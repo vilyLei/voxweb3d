@@ -146,10 +146,10 @@ export namespace demo
             if(this.m_rscene == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/warter_01.jpg");
-                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/fruit_01.jpg");
+                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/warter_01.jpg");
+                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/fruit_01.jpg");
                 tex0.mipmapEnabled = true;
                 tex0.setWrap(TextureConst.WRAP_REPEAT);
                 tex1.mipmapEnabled = true;
@@ -162,7 +162,7 @@ export namespace demo
                 let rparam:RendererParam;
                 rparam = new RendererParam("glcanvas");
                 rparam.setMatrix4AllocateSize(8192 * 4);
-                rparam.setCamProject(45.0,0.1,3000.0);
+                rparam.setCamProject(45.0,50.0,6000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
                 
                 this.m_rscene = new RendererScene();

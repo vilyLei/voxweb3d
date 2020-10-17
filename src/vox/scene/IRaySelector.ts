@@ -8,14 +8,12 @@
 
 import * as Vector3DT from "../../vox/geom/Vector3";
 import * as CameraBaseT from "../../vox/view/CameraBase";
-//import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
-import * as RaySelectedNodeT from '../../vox/scene/RaySelectedNode';
+import * as RaySelectedNodeT from "../../vox/scene/RaySelectedNode";
 import * as IRendererT from "../../vox/scene/IRenderer";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
-//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
 import RaySelectedNode = RaySelectedNodeT.vox.scene.RaySelectedNode;
 import IRenderer = IRendererT.vox.scene.IRenderer;

@@ -74,7 +74,7 @@ export namespace voxvat
                     let rparam:RendererParam = new RendererParam("glcanvas");
                     rparam.evtFlowEnabled = true;
                     rparam.setMatrix4AllocateSize(8192 * 4);
-                    rparam.setCamProject(45.0,0.1,7000.0);
+                    rparam.setCamProject(45.0,50.0,7000.0);
                     rparam.setCamPosition(2500.0,2500.0,2500.0);
                     this.m_rsc = new RendererScene();
                     this.m_rsc.initialize(rparam,5);

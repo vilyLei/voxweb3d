@@ -60,8 +60,10 @@ export namespace demo
             if(this.m_rcontext == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("broken_iron.jpg");
+                RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+                RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
                 tex0.mipmapEnabled = true;
                 tex0.setWrap(TextureConst.WRAP_REPEAT);
                 tex1.setWrap(TextureConst.WRAP_REPEAT);
@@ -73,7 +75,7 @@ export namespace demo
                 this.m_statusDisp.initialize("rstatus");
 
                 let rparam:RendererParam = new RendererParam("glcanvas");
-                rparam.setCamProject(45.0,100.0,5000.0);
+                rparam.setCamProject(45.0,30.0,5000.0);
                 this.m_renderer = new RendererInstance();
                 this.m_renderer.initialize(rparam);
                 this.m_renderer.appendProcess();

@@ -189,10 +189,24 @@ export namespace vox
             __$updateToGpu(rc:RenderProxy):void
             {
             }
-            // sub class override
+            //  sub class can not override!!!!
             upload(rc:RenderProxy):void
             {
-                
+                if(this.m_uploadBoo)
+                {
+                    if(this.m_haveRData)
+                    {
+                        let gl:any = rc.RContext;
+                        this.m_samplerTarget = TextureTarget.GetValue(gl,this.m_texTarget);
+                        //  console.log("TextureProxy::upload(), tex: "+this);
+                        //  console.log("TextureProxy::upload(), this.m_imgData: "+this.m_imgData);
+                        this.m_texBuf = gl.createTexture();
+                        gl.bindTexture (this.m_samplerTarget, this.m_texBuf);
+                        this.uploadData(rc);
+                        this.___buildParam(gl);
+                        this.m_uploadBoo = false;
+                    }
+                }
             }
             
             toString():string

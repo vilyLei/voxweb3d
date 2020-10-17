@@ -5,23 +5,23 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as RODrawStateT from "../../vox/render/RODrawState";
+import * as RendererStateT from "../../vox/render/RendererState";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as Text2DMaterialT from "../../vox2d/material/mcase/Text2DMaterial";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as TextRectMeshT from "../../vox/text/TextRectMesh";
 import * as H5FontSysT from "../../vox/text/H5FontSys";
-import * as SpaceCullingMasKT from '../../vox/scene/SpaceCullingMasK';
+import * as SpaceCullingMaskT from "../../vox/scene/SpaceCullingMask";
 
-import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
+import RendererState = RendererStateT.vox.render.RendererState;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import Text2DMaterial = Text2DMaterialT.vox2d.material.mcase.Text2DMaterial;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextRectMesh = TextRectMeshT.vox.text.TextRectMesh;
 import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
-import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
+import SpaceCullingMasK = SpaceCullingMaskT.vox.scene.SpaceCullingMasK;
 
 export namespace vox2d
 {
@@ -187,7 +187,8 @@ export namespace vox2d
             initialize(charsStr:string,texList:TextureProxy[] = null):void
             {
                 this.m_charsStr = charsStr;
-                this.spaceCullMask = SpaceCullingMasK.NONE;                
+                this.spaceCullMask = SpaceCullingMasK.NONE;
+                this.spaceCullMask = 0;
                 this.m_alignFactorX = 0.0;
                 this.m_alignFactorY = 0.0;
                 if(texList == null)
@@ -199,7 +200,7 @@ export namespace vox2d
                     this.createMaterial(texList);
                 }
                 this.activeDisplay();
-                this.setRenderState(RenderStateObject.BACK_TRANSPARENT_ALWAYS_STATE);
+                this.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
                 //this.setRenderState(RenderStateObject.BACK_NORMAL_ALWAYS_STATE);
             }
             protected createBounds():void

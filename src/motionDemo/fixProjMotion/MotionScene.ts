@@ -140,12 +140,12 @@ export namespace motionDemo
                 this.m_texLoader.run();
             }
             private m_texList:string[] = [
-                "assets/default.jpg",
-                "assets/ceil_01.jpg",
-                "assets/flare_core_01.jpg",
-                "assets/flare_core_02.jpg",
-                "assets/blackAlpha0.png",
-                "assets/blackAlpha2.png"
+                "static/assets/default.jpg",
+                "static/assets/ceil_01.jpg",
+                "static/assets/flare_core_01.jpg",
+                "static/assets/flare_core_02.jpg",
+                "static/assets/blackAlpha0.png",
+                "static/assets/blackAlpha2.png"
             ];
             private getTexAt(i:number):TextureProxy
             {

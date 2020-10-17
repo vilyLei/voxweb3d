@@ -18,14 +18,10 @@ import * as Box3DEntityT from "../../vox/entity/Box3DEntity";
 import * as BillboardFrameT from "../../vox/entity/BillboardFrame";
 import * as ProfileInstanceT from "../../voxprofile/entity/ProfileInstance";
 import * as CameraTrackT from "../../vox/view/CameraTrack";
-import * as BoxFrame3DT from "../../vox/entity/BoxFrame3D";
-import * as QuadHolePOVT from '../../voxocc/occlusion/QuadHolePOV';
-import * as BoxPOVT from '../../voxocc/occlusion/BoxPOV';
-import * as BoxFarFacePOVT from '../../voxocc/occlusion/BoxFarFacePOV';
-import * as OccBoxWallT from '../../voxocc/demo/occwall/OccBoxWall';
 import * as IRendererSpaceT from "../../vox/scene/IRendererSpace";
-import * as SpaceCullingMasKT from '../../vox/scene/SpaceCullingMasK';
-import * as SpaceCullingorT from '../../vox/scene/SpaceCullingor';
+import * as SpaceCullingorT from "../../vox/scene/SpaceCullingor";
+import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMask";
+import * as OccBoxWallT from "../../voxocc/demo/occwall/OccBoxWall";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import CubeRandomRange = RandomRangeT.vox.utils.CubeRandomRange;
@@ -48,14 +44,10 @@ import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import BillboardFrame = BillboardFrameT.vox.entity.BillboardFrame;
 import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import BoxFrame3D = BoxFrame3DT.vox.entity.BoxFrame3D;
-import QuadHolePOV = QuadHolePOVT.voxocc.occlusion.QuadHolePOV;
-import BoxPOV = BoxPOVT.voxocc.occlusion.BoxPOV;
-import BoxFarFacePOV = BoxFarFacePOVT.voxocc.occlusion.BoxFarFacePOV;
-import OccBoxWall = OccBoxWallT.voxocc.demo.occwall.OccBoxWall;
 import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
-import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
 import SpaceCullingor = SpaceCullingorT.vox.scene.SpaceCullingor;
+import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
+import OccBoxWall = OccBoxWallT.voxocc.demo.occwall.OccBoxWall;
 
 export namespace voxocc
 {
@@ -84,12 +76,12 @@ export namespace demo
             {
                 H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/metal_08.jpg");
-                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/flare_core_01.jpg");
-                let tex4:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/flare_core_02.jpg");
-                let tex5:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/moss_02.jpg");
+                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/metal_08.jpg");
+                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_01.jpg");
+                let tex4:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_02.jpg");
+                let tex5:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/moss_02.jpg");
                 tex0.mipmapEnabled = true;
                 tex1.mipmapEnabled = true;
                 tex2.mipmapEnabled = true;
@@ -105,7 +97,7 @@ export namespace demo
                 
                 let rparam:RendererParam = new RendererParam("glcanvas");
                 rparam.setMatrix4AllocateSize(8192 * 4);
-                rparam.setCamProject(45.0,0.1,5000.0);
+                rparam.setCamProject(45.0,100.0,5000.0);
                 rparam.setCamPosition(2000.0,1500.0,2000.0);
                 
                 this.m_rscene = new RendererScene();

@@ -1,29 +1,29 @@
 
+import * as SpaceCullingMasKT from "../../../vox/scene/SpaceCullingMasK";
 import * as Vector3DT from "../../../vox/geom/Vector3";
 import * as TextureProxyT from "../../../vox/texture/TextureProxy";
 import * as RendererSceneT from "../../../vox/scene/RendererScene";
 
 import * as Box3DEntityT from "../../../vox/entity/Box3DEntity";
-import * as BillboardFrameT from "../../../vox/entity/BillboardFrame";
 import * as BoxFrame3DT from "../../../vox/entity/BoxFrame3D";
-import * as QuadHolePOVT from '../../../voxocc/occlusion/QuadHolePOV';
-import * as BoxFarFacePOVT from '../../../voxocc/occlusion/BoxFarFacePOV';
+import * as QuadHolePOVT from "../../../voxocc/occlusion/QuadHolePOV";
+import * as OccCullingMaskT from "../../../voxocc/occlusion/OccCullingMask";
 import * as IRendererSpaceT from "../../../vox/scene/IRendererSpace";
-import * as SpaceCullingMasKT from '../../../vox/scene/SpaceCullingMasK';
-import * as SpaceCullingorT from '../../../vox/scene/SpaceCullingor';
+import * as SpaceCullingorT from "../../../vox/scene/SpaceCullingor";
+import * as BoxFarFacePOVT from "../../../voxocc/occlusion/BoxFarFacePOV";
 
+//import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import BillboardFrame = BillboardFrameT.vox.entity.BillboardFrame;
 import BoxFrame3D = BoxFrame3DT.vox.entity.BoxFrame3D;
 import QuadHolePOV = QuadHolePOVT.voxocc.occlusion.QuadHolePOV;
-import BoxFarFacePOV = BoxFarFacePOVT.voxocc.occlusion.BoxFarFacePOV;
 import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
-import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
+import SpaceCullingMasK = OccCullingMaskT.voxocc.occlusion.OccCullingMask;
 import SpaceCullingor = SpaceCullingorT.vox.scene.SpaceCullingor;
+import BoxFarFacePOV = BoxFarFacePOVT.voxocc.occlusion.BoxFarFacePOV;
 
 export namespace voxocc
 {

@@ -1,5 +1,8 @@
 
 
+//  import * as VatParallaxMap2 from "./voxvat/demo/VatParallaxMap2";
+//  import Demo = VatParallaxMap2.voxvat.demo.VatParallaxMap2;
+
 //  import * as DemoBase from "./demo2d/DemoBase";
 //  import Demo = DemoBase.demo2d.DemoBase;
 
@@ -24,15 +27,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
-
-//  import * as DemoBase from "./demo/DemoBase";
-//  import Demo = DemoBase.demo.DemoBase;
-
-//  import * as DemoFrustrum from "./demo/DemoFrustrum";
-//  import Demo = DemoFrustrum.demo.DemoFrustrum;
-
-//  import * as DemoOrtho from "./demo/DemoOrtho";
-//  import Demo = DemoOrtho.demo.DemoOrtho;
 
 //  import * as DemoOrthoSubScene from "./demo/DemoOrthoSubScene";
 //  import Demo = DemoOrthoSubScene.demo.DemoOrthoSubScene;
@@ -124,8 +118,8 @@
 //  import * as DemoRTTHalfSize from "./demo/DemoRTTHalfSize";
 //  import Demo = DemoRTTHalfSize.demo.DemoRTTHalfSize;
 
-import * as DemoRTT from "./demo/DemoRTT";
-import Demo = DemoRTT.demo.DemoRTT;
+//  import * as DemoRTT from "./demo/DemoRTT";
+//  import Demo = DemoRTT.demo.DemoRTT;
 
 //  import * as DemoMRT2 from "./demo/DemoMRT2";
 //  import Demo = DemoMRT2.demo.DemoMRT2;
@@ -136,12 +130,21 @@ import Demo = DemoRTT.demo.DemoRTT;
 //  import * as DemoCubeMapMRT from "./demo/DemoCubeMapMRT";
 //  import Demo = DemoCubeMapMRT.demo.DemoCubeMapMRT;
 
+//  import * as DemoFrustrum from "./demo/DemoFrustrum";
+//  import Demo = DemoFrustrum.demo.DemoFrustrum;
+
+//  import * as DemoOrtho from "./demo/DemoOrtho";
+//  import Demo = DemoOrtho.demo.DemoOrtho;
+
 //  import * as DemoScreenPingpongBlur from "./demo/DemoScreenPingpongBlur";
 //  import Demo = DemoScreenPingpongBlur.demo.DemoScreenPingpongBlur;
 
 //  import * as DemoDepthBlur from "./demo/DemoDepthBlur";
 //  import Demo = DemoDepthBlur.demo.DemoDepthBlur;
 //
+import * as DemoBase from "./demo/DemoBase";
+import Demo = DemoBase.demo.DemoBase;
+
 let demoIns:Demo = new Demo();
 function main():void
 {

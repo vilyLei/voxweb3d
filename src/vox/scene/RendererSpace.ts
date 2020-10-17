@@ -5,11 +5,15 @@
 /*                                                                         */
 /***************************************************************************/
 // 当前渲染场景空间管理的入口类, 鼠标拾取，摄像机裁剪，空间管理遮挡剔除等都是由这个系统来组织完成的
-
+/*
+This relative module was not found:
+* ../../vox/scene/SpaceCullingMasK in ./src/vox/scene/RendererSpace.ts
+*/
 import * as Vector3DT from "../../vox/geom/Vector3";
 import * as AABBT from "../../vox/geom/AABB";
 import * as Stage3DT from "../../vox/display/Stage3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
+//import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMasK";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as IRendererSpaceT from "../../vox/scene/IRendererSpace";
 import * as RPONodeBuiderT from "../../vox/render/RPONodeBuider";
@@ -17,13 +21,14 @@ import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
 import * as EntityNodeQueueT from "../../vox/scene/EntityNodeQueue";
 import * as Entity3DNodeLinkerT from "../../vox/scene/Entity3DNodeLinker";
 import * as IRendererT from "../../vox/scene/IRenderer";
-import * as IRaySelectorT from '../../vox/scene/IRaySelector';
-import * as ISpaceCullingorT from '../../vox/scene/ISpaceCullingor';
+import * as IRaySelectorT from "../../vox/scene/IRaySelector";
+import * as ISpaceCullingorT from "../../vox/scene/ISpaceCullingor";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import AABB = AABBT.vox.geom.AABB;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
+//import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
 import RPONode = RPONodeBuiderT.vox.render.RPONode;
@@ -35,8 +40,6 @@ import IRenderer = IRendererT.vox.scene.IRenderer;
 import IRaySelector = IRaySelectorT.vox.scene.IRaySelector;
 import ISpaceCullingor = ISpaceCullingorT.vox.scene.ISpaceCullingor;
 
-//import * as CullingMasKT from "../../vox/base/SpaceCullingMasK";
-//import SpaceCullingMasK = CullingMasKT.vox.base.SpaceCullingMasK;
 export namespace vox
 {
     export namespace scene

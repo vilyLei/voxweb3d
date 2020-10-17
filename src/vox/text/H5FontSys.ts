@@ -302,6 +302,21 @@ export class H5FontSystem
       }
 
       this.m_canvas = pdocument.getElementById(canvas_id_name);
+      if(this.m_canvas == null)
+      {
+        this.m_canvas = document.createElement('canvas');
+        document.body.appendChild(this.m_canvas);
+
+        this.m_canvas.style.width = '128px';
+        this.m_canvas.style.height = '128px';
+        this.m_canvas.style.display = 'bolck';
+        this.m_canvas.style.overflow = 'hidden';
+        this.m_canvas.style.left = '0px';
+        this.m_canvas.style.top = '0px';
+        this.m_canvas.style.position = 'absolute';
+        this.m_canvas.style.backgroundColor = 'transparent';
+        this.m_canvas.style.pointerEvents = 'none';
+      }
       this.m_canvas.width = texWidth;
       this.m_canvas.height = texHeight;
       //console.log("H5FontSystem::initialize(), canvas_visible: "+canvas_visible);
@@ -323,8 +338,8 @@ export class H5FontSystem
       this.m_texBase = TextureStore.CreateBytesTex(this.m_texWidth,this.m_texHeight);
       this.m_texBase.toAlphaFormat();
       this.m_texBase.mipmapEnabled = mipmapEnabled;
-      this.m_texBase.min_filter = TextureConst.NEAREST;
-      //this.m_texBase.mag_filter = TextureConst.NEAREST;
+      this.m_texBase.min_filter = TextureConst.LINEAR;
+      this.m_texBase.mag_filter = TextureConst.NEAREST;
 
       this.createInitTexAndChars();
     }

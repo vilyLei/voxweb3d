@@ -1,6 +1,5 @@
 
 import * as Vector3DT from "../vox/geom/Vector3";
-import * as Matrix4T from "../vox/geom/Matrix4";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RenderConstT from "../vox/render/RenderConst";
 import * as RODrawStateT from "../vox/render/RODrawState";
@@ -12,12 +11,9 @@ import * as MouseEventT from "../vox/event/MouseEvent";
 import * as Stage3DT from "../vox/display/Stage3D";
 
 import * as DisplayEntityT from "../vox/entity/DisplayEntity";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
 import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
 import * as Box3DEntityT from "../vox/entity/Box3DEntity";
 import * as Sphere3DEntityT from "../vox/entity/Sphere3DEntity";
-import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
-import * as Billboard3DEntityT from "../vox/entity/Billboard3DEntity";
 import * as BoxFrame3DT from "../vox/entity/BoxFrame3D";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureConstT from "../vox/texture/TextureConst";
@@ -27,8 +23,6 @@ import * as DisplayEntityContainerT from "../vox/entity/DisplayEntityContainer";
 import * as EntityDispT from "./base/EntityDisp";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
-import Matrix4Pool = Matrix4T.vox.geom.Matrix4Pool;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
@@ -42,19 +36,16 @@ import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
-import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import BoxFrame3D = BoxFrame3DT.vox.entity.BoxFrame3D;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
-//import EntityDisp = EntityDispT.demo.base.EntityDisp;
+
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 
 export namespace demo
@@ -77,11 +68,11 @@ export namespace demo
         initTex():void
         {
             let i:number = 0;
-            //m_texList
+            
             let urls:string[] = [
-                "default.jpg"
-                ,"broken_iron.jpg"
-                ,"assets/guangyun_H_0007.png"
+                "static/assets/default.jpg"
+                , "static/assets/broken_iron.jpg"
+                , "static/assets/guangyun_H_0007.png"
             ];
             for(; i < urls.length; ++i)
             {
@@ -129,45 +120,13 @@ export namespace demo
                 this.initContainerBoundsTest();
             }
         }
-        private m_runFlag:number = 1;
         mouseUpListener(evt:any):void
         {
-            console.log("mouseUpListener call, this.m_renderer: "+this.m_rscene.toString());
-            //this.m_followEntity.setVisible(!this.m_followEntity.getVisible());
-            //this.m_container.setVisible(!this.m_container.getVisible());
-            //this.m_topContainer.setVisible(!this.m_topContainer.getVisible());
-
-            //this.m_targetEntity.setVisible(!this.m_targetEntity.getVisible());
-
-            //if(this.m_mainContainer.getRenderer() != null)
-            //{
-            //    this.m_rscene.removeContainer( this.m_mainContainer );
-            //}
-            //else
-            //{
-            //    this.m_rscene.addContainer( this.m_mainContainer );
-            //}
-            //this.m_runFlag = 1;
-            if(this.m_runFlag > 0)
-            {
-                this.m_runFlag = 0;
-            }
-            else
-            {
-                this.m_runFlag = 1;
-            }
-            this.m_rscene.showInfoAt(0);
         }
         pv:Vector3D = new Vector3D();
         delayTime:number = 10;
         run():void
         {
-            if(this.m_runFlag < 1)
-            {
-                return;
-            }
-            //--this.m_runFlag;
-
             this.m_statusDisp.update();
             // logic run
             this.m_equeue.run();

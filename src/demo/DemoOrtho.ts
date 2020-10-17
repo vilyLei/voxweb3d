@@ -12,6 +12,7 @@ import * as RendererSceneT from "../vox/scene/RendererScene";
 import * as RaySelectorT from "../vox/scene/RaySelector";
 import * as MouseEvt3DControllerT from "../vox/scene/MouseEvt3DController";
 
+import * as DisplayEntityT from "../vox/entity/DisplayEntity";
 import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
 import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
 import * as Box3DEntityT from "../vox/entity/Box3DEntity";
@@ -31,7 +32,7 @@ import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
-//import Keyboard = KeyboardT.vox.ui.Keyboard;
+
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
@@ -39,6 +40,7 @@ import RaySelector = RaySelectorT.vox.scene.RaySelector;
 import MouseEvt3DController = MouseEvt3DControllerT.vox.scene.MouseEvt3DController;
 
 import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
+import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
@@ -56,6 +58,7 @@ export namespace demo
         {
         }
         name:string = "DispEvtevtCtrObj";
+        disp:DisplayEntity = null;
         mouseMoveListener(evt:any):void
         {
             
@@ -64,11 +67,20 @@ export namespace demo
         {
             
             console.log(this.name+", DispEvtevtCtrObj mouse over. ");
-            
+            if(this.disp != null)
+            {
+                let material:any = this.disp.getMaterial();
+                material.setRGB3f(Math.random() * 1.2,1.0,1.0);
+            }
         }
         mouseOutListener(evt:any):void
         {
             console.log(this.name+", DispEvtevtCtrObj mouse out. ");
+            if(this.disp != null)
+            {
+                let material:any = this.disp.getMaterial();
+                material.setRGB3f(1.0,1.0, Math.random() * 1.2);
+            }
         }
         mouseDownListener(evt:any):void
         {
@@ -101,10 +113,10 @@ export namespace demo
             if(this.m_rscene == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/warter_01.jpg");
-                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/flare_core_02.jpg");
+                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/assets/warter_01.jpg");
+                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/assets/flare_core_02.jpg");
                 tex0.mipmapEnabled = true;
                 tex0.setWrap(TextureConst.WRAP_REPEAT);
                 tex1.mipmapEnabled = true;
@@ -118,7 +130,7 @@ export namespace demo
                 let rparam:RendererParam = new RendererParam("glcanvas");
                 rparam.cameraPerspectiveEnabled = false;
                 rparam.setMatrix4AllocateSize(8192 * 4);
-                rparam.setCamProject(45.0,0.1,3000.0);
+                rparam.setCamProject(45.0,10.1,3000.0);
                 rparam.setCamPosition(0.0,0.0,1500.0);
                 //rparam.setCamPosition(1500.0,1500.0,1500.0);
                 
@@ -135,12 +147,6 @@ export namespace demo
                 this.m_rspace.setRaySelector(this.m_raySelector);
                 let evtCtr:MouseEvt3DController = new MouseEvt3DController();
                 this.m_rscene.setEvt3DController(evtCtr);
-
-                //  this.m_stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
-                //  this.m_stage3D.addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener);
-                //  this.m_stage3D.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener);
-                //  this.m_stage3D.addEventListener(KeyboardEvent.KEY_DOWN,this,this.keyDownListener);
-                //  this.m_stage3D.addEventListener(KeyboardEvent.KEY_UP,this,this.keyUpListener);
 
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rscene.getCamera());
@@ -163,6 +169,7 @@ export namespace demo
                     
                     evtCtrObj = new DispEvtevtCtrObj();
                     evtCtrObj.name = "plane_"+i;
+                    evtCtrObj.disp = plane;
                     dispatcher = new MouseEvt3DDispatcher();
                     dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,evtCtrObj,evtCtrObj.mouseDownListener);
                     dispatcher.addEventListener(MouseEvent.MOUSE_UP,evtCtrObj,evtCtrObj.mouseUpListener);
@@ -187,6 +194,7 @@ export namespace demo
                     this.m_rscene.addEntity(box);
 
                     evtCtrObj = new DispEvtevtCtrObj();
+                    evtCtrObj.disp = box;
                     evtCtrObj.name = "box_"+i;
                     dispatcher = new MouseEvt3DDispatcher();
                     dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,evtCtrObj,evtCtrObj.mouseDownListener);
@@ -206,6 +214,7 @@ export namespace demo
                     this.m_rscene.addEntity(sphere);
 
                     evtCtrObj = new DispEvtevtCtrObj();
+                    evtCtrObj.disp = sphere;
                     evtCtrObj.name = "sphere_"+i;
                     dispatcher = new MouseEvt3DDispatcher();
                     dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,evtCtrObj,evtCtrObj.mouseDownListener);
@@ -218,86 +227,16 @@ export namespace demo
                 }
             }
         }
-        private m_mouseX:number = 0.0;
-        private m_mouseY:number = 0.0;
-        private m_mouseDownBoo:boolean = false;
-        keyDownListener(evt:any):void
-        {
-            console.log("keyDownListener call, key: "+evt.key+",repeat: "+evt.repeat);
-        }
-        keyUpListener(evt:any):void
-        {
-            console.log("keyUpListener call, key: "+evt.key+",repeat: "+evt.repeat);
-            switch(evt.key)
-            {
-                case "z":
-                    console.log("reset cam lookAt.");
-                    this.m_rscene.getCamera().lookAtRH(new Vector3D(1500.0,1500.0,1500.0),new Vector3D(),new Vector3D(0.0,1.0,0.0));
-                break;
-            }
-        }
-        mouseDownListener(evt:any):void
-        {
-            //console.log("mouseDownListener call, this.m_rscene: "+this.m_rscene.toString());
-            this.m_mouseX = this.m_stage3D.mouseX;
-            this.m_mouseY = this.m_stage3D.mouseY;
-            this.m_mouseDownBoo = true;
-        }
-        mouseUpListener(evt:any):void
-        {
-            //console.log("mouseUpListener call, this.m_rscene: "+this.m_rscene.toString());
-            this.m_mouseDownBoo = false;
-        }
-        mouseWheeelListener(evt:any):void
-        {
-            //console.log("mouseWheeelListener call, evt.wheelDeltaY: "+evt.wheelDeltaY);
-            if(evt.wheelDeltaY < 0)
-            {
-                // zoom in
-                this.m_rscene.getCamera().forward(-25.0);
-            }
-            else
-            {
-                // zoom out
-                this.m_rscene.getCamera().forward(25.0);
-            }
-        }
-        private updateMouseDrag():void
-        {
-            let dx:number = this.m_mouseX - this.m_stage3D.mouseX;
-            let dy:number = this.m_mouseY - this.m_stage3D.mouseY;
-            let abs_dx:number = Math.abs(dx);
-            let abs_dy:number = Math.abs(dy);
-            if(abs_dx > abs_dy)
-            {
-                if(abs_dx > 0.5)this.m_rscene.getCamera().swingHorizontal(dx * 0.002);
-            }
-            else
-            {
-                if(abs_dy > 0.5)this.m_rscene.getCamera().swingVertical(dy * 0.002);
-            }
-            this.m_mouseX = this.m_stage3D.mouseX;
-            this.m_mouseY = this.m_stage3D.mouseY;
-        }
         run():void
         {
             this.m_statusDisp.update();
-            //  if(this.m_mouseDownBoo)
-            //  {
-            //      this.updateMouseDrag();
-            //  }
-
-            //this.m_rscene.setViewPort(0,0,this.m_stage3D.stageWidth,this.m_stage3D.stageHeight);
             this.m_rscene.getCamera().translationXYZ(this.m_stage3D.stageHalfWidth,this.m_stage3D.stageHalfHeight,1500.0);
             this.m_rscene.setClearRGBColor3f(0.0, 0.5, 0.0);
             this.m_rscene.runBegin();
-            //this.m_rscene.updateCamera();
             this.m_rscene.update();
             this.m_rscene.run();
 
             this.m_rscene.runEnd();
-            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-            //this.m_rscene.updateCamera();
         }
     }
 }

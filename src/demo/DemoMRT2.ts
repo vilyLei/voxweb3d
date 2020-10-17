@@ -58,11 +58,11 @@ export namespace demo
             if(this.m_rcontext == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/fruit_01.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/metal_08.jpg");
-                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/warter_01.jpg");
-                let tex4:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/flare_core_02.jpg");
+                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/fruit_01.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/metal_08.jpg");
+                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/warter_01.jpg");
+                let tex4:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_02.jpg");
                 tex0.mipmapEnabled = true;
                 tex0.setWrap(TextureConst.WRAP_REPEAT);
                 tex1.setWrap(TextureConst.WRAP_REPEAT);
@@ -77,6 +77,7 @@ export namespace demo
                 this.m_statusDisp.initialize("rstatus");
 
                 let rparam:RendererParam = new RendererParam("glcanvas");
+                rparam.setCamPosition(800.0,800.0,800.0);
                 this.m_renderer = new RendererInstance();
                 this.m_renderer.initialize(rparam);
                 this.m_renderer.appendProcess();
@@ -155,7 +156,8 @@ export namespace demo
 	    	{
 	    		return this.m_texs[i];
             }
-	    	this.m_texs[i] = TextureStore.CreateTex2D(64, 64);
+            this.m_texs[i] = TextureStore.CreateTex2D(64, 64);
+            
 	    	return this.m_texs[i];
 	    }
         run():void
@@ -186,9 +188,11 @@ export namespace demo
             //  radapter.setRenderToTexture(this.getTextureAt(1), true, false, 1);
             //  radapter.useFBO(false, false, false);
             //  rinstance.runAt(3);
-            radapter.setRenderToTexture(this.getTextureAt(0), true, false, 0);
-            radapter.useFBO(false, false, false);
-            rinstance.runAt(4);
+            //  radapter.setRenderToTexture(this.getTextureAt(0), true, false, 0);
+            //  //radapter.setRenderToTexture(this.getTextureAt(1), true, false, 1);
+            //  radapter.useFBO(false, false, false);
+            //  //radapter.useFBO(true, true, false);
+            //  rinstance.runAt(4);
             /*
             pcontext.bindFBOAt(1,FrameBufferType.FRAMEBUFFER);
             radapter.setRenderToTexture(this.getTextureAt(2), false, false, 0);
@@ -196,10 +200,10 @@ export namespace demo
             radapter.useFBO(true, true, false);
             rinstance.runAt(5);
             // -------------------------------------------------------
+            //*/
             pcontext.setClearRGBColor3f(0.0, 3.0, 2.0);
             radapter.setRenderToBackBuffer();
             rinstance.runAt(2);
-            //*/
 
 
             pcontext.runEnd();            

@@ -53,7 +53,7 @@ export namespace vox
             constructor(texList:TextureProxy[], texWidth:number,texHeight:number,powerof2Boo:boolean = false)
             {
                 super(texList, texWidth,texHeight,powerof2Boo);
-                this.m_type = TextureConst.TEX_PROXY2D;                
+                this.m_type = TextureConst.TEX_PROXY2D;
                 this.min_filter = TextureConst.LINEAR;
             }
             toAlphaFormat():void

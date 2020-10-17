@@ -25,7 +25,7 @@ import * as TexResLoaderT from "../vox/texture/TexResLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as DisplayEntityContainerT from "../vox/entity/DisplayEntityContainer";
 import * as EntityDispT from "./base/EntityDisp";
-import * as Color4T from '../vox/material/Color4';
+import * as Color4T from "../vox/material/Color4";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
@@ -55,7 +55,6 @@ import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
-//import EntityDisp = EntityDispT.demo.base.EntityDisp;
 import Color4 = Color4T.vox.material.Color4;
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 
@@ -66,7 +65,6 @@ export namespace demo
         constructor()
         {
         }
-        //private m_renderer:RendererInstance = null;
         private m_rscene:RendererScene = null;
         private m_rcontext:RendererInstanceContext = null;
         private m_texLoader:TexResLoader = new TexResLoader();
@@ -86,12 +84,12 @@ export namespace demo
             if(this.m_rcontext == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/guangyun_H_0007.png");
-                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/flare_core_01.jpg");
-                let tex4:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/flare_core_02.jpg");
-                let tex5:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/a_02_c.jpg");
+                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/guangyun_H_0007.png");
+                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_01.jpg");
+                let tex4:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_02.jpg");
+                let tex5:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/a_02_c.jpg");
                 BillParticle.texs.push(tex2);
                 BillParticle.texs.push(tex3);
                 BillParticle.texs.push(tex4);
@@ -106,12 +104,9 @@ export namespace demo
                 this.m_statusDisp.initialize("rstatus");
                 let rparam:RendererParam = new RendererParam("glcanvas");
                 rparam.setMatrix4AllocateSize(8192 * 4);
-                rparam.setCamProject(45.0,0.1,3000.0);
+                rparam.setCamProject(45.0,10.0,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
-                //rparam.setCamPosition(100.0,100.0,100.0);
-                //  this.m_renderer = new RendererInstance();
-                //  this.m_renderer.initialize(rparam);
-                //  this.m_renderer.appendProcess(true,true);
+                
                 this.m_rscene = new RendererScene();
                 this.m_rscene.initialize(rparam,3);
                 this.m_rscene.setRendererProcessParam(1,true,true);
@@ -134,7 +129,7 @@ export namespace demo
                 ///*
                 container = new DisplayEntityContainer();
                 container.addEntity(plane);
-                console.log(">>>>>>>>>>>>>>>>>>>>>>");
+                
                 container.setXYZ(100.0,100.0,100.0);
                 this.m_rscene.addEntity(plane);
                 //plane.setRenderStateByName("ADD01");
@@ -223,7 +218,7 @@ export namespace demo
         run():void
         {
             this.m_equeue.run();
-            //this.m_statusDisp.statusInfo = "/" + RenderStateObject.Rstate.drawcallTimes;
+            
             this.m_statusDisp.update();
 
             //console.log("##-- begin");

@@ -8,7 +8,6 @@ import * as RendererInstanceT from "../vox/scene/RendererInstance";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 
 import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
 import * as Box3DEntityT from "../vox/entity/Box3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureStoreT from "../vox/texture/TextureStore";
@@ -26,7 +25,6 @@ import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 
 import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
@@ -54,8 +52,8 @@ export namespace demo
             if(this.m_rcontext == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/fruit_01.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("broken_iron.jpg");
+                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/assets/fruit_01.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
                 tex0.mipmapEnabled = true;
                 tex0.setWrap(TextureConst.WRAP_REPEAT);
                 tex1.setWrap(TextureConst.WRAP_REPEAT);
@@ -64,6 +62,7 @@ export namespace demo
                 this.m_statusDisp.initialize("rstatus");
 
                 let rparam:RendererParam = new RendererParam("glcanvas");
+                rparam.setCamPosition(800.0,800.0,800.0);
                 this.m_renderer = new RendererInstance();
                 this.m_renderer.initialize(rparam);
                 this.m_renderer.appendProcess();
@@ -80,11 +79,6 @@ export namespace demo
                 plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
                 this.m_renderer.addEntity(plane);
                 this.m_renderer.addEntity(plane);
-
-                // let axis:Axis3DEntity = new Axis3DEntity();
-                // axis.name = "axis";
-                // axis.initialize(300.0);
-                // this.m_renderer.addEntity(axis);
 
                 let boxSize:number = 100.0;
                 let box:Box3DEntity = new Box3DEntity();

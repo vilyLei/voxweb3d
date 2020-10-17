@@ -11,7 +11,7 @@ import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as ScreenFixedPlaneMaterialT from "../../vox/material/mcase/ScreenFixedPlaneMaterial";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as RORectMeshT from "../../vox/mesh/RORectMesh";
-import * as SpaceCullingMasKT from '../../vox/scene/SpaceCullingMasK';
+import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMask";
 
 import RendererState = RendererStateT.vox.render.RendererState;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;

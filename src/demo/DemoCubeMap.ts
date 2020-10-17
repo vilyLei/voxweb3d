@@ -49,6 +49,7 @@ export namespace demo
             if(this.m_rcontext == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 let urls = [
                     "static/assets/hw_morning/morning_ft.jpg",
                     "static/assets/hw_morning/morning_bk.jpg",
@@ -65,6 +66,7 @@ export namespace demo
                 this.m_statusDisp.initialize("rstatus");
                 
                 let rparam:RendererParam = new RendererParam("glcanvas","app");
+                rparam.setCamPosition(1000.0,1000.0,1000.0);
                 this.m_renderer = new RendererInstance();
                 this.m_renderer.initialize(rparam);
                 this.m_rcontext = this.m_renderer.getRendererContext();

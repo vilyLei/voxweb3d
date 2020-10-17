@@ -73,10 +73,10 @@ export namespace demo
             if(this.m_rscene == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/warter_01.jpg");
-                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/bt_reset_01.png");
+                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/warter_01.jpg");
+                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/bt_reset_01.png");
                 tex0.mipmapEnabled = true;
                 tex0.setWrap(TextureConst.WRAP_REPEAT);
                 tex1.mipmapEnabled = true;
@@ -102,7 +102,7 @@ export namespace demo
 
                 rparam = new RendererParam("glcanvas");
                 rparam.cameraPerspectiveEnabled = false;
-                rparam.setCamProject(45.0,0.1,3000.0);
+                rparam.setCamProject(45.0,50.0,6000.0);
                 rparam.setCamPosition(0.0,0.0,1500.0);
                 let subScene:RendererSubScene = null;
                 subScene = this.m_rscene.createSubScene();

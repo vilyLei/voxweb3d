@@ -4,10 +4,8 @@ import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RenderConstT from "../vox/render/RenderConst";
 import * as RODrawStateT from "../vox/render/RODrawState";
 import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererInstanceT from "../vox/scene/RendererInstance";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 import * as MouseEventT from "../vox/event/MouseEvent";
-import * as KeyboardEventT from "../vox/event/KeyboardEvent";
 import * as Stage3DT from "../vox/display/Stage3D";
 import * as IRendererSpaceT from "../vox/scene/IRendererSpace";
 import * as RendererSceneT from "../vox/scene/RendererScene";
@@ -20,9 +18,6 @@ import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
 import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
 import * as Box3DEntityT from "../vox/entity/Box3DEntity";
 import * as Sphere3DEntityT from "../vox/entity/Sphere3DEntity";
-import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
-import * as Billboard3DEntityT from "../vox/entity/Billboard3DEntity";
-import * as ObjData3DEntityT from "../vox/entity/ObjData3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureConstT from "../vox/texture/TextureConst";
 import * as TexResLoaderT from "../vox/texture/TexResLoader";
@@ -36,10 +31,8 @@ import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
 import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
 import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import KeyboardEvent = KeyboardEventT.vox.event.KeyboardEvent;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
@@ -52,9 +45,6 @@ import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
-import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
-import ObjData3DEntity = ObjData3DEntityT.vox.entity.ObjData3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
@@ -120,10 +110,10 @@ export namespace demo
             if(this.m_rscene == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/warter_01.jpg");
-                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/flare_core_02.jpg");
+                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/warter_01.jpg");
+                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_02.jpg");
                 tex0.mipmapEnabled = true;
                 tex0.setWrap(TextureConst.WRAP_REPEAT);
                 tex1.mipmapEnabled = true;
@@ -260,12 +250,6 @@ export namespace demo
                     sphere.mouseEnabled = true;
                 }
 
-                //  let objUrl:string;
-                //  objUrl = "assets/obj/env_03.obj";
-                //  let objDisp:ObjData3DEntity = new ObjData3DEntity();
-                //  objDisp.moduleScale = 10.0;
-                //  objDisp.initializeByObjDataUrl(objUrl,[tex2]);
-                //  this.m_delayAddEntitys.push(objDisp);
             }
         }
         private m_mouseX:number = 0.0;

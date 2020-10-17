@@ -116,7 +116,7 @@ export namespace voxvat
                     rcbt.overColor.setRGB3f(0.0,1.0,1.0);
                     rcbt.downColor.setRGB3f(1.0,0.0,1.0);
                     rcbt.setRenderState( RendererState.BACK_TRANSPARENT_STATE );
-                    rcbt.initialize(0.0,0.0,64.0,64.0,[TexManager.CreateTexByUrl("static/voxgl/assets/bt_reset_01.png")]);
+                    rcbt.initialize(0.0,0.0,64.0,64.0,[TexManager.CreateTexByUrl("static/assets/bt_reset_01.png")]);
                     this.m_ruisc.addEntity(rcbt);
                     rcbt.setXYZ((this.m_stage3D.stageWidth - 64.0) * devK, 0.0,0.1);
                     rcbt.addEventListener(MouseEvent.MOUSE_UP,this,this.resetCameraListener);
@@ -128,7 +128,7 @@ export namespace voxvat
                     rcbt.overColor.setRGB3f(0.0,1.0,1.0);
                     rcbt.downColor.setRGB3f(1.0,0.0,1.0);
                     rcbt.setRenderState( RendererState.BACK_TRANSPARENT_STATE );
-                    rcbt.initialize(0.0,0.0,64.0,64.0,[TexManager.CreateTexByUrl("static/voxgl/assets/bt_cancel_01.png")]);
+                    rcbt.initialize(0.0,0.0,64.0,64.0,[TexManager.CreateTexByUrl("static/assets/bt_cancel_01.png")]);
                     this.m_ruisc.addEntity(rcbt);
                     rcbt.setXYZ((this.m_stage3D.stageWidth - 128 - 2) * devK, 0.0,0.1);
                     rcbt.addEventListener(MouseEvent.MOUSE_UP,this,this.cancelSelectListener);

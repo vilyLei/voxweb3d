@@ -1,5 +1,4 @@
 
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RenderConstT from "../vox/render/RenderConst";
 import * as RODrawStateT from "../vox/render/RODrawState";
 import * as RendererParamT from "../vox/scene/RendererParam";
@@ -9,15 +8,10 @@ import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 import * as MouseEventT from "../vox/event/MouseEvent";
 import * as Stage3DT from "../vox/display/Stage3D";
 
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
 import * as QuadLine3DEntityT from "../vox/entity/QuadLine3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureConstT from "../vox/texture/TextureConst";
-import * as TexResLoaderT from "../vox/texture/TexResLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as EntityDispT from "./base/EntityDisp";
 
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
 import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
@@ -29,11 +23,7 @@ import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
 import QuadBrokenLine3DEntity = QuadLine3DEntityT.vox.entity.QuadBrokenLine3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 
@@ -46,7 +36,6 @@ export namespace demo
         }
         private m_renderer:RendererInstance = null;
         private m_rcontext:RendererInstanceContext = null;
-        private m_texLoader:TexResLoader = new TexResLoader();
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_equeue:EntityDispQueue = new EntityDispQueue();
@@ -55,19 +44,6 @@ export namespace demo
             console.log("DemoQuadLine::initialize()......");
             if(this.m_rcontext == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/guangyun_H_0007.png");
-                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/flare_core_02.jpg");
-                tex0.mipmapEnabled = true;
-                tex0.setWrap(TextureConst.WRAP_REPEAT);
-                tex1.mipmapEnabled = true;
-                tex1.setWrap(TextureConst.WRAP_REPEAT);
-                tex2.mipmapEnabled = true;
-                tex2.setWrap(TextureConst.WRAP_REPEAT);
-                tex3.mipmapEnabled = true;
-                
                 this.m_statusDisp.initialize("rstatus");
                 let rparam:RendererParam = new RendererParam("glcanvas");
                 rparam.setCamProject(45.0,0.1,3000.0);
@@ -83,18 +59,6 @@ export namespace demo
                 RenderStateObject.Create("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
                 RenderStateObject.Create("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 
-                // cos(2a) = 2.0 * cos(a)^2 - 1.0;
-                let axis:Axis3DEntity = new Axis3DEntity();
-                //  axis.initialize(200.0);
-                //  this.m_renderer.addEntity(axis);
-
-                //  let axisQ:AxisQuad3DEntity = new AxisQuad3DEntity();
-                //  axisQ.initialize(200.0,10.0);
-                //  this.m_renderer.addEntity(axisQ);
-
-                //  let line3D:QuadLine3DEntity = new QuadLine3DEntity();
-                //  line3D.initialize(new Vector3D(), new Vector3D(0.0,0.0,200.0),5.0);
-                //  this.m_renderer.addEntity(line3D);
                 let brokenLine:QuadBrokenLine3DEntity = new QuadBrokenLine3DEntity();
                 //brokenLine.initialize([0.0,0.0,0.0, 0.0,0.0,200.0, 100.0,0.0,100.0, 200.0,0.0,200.0],5.0);
                 brokenLine.initialize([0.0,0.0,0.0, 0.0,0.0,200.0, 100.0,0.0,200.0, 100.0,0.0,400.0, 100.0,-150.0,500.0],40.0);

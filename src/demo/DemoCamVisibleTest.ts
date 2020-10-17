@@ -104,12 +104,12 @@ export namespace demo
             {
                 H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,true,false);
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/guangyun_H_0007.png");
-                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/flare_core_01.jpg");
-                let tex4:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/flare_core_02.jpg");
-                let tex5:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/a_02_c.jpg");
+                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/guangyun_H_0007.png");
+                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_01.jpg");
+                let tex4:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_02.jpg");
+                let tex5:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/a_02_c.jpg");
                 BillParticle.texs.push(tex2);
                 BillParticle.texs.push(tex3);
                 BillParticle.texs.push(tex4);
@@ -125,9 +125,7 @@ export namespace demo
                 rparam.setMatrix4AllocateSize(8192 * 4);
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
-                //  this.m_renderer = new RendererInstance();
-                //  this.m_renderer.initialize(rparam);
-                //  this.m_renderer.appendProcess(true,true);
+                
                 this.m_rscene = new RendererScene();
                 this.m_rscene.initialize(rparam,3);
                 this.m_rscene.setRendererProcessParam(1,true,true);
@@ -190,91 +188,6 @@ export namespace demo
                     //if(total > 1)box.setXYZ(Math.random() * 8000.0 - 4000.0,Math.random() * 8000.0 - 4000.0,Math.random() * 8000.0 - 4000.0);
                     this.m_rscene.addEntity(box);
                 }
-
-                /*
-                let container:DisplayEntityContainer = null;
-                let plane:Plane3DEntity = new Plane3DEntity();
-                plane.name = "plane";
-                plane.showDoubleFace();
-                plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
-
-                container = new DisplayEntityContainer();
-                container.addEntity(plane);
-                console.log(">>>>>>>>>>>>>>>>>>>>>>");
-                container.setXYZ(100.0,100.0,100.0);
-                this.m_rscene.addEntity(plane);
-                //plane.setRenderStateByName("ADD01");
-                //container.update();
-                let containerB:DisplayEntityContainer = new DisplayEntityContainer();
-                containerB.addChild(container);
-                this.m_container = container;
-                this.m_containerMain = containerB;
-                this.m_rscene.addContainer(this.m_containerMain);
-                
-                let axisEntity:Axis3DEntity = new Axis3DEntity();
-                axisEntity.name = "axisEntity";
-                axisEntity.initialize(30.0);
-                //axisEntity.setXYZ(200.0,10.0,150.0);
-                //container.addEntity(axisEntity);
-                this.m_rscene.addEntity(axisEntity);
-                this.m_followEntity = axisEntity;
-
-                let axis:Axis3DEntity = new Axis3DEntity();
-                axis.name = "axis";
-                axis.initialize(300.0);
-                axis.setXYZ(100.0,100.0,100.0);
-                this.m_rscene.addEntity(axis);
-                
-                axis = new Axis3DEntity();
-                axis.name = "axis";
-                axis.initialize(600.0);
-                this.m_rscene.addEntity(axis);
-               
-                let srcBillboard:Billboard3DEntity = new Billboard3DEntity();
-                srcBillboard.initialize(100.0,100.0, [tex2]);
-                BillParticle.srcBillboard = srcBillboard;
-                let billboard:Billboard3DEntity = new Billboard3DEntity();
-                for(; i < 0; ++i)
-                {
-                    billboard = new Billboard3DEntity();
-                    billboard.setMesh(srcBillboard.getMesh());
-                    billboard.setRenderStateByName("ADD01");
-                    billboard.initialize(100.0,100.0, [tex2]);
-                    billboard.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
-                    billboard.setBrightness(Math.random());
-                    this.m_rscene.addEntity(billboard);
-                    this.m_equeue.addBillEntity(billboard,false);
-                }
-                
-                if(container != null)
-                {
-                    billboard = new Billboard3DEntity();
-                    billboard.setMesh(srcBillboard.getMesh());
-                    billboard.setRenderStateByName("ADD02");
-                    billboard.initialize(100.0,100.0, [tex2]);
-                    billboard.setXYZ(200,10,150);
-                    //container.addEntity(billboard);
-                    this.m_rscene.addEntity(billboard,1);
-                    billboard = new Billboard3DEntity();
-                    billboard.setMesh(srcBillboard.getMesh());
-                    billboard.setRenderStateByName("ADD02");
-                    billboard.initialize(100.0,100.0, [tex2]);
-                    billboard.setXYZ(-200,10,-150);
-                    //container.addEntity(billboard);
-                    this.m_rscene.addEntity(billboard,1);
-                }
-                if(this.m_timeoutEnabled)
-                {
-                    if(this.m_intervalEnabled)
-                    {
-                        this.m_timeIntervalId = setInterval(this.parRun.bind(this),25);
-                    }
-                    else
-                    {
-                        this.parRun();
-                    }
-                }
-                //*/
             }
         }
         private m_flagBoo:boolean = true;

@@ -21,5 +21,8 @@
       "noImplicitAny": true,
       "declaration": true
   },
-  "exclude": [ "build", "node_modules" ]
+  "exclude": [ "build", "node_modules" ],
+  "include":[ //需要包含编译的目录
+    "src/**/*.ts"
+  ]
 }

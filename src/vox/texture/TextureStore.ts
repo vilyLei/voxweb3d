@@ -350,7 +350,8 @@ export namespace vox
 	        		return TextureStore.s_rttTexs[i];
                 }
                 TextureStore.s_rttTexs[i] = TextureStore.CreateTex2D(64, 64);
-                TextureStore.s_rttTexs[i].min_filter = TextureConst.LINEAR;
+                //TextureStore.s_rttTexs[i].min_filter = TextureConst.LINEAR;
+                TextureStore.s_rttTexs[i].min_filter = TextureConst.NEAREST;
 	        	return TextureStore.s_rttTexs[i];
             }
             static GetRTTFloatTextureAt(i:number):TextureProxy

@@ -10,7 +10,7 @@
 // 一个此逻辑 DisplayEntity 对象可以对应一个或者多个 RODisplay, 包含对应的transform
 // 可支持多线程，也可支持单线程, 模式
 
-import * as SpaceCullingMasKT from '../../vox/scene/SpaceCullingMasK';
+//import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMask";
 import * as Vector3T from "../../vox/geom/Vector3";
 import * as AABBT from "../../vox/geom/AABB";
 import * as MouseEventT from "../../vox/event/MouseEvent";
@@ -29,7 +29,7 @@ import * as TextureProxyT from '../../vox/texture/TextureProxy';
 import * as RODispBuilderT from '../../vox/render/RODispBuilder';
 
 
-import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
+//import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
 import Vector3D = Vector3T.vox.geom.Vector3D;
 import AABB = AABBT.vox.geom.AABB;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
@@ -61,7 +61,6 @@ export namespace vox
             protected m_mouseEvtDispatcher:IEvtDispatcher = null;
             constructor(transform:ROTransform = null)
             {
-                //this.spaceCullMask = SpaceCullingMasK.CAMERA;
                 this.m_uid = DisplayEntity.__s_uid++;
                 if(transform == null)
                 {

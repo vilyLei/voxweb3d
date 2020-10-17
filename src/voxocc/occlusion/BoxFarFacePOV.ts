@@ -5,7 +5,8 @@ import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as PlaneT from "../../vox/geom/Plane";
 import * as AABBT from "../../vox/geom/AABB";
 import * as CameraBaseT from "../../vox/view/CameraBase";
-import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMasK";
+import * as OccCullingMaskT from "../../voxocc/occlusion/OccCullingMask";
+//import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMasK";
 import * as SpherePOVT from './SpherePOV';
 import * as ISpacePOCT from "../../vox/scene/occlusion/ISpacePOV";
 
@@ -15,7 +16,8 @@ import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import Plane = PlaneT.vox.geom.Plane;
 import AABB = AABBT.vox.geom.AABB;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
-import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
+import SpaceCullingMasK = OccCullingMaskT.voxocc.occlusion.OccCullingMask;
+//import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
 import SpherePOV = SpherePOVT.voxocc.occlusion.SpherePOV;
 import ISpacePOV = ISpacePOCT.vox.scene.occlusion.ISpacePOV;
 export namespace voxocc

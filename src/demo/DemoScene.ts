@@ -66,12 +66,13 @@ export namespace demo
             {
                 H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
-                let tex0:TextureProxy = this.getTexByUrl("default.jpg");
-                let tex1:TextureProxy = this.getTexByUrl("broken_iron.jpg");
+                RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+                let tex0:TextureProxy = this.getTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.getTexByUrl("static/assets/broken_iron.jpg");
                 
                 let rparam:RendererParam = new RendererParam("glcanvas");
                 rparam.setMatrix4AllocateSize(8192 * 4);
-                rparam.setCamProject(45.0,0.1,5000.0);
+                rparam.setCamProject(45.0,10.1,5000.0);
                 rparam.setCamPosition(2500.0,2500.0,2500.0);
                 
                 this.m_rscene = new RendererScene();

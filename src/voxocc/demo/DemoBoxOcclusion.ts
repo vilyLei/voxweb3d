@@ -22,7 +22,7 @@ import * as BrokenLine3DEntityT from "../../vox/entity/BrokenLine3DEntity";
 import * as QuadHolePOVT from '../../voxocc/occlusion/QuadHolePOV';
 import * as BoxPOVT from '../../voxocc/occlusion/BoxPOV';
 import * as IRendererSpaceT from "../../vox/scene/IRendererSpace";
-import * as SpaceCullingMasKT from '../../vox/scene/SpaceCullingMasK';
+import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMask";
 import * as SpaceCullingorT from '../../vox/scene/SpaceCullingor';
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
@@ -82,12 +82,12 @@ export namespace demo
             {
                 H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/guangyun_H_0007.png");
-                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/flare_core_01.jpg");
-                let tex4:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/flare_core_02.jpg");
-                let tex5:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/a_02_c.jpg");
+                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/guangyun_H_0007.png");
+                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_01.jpg");
+                let tex4:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_02.jpg");
+                let tex5:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/a_02_c.jpg");
                 tex0.mipmapEnabled = true;
                 tex1.mipmapEnabled = true;
                 tex2.mipmapEnabled = true;
@@ -97,7 +97,7 @@ export namespace demo
                 
                 let rparam:RendererParam = new RendererParam("glcanvas");
                 rparam.setMatrix4AllocateSize(8192 * 4);
-                rparam.setCamProject(45.0,0.1,3000.0);
+                rparam.setCamProject(45.0,50.0,8000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
                 
                 this.m_rscene = new RendererScene();

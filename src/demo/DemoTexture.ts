@@ -76,9 +76,9 @@ export namespace demo
             if(this.m_rcontext == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/fruit_01.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("default.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/guangyun_H_0007.png");
+                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/fruit_01.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/guangyun_H_0007.png");
                 tex0.mipmapEnabled = true;
                 tex0.setWrap(TextureConst.WRAP_REPEAT);
                 tex1.mipmapEnabled = true;
@@ -90,7 +90,7 @@ export namespace demo
                 
                 this.m_statusDisp.initialize("rstatus");
                 let rparam:RendererParam = new RendererParam("glcanvas");
-                rparam.setCamProject(45.0,0.1,3000.0);
+                rparam.setCamProject(45.0,50.0,5000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
                 this.m_renderer = new RendererInstance();
                 this.m_renderer.initialize(rparam);
@@ -115,16 +115,16 @@ export namespace demo
                 plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
                 this.m_renderer.addEntity(plane);
                 this.m_followEntity = plane;
-                return;
+                //return;
                 //plane.setRenderStateByName("ADD01");
 
                 //  let urls:string[] = [
-                //      "./assets/hw_morning/morning_ft.jpg",
-                //      "./assets/hw_morning/morning_bk.jpg",
-                //      "./assets/hw_morning/morning_up.jpg",
-                //      "./assets/hw_morning/morning_dn.jpg",
-                //      "./assets/hw_morning/morning_rt.jpg",
-                //      "./assets/hw_morning/morning_lf.jpg"
+                //      "static/assets/hw_morning/morning_ft.jpg",
+                //      "static/assets/hw_morning/morning_bk.jpg",
+                //      "static/assets/hw_morning/morning_up.jpg",
+                //      "static/assets/hw_morning/morning_dn.jpg",
+                //      "static/assets/hw_morning/morning_rt.jpg",
+                //      "static/assets/hw_morning/morning_lf.jpg"
                 //  ];
                 //  let cubeTex0:TextureProxy = this.m_texLoader.getCubeTexAndLoadImg("cubeMap",urls);
                 //  cubeTex0.mipmapEnabled = true;

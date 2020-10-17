@@ -7,7 +7,7 @@
 // 渲染场景内物体的鼠标事件控制类接口规范
 
 import * as Stage3DT from "../../vox/display/Stage3D";
-import * as IRaySelectorT from '../../vox/scene/IRaySelector';
+import * as IRaySelectorT from "../../vox/scene/IRaySelector";
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import IRaySelector = IRaySelectorT.vox.scene.IRaySelector;
 

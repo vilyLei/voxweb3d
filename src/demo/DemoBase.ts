@@ -66,7 +66,7 @@ export namespace demo
             console.log("DemoBase::initialize()......");
             if(this.m_rcontext == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
                 let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
                 let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
                 let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/guangyun_H_0007.png");
@@ -96,7 +96,7 @@ export namespace demo
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 
                 let i:number = 0;
-                ///*
+                
                 let plane:Plane3DEntity = new Plane3DEntity();
                 plane.name = "plane";
                 //plane.showDoubleFace();
@@ -104,7 +104,6 @@ export namespace demo
                 //plane.initializeXOZ(-200.0,-150.0,400.0,300.0,null);
                 this.m_renderer.addEntity(plane);
                 
-                //plane.setRenderStateByName("ADD01");
                 let srcBillboard:Billboard3DEntity = new Billboard3DEntity();
                 srcBillboard.initialize(100.0,100.0, [tex2]);
                 for(i = 0; i < 2; ++i)
@@ -114,7 +113,6 @@ export namespace demo
                     billboard.name = "billboard";
                     billboard.setRenderStateByName("ADD01");
                     billboard.initialize(100.0,100.0, [tex2]);
-                    //billboard.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
                     billboard.setXYZ(Math.random() * 500.0 - 250.0,Math.random() * 500.0 - 250.0,Math.random() * 500.0 - 250.0);
                     billboard.setBrightness(Math.random());
                     this.m_renderer.addEntity(billboard);
@@ -135,26 +133,12 @@ export namespace demo
                     this.m_equeue.addBillEntity(billboard,false);
                 }
 
-                //return;
-                //*/
-                ///*
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.name = "axis";
                 axis.initialize(300.0);
                 axis.setXYZ(100.0,0.0,100.0);
                 this.m_renderer.addEntity(axis);
-                
-                axis = new Axis3DEntity();
-                axis.name = "axis";
-                axis.initialize(600.0);
-                this.m_renderer.addEntity(axis);
-                axis = new Axis3DEntity();
-                axis.name = "axis";
-                axis.initialize(50.0);
-                axis.setXYZ(0,300.0,0);
-                this.m_renderer.addEntity(axis);
-                //*/
-                ///*
+
                 let srcBox:Box3DEntity = new Box3DEntity();
                 srcBox.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
                 //srcBox = null;
@@ -176,14 +160,6 @@ export namespace demo
                     sphere.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
                     this.m_renderer.addEntity(sphere);
                 }
-                //*/
-                //return;
-                let axisB:Axis3DEntity = new Axis3DEntity();
-                axisB.name = "axisB";
-                axisB.initialize(50.0);
-                axisB.setXYZ(-300.0,0.0,-300.0);
-                this.m_renderer.addEntity(axisB);
-
                 for(i = 0; i < 2; ++i)
                 {
                     let cylinder:Cylinder3DEntity = new Cylinder3DEntity();
@@ -192,13 +168,6 @@ export namespace demo
                     cylinder.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
                     this.m_renderer.addEntity(cylinder);
                 }
-                
-                let axisC:Axis3DEntity = new Axis3DEntity();
-                axisC.name = "axisC";
-                axisC.initialize(50.0);
-                axisC.setXYZ(300.0,0.0,300.0);
-                this.m_renderer.addEntity(axisC);
-                //*/
 
             }
         }
@@ -222,7 +191,7 @@ export namespace demo
             this.m_renderer.run();
 
             this.m_rcontext.runEnd();            
-            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);;
+            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
             this.m_rcontext.updateCamera();
             
             //  //console.log("#---  end");

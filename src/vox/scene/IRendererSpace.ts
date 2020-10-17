@@ -11,8 +11,8 @@ import * as Stage3DT from "../../vox/display/Stage3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
-import * as ISpaceCullingorT from '../../vox/scene/ISpaceCullingor';
-import * as IRaySelectorT from '../../vox/scene/IRaySelector';
+import * as ISpaceCullingorT from "../../vox/scene/ISpaceCullingor";
+import * as IRaySelectorT from "../../vox/scene/IRaySelector";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import Stage3D = Stage3DT.vox.display.Stage3D;

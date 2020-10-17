@@ -12,18 +12,13 @@ import * as MouseEventT from "../vox/event/MouseEvent";
 import * as Stage3DT from "../vox/display/Stage3D";
 import * as CameraBaseT from "../vox/view/CameraBase";
 
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
 import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
 import * as Sphere3DEntityT from "../vox/entity/Sphere3DEntity";
-import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
-import * as Billboard3DEntityT from "../vox/entity/Billboard3DEntity";
 import * as DashedLine3DEntityT from "../vox/entity/DashedLine3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureConstT from "../vox/texture/TextureConst";
 import * as TexResLoaderT from "../vox/texture/TexResLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as EntityDispT from "./base/EntityDisp";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import MathConst = MathConstT.vox.utils.MathConst;
@@ -40,18 +35,13 @@ import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
-import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import DashedLine3DEntity = DashedLine3DEntityT.vox.entity.DashedLine3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 
 export namespace demo
 {
@@ -65,7 +55,6 @@ export namespace demo
         private m_texLoader:TexResLoader = new TexResLoader();
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
-        private m_equeue:EntityDispQueue = new EntityDispQueue();
         private m_tarDisp:Sphere3DEntity = null;
         initialize():void
         {
@@ -73,10 +62,10 @@ export namespace demo
             if(this.m_rcontext == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/guangyun_H_0007.png");
-                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/flare_core_02.jpg");
+                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/assets/guangyun_H_0007.png");
+                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/assets/flare_core_02.jpg");
                 tex0.mipmapEnabled = true;
                 tex0.setWrap(TextureConst.WRAP_REPEAT);
                 tex1.mipmapEnabled = true;
@@ -87,7 +76,7 @@ export namespace demo
                 
                 this.m_statusDisp.initialize("rstatus");
                 let rparam:RendererParam = new RendererParam("glcanvas");
-                rparam.setCamProject(45.0,0.1,3000.0);
+                rparam.setCamProject(45.0,10.0,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
                 this.m_renderer = new RendererInstance();
                 this.m_renderer.initialize(rparam);
@@ -122,7 +111,6 @@ export namespace demo
                 fruLine.initializeDashedLine([pvs[4],pvs[5],pvs[5],pvs[6],pvs[6],pvs[7],pvs[7],pvs[4]]);
                 fruLine.setRGB3f(0.0,0.5,1.0);
                 this.m_renderer.addEntity(fruLine);
-
                 
                 fruLine = new DashedLine3DEntity();
                 fruLine.initializeDashedLine([pvs[0],pvs[4],pvs[1],pvs[5],pvs[2],pvs[6],pvs[3],pvs[7]]);
@@ -141,24 +129,18 @@ export namespace demo
         }
         run():void
         {
-            //--this.m_runFlag;
-
-            this.m_equeue.run();
             this.m_statusDisp.update();
 
-            //console.log("##-- begin");
             this.m_rcontext.setClearRGBColor3f(0.0, 0.0, 0.0);
-            //this.m_rcontext.setClearRGBAColor4f(0.0, 0.5, 0.0,0.0);
             this.m_rcontext.runBegin();
 
             this.m_renderer.update();
             this.m_renderer.run();
 
             this.m_rcontext.runEnd();            
-            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);;
+            this.m_camTrack.rotationOffsetAngleWorldY(0.2);
             this.m_rcontext.updateCamera();
             
-            //  //console.log("#---  end");
         }
     }
 }

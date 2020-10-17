@@ -50,6 +50,8 @@ export namespace demo
             if(this.m_rcontext == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+                
                 let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
                 let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
                 tex0.mipmapEnabled = true;
@@ -62,13 +64,12 @@ export namespace demo
                 let rparam:RendererParam = new RendererParam("glcanvas","app");
                 rparam.maxWebGLVersion = 2;
                 rparam.setCamProject(45.0,0.1,3000.0);
-                rparam.setCamPosition(1500.0,1500.0,1500.0);
+                rparam.setCamPosition(1000.0,1000.0,1000.0);
                 this.m_renderer = new RendererInstance();
                 this.m_renderer.initialize(rparam);
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();
                 this.m_blurIns = new ScreenPingpongBlur(this.m_renderer);
-                //this.m_blurIns.setBlurMode(ScreenPingpongBlur.VERTICAL);
                 this.m_rcontext = this.m_renderer.getRendererContext();
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());

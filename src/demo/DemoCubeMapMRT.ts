@@ -10,7 +10,6 @@ import * as CubeMapMaterialT from "../vox/material/mcase/CubeMapMaterial";
 import * as CubeMapMRTMaterialT from "../vox/material/mcase/CubeMapMRTMaterial";
 
 import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
 import * as Box3DEntityT from "../vox/entity/Box3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureStoreT from "../vox/texture/TextureStore";
@@ -31,7 +30,6 @@ import CubeMapMaterial = CubeMapMaterialT.vox.material.mcase.CubeMapMaterial;
 import CubeMapMRTMaterial = CubeMapMRTMaterialT.vox.material.mcase.CubeMapMRTMaterial;
 
 import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
@@ -61,8 +59,8 @@ export namespace demo
             if(this.m_rcontext == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("broken_iron.jpg");
+                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
                 tex0.mipmapEnabled = true;
                 tex0.setWrap(TextureConst.WRAP_REPEAT);
                 tex1.setWrap(TextureConst.WRAP_REPEAT);
@@ -71,6 +69,7 @@ export namespace demo
                 this.m_statusDisp.initialize("rstatus");
 
                 let rparam:RendererParam = new RendererParam("glcanvas");
+                rparam.setCamPosition(800.0,800.0,800.0);
                 this.m_renderer = new RendererInstance();
                 this.m_renderer.initialize(rparam);
                 this.m_renderer.appendProcess();

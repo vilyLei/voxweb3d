@@ -1,6 +1,4 @@
 
-import * as Vector3DT from "../vox/geom/Vector3";
-import * as Matrix4T from "../vox/geom/Matrix4";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RenderConstT from "../vox/render/RenderConst";
 import * as RODrawStateT from "../vox/render/RODrawState";
@@ -12,23 +10,12 @@ import * as MouseEventT from "../vox/event/MouseEvent";
 import * as Stage3DT from "../vox/display/Stage3D";
 import * as H5FontSysT from "../vox/text/H5FontSys";
 
-import * as DisplayEntityT from "../vox/entity/DisplayEntity";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
 import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as Sphere3DEntityT from "../vox/entity/Sphere3DEntity";
-import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
-import * as Billboard3DEntityT from "../vox/entity/Billboard3DEntity";
 import * as TextBillboard3DEntityT from "../vox/text/TextBillboard3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureConstT from "../vox/texture/TextureConst";
 import * as TexResLoaderT from "../vox/texture/TexResLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as EntityDispT from "./base/EntityDisp";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
-import Matrix4Pool = Matrix4T.vox.geom.Matrix4Pool;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
@@ -42,17 +29,8 @@ import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
 
-//H5FontSystem
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
-import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import TextBillboard3DEntity = TextBillboard3DEntityT.vox.text.TextBillboard3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 //import EntityDisp = EntityDispT.demo.base.EntityDisp;
@@ -71,8 +49,7 @@ export namespace demo
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_equeue:EntityDispQueue = new EntityDispQueue();
-        private m_followEntity:DisplayEntity = null;
-        //private m_fontSystem:H5FontSystem = new H5FontSystem();
+        
         private m_fpsTextBill:TextBillboard3DEntity = null;
         private m_textBill:TextBillboard3DEntity = null;
         initialize():void
@@ -83,19 +60,7 @@ export namespace demo
                 H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,true,true);
 
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/guangyun_H_0007.png");
-                //let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("assets/displacement_02.jpg");
-                tex0.mipmapEnabled = true;
-                tex0.setWrap(TextureConst.WRAP_REPEAT);
-                tex1.mipmapEnabled = true;
-                tex1.setWrap(TextureConst.WRAP_REPEAT);
-                tex2.mipmapEnabled = true;
-                tex2.setWrap(TextureConst.WRAP_REPEAT);
-                //tex3.mipmapEnabled = true;
-                //tex3.setWrap(TextureConst.WRAP_REPEAT);
-                
+                                
                 this.m_statusDisp.initialize("rstatus");
                 let rparam:RendererParam = new RendererParam("glcanvas");
                 rparam.setCamProject(45.0,0.1,3000.0);
@@ -124,7 +89,7 @@ export namespace demo
                 textBill.setXYZ(Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0,Math.random() * 500.0 - 250.0);
                 this.m_renderer.addEntity(textBill);
                 this.m_textBill = textBill;
-                //return;
+                
                 textBill = new TextBillboard3DEntity();
                 textBill.initialize("哇塞");
                 textBill.setXYZ(Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0,Math.random() * 500.0 - 250.0);
@@ -136,22 +101,13 @@ export namespace demo
                 this.m_fpsTextBill.setRGB3f(Math.random() + 0.1,Math.random() + 0.1,Math.random() + 0.1);
                 //this.m_fpsTextBill.setRGB3f(0.0,1.0,1.0);
                 this.m_fpsTextBill.setXYZ(Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0,Math.random() * 500.0 - 250.0);
-                this.m_renderer.addEntity(this.m_fpsTextBill);
-
-                //  let texBill:Billboard3DEntity = new Billboard3DEntity();
-                //  texBill.initialize(100.0,100.0,[tex3]);
-                //  texBill.setRGB3f(Math.random() + 0.3,Math.random() + 0.3,Math.random() + 0.3);
-                //  texBill.setXYZ(Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0,Math.random() * 500.0 - 250.0);
-                //  this.m_renderer.addEntity(texBill);
-                
+                this.m_renderer.addEntity(this.m_fpsTextBill);               
 
             }
         }
-        private m_runFlag:number = 20;
         mouseUpListener(evt:any):void
         {
             console.log("mouseUpListener call, this.m_renderer: "+this.m_renderer.toString());
-            //  this.m_runFlag = 1;
             //  if(this.m_followEntity.getDisplay().__$ruid > -1)
             //  {
             //      this.m_renderer.removeEntity(this.m_followEntity);
@@ -165,12 +121,6 @@ export namespace demo
         }
         run():void
         {
-            if(this.m_runFlag < 1)
-            {
-                //return;
-            }
-            //--this.m_runFlag;
-            
             if(this.m_fpsTextBill != null)
             {
                 this.m_fpsTextBill.setRGB3f(Math.random() + 0.1,Math.random() + 0.1,Math.random() + 0.1);

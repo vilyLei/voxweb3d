@@ -105,14 +105,14 @@ export namespace voxvat
                     let i:number = 0;
                     let j:number = 0;
                     let texList:TextureProxy[] = [
-                        TexManager.CreateTexByUrl("static/voxgl/assets/yanj.jpg"),
-                        TexManager.CreateTexByUrl("static/voxgl/assets/disp/yanj_OCC.png"),
-                        TexManager.CreateTexByUrl("static/voxgl/assets/disp/yanj_NRM.png"),
-                        TexManager.CreateTexByUrl("static/voxgl/assets/moss_04.jpg"),
-                        TexManager.CreateTexByUrl("static/voxgl/assets/image_003_1.jpg")
+                        TexManager.CreateTexByUrl("static/assets/yanj.jpg"),
+                        TexManager.CreateTexByUrl("static/assets/disp/yanj_OCC.png"),
+                        TexManager.CreateTexByUrl("static/assets/disp/yanj_NRM.png"),
+                        TexManager.CreateTexByUrl("static/assets/moss_04.jpg"),
+                        TexManager.CreateTexByUrl("static/assets/image_003_1.jpg")
                     ];
                     
-                    let billTex0:TextureProxy = TexManager.CreateTexByUrl("static/voxgl/assets/flare_core_03.jpg");
+                    let billTex0:TextureProxy = TexManager.CreateTexByUrl("static/assets/flare_core_03.jpg");
                     let startX:number = -700.0 - 350;
                     let startZ:number = -700.0 - 350;
                     let pv:Vector3D = new Vector3D();
@@ -328,7 +328,7 @@ export namespace voxvat
                 }
                 private createTorus(mesh:MeshBase,px:number,py:number,pz:number, texList:TextureProxy[],pindex:number):ObjData3DEntity
                 {
-                    let objUrl:string = "static/voxgl/assets/objs/torus01.obj";
+                    let objUrl:string = "static/assets/objs/torus01.obj";
 
                     let plMaterial:MaterialBase = this.createMaterial2();
                     let objDisp:ObjData3DEntity = new ObjData3DEntity();

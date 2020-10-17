@@ -10,9 +10,9 @@ import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as RenderBufferUpdaterT from "../../vox/render/RenderBufferUpdater";
 
+import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
-import TextureTarget = TextureConstT.vox.texture.TextureTarget;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import RenderBufferUpdater = RenderBufferUpdaterT.vox.render.RenderBufferUpdater;
@@ -23,7 +23,11 @@ export namespace vox
     {
         export class ImageTextureProxy extends TextureProxy
         {
-            
+            constructor(texList:TextureProxy[], texWidth:number,texHeight:number,powerof2Boo:boolean = false)
+            {
+                super(texList,texWidth,texHeight,powerof2Boo);
+                this.min_filter = TextureConst.LINEAR_MIPMAP_LINEAR;
+            }
             protected m_imgData:any = null;
             protected uploadData(rc:RenderProxy):void
             {
@@ -92,24 +96,6 @@ export namespace vox
                 }
             }
             
-            upload(rc:RenderProxy):void
-            {
-                if(this.m_uploadBoo)
-                {
-                    if(this.m_haveRData)
-                    {
-                        let gl:any = rc.RContext;
-                        this.m_samplerTarget = TextureTarget.GetValue(gl,this.m_texTarget);
-                        //  console.log("TextureProxy::upload(), tex: "+this);
-                        //  console.log("TextureProxy::upload(), this.m_imgData: "+this.m_imgData);
-                        this.m_texBuf = gl.createTexture();
-                        gl.bindTexture (this.m_samplerTarget, this.m_texBuf);
-                        this.uploadData(rc);
-                        this.___buildParam(gl);
-                        this.m_uploadBoo = false;
-                    }
-                }
-            }
             __$destroy(rc:RenderProxy):void
             {
                 if(!this.isGpuEnabled())

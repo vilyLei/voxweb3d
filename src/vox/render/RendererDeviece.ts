@@ -14,7 +14,7 @@ export namespace vox
             private static s_WEBGL_VER:number = 2;
             public static SHADERCODE_TRACE_ENABLED:boolean = false;
             // true: force vertex shader precision to highp
-            public static VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED:boolean = false;
+            public static VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED:boolean = true;
             // true: force fragment shader precision to highp
             public static FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED:boolean = false;
             static Initialize = function(infoArr:number[])
