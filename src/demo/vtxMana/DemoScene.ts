@@ -1,0 +1,287 @@
+
+import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as RendererDevieceT from "../../vox/render/RendererDeviece";
+import * as RenderConstT from "../../vox/render/RenderConst";
+import * as RendererStateT from "../../vox/render/RendererState";
+import * as Color4T from "../../vox/material/Color4";
+import * as RendererParamT from "../../vox/scene/RendererParam";
+import * as MeshBaseT from "../../vox/mesh/MeshBase";
+import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
+import * as RendererInstanceT from "../../vox/scene/RendererInstance";
+import * as RenderStatusDisplayT from "../../vox/scene/RenderStatusDisplay";
+import * as MouseEventT from "../../vox/event/MouseEvent";
+import * as Stage3DT from "../../vox/display/Stage3D";
+
+import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
+import * as Plane3DEntityT from "../../vox/entity/Plane3DEntity";
+import * as Axis3DEntityT from "../../vox/entity/Axis3DEntity";
+import * as Box3DEntityT from "../../vox/entity/Box3DEntity";
+import * as Sphere3DEntityT from "../../vox/entity/Sphere3DEntity";
+import * as Cylinder3DEntityT from "../../vox/entity/Cylinder3DEntity";
+import * as Billboard3DEntityT from "../../vox/entity/Billboard3DEntity";
+import * as ClipsBillboard3DEntityT from "../../vox/entity/ClipsBillboard3DEntity";
+import * as ObjData3DEntityT from "../../vox/entity/ObjData3DEntity";
+import * as TextureProxyT from "../../vox/texture/TextureProxy";
+import * as TextureStoreT from "../../vox/texture/TextureStore";
+import * as TextureConstT from "../../vox/texture/TextureConst";
+//import * as TexResLoaderT from "../../vox/texture/TexResLoader";
+import * as ImageTexResLoaderT from "../../vox/texture/ImageTexResLoader";
+import * as CameraTrackT from "../../vox/view/CameraTrack";
+import * as EntityDispT from "../base/EntityDisp";
+
+import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import Matrix4Pool = Matrix4T.vox.geom.Matrix4Pool;
+import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
+import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
+import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
+import RendererState = RendererStateT.vox.render.RendererState;
+import Color4 = Color4T.vox.material.Color4;
+import RendererParam = RendererParamT.vox.scene.RendererParam;
+import MeshBase = MeshBaseT.vox.mesh.MeshBase;
+import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
+import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
+import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
+import MouseEvent = MouseEventT.vox.event.MouseEvent;
+import Stage3D = Stage3DT.vox.display.Stage3D;
+
+import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
+import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
+import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
+import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
+import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
+import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
+import ClipsBillboard3DEntity = ClipsBillboard3DEntityT.vox.entity.ClipsBillboard3DEntity;
+import ObjData3DEntity = ObjData3DEntityT.vox.entity.ObjData3DEntity;
+import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+import TextureStore = TextureStoreT.vox.texture.TextureStore;
+import TextureConst = TextureConstT.vox.texture.TextureConst;
+//import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
+import ImageTexResLoader = ImageTexResLoaderT.vox.texture.ImageTexResLoader;
+import CameraTrack = CameraTrackT.vox.view.CameraTrack;
+import EntityDisp = EntityDispT.demo.base.EntityDisp;
+import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
+
+export namespace demo
+{
+    export namespace vtxMana
+    {
+        export class DemoScene
+        {
+            constructor()
+            {
+            }
+            private m_renderer:RendererInstance = null;
+            private m_rcontext:RendererInstanceContext = null;
+            private m_texLoader:ImageTexResLoader = new ImageTexResLoader();
+            //private m_camTrack:CameraTrack = null;
+            private m_equeue:EntityDispQueue = new EntityDispQueue();
+            private m_srcBoxEntity:Box3DEntity = null;
+            private m_boxEntity:Box3DEntity = null;
+            private m_billMeshSrc0Entity:Billboard3DEntity = null;
+            //
+            private m_mesh:MeshBase = null;
+            initialize(renderer:RendererInstance):void
+            {
+                console.log("DemoScene::initialize()......");
+                if(this.m_rcontext == null)
+                {
+                    this.m_renderer = renderer;
+                    this.m_rcontext = this.m_renderer.getRendererContext();               
+                    RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
+                    RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
+
+                    //this.initDisp();
+                    this.initTest();    
+                }
+            }
+            private m_parClipTexList:string[] = [
+                "assets/xulie_48.png",
+                "assets/xulie_08_61.png",
+                "assets/image_sequence_2x.png"
+            ];
+            private m_parTexList:string[] = [
+                "assets/flare_core_01.jpg",
+                "assets/flare_core_02.jpg",
+                "assets/guangyun_H_0007.png",
+            ];
+            private getParClipTexAt(i:number):TextureProxy
+            {
+                let tex:TextureProxy = this.m_texLoader.getTexByUrl(this.m_parClipTexList[i]);
+                return tex;
+            }
+            private getParTexAt(i:number):TextureProxy
+            {
+                let tex:TextureProxy = this.m_texLoader.getTexByUrl(this.m_parTexList[i]);
+                return tex;
+            }
+            private getdefaultTexAt(i:number):TextureProxy
+            {
+                let tex:TextureProxy = this.m_texLoader.getTexByUrl("default.jpg");
+                return tex;
+            }
+            private initTest():void
+            {
+                let i:number = 0;
+                //let tex0:TextureProxy = this.m_texLoader.getTexByUrl("default.jpg");
+                //  this.m_srcBoxEntity = new Box3DEntity();
+                //  this.m_srcBoxEntity.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[this.getdefaultTexAt(0)]);
+                let objUrl:string = "assets/obj/box01.obj";
+                objUrl = "assets/obj/letter_A.obj";
+                let objDisp:ObjData3DEntity = new ObjData3DEntity();
+                objDisp.moduleScale = 10.0;//10.0 + Math.random() * 5.5;
+                objDisp.setRotationXYZ(Math.random() * 360.0,Math.random() * 360.0,Math.random() * 360.0);
+                objDisp.initializeByObjDataUrl(objUrl,[this.getdefaultTexAt(0)]);
+                objDisp.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+                this.m_renderer.addEntity(objDisp);
+
+                let box:Box3DEntity = null;
+                for(i = 0; i < 1; ++i)
+                {
+                    box = new Box3DEntity();
+                    this.m_boxEntity = box;
+                    box.name = "box_"+i;
+                    if(this.m_srcBoxEntity != null)box.copyMeshFrom(this.m_srcBoxEntity);
+                    box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[this.getdefaultTexAt(0)]);
+                    box.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
+                    this.m_renderer.addEntity(box);
+                }
+            }
+            private initDisp():void
+            {
+                //let tex0:TextureProxy = this.m_texMana.getTexByUrl("assets/fruit_01.jpg");
+
+                this.m_billMeshSrc0Entity = new Billboard3DEntity();
+                //this.m_billMeshSrc0Entity.initialize(100.0,100.0, [this.getParTexAt(0)]);
+                this.m_billMeshSrc0Entity.initialize(100.0,100.0, [TextureStore.CreateRGBATex2D(16,16,new Color4(1.0,0.0,1.0))]);
+                //this.m_renderer.addEntity( this.m_billMeshSrc0Entity );
+
+                let axis:Axis3DEntity = new Axis3DEntity();
+                axis.name = "axis";
+                axis.initialize(300.0);
+                axis.setXYZ(100.0,0.0,100.0);
+                this.m_renderer.addEntity(axis);
+                //
+                this.createBillClips(15);
+                this.createBills(15);
+            }
+            private createBillClips(total:number):void
+            {
+                let bill:ClipsBillboard3DEntity = null;
+                let i:number = 0;
+                let factorBoo:boolean = false;
+                for(i = 0; i < total; ++i)
+                {
+                    bill = new ClipsBillboard3DEntity();
+                    bill.copyMeshFrom( this.m_billMeshSrc0Entity );
+                    factorBoo = Math.random() > 0.3;
+                    if(factorBoo)
+                    {
+                        if(Math.random() > 0.5)
+                        {
+                            bill.initialize(100.0,100.0, [this.getParClipTexAt(0)]);
+                        }
+                        else
+                        {
+                            bill.initialize(100.0,100.0, [this.getParClipTexAt(1)]);
+                        }
+                    }
+                    else
+                    {
+                        bill.initialize(100.0,100.0, [this.getParClipTexAt(2)]);
+                    }
+                    bill.setRenderStateByName("ADD01");
+                    bill.setClipsUVRNCN(4,4);
+                    bill.autoPlay(true,0.02);
+                    bill.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
+                    this.m_renderer.addEntity( bill );
+                    let disp:EntityDisp = this.m_equeue.addClipsBillEntity(bill,factorBoo);
+                    disp.lifeTime = Math.round(Math.random() * 100 + 200);
+                    disp.scale = Math.random() * 0.8 + 0.5;
+                }
+            }
+            private createBills(total:number):void
+            {
+                let bill:Billboard3DEntity = null;
+                let i:number = 0;
+                let factorBoo:boolean = false;
+                for(i = 0; i < total; ++i)
+                {
+                    bill = new Billboard3DEntity();
+                    bill.copyMeshFrom( this.m_billMeshSrc0Entity );
+                    bill.initialize(100.0,100.0, [this.getParTexAt(Math.floor(Math.random() * (this.m_parTexList.length - 0.5)))]);
+                    bill.setRenderStateByName("ADD01");
+                    bill.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
+                    this.m_renderer.addEntity( bill );
+                    let disp:EntityDisp = this.m_equeue.addBillEntity(bill,factorBoo);
+                    disp.lifeTime = Math.round(Math.random() * 100 + 200);
+                    disp.scale = Math.random() * 0.8 + 0.5;
+                }
+            }
+            mouseDown():void
+            {
+                //  this.createBillClips(Math.round(Math.random() * 15));
+                //  this.createBills(Math.round(Math.random() * 15));
+                if(this.m_boxEntity != null)
+                {
+                    if(this.m_boxEntity.isInRenderer())
+                    {
+                        this.m_renderer.removeEntity(this.m_boxEntity);
+                        this.m_boxEntity.destroy();
+                    }
+                    else
+                    {
+                        let box:Box3DEntity = null;
+                        for(let i:number = 0; i < 1; ++i)
+                        {
+                            box = new Box3DEntity();
+                            if(this.m_mesh != null)
+                            {
+                                box.setMesh(this.m_mesh);
+                            }
+                            this.m_boxEntity = box;
+                            box.name = "box_"+i;
+                            if(this.m_srcBoxEntity != null)box.copyMeshFrom(this.m_srcBoxEntity);
+                            box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[this.getdefaultTexAt(0)]);
+                            box.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
+                            this.m_renderer.addEntity(box);
+                            if(this.m_mesh == null)
+                            {
+                                this.m_mesh = box.getMesh();
+                            }
+                        }
+                    }
+                }
+            }
+            run():void
+            {
+                this.m_equeue.run();
+                let disp:EntityDisp = null;
+                let dispEntity:DisplayEntity = null;
+                let disps:EntityDisp[] = this.m_equeue.getList();
+                let i:number = 0;
+                let len:number = this.m_equeue.getListLength();
+                for(; i < len; ++i)
+                {
+                    disp = disps[i];
+                    if(!disp.isAwake())
+                    {
+                        disps.splice(i,1);
+                        dispEntity = disp.getTarget();
+                        this.m_renderer.removeEntity(disp.getTarget());
+                        dispEntity.destroy();
+                        disp.destroy();
+                        console.log("DemoScene::run(), remove a disp, i: "+i);
+                        --i;
+                        --len;
+                    }
+                }
+
+                this.m_texLoader.run();
+            }
+        }
+    }
+}

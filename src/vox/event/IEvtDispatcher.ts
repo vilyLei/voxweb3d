@@ -1,0 +1,19 @@
+
+export namespace vox
+{
+    export namespace event
+    {
+        export interface IEvtDispatcher
+        {
+            destroy():void;
+            // @return      1 is send evt yes,0 is send evt no
+            dispatchEvt(evt:any):number;
+            //@return if the evt can be dispatched in this node,it returns 1,otherwise it returns 0
+            passTestEvt(evt:any):number;
+            //@return if the evt phase is in this node,it returns 1,otherwise it returns 0
+            passTestPhase(phase:number):number;
+            addEventListener(type:number,listener:any,func:(evt:any)=>void,captureEnabled:boolean,bubbleEnabled:boolean):void
+            removeEventListener(type:number,listener:any,func:(evt:any)=>void):void;
+        }
+    }
+}

@@ -1,0 +1,114 @@
+/***************************************************************************/
+/*                                                                         */
+/*  Copyright 2018-2020 by                                                 */
+/*  Vily(vily313@126.com)                                                  */
+/*                                                                         */
+/***************************************************************************/
+
+import * as DashedLineMeshT from '../../vox/mesh/DashedLineMesh';
+import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
+import * as Color4T from '../../vox/material/Color4';
+import * as MaterialBaseT from '../../vox/material/MaterialBase';
+import * as Line3DMaterialT from '../../vox/material/mcase/Line3DMaterial';
+
+import DashedLineMesh = DashedLineMeshT.vox.mesh.DashedLineMesh;
+import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+import Color4 = Color4T.vox.material.Color4;
+import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+import Line3DMaterial = Line3DMaterialT.vox.material.mcase.Line3DMaterial;
+
+export namespace vox
+{
+    export namespace entity
+    {
+        export class Axis3DEntity extends DisplayEntity
+        {
+            constructor()
+            {
+                super();
+            }
+            // 用于射线检测
+            public rayTestRadius:number = 8.0;
+            colorX:Color4 = new Color4(1.0,0.0,0.0,1.0);
+            colorY:Color4 = new Color4(0.0,1.0,0.0,1.0);
+            colorZ:Color4 = new Color4(0.0,0.0,1.0,1.0);
+            private m_posarr:number[] = [0,0,0, 100.0,0,0, 0,0,0, 0,100.0,0, 0,0,0, 0,0,100.0];
+            setLineWidth(lineW:number):void
+            {
+                //if(this.getMesh())
+                //{
+                //    //this.getMesh().vbuf.lineWidth = lineW;
+                //}
+            }
+            createMaterial():void
+            {
+                if(this.getMaterial() == null)
+                {
+                    let cm:Line3DMaterial = new Line3DMaterial();
+                    this.setMaterial(cm);
+                }
+            }
+            protected __activeMesh(material:MaterialBase):void
+            {
+                if(this.getMesh() == null)
+                {
+                    let colorarr:number[] = [
+                        this.colorX.r,this.colorX.g,this.colorX.b, this.colorX.r,this.colorX.g,this.colorX.b
+                        , this.colorY.r,this.colorY.g,this.colorY.b, this.colorY.r,this.colorY.g,this.colorY.b
+                        , this.colorZ.r,this.colorZ.g,this.colorZ.b, this.colorZ.r,this.colorZ.g,this.colorZ.b
+                    ];
+                    let mesh:DashedLineMesh = new DashedLineMesh();
+                    mesh.rayTestRadius = this.rayTestRadius;
+                    mesh.vaoEnabled = true;
+                    mesh.vbWholeDataEnabled = false;
+                    mesh.setBufSortFormat( material.getBufSortFormat() );
+                    mesh.initialize(this.m_posarr, colorarr);
+                    this.setMesh(mesh);
+                }
+            }
+            initialize(size:number = 100.0):void
+            {
+                if(size < 10)
+                {
+                    size = 10;
+                }
+                this.m_posarr[3] = size;
+                this.m_posarr[10] = size;
+                this.m_posarr[17] = size;
+                this.createMaterial();
+                this.activeDisplay();
+
+            }
+            initializeSizeXYZ(sizeX:number,sizeY:number,sizeZ:number):void
+            {
+                this.m_posarr[3] = sizeX;
+                this.m_posarr[10] = sizeY;
+                this.m_posarr[17] = sizeZ;
+                this.createMaterial();
+                this.activeDisplay();
+            }
+            
+            initializeCross(size:number = 100.0):void
+            {
+                if(size < 10)
+                {
+                    size = 10;
+                }
+                size *= 0.5;
+                this.m_posarr[0] = -size;
+                this.m_posarr[7] = -size;
+                this.m_posarr[14] = -size;
+                this.m_posarr[3] = size;
+                this.m_posarr[10] = size;
+                this.m_posarr[17] = size;
+                this.createMaterial();
+                this.activeDisplay();
+
+            }
+            toString():string
+            {
+                return "Axis3DEntity(name="+this.name+",uid = "+this.getUid()+", __$wuid = "+this.__$wuid+", __$weid = "+this.__$weid+")";
+            }
+        }
+    }
+}

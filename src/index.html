@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8" />
+        <title>VoxEngine</title>
+        <style type="text/css">
+            /*
+            #glcanvas {
+                display: block;
+                width: 100%;
+                height: 100%;
+                left: 0px;
+                top: 0px;
+                position: absolute;
+            }
+            */
+            
+            /*
+            #glcanvasdiv {
+                display: block;
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                left: 0px;
+                top: 0px;
+                position: absolute;
+            }
+            */
+            #glcanvasdiv {
+                overflow: hidden;
+                width: 100%;
+                height: 100%;
+                left: 0px;
+                top: 0px;
+                position: absolute;
+            }
+            #glcanvas{
+                left: 0px;
+                top: 0px;
+                position: absolute;
+            }
+            #fontTex {
+              background-color: transparent;
+              position: absolute;
+              overflow: hidden;
+              left: 0px;
+              top: 0px;
+              z-index: 10;
+              pointer-events:none;
+            }
+            #rstatus {
+              background-color: transparent;
+              position: absolute;
+              z-index: 12;
+              pointer-events:none;
+            }
+            body {
+              border: 0;
+              background-color:#1a1a1d;
+            }
+            
+            div {
+              display: block;
+            }
+          </style>
+    </head>
+    <body bgcolor="#335588">
+        <div id="glcanvasdiv" width="100%" height="100%">
+          <canvas id="glcanvas"width="512" height="512"></canvas>
+        </div>
+        <canvas id="fontTex" width="512" height="256"></canvas>
+        <canvas id="rstatus" width="600" height="70"></canvas>
+        <script src="bundle.js"></script>
+    </body>
+</html>

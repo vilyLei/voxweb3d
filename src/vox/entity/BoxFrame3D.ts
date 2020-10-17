@@ -1,0 +1,189 @@
+/***************************************************************************/
+/*                                                                         */
+/*  Copyright 2018-2022 by                                                 */
+/*  Vily(vily313@126.com)                                                  */
+/*                                                                         */
+/***************************************************************************/
+
+import * as Vector3T from "../../vox/geom/Vector3";
+import * as AABBT from "../../vox/geom/AABB";
+import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
+import * as DashedLineMeshT from '../../vox/mesh/DashedLineMesh';
+import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
+import * as Color4T from '../../vox/material/Color4';
+import * as MaterialBaseT from '../../vox/material/MaterialBase';
+import * as Line3DMaterialT from '../../vox/material/mcase/Line3DMaterial';
+
+import Vector3D = Vector3T.vox.geom.Vector3D;
+import AABB = AABBT.vox.geom.AABB;
+import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
+import DashedLineMesh = DashedLineMeshT.vox.mesh.DashedLineMesh;
+import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+import Color4 = Color4T.vox.material.Color4;
+import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+import Line3DMaterial = Line3DMaterialT.vox.material.mcase.Line3DMaterial;
+
+export namespace vox
+{
+    export namespace entity
+    {
+        export class BoxFrame3D extends DisplayEntity
+        {
+            private m_dynColorBoo:boolean = false;
+            constructor(dynColorBoo:boolean = false)
+            {
+                super();
+                this.m_dynColorBoo = dynColorBoo;
+            }
+            private m_minV:Vector3D = new Vector3D();
+            private m_maxV:Vector3D = new Vector3D();
+            private m_posarr:number[] = null;
+            private m_selfMesh:DashedLineMesh = null;
+            private m_currMaterial:Line3DMaterial = null;
+            // 用于射线检测
+            public rayTestRadius:number = 8.0;
+            color:Color4 = new Color4(1.0,1.0,1.0,1.0);
+            setLineWidth(lineW:number):void
+            {
+                //if(this.getMesh())
+                //{
+                //    //this.getMesh().vbuf.lineWidth = lineW;
+                //}
+            }
+            
+            setRGB3f(pr:number,pg:number,pb:number)
+            {
+                if(this.m_dynColorBoo)
+                {
+                    this.m_currMaterial.setRGB3f(pr,pg,pb);
+                }
+            }
+            createMaterial():void
+            {
+                if(this.getMaterial() == null)
+                {
+                    this.m_currMaterial = new Line3DMaterial(this.m_dynColorBoo);
+                    this.setMaterial( this.m_currMaterial );
+                }
+            }
+            protected __activeMesh(material:MaterialBase):void
+            {
+                if(this.getMesh() == null)
+                {
+                    let colorarr:number[] = null;
+                    if(!this.m_dynColorBoo)
+                    {
+                        colorarr = [];
+                        let i:number = 0;
+                        for(; i < 24; ++i)
+                        {
+                            colorarr.push(this.color.r,this.color.g,this.color.b);
+                        }
+                    }
+                    this.m_selfMesh = new DashedLineMesh(VtxBufConst.VTX_DYNAMIC_DRAW);          
+                    this.m_selfMesh.rayTestRadius = this.rayTestRadius;
+                    this.m_selfMesh.vaoEnabled = false;
+                    this.m_selfMesh.vbWholeDataEnabled = false;
+                    this.m_selfMesh.setBufSortFormat( material.getBufSortFormat() );
+                    if(this.m_dynColorBoo)
+                    {
+                        this.m_selfMesh.initialize(this.m_posarr, null);
+                    }
+                    else
+                    {
+                        this.m_selfMesh.initialize(this.m_posarr, colorarr);
+                    }
+                    this.setMesh(this.m_selfMesh);
+                }
+            }
+            initialize(minV:Vector3D,maxV:Vector3D):void
+            {
+                this.m_minV.copyFrom(minV);
+                this.m_maxV.copyFrom(maxV);
+                this.m_posarr = [
+                    // bottom frame
+                    this.m_minV.x,this.m_minV.y,this.m_minV.z, this.m_minV.x,this.m_minV.y,this.m_maxV.z,
+                    this.m_minV.x,this.m_minV.y,this.m_minV.z, this.m_maxV.x,this.m_minV.y,this.m_minV.z,
+                    this.m_minV.x,this.m_minV.y,this.m_maxV.z, this.m_maxV.x,this.m_minV.y,this.m_maxV.z,
+                    this.m_maxV.x,this.m_minV.y,this.m_minV.z, this.m_maxV.x,this.m_minV.y,this.m_maxV.z,
+                    // wall frame
+                    this.m_minV.x,this.m_minV.y,this.m_minV.z, this.m_minV.x,this.m_maxV.y,this.m_minV.z,
+                    this.m_minV.x,this.m_minV.y,this.m_maxV.z, this.m_minV.x,this.m_maxV.y,this.m_maxV.z,
+                    this.m_maxV.x,this.m_minV.y,this.m_minV.z, this.m_maxV.x,this.m_maxV.y,this.m_minV.z,
+                    this.m_maxV.x,this.m_minV.y,this.m_maxV.z, this.m_maxV.x,this.m_maxV.y,this.m_maxV.z,
+                    // top frame
+                    this.m_minV.x,this.m_maxV.y,this.m_minV.z, this.m_minV.x,this.m_maxV.y,this.m_maxV.z,
+                    this.m_minV.x,this.m_maxV.y,this.m_minV.z, this.m_maxV.x,this.m_maxV.y,this.m_minV.z,
+                    this.m_minV.x,this.m_maxV.y,this.m_maxV.z, this.m_maxV.x,this.m_maxV.y,this.m_maxV.z,
+                    this.m_maxV.x,this.m_maxV.y,this.m_minV.z, this.m_maxV.x,this.m_maxV.y,this.m_maxV.z
+                ];
+
+                this.createMaterial();
+                this.activeDisplay();
+            }
+            
+            initializeByPosList8(posList8:Vector3D[]):void
+            {
+                this.m_posarr = [
+                    // bottom frame
+                    posList8[0].x,posList8[0].y,posList8[0].z, posList8[1].x,posList8[1].y,posList8[1].z,
+                    posList8[1].x,posList8[1].y,posList8[1].z, posList8[2].x,posList8[2].y,posList8[2].z,
+                    posList8[2].x,posList8[2].y,posList8[2].z, posList8[3].x,posList8[3].y,posList8[3].z,
+                    posList8[3].x,posList8[3].y,posList8[3].z, posList8[0].x,posList8[0].y,posList8[0].z,
+                    // wall frame
+                    posList8[0].x,posList8[0].y,posList8[0].z, posList8[4].x,posList8[4].y,posList8[4].z,
+                    posList8[1].x,posList8[1].y,posList8[1].z, posList8[5].x,posList8[5].y,posList8[5].z,
+                    posList8[2].x,posList8[2].y,posList8[2].z, posList8[6].x,posList8[6].y,posList8[6].z,
+                    posList8[3].x,posList8[3].y,posList8[3].z, posList8[7].x,posList8[7].y,posList8[7].z,
+                    // top frame
+                    posList8[4].x,posList8[4].y,posList8[4].z, posList8[5].x,posList8[5].y,posList8[5].z,
+                    posList8[5].x,posList8[5].y,posList8[5].z, posList8[6].x,posList8[6].y,posList8[6].z,
+                    posList8[6].x,posList8[6].y,posList8[6].z, posList8[7].x,posList8[7].y,posList8[7].z,
+                    posList8[7].x,posList8[7].y,posList8[7].z, posList8[4].x,posList8[4].y,posList8[4].z
+                ];
+
+                this.createMaterial();
+                this.activeDisplay();
+            }
+
+            private m_abVersion:number = -1;
+            updateFrameByAABB(ab:AABB):void
+            {
+                if(this.m_abVersion != ab.version)
+                {
+                    this.m_abVersion = ab.version;
+                    this.m_minV.copyFrom(ab.min);
+                    this.m_maxV.copyFrom(ab.max);
+                    let posarr:number[] = [
+                        // bottom frame
+                        this.m_minV.x,this.m_minV.y,this.m_minV.z, this.m_minV.x,this.m_minV.y,this.m_maxV.z,
+                        this.m_minV.x,this.m_minV.y,this.m_minV.z, this.m_maxV.x,this.m_minV.y,this.m_minV.z,
+                        this.m_minV.x,this.m_minV.y,this.m_maxV.z, this.m_maxV.x,this.m_minV.y,this.m_maxV.z,
+                        this.m_maxV.x,this.m_minV.y,this.m_minV.z, this.m_maxV.x,this.m_minV.y,this.m_maxV.z,
+                        // wall frame
+                        this.m_minV.x,this.m_minV.y,this.m_minV.z, this.m_minV.x,this.m_maxV.y,this.m_minV.z,
+                        this.m_minV.x,this.m_minV.y,this.m_maxV.z, this.m_minV.x,this.m_maxV.y,this.m_maxV.z,
+                        this.m_maxV.x,this.m_minV.y,this.m_minV.z, this.m_maxV.x,this.m_maxV.y,this.m_minV.z,
+                        this.m_maxV.x,this.m_minV.y,this.m_maxV.z, this.m_maxV.x,this.m_maxV.y,this.m_maxV.z,
+                        // top frame
+                        this.m_minV.x,this.m_maxV.y,this.m_minV.z, this.m_minV.x,this.m_maxV.y,this.m_maxV.z,
+                        this.m_minV.x,this.m_maxV.y,this.m_minV.z, this.m_maxV.x,this.m_maxV.y,this.m_minV.z,
+                        this.m_minV.x,this.m_maxV.y,this.m_maxV.z, this.m_maxV.x,this.m_maxV.y,this.m_maxV.z,
+                        this.m_maxV.x,this.m_maxV.y,this.m_minV.z, this.m_maxV.x,this.m_maxV.y,this.m_maxV.z
+                    ];
+                    if(this.m_selfMesh != null)
+                    {
+                        let i:number = 0;
+                        let j:number = 0;
+                        for(; i < 24; ++i)
+                        {
+                            this.m_selfMesh.setVSXYZAt(i,posarr[j],posarr[j+1],posarr[j+2]);
+                            j += 3;
+                        }
+                    }
+                }
+            }
+            
+        }
+    }
+}

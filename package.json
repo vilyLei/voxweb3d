@@ -1,0 +1,47 @@
+{
+  "name": "lyl",
+  "version": "1.0.0",
+  "description": "a test",
+  "main": "index.js",
+  "author": "vily",
+  "license": "MIT",
+  "scripts": {
+    "devsvr": "vue-cli-service serve",
+    "buildt": "tsc",
+    "build": "vue-cli-service build --target lib --name Test --dest dist ./src/main.ts ",
+    "start": "node ./dist/index.js",
+    "devt": "ts-node ./src/index.ts",
+    "dev": "vue-cli-service serve"
+  },
+  "dependencies": {
+    "@tweenjs/tween.js": "^18.4.2",
+    "@types/dat.gui": "^0.7.4",
+    "@types/dom-to-image": "^2.6.1",
+    "@types/encoding-japanese": "^1.0.15",
+    "@types/jquery": "^3.3.31",
+    "@types/jszip": "^3.1.7",
+    "@types/pngjs": "^3.4.2",
+    "@types/stats.js": "^0.17.0",
+    "@types/tween.js": "^17.2.0",
+    "core-js": "^3.3.2",
+    "dat.gui": "^0.7.6",
+    "dom-to-image": "^2.6.0",
+    "draco3d": "http://116.62.211.118:8700/WeiChanghua/lt-draco3d.git",
+    "encoding-japanese": "^1.0.30",
+    "flyio": "^0.6.14",
+    "jszip": "^3.2.2",
+    "pngjs": "^3.4.0",
+    "stats.js": "^0.17.0",
+    "three": "^0.108.0",
+    "ts-debounce-throttle": "^1.0.0"
+  },
+  "devDependencies": {
+    "@vue/cli-plugin-babel": "^4.0.0",
+    "@vue/cli-plugin-typescript": "^4.0.0",
+    "@vue/cli-service": "^4.0.0",
+    "cross-env": "^6.0.3",
+    "raw-loader": "^3.1.0",
+    "typescript": "~3.5.3",
+    "vue-template-compiler": "^2.6.10"
+  }
+}
