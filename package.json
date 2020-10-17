@@ -6,12 +6,8 @@
   "author": "vily",
   "license": "MIT",
   "scripts": {
-    "devsvr": "vue-cli-service serve",
-    "buildt": "tsc",
     "build": "vue-cli-service build --target lib --name Test --dest dist ./src/main.ts ",
-    "start": "node ./dist/index.js",
-    "devt": "ts-node ./src/index.ts",
-    "dev": "vue-cli-service serve"
+    "dev": "vue-cli-service serve ./src/*.ts"
   },
   "dependencies": {
     "@tweenjs/tween.js": "^18.4.2",

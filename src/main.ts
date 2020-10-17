@@ -118,8 +118,8 @@
 //  import * as DemoRTTHalfSize from "./demo/DemoRTTHalfSize";
 //  import Demo = DemoRTTHalfSize.demo.DemoRTTHalfSize;
 
-//  import * as DemoRTT from "./demo/DemoRTT";
-//  import Demo = DemoRTT.demo.DemoRTT;
+import * as DemoRTT from "./demo/DemoRTT";
+import Demo = DemoRTT.demo.DemoRTT;
 
 //  import * as DemoMRT2 from "./demo/DemoMRT2";
 //  import Demo = DemoMRT2.demo.DemoMRT2;
@@ -141,9 +141,9 @@
 
 //  import * as DemoDepthBlur from "./demo/DemoDepthBlur";
 //  import Demo = DemoDepthBlur.demo.DemoDepthBlur;
-//
-import * as DemoBase from "./demo/DemoBase";
-import Demo = DemoBase.demo.DemoBase;
+
+//  import * as DemoBase from "./demo/DemoBase";
+//  import Demo = DemoBase.demo.DemoBase;
 
 let demoIns:Demo = new Demo();
 function main():void
