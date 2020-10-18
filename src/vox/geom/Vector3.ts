@@ -163,11 +163,12 @@ export namespace vox
             {
                 return "[Vector3D(x="+this.x+", y="+this.y+",z="+this.z+",w="+this.w+")]";
             }    
-            private static __vtor3Stv0:Vector3D = new Vector3D();
-            private static __vtor3Stv1:Vector3D = new Vector3D();
             static X_AXIS = new Vector3D(1,0,0);
             static Y_AXIS = new Vector3D(0,1,0);
             static Z_AXIS = new Vector3D(0,0,1);
+            
+            private static __vtor3Stv0:Vector3D = new Vector3D();
+            private static __vtor3Stv1:Vector3D = new Vector3D();
             // 右手法则(为正)
             static Cross(a:Vector3D, b:Vector3D, result:Vector3D):void
             {

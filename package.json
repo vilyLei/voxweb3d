@@ -7,7 +7,7 @@
   "license": "MIT",
   "scripts": {
     "build": "vue-cli-service build --target lib --name Test --dest dist ./src/main.ts ",
-    "dev": "vue-cli-service serve ./src/*.ts"
+    "dev": "vue-cli-service serve"
   },
   "dependencies": {
     "@tweenjs/tween.js": "^18.4.2",
