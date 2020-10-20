@@ -5,13 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as MathConstT from "../../vox/utils/MathConst";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
-import * as ImageTextureProxyT from "../../vox/texture/ImageTextureProxy";
 import * as CubeTextureProxyT from "../../vox/texture/CubeTextureProxy";
 import * as TextureStoreT from "../../vox/texture/TextureStore";
 
+import MathConst = MathConstT.vox.utils.MathConst;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import ImageTextureProxy = ImageTextureProxyT.vox.texture.ImageTextureProxy;
 import CubeTextureProxy = CubeTextureProxyT.vox.texture.CubeTextureProxy;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
 
@@ -25,7 +25,7 @@ export namespace vox
             private m_img:any = null;
             private m_loaded:boolean = false;
             private m_mipLv:number = 0;
-            texture:ImageTextureProxy = null;
+            texture:TextureProxy = null;
             constructor(purl:string,mipLv:number)
             {
                 this.m_url = purl;
@@ -37,10 +37,39 @@ export namespace vox
                 {
                     let thisT:any = this;
                     this.m_img = new Image();
+                    let img:any = this.m_img;
                     //console.log("ImgResUnit:startLoad(), start load m_url: "+this.m_url);
                     this.m_img.onload = function(info:any):void
                     {
-                        thisT.texture.uploadFromImage(thisT.m_img,thisT.m_mipLv);
+                        let powBoo:boolean = MathConst.IsPowerOf2(img.width) && MathConst.IsPowerOf2(img.height);
+                        if(!powBoo)
+                        {
+                            var canvas:any = document.createElement('canvas');
+                            //document.body.appendChild(canvas);
+                            canvas.width = MathConst.CalcNearestCeilPow2(img.width);
+                            
+                            canvas.height = MathConst.CalcNearestCeilPow2(img.height);
+                            if(canvas.width > 2048)
+                            {
+                                canvas.width = 2048;
+                            }
+                            if(canvas.height > 2048)
+                            {
+                                canvas.height = 2048;
+                            }
+                            //console.log(" size: "+canvas.width+","+canvas.height);
+                            //canvas.style.visibility = "hidden";
+                            //canvas.style.backgroundColor = "transparent";
+                            canvas.style.left = '0px';
+                            canvas.style.top = '0px';
+                            canvas.style.position = 'absolute';
+                            let ctx2d = canvas.getContext("2d");
+                            //ctx2d.fillStyle = "rgba(255, 255, 255, 0.0)";
+                            ctx2d.drawImage(img, 0, 0, img.width,img.height,0,0,canvas.width,canvas.height);
+                            img = canvas;
+                        }
+
+                        thisT.texture.uploadFromImage(img,thisT.m_mipLv);
                         thisT.texture.name = thisT.m_img.src;
                         thisT.m_loaded = true;
                         //console.log("ImgResUnit:startLoad(), loaded m_url: "+thisT.m_url);
@@ -86,7 +115,7 @@ export namespace vox
             {
             }
         
-            getTexByUrl(purl:string,mipLevel:number = 0):ImageTextureProxy
+            getTexByUrl(purl:string,mipLevel:number = 0):TextureProxy
             {
                 if(purl == "")
                 {
@@ -98,7 +127,7 @@ export namespace vox
                 {
                     t = new ImgResUnit(purl,mipLevel);
                     this.m_resMap.set(purl,t);
-                    let tex:ImageTextureProxy = TextureStore.CreateImageTex2D(1,1);
+                    let tex:TextureProxy = TextureStore.CreateTex2D(1,1);
                     TextureStore.__$AttachTex(tex);
                     tex.name = purl;
                     t.texture = tex;

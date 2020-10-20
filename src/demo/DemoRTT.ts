@@ -53,7 +53,6 @@ export namespace demo
         initialize():void
         {
             console.log("DemoRTT::initialize()......");
-            console.log(Math.PI * 2.0);
             if(this.m_rcontext == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;

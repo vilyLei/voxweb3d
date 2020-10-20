@@ -12,21 +12,21 @@ export namespace vox
     {
         export class MathConst
         {
-            static MATH_MIN_POSITIVE:number = 1e-5;
-            static MATH_MAX_NEGATIVE:number = -1e-5;
-            static MATH_MAX_POSITIVE:number = 0xffffffe;
-            static MATH_MIN_NEGATIVE:number = -0xffffffe;
-            static MATH_1_OVER_255:number = 1.0/255.0;
-            static MATH_PI:number = Math.PI;
-            static MATH_2PI:number = MathConst.MATH_PI * 2.0;
-            static MATH_3PER2PI:number = MathConst.MATH_PI * 1.5;
-            static MATH_1PER2PI:number = MathConst.MATH_PI * 0.5;
-            static MATH_1_OVER_PI:number = 1.0 / MathConst.MATH_PI;
-            static MATH_1_OVER_360:number = 1.0 / 360.0;
-            static MATH_1_OVER_180:number = 1.0 / 180.0;
-            static MATH_180_OVER_PI:number = 180.0 / MathConst.MATH_PI;
-            static MATH_PI_OVER_180:number = MathConst.MATH_PI / 180.0;
-            static MATH_LN2:number = 0.6931471805599453;
+            static readonly MATH_MIN_POSITIVE:number = 1e-5;
+            static readonly MATH_MAX_NEGATIVE:number = -1e-5;
+            static readonly MATH_MAX_POSITIVE:number = 0xffffffe;
+            static readonly MATH_MIN_NEGATIVE:number = -0xffffffe;
+            static readonly MATH_1_OVER_255:number = 1.0/255.0;
+            static readonly MATH_PI:number = Math.PI;
+            static readonly MATH_2PI:number = MathConst.MATH_PI * 2.0;
+            static readonly MATH_3PER2PI:number = MathConst.MATH_PI * 1.5;
+            static readonly MATH_1PER2PI:number = MathConst.MATH_PI * 0.5;
+            static readonly MATH_1_OVER_PI:number = 1.0 / MathConst.MATH_PI;
+            static readonly MATH_1_OVER_360:number = 1.0 / 360.0;
+            static readonly MATH_1_OVER_180:number = 1.0 / 180.0;
+            static readonly MATH_180_OVER_PI:number = 180.0 / MathConst.MATH_PI;
+            static readonly MATH_PI_OVER_180:number = MathConst.MATH_PI / 180.0;
+            static readonly MATH_LN2:number = 0.6931471805599453;
     
             static IsPowerOf2(value:number):boolean
             {

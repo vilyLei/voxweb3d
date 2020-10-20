@@ -5,13 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as MathConstT from "../../vox/utils/MathConst";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
-import * as ImageTextureProxyT from "../../vox/texture/ImageTextureProxy";
 import * as CubeTextureProxyT from "../../vox/texture/CubeTextureProxy";
 import * as TextureStoreT from "../../vox/texture/TextureStore";
 
+import MathConst = MathConstT.vox.utils.MathConst;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import ImageTextureProxy = ImageTextureProxyT.vox.texture.ImageTextureProxy;
 import CubeTextureProxy = CubeTextureProxyT.vox.texture.CubeTextureProxy;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
 
@@ -24,20 +24,50 @@ export namespace vox
             private m_url:string;  
             private m_img:any = new Image();
             private m_loaded:boolean = false;
-            private m_texList:ImageTextureProxy[] = [];
+            private m_texList:TextureProxy[] = [];
             private m_mLvList:number[] = [];
             constructor(purl:string)
             {
                 this.m_url = purl;
                 var thisT:any = this;
+                let img:any = this.m_img;
                 this.m_img.onload = function(info:any):void
                 {
+                    let powBoo:boolean = MathConst.IsPowerOf2(img.width) && MathConst.IsPowerOf2(img.height);
+                    if(!powBoo)
+                    {
+                        var canvas:any = document.createElement('canvas');
+                        //document.body.appendChild(canvas);
+                        canvas.width = MathConst.CalcNearestCeilPow2(img.width);
+                        canvas.height = MathConst.CalcNearestCeilPow2(img.height);
+                        if(canvas.width > 2048)
+                        {
+                            canvas.width = 2048;
+                        }
+                        if(canvas.height > 2048)
+                        {
+                            canvas.height = 2048;
+                        }
+                        //canvas.style.visibility = "hidden";
+                        canvas.style.backgroundColor = "transparent";//transparent
+                        canvas.style.left = '0px';
+                        canvas.style.top = '0px';
+                        canvas.style.position = 'absolute';
+                        let ctx2d = canvas.getContext("2d");
+                        //ctx2d.fillStyle = "rgba(255, 255, 255, 0.0)";
+                        ctx2d.drawImage(img, 0, 0, img.width,img.height,0,0,canvas.width,canvas.height);
+                        img = canvas;
+                    }
+                    //this.m_texWidth = MathConst.CalcNearestCeilPow2(pwidth);
+
+                    
+
                     let i:number = 0;
                     let len:number = thisT.m_texList.length;
                     for(; i < len; ++i)
                     {
                         //trace("m_img size: "+m_img.width+","+m_img.height);
-                        thisT.m_texList[i].uploadFromImage(thisT.m_img,thisT.m_mLvList[i]);
+                        thisT.m_texList[i].uploadFromImage(img,thisT.m_mLvList[i]);
                         thisT.m_texList[i].name = thisT.m_img.src;
                     }
                 }
@@ -45,7 +75,7 @@ export namespace vox
                 //m_img.setAttribute('crossorigin', 'anonymous');
                 this.m_img.src = this.m_url;
             }
-            addTex(tex:ImageTextureProxy,mipLevel:number):void
+            addTex(tex:TextureProxy,mipLevel:number):void
             {
                 this.m_texList.push(tex);
                 this.m_mLvList.push(mipLevel);
@@ -58,7 +88,7 @@ export namespace vox
             {
                 return this.m_img;
             }
-            getTexAt(i:number):ImageTextureProxy
+            getTexAt(i:number):TextureProxy
             {
                 return this.m_texList[i];
             }
@@ -150,7 +180,7 @@ export namespace vox
                 {
                     t = new ImgResLoader(purl);
                     this.___dict.set(purl,t);
-                    let tex:ImageTextureProxy = TextureStore.CreateImageTex2D(1,1);//new TextureProxy(1,1);
+                    let tex:TextureProxy = TextureStore.CreateTex2D(1,1);//new TextureProxy(1,1);
                     TextureStore.__$AttachTexAt(tex.getUid());
                     tex.name = purl;
                     t.addTex(tex,mipLevel);
