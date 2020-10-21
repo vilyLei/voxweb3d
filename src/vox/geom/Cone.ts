@@ -47,14 +47,14 @@ export namespace vox
 				v3.x = pv.x - this.position.x;
 				v3.y = pv.y - this.position.y;
 				v3.z = pv.z - this.position.z;
-				v3.w = v3.dotProduct(this.tv);
+				v3.w = v3.dot(this.tv);
 				//console.log("v3.w: "+v3.w+", this.height: "+this.height);
 				if(v3.w > 0.0)
 				{
 					v3.normalize();
-					//console.log("v3.dotProduct(this.tv): "+v3.dotProduct(this.tv));
+					//console.log("v3.dot(this.tv): "+v3.dot(this.tv));
 					//console.log("this.mcos: "+this.mcos);
-					return v3.dotProduct(this.tv) >= (this.mcos - MathConst.MATH_MIN_POSITIVE);
+					return v3.dot(this.tv) >= (this.mcos - MathConst.MATH_MIN_POSITIVE);
 				}
 				else if(v3.getLengthSquared() < MathConst.MATH_MIN_POSITIVE)
 				{
@@ -70,7 +70,7 @@ export namespace vox
 			//		opv.subtractBy(slpv);
 			//		Vector3D.Cross(sltv, opv, pnv);
 			//		pnv.normalize();
-			//		let planeDis:number = pnv.dotProduct(slpv);
+			//		let planeDis:number = pnv.dot(slpv);
 			//		opv.copyFrom(this.tv);
 			//		opv.scaleBy(this.height);
 			//		opv.addBy(this.position);
@@ -78,7 +78,7 @@ export namespace vox
 			//		PlaneCalc.CalcPVCloseV(pnv,planeDis,opv, opv2);
 			//		opv2.subtractBy(this.position);
 			//		opv2.normalize();
-			//		return opv2.dotProduct(this.tv) >= (this.mcos - MathConst.MATH_MIN_POSITIVE);
+			//		return opv2.dot(this.tv) >= (this.mcos - MathConst.MATH_MIN_POSITIVE);
 			//	}
 			// 判断锥体是否和一个直线相交
 			intersectionRL(slpv:Vector3D, sltv:Vector3D, outV0:Vector3D, outV1:Vector3D):boolean
@@ -87,15 +87,15 @@ export namespace vox
 				let psltv:Vector3D = InfiniteCone.__cotV1;
 				psltv.copyFrom(sltv);
 				psltv.negate();
-				sltv = sltv.dotProduct(this.tv) > 0.0?sltv:psltv;
+				sltv = sltv.dot(this.tv) > 0.0?sltv:psltv;
 				let coDV:Vector3D = InfiniteCone.__cotV0;
 				coDV.copyFrom(slpv);
 				coDV.subtractBy(this.position);
-				let pb:number = sltv.dotProduct(this.tv);
+				let pb:number = sltv.dot(this.tv);
 				let pa:number = pb * pb - this.mcos2;
-				let pc:number = coDV.dotProduct(this.tv);
-				pb = 2.0 * (pb * pc - coDV.dotProduct(sltv) * this.mcos2);
-				pc = pc * pc - coDV.dotProduct(coDV) * this.mcos2;
+				let pc:number = coDV.dot(this.tv);
+				pb = 2.0 * (pb * pc - coDV.dot(sltv) * this.mcos2);
+				pc = pc * pc - coDV.dot(coDV) * this.mcos2;
 				let pt:number = pb * pb - 4.0 * pa * pc;
 				console.log("pt: "+pt);
 				if(pt >= MathConst.MATH_MAX_NEGATIVE)
@@ -119,11 +119,11 @@ export namespace vox
 						v3.x = outV0.x - this.position.x;
 						v3.y = outV0.y - this.position.y;
 						v3.z = outV0.z - this.position.z;
-						v3.w = v3.dotProduct(this.tv);
+						v3.w = v3.dot(this.tv);
 						if(v3.w > 0.0)
 						{
 							v3.normalize();
-							if(v3.dotProduct(this.tv) >= (this.mcos - MathConst.MATH_MIN_POSITIVE))
+							if(v3.dot(this.tv) >= (this.mcos - MathConst.MATH_MIN_POSITIVE))
 							{
 								pt = 1.0;
 								outV0.w = 1.0;
@@ -137,11 +137,11 @@ export namespace vox
 						v3.x = outV1.x - this.position.x;
 						v3.y = outV1.y - this.position.y;
 						v3.z = outV1.z - this.position.z;
-						v3.w = v3.dotProduct(this.tv);
+						v3.w = v3.dot(this.tv);
 						if(v3.w > 0.0)
 						{
 							v3.normalize();
-							if(v3.dotProduct(this.tv) >= (this.mcos - MathConst.MATH_MIN_POSITIVE))
+							if(v3.dot(this.tv) >= (this.mcos - MathConst.MATH_MIN_POSITIVE))
 							{
 								pt = 1.0;
 								outV1.w = 1.0;
@@ -152,7 +152,7 @@ export namespace vox
 					{
 						// 穿过锥体顶端 或者 和锥体腰部刚好相交只有一个交点
 						
-						if(sltv.dotProduct(this.tv) > this.mcos)
+						if(sltv.dot(this.tv) > this.mcos)
 						{
 							console.log("BBB 过锥顶.");
 						}
@@ -213,14 +213,14 @@ export namespace vox
 				v3.x = pv.x - this.position.x;
 				v3.y = pv.y - this.position.y;
 				v3.z = pv.z - this.position.z;
-				v3.w = v3.dotProduct(this.tv);
+				v3.w = v3.dot(this.tv);
 				//console.log("v3.w: "+v3.w+", this.height: "+this.height);
 				if(v3.w > 0.0 && v3.w <= this.height)
 				{
 					v3.normalize();
-					//console.log("v3.dotProduct(this.tv): "+v3.dotProduct(this.tv));
+					//console.log("v3.dot(this.tv): "+v3.dot(this.tv));
 					//console.log("this.mcos: "+this.mcos);
-					return v3.dotProduct(this.tv) >= (this.mcos - MathConst.MATH_MIN_POSITIVE);
+					return v3.dot(this.tv) >= (this.mcos - MathConst.MATH_MIN_POSITIVE);
 				}
 				else if(v3.getLengthSquared() < MathConst.MATH_MIN_POSITIVE)
 				{
@@ -236,7 +236,7 @@ export namespace vox
 			//		opv.subtractBy(slpv);
 			//		Vector3D.Cross(sltv, opv, pnv);
 			//		pnv.normalize();
-			//		let planeDis:number = pnv.dotProduct(slpv);
+			//		let planeDis:number = pnv.dot(slpv);
 			//		opv.copyFrom(this.tv);
 			//		opv.scaleBy(this.height);
 			//		opv.addBy(this.position);
@@ -244,7 +244,7 @@ export namespace vox
 			//		PlaneCalc.CalcPVCloseV(pnv,planeDis,opv, opv2);
 			//		opv2.subtractBy(this.position);
 			//		opv2.normalize();
-			//		return opv2.dotProduct(this.tv) >= (this.mcos - MathConst.MATH_MIN_POSITIVE);
+			//		return opv2.dot(this.tv) >= (this.mcos - MathConst.MATH_MIN_POSITIVE);
 			//	}
 			// 判断锥体是否和一个直线相交
 			intersectionRL(slpv:Vector3D, sltv:Vector3D, outV0:Vector3D, outV1:Vector3D):boolean
@@ -253,11 +253,11 @@ export namespace vox
 				let coDV:Vector3D = Cone.__cotV0;
 				coDV.copyFrom(slpv);
 				coDV.subtractBy(this.position);
-				let pb:number = sltv.dotProduct(this.tv);
+				let pb:number = sltv.dot(this.tv);
 				let pa:number = pb * pb - this.mcos2;
-				let pc:number = coDV.dotProduct(this.tv);
-				pb = 2.0 * (pb * pc - coDV.dotProduct(sltv) * this.mcos2);
-				pc = pc * pc - coDV.dotProduct(coDV) * this.mcos2;
+				let pc:number = coDV.dot(this.tv);
+				pb = 2.0 * (pb * pc - coDV.dot(sltv) * this.mcos2);
+				pc = pc * pc - coDV.dot(coDV) * this.mcos2;
 				let pt:number = pb * pb - 4.0 * pa * pc;
 				console.log("pt: "+pt);
 				if(pt >= MathConst.MATH_MAX_NEGATIVE)
@@ -317,11 +317,11 @@ export namespace vox
 			//		StraightLine.CalcTwoSLCloseV2(slpv, sltv, this.position, this.tv, v3);
 			//		outV0.copyFrom(v3);
 			//		v3.subtractBy(this.position);
-			//		v3.w = v3.dotProduct(this.tv);
+			//		v3.w = v3.dot(this.tv);
 			//		if(v3.w <= this.height)
 			//		{
 			//			v3.normalize();
-			//			return v3.dotProduct(this.tv) >= this.mcos;
+			//			return v3.dot(this.tv) >= this.mcos;
 			//		}
 			//		return false;
 			//	}

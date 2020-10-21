@@ -135,20 +135,20 @@ export namespace voxocc
                 this.m_pv.copyFrom(this.m_planePv1);
                 this.m_pv.subtractBy(this.m_planePv0);
                 // 计算this.m_qgPOV0 所对应的平面的外面正空间的指向法线
-                if(this.m_pv.dotProduct(this.m_nv0) > 0.0)
+                if(this.m_pv.dot(this.m_nv0) > 0.0)
                 {
                     this.m_nv0.scaleBy(-1.0);
                 }
                 // 计算this.m_qgPOV1 所对应的平面的外面正空间的指向法线
-                if(this.m_pv.dotProduct(this.m_nv1) < 0.0)
+                if(this.m_pv.dot(this.m_nv1) < 0.0)
                 {
                     this.m_nv1.scaleBy(-1.0);
                 }
                 this.m_nv0.normalize();
                 this.m_nv1.normalize();
 
-                this.m_dis0 = this.m_nv0.dotProduct(this.m_planePv0);
-                this.m_dis1 = this.m_nv1.dotProduct(this.m_planePv1);
+                this.m_dis0 = this.m_nv0.dot(this.m_planePv0);
+                this.m_dis1 = this.m_nv1.dot(this.m_planePv1);
 
                 /*
                 this.m_centerv.copyFrom(va0);
@@ -230,12 +230,12 @@ export namespace voxocc
                 this.m_pv.copyFrom(this.m_planePv0);
                 this.m_pv.subtractBy(this.m_camPv);
                 this.m_pv.normalize();
-                this.m_pv.w = this.m_pv.dotProduct(this.m_nv0);
+                this.m_pv.w = this.m_pv.dot(this.m_nv0);
 
                 this.m_pv.copyFrom(this.m_planePv1);
                 this.m_pv.subtractBy(this.m_camPv);
                 this.m_pv.normalize();
-                this.m_pv.x = this.m_pv.dotProduct(this.m_nv1);
+                this.m_pv.x = this.m_pv.dot(this.m_nv1);
 
                 if(this.m_subPovsTotal > 0)
                 {

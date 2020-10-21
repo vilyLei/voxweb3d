@@ -64,8 +64,8 @@
 //  import * as DemoOccBoxWall from "./voxocc/demo/DemoOccBoxWall";
 //  import Demo = DemoOccBoxWall.voxocc.demo.DemoOccBoxWall;
 
-//  import * as DemoOccBoxWall2 from "./voxocc/demo/DemoOccBoxWall2";
-//  import Demo = DemoOccBoxWall2.voxocc.demo.DemoOccBoxWall2;
+import * as DemoOccBoxWall2 from "./voxocc/demo/DemoOccBoxWall2";
+import Demo = DemoOccBoxWall2.voxocc.demo.DemoOccBoxWall2;
 
 //  import * as DemoGpuTexMana from "./demo/DemoGpuTexMana";
 //  import Demo = DemoGpuTexMana.demo.DemoGpuTexMana;
@@ -118,8 +118,8 @@
 //  import * as DemoRTTHalfSize from "./demo/DemoRTTHalfSize";
 //  import Demo = DemoRTTHalfSize.demo.DemoRTTHalfSize;
 
-import * as DemoRTT from "./demo/DemoRTT";
-import Demo = DemoRTT.demo.DemoRTT;
+//  import * as DemoRTT from "./demo/DemoRTT";
+//  import Demo = DemoRTT.demo.DemoRTT;
 
 //  import * as DemoMRT2 from "./demo/DemoMRT2";
 //  import Demo = DemoMRT2.demo.DemoMRT2;

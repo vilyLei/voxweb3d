@@ -39,7 +39,7 @@ export namespace voxocc
                 this.m_pv.copyFrom(this.pvList[0]);
                 this.m_pv.subtractBy(camPv);
                 //this.m_pv.copyFrom(nv);
-                this.visible = this.m_pv.dotProduct( this.plane_nv ) < MathConst.MATH_MIN_POSITIVE;
+                this.visible = this.m_pv.dot( this.plane_nv ) < MathConst.MATH_MIN_POSITIVE;
                 if(this.visible)
                 {
                     let i:number = 0;
@@ -133,13 +133,13 @@ export namespace voxocc
                         this.m_pov.subtractBy(this.m_camPv);
 
                         Vector3D.Cross(this.m_pv,this.m_pov,pnv);
-                        if(pnv.dotProduct(bls.nv) < MathConst.MATH_MIN_POSITIVE)
+                        if(pnv.dot(bls.nv) < MathConst.MATH_MIN_POSITIVE)
                         {
                             pnv.scaleBy( -1.0 );
                         }
                         pnv.normalize();
                         
-                        this.m_planeDisList[this.m_projNVTotal] = pnv.dotProduct(bls.a);
+                        this.m_planeDisList[this.m_projNVTotal] = pnv.dot(bls.a);
                         pvList.push(bls.a, bls.b);
                         ++this.m_projNVTotal;
                     }
@@ -209,7 +209,7 @@ export namespace voxocc
                 face.pvList.push(point0,point1,point2,point3);
                 Vector3D.CrossSubtract(point3,point0, point1, point0,face.plane_nv);
                 face.plane_nv.normalize();                            // -y
-                face.plane_dis = face.plane_nv.dotProduct(face.pvList[0]);
+                face.plane_dis = face.plane_nv.dot(face.pvList[0]);
                 face.lsIndicis.push(0,1,2,3);
             
                 face = this.m_faceList[1];
@@ -217,7 +217,7 @@ export namespace voxocc
                 face.pvList.push(point4,point5,point6,point7);
                 Vector3D.CrossSubtract(point5,point4, point7, point4,face.plane_nv);
                 face.plane_nv.normalize();                          // +y
-                face.plane_dis = face.plane_nv.dotProduct(face.pvList[0]);
+                face.plane_dis = face.plane_nv.dot(face.pvList[0]);
                 face.lsIndicis.push(4,5,6,7);
             
                 face = this.m_faceList[2];
@@ -225,7 +225,7 @@ export namespace voxocc
                 face.pvList.push(point0,point4,point5,point1);
                 Vector3D.CrossSubtract(point0,point1, point0, point4,face.plane_nv);
                 face.plane_nv.normalize();                            // +x
-                face.plane_dis = face.plane_nv.dotProduct(face.pvList[0]);
+                face.plane_dis = face.plane_nv.dot(face.pvList[0]);
                 face.lsIndicis.push(0,4,8,9);            
 
                 face = this.m_faceList[3];
@@ -233,7 +233,7 @@ export namespace voxocc
                 face.pvList.push(point1,point5,point6,point2);
                 Vector3D.CrossSubtract(point1,point2, point1, point5,face.plane_nv);
                 face.plane_nv.normalize();                             // -z
-                face.plane_dis = face.plane_nv.dotProduct(face.pvList[0]);
+                face.plane_dis = face.plane_nv.dot(face.pvList[0]);
                 face.lsIndicis.push(1,5,9,10);
 
                 face = this.m_faceList[4];
@@ -241,7 +241,7 @@ export namespace voxocc
                 face.pvList.push(point2,point6,point7,point3);
                 Vector3D.CrossSubtract(point2,point3, point2, point6,face.plane_nv);
                 face.plane_nv.normalize();                             // -x
-                face.plane_dis = face.plane_nv.dotProduct(face.pvList[0]);
+                face.plane_dis = face.plane_nv.dot(face.pvList[0]);
                 face.lsIndicis.push(2,6,10,11);
 
                 face = this.m_faceList[5];
@@ -249,7 +249,7 @@ export namespace voxocc
                 face.pvList.push(point3,point7,point4,point0);
                 Vector3D.CrossSubtract(point3,point0, point3, point7,face.plane_nv);
                 face.plane_nv.normalize();                           // +z
-                face.plane_dis = face.plane_nv.dotProduct(face.pvList[0]);
+                face.plane_dis = face.plane_nv.dot(face.pvList[0]);
                 face.lsIndicis.push(3,7,11,8);
             }
             setParam(minV:Vector3D,maxV:Vector3D):void

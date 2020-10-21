@@ -164,16 +164,16 @@ export namespace vox
 					SurfaceNormalCalc.s_temp_vb.normalize();
 					SurfaceNormalCalc.s_temp_vc.setTo(nvs[i], nvs[i + 1], nvs[i + 2]);
 					SurfaceNormalCalc.s_temp_va.copyFrom(SurfaceNormalCalc.s_temp_vc);
-					SurfaceNormalCalc.s_temp_vc.scaleBy(SurfaceNormalCalc.s_temp_vc.dotProduct(SurfaceNormalCalc.s_temp_vd));
+					SurfaceNormalCalc.s_temp_vc.scaleBy(SurfaceNormalCalc.s_temp_vc.dot(SurfaceNormalCalc.s_temp_vd));
 					SurfaceNormalCalc.s_temp_vd.subtractBy(SurfaceNormalCalc.s_temp_vc);
 					SurfaceNormalCalc.s_temp_vd.normalize();
 					//b = b - n * dot( b, n )
 					SurfaceNormalCalc.s_temp_vc.setTo(nvs[i], nvs[i + 1], nvs[i + 2]);
-					SurfaceNormalCalc.s_temp_vc.scaleBy(SurfaceNormalCalc.s_temp_vb.dotProduct(SurfaceNormalCalc.s_temp_vc));
+					SurfaceNormalCalc.s_temp_vc.scaleBy(SurfaceNormalCalc.s_temp_vb.dot(SurfaceNormalCalc.s_temp_vc));
 					SurfaceNormalCalc.s_temp_vb.subtractBy(SurfaceNormalCalc.s_temp_vc);
 					SurfaceNormalCalc.s_temp_vb.normalize();
 					SurfaceNormalCalc.s_temp_va.crossBy(SurfaceNormalCalc.s_temp_vd);
-					if (SurfaceNormalCalc.s_temp_va.dotProduct(SurfaceNormalCalc.s_temp_vb) < 0.0)
+					if (SurfaceNormalCalc.s_temp_va.dot(SurfaceNormalCalc.s_temp_vb) < 0.0)
 					{
 						SurfaceNormalCalc.s_temp_vd.scaleBy(-1.0);
 					}

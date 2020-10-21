@@ -7,11 +7,13 @@
 
 import * as MathConstT from "../../vox/utils/MathConst";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
+import * as ImageTextureProxyT from "../../vox/texture/ImageTextureProxy";
 import * as CubeTextureProxyT from "../../vox/texture/CubeTextureProxy";
 import * as TextureStoreT from "../../vox/texture/TextureStore";
 
 import MathConst = MathConstT.vox.utils.MathConst;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+import ImageTextureProxy = ImageTextureProxyT.vox.texture.ImageTextureProxy;
 import CubeTextureProxy = CubeTextureProxyT.vox.texture.CubeTextureProxy;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
 
@@ -24,7 +26,7 @@ export namespace vox
             private m_url:string;  
             private m_img:any = new Image();
             private m_loaded:boolean = false;
-            private m_texList:TextureProxy[] = [];
+            private m_texList:ImageTextureProxy[] = [];
             private m_mLvList:number[] = [];
             constructor(purl:string)
             {
@@ -75,7 +77,7 @@ export namespace vox
                 //m_img.setAttribute('crossorigin', 'anonymous');
                 this.m_img.src = this.m_url;
             }
-            addTex(tex:TextureProxy,mipLevel:number):void
+            addTex(tex:ImageTextureProxy,mipLevel:number):void
             {
                 this.m_texList.push(tex);
                 this.m_mLvList.push(mipLevel);
@@ -88,7 +90,7 @@ export namespace vox
             {
                 return this.m_img;
             }
-            getTexAt(i:number):TextureProxy
+            getTexAt(i:number):ImageTextureProxy
             {
                 return this.m_texList[i];
             }
@@ -168,7 +170,12 @@ export namespace vox
             {
             }
         
-            getTexAndLoadImg(purl:string,mipLevel:number = 0):TextureProxy
+            
+            getImageTexByUrl(purl:string,mipLevel:number = 0):ImageTextureProxy
+            {
+                return this.getTexAndLoadImg(purl, mipLevel);
+            }
+            getTexAndLoadImg(purl:string,mipLevel:number = 0):ImageTextureProxy
             {
                 if(purl == "")
                 {
@@ -180,7 +187,7 @@ export namespace vox
                 {
                     t = new ImgResLoader(purl);
                     this.___dict.set(purl,t);
-                    let tex:TextureProxy = TextureStore.CreateTex2D(1,1);//new TextureProxy(1,1);
+                    let tex:ImageTextureProxy = TextureStore.CreateImageTex2D(1,1);
                     TextureStore.__$AttachTexAt(tex.getUid());
                     tex.name = purl;
                     t.addTex(tex,mipLevel);

@@ -390,7 +390,7 @@ export namespace vox
 				outV.y = ab.center.y - lpv.y;
 				outV.z = ab.center.z - lpv.z;
 				//
-				let dis:number = outV.dotProduct(ltv);
+				let dis:number = outV.dot(ltv);
 				
 				outV.x -= dis * ltv.x;
 				outV.y -= dis * ltv.y;

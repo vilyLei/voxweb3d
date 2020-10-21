@@ -24,7 +24,7 @@ export namespace voxvat
                     tex.mipmapEnabled = true;
                     return tex;
                 }
-                static GetTexByUrl(purl:string):TextureProxy
+                static getImageTexByUrl(purl:string):TextureProxy
                 {
                     return TexManager.s_texLoader.getTexAndLoadImg(purl);
                 }

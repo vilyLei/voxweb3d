@@ -53,7 +53,7 @@ export namespace demo
         private m_camTrack:CameraTrack = null;
         
         private m_profileInstance:ProfileInstance = null;
-        getTexByUrl(purl:string):TextureProxy
+        getImageTexByUrl(purl:string):TextureProxy
         {
             let tex:TextureProxy = this.m_texLoader.getTexAndLoadImg(purl);
             tex.mipmapEnabled = true;
@@ -67,8 +67,8 @@ export namespace demo
                 H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-                let tex0:TextureProxy = this.getTexByUrl("static/assets/default.jpg");
-                let tex1:TextureProxy = this.getTexByUrl("static/assets/broken_iron.jpg");
+                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
                 
                 let rparam:RendererParam = new RendererParam("glcanvas");
                 rparam.setMatrix4AllocateSize(8192 * 4);

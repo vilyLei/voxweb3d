@@ -76,7 +76,7 @@ export namespace voxocc
             {
                 this.m_pv.copyFrom(bounds.center);
                 this.m_pv.subtractBy(this.m_camPv);
-                this.m_pv.w = bounds.radius + this.m_occRadiusK * this.m_occTV.dotProduct(this.m_pv);
+                this.m_pv.w = bounds.radius + this.m_occRadiusK * this.m_occTV.dot(this.m_pv);
                 if(StraightLine.CalcPVDis(this.m_occTV,this.m_camPv,bounds.center) < this.m_pv.w)
                 {
                     this.status = 0;

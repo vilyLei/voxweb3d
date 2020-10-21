@@ -43,9 +43,9 @@ export namespace demo
         private m_texLoader:ImageTexResLoader = new ImageTexResLoader();
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
-        getTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
+        getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
-            let ptex:TextureProxy = this.m_texLoader.getTexByUrl(purl);
+            let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
             ptex.mipmapEnabled = mipmapEnabled;
             if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
             return ptex;
@@ -59,8 +59,8 @@ export namespace demo
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
-                let tex0:TextureProxy = this.getTexByUrl("static/assets/default.jpg");
-                let tex1:TextureProxy = this.getTexByUrl("static/assets/broken_iron.jpg");
+                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
                 
                 let rparam:RendererParam = new RendererParam("glcanvas");
                 rparam.maxWebGLVersion = 1;

@@ -133,22 +133,22 @@ export namespace demo
             ];
             private getParClipTexAt(i:number):TextureProxy
             {
-                let tex:TextureProxy = this.m_texLoader.getTexByUrl(this.m_parClipTexList[i]);
+                let tex:TextureProxy = this.m_texLoader.getImageTexByUrl(this.m_parClipTexList[i]);
                 return tex;
             }
             private getParTexAt(i:number):TextureProxy
             {
-                let tex:TextureProxy = this.m_texLoader.getTexByUrl(this.m_parTexList[i]);
+                let tex:TextureProxy = this.m_texLoader.getImageTexByUrl(this.m_parTexList[i]);
                 return tex;
             }
             private getBaseTexAt(i:number):TextureProxy
             {
-                let tex:TextureProxy = this.m_texLoader.getTexByUrl(this.m_baseTexList[i]);
+                let tex:TextureProxy = this.m_texLoader.getImageTexByUrl(this.m_baseTexList[i]);
                 return tex;
             }
             private initDisp():void
             {
-                //let tex0:TextureProxy = this.m_texMana.getTexByUrl("assets/fruit_01.jpg");
+                //let tex0:TextureProxy = this.m_texMana.getImageTexByUrl("assets/fruit_01.jpg");
 
                 this.m_billMeshSrc0Entity = new Billboard3DEntity();
                 // create and save mesh in m_billMeshSrc0Entity instance

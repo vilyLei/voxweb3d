@@ -48,17 +48,17 @@ export namespace vox
 
 				Vector3D.Cross(rltv, pv, outV);
 				outV.normalize();
-				pv.w = outV.dotProduct(rlpv) - outV.dotProduct(lspvb);
+				pv.w = outV.dot(rlpv) - outV.dot(lspvb);
 				if(Math.abs(pv.w) <= radius)
 				{
 					// 两条直线已经相交
 					// outV 和 rlpv rltv 计算构成了一个平面
 					outV.crossBy(rltv);
 					outV.normalize();
-					outV.w = outV.dotProduct(rlpv);
+					outV.w = outV.dot(rlpv);
 					// 计算 lspva 所在的直线与平面的交点
 					//let tv2:Vector3D = AbsGeomBase.__tV1;
-					pv.w = (outV.w - outV.dotProduct(lspva))/(pv.dotProduct(outV));
+					pv.w = (outV.w - outV.dot(lspva))/(pv.dot(outV));
 					outV.copyFrom(pv);
 					outV.scaleBy(pv.w);
 					outV.addBy(lspva);
@@ -68,7 +68,7 @@ export namespace vox
 					let pv1:Vector3D = AbsGeomBase.__tV1;
 					pv1.copyFrom(outV);
 					pv1.subtractBy(lspvb);
-					if(pv.dotProduct(pv1) <= 0.0)
+					if(pv.dot(pv1) <= 0.0)
 					{
 						return 1;
 					}
@@ -84,7 +84,7 @@ export namespace vox
 				pv.y = cv.y - rlpv.y;
 				pv.z = cv.z - rlpv.z;
 				
-				pv.w = pv.dotProduct(rltv);
+				pv.w = pv.dot(rltv);
 				radius *= radius;
 				if(pv.w > MathConst.MATH_MIN_POSITIVE)
 				{
@@ -133,7 +133,7 @@ export namespace vox
 				pv.x = cv.x - rlpv.x;
 				pv.y = cv.y - rlpv.y;
 				pv.z = cv.z - rlpv.z;
-				pv.w = pv.dotProduct(rltv);
+				pv.w = pv.dot(rltv);
 				if(pv.w > MathConst.MATH_MIN_POSITIVE)
 				{
 					outV.x = pv.x - pv.w * rltv.x;
@@ -154,8 +154,8 @@ export namespace vox
 						// 准备计算 CP和XP 之间夹角a的余弦值, cos(a)值
 						pv.normalize();
 						// cos(a) 值 和 CP距离值相乘
-						//pv.y = pv.dotProduct(rltv) * outV.w;
-						outV.y = pv.dotProduct(rltv) * Math.sqrt(outV.x);
+						//pv.y = pv.dot(rltv) * outV.w;
+						outV.y = pv.dot(rltv) * Math.sqrt(outV.x);
 						// 求解方程的根,得到近些的距离
 						pv.w = (-outV.y + Math.sqrt(outV.y * outV.y + 4.0 * outV.z)) * 0.5;
 						outV.copyFrom(rltv);
@@ -173,7 +173,7 @@ export namespace vox
 					{
 						outV.z = outV.w - outV.x;
 						pv.normalize();
-						outV.y = pv.dotProduct(rltv) * Math.sqrt(outV.x);
+						outV.y = pv.dot(rltv) * Math.sqrt(outV.x);
 						// 求解方程的根,得到远些的距离
 						pv.w = (-outV.y + Math.sqrt(outV.y * outV.y + 4.0 * outV.z)) * 0.5;
 						outV.copyFrom(rltv);
@@ -191,7 +191,7 @@ export namespace vox
 				pv.x = cv.x - rlpv.x;
 				pv.y = cv.y - rlpv.y;
 				pv.z = cv.z - rlpv.z;
-				pv.w = pv.dotProduct(rltv);
+				pv.w = pv.dot(rltv);
 				if(pv.w < MathConst.MATH_MIN_POSITIVE)
 				{
 					return pv.getLengthSquared() <= (radius * radius);
@@ -227,7 +227,7 @@ export namespace vox
 				pv.x = spCV.x - lpv.x;
 				pv.y = spCV.y - lpv.y;
 				pv.z = spCV.z - lpv.z;
-				pv.w = pv.dotProduct(ltv);
+				pv.w = pv.dot(ltv);
 				pv.x -= pv.w * ltv.x;
 				pv.y -= pv.w * ltv.y;
 				pv.z -= pv.w * ltv.z;		
@@ -241,7 +241,7 @@ export namespace vox
 				pv.y = spCV.y - lpv.y;
 				pv.z = spCV.z - lpv.z;
 				//
-				let da:number = pv.dotProduct(ltv);
+				let da:number = pv.dot(ltv);
 				pv.x = da * ltv.x + lpv.x;
 				pv.y = da * ltv.y + lpv.y;
 				pv.z = da * ltv.z + lpv.z;
@@ -263,7 +263,7 @@ export namespace vox
 				outV.x = spCV.x - lpv.x;
 				outV.y = spCV.y - lpv.y;
 				outV.z = spCV.z - lpv.z;
-				let da:number = outV.dotProduct(ltv);
+				let da:number = outV.dot(ltv);
 				outV.x = da * ltv.x + lpv.x;
 				outV.y = da * ltv.y + lpv.y;
 				outV.z = da * ltv.z + lpv.z;
@@ -281,7 +281,7 @@ export namespace vox
 				Vector3D.Cross(latv, lbtv, AbsGeomBase.__tV1);
 				Vector3D.Cross(latv, AbsGeomBase.__tV1, AbsGeomBase.__tV2);
 				AbsGeomBase.__tV2.normalize();
-				PlaneCalc.IntersectionSLV2(AbsGeomBase.__tV2, AbsGeomBase.__tV2.dotProduct(lapv), lbpv, lbtv, outV);
+				PlaneCalc.IntersectionSLV2(AbsGeomBase.__tV2, AbsGeomBase.__tV2.dot(lapv), lbpv, lbtv, outV);
 			}
 			// 计算两条异面直线距离最近的点,而且这个点落在空间直线b线上
 			static CalcTwoSLCloseV2(lapv:Vector3D, latv:Vector3D, lbpv:Vector3D, lbtv:Vector3D, outV:Vector3D):void
@@ -289,10 +289,10 @@ export namespace vox
 				Vector3D.Cross(latv, lbtv, AbsGeomBase.__tV1);
 				Vector3D.Cross(latv, AbsGeomBase.__tV1, AbsGeomBase.__tV2);
 				AbsGeomBase.__tV2.normalize();
-				PlaneCalc.IntersectionSLV2(AbsGeomBase.__tV2, AbsGeomBase.__tV2.dotProduct(lapv), lbpv, lbtv, outV);
+				PlaneCalc.IntersectionSLV2(AbsGeomBase.__tV2, AbsGeomBase.__tV2.dot(lapv), lbpv, lbtv, outV);
 				// 计算点在空间直线a上的投影
 				outV.subtractBy(lapv);
-				outV.w = outV.dotProduct(latv);
+				outV.w = outV.dot(latv);
 				outV.x = outV.w * latv.x + lapv.x;
 				outV.y = outV.w * latv.y + lapv.y;
 				outV.z = outV.w * latv.z + lapv.z;
@@ -304,11 +304,11 @@ export namespace vox
 				Vector3D.Cross(latv, lbtv, AbsGeomBase.__tV1);
 				Vector3D.Cross(latv, AbsGeomBase.__tV1, AbsGeomBase.__tV2);
 				AbsGeomBase.__tV2.normalize();
-				PlaneCalc.IntersectionSLV2(AbsGeomBase.__tV2, AbsGeomBase.__tV2.dotProduct(lapv), lbpv, lbtv, outVa);
+				PlaneCalc.IntersectionSLV2(AbsGeomBase.__tV2, AbsGeomBase.__tV2.dot(lapv), lbpv, lbtv, outVa);
 				outVb.copyFrom(lbpv);
 				// 计算点在空间直线a上的投影
 				outVa.subtractBy(lapv);
-				outVa.w = outVa.dotProduct(latv);
+				outVa.w = outVa.dot(latv);
 				outVa.x = outVa.w * latv.x + lapv.x;
 				outVa.y = outVa.w * latv.y + lapv.y;
 				outVa.z = outVa.w * latv.z + lapv.z;
@@ -316,7 +316,7 @@ export namespace vox
 				// 计算点在空间直线b上的投影
 				//AbsGeomBase.__tV1.normalize();
 				outVb.subtractBy(outVa);
-				outVb.w = outVb.dotProduct(AbsGeomBase.__tV1);
+				outVb.w = outVb.dot(AbsGeomBase.__tV1);
 				outVb.x = outVb.w * AbsGeomBase.__tV1.x + outVa.x;
 				outVb.y = outVb.w * AbsGeomBase.__tV1.y + outVa.y;
 				outVb.z = outVb.w * AbsGeomBase.__tV1.z + outVa.z;
@@ -341,11 +341,11 @@ export namespace vox
 				Vector3D.Cross(this.tv, lsbtv, AbsGeomBase.__tV1);
 				Vector3D.Cross(this.tv, AbsGeomBase.__tV1, AbsGeomBase.__tV2);
 				AbsGeomBase.__tV2.normalize();
-				PlaneCalc.IntersectionSLV2(AbsGeomBase.__tV2, AbsGeomBase.__tV2.dotProduct(this.position), lsbpv, lsbtv, outV);
+				PlaneCalc.IntersectionSLV2(AbsGeomBase.__tV2, AbsGeomBase.__tV2.dot(this.position), lsbpv, lsbtv, outV);
 				AbsGeomBase.__tV2.x = outV.x - this.position.x;
 				AbsGeomBase.__tV2.y = outV.y - this.position.y;
 				AbsGeomBase.__tV2.z = outV.z - this.position.z;
-				let dis = AbsGeomBase.__tV2.dotProduct(this.tv);
+				let dis = AbsGeomBase.__tV2.dot(this.tv);
 				if(dis < 0.0) outV.copyFrom(this.position);
 				else if(dis > this.length) outV.copyFrom(this.anotherPosition);
 			}

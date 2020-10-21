@@ -61,7 +61,7 @@ export namespace advancedDemo
             private m_rct:RendererInstanceContext = null;
             private m_texLoader:TexResLoader = new TexResLoader();
             private m_profileInstance:ProfileInstance = null;
-            getTexByUrl(pns:string):TextureProxy
+            getImageTexByUrl(pns:string):TextureProxy
             {
                 let tex:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/voxgl/assets/"+pns);
                 tex.mipmapEnabled = true;
@@ -146,9 +146,9 @@ export namespace advancedDemo
                 {
                     this.m_rc = rc;
                     
-                    let tex0:TextureProxy = this.getTexByUrl("moss_04.jpg");
-                    let tex1:TextureProxy = this.getTexByUrl("metal_08.jpg");
-                    let tex2:TextureProxy = this.getTexByUrl("brickwall_big.jpg");
+                    let tex0:TextureProxy = this.getImageTexByUrl("moss_04.jpg");
+                    let tex1:TextureProxy = this.getImageTexByUrl("metal_08.jpg");
+                    let tex2:TextureProxy = this.getImageTexByUrl("brickwall_big.jpg");
 
                     this.m_rct = this.m_rc.getRendererContext();
 

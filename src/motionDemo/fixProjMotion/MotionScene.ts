@@ -149,7 +149,7 @@ export namespace motionDemo
             ];
             private getTexAt(i:number):TextureProxy
             {
-                let tex:TextureProxy = this.m_texLoader.getTexByUrl(this.m_texList[i]);
+                let tex:TextureProxy = this.m_texLoader.getImageTexByUrl(this.m_texList[i]);
                 tex.mipmapEnabled = true;
                 //tex.setWrap(TextureConst.WRAP_REPEAT);
                 //console.log("getTexAt(), tex: "+tex);

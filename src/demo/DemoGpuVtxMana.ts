@@ -48,7 +48,7 @@ export namespace demo
             if(this.m_rcontext == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                //let tex0:TextureProxy = this.m_texMana.getTexByUrl("assets/fruit_01.jpg");
+                //let tex0:TextureProxy = this.m_texMana.getImageTexByUrl("assets/fruit_01.jpg");
                 
                 this.m_statusDisp.initialize("rstatus");
                 let rparam:RendererParam = new RendererParam("glcanvas");

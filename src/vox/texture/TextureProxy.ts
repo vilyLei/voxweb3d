@@ -33,6 +33,8 @@ export namespace vox
             wrap_t:number = TextureConst.WRAP_CLAMP_TO_EDGE;
             wrap_r:number = TextureConst.WRAP_CLAMP_TO_EDGE;
             //
+            flipY:boolean = false;
+            premultiplyAlpha:boolean = false;
             min_filter:number = TextureConst.LINEAR;
             // QQ浏览器这个参数值为LINEAR会报错:
             // [.WebGL-0BC70EE8]RENDER WARNING: texture bound to texture unit 1 is not renderable. It maybe non-power-of-2 and have incompatible texture filtering.
@@ -139,6 +141,9 @@ export namespace vox
             {
                 this.m_texBufW = this.m_texWidth;
                 this.m_texBufH = this.m_texHeight;
+                
+                gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
+                gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premultiplyAlpha);
                 if (this.mipmapEnabled && MathConst.IsPowerOf2(this.m_texWidth) && MathConst.IsPowerOf2(this.m_texHeight))
                 {
                     gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_WRAP_S, TextureConst.GetConst(gl,this.wrap_s));

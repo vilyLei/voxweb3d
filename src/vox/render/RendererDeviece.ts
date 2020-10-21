@@ -26,7 +26,22 @@ export namespace vox
                 }
             }
             static IsWebGL1():boolean{return RendererDeviece.s_WEBGL_VER == 1;}
-            static IsWebGL2():boolean{return RendererDeviece.s_WEBGL_VER == 2;}   
+            static IsWebGL2():boolean{return RendererDeviece.s_WEBGL_VER == 2;}
+            static IsMobileWeb()
+            {
+
+                if (/mobile/.test(location.href)) return true;            
+                if (/Android/i.test(navigator.userAgent)) {            
+                    if (/Mobile/i.test(navigator.userAgent)) {            
+                      return true;
+                    } else {            
+                      return false;            
+                    }            
+                } else if (/webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                    return true;            
+                }
+                return false;
+            }
         }
     }
 }

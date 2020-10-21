@@ -42,7 +42,7 @@ export namespace advancedDemo
 
             private m_rc:RendererScene = null;
             texLoader:TexResLoader = null;
-            getTexByUrl(pns:string):TextureProxy
+            getImageTexByUrl(pns:string):TextureProxy
             {
                 let tex:TextureProxy = this.texLoader.getTexAndLoadImg("static/voxgl/assets/"+pns);
                 tex.setWrap(TextureConst.WRAP_REPEAT);
@@ -107,10 +107,10 @@ export namespace advancedDemo
                 {
                     this.m_rc = rc;
                     
-                    let tex0:TextureProxy = this.getTexByUrl("moss_04.jpg");
-                    let tex1:TextureProxy = this.getTexByUrl("metal_08.jpg");
-                    let tex2:TextureProxy = this.getTexByUrl("brickwall_big.jpg");
-                    let tex3:TextureProxy = this.getTexByUrl("wood_01.jpg");
+                    let tex0:TextureProxy = this.getImageTexByUrl("moss_04.jpg");
+                    let tex1:TextureProxy = this.getImageTexByUrl("metal_08.jpg");
+                    let tex2:TextureProxy = this.getImageTexByUrl("brickwall_big.jpg");
+                    let tex3:TextureProxy = this.getImageTexByUrl("wood_01.jpg");
                     
                     //  RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
                     //  RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);

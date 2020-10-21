@@ -53,35 +53,35 @@ export namespace voxocc
                 nv = this.m_planeNV;
                 Vector3D.CrossSubtract(this.m_pvList[0],this.m_pvList[1],this.m_pvList[0],this.m_pvList[3],nv);
                 this.m_pv.normalize();
-                this.m_pv.w = nv.dotProduct(this.m_pv);
+                this.m_pv.w = nv.dot(this.m_pv);
                 if(this.m_pv.w < 0.0) nv.scaleBy(-1.0);
                 nv.normalize();
-                this.m_planeDis = nv.dotProduct(this.m_pvList[0]);
+                this.m_planeDis = nv.dot(this.m_pvList[0]);
                 nv.w = Math.abs(this.m_pv.w);
 
                 nv = this.m_pnvList[0];
                 Vector3D.CrossSubtract(this.m_camPv,this.m_pvList[0],this.m_camPv,this.m_pvList[1],nv);
-                if(nv.dotProduct(this.m_pdvList[0]) < 0.0) nv.scaleBy(-1.0);
+                if(nv.dot(this.m_pdvList[0]) < 0.0) nv.scaleBy(-1.0);
                 nv.normalize();
-                this.m_pdisList[0] = nv.dotProduct(this.m_pvList[0]);
+                this.m_pdisList[0] = nv.dot(this.m_pvList[0]);
 
                 nv = this.m_pnvList[1];
                 Vector3D.CrossSubtract(this.m_camPv,this.m_pvList[1],this.m_camPv,this.m_pvList[2],nv);
-                if(nv.dotProduct(this.m_pdvList[1]) < 0.0) nv.scaleBy(-1.0);
+                if(nv.dot(this.m_pdvList[1]) < 0.0) nv.scaleBy(-1.0);
                 nv.normalize();
-                this.m_pdisList[1] = nv.dotProduct(this.m_pvList[1]);
+                this.m_pdisList[1] = nv.dot(this.m_pvList[1]);
 
                 nv = this.m_pnvList[2];
                 Vector3D.CrossSubtract(this.m_camPv,this.m_pvList[2],this.m_camPv,this.m_pvList[3],nv);
-                if(nv.dotProduct(this.m_pdvList[2]) < 0.0) nv.scaleBy(-1.0);
+                if(nv.dot(this.m_pdvList[2]) < 0.0) nv.scaleBy(-1.0);
                 nv.normalize();
-                this.m_pdisList[2] = nv.dotProduct(this.m_pvList[2]);
+                this.m_pdisList[2] = nv.dot(this.m_pvList[2]);
 
                 nv = this.m_pnvList[3];
                 Vector3D.CrossSubtract(this.m_camPv,this.m_pvList[3],this.m_camPv,this.m_pvList[0],nv);
-                if(nv.dotProduct(this.m_pdvList[3]) < 0.0) nv.scaleBy(-1.0);
+                if(nv.dot(this.m_pdvList[3]) < 0.0) nv.scaleBy(-1.0);
                 nv.normalize();
-                this.m_pdisList[3] = nv.dotProduct(this.m_pvList[3]);
+                this.m_pdisList[3] = nv.dot(this.m_pvList[3]);
                 
             }
             setParam(va:Vector3D,vb:Vector3D,vc:Vector3D,vd:Vector3D):void
@@ -189,7 +189,7 @@ export namespace voxocc
                     //this.m_pv.copyFrom(bounds.center);
                     //this.m_pv.subtractBy(this.m_centerv);
                     //this.m_pv.normalize();
-                    //if(this.m_planeNV.dotProduct(this.m_pv) < MathConst.MATH_MIN_POSITIVE)
+                    //if(this.m_planeNV.dot(this.m_pv) < MathConst.MATH_MIN_POSITIVE)
                     //{
                         this.m_sphOcc.test(bounds,cullMask);
                         this.status = this.m_sphOcc.status;
@@ -198,7 +198,7 @@ export namespace voxocc
                             let i:number = 0;
                             for(; i < 4; ++i)
                             {
-                                if((this.m_pnvList[i].dotProduct(bounds.center) - this.m_pdisList[i] - bounds.radius) > MathConst.MATH_MIN_POSITIVE)
+                                if((this.m_pnvList[i].dot(bounds.center) - this.m_pdisList[i] - bounds.radius) > MathConst.MATH_MIN_POSITIVE)
                                 {
                                     break;
                                 }

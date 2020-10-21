@@ -66,7 +66,7 @@ export namespace advancedDemo
             private m_fogSys:FogSphSystem = null;
             private m_roleSc:RoleScene = null;
             private m_billGroup:BillParticleGroup = null;
-            getTexByUrl(pns:string):TextureProxy
+            getImageTexByUrl(pns:string):TextureProxy
             {
                 let tex:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/voxgl/assets/"+pns);
                 tex.setWrap(TextureConst.WRAP_REPEAT);
@@ -157,8 +157,8 @@ export namespace advancedDemo
                     RendererState.CreateRenderState("ADD03",CullFaceMode.BACK,RenderBlendMode.TRANSPARENT,DepthTestMode.RENDER_ALWAYS);
                     ///*
                     this.m_billGroup = new BillParticleGroup();                    
-                    let ptex0:TextureProxy = this.getTexByUrl("flare_core_02.jpg");
-                    let ptex1:TextureProxy = this.getTexByUrl("a_02_c.jpg");
+                    let ptex0:TextureProxy = this.getImageTexByUrl("flare_core_02.jpg");
+                    let ptex1:TextureProxy = this.getImageTexByUrl("a_02_c.jpg");
                     this.m_billGroup.texs = [ptex0,ptex1];
                     this.m_billGroup.renderer = this.m_rc;
                     this.m_billGroup.rendererIndex = this.m_parIndex;

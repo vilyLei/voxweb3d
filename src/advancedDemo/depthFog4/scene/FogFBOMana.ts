@@ -52,7 +52,7 @@ export namespace advancedDemo
             private m_rc:RendererScene = null;
             private m_rct:RendererInstanceContext = null;
             private m_texLoader:TexResLoader = new TexResLoader();
-            getTexByUrl(pns:string):TextureProxy
+            getImageTexByUrl(pns:string):TextureProxy
             {
                 let tex:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/voxgl/assets/"+pns);
                 tex.mipmapEnabled = true;

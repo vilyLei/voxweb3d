@@ -44,7 +44,7 @@ export namespace vox
                 this.y = v3.y;
                 this.z = v3.z;
             }
-            dotProduct(a:Vector3D)
+            dot(a:Vector3D)
             {
                 return this.x * a.x + this.y * a.y + this.z * a.z;
             }
@@ -158,7 +158,27 @@ export namespace vox
 	        	this.x = this.x - idotn2 * nv.x;
 	        	this.y = this.y - idotn2 * nv.y;
 	        	this.z = this.z - idotn2 * nv.z;
-	        }
+            }
+            
+            subVecsTo(va:Vector3D, vb:Vector3D):void
+            {
+                this.x = va.x - vb.x;
+                this.y = va.y - vb.y;
+                this.z = va.z - vb.z;
+            }
+            addVecsTo(va:Vector3D, vb:Vector3D):void
+            {
+                this.x = va.x + vb.x;
+                this.y = va.y + vb.y;
+                this.z = va.z + vb.z;
+            }
+
+            crossVecsTo(va:Vector3D, vb:Vector3D):void
+            {
+                this.x = va.y * vb.z - va.z * vb.y;
+                this.y = va.z * vb.x - va.x * vb.z;
+                this.z = va.x * vb.y - va.y * vb.x;
+            }
             toString():string
             {
                 return "[Vector3D(x="+this.x+", y="+this.y+",z="+this.z+",w="+this.w+")]";
@@ -226,13 +246,13 @@ export namespace vox
             {
                 v0.normalizeTo(Vector3D.__vtor3Stv0);
                 v1.normalizeTo(Vector3D.__vtor3Stv1);
-                return Math.acos(Vector3D.__vtor3Stv0.dotProduct(Vector3D.__vtor3Stv1)) * MathConst.MATH_180_OVER_PI;
+                return Math.acos(Vector3D.__vtor3Stv0.dot(Vector3D.__vtor3Stv1)) * MathConst.MATH_180_OVER_PI;
             }
             static RadianBetween(v0:Vector3D,v1:Vector3D)
             {
                 v0.normalizeTo(Vector3D.__vtor3Stv0);
                 v1.normalizeTo(Vector3D.__vtor3Stv1);
-                return Math.acos(Vector3D.__vtor3Stv0.dotProduct(Vector3D.__vtor3Stv1));                
+                return Math.acos(Vector3D.__vtor3Stv0.dot(Vector3D.__vtor3Stv1));                
             }
             
             static RadianBetween2(v0:Vector3D,v1:Vector3D)

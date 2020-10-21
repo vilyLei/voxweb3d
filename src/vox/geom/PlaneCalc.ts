@@ -24,7 +24,7 @@ export namespace vox
 			{
 				PlaneCalc.IntersectBoo = false;
 				PlaneCalc.IntersectSatus = 0;
-				pdis = pnv.dotProduct(cv) - pdis;
+				pdis = pnv.dot(cv) - pdis;
 				if (pdis > MathConst.MATH_MIN_POSITIVE)
 				{
 					PlaneCalc.IntersectBoo = pdis <= radius;
@@ -37,13 +37,13 @@ export namespace vox
 			}
 			static CalcPVCloseV(planeNV:Vector3D, planeDis:number, posV:Vector3D, outV:Vector3D):void
 			{
-				let value:number = planeDis - posV.dotProduct( planeNV );
+				let value:number = planeDis - posV.dot( planeNV );
 				outV.setTo(value * planeNV.x, value * planeNV.y, value * planeNV.z);
 				outV.addBy(posV);			
 			}
 			static CalcPVCloseV2(pnv:Vector3D, pd:number, posV:Vector3D, outV:Vector3D):void
 			{
-				let value:number = pd - posV.dotProduct( pnv );
+				let value:number = pd - posV.dot( pnv );
 				outV.setTo(value * pnv.x, value * pnv.y, value * pnv.z);
 				//outV.scaleBy(value);
 				outV.addBy(posV);
@@ -51,23 +51,23 @@ export namespace vox
 			static IntersectionSLV2(planeNV:Vector3D, planeDis:number, sl_pos:Vector3D, sl_tv:Vector3D, outV:Vector3D):number
 			{
 				// intersection or parallel
-				let td:number = planeNV.dotProduct(sl_tv);
+				let td:number = planeNV.dot(sl_tv);
 				if (td > MathConst.MATH_MIN_POSITIVE || td < MathConst.MATH_MAX_NEGATIVE)
 				{
 					// intersection
-					let dis:number = planeNV.dotProduct(sl_pos) - planeDis;
+					let dis:number = planeNV.dot(sl_pos) - planeDis;
 					outV.x = sl_tv.x * 100000.0 + sl_pos.x;
 					outV.y = sl_tv.y * 100000.0 + sl_pos.y;
 					outV.z = sl_tv.z * 100000.0 + sl_pos.z;
 					//
-					td = planeNV.dotProduct(outV) - planeDis;
+					td = planeNV.dot(outV) - planeDis;
 					td = dis / (dis - td);
 					outV.subtractBy(sl_pos);
 					outV.scaleBy(td);
 					outV.addBy(sl_pos);
 					return 1;
 				}
-				td = planeNV.dotProduct(sl_pos) - planeDis;
+				td = planeNV.dot(sl_pos) - planeDis;
 				if (td <= MathConst.MATH_MIN_POSITIVE || td >= MathConst.MATH_MAX_NEGATIVE)
 				{
 					// plane contains line

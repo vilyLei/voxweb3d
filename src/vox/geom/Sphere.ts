@@ -44,12 +44,12 @@ export namespace vox
 					outV.copyFrom(lpv);
 					return true;
 				}
-				if(bv.dotProduct(ltv) > 0.0)
+				if(bv.dot(ltv) > 0.0)
 				{
 					outV.x = spCV.x - lpv.x;
 					outV.y = spCV.y - lpv.y;
 					outV.z = spCV.z - lpv.z;
-					let f:number = outV.dotProduct(ltv);
+					let f:number = outV.dot(ltv);
 					outV.x = f * ltv.x + lpv.x;
 					outV.y = f * ltv.y + lpv.y;
 					outV.z = f * ltv.z + lpv.z;
@@ -91,12 +91,12 @@ export namespace vox
 					outV.copyFrom(lpv);
 					return true;
 				}
-				if(bv.dotProduct(ltv) > 0.0)
+				if(bv.dot(ltv) > 0.0)
 				{
 					outV.x = spCV.x - lpv.x;
 					outV.y = spCV.y - lpv.y;
 					outV.z = spCV.z - lpv.z;
-					let f:number = outV.dotProduct(ltv);
+					let f:number = outV.dot(ltv);
 					outV.x = f * ltv.x + lpv.x;
 					outV.y = f * ltv.y + lpv.y;
 					outV.z = f * ltv.z + lpv.z;

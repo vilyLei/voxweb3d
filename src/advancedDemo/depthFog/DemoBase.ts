@@ -72,7 +72,7 @@ export namespace advancedDemo
             private m_texLoader:TexResLoader = new TexResLoader();
             private m_camTrack:CameraTrack = null;
             private m_profileInstance:ProfileInstance = null;
-            getTexByUrl(pns:string):TextureProxy
+            getImageTexByUrl(pns:string):TextureProxy
             {
                 let tex:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/voxgl/assets/"+pns);
                 tex.mipmapEnabled = true;
@@ -170,8 +170,8 @@ export namespace advancedDemo
                 {
                     H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
                     RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                    let tex0:TextureProxy = this.getTexByUrl("moss_04.jpg");
-                    let tex1:TextureProxy = this.getTexByUrl("metal_08.jpg");
+                    let tex0:TextureProxy = this.getImageTexByUrl("moss_04.jpg");
+                    let tex1:TextureProxy = this.getImageTexByUrl("metal_08.jpg");
 
                     let rparam:RendererParam = new RendererParam("glcanvas");
                     rparam.setMatrix4AllocateSize(8192 * 4);

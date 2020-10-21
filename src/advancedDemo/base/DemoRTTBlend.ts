@@ -63,7 +63,7 @@ export namespace advancedDemo
             private m_profileInstance:ProfileInstance = null;
             private m_bill0:Billboard3DEntity = null;
             private m_bill1:Billboard3DEntity = null;
-            getTexByUrl(pns:string):TextureProxy
+            getImageTexByUrl(pns:string):TextureProxy
             {
                 let tex:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/voxgl/assets/"+pns);
                 tex.mipmapEnabled = true;
@@ -76,10 +76,10 @@ export namespace advancedDemo
                 {
                     H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
                     RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
-                    let tex0:TextureProxy = this.getTexByUrl("default.jpg");
-                    let tex1:TextureProxy = this.getTexByUrl("broken_iron.jpg");
-                    //let tex2:TextureProxy = this.getTexByUrl("flare_core_03.jpg");
-                    let tex2:TextureProxy = this.getTexByUrl("cloud01.png");
+                    let tex0:TextureProxy = this.getImageTexByUrl("default.jpg");
+                    let tex1:TextureProxy = this.getImageTexByUrl("broken_iron.jpg");
+                    //let tex2:TextureProxy = this.getImageTexByUrl("flare_core_03.jpg");
+                    let tex2:TextureProxy = this.getImageTexByUrl("cloud01.png");
 
                     let rparam:RendererParam = new RendererParam("glcanvas");
                     rparam.setMatrix4AllocateSize(8192 * 4);

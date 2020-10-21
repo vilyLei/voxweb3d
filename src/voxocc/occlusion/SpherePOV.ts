@@ -97,17 +97,17 @@ export namespace voxocc
             {
                 //  this.m_pv.copyFrom(bounds.center);
                 //  this.m_pv.subtractBy(this.m_camPv);
-                //  let dis:number = this.m_occTV.dotProduct(this.m_pv);
+                //  let dis:number = this.m_occTV.dot(this.m_pv);
                 this.status = 0;
                 this.m_pv.copyFrom(bounds.center);
                 this.m_pv.subtractBy(this.m_centerv);
-                let dis:number = this.m_occTV.dotProduct(this.m_pv);
+                let dis:number = this.m_occTV.dot(this.m_pv);
                 if(dis > MathConst.MATH_MIN_POSITIVE)
                 {
                     this.m_pv.copyFrom(bounds.center);
                     this.m_pv.subtractBy(this.m_camPv);
-                    dis = this.m_occTV.dotProduct(this.m_pv);
-                    //  dis = this.m_occTV.dotProduct(this.m_pv);
+                    dis = this.m_occTV.dot(this.m_pv);
+                    //  dis = this.m_occTV.dot(this.m_pv);
                     //  //if((dis - this.m_occDis) > bounds.radius)
                     //  //{
                     //      //let por:number = this.m_occRadiusK * dis;

@@ -376,7 +376,7 @@ export namespace demo
                 let x_nv:Vector3D = new Vector3D(Math.random(),Math.random(),Math.random());
                 x_nv.normalize();
                 x_pv1.multBy(x_nv);
-                x_pv0.w = x_pv0.dotProduct(x_nv);
+                x_pv0.w = x_pv0.dot(x_nv);
                 x_pv0.copyFrom(x_nv);
                 x_pv0.scaleBy(x_pv0.w);
 

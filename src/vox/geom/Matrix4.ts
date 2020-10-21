@@ -632,7 +632,7 @@ export namespace vox
 				dir.normalize();
 				vup.normalize();
 				let dir2 = new Vector3D(dir.x,dir.y,dir.z);
-				dir2.scaleBy(vup.dotProduct(dir));
+				dir2.scaleBy(vup.dot(dir));
 				//
 				vup.subtractBy(dir2);
 				if (vup.getLength() > MathConst.MATH_MIN_POSITIVE) vup.normalize();
@@ -1166,9 +1166,9 @@ export namespace vox
 				let s:Vector3D = f.crossProduct(up);
 				s.normalize();
 				let u:Vector3D = s.crossProduct(f);
-				s.w = -s.dotProduct(eye);
-				u.w = -u.dotProduct(eye);
-				f.w = f.dotProduct(eye);
+				s.w = -s.dot(eye);
+				u.w = -u.dot(eye);
+				f.w = f.dot(eye);
 				f.negate();
 				this.copyRowFrom(0, s);
 				this.copyRowFrom(1, u);
@@ -1183,9 +1183,9 @@ export namespace vox
 				s.normalize();
 				let u:Vector3D = s.crossProduct(f);
 
-				s.w = -s.dotProduct(eye);
-				u.w = -u.dotProduct(eye);
-				f.w = -f.dotProduct(eye);
+				s.w = -s.dot(eye);
+				u.w = -u.dot(eye);
+				f.w = -f.dot(eye);
 				this.copyRowFrom(0, s);
 				this.copyRowFrom(1, u);
 				this.copyRowFrom(2, f);

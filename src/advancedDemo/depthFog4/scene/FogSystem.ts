@@ -66,7 +66,7 @@ export namespace advancedDemo
                 maxRadius:number = 800.0;
                 factorPlane:Plane3DEntity;
                 fogFactorM:FogPlaneGeomFactorMaterial;
-                getTexByUrl(pns:string):TextureProxy
+                getImageTexByUrl(pns:string):TextureProxy
                 {
                     let tex:TextureProxy = this.texLoader.getTexAndLoadImg("static/voxgl/assets/"+pns);
                     tex.setWrap(TextureConst.WRAP_REPEAT);
@@ -104,7 +104,7 @@ export namespace advancedDemo
                         this.m_fogUnits.push(fogUnit);
                     }
 
-                    let tex3:TextureProxy = this.getTexByUrl("displacement_03.jpg");
+                    let tex3:TextureProxy = this.getImageTexByUrl("displacement_03.jpg");
                     this.fogFactorM = new FogPlaneGeomFactorMaterial();
                     this.factorPlane = new Plane3DEntity();
                     this.factorPlane.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);

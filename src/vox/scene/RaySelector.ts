@@ -198,7 +198,7 @@ export namespace vox
                             outv.x = nextNode.bounds.center.x - rpv.x;
 				            outv.y = nextNode.bounds.center.y - rpv.y;
 				            outv.z = nextNode.bounds.center.z - rpv.z;
-				            dis = outv.dotProduct(rtv);
+				            dis = outv.dot(rtv);
 				            outv.x -= dis * rtv.x;
 				            outv.y -= dis * rtv.y;
 				            outv.z -= dis * rtv.z;
@@ -216,7 +216,7 @@ export namespace vox
                                         node.entity = nextNode.entity;
                                         node.dis = this.m_rlinvtv.w;
                                         node.wpv.copyFrom(outv);
-                                        //  console.log("H Hit Dis: "+rtv.dotProduct(outv));
+                                        //  console.log("H Hit Dis: "+rtv.dot(outv));
                                         //console.log("Ray hit test a renderNode.");
                                         ++total;
                                     }
@@ -240,7 +240,7 @@ export namespace vox
                         let hitTotal:number = 0;
                         let mat4:Matrix4 = null;
                         let rayNode:RaySelectedNode = null;
-                        let pvdis:number = rtv.dotProduct(rpv);
+                        let pvdis:number = rtv.dot(rpv);
                         let preDis:number = 0.0;
                         if(total > 1)
                         {
@@ -276,7 +276,7 @@ export namespace vox
                                 {
                                     rayNode.lpv.copyFrom(outv);
                                     entity.getTransform().getMatrix().transformOutVector3(outv,rayNode.wpv);
-                                    rayNode.dis = rtv.dotProduct(rayNode.wpv) - pvdis;
+                                    rayNode.dis = rtv.dot(rayNode.wpv) - pvdis;
                                     this.m_hitList[hitTotal] = i;
                                     ++hitTotal;
                                     //console.log("YYYYYYYYYYYYYYYes multi Ray hit mesh success.");
@@ -317,7 +317,7 @@ export namespace vox
                             {
                                 rayNode.lpv.copyFrom(outv);
                                 entity.getTransform().getMatrix().transformOutVector3(outv,rayNode.wpv);
-                                rayNode.dis = rtv.dotProduct(rayNode.wpv) - pvdis;
+                                rayNode.dis = rtv.dot(rayNode.wpv) - pvdis;
                                 this.m_selectedNode = rayNode;
                                 //console.log("YYYYYYYYYYYYYYYes Ray hit mesh success.");
                             }

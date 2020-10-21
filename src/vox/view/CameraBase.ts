@@ -334,7 +334,7 @@ export namespace vox
             setPosition(v3:Vector3D):void
             {
                 Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_tempV);
-                var dot = this.m_tempV.dotProduct(this.m_initUP);
+                var dot = this.m_tempV.dot(this.m_initUP);
                 this.m_tempV1.copyFrom(this.m_initUP);
                 this.m_tempV1.scaleBy(dot);
                 this.m_tempV.subtractBy(this.m_tempV1);
@@ -353,7 +353,7 @@ export namespace vox
             setPositionXYZ(px:number, py:number, pz:number):void
             {
                 Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_tempV);
-                var dot:number = this.m_tempV.dotProduct(this.m_initUP);
+                var dot:number = this.m_tempV.dot(this.m_initUP);
                 this.m_tempV1.copyFrom(this.m_initUP);
                 this.m_tempV1.scaleBy(dot);
                 this.m_tempV.subtractBy(this.m_tempV1);
@@ -634,12 +634,12 @@ export namespace vox
                 // front face
                 plane = this.m_wFruPlaneList[0];
                 plane.nv.copyFrom(this.m_wNV);
-                plane.distance = plane.nv.dotProduct(this.m_farWCV);
+                plane.distance = plane.nv.dot(this.m_farWCV);
                 plane.position.copyFrom(this.m_farWCV);
                 // back face
                 plane = this.m_wFruPlaneList[1];
                 plane.nv.copyFrom(this.m_wFruPlaneList[0].nv);
-                plane.distance = plane.nv.dotProduct(this.m_nearWCV);
+                plane.distance = plane.nv.dot(this.m_nearWCV);
                 plane.position.copyFrom(this.m_nearWCV);
                 //
                 this.m_wFrustumVtxArr[8] = this.m_nearWCV;
@@ -687,7 +687,7 @@ export namespace vox
                 plane = this.m_wFruPlaneList[3];
                 Vector3D.Cross(this.m_tempV1, this.m_tempV, plane.nv);
                 plane.nv.normalize();
-                plane.distance = plane.nv.dotProduct(v0);
+                plane.distance = plane.nv.dot(v0);
                 plane.position.copyFrom(v0);
                 // top
                 v0 = this.m_wFrustumVtxArr[3];
@@ -703,7 +703,7 @@ export namespace vox
                 plane = this.m_wFruPlaneList[2];
                 Vector3D.Cross(this.m_tempV1, this.m_tempV, plane.nv);
                 plane.nv.normalize();
-                plane.distance = plane.nv.dotProduct(v0);
+                plane.distance = plane.nv.dot(v0);
                 plane.position.copyFrom(v0);
                 // left
                 v0 = this.m_wFrustumVtxArr[0];
@@ -719,7 +719,7 @@ export namespace vox
                 plane = this.m_wFruPlaneList[4];
                 Vector3D.Cross(this.m_tempV, this.m_tempV1, plane.nv);
                 plane.nv.normalize();
-                plane.distance = plane.nv.dotProduct(v0);
+                plane.distance = plane.nv.dot(v0);
                 plane.position.copyFrom(v0);
                 // right
                 v0 = this.m_wFrustumVtxArr[1];
@@ -735,7 +735,7 @@ export namespace vox
                 plane = this.m_wFruPlaneList[5];
                 Vector3D.Cross(this.m_tempV, this.m_tempV1, plane.nv);
                 plane.nv.normalize();
-                plane.distance = plane.nv.dotProduct(v0);
+                plane.distance = plane.nv.dot(v0);
                 plane.position.copyFrom(v0);
 
                 this.m_fpNVArr[0].copyFrom(this.m_wFruPlaneList[0].nv);
@@ -762,65 +762,65 @@ export namespace vox
             
             visiTestSphere2(w_cv:Vector3D,radius:number):boolean
             {
-                let boo:boolean = (this.m_fpNVArr[0].dotProduct(w_cv) - this.m_fpDisArr[0] - radius) > MathConst.MATH_MIN_POSITIVE;
+                let boo:boolean = (this.m_fpNVArr[0].dot(w_cv) - this.m_fpDisArr[0] - radius) > MathConst.MATH_MIN_POSITIVE;
                 if(boo)return false;
-                boo = (this.m_fpNVArr[1].dotProduct(w_cv) - this.m_fpDisArr[1] - radius) > MathConst.MATH_MIN_POSITIVE;
+                boo = (this.m_fpNVArr[1].dot(w_cv) - this.m_fpDisArr[1] - radius) > MathConst.MATH_MIN_POSITIVE;
                 if(boo)return false;
-                boo = (this.m_fpNVArr[2].dotProduct(w_cv) - this.m_fpDisArr[2] - radius) > MathConst.MATH_MIN_POSITIVE;
+                boo = (this.m_fpNVArr[2].dot(w_cv) - this.m_fpDisArr[2] - radius) > MathConst.MATH_MIN_POSITIVE;
                 if(boo)return false;                
-                boo = (this.m_fpNVArr[3].dotProduct(w_cv) - this.m_fpDisArr[3] - radius) > MathConst.MATH_MIN_POSITIVE;
+                boo = (this.m_fpNVArr[3].dot(w_cv) - this.m_fpDisArr[3] - radius) > MathConst.MATH_MIN_POSITIVE;
                 if(boo)return false;                
-                boo = (this.m_fpNVArr[4].dotProduct(w_cv) - this.m_fpDisArr[4] - radius) >  MathConst.MATH_MIN_POSITIVE;
+                boo = (this.m_fpNVArr[4].dot(w_cv) - this.m_fpDisArr[4] - radius) >  MathConst.MATH_MIN_POSITIVE;
                 if(boo)return false;                
-                boo = (this.m_fpNVArr[5].dotProduct(w_cv) - this.m_fpDisArr[5] - radius) > MathConst.MATH_MIN_POSITIVE;
+                boo = (this.m_fpNVArr[5].dot(w_cv) - this.m_fpDisArr[5] - radius) > MathConst.MATH_MIN_POSITIVE;
                 if(boo)return false;
                 return true;
             }
             
             visiTestSphere3(w_cv:Vector3D,radius:number,farROffset:number):boolean
             {
-                let boo:boolean = (this.m_fpNVArr[0].dotProduct(w_cv) - this.m_fpDisArr[0] + farROffset - radius) > MathConst.MATH_MIN_POSITIVE;
+                let boo:boolean = (this.m_fpNVArr[0].dot(w_cv) - this.m_fpDisArr[0] + farROffset - radius) > MathConst.MATH_MIN_POSITIVE;
                 if(boo)return false;
-                boo = (this.m_fpNVArr[1].dotProduct(w_cv) - this.m_fpDisArr[1] - radius) > MathConst.MATH_MIN_POSITIVE;
+                boo = (this.m_fpNVArr[1].dot(w_cv) - this.m_fpDisArr[1] - radius) > MathConst.MATH_MIN_POSITIVE;
                 if(boo)return false;
-                boo = (this.m_fpNVArr[2].dotProduct(w_cv) - this.m_fpDisArr[2] - radius) > MathConst.MATH_MIN_POSITIVE;
+                boo = (this.m_fpNVArr[2].dot(w_cv) - this.m_fpDisArr[2] - radius) > MathConst.MATH_MIN_POSITIVE;
                 if(boo)return false;                
-                boo = (this.m_fpNVArr[3].dotProduct(w_cv) - this.m_fpDisArr[3] - radius) > MathConst.MATH_MIN_POSITIVE;
+                boo = (this.m_fpNVArr[3].dot(w_cv) - this.m_fpDisArr[3] - radius) > MathConst.MATH_MIN_POSITIVE;
                 if(boo)return false;                
-                boo = (this.m_fpNVArr[4].dotProduct(w_cv) - this.m_fpDisArr[4] - radius) >  MathConst.MATH_MIN_POSITIVE;
+                boo = (this.m_fpNVArr[4].dot(w_cv) - this.m_fpDisArr[4] - radius) >  MathConst.MATH_MIN_POSITIVE;
                 if(boo)return false;                
-                boo = (this.m_fpNVArr[5].dotProduct(w_cv) - this.m_fpDisArr[5] - radius) > MathConst.MATH_MIN_POSITIVE;
+                boo = (this.m_fpNVArr[5].dot(w_cv) - this.m_fpDisArr[5] - radius) > MathConst.MATH_MIN_POSITIVE;
                 if(boo)return false;
                 return true;
             }
             visiTestPosition(pv:Vector3D):boolean
             {
-                let boo:boolean = (this.m_fpNVArr[0].dotProduct(pv) - this.m_fpDisArr[0]) > MathConst.MATH_MIN_POSITIVE;
+                let boo:boolean = (this.m_fpNVArr[0].dot(pv) - this.m_fpDisArr[0]) > MathConst.MATH_MIN_POSITIVE;
                 if(boo)return false;
-                boo = (this.m_fpNVArr[1].dotProduct(pv) - this.m_fpDisArr[1]) > MathConst.MATH_MIN_POSITIVE;
+                boo = (this.m_fpNVArr[1].dot(pv) - this.m_fpDisArr[1]) > MathConst.MATH_MIN_POSITIVE;
                 if(boo)return false;
-                boo = (this.m_fpNVArr[2].dotProduct(pv) - this.m_fpDisArr[2]) > MathConst.MATH_MIN_POSITIVE;
+                boo = (this.m_fpNVArr[2].dot(pv) - this.m_fpDisArr[2]) > MathConst.MATH_MIN_POSITIVE;
                 if(boo)return false;                
-                boo = (this.m_fpNVArr[3].dotProduct(pv) - this.m_fpDisArr[3]) > MathConst.MATH_MIN_POSITIVE;
+                boo = (this.m_fpNVArr[3].dot(pv) - this.m_fpDisArr[3]) > MathConst.MATH_MIN_POSITIVE;
                 if(boo)return false;                
-                boo = (this.m_fpNVArr[4].dotProduct(pv) - this.m_fpDisArr[4]) >  MathConst.MATH_MIN_POSITIVE;
+                boo = (this.m_fpNVArr[4].dot(pv) - this.m_fpDisArr[4]) >  MathConst.MATH_MIN_POSITIVE;
                 if(boo)return false;                
-                boo = (this.m_fpNVArr[5].dotProduct(pv) - this.m_fpDisArr[5]) > MathConst.MATH_MIN_POSITIVE;
+                boo = (this.m_fpNVArr[5].dot(pv) - this.m_fpDisArr[5]) > MathConst.MATH_MIN_POSITIVE;
                 if(boo)return false;
                 return true;
             }
             visiTestPlane(nv:Vector3D,distance:number):boolean
             {
-                let f0:number = (nv.dotProduct(this.m_wFruPlaneList[0].position) - distance);
-                let f1:number = f0 * (nv.dotProduct(this.m_wFruPlaneList[1].position) - distance);
+                let f0:number = (nv.dot(this.m_wFruPlaneList[0].position) - distance);
+                let f1:number = f0 * (nv.dot(this.m_wFruPlaneList[1].position) - distance);
                 if(f1 < MathConst.MATH_MIN_POSITIVE) return true;
-                f1 = f0 * (nv.dotProduct(this.m_wFruPlaneList[2].position) - distance);
+                f1 = f0 * (nv.dot(this.m_wFruPlaneList[2].position) - distance);
                 if(f1 < MathConst.MATH_MIN_POSITIVE) return true;
-                f1 = f0 * (nv.dotProduct(this.m_wFruPlaneList[3].position) - distance);
+                f1 = f0 * (nv.dot(this.m_wFruPlaneList[3].position) - distance);
                 if(f1 < MathConst.MATH_MIN_POSITIVE) return true;
-                f1 = f0 * (nv.dotProduct(this.m_wFruPlaneList[4].position) - distance);
+                f1 = f0 * (nv.dot(this.m_wFruPlaneList[4].position) - distance);
                 if(f1 < MathConst.MATH_MIN_POSITIVE) return true;
-                f1 = f0 * (nv.dotProduct(this.m_wFruPlaneList[5].position) - distance);
+                f1 = f0 * (nv.dot(this.m_wFruPlaneList[5].position) - distance);
                 if(f1 < MathConst.MATH_MIN_POSITIVE) return true;
                 return false;
             }

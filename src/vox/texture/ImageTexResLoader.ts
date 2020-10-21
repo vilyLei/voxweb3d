@@ -7,11 +7,13 @@
 
 import * as MathConstT from "../../vox/utils/MathConst";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
+import * as ImageTextureProxyT from "../../vox/texture/ImageTextureProxy";
 import * as CubeTextureProxyT from "../../vox/texture/CubeTextureProxy";
 import * as TextureStoreT from "../../vox/texture/TextureStore";
 
 import MathConst = MathConstT.vox.utils.MathConst;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+import ImageTextureProxy = ImageTextureProxyT.vox.texture.ImageTextureProxy;
 import CubeTextureProxy = CubeTextureProxyT.vox.texture.CubeTextureProxy;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
 
@@ -25,7 +27,7 @@ export namespace vox
             private m_img:any = null;
             private m_loaded:boolean = false;
             private m_mipLv:number = 0;
-            texture:TextureProxy = null;
+            texture:ImageTextureProxy = null;
             constructor(purl:string,mipLv:number)
             {
                 this.m_url = purl;
@@ -114,8 +116,8 @@ export namespace vox
             constructor()
             {
             }
-        
-            getTexByUrl(purl:string,mipLevel:number = 0):TextureProxy
+            /*
+            getImageTexByUrl(purl:string,mipLevel:number = 0):ImageTextureProxy
             {
                 if(purl == "")
                 {
@@ -127,7 +129,32 @@ export namespace vox
                 {
                     t = new ImgResUnit(purl,mipLevel);
                     this.m_resMap.set(purl,t);
-                    let tex:TextureProxy = TextureStore.CreateTex2D(1,1);
+                    let tex:ImageTextureProxy = TextureStore.CreateImageTex2D(1,1);
+                    TextureStore.__$AttachTex(tex);
+                    tex.name = purl;
+                    t.texture = tex;
+                    this.m_waitLoadList.push(t);
+                    return tex;
+                }
+                else
+                {
+                    return t.texture;
+                }
+            }
+            */
+            getImageTexByUrl(purl:string,mipLevel:number = 0):ImageTextureProxy
+            {
+                if(purl == "")
+                {
+                    return null;
+                }
+                if(mipLevel < 0) mipLevel = 0;
+                let t:ImgResUnit = this.m_resMap.get(purl);
+                if(t == null)
+                {
+                    t = new ImgResUnit(purl,mipLevel);
+                    this.m_resMap.set(purl,t);
+                    let tex:ImageTextureProxy = TextureStore.CreateImageTex2D(1,1);
                     TextureStore.__$AttachTex(tex);
                     tex.name = purl;
                     t.texture = tex;

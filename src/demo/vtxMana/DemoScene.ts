@@ -110,23 +110,23 @@ export namespace demo
             ];
             private getParClipTexAt(i:number):TextureProxy
             {
-                let tex:TextureProxy = this.m_texLoader.getTexByUrl(this.m_parClipTexList[i]);
+                let tex:TextureProxy = this.m_texLoader.getImageTexByUrl(this.m_parClipTexList[i]);
                 return tex;
             }
             private getParTexAt(i:number):TextureProxy
             {
-                let tex:TextureProxy = this.m_texLoader.getTexByUrl(this.m_parTexList[i]);
+                let tex:TextureProxy = this.m_texLoader.getImageTexByUrl(this.m_parTexList[i]);
                 return tex;
             }
             private getdefaultTexAt(i:number):TextureProxy
             {
-                let tex:TextureProxy = this.m_texLoader.getTexByUrl("default.jpg");
+                let tex:TextureProxy = this.m_texLoader.getImageTexByUrl("default.jpg");
                 return tex;
             }
             private initTest():void
             {
                 let i:number = 0;
-                //let tex0:TextureProxy = this.m_texLoader.getTexByUrl("default.jpg");
+                //let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("default.jpg");
                 //  this.m_srcBoxEntity = new Box3DEntity();
                 //  this.m_srcBoxEntity.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[this.getdefaultTexAt(0)]);
                 let objUrl:string = "assets/obj/box01.obj";
@@ -152,7 +152,7 @@ export namespace demo
             }
             private initDisp():void
             {
-                //let tex0:TextureProxy = this.m_texMana.getTexByUrl("assets/fruit_01.jpg");
+                //let tex0:TextureProxy = this.m_texMana.getImageTexByUrl("assets/fruit_01.jpg");
 
                 this.m_billMeshSrc0Entity = new Billboard3DEntity();
                 //this.m_billMeshSrc0Entity.initialize(100.0,100.0, [this.getParTexAt(0)]);

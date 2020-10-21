@@ -20,7 +20,7 @@ export namespace demo
             constructor()
             {
             }
-            getTexByUrl(url:string):TextureProxy
+            getImageTexByUrl(url:string):TextureProxy
             {
                 let tex:TextureProxy = this.m_texLoader.getTexAndLoadImg(url);
                 tex.mipmapEnabled = true;
