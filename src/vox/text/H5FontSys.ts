@@ -338,8 +338,8 @@ export class H5FontSystem
       this.m_texBase = TextureStore.CreateBytesTex(this.m_texWidth,this.m_texHeight);
       this.m_texBase.toAlphaFormat();
       this.m_texBase.mipmapEnabled = mipmapEnabled;
-      this.m_texBase.min_filter = TextureConst.LINEAR;
-      this.m_texBase.mag_filter = TextureConst.NEAREST;
+      this.m_texBase.minFilter = TextureConst.LINEAR;
+      this.m_texBase.magFilter = TextureConst.NEAREST;
 
       this.createInitTexAndChars();
     }

@@ -54,7 +54,7 @@ export namespace vox
             {
                 super(texList, texWidth,texHeight,powerof2Boo);
                 this.m_type = TextureConst.TEX_PROXY2D;
-                this.min_filter = TextureConst.LINEAR;
+                this.minFilter = TextureConst.LINEAR;
             }
             toAlphaFormat():void
             {
@@ -168,20 +168,24 @@ export namespace vox
                 }
             }
             
-            uploadFromBytes(bytes:Uint8Array, miplevel:number = 0):void
+            uploadFromBytes(bytes:Uint8Array, miplevel:number = 0,pw:number = -1,ph:number = -1):void
             {
-                this.m_bytes = bytes;
-                if(this.m_texBuf == null)
+                if(bytes != null)
                 {
-                    this.m_miplevel = miplevel;
-                    this.m_haveRData = true;
-                }
-                else
-                {
-                    if(bytes != null)
+                    this.m_bytes = bytes;
+                    if( pw > 0 && ph > 0)
+                    {
+                        this.m_texWidth = pw;
+                        this.m_texHeight = ph;
+                    }
+                    if(this.m_texBuf == null)
                     {
                         this.m_miplevel = miplevel;
-                        
+                        this.m_haveRData = true;
+                    }
+                    else
+                    {
+                        this.m_miplevel = miplevel;                            
                         if(!this.m_dataChanged)
                         {
                             this.m_dataChanged = true;

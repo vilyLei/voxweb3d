@@ -35,10 +35,10 @@ export namespace vox
             //
             flipY:boolean = false;
             premultiplyAlpha:boolean = false;
-            min_filter:number = TextureConst.LINEAR;
+            minFilter:number = TextureConst.LINEAR_MIPMAP_LINEAR;
             // QQ浏览器这个参数值为LINEAR会报错:
             // [.WebGL-0BC70EE8]RENDER WARNING: texture bound to texture unit 1 is not renderable. It maybe non-power-of-2 and have incompatible texture filtering.
-            mag_filter:number = TextureConst.LINEAR;
+            magFilter:number = TextureConst.LINEAR;
             protected m_miplevel:number = -1;
             protected m_texWidth:number = 128;
             protected m_texHeight:number = 128;
@@ -154,9 +154,9 @@ export namespace vox
                         gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_BASE_LEVEL, 0);
                         gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAX_LEVEL, Math.log2(this.m_texWidth));
                     }
-                    //gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_MIN_FILTER, gl.LINEAR_MIPMAP_LINEAR);
-                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_MIN_FILTER, TextureConst.GetConst(gl,this.min_filter));
-                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_MAG_FILTER, TextureConst.GetConst(gl,this.mag_filter));
+                    //gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_minFilter, gl.LINEAR_MIPMAP_LINEAR);
+                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_minFilter, TextureConst.GetConst(gl,this.minFilter));
+                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_magFilter, TextureConst.GetConst(gl,this.magFilter));
                     //gl.DONT_CARE
                     //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.NICEST);
                     //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.FASTEST);
@@ -171,8 +171,8 @@ export namespace vox
                         gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_BASE_LEVEL, 0);
                         gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAX_LEVEL, Math.log2(this.m_texWidth));
                     }
-                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_MIN_FILTER, TextureConst.GetConst(gl,this.min_filter));
-                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_MAG_FILTER, TextureConst.GetConst(gl,this.mag_filter));
+                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_minFilter, TextureConst.GetConst(gl,this.minFilter));
+                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_magFilter, TextureConst.GetConst(gl,this.magFilter));
                 }
             }
             // sub class override

@@ -24,6 +24,12 @@ export namespace vox
                 this.b = pb;
                 this.a = pa;
             }
+            setRGB3Bytes(r:number,g:number,b:number):void
+            {
+                this.r = r/255.0;
+                this.g = g/255.0;
+                this.b = b/255.0;
+            }
             setRGB3f(r:number,g:number,b:number):void
             {
                 this.r = r;
@@ -36,7 +42,7 @@ export namespace vox
                 this.g = ((rgbUint24 >> 8) & 0x0000ff)/255.0;
                 this.b = (rgbUint24 & 0x0000ff)/255.0;
             }
-            setRGBA4f = function(r:number,g:number,b:number,a:number):void
+            setRGBA4f(r:number,g:number,b:number,a:number):void
             {
                 this.r = r;
                 this.g = g;

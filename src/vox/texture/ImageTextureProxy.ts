@@ -26,15 +26,32 @@ export namespace vox
             constructor(texList:TextureProxy[], texWidth:number,texHeight:number,powerof2Boo:boolean = false)
             {
                 super(texList,texWidth,texHeight,powerof2Boo);
-                this.min_filter = TextureConst.LINEAR_MIPMAP_LINEAR;
+                this.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
             }
             protected m_imgData:any = null;
+            protected m_mipImgDatas:any[] = null;
+            protected m_mipImgLvs:number[] = null;
             protected uploadData(rc:RenderProxy):void
             {
                 if(this.m_imgData != null)
                 {
                     let gl:any = rc.RContext;
-                    gl.texImage2D(this.m_samplerTarget, this.m_miplevel, TextureFormat.ToGL(gl,this.internalFormat),TextureFormat.ToGL(gl,this.srcFormat), TextureDataType.ToGL(gl, this.dataType), this.m_imgData);
+                    if(this.m_mipImgDatas == null)
+                    {
+                        gl.texImage2D(this.m_samplerTarget, this.m_miplevel, TextureFormat.ToGL(gl,this.internalFormat),TextureFormat.ToGL(gl,this.srcFormat), TextureDataType.ToGL(gl, this.dataType), this.m_imgData);
+                    }
+                    else
+                    {
+                        let interType:any = TextureFormat.ToGL(gl,this.internalFormat);
+                        let format:any = TextureFormat.ToGL(gl,this.srcFormat);
+                        let type:any = TextureDataType.ToGL(gl, this.dataType);
+                        let ds:any[] = this.m_mipImgDatas;
+                        let vs:number[] = this.m_mipImgLvs;
+                        for(let i:number = 0,len:number = vs.length; i < len; ++i)
+                        {
+                            gl.texImage2D(this.m_samplerTarget, vs[i], interType,format, type, ds[i]);    
+                        }
+                    }
                 }
             }
             getImageData():any
@@ -60,11 +77,29 @@ export namespace vox
                     }
                     else
                     {
-                        this.m_texWidth = img.width;
-                        this.m_texHeight = img.height;
-                        this.m_imgData = img;
-                        this.m_miplevel = miplevel;
-                        this.m_haveRData = true;
+                        if(img != null)
+                        {
+                            if(miplevel <= 0)
+                            {
+                                miplevel = 0;
+                                this.m_texWidth = img.width;
+                                this.m_texHeight = img.height;
+                                this.m_imgData = img;
+                                this.m_miplevel = miplevel;
+                                this.m_haveRData = true;
+                            }
+                            else if(miplevel > 0)
+                            {
+                                if(this.m_imgData != null && this.m_mipImgDatas == null)
+                                {
+                                    this.m_mipImgDatas = [];
+                                    this.m_mipImgLvs = [this.m_miplevel];
+                                    this.m_mipImgDatas.push(this.m_imgData);
+                                }
+                                this.m_mipImgDatas.push(img);
+                                this.m_mipImgLvs.push(miplevel);
+                            }
+                        }
                     }
                 }
             }

@@ -98,7 +98,7 @@ export namespace vox
                         return this.m_texs[index];
                     }
                     this.m_texs[index] = TextureStore.CreateTex2D(this.m_renderIns.getViewWidth(),this.m_renderIns.getViewHeight());//new TextureProxy(this.m_renderIns.getViewWidth(),this.m_renderIns.getViewHeight());
-                    this.m_texs[index].mag_filter = TextureConst.NEAREST;
+                    this.m_texs[index].magFilter = TextureConst.NEAREST;
                     return this.m_texs[index];
                 }
                 private m_flagBoo:boolean = true;

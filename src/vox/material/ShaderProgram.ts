@@ -236,8 +236,21 @@ export namespace vox
         	{
         		const regExp0:RegExp = /^#.+(\bes|core\b)/;
                 codeStr = codeStr.replace(regExp0, "");
+                // 防止函数中的in 被替换
+        		//const regExpFuncIn:RegExp = /\b in \b/g;
+        		const regExpFuncIn:RegExp = new RegExp(" in ", "g");
+                codeStr = codeStr.replace(regExpFuncIn, "_fref_");
+
         		const regExp1:RegExp = /\bin\b/g;
-        		codeStr = codeStr.replace(regExp1, "varying");
+                codeStr = codeStr.replace(regExp1, "varying");
+                // 防止函数中的in 被替换
+        		const regExpToFuncIn:RegExp = new RegExp("_fref_", "g");
+                codeStr = codeStr.replace(regExpToFuncIn, " in ");
+                
+                
+        		//const regExp1:RegExp = /\bin\b/g;
+        		//codeStr = codeStr.replace(regExp1, "varying");
+
         		const regExp2:RegExp = /\btexture\b/g;
                 codeStr = codeStr.replace(regExp2, "texture2D");
                 //  trace("XXXXXXXXXXXXXXXXXXXXXXXXXXXX A");

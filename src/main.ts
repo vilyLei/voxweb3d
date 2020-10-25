@@ -64,8 +64,8 @@
 //  import * as DemoOccBoxWall from "./voxocc/demo/DemoOccBoxWall";
 //  import Demo = DemoOccBoxWall.voxocc.demo.DemoOccBoxWall;
 
-import * as DemoOccBoxWall2 from "./voxocc/demo/DemoOccBoxWall2";
-import Demo = DemoOccBoxWall2.voxocc.demo.DemoOccBoxWall2;
+//  import * as DemoOccBoxWall2 from "./voxocc/demo/DemoOccBoxWall2";
+//  import Demo = DemoOccBoxWall2.voxocc.demo.DemoOccBoxWall2;
 
 //  import * as DemoGpuTexMana from "./demo/DemoGpuTexMana";
 //  import Demo = DemoGpuTexMana.demo.DemoGpuTexMana;
@@ -144,6 +144,9 @@ import Demo = DemoOccBoxWall2.voxocc.demo.DemoOccBoxWall2;
 
 //  import * as DemoBase from "./demo/DemoBase";
 //  import Demo = DemoBase.demo.DemoBase;
+
+import * as DemoPNG from "./example/DemoPNG";
+import Demo = DemoPNG.example.DemoPNG;
 
 let demoIns:Demo = new Demo();
 function main():void

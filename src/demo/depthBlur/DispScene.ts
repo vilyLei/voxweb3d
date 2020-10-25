@@ -186,7 +186,7 @@ export namespace demo
                         this.m_texs[index].internalFormat = TextureFormat.RGBA16F;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
                         this.m_texs[index].dataType = TextureDataType.FLOAT;
-                        this.m_texs[index].mag_filter = TextureConst.NEAREST;
+                        this.m_texs[index].magFilter = TextureConst.NEAREST;
                         return this.m_texs[index];
                     break;
 
@@ -195,7 +195,7 @@ export namespace demo
                         TextureStore.__$AttachTex(this.m_texs[index]);
                         this.m_texs[index].internalFormat = TextureFormat.RGBA;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
-                        this.m_texs[index].mag_filter = TextureConst.NEAREST;
+                        this.m_texs[index].magFilter = TextureConst.NEAREST;
                         return this.m_texs[index];
                     break;
                     default:

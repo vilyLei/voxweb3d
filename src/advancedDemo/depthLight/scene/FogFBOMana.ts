@@ -68,9 +68,9 @@ export namespace advancedDemo
                 this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewWidth(), this.m_rct.getViewHeight());
                 this.m_texs[index].internalFormat = TextureFormat.RGBA;
                 this.m_texs[index].srcFormat = TextureFormat.RGBA;
-                this.m_texs[index].mag_filter = TextureConst.NEAREST;
-                this.m_texs[index].min_filter = TextureConst.LINEAR;
-                //this.m_texs[index].mag_filter = TextureConst.LINEAR;
+                this.m_texs[index].magFilter = TextureConst.NEAREST;
+                this.m_texs[index].minFilter = TextureConst.LINEAR;
+                //this.m_texs[index].magFilter = TextureConst.LINEAR;
                 return this.m_texs[index];                
             }
             private m_middleFBO:FBOInstance = null;
