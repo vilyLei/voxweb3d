@@ -145,8 +145,11 @@
 //  import * as DemoBase from "./demo/DemoBase";
 //  import Demo = DemoBase.demo.DemoBase;
 
-import * as DemoPNG from "./example/DemoPNG";
-import Demo = DemoPNG.example.DemoPNG;
+//  import * as DemoPNG from "./example/DemoPNG";
+//  import Demo = DemoPNG.example.DemoPNG;
+
+import * as DemoRTTCircle from "./demo/DemoRTTCircle";
+import Demo = DemoRTTCircle.demo.DemoRTTCircle;
 
 let demoIns:Demo = new Demo();
 function main():void

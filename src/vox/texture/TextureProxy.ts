@@ -141,7 +141,7 @@ export namespace vox
             {
                 this.m_texBufW = this.m_texWidth;
                 this.m_texBufH = this.m_texHeight;
-                
+                console.log("texture size: "+this.m_texWidth+","+this.m_texHeight);
                 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
                 gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premultiplyAlpha);
                 if (this.mipmapEnabled && MathConst.IsPowerOf2(this.m_texWidth) && MathConst.IsPowerOf2(this.m_texHeight))
@@ -155,8 +155,8 @@ export namespace vox
                         gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAX_LEVEL, Math.log2(this.m_texWidth));
                     }
                     //gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_minFilter, gl.LINEAR_MIPMAP_LINEAR);
-                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_minFilter, TextureConst.GetConst(gl,this.minFilter));
-                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_magFilter, TextureConst.GetConst(gl,this.magFilter));
+                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_MIN_FILTER, TextureConst.GetConst(gl,this.minFilter));
+                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_MAG_FILTER, TextureConst.GetConst(gl,this.magFilter));
                     //gl.DONT_CARE
                     //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.NICEST);
                     //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.FASTEST);
@@ -171,8 +171,8 @@ export namespace vox
                         gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_BASE_LEVEL, 0);
                         gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAX_LEVEL, Math.log2(this.m_texWidth));
                     }
-                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_minFilter, TextureConst.GetConst(gl,this.minFilter));
-                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_magFilter, TextureConst.GetConst(gl,this.magFilter));
+                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_MIN_FILTER, TextureConst.GetConst(gl,this.minFilter));
+                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_MAG_FILTER, TextureConst.GetConst(gl,this.magFilter));
                 }
             }
             // sub class override

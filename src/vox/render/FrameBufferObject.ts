@@ -548,7 +548,7 @@ export namespace vox
 					}
 					else
 					{
-						console.log("FrameBufferObject::createNewFBO(), create success...");
+						console.log("FrameBufferObject::createNewFBO(), create success...,size: "+pw+","+ph);
 					}
 				}
 			}

@@ -166,7 +166,6 @@ export namespace vox
                     return gl.NEAREST;
                     break;
                     case TextureConst.LINEAR_MIPMAP_LINEAR:
-                        console.log("gl.LINEAR_MIPMAP_LINEAR used.");
                     return gl.LINEAR_MIPMAP_LINEAR;
                     break;                    
                     case TextureConst.NEAREST_MIPMAP_NEAREST:
