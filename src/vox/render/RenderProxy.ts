@@ -40,14 +40,30 @@ export namespace vox
     {
         export class RenderProxy
         {
-            RGBA:number = 0;
-            UNSIGNED_BYTE:number = 0;
-            TRIANGLE_STRIP:number = 0;
-            TRIANGLE_FAN:number = 0;
-            TRIANGLES:number = 0;
-            LINES:number = 0;
-            LINE_STRIP:number = 0;
-            UNSIGNED_SHORT:number = 0;
+            readonly RGBA:number = 0;
+            readonly UNSIGNED_BYTE:number = 0;
+            readonly TRIANGLE_STRIP:number = 0;
+            readonly TRIANGLE_FAN:number = 0;
+            readonly TRIANGLES:number = 0;
+            readonly LINES:number = 0;
+            readonly LINE_STRIP:number = 0;
+            readonly UNSIGNED_SHORT:number = 0;
+            readonly UNSIGNED_INT:number = 0;
+
+            // webgl Extension ...
+            readonly WEBGL_draw_buffers:any = null;
+            readonly OES_vertex_array_object:any = null;
+            readonly ANGLE_instanced_arrays:any = null;
+            readonly EXT_color_buffer_float:any = null;
+            readonly EXT_color_buffer_half_float:any = null;
+            readonly OES_texture_float_linear:any = null;
+            readonly OES_texture_half_float_linear:any = null;
+            readonly OES_texture_float:any = null;
+            readonly OES_element_index_uint:any = null;
+
+            readonly RContext:any = null;
+            readonly RState:RODrawState = null;
+
             private m_camUBO:any = null;
             private m_mainCamera:CameraBase = null;
             private m_adapter:RenderAdapter = new RenderAdapter();
@@ -74,21 +90,9 @@ export namespace vox
             private m_stencilTestEnabled:boolean = true;
             private m_multisampleEnabled:boolean = false;
 
-            // webgl Extension ...
-            WEBGL_draw_buffers:any = null;
-            OES_vertex_array_object:any = null;
-            ANGLE_instanced_arrays:any = null;
-            EXT_color_buffer_float:any = null;
-            EXT_color_buffer_half_float:any = null;
-            OES_texture_float_linear:any = null;
-            OES_texture_half_float_linear:any = null;
-            OES_texture_float:any = null;
-            //
-            RContext:any = null;
             // main camera
-            private Camera:CameraBase = null;
+            private m_camera:CameraBase = null;
             private m_camSwitched:boolean = false;
-            RState:RODrawState = null;
             // 是否舞台尺寸和view自动同步一致
             private m_autoSynViewAndStage:boolean = true;
             isAutoSynViewAndStage():boolean
@@ -97,11 +101,11 @@ export namespace vox
             }
             getCamera():CameraBase
             {
-                return this.Camera;
+                return this.m_camera;
             }
             updateCamera():void
             {
-                return this.Camera.update();
+                return this.m_camera.update();
             }
             createCameraUBO (shdProgram:any):void
             {
@@ -502,93 +506,94 @@ export namespace vox
                 this.m_mainCamera.update();
                 this.m_adapter.bgColor.setRGB3f(0.0,0.0,0.0);
 
-                this.Camera = this.m_mainCamera;
-            
                 this.m_rc = this.m_RAdapterContext.getRC();
-                this.RGBA = this.m_rc.RGBA;
-                this.UNSIGNED_BYTE = this.m_rc.UNSIGNED_BYTE;
-
-                this.TRIANGLE_STRIP = this.m_rc.TRIANGLE_STRIP;
-                this.TRIANGLE_FAN = this.m_rc.TRIANGLE_FAN;
-                this.TRIANGLES = this.m_rc.TRIANGLES;
-                this.LINES = this.m_rc.LINES;
-                this.LINE_STRIP = this.m_rc.LINE_STRIP;
-                this.UNSIGNED_SHORT = this.m_rc.UNSIGNED_SHORT;
-                RenderFBOProxy.SetRenderer(this.m_RAdapterContext);
-            
-                this.RState = this.m_RAdapterContext.getRenderState();
-                this.RContext = this.m_rc;
-
+                this.m_camera = this.m_mainCamera;
+                let selfT:any = this;
                 if(this.m_WEBGL_VER == 1)
                 {
-                    this.WEBGL_draw_buffers = RenderFBOProxy.GetWebglDrawBufsObj();
-                    this.OES_vertex_array_object = this.m_rc.getExtension('OES_vertex_array_object');
-                    if(this.OES_vertex_array_object != null)
+                    selfT.WEBGL_draw_buffers = RenderFBOProxy.GetWebglDrawBufsObj();
+                    selfT.OES_vertex_array_object = this.m_rc.getExtension('OES_vertex_array_object');
+                    if(selfT.OES_vertex_array_object != null)
                     console.log("Use OES_vertex_array_object Extension success!");
                     else
                     console.log("OES_vertex_array_object Extension can not support!");
-                    this.ANGLE_instanced_arrays = this.m_rc.getExtension('ANGLE_instanced_arrays');
-                    if(this.ANGLE_instanced_arrays != null)
+                    selfT.ANGLE_instanced_arrays = this.m_rc.getExtension('ANGLE_instanced_arrays');
+                    if(selfT.ANGLE_instanced_arrays != null)
                     console.log("Use ANGLE_instanced_arrays Extension success!");
                     else
                     console.log("ANGLE_instanced_arrays Extension can not support!");
-                    this.EXT_color_buffer_float = this.m_rc.getExtension('EXT_color_buffer_float');
-                    if(this.EXT_color_buffer_float != null)
+                    selfT.EXT_color_buffer_float = this.m_rc.getExtension('EXT_color_buffer_float');
+                    if(selfT.EXT_color_buffer_float != null)
                     console.log("Use EXT_color_buffer_float Extension success!");
                     else
                     console.log("EXT_color_buffer_float Extension can not support!");
 
-                    this.EXT_color_buffer_half_float = this.m_rc.getExtension('EXT_color_buffer_half_float');
-                    if(this.EXT_color_buffer_half_float != null)
+                    selfT.EXT_color_buffer_half_float = this.m_rc.getExtension('EXT_color_buffer_half_float');
+                    if(selfT.EXT_color_buffer_half_float != null)
                     console.log("Use EXT_color_buffer_half_float Extension success!");
                     else
                     console.log("EXT_color_buffer_half_float Extension can not support!");
-                
-                    this.OES_texture_float_linear = this.m_rc.getExtension('OES_texture_float_linear');
-                    if(this.OES_texture_float_linear != null)
-                    console.log("Use OES_texture_float_linear Extension success!");
-                    else
-                    console.log("OES_texture_float_linear Extension can not support!");
 
-                    this.OES_texture_half_float_linear = this.m_rc.getExtension('OES_texture_half_float_linear');
-                    if(this.OES_texture_half_float_linear != null)
+                    selfT.OES_texture_half_float_linear = this.m_rc.getExtension('OES_texture_half_float_linear');
+                    if(selfT.OES_texture_half_float_linear != null)
                     console.log("Use OES_texture_half_float_linear Extension success!");
                     else
                     console.log("OES_texture_half_float_linear Extension can not support!");
 
-                    this.OES_texture_float = this.m_rc.getExtension('OES_texture_float');
-                    if(this.OES_texture_float != null)
+                    selfT.OES_texture_float = this.m_rc.getExtension('OES_texture_float');
+                    if(selfT.OES_texture_float != null)
                     console.log("Use OES_texture_float Extension success!");
                     else
                     console.log("OES_texture_float Extension can not support!");
+                    //
+                    selfT.OES_element_index_uint = this.m_rc.getExtension('OES_element_index_uint');
+                    if(selfT.OES_element_index_uint != null)
+                    console.log("Use OES_element_index_uint Extension success!");
+                    else
+                    console.log("OES_element_index_uint Extension can not support!");
                 }
                 else
                 {
                     
-                    this.EXT_color_buffer_half_float = this.m_rc.getExtension('EXT_color_buffer_half_float');
-                    if(this.EXT_color_buffer_half_float != null)
+                    selfT.EXT_color_buffer_half_float = this.m_rc.getExtension('EXT_color_buffer_half_float');
+                    if(selfT.EXT_color_buffer_half_float != null)
                     console.log("Use EXT_color_buffer_half_float Extension success!");
                     else
                     console.log("EXT_color_buffer_half_float Extension can not support!");
-
-                    this.OES_texture_float_linear = this.m_rc.getExtension('OES_texture_float_linear');
-                    if(this.OES_texture_float_linear != null)
-                    console.log("Use OES_texture_float_linear Extension success!");
-                    else
-                    console.log("OES_texture_float_linear Extension can not support!");
                     
-                    this.OES_texture_half_float_linear = this.m_rc.getExtension('OES_texture_half_float_linear');
-                    if(this.OES_texture_half_float_linear != null)
+                    selfT.OES_texture_half_float_linear = this.m_rc.getExtension('OES_texture_half_float_linear');
+                    if(selfT.OES_texture_half_float_linear != null)
                     console.log("Use OES_texture_half_float_linear Extension success!");
                     else
                     console.log("OES_texture_half_float_linear Extension can not support!");
 
-                    this.EXT_color_buffer_float = this.m_rc.getExtension('EXT_color_buffer_float');
-                    if(this.EXT_color_buffer_float != null)
+                    selfT.EXT_color_buffer_float = this.m_rc.getExtension('EXT_color_buffer_float');
+                    if(selfT.EXT_color_buffer_float != null)
                     console.log("Use EXT_color_buffer_float Extension success!");
                     else
                     console.log("EXT_color_buffer_float Extension can not support!");
                 }
+                
+                selfT.OES_texture_float_linear = this.m_rc.getExtension('OES_texture_float_linear');
+                if(selfT.OES_texture_float_linear != null)
+                console.log("Use OES_texture_float_linear Extension success!");
+                else
+                console.log("OES_texture_float_linear Extension can not support!");
+
+                selfT.RGBA = this.m_rc.RGBA;
+                selfT.UNSIGNED_BYTE = this.m_rc.UNSIGNED_BYTE;
+                selfT.TRIANGLE_STRIP = this.m_rc.TRIANGLE_STRIP;
+                selfT.TRIANGLE_FAN = this.m_rc.TRIANGLE_FAN;
+                selfT.TRIANGLES = this.m_rc.TRIANGLES;
+                selfT.LINES = this.m_rc.LINES;
+                selfT.LINE_STRIP = this.m_rc.LINE_STRIP;
+                selfT.UNSIGNED_SHORT = this.m_rc.UNSIGNED_SHORT;
+                selfT.UNSIGNED_INT = this.m_rc.UNSIGNED_INT;
+
+                RenderFBOProxy.SetRenderer(this.m_RAdapterContext);
+                selfT.RState = this.m_RAdapterContext.getRenderState();
+                selfT.RContext = this.m_rc;
+
             }
             createCamera():CameraBase
             {
