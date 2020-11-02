@@ -5,12 +5,14 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as Color4T from "../../vox/material/Color4";
 import * as KeyboardT from "../../vox/ui/Keyboard";
 import * as Stage3DT from "../../vox/display/Stage3D";
 import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RendererStateT from "../../vox/render/RendererState";
 
+import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import Color4 = Color4T.vox.material.Color4;
 import Keyboard = KeyboardT.vox.ui.Keyboard;
 import Stage3D = Stage3DT.vox.display.Stage3D;
@@ -306,7 +308,7 @@ export namespace vox
                     {
                         console.log("RAdapterContext::initialize(), window is undefined.");
                     }
-                    var selfT:any = this;
+                    var selfT:RAdapterContext = this;
                     pwindow.onresize = function(evt:any):void
                     {
                         //console.log("onresize: "+evt);
@@ -383,6 +385,7 @@ export namespace vox
             resize(pw:number,ph:number):void
             {
                 this.m_devicePixelRatio = window.devicePixelRatio;
+                RendererDeviece.SetDevicePixelRatio(this.m_devicePixelRatio);
                 //console.log("this.m_devicePixelRatio: "+this.m_devicePixelRatio);
                 //console.log("RAdapterContext::resize(), pw:"+pw+", ph:"+ph);
                 //this.m_devicePixelRatio = 1.0;

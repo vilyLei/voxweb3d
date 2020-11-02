@@ -12,11 +12,21 @@ export namespace vox
         {
             private static s_inited:boolean = true;
             private static s_WEBGL_VER:number = 2;
+            private static s_devicePixelRatio:number = 1.0;
             public static SHADERCODE_TRACE_ENABLED:boolean = false;
             // true: force vertex shader precision to highp
             public static VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED:boolean = true;
             // true: force fragment shader precision to highp
             public static FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED:boolean = false;
+
+            public static SetDevicePixelRatio(dpr:number):void
+            {
+                RendererDeviece.s_devicePixelRatio = dpr;
+            }
+            public static GetDevicePixelRatio():number
+            {
+                return RendererDeviece.s_devicePixelRatio;
+            }
             static Initialize = function(infoArr:number[])
             {
                 if(RendererDeviece.s_inited)
