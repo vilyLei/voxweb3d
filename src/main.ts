@@ -133,8 +133,8 @@
 //  import * as DemoFrustrum from "./demo/DemoFrustrum";
 //  import Demo = DemoFrustrum.demo.DemoFrustrum;
 
-import * as DemoOrtho from "./demo/DemoOrtho";
-import Demo = DemoOrtho.demo.DemoOrtho;
+//  import * as DemoOrtho from "./demo/DemoOrtho";
+//  import Demo = DemoOrtho.demo.DemoOrtho;
 
 //  import * as DemoScreenPingpongBlur from "./demo/DemoScreenPingpongBlur";
 //  import Demo = DemoScreenPingpongBlur.demo.DemoScreenPingpongBlur;
@@ -148,8 +148,8 @@ import Demo = DemoOrtho.demo.DemoOrtho;
 //  import * as DemoPNG from "./example/DemoPNG";
 //  import Demo = DemoPNG.example.DemoPNG;
 
-//  import * as DemoRTTCircle from "./demo/DemoRTTCircle";
-//  import Demo = DemoRTTCircle.demo.DemoRTTCircle;
+import * as DemoRTTCircle from "./demo/DemoRTTCircle";
+import Demo = DemoRTTCircle.demo.DemoRTTCircle;
 
 let demoIns:Demo = new Demo();
 function main():void

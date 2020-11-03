@@ -58,7 +58,7 @@ export namespace vox
 			private m_fboType:number = FrameBufferType.FRAMEBUFFER;
 			private m_fboBufList:FrameBufferObject[] = [null,null,null,null, null,null,null,null];
 			private m_fboClearBoo:boolean = true;
-			private m_fboViewRectBoo:boolean = true;
+			private m_fboViewRectBoo:boolean = false;
     		private m_viewX:number = 0;
     		private m_viewY:number = 0;
     		private m_viewWidth:number = 800;
@@ -236,7 +236,7 @@ export namespace vox
 						);
 					this.uViewProbe.update();
 				
-					//console.log("reseizeViewPort: "+Math.floor(this.m_viewX * k)+","+Math.floor(this.m_viewY * k)+","+Math.floor(this.m_viewWidth * k)+","+Math.floor(this.m_viewHeight * k));
+					console.log("reseizeViewPort: "+Math.floor(this.m_viewX * k)+","+Math.floor(this.m_viewY * k)+","+Math.floor(this.m_viewWidth * k)+","+Math.floor(this.m_viewHeight * k));
 					this.m_rc.viewport(
 						Math.floor(this.m_viewX * k),
 						Math.floor(this.m_viewY * k),
@@ -266,7 +266,7 @@ export namespace vox
 						Math.floor(this.m_viewHeight * k)
 					);
 					this.uViewProbe.update();
-					//console.log("reseizeFBOViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
+					console.log("reseizeFBOViewPort: "+Math.floor(this.m_viewX * k)+","+Math.floor(this.m_viewY * k)+","+Math.floor(this.m_viewWidth * k)+","+Math.floor(this.m_viewHeight * k));
 					this.m_rc.viewport(
 						Math.floor(this.m_viewX * k),
 						Math.floor(this.m_viewY * k),
@@ -315,7 +315,7 @@ export namespace vox
 					}
 					this.m_fboType = fboType;
 					this.m_fboBuf = new FrameBufferObject(this.m_fboType);
-					this.m_fboBuf.devPRatio = this.m_rcontext.getDevicePixelRatio();
+					//this.m_fboBuf.devPRatio = this.m_rcontext.getDevicePixelRatio();
 					this.m_fboBuf.multisampleEnabled = multisampleLevel > 0;
 					this.m_fboBuf.multisampleLevel = multisampleLevel;
 					this.m_fboBuf.writeDepthEnabled = enableDepth;
@@ -417,10 +417,10 @@ export namespace vox
 					{
 						if (this.m_fboBuf != null)
 						{
-							this.m_fboBuf.devPRatio = this.m_rcontext.getDevicePixelRatio();
+							//this.m_fboBuf.devPRatio = this.m_rcontext.getDevicePixelRatio();
 							if(this.m_synFBOSizeWithViewport)
 							{
-								this.m_fboBuf.initialize(this.m_rc, Math.floor(this.getViewWidth() * this.m_fboSizeFactor), Math.floor(this.getViewHeight() * this.m_fboSizeFactor));
+								this.m_fboBuf.initialize(this.m_rc, this.m_rcontext.getRCanvasWidth(), this.m_rcontext.getRCanvasHeight());
 							}
 							else
 							{
@@ -432,13 +432,13 @@ export namespace vox
 							if (this.m_fboBuf == null)
 							{
 								this.m_fboBuf = new FrameBufferObject(this.m_fboType);
-								this.m_fboBuf.devPRatio = this.m_rcontext.getDevicePixelRatio();
+								//this.m_fboBuf.devPRatio = this.m_rcontext.getDevicePixelRatio();
 								this.m_fboBufList[this.m_fboIndex] = this.m_fboBuf;
 								this.m_fboBuf.writeDepthEnabled = enableDepth;
 								this.m_fboBuf.writeStencilEnabled = enableStencil;
 								if(this.m_synFBOSizeWithViewport)
 								{
-									this.m_fboBuf.initialize(this.m_rc, this.getViewWidth(),this.getViewHeight());
+									this.m_fboBuf.initialize(this.m_rc, this.m_rcontext.getRCanvasWidth(), this.m_rcontext.getRCanvasHeight());
 								}
 								else
 								{
@@ -528,7 +528,8 @@ export namespace vox
 						{
 							if(this.m_synFBOSizeWithViewport)
 							{
-								this.m_fboViewSize.setTo(0,0,Math.floor(this.m_rcontext.getViewportWidth() * this.m_fboSizeFactor),Math.floor(this.m_rcontext.getViewportHeight() * this.m_fboSizeFactor));
+								//console.log("this.m_fboSizeFactor: "+this.m_fboSizeFactor);
+								this.m_fboViewSize.setTo(0,0,this.getViewWidth(),this.getViewHeight());
 								this.reseizeFBOViewPort();
 							}
 							else

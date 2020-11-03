@@ -103,19 +103,18 @@ export namespace demo
                 //let boxRtt:Box3DEntity = new Box3DEntity();
                 //boxRtt.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[TextureStore.GetRTTTextureAt(0)]);
                 //this.m_rscene.addEntity(boxRtt, 1);
+                let dpr:number = RendererDeviece.GetDevicePixelRatio();
                 let rttCirM:RttCircleMaterial = new RttCircleMaterial();
                 this.m_rttCirM = rttCirM;
                 rttCirM.setRaius(100.0);
                 rttCirM.setPosXY(500.0,300.0);
-                rttCirM.setStageSize(this.m_rscene.getStage3D().stageWidth, this.m_rscene.getStage3D().stageHeight);
+                rttCirM.setStageSize(this.m_rscene.getStage3D().stageWidth * dpr, this.m_rscene.getStage3D().stageHeight * dpr);
                 let scrPlane:Plane3DEntity = new Plane3DEntity();
                 scrPlane.setMaterial(rttCirM);
                 scrPlane.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
                 //scrPlane.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
                 scrPlane.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(0)]);
                 this.m_rscene.addEntity(scrPlane, 2);
-
-
             }
         }
         private m_boo:boolean = false;
@@ -125,11 +124,13 @@ export namespace demo
         private m_mousePv:Vector3D = new Vector3D();
         private m_mousePrePv:Vector3D = new Vector3D();
         private m_mouseDelay:number = -1;
+        private m_alpha:number = 1.0;
         run():void
         {
             this.m_mousePv.x = this.m_rscene.getStage3D().mouseX;
             this.m_mousePv.y = this.m_rscene.getStage3D().mouseY;
-            this.m_rttCirM.setPosXY(this.m_mousePv.x,this.m_mousePv.y);
+            let dpr:number = RendererDeviece.GetDevicePixelRatio();
+            this.m_rttCirM.setPosXY(this.m_mousePv.x * dpr,this.m_mousePv.y * dpr);
             let pcontext:RendererInstanceContext = this.m_rcontext;
             // show fps status
             this.m_statusDisp.update();
@@ -144,7 +145,7 @@ export namespace demo
                 //this.m_rscene.getCamera().setPosition( this.m_fixPos );
                 this.m_rscene.getCamera().translation( this.m_fixPos );
                 this.m_rscene.getCamera().update();
-                let k:number = 0.8;
+                let k:number = 1.0;
                 this.m_offsetPv.x = k * (this.m_rscene.getStage3D().mouseX - this.m_rscene.getStage3D().stageHalfWidth);
                 this.m_offsetPv.y = k * (this.m_rscene.getStage3D().mouseY - this.m_rscene.getStage3D().stageHalfHeight);
                 this.m_offsetPv.z = 0.0;
@@ -157,9 +158,10 @@ export namespace demo
 
                 this.m_mousePrePv.subtractBy(this.m_mousePv);
 
-                if(this.m_mousePrePv.getLengthSquared() > 10.0)
+                if(this.m_mousePrePv.getLengthSquared() > 3.0)
                 {
-                    this.m_rttCirM.setAlpha(0.4);
+                    this.m_alpha = 0.4;
+                    this.m_rttCirM.setAlpha(this.m_alpha);
                     this.m_mouseDelay = 45;
                 }                
                 this.m_mousePrePv.copyFrom(this.m_mousePv);
@@ -175,15 +177,27 @@ export namespace demo
                 if(this.m_mouseDelay == 0)
                 {
                     //console.log("XXXX this.m_mouseDelay: "+this.m_mouseDelay);
-                    this.m_rttCirM.setAlpha(1.0);
                     this.m_mouseDelay = -1;
                 }
+            }
+            else
+            {
+                if(this.m_alpha < 1.0)
+                {
+                    this.m_alpha += 0.01;
+                    if(this.m_alpha > 1.0)
+                    {
+                        this.m_alpha = 1.0;
+                    }
+                }
+                this.m_rttCirM.setAlpha(this.m_alpha);
             }
             // run logic program
             this.m_rscene.update();
             // --------------------------------------------- rtt begin
             pcontext.setClearRGBColor3f(0.1, 0.0, 0.1);
             pcontext.synFBOSizeWithViewport();
+            pcontext.setFBOSizeFactorWithViewPort(dpr);
             pcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(0), true, false, 0);
             pcontext.useFBO(true, true, false);
             this.m_rscene.getCamera().forward( +380 );

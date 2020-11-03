@@ -371,6 +371,8 @@ export namespace vox
             }
             private m_displayWidth:number = 0;
             private m_displayHeight:number = 0;
+            private m_rcanvasWidth:number = 0;
+            private m_rcanvasHeight:number = 0;
             private m_resizeCallback:()=>void = null;
             private m_resizeCallbackTarget:any = null;
             setResizeCallback(resizeCallbackTarget:any, resizeCallback:()=>void):void
@@ -384,6 +386,8 @@ export namespace vox
             }
             resize(pw:number,ph:number):void
             {
+                pw = Math.floor(pw);
+                ph = Math.floor(ph);
                 this.m_devicePixelRatio = window.devicePixelRatio;
                 RendererDeviece.SetDevicePixelRatio(this.m_devicePixelRatio);
                 //console.log("this.m_devicePixelRatio: "+this.m_devicePixelRatio);
@@ -394,25 +398,28 @@ export namespace vox
                 {
                     this.m_displayWidth  = pw;
                     this.m_displayHeight = ph;
+                    this.m_rcanvasWidth = Math.floor(pw * k)
+                    this.m_rcanvasHeight = Math.floor(ph * k);
                     if(this.m_offcanvas == null)
                     {
-                        this.m_canvas.width  = Math.floor(this.m_displayWidth * k);
-                        this.m_canvas.height = Math.floor(this.m_displayHeight * k);
+                        this.m_canvas.width  = this.m_rcanvasWidth;
+                        this.m_canvas.height = this.m_rcanvasHeight;
                     }
                     else
                     {
-                        this.m_offcanvas.width  = Math.floor(this.m_displayWidth * k);
-                        this.m_offcanvas.height = Math.floor(this.m_displayHeight * k); 
+                        this.m_offcanvas.width  = this.m_rcanvasWidth;
+                        this.m_offcanvas.height = this.m_rcanvasHeight;
                     }
 
                     this.m_canvas.style.width = this.m_displayWidth + 'px';
                     this.m_canvas.style.height = this.m_displayHeight + 'px';
-
                     this.m_stage.stageWidth = pw;
                     this.m_stage.stageHeight = ph;
                     this.m_stage.pixelRatio = k;
 
-                    //console.log("RAdapterContext::resize(), stw:"+this.m_stage.stageWidth+", sth:"+this.m_stage.stageHeight);
+                    console.log("RAdapterContext::resize(), canvas.width:"+this.m_canvas.width+", canvas.height:"+this.m_canvas.height);
+                    console.log("RAdapterContext::resize(), m_rcanvasWidth:"+this.m_rcanvasWidth+", m_rcanvasHeight:"+this.m_rcanvasHeight);
+                    console.log("RAdapterContext::resize(), stw:"+this.m_stage.stageWidth+", sth:"+this.m_stage.stageHeight);
 
                     this.m_stage.update();
                     if(this.m_resizeCallback != null)
@@ -488,13 +495,13 @@ export namespace vox
         	{
         		return this.m_viewHeight;
         	}
-        	getViewportHalfWidth():number
+        	getRCanvasWidth():number
         	{
-        		return this.m_viewWidth;
+        		return this.m_rcanvasWidth;
         	}
-        	getViewportHalfHeight():number
+        	getRCanvasHeight():number
         	{
-        		return this.m_viewHeight;
+        		return this.m_rcanvasHeight;
         	}
         	update():void
         	{

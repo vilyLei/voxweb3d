@@ -44,6 +44,7 @@ export namespace vox
             static FRONT_CULLFACE_GREATER_STATE:number = 9;
             static BACK_ADD_BLENDSORT_STATE:number = 10;
             static BACK_ADD_ALWAYS_STATE:number = 11;
+            static BACK_ALPHA_ADD_ALWAYS_STATE:number = 12;
 
             static Initialize():void
             {
@@ -71,6 +72,7 @@ export namespace vox
                     RendererState.FRONT_CULLFACE_GREATER_STATE = RenderStateObject.Create("front_greater",CullFaceMode.FRONT,RenderBlendMode.NORMAL,DepthTestMode.RENDER_TRUE_GREATER);
                     RendererState.BACK_ADD_BLENDSORT_STATE = RenderStateObject.Create("back_add_blendSort",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_TRANSPARENT_SORT);
                     RendererState.BACK_ADD_ALWAYS_STATE = RenderStateObject.Create("back_add_always",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
+                    RendererState.BACK_ALPHA_ADD_ALWAYS_STATE = RenderStateObject.Create("back_alpha_add_always",CullFaceMode.BACK,RenderBlendMode.ALPHA_ADD,DepthTestMode.RENDER_ALWAYS);
 
                 }
             }

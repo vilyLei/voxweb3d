@@ -141,7 +141,6 @@ export namespace vox
             {
                 this.m_texBufW = this.m_texWidth;
                 this.m_texBufH = this.m_texHeight;
-                console.log("texture size: "+this.m_texWidth+","+this.m_texHeight);
                 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
                 gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premultiplyAlpha);
                 if (this.mipmapEnabled && MathConst.IsPowerOf2(this.m_texWidth) && MathConst.IsPowerOf2(this.m_texHeight))

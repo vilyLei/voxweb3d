@@ -54,7 +54,7 @@ export namespace vox
 			private m_stencilValueArr = new Int16Array(4);
 			private m_fboSizeChanged:boolean = false;
 			//
-			devPRatio:number = 1.0;
+			//devPRatio:number = 1.0;
     		writeDepthEnabled:boolean = true;
     		writeStencilEnabled:boolean = false;
     		multisampleEnabled:boolean = false;
@@ -354,8 +354,8 @@ export namespace vox
 			}
 			initialize(rgl:any, pw:number, ph:number):void
 			{
-				pw = Math.floor(this.devPRatio * pw);
-				ph = Math.floor(this.devPRatio * ph);
+				//pw = Math.floor(this.devPRatio * pw);
+				//ph = Math.floor(this.devPRatio * ph);
 				this.m_gl = rgl;
 				this.m_COLOR_ATTACHMENT0 = RenderFBOProxy.Get_COLOR_ATTACHMENT0();
 				if(this.m_fboSizeChanged)
@@ -372,9 +372,8 @@ export namespace vox
 				{
 					// ready rebuild some new fbo's Renderbuffers.
 					this.createNewFBO(rgl, pw, ph);
-					//console.log("FrameBufferObject ready rebuild another new fbo's Renderbuffers.fbo: "+this);
+					console.log("FrameBufferObject ready rebuild another new fbo's Renderbuffers.fbo: "+this);
 				}
-				//*/
 			}
 			destroy(rgl:any):void
 			{
