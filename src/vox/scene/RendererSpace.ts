@@ -55,7 +55,6 @@ export namespace vox
             static INNER_POV_PASS:number = 4;
             // 摄像机和POV都要做遮挡剔除
             static CAMERA_AND_POV:number = 3;
-            
         }
         export class RendererSpace implements IRendererSpace
         {

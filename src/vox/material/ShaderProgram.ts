@@ -78,6 +78,8 @@ export namespace vox
             
                 codeStr = codeStr.replace(regExp2, "varying");
             
+        		const regExp3:RegExp = /\btexture\b/g;
+                codeStr = codeStr.replace(regExp3, "texture2D");
                 if(codeStr.indexOf("#version") >= 0)
                 {
                     codeStr = codeStr.replace("#version", "//#version");
@@ -558,8 +560,9 @@ export namespace vox
             m_attriNSList:string[] = null;
             m_attriSizeList:number[] = null;
             // m_uniform name list
-            uniformNameList:string[] = null;
+            //uniformNameList:string[] = null;
             uniformNameListStr:string = "";
+            texUniformNameListStr:string = "";
             attributes:AttributeLine[] = [null,null,null,null, null,null,null,null, null,null,null,null];
             m_uniforms:UniformLine[] = null;
             texTotal:number = 0;
@@ -568,8 +571,9 @@ export namespace vox
             {
                 this.m_useTex = false;
                 this.m_attriNSList = null;
-                this.uniformNameList = null;
+                //this.uniformNameList = null;
                 this.uniformNameListStr = "";
+                this.texUniformNameListStr = "";
                 let i:number = 0;
                 for(; i < 12; ++i)
                 {
@@ -632,7 +636,7 @@ export namespace vox
                 //
                 let uniform:UniformLine = null;
                 if(this.m_uniforms == null)this.m_uniforms = [];
-                if(this.uniformNameList == null)this.uniformNameList = [];
+                //if(this.uniformNameList == null)this.uniformNameList = [];
                 //
                 i = 0;
                 let flagLayout:boolean = false;
@@ -657,8 +661,14 @@ export namespace vox
                         if(uniform.parseCode(str))
                         {
                             this.m_uniforms.push(uniform);
-                            this.uniformNameList.push( uniform.name );
-                            this.uniformNameListStr += uniform.name + " ";
+                            //this.uniformNameList.push( uniform.name );
+                            this.uniformNameListStr += uniform.name + ",";
+                            if(uniform.isTex)
+                            {
+                                console.log("use vtx texture !!!");
+                                this.texUniformNameListStr += uniform.name + ",";
+                                this.texTotal ++;
+                            }
                         }
                     }
                     ++i;
@@ -720,9 +730,10 @@ export namespace vox
                         if(uniform.parseCode(str))
                         {
                             this.m_uniforms.push(uniform);
-                            this.uniformNameListStr += uniform.name + " ";
+                            this.uniformNameListStr += uniform.name + ",";
                             if(uniform.isTex)
                             {
+                                this.texUniformNameListStr += uniform.name + ",";
                                 this.texTotal ++;
                             }else
                             {
@@ -779,7 +790,7 @@ export namespace vox
             private m_aLocationTypes:number[] = null;
             private m_aLocationSizes:number[] = null;
             private m_uLocations:any[] = null;
-            private m_texLocations:any[] = [null,null,null,null, null,null,null,null];
+            private m_texLocations:any[] = [null,null,null,null, null,null,null,null,null,null,null,null, null,null,null,null];
             private m_attribLIndexList:number[] = [-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1];
             private m_attribTypeSizeList:number[] = [-1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1, -1,-1,-1,-1,-1,-1];
             private m_uniformDict:Map<string,UniformLine> = new Map();
@@ -787,6 +798,7 @@ export namespace vox
             private m_haveCommonUniform:boolean = false;
             private m_layoutBit:number = 0x0;
             private m_fragOutputTotal:number = 1;
+            private m_texUniformNames:string[] = null;
 
             getLayoutBit():number
             {
@@ -879,6 +891,10 @@ export namespace vox
                 }
                 this.m_texTotal = ShaderProgram.___s_codeParser.texTotal;
                 this.m_useTex = this.m_texTotal > 0;
+                if(this.m_useTex)
+                {
+                    this.m_texUniformNames = ShaderProgram.___s_codeParser.texUniformNameListStr.split(",");
+                }
                 this.m_haveCommonUniform = this.m_texTotal < this.m_uniforms.length;
                 this.m_vshdSrc = vshdsrc;
                 this.m_fshdSrc = fshdSrc;
@@ -894,6 +910,7 @@ export namespace vox
             }
             useTexLocation():void
             {
+                //this.m_texUniformNames
                 for(let i:number = 0; i < this.m_texTotal; ++i)
                 {
                     if(this.m_texLocations[i] != null)
@@ -903,8 +920,9 @@ export namespace vox
                     }
                     else
                     {
-                        this.m_texLocations[i] = this.m_gl.getUniformLocation(this.m_program, MaterialConst.UNIFORMNS_TEX_SAMPLER_LIST[ i ]);
-                        //if(RendererDeviece.SHADERCODE_TRACE_ENABLED)trace("useTexLocation(),m_texLocations["+i+"]: "+m_texLocations[i]+", MaterialConst.SHDER_UNIFORM_TEX_SAMPLE_LIST[ i ]: "+MaterialConst.UNIFORMNS_TEX_SAMPLER_LIST[ i ]);
+                        //this.m_texLocations[i] = this.m_gl.getUniformLocation(this.m_program, MaterialConst.UNIFORMNS_TEX_SAMPLER_LIST[ i ]);
+                        this.m_texLocations[i] = this.m_gl.getUniformLocation(this.m_program, this.m_texUniformNames[ i ]);
+                        if(RendererDeviece.SHADERCODE_TRACE_ENABLED)console.log("useTexLocation(),m_texLocations["+i+"] name: "+this.m_texUniformNames[i]);
                         this.m_gl.uniform1i(this.m_texLocations[i], i);
                     }
                 }
@@ -1218,14 +1236,7 @@ export namespace vox
             destroy():void
             {
                 this.m_aLocations = null;
-                this.m_texLocations[0] = null;
-                this.m_texLocations[1] = null;
-                this.m_texLocations[2] = null;
-                this.m_texLocations[3] = null;
-                this.m_texLocations[4] = null;
-                this.m_texLocations[5] = null;
-                this.m_texLocations[6] = null;
-                this.m_texLocations[7] = null;
+                this.m_texLocations.fill(null);
                 //
                 if(this.m_program != null)
                 {
