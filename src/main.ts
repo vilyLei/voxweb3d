@@ -148,9 +148,13 @@
 //  import * as DemoPNG from "./example/DemoPNG";
 //  import Demo = DemoPNG.example.DemoPNG;
 
-import * as DemoRTTCircle from "./demo/DemoRTTCircle";
-import Demo = DemoRTTCircle.demo.DemoRTTCircle;
+//  import * as DemoRTTCircle from "./demo/DemoRTTCircle";
+//  import Demo = DemoRTTCircle.demo.DemoRTTCircle;
 
+import * as DemoVSTexture from "./demo/DemoVSTexture";
+import Demo = DemoVSTexture.demo.DemoVSTexture;
+
+//DemoVSTexture
 let demoIns:Demo = new Demo();
 function main():void
 {
