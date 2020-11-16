@@ -37,6 +37,8 @@ export namespace vox
             vbufs:any[] = null;
             vbuf:any = null;
             ibuf:any = null;
+            ibufType:number = 0;// UNSIGNED_SHORT or UNSIGNED_INT
+            ibufStep:number = 2;// 2 or 4
             vao:any = null;
             registers:number[] = null;
             wholeOffsetList:number[] = null;
@@ -100,7 +102,6 @@ export namespace vox
                     }
                     else
                     {
-                        //rc.bindArrBuf(this.vbuf);
                         if(this.vbuf != null)
                         {
                             rc.useVtxAttrisbPtrTypeFloat(this.vbuf, this.registers, this.wholeOffsetList,this.registersLen, this.wholeStride);

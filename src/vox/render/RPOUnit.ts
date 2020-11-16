@@ -12,7 +12,6 @@ import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
 import * as ShaderProgramT from "../../vox/material/ShaderProgram";
 import * as MaterialProgramT from "../../vox/material/MaterialProgram";
 import * as TextureRenderObjT from "../../vox/texture/TextureRenderObj";
-import * as RODisplayT from "../../vox/display/RODisplay";
 import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
@@ -25,7 +24,6 @@ import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
 import ShaderProgram = ShaderProgramT.vox.material.ShaderProgram;
 import MaterialProgram = MaterialProgramT.vox.material.MaterialProgram;
 import ITextureRenderObj = TextureRenderObjT.vox.texture.ITextureRenderObj;
-import RODisplay = RODisplayT.vox.display.RODisplay;
 import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
 import RenderColorMask = RODrawStateT.vox.render.RenderColorMask;
 import RendererState = RendererStateT.vox.render.RendererState;
@@ -51,6 +49,10 @@ export namespace vox
                 this.m_uid = RPOUnit.__s_uid++;
             }
             // 记录对应的RODisplay的渲染所需的状态数据
+            
+            ibufType:number = 0;// UNSIGNED_SHORT or UNSIGNED_INT
+            ibufStep:number = 2;// 2 or 4
+
             ivsIndex:number = 0;
             ivsCount:number = 0;
             insCount:number = 0;
@@ -92,27 +94,31 @@ export namespace vox
                 switch(this.drawMode)
                 {
                     case RenderDrawMode.ELEMENTS_TRIANGLES:
-                        //console.log("RPOUnit::run(), TRIANGLES drawElements(ivsCount="+this.display.ivsCount+", ivsIndex="+this.display.ivsIndex+")");
-                        rc.RContext.drawElements(rc.TRIANGLES, this.ivsCount, rc.UNSIGNED_SHORT,this.ivsIndex * 2);
+                        //console.log("RPOUnit::run(), TRIANGLES drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
+                        //rc.RContext.drawElements(rc.TRIANGLES, this.ivsCount, rc.UNSIGNED_SHORT,this.ivsIndex * 2);
+                        rc.RContext.drawElements(rc.TRIANGLES, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
                         break;
                     case RenderDrawMode.ELEMENTS_TRIANGLE_STRIP:
-                        //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.display.ivsCount+", ivsIndex="+this.display.ivsIndex+")");
-                        rc.RContext.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, rc.UNSIGNED_SHORT,this.ivsIndex * 2);
+                        //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
+                        //rc.RContext.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, rc.UNSIGNED_SHORT,this.ivsIndex * 2);
+                        rc.RContext.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
                         break;
                     case RenderDrawMode.ELEMENTS_INSTANCED_TRIANGLES:
-                        //console.log("RPOUnit::run(), drawElementsInstanced(ivsCount="+this.display.ivsCount+", ivsIndex="+this.display.ivsIndex+", display.insCount: "+this.display.insCount+")");
-                        rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, rc.UNSIGNED_SHORT, this.ivsIndex * 2, this.insCount);
+                        //console.log("RPOUnit::run(), drawElementsInstanced(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+", insCount: "+this.insCount+")");
+                        //rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, rc.UNSIGNED_SHORT, this.ivsIndex * 2, this.insCount);
+                        rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.ivsIndex * this.ibufStep, this.insCount);
                         break;
                     case RenderDrawMode.ELEMENTS_TRIANGLE_FAN:
-                        //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.display.ivsCount+", ivsIndex="+this.display.ivsIndex+")");
-                        rc.RContext.drawElements(rc.TRIANGLE_FAN, this.ivsCount, rc.UNSIGNED_SHORT,this.ivsIndex * 2);
+                        //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
+                        //rc.RContext.drawElements(rc.TRIANGLE_FAN, this.ivsCount, rc.UNSIGNED_SHORT,this.ivsIndex * 2);
+                        rc.RContext.drawElements(rc.TRIANGLE_FAN, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
                         break;
                     case RenderDrawMode.ARRAYS_LINES:
-                        //console.log("RPOUnit::run(), drawArrays(ivsCount="+this.display.ivsCount+", ivsIndex="+this.display.ivsIndex+")");
+                        //console.log("RPOUnit::run(), drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
                         rc.RContext.drawArrays(rc.LINES, this.ivsIndex, this.ivsCount);
                         break;
                     case RenderDrawMode.ARRAYS_LINE_STRIP:
-                        //console.log("RPOUnit::run(), drawArrays(ivsCount="+this.display.ivsCount+", ivsIndex="+this.display.ivsIndex+")");
+                        //console.log("RPOUnit::run(), drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
                         rc.RContext.drawArrays(rc.LINE_STRIP, this.ivsIndex, this.ivsCount);
                         break;
                     default:
@@ -131,7 +137,7 @@ export namespace vox
             }
             run(rc:RenderProxy):void
             {
-                //console.log("RPOUnit::run(), this.display: "+this.display+", this.display.drawMode: "+this.display.drawMode);
+                //console.log("RPOUnit::run(), this.display: "+this.display+", this.drawMode: "+this.drawMode);
                 if(this.ubo != null)
                 {
                     this.ubo.run(rc);

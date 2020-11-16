@@ -246,6 +246,62 @@ export namespace vox
 				radius *= radius;
 				return radius >= dis;
 			}
+			intersectRL(ltv:Vector3D, lpv:Vector3D):boolean
+			{
+				let f:number = 0;
+			    let tmin:number = (this.min.x - lpv.x) / ltv.x;
+			    let tmax:number = (this.max.x - lpv.x) / ltv.x;
+				//console.log("AABB::IntersectRL uses...");
+				if (tmin > tmax)
+				{
+					f = tmax;
+					tmax = tmin;
+					tmin = f;
+				}
+				//	console.log("\n");
+				//	console.log("tmin: "+tmin+",tmax: "+tmax);
+			    let tymin:number = (this.min.y - lpv.y) / ltv.y;
+			    let tymax:number = (this.max.y - lpv.y) / ltv.y;
+			
+				//	console.log("tymin: "+tymin+",tymax: "+tymax);
+				if (tymin > tymax)
+				{
+					f = tymax;
+					tymax = tymin;
+					tymin = f;
+				}
+			
+			    if ((tmin > tymax) || (tymin > tmax))
+			        return false;
+			
+			    if (tymin > tmin)
+			        tmin = tymin;
+			
+			    if (tymax < tmax)
+			        tmax = tymax;
+			
+			    let tzmin:number = (this.min.z - lpv.z) / ltv.z;
+			    let tzmax:number = (this.max.z - lpv.z) / ltv.z;
+			
+				//	console.log("tzmin: "+tzmin+",tzmax: "+tzmax);
+				//	console.log("\n");
+				if (tzmin > tzmax)
+				{
+					f = tzmax;
+					tzmax = tzmin;
+					tzmin = f;
+				}
+			
+			    if ((tmin > tzmax) || (tzmin > tmax))
+			        return false;
+				
+			    if (tzmin > tmin)
+			        tmin = tzmin;
+				
+			    if (tzmax < tmax)
+			        tmax = tzmax;				
+			    return true;
+			}
 			/*
 			static IntersectionRL3(vecs:Vector3D[],rsigns:Uint8Array,ltInvtv:Vector3D, ltv:Vector3D, lpv:Vector3D,outV:Vector3D):boolean
 			{ 
@@ -309,6 +365,7 @@ export namespace vox
 				//console.log("T Hit outV: "+outV.toString());
 				return true;
 			}
+			
 			static IntersectionRL1(ltv:Vector3D, lpv:Vector3D, ab:AABB, outV:Vector3D):boolean
 			{
 				let f:number = 0;

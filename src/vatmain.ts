@@ -1,4 +1,4 @@
-
+/*
 
 import * as VatParallaxMap2 from "./voxvat/demo/VatParallaxMap2";
 import Demo = VatParallaxMap2.voxvat.demo.VatParallaxMap2;
@@ -18,3 +18,4 @@ function main():void
 }
 //
 main();
+*/

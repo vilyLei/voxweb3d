@@ -16,14 +16,14 @@ export namespace vox
             {
             }
             private m_evtNodes:EvtNode[] = [
-                new EvtNode(),new EvtNode(),new EvtNode(),new EvtNode(),
-                new EvtNode(),new EvtNode(),new EvtNode(),new EvtNode(),
-                new EvtNode(),new EvtNode(),new EvtNode()
+                null,null,null,null,
+                null,null,null,null,
+                null,null,null,null,
+                null,null,null,null
             ];
-            private m_evtNodesLen:number = 11;
+            private m_evtNodesLen:number = 15;
             destroy():void
             {
-                
                 for(let i:number = 0;i < this.m_evtNodesLen; ++i)
                 {
                     this.m_evtNodes[i].destroy();
@@ -37,7 +37,7 @@ export namespace vox
                     let t:number = evt.type - MouseEvent.GetEvtTypeValueBase();
                     if(t >= 0 && t < MouseEvent.GetEvtTypeValuesTotal())
                     {
-                        return this.m_evtNodes[t].dispatch(evt);
+                        if(this.m_evtNodes[t] != null)return this.m_evtNodes[t].dispatch(evt);
                     }
                     else
                     {
@@ -66,11 +66,11 @@ export namespace vox
                 let len:number = MouseEvent.GetEvtTypeValuesTotal();
                 for(let i:number = 0; i < len; ++i)
                 {
-                    if(this.m_evtNodes[i].passTestPhase(phase) == 1)
+                    if(this.m_evtNodes[i] != null && this.m_evtNodes[i].passTestPhase(phase) == 1)
                     {
                         return 1;
                     }
-                }               
+                }
                 return 0;
             }
             addEventListener(type:number,target:any,func:(evt:any)=>void,captureEnabled:boolean = true,bubbleEnabled:boolean = false):void
@@ -93,7 +93,15 @@ export namespace vox
                                 phase = 2;
                             }
                         }
-                        this.m_evtNodes[t].addListener(target,func,phase);
+                        if(this.m_evtNodes[t] != null)
+                        {
+                            this.m_evtNodes[t].addListener(target,func,phase);
+                        }
+                        else
+                        {
+                            this.m_evtNodes[t] = new EvtNode();
+                            this.m_evtNodes[t].addListener(target,func,phase);
+                        }
                     }
                     else
                     {
@@ -108,7 +116,7 @@ export namespace vox
                     let t:number = type - MouseEvent.GetEvtTypeValueBase();
                     if(t >= 0 && t < MouseEvent.GetEvtTypeValuesTotal())
                     {
-                        this.m_evtNodes[t].removeListener(target,func);
+                        if(this.m_evtNodes[t] != null)this.m_evtNodes[t].removeListener(target,func);
                     }
                     else
                     {

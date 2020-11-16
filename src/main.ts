@@ -133,9 +133,6 @@
 //  import * as DemoFrustrum from "./demo/DemoFrustrum";
 //  import Demo = DemoFrustrum.demo.DemoFrustrum;
 
-//  import * as DemoOrtho from "./demo/DemoOrtho";
-//  import Demo = DemoOrtho.demo.DemoOrtho;
-
 //  import * as DemoScreenPingpongBlur from "./demo/DemoScreenPingpongBlur";
 //  import Demo = DemoScreenPingpongBlur.demo.DemoScreenPingpongBlur;
 
@@ -151,10 +148,22 @@
 //  import * as DemoRTTCircle from "./demo/DemoRTTCircle";
 //  import Demo = DemoRTTCircle.demo.DemoRTTCircle;
 
-import * as DemoVSTexture from "./demo/DemoVSTexture";
-import Demo = DemoVSTexture.demo.DemoVSTexture;
+//  import * as DemoVSTexture from "./demo/DemoVSTexture";
+//  import Demo = DemoVSTexture.demo.DemoVSTexture;
 
-//DemoVSTexture
+//  import * as DemoLargeVtx from "./large/DemoLargeVtx";
+//  import Demo = DemoLargeVtx.large.DemoLargeVtx;
+
+//  import * as VatParallaxMap2 from "./voxvat/demo/VatParallaxMap2";
+//  import Demo = VatParallaxMap2.voxvat.demo.VatParallaxMap2;
+
+//  import * as DemoOrtho from "./demo/DemoOrtho";
+//  import Demo = DemoOrtho.demo.DemoOrtho;
+
+import * as DemoMobileEvt from "./demo/DemoMobileEvt";
+import Demo = DemoMobileEvt.demo.DemoMobileEvt;
+
+//
 let demoIns:Demo = new Demo();
 function main():void
 {

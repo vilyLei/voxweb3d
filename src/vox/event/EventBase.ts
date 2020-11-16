@@ -30,6 +30,15 @@ export namespace vox
             type:number = EventBase.RESIZE;
             // 事件发送者
             target:any = null;
+            __$preventBoo:boolean = false;
+            preventDefault():void
+            {
+                this.__$preventBoo = true;
+            }
+            reset():void
+            {
+                this.__$preventBoo = false;
+            }
             toString():string
             {
                 return "[EventBase]";

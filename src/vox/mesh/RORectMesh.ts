@@ -12,6 +12,7 @@ import * as RenderConstT from "../../vox/render/RenderConst";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as AABBT from "../../vox/geom/AABB";
 import * as MeshBaseT from "../../vox/mesh/MeshBase";
+import * as VtxBufDataT from "../../vox/mesh/VtxBufData";
 import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
@@ -21,7 +22,9 @@ import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
 import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 import AABB = AABBT.vox.geom.AABB;
 import MeshBase = MeshBaseT.vox.mesh.MeshBase;
+import VtxBufData = VtxBufDataT.vox.mesh.VtxBufData;
 import ROVertexBuffer = ROVertexBufferT.vox.mesh.ROVertexBuffer;
+
 
 export namespace vox
 {
@@ -69,7 +72,7 @@ export namespace vox
                 //
                 // ccw is positive, left-bottom pos(minX,minY) -> right-bottom pos(maxX,minY) -> right-top pos(maxX,maxY)  -> right-top pos(minX,maxY)
                 this.m_ivs = new Uint16Array([0,1,2,0,2,3]);
-                //this.m_ivs = new Uint16Array([0,3,1,2]);
+                //this.m_ivs = new Uint32Array([0,1,2,0,2,3]);
                 switch(this.axisFlag)
                 {
                     case 0:
@@ -188,13 +191,47 @@ export namespace vox
                 
                 ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
                 //
-                this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
-                this.m_vbuf.setUint16IVSData(this.m_ivs);
+                // 如果用 VtxBufData 使用样例, 要注释掉下面四句代码
                 this.vtCount = this.m_ivs.length;
+                this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
+                //this.m_vbuf = ROVertexBuffer.CreateBySaveDataSeparate(this.getBufDataUsage());
+                this.m_vbuf.setUintIVSData(this.m_ivs);
                 this.vtxTotal = 4;
                 this.trisNumber = 2;
-                this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;
                 //this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLE_STRIP;
+
+                /*
+                // VtxBufData 使用样例, 要注释掉上面的构建调用
+                let bufData:VtxBufData = new VtxBufData(2);
+                bufData.addAttributeDataAt(0,this.m_vs, 3);
+                bufData.addAttributeDataAt(1,this.m_uvs, 2);
+
+                let vs2:Float32Array = this.m_vs = new Float32Array([
+                    100.0 + maxX,pz,100.0 + minY,
+                    100.0 + minX,pz,100.0 + minY,
+                    100.0 + minX,pz,100.0 + maxY,
+                    //100.0 + maxX,pz,100.0 + maxY
+                ]);
+                
+                bufData.addAttributeDataAt(0,vs2, 3);
+                bufData.addAttributeDataAt(1,this.m_uvs, 2);
+                //this.m_ivs = new Uint16Array([0,1,2,0,2,3, 4+0,4+1,4+2,4+0,4+2,4+3]);
+                //let p1ivs:Uint16Array = new Uint16Array([4+0,4+1,4+2,4+0,4+2,4+3]);
+                let p1ivs:Uint16Array = new Uint16Array([4+0,4+1,4+2]);
+
+                bufData.addIndexData(this.m_ivs);
+                bufData.addIndexData(p1ivs);
+
+                this.m_vbuf = ROVertexBuffer.CreateByBufDataSeparate(bufData,this.getBufDataUsage());
+                this.vtCount = bufData.getIndexDataLengthTotal();
+                this.vtxTotal = bufData.getVerticesTotal();
+                this.trisNumber = bufData.getTrianglesTotal();
+                //console.log("this.vtxTotal: "+this.vtxTotal);
+                //console.log("this.trisNumber: "+this.trisNumber);
+                //*/
+                this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;
+
+
                 this.buildEnd();
             }
             vsFloat32:Float32Array = null;

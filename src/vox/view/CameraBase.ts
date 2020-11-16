@@ -6,7 +6,6 @@
 /***************************************************************************/
 
 import * as MathConstT from "../../vox/utils/MathConst";
-import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as Vector3DT from "../../vox/geom/Vector3";
 import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as PlaneT from "../../vox/geom/Plane";
@@ -14,7 +13,6 @@ import * as AABBT from "../../vox/geom/AABB";
 import * as ShaderUniformProbeT from "../../vox/material/ShaderUniformProbe";
 
 import MathConst = MathConstT.vox.utils.MathConst;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import Matrix4Pool = Matrix4T.vox.geom.Matrix4Pool;
@@ -172,7 +170,7 @@ export namespace vox
                 this.m_zFar = zFar;
                 this.m_b = b;this.m_t = t;this.m_l = l;this.m_r = r;
 	        	//this.m_projMat.orthoRH(Math.floor(devPRatio * b), Math.floor(devPRatio * t), Math.floor(devPRatio * l), Math.floor(devPRatio * r), zNear, zFar,devPRatio);
-	        	this.m_projMat.orthoRH(Math.floor(devPRatio * b), Math.floor(devPRatio * t), Math.floor(devPRatio * l), Math.floor(devPRatio * r), zNear, zFar,devPRatio);
+	        	this.m_projMat.orthoRH(b, t, l, r, zNear, zFar);
 	        	this.m_perspectiveEnabled = false;
                 this.m_rightHandEnabled = true;
                 this.m_changed = true;
@@ -211,6 +209,7 @@ export namespace vox
                     this.m_viewH = ph;
                     this.m_viewHalfW = pw * 0.5;
                     this.m_viewHalfH = ph * 0.5;
+                    console.log("setViewSize, pw:"+pw+",ph:"+ph);
                     if(this.m_perspectiveEnabled)
                     {
                         if(this.m_project2Enabled)
@@ -226,7 +225,8 @@ export namespace vox
                     }
                     else
                     {
-                        this.orthoRH(this.m_zNear, this.m_zFar, -0.5 * ph, 0.5 * ph, -0.5 * pw, 0.5 * pw,devPRatio);
+                        //this.orthoRH(this.m_zNear, this.m_zFar, -0.5 * ph, 0.5 * ph, -0.5 * pw, 0.5 * pw,devPRatio);
+                        this.orthoRH(this.m_zNear, this.m_zFar, -0.5 * ph, 0.5 * ph, -0.5 * pw, 0.5 * pw,1.0);
                     }
                 }
             }
@@ -251,6 +251,17 @@ export namespace vox
                 this.m_camPos.x += this.m_lookDirectNV.x * dis;
                 this.m_camPos.y += this.m_lookDirectNV.y * dis;
                 this.m_camPos.z += this.m_lookDirectNV.z * dis;        
+                this.m_lookAtPos.x = this.m_camPos.x + this.m_lookAtDirec.x;
+                this.m_lookAtPos.y = this.m_camPos.y + this.m_lookAtDirec.y;
+                this.m_lookAtPos.z = this.m_camPos.z + this.m_lookAtDirec.z;
+                this.m_changed = true;
+            }
+            
+            forwardFixPos(dis:number,pos:Vector3D):void
+            {
+                this.m_camPos.x = pos.x + this.m_lookDirectNV.x * dis;
+                this.m_camPos.y = pos.y + this.m_lookDirectNV.y * dis;
+                this.m_camPos.z = pos.z + this.m_lookDirectNV.z * dis;        
                 this.m_lookAtPos.x = this.m_camPos.x + this.m_lookAtDirec.x;
                 this.m_lookAtPos.y = this.m_camPos.y + this.m_lookAtDirec.y;
                 this.m_lookAtPos.z = this.m_camPos.z + this.m_lookAtDirec.z;
@@ -497,6 +508,7 @@ export namespace vox
             }
             getWorldPickingRayByScreenXY(screenX:number, screenY:number, ray_pos:Vector3D, ray_tv:Vector3D):void
             {
+                //console.log("screenX,screenY: ",screenX,screenY,this.m_viewHalfW,this.m_viewHalfH);
                 screenX -= this.m_viewX;
                 screenY -= this.m_viewY;
                 if (this.m_perspectiveEnabled)
@@ -932,8 +944,6 @@ export namespace vox
                 return false;
             }
             private m_vpMat:Matrix4 = Matrix4Pool.GetMatrix();
-            private m_cPos:Vector3D = new Vector3D();
-            private m_lPos:Vector3D = new Vector3D();
 	        update():void
 	        {
                 if(this.m_changed)
@@ -949,22 +959,13 @@ export namespace vox
                         this.m_matrix.identity();
                         this.m_matrix.appendRotationEulerAngle(this.m_rotateX * MathConst.MATH_PI_OVER_180, this.m_rotateY * MathConst.MATH_PI_OVER_180, this.m_rotateZ * MathConst.MATH_PI_OVER_180);
                     }
-                    this.m_cPos.copyFrom(this.m_camPos);
-                    this.m_lPos.copyFrom(this.m_lookAtPos);
-                    if(!this.m_perspectiveEnabled)
-                    {
-                        this.m_cPos.x *= RendererDeviece.GetDevicePixelRatio();
-                        this.m_cPos.y *= RendererDeviece.GetDevicePixelRatio();
-                        this.m_lPos.x *= RendererDeviece.GetDevicePixelRatio();
-                        this.m_lPos.y *= RendererDeviece.GetDevicePixelRatio();
-                    }
 	        	    if (this.m_lookRHEnabled)
 	        	    {
-	        	    	this.m_viewMat.lookAtRH(this.m_cPos, this.m_lPos, this.m_up);
+	        	    	this.m_viewMat.lookAtRH(this.m_camPos, this.m_lookAtPos, this.m_up);
 	        	    }
 	        	    else
 	        	    {
-	        	    	this.m_viewMat.lookAtLH(this.m_cPos, this.m_lPos, this.m_up);
+	        	    	this.m_viewMat.lookAtLH(this.m_camPos, this.m_lookAtPos, this.m_up);
 	        	    }
                     if(this.m_project2Enabled)
                     {

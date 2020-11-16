@@ -5,6 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as DivLogT from "../../vox/utils/DivLog";
 import * as Vector3T from "../../vox/geom/Vector3";
 import * as Color4T from "../../vox/material/Color4";
 import * as FrameBufferTypeT from "../../vox/render/FrameBufferType";
@@ -19,6 +20,7 @@ import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as UniformVec4ProbeT from "../../vox/material/UniformVec4Probe";
 
+import DivLog = DivLogT.vox.utils.DivLog;
 import Vector3D = Vector3T.vox.geom.Vector3D;
 import Color4 = Color4T.vox.material.Color4;
 import FrameBufferType = FrameBufferTypeT.vox.render.FrameBufferType;
@@ -101,6 +103,7 @@ export namespace vox
     		        this.m_rc.cullFace(this.m_rc.BACK);
 					this.m_rc.enable(this.m_rc.BLEND);
 					this.m_rc.disable(this.m_rc.DITHER);
+					//this.m_rc.frontFace( this.m_rc.CCW );
 					//m_rc.hint(m_rc.PERSPECTIVE_CORRECTION_HINT, m_rc.NICEST);	// Really Nice Perspective Calculations
     		        this.m_clearMask = this.m_rc.COLOR_BUFFER_BIT | this.m_rc.DEPTH_BUFFER_BIT | this.m_rc.STENCIL_BUFFER_BIT;
     		        //
@@ -116,6 +119,15 @@ export namespace vox
                 	}
 				}
 			}
+			
+            getDiv():any
+            {
+                return this.m_rcontext.getDiv();
+            }
+            getCanvas():any
+            {
+                return this.m_rcontext.getCanvas();
+            }
 			setClearDepth(depth:number):void
 			{
 				this.m_clearDepth = depth;
@@ -229,13 +241,35 @@ export namespace vox
 					this.m_viewHeight = this.m_rcontext.getViewportHeight();
 					
 					this.uViewProbe.setVec4Data(
+						this.m_viewX,
+						this.m_viewY,
+						this.m_viewWidth,
+						this.m_viewHeight
+						);
+					this.uViewProbe.update();
+					DivLog.ShowLog("viewPort: "+this.m_viewWidth+","+this.m_viewHeight);
+					console.log("reseizeViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
+					this.m_rc.viewport(
+						this.m_viewX,
+						this.m_viewY,
+						this.m_viewWidth,
+						this.m_viewHeight
+					);
+					/*
+					this.m_devPRatio = k;
+					this.m_viewX = this.m_rcontext.getViewportX();
+					this.m_viewY = this.m_rcontext.getViewportY();
+					this.m_viewWidth = this.m_rcontext.getViewportWidth();
+					this.m_viewHeight = this.m_rcontext.getViewportHeight();
+					
+					this.uViewProbe.setVec4Data(
 						Math.floor(this.m_viewX * k),
 						Math.floor(this.m_viewY * k),
 						Math.floor(this.m_viewWidth * k),
 						Math.floor(this.m_viewHeight * k)
 						);
 					this.uViewProbe.update();
-				
+					DivLog.ShowLog("viewPort: "+Math.floor(this.m_viewWidth * k)+","+Math.floor(this.m_viewHeight * k));
 					console.log("reseizeViewPort: "+Math.floor(this.m_viewX * k)+","+Math.floor(this.m_viewY * k)+","+Math.floor(this.m_viewWidth * k)+","+Math.floor(this.m_viewHeight * k));
 					this.m_rc.viewport(
 						Math.floor(this.m_viewX * k),
@@ -243,6 +277,7 @@ export namespace vox
 						Math.floor(this.m_viewWidth * k),
 						Math.floor(this.m_viewHeight * k)
 					);
+					//*/
 				}
 			}
 			private reseizeFBOViewPort():void
@@ -254,6 +289,25 @@ export namespace vox
 				boo = boo || Math.abs(this.m_devPRatio - k) > 0.01;
 				if(boo)
 				{
+					this.m_devPRatio = k;
+					this.m_viewX = this.m_fboViewSize.x;
+					this.m_viewY = this.m_fboViewSize.y;
+					this.m_viewWidth = this.m_fboViewSize.z;
+					this.m_viewHeight = this.m_fboViewSize.w;			
+					this.uViewProbe.setVec4Data(						
+						this.m_viewX * k,
+						this.m_viewY * k,
+						this.m_viewWidth * k,
+						this.m_viewHeight * k
+					);
+					this.uViewProbe.update();
+					console.log("reseizeFBOViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
+					this.m_rc.viewport(
+						this.m_viewX * k,
+						this.m_viewY * k,
+						this.m_viewWidth * k,
+						this.m_viewHeight * k,					);
+					/*
 					this.m_devPRatio = k;
 					this.m_viewX = this.m_fboViewSize.x;
 					this.m_viewY = this.m_fboViewSize.y;
@@ -273,6 +327,7 @@ export namespace vox
 						Math.floor(this.m_viewWidth * k),
 						Math.floor(this.m_viewHeight * k)
 					);
+					//*/
 				}
 			}
 			renderEnd():void
@@ -293,8 +348,7 @@ export namespace vox
 			// read data format include float or unsigned byte ,etc.
 			readPixels(px:number, py:number, width:number, height:number, format:number, dataType:number, pixels:Uint8Array):void
 			{
-				let k:number = this.m_rcontext.getDevicePixelRatio();
-				this.m_rc.readPixels(Math.floor(px * k), Math.floor(py * k), width, height, TextureFormat.ToGL(this.m_rc,format), TextureDataType.ToGL(this.m_rc, dataType), pixels);
+				this.m_rc.readPixels(px,py, width, height, TextureFormat.ToGL(this.m_rc,format), TextureDataType.ToGL(this.m_rc, dataType), pixels);
     		}
     
     		setFBOViewRect(px:number, py:number, pw:number, ph:number):void
@@ -417,7 +471,6 @@ export namespace vox
 					{
 						if (this.m_fboBuf != null)
 						{
-							//this.m_fboBuf.devPRatio = this.m_rcontext.getDevicePixelRatio();
 							if(this.m_synFBOSizeWithViewport)
 							{
 								this.m_fboBuf.initialize(this.m_rc, this.m_rcontext.getRCanvasWidth(), this.m_rcontext.getRCanvasHeight());
@@ -432,7 +485,6 @@ export namespace vox
 							if (this.m_fboBuf == null)
 							{
 								this.m_fboBuf = new FrameBufferObject(this.m_fboType);
-								//this.m_fboBuf.devPRatio = this.m_rcontext.getDevicePixelRatio();
 								this.m_fboBufList[this.m_fboIndex] = this.m_fboBuf;
 								this.m_fboBuf.writeDepthEnabled = enableDepth;
 								this.m_fboBuf.writeStencilEnabled = enableStencil;

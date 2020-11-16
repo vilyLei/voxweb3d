@@ -4,7 +4,7 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// 鼠标事件类
+// mobile上的touch事件类
 
 import * as Vector3DT from "../../vox/geom/Vector3";
 import Vector3D = Vector3DT.vox.geom.Vector3D;
@@ -12,7 +12,8 @@ export namespace vox
 {
     export namespace event
     {
-        export class MouseEvent
+        // mobile 环境专用
+        export class TouchEvent
         {
             static EventClassType:number = 1002;
             constructor()
@@ -26,18 +27,19 @@ export namespace vox
             {
                 return 15;
             }
-            static readonly MOUSE_DOWN:number = 5001;
-            static readonly MOUSE_UP:number = 5002;
-            static readonly MOUSE_RIGHT_UP:number = 5003;
-            static readonly MOUSE_RIGHT_DOWN:number = 5004;
-            static readonly MOUSE_MOVE:number = 5005;
-            static readonly MOUSE_WHEEL:number = 5006;
-            static readonly MOUSE_OVER:number = 5007;
-            static readonly MOUSE_OUT:number = 5008;
-            static readonly MOUSE_CLICK:number = 5009;
-            static readonly MOUSE_RIGHT_CLICK:number = 5010;
-            static readonly MOUSE_DOUBLE_CLICK:number = 5011;
-            static readonly MOUSE_CANCEL:number = 5012;
+            // 和mouse event 对齐
+            static readonly TOUCH_DOWN:number = 5001;
+            static readonly TOUCH_UP:number = 5002;
+            //static readonly MOUSE_RIGHT_UP:number = 5003;
+            //static readonly MOUSE_RIGHT_DOWN:number = 5004;
+            static readonly TOUCH_MOVE:number = 5005;
+            //static readonly MOUSE_WHEEL:number = 5006;
+            static readonly TOUCH_OVER:number = 5007;
+            static readonly TOUCH_OUT:number = 5008;
+            static readonly TOUCH_CLICK:number = 5009;
+            //static readonly MOUSE_RIGHT_CLICK:number = 5010;
+            static readonly TOUCH_DOUBLE_CLICK:number = 5011;
+            static readonly TOUCH_CANCEL:number = 5012;
             static readonly MOUSE_MULTI_DOWN:number = 5013;
             static readonly MOUSE_MULTI_UP:number = 5014;
             static readonly MOUSE_MULTI_MOVE:number = 5015;
@@ -45,12 +47,12 @@ export namespace vox
             //classType:number = 1001;
             getClassType():number
             {
-                return MouseEvent.EventClassType;
+                return TouchEvent.EventClassType;
             }
             // phase is event flow phase: 0(none phase),1(capture phase),2(bubble phase)
             phase:number = 0;
             // 事件类型
-            type:number = 0;//MouseEvent.MOUSE_DOWN;
+            type:number = 0;//TouchEvent.MOUSE_DOWN;
             // 事件发送者
             target:any = null;
             // 物体空间坐标
@@ -74,7 +76,7 @@ export namespace vox
 
             toString():string
             {
-                return "[MouseEvent]";
+                return "[TouchEvent]";
             }
         }
     }

@@ -44,10 +44,14 @@ export namespace vox
             pixelRatio:number = 1.0;
             stageWidth:number = 800;
             stageHeight:number = 600;
+            // 实际宽高, 和gpu端对齐
             stageHalfWidth:number = 400;
             stageHalfHeight:number = 300;
             mouseX:number = 0;
             mouseY:number = 0;
+            // sdiv页面实际占据的像素宽高
+            viewWidth:number = 800;
+            viewHeight:number = 600;
             mouseViewX:number = 0;
             mouseViewY:number = 0;
             private m_viewX:number = 0.0;
@@ -275,7 +279,49 @@ export namespace vox
                 this.m_mouseEvt.phase = 1;
                 this.m_mouseEvtDispatcher.dispatchEvt(this.m_mouseEvt);
             }
-            
+            // 等同于 touchCancle
+            mouseCancel():void
+            {
+                this.m_mouseEvt.type = MouseEvent.MOUSE_CANCEL;
+                this.m_mouseEvt.mouseX = this.mouseX;
+                this.m_mouseEvt.mouseY = this.mouseY;
+                this.m_mouseEvt.target = this;
+                this.m_mouseEvt.phase = 1;
+                this.m_mouseEvtDispatcher.dispatchEvt(this.m_mouseEvt);
+            }
+            //param [{x,y},{x,y},...]
+            mouseMultiDown(posArray:any[]):void
+            {
+                this.m_mouseEvt.type = MouseEvent.MOUSE_MULTI_DOWN;
+                this.m_mouseEvt.mouseX = this.mouseX;
+                this.m_mouseEvt.mouseY = this.mouseY;
+                this.m_mouseEvt.target = this;
+                this.m_mouseEvt.phase = 1;
+                this.m_mouseEvt.posArray = posArray;
+                this.m_mouseEvtDispatcher.dispatchEvt(this.m_mouseEvt);
+            }
+            //param [{x,y},{x,y},...]
+            mouseMultiUp(posArray:any[]):void
+            {
+                this.m_mouseEvt.type = MouseEvent.MOUSE_MULTI_UP;
+                this.m_mouseEvt.mouseX = this.mouseX;
+                this.m_mouseEvt.mouseY = this.mouseY;
+                this.m_mouseEvt.target = this;
+                this.m_mouseEvt.phase = 1;
+                this.m_mouseEvt.posArray = posArray;
+                this.m_mouseEvtDispatcher.dispatchEvt(this.m_mouseEvt);
+            }
+            //param [{x,y},{x,y},...]
+            mouseMultiMove(posArray:any[]):void
+            {
+                this.m_mouseEvt.type = MouseEvent.MOUSE_MULTI_MOVE;
+                this.m_mouseEvt.mouseX = this.mouseX;
+                this.m_mouseEvt.mouseY = this.mouseY;
+                this.m_mouseEvt.target = this;
+                this.m_mouseEvt.phase = 1;
+                this.m_mouseEvt.posArray = posArray;
+                this.m_mouseEvtDispatcher.dispatchEvt(this.m_mouseEvt);
+            }
             addEventListener(type:number,target:any,func:(evt:any)=>void,captureEnabled:boolean = true,bubbleEnabled:boolean = true):void
             {
                 if(func != null && target != null)

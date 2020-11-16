@@ -5,19 +5,23 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as DivLogT from "../../vox/utils/DivLog";
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as Color4T from "../../vox/material/Color4";
 import * as KeyboardT from "../../vox/ui/Keyboard";
 import * as Stage3DT from "../../vox/display/Stage3D";
 import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RendererStateT from "../../vox/render/RendererState";
+import * as ContextMouseEvtDispatcherT from "../../vox/render/ContextMouseEvtDispatcher";
 
+import DivLog = DivLogT.vox.utils.DivLog;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import Color4 = Color4T.vox.material.Color4;
 import Keyboard = KeyboardT.vox.ui.Keyboard;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import RODrawState = RODrawStateT.vox.render.RODrawState;
 import RendererState = RendererStateT.vox.render.RendererState;
+import ContextMouseEvtDispatcher = ContextMouseEvtDispatcherT.vox.render.ContextMouseEvtDispatcher;
 
 export namespace vox
 {
@@ -29,6 +33,7 @@ export namespace vox
             {
             }
             private m_rState:RODrawState = null;
+            private m_mouseEvtDisplather:ContextMouseEvtDispatcher = new ContextMouseEvtDispatcher();
             private m_canvas:any = null;
             private m_div:any = null;
             private m_document:any = null;
@@ -105,6 +110,14 @@ export namespace vox
                     this.m_canvas.style.position = 'absolute';
                 }
             }
+            getDiv():any
+            {
+                return this.m_div;
+            }
+            getCanvas():any
+            {
+                return this.m_canvas;
+            }
             initialize(glCanvasNS:string,glDivNS:string):void
             {
                 var pdocument:any = null;
@@ -146,108 +159,9 @@ export namespace vox
                     {
                         Keyboard.KeyUp(evt);
                     }
-                    if(canvas.onmousewheel == undefined && canvas.addEventListener != undefined)
-                    {
-                        //use firefox browser mousewheel evt
-                        let func:any = function(evt:any):void
-                        {
-                            evt.wheelDeltaY = -evt.detail;
-                            stage.mouseWheel(evt);
-                        }
-                        canvas.addEventListener('DOMMouseScroll', func, false);  
-                    }
-                    canvas.onmousewheel = function(evt:any):void
-                    {
-                        stage.mouseWheel(evt);
-                    }
-                    canvas.onmousedown = function(evt:any):void
-                    {
-                        let rect:any = canvas.getBoundingClientRect();
-                        let px:number = evt.clientX - rect.left;
-                        let py:number = evt.clientY - rect.top;
-                        stage.mouseX = px;
-                        stage.mouseY = stage.stageHeight - py;
-                        stage.mouseViewX = px;
-                        stage.mouseViewY = py;
-                        //console.log("RAdapterContext::onmousedown(),"+stage.mouseViewX+","+stage.mouseViewY);
-                        if(evt.button == 0)
-                        {
-                            stage.mouseDown();
-                        }else if(evt.button == 2)
-                        {
-                            stage.mouseRightDown();
-                        }
-                    }
-                    canvas.onmouseup = function(evt:any):void
-                    {
-                        let rect = canvas.getBoundingClientRect();
-                        let px = evt.clientX - rect.left;
-                        let py = evt.clientY - rect.top;
-                        stage.mouseX = px;
-                        stage.mouseY = stage.stageHeight - py;
-                        stage.mouseViewX = px;
-                        stage.mouseViewY = py;
-                        //console.log("RAdapterContext::onmouseup(),"+stage.mouseViewX+","+stage.mouseViewY);
-                        //
-                        if(evt.button == 0)
-                        {
-                            stage.mouseUp();
-                        }
-                        else if(evt.button == 2)
-                        {
-                            stage.mouseRightUp();
-                        }
-                    }
-                    canvas.onmousemove = function(evt:any):void
-                    {
-                        //console.log("RAdapterContext::onmouseMove"+evt.pageX+","+evt.pageY);
-                        let rect:any = canvas.getBoundingClientRect();
-                        let px:number = evt.clientX - rect.left;
-                        let py:number = evt.clientY - rect.top;
-                        stage.mouseX = px;
-                        stage.mouseY = stage.stageHeight - py;
-                        stage.mouseViewX = px;
-                        stage.mouseViewY = py;
-                        stage.mouseMove();
-                    }
-                    
-                    canvas.onclick = function(evt:any):void
-                    {
-                        let rect:any = canvas.getBoundingClientRect();
-                        let px:number = evt.clientX - rect.left;
-                        let py:number = evt.clientY - rect.top;
-                        stage.mouseX = px;
-                        stage.mouseY = stage.stageHeight - py;
-                        stage.mouseViewX = px;
-                        stage.mouseViewY = py;
-                        //  console.log("RAdapterContext::onclick(),"+stage.mouseViewX+","+stage.mouseViewY+",evt.button: "+evt.button);
-                        if(evt.button == 0)
-                        {
-                            stage.mouseClick();
-                        }else if(evt.button == 2)
-                        {
-                            stage.mouseRightClick();
-                        }
-                    }
-                    canvas.ondblclick = function(evt:any):void
-                    {
-                        let rect:any = canvas.getBoundingClientRect();
-                        let px:number = evt.clientX - rect.left;
-                        let py:number = evt.clientY - rect.top;
-                        stage.mouseX = px;
-                        stage.mouseY = stage.stageHeight - py;
-                        stage.mouseViewX = px;
-                        stage.mouseViewY = py;
-                        //console.log("RAdapterContext::ondoubleclick(),"+stage.mouseViewX+","+stage.mouseViewY+",evt.button: "+evt.button);
-                        if(evt.button == 0)
-                        {
-                            stage.mouseDoubleClick();
-                        }else if(evt.button == 2)
-                        {
-                            //stage.mouseRightDoubleClick();
-                        }
-                    }
+                    this.m_mouseEvtDisplather.initialize(canvas,div,stage);
                     this.m_devicePixelRatio = window.devicePixelRatio;
+                    this.m_mouseEvtDisplather.dpr = this.m_devicePixelRatio;
                     console.log("this.m_devicePixelRatio: "+this.m_devicePixelRatio);
                     console.log("depthTestEnabled: "+this.depthTestEnabled);
                     console.log("stencilTestEnabled: "+this.stencilTestEnabled);
@@ -296,18 +210,7 @@ export namespace vox
                         alert('Unable to initialize WebGL. Your browser or machine may not support it.');
                         return;
                     }
-                    var pwindow:any = null;
-                    try
-                    {
-                        if(window != undefined)
-                        {
-                            pwindow = window;
-                        }
-                    }
-                    catch(err)
-                    {
-                        console.log("RAdapterContext::initialize(), window is undefined.");
-                    }
+
                     var selfT:RAdapterContext = this;
                     pwindow.onresize = function(evt:any):void
                     {
@@ -367,7 +270,8 @@ export namespace vox
             }
             setScissorRect(px:number,py:number,pw:number,ph:number):void
             {
-                this.m_gl.scissor(Math.floor(px*this.m_devicePixelRatio),Math.floor(py*this.m_devicePixelRatio), pw,ph);
+                //this.m_gl.scissor(Math.floor(px*this.m_devicePixelRatio),Math.floor(py*this.m_devicePixelRatio), pw,ph);
+                this.m_gl.scissor(px,py, pw,ph);
             }
             private m_displayWidth:number = 0;
             private m_displayHeight:number = 0;
@@ -389,6 +293,7 @@ export namespace vox
                 pw = Math.floor(pw);
                 ph = Math.floor(ph);
                 this.m_devicePixelRatio = window.devicePixelRatio;
+                this.m_mouseEvtDisplather.dpr = window.devicePixelRatio;
                 RendererDeviece.SetDevicePixelRatio(this.m_devicePixelRatio);
                 //console.log("this.m_devicePixelRatio: "+this.m_devicePixelRatio);
                 //console.log("RAdapterContext::resize(), pw:"+pw+", ph:"+ph);
@@ -413,10 +318,15 @@ export namespace vox
 
                     this.m_canvas.style.width = this.m_displayWidth + 'px';
                     this.m_canvas.style.height = this.m_displayHeight + 'px';
-                    this.m_stage.stageWidth = pw;
-                    this.m_stage.stageHeight = ph;
+                    this.m_stage.stageWidth = this.m_rcanvasWidth;
+                    this.m_stage.stageHeight = this.m_rcanvasHeight;
+                    this.m_stage.viewWidth = this.m_displayWidth;
+                    this.m_stage.viewHeight = this.m_displayHeight;
                     this.m_stage.pixelRatio = k;
-
+                    DivLog.showLogOnce("stageSize: "+this.m_stage.stageWidth+","+this.m_stage.stageHeight);
+                    DivLog.ShowLog("canvasSize: "+this.m_canvas.width+","+this.m_canvas.height);
+                    DivLog.ShowLog("dispSize: "+this.m_displayWidth+","+this.m_displayHeight);
+                    DivLog.ShowLog("pixelRatio:"+this.m_devicePixelRatio);
                     console.log("RAdapterContext::resize(), canvas.width:"+this.m_canvas.width+", canvas.height:"+this.m_canvas.height);
                     console.log("RAdapterContext::resize(), m_rcanvasWidth:"+this.m_rcanvasWidth+", m_rcanvasHeight:"+this.m_rcanvasHeight);
                     console.log("RAdapterContext::resize(), stw:"+this.m_stage.stageWidth+", sth:"+this.m_stage.stageHeight);
@@ -440,14 +350,14 @@ export namespace vox
             {
                 return this.m_stage.stageHeight;
             }
-            //  getDrawingBufferWidth():number
-            //  {
-            //      return this.m_gl.drawingBufferWidth;//this.m_displayWidth;
-            //  }
-            //  getDrawingBufferHeight():number
-            //  {
-            //      return this.m_gl.drawingBufferHeight;//this.m_displayHeight;
-            //  }
+            getDisplayWidth():number
+            {
+                return this.m_displayWidth;
+            }
+            getDisplayHeight():number
+            {
+                return this.m_displayHeight;
+            }
         	getWindowWidth():number
         	{
         		return this.m_windowWidth;
@@ -462,6 +372,8 @@ export namespace vox
         		if (this.m_viewWidth != pw || this.m_viewHeight != ph || boo)
         		{
                     //console.log("RAdapterContext::setViewport(), pw: "+pw+",ph: "+ph);
+                    
+                    DivLog.ShowLog("setViewport:"+px+","+py+","+pw+","+ph);
         			this.m_viewX = px;
         			this.m_viewY = py;
         			this.m_viewWidth = pw;
@@ -473,6 +385,7 @@ export namespace vox
         	{
         		if (this.m_viewWidth != pw || this.m_viewHeight != ph)
         		{
+                    DivLog.ShowLog("setViewportSize:"+pw+","+ph);
                     //console.log("RAdapterContext::setViewportSize(), pw: "+pw+",ph: "+ph);
         			this.m_viewWidth = pw;
         			this.m_viewHeight = ph;

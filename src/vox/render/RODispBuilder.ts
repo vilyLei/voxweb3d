@@ -223,7 +223,11 @@ export namespace vox
                             runit.vro.__$attachThis();
                             disp.vbuf.createVROEnd();
                             runit.vtxUid = runit.vro.getVtxUid();
+                            
+                            runit.ibufType = runit.vro.ibufType;
+                            runit.ibufStep = runit.vro.ibufStep;
                         }
+                        //console.log("runit.ibufType: "+runit.ibufType+", runit.ibufStep: "+runit.ibufStep+", runit.ivsCount: "+runit.ivsCount);
                         RenderProcessBuider.GetProcess(processUid).addDisp(rc, disp);
                     }
                     else

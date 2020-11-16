@@ -66,6 +66,15 @@ export namespace vox
                     this.m_materialProxy.setDispBuilder(builder);
                 }
             }
+            
+            getDiv():any
+            {
+                return this.m_rAdapter.getDiv();
+            }
+            getCanvas():any
+            {
+                return this.m_rAdapter.getCanvas();
+            }
             getRenderAdapter():RenderAdapter
             {
                 return this.m_rAdapter;

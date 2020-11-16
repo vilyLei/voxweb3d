@@ -1123,7 +1123,7 @@ export namespace vox
 				this.m_localFS32[11] = -1.0;
 				this.m_localFS32[14] = m14;
 			}
-			orthoRH(b:number, t:number, l:number, r:number, zNear:number, zFar:number,devPRatio:number = 1.0):void
+			orthoRH(b:number, t:number, l:number, r:number, zNear:number, zFar:number):void
 			{
 				this.identity();
 				this.m_localFS32[0] = 2.0/(r-l);

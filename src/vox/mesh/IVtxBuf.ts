@@ -6,10 +6,12 @@
 /***************************************************************************/
 
 import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as VtxBufDataT from "../../vox/mesh/VtxBufData";
 import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
 import * as ShaderProgramT from "../../vox/material/ShaderProgram";
 
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import VtxBufData = VtxBufDataT.vox.mesh.VtxBufData;
 import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
 import ShaderProgram = ShaderProgramT.vox.material.ShaderProgram;
 
@@ -19,6 +21,7 @@ export namespace vox
     {
         export interface IVtxBuf
         {
+            bufData:VtxBufData;
             getType():number;
             getBufDataUsage():number;
             setBufDataUsage(bufDataUsage:number):void;

@@ -69,7 +69,7 @@ export namespace vox
             private m_isDyn:boolean = false;
             // very important!!!
             protected m_vbuf:ROVertexBuffer = null;
-            protected m_ivs:Uint16Array = null;
+            protected m_ivs:any = null;//Uint16Array or Uint32Array
 
             private m_bufDataList:Float32Array[] = null;
             private m_bufDataStepList:number[] = null;
@@ -188,7 +188,7 @@ export namespace vox
             // base vtx color2
             getCVS2():Float32Array{return null;}
             // index bufer
-            getIVS():Uint16Array{return this.m_ivs;}
+            getIVS():any{return this.m_ivs;}
             //
             private m_layoutBit:number = 0x0;
             //

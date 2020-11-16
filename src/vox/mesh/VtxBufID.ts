@@ -7,22 +7,14 @@
 
 export namespace vox
 {
-    export namespace scene
+    export namespace mesh
     {
-        export class SpaceCullingMasK
+        export class VtxBufID
         {
-            static NONE:number = 0;
-            // 需要做摄像机的可见剔除
-            static CAMERA:number = 1;
-            // project occlusion volume
-            static POV:number = 2;
-            // 包含在遮挡体内部的不会进行遮挡剔除计算
-            static INNER_POV_PASS:number = 4;
-            // 摄像机和POV都要做遮挡剔除
-            static CAMERA_AND_POV:number = 3;
-            constructor()
+            private static __s_uid:number = 0;
+            static CreateNewID():number
             {
-                
+                return VtxBufID.__s_uid++;
             }
         }
     }

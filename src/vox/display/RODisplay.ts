@@ -10,7 +10,7 @@
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
-import * as ROIndexBufferT from "../../vox/mesh/ROIndexBuffer";
+//import * as ROIndexBufferT from "../../vox/mesh/ROIndexBuffer";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
 //import * as RODisplayBaseT from "../../vox/display/RODisplayBase";
 import * as ROTransformT from "../../vox/display/ROTransform";
@@ -19,7 +19,7 @@ import * as ROTransformT from "../../vox/display/ROTransform";
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
 import RendererState = RendererStateT.vox.render.RendererState;
 import ROVertexBuffer = ROVertexBufferT.vox.mesh.ROVertexBuffer;
-import ROIndexBuffer = ROIndexBufferT.vox.mesh.ROIndexBuffer;
+//import ROIndexBuffer = ROIndexBufferT.vox.mesh.ROIndexBuffer;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 //import RODisplayBase = RODisplayBaseT.vox.display.RODisplayBase;
 import ROTransform = ROTransformT.vox.display.ROTransform;

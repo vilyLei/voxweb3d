@@ -66,7 +66,7 @@ export namespace demo
         mouseOverListener(evt:any):void
         {
             
-            console.log(this.name+", DispEvtevtCtrObj mouse over. ");
+            console.log(this.name+", DispEvtevtCtrObj mouse over. pos: "+evt.mouseX+","+evt.mouseY);
             if(this.disp != null)
             {
                 let material:any = this.disp.getMaterial();
@@ -159,6 +159,7 @@ export namespace demo
                 let i:number = 0;
                 let plane:Plane3DEntity;
 
+                let dprK:number = this.m_rscene.getDevicePixelRatio();
                 for(i = 0; i < 2; ++i)
                 {
                     plane = new Plane3DEntity();
@@ -182,6 +183,7 @@ export namespace demo
                 
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.initialize(600.0);
+                axis.setXYZ(200,300,0);
                 this.m_rscene.addEntity(axis);
                 let box:Box3DEntity = null;
                 let sphere:Sphere3DEntity = null;
@@ -190,7 +192,7 @@ export namespace demo
                 {
                     box = new Box3DEntity(); 
                     box.initialize(new Vector3D(-50.0,-50.0,-50.0),new Vector3D(50.0,50.0,5.0),[tex1]);
-                    box.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
+                    box.setXYZ(Math.random() * 1000.0,Math.random() * 1000.0,Math.random() * 1000.0);
                     this.m_rscene.addEntity(box);
 
                     evtCtrObj = new DispEvtevtCtrObj();
@@ -206,7 +208,7 @@ export namespace demo
                     box.mouseEnabled = true;
 
                 }
-                for(i = 0; i < 2; ++i)
+                for(i = 0; i < 0; ++i)
                 {
                     sphere = new Sphere3DEntity();
                     sphere.initialize(50.0,15,15,[tex1]);

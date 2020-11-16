@@ -5,15 +5,19 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as VtxBufIDT from "../../vox/mesh/VtxBufID";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as IVtxBufT from "../../vox/mesh/IVtxBuf";
+import * as VtxBufDataT from "../../vox/mesh/VtxBufData";
 import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
 import * as ShaderProgramT from "../../vox/material/ShaderProgram";
 
+import VtxBufID = VtxBufIDT.vox.mesh.VtxBufID;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 import IVtxBuf = IVtxBufT.vox.mesh.IVtxBuf;
+import VtxBufData = VtxBufDataT.vox.mesh.VtxBufData;
 import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
 import ShaderProgram = ShaderProgramT.vox.material.ShaderProgram;
 
@@ -23,17 +27,17 @@ export namespace vox
     {
         export class VtxCombinedBuf implements IVtxBuf
         {
-            private static __s_uid:number = 0;
             private m_uid:number = 0;
             private m_bufDataUsage:number = 0;
+            private m_aTypeList:number[] = null;
+            private m_total:number = 0;
+            bufData:VtxBufData = null;
             constructor(bufDataUsage:number = VtxBufConst.VTX_STATIC_DRAW)
             {
-                this.m_uid = VtxCombinedBuf.__s_uid++;
+                this.m_uid = VtxBufID.CreateNewID();
                 this.m_bufDataUsage = bufDataUsage;
             }
             
-            private m_aTypeList:number[] = null;
-            private m_total:number = 0;
             public getType():number
             {
                 return 0;
@@ -199,7 +203,7 @@ export namespace vox
                 if(vaoEnabled)
                 {
                     // vao 的生成要记录标记,防止重复生成, 因为同一组数据在不同的shader使用中可能组合方式不同，导致了vao可能是多样的
-                    //console.log("createVROBegin(), "+this.m_aTypeList+" /// "+this.m_wholeStride+" /// "+this.m_pOffsetList);
+                    //console.log("VtxCombinedBuf::createVROBegin(), "+this.m_aTypeList+" /// "+this.m_wholeStride+" /// "+this.m_pOffsetList);
                     vro.vao = rc.createVertexArray();
                     rc.bindVertexArray(vro.vao);                    
                     rc.bindArrBuf(this.m_f32Buf);

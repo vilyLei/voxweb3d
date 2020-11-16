@@ -99,6 +99,15 @@ export namespace vox
             {
                 return this.m_autoSynViewAndStage;
             }
+            
+            getDiv():any
+            {
+                return this.m_adapter.getDiv();
+            }
+            getCanvas():any
+            {
+                return this.m_adapter.getCanvas();
+            }
             getCamera():CameraBase
             {
                 return this.m_camera;
@@ -241,13 +250,13 @@ export namespace vox
             {
                 this.m_rc.bufferData(this.m_rc.ARRAY_BUFFER, float32Arr, VtxBufConst.ToGL(this.m_rc,usage));
             }
-            eleBufSubData(uint16Arr:Uint16Array, offset:number):void
+            eleBufSubData(uintDataArr:any, offset:number):void
             {
-                this.m_rc.bufferSubData(this.m_rc.ELEMENT_ARRAY_BUFFER,offset, uint16Arr);
+                this.m_rc.bufferSubData(this.m_rc.ELEMENT_ARRAY_BUFFER,offset, uintDataArr);
             }
-            eleBufData(uint16Arr:Uint16Array, usage:number):void
+            eleBufData(uintDataArr:any, usage:number):void
             {
-                this.m_rc.bufferData(this.m_rc.ELEMENT_ARRAY_BUFFER, uint16Arr, VtxBufConst.ToGL(this.m_rc,usage));
+                this.m_rc.bufferData(this.m_rc.ELEMENT_ARRAY_BUFFER, uintDataArr, VtxBufConst.ToGL(this.m_rc,usage));
             }
             arrBufDataMem(bytesSize:number, usage:number):void
             {
@@ -589,7 +598,7 @@ export namespace vox
                 selfT.LINE_STRIP = this.m_rc.LINE_STRIP;
                 selfT.UNSIGNED_SHORT = this.m_rc.UNSIGNED_SHORT;
                 selfT.UNSIGNED_INT = this.m_rc.UNSIGNED_INT;
-
+                
                 RenderFBOProxy.SetRenderer(this.m_RAdapterContext);
                 selfT.RState = this.m_RAdapterContext.getRenderState();
                 selfT.RContext = this.m_rc;
