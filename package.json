@@ -28,7 +28,6 @@
     "jszip": "^3.2.2",
     "pngjs": "^3.4.0",
     "stats.js": "^0.17.0",
-    "three": "^0.108.0",
     "ts-debounce-throttle": "^1.0.0"
   },
   "devDependencies": {
