@@ -92,10 +92,10 @@ export namespace vox
             {
                 return this.m_renderProxy.getStage3D();
             }
-			getViewX():number { return this.m_adapter.getViewX(); }
-			getViewY():number { return this.m_adapter.getViewY(); }
-			getViewWidth():number { return this.m_adapter.getViewWidth(); }
-			getViewHeight():number { return this.m_adapter.getViewHeight(); }
+			getViewX():number { return this.m_adapter.getViewportX(); }
+			getViewY():number { return this.m_adapter.getViewportY(); }
+			getViewWidth():number { return this.m_adapter.getViewportWidth(); }
+			getViewHeight():number { return this.m_adapter.getViewportHeight(); }
             getCamera():CameraBase
             {
                 if(this.m_renderProxy == null)
@@ -269,11 +269,11 @@ export namespace vox
                 return this.m_processesLen;
             }
             // 首先要锁定Material才能用这种绘制方式,再者这个entity已经完全加入渲染器了渲染资源已经准备完毕,这种方式比较耗性能，只能用在特殊的地方
-            drawEntityByLockMaterial(entity:DisplayEntity):void
+            drawEntityByLockMaterial(entity:DisplayEntity,forceUpdateUniform:boolean = true):void
             {
                 if(entity != null && entity.__$wuid == this.m_uid)
                 {
-                    this.m_processes[ 0 ].drawLockMaterialByDisp(this.m_renderProxy,entity.getDisplay());
+                    this.m_processes[ 0 ].drawLockMaterialByDisp(this.m_renderProxy,entity.getDisplay(),forceUpdateUniform);
                 }
             }
             runAt(index:number):void

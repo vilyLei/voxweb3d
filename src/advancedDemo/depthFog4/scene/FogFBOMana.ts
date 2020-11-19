@@ -65,7 +65,7 @@ export namespace advancedDemo
                 {
                     return this.m_texs[index];
                 }
-                this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewWidth(), this.m_rct.getViewHeight());
+                this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
                 this.m_texs[index].internalFormat = TextureFormat.RGBA;
                 this.m_texs[index].srcFormat = TextureFormat.RGBA;
                 //this.m_texs[index].magFilter = TextureConst.NEAREST;
@@ -80,7 +80,7 @@ export namespace advancedDemo
             {
                 this.m_middleFBO = this.m_rc.createFBOInstance();
                 this.m_middleFBO.setClearRGBAColor4f(0.0,0.0,0.0,1.0);
-                this.m_middleFBO.createFBOAt(0,this.m_rct.getViewWidth(), this.m_rct.getViewHeight(),true,false);
+                this.m_middleFBO.createFBOAt(0,this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight(),true,false);
                 this.m_middleFBO.setClearState(true,true,false);
                 this.m_middleFBO.setRenderToTexture(this.getTextureAt(0), 0);// color
                 this.m_middleFBO.setRenderToTexture(this.getTextureAt(1), 1);// depth
@@ -100,7 +100,7 @@ export namespace advancedDemo
                 this.m_factorFBO = this.m_rc.createFBOInstance();
                 //this.m_factorFBO.setFBOSizeFactorWithViewPort(0.5);
                 this.m_factorFBO.setClearRGBAColor4f(0.0,0.0,0.0,0.0);
-                this.m_factorFBO.createFBOAt(1,this.m_rct.getViewWidth(), this.m_rct.getViewHeight(),false,false);
+                this.m_factorFBO.createFBOAt(1,this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight(),false,false);
                 this.m_factorFBO.setClearState(true,true,false);
                 this.m_factorFBO.setRenderToTexture(this.getTextureAt(2), 0);
                 this.m_factorFBO.setRenderToTexture(this.getTextureAt(3), 1);

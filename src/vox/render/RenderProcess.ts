@@ -110,10 +110,10 @@ export namespace vox
                 //  注意，这里可以管理组合方式, 例如可以做更多条件的排序
                 //  这里依赖的是 shader program 和 vtx uid 来分类
                 let block:RPOBlock = null;
-                //console.log("RenderProcess::addDisp(),uid: "+this.m_uid+" node.shdUid: "+node.shdUid+", disp: "+disp.toString());
+                //console.log("RenderProcess::addDisp(),uid: "+this.m_uid+" node.shdUid: "+node.shdUid+", index: "+this.index);
                 if(node.shdUid >= RenderProcess.s_max_shdTotal)
                 {
-                    console.log("Error: Shader uid >= "+RenderProcess.s_max_shdTotal);
+                    console.error("Error: Shader uid >= "+RenderProcess.s_max_shdTotal);
                 }
                 if(this.m_blockFList[node.shdUid] < 0)
                 {
@@ -241,14 +241,14 @@ export namespace vox
             }
             // 用于特殊绘制
             private m_proBlock:RPOBlock = new RPOBlock();
-            drawLockMaterialByDisp(rc:RenderProxy,disp:RODisplay):void
+            drawLockMaterialByDisp(rc:RenderProxy,disp:RODisplay,forceUpdateUniform:boolean):void
             {
                 if(disp != null)
                 {
                     let unit:RPOUnit = RPOUnitBuider.GetRPOUnit( disp.__$ruid );
                     if(unit != null)
                     {
-                        this.m_proBlock.drawLockMaterialByUnit(rc,unit);
+                        this.m_proBlock.drawLockMaterialByUnit(rc,unit,disp,forceUpdateUniform);
                     }
                 }
             }

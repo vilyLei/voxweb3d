@@ -163,25 +163,36 @@ export namespace vox
                             // create shared uniform
                             MaterialProgram.SetSharedUniformByShd(shdp, ShdUniformTool.BuildShared(material.createSharedUniform(rc),rc, shdp));
                         }
+                        let hasTrans:boolean = shdp.hasUniformByName(UniformConst.LocalTransformMatUNS);
                         if(material.__$uniform == null)
                         {
                             let unfdata:ShaderUniformData = material.createSelfUniformData();
-                            let hasTrans:boolean = shdp.hasUniformByName(UniformConst.LocalTransformMatUNS);
                             if(unfdata != null || hasTrans)
                             {
                                 if(RendererDeviece.IsWebGL2())
                                 {
+                                    //runit.transUniform = ShdUniformTool.BuildLocalFromTransformV1(hasTrans?disp.transform:null, runit.shdp);
                                     material.__$uniform = ShdUniformTool.BuildLocalFromDataV2(unfdata, hasTrans?disp.transform:null, runit.shdp);
                                 }
                                 else
                                 {
+                                    //runit.transUniform = ShdUniformTool.BuildLocalFromTransformV2(hasTrans?disp.transform:null, runit.shdp);
                                     material.__$uniform = ShdUniformTool.BuildLocalFromDataV1(unfdata, hasTrans?disp.transform:null, runit.shdp);
                                 }
                             }
                             else
                             {
-                                material.__$uniform = EmptyShdUniform.EmptyUniform;
+                                //material.__$uniform = EmptyShdUniform.EmptyUniform;
+                                runit.transUniform = EmptyShdUniform.EmptyUniform;
                             }
+                        }
+                        if(RendererDeviece.IsWebGL2())
+                        {
+                            runit.transUniform = ShdUniformTool.BuildLocalFromTransformV1(hasTrans?disp.transform:null, runit.shdp);
+                        }
+                        else
+                        {
+                            runit.transUniform = ShdUniformTool.BuildLocalFromTransformV2(hasTrans?disp.transform:null, runit.shdp);
                         }
                         runit.uniform = material.__$uniform;
                         

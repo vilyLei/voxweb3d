@@ -92,8 +92,8 @@ export namespace demo
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
                 // add common 3d display entity
-                this.m_rcontext.createFBOAt(0,FrameBufferType.FRAMEBUFFER,this.m_rcontext.getViewWidth(),this.m_rcontext.getViewHeight(),true,false);
-                this.m_rcontext.createFBOAt(1,FrameBufferType.FRAMEBUFFER,this.m_rcontext.getViewWidth(),this.m_rcontext.getViewHeight(),false,false);
+                this.m_rcontext.createFBOAt(0,FrameBufferType.FRAMEBUFFER,this.m_rcontext.getViewportWidth(),this.m_rcontext.getViewportHeight(),true,false);
+                this.m_rcontext.createFBOAt(1,FrameBufferType.FRAMEBUFFER,this.m_rcontext.getViewportWidth(),this.m_rcontext.getViewportHeight(),false,false);
                 var plane:Plane3DEntity = new Plane3DEntity();
                 plane.setMaterial(new DefaultMRTMaterial());
                 plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);

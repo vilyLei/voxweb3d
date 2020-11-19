@@ -59,9 +59,7 @@ export namespace demo
                 tex1.setWrap(TextureConst.WRAP_REPEAT);
                 tex1.mipmapEnabled = true;
                 
-                this.m_statusDisp.initialize("rstatus");
-
-                let rparam:RendererParam = new RendererParam("glcanvas","app");
+                let rparam:RendererParam = new RendererParam();
                 rparam.maxWebGLVersion = 2;
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(1000.0,1000.0,1000.0);
@@ -73,6 +71,7 @@ export namespace demo
                 this.m_rcontext = this.m_renderer.getRendererContext();
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
+                this.m_statusDisp.initialize("rstatus",this.m_renderer.getStage3D().viewWidth - 64);
                 // add common 3d display entity
                 var plane:Plane3DEntity = new Plane3DEntity();
                 plane.name = "plane";

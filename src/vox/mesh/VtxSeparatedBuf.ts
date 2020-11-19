@@ -27,7 +27,7 @@ export namespace vox
     {
         export class VtxSeparatedBuf implements IVtxBuf
         {
-            private m_uid:number = 0;
+            private m_uid:number = -1;
             private m_bufDataUsage:number = 0;            
             private m_aTypeList:number[] = null;
             private m_total:number = 0;
@@ -234,26 +234,21 @@ export namespace vox
             // 创建被 RPOUnit 使用的 vro 实例
             createVROBegin(rc:RenderProxy, shdp:ShaderProgram, vaoEnabled:boolean = true):VertexRenderObj
             {
-                let mid:number = 31;
+                let mid:number = shdp.getLayoutBit();
                 if(vaoEnabled)
                 {
-                    mid = 51;
+                    // 之所以这样区分，是因为 shdp.getLayoutBit() 的取值范围不会超过short(double bytes)取值范围
+                    mid += 0xf0000;
                 }
                 let i:number = 0;
-                for(; i < this.m_total; ++i)
-                {
-                    if(shdp.testVertexAttribPointerType(this.m_aTypeList[i]))
-                    {
-                        mid = mid * 131 + i;
-                    }
-                }
-                for(i = 0; i < this.m_vroListLen; ++i)
+                for(; i < this.m_vroListLen; ++i)
                 {
                     if(this.m_vroList[i].getMid() == mid)
                     {
                         return this.m_vroList[i];
                     }
                 }
+                //console.log("### Separated mid: "+mid+", uid: "+this.m_uid);
                 let vro:VertexRenderObj = VertexRenderObj.Create(mid,this.m_uid);
                 vro.vbuf = this.m_f32Bufs;
                 if(vaoEnabled)

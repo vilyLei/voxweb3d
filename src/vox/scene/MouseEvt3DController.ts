@@ -15,6 +15,7 @@ import * as RaySelectedNodeT from '../../vox/scene/RaySelectedNode';
 import * as IRaySelectorT from '../../vox/scene/IRaySelector';
 import * as IEvt3DControllerT from '../../vox/scene/IEvt3DController';
 import * as IEvtDispatcherT from "../../vox/event/IEvtDispatcher";
+import * as MouseEvt3DDispatcherT from "../../vox/event/MouseEvt3DDispatcher";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
@@ -25,6 +26,7 @@ import RaySelectedNode = RaySelectedNodeT.vox.scene.RaySelectedNode;
 import IRaySelector = IRaySelectorT.vox.scene.IRaySelector;
 import IEvt3DController = IEvt3DControllerT.vox.scene.IEvt3DController;
 import IEvtDispatcher = IEvtDispatcherT.vox.event.IEvtDispatcher;
+import MouseEvt3DDispatcher = MouseEvt3DDispatcherT.vox.event.MouseEvt3DDispatcher;
 
 
 export namespace vox
@@ -39,6 +41,7 @@ export namespace vox
             private m_stage:Stage3D = null;
             private m_raySelector:IRaySelector = null;
             private m_unlockBoo:boolean = true;
+            private m_evtbgDispather:MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
             initialize(stage:Stage3D):void
             {
                 //console.log("MouseEvt3DController::initialize()......");
@@ -48,8 +51,17 @@ export namespace vox
                     stage.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
                     stage.addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener);
                     stage.addEventListener(MouseEvent.MOUSE_MOVE,this,this.mouseMoveListener);
-                    stage.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener);                
+                    stage.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener);   
+                    
                 }
+            }
+            addBGMouseEventListener(type:number,target:any,func:(evt:any)=>void,captureEnabled:boolean = true,bubbleEnabled:boolean = false):void
+            {
+                this.m_evtbgDispather.addEventListener(type,target,func,captureEnabled,bubbleEnabled);
+            }
+            removeBGMouseEventListener(type:number,target:any,func:(evt:any)=>void):void
+            {
+                this.m_evtbgDispather.removeEventListener(type,target,func);
             }
             setRaySelector(raySelector:IRaySelector):void
             {
@@ -199,6 +211,14 @@ export namespace vox
                                     flag += dispatcher.dispatchEvt(this.m_mouseOutEvt);
                                 }
                                 this.m_evtTarget = null;
+                            }
+                            // 加入背景事件接收处理机制
+                            for(let i:number = 0;i < this.m_evtTotal;i++)
+                            {
+                                this.m_mouseEvt.type = this.m_evtTypes[i];
+                                this.m_mouseEvt.target = null;
+                                this.m_mouseEvt.phase = evtFlowPhase;
+                                this.m_evtbgDispather.dispatchEvt(this.m_mouseEvt);
                             }
                         }
                     }

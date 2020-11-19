@@ -194,7 +194,51 @@ export namespace vox
                 }
                 return guniform;                
             }
-            
+            private static s_emptyUniform:ShaderUniform = new ShaderUniform();
+            static BuildLocalFromTransformV1(transform:ROTransform, shdp:ShaderProgram):IShaderUniform
+            {
+                if(transform != null)
+                {
+                    let shdUniform:ShaderUniformV1 = new ShaderUniformV1();
+                    shdUniform.uniformSize = 0;
+                    shdUniform.uniformNameList = [];
+                    shdUniform.types = [];
+                    shdUniform.locations = [];
+                    shdUniform.dataList = [];
+                    shdUniform.dataSizeList = [];
+                    //console.log("BuildLocalFromDataAAA create u_objMat.shdp: "+shdp);
+                    shdUniform.uniformSize += 1;
+                    shdUniform.uniformNameList.push( "u_objMat" );
+                    shdUniform.types.push( shdp.getUniformTypeByNS("u_objMat") );
+                    shdUniform.locations.push( shdp.getUniformLocationByNS("u_objMat") );
+                    shdUniform.dataList.push(transform.getMatrixFS32());
+                    shdUniform.dataSizeList.push(1);                    
+                    return shdUniform;
+                }
+                return ShdUniformTool.s_emptyUniform;
+            }
+            static BuildLocalFromTransformV2(transform:ROTransform, shdp:ShaderProgram):IShaderUniform
+            {
+                if(transform != null)
+                {
+                    let shdUniform:ShaderUniformV1 = new ShaderUniformV2();
+                    shdUniform.uniformSize = 0;
+                    shdUniform.uniformNameList = [];
+                    shdUniform.types = [];
+                    shdUniform.locations = [];
+                    shdUniform.dataList = [];
+                    shdUniform.dataSizeList = [];
+                    //console.log("BuildLocalFromDataAAA create u_objMat.shdp: "+shdp);
+                    shdUniform.uniformSize += 1;
+                    shdUniform.uniformNameList.push( "u_objMat" );
+                    shdUniform.types.push( shdp.getUniformTypeByNS("u_objMat") );
+                    shdUniform.locations.push( shdp.getUniformLocationByNS("u_objMat") );
+                    shdUniform.dataList.push(transform.getMatrixFS32());
+                    shdUniform.dataSizeList.push(1);                    
+                    return shdUniform;
+                }
+                return ShdUniformTool.s_emptyUniform;
+            }
             static BuildLocalFromDataV1(uniformData:ShaderUniformData,transform:ROTransform, shdp:ShaderProgram):IShaderUniform
             {
                 // collect all uniform data,create a new runned uniform
@@ -205,16 +249,16 @@ export namespace vox
                 shdUniform.dataList = [];
                 shdUniform.dataSizeList = [];
                 shdUniform.uniformSize = 0;
-                if(transform != null)
-                {
-                    //console.log("BuildLocalFromDataAAA create u_objMat.shdp: "+shdp);
-                    shdUniform.uniformSize += 1;
-                    shdUniform.uniformNameList.push( "u_objMat" );
-                    shdUniform.types.push( shdp.getUniformTypeByNS("u_objMat") );
-                    shdUniform.locations.push( shdp.getUniformLocationByNS("u_objMat") );
-                    shdUniform.dataList.push(transform.getMatrixFS32());
-                    shdUniform.dataSizeList.push(1);
-                }
+                //  if(transform != null)
+                //  {
+                //      //console.log("BuildLocalFromDataAAA create u_objMat.shdp: "+shdp);
+                //      shdUniform.uniformSize += 1;
+                //      shdUniform.uniformNameList.push( "u_objMat" );
+                //      shdUniform.types.push( shdp.getUniformTypeByNS("u_objMat") );
+                //      shdUniform.locations.push( shdp.getUniformLocationByNS("u_objMat") );
+                //      shdUniform.dataList.push(transform.getMatrixFS32());
+                //      shdUniform.dataSizeList.push(1);
+                //  }
 
                 let pdata:ShaderUniformData = uniformData;
                 let i:number = 0;
@@ -250,16 +294,16 @@ export namespace vox
                 shdUniform.dataList = [];
                 shdUniform.dataSizeList = [];
                 shdUniform.uniformSize = 0;
-                if(transform != null)
-                {
-                    //console.log("BuildLocalFromDataAAA create u_objMat.shdp: "+shdp);
-                    shdUniform.uniformSize += 1;
-                    shdUniform.uniformNameList.push( "u_objMat" );
-                    shdUniform.types.push( shdp.getUniformTypeByNS("u_objMat") );
-                    shdUniform.locations.push( shdp.getUniformLocationByNS("u_objMat") );
-                    shdUniform.dataList.push(transform.getMatrixFS32());
-                    shdUniform.dataSizeList.push(1);
-                }
+                //  if(transform != null)
+                //  {
+                //      //console.log("BuildLocalFromDataAAA create u_objMat.shdp: "+shdp);
+                //      shdUniform.uniformSize += 1;
+                //      shdUniform.uniformNameList.push( "u_objMat" );
+                //      shdUniform.types.push( shdp.getUniformTypeByNS("u_objMat") );
+                //      shdUniform.locations.push( shdp.getUniformLocationByNS("u_objMat") );
+                //      shdUniform.dataList.push(transform.getMatrixFS32());
+                //      shdUniform.dataSizeList.push(1);
+                //  }
 
                 let pdata:ShaderUniformData = uniformData;
                 let i:number = 0;

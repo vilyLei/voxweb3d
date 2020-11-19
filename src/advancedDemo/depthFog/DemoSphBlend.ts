@@ -89,7 +89,7 @@ export namespace advancedDemo
                 switch(index)
                 {
                     case 0:
-                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewWidth(), this.m_rct.getViewHeight());
+                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
                         this.m_texs[index].internalFormat = TextureFormat.RGBA16F;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
                         this.m_texs[index].dataType = TextureDataType.FLOAT;
@@ -98,7 +98,7 @@ export namespace advancedDemo
                     break;
 
                     case 1:
-                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewWidth(), this.m_rct.getViewHeight());
+                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
                         this.m_texs[index].internalFormat = TextureFormat.RGBA16F;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
                         this.m_texs[index].dataType = TextureDataType.FLOAT;
@@ -107,7 +107,7 @@ export namespace advancedDemo
                     break;
 
                     case 2:
-                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewWidth(), this.m_rct.getViewHeight());
+                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
                         this.m_texs[index].internalFormat = TextureFormat.RGBA16F;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
                         this.m_texs[index].dataType = TextureDataType.FLOAT;
@@ -115,7 +115,7 @@ export namespace advancedDemo
                         return this.m_texs[index];
                     break;
                     case 3:
-                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewWidth(), this.m_rct.getViewHeight());
+                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
                         this.m_texs[index].internalFormat = TextureFormat.RGBA;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
                         this.m_texs[index].magFilter = TextureConst.NEAREST;
@@ -123,7 +123,7 @@ export namespace advancedDemo
                     break;
                     default:
                         
-                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewWidth(), this.m_rct.getViewHeight());
+                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
                         this.m_texs[index].internalFormat = TextureFormat.RGBA;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
                         this.m_texs[index].magFilter = TextureConst.NEAREST;
@@ -326,8 +326,8 @@ export namespace advancedDemo
                     this.m_dstPlane.initialize(-1.0,-1.0,2.0,2.0,[this.getTextureAt(3),this.getTextureAt(4)])
                     this.m_rc.addEntity(this.m_dstPlane,this.m_dstPlaneIndex);
                     
-                    this.m_rct.createFBOAt(0,FrameBufferType.FRAMEBUFFER, this.m_rct.getViewWidth(), this.m_rct.getViewHeight(),true,false);
-                    this.m_rct.createFBOAt(1,FrameBufferType.FRAMEBUFFER, this.m_rct.getViewWidth(), this.m_rct.getViewHeight(),false,false);
+                    this.m_rct.createFBOAt(0,FrameBufferType.FRAMEBUFFER, this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight(),true,false);
+                    this.m_rct.createFBOAt(1,FrameBufferType.FRAMEBUFFER, this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight(),false,false);
                     
                     this.m_profileInstance = new ProfileInstance();
                     this.m_profileInstance.initialize(this.m_rc.getRenderer());

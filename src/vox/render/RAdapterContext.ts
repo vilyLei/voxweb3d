@@ -323,7 +323,7 @@ export namespace vox
                     this.m_stage.viewWidth = this.m_displayWidth;
                     this.m_stage.viewHeight = this.m_displayHeight;
                     this.m_stage.pixelRatio = k;
-                    DivLog.showLogOnce("stageSize: "+this.m_stage.stageWidth+","+this.m_stage.stageHeight);
+                    DivLog.ShowLogOnce("stageSize: "+this.m_stage.stageWidth+","+this.m_stage.stageHeight);
                     DivLog.ShowLog("canvasSize: "+this.m_canvas.width+","+this.m_canvas.height);
                     DivLog.ShowLog("dispSize: "+this.m_displayWidth+","+this.m_displayHeight);
                     DivLog.ShowLog("pixelRatio:"+this.m_devicePixelRatio);

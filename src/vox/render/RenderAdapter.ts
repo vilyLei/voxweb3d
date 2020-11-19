@@ -141,10 +141,10 @@ export namespace vox
 				this.m_rcontext.autoSynContextSizeAndWindowSize = false;
 				this.m_rcontext.resize(pw,ph);
 			}
-			getViewX():number { return this.m_rcontext.getViewportX(); }
-			getViewY():number { return this.m_rcontext.getViewportY(); }
-			getViewWidth():number { return this.m_rcontext.getViewportWidth(); }
-			getViewHeight():number { return this.m_rcontext.getViewportHeight(); }
+			getViewportX():number { return this.m_rcontext.getViewportX(); }
+			getViewportY():number { return this.m_rcontext.getViewportY(); }
+			getViewportWidth():number { return this.m_rcontext.getViewportWidth(); }
+			getViewportHeight():number { return this.m_rcontext.getViewportHeight(); }
 			
     		setColorMask(mr:boolean,mg:boolean,mb:boolean,ma:boolean):void
     		{
@@ -247,8 +247,8 @@ export namespace vox
 						this.m_viewHeight
 						);
 					this.uViewProbe.update();
-					DivLog.ShowLog("viewPort: "+this.m_viewWidth+","+this.m_viewHeight);
-					console.log("reseizeViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
+					DivLog.ShowLog("reseizeViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
+					//console.log("reseizeViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
 					this.m_rc.viewport(
 						this.m_viewX,
 						this.m_viewY,
@@ -295,18 +295,20 @@ export namespace vox
 					this.m_viewWidth = this.m_fboViewSize.z;
 					this.m_viewHeight = this.m_fboViewSize.w;			
 					this.uViewProbe.setVec4Data(						
-						this.m_viewX * k,
-						this.m_viewY * k,
-						this.m_viewWidth * k,
-						this.m_viewHeight * k
+						this.m_viewX,// * k,
+						this.m_viewY, //* k,
+						this.m_viewWidth,// * k,
+						this.m_viewHeight// * k
 					);
 					this.uViewProbe.update();
-					console.log("reseizeFBOViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
+					DivLog.ShowLog("reseizeFBOViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
+					//console.log("reseizeFBOViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
 					this.m_rc.viewport(
-						this.m_viewX * k,
-						this.m_viewY * k,
-						this.m_viewWidth * k,
-						this.m_viewHeight * k,					);
+						this.m_viewX,// * k,
+						this.m_viewY,// * k,
+						this.m_viewWidth,// * k,
+						this.m_viewHeight// * k,
+					);
 					/*
 					this.m_devPRatio = k;
 					this.m_viewX = this.m_fboViewSize.x;
@@ -473,7 +475,7 @@ export namespace vox
 						{
 							if(this.m_synFBOSizeWithViewport)
 							{
-								this.m_fboBuf.initialize(this.m_rc, this.m_rcontext.getRCanvasWidth(), this.m_rcontext.getRCanvasHeight());
+								this.m_fboBuf.initialize(this.m_rc, Math.floor(this.m_rcontext.getRCanvasWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getRCanvasHeight() * this.m_fboSizeFactor));
 							}
 							else
 							{
@@ -490,7 +492,7 @@ export namespace vox
 								this.m_fboBuf.writeStencilEnabled = enableStencil;
 								if(this.m_synFBOSizeWithViewport)
 								{
-									this.m_fboBuf.initialize(this.m_rc, this.m_rcontext.getRCanvasWidth(), this.m_rcontext.getRCanvasHeight());
+									this.m_fboBuf.initialize(this.m_rc, Math.floor(this.m_rcontext.getRCanvasWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getRCanvasHeight() * this.m_fboSizeFactor));
 								}
 								else
 								{
@@ -581,7 +583,7 @@ export namespace vox
 							if(this.m_synFBOSizeWithViewport)
 							{
 								//console.log("this.m_fboSizeFactor: "+this.m_fboSizeFactor);
-								this.m_fboViewSize.setTo(0,0,this.getViewWidth(),this.getViewHeight());
+								this.m_fboViewSize.setTo(0,0,Math.floor(this.getViewportWidth() * this.m_fboSizeFactor),Math.floor(this.getViewportHeight() * this.m_fboSizeFactor));
 								this.reseizeFBOViewPort();
 							}
 							else

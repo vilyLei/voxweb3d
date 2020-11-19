@@ -6,11 +6,13 @@
 /***************************************************************************/
 // gpu射线检测拾取代理对象
 
+import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as MathConstT from "../../vox/utils/MathConst";
 import * as Vector3DT from "../../vox/geom/Vector3";
 import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as AABBT from "../../vox/geom/AABB";
 import * as CameraBaseT from "../../vox/view/CameraBase";
+import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
 import * as IRayGpuSelectorT from '../../vox/scene/IRaySelector';
@@ -24,12 +26,15 @@ import * as IRendererT from "../../vox/scene/IRenderer";
 import * as Color4T from "../../vox/material/Color4";
 import * as MaterialProgramT from "../../vox/material/MaterialProgram";
 import * as PixelPickIndexMaterialT from "../../vox/material/mcase/PixelPickIndexMaterial";
+import * as DivLogT from "../../vox/utils/DivLog";
 
+import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import MathConst = MathConstT.vox.utils.MathConst;
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import AABB = AABBT.vox.geom.AABB;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
+import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
 import IRayGpuSelector = IRayGpuSelectorT.vox.scene.IRaySelector;
@@ -44,6 +49,7 @@ import IRenderer = IRendererT.vox.scene.IRenderer;
 import Color4 = Color4T.vox.material.Color4;
 import MaterialProgram = MaterialProgramT.vox.material.MaterialProgram;
 import PixelPickIndexMaterial = PixelPickIndexMaterialT.vox.material.mcase.PixelPickIndexMaterial;
+import DivLog = DivLogT.vox.utils.DivLog;
 
 export namespace vox
 {
@@ -402,7 +408,7 @@ export namespace vox
                 let pmx:number = proxy.getStage3D().mouseX;
                 //let pmy:number = proxy.getStage3D().stageHeight - proxy.getStage3D().mouseY;
                 let pmy:number = proxy.getStage3D().mouseY;
-
+                VertexRenderObj.RenderBegin();
                 proxy.getClearRGBAColor4f(this.m_initColor);
                 proxy.setClearRGBAColor4f(0.0,0.0,0.0,0.0);
                 proxy.setScissorEnabled(true);
@@ -421,6 +427,8 @@ export namespace vox
                 let entity:DisplayEntity = null;
                 let j:number = -1;
                 let i:number = 0;
+                //DivLog.ShowLogOnce("total: "+total);
+                //RendererDeviece.SHOWLOG_ENABLED = true;
                 for(; i < total; ++i)
                 {
                     rayNode = this.m_rsnList[i];
@@ -429,6 +437,7 @@ export namespace vox
                     {
                         ++j;
                         this.m_indexMaterial.setIndex(j+2);
+                        
                         this.m_uintList[j] = i;
                         MaterialProgram.UpdateMaterialUniformToCurrentShd(proxy,this.m_indexMaterial);
                         this.m_renderer.drawEntityByLockMaterial(entity);
@@ -440,13 +449,16 @@ export namespace vox
                 }
                 RendererState.UnlockBlendMode();
                 RendererState.UnlockDepthTestMode();
+                //RendererDeviece.SHOWLOG_ENABLED = false;
+                //DivLog.ShowLog("uintArray[3]: "+this.m_uintArray[3]+", "+(((this.m_uintArray[0])<<8) + this.m_uintArray[1] + this.m_uintArray[2]/255.0));
                 if(this.m_uintArray[3] > 1)
                 {
                     //console.log("this.m_uintArray: "+this.m_uintArray);
                     i = this.m_uintList[this.m_uintArray[3] - 2];
                     rayNode = this.m_rsnList[i];
-                    let depth:number = this.m_uintArray[0] * 255.0 + this.m_uintArray[1] + this.m_uintArray[2]/255.0;
-                    //console.log("depth: "+depth);
+                    //let depth:number = this.m_uintArray[0] * 255.0 + this.m_uintArray[1] + this.m_uintArray[2]/255.0;  
+                    let depth:number = ((this.m_uintArray[0])<<8) + this.m_uintArray[1] + this.m_uintArray[2]/255.0;
+                    //DivLog.ShowLog("depth: "+depth);
                     if(this.m_selectedNode != null)
                     {
                         let selectedEntity:DisplayEntity = this.m_selectedNode.entity;
@@ -463,6 +475,9 @@ export namespace vox
                     {
                         // 实际选中的是当前的通过像素拾取得到的对象
                         rayNode.dis = depth;
+                        // 重新计算wpos和lpos
+                        this.getWorldPosByRayDistance(depth,this.m_rltv,this.m_camera.getPosition(),rayNode.wpv);
+                        //console.log(depth+","+rayNode.wpv.toString());
                         this.m_selectedNode = rayNode;
                     }
                 }
@@ -473,6 +488,18 @@ export namespace vox
                 RendererState.UnlockDepthTestMode();
                 
                 proxy.setClearRGBAColor4f(this.m_initColor.r,this.m_initColor.g,this.m_initColor.b,this.m_initColor.a);
+            }
+            
+            // @param           the cameraDistance is the distance between camera position and a position
+            private getWorldPosByRayDistance(cameraDistance:number,tv:Vector3D,camPv:Vector3D,resultV:Vector3D):void
+            {
+                resultV.x = tv.x * cameraDistance + camPv.x;
+                resultV.y = tv.y * cameraDistance + camPv.y;
+                resultV.z = tv.z * cameraDistance + camPv.z;
+                //console.log("### cameraDistance: "+cameraDistance);
+                //  console.log("tv: "+tv.toString());
+                //  console.log("camPv: "+camPv.toString());
+                //  console.log("resultV: "+resultV.toString());
             }
         }
     }

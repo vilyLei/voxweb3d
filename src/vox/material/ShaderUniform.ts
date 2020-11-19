@@ -21,7 +21,7 @@ export namespace vox
 {
     export namespace material
     {
-        export class ShaderUniform
+        export class ShaderUniform implements IShaderUniform
         {
             constructor()
             {
@@ -35,7 +35,6 @@ export namespace vox
             calcModels:any[] = null;
             always:boolean = true;
             next:ShaderUniform = null;
-            
             // for fast data's operation
             getDataRefFromUniformName(ns:string):Float32Array
             {
@@ -81,12 +80,14 @@ export namespace vox
                 }
                 this.uniformSize = probe.uniformSlotSize;
             }
-            use(rc:RenderProxy):void
-            {
-            }
+            useByLocation(rc:RenderProxy,type:number,location:any,i:number):void{}
+            useByShd(rc:RenderProxy,shd:ShaderProgram):void{}
+            use(rc:RenderProxy):void{}
+            updateData():void{}
+            destroy():void{}
         }
         // for webgl1
-        export class ShaderUniformV1 extends ShaderUniform implements IShaderUniform
+        export class ShaderUniformV1 extends ShaderUniform
         {
             constructor()
             {
@@ -153,7 +154,7 @@ export namespace vox
         }
 
         // for webgl2
-        export class ShaderUniformV2 extends ShaderUniform implements IShaderUniform
+        export class ShaderUniformV2 extends ShaderUniform
         {
             constructor()
             {

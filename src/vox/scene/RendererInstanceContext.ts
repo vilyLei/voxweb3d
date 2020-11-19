@@ -225,10 +225,10 @@ export namespace vox
             }
 			setClearDepth(depth:number):void { this.m_rAdapter.setClearDepth(depth); }
 			getClearDepth():number { return this.m_rAdapter.getClearDepth(); }
-			getViewX():number { return this.m_rAdapter.getViewX(); }
-			getViewY():number { return this.m_rAdapter.getViewY(); }
-			getViewWidth():number { return this.m_rAdapter.getViewWidth(); }
-            getViewHeight():number { return this.m_rAdapter.getViewHeight(); }
+			getViewportX():number { return this.m_rAdapter.getViewportX(); }
+			getViewportY():number { return this.m_rAdapter.getViewportY(); }
+			getViewportWidth():number { return this.m_rAdapter.getViewportWidth(); }
+            getViewportHeight():number { return this.m_rAdapter.getViewportHeight(); }
             /**
              * 设置用于3D绘制的canvas的宽高尺寸,如果调用了此函数，则不会自动匹配窗口尺寸改变，默认是自动匹配窗口尺寸改变的
              * @param       pw 像素宽度

@@ -133,6 +133,15 @@ export namespace vox
                     uniform.useByShd(rc,shd);
                 }
             }
+            static UpdateUniformToCurrentShd2(rc:RenderProxy,uniform:IShaderUniform,uniform2:IShaderUniform)
+            {
+                let shd:ShaderProgram = MaterialProgram.__s_currShd;
+                if(shd != null)
+                {
+                    uniform.useByShd(rc,shd);
+                    uniform2.useByShd(rc,shd);
+                }
+            }
             static UpdateMaterialUniformToCurrentShd(rc:RenderProxy,m:MaterialBase)
             {
                 let shd:ShaderProgram = MaterialProgram.__s_currShd;

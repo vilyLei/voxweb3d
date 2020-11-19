@@ -31,7 +31,7 @@ export namespace vox
 
             batchEnabled:boolean = true;
             processFixedState:boolean = false;
-            constructor(glCanvasName:string,divIdns:string = "")
+            constructor(glCanvasName:string = "glcanvas",divIdns:string = "")
             {
                 if(divIdns != "")
                 {

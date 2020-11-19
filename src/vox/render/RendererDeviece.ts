@@ -13,6 +13,8 @@ export namespace vox
             private static s_inited:boolean = true;
             private static s_WEBGL_VER:number = 2;
             private static s_devicePixelRatio:number = 1.0;
+            // for debug
+            public static SHOWLOG_ENABLED:boolean = false;
             public static SHADERCODE_TRACE_ENABLED:boolean = false;
             // true: force vertex shader precision to highp
             public static VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED:boolean = true;

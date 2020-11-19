@@ -73,20 +73,20 @@ export namespace demo
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
-                this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().stageWidth - 10);
+                this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
 
                 // add common 3d display entity
-                var plane:Plane3DEntity = new Plane3DEntity();
-                plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
-                this.m_rscene.addEntity(plane);
+                //  var plane:Plane3DEntity = new Plane3DEntity();
+                //  plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
+                //  this.m_rscene.addEntity(plane);
 
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.initialize(300.0);
                 this.m_rscene.addEntity(axis);
 
-                let box:Box3DEntity = new Box3DEntity();
-                box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
-                this.m_rscene.addEntity(box);
+                //  let box:Box3DEntity = new Box3DEntity();
+                //  box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
+                //  this.m_rscene.addEntity(box);
                 // add rtt texture 3d display entity
                 let boxRtt:Box3DEntity = new Box3DEntity();
                 boxRtt.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[TextureStore.GetRTTTextureAt(0)]);

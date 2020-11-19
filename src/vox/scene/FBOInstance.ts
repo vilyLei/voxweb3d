@@ -163,8 +163,8 @@ export namespace vox
                 {
                     this.m_fboIndex = fboIndex;
                     this.m_fboType = FrameBufferType.FRAMEBUFFER;
-                    this.m_initW = this.m_rAdapter.getViewWidth();
-                    this.m_initH = this.m_rAdapter.getViewHeight();
+                    this.m_initW = this.m_rAdapter.getViewportWidth();
+                    this.m_initH = this.m_rAdapter.getViewportHeight();
                     this.m_enableDepth = enableDepth;
                     this.m_enableStencil = enableStencil;
                     this.m_multisampleLevel = multisampleLevel;
@@ -242,10 +242,10 @@ export namespace vox
             }
 			setClearDepth(depth:number):void { this.m_clearDepth = depth; }
 			getClearDepth():number { return this.m_rAdapter.getClearDepth(); }
-			getViewX():number { return this.m_rAdapter.getViewX(); }
-			getViewY():number { return this.m_rAdapter.getViewY(); }
-			getViewWidth():number { return this.m_rAdapter.getViewWidth(); }
-            getViewHeight():number { return this.m_rAdapter.getViewHeight(); }
+			getViewX():number { return this.m_rAdapter.getViewportX(); }
+			getViewY():number { return this.m_rAdapter.getViewportY(); }
+			getViewWidth():number { return this.m_rAdapter.getViewportWidth(); }
+            getViewHeight():number { return this.m_rAdapter.getViewportHeight(); }
             
             setClearRGBColor3f(pr:number,pg:number,pb:number)
             {

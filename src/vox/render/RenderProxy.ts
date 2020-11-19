@@ -18,6 +18,7 @@ import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RAdapterContextT from "../../vox/render/RAdapterContext";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as RenderFBOProxyT from "../../vox/render/RenderFBOProxy";
+import * as DivLogT from "../../vox/utils/DivLog";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import MathConst = MathConstT.vox.utils.MathConst;
@@ -33,6 +34,7 @@ import RenderColorMask = RODrawStateT.vox.render.RenderColorMask;
 import RAdapterContext = RAdapterContextT.vox.render.RAdapterContext;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RenderFBOProxy = RenderFBOProxyT.vox.render.RenderFBOProxy;
+import DivLog = DivLogT.vox.utils.DivLog;
 
 export namespace vox
 {
@@ -624,13 +626,13 @@ export namespace vox
             {
                 color4.copyFrom(this.m_adapter.bgColor);
             }
-            getViewWidth():number
+            getViewportWidth():number
             {
-                return this.m_adapter.getViewWidth();
+                return this.m_adapter.getViewportWidth();
             }
-            getViewHeight():number
+            getViewportHeight():number
             {
-                return this.m_adapter.getViewHeight();
+                return this.m_adapter.getViewportHeight();
             }
             setRenderToBackBuffer():void
             {

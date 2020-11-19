@@ -1,4 +1,5 @@
 
+import * as DivLogT from "../vox/utils/DivLog";
 import * as Vector3DT from "../vox/geom/Vector3";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as CameraBaseT from "../vox/view/CameraBase"
@@ -38,6 +39,7 @@ import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
 import ScreenFixedPlaneMaterial = ScreenFixedPlaneMaterialT.vox.material.mcase.ScreenFixedPlaneMaterial;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
+import DivLog = DivLogT.vox.utils.DivLog;
 
 export namespace demo
 {
@@ -59,6 +61,9 @@ export namespace demo
             if(this.m_rcontext == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+                //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
+                DivLog.SetDebugEnabled(true);
                 let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
                 let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
                 tex0.mipmapEnabled = true;
@@ -66,9 +71,9 @@ export namespace demo
                 tex1.setWrap(TextureConst.WRAP_REPEAT);
                 tex1.mipmapEnabled = true;
 
-                this.m_statusDisp.initialize("rstatus");
-
                 let rparam:RendererParam = new RendererParam("glcanvas");
+                rparam.maxWebGLVersion = 1;
+                rparam.setCamPosition(500.0,500.0,500.0);
                 this.m_renderer = new RendererInstance();
                 this.m_renderer.initialize(rparam);
                 this.m_renderer.appendProcess();
@@ -79,8 +84,10 @@ export namespace demo
 
                 this.m_viewSize.x = this.m_rcontext.getStage3D().stageWidth;
                 this.m_viewSize.y = this.m_rcontext.getStage3D().stageHeight;
-                this.m_viewSize.z = Math.floor(this.m_rcontext.getStage3D().stageHalfWidth * 0.5);
-                this.m_viewSize.w = Math.floor(this.m_rcontext.getStage3D().stageHalfHeight * 0.5);
+                this.m_viewSize.z = Math.floor(this.m_viewSize.x * 0.5);
+                this.m_viewSize.w = Math.floor(this.m_viewSize.y * 0.5);
+                //  this.m_viewSize.z = Math.floor(this.m_rcontext.getStage3D().stageHalfWidth * 0.5);
+                //  this.m_viewSize.w = Math.floor(this.m_rcontext.getStage3D().stageHalfHeight * 0.5);
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
                 // add common 3d display entity
@@ -100,61 +107,46 @@ export namespace demo
                 let material:ScreenFixedPlaneMaterial = new ScreenFixedPlaneMaterial();
                 let rttPlane:Plane3DEntity = new Plane3DEntity();
                 rttPlane.setMaterial(material);
-                rttPlane.initialize(-1.0,-1.0,2.0,2.0,[this.getTextureAt(0)]);
+                rttPlane.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(0)]);
                 this.m_renderer.addEntity(rttPlane, 1);
 
                 material = new ScreenFixedPlaneMaterial();
                 rttPlane = new Plane3DEntity();
                 rttPlane.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
                 rttPlane.setMaterial(material);
-                rttPlane.initialize(-1.0,-1.0,2.0,2.0,[this.getTextureAt(1)]);
+                rttPlane.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(1)]);
                 this.m_renderer.addEntity(rttPlane, 2);
 
                 this.m_rcontext.createFBOAt(0,FrameBufferType.FRAMEBUFFER,this.m_viewSize.x,this.m_viewSize.y,true,false);
                 this.m_rcontext.createFBOAt(1,FrameBufferType.FRAMEBUFFER,this.m_viewSize.z,this.m_viewSize.w,true,false);
+                
+                this.m_statusDisp.initialize("rstatus",this.m_renderer.getStage3D().viewWidth - 64);
+
             }
         }
-        private m_rttTexs:TextureProxy[] = [null,null,null];
-        getTextureAt(i:number):TextureProxy
-	    {
-	    	if (this.m_rttTexs[i] != null)
-	    	{
-	    		return this.m_rttTexs[i];
-            }
-            if(i == 1)
-            {
-                this.m_rttTexs[i] = TextureStore.CreateTex2D(this.m_viewSize.z,this.m_viewSize.w);
-            }
-            else
-            {                
-	    	    this.m_rttTexs[i] = TextureStore.CreateTex2D(64, 64);
-            }
-	    	return this.m_rttTexs[i];
-	    }
         run():void
         {
             this.m_statusDisp.update();
-
+            DivLog.ShowLogOnce("");
             let rinstance:RendererInstance = this.m_renderer;
             let pcontext:RendererInstanceContext = this.m_rcontext;
             //this.m_camera.perspectiveRH(this.m_camera.getFov(),this.m_camera.getAspect(),0.1,5000.0);
-            pcontext.setViewPort(0,0,this.m_viewSize.x,this.m_viewSize.y);
+            //pcontext.setViewPort(0,0,this.m_viewSize.x,this.m_viewSize.y);
             pcontext.setClearRGBColor3f(0.0, 0.0, 0.0);
             pcontext.runBegin();
             rinstance.update();
-            
+            //          rinstance.runAt(0);
             // --------------------------------------------- rtt begin
             pcontext.setClearRGBColor3f(0.1, 0.0, 0.1);
             pcontext.synFBOSizeWithViewport();
             pcontext.bindFBOAt(0,FrameBufferType.FRAMEBUFFER);
-            pcontext.setRenderToTexture(this.getTextureAt(0), true, false, 0);
+            pcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(0), true, false, 0);
             pcontext.useFBO(true, true, false);
             rinstance.runAt(0);
-            
-            //pcontext.asynFBOSizeWithViewport();
-            pcontext.setFBOSizeFactorWithViewPort(0.5);
+            //              //pcontext.asynFBOSizeWithViewport();
+            pcontext.setFBOSizeFactorWithViewPort(0.25);
             pcontext.bindFBOAt(1,FrameBufferType.FRAMEBUFFER);
-            pcontext.setRenderToTexture(this.getTextureAt(1), true, false, 0);
+            pcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(1), true, false, 0);
             pcontext.useFBO(true, true, false);
             rinstance.runAt(0);
             // --------------------------------------------- rtt end
@@ -162,10 +154,41 @@ export namespace demo
             pcontext.setRenderToBackBuffer();
             rinstance.runAt(1);
             rinstance.runAt(2);
+            //*/
 
             pcontext.runEnd();            
-            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);;
+            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
             pcontext.updateCamera();
+        }
+        run2():void
+        {
+            let pcontext:RendererInstanceContext = this.m_rcontext;
+            let rinstance:RendererInstance = this.m_renderer;
+            // show fps status
+            this.m_statusDisp.update();
+            // 分帧加载
+            //this.m_texLoader.run();
+            pcontext.setClearRGBColor3f(0.0, 0.0, 0.0);
+            // render begin
+            pcontext.runBegin();
+            // run logic program
+            rinstance.update();
+            // --------------------------------------------- rtt begin
+            pcontext.setClearRGBColor3f(0.1, 0.0, 0.1);
+            pcontext.synFBOSizeWithViewport();
+            pcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(0), true, false, 0);
+            pcontext.useFBO(true, true, false);
+            // to be rendering in framebuffer
+            rinstance.runAt(0);
+            // --------------------------------------------- rtt end
+            pcontext.setClearRGBColor3f(0.0, 3.0, 2.0);
+            pcontext.setRenderToBackBuffer();
+            // to be rendering in backbuffer
+            rinstance.runAt(1);
+            // render end
+            pcontext.runEnd();
+
+            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }
 }

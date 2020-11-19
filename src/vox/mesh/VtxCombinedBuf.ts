@@ -27,7 +27,7 @@ export namespace vox
     {
         export class VtxCombinedBuf implements IVtxBuf
         {
-            private m_uid:number = 0;
+            private m_uid:number = -1;
             private m_bufDataUsage:number = 0;
             private m_aTypeList:number[] = null;
             private m_total:number = 0;
@@ -174,30 +174,24 @@ export namespace vox
             }
             private m_vroList:VertexRenderObj[] = [];
             private m_vroListLen:number = 0;
-        
             // 创建被 RPOUnit 使用的 vro 实例
             createVROBegin(rc:RenderProxy, shdp:ShaderProgram, vaoEnabled:boolean = true):VertexRenderObj
             {
-                let mid:number = 31;
+                let mid:number = shdp.getLayoutBit();
                 if(vaoEnabled)
                 {
-                    mid = 51;
+                    // 之所以这样区分，是因为 shdp.getLayoutBit() 的取值范围不会超过short(double bytes)取值范围
+                    mid += 0xf0000;
                 }
                 let i:number = 0;
-                for(; i < this.m_total; ++i)
-                {
-                    if(shdp.testVertexAttribPointerType(this.m_aTypeList[i]))
-                    {
-                        mid = mid * 131 + i;
-                    }
-                }
-                for(i = 0; i < this.m_vroListLen; ++i)
+                for(; i < this.m_vroListLen; ++i)
                 {
                     if(this.m_vroList[i].getMid() == mid)
                     {
                         return this.m_vroList[i];
                     }
                 }
+                //console.log("### Combined mid: "+mid+", uid: "+this.m_uid);
                 let vro:VertexRenderObj = VertexRenderObj.Create(mid,this.m_uid);
                 vro.vbuf = this.m_f32Buf;
                 if(vaoEnabled)
@@ -205,7 +199,7 @@ export namespace vox
                     // vao 的生成要记录标记,防止重复生成, 因为同一组数据在不同的shader使用中可能组合方式不同，导致了vao可能是多样的
                     //console.log("VtxCombinedBuf::createVROBegin(), "+this.m_aTypeList+" /// "+this.m_wholeStride+" /// "+this.m_pOffsetList);
                     vro.vao = rc.createVertexArray();
-                    rc.bindVertexArray(vro.vao);                    
+                    rc.bindVertexArray(vro.vao);
                     rc.bindArrBuf(this.m_f32Buf);
                     shdp.vertexAttribPointerTypeFloat(this.m_aTypeList[0], this.m_wholeStride,this.m_pOffsetList[0]);
                     for(i = 1; i < this.m_total; ++i)

@@ -29,20 +29,19 @@ export namespace demo
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 
-                this.m_statusDisp.initialize("rstatus");
 
                 this.m_renderer = new RendererInstance();
-                let rparam:RendererParam = new RendererParam("glcanvas");
+                let rparam:RendererParam = new RendererParam();
                 rparam.setCamProject(60.0,0.1,5000.0);
                 rparam.setCamPosition(1700,1700,1700);
                 this.m_renderer.initialize(rparam);
                 this.m_scene.initialize(this.m_renderer);
+                this.m_statusDisp.initialize("rstatus",this.m_renderer.getStage3D().viewWidth - 64);
                 
             }
         }
         run():void
         {
-
             this.m_statusDisp.update();
             this.m_scene.run();
         }

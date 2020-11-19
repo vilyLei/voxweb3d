@@ -181,21 +181,19 @@ export namespace demo
                 switch(index)
                 {
                     case 0:
-                        this.m_texs[index] = TextureStore.CreateTex2D(128,128);
+                        this.m_texs[index] = TextureStore.GetRTTTextureAt(0)
                         TextureStore.__$AttachTex(this.m_texs[index]);
                         this.m_texs[index].internalFormat = TextureFormat.RGBA16F;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
                         this.m_texs[index].dataType = TextureDataType.FLOAT;
-                        this.m_texs[index].magFilter = TextureConst.NEAREST;
                         return this.m_texs[index];
                     break;
 
                     case 1:
-                        this.m_texs[index] = TextureStore.CreateTex2D(128,128);
+                        this.m_texs[index] = TextureStore.GetRTTTextureAt(1)
                         TextureStore.__$AttachTex(this.m_texs[index]);
                         this.m_texs[index].internalFormat = TextureFormat.RGBA;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
-                        this.m_texs[index].magFilter = TextureConst.NEAREST;
                         return this.m_texs[index];
                     break;
                     default:

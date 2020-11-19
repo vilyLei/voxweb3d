@@ -129,8 +129,7 @@ export namespace demo
         {
             this.m_mousePv.x = this.m_rscene.getStage3D().mouseX;
             this.m_mousePv.y = this.m_rscene.getStage3D().mouseY;
-            let dpr:number = RendererDeviece.GetDevicePixelRatio();
-            this.m_rttCirM.setPosXY(this.m_mousePv.x * dpr,this.m_mousePv.y * dpr);
+            this.m_rttCirM.setPosXY(this.m_mousePv.x,this.m_mousePv.y);
             let pcontext:RendererInstanceContext = this.m_rcontext;
             // show fps status
             this.m_statusDisp.update();
@@ -197,7 +196,6 @@ export namespace demo
             // --------------------------------------------- rtt begin
             pcontext.setClearRGBColor3f(0.1, 0.0, 0.1);
             pcontext.synFBOSizeWithViewport();
-            pcontext.setFBOSizeFactorWithViewPort(dpr);
             pcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(0), true, false, 0);
             pcontext.useFBO(true, true, false);
             this.m_rscene.getCamera().forward( +380 );

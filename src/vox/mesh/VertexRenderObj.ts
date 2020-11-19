@@ -5,11 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as ROVtxBufUidStoreT from "../../vox/mesh/ROVtxBufUidStore";
 
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import ROVtxBufUidStore = ROVtxBufUidStoreT.vox.mesh.ROVtxBufUidStore;
+import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 
 export namespace vox
 {
@@ -52,7 +54,6 @@ export namespace vox
                 this.m_mid = mid;
                 this.m_vtxUid = pvtxUid;
                 this.m_uid = VertexRenderObj.__s_uid++;
-
                 //ROVtxBufUidStore.GetInstance().__$attachAt(this.m_vtxUid);
             }
             //  __$getRUT():number
@@ -205,8 +206,8 @@ export namespace vox
             }
             static RenderBegin():void
             {
-                VertexRenderObj.__s_vtxUid = -1;
-                VertexRenderObj.__s_preUid = -1;
+                VertexRenderObj.__s_vtxUid = -2;
+                VertexRenderObj.__s_preUid = -3;
             }
         }
     }

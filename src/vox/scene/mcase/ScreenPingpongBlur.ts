@@ -97,7 +97,8 @@ export namespace vox
                     {
                         return this.m_texs[index];
                     }
-                    this.m_texs[index] = TextureStore.CreateTex2D(this.m_renderIns.getViewWidth(),this.m_renderIns.getViewHeight());//new TextureProxy(this.m_renderIns.getViewWidth(),this.m_renderIns.getViewHeight());
+                    this.m_texs[index] = TextureStore.CreateTex2D(this.m_renderIns.getViewWidth(),this.m_renderIns.getViewHeight());
+                    this.m_texs[index].minFilter = TextureConst.NEAREST;
                     this.m_texs[index].magFilter = TextureConst.NEAREST;
                     return this.m_texs[index];
                 }
@@ -106,8 +107,8 @@ export namespace vox
                 {let rc:RenderProxy = this.m_renderIns.getRenderProxy();
                     let adapter:RenderAdapter = rc.getRenderAdapter();
 
-                    let viewW:number = adapter.getViewWidth();
-                    let viewH:number = adapter.getViewHeight();
+                    let viewW:number = adapter.getViewportWidth();
+                    let viewH:number = adapter.getViewportHeight();
                     let tex0:TextureProxy = this.getTextureAt(0);
                     let tex1:TextureProxy = this.getTextureAt(1);
                     if(this.m_screenPlane_0 == null)
@@ -153,8 +154,8 @@ export namespace vox
                 {
                     let rc:RenderProxy = this.m_renderIns.getRenderProxy();
                     let adapter:RenderAdapter = rc.getRenderAdapter();
-                    let viewW:number = adapter.getViewWidth();
-                    let viewH:number = adapter.getViewHeight();
+                    let viewW:number = adapter.getViewportWidth();
+                    let viewH:number = adapter.getViewportHeight();
                     let tex0:TextureProxy = this.getTextureAt(0);
                     let tex1:TextureProxy = this.getTextureAt(1);
                     if(this.m_flagBoo)
@@ -239,8 +240,8 @@ export namespace vox
                 {
                     let rc:RenderProxy = this.m_renderIns.getRenderProxy();
                     let adapter:RenderAdapter = rc.getRenderAdapter();
-                    let viewW:number = adapter.getViewWidth();
-                    let viewH:number = adapter.getViewHeight();
+                    let viewW:number = adapter.getViewportWidth();
+                    let viewH:number = adapter.getViewportHeight();
                     let tex0:TextureProxy = this.getTextureAt(0);
                     let tex1:TextureProxy = this.getTextureAt(1);
                     if(this.m_flagBoo)

@@ -7,6 +7,8 @@
 // 用于对 RPOBlock 进行必要的组织, 例如 合批或者按照 shader不同来分类, 以及依据其他机制分类等等
 // 目前一个block内的所有node 所使用的shader program 是相同的
 
+import * as IShaderUniformT from "../../vox/material/IShaderUniform";
+import * as RODisplayT from "../../vox/display/RODisplay";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPOUnitBuiderT from "../../vox/render/RPOUnitBuider";
 import * as RPONodeBuiderT from "../../vox/render/RPONodeBuider";
@@ -14,7 +16,10 @@ import * as RPONodeLinkerT from "../../vox/render/RPONodeLinker";
 import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as MaterialProgramT from "../../vox/material/MaterialProgram";
+import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
 
+import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
+import RODisplay = RODisplayT.vox.display.RODisplay;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RPOUnitBuider = RPOUnitBuiderT.vox.render.RPOUnitBuider;
 import RPONode = RPONodeBuiderT.vox.render.RPONode;
@@ -24,6 +29,7 @@ import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
 import RenderColorMask = RODrawStateT.vox.render.RenderColorMask;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import MaterialProgram = MaterialProgramT.vox.material.MaterialProgram;
+import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
 
 export namespace vox
 {
@@ -107,6 +113,7 @@ export namespace vox
                 if(nextNode != null)
                 {
                     MaterialProgram.UseShdByUid(rc,this.shdUid);
+                    RPOUnit.RenderBegin();
                     let unit:RPOUnit = null;
                     let vtxTotal:number = 0;
                     let texTotal:number = 0;
@@ -161,12 +168,13 @@ export namespace vox
                 if(nextNode != null)
                 {
                     MaterialProgram.UseShdByUid(rc,this.shdUid);
+                    RPOUnit.RenderBegin();
                     let unit:RPOUnit = null;
                     let vtxTotal:number = 0;
                     let texTotal:number = 0;
                     let flagVBoo:boolean = false;
                     let flagTBoo:boolean = false;
-
+                    let preUniform:IShaderUniform = null;
                     RenderStateObject.UseRenderState(nextNode.unit.renderState);
                     RenderColorMask.UseRenderState(nextNode.unit.rcolorMask);
                     while(nextNode != null)
@@ -209,7 +217,12 @@ export namespace vox
                                 {
                                     unit.ubo.run(rc);
                                 }
-                                unit.uniform.use(rc);
+                                unit.transUniform.use(rc);
+                                if(preUniform != unit.uniform)
+                                {
+                                    preUniform = unit.uniform;
+                                    unit.uniform.use(rc);
+                                }
                                 unit.drawThis(rc);
                             }
                         }
@@ -223,9 +236,9 @@ export namespace vox
                 if(nextNode != null)
                 {
                     MaterialProgram.UseShdByUid(rc, this.shdUid);
+                    RPOUnit.RenderBegin();
                     let unit:RPOUnit = null;
                     let flagVBoo:boolean = false;
-
                     if(this.batchEnabled)
                     {
                         let vtxTotal:number = 0;
@@ -271,11 +284,14 @@ export namespace vox
                 }
             }
             // 在锁定material的时候,直接绘制单个unit
-            drawLockMaterialByUnit(rc:RenderProxy,unit:RPOUnit):void
+            drawLockMaterialByUnit(rc:RenderProxy,unit:RPOUnit,disp:RODisplay,forceUpdateUniform:boolean):void
             {
                 if(unit.drawEnabled)
                 {
-                    unit.vro.run(rc);
+                    if(forceUpdateUniform)RPOUnit.RenderBegin();
+                    // 如果不这么做，vro和shader attributes没有完全匹配的时候可能在移动设备上会有问题(无法正常绘制)例如 ip6s
+                    let vro:VertexRenderObj = disp.vbuf.createVROBegin(MaterialProgram.GetCurrentShd());
+                    vro.run(rc);
                     unit.runLockMaterial2(rc);
                     unit.drawThis(rc);
                 }

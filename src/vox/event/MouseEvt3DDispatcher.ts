@@ -118,10 +118,10 @@ export namespace vox
                     {
                         if(this.m_evtNodes[t] != null)this.m_evtNodes[t].removeListener(target,func);
                     }
-                    else
-                    {
-                        console.log("MouseEvt3DDispatcher::removeEventListener(), Warn: undefined Event type.");
-                    }
+                    //  else
+                    //  {
+                    //      console.log("MouseEvt3DDispatcher::removeEventListener(), Warn: undefined Event type.");
+                    //  }
                 }
             }
         }

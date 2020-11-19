@@ -30,7 +30,7 @@ export namespace vox
             {
                 return DivLog.s_logStr;
             }
-            static showLogOnce(logStr:string):void
+            static ShowLogOnce(logStr:string):void
             {
                 if(DivLog.s_debugEanbled)
                 {
