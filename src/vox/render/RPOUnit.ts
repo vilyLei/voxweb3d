@@ -143,7 +143,7 @@ export namespace vox
                     this.uniform.use(rc);
                 }
                 RenderStateObject.UseRenderState(this.renderState);
-                RenderColorMask.UseRenderState(this.rcolorMask);                
+                RenderColorMask.UseRenderState(this.rcolorMask);
             }
             run(rc:RenderProxy):void
             {

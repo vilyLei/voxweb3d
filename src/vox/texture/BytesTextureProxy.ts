@@ -55,11 +55,31 @@ export namespace vox
                 super(texList, texWidth,texHeight,powerof2Boo);
                 this.m_type = TextureConst.TEX_PROXY2D;
                 this.minFilter = TextureConst.LINEAR;
+                
             }
             toAlphaFormat():void
             {
                 this.srcFormat = TextureFormat.ALPHA;
-                this.internalFormat = TextureFormat.ALPHA; 
+                this.internalFormat = TextureFormat.ALPHA;
+                this.unpackAlignment = 1;
+            }
+            toRedFormat():void
+            {
+                this.srcFormat = TextureFormat.RED;
+                this.internalFormat = TextureFormat.RED;
+                this.unpackAlignment = 1;
+            }
+            toRGBFormat():void
+            {
+                this.srcFormat = TextureFormat.RGB;
+                this.internalFormat = TextureFormat.RGB;
+                this.unpackAlignment = 3;
+            }
+            toRGBAFormat():void
+            {
+                this.srcFormat = TextureFormat.RGBA;
+                this.internalFormat = TextureFormat.RGBA;
+                this.unpackAlignment = 4;
             }
             __$updateToGpu(rc:RenderProxy):void
             {
@@ -70,11 +90,6 @@ export namespace vox
                         let gl:any = rc.RContext;
                         let len:number = this.m_subDataList.length;
 
-                        //  gl.bindTexture(this.m_samplerTarget, this.m_texBuf);
-                        //  if(this.srcFormat == TextureFormat.ALPHA)
-                        //  {
-                        //      gl.pixelStorei(gl.UNPACK_ALIGNMENT,1);
-                        //  }
                         this.__$updateToGpuBegin(gl);
                         if(len > 0)
                         {
@@ -96,30 +111,9 @@ export namespace vox
                             let width:number = this.m_texWidth;
                             let height:number  = this.m_texHeight;
 
-                            //  if(this.m_miplevel > 0)
-                            //  {
-                            //      width = this.m_texWidth >> this.m_miplevel;
-                            //      height = this.m_texHeight >> this.m_miplevel;
-                            //      if (width == 0 && height == 0)
-                            //      {
-                            //          return;
-                            //      }
-                            //      if (width < 1)
-                            //      {
-                            //          width = 1;
-                            //      }
-                            //      if (height < 1)
-                            //      {
-                            //          height = 1;
-                            //      }
-                            //  }
                             gl.texSubImage2D(this.m_samplerTarget, 0, 0, 0, width, height, TextureFormat.ToGL(gl,this.srcFormat), TextureDataType.ToGL(gl, this.dataType), this.m_bytes);
 
                         }
-                        //  if(this.srcFormat == TextureFormat.ALPHA)
-                        //  {
-                        //      gl.pixelStorei(gl.PACK_ALIGNMENT,4);
-                        //  }
                         this.__$updateToGpuEnd(gl);
                         this.m_dataChanged = false;
                     }                    
@@ -133,32 +127,8 @@ export namespace vox
                     let width:number = this.m_texWidth;
                     let height:number  = this.m_texHeight;
                     
-                    //  if(this.m_miplevel > 0)
-                    //  {
-                    //      width = this.m_texWidth >> this.m_miplevel;
-                    //      height = this.m_texHeight >> this.m_miplevel;
-                    //      if (width == 0 && height == 0)
-                    //      {
-                    //          return;
-                    //      }
-                    //      if (width < 1)
-                    //      {
-                    //          width = 1;
-                    //      }
-                    //      if (height < 1)
-                    //      {
-                    //          height = 1;
-                    //      }
-                    //  }
-                    if(this.srcFormat == TextureFormat.ALPHA)
-                    {
-                        gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
-                    }
                     gl.texImage2D(this.m_samplerTarget, this.m_miplevel, TextureFormat.ToGL(gl,this.internalFormat),width,height,0,TextureFormat.ToGL(gl,this.srcFormat),  TextureDataType.ToGL(gl, this.dataType), this.m_bytes);
-                    if(this.srcFormat == TextureFormat.ALPHA)
-                    {
-                        gl.pixelStorei(gl.UNPACK_ALIGNMENT, 4);
-                    }
+
                     if(this.m_subDataList != null)
                     {
                         this.m_dataChanged = true;

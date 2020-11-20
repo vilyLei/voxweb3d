@@ -73,14 +73,12 @@ export namespace vox
             private m_RAdapterContext:RAdapterContext = new RAdapterContext();
 
             private m_rc:any = null;
-            private m_perspective2Enabled = false;
             private m_perspectiveEnabled = true;
 
             private m_viewX:number = 0;
             private m_viewY:number = 0;
             private m_viewW:number = 800;
             private m_viewH:number = 600;
-            private m_viewSizeEnabled:boolean = false;
 
             private m_cameraNear:number = 0.1;
             private m_cameraFar:number = 5000.0;

@@ -30,6 +30,30 @@ export namespace vox
                 this.mipmapEnabled = true;
             }
             
+            toAlphaFormat():void
+            {
+                this.srcFormat = TextureFormat.ALPHA;
+                this.internalFormat = TextureFormat.ALPHA;
+                this.unpackAlignment = 1;
+            }
+            toRedFormat():void
+            {
+                this.srcFormat = TextureFormat.RED;
+                this.internalFormat = TextureFormat.RED;
+                this.unpackAlignment = 1;
+            }
+            toRGBFormat():void
+            {
+                this.srcFormat = TextureFormat.RGB;
+                this.internalFormat = TextureFormat.RGB;
+                this.unpackAlignment = 3;
+            }
+            toRGBAFormat():void
+            {
+                this.srcFormat = TextureFormat.RGBA;
+                this.internalFormat = TextureFormat.RGBA;
+                this.unpackAlignment = 4;
+            }
             uploadFromBytesCubeFaceAt(index:number,bytes:Uint8Array,pw:number,ph:number, miplevel:number = 0)
             {
                 if(this.m_imgDataList == null)
