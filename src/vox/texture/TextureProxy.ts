@@ -25,7 +25,6 @@ export namespace vox
             private static __s_uid:number = 0;
             private m_uid:number = -1;
             name:string = "TextureProxy";
-            
             internalFormat:number = TextureFormat.RGBA;
             srcFormat:number = TextureFormat.RGBA;
             dataType:number = TextureDataType.UNSIGNED_BYTE;

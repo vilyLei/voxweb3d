@@ -160,22 +160,52 @@
 //  import * as DemoOrtho from "./demo/DemoOrtho";
 //  import Demo = DemoOrtho.demo.DemoOrtho;
 
-import * as DemoMobileEvt from "./demo/DemoMobileEvt";
-import Demo = DemoMobileEvt.demo.DemoMobileEvt;
+//  import * as DemoMobileEvt from "./demo/DemoMobileEvt";
+//  import Demo = DemoMobileEvt.demo.DemoMobileEvt;
 
-//
+//  import * as DemoFBOBlit from "./demo/DemoFBOBlit";
+//  import Demo = DemoFBOBlit.demo.DemoFBOBlit;
+
+import * as DemoPartRender from "./demo/DemoPartRender";
+import Demo = DemoPartRender.demo.DemoPartRender;
+
 let demoIns:Demo = new Demo();
-function main():void
+
+let ins:any = demoIns;
+if(ins.runBegin != undefined)
 {
-    console.log("------ demo --- init ------");
-    demoIns.initialize();
-    function mainLoop(now:any):void
+
+    function main():void
     {
-        demoIns.run();
+        console.log("------ demo --- init ------");
+        ins.initialize();
+        function mainLoop(now:any):void
+        {
+            ins.runBegin();
+            ins.run();
+            ins.runEnd();
+            window.requestAnimationFrame(mainLoop);
+        }
         window.requestAnimationFrame(mainLoop);
+        console.log("------ demo --- running ------"); 
     }
-    window.requestAnimationFrame(mainLoop);
-    console.log("------ demo --- running ------"); 
+    //
+    main();
 }
-//
-main();
+else
+{
+    function main():void
+    {
+        console.log("------ demo --- init ------");
+        demoIns.initialize();
+        function mainLoop(now:any):void
+        {
+            demoIns.run();
+            window.requestAnimationFrame(mainLoop);
+        }
+        window.requestAnimationFrame(mainLoop);
+        console.log("------ demo --- running ------"); 
+    }
+    //
+    main();
+}

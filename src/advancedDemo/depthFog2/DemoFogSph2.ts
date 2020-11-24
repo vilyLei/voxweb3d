@@ -143,7 +143,7 @@ export namespace advancedDemo
                         //  this.m_factorFBO.setClearColorEnabled(flag < 1);
                         //  this.m_factorFBO.run();
                         //++flag;
-                        this.m_factorFBO.runOnlyAt(0);
+                        this.m_factorFBO.runAt(0);
                     }
                     else
                     {

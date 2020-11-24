@@ -79,7 +79,10 @@ uniform mat4 u_projMat;\n\
 varying vec3 v_vtxColor;\n\
 void main()\n\
 {\n\
-    gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs,1.0);\n\
+    vec4 pv = u_projMat * u_viewMat * u_objMat * vec4(a_vs,1.0);\n\
+    // pixels move offset, and no perspective error.\n\
+    //  pv.xy = (pv.xy/pv.w - vec2(0.5)) * pv.w;\n\
+    gl_Position = pv;\n\
 ";
 
                     if(this.dynColorEnabled)

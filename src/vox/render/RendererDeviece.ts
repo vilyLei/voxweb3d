@@ -13,6 +13,7 @@ export namespace vox
             private static s_inited:boolean = true;
             private static s_WEBGL_VER:number = 2;
             private static s_devicePixelRatio:number = 1.0;
+            private static s_mobileWeb:boolean = false;
             // for debug
             public static SHOWLOG_ENABLED:boolean = false;
             public static SHADERCODE_TRACE_ENABLED:boolean = false;
@@ -35,24 +36,40 @@ export namespace vox
                 {
                     RendererDeviece.s_WEBGL_VER = infoArr[0];
                     RendererDeviece.s_inited = false;
+                    
+                    RendererDeviece.TestMobileWeb();
                 }
             }
             static IsWebGL1():boolean{return RendererDeviece.s_WEBGL_VER == 1;}
             static IsWebGL2():boolean{return RendererDeviece.s_WEBGL_VER == 2;}
-            static IsMobileWeb()
+            static IsMobileWeb():boolean
             {
-
-                if (/mobile/.test(location.href)) return true;            
+                return RendererDeviece.s_mobileWeb;
+                //  if (/mobile/.test(location.href)) return true;            
+                //  if (/Android/i.test(navigator.userAgent)) {            
+                //      if (/Mobile/i.test(navigator.userAgent)) {            
+                //        return true;
+                //      } else {            
+                //        return false;            
+                //      }            
+                //  } else if (/webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
+                //      return true;            
+                //  }
+                //  return false;
+            }
+            private static TestMobileWeb()
+            {
+                if (/mobile/.test(location.href)) RendererDeviece.s_mobileWeb = true;
                 if (/Android/i.test(navigator.userAgent)) {            
                     if (/Mobile/i.test(navigator.userAgent)) {            
-                      return true;
+                      RendererDeviece.s_mobileWeb = true;
                     } else {            
-                      return false;            
+                      RendererDeviece.s_mobileWeb = false;
                     }            
                 } else if (/webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                    return true;            
+                    RendererDeviece.s_mobileWeb = true;
                 }
-                return false;
+                RendererDeviece.s_mobileWeb = false;
             }
         }
     }

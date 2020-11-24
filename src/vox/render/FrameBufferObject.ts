@@ -54,6 +54,7 @@ export namespace vox
 			private m_stencilValueArr = new Int16Array(4);
 			private m_fboSizeChanged:boolean = false;
 			//
+			sizeFixed:boolean = false;
 			//devPRatio:number = 1.0;
     		writeDepthEnabled:boolean = true;
     		writeStencilEnabled:boolean = false;
@@ -147,7 +148,6 @@ export namespace vox
 					rTex = texProxy.__$gpuBuf();
 
 					let boo:boolean = false;
-					//if(targetType == TextureTarget.TEXTURE_CUBE && (texProxy.getBufWidth() != this.m_width || texProxy.getBufHeight() != this.m_height))boo = true;
 					if(texProxy.getBufWidth() != this.m_width || texProxy.getBufHeight() != this.m_height)boo = true;
 					if(rTex == null)
 					{

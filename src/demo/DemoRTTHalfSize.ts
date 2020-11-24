@@ -92,8 +92,8 @@ export namespace demo
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
                 // add common 3d display entity
                 var plane:Plane3DEntity = new Plane3DEntity();
-                //plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
-                plane.initializeXOZ(-200.0,-150.0,400.0,300.0);
+                plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
+                //plane.initializeXOZ(-200.0,-150.0,400.0,300.0);
                 this.m_renderer.addEntity(plane);
 
                 let axis:Axis3DEntity = new Axis3DEntity();
@@ -114,7 +114,9 @@ export namespace demo
                 rttPlane = new Plane3DEntity();
                 rttPlane.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
                 rttPlane.setMaterial(material);
-                rttPlane.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(1)]);
+                //rttPlane.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(1)]);
+                TextureStore.CreateRTTTextureAt(1,256,256);
+                rttPlane.initialize(-1.0,-1.0,1.0,1.0,[TextureStore.GetRTTTextureAt(1)]);
                 this.m_renderer.addEntity(rttPlane, 2);
 
                 this.m_rcontext.createFBOAt(0,FrameBufferType.FRAMEBUFFER,this.m_viewSize.x,this.m_viewSize.y,true,false);
@@ -144,19 +146,36 @@ export namespace demo
             pcontext.useFBO(true, true, false);
             rinstance.runAt(0);
             //              //pcontext.asynFBOSizeWithViewport();
-            pcontext.setFBOSizeFactorWithViewPort(0.25);
-            pcontext.bindFBOAt(1,FrameBufferType.FRAMEBUFFER);
-            pcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(1), true, false, 0);
-            pcontext.useFBO(true, true, false);
-            rinstance.runAt(0);
+            let renderAll:boolean = true;
+            if(renderAll)
+            {
+                pcontext.setFBOSizeFactorWithViewPort(0.5);
+                pcontext.bindFBOAt(1,FrameBufferType.FRAMEBUFFER);
+                pcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(1), true, false, 0);
+                pcontext.useFBO(true, true, false);
+                rinstance.runAt(0);
+            }
+            else
+            {
+                pcontext.asynFBOSizeWithViewport();
+                pcontext.lockViewport();
+                pcontext.setFBOSizeFactorWithViewPort(0.5);
+                pcontext.bindFBOAt(1,FrameBufferType.FRAMEBUFFER);
+                pcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(1), true, false, 0);
+                pcontext.useFBO(true, true, false);
+                rinstance.runAt(0);
+                pcontext.unlockViewport();
+            }
             // --------------------------------------------- rtt end
+            
+            //pcontext.cameraUnlock();
             pcontext.setClearRGBColor3f(0.0, 3.0, 2.0);
             pcontext.setRenderToBackBuffer();
             rinstance.runAt(1);
             rinstance.runAt(2);
             //*/
 
-            pcontext.runEnd();            
+            pcontext.runEnd();
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
             pcontext.updateCamera();
         }

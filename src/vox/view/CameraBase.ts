@@ -79,40 +79,56 @@ export namespace vox
             private m_rotateZ:number = 0.0;
             private m_viewFieldZoom:number = 1.0;
             private m_changed:boolean = true;
-            
+            private m_unlock:boolean = true;
+            // 不允许外界修改camera数据
+            lock():void
+            {
+                this.m_unlock = false;
+            }
+            // 允许外界修改camera数据
+            unlock():void
+            {
+                this.m_unlock = true;
+            }
 	        lookAtLH(camPos:Vector3D, lookAtPos:Vector3D, up:Vector3D):void
 	        {
-	        	this.m_camPos.copyFrom(camPos);
-	        	this.m_lookAtPos.copyFrom(lookAtPos);
-	        	this.m_up.copyFrom(up);
-	        	this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-	        	this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-	        	this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
-	        	this.m_lookRHEnabled = false;
-                this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
-                this.m_lookDirectNV.normalize();
-                this.m_initUP.copyFrom(up);
-                this.m_initUP.normalize();
-                Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
-                this.m_initRV.normalize();
-                this.m_changed = true;
+                if(this.m_unlock)
+                {
+	        	    this.m_camPos.copyFrom(camPos);
+	        	    this.m_lookAtPos.copyFrom(lookAtPos);
+	        	    this.m_up.copyFrom(up);
+	        	    this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+	        	    this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+	        	    this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+	        	    this.m_lookRHEnabled = false;
+                    this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
+                    this.m_lookDirectNV.normalize();
+                    this.m_initUP.copyFrom(up);
+                    this.m_initUP.normalize();
+                    Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
+                    this.m_initRV.normalize();
+                    this.m_changed = true;
+                }
 	        }
 	        lookAtRH(camPos:Vector3D, lookAtPos:Vector3D, up:Vector3D):void
 	        {
-	        	this.m_camPos.copyFrom(camPos);
-	        	this.m_lookAtPos.copyFrom(lookAtPos);
-	        	this.m_up.copyFrom(up);
-	        	this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-	        	this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-	        	this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
-	        	this.m_lookRHEnabled = true;
-                this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
-                this.m_lookDirectNV.normalize();
-                this.m_initUP.copyFrom(up);
-                this.m_initUP.normalize();
-                Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
-                this.m_initRV.normalize();
-                this.m_changed = true;
+                if(this.m_unlock)
+                {
+	        	    this.m_camPos.copyFrom(camPos);
+	        	    this.m_lookAtPos.copyFrom(lookAtPos);
+	        	    this.m_up.copyFrom(up);
+	        	    this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+	        	    this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+	        	    this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+	        	    this.m_lookRHEnabled = true;
+                    this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
+                    this.m_lookDirectNV.normalize();
+                    this.m_initUP.copyFrom(up);
+                    this.m_initUP.normalize();
+                    Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
+                    this.m_initRV.normalize();
+                    this.m_changed = true;
+                }
 	        }
             //
             getLookAtLH(camPos:Vector3D, lookAtPos:Vector3D, up:Vector3D, outViewMat:Matrix4):void
@@ -125,65 +141,80 @@ export namespace vox
             }
 	        perspectiveLH(fovy:number, aspect:number, zNear:number, zFar:number):void
 	        {
-                this.m_project2Enabled = false;
-	        	this.m_aspect = aspect;
-                this.m_fovy = fovy;
-                this.m_zNear = zNear;
-                this.m_zFar = zFar;
-	        	this.m_projMat.perspectiveLH(fovy, aspect, zNear, zFar);
-                this.m_viewFieldZoom = Math.tan(fovy * 0.5);
-                this.m_perspectiveEnabled = true;
-                this.m_rightHandEnabled = false;
-                this.m_changed = true;
+                if(this.m_unlock)
+                {
+                    this.m_project2Enabled = false;
+	        	    this.m_aspect = aspect;
+                    this.m_fovy = fovy;
+                    this.m_zNear = zNear;
+                    this.m_zFar = zFar;
+	        	    this.m_projMat.perspectiveLH(fovy, aspect, zNear, zFar);
+                    this.m_viewFieldZoom = Math.tan(fovy * 0.5);
+                    this.m_perspectiveEnabled = true;
+                    this.m_rightHandEnabled = false;
+                    this.m_changed = true;
+                }
 	        }
 	        perspectiveRH(fovy:number, aspect:number, zNear:number, zFar:number):void
 	        {
-	        	this.m_aspect = aspect;
-                this.m_fovy = fovy;
-                this.m_zNear = zNear;
-                this.m_zFar = zFar;
-                this.m_projMat.perspectiveRH(fovy, aspect, zNear, zFar);
-                this.m_viewFieldZoom = Math.tan(fovy * 0.5);
-                this.m_project2Enabled = false;
-	        	this.m_perspectiveEnabled = true;
-                this.m_rightHandEnabled = true;
-                this.m_changed = true;
+                if(this.m_unlock)
+                {
+	        	    this.m_aspect = aspect;
+                    this.m_fovy = fovy;
+                    this.m_zNear = zNear;
+                    this.m_zFar = zFar;
+                    this.m_projMat.perspectiveRH(fovy, aspect, zNear, zFar);
+                    this.m_viewFieldZoom = Math.tan(fovy * 0.5);
+                    this.m_project2Enabled = false;
+	        	    this.m_perspectiveEnabled = true;
+                    this.m_rightHandEnabled = true;
+                    this.m_changed = true;
+                }
             }
             perspectiveRH2(fovy:number, pw:number,ph:number, zNear:number, zFar:number):void
 	        {
-	        	this.m_aspect = pw/ph;
-                this.m_fovy = fovy;
-                this.m_zNear = zNear;
-                this.m_zFar = zFar;
-                this.m_projMat.perspectiveRH2(fovy, pw,ph, zNear, zFar);
-                this.m_viewFieldZoom = Math.tan(fovy * 0.5);
-	        	this.m_perspectiveEnabled = true;
-                this.m_project2Enabled = true;
-                this.m_rightHandEnabled = true;
-                this.m_changed = true;
+                if(this.m_unlock)
+                {
+	        	    this.m_aspect = pw/ph;
+                    this.m_fovy = fovy;
+                    this.m_zNear = zNear;
+                    this.m_zFar = zFar;
+                    this.m_projMat.perspectiveRH2(fovy, pw,ph, zNear, zFar);
+                    this.m_viewFieldZoom = Math.tan(fovy * 0.5);
+	        	    this.m_perspectiveEnabled = true;
+                    this.m_project2Enabled = true;
+                    this.m_rightHandEnabled = true;
+                    this.m_changed = true;
+                }
             }
             getAspect():number{return this.m_aspect;}
             getViewFieldZoom():number{return this.m_viewFieldZoom;}
 	        orthoRH(zNear:number, zFar:number, b:number, t:number, l:number, r:number,devPRatio:number = 1.0):void
 	        {
-                this.m_zNear = zNear;
-                this.m_zFar = zFar;
-                this.m_b = b;this.m_t = t;this.m_l = l;this.m_r = r;
-	        	//this.m_projMat.orthoRH(Math.floor(devPRatio * b), Math.floor(devPRatio * t), Math.floor(devPRatio * l), Math.floor(devPRatio * r), zNear, zFar,devPRatio);
-	        	this.m_projMat.orthoRH(b, t, l, r, zNear, zFar);
-	        	this.m_perspectiveEnabled = false;
-                this.m_rightHandEnabled = true;
-                this.m_changed = true;
+                if(this.m_unlock)
+                {
+                    this.m_zNear = zNear;
+                    this.m_zFar = zFar;
+                    this.m_b = b;this.m_t = t;this.m_l = l;this.m_r = r;
+	        	    //this.m_projMat.orthoRH(Math.floor(devPRatio * b), Math.floor(devPRatio * t), Math.floor(devPRatio * l), Math.floor(devPRatio * r), zNear, zFar,devPRatio);
+	        	    this.m_projMat.orthoRH(b, t, l, r, zNear, zFar);
+	        	    this.m_perspectiveEnabled = false;
+                    this.m_rightHandEnabled = true;
+                    this.m_changed = true;
+                }
 	        }
 	        orthoLH(zNear:number, zFar:number, b:number, t:number, l:number, r:number,devPRatio:number = 1.0):void
 	        {
-                this.m_zNear = zNear;
-                this.m_zFar = zFar;
-                this.m_b = b;this.m_t = t;this.m_l = l;this.m_r = r;
-	        	this.m_projMat.orthoLH(Math.floor(devPRatio * b), Math.floor(devPRatio * t), Math.floor(devPRatio * l), Math.floor(devPRatio * r), zNear, zFar);
-	        	this.m_perspectiveEnabled = false;
-                this.m_rightHandEnabled = false;
-                this.m_changed = true;
+                if(this.m_unlock)
+                {
+                    this.m_zNear = zNear;
+                    this.m_zFar = zFar;
+                    this.m_b = b;this.m_t = t;this.m_l = l;this.m_r = r;
+	        	    this.m_projMat.orthoLH(Math.floor(devPRatio * b), Math.floor(devPRatio * t), Math.floor(devPRatio * l), Math.floor(devPRatio * r), zNear, zFar);
+	        	    this.m_perspectiveEnabled = false;
+                    this.m_rightHandEnabled = false;
+                    this.m_changed = true;
+                }
 	        }
 	        perspectiveEnabled():boolean
 	        {
@@ -196,232 +227,274 @@ export namespace vox
 
             setViewXY(px:number,py:number):void
             {
-                this.m_viewX = px;
-                this.m_viewY = py;
+                if(this.m_unlock)
+                {
+                    this.m_viewX = px;
+                    this.m_viewY = py;
+                }
             }
             private m_devPRatio:number = 0.0;
             setViewSize(pw:number,ph:number,devPRatio:number = 1.0):void
             {
-                if(pw != this.m_viewW || ph != this.m_viewH || Math.abs(this.m_devPRatio - devPRatio) > 0.01)
+                if(this.m_unlock)
                 {
-                    this.m_devPRatio = devPRatio;
-                    this.m_viewW = pw;
-                    this.m_viewH = ph;
-                    this.m_viewHalfW = pw * 0.5;
-                    this.m_viewHalfH = ph * 0.5;
-                    console.log("setViewSize, pw:"+pw+",ph:"+ph);
-                    if(this.m_perspectiveEnabled)
+                    if(pw != this.m_viewW || ph != this.m_viewH || Math.abs(this.m_devPRatio - devPRatio) > 0.01)
                     {
-                        if(this.m_project2Enabled)
+                        this.m_devPRatio = devPRatio;
+                        this.m_viewW = pw;
+                        this.m_viewH = ph;
+                        this.m_viewHalfW = pw * 0.5;
+                        this.m_viewHalfH = ph * 0.5;
+                        console.log("setViewSize, pw:"+pw+",ph:"+ph);
+                        if(this.m_perspectiveEnabled)
                         {
-                            if(this.m_rightHandEnabled)this.perspectiveRH2(this.m_fovy, pw,ph, this.m_zNear, this.m_zFar);
-                            //else this.perspectiveLH2(this.m_fovy, pw,ph, this.m_zNear, this.m_zFar);
+                            if(this.m_project2Enabled)
+                            {
+                                if(this.m_rightHandEnabled)this.perspectiveRH2(this.m_fovy, pw,ph, this.m_zNear, this.m_zFar);
+                                //else this.perspectiveLH2(this.m_fovy, pw,ph, this.m_zNear, this.m_zFar);
+                            }
+                            else
+                            {
+                                if(this.m_rightHandEnabled)this.perspectiveRH(this.m_fovy, pw/ph, this.m_zNear, this.m_zFar);
+                                else this.perspectiveLH(this.m_fovy, pw/ph, this.m_zNear, this.m_zFar);
+                            }
                         }
                         else
                         {
-                            if(this.m_rightHandEnabled)this.perspectiveRH(this.m_fovy, pw/ph, this.m_zNear, this.m_zFar);
-                            else this.perspectiveLH(this.m_fovy, pw/ph, this.m_zNear, this.m_zFar);
+                            //this.orthoRH(this.m_zNear, this.m_zFar, -0.5 * ph, 0.5 * ph, -0.5 * pw, 0.5 * pw,devPRatio);
+                            this.orthoRH(this.m_zNear, this.m_zFar, -0.5 * ph, 0.5 * ph, -0.5 * pw, 0.5 * pw,1.0);
                         }
-                    }
-                    else
-                    {
-                        //this.orthoRH(this.m_zNear, this.m_zFar, -0.5 * ph, 0.5 * ph, -0.5 * pw, 0.5 * pw,devPRatio);
-                        this.orthoRH(this.m_zNear, this.m_zFar, -0.5 * ph, 0.5 * ph, -0.5 * pw, 0.5 * pw,1.0);
                     }
                 }
             }
 	        translation(v3:Vector3D):void
             {
-                this.m_camPos.copyFrom(v3);
-                this.m_lookAtPos.x = v3.x + this.m_lookAtDirec.x;
-                this.m_lookAtPos.y = v3.y + this.m_lookAtDirec.y;
-                this.m_lookAtPos.z = v3.z + this.m_lookAtDirec.z;
-                this.m_changed = true;
+                if(this.m_unlock)
+                {
+                    this.m_camPos.copyFrom(v3);
+                    this.m_lookAtPos.x = v3.x + this.m_lookAtDirec.x;
+                    this.m_lookAtPos.y = v3.y + this.m_lookAtDirec.y;
+                    this.m_lookAtPos.z = v3.z + this.m_lookAtDirec.z;
+                    this.m_changed = true;
+                }
             }
 	        translationXYZ(px:number, py:number, pz:number):void
             {
-                this.m_camPos.setTo(px,py,pz);
-                this.m_lookAtPos.x = px + this.m_lookAtDirec.x;
-                this.m_lookAtPos.y = py + this.m_lookAtDirec.y;
-                this.m_lookAtPos.z = pz + this.m_lookAtDirec.z;
-                this.m_changed = true;
+                if(this.m_unlock)
+                {
+                    this.m_camPos.setTo(px,py,pz);
+                    this.m_lookAtPos.x = px + this.m_lookAtDirec.x;
+                    this.m_lookAtPos.y = py + this.m_lookAtDirec.y;
+                    this.m_lookAtPos.z = pz + this.m_lookAtDirec.z;
+                    this.m_changed = true;
+                }
             }
             forward(dis:number):void
             {
-                this.m_camPos.x += this.m_lookDirectNV.x * dis;
-                this.m_camPos.y += this.m_lookDirectNV.y * dis;
-                this.m_camPos.z += this.m_lookDirectNV.z * dis;        
-                this.m_lookAtPos.x = this.m_camPos.x + this.m_lookAtDirec.x;
-                this.m_lookAtPos.y = this.m_camPos.y + this.m_lookAtDirec.y;
-                this.m_lookAtPos.z = this.m_camPos.z + this.m_lookAtDirec.z;
-                this.m_changed = true;
+                if(this.m_unlock)
+                {
+                    this.m_camPos.x += this.m_lookDirectNV.x * dis;
+                    this.m_camPos.y += this.m_lookDirectNV.y * dis;
+                    this.m_camPos.z += this.m_lookDirectNV.z * dis;        
+                    this.m_lookAtPos.x = this.m_camPos.x + this.m_lookAtDirec.x;
+                    this.m_lookAtPos.y = this.m_camPos.y + this.m_lookAtDirec.y;
+                    this.m_lookAtPos.z = this.m_camPos.z + this.m_lookAtDirec.z;
+                    this.m_changed = true;
+                }
             }
             
             forwardFixPos(dis:number,pos:Vector3D):void
             {
-                this.m_camPos.x = pos.x + this.m_lookDirectNV.x * dis;
-                this.m_camPos.y = pos.y + this.m_lookDirectNV.y * dis;
-                this.m_camPos.z = pos.z + this.m_lookDirectNV.z * dis;        
-                this.m_lookAtPos.x = this.m_camPos.x + this.m_lookAtDirec.x;
-                this.m_lookAtPos.y = this.m_camPos.y + this.m_lookAtDirec.y;
-                this.m_lookAtPos.z = this.m_camPos.z + this.m_lookAtDirec.z;
-                this.m_changed = true;
+                if(this.m_unlock)
+                {
+                    this.m_camPos.x = pos.x + this.m_lookDirectNV.x * dis;
+                    this.m_camPos.y = pos.y + this.m_lookDirectNV.y * dis;
+                    this.m_camPos.z = pos.z + this.m_lookDirectNV.z * dis;        
+                    this.m_lookAtPos.x = this.m_camPos.x + this.m_lookAtDirec.x;
+                    this.m_lookAtPos.y = this.m_camPos.y + this.m_lookAtDirec.y;
+                    this.m_lookAtPos.z = this.m_camPos.z + this.m_lookAtDirec.z;
+                    this.m_changed = true;
+                }
             }
             
             swingHorizontalWithAxis(rad:number,axis:Vector3D):void
             {
-                this.m_tempMat.identity();
-                if(axis != null)
+                if(this.m_unlock)
                 {
-                    this.m_tempMat.appendRotation(rad * MathConst.MATH_PI_OVER_180,axis);
+                    this.m_tempMat.identity();
+                    if(axis != null)
+                    {
+                        this.m_tempMat.appendRotation(rad * MathConst.MATH_PI_OVER_180,axis);
+                    }
+                    else
+                    {                    
+                        this.m_tempMat.appendRotation(rad * MathConst.MATH_PI_OVER_180,Vector3D.Y_AXIS);
+                    }
+                    this.m_lookAtDirec.x = this.m_camPos.x - this.m_lookAtPos.x;
+                    this.m_lookAtDirec.y = this.m_camPos.y - this.m_lookAtPos.y;
+                    this.m_lookAtDirec.z = this.m_camPos.z - this.m_lookAtPos.z;
+                    this.m_tempMat.transformVectorSelf(this.m_lookAtDirec);
+                    this.m_camPos.x = this.m_lookAtDirec.x + this.m_lookAtPos.x;
+                    this.m_camPos.y = this.m_lookAtDirec.y + this.m_lookAtPos.y;
+                    this.m_camPos.z = this.m_lookAtDirec.z + this.m_lookAtPos.z;
+	        	    this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+	        	    this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+	        	    this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+	        	    this.m_lookRHEnabled = true;
+                    this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
+                    this.m_lookDirectNV.normalize();
+                    //
+                    this.m_tempMat.transformVectorSelf(this.m_initRV);
+                    this.m_initRV.normalize();
+                    //Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
+                    Vector3D.Cross(this.m_initRV, this.m_lookAtDirec, this.m_up);
+                    this.m_up.normalize();
+                    this.m_changed = true;
                 }
-                else
-                {                    
-                    this.m_tempMat.appendRotation(rad * MathConst.MATH_PI_OVER_180,Vector3D.Y_AXIS);
-                }
-                this.m_lookAtDirec.x = this.m_camPos.x - this.m_lookAtPos.x;
-                this.m_lookAtDirec.y = this.m_camPos.y - this.m_lookAtPos.y;
-                this.m_lookAtDirec.z = this.m_camPos.z - this.m_lookAtPos.z;
-                this.m_tempMat.transformVectorSelf(this.m_lookAtDirec);
-                this.m_camPos.x = this.m_lookAtDirec.x + this.m_lookAtPos.x;
-                this.m_camPos.y = this.m_lookAtDirec.y + this.m_lookAtPos.y;
-                this.m_camPos.z = this.m_lookAtDirec.z + this.m_lookAtPos.z;
-	        	this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-	        	this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-	        	this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
-	        	this.m_lookRHEnabled = true;
-                this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
-                this.m_lookDirectNV.normalize();
-                //
-                this.m_tempMat.transformVectorSelf(this.m_initRV);
-                this.m_initRV.normalize();
-                //Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
-                Vector3D.Cross(this.m_initRV, this.m_lookAtDirec, this.m_up);
-                this.m_up.normalize();
-                this.m_changed = true;
             }
             swingHorizontal(degree:number):void
             {
-                this.m_tempMat.identity();
-                this.m_tempMat.appendRotation(degree * MathConst.MATH_PI_OVER_180,this.m_up);
-                this.m_lookAtDirec.x = this.m_camPos.x - this.m_lookAtPos.x;
-                this.m_lookAtDirec.y = this.m_camPos.y - this.m_lookAtPos.y;
-                this.m_lookAtDirec.z = this.m_camPos.z - this.m_lookAtPos.z;
-                this.m_tempMat.transformVectorSelf(this.m_lookAtDirec);
-                this.m_camPos.x = this.m_lookAtDirec.x + this.m_lookAtPos.x;
-                this.m_camPos.y = this.m_lookAtDirec.y + this.m_lookAtPos.y;
-                this.m_camPos.z = this.m_lookAtDirec.z + this.m_lookAtPos.z;
-	        	this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-	        	this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-	        	this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
-	        	this.m_lookRHEnabled = true;
-                this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
-                this.m_lookDirectNV.normalize();
-                //
-                Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
-                this.m_initRV.normalize();
-                this.m_changed = true;
+                if(this.m_unlock)
+                {
+                    this.m_tempMat.identity();
+                    this.m_tempMat.appendRotation(degree * MathConst.MATH_PI_OVER_180,this.m_up);
+                    this.m_lookAtDirec.x = this.m_camPos.x - this.m_lookAtPos.x;
+                    this.m_lookAtDirec.y = this.m_camPos.y - this.m_lookAtPos.y;
+                    this.m_lookAtDirec.z = this.m_camPos.z - this.m_lookAtPos.z;
+                    this.m_tempMat.transformVectorSelf(this.m_lookAtDirec);
+                    this.m_camPos.x = this.m_lookAtDirec.x + this.m_lookAtPos.x;
+                    this.m_camPos.y = this.m_lookAtDirec.y + this.m_lookAtPos.y;
+                    this.m_camPos.z = this.m_lookAtDirec.z + this.m_lookAtPos.z;
+	        	    this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+	        	    this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+	        	    this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+	        	    this.m_lookRHEnabled = true;
+                    this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
+                    this.m_lookDirectNV.normalize();
+                    //
+                    Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
+                    this.m_initRV.normalize();
+                    this.m_changed = true;
+                }
             }
             swingVertical(degree:number):void
-            {
-                this.m_tempMat.identity();
-                this.m_tempMat.appendRotation(degree * MathConst.MATH_PI_OVER_180,this.m_initRV);
-                this.m_lookAtDirec.x = this.m_camPos.x - this.m_lookAtPos.x;
-                this.m_lookAtDirec.y = this.m_camPos.y - this.m_lookAtPos.y;
-                this.m_lookAtDirec.z = this.m_camPos.z - this.m_lookAtPos.z;
-                this.m_tempMat.transformVectorSelf(this.m_lookAtDirec);
-                this.m_camPos.x = this.m_lookAtDirec.x + this.m_lookAtPos.x;
-                this.m_camPos.y = this.m_lookAtDirec.y + this.m_lookAtPos.y;
-                this.m_camPos.z = this.m_lookAtDirec.z + this.m_lookAtPos.z;
-	        	this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-	        	this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-	        	this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
-	        	this.m_lookRHEnabled = true;
-                this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
-                this.m_lookDirectNV.normalize();
-                //
-                Vector3D.Cross(this.m_initRV,this.m_lookAtDirec, this.m_up);
-                this.m_up.normalize();
-                this.m_initUP.copyFrom(this.m_up);
-                this.m_changed = true;
+            {                
+                if(this.m_unlock)
+                {
+                    this.m_tempMat.identity();
+                    this.m_tempMat.appendRotation(degree * MathConst.MATH_PI_OVER_180,this.m_initRV);
+                    this.m_lookAtDirec.x = this.m_camPos.x - this.m_lookAtPos.x;
+                    this.m_lookAtDirec.y = this.m_camPos.y - this.m_lookAtPos.y;
+                    this.m_lookAtDirec.z = this.m_camPos.z - this.m_lookAtPos.z;
+                    this.m_tempMat.transformVectorSelf(this.m_lookAtDirec);
+                    this.m_camPos.x = this.m_lookAtDirec.x + this.m_lookAtPos.x;
+                    this.m_camPos.y = this.m_lookAtDirec.y + this.m_lookAtPos.y;
+                    this.m_camPos.z = this.m_lookAtDirec.z + this.m_lookAtPos.z;
+	        	    this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+	        	    this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+	        	    this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+	        	    this.m_lookRHEnabled = true;
+                    this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
+                    this.m_lookDirectNV.normalize();
+                    //
+                    Vector3D.Cross(this.m_initRV,this.m_lookAtDirec, this.m_up);
+                    this.m_up.normalize();
+                    this.m_initUP.copyFrom(this.m_up);
+                    this.m_changed = true;
+                }
             }
             setPosition(v3:Vector3D):void
             {
-                Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_tempV);
-                var dot = this.m_tempV.dot(this.m_initUP);
-                this.m_tempV1.copyFrom(this.m_initUP);
-                this.m_tempV1.scaleBy(dot);
-                this.m_tempV.subtractBy(this.m_tempV1);
-                //m_tempV.y = 0;
-                this.m_camPos.copyFrom(v3);
-                this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-                this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-                this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
-                this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
-                this.m_lookDirectNV.normalize();
-                //
-                Vector3D.Cross(this.m_tempV, this.m_lookAtDirec, this.m_up);
-                this.m_up.normalize();
-                this.m_changed = true;
+                if(this.m_unlock)
+                {
+                    Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_tempV);
+                    var dot = this.m_tempV.dot(this.m_initUP);
+                    this.m_tempV1.copyFrom(this.m_initUP);
+                    this.m_tempV1.scaleBy(dot);
+                    this.m_tempV.subtractBy(this.m_tempV1);
+                    //m_tempV.y = 0;
+                    this.m_camPos.copyFrom(v3);
+                    this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+                    this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+                    this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+                    this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
+                    this.m_lookDirectNV.normalize();
+                    //
+                    Vector3D.Cross(this.m_tempV, this.m_lookAtDirec, this.m_up);
+                    this.m_up.normalize();
+                    this.m_changed = true;
+                }
             }
             setPositionXYZ(px:number, py:number, pz:number):void
             {
-                Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_tempV);
-                var dot:number = this.m_tempV.dot(this.m_initUP);
-                this.m_tempV1.copyFrom(this.m_initUP);
-                this.m_tempV1.scaleBy(dot);
-                this.m_tempV.subtractBy(this.m_tempV1);
-                this.m_camPos.setTo(px, py, pz);
-                this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-                this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-                this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
-                this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
-                this.m_lookDirectNV.normalize();
-                //
-                Vector3D.Cross(this.m_tempV, this.m_lookAtDirec, this.m_up);
-                this.m_up.normalize();
-                this.m_changed = true;
+                if(this.m_unlock)
+                {
+                    Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_tempV);
+                    var dot:number = this.m_tempV.dot(this.m_initUP);
+                    this.m_tempV1.copyFrom(this.m_initUP);
+                    this.m_tempV1.scaleBy(dot);
+                    this.m_tempV.subtractBy(this.m_tempV1);
+                    this.m_camPos.setTo(px, py, pz);
+                    this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+                    this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+                    this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+                    this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
+                    this.m_lookDirectNV.normalize();
+                    //
+                    Vector3D.Cross(this.m_tempV, this.m_lookAtDirec, this.m_up);
+                    this.m_up.normalize();
+                    this.m_changed = true;
+                }
             }
             setLookPosXYZFixUp(px:number, py:number, pz:number):void
             {
-                this.m_lookAtPos.setTo(px,py,pz);
-	        	this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-	        	this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-	        	this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
-	        	this.m_lookRHEnabled = true;
-                this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
-                this.m_lookDirectNV.normalize();
-                //
-                Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
-                this.m_initRV.normalize();
-                this.m_changed = true;
+                if(this.m_unlock)
+                {
+                    this.m_lookAtPos.setTo(px,py,pz);
+	        	    this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+	        	    this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+	        	    this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+	        	    this.m_lookRHEnabled = true;
+                    this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
+                    this.m_lookDirectNV.normalize();
+                    //
+                    Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
+                    this.m_initRV.normalize();
+                    this.m_changed = true;
+                }
             }
             setPositionXYZFixUp(px:number, py:number, pz:number):void
             {
-                this.m_camPos.setTo(px,py,pz);
-	        	this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-	        	this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-	        	this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
-	        	this.m_lookRHEnabled = true;
-                this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
-                this.m_lookDirectNV.normalize();
-                //
-                Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
-                this.m_initRV.normalize();
-                this.m_changed = true;
+                if(this.m_unlock)
+                {
+                    this.m_camPos.setTo(px,py,pz);
+	        	    this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+	        	    this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+	        	    this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+	        	    this.m_lookRHEnabled = true;
+                    this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
+                    this.m_lookDirectNV.normalize();
+                    //
+                    Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
+                    this.m_initRV.normalize();
+                    this.m_changed = true;
+                }
             }
             setPositionFixUp(v3:Vector3D):void
             {
-                this.m_camPos.copyFrom(v3);
-	        	this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-	        	this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-	        	this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
-	        	this.m_lookRHEnabled = true;
-                this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
-                this.m_lookDirectNV.normalize();
-                Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
-                this.m_initRV.normalize();
-                this.m_changed = true;
+                if(this.m_unlock)
+                {
+                    this.m_camPos.copyFrom(v3);
+	        	    this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+	        	    this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+	        	    this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+	        	    this.m_lookRHEnabled = true;
+                    this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
+                    this.m_lookDirectNV.normalize();
+                    Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
+                    this.m_initRV.normalize();
+                    this.m_changed = true;
+                }
             }
             copyFrom(tarCam:CameraBase):void
             {
@@ -445,13 +518,16 @@ export namespace vox
 	        getPosition() {return this.m_camPos;}
 	        setLookAtPosition(px:number, py:number, pz:number):void
 	        {
-                this.m_lookAtPos.setTo(px,py,pz);
-                this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
-                this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
-                this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
-                this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
-                this.m_lookDirectNV.normalize();
-                this.m_changed = true;
+                if(this.m_unlock)
+                {
+                    this.m_lookAtPos.setTo(px,py,pz);
+                    this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
+                    this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
+                    this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
+                    this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
+                    this.m_lookDirectNV.normalize();
+                    this.m_changed = true;
+                }
             }
             getPerspectiveEnabled():boolean{return this.m_perspectiveEnabled;}
             setPerspectiveEnabled(boo:boolean):void{this.m_perspectiveEnabled = boo;}
@@ -462,11 +538,14 @@ export namespace vox
             private m_axisRotEnabled:boolean = false;
             appendRotationByAxis(degree:number, axis:Vector3D, pivotPoint:Vector3D = null):void
             {
-                this.m_rotDegree = degree;
-                this.m_changed = true;
-                this.m_rotAxis.copyFrom(axis);
-                this.m_rotPivotPoint = pivotPoint;
-                this.m_axisRotEnabled = true;
+                if(this.m_unlock)
+                {
+                    this.m_rotDegree = degree;
+                    this.m_changed = true;
+                    this.m_rotAxis.copyFrom(axis);
+                    this.m_rotPivotPoint = pivotPoint;
+                    this.m_axisRotEnabled = true;
+                }
             }
             setRotationX(degree:number):void{this.m_rotateX = degree;this.m_changed = true;this.m_axisRotEnabled = false;}
             getRotationX():number { return this.m_rotateX; }
@@ -476,11 +555,14 @@ export namespace vox
             getRotationZ() { return this.m_rotateZ; }
             setRotationXYZ(rx:number, ry:number, rz:number):void
             {
-                this.m_rotateX = rx;
-                this.m_rotateY = ry;
-                this.m_rotateZ = rz;
-                this.m_changed = true;
-                this.m_axisRotEnabled = false;
+                if(this.m_unlock)
+                {
+                    this.m_rotateX = rx;
+                    this.m_rotateY = ry;
+                    this.m_rotateZ = rz;
+                    this.m_changed = true;
+                    this.m_axisRotEnabled = false;
+                }
             }
             screenXYToViewXYZ(px:number, py:number, outV:Vector3D):void
             {

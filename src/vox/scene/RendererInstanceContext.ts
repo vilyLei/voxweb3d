@@ -99,6 +99,14 @@ export namespace vox
                 }
                 return null;
             }
+            cameraLock():void
+            {
+                this.m_renderProxy.cameraLock();
+            }
+            cameraUnlock():void
+            {
+                this.m_renderProxy.cameraUnlock();
+            }
             createCamera():CameraBase
             {
                 if(this.m_renderProxy == null)
@@ -223,6 +231,14 @@ export namespace vox
                     this.m_rAdapter.setRenderToBackBuffer();
                 }
             }
+            lockViewport():void
+			{
+				this.m_rAdapter.lockViewport();
+			}
+			unlockViewport():void
+			{
+				this.m_rAdapter.unlockViewport();
+			}
 			setClearDepth(depth:number):void { this.m_rAdapter.setClearDepth(depth); }
 			getClearDepth():number { return this.m_rAdapter.getClearDepth(); }
 			getViewportX():number { return this.m_rAdapter.getViewportX(); }
@@ -317,6 +333,7 @@ export namespace vox
             {
                 if(this.m_renderProxy != null)
                 {
+                    this.m_rAdapter.unlockViewport();
                     //this.m_roBufMana.update();
                     this.m_rAdapter = this.m_renderProxy.getRenderAdapter();
                     this.m_rAdapter.setClearDepth(1.0);

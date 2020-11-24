@@ -130,6 +130,14 @@ export namespace vox
             {
                 this.m_renderProxy.reseizeRCViewPort();
             }
+            lockViewport():void
+			{
+				this.m_adapter.lockViewport();
+			}
+			unlockViewport():void
+			{
+				this.m_adapter.unlockViewport();
+			}
             getRendererAdapter():RenderAdapter
             {
                 return this.m_adapter;
@@ -150,6 +158,14 @@ export namespace vox
             {
                 return this.m_renderProxy.getCamera();
             }
+            cameraLock():void
+            {
+                this.m_renderProxy.cameraLock();
+            }
+            cameraUnlock():void
+            {
+                this.m_renderProxy.cameraUnlock();
+            }
             getMouseXYWorldRay(rl_position:Vector3D, rl_tv:Vector3D):void
             {
                 this.m_renderProxy.getMouseXYWorldRay(rl_position,rl_tv);
@@ -163,26 +179,21 @@ export namespace vox
                 let ins:FBOInstance = new FBOInstance(this);
                 return ins; 
             }
+            setClearUint24Color(colorUint24:number,alpha:number = 1.0):void
+            {
+                this.m_renderProxy.setClearUint24Color(colorUint24, alpha);
+            }
             setClearRGBColor3f(pr:number,pg:number,pb:number)
             {
-                if(this.m_renderProxy != null)
-                {
-                    this.m_renderProxy.setClearRGBColor3f(pr,pg,pb);
-                }
+                this.m_renderProxy.setClearRGBColor3f(pr,pg,pb);
             }
             setClearRGBAColor4f(pr:number,pg:number,pb:number,pa:number):void
             {
-                if(this.m_renderProxy != null)
-                {
-                    this.m_renderProxy.setClearRGBAColor4f(pr,pg,pb,pa);
-                }
+                this.m_renderProxy.setClearRGBAColor4f(pr,pg,pb,pa);
             }
             setClearColor(color:Color4):void
             {
-                if(this.m_renderProxy != null)
-                {
-                    this.m_renderProxy.setClearRGBAColor4f(color.r,color.g,color.b,color.a);
-                }
+                this.m_renderProxy.setClearRGBAColor4f(color.r,color.g,color.b,color.a);
             }
             setRenderToBackBuffer():void
             {
@@ -406,8 +417,14 @@ export namespace vox
             {
                 this.m_renderer.showInfoAt(index);
             }
+            
+            getRenderUnitsTotal():number
+            {
+                return this.m_renderer.getRenderUnitsTotal();
+            }
             runBegin():void
             {
+                this.m_adapter.unlockViewport();
                 if(!this.m_renderProxy.isAutoSynViewAndStage())
                 {
                     this.m_renderProxy.setViewPort(this.m_viewX,this.m_viewY,this.m_viewW,this.m_viewH);

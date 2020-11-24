@@ -160,7 +160,7 @@ export namespace advancedDemo
                         {
                             this.m_esc.fogFactorM.setFogRGBColor(this.m_esc.fogColors[i]);
                         }
-                        this.m_factorFBO.runOnlyAt(0);
+                        this.m_factorFBO.runAt(0);
                     }
                 }
                 /////////////////// 绘制体数据机制 end

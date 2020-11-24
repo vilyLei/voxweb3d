@@ -81,7 +81,7 @@ export namespace advancedDemo
                 this.m_middleFBO = this.m_rc.createFBOInstance();
                 this.m_middleFBO.setClearRGBAColor4f(0.0,0.0,0.0,1.0);
                 //this.m_middleFBO.createFBOAt(0,this.m_rct.getViewWidth(), this.m_rct.getViewHeight(),true,false);
-                this.m_middleFBO.createViewSizeFBOAt(0,true,false);
+                this.m_middleFBO.createViewportSizeFBOAt(0,true,false);
                 this.m_middleFBO.setClearState(true,true,false);
                 this.m_middleFBO.setRenderToTexture(this.getTextureAt(0), 0);// color
                 this.m_middleFBO.setRenderToTexture(this.getTextureAt(1), 1);// depth
@@ -101,7 +101,7 @@ export namespace advancedDemo
                 this.m_factorFBO = this.m_rc.createFBOInstance();
                 this.m_factorFBO.setClearRGBAColor4f(0.0,0.0,0.0,0.0);
                 //this.m_factorFBO.createFBOAt(1,this.m_rct.getViewWidth(), this.m_rct.getViewHeight(),false,false);
-                this.m_factorFBO.createViewSizeFBOAt(1,false,false);
+                this.m_factorFBO.createViewportSizeFBOAt(1,false,false);
                 this.m_factorFBO.setClearState(true,true,false);
                 this.m_factorFBO.setRenderToTexture(this.getTextureAt(2), 0);
                 this.m_factorFBO.setRenderToTexture(this.getTextureAt(3), 1);

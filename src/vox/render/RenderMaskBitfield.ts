@@ -10,9 +10,9 @@ export namespace vox
     {
         export class RenderMaskBitfield
         {
-			static COLOR_BUFFER_BIT:number = 131;
-			static DEPTH_BUFFER_BIT:number = 132;
-			static STENCIL_BUFFER_BIT:number = 133;
+			static readonly COLOR_BUFFER_BIT:number = 131;
+			static readonly DEPTH_BUFFER_BIT:number = 132;
+			static readonly STENCIL_BUFFER_BIT:number = 133;
 		}
 	}
 }

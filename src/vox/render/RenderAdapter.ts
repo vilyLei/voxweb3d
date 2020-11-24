@@ -225,112 +225,127 @@ export namespace vox
     		    }
 			}
 			private m_devPRatio:number = 1.0;
+			private m_viewportUnlock:boolean = true;
 			reseizeViewPort():void
 			{
-				let k:number = this.m_rcontext.getDevicePixelRatio();
-				let boo:boolean = this.m_viewX != this.m_rcontext.getViewportX() || this.m_viewY != this.m_rcontext.getViewportY();
-				boo = boo || this.m_viewWidth != this.m_rcontext.getViewportWidth();
-				boo = boo || this.m_viewHeight != this.m_rcontext.getViewportHeight();
-				boo = boo || Math.abs(this.m_devPRatio - k) > 0.01;
-				if(boo)
+				if(this.m_viewportUnlock)
 				{
-					this.m_devPRatio = k;
-					this.m_viewX = this.m_rcontext.getViewportX();
-					this.m_viewY = this.m_rcontext.getViewportY();
-					this.m_viewWidth = this.m_rcontext.getViewportWidth();
-					this.m_viewHeight = this.m_rcontext.getViewportHeight();
-					
-					this.uViewProbe.setVec4Data(
-						this.m_viewX,
-						this.m_viewY,
-						this.m_viewWidth,
-						this.m_viewHeight
+					let k:number = this.m_rcontext.getDevicePixelRatio();
+					let boo:boolean = this.m_viewX != this.m_rcontext.getViewportX() || this.m_viewY != this.m_rcontext.getViewportY();
+					boo = boo || this.m_viewWidth != this.m_rcontext.getViewportWidth();
+					boo = boo || this.m_viewHeight != this.m_rcontext.getViewportHeight();
+					boo = boo || Math.abs(this.m_devPRatio - k) > 0.01;
+					if(boo)
+					{
+						this.m_devPRatio = k;
+						this.m_viewX = this.m_rcontext.getViewportX();
+						this.m_viewY = this.m_rcontext.getViewportY();
+						this.m_viewWidth = this.m_rcontext.getViewportWidth();
+						this.m_viewHeight = this.m_rcontext.getViewportHeight();
+						
+						this.uViewProbe.setVec4Data(
+							this.m_viewX,
+							this.m_viewY,
+							this.m_viewWidth,
+							this.m_viewHeight
+							);
+						this.uViewProbe.update();
+						DivLog.ShowLog("reseizeViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
+						//console.log("reseizeViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
+						this.m_rc.viewport(
+							this.m_viewX,
+							this.m_viewY,
+							this.m_viewWidth,
+							this.m_viewHeight
 						);
-					this.uViewProbe.update();
-					DivLog.ShowLog("reseizeViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
-					//console.log("reseizeViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
-					this.m_rc.viewport(
-						this.m_viewX,
-						this.m_viewY,
-						this.m_viewWidth,
-						this.m_viewHeight
-					);
-					/*
-					this.m_devPRatio = k;
-					this.m_viewX = this.m_rcontext.getViewportX();
-					this.m_viewY = this.m_rcontext.getViewportY();
-					this.m_viewWidth = this.m_rcontext.getViewportWidth();
-					this.m_viewHeight = this.m_rcontext.getViewportHeight();
-					
-					this.uViewProbe.setVec4Data(
-						Math.floor(this.m_viewX * k),
-						Math.floor(this.m_viewY * k),
-						Math.floor(this.m_viewWidth * k),
-						Math.floor(this.m_viewHeight * k)
+						/*
+						this.m_devPRatio = k;
+						this.m_viewX = this.m_rcontext.getViewportX();
+						this.m_viewY = this.m_rcontext.getViewportY();
+						this.m_viewWidth = this.m_rcontext.getViewportWidth();
+						this.m_viewHeight = this.m_rcontext.getViewportHeight();
+						
+						this.uViewProbe.setVec4Data(
+							Math.floor(this.m_viewX * k),
+							Math.floor(this.m_viewY * k),
+							Math.floor(this.m_viewWidth * k),
+							Math.floor(this.m_viewHeight * k)
+							);
+						this.uViewProbe.update();
+						DivLog.ShowLog("viewPort: "+Math.floor(this.m_viewWidth * k)+","+Math.floor(this.m_viewHeight * k));
+						console.log("reseizeViewPort: "+Math.floor(this.m_viewX * k)+","+Math.floor(this.m_viewY * k)+","+Math.floor(this.m_viewWidth * k)+","+Math.floor(this.m_viewHeight * k));
+						this.m_rc.viewport(
+							Math.floor(this.m_viewX * k),
+							Math.floor(this.m_viewY * k),
+							Math.floor(this.m_viewWidth * k),
+							Math.floor(this.m_viewHeight * k)
 						);
-					this.uViewProbe.update();
-					DivLog.ShowLog("viewPort: "+Math.floor(this.m_viewWidth * k)+","+Math.floor(this.m_viewHeight * k));
-					console.log("reseizeViewPort: "+Math.floor(this.m_viewX * k)+","+Math.floor(this.m_viewY * k)+","+Math.floor(this.m_viewWidth * k)+","+Math.floor(this.m_viewHeight * k));
-					this.m_rc.viewport(
-						Math.floor(this.m_viewX * k),
-						Math.floor(this.m_viewY * k),
-						Math.floor(this.m_viewWidth * k),
-						Math.floor(this.m_viewHeight * k)
-					);
-					//*/
+						//*/
+					}
 				}
 			}
 			private reseizeFBOViewPort():void
 			{
-				let k:number = this.m_rcontext.getDevicePixelRatio();
-				let boo:boolean = this.m_viewX != this.m_fboViewSize.x || this.m_viewY != this.m_fboViewSize.y;
-				boo = boo || this.m_viewWidth != this.m_fboViewSize.z;
-				boo = boo || this.m_viewHeight != this.m_fboViewSize.w;
-				boo = boo || Math.abs(this.m_devPRatio - k) > 0.01;
-				if(boo)
+				if(this.m_viewportUnlock)
 				{
-					this.m_devPRatio = k;
-					this.m_viewX = this.m_fboViewSize.x;
-					this.m_viewY = this.m_fboViewSize.y;
-					this.m_viewWidth = this.m_fboViewSize.z;
-					this.m_viewHeight = this.m_fboViewSize.w;			
-					this.uViewProbe.setVec4Data(						
-						this.m_viewX,// * k,
-						this.m_viewY, //* k,
-						this.m_viewWidth,// * k,
-						this.m_viewHeight// * k
-					);
-					this.uViewProbe.update();
-					DivLog.ShowLog("reseizeFBOViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
-					//console.log("reseizeFBOViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
-					this.m_rc.viewport(
-						this.m_viewX,// * k,
-						this.m_viewY,// * k,
-						this.m_viewWidth,// * k,
-						this.m_viewHeight// * k,
-					);
-					/*
-					this.m_devPRatio = k;
-					this.m_viewX = this.m_fboViewSize.x;
-					this.m_viewY = this.m_fboViewSize.y;
-					this.m_viewWidth = this.m_fboViewSize.z;
-					this.m_viewHeight = this.m_fboViewSize.w;			
-					this.uViewProbe.setVec4Data(						
-						Math.floor(this.m_viewX * k),
-						Math.floor(this.m_viewY * k),
-						Math.floor(this.m_viewWidth * k),
-						Math.floor(this.m_viewHeight * k)
-					);
-					this.uViewProbe.update();
-					console.log("reseizeFBOViewPort: "+Math.floor(this.m_viewX * k)+","+Math.floor(this.m_viewY * k)+","+Math.floor(this.m_viewWidth * k)+","+Math.floor(this.m_viewHeight * k));
-					this.m_rc.viewport(
-						Math.floor(this.m_viewX * k),
-						Math.floor(this.m_viewY * k),
-						Math.floor(this.m_viewWidth * k),
-						Math.floor(this.m_viewHeight * k)
-					);
-					//*/
+					let k:number = this.m_rcontext.getDevicePixelRatio();
+					let boo:boolean = this.m_viewX != this.m_fboViewSize.x || this.m_viewY != this.m_fboViewSize.y;
+					boo = boo || this.m_viewWidth != this.m_fboViewSize.z;
+					boo = boo || this.m_viewHeight != this.m_fboViewSize.w;
+					boo = boo || Math.abs(this.m_devPRatio - k) > 0.01;
+					if(boo)
+					{
+						this.m_devPRatio = k;
+						this.m_viewX = this.m_fboViewSize.x;
+						this.m_viewY = this.m_fboViewSize.y;
+						this.m_viewWidth = this.m_fboViewSize.z;
+						this.m_viewHeight = this.m_fboViewSize.w;
+						this.uViewProbe.setVec4Data(						
+							this.m_viewX,// * k,
+							this.m_viewY, //* k,
+							this.m_viewWidth,// * k,
+							this.m_viewHeight// * k
+						);
+						this.uViewProbe.update();
+						DivLog.ShowLog("reseizeFBOViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
+						//console.log("reseizeFBOViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
+						this.m_rc.viewport(
+							this.m_viewX,// * k,
+							this.m_viewY,// * k,
+							this.m_viewWidth,// * k,
+							this.m_viewHeight// * k,
+						);
+						/*
+						this.m_devPRatio = k;
+						this.m_viewX = this.m_fboViewSize.x;
+						this.m_viewY = this.m_fboViewSize.y;
+						this.m_viewWidth = this.m_fboViewSize.z;
+						this.m_viewHeight = this.m_fboViewSize.w;			
+						this.uViewProbe.setVec4Data(						
+							Math.floor(this.m_viewX * k),
+							Math.floor(this.m_viewY * k),
+							Math.floor(this.m_viewWidth * k),
+							Math.floor(this.m_viewHeight * k)
+						);
+						this.uViewProbe.update();
+						console.log("reseizeFBOViewPort: "+Math.floor(this.m_viewX * k)+","+Math.floor(this.m_viewY * k)+","+Math.floor(this.m_viewWidth * k)+","+Math.floor(this.m_viewHeight * k));
+						this.m_rc.viewport(
+							Math.floor(this.m_viewX * k),
+							Math.floor(this.m_viewY * k),
+							Math.floor(this.m_viewWidth * k),
+							Math.floor(this.m_viewHeight * k)
+						);
+						//*/
+					}
 				}
+			}
+			lockViewport():void
+			{
+				this.m_viewportUnlock = false;
+			}
+			unlockViewport():void
+			{
+				this.m_viewportUnlock = true;
 			}
 			renderEnd():void
 			{
@@ -371,13 +386,13 @@ export namespace vox
 					}
 					this.m_fboType = fboType;
 					this.m_fboBuf = new FrameBufferObject(this.m_fboType);
-					//this.m_fboBuf.devPRatio = this.m_rcontext.getDevicePixelRatio();
 					this.m_fboBuf.multisampleEnabled = multisampleLevel > 0;
 					this.m_fboBuf.multisampleLevel = multisampleLevel;
 					this.m_fboBuf.writeDepthEnabled = enableDepth;
 					this.m_fboBuf.writeStencilEnabled = enableStencil;
 					this.m_fboBuf.initialize(this.m_rc, pw,ph);
 					this.m_fboBufList[index] = this.m_fboBuf;
+					this.m_fboBuf.sizeFixed = true;
 				}
 			}
 			
@@ -396,7 +411,22 @@ export namespace vox
 					this.m_fboBufList[this.m_fboIndex].resize(pw,ph);
 				}
 			}
-			
+			getFBOWidthAt(index:number):number
+			{
+				if(this.m_fboBufList[index] != null)
+				{
+					return this.m_fboBufList[index].getWidth();
+				}
+				return 0;
+			}
+			getFBOHeightAt(index:number):number
+			{
+				if(this.m_fboBufList[index] != null)
+				{
+					return this.m_fboBufList[index].getHeight();
+				}
+				return 0;
+			}
 			private m_synFBOSizeWithViewport:boolean = false;
 			synFBOSizeWithViewport():void
 			{
@@ -479,7 +509,15 @@ export namespace vox
 							}
 							else
 							{
-								this.m_fboBuf.initialize(this.m_rc, texProxy.getWidth(), texProxy.getHeight());
+								//this.m_fboBuf.initialize(this.m_rc, texProxy.getWidth(), texProxy.getHeight());
+								if (this.m_fboViewRectBoo)
+								{
+									this.m_fboBuf.initialize(this.m_rc, this.m_fboViewRect[2],this.m_fboViewRect[3]);
+								}
+								else if(!this.m_fboBuf.sizeFixed)
+								{
+									this.m_fboBuf.initialize(this.m_rc, texProxy.getWidth(), texProxy.getHeight());
+								}
 							}
 						}
 						if (this.m_fboIndex >= 0)
@@ -496,7 +534,14 @@ export namespace vox
 								}
 								else
 								{
-									this.m_fboBuf.initialize(this.m_rc, texProxy.getWidth(), texProxy.getHeight());
+									if (this.m_fboViewRectBoo)
+									{
+										this.m_fboBuf.initialize(this.m_rc, this.m_fboViewRect[2],this.m_fboViewRect[3]);
+									}
+									else
+									{
+										this.m_fboBuf.initialize(this.m_rc, texProxy.getWidth(), texProxy.getHeight());
+									}
 								}
 							}
 						}
@@ -515,17 +560,12 @@ export namespace vox
 			}
 			getAttachmentTotal():number
 			{
-				//if (this.m_fboBuf != null)
-				//{
-				//	return this.m_fboBuf.getAttachmentTotal();
-				//}
 				return this.m_activeAttachmentTotal;
 			}
 			useFBO(clearColorBoo:boolean = false, clearDepthBoo:boolean = false, clearStencilBoo:boolean = false):void
 			{
 				if (this.m_fboBuf != null)
 				{
-					//this.m_activeAttachmentTotal = this.m_fboBuf.getActiveAttachmentTotal();
 					if (this.m_fboClearBoo)
 					{
 						this.m_fboClearBoo = false;
@@ -584,13 +624,12 @@ export namespace vox
 							{
 								//console.log("this.m_fboSizeFactor: "+this.m_fboSizeFactor);
 								this.m_fboViewSize.setTo(0,0,Math.floor(this.getViewportWidth() * this.m_fboSizeFactor),Math.floor(this.getViewportHeight() * this.m_fboSizeFactor));
-								this.reseizeFBOViewPort();
 							}
 							else
 							{
 								this.m_fboViewSize.setTo(0,0,this.m_fboBuf.getWidth(),this.m_fboBuf.getHeight());
-								this.reseizeFBOViewPort();
 							}
+							this.reseizeFBOViewPort();
 						}
 					}
 				}
@@ -630,10 +669,11 @@ export namespace vox
 				this.m_fboBiltRect[6] = px + pw;
 				this.m_fboBiltRect[7] = py + ph;
 			}
-		
+			/**
+			 * @oaram			clearType, it is RenderProxy.COLOR or RenderProxy.DEPTH or RenderProxy.STENCIL or RenderProxy.DEPTH_STENCIL
+			*/
 			blitFBO(readFBOIndex:number = 0, writeFBOIndex:number = 0, mask_bitfiled:number = RenderMaskBitfield.COLOR_BUFFER_BIT, filter:number = RenderFilter.NEAREST, clearType:number = 0,clearIndex:number = 0,dataArr:number[] = null):void
 			{
-			
 				if (readFBOIndex > 7)
 				{
 					readFBOIndex = 7;
@@ -658,29 +698,6 @@ export namespace vox
 				{
 					FrameBufferObject.BindToBackbuffer(this.m_rc, FrameBufferType.DRAW_FRAMEBUFFER);
 				}
-				let maskBit:number = 0;
-				let samplefilter:number = 0;
-				switch (mask_bitfiled)
-				{
-				case RenderMaskBitfield.DEPTH_BUFFER_BIT:
-					maskBit = this.m_rc.DEPTH_BUFFER_BIT;
-					break;
-				case RenderMaskBitfield.STENCIL_BUFFER_BIT:
-					maskBit = this.m_rc.STENCIL_BUFFER_BIT;
-					break;
-				default:
-					maskBit = this.m_rc.COLOR_BUFFER_BIT;
-					break;
-				}
-				switch (filter)
-				{
-				case RenderFilter.LINEAR:
-					samplefilter = this.m_rc.LINEAR;
-					break;
-				default:
-					samplefilter = this.m_rc.NEAREST;
-					break;
-				}
 				if(clearType > 0)
 				{
 					if(clearIndex < 0)
@@ -697,7 +714,7 @@ export namespace vox
 					this.m_rc.clearBufferfv(clearType, clearIndex, dataArr);
 				}
 				let fs:Uint16Array = this.m_fboBiltRect;
-				this.m_rc.blitFramebuffer(fs[0], fs[1], fs[2], fs[3], fs[4], fs[5], fs[6], fs[7], maskBit, samplefilter);
+				this.m_rc.blitFramebuffer(fs[0], fs[1], fs[2], fs[3], fs[4], fs[5], fs[6], fs[7], mask_bitfiled, filter);
 			}
 		}
 	}

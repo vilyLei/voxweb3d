@@ -105,6 +105,10 @@ export namespace vox
             {
                 return this.m_weid;
             }
+            getUnitsTotal():number
+            {
+                return this.m_nodesLen;
+            }
             private addNodeToBlock(node:RPONode):void
             {
                 //  注意，这里可以管理组合方式, 例如可以做更多条件的排序
@@ -254,6 +258,7 @@ export namespace vox
             }
             reset():void
             {
+                this.m_nodesLen = 0;
                 this.index = -1;
                 this.m_uid = -1;
                 this.m_wuid = -1;

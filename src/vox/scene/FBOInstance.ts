@@ -8,6 +8,9 @@
 
 import * as Stage3DT from "../../vox/display/Stage3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
+import * as FrameBufferTypeT from "../../vox/render/FrameBufferType";
+import * as RenderFilterT from "../../vox/render/RenderFilter";
+import * as RenderMaskBitfieldT from "../../vox/render/RenderMaskBitfield";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as RAdapterContextT from "../../vox/render/RAdapterContext";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
@@ -16,20 +19,21 @@ import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as Color4T from "../../vox/material/Color4";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
 import * as RenderMaterialProxyT from "../../vox/render/RenderMaterialProxy";
-import * as FrameBufferTypeT from "../../vox/render/FrameBufferType";
 import * as IRendererT from "../../vox/scene/IRenderer";
 
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
-import RAdapterContext = RAdapterContextT.vox.render.RAdapterContext;
+import FrameBufferType = FrameBufferTypeT.vox.render.FrameBufferType;
+import RenderFilter = RenderFilterT.vox.render.RenderFilter;
+import RenderMaskBitfield = RenderMaskBitfieldT.vox.render.RenderMaskBitfield;
 import RendererState = RendererStateT.vox.render.RendererState;
+import RAdapterContext = RAdapterContextT.vox.render.RAdapterContext;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import Color4 = Color4T.vox.material.Color4;
 import RenderMaterialProxy = RenderMaterialProxyT.vox.render.RenderMaterialProxy;
-import FrameBufferType = FrameBufferTypeT.vox.render.FrameBufferType;
 import IRenderer = IRendererT.vox.scene.IRenderer;
 
 export namespace vox
@@ -43,7 +47,7 @@ export namespace vox
             private m_materialProxy:RenderMaterialProxy = null;
             private m_bgColor:Color4 = new Color4();
             private m_render:IRenderer = null;
-
+            private m_runBegin:boolean = true;
             private m_fboIndex:number = -1;
             private m_fboType:number = -1;
             private m_initW:number = 128;
@@ -52,7 +56,7 @@ export namespace vox
             private m_enableStencil:boolean = false;
             private m_multisampleLevel:number = 0;
             private m_gMateiral:MaterialBase = null;
-            private m_rindexs:number[] = null;
+            private m_rindexs:number[] = [];
             private m_texs:TextureProxy[] = [null,null,null,null,null,null,null,null];
             private m_texsTot:number = 0;
             private m_synFBOSizeWithViewport:boolean = true;
@@ -61,12 +65,17 @@ export namespace vox
             private m_clearColorBoo:boolean = true;
             private m_clearDepthBoo:boolean = true;
             private m_clearStencilBoo:boolean = false;
+            private m_viewportLock:boolean = false;
             constructor(render:IRenderer)
             {
                 this.m_render = render;
                 this.m_renderProxy = render.getRenderProxy();
                 this.m_rAdapter = this.m_renderProxy.getRenderAdapter();
                 this.m_materialProxy = this.m_render.getRendererContext().getRenderMaterialProxy();
+            }
+            getFBOUid():number
+            {
+                return this.m_fboIndex;
             }
             setRProcessIDList(list:number[]):void
             {
@@ -87,6 +96,14 @@ export namespace vox
                     return this.m_renderProxy.getCamera();
                 }
                 return null;
+            }
+            lockViewport():void
+            {
+                this.m_viewportLock = true;
+            }
+            unlockViewport():void
+            {
+                this.m_viewportLock = false;
             }
             updateCamera():void
             {
@@ -157,7 +174,7 @@ export namespace vox
                 this.m_fboSizeFactor = factor;
             }
             
-			createViewSizeFBOAt(fboIndex:number, enableDepth:boolean = false, enableStencil:boolean = false,multisampleLevel:number = 0):void
+			createViewportSizeFBOAt(fboIndex:number, enableDepth:boolean = false, enableStencil:boolean = false,multisampleLevel:number = 0):void
 			{
                 if(this.m_fboIndex < 0)
                 {
@@ -246,10 +263,12 @@ export namespace vox
 			getViewY():number { return this.m_rAdapter.getViewportY(); }
 			getViewWidth():number { return this.m_rAdapter.getViewportWidth(); }
             getViewHeight():number { return this.m_rAdapter.getViewportHeight(); }
+			getFBOWidth():number { return this.m_rAdapter.getFBOWidthAt(this.m_fboIndex); }
+            getFBOHeight():number { return this.m_rAdapter.getFBOHeightAt(this.m_fboIndex); }
             
             setClearRGBColor3f(pr:number,pg:number,pb:number)
             {
-                this.m_bgColor.setRGB3f(pr,pb,pg);
+                this.m_bgColor.setRGB3f(pr,pg,pb);
             }
             setClearColorEnabled(boo:boolean):void
             {
@@ -264,14 +283,77 @@ export namespace vox
                 this.m_clearStencilBoo = boo;
             }
 
+            setClearUint24Color(colorUint24:number,alpha:number = 1.0):void
+            {
+                this.m_bgColor.setRGBUint24(colorUint24);
+                this.m_bgColor.a = alpha;
+            }
             setClearRGBAColor4f(pr:number,pg:number,pb:number,pa:number):void
             {
                 this.m_bgColor.setRGBA4f(pr,pb,pg,pa);
             }
-            run():void
+			/**
+			 * @oaram			clearType, it is RenderProxy.COLOR or RenderProxy.DEPTH or RenderProxy.STENCIL or RenderProxy.DEPTH_STENCIL
+			*/
+            blitFrom(fboIns:FBOInstance,mask_bitfiled:number = RenderMaskBitfield.COLOR_BUFFER_BIT, filter:number = RenderFilter.NEAREST, clearType:number = -1,clearIndex:number = 0,dataArr:number[] = null):void
             {
-                if(this.m_fboIndex >= 0 && this.m_rindexs != null)
+                if(this.m_fboIndex >= 0)
                 {
+                    this.m_rAdapter.setBlitFboSrcRect(0,0,fboIns.getFBOWidth(),fboIns.getFBOHeight());
+                    this.m_rAdapter.setBlitFboSrcRect(0,0,this.getFBOWidth(),this.getFBOHeight());
+                    this.m_rAdapter.blitFBO(fboIns.getFBOUid(),this.m_fboIndex,mask_bitfiled,filter,clearType,clearIndex,dataArr);
+                }
+            }
+            blitColorFrom(fboIns:FBOInstance,filter:number = RenderFilter.NEAREST, clearType:number = -1,clearIndex:number = 0,dataArr:number[] = null):void
+            {
+                if(this.m_fboIndex >= 0)
+                {
+                    this.m_rAdapter.setBlitFboSrcRect(0,0,fboIns.getFBOWidth(),fboIns.getFBOHeight());
+                    this.m_rAdapter.setBlitFboSrcRect(0,0,this.getFBOWidth(),this.getFBOHeight());
+                    this.m_rAdapter.blitFBO(fboIns.getFBOUid(),this.m_fboIndex,RenderMaskBitfield.COLOR_BUFFER_BIT,filter,clearType,clearIndex,dataArr);
+                }
+            }
+            blitDepthFrom(fboIns:FBOInstance,filter:number = RenderFilter.NEAREST, clearType:number = -1,clearIndex:number = 0,dataArr:number[] = null):void
+            {
+                if(this.m_fboIndex >= 0)
+                {
+                    this.m_rAdapter.setBlitFboSrcRect(0,0,fboIns.getFBOWidth(),fboIns.getFBOHeight());
+                    this.m_rAdapter.setBlitFboSrcRect(0,0,this.getFBOWidth(),this.getFBOHeight());
+                    this.m_rAdapter.blitFBO(fboIns.getFBOUid(),this.m_fboIndex,RenderMaskBitfield.COLOR_BUFFER_BIT | RenderMaskBitfield.DEPTH_BUFFER_BIT,filter,clearType,clearIndex,dataArr);
+                }
+            }
+            blitColorAndDepthFrom(fboIns:FBOInstance,filter:number = RenderFilter.NEAREST, clearType:number = -1,clearIndex:number = 0,dataArr:number[] = null):void
+            {
+                if(this.m_fboIndex >= 0)
+                {
+                    this.m_rAdapter.setBlitFboSrcRect(0,0,fboIns.getFBOWidth(),fboIns.getFBOHeight());
+                    this.m_rAdapter.setBlitFboSrcRect(0,0,this.getFBOWidth(),this.getFBOHeight());
+                    this.m_rAdapter.blitFBO(fboIns.getFBOUid(),this.m_fboIndex,RenderMaskBitfield.COLOR_BUFFER_BIT | RenderMaskBitfield.DEPTH_BUFFER_BIT,filter,clearType,clearIndex,dataArr);
+                }
+            }
+            blitStencilFrom(fboIns:FBOInstance,filter:number = RenderFilter.NEAREST, clearType:number = -1,clearIndex:number = 0,dataArr:number[] = null):void
+            {
+                if(this.m_fboIndex >= 0)
+                {
+                    this.m_rAdapter.setBlitFboSrcRect(0,0,fboIns.getFBOWidth(),fboIns.getFBOHeight());
+                    this.m_rAdapter.setBlitFboSrcRect(0,0,this.getFBOWidth(),this.getFBOHeight());
+                    this.m_rAdapter.blitFBO(fboIns.getFBOUid(),this.m_fboIndex,RenderMaskBitfield.STENCIL_BUFFER_BIT,filter,clearType,clearIndex,dataArr);
+                }
+            }
+            private runBeginDo():void
+            {
+                if(this.m_runBegin)
+                {
+                    this.m_runBegin = false;
+
+                    if(this.m_viewportLock)
+                    {
+                        this.m_rAdapter.lockViewport();
+                    }
+                    else
+                    {
+                        this.m_rAdapter.unlockViewport();
+                    }
                     this.m_rAdapter.bindFBOAt(this.m_fboIndex,this.m_fboType);
                     if(this.m_synFBOSizeWithViewport)
                     {
@@ -299,12 +381,18 @@ export namespace vox
                         this.m_materialProxy.useGlobalMaterial(this.m_gMateiral);
                         this.m_materialProxy.lockMaterial();
                     }
-                    let len:number = this.m_rindexs.length;
-                    for(i = 0; i < len; ++i)
+                }
+            }
+            run():void
+            {
+                if(this.m_fboIndex >= 0 && this.m_rindexs != null)
+                {
+                    this.runBeginDo();
+                    for(let i:number = 0,len:number = this.m_rindexs.length; i < len; ++i)
                     {
                         this.m_render.runAt(this.m_rindexs[i]);
                     }
-
+                    this.m_runBegin = true;
                 }
             }
             runAt(index:number):void
@@ -313,33 +401,11 @@ export namespace vox
                 {
                     if(index == 0)
                     {
-                        this.m_rAdapter.bindFBOAt(this.m_fboIndex,this.m_fboType);
-                        if(this.m_synFBOSizeWithViewport)
-                        {
-                            this.m_rAdapter.synFBOSizeWithViewport();
-                            this.m_rAdapter.setFBOSizeFactorWithViewPort(this.m_fboSizeFactor);
-                        }
-                        else
-                        {
-                            this.m_rAdapter.asynFBOSizeWithViewport();
-                        }
-                        if(this.m_clearDepth < 128.0)
-                        {
-                            this.m_rAdapter.setClearDepth(this.m_clearDepth);
-                        }
-                        this.m_renderProxy.setClearColor(this.m_bgColor);
-                        let i:number = 0;
-                        for(; i < this.m_texsTot; ++i)
-                        {
-                            this.m_rAdapter.setRenderToTexture(this.m_texs[i],this.m_enableDepth,this.m_enableStencil,i);
-                        }
-                        this.m_rAdapter.useFBO(this.m_clearColorBoo,this.m_clearDepthBoo,this.m_clearStencilBoo);
-                        if(this.m_gMateiral != null)
-                        {
-                            this.m_materialProxy.unlockMaterial();
-                            this.m_materialProxy.useGlobalMaterial(this.m_gMateiral);
-                            this.m_materialProxy.lockMaterial();
-                        }
+                        this.runBeginDo();
+                    }
+                    else
+                    {
+                        this.m_runBegin = true;
                     }
                     this.m_render.runAt(this.m_rindexs[index]);
                 }
@@ -349,54 +415,18 @@ export namespace vox
             {
                 if(this.m_fboIndex >= 0 && this.m_rindexs != null)
                 {
-                    this.m_rAdapter.bindFBOAt(this.m_fboIndex,this.m_fboType);
-                    if(this.m_synFBOSizeWithViewport)
-                    {
-                        this.m_rAdapter.synFBOSizeWithViewport();
-                        this.m_rAdapter.setFBOSizeFactorWithViewPort(this.m_fboSizeFactor);
-                    }
-                    else
-                    {
-                        this.m_rAdapter.asynFBOSizeWithViewport();
-                    }
-                    if(this.m_clearDepth < 128.0)
-                    {
-                        this.m_rAdapter.setClearDepth(this.m_clearDepth);
-                    }
-                    this.m_renderProxy.setClearColor(this.m_bgColor);
-                    let i:number = 0;
-                    for(; i < this.m_texsTot; ++i)
-                    {
-                        this.m_rAdapter.setRenderToTexture(this.m_texs[i],this.m_enableDepth,this.m_enableStencil,i);
-                    }
-                    this.m_rAdapter.useFBO(this.m_clearColorBoo,this.m_clearDepthBoo,this.m_clearStencilBoo);
-                    if(this.m_gMateiral != null)
-                    {
-                        this.m_materialProxy.unlockMaterial();
-                        this.m_materialProxy.useGlobalMaterial(this.m_gMateiral);
-                        this.m_materialProxy.lockMaterial();
-                    }
+                    this.m_runBegin = true;
+                    this.runBeginDo();
                 }
             }
-            
-            runOnlyAll():void
+            runEnd():void
             {
-                if(this.m_fboIndex >= 0 && this.m_rindexs != null)
-                {                    
-                    let len:number = this.m_rindexs.length;
-                    for(let i:number = 0; i < len; ++i)
-                    {
-                        this.m_render.runAt(this.m_rindexs[i]);
-                    }
-
-                }
-            }
-            runOnlyAt(index:number):void
-            {
-                this.m_render.runAt(this.m_rindexs[index]);
+                this.m_runBegin = true;
+                this.m_rAdapter.unlockViewport();
             }
             reset():void
             {
+                this.m_runBegin = true;
                 this.m_fboIndex = -1;
                 this.m_texsTot = 0;
             }
@@ -426,10 +456,10 @@ export namespace vox
                 if(this.m_rindexs != null)
                 {
                     let len:number = this.m_rindexs.length;
-                    let list:number[] = [];
+                    let list:number[] = new Array(len);
                     for(i = 0; i < len; ++i)
                     {
-                        list.push(this.m_rindexs[i]);
+                        list[i] = this.m_rindexs[i];
                     }
                     ins.setRProcessIDList(list);
                 }

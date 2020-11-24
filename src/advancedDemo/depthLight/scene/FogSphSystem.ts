@@ -196,7 +196,7 @@ export namespace advancedDemo
                                 {
                                     this.fogFactorM.setFogRGBColor(fogUnit.fogColor);
                                 }
-                                this.m_factorFBO.runOnlyAt(0);
+                                this.m_factorFBO.runAt(0);
                             }
                         }
                     }

@@ -155,7 +155,7 @@ export namespace advancedDemo
                         {
                             this.m_esc.fogFactorM.setRGBColor(this.m_esc.volumeColors[i]);
                         }
-                        this.m_factorFBO.runOnlyAt(0);
+                        this.m_factorFBO.runAt(0);
                     }
                 }
                 /////////////////// 绘制体数据机制 end

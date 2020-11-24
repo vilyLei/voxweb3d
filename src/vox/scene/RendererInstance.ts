@@ -304,6 +304,15 @@ export namespace vox
                     }
                 }
             }
+            getRenderUnitsTotal():number
+            {
+                let total:number = 0;
+                for(let i:number = 0; i < this.m_processesLen; ++i)
+                {
+                    total += this.m_processes[i].getUnitsTotal();
+                }
+                return total;
+            }
             toString():string
             {
                 return "[RendererInstance(uid = "+this.m_uid+")]";

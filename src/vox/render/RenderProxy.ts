@@ -7,6 +7,8 @@
 // 真正位于高频运行的渲染管线中的被使用的渲染关键代理对象
 
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
+import * as RenderFilterT from "../../vox/render/RenderFilter";
+import * as RenderMaskBitfieldT from "../../vox/render/RenderMaskBitfield";
 import * as MathConstT from "../../vox/utils/MathConst";
 import * as MaterialConstT from "../../vox/material/MaterialConst";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
@@ -21,6 +23,8 @@ import * as RenderFBOProxyT from "../../vox/render/RenderFBOProxy";
 import * as DivLogT from "../../vox/utils/DivLog";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+import RenderFilter = RenderFilterT.vox.render.RenderFilter;
+import RenderMaskBitfield = RenderMaskBitfieldT.vox.render.RenderMaskBitfield;
 import MathConst = MathConstT.vox.utils.MathConst;
 import MaterialConst = MaterialConstT.vox.material.MaterialConst;
 import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
@@ -51,6 +55,11 @@ export namespace vox
             readonly LINE_STRIP:number = 0;
             readonly UNSIGNED_SHORT:number = 0;
             readonly UNSIGNED_INT:number = 0;
+
+            readonly COLOR:number = 0;
+            readonly DEPTH:number = 0;
+            readonly STENCIL:number = 0;
+            readonly DEPTH_STENCIL:number = 0;
 
             // webgl Extension ...
             readonly WEBGL_draw_buffers:any = null;
@@ -100,6 +109,14 @@ export namespace vox
                 return this.m_autoSynViewAndStage;
             }
             
+			lockViewport():void
+			{
+				this.m_adapter.lockViewport();
+			}
+			unlockViewport():void
+			{
+				this.m_adapter.unlockViewport();
+			}
             getDiv():any
             {
                 return this.m_adapter.getDiv();
@@ -107,6 +124,14 @@ export namespace vox
             getCanvas():any
             {
                 return this.m_adapter.getCanvas();
+            }
+            cameraLock():void
+            {
+                this.m_camera.lock();
+            }
+            cameraUnlock():void
+            {
+                this.m_camera.unlock();
             }
             getCamera():CameraBase
             {
@@ -427,6 +452,7 @@ export namespace vox
             }
             reseizeRCViewPort():void
             {
+                this.m_adapter.unlockViewport();
                 this.m_adapter.reseizeViewPort();
             }
             private resizeCallback():void
@@ -589,16 +615,34 @@ export namespace vox
                 else
                 console.log("OES_texture_float_linear Extension can not support!");
 
-                selfT.RGBA = this.m_rc.RGBA;
-                selfT.UNSIGNED_BYTE = this.m_rc.UNSIGNED_BYTE;
-                selfT.TRIANGLE_STRIP = this.m_rc.TRIANGLE_STRIP;
-                selfT.TRIANGLE_FAN = this.m_rc.TRIANGLE_FAN;
-                selfT.TRIANGLES = this.m_rc.TRIANGLES;
+                let gl:any = this.m_rc;
+                selfT.RGBA = gl.RGBA;
+                selfT.UNSIGNED_BYTE = gl.UNSIGNED_BYTE;
+                selfT.TRIANGLE_STRIP = gl.TRIANGLE_STRIP;
+                selfT.TRIANGLE_FAN = gl.TRIANGLE_FAN;
+                selfT.TRIANGLES = gl.TRIANGLES;
                 selfT.LINES = this.m_rc.LINES;
-                selfT.LINE_STRIP = this.m_rc.LINE_STRIP;
-                selfT.UNSIGNED_SHORT = this.m_rc.UNSIGNED_SHORT;
-                selfT.UNSIGNED_INT = this.m_rc.UNSIGNED_INT;
+                selfT.LINE_STRIP = gl.LINE_STRIP;
+                selfT.UNSIGNED_SHORT = gl.UNSIGNED_SHORT;
+                selfT.UNSIGNED_INT = gl.UNSIGNED_INT;
+
+                selfT.COLOR = gl.COLOR;
+                selfT.DEPTH = gl.DEPTH;
+                selfT.STENCIL = gl.STENCIL;
+                selfT.DEPTH_STENCIL = gl.DEPTH_STENCIL;
                 
+                let classRenderFilter:any = RenderFilter;
+                classRenderFilter.NEAREST = gl.NEAREST;
+                classRenderFilter.LINEAR = gl.LINEAR;
+                classRenderFilter.LINEAR_MIPMAP_LINEAR = gl.LINEAR_MIPMAP_LINEAR;
+                classRenderFilter.NEAREST_MIPMAP_NEAREST = gl.NEAREST_MIPMAP_NEAREST;
+                classRenderFilter.LINEAR_MIPMAP_NEAREST = gl.LINEAR_MIPMAP_NEAREST;
+                classRenderFilter.NEAREST_MIPMAP_LINEAR = gl.NEAREST_MIPMAP_LINEAR;
+                let classRenderMaskBitfield:any = RenderMaskBitfield;
+			    classRenderMaskBitfield.COLOR_BUFFER_BIT = gl.COLOR_BUFFER_BIT;
+			    classRenderMaskBitfield.DEPTH_BUFFER_BIT = gl.DEPTH_BUFFER_BIT;
+			    classRenderMaskBitfield.STENCIL_BUFFER_BIT = gl.STENCIL_BUFFER_BIT;
+
                 RenderFBOProxy.SetRenderer(this.m_RAdapterContext);
                 selfT.RState = this.m_RAdapterContext.getRenderState();
                 selfT.RContext = this.m_rc;
@@ -615,6 +659,11 @@ export namespace vox
             setClearColor(color:Color4):void
             {
                 this.m_adapter.bgColor.copyFrom(color);
+            }
+            setClearUint24Color(colorUint24:number,alpha:number):void
+            {
+                this.m_adapter.bgColor.setRGBUint24(colorUint24);
+                this.m_adapter.bgColor.a = alpha;
             }
             setClearRGBAColor4f(pr:number,pg:number,pb:number,pa:number):void
             {

@@ -28,6 +28,9 @@ import * as RaySelectedNodeT from "../../vox/scene/RaySelectedNode";
 import * as IRendererSpaceT from "../../vox/scene/IRendererSpace";
 import * as RendererSpaceT from "../../vox/scene/RendererSpace";
 import * as IRaySelectorT from "../../vox/scene/IRaySelector";
+import * as RaySelectorT from "../../vox/scene/RaySelector";
+import * as RayGpuSelectorT from "../../vox/scene/RayGpuSelector";
+import * as MouseEvt3DControllerT from "../../vox/scene/MouseEvt3DController";
 import * as IEvt3DControllerT from "../../vox/scene/IEvt3DController";
 
 import MathConst = MathConstT.vox.utils.MathConst;
@@ -51,6 +54,9 @@ import RaySelectedNode = RaySelectedNodeT.vox.scene.RaySelectedNode;
 import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
 import RendererSpace = RendererSpaceT.vox.scene.RendererSpace;
 import IRaySelector = IRaySelectorT.vox.scene.IRaySelector;
+import RaySelector = RaySelectorT.vox.scene.RaySelector;
+import RayGpuSelector = RayGpuSelectorT.vox.scene.RayGpuSelector;
+import MouseEvt3DController = MouseEvt3DControllerT.vox.scene.MouseEvt3DController;
 import IEvt3DController = IEvt3DControllerT.vox.scene.IEvt3DController;
 
 export namespace vox
@@ -167,6 +173,31 @@ export namespace vox
                 }
                 this.m_evt3DCtr = evt3DCtr;
             }
+            private m_mouseEvtEnabled:boolean = true;
+            enableMouseEvent(gpuTestEnabled:boolean = true):void
+            {
+                if(this.m_evt3DCtr == null)
+                {
+                    if(gpuTestEnabled)
+                    {
+                        this.m_rspace.setRaySelector(new RayGpuSelector());
+                    }
+                    else
+                    {
+                        this.m_rspace.setRaySelector(new RaySelector());
+                    }
+                    this.setEvt3DController(new MouseEvt3DController());
+                }
+                this.m_mouseEvtEnabled = true;                
+            }
+            disableMouseEvent():void
+            {
+                this.m_mouseEvtEnabled = false; 
+            }
+            getEvt3DController():IEvt3DController
+            {
+                return this.m_evt3DCtr;
+            }
             getSpace():IRendererSpace
             {
                 return this.m_rspace;
@@ -237,6 +268,14 @@ export namespace vox
                 }
                 this.m_camera.lookAtRH(this.m_rparam.camPosition, this.m_rparam.camLookAtPos, this.m_rparam.camUpDirect);
                 this.m_camera.update();
+            }
+            cameraLock():void
+            {
+                this.m_camera.lock();
+            }
+            cameraUnlock():void
+            {
+                this.m_camera.unlock();
             }
             setRendererProcessParam(index:number,batchEnabled:boolean,processFixedState:boolean):void
             {
@@ -393,7 +432,7 @@ export namespace vox
             runMouseTest(evtFlowPhase:number,status:number):number
             {
                 let flag:number = -1;
-                if(this.m_evt3DCtr != null)
+                if(this.m_evt3DCtr != null && this.m_mouseEvtEnabled)
                 {
                     if(this.m_rayTestBoo && this.m_evt3DCtr.getEvtType() > 0)
                     {

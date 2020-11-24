@@ -14,16 +14,16 @@ export namespace vox
     {
         export class TextureFormat
         {
-            static R8:number = 101;
-            static RGB:number = 110;
-            static RED:number = 111;
-            static RGBA:number = 121;
-            static RGB8:number = 122;
-            static RGBA8:number = 123;
-            static ALPHA:number = 132;
-            static RGB16F:number = 331;
-            static RGBA16F:number = 332;
-            static RGB32F:number = 341;
+            static readonly R8:number = 101;
+            static readonly RGB:number = 110;
+            static readonly RED:number = 111;
+            static readonly RGBA:number = 121;
+            static readonly RGB8:number = 122;
+            static readonly RGBA8:number = 123;
+            static readonly ALPHA:number = 132;
+            static readonly RGB16F:number = 331;
+            static readonly RGBA16F:number = 332;
+            static readonly RGB32F:number = 341;
             static ToGL(gl:any,format:number):number
             {
                 switch(format)
@@ -75,12 +75,12 @@ export namespace vox
         }
         export class TextureDataType
         {
-            static UNSIGNED_BYTE:number = 1109;
-            static UNSIGNED_SHORT:number = 1110;
-            static BYTE:number = 1111;
-            static FLOAT:number = 1211;
-            static HALF_FLOAT:number = 1212;
-            static HALF_FLOAT_OES:number = 1213;
+            static readonly UNSIGNED_BYTE:number = 1109;
+            static readonly UNSIGNED_SHORT:number = 1110;
+            static readonly BYTE:number = 1111;
+            static readonly FLOAT:number = 1211;
+            static readonly HALF_FLOAT:number = 1212;
+            static readonly HALF_FLOAT_OES:number = 1213;
 
             static ToGL(gl:any,type:number):number
             {
@@ -113,11 +113,11 @@ export namespace vox
 
         export class TextureTarget
         {
-            static TEXTURE_2D:number = 20;
-            static TEXTURE_2D_ARRAY:number = 22;
-            static TEXTURE_SHADOW_2D:number = 23;
-            static TEXTURE_CUBE:number = 25;
-            static TEXTURE_3D:number = 30;
+            static readonly TEXTURE_2D:number = 20;
+            static readonly TEXTURE_2D_ARRAY:number = 22;
+            static readonly TEXTURE_SHADOW_2D:number = 23;
+            static readonly TEXTURE_CUBE:number = 25;
+            static readonly TEXTURE_3D:number = 30;
             static GetValue(rc:any,param:number):number
             {
                 switch(param)
@@ -143,21 +143,21 @@ export namespace vox
 
         export class TextureConst
         {
-            static WRAP_REPEAT:number = 3001;
-            static WRAP_CLAMP_TO_EDGE:number = 3002;
-            static WRAP_MIRRORED_REPEAT:number = 3003;
-            static NEAREST:number = 4001;
-            static LINEAR:number = 4002;
-            static LINEAR_MIPMAP_LINEAR:number = 4003;
+            static readonly WRAP_REPEAT:number = 3001;
+            static readonly WRAP_CLAMP_TO_EDGE:number = 3002;
+            static readonly WRAP_MIRRORED_REPEAT:number = 3003;
 
-            static NEAREST_MIPMAP_NEAREST = 4004;
-            static LINEAR_MIPMAP_NEAREST = 4005;
-            static NEAREST_MIPMAP_LINEAR = 4006;
+            static readonly NEAREST:number = 4001;
+            static readonly LINEAR:number = 4002;
+            static readonly LINEAR_MIPMAP_LINEAR:number = 4003;
+            static readonly NEAREST_MIPMAP_NEAREST:number = 4004;
+            static readonly LINEAR_MIPMAP_NEAREST:number = 4005;
+            static readonly NEAREST_MIPMAP_LINEAR:number = 4006;
 
-            static TEX_PROXY2D:number = 5001;
-            static TEX_BYTES2D:number = 5002;
-            static TEX_CUBE:number = 5003;
-            static TEX_PROXY3D:number = 5004;
+            static readonly TEX_PROXY2D:number = 5001;
+            static readonly TEX_BYTES2D:number = 5002;
+            static readonly TEX_CUBE:number = 5003;
+            static readonly TEX_PROXY3D:number = 5004;
             static GetConst(gl:any,param:number):number
             {
                 switch(param)
@@ -165,9 +165,12 @@ export namespace vox
                     case TextureConst.NEAREST:
                     return gl.NEAREST;
                     break;
+                    case TextureConst.LINEAR:
+                    return gl.LINEAR;
+                    break;
                     case TextureConst.LINEAR_MIPMAP_LINEAR:
                     return gl.LINEAR_MIPMAP_LINEAR;
-                    break;                    
+                    break;
                     case TextureConst.NEAREST_MIPMAP_NEAREST:
                     return gl.NEAREST_MIPMAP_NEAREST;
                     break;
@@ -177,9 +180,7 @@ export namespace vox
                     case TextureConst.NEAREST_MIPMAP_LINEAR:
                     return gl.NEAREST_MIPMAP_LINEAR;
                     break;
-                    case TextureConst.LINEAR:
-                    return gl.LINEAR;
-                    break;
+
                     case TextureConst.WRAP_REPEAT:
                     return gl.REPEAT;
                     break;

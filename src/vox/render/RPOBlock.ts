@@ -7,6 +7,7 @@
 // 用于对 RPOBlock 进行必要的组织, 例如 合批或者按照 shader不同来分类, 以及依据其他机制分类等等
 // 目前一个block内的所有node 所使用的shader program 是相同的
 
+import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 import * as RODisplayT from "../../vox/display/RODisplay";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
@@ -18,6 +19,7 @@ import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as MaterialProgramT from "../../vox/material/MaterialProgram";
 import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
 
+import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
 import RODisplay = RODisplayT.vox.display.RODisplay;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
@@ -289,9 +291,16 @@ export namespace vox
                 if(unit.drawEnabled)
                 {
                     if(forceUpdateUniform)RPOUnit.RenderBegin();
-                    // 如果不这么做，vro和shader attributes没有完全匹配的时候可能在移动设备上会有问题(无法正常绘制)例如 ip6s
-                    let vro:VertexRenderObj = disp.vbuf.createVROBegin(MaterialProgram.GetCurrentShd());
-                    vro.run(rc);
+                    if(RendererDeviece.IsMobileWeb())
+                    {
+                        // 如果不这么做，vro和shader attributes没有完全匹配的时候可能在移动设备上会有问题(无法正常绘制)例如 ip6s
+                        let vro:VertexRenderObj = disp.vbuf.createVROBegin(MaterialProgram.GetCurrentShd());
+                        vro.run(rc);
+                    }
+                    else
+                    {
+                        unit.vro.run(rc);
+                    }
                     unit.runLockMaterial2(rc);
                     unit.drawThis(rc);
                 }
