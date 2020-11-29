@@ -6,6 +6,7 @@ import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext"
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 import * as Stage3DT from "../vox/display/Stage3D";
 
+import * as H5FontSysT from "../vox/text/H5FontSys";
 import * as DisplayEntityT from "../vox/entity/DisplayEntity";
 import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
 import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
@@ -22,6 +23,7 @@ import * as MouseEventT from "../vox/event/MouseEvent";
 import * as MouseEvt3DDispatcherT from "../vox/event/MouseEvt3DDispatcher";
 import * as BoxFrame3DT from "../vox/entity/BoxFrame3D";
 import * as CameraZoomControllerT from "../voxeditor/control/CameraZoomController";
+import * as ProfileInstanceT from "../voxprofile/entity/ProfileInstance";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
@@ -30,6 +32,7 @@ import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInst
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 
+import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
@@ -46,6 +49,7 @@ import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import MouseEvt3DDispatcher = MouseEvt3DDispatcherT.vox.event.MouseEvt3DDispatcher;
 import BoxFrame3D = BoxFrame3DT.vox.entity.BoxFrame3D;
 import CameraZoomController = CameraZoomControllerT.voxeditor.control.CameraZoomController;
+import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
 
 export namespace demo
 {
@@ -116,7 +120,7 @@ export namespace demo
                 }
             }
             //this.m_frameDisp.setRGB3f(Math.random() * 1.1,Math.random() * 1.1,Math.random() * 1.1);
-            console.log("evt.wpos: "+evt.wpos.toString());
+            //console.log("evt.wpos: "+evt.wpos.toString());
             
             let axis:Axis3DEntity = new Axis3DEntity();
             if(DispCtrObj.s_axis != null)
@@ -142,7 +146,6 @@ export namespace demo
         {
             this.rscene = null;
             this.m_frameDisp = null;
-            //this.frameDispList = null;
         }
     }
     export class DemoMobileEvt
@@ -154,8 +157,8 @@ export namespace demo
         private m_rcontext:RendererInstanceContext = null;
         private m_texLoader:ImageTexResLoader = new ImageTexResLoader();
         private m_camTrack:CameraTrack = null;
-        private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_CameraZoomController:CameraZoomController = new CameraZoomController();
+        private m_profileInstance:ProfileInstance = new ProfileInstance();
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
             let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -196,7 +199,6 @@ export namespace demo
         {
             console.log("test_bgmouseDownListener");
             this.m_rscene.setClearRGBColor3f(Math.random() * 0.3, 0, Math.random() * 0.3);
-            //this.testDis(Math.random() * 3000.0 + 500.0);
         }
         private test_bgmouseUpListener(evt:any):void
         {
@@ -211,7 +213,9 @@ export namespace demo
             console.log("DemoMobileEvt::initialize()......");
             if(this.m_rcontext == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
+                
+                H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
+                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 DivLog.SetDebugEnabled(false);
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
@@ -225,28 +229,20 @@ export namespace demo
                 this.m_rscene.initialize(rparam,3);
                 this.m_rscene.updateCamera();
                 this.m_rcontext = this.m_rscene.getRendererContext();
+                this.m_profileInstance.initialize(this.m_rscene.getRenderer());
                 
                 this.m_rscene.enableMouseEvent(true);
                 this.m_CameraZoomController.bindCamera(this.m_rscene.getCamera());
                 this.m_CameraZoomController.initialize(this.m_rscene.getStage3D());
 
-                
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
-
-                this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 10);
-
                 this.m_rscene.getEvt3DController().addBGMouseEventListener(MouseEvent.MOUSE_DOWN,this,this.test_bgmouseDownListener,true,false);
-                //  //  // add common 3d display entity
-                //  var plane:Plane3DEntity = new Plane3DEntity();
-                //  plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
-                //  this.m_rscene.addEntity(plane);
-                //  return;
-                ///*
+
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.initialize(300.0);
                 this.m_rscene.addEntity(axis);
-                //*/
+                //return;
                 let srcBox:Box3DEntity = new Box3DEntity();
                 srcBox.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
                 let i:number = 0;
@@ -261,9 +257,7 @@ export namespace demo
                     this.useEvtDispatcher(box);
                     this.m_rscene.addEntity(box);
                 }
-                //*/
-                ///*
-                //return;
+                
                 for(i = 0; i < 2; ++i)
                 {
                     let sph:Sphere3DEntity = new Sphere3DEntity();
@@ -299,8 +293,6 @@ export namespace demo
         private m_lookAtPos:Vector3D = new Vector3D();
         run():void
         {
-            // show fps status
-            this.m_statusDisp.update();
             
             // 分帧加载
             this.m_texLoader.run();
@@ -314,7 +306,10 @@ export namespace demo
             this.m_rscene.runEnd();
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
             this.m_CameraZoomController.run(this.m_lookAtPos, 50.0);
-
+            if(this.m_profileInstance != null)
+            {
+                this.m_profileInstance.run();
+            }
         }
     }
 }

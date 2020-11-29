@@ -57,7 +57,7 @@ export namespace vox
             }
             private m_rc:RenderProxy = null;
             //private m_ivs:Uint16Array = null;
-            private m_ivs:any = null;// Uint16Array or Uint32Array
+            private m_ivs:Uint16Array|Uint32Array = null;// Uint16Array or Uint32Array
             private m_ivsChanged:boolean = false;
             private m_ivsPreSize:number = 0;
             private m_ivsBuf:any = null;
@@ -136,7 +136,7 @@ export namespace vox
                     this.m_ivsChanged = true;
                 }
             }
-            setUint16IVSData(uint16Arr:Uint16Array,status:number = VtxBufConst.VTX_STATIC_DRAW):void
+            setUint16IVSData(uint16Arr:Uint16Array|Uint32Array,status:number = VtxBufConst.VTX_STATIC_DRAW):void
             {
                 if((uint16Arr instanceof Uint16Array))
                 {
@@ -152,9 +152,9 @@ export namespace vox
                     console.error("Error: uint16Arr is not an Uint16Array bufferArray instance !!!!");
                 }
             }
-            setUint32IVSData(uint32Arr:Uint32Array,status:number = VtxBufConst.VTX_STATIC_DRAW):void
+            setUint32IVSData(uint32Arr:Uint16Array|Uint32Array,status:number = VtxBufConst.VTX_STATIC_DRAW):void
             {
-                if((uint32Arr instanceof Uint16Array))
+                if((uint32Arr instanceof Uint32Array))
                 {
                     this.m_ivs = uint32Arr;
                     if(this.m_ivsBuf != null && uint32Arr != null)

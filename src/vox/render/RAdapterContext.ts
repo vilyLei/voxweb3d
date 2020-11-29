@@ -39,9 +39,9 @@ export namespace vox
             private m_document:any = null;
             bgColor:Color4 = new Color4();
     
-            depthTestEnabled:boolean = true;
+            private m_depthTestEnabled:boolean = true;
             //STENCIL_TEST
-            stencilTestEnabled:boolean = true;
+            private m_stencilTestEnabled:boolean = true;
             // display 3d view buf size auto syn window size
             autoSynContextSizeAndWindowSize:boolean = true;
             //
@@ -118,7 +118,15 @@ export namespace vox
             {
                 return this.m_canvas;
             }
-            initialize(glCanvasNS:string,glDivNS:string):void
+            getDepthTestEnabled():boolean
+            {
+                return this.m_depthTestEnabled;
+            }
+            getStencilTestEnabled():boolean
+            {
+                return this.m_stencilTestEnabled;
+            }
+            initialize(glCanvasNS:string,glDivNS:string,rattr:any = null):void
             {
                 var pdocument:any = null;
                 var pwindow:any = null;
@@ -162,10 +170,21 @@ export namespace vox
                     this.m_mouseEvtDisplather.initialize(canvas,div,stage);
                     this.m_devicePixelRatio = window.devicePixelRatio;
                     this.m_mouseEvtDisplather.dpr = this.m_devicePixelRatio;
+                    let attr:any = rattr;
+                    if(rattr == null)
+                    {
+                        attr = {depth:this.m_depthTestEnabled,premultipliedAlpha: false, alpha: true, antialias:false,stencil:this.m_stencilTestEnabled,preserveDrawingBuffer:true };
+                    }
+                    else
+                    {
+                        this.m_depthTestEnabled = attr.depth;
+                        this.m_stencilTestEnabled = attr.stencil;
+                    }
                     console.log("this.m_devicePixelRatio: "+this.m_devicePixelRatio);
-                    console.log("depthTestEnabled: "+this.depthTestEnabled);
-                    console.log("stencilTestEnabled: "+this.stencilTestEnabled);
-                    let attr:any = {depth:this.depthTestEnabled,premultipliedAlpha: false, alpha: true, antialias:false,stencil:this.stencilTestEnabled,preserveDrawingBuffer:true };
+                    console.log("depthTestEnabled: "+attr.depth);
+                    console.log("stencilTestEnabled: "+attr.stencil);
+                    console.log("antialiasEnabled: "+attr.antialias);
+                    console.log("alphaEnabled: "+attr.alpha);
                     let offscreen:any = null;
                     if(this.offscreenRenderEnabled)
                     {

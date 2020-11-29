@@ -14,7 +14,6 @@ export namespace vox
     {
         export class RenderFBOProxy
         {
-            private static m_RAdapterContext:RAdapterContext = null;
             private static m_rc:any = null;
             private static m_COLOR_ATTACHMENT0:number = 0x0;
             private static m_drawBufsObj:any = null;
@@ -27,14 +26,14 @@ export namespace vox
             {
                 return RenderFBOProxy.m_drawBufsObj;
             }
-            static SetRenderer(pr:RAdapterContext):void
+            static SetRenderer(pr:RAdapterContext,drawBufsObj:any):void
             {
-                RenderFBOProxy.m_RAdapterContext = pr;
                 RenderFBOProxy.m_rc = pr.getRC();
                 RenderFBOProxy.m_webGLVer = pr.getWebGLVersion();
+                RenderFBOProxy.m_drawBufsObj = drawBufsObj;
                 if(RenderFBOProxy.m_webGLVer == 1)
                 {
-                    RenderFBOProxy.m_drawBufsObj = RenderFBOProxy.m_rc.getExtension('WEBGL_draw_buffers');
+                    //RenderFBOProxy.m_drawBufsObj = RenderFBOProxy.m_rc.getExtension('WEBGL_draw_buffers');
                     if (RenderFBOProxy.m_drawBufsObj != null)
                     {
                         //trace("Use WEBGL_draw_buffers Extension success!");

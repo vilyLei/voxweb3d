@@ -85,10 +85,10 @@ export namespace vox
 					this.m_rcontext = context;
     		        this.m_rc = context.getRC();
 					this.m_rc.disable(this.m_rc.SCISSOR_TEST);
-				
-    		        if(context.depthTestEnabled) this.m_rc.enable(this.m_rc.DEPTH_TEST);
+
+    		        if(context.getDepthTestEnabled()) this.m_rc.enable(this.m_rc.DEPTH_TEST);
     		        else this.m_rc.disable(this.m_rc.DEPTH_TEST);
-					if(context.stencilTestEnabled) 
+					if(context.getStencilTestEnabled()) 
 					{
 						console.log("Enabled STENCIL_TEST !!!!");
 						this.m_rc.enable(this.m_rc.STENCIL_TEST);
@@ -98,7 +98,6 @@ export namespace vox
 						console.log("Disabled STENCIL_TEST !!!!");
 						this.m_rc.disable(this.m_rc.STENCIL_TEST);
 					}
-    		        //
     		        this.m_rc.enable(this.m_rc.CULL_FACE);
     		        this.m_rc.cullFace(this.m_rc.BACK);
 					this.m_rc.enable(this.m_rc.BLEND);

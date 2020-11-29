@@ -44,7 +44,7 @@ export namespace vox
             getUVS():Float32Array{return this.m_uvs;}
             getNVS():Float32Array{return this.m_nvs;}
             getCVS():Float32Array{return this.m_cvs;}
-            getIVS():Uint16Array{return this.m_ivs;}
+            getIVS():Uint16Array | Uint32Array{return this.m_ivs;}
             
             //
             initialize(radius:number, longitudeNumSegments:number, latitudeNumSegments:number):void 

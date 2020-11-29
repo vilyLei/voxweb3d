@@ -20,6 +20,7 @@ import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RAdapterContextT from "../../vox/render/RAdapterContext";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as RenderFBOProxyT from "../../vox/render/RenderFBOProxy";
+import * as RCExtensionT from "../../vox/render/RCExtension";
 import * as DivLogT from "../../vox/utils/DivLog";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
@@ -38,6 +39,7 @@ import RenderColorMask = RODrawStateT.vox.render.RenderColorMask;
 import RAdapterContext = RAdapterContextT.vox.render.RAdapterContext;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RenderFBOProxy = RenderFBOProxyT.vox.render.RenderFBOProxy;
+import RCExtension = RCExtensionT.vox.render.RCExtension;
 import DivLog = DivLogT.vox.utils.DivLog;
 
 export namespace vox
@@ -61,17 +63,6 @@ export namespace vox
             readonly STENCIL:number = 0;
             readonly DEPTH_STENCIL:number = 0;
 
-            // webgl Extension ...
-            readonly WEBGL_draw_buffers:any = null;
-            readonly OES_vertex_array_object:any = null;
-            readonly ANGLE_instanced_arrays:any = null;
-            readonly EXT_color_buffer_float:any = null;
-            readonly EXT_color_buffer_half_float:any = null;
-            readonly OES_texture_float_linear:any = null;
-            readonly OES_texture_half_float_linear:any = null;
-            readonly OES_texture_float:any = null;
-            readonly OES_element_index_uint:any = null;
-
             readonly RContext:any = null;
             readonly RState:RODrawState = null;
 
@@ -94,10 +85,6 @@ export namespace vox
             private m_cameraFov:number = 45.0;
             private m_maxWebGLVersion:number = 2;
             private m_WEBGL_VER:number = 2;
-
-            private m_depthTestEnabled:boolean = true;
-            private m_stencilTestEnabled:boolean = true;
-            private m_multisampleEnabled:boolean = false;
 
             // main camera
             private m_camera:CameraBase = null;
@@ -184,7 +171,7 @@ export namespace vox
                 }
                 else
                 {
-                    vao = this.OES_vertex_array_object.createVertexArrayOES();
+                    vao = RCExtension.OES_vertex_array_object.createVertexArrayOES();
                     //this.OES_vertex_array_object.bindVertexArrayOES(vao);
                 }
                 return vao;
@@ -275,11 +262,11 @@ export namespace vox
             {
                 this.m_rc.bufferData(this.m_rc.ARRAY_BUFFER, float32Arr, VtxBufConst.ToGL(this.m_rc,usage));
             }
-            eleBufSubData(uintDataArr:any, offset:number):void
+            eleBufSubData(uintDataArr:Uint16Array|Uint32Array, offset:number):void
             {
                 this.m_rc.bufferSubData(this.m_rc.ELEMENT_ARRAY_BUFFER,offset, uintDataArr);
             }
-            eleBufData(uintDataArr:any, usage:number):void
+            eleBufData(uintDataArr:Uint16Array|Uint32Array, usage:number):void
             {
                 this.m_rc.bufferData(this.m_rc.ELEMENT_ARRAY_BUFFER, uintDataArr, VtxBufConst.ToGL(this.m_rc,usage));
             }
@@ -326,7 +313,7 @@ export namespace vox
                 }
                 else
                 {
-                    this.OES_vertex_array_object.bindVertexArrayOES(vao);
+                    RCExtension.OES_vertex_array_object.bindVertexArrayOES(vao);
                 }
                 return vao;
             }
@@ -338,7 +325,7 @@ export namespace vox
                 }
                 else
                 {
-                    this.OES_vertex_array_object.deleteVertexArrayOES(vao);
+                    RCExtension.OES_vertex_array_object.deleteVertexArrayOES(vao);
                 }
             }
             drawInstanced(count:number, offset:number, instanceCount:number):void
@@ -349,7 +336,7 @@ export namespace vox
                 }
                 else
                 {
-                    this.ANGLE_instanced_arrays.drawElementsInstancedANGLE(this.TRIANGLES,count, offset, instanceCount);
+                    RCExtension.ANGLE_instanced_arrays.drawElementsInstancedANGLE(this.TRIANGLES,count, offset, instanceCount);
                 }
             }
             createUBOBufferByBytesCount(bytesCount:number):any
@@ -413,12 +400,6 @@ export namespace vox
                 this.m_cameraFov = fov;
                 this.m_cameraNear = near;
                 this.m_cameraFar = far;
-            }
-            setRendererParam(depthTestEnabled:boolean, stencilTestEnabled:boolean, multisampleEnabled:boolean):void
-            {
-                this.m_depthTestEnabled = depthTestEnabled;
-                this.m_stencilTestEnabled = stencilTestEnabled;
-                this.m_multisampleEnabled = multisampleEnabled;
             }
             getMouseXYWorldRay(rl_position:Vector3D, rl_tv:Vector3D):void
             {
@@ -497,7 +478,7 @@ export namespace vox
             {
                 this.m_adapter.readPixels(px,py,width,height,format,dataType,pixels);
             }
-            initialize(glCanvasNS:string,glDivNS:string,posV3:Vector3D = null, lookAtPosV3:Vector3D = null, upV3:Vector3D = null,perspectiveEnabled:boolean = true):void
+            initialize(glCanvasNS:string,glDivNS:string,posV3:Vector3D = null, lookAtPosV3:Vector3D = null, upV3:Vector3D = null,perspectiveEnabled:boolean = true,renderContextAttri:any = null):void
             {
                 if(posV3 == null)
                 {
@@ -512,11 +493,9 @@ export namespace vox
                     upV3 = new Vector3D(0.0, 1.0, 0.0);
                 }
                 this.m_perspectiveEnabled = perspectiveEnabled;
-                this.m_RAdapterContext.depthTestEnabled = this.m_depthTestEnabled;
-                this.m_RAdapterContext.stencilTestEnabled = this.m_stencilTestEnabled;
                 this.m_RAdapterContext.setResizeCallback(this, this.resizeCallback);
                 this.m_RAdapterContext.setWebGLMaxVersion(this.m_maxWebGLVersion);
-                this.m_RAdapterContext.initialize(glCanvasNS,glDivNS);
+                this.m_RAdapterContext.initialize(glCanvasNS,glDivNS,renderContextAttri);
                 this.m_WEBGL_VER = this.m_RAdapterContext.getWebGLVersion();
                 RendererDeviece.Initialize([this.m_WEBGL_VER]);
                 this.m_viewW = this.m_RAdapterContext.getViewportWidth();
@@ -544,78 +523,9 @@ export namespace vox
                 this.m_rc = this.m_RAdapterContext.getRC();
                 this.m_camera = this.m_mainCamera;
                 let selfT:any = this;
-                if(this.m_WEBGL_VER == 1)
-                {
-                    selfT.WEBGL_draw_buffers = RenderFBOProxy.GetWebglDrawBufsObj();
-                    selfT.OES_vertex_array_object = this.m_rc.getExtension('OES_vertex_array_object');
-                    if(selfT.OES_vertex_array_object != null)
-                    console.log("Use OES_vertex_array_object Extension success!");
-                    else
-                    console.log("OES_vertex_array_object Extension can not support!");
-                    selfT.ANGLE_instanced_arrays = this.m_rc.getExtension('ANGLE_instanced_arrays');
-                    if(selfT.ANGLE_instanced_arrays != null)
-                    console.log("Use ANGLE_instanced_arrays Extension success!");
-                    else
-                    console.log("ANGLE_instanced_arrays Extension can not support!");
-                    selfT.EXT_color_buffer_float = this.m_rc.getExtension('EXT_color_buffer_float');
-                    if(selfT.EXT_color_buffer_float != null)
-                    console.log("Use EXT_color_buffer_float Extension success!");
-                    else
-                    console.log("EXT_color_buffer_float Extension can not support!");
-
-                    selfT.EXT_color_buffer_half_float = this.m_rc.getExtension('EXT_color_buffer_half_float');
-                    if(selfT.EXT_color_buffer_half_float != null)
-                    console.log("Use EXT_color_buffer_half_float Extension success!");
-                    else
-                    console.log("EXT_color_buffer_half_float Extension can not support!");
-
-                    selfT.OES_texture_half_float_linear = this.m_rc.getExtension('OES_texture_half_float_linear');
-                    if(selfT.OES_texture_half_float_linear != null)
-                    console.log("Use OES_texture_half_float_linear Extension success!");
-                    else
-                    console.log("OES_texture_half_float_linear Extension can not support!");
-
-                    selfT.OES_texture_float = this.m_rc.getExtension('OES_texture_float');
-                    if(selfT.OES_texture_float != null)
-                    console.log("Use OES_texture_float Extension success!");
-                    else
-                    console.log("OES_texture_float Extension can not support!");
-                    //
-                    selfT.OES_element_index_uint = this.m_rc.getExtension('OES_element_index_uint');
-                    if(selfT.OES_element_index_uint != null)
-                    console.log("Use OES_element_index_uint Extension success!");
-                    else
-                    console.log("OES_element_index_uint Extension can not support!");
-                }
-                else
-                {
-                    
-                    selfT.EXT_color_buffer_half_float = this.m_rc.getExtension('EXT_color_buffer_half_float');
-                    if(selfT.EXT_color_buffer_half_float != null)
-                    console.log("Use EXT_color_buffer_half_float Extension success!");
-                    else
-                    console.log("EXT_color_buffer_half_float Extension can not support!");
-                    
-                    selfT.OES_texture_half_float_linear = this.m_rc.getExtension('OES_texture_half_float_linear');
-                    if(selfT.OES_texture_half_float_linear != null)
-                    console.log("Use OES_texture_half_float_linear Extension success!");
-                    else
-                    console.log("OES_texture_half_float_linear Extension can not support!");
-
-                    selfT.EXT_color_buffer_float = this.m_rc.getExtension('EXT_color_buffer_float');
-                    if(selfT.EXT_color_buffer_float != null)
-                    console.log("Use EXT_color_buffer_float Extension success!");
-                    else
-                    console.log("EXT_color_buffer_float Extension can not support!");
-                }
-                
-                selfT.OES_texture_float_linear = this.m_rc.getExtension('OES_texture_float_linear');
-                if(selfT.OES_texture_float_linear != null)
-                console.log("Use OES_texture_float_linear Extension success!");
-                else
-                console.log("OES_texture_float_linear Extension can not support!");
-
                 let gl:any = this.m_rc;
+                RCExtension.Initialize(this.m_WEBGL_VER,gl);
+
                 selfT.RGBA = gl.RGBA;
                 selfT.UNSIGNED_BYTE = gl.UNSIGNED_BYTE;
                 selfT.TRIANGLE_STRIP = gl.TRIANGLE_STRIP;
@@ -643,7 +553,8 @@ export namespace vox
 			    classRenderMaskBitfield.DEPTH_BUFFER_BIT = gl.DEPTH_BUFFER_BIT;
 			    classRenderMaskBitfield.STENCIL_BUFFER_BIT = gl.STENCIL_BUFFER_BIT;
 
-                RenderFBOProxy.SetRenderer(this.m_RAdapterContext);
+                RenderFBOProxy.SetRenderer(this.m_RAdapterContext, RCExtension.WEBGL_draw_buffers);
+
                 selfT.RState = this.m_RAdapterContext.getRenderState();
                 selfT.RContext = this.m_rc;
 
@@ -709,7 +620,6 @@ export namespace vox
             {
                 this.m_RAdapterContext.setScissorRect(px,py,pw,ph);
             }
-    
             useRenderColorMask(state:number):void
             {
                 RenderColorMask.UseRenderState(state);
@@ -721,8 +631,7 @@ export namespace vox
             lockRenderColorMask():void
             {
                 RenderColorMask.Lock();
-            }
-        
+            }        
             useRenderState(state:number):void
             {
                 RenderStateObject.UseRenderState(state);

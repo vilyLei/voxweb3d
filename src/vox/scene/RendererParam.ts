@@ -11,12 +11,13 @@ export namespace vox
 {
     export namespace scene
     {
-        
+        //
         export class RendererParam
         {
             private m_matrix4AllocateSize:number = 8192;
             private m_glCanvasName:string = "glcanvas";
             private m_glDivName:string = "glcanvasdiv";
+            private m_renderContextAttri:any = {depth:true,premultipliedAlpha: false, alpha: true, antialias:false,stencil:false,preserveDrawingBuffer:true };
             maxWebGLVersion:number = 2;
             cameraPerspectiveEnabled:boolean = true;
             // event flow control enable
@@ -38,6 +39,34 @@ export namespace vox
                     this.m_glDivName = divIdns;
                 }
                 this.m_glCanvasName = glCanvasName;
+            }
+            getRenderContextAttri():any
+            {
+                return this.m_renderContextAttri;
+            }
+            setAttriDepth(boo:boolean):void
+            {
+                this.m_renderContextAttri.depth = boo;
+            }
+            setAttriStencil(boo:boolean):void
+            {
+                this.m_renderContextAttri.stencil = boo;
+            }
+            setAttriAlpha(boo:boolean):void
+            {
+                this.m_renderContextAttri.alpha = boo;
+            }
+            setAttriPremultipliedAlpha(boo:boolean):void
+            {
+                this.m_renderContextAttri.premultipliedAlpha = boo;
+            }
+            setAttriAntialias(boo:boolean):void
+            {
+                this.m_renderContextAttri.antialias = boo;
+            }
+            setAttripreserveDrawingBuffer(boo:boolean):void
+            {
+                this.m_renderContextAttri.preserveDrawingBuffer = boo;
             }
             getGLCanvasName():string
             {

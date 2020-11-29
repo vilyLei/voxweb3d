@@ -300,7 +300,8 @@ export namespace vox
                         param.camPosition,
                         param.camLookAtPos,
                         param.camUpDirect,
-                        param.cameraPerspectiveEnabled
+                        param.cameraPerspectiveEnabled,
+                        param.getRenderContextAttri()
                         );
                     //this.m_renderProxy.initialize(glCanvasNS,glDivNS,posV3, lookAtPosV3, upV3,perspectiveEnabled);
                     let context:RAdapterContext = this.m_renderProxy.getContext();

@@ -167,18 +167,9 @@ export namespace vox
                         if(material.__$uniform == null)
                         {
                             let unfdata:ShaderUniformData = material.createSelfUniformData();
-                            if(unfdata != null || hasTrans)
+                            if(unfdata != null)
                             {
-                                if(RendererDeviece.IsWebGL2())
-                                {
-                                    //runit.transUniform = ShdUniformTool.BuildLocalFromTransformV1(hasTrans?disp.transform:null, runit.shdp);
-                                    material.__$uniform = ShdUniformTool.BuildLocalFromDataV2(unfdata, hasTrans?disp.transform:null, runit.shdp);
-                                }
-                                else
-                                {
-                                    //runit.transUniform = ShdUniformTool.BuildLocalFromTransformV2(hasTrans?disp.transform:null, runit.shdp);
-                                    material.__$uniform = ShdUniformTool.BuildLocalFromDataV1(unfdata, hasTrans?disp.transform:null, runit.shdp);
-                                }
+                                material.__$uniform = ShdUniformTool.BuildLocalFromData(unfdata, runit.shdp);
                             }
                             else
                             {
@@ -186,14 +177,7 @@ export namespace vox
                                 runit.transUniform = EmptyShdUniform.EmptyUniform;
                             }
                         }
-                        if(RendererDeviece.IsWebGL2())
-                        {
-                            runit.transUniform = ShdUniformTool.BuildLocalFromTransformV1(hasTrans?disp.transform:null, runit.shdp);
-                        }
-                        else
-                        {
-                            runit.transUniform = ShdUniformTool.BuildLocalFromTransformV2(hasTrans?disp.transform:null, runit.shdp);
-                        }
+                        runit.transUniform = ShdUniformTool.BuildLocalFromTransformV(hasTrans?disp.transform:null, runit.shdp);
                         runit.uniform = material.__$uniform;
                         
                     }
@@ -299,16 +283,9 @@ export namespace vox
                     if(material.__$uniform == null)
                     {
                         let unfdata:ShaderUniformData = material.createSelfUniformData();
-                        if(unfdata != null || shdp.hasUniformByName(UniformConst.LocalTransformMatUNS))
+                        if(unfdata != null)
                         {
-                            if(RendererDeviece.IsWebGL2())
-                            {
-                                material.__$uniform = ShdUniformTool.BuildLocalFromDataV2(unfdata, null, shdp);
-                            }
-                            else
-                            {
-                                material.__$uniform = ShdUniformTool.BuildLocalFromDataV1(unfdata, null, shdp);
-                            }
+                            material.__$uniform = ShdUniformTool.BuildLocalFromData(unfdata, shdp);
                         }
                         else
                         {

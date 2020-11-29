@@ -41,36 +41,35 @@ export namespace vox
                     if(RendererDeviece.IsWebGL2())
                     {
                     fragCode =
-"\
-#version 300 es\n\
-precision mediump float;\n\
-uniform sampler2D u_sampler0;\n\
-in vec2 v_uvs;\n\
-layout(location = 0) out vec4 FragColor0;\n\
-layout(location = 1) out vec4 FragColor1;\n\
-void main()\n\
-{\n\
-    vec4 color = texture(u_sampler0, v_uvs);\n\
-    FragColor0 = vec4(color.rgb,1.0);\n\
-    FragColor1 = vec4(1.0 - color.rgb * color.rgb * color.rgb,1.0);\n\
-}\n\
-";
+`#version 300 es
+precision mediump float;
+uniform sampler2D u_sampler0;
+in vec2 v_uvs;
+layout(location = 0) out vec4 FragColor0;
+layout(location = 1) out vec4 FragColor1;
+void main()
+{
+    vec4 color = texture(u_sampler0, v_uvs);
+    FragColor0 = vec4(color.rgb,1.0);
+    FragColor1 = vec4(1.0 - color.rgb * color.rgb * color.rgb,1.0);
+}
+`
                     }
                     else
                     {
                         fragCode =
-"\
-#extension GL_EXT_draw_buffers: require\n\
-precision mediump float;\n\
-uniform sampler2D u_sampler0;\n\
-varying vec2 v_uvs;\n\
-void main()\n\
-{\n\
-    vec4 color = texture2D(u_sampler0, v_uvs);\n\
-    gl_FragData[0] = vec4(color.rgb,1.0);\n\
-    gl_FragData[1] = vec4(1.0 - color.rgb * color.rgb * color.rgb,1.0);\n\
-}\n\
-";
+`
+#extension GL_EXT_draw_buffers: require
+precision mediump float;
+uniform sampler2D u_sampler0;
+varying vec2 v_uvs;
+void main()
+{
+    vec4 color = texture2D(u_sampler0, v_uvs);
+    gl_FragData[0] = vec4(color.rgb,1.0);
+    gl_FragData[1] = vec4(1.0 - color.rgb * color.rgb * color.rgb,1.0);
+}
+`;
                     }
                     return fragCode;
                 }

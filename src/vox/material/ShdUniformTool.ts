@@ -5,6 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as ShaderProgramT from "../../vox/material/ShaderProgram";
 import * as ROTransformT from "../../vox/display/ROTransform";
 import * as ShaderUniformDataT from "../../vox/material/ShaderUniformData";
@@ -17,6 +18,7 @@ import * as CameraParamUniformBuilderT from "../../vox/material/shared/CameraPar
 import * as ViewParamUniformBuilderT from "../../vox/material/shared/ViewParamUniformBuilder";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 
+import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import ShaderProgram = ShaderProgramT.vox.material.ShaderProgram;
 import ROTransform = ROTransformT.vox.display.ROTransform;
 import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
@@ -195,11 +197,19 @@ export namespace vox
                 return guniform;                
             }
             private static s_emptyUniform:ShaderUniform = new ShaderUniform();
-            static BuildLocalFromTransformV1(transform:ROTransform, shdp:ShaderProgram):IShaderUniform
+            static BuildLocalFromTransformV(transform:ROTransform, shdp:ShaderProgram):IShaderUniform
             {
                 if(transform != null)
                 {
-                    let shdUniform:ShaderUniformV1 = new ShaderUniformV1();
+                    let shdUniform:ShaderUniform;
+                    if(RendererDeviece.IsWebGL1())
+                    {
+                        shdUniform = new ShaderUniformV1();
+                    }
+                    else
+                    {
+                        shdUniform = new ShaderUniformV2();
+                    }
                     shdUniform.uniformSize = 0;
                     shdUniform.uniformNameList = [];
                     shdUniform.types = [];
@@ -217,49 +227,24 @@ export namespace vox
                 }
                 return ShdUniformTool.s_emptyUniform;
             }
-            static BuildLocalFromTransformV2(transform:ROTransform, shdp:ShaderProgram):IShaderUniform
-            {
-                if(transform != null)
-                {
-                    let shdUniform:ShaderUniformV1 = new ShaderUniformV2();
-                    shdUniform.uniformSize = 0;
-                    shdUniform.uniformNameList = [];
-                    shdUniform.types = [];
-                    shdUniform.locations = [];
-                    shdUniform.dataList = [];
-                    shdUniform.dataSizeList = [];
-                    //console.log("BuildLocalFromDataAAA create u_objMat.shdp: "+shdp);
-                    shdUniform.uniformSize += 1;
-                    shdUniform.uniformNameList.push( "u_objMat" );
-                    shdUniform.types.push( shdp.getUniformTypeByNS("u_objMat") );
-                    shdUniform.locations.push( shdp.getUniformLocationByNS("u_objMat") );
-                    shdUniform.dataList.push(transform.getMatrixFS32());
-                    shdUniform.dataSizeList.push(1);                    
-                    return shdUniform;
-                }
-                return ShdUniformTool.s_emptyUniform;
-            }
-            static BuildLocalFromDataV1(uniformData:ShaderUniformData,transform:ROTransform, shdp:ShaderProgram):IShaderUniform
+            static BuildLocalFromData(uniformData:ShaderUniformData, shdp:ShaderProgram):IShaderUniform
             {
                 // collect all uniform data,create a new runned uniform
-                let shdUniform:ShaderUniformV1 = new ShaderUniformV1();
+                let shdUniform:ShaderUniform;
+                if(RendererDeviece.IsWebGL1())
+                {
+                    shdUniform = new ShaderUniformV1();
+                }
+                else
+                {
+                    shdUniform = new ShaderUniformV2();
+                }
                 shdUniform.uniformNameList = [];
                 shdUniform.types = [];
                 shdUniform.locations = [];
                 shdUniform.dataList = [];
                 shdUniform.dataSizeList = [];
                 shdUniform.uniformSize = 0;
-                //  if(transform != null)
-                //  {
-                //      //console.log("BuildLocalFromDataAAA create u_objMat.shdp: "+shdp);
-                //      shdUniform.uniformSize += 1;
-                //      shdUniform.uniformNameList.push( "u_objMat" );
-                //      shdUniform.types.push( shdp.getUniformTypeByNS("u_objMat") );
-                //      shdUniform.locations.push( shdp.getUniformLocationByNS("u_objMat") );
-                //      shdUniform.dataList.push(transform.getMatrixFS32());
-                //      shdUniform.dataSizeList.push(1);
-                //  }
-
                 let pdata:ShaderUniformData = uniformData;
                 let i:number = 0;
                 while(pdata != null)
@@ -278,51 +263,6 @@ export namespace vox
                         //  console.log("local uniform frome data names: "+shdUniform.uniformNameList);
                         //  console.log("local uniform frome data types: "+shdUniform.types);
                         //  console.log("local uniform frome data locations: "+shdUniform.locations);
-                    }
-                    pdata = pdata.next;
-                }
-                return shdUniform;
-            }
-            
-            static BuildLocalFromDataV2(uniformData:ShaderUniformData,transform:ROTransform, shdp:ShaderProgram):IShaderUniform
-            {
-                // collect all uniform data,create a new runned uniform
-                let shdUniform:ShaderUniformV2 = new ShaderUniformV2();
-                shdUniform.uniformNameList = [];
-                shdUniform.types = [];
-                shdUniform.locations = [];
-                shdUniform.dataList = [];
-                shdUniform.dataSizeList = [];
-                shdUniform.uniformSize = 0;
-                //  if(transform != null)
-                //  {
-                //      //console.log("BuildLocalFromDataAAA create u_objMat.shdp: "+shdp);
-                //      shdUniform.uniformSize += 1;
-                //      shdUniform.uniformNameList.push( "u_objMat" );
-                //      shdUniform.types.push( shdp.getUniformTypeByNS("u_objMat") );
-                //      shdUniform.locations.push( shdp.getUniformLocationByNS("u_objMat") );
-                //      shdUniform.dataList.push(transform.getMatrixFS32());
-                //      shdUniform.dataSizeList.push(1);
-                //  }
-
-                let pdata:ShaderUniformData = uniformData;
-                let i:number = 0;
-                while(pdata != null)
-                {
-                    if(pdata.uniformNameList != null && pdata.locations == null)
-                    {
-                        shdUniform.uniformSize += pdata.uniformNameList.length;
-                        for(i = 0; i < shdUniform.uniformSize; ++i)
-                        {
-                            shdUniform.uniformNameList.push( pdata.uniformNameList[i] );
-                            shdUniform.types.push( shdp.getUniformTypeByNS(pdata.uniformNameList[i]) );
-                            shdUniform.locations.push( shdp.getUniformLocationByNS(pdata.uniformNameList[i]) );
-                            shdUniform.dataList.push(pdata.dataList[i]);
-                            shdUniform.dataSizeList.push(pdata.dataSizeList[i]);
-                        }
-                        //  console.log("local v2 uniform frome data names: "+shdUniform.uniformNameList);
-                        //  console.log("local v2 uniform frome data types: "+shdUniform.types);
-                        //  console.log("local v2 uniform frome data locations: "+shdUniform.locations);
                     }
                     pdata = pdata.next;
                 }

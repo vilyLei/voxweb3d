@@ -108,7 +108,7 @@ export namespace demo
 	    	{
 	    		return this.m_texs[i];
             }
-	    	this.m_texs[i] = TextureStore.CreateTex2D(64, 64);
+	    	this.m_texs[i] = TextureStore.GetRTTTextureAt(i);
 	    	return this.m_texs[i];
 	    }
         run():void

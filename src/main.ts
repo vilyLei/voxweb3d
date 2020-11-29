@@ -169,13 +169,15 @@
 import * as DemoPartRender from "./demo/DemoPartRender";
 import Demo = DemoPartRender.demo.DemoPartRender;
 
-let demoIns:Demo = new Demo();
 
+//  import * as TwoTexture from "./example/TwoTexture";
+//  import Demo = TwoTexture.example.TwoTexture;
+
+let demoIns:Demo = new Demo();
 let ins:any = demoIns;
 if(ins.runBegin != undefined)
 {
-
-    function main():void
+    function main1():void
     {
         console.log("------ demo --- init ------");
         ins.initialize();
@@ -190,11 +192,11 @@ if(ins.runBegin != undefined)
         console.log("------ demo --- running ------"); 
     }
     //
-    main();
+    main1();
 }
 else
 {
-    function main():void
+    function main2():void
     {
         console.log("------ demo --- init ------");
         demoIns.initialize();
@@ -207,5 +209,5 @@ else
         console.log("------ demo --- running ------"); 
     }
     //
-    main();
+    main2();
 }
