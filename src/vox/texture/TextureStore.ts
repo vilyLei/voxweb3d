@@ -10,10 +10,11 @@ import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as ImageTextureProxyT from "../../vox/texture/ImageTextureProxy";
 import * as BytesTextureProxyT from "../../vox/texture/BytesTextureProxy";
+import * as Uint16TextureProxyT from "../../vox/texture/Uint16TextureProxy";
 import * as FloatTextureProxyT from "../../vox/texture/FloatTextureProxy";
 import * as FloatCubeTextureProxyT from "../../vox/texture/FloatCubeTextureProxy";
 import * as BytesCubeTextureProxyT from "../../vox/texture/BytesCubeTextureProxy";
-import * as CubeTextureProxyT from "../../vox/texture/CubeTextureProxy";
+import * as ImageCubeTextureProxyT from "../../vox/texture/ImageCubeTextureProxy";
 import * as Texture3DProxyT from "../../vox/texture/Texture3DProxy";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
@@ -25,10 +26,11 @@ import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import ImageTextureProxy = ImageTextureProxyT.vox.texture.ImageTextureProxy;
 import BytesTextureProxy = BytesTextureProxyT.vox.texture.BytesTextureProxy;
+import Uint16TextureProxy = Uint16TextureProxyT.vox.texture.Uint16TextureProxy;
 import FloatTextureProxy = FloatTextureProxyT.vox.texture.FloatTextureProxy;
 import FloatCubeTextureProxy = FloatCubeTextureProxyT.vox.texture.FloatCubeTextureProxy;
 import BytesCubeTextureProxy = BytesCubeTextureProxyT.vox.texture.BytesCubeTextureProxy;
-import CubeTextureProxy = CubeTextureProxyT.vox.texture.CubeTextureProxy;
+import ImageCubeTextureProxy = ImageCubeTextureProxyT.vox.texture.ImageCubeTextureProxy;
 import Texture3DProxy = Texture3DProxyT.vox.texture.Texture3DProxy;
 
 export namespace vox
@@ -210,6 +212,17 @@ export namespace vox
                 TextureStore.s_texList.push(tex);
                 return tex;
             }
+            static CreateUint16Tex2D(pw:number,ph:number,powerof2Boo:boolean = false):Uint16TextureProxy
+            {
+                let texUid:number = TextureStore.__s_texUidStore.getTex2DUid();
+                if(texUid >= 0)
+                {
+                    return TextureStore.GetTexByUid(texUid) as Uint16TextureProxy;
+                }
+                let tex:Uint16TextureProxy = new Uint16TextureProxy(TextureStore.s_texList,pw,ph,powerof2Boo);
+                TextureStore.s_texList.push(tex);
+                return tex;
+            }
             static CreateFloatCubeTex(pw:number,ph:number,powerof2Boo:boolean = false):FloatCubeTextureProxy
             {
                 let texUid:number = TextureStore.__s_texUidStore.getTex2DUid();
@@ -244,14 +257,14 @@ export namespace vox
                 TextureStore.s_texList.push(tex);
                 return tex;
             }
-            static CreateCubeTex(texW:number,texH:number):CubeTextureProxy
+            static CreateImageCubeTex(texW:number,texH:number):ImageCubeTextureProxy
             {
                 let texUid:number = TextureStore.__s_texUidStore.getCubeTexUid();
                 if(texUid >= 0)
                 {
-                    return TextureStore.GetTexByUid(texUid) as CubeTextureProxy;
+                    return TextureStore.GetTexByUid(texUid) as ImageCubeTextureProxy;
                 }
-                let tex:CubeTextureProxy = new CubeTextureProxy(TextureStore.s_texList,texW,texH);
+                let tex:ImageCubeTextureProxy = new ImageCubeTextureProxy(TextureStore.s_texList,texW,texH);
                 TextureStore.s_texList.push(tex);
                 return tex;
             }

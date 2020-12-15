@@ -13,7 +13,7 @@ import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
 import * as Box3DEntityT from "../vox/entity/Box3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureStoreT from "../vox/texture/TextureStore";
-import * as CubeTextureProxyT from "../vox/texture/CubeTextureProxy";
+import * as ImageCubeTextureProxyT from "../vox/texture/ImageCubeTextureProxy";
 import * as TextureConstT from "../vox/texture/TextureConst";
 import * as TexResLoaderT from "../vox/texture/TexResLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
@@ -33,7 +33,7 @@ import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import CubeTextureProxy = CubeTextureProxyT.vox.texture.CubeTextureProxy;
+import ImageCubeTextureProxy = ImageCubeTextureProxyT.vox.texture.ImageCubeTextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
@@ -103,14 +103,14 @@ export namespace demo
 
             }
         }
-        private m_tex:CubeTextureProxy = null;
-        getTexture():CubeTextureProxy
+        private m_tex:ImageCubeTextureProxy = null;
+        getTexture():ImageCubeTextureProxy
 	    {
 	    	if (this.m_tex != null)
 	    	{
 	    		return this.m_tex;
             }
-	    	this.m_tex = TextureStore.CreateCubeTex(1024, 1024);
+	    	this.m_tex = TextureStore.CreateImageCubeTex(1024, 1024);
 	    	return this.m_tex;
 	    }
         run():void

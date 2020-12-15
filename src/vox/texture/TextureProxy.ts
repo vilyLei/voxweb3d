@@ -4,11 +4,13 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
+import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as MathConstT from "../../vox/utils/MathConst";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as IRenderBufferT from "../../vox/render/IRenderBuffer";
 
+import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import TextureTarget = TextureConstT.vox.texture.TextureTarget;
@@ -41,6 +43,7 @@ export namespace vox
             // [.WebGL-0BC70EE8]RENDER WARNING: texture bound to texture unit 1 is not renderable. It maybe non-power-of-2 and have incompatible texture filtering.
             magFilter:number = TextureConst.LINEAR;
             protected m_miplevel:number = -1;
+
             protected m_texWidth:number = 128;
             protected m_texHeight:number = 128;
             protected m_texBufW:number = 128;
@@ -52,6 +55,7 @@ export namespace vox
             // have render useable data
             protected m_haveRData:boolean = false;
             protected m_type:number = TextureConst.TEX_PROXY2D;
+            protected m_generateMipmap:boolean = true;
             constructor(texList:TextureProxy[], texWidth:number,texHeight:number,powerof2Boo:boolean = false)
             {
                 this.m_uid = TextureProxy.__s_uid++;
@@ -142,6 +146,10 @@ export namespace vox
             {
                 this.m_texBufW = this.m_texWidth;
                 this.m_texBufH = this.m_texHeight;
+                if(RendererDeviece.GetDebugEnabled())
+                {
+                    console.log("this.mipmapEnabled:"+this.mipmapEnabled+",generateMipmap："+this.m_generateMipmap);
+                }
                 if (this.mipmapEnabled && MathConst.IsPowerOf2(this.m_texWidth) && MathConst.IsPowerOf2(this.m_texHeight))
                 {
                     gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_WRAP_S, TextureConst.GetConst(gl,this.wrap_s));
@@ -158,7 +166,11 @@ export namespace vox
                     //gl.DONT_CARE
                     //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.NICEST);
                     //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.FASTEST);
-                    gl.generateMipmap(this.m_samplerTarget);
+                    if(this.m_generateMipmap)
+                    {
+                        console.log("generateMipmap...",this);
+                        gl.generateMipmap(this.m_samplerTarget);
+                    }
                 }
                 else
                 {
@@ -201,15 +213,11 @@ export namespace vox
                     {
                         let gl:any = rc.RContext;
                         this.m_samplerTarget = TextureTarget.GetValue(gl,this.m_texTarget);
-                        //  console.log("TextureProxy::upload(), tex: "+this);
-                        //  console.log("TextureProxy::upload(), this.m_imgData: "+this.m_imgData);
                         this.m_texBuf = gl.createTexture();
-                        gl.bindTexture (this.m_samplerTarget, this.m_texBuf);
-                        gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
-                        gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premultiplyAlpha);
-                        gl.pixelStorei(gl.UNPACK_ALIGNMENT, this.unpackAlignment);
+                        this.__$updateToGpuBegin(gl);
                         this.uploadData(rc);
                         this.___buildParam(gl);
+                        this.m_generateMipmap = true;
                         this.m_uploadBoo = false;
                     }
                 }
@@ -229,23 +237,29 @@ export namespace vox
                     //console.log("TextureProxy::__$disposeGpu(), tex: "+this);
                 }
             }
+            protected __$updateUnpackAlign(gl:any):void
+            {
+                switch(this.srcFormat)
+                {
+                    case TextureFormat.RGB:
+                        this.unpackAlignment = 3;
+                    break;
+                    case TextureFormat.ALPHA:
+                        this.unpackAlignment = 1;
+                    break;
+                    default:                        
+                    this.unpackAlignment = 4;
+                    break;
+                }
+            }
             protected __$updateToGpuBegin(gl:any):void
             {
                 gl.bindTexture(this.m_samplerTarget, this.m_texBuf);
-                switch(this.srcFormat)
-                {
-                    case TextureFormat.RGBA:
-                        gl.pixelStorei(gl.UNPACK_ALIGNMENT,4);
-                    break;
-                    case TextureFormat.RGB:
-                        gl.pixelStorei(gl.UNPACK_ALIGNMENT,3);
-                    break;
-                    case TextureFormat.ALPHA:
-                        gl.pixelStorei(gl.UNPACK_ALIGNMENT,1);
-                    break;
-                    default:                        
-                        gl.pixelStorei(gl.UNPACK_ALIGNMENT,4);
-                }
+                this.__$updateUnpackAlign(gl);
+                gl.bindTexture (this.m_samplerTarget, this.m_texBuf);
+                gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
+                gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premultiplyAlpha);
+                gl.pixelStorei(gl.UNPACK_ALIGNMENT, this.unpackAlignment);
             }
             protected __$updateToGpuEnd(gl:any):void
             {
@@ -258,7 +272,6 @@ export namespace vox
             {
                 if(!this.isGpuEnabled())
                 {
-                    //this.m_imgData = null;
                     this.m_uploadBoo = true;
                     this.m_haveRData = false;                    
                     this.m_texWidth = 1;

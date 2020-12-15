@@ -1,6 +1,6 @@
 /***************************************************************************/
 /*                                                                         */
-/*  Copyright 2018-2020 by                                                 */
+/*  Copyright 2018-2022 by                                                 */
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
@@ -257,29 +257,6 @@ export namespace vox
 							this.m_viewWidth,
 							this.m_viewHeight
 						);
-						/*
-						this.m_devPRatio = k;
-						this.m_viewX = this.m_rcontext.getViewportX();
-						this.m_viewY = this.m_rcontext.getViewportY();
-						this.m_viewWidth = this.m_rcontext.getViewportWidth();
-						this.m_viewHeight = this.m_rcontext.getViewportHeight();
-						
-						this.uViewProbe.setVec4Data(
-							Math.floor(this.m_viewX * k),
-							Math.floor(this.m_viewY * k),
-							Math.floor(this.m_viewWidth * k),
-							Math.floor(this.m_viewHeight * k)
-							);
-						this.uViewProbe.update();
-						DivLog.ShowLog("viewPort: "+Math.floor(this.m_viewWidth * k)+","+Math.floor(this.m_viewHeight * k));
-						console.log("reseizeViewPort: "+Math.floor(this.m_viewX * k)+","+Math.floor(this.m_viewY * k)+","+Math.floor(this.m_viewWidth * k)+","+Math.floor(this.m_viewHeight * k));
-						this.m_rc.viewport(
-							Math.floor(this.m_viewX * k),
-							Math.floor(this.m_viewY * k),
-							Math.floor(this.m_viewWidth * k),
-							Math.floor(this.m_viewHeight * k)
-						);
-						//*/
 					}
 				}
 			}
@@ -300,41 +277,20 @@ export namespace vox
 						this.m_viewWidth = this.m_fboViewSize.z;
 						this.m_viewHeight = this.m_fboViewSize.w;
 						this.uViewProbe.setVec4Data(						
-							this.m_viewX,// * k,
-							this.m_viewY, //* k,
-							this.m_viewWidth,// * k,
-							this.m_viewHeight// * k
+							this.m_viewX,
+							this.m_viewY,
+							this.m_viewWidth,
+							this.m_viewHeight
 						);
 						this.uViewProbe.update();
 						DivLog.ShowLog("reseizeFBOViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
 						//console.log("reseizeFBOViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
 						this.m_rc.viewport(
-							this.m_viewX,// * k,
-							this.m_viewY,// * k,
-							this.m_viewWidth,// * k,
-							this.m_viewHeight// * k,
+							this.m_viewX,
+							this.m_viewY,
+							this.m_viewWidth,
+							this.m_viewHeight
 						);
-						/*
-						this.m_devPRatio = k;
-						this.m_viewX = this.m_fboViewSize.x;
-						this.m_viewY = this.m_fboViewSize.y;
-						this.m_viewWidth = this.m_fboViewSize.z;
-						this.m_viewHeight = this.m_fboViewSize.w;			
-						this.uViewProbe.setVec4Data(						
-							Math.floor(this.m_viewX * k),
-							Math.floor(this.m_viewY * k),
-							Math.floor(this.m_viewWidth * k),
-							Math.floor(this.m_viewHeight * k)
-						);
-						this.uViewProbe.update();
-						console.log("reseizeFBOViewPort: "+Math.floor(this.m_viewX * k)+","+Math.floor(this.m_viewY * k)+","+Math.floor(this.m_viewWidth * k)+","+Math.floor(this.m_viewHeight * k));
-						this.m_rc.viewport(
-							Math.floor(this.m_viewX * k),
-							Math.floor(this.m_viewY * k),
-							Math.floor(this.m_viewWidth * k),
-							Math.floor(this.m_viewHeight * k)
-						);
-						//*/
 					}
 				}
 			}
@@ -713,6 +669,7 @@ export namespace vox
 					this.m_rc.clearBufferfv(clearType, clearIndex, dataArr);
 				}
 				let fs:Uint16Array = this.m_fboBiltRect;
+				//copyTexSubImage2D 可以在gles2中代替下面的函数
 				this.m_rc.blitFramebuffer(fs[0], fs[1], fs[2], fs[3], fs[4], fs[5], fs[6], fs[7], mask_bitfiled, filter);
 			}
 		}

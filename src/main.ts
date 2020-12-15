@@ -166,12 +166,17 @@
 //  import * as DemoFBOBlit from "./demo/DemoFBOBlit";
 //  import Demo = DemoFBOBlit.demo.DemoFBOBlit;
 
-import * as DemoPartRender from "./demo/DemoPartRender";
-import Demo = DemoPartRender.demo.DemoPartRender;
+//  import * as DemoPartRender from "./demo/DemoPartRender";
+//  import Demo = DemoPartRender.demo.DemoPartRender;
 
-
+//  import * as DemoLargeVtx from "./large/DemoLargeVtx";
+//  import Demo = DemoLargeVtx.large.DemoLargeVtx;
+//
 //  import * as TwoTexture from "./example/TwoTexture";
 //  import Demo = TwoTexture.example.TwoTexture;
+
+import * as MipmapTexture from "./example/MipmapTexture";
+import Demo = MipmapTexture.example.MipmapTexture;
 
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;

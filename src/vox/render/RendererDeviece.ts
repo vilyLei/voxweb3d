@@ -14,6 +14,7 @@ export namespace vox
             private static s_WEBGL_VER:number = 2;
             private static s_devicePixelRatio:number = 1.0;
             private static s_mobileWeb:boolean = false;
+            private static s_debugEnabled:boolean = true;
             // for debug
             public static SHOWLOG_ENABLED:boolean = false;
             public static SHADERCODE_TRACE_ENABLED:boolean = false;
@@ -22,11 +23,19 @@ export namespace vox
             // true: force fragment shader precision to highp
             public static FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED:boolean = false;
 
-            public static SetDevicePixelRatio(dpr:number):void
+            static GetDebugEnabled():boolean
+            {
+                return RendererDeviece.s_debugEnabled;
+            }
+            static SetDebugEnabled(boo:boolean):void
+            {
+                RendererDeviece.s_debugEnabled = boo;
+            }
+            static SetDevicePixelRatio(dpr:number):void
             {
                 RendererDeviece.s_devicePixelRatio = dpr;
             }
-            public static GetDevicePixelRatio():number
+            static GetDevicePixelRatio():number
             {
                 return RendererDeviece.s_devicePixelRatio;
             }
@@ -45,17 +54,6 @@ export namespace vox
             static IsMobileWeb():boolean
             {
                 return RendererDeviece.s_mobileWeb;
-                //  if (/mobile/.test(location.href)) return true;            
-                //  if (/Android/i.test(navigator.userAgent)) {            
-                //      if (/Mobile/i.test(navigator.userAgent)) {            
-                //        return true;
-                //      } else {            
-                //        return false;            
-                //      }            
-                //  } else if (/webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
-                //      return true;            
-                //  }
-                //  return false;
             }
             private static TestMobileWeb()
             {

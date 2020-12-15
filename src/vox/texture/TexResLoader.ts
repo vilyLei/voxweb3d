@@ -8,13 +8,13 @@
 import * as MathConstT from "../../vox/utils/MathConst";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as ImageTextureProxyT from "../../vox/texture/ImageTextureProxy";
-import * as CubeTextureProxyT from "../../vox/texture/CubeTextureProxy";
+import * as ImageCubeTextureProxyT from "../../vox/texture/ImageCubeTextureProxy";
 import * as TextureStoreT from "../../vox/texture/TextureStore";
 
 import MathConst = MathConstT.vox.utils.MathConst;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import ImageTextureProxy = ImageTextureProxyT.vox.texture.ImageTextureProxy;
-import CubeTextureProxy = CubeTextureProxyT.vox.texture.CubeTextureProxy;
+import ImageCubeTextureProxy = ImageCubeTextureProxyT.vox.texture.ImageCubeTextureProxy;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
 
 export namespace vox
@@ -109,7 +109,7 @@ export namespace vox
             private m_imgs:any[] = [];
             private m_loadedTotal:number = 0;
             private m_loaded:boolean = false;
-            private m_texList:CubeTextureProxy[] = [];
+            private m_texList:ImageCubeTextureProxy[] = [];
             private m_mLvList:number[] = [];
             constructor(purls:string[])
             {
@@ -139,7 +139,7 @@ export namespace vox
                     thisT.m_imgs.push(img);
                 }            
             }
-            addTex(tex:CubeTextureProxy,mipLevel:number):void
+            addTex(tex:ImageCubeTextureProxy,mipLevel:number):void
             {
                 this.m_texList.push(tex);
                 this.m_mLvList.push(mipLevel);
@@ -148,7 +148,7 @@ export namespace vox
             {
                 return this.m_urls[0];
             }
-            getTexAt(i:number):CubeTextureProxy
+            getTexAt(i:number):ImageCubeTextureProxy
             {
                 return this.m_texList[i];
             }
@@ -198,7 +198,7 @@ export namespace vox
                     return t.getTexAt(0);
                 }
             }
-            getCubeTexAndLoadImg(idns:string,purls:string[],mipLevel:number = 0):CubeTextureProxy
+            getCubeTexAndLoadImg(idns:string,purls:string[],mipLevel:number = 0):ImageCubeTextureProxy
             {
                 if(idns == "" || purls == null || purls.length < 6)
                 {
@@ -210,7 +210,7 @@ export namespace vox
                 {
                     t = new CubeImgResLoader(purls);
                     this.___cubeDict.set(idns, t);
-                    let tex:CubeTextureProxy = TextureStore.CreateCubeTex(8,8);//new CubeTextureProxy(1,1);
+                    let tex:ImageCubeTextureProxy = TextureStore.CreateImageCubeTex(8,8);//new ImageCubeTextureProxy(1,1);
                     TextureStore.__$AttachTexAt(tex.getUid());
                     t.addTex(tex,mipLevel);
                     return tex;

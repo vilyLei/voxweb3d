@@ -466,7 +466,7 @@ export class H5FontSystem
       }
     }
     //
-    this.m_texBase.uploadFromBytes(this.m_areaBytes);
+    this.m_texBase.uploadFromBytes(this.m_areaBytes,0,this.m_texWidth,this.m_texHeight);
   }
   getTextureAt(index:number = 0):BytesTextureProxy
   {
