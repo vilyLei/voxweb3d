@@ -11,7 +11,7 @@ export namespace thread
     {
         export class ThreadCore
         {
-            // ThreadTask example code
+            // worker task manage code
             static CodeStr:string =
 `
 let scriptDir = "";

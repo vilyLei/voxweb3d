@@ -4,7 +4,7 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// thread code example
+// thread code example, for parsing a special thread task data(equal getTaskClass() value)
 
 function ThreadAddNum()
 {

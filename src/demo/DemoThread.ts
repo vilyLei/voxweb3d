@@ -59,7 +59,7 @@ export namespace demo
             param.maxWebGLVersion = 1;
             param.setCamPosition(500.0,500.0,500.0);
         }
-        // 通过后续添加的代码字符串来扩充worker中的功能示例
+        // thread code example(demonstrate: 通过后续添加的代码字符串来扩充worker中的功能示例)
         private m_codeStr:string = 
 `
 function ThreadAddNum()
@@ -137,6 +137,8 @@ let workerIns_ThreadAddNum = new ThreadAddNum();
         }
         private thr_test():void
         {
+            // 注意: m_codeStr 代码中描述的 getTaskClass() 返回值 要和 TestNumberAddTask 中的 getTaskClass() 返回值 要相等
+
             //  ThreadSystem.InitTaskByURL("static/thread/ThreadAddNum",0);
             //  ThreadSystem.InitTaskByURL("static/thread/ThreadMultNum",1);
             //  ThreadSystem.InitTaskByURL("static/thread/ThreadMathNum",2);
