@@ -15,6 +15,7 @@ import * as RORectMeshT from "../../vox/mesh/RORectMesh";
 import * as RenderProcessT from "../../vox/render/RenderProcess";
 import * as RendererInstanceT from "../../vox/scene/RendererInstance";
 import * as Rect2DEntityT from "../../vox2d/entity/Rect2DEntity";
+import * as H5FontSysT from "../../vox/text/H5FontSys";
 import * as Text2DEntityT from "../../vox2d/text/Text2DEntity";
 
 import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
@@ -27,6 +28,7 @@ import RORectMesh = RORectMeshT.vox.mesh.RORectMesh;
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import Rect2DEntity = Rect2DEntityT.vox2d.entity.Rect2DEntity;
+import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
 import Text2DEntity = Text2DEntityT.vox2d.text.Text2DEntity;
 
 export namespace voxprofile
@@ -103,6 +105,10 @@ export namespace voxprofile
             {
                 if(this.m_renderer == null)
                 {
+                    if(!H5FontSystem.GetInstance().isEnabled())
+                    {
+                        H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
+                    }
                     this.m_renderer = renderer;
                     this.m_rprocess = rprocess;
                     //addEntityToProcess

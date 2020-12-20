@@ -63,6 +63,10 @@ export namespace vox
             readonly STENCIL:number = 0;
             readonly DEPTH_STENCIL:number = 0;
 
+            
+            readonly MAX:number = 0;
+            readonly MIN:number = 0;
+
             readonly RContext:any = null;
             readonly RState:RODrawState = null;
 
@@ -540,7 +544,18 @@ export namespace vox
                 selfT.DEPTH = gl.DEPTH;
                 selfT.STENCIL = gl.STENCIL;
                 selfT.DEPTH_STENCIL = gl.DEPTH_STENCIL;
-                
+                if(this.m_WEBGL_VER > 1)
+                {
+                    selfT.MIN = gl.MIN;
+                    selfT.MAX = gl.MAX;
+                }
+                else
+                {
+                    selfT.MIN = RCExtension.EXT_blend_minmax.MIN_EXT;
+                    selfT.MAX = RCExtension.EXT_blend_minmax.MAX_EXT;
+                }
+                console.log("MIN: "+selfT.MIN);
+                console.log("MAX: "+selfT.MAX);
                 let classRenderFilter:any = RenderFilter;
                 classRenderFilter.NEAREST = gl.NEAREST;
                 classRenderFilter.LINEAR = gl.LINEAR;

@@ -25,6 +25,7 @@ export namespace vox
             static readonly OES_texture_half_float_linear:any = null;
             static readonly OES_texture_float:any = null;
             static readonly OES_element_index_uint:any = null;
+            static readonly EXT_blend_minmax:any = null;
 
             static Initialize(webVer:number, gl:any):void
             {
@@ -75,6 +76,12 @@ export namespace vox
                     console.log("Use OES_element_index_uint Extension success!");
                     else
                     console.log("OES_element_index_uint Extension can not support!");
+                    //EXT_blend_minmax
+                    selfT.EXT_blend_minmax = gl.getExtension('EXT_blend_minmax');
+                    if(selfT.EXT_blend_minmax != null)
+                    console.log("Use EXT_blend_minmax Extension success!");
+                    else
+                    console.log("EXT_blend_minmax Extension can not support!");
                 }
                 else
                 {

@@ -134,6 +134,7 @@ export namespace example
             console.log("MipmapTexture::initialize()......");
             if(this.m_rcontext == null)
             {
+                
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 let tex1:TextureProxy;
                 H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);

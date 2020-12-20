@@ -175,8 +175,11 @@
 //  import * as TwoTexture from "./example/TwoTexture";
 //  import Demo = TwoTexture.example.TwoTexture;
 
-import * as MipmapTexture from "./example/MipmapTexture";
-import Demo = MipmapTexture.example.MipmapTexture;
+//  import * as MipmapTexture from "./example/MipmapTexture";
+//  import Demo = MipmapTexture.example.MipmapTexture;
+
+import * as DemoThread from "./demo/DemoThread";
+import Demo = DemoThread.demo.DemoThread;
 
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;

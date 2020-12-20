@@ -22,7 +22,16 @@ export namespace vox
             public static VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED:boolean = true;
             // true: force fragment shader precision to highp
             public static FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED:boolean = false;
-
+            // worker multi threads enabled yes or no
+            private static s_threadEnabled:boolean = true;
+            static SetThreadEnabled(boo:boolean):void
+            {
+                RendererDeviece.s_threadEnabled = boo;
+            }
+            static GetThreadEnabled():boolean
+            {
+              return RendererDeviece.s_threadEnabled;
+            }
             static GetDebugEnabled():boolean
             {
                 return RendererDeviece.s_debugEnabled;

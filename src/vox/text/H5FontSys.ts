@@ -273,6 +273,10 @@ export class H5FontSystem
   private m_fontSize:number = 18;
   private m_fontCharTable:FontTexCharTable = new FontTexCharTable();
   private m_fontTexDataBuilder:FontTexDataBuilder = new FontTexDataBuilder();
+  isEnabled():boolean
+  {
+    return this.m_canvas != null;
+  }
   initialize(canvas_id_name:string,fontSize:number = 10, texWidth:number = 512,texHeight:number = 512,canvas_visible:boolean = false,mipmapEnabled:boolean = false)
   {
     if(this.m_canvas == null)
