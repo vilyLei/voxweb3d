@@ -1,5 +1,5 @@
 # voxweb3d
-TypeScript WebGL 3d engine system(support WebGL1 and WebGL2,WebAssembly and Multi Thread Tasks System, env: pc/web/mobile) , and code style like c++/java.
+TypeScript WebGL 3d engine system(High Performence, Support WebGL1 and WebGL2,WebAssembly and Multi Thread Tasks System, env: pc/web/mobile) , and code style like c++/java.
 
 Engine code in src\vox\
 
