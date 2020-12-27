@@ -410,6 +410,10 @@ export namespace vox
 				let subArr:Float32Array = fs32Arr.subarray(index, index + 16);
 				this.m_fs32.set(subArr, this.m_index);
 			}
+    		copyToF32Arr(fs32Arr:Float32Array,index:number = 0):void
+			{
+				fs32Arr.set(this.m_localFS32, index);
+			}
     		copyFrom(mat_other:Matrix4):void
 			{
 				this.m_localFS32.set(mat_other.getLocalFS32(),0);
