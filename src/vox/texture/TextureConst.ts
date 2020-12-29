@@ -31,20 +31,20 @@ export namespace vox
                 {
                     case TextureFormat.R8:
                         return gl.R8;
-                        break;
+                    break;
                     case TextureFormat.RGB:
                         //console.log("TextureFormat.RGB...");
                         return gl.RGB;
-                        break;
+                    break;
                     case TextureFormat.RGB8:
                         return gl.RGB8;
-                        break;
+                    break;
                     case TextureFormat.RGBA8:
                         return gl.RGBA8;
-                        break;
+                    break;
                     case TextureFormat.ALPHA:
                         return gl.ALPHA;
-                        break;
+                    break;
                     case TextureFormat.RGB16F:
                         //console.log("TextureFormat.RGB16F...");
                         if(RendererDeviece.IsWebGL2())
@@ -52,14 +52,14 @@ export namespace vox
                             return gl.RGB16F;
                         }
                         return gl.RGB;
-                        break;
+                    break;
                     case TextureFormat.RGBA16F:
                         if(RendererDeviece.IsWebGL2())
                         {
                             return gl.RGBA16F;
                         }
                         return gl.RGBA;
-                        break;
+                    break;
                     case TextureFormat.RGB32F:
                         //console.log("TextureFormat.RGB32F...");
                         if(RendererDeviece.IsWebGL2()) gl.RGB32F;
@@ -69,12 +69,12 @@ export namespace vox
                         //console.log("TextureFormat.RGB32F...");
                         if(RendererDeviece.IsWebGL2()) gl.RGBA32F;
                         return gl.RGBA;
-                        break;
+                    break;
                     case TextureFormat.RED:
                         return gl.RED;
-                        break;
+                    break;
                     default:
-                    
+                    break;
                 }
                 return gl.RGBA;
             }
@@ -99,37 +99,37 @@ export namespace vox
                 {
                     case TextureDataType.UNSIGNED_BYTE:
                         return gl.UNSIGNED_BYTE;
-                        break;
+                    break;
                     case TextureDataType.BYTE:
                         return gl.BYTE;
-                        break;
+                    break;
                     case TextureDataType.FLOAT:
                         //console.log("TextureDataType.FLOAT...");
                         return gl.FLOAT;
-                        break;
+                    break;
                     case TextureDataType.HALF_FLOAT:
                         return gl.HALF_FLOAT;
-                        break;
+                    break;
                     case TextureDataType.HALF_FLOAT_OES:
                         return gl.HALF_FLOAT_OES;
                         break;
                     case TextureDataType.UNSIGNED_SHORT:
                         return gl.UNSIGNED_SHORT;
-                        break;
+                    break;
                     case TextureDataType.UNSIGNED_SHORT_5_6_5:
                         return gl.UNSIGNED_SHORT_5_6_5;
-                        break;
+                    break;
                     case TextureDataType.UNSIGNED_SHORT_4_4_4_4:
                         return gl.UNSIGNED_SHORT_4_4_4_4;
-                        break;
+                    break;
                     case TextureDataType.UNSIGNED_SHORT_5_5_5_1:
                         return gl.UNSIGNED_SHORT_5_5_5_1;
-                        break;
+                    break;
                     case TextureDataType.UNSIGNED_INT_24_8_WEBGL:
                         return gl.UNSIGNED_INT_24_8_WEBGL;
-                        break;
+                    break;
                     default:
-                        break;
+                    break;
             
                 }
                 return gl.UNSIGNED_BYTE;
@@ -148,16 +148,16 @@ export namespace vox
                 switch(param)
                 {
                     case TextureTarget.TEXTURE_2D:
-                    return rc.TEXTURE_2D;
+                        return rc.TEXTURE_2D;
                     break;
                     case TextureTarget.TEXTURE_2D_ARRAY:
-                    return rc.TEXTURE_2D_ARRAY;
+                        return rc.TEXTURE_2D_ARRAY;
                     break;
                     case TextureTarget.TEXTURE_CUBE:
-                    return rc.TEXTURE_CUBE_MAP;
+                        return rc.TEXTURE_CUBE_MAP;
                     break;
                     case TextureTarget.TEXTURE_3D:
-                    return rc.TEXTURE_3D;
+                        return rc.TEXTURE_3D;
                     break;
                     default:
                     break;

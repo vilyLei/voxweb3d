@@ -248,6 +248,13 @@ export namespace vox
                     this.setMesh( entity.getMesh() );
                 }
             }
+            copyMaterialFrom(entity:DisplayEntity):void
+            {
+                if(entity != null)
+                {
+                    this.setMaterial( entity.getMaterial() );
+                }
+            }
             setMesh(m:MeshBase):void
             {
                 if(this.m_mesh == null && m != null)

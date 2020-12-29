@@ -32,12 +32,26 @@ export namespace thread
         {
             if(ThreadSystem.GetThreadEnabled())
             {
+                let boo:boolean = false;
                 // serach a free thread
                 let thread:ThreadBase = ThreadSystem.GetAFreeThread();
-                //console.log("thread != null: "+(thread != null));
-                if(thread != null)
+                //console.log("thread != null: "+(thread != null),", threadsTotal: "+ThreadSystem.s_threadsTotal);
+                boo = thread != null;
+                if(boo)
                 {
                     ThrDataPool.SendDataTo(thread);
+                    // append thread calc
+                    thread = ThreadSystem.GetAFreeThread();
+                    boo = thread != null;
+                    if(boo)
+                    {
+                        ThrDataPool.SendDataTo(thread);
+                    }
+                }
+                if(!boo)
+                {
+                    //console.log("thread amount is not enough.");
+                    ThreadSystem.CreateThread();
                 }
             }
         }

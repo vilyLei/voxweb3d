@@ -61,6 +61,7 @@ export namespace thread
                         this.m_worker.postMessage(thrData.sendData);
                     }
                     thrData.sendStatus = 1;
+                    this.m_free = false;
                 }
             }
             //

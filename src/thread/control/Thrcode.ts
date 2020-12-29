@@ -21,16 +21,22 @@ if (ENV_IS_WORKER)
     // in worker
     scriptDir = self.location.href;
 }
-let baseUrl = scriptDir.slice(0,scriptDir.lastIndexOf("/")+1);
-baseUrl = baseUrl.slice(baseUrl.indexOf("http://"));
-self.TaskSlot = [null,null,null,null,null,null,null,null,null];
-self.TaskSTList = [0,0,0,0,0,0,0,0,0,0,0,0,0,0];
+var baseUrl = scriptDir.slice(0,scriptDir.lastIndexOf("/")+1);
+var k = baseUrl.indexOf("http://");
+if(k < 0)
+{
+    k = baseUrl.indexOf("https://");
+}
+if(k < 0) k = 0;
+baseUrl = baseUrl.slice(k);
+self.TaskSlot = [null,null,null,null,null,null,null,null, null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null, null,null,null,null,null,null,null,null];
+self.TaskSTList = [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0];
 let taskSlot = self.TaskSlot;
 let taskSTList = self.TaskSTList;
 function ThreadCore()
 {
   let m_initBoo = true;
-  this.threadIndex = 0;
+  let m_threadIndex = 0;
   this.isWorker = typeof(postMessage) !== "undefined";
   
   let selfT = this;
@@ -44,6 +50,7 @@ function ThreadCore()
     {
         case "DATA_PARSE":
             // taskclass
+            data.threadIndex = m_threadIndex;
             let ins = taskSlot[data.taskclass];
             if(ins)
             {
@@ -107,11 +114,11 @@ function ThreadCore()
         case "INIT_PARAM":
             if(m_initBoo)
             {
-                selfT.threadIndex = data.threadIndex;
+                m_threadIndex = data.threadIndex;
                 
-                console.log("worker data.threadIndex: "+data.threadIndex);
+                console.log("thread init data.threadIndex: "+m_threadIndex);
                 m_initBoo = false;
-                postMessage({cmd:"INIT_PARAM",threadIndex:selfT.threadIndex});
+                postMessage({cmd:"INIT_PARAM",threadIndex:m_threadIndex});
             }
         break;
         default:
@@ -120,7 +127,7 @@ function ThreadCore()
   }
   this.initialize = function()
   {
-    console.log("ThreadCore::workerInit()...");
+    console.log("###worker ThreadCore::initialize()...");
     console.log("self.TaskSlot: ",self.TaskSlot);
     if(typeof(postMessage) !== "undefined")
     {
@@ -129,7 +136,7 @@ function ThreadCore()
             selfT.receiveData,
             false
         );
-        postMessage({cmd:"THREAD_INIT",threadIndex:selfT.threadIndex});
+        postMessage({cmd:"THREAD_INIT"});
     }
   }
 }

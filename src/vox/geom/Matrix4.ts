@@ -392,10 +392,19 @@ export namespace vox
 			}
 			setF32ArrAndIndex(fs32Arr:Float32Array,index:number = 0):void
 			{
-				if(fs32Arr != null)
+				if(fs32Arr != null && index >= 0)
 				{
 					this.m_fs32 = fs32Arr;
 					this.m_index = index;
+					this.m_localFS32 = this.m_fs32.subarray(index,index + 16);
+				}
+			}
+			setF32ArrIndex(index:number = 0):void
+			{
+				if(index >= 0)
+				{
+					this.m_index = index;
+					this.m_localFS32 = this.m_fs32.subarray(index,index + 16);
 				}
 			}
 			setF32Arr(fs32Arr:Float32Array):void
@@ -408,7 +417,7 @@ export namespace vox
     		copyFromF32Arr(fs32Arr:Float32Array,index:number = 0):void
 			{
 				let subArr:Float32Array = fs32Arr.subarray(index, index + 16);
-				this.m_fs32.set(subArr, this.m_index);
+				this.m_localFS32.set(subArr, 0);
 			}
     		copyToF32Arr(fs32Arr:Float32Array,index:number = 0):void
 			{
@@ -895,7 +904,7 @@ export namespace vox
 				if (components[2].y == 0) this.m_localFS32[5] = 0;// 1e-15;
 				if (components[2].z == 0) this.m_localFS32[10] = 0;// 1e-15;
 				scale = null;
-				return !(components[2].x == 0 || components[2].y == 0 || components[2].y == 0);
+				return true;
     		}
 
 			deltaTransformVector(v3:Vector3D):Vector3D

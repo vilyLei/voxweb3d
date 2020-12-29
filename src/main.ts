@@ -178,8 +178,12 @@
 //  import * as MipmapTexture from "./example/MipmapTexture";
 //  import Demo = MipmapTexture.example.MipmapTexture;
 
-import * as DemoThread from "./demo/DemoThread";
-import Demo = DemoThread.demo.DemoThread;
+//  import * as DemoThread from "./demo/DemoThread";
+//  import Demo = DemoThread.demo.DemoThread;
+
+import * as DemoMatComputer from "./demo/DemoMatComputer";
+import Demo = DemoMatComputer.demo.DemoMatComputer;
+
 
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;

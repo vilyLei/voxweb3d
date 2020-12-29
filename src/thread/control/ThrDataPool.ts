@@ -74,6 +74,10 @@ export namespace thread
                     console.error("thrData.sendStatus value is "+thrData.sendStatus);
                 }
             }
+            static getDataTotal():number
+            {
+                return ThrDataPool.s_dataTotal;
+            }
             static IsEnabled():boolean
             {
                 return ThrDataPool.s_dataTotal > 0 * ThrDataPool.s_startupFlag;
