@@ -11,7 +11,7 @@ import * as Vector3DT from "../../vox/geom/Vector3";
 import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as AABBT from "../../vox/geom/AABB";
 import * as CameraBaseT from "../../vox/view/CameraBase";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
+import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
 import * as IRaySelectorT from '../../vox/scene/IRaySelector';
 import * as RaySelectedNodeT from '../../vox/scene/RaySelectedNode';
@@ -22,7 +22,7 @@ import Vector3D = Vector3DT.vox.geom.Vector3D;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import AABB = AABBT.vox.geom.AABB;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
 import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
 import IRaySelector = IRaySelectorT.vox.scene.IRaySelector;
 import RaySelectedNode = RaySelectedNodeT.vox.scene.RaySelectedNode;
@@ -235,7 +235,7 @@ export namespace vox
                     {
                         let invpv:Vector3D = this.m_invpv;
                         let invtv:Vector3D = this.m_invtv;
-                        let entity:DisplayEntity = null;
+                        let entity:IRenderEntity = null;
                         let flag:number = 0;
                         let hitTotal:number = 0;
                         let mat4:Matrix4 = null;
@@ -255,7 +255,7 @@ export namespace vox
                                 {
                                     if(polyTest)
                                     {
-                                        mat4 = entity.getTransform().getInvMatrix();
+                                        mat4 = entity.getInvMatrix();
                                         mat4.transformOutVector3(rpv,invpv);
                                         mat4.deltaTransformOutVector(rtv,invtv);
                                         flag = entity.getMesh().testRay(invpv,invtv,outv,true);
@@ -267,7 +267,7 @@ export namespace vox
                                 }
                                 else
                                 {
-                                    mat4 = entity.getTransform().getInvMatrix();
+                                    mat4 = entity.getInvMatrix();
                                     mat4.transformOutVector3(rpv,invpv);
                                     mat4.deltaTransformOutVector(rtv,invtv);
                                     flag = entity.getMesh().testRay(invpv,invtv,outv,true);
@@ -275,7 +275,7 @@ export namespace vox
                                 if(flag > 0)
                                 {
                                     rayNode.lpv.copyFrom(outv);
-                                    entity.getTransform().getMatrix().transformOutVector3(outv,rayNode.wpv);
+                                    entity.getMatrix().transformOutVector3(outv,rayNode.wpv);
                                     rayNode.dis = rtv.dot(rayNode.wpv) - pvdis;
                                     this.m_hitList[hitTotal] = i;
                                     ++hitTotal;
@@ -308,7 +308,7 @@ export namespace vox
                         {
                             rayNode = this.m_rsnList[0];
                             entity = this.m_rsnList[0].entity;
-                            mat4 = entity.getTransform().getInvMatrix();
+                            mat4 = entity.getInvMatrix();
                             mat4.transformOutVector3(rpv,invpv);
                             mat4.deltaTransformOutVector(rtv,invtv);
                             flag = entity.getMesh().testRay(invpv,invtv,outv,true);
@@ -316,7 +316,7 @@ export namespace vox
                             if(flag > 0)
                             {
                                 rayNode.lpv.copyFrom(outv);
-                                entity.getTransform().getMatrix().transformOutVector3(outv,rayNode.wpv);
+                                entity.getMatrix().transformOutVector3(outv,rayNode.wpv);
                                 rayNode.dis = rtv.dot(rayNode.wpv) - pvdis;
                                 this.m_selectedNode = rayNode;
                                 //console.log("YYYYYYYYYYYYYYYes Ray hit mesh success.");

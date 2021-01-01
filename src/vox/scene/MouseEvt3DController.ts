@@ -10,7 +10,7 @@ import * as Vector3DT from "../../vox/geom/Vector3";
 import * as MouseEventT from "../../vox/event/MouseEvent";
 import * as Stage3DT from "../../vox/display/Stage3D";
 
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
+import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
 import * as RaySelectedNodeT from '../../vox/scene/RaySelectedNode';
 import * as IRaySelectorT from '../../vox/scene/IRaySelector';
 import * as IEvt3DControllerT from '../../vox/scene/IEvt3DController';
@@ -21,7 +21,7 @@ import Vector3D = Vector3DT.vox.geom.Vector3D;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
 import RaySelectedNode = RaySelectedNodeT.vox.scene.RaySelectedNode;
 import IRaySelector = IRaySelectorT.vox.scene.IRaySelector;
 import IEvt3DController = IEvt3DControllerT.vox.scene.IEvt3DController;
@@ -70,7 +70,7 @@ export namespace vox
             private m_mouseEvt:MouseEvent = new MouseEvent();
             private m_mouseOverEvt:MouseEvent = new MouseEvent();
             private m_mouseOutEvt:MouseEvent = new MouseEvent();
-            private m_evtTarget:DisplayEntity = null;
+            private m_evtTarget:IRenderEntity = null;
             private m_evtTypes:Float32Array = new Float32Array(64);
             private m_evtXList:Float32Array = new Float32Array(64);
             private m_evtYList:Float32Array = new Float32Array(64);
@@ -134,7 +134,7 @@ export namespace vox
                         {
                             lpv = node.lpv;
                             wpv = node.wpv;
-                            let entity:DisplayEntity = node.entity;
+                            let entity:IRenderEntity = node.entity;
                             dispatcher = entity.getEvtDispatcher(MouseEvent.EventClassType);
 
                             for(let i:number = 0;i < this.m_evtTotal;i++)

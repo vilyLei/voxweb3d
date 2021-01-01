@@ -13,7 +13,7 @@ import * as Stage3DT from "../../vox/display/Stage3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
+import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
 import * as DisplayEntityContainerT from "../../vox/entity/DisplayEntityContainer";
 import * as RendererParamT from "../../vox/scene/RendererParam";
 import * as RenderProcessT from "../../vox/render/RenderProcess";
@@ -39,7 +39,7 @@ import Stage3D = Stage3DT.vox.display.Stage3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
 import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
@@ -334,7 +334,7 @@ export namespace vox
                     }
                 }
             }
-            addEntity(entity:DisplayEntity,processid:number = 0,deferred:boolean = true):void
+            addEntity(entity:IRenderEntity,processid:number = 0,deferred:boolean = true):void
             {
                 if(entity.__$spaceId < 0)
                 {
@@ -372,7 +372,7 @@ export namespace vox
                 }
             }
             // 这是真正的完全将entity从world中清除
-            removeEntity(entity:DisplayEntity):void
+            removeEntity(entity:IRenderEntity):void
             {
                 let node:Entity3DNode = null;
                 if(this.m_nodeWaitLinker != null)
@@ -394,7 +394,7 @@ export namespace vox
                 }
             }
             // 首先要锁定Material才能用这种绘制方式,再者这个entity已经完全加入渲染器了渲染资源已经准备完毕,这种方式比较耗性能，只能用在特殊的地方
-            drawEntityByLockMaterial(entity:DisplayEntity):void
+            drawEntityByLockMaterial(entity:IRenderEntity):void
             {
                 this.m_renderer.drawEntityByLockMaterial(entity);
             }
@@ -482,7 +482,7 @@ export namespace vox
                     if(nextNode != null)
                     {
                         let pnode:Entity3DNode;
-                        let entity:DisplayEntity;
+                        let entity:IRenderEntity;
                         let status:number;
                         while(nextNode != null)
                         {

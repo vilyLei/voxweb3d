@@ -7,16 +7,15 @@
 // RenderProcess 实例实际上可以被外部功能块直接使用,以便实现具体渲染目的
 // 只能在 RenderWorld 中创建
 
-import * as RODisplayT from "../../vox/display/RODisplay";
+import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as MaterialProgramT from "../../vox/material/MaterialProgram";
-//import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPOUnitBuiderT from "../../vox/render/RPOUnitBuider";
 import * as RPONodeBuiderT from "../../vox/render/RPONodeBuider";
 import * as RPOBlockT from "../../vox/render/RPOBlock";
 
-import RODisplay = RODisplayT.vox.display.RODisplay;
+import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import MaterialProgram = MaterialProgramT.vox.material.MaterialProgram;
 //import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
@@ -155,7 +154,7 @@ export namespace vox
                 node.index = block.index;
                 block.addNode(node);
             }
-            addDisp(rc:RenderProxy, disp:RODisplay,deferred:boolean = true):void
+            addDisp(rc:RenderProxy, disp:IRODisplay,deferred:boolean = true):void
             {
                 if(disp != null)
                 {
@@ -165,8 +164,9 @@ export namespace vox
                         {
                             let node:RPONode = RPONodeBuider.Create();
                             node.unit = RPOUnitBuider.GetRPOUnit( disp.__$ruid );
-                            node.disp = disp;
+                            //node.disp = disp;
                             disp.__$rpuid = node.uid;
+                            node.__$ruid = disp.__$ruid;
                             node.updateData();
                             //this.m_nodes.push( node );
                             ++this.m_nodesLen;
@@ -182,7 +182,7 @@ export namespace vox
                     }
                 }
             }
-            updateDispMateiral(disp:RODisplay):void
+            updateDispMateiral(disp:IRODisplay):void
             {
                 if(disp.__$ruid > -1)
                 {
@@ -197,7 +197,7 @@ export namespace vox
                     this.addNodeToBlock(node);
                 }
             }
-            removeDisp(disp:RODisplay):void
+            removeDisp(disp:IRODisplay):void
             {
                 if(disp != null)
                 {
@@ -245,7 +245,7 @@ export namespace vox
             }
             // 用于特殊绘制
             private m_proBlock:RPOBlock = new RPOBlock();
-            drawLockMaterialByDisp(rc:RenderProxy,disp:RODisplay,forceUpdateUniform:boolean):void
+            drawLockMaterialByDisp(rc:RenderProxy,disp:IRODisplay,forceUpdateUniform:boolean):void
             {
                 if(disp != null)
                 {

@@ -11,7 +11,6 @@ export namespace vox
 {
     export namespace scene
     {
-        //
         export class RendererParam
         {
             private m_matrix4AllocateSize:number = 8192;

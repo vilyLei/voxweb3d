@@ -7,7 +7,6 @@
 
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as ShaderProgramT from "../../vox/material/ShaderProgram";
-import * as ROTransformT from "../../vox/display/ROTransform";
 import * as ShaderUniformDataT from "../../vox/material/ShaderUniformData";
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 import * as ShaderUniformT from "../../vox/material/ShaderUniform";
@@ -20,7 +19,6 @@ import * as RenderProxyT from "../../vox/render/RenderProxy";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import ShaderProgram = ShaderProgramT.vox.material.ShaderProgram;
-import ROTransform = ROTransformT.vox.display.ROTransform;
 import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
 import ShaderUniform = ShaderUniformT.vox.material.ShaderUniform;
@@ -197,9 +195,9 @@ export namespace vox
                 return guniform;                
             }
             private static s_emptyUniform:ShaderUniform = new ShaderUniform();
-            static BuildLocalFromTransformV(transform:ROTransform, shdp:ShaderProgram):IShaderUniform
+            static BuildLocalFromTransformV(transformData:Float32Array, shdp:ShaderProgram):IShaderUniform
             {
-                if(transform != null)
+                if(transformData != null)
                 {
                     let shdUniform:ShaderUniform;
                     if(RendererDeviece.IsWebGL1())
@@ -221,7 +219,7 @@ export namespace vox
                     shdUniform.uniformNameList.push( "u_objMat" );
                     shdUniform.types.push( shdp.getUniformTypeByNS("u_objMat") );
                     shdUniform.locations.push( shdp.getUniformLocationByNS("u_objMat") );
-                    shdUniform.dataList.push(transform.getMatrixFS32());
+                    shdUniform.dataList.push(transformData);
                     shdUniform.dataSizeList.push(1);                    
                     return shdUniform;
                 }

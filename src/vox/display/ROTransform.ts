@@ -20,7 +20,6 @@ export namespace vox
 {
     export namespace display
     {
-
         export class ROTransform
         {
             private static __s_uid:number = 0;

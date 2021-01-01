@@ -9,16 +9,16 @@
 // 一旦DisplayEntity3D实例 从 RendererInstance 中移除，则表明其完全从渲染管理中移除, 
 // RenderProcess 只能由 RendererInstance 来创建, 并且一个process只能被一个RendererInstance实例持有, 如果是外面的逻辑自己管理process则不在这个规定的范围内
 
-//import * as Vector3DT from "../../vox/geom/Vector3";
+import * as RenderConstT from "../../vox/render/RenderConst";
 import * as Stage3DT from "../../vox/display/Stage3D";
-import * as RODisplayT from "../../vox/display/RODisplay";
+import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as RenderBufferUpdaterT from "../../vox/render/RenderBufferUpdater";
 import * as ShaderProgramT from "../../vox/material/ShaderProgram";
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as CameraBaseT from "../../vox/view/CameraBase";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
+import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
 import * as RPOUnitBuiderT from "../../vox/render/RPOUnitBuider";
 import * as RODispBuilderT from "../../vox/render/RODispBuilder";
 import * as RendererParamT from "../../vox/scene/RendererParam";
@@ -30,17 +30,16 @@ import * as IRendererT from "../../vox/scene/IRenderer";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
 import * as Entity3DNodeLinkerT from "../../vox/scene/Entity3DNodeLinker";
 
-
-//import Vector3D = Vector3DT.vox.geom.Vector3D;
+import DisplayRenderState = RenderConstT.vox.render.DisplayRenderState;
 import Stage3D = Stage3DT.vox.display.Stage3D;
-import RODisplay = RODisplayT.vox.display.RODisplay;
+import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import RenderBufferUpdater = RenderBufferUpdaterT.vox.render.RenderBufferUpdater;
 import ShaderProgram = ShaderProgramT.vox.material.ShaderProgram;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
 import RODispBuilder = RODispBuilderT.vox.render.RODispBuilder;
 import RCRPObj = RPOUnitBuiderT.vox.render.RCRPObj;
 import RPOUnitBuider = RPOUnitBuiderT.vox.render.RPOUnitBuider;
@@ -153,7 +152,7 @@ export namespace vox
             {
                 this.m_entity3DMana.entityManaListener = listener;
             }
-            addEntity(entity:DisplayEntity,processid:number = 0,deferred:boolean = true):void
+            addEntity(entity:IRenderEntity,processid:number = 0,deferred:boolean = true):void
             {
                 if(entity != null)
                 {
@@ -174,7 +173,7 @@ export namespace vox
                     }
                 }
             }
-            addEntityToProcess(entity:DisplayEntity,process:RenderProcess,deferred:boolean = true):void
+            addEntityToProcess(entity:IRenderEntity,process:RenderProcess,deferred:boolean = true):void
             {
                 if(process != null && entity != null && entity.__$wuid < 0 && entity.__$weid < 0 && entity.__$contId < 0)
                 {
@@ -193,7 +192,7 @@ export namespace vox
                 }
             }
             // 这是真正的完全将entity从world中清除
-            removeEntity(entity:DisplayEntity):void
+            removeEntity(entity:IRenderEntity):void
             {
                 if(entity != null && entity.__$wuid == this.m_uid)
                 {
@@ -201,7 +200,7 @@ export namespace vox
                 }
             }
             // 只是从对应的process移除这个entity的display
-            removeEntityFromProcess(entity:DisplayEntity,process:RenderProcess):void
+            removeEntityFromProcess(entity:IRenderEntity,process:RenderProcess):void
             {
                 if(process != null && process.getWUid() == this.m_uid)
                 {
@@ -212,7 +211,7 @@ export namespace vox
                 }
             }
             // 只是通过process在当前RendererInstance实例process数组总的序号,从对应的process移除这个entity的display
-            removeEntityByProcessIndex(entity:DisplayEntity,processIndex:number):void
+            removeEntityByProcessIndex(entity:IRenderEntity,processIndex:number):void
             {
                 if(processIndex >= 0 && processIndex < this.m_processesLen)
                 {
@@ -269,7 +268,7 @@ export namespace vox
                 return this.m_processesLen;
             }
             // 首先要锁定Material才能用这种绘制方式,再者这个entity已经完全加入渲染器了渲染资源已经准备完毕,这种方式比较耗性能，只能用在特殊的地方
-            drawEntityByLockMaterial(entity:DisplayEntity,forceUpdateUniform:boolean = true):void
+            drawEntityByLockMaterial(entity:IRenderEntity,forceUpdateUniform:boolean = true):void
             {
                 if(entity != null && entity.__$wuid == this.m_uid)
                 {
@@ -321,7 +320,7 @@ export namespace vox
 
         export class DispEntity3DManager
         {
-            private m_waitList:DisplayEntity[] = [];
+            private m_waitList:IRenderEntity[] = [];
             private m_processUidList:number[] = [];
             private m_wuid:number = -1;            
             private m_dispBuilder:RODispBuilder = null;
@@ -338,7 +337,7 @@ export namespace vox
             {
                 return this.nodeLinker.isEmpty();
             }
-            removeEntity(entity:DisplayEntity):void
+            removeEntity(entity:IRenderEntity):void
             {
                 if(entity.__$wuid == this.m_wuid && entity.__$weid > -1)
                 {
@@ -347,7 +346,7 @@ export namespace vox
                     {
                         this.nodeLinker.removeNode(node);
                         // 从所有相关process中移除这个display
-                        let display:RODisplay = entity.getDisplay();
+                        let display:IRODisplay = entity.getDisplay();
                         if(display != null && display.__$ruid > -1)
                         {
                             let puid:number = display.__$ruid;
@@ -367,13 +366,13 @@ export namespace vox
                             if(po.count == 0)
                             {
                                 //console.log("DispEntity3DManager::removeEntity(), remove a entity from all processes.");
-                                if(display.rsign != RODisplay.LIVE_IN_WORLD)
-                                if(display.rsign != RODisplay.LIVE_IN_WORLD)
+                                if(display.rsign != DisplayRenderState.LIVE_IN_WORLD)
+                                if(display.rsign != DisplayRenderState.LIVE_IN_WORLD)
                                 {
                                     // error!!!
                                     console.log("DispEntity3DManager::removeEntity(), Error: display.rsign != RODisplay.LIVE_IN_WORLD.");
                                 }
-                                display.rsign = RODisplay.NOT_IN_WORLD;
+                                display.rsign = DisplayRenderState.NOT_IN_WORLD;
                                 // 准备移除和当前 display 对应的 RPOUnit
                                 RPOUnitBuider.Restore(RPOUnitBuider.GetRPOUnit(puid));
                             }
@@ -393,15 +392,15 @@ export namespace vox
                     }
                 }
             }
-            addEntity(rc:RenderProxy, entity:DisplayEntity, processUid:number,deferred:boolean = false):boolean
+            addEntity(rc:RenderProxy, entity:IRenderEntity, processUid:number,deferred:boolean = false):boolean
             {
                 if(entity != null)
                 {
                     //console.log("XXXXXXXXXX entity.getUid(): "+entity.getUid());
-                    let disp:RODisplay = entity.getDisplay();
+                    let disp:IRODisplay = entity.getDisplay();
                     if(disp != null)
                     {
-                        if(disp.rsign == RODisplay.LIVE_IN_WORLD)
+                        if(disp.rsign == DisplayRenderState.LIVE_IN_WORLD)
                         {
                             if(!RPOUnitBuider.TestRPNodeNotExists(disp.__$ruid,processUid))
                             {
@@ -411,9 +410,9 @@ export namespace vox
                         }
                         if(deferred)
                         {
-                            if(disp.rsign == RODisplay.NOT_IN_WORLD)
+                            if(disp.rsign == DisplayRenderState.NOT_IN_WORLD)
                             {
-                                disp.rsign = RODisplay.GO_TO_WORLD;
+                                disp.rsign = DisplayRenderState.GO_TO_WORLD;
                             }
                             //entity.update();
                             entity.__$weid = 999999;
@@ -433,9 +432,9 @@ export namespace vox
                                 node.entity = entity;
                                 entity.__$weid = node.uid;
                                 this.nodeLinker.addNode(node);
-                                if(disp.rsign == RODisplay.NOT_IN_WORLD)
+                                if(disp.rsign == DisplayRenderState.NOT_IN_WORLD)
                                 {
-                                    disp.rsign = RODisplay.GO_TO_WORLD;
+                                    disp.rsign = DisplayRenderState.GO_TO_WORLD;
                                 }
                                 this.m_rprocess = RenderProcessBuider.GetProcess(processUid);
                                 //console.log("DispEntity3DManager::addEntity(), add a ready ok entity to process.");
@@ -457,9 +456,9 @@ export namespace vox
                             else
                             {
                                 //console.log("DispEntity3DManager::addEntity(), add a ready ok entity to process.");
-                                if(disp.rsign == RODisplay.NOT_IN_WORLD)
+                                if(disp.rsign == DisplayRenderState.NOT_IN_WORLD)
                                 {
-                                    disp.rsign = RODisplay.GO_TO_WORLD;
+                                    disp.rsign = DisplayRenderState.GO_TO_WORLD;
                                 }
                                 entity.__$weid = 999999;
                                 this.m_waitList.push(entity);
@@ -477,7 +476,7 @@ export namespace vox
             private m_material:MaterialBase = null;
             private m_shdp:ShaderProgram = null;
             private m_rprocess:RenderProcess = null;
-            testValidData(entity:DisplayEntity):boolean
+            testValidData(entity:IRenderEntity):boolean
             {
                 this.m_material = entity.getMaterial();
                 if(this.m_material != null && entity.getMesh() != null)
@@ -507,9 +506,9 @@ export namespace vox
             update(rc:RenderProxy):void
             {
                 let len:number = this.m_waitList.length;
-                let entity:DisplayEntity = null;
+                let entity:IRenderEntity = null;
                 let node:Entity3DNode = null;
-                let disp:RODisplay = null;
+                let disp:IRODisplay = null;
                 for(let i:number = 0; i < len; ++i)
                 {
                     entity = this.m_waitList[i];
@@ -518,7 +517,7 @@ export namespace vox
                         if(this.testValidData(entity))
                         {
                             disp = entity.getDisplay();
-                            if(disp.rsign == RODisplay.LIVE_IN_WORLD)
+                            if(disp.rsign == DisplayRenderState.LIVE_IN_WORLD)
                             {
                                 if(!RPOUnitBuider.TestRPNodeNotExists(disp.__$ruid,this.m_processUidList[i]))
                                 {
@@ -562,9 +561,9 @@ export namespace vox
                     else
                     {
                         disp = entity.getDisplay();
-                        if(disp != null && disp.rsign == RODisplay.GO_TO_WORLD)
+                        if(disp != null && disp.rsign == DisplayRenderState.GO_TO_WORLD)
                         {
-                            disp.rsign = RODisplay.NOT_IN_WORLD;
+                            disp.rsign = DisplayRenderState.NOT_IN_WORLD;
                         }
                         console.log("DispEntity3DManager::update(), remove a ready entity.");
                         entity.__$weid = -1;

@@ -14,7 +14,7 @@ import * as AABBT from "../../vox/geom/AABB";
 import * as Stage3DT from "../../vox/display/Stage3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMasK";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
+import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
 import * as IRendererSpaceT from "../../vox/scene/IRendererSpace";
 import * as RPONodeBuiderT from "../../vox/render/RPONodeBuider";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
@@ -29,7 +29,7 @@ import AABB = AABBT.vox.geom.AABB;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
 import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
 import RPONode = RPONodeBuiderT.vox.render.RPONode;
 import RPONodeBuider = RPONodeBuiderT.vox.render.RPONodeBuider;
@@ -115,7 +115,7 @@ export namespace vox
                 return this.m_raySelector;
             }
             // 可以添加真正被渲染的实体也可以添加只是为了做检测的实体(不允许有material)
-            addEntity(entity:DisplayEntity):void
+            addEntity(entity:IRenderEntity):void
             {
                 if(entity.getGlobalBounds() != null && entity.spaceCullMask > SpaceCullingMasK.NONE)
                 {
@@ -159,7 +159,7 @@ export namespace vox
                     }
                 }
             }
-            removeEntity(entity:DisplayEntity):void
+            removeEntity(entity:IRenderEntity):void
             {
                 let node:Entity3DNode = this.m_nodeQueue.getNodeByEntity(entity);
                 if(node != null)

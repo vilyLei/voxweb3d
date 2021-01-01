@@ -60,7 +60,7 @@ export namespace voxprofile
             }
             updateFPS():void
             {
-                let t:number = new Date().getTime();
+                let t:number = Date.now();
                 if(this.m_lastTime > 0)
                 {
                     --this.m_times;

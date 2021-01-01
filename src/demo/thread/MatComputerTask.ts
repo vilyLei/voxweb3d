@@ -22,6 +22,7 @@ export namespace demo
         {
             constructor()
             {
+                console.log("MatCalcSendData::constructor().");
             }
 
             allTot:number = 16;
@@ -77,7 +78,7 @@ export namespace demo
                         this.transfers = [this.paramData.buffer];
                     }
                 }
-                this.paramData = null;
+                //this.paramData = null;
             }
             
             reset():void
@@ -110,6 +111,7 @@ export namespace demo
             {
                 let sd:MatCalcSendData = null;
                 let index:number = MatCalcSendData.GetFreeId();
+                //console.log("index: "+index);
                 //console.log("MatCalcSendData::Create(), MatCalcSendData.m_unitList.length: "+MatCalcSendData.m_unitList.length);
                 if(index >= 0)
                 {
@@ -137,6 +139,15 @@ export namespace demo
                     MatCalcSendData.m_freeIdList.push(uid);
                     MatCalcSendData.m_unitFlagList[uid] = MatCalcSendData.__S_FLAG_FREE;
                     psd.reset();
+                }
+            }
+            static RestoreByUid(uid:number):void
+            {
+                if(uid >= 0 && MatCalcSendData.m_unitFlagList[uid] == MatCalcSendData.__S_FLAG_BUSY)
+                {
+                    MatCalcSendData.m_freeIdList.push(uid);
+                    MatCalcSendData.m_unitFlagList[uid] = MatCalcSendData.__S_FLAG_FREE;
+                    MatCalcSendData.m_unitList[uid].reset();
                 }
             }
         }
@@ -194,6 +205,7 @@ export namespace demo
             private m_fs32Arr:Float32Array = null;
             private m_dstMFSList:Matrix4[] = null;
             private m_dstMFSTotal:number = 0;
+            private m_enabled:boolean = true;
 
             
             private m_dataList:TransData[] = null;
@@ -204,8 +216,9 @@ export namespace demo
             }
             initialize(matTotal:number):void
             {
-                if(this.m_fs32Arr == null && matTotal > 0)
+                if(this.m_matTotal < 1 && this.m_fs32Arr == null && matTotal > 0)
                 {
+                    console.log("### MatComputerTask::initialize()...");
                     this.m_matTotal = matTotal;
                     this.m_fs32Arr = new Float32Array(matTotal * 16);
                     this.m_dstMFSList = new Array(matTotal);
@@ -232,13 +245,29 @@ export namespace demo
                     this.m_dataList[i].update();
                 }
             }
+            updateAndSendParam():void
+            {
+                if(this.isSendEnabled())
+                {
+                    if(this.m_dstMFSTotal > 0)
+                    {
+                        this.setCurrTotal(this.m_dstMFSTotal);
+                        this.setIndex(0);
+                        for(let i:number = 0; i < this.m_dstMFSTotal; ++i)
+                        {
+                            this.m_dataList[i].update();
+                        }
+                        this.sendData();
+                    }
+                }
+            }
             isSendEnabled():boolean
             {
-                return this.m_fs32Arr != null;
+                return this.m_enabled;//this.m_fs32Arr != null;
             }
             isDataEnabled():boolean
             {
-                return this.m_fs32Arr != null;
+                return this.m_enabled;
             }
             setCurrTotal(currMatTotal:number):number
             {
@@ -271,7 +300,7 @@ export namespace demo
             }
             sendData():void
             {
-                if(this.m_fs32Arr != null)
+                if(this.m_enabled && this.m_fs32Arr != null)
                 {
                     let sd:MatCalcSendData = MatCalcSendData.Create();
                     sd.taskCmd = "MAT_COMPUTE";
@@ -279,7 +308,13 @@ export namespace demo
                     sd.allTot = this.m_matTotal;
                     sd.matTotal = this.m_currMatTotal;
                     this.addData(sd);
-                    this.m_fs32Arr = null;
+                    //this.m_fs32Arr = null;
+                    this.m_enabled = false;
+                    //console.log("sendData success...uid: "+this.getUid());
+                }
+                else
+                {
+                    console.log("sendData failure...");
                 }
             }
             
@@ -287,7 +322,8 @@ export namespace demo
             parseDone(data:any,flag:number):boolean
             {
                 //console.log("MatComputerTask::parseDone(), data: ",data);
-                this.m_fs32Arr = data.paramData;
+                //console.log("parseDone(), srcuid: "+data.srcuid+","+this.getUid());
+                this.m_fs32Arr = (data.paramData);
                 //this.m_dstMFSList[0].copyFromF32Arr(this.m_fs32Arr,0);
                 let list:Matrix4[] = this.m_dstMFSList;
                 //console.log("data.matTotal: "+data.matTotal);
@@ -296,10 +332,8 @@ export namespace demo
                     list[i].copyFromF32Arr(this.m_fs32Arr,i * 16);
                     //console.log("list["+i+"]: \n"+list[i].toString());
                 }
-                //console.log("this.m_dstMFSList[0]: \n"+this.m_dstMFSList[0].toString());
-                //this.m_dstMFSList[index]
-                //data.paramData = null;
-                MatCalcSendData.Restore(data.dataIndex);
+                MatCalcSendData.RestoreByUid(data.dataIndex);
+                this.m_enabled = true;
                 return true;
             }
             getWorkerSendDataAt(i:number):IThreadSendData

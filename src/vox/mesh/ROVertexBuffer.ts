@@ -48,7 +48,7 @@ export namespace vox
             {
                 this.m_uid = ROVertexBuffer.__s_uid++;
                 this.m_bufDataUsage = bufDataUsage;
-                
+                console.log("ROVertexBuffer::constructor()...");
             }
             private setVtxBuf(vtxBuf:IVtxBuf):void
             {
@@ -602,27 +602,30 @@ export namespace vox
                 {
                     ROVertexBuffer.s_timeDelay = 10;
                     let store:ROVtxBufUidStore = ROVtxBufUidStore.GetInstance();
-                    let list:number[] = store.__$getRemovedList();
-                    let len:number = list.length;
-                    let i:number = 0;
-                    let vtxUid:number = 0;
-                    let vb:ROVertexBuffer = null;
-                    for(; i < 16; ++i)
+                    if(store.__$getRemovedListLen() > 0)
                     {
-                        if(len > 0)
+                        let list:number[] = store.__$getRemovedList();
+                        let len:number = list.length;
+                        let i:number = 0;
+                        let vtxUid:number = 0;
+                        let vb:ROVertexBuffer = null;
+                        for(; i < 16; ++i)
                         {
-                            vtxUid = list.pop();
-                            --len;
-                            if(store.getAttachCountAt(vtxUid) < 1)
+                            if(len > 0)
                             {
-                                vb = ROVertexBuffer.GetVtxByUid(vtxUid);
-                                vb.__$disposeGpu(rc);
-                                ROVertexBuffer.__$Restore(vb);
+                                vtxUid = list.pop();
+                                --len;
+                                if(store.getAttachCountAt(vtxUid) < 1)
+                                {
+                                    vb = ROVertexBuffer.GetVtxByUid(vtxUid);
+                                    vb.__$disposeGpu(rc);
+                                    ROVertexBuffer.__$Restore(vb);
+                                }
                             }
-                        }
-                        else
-                        {
-                            break;
+                            else
+                            {
+                                break;
+                            }
                         }
                     }
                 }

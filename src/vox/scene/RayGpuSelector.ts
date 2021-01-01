@@ -13,7 +13,7 @@ import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as AABBT from "../../vox/geom/AABB";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
+import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
 import * as IRayGpuSelectorT from '../../vox/scene/IRaySelector';
 import * as RaySelectedNodeT from '../../vox/scene/RaySelectedNode';
@@ -35,7 +35,7 @@ import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import AABB = AABBT.vox.geom.AABB;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
 import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
 import IRayGpuSelector = IRayGpuSelectorT.vox.scene.IRaySelector;
 import RaySelectedNode = RaySelectedNodeT.vox.scene.RaySelectedNode;
@@ -259,7 +259,7 @@ export namespace vox
                     {
                         let invpv:Vector3D = this.m_invpv;
                         let invtv:Vector3D = this.m_invtv;
-                        let entity:DisplayEntity = null;
+                        let entity:IRenderEntity = null;
                         let flag:number = 0;
                         let hitTotal:number = 0;
                         let mat4:Matrix4 = null;
@@ -280,7 +280,7 @@ export namespace vox
                                 {
                                     if(polyTest)
                                     {
-                                        mat4 = entity.getTransform().getInvMatrix();
+                                        mat4 = entity.getInvMatrix();
                                         mat4.transformOutVector3(rpv,invpv);
                                         mat4.deltaTransformOutVector(rtv,invtv);
                                         flag = entity.getMesh().testRay(invpv,invtv,outv,true);
@@ -293,7 +293,7 @@ export namespace vox
                                 }
                                 else
                                 {
-                                    mat4 = entity.getTransform().getInvMatrix();
+                                    mat4 = entity.getInvMatrix();
                                     mat4.transformOutVector3(rpv,invpv);
                                     mat4.deltaTransformOutVector(rtv,invtv);
                                     flag = entity.getMesh().testRay(invpv,invtv,outv,true);
@@ -301,7 +301,7 @@ export namespace vox
                                 if(flag > 0)
                                 {
                                     rayNode.lpv.copyFrom(outv);
-                                    entity.getTransform().getMatrix().transformOutVector3(outv,rayNode.wpv);
+                                    entity.getMatrix().transformOutVector3(outv,rayNode.wpv);
                                     rayNode.dis = rtv.dot(rayNode.wpv) - pvdis;
                                     this.m_hitList[hitTotal] = i;
                                     ++hitTotal;
@@ -334,7 +334,7 @@ export namespace vox
                         {
                             rayNode = this.m_rsnList[0];
                             entity = this.m_rsnList[0].entity;
-                            mat4 = entity.getTransform().getInvMatrix();
+                            mat4 = entity.getInvMatrix();
                             mat4.transformOutVector3(rpv,invpv);
                             mat4.deltaTransformOutVector(rtv,invtv);
                             if(entity.getMesh().isPolyhedral())
@@ -357,7 +357,7 @@ export namespace vox
                             if(flag > 0)
                             {
                                 rayNode.lpv.copyFrom(outv);
-                                entity.getTransform().getMatrix().transformOutVector3(outv,rayNode.wpv);
+                                entity.getMatrix().transformOutVector3(outv,rayNode.wpv);
                                 rayNode.dis = rtv.dot(rayNode.wpv) - pvdis;
                                 this.m_selectedNode = rayNode;
                                 //console.log("YYYYYYYYYYYYYYYes Ray hit mesh success.");
@@ -424,7 +424,7 @@ export namespace vox
                 rcontext.useGlobalMaterial(this.m_indexMaterial);
                 //rcontext.lockMaterial();
                 let rayNode:RaySelectedNode = null;
-                let entity:DisplayEntity = null;
+                let entity:IRenderEntity = null;
                 let j:number = -1;
                 let i:number = 0;
                 //DivLog.ShowLogOnce("total: "+total);
@@ -461,7 +461,7 @@ export namespace vox
                     //DivLog.ShowLog("depth: "+depth);
                     if(this.m_selectedNode != null)
                     {
-                        let selectedEntity:DisplayEntity = this.m_selectedNode.entity;
+                        let selectedEntity:IRenderEntity = this.m_selectedNode.entity;
                         if(this.m_selectedNode != rayNode && !selectedEntity.getMesh().isPolyhedral())
                         {
                             // 说明现在鼠标选中的非像素拾取对象更靠近摄像机

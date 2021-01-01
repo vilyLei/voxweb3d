@@ -8,13 +8,11 @@
 
 import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
 import * as TextureRenderObjT from "../../vox/texture/TextureRenderObj";
-import * as RODisplayT from "../../vox/display/RODisplay";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPOUnitBuiderT from "../../vox/render/RPOUnitBuider";
 
 import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
 import ITextureRenderObj = TextureRenderObjT.vox.texture.ITextureRenderObj;
-import RODisplay = RODisplayT.vox.display.RODisplay;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RPOUnitBuider = RPOUnitBuiderT.vox.render.RPOUnitBuider;
 
@@ -28,6 +26,7 @@ export namespace vox
             constructor()
             {
             }
+            __$ruid:number = -1;
             drawEnabled:boolean = true;
             uid:number = -1;
             index:number = -1;
@@ -41,7 +40,6 @@ export namespace vox
             prev:RPONode = null;
             next:RPONode = null;
             unit:RPOUnit = null;
-            disp:RODisplay = null;
             vro:VertexRenderObj = null;
             tro:ITextureRenderObj = null;
 
@@ -76,7 +74,6 @@ export namespace vox
                 this.vtxUid = -1;
                 this.texMid = -1;
                 this.unit = null;
-                this.disp = null;
                 this.vro = null;
                 this.tro = null;
                 this.prev = null;

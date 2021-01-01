@@ -4,23 +4,12 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// 整个渲染器的空间管理类接口规范
-
-import * as MathConstT from "../../vox/utils/MathConst";
+// Ray pick selection obj
 import * as Vector3DT from "../../vox/geom/Vector3";
-import * as AABBT from "../../vox/geom/AABB";
-import * as CameraBaseT from "../../vox/view/CameraBase";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
-import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
-import * as IRaySelectorT from '../../vox/scene/IRaySelector';
+import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
 
-import MathConst = MathConstT.vox.utils.MathConst;
 import Vector3D = Vector3DT.vox.geom.Vector3D;
-import AABB = AABBT.vox.geom.AABB;
-import CameraBase = CameraBaseT.vox.view.CameraBase;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
-import IRaySelector = IRaySelectorT.vox.scene.IRaySelector;
+import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
 
 export namespace vox
 {
@@ -29,7 +18,7 @@ export namespace vox
         export class RaySelectedNode
         {
             constructor(){}
-            entity:DisplayEntity = null;
+            entity:IRenderEntity = null;
             // object space hit position
             lpv:Vector3D = new Vector3D();
             // world space hit position

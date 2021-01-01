@@ -43,6 +43,7 @@ function ThreadAddNum()
     }
 
     self.TaskSlot[this.getTaskClass()] = this;
-    postMessage({cmd:"INIT_TASK",taskclass:this.getTaskClass()});
+    let INIT_TASK = 3701;
+    postMessage({cmd:INIT_TASK,taskclass:this.getTaskClass()});
 }
 let workerIns_ThreadAddNum = new ThreadAddNum();

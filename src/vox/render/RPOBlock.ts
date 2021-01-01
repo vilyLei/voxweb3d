@@ -9,7 +9,7 @@
 
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
-import * as RODisplayT from "../../vox/display/RODisplay";
+import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPOUnitBuiderT from "../../vox/render/RPOUnitBuider";
 import * as RPONodeBuiderT from "../../vox/render/RPONodeBuider";
@@ -21,7 +21,7 @@ import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
-import RODisplay = RODisplayT.vox.display.RODisplay;
+import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RPOUnitBuider = RPOUnitBuiderT.vox.render.RPOUnitBuider;
 import RPONode = RPONodeBuiderT.vox.render.RPONode;
@@ -286,7 +286,7 @@ export namespace vox
                 }
             }
             // 在锁定material的时候,直接绘制单个unit
-            drawLockMaterialByUnit(rc:RenderProxy,unit:RPOUnit,disp:RODisplay,forceUpdateUniform:boolean):void
+            drawLockMaterialByUnit(rc:RenderProxy,unit:RPOUnit,disp:IRODisplay,forceUpdateUniform:boolean):void
             {
                 if(unit.drawEnabled)
                 {
@@ -315,7 +315,7 @@ export namespace vox
                     {
                         node = nextNode;
                         nextNode = nextNode.next;
-                        RPOUnitBuider.SetRPNodeParam(node.disp.__$ruid, this.procuid, -1);
+                        RPOUnitBuider.SetRPNodeParam(node.__$ruid, this.procuid, -1);
                         node.reset();
                         RPONodeBuider.Restore(node);
                     }

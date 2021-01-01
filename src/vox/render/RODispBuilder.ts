@@ -7,7 +7,8 @@
 /***************************************************************************/
 
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
-import * as RODisplayT from "../../vox/display/RODisplay";
+import * as RenderConstT from "../../vox/render/RenderConst";
+import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as UniformConstT from "../../vox/material/UniformConst";
 import * as ShaderProgramT from "../../vox/material/ShaderProgram";
@@ -22,7 +23,8 @@ import * as RPOUnitBuiderT from "../../vox/render/RPOUnitBuider";
 import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RODisplay = RODisplayT.vox.display.RODisplay;
+import DisplayRenderState = RenderConstT.vox.render.DisplayRenderState;
+import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import UniformConst = UniformConstT.vox.material.UniformConst;
 import ShaderProgram = ShaderProgramT.vox.material.ShaderProgram;
@@ -44,11 +46,11 @@ export namespace vox
     {
         export class RODispBuilder
         {
-            private m_disps:RODisplay[] = [];
+            private m_disps:IRODisplay[] = [];
             private m_processUidList:number[] = [];
             private static s_emptyTRO:EmptyTexRenderObj = new EmptyTexRenderObj();
 
-            static UpdateDispTRO(rc:RenderProxy,disp:RODisplay):void
+            static UpdateDispTRO(rc:RenderProxy,disp:IRODisplay):void
             {
                 if(disp != null && disp.__$ruid > -1)
                 {
@@ -79,11 +81,11 @@ export namespace vox
                                 else
                                 {
                                     if(runit.tro != RODispBuilder.s_emptyTRO)
-                                    {           
+                                    {
                                         if(runit.tro != null)
                                         {
                                             runit.tro.__$detachThis();
-                                        }                                        
+                                        }
                                         runit.tro = RODispBuilder.s_emptyTRO;
                                         material.__$troMid = -1;
                                     }
@@ -93,7 +95,7 @@ export namespace vox
                     }
                 }
             }
-            addDispToProcess(rc:RenderProxy, disp:RODisplay, processUid:number,deferred:boolean = true):void
+            addDispToProcess(rc:RenderProxy, disp:IRODisplay, processUid:number,deferred:boolean = true):void
             {
                 if(disp != null && processUid >= 0)
                 {
@@ -108,7 +110,7 @@ export namespace vox
                     }
                 }
             }
-            public updateDispMaterial(rc:RenderProxy,runit:RPOUnit,disp:RODisplay):ShaderProgram
+            public updateDispMaterial(rc:RenderProxy,runit:RPOUnit,disp:IRODisplay):ShaderProgram
             {
                 let shdp:ShaderProgram = null;
                 if(disp.__$ruid >= 0)
@@ -116,7 +118,6 @@ export namespace vox
                     let material:MaterialBase = disp.getMaterial();
                     if(material != null)
                     {
-                        
                         shdp = material.getShaderProgram();
                         if(shdp == null)
                         {
@@ -148,7 +149,7 @@ export namespace vox
                         else
                         {
                             if(runit.tro != RODispBuilder.s_emptyTRO)
-                            {                                        
+                            {
                                 if(runit.tro != null)
                                 {
                                     runit.tro.__$detachThis();
@@ -173,11 +174,10 @@ export namespace vox
                             }
                             else
                             {
-                                //material.__$uniform = EmptyShdUniform.EmptyUniform;
                                 runit.transUniform = EmptyShdUniform.EmptyUniform;
                             }
                         }
-                        runit.transUniform = ShdUniformTool.BuildLocalFromTransformV(hasTrans?disp.transform:null, runit.shdp);
+                        runit.transUniform = ShdUniformTool.BuildLocalFromTransformV(hasTrans?disp.getMatrixFS32():null, runit.shdp);
                         runit.uniform = material.__$uniform;
                         
                     }
@@ -188,14 +188,14 @@ export namespace vox
                 }
                 return shdp;
             }
-            private buildGpuDisp(rc:RenderProxy,disp:RODisplay,processUid:number):void
+            private buildGpuDisp(rc:RenderProxy,disp:IRODisplay,processUid:number):void
             {
                 if(disp.__$ruid < 0)
                 {
                     let material:MaterialBase = disp.getMaterial();
                     if(material != null)
                     {
-                        disp.rsign = RODisplay.LIVE_IN_WORLD;
+                        disp.rsign = DisplayRenderState.LIVE_IN_WORLD;
                         
                         let runit:RPOUnit = RPOUnitBuider.Create();
                         runit.ivsIndex = disp.ivsIndex;
@@ -234,13 +234,13 @@ export namespace vox
             private updateDispToProcess(rc:RenderProxy):void
             {
                 let len:number = this.m_disps.length;
-                let disp:RODisplay = null;
+                let disp:IRODisplay = null;
                 let m_processUid:number = -1;
                 while(len > 0)
                 {
                     disp = this.m_disps.shift();
                     m_processUid = this.m_processUidList.shift();
-                    if(disp.rsign == RODisplay.GO_TO_WORLD)
+                    if(disp.rsign == DisplayRenderState.GO_TO_WORLD)
                     {
                         this.buildGpuDisp(rc, disp, m_processUid);
                     }

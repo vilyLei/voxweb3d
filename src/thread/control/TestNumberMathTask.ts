@@ -118,7 +118,6 @@ export namespace thread
                 }
                 return sd;
             }
-            
             static Restore(psd:NumberMathSendData):void
             {
                 if(psd != null && NumberMathSendData.m_unitFlagList[psd.dataIndex] == NumberMathSendData.__S_FLAG_BUSY)
@@ -127,6 +126,15 @@ export namespace thread
                     NumberMathSendData.m_freeIdList.push(uid);
                     NumberMathSendData.m_unitFlagList[uid] = NumberMathSendData.__S_FLAG_FREE;
                     psd.reset();
+                }
+            }
+            static RestoreByUid(uid:number):void
+            {
+                if(uid >= 0 && NumberMathSendData.m_unitFlagList[uid] == NumberMathSendData.__S_FLAG_BUSY)
+                {
+                    NumberMathSendData.m_freeIdList.push(uid);
+                    NumberMathSendData.m_unitFlagList[uid] = NumberMathSendData.__S_FLAG_FREE;
+                    NumberMathSendData.m_unitList[uid].reset();
                 }
             }
         }
@@ -186,7 +194,7 @@ export namespace thread
                 {
                     console.log("TestNumberAddTask::parseDone() finish.");
                 }
-                NumberMathSendData.Restore(data.dataIndex);
+                NumberMathSendData.RestoreByUid(data.dataIndex);
                 return true;
             }
             getWorkerSendDataAt(i:number):IThreadSendData

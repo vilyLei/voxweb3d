@@ -5,9 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
+import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
 import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
 
 export namespace vox
@@ -19,7 +19,7 @@ export namespace vox
             private m_nodeListLen:number = 0;
             private m_nodeIdList:number[] = [];
             private m_nodeList:Entity3DNode[] = [];
-            private m_entityList:DisplayEntity[] = [];
+            private m_entityList:IRenderEntity[] = [];
             private m_nodeFlagList:number[] = [];
             private m_freeIdList:number[] = [];
             constructor()
@@ -68,7 +68,7 @@ export namespace vox
                 }
             }
             // 可以添加真正被渲染的实体也可以添加只是为了做检测的实体(不允许有material)
-            addEntity(entity:DisplayEntity):Entity3DNode
+            addEntity(entity:IRenderEntity):Entity3DNode
             {
                 if(entity.__$spaceId < 0)
                 {
@@ -79,7 +79,7 @@ export namespace vox
                     return node;                        
                 }
             }
-            getNodeByEntity(entity:DisplayEntity):Entity3DNode
+            getNodeByEntity(entity:IRenderEntity):Entity3DNode
             {
                 if(entity.__$spaceId > -1 && this.m_entityList[entity.__$spaceId] == entity)
                 {
@@ -87,7 +87,7 @@ export namespace vox
                 }
                 return null;
             }
-            removeEntity(entity:DisplayEntity):void
+            removeEntity(entity:IRenderEntity):void
             {
                 if(entity.__$spaceId > -1 && this.m_entityList[entity.__$spaceId] == entity)
                 {

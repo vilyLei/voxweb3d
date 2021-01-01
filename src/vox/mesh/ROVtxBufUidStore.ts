@@ -24,6 +24,10 @@ export namespace vox
             {
                 return ROVtxBufUidStore.s_ins;
             }
+            __$getRemovedListLen():number
+            {
+                return this.m_removeidList.length;
+            }
             __$getRemovedList():number[]
             {
                 return this.m_removeidList;

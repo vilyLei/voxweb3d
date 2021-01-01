@@ -31,20 +31,20 @@ export namespace thread
                     let len:number = ThrDataPool.s_waitList.length;
                     if(len > 0)
                     {
-                        data = ThrDataPool.s_waitList[len - 1];
+                        data = ThrDataPool.s_waitList[0];
                         thread.sendDataTo(data);
                         if(data.sendStatus == 1)
                         {
                             ThrDataPool.s_dataTotal--;
                             len --;
-                            ThrDataPool.s_waitList.pop();
+                            ThrDataPool.s_waitList.shift();
                             return true;
                         }
                     }
                     len = ThrDataPool.s_dataTotal - len;
                     if(len > 0)
                     {
-                        data = ThrDataPool.s_dataList.pop();
+                        data = ThrDataPool.s_dataList.shift();
                         thread.sendDataTo(data);
                         if(data.sendStatus == 1)
                         {

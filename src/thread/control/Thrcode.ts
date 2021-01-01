@@ -41,14 +41,18 @@ function ThreadCore()
   
   let selfT = this;
   
+  let DATA_PARSE = 3501;
+  let THREAD_INIT = 3601;
+  let INIT_TASK = 3701;
+  let INIT_PARAM = 3801;
   this.receiveData = function(evt)
   {
     /////////////////////////////////////////////////// receive data from Main Worker ///////////////////////////////////
-    //console.log("receive main data in worker,data: "+evt.data);
+    //console.log("receive main data in worker,data: ",evt.data);
     let data = evt.data;
     switch(data.cmd)
     {
-        case "DATA_PARSE":
+        case DATA_PARSE:
             // taskclass
             data.threadIndex = m_threadIndex;
             let ins = taskSlot[data.taskclass];
@@ -57,7 +61,7 @@ function ThreadCore()
                 ins.receiveData(data);
             }
         break;
-        case "INIT_TASK":
+        case INIT_TASK:
             let param =  data.param;
             console.log("worker INIT_TASK param.type: ",param.type);
             switch(param.type)
@@ -111,14 +115,14 @@ function ThreadCore()
                 }
             }
             break;
-        case "INIT_PARAM":
+        case INIT_PARAM:
             if(m_initBoo)
             {
                 m_threadIndex = data.threadIndex;
                 
                 console.log("thread init data.threadIndex: "+m_threadIndex);
                 m_initBoo = false;
-                postMessage({cmd:"INIT_PARAM",threadIndex:m_threadIndex});
+                postMessage({cmd:INIT_PARAM,threadIndex:m_threadIndex});
             }
         break;
         default:
@@ -128,7 +132,7 @@ function ThreadCore()
   this.initialize = function()
   {
     console.log("###worker ThreadCore::initialize()...");
-    console.log("self.TaskSlot: ",self.TaskSlot);
+    //console.log("self.TaskSlot: ",self.TaskSlot);
     if(typeof(postMessage) !== "undefined")
     {
         self.addEventListener(
@@ -136,7 +140,8 @@ function ThreadCore()
             selfT.receiveData,
             false
         );
-        postMessage({cmd:"THREAD_INIT"});
+        let THREAD_INIT = 3601;
+        postMessage({cmd:THREAD_INIT});
     }
   }
 }

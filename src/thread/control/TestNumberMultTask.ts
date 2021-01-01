@@ -129,6 +129,16 @@ export namespace thread
                     psd.reset();
                 }
             }
+            
+            static RestoreByUid(uid:number):void
+            {
+                if(uid >= 0 && NumberMultSendData.m_unitFlagList[uid] == NumberMultSendData.__S_FLAG_BUSY)
+                {
+                    NumberMultSendData.m_freeIdList.push(uid);
+                    NumberMultSendData.m_unitFlagList[uid] = NumberMultSendData.__S_FLAG_FREE;
+                    NumberMultSendData.m_unitList[uid].reset();
+                }
+            }
         }
         export class TestNumberMultTask extends ThreadTask
         {
@@ -151,7 +161,7 @@ export namespace thread
             parseDone(data:any,flag:number):boolean
             {
                 console.log("TestNumberAddTask::parseDone(), data: ",data);
-                NumberMultSendData.Restore(data.dataIndex);
+                NumberMultSendData.RestoreByUid(data.dataIndex);
                 return true;
             }
             getWorkerSendDataAt(i:number):IThreadSendData

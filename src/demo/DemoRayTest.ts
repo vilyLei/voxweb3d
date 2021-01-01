@@ -283,7 +283,7 @@ export namespace demo
             if(this.m_raySelector.getSelectedNodesTotal() > 0)
             {
                 let nodes:RaySelectedNode[] = this.m_raySelector.getSelectedNodes();
-                let entity:DisplayEntity = nodes[0].entity;
+                let entity:DisplayEntity = nodes[0].entity as DisplayEntity;
                 dispatcher = entity.getEvtDispatcher(MouseEvent.EventClassType);
                 let pv:Vector3D = nodes[0].wpv;
                 //  let axis:Axis3DEntity = new Axis3DEntity();

@@ -7,20 +7,17 @@
 // 对于纯粹的逻辑对象来讲, 只会和逻辑操作相关(同步)，本质和渲染表现和逻辑可以做到分离
 // 因此，这里所涉及到的主要是transform和一些逻辑行为
 // 和其他渲染相关的沟通，则依赖对应的协议，对协议的解释，则最终决定呈现结果
-// 一个此逻辑 DisplayEntity 对象可以对应一个或者多个 RODisplay, 包含对应的transform
-// 可支持多线程，也可支持单线程, 模式
+// 一个此逻辑 PureEntity 对象可以对应一个或者多个 RODisplay, 包含对应的transform
+// 可支持多线程模式(主要支持多线程模式的纯粹的被渲染器接受的渲染对象)，也可支持单线程模式, 此实例不允许加入容器
 
 //import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMask";
-import * as Vector3T from "../../vox/geom/Vector3";
 import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as AABBT from "../../vox/geom/AABB";
 import * as MouseEventT from "../../vox/event/MouseEvent";
 import * as IEvt3DDispatcherT from "../../vox/event/IEvtDispatcher";
-import * as IDisplayEntityContainerT from "../../vox/entity/IDisplayEntityContainer";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as MeshBaseT from "../../vox/mesh/MeshBase";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
-import * as ROTransformT from "../../vox/display/ROTransform";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as RODisplayT from "../../vox/display/RODisplay";
 import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
@@ -32,16 +29,14 @@ import * as RODispBuilderT from '../../vox/render/RODispBuilder';
 
 
 //import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
-import Vector3D = Vector3T.vox.geom.Vector3D;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import Matrix4Pool = Matrix4T.vox.geom.Matrix4Pool;
 import AABB = AABBT.vox.geom.AABB;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import IEvtDispatcher = IEvt3DDispatcherT.vox.event.IEvtDispatcher;
-import IDisplayEntityContainer = IDisplayEntityContainerT.vox.entity.IDisplayEntityContainer;
 import RendererState = RendererStateT.vox.render.RendererState;
 import MeshBase = MeshBaseT.vox.mesh.MeshBase;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
-import ROTransform = ROTransformT.vox.display.ROTransform;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import RODisplay = RODisplayT.vox.display.RODisplay;
 import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
@@ -55,26 +50,21 @@ export namespace vox
 {
     export namespace entity
     {
-        export class DisplayEntity implements IRenderEntity
+        export class PureEntity implements IRenderEntity
         {
             private static __s_uid:number = 0;
             private m_uid:number = 0;
             // the entity is rendered entity or logic entity(doesn't exist in renderer process)
             protected m_isRenderedEntity:boolean = true;
-            protected m_transfrom:ROTransform = null;
             protected m_mouseEvtDispatcher:IEvtDispatcher = null;
-            constructor(transform:ROTransform = null)
+            private m_matChanged:boolean = true;
+            // local to world spcae matrix
+            private m_omat:Matrix4 = null;
+            // word to local matrix
+            private m_invOmat:Matrix4 = null;
+            constructor()
             {
-                this.m_uid = DisplayEntity.__s_uid++;
-                if(transform == null)
-                {
-                   this.m_transfrom = ROTransform.Create();
-                }
-                else
-                {
-                    this.m_transfrom = transform;
-                }
-                this.createBounds();
+                this.m_uid = PureEntity.__s_uid++;
             }
             private m_visible:boolean = true;
             private m_drawEnabled:boolean = true;
@@ -84,7 +74,6 @@ export namespace vox
             protected m_mesh:MeshBase = null;
             // 如果一个entity如果包含了多个mesh,则这个bounds就是多个mesh aabb 合并的aabb
             protected m_globalBounds:AABB = null;
-            protected m_parent:IDisplayEntityContainer = null;
             // 自身所在的world的唯一id, 通过这个id可以找到对应的world
             __$wuid:number = -1;
             // 自身在world中被分配的唯一id, 通过这个id就能在world中快速找到自己所在的数组位置
@@ -94,7 +83,7 @@ export namespace vox
             // space id
             __$spaceId:number = -1;
 
-            name:string = "DisplayEntity";
+            name:string = "PureEntity";
             // 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMasK, 默认只会有摄像机裁剪
             spaceCullMask:number = 1;//SpaceCullingMasK.CAMERA;
             //spaceCullMask:number = SpaceCullingMasK.CAMERA;
@@ -104,13 +93,7 @@ export namespace vox
             mouseEnabled:boolean = false;
             //
             vbWholeDataEnabled:boolean = true;
-            __$setParent(parent:IDisplayEntityContainer):void
-            {
-                if(this.m_parent == null)
-                {
-                }
-                this.m_parent = parent;
-            }
+            
             protected createBounds():void
             {
                 this.m_globalBounds = new AABB();
@@ -138,7 +121,7 @@ export namespace vox
             {
                 this.m_mouseEvtDispatcher = evtDisptacher;
             }
-
+            // 需要手动更新
             getGlobalBounds():AABB
             {
                 return this.m_globalBounds;
@@ -160,10 +143,10 @@ export namespace vox
             {
                 if(this.m_drawEnabled != boo)
                 {
-                    //  console.log("DisplayEntity::__$setDrawEnabled: "+boo);
+                    //  console.log("PureEntity::__$setDrawEnabled: "+boo);
                     //  if(!this.m_drawEnabled)
                     //  {
-                    //      console.log("DisplayEntity::__$setDrawEnabled A: "+boo);
+                    //      console.log("PureEntity::__$setDrawEnabled A: "+boo);
                     //  }
                     this.m_drawEnabled = boo;
                     if(this.m_display != null)
@@ -234,17 +217,6 @@ export namespace vox
             {
                 return this.m_isRenderedEntity;
             }
-            getTransform():ROTransform
-            {
-                return this.m_transfrom;
-            }
-            copyPositionFrom(entity:DisplayEntity):void
-            {
-                if(entity != null)
-                {
-                    this.m_transfrom.copyPositionFrom(entity.getTransform());
-                }
-            }
             copyMeshFrom(entity:IRenderEntity):void
             {
                 if(entity != null)
@@ -274,7 +246,12 @@ export namespace vox
                         }
                         if(this.m_display != null)
                         {
-                            this.m_display.setMatrixFS32(this.m_transfrom.getMatrix().getLocalFS32());
+                            if(this.m_omat == null)
+                            {
+                                this.m_omat = Matrix4Pool.GetMatrix();
+                            }
+                            //this.m_display.setTransform(this.m_transfrom);
+                            this.m_display.setMatrixFS32(this.m_omat.getLocalFS32());
                             this.m_display.visible = this.m_visible && this.m_drawEnabled;
                             this.m_display.vbuf = m.__$attachVBuf();
                             this.m_display.ivsIndex = 0;
@@ -282,7 +259,7 @@ export namespace vox
                             this.m_display.drawMode = m.drawMode;
                             this.m_display.trisNumber = m.trisNumber;
                         }
-                        //console.log("DisplayEntity::setMesh(), "+this.m_display.toString()+",m.drawMode: "+m.drawMode);
+                        //console.log("PureEntity::setMesh(), "+this.m_display.toString()+",m.drawMode: "+m.drawMode);
                         if(this.m_globalBounds != null)
                         {
                             this.m_globalBounds.copyFrom(m.bounds);
@@ -313,7 +290,11 @@ export namespace vox
                     if(this.m_display == null)
                     {
                         this.m_display = RODisplay.Create();
-                        this.m_display.setMatrixFS32(this.m_transfrom.getMatrix().getLocalFS32());
+                        if(this.m_omat == null)
+                        {
+                            this.m_omat = Matrix4Pool.GetMatrix();
+                        }
+                        this.m_display.setMatrixFS32(this.m_omat.getLocalFS32());
                         this.m_display.visible = this.m_visible && this.m_drawEnabled;                    
                     }
                     if(this.m_display.getMaterial() != m && this.__$wuid < 0 && this.m_display.__$ruid < 0)
@@ -339,11 +320,24 @@ export namespace vox
 
             getInvMatrix():Matrix4
             {
-                return this.m_transfrom.getInvMatrix();
+                if(this.m_invOmat != null)
+                {
+                    if(this.m_matChanged)
+                    {
+                        this.m_invOmat.copyFrom(this.m_invOmat);
+                        this.m_invOmat.invert();
+                        this.m_matChanged = false;
+                    }
+                }
+                this.m_invOmat = Matrix4Pool.GetMatrix();
+                this.m_invOmat.copyFrom(this.m_invOmat);
+                this.m_invOmat.invert();
+                this.m_matChanged = false;
+                return this.m_invOmat;
             }
             getMatrix():Matrix4
             {
-                return this.m_transfrom.getMatrix();
+                return this.m_omat;
             }
             setRenderColorMask(rt:number):void
             {
@@ -414,36 +408,17 @@ export namespace vox
             {
             }
             getUid():number{return this.m_uid;}
-            setXYZ(px:number,py:number,pz:number):void
-            {
-                this.m_transfrom.setXYZ(px,py,pz);
-            }
-            setPosition(pv:Vector3D):void
-            {             
-                this.m_transfrom.setPosition(pv);
-            }
-            getPosition(pv:Vector3D):void
-            {
-                this.m_transfrom.getPosition(pv);
-            }
-            setRotationXYZ(rx:number,ry:number,rz:number):void
-            {
-                this.m_transfrom.setRotationXYZ(rx,ry,rz);
-            }
-            setScaleXYZ(sx:number,sy:number,sz:number):void
-            {
-                this.m_transfrom.setScaleXYZ(sx,sy,sz);
-            }
+            
             destroy():void
             {
                 // 当自身被完全移出RenderWorld之后才能执行自身的destroy
-                console.log("DisplayEntity::destroy(), this.__$wuid: "+this.__$wuid+", this.__$spaceId: "+this.__$spaceId);
+                console.log("PureEntity::destroy(), this.__$wuid: "+this.__$wuid+", this.__$spaceId: "+this.__$spaceId);
                 if(this.m_mouseEvtDispatcher != null)
                 {
                     this.m_mouseEvtDispatcher.destroy();
                     this.m_mouseEvtDispatcher = null; 
                 }
-                if(this.m_transfrom != null && this.__$wuid < 0 && this.__$spaceId < 0)
+                if(this.m_omat != null && this.__$wuid < 0 && this.__$spaceId < 0)
                 {
                     // 这里要保证其在所有的process中都被移除
                     if(this.m_display != null)
@@ -452,21 +427,17 @@ export namespace vox
                         RODisplay.Restore(this.m_display);
                         this.m_display = null;
                     }
-                    ROTransform.Restore(this.m_transfrom);
-                    this.m_transfrom = null;
                     if(this.m_mesh != null)
                     {
                         this.m_mesh.__$detachThis();
                         this.m_mesh = null;
                     }
-                    this.__$setParent(null);
+                    if(this.m_invOmat != null) Matrix4Pool.RetrieveMatrix(this.m_invOmat);
+                    if(this.m_omat != null) Matrix4Pool.RetrieveMatrix(this.m_omat);
                     this.m_visible = true;
                     this.m_drawEnabled = true;
                 }
             }
-            private static s_boundsInVS:Float32Array = new Float32Array(24);
-            private static s_boundsOutVS:Float32Array = new Float32Array(24);
-            private static s_pos:Vector3D = new Vector3D();
             isInRenderer():boolean
             {
                 return this.__$wuid >= 0;
@@ -477,62 +448,18 @@ export namespace vox
             }
             updateBounds():void
             {
-                if(this.m_transfrom != null)
-                {
-                    this.m_transfrom.setX(this.m_transfrom.getX());
-                    this.update();
-                }
+            }
+            updateMatrix():void
+            {
+                
+                this.m_matChanged = true;
             }
             update():void
             {
-                if(this.m_transfrom.updateStatus != ROTransform.UPDATE_NONE)
-                {
-                    if(this.m_globalBounds != null && this.m_mesh != null)
-                    {
-                        // 这里的逻辑也有问题,需要再处理，为了支持摄像机等的拾取以及支持遮挡计算等空间管理计算
-                        if(this.m_transfrom.updatedStatus > ROTransform.UPDATE_POSITION)
-                        {
-                            this.m_transfrom.update();
-                            let pminV:Vector3D = this.m_mesh.bounds.min;
-                            let pmaxV:Vector3D = this.m_mesh.bounds.max;
-                            let pvs:Float32Array = DisplayEntity.s_boundsInVS;
-                            pvs[0] = pminV.x;pvs[1] = pminV.y;pvs[2] = pminV.z;
-                            pvs[3] = pmaxV.x;pvs[4] = pminV.y;pvs[5] = pminV.z;
-                            pvs[6] = pminV.x;pvs[7] = pminV.y;pvs[8] = pmaxV.z;
-                            pvs[9] = pmaxV.x;pvs[10] = pminV.y;pvs[11] = pmaxV.z;
-                            pvs[12] = pminV.x;pvs[13] = pmaxV.y;pvs[14] = pminV.z;
-                            pvs[15] = pmaxV.x;pvs[16] = pmaxV.y;pvs[17] = pminV.z;
-                            pvs[18] = pminV.x;pvs[19] = pmaxV.y;pvs[20] = pmaxV.z;
-                            pvs[21] = pmaxV.x;pvs[22] = pmaxV.y;pvs[23] = pmaxV.z;            
-                            this.m_transfrom.getMatrix().transformVectors(pvs,24,DisplayEntity.s_boundsOutVS);
-                            this.m_globalBounds.reset();
-                            this.m_globalBounds.addXYZFloat32Arr(DisplayEntity.s_boundsOutVS);
-                            this.m_globalBounds.update();
-                        }
-                        else
-                        {
-                            this.m_transfrom.update();
-                            this.m_globalBounds.radius = this.m_mesh.bounds.radius;
-                            this.m_globalBounds.radius2 = this.m_mesh.bounds.radius2;
-                            this.m_globalBounds.center.copyFrom(this.m_mesh.bounds.center);
-                            this.m_transfrom.getPosition(DisplayEntity.s_pos);
-                            this.m_globalBounds.center.addBy(DisplayEntity.s_pos);
-                            this.m_globalBounds.min.copyFrom(this.m_mesh.bounds.min);
-                            this.m_globalBounds.min.addBy(DisplayEntity.s_pos);
-                            this.m_globalBounds.max.copyFrom(this.m_mesh.bounds.max);
-                            this.m_globalBounds.max.addBy(DisplayEntity.s_pos);
-                            ++this.m_globalBounds.version;
-                        }
-                    }
-                    else
-                    {
-                        this.m_transfrom.update();
-                    }
-                }
             }
             toString():string
             {
-                return "DisplayEntity(name="+this.name+",uid = "+this.m_uid+", __$wuid = "+this.__$wuid+", __$weid = "+this.__$weid+")";
+                return "PureEntity(name="+this.name+",uid = "+this.m_uid+", __$wuid = "+this.__$wuid+", __$weid = "+this.__$weid+")";
             }
         }
     }

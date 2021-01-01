@@ -44,7 +44,8 @@ function ThreadMultNum()
         return 1;
     }
     
-    self.TaskSlot[this.getTaskClass()] = this;    
-    postMessage({cmd:"INIT_TASK",taskclass:this.getTaskClass()});
+    self.TaskSlot[this.getTaskClass()] = this;
+    let INIT_TASK = 3701;
+    postMessage({cmd:INIT_TASK,taskclass:this.getTaskClass()});
 }
 let workerIns_ThreadMultNum = new ThreadMultNum();

@@ -416,8 +416,15 @@ export namespace vox
 			}
     		copyFromF32Arr(fs32Arr:Float32Array,index:number = 0):void
 			{
-				let subArr:Float32Array = fs32Arr.subarray(index, index + 16);
-				this.m_localFS32.set(subArr, 0);
+				//let subArr:Float32Array = fs32Arr.subarray(index, index + 16);
+				//this.m_localFS32.set(fs32Arr.subarray(index, index + 16), 0);
+
+				let i:number = 0;
+				for(let end:number = index + 16;index < end;index++)
+				{
+					this.m_localFS32[i] = fs32Arr[index];
+					++i;
+				}
 			}
     		copyToF32Arr(fs32Arr:Float32Array,index:number = 0):void
 			{

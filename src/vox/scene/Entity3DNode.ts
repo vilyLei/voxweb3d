@@ -8,12 +8,12 @@
 import * as RendererConstT from "../../vox/scene/RendererConst";
 import * as AABBT from "../../vox/geom/AABB";
 import * as RPONodeBuiderT from "../../vox/render/RPONodeBuider";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
+import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
 
 import RendererConst = RendererConstT.vox.scene.RendererConst;
 import AABB = AABBT.vox.geom.AABB;
 import RPONode = RPONodeBuiderT.vox.render.RPONode;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
 
 export namespace vox
 {
@@ -28,7 +28,7 @@ export namespace vox
             drawEnabled:boolean = true;
             prev:Entity3DNode = null;
             next:Entity3DNode = null;
-            entity:DisplayEntity = null;
+            entity:IRenderEntity = null;
             bounds:AABB = null;
             rayTestState:number = 0;
             rpoNode:RPONode = null;

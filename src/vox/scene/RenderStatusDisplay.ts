@@ -82,13 +82,13 @@ export namespace vox
                 if(this.m_delayTime > 0)
                 {
                     --this.m_delayTime;
-                    this.m_lastTime = new Date().getTime();
+                    this.m_lastTime = Date.now();
                 }
                 else
                 {
                     if(this.m_ctx2D != null)
                     {
-                        let t:number = new Date().getTime();
+                        let t:number = Date.now();
                         //let t:number = this.m_date.getTime();
                         if(this.m_lastTime > 0)
                         {
