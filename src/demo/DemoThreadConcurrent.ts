@@ -48,7 +48,8 @@ export namespace demo
         }
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = null;//new RenderStatusDisplay();
-        private m_profileInstance:ProfileInstance = null;//new ProfileInstance();
+        //private m_profileInstance:ProfileInstance = null;//new ProfileInstance();
+        private m_profileInstance:ProfileInstance = new ProfileInstance();
         protected initializeSceneParam(param:RendererParam):void
         {
             this.m_processTotal = 4;
@@ -87,7 +88,7 @@ export namespace demo
         private m_dispTotal:number = 0;
         private m_srcBox:Box3DEntity = null;
         private m_matTasks:MatComputerTask[] = [];
-        private m_unitAmount:number = 1024 * 2;
+        private m_unitAmount:number = 1024 * 4;
         private m_texnsList:string[] = [
             "fruit_01.jpg"
             ,"moss_05.jpg"
@@ -114,6 +115,8 @@ export namespace demo
             
             let materialBox:Box3DEntity = new Box3DEntity();
             materialBox.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
+            let material:any = materialBox.getMaterial();
+            material.setRGB3f(Math.random() + 0.4,Math.random() + 0.4,Math.random() + 0.4);
             //metal_08.jpg
             if(this.m_srcBox == null)
             {
@@ -174,7 +177,7 @@ export namespace demo
 
             // 注意: m_codeStr 代码中描述的 getTaskClass() 返回值 要和 TestNumberAddTask 中的 getTaskClass() 返回值 要相等
             ThreadSystem.InitTaskByURL("static/thread/ThreadMatComputer",0);
-            ThreadSystem.Initsialize(3);
+            ThreadSystem.Initsialize(6);
             this.testTask();
         }
         

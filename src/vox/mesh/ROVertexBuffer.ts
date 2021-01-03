@@ -48,7 +48,6 @@ export namespace vox
             {
                 this.m_uid = ROVertexBuffer.__s_uid++;
                 this.m_bufDataUsage = bufDataUsage;
-                console.log("ROVertexBuffer::constructor()...");
             }
             private setVtxBuf(vtxBuf:IVtxBuf):void
             {

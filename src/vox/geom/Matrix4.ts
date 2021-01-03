@@ -430,13 +430,14 @@ export namespace vox
 			{
 				fs32Arr.set(this.m_localFS32, index);
 			}
-    		copyFrom(mat_other:Matrix4):void
+    		copyFrom(smat:Matrix4):void
 			{
-				this.m_localFS32.set(mat_other.getLocalFS32(),0);
+				this.m_localFS32.set(smat.m_localFS32,0);
     		}
-    		copyTo(mat_other:Matrix4):void
+    		copyTo(dmat:Matrix4):void
 			{
-				mat_other.copyFrom(this);
+				//dmat.copyFrom(this);
+				dmat.m_localFS32.set(this.m_localFS32,0);
     		}
     		copyRawDataFrom(float_rawDataArr:Float32Array,rawDataLength:number = 16, index:number = 0, bool_tp:Boolean = false):void
 			{
@@ -1101,13 +1102,6 @@ export namespace vox
 			transformPerspV4Self(v4:Vector3D):void
 			{
 				v4.w = v4.z;
-				//let sfs32:Float32Array = this.m_localFS32;
-				//v4.setTo(
-				//	x * sfs32[0],
-				//	y * sfs32[5],
-				//	z * sfs32[10] + sfs32[14],
-				//	z * sfs32[11] + sfs32[15]
-				//);
 				v4.x *= this.m_localFS32[0];
 				v4.y *= this.m_localFS32[5];
 				v4.z *= this.m_localFS32[10];

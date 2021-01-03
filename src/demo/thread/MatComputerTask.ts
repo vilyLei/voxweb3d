@@ -40,7 +40,7 @@ export namespace demo
             // thread task 任务命令名
             taskCmd:string;
             //
-            transfers:any[] = null;
+            transfers:any[] = [null];
             // sendStatus 值为 -1 表示没有加入数据池等待处理
             //            值为 0 表示已经加入数据池正等待处理
             //            值为 1 表示已经发送给worker
@@ -72,18 +72,14 @@ export namespace demo
                 //console.log("transferEnabled: "+transferEnabled);
                 if(transferEnabled)
                 {
-                    if(this.paramData != null)
-                    {
-                        //console.log("MatCalcSendData::buildSendData(), this.paramData.byteLength: "+this.paramData.byteLength);
-                        this.transfers = [this.paramData.buffer];
-                    }
+                    this.transfers[0] = this.paramData.buffer;
                 }
                 //this.paramData = null;
             }
             
             reset():void
             {
-                this.transfers = null;
+                this.transfers[0] = null;
                 if(this.sendData != null)
                 {
                     this.sendData.paramData = null

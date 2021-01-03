@@ -646,7 +646,7 @@ export namespace vox
             lockRenderColorMask():void
             {
                 RenderColorMask.Lock();
-            }        
+            }
             useRenderState(state:number):void
             {
                 RenderStateObject.UseRenderState(state);

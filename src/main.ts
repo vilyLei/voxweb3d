@@ -184,8 +184,11 @@
 //  import * as DemoMatComputer from "./demo/DemoMatComputer";
 //  import Demo = DemoMatComputer.demo.DemoMatComputer;
 
-import * as DemoThreadConcurrent from "./demo/DemoThreadConcurrent";
-import Demo = DemoThreadConcurrent.demo.DemoThreadConcurrent;
+//  import * as DemoThreadConcurrent from "./demo/DemoThreadConcurrent";
+//  import Demo = DemoThreadConcurrent.demo.DemoThreadConcurrent;
+
+import * as DemoMatContainer from "./demo/DemoMatContainer";
+import Demo = DemoMatContainer.demo.DemoMatContainer;
 
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;
