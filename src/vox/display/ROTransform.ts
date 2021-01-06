@@ -32,6 +32,7 @@ export namespace vox
             static readonly UPDATE_POSITION:number = 1;
             static readonly UPDATE_ROTATION:number = 2;
             static readonly UPDATE_SCALE:number = 4;
+            static readonly UPDATE_TRANSFORM:number = 7;
             static readonly UPDATE_PARENT_MAT:number = 8;
 
             private m_uid:number = 0;
@@ -187,7 +188,7 @@ export namespace vox
                 {
                     if(this.m_localMat == this.m_omat)
                     {
-                        this.updateStatus = 7;
+                        this.updateStatus = ROTransform.UPDATE_TRANSFORM;
                         this.m_localMat = Matrix4Pool.GetMatrix();
                     }
                     else
@@ -229,11 +230,36 @@ export namespace vox
                 this.m_localMat = null;
                 this.m_omat = null;
                 this.m_parentMat = null;
-                this.updateStatus = 7;
+                this.updateStatus = ROTransform.UPDATE_TRANSFORM;
             }
             update():void
             {
                 //trace("ROTransform::update(), updateStatus: "+updateStatus);
+                if(this.updateStatus > 0)
+                {
+                    if((this.updateStatus & ROTransform.UPDATE_TRANSFORM) > 0)
+                    {
+                        this.m_localMat.getLocalFS32().set(this.m_fs32,0);
+                        if((this.updateStatus & ROTransform.UPDATE_ROTATION)==ROTransform.UPDATE_ROTATION)
+                        {
+                            this.m_localMat.setRotationEulerAngle(this.m_fs32[1] * MathConst.MATH_PI_OVER_180, this.m_fs32[6] * MathConst.MATH_PI_OVER_180, this.m_fs32[9] * MathConst.MATH_PI_OVER_180); 
+                        }
+                        if(this.m_parentMat != null)
+                        {
+                            this.updateStatus = this.updateStatus | ROTransform.UPDATE_PARENT_MAT;
+                        }
+                    }
+                    if(this.m_omat != this.m_localMat)
+                    {
+                        this.m_omat.copyFrom(this.m_localMat);
+                    }
+                    if((this.updateStatus & ROTransform.UPDATE_PARENT_MAT) == ROTransform.UPDATE_PARENT_MAT)
+                    {
+                        this.m_omat.append( this.m_parentMat );
+                    }
+                    this.updateStatus = 0;
+                }
+                /*
                 if (this.updateStatus > 0)
 	        	{
                     //trace("ROTransform::update(), m_uid: "+m_uid);
@@ -263,7 +289,8 @@ export namespace vox
                     //console.log("ROTransform::update(), this.m_omat: "+this.m_omat.toString());
                     this.updateStatus = 0;
                     this.m_invMatEnabled = true;
-	        	}
+                }
+                //*/
             }
             getMatrixFS32():Float32Array
             {

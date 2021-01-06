@@ -35,6 +35,7 @@ export namespace vox
             static readonly UPDATE_POSITION:number = 1;
             static readonly UPDATE_ROTATION:number = 2;
             static readonly UPDATE_SCALE:number = 4;
+            static readonly UPDATE_TRANSFORM:number = 7;
             static readonly UPDATE_PARENT_MAT:number = 8;
 
             private m_uid:number = 0;
@@ -217,7 +218,7 @@ export namespace vox
                 {
                     if(this.m_localMat == this.m_omat)
                     {
-                        this.m_updateStatus = 7;
+                        this.m_updateStatus = Matrix4Container.UPDATE_TRANSFORM;
                         this.m_localMat = Matrix4Pool.GetMatrix();
                     }
                     else
@@ -271,45 +272,37 @@ export namespace vox
                     this.m_localMat = null;
                     this.m_omat = null;
                     this.m_parentMat = null;
-                    this.m_updateStatus = 7;
+                    this.m_updateStatus = Matrix4Container.UPDATE_TRANSFORM;
 
                     this.m_fs32 = null;
                 }
             }
             update():void
             {
-                //trace("Matrix4Container::update(), m_updateStatus: "+m_updateStatus);
-                if (this.m_updateStatus > 0)
-	        	{
-                    if(this.m_parentMat != null)
-                    {
-                        if(this.m_updateStatus != Matrix4Container.UPDATE_PARENT_MAT)
-                        {
-                            this.m_localMat.getLocalFS32().set(this.m_fs32,0);
-                            if((this.m_updatedStatus&Matrix4Container.UPDATE_ROTATION)==Matrix4Container.UPDATE_ROTATION)
-                            {
-                                this.m_localMat.setRotationEulerAngle(this.m_fs32[1] * MathConst.MATH_PI_OVER_180, this.m_fs32[6] * MathConst.MATH_PI_OVER_180, this.m_fs32[9] * MathConst.MATH_PI_OVER_180); 
-                            }
-                        }
-                        this.m_omat.copyFrom(this.m_localMat);
-                        //console.log("Matrix4Container::update(), this.m_parentMat: "+this.m_parentMat.toString());
-                        this.m_omat.append( this.m_parentMat );
-                        //console.log("append parent mat");
-                    }
-                    else
+                if(this.m_updateStatus > 0)
+                {
+                    if((this.m_updateStatus & Matrix4Container.UPDATE_TRANSFORM) > 0)
                     {
                         this.m_localMat.getLocalFS32().set(this.m_fs32,0);
-                        if((this.m_updatedStatus&Matrix4Container.UPDATE_ROTATION)==Matrix4Container.UPDATE_ROTATION)
+                        if((this.m_updatedStatus & Matrix4Container.UPDATE_ROTATION) == Matrix4Container.UPDATE_ROTATION)
                         {
                             this.m_localMat.setRotationEulerAngle(this.m_fs32[1] * MathConst.MATH_PI_OVER_180, this.m_fs32[6] * MathConst.MATH_PI_OVER_180, this.m_fs32[9] * MathConst.MATH_PI_OVER_180); 
                         }
+                        if(this.m_parentMat != null)
+                        {
+                            this.m_updateStatus = this.m_updateStatus | Matrix4Container.UPDATE_PARENT_MAT;
+                        }
                     }
-                    this.version++;
-                    //console.log("Matrix4Container::update(), this.m_omat: "+this.m_omat.toString());
+                    if(this.m_omat != this.m_localMat)
+                    {
+                        this.m_omat.copyFrom(this.m_localMat);
+                    }
+                    if((this.m_updateStatus & Matrix4Container.UPDATE_PARENT_MAT) == Matrix4Container.UPDATE_PARENT_MAT)
+                    {
+                        this.m_omat.append( this.m_parentMat );
+                    }
                     this.m_updateStatus = 0;
-                    this.m_invMatEnabled = true;
-                    
-                    // 子集需要做相应变换
+                    // children transform
                     if(this.m_childListLen > 0)
                     {
                         for(let i:number = 0; i < this.m_childListLen; i++)
@@ -321,8 +314,7 @@ export namespace vox
                 }
                 else
                 {
-                    // 子集需要做相应变换
-                    //console.log("B this.m_childListLen: "+this.m_childListLen);
+                    // children transform
                     if(this.m_childListLen > 0)
                     {
                         for(let i:number = 0; i < this.m_childListLen; i++)
@@ -331,7 +323,6 @@ export namespace vox
                         }
                     }
                 }
-                
             }
             getMatrixFS32():Float32Array
             {

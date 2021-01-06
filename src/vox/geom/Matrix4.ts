@@ -1015,6 +1015,21 @@ export namespace vox
 					i += 3;
 				}
 			}
+    		transformVectorsSelf(float_vinArr:Float32Array, vinLength:number):void
+			{
+				let i:number = 0;
+				let x:number, y:number, z:number;
+				let pfs:Float32Array = this.m_localFS32;
+				while ((i + 3) <= vinLength) {
+					x = float_vinArr[i];
+					y = float_vinArr[i + 1];
+					z = float_vinArr[i + 2];
+					float_vinArr[i] = x * pfs[0] + y * pfs[4] + z * pfs[8] + pfs[12];
+					float_vinArr[i + 1] = x * pfs[1] + y * pfs[5] + z * pfs[9] + pfs[13];
+					float_vinArr[i + 2] = x * pfs[2] + y * pfs[6] + z * pfs[10] + pfs[14];
+					i += 3;
+				}
+			}
 		    transpose():void
 			{
 				Matrix4.___tMat4.copyFrom(this);

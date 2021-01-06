@@ -20,8 +20,10 @@ export namespace thread
             private static s_dataList:IThreadSendData[] = [];
             // wait calc data queue
             private static s_waitList:IThreadSendData[] = [];
+            
             private static s_dataTotal:number = 0;
             private static s_startupFlag:number = 0;
+
             static SendDataTo(thread:IThreadBase):boolean
             {
                 if(ThrDataPool.s_dataTotal > 0)

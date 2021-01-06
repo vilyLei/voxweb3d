@@ -8,79 +8,66 @@
 
 var Module = {};
 
-function ThreadMatComputer()
+function ThreadMatTrans()
 {
-    console.log("ThreadMatComputer instance init run ...");
+    console.log("ThreadMatTrans instance init run ...");
     
     let m_dataIndex = 0;
     let m_srcuid = 0;
     this.threadIndex = 0;
     let m_allTot = 0;
-    let m_matComputer = null;
+    let m_matTrans = null;
     let m_time = 0.0;
-    let m_paramFS32 = null;
     let m_matFS32 = null;
+    let m_paramFS32 = null;
     this.initialize = function()
     {
-        //      m_matComputer = new Module.MatrixComputer();
-        //      m_matComputer.allocate(16);
+        //      m_matTrans = new Module.MatTransform();
+        //      m_matTrans.allocate(16);
         //  matCompter.setScaleXYZParamAt(10.0, 4.5, 2.1, index);
         //  matCompter.setRotationEulerAngleParamAt(30.0, 20.0, 80.0, index);
         //  matCompter.setTranslationXYZParamAt(30.0, 20.0, 80.0, index);
-        //  let paramFS32 = m_matComputer.getParamData();
-        //  console.log("ThreadMatComputer MatrixComputer paramFS32: \n",paramFS32);
+        //  let paramFS32 = m_matTrans.getParamData();
+        //  console.log("ThreadMatTrans MatTransform paramFS32: \n",paramFS32);
     }
     this.receiveData = function(data)
     {
         let matTotal = data.matTotal;
+        //  matTotal = 1;
+        //  data.allTot = 1;
         m_dataIndex = data.dataIndex;
         let fs32 = (data.paramData);
 
         ///*
-        if(m_matComputer == null)
+        if(m_matTrans == null)
         {
-            m_matComputer = new Module.MatrixComputer();
+            console.log("Init MatTransform ins....");
+            m_matTrans = new Module.MatTransform();
             m_allTot = data.allTot;
-            m_matComputer.allocate(m_allTot);
-
-            m_matFS32 = m_matComputer.getMatData();
-            m_paramFS32 = m_matComputer.getParamData();
+            m_matTrans.allocate(m_allTot);
+            m_matFS32 = m_matTrans.getMatData();
+            m_paramFS32 = m_matTrans.getParamData();
         }
-        
-        let len = matTotal * 9;
-        //let subArr = null;//fs32.subarray(0,len);
-        m_paramFS32 = m_matComputer.getParamData();
         let i = 0;
-        for(; i < len; i++)
+        let len = matTotal * 9;
+        if(data.flag < 1)
         {
-            m_paramFS32[i] = fs32[i];
+            for(i = 0; i < len; i++)
+            {
+                m_paramFS32[i] = fs32[i];
+            }
+            //console.log("fs32: ",fs32);
+            m_matTrans.updateParam();
         }
-        //m_paramFS32.set(subArr,0);
-        m_matComputer.calcMotion(-100.0,100.0,m_time,35.0, 8.0,matTotal);
-        m_matComputer.calcMotion(50.0,-70.0,m_time,20.0, 7.0,matTotal);
-        m_time += 0.01;
-        //console.log("ThreadMatComputer::receiveData m_paramFS32: \n",m_paramFS32);
-        m_matComputer.calc(matTotal);
-        //m_matComputer.coutThisMatAt(0);
-
-        //console.log("data.allTot: "+data.allTot);
-        len = matTotal * 16;
+        m_matTrans.calc();
+        
+        //  console.log("paramFS32: ",m_matFS32);
+        len = matTotal * 32;
         for(i = 0; i < len; i++)
         {
             fs32[i] = m_matFS32[i];
         }
-        //  if(matTotal < m_allTot)
-        //  {
-        //      len = matTotal * 16;
-        //      subArr = paramFS32.subarray(0,len);
-        //      fs32.set(subArr,0);
-        //  }
-        //  else
-        //  {
-        //      fs32.set(paramFS32,0);
-        //  }
-        //*/
-        //fs32 = null;
+        
         let sendData = 
         {
             cmd:data.cmd,
@@ -106,14 +93,14 @@ function ThreadMatComputer()
         return 0;
     }
 }
-let workerIns_ThreadMatComputer = new ThreadMatComputer();
+let workerIns_ThreadMatTrans = new ThreadMatTrans();
 
 Module["onModuleLoaded"] = function()
 {
-    console.log("ThreadMatComputer onModuleLoaded ...");
-    workerIns_ThreadMatComputer.initialize();
+    console.log("ThreadMatTrans onModuleLoaded ...");
+    workerIns_ThreadMatTrans.initialize();
     let INIT_TASK = 3701;
-    postMessage({cmd:INIT_TASK,taskclass:workerIns_ThreadMatComputer.getTaskClass()});
+    postMessage({cmd:INIT_TASK,taskclass:workerIns_ThreadMatTrans.getTaskClass()});
 }
 
 var baseUrl = self.location.href.slice(0,scriptDir.lastIndexOf("/")+1);
@@ -125,7 +112,7 @@ if(k < 0)
 if(k < 0) k = 0;
 baseUrl = baseUrl.slice(k) + "static/wasm/";
 Module["moduleUrl"] = baseUrl;
-baseUrl += "matDemo.js"
-console.log("ThreadMatComputer::baseUrl: "+baseUrl);
+baseUrl += "transformDemo.js"
+console.log("ThreadMatTrans::baseUrl: "+baseUrl);
 importScripts(baseUrl);
-self.TaskSlot[workerIns_ThreadMatComputer.getTaskClass()] = workerIns_ThreadMatComputer;
+self.TaskSlot[workerIns_ThreadMatTrans.getTaskClass()] = workerIns_ThreadMatTrans;

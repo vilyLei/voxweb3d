@@ -42,11 +42,11 @@ export namespace demo
         private m_camTrack:CameraTrack = null;
         private m_profileInstance:ProfileInstance = new ProfileInstance();
 
-        private m_matContainer:Matrix4Container = null;//new Matrix4Container();
-        private m_matBox0:Matrix4Container = null;//new Matrix4Container();
-        private m_matBox1:Matrix4Container = null;//new Matrix4Container();
-        private m_matBoxParent0:Matrix4Container = null;//new Matrix4Container();
-        private m_matBoxParent1:Matrix4Container = null;//new Matrix4Container();
+        private m_matContainer:Matrix4Container = null;
+        private m_matBox0:Matrix4Container = null;
+        private m_matBox1:Matrix4Container = null;
+        private m_matBoxParent0:Matrix4Container = null;
+        private m_matBoxParent1:Matrix4Container = null;
         private m_box0:Box3DEntity = null;
         private m_box1:Box3DEntity = null;
         protected initializeSceneParam(param:RendererParam):void
@@ -111,7 +111,6 @@ export namespace demo
             this.m_rscene.addEntity(box);
             this.m_box0 = box;
 
-            
             box = new Box3DEntity();
             box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
             this.m_rscene.addEntity(box);
@@ -149,7 +148,7 @@ export namespace demo
             this.runDisp();
             
             this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
-            //this.m_rscene.setClearUint24Color(0x003300,1.0);
+            
             super.runBegin();
         }
         run():void

@@ -59,7 +59,7 @@ export namespace thread
                 if(this.m_free && this.m_taskfs[thrData.taskclass] > 0)
                 {
                     thrData.buildThis(true);
-                    thrData.sendData.cmd = ThreadCMD.DATA_PARSE;//"DATA_PARSE";
+                    thrData.sendData.cmd = ThreadCMD.DATA_PARSE;
                     if(thrData.transfers != null)
                     {
                         this.m_worker.postMessage(thrData.sendData,thrData.transfers);
@@ -146,19 +146,19 @@ export namespace thread
                         //console.log("Main Worker received worker cmd: "+data.cmd);
                         switch(data.cmd)
                         {
-                            case ThreadCMD.DATA_PARSE://"DATA_PARSE":
+                            case ThreadCMD.DATA_PARSE:
                                 selfT.receiveData(data);
                             break;
-                            case ThreadCMD.THREAD_INIT://"THREAD_INIT":
+                            case ThreadCMD.THREAD_INIT:
                                 worker.postMessage({cmd:ThreadCMD.INIT_PARAM,threadIndex:selfT.getUid()});
                             break;
-                            case ThreadCMD.INIT_TASK://"INIT_TASK":
+                            case ThreadCMD.INIT_TASK:
                                 selfT.m_taskfs[data.taskclass] = 1;
                                 selfT.m_free = true;
                                 //console.log("Main Worker INIT_TASK selfT.m_taskfs: ",selfT.m_taskfs);
                                 selfT.updateInitTask();
                                 break;
-                            case ThreadCMD.INIT_PARAM://"INIT_PARAM":
+                            case ThreadCMD.INIT_PARAM:
                                 selfT.m_free = true;
                                 selfT.m_enabled = true;
                                 //console.log("Main worker recieve INIT_PARAM.");

@@ -99,7 +99,8 @@ function ThreadAddNum()
     }
 
     self.TaskSlot[this.getTaskClass()] = this;
-    postMessage({cmd:"INIT_TASK",taskclass:this.getTaskClass()});
+    let INIT_TASK = 3701;
+    postMessage({cmd:INIT_TASK,taskclass:this.getTaskClass()});
 }
 let workerIns_ThreadAddNum = new ThreadAddNum();
 `;
@@ -183,6 +184,9 @@ let workerIns_ThreadAddNum = new ThreadAddNum();
         private testTask():void
         {
             let t:number = this.m_flag%3;
+            this.m_numberAddTask.clacNumberList(new Float32Array([10,12,21,22]));
+            this.m_numberAddTask.clacNumberList(new Float32Array([-10,-12,-21,-22]));
+            t = -1;
             switch(t)
             {
                 case 0:
@@ -204,10 +208,10 @@ let workerIns_ThreadAddNum = new ThreadAddNum();
         {
             console.log("mouse down evt: ",evt);
             this.testTask();
-            if(Math.random() > 0.6)
-            {
-                this.useMathTask();
-            }
+            //  if(Math.random() > 0.6)
+            //  {
+            //      this.useMathTask();
+            //  }
         }
         runBegin():void
         {
