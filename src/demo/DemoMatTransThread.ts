@@ -87,103 +87,18 @@ export namespace demo
             this.thr_test();
         }
         private m_dispTotal:number = 0;
-        //private m_srcBox:Box3DEntity = null;
-        //private m_matTasks:MatTransTask[] = [];
         private m_matTasks:MatCarTask[] = [];
-        private m_unitAmount:number = 2;
-        //  private m_texnsList:string[] = [
-        //      "fruit_01.jpg"
-        //      ,"moss_05.jpg"
-        //      ,"metal_02.jpg"
-        //      ,"fruit_01.jpg"
-        //      ,"moss_05.jpg"
-        //      ,"metal_02.jpg"
-        //  ];
+        private m_unitAmount:number = 5;
         private buildTask():void
         {
-            ///*
             let total:number = this.m_unitAmount;
-            //let matTask:MatTransTask = new MatTransTask();
             let matTask:MatCarTask = new MatCarTask();
             matTask.getImageTexByUrlFunc = this.getImageTexByUrl;
             matTask.getImageTexByUrlHost = this;
             matTask.buildTask(total,this.m_rscene);
             this.m_dispTotal += total;
             this.m_matTasks.push(matTask);
-            //*/
-            /*
-            let texnsI:number = this.m_matTasks.length;
-            //texnsI = texnsI % this.m_texnsList.length;
-            texnsI = Math.floor(this.m_texnsList.length * 10 * Math.random() - 0.1) % this.m_texnsList.length;
-            //if(texnsI >= this.m_texnsList.length)
-            //{
-            //    texnsI = this.m_texnsList.length - 1;
-            //}
-            let tex1:TextureProxy = this.getImageTexByUrl("static/assets/"+this.m_texnsList[texnsI]);
-            let total:number = this.m_unitAmount;
-            let matTask:MatTransTask = new MatTransTask();
-            matTask.initialize(total);
-            this.m_matTasks.push(matTask);
-            console.log("matTasks.length: "+this.m_matTasks.length);
             
-            let materialBox:Box3DEntity = new Box3DEntity();
-            materialBox.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
-            let material:any = materialBox.getMaterial();
-            material.setRGB3f(Math.random() + 0.4,Math.random() + 0.4,Math.random() + 0.4);
-            //metal_08.jpg
-            if(this.m_srcBox == null)
-            {
-                this.m_srcBox = new Box3DEntity();
-                this.m_srcBox.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
-            }
-            total = matTask.setCurrTotal(total);
-            this.m_dispTotal += total;
-            let i:number = 0;
-            ///*
-            let box:PureEntity;
-            console.log("create some concurrent render entities, total: "+total);
-            matTask.setIndex( 0 );
-            let px:number = 0;
-            let scale:number = 0.1;
-            for(; i < total; ++i)
-            {
-                box = new PureEntity();
-                box.copyMeshFrom(this.m_srcBox);
-                box.copyMaterialFrom(materialBox);
-                //matTask.setMatAt(box.getMatrix(),i * 2);
-                this.m_rscene.addEntity(box);
-                matTask.setDispAt(box, i*2);
-                
-                box = new PureEntity();
-                box.copyMeshFrom(this.m_srcBox);
-                box.copyMaterialFrom(materialBox);
-                //matTask.setMatAt(box.getMatrix(),i * 2 + 1);
-                this.m_rscene.addEntity(box);
-                matTask.setDispAt(box, i*2 + 1);
-                scale = Math.random() * 0.1 + 0.05;
-                matTask.setScaleXYZ(scale,scale,scale);
-                matTask.setRotationXYZ(0.0,Math.random() * 360.0,0.0);
-                //matTask.setPositionXYZ(px + i * 50.0,i * 0.5,i * 0.2);
-                matTask.setPositionXYZ(
-                    Math.random() * 400 - 200.0
-                    ,Math.random() * 400 - 200.0
-                    ,Math.random() * 400 - 200.0
-                    );
-            }
-            //*/
-            
-            /*
-            let box:Box3DEntity;
-            console.log("create some concurrent render entities.");
-            for(; i < total; ++i)
-            {
-                box = new Box3DEntity();
-                box.copyMeshFrom(this.m_srcBox);
-                box.copyMaterialFrom(materialBox);
-                this.m_rscene.addEntity(box);
-                matTask.setMatAt(box.getMatrix(),i);
-            }
-            //*/
         }
         private updateTask():void
         {
@@ -236,7 +151,7 @@ export namespace demo
             //this.m_rscene.setClearUint24Color(0x003300,1.0);
             if(this.m_flag > 0)
             {
-                //this.testTask();
+                this.testTask();
             }
             super.runBegin();
         }
@@ -252,7 +167,7 @@ export namespace demo
         runEnd():void
         {
             super.runEnd();
-            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }
 }
