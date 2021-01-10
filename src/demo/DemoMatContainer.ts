@@ -49,6 +49,9 @@ export namespace demo
         private m_matBoxParent1:Matrix4Container = null;
         private m_box0:Box3DEntity = null;
         private m_box1:Box3DEntity = null;
+        private m_box2:Box3DEntity = null;
+        private m_box3:Box3DEntity = null;
+        private m_bodyBox:Box3DEntity = null;
         protected initializeSceneParam(param:RendererParam):void
         {
             this.m_processTotal = 4;
@@ -80,42 +83,16 @@ export namespace demo
             let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
             
             // add common 3d display entity
-            var plane:Plane3DEntity = new Plane3DEntity();
-            plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
-            this.m_rscene.addEntity(plane,2);
+            //  var plane:Plane3DEntity = new Plane3DEntity();
+            //  plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
+            //  this.m_rscene.addEntity(plane,2);
             let axis:Axis3DEntity = new Axis3DEntity();
             axis.initialize(300.0);
             this.m_rscene.addEntity(axis);
 
-            this.m_matContainer = new Matrix4Container();
-            this.m_matBoxParent0 = new Matrix4Container();
-            this.m_matBoxParent1 = new Matrix4Container();
-            this.m_matBox0 = new Matrix4Container();
-            this.m_matBox1 = new Matrix4Container();
-            
-            this.m_matBoxParent0.setXYZ(-250.0,0.0,0.0);
-            this.m_matBoxParent1.setXYZ(250.0,0.0,0.0);
-
-            this.m_matContainer.addChild(this.m_matBoxParent0);
-            this.m_matContainer.addChild(this.m_matBoxParent1);
-
-            this.m_matBoxParent0.addChild(this.m_matBox0);
-            this.m_matBoxParent1.addChild(this.m_matBox1);
-
-            let texnsI:number = 0;
-            texnsI = Math.floor(100 * Math.random() - 0.1) % this.m_texnsList.length;
-            let tex1:TextureProxy = this.getImageTexByUrl("static/assets/"+this.m_texnsList[texnsI]);
-            let box:Box3DEntity;
-            box = new Box3DEntity();
-            box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
-            this.m_rscene.addEntity(box);
-            this.m_box0 = box;
-
-            box = new Box3DEntity();
-            box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
-            this.m_rscene.addEntity(box);
-            this.m_box1 = box;
             console.log("------------------------------------------------------------------");
+
+            this.runDisp2();
         }
         private m_rotY:number = 0;
         private m_rotX0:number = Math.random() * 100.0;
@@ -127,25 +104,161 @@ export namespace demo
         private mouseDown(evt:any):void
         {
             console.log(">>> mouse down evt: ",evt);
-            //this.runDisp();
+            this.runDisp2();
         }
         private runDisp():void
         {
-            this.m_rotY += 0.1;
-            this.m_rotX0 += 0.2;
-            this.m_rotX1 += 0.3;
-            this.m_rotY0 += 0.2;
-            this.m_rotY1 += 0.2;
-            this.m_matBox0.setRotationXYZ(this.m_rotX0,this.m_rotY0,0.0);
-            this.m_matBox1.setRotationXYZ(this.m_rotX1,this.m_rotY1,0.0);
-            this.m_matContainer.setRotationY(this.m_rotY);
-            this.m_matContainer.update();
-            this.m_matBox0.copyMatrixTo(this.m_box0.getTransform().getMatrix());
-            this.m_matBox1.copyMatrixTo(this.m_box1.getTransform().getMatrix());
+            if(this.m_matContainer == null)
+            {
+                this.m_matContainer = new Matrix4Container();
+                this.m_matBoxParent0 = new Matrix4Container();
+                this.m_matBoxParent1 = new Matrix4Container();
+                this.m_matBox0 = new Matrix4Container();
+                this.m_matBox1 = new Matrix4Container();
+                
+                this.m_matBoxParent0.setXYZ(-250.0,0.0,0.0);
+                this.m_matBoxParent1.setXYZ(250.0,0.0,0.0);
+
+                this.m_matContainer.addChild(this.m_matBoxParent0);
+                this.m_matContainer.addChild(this.m_matBoxParent1);
+
+                this.m_matBoxParent0.addChild(this.m_matBox0);
+                this.m_matBoxParent1.addChild(this.m_matBox1);
+
+                let texnsI:number = 0;
+                texnsI = Math.floor(100 * Math.random() - 0.1) % this.m_texnsList.length;
+                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/"+this.m_texnsList[texnsI]);
+                let box:Box3DEntity;
+                box = new Box3DEntity();
+                box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
+                this.m_rscene.addEntity(box);
+                this.m_box0 = box;
+
+                box = new Box3DEntity();
+                box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
+                this.m_rscene.addEntity(box);
+                this.m_box1 = box;
+            }
+            else
+            {
+                this.m_rotY += 0.1;
+                this.m_rotX0 += 0.2;
+                this.m_rotX1 += 0.3;
+                this.m_rotY0 += 0.2;
+                this.m_rotY1 += 0.2;
+                this.m_matBox0.setRotationXYZ(this.m_rotX0,this.m_rotY0,0.0);
+                this.m_matBox1.setRotationXYZ(this.m_rotX1,this.m_rotY1,0.0);
+                this.m_matContainer.setRotationY(this.m_rotY);
+                this.m_matContainer.update();
+                this.m_matBox0.copyMatrixTo(this.m_box0.getTransform().getMatrix());
+                this.m_matBox1.copyMatrixTo(this.m_box1.getTransform().getMatrix());
+            }
+        }
+        
+        private m_body:Matrix4Container = null;
+        private m_part0:Matrix4Container = null;
+        private m_part1:Matrix4Container = null;
+        private m_tarA0:Matrix4Container = null;
+        private m_tarA1:Matrix4Container = null;
+        private m_tarB0:Matrix4Container = null;
+        private m_tarB1:Matrix4Container = null;
+        private m_offsetV:Vector3D = new Vector3D(80.0,-30,100);
+        private runDisp2():void
+        {
+            if(this.m_body == null)
+            {
+                
+                let texnsI:number = 0;
+                texnsI = Math.floor(100 * Math.random() - 0.1) % this.m_texnsList.length;
+                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/"+this.m_texnsList[texnsI]);
+                let box:Box3DEntity = new Box3DEntity();
+
+                box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
+                this.m_rscene.addEntity(box);
+                this.m_box0 = box;
+                box = new Box3DEntity();
+                box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
+                this.m_rscene.addEntity(box);
+                this.m_box1 = box;
+
+                box = new Box3DEntity();
+                box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
+                this.m_rscene.addEntity(box);
+                this.m_box2 = box;
+                box = new Box3DEntity();
+                box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
+                this.m_rscene.addEntity(box);
+                this.m_box3 = box;
+
+                texnsI = Math.floor(100 * Math.random() - 0.1) % this.m_texnsList.length;
+                tex1 = this.getImageTexByUrl("static/assets/"+this.m_texnsList[texnsI]);
+                box = new Box3DEntity();
+                box.initialize(new Vector3D(-130.0,-50.0,-100.0),new Vector3D(130.0,50.0,100.0),[tex1]);
+                this.m_rscene.addEntity(box);
+                this.m_bodyBox = box;
+                let scale:number = 0.3;
+                //          this.m_box0.setScaleXYZ(scale,scale,scale);
+                //          this.m_box1.setScaleXYZ(scale,scale,scale);
+                //          this.m_box2.setScaleXYZ(scale,scale,scale);
+                //          this.m_box3.setScaleXYZ(scale,scale,scale);
+
+                this.m_body = new Matrix4Container();
+
+                this.m_part0 = new Matrix4Container();
+                this.m_part1 = new Matrix4Container();
+
+                this.m_part0.setXYZ(this.m_offsetV.x,this.m_offsetV.y,0.0);
+                this.m_part1.setXYZ(-this.m_offsetV.x,this.m_offsetV.y,0.0);
+                this.m_body.addChild(this.m_part0);
+                this.m_body.addChild(this.m_part1);
+
+                this.m_tarA0 = new Matrix4Container();
+                this.m_tarA1 = new Matrix4Container();
+
+                this.m_tarA0.setZ(this.m_offsetV.z);
+                this.m_tarA1.setZ(-this.m_offsetV.z);
+
+                this.m_part0.addChild(this.m_tarA0);
+                this.m_part0.addChild(this.m_tarA1);
+                
+                this.m_tarB0 = new Matrix4Container();
+                this.m_tarB1 = new Matrix4Container();                
+                this.m_tarB0.setZ(this.m_offsetV.z);
+                this.m_tarB1.setZ(-this.m_offsetV.z);
+
+                this.m_part1.addChild(this.m_tarB0);
+                this.m_part1.addChild(this.m_tarB1);
+
+                this.m_tarA0.setScaleXYZ(scale,scale,scale);
+                this.m_tarA1.setScaleXYZ(scale,scale,scale);
+                this.m_tarB0.setScaleXYZ(scale,scale,scale);
+                this.m_tarB1.setScaleXYZ(scale,scale,scale);
+
+                this.m_body.setXYZ(100,0.0,-200);
+                this.m_body.setRotationXYZ(0.0,70.0,0.0);
+                this.m_body.update();
+            }
+            else
+            {
+                
+                this.m_rotX0 += 0.2;
+                //this.m_rotX1 += 0.3;
+                this.m_part0.setRotationZ(this.m_rotX0);
+                this.m_part1.setRotationZ(this.m_rotX0);
+                this.m_body.update();
+                this.m_body.copyMatrixTo(this.m_bodyBox.getTransform().getMatrix());
+                this.m_bodyBox
+                this.m_tarA0.copyMatrixTo(this.m_box0.getTransform().getMatrix());
+                this.m_tarA1.copyMatrixTo(this.m_box1.getTransform().getMatrix());
+
+                this.m_tarB0.copyMatrixTo(this.m_box2.getTransform().getMatrix());
+                this.m_tarB1.copyMatrixTo(this.m_box3.getTransform().getMatrix());
+            }
         }
         runBegin():void
         {
-            this.runDisp();
+            //this.runDisp();
+            this.runDisp2();
             
             this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
             
@@ -162,7 +275,7 @@ export namespace demo
         runEnd():void
         {
             super.runEnd();
-            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }
 }

@@ -17,6 +17,7 @@ import * as DemoInstanceT from "./DemoInstance";
 import * as ProfileInstanceT from "../voxprofile/entity/ProfileInstance";
 import * as ThreadSystemT from "../thread/ThreadSystem";
 import * as MatTransTaskT from "../demo/thread/MatTransTask";
+import * as MatCarTaskT from "../demo/thread/MatCarTask";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
@@ -36,6 +37,7 @@ import DemoInstance = DemoInstanceT.demo.DemoInstance;
 import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
 import ThreadSystem = ThreadSystemT.thread.ThreadSystem;
 import MatTransTask = MatTransTaskT.demo.thread.MatTransTask;
+import MatCarTask = MatCarTaskT.demo.thread.MatCarTask;
 
 
 export namespace demo
@@ -76,28 +78,40 @@ export namespace demo
             //  var plane:Plane3DEntity = new Plane3DEntity();
             //  plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
             //  this.m_rscene.addEntity(plane,2);
-            //  let axis:Axis3DEntity = new Axis3DEntity();
-            //  axis.initialize(300.0);
-            //  this.m_rscene.addEntity(axis);
+            let axis:Axis3DEntity = new Axis3DEntity();
+            axis.initialize(300.0);
+            this.m_rscene.addEntity(axis);
 
             console.log("------------------------------------------------------------------");
             console.log("------------------------------------------------------------------");
             this.thr_test();
         }
         private m_dispTotal:number = 0;
-        private m_srcBox:Box3DEntity = null;
-        private m_matTasks:MatTransTask[] = [];
-        private m_unitAmount:number = 2048 * 2;
-        private m_texnsList:string[] = [
-            "fruit_01.jpg"
-            ,"moss_05.jpg"
-            ,"metal_02.jpg"
-            ,"fruit_01.jpg"
-            ,"moss_05.jpg"
-            ,"metal_02.jpg"
-        ];
+        //private m_srcBox:Box3DEntity = null;
+        //private m_matTasks:MatTransTask[] = [];
+        private m_matTasks:MatCarTask[] = [];
+        private m_unitAmount:number = 2;
+        //  private m_texnsList:string[] = [
+        //      "fruit_01.jpg"
+        //      ,"moss_05.jpg"
+        //      ,"metal_02.jpg"
+        //      ,"fruit_01.jpg"
+        //      ,"moss_05.jpg"
+        //      ,"metal_02.jpg"
+        //  ];
         private buildTask():void
         {
+            ///*
+            let total:number = this.m_unitAmount;
+            //let matTask:MatTransTask = new MatTransTask();
+            let matTask:MatCarTask = new MatCarTask();
+            matTask.getImageTexByUrlFunc = this.getImageTexByUrl;
+            matTask.getImageTexByUrlHost = this;
+            matTask.buildTask(total,this.m_rscene);
+            this.m_dispTotal += total;
+            this.m_matTasks.push(matTask);
+            //*/
+            /*
             let texnsI:number = this.m_matTasks.length;
             //texnsI = texnsI % this.m_texnsList.length;
             texnsI = Math.floor(this.m_texnsList.length * 10 * Math.random() - 0.1) % this.m_texnsList.length;
@@ -175,7 +189,7 @@ export namespace demo
         {
             if(this.m_dispTotal > 0)
             {
-                let list:MatTransTask[] = this.m_matTasks;
+                let list:any[] = this.m_matTasks;
                 let len:number = list.length;
                 for(let i:number = 0; i < len; ++i)
                 {
@@ -222,7 +236,7 @@ export namespace demo
             //this.m_rscene.setClearUint24Color(0x003300,1.0);
             if(this.m_flag > 0)
             {
-                this.testTask();
+                //this.testTask();
             }
             super.runBegin();
         }
@@ -238,7 +252,7 @@ export namespace demo
         runEnd():void
         {
             super.runEnd();
-            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }
 }

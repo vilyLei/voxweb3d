@@ -32,15 +32,15 @@ export namespace demo
 {
     export namespace thread
     {
-        export class MatTransSendData implements IThreadSendData
+        export class MatCarSendData implements IThreadSendData
         {
             constructor()
             {
-                console.log("MatTransSendData::constructor().");
+                console.log("MatCarSendData::constructor().");
             }
 
             flag:number = 0;
-            calcType:number = 0;
+            calcType:number = 1;
             allTot:number = 16;
             matTotal:number = 0;
             paramData:Float32Array = null;
@@ -113,57 +113,57 @@ export namespace demo
             private static m_unitFlagList:number[] = [];
             private static m_unitIndexPptFlagList:number[] = [];
             private static m_unitListLen:number = 0;
-            private static m_unitList:MatTransSendData[] = [];
+            private static m_unitList:MatCarSendData[] = [];
             private static m_freeIdList:number[] = [];
             private static GetFreeId():number
             {
-                if(MatTransSendData.m_freeIdList.length > 0)
+                if(MatCarSendData.m_freeIdList.length > 0)
                 {
-                    return MatTransSendData.m_freeIdList.pop();
+                    return MatCarSendData.m_freeIdList.pop();
                 }
                 return -1;
             }
-            static Create():MatTransSendData
+            static Create():MatCarSendData
             {
-                let sd:MatTransSendData = null;
-                let index:number = MatTransSendData.GetFreeId();
+                let sd:MatCarSendData = null;
+                let index:number = MatCarSendData.GetFreeId();
                 //console.log("index: "+index);
-                //console.log("MatTransSendData::Create(), MatTransSendData.m_unitList.length: "+MatTransSendData.m_unitList.length);
+                //console.log("MatCarSendData::Create(), MatCarSendData.m_unitList.length: "+MatCarSendData.m_unitList.length);
                 if(index >= 0)
                 {
-                    sd = MatTransSendData.m_unitList[index];
+                    sd = MatCarSendData.m_unitList[index];
                     sd.dataIndex = index;
-                    MatTransSendData.m_unitFlagList[index] = MatTransSendData.__S_FLAG_BUSY;
+                    MatCarSendData.m_unitFlagList[index] = MatCarSendData.__S_FLAG_BUSY;
                 }
                 else
                 {
-                    sd = new MatTransSendData();
-                    MatTransSendData.m_unitList.push( sd );
-                    MatTransSendData.m_unitIndexPptFlagList.push(MatTransSendData.__S_FLAG_FREE);
-                    MatTransSendData.m_unitFlagList.push(MatTransSendData.__S_FLAG_BUSY);
-                    sd.dataIndex = MatTransSendData.m_unitListLen;
-                    MatTransSendData.m_unitListLen++;
+                    sd = new MatCarSendData();
+                    MatCarSendData.m_unitList.push( sd );
+                    MatCarSendData.m_unitIndexPptFlagList.push(MatCarSendData.__S_FLAG_FREE);
+                    MatCarSendData.m_unitFlagList.push(MatCarSendData.__S_FLAG_BUSY);
+                    sd.dataIndex = MatCarSendData.m_unitListLen;
+                    MatCarSendData.m_unitListLen++;
                 }
                 return sd;
             }
             
-            static Restore(psd:MatTransSendData):void
+            static Restore(psd:MatCarSendData):void
             {
-                if(psd != null && MatTransSendData.m_unitFlagList[psd.dataIndex] == MatTransSendData.__S_FLAG_BUSY)
+                if(psd != null && MatCarSendData.m_unitFlagList[psd.dataIndex] == MatCarSendData.__S_FLAG_BUSY)
                 {
                     let uid:number = psd.dataIndex;
-                    MatTransSendData.m_freeIdList.push(uid);
-                    MatTransSendData.m_unitFlagList[uid] = MatTransSendData.__S_FLAG_FREE;
+                    MatCarSendData.m_freeIdList.push(uid);
+                    MatCarSendData.m_unitFlagList[uid] = MatCarSendData.__S_FLAG_FREE;
                     psd.reset();
                 }
             }
             static RestoreByUid(uid:number):void
             {
-                if(uid >= 0 && MatTransSendData.m_unitFlagList[uid] == MatTransSendData.__S_FLAG_BUSY)
+                if(uid >= 0 && MatCarSendData.m_unitFlagList[uid] == MatCarSendData.__S_FLAG_BUSY)
                 {
-                    MatTransSendData.m_freeIdList.push(uid);
-                    MatTransSendData.m_unitFlagList[uid] = MatTransSendData.__S_FLAG_FREE;
-                    MatTransSendData.m_unitList[uid].reset();
+                    MatCarSendData.m_freeIdList.push(uid);
+                    MatCarSendData.m_unitFlagList[uid] = MatCarSendData.__S_FLAG_FREE;
+                    MatCarSendData.m_unitList[uid].reset();
                 }
             }
         }
@@ -186,7 +186,7 @@ export namespace demo
             spd_ry:number = 1.0;
             spd_rz:number = 0;
             //
-            matTask:MatTransTask = null;
+            matTask:MatCarTask = null;
             constructor()
             {
             }
@@ -210,7 +210,7 @@ export namespace demo
 
             }
         }
-        export class MatTransTask extends ThreadTask
+        export class MatCarTask extends ThreadTask
         {
             private m_matIndex:number = 0;
             private m_tarTotal:number = 0;
@@ -229,7 +229,8 @@ export namespace demo
             {
                 super();
             }
-            private m_srcBox:Box3DEntity = null;
+            private m_srcBox0:Box3DEntity = null;
+            private m_srcBox1:Box3DEntity = null;
             private m_texnsList:string[] = [
                 "fruit_01.jpg"
                 ,"moss_05.jpg"
@@ -244,53 +245,73 @@ export namespace demo
             {
                 let texnsI = Math.floor(this.m_texnsList.length * 10 * Math.random() - 0.1) % this.m_texnsList.length;
                 
-                let tex1:TextureProxy = this.getImageTexByUrlFunc.call(this.getImageTexByUrlHost,"static/assets/"+this.m_texnsList[texnsI]);
-                let matTask:MatTransTask = this;
+                let tex0:TextureProxy = this.getImageTexByUrlFunc.call(this.getImageTexByUrlHost,"static/assets/"+this.m_texnsList[texnsI]);
+                let matTask:MatCarTask = this;
                 matTask.initialize(total);
                 
-                let materialBox:Box3DEntity = new Box3DEntity();
-                materialBox.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
-                let material:any = materialBox.getMaterial();
-                material.setRGB3f(Math.random() + 0.4,Math.random() + 0.4,Math.random() + 0.4);
-                //metal_08.jpg
-                if(this.m_srcBox == null)
+                if(this.m_srcBox0 == null)
                 {
-                    this.m_srcBox = new Box3DEntity();
-                    this.m_srcBox.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
+                    this.m_srcBox0 = new Box3DEntity();
+                    this.m_srcBox0.initialize(new Vector3D(-100.0,-50.0,-100.0),new Vector3D(100.0,50.0,100.0),[tex0]);
                 }
+                if(this.m_srcBox1 == null)
+                {
+                    this.m_srcBox1 = new Box3DEntity();
+                    this.m_srcBox1.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex0]);
+                }
+                let materialBox0:Box3DEntity = new Box3DEntity();
+                materialBox0.copyMeshFrom(this.m_srcBox0);
+                materialBox0.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex0]);
+                let material0:any = materialBox0.getMaterial();
+                material0.setRGB3f(Math.random() + 0.4,Math.random() + 0.4,Math.random() + 0.4);
+
+                texnsI = Math.floor(this.m_texnsList.length * 10 * Math.random() - 0.1) % this.m_texnsList.length;
+                
+                let tex1:TextureProxy = this.getImageTexByUrlFunc.call(this.getImageTexByUrlHost,"static/assets/"+this.m_texnsList[texnsI]);
+                let materialBox1:Box3DEntity = new Box3DEntity();
+                materialBox1.copyMeshFrom(this.m_srcBox0);
+                materialBox1.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
+                let material1:any = materialBox1.getMaterial();
+                material1.setRGB3f(Math.random() + 0.4,Math.random() + 0.4,Math.random() + 0.4);
+
                 total = this.setCurrTotal(total);
                 
                 let i:number = 0;
                 ///*
                 let box:PureEntity;
                 console.log("create some concurrent render entities, total: "+total);
-                matTask.setIndex( 0 );
-                let px:number = 0;
-                let scale:number = 0.1;
+                matTask.setIndex(0);
+                let k:number = 0;
+                let j:number = 0;
                 for(; i < total; ++i)
                 {
+                    k = i * 5;
+                    //matTask.setIndex( i * 15 );
                     box = new PureEntity();
-                    box.copyMeshFrom(this.m_srcBox);
-                    box.copyMaterialFrom(materialBox);
-                    
+                    box.copyMeshFrom(this.m_srcBox0);
+                    box.copyMaterialFrom(materialBox0);
                     sc.addEntity(box,0,true);
-                    matTask.setDispAt(box, i*2);
+                    matTask.setDispAt(box, k);
+                    for(j = 1; j < 5; j++)
+                    {
+                        box = new PureEntity();
+                        box.copyMeshFrom(this.m_srcBox1);
+                        box.copyMaterialFrom(materialBox1);
+                        sc.addEntity(box,0,true);
+                        matTask.setDispAt(box, k + j);
+                    }
 
-                    box = new PureEntity();
-                    box.copyMeshFrom(this.m_srcBox);
-                    box.copyMaterialFrom(materialBox);
-                    //matTask.setMatAt(box.getMatrix(),i * 2 + 1);
-                    sc.addEntity(box,0,true);
-                    matTask.setDispAt(box, i*2 + 1);
-                    scale = Math.random() * 0.1 + 0.05;
-                    matTask.setScaleXYZ(scale,scale,scale);
-                    matTask.setRotationXYZ(0.0,Math.random() * 360.0,0.0);
-                    //matTask.setPositionXYZ(px + i * 50.0,i * 0.5,i * 0.2);
+                    //scale = Math.random() * 0.1 + 0.05;
+                    //matTask.setPositionXYZ(0.0,0.0,0.0);
                     matTask.setPositionXYZ(
                         Math.random() * 400 - 200.0
-                        ,Math.random() * 400 - 200.0
+                        ,0//Math.random() * 400 - 200.0
                         ,Math.random() * 400 - 200.0
                         );
+                    matTask.setRotationXYZ(0.0, Math.random() * 360.0, 0.0);
+                    matTask.setParam(0.5,0.5,0.5);
+                    matTask.setOffsetXYZ(80.0,-30.0,100.0);
+                    matTask.setSpdParam(Math.random() * 360.0, Math.random() * 0.5 + 0.1,0.3);
                 }
                 //*/
             }
@@ -298,10 +319,13 @@ export namespace demo
             {
                 if(this.m_tarTotal < 1 && this.m_fs32Arr == null && dispTotal > 0)
                 {
-                    console.log("### MatTransTask::initialize()...");
+                    console.log("### MatCarTask::initialize()...");
                     this.m_tarTotal = dispTotal;
-                    this.m_fs32Arr = new Float32Array(dispTotal * 16 * 2);
-                    this.m_dispList = new Array(dispTotal * 2);
+                    this.m_fs32Arr = new Float32Array(dispTotal * 16 * 5);
+                    //  this.m_dstMFSList = new Array(matTotal);
+                    //  this.m_dataList = new Array(matTotal);
+                    ///////////////////////////////////////////////////////////////////
+                    this.m_dispList = new Array(dispTotal * 5);
                 }
             }
             getTotal():number
@@ -310,6 +334,12 @@ export namespace demo
             }
             setMatAt(mat:Matrix4,index:number):void
             {
+                //  let pdata:TransData = new TransData();
+                //  pdata.matTask = this;
+                //  pdata.initialize();
+                //  this.m_dataList[index] = pdata;
+                //  this.m_dstMFSList[index] = mat;
+                //  this.m_dstMFSTotal++;
             }
             
             setDispAt(disp:PureEntity,index:number):void
@@ -351,16 +381,16 @@ export namespace demo
                 this.m_currMatTotal = currMatTotal;
                 return currMatTotal;
             }
-            setIndex(index:number):void
+            private setIndex(index:number):void
             {
-                this.m_matIndex = index * 9;
+                this.m_matIndex = index;
             }
             
-            setScaleXYZ(psx:number,psy:number,psz:number):void
+            setPositionXYZ(px:number,py:number,pz:number):void
             {
-                this.m_fs32Arr[this.m_matIndex++] = psx;
-                this.m_fs32Arr[this.m_matIndex++] = psy;
-                this.m_fs32Arr[this.m_matIndex++] = psz;
+                this.m_fs32Arr[this.m_matIndex++] = px;
+                this.m_fs32Arr[this.m_matIndex++] = py;
+                this.m_fs32Arr[this.m_matIndex++] = pz;
             }
             setRotationXYZ(prx:number,pry:number,prz:number):void
             {
@@ -368,23 +398,36 @@ export namespace demo
                 this.m_fs32Arr[this.m_matIndex++] = pry;
                 this.m_fs32Arr[this.m_matIndex++] = prz;
             }
-            setPositionXYZ(px:number,py:number,pz:number):void
+            setParam(prx:number,pry:number,prz:number):void
             {
-                this.m_fs32Arr[this.m_matIndex++] = px;
-                this.m_fs32Arr[this.m_matIndex++] = py;
-                this.m_fs32Arr[this.m_matIndex++] = pz;
+                this.m_fs32Arr[this.m_matIndex++] = prx;
+                this.m_fs32Arr[this.m_matIndex++] = pry;
+                this.m_fs32Arr[this.m_matIndex++] = prz;
             }
+            setOffsetXYZ(psx:number,psy:number,psz:number):void
+            {
+                this.m_fs32Arr[this.m_matIndex++] = psx;
+                this.m_fs32Arr[this.m_matIndex++] = psy;
+                this.m_fs32Arr[this.m_matIndex++] = psz;
+            }
+            setSpdParam(prx:number,pry:number,prz:number):void
+            {
+                this.m_fs32Arr[this.m_matIndex++] = prx;
+                this.m_fs32Arr[this.m_matIndex++] = pry;
+                this.m_fs32Arr[this.m_matIndex++] = prz;
+            }
+            //
             sendData():void
             {
                 if(this.m_enabled)
                 {
-                    let sd:MatTransSendData = MatTransSendData.Create();
-                    sd.taskCmd = "MAT_TRANS";
+                    let sd:MatCarSendData = MatCarSendData.Create();
+                    sd.taskCmd = "MAT_car";
                     sd.paramData = this.m_fs32Arr;
                     sd.allTot = this.m_tarTotal;
                     sd.matTotal = this.m_currMatTotal;
                     sd.flag = this.m_flag;
-                    sd.calcType = 0;
+                    sd.calcType = 1;
                     this.addData(sd);
                     this.m_enabled = false;
                     this.m_flag = 1;
@@ -399,7 +442,7 @@ export namespace demo
             // return true, task finish; return false, task continue...
             parseDone(data:any,flag:number):boolean
             {
-                //console.log("MatTransTask::parseDone(), data: ",data);
+                //console.log("MatCarTask::parseDone(), data: ",data);
                 //      //console.log("parseDone(), srcuid: "+data.srcuid+","+this.getUid());
                 this.m_fs32Arr = (data.paramData);
                 //      //this.m_dstMFSList[0].copyFromF32Arr(this.m_fs32Arr,0);
@@ -410,7 +453,7 @@ export namespace demo
                 //          list[i].copyFromF32Arr(this.m_fs32Arr,i * 16);
                 //          //console.log("list["+i+"]: \n"+list[i].toString());
                 //      }
-                MatTransSendData.RestoreByUid(data.dataIndex);
+                MatCarSendData.RestoreByUid(data.dataIndex);
                 //console.log("this.m_dispListLen: "+this.m_dispListLen);
                 for(let i:number = 0; i < this.m_dispListLen; ++i)
                 {

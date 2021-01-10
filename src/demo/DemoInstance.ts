@@ -32,11 +32,11 @@ export namespace demo
         }
         protected m_rscene:RendererScene = null;
         protected m_rcontext:RendererInstanceContext = null;
-        protected m_texLoader:ImageTexResLoader = new ImageTexResLoader();
         protected m_stage3D:Stage3D = null;
         protected m_camera:CameraBase = null;
         protected m_rparam:RendererParam = null;
         protected m_processTotal:number = 3;
+        protected m_texLoader:ImageTexResLoader = new ImageTexResLoader();
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
             let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);

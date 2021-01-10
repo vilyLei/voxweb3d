@@ -20,6 +20,7 @@ function ThreadMatTrans()
     let m_time = 0.0;
     let m_matFS32 = null;
     let m_paramFS32 = null;
+    let m_calcType = -1;
     this.initialize = function()
     {
         //      m_matTrans = new Module.MatTransform();
@@ -41,28 +42,64 @@ function ThreadMatTrans()
         ///*
         if(m_matTrans == null)
         {
-            console.log("Init MatTransform ins....");
+            m_calcType = data.calcType;
+            console.log("Init MatTransform ins....m_calcType: "+m_calcType);
             m_matTrans = new Module.MatTransform();
             m_allTot = data.allTot;
-            m_matTrans.allocate(m_allTot);
+            switch(m_calcType)
+            {
+                case 0:
+                    m_matTrans.allocate(m_allTot);
+                    break;
+                case 1:
+                    m_matTrans.allocate2(m_allTot);
+                    break;
+                default:                    
+                    break;
+            }
             m_matFS32 = m_matTrans.getMatData();
             m_paramFS32 = m_matTrans.getParamData();
         }
         let i = 0;
-        let len = matTotal * 9;
+        let len = 0;
         if(data.flag < 1)
         {
-            for(i = 0; i < len; i++)
+            switch(m_calcType)
             {
-                m_paramFS32[i] = fs32[i];
+                case 0:
+                    len = matTotal * 9;
+                    for(i = 0; i < len; i++) m_paramFS32[i] = fs32[i];
+                    m_matTrans.updateParam();
+                    len = matTotal * 16 * 2;
+                    break;
+                case 1:
+                    len = matTotal * 15;
+                    for(i = 0; i < len; i++) m_paramFS32[i] = fs32[i];
+                    m_matTrans.updateParam2();
+                    len = matTotal * 16 * 5;
+                    break;
+                default:
+                    break;
             }
             //console.log("fs32: ",fs32);
-            m_matTrans.updateParam();
+        }
+        else
+        {
+            switch(m_calcType)
+            {
+                case 0:
+                    len = matTotal * 16 * 2;
+                    break;
+                case 1:
+                    len = matTotal * 16 * 5;
+                    break;
+                default:                    
+                    break;
+            }
         }
         m_matTrans.calc();
         
         //  console.log("paramFS32: ",m_matFS32);
-        len = matTotal * 32;
         for(i = 0; i < len; i++)
         {
             fs32[i] = m_matFS32[i];
