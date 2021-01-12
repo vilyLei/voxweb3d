@@ -42,7 +42,7 @@ import MatCarTask = MatCarTaskT.demo.thread.MatCarTask;
 
 export namespace demo
 {
-    export class DemoMatTransThread extends DemoInstance
+    export class DemoDrawGroup extends DemoInstance
     {
         constructor()
         {
@@ -50,18 +50,19 @@ export namespace demo
         }
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = null;
+        //private m_profileInstance:ProfileInstance = null;//new ProfileInstance();
         private m_profileInstance:ProfileInstance = new ProfileInstance();
         protected initializeSceneParam(param:RendererParam):void
         {
             this.m_processTotal = 4;
             param.maxWebGLVersion = 1;
-            param.setMatrix4AllocateSize(4096 * 4);
+            param.setMatrix4AllocateSize(4096 * 8);
             param.setCamPosition(500.0,500.0,500.0);
         }
         
         protected initializeSceneObj():void
         {
-            console.log("DemoMatTransThread::initialize()......");
+            console.log("DemoDrawGroup::initialize()......");
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
@@ -75,86 +76,54 @@ export namespace demo
             let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
             
             // add common 3d display entity
-            //  var plane:Plane3DEntity = new Plane3DEntity();
-            //  plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
-            //  this.m_rscene.addEntity(plane,2);
-            let axis:Axis3DEntity = new Axis3DEntity();
-            axis.initialize(300.0);
-            this.m_rscene.addEntity(axis);
+            var plane:Plane3DEntity = new Plane3DEntity();
+            plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
+            this.m_rscene.addEntity(plane,0);
+
+            let srcPlane:Plane3DEntity = plane;
+            
+            //for(let i:number = 0; i < 20000; ++i)
+            for(let i:number = 0; i < 200; ++i)
+            {
+                // 这样的操作只有一个 object matrix4 要更新到gpu所以相当于之后drawcall, 就会性能好
+                plane = new Plane3DEntity(plane.getTransform());
+                // 这样的操作会有20000个 object matrix4 要更新到gpu所以性能差了比上述方法差了一半
+                //plane = new Plane3DEntity();
+                plane.copyMeshFrom(srcPlane);
+                plane.copyMaterialFrom(srcPlane);
+                plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
+                //plane.setXYZ(i * 30.0,0.0,i * 30.0);
+                this.m_rscene.addEntity(plane,0);
+            }
+            //plane.setIvsParam(3,3);
+            //console.log("plane.getDisplay(): "+(plane.getDisplay())+", "+plane.getDisplay().getPartGroup());
+            //  plane.getDisplay().createPartGroup(2);
+            //  plane.getDisplay().setDrawPartAt(0, 0,3);
+            //  plane.getDisplay().setDrawPartAt(1, 3,3);
+
+            //  let axis:Axis3DEntity = new Axis3DEntity();
+            //  axis.initialize(300.0);
+            //  this.m_rscene.addEntity(axis);
 
             console.log("------------------------------------------------------------------");
             console.log("------------------------------------------------------------------");
-            this.thr_test();
         }
         private m_dispTotal:number = 0;
         private m_matTasks:MatCarTask[] = [];
         private m_unitAmount:number = 1;
-        private buildTask():void
-        {
-            // /*
-            let total:number = this.m_unitAmount;
-            let matTask:MatCarTask = new MatCarTask();
-            matTask.getImageTexByUrlFunc = this.getImageTexByUrl;
-            matTask.getImageTexByUrlHost = this;
-            matTask.buildTask(total,this.m_rscene);
-            this.m_dispTotal += total;
-            this.m_matTasks.push(matTask);
-            //*/
-            
-        }
-        private updateTask():void
-        {
-            if(this.m_dispTotal > 0)
-            {
-                let list:any[] = this.m_matTasks;
-                let len:number = list.length;
-                for(let i:number = 0; i < len; ++i)
-                {
-                    list[i].updateAndSendParam();
-                }
-            }
-        }
+        
         private m_flag:number = 0;
         private m_downFlag:number = 0;
-        private testTask():void
-        {
-            this.m_flag ++;
-            this.updateTask();
-        }
-        private thr_test():void
-        {
-            this.buildTask();
-
-            // 注意: m_codeStr 代码中描述的 getTaskClass() 返回值 要和 TestNumberAddTask 中的 getTaskClass() 返回值 要相等
-            ThreadSystem.InitTaskByURL("static/thread/ThreadMatTrans",0);
-            ThreadSystem.Initsialize(1);
-            this.testTask();
-        }
         
         private mouseDown(evt:any):void
         {
-            //  //if(this.m_downFlag < 20 && this.m_matTasks.length < 3)
-            //  if(this.m_downFlag < 20)
-            //  {
-            //      if(this.m_dispTotal < 22000)
-            //      {
-            //          this.buildTask();
-            //      }
-            //  }
             this.m_downFlag++;
-            //  //console.log("mouse down evt: ",evt);
-            //  this.testTask();
-            //this.updateTask();
         }
         runBegin():void
         {
             if(this.m_statusDisp != null)this.m_statusDisp.update();
             this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
             //this.m_rscene.setClearUint24Color(0x003300,1.0);
-            if(this.m_flag > 0)
-            {
-                this.testTask();
-            }
             super.runBegin();
         }
         run():void

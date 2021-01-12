@@ -21,6 +21,7 @@ import * as ShdUniformToolT from '../../vox/material/ShdUniformTool';
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPOUnitBuiderT from "../../vox/render/RPOUnitBuider";
 import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
+import * as ROTransPoolT from "../../vox/render/ROTransPool";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import DisplayRenderState = RenderConstT.vox.render.DisplayRenderState;
@@ -39,6 +40,7 @@ import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RPOUnitBuider = RPOUnitBuiderT.vox.render.RPOUnitBuider;
 import RenderProcessBuider = RenderProcessBuiderT.vox.render.RenderProcessBuider;
 import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
+import ROTransPool = ROTransPoolT.vox.render.ROTransPool;
 
 export namespace vox
 {
@@ -174,10 +176,25 @@ export namespace vox
                             }
                             else
                             {
-                                runit.transUniform = EmptyShdUniform.EmptyUniform;
+                                material.__$uniform = EmptyShdUniform.EmptyUniform;
                             }
                         }
-                        runit.transUniform = ShdUniformTool.BuildLocalFromTransformV(hasTrans?disp.getMatrixFS32():null, runit.shdp);
+                        
+                        if(hasTrans)
+                        {
+                            if(disp.getTransform() != null)
+                            {
+                                //console.log("disp.getTransform().getUid(): "+disp.getTransform().getUid());
+                                runit.transUniform = ROTransPool.GetTransUniform(disp.getTransform());
+                                //console.log("updateDispMaterial(), get runit.transUniform: ",runit.transUniform);
+                            }
+                        }
+                        if(runit.transUniform == null)
+                        {
+                            runit.transUniform = ShdUniformTool.BuildLocalFromTransformV(hasTrans?disp.getMatrixFS32():null, runit.shdp);
+                            ROTransPool.SetTransUniform(disp.getTransform(), runit.transUniform);
+                            //console.log("create transUniform");
+                        }
                         runit.uniform = material.__$uniform;
                         
                     }

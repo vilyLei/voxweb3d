@@ -41,6 +41,7 @@ export namespace vox
             static __$_S_flag:number = 0;
             private m_uid:number = -1;
             private static s_preUniform:IShaderUniform = null;
+            private static s_preTUniform:IShaderUniform = null;
             constructor()
             {
                 if(RPOUnit.__$_S_flag < 1)
@@ -57,6 +58,10 @@ export namespace vox
             ivsIndex:number = 0;
             ivsCount:number = 0;
             insCount:number = 0;
+            drawOffset:number = 0;
+            partTotal:number = 0;           // partTotal = partGroup.length
+            partGroup:Uint16Array = null;
+
             trisNumber:number = 0;
             visible:boolean = true;
             drawEnabled:boolean = true;
@@ -98,24 +103,68 @@ export namespace vox
                 switch(this.drawMode)
                 {
                     case RenderDrawMode.ELEMENTS_TRIANGLES:
-                        //console.log("RPOUnit::run(), TRIANGLES drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
-                        //rc.RContext.drawElements(rc.TRIANGLES, this.ivsCount, rc.UNSIGNED_SHORT,this.ivsIndex * 2);
-                        rc.RContext.drawElements(rc.TRIANGLES, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
+                        //console.log("RPOUnit::run(), TRIANGLES drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+"),drawOffset: "+this.drawOffset);
+                        //rc.RContext.drawElements(rc.TRIANGLES, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
+                        rc.RContext.drawElements(rc.TRIANGLES, this.ivsCount, this.ibufType, this.drawOffset);
                         break;
                     case RenderDrawMode.ELEMENTS_TRIANGLE_STRIP:
                         //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
-                        //rc.RContext.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, rc.UNSIGNED_SHORT,this.ivsIndex * 2);
-                        rc.RContext.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
+                        //rc.RContext.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
+                        rc.RContext.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, this.ibufType, this.drawOffset);
                         break;
                     case RenderDrawMode.ELEMENTS_INSTANCED_TRIANGLES:
                         //console.log("RPOUnit::run(), drawElementsInstanced(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+", insCount: "+this.insCount+")");
-                        //rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, rc.UNSIGNED_SHORT, this.ivsIndex * 2, this.insCount);
-                        rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.ivsIndex * this.ibufStep, this.insCount);
+                        //rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.ivsIndex * this.ibufStep, this.insCount);
+                        rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.drawOffset, this.insCount);
                         break;
                     case RenderDrawMode.ELEMENTS_TRIANGLE_FAN:
                         //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
-                        //rc.RContext.drawElements(rc.TRIANGLE_FAN, this.ivsCount, rc.UNSIGNED_SHORT,this.ivsIndex * 2);
-                        rc.RContext.drawElements(rc.TRIANGLE_FAN, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
+                        //rc.RContext.drawElements(rc.TRIANGLE_FAN, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
+                        rc.RContext.drawElements(rc.TRIANGLE_FAN, this.ivsCount, this.ibufType, this.drawOffset);
+                        break;
+                    case RenderDrawMode.ARRAYS_LINES:
+                        //console.log("RPOUnit::run(), drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
+                        rc.RContext.drawArrays(rc.LINES, this.ivsIndex, this.ivsCount);
+                        break;
+                    case RenderDrawMode.ARRAYS_LINE_STRIP:
+                        //console.log("RPOUnit::run(), drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
+                        rc.RContext.drawArrays(rc.LINE_STRIP, this.ivsIndex, this.ivsCount);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            
+            drawPart(rc:RenderProxy):void
+            {
+                ++RendererState.DrawCallTimes;
+                RendererState.DrawTrisNumber += this.trisNumber;
+                let i:number = 0
+                switch(this.drawMode)
+                {
+                    case RenderDrawMode.ELEMENTS_TRIANGLES:
+                        for(; i < this.partTotal;)
+                        {
+                            let count:number = this.partGroup[i++];
+                            let offset:number = this.partGroup[i++];
+                            //rc.RContext.drawElements(rc.TRIANGLES, this.partGroup[i++], this.ibufType, this.partGroup[i++]);
+                            rc.RContext.drawElements(rc.TRIANGLES, count, this.ibufType, offset);
+                        }
+                        break;
+                    case RenderDrawMode.ELEMENTS_TRIANGLE_STRIP:
+                        //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
+                        //rc.RContext.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
+                        rc.RContext.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, this.ibufType, this.drawOffset);
+                        break;
+                    case RenderDrawMode.ELEMENTS_INSTANCED_TRIANGLES:
+                        //console.log("RPOUnit::run(), drawElementsInstanced(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+", insCount: "+this.insCount+")");
+                        //rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.ivsIndex * this.ibufStep, this.insCount);
+                        rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.drawOffset, this.insCount);
+                        break;
+                    case RenderDrawMode.ELEMENTS_TRIANGLE_FAN:
+                        //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
+                        //rc.RContext.drawElements(rc.TRIANGLE_FAN, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
+                        rc.RContext.drawElements(rc.TRIANGLE_FAN, this.ivsCount, this.ibufType, this.drawOffset);
                         break;
                     case RenderDrawMode.ARRAYS_LINES:
                         //console.log("RPOUnit::run(), drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
@@ -136,7 +185,11 @@ export namespace vox
                 {
                     this.ubo.run(rc);
                 }
-                this.transUniform.use(rc);
+                if(RPOUnit.s_preTUniform != this.transUniform)
+                {
+                    RPOUnit.s_preTUniform = this.transUniform;
+                    this.transUniform.use(rc);
+                }
                 if(RPOUnit.s_preUniform != this.uniform)
                 {
                     RPOUnit.s_preUniform = this.uniform;
@@ -154,7 +207,12 @@ export namespace vox
                 }
                 this.vro.run(rc);
                 this.tro.run(rc);
-                this.transUniform.use(rc);
+                
+                if(RPOUnit.s_preTUniform != this.transUniform)
+                {
+                    RPOUnit.s_preTUniform = this.transUniform;
+                    this.transUniform.use(rc);
+                }
                 if(RPOUnit.s_preUniform != this.uniform)
                 {
                     RPOUnit.s_preUniform = this.uniform;
@@ -186,11 +244,24 @@ export namespace vox
                 if(RPOUnit.s_preUniform != this.uniform)
                 {
                     RPOUnit.s_preUniform = this.uniform;
-                    MaterialProgram.UpdateUniformToCurrentShd2(rc,this.uniform,this.transUniform);
+                    
+                    if(RPOUnit.s_preTUniform != this.transUniform)
+                    {
+                        RPOUnit.s_preTUniform = this.transUniform;
+                        MaterialProgram.UpdateUniformToCurrentShd2(rc,this.uniform,this.transUniform);
+                    }
+                    else
+                    {
+                        MaterialProgram.UpdateUniformToCurrentShd(rc,this.uniform);
+                    }
                 }
                 else
                 {
-                    MaterialProgram.UpdateUniformToCurrentShd(rc,this.transUniform);
+                    if(RPOUnit.s_preTUniform != this.transUniform)
+                    {
+                        RPOUnit.s_preTUniform = this.transUniform;
+                        MaterialProgram.UpdateUniformToCurrentShd(rc,this.transUniform);
+                    }
                 }
             }
             reset():void
@@ -207,10 +278,12 @@ export namespace vox
                 this.shdp = null;
                 this.uniform = null;
                 this.transUniform = null;
+                this.partGroup = null;
 
                 this.ivsIndex = 0;
                 this.ivsCount = 0;
                 this.insCount = 0;
+                this.partTotal = 0;
                 this.drawEnabled = true;
                 this.drawMode = 0;
                 this.renderState = 0;
@@ -219,6 +292,7 @@ export namespace vox
             static RenderBegin():void
             {
                 RPOUnit.s_preUniform = null;
+                RPOUnit.s_preTUniform = null;
             }
             destroy():void
             {

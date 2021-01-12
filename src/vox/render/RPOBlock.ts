@@ -101,7 +101,14 @@ export namespace vox
                             if(unit.drawEnabled)
                             {
                                 unit.run(rc);
-                                unit.drawThis(rc);
+                                if(unit.partTotal < 1)
+                                {
+                                    unit.drawThis(rc);
+                                }
+                                else
+                                {
+                                    unit.drawPart(rc);
+                                }
                             }
                         }
                         nextNode = nextNode.next;
@@ -157,7 +164,14 @@ export namespace vox
                                     flagTBoo = false;
                                 }
                                 unit.run2(rc);
-                                unit.drawThis(rc);
+                                if(unit.partTotal < 1)
+                                {
+                                    unit.drawThis(rc);
+                                }
+                                else
+                                {
+                                    unit.drawPart(rc);
+                                }
                             }
                         }
                         nextNode = nextNode.next;
@@ -225,7 +239,14 @@ export namespace vox
                                     preUniform = unit.uniform;
                                     unit.uniform.use(rc);
                                 }
-                                unit.drawThis(rc);
+                                if(unit.partTotal < 1)
+                                {
+                                    unit.drawThis(rc);
+                                }
+                                else
+                                {
+                                    unit.drawPart(rc);
+                                }
                             }
                         }
                         nextNode = nextNode.next;
@@ -265,7 +286,14 @@ export namespace vox
                                     flagVBoo = false;
                                 }
                                 unit.runLockMaterial2(rc);
-                                unit.drawThis(rc);
+                                if(unit.partTotal < 1)
+                                {
+                                    unit.drawThis(rc);
+                                }
+                                else
+                                {
+                                    unit.drawPart(rc);
+                                }
                             }
                             nextNode = nextNode.next;
                         }
@@ -278,7 +306,14 @@ export namespace vox
                             if(unit.drawEnabled)
                             {
                                 unit.runLockMaterial(rc);
-                                unit.drawThis(rc);
+                                if(unit.partTotal < 1)
+                                {
+                                    unit.drawThis(rc);
+                                }
+                                else
+                                {
+                                    unit.drawPart(rc);
+                                }
                             }
                             nextNode = nextNode.next;
                         }
@@ -302,7 +337,14 @@ export namespace vox
                         unit.vro.run(rc);
                     }
                     unit.runLockMaterial2(rc);
-                    unit.drawThis(rc);
+                    if(unit.partTotal < 1)
+                    {
+                        unit.drawThis(rc);
+                    }
+                    else
+                    {
+                        unit.drawPart(rc);
+                    }
                 }
             }
             reset():void

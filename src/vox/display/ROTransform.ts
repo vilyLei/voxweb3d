@@ -9,11 +9,13 @@
 import * as MathConstT from "../../vox/utils/MathConst";
 import * as Vector3T from "../../vox/geom/Vector3";
 import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as ROTransPoolT from '../../vox/render/ROTransPool';
 
 import MathConst = MathConstT.vox.utils.MathConst;
 import Vector3D = Vector3T.vox.geom.Vector3D;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import Matrix4Pool = Matrix4T.vox.geom.Matrix4Pool;
+import ROTransPool = ROTransPoolT.vox.render.ROTransPool;
 
 export namespace vox
 {
@@ -216,7 +218,11 @@ export namespace vox
                     {
                         this.m_localMat = matrix;
                     }
-                    if(this.m_omat != null) Matrix4Pool.RetrieveMatrix(this.m_omat);
+                    if(this.m_omat != null)
+                    {
+                        ROTransPool.RemoveTransUniform(this.m_omat);
+                        Matrix4Pool.RetrieveMatrix(this.m_omat);
+                    }
                     this.m_omat = matrix;
                 }
             }
@@ -224,8 +230,19 @@ export namespace vox
             {
                 // 当自身被完全移出RenderWorld之后才能执行自身的destroy
                 if(this.m_invOmat != null) Matrix4Pool.RetrieveMatrix(this.m_invOmat);
-                if(this.m_localMat != null) Matrix4Pool.RetrieveMatrix(this.m_localMat);
-                if(this.m_omat != null && this.m_omat != this.m_localMat) Matrix4Pool.RetrieveMatrix(this.m_omat);
+                if(this.m_localMat != null)
+                {
+                    if(this.m_omat == this.m_localMat)
+                    {
+                        ROTransPool.RemoveTransUniform(this.m_omat);
+                    }
+                    Matrix4Pool.RetrieveMatrix(this.m_localMat);
+                }
+                if(this.m_omat != null && this.m_omat != this.m_localMat)
+                {
+                    ROTransPool.RemoveTransUniform(this.m_omat);
+                    Matrix4Pool.RetrieveMatrix(this.m_omat);
+                }
                 this.m_invOmat = null;
                 this.m_localMat = null;
                 this.m_omat = null;

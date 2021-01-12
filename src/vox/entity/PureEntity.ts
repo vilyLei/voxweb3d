@@ -26,6 +26,7 @@ import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as RenderBufferUpdaterT from "../../vox/render/RenderBufferUpdater";
 import * as TextureProxyT from '../../vox/texture/TextureProxy';
 import * as RODispBuilderT from '../../vox/render/RODispBuilder';
+import * as ROTransPoolT from '../../vox/render/ROTransPool';
 
 
 //import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
@@ -45,6 +46,7 @@ import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import RenderBufferUpdater = RenderBufferUpdaterT.vox.render.RenderBufferUpdater;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import RODispBuilder = RODispBuilderT.vox.render.RODispBuilder;
+import ROTransPool = ROTransPoolT.vox.render.ROTransPool;
 
 export namespace vox
 {
@@ -251,7 +253,8 @@ export namespace vox
                                 this.m_omat = Matrix4Pool.GetMatrix();
                             }
                             //this.m_display.setTransform(this.m_transfrom);
-                            this.m_display.setMatrixFS32(this.m_omat.getLocalFS32());
+                            //this.m_display.setMatrixFS32(this.m_omat.getLocalFS32());
+                            this.m_display.setTransform(this.m_omat);
                             this.m_display.visible = this.m_visible && this.m_drawEnabled;
                             this.m_display.vbuf = m.__$attachVBuf();
                             this.m_display.ivsIndex = 0;
@@ -294,7 +297,8 @@ export namespace vox
                         {
                             this.m_omat = Matrix4Pool.GetMatrix();
                         }
-                        this.m_display.setMatrixFS32(this.m_omat.getLocalFS32());
+                        //this.m_display.setMatrixFS32(this.m_omat.getLocalFS32());
+                        this.m_display.setTransform(this.m_omat);
                         this.m_display.visible = this.m_visible && this.m_drawEnabled;                    
                     }
                     if(this.m_display.getMaterial() != m && this.__$wuid < 0 && this.m_display.__$ruid < 0)
@@ -433,7 +437,11 @@ export namespace vox
                         this.m_mesh = null;
                     }
                     if(this.m_invOmat != null) Matrix4Pool.RetrieveMatrix(this.m_invOmat);
-                    if(this.m_omat != null) Matrix4Pool.RetrieveMatrix(this.m_omat);
+                    if(this.m_omat != null)
+                    {
+                        ROTransPool.RemoveTransUniform( this.m_omat );
+                        Matrix4Pool.RetrieveMatrix(this.m_omat);
+                    }
                     this.m_visible = true;
                     this.m_drawEnabled = true;
                 }

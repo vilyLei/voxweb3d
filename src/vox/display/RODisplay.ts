@@ -11,6 +11,7 @@ import * as RenderConstT from "../../vox/render/RenderConst";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
+import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
 
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
@@ -18,6 +19,7 @@ import DisplayRenderState = RenderConstT.vox.render.DisplayRenderState;
 import RendererState = RendererStateT.vox.render.RendererState;
 import ROVertexBuffer = ROVertexBufferT.vox.mesh.ROVertexBuffer;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 
 export namespace vox
@@ -49,18 +51,46 @@ export namespace vox
             rcolorMask:number = RendererState.ALL_TRUE_COLOR_MASK;
             // mouse interaction enabled flag
             mouseEnabled:boolean = false;
+            private m_partGroup:Uint16Array = null;
+            private m_trans:Matrix4 = null;
             private constructor()
             {
                 this.m_uid = RODisplay.__s_uid++;
+            }
+            
+            // draw parts group: [ivsCount0,ivsIndex0, ivsCount1,ivsIndex1, ivsCount2,ivsIndex2, ...]
+            getPartGroup():Uint16Array
+            {
+                return this.m_partGroup;
+            }
+            createPartGroup(partsTotal:number):void
+            {
+                if(partsTotal < 1)
+                {
+                    partsTotal = 1;
+                }
+                this.m_partGroup = new Uint16Array(partsTotal * 2);
+            }
+            setDrawPartAt(index:number,ivsIndex:number, ivsCount:number):void
+            {
+                index *= 2;
+                this.m_partGroup[index] = ivsCount;
+                this.m_partGroup[++index] = ivsIndex;
             }
             getUid():number
             {
                 return this.m_uid;
             }            
-            setMatrixFS32(matFS32:Float32Array):void
+            setTransform(trans:Matrix4):void
             {
-                this.m_matFS32 = matFS32;
+                this.m_trans = trans;
+                this.m_matFS32 = trans.getLocalFS32();
             }
+            getTransform():Matrix4
+            {
+                return this.m_trans;
+            }
+            
             getMatrixFS32():Float32Array
             {
                 return this.m_matFS32;
@@ -140,6 +170,7 @@ export namespace vox
                 this.__$rpuid = -1;
                 this.ivsIndex = 0;
                 this.ivsCount = 0;
+                this.m_partGroup = null;
             }
             // 只能由渲染系统内部调用
             __$ruid:number = -1;     // 用于关联RPOUnit对象

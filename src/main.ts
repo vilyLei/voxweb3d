@@ -184,15 +184,20 @@
 //  import * as DemoMatComputer from "./demo/DemoMatComputer";
 //  import Demo = DemoMatComputer.demo.DemoMatComputer;
 
-//  import * as DemoThreadConcurrent from "./demo/DemoThreadConcurrent";
-//  import Demo = DemoThreadConcurrent.demo.DemoThreadConcurrent;
+import * as DemoThreadConcurrent from "./demo/DemoThreadConcurrent";
+import Demo = DemoThreadConcurrent.demo.DemoThreadConcurrent;
 
 //  import * as DemoMatContainer from "./demo/DemoMatContainer";
 //  import Demo = DemoMatContainer.demo.DemoMatContainer;
 
-import * as DemoMatTransThread from "./demo/DemoMatTransThread";
-import Demo = DemoMatTransThread.demo.DemoMatTransThread;
+//  import * as DemoMatTransThread from "./demo/DemoMatTransThread";
+//  import Demo = DemoMatTransThread.demo.DemoMatTransThread;
 
+//  import * as DemoDrawGroup from "./demo/DemoDrawGroup";
+//  import Demo = DemoDrawGroup.demo.DemoDrawGroup;
+
+//  import * as DemoDrawGroup from "./demo/DemoDrawGroup";
+//  import Demo = DemoDrawGroup.demo.DemoDrawGroup;
 
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;

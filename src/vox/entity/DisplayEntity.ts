@@ -274,7 +274,8 @@ export namespace vox
                         }
                         if(this.m_display != null)
                         {
-                            this.m_display.setMatrixFS32(this.m_transfrom.getMatrix().getLocalFS32());
+                            this.m_display.setTransform(this.m_transfrom.getMatrix());
+                            //this.m_display.setMatrixFS32(this.m_transfrom.getMatrix().getLocalFS32());
                             this.m_display.visible = this.m_visible && this.m_drawEnabled;
                             this.m_display.vbuf = m.__$attachVBuf();
                             this.m_display.ivsIndex = 0;
@@ -312,8 +313,9 @@ export namespace vox
                 {
                     if(this.m_display == null)
                     {
-                        this.m_display = RODisplay.Create();
-                        this.m_display.setMatrixFS32(this.m_transfrom.getMatrix().getLocalFS32());
+                        this.m_display = RODisplay.Create();                        
+                        this.m_display.setTransform(this.m_transfrom.getMatrix());
+                        //this.m_display.setMatrixFS32(this.m_transfrom.getMatrix().getLocalFS32());
                         this.m_display.visible = this.m_visible && this.m_drawEnabled;                    
                     }
                     if(this.m_display.getMaterial() != m && this.__$wuid < 0 && this.m_display.__$ruid < 0)

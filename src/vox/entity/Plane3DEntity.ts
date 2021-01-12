@@ -11,6 +11,7 @@ import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as Default3DMaterialT from "../../vox/material/mcase/Default3DMaterial";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as RORectMeshT from "../../vox/mesh/RORectMesh";
+import * as ROTransformT from "../../vox/display/ROTransform";
 
 import RendererState = RendererStateT.vox.render.RendererState;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
@@ -18,6 +19,7 @@ import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import Default3DMaterial = Default3DMaterialT.vox.material.mcase.Default3DMaterial;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import RORectMesh = RORectMeshT.vox.mesh.RORectMesh;
+import ROTransform = ROTransformT.vox.display.ROTransform;
 
 export namespace vox
 {
@@ -31,9 +33,9 @@ export namespace vox
             private m_plong:number = 0;
             private m_flag:number = 0;
             flipVerticalUV:boolean = false;
-            constructor()
+            constructor(transform:ROTransform = null)
             {
-                super();
+                super(transform);
             }
             createMaterial(texList:TextureProxy[]):void
             {

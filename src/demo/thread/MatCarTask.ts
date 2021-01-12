@@ -309,7 +309,8 @@ export namespace demo
                         ,Math.random() * 400 - 200.0
                         );
                     matTask.setRotationXYZ(0.0, Math.random() * 360.0, 0.0);
-                    matTask.setParam(0.5,0.5,0.5);
+                    // whole body scale, param 1, param 2;
+                    matTask.setParam(0.2,0.5,0.5);
                     matTask.setOffsetXYZ(80.0,-30.0,100.0);
                     matTask.setSpdParam(Math.random() * 360.0, Math.random() * 0.5 + 0.1,0.3);
                 }

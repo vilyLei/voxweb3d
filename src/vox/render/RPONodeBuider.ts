@@ -54,6 +54,7 @@ export namespace vox
                 this.ivsIndex = p.ivsIndex;
                 this.ivsCount = p.ivsCount;
                 this.insCount = p.insCount;
+                p.drawOffset = p.ivsIndex * p.ibufStep;
                 this.vtxUid = p.vtxUid;
                 this.vro = p.vro;
                 // material info etc.

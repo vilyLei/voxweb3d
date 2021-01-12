@@ -7,11 +7,13 @@
 // 只是用于视觉表现上的控制, 而和transform或者非渲染的逻辑无关
 // 一个 RODisplay 和一个 RPOUnit一一对应
 
+import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
 
 import ROVertexBuffer = ROVertexBufferT.vox.mesh.ROVertexBuffer;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+import Matrix4 = Matrix4T.vox.geom.Matrix4;
 
 export namespace vox
 {
@@ -35,8 +37,14 @@ export namespace vox
             rcolorMask:number;// = RendererState.ALL_TRUE_COLOR_MASK;
             // mouse interaction enabled flag
             mouseEnabled:boolean;// = false;
+            // draw parts group: [ivsCount0,ivsIndex0, ivsCount1,ivsIndex1, ivsCount2,ivsIndex2, ...]
+            getPartGroup():Uint16Array;
+            createPartGroup(partsTotal:number):void;
+            setDrawPartAt(index:number,ivsIndex:number, ivsCount:number):void;
            
             getUid():number;
+            setTransform(trans:Matrix4):void;
+            getTransform():Matrix4;
             getMatrixFS32():Float32Array;
             enableDrawInstanced(offset:number, instanceCount:number):void;
             disableDrawInstanced():void;

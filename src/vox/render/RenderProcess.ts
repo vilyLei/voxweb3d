@@ -164,6 +164,17 @@ export namespace vox
                         {
                             let node:RPONode = RPONodeBuider.Create();
                             node.unit = RPOUnitBuider.GetRPOUnit( disp.__$ruid );
+                            if(disp.getPartGroup() != null)
+                            {
+                                node.unit.partGroup = disp.getPartGroup().slice(0);
+                                node.unit.partTotal = node.unit.partGroup.length;
+                                let fs:Uint16Array = node.unit.partGroup;
+                                for(let i:number = 0, len:number = node.unit.partTotal; i < len;)
+                                {
+                                    i++;
+                                    fs[i++] *= node.unit.ibufStep;
+                                }
+                            }
                             //node.disp = disp;
                             disp.__$rpuid = node.uid;
                             node.__$ruid = disp.__$ruid;

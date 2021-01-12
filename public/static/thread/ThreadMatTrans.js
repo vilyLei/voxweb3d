@@ -21,6 +21,7 @@ function ThreadMatTrans()
     let m_matFS32 = null;
     let m_paramFS32 = null;
     let m_calcType = -1;
+    let m_starA = null;
     this.initialize = function()
     {
         //      m_matTrans = new Module.MatTransform();
@@ -59,6 +60,47 @@ function ThreadMatTrans()
             }
             m_matFS32 = m_matTrans.getMatData();
             m_paramFS32 = m_matTrans.getParamData();
+
+            if(m_starA == null)
+            {
+                console.log("### init star a.");
+                let rn = 6;
+                let cn = 6;
+                m_starA = new Module.StarA();
+                m_starA.allocate(128);
+                m_starA.initialize(rn, cn, 100);
+
+                let stvs = new Float32Array(
+                    [
+                        0,0,0,0,0,0,
+                        0,0,1,1,0,0,
+                        0,0,0,0,0,0,
+                        0,0,0,1,0,0,
+                        0,0,0,1,0,0,
+                        0,0,0,0,0,0
+                    ]
+                );
+                let r = 0;
+			    let c = 0;
+			    let tot = rn * cn;
+			    let i = 0;
+			    for (; i < tot; ++i)
+			    {
+			    	m_starA.setGoValueByRC(stvs[i], r, c);
+			    	c++;
+			    	if (c >= cn)
+			    	{
+			    		c = 0;
+			    		r++;
+			    	}
+                }
+                m_starA.searchPathDataByRC(0, 0, 4, 4);
+                let dataLen = m_starA.getPathDataTotal();
+                
+                let vs = m_starA.getPathData();
+                console.log("dataLen: "+dataLen);
+                console.log("vs: ",vs);
+            }
         }
         let i = 0;
         let len = 0;
