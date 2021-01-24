@@ -17,4 +17,4 @@ installation:
 
 about:
 
-    1. Find some demos in src/main.ts file.
+    1. You can find some demos in the src/main.ts file.
