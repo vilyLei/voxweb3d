@@ -149,7 +149,7 @@ export namespace vox
                             TextureRenderObj.__$DetachTexAt(this.m_texList[i].getUid());
                         }
                     }
-                    this.m_texDataEnabled = false;
+                    this.m_texDataEnabled = true;
                     this.m_texList = texList;
                     if(this.m_texList != null)
                     {
@@ -158,6 +158,10 @@ export namespace vox
                         {
                             key = key * 131 + this.m_texList[i].getUid();
                             TextureRenderObj.__$AttachTexAt(this.m_texList[i].getUid());
+                            if(!this.m_texList[i].dataEnough())
+                            {
+                                this.m_texDataEnabled = false;
+                            }
                         }
                         this.__$troMid = key;
                     }
@@ -174,6 +178,7 @@ export namespace vox
                         texList = texList.slice(0);
                         TextureRenderObj.__$DetachTexAt(texList[index].getUid());
                         texList[index] = tex;
+                        this.m_texDataEnabled = tex.dataEnough();
                         TextureRenderObj.__$AttachTexAt(tex.getUid());
                         let key = 31;
                         for(let i:number = 0; i < len; ++i)
@@ -204,9 +209,10 @@ export namespace vox
                         return true;
                     }
                     let boo:boolean = true;
-                    for(let i = 0; i < this.m_texListLen; ++i)
+                    let texList:TextureProxy[] = this.m_texList;
+                    for(let i:number = 0; i < this.m_texListLen; ++i)
                     {
-                        if(!this.m_texList[i].dataEnough())
+                        if(!texList[i].dataEnough())
                         {
                             boo = false;
                             break;
@@ -217,7 +223,7 @@ export namespace vox
                 }
                 return false;
             }
-            //
+            
             createSharedUniform(rc:RenderProxy):ShaderGlobalUniform
             {
                 return null;
@@ -226,7 +232,7 @@ export namespace vox
             {
                 return null;
             }
-            // synchronism ubo data and src data
+            //  // synchronism ubo data and src data
             updateSelfData(ro:any):void
             {
             }

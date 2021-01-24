@@ -139,9 +139,9 @@ export namespace vox
             protected m_texTotal:number = 0;
             // max texture amount: 8
             private m_gtexList:any[] = [null,null,null,null, null,null,null,null];
-            protected m_gtexIndexList:Uint16Array = new Uint16Array(8);
-            protected m_texTargetList:Uint16Array = new Uint16Array(8);
+            protected m_targets:Uint16Array = new Uint16Array(8);
             protected m_texList:TextureProxy[] = null;
+            direct:boolean = true;
             private constructor(texListHashId:number)
             {
                 this.m_uid = TextureRenderObj.__s_uid++;
@@ -165,19 +165,18 @@ export namespace vox
                 if(this.m_texTotal < 1 && ptexList.length > 0)
                 {
                     this.m_texList = ptexList;
-                    
-                    let texI:number = rc.RContext.TEXTURE0;
-                    this.m_texTotal = 0;
-                    while(this.m_texTotal < shdTexTotal)
+                    let store:TexUidGpuStore = TextureRenderObj.s_texUidStore;
+                    let tot:number = 0;
+                    while(tot < shdTexTotal)
                     {
-                        TextureRenderObj.s_texUidStore.attachTexAt(ptexList[this.m_texTotal].getUid());
-                        ptexList[this.m_texTotal].upload( rc );
-                        this.m_texTargetList[this.m_texTotal] = ptexList[this.m_texTotal].getSamplerType();
+                        store.attachTexAt(ptexList[tot].getUid());
+                        ptexList[tot].upload( rc );
+                        this.m_targets[tot] = ptexList[tot].getSamplerType();
                         
-                        this.m_gtexIndexList[this.m_texTotal] = (texI + this.m_texTotal);
-                        this.m_gtexList[this.m_texTotal] = ( ptexList[this.m_texTotal].__$gpuBuf());
-                        this.m_texTotal ++;
+                        this.m_gtexList[tot] = ( ptexList[tot].__$gpuBuf() );
+                        tot ++;
                     }
+                    this.m_texTotal = tot;
                 }
                 else
                 {
@@ -191,10 +190,25 @@ export namespace vox
                 {
                     TextureRenderObj.s_preMid = this.m_mid;
                     let gl:any = rc.RContext;
-                    for(let i:number = 0; i < this.m_texTotal; ++i)
+                    let texI:number = gl.TEXTURE0;
+                    if(this.direct)
                     {
-                        gl.activeTexture(this.m_gtexIndexList[i]);
-                        gl.bindTexture(this.m_texTargetList[i], this.m_gtexList[i]);
+                        for(let i:number = 0; i < this.m_texTotal; ++i)
+                        {
+                            gl.activeTexture(texI);
+                            gl.bindTexture(this.m_targets[i], this.m_gtexList[i]);
+                            texI++;
+                        }
+                    }
+                    else
+                    {
+                        let list:TextureProxy[] = this.m_texList;
+                        for(let i:number = 0; i < this.m_texTotal; ++i)
+                        {
+                            gl.activeTexture(texI);
+                            list[i].__$use(gl);
+                            texI++;
+                        }
                     }
                 }
             }
@@ -258,6 +272,7 @@ export namespace vox
             }
             static RenderBegin(rc:RenderProxy):void
             {
+                TextureRenderObj.s_preMid = -1;
             }
             static Create(rc:RenderProxy,texList:TextureProxy[],shdTexTotal:number):TextureRenderObj
             {
@@ -265,9 +280,14 @@ export namespace vox
                 {
                     let key = 31;
                     let t:number = 0;
+                    let direct:boolean = true;
                     while(t < shdTexTotal)
                     {
                         key = key * 131 + texList[t].getUid();
+                        if(!texList[t].isDirect())
+                        {
+                            direct = false;
+                        }
                         ++t;
                     }
                     let tro:TextureRenderObj = null;
@@ -291,8 +311,10 @@ export namespace vox
                         TextureRenderObj.s_troMap.set(key, tro);
                     }
                     tro.__$setMId(key);
+                    tro.direct = direct;
                     return tro;
                 }
+                return null;
             }
             private static Restore(tro:TextureRenderObj):void
             {

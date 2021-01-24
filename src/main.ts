@@ -202,9 +202,11 @@
 //  import * as DemoDepthTex from "./demo/DemoDepthTex";
 //  import Demo = DemoDepthTex.demo.DemoDepthTex;
 
-import * as DemoDeepTransparent from "./demo/DemoDeepTransparent";
-import Demo = DemoDeepTransparent.demo.DemoDeepTransparent;
+//  import * as DemoDeepTransparent from "./demo/DemoDeepTransparent";
+//  import Demo = DemoDeepTransparent.demo.DemoDeepTransparent;
 
+import * as DemoDeepTransparent2 from "./demo/DemoDeepTransparent2";
+import Demo = DemoDeepTransparent2.demo.DemoDeepTransparent2;
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;
 if(ins.runBegin != undefined)

@@ -17,6 +17,7 @@ import * as BytesCubeTextureProxyT from "../../vox/texture/BytesCubeTextureProxy
 import * as ImageCubeTextureProxyT from "../../vox/texture/ImageCubeTextureProxy";
 import * as Texture3DProxyT from "../../vox/texture/Texture3DProxy";
 import * as DepthTextureProxyT from "../../vox/texture/DepthTextureProxy";
+import * as WrapperTextureProxyT from "../../vox/texture/WrapperTextureProxy";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
@@ -34,6 +35,7 @@ import BytesCubeTextureProxy = BytesCubeTextureProxyT.vox.texture.BytesCubeTextu
 import ImageCubeTextureProxy = ImageCubeTextureProxyT.vox.texture.ImageCubeTextureProxy;
 import Texture3DProxy = Texture3DProxyT.vox.texture.Texture3DProxy;
 import DepthTextureProxy = DepthTextureProxyT.vox.texture.DepthTextureProxy;
+import WrapperTextureProxy = WrapperTextureProxyT.vox.texture.WrapperTextureProxy;
 
 export namespace vox
 {
@@ -176,7 +178,18 @@ export namespace vox
                 return tex;
             }
 
-            
+            static CreateWrapperTex(pw:number,ph:number,powerof2Boo:boolean = false):WrapperTextureProxy
+            {
+                let texUid:number = TextureStore.__s_texUidStore.getTex2DUid();
+                if(texUid >= 0)
+                {
+                    return TextureStore.GetTexByUid(texUid) as WrapperTextureProxy;
+                }
+                let tex:WrapperTextureProxy = new WrapperTextureProxy(TextureStore.s_texList,pw,ph,powerof2Boo);
+                TextureStore.s_texList.push(tex);
+                return tex;
+            }
+
             static CreateTex2D(pw:number,ph:number,powerof2Boo:boolean = false):TextureProxy
             {
                 let texUid:number = TextureStore.__s_texUidStore.getTex2DUid();

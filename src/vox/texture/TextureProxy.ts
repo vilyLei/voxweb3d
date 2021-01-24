@@ -44,6 +44,7 @@ export namespace vox
             magFilter:number = TextureConst.LINEAR;
             protected m_miplevel:number = -1;
 
+            //
             protected m_texWidth:number = 128;
             protected m_texHeight:number = 128;
             protected m_texBufW:number = 128;
@@ -64,6 +65,10 @@ export namespace vox
                     throw Error("new a TextureProxy instance Error!!!");
                 }
                 this.___construct(texWidth,texHeight,powerof2Boo);
+            }
+            isDirect():boolean
+            {
+                return true;
             }
             getType():number
             {
@@ -120,6 +125,10 @@ export namespace vox
             __$gpuBuf():any
             {
                 return this.m_texBuf;
+            }
+            __$use(gl:any):void
+            {
+                gl.bindTexture(this.m_samplerTarget, this.m_texBuf);
             }
             isGpuEnabled():boolean
             {
