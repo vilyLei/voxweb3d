@@ -129,11 +129,11 @@ export namespace vox
         export class TextureRenderObj implements ITextureRenderObj
         {
             private static __s_uid:number = 0;
-            private static ___troMap:Map<number, TextureRenderObj> = new Map();
-            private static ___freeTROList:TextureRenderObj[] = [];
-            protected static __s_unloacked:boolean = true;
-            protected static __s_preMid:number = -1;
-            private static __s_texUidStore:TexUidGpuStore = new TexUidGpuStore();
+            private static s_troMap:Map<number, TextureRenderObj> = new Map();
+            private static s_freeTROList:TextureRenderObj[] = [];
+            protected static s_unloacked:boolean = true;
+            protected static s_preMid:number = -1;
+            private static s_texUidStore:TexUidGpuStore = new TexUidGpuStore();
             private m_uid:number = -1;
             protected m_mid:number = -1;
             protected m_texTotal:number = 0;
@@ -170,7 +170,7 @@ export namespace vox
                     this.m_texTotal = 0;
                     while(this.m_texTotal < shdTexTotal)
                     {
-                        TextureRenderObj.__s_texUidStore.attachTexAt(ptexList[this.m_texTotal].getUid());
+                        TextureRenderObj.s_texUidStore.attachTexAt(ptexList[this.m_texTotal].getUid());
                         ptexList[this.m_texTotal].upload( rc );
                         this.m_texTargetList[this.m_texTotal] = ptexList[this.m_texTotal].getSamplerType();
                         
@@ -187,9 +187,9 @@ export namespace vox
             // 注意: 移动端要注意这里的切换机制是符合移动端低带宽的特点
             run(rc:RenderProxy):void
             {
-                if(TextureRenderObj.__s_unloacked && TextureRenderObj.__s_preMid != this.m_mid)
+                if(TextureRenderObj.s_unloacked && TextureRenderObj.s_preMid != this.m_mid)
                 {
-                    TextureRenderObj.__s_preMid = this.m_mid;
+                    TextureRenderObj.s_preMid = this.m_mid;
                     let gl:any = rc.RContext;
                     for(let i:number = 0; i < this.m_texTotal; ++i)
                     {
@@ -224,7 +224,7 @@ export namespace vox
                 {
                     for(let i:number = 0; i < this.m_texTotal; ++i)
                     {
-                        TextureRenderObj.__s_texUidStore.detachTexAt(this.m_texList[i].getUid());
+                        TextureRenderObj.s_texUidStore.detachTexAt(this.m_texList[i].getUid());
                         this.m_gtexList[i] = null;
                     }
                 }
@@ -237,24 +237,27 @@ export namespace vox
             }
             static __$AttachTexAt(texUid:number):void
             {
-                TextureRenderObj.__s_texUidStore.attachTexAt(texUid);
+                TextureRenderObj.s_texUidStore.attachTexAt(texUid);
             }
             static __$DetachTexAt(texUid:number):void
             {
-                TextureRenderObj.__s_texUidStore.detachTexAt(texUid);
+                TextureRenderObj.s_texUidStore.detachTexAt(texUid);
             }
             static __$GetexAttachCountAt(texUid:number):number
             {
-                return TextureRenderObj.__s_texUidStore.getAttachCountAt(texUid);
+                return TextureRenderObj.s_texUidStore.getAttachCountAt(texUid);
             }
             static GetTexAttachAllCount():number
             {
-                return TextureRenderObj.__s_texUidStore.getAttachAllCount();
+                return TextureRenderObj.s_texUidStore.getAttachAllCount();
+            }
+            static RenderReset(rc:RenderProxy):void
+            {
+                TextureRenderObj.s_preMid = -1;
+                TextureRenderObj.s_texUidStore.disposeTest(rc);
             }
             static RenderBegin(rc:RenderProxy):void
             {
-                TextureRenderObj.__s_preMid = -1;
-                TextureRenderObj.__s_texUidStore.disposeTest(rc);
             }
             static Create(rc:RenderProxy,texList:TextureProxy[],shdTexTotal:number):TextureRenderObj
             {
@@ -268,26 +271,26 @@ export namespace vox
                         ++t;
                     }
                     let tro:TextureRenderObj = null;
-                    if(TextureRenderObj.___troMap.has(key))
+                    if(TextureRenderObj.s_troMap.has(key))
                     {
-                        tro = TextureRenderObj.___troMap.get(key);
+                        tro = TextureRenderObj.s_troMap.get(key);
                     }
                     else
                     {
-                        if(TextureRenderObj.___freeTROList.length < 1)
+                        if(TextureRenderObj.s_freeTROList.length < 1)
                         {
                             tro = new TextureRenderObj(key);
                             //console.log("TextureRenderObj::Create use a new tro.getMid(): "+tro.getMid());
                         }
                         else
                         {
-                            tro = TextureRenderObj.___freeTROList.pop();
-                            tro.__$setMId(key);
+                            tro = TextureRenderObj.s_freeTROList.pop();
                             //console.log("TextureRenderObj::Create use an old tro.getMid(): "+tro.getMid());
                         }
                         tro.collectTexList(rc,texList,shdTexTotal);
-                        TextureRenderObj.___troMap.set(key, tro);
+                        TextureRenderObj.s_troMap.set(key, tro);
                     }
+                    tro.__$setMId(key);
                     return tro;
                 }
             }
@@ -296,24 +299,24 @@ export namespace vox
                 if(tro.getMid() > -1)
                 {
                     //console.log("TextureRenderObj::Restore tro.getMid(): "+tro.getMid());
-                    TextureRenderObj.___troMap.delete(tro.getMid());
+                    TextureRenderObj.s_troMap.delete(tro.getMid());
                     tro.__$setMId(-1);
-                    TextureRenderObj.___freeTROList.push(tro);
+                    TextureRenderObj.s_freeTROList.push(tro);
                     tro.reset();
                 }
             }
             
             static GetByMid(uid:number):TextureRenderObj
             {
-                return TextureRenderObj.___troMap.get(uid);
+                return TextureRenderObj.s_troMap.get(uid);
             }
             static Unlock():void
             {
-                TextureRenderObj.__s_unloacked = true;
+                TextureRenderObj.s_unloacked = true;
             }
             static Lock():void
             {
-                TextureRenderObj.__s_unloacked = false;
+                TextureRenderObj.s_unloacked = false;
             }
         }
         

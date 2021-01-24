@@ -167,7 +167,7 @@ export namespace vox
                                 }
                                 this.m_generateMipmap = false;
                             }
-                            this.___buildParam(gl);
+                            this.__$buildParam(gl);
                             this.m_generateMipmap = true;
                         }
                         this.m_dataChanged = false;

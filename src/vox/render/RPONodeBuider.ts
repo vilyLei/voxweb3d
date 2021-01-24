@@ -37,6 +37,7 @@ export namespace vox
             insCount:number = 0;
             vtxUid:number = -1;
             texMid:number = -1;
+            rtokey:number = -1;
             prev:RPONode = null;
             next:RPONode = null;
             unit:RPOUnit = null;
@@ -74,6 +75,7 @@ export namespace vox
                 this.shdUid = -1;
                 this.vtxUid = -1;
                 this.texMid = -1;
+                this.rtokey = -1;
                 this.unit = null;
                 this.vro = null;
                 this.tro = null;
@@ -106,6 +108,10 @@ export namespace vox
                 return -1; 
             }
 
+            static UpdateTROByRUnit(runit:RPOUnit):void
+            {
+                RPONodeBuider.m_nodeList[runit.__$rpuid].tro = runit.tro;
+            }
             static GetNodeByUid(uid:number):RPONode
             {
                 return RPONodeBuider.m_nodeList[uid];

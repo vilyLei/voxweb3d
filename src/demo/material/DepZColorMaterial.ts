@@ -21,19 +21,19 @@ export namespace demo
 {
     export namespace material
     {
-            export class RttCircleShaderBuffer extends ShaderCodeBuffer
+            export class DepZColorShaderBuffer extends ShaderCodeBuffer
             {
                 constructor()
                 {
                     super();
                 }
-                private static ___s_instance:RttCircleShaderBuffer = null;
+                private static ___s_instance:DepZColorShaderBuffer = null;
                 private m_uniqueName:string = "";
                 private m_hasTex:boolean = false;
                 initialize(texEnabled:boolean):void
                 {
-                    //console.log("RttCircleShaderBuffer::initialize()... texEnabled: "+texEnabled);
-                    this.m_uniqueName = "RttCircleShd";
+                    //console.log("DepZColorShaderBuffer::initialize()... texEnabled: "+texEnabled);
+                    this.m_uniqueName = "DepZColorShd";
                     this.m_hasTex = texEnabled;
                     if(texEnabled)
                     {
@@ -46,16 +46,33 @@ export namespace demo
 `
 precision mediump float;
 uniform sampler2D u_sampler0;
+uniform sampler2D u_sampler1;
 varying vec2 v_texUV;
 uniform vec4 u_colors[2];
 uniform vec4 u_stSize;
+uniform vec4 u_cameraParam;
+
+float viewZToOrthographicDepth( const in float viewZ, const in float near, const in float far ) {
+	return ( viewZ + near ) / ( near - far );
+}
+float viewZToPerspectiveDepth( const in float viewZ, const in float near, const in float far ) {
+	return (( near + viewZ ) * far ) / (( far - near ) * viewZ );
+}
+float perspectiveDepthToViewZ( const in float invClipZ, const in float near, const in float far ) {
+	return ( near * far ) / ( ( far - near ) * invClipZ - far );
+}
+float readDepth( sampler2D depthSampler, vec2 coord,float cameraNear, float cameraFar ) {
+    float fragCoordZ = texture2D( depthSampler, coord ).x;
+    float viewZ = perspectiveDepthToViewZ( fragCoordZ, cameraNear, cameraFar );
+    return viewZToOrthographicDepth( viewZ, cameraNear, cameraFar );
+}
 void main()
 {
     vec2 sv2 = vec2(gl_FragCoord.x/u_stSize.x,gl_FragCoord.y/u_stSize.y);
-    float dis = length(u_stSize.zw - gl_FragCoord.xy);
     vec4 color4 = texture2D(u_sampler0, v_texUV * 0.0 + sv2);
-    //color4.xyz = 1.5 * color4.xzy * color4.xyz;
-    color4.w = min(u_colors[0].w * min(8.0 - 3.8 * dis / u_colors[1].w, 1.0), 1.0);
+    color4.xyz *= u_colors[0].xyz;
+    float depth = readDepth( u_sampler1, sv2, u_cameraParam.x,u_cameraParam.y);
+    color4.xyz = color4.xyz * 0.0001 + vec3(1.0 - depth);
     gl_FragColor = color4;
 }
 `;
@@ -72,7 +89,7 @@ varying vec2 v_texUV;
 void main()
 {
     gl_Position = vec4(a_vs,1.0);
-v_texUV = a_uvs;
+    v_texUV = a_uvs;
 }
 `;
                     return vtxCode;
@@ -84,21 +101,21 @@ v_texUV = a_uvs;
                 }
                 toString():string
                 {
-                    return "[RttCircleShaderBuffer()]";
+                    return "[DepZColorShaderBuffer()]";
                 }
 
-                static GetInstance():RttCircleShaderBuffer
+                static GetInstance():DepZColorShaderBuffer
                 {
-                    if(RttCircleShaderBuffer.___s_instance != null)
+                    if(DepZColorShaderBuffer.___s_instance != null)
                     {
-                        return RttCircleShaderBuffer.___s_instance;
+                        return DepZColorShaderBuffer.___s_instance;
                     }
-                    RttCircleShaderBuffer.___s_instance = new RttCircleShaderBuffer();
-                    return RttCircleShaderBuffer.___s_instance;
+                    DepZColorShaderBuffer.___s_instance = new DepZColorShaderBuffer();
+                    return DepZColorShaderBuffer.___s_instance;
                 }
             }
             
-            export class RttCircleMaterial extends MaterialBase
+            export class DepZColorMaterial extends MaterialBase
             {
                 constructor()
                 {
@@ -107,7 +124,7 @@ v_texUV = a_uvs;
                 
                 getCodeBuf():ShaderCodeBuffer
                 {
-                    return RttCircleShaderBuffer.GetInstance();
+                    return DepZColorShaderBuffer.GetInstance();
                 }
                 private m_colorArray:Float32Array = new Float32Array([1.0,0.0,1.0,1.0, 0.0,0.0,0.0,60.0]);
                 private m_stSizeArray:Float32Array = new Float32Array([800.0,600.0,0.0,0.0]);

@@ -17,7 +17,7 @@ export namespace vox
             static CameraViewMatUNS:string = "u_viewMat";
             // camera projective matrix shader uniform name string
             static CameraProjectiveMatUNS:string = "u_projMat";
-            // camera param shader uniform name string
+            // camera param shader uniform name string,vec4: [camera zNear,camera zFar, camera nearPlaneHalfW, camera nearPlaneHalfH]
             static CameraParamUNS:string = "u_cameraParam";
             // stage param shader uniform name string
             static StageParamUNS:string = "u_stageParam";

@@ -79,41 +79,41 @@ void main()
                     if(RendererDeviece.IsWebGL2())
                     {
                         vtxCode =
-"\
-#version 300 es\n\
-precision mediump float;\n\
-layout(location = 0) in vec3 a_vs;\n\
-layout(location = 1) in vec2 a_uvs;\n\
-uniform mat4 u_objMat;\n\
-uniform mat4 u_viewMat;\n\
-uniform mat4 u_projMat;\n\
-out vec2 v_uvs;\n\
-void main(){\n\
-    mat4 viewMat4 = u_viewMat * u_objMat;\n\
-    vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);\n\
-    gl_Position = u_projMat * viewPos;\n\
-    v_uvs = a_uvs;\n\
-}\n\
-";
+`
+#version 300 es
+precision mediump float;
+layout(location = 0) in vec3 a_vs;
+layout(location = 1) in vec2 a_uvs;
+uniform mat4 u_objMat;
+uniform mat4 u_viewMat;
+uniform mat4 u_projMat;
+out vec2 v_uvs;
+void main(){
+    mat4 viewMat4 = u_viewMat * u_objMat;
+    vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);
+    gl_Position = u_projMat * viewPos;
+    v_uvs = a_uvs;
+}
+`;
                     }
                     else
                     {
                         vtxCode =
-"\
-precision mediump float;\n\
-attribute vec3 a_vs;\n\
-attribute vec2 a_uvs;\n\
-uniform mat4 u_objMat;\n\
-uniform mat4 u_viewMat;\n\
-uniform mat4 u_projMat;\n\
-varying vec2 v_uvs;\n\
-void main(){\n\
-    mat4 viewMat4 = u_viewMat * u_objMat;\n\
-    vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);\n\
-    gl_Position = u_projMat * viewPos;\n\
-    v_uvs = a_uvs;\n\
-}\n\
-";
+`
+precision mediump float;
+attribute vec3 a_vs;
+attribute vec2 a_uvs;
+uniform mat4 u_objMat;
+uniform mat4 u_viewMat;
+uniform mat4 u_projMat;
+varying vec2 v_uvs;
+void main(){
+    mat4 viewMat4 = u_viewMat * u_objMat;
+    vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);
+    gl_Position = u_projMat * viewPos;
+    v_uvs = a_uvs;
+}
+`;
                     }
                     return vtxCode;
                 }

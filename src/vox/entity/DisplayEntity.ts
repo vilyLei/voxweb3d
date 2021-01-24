@@ -196,17 +196,68 @@ export namespace vox
                 this.m_texChanged = false;
                 RODispBuilder.UpdateDispTRO(rc,this.m_display);
             }
-            updateTextureList(texList:TextureProxy[]):void
+            updateTextureList(texList:TextureProxy[],rc:RenderProxy = null):void
             {
                 if(this.m_display != null && this.m_display.__$ruid > -1)
                 {
                     if(this.m_display.getMaterial() != null)
                     {
                         this.m_display.getMaterial().setTextureList(texList);
-                        if(!this.m_texChanged)
+                        if(rc == null)
                         {
-                            this.m_texChanged = true;
-                            RenderBufferUpdater.GetInstance().__$addBuf(this);
+                            if(!this.m_texChanged)
+                            {
+                                this.m_texChanged = true;
+                                RenderBufferUpdater.GetInstance().__$addBuf(this);
+                            }
+                        }
+                        else
+                        {
+                            this.__$updateToGpu(rc);
+                        }
+                    }
+                }
+            }
+            updateTextureAt(index:number, tex:TextureProxy,rc:RenderProxy = null):void
+            {
+                if(this.m_display != null && this.m_display.__$ruid > -1)
+                {
+                    if(this.m_display.getMaterial() != null)
+                    {
+                        this.m_display.getMaterial().updateTextureAt(index,tex);
+                        if(rc == null)
+                        {
+                            if(!this.m_texChanged)
+                            {
+                                this.m_texChanged = true;
+                                RenderBufferUpdater.GetInstance().__$addBuf(this);
+                            }
+                        }
+                        else
+                        {
+                            this.__$updateToGpu(rc);
+                        }
+                    }
+                }
+                
+            }
+            updateTexByMaterial(rc:RenderProxy = null):void
+            {
+                if(this.m_display != null && this.m_display.__$ruid > -1)
+                {
+                    if(this.m_display.getMaterial() != null)
+                    {
+                        if(rc == null)
+                        {
+                            if(!this.m_texChanged)
+                            {
+                                this.m_texChanged = true;
+                                RenderBufferUpdater.GetInstance().__$addBuf(this);
+                            }
+                        }
+                        else
+                        {
+                            this.__$updateToGpu(rc);
                         }
                     }
                 }
@@ -391,16 +442,22 @@ export namespace vox
                 if(this.m_display != null)
                 {
                     let material:MaterialBase = this.m_display.getMaterial();
-                    if(material != null && material.getShaderProgram() == null)
+                    if(material != null)
                     {
-                        if(material.getCodeBuf() != null)
+                        if(material.getShaderProgram() == null)
                         {
-                            if(material.getShaderProgram() == null)
+                            if(material.getCodeBuf() != null)
                             {
-                                let texList:TextureProxy[] = material.getTextureList();
-                                let texEnabled:boolean = (texList != null && texList.length > 0);
-                                material.initializeByCodeBuf(texEnabled);
+                                if(material.getShaderProgram() == null)
+                                {
+                                    let texList:TextureProxy[] = material.getTextureList();
+                                    let texEnabled:boolean = (texList != null && texList.length > 0);
+                                    material.initializeByCodeBuf(texEnabled);
+                                }
                             }
+                        }
+                        if(this.getMesh() == null)
+                        {
                             this.__activeMesh(material);
                             // for debug
                             this.m_display.name = this.name;

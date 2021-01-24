@@ -52,6 +52,12 @@ export namespace vox
             reset():void
             {
                 MaterialProgram.Reset();
+                TextureRenderObj.RenderReset(this.m_rc);
+                TextureStore.RenderBegin(this.m_rc);
+            }
+            renderBegin():void
+            {
+                MaterialProgram.Reset();
                 TextureRenderObj.RenderBegin(this.m_rc);
                 TextureStore.RenderBegin(this.m_rc);
             }

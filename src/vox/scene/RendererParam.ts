@@ -16,7 +16,15 @@ export namespace vox
             private m_matrix4AllocateSize:number = 8192;
             private m_glCanvasName:string = "glcanvas";
             private m_glDivName:string = "glcanvasdiv";
-            private m_renderContextAttri:any = {depth:true,premultipliedAlpha: false, alpha: true, antialias:false,stencil:false,preserveDrawingBuffer:true };
+            private m_renderContextAttri:any = {
+                depth:true
+                ,premultipliedAlpha: false
+                , alpha: true
+                , antialias:false
+                ,stencil:false
+                ,preserveDrawingBuffer:true
+                ,powerPreference:"high-performance"//"default"
+            };
             maxWebGLVersion:number = 2;
             cameraPerspectiveEnabled:boolean = true;
             // event flow control enable
@@ -66,6 +74,10 @@ export namespace vox
             setAttripreserveDrawingBuffer(boo:boolean):void
             {
                 this.m_renderContextAttri.preserveDrawingBuffer = boo;
+            }
+            setAttriHightPowerPreference(boo:boolean):void
+            {
+                this.m_renderContextAttri.powerPreference = boo?"high-performance":"default";
             }
             getGLCanvasName():string
             {

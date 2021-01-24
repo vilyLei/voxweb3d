@@ -39,7 +39,7 @@ export namespace vox
             private m_shduns:string = "";
             private m_spg:ShaderProgram = null;
             // tex list unique hash value
-            __$troMid:number = 0;
+            __$troMid:number = -1;
             __$uniform:IShaderUniform = null;
             getShdUniqueName():string
             {
@@ -153,10 +153,35 @@ export namespace vox
                     this.m_texList = texList;
                     if(this.m_texList != null)
                     {
+                        let key = 31;
                         for(i = 0;i < this.m_texList.length;++i)
                         {
+                            key = key * 131 + this.m_texList[i].getUid();
                             TextureRenderObj.__$AttachTexAt(this.m_texList[i].getUid());
                         }
+                        this.__$troMid = key;
+                    }
+                }
+            }
+            updateTextureAt(index:number,tex:TextureProxy):void
+            {
+                if(index >= 0 && tex != null)
+                {
+                    let texList:TextureProxy[] = this.m_texList;
+                    let len:number = texList.length;
+                    if(texList != null && texList[index] != tex && index < len && len > 0)
+                    {
+                        texList = texList.slice(0);
+                        TextureRenderObj.__$DetachTexAt(texList[index].getUid());
+                        texList[index] = tex;
+                        TextureRenderObj.__$AttachTexAt(tex.getUid());
+                        let key = 31;
+                        for(let i:number = 0; i < len; ++i)
+                        {
+                            key = key * 131 + texList[i].getUid();
+                        }
+                        this.__$troMid = key;
+                        this.m_texList = texList;
                     }
                 }
             }

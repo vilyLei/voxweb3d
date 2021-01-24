@@ -127,15 +127,30 @@ export namespace vox
     
     		renderToTexAt(rgl:any, texProxy:TextureProxy, outPutIndex:number):void
 			{
+				let inFormat:number = -1;
+				if (texProxy != null)
+				{
+					inFormat = texProxy.internalFormat;
+				}
 				if (this.m_fbo != null)
 				{
-					if (outPutIndex == 0)
+					if(inFormat != TextureFormat.DEPTH_COMPONENT)
 					{
-						this.m_activeAttachmentTotal = 0;
-						this.m_attachmentIndex = 0;
-						// 注意, 防止多次重复调用的没必要重设
-						this.m_gl.bindFramebuffer(this.m_fboTarget, this.m_fbo);
-						//console.log(this.toString() + ", bindFramebuffer, texProxy("+texProxy+"), m_fbo: "+this.m_fbo+",this.m_fboTarget: "+this.m_fboTarget);
+						if (outPutIndex == 0)
+						{
+							this.m_activeAttachmentTotal = 0;
+							this.m_attachmentIndex = 0;
+							// 注意, 防止多次重复调用的没必要重设
+							this.m_gl.bindFramebuffer(this.m_fboTarget, this.m_fbo);
+							//console.log(this.toString() + ", bindFramebuffer, texProxy("+texProxy+"), m_fbo: "+this.m_fbo+",this.m_fboTarget: "+this.m_fboTarget);
+						}
+					}
+					else
+					{
+						if (outPutIndex == 0)
+						{
+							this.m_gl.bindFramebuffer(this.m_fboTarget, this.m_fbo);
+						}
 					}
 				}
 				let i:number = 0;
@@ -144,7 +159,7 @@ export namespace vox
 				//trace("FrameBufferObject::use(), texProxy != null: "+(texProxy != null));
 				if (texProxy != null)
 				{
-					targetType = texProxy.getTargetType()
+					targetType = texProxy.getTargetType();
 					rTex = texProxy.__$gpuBuf();
 
 					let boo:boolean = false;
@@ -182,12 +197,25 @@ export namespace vox
 				{
 					targetType = this.m_texTargetTypes[this.m_activeAttachmentTotal];
 				}
+				switch(inFormat)
+				{
+					case TextureFormat.DEPTH_COMPONENT:
+						rgl.framebufferTexture2D(this.m_fboTarget, this.m_gl.DEPTH_ATTACHMENT, rgl.TEXTURE_2D, rTex,0);
+						return;
+					break;
+					case TextureFormat.DEPTH_COMPONENT:
+						rgl.framebufferTexture2D(this.m_fboTarget, this.m_gl.DEPTH_STENCIL_ATTACHMENT, rgl.TEXTURE_2D, rTex,0);
+						return;
+					break;
+					default:
+					break;
+				}
+				// current texture attachments
 				switch (targetType)
 				{
 				case TextureTarget.TEXTURE_2D:
 					if(this.m_attachmentMaskList[this.m_activeAttachmentTotal])
 					{
-						//console.log("this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex: "+(this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex)+",texProxy: "+texProxy);
 						rgl.framebufferTexture2D(this.m_fboTarget, this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex, rgl.TEXTURE_2D, rTex, 0);
 						++this.m_attachmentIndex;
 						if (rTex != null)
@@ -494,6 +522,7 @@ export namespace vox
 							}
 							else
 							{
+								console.log("Only use webgl1 depth fbo buffer.");
 								rgl.renderbufferStorage(rgl.RENDERBUFFER, rgl.DEPTH_COMPONENT16, pw, ph);
 							}
 							rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.DEPTH_ATTACHMENT, rgl.RENDERBUFFER, this.m_depthRBO);

@@ -396,7 +396,6 @@ export namespace vox
             {
                 if(entity != null)
                 {
-                    //console.log("XXXXXXXXXX entity.getUid(): "+entity.getUid());
                     let disp:IRODisplay = entity.getDisplay();
                     if(disp != null)
                     {

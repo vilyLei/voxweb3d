@@ -186,12 +186,23 @@ export namespace vox
 			{
 				return this.m_begin;
 			}
-		
+			containsNode(node:RPONode):boolean
+			{
+				let pnode:RPONode = this.m_unitMap.get(node.vtxUid);
+				if (pnode != null)
+				{
+					let key:number = (31 + pnode.rvroI) * 131;
+					key *= key + pnode.texMid;
+					return node.rtokey == key;
+				}
+				return false;
+			}
 			addNodeAndSort(node:RPONode):void
 			{
 				//  注意，这里可以管理组合方式, 例如可以做更多条件的排序
 				//  有些需要排序, 有些不需要排序
 				//trace("RPONodeLinker::addNodeAndSort(), node: "+node);
+				// 首先依据相同的顶点紧凑排序, 然后再以纹理组合排列, 因此用 顶点的key与tex序列的key组合为一个新的key
 				let pnode:RPONode = this.m_unitMap.get(node.vtxUid);
 				if (pnode == null)
 				{
@@ -201,6 +212,7 @@ export namespace vox
 
 					let key:number = (31 + node.rvroI) * 131;
 					key *= key + node.texMid;
+					node.rtokey = key;
 					node.rtroI = this.getTexIndex();
 					this.m_unitTexMap.set(key, node.rtroI);
 					this.attachTexAt(node.rtroI);
@@ -222,8 +234,7 @@ export namespace vox
 						node.rtroI = this.getTexIndex();
 						this.m_unitTexMap.set(key, node.rtroI);
 					}
-
-					//node.tro.__$attachRUT();
+					node.rtokey = key;
 					this.attachTexAt(node.rtroI);
 					//console.log("RPONodeLinker::addNodeAndSort(), append a new pnode != m_end: "+(pnode != this.m_end));
 					if (pnode != this.m_end)

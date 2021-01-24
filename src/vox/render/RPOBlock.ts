@@ -37,6 +37,14 @@ export namespace vox
 {
     export namespace render
     {
+        //  class TroPin
+        //  {
+        //      constructor()
+        //      {
+        //      }
+        //      uid:number = 0;
+        //      total:number = 0;
+        //  }
         export class RPOBlock
         {
             private static __s_uid:number = 0;
@@ -49,6 +57,8 @@ export namespace vox
             batchEnabled:boolean = true;
             fixedState:boolean = true;
             runMode:number = 0;
+            
+            //private m_troMap:Map<number, TroPin> = new Map();
             constructor()
             {
                 this.m_uid = RPOBlock.__s_uid++;
@@ -60,6 +70,14 @@ export namespace vox
             addNode(node:RPONode):void
             {
                 this.m_nodeLinker.addNodeAndSort(node);
+            }
+            rejoinNodeForTro(node:RPONode):void
+            {
+                if(!this.m_nodeLinker.containsNode(node))
+                {
+                    this.m_nodeLinker.removeNodeAndSort(node);
+                    this.m_nodeLinker.addNodeAndSort(node);
+                }
             }
             removeNode(node:RPONode):void
             {

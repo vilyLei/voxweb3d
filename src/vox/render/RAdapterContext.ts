@@ -173,14 +173,14 @@ export namespace vox
                     let attr:any = rattr;
                     if(rattr == null)
                     {
-                        attr = {depth:this.m_depthTestEnabled,premultipliedAlpha: false, alpha: true, antialias:false,stencil:this.m_stencilTestEnabled,preserveDrawingBuffer:true };
+                        attr = {depth:this.m_depthTestEnabled,premultipliedAlpha: false, alpha: true, antialias:false,stencil:this.m_stencilTestEnabled,preserveDrawingBuffer:true,powerPreference:"default" };
                     }
                     else
                     {
                         this.m_depthTestEnabled = attr.depth;
                         this.m_stencilTestEnabled = attr.stencil;
                     }
-                    console.log("this.m_devicePixelRatio: "+this.m_devicePixelRatio);
+                    console.log("this.m_devicePixelRatio: "+this.m_devicePixelRatio+",rattr == null: "+(rattr == null));
                     console.log("depthTestEnabled: "+attr.depth);
                     console.log("stencilTestEnabled: "+attr.stencil);
                     console.log("antialiasEnabled: "+attr.antialias);
@@ -342,11 +342,13 @@ export namespace vox
                     this.m_stage.viewWidth = this.m_displayWidth;
                     this.m_stage.viewHeight = this.m_displayHeight;
                     this.m_stage.pixelRatio = k;
+                    
                     DivLog.ShowLogOnce("stageSize: "+this.m_stage.stageWidth+","+this.m_stage.stageHeight);
                     DivLog.ShowLog("canvasSize: "+this.m_canvas.width+","+this.m_canvas.height);
                     DivLog.ShowLog("dispSize: "+this.m_displayWidth+","+this.m_displayHeight);
                     DivLog.ShowLog("pixelRatio:"+this.m_devicePixelRatio);
                     console.log("RAdapterContext::resize(), canvas.width:"+this.m_canvas.width+", canvas.height:"+this.m_canvas.height);
+                    console.log("RAdapterContext::resize(), stageWidth:"+this.m_stage.stageWidth+", stageHeight:"+this.m_stage.stageHeight);
                     console.log("RAdapterContext::resize(), m_rcanvasWidth:"+this.m_rcanvasWidth+", m_rcanvasHeight:"+this.m_rcanvasHeight);
                     console.log("RAdapterContext::resize(), stw:"+this.m_stage.stageWidth+", sth:"+this.m_stage.stageHeight);
 

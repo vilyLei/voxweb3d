@@ -6,9 +6,6 @@
 /***************************************************************************/
 // renderer context Extensions
 
-import * as RenderFBOProxyT from "../../vox/render/RenderFBOProxy";
-import RenderFBOProxy = RenderFBOProxyT.vox.render.RenderFBOProxy;
-
 export namespace vox
 {
     export namespace render
@@ -26,10 +23,11 @@ export namespace vox
             static readonly OES_texture_float:any = null;
             static readonly OES_element_index_uint:any = null;
             static readonly EXT_blend_minmax:any = null;
+            static readonly WEBGL_depth_texture:any = null;
 
             static Initialize(webVer:number, gl:any):void
             {
-                let selfT:any = this;
+                let selfT:any = this;//RCExtension;
                 if(webVer == 1)
                 {
                     selfT.WEBGL_draw_buffers = gl.getExtension('WEBGL_draw_buffers');
@@ -110,6 +108,14 @@ export namespace vox
                 console.log("Use OES_texture_float_linear Extension success!");
                 else
                 console.log("OES_texture_float_linear Extension can not support!");
+
+                selfT.WEBGL_depth_texture = gl.getExtension('WEBGL_depth_texture');
+                if(selfT.WEBGL_depth_texture != null)
+                console.log("Use WEBGL_depth_texture Extension success!");
+                else
+                console.log("WEBGL_depth_texture Extension can not support!");
+                //
+                //console.log("RCExtension.WEBGL_depth_texture: ",RCExtension.WEBGL_depth_texture);
             }
         }
     }

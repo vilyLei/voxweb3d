@@ -16,6 +16,7 @@ import * as FloatCubeTextureProxyT from "../../vox/texture/FloatCubeTextureProxy
 import * as BytesCubeTextureProxyT from "../../vox/texture/BytesCubeTextureProxy";
 import * as ImageCubeTextureProxyT from "../../vox/texture/ImageCubeTextureProxy";
 import * as Texture3DProxyT from "../../vox/texture/Texture3DProxy";
+import * as DepthTextureProxyT from "../../vox/texture/DepthTextureProxy";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
@@ -32,6 +33,7 @@ import FloatCubeTextureProxy = FloatCubeTextureProxyT.vox.texture.FloatCubeTextu
 import BytesCubeTextureProxy = BytesCubeTextureProxyT.vox.texture.BytesCubeTextureProxy;
 import ImageCubeTextureProxy = ImageCubeTextureProxyT.vox.texture.ImageCubeTextureProxy;
 import Texture3DProxy = Texture3DProxyT.vox.texture.Texture3DProxy;
+import DepthTextureProxy = DepthTextureProxyT.vox.texture.DepthTextureProxy;
 
 export namespace vox
 {
@@ -161,6 +163,19 @@ export namespace vox
         {
             private static __s_texUidStore:TexUidStore = new TexUidStore();
             private static s_texList:TextureProxy[] = [];
+            
+            private static CreateDepthTex2D(pw:number,ph:number,powerof2Boo:boolean = false):DepthTextureProxy
+            {
+                let texUid:number = TextureStore.__s_texUidStore.getTex2DUid();
+                if(texUid >= 0)
+                {
+                    return TextureStore.GetTexByUid(texUid) as DepthTextureProxy;
+                }
+                let tex:DepthTextureProxy = new DepthTextureProxy(TextureStore.s_texList,pw,ph,powerof2Boo);
+                TextureStore.s_texList.push(tex);
+                return tex;
+            }
+
             
             static CreateTex2D(pw:number,ph:number,powerof2Boo:boolean = false):TextureProxy
             {
@@ -356,6 +371,7 @@ export namespace vox
             }
             private static s_rttTexs:TextureProxy[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
             private static s_rttFloatTexs:TextureProxy[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
+            private static s_rttDepTexs:DepthTextureProxy[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
             static GetRTTTextureAt(i:number):TextureProxy
 	        {
 	        	if (TextureStore.s_rttTexs[i] != null)
@@ -363,21 +379,50 @@ export namespace vox
 	        		return TextureStore.s_rttTexs[i];
                 }
                 TextureStore.s_rttTexs[i] = TextureStore.CreateTex2D(64, 64);
+                TextureStore.s_rttTexs[i].name = "sys_rttTex_"+i;
                 TextureStore.s_rttTexs[i].minFilter = TextureConst.LINEAR;
                 TextureStore.s_rttTexs[i].magFilter = TextureConst.LINEAR;
 	        	return TextureStore.s_rttTexs[i];
             }
             static CreateRTTTextureAt(i:number,pw:number,ph:number):TextureProxy
 	        {
+                pw = pw > 1?pw:1;
+                ph = ph > 1?ph:1;
 	        	if (TextureStore.s_rttTexs[i] != null)
 	        	{
-
 	        		return TextureStore.s_rttTexs[i];
                 }
                 TextureStore.s_rttTexs[i] = TextureStore.CreateTex2D(pw, ph);
+                TextureStore.s_rttTexs[i].name = "sys_rttTex_"+i;
                 TextureStore.s_rttTexs[i].minFilter = TextureConst.LINEAR;
                 TextureStore.s_rttTexs[i].magFilter = TextureConst.LINEAR;
 	        	return TextureStore.s_rttTexs[i];
+            }
+            static GetDepthTextureAt(i:number):DepthTextureProxy
+	        {
+	        	if (TextureStore.s_rttDepTexs[i] != null)
+	        	{
+	        		return TextureStore.s_rttDepTexs[i];
+                }
+                TextureStore.s_rttDepTexs[i] = TextureStore.CreateDepthTex2D(64, 64);
+                TextureStore.s_rttDepTexs[i].name = "sys_depthTex_"+i;
+                TextureStore.s_rttDepTexs[i].minFilter = TextureConst.LINEAR;
+                TextureStore.s_rttDepTexs[i].magFilter = TextureConst.LINEAR;
+	        	return TextureStore.s_rttDepTexs[i];
+            }
+            static CreateDepthTextureAt(i:number,pw:number,ph:number):DepthTextureProxy
+	        {
+                pw = pw > 1?pw:1;
+                ph = ph > 1?ph:1;
+	        	if (TextureStore.s_rttDepTexs[i] != null)
+	        	{
+	        		return TextureStore.s_rttDepTexs[i];
+                }
+                TextureStore.s_rttDepTexs[i] = TextureStore.CreateDepthTex2D(pw,ph);
+                TextureStore.s_rttDepTexs[i].name = "sys_depthTex_"+i;
+                TextureStore.s_rttDepTexs[i].minFilter = TextureConst.LINEAR;
+                TextureStore.s_rttDepTexs[i].magFilter = TextureConst.LINEAR;
+	        	return TextureStore.s_rttDepTexs[i];
             }
             static GetRTTFloatTextureAt(i:number):TextureProxy
 	        {
@@ -386,6 +431,24 @@ export namespace vox
 	        		return TextureStore.s_rttFloatTexs[i];
                 }
                 let tex:TextureProxy = TextureStore.CreateTex2D(64, 64);
+                TextureStore.s_rttFloatTexs[i].name = "sys_rttFloatTex_"+i;
+	        	TextureStore.s_rttFloatTexs[i] = tex;
+                tex.internalFormat = TextureFormat.RGBA16F;
+                tex.srcFormat = TextureFormat.RGBA;
+                tex.dataType = TextureDataType.FLOAT;
+                tex.magFilter = TextureConst.NEAREST;
+	        	return tex;
+            }
+            static CreateRTTFloatTextureAt(i:number,pw:number,ph:number):TextureProxy
+	        {
+                pw = pw > 1?pw:1;
+                ph = ph > 1?ph:1;
+	        	if (TextureStore.s_rttFloatTexs[i] != null)
+	        	{
+	        		return TextureStore.s_rttFloatTexs[i];
+                }
+                let tex:TextureProxy = TextureStore.CreateTex2D(64, 64);
+                TextureStore.s_rttFloatTexs[i].name = "sys_rttFloatTex_"+i;
 	        	TextureStore.s_rttFloatTexs[i] = tex;
                 tex.internalFormat = TextureFormat.RGBA16F;
                 tex.srcFormat = TextureFormat.RGBA;

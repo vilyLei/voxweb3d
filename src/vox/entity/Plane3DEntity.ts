@@ -9,6 +9,7 @@ import * as RendererStateT from "../../vox/render/RendererState";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as Default3DMaterialT from "../../vox/material/mcase/Default3DMaterial";
+import * as ScreenPlaneMaterialT from "../../vox/material/mcase/ScreenPlaneMaterial";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as RORectMeshT from "../../vox/mesh/RORectMesh";
 import * as ROTransformT from "../../vox/display/ROTransform";
@@ -17,6 +18,7 @@ import RendererState = RendererStateT.vox.render.RendererState;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import Default3DMaterial = Default3DMaterialT.vox.material.mcase.Default3DMaterial;
+import ScreenPlaneMaterial = ScreenPlaneMaterialT.vox.material.mcase.ScreenPlaneMaterial;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import RORectMesh = RORectMeshT.vox.mesh.RORectMesh;
 import ROTransform = ROTransformT.vox.display.ROTransform;
@@ -33,17 +35,33 @@ export namespace vox
             private m_plong:number = 0;
             private m_flag:number = 0;
             flipVerticalUV:boolean = false;
+            private m_screenAlignEnabled:boolean = false;
             constructor(transform:ROTransform = null)
             {
                 super(transform);
+            }
+            // 是否是平铺在屏幕上
+            setScreenAlignEnable(enable:boolean):void
+            {
+                this.m_screenAlignEnabled = enable;
             }
             createMaterial(texList:TextureProxy[]):void
             {
                 if(this.getMaterial() == null)
                 {
-                    let cm:Default3DMaterial = new Default3DMaterial();
-                    cm.setTextureList(texList);
-                    this.setMaterial(cm);
+                    //ScreenPlaneMaterial
+                    if(this.m_screenAlignEnabled)
+                    {
+                        let cm:ScreenPlaneMaterial = new ScreenPlaneMaterial();
+                        cm.setTextureList(texList);
+                        this.setMaterial(cm);
+                    }
+                    else
+                    {
+                        let cm:Default3DMaterial = new Default3DMaterial();
+                        cm.setTextureList(texList);
+                        this.setMaterial(cm);
+                    }
                 }
                 else
                 {

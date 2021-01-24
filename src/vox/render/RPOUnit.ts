@@ -50,8 +50,12 @@ export namespace vox
                 }
                 this.m_uid = RPOUnit.__s_uid++;
             }
+            // 记录自身和RPONode的对应关系
+            __$rpuid:number = -1;
+            // renderProcess uid
+            __$rprouid:number = -1;
+
             // 记录对应的RODisplay的渲染所需的状态数据
-            
             ibufType:number = 0;// UNSIGNED_SHORT or UNSIGNED_INT
             ibufStep:number = 2;// 2 or 4
 

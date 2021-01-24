@@ -105,7 +105,7 @@ export namespace vox
                     this.m_samplerTarget = TextureTarget.GetValue(gl,this.m_texTarget);
                     this.m_uploadBoo = false;
                     this.m_haveRData = true;
-                    this.___buildParam(gl);
+                    this.__$buildParam(gl);
                 }
                 else if(this.m_texBuf == pTexBuf)
                 {
@@ -113,7 +113,7 @@ export namespace vox
                     {
                         this.m_texWidth = pw;
                         this.m_texHeight = ph;
-                        this.___buildParam(gl);
+                        this.__$buildParam(gl);
                     }
                 }
             }
@@ -142,7 +142,7 @@ export namespace vox
             getHeight():number{return this.m_texHeight;}
             dataEnough():boolean{return this.m_haveRData;}
             //
-            ___buildParam(gl:any):void
+            protected __$buildParam(gl:any):void
             {
                 this.m_texBufW = this.m_texWidth;
                 this.m_texBufH = this.m_texHeight;
@@ -216,7 +216,7 @@ export namespace vox
                         this.m_texBuf = gl.createTexture();
                         this.__$updateToGpuBegin(gl);
                         this.uploadData(rc);
-                        this.___buildParam(gl);
+                        this.__$buildParam(gl);
                         this.m_generateMipmap = true;
                         this.m_uploadBoo = false;
                     }

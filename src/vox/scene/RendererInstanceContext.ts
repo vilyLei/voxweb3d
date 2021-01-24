@@ -335,13 +335,31 @@ export namespace vox
                 if(this.m_renderProxy != null)
                 {
                     this.m_rAdapter.unlockViewport();
-                    //this.m_roBufMana.update();
                     this.m_rAdapter = this.m_renderProxy.getRenderAdapter();
                     this.m_rAdapter.setClearDepth(1.0);
                     RendererState.ResetInfo();
                     RendererState.Reset();
                     this.m_meshProxy.reset();
                     this.m_materialProxy.reset();
+                    this.m_rAdapter.update();
+                    this.m_rAdapter.setClearMaskClearAll();
+                    this.m_rAdapter.renderBegin();
+                    this.m_renderProxy.useCameraData();
+                    this.m_renderProxy.updateCameraDataFromCamera( this.m_renderProxy.getCamera() );
+                }
+            }
+            
+            renderBegin():void
+            {
+                if(this.m_renderProxy != null)
+                {
+                    this.m_rAdapter.unlockViewport();
+                    this.m_rAdapter = this.m_renderProxy.getRenderAdapter();
+                    this.m_rAdapter.setClearDepth(1.0);
+                    RendererState.ResetInfo();
+                    RendererState.Reset();
+                    this.m_meshProxy.reset();
+                    this.m_materialProxy.renderBegin();
                     this.m_rAdapter.update();
                     this.m_rAdapter.setClearMaskClearAll();
                     this.m_rAdapter.renderBegin();

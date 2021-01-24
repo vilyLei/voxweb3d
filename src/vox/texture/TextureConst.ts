@@ -6,7 +6,9 @@
 /***************************************************************************/
 
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
+import * as RCExtensionT from "../../vox/render/RCExtension";
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+import RCExtension = RCExtensionT.vox.render.RCExtension;
 
 export namespace vox
 {
@@ -25,6 +27,8 @@ export namespace vox
             static readonly RGBA16F:number = 332;
             static readonly RGB32F:number = 341;
             static readonly RGBA32F:number = 342;
+            static readonly DEPTH_COMPONENT:number = 351;
+            static readonly DEPTH_STENCIL:number = 352;
             static ToGL(gl:any,format:number):number
             {
                 switch(format)
@@ -73,16 +77,23 @@ export namespace vox
                     case TextureFormat.RED:
                         return gl.RED;
                     break;
+                    case TextureFormat.DEPTH_COMPONENT:
+                        return gl.DEPTH_COMPONENT;
+                    break;
+                    case TextureFormat.DEPTH_STENCIL:
+                        return gl.DEPTH_STENCIL;
+                    break;
                     default:
                     break;
                 }
                 return gl.RGBA;
-            }
+            }            
         }
         export class TextureDataType
         {
-            static readonly UNSIGNED_BYTE:number = 1109;
-            static readonly UNSIGNED_SHORT:number = 1110;
+            static readonly UNSIGNED_BYTE:number = 1108;
+            static readonly UNSIGNED_SHORT:number = 1109;
+            static readonly UNSIGNED_INT:number = 1110;
             static readonly BYTE:number = 1111;
             static readonly FLOAT:number = 1211;
             static readonly HALF_FLOAT:number = 1212;
@@ -116,6 +127,9 @@ export namespace vox
                     case TextureDataType.UNSIGNED_SHORT:
                         return gl.UNSIGNED_SHORT;
                     break;
+                    case TextureDataType.UNSIGNED_INT:
+                        return gl.UNSIGNED_INT;
+                    break;
                     case TextureDataType.UNSIGNED_SHORT_5_6_5:
                         return gl.UNSIGNED_SHORT_5_6_5;
                     break;
@@ -126,7 +140,7 @@ export namespace vox
                         return gl.UNSIGNED_SHORT_5_5_5_1;
                     break;
                     case TextureDataType.UNSIGNED_INT_24_8_WEBGL:
-                        return gl.UNSIGNED_INT_24_8_WEBGL;
+                        return RCExtension.WEBGL_depth_texture.UNSIGNED_INT_24_8_WEBGL;
                     break;
                     default:
                     break;

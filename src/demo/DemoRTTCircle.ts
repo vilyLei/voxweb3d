@@ -103,12 +103,13 @@ export namespace demo
                 //let boxRtt:Box3DEntity = new Box3DEntity();
                 //boxRtt.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[TextureStore.GetRTTTextureAt(0)]);
                 //this.m_rscene.addEntity(boxRtt, 1);
-                let dpr:number = RendererDeviece.GetDevicePixelRatio();
                 let rttCirM:RttCircleMaterial = new RttCircleMaterial();
                 this.m_rttCirM = rttCirM;
                 rttCirM.setRaius(100.0);
                 rttCirM.setPosXY(500.0,300.0);
-                rttCirM.setStageSize(this.m_rscene.getStage3D().stageWidth * dpr, this.m_rscene.getStage3D().stageHeight * dpr);
+                //let dpr:number = RendererDeviece.GetDevicePixelRatio();
+                //rttCirM.setStageSize(this.m_rscene.getStage3D().stageWidth * dpr, this.m_rscene.getStage3D().stageHeight * dpr);
+                rttCirM.setStageSize(this.m_rscene.getStage3D().stageWidth, this.m_rscene.getStage3D().stageHeight);
                 let scrPlane:Plane3DEntity = new Plane3DEntity();
                 scrPlane.setMaterial(rttCirM);
                 scrPlane.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
@@ -144,7 +145,7 @@ export namespace demo
                 //this.m_rscene.getCamera().setPosition( this.m_fixPos );
                 this.m_rscene.getCamera().translation( this.m_fixPos );
                 this.m_rscene.getCamera().update();
-                let k:number = 1.0;
+                let k:number = 0.7;
                 this.m_offsetPv.x = k * (this.m_rscene.getStage3D().mouseX - this.m_rscene.getStage3D().stageHalfWidth);
                 this.m_offsetPv.y = k * (this.m_rscene.getStage3D().mouseY - this.m_rscene.getStage3D().stageHalfHeight);
                 this.m_offsetPv.z = 0.0;

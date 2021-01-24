@@ -437,6 +437,21 @@ export namespace vox
                     this.m_rspace.runBegin();
                 }
             }
+            renderBegin():void
+            {
+                this.m_adapter.unlockViewport();
+                if(!this.m_renderProxy.isAutoSynViewAndStage())
+                {
+                    this.m_renderProxy.setViewPort(this.m_viewX,this.m_viewY,this.m_viewW,this.m_viewH);
+                }
+                this.m_renderProxy.getCamera().update();
+                this.m_rcontext.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
+                this.m_rcontext.renderBegin();
+                if(this.m_rspace != null)
+                {
+                    this.m_rspace.runBegin();
+                }
+            }
             synFBOSizeWithViewport():void
             {
                 this.m_rcontext.synFBOSizeWithViewport();

@@ -154,6 +154,13 @@ export namespace vox
                 node.index = block.index;
                 block.addNode(node);
             }
+            rejoinRunitForTro(runit:RPOUnit):void
+            {
+                let node:RPONode = RPONodeBuider.GetNodeByUid(runit.__$rpuid);
+                node.tro = runit.tro;
+                node.texMid = node.unit.texMid;
+                this.m_blockList[node.index].rejoinNodeForTro(node);
+            }
             addDisp(rc:RenderProxy, disp:IRODisplay,deferred:boolean = true):void
             {
                 if(disp != null)
@@ -164,6 +171,7 @@ export namespace vox
                         {
                             let node:RPONode = RPONodeBuider.Create();
                             node.unit = RPOUnitBuider.GetRPOUnit( disp.__$ruid );
+                            node.unit.__$rprouid = this.index;
                             if(disp.getPartGroup() != null)
                             {
                                 node.unit.partGroup = disp.getPartGroup().slice(0);
@@ -178,6 +186,7 @@ export namespace vox
                             //node.disp = disp;
                             disp.__$rpuid = node.uid;
                             node.__$ruid = disp.__$ruid;
+                            node.unit.__$rpuid = node.uid;
                             node.updateData();
                             //this.m_nodes.push( node );
                             ++this.m_nodesLen;

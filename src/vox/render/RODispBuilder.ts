@@ -22,6 +22,7 @@ import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPOUnitBuiderT from "../../vox/render/RPOUnitBuider";
 import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
 import * as ROTransPoolT from "../../vox/render/ROTransPool";
+import * as RPONodeBuiderT from "../../vox/render/RPONodeBuider";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import DisplayRenderState = RenderConstT.vox.render.DisplayRenderState;
@@ -41,6 +42,7 @@ import RPOUnitBuider = RPOUnitBuiderT.vox.render.RPOUnitBuider;
 import RenderProcessBuider = RenderProcessBuiderT.vox.render.RenderProcessBuider;
 import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
 import ROTransPool = ROTransPoolT.vox.render.ROTransPool;
+import RPONodeBuider = RPONodeBuiderT.vox.render.RPONodeBuider;
 
 export namespace vox
 {
@@ -60,14 +62,15 @@ export namespace vox
                     if(material != null)
                     {
                         let runit:RPOUnit = RPOUnitBuider.GetRPOUnit(disp.__$ruid);
-                        if(runit.tro != null)
+                        let tro:TextureRenderObj = TextureRenderObj.GetByMid(material.__$troMid);
+                        if(runit.tro != null && (tro == null || runit.tro.getMid() != tro.getMid()))
                         {
                             let shdp:ShaderProgram = material.getShaderProgram();
                             if(shdp != null)
                             {
                                 if(shdp.getTexTotal() > 0)
                                 {
-                                    let tro:TextureRenderObj = TextureRenderObj.Create(rc, material.getTextureList(),shdp.getTexTotal());
+                                    if(tro == null)tro = TextureRenderObj.Create(rc, material.getTextureList(),shdp.getTexTotal());
                                     //console.log("RODispBuilder::UpdateDispTRO(), runit.tro != tro: "+(runit.tro != tro));
                                     if(runit.tro != tro)
                                     {
@@ -76,6 +79,8 @@ export namespace vox
                                             runit.tro.__$detachThis();
                                         }
                                         runit.tro = tro;
+                                        runit.texMid = runit.tro.getMid();
+                                        RenderProcessBuider.RejoinRunitForTro(runit);
                                         tro.__$attachThis();
                                         material.__$troMid = runit.tro.getMid();
                                     }
@@ -89,7 +94,9 @@ export namespace vox
                                             runit.tro.__$detachThis();
                                         }
                                         runit.tro = RODispBuilder.s_emptyTRO;
-                                        material.__$troMid = -1;
+                                        runit.texMid = runit.tro.getMid();
+                                        RenderProcessBuider.RejoinRunitForTro(runit);
+                                        material.__$troMid = runit.texMid;
                                     }
                                 }
                             }
@@ -144,6 +151,8 @@ export namespace vox
                                     runit.tro.__$detachThis();
                                 }
                                 runit.tro = tro;
+                                runit.texMid = runit.tro.getMid();
+                                if(runit.__$rprouid >= 0)RenderProcessBuider.RejoinRunitForTro(runit);
                                 tro.__$attachThis();
                                 material.__$troMid = runit.tro.getMid();
                             }
@@ -155,12 +164,13 @@ export namespace vox
                                 if(runit.tro != null)
                                 {
                                     runit.tro.__$detachThis();
-                                }                                        
+                                }
                                 runit.tro = RODispBuilder.s_emptyTRO;
-                                material.__$troMid = -1;
+                                runit.texMid = runit.tro.getMid();
+                                if(runit.__$rprouid >= 0)RenderProcessBuider.RejoinRunitForTro(runit);
+                                material.__$troMid = runit.texMid;
                             }
                         }
-                        runit.texMid = runit.tro.getMid();
                         if(MaterialProgram.GetSharedUniformByShd(shdp) == null)
                         {
                             // create shared uniform
@@ -239,7 +249,7 @@ export namespace vox
                             runit.ibufType = runit.vro.ibufType;
                             runit.ibufStep = runit.vro.ibufStep;
                         }
-                        //console.log("runit.ibufType: "+runit.ibufType+", runit.ibufStep: "+runit.ibufStep+", runit.ivsCount: "+runit.ivsCount);
+                        //console.log("buildGpuDisp(), runit.ibufType: "+runit.ibufType+", runit.ibufStep: "+runit.ibufStep+", runit.ivsCount: "+runit.ivsCount);
                         RenderProcessBuider.GetProcess(processUid).addDisp(rc, disp);
                     }
                     else

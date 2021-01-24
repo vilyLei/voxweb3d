@@ -5,8 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RenderProcessT from "../../vox/render/RenderProcess";
 
+import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 
 export namespace vox
@@ -39,6 +41,10 @@ export namespace vox
                     return RenderProcessBuider.m_processList[index];
                 }
                 return null;
+            }
+            static RejoinRunitForTro(runit:RPOUnit):void
+            {
+                RenderProcessBuider.m_processList[runit.__$rprouid].rejoinRunitForTro(runit);
             }
             static Create(batchEnabled:boolean,fixedState:boolean):RenderProcess
             {
