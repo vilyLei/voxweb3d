@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import * as DivLogT from "../../vox/utils/DivLog";
+import * as RCExtensionT from "../../vox/render/RCExtension";
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as Color4T from "../../vox/material/Color4";
 import * as KeyboardT from "../../vox/ui/Keyboard";
@@ -15,6 +16,7 @@ import * as RendererStateT from "../../vox/render/RendererState";
 import * as ContextMouseEvtDispatcherT from "../../vox/render/ContextMouseEvtDispatcher";
 
 import DivLog = DivLogT.vox.utils.DivLog;
+import RCExtension = RCExtensionT.vox.render.RCExtension;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import Color4 = Color4T.vox.material.Color4;
 import Keyboard = KeyboardT.vox.ui.Keyboard;
@@ -228,6 +230,22 @@ export namespace vox
                         this.m_webGLVersion = -1;
                         alert('Unable to initialize WebGL. Your browser or machine may not support it.');
                         return;
+                    }
+                    let device:any = RendererDeviece;
+                    device.MAX_TEXTURE_SIZE = this.m_gl.getParameter(this.m_gl.MAX_TEXTURE_SIZE);
+                    RCExtension.Initialize(this.m_webGLVersion,this.m_gl);
+                    RendererDeviece.Initialize([this.m_webGLVersion]);
+
+                    
+                    let debugInfo:any = RCExtension.WEBGL_debug_renderer_info;
+                    if(debugInfo != null)
+                    {
+                        let webgl_vendor:any = this.m_gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
+                        let webgl_renderer:any = this.m_gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
+                        device.GPU_VENDOR = webgl_vendor;
+                        device.GPU_RENDERER = webgl_vendor;
+                        console.log("webgl_vendor: ",webgl_vendor);
+                        console.log("webgl_renderer: ",webgl_renderer);
                     }
 
                     var selfT:RAdapterContext = this;

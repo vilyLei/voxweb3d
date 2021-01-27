@@ -112,9 +112,9 @@ export namespace vox
                 if(this.m_texData != null)
                 {
                     let gl:any = rc.RContext;
-                    let interType:any = TextureFormat.ToGL(gl,this.internalFormat);
-                    let format:any = TextureFormat.ToGL(gl,this.srcFormat);
-                    let type:any = TextureDataType.ToGL(gl, this.dataType);
+                    let interType:number = TextureFormat.ToGL(gl,this.internalFormat);
+                    let format:number = TextureFormat.ToGL(gl,this.srcFormat);
+                    let type:number = TextureDataType.ToGL(gl, this.dataType);
                     let d:ImgTexData = this.m_texData;
                     if(this.m_texDatas == null)
                     {                       

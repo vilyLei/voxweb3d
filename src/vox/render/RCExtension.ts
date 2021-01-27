@@ -24,6 +24,7 @@ export namespace vox
             static readonly OES_element_index_uint:any = null;
             static readonly EXT_blend_minmax:any = null;
             static readonly WEBGL_depth_texture:any = null;
+            static readonly WEBGL_debug_renderer_info:any = null;
 
             static Initialize(webVer:number, gl:any):void
             {
@@ -114,6 +115,12 @@ export namespace vox
                 console.log("Use WEBGL_depth_texture Extension success!");
                 else
                 console.log("WEBGL_depth_texture Extension can not support!");
+
+                selfT.WEBGL_debug_renderer_info = gl.getExtension('WEBGL_debug_renderer_info');
+                if(selfT.WEBGL_debug_renderer_info != null)
+                console.log("Use WEBGL_debug_renderer_info Extension success!");
+                else
+                console.log("WEBGL_debug_renderer_info Extension can not support!");
                 //
                 //console.log("RCExtension.WEBGL_depth_texture: ",RCExtension.WEBGL_depth_texture);
             }

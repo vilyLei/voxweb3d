@@ -76,7 +76,7 @@ export namespace demo
         private m_peelEntity2:DisplayEntity = null;
         protected initializeSceneObj():void
         {
-            console.log("DemoDeepTransparent2::initialize()......");
+            console.log("DemoDeepTransparent2::initialize()......,maxTexSize: ",RendererDeviece.MAX_TEXTURE_SIZE);
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
@@ -194,6 +194,7 @@ export namespace demo
                 return;
             }
             this.m_flag -= 1;
+
             //this.m_rscene.run();
             //  if(this.m_profileInstance != null)
             //  {
@@ -227,8 +228,6 @@ export namespace demo
                 if(colorIndex > 1) colorIndex = 0;
                 this.m_peelM0.setPeelEanbled(true);
                 this.m_wrapperTex.attachTex(TextureStore.GetDepthTextureAt(depIndex0));
-                //console.log("depIndex1: ",depIndex1,"colorIndex: ",colorIndex);
-                //this.m_peelEntity0.updateTextureAt(1,this.m_depTex0,this.m_rscene.getRenderProxy());
                 this.m_rcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(colorIndex), true, false, 0);
                 this.m_rcontext.setRenderToTexture(TextureStore.GetDepthTextureAt(depIndex1), true, false, 1024);
                 this.m_rscene.renderBegin();

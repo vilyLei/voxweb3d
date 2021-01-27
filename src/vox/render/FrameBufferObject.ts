@@ -127,33 +127,18 @@ export namespace vox
     
     		renderToTexAt(rgl:any, texProxy:TextureProxy, outPutIndex:number):void
 			{
-				let inFormat:number = -1;
-				if (texProxy != null)
+				let inFormat:number = texProxy!=null?texProxy.internalFormat:-1;
+				
+				if (outPutIndex == 0)
 				{
-					inFormat = texProxy.internalFormat;
-				}
-				if (this.m_fbo != null)
-				{
+					// 注意, 防止多次重复调用的没必要重设
+					this.m_gl.bindFramebuffer(this.m_fboTarget, this.m_fbo);
 					if(inFormat != TextureFormat.DEPTH_COMPONENT)
 					{
-						if (outPutIndex == 0)
-						{
-							this.m_activeAttachmentTotal = 0;
-							this.m_attachmentIndex = 0;
-							// 注意, 防止多次重复调用的没必要重设
-							this.m_gl.bindFramebuffer(this.m_fboTarget, this.m_fbo);
-							//console.log(this.toString() + ", bindFramebuffer, texProxy("+texProxy+"), m_fbo: "+this.m_fbo+",this.m_fboTarget: "+this.m_fboTarget);
-						}
-					}
-					else
-					{
-						if (outPutIndex == 0)
-						{
-							this.m_gl.bindFramebuffer(this.m_fboTarget, this.m_fbo);
-						}
+						this.m_activeAttachmentTotal = 0;
+						this.m_attachmentIndex = 0;
 					}
 				}
-				let i:number = 0;
 				let targetType:number = -1;
 				let rTex:any = null;
 				//trace("FrameBufferObject::use(), texProxy != null: "+(texProxy != null));
@@ -161,42 +146,21 @@ export namespace vox
 				{
 					targetType = texProxy.getTargetType();
 					rTex = texProxy.__$gpuBuf();
-
-					let boo:boolean = false;
-					if(texProxy.getBufWidth() != this.m_width || texProxy.getBufHeight() != this.m_height)boo = true;
 					if(rTex == null)
 					{
 						rTex = rgl.createTexture();
-						boo = true;
+						this.initTexrure(rgl,targetType,texProxy,rTex);
 					}
-					if (boo)
+					else if(texProxy.getBufWidth() != this.m_width || texProxy.getBufHeight() != this.m_height)
 					{
-    		            rgl.bindTexture(TextureTarget.GetValue(rgl, texProxy.getTargetType()), rTex);
-						switch(targetType)
-						{
-						case TextureTarget.TEXTURE_2D:
-							rgl.texImage2D(rgl.TEXTURE_2D, 0,TextureFormat.ToGL(rgl,texProxy.internalFormat),this.m_width,this.m_height,0,TextureFormat.ToGL(rgl,texProxy.srcFormat),TextureDataType.ToGL(rgl, texProxy.dataType), null);
-							break;
-						case TextureTarget.TEXTURE_CUBE:
-							for (i = 0; i < 6; ++i)
-							{
-    		                    rgl.texImage2D(rgl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, TextureFormat.ToGL(rgl,texProxy.internalFormat),this.m_width,this.m_height,0,TextureFormat.ToGL(rgl,texProxy.srcFormat), TextureDataType.ToGL(rgl, texProxy.dataType), null);
-							}
-							break;
-						case TextureTarget.TEXTURE_SHADOW_2D:
-    		                rgl.texImage2D(rgl.TEXTURE_2D, 0, rgl.DEPTH_COMPONENT16, this.m_width, this.m_height, 0, rgl.DEPTH_COMPONENT, rgl.FLOAT, null);
-							break;
-						default:
-							break;
-						}
-						texProxy.__$setTexBuf(rgl, rTex, targetType,this.m_width,this.m_height);
-					}
-					targetType = texProxy.getTargetType();				
+						this.initTexrure(rgl,targetType,texProxy,rTex);
+					}					
 				}
 				else
 				{
 					targetType = this.m_texTargetTypes[this.m_activeAttachmentTotal];
 				}
+
 				switch(inFormat)
 				{
 					case TextureFormat.DEPTH_COMPONENT:
@@ -210,6 +174,39 @@ export namespace vox
 					default:
 					break;
 				}
+
+				this.framebufferTexture2D(rgl,targetType, rTex);
+			}
+			private initTexrure(rgl:any, targetType:number,texProxy:TextureProxy, rTex:any):void
+			{
+
+				let interType:number = TextureFormat.ToGL(rgl, texProxy.internalFormat);
+				let format:number = TextureFormat.ToGL(rgl, texProxy.srcFormat);
+				let type:number = TextureDataType.ToGL(rgl, texProxy.dataType);
+				
+				rgl.bindTexture(TextureTarget.GetValue(rgl, targetType), rTex);
+				
+				switch(targetType)
+				{
+				case TextureTarget.TEXTURE_2D:
+					rgl.texImage2D(rgl.TEXTURE_2D, 0,interType,this.m_width,this.m_height,0,format,type, null);
+					break;
+				case TextureTarget.TEXTURE_CUBE:
+					for (let i:number = 0; i < 6; ++i)
+					{
+						rgl.texImage2D(rgl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, interType,this.m_width,this.m_height,0,format, type, null);
+					}
+					break;
+				case TextureTarget.TEXTURE_SHADOW_2D:
+					rgl.texImage2D(rgl.TEXTURE_2D, 0, rgl.DEPTH_COMPONENT16, this.m_width, this.m_height, 0, rgl.DEPTH_COMPONENT, rgl.FLOAT, null);
+					break;
+				default:
+					break;
+				}
+				texProxy.__$setTexBuf(rgl, rTex, targetType,this.m_width,this.m_height);
+			}
+			private framebufferTexture2D(rgl:any, targetType:number, rTex:any):void
+			{
 				// current texture attachments
 				switch (targetType)
 				{
@@ -234,7 +231,7 @@ export namespace vox
 					++this.m_activeAttachmentTotal;
 					break;
 				case TextureTarget.TEXTURE_CUBE:
-					for (i = 0; i < 6; ++i)
+					for (let i:number = 0; i < 6; ++i)
 					{
 						if(this.m_attachmentMaskList[this.m_activeAttachmentTotal])
 						{
@@ -382,10 +379,8 @@ export namespace vox
 			}
 			initialize(rgl:any, pw:number, ph:number):void
 			{
-				//pw = Math.floor(this.devPRatio * pw);
-				//ph = Math.floor(this.devPRatio * ph);
 				this.m_gl = rgl;
-				this.m_COLOR_ATTACHMENT0 = RenderFBOProxy.Get_COLOR_ATTACHMENT0();
+				this.m_COLOR_ATTACHMENT0 = RenderFBOProxy.COLOR_ATTACHMENT0;
 				if(this.m_fboSizeChanged)
 				{
 					pw = this.m_resizeW;
@@ -444,10 +439,98 @@ export namespace vox
 				}
 				return "[FrameBufferObject(FRAMEBUFFER(uid="+this.m_uid+" width="+this.m_width+",height="+this.m_height+")]";
 			}
+			private buildDepthStencilRBO(rgl:any, pw:number, ph:number):void
+			{
+				if(this.m_depthStencilRBO == null)this.m_depthStencilRBO = rgl.createRenderbuffer();
+				if (this.multisampleEnabled)
+				{
+					rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthStencilRBO);
+					rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.DEPTH_STENCIL, pw, ph);
+					rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.DEPTH_STENCIL_ATTACHMENT, rgl.RENDERBUFFER, this.m_depthStencilRBO);
+					//
+					if(this.m_colorRBO == null)this.m_colorRBO = rgl.createRenderbuffer();
+					rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_colorRBO);
+					rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.RGBA8, pw, ph);
+					rgl.framebufferRenderbuffer(this.m_fboTarget, this.m_COLOR_ATTACHMENT0, rgl.RENDERBUFFER, this.m_colorRBO);
+					//
+				}
+				else
+				{
+					rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthStencilRBO);
+					rgl.renderbufferStorage(rgl.RENDERBUFFER,rgl.DEPTH_STENCIL, pw, ph);
+					rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.DEPTH_STENCIL_ATTACHMENT, rgl.RENDERBUFFER, this.m_depthStencilRBO);
+				}
+			}
+			private buildDepthRBO(rgl:any, pw:number, ph:number):void
+			{
+				if (this.m_depthRBO == null) this.m_depthRBO = rgl.createRenderbuffer();
+				if (this.multisampleEnabled)
+				{
+					rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthRBO);
+					rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.DEPTH_COMPONENT24, pw, ph);
+					rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.DEPTH_ATTACHMENT, rgl.RENDERBUFFER, this.m_depthRBO);
+					//
+					if(this.m_colorRBO == null)this.m_colorRBO = rgl.createRenderbuffer();
+					rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_colorRBO);
+					rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.RGBA8, pw, ph);
+					rgl.framebufferRenderbuffer(this.m_fboTarget, this.m_COLOR_ATTACHMENT0, rgl.RENDERBUFFER, this.m_colorRBO);
+				}
+				else
+				{
+					rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthRBO);
+					if(RendererDeviece.IsWebGL2())
+					{
+						rgl.renderbufferStorage(rgl.RENDERBUFFER, rgl.DEPTH_COMPONENT24, pw, ph);
+					}
+					else
+					{
+						console.log("Only use webgl1 depth fbo buffer.");
+						rgl.renderbufferStorage(rgl.RENDERBUFFER, rgl.DEPTH_COMPONENT16, pw, ph);
+					}
+					rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.DEPTH_ATTACHMENT, rgl.RENDERBUFFER, this.m_depthRBO);
+				}
+			}
+			private buildStencilRBO(rgl:any, pw:number, ph:number):void
+			{
+				if (this.m_depthStencilRBO == null)
+				{
+					//trace("FrameBufferObject create stencil buf...this.multisampleEnabled: "+this.multisampleEnabled+",this.multisampleLevel:"+this.multisampleLevel);
+					if(this.m_depthStencilRBO == null)this.m_depthStencilRBO = rgl.createRenderbuffer();
+					if(this.multisampleEnabled)
+					{
+						rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthStencilRBO);
+						rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.STENCIL_INDEX8, pw, ph);
+						rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.STENCIL_ATTACHMENT, rgl.RENDERBUFFER, this.m_depthStencilRBO);
+						//
+						if(this.m_colorRBO == null)this.m_colorRBO = rgl.createRenderbuffer();
+						rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_colorRBO);
+						rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.RGBA8, pw, ph);
+						rgl.framebufferRenderbuffer(this.m_fboTarget, this.m_COLOR_ATTACHMENT0, rgl.RENDERBUFFER, this.m_colorRBO);
+					}
+					else
+					{
+						rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthStencilRBO);
+						rgl.renderbufferStorage(rgl.RENDERBUFFER,rgl.STENCIL_INDEX8, pw, ph);
+						rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.STENCIL_ATTACHMENT, rgl.RENDERBUFFER, this.m_depthStencilRBO);
+					}
+				}
+			}
+			private buildColorRBO(rgl:any, pw:number, ph:number):void
+			{
+				if (this.multisampleEnabled)
+				{
+					if(this.m_colorRBO == null)this.m_colorRBO = rgl.createRenderbuffer();
+					rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_colorRBO);
+					rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.RGBA8, pw, ph);
+					rgl.framebufferRenderbuffer(this.m_fboTarget, this.m_COLOR_ATTACHMENT0, rgl.RENDERBUFFER, this.m_colorRBO);
+					//
+				}
+				console.log("FrameBufferObject create only color buf...this.multisampleEnabled: "+this.multisampleEnabled+",this.multisampleLevel:"+this.multisampleLevel);
+			}
 			private createNewFBO(rgl:any, pw:number, ph:number):void
 			{
 				let boo:boolean = this.m_fbo == null;
-				//this.m_rttTexIndexList = [];
+				
 				this.m_preAttachTotal = this.m_activeAttachmentTotal = 0;
 				this.m_preAttachIndex = this.m_attachmentIndex = 0;
 				this.m_width = pw;
@@ -478,93 +561,21 @@ export namespace vox
 						if (this.m_depthStencilRBO == null)
 						{
 							//trace("FrameBufferObject create depth and stencil buf...this.multisampleEnabled: "+this.multisampleEnabled+",this.multisampleLevel:"+this.multisampleLevel);
-							if(this.m_depthStencilRBO == null)this.m_depthStencilRBO = rgl.createRenderbuffer();
-							if (this.multisampleEnabled)
-							{
-								rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthStencilRBO);
-								rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.DEPTH_STENCIL, pw, ph);
-								rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.DEPTH_STENCIL_ATTACHMENT, rgl.RENDERBUFFER, this.m_depthStencilRBO);
-								//
-								if(this.m_colorRBO == null)this.m_colorRBO = rgl.createRenderbuffer();
-								rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_colorRBO);
-								rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.RGBA8, pw, ph);
-								rgl.framebufferRenderbuffer(this.m_fboTarget, this.m_COLOR_ATTACHMENT0, rgl.RENDERBUFFER, this.m_colorRBO);
-								//
-							}
-							else
-							{
-								rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthStencilRBO);
-								rgl.renderbufferStorage(rgl.RENDERBUFFER,rgl.DEPTH_STENCIL, pw, ph);
-								rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.DEPTH_STENCIL_ATTACHMENT, rgl.RENDERBUFFER, this.m_depthStencilRBO);
-							}
+							this.buildDepthStencilRBO(rgl, pw,ph);
 						}
 					}
 					else
 					{
-						if (this.m_depthRBO == null) this.m_depthRBO = rgl.createRenderbuffer();
-						if (this.multisampleEnabled)
-						{
-							rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthRBO);
-							rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.DEPTH_COMPONENT24, pw, ph);
-							rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.DEPTH_ATTACHMENT, rgl.RENDERBUFFER, this.m_depthRBO);
-							//
-							if(this.m_colorRBO == null)this.m_colorRBO = rgl.createRenderbuffer();
-							rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_colorRBO);
-							rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.RGBA8, pw, ph);
-							rgl.framebufferRenderbuffer(this.m_fboTarget, this.m_COLOR_ATTACHMENT0, rgl.RENDERBUFFER, this.m_colorRBO);
-						}
-						else
-						{
-							rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthRBO);
-							if(RendererDeviece.IsWebGL2())
-							{
-								rgl.renderbufferStorage(rgl.RENDERBUFFER, rgl.DEPTH_COMPONENT24, pw, ph);
-							}
-							else
-							{
-								console.log("Only use webgl1 depth fbo buffer.");
-								rgl.renderbufferStorage(rgl.RENDERBUFFER, rgl.DEPTH_COMPONENT16, pw, ph);
-							}
-							rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.DEPTH_ATTACHMENT, rgl.RENDERBUFFER, this.m_depthRBO);
-						}
+						this.buildDepthRBO(rgl, pw,ph);
 					}
 				}
 				else if (this.writeStencilEnabled)
 				{
-					if (this.m_depthStencilRBO == null)
-					{
-						//trace("FrameBufferObject create stencil buf...this.multisampleEnabled: "+this.multisampleEnabled+",this.multisampleLevel:"+this.multisampleLevel);
-						if(this.m_depthStencilRBO == null)this.m_depthStencilRBO = rgl.createRenderbuffer();
-						if(this.multisampleEnabled)
-						{
-							rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthStencilRBO);
-							rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.STENCIL_INDEX8, pw, ph);
-							rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.STENCIL_ATTACHMENT, rgl.RENDERBUFFER, this.m_depthStencilRBO);
-							//
-							if(this.m_colorRBO == null)this.m_colorRBO = rgl.createRenderbuffer();
-							rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_colorRBO);
-							rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.RGBA8, pw, ph);
-							rgl.framebufferRenderbuffer(this.m_fboTarget, this.m_COLOR_ATTACHMENT0, rgl.RENDERBUFFER, this.m_colorRBO);
-						}
-						else
-						{
-							rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthStencilRBO);
-							rgl.renderbufferStorage(rgl.RENDERBUFFER,rgl.STENCIL_INDEX8, pw, ph);
-							rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.STENCIL_ATTACHMENT, rgl.RENDERBUFFER, this.m_depthStencilRBO);
-						}
-					}
+					this.buildStencilRBO(rgl,pw,ph);
 				}
 				else
 				{
-					if (this.multisampleEnabled)
-					{
-						if(this.m_colorRBO == null)this.m_colorRBO = rgl.createRenderbuffer();
-						rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_colorRBO);
-						rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.RGBA8, pw, ph);
-						rgl.framebufferRenderbuffer(this.m_fboTarget, this.m_COLOR_ATTACHMENT0, rgl.RENDERBUFFER, this.m_colorRBO);
-						//
-					}
-					console.log("FrameBufferObject create only color buf...this.multisampleEnabled: "+this.multisampleEnabled+",this.multisampleLevel:"+this.multisampleLevel);
+					this.buildColorRBO(rgl, pw,ph);
 				}
 				if(boo)
 				{
@@ -572,7 +583,7 @@ export namespace vox
 					//trace("XXXXX   XXXXXXXXx Err: "+e+", rgl.FRAMEBUFFER_COMPLETE: "+rgl.FRAMEBUFFER_COMPLETE);
 					if(e !== rgl.FRAMEBUFFER_COMPLETE)
 					{
-						console.log("FrameBufferObject::createNewFBO(), Error: create failure!!!!");
+						console.error("FrameBufferObject::createNewFBO(), Error: create failure!!!!");
 					}
 					else
 					{

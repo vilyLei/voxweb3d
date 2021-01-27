@@ -109,9 +109,9 @@ export namespace vox
                 {
                     let gl:any = rc.RContext;
                     let d:RawTexData = this.m_texData;
-                    let interType:any = TextureFormat.ToGL(gl,this.internalFormat);
-                    let format:any = TextureFormat.ToGL(gl,this.srcFormat);
-                    let type:any = TextureDataType.ToGL(gl, this.dataType);
+                    let interType:number = TextureFormat.ToGL(gl,this.internalFormat);
+                    let format:number = TextureFormat.ToGL(gl,this.srcFormat);
+                    let type:number = TextureDataType.ToGL(gl, this.dataType);
                     if(this.m_texDatas == null)
                     {
                         d.updateToGpu(gl,this.m_samplerTarget,interType,format,type);
@@ -141,9 +141,9 @@ export namespace vox
                         let len:number = this.m_subDataList != null?this.m_subDataList.length:0;
                         let d:RawTexData = null;
 
-                        let interType:any = TextureFormat.ToGL(gl,this.internalFormat);
-                        let format:any = TextureFormat.ToGL(gl,this.srcFormat);
-                        let type:any = TextureDataType.ToGL(gl, this.dataType);
+                        let interType:number = TextureFormat.ToGL(gl,this.internalFormat);
+                        let format:number = TextureFormat.ToGL(gl,this.srcFormat);
+                        let type:number = TextureDataType.ToGL(gl, this.dataType);
                         this.__$updateToGpuBegin(gl);
                         let i:number = 0;
                         if(len > 0)

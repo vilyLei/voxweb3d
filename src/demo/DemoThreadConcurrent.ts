@@ -54,7 +54,7 @@ export namespace demo
         {
             this.m_processTotal = 4;
             param.maxWebGLVersion = 1;
-            param.setMatrix4AllocateSize(4096 * 12);
+            param.setMatrix4AllocateSize(4096 * 16);
             param.setCamPosition(500.0,500.0,500.0);
         }
         
@@ -186,7 +186,7 @@ export namespace demo
             //if(this.m_downFlag < 20 && this.m_matTasks.length < 3)
             if(this.m_downFlag < 20)
             {
-                if(this.m_dispTotal < 22000)
+                if(this.m_dispTotal < 52000)
                 {
                     this.buildTask();
                 }

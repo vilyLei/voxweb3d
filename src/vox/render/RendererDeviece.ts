@@ -4,6 +4,10 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
+
+import * as RCExtensionT from "../../vox/render/RCExtension";
+
+import RCExtension = RCExtensionT.vox.render.RCExtension;
 export namespace vox
 {
     export namespace render
@@ -15,6 +19,11 @@ export namespace vox
             private static s_devicePixelRatio:number = 1.0;
             private static s_mobileWeb:boolean = false;
             private static s_debugEnabled:boolean = true;
+
+            public static GPU_VENDOR:string = "unknown";
+            public static GPU_RENDERER:string = "unknown";
+            public static MAX_TEXTURE_SIZE:number = 4096;
+
             // for debug
             public static SHOWLOG_ENABLED:boolean = false;
             public static SHADERCODE_TRACE_ENABLED:boolean = false;

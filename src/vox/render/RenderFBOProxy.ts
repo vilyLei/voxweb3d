@@ -4,9 +4,11 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// 真正位于高频运行的渲染管线中的被使用的渲染关键代理对象
 
+import * as RCExtensionT from "../../vox/render/RCExtension";
 import * as RAdapterContextT from "../../vox/render/RAdapterContext";
+
+import RCExtension = RCExtensionT.vox.render.RCExtension;
 import RAdapterContext = RAdapterContextT.vox.render.RAdapterContext;
 export namespace vox
 {
@@ -15,39 +17,28 @@ export namespace vox
         export class RenderFBOProxy
         {
             private static m_rc:any = null;
-            private static m_COLOR_ATTACHMENT0:number = 0x0;
-            private static m_drawBufsObj:any = null;
             private static m_webGLVer:number = 2;
-            static Get_COLOR_ATTACHMENT0():number
-            {
-                return RenderFBOProxy.m_COLOR_ATTACHMENT0;
-            }
-            static GetWebglDrawBufsObj():any
-            {
-                return RenderFBOProxy.m_drawBufsObj;
-            }
-            static SetRenderer(pr:RAdapterContext,drawBufsObj:any):void
+            public static readonly COLOR_ATTACHMENT0:number = 0x0;
+
+            static SetRenderer(pr:RAdapterContext,):void
             {
                 RenderFBOProxy.m_rc = pr.getRC();
                 RenderFBOProxy.m_webGLVer = pr.getWebGLVersion();
-                RenderFBOProxy.m_drawBufsObj = drawBufsObj;
+                let thisT:any = RenderFBOProxy;
                 if(RenderFBOProxy.m_webGLVer == 1)
                 {
-                    //RenderFBOProxy.m_drawBufsObj = RenderFBOProxy.m_rc.getExtension('WEBGL_draw_buffers');
-                    if (RenderFBOProxy.m_drawBufsObj != null)
+                    if (RCExtension.WEBGL_draw_buffers != null)
                     {
-                        //trace("Use WEBGL_draw_buffers Extension success!");
-                        RenderFBOProxy.m_COLOR_ATTACHMENT0 = RenderFBOProxy.m_drawBufsObj.COLOR_ATTACHMENT0_WEBGL;
+                        thisT.COLOR_ATTACHMENT0 = RCExtension.WEBGL_draw_buffers.COLOR_ATTACHMENT0_WEBGL;
                     }
                     else
                     {
-                        RenderFBOProxy.m_COLOR_ATTACHMENT0 = RenderFBOProxy.m_rc.COLOR_ATTACHMENT0;
-                        //trace("WEBGL_draw_buffers Extension can not support!");
+                        thisT.COLOR_ATTACHMENT0 = RenderFBOProxy.m_rc.COLOR_ATTACHMENT0;
                     }
                 }
                 else
                 {
-                    RenderFBOProxy.m_COLOR_ATTACHMENT0 = RenderFBOProxy.m_rc.COLOR_ATTACHMENT0;
+                    thisT.COLOR_ATTACHMENT0 = RenderFBOProxy.m_rc.COLOR_ATTACHMENT0;
                 }
             }
             static DrawBuffers(attachments:number[]):void
@@ -56,14 +47,10 @@ export namespace vox
                 {
                     RenderFBOProxy.m_rc.drawBuffers(attachments);
                 }
-                else if(RenderFBOProxy.m_drawBufsObj != null)
+                else if (RCExtension.WEBGL_draw_buffers != null)
                 {
-                    RenderFBOProxy.m_drawBufsObj.drawBuffersWEBGL(attachments);
+                    RCExtension.WEBGL_draw_buffers.drawBuffersWEBGL(attachments);
                 }
-            }    
-            static SetRenderToBackBuffer():void
-            {
-                RenderFBOProxy.m_rc.bindFramebuffer(RenderFBOProxy.m_rc.FRAMEBUFFER,null);
             }
         }
     }

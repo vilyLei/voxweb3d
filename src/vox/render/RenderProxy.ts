@@ -6,7 +6,6 @@
 /***************************************************************************/
 // 真正位于高频运行的渲染管线中的被使用的渲染关键代理对象
 
-import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as RenderFilterT from "../../vox/render/RenderFilter";
 import * as RenderMaskBitfieldT from "../../vox/render/RenderMaskBitfield";
 import * as MathConstT from "../../vox/utils/MathConst";
@@ -23,7 +22,6 @@ import * as RenderFBOProxyT from "../../vox/render/RenderFBOProxy";
 import * as RCExtensionT from "../../vox/render/RCExtension";
 import * as DivLogT from "../../vox/utils/DivLog";
 
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RenderFilter = RenderFilterT.vox.render.RenderFilter;
 import RenderMaskBitfield = RenderMaskBitfieldT.vox.render.RenderMaskBitfield;
 import MathConst = MathConstT.vox.utils.MathConst;
@@ -501,7 +499,7 @@ export namespace vox
                 this.m_RAdapterContext.setWebGLMaxVersion(this.m_maxWebGLVersion);
                 this.m_RAdapterContext.initialize(glCanvasNS,glDivNS,renderContextAttri);
                 this.m_WEBGL_VER = this.m_RAdapterContext.getWebGLVersion();
-                RendererDeviece.Initialize([this.m_WEBGL_VER]);
+                
                 this.m_viewW = this.m_RAdapterContext.getViewportWidth();
                 this.m_viewH = this.m_RAdapterContext.getViewportHeight();
                 this.m_adapter.initialize(this.m_RAdapterContext);
@@ -528,7 +526,6 @@ export namespace vox
                 this.m_camera = this.m_mainCamera;
                 let selfT:any = this;
                 let gl:any = this.m_rc;
-                RCExtension.Initialize(this.m_WEBGL_VER,gl);
 
                 selfT.RGBA = gl.RGBA;
                 selfT.UNSIGNED_BYTE = gl.UNSIGNED_BYTE;
@@ -568,7 +565,7 @@ export namespace vox
 			    classRenderMaskBitfield.DEPTH_BUFFER_BIT = gl.DEPTH_BUFFER_BIT;
 			    classRenderMaskBitfield.STENCIL_BUFFER_BIT = gl.STENCIL_BUFFER_BIT;
 
-                RenderFBOProxy.SetRenderer(this.m_RAdapterContext, RCExtension.WEBGL_draw_buffers);
+                RenderFBOProxy.SetRenderer(this.m_RAdapterContext);
 
                 selfT.RState = this.m_RAdapterContext.getRenderState();
                 selfT.RContext = this.m_rc;
