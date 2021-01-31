@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as ROTransformT from "../../vox/display/ROTransform";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
@@ -16,6 +17,7 @@ import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as Box3DMeshT from "../../vox/mesh/Box3DMesh";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import ROTransform = ROTransformT.vox.display.ROTransform;
 import RendererState = RendererStateT.vox.render.RendererState;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
@@ -35,9 +37,14 @@ export namespace vox
             private m_normalType:number = VtxNormalType.FLAT;
             private m_minV:Vector3D = null;
             private m_maxV:Vector3D = null;
+            private m_transMatrix:Matrix4 = null;
             constructor(transform:ROTransform = null)
             {
                 super(transform);
+            }
+            setVtxTransformMatrix(matrix:Matrix4):void
+            {
+                this.m_transMatrix = matrix;
             }
             useFlatNormal():void
             {
@@ -78,9 +85,21 @@ export namespace vox
 
             protected __activeMesh(material:MaterialBase):void
             {
+                let mesh:Box3DMesh = null;
                 if(this.getMesh() == null)
                 {
-                    let mesh:Box3DMesh = new Box3DMesh();
+                    mesh = new Box3DMesh();
+                }
+                else if(this.getMesh().getIVS() == null)
+                {
+                    mesh = this.getMesh() as Box3DMesh;
+                }
+                if(mesh != null)
+                {
+                    if(this.m_transMatrix != null)
+                    {
+                        mesh.setTransformMatrix(this.m_transMatrix);
+                    }
                     mesh.vaoEnabled = true;
                     mesh.m_normalType = this.m_normalType;
                     mesh.normalScale = this.normalScale;
@@ -90,7 +109,9 @@ export namespace vox
                     this.m_minV = null;
                     this.m_maxV = null;
                     this.setMesh(mesh);
+                    mesh.setTransformMatrix(null);
                 }
+                this.m_transMatrix = null;
             }
 
             setFaceUVSAt(uvslen8:Float32Array,i:number):void

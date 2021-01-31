@@ -214,7 +214,6 @@ export namespace vox
                     shdUniform.locations = [];
                     shdUniform.dataList = [];
                     shdUniform.dataSizeList = [];
-                    //console.log("BuildLocalFromDataAAA create u_objMat.shdp: "+shdp);
                     shdUniform.uniformSize += 1;
                     shdUniform.uniformNameList.push( "u_objMat" );
                     shdUniform.types.push( shdp.getUniformTypeByNS("u_objMat") );

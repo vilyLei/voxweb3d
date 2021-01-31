@@ -295,6 +295,7 @@ export namespace vox
                     this.m_rAdapter = this.m_renderProxy.getRenderAdapter();
                     this.m_rAdapter.bgColor.setRGBA4f(0.0,0.0,0.0,1.0);
                     this.m_renderProxy.initialize(
+                        param.getMainDiv(),
                         param.getGLCanvasName(),
                         param.getGLDivName(),
                         param.camPosition,

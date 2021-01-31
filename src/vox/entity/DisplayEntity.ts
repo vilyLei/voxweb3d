@@ -310,6 +310,7 @@ export namespace vox
                     this.setMaterial( entity.getMaterial() );
                 }
             }
+            // 必须是构建完备的mesh才能被设置进来
             setMesh(m:MeshBase):void
             {
                 if(this.m_mesh == null && m != null)

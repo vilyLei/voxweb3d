@@ -117,7 +117,7 @@ export namespace vox
 					}
 				}
 			}
-    		//
+			
 			getFBO():object { return this.m_fbo; }
 			getDepthStencilRBO():object { return this.m_depthStencilRBO; }
 			getDepthRBO():object { return this.m_depthRBO; }

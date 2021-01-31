@@ -16,6 +16,7 @@ export namespace vox
             private m_matrix4AllocateSize:number = 8192;
             private m_glCanvasName:string = "glcanvas";
             private m_glDivName:string = "glcanvasdiv";
+            private m_mainDiv:HTMLElement = null;
             private m_renderContextAttri:any = {
                 depth:true
                 ,premultipliedAlpha: false
@@ -46,6 +47,14 @@ export namespace vox
                     this.m_glDivName = divIdns;
                 }
                 this.m_glCanvasName = glCanvasName;
+            }
+            setMainDiv(div:HTMLElement):void
+            {
+                this.m_mainDiv = div;
+            }
+            getMainDiv():HTMLElement
+            {
+                return this.m_mainDiv;
             }
             getRenderContextAttri():any
             {

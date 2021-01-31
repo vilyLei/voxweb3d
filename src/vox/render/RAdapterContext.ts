@@ -83,11 +83,18 @@ export namespace vox
             {
                 return this.m_webGLVersion;
             }
+            public setCanvasDiv(div:HTMLElement):void
+            {
+                this.m_div = div;
+            }
             private createWebEle(pdocument:any,canvasns:string,divns:string):void
             {
 
                 this.m_document = pdocument;
-                this.m_div = pdocument.getElementById(divns);
+                if(this.m_div == null)
+                {
+                    this.m_div = pdocument.getElementById(divns);
+                }
                 if(this.m_div == null)
                 {
                     this.m_div = pdocument.getElementById("app");
@@ -232,11 +239,32 @@ export namespace vox
                         return;
                     }
                     let device:any = RendererDeviece;
+                    //MAX_RENDERBUFFER_SIZE
                     device.MAX_TEXTURE_SIZE = this.m_gl.getParameter(this.m_gl.MAX_TEXTURE_SIZE);
+                    device.MAX_RENDERBUFFER_SIZE = this.m_gl.getParameter(this.m_gl.MAX_RENDERBUFFER_SIZE);
+                    let viewPortIMS:any = this.m_gl.getParameter(this.m_gl.MAX_VIEWPORT_DIMS);
+                    device.MAX_VIEWPORT_WIDTH = viewPortIMS[0];
+                    device.MAX_VIEWPORT_HEIGHT = viewPortIMS[1];
+
                     RCExtension.Initialize(this.m_webGLVersion,this.m_gl);
                     RendererDeviece.Initialize([this.m_webGLVersion]);
 
+                    console.log("viewPortIMS: ",viewPortIMS);
+                    console.log("MAX_TEXTURE_SIZE: ",RendererDeviece.MAX_TEXTURE_SIZE);
+                    console.log("MAX_RENDERBUFFER_SIZE: ",RendererDeviece.MAX_RENDERBUFFER_SIZE);
+                    console.log("MAX_VIEWPORT_WIDTH: ",RendererDeviece.MAX_VIEWPORT_WIDTH);
+                    console.log("MAX_VIEWPORT_HEIGHT: ",RendererDeviece.MAX_VIEWPORT_HEIGHT);
+
+                    //  DivLog.ShowLogOnce("MAX_TEXTURE_SIZE: "+RendererDeviece.MAX_TEXTURE_SIZE);
+                    //  DivLog.ShowLog("MAX_RENDERBUFFER_SIZE: "+RendererDeviece.MAX_RENDERBUFFER_SIZE);
+                    //  DivLog.ShowLog("MAX_VIEWPORT_WIDTH: "+RendererDeviece.MAX_VIEWPORT_WIDTH);
+                    //  DivLog.ShowLog("MAX_VIEWPORT_HEIGHT: "+RendererDeviece.MAX_VIEWPORT_HEIGHT);
                     
+                    //  let rc_vendor:any = this.m_gl.getParameter(this.m_gl.VENDOR);
+                    //  let rc_renderer:any = this.m_gl.getParameter(this.m_gl.RENDERER);
+                    //  console.log("rc_vendor: ",rc_vendor);
+                    //  console.log("rc_renderer: ",rc_renderer);
+
                     let debugInfo:any = RCExtension.WEBGL_debug_renderer_info;
                     if(debugInfo != null)
                     {
@@ -246,6 +274,9 @@ export namespace vox
                         device.GPU_RENDERER = webgl_vendor;
                         console.log("webgl_vendor: ",webgl_vendor);
                         console.log("webgl_renderer: ",webgl_renderer);
+
+                        DivLog.ShowLog("webgl_vendor: "+webgl_vendor);
+                        DivLog.ShowLog("webgl_renderer: "+webgl_renderer);
                     }
 
                     var selfT:RAdapterContext = this;
@@ -316,6 +347,7 @@ export namespace vox
             private m_rcanvasHeight:number = 0;
             private m_resizeCallback:()=>void = null;
             private m_resizeCallbackTarget:any = null;
+
             setResizeCallback(resizeCallbackTarget:any, resizeCallback:()=>void):void
             {
                 this.m_resizeCallbackTarget = resizeCallbackTarget;
@@ -361,14 +393,14 @@ export namespace vox
                     this.m_stage.viewHeight = this.m_displayHeight;
                     this.m_stage.pixelRatio = k;
                     
-                    DivLog.ShowLogOnce("stageSize: "+this.m_stage.stageWidth+","+this.m_stage.stageHeight);
-                    DivLog.ShowLog("canvasSize: "+this.m_canvas.width+","+this.m_canvas.height);
-                    DivLog.ShowLog("dispSize: "+this.m_displayWidth+","+this.m_displayHeight);
-                    DivLog.ShowLog("pixelRatio:"+this.m_devicePixelRatio);
-                    console.log("RAdapterContext::resize(), canvas.width:"+this.m_canvas.width+", canvas.height:"+this.m_canvas.height);
-                    console.log("RAdapterContext::resize(), stageWidth:"+this.m_stage.stageWidth+", stageHeight:"+this.m_stage.stageHeight);
-                    console.log("RAdapterContext::resize(), m_rcanvasWidth:"+this.m_rcanvasWidth+", m_rcanvasHeight:"+this.m_rcanvasHeight);
-                    console.log("RAdapterContext::resize(), stw:"+this.m_stage.stageWidth+", sth:"+this.m_stage.stageHeight);
+                    //  DivLog.ShowLogOnce("stageSize: "+this.m_stage.stageWidth+","+this.m_stage.stageHeight);
+                    //  DivLog.ShowLog("canvasSize: "+this.m_canvas.width+","+this.m_canvas.height);
+                    //  DivLog.ShowLog("dispSize: "+this.m_displayWidth+","+this.m_displayHeight);
+                    //  DivLog.ShowLog("pixelRatio:"+this.m_devicePixelRatio);
+                    //  console.log("RAdapterContext::resize(), canvas.width:"+this.m_canvas.width+", canvas.height:"+this.m_canvas.height);
+                    //  console.log("RAdapterContext::resize(), stageWidth:"+this.m_stage.stageWidth+", stageHeight:"+this.m_stage.stageHeight);
+                    //  console.log("RAdapterContext::resize(), m_rcanvasWidth:"+this.m_rcanvasWidth+", m_rcanvasHeight:"+this.m_rcanvasHeight);
+                    //  console.log("RAdapterContext::resize(), stw:"+this.m_stage.stageWidth+", sth:"+this.m_stage.stageHeight);
 
                     this.m_stage.update();
                     if(this.m_resizeCallback != null)
@@ -446,6 +478,15 @@ export namespace vox
         	getViewportHeight():number
         	{
         		return this.m_viewHeight;
+            }
+            
+        	getFBOWidth():number
+        	{
+        		return this.m_viewWidth < RendererDeviece.MAX_RENDERBUFFER_SIZE?this.m_viewWidth:RendererDeviece.MAX_RENDERBUFFER_SIZE;
+        	}
+        	getFBOHeight():number
+        	{
+                return this.m_viewHeight < RendererDeviece.MAX_RENDERBUFFER_SIZE?this.m_viewHeight:RendererDeviece.MAX_RENDERBUFFER_SIZE;
         	}
         	getRCanvasWidth():number
         	{

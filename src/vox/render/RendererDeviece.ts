@@ -23,6 +23,9 @@ export namespace vox
             public static GPU_VENDOR:string = "unknown";
             public static GPU_RENDERER:string = "unknown";
             public static MAX_TEXTURE_SIZE:number = 4096;
+            public static MAX_RENDERBUFFER_SIZE:number = 4096;
+            public static MAX_VIEWPORT_WIDTH:number = 4096;
+            public static MAX_VIEWPORT_HEIGHT:number = 4096;
 
             // for debug
             public static SHOWLOG_ENABLED:boolean = false;

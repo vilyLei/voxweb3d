@@ -222,6 +222,12 @@ export namespace vox
                         this.m_vs[i] = pvtx.x; this.m_vs[i + 1] = pvtx.y; this.m_vs[i + 2] = pvtx.z;
                         //trace(pvtx.x+","+pvtx.y+","+pvtx.z);
                         i += 3;
+                    }                    
+                    if(this.m_transMatrix != null)
+                    {
+                        this.m_transMatrix.transformVectorsSelf(this.m_vs, this.m_vs.length);
+                        this.bounds.addXYZFloat32Arr( this.m_vs );
+                        this.bounds.updateFast();
                     }
                     ROVertexBuffer.Reset();
                     ROVertexBuffer.AddFloat32Data(this.m_vs,3);

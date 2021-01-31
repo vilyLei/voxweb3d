@@ -205,8 +205,11 @@
 //  import * as DemoDeepTransparent from "./demo/DemoDeepTransparent";
 //  import Demo = DemoDeepTransparent.demo.DemoDeepTransparent;
 
-import * as DemoDeepTransparent2 from "./demo/DemoDeepTransparent2";
-import Demo = DemoDeepTransparent2.demo.DemoDeepTransparent2;
+//  import * as DemoDeepTransparent2 from "./demo/DemoDeepTransparent2";
+//  import Demo = DemoDeepTransparent2.demo.DemoDeepTransparent2;
+
+import * as DemoMaterial from "./demo/DemoMaterial";
+import Demo = DemoMaterial.demo.DemoMaterial;
 
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;

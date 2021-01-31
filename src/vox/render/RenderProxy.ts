@@ -60,7 +60,6 @@ export namespace vox
             readonly DEPTH:number = 0;
             readonly STENCIL:number = 0;
             readonly DEPTH_STENCIL:number = 0;
-
             
             readonly MAX:number = 0;
             readonly MIN:number = 0;
@@ -178,7 +177,7 @@ export namespace vox
                 }
                 return vao;
             }
-            useByLocationV2(ult:any,type:number, f32Arr:Float32Array,dataSize:number = 1,offset:number = 0):void
+            useByLocationV2(ult:any,type:number, f32Arr:Float32Array,dataSize:number,offset:number):void
             {
                 switch(type)
                 {
@@ -210,10 +209,12 @@ export namespace vox
                     case MaterialConst.SHADER_VEC2:
 	        		    this.m_rc.uniform2f(ult, f32Arr[0], f32Arr[1]);
                     break;
+                    default:
+                        break;
                 }
             }
             
-            useByLocationV1(ult:any,type:number, f32Arr:Float32Array,dataSize:number = 1):void
+            useByLocationV1(ult:any,type:number, f32Arr:Float32Array,dataSize:number):void
             {
                 switch(type)
                 {
@@ -238,6 +239,8 @@ export namespace vox
                     case MaterialConst.SHADER_VEC2:
 	        		    this.m_rc.uniform2f(ult, f32Arr[0], f32Arr[1]);
                     break;
+                    default:
+                        break;
                 }
             }
             createBuf():any
@@ -464,7 +467,6 @@ export namespace vox
                 this.m_mainCamera = new CameraBase(stage.getIndex());
                 this.m_mainCamera.uniformEnabled = true;
                 
-                //
                 if(this.m_perspectiveEnabled)
                 {
                     this.m_mainCamera.perspectiveRH(MathConst.DegreeToRadian(this.m_cameraFov), this.m_viewW/this.m_viewH, this.m_cameraNear, this.m_cameraFar);
@@ -480,7 +482,7 @@ export namespace vox
             {
                 this.m_adapter.readPixels(px,py,width,height,format,dataType,pixels);
             }
-            initialize(glCanvasNS:string,glDivNS:string,posV3:Vector3D = null, lookAtPosV3:Vector3D = null, upV3:Vector3D = null,perspectiveEnabled:boolean = true,renderContextAttri:any = null):void
+            initialize(div:HTMLElement,glCanvasNS:string,glDivNS:string,posV3:Vector3D = null, lookAtPosV3:Vector3D = null, upV3:Vector3D = null,perspectiveEnabled:boolean = true,renderContextAttri:any = null):void
             {
                 if(posV3 == null)
                 {
@@ -495,6 +497,7 @@ export namespace vox
                     upV3 = new Vector3D(0.0, 1.0, 0.0);
                 }
                 this.m_perspectiveEnabled = perspectiveEnabled;
+                this.m_RAdapterContext.setCanvasDiv(div);
                 this.m_RAdapterContext.setResizeCallback(this, this.resizeCallback);
                 this.m_RAdapterContext.setWebGLMaxVersion(this.m_maxWebGLVersion);
                 this.m_RAdapterContext.initialize(glCanvasNS,glDivNS,renderContextAttri);
@@ -551,8 +554,6 @@ export namespace vox
                     selfT.MIN = RCExtension.EXT_blend_minmax.MIN_EXT;
                     selfT.MAX = RCExtension.EXT_blend_minmax.MAX_EXT;
                 }
-                console.log("MIN: "+selfT.MIN);
-                console.log("MAX: "+selfT.MAX);
                 let classRenderFilter:any = RenderFilter;
                 classRenderFilter.NEAREST = gl.NEAREST;
                 classRenderFilter.LINEAR = gl.LINEAR;

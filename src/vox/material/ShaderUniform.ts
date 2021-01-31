@@ -5,15 +5,15 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 import * as ShaderUniformProbeT from "../../vox/material/ShaderUniformProbe";
+import * as MaterialConstT from "../../vox/material/MaterialConst";
 import * as ShaderProgramT from "../../vox/material/ShaderProgram";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
 import ShaderUniformProbe = ShaderUniformProbeT.vox.material.ShaderUniformProbe;
+import MaterialConst = MaterialConstT.vox.material.MaterialConst;
 import ShaderProgram = ShaderProgramT.vox.material.ShaderProgram;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 
@@ -93,6 +93,7 @@ export namespace vox
             {
                 super();
             }
+            
             use(rc:RenderProxy):void
             {
                 let i:number = 0;

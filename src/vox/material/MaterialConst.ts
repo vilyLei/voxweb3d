@@ -18,6 +18,7 @@ export namespace vox
             static UNIFORMNS_VIEW_MAT_NS:string = "u_viewMat";
             static UNIFORMNS_PROJ_MAT_NS:string = "u_projMat";
             // 取值范围3001(包括3001) 到 3255(包括3255)
+            static SHADER_UNDEFINED:number = 3010;
             static SHADER_VEC2:number = 3011;
             static SHADER_VEC3:number = 3012;
             static SHADER_VEC4:number = 3013;
@@ -108,9 +109,9 @@ export namespace vox
                         return MaterialConst.SHADER_SAMPLERCUBE;
                         break;
                     default:
-                        return -1;
+                        break;
                 }
-                return -1;
+                return MaterialConst.SHADER_UNDEFINED;
             }
             static GetTypeNSByType(type:number):string
             {
@@ -144,6 +145,11 @@ export namespace vox
                         break;
                     case MaterialConst.SHADER_SAMPLERCUBE:
                         return "samplerCube";
+                        break;
+                    case MaterialConst.SHADER_UNDEFINED:
+                        return "undefined";
+                        break;
+                    default:
                         break;
                 }
                 return "";

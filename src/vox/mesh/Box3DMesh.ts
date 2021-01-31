@@ -131,21 +131,25 @@ export namespace vox
                 this.m_vs[i + 3] = point5[0]; this.m_vs[i + 4] = point5[1]; this.m_vs[i + 5] = point5[2];
                 this.m_vs[i + 6] = point6[0]; this.m_vs[i + 7] = point6[1]; this.m_vs[i + 8] = point6[2];
                 this.m_vs[i + 9] = point7[0]; this.m_vs[i + 10] = point7[1]; this.m_vs[i + 11] = point7[2];
-                //
+
+                if(this.m_transMatrix != null)
+                {
+                    this.m_transMatrix.transformVectorsSelf(this.m_vs, this.m_vs.length);
+                    this.bounds.addXYZFloat32Arr( this.m_vs );
+                    this.bounds.updateFast();
+                }
                 ROVertexBuffer.Reset();
                 ROVertexBuffer.AddFloat32Data(this.m_vs,3);
-                //let typeList = [VtxBufConst.VBUF_VS];
-                //
+
                 baseI += 6;
                 k += 4;
                 this.m_ivs[baseI] = k + 2; this.m_ivs[baseI + 1] = k + 3; this.m_ivs[baseI + 2] = k;
                 this.m_ivs[baseI + 3] = k + 2; this.m_ivs[baseI + 4] = k; this.m_ivs[baseI + 5] = k + 1;
             
-                let faceTotal = 6;
-                //trace("use uvs.....AAAA Box3DMesh VS...........................");
+                let faceTotal:number = 6;
+                
         		if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX))
         		{
-                    //trace("use uvs.....AAAA Box3DMesh UVS...........................");
         			// uv
                     i = 0;
                     baseI = this.vtxTotal * 2;
@@ -210,12 +214,10 @@ export namespace vox
         				}
         			}
                     ROVertexBuffer.AddFloat32Data(this.m_uvs, 2);
-        		}
-        		//if (this.normalEnabled)
+                }
+                
         		if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX))
         		{
-                    //trace("use uvs.....AAAA Box3DMesh NVS...........................");
-        			// normal
                     this.m_nvs = new Float32Array(72);
                     baseI = 0;
                     let nx = 0.0;
@@ -247,9 +249,9 @@ export namespace vox
                                 ny = 1.0;
                                 break;
                             default:
-                                //break;
+                                break;
                             }
-                            //
+                            
                             i = baseI * 12;
                             nx *= this.normalScale;
                             ny *= this.normalScale;
@@ -258,7 +260,7 @@ export namespace vox
                             this.m_nvs[i+3] = nx; this.m_nvs[i + 4] = ny; this.m_nvs[i + 5] = nz;
                             this.m_nvs[i+6] = nx; this.m_nvs[i + 7] = ny; this.m_nvs[i + 8] = nz;
                             this.m_nvs[i+9] = nx; this.m_nvs[i + 10] = ny; this.m_nvs[i + 11] = nz;
-                            //
+
                             ++baseI;
                         }
                     }
@@ -273,7 +275,7 @@ export namespace vox
                             ny = this.m_vs[i+1] - centV.y;
                             nz = this.m_vs[i+2] - centV.z;
                             d = Math.sqrt(nx*nx + ny*ny + nz*nz);
-                            //trace(nx+","+ny+","+nz);
+                            
                             if (d > MathConst.MATH_MIN_POSITIVE)
                             {
                                 this.m_nvs[i] = nx / d;
@@ -299,23 +301,18 @@ export namespace vox
                         this.m_cvs[i+3] = pr; this.m_cvs[i + 4] = pg; this.m_cvs[i + 5] = pb;
                         this.m_cvs[i+6] = pr; this.m_cvs[i + 7] = pg; this.m_cvs[i + 8] = pb;
                         this.m_cvs[i+9] = pr; this.m_cvs[i + 10] = pg; this.m_cvs[i + 11] = pb;
-                        //
+                        
                         ++baseI;
                     }
                     ROVertexBuffer.AddFloat32Data(this.m_cvs,3);
-                    //typeList.push(VtxBufConst.VBUF_CVS);
                 }
                 if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX))
                 {
-                    //trace("m_vs: "+m_vs);
-                    //trace("m_uvs: "+m_uvs);
-                    //trace("m_nvs: "+m_nvs);
                     let numTriangles = 12;
                     let tvs:Float32Array = new Float32Array(this.m_nvs.length);
                     let btvs:Float32Array = new Float32Array(this.m_nvs.length);
                     SurfaceNormalCalc.ClacTrisTangent(this.m_vs, this.m_vs.length, this.m_uvs, this.m_nvs, numTriangles, this.m_ivs, tvs, btvs);
-                    //trace("tvs: "+tvs);
-                    //trace("btvs: "+btvs);
+
                     ROVertexBuffer.AddFloat32Data(tvs,3);
                     ROVertexBuffer.AddFloat32Data(btvs,3);
                 }
@@ -325,7 +322,7 @@ export namespace vox
                 this.m_vbuf.setUint16IVSData(this.m_ivs);
                 this.vtCount = this.m_ivs.length;
                 this.trisNumber = 12;
-                //
+                
                 this.buildEnd();
             }
             setFaceUVSAt(uvslen8:Float32Array,i:number):void

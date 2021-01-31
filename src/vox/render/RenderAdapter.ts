@@ -144,6 +144,8 @@ export namespace vox
 			getViewportY():number { return this.m_rcontext.getViewportY(); }
 			getViewportWidth():number { return this.m_rcontext.getViewportWidth(); }
 			getViewportHeight():number { return this.m_rcontext.getViewportHeight(); }
+			getFBOFitWidth():number { return this.m_rcontext.getFBOWidth(); }
+			getFBOFitHeight():number { return this.m_rcontext.getFBOHeight(); }
 			
     		setColorMask(mr:boolean,mg:boolean,mb:boolean,ma:boolean):void
     		{
@@ -460,7 +462,7 @@ export namespace vox
 						{
 							if(this.m_synFBOSizeWithViewport)
 							{
-								this.m_fboBuf.initialize(this.m_rc, Math.floor(this.m_rcontext.getRCanvasWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getRCanvasHeight() * this.m_fboSizeFactor));
+								this.m_fboBuf.initialize(this.m_rc, Math.floor(this.m_rcontext.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getFBOHeight() * this.m_fboSizeFactor));
 							}
 							else
 							{
@@ -485,7 +487,7 @@ export namespace vox
 								this.m_fboBuf.writeStencilEnabled = enableStencil;
 								if(this.m_synFBOSizeWithViewport)
 								{
-									this.m_fboBuf.initialize(this.m_rc, Math.floor(this.m_rcontext.getRCanvasWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getRCanvasHeight() * this.m_fboSizeFactor));
+									this.m_fboBuf.initialize(this.m_rc, Math.floor(this.m_rcontext.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getFBOHeight() * this.m_fboSizeFactor));
 								}
 								else
 								{
@@ -578,7 +580,7 @@ export namespace vox
 							if(this.m_synFBOSizeWithViewport)
 							{
 								//console.log("this.m_fboSizeFactor: "+this.m_fboSizeFactor);
-								this.m_fboViewSize.setTo(0,0,Math.floor(this.getViewportWidth() * this.m_fboSizeFactor),Math.floor(this.getViewportHeight() * this.m_fboSizeFactor));
+								this.m_fboViewSize.setTo(0,0,Math.floor(this.m_rcontext.getFBOWidth() * this.m_fboSizeFactor),Math.floor(this.m_rcontext.getFBOHeight() * this.m_fboSizeFactor));
 							}
 							else
 							{

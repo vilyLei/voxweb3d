@@ -5,6 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as ROTransformT from "../../vox/display/ROTransform";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
@@ -12,6 +13,7 @@ import * as Default3DMaterialT from "../../vox/material/mcase/Default3DMaterial"
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as Cylinder3DMeshT from "../../vox/mesh/Cylinder3DMesh";
 
+import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import ROTransform = ROTransformT.vox.display.ROTransform;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
@@ -25,17 +27,22 @@ export namespace vox
     {
         export class Cylinder3DEntity extends DisplayEntity
         {
-            constructor(transform:ROTransform = null)
-            {
-                super(transform);
-            }
+            private m_plongitudeNumSegments:number = 10.0;
+            private m_uvType:number = 1;
+            private m_alignYRatio:number = -0.5;
+            private m_transMatrix:Matrix4 = null;
             uScale:number = 1.0;
             vScale:number = 1.0;
             m_radius:number = 50.0;
             m_height:number = 100.0;
-            private m_plongitudeNumSegments:number = 10.0;
-            private m_uvType:number = 1;
-            private m_alignYRatio:number = -0.5;
+            constructor(transform:ROTransform = null)
+            {
+                super(transform);
+            }
+            setVtxTransformMatrix(matrix:Matrix4):void
+            {
+                this.m_transMatrix = matrix;
+            }
             createMaterial(texList:TextureProxy[]):void
             {
                 if(this.getMaterial() == null)
@@ -66,6 +73,11 @@ export namespace vox
                 if(this.getMesh() == null)
                 {
                     let mesh:Cylinder3DMesh = new Cylinder3DMesh();
+                    
+                    if(this.m_transMatrix != null)
+                    {
+                        mesh.setTransformMatrix(this.m_transMatrix);
+                    }
                     mesh.uScale = this.uScale;
                     mesh.vScale = this.vScale;
                     mesh.vaoEnabled = true;
@@ -73,7 +85,9 @@ export namespace vox
                     mesh.setBufSortFormat( material.getBufSortFormat() );
                     mesh.initialize(this.m_radius, this.m_height, this.m_plongitudeNumSegments, 2, this.m_uvType, this.m_alignYRatio);
                     this.setMesh(mesh);
+                    mesh.setTransformMatrix(null);
                 }
+                this.m_transMatrix = null;
             }
 
             toString():string
