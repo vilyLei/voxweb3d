@@ -108,48 +108,47 @@ export namespace vox
                         this.m_attriNSList.push(attri.name);
                         this.m_attriSizeList.push(attri.typeSize);
                     
-                        //type = VtxBufConst.getVBufTypeByNS(attri.name);
                         switch(VtxBufConst.GetVBufTypeByNS(attri.name))
                         {
                             case VtxBufConst.VBUF_VS:
-                                //arr[0] = type;
+                                
                                 this.m_layoutBit |= BitConst.BIT_ONE_0;
                             break;
                             case VtxBufConst.VBUF_UVS:
-                                //arr[1] = type;
+                                
                                 this.m_layoutBit |= BitConst.BIT_ONE_1;
                             break;
                             case VtxBufConst.VBUF_NVS:
-                                //arr[2] = type;
+                                
                                 this.m_layoutBit |= BitConst.BIT_ONE_2;
                             break;
                             case VtxBufConst.VBUF_CVS:
-                                //arr[3] = type;
+                                
                                 this.m_layoutBit |= BitConst.BIT_ONE_3;
                             break;
                             case VtxBufConst.VBUF_TVS:
-                                //arr[3] = type;
+                                
                                 this.m_layoutBit |= BitConst.BIT_ONE_4;
                             break;
                             ///////////////////
                             case VtxBufConst.VBUF_VS2:
-                                //arr[4] = type;
+                                
                                 this.m_layoutBit |= BitConst.BIT_ONE_5;
                             break;
                             case VtxBufConst.VBUF_UVS2:
-                                //arr[5] = type;
+                                
                                 this.m_layoutBit |= BitConst.BIT_ONE_6;
                             break;
                             case VtxBufConst.VBUF_NVS2:
-                                //arr[6] = type;
+                                
                                 this.m_layoutBit |= BitConst.BIT_ONE_7;
                             break;
                             case VtxBufConst.VBUF_CVS2:
-                                //arr[7] = type;
+                                
                                 this.m_layoutBit |= BitConst.BIT_ONE_8;
                             break;
                             case VtxBufConst.VBUF_TVS2:
-                                //arr[7] = type;
+                                
                                 this.m_layoutBit |= BitConst.BIT_ONE_9;
                             break;
                             default:
