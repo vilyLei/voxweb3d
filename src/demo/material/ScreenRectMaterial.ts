@@ -120,7 +120,6 @@ gl_Position = u_objMat * vec4(a_vs,1.0);\n\
                 createSelfUniformData():ShaderUniformData
                 {
                     let oum:ShaderUniformData = new ShaderUniformData();
-                    oum.dataSizeList = [1];
                     oum.uniformNameList = ["u_color"];
                     oum.dataList = [this.m_colorArray];
                     return oum;

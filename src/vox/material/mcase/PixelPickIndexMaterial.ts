@@ -116,7 +116,6 @@ void main(){
                 createSelfUniformData():ShaderUniformData
                 {
                     let oum:ShaderUniformData = new ShaderUniformData();
-                    oum.dataSizeList = [1];
                     oum.uniformNameList = ["u_param"];
                     oum.dataList = [this.m_paramArray];
                     return oum;

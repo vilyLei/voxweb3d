@@ -24,6 +24,7 @@ export namespace vox
                 typeName:string = "";
                 name:string = "";
                 isArray:boolean = false;
+                arrLength:number = 0;
                 isTex:boolean = false;
                 location:any = null;
                 parseCode(codeStr:string):boolean
@@ -53,8 +54,11 @@ export namespace vox
                     this.typeName = arr[arr.length - 2];
                     this.name = arr[arr.length - 1];
                     i = this.name.indexOf("[");
-                    if(i > 0)
+                    this.isArray = i > 0;
+                    this.arrLength = 0;
+                    if(this.isArray)
                     {
+                        this.arrLength = parseInt(this.name.slice(i+1,this.name.indexOf("]",i+1)));
                         this.name = this.name.slice(0,i);
                         this.typeName +="[]";
                     }

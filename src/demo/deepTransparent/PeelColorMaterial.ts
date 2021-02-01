@@ -150,7 +150,6 @@ void main(){
                 createSelfUniformData():ShaderUniformData
                 {
                     let oum:ShaderUniformData = new ShaderUniformData();
-                    oum.dataSizeList = [2];
                     oum.uniformNameList = ["u_colors"];
                     oum.dataList = [this.m_colorArray];
                     return oum;

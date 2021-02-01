@@ -130,7 +130,6 @@ v_colorOffset = u_billParam[2];\n\
                 createSelfUniformData():ShaderUniformData
                 {
                     let oum:ShaderUniformData = new ShaderUniformData();
-                    oum.dataSizeList = [3];
                     oum.uniformNameList = ["u_billParam"];
                     oum.dataList = [this.m_uniformData];
                     return oum;

@@ -161,7 +161,6 @@ gl_Position = u_objMat * vec4(a_vs,1.0);\n\
                 createSelfUniformData():ShaderUniformData
                 {
                     let oum:ShaderUniformData = new ShaderUniformData();
-                    oum.dataSizeList = [2];
                     oum.uniformNameList = ["u_sphParam"];
                     oum.dataList = [this.m_sphParam];
                     return oum;

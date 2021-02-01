@@ -282,13 +282,11 @@ void main()\n\
                 
                     if(RendererDeviece.IsWebGL2())
                     {
-                        oum.dataSizeList = [1];
                         oum.uniformNameList = ["u_color"];
                         oum.dataList = [this.m_colorArray];
                     }
                     else
                     {
-                        oum.dataSizeList = [1, 1];
                         oum.uniformNameList = ["u_color", "u_texSize"];
                         oum.dataList = [this.m_colorArray, this.m_texSizeArray];
                     }

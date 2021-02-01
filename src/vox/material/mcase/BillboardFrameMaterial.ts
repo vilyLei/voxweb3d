@@ -119,7 +119,6 @@ v_color = u_billParam[1] * vec4(a_cvs.xyz,1.0);\n\
                 createSelfUniformData():ShaderUniformData
                 {
                     let oum:ShaderUniformData = new ShaderUniformData();
-                    oum.dataSizeList = [2];
                     oum.uniformNameList = ["u_billParam"];
                     oum.dataList = [this.m_uniformData];
                     return oum;

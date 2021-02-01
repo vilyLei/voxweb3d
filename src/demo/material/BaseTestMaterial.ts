@@ -108,8 +108,9 @@ void main(){
                 {
                     return BaseTestShaderBuffer.GetInstance();
                 }
-                private m_colorArray:Float32Array = new Float32Array([1.0,1.0,1.0,1.0, 800.0,600.0,0.0,0.0]);
+                private m_colorArray:Float32Array = new Float32Array([1.0,0.0,1.0,1.0, 800.0,600.0,0.0,0.0]);
                 private m_baseParam:Float32Array = new Float32Array([1.0,1.0,1.0, 0.0,0.0,0.0]);
+
                 setStageSize(pw:number,ph:number):void
                 {
                     this.m_colorArray[4] = pw;
@@ -122,7 +123,6 @@ void main(){
                 createSelfUniformData():ShaderUniformData
                 {
                     let oum:ShaderUniformData = new ShaderUniformData();
-                    oum.dataSizeList = [2];
                     oum.uniformNameList = ["u_colors"];
                     oum.dataList = [this.m_colorArray];
                     return oum;

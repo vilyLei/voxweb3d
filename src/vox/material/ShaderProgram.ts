@@ -388,6 +388,14 @@ export namespace vox
             {
                 return this.m_uniformDict.has(ns);
             }
+            getUniformLengthByNS(ns:string):number
+            {
+                if(this.m_uniformDict.has(ns))
+                {
+                    this.m_uniformDict.get(ns).arrLength;
+                }
+                return 0;
+            }
             private initShaderProgram( vshd_str:string, fshd_str:string ):any
             {
                 //console.log("ShaderProgram::initShaderProgram(), this: "+this);

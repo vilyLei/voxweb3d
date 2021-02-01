@@ -141,7 +141,6 @@ v_texUV = getGridUV(v_colorOffset.w,a_uvs.xy,vec2(floor(temp.w),floor(10.1 * fra
                 createSelfUniformData():ShaderUniformData
                 {
                     let oum:ShaderUniformData = new ShaderUniformData();
-                    oum.dataSizeList = [3];
                     oum.uniformNameList = ["u_billParam"];
                     oum.dataList = [this.m_uniformData];
                     return oum;

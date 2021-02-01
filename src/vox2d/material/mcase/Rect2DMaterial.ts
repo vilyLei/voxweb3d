@@ -258,7 +258,6 @@ if(!this.centerAlignEnabled)
                 createSelfUniformData():ShaderUniformData
                 {
                     let oum:ShaderUniformData = new ShaderUniformData();
-                    oum.dataSizeList = [3];
                     oum.uniformNameList = ["u_params"];
                     oum.dataList = [this.m_paramArray];
                     return oum;

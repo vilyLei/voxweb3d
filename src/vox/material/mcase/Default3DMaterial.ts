@@ -40,7 +40,6 @@ export namespace vox
                 createSelfUniformData():ShaderUniformData
                 {
                     let oum:ShaderUniformData = new ShaderUniformData();
-                    oum.dataSizeList = [1];
                     oum.uniformNameList = ["u_color"];
                     oum.dataList = [this.m_colorArray];
                     return oum;

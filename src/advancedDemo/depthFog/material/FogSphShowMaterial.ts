@@ -167,15 +167,6 @@ v_viewMat = u_viewMat;\n\
                 {
                     return FogSphShowShaderBuffer.GetInstance();
                 }
-                //  private m_colorArray:Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
-                //  createSelfUniformData():ShaderUniformData
-                //  {
-                //      let oum:ShaderUniformData = new ShaderUniformData();
-                //      oum.dataSizeList = [1];
-                //      oum.uniformNameList = ["u_color"];
-                //      oum.dataList = [this.m_colorArray];
-                //      return oum;
-                //  }
             }
         }
     }

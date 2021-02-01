@@ -45,7 +45,6 @@ export namespace vox
                 {
                     this.m_useTex = false;
                     this.m_attriNSList = null;
-                    //this.uniformNameList = null;
                     this.uniformNameListStr = "";
                     this.texUniformNameListStr = "";
                     let i:number = 0;

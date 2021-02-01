@@ -99,16 +99,6 @@ void main(){\n\
                 {        
                     return GetDepthShaderBuffer.GetInstance();
                 }
-                //colorArray:Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
-                
-                //  createSelfUniformData():ShaderUniformData
-                //  {
-                //      let oum:ShaderUniformData = new ShaderUniformData();
-                //      oum.dataSizeList = [1];
-                //      oum.uniformNameList = ["u_color"];
-                //      oum.dataList = [this.colorArray];
-                //      return oum;
-                //  }
             }
         }
     }

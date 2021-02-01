@@ -255,7 +255,7 @@ export namespace vox
                             shdUniform.types.push( shdp.getUniformTypeByNS(pdata.uniformNameList[i]) );
                             shdUniform.locations.push( shdp.getUniformLocationByNS(pdata.uniformNameList[i]) );
                             shdUniform.dataList.push(pdata.dataList[i]);
-                            shdUniform.dataSizeList.push(pdata.dataSizeList[i]);
+                            shdUniform.dataSizeList.push(shdp.getUniformLengthByNS(pdata.uniformNameList[i]));
                         }
                         //  console.log("local uniform frome data names: "+shdUniform.uniformNameList);
                         //  console.log("local uniform frome data types: "+shdUniform.types);
@@ -289,7 +289,7 @@ export namespace vox
                             shdUniform.types.push( shdp.getUniformTypeByNS(pdata.uniformNameList[i]) );
                             shdUniform.locations.push( shdp.getUniformLocationByNS(pdata.uniformNameList[i]) );
                             shdUniform.dataList.push(pdata.dataList[i]);
-                            shdUniform.dataSizeList.push(pdata.dataSizeList[i]);
+                            shdUniform.dataSizeList.push(shdp.getUniformLengthByNS(pdata.uniformNameList[i]));
                         }
                         //  console.log("local uniform names: "+shdUniform.uniformNameList);
                         //  console.log("local uniform types: "+shdUniform.types);

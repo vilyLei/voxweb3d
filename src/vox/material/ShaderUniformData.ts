@@ -22,7 +22,6 @@ export namespace vox
             uniformSize:number = 0;
             uniformNameList:string[] = null;
             locations:any[] = null;
-            dataSizeList:number[] = null;
             dataList:Float32Array[] = null;
             calcModels:any[] = null;
             always:boolean = true;
@@ -65,11 +64,9 @@ export namespace vox
             copyDataFromProbe(probe:ShaderUniformProbe):void
             {
                 this.types = [];
-                this.dataSizeList = [];
                 for(let i = 0; i < probe.uniformSlotSize; ++i)
                 {
                     this.types.push( probe.uniformTypes[i] );
-                    this.dataSizeList.push( probe.dataSizeList[i] );
                 }
                 this.uniformSize = probe.uniformSlotSize;
             }
@@ -93,7 +90,6 @@ export namespace vox
                 this.dataList = null;
                 this.types = null;
                 this.locations = null;
-                this.dataSizeList = null;
                 this.calcModels = null;
             }
         }

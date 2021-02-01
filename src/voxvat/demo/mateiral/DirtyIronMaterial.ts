@@ -244,7 +244,6 @@ v_mToVNVS = a_nvs.xyz * mInvMToVMMat3;\n\
                 createSelfUniformData():ShaderUniformData
                 {
                     let oum:ShaderUniformData = new ShaderUniformData();
-                    oum.dataSizeList = [6];
                     oum.uniformNameList = ["fV4U_0"];
                     oum.dataList = [this.m_mparamData];
                     return oum;

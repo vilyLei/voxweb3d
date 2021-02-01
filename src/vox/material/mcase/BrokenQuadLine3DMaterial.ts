@@ -40,109 +40,94 @@ export namespace vox
                 getFragShaderCode():string
                 {
                     let fragCode:string = 
-"\
-precision mediump float;\n\
-varying vec4 v_vtxColor;\n\
-void main()\n\
-{\
-    gl_FragColor = v_vtxColor;\n\
-}\n\
-";
+`
+precision mediump float;
+varying vec4 v_vtxColor;
+void main()
+{
+    gl_FragColor = v_vtxColor;
+}
+`;
                     return fragCode;
                 }
                 getVtxShaderCode():string
                 {
                     let vtxCode:string = 
-"\
-precision mediump float;\n\
-attribute vec4 a_vs;\n\
-attribute vec4 a_vs2;\n\
-";
+`
+precision mediump float;
+attribute vec4 a_vs;
+attribute vec4 a_vs2;
+`;
                     if(this.dynColorEnabled)
                     {
-                        vtxCode +=
-"\
-uniform vec4 u_color;\n\
-";
+                        vtxCode += "\nuniform vec4 u_color;";
                     }
                     else
                     {
-                        vtxCode +=
-"\
-attribute vec4 a_cvs;\n\
-";
+                        vtxCode += "\nattribute vec4 a_cvs;";
                     }
-                        vtxCode +=
-"\
-attribute vec4 a_cvs2;\n\
-uniform vec4 u_stageParam;\n\
-uniform vec4 u_cameraParam;\n\
-uniform mat4 u_objMat;\n\
-uniform mat4 u_viewMat;\n\
-uniform mat4 u_projMat;\n\
-varying vec4 v_vtxColor;\n\
-void main()\n\
-{\n\
-    mat4 voMat4 = u_viewMat * u_objMat;\n\
-    vec4 pv0 = voMat4 * vec4(a_cvs2.xyz, 1.0);\n\
-    vec4 pv1 = voMat4 * vec4(a_vs.xyz, 1.0);\n\
-    vec4 pv1b = pv1;\n\
-    vec4 pv2 = voMat4 * vec4(a_vs2.xyz, 1.0);\n\
-    \n\
-    float f = (pv1.z > -u_cameraParam[0]) ? 1.0 : 0.0;\n\
-    vec3 dir = pv2.xyz - pv1.xyz;\n\
-    vec3 pv3 = ((pv1.z - 1.0)/(pv1.z - pv2.z + 0.000001)) * dir;\n\
-    pv3 = (pv1.xyz + pv3) * f;\n\
-    pv1.xyz = pv1.xyz * (1.0 - f) + pv3;\n\
-    // calc screen pos\n\
-    dir = pv2.xyz - pv1.xyz;\n\
-    f = abs(pv1.z) * u_cameraParam[3] / u_cameraParam[0] / u_stageParam[2];\n\
-    pv3 = normalize(cross(dir, pv1.xyz)) * f;\n\
-    \n\
-    f = (pv0.z > -u_cameraParam[0]) ? 1.0 : 0.0;\n\
-    dir = pv1b.xyz - pv0.xyz;\n\
-    vec3 pv3b = ((pv0.z - 1.0)/(pv0.z - pv1b.z + 0.000001)) * dir;\n\
-    pv3b = (pv0.xyz + pv3b) * f;\n\
-    pv0.xyz = pv0.xyz * (1.0 - f) + pv3b;\n\
-    // calc screen pos\n\
-    dir = pv1b.xyz - pv0.xyz;\n\
-    f = abs(pv0.z) * u_cameraParam[3] / u_cameraParam[0] / u_stageParam[2];\n\
-    pv3b = normalize(cross(dir, pv0.xyz)) * f;\n\
-    \n\
-    //  if(dot(pv3,pv3b) < 0.0)\n\
-    //  {\n\
-        dir = pv3;\n\
-        pv3 = normalize(pv3 + pv3b);\n\
-        //pv3 *= a_vs.w / max(abs(dot(pv3,dir)),0.01);\n\
-        //pv3 *= a_vs.w / min(abs(dot(pv3,dir)),10.0);\n\
-        pv3 *= a_vs.w / abs(dot(pv3,dir));\n\
-    //  }\n\
-    //  else\n\
-    //  {\n\
-    //      pv3 *= a_vs.w;\n\
-    //  }\n\
-    gl_Position = u_projMat * vec4(pv3 + pv1.xyz, 1.0);\n\
-    v_vtxColor = a_cvs;\n\
-";
+                    vtxCode +=
+`
+attribute vec4 a_cvs2;
+uniform vec4 u_stageParam;
+uniform vec4 u_cameraParam;
+uniform mat4 u_objMat;
+uniform mat4 u_viewMat;
+uniform mat4 u_projMat;
+varying vec4 v_vtxColor;
+void main()
+{
+    mat4 voMat4 = u_viewMat * u_objMat;
+    vec4 pv0 = voMat4 * vec4(a_cvs2.xyz, 1.0);
+    vec4 pv1 = voMat4 * vec4(a_vs.xyz, 1.0);
+    vec4 pv1b = pv1;
+    vec4 pv2 = voMat4 * vec4(a_vs2.xyz, 1.0);
+    
+    float f = (pv1.z > -u_cameraParam[0]) ? 1.0 : 0.0;
+    vec3 dir = pv2.xyz - pv1.xyz;
+    vec3 pv3 = ((pv1.z - 1.0)/(pv1.z - pv2.z + 0.000001)) * dir;
+    pv3 = (pv1.xyz + pv3) * f;
+    pv1.xyz = pv1.xyz * (1.0 - f) + pv3;
+    // calc screen pos
+    dir = pv2.xyz - pv1.xyz;
+    f = abs(pv1.z) * u_cameraParam[3] / u_cameraParam[0] / u_stageParam[2];
+    pv3 = normalize(cross(dir, pv1.xyz)) * f;
+    
+    f = (pv0.z > -u_cameraParam[0]) ? 1.0 : 0.0;
+    dir = pv1b.xyz - pv0.xyz;
+    vec3 pv3b = ((pv0.z - 1.0)/(pv0.z - pv1b.z + 0.000001)) * dir;
+    pv3b = (pv0.xyz + pv3b) * f;
+    pv0.xyz = pv0.xyz * (1.0 - f) + pv3b;
+    // calc screen pos
+    dir = pv1b.xyz - pv0.xyz;
+    f = abs(pv0.z) * u_cameraParam[3] / u_cameraParam[0] / u_stageParam[2];
+    pv3b = normalize(cross(dir, pv0.xyz)) * f;
+    
+    //  if(dot(pv3,pv3b) < 0.0)
+    //  {
+        dir = pv3;
+        pv3 = normalize(pv3 + pv3b);
+        //pv3 *= a_vs.w / max(abs(dot(pv3,dir)),0.01);
+        //pv3 *= a_vs.w / min(abs(dot(pv3,dir)),10.0);
+        pv3 *= a_vs.w / abs(dot(pv3,dir));
+    //  }
+    //  else
+    //  {
+    //      pv3 *= a_vs.w;
+    //  }
+    gl_Position = u_projMat * vec4(pv3 + pv1.xyz, 1.0);
+    v_vtxColor = a_cvs;
+`
 
                     if(this.dynColorEnabled)
                     {
-                        vtxCode +=
-"\
-    v_vtxColor = u_color;\n\
-";
+                        vtxCode += "\nv_vtxColor = u_color;";
                     }
                     else
                     {
-                        vtxCode +=
-"\
-    v_vtxColor = a_cvs;\n\
-";
+                        vtxCode += "\nv_vtxColor = a_cvs;";
                     }
-                            vtxCode +=
-"\
-}\n\
-";
+                    vtxCode += "\n}";
                     return vtxCode;
                 }
                 getUniqueShaderName()
@@ -201,7 +186,6 @@ void main()\n\
                     if(this.m_dynColorEnabled)
                     {
                         let oum:ShaderUniformData = new ShaderUniformData();
-                        oum.dataSizeList = [1];
                         oum.uniformNameList = ["u_color"];
                         oum.dataList = [this.m_colorArray];
                         return oum;

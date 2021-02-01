@@ -199,8 +199,8 @@
 //  import * as DemoDrawGroup from "./demo/DemoDrawGroup";
 //  import Demo = DemoDrawGroup.demo.DemoDrawGroup;
 
-//import * as DemoDepthTex from "./demo/DemoDepthTex";
-//import Demo = DemoDepthTex.demo.DemoDepthTex;
+//  import * as DemoDepthTex from "./demo/DemoDepthTex";
+//  import Demo = DemoDepthTex.demo.DemoDepthTex;
 
 //  import * as DemoDeepTransparent from "./demo/DemoDeepTransparent";
 //  import Demo = DemoDeepTransparent.demo.DemoDeepTransparent;
