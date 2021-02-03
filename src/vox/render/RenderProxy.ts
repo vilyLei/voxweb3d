@@ -14,6 +14,7 @@ import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as Vector3T from "../../vox/geom/Vector3";
 import * as Color4T from "../../vox/material/Color4";
 import * as CameraBaseT from "../../vox/view/CameraBase";
+import * as RendererParamT from "../../vox/scene/RendererParam";
 import * as Stage3DT from "../../vox/display/Stage3D";
 import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RAdapterContextT from "../../vox/render/RAdapterContext";
@@ -30,6 +31,7 @@ import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 import Vector3D = Vector3T.vox.geom.Vector3D;
 import Color4 = Color4T.vox.material.Color4;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
+import RendererParam = RendererParamT.vox.scene.RendererParam;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import RODrawState = RODrawStateT.vox.render.RODrawState;
 import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
@@ -463,7 +465,7 @@ export namespace vox
             }
             private createMainCamera():void
             {
-                let stage:Stage3D = this.m_RAdapterContext.getStage();                
+                let stage:Stage3D = this.m_RAdapterContext.getStage();
                 this.m_mainCamera = new CameraBase(stage.getIndex());
                 this.m_mainCamera.uniformEnabled = true;
                 
@@ -482,25 +484,20 @@ export namespace vox
             {
                 this.m_adapter.readPixels(px,py,width,height,format,dataType,pixels);
             }
-            initialize(div:HTMLElement,glCanvasNS:string,glDivNS:string,posV3:Vector3D = null, lookAtPosV3:Vector3D = null, upV3:Vector3D = null,perspectiveEnabled:boolean = true,renderContextAttri:any = null):void
+            initialize(param:RendererParam):void
             {
-                if(posV3 == null)
-                {
-                    posV3 = new Vector3D(500.0, 500.0, 500.0);
-                }
-                if(lookAtPosV3 == null)
-                {
-                    lookAtPosV3 = new Vector3D(0.0, 0.0, 0.0);
-                }
-                if(upV3 == null)
-                {
-                    upV3 = new Vector3D(0.0, 1.0, 0.0);
-                }
-                this.m_perspectiveEnabled = perspectiveEnabled;
-                this.m_RAdapterContext.setCanvasDiv(div);
+                let posV3:Vector3D = param.camPosition;
+                let lookAtPosV3:Vector3D = param.camLookAtPos;
+                let upV3:Vector3D = param.camUpDirect;
+                if(posV3 == null) posV3 = new Vector3D(500.0, 500.0, 500.0);
+                if(lookAtPosV3 == null) lookAtPosV3 = new Vector3D(0.0, 0.0, 0.0);                
+                if(upV3 == null) upV3 = new Vector3D(0.0, 1.0, 0.0);
+
+                this.m_perspectiveEnabled = param.cameraPerspectiveEnabled;
+                this.m_RAdapterContext.autoSyncRenderBufferAndWindowSize = param.autoSyncRenderBufferAndWindowSize;
                 this.m_RAdapterContext.setResizeCallback(this, this.resizeCallback);
                 this.m_RAdapterContext.setWebGLMaxVersion(this.m_maxWebGLVersion);
-                this.m_RAdapterContext.initialize(glCanvasNS,glDivNS,renderContextAttri);
+                this.m_RAdapterContext.initialize(param.getDiv(),param.getRenderContextAttri());
                 this.m_WEBGL_VER = this.m_RAdapterContext.getWebGLVersion();
                 
                 this.m_viewW = this.m_RAdapterContext.getViewportWidth();

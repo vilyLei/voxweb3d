@@ -68,7 +68,7 @@ export namespace demo
 
                 this.m_statusDisp.initialize("rstatus");
 
-                let rparam:RendererParam = new RendererParam("glcanvas");
+                let rparam:RendererParam = new RendererParam();
                 rparam.setCamPosition(800.0,800.0,800.0);
                 this.m_renderer = new RendererInstance();
                 this.m_renderer.initialize(rparam);

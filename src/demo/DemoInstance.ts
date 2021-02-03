@@ -52,7 +52,7 @@ export namespace demo
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
-                this.m_rparam = new RendererParam("glcanvas");
+                this.m_rparam = new RendererParam();
                 this.m_rparam.setCamPosition(500.0,500.0,500.0);
                 this.initializeSceneParam(this.m_rparam);
                 this.m_rscene = new RendererScene();

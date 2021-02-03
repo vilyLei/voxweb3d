@@ -71,7 +71,7 @@ export namespace voxvat
                     H5FontSystem.GetInstance().setStyleSize(128,128);
                     RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
 
-                    let rparam:RendererParam = new RendererParam("glcanvas");
+                    let rparam:RendererParam = new RendererParam();
                     rparam.evtFlowEnabled = true;
                     rparam.setMatrix4AllocateSize(8192 * 4);
                     rparam.setCamProject(45.0,50.0,7000.0);
@@ -95,7 +95,7 @@ export namespace voxvat
                     RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
 
                     this.m_ruisc = this.m_rsc.createSubScene();
-                    rparam = new RendererParam("glcanvas");
+                    rparam = new RendererParam();
                     rparam.cameraPerspectiveEnabled = false;
                     rparam.setCamProject(45.0,0.1,3000.0);
                     rparam.setCamPosition(0.0,0.0,1500.0);

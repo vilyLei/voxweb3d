@@ -181,6 +181,9 @@
 //  import * as DemoThread from "./demo/DemoThread";
 //  import Demo = DemoThread.demo.DemoThread;
 
+//  import * as DemoThreadSchedule from "./demo/DemoThreadSchedule";
+//  import Demo = DemoThreadSchedule.demo.DemoThreadSchedule;
+
 //  import * as DemoMatComputer from "./demo/DemoMatComputer";
 //  import Demo = DemoMatComputer.demo.DemoMatComputer;
 
@@ -208,8 +211,11 @@
 //  import * as DemoDeepTransparent2 from "./demo/DemoDeepTransparent2";
 //  import Demo = DemoDeepTransparent2.demo.DemoDeepTransparent2;
 
-import * as DemoMaterial from "./demo/DemoMaterial";
-import Demo = DemoMaterial.demo.DemoMaterial;
+//  import * as DemoMaterial from "./demo/DemoMaterial";
+//  import Demo = DemoMaterial.demo.DemoMaterial;
+
+import * as DemoDivControl from "./demo/DemoDivControl";
+import Demo = DemoDivControl.demo.DemoDivControl;
 
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;

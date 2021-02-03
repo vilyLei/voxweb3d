@@ -46,7 +46,7 @@ export namespace motionDemo
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 
                 this.m_statusDisp.initialize("rstatus");
-                let rparam:RendererParam = new RendererParam("glcanvas");
+                let rparam:RendererParam = new RendererParam();
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
                 this.m_renderer = new RendererInstance();

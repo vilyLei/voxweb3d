@@ -80,7 +80,7 @@ export namespace demo
                 tex3.mipmapEnabled = true;
                 
                 if(this.m_statusDisp != null)this.m_statusDisp.initialize("rstatus");
-                let rparam:RendererParam = new RendererParam("glcanvas","app");
+                let rparam:RendererParam = new RendererParam();
                 rparam.maxWebGLVersion = 2;
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);

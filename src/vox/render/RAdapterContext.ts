@@ -8,6 +8,7 @@
 import * as DivLogT from "../../vox/utils/DivLog";
 import * as RCExtensionT from "../../vox/render/RCExtension";
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
+import * as RViewElementT from "../../vox/render/RViewElement";
 import * as Color4T from "../../vox/material/Color4";
 import * as KeyboardT from "../../vox/ui/Keyboard";
 import * as Stage3DT from "../../vox/display/Stage3D";
@@ -18,6 +19,7 @@ import * as ContextMouseEvtDispatcherT from "../../vox/render/ContextMouseEvtDis
 import DivLog = DivLogT.vox.utils.DivLog;
 import RCExtension = RCExtensionT.vox.render.RCExtension;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+import RViewElement = RViewElementT.vox.render.RViewElement;
 import Color4 = Color4T.vox.material.Color4;
 import Keyboard = KeyboardT.vox.ui.Keyboard;
 import Stage3D = Stage3DT.vox.display.Stage3D;
@@ -36,32 +38,33 @@ export namespace vox
             }
             private m_rState:RODrawState = null;
             private m_mouseEvtDisplather:ContextMouseEvtDispatcher = new ContextMouseEvtDispatcher();
+            private m_div:HTMLElement = null;
             private m_canvas:any = null;
-            private m_div:any = null;
-            private m_document:any = null;
-            bgColor:Color4 = new Color4();
+            private m_document:HTMLElement = null;
+            private m_scissorEnabled:boolean = false;
     
             private m_depthTestEnabled:boolean = true;
             //STENCIL_TEST
             private m_stencilTestEnabled:boolean = true;
-            // display 3d view buf size auto syn window size
-            autoSynContextSizeAndWindowSize:boolean = true;
+            // display 3d view buf size auto sync window size
+            autoSyncRenderBufferAndWindowSize:boolean = true;
             //
             offscreenRenderEnabled:boolean = false;
             private m_offcanvas:any = null;
             private m_gl:any = null;
             private m_stage:Stage3D = null;
-            private m_windowWidth:number = 800;
-            private m_windowHeight:number = 600;
+            
             private m_viewX:number = 0;
             private m_viewY:number = 0;
             private m_viewWidth:number = 800;
             private m_viewHeight:number = 600;
             private m_maxWebGLVersion:number = 2;
             private m_webGLVersion:number = 2;
-            private m_changedBoo:boolean = true;
             private m_devicePixelRatio:number = 1.0;
 
+            private m_viewEle:RViewElement = new RViewElement();
+
+            readonly bgColor:Color4 = new Color4();
             private contextrestoredHandler(evt:any):void
             {
                 console.log("webglcontextrestored...!!!");
@@ -83,45 +86,17 @@ export namespace vox
             {
                 return this.m_webGLVersion;
             }
-            public setCanvasDiv(div:HTMLElement):void
-            {
-                this.m_div = div;
-            }
-            private createWebEle(pdocument:any,canvasns:string,divns:string):void
-            {
-
-                this.m_document = pdocument;
-                if(this.m_div == null)
-                {
-                    this.m_div = pdocument.getElementById(divns);
-                }
-                if(this.m_div == null)
-                {
-                    this.m_div = pdocument.getElementById("app");
-                }
-                
-                this.m_div.style.display = 'bolck';
-                this.m_div.style.width = '100%';
-                this.m_div.style.height = '100%';
-                this.m_div.style.left = '0px';
-                this.m_div.style.top = '0px';
-                this.m_div.style.position = 'absolute';
-                this.m_canvas = pdocument.getElementById(canvasns);
-                if(this.m_canvas == null)
-                {
-                    this.m_canvas = document.createElement('canvas');
-                    this.m_div.appendChild(this.m_canvas);
-                    this.m_canvas.width = 400;
-                    this.m_canvas.height = 600;
-                    this.m_canvas.style.display = 'bolck';
-                    this.m_canvas.style.left = '0px';
-                    this.m_canvas.style.top = '0px';
-                    this.m_canvas.style.position = 'absolute';
-                }
-            }
             getDiv():any
             {
                 return this.m_div;
+            }
+            setDivStyleLeftAndTop(px:number,py:number):void
+            {
+                this.m_viewEle.setDivStyleLeftAndTop(px,py);
+            }
+            setDivStyleSize(pw:number,ph:number):void
+            {
+                this.m_viewEle.setDivStyleSize(pw,ph);
             }
             getCanvas():any
             {
@@ -135,7 +110,7 @@ export namespace vox
             {
                 return this.m_stencilTestEnabled;
             }
-            initialize(glCanvasNS:string,glDivNS:string,rattr:any = null):void
+            initialize(div:HTMLElement,rattr:any = null):void
             {
                 var pdocument:any = null;
                 var pwindow:any = null;
@@ -155,16 +130,13 @@ export namespace vox
                 {
                     RendererState.Initialize();
                     this.m_rState = RendererState.Rstate;
-
-                    this.createWebEle(pdocument,glCanvasNS,glDivNS);
-
-                    let canvas:any = this.m_canvas;
-                    let div:any = this.m_div;
                     
-                    if(this.m_stage == null)
-                    {
-                        this.m_stage = new Stage3D();
-                    }
+                    this.m_viewEle.setDiv(div);
+                    this.m_viewEle.createViewEle(pdocument,this.autoSyncRenderBufferAndWindowSize);
+                    this.m_div = div = this.m_viewEle.getDiv();
+                    let canvas:any = this.m_canvas = this.m_viewEle.getCanvas();
+
+                    if(this.m_stage == null)this.m_stage = new Stage3D();
 
                     let stage:Stage3D = this.m_stage;
 
@@ -179,6 +151,7 @@ export namespace vox
                     this.m_mouseEvtDisplather.initialize(canvas,div,stage);
                     this.m_devicePixelRatio = window.devicePixelRatio;
                     this.m_mouseEvtDisplather.dpr = this.m_devicePixelRatio;
+                    
                     let attr:any = rattr;
                     if(rattr == null)
                     {
@@ -236,6 +209,7 @@ export namespace vox
                     if (!this.m_gl) {
                         this.m_webGLVersion = -1;
                         alert('Unable to initialize WebGL. Your browser or machine may not support it.');
+                        throw Error("WebGL initialization failure.");
                         return;
                     }
                     let device:any = RendererDeviece;
@@ -249,11 +223,11 @@ export namespace vox
                     RCExtension.Initialize(this.m_webGLVersion,this.m_gl);
                     RendererDeviece.Initialize([this.m_webGLVersion]);
 
-                    console.log("viewPortIMS: ",viewPortIMS);
-                    console.log("MAX_TEXTURE_SIZE: ",RendererDeviece.MAX_TEXTURE_SIZE);
-                    console.log("MAX_RENDERBUFFER_SIZE: ",RendererDeviece.MAX_RENDERBUFFER_SIZE);
-                    console.log("MAX_VIEWPORT_WIDTH: ",RendererDeviece.MAX_VIEWPORT_WIDTH);
-                    console.log("MAX_VIEWPORT_HEIGHT: ",RendererDeviece.MAX_VIEWPORT_HEIGHT);
+                    //  console.log("viewPortIMS: ",viewPortIMS);
+                    //  console.log("MAX_TEXTURE_SIZE: ",RendererDeviece.MAX_TEXTURE_SIZE);
+                    //  console.log("MAX_RENDERBUFFER_SIZE: ",RendererDeviece.MAX_RENDERBUFFER_SIZE);
+                    //  console.log("MAX_VIEWPORT_WIDTH: ",RendererDeviece.MAX_VIEWPORT_WIDTH);
+                    //  console.log("MAX_VIEWPORT_HEIGHT: ",RendererDeviece.MAX_VIEWPORT_HEIGHT);
 
                     //  DivLog.ShowLogOnce("MAX_TEXTURE_SIZE: "+RendererDeviece.MAX_TEXTURE_SIZE);
                     //  DivLog.ShowLog("MAX_RENDERBUFFER_SIZE: "+RendererDeviece.MAX_RENDERBUFFER_SIZE);
@@ -272,9 +246,9 @@ export namespace vox
                         let webgl_renderer:any = this.m_gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
                         device.GPU_VENDOR = webgl_vendor;
                         device.GPU_RENDERER = webgl_vendor;
+
                         console.log("webgl_vendor: ",webgl_vendor);
                         console.log("webgl_renderer: ",webgl_renderer);
-
                         DivLog.ShowLog("webgl_vendor: "+webgl_vendor);
                         DivLog.ShowLog("webgl_renderer: "+webgl_renderer);
                     }
@@ -282,23 +256,20 @@ export namespace vox
                     var selfT:RAdapterContext = this;
                     pwindow.onresize = function(evt:any):void
                     {
-                        //console.log("onresize: "+evt);
-                        if(selfT.autoSynContextSizeAndWindowSize)
+                        if(selfT.autoSyncRenderBufferAndWindowSize)
                         {
-                            let rect = div.getBoundingClientRect();
-                            selfT.resize(rect.width, rect.height);
+                            selfT.updateRenderBufferSize();
                         }
                     }
-                    //
+                    
                     this.m_rState.setRenderer(this.m_gl);
-                    //
+                    
                     canvas.addEventListener('webglcontextrestored', this.contextrestoredHandler, false);
                     canvas.addEventListener('webglcontextlost',this.contextlostHandler,false);
-                    if(this.autoSynContextSizeAndWindowSize)
-                    {
-                        let rect = div.getBoundingClientRect();
-                        this.resize(rect.width, rect.height);
-                    }
+                    //if(this.autoSyncRenderBufferAndWindowSize)
+                    //{
+                    this.updateRenderBufferSize();
+                    //}
                 }
                 else
                 {
@@ -316,7 +287,6 @@ export namespace vox
             getRC():any{return this.m_gl;}
             getRenderState():RODrawState{return this.m_rState;}
     
-            private m_scissorEnabled:boolean = false;
             setScissorEnabled(boo:boolean):void
             {
                 if(boo)
@@ -345,6 +315,7 @@ export namespace vox
             private m_displayHeight:number = 0;
             private m_rcanvasWidth:number = 0;
             private m_rcanvasHeight:number = 0;
+
             private m_resizeCallback:()=>void = null;
             private m_resizeCallbackTarget:any = null;
 
@@ -357,23 +328,25 @@ export namespace vox
             {
                 return this.m_devicePixelRatio;
             }
-            resize(pw:number,ph:number):void
+            resizeBufferSize(pw:number,ph:number):void
             {
                 pw = Math.floor(pw);
                 ph = Math.floor(ph);
-                this.m_devicePixelRatio = window.devicePixelRatio;
-                this.m_mouseEvtDisplather.dpr = window.devicePixelRatio;
+                let k:number = window.devicePixelRatio;
+
+                let dprChanged:boolean = Math.abs(k - this.m_devicePixelRatio) > 0.02;
+                this.m_devicePixelRatio = k;
+                this.m_mouseEvtDisplather.dpr = k;
                 RendererDeviece.SetDevicePixelRatio(this.m_devicePixelRatio);
-                //console.log("this.m_devicePixelRatio: "+this.m_devicePixelRatio);
-                //console.log("RAdapterContext::resize(), pw:"+pw+", ph:"+ph);
-                //this.m_devicePixelRatio = 1.0;
-                let k:number = this.m_devicePixelRatio;
-                if(this.m_displayWidth != pw || this.m_displayHeight != ph)
+                // console.log("this.m_devicePixelRatio: "+this.m_devicePixelRatio);
+                
+                if(this.m_displayWidth != pw || this.m_displayHeight != ph || dprChanged)
                 {
                     this.m_displayWidth  = pw;
                     this.m_displayHeight = ph;
                     this.m_rcanvasWidth = Math.floor(pw * k)
                     this.m_rcanvasHeight = Math.floor(ph * k);
+
                     if(this.m_offcanvas == null)
                     {
                         this.m_canvas.width  = this.m_rcanvasWidth;
@@ -397,6 +370,7 @@ export namespace vox
                     //  DivLog.ShowLog("canvasSize: "+this.m_canvas.width+","+this.m_canvas.height);
                     //  DivLog.ShowLog("dispSize: "+this.m_displayWidth+","+this.m_displayHeight);
                     //  DivLog.ShowLog("pixelRatio:"+this.m_devicePixelRatio);
+                    //  console.log("display size: "+this.m_displayWidth+","+this.m_displayHeight);
                     //  console.log("RAdapterContext::resize(), canvas.width:"+this.m_canvas.width+", canvas.height:"+this.m_canvas.height);
                     //  console.log("RAdapterContext::resize(), stageWidth:"+this.m_stage.stageWidth+", stageHeight:"+this.m_stage.stageHeight);
                     //  console.log("RAdapterContext::resize(), m_rcanvasWidth:"+this.m_rcanvasWidth+", m_rcanvasHeight:"+this.m_rcanvasHeight);
@@ -429,38 +403,23 @@ export namespace vox
             {
                 return this.m_displayHeight;
             }
-        	getWindowWidth():number
-        	{
-        		return this.m_windowWidth;
-        	}
-        	getWindowHeight():number
-        	{
-        		return this.m_windowHeight;
-        	}
         	setViewport(px:number, py:number, pw:number, ph:number):void
         	{
                 let boo:boolean = this.m_viewX != px || this.m_viewY != py;
         		if (this.m_viewWidth != pw || this.m_viewHeight != ph || boo)
         		{
-                    //console.log("RAdapterContext::setViewport(), pw: "+pw+",ph: "+ph);
-                    
-                    DivLog.ShowLog("setViewport:"+px+","+py+","+pw+","+ph);
         			this.m_viewX = px;
         			this.m_viewY = py;
         			this.m_viewWidth = pw;
         			this.m_viewHeight = ph;
-        			this.m_changedBoo = true;
         		}
         	}
         	setViewportSize(pw:number, ph:number):void
         	{
         		if (this.m_viewWidth != pw || this.m_viewHeight != ph)
         		{
-                    DivLog.ShowLog("setViewportSize:"+pw+","+ph);
-                    //console.log("RAdapterContext::setViewportSize(), pw: "+pw+",ph: "+ph);
         			this.m_viewWidth = pw;
         			this.m_viewHeight = ph;
-        			this.m_changedBoo = true;
         		}
         	}
         	getViewportX():number
@@ -495,14 +454,12 @@ export namespace vox
         	getRCanvasHeight():number
         	{
         		return this.m_rcanvasHeight;
-        	}
-        	update():void
-        	{
-        		if (this.m_changedBoo)
-        		{
-        			this.m_changedBoo = false;
-        		}
-        	}
+            }
+            updateRenderBufferSize():void
+            {
+                let rect:any = this.m_div.getBoundingClientRect();
+                this.resizeBufferSize(rect.width, rect.height);
+            }
         }
     }
 }

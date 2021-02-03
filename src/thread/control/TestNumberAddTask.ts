@@ -145,15 +145,17 @@ export namespace thread
             {
                 super();
             }
-            clacNumberList(typeData:Float32Array):void
+            clacNumberList(typeData:Float32Array):NumberAddSendData
             {
                 if(typeData != null)
                 {
-                    let sd:NumberAddSendData = NumberAddSendData.Create();//new NumberAddSendData();
+                    let sd:NumberAddSendData = NumberAddSendData.Create();
                     sd.taskCmd = "ADD_NUMBER";
                     sd.numberData = typeData;
                     this.addData(sd);
+                    return sd;
                 }
+                return null;
             }
             // return true, task finish; return false, task continue...
             parseDone(data:any,flag:number):boolean

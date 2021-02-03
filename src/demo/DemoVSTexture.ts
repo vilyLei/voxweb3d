@@ -66,7 +66,7 @@ export namespace demo
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/green.jpg");
                 //let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
                 
-                let rparam:RendererParam = new RendererParam("glcanvas");
+                let rparam:RendererParam = new RendererParam();
                 rparam.maxWebGLVersion = 1;
                 rparam.setCamPosition(500.0,500.0,500.0);
                 this.m_rscene = new RendererScene();

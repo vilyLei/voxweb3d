@@ -16,7 +16,7 @@ import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as MouseEventT from "../vox/event/MouseEvent";
 import * as DemoInstanceT from "./DemoInstance";
 import * as ProfileInstanceT from "../voxprofile/entity/ProfileInstance";
-import * as ThreadSystemT from "../thread/ThreadSystem";
+import * as ThreadScheduleT from "../thread/ThreadSchedule";
 import * as TestNumberAddTaskT from "../thread/control/TestNumberAddTask";
 import * as TestNumberMultTaskT from "../thread/control/TestNumberMultTask";
 import * as TestNumberMathTaskT from "../thread/control/TestNumberMathTask";
@@ -39,7 +39,7 @@ import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import DemoInstance = DemoInstanceT.demo.DemoInstance;
 import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
-import ThreadSystem = ThreadSystemT.thread.ThreadSystem;
+import ThreadSchedule = ThreadScheduleT.thread.ThreadSchedule;
 import TestNumberAddTask = TestNumberAddTaskT.thread.control.TestNumberAddTask;
 import TestNumberMultTask = TestNumberMultTaskT.thread.control.TestNumberMultTask;
 import TestNumberMathTask = TestNumberMathTaskT.thread.control.TestNumberMathTask;
@@ -47,7 +47,7 @@ import TestNumberMathTask = TestNumberMathTaskT.thread.control.TestNumberMathTas
 
 export namespace demo
 {
-    export class DemoThread extends DemoInstance
+    export class DemoThreadSchedule extends DemoInstance
     {
         constructor()
         {
@@ -56,12 +56,14 @@ export namespace demo
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_profileInstance:ProfileInstance = new ProfileInstance();
+        private m_thrSchedule:ThreadSchedule = new ThreadSchedule();
         protected initializeSceneParam(param:RendererParam):void
         {
             this.m_processTotal = 4;
             param.maxWebGLVersion = 1;
             param.setCamPosition(500.0,500.0,500.0);
         }
+        //ENV=pre,ENV=dev,ENV=beta,ENV=pro,ENV=p2,,ENV=off
         // thread code example(demonstrate: 通过后续添加的代码字符串来扩充worker中的功能示例)
         private m_codeStr:string = 
 `
@@ -109,7 +111,7 @@ let workerIns_ThreadAddNum = new ThreadAddNum();
 `;
         protected initializeSceneObj():void
         {
-            console.log("DemoThread::initialize()......");
+            console.log("DemoThreadSchedule::initialize()......");
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
@@ -146,10 +148,10 @@ let workerIns_ThreadAddNum = new ThreadAddNum();
             //  ThreadSystem.InitTaskByURL("static/thread/ThreadAddNum",0);
             //  ThreadSystem.InitTaskByURL("static/thread/ThreadMultNum",1);
             //  ThreadSystem.InitTaskByURL("static/thread/ThreadMathNum",2);
-            ThreadSystem.InitTaskByCodeStr(this.m_codeStr,0);
-            ThreadSystem.InitTaskByURL("static/thread/ThreadMultNum",1);
-            ThreadSystem.InitTaskByURL("static/thread/ThreadMathNum",2);
-            ThreadSystem.Initsialize(1);
+            this.m_thrSchedule.initTaskByCodeStr(this.m_codeStr,0);
+            this.m_thrSchedule.initTaskByURL("static/thread/ThreadMultNum",1);
+            this.m_thrSchedule.initTaskByURL("static/thread/ThreadMathNum",2);
+            this.m_thrSchedule.initsialize(1);
             //this.useMathTask();
         }
         private m_numberAddTask:TestNumberAddTask = new TestNumberAddTask();
@@ -168,16 +170,16 @@ let workerIns_ThreadAddNum = new ThreadAddNum();
                 switch(f)
                 {
                     case 0:
-                        ThreadSystem.AddData(this.m_numberMathTask.addNumberList(new Float32Array([10,12,21,22])));
+                        this.m_thrSchedule.addData(this.m_numberMathTask.addNumberList(new Float32Array([10,12,21,22])));
                     break;
                     case 1:
-                        ThreadSystem.AddData(this.m_numberMathTask.subNumberList(new Float32Array([10,12,21,22])));
+                        this.m_thrSchedule.addData(this.m_numberMathTask.subNumberList(new Float32Array([10,12,21,22])));
                     break;
                     case 2:
-                        ThreadSystem.AddData(this.m_numberMathTask.divNumberList(new Float32Array([10,12,21,22])));
+                        this.m_thrSchedule.addData(this.m_numberMathTask.divNumberList(new Float32Array([10,12,21,22])));
                     break;
                     case 3:
-                        ThreadSystem.AddData(this.m_numberMathTask.mulNumberList(new Float32Array([10,12,21,22])));
+                        this.m_thrSchedule.addData(this.m_numberMathTask.mulNumberList(new Float32Array([10,12,21,22])));
                     break;
                     default:
                     break;
@@ -188,16 +190,16 @@ let workerIns_ThreadAddNum = new ThreadAddNum();
         private testTask():void
         {
             let t:number = this.m_flag%3;
-            ThreadSystem.AddData(this.m_numberAddTask.clacNumberList(new Float32Array([10,12,21,22])));
-            ThreadSystem.AddData(this.m_numberAddTask.clacNumberList(new Float32Array([-10,-12,-21,-22])));
-            t = -1;
+            this.m_thrSchedule.addData(this.m_numberAddTask.clacNumberList(new Float32Array([10,12,21,22])));
+            //this.m_thrSchedule.addData(this.m_numberAddTask.clacNumberList(new Float32Array([-10,-12,-21,-22])));
+            
             switch(t)
             {
                 case 0:
-                    ThreadSystem.AddData(this.m_numberAddTask.clacNumberList(new Float32Array([10,12,21,22])));
+                    this.m_thrSchedule.addData(this.m_numberAddTask.clacNumberList(new Float32Array([110,112,121,122])));
                 break;
                 case 1:
-                    ThreadSystem.AddData(this.m_numberMultTask.clacNumberList(new Float32Array([10,12,21,22])));
+                    this.m_thrSchedule.addData(this.m_numberMultTask.clacNumberList(new Float32Array([210,212,221,222])));
                 break;
                 case 2:
                 //this.useMathTask();
@@ -231,12 +233,12 @@ let workerIns_ThreadAddNum = new ThreadAddNum();
             {
                 this.m_profileInstance.run();
             }
-            ThreadSystem.Run();
+            this.m_thrSchedule.run();
         }
         runEnd():void
         {
             super.runEnd();
-            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }
 }

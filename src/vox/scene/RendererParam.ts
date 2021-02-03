@@ -14,8 +14,6 @@ export namespace vox
         export class RendererParam
         {
             private m_matrix4AllocateSize:number = 8192;
-            private m_glCanvasName:string = "glcanvas";
-            private m_glDivName:string = "glcanvasdiv";
             private m_mainDiv:HTMLElement = null;
             private m_renderContextAttri:any = {
                 depth:true
@@ -26,33 +24,26 @@ export namespace vox
                 ,preserveDrawingBuffer:true
                 ,powerPreference:"high-performance"//"default"
             };
+            // display 3d view buf size auto sync window size
+            autoSyncRenderBufferAndWindowSize:boolean = true;
             maxWebGLVersion:number = 2;
             cameraPerspectiveEnabled:boolean = true;
             // event flow control enable
             evtFlowEnabled:boolean = false;
             // x: fov, y: near, z: far
-            camProjParam:Vector3D = new Vector3D(45.0,10.0,5000.0);
-            // x: bottom, y: top, z: left, w: right
-            // camOrthoParam:Vector3D = new Vector3D(-300.0,300.0, -400.0,400.0);
-            camPosition:Vector3D = new Vector3D(2000.0,2000.0,2000.0);
-            camLookAtPos:Vector3D = new Vector3D(0.0,0.0,0.0);
-            camUpDirect:Vector3D = new Vector3D(0.0,1.0,0.0);
+            readonly camProjParam:Vector3D = new Vector3D(45.0,10.0,5000.0);
+            
+            readonly camPosition:Vector3D = new Vector3D(2000.0,2000.0,2000.0);
+            readonly camLookAtPos:Vector3D = new Vector3D(0.0,0.0,0.0);
+            readonly camUpDirect:Vector3D = new Vector3D(0.0,1.0,0.0);
 
             batchEnabled:boolean = true;
             processFixedState:boolean = false;
-            constructor(glCanvasName:string = "glcanvas",divIdns:string = "")
-            {
-                if(divIdns != "")
-                {
-                    this.m_glDivName = divIdns;
-                }
-                this.m_glCanvasName = glCanvasName;
-            }
-            setMainDiv(div:HTMLElement):void
+            constructor(div:HTMLElement = null)
             {
                 this.m_mainDiv = div;
             }
-            getMainDiv():HTMLElement
+            getDiv():HTMLElement
             {
                 return this.m_mainDiv;
             }
@@ -87,14 +78,6 @@ export namespace vox
             setAttriHightPowerPreference(boo:boolean):void
             {
                 this.m_renderContextAttri.powerPreference = boo?"high-performance":"default";
-            }
-            getGLCanvasName():string
-            {
-                return this.m_glCanvasName;
-            }
-            getGLDivName():string
-            {
-                return this.m_glDivName;
             }
             setMatrix4AllocateSize(total:number):void
             {

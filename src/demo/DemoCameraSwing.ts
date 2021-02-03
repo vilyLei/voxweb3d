@@ -87,7 +87,7 @@ export namespace demo
                 
                 this.m_statusDisp.initialize("rstatus");
                 
-                let rparam:RendererParam = new RendererParam("glcanvas");
+                let rparam:RendererParam = new RendererParam();
                 rparam.setMatrix4AllocateSize(8192 * 4);
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
@@ -100,7 +100,7 @@ export namespace demo
                 let evtCtr:MouseEvt3DController = null;                
                 this.m_stage3D = this.m_rscene.getStage3D();
 
-                rparam = new RendererParam("glcanvas");
+                rparam = new RendererParam();
                 rparam.cameraPerspectiveEnabled = false;
                 rparam.setCamProject(45.0,50.0,6000.0);
                 rparam.setCamPosition(0.0,0.0,1500.0);

@@ -71,7 +71,7 @@ export namespace demo
                 tex1.setWrap(TextureConst.WRAP_REPEAT);
                 tex1.mipmapEnabled = true;
 
-                let rparam:RendererParam = new RendererParam("glcanvas");
+                let rparam:RendererParam = new RendererParam();
                 rparam.maxWebGLVersion = 1;
                 rparam.setCamPosition(500.0,500.0,500.0);
                 this.m_renderer = new RendererInstance();

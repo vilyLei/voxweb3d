@@ -46,7 +46,7 @@ export namespace vox
     {
         export class RendererInstanceContext
         {
-            private m_rAdapter:RenderAdapter = null;
+            private m_adapter:RenderAdapter = null;
             private m_renderProxy:RenderProxy = null;
             private m_materialProxy:RenderMaterialProxy = null;
             private m_meshProxy:RenderMeshProxy = null;
@@ -69,15 +69,15 @@ export namespace vox
             
             getDiv():any
             {
-                return this.m_rAdapter.getDiv();
+                return this.m_adapter.getDiv();
             }
             getCanvas():any
             {
-                return this.m_rAdapter.getCanvas();
+                return this.m_adapter.getCanvas();
             }
             getRenderAdapter():RenderAdapter
             {
-                return this.m_rAdapter;
+                return this.m_adapter;
             }
             getRenderMaterialProxy():RenderMaterialProxy
             {
@@ -185,11 +185,11 @@ export namespace vox
             }
             setScissorRect(px:number, py:number, pw:number, ph:number):void
 			{
-				this.m_rAdapter.setScissorRect(px, py, pw, ph);
+				this.m_adapter.setScissorRect(px, py, pw, ph);
 			}
             setScissorEnabled(enabled:boolean):void
             {
-                this.m_rAdapter.setScissorEnabled(enabled);
+                this.m_adapter.setScissorEnabled(enabled);
             }
             setViewPort(px:number,py:number,pw:number,ph:number):void
             {
@@ -197,54 +197,54 @@ export namespace vox
             }
             synFBOSizeWithViewport():void
 			{
-				this.m_rAdapter.synFBOSizeWithViewport();
+				this.m_adapter.synFBOSizeWithViewport();
             }
             asynFBOSizeWithViewport():void
 			{
-				this.m_rAdapter.asynFBOSizeWithViewport();
+				this.m_adapter.asynFBOSizeWithViewport();
             }
             // if synFBOSizeWithViewport is true, fbo size = factor * view port size;
 			setFBOSizeFactorWithViewPort(factor:number):void
 			{
-                this.m_rAdapter.setFBOSizeFactorWithViewPort(factor);
+                this.m_adapter.setFBOSizeFactorWithViewPort(factor);
             }
 			createFBOAt(index:number, fboType:number, pw:number,ph:number, enableDepth:boolean = false, enableStencil:boolean = false,multisampleLevel:number = 0):void
 			{
-                this.m_rAdapter.createFBOAt(index,fboType,pw,ph,enableDepth,enableStencil,multisampleLevel);
+                this.m_adapter.createFBOAt(index,fboType,pw,ph,enableDepth,enableStencil,multisampleLevel);
             }
             bindFBOAt(index:number, fboType:number):void
             {
-                this.m_rAdapter.bindFBOAt(index,fboType);
+                this.m_adapter.bindFBOAt(index,fboType);
             }
             setRenderToTexture(texProxy:TextureProxy, enableDepth:boolean = false, enableStencil:boolean = false, outputIndex:number = 0):void
             {
-                this.m_rAdapter.setRenderToTexture(texProxy,enableDepth,enableStencil,outputIndex);
+                this.m_adapter.setRenderToTexture(texProxy,enableDepth,enableStencil,outputIndex);
             }
             useFBO(clearColorBoo:boolean = false, clearDepthBoo:boolean = false, clearStencilBoo:boolean = false):void
             {
-                this.m_rAdapter.useFBO(clearColorBoo,clearDepthBoo,clearStencilBoo);
+                this.m_adapter.useFBO(clearColorBoo,clearDepthBoo,clearStencilBoo);
             }
             setRenderToBackBuffer():void
             {
-                if(this.m_rAdapter != null)
+                if(this.m_adapter != null)
                 {
-                    this.m_rAdapter.setRenderToBackBuffer();
+                    this.m_adapter.setRenderToBackBuffer();
                 }
             }
             lockViewport():void
 			{
-				this.m_rAdapter.lockViewport();
+				this.m_adapter.lockViewport();
 			}
 			unlockViewport():void
 			{
-				this.m_rAdapter.unlockViewport();
+				this.m_adapter.unlockViewport();
 			}
-			setClearDepth(depth:number):void { this.m_rAdapter.setClearDepth(depth); }
-			getClearDepth():number { return this.m_rAdapter.getClearDepth(); }
-			getViewportX():number { return this.m_rAdapter.getViewportX(); }
-			getViewportY():number { return this.m_rAdapter.getViewportY(); }
-			getViewportWidth():number { return this.m_rAdapter.getViewportWidth(); }
-            getViewportHeight():number { return this.m_rAdapter.getViewportHeight(); }
+			setClearDepth(depth:number):void { this.m_adapter.setClearDepth(depth); }
+			getClearDepth():number { return this.m_adapter.getClearDepth(); }
+			getViewportX():number { return this.m_adapter.getViewportX(); }
+			getViewportY():number { return this.m_adapter.getViewportY(); }
+			getViewportWidth():number { return this.m_adapter.getViewportWidth(); }
+            getViewportHeight():number { return this.m_adapter.getViewportHeight(); }
             /**
              * 设置用于3D绘制的canvas的宽高尺寸,如果调用了此函数，则不会自动匹配窗口尺寸改变，默认是自动匹配窗口尺寸改变的
              * @param       pw 像素宽度
@@ -252,7 +252,7 @@ export namespace vox
             */
 			setContextViewSize(pw:number,ph:number):void
 			{
-                this.m_rAdapter.setContextViewSize(pw,ph);
+                this.m_adapter.setContextViewSize(pw,ph);
             }
             // 引擎初始化的时候调用,构建单例的唯一实例
             setMatrix4AllocateSize(total:number):void
@@ -278,10 +278,8 @@ export namespace vox
                     this.m_renderProxy.setCameraParam(fov, near, far);
                 }
             }
-            //initialize(glCanvasNS:string,glDivNS:string,posV3:Vector3D = null, lookAtPosV3:Vector3D = null, upV3:Vector3D = null,perspectiveEnabled:boolean = true):void
             initialize(param:RendererParam):void
             {
-                //console.log("RendererInstanceContext::initialize(), this.m_Matrix4AllocateSize: "+this.m_Matrix4AllocateSize);
                 if(this.m_Matrix4AllocateSize < 1024)
                 {
                     this.setMatrix4AllocateSize(1024);
@@ -289,24 +287,15 @@ export namespace vox
                 if(this.m_renderProxy == null)
                 {
                     RenderDataSlot.Initialize();
+
                     this.m_renderProxy = new RenderProxy();
                     this.m_renderProxy.setCameraParam(this.m_cameraFov,this.m_cameraNear,this.m_cameraFar);
                     this.m_renderProxy.setWebGLMaxVersion(param.maxWebGLVersion);
-                    this.m_rAdapter = this.m_renderProxy.getRenderAdapter();
-                    this.m_rAdapter.bgColor.setRGBA4f(0.0,0.0,0.0,1.0);
-                    this.m_renderProxy.initialize(
-                        param.getMainDiv(),
-                        param.getGLCanvasName(),
-                        param.getGLDivName(),
-                        param.camPosition,
-                        param.camLookAtPos,
-                        param.camUpDirect,
-                        param.cameraPerspectiveEnabled,
-                        param.getRenderContextAttri()
-                        );
-                    //this.m_renderProxy.initialize(glCanvasNS,glDivNS,posV3, lookAtPosV3, upV3,perspectiveEnabled);
+                    this.m_adapter = this.m_renderProxy.getRenderAdapter();
+                    this.m_adapter.bgColor.setRGBA4f(0.0,0.0,0.0,1.0);
+                    this.m_renderProxy.initialize(param);
+
                     let context:RAdapterContext = this.m_renderProxy.getContext();
-                    //console.log("RendererInstanceContext::initialize(),stageSize: "+context.getStage().stageWidth+","+context.getStage().stageHeight);
                     context.setViewport(0,0, context.getStage().stageWidth, context.getStage().stageHeight);
                     this.m_meshProxy = new RenderMeshProxy();
                     this.m_meshProxy.setRenderProxy(this.m_renderProxy);
@@ -331,20 +320,26 @@ export namespace vox
                     this.m_renderProxy.setClearRGBAColor4f(pr,pg,pb,pa);
                 }
             }
+            
+            updateRenderBufferSize():void
+            {
+                this.m_adapter.updateRenderBufferSize();
+            }
+
             runBegin():void
             {
                 if(this.m_renderProxy != null)
                 {
-                    this.m_rAdapter.unlockViewport();
-                    this.m_rAdapter = this.m_renderProxy.getRenderAdapter();
-                    this.m_rAdapter.setClearDepth(1.0);
+                    this.m_adapter.unlockViewport();
+                    this.m_adapter = this.m_renderProxy.getRenderAdapter();
+                    this.m_adapter.setClearDepth(1.0);
                     RendererState.ResetInfo();
                     RendererState.Reset();
                     this.m_meshProxy.reset();
                     this.m_materialProxy.reset();
-                    this.m_rAdapter.update();
-                    this.m_rAdapter.setClearMaskClearAll();
-                    this.m_rAdapter.renderBegin();
+                    this.m_adapter.update();
+                    this.m_adapter.setClearMaskClearAll();
+                    this.m_adapter.renderBegin();
                     this.m_renderProxy.useCameraData();
                     this.m_renderProxy.updateCameraDataFromCamera( this.m_renderProxy.getCamera() );
                 }
@@ -354,16 +349,16 @@ export namespace vox
             {
                 if(this.m_renderProxy != null)
                 {
-                    this.m_rAdapter.unlockViewport();
-                    this.m_rAdapter = this.m_renderProxy.getRenderAdapter();
-                    this.m_rAdapter.setClearDepth(1.0);
+                    this.m_adapter.unlockViewport();
+                    this.m_adapter = this.m_renderProxy.getRenderAdapter();
+                    this.m_adapter.setClearDepth(1.0);
                     RendererState.ResetInfo();
                     RendererState.Reset();
                     this.m_meshProxy.reset();
                     this.m_materialProxy.renderBegin();
-                    this.m_rAdapter.update();
-                    this.m_rAdapter.setClearMaskClearAll();
-                    this.m_rAdapter.renderBegin();
+                    this.m_adapter.update();
+                    this.m_adapter.setClearMaskClearAll();
+                    this.m_adapter.renderBegin();
                     this.m_renderProxy.useCameraData();
                     this.m_renderProxy.updateCameraDataFromCamera( this.m_renderProxy.getCamera() );
                 }

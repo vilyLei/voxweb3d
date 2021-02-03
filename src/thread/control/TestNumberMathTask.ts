@@ -144,7 +144,7 @@ export namespace thread
             {
                 super();
             }
-            addNumberList(typeData:Float32Array):void
+            addNumberList(typeData:Float32Array):NumberMathSendData
             {
                 if(typeData != null)
                 {
@@ -152,9 +152,11 @@ export namespace thread
                     sd.taskCmd = "MATH_ADD";
                     sd.numberData = typeData;
                     this.addData(sd);
+                    return sd;
                 }
+                return null;
             }
-            subNumberList(typeData:Float32Array):void
+            subNumberList(typeData:Float32Array):NumberMathSendData
             {
                 if(typeData != null)
                 {
@@ -162,9 +164,11 @@ export namespace thread
                     sd.taskCmd = "MATH_SUB";
                     sd.numberData = typeData;
                     this.addData(sd);
+                    return sd;
                 }
+                return null;
             }
-            divNumberList(typeData:Float32Array):void
+            divNumberList(typeData:Float32Array):NumberMathSendData
             {
                 if(typeData != null)
                 {
@@ -172,9 +176,11 @@ export namespace thread
                     sd.taskCmd = "MATH_DIV";
                     sd.numberData = typeData;
                     this.addData(sd);
+                    return sd;
                 }
+                return null;
             }
-            mulNumberList(typeData:Float32Array):void
+            mulNumberList(typeData:Float32Array):NumberMathSendData
             {
                 if(typeData != null)
                 {
@@ -182,7 +188,9 @@ export namespace thread
                     sd.taskCmd = "MATH_MUL";
                     sd.numberData = typeData;
                     this.addData(sd);
+                    return sd;
                 }
+                return null;
             }
             
             // return true, task finish; return false, task continue...

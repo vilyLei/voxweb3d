@@ -9,10 +9,12 @@
 import * as IThreadSendDataT from "../../thread/base/IThreadSendData";
 import * as ThreadTaskT from "../../thread/control/ThreadTask";
 import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as ThreadSystemT from "../../thread/ThreadSystem";
 
 import IThreadSendData = IThreadSendDataT.thread.base.IThreadSendData;
 import ThreadTask = ThreadTaskT.thread.control.ThreadTask;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import ThreadSystem = ThreadSystemT.thread.ThreadSystem;
 
 export namespace demo
 {
@@ -304,6 +306,7 @@ export namespace demo
                     sd.allTot = this.m_matTotal;
                     sd.matTotal = this.m_currMatTotal;
                     this.addData(sd);
+                    ThreadSystem.AddData( sd );
                     //this.m_fs32Arr = null;
                     this.m_enabled = false;
                     //console.log("sendData success...uid: "+this.getUid());

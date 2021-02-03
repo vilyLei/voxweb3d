@@ -277,6 +277,10 @@ export namespace vox
             {
                 this.m_camera.unlock();
             }
+            updateRenderBufferSize():void
+            {
+                this.m_adapter.updateRenderBufferSize();
+            }
             setRendererProcessParam(index:number,batchEnabled:boolean,processFixedState:boolean):void
             {
                 this.m_renderer.setRendererProcessParam(this.m_processids[index],batchEnabled, processFixedState);

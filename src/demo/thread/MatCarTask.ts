@@ -16,6 +16,7 @@ import * as IRendererT from "../../vox/scene/IRenderer";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as TextureStoreT from "../../vox/texture/TextureStore";
 import * as Box3DEntityT from "../../vox/entity/Box3DEntity";
+import * as ThreadSystemT from "../../thread/ThreadSystem";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import IThreadSendData = IThreadSendDataT.thread.base.IThreadSendData;
@@ -27,6 +28,7 @@ import IRenderer = IRendererT.vox.scene.IRenderer;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
+import ThreadSystem = ThreadSystemT.thread.ThreadSystem;
 
 export namespace demo
 {
@@ -430,6 +432,7 @@ export namespace demo
                     sd.flag = this.m_flag;
                     sd.calcType = 1;
                     this.addData(sd);
+                    ThreadSystem.AddData(sd);
                     this.m_enabled = false;
                     this.m_flag = 1;
                     //console.log("sendData success...uid: "+this.getUid());

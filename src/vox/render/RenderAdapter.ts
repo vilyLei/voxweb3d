@@ -111,7 +111,6 @@ export namespace vox
 
 					if(this.uViewProbe == null)
                 	{
-                	    //this.m_viewParamArr = new Float32Array([this.m_viewX,this.m_viewY,this.m_viewWidth,this.m_viewHeight]);
                 	    this.uViewProbe = new UniformVec4Probe(1);
                 	    this.uViewProbe.bindSlotAt( this.m_index );
                 	    this.uViewProbe.setVec4DataWithArr4([this.m_viewX,this.m_viewY,this.m_viewWidth,this.m_viewHeight]);
@@ -137,8 +136,8 @@ export namespace vox
 			}
 			setContextViewSize(pw:number,ph:number):void
 			{
-				this.m_rcontext.autoSynContextSizeAndWindowSize = false;
-				this.m_rcontext.resize(pw,ph);
+				this.m_rcontext.autoSyncRenderBufferAndWindowSize = false;
+				this.m_rcontext.resizeBufferSize(pw,ph);
 			}
 			getViewportX():number { return this.m_rcontext.getViewportX(); }
 			getViewportY():number { return this.m_rcontext.getViewportY(); }
@@ -310,6 +309,10 @@ export namespace vox
 			update():void
 			{
 			}
+            updateRenderBufferSize():void
+            {
+                this.m_rcontext.updateRenderBufferSize();
+            }
 			destroy():void
 			{
 				this.m_rcontext = null;

@@ -32,6 +32,7 @@ export namespace thread
             private m_enabled:boolean = false;
             private m_initBoo:boolean = true;
             autoSendData:boolean = false;
+            pool:ThrDataPool = null;
             constructor()
             {
                 this.m_uid = ThreadBase.s_uid++;
@@ -50,7 +51,7 @@ export namespace thread
             }
             private thisSendDataTo():void
             {
-                ThrDataPool.SendDataTo(this);
+                this.pool.sendDataTo(this);
             }
             // send parse data to thread
             sendDataTo(thrData:IThreadSendData):void

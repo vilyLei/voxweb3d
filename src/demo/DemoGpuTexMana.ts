@@ -49,7 +49,7 @@ export namespace demo
                 //let tex0:TextureProxy = this.m_texMana.getImageTexByUrl("static/assets/fruit_01.jpg");
                 
                 this.m_statusDisp.initialize("rstatus");
-                let rparam:RendererParam = new RendererParam("glcanvas");
+                let rparam:RendererParam = new RendererParam();
                 rparam.setMatrix4AllocateSize(4096);
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);

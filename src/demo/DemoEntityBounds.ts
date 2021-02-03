@@ -94,7 +94,7 @@ export namespace demo
 
                 this.m_statusDisp.initialize("rstatus");
 
-                let rparam:RendererParam = new RendererParam("glcanvas");
+                let rparam:RendererParam = new RendererParam();
                 rparam.setMatrix4AllocateSize(8192);
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);

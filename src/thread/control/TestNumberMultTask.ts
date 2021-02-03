@@ -146,7 +146,7 @@ export namespace thread
             {
                 super();
             }
-            clacNumberList(typeData:Float32Array):void
+            clacNumberList(typeData:Float32Array):NumberMultSendData
             {
                 if(typeData != null)
                 {
@@ -154,7 +154,9 @@ export namespace thread
                     sd.taskCmd = "MULT_NUMBER";
                     sd.numberData = typeData;
                     this.addData(sd);
+                    return sd;
                 }
+                return null;
             }
             
             // return true, task finish; return false, task continue...

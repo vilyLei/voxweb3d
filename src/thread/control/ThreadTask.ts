@@ -10,10 +10,10 @@
 本类作为任何thread task 的基类
 */
 import * as IThreadSendDataT from "../../thread/base/IThreadSendData";
-import * as ThrDataPoolT from "../../thread/control/ThrDataPool";
+//import * as ThrDataPoolT from "../../thread/control/ThrDataPool";
 
 import IThreadSendData = IThreadSendDataT.thread.base.IThreadSendData;
-import ThrDataPool = ThrDataPoolT.thread.control.ThrDataPool;
+//import ThrDataPool = ThrDataPoolT.thread.control.ThrDataPool;
 
 export namespace thread
 {
@@ -112,7 +112,7 @@ export namespace thread
                 {
                     data.srcuid = this.m_uid;
                     data.taskclass = this.getTaskClass();
-                    ThrDataPool.AddData(data);
+                    //ThrDataPool.AddData(data);
                 }
                 else
                 {

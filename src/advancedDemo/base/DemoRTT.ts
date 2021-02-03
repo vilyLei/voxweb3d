@@ -74,7 +74,7 @@ export namespace advancedDemo
                     let tex0:TextureProxy = this.getImageTexByUrl("default.jpg");
                     let tex1:TextureProxy = this.getImageTexByUrl("broken_iron.jpg");
 
-                    let rparam:RendererParam = new RendererParam("glcanvas");
+                    let rparam:RendererParam = new RendererParam();
                     rparam.setMatrix4AllocateSize(8192 * 4);
                     rparam.setCamProject(45.0,0.1,5000.0);
                     rparam.setCamPosition(2500.0,2500.0,2500.0);

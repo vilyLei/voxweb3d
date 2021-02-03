@@ -92,7 +92,7 @@ export namespace demo
                 tex4.mipmapEnabled = true;
                 tex5.mipmapEnabled = true;
                 
-                let rparam:RendererParam = new RendererParam("glcanvas");
+                let rparam:RendererParam = new RendererParam();
                 rparam.setMatrix4AllocateSize(8192 * 4);
                 rparam.setCamProject(45.0,50.0,5000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);

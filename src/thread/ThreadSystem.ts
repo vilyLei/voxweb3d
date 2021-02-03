@@ -5,11 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as IThreadSendDataT from "../thread/base/IThreadSendData";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as ThreadCoreT from "../thread/control/Thrcode";
 import * as ThrDataPoolT from "../thread/control/ThrDataPool";
 import * as ThreadBaseT from "../thread/base/ThreadBase";
 
+import IThreadSendData = IThreadSendDataT.thread.base.IThreadSendData;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import ThreadCore = ThreadCoreT.thread.control.ThreadCore;
 import ThrDataPool = ThrDataPoolT.thread.control.ThrDataPool;
@@ -27,21 +29,21 @@ export namespace thread
         private static s_tasks:any[] = [null,null,null,null,null,null,null,null,null,null,null,null];
         private static s_threads:ThreadBase[] = [];
         private static s_threadsTotal:number = 0;
-
+        private static s_pool:ThrDataPool = new ThrDataPool();
         static Run():void
         {
             if(ThreadSystem.GetThreadEnabled())
             {
-                if(ThrDataPool.IsEnabled())
+                if(ThreadSystem.s_pool.isEnabled())
                 {
                     let tot:number = 0;
                     for(let i:number = 0; i < ThreadSystem.s_threadsTotal; ++i)
                     {
-                        if(ThrDataPool.IsEnabled())
+                        if(ThreadSystem.s_pool.isEnabled())
                         {
                             if(ThreadSystem.s_threads[i].isFree())
                             {
-                                ThrDataPool.SendDataTo(ThreadSystem.s_threads[i]);
+                                ThreadSystem.s_pool.sendDataTo(ThreadSystem.s_threads[i]);
                             }
                             if(ThreadSystem.s_threads[i].isFree())
                             {
@@ -49,11 +51,18 @@ export namespace thread
                             }
                         }
                     }
-                    if(tot < 1 && ThrDataPool.IsEnabled())
+                    if(tot < 1 && ThreadSystem.s_pool.isEnabled())
                     {
                         ThreadSystem.CreateThread();
                     }
                 }
+            }
+        }
+        static AddData(thrData:IThreadSendData):void
+        {
+            if(thrData != null && thrData.srcuid >= 0)
+            {
+                ThreadSystem.s_pool.addData(thrData);
             }
         }
         private static GetAFreeThread():ThreadBase
@@ -98,6 +107,7 @@ export namespace thread
             if(ThreadSystem.s_threadsTotal < ThreadSystem.s_maxThreadsTotal)
             {
                 let thread:ThreadBase = new ThreadBase();
+                thread.pool = ThreadSystem.s_pool;
                 thread.initialize(ThreadSystem.s_codeBlob);
                 ThreadSystem.s_threads.push(thread);
                 ThreadSystem.s_threadsTotal++;
@@ -160,6 +170,9 @@ export namespace thread
                 }
             }
         }
+        /**
+         * @param maxThreadsTotal 最大子线程数量
+         */
         static Initsialize(maxThreadsTotal:number):void
         {
             if(ThreadSystem.s_initBoo)
@@ -167,6 +180,7 @@ export namespace thread
                 if(ThreadSystem.GetThreadEnabled() && ThreadSystem.IsSupported())
                 {
                     //console.log("ThreadCore.CodeStr: \n",ThreadCore.CodeStr);
+                    
                     let bolb:Blob = new Blob([ThreadCore.CodeStr]);
                     
                     if(maxThreadsTotal < 1)maxThreadsTotal = 1;

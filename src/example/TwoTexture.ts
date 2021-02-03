@@ -69,7 +69,7 @@ export namespace example
                 tex2.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
                 //tex2.magFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
                 
-                let rparam:RendererParam = new RendererParam("glcanvas");
+                let rparam:RendererParam = new RendererParam();
                 rparam.setAttriAntialias(true);
                 rparam.setAttriAlpha(false);
                 rparam.maxWebGLVersion = 1;

@@ -95,7 +95,7 @@ export namespace demo
                 this.m_texList.push(tex4);
                 this.m_texList.push(tex5);
                 
-                let rparam:RendererParam = new RendererParam("glcanvas");
+                let rparam:RendererParam = new RendererParam();
                 rparam.setMatrix4AllocateSize(8192 * 4);
                 rparam.setCamProject(45.0,100.0,5000.0);
                 rparam.setCamPosition(2000.0,1500.0,2000.0);

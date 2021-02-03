@@ -155,7 +155,7 @@ export namespace example
                 tex1.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
                 this.m_targetTex = tex1 as ImageTextureProxy;
                 
-                let rparam:RendererParam = new RendererParam("glcanvas");
+                let rparam:RendererParam = new RendererParam();
                 rparam.setAttriAntialias(true);
                 rparam.setAttriAlpha(false);
                 rparam.maxWebGLVersion = 1;

@@ -298,7 +298,7 @@ export namespace demo
                 //  cubeTex0.mipmapEnabled = true;
                 //this.m_statusDisp.initialize("rstatus");
 
-                let rparam:RendererParam = new RendererParam("glcanvas");
+                let rparam:RendererParam = new RendererParam();
                 rparam.maxWebGLVersion = 1;
                 rparam.setCamProject(45,10.0,7000.0);
                 rparam.setCamPosition(900.0,900.0,900.0);

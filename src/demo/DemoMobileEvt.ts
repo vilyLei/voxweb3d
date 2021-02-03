@@ -221,7 +221,7 @@ export namespace demo
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
                 
-                let rparam:RendererParam = new RendererParam("glcanvas");
+                let rparam:RendererParam = new RendererParam();
                 rparam.maxWebGLVersion = 1;
                 rparam.setCamProject(45,0.1,6000.0);
                 rparam.setCamPosition(1100.0,1100.0,1100.0);

@@ -176,7 +176,7 @@ export namespace voxnav
                 
                 this.m_statusDisp.initialize("rstatus");
                 
-                let rparam:RendererParam = new RendererParam("glcanvas");
+                let rparam:RendererParam = new RendererParam();
                 rparam.setMatrix4AllocateSize(8192 * 4);
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
@@ -189,7 +189,7 @@ export namespace voxnav
                 let evtCtr:MouseEvt3DController = null;                
                 this.m_stage3D = this.m_rscene.getStage3D();
                 // create ui renderer scene
-                rparam = new RendererParam("glcanvas");
+                rparam = new RendererParam();
                 rparam.cameraPerspectiveEnabled = false;
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(0.0,0.0,1500.0);

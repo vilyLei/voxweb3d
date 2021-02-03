@@ -3,7 +3,7 @@ import * as Vector3DT from "../vox/geom/Vector3";
 import * as Matrix4T from "../vox/geom/Matrix4";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RenderConstT from "../vox/render/RenderConst";
-import * as RODrawStateT from "../vox/render/RODrawState";
+import * as RendererStateT from "../vox/render/RendererState";
 import * as RendererParamT from "../vox/scene/RendererParam";
 import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
 import * as RendererInstanceT from "../vox/scene/RendererInstance";
@@ -34,7 +34,7 @@ import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
 import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
+import RendererState = RendererStateT.vox.render.RendererState;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
@@ -101,8 +101,7 @@ export namespace demo
                 tex4.mipmapEnabled = true;
                 tex5.mipmapEnabled = true;
                 
-                this.m_statusDisp.initialize("rstatus");
-                let rparam:RendererParam = new RendererParam("glcanvas");
+                let rparam:RendererParam = new RendererParam();
                 rparam.setMatrix4AllocateSize(8192 * 4);
                 rparam.setCamProject(45.0,10.0,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
@@ -116,9 +115,10 @@ export namespace demo
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseUpListener);
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
-                
-                RenderStateObject.Create("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
-                RenderStateObject.Create("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
+
+                this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
+                RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
+                RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 
                 let plane:Plane3DEntity = new Plane3DEntity();
                 plane.name = "plane";
@@ -218,8 +218,6 @@ export namespace demo
         run():void
         {
             this.m_equeue.run();
-            
-            this.m_statusDisp.update();
 
             //console.log("##-- begin");
             this.m_rcontext.setClearRGBColor3f(0.1, 0.1, 0.1);
@@ -230,7 +228,7 @@ export namespace demo
             this.m_rscene.run();
 
             this.m_rscene.runEnd();
-            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
             this.m_rscene.updateCamera();
             //this.m_rscene.cullingTest();
             if(this.m_containerMain != null)
@@ -249,6 +247,8 @@ export namespace demo
             {
                 this.parRun();
             }
+            this.m_statusDisp.statusInfo = "/"+RendererState.DrawCallTimes;
+            this.m_statusDisp.update();
         }
         
         parRun():void
@@ -273,8 +273,8 @@ export namespace demo
                         par.awake();
                     }
                     let i:number = 0;
-                    //let len:number = 80 + Math.round(Math.random() * 845);
-                    let len:number = 10 + Math.round(Math.random() * 15);
+                    let len:number = 80 + Math.round(Math.random() * 845);
+                    //let len:number = 10 + Math.round(Math.random() * 15);
 
                     for(; i < len; ++i)
                     {

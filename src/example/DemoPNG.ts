@@ -124,7 +124,7 @@ export namespace example
                 colorTex.mipmapEnabled = true;
                 //this.m_statusDisp.initialize("rstatus");
 
-                let rparam:RendererParam = new RendererParam("glcanvas");
+                let rparam:RendererParam = new RendererParam();
                 rparam.maxWebGLVersion = 1;
                 rparam.setCamPosition(0.0,600.0,0.0);
                 rparam.setCamUpDirect(0.0,0.0,-1.0);

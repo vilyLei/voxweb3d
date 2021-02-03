@@ -200,6 +200,10 @@ export namespace vox
                 this.m_rcontext.setRenderToBackBuffer();
             }
             
+            updateRenderBufferSize():void
+            {
+                this.m_adapter.updateRenderBufferSize();
+            }
             setEvt3DController(evt3DCtr:IEvt3DController):void
             {
                 if(evt3DCtr != null)

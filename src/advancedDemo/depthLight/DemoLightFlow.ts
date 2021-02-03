@@ -45,7 +45,7 @@ export namespace advancedDemo
                     H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
                     RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
 
-                    let rparam:RendererParam = new RendererParam("glcanvas");
+                    let rparam:RendererParam = new RendererParam();
                     rparam.setMatrix4AllocateSize(8192 * 4);
                     rparam.setCamProject(45.0,0.1,5000.0);
                     rparam.setCamPosition(2500.0,2500.0,2500.0);
