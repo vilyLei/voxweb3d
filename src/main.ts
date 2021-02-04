@@ -217,6 +217,9 @@
 import * as DemoDivControl from "./demo/DemoDivControl";
 import Demo = DemoDivControl.demo.DemoDivControl;
 
+//  import * as DemoMultiRenderer from "./demo/DemoMultiRenderer";
+//  import Demo = DemoMultiRenderer.demo.DemoMultiRenderer;
+
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;
 if(ins.runBegin != undefined)

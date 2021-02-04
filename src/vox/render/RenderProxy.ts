@@ -48,6 +48,7 @@ export namespace vox
     {
         export class RenderProxy
         {
+
             readonly RGBA:number = 0;
             readonly UNSIGNED_BYTE:number = 0;
             readonly TRIANGLE_STRIP:number = 0;
@@ -69,11 +70,13 @@ export namespace vox
             readonly RContext:any = null;
             readonly RState:RODrawState = null;
 
+            private m_uid:number = 0;
+            private static s_uid:number = 0;
             private m_camUBO:any = null;
             private m_mainCamera:CameraBase = null;
             private m_adapter:RenderAdapter = new RenderAdapter();
 
-            private m_RAdapterContext:RAdapterContext = new RAdapterContext();
+            private m_adapterContext:RAdapterContext = new RAdapterContext();
 
             private m_rc:any = null;
             private m_perspectiveEnabled = true;
@@ -94,6 +97,15 @@ export namespace vox
             private m_camSwitched:boolean = false;
             // 是否舞台尺寸和view自动同步一致
             private m_autoSynViewAndStage:boolean = true;
+
+            constructor()
+            {
+                this.m_uid = RenderProxy.s_uid++;
+            }
+            getUid():number
+            {
+                return this.m_uid;
+            }
             isAutoSynViewAndStage():boolean
             {
                 return this.m_autoSynViewAndStage;
@@ -131,11 +143,11 @@ export namespace vox
             {
                 return this.m_camera.update();
             }
-            createCameraUBO (shdProgram:any):void
+            createCameraUBO (shd:any):void
             {
                 //  if(this.m_camUBO == null)
                 //  {
-                //      this.m_camUBO = ShaderUBOBuilder.createUBOWithDataFloatsCount("UBlock_Camera", shdProgram, 32);
+                //      this.m_camUBO = ShaderUBOBuilder.createUBOWithDataFloatsCount("UBlock_Camera", shd, 32);
                 //      this.m_camUBO.setSubDataArrAt(0, m_mainCamera.getViewMatrix().getLocalFS32());
                 //      this.m_camUBO.setSubDataArrAt(16, m_mainCamera.getProjectMatrix().getLocalFS32());
                 //      this.m_camUBO.run();
@@ -388,11 +400,11 @@ export namespace vox
             }
             getContext():RAdapterContext
             {
-                return this.m_RAdapterContext;
+                return this.m_adapterContext;
             }
             getStage3D():Stage3D
             {
-                return this.m_RAdapterContext.getStage();
+                return this.m_adapterContext.getStage();
             }
             getRenderAdapter():RenderAdapter
             {
@@ -410,7 +422,7 @@ export namespace vox
             }
             getMouseXYWorldRay(rl_position:Vector3D, rl_tv:Vector3D):void
             {
-                let stage:Stage3D = this.m_RAdapterContext.getStage();
+                let stage:Stage3D = this.m_adapterContext.getStage();
                 this.m_mainCamera.getWorldPickingRayByScreenXY(stage.mouseX,stage.mouseY,rl_position,rl_tv);
             }
             
@@ -421,14 +433,14 @@ export namespace vox
                 this.m_viewY = py;
                 this.m_viewW = pw;
                 this.m_viewH = ph;
-                let stage:Stage3D = this.m_RAdapterContext.getStage();
+                let stage:Stage3D = this.m_adapterContext.getStage();
                 if(stage != null)
                 {
                     stage.setViewPort(pw,py,pw,ph);
                     if(this.m_mainCamera != null)
                     {
                         this.m_mainCamera.setViewXY(this.m_viewX,this.m_viewY);
-                        this.m_mainCamera.setViewSize(this.m_viewW,this.m_viewH, this.m_RAdapterContext.getDevicePixelRatio());                    
+                        this.m_mainCamera.setViewSize(this.m_viewW,this.m_viewH, this.m_adapterContext.getDevicePixelRatio());                    
                     }
                 }
                 this.setRCViewPort(this.m_viewX,this.m_viewY,this.m_viewW,this.m_viewH);
@@ -436,7 +448,7 @@ export namespace vox
             setRCViewPort(px:number,py:number,pw:number,ph:number):void
             {
                 this.m_autoSynViewAndStage = false;
-                this.m_RAdapterContext.setViewport(px,py,pw,ph);
+                this.m_adapterContext.setViewport(px,py,pw,ph);
             }
             reseizeRCViewPort():void
             {
@@ -447,7 +459,7 @@ export namespace vox
             {
                 if(this.m_autoSynViewAndStage)
                 {
-                    let stage:Stage3D = this.m_RAdapterContext.getStage();
+                    let stage:Stage3D = this.m_adapterContext.getStage();
                     
                     this.m_viewX = 0;
                     this.m_viewY = 0;
@@ -457,15 +469,15 @@ export namespace vox
                     {
                         this.createMainCamera();
                     }
-                    this.m_RAdapterContext.setViewport(this.m_viewX,this.m_viewY, this.m_viewW,this.m_viewH);
+                    this.m_adapterContext.setViewport(this.m_viewX,this.m_viewY, this.m_viewW,this.m_viewH);
                     this.m_mainCamera.setViewXY(this.m_viewX,this.m_viewY);
-                    this.m_mainCamera.setViewSize(this.m_viewW,this.m_viewH,this.m_RAdapterContext.getDevicePixelRatio());
+                    this.m_mainCamera.setViewSize(this.m_viewW,this.m_viewH,this.m_adapterContext.getDevicePixelRatio());
                     //console.log("resizeCallback(), this.m_viewW, this.m_viewH: "+this.m_viewW+", "+this.m_viewH);
                 }
             }
             private createMainCamera():void
             {
-                let stage:Stage3D = this.m_RAdapterContext.getStage();
+                let stage:Stage3D = this.m_adapterContext.getStage();
                 this.m_mainCamera = new CameraBase(stage.getIndex());
                 this.m_mainCamera.uniformEnabled = true;
                 
@@ -478,7 +490,7 @@ export namespace vox
                     this.m_mainCamera.orthoRH(this.m_cameraNear, this.m_cameraFar, -0.5 * this.m_viewH, 0.5 * this.m_viewH, -0.5 * this.m_viewW, 0.5 * this.m_viewW);
                 }
                 this.m_mainCamera.setViewXY(this.m_viewX,this.m_viewY);
-                this.m_mainCamera.setViewSize(this.m_viewW,this.m_viewH,this.m_RAdapterContext.getDevicePixelRatio());
+                this.m_mainCamera.setViewSize(this.m_viewW,this.m_viewH,this.m_adapterContext.getDevicePixelRatio());
             }
             readPixels(px:number, py:number, width:number, height:number, format:number, dataType:number, pixels:Uint8Array):void
             {
@@ -494,19 +506,19 @@ export namespace vox
                 if(upV3 == null) upV3 = new Vector3D(0.0, 1.0, 0.0);
 
                 this.m_perspectiveEnabled = param.cameraPerspectiveEnabled;
-                this.m_RAdapterContext.autoSyncRenderBufferAndWindowSize = param.autoSyncRenderBufferAndWindowSize;
-                this.m_RAdapterContext.setResizeCallback(this, this.resizeCallback);
-                this.m_RAdapterContext.setWebGLMaxVersion(this.m_maxWebGLVersion);
-                this.m_RAdapterContext.initialize(param.getDiv(),param.getRenderContextAttri());
-                this.m_WEBGL_VER = this.m_RAdapterContext.getWebGLVersion();
+                this.m_adapterContext.autoSyncRenderBufferAndWindowSize = param.autoSyncRenderBufferAndWindowSize;
+                this.m_adapterContext.setResizeCallback(this, this.resizeCallback);
+                this.m_adapterContext.setWebGLMaxVersion(this.m_maxWebGLVersion);
+                this.m_adapterContext.initialize(param.getDiv(),param.getRenderContextAttri());
+                this.m_WEBGL_VER = this.m_adapterContext.getWebGLVersion();
                 
-                this.m_viewW = this.m_RAdapterContext.getViewportWidth();
-                this.m_viewH = this.m_RAdapterContext.getViewportHeight();
-                this.m_adapter.initialize(this.m_RAdapterContext);
+                this.m_viewW = this.m_adapterContext.getViewportWidth();
+                this.m_viewH = this.m_adapterContext.getViewportHeight();
+                this.m_adapter.initialize(this.m_adapterContext);
                 
                 if(this.m_autoSynViewAndStage)
                 {
-                    let stage:Stage3D = this.m_RAdapterContext.getStage();
+                    let stage:Stage3D = this.m_adapterContext.getStage();
                     if(stage != null)
                     {
                         this.m_viewW = stage.stageWidth;
@@ -517,12 +529,12 @@ export namespace vox
                 {
                     this.createMainCamera();
                 }
-                this.m_RAdapterContext.setViewport(this.m_viewX,this.m_viewY, this.m_viewW,this.m_viewH);                
+                this.m_adapterContext.setViewport(this.m_viewX,this.m_viewY, this.m_viewW,this.m_viewH);                
                 this.m_mainCamera.lookAtRH(posV3, lookAtPosV3, upV3);
                 this.m_mainCamera.update();
                 this.m_adapter.bgColor.setRGB3f(0.0,0.0,0.0);
 
-                this.m_rc = this.m_RAdapterContext.getRC();
+                this.m_rc = this.m_adapterContext.getRC();
                 this.m_camera = this.m_mainCamera;
                 let selfT:any = this;
                 let gl:any = this.m_rc;
@@ -563,15 +575,15 @@ export namespace vox
 			    classRenderMaskBitfield.DEPTH_BUFFER_BIT = gl.DEPTH_BUFFER_BIT;
 			    classRenderMaskBitfield.STENCIL_BUFFER_BIT = gl.STENCIL_BUFFER_BIT;
 
-                RenderFBOProxy.SetRenderer(this.m_RAdapterContext);
+                RenderFBOProxy.SetRenderer(this.m_adapterContext);
 
-                selfT.RState = this.m_RAdapterContext.getRenderState();
+                selfT.RState = this.m_adapterContext.getRenderState();
                 selfT.RContext = this.m_rc;
 
             }
             createCamera():CameraBase
             {
-                return new CameraBase(this.m_RAdapterContext.getStage().getIndex());
+                return new CameraBase(this.m_adapterContext.getStage().getIndex());
             }
             setClearRGBColor3f(pr:number,pg:number,pb:number)
             {
@@ -624,11 +636,11 @@ export namespace vox
             }
             setScissorEnabled(boo:boolean):void
             {
-                this.m_RAdapterContext.setScissorEnabled(boo);
+                this.m_adapterContext.setScissorEnabled(boo);
             }
             setScissorRect(px:number,py:number,pw:number,ph:number):void
             {
-                this.m_RAdapterContext.setScissorRect(px,py,pw,ph);
+                this.m_adapterContext.setScissorRect(px,py,pw,ph);
             }
             useRenderColorMask(state:number):void
             {

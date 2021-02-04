@@ -31,7 +31,7 @@ export namespace vox
     {
         export class MaterialBase
         {
-            private static ___s_codeBuffer:ShaderCodeBuffer = null;
+            private static s_codeBuffer:ShaderCodeBuffer = null;
             constructor()
             {
             }
@@ -50,7 +50,8 @@ export namespace vox
                 if(this.getShaderProgram() == null)
                 {
                     let program:ShaderProgram = MaterialProgram.Find( shdCode_uniqueName );
-                    if(program != null) this.setShaderProgram(program);
+                    //if(program != null) this.setShaderProgram(program);
+                    if(program != null) this.m_spg = program;
                 }
                 return this.getShaderProgram() != null;
             }
@@ -70,42 +71,42 @@ export namespace vox
                         );
                     }
                     this.m_shduns = shdCode_uniqueName;
-                    this.setShaderProgram(program);
+                    this.m_spg = program;
                 }
             }
             // get a shader code buf instance, for sub class override
             getCodeBuf()
             {
-                if(MaterialBase.___s_codeBuffer != null)
+                if(MaterialBase.s_codeBuffer != null)
                 {
-                    return MaterialBase.___s_codeBuffer;
+                    return MaterialBase.s_codeBuffer;
                 }
-                MaterialBase.___s_codeBuffer = new ShaderCodeBuffer();
-                return MaterialBase.___s_codeBuffer;
+                MaterialBase.s_codeBuffer = new ShaderCodeBuffer();
+                return MaterialBase.s_codeBuffer;
             }
             initializeByCodeBuf(texEnabled:boolean = false):void
             {
-                if(this.getShaderProgram() == null)
+                if(this.m_spg == null)
                 {
                     let buf:ShaderCodeBuffer = this.getCodeBuf();
                     if(buf != null)
                     {
-                        if(MaterialBase.___s_codeBuffer == null)
+                        if(MaterialBase.s_codeBuffer == null)
                         {
-                            MaterialBase.___s_codeBuffer = new ShaderCodeBuffer();
+                            MaterialBase.s_codeBuffer = new ShaderCodeBuffer();
                         }
                         ShaderCodeBuffer.UseShaderBuffer( buf );
                         //
-                        MaterialBase.___s_codeBuffer.initialize(texEnabled);
-                        let shdCode_uniqueName:string = MaterialBase.___s_codeBuffer.getUniqueShaderName();
+                        MaterialBase.s_codeBuffer.initialize(texEnabled);
+                        let shdCode_uniqueName:string = MaterialBase.s_codeBuffer.getUniqueShaderName();
                         this.m_shduns = shdCode_uniqueName;
                         this.__initShd(this.m_shduns);
                         let program:ShaderProgram = MaterialProgram.Find( shdCode_uniqueName );
                         if(null == program)
                         {
-                            MaterialBase.___s_codeBuffer.buildShader();
-                            let shdCode_fshdCode = MaterialBase.___s_codeBuffer.getFragShaderCode();
-                            let shdCode_vshdCode = MaterialBase.___s_codeBuffer.getVtxShaderCode();
+                            MaterialBase.s_codeBuffer.buildShader();
+                            let shdCode_fshdCode = MaterialBase.s_codeBuffer.getFragShaderCode();
+                            let shdCode_vshdCode = MaterialBase.s_codeBuffer.getVtxShaderCode();
                             program = MaterialProgram.Create(
                                 shdCode_uniqueName
                                 , shdCode_vshdCode
@@ -113,16 +114,14 @@ export namespace vox
                             );
                         }
                         ShaderCodeBuffer.UseShaderBuffer(null);
-                        this.setShaderProgram(program);
+                        this.m_spg = program;
                     }
                 }
             }
             protected __initShd(pshduns:string):void
             {
             }
-            setShaderProgram(p:ShaderProgram):void{ this.m_spg = p;}
-            getShaderProgram():ShaderProgram{return this.m_spg;};    
-            getProgram(){return this.m_spg.getProgram();}
+            getShaderProgram():ShaderProgram{return this.m_spg;}
         
             private m_texList:TextureProxy[] = null;
             private m_texListLen:number = 0;
@@ -153,7 +152,7 @@ export namespace vox
                     this.m_texList = texList;
                     if(this.m_texList != null)
                     {
-                        let key = 31;
+                        let key:number = 31;
                         for(i = 0;i < this.m_texList.length;++i)
                         {
                             key = key * 131 + this.m_texList[i].getUid();

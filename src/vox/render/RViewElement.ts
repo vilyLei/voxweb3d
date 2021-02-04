@@ -32,15 +32,19 @@ export namespace vox
                     this.m_div.style.height = '300px';
                     document.body.appendChild(this.m_div);
                 }
+                this.m_div.style.display = 'bolck';
+                this.m_div.style.position = 'absolute';
+                
+                if(this.m_div.style.left == "")
+                {
+                    this.m_div.style.left = '0px';
+                    this.m_div.style.top = '0px';
+                }
                 if(autoResize)
                 {
                     this.m_div.style.width = '100%';
                     this.m_div.style.height = '100%';
                 }
-                this.m_div.style.display = 'bolck';
-                this.m_div.style.left = '0px';
-                this.m_div.style.top = '0px';
-                this.m_div.style.position = 'absolute';
                 
                 if(this.m_canvas == null)
                 {

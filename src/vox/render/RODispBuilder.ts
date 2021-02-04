@@ -135,11 +135,11 @@ export namespace vox
                             material.initializeByCodeBuf(texEnabled);
                             shdp = material.getShaderProgram();
                         }
-                        //
+                        
                         shdp.upload( rc.RContext );
                         runit.shdUid = shdp.getUid();
                         runit.shdp = shdp;
-                        //
+                        
                         let tro:TextureRenderObj = null;
                         if(shdp.getTexTotal() > 0)
                         {
