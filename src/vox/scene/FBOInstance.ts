@@ -66,6 +66,7 @@ export namespace vox
             private m_clearDepthBoo:boolean = true;
             private m_clearStencilBoo:boolean = false;
             private m_viewportLock:boolean = false;
+            
             constructor(render:IRenderer)
             {
                 this.m_render = render;
