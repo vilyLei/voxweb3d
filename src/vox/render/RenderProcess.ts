@@ -8,7 +8,7 @@
 // 只能在 RenderWorld 中创建
 
 import * as IRODisplayT from "../../vox/display/IRODisplay";
-import * as MaterialProgramT from "../../vox/material/MaterialProgram";
+import * as MaterialShaderT from '../../vox/material/MaterialShader';
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPOUnitBuiderT from "../../vox/render/RPOUnitBuider";
@@ -16,8 +16,7 @@ import * as RPONodeBuiderT from "../../vox/render/RPONodeBuider";
 import * as RPOBlockT from "../../vox/render/RPOBlock";
 
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
-import MaterialProgram = MaterialProgramT.vox.material.MaterialProgram;
-//import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 
@@ -45,13 +44,18 @@ export namespace vox
             private m_blockListLen:number = 0;
             private m_blockFList:Int8Array = new Int8Array(RenderProcess.s_max_shdTotal);               // 记录以相同shader的node为一个集合对象(RPOBlock)的构建状态 的数组
             private m_blockFListLen:number = RenderProcess.s_max_shdTotal;                              // 假定shader 最多为1024种
-        
+            private m_shader:MaterialShader = null;
+            // 用于特殊绘制
+            private m_proBlock:RPOBlock = null;//new RPOBlock();
+
             private m_uid:number = -1;
             index:number = -1;
             private m_batchEnabled:boolean = true;
             private m_fixedState:boolean = true;
-            constructor(batchEnabled:boolean,processFixedState:boolean)
+            constructor(shader:MaterialShader, batchEnabled:boolean,processFixedState:boolean)
             {
+                this.m_shader = shader;
+                this.m_proBlock = new RPOBlock(shader);
                 this.m_batchEnabled = batchEnabled;
                 this.m_fixedState = processFixedState;
                 for(let k:number = 0; k < this.m_blockFListLen; ++k)
@@ -120,7 +124,7 @@ export namespace vox
                 }
                 if(this.m_blockFList[node.shdUid] < 0)
                 {
-                    block = new RPOBlock();
+                    block = new RPOBlock(this.m_shader);
                     block.batchEnabled = this.m_batchEnabled;
                     block.fixedState = this.m_fixedState;
                     if(block.batchEnabled)
@@ -171,6 +175,7 @@ export namespace vox
                         {
                             let node:RPONode = RPONodeBuider.Create();
                             node.unit = RPOUnitBuider.GetRPOUnit( disp.__$ruid );
+                            node.unit.shader = this.m_shader;
                             node.unit.__$rprouid = this.index;
                             if(disp.getPartGroup() != null)
                             {
@@ -247,7 +252,7 @@ export namespace vox
             {
                 if(this.m_enabled && this.m_nodesLen > 0)
                 {
-                    if(MaterialProgram.IsUnLocked())
+                    if(this.m_shader.isUnLocked())
                     {
                         for(let i:number = 0; i < this.m_blockListLen; ++i)
                         {
@@ -263,8 +268,7 @@ export namespace vox
                     }
                 }
             }
-            // 用于特殊绘制
-            private m_proBlock:RPOBlock = new RPOBlock();
+
             drawLockMaterialByDisp(rc:RenderProxy,disp:IRODisplay,forceUpdateUniform:boolean):void
             {
                 if(disp != null)

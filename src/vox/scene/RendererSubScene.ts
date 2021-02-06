@@ -17,10 +17,11 @@ import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
 import * as DisplayEntityContainerT from "../../vox/entity/DisplayEntityContainer";
 import * as RendererParamT from "../../vox/scene/RendererParam";
 import * as RenderProcessT from "../../vox/render/RenderProcess";
-import * as MaterialProgramT from "../../vox/material/MaterialProgram";
+import * as MaterialShaderT from "../../vox/material/MaterialShader";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
 import * as EntityNodeQueueT from "../../vox/scene/EntityNodeQueue";
 import * as Entity3DNodeLinkerT from "../../vox/scene/Entity3DNodeLinker";
+import * as MaterialBaseT from "../../vox/material/MaterialBase";
 import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
 import * as RendererInstanceT from "../../vox/scene/RendererInstance";
 import * as IRendererT from "../../vox/scene/IRenderer";
@@ -43,10 +44,11 @@ import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
 import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
-import MaterialProgram = MaterialProgramT.vox.material.MaterialProgram;
+import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
 import EntityNodeQueue = EntityNodeQueueT.vox.scene.EntityNodeQueue;
 import Entity3DNodeLinker = Entity3DNodeLinkerT.vox.scene.Entity3DNodeLinker;
+import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import IRenderer = IRendererT.vox.scene.IRenderer;
@@ -90,10 +92,12 @@ export namespace vox
             private m_perspectiveEnabled = true;
             private m_rparam:RendererParam = null;
             private m_stage3D:Stage3D = null;
+            private m_shader:MaterialShader = null;
             constructor(renderer:RendererInstance,evtFlowEnabled:boolean)
             {
                 this.m_evtFlowEnabled = evtFlowEnabled;
                 this.m_renderer = renderer;
+                this.m_shader = renderer.getDispBuilder().getMaterialShader();
                 this.m_uid = 1024 + RendererSubScene.__s_uid++;
             }
             getUid():number
@@ -397,6 +401,11 @@ export namespace vox
                     }
                 }
             }
+            
+            updateMaterialUniformToCurrentShd(material:MaterialBase):void
+            {
+                this.m_renderer.updateMaterialUniformToCurrentShd(material);
+            }
             // 首先要锁定Material才能用这种绘制方式,再者这个entity已经完全加入渲染器了渲染资源已经准备完毕,这种方式比较耗性能，只能用在特殊的地方
             drawEntityByLockMaterial(entity:IRenderEntity):void
             {
@@ -421,7 +430,7 @@ export namespace vox
                     this.m_rcontext.updateCameraDataFromCamera(this.m_camera);
                 }
                 this.m_camera.update();
-                MaterialProgram.Reset();
+                this.m_shader.reset();
                 if(this.m_rspace != null)
                 {
                     this.m_rspace.runBegin();
@@ -430,9 +439,11 @@ export namespace vox
             private m_mouseTestBoo:boolean = true;
             private m_cullingTestBoo:boolean = true;
             private m_rayTestBoo:boolean = true;
-            // @param       evtFlowPhase: 0(none phase),1(capture phase),2(bubble phase)
-            // @param       status: 1(default process),1(deselect ray pick target)
-            // @return      1 is send evt yes,0 is send evt no,-1 is event nothing
+            /**
+             * @param evtFlowPhase  0(none phase),1(capture phase),2(bubble phase)
+             * @param status: 1(default process),1(deselect ray pick target)
+             * @requires 1 is send evt yes,0 is send evt no,-1 is event nothing
+             */
             runMouseTest(evtFlowPhase:number,status:number):number
             {
                 let flag:number = -1;

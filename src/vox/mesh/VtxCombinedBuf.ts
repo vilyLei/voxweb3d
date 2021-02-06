@@ -11,7 +11,7 @@ import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as IVtxBufT from "../../vox/mesh/IVtxBuf";
 import * as VtxBufDataT from "../../vox/mesh/VtxBufData";
 import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
-import * as ShaderProgramT from "../../vox/material/ShaderProgram";
+import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
 
 import VtxBufID = VtxBufIDT.vox.mesh.VtxBufID;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
@@ -19,7 +19,7 @@ import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 import IVtxBuf = IVtxBufT.vox.mesh.IVtxBuf;
 import VtxBufData = VtxBufDataT.vox.mesh.VtxBufData;
 import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
-import ShaderProgram = ShaderProgramT.vox.material.ShaderProgram;
+import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
 
 export namespace vox
 {
@@ -143,7 +143,7 @@ export namespace vox
                     this.m_f32Changed = false;
                 }
             }
-            upload(rc:RenderProxy,shdp:ShaderProgram):void
+            upload(rc:RenderProxy,shdp:IVtxShdCtr):void
             {
                 //console.log("VtxCombinedBuf::upload()... ");
                 if(this.m_f32 != null)
@@ -175,7 +175,7 @@ export namespace vox
             private m_vroList:VertexRenderObj[] = [];
             private m_vroListLen:number = 0;
             // 创建被 RPOUnit 使用的 vro 实例
-            createVROBegin(rc:RenderProxy, shdp:ShaderProgram, vaoEnabled:boolean = true):VertexRenderObj
+            createVROBegin(rc:RenderProxy, shdp:IVtxShdCtr, vaoEnabled:boolean = true):VertexRenderObj
             {
                 let mid:number = shdp.getLayoutBit();
                 if(vaoEnabled)

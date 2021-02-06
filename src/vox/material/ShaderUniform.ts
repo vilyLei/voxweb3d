@@ -8,13 +8,13 @@
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 import * as ShaderUniformProbeT from "../../vox/material/ShaderUniformProbe";
 import * as MaterialConstT from "../../vox/material/MaterialConst";
-import * as ShaderProgramT from "../../vox/material/ShaderProgram";
+import * as ShdProgramT from "../../vox/material/ShdProgram";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
 import ShaderUniformProbe = ShaderUniformProbeT.vox.material.ShaderUniformProbe;
 import MaterialConst = MaterialConstT.vox.material.MaterialConst;
-import ShaderProgram = ShaderProgramT.vox.material.ShaderProgram;
+import ShdProgram = ShdProgramT.vox.material.ShdProgram;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 
 export namespace vox
@@ -81,7 +81,7 @@ export namespace vox
                 this.uniformSize = probe.uniformSlotSize;
             }
             useByLocation(rc:RenderProxy,type:number,location:any,i:number):void{}
-            useByShd(rc:RenderProxy,shd:ShaderProgram):void{}
+            useByShd(rc:RenderProxy,shd:ShdProgram):void{}
             use(rc:RenderProxy):void{}
             updateData():void{}
             destroy():void{}
@@ -106,7 +106,7 @@ export namespace vox
             {
                 rc.useByLocationV1(location,type,this.dataList[i],this.dataSizeList[i]);
             }
-            useByShd(rc:RenderProxy,shd:ShaderProgram):void
+            useByShd(rc:RenderProxy,shd:ShdProgram):void
             {
                 let i:number = 0;
                 for(; i < this.uniformSize; ++i)
@@ -173,7 +173,7 @@ export namespace vox
             {
                 rc.useByLocationV2(location,type,this.dataList[i],this.dataSizeList[i],0);
             }
-            useByShd(rc:RenderProxy,shd:ShaderProgram):void
+            useByShd(rc:RenderProxy,shd:ShdProgram):void
             {
                 let i:number = 0;
                 for(; i < this.uniformSize; ++i)

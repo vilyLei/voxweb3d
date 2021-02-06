@@ -19,6 +19,7 @@ import * as RenderProcessT from "../../vox/render/RenderProcess";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
 import * as EntityNodeQueueT from "../../vox/scene/EntityNodeQueue";
 import * as Entity3DNodeLinkerT from "../../vox/scene/Entity3DNodeLinker";
+import * as MaterialBaseT from "../../vox/material/MaterialBase";
 import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
 import * as RendererInstanceT from "../../vox/scene/RendererInstance";
 import * as IRendererT from "../../vox/scene/IRenderer";
@@ -46,6 +47,7 @@ import RendererParam = RendererParamT.vox.scene.RendererParam;
 import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
 import EntityNodeQueue = EntityNodeQueueT.vox.scene.EntityNodeQueue;
 import Entity3DNodeLinker = Entity3DNodeLinkerT.vox.scene.Entity3DNodeLinker;
+import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import IRenderer = IRendererT.vox.scene.IRenderer;
@@ -411,6 +413,11 @@ export namespace vox
                         this.m_rspace.removeEntity(entity);
                     }
                 }
+            }
+            
+            updateMaterialUniformToCurrentShd(material:MaterialBase):void
+            {
+                this.m_renderer.updateMaterialUniformToCurrentShd(material);
             }
             // 首先要锁定Material才能用这种绘制方式,再者这个entity已经完全加入渲染器了渲染资源已经准备完毕,这种方式比较耗性能，只能用在特殊的地方
             drawEntityByLockMaterial(entity:IRenderEntity):void

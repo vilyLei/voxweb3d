@@ -14,6 +14,7 @@ import * as GLSLConverterT from "../../vox/material/code/GLSLConverter";
 import * as AttributeLineT from "../../vox/material/code/AttributeLine";
 import * as UniformLineT from "../../vox/material/code/UniformLine";
 import * as ShaderCodeParserT from "../../vox/material/code/ShaderCodeParser";
+import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
 
 import BitConst = BitConstT.vox.utils.BitConst;
 import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
@@ -23,12 +24,13 @@ import GLSLConverter = GLSLConverterT.vox.material.code.GLSLConverter;
 import AttributeLine = AttributeLineT.vox.material.code.AttributeLine;
 import UniformLine = UniformLineT.vox.material.code.UniformLine;
 import ShaderCodeParser = ShaderCodeParserT.vox.material.code.ShaderCodeParser;
+import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
 
 export namespace vox
 {
     export namespace material
     {
-        export class ShaderProgram
+        export class ShaderProgram implements IVtxShdCtr
         {
             private static __s_uid:number = 0;
 

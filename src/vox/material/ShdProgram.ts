@@ -10,17 +10,19 @@ import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as UniformLineT from "../../vox/material/code/UniformLine";
 import * as ShaderDataT from "../../vox/material/ShaderData";
+import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
 
 import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import UniformLine = UniformLineT.vox.material.code.UniformLine;
 import ShaderData = ShaderDataT.vox.material.ShaderData;
+import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
 
 export namespace vox
 {
     export namespace material
     {
-        export class ShdProgram
+        export class ShdProgram implements IVtxShdCtr
         {
             private static s_uid:number = 0;
             
@@ -32,7 +34,6 @@ export namespace vox
             private m_shdUniqueName:string = "";
             private m_texTotal:number = 0;
             
-            private m_attriSizeList:number[] = null;
             // recorde uniform GLUniformLocation id
             private m_aLocations:number[] = null;
             private m_aLocationTypes:number[] = null;
@@ -44,6 +45,9 @@ export namespace vox
             private m_uniformDict:Map<string,UniformLine> = new Map();
             private m_uLocationDict:Map<string,any> = new Map();
 
+            // recode shader uniform including status
+            dataUniformEnabled:boolean = false;
+            
             constructor()
             {
                 this.m_uid = ShdProgram.s_uid++;
@@ -74,8 +78,6 @@ export namespace vox
             {
                 return this.m_shdData.haveTexture();
             }
-            // recode shader uniform including status
-            dataUniformEnabled:boolean = false;
             private createLocations():void
             {
                 let i:number = 0;
@@ -86,6 +88,7 @@ export namespace vox
                     if(this.m_aLocations == null)
                     {
                         this.dataUniformEnabled = false;
+                        let attriSizeList:number[] = this.m_shdData.getAttriSizeList();
                         this.m_aLocations = [];
                         this.m_aLocationTypes = [];
                         this.m_aLocationSizes = [];
@@ -98,9 +101,9 @@ export namespace vox
                             this.m_aLocations.push( altI );
                             type = VtxBufConst.GetVBufAttributeTypeByNS(attriNSList[i]);
                             this.m_aLocationTypes.push( type );
-                            this.m_aLocationSizes.push( this.m_attriSizeList[i] );
+                            this.m_aLocationSizes.push( attriSizeList[i] );
                             this.m_attribLIndexList[ type ] = altI;
-                            this.m_attribTypeSizeList[ type ] = this.m_attriSizeList[i];
+                            this.m_attribTypeSizeList[ type ] = attriSizeList[i];
                             this.dataUniformEnabled = true;
                             ++i;
                         }
@@ -163,6 +166,15 @@ export namespace vox
                         this.m_texLocations[i] = this.m_gl.getUniformLocation(this.m_program, texnsList[ i ]);
                     }
                 }
+            }
+            
+            getLayoutBit():number
+            {
+                return this.m_shdData.getLayoutBit();
+            }
+            getFragOutputTotal():number
+            {
+                return this.m_shdData.getFragOutputTotal();
             }
             getLocationsTotal():number
             {
@@ -344,8 +356,8 @@ export namespace vox
                     return null;
                 }
                 return shdProgram;
-            };
-            //
+            }
+            
             private loadShader(type:number, source:string):any
             {
                 let shader:any = this.m_gl.createShader(type);

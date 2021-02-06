@@ -7,10 +7,9 @@
 // 真正被高频运行的渲染管线中的被执行对象
 
 import * as RenderConstT from "../../vox/render/RenderConst";
-//import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
 import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
-import * as ShaderProgramT from "../../vox/material/ShaderProgram";
-import * as MaterialProgramT from "../../vox/material/MaterialProgram";
+import * as ShdProgramT from "../../vox/material/ShdProgram";
+import * as MaterialShaderT from "../../vox/material/MaterialShader";
 import * as TextureRenderObjT from "../../vox/texture/TextureRenderObj";
 import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RendererStateT from "../../vox/render/RendererState";
@@ -19,10 +18,9 @@ import * as ShaderUBOT from "../../vox/material/ShaderUBO";
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
-//import ROVertexBuffer = ROVertexBufferT.vox.mesh.ROVertexBuffer;
 import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
-import ShaderProgram = ShaderProgramT.vox.material.ShaderProgram;
-import MaterialProgram = MaterialProgramT.vox.material.MaterialProgram;
+import ShdProgram = ShdProgramT.vox.material.ShdProgram;
+import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 import ITextureRenderObj = TextureRenderObjT.vox.texture.ITextureRenderObj;
 import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
 import RenderColorMask = RODrawStateT.vox.render.RenderColorMask;
@@ -55,6 +53,8 @@ export namespace vox
             // renderProcess uid
             __$rprouid:number = -1;
 
+            shader:MaterialShader = null;
+
             // 记录对应的RODisplay的渲染所需的状态数据
             ibufType:number = 0;// UNSIGNED_SHORT or UNSIGNED_INT
             ibufStep:number = 2;// 2 or 4
@@ -73,7 +73,7 @@ export namespace vox
             renderState:number = 0;
             rcolorMask:number = 0;
             vro:VertexRenderObj = null;
-            shdp:ShaderProgram = null;
+            shdp:ShdProgram = null;
             // transform uniform
             transUniform:IShaderUniform = null;
             // materiall uniform
@@ -233,11 +233,11 @@ export namespace vox
                 if(RPOUnit.s_preUniform != this.uniform)
                 {
                     RPOUnit.s_preUniform = this.uniform;
-                    MaterialProgram.UpdateUniformToCurrentShd2(rc,this.uniform,this.transUniform);
+                    this.shader.updateUniformToCurrentShd2(rc,this.uniform,this.transUniform);
                 }
                 else
                 {
-                    MaterialProgram.UpdateUniformToCurrentShd(rc,this.transUniform);
+                    this.shader.updateUniformToCurrentShd(rc,this.transUniform);
                 }
             }
             runLockMaterial(rc:RenderProxy):void
@@ -252,11 +252,11 @@ export namespace vox
                     if(RPOUnit.s_preTUniform != this.transUniform)
                     {
                         RPOUnit.s_preTUniform = this.transUniform;
-                        MaterialProgram.UpdateUniformToCurrentShd2(rc,this.uniform,this.transUniform);
+                        this.shader.updateUniformToCurrentShd2(rc,this.uniform,this.transUniform);
                     }
                     else
                     {
-                        MaterialProgram.UpdateUniformToCurrentShd(rc,this.uniform);
+                        this.shader.updateUniformToCurrentShd(rc,this.uniform);
                     }
                 }
                 else
@@ -264,7 +264,7 @@ export namespace vox
                     if(RPOUnit.s_preTUniform != this.transUniform)
                     {
                         RPOUnit.s_preTUniform = this.transUniform;
-                        MaterialProgram.UpdateUniformToCurrentShd(rc,this.transUniform);
+                        this.shader.updateUniformToCurrentShd(rc,this.transUniform);
                     }
                 }
             }
@@ -292,6 +292,8 @@ export namespace vox
                 this.drawMode = 0;
                 this.renderState = 0;
                 this.rcolorMask = 0;
+
+                this.shader = null;
             }
             static RenderBegin():void
             {

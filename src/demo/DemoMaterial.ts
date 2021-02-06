@@ -81,10 +81,11 @@ export namespace demo
                 
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
+                let tex3:TextureProxy = this.getImageTexByUrl("static/pics/f01_4096.jpg");
                 
                 let rparam:RendererParam = new RendererParam();
-                rparam.maxWebGLVersion = 1;
-                rparam.setCamPosition(500.0,500.0,500.0);
+                //rparam.maxWebGLVersion = 1;
+                rparam.setCamPosition(800.0,800.0,800.0);
                 this.m_rscene = new RendererScene();
                 this.m_rscene.initialize(rparam,3);
                 this.m_rscene.updateCamera();
@@ -95,18 +96,18 @@ export namespace demo
 
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
 
+                let axis:Axis3DEntity = new Axis3DEntity();
+                axis.initialize(300.0);
+                this.m_rscene.addEntity(axis);
                 // add common 3d display entity
                 //  var plane:Plane3DEntity = new Plane3DEntity();
-                //  plane.setMaterial(material);
-                //  plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
+                //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex3]);
                 //  this.m_rscene.addEntity(plane);
+                //return;
                 let transMat:Matrix4 = new Matrix4();
                 //transMat.appendRotationEulerAngle(MathConst.DegreeToRadian(90.0),0.0,MathConst.DegreeToRadian(90.0));
                 transMat.appendRotationEulerAngle(0.0,0.0,MathConst.DegreeToRadian(90.0));
                 //transMat.setTranslationXYZ(-200.0,0.0,0.0);
-                let axis:Axis3DEntity = new Axis3DEntity();
-                axis.initialize(300.0);
-                this.m_rscene.addEntity(axis);
                 //  let mesh:Box3DMesh = new Box3DMesh();
                 //  mesh.setTransformMatrix(transMat);
                 //  mesh.vaoEnabled = true;
@@ -206,7 +207,7 @@ void main(){
             //*/
             // render end
             this.m_rscene.runEnd();
-            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }
 }

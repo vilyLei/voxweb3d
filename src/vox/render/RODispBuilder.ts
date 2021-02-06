@@ -11,38 +11,36 @@ import * as RenderConstT from "../../vox/render/RenderConst";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as UniformConstT from "../../vox/material/UniformConst";
-import * as ShaderProgramT from "../../vox/material/ShaderProgram";
-import * as MaterialProgramT from "../../vox/material/MaterialProgram";
+import * as ShdProgramT from "../../vox/material/ShdProgram";
 import * as TextureProxyT from '../../vox/texture/TextureProxy';
 import * as TextureRenderObjT from '../../vox/texture/TextureRenderObj';
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
+import * as MaterialShaderT from '../../vox/material/MaterialShader';
 import * as ShaderUniformDataT from "../../vox/material/ShaderUniformData";
 import * as ShdUniformToolT from '../../vox/material/ShdUniformTool';
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPOUnitBuiderT from "../../vox/render/RPOUnitBuider";
 import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
 import * as ROTransPoolT from "../../vox/render/ROTransPool";
-import * as RPONodeBuiderT from "../../vox/render/RPONodeBuider";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import DisplayRenderState = RenderConstT.vox.render.DisplayRenderState;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import UniformConst = UniformConstT.vox.material.UniformConst;
-import ShaderProgram = ShaderProgramT.vox.material.ShaderProgram;
-import MaterialProgram = MaterialProgramT.vox.material.MaterialProgram;
+import ShdProgram = ShdProgramT.vox.material.ShdProgram;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureRenderObj = TextureRenderObjT.vox.texture.TextureRenderObj;
 import EmptyTexRenderObj = TextureRenderObjT.vox.texture.EmptyTexRenderObj;
 import ShdUniformTool = ShdUniformToolT.vox.material.ShdUniformTool;
 import EmptyShdUniform = ShdUniformToolT.vox.material.EmptyShdUniform;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RPOUnitBuider = RPOUnitBuiderT.vox.render.RPOUnitBuider;
 import RenderProcessBuider = RenderProcessBuiderT.vox.render.RenderProcessBuider;
 import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
 import ROTransPool = ROTransPoolT.vox.render.ROTransPool;
-import RPONodeBuider = RPONodeBuiderT.vox.render.RPONodeBuider;
 
 export namespace vox
 {
@@ -50,10 +48,21 @@ export namespace vox
     {
         export class RODispBuilder
         {
+            private static s_emptyTRO:EmptyTexRenderObj = new EmptyTexRenderObj();
+            private static s_shaders:MaterialShader[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
             private m_disps:IRODisplay[] = [];
             private m_processUidList:number[] = [];
-            private static s_emptyTRO:EmptyTexRenderObj = new EmptyTexRenderObj();
-
+            
+            private m_shader:MaterialShader = null;
+            constructor(rc:RenderProxy)
+            {
+                this.m_shader = new MaterialShader();
+                RODispBuilder.s_shaders[rc.getUid()] = this.m_shader;
+            }
+            getMaterialShader():MaterialShader
+            {
+                return this.m_shader;
+            }
             static UpdateDispTRO(rc:RenderProxy,disp:IRODisplay):void
             {
                 if(disp != null && disp.__$ruid > -1)
@@ -65,7 +74,8 @@ export namespace vox
                         let tro:TextureRenderObj = TextureRenderObj.GetByMid(material.__$troMid);
                         if(runit.tro != null && (tro == null || runit.tro.getMid() != tro.getMid()))
                         {
-                            let shdp:ShaderProgram = material.getShaderProgram();
+                            let shader:MaterialShader = RODispBuilder.s_shaders[rc.getUid()];
+                            let shdp:ShdProgram = shader.findShdProgramByShdData(material.getShaderData());
                             if(shdp != null)
                             {
                                 if(shdp.getTexTotal() > 0)
@@ -119,22 +129,21 @@ export namespace vox
                     }
                 }
             }
-            public updateDispMaterial(rc:RenderProxy,runit:RPOUnit,disp:IRODisplay):ShaderProgram
+            public updateDispMaterial(rc:RenderProxy,runit:RPOUnit,disp:IRODisplay):ShdProgram
             {
-                let shdp:ShaderProgram = null;
+                let shdp:ShdProgram = null;
                 if(disp.__$ruid >= 0)
                 {
                     let material:MaterialBase = disp.getMaterial();
                     if(material != null)
                     {
-                        shdp = material.getShaderProgram();
-                        if(shdp == null)
+                        if(material.getShaderData() == null)
                         {
                             let texList:TextureProxy[] = material.getTextureList();
                             let texEnabled:boolean = ((texList != null && texList != null) && texList.length > 0);
                             material.initializeByCodeBuf(texEnabled);
-                            shdp = material.getShaderProgram();
                         }
+                        shdp = this.m_shader.create(material.getShaderData());
                         
                         shdp.upload( rc.RContext );
                         runit.shdUid = shdp.getUid();
@@ -171,10 +180,10 @@ export namespace vox
                                 material.__$troMid = runit.texMid;
                             }
                         }
-                        if(MaterialProgram.GetSharedUniformByShd(shdp) == null)
+                        if(this.m_shader.getSharedUniformByShd(shdp) == null)
                         {
                             // create shared uniform
-                            MaterialProgram.SetSharedUniformByShd(shdp, ShdUniformTool.BuildShared(material.createSharedUniform(rc),rc, shdp));
+                            this.m_shader.setSharedUniformByShd(shdp, ShdUniformTool.BuildShared(material.createSharedUniform(rc),rc, shdp));
                         }
                         let hasTrans:boolean = shdp.hasUniformByName(UniformConst.LocalTransformMatUNS);
                         if(material.__$uniform == null)
@@ -235,8 +244,8 @@ export namespace vox
                         runit.rcolorMask = disp.rcolorMask;
                         runit.trisNumber = disp.trisNumber;
                         disp.__$ruid = runit.getUid();
-                        //let shdp:ShaderProgram = null;
-                        let shdp:ShaderProgram = this.updateDispMaterial(rc,runit,disp);
+                        //let shdp:ShdProgram = null;
+                        let shdp:ShdProgram = this.updateDispMaterial(rc,runit,disp);
                         // build vtx gpu data
                         if(disp.vbuf != null)
                         {
@@ -285,16 +294,16 @@ export namespace vox
                 {
                     let tro:TextureRenderObj = null;
                     let gl:any = rc.RContext;
-                    let shdp:ShaderProgram = material.getShaderProgram();
+                    let shdp:ShdProgram = null;//material.getShdProgram();
                     let texList:TextureProxy[] = null;
                     let texEnabled:boolean = false;
-                    if(shdp == null)
+                    if(material.getShaderData() == null)
                     {
                         texList = material.getTextureList();
                         texEnabled = (texList != null && texList.length > 0);
                         material.initializeByCodeBuf( texEnabled );
-                        shdp = material.getShaderProgram();
                     }
+                    shdp = this.m_shader.create(material.getShaderData());
                     shdp.upload( rc.RContext );
                     let shdUid:number = shdp.getUid();
                     let texTotal:number = shdp.getTexTotal();
@@ -302,9 +311,9 @@ export namespace vox
                     {
                         tro = TextureRenderObj.Create(gl, texList, texTotal);
                     }
-                    if(MaterialProgram.GetSharedUniformByShd(shdp) == null)
+                    if(this.m_shader.getSharedUniformByShd(shdp) == null)
                     {
-                        MaterialProgram.SetSharedUniformByShd(shdp, ShdUniformTool.BuildShared(material.createSharedUniform(rc),rc, shdp));
+                        this.m_shader.setSharedUniformByShd(shdp, ShdUniformTool.BuildShared(material.createSharedUniform(rc),rc, shdp));
                     }
                     
                     if(material.__$uniform == null)
@@ -319,7 +328,7 @@ export namespace vox
                             material.__$uniform = EmptyShdUniform.EmptyUniform;
                         }
                     }
-                    MaterialProgram.UseShdByUid(rc, shdUid);
+                    this.m_shader.useShdByUid(rc, shdUid);
                     if(tro != null)
                     {
                         tro.run(rc);

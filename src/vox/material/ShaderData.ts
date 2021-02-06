@@ -48,8 +48,8 @@ export namespace vox
             private m_useTex:boolean = false;
             // web gl 1.0, attribute namestring list
             private m_attriNSList:string[] = null;
-            private m_attriSizeList:number[] = null;            
-            private m_aLocationTypes:number[] = null;            
+            private m_attriSizeList:number[] = null;
+            private m_aLocationTypes:number[] = null;
             private m_uniformDict:Map<string,UniformLine> = new Map();
             
             private m_haveCommonUniform:boolean = false;
@@ -167,7 +167,10 @@ export namespace vox
                 this.m_fshdCode = fshdSrc;
                 this.m_shdUniqueName = unique_ns;
             }
-            
+            getAttriSizeList():number[]
+            {
+                return this.m_attriSizeList;
+            }
             getTexUniformNames():string[]
             {
                 return this.m_texUniformNames;

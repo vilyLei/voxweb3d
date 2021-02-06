@@ -6,14 +6,14 @@
 /***************************************************************************/
 
 import * as UniformConstT from "../../../vox/material/UniformConst";
-import * as ShaderProgramT from "../../../vox/material/ShaderProgram";
+import * as ShdProgramT from "../../../vox/material/ShdProgram";
 import * as ShaderUniformT from "../../../vox/material/ShaderUniform";
 import * as ShaderGlobalUniformT from "../../../vox/material/ShaderGlobalUniform";
 import * as IUniformBuilderT from "../../../vox/material/shared/IUniformBuilder";
 import * as RenderProxyT from "../../../vox/render/RenderProxy";
 
 import UniformConst = UniformConstT.vox.material.UniformConst;
-import ShaderProgram = ShaderProgramT.vox.material.ShaderProgram;
+import ShdProgram = ShdProgramT.vox.material.ShdProgram;
 import ShaderUniform = ShaderUniformT.vox.material.ShaderUniform;
 import ShaderGlobalUniform = ShaderGlobalUniformT.vox.material.ShaderGlobalUniform;
 import IUniformBuilder = IUniformBuilderT.vox.material.shared.IUniformBuilder;
@@ -27,7 +27,7 @@ export namespace vox
         {
             export class ViewParamUniformBuilder implements IUniformBuilder
             {
-                create( rc:RenderProxy,shdp:ShaderProgram):ShaderUniform
+                create( rc:RenderProxy,shdp:ShdProgram):ShaderUniform
                 {
                     let suo:ShaderGlobalUniform = null;
                     if(shdp.hasUniformByName(UniformConst.ViewParamUNS))

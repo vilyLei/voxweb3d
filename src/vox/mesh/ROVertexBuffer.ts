@@ -16,7 +16,7 @@ import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
 import * as IVtxBufT from "../../vox/mesh/IVtxBuf";
 import * as VtxCombinedBufT from "../../vox/mesh/VtxCombinedBuf";
 import * as VtxSeparatedBufT from "../../vox/mesh/VtxSeparatedBuf";
-import * as ShaderProgramT from "../../vox/material/ShaderProgram";
+import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
 
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
@@ -29,7 +29,7 @@ import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
 import IVtxBuf = IVtxBufT.vox.mesh.IVtxBuf;
 import VtxCombinedBuf = VtxCombinedBufT.vox.mesh.VtxCombinedBuf;
 import VtxSeparatedBuf = VtxSeparatedBufT.vox.mesh.VtxSeparatedBuf;
-import ShaderProgram = ShaderProgramT.vox.material.ShaderProgram;
+import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
 
 export namespace vox
 {
@@ -238,7 +238,7 @@ export namespace vox
                     }
                 }
             }
-            upload(rc:RenderProxy,shdp:ShaderProgram):void
+            upload(rc:RenderProxy,shdp:IVtxShdCtr):void
             {
                 //console.log("ROVertexBuffer::upload()... this.m_rc == null: "+(this.m_rc == null)+", "+this);
                 if(this.m_rc == null)
@@ -287,7 +287,7 @@ export namespace vox
                 }
             }
             // 创建被 RPOUnit 使用的 vro 实例
-            createVROBegin(shdp:ShaderProgram, vaoEnabled:boolean = true):VertexRenderObj
+            createVROBegin(shdp:IVtxShdCtr, vaoEnabled:boolean = true):VertexRenderObj
             {
                 if(this.m_rc != null)
                 {

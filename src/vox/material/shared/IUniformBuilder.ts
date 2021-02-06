@@ -5,11 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as ShaderProgramT from "../../../vox/material/ShaderProgram";
+import * as ShdProgramT from "../../../vox/material/ShdProgram";
 import * as ShaderUniformT from "../../../vox/material/ShaderUniform";
 import * as RenderProxyT from "../../../vox/render/RenderProxy";
 
-import ShaderProgram = ShaderProgramT.vox.material.ShaderProgram;
+import ShdProgram = ShdProgramT.vox.material.ShdProgram;
 import ShaderUniform = ShaderUniformT.vox.material.ShaderUniform;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 
@@ -21,7 +21,7 @@ export namespace vox
         {
             export interface IUniformBuilder
             {
-                create( rc:RenderProxy,shdp:ShaderProgram):ShaderUniform;
+                create( rc:RenderProxy,shdp:ShdProgram):ShaderUniform;
                 getIDNS():string;
             }
         }

@@ -445,11 +445,11 @@ export namespace vox
                     let material:MaterialBase = this.m_display.getMaterial();
                     if(material != null)
                     {
-                        if(material.getShaderProgram() == null)
+                        if(material.getShaderData() == null)
                         {
                             if(material.getCodeBuf() != null)
                             {
-                                if(material.getShaderProgram() == null)
+                                if(material.getShaderData() == null)
                                 {
                                     let texList:TextureProxy[] = material.getTextureList();
                                     let texEnabled:boolean = (texList != null && texList.length > 0);

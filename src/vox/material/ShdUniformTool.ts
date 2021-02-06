@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
-import * as ShaderProgramT from "../../vox/material/ShaderProgram";
+import * as ShdProgramT from "../../vox/material/ShdProgram";
 import * as ShaderUniformDataT from "../../vox/material/ShaderUniformData";
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 import * as ShaderUniformT from "../../vox/material/ShaderUniform";
@@ -18,7 +18,7 @@ import * as ViewParamUniformBuilderT from "../../vox/material/shared/ViewParamUn
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import ShaderProgram = ShaderProgramT.vox.material.ShaderProgram;
+import ShdProgram = ShdProgramT.vox.material.ShdProgram;
 import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
 import ShaderUniform = ShaderUniformT.vox.material.ShaderUniform;
@@ -44,7 +44,7 @@ export namespace vox
             useByLocation(rc:RenderProxy,type:number,location:any,i:number):void
             {
             }
-            useByShd(rc:RenderProxy,shd:ShaderProgram):void
+            useByShd(rc:RenderProxy,shd:ShdProgram):void
             {
             }
             updateData():void
@@ -130,7 +130,7 @@ export namespace vox
                     ShdUniformTool.s_uniformDict.delete(builderNS);
                 }
             }
-            static BuildShared(guniform:ShaderUniform, rc:RenderProxy,shdp:ShaderProgram):ShaderUniform
+            static BuildShared(guniform:ShaderUniform, rc:RenderProxy,shdp:ShdProgram):ShaderUniform
             {
                 let headU:ShaderUniform = null;
                 let prevU:ShaderUniform = null;
@@ -195,7 +195,7 @@ export namespace vox
                 return guniform;                
             }
             private static s_emptyUniform:ShaderUniform = new ShaderUniform();
-            static BuildLocalFromTransformV(transformData:Float32Array, shdp:ShaderProgram):IShaderUniform
+            static BuildLocalFromTransformV(transformData:Float32Array, shdp:ShdProgram):IShaderUniform
             {
                 if(transformData != null)
                 {
@@ -224,7 +224,7 @@ export namespace vox
                 }
                 return ShdUniformTool.s_emptyUniform;
             }
-            static BuildLocalFromData(uniformData:ShaderUniformData, shdp:ShaderProgram):IShaderUniform
+            static BuildLocalFromData(uniformData:ShaderUniformData, shdp:ShdProgram):IShaderUniform
             {
                 // collect all uniform data,create a new runned uniform
                 let shdUniform:ShaderUniform;
@@ -265,7 +265,7 @@ export namespace vox
                 }
                 return shdUniform;
             }
-            static BuildLocal(sUniform:ShaderUniform, shdp:ShaderProgram):ShaderUniform
+            static BuildLocal(sUniform:ShaderUniform, shdp:ShdProgram):ShaderUniform
             {
                 // collect all uniform data,create a new runned uniform
                 let shdUniform:ShaderUniform = new ShaderUniform();

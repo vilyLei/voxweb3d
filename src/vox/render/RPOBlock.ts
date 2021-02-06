@@ -16,7 +16,7 @@ import * as RPONodeBuiderT from "../../vox/render/RPONodeBuider";
 import * as RPONodeLinkerT from "../../vox/render/RPONodeLinker";
 import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
-import * as MaterialProgramT from "../../vox/material/MaterialProgram";
+import * as MaterialShaderT from '../../vox/material/MaterialShader';
 import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
@@ -30,21 +30,13 @@ import RPONodeLinker = RPONodeLinkerT.vox.render.RPONodeLinker;
 import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
 import RenderColorMask = RODrawStateT.vox.render.RenderColorMask;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-import MaterialProgram = MaterialProgramT.vox.material.MaterialProgram;
+import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
 
 export namespace vox
 {
     export namespace render
     {
-        //  class TroPin
-        //  {
-        //      constructor()
-        //      {
-        //      }
-        //      uid:number = 0;
-        //      total:number = 0;
-        //  }
         export class RPOBlock
         {
             private static __s_uid:number = 0;
@@ -57,10 +49,10 @@ export namespace vox
             batchEnabled:boolean = true;
             fixedState:boolean = true;
             runMode:number = 0;
-            
-            //private m_troMap:Map<number, TroPin> = new Map();
-            constructor()
+            private m_shader:MaterialShader = null;
+            constructor(shader:MaterialShader)
             {
+                this.m_shader = shader;
                 this.m_uid = RPOBlock.__s_uid++;
             }
             showInfo():void
@@ -109,7 +101,7 @@ export namespace vox
                 let nextNode:RPONode = this.m_nodeLinker.getBegin();
                 if(nextNode != null)
                 {
-                    MaterialProgram.UseShdByUid(rc,this.shdUid);
+                    this.m_shader.useShdByUid(rc,this.shdUid);
                     let unit:RPOUnit = null;
                     while(nextNode != null)
                     {
@@ -139,7 +131,7 @@ export namespace vox
                 let nextNode:RPONode = this.m_nodeLinker.getBegin();
                 if(nextNode != null)
                 {
-                    MaterialProgram.UseShdByUid(rc,this.shdUid);
+                    this.m_shader.useShdByUid(rc,this.shdUid);
                     RPOUnit.RenderBegin();
                     let unit:RPOUnit = null;
                     let vtxTotal:number = 0;
@@ -201,7 +193,7 @@ export namespace vox
                 let nextNode:RPONode = this.m_nodeLinker.getBegin();
                 if(nextNode != null)
                 {
-                    MaterialProgram.UseShdByUid(rc,this.shdUid);
+                    this.m_shader.useShdByUid(rc,this.shdUid);
                     RPOUnit.RenderBegin();
                     let unit:RPOUnit = null;
                     let vtxTotal:number = 0;
@@ -276,7 +268,7 @@ export namespace vox
                 let nextNode:RPONode = this.m_nodeLinker.getBegin();
                 if(nextNode != null)
                 {
-                    MaterialProgram.UseShdByUid(rc, this.shdUid);
+                    this.m_shader.useShdByUid(rc, this.shdUid);
                     RPOUnit.RenderBegin();
                     let unit:RPOUnit = null;
                     let flagVBoo:boolean = false;
@@ -347,7 +339,7 @@ export namespace vox
                     if(RendererDeviece.IsMobileWeb())
                     {
                         // 如果不这么做，vro和shader attributes没有完全匹配的时候可能在移动设备上会有问题(无法正常绘制)例如 ip6s
-                        let vro:VertexRenderObj = disp.vbuf.createVROBegin(MaterialProgram.GetCurrentShd());
+                        let vro:VertexRenderObj = disp.vbuf.createVROBegin(this.m_shader.getCurrentShd());
                         vro.run(rc);
                     }
                     else

@@ -24,7 +24,7 @@ import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
 import * as IRendererT from "../../vox/scene/IRenderer";
 import * as Color4T from "../../vox/material/Color4";
-import * as MaterialProgramT from "../../vox/material/MaterialProgram";
+import * as MaterialShaderT from "../../vox/material/MaterialShader";
 import * as PixelPickIndexMaterialT from "../../vox/material/mcase/PixelPickIndexMaterial";
 import * as DivLogT from "../../vox/utils/DivLog";
 
@@ -47,7 +47,7 @@ import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 import IRenderer = IRendererT.vox.scene.IRenderer;
 import Color4 = Color4T.vox.material.Color4;
-import MaterialProgram = MaterialProgramT.vox.material.MaterialProgram;
+import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 import PixelPickIndexMaterial = PixelPickIndexMaterialT.vox.material.mcase.PixelPickIndexMaterial;
 import DivLog = DivLogT.vox.utils.DivLog;
 
@@ -439,7 +439,7 @@ export namespace vox
                         this.m_indexMaterial.setIndex(j+2);
                         
                         this.m_uintList[j] = i;
-                        MaterialProgram.UpdateMaterialUniformToCurrentShd(proxy,this.m_indexMaterial);
+                        this.m_renderer.updateMaterialUniformToCurrentShd(this.m_indexMaterial);
                         this.m_renderer.drawEntityByLockMaterial(entity);
                     }
                 }

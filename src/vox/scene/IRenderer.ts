@@ -9,12 +9,14 @@
 import * as Stage3DT from "../../vox/display/Stage3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as MaterialBaseT from "../../vox/material/MaterialBase";
 import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
 import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
 
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 
@@ -31,6 +33,7 @@ export namespace vox
             getCamera():CameraBase;
             addEntity(entity:IRenderEntity,processid:number,deferred:boolean):void;
             removeEntity(entity:IRenderEntity):void;
+            updateMaterialUniformToCurrentShd(material:MaterialBase):void;
             // 首先要锁定Material才能用这种绘制方式,再者这个entity已经完全加入渲染器了渲染资源已经准备完毕,这种方式比较耗性能，只能用在特殊的地方
             drawEntityByLockMaterial(entity:IRenderEntity):void;
             showInfoAt(index:number):void;

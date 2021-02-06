@@ -6,9 +6,11 @@
 /***************************************************************************/
 
 import * as RPOUnitT from "../../vox/render/RPOUnit";
+import * as MaterialShaderT from '../../vox/material/MaterialShader';
 import * as RenderProcessT from "../../vox/render/RenderProcess";
 
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
+import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 
 export namespace vox
@@ -46,7 +48,7 @@ export namespace vox
             {
                 RenderProcessBuider.m_processList[runit.__$rprouid].rejoinRunitForTro(runit);
             }
-            static Create(batchEnabled:boolean,fixedState:boolean):RenderProcess
+            static Create(shader:MaterialShader, batchEnabled:boolean,fixedState:boolean):RenderProcess
             {
                 let process:RenderProcess = null;
                 let index:number = RenderProcessBuider.GetFreeId();
@@ -59,7 +61,7 @@ export namespace vox
                 else
                 {
                     // create a new processIndex
-                    process = new RenderProcess(batchEnabled,fixedState);
+                    process = new RenderProcess(shader,batchEnabled,fixedState);
                     RenderProcessBuider.m_processList.push( process );
                     RenderProcessBuider.m_processIndexPptFlagList.push(0);
                     RenderProcessBuider.m_processFlagList.push(RenderProcessBuider.__S_FLAG_BUSY);
