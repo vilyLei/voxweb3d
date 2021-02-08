@@ -24,7 +24,7 @@ export namespace vox
 
             static CreateShdData(unique_name_str:string,vshdsrc:string,fshdSrc:string):ShaderData
             {
-                //console.log("MaterialProgram.CreateShdData() begin...");
+                
                 if(MaterialProgram.s_shdDataDict.has(unique_name_str)){return MaterialProgram.s_shdDataDict.get(unique_name_str);}
                 let p:ShaderData = new ShaderData();
                 p.initialize(unique_name_str, vshdsrc,fshdSrc);
