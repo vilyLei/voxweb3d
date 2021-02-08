@@ -20,7 +20,6 @@ import * as Billboard3DEntityT from "../vox/entity/Billboard3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureConstT from "../vox/texture/TextureConst";
 import * as TexResLoaderT from "../vox/texture/TexResLoader";
-import * as TextureRenderObjT from "../vox/texture/TextureRenderObj";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as EntityDispT from "./base/EntityDisp";
 import * as CubeMapMaterialT from "../vox/material/mcase/CubeMapMaterial";
@@ -48,7 +47,6 @@ import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-import TextureRenderObj = TextureRenderObjT.vox.texture.TextureRenderObj;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 //import EntityDisp = EntityDispT.demo.base.EntityDisp;
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
@@ -240,7 +238,7 @@ export namespace demo
             }
             //--this.m_runFlag;
             //TextureRenderObj
-            this.m_statusDisp.statusInfo = "/"+TextureRenderObj.GetTexAttachAllCount();
+            this.m_statusDisp.statusInfo = "/"+this.m_rcontext.getTextureAttachTotal();
             this.m_equeue.run();
             this.m_statusDisp.update();
 

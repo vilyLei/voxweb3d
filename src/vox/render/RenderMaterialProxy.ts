@@ -7,14 +7,12 @@
 
 import * as TextureStoreT from "../../vox/texture/TextureStore";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
-import * as TextureRenderObjT from "../../vox/texture/TextureRenderObj";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as MaterialShaderT from "../../vox/material/MaterialShader";
 import * as RODispBuilderT from "../../vox/render/RODispBuilder";
 
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
-import TextureRenderObj = TextureRenderObjT.vox.texture.TextureRenderObj;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 import RODispBuilder = RODispBuilderT.vox.render.RODispBuilder;
@@ -44,23 +42,23 @@ export namespace vox
             unlockMaterial():void
             {
                 this.m_shader.unlock();
-                TextureRenderObj.Unlock();
+                this.m_rc.Texture.unlocked = true;
             }
             lockMaterial():void
             {
                 this.m_shader.lock();
-                TextureRenderObj.Lock();
+                this.m_rc.Texture.unlocked = false;
             }
             reset():void
             {
                 this.m_shader.reset();
-                TextureRenderObj.RenderReset(this.m_rc);
+                this.m_rc.Texture.renderBegin();
                 TextureStore.RenderBegin(this.m_rc);
             }
             renderBegin():void
             {
                 this.m_shader.reset();
-                TextureRenderObj.RenderBegin(this.m_rc);
+                this.m_rc.Texture.renderBegin();
                 TextureStore.RenderBegin(this.m_rc);
             }
             useGlobalMaterial(material:MaterialBase):void

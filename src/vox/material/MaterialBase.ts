@@ -11,7 +11,7 @@ import * as ShaderUniformDataT from "../../vox/material/ShaderUniformData";
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 import * as ShaderGlobalUniformT from "../../vox/material/ShaderGlobalUniform";
 import * as TextureProxyT from '../../vox/texture/TextureProxy';
-import * as TextureRenderObjT from '../../vox/texture/TextureRenderObj';
+//import * as TextureRenderObjT from '../../vox/texture/TextureRenderObj';
 import * as ShaderCodeBufferT from "../../vox/material/ShaderCodeBuffer";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 
@@ -21,7 +21,7 @@ import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
 import ShaderGlobalUniform = ShaderGlobalUniformT.vox.material.ShaderGlobalUniform;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureRenderObj = TextureRenderObjT.vox.texture.TextureRenderObj;
+//import TextureRenderObj = TextureRenderObjT.vox.texture.TextureRenderObj;
 import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 
@@ -145,7 +145,8 @@ export namespace vox
                     {
                         for(;i < this.m_texList.length;++i)
                         {
-                            TextureRenderObj.__$DetachTexAt(this.m_texList[i].getUid());
+                            //TextureRenderObj.__$DetachTexAt(this.m_texList[i].getUid());
+                            this.m_texList[i].__$detachThis();
                         }
                     }
                     this.m_texDataEnabled = true;
@@ -156,7 +157,8 @@ export namespace vox
                         for(i = 0;i < this.m_texList.length;++i)
                         {
                             key = key * 131 + this.m_texList[i].getUid();
-                            TextureRenderObj.__$AttachTexAt(this.m_texList[i].getUid());
+                            //TextureRenderObj.__$AttachTexAt(this.m_texList[i].getUid());
+                            this.m_texList[i].__$attachThis();
                             if(!this.m_texList[i].dataEnough())
                             {
                                 this.m_texDataEnabled = false;
@@ -175,10 +177,12 @@ export namespace vox
                     if(texList != null && texList[index] != tex && index < len && len > 0)
                     {
                         texList = texList.slice(0);
-                        TextureRenderObj.__$DetachTexAt(texList[index].getUid());
+                        //TextureRenderObj.__$DetachTexAt(texList[index].getUid());
+                        texList[index].__$detachThis();
                         texList[index] = tex;
                         this.m_texDataEnabled = tex.dataEnough();
-                        TextureRenderObj.__$AttachTexAt(tex.getUid());
+                        //TextureRenderObj.__$AttachTexAt(tex.getUid());
+                        tex.__$attachThis();
                         let key = 31;
                         for(let i:number = 0; i < len; ++i)
                         {
@@ -275,7 +279,8 @@ export namespace vox
                     {
                         for(let i:number = 0;i < this.m_texList.length;++i)
                         {
-                            TextureRenderObj.__$DetachTexAt(this.m_texList[i].getUid());
+                            //TextureRenderObj.__$DetachTexAt(this.m_texList[i].getUid());
+                            this.m_texList[i].__$detachThis();
                         }
                     }
                     this.m_shdData = null;

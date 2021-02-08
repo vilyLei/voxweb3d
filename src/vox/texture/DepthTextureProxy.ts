@@ -6,24 +6,28 @@
 /***************************************************************************/
 
 import * as TextureConstT from "../../vox/texture/TextureConst";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
+import * as TextureProxyT from "../../vox/texture/TextureProxy";
+import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
+import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 
 export namespace vox
 {
     export namespace texture
     {
-        export class DepthTextureProxy extends TextureProxy
+        export class DepthTextureProxy extends RTTTextureProxy
         {
-            constructor(texList:TextureProxy[], texWidth:number,texHeight:number,powerof2Boo:boolean = false)
+            constructor(slot:ITextureSlot, texWidth:number,texHeight:number,powerof2Boo:boolean = false)
             {
-                super(texList,texWidth,texHeight,powerof2Boo);
+                super(slot,texWidth,texHeight,powerof2Boo);
                 this.minFilter = TextureConst.NEAREST;
                 this.magFilter = TextureConst.NEAREST;
                 this.srcFormat = TextureFormat.DEPTH_COMPONENT;
@@ -71,7 +75,6 @@ export namespace vox
             {
                 let gl:any = rc.RContext;
                 gl.texImage2D(this.m_samplerTarget, 0,TextureFormat.ToGL(gl,this.internalFormat),this.m_texWidth,this.m_texHeight,0,TextureFormat.ToGL(gl,this.srcFormat),TextureDataType.ToGL(gl, this.dataType), null);
-                
             }
             toString():string
             {

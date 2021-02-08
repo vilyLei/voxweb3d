@@ -11,10 +11,11 @@ import * as Color4T from "../../vox/material/Color4";
 import * as FrameBufferTypeT from "../../vox/render/FrameBufferType";
 import * as RenderFilterT from "../../vox/render/RenderFilter";
 import * as RenderMaskBitfieldT from "../../vox/render/RenderMaskBitfield";
+import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
 import * as FrameBufferObjectT from "../../vox/render/FrameBufferObject";
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as TextureConstT from "../../vox/texture/TextureConst";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
+import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 import * as RAdapterContextT from "../../vox/render/RAdapterContext";
 import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RendererStateT from "../../vox/render/RendererState";
@@ -26,12 +27,13 @@ import Color4 = Color4T.vox.material.Color4;
 import FrameBufferType = FrameBufferTypeT.vox.render.FrameBufferType;
 import RenderFilter = RenderFilterT.vox.render.RenderFilter;
 import RenderMaskBitfield = RenderMaskBitfieldT.vox.render.RenderMaskBitfield;
+import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
 import FrameBufferObject = FrameBufferObjectT.vox.render.FrameBufferObject;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 import RAdapterContext = RAdapterContextT.vox.render.RAdapterContext;
 import RODrawState = RODrawStateT.vox.render.RODrawState;
 import RenderColorMask = RODrawStateT.vox.render.RenderColorMask;
@@ -47,8 +49,14 @@ export namespace vox
 		export class RenderAdapter
 		{
     		bgColor:Color4 = new Color4();
-			constructor()
+			// renderer context uid
+			private m_rcuid:number = 0;
+			
+			private m_texResource:ROTextureResource;
+			constructor(rcuid:number,texResource:ROTextureResource)
 			{
+				this.m_texResource = texResource;
+				this.m_rcuid = rcuid;
 			}
 			private m_index:number = 0;
     		private m_rc:any = null;
@@ -345,7 +353,7 @@ export namespace vox
 						index = 7;
 					}
 					this.m_fboType = fboType;
-					this.m_fboBuf = new FrameBufferObject(this.m_fboType);
+					this.m_fboBuf = new FrameBufferObject(this.m_rcuid,this.m_texResource,this.m_fboType);
 					this.m_fboBuf.multisampleEnabled = multisampleLevel > 0;
 					this.m_fboBuf.multisampleLevel = multisampleLevel;
 					this.m_fboBuf.writeDepthEnabled = enableDepth;
@@ -447,7 +455,7 @@ export namespace vox
 				}
 				return 0;
 			}
-			setRenderToTexture(texProxy:TextureProxy, enableDepth:boolean = false, enableStencil:boolean = false, outputIndex:number = 0):void
+			setRenderToTexture(texProxy:RTTTextureProxy, enableDepth:boolean = false, enableStencil:boolean = false, outputIndex:number = 0):void
 			{
 				if (outputIndex < 0 || outputIndex >= 8)
 				{
@@ -484,7 +492,7 @@ export namespace vox
 						{
 							if (this.m_fboBuf == null)
 							{
-								this.m_fboBuf = new FrameBufferObject(this.m_fboType);
+								this.m_fboBuf = new FrameBufferObject(this.m_rcuid,this.m_texResource,this.m_fboType);
 								this.m_fboBufList[this.m_fboIndex] = this.m_fboBuf;
 								this.m_fboBuf.writeDepthEnabled = enableDepth;
 								this.m_fboBuf.writeStencilEnabled = enableStencil;

@@ -132,7 +132,10 @@ export namespace vox
                 if(nextNode != null)
                 {
                     this.m_shader.useShdByUid(rc,this.shdUid);
-                    RPOUnit.RenderBegin();
+                    
+                    this.m_shader.uniform = null;
+                    this.m_shader.transformUniform = null;
+                    
                     let unit:RPOUnit = null;
                     let vtxTotal:number = 0;
                     let texTotal:number = 0;
@@ -194,7 +197,10 @@ export namespace vox
                 if(nextNode != null)
                 {
                     this.m_shader.useShdByUid(rc,this.shdUid);
-                    RPOUnit.RenderBegin();
+
+                    this.m_shader.uniform = null;
+                    this.m_shader.transformUniform = null;
+
                     let unit:RPOUnit = null;
                     let vtxTotal:number = 0;
                     let texTotal:number = 0;
@@ -269,7 +275,10 @@ export namespace vox
                 if(nextNode != null)
                 {
                     this.m_shader.useShdByUid(rc, this.shdUid);
-                    RPOUnit.RenderBegin();
+                    
+                    this.m_shader.uniform = null;
+                    this.m_shader.transformUniform = null;
+
                     let unit:RPOUnit = null;
                     let flagVBoo:boolean = false;
                     if(this.batchEnabled)
@@ -335,7 +344,11 @@ export namespace vox
             {
                 if(unit.drawEnabled)
                 {
-                    if(forceUpdateUniform)RPOUnit.RenderBegin();
+                    if(forceUpdateUniform)
+                    {
+                        this.m_shader.uniform = null;
+                        this.m_shader.transformUniform = null;
+                    }
                     if(RendererDeviece.IsMobileWeb())
                     {
                         // 如果不这么做，vro和shader attributes没有完全匹配的时候可能在移动设备上会有问题(无法正常绘制)例如 ip6s

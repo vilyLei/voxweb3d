@@ -112,20 +112,10 @@ export namespace demo
                 let scrM:ScreenFixedPlaneMaterial = new ScreenFixedPlaneMaterial();
                 let scrPlane:Plane3DEntity = new Plane3DEntity();
                 scrPlane.setMaterial(scrM);
-                scrPlane.initialize(-1.0,-1.0,2.0,2.0,[this.getTextureAt(1)]);
+                scrPlane.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(1)]);
                 this.m_renderer.addEntity(scrPlane, 1);
             }
         }
-        private m_rttTexs:TextureProxy[] = [null,null,null];
-        getTextureAt(i:number):TextureProxy
-	    {
-	    	if (this.m_rttTexs[i] != null)
-	    	{
-	    		return this.m_rttTexs[i];
-            }
-	    	this.m_rttTexs[i] = TextureStore.CreateTex2D(64, 64);
-	    	return this.m_rttTexs[i];
-	    }
         run():void
         {
             this.m_statusDisp.update();
@@ -141,13 +131,13 @@ export namespace demo
             pcontext.setClearRGBColor3f(0.0, 0.3, 0.0);
             pcontext.synFBOSizeWithViewport();
             pcontext.useGlobalMaterial(this.m_depMaterial);
-            pcontext.setRenderToTexture(this.getTextureAt(0), true, false, 0);
+            pcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(0), true, false, 0);
             pcontext.useFBO(true, true, false);
             rinstance.runAt(0);
             
             pcontext.unlockMaterial();
             pcontext.useGlobalRenderStateByName("depthSt");
-            pcontext.setRenderToTexture(this.getTextureAt(1), true, false, 0);
+            pcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(1), true, false, 0);
             pcontext.useFBO(true, false, false);
             rinstance.runAt(0);
             // --------------------------------------------- rtt end

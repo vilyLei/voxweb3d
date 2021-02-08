@@ -16,8 +16,11 @@ import * as FloatCubeTextureProxyT from "../../vox/texture/FloatCubeTextureProxy
 import * as BytesCubeTextureProxyT from "../../vox/texture/BytesCubeTextureProxy";
 import * as ImageCubeTextureProxyT from "../../vox/texture/ImageCubeTextureProxy";
 import * as Texture3DProxyT from "../../vox/texture/Texture3DProxy";
+import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 import * as DepthTextureProxyT from "../../vox/texture/DepthTextureProxy";
 import * as WrapperTextureProxyT from "../../vox/texture/WrapperTextureProxy";
+import * as ROBufferUpdaterT from "../../vox/render/ROBufferUpdater";
+import * as TextureSlotT from "../../vox/texture/TextureSlot";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
@@ -34,8 +37,11 @@ import FloatCubeTextureProxy = FloatCubeTextureProxyT.vox.texture.FloatCubeTextu
 import BytesCubeTextureProxy = BytesCubeTextureProxyT.vox.texture.BytesCubeTextureProxy;
 import ImageCubeTextureProxy = ImageCubeTextureProxyT.vox.texture.ImageCubeTextureProxy;
 import Texture3DProxy = Texture3DProxyT.vox.texture.Texture3DProxy;
+import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 import DepthTextureProxy = DepthTextureProxyT.vox.texture.DepthTextureProxy;
 import WrapperTextureProxy = WrapperTextureProxyT.vox.texture.WrapperTextureProxy;
+import ROBufferUpdater = ROBufferUpdaterT.vox.render.ROBufferUpdater;
+import TextureSlot = TextureSlotT.vox.texture.TextureSlot;
 
 export namespace vox
 {
@@ -122,13 +128,13 @@ export namespace vox
                 }
                 return total;
             }
-            private m_timeDelay:number = 7;
+            private m_timeDelay:number = 70;
             destroyTest(rc:RenderProxy):void
             {
                 --this.m_timeDelay;
                 if(this.m_timeDelay < 1)
                 {
-                    this.m_timeDelay = 7;
+                    this.m_timeDelay = 70;
 
                     if(this.m_removeidList.length > 0)
                     {
@@ -141,7 +147,7 @@ export namespace vox
                                 case TextureConst.TEX_PROXY2D:
                                     this.m_tex2DUids.push(tex.getUid());
                                     break;
-                                case TextureConst.TEX_CUBE:
+                                case TextureConst.TEX_PROXYCUBE:
                                     this.m_cubeTexUids.push(tex.getUid());
                                     break;
                                 case TextureConst.TEX_BYTES2D:
@@ -163,65 +169,86 @@ export namespace vox
         }
         export class TextureStore
         {
-            private static __s_texUidStore:TexUidStore = new TexUidStore();
+            private static s_uidStore:TexUidStore = new TexUidStore();
             private static s_texList:TextureProxy[] = [];
+            private static s_textureSlot:TextureSlot = new TextureSlot();
+
+            static SetRenderProxy(renderProxy:RenderProxy):void
+            {
+                TextureStore.s_textureSlot.setRenderProxy(renderProxy);
+            }
+            static SetBufferUpdater(bufferUpdater:ROBufferUpdater):void
+            {
+                TextureStore.s_textureSlot.setBufferUpdater(bufferUpdater);
+            }
             
             private static CreateDepthTex2D(pw:number,ph:number,powerof2Boo:boolean = false):DepthTextureProxy
             {
-                let texUid:number = TextureStore.__s_texUidStore.getTex2DUid();
+                let texUid:number = TextureStore.s_uidStore.getTex2DUid();
                 if(texUid >= 0)
                 {
                     return TextureStore.GetTexByUid(texUid) as DepthTextureProxy;
                 }
-                let tex:DepthTextureProxy = new DepthTextureProxy(TextureStore.s_texList,pw,ph,powerof2Boo);
+                let tex:DepthTextureProxy = new DepthTextureProxy(TextureStore.s_textureSlot,pw,ph,powerof2Boo);
                 TextureStore.s_texList.push(tex);
                 return tex;
             }
 
             static CreateWrapperTex(pw:number,ph:number,powerof2Boo:boolean = false):WrapperTextureProxy
             {
-                let texUid:number = TextureStore.__s_texUidStore.getTex2DUid();
+                let texUid:number = TextureStore.s_uidStore.getTex2DUid();
                 if(texUid >= 0)
                 {
                     return TextureStore.GetTexByUid(texUid) as WrapperTextureProxy;
                 }
-                let tex:WrapperTextureProxy = new WrapperTextureProxy(TextureStore.s_texList,pw,ph,powerof2Boo);
+                let tex:WrapperTextureProxy = new WrapperTextureProxy(TextureStore.s_textureSlot,pw,ph,powerof2Boo);
                 TextureStore.s_texList.push(tex);
                 return tex;
             }
 
             static CreateTex2D(pw:number,ph:number,powerof2Boo:boolean = false):TextureProxy
             {
-                let texUid:number = TextureStore.__s_texUidStore.getTex2DUid();
+                let texUid:number = TextureStore.s_uidStore.getTex2DUid();
                 if(texUid >= 0)
                 {
                     return TextureStore.GetTexByUid(texUid);
                 }
-                let tex:TextureProxy = new TextureProxy(TextureStore.s_texList,pw,ph,powerof2Boo);
+                let tex:TextureProxy = new TextureProxy(TextureStore.s_textureSlot,pw,ph,powerof2Boo);
                 TextureStore.s_texList.push(tex);
                 return tex;
             }
             
+            static CreateRTTTex2D(pw:number,ph:number,powerof2Boo:boolean = false):RTTTextureProxy
+            {
+                let texUid:number = TextureStore.s_uidStore.getTex2DUid();
+                if(texUid >= 0)
+                {
+                    return TextureStore.GetTexByUid(texUid) as RTTTextureProxy;
+                }
+                let tex:RTTTextureProxy = new RTTTextureProxy(TextureStore.s_textureSlot,pw,ph,powerof2Boo);
+                TextureStore.s_texList.push(tex);
+                return tex;
+            }
             static CreateImageTex2D(pw:number,ph:number,powerof2Boo:boolean = false):ImageTextureProxy
             {
-                let texUid:number = TextureStore.__s_texUidStore.getTex2DUid();
+                let texUid:number = TextureStore.s_uidStore.getTex2DUid();
                 if(texUid >= 0)
                 {
                     return TextureStore.GetTexByUid(texUid) as ImageTextureProxy;
                 }
-                let tex:ImageTextureProxy = new ImageTextureProxy(TextureStore.s_texList,pw,ph,powerof2Boo);
+                let tex:ImageTextureProxy = new ImageTextureProxy(TextureStore.s_textureSlot,pw,ph,powerof2Boo);
                 TextureStore.s_texList.push(tex);
                 return tex;
             }
             
             static CreateHalfFloatTex2D(pw:number,ph:number,powerof2Boo:boolean = false):FloatTextureProxy
             {
-                let texUid:number = TextureStore.__s_texUidStore.getTex2DUid();
+                let texUid:number = TextureStore.s_uidStore.getTex2DUid();
                 if(texUid >= 0)
                 {
                     return TextureStore.GetTexByUid(texUid) as FloatTextureProxy;
                 }
-                let tex:FloatTextureProxy = new FloatTextureProxy(TextureStore.s_texList,pw,ph,powerof2Boo);
+                let tex:FloatTextureProxy = new FloatTextureProxy(TextureStore.s_textureSlot,pw,ph,powerof2Boo);
                 tex.srcFormat = TextureFormat.RGBA;
                 tex.dataType = TextureDataType.HALF_FLOAT_OES;
                 //tex.srcFormat = TextureFormat.RGBA16F;
@@ -231,68 +258,68 @@ export namespace vox
             }
             static CreateFloatTex2D(pw:number,ph:number,powerof2Boo:boolean = false):FloatTextureProxy
             {
-                let texUid:number = TextureStore.__s_texUidStore.getTex2DUid();
+                let texUid:number = TextureStore.s_uidStore.getTex2DUid();
                 if(texUid >= 0)
                 {
                     return TextureStore.GetTexByUid(texUid) as FloatTextureProxy;
                 }
-                let tex:FloatTextureProxy = new FloatTextureProxy(TextureStore.s_texList,pw,ph,powerof2Boo);
+                let tex:FloatTextureProxy = new FloatTextureProxy(TextureStore.s_textureSlot,pw,ph,powerof2Boo);
                 TextureStore.s_texList.push(tex);
                 return tex;
             }
             static CreateUint16Tex2D(pw:number,ph:number,powerof2Boo:boolean = false):Uint16TextureProxy
             {
-                let texUid:number = TextureStore.__s_texUidStore.getTex2DUid();
+                let texUid:number = TextureStore.s_uidStore.getTex2DUid();
                 if(texUid >= 0)
                 {
                     return TextureStore.GetTexByUid(texUid) as Uint16TextureProxy;
                 }
-                let tex:Uint16TextureProxy = new Uint16TextureProxy(TextureStore.s_texList,pw,ph,powerof2Boo);
+                let tex:Uint16TextureProxy = new Uint16TextureProxy(TextureStore.s_textureSlot,pw,ph,powerof2Boo);
                 TextureStore.s_texList.push(tex);
                 return tex;
             }
             static CreateFloatCubeTex(pw:number,ph:number,powerof2Boo:boolean = false):FloatCubeTextureProxy
             {
-                let texUid:number = TextureStore.__s_texUidStore.getTex2DUid();
+                let texUid:number = TextureStore.s_uidStore.getTex2DUid();
                 if(texUid >= 0)
                 {
                     return TextureStore.GetTexByUid(texUid) as FloatCubeTextureProxy;
                 }
-                let tex:FloatCubeTextureProxy = new FloatCubeTextureProxy(TextureStore.s_texList,pw,ph);
+                let tex:FloatCubeTextureProxy = new FloatCubeTextureProxy(TextureStore.s_textureSlot,pw,ph);
                 TextureStore.s_texList.push(tex);
                 return tex;
             }
             static CreateBytesTex(texW:number,texH:number):BytesTextureProxy
             {
-                let texUid:number = TextureStore.__s_texUidStore.getBytesTexUid();
+                let texUid:number = TextureStore.s_uidStore.getTex2DUid();
                 if(texUid >= 0)
                 {
                     return TextureStore.GetTexByUid(texUid) as BytesTextureProxy;
                 }
-                let tex:BytesTextureProxy = new BytesTextureProxy(TextureStore.s_texList,texW,texH);
+                let tex:BytesTextureProxy = new BytesTextureProxy(TextureStore.s_textureSlot,texW,texH);
                 TextureStore.s_texList.push(tex);
                 return tex;
             }
-            //BytesCubeTextureProxy
+            
             static CreateBytesCubeTex(texW:number,texH:number):BytesCubeTextureProxy
             {
-                let texUid:number = TextureStore.__s_texUidStore.getCubeTexUid();
+                let texUid:number = TextureStore.s_uidStore.getCubeTexUid();
                 if(texUid >= 0)
                 {
                     return TextureStore.GetTexByUid(texUid) as BytesCubeTextureProxy;
                 }
-                let tex:BytesCubeTextureProxy = new BytesCubeTextureProxy(TextureStore.s_texList,texW,texH);
+                let tex:BytesCubeTextureProxy = new BytesCubeTextureProxy(TextureStore.s_textureSlot,texW,texH);
                 TextureStore.s_texList.push(tex);
                 return tex;
             }
             static CreateImageCubeTex(texW:number,texH:number):ImageCubeTextureProxy
             {
-                let texUid:number = TextureStore.__s_texUidStore.getCubeTexUid();
+                let texUid:number = TextureStore.s_uidStore.getCubeTexUid();
                 if(texUid >= 0)
                 {
                     return TextureStore.GetTexByUid(texUid) as ImageCubeTextureProxy;
                 }
-                let tex:ImageCubeTextureProxy = new ImageCubeTextureProxy(TextureStore.s_texList,texW,texH);
+                let tex:ImageCubeTextureProxy = new ImageCubeTextureProxy(TextureStore.s_textureSlot,texW,texH);
                 TextureStore.s_texList.push(tex);
                 return tex;
             }
@@ -302,12 +329,12 @@ export namespace vox
                 {
                     depth = 1;
                 }
-                let texUid:number = TextureStore.__s_texUidStore.getCubeTexUid();
+                let texUid:number = TextureStore.s_uidStore.getCubeTexUid();
                 if(texUid >= 0)
                 {
                     return TextureStore.GetTexByUid(texUid) as Texture3DProxy;
                 }
-                let tex:Texture3DProxy = new Texture3DProxy(TextureStore.s_texList,texW,texH,depth);
+                let tex:Texture3DProxy = new Texture3DProxy(TextureStore.s_textureSlot,texW,texH,depth);
                 TextureStore.s_texList.push(tex);
                 return tex;
             }
@@ -318,35 +345,38 @@ export namespace vox
             
             static __$AttachTex(tex:TextureProxy):void
             {
-                TextureStore.__s_texUidStore.useTexAt(tex.getUid());
+                TextureStore.s_uidStore.useTexAt(tex.getUid());
             }
             static __$DetachTex(tex:TextureProxy):void
             {
-                TextureStore.__s_texUidStore.detachTexAt(tex.getUid());
+                TextureStore.s_uidStore.detachTexAt(tex.getUid());
             }
             static __$GetexAttachCount(tex:TextureProxy):number
             {
-                return TextureStore.__s_texUidStore.getAttachCountAt(tex.getUid());
+                return TextureStore.s_uidStore.getAttachCountAt(tex.getUid());
             }
             static __$AttachTexAt(texUid:number):void
             {
-                TextureStore.__s_texUidStore.useTexAt(texUid);
+                TextureStore.s_uidStore.useTexAt(texUid);
             }
             static __$DetachTexAt(texUid:number):void
             {
-                TextureStore.__s_texUidStore.detachTexAt(texUid);
+                TextureStore.s_uidStore.detachTexAt(texUid);
             }
-            static __$GetexAttachCountAt(texUid:number):number
-            {
-                return TextureStore.__s_texUidStore.getAttachCountAt(texUid);
-            }
+            //static __$GetexAttachCountAt(texUid:number):number
+            //{
+            //    return TextureStore.s_uidStore.getAttachCountAt(texUid);
+            //}
             static RenderBegin(rc:RenderProxy):void
             {
-                TextureStore.__s_texUidStore.destroyTest(rc);
+                //  TextureStore.s_uidStore.destroyTest(rc);
             }
             
             static CreateRGBATex2D(pw:number,ph:number,color:Color4):BytesTextureProxy
             {
+                pw = pw > 1 ? pw:1;
+                ph = ph > 1 ? ph:1;
+
                 let tot:number = pw * ph;
                 let tex:BytesTextureProxy = TextureStore.CreateBytesTex(pw,ph);
                 let bytes:Uint8Array = new Uint8Array(tot * 4);
@@ -366,6 +396,8 @@ export namespace vox
             }
             static CreateAlphaTex2D(pw:number,ph:number,alpha:number):BytesTextureProxy
             {
+                pw = pw > 1 ? pw:1;
+                ph = ph > 1 ? ph:1;
                 let tot:number = pw * ph;
                 let tex:BytesTextureProxy = TextureStore.CreateBytesTex(pw,ph);
                 let bytes:Uint8Array = new Uint8Array(tot);
@@ -382,22 +414,53 @@ export namespace vox
                 tex.toAlphaFormat();
                 return tex;
             }
-            private static s_rttTexs:TextureProxy[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
-            private static s_rttFloatTexs:TextureProxy[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
+            private static s_rttTexs:RTTTextureProxy[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
+            private static s_rttCubeTexs:RTTTextureProxy[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
+            private static s_rttFloatTexs:RTTTextureProxy[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
             private static s_rttDepTexs:DepthTextureProxy[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
-            static GetRTTTextureAt(i:number):TextureProxy
+            static GetCubeRTTTextureAt(i:number):RTTTextureProxy
+	        {
+	        	if (TextureStore.s_rttCubeTexs[i] != null)
+	        	{
+	        		return TextureStore.s_rttCubeTexs[i] as RTTTextureProxy;
+                }
+                TextureStore.s_rttCubeTexs[i] = TextureStore.CreateRTTTex2D(32, 32);
+                TextureStore.s_rttCubeTexs[i].toCubeTexture();
+                TextureStore.s_rttCubeTexs[i].name = "sys_cube_rttTex_"+i;
+                TextureStore.s_rttCubeTexs[i].minFilter = TextureConst.LINEAR;
+                TextureStore.s_rttCubeTexs[i].magFilter = TextureConst.LINEAR;
+	        	return TextureStore.s_rttCubeTexs[i];
+            }
+            static CreateCubeRTTTextureAt(i:number,pw:number,ph:number):RTTTextureProxy
+	        {
+                pw = pw > 1?pw:1;
+                ph = ph > 1?ph:1;
+	        	if (TextureStore.s_rttCubeTexs[i] != null)
+	        	{
+	        		return TextureStore.s_rttCubeTexs[i];
+                }
+                TextureStore.s_rttCubeTexs[i] = TextureStore.CreateRTTTex2D(pw, ph);
+                TextureStore.s_rttCubeTexs[i].toCubeTexture();
+                TextureStore.s_rttCubeTexs[i].name = "sys_cube_rttTex_"+i;
+                TextureStore.s_rttCubeTexs[i].minFilter = TextureConst.LINEAR;
+                TextureStore.s_rttCubeTexs[i].magFilter = TextureConst.LINEAR;
+	        	return TextureStore.s_rttCubeTexs[i];
+            }
+
+            static GetRTTTextureAt(i:number):RTTTextureProxy
 	        {
 	        	if (TextureStore.s_rttTexs[i] != null)
 	        	{
-	        		return TextureStore.s_rttTexs[i];
+	        		return TextureStore.s_rttTexs[i] as RTTTextureProxy;
                 }
-                TextureStore.s_rttTexs[i] = TextureStore.CreateTex2D(64, 64);
+                TextureStore.s_rttTexs[i] = TextureStore.CreateRTTTex2D(32, 32);
+                TextureStore.s_rttTexs[i].to2DTexture();
                 TextureStore.s_rttTexs[i].name = "sys_rttTex_"+i;
                 TextureStore.s_rttTexs[i].minFilter = TextureConst.LINEAR;
                 TextureStore.s_rttTexs[i].magFilter = TextureConst.LINEAR;
 	        	return TextureStore.s_rttTexs[i];
             }
-            static CreateRTTTextureAt(i:number,pw:number,ph:number):TextureProxy
+            static CreateRTTTextureAt(i:number,pw:number,ph:number):RTTTextureProxy
 	        {
                 pw = pw > 1?pw:1;
                 ph = ph > 1?ph:1;
@@ -405,7 +468,8 @@ export namespace vox
 	        	{
 	        		return TextureStore.s_rttTexs[i];
                 }
-                TextureStore.s_rttTexs[i] = TextureStore.CreateTex2D(pw, ph);
+                TextureStore.s_rttTexs[i] = TextureStore.CreateRTTTex2D(pw, ph);
+                TextureStore.s_rttTexs[i].to2DTexture();
                 TextureStore.s_rttTexs[i].name = "sys_rttTex_"+i;
                 TextureStore.s_rttTexs[i].minFilter = TextureConst.LINEAR;
                 TextureStore.s_rttTexs[i].magFilter = TextureConst.LINEAR;
@@ -418,6 +482,7 @@ export namespace vox
 	        		return TextureStore.s_rttDepTexs[i];
                 }
                 TextureStore.s_rttDepTexs[i] = TextureStore.CreateDepthTex2D(64, 64);
+                TextureStore.s_rttDepTexs[i].to2DTexture();
                 TextureStore.s_rttDepTexs[i].name = "sys_depthTex_"+i;
                 TextureStore.s_rttDepTexs[i].minFilter = TextureConst.LINEAR;
                 TextureStore.s_rttDepTexs[i].magFilter = TextureConst.LINEAR;
@@ -432,18 +497,20 @@ export namespace vox
 	        		return TextureStore.s_rttDepTexs[i];
                 }
                 TextureStore.s_rttDepTexs[i] = TextureStore.CreateDepthTex2D(pw,ph);
+                TextureStore.s_rttDepTexs[i].to2DTexture();
                 TextureStore.s_rttDepTexs[i].name = "sys_depthTex_"+i;
                 TextureStore.s_rttDepTexs[i].minFilter = TextureConst.LINEAR;
                 TextureStore.s_rttDepTexs[i].magFilter = TextureConst.LINEAR;
 	        	return TextureStore.s_rttDepTexs[i];
             }
-            static GetRTTFloatTextureAt(i:number):TextureProxy
+            static GetRTTFloatTextureAt(i:number):RTTTextureProxy
 	        {
 	        	if (TextureStore.s_rttFloatTexs[i] != null)
 	        	{
-	        		return TextureStore.s_rttFloatTexs[i];
+	        		return TextureStore.s_rttFloatTexs[i] as RTTTextureProxy;
                 }
-                let tex:TextureProxy = TextureStore.CreateTex2D(64, 64);
+                let tex:RTTTextureProxy = TextureStore.CreateDepthTex2D(64, 64);
+                tex.to2DTexture();
                 TextureStore.s_rttFloatTexs[i].name = "sys_rttFloatTex_"+i;
 	        	TextureStore.s_rttFloatTexs[i] = tex;
                 tex.internalFormat = TextureFormat.RGBA16F;
@@ -452,15 +519,16 @@ export namespace vox
                 tex.magFilter = TextureConst.NEAREST;
 	        	return tex;
             }
-            static CreateRTTFloatTextureAt(i:number,pw:number,ph:number):TextureProxy
+            static CreateRTTFloatTextureAt(i:number,pw:number,ph:number):RTTTextureProxy
 	        {
                 pw = pw > 1?pw:1;
                 ph = ph > 1?ph:1;
 	        	if (TextureStore.s_rttFloatTexs[i] != null)
 	        	{
-	        		return TextureStore.s_rttFloatTexs[i];
+	        		return TextureStore.s_rttFloatTexs[i] as RTTTextureProxy;
                 }
-                let tex:TextureProxy = TextureStore.CreateTex2D(64, 64);
+                let tex:RTTTextureProxy = TextureStore.CreateDepthTex2D(pw, ph);
+                tex.to2DTexture();
                 TextureStore.s_rttFloatTexs[i].name = "sys_rttFloatTex_"+i;
 	        	TextureStore.s_rttFloatTexs[i] = tex;
                 tex.internalFormat = TextureFormat.RGBA16F;

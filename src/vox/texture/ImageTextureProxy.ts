@@ -5,19 +5,19 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as ITexDataT from "../../vox/texture/ITexData";
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as ImgTexDataT from "../../vox/texture/ImgTexData";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
-import * as RenderBufferUpdaterT from "../../vox/render/RenderBufferUpdater";
+import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
+import * as TextureProxyT from "../../vox/texture/TextureProxy";
 
+import ITexData = ITexDataT.vox.texture.ITexData;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TextureFormat = TextureConstT.vox.texture.TextureFormat;
-import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import ImgTexData = ImgTexDataT.vox.texture.ImgTexData;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-import RenderBufferUpdater = RenderBufferUpdaterT.vox.render.RenderBufferUpdater;
+import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
+import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 
 export namespace vox
 {
@@ -25,13 +25,13 @@ export namespace vox
     {
         export class ImageTextureProxy extends TextureProxy
         {
-            constructor(texList:TextureProxy[], texWidth:number,texHeight:number,powerof2Boo:boolean = false)
+            constructor(slot:ITextureSlot, texWidth:number,texHeight:number,powerof2Boo:boolean = false)
             {
-                super(texList,texWidth,texHeight,powerof2Boo);
+                super(slot,texWidth,texHeight,powerof2Boo);
                 this.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
             }
             private m_texData:ImgTexData = null;
-            private m_texDatas:ImgTexData[] = null;
+            private m_texDatas:ITexData[] = null;
             private m_texDatasLen:number = 0;
             getTexData():ImgTexData
             {
@@ -60,7 +60,7 @@ export namespace vox
                             {
                                 this.m_texDatas = [this.m_texData,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
                             }
-                            td = this.m_texDatas[miplevel];
+                            td = this.m_texDatas[miplevel] as ImgTexData;
                             if(td == null)
                             {
                                 td = ImgTexData.Create();
@@ -86,13 +86,9 @@ export namespace vox
                             this.m_texWidth = img.width;
                             this.m_texHeight = img.height;
                         }
-                        if(this.m_texBuf != null && this.m_texData.data != null)
+                        if(this.isGpuEnabled() && this.m_texData.data != null)
                         {
-                            if(!this.m_dataChanged)
-                            {
-                                this.m_dataChanged = true;
-                                RenderBufferUpdater.GetInstance().__$addBuf(this);
-                            }
+                            this.m_slot.addRenderBuffer(this, this.getResUid());
                         }
                         td.data = img;
                         td.status = 0;// 0表示 更新纹理数据而不会重新开辟空间, 1表示需要重新开辟空间并更新纹理数据, -1表示不需要更新
@@ -112,61 +108,20 @@ export namespace vox
                 if(this.m_texData != null)
                 {
                     let gl:any = rc.RContext;
-                    let interType:number = TextureFormat.ToGL(gl,this.internalFormat);
-                    let format:number = TextureFormat.ToGL(gl,this.srcFormat);
-                    let type:number = TextureDataType.ToGL(gl, this.dataType);
-                    let d:ImgTexData = this.m_texData;
-                    if(this.m_texDatas == null)
-                    {                       
-                        d.updateToGpu(gl,this.m_samplerTarget,interType,format,type);
-                    }
-                    else
-                    {
-                        let ds:ImgTexData[] = this.m_texDatas;
-                        for(let i:number = 0; i < this.m_texDatasLen; ++i)
-                        {
-                            d = ds[i];
-                            if(d != null)
-                            {
-                                d.updateToGpu(gl,this.m_samplerTarget,interType,format,type);
-                            }
-                        }
-                        this.m_generateMipmap = false;
-                    }
+                    this.updateTexData(gl,this.m_texData, this.m_texDatas);
                 }
             }
             __$updateToGpu(rc:RenderProxy):void
             {
-                if(this.m_texBuf != null)
+                if(this.isGpuEnabled())
                 {
                     if(this.m_dataChanged)
                     {
                         if(this.m_texData != null)
                         {
                             let gl:any = rc.RContext;
-                            gl.bindTexture (this.m_samplerTarget, this.m_texBuf);
-                            this.__$updateToGpuBegin(gl);
-                            let interType:any = TextureFormat.ToGL(gl,this.internalFormat);
-                            let format:any = TextureFormat.ToGL(gl,this.srcFormat);
-                            let type:any = TextureDataType.ToGL(gl, this.dataType);
-                            let d:ImgTexData = this.m_texData;
-                            if(this.m_texDatas == null)
-                            {
-                                if(d.status > -1)d.updateToGpu(gl,this.m_samplerTarget,interType,format,type);
-                            }
-                            else
-                            {
-                                let ds:ImgTexData[] = this.m_texDatas;
-                                for(let i:number = 0; i < this.m_texDatasLen; ++i)
-                                {
-                                    d = ds[i];
-                                    if(d != null)
-                                    {
-                                        if(d.status > -1)d.updateToGpu(gl,this.m_samplerTarget,interType,format,type);
-                                    }
-                                }
-                                this.m_generateMipmap = false;
-                            }
+                            this.__$updateToGpuBegin(rc);
+                            this.updateTexData(gl,this.m_texData, this.m_texDatas);                            
                             this.__$buildParam(gl);
                             this.m_generateMipmap = true;
                         }
@@ -174,7 +129,6 @@ export namespace vox
                     }
                 }
             }
-            
             __$destroy(rc:RenderProxy):void
             {
                 if(!this.isGpuEnabled())
@@ -183,7 +137,7 @@ export namespace vox
                     {
                         for(let i:number = 0;i<this.m_texDatasLen;++i)
                         {
-                            ImgTexData.Restore(this.m_texDatas[i]);
+                            ImgTexData.Restore(this.m_texDatas[i] as ImgTexData);
                         }
                         this.m_texDatasLen = 0;
                         this.m_texDatas = null;

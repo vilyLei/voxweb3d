@@ -92,26 +92,16 @@ export namespace demo
                 // add mrt texture 3d display entity
                 let boxMrt0:Box3DEntity = new Box3DEntity();
                 boxMrt0.name = "boxMrt0";
-                boxMrt0.initialize(new Vector3D(-boxSize,-boxSize,-boxSize),new Vector3D(boxSize,boxSize,boxSize),[this.getTextureAt(0)]);
+                boxMrt0.initialize(new Vector3D(-boxSize,-boxSize,-boxSize),new Vector3D(boxSize,boxSize,boxSize),[TextureStore.GetRTTTextureAt(0)]);
                 boxMrt0.setXYZ(-150,0,-150);
                 this.m_renderer.addEntity(boxMrt0, 1);
                 let boxMrt1:Box3DEntity = new Box3DEntity();
                 boxMrt1.name = "boxMrt1";
-                boxMrt1.initialize(new Vector3D(-boxSize,-boxSize,-boxSize),new Vector3D(boxSize,boxSize,boxSize),[this.getTextureAt(1)]);
+                boxMrt1.initialize(new Vector3D(-boxSize,-boxSize,-boxSize),new Vector3D(boxSize,boxSize,boxSize),[TextureStore.GetRTTTextureAt(1)]);
                 boxMrt1.setXYZ(150,0,150);
                 this.m_renderer.addEntity(boxMrt1, 1);
             }
         }
-        private m_texs:TextureProxy[] = [null,null];
-        getTextureAt(i:number):TextureProxy
-	    {
-	    	if (this.m_texs[i] != null)
-	    	{
-	    		return this.m_texs[i];
-            }
-	    	this.m_texs[i] = TextureStore.GetRTTTextureAt(i);
-	    	return this.m_texs[i];
-	    }
         run():void
         {
             let pcontext:RendererInstanceContext = this.m_rcontext;
@@ -127,8 +117,8 @@ export namespace demo
             // --------------------------------------------- mrt begin
             pcontext.setClearRGBColor3f(0.1, 0.0, 0.1);
             radapter.synFBOSizeWithViewport();
-            radapter.setRenderToTexture(this.getTextureAt(0), true, false, 0);
-            radapter.setRenderToTexture(this.getTextureAt(1), true, false, 1);
+            radapter.setRenderToTexture(TextureStore.GetRTTTextureAt(0), true, false, 0);
+            radapter.setRenderToTexture(TextureStore.GetRTTTextureAt(1), true, false, 1);
             radapter.useFBO(true, true, false);
             rinstance.runAt(0);
             // --------------------------------------------- mrt end

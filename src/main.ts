@@ -211,11 +211,11 @@
 //  import * as DemoDeepTransparent2 from "./demo/DemoDeepTransparent2";
 //  import Demo = DemoDeepTransparent2.demo.DemoDeepTransparent2;
 
-//  import * as DemoMaterial from "./demo/DemoMaterial";
-//  import Demo = DemoMaterial.demo.DemoMaterial;
+import * as DemoMaterial from "./demo/DemoMaterial";
+import Demo = DemoMaterial.demo.DemoMaterial;
 
-import * as DemoDivControl from "./demo/DemoDivControl";
-import Demo = DemoDivControl.demo.DemoDivControl;
+//  import * as DemoDivControl from "./demo/DemoDivControl";
+//  import Demo = DemoDivControl.demo.DemoDivControl;
 
 //  import * as DemoMultiRenderer from "./demo/DemoMultiRenderer";
 //  import Demo = DemoMultiRenderer.demo.DemoMultiRenderer;

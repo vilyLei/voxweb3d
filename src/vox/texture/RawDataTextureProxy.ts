@@ -6,17 +6,21 @@
 /***************************************************************************/
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as TextureDataT from "../../vox/texture/RawTexData";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
+import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as RenderBufferUpdaterT from "../../vox/render/RenderBufferUpdater";
+import * as ITexDataT from "../../vox/texture/ITexData";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import RawTexData = TextureDataT.vox.texture.RawTexData;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
+import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import RenderBufferUpdater = RenderBufferUpdaterT.vox.render.RenderBufferUpdater;
+import ITexData = ITexDataT.vox.texture.ITexData;
 
 export namespace vox
 {
@@ -27,14 +31,14 @@ export namespace vox
             private m_bytes:Uint8Array | Uint16Array | Float32Array = null;
             private m_subDataList:RawTexData[] = null;
             private m_texDatasLen:number = 0;
-            constructor(texList:TextureProxy[], texWidth:number,texHeight:number,powerof2Boo:boolean = false)
+            constructor(slot:ITextureSlot, texWidth:number,texHeight:number,powerof2Boo:boolean = false)
             {
-                super(texList, texWidth,texHeight,powerof2Boo);
+                super(slot, texWidth,texHeight,powerof2Boo);
                 this.m_type = TextureConst.TEX_PROXY2D;
                 this.minFilter = TextureConst.LINEAR;
             }
             private m_texData:RawTexData = null;
-            private m_texDatas:RawTexData[] = null;
+            private m_texDatas:ITexData[] = null;
             uploadFromBytes(bytes:Uint8Array | Uint16Array | Float32Array, miplevel:number = 0,imgWidth:number = -1,imgHeight:number = -1,offsetx:number = 0,offsety:number = 0,rebuild:boolean = false):void
             {
                 if(bytes != null && imgWidth > 0 && imgHeight > 0)
@@ -52,7 +56,7 @@ export namespace vox
                         if(this.m_texData.miplevel != miplevel)
                         {
                             if(this.m_texDatas == null) this.m_texDatas = [this.m_texData,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
-                            td = this.m_texDatas[miplevel];
+                            td = this.m_texDatas[miplevel] as RawTexData;
                             if(td == null)
                             {
                                 td = RawTexData.Create();
@@ -77,13 +81,10 @@ export namespace vox
                             this.m_texHeight = imgHeight;
                             this.m_bytes = bytes;
                         }
-                        if(this.m_texBuf != null && this.m_texData.data != null)
+                        
+                        if(this.isGpuEnabled() && this.m_texData.data != null)
                         {
-                            if(!this.m_dataChanged)
-                            {
-                                this.m_dataChanged = true;
-                                RenderBufferUpdater.GetInstance().__$addBuf(this);
-                            }
+                            this.m_slot.addRenderBuffer(this, this.getResUid());
                         }
                         td.data = bytes;
                         td.status = 0;// 0表示 更新纹理数据而不会重新开辟空间, 1表示需要重新开辟空间并更新纹理数据, -1表示不需要更新
@@ -108,46 +109,26 @@ export namespace vox
                 if(this.m_texData != null)
                 {
                     let gl:any = rc.RContext;
-                    let d:RawTexData = this.m_texData;
-                    let interType:number = TextureFormat.ToGL(gl,this.internalFormat);
-                    let format:number = TextureFormat.ToGL(gl,this.srcFormat);
-                    let type:number = TextureDataType.ToGL(gl, this.dataType);
-                    if(this.m_texDatas == null)
-                    {
-                        d.updateToGpu(gl,this.m_samplerTarget,interType,format,type);
-                    }
-                    else
-                    {
-                        let ds:RawTexData[] = this.m_texDatas;
-                        for(let i:number = 0; i < this.m_texDatasLen; ++i)
-                        {
-                            d = ds[i];
-                            if(d != null)
-                            {
-                                d.updateToGpu(gl,this.m_samplerTarget,interType,format,type);
-                            }
-                        }
-                        this.m_generateMipmap = false;
-                    }
+                    this.updateTexData(gl,this.m_texData, this.m_texDatas);                    
                 }
             }
             __$updateToGpu(rc:RenderProxy):void
             {
-                if(this.m_texBuf != null)
+                if(this.isGpuEnabled())
                 {
                     if(this.m_dataChanged)
                     {
                         let gl:any = rc.RContext;
-                        let len:number = this.m_subDataList != null?this.m_subDataList.length:0;
-                        let d:RawTexData = null;
 
-                        let interType:number = TextureFormat.ToGL(gl,this.internalFormat);
-                        let format:number = TextureFormat.ToGL(gl,this.srcFormat);
-                        let type:number = TextureDataType.ToGL(gl, this.dataType);
-                        this.__$updateToGpuBegin(gl);
-                        let i:number = 0;
+                        let len:number = this.m_subDataList != null?this.m_subDataList.length:0;
+                        this.__$updateToGpuBegin(rc);
                         if(len > 0)
                         {
+                            let i:number = 0;
+                            let d:RawTexData = null;
+                            let interType:number = TextureFormat.ToGL(gl,this.internalFormat);
+                            let format:number = TextureFormat.ToGL(gl,this.srcFormat);
+                            let type:number = TextureDataType.ToGL(gl, this.dataType);
                             for(; i < len; ++i)
                             {
                                 d = this.m_subDataList.pop();
@@ -158,24 +139,7 @@ export namespace vox
                         }
                         if(this.m_texData != null)
                         {
-                            let d:RawTexData = this.m_texData;
-                            if(this.m_texDatas == null)
-                            {
-                                if(d.status > -1)d.updateToGpu(gl,this.m_samplerTarget,interType,format,type);
-                            }
-                            else
-                            {
-                                let ds:RawTexData[] = this.m_texDatas;
-                                for(; i < this.m_texDatasLen; ++i)
-                                {
-                                    d = ds[i];
-                                    if(d != null)
-                                    {
-                                        if(d.status > -1)d.updateToGpu(gl,this.m_samplerTarget,interType,format,type);
-                                    }
-                                }
-                                this.m_generateMipmap = false;
-                            }
+                            this.updateTexData(gl,this.m_texData, this.m_texDatas);                            
                             this.__$buildParam(gl);
                             this.m_generateMipmap = true;
                         }
@@ -280,7 +244,7 @@ export namespace vox
                     {
                         for(let i:number = 0;i<this.m_texDatasLen;++i)
                         {
-                            RawTexData.Restore(this.m_texDatas[i]);
+                            RawTexData.Restore(this.m_texDatas[i] as RawTexData);
                         }
                         this.m_texDatasLen = 0;
                         this.m_texDatas = null;

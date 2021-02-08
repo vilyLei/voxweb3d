@@ -79,7 +79,7 @@ export namespace demo
             console.log("DemoDeepTransparent2::initialize()......,maxTexSize: ",RendererDeviece.MAX_TEXTURE_SIZE);
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
-
+            
             RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
             RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;

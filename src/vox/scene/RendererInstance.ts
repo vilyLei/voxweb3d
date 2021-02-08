@@ -12,7 +12,8 @@
 import * as Stage3DT from "../../vox/display/Stage3D";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
-import * as RenderBufferUpdaterT from "../../vox/render/RenderBufferUpdater";
+//import * as RenderBufferUpdaterT from "../../vox/render/RenderBufferUpdater";
+import * as ROBufferUpdaterT from "../../vox/render/ROBufferUpdater";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
 import * as RODispBuilderT from "../../vox/render/RODispBuilder";
@@ -27,7 +28,8 @@ import * as DispEntity3DManagerT from "../../vox/scene/DispEntity3DManager";
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-import RenderBufferUpdater = RenderBufferUpdaterT.vox.render.RenderBufferUpdater;
+//import RenderBufferUpdater = RenderBufferUpdaterT.vox.render.RenderBufferUpdater;
+import ROBufferUpdater = ROBufferUpdaterT.vox.render.ROBufferUpdater;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
 import RODispBuilder = RODispBuilderT.vox.render.RODispBuilder;
@@ -56,6 +58,7 @@ export namespace vox
             private m_dispBuilder:RODispBuilder = null;
             private m_batchEnabled:boolean = true;
             private m_processFixedState:boolean = true;
+            readonly bufferUpdater:ROBufferUpdater = null;
             constructor()
             {
                 this.m_uid = RendererInstance.__s_uid++;
@@ -129,6 +132,9 @@ export namespace vox
                     this.m_renderInsContext.setDispBuilder(this.m_dispBuilder);
                     this.m_entity3DMana = new DispEntity3DManager(this.m_uid, this.m_dispBuilder);
                     this.appendProcess(this.m_batchEnabled,this.m_processFixedState);
+                    
+                    let selfT:any = this;
+                    selfT.bufferUpdater = new ROBufferUpdater();
                 }
             }
             getUid():number
@@ -137,8 +143,10 @@ export namespace vox
             }
             update():void
             {
+                this.m_renderProxy.Texture.update();
                 this.m_entity3DMana.update(this.m_renderProxy);
-                RenderBufferUpdater.GetInstance().__$update(this.m_renderProxy);
+                //RenderBufferUpdater.GetInstance().__$update(this.m_renderProxy);
+                this.bufferUpdater.__$update(this.m_renderProxy);
             }
             setEntityManaListener(listener:any):void
             {

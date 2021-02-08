@@ -9,6 +9,7 @@
 
 import * as TextureConstT from "../../../vox/texture/TextureConst";
 import * as TextureProxyT from "../../../vox/texture/TextureProxy";
+import * as RTTTextureProxyT from "../../../vox/texture/RTTTextureProxy";
 import * as TextureStoreT from "../../../vox/texture/TextureStore";
 import * as Plane3DEntityT from "../../../vox/entity/Plane3DEntity";
 import * as MaterialBaseT from "../../../vox/material//mcase/PingpongBlurMaterial";
@@ -19,6 +20,7 @@ import * as RendererInstanceT from "../../../vox/scene/RendererInstance";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import PingpongBlurMaterial = MaterialBaseT.vox.material.mcase.PingpongBlurMaterial;
@@ -46,7 +48,7 @@ export namespace vox
                 private m_hMaterial:PingpongBlurMaterial = null;
                 private m_vMaterial:PingpongBlurMaterial = null;
                 private m_backbufferVisible = true;
-                private m_texs:TextureProxy[] = [null,null];
+                private m_texs:RTTTextureProxy[] = [null,null];
                 private m_blurMode:number = 2;
                 //private m_synSizeWithViewport:boolean = false;
                 constructor(renderIns:RendererInstance)
@@ -83,21 +85,21 @@ export namespace vox
                     let rc:RenderProxy = this.m_renderIns.getRenderProxy();
                     rc.getRenderAdapter().asynFBOSizeWithViewport();
 			    }
-                public getDstTexture():TextureProxy
+                public getDstTexture():RTTTextureProxy
                 {
                     return this.getTextureAt(this.m_blurCount%2);       
                 }
-                public setSrcTexture(tex:TextureProxy):void
+                public setSrcTexture(tex:RTTTextureProxy):void
             	{
                     this.m_texs[0] = tex;
                 }
-                public getTextureAt(index:number):TextureProxy
+                public getTextureAt(index:number):RTTTextureProxy
             	{
                     if(this.m_texs[index] != null)
                     {
                         return this.m_texs[index];
                     }
-                    this.m_texs[index] = TextureStore.CreateTex2D(this.m_renderIns.getViewWidth(),this.m_renderIns.getViewHeight());
+                    this.m_texs[index] = TextureStore.CreateRTTTex2D(this.m_renderIns.getViewWidth(),this.m_renderIns.getViewHeight());
                     this.m_texs[index].minFilter = TextureConst.NEAREST;
                     this.m_texs[index].magFilter = TextureConst.NEAREST;
                     return this.m_texs[index];
@@ -156,8 +158,8 @@ export namespace vox
                     let adapter:RenderAdapter = rc.getRenderAdapter();
                     let viewW:number = adapter.getViewportWidth();
                     let viewH:number = adapter.getViewportHeight();
-                    let tex0:TextureProxy = this.getTextureAt(0);
-                    let tex1:TextureProxy = this.getTextureAt(1);
+                    let tex0:RTTTextureProxy = this.getTextureAt(0);
+                    let tex1:RTTTextureProxy = this.getTextureAt(1);
                     if(this.m_flagBoo)
                     {
                         if(this.m_screenPlane_0 == null)
@@ -242,8 +244,8 @@ export namespace vox
                     let adapter:RenderAdapter = rc.getRenderAdapter();
                     let viewW:number = adapter.getViewportWidth();
                     let viewH:number = adapter.getViewportHeight();
-                    let tex0:TextureProxy = this.getTextureAt(0);
-                    let tex1:TextureProxy = this.getTextureAt(1);
+                    let tex0:RTTTextureProxy = this.getTextureAt(0);
+                    let tex1:RTTTextureProxy = this.getTextureAt(1);
                     if(this.m_flagBoo)
                     {
                         if(this.m_screenPlane_0 == null)

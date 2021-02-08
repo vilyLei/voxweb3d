@@ -7,12 +7,12 @@
 // 真正被高频运行的渲染管线中的被执行对象
 
 import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
-import * as TextureRenderObjT from "../../vox/texture/TextureRenderObj";
+import * as ITextureRenderObjT from "../../vox/texture/ITextureRenderObj";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPOUnitBuiderT from "../../vox/render/RPOUnitBuider";
 
 import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
-import ITextureRenderObj = TextureRenderObjT.vox.texture.ITextureRenderObj;
+import ITextureRenderObj = ITextureRenderObjT.vox.texture.ITextureRenderObj;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RPOUnitBuider = RPOUnitBuiderT.vox.render.RPOUnitBuider;
 

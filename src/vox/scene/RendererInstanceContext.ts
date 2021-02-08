@@ -14,7 +14,7 @@ import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as RAdapterContextT from "../../vox/render/RAdapterContext";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
+import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
 import * as ShdUniformToolT from "../../vox/material/ShdUniformTool";
@@ -31,7 +31,7 @@ import CameraBase = CameraBaseT.vox.view.CameraBase;
 import RAdapterContext = RAdapterContextT.vox.render.RAdapterContext;
 import RendererState = RendererStateT.vox.render.RendererState;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import ShdUniformTool = ShdUniformToolT.vox.material.ShdUniformTool;
@@ -86,6 +86,14 @@ export namespace vox
             getRenderProxy():RenderProxy
             {
                 return this.m_renderProxy;
+            }
+            getTextureResTotal():number
+            {
+                return this.m_renderProxy.Texture.getTextureResTotal();
+            }
+            getTextureAttachTotal():number
+            {
+                return this.m_renderProxy.Texture.getAttachTotal();
             }
             getStage3D():Stage3D
             {
@@ -216,7 +224,7 @@ export namespace vox
             {
                 this.m_adapter.bindFBOAt(index,fboType);
             }
-            setRenderToTexture(texProxy:TextureProxy, enableDepth:boolean = false, enableStencil:boolean = false, outputIndex:number = 0):void
+            setRenderToTexture(texProxy:RTTTextureProxy, enableDepth:boolean = false, enableStencil:boolean = false, outputIndex:number = 0):void
             {
                 this.m_adapter.setRenderToTexture(texProxy,enableDepth,enableStencil,outputIndex);
             }
@@ -291,9 +299,9 @@ export namespace vox
                     this.m_renderProxy = new RenderProxy();
                     this.m_renderProxy.setCameraParam(this.m_cameraFov,this.m_cameraNear,this.m_cameraFar);
                     this.m_renderProxy.setWebGLMaxVersion(param.maxWebGLVersion);
+                    this.m_renderProxy.initialize(param);
                     this.m_adapter = this.m_renderProxy.getRenderAdapter();
                     this.m_adapter.bgColor.setRGBA4f(0.0,0.0,0.0,1.0);
-                    this.m_renderProxy.initialize(param);
 
                     let context:RAdapterContext = this.m_renderProxy.getContext();
                     context.setViewport(0,0, context.getStage().stageWidth, context.getStage().stageHeight);

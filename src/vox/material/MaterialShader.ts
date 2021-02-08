@@ -38,6 +38,8 @@ export namespace vox
             private m_currShd:ShdProgram = null;
             private m_fragOutputTotal:number = 1;
 
+            uniform:IShaderUniform = null;
+            transformUniform:IShaderUniform = null;
             create(shdData:ShaderData):ShdProgram
             {
                 //console.log("this.Create() begin...");
@@ -140,6 +142,8 @@ export namespace vox
             }
             reset():void
             {
+                this.uniform = null;
+                this.transformUniform = null;
                 this.m_fragOutputTotal = 1;
                 this.m_preuid = -1;
                 this.m_currShd = null;

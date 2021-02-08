@@ -8,15 +8,20 @@
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as FrameBufferTypeT from "../../vox/render/FrameBufferType";
 import * as TextureConstT from "../../vox/texture/TextureConst";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
+import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
+import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 import * as RenderFBOProxyT from "../../vox/render/RenderFBOProxy";
 import * as Color4T from "../../vox/material/Color4";
+
+
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import FrameBufferType = FrameBufferTypeT.vox.render.FrameBufferType;
 import TextureTarget = TextureConstT.vox.texture.TextureTarget;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
+import GpuTexObect = ROTextureResourceT.vox.render.GpuTexObect;
+import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 import RenderFBOProxy = RenderFBOProxyT.vox.render.RenderFBOProxy;
 import Color4 = Color4T.vox.material.Color4;
 
@@ -28,8 +33,13 @@ export namespace vox
 		{
 			private m_uid:number = -1;
 			private static s__uid:number = 0;
-			constructor(frameBufType:number)
+			// renderer context unique id
+			private m_rcuid:number = 0;
+			private m_texResource:ROTextureResource;
+			constructor(rcuid:number,texResource:ROTextureResource,frameBufType:number)
     		{
+				this.m_rcuid = rcuid;
+				this.m_texResource = texResource;
 				this.m_bufferLType = frameBufType;
 				this.m_uid = FrameBufferObject.s__uid++;
     		}
@@ -125,7 +135,7 @@ export namespace vox
 			getHeight():number { return this.m_height; }
     		getFramebufferType():number{return this.m_bufferLType;}
     
-    		renderToTexAt(rgl:any, texProxy:TextureProxy, outPutIndex:number):void
+    		renderToTexAt(rgl:any, texProxy:RTTTextureProxy, outPutIndex:number):void
 			{
 				let inFormat:number = texProxy!=null?texProxy.internalFormat:-1;
 				
@@ -145,90 +155,54 @@ export namespace vox
 				if (texProxy != null)
 				{
 					targetType = texProxy.getTargetType();
-					rTex = texProxy.__$gpuBuf();
-					if(rTex == null)
-					{
-						rTex = rgl.createTexture();
-						this.initTexrure(rgl,targetType,texProxy,rTex);
-					}
-					else if(texProxy.getBufWidth() != this.m_width || texProxy.getBufHeight() != this.m_height)
-					{
-						this.initTexrure(rgl,targetType,texProxy,rTex);
-					}					
+					texProxy.uploadFromFbo(this.m_texResource,this.m_width,this.m_height);
+					rTex = this.m_texResource.getTextureBuffer(texProxy.getResUid());					
 				}
 				else
 				{
 					targetType = this.m_texTargetTypes[this.m_activeAttachmentTotal];
 				}
-
+				this.framebufferTextureBind(rgl,targetType, inFormat, rTex);
+			}
+			private framebufferTexture2D(rgl:any,targetType:number, inFormat:number,rTex:any):void
+			{
 				switch(inFormat)
 				{
 					case TextureFormat.DEPTH_COMPONENT:
 						rgl.framebufferTexture2D(this.m_fboTarget, this.m_gl.DEPTH_ATTACHMENT, rgl.TEXTURE_2D, rTex,0);
-						return;
 					break;
-					case TextureFormat.DEPTH_COMPONENT:
+					case TextureFormat.DEPTH_STENCIL:
 						rgl.framebufferTexture2D(this.m_fboTarget, this.m_gl.DEPTH_STENCIL_ATTACHMENT, rgl.TEXTURE_2D, rTex,0);
-						return;
 					break;
 					default:
-					break;
-				}
-
-				this.framebufferTexture2D(rgl,targetType, rTex);
-			}
-			private initTexrure(rgl:any, targetType:number,texProxy:TextureProxy, rTex:any):void
-			{
-
-				let interType:number = TextureFormat.ToGL(rgl, texProxy.internalFormat);
-				let format:number = TextureFormat.ToGL(rgl, texProxy.srcFormat);
-				let type:number = TextureDataType.ToGL(rgl, texProxy.dataType);
-				
-				rgl.bindTexture(TextureTarget.GetValue(rgl, targetType), rTex);
-				
-				switch(targetType)
-				{
-				case TextureTarget.TEXTURE_2D:
-					rgl.texImage2D(rgl.TEXTURE_2D, 0,interType,this.m_width,this.m_height,0,format,type, null);
-					break;
-				case TextureTarget.TEXTURE_CUBE:
-					for (let i:number = 0; i < 6; ++i)
-					{
-						rgl.texImage2D(rgl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, interType,this.m_width,this.m_height,0,format, type, null);
-					}
-					break;
-				case TextureTarget.TEXTURE_SHADOW_2D:
-					rgl.texImage2D(rgl.TEXTURE_2D, 0, rgl.DEPTH_COMPONENT16, this.m_width, this.m_height, 0, rgl.DEPTH_COMPONENT, rgl.FLOAT, null);
-					break;
-				default:
-					break;
-				}
-				texProxy.__$setTexBuf(rgl, rTex, targetType,this.m_width,this.m_height);
-			}
-			private framebufferTexture2D(rgl:any, targetType:number, rTex:any):void
-			{
-				// current texture attachments
-				switch (targetType)
-				{
-				case TextureTarget.TEXTURE_2D:
-					if(this.m_attachmentMaskList[this.m_activeAttachmentTotal])
-					{
-						rgl.framebufferTexture2D(this.m_fboTarget, this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex, rgl.TEXTURE_2D, rTex, 0);
-						++this.m_attachmentIndex;
-						if (rTex != null)
+						if(this.m_attachmentMaskList[this.m_activeAttachmentTotal])
 						{
-							this.m_texTargetTypes[this.m_activeAttachmentTotal] = targetType;
+							rgl.framebufferTexture2D(this.m_fboTarget, this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex, rgl.TEXTURE_2D, rTex, 0);
+							++this.m_attachmentIndex;
+							if (rTex != null)
+							{
+								this.m_texTargetTypes[this.m_activeAttachmentTotal] = targetType;
+							}
+							else
+							{
+								this.m_texTargetTypes[this.m_activeAttachmentTotal] = 0;
+							}
 						}
 						else
 						{
 							this.m_texTargetTypes[this.m_activeAttachmentTotal] = 0;
 						}
-					}
-					else
-					{
-						this.m_texTargetTypes[this.m_activeAttachmentTotal] = 0;
-					}
-					++this.m_activeAttachmentTotal;
+						++this.m_activeAttachmentTotal;
+					break;
+				}
+			}
+			private framebufferTextureBind(rgl:any, targetType:number,inFormat:number, rTex:any):void
+			{
+				// current texture attachments
+				switch (targetType)
+				{
+				case TextureTarget.TEXTURE_2D:
+					this.framebufferTexture2D(rgl, targetType, inFormat, rTex);					
 					break;
 				case TextureTarget.TEXTURE_CUBE:
 					for (let i:number = 0; i < 6; ++i)
@@ -447,12 +421,12 @@ export namespace vox
 					rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthStencilRBO);
 					rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.DEPTH_STENCIL, pw, ph);
 					rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.DEPTH_STENCIL_ATTACHMENT, rgl.RENDERBUFFER, this.m_depthStencilRBO);
-					//
+
 					if(this.m_colorRBO == null)this.m_colorRBO = rgl.createRenderbuffer();
 					rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_colorRBO);
 					rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.RGBA8, pw, ph);
 					rgl.framebufferRenderbuffer(this.m_fboTarget, this.m_COLOR_ATTACHMENT0, rgl.RENDERBUFFER, this.m_colorRBO);
-					//
+
 				}
 				else
 				{
@@ -469,7 +443,7 @@ export namespace vox
 					rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthRBO);
 					rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.DEPTH_COMPONENT24, pw, ph);
 					rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.DEPTH_ATTACHMENT, rgl.RENDERBUFFER, this.m_depthRBO);
-					//
+
 					if(this.m_colorRBO == null)this.m_colorRBO = rgl.createRenderbuffer();
 					rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_colorRBO);
 					rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.RGBA8, pw, ph);
@@ -501,7 +475,7 @@ export namespace vox
 						rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthStencilRBO);
 						rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.STENCIL_INDEX8, pw, ph);
 						rgl.framebufferRenderbuffer(this.m_fboTarget, rgl.STENCIL_ATTACHMENT, rgl.RENDERBUFFER, this.m_depthStencilRBO);
-						//
+
 						if(this.m_colorRBO == null)this.m_colorRBO = rgl.createRenderbuffer();
 						rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_colorRBO);
 						rgl.renderbufferStorageMultisample(rgl.RENDERBUFFER, this.multisampleLevel, rgl.RGBA8, pw, ph);
@@ -550,6 +524,7 @@ export namespace vox
 					break;
 				default:
 					this.m_fboTarget = rgl.FRAMEBUFFER;
+					break;
 				}
 				rgl.bindFramebuffer(this.m_fboTarget, this.m_fbo);
 				//console.log("FrameBufferObject::initialize() writeDepthEnabled: "+this.writeDepthEnabled+", writeDepthEnabled: " , this.writeDepthEnabled+" ,size("+pw + "," ,ph+")");
@@ -603,6 +578,7 @@ export namespace vox
 					break;
 				default:
 					rc.bindFramebuffer(rc.FRAMEBUFFER, null);
+					break;
 				}
 			}
 		}

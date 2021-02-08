@@ -379,6 +379,7 @@ export namespace vox
                     }
                 }
 
+                ////*
                 --this.m_testDelay;
                 if(this.m_testDelay < 1)
                 {
@@ -389,9 +390,9 @@ export namespace vox
                     {
                         res = this.m_loadedList[i];
                         tex = res.texture!=null?res.texture:res.bytesTex;
-                        if(!tex.isGpuEnabled() && TextureStore.__$GetexAttachCountAt(tex.getUid()) == 1)
+                        if(tex.getAttachCount() < 1)
                         {
-                            TextureStore.__$DetachTexAt(tex.getUid());
+                            console.log("ImageTexResLoader::run(),remove a resource,url: ",res.getURL());
                             this.m_resMap.delete(res.getURL());
                             this.m_loadedList.splice(i,1);
                             res.destroy();
@@ -400,6 +401,7 @@ export namespace vox
                         }
                     }
                 }
+                //*/
             }
         }
     }

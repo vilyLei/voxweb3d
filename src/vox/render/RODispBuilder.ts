@@ -14,10 +14,11 @@ import * as UniformConstT from "../../vox/material/UniformConst";
 import * as ShdProgramT from "../../vox/material/ShdProgram";
 import * as TextureProxyT from '../../vox/texture/TextureProxy';
 import * as TextureRenderObjT from '../../vox/texture/TextureRenderObj';
-import * as MaterialBaseT from '../../vox/material/MaterialBase';
-import * as MaterialShaderT from '../../vox/material/MaterialShader';
 import * as ShaderUniformDataT from "../../vox/material/ShaderUniformData";
 import * as ShdUniformToolT from '../../vox/material/ShdUniformTool';
+import * as MaterialBaseT from '../../vox/material/MaterialBase';
+import * as MaterialShaderT from '../../vox/material/MaterialShader';
+import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPOUnitBuiderT from "../../vox/render/RPOUnitBuider";
 import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
@@ -36,6 +37,7 @@ import ShdUniformTool = ShdUniformToolT.vox.material.ShdUniformTool;
 import EmptyShdUniform = ShdUniformToolT.vox.material.EmptyShdUniform;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
+import GpuTexObect = ROTextureResourceT.vox.render.GpuTexObect;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RPOUnitBuider = RPOUnitBuiderT.vox.render.RPOUnitBuider;
 import RenderProcessBuider = RenderProcessBuiderT.vox.render.RenderProcessBuider;
@@ -52,7 +54,7 @@ export namespace vox
             private static s_shaders:MaterialShader[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
             private m_disps:IRODisplay[] = [];
             private m_processUidList:number[] = [];
-            
+            // 当前 renderer context 范围内的所有 material shader 管理 
             private m_shader:MaterialShader = null;
             constructor(rc:RenderProxy)
             {
@@ -63,6 +65,25 @@ export namespace vox
             {
                 return this.m_shader;
             }
+            private static CreateGTO(rc:RenderProxy,textures:TextureProxy[],shdTexTotal:number):void
+            {
+                let obj:GpuTexObect = null;
+                
+                let i:number = 0;
+                let tex:TextureProxy;
+                while(i < shdTexTotal)
+                {
+                    tex = textures[i];
+                    obj = new GpuTexObect();
+                    obj.resUid = tex.getResUid();
+                    obj.width = tex.getWidth();
+                    obj.height = tex.getHeight();
+                    obj.sampler = tex.getSamplerType();
+                    obj.texBuf = rc.RContext.createTexture();
+                    rc.Texture.addTextureRes(obj);
+                    i ++;
+                }
+            }
             static UpdateDispTRO(rc:RenderProxy,disp:IRODisplay):void
             {
                 if(disp != null && disp.__$ruid > -1)
@@ -71,7 +92,7 @@ export namespace vox
                     if(material != null)
                     {
                         let runit:RPOUnit = RPOUnitBuider.GetRPOUnit(disp.__$ruid);
-                        let tro:TextureRenderObj = TextureRenderObj.GetByMid(material.__$troMid);
+                        let tro:TextureRenderObj = TextureRenderObj.GetByMid(rc.getUid(), material.__$troMid);
                         if(runit.tro != null && (tro == null || runit.tro.getMid() != tro.getMid()))
                         {
                             let shader:MaterialShader = RODispBuilder.s_shaders[rc.getUid()];
@@ -80,7 +101,10 @@ export namespace vox
                             {
                                 if(shdp.getTexTotal() > 0)
                                 {
-                                    if(tro == null)tro = TextureRenderObj.Create(rc, material.getTextureList(),shdp.getTexTotal());
+                                    if(tro == null)
+                                    {
+                                        tro = TextureRenderObj.Create(rc, material.getTextureList(),shdp.getTexTotal());
+                                    }
                                     //console.log("RODispBuilder::UpdateDispTRO(), runit.tro != tro: "+(runit.tro != tro));
                                     if(runit.tro != tro)
                                     {
@@ -147,7 +171,6 @@ export namespace vox
                         
                         shdp.upload( rc.RContext );
                         runit.shdUid = shdp.getUid();
-                        runit.shdp = shdp;
                         
                         let tro:TextureRenderObj = null;
                         if(shdp.getTexTotal() > 0)
@@ -191,7 +214,7 @@ export namespace vox
                             let unfdata:ShaderUniformData = material.createSelfUniformData();
                             if(unfdata != null)
                             {
-                                material.__$uniform = ShdUniformTool.BuildLocalFromData(unfdata, runit.shdp);
+                                material.__$uniform = ShdUniformTool.BuildLocalFromData(unfdata, shdp);
                             }
                             else
                             {
@@ -210,7 +233,7 @@ export namespace vox
                         }
                         if(runit.transUniform == null)
                         {
-                            runit.transUniform = ShdUniformTool.BuildLocalFromTransformV(hasTrans?disp.getMatrixFS32():null, runit.shdp);
+                            runit.transUniform = ShdUniformTool.BuildLocalFromTransformV(hasTrans?disp.getMatrixFS32():null, shdp);
                             ROTransPool.SetTransUniform(disp.getTransform(), runit.transUniform);
                             //console.log("create transUniform");
                         }
@@ -244,7 +267,7 @@ export namespace vox
                         runit.rcolorMask = disp.rcolorMask;
                         runit.trisNumber = disp.trisNumber;
                         disp.__$ruid = runit.getUid();
-                        //let shdp:ShdProgram = null;
+                        
                         let shdp:ShdProgram = this.updateDispMaterial(rc,runit,disp);
                         // build vtx gpu data
                         if(disp.vbuf != null)
@@ -294,7 +317,7 @@ export namespace vox
                 {
                     let tro:TextureRenderObj = null;
                     let gl:any = rc.RContext;
-                    let shdp:ShdProgram = null;//material.getShdProgram();
+                    let shdp:ShdProgram = null;
                     let texList:TextureProxy[] = null;
                     let texEnabled:boolean = false;
                     if(material.getShaderData() == null)

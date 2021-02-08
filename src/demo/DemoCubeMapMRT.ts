@@ -95,7 +95,7 @@ export namespace demo
                 boxCubeMapMRT.useGourandNormal();
                 boxCubeMapMRT.name = "boxCubeMapMRT";
                 boxCubeMapMRT.setMaterial(new CubeMapMaterial());
-                boxCubeMapMRT.initialize(new Vector3D(-80.0,-80.0,-80.0),new Vector3D(80.0,80.0,80.0),[this.getTexture()]);
+                boxCubeMapMRT.initialize(new Vector3D(-80.0,-80.0,-80.0),new Vector3D(80.0,80.0,80.0),[TextureStore.GetCubeRTTTextureAt(0)]);
                 this.m_renderer.addEntity(boxCubeMapMRT, 1);
 
                 let disp:EntityDisp = this.m_equeue.addEntity( boxCubeMapMRT );
@@ -103,16 +103,6 @@ export namespace demo
 
             }
         }
-        private m_tex:ImageCubeTextureProxy = null;
-        getTexture():ImageCubeTextureProxy
-	    {
-	    	if (this.m_tex != null)
-	    	{
-	    		return this.m_tex;
-            }
-	    	this.m_tex = TextureStore.CreateImageCubeTex(1024, 1024);
-	    	return this.m_tex;
-	    }
         run():void
         {
             this.m_statusDisp.update();
@@ -130,7 +120,7 @@ export namespace demo
 
             // --------------------------------------------- cubemap mrt begin
             pcontext.setClearRGBColor3f(0.1, 0.0, 0.1);
-            radapter.setRenderToTexture(this.getTexture(), true, false, 0);
+            radapter.setRenderToTexture(TextureStore.GetCubeRTTTextureAt(0), true, false, 0);
             radapter.useFBO(true, true, false);
             renderer.runAt(0);
             // --------------------------------------------- cubemap mrt end

@@ -7,6 +7,7 @@ import * as RendererStateT from "../../../vox/render/RendererState";
 import * as RendererParamT from "../../../vox/scene/RendererParam";
 import * as TextureConstT from "../../../vox/texture/TextureConst";
 import * as TextureProxyT from "../../../vox/texture/TextureProxy";
+import * as RTTTextureProxyT from "../../../vox/texture/RTTTextureProxy";
 import * as TextureStoreT from "../../../vox/texture/TextureStore";
 import * as TexResLoaderT from "../../../vox/texture/TexResLoader";
 import * as RendererInstanceContextT from "../../../vox/scene/RendererInstanceContext";
@@ -29,6 +30,7 @@ import * as BoxSpaceMotionerT from "../../../voxmotion/primtive/BoxSpaceMotioner
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
+import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
@@ -58,8 +60,8 @@ export namespace advancedDemo
                 tex.mipmapEnabled = true;
                 return tex;
             }
-            private m_texs:TextureProxy[] = [null,null,null,null,null,null];
-            public getTextureAt(index:number):TextureProxy
+            private m_texs:RTTTextureProxy[] = [null,null,null,null,null,null];
+            public getTextureAt(index:number):RTTTextureProxy
 	        {
                 if(this.m_texs[index] != null)
                 {
@@ -68,7 +70,7 @@ export namespace advancedDemo
                 switch(index)
                 {
                     case 0:
-                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
+                        this.m_texs[index] = TextureStore.CreateRTTTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
                         this.m_texs[index].internalFormat = TextureFormat.RGBA16F;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
                         this.m_texs[index].dataType = TextureDataType.FLOAT;
@@ -77,7 +79,7 @@ export namespace advancedDemo
                     break;
 
                     case 1:
-                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
+                        this.m_texs[index] = TextureStore.CreateRTTTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
                         this.m_texs[index].internalFormat = TextureFormat.RGBA16F;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
                         this.m_texs[index].dataType = TextureDataType.FLOAT;
@@ -86,7 +88,7 @@ export namespace advancedDemo
                     break;
 
                     case 2:
-                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
+                        this.m_texs[index] = TextureStore.CreateRTTTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
                         this.m_texs[index].internalFormat = TextureFormat.RGBA16F;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
                         this.m_texs[index].dataType = TextureDataType.FLOAT;
@@ -94,7 +96,7 @@ export namespace advancedDemo
                         return this.m_texs[index];
                     break;
                     case 3:
-                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
+                        this.m_texs[index] = TextureStore.CreateRTTTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
                         this.m_texs[index].internalFormat = TextureFormat.RGBA;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
                         this.m_texs[index].magFilter = TextureConst.NEAREST;
@@ -102,7 +104,7 @@ export namespace advancedDemo
                     break;
                     default:
                         
-                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
+                        this.m_texs[index] = TextureStore.CreateRTTTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
                         this.m_texs[index].internalFormat = TextureFormat.RGBA;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
                         this.m_texs[index].magFilter = TextureConst.NEAREST;

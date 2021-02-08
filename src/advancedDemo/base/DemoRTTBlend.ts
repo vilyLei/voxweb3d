@@ -125,21 +125,21 @@ export namespace advancedDemo
 
                     //  let size:number = 700.0;
                     //  let rttTexBox:Box3DEntity = new Box3DEntity();
-                    //  rttTexBox.initialize(new Vector3D(-size,-size,-size),new Vector3D(size,size,size),[this.getTextureAt(3)]);
+                    //  rttTexBox.initialize(new Vector3D(-size,-size,-size),new Vector3D(size,size,size),[TextureStore.GetRTTTextureAt(3)]);
                     //  this.m_rc.addEntity(rttTexBox,3);
                     let scrP:ScreenAlignPlaneEntity = new ScreenAlignPlaneEntity();
                     //scrP.setRenderState(RendererState.BACK_NORMAL_ALWAYS_STATE);
                     scrP.setRenderStateByName("ADD02");
-                    scrP.initialize(-1.0,-1.0,2.0,2.0,[this.getTextureAt(3)]);
+                    scrP.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(3)]);
                     this.m_rc.addEntity(scrP,3);
 
                     let dstP0:ScreenAlignPlaneEntity = new ScreenAlignPlaneEntity();
                     dstP0.setRenderStateByName("ADD02");
-                    dstP0.initialize(-1.0,-1.0,2.0,2.0,[this.getTextureAt(0)]);
+                    dstP0.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(0)]);
                     this.m_rc.addEntity(dstP0,4);
                     let dstP1:ScreenAlignPlaneEntity = new ScreenAlignPlaneEntity();
                     dstP1.setRenderStateByName("ADD02");
-                    dstP1.initialize(-1.0,-1.0,2.0,2.0,[this.getTextureAt(1)]);
+                    dstP1.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(1)]);
                     this.m_rc.addEntity(dstP1,4);
 
                     this.m_profileInstance = new ProfileInstance();
@@ -152,16 +152,6 @@ export namespace advancedDemo
                 this.m_bgColor.setRGB3f(0.4 * Math.random(),0.4 * Math.random(),0.4 * Math.random());
             }
             
-            private m_rttTexs:TextureProxy[] = [null,null,null,null];
-            getTextureAt(i:number):TextureProxy
-	        {
-	        	if (this.m_rttTexs[i] != null)
-	        	{
-	        		return this.m_rttTexs[i];
-                }
-	        	this.m_rttTexs[i] = TextureStore.CreateTex2D(64, 64);
-	        	return this.m_rttTexs[i];
-	        }
             run():void
             {
                 //this.m_rc.setClearRGBColor3f(this.m_bgColor.r,this.m_bgColor.g,this.m_bgColor.b);
@@ -175,7 +165,7 @@ export namespace advancedDemo
                 this.m_rc.runAt(0);
                 this.m_rc.runAt(1);
                 
-                //  this.m_rct.setRenderToTexture(this.getTextureAt(3), true, false, 0);
+                //  this.m_rct.setRenderToTexture(TextureStore.GetRTTTextureAt(3), true, false, 0);
                 //  this.m_rct.useFBO(true, true, false);
                 //  this.m_rc.runAt(0);
                 //  this.m_rc.runAt(1);
@@ -185,10 +175,10 @@ export namespace advancedDemo
                 this.m_bill1.setXYZ(300.0,0.0,0.0);
                 this.m_bill1.update();
 
-                //  this.m_rct.setRenderToTexture(this.getTextureAt(0), true, false, 0);
+                //  this.m_rct.setRenderToTexture(TextureStore.GetRTTTextureAt(0), true, false, 0);
                 //  this.m_rct.useFBO(true, true, false);
                 //  this.m_rc.runAt(0);
-                //  this.m_rct.setRenderToTexture(this.getTextureAt(1), true, false, 0);
+                //  this.m_rct.setRenderToTexture(TextureStore.GetRTTTextureAt(1), true, false, 0);
                 //  this.m_rct.useFBO(true, true, false);
                 //  this.m_rc.runAt(1);
                 ///*
@@ -199,14 +189,14 @@ export namespace advancedDemo
                     this.m_bill0.update();
                     this.m_bill1.setXYZ(300.0,0.0,i * 60.0);
                     this.m_bill1.update();
-                    this.m_rct.setRenderToTexture(this.getTextureAt(0), true, false, 0);
+                    this.m_rct.setRenderToTexture(TextureStore.GetRTTTextureAt(0), true, false, 0);
                     this.m_rct.useFBO(true, true, false);
                     this.m_rc.runAt(0);
-                    this.m_rct.setRenderToTexture(this.getTextureAt(1), true, false, 0);
+                    this.m_rct.setRenderToTexture(TextureStore.GetRTTTextureAt(1), true, false, 0);
                     this.m_rct.useFBO(true, true, false);
                     this.m_rc.runAt(1);
                     
-                    this.m_rct.setRenderToTexture(this.getTextureAt(3), true, false, 0);
+                    this.m_rct.setRenderToTexture(TextureStore.GetRTTTextureAt(3), true, false, 0);
                     this.m_rct.useFBO(i < 1, false, false);
                     this.m_rc.runAt(4);
                     this.m_rc.runAt(5);

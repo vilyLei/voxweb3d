@@ -5,17 +5,21 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as ITexDataT from "../../vox/texture/ITexData";
+
+import ITexData = ITexDataT.vox.texture.ITexData;
 export namespace vox
 {
     export namespace texture
     {
-        export class RawTexData
+        export class RawTexData implements ITexData
         {
             private static s_list:RawTexData[] = [];
             width:number = 0;
             height:number = 0;
             data:Uint8Array | Uint16Array | Float32Array = null;
             miplevel:number = 0;
+            // 0表示 更新纹理数据而不会重新开辟空间, 1表示需要重新开辟空间并更新纹理数据, -1表示不需要更新
             status:number = 1;
             offsetx:number = 0;
             offsety:number = 0;

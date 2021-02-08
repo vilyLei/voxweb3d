@@ -152,7 +152,7 @@ export namespace advancedDemo
                         this.m_rc.addEntity(sph);
                     }
                     let rttTexBox:Box3DEntity = new Box3DEntity();
-                    rttTexBox.initialize(new Vector3D(-500.0,-500.0,-500.0),new Vector3D(500.0,500.0,500.0),[this.getTexture()]);
+                    rttTexBox.initialize(new Vector3D(-500.0,-500.0,-500.0),new Vector3D(500.0,500.0,500.0),[TextureStore.GetRTTTextureAt(0)]);
                     this.m_rc.addEntity(rttTexBox,1);
 
                     
@@ -166,16 +166,6 @@ export namespace advancedDemo
                 this.m_bgColor.setRGB3f(0.4 * Math.random(),0.4 * Math.random(),0.4 * Math.random());
             }
             
-            private m_rttTex:TextureProxy = null;
-            getTexture():TextureProxy
-	        {
-	        	if (this.m_rttTex != null)
-	        	{
-	        		return this.m_rttTex;
-                }
-	        	this.m_rttTex = TextureStore.CreateTex2D(64, 64);
-	        	return this.m_rttTex;
-	        }
             run():void
             {
                 //this.m_rc.setClearRGBColor3f(this.m_bgColor.r,this.m_bgColor.g,this.m_bgColor.b);
@@ -186,7 +176,7 @@ export namespace advancedDemo
                 // --------------------------------------------- rtt begin
                 this.m_rc.setClearRGBColor3f(0.1, 0.0, 0.1);
                 this.m_rct.synFBOSizeWithViewport();
-                this.m_rct.setRenderToTexture(this.getTexture(), false, false, 0);
+                this.m_rct.setRenderToTexture(TextureStore.GetRTTTextureAt(0), false, false, 0);
                 this.m_rct.useFBO(true, false, false);
                 this.m_rc.runAt(0);
                 // --------------------------------------------- rtt end

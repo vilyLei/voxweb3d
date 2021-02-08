@@ -6,6 +6,7 @@ import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceConte
 import * as RendererInstanceT from "../../vox/scene/RendererInstance";
 import * as Plane3DEntityT from "../../vox/entity/Plane3DEntity";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
+import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 import * as TextureStoreT from "../../vox/texture/TextureStore";
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as ScrDepBaseMaterialT from "../material/ScrDepBaseMaterial";
@@ -23,6 +24,7 @@ import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInst
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
@@ -171,8 +173,8 @@ export namespace demo
                 this.m_rcontext.unlockRenderState();
                 this.m_renderer.runAt(4);
             }
-            private m_texs:TextureProxy[] = [null,null];
-            private getTextureAt(index:number):TextureProxy
+            private m_texs:RTTTextureProxy[] = [null,null];
+            private getTextureAt(index:number):RTTTextureProxy
 	        {
                 if(this.m_texs[index] != null)
                 {

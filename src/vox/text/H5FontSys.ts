@@ -430,12 +430,7 @@ export class H5FontSystem
         k++;
 	  	}
 	  }
-	  //m_texBase.setSubBytesData(rawBytes,m_fontTexDataBuilder.pixMinPos.x,m_fontTexDataBuilder.pixMinPos.y,dw,dh);	
-    //m_texBase.upload(m_gl);
-	  this.m_texBase.updateSubBytes(rawBytes,this.m_fontTexDataBuilder.pixMinPos.x,this.m_fontTexDataBuilder.pixMinPos.y,dw,dh);	
-    //this.m_texBase.upload(this.m_gl);
-
-    //console.log("XXX  createCharsTexFromStr() end");
+	  this.m_texBase.updateSubBytes(rawBytes,this.m_fontTexDataBuilder.pixMinPos.x,this.m_fontTexDataBuilder.pixMinPos.y,dw,dh);
   }
   private createInitTexAndChars():void
   {

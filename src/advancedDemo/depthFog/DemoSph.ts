@@ -7,6 +7,7 @@ import * as RendererStateT from "../../vox/render/RendererState";
 import * as RendererParamT from "../../vox/scene/RendererParam";
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
+import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 import * as TextureStoreT from "../../vox/texture/TextureStore";
 import * as TexResLoaderT from "../../vox/texture/TexResLoader";
 import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
@@ -36,6 +37,7 @@ import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
@@ -76,8 +78,8 @@ export namespace advancedDemo
             }
 
             private m_dstPlane:Plane3DEntity = null;
-            private m_texs:TextureProxy[] = [null,null,null,null];
-            private getTextureAt(index:number):TextureProxy
+            private m_texs:RTTTextureProxy[] = [null,null,null,null];
+            private getTextureAt(index:number):RTTTextureProxy
 	        {
                 if(this.m_texs[index] != null)
                 {
@@ -86,7 +88,7 @@ export namespace advancedDemo
                 switch(index)
                 {
                     case 0:
-                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
+                        this.m_texs[index] = TextureStore.CreateRTTTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
                         this.m_texs[index].internalFormat = TextureFormat.RGBA16F;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
                         this.m_texs[index].dataType = TextureDataType.FLOAT;
@@ -96,7 +98,7 @@ export namespace advancedDemo
 
                     case 1:
                         
-                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
+                        this.m_texs[index] = TextureStore.CreateRTTTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
                         this.m_texs[index].internalFormat = TextureFormat.RGBA;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
                         this.m_texs[index].magFilter = TextureConst.NEAREST;
@@ -110,7 +112,7 @@ export namespace advancedDemo
                     break;
 
                     case 2:
-                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
+                        this.m_texs[index] = TextureStore.CreateRTTTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
                         //  this.m_texs[index].internalFormat = TextureFormat.RGBA;
                         //  this.m_texs[index].srcFormat = TextureFormat.RGBA;
                         //  this.m_texs[index].magFilter = TextureConst.NEAREST;
@@ -121,7 +123,7 @@ export namespace advancedDemo
                         return this.m_texs[index];
                     break;
                     case 3:
-                        this.m_texs[index] = TextureStore.CreateTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
+                        this.m_texs[index] = TextureStore.CreateRTTTex2D(this.m_rct.getViewportWidth(), this.m_rct.getViewportHeight());
                         this.m_texs[index].internalFormat = TextureFormat.RGBA;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
                         this.m_texs[index].magFilter = TextureConst.NEAREST;

@@ -5,15 +5,17 @@
 /*                                                                         */
 /***************************************************************************/
 import * as TextureConstT from "../../vox/texture/TextureConst";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
+import * as TextureProxyT from "../../vox/texture/TextureProxy";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import TextureTarget = TextureConstT.vox.texture.TextureTarget;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
+import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 
 export namespace vox
 {
@@ -23,9 +25,9 @@ export namespace vox
         export class BytesCubeTextureProxy extends TextureProxy
         {
             private m_imgDataList:any[] = null;
-            constructor(texList:TextureProxy[], texWidth:number,texHeight:number)
+            constructor(slot:ITextureSlot, texWidth:number,texHeight:number)
             {
-                super(texList, texWidth,texHeight,false);
+                super(slot, texWidth,texHeight,false);
                 this.m_texTarget = TextureTarget.TEXTURE_CUBE;
                 this.mipmapEnabled = true;
             }
@@ -60,7 +62,7 @@ export namespace vox
                 {
                     this.m_imgDataList = [null,null,null, null,null,null];
                 }
-                if(this.m_texBuf == null && pw > 0 && ph > 0)
+                if(this.isGpuEnabled() && pw > 0 && ph > 0)
                 {
                     if(index == 0)
                     {

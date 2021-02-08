@@ -14,7 +14,7 @@ import * as RenderMaskBitfieldT from "../../vox/render/RenderMaskBitfield";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as RAdapterContextT from "../../vox/render/RAdapterContext";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
+import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as Color4T from "../../vox/material/Color4";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
@@ -29,7 +29,7 @@ import RenderMaskBitfield = RenderMaskBitfieldT.vox.render.RenderMaskBitfield;
 import RendererState = RendererStateT.vox.render.RendererState;
 import RAdapterContext = RAdapterContextT.vox.render.RAdapterContext;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import Color4 = Color4T.vox.material.Color4;
@@ -57,7 +57,7 @@ export namespace vox
             private m_multisampleLevel:number = 0;
             private m_gMateiral:MaterialBase = null;
             private m_rindexs:number[] = [];
-            private m_texs:TextureProxy[] = [null,null,null,null,null,null,null,null];
+            private m_texs:RTTTextureProxy[] = [null,null,null,null,null,null,null,null];
             private m_texsTot:number = 0;
             private m_synFBOSizeWithViewport:boolean = true;
             private m_fboSizeFactor:number = 1.0;
@@ -232,11 +232,11 @@ export namespace vox
                     this.m_adapter.createFBOAt(fboIndex,this.m_fboType,pw,ph,enableDepth,enableStencil,multisampleLevel);
                 }
             }
-            getTextureAt(i:number):TextureProxy
+            getTextureAt(i:number):RTTTextureProxy
             {
                 return this.m_texs[i];
             }
-            setRenderToTexture(texProxy:TextureProxy, outputIndex:number = 0):void
+            setRenderToTexture(texProxy:RTTTextureProxy, outputIndex:number = 0):void
             {
                 if(outputIndex == 0)
                 {

@@ -5,135 +5,28 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
+import * as ITextureRenderObjT from "../../vox/texture/ITextureRenderObj";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
-import * as TextureStoreT from "../../vox/texture/TextureStore";
 
+import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
+import ITextureRenderObj = ITextureRenderObjT.vox.texture.ITextureRenderObj;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
 
 export namespace vox
 {
     export namespace texture
     {
-        // 注意这里只会管理gpu相关的资源
-        class TexUidGpuStore
-        {
-            private m_useidList:number[] = [];
-            private m_removeidList:number[] = [];
-            constructor()
-            {
-            }
-            attachTexAt(index:number):void
-            {
-                if(index < this.m_useidList.length)
-                {
-                    ++this.m_useidList[index];
-                }
-                else
-                {
-                    let i:number = this.m_useidList.length;
-                    for(; i <= index; ++i)
-                    {
-                        this.m_useidList.push(0);
-                    }
-                    ++this.m_useidList[index];
-                }
-                //console.log("TexUidGpuStore::attachTexAt() this.m_useidList["+index+"]: "+this.m_useidList[index]);
-            }
-            detachTexAt(index:number):void
-            {
-                --this.m_useidList[index];
-                if(this.m_useidList[index] < 1)
-                {
-                    this.m_useidList[index] = 0;
-                    //console.log("TexUidGpuStore::detachTexAt("+index+") tex useCount value is 0.");
-                    this.m_removeidList.push(index);
-                }
-            }
-            getAttachCountAt(index:number):number
-            {
-                if(index < this.m_useidList.length)
-                {
-                    return this.m_useidList[index];
-                }
-                return 0;
-            }
-            getAttachAllCount():number
-            {
-                let total:number = 0;
-                let i:number = 0;
-                let len:number = this.m_useidList.length;
-                for(; i < len; ++i)
-                {
-                    if(this.m_useidList[i] > 0)
-                    {
-                        total += this.m_useidList[i];
-                    }
-                }
-                return total;
-            }
-            private m_timeDelay:number = 11;
-            disposeTest(rc:RenderProxy):void
-            {
-                --this.m_timeDelay;
-                if(this.m_timeDelay < 1)
-                {
-                    this.m_timeDelay = 11;
-
-                    if(this.m_removeidList.length > 0)
-                    {
-                        let list:number[] = this.m_removeidList;
-                        let len:number = list.length;
-                        let i:number = 0;
-                        let puid:number = 0;
-                        let tex:TextureProxy = null;
-                        for(; i < 10; ++i)
-                        {
-                            if(len > 0)
-                            {
-                                puid = list.pop();
-                                --len;
-                                if(this.getAttachCountAt(puid) < 1)
-                                {
-                                    tex = TextureStore.GetTexByUid(puid);
-                                    tex.__$disposeGpu(rc);
-                                }
-                            }
-                            else
-                            {
-                                break;
-                            }
-                        }
-                        //  let texUid:number = this.m_removeidList.pop();
-                        //  if(this.getAttachCountAt(texUid) < 1)
-                        //  {
-                        //      console.log("TexUidGpuStore::disposeTest(), texUid: "+texUid);
-                        //      let tex:TextureProxy = TextureStore.GetTexByUid(texUid);
-                        //      tex.__$disposeGpu(rc);
-                        //  }
-                    }
-                }
-            }
-        }
-        //
-        export interface ITextureRenderObj
-        {
-            run(rc:RenderProxy):void;
-            getMid():number;
-            __$attachThis():void;
-            __$detachThis():void;
-        }
         // texture render runtime object
         export class TextureRenderObj implements ITextureRenderObj
         {
-            private static __s_uid:number = 0;
-            private static s_troMap:Map<number, TextureRenderObj> = new Map();
+            private static s_uid:number = 0;
+            private static s_troMaps:Map<number, TextureRenderObj>[] = [new Map(),new Map(),new Map(),new Map(), new Map(),new Map(),new Map(),new Map()];
             private static s_freeTROList:TextureRenderObj[] = [];
             protected static s_unloacked:boolean = true;
             protected static s_preMid:number = -1;
-            private static s_texUidStore:TexUidGpuStore = new TexUidGpuStore();
             private m_uid:number = -1;
             protected m_mid:number = -1;
             protected m_texTotal:number = 0;
@@ -141,15 +34,26 @@ export namespace vox
             private m_gtexList:any[] = [null,null,null,null, null,null,null,null];
             protected m_targets:Uint16Array = new Uint16Array(8);
             protected m_texList:TextureProxy[] = null;
+			// renderer context uid
+            private m_rcuid:number = 0;
+            private m_texRes:ROTextureResource = null;
+            
             direct:boolean = true;
-            private constructor(texListHashId:number)
+            private constructor(rcuid:number,texListHashId:number)
             {
-                this.m_uid = TextureRenderObj.__s_uid++;
+                this.m_rcuid = rcuid;
+                this.m_uid = TextureRenderObj.s_uid++;
                 this.m_mid = texListHashId;
             }
-            private __$setMId(texListHashId:number):void
+            private __$setParam(rcuid:number,texListHashId:number):void
             {
+                this.m_rcuid = rcuid;
                 this.m_mid = texListHashId;
+            }
+            // get renderer context uid
+            getRCUid():number
+            {
+                return this.m_rcuid;
             }
             getMid():number
             {
@@ -162,33 +66,47 @@ export namespace vox
             
             protected collectTexList(rc:RenderProxy, ptexList:TextureProxy[],shdTexTotal:number):void
             {
-                if(this.m_texTotal < 1 && ptexList.length > 0)
+                this.m_texRes = rc.Texture;
+                let i:number = 0;
+                if(this.direct)
                 {
-                    this.m_texList = ptexList;
-                    let store:TexUidGpuStore = TextureRenderObj.s_texUidStore;
-                    let tot:number = 0;
-                    while(tot < shdTexTotal)
+                    if(this.m_texTotal < 1 && ptexList.length > 0)
                     {
-                        store.attachTexAt(ptexList[tot].getUid());
-                        ptexList[tot].upload( rc );
-                        this.m_targets[tot] = ptexList[tot].getSamplerType();
-                        
-                        this.m_gtexList[tot] = ( ptexList[tot].__$gpuBuf() );
-                        tot ++;
+                        this.m_texList = ptexList;
+                        let tex:TextureProxy;
+                        while(i < shdTexTotal)
+                        {
+                            tex = ptexList[i];
+                            tex.__$attachThis();
+                            tex.upload( rc );
+                            this.m_targets[i] = tex.getSamplerType();
+                            this.m_gtexList[i] = this.m_texRes.getTextureBuffer(tex.getResUid());
+                            this.m_texRes.__$attachRes(tex.getResUid());
+                            i ++;
+                        }
+
+                        this.m_texTotal = i;                        
                     }
-                    this.m_texTotal = tot;
+                    else
+                    {
+                        this.m_texTotal = 0;
+                    }
                 }
                 else
                 {
-                    this.m_texTotal = 0;
+                    this.m_texTotal = shdTexTotal;
+                }
+                while(i < ptexList.length)
+                {
+                    ptexList[i].__$detachThis();
                 }
             }
             // 注意: 移动端要注意这里的切换机制是符合移动端低带宽的特点
             run(rc:RenderProxy):void
             {
-                if(TextureRenderObj.s_unloacked && TextureRenderObj.s_preMid != this.m_mid)
+                if(this.m_texRes.unlocked && this.m_texRes.texMid != this.m_mid)
                 {
-                    TextureRenderObj.s_preMid = this.m_mid;
+                    this.m_texRes.texMid = this.m_mid;
                     let gl:any = rc.RContext;
                     let texI:number = gl.TEXTURE0;
                     if(this.direct)
@@ -206,7 +124,7 @@ export namespace vox
                         for(let i:number = 0; i < this.m_texTotal; ++i)
                         {
                             gl.activeTexture(texI);
-                            list[i].__$use(gl);
+                            list[i].__$use(rc);
                             texI++;
                         }
                     }
@@ -216,6 +134,7 @@ export namespace vox
             {
                 return this.m_uid;
             }
+            // 自身的引用计数器
             private m_attachCount:number = 0;
             __$attachThis():void
             {
@@ -236,43 +155,20 @@ export namespace vox
             {
                 if(this.m_texList != null)
                 {
-                    for(let i:number = 0; i < this.m_texTotal; ++i)
+                    for(let i:number = 0,len:number=this.m_texList.length; i < len; ++i)
                     {
-                        TextureRenderObj.s_texUidStore.detachTexAt(this.m_texList[i].getUid());
+                        this.m_texList[i].__$detachThis();
+                        this.m_texRes.__$detachRes(this.m_texList[i].getResUid());
                         this.m_gtexList[i] = null;
                     }
                 }
                 this.m_texTotal = 0;
                 this.m_texList = null;
+                this.m_texRes = null;
             }
             toString():string
             {
                 return "TextureRenderObj(uid = "+this.m_uid+", mid="+this.m_mid+")";
-            }
-            static __$AttachTexAt(texUid:number):void
-            {
-                TextureRenderObj.s_texUidStore.attachTexAt(texUid);
-            }
-            static __$DetachTexAt(texUid:number):void
-            {
-                TextureRenderObj.s_texUidStore.detachTexAt(texUid);
-            }
-            static __$GetexAttachCountAt(texUid:number):number
-            {
-                return TextureRenderObj.s_texUidStore.getAttachCountAt(texUid);
-            }
-            static GetTexAttachAllCount():number
-            {
-                return TextureRenderObj.s_texUidStore.getAttachAllCount();
-            }
-            static RenderReset(rc:RenderProxy):void
-            {
-                TextureRenderObj.s_preMid = -1;
-                TextureRenderObj.s_texUidStore.disposeTest(rc);
-            }
-            static RenderBegin(rc:RenderProxy):void
-            {
-                TextureRenderObj.s_preMid = -1;
             }
             static Create(rc:RenderProxy,texList:TextureProxy[],shdTexTotal:number):TextureRenderObj
             {
@@ -290,16 +186,17 @@ export namespace vox
                         }
                         ++t;
                     }
+                    let rtoMap:Map<number, TextureRenderObj> = TextureRenderObj.s_troMaps[rc.getUid()];
                     let tro:TextureRenderObj = null;
-                    if(TextureRenderObj.s_troMap.has(key))
+                    if(rtoMap.has(key))
                     {
-                        tro = TextureRenderObj.s_troMap.get(key);
+                        tro = rtoMap.get(key);
                     }
                     else
                     {
                         if(TextureRenderObj.s_freeTROList.length < 1)
                         {
-                            tro = new TextureRenderObj(key);
+                            tro = new TextureRenderObj(rc.getUid(),key);
                             //console.log("TextureRenderObj::Create use a new tro.getMid(): "+tro.getMid());
                         }
                         else
@@ -308,9 +205,9 @@ export namespace vox
                             //console.log("TextureRenderObj::Create use an old tro.getMid(): "+tro.getMid());
                         }
                         tro.collectTexList(rc,texList,shdTexTotal);
-                        TextureRenderObj.s_troMap.set(key, tro);
+                        rtoMap.set(key, tro);
                     }
-                    tro.__$setMId(key);
+                    tro.__$setParam(rc.getUid(),key);
                     tro.direct = direct;
                     return tro;
                 }
@@ -321,24 +218,16 @@ export namespace vox
                 if(tro.getMid() > -1)
                 {
                     //console.log("TextureRenderObj::Restore tro.getMid(): "+tro.getMid());
-                    TextureRenderObj.s_troMap.delete(tro.getMid());
-                    tro.__$setMId(-1);
+                    TextureRenderObj.s_troMaps[tro.getRCUid()].delete(tro.getMid());
+                    tro.__$setParam(0,0);
                     TextureRenderObj.s_freeTROList.push(tro);
                     tro.reset();
                 }
             }
             
-            static GetByMid(uid:number):TextureRenderObj
+            static GetByMid(rcuid:number,uid:number):TextureRenderObj
             {
-                return TextureRenderObj.s_troMap.get(uid);
-            }
-            static Unlock():void
-            {
-                TextureRenderObj.s_unloacked = true;
-            }
-            static Lock():void
-            {
-                TextureRenderObj.s_unloacked = false;
+                return TextureRenderObj.s_troMaps[rcuid].get(uid);
             }
         }
         
@@ -349,7 +238,7 @@ export namespace vox
             }
             run(rc:RenderProxy):void
             {
-                TextureRenderObj.RenderBegin(rc);
+                rc.Texture.renderBegin();
             }
             getMid():number
             {

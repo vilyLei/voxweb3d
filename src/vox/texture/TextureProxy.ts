@@ -7,8 +7,12 @@
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as MathConstT from "../../vox/utils/MathConst";
+
+import * as ITexDataT from "../../vox/texture/ITexData";
+import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as IRenderBufferT from "../../vox/render/IRenderBuffer";
+import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
@@ -16,16 +20,41 @@ import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import TextureTarget = TextureConstT.vox.texture.TextureTarget;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import MathConst = MathConstT.vox.utils.MathConst;
+
+import ITexData = ITexDataT.vox.texture.ITexData;
+import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
+import GpuTexObect = ROTextureResourceT.vox.render.GpuTexObect;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import IRenderBuffer = IRenderBufferT.vox.render.IRenderBuffer;
+import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 export namespace vox
 {
     export namespace texture
     {
+        
+        /**
+         * Texture cpu memory data object
+         */
         export class TextureProxy implements IRenderBuffer
         {
             private static __s_uid:number = 0;
             private m_uid:number = -1;
+            protected m_texBuf:any = null;
+            protected m_slot:ITextureSlot = null;
+
+            protected m_miplevel:number = -1;
+            protected m_texWidth:number = 128;
+            protected m_texHeight:number = 128;
+            protected m_texBufW:number = 128;
+            protected m_texBufH:number = 128;
+            protected m_texTarget:number = TextureTarget.TEXTURE_2D;
+            protected m_samplerTarget:number = -1;
+
+            // have render useable data
+            protected m_haveRData:boolean = false;
+            protected m_type:number = TextureConst.TEX_PROXY2D;
+            protected m_generateMipmap:boolean = true;
+            
             name:string = "TextureProxy";
             internalFormat:number = TextureFormat.RGBA;
             srcFormat:number = TextureFormat.RGBA;
@@ -39,41 +68,85 @@ export namespace vox
             premultiplyAlpha:boolean = false;
             unpackAlignment:number = 4;
             minFilter:number = TextureConst.LINEAR_MIPMAP_LINEAR;
-            // QQ浏览器这个参数值为LINEAR会报错:
+            // webgl1环境下,这个参数值为LINEAR会报错:
             // [.WebGL-0BC70EE8]RENDER WARNING: texture bound to texture unit 1 is not renderable. It maybe non-power-of-2 and have incompatible texture filtering.
             magFilter:number = TextureConst.LINEAR;
-            protected m_miplevel:number = -1;
-
-            //
-            protected m_texWidth:number = 128;
-            protected m_texHeight:number = 128;
-            protected m_texBufW:number = 128;
-            protected m_texBufH:number = 128;
-            protected m_uploadBoo:boolean = true;
-            protected m_texBuf:any = null;
-            protected m_texTarget:number = TextureTarget.TEXTURE_2D;
-            protected m_samplerTarget:number = -1;
-            // have render useable data
-            protected m_haveRData:boolean = false;
-            protected m_type:number = TextureConst.TEX_PROXY2D;
-            protected m_generateMipmap:boolean = true;
-            constructor(texList:TextureProxy[], texWidth:number,texHeight:number,powerof2Boo:boolean = false)
+            constructor(slot:ITextureSlot, texWidth:number,texHeight:number,powerof2Boo:boolean = false)
             {
-                this.m_uid = TextureProxy.__s_uid++;
-                if(this.m_uid != texList.length)
+                if(slot == null)
                 {
-                    throw Error("new a TextureProxy instance Error!!!");
+                    throw Error("create a new textureProxy instance Error!!!");
                 }
-                this.___construct(texWidth,texHeight,powerof2Boo);
+                this.m_slot = slot;
+                this.m_uid = TextureProxy.__s_uid++;
+
+                if(texWidth  < 1) texWidth = 128;
+                if(texHeight  < 1) texHeight = 128;
+                if(powerof2Boo)
+                {
+                    this.m_texWidth = MathConst.CalcNearestCeilPow2(texWidth);
+                    this.m_texHeight = MathConst.CalcNearestCeilPow2(texHeight);
+                }
+                else
+                {
+                    this.m_texWidth = texWidth;
+                    this.m_texHeight = texHeight;
+                }
             }
+            // 自身的引用计数器
+            private m_attachCount:number = 0;
+            /**
+             * 被引用计数加一
+             */
+            __$attachThis():void
+            {
+                ++this.m_attachCount;
+            }
+            /**
+             * 被引用计数减一
+             */
+            __$detachThis():void
+            {
+                --this.m_attachCount;
+                //console.log("TextureProxy::__$detachThis() this.m_attachCount: "+this.m_attachCount);
+                if(this.m_attachCount < 1)
+                {
+                    this.m_attachCount = 0;
+                    console.log("TextureProxy::__$detachThis() this.m_attachCount value is 0.");
+                }
+            }
+            /**
+             * @returns 获得引用计数值
+             */
+            getAttachCount():number
+            {
+                return this.m_attachCount;
+            }
+            /**
+             * @returns 返回true, 表示当前纹理对象是渲染直接使用其对应的显存资源的对象
+             *          返回false, 表示不能直接使用对应的显存资源
+             */
             isDirect():boolean
             {
                 return true;
             }
+            /**
+             * @returns 返回自己的 纹理 类型(取值: TextureConst.TEX_PROXY2D)
+             */
             getType():number
             {
                 return this.m_type;
             }
+            /**
+             * @returns 返回自己的 纹理资源 unique id, 这个id会被对应的资源管理器使用, 此方法子类可以依据需求覆盖
+             */
+            getResUid():number
+            {
+                return this.m_uid;
+            }
+            /**
+             * @returns 返回自己的 unique id, 此方法不允许子类覆盖
+             */
             getUid():number
             {
                 return this.m_uid;
@@ -82,63 +155,22 @@ export namespace vox
             {
                 this.wrap_s =  this.wrap_t = this.wrap_r = wrap;
             }
-
-	        private ___construct(pwidth:number,pheight:number, powerof2Boo:boolean = false):void
+            
+            __$use(rc:RenderProxy):void
             {
-                if(pwidth  < 1) pwidth = 128;
-                if(pheight  < 1) pheight = 128;
-                if(powerof2Boo)
-                {
-                    this.m_texWidth = MathConst.CalcNearestCeilPow2(pwidth);
-                    this.m_texHeight = MathConst.CalcNearestCeilPow2(pheight);
-                }
-                else
-                {
-                    this.m_texWidth = pwidth;
-                    this.m_texHeight = pheight;
-                }
-            }
-            /////////////////////////////////////////////
-            __$setTexBuf(gl:any,pTexBuf:any,ptexTarget:number,pw:number = 0,ph:number = 0):void
-            {
-                if(this.m_texBuf == null)
-                {
-                    if(pw > 0)this.m_texWidth = pw;
-                    if(ph > 0)this.m_texHeight = ph;
-                    this.m_texBuf = pTexBuf;
-                    this.m_texTarget = ptexTarget;
-                    this.m_samplerTarget = TextureTarget.GetValue(gl,this.m_texTarget);
-                    this.m_uploadBoo = false;
-                    this.m_haveRData = true;
-                    this.__$buildParam(gl);
-                }
-                else if(this.m_texBuf == pTexBuf)
-                {
-                    if(pw > 0 && ph > 0)
-                    {
-                        this.m_texWidth = pw;
-                        this.m_texHeight = ph;
-                        this.__$buildParam(gl);
-                    }
-                }
-            }
-            __$gpuBuf():any
-            {
-                return this.m_texBuf;
-            }
-            __$use(gl:any):void
-            {
-                gl.bindTexture(this.m_samplerTarget, this.m_texBuf);
+                rc.Texture.bindTexture(this.getResUid());
             }
             isGpuEnabled():boolean
             {
-                return this.m_texBuf != null;
+                return this.m_slot.isGpuEnabledByResUid(this.getResUid());
             }
             getSamplerType():number
             {
                 return this.m_samplerTarget;
             }
-            // TextureConst.TEXTURE_2D or TextureConst.TEXTURE_CUBE or TextureConst.TEXTURE_3D
+            /**
+             * @returns return value is TextureConst.TEXTURE_2D or TextureConst.TEXTURE_CUBE or TextureConst.TEXTURE_3D
+             */
             getTargetType():number
             {
                 return this.m_texTarget;
@@ -150,15 +182,12 @@ export namespace vox
             getWidth():number{return this.m_texWidth;}
             getHeight():number{return this.m_texHeight;}
             dataEnough():boolean{return this.m_haveRData;}
-            //
+            
             protected __$buildParam(gl:any):void
             {
                 this.m_texBufW = this.m_texWidth;
                 this.m_texBufH = this.m_texHeight;
-                if(RendererDeviece.GetDebugEnabled())
-                {
-                    console.log("this.mipmapEnabled:"+this.mipmapEnabled+",generateMipmap："+this.m_generateMipmap);
-                }
+                
                 if (this.mipmapEnabled && MathConst.IsPowerOf2(this.m_texWidth) && MathConst.IsPowerOf2(this.m_texHeight))
                 {
                     gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_WRAP_S, TextureConst.GetConst(gl,this.wrap_s));
@@ -213,37 +242,67 @@ export namespace vox
             __$updateToGpu(rc:RenderProxy):void
             {
             }
-            //  sub class can not override!!!!
+            protected createTexBuf(texResource:ROTextureResource):boolean
+            {
+                let obj:GpuTexObect = texResource.getTextureRes(this.getResUid());
+                if(obj == null)
+                {
+                    this.m_samplerTarget = TextureTarget.GetValue(texResource.getRC(),this.m_texTarget);
+                    obj = new GpuTexObect();
+                    obj.rcuid = texResource.getRCUid();
+                    obj.resUid = this.getResUid();
+                    obj.width = this.getWidth();
+                    obj.height = this.getHeight();
+                    obj.sampler = this.getSamplerType();
+                    obj.texBuf = texResource.getRC().createTexture();
+                    texResource.addTextureRes(obj);
+                    this.m_texBuf = obj.texBuf;
+                    return true;
+                }
+                return false;
+            }
+            /**
+             * sub class can not override!!!!
+             */
             upload(rc:RenderProxy):void
             {
-                if(this.m_uploadBoo)
+                if(this.m_haveRData)
                 {
-                    if(this.m_haveRData)
+                    let buildStatus:boolean = this.createTexBuf(rc.Texture);
+                    if(buildStatus)
                     {
-                        let gl:any = rc.RContext;
-                        this.m_samplerTarget = TextureTarget.GetValue(gl,this.m_texTarget);
-                        this.m_texBuf = gl.createTexture();
-                        this.__$updateToGpuBegin(gl);
+                        this.__$updateToGpuBegin(rc);
                         this.uploadData(rc);
-                        this.__$buildParam(gl);
+                        this.__$buildParam(rc.RContext);
                         this.m_generateMipmap = true;
-                        this.m_uploadBoo = false;
                     }
                 }
             }
-            
-            toString():string
-            {
-                return "[TextureProxy(name:"+this.name+",uid="+this.getUid()+",width="+this.getWidth()+",height="+this.getHeight()+")]";
-            }
-            __$disposeGpu(rc:RenderProxy):void
-            {
-                if(this.isGpuEnabled())
+            /**
+             * sub class can not override!!!!
+             */
+            protected updateTexData(gl:any,texData:ITexData,texDatas:ITexData[]):void
+            {                
+                let interType:any = TextureFormat.ToGL(gl,this.internalFormat);
+                let format:any = TextureFormat.ToGL(gl,this.srcFormat);
+                let type:any = TextureDataType.ToGL(gl, this.dataType);
+                let d:ITexData = texData;
+                if(texDatas == null)
                 {
-                    this.m_uploadBoo = true;
-                    rc.RContext.deleteTexture(this.m_texBuf);
-                    this.m_texBuf = null;
-                    //console.log("TextureProxy::__$disposeGpu(), tex: "+this);
+                    if(d.status > -1)d.updateToGpu(gl,this.m_samplerTarget,interType,format,type);
+                }
+                else
+                {
+                    let ds:ITexData[] = texDatas;
+                    for(let i:number = 0, len:number = ds.length; i < len; ++i)
+                    {
+                        d = ds[i];
+                        if(d != null)
+                        {
+                            if(d.status > -1)d.updateToGpu(gl,this.m_samplerTarget,interType,format,type);
+                        }
+                    }
+                    this.m_generateMipmap = false;
                 }
             }
             protected __$updateUnpackAlign(gl:any):void
@@ -257,15 +316,16 @@ export namespace vox
                         this.unpackAlignment = 1;
                     break;
                     default:                        
-                    this.unpackAlignment = 4;
+                        this.unpackAlignment = 4;
                     break;
                 }
             }
-            protected __$updateToGpuBegin(gl:any):void
+            protected __$updateToGpuBegin(rc:RenderProxy):void
             {
-                gl.bindTexture(this.m_samplerTarget, this.m_texBuf);
+                let gl:any = rc.RContext;
+                rc.Texture.bindTexture(this.getResUid());
                 this.__$updateUnpackAlign(gl);
-                gl.bindTexture (this.m_samplerTarget, this.m_texBuf);
+                
                 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
                 gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premultiplyAlpha);
                 gl.pixelStorei(gl.UNPACK_ALIGNMENT, this.unpackAlignment);
@@ -279,14 +339,18 @@ export namespace vox
             }
             __$destroy(rc:RenderProxy):void
             {
-                if(!this.isGpuEnabled())
+                if(this.getAttachCount() < 1)
                 {
-                    this.m_uploadBoo = true;
-                    this.m_haveRData = false;                    
+                    this.m_haveRData = false;
                     this.m_texWidth = 1;
                     this.m_texHeight = 1;
+                    this.m_slot = null;
                     console.log("TextureProxy::destroy(), destroy a TextureProxy instance...");
                 }
+            }
+            toString():string
+            {
+                return "[TextureProxy(name:"+this.name+",uid="+this.getUid()+",width="+this.getWidth()+",height="+this.getHeight()+")]";
             }
         }
     }

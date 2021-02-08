@@ -8,9 +8,9 @@
 
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
-import * as ShdProgramT from "../../vox/material/ShdProgram";
+//import * as ShdProgramT from "../../vox/material/ShdProgram";
 import * as MaterialShaderT from "../../vox/material/MaterialShader";
-import * as TextureRenderObjT from "../../vox/texture/TextureRenderObj";
+import * as ITextureRenderObjT from "../../vox/texture/ITextureRenderObj";
 import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
@@ -19,9 +19,9 @@ import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
 import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
-import ShdProgram = ShdProgramT.vox.material.ShdProgram;
+//import ShdProgram = ShdProgramT.vox.material.ShdProgram;
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
-import ITextureRenderObj = TextureRenderObjT.vox.texture.ITextureRenderObj;
+import ITextureRenderObj = ITextureRenderObjT.vox.texture.ITextureRenderObj;
 import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
 import RenderColorMask = RODrawStateT.vox.render.RenderColorMask;
 import RendererState = RendererStateT.vox.render.RendererState;
@@ -38,8 +38,7 @@ export namespace vox
             private static __s_uid:number = 0;
             static __$_S_flag:number = 0;
             private m_uid:number = -1;
-            private static s_preUniform:IShaderUniform = null;
-            private static s_preTUniform:IShaderUniform = null;
+            
             constructor()
             {
                 if(RPOUnit.__$_S_flag < 1)
@@ -73,7 +72,7 @@ export namespace vox
             renderState:number = 0;
             rcolorMask:number = 0;
             vro:VertexRenderObj = null;
-            shdp:ShdProgram = null;
+            //shdp:ShdProgram = null;
             // transform uniform
             transUniform:IShaderUniform = null;
             // materiall uniform
@@ -189,14 +188,14 @@ export namespace vox
                 {
                     this.ubo.run(rc);
                 }
-                if(RPOUnit.s_preTUniform != this.transUniform)
+                if(this.shader.transformUniform != this.transUniform)
                 {
-                    RPOUnit.s_preTUniform = this.transUniform;
+                    this.shader.transformUniform = this.transUniform;
                     this.transUniform.use(rc);
                 }
-                if(RPOUnit.s_preUniform != this.uniform)
+                if(this.shader.uniform != this.uniform)
                 {
-                    RPOUnit.s_preUniform = this.uniform;
+                    this.shader.uniform = this.uniform;
                     this.uniform.use(rc);
                 }
                 RenderStateObject.UseRenderState(this.renderState);
@@ -212,14 +211,14 @@ export namespace vox
                 this.vro.run(rc);
                 this.tro.run(rc);
                 
-                if(RPOUnit.s_preTUniform != this.transUniform)
+                if(this.shader.transformUniform != this.transUniform)
                 {
-                    RPOUnit.s_preTUniform = this.transUniform;
+                    this.shader.transformUniform = this.transUniform;
                     this.transUniform.use(rc);
                 }
-                if(RPOUnit.s_preUniform != this.uniform)
+                if(this.shader.uniform != this.uniform)
                 {
-                    RPOUnit.s_preUniform = this.uniform;
+                    this.shader.uniform = this.uniform;
                     this.uniform.use(rc);
                 }
                 RenderStateObject.UseRenderState(this.renderState);
@@ -230,9 +229,9 @@ export namespace vox
             {
                 RenderStateObject.UseRenderState(this.renderState);
                 RenderColorMask.UseRenderState(this.rcolorMask);
-                if(RPOUnit.s_preUniform != this.uniform)
+                if(this.shader.uniform != this.uniform)
                 {
-                    RPOUnit.s_preUniform = this.uniform;
+                    this.shader.uniform = this.uniform;
                     this.shader.updateUniformToCurrentShd2(rc,this.uniform,this.transUniform);
                 }
                 else
@@ -245,13 +244,13 @@ export namespace vox
                 this.vro.run(rc);
                 RenderStateObject.UseRenderState(this.renderState);
                 RenderColorMask.UseRenderState(this.rcolorMask);
-                if(RPOUnit.s_preUniform != this.uniform)
+                if(this.shader.uniform != this.uniform)
                 {
-                    RPOUnit.s_preUniform = this.uniform;
+                    this.shader.uniform = this.uniform;
                     
-                    if(RPOUnit.s_preTUniform != this.transUniform)
+                    if(this.shader.transformUniform != this.transUniform)
                     {
-                        RPOUnit.s_preTUniform = this.transUniform;
+                        this.shader.transformUniform = this.transUniform;
                         this.shader.updateUniformToCurrentShd2(rc,this.uniform,this.transUniform);
                     }
                     else
@@ -261,9 +260,9 @@ export namespace vox
                 }
                 else
                 {
-                    if(RPOUnit.s_preTUniform != this.transUniform)
+                    if(this.shader.transformUniform != this.transUniform)
                     {
-                        RPOUnit.s_preTUniform = this.transUniform;
+                        this.shader.transformUniform = this.transUniform;
                         this.shader.updateUniformToCurrentShd(rc,this.transUniform);
                     }
                 }
@@ -279,7 +278,7 @@ export namespace vox
                 this.ubo = null;
                 this.shdUid = -1;
                 this.vtxUid = -1;
-                this.shdp = null;
+                //this.shdp = null;
                 this.uniform = null;
                 this.transUniform = null;
                 this.partGroup = null;
@@ -294,11 +293,6 @@ export namespace vox
                 this.rcolorMask = 0;
 
                 this.shader = null;
-            }
-            static RenderBegin():void
-            {
-                RPOUnit.s_preUniform = null;
-                RPOUnit.s_preTUniform = null;
             }
             destroy():void
             {

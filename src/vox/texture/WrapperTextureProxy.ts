@@ -5,9 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 
+import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 export namespace vox
@@ -17,10 +19,21 @@ export namespace vox
         export class WrapperTextureProxy extends TextureProxy
         {
             private m_tex:TextureProxy = null;
-            constructor(texList:TextureProxy[], texWidth:number,texHeight:number,powerof2Boo:boolean = false)
+            constructor(slot:ITextureSlot, texWidth:number,texHeight:number,powerof2Boo:boolean = false)
             {
-                super(texList,texWidth,texHeight,powerof2Boo)
+                super(slot,texWidth,texHeight,powerof2Boo)
             }
+            /**
+             * @returns 返回自己的 纹理资源 unique id, 这个id会被对应的资源管理器使用, 此方法子类不可以覆盖
+             */
+            getResUid():number
+            {
+                return this.m_tex.getResUid();
+            }
+            /**
+             * @returns 返回true, 表示当前纹理对象是渲染直接使用其对应的显存资源的对象
+             *          返回false, 表示不能直接使用对应的显存资源
+             */
             isDirect():boolean
             {
                 return false;
@@ -41,13 +54,9 @@ export namespace vox
             {
                 return this.m_tex.dataEnough();
             }
-            __$gpuBuf():any
+            __$use(rc:RenderProxy):void
             {
-                return this.m_tex.__$gpuBuf();
-            }
-            __$use(gl:any):void
-            {
-                this.m_tex.__$use(gl);
+                this.m_tex.__$use(rc);
             }
             isGpuEnabled():boolean
             {
@@ -57,7 +66,9 @@ export namespace vox
             {
                 return this.m_tex.getSamplerType();
             }
-            // TextureConst.TEXTURE_2D or TextureConst.TEXTURE_CUBE or TextureConst.TEXTURE_3D
+            /**
+             * @returns return value is TextureConst.TEXTURE_2D or TextureConst.TEXTURE_CUBE or TextureConst.TEXTURE_3D
+             */
             getTargetType():number
             {
                 return this.m_tex.getTargetType();
@@ -84,10 +95,6 @@ export namespace vox
             toString():string
             {
                 return "[WrapperTextureProxy(name:"+this.name+",uid="+this.getUid()+",width="+this.getWidth()+",height="+this.getHeight()+")]";
-            }
-            __$disposeGpu(rc:RenderProxy):void
-            {
-                this.m_tex.__$disposeGpu(rc);
             }
         }
     }

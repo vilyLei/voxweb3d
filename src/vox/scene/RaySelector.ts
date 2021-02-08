@@ -54,6 +54,11 @@ export namespace vox
             private m_vecs:Vector3D[] = [null,null];
             private m_gpuTestEnabled:boolean = false;
 
+            //  setGPUTestEnabled(enabled:boolean):void
+            //  {
+            //      this.m_gpuTestEnabled = enabled;
+            //  }
+            
             setRenderer(renderer:IRenderer):void
             {
                 this.m_renderer = renderer;

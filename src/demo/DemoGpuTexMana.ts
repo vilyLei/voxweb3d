@@ -8,7 +8,6 @@ import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 import * as MouseEventT from "../vox/event/MouseEvent";
 import * as Stage3DT from "../vox/display/Stage3D";
 
-import * as TextureRenderObjT from "../vox/texture/TextureRenderObj";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as TexManaT from "./base/TexMana";
 import * as DemoSceneT from "./texMana/DemoScene";
@@ -22,7 +21,6 @@ import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 
-import TextureRenderObj = TextureRenderObjT.vox.texture.TextureRenderObj;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import TexMana = TexManaT.demo.base.TexMana;
 import DemoScene = DemoSceneT.demo.texMama.DemoScene;
@@ -75,7 +73,7 @@ export namespace demo
         {
             //--this.m_runFlag;
             this.m_scene.run();
-            this.m_statusDisp.statusInfo = "/"+TextureRenderObj.GetTexAttachAllCount();
+            this.m_statusDisp.statusInfo = "/"+this.m_rcontext.getTextureAttachTotal();
             this.m_statusDisp.update();
 
             //console.log("##-- begin");

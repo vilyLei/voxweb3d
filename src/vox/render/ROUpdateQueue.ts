@@ -9,12 +9,10 @@
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
-import * as TextureRenderObjT from "../../vox/texture/TextureRenderObj";
 
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-import TextureRenderObj = TextureRenderObjT.vox.texture.TextureRenderObj;
 
 export namespace vox
 {
@@ -40,22 +38,8 @@ export namespace vox
                     this.m_bufs.push(buf);
                 }
             }
-            private updateTexMaterial(rc:RenderProxy):void
-            {
-            }
-            private updateBuf(rc:RenderProxy):void
-            {
-            }
             update(rc:RenderProxy):void
             {
-                //  if(this.m_texMaterials.length > 0)
-                //  {
-                //      this.updateTexMaterial(rc);
-                //  }
-                //  if(this.m_bufs.length > 0)
-                //  {
-                //      this.updateBuf(rc);
-                //  }
             }
             private static __s_ins:ROUpdateQueue = null;
             static GetInstance():ROUpdateQueue

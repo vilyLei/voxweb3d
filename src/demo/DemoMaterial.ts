@@ -79,10 +79,6 @@ export namespace demo
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
                 
-                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-                let tex3:TextureProxy = this.getImageTexByUrl("static/pics/f01_4096.jpg");
-                
                 let rparam:RendererParam = new RendererParam();
                 //rparam.maxWebGLVersion = 1;
                 rparam.setCamPosition(800.0,800.0,800.0);
@@ -95,6 +91,14 @@ export namespace demo
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
+
+                TextureStore.SetRenderProxy( this.m_rscene.getRenderProxy() );
+                TextureStore.SetBufferUpdater( this.m_rscene.getRenderer().bufferUpdater );
+                
+                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
+                let tex3:TextureProxy = this.getImageTexByUrl("static/pics/f01_4096.jpg");
+                
 
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.initialize(300.0);
@@ -179,32 +183,20 @@ void main(){
         run():void
         {
             let pcontext:RendererInstanceContext = this.m_rcontext;
-            //this.m_tarEntity.setRotationXYZ(this.m_tarEntity.getTransform().getRotationX() + 0.5,0.0,0.0);
-            //this.m_tarEntity.update();
+            
             // show fps status
+            this.m_statusDisp.statusInfo = "/"+pcontext.getTextureResTotal()+"/"+pcontext.getTextureAttachTotal();
             this.m_statusDisp.update();
             // 分帧加载
             this.m_texLoader.run();
             this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
             // render begin
             this.m_rscene.runBegin();
+
             // run logic program
             this.m_rscene.update();
             this.m_rscene.run();
-            /*
-            // --------------------------------------------- rtt begin
-            pcontext.setClearRGBColor3f(0.1, 0.0, 0.1);
-            pcontext.synFBOSizeWithViewport();
-            pcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(0), true, false, 0);
-            pcontext.useFBO(true, true, false);
-            // to be rendering in framebuffer
-            this.m_rscene.runAt(0);
-            // --------------------------------------------- rtt end
-            pcontext.setClearRGBColor3f(0.0, 3.0, 2.0);
-            pcontext.setRenderToBackBuffer();
-            // to be rendering in backbuffer
-            this.m_rscene.runAt(1);
-            //*/
+
             // render end
             this.m_rscene.runEnd();
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);

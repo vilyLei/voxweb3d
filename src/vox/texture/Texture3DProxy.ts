@@ -6,14 +6,16 @@
 /***************************************************************************/
 
 import * as TextureConstT from "../../vox/texture/TextureConst";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
+import * as TextureProxyT from "../../vox/texture/TextureProxy";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureTarget = TextureConstT.vox.texture.TextureTarget;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
+import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 
 export namespace vox
 {
@@ -23,9 +25,9 @@ export namespace vox
         {
             private m_bytes:Uint8Array = null;
             private m_tex3DDepth:number = 1;
-            constructor(texList:TextureProxy[], texWidth:number,texHeight:number,tex3DDepth:number = 1,powerof2Boo:boolean = false)
+            constructor(slot:ITextureSlot, texWidth:number,texHeight:number,tex3DDepth:number = 1,powerof2Boo:boolean = false)
             {
-                super(texList, texWidth,texHeight,powerof2Boo);        
+                super(slot, texWidth,texHeight,powerof2Boo);        
                 this.internalFormat = TextureFormat.R8;
                 this.srcFormat = TextureFormat.RED;
                 this.m_tex3DDepth = tex3DDepth;
@@ -35,7 +37,7 @@ export namespace vox
             getDepth():number{return this.m_tex3DDepth;}
             uploadFromTypedArray(bytesData:Uint8Array, miplevel:number = 0):void
             {
-                if(this.m_texBuf == null)
+                if(!this.isGpuEnabled())
                 {
                     this.m_bytes = bytesData;
                     this.m_miplevel = miplevel;

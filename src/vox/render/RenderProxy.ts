@@ -21,6 +21,8 @@ import * as RAdapterContextT from "../../vox/render/RAdapterContext";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as RenderFBOProxyT from "../../vox/render/RenderFBOProxy";
 import * as RCExtensionT from "../../vox/render/RCExtension";
+
+import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
 import * as DivLogT from "../../vox/utils/DivLog";
 
 import RenderFilter = RenderFilterT.vox.render.RenderFilter;
@@ -40,6 +42,8 @@ import RAdapterContext = RAdapterContextT.vox.render.RAdapterContext;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RenderFBOProxy = RenderFBOProxyT.vox.render.RenderFBOProxy;
 import RCExtension = RCExtensionT.vox.render.RCExtension;
+
+import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
 import DivLog = DivLogT.vox.utils.DivLog;
 
 export namespace vox
@@ -69,12 +73,13 @@ export namespace vox
 
             readonly RContext:any = null;
             readonly RState:RODrawState = null;
+            readonly Texture:ROTextureResource = null;
 
             private m_uid:number = 0;
             private static s_uid:number = 0;
             private m_camUBO:any = null;
             private m_mainCamera:CameraBase = null;
-            private m_adapter:RenderAdapter = new RenderAdapter();
+            private m_adapter:RenderAdapter = null;//new RenderAdapter();
 
             private m_adapterContext:RAdapterContext = new RAdapterContext();
 
@@ -498,6 +503,7 @@ export namespace vox
             }
             initialize(param:RendererParam):void
             {
+                
                 let posV3:Vector3D = param.camPosition;
                 let lookAtPosV3:Vector3D = param.camLookAtPos;
                 let upV3:Vector3D = param.camUpDirect;
@@ -512,8 +518,16 @@ export namespace vox
                 this.m_adapterContext.initialize(param.getDiv(),param.getRenderContextAttri());
                 this.m_WEBGL_VER = this.m_adapterContext.getWebGLVersion();
                 
+                this.m_rc = this.m_adapterContext.getRC();
+                let selfT:any = this;
+                let gl:any = this.m_rc;
+                let texRes:ROTextureResource = new ROTextureResource(this.m_uid,gl);
+                selfT.Texture = texRes;
+
                 this.m_viewW = this.m_adapterContext.getViewportWidth();
                 this.m_viewH = this.m_adapterContext.getViewportHeight();
+                
+                this.m_adapter = new RenderAdapter(this.m_uid,texRes);
                 this.m_adapter.initialize(this.m_adapterContext);
                 
                 if(this.m_autoSynViewAndStage)
@@ -534,10 +548,8 @@ export namespace vox
                 this.m_mainCamera.update();
                 this.m_adapter.bgColor.setRGB3f(0.0,0.0,0.0);
 
-                this.m_rc = this.m_adapterContext.getRC();
                 this.m_camera = this.m_mainCamera;
-                let selfT:any = this;
-                let gl:any = this.m_rc;
+
 
                 selfT.RGBA = gl.RGBA;
                 selfT.UNSIGNED_BYTE = gl.UNSIGNED_BYTE;
@@ -576,7 +588,6 @@ export namespace vox
 			    classRenderMaskBitfield.STENCIL_BUFFER_BIT = gl.STENCIL_BUFFER_BIT;
 
                 RenderFBOProxy.SetRenderer(this.m_adapterContext);
-
                 selfT.RState = this.m_adapterContext.getRenderState();
                 selfT.RContext = this.m_rc;
 

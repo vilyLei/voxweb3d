@@ -195,7 +195,7 @@ export namespace vox
 
             static readonly TEX_PROXY2D:number = 5001;
             static readonly TEX_BYTES2D:number = 5002;
-            static readonly TEX_CUBE:number = 5003;
+            static readonly TEX_PROXYCUBE:number = 5003;
             static readonly TEX_PROXY3D:number = 5004;
             static GetConst(gl:any,param:number):number
             {

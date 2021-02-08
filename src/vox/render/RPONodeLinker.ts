@@ -385,7 +385,6 @@ export namespace vox
 				this.detachVtxAt(node.rvroI);
 				this.detachTexAt(node.rtroI);
 
-				//node.tro.__$detachRUT();
 				node.prev = null;
 				node.next = null;
 			}
