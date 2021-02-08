@@ -6,10 +6,10 @@
 /***************************************************************************/
 
 import * as RenderProxyT from "../../vox/render/RenderProxy";
-import * as ShaderProgramT from "../../vox/material/ShaderProgram";
+import * as ShdProgramT from "../../vox/material/ShdProgram";
 
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-import ShaderProgram = ShaderProgramT.vox.material.ShaderProgram;
+import ShdProgram = ShdProgramT.vox.material.ShdProgram;
 
 export namespace vox
 {
@@ -206,7 +206,7 @@ export namespace vox
                 ShaderUBOBuilder.s_uboBindingNSMap.set(uniform_block_ns,index);
                 return index;
             }
-            static CreateBindingIndexByNS(uniform_block_ns:string,shdProgram:ShaderProgram):number
+            static CreateBindingIndexByNS(uniform_block_ns:string,shdProgram:ShdProgram):number
             {
                 if(ShaderUBOBuilder.s_uboBindingNSMap.has(uniform_block_ns))
                 {
@@ -223,14 +223,14 @@ export namespace vox
             {
                 return ShaderUBOBuilder.s_uboBindingNSMap.has(uniform_block_ns);
             }
-            static CreateUBOWithDataFloatsCount(rc:RenderProxy, uniform_block_ns:string,shdProgram:ShaderProgram,dataFloatsCount:number):ShaderUBO
+            static CreateUBOWithDataFloatsCount(rc:RenderProxy, uniform_block_ns:string,shdProgram:ShdProgram,dataFloatsCount:number):ShaderUBO
             {
                 let ubo:ShaderUBO = new ShaderUBO();
                 let bindingIndex:number = ShaderUBOBuilder.CreateBindingIndexByNS(uniform_block_ns,shdProgram);
                 ubo.initializeWithDataFloatsCount(rc, uniform_block_ns,bindingIndex,dataFloatsCount);
                 return ubo;
             }
-            static CreateUBOWithFloatData(uniform_block_ns:string,shdProgram:ShaderProgram,dataFloatArr:Float32Array):ShaderUBO
+            static CreateUBOWithFloatData(uniform_block_ns:string,shdProgram:ShdProgram,dataFloatArr:Float32Array):ShaderUBO
             {
                 let ubo:ShaderUBO = new ShaderUBO();
                 let bindingIndex = ShaderUBOBuilder.CreateBindingIndexByNS(uniform_block_ns,shdProgram);
