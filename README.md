@@ -5,7 +5,7 @@ Engine code in src\vox\
 
 installation:
 
-    step 1, install global nodejs(https://nodejs.org/en/),auto include npm alredy.
+    step 1, install global nodejs(https://nodejs.org/en/),auto include npm already.
     
     step 2, install yarn(console run: npm install -g yarn)
     
