@@ -23,6 +23,9 @@ import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
 import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
 import * as IRendererT from "../../vox/scene/IRenderer";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
+
+import * as TextureSlotT from "../../vox/texture/TextureSlot";
+import * as RTTTextureStoreT from "../../vox/texture/RTTTextureStore";
 import * as DispEntity3DManagerT from "../../vox/scene/DispEntity3DManager";
 
 import Stage3D = Stage3DT.vox.display.Stage3D;
@@ -39,6 +42,9 @@ import RenderProcessBuider = RenderProcessBuiderT.vox.render.RenderProcessBuider
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 import IRenderer = IRendererT.vox.scene.IRenderer;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+
+import TextureSlot = TextureSlotT.vox.texture.TextureSlot;
+import RTTTextureStore = RTTTextureStoreT.vox.texture.RTTTextureStore;
 import DispEntity3DManager = DispEntity3DManagerT.vox.scene.DispEntity3DManager;
 
 export namespace vox
@@ -59,6 +65,8 @@ export namespace vox
             private m_batchEnabled:boolean = true;
             private m_processFixedState:boolean = true;
             readonly bufferUpdater:ROBufferUpdater = null;
+            readonly textureSlot:TextureSlot = null;
+            readonly rttStore:RTTTextureStore = null;
             constructor()
             {
                 this.m_uid = RendererInstance.__s_uid++;
@@ -133,8 +141,13 @@ export namespace vox
                     this.m_entity3DMana = new DispEntity3DManager(this.m_uid, this.m_dispBuilder);
                     this.appendProcess(this.m_batchEnabled,this.m_processFixedState);
                     
+                    let texSlot:TextureSlot = new TextureSlot();
+                    texSlot.setRenderProxy(this.m_renderProxy);
+                    texSlot.setBufferUpdater(this.bufferUpdater);
                     let selfT:any = this;
                     selfT.bufferUpdater = new ROBufferUpdater();
+                    selfT.textureSlot = texSlot;
+                    selfT.rttStore = new RTTTextureStore(texSlot);
                 }
             }
             getUid():number

@@ -7,6 +7,7 @@ import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
 import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
 import * as ShaderMaterialT from "../vox/material/mcase/ShaderMaterial";
+import * as Color4T from "../vox/material/Color4";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 import * as VtxBufConstT from "../vox/mesh/VtxBufConst";
 
@@ -15,6 +16,7 @@ import * as DisplayEntityT from "../vox/entity/DisplayEntity";
 import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
 import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
 import * as Box3DEntityT from "../vox/entity/Box3DEntity";
+import * as Billboard3DEntityT from "../vox/entity/Billboard3DEntity";
 import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureStoreT from "../vox/texture/TextureStore";
@@ -31,6 +33,7 @@ import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
+import Color4 = Color4T.vox.material.Color4;
 import ShaderMaterial = ShaderMaterialT.vox.material.mcase.ShaderMaterial;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 import VtxNormalType = VtxBufConstT.vox.mesh.VtxNormalType;
@@ -40,6 +43,7 @@ import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
+import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
@@ -92,22 +96,23 @@ export namespace demo
 
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
 
-                TextureStore.SetRenderProxy( this.m_rscene.getRenderProxy() );
-                TextureStore.SetBufferUpdater( this.m_rscene.getRenderer().bufferUpdater );
+                TextureStore.SetRenderer( this.m_rscene.getRenderer() );
                 
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-                let tex3:TextureProxy = this.getImageTexByUrl("static/pics/f01_4096.jpg");
+                let tex4:TextureProxy = this.getImageTexByUrl("static/assets/yanj.jpg");
+                let tex5:TextureProxy = TextureStore.CreateRGBATex2D(16,16,new Color4(1.0,0.0,1.0));
                 
-
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.initialize(300.0);
                 this.m_rscene.addEntity(axis);
-                // add common 3d display entity
+
+                //  // add common 3d display entity
                 //  var plane:Plane3DEntity = new Plane3DEntity();
-                //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex3]);
+                //  //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex4]);
+                //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex5]);
                 //  this.m_rscene.addEntity(plane);
-                //return;
+                
                 let transMat:Matrix4 = new Matrix4();
                 //transMat.appendRotationEulerAngle(MathConst.DegreeToRadian(90.0),0.0,MathConst.DegreeToRadian(90.0));
                 transMat.appendRotationEulerAngle(0.0,0.0,MathConst.DegreeToRadian(90.0));
@@ -173,17 +178,13 @@ void main(){
                 cly.initialize(100.0,200.0,15,[tex1]);
                 this.m_rscene.addEntity(cly);
                 this.m_tarEntity = cly;
-                //  // add rtt texture 3d display entity
-                //  let boxRtt:Box3DEntity = new Box3DEntity();
-                //  boxRtt.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[TextureStore.GetRTTTextureAt(0)]);
-                //  this.m_rscene.addEntity(boxRtt, 1);
-
             }
         }
         run():void
         {
             let pcontext:RendererInstanceContext = this.m_rcontext;
-            
+            // 纹理资源监测
+            TextureStore.Update();
             // show fps status
             this.m_statusDisp.statusInfo = "/"+pcontext.getTextureResTotal()+"/"+pcontext.getTextureAttachTotal();
             this.m_statusDisp.update();

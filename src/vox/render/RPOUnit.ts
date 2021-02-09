@@ -274,6 +274,7 @@ export namespace vox
                 this.tro.__$detachThis();
                 this.tro = null;
                 this.texMid = -1;
+                this.__$rprouid = -1;
 
                 this.ubo = null;
                 this.shdUid = -1;

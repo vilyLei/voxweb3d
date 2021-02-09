@@ -14,6 +14,7 @@ import * as TextureProxyT from "../../vox/texture/TextureProxy";
 
 import ITexData = ITexDataT.vox.texture.ITexData;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
+import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
 import ImgTexData = ImgTexDataT.vox.texture.ImgTexData;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
@@ -29,6 +30,7 @@ export namespace vox
             {
                 super(slot,texWidth,texHeight,powerof2Boo);
                 this.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
+                this.m_type = TextureProxyType.Image;
             }
             private m_texData:ImgTexData = null;
             private m_texDatas:ITexData[] = null;
@@ -129,7 +131,7 @@ export namespace vox
                     }
                 }
             }
-            __$destroy(rc:RenderProxy):void
+            __$destroy():void
             {
                 if(!this.isGpuEnabled())
                 {
@@ -148,7 +150,7 @@ export namespace vox
                         ImgTexData.Restore(this.m_texData);
                         this.m_texData = null;
                     }
-                    super.__$destroy(rc);
+                    super.__$destroy();
                 }
             }
             toString():string

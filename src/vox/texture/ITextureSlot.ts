@@ -18,7 +18,8 @@ export namespace vox
             isGpuEnabledByResUid(resUid:number):boolean;
             // 先使用map hash拦截的方式,来决定buf和renderer context避免重复的单次关联
             addRenderBuffer(buf:IRenderBuffer,bufResUid:number):void;
-            addFreeResUid(resUid:number):void;
+            addFreeUid(resUid:number):void;
+            removeFreeUid(resUid:number):void;
         }
     }
 }

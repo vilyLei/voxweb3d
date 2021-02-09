@@ -8,14 +8,13 @@
 
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as RawDataTextureProxyT from "../../vox/texture/RawDataTextureProxy";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
+import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import RawDataTextureProxy = RawDataTextureProxyT.vox.texture.RawDataTextureProxy;
 
 export namespace vox
@@ -27,7 +26,7 @@ export namespace vox
             constructor(slot:ITextureSlot, texWidth:number,texHeight:number,powerof2Boo:boolean = false)
             {
                 super(slot, texWidth,texHeight,powerof2Boo);
-                this.m_type = TextureConst.TEX_PROXY2D;
+                this.m_type = TextureProxyType.Float;
                 this.minFilter = TextureConst.LINEAR;
                 this.internalFormat = TextureFormat.RGBA16F;
                 this.dataType = TextureDataType.FLOAT;

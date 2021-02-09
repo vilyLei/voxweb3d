@@ -343,6 +343,7 @@ export namespace vox
                     this.m_adapter.setClearDepth(1.0);
                     RendererState.ResetInfo();
                     RendererState.Reset();
+                    RendererState.SetDrawState(this.m_renderProxy.RState);
                     this.m_meshProxy.reset();
                     this.m_materialProxy.reset();
                     this.m_adapter.update();

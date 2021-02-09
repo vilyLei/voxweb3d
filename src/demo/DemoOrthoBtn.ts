@@ -2,7 +2,7 @@
 import * as Vector3DT from "../vox/geom/Vector3";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RenderConstT from "../vox/render/RenderConst";
-import * as RODrawStateT from "../vox/render/RODrawState";
+import * as RendererStateT from "../vox/render/RendererState";
 import * as RendererParamT from "../vox/scene/RendererParam";
 import * as RendererInstanceT from "../vox/scene/RendererInstance";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
@@ -39,7 +39,7 @@ import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
 import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
+import RendererState = RendererStateT.vox.render.RendererState;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
@@ -204,8 +204,8 @@ export namespace demo
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-                RenderStateObject.Create("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
-                RenderStateObject.Create("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
+                RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
+                RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 
                 let imgBtn:ColorRectImgButton = new ColorRectImgButton();
                 imgBtn.initialize(0.0,0.0,50.0,50.0,[tex3]);

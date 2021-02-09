@@ -14,6 +14,7 @@ import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
 import TextureTarget = TextureConstT.vox.texture.TextureTarget;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
+import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 
@@ -26,6 +27,7 @@ export namespace vox
             constructor(slot:ITextureSlot, texWidth:number,texHeight:number,powerof2Boo:boolean = false)
             {
                 super(slot,texWidth,texHeight,powerof2Boo);
+                this.m_type = TextureProxyType.RTT;
             }
             to2DTexture():void
             {

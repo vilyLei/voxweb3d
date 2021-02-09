@@ -7,8 +7,8 @@ import * as RendererInstanceT from "../../vox/scene/RendererInstance";
 import * as Plane3DEntityT from "../../vox/entity/Plane3DEntity";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
-import * as TextureStoreT from "../../vox/texture/TextureStore";
 import * as TextureConstT from "../../vox/texture/TextureConst";
+import * as TextureStoreT from "../../vox/texture/TextureStore";
 import * as ScrDepBaseMaterialT from "../material/ScrDepBaseMaterial";
 import * as ScrDepBlurMaterialT from "../material/ScrDepBlurMaterial";
 import * as ScreenPlaneMaterialT from "../../vox/material/mcase/ScreenPlaneMaterial";
@@ -25,10 +25,10 @@ import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
+import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import ScrDepBaseMaterial = ScrDepBaseMaterialT.demo.material.ScrDepBaseMaterial;
 import ScrDepBlurMaterial = ScrDepBlurMaterialT.demo.material.ScrDepBlurMaterial;
 import ScreenPlaneMaterial = ScreenPlaneMaterialT.vox.material.mcase.ScreenPlaneMaterial;
@@ -57,6 +57,7 @@ export namespace demo
             {
                 this.m_renderer = renderer;
                 
+                TextureStore.SetRenderer( this.m_renderer );
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();
@@ -184,7 +185,6 @@ export namespace demo
                 {
                     case 0:
                         this.m_texs[index] = TextureStore.GetRTTTextureAt(0)
-                        TextureStore.__$AttachTex(this.m_texs[index]);
                         this.m_texs[index].internalFormat = TextureFormat.RGBA16F;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
                         this.m_texs[index].dataType = TextureDataType.FLOAT;
@@ -193,7 +193,6 @@ export namespace demo
 
                     case 1:
                         this.m_texs[index] = TextureStore.GetRTTTextureAt(1)
-                        TextureStore.__$AttachTex(this.m_texs[index]);
                         this.m_texs[index].internalFormat = TextureFormat.RGBA;
                         this.m_texs[index].srcFormat = TextureFormat.RGBA;
                         return this.m_texs[index];

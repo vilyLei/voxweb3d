@@ -3,7 +3,7 @@ import * as Vector3DT from "../vox/geom/Vector3";
 import * as Matrix4T from "../vox/geom/Matrix4";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RenderConstT from "../vox/render/RenderConst";
-import * as RODrawStateT from "../vox/render/RODrawState";
+import * as RendererStateT from "../vox/render/RendererState";
 import * as RendererParamT from "../vox/scene/RendererParam";
 import * as RendererInstanceT from "../vox/scene/RendererInstance";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
@@ -40,7 +40,7 @@ import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
 import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
+import RendererState = RendererStateT.vox.render.RendererState;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
@@ -206,8 +206,8 @@ export namespace voxnav
                 this.m_subScene.getCamera().translationXYZ(this.m_stage3D.stageHalfWidth,this.m_stage3D.stageHalfHeight,1500.0);
                 this.m_subScene.getCamera().update();
 
-                RenderStateObject.Create("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
-                RenderStateObject.Create("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
+                RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
+                RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 
                 let cameraHotSwingHotArea:BoundsButton = new BoundsButton();
                 cameraHotSwingHotArea.initializeBtn2D(this.m_stage3D.stageWidth, this.m_stage3D.stageHeight);
@@ -221,7 +221,7 @@ export namespace voxnav
                 resetCameraBtn.outColor.setRGB3f(0.0,1.0,0.0);
                 resetCameraBtn.overColor.setRGB3f(0.0,1.0,1.0);
                 resetCameraBtn.downColor.setRGB3f(1.0,0.0,1.0);
-                resetCameraBtn.setRenderState( RenderStateObject.BACK_TRANSPARENT_STATE);
+                resetCameraBtn.setRenderState( RendererState.BACK_TRANSPARENT_STATE);
                 resetCameraBtn.initialize(0.0,0.0,64.0,64.0,[tex3]);
                 this.m_subScene.addEntity(resetCameraBtn);
                 resetCameraBtn.setXYZ(this.m_stage3D.stageWidth - 64.0, 0.0,0.1);

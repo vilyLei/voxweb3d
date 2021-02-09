@@ -67,9 +67,6 @@
 //  import * as DemoOccBoxWall2 from "./voxocc/demo/DemoOccBoxWall2";
 //  import Demo = DemoOccBoxWall2.voxocc.demo.DemoOccBoxWall2;
 
-//  import * as DemoGpuTexMana from "./demo/DemoGpuTexMana";
-//  import Demo = DemoGpuTexMana.demo.DemoGpuTexMana;
-
 //  import * as DemoRayTest from "./demo/DemoRayTest";
 //  import Demo = DemoRayTest.demo.DemoRayTest;
 
@@ -210,6 +207,9 @@
 
 //  import * as DemoDeepTransparent2 from "./demo/DemoDeepTransparent2";
 //  import Demo = DemoDeepTransparent2.demo.DemoDeepTransparent2;
+
+//  import * as DemoGpuTexMana from "./demo/DemoGpuTexMana";
+//  import Demo = DemoGpuTexMana.demo.DemoGpuTexMana;
 
 import * as DemoMaterial from "./demo/DemoMaterial";
 import Demo = DemoMaterial.demo.DemoMaterial;

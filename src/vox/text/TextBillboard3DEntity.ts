@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as RODrawStateT from "../../vox/render/RODrawState";
+import * as RendererStateT from "../../vox/render/RendererState";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as BillboardAlphaTexMaterialT from "../../vox/material/mcase/BillboardAlphaTexMaterial";
@@ -13,7 +13,7 @@ import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as TextRectMeshT from "../../vox/text/TextRectMesh";
 import * as H5FontSysT from "../../vox/text/H5FontSys";
 
-import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
+import RendererState = RendererStateT.vox.render.RendererState;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import BillboardAlphaTexMaterial = BillboardAlphaTexMaterialT.vox.material.mcase.BillboardAlphaTexMaterial;
@@ -155,7 +155,7 @@ export namespace vox
                     this.createMaterial(texList);
                 }
                 this.activeDisplay();
-                this.setRenderState(RenderStateObject.BACK_TRANSPARENT_STATE);
+                this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
             }
             protected createBounds():void
             {

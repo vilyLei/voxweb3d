@@ -5,7 +5,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
@@ -18,7 +17,6 @@ import * as Rect2DEntityT from "../../vox2d/entity/Rect2DEntity";
 import * as H5FontSysT from "../../vox/text/H5FontSys";
 import * as Text2DEntityT from "../../vox2d/text/Text2DEntity";
 
-import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
 import RendererState = RendererStateT.vox.render.RendererState;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;

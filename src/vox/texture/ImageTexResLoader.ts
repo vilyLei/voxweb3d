@@ -10,6 +10,7 @@ import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as ImageTextureProxyT from "../../vox/texture/ImageTextureProxy";
 import * as BytesTextureProxyT from "../../vox/texture/BytesTextureProxy";
 import * as ImageCubeTextureProxyT from "../../vox/texture/ImageCubeTextureProxy";
+import * as RendererInstanceT from "../../vox/scene/RendererInstance";
 import * as TextureStoreT from "../../vox/texture/TextureStore";
 
 import MathConst = MathConstT.vox.utils.MathConst;
@@ -17,6 +18,7 @@ import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import ImageTextureProxy = ImageTextureProxyT.vox.texture.ImageTextureProxy;
 import BytesTextureProxy = BytesTextureProxyT.vox.texture.BytesTextureProxy;
 import ImageCubeTextureProxy = ImageCubeTextureProxyT.vox.texture.ImageCubeTextureProxy;
+import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
 
 export namespace vox
@@ -88,7 +90,7 @@ export namespace vox
 
             texture:ImageTextureProxy = null;
             bytesTex:BytesTextureProxy = null;
-            //canvas:any = null;
+            
             offsetTex:ImageTextureProxy = null;
             premultipliedAlpha:boolean = true;
             constructor(purl:string,mipLv:number)
@@ -101,109 +103,118 @@ export namespace vox
                 if(this.m_img == null)
                 {
                     let selfT:ImgResUnit = this;
+
+                    this.m_img = new Image();
+
+                    this.m_img.onload = function(evt:any):void
+                    {
+                        selfT.m_loaded = true;
+                        selfT.buildTex();                        
+                    }
+                    this.m_img.addEventListener('error', (evt:any) => {
+                        if(selfT.m_url != "")
+                        {
+                            console.error("load image url error: ",selfT.m_url);
+                        }
+                    });
+                    this.m_img.crossOrigin = "";
+                    //m_img.setAttribute('crossorigin', 'anonymous');
+                    this.m_img.src = this.m_url;
+                    
+                }
+            }
+            buildTex():void
+            {
+                let img:any = this.m_img;
+                if(img != null && this.m_loaded)
+                {
                     let tex:ImageTextureProxy = this.texture;
                     let offsetTex:ImageTextureProxy = this.offsetTex;
                     let bytesTex:BytesTextureProxy = this.bytesTex;
-
-                    this.m_img = new Image();
-                    let img:any = this.m_img;
                     let imgData:any = null;
-                    //console.log("ImgResUnit:startLoad(), start load m_url: "+this.m_url);
-                    this.m_img.onload = function(info:any):void
+
+                    let powBoo:boolean = MathConst.IsPowerOf2(img.width) && MathConst.IsPowerOf2(img.height);
+                    if(!powBoo)
                     {
-                        let powBoo:boolean = MathConst.IsPowerOf2(img.width) && MathConst.IsPowerOf2(img.height);
-                        if(!powBoo)
+                        let pwidth:number = MathConst.CalcNearestCeilPow2(img.width);                            
+                        let pheight:number = MathConst.CalcNearestCeilPow2(img.height);
+                        if(pwidth > 2048)pwidth = 2048;
+                        if(pheight > 2048)pwidth = 2048;
+                        console.log("image canvas size: "+pwidth+","+pheight);
+                        let dobj:any = createImageCanvas(img, pwidth,pheight);
+                        let mipLv:number = this.m_mipLv;
+                        if(tex != null)
+                        {
+                            tex.uploadFromImage(dobj.canvas, mipLv);
+                            console.log("use a base canvas create a img tex.");
+                            tex.name = this.m_img.src;
+                            if(offsetTex != null)
+                            {
+                                dobj = createImageCanvasAlphaOffset(img, pwidth,pheight);
+                                offsetTex.uploadFromImage(dobj.canvas, mipLv);
+                            }
+                        }
+                        if(bytesTex != null)
+                        {
+                            if(this.premultipliedAlpha)
+                            {
+                                console.log("use a base canvas create a bytes tex.");
+                                imgData = dobj.ctx2d.getImageData(0,0,dobj.canvas.width, dobj.canvas.height);
+                                bytesTex.uploadFromBytes(imgData.data, mipLv,dobj.canvas.width, dobj.canvas.height);
+                                bytesTex.name = this.m_img.src;
+                            }
+                            else
+                            {
+                                //let t:number = Date.now();
+                                console.log("use a base canvas and a blendCanvas create a bytes tex.");
+                                imgData = dobj.ctx2d.getImageData(0,0,dobj.canvas.width, dobj.canvas.height);
+                                let dst:any = imgData.data;
+                                
+                                let offsetObj:any = createImageCanvasAlphaOffset(img, pwidth,pheight);
+                                imgData = offsetObj.ctx2d.getImageData(0,0,offsetObj.canvas.width, offsetObj.canvas.height);
+                                let sdata:any = imgData.data;
+                                let i:number = 0,j:number = 0, k:number = 0;
+
+                                for(; i < pheight; ++i)
+                                {
+                                    for(j = 0; j < pwidth; ++j)
+                                    {
+                                        dst[k] += 255 - sdata[k];
+                                        dst[k+1] += 255 - sdata[k+1];
+                                        dst[k+2] += 255 - sdata[k+2];
+                                        //sdata[k + 3] = dst[k + 3];
+                                        k += 4;
+                                    }
+                                }
+                                //console.log("Loss time: "+(Date.now() - t));
+                                bytesTex.uploadFromBytes(dst, mipLv,dobj.canvas.width, dobj.canvas.height);
+                                bytesTex.name = this.m_img.src;
+                            }
+                        }
+                    }
+                    else
+                    {
+                        if(tex != null)
+                        {
+                            tex.uploadFromImage(img,this.m_mipLv);                                
+                            tex.name = this.m_img.src;
+                        }
+                        else if(bytesTex != null)
                         {
                             let pwidth:number = MathConst.CalcNearestCeilPow2(img.width);                            
                             let pheight:number = MathConst.CalcNearestCeilPow2(img.height);
                             if(pwidth > 2048)pwidth = 2048;
                             if(pheight > 2048)pwidth = 2048;
-                            console.log("image canvas size: "+pwidth+","+pheight);
+
                             let dobj:any = createImageCanvas(img, pwidth,pheight);
-                            let mipLv:number = selfT.m_mipLv;
-                            if(tex != null)
-                            {
-                                tex.uploadFromImage(dobj.canvas, mipLv);
-                                console.log("use a base canvas create a img tex.");
-                                //  let mipCanvas = generateCanvasMipmapsAt(canvas);
-                                //  for(;mipCanvas != null;)
-                                //  {
-                                //      mipLv++;
-                                //      tex.uploadFromImage(mipCanvas, mipLv);
-                                //      mipCanvas = generateCanvasMipmapsAt(mipCanvas);
-                                //  }
-                                tex.name = selfT.m_img.src;
-                                if(offsetTex != null)
-                                {
-                                    dobj = createImageCanvasAlphaOffset(img, pwidth,pheight);
-                                    offsetTex.uploadFromImage(dobj.canvas, mipLv);
-                                }
-                            }
-                            if(bytesTex != null)
-                            {
-                                if(selfT.premultipliedAlpha)
-                                {
-                                    console.log("use a base canvas create a bytes tex.");
-                                    imgData = dobj.ctx2d.getImageData(0,0,dobj.canvas.width, dobj.canvas.height);
-                                    bytesTex.uploadFromBytes(imgData.data, mipLv,dobj.canvas.width, dobj.canvas.height);
-                                    bytesTex.name = selfT.m_img.src;
-                                }
-                                else
-                                {
-                                    //let t:number = Date.now();
-                                    console.log("use a base canvas and a blendCanvas create a bytes tex.");
-                                    imgData = dobj.ctx2d.getImageData(0,0,dobj.canvas.width, dobj.canvas.height);
-                                    let dst:any = imgData.data;
-                                    
-                                    let offsetObj:any = createImageCanvasAlphaOffset(img, pwidth,pheight);
-                                    imgData = offsetObj.ctx2d.getImageData(0,0,offsetObj.canvas.width, offsetObj.canvas.height);
-                                    let sdata:any = imgData.data;
-                                    let i:number = 0,j:number = 0, k:number = 0;
-
-                                    for(; i < pheight; ++i)
-                                    {
-                                        for(j = 0; j < pwidth; ++j)
-                                        {
-                                            dst[k] += 255 - sdata[k];
-                                            dst[k+1] += 255 - sdata[k+1];
-                                            dst[k+2] += 255 - sdata[k+2];
-                                            //sdata[k + 3] = dst[k + 3];
-                                            k += 4;
-                                        }
-                                    }
-                                    //console.log("Loss time: "+(Date.now() - t));
-                                    bytesTex.uploadFromBytes(dst, mipLv,dobj.canvas.width, dobj.canvas.height);
-                                    bytesTex.name = selfT.m_img.src;
-                                }
-                            }
+                            let mipLv:number = this.m_mipLv;
+                            imgData = dobj.ctx2d.getImageData(0,0,dobj.canvas.width, dobj.canvas.height);
+                            bytesTex.uploadFromBytes(imgData.data, mipLv,dobj.canvas.width, dobj.canvas.height);
+                            bytesTex.name = this.m_img.src;
                         }
-                        else
-                        {
-                            if(tex != null)
-                            {
-                                tex.uploadFromImage(img,selfT.m_mipLv);                                
-                                tex.name = selfT.m_img.src;
-                            }
-                            else if(bytesTex != null)
-                            {
-                                let pwidth:number = MathConst.CalcNearestCeilPow2(img.width);                            
-                                let pheight:number = MathConst.CalcNearestCeilPow2(img.height);
-                                if(pwidth > 2048)pwidth = 2048;
-                                if(pheight > 2048)pwidth = 2048;
-
-                                let dobj:any = createImageCanvas(img, pwidth,pheight);
-                                let mipLv:number = selfT.m_mipLv;
-                                imgData = dobj.ctx2d.getImageData(0,0,dobj.canvas.width, dobj.canvas.height);
-                                bytesTex.uploadFromBytes(imgData.data, mipLv,dobj.canvas.width, dobj.canvas.height);
-                                bytesTex.name = selfT.m_img.src;
-                            }
-                        }
-                        selfT.m_loaded = true;
-                        //console.log("ImgResUnit:startLoad(), loaded m_url: "+selfT.m_url);
                     }
-                    this.m_img.crossOrigin = "";
-                    //m_img.setAttribute('crossorigin', 'anonymous');
-                    this.m_img.src = this.m_url;
+                    this.m_loaded = true;
+                    //console.log("ImgResUnit:startLoad(), loaded m_url: "+selfT.m_url);
                 }
             }
             getURL():string
@@ -221,8 +232,10 @@ export namespace vox
             destroy():void
             {
                 //console.log("ImgResUnit:destroy(), remove a res m_url: "+this.m_url);
+                this.m_loaded = false;
                 this.m_url = "";
                 this.texture = null;
+                // cancel image load
                 this.m_img.src = "";
                 this.m_img = null;
             }
@@ -236,12 +249,16 @@ export namespace vox
             private m_loadingQueueMaxLength:number = 5;
             private m_loadDelay:number = 17;
             private m_loadDelayTime:number = 17;
-            private m_testDelay:number = 87;
-            private m_testDelayTime:number = 87;
+            private m_testDelay:number = 512;
+            private m_testDelayTime:number = 512;
             constructor()
             {
             }
             
+            setRenderer(renderer:RendererInstance):void
+            {
+                TextureStore.SetRenderer(renderer);
+            }
             getBytesNoPremultipliedAlphaTexByUrl(purl:string,mipLevel:number = 0):BytesTextureProxy
             {
                 if(purl == "")
@@ -256,7 +273,6 @@ export namespace vox
                     t.premultipliedAlpha = false;
                     this.m_resMap.set(purl,t);
                     let tex:BytesTextureProxy = TextureStore.CreateBytesTex(1,1);
-                    TextureStore.__$AttachTex(tex);
                     tex.name = purl;
                     t.bytesTex = tex;
                     this.m_waitLoadList.push(t);
@@ -264,6 +280,10 @@ export namespace vox
                 }
                 else
                 {
+                    if(t.bytesTex.isDestroyed())
+                    {
+                        t.bytesTex = TextureStore.CreateBytesTex(1,1);
+                    }
                     return t.bytesTex;
                 }
             }
@@ -280,7 +300,6 @@ export namespace vox
                     t = new ImgResUnit(purl,mipLevel);
                     this.m_resMap.set(purl,t);
                     let tex:BytesTextureProxy = TextureStore.CreateBytesTex(1,1);
-                    TextureStore.__$AttachTex(tex);
                     tex.name = purl;
                     t.bytesTex = tex;
                     this.m_waitLoadList.push(t);
@@ -288,6 +307,10 @@ export namespace vox
                 }
                 else
                 {
+                    if(t.bytesTex.isDestroyed())
+                    {
+                        t.bytesTex = TextureStore.CreateBytesTex(1,1);
+                    }
                     return t.bytesTex;
                 }
             }
@@ -322,7 +345,6 @@ export namespace vox
                     }
                     this.m_resMap.set(purl,t);
                     let tex:ImageTextureProxy = TextureStore.CreateImageTex2D(1,1);
-                    TextureStore.__$AttachTex(tex);
                     tex.name = purl;
                     t.texture = tex;
                     this.m_waitLoadList.push(t);
@@ -330,6 +352,10 @@ export namespace vox
                 }
                 else
                 {
+                    if(t.texture.isDestroyed())
+                    {
+                        t.texture = TextureStore.CreateImageTex2D(1,1);
+                    }
                     return t.texture;
                 }
             }
@@ -379,7 +405,6 @@ export namespace vox
                     }
                 }
 
-                ////*
                 --this.m_testDelay;
                 if(this.m_testDelay < 1)
                 {
@@ -390,7 +415,7 @@ export namespace vox
                     {
                         res = this.m_loadedList[i];
                         tex = res.texture!=null?res.texture:res.bytesTex;
-                        if(tex.getAttachCount() < 1)
+                        if(tex.isDestroyed())
                         {
                             console.log("ImageTexResLoader::run(),remove a resource,url: ",res.getURL());
                             this.m_resMap.delete(res.getURL());
@@ -401,7 +426,6 @@ export namespace vox
                         }
                     }
                 }
-                //*/
             }
         }
     }

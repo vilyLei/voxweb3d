@@ -188,7 +188,6 @@ export namespace vox
                     t = new ImgResLoader(purl);
                     this.___dict.set(purl,t);
                     let tex:ImageTextureProxy = TextureStore.CreateImageTex2D(1,1);
-                    TextureStore.__$AttachTexAt(tex.getUid());
                     tex.name = purl;
                     t.addTex(tex,mipLevel);
                     return tex;
@@ -210,8 +209,7 @@ export namespace vox
                 {
                     t = new CubeImgResLoader(purls);
                     this.___cubeDict.set(idns, t);
-                    let tex:ImageCubeTextureProxy = TextureStore.CreateImageCubeTex(8,8);//new ImageCubeTextureProxy(1,1);
-                    TextureStore.__$AttachTexAt(tex.getUid());
+                    let tex:ImageCubeTextureProxy = TextureStore.CreateImageCubeTex(8,8);
                     t.addTex(tex,mipLevel);
                     return tex;
                 }

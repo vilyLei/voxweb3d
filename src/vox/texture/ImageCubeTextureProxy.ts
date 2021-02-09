@@ -13,6 +13,7 @@ import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import TextureTarget = TextureConstT.vox.texture.TextureTarget;
+import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
@@ -29,7 +30,7 @@ export namespace vox
             {
                 super(slot, texWidth,texHeight,false);
                 this.m_texTarget = TextureTarget.TEXTURE_CUBE;
-                this.m_type = TextureConst.TEX_PROXYCUBE;
+                this.m_type = TextureProxyType.ImageCube;
             }
             
             uploadFromImageCubeFaceAt(index:number,img:any, miplevel:number = 0)
@@ -73,7 +74,7 @@ export namespace vox
             {
                 return "[ImageCubeTextureProxy(name:"+this.name+",uid="+this.getUid()+",width="+this.getWidth()+",height="+this.getHeight()+")]";
             }
-            __$destroy(rc:RenderProxy):void
+            __$destroy():void
             {
                 if(!this.isGpuEnabled())
                 {
@@ -88,7 +89,7 @@ export namespace vox
                         }
                     }
                     console.log("ImageCubeTextureProxy::destroy(), destroy a ImageCubeTextureProxy instance...");
-                    super.__$destroy(rc);
+                    super.__$destroy();
                 }
             }
         }

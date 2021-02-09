@@ -2,7 +2,7 @@
 import * as Vector3DT from "../../vox/geom/Vector3";
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as RenderConstT from "../../vox/render/RenderConst";
-import * as RODrawStateT from "../../vox/render/RODrawState";
+import * as RendererStateT from "../../vox/render/RendererState";
 import * as RendererParamT from "../../vox/scene/RendererParam";
 import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
 import * as RendererInstanceT from "../../vox/scene/RendererInstance";
@@ -30,7 +30,7 @@ import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
 import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
+import RendererState = RendererStateT.vox.render.RendererState;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
@@ -77,9 +77,9 @@ export namespace motionDemo
                 this.m_srcShadow.initializeXOZ(-100,-100,200.0,200,[this.getTexAt(4)]);
 
                 
-                RenderStateObject.Create("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
-                RenderStateObject.Create("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
-                RenderStateObject.Create("transparent02",CullFaceMode.BACK,RenderBlendMode.TRANSPARENT,DepthTestMode.RENDER_ALWAYS);
+                RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
+                RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
+                RendererState.CreateRenderState("transparent02",CullFaceMode.BACK,RenderBlendMode.TRANSPARENT,DepthTestMode.RENDER_ALWAYS);
 
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.name = "axis_big";

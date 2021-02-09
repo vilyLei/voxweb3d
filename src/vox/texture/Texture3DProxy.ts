@@ -13,6 +13,7 @@ import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureTarget = TextureConstT.vox.texture.TextureTarget;
+import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
@@ -32,7 +33,7 @@ export namespace vox
                 this.srcFormat = TextureFormat.RED;
                 this.m_tex3DDepth = tex3DDepth;
                 this.m_texTarget = TextureTarget.TEXTURE_3D;
-                this.m_type = TextureConst.TEX_PROXY3D;
+                this.m_type = TextureProxyType.Texture3D;
             }
             getDepth():number{return this.m_tex3DDepth;}
             uploadFromTypedArray(bytesData:Uint8Array, miplevel:number = 0):void
@@ -65,13 +66,13 @@ export namespace vox
                     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 4);
                 }
             }
-            __$destroy(rc:RenderProxy):void
+            __$destroy():void
             {
                 if(!this.isGpuEnabled())
                 {
                     this.m_bytes = null;
                     console.log("Texture3DProxy::destroy(), destroy a Texture3DProxy instance...");
-                    super.__$destroy(rc);
+                    super.__$destroy();
                 }
             }
             toString():string

@@ -9,10 +9,10 @@ import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 
-import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import TextureTarget = TextureConstT.vox.texture.TextureTarget;
+import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
@@ -30,6 +30,7 @@ export namespace vox
                 super(slot, texWidth,texHeight,false);
                 this.m_texTarget = TextureTarget.TEXTURE_CUBE;
                 this.mipmapEnabled = true;
+                this.m_type = TextureProxyType.BytesCube;
             }
             
             toAlphaFormat():void
@@ -98,7 +99,7 @@ export namespace vox
             {
                 return "[BytesCubeTextureProxy(name:"+this.name+",uid="+this.getUid()+",width="+this.getWidth()+",height="+this.getHeight()+")]";
             }
-            __$destroy(rc:RenderProxy):void
+            __$destroy():void
             {
                 if(!this.isGpuEnabled())
                 {
@@ -113,7 +114,7 @@ export namespace vox
                         }
                     }
                     console.log("BytesCubeTextureProxy::destroy(), destroy a BytesCubeTextureProxy instance...");
-                    super.__$destroy(rc);
+                    super.__$destroy();
                 }
             }
         }

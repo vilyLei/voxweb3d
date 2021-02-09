@@ -12,6 +12,7 @@ import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
 import * as Box3DEntityT from "../vox/entity/Box3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureConstT from "../vox/texture/TextureConst";
+import * as TextureStoreT from "../vox/texture/TextureStore";
 import * as TexResLoaderT from "../vox/texture/TexResLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 
@@ -28,6 +29,7 @@ import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
+import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 
@@ -52,13 +54,6 @@ export namespace demo
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
-                tex0.mipmapEnabled = true;
-                tex0.setWrap(TextureConst.WRAP_REPEAT);
-                tex1.setWrap(TextureConst.WRAP_REPEAT);
-                tex1.mipmapEnabled = true;
-                
                 let rparam:RendererParam = new RendererParam();
                 rparam.maxWebGLVersion = 2;
                 rparam.setCamProject(45.0,0.1,3000.0);
@@ -67,6 +62,16 @@ export namespace demo
                 this.m_renderer.initialize(rparam);
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();
+                TextureStore.SetRenderer(this.m_renderer);
+                
+                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
+                tex0.mipmapEnabled = true;
+                tex0.setWrap(TextureConst.WRAP_REPEAT);
+                tex1.setWrap(TextureConst.WRAP_REPEAT);
+                tex1.mipmapEnabled = true;
+                
+
                 this.m_blurIns = new ScreenPingpongBlur(this.m_renderer);
                 this.m_rcontext = this.m_renderer.getRendererContext();
                 this.m_camTrack = new CameraTrack();

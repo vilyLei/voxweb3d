@@ -4,7 +4,7 @@ import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RandomRangeT from "../vox/utils/RandomRange";
 import * as Color4T from "../vox/material/Color4";
 import * as RenderConstT from "../vox/render/RenderConst";
-import * as RODrawStateT from "../vox/render/RODrawState";
+import * as RendererStateT from "../vox/render/RendererState";
 import * as RendererParamT from "../vox/scene/RendererParam";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TexResLoaderT from "../vox/texture/TexResLoader";
@@ -38,7 +38,7 @@ import Color4 = Color4T.vox.material.Color4;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
 import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
+import RendererState = RendererStateT.vox.render.RendererState;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
@@ -271,8 +271,8 @@ export namespace demo
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rscene.getCamera());
                 
-                RenderStateObject.Create("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
-                RenderStateObject.Create("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
+                RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
+                RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 this.m_rscene.updateCamera();
 
                 let pv:Vector3D = new Vector3D();

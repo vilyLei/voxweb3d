@@ -12,6 +12,7 @@ import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
+import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
@@ -36,6 +37,7 @@ export namespace vox
                 this.m_generateMipmap = false;
                 this.m_haveRData = true;
                 this.mipmapEnabled = false;
+                this.m_type = TextureProxyType.Depth;
             }
             
             toDepthUnsignedInt():void

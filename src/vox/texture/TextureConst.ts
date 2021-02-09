@@ -179,7 +179,54 @@ export namespace vox
                 return rc.TEXTURE_2D;
             }
         }
-
+        export enum TextureProxyType
+        {
+            Default,
+            /**
+             * for DepthTextureProxy class
+             */
+            Depth,
+            /**
+             * for WrapperTextureProxy class
+             */
+            Wrapper,
+            /**
+             * for RTTTextureProxy class
+             */
+            RTT,
+            /**
+             * for ImageTextureProxy class
+             */
+            Image,
+            /**
+             * for FloatTextureProxy class
+             */
+            Float,
+            /**
+             * for Uint16TextureProxy class
+             */
+            Uint16,
+            /**
+             * for FloatCubeTextureProxy class
+             */
+            FloatCube,
+            /**
+             * for BytesTextureProxy class
+             */
+            Bytes,
+            /**
+             * for BytesCubeTextureProxy class
+             */
+            BytesCube,
+            /**
+             * for ImageCubeTextureProxy class
+             */
+            ImageCube,
+            /**
+             * for Texture3DProxy class
+             */
+            Texture3D
+        }
         export class TextureConst
         {
             static readonly WRAP_REPEAT:number = 3001;
@@ -193,10 +240,10 @@ export namespace vox
             static readonly LINEAR_MIPMAP_NEAREST:number = 4005;
             static readonly NEAREST_MIPMAP_LINEAR:number = 4006;
 
-            static readonly TEX_PROXY2D:number = 5001;
-            static readonly TEX_BYTES2D:number = 5002;
-            static readonly TEX_PROXYCUBE:number = 5003;
-            static readonly TEX_PROXY3D:number = 5004;
+            //  static readonly TEX_PROXY2D:number = 5001;
+            //  static readonly TEX_BYTES2D:number = 5002;
+            //  static readonly TEX_PROXYCUBE:number = 5003;
+            //  static readonly TEX_PROXY3D:number = 5004;
             static GetConst(gl:any,param:number):number
             {
                 switch(param)

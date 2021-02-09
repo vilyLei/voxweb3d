@@ -5,13 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as TextureStoreT from "../../vox/texture/TextureStore";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as MaterialShaderT from "../../vox/material/MaterialShader";
 import * as RODispBuilderT from "../../vox/render/RODispBuilder";
 
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
@@ -53,13 +51,11 @@ export namespace vox
             {
                 this.m_shader.reset();
                 this.m_rc.Texture.renderBegin();
-                TextureStore.RenderBegin(this.m_rc);
             }
             renderBegin():void
             {
                 this.m_shader.reset();
                 this.m_rc.Texture.renderBegin();
-                TextureStore.RenderBegin(this.m_rc);
             }
             useGlobalMaterial(material:MaterialBase):void
             {

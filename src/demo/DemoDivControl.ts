@@ -81,8 +81,6 @@ export namespace demo
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
                 
-                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
                 //let div = document.getElementById("app");
                 let div:HTMLElement = null;
                 let rparam:RendererParam = new RendererParam(div);
@@ -97,6 +95,9 @@ export namespace demo
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
+                this.m_texLoader.setRenderer(this.m_rscene.getRenderer());
+                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
 
                 let transMat:Matrix4 = new Matrix4();

@@ -71,9 +71,6 @@ export namespace demo
         }
         private m_handleMaterial:MaterialBase = new MaterialBase();
         private m_peelM0:PeelColorMaterial = null;
-        private m_peelEntity0:DisplayEntity = null;
-        private m_peelEntity1:DisplayEntity = null;
-        private m_peelEntity2:DisplayEntity = null;
         protected initializeSceneObj():void
         {
             console.log("DemoDeepTransparent2::initialize()......,maxTexSize: ",RendererDeviece.MAX_TEXTURE_SIZE);
@@ -86,7 +83,6 @@ export namespace demo
             this.m_rscene.getStage3D().addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
             if(this.m_profileInstance != null)this.m_profileInstance.initialize(this.m_rscene.getRenderer());
             if(this.m_statusDisp != null)this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
-
             //let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
             let tex0:TextureProxy = this.getImageTexByUrl("static/assets/bg002.jpg");
             //this.m_rscene.getStage3D().stageWidth, this.m_rscene.getStage3D().stageHeight
@@ -122,7 +118,6 @@ export namespace demo
             //box.setXYZ(1200 * Math.random() - 600.0,1200 * Math.random() - 600.0,600 * Math.random() - 600.0);
             //box.setScaleXYZ(scale,scale,scale);
             this.m_rscene.addEntity(box);
-            this.m_peelEntity1 = box;
 
             //*/
             let srcSph:Sphere3DEntity = null;
@@ -136,7 +131,6 @@ export namespace demo
             console.log("sph.getMaterial().getTextureList(): ",sph.getMaterial().getTextureList());
             this.m_rscene.addEntity(sph);
             //sph.setVisible(false);
-            this.m_peelEntity0 = sph;
             srcSph = sph;
             ///*
             sph = new Sphere3DEntity();
@@ -149,7 +143,6 @@ export namespace demo
             sph.setScaleXYZ(scale,scale,scale);
             //console.log("sph.getMaterial().getTextureList(): ",sph.getMaterial().getTextureList());
             this.m_rscene.addEntity(sph);
-            this.m_peelEntity2 = sph;
             //*/
             let scrPlane:Plane3DEntity = new Plane3DEntity();
             //scrPlane.setScreenAlignEnable(true);
@@ -163,8 +156,6 @@ export namespace demo
             //scrPlane.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(0), this.m_depTex0]);
             this.m_rscene.addEntity(scrPlane, 1);
 
-            console.log("------------------------------------------------------------------");
-            console.log("------------------------------------------------------------------");
         }
         private m_flag:number = 16;
         private mouseDown(evt:any):void

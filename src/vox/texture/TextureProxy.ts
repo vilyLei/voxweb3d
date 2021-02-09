@@ -19,6 +19,7 @@ import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import TextureTarget = TextureConstT.vox.texture.TextureTarget;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
+import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
 import MathConst = MathConstT.vox.utils.MathConst;
 
 import ITexData = ITexDataT.vox.texture.ITexData;
@@ -39,6 +40,8 @@ export namespace vox
         {
             private static __s_uid:number = 0;
             private m_uid:number = -1;
+            // 自身的引用计数器
+            private m_attachCount:number = 0;
             protected m_texBuf:any = null;
             protected m_slot:ITextureSlot = null;
 
@@ -52,7 +55,7 @@ export namespace vox
 
             // have render useable data
             protected m_haveRData:boolean = false;
-            protected m_type:number = TextureConst.TEX_PROXY2D;
+            protected m_type:TextureProxyType = TextureProxyType.Default;
             protected m_generateMipmap:boolean = true;
             
             name:string = "TextureProxy";
@@ -93,13 +96,24 @@ export namespace vox
                     this.m_texHeight = texHeight;
                 }
             }
-            // 自身的引用计数器
-            private m_attachCount:number = 0;
+            __$setSlot(slot:ITextureSlot):void
+            {
+                if(this.m_slot == null && slot != null)
+                {
+                    this.m_attachCount = 0;
+                    this.m_slot = slot;
+                }
+            }
             /**
              * 被引用计数加一
              */
             __$attachThis():void
             {
+                if(this.m_attachCount == -1)
+                {
+                    this.m_slot.removeFreeUid(this.getUid());
+                    this.m_attachCount = 0;
+                }
                 ++this.m_attachCount;
             }
             /**
@@ -107,12 +121,16 @@ export namespace vox
              */
             __$detachThis():void
             {
-                --this.m_attachCount;
-                //console.log("TextureProxy::__$detachThis() this.m_attachCount: "+this.m_attachCount);
-                if(this.m_attachCount < 1)
+                if(this.m_attachCount > 0)
                 {
-                    this.m_attachCount = 0;
-                    console.log("TextureProxy::__$detachThis() this.m_attachCount value is 0.");
+                    --this.m_attachCount;
+                    console.log("TextureProxy::__$detachThis() this(uid="+this.getUid()+").attachCount: "+this.m_attachCount);
+                    if(this.m_attachCount < 1)
+                    {
+                        this.m_attachCount = -1;
+                        this.m_slot.addFreeUid(this.getUid());
+                        console.log("TextureProxy::__$detachThis() this.m_attachCount value is 0.");
+                    }
                 }
             }
             /**
@@ -131,9 +149,9 @@ export namespace vox
                 return true;
             }
             /**
-             * @returns 返回自己的 纹理 类型(取值: TextureConst.TEX_PROXY2D)
+             * @returns 返回自己的纹理类型(value: TextureProxyType)
              */
-            getType():number
+            getType():TextureProxyType
             {
                 return this.m_type;
             }
@@ -337,15 +355,21 @@ export namespace vox
                     gl.pixelStorei(gl.UNPACK_ALIGNMENT,4);
                 }
             }
-            __$destroy(rc:RenderProxy):void
+            isDestroyed():boolean
+            {
+                return this.m_attachCount < -1;
+            }
+            __$destroy():void
             {
                 if(this.getAttachCount() < 1)
                 {
+                    this.m_attachCount = -2;
+                    this.m_texBuf = null;
                     this.m_haveRData = false;
                     this.m_texWidth = 1;
                     this.m_texHeight = 1;
                     this.m_slot = null;
-                    console.log("TextureProxy::destroy(), destroy a TextureProxy instance...");
+                    console.log("TextureProxy::destroy(), destroy a textureProxy instance(uid="+this.getUid()+")...");
                 }
             }
             toString():string

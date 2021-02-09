@@ -34,7 +34,6 @@ export namespace vox
             constructor(slot:ITextureSlot, texWidth:number,texHeight:number,powerof2Boo:boolean = false)
             {
                 super(slot, texWidth,texHeight,powerof2Boo);
-                this.m_type = TextureConst.TEX_PROXY2D;
                 this.minFilter = TextureConst.LINEAR;
             }
             private m_texData:RawTexData = null;
@@ -236,7 +235,7 @@ export namespace vox
                     }
                 }
             }
-            __$destroy(rc:RenderProxy):void
+            __$destroy():void
             {
                 if(!this.isGpuEnabled())
                 {
@@ -257,7 +256,7 @@ export namespace vox
                     }
                     this.m_bytes = null;
                     console.log("RawDataTextureProxy::destroy(), destroy a RawDataTextureProxy instance...");
-                    super.__$destroy(rc);
+                    super.__$destroy();
                 }
             }
             toString():string

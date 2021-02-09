@@ -10,10 +10,9 @@
 import * as TextureConstT from "../../../vox/texture/TextureConst";
 import * as TextureProxyT from "../../../vox/texture/TextureProxy";
 import * as RTTTextureProxyT from "../../../vox/texture/RTTTextureProxy";
-import * as TextureStoreT from "../../../vox/texture/TextureStore";
 import * as Plane3DEntityT from "../../../vox/entity/Plane3DEntity";
 import * as MaterialBaseT from "../../../vox/material//mcase/PingpongBlurMaterial";
-import * as RODrawStateT from "../../../vox/render/RODrawState";
+import * as RendererStateT from "../../../vox/render/RendererState";
 import * as RenderAdapterT from "../../../vox/render/RenderAdapter";
 import * as RenderProxyT from "../../../vox/render/RenderProxy";
 import * as RendererInstanceT from "../../../vox/scene/RendererInstance";
@@ -21,10 +20,9 @@ import * as RendererInstanceT from "../../../vox/scene/RendererInstance";
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import PingpongBlurMaterial = MaterialBaseT.vox.material.mcase.PingpongBlurMaterial;
-import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
+import RendererState = RendererStateT.vox.render.RendererState;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
@@ -40,7 +38,7 @@ export namespace vox
                 public static HORIZONTAL:number = 0;
                 public static VERTICAL:number = 1;
                 public static HORIZONTAL_AND_VERTICAL:number = 2;
-                private m_renderIns:RendererInstance = null;
+                private m_renderer:RendererInstance = null;
                 private m_screenPlane_0:Plane3DEntity = null;
                 private m_screenPlane_1:Plane3DEntity = null;
                 private m_blurCount:number = 15;
@@ -51,9 +49,9 @@ export namespace vox
                 private m_texs:RTTTextureProxy[] = [null,null];
                 private m_blurMode:number = 2;
                 //private m_synSizeWithViewport:boolean = false;
-                constructor(renderIns:RendererInstance)
+                constructor(renderer:RendererInstance)
                 {
-                    this.m_renderIns = renderIns;
+                    this.m_renderer = renderer;
                 }
                 setBlurMode(blurMode:number):void
                 {
@@ -77,12 +75,12 @@ export namespace vox
                 }
                 synViewportSize():void
 			    {
-                    let rc:RenderProxy = this.m_renderIns.getRenderProxy();
+                    let rc:RenderProxy = this.m_renderer.getRenderProxy();
                     rc.getRenderAdapter().synFBOSizeWithViewport();
 			    }
 			    asynViewportSize():void
 			    {
-                    let rc:RenderProxy = this.m_renderIns.getRenderProxy();
+                    let rc:RenderProxy = this.m_renderer.getRenderProxy();
                     rc.getRenderAdapter().asynFBOSizeWithViewport();
 			    }
                 public getDstTexture():RTTTextureProxy
@@ -99,14 +97,14 @@ export namespace vox
                     {
                         return this.m_texs[index];
                     }
-                    this.m_texs[index] = TextureStore.CreateRTTTex2D(this.m_renderIns.getViewWidth(),this.m_renderIns.getViewHeight());
+                    this.m_texs[index] = this.m_renderer.rttStore.createRTTTex2D(this.m_renderer.getViewWidth(),this.m_renderer.getViewHeight());
                     this.m_texs[index].minFilter = TextureConst.NEAREST;
                     this.m_texs[index].magFilter = TextureConst.NEAREST;
                     return this.m_texs[index];
                 }
                 private m_flagBoo:boolean = true;
                 runBegin(srcProcessIndex:number,dstProcessIndex:number):void
-                {let rc:RenderProxy = this.m_renderIns.getRenderProxy();
+                {let rc:RenderProxy = this.m_renderer.getRenderProxy();
                     let adapter:RenderAdapter = rc.getRenderAdapter();
 
                     let viewW:number = adapter.getViewportWidth();
@@ -133,8 +131,8 @@ export namespace vox
                         let plane3D = new Plane3DEntity();
                         plane3D.setMaterial( this.m_vMaterial );
                         plane3D.initialize(-1.0,-1.0, 2.0,2.0, [tex0]);
-                        this.m_renderIns.addEntity(plane3D,dstProcessIndex);
-                        plane3D.getDisplay().renderState = RenderStateObject.BACK_NORMAL_ALWAYS_STATE;
+                        this.m_renderer.addEntity(plane3D,dstProcessIndex);
+                        plane3D.getDisplay().renderState = RendererState.BACK_NORMAL_ALWAYS_STATE;
                         this.m_screenPlane_0 = plane3D;
                         this.m_screenPlane_0.setVisible(false);
                         //
@@ -143,8 +141,8 @@ export namespace vox
                         plane3D = new Plane3DEntity();
                         plane3D.setMaterial( this.m_hMaterial );
                         plane3D.initialize(-1.0,-1.0, 2.0,2.0, [tex1]);
-                        this.m_renderIns.addEntity(plane3D,dstProcessIndex);
-                        plane3D.getDisplay().renderState = RenderStateObject.BACK_NORMAL_ALWAYS_STATE;
+                        this.m_renderer.addEntity(plane3D,dstProcessIndex);
+                        plane3D.getDisplay().renderState = RendererState.BACK_NORMAL_ALWAYS_STATE;
                         this.m_screenPlane_1 = plane3D;
                         this.m_screenPlane_1.setVisible(false);
                     }
@@ -154,7 +152,7 @@ export namespace vox
                 }
                 run(srcProcessIndex:number,dstProcessIndex:number):void
                 {
-                    let rc:RenderProxy = this.m_renderIns.getRenderProxy();
+                    let rc:RenderProxy = this.m_renderer.getRenderProxy();
                     let adapter:RenderAdapter = rc.getRenderAdapter();
                     let viewW:number = adapter.getViewportWidth();
                     let viewH:number = adapter.getViewportHeight();
@@ -182,8 +180,8 @@ export namespace vox
                             let plane3D = new Plane3DEntity();
                             plane3D.setMaterial( this.m_vMaterial );
                             plane3D.initialize(-1.0,-1.0, 2.0,2.0, [tex0]);
-                            this.m_renderIns.addEntity(plane3D,dstProcessIndex);
-                            plane3D.getDisplay().renderState = RenderStateObject.BACK_NORMAL_ALWAYS_STATE;
+                            this.m_renderer.addEntity(plane3D,dstProcessIndex);
+                            plane3D.getDisplay().renderState = RendererState.BACK_NORMAL_ALWAYS_STATE;
                             this.m_screenPlane_0 = plane3D;
                             this.m_screenPlane_0.setVisible(false);
                             //
@@ -192,8 +190,8 @@ export namespace vox
                             plane3D = new Plane3DEntity();
                             plane3D.setMaterial( this.m_hMaterial );
                             plane3D.initialize(-1.0,-1.0, 2.0,2.0, [tex1]);
-                            this.m_renderIns.addEntity(plane3D,dstProcessIndex);
-                            plane3D.getDisplay().renderState = RenderStateObject.BACK_NORMAL_ALWAYS_STATE;
+                            this.m_renderer.addEntity(plane3D,dstProcessIndex);
+                            plane3D.getDisplay().renderState = RendererState.BACK_NORMAL_ALWAYS_STATE;
                             this.m_screenPlane_1 = plane3D;
                             this.m_screenPlane_1.setVisible(false);
                         }
@@ -204,7 +202,7 @@ export namespace vox
                     // 将srcProcessIndex 里面的显示内容绘制到 fbo, 以便获取初始数据源
                     adapter.setRenderToTexture(tex0, true, false, 0);
                     adapter.useFBO(true, true, false);
-                    this.m_renderIns.runAt(srcProcessIndex);
+                    this.m_renderer.runAt(srcProcessIndex);
                     // 设置模糊的背景色数据
                     for(let i:number = 0; i < this.m_blurCount; ++i)
                     {
@@ -216,7 +214,7 @@ export namespace vox
                             this.m_screenPlane_1.setVisible(false);
                             adapter.setRenderToTexture(tex1, true, false, 0);
                             adapter.useFBO(true, true, false);
-                            this.m_renderIns.runAt(dstProcessIndex);
+                            this.m_renderer.runAt(dstProcessIndex);
                         }
                         else
                         {
@@ -225,7 +223,7 @@ export namespace vox
                             this.m_screenPlane_1.setVisible(true);
                             adapter.setRenderToTexture(tex0, true, false, 0);
                             adapter.useFBO(true, true, false);
-                            this.m_renderIns.runAt(dstProcessIndex);
+                            this.m_renderer.runAt(dstProcessIndex);
                         }
                     }
                     this.m_screenPlane_0.setVisible(!this.m_screenPlane_0.getVisible());
@@ -234,13 +232,13 @@ export namespace vox
                     {
                         adapter.setRenderToBackBuffer();
                         rc.unlockRenderState();
-                        this.m_renderIns.runAt(dstProcessIndex);
+                        this.m_renderer.runAt(dstProcessIndex);
                     }
                 }
                 
                 runBlur(dstProcessIndex:number):void
                 {
-                    let rc:RenderProxy = this.m_renderIns.getRenderProxy();
+                    let rc:RenderProxy = this.m_renderer.getRenderProxy();
                     let adapter:RenderAdapter = rc.getRenderAdapter();
                     let viewW:number = adapter.getViewportWidth();
                     let viewH:number = adapter.getViewportHeight();
@@ -268,8 +266,8 @@ export namespace vox
                             let plane3D = new Plane3DEntity();
                             plane3D.setMaterial( this.m_vMaterial );
                             plane3D.initialize(-1.0,-1.0, 2.0,2.0, [tex0]);
-                            this.m_renderIns.addEntity(plane3D,dstProcessIndex);
-                            plane3D.getDisplay().renderState = RenderStateObject.BACK_NORMAL_ALWAYS_STATE;
+                            this.m_renderer.addEntity(plane3D,dstProcessIndex);
+                            plane3D.getDisplay().renderState = RendererState.BACK_NORMAL_ALWAYS_STATE;
                             this.m_screenPlane_0 = plane3D;
                             this.m_screenPlane_0.setVisible(false);
                             //
@@ -278,8 +276,8 @@ export namespace vox
                             plane3D = new Plane3DEntity();
                             plane3D.setMaterial( this.m_hMaterial );
                             plane3D.initialize(-1.0,-1.0, 2.0,2.0, [tex1]);
-                            this.m_renderIns.addEntity(plane3D,dstProcessIndex);
-                            plane3D.getDisplay().renderState = RenderStateObject.BACK_NORMAL_ALWAYS_STATE;
+                            this.m_renderer.addEntity(plane3D,dstProcessIndex);
+                            plane3D.getDisplay().renderState = RendererState.BACK_NORMAL_ALWAYS_STATE;
                             this.m_screenPlane_1 = plane3D;
                             this.m_screenPlane_1.setVisible(false);
                         }
@@ -300,7 +298,7 @@ export namespace vox
                             this.m_screenPlane_1.setVisible(false);
                             adapter.setRenderToTexture(tex1, true, false, 0);
                             adapter.useFBO(true, true, false);
-                            this.m_renderIns.runAt(dstProcessIndex);
+                            this.m_renderer.runAt(dstProcessIndex);
                         }
                         else
                         {
@@ -309,7 +307,7 @@ export namespace vox
                             this.m_screenPlane_1.setVisible(true);
                             adapter.setRenderToTexture(tex0, true, false, 0);
                             adapter.useFBO(true, true, false);
-                            this.m_renderIns.runAt(dstProcessIndex);
+                            this.m_renderer.runAt(dstProcessIndex);
                         }
                     }
                     this.m_screenPlane_0.setVisible(false);
@@ -318,7 +316,7 @@ export namespace vox
                 }
                 destroy():void
                 {
-                    this.m_renderIns = null;
+                    this.m_renderer = null;
                 }
             }
         }

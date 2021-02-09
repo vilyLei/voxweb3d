@@ -113,8 +113,12 @@ export namespace vox
             {
                 RenderColorMask.Reset();
                 RenderStateObject.Reset();
-                
                 RendererState.Rstate.roColorMask = -11;
+            }
+            static SetDrawState(rstate:RODrawState):void
+            {
+                RenderColorMask.Rstate = rstate;
+                RenderStateObject.Rstate = rstate;
             }
             static ResetInfo():void
             {
