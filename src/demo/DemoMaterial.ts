@@ -19,9 +19,9 @@ import * as Box3DEntityT from "../vox/entity/Box3DEntity";
 import * as Billboard3DEntityT from "../vox/entity/Billboard3DEntity";
 import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureStoreT from "../vox/texture/TextureStore";
 import * as TextureConstT from "../vox/texture/TextureConst";
-import * as ImageTexResLoaderT from "../vox/texture/ImageTexResLoader";
+import * as TextureBlockT from "../vox/texture/TextureBlock";
+import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as RendererSceneT from "../vox/scene/RendererScene";
 import * as BaseTestMaterialT from "../demo/material/BaseTestMaterial";
@@ -46,9 +46,9 @@ import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
-import ImageTexResLoader = ImageTexResLoaderT.vox.texture.ImageTexResLoader;
+import TextureBlock = TextureBlockT.vox.texture.TextureBlock;
+import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import BaseTestMaterial = BaseTestMaterialT.demo.material.BaseTestMaterial;
@@ -62,7 +62,8 @@ export namespace demo
         }
         private m_rscene:RendererScene = null;
         private m_rcontext:RendererInstanceContext = null;
-        private m_texLoader:ImageTexResLoader = new ImageTexResLoader();
+        private m_texLoader:ImageTextureLoader = null;//new ImageTextureLoader();
+        private m_texBlock:TextureBlock = null;//new ImageTextureLoader();
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_tarEntity:DisplayEntity = null;
@@ -96,12 +97,14 @@ export namespace demo
 
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
 
-                TextureStore.SetRenderer( this.m_rscene.getRenderer() );
+                this.m_texBlock = new TextureBlock();
+                this.m_texBlock.setRenderer(this.m_rscene.getRenderer());
+                this.m_texLoader = new ImageTextureLoader( this.m_texBlock );
                 
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
                 let tex4:TextureProxy = this.getImageTexByUrl("static/assets/yanj.jpg");
-                let tex5:TextureProxy = TextureStore.CreateRGBATex2D(16,16,new Color4(1.0,0.0,1.0));
+                let tex5:TextureProxy = this.m_texBlock.createRGBATex2D(16,16,new Color4(1.0,0.0,1.0));
                 
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.initialize(300.0);
@@ -184,7 +187,7 @@ void main(){
         {
             let pcontext:RendererInstanceContext = this.m_rcontext;
             // 纹理资源监测
-            TextureStore.Update();
+            this.m_texBlock.update();
             // show fps status
             this.m_statusDisp.statusInfo = "/"+pcontext.getTextureResTotal()+"/"+pcontext.getTextureAttachTotal();
             this.m_statusDisp.update();

@@ -18,8 +18,8 @@ import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
 import * as Billboard3DEntityT from "../vox/entity/Billboard3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureConstT from "../vox/texture/TextureConst";
-import * as TextureStoreT from "../vox/texture/TextureStore";
-import * as TexResLoaderT from "../vox/texture/TexResLoader";
+import * as TextureBlockT from "../vox/texture/TextureBlock";
+import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as EntityDispT from "./base/EntityDisp";
 
@@ -44,8 +44,8 @@ import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
 import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
+import TextureBlock = TextureBlockT.vox.texture.TextureBlock;
+import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 
@@ -56,13 +56,22 @@ export namespace demo
         constructor()
         {
         }
+
         private m_renderer:RendererInstance = null;
         private m_rcontext:RendererInstanceContext = null;
-        private m_texLoader:TexResLoader = new TexResLoader();
+        private m_texLoader:ImageTextureLoader;
+        private m_texBlock:TextureBlock;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_equeue:EntityDispQueue = new EntityDispQueue();
         
+        getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
+        {
+            let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
+            ptex.mipmapEnabled = mipmapEnabled;
+            if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
+            return ptex;
+        }
         initialize():void
         {
             console.log("DemoBase::initialize()......");
@@ -70,8 +79,6 @@ export namespace demo
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
                 
-                
-                if(this.m_statusDisp != null)this.m_statusDisp.initialize("rstatus");
                 let rparam:RendererParam = new RendererParam();
                 rparam.maxWebGLVersion = 2;
                 rparam.setCamProject(45.0,0.1,3000.0);
@@ -83,20 +90,16 @@ export namespace demo
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
-                TextureStore.SetRenderer( this.m_renderer );
+                this.m_texBlock = new TextureBlock();
+                this.m_texBlock.setRenderer( this.m_renderer );
+                this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
 
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/guangyun_H_0007.png");
-                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_02.jpg");
-                tex0.mipmapEnabled = true;
-                tex0.setWrap(TextureConst.WRAP_REPEAT);
-                tex1.mipmapEnabled = true;
-                tex1.setWrap(TextureConst.WRAP_REPEAT);
-                tex2.mipmapEnabled = true;
-                tex2.setWrap(TextureConst.WRAP_REPEAT);
-                tex3.mipmapEnabled = true;
-                
+                if(this.m_statusDisp != null)this.m_statusDisp.initialize("rstatus",stage3D.viewWidth - 180);
+                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.getImageTexByUrl("static/assets/guangyun_H_0007.png");
+                let tex3:TextureProxy = this.getImageTexByUrl("static/assets/flare_core_02.jpg");
+                                
                 RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 
@@ -181,10 +184,12 @@ export namespace demo
             console.log("mouseUpListener call, this.m_renderer: "+this.m_renderer.toString());
         }
         run():void
-        {            
+        {
+            this.m_texLoader.run();
+            this.m_texBlock.update();
+
             this.m_equeue.run();
             if(this.m_statusDisp != null)this.m_statusDisp.update();
-
             
             this.m_rcontext.setClearRGBColor3f(0.0, 0.5, 0.0);
             

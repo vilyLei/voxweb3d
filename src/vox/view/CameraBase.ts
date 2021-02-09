@@ -245,7 +245,8 @@ export namespace vox
                         this.m_viewH = ph;
                         this.m_viewHalfW = pw * 0.5;
                         this.m_viewHalfH = ph * 0.5;
-                        console.log("setViewSize, pw:"+pw+",ph:"+ph);
+                        
+                        //console.log("setViewSize, pw:"+pw+",ph:"+ph);
                         if(this.m_perspectiveEnabled)
                         {
                             if(this.m_project2Enabled)
