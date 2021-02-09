@@ -8,8 +8,7 @@ import * as CameraBaseT from "../vox/view/CameraBase";
 
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureConstT from "../vox/texture/TextureConst";
-import * as TextureStoreT from "../vox/texture/TextureStore";
-import * as ImageTexResLoaderT from "../vox/texture/ImageTexResLoader";
+import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as RendererSceneT from "../vox/scene/RendererScene";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
@@ -21,8 +20,7 @@ import Stage3D = Stage3DT.vox.display.Stage3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import ImageTexResLoader = ImageTexResLoaderT.vox.texture.ImageTexResLoader;
+import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 
 export namespace demo
@@ -38,7 +36,7 @@ export namespace demo
         protected m_camera:CameraBase = null;
         protected m_rparam:RendererParam = null;
         protected m_processTotal:number = 3;
-        protected m_texLoader:ImageTexResLoader = new ImageTexResLoader();
+        protected m_texLoader:ImageTextureLoader;
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
             let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -64,7 +62,8 @@ export namespace demo
                 this.m_stage3D = this.m_rscene.getStage3D();
                 this.m_camera = this.m_rscene.getCamera();
 
-                TextureStore.SetRenderer(this.m_rscene.getRenderer());
+                this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+                
                 this.initializeSceneObj();
             }
         }

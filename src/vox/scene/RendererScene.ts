@@ -22,6 +22,7 @@ import * as Entity3DNodeLinkerT from "../../vox/scene/Entity3DNodeLinker";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
 import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
 import * as RendererInstanceT from "../../vox/scene/RendererInstance";
+import * as TextureBlockT from "../../vox/texture/TextureBlock";
 import * as IRendererT from "../../vox/scene/IRenderer";
 import * as IRendererSpaceT from "../../vox/scene/IRendererSpace";
 import * as RendererSpaceT from "../../vox/scene/RendererSpace";
@@ -50,6 +51,7 @@ import Entity3DNodeLinker = Entity3DNodeLinkerT.vox.scene.Entity3DNodeLinker;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
+import TextureBlock = TextureBlockT.vox.texture.TextureBlock;
 import IRenderer = IRendererT.vox.scene.IRenderer;
 import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
 import RendererSpace = RendererSpaceT.vox.scene.RendererSpace;
@@ -69,7 +71,7 @@ export namespace vox
     {
         export class RendererScene implements IRenderer
         {
-            private static __s_uid:number = 0;
+            private static s_uid:number = 0;
             private m_uid:number = -1;
             private m_adapter:RenderAdapter = null;
             private m_renderProxy:RenderProxy = null;
@@ -94,9 +96,10 @@ export namespace vox
             private m_subscList:RendererSubScene[] = [];
             private m_subscListLen:number = 0;
 
+            readonly textureBlock:TextureBlock = new TextureBlock();
             constructor()
             {
-                this.m_uid = RendererScene.__s_uid++;
+                this.m_uid = RendererScene.s_uid++;
             }
             getUid():number
             {
@@ -291,6 +294,9 @@ export namespace vox
                     let stage3D:Stage3D = this.m_renderProxy.getStage3D();
                     this.m_viewW = stage3D.stageWidth;
                     this.m_viewH = stage3D.stageHeight;
+
+                    this.textureBlock.setRenderer(this.m_renderer);
+                    
                     if(this.m_rspace == null)
                     {
                         this.m_rspace = new RendererSpace();
@@ -512,6 +518,8 @@ export namespace vox
             // call this function per frame
             update():void
             {
+                this.textureBlock.update();
+
                 // camera visible test, ray cast test, Occlusion Culling test
 
                 this.m_mouseTestBoo = true;

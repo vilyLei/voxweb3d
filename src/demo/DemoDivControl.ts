@@ -18,9 +18,8 @@ import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
 import * as Box3DEntityT from "../vox/entity/Box3DEntity";
 import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureStoreT from "../vox/texture/TextureStore";
 import * as TextureConstT from "../vox/texture/TextureConst";
-import * as ImageTexResLoaderT from "../vox/texture/ImageTexResLoader";
+import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as RendererSceneT from "../vox/scene/RendererScene";
 import * as BaseTestMaterialT from "../demo/material/BaseTestMaterial";
@@ -44,9 +43,8 @@ import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
-import ImageTexResLoader = ImageTexResLoaderT.vox.texture.ImageTexResLoader;
+import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import BaseTestMaterial = BaseTestMaterialT.demo.material.BaseTestMaterial;
@@ -60,7 +58,7 @@ export namespace demo
         }
         private m_rscene:RendererScene = null;
         private m_rcontext:RendererInstanceContext = null;
-        private m_texLoader:ImageTexResLoader = new ImageTexResLoader();
+        private m_texLoader:ImageTextureLoader;// = new ImageTextureLoader();
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_tarEntity:DisplayEntity = null;
@@ -95,7 +93,8 @@ export namespace demo
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
-                this.m_texLoader.setRenderer(this.m_rscene.getRenderer());
+                this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);

@@ -136,8 +136,8 @@
 //  import * as DemoDepthBlur from "./demo/DemoDepthBlur";
 //  import Demo = DemoDepthBlur.demo.DemoDepthBlur;
 
-import * as DemoBase from "./demo/DemoBase";
-import Demo = DemoBase.demo.DemoBase;
+//  import * as DemoBase from "./demo/DemoBase";
+//  import Demo = DemoBase.demo.DemoBase;
 
 //  import * as DemoPNG from "./example/DemoPNG";
 //  import Demo = DemoPNG.example.DemoPNG;
@@ -205,8 +205,8 @@ import Demo = DemoBase.demo.DemoBase;
 //  import * as DemoDeepTransparent from "./demo/DemoDeepTransparent";
 //  import Demo = DemoDeepTransparent.demo.DemoDeepTransparent;
 
-//  import * as DemoDeepTransparent2 from "./demo/DemoDeepTransparent2";
-//  import Demo = DemoDeepTransparent2.demo.DemoDeepTransparent2;
+import * as DemoDeepTransparent2 from "./demo/DemoDeepTransparent2";
+import Demo = DemoDeepTransparent2.demo.DemoDeepTransparent2;
 
 //  import * as DemoGpuTexMana from "./demo/DemoGpuTexMana";
 //  import Demo = DemoGpuTexMana.demo.DemoGpuTexMana;
