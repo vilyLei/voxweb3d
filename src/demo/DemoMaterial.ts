@@ -67,6 +67,7 @@ export namespace demo
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_matrixA:Matrix4 = Matrix4Pool.GetMatrix();
+        private m_matrixA:Matrix4 = Matrix4Pool.GetMatrix();
 
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {

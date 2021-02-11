@@ -1315,8 +1315,8 @@ export namespace vox
 				}
 				else
 				{
-					//console.log("Matrix4Pool::GetMatrix(), Error Matrix4Pool is empty !!!");
-					return new Matrix4();
+					//console.error("Matrix4Pool::GetMatrix(), Error Matrix4Pool is empty !!!");
+					mat =  new Matrix4();
 				}
                 return mat;
             }
@@ -1327,10 +1327,10 @@ export namespace vox
 					let uid:number = mat.getUid();
 					if(uid >= Matrix4Pool.s_baseUid && uid < Matrix4Pool.s_maxUid)
 					{
-						if(Matrix4Pool.s_matFlagList[uid] == Matrix4Pool.S_FLAG_BUSY)
+						if(Matrix4Pool.s_matFlagList[uid - Matrix4Pool.s_baseUid] == Matrix4Pool.S_FLAG_BUSY)
 						{
 							Matrix4Pool.m_freeIdList.push(uid);
-							Matrix4Pool.s_matFlagList[uid] = Matrix4Pool.S_FLAG_FREE;
+							Matrix4Pool.s_matFlagList[uid - Matrix4Pool.s_baseUid] = Matrix4Pool.S_FLAG_FREE;
 						}
 					}
 
