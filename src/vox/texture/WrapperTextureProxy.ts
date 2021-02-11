@@ -82,29 +82,28 @@ export namespace vox
                     this.m_tex.__$detachThis();
                 }
             }
-            dataEnough():boolean
+            /**
+             * This function only be be called by the renderer inner system.
+             */
+            __$$use(rc:RenderProxy):void
             {
-                return this.m_tex.dataEnough();
+                this.m_tex.__$$use(rc);
             }
-            __$use(rc:RenderProxy):void
-            {
-                this.m_tex.__$use(rc);
-            }
+            /**
+             * @returns the texture gpu resource is enabled or not.
+             */
             isGpuEnabled():boolean
             {
                 return this.m_tex.isGpuEnabled();
             }
-            getSamplerType():number
-            {
-                return this.m_tex.getSamplerType();
-            }
             /**
-             * @returns return value is TextureConst.TEXTURE_2D or TextureConst.TEXTURE_CUBE or TextureConst.TEXTURE_3D
+             * @returns The fragment processor texture sampler type.
              */
-            getTargetType():number
+            getSampler():number
             {
-                return this.m_tex.getTargetType();
+                return this.m_tex.getSampler();
             }
+            
             __$setUpdateStatus(s:number):void
             {
                 this.m_tex.__$setUpdateStatus(s);
@@ -113,15 +112,17 @@ export namespace vox
             {
                 return this.m_tex.__$getUpdateStatus();
             }
-            // sub class override
             __$updateToGpu(rc:RenderProxy):void
             {
                 this.m_tex.__$updateToGpu(rc);
             }
-            //  sub class can not override!!!!
-            upload(rc:RenderProxy):void
+            /**
+             * This function only be be called by the renderer inner system.
+             * if sub class override this function, it must does call this function.
+             */
+            __$$upload(rc:RenderProxy):void
             {
-                this.m_tex.upload(rc);
+                this.m_tex.__$$upload(rc);
             }
             
             __$destroy():void
@@ -130,11 +131,26 @@ export namespace vox
                 {
                     if(this.m_tex != null)
                     {
-                        this.m_tex.__$attachThis();
+                        this.m_tex.__$detachThis();
                     }
                     this.m_tex = null;
+                    super.__$destroy();
                 }
-                super.__$destroy();
+            }
+
+            /**
+             * @returns the texture data is enough or not.
+             */
+            isDataEnough():boolean
+            {
+                return this.m_tex.isDataEnough();
+            }
+            /**
+             * @returns return value is TextureConst.TEXTURE_2D or TextureConst.TEXTURE_CUBE or TextureConst.TEXTURE_3D
+             */
+            getTargetType():number
+            {
+                return this.m_tex.getTargetType();
             }
             toString():string
             {

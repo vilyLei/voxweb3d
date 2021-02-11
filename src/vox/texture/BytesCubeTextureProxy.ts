@@ -57,7 +57,7 @@ export namespace vox
                 this.internalFormat = TextureFormat.RGBA;
                 this.unpackAlignment = 4;
             }
-            uploadFromBytesCubeFaceAt(index:number,bytes:Uint8Array,pw:number,ph:number, miplevel:number = 0)
+            setDataFromBytesToFaceAt(index:number,bytes:Uint8Array,pw:number,ph:number, miplevel:number = 0)
             {
                 if(this.m_imgDataList == null)
                 {

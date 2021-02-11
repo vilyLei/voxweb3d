@@ -35,7 +35,7 @@ export namespace vox
                 this.mipmapEnabled = true;
             }
             
-            uploadFromBytesCubeFaceAt(index:number,bytes:Float32Array,pw:number,ph:number, miplevel:number = 0)
+            setDataFromBytesToFaceAt(index:number,bytes:Float32Array,pw:number,ph:number, miplevel:number = 0)
             {
                 if(this.m_imgDataList == null)
                 {
@@ -79,7 +79,7 @@ export namespace vox
             }
             __$destroy():void
             {
-                if(!this.isGpuEnabled())
+                if(this.getAttachCount() < 1)
                 {
                     if( this.m_imgDataList != null)
                     {

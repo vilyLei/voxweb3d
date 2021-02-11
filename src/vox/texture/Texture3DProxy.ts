@@ -34,6 +34,7 @@ export namespace vox
                 this.m_tex3DDepth = tex3DDepth;
                 this.m_texTarget = TextureTarget.TEXTURE_3D;
                 this.m_type = TextureProxyType.Texture3D;
+                this.unpackAlignment = 1;
             }
             getDepth():number{return this.m_tex3DDepth;}
             uploadFromTypedArray(bytesData:Uint8Array, miplevel:number = 0):void
@@ -68,7 +69,7 @@ export namespace vox
             }
             __$destroy():void
             {
-                if(!this.isGpuEnabled())
+                if(this.getAttachCount() < 1)
                 {
                     this.m_bytes = null;
                     console.log("Texture3DProxy::destroy(), destroy a Texture3DProxy instance...");

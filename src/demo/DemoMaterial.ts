@@ -59,12 +59,13 @@ export namespace demo
         constructor()
         {
         }
+
         private m_rscene:RendererScene = null;
         private m_rcontext:RendererInstanceContext = null;
         private m_texLoader:ImageTextureLoader = null;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
-        private m_tarEntity:DisplayEntity = null;
+
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
             let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -178,7 +179,6 @@ void main(){
                 cly.setVtxTransformMatrix(transMat);
                 cly.initialize(100.0,200.0,15,[tex1]);
                 this.m_rscene.addEntity(cly);
-                this.m_tarEntity = cly;
             }
         }
         run():void

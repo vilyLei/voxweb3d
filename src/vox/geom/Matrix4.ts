@@ -1229,26 +1229,26 @@ export namespace vox
 		
         export class Matrix4Pool
         {
-            private static __S_FLAG_BUSY = 1;
-            private static __S_FLAG_FREE = 0;
+            private static S_FLAG_BUSY:number = 1;
+            private static S_FLAG_FREE:number = 0;
             private static s_matList:Matrix4[] = [];
             private static s_matFlagList:number[] = [];
             private static m_freeIdList:number[] = [];        
-			private static ___mfs32Arr:Float32Array = null;
-			private static ___mtotal:number = 0;
+			private static s_mfs32Arr:Float32Array = null;
+			private static s_mtotal:number = 0;
 
 			static GetMatTotal():number
 			{
-				return Matrix4Pool.___mtotal;
+				return Matrix4Pool.s_mtotal;
 			}
 			static GetFS32Arr():Float32Array
 			{
-				return Matrix4Pool.___mfs32Arr;
+				return Matrix4Pool.s_mfs32Arr;
 			}
 			static SetFS32Arr(fs32:Float32Array):void
 			{
-				Matrix4Pool.___mfs32Arr = fs32;
-				let total = Matrix4Pool.___mtotal;
+				Matrix4Pool.s_mfs32Arr = fs32;
+				let total = Matrix4Pool.s_mtotal;
 				let list:Matrix4[] = Matrix4Pool.s_matList;
 				for(let i:number = 0; i < total; ++i)
 				{
@@ -1270,28 +1270,28 @@ export namespace vox
 				{
 					total = 512;
 				}
-				if(Matrix4Pool.___mtotal < 1)
+				if(Matrix4Pool.s_mtotal < 1)
 				{
 					//console.log("Matrix4Pool::Allocate(), Matrix total: "+total);
-					Matrix4Pool.___mtotal = total;
-					Matrix4Pool.___mfs32Arr = new Float32Array(total * 16);
+					Matrix4Pool.s_mtotal = total;
+					Matrix4Pool.s_mfs32Arr = new Float32Array(total * 16);
 					let i:number = 0;
-					let mat:Matrix4 = new Matrix4(Matrix4Pool.___mfs32Arr,i * 16);
+					let mat:Matrix4 = new Matrix4(Matrix4Pool.s_mfs32Arr,i * 16);
 					let uid:number = mat.getUid();
 					for(; i < uid; ++i)
 					{
 						Matrix4Pool.s_matList.push( null );
-                    	Matrix4Pool.s_matFlagList.push(Matrix4Pool.__S_FLAG_FREE);
+                    	Matrix4Pool.s_matFlagList.push(Matrix4Pool.S_FLAG_FREE);
 					}
 					Matrix4Pool.s_matList.push( mat );
-					Matrix4Pool.s_matFlagList.push(Matrix4Pool.__S_FLAG_FREE);
+					Matrix4Pool.s_matFlagList.push(Matrix4Pool.S_FLAG_FREE);
 					Matrix4Pool.m_freeIdList.push(mat.getUid());
 
 					for(i = 1; i < total; ++i)
 					{
-						mat = new Matrix4(Matrix4Pool.___mfs32Arr,i * 16);
+						mat = new Matrix4(Matrix4Pool.s_mfs32Arr,i * 16);
 						Matrix4Pool.s_matList.push( mat );
-                    	Matrix4Pool.s_matFlagList.push(Matrix4Pool.__S_FLAG_FREE);
+                    	Matrix4Pool.s_matFlagList.push(Matrix4Pool.S_FLAG_FREE);
 						Matrix4Pool.m_freeIdList.push(mat.getUid());
 					}
 				}
@@ -1304,7 +1304,7 @@ export namespace vox
                 {
 					mat = Matrix4Pool.s_matList[index];
 					mat.identity();
-					Matrix4Pool.s_matFlagList[index] = Matrix4Pool.__S_FLAG_BUSY;
+					Matrix4Pool.s_matFlagList[index] = Matrix4Pool.S_FLAG_BUSY;
 					//console.log("Get a free Matrix !!!");
 				}
 				else
@@ -1315,10 +1315,10 @@ export namespace vox
             }
             static RetrieveMatrix(mat:Matrix4):void
             {
-                if(mat != null && mat.getUid() >= 0 && Matrix4Pool.s_matFlagList[mat.getUid()] == Matrix4Pool.__S_FLAG_BUSY)
+                if(mat != null && mat.getUid() >= 0 && Matrix4Pool.s_matFlagList[mat.getUid()] == Matrix4Pool.S_FLAG_BUSY)
                 {
                     Matrix4Pool.m_freeIdList.push(mat.getUid());
-                    Matrix4Pool.s_matFlagList[mat.getUid()] = Matrix4Pool.__S_FLAG_FREE;
+                    Matrix4Pool.s_matFlagList[mat.getUid()] = Matrix4Pool.S_FLAG_FREE;
                 }
             }
 		}

@@ -9,7 +9,6 @@ import * as TextureDataT from "../../vox/texture/RawTexData";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
-import * as RenderBufferUpdaterT from "../../vox/render/RenderBufferUpdater";
 import * as ITexDataT from "../../vox/texture/ITexData";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
@@ -19,7 +18,6 @@ import RawTexData = TextureDataT.vox.texture.RawTexData;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import RenderBufferUpdater = RenderBufferUpdaterT.vox.render.RenderBufferUpdater;
 import ITexData = ITexDataT.vox.texture.ITexData;
 
 export namespace vox
@@ -38,7 +36,10 @@ export namespace vox
             }
             private m_texData:RawTexData = null;
             private m_texDatas:ITexData[] = null;
-            uploadFromBytes(bytes:Uint8Array | Uint16Array | Float32Array, miplevel:number = 0,imgWidth:number = -1,imgHeight:number = -1,offsetx:number = 0,offsety:number = 0,rebuild:boolean = false):void
+            /**
+             * 设置 Bytes 纹理的纹理数据
+             */
+            setDataFromBytes(bytes:Uint8Array | Uint16Array | Float32Array, miplevel:number = 0,imgWidth:number = -1,imgHeight:number = -1,offsetx:number = 0,offsety:number = 0,rebuild:boolean = false):void
             {
                 if(bytes != null && imgWidth > 0 && imgHeight > 0)
                 {
@@ -80,11 +81,6 @@ export namespace vox
                             this.m_texHeight = imgHeight;
                             this.m_bytes = bytes;
                         }
-                        
-                        if(this.isGpuEnabled() && this.m_texData.data != null)
-                        {
-                            this.m_slot.addRenderBuffer(this, this.getResUid());
-                        }
                         td.data = bytes;
                         td.status = 0;// 0表示 更新纹理数据而不会重新开辟空间, 1表示需要重新开辟空间并更新纹理数据, -1表示不需要更新
                         if(td.width < imgWidth || td.height < imgHeight || rebuild)
@@ -108,48 +104,45 @@ export namespace vox
                 if(this.m_texData != null)
                 {
                     let gl:any = rc.RContext;
-                    this.updateTexData(gl,this.m_texData, this.m_texDatas);                    
+                    this.dataUploadToGpu(gl,this.m_texData, this.m_texDatas);                    
                 }
             }
             __$updateToGpu(rc:RenderProxy):void
             {
-                if(this.isGpuEnabled())
+                // 这里之所以用这种方式判断，是为了运行时支持多 gpu context
+                if(rc.Texture.hasTextureRes(this.getResUid()))
                 {
-                    if(this.m_dataChanged)
-                    {
-                        let gl:any = rc.RContext;
+                    let gl:any = rc.RContext;
 
-                        let len:number = this.m_subDataList != null?this.m_subDataList.length:0;
-                        this.__$updateToGpuBegin(rc);
-                        if(len > 0)
+                    let len:number = this.m_subDataList != null?this.m_subDataList.length:0;
+                    this.__$updateToGpuBegin(rc);
+                    if(len > 0)
+                    {
+                        let i:number = 0;
+                        let d:RawTexData = null;
+                        let interType:number = TextureFormat.ToGL(gl,this.internalFormat);
+                        let format:number = TextureFormat.ToGL(gl,this.srcFormat);
+                        let type:number = TextureDataType.ToGL(gl, this.dataType);
+                        for(; i < len; ++i)
                         {
-                            let i:number = 0;
-                            let d:RawTexData = null;
-                            let interType:number = TextureFormat.ToGL(gl,this.internalFormat);
-                            let format:number = TextureFormat.ToGL(gl,this.srcFormat);
-                            let type:number = TextureDataType.ToGL(gl, this.dataType);
-                            for(; i < len; ++i)
-                            {
-                                d = this.m_subDataList.pop();
-                                d.updateToGpu(gl,this.m_samplerTarget,interType,format,type);
-                                RawTexData.Restore(d);
-                            }
-                            //concole.log("#####upload sub texture pix data!");
+                            d = this.m_subDataList.pop();
+                            d.updateToGpu(gl,this.m_sampler,interType,format,type);
+                            RawTexData.Restore(d);
                         }
-                        if(this.m_texData != null)
-                        {
-                            this.updateTexData(gl,this.m_texData, this.m_texDatas);                            
-                            this.__$buildParam(gl);
-                            this.m_generateMipmap = true;
-                        }
-                        this.__$updateToGpuEnd(gl);
-                        this.m_dataChanged = false;
+                        //concole.log("#####upload sub texture pix data!");
                     }
+                    if(this.m_texData != null)
+                    {
+                        this.dataUploadToGpu(gl,this.m_texData, this.m_texDatas);                            
+                        this.__$buildParam(gl);
+                        this.m_generateMipmap = true;
+                    }
+                    this.__$updateToGpuEnd(gl);
                 }
             }
             
-            // 对mipmap level 的纹理数据的更新
-        	updateSubBytes(bytes:Uint8Array | Uint16Array | Float32Array,px:number,py:number,twidth:number,theight:number, miplevel:number = 0):void
+            // 对mipmap level 的纹理数据的部分更新
+        	setPartDataFromeBytes(bytes:Uint8Array | Uint16Array | Float32Array,px:number,py:number,twidth:number,theight:number, miplevel:number = 0):void
             {
                 if(this.m_subDataList == null)
                 {
@@ -164,11 +157,6 @@ export namespace vox
                 d.width = twidth;
                 d.height = theight;
                 this.m_subDataList.push(d);
-                if(!this.m_dataChanged)
-                {
-                    this.m_dataChanged = true;
-                    RenderBufferUpdater.GetInstance().__$addBuf(this);
-                }
             }
             getPixels(px:number,py:number, pw:number,ph:number,outBytes:Uint8Array | Uint16Array | Float32Array):void
             {
@@ -237,7 +225,7 @@ export namespace vox
             }
             __$destroy():void
             {
-                if(!this.isGpuEnabled())
+                if(this.getAttachCount() < 1)
                 {
                     if(this.m_texDatas != null)
                     {

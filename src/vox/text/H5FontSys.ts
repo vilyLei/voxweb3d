@@ -430,7 +430,7 @@ export class H5FontSystem
         k++;
 	  	}
 	  }
-	  this.m_texBase.updateSubBytes(rawBytes,this.m_fontTexDataBuilder.pixMinPos.x,this.m_fontTexDataBuilder.pixMinPos.y,dw,dh);
+	  this.m_texBase.setPartDataFromeBytes(rawBytes,this.m_fontTexDataBuilder.pixMinPos.x,this.m_fontTexDataBuilder.pixMinPos.y,dw,dh);
   }
   private createInitTexAndChars():void
   {
@@ -465,7 +465,7 @@ export class H5FontSystem
       }
     }
     //
-    this.m_texBase.uploadFromBytes(this.m_areaBytes,0,this.m_texWidth,this.m_texHeight);
+    this.m_texBase.setDataFromBytes(this.m_areaBytes,0,this.m_texWidth,this.m_texHeight);
   }
   getTextureAt(index:number = 0):BytesTextureProxy
   {

@@ -178,7 +178,7 @@ export namespace vox
                     bytes.set(fs,k);
                     k += 4;
                 }
-                tex.uploadFromBytes(bytes,0, pw,ph);
+                tex.setDataFromBytes(bytes,0, pw,ph);
                 TextureStore.s_renderer.textureSlot.addTexture(tex);
                 return tex;
             }
@@ -192,13 +192,13 @@ export namespace vox
                 let bytes:Uint8Array = new Uint8Array(size);
                 let value:number = Math.round(alpha * 255.0);
                 bytes.fill(value,0,size);
-                tex.uploadFromBytes(bytes,0, pw,ph);
+                tex.setDataFromBytes(bytes,0, pw,ph);
                 return tex;
             }
             static CreateAlphaTexBytes2D(pw:number,ph:number,bytes:Uint8Array):BytesTextureProxy
             {
                 let tex:BytesTextureProxy = TextureStore.CreateBytesTex(pw,ph);             
-                tex.uploadFromBytes(bytes, 0, pw, ph);
+                tex.setDataFromBytes(bytes, 0, pw, ph);
                 tex.toAlphaFormat();
                 TextureStore.s_renderer.textureSlot.addTexture(tex);
                 return tex;

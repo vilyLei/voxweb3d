@@ -17,7 +17,7 @@ export namespace vox
             private static s_list:ImgTexData[] = [];
             width:number = 0;
             height:number = 0;
-            data:ImageData | HTMLImageElement | HTMLCanvasElement = null;
+            data:ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap = null;
             miplevel:number = 0;
             // 0表示 更新纹理数据而不会重新开辟空间, 1表示需要重新开辟空间并更新纹理数据, -1表示不需要更新
             status:number = 1;

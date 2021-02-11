@@ -90,8 +90,8 @@ export namespace vox
         export class RPONodeBuider
         {
 
-            private static __S_FLAG_BUSY = 1;
-            private static __S_FLAG_FREE = 0;
+            private static S_FLAG_BUSY = 1;
+            private static S_FLAG_FREE = 0;
         
             private static m_nodeListLen:number = 0;
             private static m_nodeList:RPONode[] = [];
@@ -124,7 +124,7 @@ export namespace vox
                 {
                     node = RPONodeBuider.m_nodeList[index];
                     node.uid = index;
-                    RPONodeBuider.m_nodeFlagList[index] = RPONodeBuider.__S_FLAG_BUSY;
+                    RPONodeBuider.m_nodeFlagList[index] = RPONodeBuider.S_FLAG_BUSY;
                 }
                 else
                 {
@@ -132,7 +132,7 @@ export namespace vox
                     node = new RPONode();
                     RPONodeBuider.m_nodeList.push( node );
                     RPONodeBuider.m_nodeIndexPptFlagList.push(0);
-                    RPONodeBuider.m_nodeFlagList.push(RPONodeBuider.__S_FLAG_BUSY);
+                    RPONodeBuider.m_nodeFlagList.push(RPONodeBuider.S_FLAG_BUSY);
                     node.uid = RPONodeBuider.m_nodeListLen;
                     RPONodeBuider.m_nodeListLen++;
                 }
@@ -140,10 +140,10 @@ export namespace vox
             }
             static Restore(pnode:RPONode):void
             {
-                if(pnode != null && pnode.uid >= 0 && RPONodeBuider.m_nodeFlagList[pnode.uid] == RPONodeBuider.__S_FLAG_BUSY)
+                if(pnode != null && pnode.uid >= 0 && RPONodeBuider.m_nodeFlagList[pnode.uid] == RPONodeBuider.S_FLAG_BUSY)
                 {
                     RPONodeBuider.m_freeIdList.push(pnode.uid);
-                    RPONodeBuider.m_nodeFlagList[pnode.uid] = RPONodeBuider.__S_FLAG_FREE;
+                    RPONodeBuider.m_nodeFlagList[pnode.uid] = RPONodeBuider.S_FLAG_FREE;
                     RPOUnitBuider.Restore(pnode.unit);
                     pnode.reset();
                 }

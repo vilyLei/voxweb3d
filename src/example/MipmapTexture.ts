@@ -73,7 +73,7 @@ export namespace example
                 let mips:any[] = ImageTool.CreateJpgImageMipmaps(img);
                 for(let i:number = 0,len:number = mips.length; i < len; ++i)
                 {
-                    ptex.uploadFromImage(mips[i],i);
+                    ptex.setDataFromImage(mips[i],i);
                 }
             }
             img.src = purl;
@@ -92,7 +92,7 @@ export namespace example
                 for(let i:number = 0,len:number = mips.length; i < len; ++i)
                 {
                     obj = mips[i];
-                    ptex.uploadFromBytes(obj.data,i,obj.width,obj.height);
+                    ptex.setDataFromBytes(obj.data,i,obj.width,obj.height);
                 }
 
             }
@@ -126,7 +126,7 @@ export namespace example
             }
             tex.minFilter = TextureConst.LINEAR;
             tex.magFilter = TextureConst.LINEAR;
-            tex.uploadFromBytes(vs,0,tex.getWidth(),tex.getHeight());
+            tex.setDataFromBytes(vs,0,tex.getWidth(),tex.getHeight());
             return tex;
         }
         initialize():void
@@ -202,18 +202,18 @@ export namespace example
             let img:any = new Image();
             img.onload = function(params:any)
             {
-                //      ptex.uploadFromImage(img);
+                //      ptex.setDataFromImage(img);
                 //  let mips:any[] = ImageTool.CreateJpgImageMipmaps(img);
                 //  console.log("BBBBBB 111 mips: ",mips);
                 //  let px:number = 0;
                 //  let py:number = 0;
                 //  for(let i:number = 0,len:number = mips.length; i < len; ++i)
                 //  {
-                //      ptex.uploadFromImage(mips[i],i,px,py);
+                //      ptex.setDataFromImage(mips[i],i,px,py);
                 //      px += 10;
                 //      py += 10;
                 //  }
-                bytetex.uploadFromBytes(ImageTool.CreateJpgBytesImg(img),1, img.width,img.height);
+                bytetex.setDataFromBytes(ImageTool.CreateJpgBytesImg(img),1, img.width,img.height);
             }//testFT4            
             img.src = "static/assets/yanj.jpg";
             return;
@@ -221,14 +221,14 @@ export namespace example
             /*
             img.onload = function(params:any)
             {
-                //      ptex.uploadFromImage(img);
+                //      ptex.setDataFromImage(img);
                 let mips:any[] = ImageTool.CreateJpgImageMipmaps(img);
                 console.log("BBBBBB 111 mips: ",mips);
                 let px:number = 0;
                 let py:number = 0;
                 for(let i:number = 0,len:number = mips.length; i < len; ++i)
                 {
-                    ptex.uploadFromImage(mips[i],i,px,py);
+                    ptex.setDataFromImage(mips[i],i,px,py);
                     px += 10;
                     py += 10;
                 }
@@ -242,7 +242,7 @@ export namespace example
             {
                 img.onload = function(params:any)
                 {
-                    selfT.m_targetTex.uploadFromImage(img,1);
+                    selfT.m_targetTex.setDataFromImage(img,1);
                 }
                 //img.src = "static/assets/broken_iron.jpg";
                 img.src = "static/assets/yanj.jpg";
@@ -251,7 +251,7 @@ export namespace example
             {
                 img.onload = function(params:any)
                 {
-                    selfT.m_targetTex.uploadFromImage(img,0,selfT.m_px,selfT.m_py);
+                    selfT.m_targetTex.setDataFromImage(img,0,selfT.m_px,selfT.m_py);
                 }
                 img.src = "static/assets/partile_tex_001.jpg";
             }
@@ -259,7 +259,7 @@ export namespace example
             {
                 img.onload = function(params:any)
                 {
-                    selfT.m_targetTex.uploadFromImage(img,0,0,0);
+                    selfT.m_targetTex.setDataFromImage(img,0,0,0);
                 }
                 img.src = "static/assets/broken_iron.jpg";
                 this.m_flag = -1;

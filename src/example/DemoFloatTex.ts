@@ -90,7 +90,7 @@ export namespace demo
             tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
             for(k = 0; k < 6; ++k)
             {
-                tex.uploadFromBytesCubeFaceAt(k,vs,tex.getWidth(),tex.getHeight(),0);
+                tex.setDataFromBytesToFaceAt(k,vs,tex.getWidth(),tex.getHeight(),0);
             }
             return tex;
         }
@@ -121,7 +121,7 @@ export namespace demo
 
             tex.mipmapEnabled = true;
             tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
-            tex.uploadFromBytes(vs,0);
+            tex.setDataFromBytes(vs,0);
             return tex;
         }
         
@@ -148,7 +148,7 @@ export namespace demo
                     vs[k+3] = c;
                 }
             }
-            tex.uploadFromBytes(vs,0);
+            tex.setDataFromBytes(vs,0);
             return tex;
             
         }

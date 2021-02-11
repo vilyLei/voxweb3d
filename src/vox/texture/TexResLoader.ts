@@ -69,7 +69,7 @@ export namespace vox
                     for(; i < len; ++i)
                     {
                         //trace("m_img size: "+m_img.width+","+m_img.height);
-                        thisT.m_texList[i].uploadFromImage(img,thisT.m_mLvList[i]);
+                        thisT.m_texList[i].setDataFromImage(img,thisT.m_mLvList[i]);
                         thisT.m_texList[i].name = thisT.m_img.src;
                     }
                 }
@@ -129,7 +129,7 @@ export namespace vox
                             for(i = 0; i < 6; ++i)
                             {
                                 //trace("m_imgs["+i+"] size: "+m_imgs[i].width+","+m_imgs[i].height);
-                                thisT.m_texList[0].uploadFromImageCubeFaceAt(i,thisT.m_imgs[i],thisT.m_mLvList[0]);
+                                thisT.m_texList[0].setDataFromImageToFaceAt(i,thisT.m_imgs[i],thisT.m_mLvList[0]);
                             }
                             thisT.m_texList[0].name = thisT.m_imgs.src;
                         }

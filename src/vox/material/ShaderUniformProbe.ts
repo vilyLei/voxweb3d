@@ -6,10 +6,10 @@
 /***************************************************************************/
 
 import * as MaterialConstT from "../../vox/material/MaterialConst";
-import * as RenderDataSlotT from "../../vox/material/RenderDataSlot";
+import * as RenderDataSlotT from "../../vox/material/UniformDataSlot";
 
 import MaterialConst = MaterialConstT.vox.material.MaterialConst;
-import RenderDataSlot = RenderDataSlotT.vox.material.RenderDataSlot;
+import UniformDataSlot = RenderDataSlotT.vox.material.UniformDataSlot;
 
 export namespace vox
 {
@@ -20,7 +20,7 @@ export namespace vox
             constructor()
             {
             }
-            private m_slot:RenderDataSlot = null;
+            private m_slot:UniformDataSlot = null;
             private m_fsList:Float32Array[] = null;
             private m_fsIndex:number = 0;
             rst:number = -1;
@@ -89,7 +89,7 @@ export namespace vox
             }
             bindSlotAt(i:number):void
             {
-                let slot:RenderDataSlot = RenderDataSlot.GetSlotAt(i);
+                let slot:UniformDataSlot = UniformDataSlot.GetSlotAt(i);
                 if(this.rst >= 0)
                 {
                     this.reset();

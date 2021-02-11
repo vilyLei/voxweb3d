@@ -49,13 +49,13 @@ export namespace vox
                 this.internalFormat = TextureFormat.RGBA;
                 this.unpackAlignment = 4;
             }
-            uploadFromBytes(bytes:Uint8Array, miplevel:number = 0,imgWidth:number = -1,imgHeight:number = -1,offsetx:number = 0,offsety:number = 0,rebuild:boolean = false):void
+            setDataFromBytes(bytes:Uint8Array, miplevel:number = 0,imgWidth:number = -1,imgHeight:number = -1,offsetx:number = 0,offsety:number = 0,rebuild:boolean = false):void
             {
-                super.uploadFromBytes(bytes, miplevel, imgWidth, imgHeight, offsetx, offsety, rebuild);
+                super.setDataFromBytes(bytes, miplevel, imgWidth, imgHeight, offsetx, offsety, rebuild);
             }
-            updateSubBytes(bytes:Uint8Array,px:number,py:number,twidth:number,theight:number, miplevel:number = 0):void
+            setPartDataFromeBytes(bytes:Uint8Array,px:number,py:number,twidth:number,theight:number, miplevel:number = 0):void
             {
-                super.updateSubBytes(bytes, px,py, twidth,theight, miplevel);
+                super.setPartDataFromeBytes(bytes, px,py, twidth,theight, miplevel);
             }
             getPixels(px:number,py:number, pw:number,ph:number,outBytes:Uint8Array):void
             {

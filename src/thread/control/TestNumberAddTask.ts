@@ -81,8 +81,8 @@ export namespace thread
                 this.sendStatus = -1;
             }
             //
-            private static __S_FLAG_BUSY:number = 1;
-            private static __S_FLAG_FREE:number = 0;
+            private static S_FLAG_BUSY:number = 1;
+            private static S_FLAG_FREE:number = 0;
             private static m_unitFlagList:number[] = [];
             private static m_unitIndexPptFlagList:number[] = [];
             private static m_unitListLen:number = 0;
@@ -105,14 +105,14 @@ export namespace thread
                 {
                     sd = NumberAddSendData.m_unitList[index];
                     sd.dataIndex = index;
-                    NumberAddSendData.m_unitFlagList[index] = NumberAddSendData.__S_FLAG_BUSY;
+                    NumberAddSendData.m_unitFlagList[index] = NumberAddSendData.S_FLAG_BUSY;
                 }
                 else
                 {
                     sd = new NumberAddSendData();
                     NumberAddSendData.m_unitList.push( sd );
-                    NumberAddSendData.m_unitIndexPptFlagList.push(NumberAddSendData.__S_FLAG_FREE);
-                    NumberAddSendData.m_unitFlagList.push(NumberAddSendData.__S_FLAG_BUSY);
+                    NumberAddSendData.m_unitIndexPptFlagList.push(NumberAddSendData.S_FLAG_FREE);
+                    NumberAddSendData.m_unitFlagList.push(NumberAddSendData.S_FLAG_BUSY);
                     sd.dataIndex = NumberAddSendData.m_unitListLen;
                     NumberAddSendData.m_unitListLen++;
                 }
@@ -121,20 +121,20 @@ export namespace thread
             
             static Restore(psd:NumberAddSendData):void
             {
-                if(psd != null && NumberAddSendData.m_unitFlagList[psd.dataIndex] == NumberAddSendData.__S_FLAG_BUSY)
+                if(psd != null && NumberAddSendData.m_unitFlagList[psd.dataIndex] == NumberAddSendData.S_FLAG_BUSY)
                 {
                     let uid:number = psd.dataIndex;
                     NumberAddSendData.m_freeIdList.push(uid);
-                    NumberAddSendData.m_unitFlagList[uid] = NumberAddSendData.__S_FLAG_FREE;
+                    NumberAddSendData.m_unitFlagList[uid] = NumberAddSendData.S_FLAG_FREE;
                     psd.reset();
                 }
             }
             static RestoreByUid(uid:number):void
             {
-                if(uid >= 0 && NumberAddSendData.m_unitFlagList[uid] == NumberAddSendData.__S_FLAG_BUSY)
+                if(uid >= 0 && NumberAddSendData.m_unitFlagList[uid] == NumberAddSendData.S_FLAG_BUSY)
                 {
                     NumberAddSendData.m_freeIdList.push(uid);
-                    NumberAddSendData.m_unitFlagList[uid] = NumberAddSendData.__S_FLAG_FREE;
+                    NumberAddSendData.m_unitFlagList[uid] = NumberAddSendData.S_FLAG_FREE;
                     NumberAddSendData.m_unitList[uid].reset();
                 }
             }

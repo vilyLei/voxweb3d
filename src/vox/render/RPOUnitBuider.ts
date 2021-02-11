@@ -35,8 +35,8 @@ export namespace vox
 
         export class RPOUnitBuider
         {    
-            private static __S_FLAG_BUSY:number = 1;
-            private static __S_FLAG_FREE:number = 0;
+            private static S_FLAG_BUSY:number = 1;
+            private static S_FLAG_FREE:number = 0;
             private static m_unitFlagList:number[] = [];
             private static m_unitIndexPptFlagList:number[] = [];
             private static m_unitListLen:number = 0;
@@ -119,7 +119,7 @@ export namespace vox
                 {
                     unit = RPOUnitBuider.m_unitList[index];
                     //unit.uid = index;
-                    RPOUnitBuider.m_unitFlagList[index] = RPOUnitBuider.__S_FLAG_BUSY;
+                    RPOUnitBuider.m_unitFlagList[index] = RPOUnitBuider.S_FLAG_BUSY;
                 }
                 else
                 {
@@ -132,8 +132,8 @@ export namespace vox
                     unit = new RPOUnit();
                     RPOUnit.__$_S_flag = 0;
                     RPOUnitBuider.m_unitList.push( unit );
-                    RPOUnitBuider.m_unitIndexPptFlagList.push(RPOUnitBuider.__S_FLAG_FREE);
-                    RPOUnitBuider.m_unitFlagList.push(RPOUnitBuider.__S_FLAG_BUSY);
+                    RPOUnitBuider.m_unitIndexPptFlagList.push(RPOUnitBuider.S_FLAG_FREE);
+                    RPOUnitBuider.m_unitFlagList.push(RPOUnitBuider.S_FLAG_BUSY);
                     //unit.uid = RPOUnitBuider.m_unitListLen;
                     RPOUnitBuider.m_unitListLen++;
                 }
@@ -141,13 +141,13 @@ export namespace vox
             }
             static Restore(punit:RPOUnit):void
             {
-                if(punit != null && RPOUnitBuider.m_unitFlagList[punit.getUid()] == RPOUnitBuider.__S_FLAG_BUSY)
+                if(punit != null && RPOUnitBuider.m_unitFlagList[punit.getUid()] == RPOUnitBuider.S_FLAG_BUSY)
                 {
                     let uid:number = punit.getUid();
                     RPOUnitBuider.m_rcpoList[uid].rcids.set(RCRPObj.__s_rcids,0);
                     //RPOUnitBuider.m_dispList[uid] = null;
                     RPOUnitBuider.m_freeIdList.push(uid);
-                    RPOUnitBuider.m_unitFlagList[uid] = RPOUnitBuider.__S_FLAG_FREE;
+                    RPOUnitBuider.m_unitFlagList[uid] = RPOUnitBuider.S_FLAG_FREE;
                     punit.reset();
                 }
             }

@@ -22,7 +22,6 @@ export namespace vox
 {
     export namespace texture
     {
-        
         export class ImageCubeTextureProxy extends TextureProxy
         {
             private m_imgDataList:any[] = null;
@@ -33,30 +32,33 @@ export namespace vox
                 this.m_type = TextureProxyType.ImageCube;
             }
             
-            uploadFromImageCubeFaceAt(index:number,img:any, miplevel:number = 0)
+            setDataFromImageToFaceAt(index:number,img:any, miplevel:number = 0)
             {
-                if(this.m_imgDataList == null)
+                if(img != null)
                 {
-                    this.m_imgDataList = [null,null,null, null,null,null];
-                }
-                if(this.isGpuEnabled() && img.width > 0 && img.height > 0)
-                {
-                    if(index == 0)
+                    if(this.m_imgDataList == null)
                     {
-                        this.m_texWidth = img.width;
-                        this.m_texHeight = img.height;
-                        this.m_miplevel = miplevel;
+                        this.m_imgDataList = [null,null,null, null,null,null];
                     }
-                    this.m_imgDataList[index] = {imgData:img,miplevel:miplevel};
-                    let k:number = 5;
-                    for(; k >= 0; --k)
+                    if(img.width > 0 && img.height > 0)
                     {
-                        if(this.m_imgDataList[k] == null)
+                        if(index == 0)
                         {
-                            break;
+                            this.m_texWidth = img.width;
+                            this.m_texHeight = img.height;
+                            this.m_miplevel = miplevel;
                         }
+                        this.m_imgDataList[index] = {imgData:img,miplevel:miplevel};
+                        let k:number = 5;
+                        for(; k >= 0; --k)
+                        {
+                            if(this.m_imgDataList[k] == null)
+                            {
+                                break;
+                            }
+                        }
+                        this.m_haveRData = k<0;
                     }
-                    this.m_haveRData = k<0;
                 }
             }
             
@@ -76,7 +78,7 @@ export namespace vox
             }
             __$destroy():void
             {
-                if(!this.isGpuEnabled())
+                if(this.getAttachCount() < 1)
                 {
                     if( this.m_imgDataList != null)
                     {

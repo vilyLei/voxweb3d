@@ -218,7 +218,7 @@ export namespace demo
             //  {
             //      this.m_renderer.addEntity(this.m_followEntity);
             //  }
-            //this.m_testTex0.uploadFromImage(this.m_testTex1.getImageData());
+            //this.m_testTex0.setDataFromImage(this.m_testTex1.getImageData());
             if(this.m_runFlag > 0)
             {
                 this.m_runFlag = 0;

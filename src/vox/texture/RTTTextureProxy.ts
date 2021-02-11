@@ -40,11 +40,10 @@ export namespace vox
             uploadFromFbo(texResource:ROTextureResource, fboWidth:number, fboHeight:number):void
             {
                 let gl:any = texResource.getRC();
-                this.m_texTarget = this.getTargetType();
 
 				if(this.m_texBuf == null)
 				{
-                    this.m_samplerTarget = TextureTarget.GetValue(gl,this.m_texTarget);
+                    this.m_sampler = TextureTarget.GetValue(gl,this.m_texTarget);
                     
                     this.createTexBuf(texResource);
                     this.bindTexture(gl,fboWidth,fboHeight);
@@ -69,7 +68,7 @@ export namespace vox
 				let format:number = TextureFormat.ToGL(rgl, this.srcFormat);
 				let type:number = TextureDataType.ToGL(rgl, this.dataType);
 				
-				rgl.bindTexture(this.m_samplerTarget, this.m_texBuf);
+				rgl.bindTexture(this.m_sampler, this.m_texBuf);
 				
 				switch( this.m_texTarget)
 				{

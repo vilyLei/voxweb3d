@@ -11,8 +11,8 @@ export namespace vox
     {
         export class IndexBuilder
         {
-            //  private static __S_FLAG_BUSY:number = 1;
-            //  private static __S_FLAG_FREE:number = 0;
+            //  private static S_FLAG_BUSY:number = 1;
+            //  private static S_FLAG_FREE:number = 0;
 
             private static m_nodeListLen:number = 0;
             private static m_nodeFlagList:number[] = [];

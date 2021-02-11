@@ -51,7 +51,8 @@ export namespace vox
             protected m_texBufW:number = 128;
             protected m_texBufH:number = 128;
             protected m_texTarget:number = TextureTarget.TEXTURE_2D;
-            protected m_samplerTarget:number = -1;
+            // The fragment processor texture sampler type.
+            protected m_sampler:number = -1;
 
             // have render useable data
             protected m_haveRData:boolean = false;
@@ -62,11 +63,11 @@ export namespace vox
             internalFormat:number = TextureFormat.RGBA;
             srcFormat:number = TextureFormat.RGBA;
             dataType:number = TextureDataType.UNSIGNED_BYTE;
-            mipmapEnabled:boolean = false;
             wrap_s:number = TextureConst.WRAP_CLAMP_TO_EDGE;
             wrap_t:number = TextureConst.WRAP_CLAMP_TO_EDGE;
             wrap_r:number = TextureConst.WRAP_CLAMP_TO_EDGE;
-            //
+            
+            mipmapEnabled:boolean = false;
             flipY:boolean = false;
             premultiplyAlpha:boolean = false;
             unpackAlignment:number = 4;
@@ -105,6 +106,13 @@ export namespace vox
                 }
             }
             /**
+             * This function only be be called by the renderer inner system.
+             */
+            __$$use(rc:RenderProxy):void
+            {
+                rc.Texture.bindTexture(this.getResUid());
+            }
+            /**
              * 被引用计数加一
              */
             __$attachThis():void
@@ -133,6 +141,7 @@ export namespace vox
                     }
                 }
             }
+
             /**
              * @returns 获得引用计数值
              */
@@ -173,18 +182,19 @@ export namespace vox
             {
                 this.wrap_s =  this.wrap_t = this.wrap_r = wrap;
             }
-            
-            __$use(rc:RenderProxy):void
-            {
-                rc.Texture.bindTexture(this.getResUid());
-            }
+            /**
+             * @returns the texture gpu resource is enabled or not.
+             */
             isGpuEnabled():boolean
             {
                 return this.m_slot.isGpuEnabledByResUid(this.getResUid());
             }
-            getSamplerType():number
+            /**
+             * @returns The fragment processor texture sampler type.
+             */
+            getSampler():number
             {
-                return this.m_samplerTarget;
+                return this.m_sampler;
             }
             /**
              * @returns return value is TextureConst.TEXTURE_2D or TextureConst.TEXTURE_CUBE or TextureConst.TEXTURE_3D
@@ -199,7 +209,10 @@ export namespace vox
             // logic tex size
             getWidth():number{return this.m_texWidth;}
             getHeight():number{return this.m_texHeight;}
-            dataEnough():boolean{return this.m_haveRData;}
+            /**
+             * @returns the texture data is enough or not.
+             */
+            isDataEnough():boolean{return this.m_haveRData;}
             
             protected __$buildParam(gl:any):void
             {
@@ -208,37 +221,37 @@ export namespace vox
                 
                 if (this.mipmapEnabled && MathConst.IsPowerOf2(this.m_texWidth) && MathConst.IsPowerOf2(this.m_texHeight))
                 {
-                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_WRAP_S, TextureConst.GetConst(gl,this.wrap_s));
-                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_WRAP_T, TextureConst.GetConst(gl,this.wrap_t));//REPEAT
+                    gl.texParameteri(this.m_sampler, gl.TEXTURE_WRAP_S, TextureConst.GetConst(gl,this.wrap_s));
+                    gl.texParameteri(this.m_sampler, gl.TEXTURE_WRAP_T, TextureConst.GetConst(gl,this.wrap_t));//REPEAT
                     if(this.m_texTarget == TextureTarget.TEXTURE_3D)
                     {
-                        gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_WRAP_R, TextureConst.GetConst(gl,this.wrap_r));//REPEAT
+                        gl.texParameteri(this.m_sampler, gl.TEXTURE_WRAP_R, TextureConst.GetConst(gl,this.wrap_r));//REPEAT
                         gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_BASE_LEVEL, 0);
                         gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAX_LEVEL, Math.log2(this.m_texWidth));
                     }
-                    //gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_minFilter, gl.LINEAR_MIPMAP_LINEAR);
-                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_MIN_FILTER, TextureConst.GetConst(gl,this.minFilter));
-                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_MAG_FILTER, TextureConst.GetConst(gl,this.magFilter));
+                    //gl.texParameteri(this.m_sampler, gl.TEXTURE_minFilter, gl.LINEAR_MIPMAP_LINEAR);
+                    gl.texParameteri(this.m_sampler, gl.TEXTURE_MIN_FILTER, TextureConst.GetConst(gl,this.minFilter));
+                    gl.texParameteri(this.m_sampler, gl.TEXTURE_MAG_FILTER, TextureConst.GetConst(gl,this.magFilter));
                     //gl.DONT_CARE
                     //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.NICEST);
                     //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.FASTEST);
                     if(this.m_generateMipmap)
                     {
                         console.log("generateMipmap...",this);
-                        gl.generateMipmap(this.m_samplerTarget);
+                        gl.generateMipmap(this.m_sampler);
                     }
                 }
                 else
                 {
-                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_WRAP_S, TextureConst.GetConst(gl,this.wrap_s));
-                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_WRAP_T, TextureConst.GetConst(gl,this.wrap_t));//REPEAT
+                    gl.texParameteri(this.m_sampler, gl.TEXTURE_WRAP_S, TextureConst.GetConst(gl,this.wrap_s));
+                    gl.texParameteri(this.m_sampler, gl.TEXTURE_WRAP_T, TextureConst.GetConst(gl,this.wrap_t));//REPEAT
                     if(this.m_texTarget == TextureTarget.TEXTURE_3D)
                     {
                         gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_BASE_LEVEL, 0);
                         gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAX_LEVEL, Math.log2(this.m_texWidth));
                     }
-                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_MIN_FILTER, TextureConst.GetConst(gl,this.minFilter));
-                    gl.texParameteri(this.m_samplerTarget, gl.TEXTURE_MAG_FILTER, TextureConst.GetConst(gl,this.magFilter));
+                    gl.texParameteri(this.m_sampler, gl.TEXTURE_MIN_FILTER, TextureConst.GetConst(gl,this.minFilter));
+                    gl.texParameteri(this.m_sampler, gl.TEXTURE_MAG_FILTER, TextureConst.GetConst(gl,this.magFilter));
                 }
             }
             // sub class override
@@ -246,32 +259,39 @@ export namespace vox
             {
             }
             
-            private m_updateStatus:number = -1;
-            protected m_dataChanged:boolean = false;
             __$setUpdateStatus(s:number):void
             {
-                this.m_updateStatus = s;
             }
             __$getUpdateStatus():number
             {
-                return this.m_updateStatus;
+                return 0;
             }
             // sub class override
             __$updateToGpu(rc:RenderProxy):void
             {
+            }
+            /**
+             * 准备将数据更新到当前的 Gpu context,这是一个异步过程，在渲染运行时才会真正的提交给gpu
+             */
+            updateDataToGpu():void
+            {
+                if(this.isGpuEnabled())
+                {
+                    this.m_slot.addRenderBuffer(this, this.getResUid());
+                }
             }
             protected createTexBuf(texResource:ROTextureResource):boolean
             {
                 let obj:GpuTexObect = texResource.getTextureRes(this.getResUid());
                 if(obj == null)
                 {
-                    this.m_samplerTarget = TextureTarget.GetValue(texResource.getRC(),this.m_texTarget);
+                    this.m_sampler = TextureTarget.GetValue(texResource.getRC(),this.m_texTarget);
                     obj = new GpuTexObect();
                     obj.rcuid = texResource.getRCUid();
                     obj.resUid = this.getResUid();
                     obj.width = this.getWidth();
                     obj.height = this.getHeight();
-                    obj.sampler = this.getSamplerType();
+                    obj.sampler = this.getSampler();
                     obj.texBuf = texResource.getRC().createTexture();
                     texResource.addTextureRes(obj);
                     this.m_texBuf = obj.texBuf;
@@ -280,9 +300,10 @@ export namespace vox
                 return false;
             }
             /**
-             * sub class can not override!!!!
+             * This function only be be called by the renderer inner system.
+             * if sub class override this function, it must does call this function.
              */
-            upload(rc:RenderProxy):void
+            __$$upload(rc:RenderProxy):void
             {
                 if(this.m_haveRData)
                 {
@@ -299,7 +320,7 @@ export namespace vox
             /**
              * sub class can not override!!!!
              */
-            protected updateTexData(gl:any,texData:ITexData,texDatas:ITexData[]):void
+            protected dataUploadToGpu(gl:any,texData:ITexData,texDatas:ITexData[]):void
             {                
                 let interType:any = TextureFormat.ToGL(gl,this.internalFormat);
                 let format:any = TextureFormat.ToGL(gl,this.srcFormat);
@@ -307,7 +328,7 @@ export namespace vox
                 let d:ITexData = texData;
                 if(texDatas == null)
                 {
-                    if(d.status > -1)d.updateToGpu(gl,this.m_samplerTarget,interType,format,type);
+                    if(d.status > -1)d.updateToGpu(gl,this.m_sampler,interType,format,type);
                 }
                 else
                 {
@@ -317,32 +338,16 @@ export namespace vox
                         d = ds[i];
                         if(d != null)
                         {
-                            if(d.status > -1)d.updateToGpu(gl,this.m_samplerTarget,interType,format,type);
+                            if(d.status > -1)d.updateToGpu(gl,this.m_sampler,interType,format,type);
                         }
                     }
                     this.m_generateMipmap = false;
-                }
-            }
-            protected __$updateUnpackAlign(gl:any):void
-            {
-                switch(this.srcFormat)
-                {
-                    case TextureFormat.RGB:
-                        this.unpackAlignment = 3;
-                    break;
-                    case TextureFormat.ALPHA:
-                        this.unpackAlignment = 1;
-                    break;
-                    default:                        
-                        this.unpackAlignment = 4;
-                    break;
                 }
             }
             protected __$updateToGpuBegin(rc:RenderProxy):void
             {
                 let gl:any = rc.RContext;
                 rc.Texture.bindTexture(this.getResUid());
-                this.__$updateUnpackAlign(gl);
                 
                 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
                 gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premultiplyAlpha);
@@ -350,11 +355,10 @@ export namespace vox
             }
             protected __$updateToGpuEnd(gl:any):void
             {
-                if(this.srcFormat != TextureFormat.RGBA)
-                {
-                    gl.pixelStorei(gl.UNPACK_ALIGNMENT,4);
-                }
             }
+            /**
+             * @returns This textureProxy instance has been destroyed.
+             */
             isDestroyed():boolean
             {
                 return this.m_attachCount < -1;

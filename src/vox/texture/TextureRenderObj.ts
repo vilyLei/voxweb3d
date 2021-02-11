@@ -78,8 +78,8 @@ export namespace vox
                         {
                             tex = ptexList[i];
                             tex.__$attachThis();
-                            tex.upload( rc );
-                            this.m_targets[i] = tex.getSamplerType();
+                            tex.__$$upload( rc );
+                            this.m_targets[i] = tex.getSampler();
                             this.m_gtexList[i] = this.m_texRes.getTextureBuffer(tex.getResUid());
                             this.m_texRes.__$attachRes(tex.getResUid());
                             i ++;
@@ -124,7 +124,7 @@ export namespace vox
                         for(let i:number = 0; i < this.m_texTotal; ++i)
                         {
                             gl.activeTexture(texI);
-                            list[i].__$use(rc);
+                            list[i].__$$use(rc);
                             texI++;
                         }
                     }

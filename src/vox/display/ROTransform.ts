@@ -318,8 +318,8 @@ export namespace vox
                 return "[ROTransform(uid = "+this.m_uid+")]";
             }
             
-            private static __S_FLAG_BUSY:number = 1;
-            private static __S_FLAG_FREE:number = 0;
+            private static S_FLAG_BUSY:number = 1;
+            private static S_FLAG_FREE:number = 0;
             private static m_unitFlagList:number[] = [];
             private static m_unitIndexPptFlagList:number[] = [];
             private static m_unitListLen:number = 0;
@@ -340,14 +340,14 @@ export namespace vox
                 if(index >= 0)
                 {
                     unit = ROTransform.m_unitList[index];
-                    ROTransform.m_unitFlagList[index] = ROTransform.__S_FLAG_BUSY;
+                    ROTransform.m_unitFlagList[index] = ROTransform.S_FLAG_BUSY;
                 }
                 else
                 {
                     unit = new ROTransform();
                     ROTransform.m_unitList.push( unit );
-                    ROTransform.m_unitIndexPptFlagList.push(ROTransform.__S_FLAG_FREE);
-                    ROTransform.m_unitFlagList.push(ROTransform.__S_FLAG_BUSY);
+                    ROTransform.m_unitIndexPptFlagList.push(ROTransform.S_FLAG_FREE);
+                    ROTransform.m_unitFlagList.push(ROTransform.S_FLAG_BUSY);
                     ROTransform.m_unitListLen++;
                 }
                 if(matrix == null)
@@ -365,11 +365,11 @@ export namespace vox
             
             static Restore(pt:ROTransform):void
             {
-                if(pt != null && ROTransform.m_unitFlagList[pt.getUid()] == ROTransform.__S_FLAG_BUSY)
+                if(pt != null && ROTransform.m_unitFlagList[pt.getUid()] == ROTransform.S_FLAG_BUSY)
                 {
                     let uid:number = pt.getUid();
                     ROTransform.m_freeIdList.push(uid);
-                    ROTransform.m_unitFlagList[uid] = ROTransform.__S_FLAG_FREE;
+                    ROTransform.m_unitFlagList[uid] = ROTransform.S_FLAG_FREE;
                     pt.destroy();
                 }
             }

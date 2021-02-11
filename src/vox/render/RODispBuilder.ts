@@ -78,7 +78,7 @@ export namespace vox
                     obj.resUid = tex.getResUid();
                     obj.width = tex.getWidth();
                     obj.height = tex.getHeight();
-                    obj.sampler = tex.getSamplerType();
+                    obj.sampler = tex.getSampler();
                     obj.texBuf = rc.RContext.createTexture();
                     rc.Texture.addTextureRes(obj);
                     i ++;

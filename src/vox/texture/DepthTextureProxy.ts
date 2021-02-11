@@ -76,7 +76,7 @@ export namespace vox
             protected uploadData(rc:RenderProxy):void
             {
                 let gl:any = rc.RContext;
-                gl.texImage2D(this.m_samplerTarget, 0,TextureFormat.ToGL(gl,this.internalFormat),this.m_texWidth,this.m_texHeight,0,TextureFormat.ToGL(gl,this.srcFormat),TextureDataType.ToGL(gl, this.dataType), null);
+                gl.texImage2D(this.m_sampler, 0,TextureFormat.ToGL(gl,this.internalFormat),this.m_texWidth,this.m_texHeight,0,TextureFormat.ToGL(gl,this.srcFormat),TextureDataType.ToGL(gl, this.dataType), null);
             }
             toString():string
             {

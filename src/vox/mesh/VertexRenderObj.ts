@@ -157,8 +157,8 @@ export namespace vox
             {
                 return "VertexRenderObj(uid = "+this.m_uid+", type="+this.m_mid+")";
             }
-            private static __S_FLAG_BUSY:number = 1;
-            private static __S_FLAG_FREE:number = 0;
+            private static S_FLAG_BUSY:number = 1;
+            private static S_FLAG_FREE:number = 0;
             private static m_unitFlagList:number[] = [];
             private static m_unitIndexPptFlagList:number[] = [];
             private static m_unitListLen:number = 0;
@@ -180,15 +180,15 @@ export namespace vox
                 if(index >= 0)
                 {
                     unit = VertexRenderObj.m_unitList[index];
-                    VertexRenderObj.m_unitFlagList[index] = VertexRenderObj.__S_FLAG_BUSY;
+                    VertexRenderObj.m_unitFlagList[index] = VertexRenderObj.S_FLAG_BUSY;
                     unit.setMidAndBufUid(type,pvtxUid);
                 }
                 else
                 {
                     unit = new VertexRenderObj(type, pvtxUid);
                     VertexRenderObj.m_unitList.push( unit );
-                    VertexRenderObj.m_unitIndexPptFlagList.push(VertexRenderObj.__S_FLAG_FREE);
-                    VertexRenderObj.m_unitFlagList.push(VertexRenderObj.__S_FLAG_BUSY);
+                    VertexRenderObj.m_unitIndexPptFlagList.push(VertexRenderObj.S_FLAG_FREE);
+                    VertexRenderObj.m_unitFlagList.push(VertexRenderObj.S_FLAG_BUSY);
                     VertexRenderObj.m_unitListLen++;
                 }
                 return unit;
@@ -196,11 +196,11 @@ export namespace vox
             
             static Restore(pobj:VertexRenderObj):void
             {
-                if(pobj != null && pobj.m_attachCount < 1 && VertexRenderObj.m_unitFlagList[pobj.getUid()] == VertexRenderObj.__S_FLAG_BUSY)
+                if(pobj != null && pobj.m_attachCount < 1 && VertexRenderObj.m_unitFlagList[pobj.getUid()] == VertexRenderObj.S_FLAG_BUSY)
                 {
                     let uid:number = pobj.getUid();
                     VertexRenderObj.m_freeIdList.push(uid);
-                    VertexRenderObj.m_unitFlagList[uid] = VertexRenderObj.__S_FLAG_FREE;
+                    VertexRenderObj.m_unitFlagList[uid] = VertexRenderObj.S_FLAG_FREE;
                     pobj.__$destroy();
                 }
             }

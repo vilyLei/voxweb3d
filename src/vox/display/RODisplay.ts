@@ -177,8 +177,8 @@ export namespace vox
             __$rpuid:number = -1;    // 用于关联RPONode对象
             rsign:number = DisplayRenderState.NOT_IN_WORLD;
 
-            private static __S_FLAG_BUSY:number = 1;
-            private static __S_FLAG_FREE:number = 0;
+            private static S_FLAG_BUSY:number = 1;
+            private static S_FLAG_FREE:number = 0;
             private static m_unitFlagList:number[] = [];
             private static m_unitIndexPptFlagList:number[] = [];
             private static m_unitListLen:number = 0;
@@ -200,14 +200,14 @@ export namespace vox
                 if(index >= 0)
                 {
                     unit = RODisplay.m_unitList[index];
-                    RODisplay.m_unitFlagList[index] = RODisplay.__S_FLAG_BUSY;
+                    RODisplay.m_unitFlagList[index] = RODisplay.S_FLAG_BUSY;
                 }
                 else
                 {
                     unit = new RODisplay();
                     RODisplay.m_unitList.push( unit );
-                    RODisplay.m_unitIndexPptFlagList.push(RODisplay.__S_FLAG_FREE);
-                    RODisplay.m_unitFlagList.push(RODisplay.__S_FLAG_BUSY);
+                    RODisplay.m_unitIndexPptFlagList.push(RODisplay.S_FLAG_FREE);
+                    RODisplay.m_unitFlagList.push(RODisplay.S_FLAG_BUSY);
                     RODisplay.m_unitListLen++;
                 }
                 return unit;
@@ -215,11 +215,11 @@ export namespace vox
             
             static Restore(pdisp:RODisplay):void
             {
-                if(pdisp != null && RODisplay.m_unitFlagList[pdisp.getUid()] == RODisplay.__S_FLAG_BUSY)
+                if(pdisp != null && RODisplay.m_unitFlagList[pdisp.getUid()] == RODisplay.S_FLAG_BUSY)
                 {
                     let uid:number = pdisp.getUid();
                     RODisplay.m_freeIdList.push(uid);
-                    RODisplay.m_unitFlagList[uid] = RODisplay.__S_FLAG_FREE;
+                    RODisplay.m_unitFlagList[uid] = RODisplay.S_FLAG_FREE;
                     pdisp.destroy();
                 }
             }

@@ -39,10 +39,12 @@ export namespace vox
             {
                 return this.m_texData;
             }
-            /**设置纹理原始数据，可以对纹理局部或者整体(rebuild = true)更新
-             * @param img              html Image or canvas or orther html elements
+            /**
+             * 设置纹理原始数据，可以对纹理局部或者整体(rebuild = true)更新
+             * @param img value from: ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap
+             * @param miplevel mipmaps level
             */
-            uploadFromImage(img:any, miplevel:number = 0,offsetx:number = 0,offsety:number = 0,rebuild:boolean = false):void
+            setDataFromImage(img:ImageData | HTMLImageElement | HTMLCanvasElement | HTMLVideoElement | ImageBitmap, miplevel:number = 0,offsetx:number = 0,offsety:number = 0,rebuild:boolean = false):void
             {
                 if(img != null && img.width > 0 && img.height > 0)
                 {
@@ -88,10 +90,6 @@ export namespace vox
                             this.m_texWidth = img.width;
                             this.m_texHeight = img.height;
                         }
-                        if(this.isGpuEnabled() && this.m_texData.data != null)
-                        {
-                            this.m_slot.addRenderBuffer(this, this.getResUid());
-                        }
                         td.data = img;
                         td.status = 0;// 0表示 更新纹理数据而不会重新开辟空间, 1表示需要重新开辟空间并更新纹理数据, -1表示不需要更新
                         if(td.width < img.width || td.height < img.height || rebuild)
@@ -109,31 +107,27 @@ export namespace vox
             {
                 if(this.m_texData != null)
                 {
-                    let gl:any = rc.RContext;
-                    this.updateTexData(gl,this.m_texData, this.m_texDatas);
+                    this.dataUploadToGpu(rc.RContext,this.m_texData, this.m_texDatas);
                 }
             }
             __$updateToGpu(rc:RenderProxy):void
             {
-                if(this.isGpuEnabled())
+                // 这里之所以用这种方式判断，是为了运行时支持多 gpu context
+                if(rc.Texture.hasTextureRes(this.getResUid()))
                 {
-                    if(this.m_dataChanged)
+                    if(this.m_texData != null)
                     {
-                        if(this.m_texData != null)
-                        {
-                            let gl:any = rc.RContext;
-                            this.__$updateToGpuBegin(rc);
-                            this.updateTexData(gl,this.m_texData, this.m_texDatas);                            
-                            this.__$buildParam(gl);
-                            this.m_generateMipmap = true;
-                        }
-                        this.m_dataChanged = false;
+                        let gl:any = rc.RContext;
+                        this.__$updateToGpuBegin(rc);
+                        this.dataUploadToGpu(gl,this.m_texData, this.m_texDatas);                     
+                        this.__$buildParam(gl);
+                        this.m_generateMipmap = true;
                     }
                 }
             }
             __$destroy():void
             {
-                if(!this.isGpuEnabled())
+                if(this.getAttachCount() < 1)
                 {
                     if(this.m_texDatas != null)
                     {

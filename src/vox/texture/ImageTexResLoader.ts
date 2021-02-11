@@ -145,13 +145,13 @@ export namespace vox
                         let mipLv:number = this.m_mipLv;
                         if(tex != null)
                         {
-                            tex.uploadFromImage(dobj.canvas, mipLv);
+                            tex.setDataFromImage(dobj.canvas, mipLv);
                             console.log("use a base canvas create a img tex.");
                             tex.name = this.m_img.src;
                             if(offsetTex != null)
                             {
                                 dobj = createImageCanvasAlphaOffset(img, pwidth,pheight);
-                                offsetTex.uploadFromImage(dobj.canvas, mipLv);
+                                offsetTex.setDataFromImage(dobj.canvas, mipLv);
                             }
                         }
                         if(bytesTex != null)
@@ -160,7 +160,7 @@ export namespace vox
                             {
                                 console.log("use a base canvas create a bytes tex.");
                                 imgData = dobj.ctx2d.getImageData(0,0,dobj.canvas.width, dobj.canvas.height);
-                                bytesTex.uploadFromBytes(imgData.data, mipLv,dobj.canvas.width, dobj.canvas.height);
+                                bytesTex.setDataFromBytes(imgData.data, mipLv,dobj.canvas.width, dobj.canvas.height);
                                 bytesTex.name = this.m_img.src;
                             }
                             else
@@ -187,7 +187,7 @@ export namespace vox
                                     }
                                 }
                                 //console.log("Loss time: "+(Date.now() - t));
-                                bytesTex.uploadFromBytes(dst, mipLv,dobj.canvas.width, dobj.canvas.height);
+                                bytesTex.setDataFromBytes(dst, mipLv,dobj.canvas.width, dobj.canvas.height);
                                 bytesTex.name = this.m_img.src;
                             }
                         }
@@ -196,7 +196,7 @@ export namespace vox
                     {
                         if(tex != null)
                         {
-                            tex.uploadFromImage(img,this.m_mipLv);                                
+                            tex.setDataFromImage(img,this.m_mipLv);                                
                             tex.name = this.m_img.src;
                         }
                         else if(bytesTex != null)
@@ -209,7 +209,7 @@ export namespace vox
                             let dobj:any = createImageCanvas(img, pwidth,pheight);
                             let mipLv:number = this.m_mipLv;
                             imgData = dobj.ctx2d.getImageData(0,0,dobj.canvas.width, dobj.canvas.height);
-                            bytesTex.uploadFromBytes(imgData.data, mipLv,dobj.canvas.width, dobj.canvas.height);
+                            bytesTex.setDataFromBytes(imgData.data, mipLv,dobj.canvas.width, dobj.canvas.height);
                             bytesTex.name = this.m_img.src;
                         }
                     }

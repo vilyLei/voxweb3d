@@ -159,7 +159,7 @@ export namespace vox
                             key = key * 131 + this.m_texList[i].getUid();
                             //TextureRenderObj.__$AttachTexAt(this.m_texList[i].getUid());
                             this.m_texList[i].__$attachThis();
-                            if(!this.m_texList[i].dataEnough())
+                            if(!this.m_texList[i].isDataEnough())
                             {
                                 this.m_texDataEnabled = false;
                             }
@@ -180,7 +180,7 @@ export namespace vox
                         //TextureRenderObj.__$DetachTexAt(texList[index].getUid());
                         texList[index].__$detachThis();
                         texList[index] = tex;
-                        this.m_texDataEnabled = tex.dataEnough();
+                        this.m_texDataEnabled = tex.isDataEnough();
                         //TextureRenderObj.__$AttachTexAt(tex.getUid());
                         tex.__$attachThis();
                         let key = 31;
@@ -215,7 +215,7 @@ export namespace vox
                     let texList:TextureProxy[] = this.m_texList;
                     for(let i:number = 0; i < this.m_texListLen; ++i)
                     {
-                        if(!texList[i].dataEnough())
+                        if(!texList[i].isDataEnough())
                         {
                             boo = false;
                             break;

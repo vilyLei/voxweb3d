@@ -20,8 +20,8 @@ export namespace vox
         export class RenderProcessBuider
         {
 
-            private static __S_FLAG_BUSY:number = 1;
-            private static __S_FLAG_FREE:number = 0;
+            private static S_FLAG_BUSY:number = 1;
+            private static S_FLAG_FREE:number = 0;
             private static m_processListLen:number = 0;
             private static m_processList:RenderProcess[] = [];
             private static m_processFlagList:number[] = [];
@@ -56,7 +56,7 @@ export namespace vox
                 {
                     process = RenderProcessBuider.m_processList[index];
                     process.index = index;
-                    RenderProcessBuider.m_processFlagList[index] = RenderProcessBuider.__S_FLAG_BUSY;
+                    RenderProcessBuider.m_processFlagList[index] = RenderProcessBuider.S_FLAG_BUSY;
                 }
                 else
                 {
@@ -64,7 +64,7 @@ export namespace vox
                     process = new RenderProcess(shader,batchEnabled,fixedState);
                     RenderProcessBuider.m_processList.push( process );
                     RenderProcessBuider.m_processIndexPptFlagList.push(0);
-                    RenderProcessBuider.m_processFlagList.push(RenderProcessBuider.__S_FLAG_BUSY);
+                    RenderProcessBuider.m_processFlagList.push(RenderProcessBuider.S_FLAG_BUSY);
                     process.index = RenderProcessBuider.m_processListLen;
                     RenderProcessBuider.m_processListLen++;
                 }
@@ -72,10 +72,10 @@ export namespace vox
             }
             static Restore(p:RenderProcess):void
             {
-                if(p != null && p.index >= 0 && RenderProcessBuider.m_processFlagList[p.index] == RenderProcessBuider.__S_FLAG_BUSY)
+                if(p != null && p.index >= 0 && RenderProcessBuider.m_processFlagList[p.index] == RenderProcessBuider.S_FLAG_BUSY)
                 {
                     RenderProcessBuider.m_freeIdList.push(p.index);
-                    RenderProcessBuider.m_processFlagList[p.index] = RenderProcessBuider.__S_FLAG_FREE;
+                    RenderProcessBuider.m_processFlagList[p.index] = RenderProcessBuider.S_FLAG_FREE;
                     p.reset();
                 }
             }

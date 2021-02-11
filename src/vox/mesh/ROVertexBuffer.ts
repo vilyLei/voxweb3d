@@ -348,8 +348,8 @@ export namespace vox
             {
                 return "ROVertexBuffer(uid = "+this.m_uid+")";
             }
-            private static __S_FLAG_BUSY:number = 1;
-            private static __S_FLAG_FREE:number = 0;
+            private static S_FLAG_BUSY:number = 1;
+            private static S_FLAG_FREE:number = 0;
             private static m_unitFlagList:number[] = [];
             private static m_unitIndexPptFlagList:number[] = [];
             private static m_unitListLen:number = 0;
@@ -375,14 +375,14 @@ export namespace vox
                 {
                     unit = ROVertexBuffer.m_unitList[index];
                     unit.setBufDataUsage(bufDataUsage);
-                    ROVertexBuffer.m_unitFlagList[index] = ROVertexBuffer.__S_FLAG_BUSY;
+                    ROVertexBuffer.m_unitFlagList[index] = ROVertexBuffer.S_FLAG_BUSY;
                 }
                 else
                 {
                     unit = new ROVertexBuffer(bufDataUsage);
                     ROVertexBuffer.m_unitList.push( unit );
-                    ROVertexBuffer.m_unitIndexPptFlagList.push(ROVertexBuffer.__S_FLAG_FREE);
-                    ROVertexBuffer.m_unitFlagList.push(ROVertexBuffer.__S_FLAG_BUSY);
+                    ROVertexBuffer.m_unitIndexPptFlagList.push(ROVertexBuffer.S_FLAG_FREE);
+                    ROVertexBuffer.m_unitFlagList.push(ROVertexBuffer.S_FLAG_BUSY);
                     ROVertexBuffer.m_unitListLen++;
                 }
                 //console.log("ROVertexBuffer::Create(), ROVertexBuffer.m_unitList.length: "+ROVertexBuffer.m_unitList.length+", new buf: "+unit);
@@ -391,12 +391,12 @@ export namespace vox
             }
             private static __$Restore(pobj:ROVertexBuffer):void
             {
-                if(pobj != null && ROVertexBuffer.m_unitFlagList[pobj.getUid()] == ROVertexBuffer.__S_FLAG_BUSY)
+                if(pobj != null && ROVertexBuffer.m_unitFlagList[pobj.getUid()] == ROVertexBuffer.S_FLAG_BUSY)
                 {
                     //console.log("ROVertexBuffer::__$Restore, pobj: "+pobj);
                     let uid:number = pobj.getUid();
                     ROVertexBuffer.m_freeIdList.push(uid);
-                    ROVertexBuffer.m_unitFlagList[uid] = ROVertexBuffer.__S_FLAG_FREE;
+                    ROVertexBuffer.m_unitFlagList[uid] = ROVertexBuffer.S_FLAG_FREE;
                     pobj.__$destroy();
                 }
             }

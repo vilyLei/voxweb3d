@@ -5,13 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as RenderDataSlotT from "../../vox/material/RenderDataSlot";
+import * as RenderDataSlotT from "../../vox/material/UniformDataSlot";
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as ShaderUniformProbeT from "../../vox/material/ShaderUniformProbe";
 import * as ShaderUniformT from "../../vox/material/ShaderUniform";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 
-import RenderDataSlot = RenderDataSlotT.vox.material.RenderDataSlot;
+import UniformDataSlot = RenderDataSlotT.vox.material.UniformDataSlot;
 import ShaderUniformProbe = ShaderUniformProbeT.vox.material.ShaderUniformProbe;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import ShaderUniform = ShaderUniformT.vox.material.ShaderUniform;
@@ -66,7 +66,7 @@ export namespace vox
             }
             use(rc:RenderProxy):void
             {
-                var slot:RenderDataSlot = RenderDataSlot.SlotList[this.slotId];
+                var slot:UniformDataSlot = UniformDataSlot.SlotList[this.slotId];
                 if(this.always || this.rst != slot.flagList[this.slotIndex])
                 {
                     this.rst = slot.flagList[this.slotIndex];

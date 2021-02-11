@@ -99,7 +99,7 @@ export namespace demo
             tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
             for(k = 0; k < 6; ++k)
             {
-                tex.uploadFromBytesCubeFaceAt(k,vs,tex.getWidth(),tex.getHeight(),0);
+                tex.setDataFromBytesToFaceAt(k,vs,tex.getWidth(),tex.getHeight(),0);
             }
             return tex;
         }
@@ -135,7 +135,7 @@ export namespace demo
             //tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
             tex.minFilter = TextureConst.LINEAR;
             tex.magFilter = TextureConst.LINEAR;
-            tex.uploadFromBytes(vs,0);
+            tex.setDataFromBytes(vs,0);
             return tex;
         }
         
@@ -163,7 +163,7 @@ export namespace demo
                     vs[k+3] = 255;
                 }
             }
-            tex.uploadFromBytes(vs,0);
+            tex.setDataFromBytes(vs,0);
             //tex.mipmapEnabled = true;
             return tex;
             
@@ -194,7 +194,7 @@ export namespace demo
                     vs[k+3] = 255;
                 }
             }
-            tex.uploadFromBytes(vs,0);
+            tex.setDataFromBytes(vs,0);
             //tex.mipmapEnabled = true;
             return tex;
             
@@ -224,7 +224,7 @@ export namespace demo
                     vs[k+2] = c;
                 }
             }
-            tex.uploadFromBytes(vs,0);
+            tex.setDataFromBytes(vs,0);
             //tex.mipmapEnabled = true;
             return tex;
             
@@ -270,7 +270,7 @@ export namespace demo
             //tex.minFilter = TextureConst.NEAREST;
             //tex.magFilter = TextureConst.LINEAR_MIPMAP_NEAREST;
             tex.magFilter = TextureConst.LINEAR;
-            tex.uploadFromBytes(vs,0);
+            tex.setDataFromBytes(vs,0);
             return tex;
         }
         initialize():void
@@ -377,7 +377,7 @@ export namespace demo
             {
                 subArr = fs32.slice(begin, begin + size);
             }
-            tex.uploadFromBytes(subArr);
+            tex.setDataFromBytes(subArr);
             var plane:Plane3DEntity = new Plane3DEntity();
             plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex]);
             plane.setXYZ(0.0,100.0,0.0);
@@ -402,7 +402,7 @@ export namespace demo
             for(let i:number = 0,len:number=6; i < len; ++i)
             {
                 subArr = fs32.slice(begin, begin + size);
-                tex.uploadFromBytesCubeFaceAt(i,subArr,width,height,0);
+                tex.setDataFromBytesToFaceAt(i,subArr,width,height,0);
             }
             let material:CubeMapMaterial = new CubeMapMaterial();
             //material.setScale(1.0);
@@ -434,7 +434,7 @@ export namespace demo
             for(let i:number = 0,len:number=6; i < len; ++i)
             {
                 subArr = fs32.slice(begin, begin + size);
-                tex.uploadFromBytesCubeFaceAt(i,subArr,width,height,0);
+                tex.setDataFromBytesToFaceAt(i,subArr,width,height,0);
             }
             let material:CubeMapMaterial = new CubeMapMaterial();
             //material.setScale(1.0);

@@ -8,7 +8,7 @@
 
 import * as Vector3T from "../../vox/geom/Vector3";
 import * as Matrix4T from "../../vox/geom/Matrix4";
-import * as RenderDataSlotT from "../../vox/material/RenderDataSlot";
+import * as RenderDataSlotT from "../../vox/material/UniformDataSlot";
 import * as Stage3DT from "../../vox/display/Stage3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as RendererStateT from "../../vox/render/RendererState";
@@ -25,7 +25,7 @@ import * as RenderMaterialProxyT from "../../vox/render/RenderMaterialProxy";
 
 import Vector3D = Vector3T.vox.geom.Vector3D;
 import Matrix4Pool = Matrix4T.vox.geom.Matrix4Pool;
-import RenderDataSlot = RenderDataSlotT.vox.material.RenderDataSlot;
+import UniformDataSlot = RenderDataSlotT.vox.material.UniformDataSlot;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import RAdapterContext = RAdapterContextT.vox.render.RAdapterContext;
@@ -294,9 +294,8 @@ export namespace vox
                 }
                 if(this.m_renderProxy == null)
                 {
-                    RenderDataSlot.Initialize();
-
                     this.m_renderProxy = new RenderProxy();
+                    UniformDataSlot.Initialize(this.m_renderProxy.getUid());
                     this.m_renderProxy.setCameraParam(this.m_cameraFov,this.m_cameraNear,this.m_cameraFar);
                     this.m_renderProxy.setWebGLMaxVersion(param.maxWebGLVersion);
                     this.m_renderProxy.initialize(param);
