@@ -30,6 +30,7 @@ import DivLog = DivLogT.vox.utils.DivLog;
 import MathConst = MathConstT.vox.utils.MathConst;
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import Matrix4Pool = Matrix4T.vox.geom.Matrix4Pool;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
@@ -65,6 +66,7 @@ export namespace demo
         private m_texLoader:ImageTextureLoader = null;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
+        private m_matrixA:Matrix4 = Matrix4Pool.GetMatrix();
 
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {

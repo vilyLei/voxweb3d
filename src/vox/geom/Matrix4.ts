@@ -32,21 +32,19 @@ export namespace vox
 				0.0,0.0,1.0,0.0,
 				0.0,0.0,0.0,1.0
 			]);
-			private static __s_uid:number = 0;
+			private static s_uid:number = 0;
 			private m_uid:number = -1;
-			private static ___tMat4 = new Matrix4();
+			private static s_tMat4 = new Matrix4();
 			private m_index:number = 0;
 			private m_fs32:Float32Array = null;
 			private m_localFS32:Float32Array = null;
-
-			name:string = "Matrix4";
 
 			constructor(pfs32:Float32Array = null,index:number = 0)
 			{
 				this.m_index = index;
 				if(pfs32 != null)
 				{
-					this.m_uid = Matrix4.__s_uid++;
+					this.m_uid = Matrix4.s_uid++;
 					this.m_fs32 = pfs32;
 					this.m_localFS32 = this.m_fs32.subarray(index,index + 16);
 				}
@@ -60,6 +58,10 @@ export namespace vox
 			getCapacity():number
 			{
 				return 16;
+			}
+			GetMaxUid():number
+			{
+				return Matrix4.s_uid;
 			}
 			getUid():number
 			{
@@ -201,41 +203,41 @@ export namespace vox
     		    {
     		        pivotPoint = Vector3D.Z_AXIS;
     		    }
-				Matrix4.___tMat4.identity();
-				Matrix4.___tMat4.getAxisRotation(axis.x, axis.y, axis.z, radian);
-				Matrix4.___tMat4.appendTranslationXYZ(pivotPoint.x, pivotPoint.y, pivotPoint.z);				
-				this.append(Matrix4.___tMat4);
+				Matrix4.s_tMat4.identity();
+				Matrix4.s_tMat4.getAxisRotation(axis.x, axis.y, axis.z, radian);
+				Matrix4.s_tMat4.appendTranslationXYZ(pivotPoint.x, pivotPoint.y, pivotPoint.z);				
+				this.append(Matrix4.s_tMat4);
 			}
 			appendRotation(radian:number, axis:Vector3D):void
 			{
-				Matrix4.___tMat4.identity();
-				Matrix4.___tMat4.getAxisRotation(axis.x, axis.y, axis.z, radian);
-				this.append(Matrix4.___tMat4);
+				Matrix4.s_tMat4.identity();
+				Matrix4.s_tMat4.getAxisRotation(axis.x, axis.y, axis.z, radian);
+				this.append(Matrix4.s_tMat4);
     		}
     		appendRotationX(radian:number):void
 			{
-				Matrix4.___tMat4.rotationX(radian);
-				this.append3x3(Matrix4.___tMat4);
+				Matrix4.s_tMat4.rotationX(radian);
+				this.append3x3(Matrix4.s_tMat4);
     		}
 			appendRotationY(radian:number):void
 			{
-				Matrix4.___tMat4.rotationY(radian);
-				this.append3x3(Matrix4.___tMat4);
+				Matrix4.s_tMat4.rotationY(radian);
+				this.append3x3(Matrix4.s_tMat4);
 			}
 			appendRotationZ(radian:number):void
 			{
-				Matrix4.___tMat4.rotationZ(radian);
-				this.append3x3(Matrix4.___tMat4);
+				Matrix4.s_tMat4.rotationZ(radian);
+				this.append3x3(Matrix4.s_tMat4);
 			}
     		// 用欧拉角形式旋转(heading->pitch->bank) => (y->x->z)
 			appendRotationEulerAngle(radianX:number, radianY:number, radianZ:number):void
 			{
-				Matrix4.___tMat4.rotationY(radianY);
-				this.append3x3(Matrix4.___tMat4);
-				Matrix4.___tMat4.rotationX(radianX);
-				this.append3x3(Matrix4.___tMat4);
-				Matrix4.___tMat4.rotationZ(radianZ);
-				this.append3x3(Matrix4.___tMat4);
+				Matrix4.s_tMat4.rotationY(radianY);
+				this.append3x3(Matrix4.s_tMat4);
+				Matrix4.s_tMat4.rotationX(radianX);
+				this.append3x3(Matrix4.s_tMat4);
+				Matrix4.s_tMat4.rotationZ(radianZ);
+				this.append3x3(Matrix4.s_tMat4);
 			}
 			
     		setScaleXYZ(xScale:number, yScale:number, zScale:number):void
@@ -512,7 +514,7 @@ export namespace vox
 			{
 				// TODO: optimize after 4 lines
 				let vec = [];
-				let mr = Matrix4.___tMat4;
+				let mr = Matrix4.s_tMat4;
 				let mrfs32 = mr.getFS32();
 				//let mrfsI = mr.getFSIndex();
     		    //std::memcpy(&mr, m_rawData, m_rawDataSize);
@@ -770,47 +772,47 @@ export namespace vox
     		}
     		prependRotationPivot(radian:number, axis:Vector3D, pivotPoint:Vector3D):void
 			{
-				Matrix4.___tMat4.identity();
-				Matrix4.___tMat4.getAxisRotation(axis.x, axis.y, axis.z, radian);
-				Matrix4.___tMat4.appendTranslationXYZ(pivotPoint.x, pivotPoint.y, pivotPoint.z);
-				this.prepend(Matrix4.___tMat4);
+				Matrix4.s_tMat4.identity();
+				Matrix4.s_tMat4.getAxisRotation(axis.x, axis.y, axis.z, radian);
+				Matrix4.s_tMat4.appendTranslationXYZ(pivotPoint.x, pivotPoint.y, pivotPoint.z);
+				this.prepend(Matrix4.s_tMat4);
 			}
 			prependRotation(radian:number, axis:Vector3D):void
 			{
-				Matrix4.___tMat4.identity();
-				Matrix4.___tMat4.getAxisRotation(axis.x, axis.y, axis.z, radian);
-				this.prepend(Matrix4.___tMat4);
+				Matrix4.s_tMat4.identity();
+				Matrix4.s_tMat4.getAxisRotation(axis.x, axis.y, axis.z, radian);
+				this.prepend(Matrix4.s_tMat4);
 			}
 			prependRotationX(radian:number):void
 			{
 				//s_tempMat.identity();
-				Matrix4.___tMat4.rotationX(radian);
-				this.prepend3x3(Matrix4.___tMat4);
+				Matrix4.s_tMat4.rotationX(radian);
+				this.prepend3x3(Matrix4.s_tMat4);
     		}
 			prependRotationY(radian:number):void
 			{
 				//s_tempMat.identity();
-				Matrix4.___tMat4.rotationY(radian);
-				this.prepend3x3(Matrix4.___tMat4);
+				Matrix4.s_tMat4.rotationY(radian);
+				this.prepend3x3(Matrix4.s_tMat4);
 			}
 			prependRotationZ(radian:number):void
 			{
 				//s_tempMat.identity();
-				Matrix4.___tMat4.rotationZ(radian);
-				this.prepend3x3(Matrix4.___tMat4);
+				Matrix4.s_tMat4.rotationZ(radian);
+				this.prepend3x3(Matrix4.s_tMat4);
 			}
 			// 用欧拉角形式旋转(heading->pitch->bank) => (y->x->z)
 			prependRotationEulerAngle(radianX:number, radianY:number, radianZ:number):void
 			{
 				//s_tempMat.identity();
-				Matrix4.___tMat4.rotationY(radianY);
-				this.prepend3x3(Matrix4.___tMat4);
+				Matrix4.s_tMat4.rotationY(radianY);
+				this.prepend3x3(Matrix4.s_tMat4);
 				//s_tempMat.identity();
-				Matrix4.___tMat4.rotationX(radianX);
-				this.prepend3x3(Matrix4.___tMat4);
+				Matrix4.s_tMat4.rotationX(radianX);
+				this.prepend3x3(Matrix4.s_tMat4);
 				//s_tempMat.identity();
-				Matrix4.___tMat4.rotationZ(radianZ);
-				this.prepend3x3(Matrix4.___tMat4);
+				Matrix4.s_tMat4.rotationZ(radianZ);
+				this.prepend3x3(Matrix4.s_tMat4);
     		}
     		prependScale(xScale:number, yScale:number, zScale:number):void
 			{
@@ -829,21 +831,21 @@ export namespace vox
     		}
 			prependTranslationXYZ(px:number, py:number, pz:number):void
 			{
-				Matrix4.___tMat4.identity();
-				//Matrix4.___tMat4.setPositionXYZ(px, py, pz);
-				this.prepend(Matrix4.___tMat4);
+				Matrix4.s_tMat4.identity();
+				//Matrix4.s_tMat4.setPositionXYZ(px, py, pz);
+				this.prepend(Matrix4.s_tMat4);
 			}
 			prependTranslation(v3:Vector3D):void
 			{
-				Matrix4.___tMat4.identity();
-				//Matrix4.___tMat4.setPositionXYZ(v3.x, v3.y, v3.z);
-				this.prepend(Matrix4.___tMat4);
+				Matrix4.s_tMat4.identity();
+				//Matrix4.s_tMat4.setPositionXYZ(v3.x, v3.y, v3.z);
+				this.prepend(Matrix4.s_tMat4);
 			}
     		recompose(components:Vector3D[], orientationStyle:number):boolean
 			{
 				if (components.length < 3 || components[2].x == 0 || components[2].y == 0 || components[2].z == 0) return false;
 				this.identity();
-				let scale = Matrix4.___tMat4.getFS32();
+				let scale = Matrix4.s_tMat4.getFS32();
 				scale[0] = scale[1] = scale[2] = components[2].x;
 				scale[4] = scale[5] = scale[6] = components[2].y;
 				scale[8] = scale[9] = scale[10] = components[2].z;
@@ -1032,8 +1034,8 @@ export namespace vox
 			}
 		    transpose():void
 			{
-				Matrix4.___tMat4.copyFrom(this);
-				let fs32 = Matrix4.___tMat4.getFS32();
+				Matrix4.s_tMat4.copyFrom(this);
+				let fs32 = Matrix4.s_tMat4.getFS32();
 				let sfs32:Float32Array = this.m_localFS32;
 				sfs32[1] = fs32[4];
 				sfs32[2] = fs32[8];
@@ -1235,6 +1237,8 @@ export namespace vox
             private static s_matFlagList:number[] = [];
             private static m_freeIdList:number[] = [];        
 			private static s_mfs32Arr:Float32Array = null;
+			private static s_baseUid:number = 0;
+			private static s_maxUid:number = 0;
 			private static s_mtotal:number = 0;
 
 			static GetMatTotal():number
@@ -1278,6 +1282,8 @@ export namespace vox
 					let i:number = 0;
 					let mat:Matrix4 = new Matrix4(Matrix4Pool.s_mfs32Arr,i * 16);
 					let uid:number = mat.getUid();
+					Matrix4Pool.s_baseUid = uid;
+					Matrix4Pool.s_maxUid = uid + total;
 					for(; i < uid; ++i)
 					{
 						Matrix4Pool.s_matList.push( null );
@@ -1298,8 +1304,8 @@ export namespace vox
 			}
             static GetMatrix():Matrix4
             {
-                let mat:Matrix4 = null;
-                let index:number = Matrix4Pool.GetFreeId();
+				let mat:Matrix4 = null;
+                let index:number = Matrix4Pool.GetFreeId() - Matrix4Pool.s_baseUid;
                 if(index >= 0)
                 {
 					mat = Matrix4Pool.s_matList[index];
@@ -1309,17 +1315,26 @@ export namespace vox
 				}
 				else
 				{
-					console.log("Matrix4Pool::GetMatrix(), Error Matrix4Pool is empty !!!");
+					//console.log("Matrix4Pool::GetMatrix(), Error Matrix4Pool is empty !!!");
+					return new Matrix4();
 				}
                 return mat;
             }
             static RetrieveMatrix(mat:Matrix4):void
             {
-                if(mat != null && mat.getUid() >= 0 && Matrix4Pool.s_matFlagList[mat.getUid()] == Matrix4Pool.S_FLAG_BUSY)
-                {
-                    Matrix4Pool.m_freeIdList.push(mat.getUid());
-                    Matrix4Pool.s_matFlagList[mat.getUid()] = Matrix4Pool.S_FLAG_FREE;
-                }
+				if(mat != null)
+				{
+					let uid:number = mat.getUid();
+					if(uid >= Matrix4Pool.s_baseUid && uid < Matrix4Pool.s_maxUid)
+					{
+						if(Matrix4Pool.s_matFlagList[uid] == Matrix4Pool.S_FLAG_BUSY)
+						{
+							Matrix4Pool.m_freeIdList.push(uid);
+							Matrix4Pool.s_matFlagList[uid] = Matrix4Pool.S_FLAG_FREE;
+						}
+					}
+
+				}
             }
 		}
 	}

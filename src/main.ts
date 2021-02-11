@@ -205,14 +205,14 @@
 //  import * as DemoDeepTransparent from "./demo/DemoDeepTransparent";
 //  import Demo = DemoDeepTransparent.demo.DemoDeepTransparent;
 
-import * as DemoDeepTransparent2 from "./demo/DemoDeepTransparent2";
-import Demo = DemoDeepTransparent2.demo.DemoDeepTransparent2;
+//  import * as DemoDeepTransparent2 from "./demo/DemoDeepTransparent2";
+//  import Demo = DemoDeepTransparent2.demo.DemoDeepTransparent2;
 
 //  import * as DemoGpuTexMana from "./demo/DemoGpuTexMana";
 //  import Demo = DemoGpuTexMana.demo.DemoGpuTexMana;
 
-//  import * as DemoMaterial from "./demo/DemoMaterial";
-//  import Demo = DemoMaterial.demo.DemoMaterial;
+import * as DemoMaterial from "./demo/DemoMaterial";
+import Demo = DemoMaterial.demo.DemoMaterial;
 
 //  import * as DemoDivControl from "./demo/DemoDivControl";
 //  import Demo = DemoDivControl.demo.DemoDivControl;

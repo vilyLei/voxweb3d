@@ -237,7 +237,6 @@ export namespace vox
                     //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.FASTEST);
                     if(this.m_generateMipmap)
                     {
-                        console.log("generateMipmap...",this);
                         gl.generateMipmap(this.m_sampler);
                     }
                 }

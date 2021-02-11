@@ -93,7 +93,7 @@ export namespace vox
                 {
                     object.waitDelTimes = 0;
                     
-                    console.log("ROTextureResource add a texture buffer(resUid="+object.resUid+"),sampler: ",object.sampler,object);
+                    // console.log("ROTextureResource add a texture buffer(resUid="+object.resUid+"),sampler: ",object.sampler,object);
                     this.m_resMap.set(object.resUid, object);
                     this.m_texResTotal++;
                 }
@@ -197,7 +197,7 @@ export namespace vox
                         value.waitDelTimes++;
                         if(value.waitDelTimes > 5)
                         {
-                            console.log("TextureResource remove a texture buffer(resUid="+value.resUid+")");
+                            // console.log("TextureResource remove a texture buffer(resUid="+value.resUid+")");
                             this.m_resMap.delete(value.resUid);
                             this.m_freeMap.delete(value.resUid);
                             
