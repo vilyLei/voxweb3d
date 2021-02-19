@@ -311,7 +311,7 @@ export namespace vox
                     {
                         console.log("ROVertexBuffer::__$disposeGpu()... "+this);
                         this.m_vtxBuf.disposeGpu(rc);
-                       
+                        
                         if(this.m_ivsBuf != null)
                         {
                             this.m_rc.deleteBuf(this.m_ivsBuf);
@@ -406,10 +406,10 @@ export namespace vox
                 ROVtxBufUidStore.GetInstance().__$detachAt(pobj.getUid());
             }
     
+            private static s_stride:number = 0;
             static BufDataList:Float32Array[] = null;
             static BufDataStepList:number[] = null;
             static BufStatusList:number[] = null;
-            private static __stride:number = 0;
             static vtxDataFS32:number[] = null;
             static vbWholeDataEnabled:boolean = false;
             static dynBufSegEnabled:boolean = false;
@@ -419,7 +419,7 @@ export namespace vox
             static Reset():void
             {
                 ROVertexBuffer.BufDataList = [];
-                ROVertexBuffer.__stride = 0;
+                ROVertexBuffer.s_stride = 0;
                 ROVertexBuffer.BufStatusList = [];
                 ROVertexBuffer.BufDataStepList = [];
                 ROVertexBuffer.vtxFS32 = null;
@@ -432,7 +432,7 @@ export namespace vox
                 ROVertexBuffer.BufDataList.push(float32Arr);
                 ROVertexBuffer.BufDataStepList.push(step);
                 ROVertexBuffer.BufStatusList.push(status);
-                ROVertexBuffer.__stride += step;
+                ROVertexBuffer.s_stride += step;
             }
             static CreateBySaveData(bufDataUsage:number = VtxBufConst.VTX_STATIC_DRAW):ROVertexBuffer
             {
@@ -453,7 +453,7 @@ export namespace vox
                 let segLen:number = 0;
                 let parrf32:Float32Array = null;
                 let subArr:Float32Array = null;
-                //
+                
                 for(i = 0; i < tot; ++i)
                 {
                     k = i * stride;
@@ -489,12 +489,12 @@ export namespace vox
                 let bufTot:number = ROVertexBuffer.BufDataStepList.length;
                 let tot:number = ROVertexBuffer.BufDataList[0].length / ROVertexBuffer.BufDataStepList[0];
                 let vtxfs32:Float32Array = vb.getF32DataAt(0);
-                let newBoo:boolean = (ROVertexBuffer.__stride * tot) != vtxfs32.length;
+                let newBoo:boolean = (ROVertexBuffer.s_stride * tot) != vtxfs32.length;
                 let offsetList:number[] = null;
                 if(newBoo)
                 {
                     offsetList = [];
-                    vtxfs32 = new Float32Array(ROVertexBuffer.__stride * tot);
+                    vtxfs32 = new Float32Array(ROVertexBuffer.s_stride * tot);
                     for(; i < bufTot; i++)
                     {
                         offsetList.push(stride);
@@ -503,13 +503,13 @@ export namespace vox
                 }
                 else
                 {
-                    stride = ROVertexBuffer.__stride;
+                    stride = ROVertexBuffer.s_stride;
                 }
                 let j:number = 0;
                 let segLen:number = 0;
                 let parrf32:Float32Array = null;
                 let subArr:Float32Array = null;
-                //
+                
                 for(i = 0; i < tot; ++i)
                 {
                     k = i * stride;
@@ -530,15 +530,13 @@ export namespace vox
                 {
                     vb.setF32DataAt(0,vtxfs32, stride, null);
                 }
-                //console.log("UpdateBufData, vtxfs32: "+vtxfs32);
-                //vb.updateData();
             }
-            //
+            
             static CreateByBufDataSeparate(bufData:VtxBufData,bufDataUsage:number = VtxBufConst.VTX_STATIC_DRAW):ROVertexBuffer
             {
                 let i:number = 0;
                 let stride:number = 0;
-                let bufTot:number = bufData.getAttributesTotal();//ROVertexBuffer.BufDataStepList.length;
+                let bufTot:number = bufData.getAttributesTotal();
                 let offsetList:number[] = new Array(bufTot);
                 offsetList.fill(0);
                 let vb:ROVertexBuffer = ROVertexBuffer.Create(bufDataUsage);
@@ -560,7 +558,7 @@ export namespace vox
                 vb.bufData = bufData;
                 return vb;
             }
-            //
+            
             static CreateBySaveDataSeparate(bufDataUsage:number = VtxBufConst.VTX_STATIC_DRAW):ROVertexBuffer
             {
                 let i:number = 0;
@@ -593,13 +591,13 @@ export namespace vox
             {
                 return ROVtxBufUidStore.GetInstance().getAttachAllCount();
             }
-            private static s_timeDelay:number = 10;
+            private static s_timeDelay:number = 128;
             static RenderBegin(rc:RenderProxy):void
             {
                 --ROVertexBuffer.s_timeDelay;
                 if(ROVertexBuffer.s_timeDelay < 1)
                 {
-                    ROVertexBuffer.s_timeDelay = 10;
+                    ROVertexBuffer.s_timeDelay = 128;
                     let store:ROVtxBufUidStore = ROVtxBufUidStore.GetInstance();
                     if(store.__$getRemovedListLen() > 0)
                     {

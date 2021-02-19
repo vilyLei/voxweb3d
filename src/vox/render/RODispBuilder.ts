@@ -37,7 +37,7 @@ import ShdUniformTool = ShdUniformToolT.vox.material.ShdUniformTool;
 import EmptyShdUniform = ShdUniformToolT.vox.material.EmptyShdUniform;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
-import GpuTexObect = ROTextureResourceT.vox.render.GpuTexObect;
+
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RPOUnitBuider = RPOUnitBuiderT.vox.render.RPOUnitBuider;
 import RenderProcessBuider = RenderProcessBuiderT.vox.render.RenderProcessBuider;
@@ -64,25 +64,6 @@ export namespace vox
             getMaterialShader():MaterialShader
             {
                 return this.m_shader;
-            }
-            private static CreateGTO(rc:RenderProxy,textures:TextureProxy[],shdTexTotal:number):void
-            {
-                let obj:GpuTexObect = null;
-                
-                let i:number = 0;
-                let tex:TextureProxy;
-                while(i < shdTexTotal)
-                {
-                    tex = textures[i];
-                    obj = new GpuTexObect();
-                    obj.resUid = tex.getResUid();
-                    obj.width = tex.getWidth();
-                    obj.height = tex.getHeight();
-                    obj.sampler = tex.getSampler();
-                    obj.texBuf = rc.RContext.createTexture();
-                    rc.Texture.addTextureRes(obj);
-                    i ++;
-                }
             }
             static UpdateDispTRO(rc:RenderProxy,disp:IRODisplay):void
             {

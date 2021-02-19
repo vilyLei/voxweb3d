@@ -258,13 +258,11 @@ export namespace vox
                     vro.vao = rc.createVertexArray();
                     rc.bindVertexArray(vro.vao);
                     rc.bindArrBuf(this.m_f32Bufs[0]);
-                    //shdp.vertexAttribPointerTypeFloat(this.m_aTypeList[0], 0,this.m_pOffsetList[0]);
-                    shdp.vertexAttribPointerTypeFloat(this.m_aTypeList[0], 0,0);
-                    for(i = 1; i < this.m_total; ++i)
+                    
+                    for(i = 0; i < this.m_total; ++i)
                     {
                         rc.bindArrBuf(this.m_f32Bufs[i]);
                         shdp.vertexAttribPointerTypeFloat(this.m_aTypeList[i], 0, 0);
-                        //shdp.vertexAttribPointerTypeFloat(this.m_aTypeList[i], 0, this.m_pOffsetList[i]);
                     }
                     vro.registers = null;
                 }
@@ -272,7 +270,7 @@ export namespace vox
                 {
                     vro.registers = [];
                     vro.wholeOffsetList = [];
-                    //vro.wholeStride = this.m_wholeStride;
+                    
                     vro.wholeStride = 0;
                     let reg:number = -1;
                     for(i = 0; i < this.m_total; ++i)

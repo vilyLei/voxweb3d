@@ -66,8 +66,6 @@ export namespace demo
         private m_texLoader:ImageTextureLoader = null;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
-        private m_matrixA:Matrix4 = Matrix4Pool.GetMatrix();
-        private m_matrixA:Matrix4 = Matrix4Pool.GetMatrix();
 
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
@@ -97,8 +95,8 @@ export namespace demo
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
-                this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
-//  
+                this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 200);
+                //  
                 //  this.m_texBlock = new TextureBlock();
                 //  this.m_texBlock.setRenderer(this.m_rscene.getRenderer());
                 this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );

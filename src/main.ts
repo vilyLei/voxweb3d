@@ -211,8 +211,11 @@
 //  import * as DemoGpuTexMana from "./demo/DemoGpuTexMana";
 //  import Demo = DemoGpuTexMana.demo.DemoGpuTexMana;
 
-import * as DemoMaterial from "./demo/DemoMaterial";
-import Demo = DemoMaterial.demo.DemoMaterial;
+//  import * as DemoMaterial from "./demo/DemoMaterial";
+//  import Demo = DemoMaterial.demo.DemoMaterial;
+
+import * as DemoVtx from "./demo/DemoVtx";
+import Demo = DemoVtx.demo.DemoVtx;
 
 //  import * as DemoDivControl from "./demo/DemoDivControl";
 //  import Demo = DemoDivControl.demo.DemoDivControl;

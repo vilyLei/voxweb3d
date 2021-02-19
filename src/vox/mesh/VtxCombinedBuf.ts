@@ -201,8 +201,8 @@ export namespace vox
                     vro.vao = rc.createVertexArray();
                     rc.bindVertexArray(vro.vao);
                     rc.bindArrBuf(this.m_f32Buf);
-                    shdp.vertexAttribPointerTypeFloat(this.m_aTypeList[0], this.m_wholeStride,this.m_pOffsetList[0]);
-                    for(i = 1; i < this.m_total; ++i)
+                    
+                    for(i = 0; i < this.m_total; ++i)
                     {
                         shdp.vertexAttribPointerTypeFloat(this.m_aTypeList[i], this.m_wholeStride, this.m_pOffsetList[i]);
                     }

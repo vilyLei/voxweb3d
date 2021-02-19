@@ -28,9 +28,9 @@ export namespace vox
         // vro
         export class VertexRenderObj implements IVertexRenderObj
         {
-            private static __s_uid:number = 0;
-            private static __s_preUid:number = -1;
-            private static __s_vtxUid:number = -1;
+            private static s_uid:number = 0;
+            private static s_preUid:number = -1;
+            private static s_vtxUid:number = -1;
             private m_vtxUid:number = 0;
             private m_uid:number = 0;
             // vtx attribute hash map id
@@ -39,8 +39,14 @@ export namespace vox
             vbufs:any[] = null;
             vbuf:any = null;
             ibuf:any = null;
-            ibufType:number = 0;// UNSIGNED_SHORT or UNSIGNED_INT
-            ibufStep:number = 2;// 2 or 4
+            /**
+             * be used by the renderer runtime, the value is UNSIGNED_SHORT or UNSIGNED_INT.
+             */
+            ibufType:number = 0;
+            /**
+             * be used by the renderer runtime, the value is 2 or 4.
+             */
+            ibufStep:number = 2;
             vao:any = null;
             registers:number[] = null;
             wholeOffsetList:number[] = null;
@@ -48,28 +54,15 @@ export namespace vox
             updateUnlocked:boolean = true;
             wholeStride:number = 0;
             // render used times
-            //  private m_rut:number = 0;
+            
             private constructor(mid:number,pvtxUid:number)
             {
                 this.m_mid = mid;
                 this.m_vtxUid = pvtxUid;
-                this.m_uid = VertexRenderObj.__s_uid++;
+                this.m_uid = VertexRenderObj.s_uid++;
                 //ROVtxBufUidStore.GetInstance().__$attachAt(this.m_vtxUid);
             }
-            //  __$getRUT():number
-            //  {
-            //      return this.m_rut;
-            //  }
-            //  __$attachRUT():void
-            //  {
-            //      ++this.m_rut;
-            //      //console.log("VertexRenderObj::__$attachRUT(), this.m_rut: "+this.m_rut);
-            //  }
-            //  __$detachRUT():void
-            //  {
-            //      --this.m_rut;
-            //      console.log("VertexRenderObj::__$detachRUT(), this.m_rut: "+this.m_rut);
-            //  }
+            
             private setMidAndBufUid(mid:number,pvtxUid:number):void
             {
                 this.m_mid = mid;
@@ -91,11 +84,11 @@ export namespace vox
             }
             run(rc:RenderProxy):void
             {
-                if(VertexRenderObj.__s_preUid != this.m_uid)
+                if(VertexRenderObj.s_preUid != this.m_uid)
                 {
                     //if(this.srcBuf != null)this.srcBuf.__$updateToGpu(rc);
                     //console.log("VertexRenderObj::run(), this.m_uid: "+this.m_uid);
-                    VertexRenderObj.__s_preUid = this.m_uid;
+                    VertexRenderObj.s_preUid = this.m_uid;
                     //console.log("VertexRenderObj::run(), this.vao != null: "+(this.vao != null));
                     if(this.vao != null)
                     {
@@ -113,9 +106,9 @@ export namespace vox
                         }
                     }
                     //console.log("VertexRenderObj::run(), ## this.m_vtxUid: "+this.m_vtxUid+", this.ibuf:"+this.ibuf);
-                    if(VertexRenderObj.__s_vtxUid != this.m_vtxUid)
+                    if(VertexRenderObj.s_vtxUid != this.m_vtxUid)
                     {
-                        VertexRenderObj.__s_vtxUid = this.m_vtxUid;
+                        VertexRenderObj.s_vtxUid = this.m_vtxUid;
                         rc.bindEleBuf(this.ibuf);
                     }
                 }
@@ -206,8 +199,8 @@ export namespace vox
             }
             static RenderBegin():void
             {
-                VertexRenderObj.__s_vtxUid = -2;
-                VertexRenderObj.__s_preUid = -3;
+                VertexRenderObj.s_vtxUid = -2;
+                VertexRenderObj.s_preUid = -3;
             }
         }
     }
