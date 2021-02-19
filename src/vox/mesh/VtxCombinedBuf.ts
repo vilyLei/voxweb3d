@@ -193,6 +193,7 @@ export namespace vox
                 }
                 //console.log("### Combined mid: "+mid+", uid: "+this.m_uid);
                 let vro:VertexRenderObj = VertexRenderObj.Create(mid,this.m_uid);
+                vro.shdp = shdp;
                 vro.vbuf = this.m_f32Buf;
                 if(vaoEnabled)
                 {
@@ -200,30 +201,30 @@ export namespace vox
                     //console.log("VtxCombinedBuf::createVROBegin(), "+this.m_aTypeList+" /// "+this.m_wholeStride+" /// "+this.m_pOffsetList);
                     vro.vao = rc.createVertexArray();
                     rc.bindVertexArray(vro.vao);
+
                     rc.bindArrBuf(this.m_f32Buf);
                     
                     for(i = 0; i < this.m_total; ++i)
                     {
                         shdp.vertexAttribPointerTypeFloat(this.m_aTypeList[i], this.m_wholeStride, this.m_pOffsetList[i]);
                     }
-                    vro.registers = null;
+                    vro.attribTypes = null;
                 }
                 else
                 {
-                    vro.registers = [];
+                    vro.attribTypes = [];
                     vro.wholeOffsetList = [];
                     vro.wholeStride = this.m_wholeStride;
-                    let reg:number = -1;
+                    
                     for(i = 0; i < this.m_total; ++i)
                     {
-                        reg = shdp.getVertexAttribByTpye(this.m_aTypeList[i]);
-                        if(reg > -1)
+                        if(shdp.testVertexAttribPointerType(this.m_aTypeList[i]))
                         {
-                            vro.registers.push(reg);
+                            vro.attribTypes.push(this.m_aTypeList[i]);
                             vro.wholeOffsetList.push( this.m_pOffsetList[i] );
                         }
                     }
-                    vro.registersLen = vro.registers.length;
+                    vro.attribTypesLen = vro.attribTypes.length;
                 }
                 this.m_vroList.push(vro);
                 ++this.m_vroListLen;

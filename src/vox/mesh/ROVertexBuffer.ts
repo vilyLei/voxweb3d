@@ -311,7 +311,7 @@ export namespace vox
                     {
                         console.log("ROVertexBuffer::__$disposeGpu()... "+this);
                         this.m_vtxBuf.disposeGpu(rc);
-                        
+
                         if(this.m_ivsBuf != null)
                         {
                             this.m_rc.deleteBuf(this.m_ivsBuf);
@@ -321,7 +321,7 @@ export namespace vox
                     }
                 }
             }
-            //
+            
             private static s_combinedBufs:IVtxBuf[] = [];
             private static s_separatedBufs:IVtxBuf[] = [];
             private __$destroy():void
@@ -466,7 +466,7 @@ export namespace vox
                         k += segLen;
                     }
                 }
-                let vb:ROVertexBuffer = ROVertexBuffer.Create(bufDataUsage);                
+                let vb:ROVertexBuffer = ROVertexBuffer.Create(bufDataUsage);
                 if(ROVertexBuffer.s_combinedBufs.length > 0)
                 {
                     let vtx:IVtxBuf = ROVertexBuffer.s_combinedBufs.pop();
@@ -477,7 +477,7 @@ export namespace vox
                 {
                     vb.setVtxBuf(new VtxCombinedBuf(vb.getBufDataUsage()));
                 }
-                vb.setF32DataAt(0,vtxfs32, stride,offsetList);
+                vb.setF32DataAt(0, vtxfs32, stride, offsetList);
                 return vb;
             }
 
@@ -550,7 +550,7 @@ export namespace vox
                 {
                     vb.setVtxBuf(new VtxSeparatedBuf(vb.getBufDataUsage()));
                 }
-                for(i= 0; i < bufTot; i++)
+                for(i = 0; i < bufTot; i++)
                 {
                     vb.setF32DataAt(i,bufData.getAttributeDataAt(i,0), stride,offsetList);
                 }

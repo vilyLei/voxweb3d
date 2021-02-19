@@ -210,7 +210,7 @@ export namespace vox
                                     rc.arrBufSubData(fs32,offset);
                                     offset += fs32.byteLength;
                                 }
-                                this.m_f32PreSizeList[i] = dataSize;//this.m_f32SizeList[i];
+                                this.m_f32PreSizeList[i] = dataSize;
                             }
                         }
                     }
@@ -223,7 +223,7 @@ export namespace vox
 
                     for(let i:number = 0; i < this.m_total; ++i)
                     {
-                        this.m_pOffsetList[i] = 0;//this.m_wholeStride;
+                        this.m_pOffsetList[i] = 0;
                         this.m_aTypeList.push( shdp.getLocationTypeByIndex(i) );
                     }
                 }
@@ -250,39 +250,37 @@ export namespace vox
                 }
                 //console.log("### Separated mid: "+mid+", uid: "+this.m_uid);
                 let vro:VertexRenderObj = VertexRenderObj.Create(mid,this.m_uid);
-                vro.vbuf = this.m_f32Bufs;
+                vro.shdp = shdp;
+                vro.vbufs = this.m_f32Bufs;
                 if(vaoEnabled)
                 {
                     // vao 的生成要记录标记,防止重复生成, 因为同一组数据在不同的shader使用中可能组合方式不同，导致了vao可能是多样的
                     //console.log("VtxSeparatedBuf::createVROBegin(), "+this.m_aTypeList+" /// "+this.m_wholeStride+" /// "+this.m_pOffsetList);
                     vro.vao = rc.createVertexArray();
                     rc.bindVertexArray(vro.vao);
-                    rc.bindArrBuf(this.m_f32Bufs[0]);
                     
                     for(i = 0; i < this.m_total; ++i)
                     {
                         rc.bindArrBuf(this.m_f32Bufs[i]);
                         shdp.vertexAttribPointerTypeFloat(this.m_aTypeList[i], 0, 0);
                     }
-                    vro.registers = null;
+                    vro.attribTypes = null;
                 }
                 else
                 {
-                    vro.registers = [];
-                    vro.wholeOffsetList = [];
-                    
+                    vro.attribTypes = [];
+                    vro.wholeOffsetList = [];                    
                     vro.wholeStride = 0;
-                    let reg:number = -1;
+                    
                     for(i = 0; i < this.m_total; ++i)
                     {
-                        reg = shdp.getVertexAttribByTpye(this.m_aTypeList[i]);
-                        if(reg > -1)
+                        if(shdp.testVertexAttribPointerType(this.m_aTypeList[i]))
                         {
-                            vro.registers.push(reg);
+                            vro.attribTypes.push(this.m_aTypeList[i]);
                             vro.wholeOffsetList.push( 0 );
                         }
                     }
-                    vro.registersLen = vro.registers.length;
+                    vro.attribTypesLen = vro.attribTypes.length;
                 }
                 this.m_vroList.push(vro);
                 ++this.m_vroListLen;

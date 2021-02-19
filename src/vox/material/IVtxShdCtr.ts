@@ -17,6 +17,7 @@ export namespace vox
             getLocationTypeByIndex(index:number):number;
             getLocationSizeByIndex(index:number):number;
             
+            testVertexAttribPointerType(attribType:number):boolean;
             vertexAttribPointerTypeFloat(attribType:number, stride:number, offset:number):void;
             getVertexAttribByTpye(attribType:number):number;
 

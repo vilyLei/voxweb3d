@@ -6,12 +6,14 @@
 /***************************************************************************/
 
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
+import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as ROVtxBufUidStoreT from "../../vox/mesh/ROVtxBufUidStore";
 
+import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import ROVtxBufUidStore = ROVtxBufUidStoreT.vox.mesh.ROVtxBufUidStore;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 
 export namespace vox
 {
@@ -36,6 +38,7 @@ export namespace vox
             // vtx attribute hash map id
             private m_mid:number = 0;
 
+            shdp:IVtxShdCtr = null;
             vbufs:any[] = null;
             vbuf:any = null;
             ibuf:any = null;
@@ -47,13 +50,17 @@ export namespace vox
              * be used by the renderer runtime, the value is 2 or 4.
              */
             ibufStep:number = 2;
+            
+            /**
+             * vao buffer object
+             */
             vao:any = null;
-            registers:number[] = null;
+
+            attribTypes:number[] = null;
             wholeOffsetList:number[] = null;
-            registersLen:number = 0;
+            attribTypesLen:number = 0;
             updateUnlocked:boolean = true;
             wholeStride:number = 0;
-            // render used times
             
             private constructor(mid:number,pvtxUid:number)
             {
@@ -98,11 +105,11 @@ export namespace vox
                     {
                         if(this.vbuf != null)
                         {
-                            rc.useVtxAttrisbPtrTypeFloat(this.vbuf, this.registers, this.wholeOffsetList,this.registersLen, this.wholeStride);
+                            rc.useVtxAttrisbPtrTypeFloat(this.shdp,this.vbuf, this.attribTypes,this.attribTypesLen, this.wholeOffsetList, this.wholeStride);
                         }
                         else
                         {
-                            rc.useVtxAttrisbPtrTypeFloat2(this.vbufs, this.registers, this.wholeOffsetList,this.registersLen, this.wholeStride);
+                            rc.useVtxAttrisbPtrTypeFloatMulti(this.shdp,this.vbufs, this.attribTypes,this.attribTypesLen, this.wholeOffsetList, this.wholeStride);
                         }
                     }
                     //console.log("VertexRenderObj::run(), ## this.m_vtxUid: "+this.m_vtxUid+", this.ibuf:"+this.ibuf);
@@ -138,12 +145,13 @@ export namespace vox
             {
                 console.log("VertexRenderObj::__$destroy()..., "+this);
                 this.m_vtxUid = -1;
+                this.shdp = null;
                 this.vbufs = null;
                 this.vbuf = null;
                 this.ibuf = null;
                 this.vao = null;
-                this.registers = null;
-                this.registersLen = 0;
+                this.attribTypes = null;
+                this.attribTypesLen = 0;
                 this.wholeStride = 0;
             }
             toString():string

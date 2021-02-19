@@ -6,6 +6,7 @@
 /***************************************************************************/
 // 真正位于高频运行的渲染管线中的被使用的渲染关键代理对象
 
+import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
 import * as RenderFilterT from "../../vox/render/RenderFilter";
 import * as RenderMaskBitfieldT from "../../vox/render/RenderMaskBitfield";
 import * as MathConstT from "../../vox/utils/MathConst";
@@ -25,6 +26,7 @@ import * as RCExtensionT from "../../vox/render/RCExtension";
 import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
 import * as DivLogT from "../../vox/utils/DivLog";
 
+import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
 import RenderFilter = RenderFilterT.vox.render.RenderFilter;
 import RenderMaskBitfield = RenderMaskBitfieldT.vox.render.RenderMaskBitfield;
 import MathConst = MathConstT.vox.utils.MathConst;
@@ -303,30 +305,21 @@ export namespace vox
                 this.m_rc.bufferData(this.m_rc.ELEMENT_ARRAY_BUFFER, bytesSize, VtxBufConst.ToGL(this.m_rc,usage));
             }
             //this.m_rc.bufferData(this.m_gl.ELEMENT_ARRAY_BUFFER, this.m_ivs.length * 2, this.m_ivs, VtxBufConst.ToGL(this.m_gl,this.m_ivsStatus));
-            useVtxAttrisbPtrTypeFloat(buf:any,registers:number[], wholeOffsetList:number[],registersLen:number,wholeStride:number):void
+            useVtxAttrisbPtrTypeFloat(shdp:IVtxShdCtr, buf:any,attribTypes:number[],attribTypesLen:number, wholeOffsetList:number[],wholeStride:number):void
             {
                 this.m_rc.bindBuffer(this.m_rc.ARRAY_BUFFER, buf);
-                let i:number = 0;
-                let reg:number = 0;
-                for(; i < registersLen; ++i)
+                
+                for(let i:number = 0; i < attribTypesLen; ++i)
                 {
-                    reg = registers[i];
-                    this.m_rc.enableVertexAttribArray( reg );
-                    //  rc.vertexAttribPointer( reg, this.layoutList[i],rc.FLOAT,false,this.wholeStride,this.wholeOffsetList[i] );
-                    this.m_rc.vertexAttribPointerTypeFloat( reg, wholeStride,wholeOffsetList[i] );
+                    shdp.vertexAttribPointerTypeFloat(attribTypes[i],wholeStride, wholeOffsetList[i]);
                 }
-                //this.m_rc.bindBuffer(this.m_rc.ELEMENT_ARRAY_BUFFER, buf);
             }
-            useVtxAttrisbPtrTypeFloat2(bufs:any[],registers:number[], wholeOffsetList:number[],registersLen:number,wholeStride:number):void
+            useVtxAttrisbPtrTypeFloatMulti(shdp:IVtxShdCtr, bufs:any[],attribTypes:number[],attribTypesLen:number, wholeOffsetList:number[],wholeStride:number):void
             {
-                let i:number = 0;
-                let reg:number = 0;
-                for(; i < registersLen; ++i)
+                for(let i:number=0; i < attribTypesLen; ++i)
                 {
-                    reg = registers[i];
-                    this.m_rc
-                    this.m_rc.enableVertexAttribArray( reg );
-                    this.m_rc.vertexAttribPointerTypeFloat( reg, wholeStride,wholeOffsetList[i] );
+                    this.m_rc.bindBuffer(this.m_rc.ARRAY_BUFFER, bufs[i]);
+                    shdp.vertexAttribPointerTypeFloat(attribTypes[i],wholeStride, wholeOffsetList[i]);
                 }
             }
             bindVertexArray(vao:any):any

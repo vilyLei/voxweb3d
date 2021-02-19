@@ -254,7 +254,7 @@ export namespace vox
                         if(disp.vbuf != null)
                         {
                             disp.vbuf.upload(rc,shdp);
-                            runit.vro = disp.vbuf.createVROBegin(shdp);
+                            runit.vro = disp.vbuf.createVROBegin(shdp,true);
                             runit.vro.__$attachThis();
                             disp.vbuf.createVROEnd();
                             runit.vtxUid = runit.vro.getVtxUid();
