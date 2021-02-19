@@ -201,7 +201,6 @@ export namespace vox
                     //console.log("VtxCombinedBuf::createVROBegin(), "+this.m_aTypeList+" /// "+this.m_wholeStride+" /// "+this.m_pOffsetList);
                     vro.vao = rc.createVertexArray();
                     rc.bindVertexArray(vro.vao);
-
                     rc.bindArrBuf(this.m_f32Buf);
                     
                     for(i = 0; i < this.m_total; ++i)
@@ -215,7 +214,7 @@ export namespace vox
                     vro.attribTypes = [];
                     vro.wholeOffsetList = [];
                     vro.wholeStride = this.m_wholeStride;
-                    
+
                     for(i = 0; i < this.m_total; ++i)
                     {
                         if(shdp.testVertexAttribPointerType(this.m_aTypeList[i]))

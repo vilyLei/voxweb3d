@@ -81,7 +81,7 @@ export namespace vox
             private static s_uid:number = 0;
             private m_camUBO:any = null;
             private m_mainCamera:CameraBase = null;
-            private m_adapter:RenderAdapter = null;//new RenderAdapter();
+            private m_adapter:RenderAdapter = null;
 
             private m_adapterContext:RAdapterContext = new RAdapterContext();
 
@@ -189,12 +189,10 @@ export namespace vox
                 if(this.m_WEBGL_VER == 2)
                 {
                     vao = this.m_rc.createVertexArray();
-                    //m_rc.bindVertexArray(vao);
                 }
                 else
                 {
                     vao = RCExtension.OES_vertex_array_object.createVertexArrayOES();
-                    //this.OES_vertex_array_object.bindVertexArrayOES(vao);
                 }
                 return vao;
             }
@@ -203,13 +201,13 @@ export namespace vox
                 switch(type)
                 {
                     case MaterialConst.SHADER_MAT4:
-                        if(offset > 0)
+                        if(offset < 1)
                         {
-                            this.m_rc.uniformMatrix4fv(ult, false, f32Arr,offset,dataSize * 16);
+                            this.m_rc.uniformMatrix4fv(ult, false, f32Arr);
                         }
                         else
                         {
-                            this.m_rc.uniformMatrix4fv(ult, false, f32Arr);
+                            this.m_rc.uniformMatrix4fv(ult, false, f32Arr,offset,dataSize * 16);
                         }
                     break;
                     case MaterialConst.SHADER_MAT3:
@@ -304,7 +302,6 @@ export namespace vox
             {
                 this.m_rc.bufferData(this.m_rc.ELEMENT_ARRAY_BUFFER, bytesSize, VtxBufConst.ToGL(this.m_rc,usage));
             }
-            //this.m_rc.bufferData(this.m_gl.ELEMENT_ARRAY_BUFFER, this.m_ivs.length * 2, this.m_ivs, VtxBufConst.ToGL(this.m_gl,this.m_ivsStatus));
             useVtxAttrisbPtrTypeFloat(shdp:IVtxShdCtr, buf:any,attribTypes:number[],attribTypesLen:number, wholeOffsetList:number[],wholeStride:number):void
             {
                 this.m_rc.bindBuffer(this.m_rc.ARRAY_BUFFER, buf);
@@ -361,7 +358,6 @@ export namespace vox
                 let buf:any = this.m_rc.createBuffer();
                 this.m_rc.bindBuffer(this.m_rc.UNIFORM_BUFFER, buf);
                 this.m_rc.bufferData(this.m_rc.UNIFORM_BUFFER, bytesCount, this.m_rc.DYNAMIC_DRAW);
-                //m_rc.bindBuffer(m_rc.UNIFORM_BUFFER, null);
                 return buf;
             }
             createUBOBufferByDataArray(dataArray:Float32Array):any
@@ -369,7 +365,6 @@ export namespace vox
                 let buf:any = this.m_rc.createBuffer();
                 this.m_rc.bindBuffer(this.m_rc.UNIFORM_BUFFER, buf);
                 this.m_rc.bufferData(this.m_rc.UNIFORM_BUFFER, dataArray, this.m_rc.DYNAMIC_DRAW);
-                //m_rc.bindBuffer(m_rc.UNIFORM_BUFFER, null);
                 return buf;
             }
             bindUBOBuffer(buf:any):void
@@ -383,7 +378,6 @@ export namespace vox
             bufferDataUBOBuffer(dataArr:Float32Array):void
             {
                 this.m_rc.bufferData(this.m_rc.UNIFORM_BUFFER, dataArr, this.m_rc.STATIC_DRAW);
-                //m_rc.bufferSubData(m_rc.UNIFORM_BUFFER,0, dataArr, m_rc.STATIC_DRAW);
             }
             bindBufferBaseUBOBuffer(bindingIndex:number,buf:any):void
             {
@@ -438,7 +432,7 @@ export namespace vox
                     if(this.m_mainCamera != null)
                     {
                         this.m_mainCamera.setViewXY(this.m_viewX,this.m_viewY);
-                        this.m_mainCamera.setViewSize(this.m_viewW,this.m_viewH, this.m_adapterContext.getDevicePixelRatio());                    
+                        this.m_mainCamera.setViewSize(this.m_viewW,this.m_viewH, this.m_adapterContext.getDevicePixelRatio());
                     }
                 }
                 this.setRCViewPort(this.m_viewX,this.m_viewY,this.m_viewW,this.m_viewH);
@@ -496,7 +490,6 @@ export namespace vox
             }
             initialize(param:RendererParam):void
             {
-                
                 let posV3:Vector3D = param.camPosition;
                 let lookAtPosV3:Vector3D = param.camLookAtPos;
                 let upV3:Vector3D = param.camUpDirect;
