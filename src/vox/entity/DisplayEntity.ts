@@ -57,7 +57,7 @@ export namespace vox
     {
         export class DisplayEntity implements IRenderEntity
         {
-            private static __s_uid:number = 0;
+            private static s_uid:number = 0;
             private m_uid:number = 0;
             // the entity is rendered entity or logic entity(doesn't exist in renderer process)
             protected m_isRenderedEntity:boolean = true;
@@ -65,7 +65,7 @@ export namespace vox
             protected m_mouseEvtDispatcher:IEvtDispatcher = null;
             constructor(transform:ROTransform = null)
             {
-                this.m_uid = DisplayEntity.__s_uid++;
+                this.m_uid = DisplayEntity.s_uid++;
                 if(transform == null)
                 {
                    this.m_transfrom = ROTransform.Create();
@@ -123,11 +123,6 @@ export namespace vox
                     {
                         this.m_mouseEvtDispatcher.dispatchEvt(evt);
                     }
-                    //else
-                    //{
-                    //    this.m_mouseEvtDispatcher = new MouseEvt3DDispatcher();
-                    //    this.m_mouseEvtDispatcher.dispatchEvt(evt);
-                    //}
                 }
             }
             getEvtDispatcher(evtClassType:number):IEvtDispatcher
@@ -160,11 +155,6 @@ export namespace vox
             {
                 if(this.m_drawEnabled != boo)
                 {
-                    //  console.log("DisplayEntity::__$setDrawEnabled: "+boo);
-                    //  if(!this.m_drawEnabled)
-                    //  {
-                    //      console.log("DisplayEntity::__$setDrawEnabled A: "+boo);
-                    //  }
                     this.m_drawEnabled = boo;
                     if(this.m_display != null)
                     {
@@ -181,7 +171,7 @@ export namespace vox
                 return this.m_drawEnabled;
             }
             // update material texture list
-            private m_updateStatus:number = -1;
+            private m_updateStatus:number = -1;            
             protected m_texChanged:boolean = false;
             __$setUpdateStatus(s:number):void
             {
@@ -527,13 +517,19 @@ export namespace vox
             private static s_boundsInVS:Float32Array = new Float32Array(24);
             private static s_boundsOutVS:Float32Array = new Float32Array(24);
             private static s_pos:Vector3D = new Vector3D();
+            /**
+             * @returns 是否已经加入渲染器中(但是可能还没有进入真正的渲染运行时)
+             */
             isInRenderer():boolean
             {
                 return this.__$wuid >= 0;
             }
+            /**
+             * @returns 是否处在渲染运行时中
+             */
             isRenderEnabled():boolean
             {
-                return this.m_display != null && this.m_display.__$rpuid > -1;
+                return this.m_display != null && this.m_display.__$ruid > -1;
             }
             updateBounds():void
             {

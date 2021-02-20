@@ -87,14 +87,14 @@ export namespace vox
             static readonly SCENE_RO_FILTER_FINISH:number = (2<<19);
             static readonly SCENE_RO_ERASE:number = 0;
         }
-        export class DisplayRenderState
+        export enum DisplayRenderState
         {
             // 还没有加入 world
-            static readonly NOT_IN_WORLD:number = -1;
+            NOT_IN_WORLD = -1,
             // 正在进入 world
-            static readonly GO_TO_WORLD:number = 1;
+            GO_TO_WORLD = 1,
             // 真正存在于 world, 也就是直接可以在 process 中使用了
-            static readonly LIVE_IN_WORLD:number = 2;
+            LIVE_IN_WORLD = 2
         }
     }
 }

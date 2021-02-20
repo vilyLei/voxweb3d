@@ -235,7 +235,7 @@ export namespace vox
                     let material:MaterialBase = disp.getMaterial();
                     if(material != null)
                     {
-                        disp.rsign = DisplayRenderState.LIVE_IN_WORLD;
+                        disp.__$$rsign = DisplayRenderState.LIVE_IN_WORLD;
                         
                         let runit:RPOUnit = RPOUnitBuilder.Create();
                         runit.ivsIndex = disp.ivsIndex;
@@ -280,7 +280,7 @@ export namespace vox
                 {
                     disp = this.m_disps.shift();
                     m_processUid = this.m_processUidList.shift();
-                    if(disp.rsign == DisplayRenderState.GO_TO_WORLD)
+                    if(disp.__$$rsign == DisplayRenderState.GO_TO_WORLD)
                     {
                         this.buildGpuDisp(rc, disp, m_processUid);
                     }

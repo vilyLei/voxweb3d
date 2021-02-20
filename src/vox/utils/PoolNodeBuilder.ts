@@ -31,6 +31,12 @@ export namespace vox
             {
                 return null;
             }
+            /**
+             * the sub class override this function, for real implement.
+             */
+            protected restoreUid(uid:number):void
+            {
+            }
             getFreeId()
             {
                 if(this.m_freeIdList.length > 0)
@@ -58,7 +64,7 @@ export namespace vox
                 {
                     // create a new nodeIndex
                     node = this.createNode();
-                    this.m_nodes.push( node );                    
+                    this.m_nodes.push( node );
                     this.m_flags.push(PoolNodeBuilder.S_BUSY);
                     node.uid = this.m_nodesTotal;
                     this.m_nodesTotal++;
@@ -69,6 +75,7 @@ export namespace vox
             {
                 if(pnode != null && pnode.uid >= 0 && this.m_flags[pnode.uid] == PoolNodeBuilder.S_BUSY)
                 {
+                    this.restoreUid(pnode.uid);
                     this.m_freeIdList.push(pnode.uid);
                     this.m_flags[pnode.uid] = PoolNodeBuilder.S_FREE;
                     pnode.reset();

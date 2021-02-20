@@ -205,7 +205,7 @@ export namespace demo2d
         {
             console.log("mouseUpListener call, this.m_renderer: "+this.m_renderer.toString());
             //  this.m_runFlag = 1;
-            //  if(this.m_followEntity.getDisplay().__$ruid > -1)
+            //  if(this.m_followEntity.isRenderEnabled())
             //  {
             //      this.m_renderer.removeEntity(this.m_followEntity);
             //  }

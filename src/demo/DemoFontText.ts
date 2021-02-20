@@ -108,7 +108,7 @@ export namespace demo
         mouseUpListener(evt:any):void
         {
             console.log("mouseUpListener call, this.m_renderer: "+this.m_renderer.toString());
-            //  if(this.m_followEntity.getDisplay().__$ruid > -1)
+            //  if(this.m_followEntity.isRenderEnabled())
             //  {
             //      this.m_renderer.removeEntity(this.m_followEntity);
             //  }

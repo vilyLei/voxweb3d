@@ -252,8 +252,7 @@ export namespace vox
                             {
                                 this.m_omat = Matrix4Pool.GetMatrix();
                             }
-                            //this.m_display.setTransform(this.m_transfrom);
-                            //this.m_display.setMatrixFS32(this.m_omat.getLocalFS32());
+                            
                             this.m_display.setTransform(this.m_omat);
                             this.m_display.visible = this.m_visible && this.m_drawEnabled;
                             this.m_display.vbuf = m.__$attachVBuf();
@@ -297,7 +296,7 @@ export namespace vox
                         {
                             this.m_omat = Matrix4Pool.GetMatrix();
                         }
-                        //this.m_display.setMatrixFS32(this.m_omat.getLocalFS32());
+                        
                         this.m_display.setTransform(this.m_omat);
                         this.m_display.visible = this.m_visible && this.m_drawEnabled;                    
                     }

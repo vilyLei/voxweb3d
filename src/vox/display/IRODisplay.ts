@@ -51,11 +51,11 @@ export namespace vox
             getMaterial():MaterialBase;
             setMaterial(m:MaterialBase):void;
             copyFrom(display:IRODisplay):void;
-            updateMaterialData():void;
+            
             // 只能由渲染系统内部调用
             __$ruid:number;// = -1;     // 用于关联RPOUnit对象
             __$rpuid:number;// = -1;     // 用于关联RPONode对象
-            rsign:number;// = RODisplay.NOT_IN_WORLD;            
+            __$$rsign:number;// = RODisplay.NOT_IN_WORLD;            
         }
     }
 }

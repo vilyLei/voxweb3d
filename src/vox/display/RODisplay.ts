@@ -28,10 +28,10 @@ export namespace vox
     {
         export class RODisplay implements IRODisplay
         {
-            private static __s_uid:number = 0;
+            private static s_uid:number = 0;
+            private m_uid:number = 0;
 
             private m_material:MaterialBase = null;
-            private m_uid:number = 0;
             // 只是持有引用不做任何管理操作
             private m_matFS32:Float32Array = null;
 
@@ -55,7 +55,7 @@ export namespace vox
             private m_trans:Matrix4 = null;
             private constructor()
             {
-                this.m_uid = RODisplay.__s_uid++;
+                this.m_uid = RODisplay.s_uid++;
             }
             
             // draw parts group: [ivsCount0,ivsIndex0, ivsCount1,ivsIndex1, ivsCount2,ivsIndex2, ...]
@@ -133,22 +133,6 @@ export namespace vox
                 this.setMaterial(display.getMaterial());
             }
 
-            //setTransform(trans:ROTransform):void
-            //{
-            //    this.m_transfrom = trans;
-            //}
-            //getTransform():ROTransform
-            //{
-            //    return this.m_transfrom;
-            //}
-            updateMaterialData():void
-            {
-                //this.renderState = this.shadowMode << 12 | this.depthTestMode << 8 | this.blendMode<<4 | this.cullFaceMode;
-                if(this.m_material != null)
-                {
-                    this.m_material.updateSelfData( this );
-                }
-            }
             toString()
             {
                 return "RODisplay(name="+this.name+",uid="+this.getUid()+", __$ruid="+this.__$ruid+")";
@@ -168,6 +152,7 @@ export namespace vox
                 this.vbuf = null;
                 this.__$ruid = -1;
                 this.__$rpuid = -1;
+                this.__$$rsign = DisplayRenderState.NOT_IN_WORLD;
                 this.ivsIndex = 0;
                 this.ivsCount = 0;
                 this.m_partGroup = null;
@@ -175,7 +160,7 @@ export namespace vox
             // 只能由渲染系统内部调用
             __$ruid:number = -1;     // 用于关联RPOUnit对象
             __$rpuid:number = -1;    // 用于关联RPONode对象
-            rsign:number = DisplayRenderState.NOT_IN_WORLD;
+            __$$rsign:DisplayRenderState = DisplayRenderState.NOT_IN_WORLD;
 
             private static S_FLAG_BUSY:number = 1;
             private static S_FLAG_FREE:number = 0;
