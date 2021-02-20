@@ -248,6 +248,7 @@ export namespace vox
                         runit.rcolorMask = disp.rcolorMask;
                         runit.trisNumber = disp.trisNumber;
                         disp.__$ruid = runit.uid;
+                        disp.__$$runit = runit;
                         
                         let shdp:ShdProgram = this.updateDispMaterial(rc,runit,disp);
                         // build vtx gpu data

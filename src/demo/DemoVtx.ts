@@ -21,6 +21,7 @@ import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureConstT from "../vox/texture/TextureConst";
 
+import * as MouseEventT from "../vox/event/MouseEvent";
 import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as RendererSceneT from "../vox/scene/RendererScene";
@@ -48,6 +49,8 @@ import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
+
+import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
@@ -67,6 +70,7 @@ export namespace demo
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
 
+        private m_targetDisp:DisplayEntity = null;
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
             let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -101,6 +105,8 @@ export namespace demo
                 //  this.m_texBlock.setRenderer(this.m_rscene.getRenderer());
                 this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
                 
+                this.m_rscene.getStage3D().addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
+
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
                 let tex4:TextureProxy = this.getImageTexByUrl("static/assets/yanj.jpg");
@@ -109,7 +115,7 @@ export namespace demo
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.initialize(300.0);
                 this.m_rscene.addEntity(axis);
-
+                this.m_targetDisp = axis;
                 //  // add common 3d display entity
                 //  var plane:Plane3DEntity = new Plane3DEntity();
                 //  //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex4]);
@@ -180,6 +186,14 @@ void main(){
                 cly.setVtxTransformMatrix(transMat);
                 cly.initialize(100.0,200.0,15,[tex1]);
                 this.m_rscene.addEntity(cly);
+            }
+        }
+        private mouseDown(evt:any):void
+        {
+            console.log("mouse down...,this.m_targetDisp != null: "+(this.m_targetDisp != null));
+            if(this.m_targetDisp != null)
+            {
+                this.m_targetDisp.setVisible(!this.m_targetDisp.getVisible());
             }
         }
         run():void

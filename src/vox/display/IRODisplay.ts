@@ -10,10 +10,12 @@
 import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
+import * as RPOUnitT from "../../vox/render/RPOUnit";
 
 import ROVertexBuffer = ROVertexBufferT.vox.mesh.ROVertexBuffer;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 
 export namespace vox
 {
@@ -55,7 +57,8 @@ export namespace vox
             // 只能由渲染系统内部调用
             __$ruid:number;// = -1;     // 用于关联RPOUnit对象
             __$rpuid:number;// = -1;     // 用于关联RPONode对象
-            __$$rsign:number;// = RODisplay.NOT_IN_WORLD;            
+            __$$runit:RPOUnit;
+            __$$rsign:number;// = RODisplay.NOT_IN_WORLD;
         }
     }
 }

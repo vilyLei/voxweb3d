@@ -24,7 +24,7 @@ import * as ROTransformT from "../../vox/display/ROTransform";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as RODisplayT from "../../vox/display/RODisplay";
 import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
-import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
+
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as RenderBufferUpdaterT from "../../vox/render/RenderBufferUpdater";
 import * as TextureProxyT from '../../vox/texture/TextureProxy';
@@ -45,7 +45,7 @@ import ROTransform = ROTransformT.vox.display.ROTransform;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import RODisplay = RODisplayT.vox.display.RODisplay;
 import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
-import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
+
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import RenderBufferUpdater = RenderBufferUpdaterT.vox.render.RenderBufferUpdater;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
@@ -161,7 +161,7 @@ export namespace vox
                         this.m_display.visible = this.m_visible && boo;
                         if(this.m_display.__$ruid > -1)
                         {
-                            RPOUnitBuilder.__$SynVisibleWithUid(this.m_display.__$ruid, this.m_display.visible);
+                            this.m_display.__$$runit.setVisible(this.m_display.visible);
                         }
                     }
                 }
@@ -262,7 +262,7 @@ export namespace vox
                         this.m_display.visible = boo && this.m_drawEnabled;
                         if(this.m_display.__$ruid > -1)
                         {
-                            RPOUnitBuilder.__$SynVisibleWithUid(this.m_display.__$ruid, boo && this.m_drawEnabled);
+                            this.m_display.__$$runit.setVisible(this.m_display.visible);
                         }
                     }
                 }
@@ -317,7 +317,7 @@ export namespace vox
                         if(this.m_display != null)
                         {
                             this.m_display.setTransform(this.m_transfrom.getMatrix());
-                            //this.m_display.setMatrixFS32(this.m_transfrom.getMatrix().getLocalFS32());
+                            
                             this.m_display.visible = this.m_visible && this.m_drawEnabled;
                             this.m_display.vbuf = m.__$attachVBuf();
                             this.m_display.ivsIndex = 0;
@@ -341,7 +341,7 @@ export namespace vox
                     this.m_display.ivsCount = ivsCount;
                     if(this.m_display.__$ruid > -1)
                     {
-                        RPOUnitBuilder.__$SynIvsParamWithUid(this.m_display.__$ruid, ivsIndex,ivsCount);
+                        this.m_display.__$$runit.setIvsParam(ivsIndex, ivsCount);
                     }
                 }
             }
@@ -357,7 +357,7 @@ export namespace vox
                     {
                         this.m_display = RODisplay.Create();                        
                         this.m_display.setTransform(this.m_transfrom.getMatrix());
-                        //this.m_display.setMatrixFS32(this.m_transfrom.getMatrix().getLocalFS32());
+                        
                         this.m_display.visible = this.m_visible && this.m_drawEnabled;                    
                     }
                     if(this.m_display.getMaterial() != m && this.__$wuid < 0 && this.m_display.__$ruid < 0)

@@ -13,6 +13,7 @@ import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
 import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
+import * as RPOUnitT from "../../vox/render/RPOUnit";
 
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
 import DisplayRenderState = RenderConstT.vox.render.DisplayRenderState;
@@ -21,7 +22,7 @@ import ROVertexBuffer = ROVertexBufferT.vox.mesh.ROVertexBuffer;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
-
+import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 export namespace vox
 {
     export namespace display
@@ -156,10 +157,12 @@ export namespace vox
                 this.ivsIndex = 0;
                 this.ivsCount = 0;
                 this.m_partGroup = null;
+                this.__$$runit = null;
             }
             // 只能由渲染系统内部调用
             __$ruid:number = -1;     // 用于关联RPOUnit对象
             __$rpuid:number = -1;    // 用于关联RPONode对象
+            __$$runit:RPOUnit = null;
             __$$rsign:DisplayRenderState = DisplayRenderState.NOT_IN_WORLD;
 
             private static S_FLAG_BUSY:number = 1;

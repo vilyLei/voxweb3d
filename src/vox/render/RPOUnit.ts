@@ -8,7 +8,7 @@
 
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
-//import * as ShdProgramT from "../../vox/material/ShdProgram";
+
 import * as MaterialShaderT from "../../vox/material/MaterialShader";
 import * as ITextureRenderObjT from "../../vox/texture/ITextureRenderObj";
 import * as RODrawStateT from "../../vox/render/RODrawState";
@@ -19,7 +19,7 @@ import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
 import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
-//import ShdProgram = ShdProgramT.vox.material.ShdProgram;
+
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 import ITextureRenderObj = ITextureRenderObjT.vox.texture.ITextureRenderObj;
 import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
