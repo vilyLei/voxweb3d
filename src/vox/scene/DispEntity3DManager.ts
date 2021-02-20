@@ -86,7 +86,6 @@ export namespace vox
                             {
                                 //console.log("DispEntity3DManager::removeEntity(), remove a entity from all processes.");
                                 if(display.__$$rsign != DisplayRenderState.LIVE_IN_WORLD)
-                                if(display.__$$rsign != DisplayRenderState.LIVE_IN_WORLD)
                                 {
                                     // error!!!
                                     console.log("DispEntity3DManager::removeEntity(), Error: display.__$$rsign != RODisplay.LIVE_IN_WORLD.");

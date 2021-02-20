@@ -89,15 +89,6 @@ export namespace vox
             {
                 return RPOUnitBuilder.m_rcpoList[dispRUid].rcids[rprocessUid];
             }
-
-            //  static __$SynVisibleWithUid(dispRUid:number,visible:boolean):void
-            //  {
-            //      RPOUnitBuilder.m_unitList[dispRUid].setVisible(visible);
-            //  }
-            //  static __$SynIvsParamWithUid(dispRUid:number,ivsIndex:number,ivsCount:number):void
-            //  {
-            //      RPOUnitBuilder.m_unitList[dispRUid].setIvsParam(ivsIndex, ivsCount);
-            //  }
             
             static GetNodeByUid(dispRUid:number):RPOUnit
             {

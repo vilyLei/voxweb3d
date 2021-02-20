@@ -16,6 +16,7 @@ import * as RendererStateT from "../../vox/render/RendererState";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as ShaderUBOT from "../../vox/material/ShaderUBO";
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
+import * as IPoolNodeT from "../../vox/utils/IPoolNode";
 
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
 import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
@@ -28,34 +29,35 @@ import RendererState = RendererStateT.vox.render.RendererState;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import ShaderUBO = ShaderUBOT.vox.material.ShaderUBO;
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
+import IPoolNode = IPoolNodeT.vox.utils.IPoolNode;
 
 export namespace vox
 {
     export namespace render
     {
-        export class RPOUnit
+        export class RPOUnit implements IPoolNode
         {
             uid:number = -1;
-            
-            constructor()
-            {
-            }
             // 记录自身和RPONode的对应关系
             __$rpuid:number = -1;
             // renderProcess uid
             __$rprouid:number = -1;
 
             shader:MaterialShader = null;
+            
+            constructor()
+            {
+            }
 
             // 记录对应的RODisplay的渲染所需的状态数据
-            ibufType:number = 0;// UNSIGNED_SHORT or UNSIGNED_INT
-            ibufStep:number = 2;// 2 or 4
+            ibufType:number = 0;                // UNSIGNED_SHORT or UNSIGNED_INT
+            ibufStep:number = 2;                // 2 or 4
 
             ivsIndex:number = 0;
             ivsCount:number = 0;
             insCount:number = 0;
             drawOffset:number = 0;
-            partTotal:number = 0;           // partTotal = partGroup.length
+            partTotal:number = 0;               // partTotal = partGroup.length
             partGroup:Uint16Array = null;
 
             trisNumber:number = 0;
