@@ -218,20 +218,19 @@ export namespace vox
             {
                 this.m_texBufW = this.m_texWidth;
                 this.m_texBufH = this.m_texHeight;
-                
+                // texture wrap
+                gl.texParameteri(this.m_sampler, gl.TEXTURE_WRAP_S, TextureConst.GetConst(gl,this.wrap_s));
+                gl.texParameteri(this.m_sampler, gl.TEXTURE_WRAP_T, TextureConst.GetConst(gl,this.wrap_t));
+                // texture filter
+                gl.texParameteri(this.m_sampler, gl.TEXTURE_MIN_FILTER, TextureConst.GetConst(gl,this.minFilter));
+                gl.texParameteri(this.m_sampler, gl.TEXTURE_MAG_FILTER, TextureConst.GetConst(gl,this.magFilter));
+
                 if (this.mipmapEnabled && MathConst.IsPowerOf2(this.m_texWidth) && MathConst.IsPowerOf2(this.m_texHeight))
                 {
-                    gl.texParameteri(this.m_sampler, gl.TEXTURE_WRAP_S, TextureConst.GetConst(gl,this.wrap_s));
-                    gl.texParameteri(this.m_sampler, gl.TEXTURE_WRAP_T, TextureConst.GetConst(gl,this.wrap_t));//REPEAT
                     if(this.m_texTarget == TextureTarget.TEXTURE_3D)
                     {
-                        gl.texParameteri(this.m_sampler, gl.TEXTURE_WRAP_R, TextureConst.GetConst(gl,this.wrap_r));//REPEAT
-                        gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_BASE_LEVEL, 0);
-                        gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAX_LEVEL, Math.log2(this.m_texWidth));
+                        gl.texParameteri(this.m_sampler, gl.TEXTURE_WRAP_R, TextureConst.GetConst(gl,this.wrap_r));
                     }
-                    //gl.texParameteri(this.m_sampler, gl.TEXTURE_minFilter, gl.LINEAR_MIPMAP_LINEAR);
-                    gl.texParameteri(this.m_sampler, gl.TEXTURE_MIN_FILTER, TextureConst.GetConst(gl,this.minFilter));
-                    gl.texParameteri(this.m_sampler, gl.TEXTURE_MAG_FILTER, TextureConst.GetConst(gl,this.magFilter));
                     //gl.DONT_CARE
                     //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.NICEST);
                     //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.FASTEST);
@@ -240,17 +239,11 @@ export namespace vox
                         gl.generateMipmap(this.m_sampler);
                     }
                 }
-                else
+                
+                if(this.m_texTarget == TextureTarget.TEXTURE_3D)
                 {
-                    gl.texParameteri(this.m_sampler, gl.TEXTURE_WRAP_S, TextureConst.GetConst(gl,this.wrap_s));
-                    gl.texParameteri(this.m_sampler, gl.TEXTURE_WRAP_T, TextureConst.GetConst(gl,this.wrap_t));//REPEAT
-                    if(this.m_texTarget == TextureTarget.TEXTURE_3D)
-                    {
-                        gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_BASE_LEVEL, 0);
-                        gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAX_LEVEL, Math.log2(this.m_texWidth));
-                    }
-                    gl.texParameteri(this.m_sampler, gl.TEXTURE_MIN_FILTER, TextureConst.GetConst(gl,this.minFilter));
-                    gl.texParameteri(this.m_sampler, gl.TEXTURE_MAG_FILTER, TextureConst.GetConst(gl,this.magFilter));
+                    gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_BASE_LEVEL, 0);
+                    gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAX_LEVEL, Math.log2(this.m_texWidth));
                 }
             }
             // sub class override
@@ -271,6 +264,7 @@ export namespace vox
             }
             /**
              * 准备将数据更新到当前的 Gpu context,这是一个异步过程，在渲染运行时才会真正的提交给gpu
+             * 这个函数由用户主动调用
              */
             updateDataToGpu():void
             {

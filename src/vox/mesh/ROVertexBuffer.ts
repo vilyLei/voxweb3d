@@ -113,7 +113,7 @@ export namespace vox
                     RenderBufferUpdater.GetInstance().__$addBuf(this);
                 }
             }
-            setUintIVSData(uint16Or32Arr:any,status:number = VtxBufConst.VTX_STATIC_DRAW):void
+            setUintIVSData(uint16Or32Arr:Uint16Array | Uint32Array,status:number = VtxBufConst.VTX_STATIC_DRAW):void
             {
                 if((uint16Or32Arr instanceof Uint16Array))
                 {
