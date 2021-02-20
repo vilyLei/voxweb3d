@@ -179,9 +179,10 @@ export namespace vox
                         if(RPOUnitBuilder.TestRPNodeNotExists(disp.__$ruid,this.m_uid))
                         {
                             let node:RPONode = this.rpoNodeBuilder.create() as RPONode;
-                            node.unit = RPOUnitBuilder.GetRPOUnit( disp.__$ruid );
+                            node.unit = RPOUnitBuilder.GetNodeByUid( disp.__$ruid );
                             node.unit.shader = this.m_shader;
                             node.unit.__$rprouid = this.index;
+                            
                             if(disp.getPartGroup() != null)
                             {
                                 node.unit.partGroup = disp.getPartGroup().slice(0);
@@ -284,7 +285,7 @@ export namespace vox
             {
                 if(disp != null)
                 {
-                    let unit:RPOUnit = RPOUnitBuilder.GetRPOUnit( disp.__$ruid );
+                    let unit:RPOUnit = RPOUnitBuilder.GetNodeByUid( disp.__$ruid );
                     if(unit != null)
                     {
                         this.m_proBlock.drawLockMaterialByUnit(rc,unit,disp,forceUpdateUniform);

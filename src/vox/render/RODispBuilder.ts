@@ -72,7 +72,7 @@ export namespace vox
                     let material:MaterialBase = disp.getMaterial();
                     if(material != null)
                     {
-                        let runit:RPOUnit = RPOUnitBuilder.GetRPOUnit(disp.__$ruid);
+                        let runit:RPOUnit = RPOUnitBuilder.GetNodeByUid(disp.__$ruid);
                         let tro:TextureRenderObj = TextureRenderObj.GetByMid(rc.getUid(), material.__$troMid);
                         if(runit.tro != null && (tro == null || runit.tro.getMid() != tro.getMid()))
                         {

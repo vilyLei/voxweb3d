@@ -13,6 +13,7 @@ import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RODispBuilderT from "../../vox/render/RODispBuilder";
+
 import * as RenderProcessT from "../../vox/render/RenderProcess";
 import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
@@ -30,7 +31,6 @@ import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
 
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 import RenderProcessBuider = RenderProcessBuiderT.vox.render.RenderProcessBuider;
-
 import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
 import Entity3DNodeLinker = Entity3DNodeLinkerT.vox.scene.Entity3DNodeLinker;
 
@@ -40,22 +40,21 @@ export namespace vox
     {
         export class DispEntity3DManager
         {
+            private m_nodeLinker = new Entity3DNodeLinker();
             private m_waitList:IRenderEntity[] = [];
             private m_processUidList:number[] = [];
             private m_wuid:number = -1;            
             private m_dispBuilder:RODispBuilder = null;
-            constructor(__$wuid:number, preROMana:RODispBuilder)
+            entityManaListener:any = null;
+            constructor(__$wuid:number, dispBuilder:RODispBuilder)
             {
                 this.m_wuid = __$wuid;
-                this.m_dispBuilder = preROMana;
+                this.m_dispBuilder = dispBuilder;
             }
-
-            nodeLinker = new Entity3DNodeLinker();
-            entityManaListener:any = null;
 
             isEmpty():boolean
             {
-                return this.nodeLinker.isEmpty();
+                return this.m_nodeLinker.isEmpty();
             }
             removeEntity(entity:IRenderEntity):void
             {
@@ -64,7 +63,7 @@ export namespace vox
                     let node:Entity3DNode = Entity3DNode.GetByUid(entity.__$weid);
                     if(node != null && entity == node.entity)
                     {
-                        this.nodeLinker.removeNode(node);
+                        this.m_nodeLinker.removeNode(node);
                         // 从所有相关process中移除这个display
                         let display:IRODisplay = entity.getDisplay();
                         if(display != null && display.__$ruid > -1)
@@ -94,7 +93,7 @@ export namespace vox
                                 }
                                 display.rsign = DisplayRenderState.NOT_IN_WORLD;
                                 // 准备移除和当前 display 对应的 RPOUnit
-                                RPOUnitBuilder.Restore(RPOUnitBuilder.GetRPOUnit(puid));
+                                RPOUnitBuilder.Restore(RPOUnitBuilder.GetNodeByUid(puid));
                             }
                             else
                             {
@@ -150,7 +149,7 @@ export namespace vox
                                 let node:Entity3DNode = Entity3DNode.Create();
                                 node.entity = entity;
                                 entity.__$weid = node.uid;
-                                this.nodeLinker.addNode(node);
+                                this.m_nodeLinker.addNode(node);
                                 if(disp.rsign == DisplayRenderState.NOT_IN_WORLD)
                                 {
                                     disp.rsign = DisplayRenderState.GO_TO_WORLD;
@@ -253,7 +252,7 @@ export namespace vox
                             node = Entity3DNode.Create();
                             node.entity = entity;
                             entity.__$weid = node.uid;
-                            this.nodeLinker.addNode(node);
+                            this.m_nodeLinker.addNode(node);
                             
                             let prouid = this.m_processUidList[i];
                             this.m_rprocess = RenderProcessBuider.GetProcess(prouid);
