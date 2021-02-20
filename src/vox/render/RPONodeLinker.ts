@@ -5,8 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
-import RPONode = RPONodeBuilderT.vox.render.RPONode;
+import * as RPONodeT from "../../vox/render/RPONode";
+import RPONode = RPONodeT.vox.render.RPONode;
 
 export namespace vox
 {
@@ -14,11 +14,11 @@ export namespace vox
     {
 		export class RPONodeLinker
 		{
-            private static __s_uid:number = 0;
+            private static s_uid:number = 0;
             private m_uid:number = -1;                          // 用于唯一记录运行时的自己唯一id
 			constructor()
 			{
-                this.m_uid = RPONodeLinker.__s_uid++;
+                this.m_uid = RPONodeLinker.s_uid++;
 			}
 		
 			private m_begin:RPONode = null;

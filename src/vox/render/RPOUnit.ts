@@ -35,17 +35,10 @@ export namespace vox
     {
         export class RPOUnit
         {
-            private static __s_uid:number = 0;
-            static __$_S_flag:number = 0;
-            private m_uid:number = -1;
+            uid:number = -1;
             
             constructor()
             {
-                if(RPOUnit.__$_S_flag < 1)
-                {
-                    throw new Error("Fatal Error: Illegal constructor() !!!");
-                }
-                this.m_uid = RPOUnit.__s_uid++;
             }
             // 记录自身和RPONode的对应关系
             __$rpuid:number = -1;
@@ -84,10 +77,7 @@ export namespace vox
             tro:ITextureRenderObj = null;
             texMid:number = -1;
             ubo:ShaderUBO = null;
-            getUid():number
-            {
-                return this.m_uid;
-            }
+            
             setIvsParam(ivsIndex:number, ivsCount:number):void
             {
                 this.ivsIndex = ivsIndex;
@@ -300,7 +290,7 @@ export namespace vox
             }
             toString():string
             {
-                return "[RPOUnit(uid = "+this.m_uid+")]";
+                return "[RPOUnit(uid = "+this.uid+")]";
             }
         }
     }

@@ -20,6 +20,8 @@ import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
 import * as EntityNodeQueueT from "../../vox/scene/EntityNodeQueue";
 import * as Entity3DNodeLinkerT from "../../vox/scene/Entity3DNodeLinker";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
+
+import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
 import * as RendererInstanceT from "../../vox/scene/RendererInstance";
 import * as TextureBlockT from "../../vox/texture/TextureBlock";
@@ -49,6 +51,8 @@ import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
 import EntityNodeQueue = EntityNodeQueueT.vox.scene.EntityNodeQueue;
 import Entity3DNodeLinker = Entity3DNodeLinkerT.vox.scene.Entity3DNodeLinker;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+
+import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import TextureBlock = TextureBlockT.vox.texture.TextureBlock;
@@ -113,6 +117,11 @@ export namespace vox
             getCanvas():any
             {
                 return this.m_renderProxy.getCanvas();
+            }
+            
+            getRPONodeBuilder():RPONodeBuilder
+            {
+                return null;
             }
             getRenderProxy():RenderProxy
             {

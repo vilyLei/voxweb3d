@@ -16,6 +16,7 @@ import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMasK";
 import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
 import * as IRendererSpaceT from "../../vox/scene/IRendererSpace";
+import * as RPONodeT from "../../vox/render/RPONode";
 import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
 import * as EntityNodeQueueT from "../../vox/scene/EntityNodeQueue";
@@ -31,7 +32,7 @@ import CameraBase = CameraBaseT.vox.view.CameraBase;
 import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
 import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
 import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
-import RPONode = RPONodeBuilderT.vox.render.RPONode;
+import RPONode = RPONodeT.vox.render.RPONode;
 import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
 import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
 import EntityNodeQueue = EntityNodeQueueT.vox.scene.EntityNodeQueue;
@@ -65,6 +66,8 @@ export namespace vox
             private m_stage3d:Stage3D = null;
             private m_emptyRPONode:RPONode = new RPONode();
 
+            private m_rpoNodeBuilder:RPONodeBuilder = null;
+
             private m_nodeQueue:EntityNodeQueue = new EntityNodeQueue();
             private m_nodeWLinker:Entity3DNodeLinker = new Entity3DNodeLinker();
             private m_nodeSLinker:Entity3DNodeLinker = new Entity3DNodeLinker();
@@ -86,6 +89,7 @@ export namespace vox
                     this.m_renderer = renderer;
                     this.m_stage3d = renderer.getStage3D();
                     this.m_camera = camera;
+                    this.m_rpoNodeBuilder = renderer.getRPONodeBuilder();
                 }
             }
             
@@ -138,7 +142,7 @@ export namespace vox
                             }
                             if(node.rpoNode == null)
                             {
-                                node.rpoNode = RPONodeBuilder.GetNodeByUid(entity.getDisplay().__$rpuid);
+                                node.rpoNode = this.m_rpoNodeBuilder.getNodeByUid(entity.getDisplay().__$rpuid) as RPONode;
                             }
                             this.m_nodeSLinker.addNode(node);
                         }
@@ -199,7 +203,7 @@ export namespace vox
                             this.m_nodeSLinker.addNode( pnode );
                             if(pnode.rpoNode == null)
                             {
-                                pnode.rpoNode = RPONodeBuilder.GetNodeByUid(pnode.entity.getDisplay().__$rpuid);
+                                pnode.rpoNode = this.m_rpoNodeBuilder.getNodeByUid(pnode.entity.getDisplay().__$rpuid) as RPONode;
                             }
                         }
                         else

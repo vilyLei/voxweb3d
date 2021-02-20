@@ -24,6 +24,7 @@ import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceConte
 import * as IRendererT from "../../vox/scene/IRenderer";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
 
+import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as TextureSlotT from "../../vox/texture/TextureSlot";
 import * as RTTTextureStoreT from "../../vox/texture/RTTTextureStore";
 import * as DispEntity3DManagerT from "../../vox/scene/DispEntity3DManager";
@@ -43,6 +44,7 @@ import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInst
 import IRenderer = IRendererT.vox.scene.IRenderer;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 
+import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
 import TextureSlot = TextureSlotT.vox.texture.TextureSlot;
 import RTTTextureStore = RTTTextureStoreT.vox.texture.RTTTextureStore;
 import DispEntity3DManager = DispEntity3DManagerT.vox.scene.DispEntity3DManager;
@@ -64,12 +66,18 @@ export namespace vox
             private m_dispBuilder:RODispBuilder = null;
             private m_batchEnabled:boolean = true;
             private m_processFixedState:boolean = true;
+
+            private m_rpoNodeBuilder:RPONodeBuilder = new RPONodeBuilder();
             readonly bufferUpdater:ROBufferUpdater = null;
             readonly textureSlot:TextureSlot = null;
             readonly rttStore:RTTTextureStore = null;
             constructor()
             {
                 this.m_uid = RendererInstance.__s_uid++;
+            }
+            getRPONodeBuilder():RPONodeBuilder
+            {
+                return this.m_rpoNodeBuilder;
             }
             getDispBuilder():RODispBuilder
             {
@@ -239,7 +247,8 @@ export namespace vox
             appendProcess(batchEnabled:boolean = true,processFixedState:boolean = false):RenderProcess
             {
                 let process:RenderProcess = RenderProcessBuider.Create(this.m_dispBuilder.getMaterialShader(),batchEnabled,processFixedState);
-                //console.log("RendererInstance::appendProcess(), process: "+process);
+                process.rpoNodeBuilder = this.m_rpoNodeBuilder;
+                
                 this.m_processes.push( process );
                 process.setWOrldParam(this.m_uid, this.m_processesLen);
                 ++this.m_processesLen;
@@ -248,7 +257,8 @@ export namespace vox
             createSeparatedProcess(batchEnabled:boolean = true,processFixedState:boolean = false):RenderProcess
             {
                 let process:RenderProcess = RenderProcessBuider.Create(this.m_dispBuilder.getMaterialShader(),batchEnabled,processFixedState);
-                //console.log("RendererInstance::createSeparatedProcess(), process: "+process);
+                process.rpoNodeBuilder = this.m_rpoNodeBuilder;
+
                 this.m_processes.push( process );
                 process.setWOrldParam(this.m_uid, this.m_processesLen);
                 return process;

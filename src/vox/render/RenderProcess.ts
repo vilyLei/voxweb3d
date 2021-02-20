@@ -11,6 +11,7 @@ import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as MaterialShaderT from '../../vox/material/MaterialShader';
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
+import * as RPONodeT from "../../vox/render/RPONode";
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as RPOBlockT from "../../vox/render/RPOBlock";
@@ -19,9 +20,9 @@ import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
+import RPONode = RPONodeT.vox.render.RPONode;
 
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
-import RPONode = RPONodeBuilderT.vox.render.RPONode;
 import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
 import RPOBlock = RPOBlockT.vox.render.RPOBlock;
 
@@ -48,10 +49,13 @@ export namespace vox
             // 用于特殊绘制
             private m_proBlock:RPOBlock = null;//new RPOBlock();
 
-            private m_uid:number = -1;
-            index:number = -1;
             private m_batchEnabled:boolean = true;
             private m_fixedState:boolean = true;
+            private m_uid:number = -1;
+
+            index:number = -1;
+            rpoNodeBuilder:RPONodeBuilder = null;
+            
             constructor(shader:MaterialShader, batchEnabled:boolean,processFixedState:boolean)
             {
                 this.m_shader = shader;
@@ -125,6 +129,7 @@ export namespace vox
                 if(this.m_blockFList[node.shdUid] < 0)
                 {
                     block = new RPOBlock(this.m_shader);
+                    block.rpoNodeBuilder = this.rpoNodeBuilder;
                     block.batchEnabled = this.m_batchEnabled;
                     block.fixedState = this.m_fixedState;
                     if(block.batchEnabled)
@@ -160,7 +165,7 @@ export namespace vox
             }
             rejoinRunitForTro(runit:RPOUnit):void
             {
-                let node:RPONode = RPONodeBuilder.GetNodeByUid(runit.__$rpuid);
+                let node:RPONode = this.rpoNodeBuilder.getNodeByUid(runit.__$rpuid) as RPONode;
                 node.tro = runit.tro;
                 node.texMid = node.unit.texMid;
                 this.m_blockList[node.index].rejoinNodeForTro(node);
@@ -173,7 +178,7 @@ export namespace vox
                     {
                         if(RPOUnitBuilder.TestRPNodeNotExists(disp.__$ruid,this.m_uid))
                         {
-                            let node:RPONode = RPONodeBuilder.Create();
+                            let node:RPONode = this.rpoNodeBuilder.create() as RPONode;
                             node.unit = RPOUnitBuilder.GetRPOUnit( disp.__$ruid );
                             node.unit.shader = this.m_shader;
                             node.unit.__$rprouid = this.index;
@@ -212,7 +217,7 @@ export namespace vox
                 if(disp.__$ruid > -1)
                 {
                     let nodeUId:number = RPOUnitBuilder.GetRPONodeUid(disp.__$ruid,this.m_uid);
-                    let node:RPONode = RPONodeBuilder.GetNodeByUid( nodeUId );
+                    let node:RPONode = this.rpoNodeBuilder.getNodeByUid( nodeUId ) as RPONode;
                     // material info etc.
                     node.shdUid = node.unit.shdUid;
                     node.texMid = node.unit.texMid;
@@ -229,16 +234,22 @@ export namespace vox
                     if(disp.__$ruid > -1)
                     {
                         let nodeUId:number = RPOUnitBuilder.GetRPONodeUid(disp.__$ruid,this.m_uid);
-                        let node:RPONode = RPONodeBuilder.GetNodeByUid( nodeUId );
+                        let node:RPONode = this.rpoNodeBuilder.getNodeByUid( nodeUId ) as RPONode;
                         //console.log("removeDisp(), node != null: "+(node != null));
                         if(node != null)
                         {
                             let block:RPOBlock = this.m_blockList[node.index];
                             block.removeNode(node);
                             RPOUnitBuilder.SetRPNodeParam(disp.__$ruid, this.m_uid, -1);
-                            //this.m_nodes.splice(node.index, 1);
+                            
                             --this.m_nodesLen;
-                            RPONodeBuilder.Restore(node);
+
+                            let runit:RPOUnit = node.unit;
+                            if(this.rpoNodeBuilder.restore(node))
+                            {
+                                RPOUnitBuilder.Restore(runit);
+                            }
+
                             disp.__$ruid = -1;
                             if(block.isEmpty())
                             {
@@ -294,14 +305,6 @@ export namespace vox
                 }
                 this.m_blockListLen = 0;
                 this.m_blockList = [];
-                //  let node:RPONode = null;
-                //  for(i = 0; i < this.m_nodesLen; ++i)
-                //  {
-                //      node = this.m_nodes.pop();
-                //      RPOUnitBuilder.SetRPNodeParam(node.disp.__$ruid, this.m_uid, -1);
-                //      node.reset();
-                //      RPONodeBuilder.Restore(node);
-                //  }
             }
             
             showInfo():void

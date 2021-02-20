@@ -11,6 +11,7 @@ import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
+import * as RPONodeT from "../../vox/render/RPONode";
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as RPONodeLinkerT from "../../vox/render/RPONodeLinker";
@@ -23,8 +24,8 @@ import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
+import RPONode = RPONodeT.vox.render.RPONode;
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
-import RPONode = RPONodeBuilderT.vox.render.RPONode;
 import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
 import RPONodeLinker = RPONodeLinkerT.vox.render.RPONodeLinker;
 import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
@@ -45,10 +46,12 @@ export namespace vox
             index:number = -1;                                  // 记录自身在 RenderProcess blocks数组中的序号
             shdUid:number = -1;                                 // 记录 material 对应的 shader program uid
             procuid:number = -1;
-            //
+            
             batchEnabled:boolean = true;
             fixedState:boolean = true;
             runMode:number = 0;
+
+            rpoNodeBuilder:RPONodeBuilder = null;
             private m_shader:MaterialShader = null;
             constructor(shader:MaterialShader)
             {
@@ -376,19 +379,26 @@ export namespace vox
                 let node:RPONode = null;
                 if(nextNode != null)
                 {
+                    let runit:RPOUnit;
                     while(nextNode != null)
                     {
                         node = nextNode;
                         nextNode = nextNode.next;
                         RPOUnitBuilder.SetRPNodeParam(node.__$ruid, this.procuid, -1);
                         node.reset();
-                        RPONodeBuilder.Restore(node);
+                        
+                        runit = node.unit;
+                        if(this.rpoNodeBuilder.restore(node))
+                        {
+                            RPOUnitBuilder.Restore(runit);
+                        }
                     }
                 }
                 this.index = -1;
                 this.shdUid = -1;
                 this.procuid = -1;
                 this.m_nodeLinker.clear();
+                this.rpoNodeBuilder = null;
             }
             destroy():void
             {

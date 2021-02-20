@@ -11,6 +11,7 @@ import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
 import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
+import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
 
 import Stage3D = Stage3DT.vox.display.Stage3D;
@@ -18,6 +19,7 @@ import CameraBase = CameraBaseT.vox.view.CameraBase;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
+import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 
 export namespace vox
@@ -27,6 +29,7 @@ export namespace vox
         export interface IRenderer
         {
             getUid():number;
+            getRPONodeBuilder():RPONodeBuilder;
             getRenderProxy():RenderProxy;
             getRendererContext():RendererInstanceContext;
             getStage3D():Stage3D;
