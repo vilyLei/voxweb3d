@@ -11,8 +11,8 @@ import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
-import * as RPOUnitBuiderT from "../../vox/render/RPOUnitBuider";
-import * as RPONodeBuiderT from "../../vox/render/RPONodeBuider";
+import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
+import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as RPONodeLinkerT from "../../vox/render/RPONodeLinker";
 import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
@@ -23,9 +23,9 @@ import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
-import RPOUnitBuider = RPOUnitBuiderT.vox.render.RPOUnitBuider;
-import RPONode = RPONodeBuiderT.vox.render.RPONode;
-import RPONodeBuider = RPONodeBuiderT.vox.render.RPONodeBuider;
+import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
+import RPONode = RPONodeBuilderT.vox.render.RPONode;
+import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
 import RPONodeLinker = RPONodeLinkerT.vox.render.RPONodeLinker;
 import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
 import RenderColorMask = RODrawStateT.vox.render.RenderColorMask;
@@ -352,7 +352,7 @@ export namespace vox
                     if(RendererDeviece.IsMobileWeb())
                     {
                         // 如果不这么做，vro和shader attributes没有完全匹配的时候可能在移动设备上会有问题(无法正常绘制)例如 ip6s
-                        let vro:VertexRenderObj = disp.vbuf.createVROBegin(this.m_shader.getCurrentShd());
+                        let vro:VertexRenderObj = disp.vbuf.createVROBegin(rc, this.m_shader.getCurrentShd(), true);
                         vro.run(rc);
                     }
                     else
@@ -380,9 +380,9 @@ export namespace vox
                     {
                         node = nextNode;
                         nextNode = nextNode.next;
-                        RPOUnitBuider.SetRPNodeParam(node.__$ruid, this.procuid, -1);
+                        RPOUnitBuilder.SetRPNodeParam(node.__$ruid, this.procuid, -1);
                         node.reset();
-                        RPONodeBuider.Restore(node);
+                        RPONodeBuilder.Restore(node);
                     }
                 }
                 this.index = -1;

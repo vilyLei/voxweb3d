@@ -180,7 +180,6 @@ export namespace vox
             private static S_FLAG_BUSY:number = 1;
             private static S_FLAG_FREE:number = 0;
             private static m_unitFlagList:number[] = [];
-            private static m_unitIndexPptFlagList:number[] = [];
             private static m_unitListLen:number = 0;
             private static m_unitList:RODisplay[] = [];
             private static m_freeIdList:number[] = [];
@@ -206,7 +205,6 @@ export namespace vox
                 {
                     unit = new RODisplay();
                     RODisplay.m_unitList.push( unit );
-                    RODisplay.m_unitIndexPptFlagList.push(RODisplay.S_FLAG_FREE);
                     RODisplay.m_unitFlagList.push(RODisplay.S_FLAG_BUSY);
                     RODisplay.m_unitListLen++;
                 }

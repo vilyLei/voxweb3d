@@ -7,12 +7,12 @@
 
 import * as RendererConstT from "../../vox/scene/RendererConst";
 import * as AABBT from "../../vox/geom/AABB";
-import * as RPONodeBuiderT from "../../vox/render/RPONodeBuider";
+import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
 
 import RendererConst = RendererConstT.vox.scene.RendererConst;
 import AABB = AABBT.vox.geom.AABB;
-import RPONode = RPONodeBuiderT.vox.render.RPONode;
+import RPONode = RPONodeBuilderT.vox.render.RPONode;
 import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
 
 export namespace vox

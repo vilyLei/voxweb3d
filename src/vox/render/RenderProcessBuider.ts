@@ -25,7 +25,6 @@ export namespace vox
             private static m_processListLen:number = 0;
             private static m_processList:RenderProcess[] = [];
             private static m_processFlagList:number[] = [];
-            private static m_processIndexPptFlagList:number[] = [];
             private static m_freeIdList:number[] = [];
         
             static GetFreeId():number
@@ -63,7 +62,6 @@ export namespace vox
                     // create a new processIndex
                     process = new RenderProcess(shader,batchEnabled,fixedState);
                     RenderProcessBuider.m_processList.push( process );
-                    RenderProcessBuider.m_processIndexPptFlagList.push(0);
                     RenderProcessBuider.m_processFlagList.push(RenderProcessBuider.S_FLAG_BUSY);
                     process.index = RenderProcessBuider.m_processListLen;
                     RenderProcessBuider.m_processListLen++;

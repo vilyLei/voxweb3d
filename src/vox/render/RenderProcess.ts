@@ -11,8 +11,8 @@ import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as MaterialShaderT from '../../vox/material/MaterialShader';
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
-import * as RPOUnitBuiderT from "../../vox/render/RPOUnitBuider";
-import * as RPONodeBuiderT from "../../vox/render/RPONodeBuider";
+import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
+import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as RPOBlockT from "../../vox/render/RPOBlock";
 
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
@@ -20,9 +20,9 @@ import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 
-import RPOUnitBuider = RPOUnitBuiderT.vox.render.RPOUnitBuider;
-import RPONode = RPONodeBuiderT.vox.render.RPONode;
-import RPONodeBuider = RPONodeBuiderT.vox.render.RPONodeBuider;
+import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
+import RPONode = RPONodeBuilderT.vox.render.RPONode;
+import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
 import RPOBlock = RPOBlockT.vox.render.RPOBlock;
 
 export namespace vox
@@ -160,7 +160,7 @@ export namespace vox
             }
             rejoinRunitForTro(runit:RPOUnit):void
             {
-                let node:RPONode = RPONodeBuider.GetNodeByUid(runit.__$rpuid);
+                let node:RPONode = RPONodeBuilder.GetNodeByUid(runit.__$rpuid);
                 node.tro = runit.tro;
                 node.texMid = node.unit.texMid;
                 this.m_blockList[node.index].rejoinNodeForTro(node);
@@ -171,10 +171,10 @@ export namespace vox
                 {
                     if(disp.__$ruid > -1)
                     {
-                        if(RPOUnitBuider.TestRPNodeNotExists(disp.__$ruid,this.m_uid))
+                        if(RPOUnitBuilder.TestRPNodeNotExists(disp.__$ruid,this.m_uid))
                         {
-                            let node:RPONode = RPONodeBuider.Create();
-                            node.unit = RPOUnitBuider.GetRPOUnit( disp.__$ruid );
+                            let node:RPONode = RPONodeBuilder.Create();
+                            node.unit = RPOUnitBuilder.GetRPOUnit( disp.__$ruid );
                             node.unit.shader = this.m_shader;
                             node.unit.__$rprouid = this.index;
                             if(disp.getPartGroup() != null)
@@ -188,16 +188,16 @@ export namespace vox
                                     fs[i++] *= node.unit.ibufStep;
                                 }
                             }
-                            //node.disp = disp;
+                            
                             disp.__$rpuid = node.uid;
                             node.__$ruid = disp.__$ruid;
                             node.unit.__$rpuid = node.uid;
                             node.updateData();
                             //this.m_nodes.push( node );
                             ++this.m_nodesLen;
-                            //
-                            RPOUnitBuider.SetRPNodeParam(disp.__$ruid, this.m_uid, node.uid);
-                            //
+                            
+                            RPOUnitBuilder.SetRPNodeParam(disp.__$ruid, this.m_uid, node.uid);
+                            
                             this.addNodeToBlock(node);
                         }
                         else
@@ -211,12 +211,12 @@ export namespace vox
             {
                 if(disp.__$ruid > -1)
                 {
-                    let nodeUId:number = RPOUnitBuider.GetRPONodeUid(disp.__$ruid,this.m_uid);
-                    let node:RPONode = RPONodeBuider.GetNodeByUid( nodeUId );
+                    let nodeUId:number = RPOUnitBuilder.GetRPONodeUid(disp.__$ruid,this.m_uid);
+                    let node:RPONode = RPONodeBuilder.GetNodeByUid( nodeUId );
                     // material info etc.
                     node.shdUid = node.unit.shdUid;
                     node.texMid = node.unit.texMid;
-                    node.tro = node.unit.tro;                    
+                    node.tro = node.unit.tro;
                     let block:RPOBlock = this.m_blockList[node.index];
                     block.removeNode(node);
                     this.addNodeToBlock(node);
@@ -228,17 +228,17 @@ export namespace vox
                 {
                     if(disp.__$ruid > -1)
                     {
-                        let nodeUId:number = RPOUnitBuider.GetRPONodeUid(disp.__$ruid,this.m_uid);
-                        let node:RPONode = RPONodeBuider.GetNodeByUid( nodeUId );
+                        let nodeUId:number = RPOUnitBuilder.GetRPONodeUid(disp.__$ruid,this.m_uid);
+                        let node:RPONode = RPONodeBuilder.GetNodeByUid( nodeUId );
                         //console.log("removeDisp(), node != null: "+(node != null));
                         if(node != null)
                         {
                             let block:RPOBlock = this.m_blockList[node.index];
                             block.removeNode(node);
-                            RPOUnitBuider.SetRPNodeParam(disp.__$ruid, this.m_uid, -1);
+                            RPOUnitBuilder.SetRPNodeParam(disp.__$ruid, this.m_uid, -1);
                             //this.m_nodes.splice(node.index, 1);
                             --this.m_nodesLen;
-                            RPONodeBuider.Restore(node);
+                            RPONodeBuilder.Restore(node);
                             disp.__$ruid = -1;
                             if(block.isEmpty())
                             {
@@ -273,7 +273,7 @@ export namespace vox
             {
                 if(disp != null)
                 {
-                    let unit:RPOUnit = RPOUnitBuider.GetRPOUnit( disp.__$ruid );
+                    let unit:RPOUnit = RPOUnitBuilder.GetRPOUnit( disp.__$ruid );
                     if(unit != null)
                     {
                         this.m_proBlock.drawLockMaterialByUnit(rc,unit,disp,forceUpdateUniform);
@@ -298,9 +298,9 @@ export namespace vox
                 //  for(i = 0; i < this.m_nodesLen; ++i)
                 //  {
                 //      node = this.m_nodes.pop();
-                //      RPOUnitBuider.SetRPNodeParam(node.disp.__$ruid, this.m_uid, -1);
+                //      RPOUnitBuilder.SetRPNodeParam(node.disp.__$ruid, this.m_uid, -1);
                 //      node.reset();
-                //      RPONodeBuider.Restore(node);
+                //      RPONodeBuilder.Restore(node);
                 //  }
             }
             

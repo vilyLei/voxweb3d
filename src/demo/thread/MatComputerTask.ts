@@ -93,7 +93,6 @@ export namespace demo
             private static S_FLAG_BUSY:number = 1;
             private static S_FLAG_FREE:number = 0;
             private static m_unitFlagList:number[] = [];
-            private static m_unitIndexPptFlagList:number[] = [];
             private static m_unitListLen:number = 0;
             private static m_unitList:MatCalcSendData[] = [];
             private static m_freeIdList:number[] = [];
@@ -121,7 +120,6 @@ export namespace demo
                 {
                     sd = new MatCalcSendData();
                     MatCalcSendData.m_unitList.push( sd );
-                    MatCalcSendData.m_unitIndexPptFlagList.push(MatCalcSendData.S_FLAG_FREE);
                     MatCalcSendData.m_unitFlagList.push(MatCalcSendData.S_FLAG_BUSY);
                     sd.dataIndex = MatCalcSendData.m_unitListLen;
                     MatCalcSendData.m_unitListLen++;

@@ -11,7 +11,7 @@ import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as ShaderDataT from "../../vox/material/ShaderData";
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
-import * as RPOUnitBuiderT from "../../vox/render/RPOUnitBuider";
+import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RODispBuilderT from "../../vox/render/RODispBuilder";
 import * as RenderProcessT from "../../vox/render/RenderProcess";
 import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
@@ -25,8 +25,8 @@ import ShaderData = ShaderDataT.vox.material.ShaderData;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
 import RODispBuilder = RODispBuilderT.vox.render.RODispBuilder;
-import RCRPObj = RPOUnitBuiderT.vox.render.RCRPObj;
-import RPOUnitBuider = RPOUnitBuiderT.vox.render.RPOUnitBuider;
+import RCRPObj = RPOUnitBuilderT.vox.render.RCRPObj;
+import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
 
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 import RenderProcessBuider = RenderProcessBuiderT.vox.render.RenderProcessBuider;
@@ -70,7 +70,7 @@ export namespace vox
                         if(display != null && display.__$ruid > -1)
                         {
                             let puid:number = display.__$ruid;
-                            let po:RCRPObj = RPOUnitBuider.GetRCRPObj(puid);
+                            let po:RCRPObj = RPOUnitBuilder.GetRCRPObj(puid);
                             let list:Int16Array = po.rcids;
                             let len:number = RCRPObj.RenerProcessMaxTotal;
                             //console.log("list: "+list);
@@ -94,7 +94,7 @@ export namespace vox
                                 }
                                 display.rsign = DisplayRenderState.NOT_IN_WORLD;
                                 // 准备移除和当前 display 对应的 RPOUnit
-                                RPOUnitBuider.Restore(RPOUnitBuider.GetRPOUnit(puid));
+                                RPOUnitBuilder.Restore(RPOUnitBuilder.GetRPOUnit(puid));
                             }
                             else
                             {
@@ -121,7 +121,7 @@ export namespace vox
                     {
                         if(disp.rsign == DisplayRenderState.LIVE_IN_WORLD)
                         {
-                            if(!RPOUnitBuider.TestRPNodeNotExists(disp.__$ruid,processUid))
+                            if(!RPOUnitBuilder.TestRPNodeNotExists(disp.__$ruid,processUid))
                             {
                                 //console.log("DispEntity3DManager::addEntity(), A, this display("+disp.__$ruid+") has existed in processid("+processUid+").");
                                 return;
@@ -238,7 +238,7 @@ export namespace vox
                             disp = entity.getDisplay();
                             if(disp.rsign == DisplayRenderState.LIVE_IN_WORLD)
                             {
-                                if(!RPOUnitBuider.TestRPNodeNotExists(disp.__$ruid,this.m_processUidList[i]))
+                                if(!RPOUnitBuilder.TestRPNodeNotExists(disp.__$ruid,this.m_processUidList[i]))
                                 {
                                     //console.log("DispEntity3DManager::update(), this display("+disp.__$ruid+") has existed in processid("+m_processUidList[i]+").");
                                     this.m_waitList.splice(i,1);

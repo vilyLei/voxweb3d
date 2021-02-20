@@ -62,11 +62,13 @@ export namespace vox
             private m_ivsBuf:any = null;
             private m_vaoEnabled:boolean = true;
             private m_f32Changed:boolean = false;
-            private m_ibufType:number = 0;// UNSIGNED_SHORT or UNSIGNED_INT
             private m_ibufStep:number = 2;// 2 or 4
-            //
+ 
             drawMode:number = RenderDrawMode.ELEMENTS_TRIANGLES;
-            //
+            getIBufStep():number
+            {
+                return this.m_ibufStep;
+            }
             getBufDataUsage():number
             {
                 return this.m_bufDataUsage;
@@ -91,6 +93,10 @@ export namespace vox
             getF32DataAt(index:number):Float32Array
             {
                 return this.m_vtxBuf.getF32DataAt(index);
+            }
+            getIvsData():Uint16Array | Uint32Array
+            {
+                return this.m_ivs;
             }
             isGpuEnabled():boolean
             {
@@ -220,17 +226,18 @@ export namespace vox
                     {
                         if(this.m_ivsPreSize >= this.m_ivs.length)
                         {
-                            this.m_rc.bindEleBuf(this.m_ivsBuf);
-                            this.m_rc.eleBufSubData(this.m_ivs, this.m_bufDataUsage);
+                            rc.bindEleBuf(this.m_ivsBuf);
+                            rc.eleBufSubData(this.m_ivs, this.m_bufDataUsage);
                         }
                         else
                         {
-                            this.m_rc.bindEleBuf(this.m_ivsBuf);
-                            this.m_rc.eleBufData(this.m_ivs, this.m_bufDataUsage);
+                            rc.bindEleBuf(this.m_ivsBuf);
+                            rc.eleBufData(this.m_ivs, this.m_bufDataUsage);
                         }
                         this.m_ivsPreSize = this.m_ivs.length;
                         this.m_ivsChanged = false;
                     }
+
                     if(this.m_f32Changed)
                     {
                         this.m_vtxBuf.updateToGpu( rc );
@@ -276,28 +283,23 @@ export namespace vox
                             for(let i:number = 0, len:number = this.bufData.getIndexDataTotal(); i < len; ++i)
                             {
                                 uintArr = this.bufData.getIndexDataAt(i);
-                                rc.eleBufSubData(uintArr,offset);
+                                rc.eleBufSubData(uintArr, offset);
                                 offset += uintArr.byteLength;
                                 dataSize += uintArr.length;
                             }
                             this.m_ivsPreSize = dataSize;
                         }
-                        this.m_ibufType = this.m_ibufStep != 4?rc.UNSIGNED_SHORT:rc.UNSIGNED_INT;
                     }
                 }
             }
             // 创建被 RPOUnit 使用的 vro 实例
-            createVROBegin(shdp:IVtxShdCtr, vaoEnabled:boolean = true):VertexRenderObj
+            createVROBegin(rc:RenderProxy, shdp:IVtxShdCtr, vaoEnabled:boolean):VertexRenderObj
             {
-                if(this.m_rc != null)
-                {
-                    let vro:VertexRenderObj = this.m_vtxBuf.createVROBegin(this.m_rc, shdp,vaoEnabled);
-                    vro.ibuf = this.m_ivsBuf;
-                    vro.ibufType = this.m_ibufType;
-                    vro.ibufStep = this.m_ibufStep;
-                    return vro;
-                }
-                return null;
+                let vro:VertexRenderObj = this.m_vtxBuf.createVROBegin(rc, shdp,vaoEnabled);
+                vro.ibuf = this.m_ivsBuf;
+                vro.ibufType = this.m_ibufStep != 4?rc.UNSIGNED_SHORT:rc.UNSIGNED_INT;
+                vro.ibufStep = this.m_ibufStep;
+                return vro;
             }
             createVROEnd():void
             {
@@ -351,7 +353,6 @@ export namespace vox
             private static S_FLAG_BUSY:number = 1;
             private static S_FLAG_FREE:number = 0;
             private static m_unitFlagList:number[] = [];
-            private static m_unitIndexPptFlagList:number[] = [];
             private static m_unitListLen:number = 0;
             private static m_unitList:ROVertexBuffer[] = [];
             private static m_freeIdList:number[] = [];
@@ -381,7 +382,6 @@ export namespace vox
                 {
                     unit = new ROVertexBuffer(bufDataUsage);
                     ROVertexBuffer.m_unitList.push( unit );
-                    ROVertexBuffer.m_unitIndexPptFlagList.push(ROVertexBuffer.S_FLAG_FREE);
                     ROVertexBuffer.m_unitFlagList.push(ROVertexBuffer.S_FLAG_BUSY);
                     ROVertexBuffer.m_unitListLen++;
                 }

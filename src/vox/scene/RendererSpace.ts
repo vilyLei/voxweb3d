@@ -16,7 +16,7 @@ import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMasK";
 import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
 import * as IRendererSpaceT from "../../vox/scene/IRendererSpace";
-import * as RPONodeBuiderT from "../../vox/render/RPONodeBuider";
+import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
 import * as EntityNodeQueueT from "../../vox/scene/EntityNodeQueue";
 import * as Entity3DNodeLinkerT from "../../vox/scene/Entity3DNodeLinker";
@@ -31,8 +31,8 @@ import CameraBase = CameraBaseT.vox.view.CameraBase;
 import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
 import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
 import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
-import RPONode = RPONodeBuiderT.vox.render.RPONode;
-import RPONodeBuider = RPONodeBuiderT.vox.render.RPONodeBuider;
+import RPONode = RPONodeBuilderT.vox.render.RPONode;
+import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
 import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
 import EntityNodeQueue = EntityNodeQueueT.vox.scene.EntityNodeQueue;
 import Entity3DNodeLinker = Entity3DNodeLinkerT.vox.scene.Entity3DNodeLinker;
@@ -138,7 +138,7 @@ export namespace vox
                             }
                             if(node.rpoNode == null)
                             {
-                                node.rpoNode = RPONodeBuider.GetNodeByUid(entity.getDisplay().__$rpuid);
+                                node.rpoNode = RPONodeBuilder.GetNodeByUid(entity.getDisplay().__$rpuid);
                             }
                             this.m_nodeSLinker.addNode(node);
                         }
@@ -199,7 +199,7 @@ export namespace vox
                             this.m_nodeSLinker.addNode( pnode );
                             if(pnode.rpoNode == null)
                             {
-                                pnode.rpoNode = RPONodeBuider.GetNodeByUid(pnode.entity.getDisplay().__$rpuid);
+                                pnode.rpoNode = RPONodeBuilder.GetNodeByUid(pnode.entity.getDisplay().__$rpuid);
                             }
                         }
                         else

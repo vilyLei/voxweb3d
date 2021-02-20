@@ -72,7 +72,7 @@ export namespace vox
             renderState:number = 0;
             rcolorMask:number = 0;
             vro:VertexRenderObj = null;
-            //shdp:ShdProgram = null;
+            
             // transform uniform
             transUniform:IShaderUniform = null;
             // materiall uniform
@@ -142,7 +142,7 @@ export namespace vox
             {
                 ++RendererState.DrawCallTimes;
                 RendererState.DrawTrisNumber += this.trisNumber;
-                let i:number = 0
+                let i:number = 0;
                 switch(this.drawMode)
                 {
                     case RenderDrawMode.ELEMENTS_TRIANGLES:
@@ -279,7 +279,6 @@ export namespace vox
                 this.ubo = null;
                 this.shdUid = -1;
                 this.vtxUid = -1;
-                //this.shdp = null;
                 this.uniform = null;
                 this.transUniform = null;
                 this.partGroup = null;

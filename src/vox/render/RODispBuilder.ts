@@ -20,7 +20,7 @@ import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as MaterialShaderT from '../../vox/material/MaterialShader';
 import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
 import * as RPOUnitT from "../../vox/render/RPOUnit";
-import * as RPOUnitBuiderT from "../../vox/render/RPOUnitBuider";
+import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
 import * as ROTransPoolT from "../../vox/render/ROTransPool";
 
@@ -39,7 +39,7 @@ import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
-import RPOUnitBuider = RPOUnitBuiderT.vox.render.RPOUnitBuider;
+import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
 import RenderProcessBuider = RenderProcessBuiderT.vox.render.RenderProcessBuider;
 import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
 import ROTransPool = ROTransPoolT.vox.render.ROTransPool;
@@ -72,7 +72,7 @@ export namespace vox
                     let material:MaterialBase = disp.getMaterial();
                     if(material != null)
                     {
-                        let runit:RPOUnit = RPOUnitBuider.GetRPOUnit(disp.__$ruid);
+                        let runit:RPOUnit = RPOUnitBuilder.GetRPOUnit(disp.__$ruid);
                         let tro:TextureRenderObj = TextureRenderObj.GetByMid(rc.getUid(), material.__$troMid);
                         if(runit.tro != null && (tro == null || runit.tro.getMid() != tro.getMid()))
                         {
@@ -86,7 +86,7 @@ export namespace vox
                                     {
                                         tro = TextureRenderObj.Create(rc, material.getTextureList(),shdp.getTexTotal());
                                     }
-                                    //console.log("RODispBuilder::UpdateDispTRO(), runit.tro != tro: "+(runit.tro != tro));
+
                                     if(runit.tro != tro)
                                     {
                                         if(runit.tro != null)
@@ -237,7 +237,7 @@ export namespace vox
                     {
                         disp.rsign = DisplayRenderState.LIVE_IN_WORLD;
                         
-                        let runit:RPOUnit = RPOUnitBuider.Create();
+                        let runit:RPOUnit = RPOUnitBuilder.Create();
                         runit.ivsIndex = disp.ivsIndex;
                         runit.ivsCount = disp.ivsCount;
                         runit.insCount = disp.insCount;
@@ -254,7 +254,7 @@ export namespace vox
                         if(disp.vbuf != null)
                         {
                             disp.vbuf.upload(rc,shdp);
-                            runit.vro = disp.vbuf.createVROBegin(shdp,true);
+                            runit.vro = disp.vbuf.createVROBegin(rc, shdp, true);
                             runit.vro.__$attachThis();
                             disp.vbuf.createVROEnd();
                             runit.vtxUid = runit.vro.getVtxUid();

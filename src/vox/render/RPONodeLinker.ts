@@ -5,8 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as RPONodeBuiderT from "../../vox/render/RPONodeBuider";
-import RPONode = RPONodeBuiderT.vox.render.RPONode;
+import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
+import RPONode = RPONodeBuilderT.vox.render.RPONode;
 
 export namespace vox
 {

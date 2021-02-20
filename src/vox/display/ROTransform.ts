@@ -321,7 +321,6 @@ export namespace vox
             private static S_FLAG_BUSY:number = 1;
             private static S_FLAG_FREE:number = 0;
             private static m_unitFlagList:number[] = [];
-            private static m_unitIndexPptFlagList:number[] = [];
             private static m_unitListLen:number = 0;
             private static m_unitList:ROTransform[] = [];
             private static m_freeIdList:number[] = [];
@@ -346,7 +345,6 @@ export namespace vox
                 {
                     unit = new ROTransform();
                     ROTransform.m_unitList.push( unit );
-                    ROTransform.m_unitIndexPptFlagList.push(ROTransform.S_FLAG_FREE);
                     ROTransform.m_unitFlagList.push(ROTransform.S_FLAG_BUSY);
                     ROTransform.m_unitListLen++;
                 }

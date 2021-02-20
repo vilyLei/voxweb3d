@@ -21,7 +21,7 @@ import * as MaterialBaseT from "../../vox/material/MaterialBase";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as RODisplayT from "../../vox/display/RODisplay";
 import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
-import * as RPOUnitBuiderT from "../../vox/render/RPOUnitBuider";
+import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as RenderBufferUpdaterT from "../../vox/render/RenderBufferUpdater";
 import * as TextureProxyT from '../../vox/texture/TextureProxy';
@@ -41,7 +41,7 @@ import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import RODisplay = RODisplayT.vox.display.RODisplay;
 import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
-import RPOUnitBuider = RPOUnitBuiderT.vox.render.RPOUnitBuider;
+import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import RenderBufferUpdater = RenderBufferUpdaterT.vox.render.RenderBufferUpdater;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
@@ -156,7 +156,7 @@ export namespace vox
                         this.m_display.visible = this.m_visible && boo;
                         if(this.m_display.__$ruid > -1)
                         {
-                            RPOUnitBuider.__$SynVisibleWithUid(this.m_display.__$ruid, this.m_display.visible);
+                            RPOUnitBuilder.__$SynVisibleWithUid(this.m_display.__$ruid, this.m_display.visible);
                         }
                     }
                 }
@@ -206,7 +206,7 @@ export namespace vox
                         this.m_display.visible = boo && this.m_drawEnabled;
                         if(this.m_display.__$ruid > -1)
                         {
-                            RPOUnitBuider.__$SynVisibleWithUid(this.m_display.__$ruid, boo && this.m_drawEnabled);
+                            RPOUnitBuilder.__$SynVisibleWithUid(this.m_display.__$ruid, boo && this.m_drawEnabled);
                         }
                     }
                 }
@@ -278,7 +278,7 @@ export namespace vox
                     this.m_display.ivsCount = ivsCount;
                     if(this.m_display.__$ruid > -1)
                     {
-                        RPOUnitBuider.__$SynIvsParamWithUid(this.m_display.__$ruid, ivsIndex,ivsCount);
+                        RPOUnitBuilder.__$SynIvsParamWithUid(this.m_display.__$ruid, ivsIndex,ivsCount);
                     }
                 }
             }

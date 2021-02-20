@@ -84,7 +84,6 @@ export namespace thread
             private static S_FLAG_BUSY:number = 1;
             private static S_FLAG_FREE:number = 0;
             private static m_unitFlagList:number[] = [];
-            private static m_unitIndexPptFlagList:number[] = [];
             private static m_unitListLen:number = 0;
             private static m_unitList:NumberMultSendData[] = [];
             private static m_freeIdList:number[] = [];
@@ -111,7 +110,6 @@ export namespace thread
                 {
                     sd = new NumberMultSendData();
                     NumberMultSendData.m_unitList.push( sd );
-                    NumberMultSendData.m_unitIndexPptFlagList.push(NumberMultSendData.S_FLAG_FREE);
                     NumberMultSendData.m_unitFlagList.push(NumberMultSendData.S_FLAG_BUSY);
                     sd.dataIndex = NumberMultSendData.m_unitListLen;
                     NumberMultSendData.m_unitListLen++;

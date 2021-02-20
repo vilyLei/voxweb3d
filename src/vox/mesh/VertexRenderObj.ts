@@ -161,7 +161,6 @@ export namespace vox
             private static S_FLAG_BUSY:number = 1;
             private static S_FLAG_FREE:number = 0;
             private static m_unitFlagList:number[] = [];
-            private static m_unitIndexPptFlagList:number[] = [];
             private static m_unitListLen:number = 0;
             private static m_unitList:VertexRenderObj[] = [];
             private static m_freeIdList:number[] = [];
@@ -188,7 +187,6 @@ export namespace vox
                 {
                     unit = new VertexRenderObj(type, pvtxUid);
                     VertexRenderObj.m_unitList.push( unit );
-                    VertexRenderObj.m_unitIndexPptFlagList.push(VertexRenderObj.S_FLAG_FREE);
                     VertexRenderObj.m_unitFlagList.push(VertexRenderObj.S_FLAG_BUSY);
                     VertexRenderObj.m_unitListLen++;
                 }

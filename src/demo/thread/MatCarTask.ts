@@ -113,7 +113,6 @@ export namespace demo
             private static S_FLAG_BUSY:number = 1;
             private static S_FLAG_FREE:number = 0;
             private static m_unitFlagList:number[] = [];
-            private static m_unitIndexPptFlagList:number[] = [];
             private static m_unitListLen:number = 0;
             private static m_unitList:MatCarSendData[] = [];
             private static m_freeIdList:number[] = [];
@@ -141,7 +140,6 @@ export namespace demo
                 {
                     sd = new MatCarSendData();
                     MatCarSendData.m_unitList.push( sd );
-                    MatCarSendData.m_unitIndexPptFlagList.push(MatCarSendData.S_FLAG_FREE);
                     MatCarSendData.m_unitFlagList.push(MatCarSendData.S_FLAG_BUSY);
                     sd.dataIndex = MatCarSendData.m_unitListLen;
                     MatCarSendData.m_unitListLen++;
