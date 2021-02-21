@@ -1,6 +1,6 @@
 /***************************************************************************/
 /*                                                                         */
-/*  Copyright 2018-2020 by                                                 */
+/*  Copyright 2018-2022 by                                                 */
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
@@ -22,8 +22,8 @@ import * as RAdapterContextT from "../../vox/render/RAdapterContext";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as RenderFBOProxyT from "../../vox/render/RenderFBOProxy";
 import * as RCExtensionT from "../../vox/render/RCExtension";
+import * as IBufferBuilderT from "../../vox/render/IBufferBuilder";
 
-//import * as ROVtxBufUidStoreT from '../../vox/mesh/ROVtxBufUidStore';
 import * as ROVertexResourceT from '../../vox/render/ROVertexResource';
 import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
 import * as DivLogT from "../../vox/utils/DivLog";
@@ -46,8 +46,8 @@ import RAdapterContext = RAdapterContextT.vox.render.RAdapterContext;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RenderFBOProxy = RenderFBOProxyT.vox.render.RenderFBOProxy;
 import RCExtension = RCExtensionT.vox.render.RCExtension;
+import IBufferBuilder = IBufferBuilderT.vox.render.IBufferBuilder;
 
-//import ROVtxBufUidStore = ROVtxBufUidStoreT.vox.mesh.ROVtxBufUidStore;
 import ROVertexResource = ROVertexResourceT.vox.render.ROVertexResource;
 import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
 import DivLog = DivLogT.vox.utils.DivLog;
@@ -56,7 +56,7 @@ export namespace vox
 {
     export namespace render
     {
-        export class RenderProxy
+        export class RenderProxy implements IBufferBuilder
         {
             readonly RGBA:number = 0;
             readonly UNSIGNED_BYTE:number = 0;
@@ -82,8 +82,9 @@ export namespace vox
             readonly Vertex:ROVertexResource = null;
             readonly Texture:ROTextureResource = null;
 
-            private m_uid:number = 0;
             private static s_uid:number = 0;
+            private m_uid:number = 0;
+
             private m_camUBO:any = null;
             private m_mainCamera:CameraBase = null;
             private m_adapter:RenderAdapter = null;
@@ -267,6 +268,7 @@ export namespace vox
                         break;
                 }
             }
+
             createBuf():any
             {
                 return this.m_rc.createBuffer();
@@ -307,21 +309,21 @@ export namespace vox
             {
                 this.m_rc.bufferData(this.m_rc.ELEMENT_ARRAY_BUFFER, bytesSize, VtxBufConst.ToGL(this.m_rc,usage));
             }
-            useVtxAttrisbPtrTypeFloat(shdp:IVtxShdCtr, buf:any,attribTypes:number[],attribTypesLen:number, wholeOffsetList:number[],wholeStride:number):void
+            useVtxAttribsPtrTypeFloat(shdp:IVtxShdCtr, buf:any,attribTypes:number[],attribTypesLen:number, wholeOffsetList:number[],wholeStride:number):void
             {
                 this.m_rc.bindBuffer(this.m_rc.ARRAY_BUFFER, buf);
                 
                 for(let i:number = 0; i < attribTypesLen; ++i)
                 {
-                    shdp.vertexAttribPointerTypeFloat(attribTypes[i],wholeStride, wholeOffsetList[i]);
+                    shdp.vertexAttribPointerTypeFloat(attribTypes[i], wholeStride, wholeOffsetList[i]);
                 }
             }
-            useVtxAttrisbPtrTypeFloatMulti(shdp:IVtxShdCtr, bufs:any[],attribTypes:number[],attribTypesLen:number, wholeOffsetList:number[],wholeStride:number):void
+            useVtxAttribsPtrTypeFloatMulti(shdp:IVtxShdCtr, bufs:any[],attribTypes:number[],attribTypesLen:number, wholeOffsetList:number[],wholeStride:number):void
             {
                 for(let i:number=0; i < attribTypesLen; ++i)
                 {
                     this.m_rc.bindBuffer(this.m_rc.ARRAY_BUFFER, bufs[i]);
-                    shdp.vertexAttribPointerTypeFloat(attribTypes[i],wholeStride, wholeOffsetList[i]);
+                    shdp.vertexAttribPointerTypeFloat(attribTypes[i], wholeStride, wholeOffsetList[i]);
                 }
             }
             bindVertexArray(vao:any):any
@@ -347,6 +349,7 @@ export namespace vox
                     RCExtension.OES_vertex_array_object.deleteVertexArrayOES(vao);
                 }
             }
+
             drawInstanced(count:number, offset:number, instanceCount:number):void
             {
                 if(this.m_WEBGL_VER == 2)

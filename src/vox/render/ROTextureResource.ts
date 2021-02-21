@@ -26,6 +26,9 @@ export namespace vox
             // gpu texture buffer
             texBuf:any = null;
             
+            constructor()
+            {                
+            }
             private m_attachCount:number = 0;
             __$attachThis():void
             {
@@ -46,12 +49,8 @@ export namespace vox
             {
                 return this.m_attachCount;
             }
-            constructor()
-            {
-                
-            }
         }
-        // tgpu exture buffer renderer resource
+        // gpu texture buffer renderer resource
         export class ROTextureResource
         {
             private m_resMap:Map<number,GpuTexObect> = new Map();

@@ -37,16 +37,18 @@ export namespace vox
     {
         export class ROVertexBuffer implements IRenderBuffer
         {
-            private static __s_uid:number = 0;
+            private static s_uid:number = 0;
             private m_uid:number = 0;
             private m_bufDataUsage:number = 0;
             private m_vtxBuf:IVtxBuf = null;
 
             private m_rc:RenderProxy = null;
+
             private m_ivs:Uint16Array|Uint32Array = null;
             private m_ivsChanged:boolean = false;
             private m_ivsPreSize:number = 0;
             private m_ivsBuf:any = null;
+
             private m_vaoEnabled:boolean = true;
             private m_f32Changed:boolean = false;
             private m_ibufStep:number = 2;// 2 or 4
@@ -55,13 +57,21 @@ export namespace vox
             bufData:VtxBufData = null;
             private constructor(bufDataUsage:number = VtxBufConst.VTX_STATIC_DRAW)
             {
-                this.m_uid = ROVertexBuffer.__s_uid++;
+                this.m_uid = ROVertexBuffer.s_uid++;
                 this.m_bufDataUsage = bufDataUsage;
             }
             private setVtxBuf(vtxBuf:IVtxBuf):void
             {
                 this.m_vtxBuf = vtxBuf;
                 if(vtxBuf != null)vtxBuf.bufData = this.bufData;
+            }
+            getVtxBuf():IVtxBuf
+            {
+                return this.m_vtxBuf;
+            }
+            getType():number
+            {
+                return this.m_vtxBuf.getType();
             }
             getIBufStep():number
             {
@@ -222,14 +232,13 @@ export namespace vox
                 {
                     if(this.m_ivsChanged && this.m_ivsBuf != null)
                     {
+                        rc.bindEleBuf(this.m_ivsBuf);
                         if(this.m_ivsPreSize >= this.m_ivs.length)
                         {
-                            rc.bindEleBuf(this.m_ivsBuf);
                             rc.eleBufSubData(this.m_ivs, this.m_bufDataUsage);
                         }
                         else
                         {
-                            rc.bindEleBuf(this.m_ivsBuf);
                             rc.eleBufData(this.m_ivs, this.m_bufDataUsage);
                         }
                         this.m_ivsPreSize = this.m_ivs.length;
@@ -467,7 +476,7 @@ export namespace vox
                     {
                         segLen = ROVertexBuffer.BufDataStepList[j];
                         parrf32 = ROVertexBuffer.BufDataList[j];
-                        subArr = parrf32.subarray(i * segLen, i * segLen + segLen);
+                        subArr = parrf32.subarray(i * segLen, (i+1) * segLen);
                         vtxfs32.set(subArr, k);
                         k += segLen;
                     }
@@ -523,7 +532,7 @@ export namespace vox
                     {
                         segLen = ROVertexBuffer.BufDataStepList[j];
                         parrf32 = ROVertexBuffer.BufDataList[j];
-                        subArr = parrf32.subarray(i * segLen, i * segLen + segLen);
+                        subArr = parrf32.subarray(i * segLen, (i+1) * segLen);
                         vtxfs32.set(subArr, k);
                         k += segLen;
                     }
@@ -583,7 +592,7 @@ export namespace vox
                 {
                     vb.setVtxBuf(new VtxSeparatedBuf(vb.getBufDataUsage()));
                 }
-                for(i= 0; i < bufTot; i++)
+                for(i = 0; i < bufTot; i++)
                 {
                     vb.setF32DataAt(i,ROVertexBuffer.BufDataList[i], stride,offsetList);
                 }

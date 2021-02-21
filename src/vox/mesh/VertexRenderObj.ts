@@ -74,11 +74,11 @@ export namespace vox
                     rc.Vertex.rvoUid = this.m_uid;
                     if(this.vbuf != null)
                     {
-                        rc.useVtxAttrisbPtrTypeFloat(this.shdp,this.vbuf, this.attribTypes,this.attribTypesLen, this.wholeOffsetList, this.wholeStride);
+                        rc.useVtxAttribsPtrTypeFloat(this.shdp,this.vbuf, this.attribTypes,this.attribTypesLen, this.wholeOffsetList, this.wholeStride);
                     }
                     else
                     {
-                        rc.useVtxAttrisbPtrTypeFloatMulti(this.shdp,this.vbufs, this.attribTypes,this.attribTypesLen, this.wholeOffsetList, this.wholeStride);
+                        rc.useVtxAttribsPtrTypeFloatMulti(this.shdp,this.vbufs, this.attribTypes,this.attribTypesLen, this.wholeOffsetList, this.wholeStride);
                     }
                     //console.log("VertexRenderObj::run(), ## this.m_vtxUid: "+this.m_vtxUid+", this.ibuf:"+this.ibuf);
                     if(rc.Vertex.rioUid != this.m_vtxUid)

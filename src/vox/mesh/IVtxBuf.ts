@@ -26,6 +26,7 @@ export namespace vox
             getBufDataUsage():number;
             setBufDataUsage(bufDataUsage:number):void;
             getUid():number;
+            getBuffersTotal():number;
             getVtxAttributesTotal():number
             getF32DataAt(index:number):Float32Array;
             isGpuEnabled():boolean;

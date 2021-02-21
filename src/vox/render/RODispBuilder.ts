@@ -86,6 +86,7 @@ export namespace vox
                     {
                         let runit:RPOUnit = RODispBuilder.s_unitBuilders[rc.getUid()].getNodeByUid(disp.__$ruid) as RPOUnit;
                         let tro:TextureRenderObj = TextureRenderObj.GetByMid(rc.getUid(), material.__$troMid);
+                        
                         if(runit.tro != null && (tro == null || runit.tro.getMid() != tro.getMid()))
                         {
                             let shader:MaterialShader = RODispBuilder.s_shaders[rc.getUid()];

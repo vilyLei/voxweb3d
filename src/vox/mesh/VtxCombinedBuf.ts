@@ -68,6 +68,10 @@ export namespace vox
             private m_f32Stride:number = 0;
             private m_wholeStride:number = 0;
             
+            getBuffersTotal():number
+            {
+                return 1;
+            }
             getVtxAttributesTotal():number
             {
                 return this.m_total;

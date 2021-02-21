@@ -57,18 +57,21 @@ export namespace vox
                 return this.m_uid;
             }
             private m_fOffsetList:number[] = null;
-            private m_pOffsetList:number[] = null;
+            //private m_pOffsetList:number[] = null;
             private m_f32List:Float32Array[] = null;
             private m_f32SizeList:number[] = null;
             private m_f32PreSizeList:number[] = null;
             private m_f32ChangedList:boolean[] = null;
             private m_f32Bufs:any[] = null;
             private m_f32StrideList:number[] = null;
-            private m_wholeStride:number = 0;
             private m_stepFloatsTotal:number = 0;
             private m_f32Changed:boolean = false;
 
             
+            getBuffersTotal():number
+            {
+                return this.m_f32List.length;
+            }
             getVtxAttributesTotal():number
             {
                 return this.m_total;
@@ -224,13 +227,10 @@ export namespace vox
                 }
                 if(this.m_aTypeList == null)
                 {
-                    this.m_wholeStride = 0;
                     this.m_aTypeList = [];
-                    this.m_pOffsetList = [];
 
                     for(let i:number = 0; i < this.m_total; ++i)
                     {
-                        this.m_pOffsetList[i] = 0;
                         this.m_aTypeList.push( shdp.getLocationTypeByIndex(i) );
                     }
                 }
@@ -269,7 +269,7 @@ export namespace vox
                 if(vaoEnabled)
                 {
                     // vao 的生成要记录标记,防止重复生成, 因为同一组数据在不同的shader使用中可能组合方式不同，导致了vao可能是多样的
-                    //console.log("VtxSeparatedBuf::createVROBegin(), "+this.m_aTypeList+" /// "+this.m_wholeStride+" /// "+this.m_pOffsetList);
+                    //console.log("VtxSeparatedBuf::createVROBegin(), "+this.m_aTypeList);
                     let vro:VaoVertexRenderObj = VaoVertexRenderObj.Create(mid, this.m_uid);
                     vro.vao = rc.createVertexArray();
                     rc.bindVertexArray(vro.vao);
@@ -287,7 +287,7 @@ export namespace vox
                     vro.shdp = shdp;
                     vro.vbufs = this.m_f32Bufs;
                     vro.attribTypes = [];
-                    vro.wholeOffsetList = [];                    
+                    vro.wholeOffsetList = [];
                     vro.wholeStride = 0;
                     
                     for(i = 0; i < this.m_total; ++i)
@@ -340,7 +340,6 @@ export namespace vox
                     this.m_aTypeList = null;
                     this.m_f32Changed = false;
                     this.m_f32List = null;
-                    this.m_pOffsetList = null;
                 }
             }
             toString():string
