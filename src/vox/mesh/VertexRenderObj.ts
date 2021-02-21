@@ -67,7 +67,6 @@ export namespace vox
                 this.m_mid = mid;
                 this.m_vtxUid = pvtxUid;
                 this.m_uid = VertexRenderObj.s_uid++;
-                //ROVtxBufUidStore.GetInstance().__$attachAt(this.m_vtxUid);
             }
             
             private setMidAndBufUid(mid:number,pvtxUid:number):void
@@ -75,7 +74,6 @@ export namespace vox
                 this.m_mid = mid;
                 this.m_vtxUid = pvtxUid;
                 this.m_attachCount = 0;
-                //ROVtxBufUidStore.GetInstance().__$attachAt(pvtxUid);
             }
             getUid():number
             {

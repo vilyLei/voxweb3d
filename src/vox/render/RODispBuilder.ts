@@ -202,15 +202,7 @@ export namespace vox
                         let hasTrans:boolean = shdp.hasUniformByName(UniformConst.LocalTransformMatUNS);
                         if(material.__$uniform == null)
                         {
-                            let unfdata:ShaderUniformData = material.createSelfUniformData();
-                            if(unfdata != null)
-                            {
-                                material.__$uniform = ShdUniformTool.BuildLocalFromData(unfdata, shdp);
-                            }
-                            else
-                            {
-                                material.__$uniform = EmptyShdUniform.EmptyUniform;
-                            }
+                            material.__$uniform = ShdUniformTool.BuildLocalFromData(material.createSelfUniformData(), shdp);
                         }
                         
                         if(hasTrans)
@@ -286,14 +278,14 @@ export namespace vox
             {
                 let len:number = this.m_disps.length;
                 let disp:IRODisplay = null;
-                let m_processUid:number = -1;
+                let processUid:number = -1;
                 while(len > 0)
                 {
                     disp = this.m_disps.shift();
-                    m_processUid = this.m_processUidList.shift();
+                    processUid = this.m_processUidList.shift();
                     if(disp.__$$rsign == DisplayRenderState.GO_TO_WORLD)
                     {
-                        this.buildGpuDisp(rc, disp, m_processUid);
+                        this.buildGpuDisp(rc, disp, processUid);
                     }
                     --len;
                 }
@@ -333,15 +325,7 @@ export namespace vox
                     
                     if(material.__$uniform == null)
                     {
-                        let unfdata:ShaderUniformData = material.createSelfUniformData();
-                        if(unfdata != null)
-                        {
-                            material.__$uniform = ShdUniformTool.BuildLocalFromData(unfdata, shdp);
-                        }
-                        else
-                        {
-                            material.__$uniform = EmptyShdUniform.EmptyUniform;
-                        }
+                        material.__$uniform = ShdUniformTool.BuildLocalFromData(material.createSelfUniformData(), shdp);
                     }
                     this.m_shader.useShdByUid(rc, shdUid);
                     if(tro != null)

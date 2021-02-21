@@ -205,14 +205,7 @@ export namespace vox
                     if(process.getWUid() == this.m_uid)
                     {
                         let processid:number = process.getWEid();
-                        //  if(processid > -1 && processid < this.m_processesLen)
-                        //  {
                         this.m_entity3DMana.addEntity(this.m_renderProxy, entity,processid,deferred);
-                        //  }
-                        //  else
-                        //  {
-                        //      console.log("RendererInstance::addEntityToProcess(), Error: Don't find processid("+processid+").");
-                        //  }
                     }
                 }
             }

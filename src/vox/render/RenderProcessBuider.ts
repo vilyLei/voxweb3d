@@ -55,7 +55,6 @@ export namespace vox
             rejoinRunitForTro(runit:RPOUnit):void
             {
                 (this.getNodeByUid(runit.__$rprouid) as RenderProcess).rejoinRunitForTro(runit);
-                //RenderProcessBuider.m_processList[runit.__$rprouid].rejoinRunitForTro(runit);
             }
         }
     }

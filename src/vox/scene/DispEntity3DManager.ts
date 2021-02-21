@@ -76,7 +76,7 @@ export namespace vox
                             let po:RCRPObj = this.m_rpoUnitBuilder.getRCRPObj(puid);
                             let list:Int16Array = po.rcids;
                             let len:number = RCRPObj.RenerProcessMaxTotal;
-                            //console.log("list: "+list);
+                            
                             for(let i:number = 0; i < len; ++i)
                             {
                                 if(list[i] > -1)
@@ -92,7 +92,7 @@ export namespace vox
                                 if(display.__$$rsign != DisplayRenderState.LIVE_IN_WORLD)
                                 {
                                     // error!!!
-                                    console.log("DispEntity3DManager::removeEntity(), Error: display.__$$rsign != RODisplay.LIVE_IN_WORLD.");
+                                    console.error("DispEntity3DManager::removeEntity(), Error: display.__$$rsign != RODisplay.LIVE_IN_WORLD.");
                                 }
                                 display.__$$rsign = DisplayRenderState.NOT_IN_WORLD;
                                 // 准备移除和当前 display 对应的 RPOUnit
@@ -100,7 +100,7 @@ export namespace vox
                             }
                             else
                             {
-                                console.log("Error: DispEntity3DManager::removeEntity(), remove a entity from all processes failed.");
+                                console.error("Error: DispEntity3DManager::removeEntity(), remove a entity from all processes failed.");
                             }
                         }
                         Entity3DNode.Restore(node);

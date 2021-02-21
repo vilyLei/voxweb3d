@@ -226,44 +226,48 @@ export namespace vox
             }
             static BuildLocalFromData(uniformData:ShaderUniformData, shdp:ShdProgram):IShaderUniform
             {
-                // collect all uniform data,create a new runned uniform
-                let shdUniform:ShaderUniform;
-                if(RendererDeviece.IsWebGL1())
+                if(uniformData != null)
                 {
-                    shdUniform = new ShaderUniformV1();
-                }
-                else
-                {
-                    shdUniform = new ShaderUniformV2();
-                }
-                shdUniform.uniformNameList = [];
-                shdUniform.types = [];
-                shdUniform.locations = [];
-                shdUniform.dataList = [];
-                shdUniform.dataSizeList = [];
-                shdUniform.uniformSize = 0;
-                let pdata:ShaderUniformData = uniformData;
-                let i:number = 0;
-                while(pdata != null)
-                {
-                    if(pdata.uniformNameList != null && pdata.locations == null)
+                    // collect all uniform data,create a new runned uniform
+                    let shdUniform:ShaderUniform;
+                    if(RendererDeviece.IsWebGL1())
                     {
-                        shdUniform.uniformSize += pdata.uniformNameList.length;
-                        for(i = 0; i < shdUniform.uniformSize; ++i)
-                        {
-                            shdUniform.uniformNameList.push( pdata.uniformNameList[i] );
-                            shdUniform.types.push( shdp.getUniformTypeByNS(pdata.uniformNameList[i]) );
-                            shdUniform.locations.push( shdp.getUniformLocationByNS(pdata.uniformNameList[i]) );
-                            shdUniform.dataList.push(pdata.dataList[i]);
-                            shdUniform.dataSizeList.push(shdp.getUniformLengthByNS(pdata.uniformNameList[i]));
-                        }
-                        //  console.log("local uniform frome data names: "+shdUniform.uniformNameList);
-                        //  console.log("local uniform frome data types: "+shdUniform.types);
-                        //  console.log("local uniform frome data locations: "+shdUniform.locations);
+                        shdUniform = new ShaderUniformV1();
                     }
-                    pdata = pdata.next;
+                    else
+                    {
+                        shdUniform = new ShaderUniformV2();
+                    }
+                    shdUniform.uniformNameList = [];
+                    shdUniform.types = [];
+                    shdUniform.locations = [];
+                    shdUniform.dataList = [];
+                    shdUniform.dataSizeList = [];
+                    shdUniform.uniformSize = 0;
+                    let pdata:ShaderUniformData = uniformData;
+                    let i:number = 0;
+                    while(pdata != null)
+                    {
+                        if(pdata.uniformNameList != null && pdata.locations == null)
+                        {
+                            shdUniform.uniformSize += pdata.uniformNameList.length;
+                            for(i = 0; i < shdUniform.uniformSize; ++i)
+                            {
+                                shdUniform.uniformNameList.push( pdata.uniformNameList[i] );
+                                shdUniform.types.push( shdp.getUniformTypeByNS(pdata.uniformNameList[i]) );
+                                shdUniform.locations.push( shdp.getUniformLocationByNS(pdata.uniformNameList[i]) );
+                                shdUniform.dataList.push(pdata.dataList[i]);
+                                shdUniform.dataSizeList.push(shdp.getUniformLengthByNS(pdata.uniformNameList[i]));
+                            }
+                            //  console.log("local uniform frome data names: "+shdUniform.uniformNameList);
+                            //  console.log("local uniform frome data types: "+shdUniform.types);
+                            //  console.log("local uniform frome data locations: "+shdUniform.locations);
+                        }
+                        pdata = pdata.next;
+                    }
+                    return shdUniform;
                 }
-                return shdUniform;
+                return EmptyShdUniform.EmptyUniform;
             }
             static BuildLocal(sUniform:ShaderUniform, shdp:ShdProgram):ShaderUniform
             {
