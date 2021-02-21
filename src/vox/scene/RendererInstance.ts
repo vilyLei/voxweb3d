@@ -24,6 +24,7 @@ import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceConte
 import * as IRendererT from "../../vox/scene/IRenderer";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
 
+import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as TextureSlotT from "../../vox/texture/TextureSlot";
 import * as RTTTextureStoreT from "../../vox/texture/RTTTextureStore";
@@ -44,6 +45,7 @@ import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInst
 import IRenderer = IRendererT.vox.scene.IRenderer;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 
+import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
 import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
 import TextureSlot = TextureSlotT.vox.texture.TextureSlot;
 import RTTTextureStore = RTTTextureStoreT.vox.texture.RTTTextureStore;
@@ -67,6 +69,7 @@ export namespace vox
             private m_batchEnabled:boolean = true;
             private m_processFixedState:boolean = true;
 
+            private m_rpoUnitBuilder:RPOUnitBuilder = new RPOUnitBuilder();
             private m_rpoNodeBuilder:RPONodeBuilder = new RPONodeBuilder();
             readonly bufferUpdater:ROBufferUpdater = null;
             readonly textureSlot:TextureSlot = null;
@@ -144,9 +147,9 @@ export namespace vox
                     this.m_renderProxy = this.m_renderInsContext.getRenderProxy();
                     this.m_adapter = this.m_renderProxy.getRenderAdapter();
                     
-                    this.m_dispBuilder = new RODispBuilder(this.m_renderProxy);
+                    this.m_dispBuilder = new RODispBuilder(this.m_renderProxy, this.m_rpoUnitBuilder);
                     this.m_renderInsContext.setDispBuilder(this.m_dispBuilder);
-                    this.m_entity3DMana = new DispEntity3DManager(this.m_uid, this.m_dispBuilder);
+                    this.m_entity3DMana = new DispEntity3DManager(this.m_uid, this.m_dispBuilder,this.m_rpoUnitBuilder);
                     this.appendProcess(this.m_batchEnabled,this.m_processFixedState);
                     
                     let texSlot:TextureSlot = new TextureSlot();
@@ -246,8 +249,15 @@ export namespace vox
             // 生成一个新的process并添加到数组末尾
             appendProcess(batchEnabled:boolean = true,processFixedState:boolean = false):RenderProcess
             {
-                let process:RenderProcess = RenderProcessBuider.Create(this.m_dispBuilder.getMaterialShader(),batchEnabled,processFixedState);
-                process.rpoNodeBuilder = this.m_rpoNodeBuilder;
+                RenderProcessBuider.SetCreateParams(
+                    this.m_dispBuilder.getMaterialShader(),
+                    this.m_rpoNodeBuilder,
+                    this.m_rpoUnitBuilder,
+                    batchEnabled,
+                    processFixedState
+                );
+                
+                let process:RenderProcess = RenderProcessBuider.Create();
                 
                 this.m_processes.push( process );
                 process.setWOrldParam(this.m_uid, this.m_processesLen);
@@ -256,8 +266,14 @@ export namespace vox
             }
             createSeparatedProcess(batchEnabled:boolean = true,processFixedState:boolean = false):RenderProcess
             {
-                let process:RenderProcess = RenderProcessBuider.Create(this.m_dispBuilder.getMaterialShader(),batchEnabled,processFixedState);
-                process.rpoNodeBuilder = this.m_rpoNodeBuilder;
+                RenderProcessBuider.SetCreateParams(
+                    this.m_dispBuilder.getMaterialShader(),
+                    this.m_rpoNodeBuilder,
+                    this.m_rpoUnitBuilder,
+                    batchEnabled,
+                    processFixedState
+                );
+                let process:RenderProcess = RenderProcessBuider.Create();
 
                 this.m_processes.push( process );
                 process.setWOrldParam(this.m_uid, this.m_processesLen);

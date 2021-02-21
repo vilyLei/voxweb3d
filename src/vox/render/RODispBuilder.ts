@@ -52,14 +52,18 @@ export namespace vox
         {
             private static s_emptyTRO:EmptyTexRenderObj = new EmptyTexRenderObj();
             private static s_shaders:MaterialShader[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
+            private static s_unitBuilders:RPOUnitBuilder[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
             private m_disps:IRODisplay[] = [];
             private m_processUidList:number[] = [];
             // 当前 renderer context 范围内的所有 material shader 管理 
             private m_shader:MaterialShader = null;
-            constructor(rc:RenderProxy)
+            private m_rpoUnitBuilder:RPOUnitBuilder = null;
+            constructor(rc:RenderProxy, rpoUnitBuilder:RPOUnitBuilder)
             {
                 this.m_shader = new MaterialShader();
+                this.m_rpoUnitBuilder = rpoUnitBuilder;
                 RODispBuilder.s_shaders[rc.getUid()] = this.m_shader;
+                RODispBuilder.s_unitBuilders[rc.getUid()] = rpoUnitBuilder;
             }
             getMaterialShader():MaterialShader
             {
@@ -72,7 +76,7 @@ export namespace vox
                     let material:MaterialBase = disp.getMaterial();
                     if(material != null)
                     {
-                        let runit:RPOUnit = RPOUnitBuilder.GetNodeByUid(disp.__$ruid);
+                        let runit:RPOUnit = RODispBuilder.s_unitBuilders[rc.getUid()].getNodeByUid(disp.__$ruid) as RPOUnit;
                         let tro:TextureRenderObj = TextureRenderObj.GetByMid(rc.getUid(), material.__$troMid);
                         if(runit.tro != null && (tro == null || runit.tro.getMid() != tro.getMid()))
                         {
@@ -237,7 +241,7 @@ export namespace vox
                     {
                         disp.__$$rsign = DisplayRenderState.LIVE_IN_WORLD;
                         
-                        let runit:RPOUnit = RPOUnitBuilder.Create();
+                        let runit:RPOUnit = this.m_rpoUnitBuilder.create() as RPOUnit;
                         runit.ivsIndex = disp.ivsIndex;
                         runit.ivsCount = disp.ivsCount;
                         runit.insCount = disp.insCount;
@@ -264,7 +268,7 @@ export namespace vox
                             runit.ibufStep = runit.vro.ibufStep;
                         }
                         //console.log("buildGpuDisp(), runit.ibufType: "+runit.ibufType+", runit.ibufStep: "+runit.ibufStep+", runit.ivsCount: "+runit.ivsCount);
-                        RenderProcessBuider.GetProcess(processUid).addDisp(rc, disp);
+                        RenderProcessBuider.GetNodeByUid(processUid).addDisp(rc, disp);
                     }
                     else
                     {

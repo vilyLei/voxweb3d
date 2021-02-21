@@ -83,6 +83,18 @@ export namespace vox
                 }
                 return false;
             }
+            restoreByUid(uid:number):boolean
+            {
+                if(uid >= 0 && uid < this.m_nodesTotal && this.m_flags[uid] == PoolNodeBuilder.S_BUSY)
+                {
+                    this.restoreUid(uid);
+                    this.m_freeIdList.push(uid);
+                    this.m_flags[uid] = PoolNodeBuilder.S_FREE;
+                    this.m_nodes[uid].reset();
+                    return true;
+                }
+                return false;
+            }
         }
     }
 }

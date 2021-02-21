@@ -6,9 +6,14 @@
 /***************************************************************************/
 // 真正被高频运行的渲染管线中的被执行对象
 
+import * as IPoolNodeT from "../../vox/utils/IPoolNode";
+import * as PoolNodeBuilderT from "../../vox/utils/PoolNodeBuilder";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 
+import IPoolNode = IPoolNodeT.vox.utils.IPoolNode;
+import PoolNodeBuilder = PoolNodeBuilderT.vox.utils.PoolNodeBuilder;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
+
 export namespace vox
 {
     export namespace render
@@ -36,7 +41,68 @@ export namespace vox
                 this.rcids.set(RCRPObj.s_rcids,0);
             }
         }
+        export class RPOUnitBuilder extends PoolNodeBuilder
+        {
+            private m_rcpoList:RCRPObj[] = [];
+            /**
+             * the sub class override this function, for real implement.
+             */
+            protected createNode():IPoolNode
+            {
+                let po:RCRPObj = new RCRPObj();
+                po.reset();                    
+                this.m_rcpoList.push(po);
+                return new RPOUnit();
+            }
+            /**
+             * the sub class override this function, for real implement.
+             */
+            protected restoreUid(uid:number):void
+            {
+                this.m_rcpoList[uid].reset();
+            }
 
+            testRPNodeExists(dispRUid:number,rprocessUid:number):boolean
+            {
+                return this.m_rcpoList[dispRUid].rcids[rprocessUid] > -1;
+            }
+            testRPNodeNotExists(dispRUid:number,rprocessUid:number):boolean
+            {
+                //trace("testRPNodeNotExists(), m_rcpoList["+dispRUid+"].rcids: "+m_rcpoList[dispRUid].rcids);
+                return this.m_rcpoList[dispRUid].rcids[rprocessUid] < 0;
+            }
+            setRPNodeParam(dispRUid:number,rprocessUid:number,rponodeUid:number):number
+            {
+                let po:RCRPObj = this.m_rcpoList[dispRUid];
+                if(rponodeUid > -1)
+                {
+                    if(po.rcids[rprocessUid] < 0)
+                    {
+                        ++ po.count;
+                        po.rcids[rprocessUid] = rponodeUid;
+                    }
+                }
+                else
+                {
+                    if(po.rcids[rprocessUid] > -1)
+                    {
+                        -- po.count;
+                        po.rcids[rprocessUid] = rponodeUid;
+                    }
+                }
+                return po.count;
+            }
+            getRPONodeUid(dispRUid:number,rprocessUid:number):number
+            {
+                return this.m_rcpoList[dispRUid].rcids[rprocessUid];
+            }
+            getRCRPObj(dispRUid:number):RCRPObj
+            {
+                return this.m_rcpoList[dispRUid];
+            }
+        }
+        
+        /*
         export class RPOUnitBuilder
         {    
             private static S_FLAG_BUSY:number = 1;
@@ -89,14 +155,14 @@ export namespace vox
             {
                 return RPOUnitBuilder.m_rcpoList[dispRUid].rcids[rprocessUid];
             }
+            static GetRCRPObj(dispRUid:number):RCRPObj
+            {
+                return RPOUnitBuilder.m_rcpoList[dispRUid];
+            }
             
             static GetNodeByUid(dispRUid:number):RPOUnit
             {
                 return RPOUnitBuilder.m_unitList[dispRUid];
-            }
-            static GetRCRPObj(dispRUid:number):RCRPObj
-            {
-                return RPOUnitBuilder.m_rcpoList[dispRUid];
             }
             static Create():RPOUnit
             {
@@ -139,5 +205,6 @@ export namespace vox
                 console.log("RPOUnitBuilder::ShowInfo(), freeIdList: "+RPOUnitBuilder.m_freeIdList);
             }
         }
+        //*/
     }
 }

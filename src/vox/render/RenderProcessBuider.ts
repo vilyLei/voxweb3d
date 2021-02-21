@@ -5,12 +5,20 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as IPoolNodeT from "../../vox/utils/IPoolNode";
+import * as PoolNodeBuilderT from "../../vox/utils/PoolNodeBuilder";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as MaterialShaderT from '../../vox/material/MaterialShader';
+import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
+import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as RenderProcessT from "../../vox/render/RenderProcess";
 
+import IPoolNode = IPoolNodeT.vox.utils.IPoolNode;
+import PoolNodeBuilder = PoolNodeBuilderT.vox.utils.PoolNodeBuilder;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
+import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
+import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 
 export namespace vox
@@ -35,7 +43,7 @@ export namespace vox
                 }
                 return -1; 
             }
-            static GetProcess(index:number):RenderProcess
+            static GetNodeByUid(index:number):RenderProcess
             {
                 if(index > -1 && index < RenderProcessBuider.m_processListLen)
                 {
@@ -47,33 +55,54 @@ export namespace vox
             {
                 RenderProcessBuider.m_processList[runit.__$rprouid].rejoinRunitForTro(runit);
             }
-            static Create(shader:MaterialShader, batchEnabled:boolean,fixedState:boolean):RenderProcess
+
+            static m_shader:MaterialShader;
+            static m_rpoNodeBuilder:RPONodeBuilder;
+            static m_rpoUnitBuilder:RPOUnitBuilder;
+            static m_batchEnabled:boolean;
+            static m_fixedState:boolean;
+            static SetCreateParams(shader:MaterialShader,rpoNodeBuilder:RPONodeBuilder,rpoUnitBuilder:RPOUnitBuilder, batchEnabled:boolean,fixedState:boolean):void
+            {
+                RenderProcessBuider.m_shader = shader;
+                RenderProcessBuider.m_rpoNodeBuilder = rpoNodeBuilder;
+                RenderProcessBuider.m_rpoUnitBuilder = rpoUnitBuilder;
+                RenderProcessBuider.m_batchEnabled = batchEnabled;
+                RenderProcessBuider.m_fixedState = fixedState;
+            }
+            //static Create(shader:MaterialShader,rpoNodeBuilder:RPONodeBuilder,rpoUnitBuilder:RPOUnitBuilder, batchEnabled:boolean,fixedState:boolean):RenderProcess
+            static Create():RenderProcess
             {
                 let process:RenderProcess = null;
                 let index:number = RenderProcessBuider.GetFreeId();
                 if(index >= 0)
                 {
                     process = RenderProcessBuider.m_processList[index];
-                    process.index = index;
+                    process.uid = index;
                     RenderProcessBuider.m_processFlagList[index] = RenderProcessBuider.S_FLAG_BUSY;
                 }
                 else
                 {
                     // create a new processIndex
-                    process = new RenderProcess(shader,batchEnabled,fixedState);
+                    process = new RenderProcess(
+                        RenderProcessBuider.m_shader,
+                        RenderProcessBuider.m_rpoNodeBuilder,
+                        RenderProcessBuider.m_rpoUnitBuilder,
+                        RenderProcessBuider.m_batchEnabled,
+                        RenderProcessBuider.m_fixedState
+                        );
                     RenderProcessBuider.m_processList.push( process );
                     RenderProcessBuider.m_processFlagList.push(RenderProcessBuider.S_FLAG_BUSY);
-                    process.index = RenderProcessBuider.m_processListLen;
+                    process.uid = RenderProcessBuider.m_processListLen;
                     RenderProcessBuider.m_processListLen++;
                 }
                 return process;
             }
             static Restore(p:RenderProcess):void
             {
-                if(p != null && p.index >= 0 && RenderProcessBuider.m_processFlagList[p.index] == RenderProcessBuider.S_FLAG_BUSY)
+                if(p != null && p.uid >= 0 && RenderProcessBuider.m_processFlagList[p.uid] == RenderProcessBuider.S_FLAG_BUSY)
                 {
-                    RenderProcessBuider.m_freeIdList.push(p.index);
-                    RenderProcessBuider.m_processFlagList[p.index] = RenderProcessBuider.S_FLAG_FREE;
+                    RenderProcessBuider.m_freeIdList.push(p.uid);
+                    RenderProcessBuider.m_processFlagList[p.uid] = RenderProcessBuider.S_FLAG_FREE;
                     p.reset();
                 }
             }

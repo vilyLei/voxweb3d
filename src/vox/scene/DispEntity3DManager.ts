@@ -40,16 +40,18 @@ export namespace vox
     {
         export class DispEntity3DManager
         {
-            private m_nodeLinker = new Entity3DNodeLinker();
+            private m_nodeLinker:Entity3DNodeLinker = new Entity3DNodeLinker();
+            private m_rpoUnitBuilder:RPOUnitBuilder = null;
             private m_waitList:IRenderEntity[] = [];
             private m_processUidList:number[] = [];
             private m_wuid:number = -1;            
             private m_dispBuilder:RODispBuilder = null;
             entityManaListener:any = null;
-            constructor(__$wuid:number, dispBuilder:RODispBuilder)
+            constructor(__$wuid:number, dispBuilder:RODispBuilder, rpoUnitBuilder:RPOUnitBuilder)
             {
                 this.m_wuid = __$wuid;
                 this.m_dispBuilder = dispBuilder;
+                this.m_rpoUnitBuilder = rpoUnitBuilder;
             }
 
             isEmpty():boolean
@@ -69,7 +71,7 @@ export namespace vox
                         if(display != null && display.__$ruid > -1)
                         {
                             let puid:number = display.__$ruid;
-                            let po:RCRPObj = RPOUnitBuilder.GetRCRPObj(puid);
+                            let po:RCRPObj = this.m_rpoUnitBuilder.getRCRPObj(puid);
                             let list:Int16Array = po.rcids;
                             let len:number = RCRPObj.RenerProcessMaxTotal;
                             //console.log("list: "+list);
@@ -78,7 +80,7 @@ export namespace vox
                                 if(list[i] > -1)
                                 {
                                     //the value of list[i] is the uid of a node;
-                                    this.m_rprocess = RenderProcessBuider.GetProcess(i);
+                                    this.m_rprocess = RenderProcessBuider.GetNodeByUid(i);
                                     this.m_rprocess.removeDisp(display);
                                 }
                             }
@@ -92,7 +94,7 @@ export namespace vox
                                 }
                                 display.__$$rsign = DisplayRenderState.NOT_IN_WORLD;
                                 // 准备移除和当前 display 对应的 RPOUnit
-                                RPOUnitBuilder.Restore(RPOUnitBuilder.GetNodeByUid(puid));
+                                this.m_rpoUnitBuilder.restoreByUid(puid);
                             }
                             else
                             {
@@ -119,7 +121,7 @@ export namespace vox
                     {
                         if(disp.__$$rsign == DisplayRenderState.LIVE_IN_WORLD)
                         {
-                            if(!RPOUnitBuilder.TestRPNodeNotExists(disp.__$ruid,processUid))
+                            if(!this.m_rpoUnitBuilder.testRPNodeNotExists(disp.__$ruid,processUid))
                             {
                                 //console.log("DispEntity3DManager::addEntity(), A, this display("+disp.__$ruid+") has existed in processid("+processUid+").");
                                 return;
@@ -153,7 +155,7 @@ export namespace vox
                                 {
                                     disp.__$$rsign = DisplayRenderState.GO_TO_WORLD;
                                 }
-                                this.m_rprocess = RenderProcessBuider.GetProcess(processUid);
+                                this.m_rprocess = RenderProcessBuider.GetNodeByUid(processUid);
                                 //console.log("DispEntity3DManager::addEntity(), add a ready ok entity to process.");
                                 //this.m_rprocess.addDisp(rc, disp,false);
                                 if(disp.__$ruid > -1)
@@ -162,9 +164,9 @@ export namespace vox
                                 }
                                 else
                                 {
-                                    this.m_dispBuilder.addDispToProcess(rc, disp, this.m_rprocess.index);
+                                    this.m_dispBuilder.addDispToProcess(rc, disp, this.m_rprocess.uid);
                                 }
-                                //
+                                
                                 if(this.entityManaListener != null)
                                 {
                                     this.entityManaListener.addToWorld(entity,this.m_wuid,processUid);
@@ -236,7 +238,7 @@ export namespace vox
                             disp = entity.getDisplay();
                             if(disp.__$$rsign == DisplayRenderState.LIVE_IN_WORLD)
                             {
-                                if(!RPOUnitBuilder.TestRPNodeNotExists(disp.__$ruid,this.m_processUidList[i]))
+                                if(!this.m_rpoUnitBuilder.testRPNodeNotExists(disp.__$ruid,this.m_processUidList[i]))
                                 {
                                     //console.log("DispEntity3DManager::update(), this display("+disp.__$ruid+") has existed in processid("+m_processUidList[i]+").");
                                     this.m_waitList.splice(i,1);
@@ -254,7 +256,7 @@ export namespace vox
                             this.m_nodeLinker.addNode(node);
                             
                             let prouid = this.m_processUidList[i];
-                            this.m_rprocess = RenderProcessBuider.GetProcess(prouid);
+                            this.m_rprocess = RenderProcessBuider.GetNodeByUid(prouid);
                             //console.log("DispEntity3DManager::update(), add a ready ok entity("+entity+") to processid("+prouid+")");
                             if(disp.__$ruid > -1)
                             {
@@ -262,7 +264,7 @@ export namespace vox
                             }
                             else
                             {
-                                this.m_dispBuilder.addDispToProcess(rc, disp, this.m_rprocess.index);
+                                this.m_dispBuilder.addDispToProcess(rc, disp, this.m_rprocess.uid);
                             }
                             
                             this.m_waitList.splice(i,1);

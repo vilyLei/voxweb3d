@@ -52,6 +52,7 @@ export namespace vox
             runMode:number = 0;
 
             rpoNodeBuilder:RPONodeBuilder = null;
+            rpoUnitBuilder:RPOUnitBuilder = null;
             private m_shader:MaterialShader = null;
             constructor(shader:MaterialShader)
             {
@@ -384,13 +385,13 @@ export namespace vox
                     {
                         node = nextNode;
                         nextNode = nextNode.next;
-                        RPOUnitBuilder.SetRPNodeParam(node.__$ruid, this.procuid, -1);
+                        this.rpoUnitBuilder.setRPNodeParam(node.__$ruid, this.procuid, -1);
                         node.reset();
                         
                         runit = node.unit;
                         if(this.rpoNodeBuilder.restore(node))
                         {
-                            RPOUnitBuilder.Restore(runit);
+                            this.rpoUnitBuilder.restore(runit);
                         }
                     }
                 }
