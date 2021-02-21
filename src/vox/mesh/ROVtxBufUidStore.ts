@@ -5,9 +5,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-//  import * as RenderProxyT from "../../vox/render/RenderProxy";
-//  import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-
 export namespace vox
 {
     export namespace mesh
@@ -16,14 +13,14 @@ export namespace vox
         {
             private m_useidList:number[] = [];
             private m_removeidList:number[] = [];
-            private static s_ins:ROVtxBufUidStore = new ROVtxBufUidStore();
-            private constructor()
+            //private static s_ins:ROVtxBufUidStore = new ROVtxBufUidStore();
+            constructor()
             {
             }
-            static GetInstance():ROVtxBufUidStore
-            {
-                return ROVtxBufUidStore.s_ins;
-            }
+            //  static GetInstance():ROVtxBufUidStore
+            //  {
+            //      return ROVtxBufUidStore.s_ins;
+            //  }
             __$getRemovedListLen():number
             {
                 return this.m_removeidList.length;

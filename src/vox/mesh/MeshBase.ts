@@ -11,7 +11,6 @@ import * as RenderConstT from "../../vox/render/RenderConst";
 import * as AABBT from "../../vox/geom/AABB";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
-import * as ROVtxBufUidStoreT from "../../vox/mesh/ROVtxBufUidStore";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
@@ -20,7 +19,6 @@ import AABB = AABBT.vox.geom.AABB;
 import VtxNormalType = VtxBufConstT.vox.mesh.VtxNormalType;
 import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 import ROVertexBuffer = ROVertexBufferT.vox.mesh.ROVertexBuffer;
-import ROVtxBufUidStore = ROVtxBufUidStoreT.vox.mesh.ROVtxBufUidStore;
 
 export namespace vox
 {
@@ -165,7 +163,7 @@ export namespace vox
                     // create vbuf;
                     this.rebuild();
                 }
-                ROVtxBufUidStore.GetInstance().__$attachAt(this.m_vbuf.getUid());
+                ROVertexBuffer.__$$AttachAt(this.m_vbuf.getUid());
                 return this.m_vbuf;
             }
             __$detachVBuf(vbuf:ROVertexBuffer):void
@@ -174,7 +172,7 @@ export namespace vox
                 {
                     throw Error("Fatal Error!");
                 }                
-                ROVtxBufUidStore.GetInstance().__$detachAt(this.m_vbuf.getUid());
+                ROVertexBuffer.__$$DetachAt(this.m_vbuf.getUid());
             }
             isGeomDynamic():number
             {

@@ -28,7 +28,7 @@ export namespace vox
             // vtx attribute hash map id
             private m_mid:number = 0;
             private m_vtxUid:number = 0;
-
+            private m_vtxStore:ROVtxBufUidStore;
             ibuf:any = null;
             /**
              * be used by the renderer runtime, the value is 2 or 4.
@@ -50,7 +50,10 @@ export namespace vox
             {
                 this.m_uid = VertexRenderObj.s_uid++;
             }
-            
+            setVtxStore(vtxStore:ROVtxBufUidStore):void
+            {
+                this.m_vtxStore = vtxStore;
+            }
             private setMidAndBufUid(mid:number,pvtxUid:number):void
             {
                 this.m_mid = mid;
@@ -95,7 +98,7 @@ export namespace vox
             {
                 if(this.m_attachCount < 1)
                 {
-                    ROVtxBufUidStore.GetInstance().__$attachAt(this.m_vtxUid);
+                    this.m_vtxStore.__$attachAt(this.m_vtxUid);
                 }
                 ++this.m_attachCount;
             }
@@ -105,7 +108,7 @@ export namespace vox
                 //console.log("VertexRenderObj::__$detachThis() this.m_attachCount: "+this.m_attachCount);
                 if(this.m_attachCount < 1)
                 {
-                    ROVtxBufUidStore.GetInstance().__$detachAt(this.m_vtxUid);
+                    this.m_vtxStore.__$detachAt(this.m_vtxUid);
                     this.m_attachCount = 0;
                     console.log("VertexRenderObj::__$detachThis() this.m_attachCount value is 0.");
                 }
@@ -122,6 +125,8 @@ export namespace vox
                 this.attribTypes = null;
                 this.attribTypesLen = 0;
                 this.wholeStride = 0;
+
+                this.m_vtxStore = null;
             }
             restoreThis(rc:RenderProxy):void
             {
@@ -145,7 +150,7 @@ export namespace vox
                 }
                 return -1;
             }
-            static Create(type:number,pvtxUid:number):VertexRenderObj
+            static Create(vtxStore:ROVtxBufUidStore,type:number,pvtxUid:number):VertexRenderObj
             {
                 let unit:VertexRenderObj = null;
                 let index:number = VertexRenderObj.GetFreeId();
@@ -154,11 +159,13 @@ export namespace vox
                 {
                     unit = VertexRenderObj.m_unitList[index];
                     VertexRenderObj.m_unitFlagList[index] = VertexRenderObj.S_FLAG_BUSY;
+                    unit.setVtxStore(vtxStore);
                     unit.setMidAndBufUid(type,pvtxUid);
                 }
                 else
                 {
                     unit = new VertexRenderObj();
+                    unit.setVtxStore(vtxStore);
                     unit.setMidAndBufUid(type,pvtxUid);
                     VertexRenderObj.m_unitList.push( unit );
                     VertexRenderObj.m_unitFlagList.push(VertexRenderObj.S_FLAG_BUSY);

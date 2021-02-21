@@ -14,6 +14,7 @@ import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
 import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
 import * as VaoVertexRenderObjT from "../../vox/mesh/VaoVertexRenderObj";
 import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
+import * as ROVtxBufUidStoreT from "../../vox/mesh/ROVtxBufUidStore";
 
 import VtxBufID = VtxBufIDT.vox.mesh.VtxBufID;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
@@ -24,6 +25,7 @@ import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
 import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
 import VaoVertexRenderObj = VaoVertexRenderObjT.vox.mesh.VaoVertexRenderObj;
 import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
+import ROVtxBufUidStore = ROVtxBufUidStoreT.vox.mesh.ROVtxBufUidStore;
 
 export namespace vox
 {
@@ -35,11 +37,13 @@ export namespace vox
             private m_bufDataUsage:number = 0;
             private m_aTypeList:number[] = null;
             private m_total:number = 0;
+            private m_vtxStore:ROVtxBufUidStore;
             bufData:VtxBufData = null;
-            constructor(bufDataUsage:number = VtxBufConst.VTX_STATIC_DRAW)
+            constructor(bufDataUsage:number,vtxStore:ROVtxBufUidStore)
             {
                 this.m_uid = VtxBufID.CreateNewID();
                 this.m_bufDataUsage = bufDataUsage;
+                this.m_vtxStore = vtxStore;
             }
             
             public getType():number
@@ -216,7 +220,7 @@ export namespace vox
                 {
                     // vao 的生成要记录标记,防止重复生成, 因为同一组数据在不同的shader使用中可能组合方式不同，导致了vao可能是多样的
                     //console.log("VtxCombinedBuf::createVROBegin(), "+this.m_aTypeList+" /// "+this.m_wholeStride+" /// "+this.m_pOffsetList);
-                    let vro:VaoVertexRenderObj = VaoVertexRenderObj.Create(mid,this.m_uid);
+                    let vro:VaoVertexRenderObj = VaoVertexRenderObj.Create(this.m_vtxStore, mid, this.m_uid);
                     vro.vao = rc.createVertexArray();
                     rc.bindVertexArray(vro.vao);
                     rc.bindArrBuf(this.m_f32Buf);
@@ -229,7 +233,7 @@ export namespace vox
                 }
                 else
                 {
-                    let vro:VertexRenderObj = VertexRenderObj.Create(mid,this.m_uid);
+                    let vro:VertexRenderObj = VertexRenderObj.Create(this.m_vtxStore, mid,this.m_uid);
                     vro.shdp = shdp;
                     vro.vbuf = this.m_f32Buf;
                     vro.attribTypes = [];

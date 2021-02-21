@@ -40,9 +40,18 @@ export namespace vox
             private static __s_uid:number = 0;
             private m_uid:number = 0;
             private m_bufDataUsage:number = 0;
-            //
             private m_vtxBuf:IVtxBuf = null;
 
+            private m_rc:RenderProxy = null;
+            private m_ivs:Uint16Array|Uint32Array = null;
+            private m_ivsChanged:boolean = false;
+            private m_ivsPreSize:number = 0;
+            private m_ivsBuf:any = null;
+            private m_vaoEnabled:boolean = true;
+            private m_f32Changed:boolean = false;
+            private m_ibufStep:number = 2;// 2 or 4
+ 
+            drawMode:number = RenderDrawMode.ELEMENTS_TRIANGLES;
             bufData:VtxBufData = null;
             private constructor(bufDataUsage:number = VtxBufConst.VTX_STATIC_DRAW)
             {
@@ -54,17 +63,6 @@ export namespace vox
                 this.m_vtxBuf = vtxBuf;
                 if(vtxBuf != null)vtxBuf.bufData = this.bufData;
             }
-            private m_rc:RenderProxy = null;
-            //private m_ivs:Uint16Array = null;
-            private m_ivs:Uint16Array|Uint32Array = null;// Uint16Array or Uint32Array
-            private m_ivsChanged:boolean = false;
-            private m_ivsPreSize:number = 0;
-            private m_ivsBuf:any = null;
-            private m_vaoEnabled:boolean = true;
-            private m_f32Changed:boolean = false;
-            private m_ibufStep:number = 2;// 2 or 4
- 
-            drawMode:number = RenderDrawMode.ELEMENTS_TRIANGLES;
             getIBufStep():number
             {
                 return this.m_ibufStep;
@@ -110,7 +108,7 @@ export namespace vox
             {
                 if(this.m_vtxBuf == null)
                 {
-                    this.m_vtxBuf = new VtxCombinedBuf(this.m_bufDataUsage);
+                    this.m_vtxBuf = new VtxCombinedBuf(this.m_bufDataUsage,ROVertexBuffer.s_vtxStore);
                 }
                 this.m_vtxBuf.setF32DataAt(index, float32Arr, stepFloatsTotal, setpOffsets);
                 if(!this.m_f32Changed && this.m_vtxBuf.isChanged())
@@ -298,7 +296,7 @@ export namespace vox
                 let vro:IVertexRenderObj = this.m_vtxBuf.createVROBegin(rc, shdp,vaoEnabled);
                 vro.ibuf = this.m_ivsBuf;
                 vro.ibufStep = this.m_ibufStep;
-                //vro.ibufType = this.m_ibufStep != 4?rc.UNSIGNED_SHORT:rc.UNSIGNED_INT;
+                
                 return vro;
             }
             createVROEnd():void
@@ -352,21 +350,22 @@ export namespace vox
             }
             private static S_FLAG_BUSY:number = 1;
             private static S_FLAG_FREE:number = 0;
-            private static m_unitFlagList:number[] = [];
-            private static m_unitListLen:number = 0;
-            private static m_unitList:ROVertexBuffer[] = [];
-            private static m_freeIdList:number[] = [];
+            private static s_unitFlagList:number[] = [];
+            private static s_unitListLen:number = 0;
+            private static s_unitList:ROVertexBuffer[] = [];
+            private static s_freeIdList:number[] = [];
+            private static s_vtxStore:ROVtxBufUidStore = new ROVtxBufUidStore();
             private static GetFreeId():number
             {
-                if(ROVertexBuffer.m_freeIdList.length > 0)
+                if(ROVertexBuffer.s_freeIdList.length > 0)
                 {
-                    return ROVertexBuffer.m_freeIdList.pop();
+                    return ROVertexBuffer.s_freeIdList.pop();
                 }
                 return -1;
             }
             private static GetVtxByUid(uid:number):ROVertexBuffer
             {
-                return ROVertexBuffer.m_unitList[uid];
+                return ROVertexBuffer.s_unitList[uid];
             }
             private static Create(bufDataUsage:number = VtxBufConst.VTX_STATIC_DRAW):ROVertexBuffer
             {
@@ -374,38 +373,45 @@ export namespace vox
                 let index:number = ROVertexBuffer.GetFreeId();
                 if(index >= 0)
                 {
-                    unit = ROVertexBuffer.m_unitList[index];
+                    unit = ROVertexBuffer.s_unitList[index];
                     unit.setBufDataUsage(bufDataUsage);
-                    ROVertexBuffer.m_unitFlagList[index] = ROVertexBuffer.S_FLAG_BUSY;
+                    ROVertexBuffer.s_unitFlagList[index] = ROVertexBuffer.S_FLAG_BUSY;
                 }
                 else
                 {
                     unit = new ROVertexBuffer(bufDataUsage);
-                    ROVertexBuffer.m_unitList.push( unit );
-                    ROVertexBuffer.m_unitFlagList.push(ROVertexBuffer.S_FLAG_BUSY);
-                    ROVertexBuffer.m_unitListLen++;
+                    ROVertexBuffer.s_unitList.push( unit );
+                    ROVertexBuffer.s_unitFlagList.push(ROVertexBuffer.S_FLAG_BUSY);
+                    ROVertexBuffer.s_unitListLen++;
                 }
-                //console.log("ROVertexBuffer::Create(), ROVertexBuffer.m_unitList.length: "+ROVertexBuffer.m_unitList.length+", new buf: "+unit);
-                ROVtxBufUidStore.GetInstance().__$attachAt(unit.getUid());
+                //console.log("ROVertexBuffer::Create(), ROVertexBuffer.s_unitList.length: "+ROVertexBuffer.s_unitList.length+", new buf: "+unit);
+                ROVertexBuffer.s_vtxStore.__$attachAt(unit.getUid());
                 return unit;
             }
             private static __$Restore(pobj:ROVertexBuffer):void
             {
-                if(pobj != null && ROVertexBuffer.m_unitFlagList[pobj.getUid()] == ROVertexBuffer.S_FLAG_BUSY)
+                if(pobj != null && ROVertexBuffer.s_unitFlagList[pobj.getUid()] == ROVertexBuffer.S_FLAG_BUSY)
                 {
                     //console.log("ROVertexBuffer::__$Restore, pobj: "+pobj);
                     let uid:number = pobj.getUid();
-                    ROVertexBuffer.m_freeIdList.push(uid);
-                    ROVertexBuffer.m_unitFlagList[uid] = ROVertexBuffer.S_FLAG_FREE;
+                    ROVertexBuffer.s_freeIdList.push(uid);
+                    ROVertexBuffer.s_unitFlagList[uid] = ROVertexBuffer.S_FLAG_FREE;
                     pobj.__$destroy();
                 }
             }
             static Restore(pobj:ROVertexBuffer):void
             {
                 //console.log("ROVertexBuffer::Restore, pobj: "+pobj);
-                ROVtxBufUidStore.GetInstance().__$detachAt(pobj.getUid());
+                ROVertexBuffer.s_vtxStore.__$detachAt(pobj.getUid());
             }
-    
+            static __$$AttachAt(uid:number):void
+            {
+                ROVertexBuffer.s_vtxStore.__$attachAt(uid);
+            }
+            static __$$DetachAt(uid:number):void
+            {
+                ROVertexBuffer.s_vtxStore.__$detachAt(uid);
+            }
             private static s_stride:number = 0;
             static BufDataList:Float32Array[] = null;
             static BufDataStepList:number[] = null;
@@ -475,7 +481,7 @@ export namespace vox
                 }
                 else
                 {
-                    vb.setVtxBuf(new VtxCombinedBuf(vb.getBufDataUsage()));
+                    vb.setVtxBuf(new VtxCombinedBuf(vb.getBufDataUsage(), ROVertexBuffer.s_vtxStore));
                 }
                 vb.setF32DataAt(0, vtxfs32, stride, offsetList);
                 return vb;
@@ -548,7 +554,7 @@ export namespace vox
                 }
                 else
                 {
-                    vb.setVtxBuf(new VtxSeparatedBuf(vb.getBufDataUsage()));
+                    vb.setVtxBuf(new VtxSeparatedBuf(vb.getBufDataUsage(),ROVertexBuffer.s_vtxStore));
                 }
                 for(i = 0; i < bufTot; i++)
                 {
@@ -575,7 +581,7 @@ export namespace vox
                 }
                 else
                 {
-                    vb.setVtxBuf(new VtxSeparatedBuf(vb.getBufDataUsage()));
+                    vb.setVtxBuf(new VtxSeparatedBuf(vb.getBufDataUsage(),ROVertexBuffer.s_vtxStore));
                 }
                 for(i= 0; i < bufTot; i++)
                 {
@@ -583,14 +589,14 @@ export namespace vox
                 }
                 return vb;
             }
-            static __$GetVtxAttachCountAt(vtxUid:number):number
-            {
-                return ROVtxBufUidStore.GetInstance().getAttachCountAt(vtxUid);
-            }
-            static GetVtxAttachAllCount():number
-            {
-                return ROVtxBufUidStore.GetInstance().getAttachAllCount();
-            }
+            //  static __$GetVtxAttachCountAt(vtxUid:number):number
+            //  {
+            //      return ROVertexBuffer.s_vtxStore.getAttachCountAt(vtxUid);
+            //  }
+            //  static GetVtxAttachAllCount():number
+            //  {
+            //      return ROVertexBuffer.s_vtxStore.getAttachAllCount();
+            //  }
             private static s_timeDelay:number = 128;
             static RenderBegin(rc:RenderProxy):void
             {
@@ -598,7 +604,9 @@ export namespace vox
                 if(ROVertexBuffer.s_timeDelay < 1)
                 {
                     ROVertexBuffer.s_timeDelay = 128;
-                    let store:ROVtxBufUidStore = ROVtxBufUidStore.GetInstance();
+                    // 管理作为数据
+                    let store:ROVtxBufUidStore = ROVertexBuffer.s_vtxStore;
+                    
                     if(store.__$getRemovedListLen() > 0)
                     {
                         let list:number[] = store.__$getRemovedList();
@@ -610,7 +618,7 @@ export namespace vox
                         {
                             if(len > 0)
                             {
-                                vtxUid = list.pop();
+                                vtxUid = list.shift();
                                 --len;
                                 if(store.getAttachCountAt(vtxUid) < 1)
                                 {
