@@ -108,7 +108,7 @@ export namespace vox
             {
                 if(this.m_vtxBuf == null)
                 {
-                    this.m_vtxBuf = new VtxCombinedBuf(this.m_bufDataUsage,ROVertexBuffer.s_vtxStore);
+                    this.m_vtxBuf = new VtxCombinedBuf(this.m_bufDataUsage);
                 }
                 this.m_vtxBuf.setF32DataAt(index, float32Arr, stepFloatsTotal, setpOffsets);
                 if(!this.m_f32Changed && this.m_vtxBuf.isChanged())
@@ -481,7 +481,7 @@ export namespace vox
                 }
                 else
                 {
-                    vb.setVtxBuf(new VtxCombinedBuf(vb.getBufDataUsage(), ROVertexBuffer.s_vtxStore));
+                    vb.setVtxBuf(new VtxCombinedBuf(vb.getBufDataUsage()));
                 }
                 vb.setF32DataAt(0, vtxfs32, stride, offsetList);
                 return vb;
@@ -554,7 +554,7 @@ export namespace vox
                 }
                 else
                 {
-                    vb.setVtxBuf(new VtxSeparatedBuf(vb.getBufDataUsage(),ROVertexBuffer.s_vtxStore));
+                    vb.setVtxBuf(new VtxSeparatedBuf(vb.getBufDataUsage()));
                 }
                 for(i = 0; i < bufTot; i++)
                 {
@@ -581,7 +581,7 @@ export namespace vox
                 }
                 else
                 {
-                    vb.setVtxBuf(new VtxSeparatedBuf(vb.getBufDataUsage(),ROVertexBuffer.s_vtxStore));
+                    vb.setVtxBuf(new VtxSeparatedBuf(vb.getBufDataUsage()));
                 }
                 for(i= 0; i < bufTot; i++)
                 {
@@ -622,6 +622,7 @@ export namespace vox
                                 --len;
                                 if(store.getAttachCountAt(vtxUid) < 1)
                                 {
+                                    console.log("ROVertexBuffer remove a instance, vtxUid: "+vtxUid);
                                     vb = ROVertexBuffer.GetVtxByUid(vtxUid);
                                     vb.__$disposeGpu(rc);
                                     ROVertexBuffer.__$Restore(vb);

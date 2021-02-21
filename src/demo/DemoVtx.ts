@@ -70,7 +70,7 @@ export namespace demo
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
 
-        private m_targetDisp:DisplayEntity = null;
+        private m_targets:DisplayEntity[] = [];
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
             let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -115,7 +115,7 @@ export namespace demo
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.initialize(300.0);
                 this.m_rscene.addEntity(axis);
-                this.m_targetDisp = axis;
+                this.m_targets.push(axis);
                 //  // add common 3d display entity
                 //  var plane:Plane3DEntity = new Plane3DEntity();
                 //  //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex4]);
@@ -186,14 +186,23 @@ void main(){
                 cly.setVtxTransformMatrix(transMat);
                 cly.initialize(100.0,200.0,15,[tex1]);
                 this.m_rscene.addEntity(cly);
+                this.m_targets.push(cly);
             }
         }
         private mouseDown(evt:any):void
         {
-            console.log("mouse down...,this.m_targetDisp != null: "+(this.m_targetDisp != null));
-            if(this.m_targetDisp != null)
+            console.log("mouse down...,this.m_targetDisp != null: "+(this.m_targets != null));
+            if(this.m_targets != null && this.m_targets.length > 0)
             {
-                this.m_targetDisp.setVisible(!this.m_targetDisp.getVisible());
+                // test visible
+                // this.m_targets[0].setVisible(!this.m_targets[0].getVisible());
+
+                if(this.m_targets[0] != null)
+                {
+                    this.m_rscene.removeEntity(this.m_targets[0]);
+                    this.m_targets[0].destroy();
+                    this.m_targets[0] = null;
+                }
             }
         }
         run():void

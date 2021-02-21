@@ -12,7 +12,7 @@
 import * as Stage3DT from "../../vox/display/Stage3D";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
-//import * as RenderBufferUpdaterT from "../../vox/render/RenderBufferUpdater";
+
 import * as ROBufferUpdaterT from "../../vox/render/ROBufferUpdater";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
@@ -33,7 +33,7 @@ import * as DispEntity3DManagerT from "../../vox/scene/DispEntity3DManager";
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-//import RenderBufferUpdater = RenderBufferUpdaterT.vox.render.RenderBufferUpdater;
+
 import ROBufferUpdater = ROBufferUpdaterT.vox.render.ROBufferUpdater;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
@@ -57,7 +57,6 @@ export namespace vox
     {
         export class RendererInstance implements IRenderer
         {
-            private static __s_uid:number = 0;
             private m_uid:number = -1;
             private m_entity3DMana:DispEntity3DManager = null;
             private m_processes:RenderProcess[] = [];
@@ -77,7 +76,6 @@ export namespace vox
             readonly rttStore:RTTTextureStore = null;
             constructor()
             {
-                this.m_uid = RendererInstance.__s_uid++;
             }
             getRPONodeBuilder():RPONodeBuilder
             {
@@ -147,6 +145,7 @@ export namespace vox
                     this.m_renderInsContext.initialize(param);
                     this.m_renderProxy = this.m_renderInsContext.getRenderProxy();
                     this.m_adapter = this.m_renderProxy.getRenderAdapter();
+                    this.m_uid = this.m_renderProxy.getUid();
                     
                     this.m_dispBuilder = new RODispBuilder(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider);
                     this.m_renderInsContext.setDispBuilder(this.m_dispBuilder);
@@ -170,7 +169,6 @@ export namespace vox
             {
                 this.m_renderProxy.Texture.update();
                 this.m_entity3DMana.update(this.m_renderProxy);
-                //RenderBufferUpdater.GetInstance().__$update(this.m_renderProxy);
                 this.bufferUpdater.__$update(this.m_renderProxy);
             }
             setEntityManaListener(listener:any):void

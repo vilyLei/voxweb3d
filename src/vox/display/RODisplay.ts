@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 // 只是用于视觉表现上的渲染控制, 而和transform或者非渲染的逻辑无关
-// 一个 RODisplay 和一个 RPOUnit一一对应
+// 一个 RODisplay 和一个 RPOUnit一一对应, 一个RODisplay也只会和一个renderer相关联
 
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as RendererStateT from "../../vox/render/RendererState";

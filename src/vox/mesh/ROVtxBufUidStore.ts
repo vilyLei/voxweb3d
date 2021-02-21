@@ -13,14 +13,19 @@ export namespace vox
         {
             private m_useidList:number[] = [];
             private m_removeidList:number[] = [];
-            //private static s_ins:ROVtxBufUidStore = new ROVtxBufUidStore();
+            private static s_ins:ROVtxBufUidStore = null;
             constructor()
             {
+                if(ROVtxBufUidStore.s_ins != null)
+                {
+                    throw Error("ROVtxBufUidStore is a singleton class!!");
+                }
+                ROVtxBufUidStore.s_ins = this;
             }
-            //  static GetInstance():ROVtxBufUidStore
-            //  {
-            //      return ROVtxBufUidStore.s_ins;
-            //  }
+            static GetInstance():ROVtxBufUidStore
+            {
+                return ROVtxBufUidStore.s_ins;
+            }
             __$getRemovedListLen():number
             {
                 return this.m_removeidList.length;

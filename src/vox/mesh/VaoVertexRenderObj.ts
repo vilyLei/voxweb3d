@@ -26,7 +26,6 @@ export namespace vox
             // vtx attribute hash map id
             private m_mid:number = 0;
             private m_vtxUid:number = 0;
-            private m_vtxStore:ROVtxBufUidStore = null;
             ibuf:any = null;
             /**
              * be used by the renderer runtime, the value is 2 or 4.
@@ -43,10 +42,6 @@ export namespace vox
                 this.m_uid = VaoVertexRenderObj.s_uid++;
             }
             
-            setVtxStore(vtxStore:ROVtxBufUidStore):void
-            {
-                this.m_vtxStore = vtxStore;
-            }
             private setMidAndBufUid(mid:number,pvtxUid:number):void
             {
                 this.m_mid = mid;
@@ -84,7 +79,7 @@ export namespace vox
             {
                 if(this.m_attachCount < 1)
                 {
-                    this.m_vtxStore.__$attachAt(this.m_vtxUid);
+                    ROVtxBufUidStore.GetInstance().__$attachAt(this.m_vtxUid);
                 }
                 ++this.m_attachCount;
             }
@@ -94,7 +89,7 @@ export namespace vox
                 //console.log("VaoVertexRenderObj::__$detachThis() this.m_attachCount: "+this.m_attachCount);
                 if(this.m_attachCount < 1)
                 {
-                    this.m_vtxStore.__$detachAt(this.m_vtxUid);
+                    ROVtxBufUidStore.GetInstance().__$detachAt(this.m_vtxUid);
                     this.m_attachCount = 0;
                     console.log("VaoVertexRenderObj::__$detachThis() this.m_attachCount value is 0.");
                 }
@@ -132,7 +127,7 @@ export namespace vox
                 }
                 return -1;
             }
-            static Create(vtxStore:ROVtxBufUidStore,type:number,pvtxUid:number):VaoVertexRenderObj
+            static Create(type:number,pvtxUid:number):VaoVertexRenderObj
             {
                 let unit:VaoVertexRenderObj = null;
                 let index:number = VaoVertexRenderObj.GetFreeId();
@@ -141,13 +136,11 @@ export namespace vox
                 {
                     unit = VaoVertexRenderObj.m_unitList[index];
                     VaoVertexRenderObj.m_unitFlagList[index] = VaoVertexRenderObj.S_FLAG_BUSY;
-                    unit.setVtxStore(vtxStore);
                     unit.setMidAndBufUid(type,pvtxUid);
                 }
                 else
                 {
                     unit = new VaoVertexRenderObj();
-                    unit.setVtxStore(vtxStore);
                     unit.setMidAndBufUid(type,pvtxUid);
                     VaoVertexRenderObj.m_unitList.push( unit );
                     VaoVertexRenderObj.m_unitFlagList.push(VaoVertexRenderObj.S_FLAG_BUSY);

@@ -18,6 +18,7 @@ import * as ShaderUniformDataT from "../../vox/material/ShaderUniformData";
 import * as ShdUniformToolT from '../../vox/material/ShdUniformTool';
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as MaterialShaderT from '../../vox/material/MaterialShader';
+import * as ROVtxBufUidStoreT from '../../vox/mesh/ROVtxBufUidStore';
 
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
@@ -38,6 +39,7 @@ import ShdUniformTool = ShdUniformToolT.vox.material.ShdUniformTool;
 import EmptyShdUniform = ShdUniformToolT.vox.material.EmptyShdUniform;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
+import ROVtxBufUidStore = ROVtxBufUidStoreT.vox.mesh.ROVtxBufUidStore;
 
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
