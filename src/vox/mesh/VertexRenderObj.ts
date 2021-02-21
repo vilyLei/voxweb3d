@@ -9,52 +9,36 @@ import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as ROVtxBufUidStoreT from "../../vox/mesh/ROVtxBufUidStore";
+import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import ROVtxBufUidStore = ROVtxBufUidStoreT.vox.mesh.ROVtxBufUidStore;
+import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
 
 export namespace vox
 {
     export namespace mesh
     {
-        
-        export interface IVertexRenderObj
-        {
-            run(rc:RenderProxy):void;
-            getMid():number;
-            __$attachThis():void;
-            __$detachThis():void;
-        }
-        // vro
         export class VertexRenderObj implements IVertexRenderObj
         {
             private static s_uid:number = 0;
-            private static s_preUid:number = -1;
-            private static s_vtxUid:number = -1;
-            private m_vtxUid:number = 0;
             private m_uid:number = 0;
             // vtx attribute hash map id
             private m_mid:number = 0;
+            private m_vtxUid:number = 0;
 
-            shdp:IVtxShdCtr = null;
-            vbufs:any[] = null;
-            vbuf:any = null;
             ibuf:any = null;
-            /**
-             * be used by the renderer runtime, the value is UNSIGNED_SHORT or UNSIGNED_INT.
-             */
-            ibufType:number = 0;
             /**
              * be used by the renderer runtime, the value is 2 or 4.
              */
             ibufStep:number = 2;
             
-            /**
-             * vao buffer object
-             */
-            vao:any = null;
+            shdp:IVtxShdCtr = null;
+
+            vbufs:any[] = null;
+            vbuf:any = null;
 
             attribTypes:number[] = null;
             wholeOffsetList:number[] = null;
@@ -62,10 +46,8 @@ export namespace vox
             updateUnlocked:boolean = true;
             wholeStride:number = 0;
             
-            private constructor(mid:number,pvtxUid:number)
+            private constructor()
             {
-                this.m_mid = mid;
-                this.m_vtxUid = pvtxUid;
                 this.m_uid = VertexRenderObj.s_uid++;
             }
             
@@ -89,31 +71,21 @@ export namespace vox
             }
             run(rc:RenderProxy):void
             {
-                if(VertexRenderObj.s_preUid != this.m_uid)
+                if(rc.Vertex.rvoUid != this.m_uid)
                 {
-                    //if(this.srcBuf != null)this.srcBuf.__$updateToGpu(rc);
-                    //console.log("VertexRenderObj::run(), this.m_uid: "+this.m_uid);
-                    VertexRenderObj.s_preUid = this.m_uid;
-                    //console.log("VertexRenderObj::run(), this.vao != null: "+(this.vao != null));
-                    if(this.vao != null)
+                    rc.Vertex.rvoUid = this.m_uid;
+                    if(this.vbuf != null)
                     {
-                        rc.bindVertexArray(this.vao);
+                        rc.useVtxAttrisbPtrTypeFloat(this.shdp,this.vbuf, this.attribTypes,this.attribTypesLen, this.wholeOffsetList, this.wholeStride);
                     }
                     else
                     {
-                        if(this.vbuf != null)
-                        {
-                            rc.useVtxAttrisbPtrTypeFloat(this.shdp,this.vbuf, this.attribTypes,this.attribTypesLen, this.wholeOffsetList, this.wholeStride);
-                        }
-                        else
-                        {
-                            rc.useVtxAttrisbPtrTypeFloatMulti(this.shdp,this.vbufs, this.attribTypes,this.attribTypesLen, this.wholeOffsetList, this.wholeStride);
-                        }
+                        rc.useVtxAttrisbPtrTypeFloatMulti(this.shdp,this.vbufs, this.attribTypes,this.attribTypesLen, this.wholeOffsetList, this.wholeStride);
                     }
                     //console.log("VertexRenderObj::run(), ## this.m_vtxUid: "+this.m_vtxUid+", this.ibuf:"+this.ibuf);
-                    if(VertexRenderObj.s_vtxUid != this.m_vtxUid)
+                    if(rc.Vertex.rioUid != this.m_vtxUid)
                     {
-                        VertexRenderObj.s_vtxUid = this.m_vtxUid;
+                        rc.Vertex.rioUid = this.m_vtxUid;
                         rc.bindEleBuf(this.ibuf);
                     }
                 }
@@ -136,7 +108,6 @@ export namespace vox
                     ROVtxBufUidStore.GetInstance().__$detachAt(this.m_vtxUid);
                     this.m_attachCount = 0;
                     console.log("VertexRenderObj::__$detachThis() this.m_attachCount value is 0.");
-                    //VertexRenderObj.Restore(this);
                 }
             }
             private __$destroy():void
@@ -147,10 +118,14 @@ export namespace vox
                 this.vbufs = null;
                 this.vbuf = null;
                 this.ibuf = null;
-                this.vao = null;
+                
                 this.attribTypes = null;
                 this.attribTypesLen = 0;
                 this.wholeStride = 0;
+            }
+            restoreThis(rc:RenderProxy):void
+            {
+                VertexRenderObj.Restore(this);
             }
             toString():string
             {
@@ -183,7 +158,8 @@ export namespace vox
                 }
                 else
                 {
-                    unit = new VertexRenderObj(type, pvtxUid);
+                    unit = new VertexRenderObj();
+                    unit.setMidAndBufUid(type,pvtxUid);
                     VertexRenderObj.m_unitList.push( unit );
                     VertexRenderObj.m_unitFlagList.push(VertexRenderObj.S_FLAG_BUSY);
                     VertexRenderObj.m_unitListLen++;
@@ -191,7 +167,7 @@ export namespace vox
                 return unit;
             }
             
-            static Restore(pobj:VertexRenderObj):void
+            private static Restore(pobj:VertexRenderObj):void
             {
                 if(pobj != null && pobj.m_attachCount < 1 && VertexRenderObj.m_unitFlagList[pobj.getUid()] == VertexRenderObj.S_FLAG_BUSY)
                 {
@@ -200,11 +176,6 @@ export namespace vox
                     VertexRenderObj.m_unitFlagList[uid] = VertexRenderObj.S_FLAG_FREE;
                     pobj.__$destroy();
                 }
-            }
-            static RenderBegin():void
-            {
-                VertexRenderObj.s_vtxUid = -2;
-                VertexRenderObj.s_preUid = -3;
             }
         }
     }

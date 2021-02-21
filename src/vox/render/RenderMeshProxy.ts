@@ -6,11 +6,9 @@
 /***************************************************************************/
 
 import * as RenderProxyT from "../../vox/render/RenderProxy";
-import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
 import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
 
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
 import ROVertexBuffer = ROVertexBufferT.vox.mesh.ROVertexBuffer;
 
 export namespace vox
@@ -27,7 +25,7 @@ export namespace vox
             }
             reset():void
             {
-                VertexRenderObj.RenderBegin();
+                this.m_rc.Vertex.renderBegin();
                 ROVertexBuffer.RenderBegin(this.m_rc);
             }
             toString():string

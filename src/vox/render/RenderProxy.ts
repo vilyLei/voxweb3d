@@ -23,6 +23,7 @@ import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as RenderFBOProxyT from "../../vox/render/RenderFBOProxy";
 import * as RCExtensionT from "../../vox/render/RCExtension";
 
+import * as ROVertexResourceT from '../../vox/render/ROVertexResource';
 import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
 import * as DivLogT from "../../vox/utils/DivLog";
 
@@ -45,6 +46,7 @@ import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RenderFBOProxy = RenderFBOProxyT.vox.render.RenderFBOProxy;
 import RCExtension = RCExtensionT.vox.render.RCExtension;
 
+import ROVertexResource = ROVertexResourceT.vox.render.ROVertexResource;
 import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
 import DivLog = DivLogT.vox.utils.DivLog;
 
@@ -54,7 +56,6 @@ export namespace vox
     {
         export class RenderProxy
         {
-
             readonly RGBA:number = 0;
             readonly UNSIGNED_BYTE:number = 0;
             readonly TRIANGLE_STRIP:number = 0;
@@ -76,6 +77,7 @@ export namespace vox
             readonly RContext:any = null;
             readonly RState:RODrawState = null;
             readonly Texture:ROTextureResource = null;
+            readonly Vertex:ROVertexResource = null;
 
             private m_uid:number = 0;
             private static s_uid:number = 0;
@@ -508,6 +510,9 @@ export namespace vox
                 let selfT:any = this;
                 let gl:any = this.m_rc;
                 let texRes:ROTextureResource = new ROTextureResource(this.m_uid,gl);
+                let vtxRes:ROVertexResource = new ROVertexResource(this.m_uid,gl);
+
+                selfT.Vertex = vtxRes;
                 selfT.Texture = texRes;
 
                 this.m_viewW = this.m_adapterContext.getViewportWidth();

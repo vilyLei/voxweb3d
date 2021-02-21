@@ -10,7 +10,9 @@ import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as IVtxBufT from "../../vox/mesh/IVtxBuf";
 import * as VtxBufDataT from "../../vox/mesh/VtxBufData";
+import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
 import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
+import * as VaoVertexRenderObjT from "../../vox/mesh/VaoVertexRenderObj";
 import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
 
 import VtxBufID = VtxBufIDT.vox.mesh.VtxBufID;
@@ -18,7 +20,9 @@ import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 import IVtxBuf = IVtxBufT.vox.mesh.IVtxBuf;
 import VtxBufData = VtxBufDataT.vox.mesh.VtxBufData;
+import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
 import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
+import VaoVertexRenderObj = VaoVertexRenderObjT.vox.mesh.VaoVertexRenderObj;
 import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
 
 export namespace vox
@@ -65,6 +69,12 @@ export namespace vox
             private m_wholeStride:number = 0;
             private m_stepFloatsTotal:number = 0;
             private m_f32Changed:boolean = false;
+
+            
+            getVtxAttributesTotal():number
+            {
+                return this.m_total;
+            }
             getF32DataAt(index:number):Float32Array
             {
                 return this.m_f32List[index];
@@ -228,18 +238,27 @@ export namespace vox
                     }
                 }
             }
-            private m_vroList:VertexRenderObj[] = [];
+            private m_vroList:IVertexRenderObj[] = [];
             private m_vroListLen:number = 0;
         
-            // 创建被 RPOUnit 使用的 vro 实例
-            createVROBegin(rc:RenderProxy, shdp:IVtxShdCtr, vaoEnabled:boolean = true):VertexRenderObj
+            getVROMid(rc:RenderProxy, shdp:IVtxShdCtr, vaoEnabled:boolean):number
             {
-                let mid:number = shdp.getLayoutBit();
+                let mid:number = 131 + rc.getUid();
                 if(vaoEnabled)
                 {
-                    // 之所以这样区分，是因为 shdp.getLayoutBit() 的取值范围不会超过short(double bytes)取值范围
-                    mid += 0xf0000;
+                    // 之所以 + 0xf0000 这样区分，是因为 shdp.getLayoutBit() 的取值范围不会超过short(double bytes)取值范围
+                    mid = mid * 131 + shdp.getLayoutBit() + 0xf0000;
                 }
+                else
+                {
+                    mid = mid * 131 + shdp.getLayoutBit();
+                }
+                return mid;
+            }
+            // 创建被 RPOUnit 使用的 vro 实例
+            createVROBegin(rc:RenderProxy, shdp:IVtxShdCtr, vaoEnabled:boolean = true):IVertexRenderObj
+            {
+                let mid:number = this.getVROMid(rc,shdp,vaoEnabled);
                 let i:number = 0;
                 for(; i < this.m_vroListLen; ++i)
                 {
@@ -249,13 +268,12 @@ export namespace vox
                     }
                 }
                 //console.log("### Separated mid: "+mid+", uid: "+this.m_uid);
-                let vro:VertexRenderObj = VertexRenderObj.Create(mid,this.m_uid);
-                vro.shdp = shdp;
-                vro.vbufs = this.m_f32Bufs;
+                let pvro:IVertexRenderObj;
                 if(vaoEnabled)
                 {
                     // vao 的生成要记录标记,防止重复生成, 因为同一组数据在不同的shader使用中可能组合方式不同，导致了vao可能是多样的
                     //console.log("VtxSeparatedBuf::createVROBegin(), "+this.m_aTypeList+" /// "+this.m_wholeStride+" /// "+this.m_pOffsetList);
+                    let vro:VaoVertexRenderObj = VaoVertexRenderObj.Create(mid,this.m_uid);
                     vro.vao = rc.createVertexArray();
                     rc.bindVertexArray(vro.vao);
                     
@@ -264,10 +282,13 @@ export namespace vox
                         rc.bindArrBuf(this.m_f32Bufs[i]);
                         shdp.vertexAttribPointerTypeFloat(this.m_aTypeList[i], 0, 0);
                     }
-                    vro.attribTypes = null;
+                    pvro = vro;
                 }
                 else
                 {
+                    let vro:VertexRenderObj = VertexRenderObj.Create(mid,this.m_uid);
+                    vro.shdp = shdp;
+                    vro.vbufs = this.m_f32Bufs;
                     vro.attribTypes = [];
                     vro.wholeOffsetList = [];                    
                     vro.wholeStride = 0;
@@ -281,10 +302,11 @@ export namespace vox
                         }
                     }
                     vro.attribTypesLen = vro.attribTypes.length;
+                    pvro = vro;
                 }
-                this.m_vroList.push(vro);
+                this.m_vroList.push(pvro);
                 ++this.m_vroListLen;
-                return vro;
+                return pvro;
             }
             public disposeGpu(rc:RenderProxy):void
             {
@@ -292,15 +314,11 @@ export namespace vox
                 {
                     console.log("VtxSeparatedBuf::__$disposeGpu()... "+this);
                     let i:number = 0;
-                    let vro:VertexRenderObj = null;
+                    let vro:IVertexRenderObj = null;
                     for(; i < this.m_vroListLen; ++i)
                     {
                         vro = this.m_vroList.pop();
-                        if(vro.vao != null)
-                        {
-                            rc.deleteVertexArray(vro.vao);
-                        }
-                        VertexRenderObj.Restore(vro);
+                        vro.restoreThis(rc);
                         this.m_vroList[i] = null;
                     }
                     this.m_vroListLen = 0;

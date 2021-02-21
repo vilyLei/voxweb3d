@@ -7,12 +7,12 @@
 // 真正被高频运行的渲染管线中的被执行对象
 
 
-import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
+import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
 import * as ITextureRenderObjT from "../../vox/texture/ITextureRenderObj";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as IPoolNodeT from "../../vox/utils/IPoolNode";
 
-import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
+import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
 import ITextureRenderObj = ITextureRenderObjT.vox.texture.ITextureRenderObj;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import IPoolNode = IPoolNodeT.vox.utils.IPoolNode;
@@ -44,7 +44,7 @@ export namespace vox
             prev:RPONode = null;
             next:RPONode = null;
             unit:RPOUnit = null;
-            vro:VertexRenderObj = null;
+            vro:IVertexRenderObj = null;
             tro:ITextureRenderObj = null;
 
             rvroI:number = -1;

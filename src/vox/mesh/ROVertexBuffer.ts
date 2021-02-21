@@ -12,7 +12,7 @@ import * as RenderBufferUpdaterT from "../../vox/render/RenderBufferUpdater";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as ROVtxBufUidStoreT from "../../vox/mesh/ROVtxBufUidStore";
 import * as VtxBufDataT from "../../vox/mesh/VtxBufData";
-import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
+import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
 import * as IVtxBufT from "../../vox/mesh/IVtxBuf";
 import * as VtxCombinedBufT from "../../vox/mesh/VtxCombinedBuf";
 import * as VtxSeparatedBufT from "../../vox/mesh/VtxSeparatedBuf";
@@ -25,7 +25,7 @@ import RenderBufferUpdater = RenderBufferUpdaterT.vox.render.RenderBufferUpdater
 import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 import ROVtxBufUidStore = ROVtxBufUidStoreT.vox.mesh.ROVtxBufUidStore;
 import VtxBufData = VtxBufDataT.vox.mesh.VtxBufData;
-import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
+import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
 import IVtxBuf = IVtxBufT.vox.mesh.IVtxBuf;
 import VtxCombinedBuf = VtxCombinedBufT.vox.mesh.VtxCombinedBuf;
 import VtxSeparatedBuf = VtxSeparatedBufT.vox.mesh.VtxSeparatedBuf;
@@ -293,12 +293,12 @@ export namespace vox
                 }
             }
             // 创建被 RPOUnit 使用的 vro 实例
-            createVROBegin(rc:RenderProxy, shdp:IVtxShdCtr, vaoEnabled:boolean):VertexRenderObj
+            createVROBegin(rc:RenderProxy, shdp:IVtxShdCtr, vaoEnabled:boolean):IVertexRenderObj
             {
-                let vro:VertexRenderObj = this.m_vtxBuf.createVROBegin(rc, shdp,vaoEnabled);
+                let vro:IVertexRenderObj = this.m_vtxBuf.createVROBegin(rc, shdp,vaoEnabled);
                 vro.ibuf = this.m_ivsBuf;
-                vro.ibufType = this.m_ibufStep != 4?rc.UNSIGNED_SHORT:rc.UNSIGNED_INT;
                 vro.ibufStep = this.m_ibufStep;
+                //vro.ibufType = this.m_ibufStep != 4?rc.UNSIGNED_SHORT:rc.UNSIGNED_INT;
                 return vro;
             }
             createVROEnd():void

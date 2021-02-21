@@ -7,12 +7,12 @@
 
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as VtxBufDataT from "../../vox/mesh/VtxBufData";
-import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
+import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
 import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
 
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import VtxBufData = VtxBufDataT.vox.mesh.VtxBufData;
-import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
+import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
 import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
 
 export namespace vox
@@ -26,6 +26,7 @@ export namespace vox
             getBufDataUsage():number;
             setBufDataUsage(bufDataUsage:number):void;
             getUid():number;
+            getVtxAttributesTotal():number
             getF32DataAt(index:number):Float32Array;
             isGpuEnabled():boolean;
             isChanged():boolean;
@@ -35,7 +36,7 @@ export namespace vox
             setData2fAt(vertexI:number,attribI:number,px:number,py:number):void;
             updateToGpu(rc:RenderProxy):void;
             upload(rc:RenderProxy,shdp:IVtxShdCtr):void;
-            createVROBegin(rc:RenderProxy, shdp:IVtxShdCtr, vaoEnabled:boolean):VertexRenderObj;
+            createVROBegin(rc:RenderProxy, shdp:IVtxShdCtr, vaoEnabled:boolean):IVertexRenderObj;
             disposeGpu(rc:RenderProxy):void;
             destroy():void;
             toString():string;

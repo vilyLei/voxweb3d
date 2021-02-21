@@ -7,7 +7,7 @@
 // 真正被高频运行的渲染管线中的被执行对象
 
 import * as RenderConstT from "../../vox/render/RenderConst";
-import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
+import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
 
 import * as MaterialShaderT from "../../vox/material/MaterialShader";
 import * as ITextureRenderObjT from "../../vox/texture/ITextureRenderObj";
@@ -19,7 +19,7 @@ import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 import * as IPoolNodeT from "../../vox/utils/IPoolNode";
 
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
-import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
+import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
 
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 import ITextureRenderObj = ITextureRenderObjT.vox.texture.ITextureRenderObj;
@@ -66,7 +66,7 @@ export namespace vox
             drawMode:number = 0;
             renderState:number = 0;
             rcolorMask:number = 0;
-            vro:VertexRenderObj = null;
+            vro:IVertexRenderObj = null;
             
             // transform uniform
             transUniform:IShaderUniform = null;

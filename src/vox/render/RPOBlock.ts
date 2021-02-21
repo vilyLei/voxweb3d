@@ -18,7 +18,7 @@ import * as RPONodeLinkerT from "../../vox/render/RPONodeLinker";
 import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as MaterialShaderT from '../../vox/material/MaterialShader';
-import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
+import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
@@ -32,7 +32,7 @@ import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
 import RenderColorMask = RODrawStateT.vox.render.RenderColorMask;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
-import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
+import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
 
 export namespace vox
 {
@@ -356,7 +356,7 @@ export namespace vox
                     if(RendererDeviece.IsMobileWeb())
                     {
                         // 如果不这么做，vro和shader attributes没有完全匹配的时候可能在移动设备上会有问题(无法正常绘制)例如 ip6s
-                        let vro:VertexRenderObj = disp.vbuf.createVROBegin(rc, this.m_shader.getCurrentShd(), true);
+                        let vro:IVertexRenderObj = disp.vbuf.createVROBegin(rc, this.m_shader.getCurrentShd(), true);
                         vro.run(rc);
                     }
                     else

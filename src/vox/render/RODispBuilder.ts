@@ -262,8 +262,8 @@ export namespace vox
                             disp.vbuf.createVROEnd();
                             runit.vtxUid = runit.vro.getVtxUid();
                             
-                            runit.ibufType = runit.vro.ibufType;
                             runit.ibufStep = runit.vro.ibufStep;
+                            runit.ibufType = runit.ibufStep != 4?rc.UNSIGNED_SHORT:rc.UNSIGNED_INT;
                         }
                         //console.log("buildGpuDisp(), runit.ibufType: "+runit.ibufType+", runit.ibufStep: "+runit.ibufStep+", runit.ivsCount: "+runit.ivsCount);
                         (this.m_processBuider.getNodeByUid(processUid) as RenderProcess).addDisp(rc, disp);
@@ -299,8 +299,8 @@ export namespace vox
             {
                 if(material != null && rc != null)
                 {
-                    let tro:TextureRenderObj = null;
                     let gl:any = rc.RContext;
+                    let tro:TextureRenderObj = null;
                     let shdp:ShdProgram = null;
                     let texList:TextureProxy[] = null;
                     let texEnabled:boolean = false;
