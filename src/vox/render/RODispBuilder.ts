@@ -18,9 +18,10 @@ import * as ShaderUniformDataT from "../../vox/material/ShaderUniformData";
 import * as ShdUniformToolT from '../../vox/material/ShdUniformTool';
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as MaterialShaderT from '../../vox/material/MaterialShader';
-import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
+
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
+import * as RenderProcessT from "../../vox/render/RenderProcess";
 import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
 import * as ROTransPoolT from "../../vox/render/ROTransPool";
 
@@ -40,6 +41,7 @@ import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
+import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 import RenderProcessBuider = RenderProcessBuiderT.vox.render.RenderProcessBuider;
 import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
 import ROTransPool = ROTransPoolT.vox.render.ROTransPool;
@@ -53,17 +55,21 @@ export namespace vox
             private static s_emptyTRO:EmptyTexRenderObj = new EmptyTexRenderObj();
             private static s_shaders:MaterialShader[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
             private static s_unitBuilders:RPOUnitBuilder[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
+            private static s_processBuilders:RenderProcessBuider[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
             private m_disps:IRODisplay[] = [];
             private m_processUidList:number[] = [];
             // 当前 renderer context 范围内的所有 material shader 管理 
             private m_shader:MaterialShader = null;
             private m_rpoUnitBuilder:RPOUnitBuilder = null;
-            constructor(rc:RenderProxy, rpoUnitBuilder:RPOUnitBuilder)
+            private m_processBuider:RenderProcessBuider = null;
+            constructor(rc:RenderProxy, rpoUnitBuilder:RPOUnitBuilder, processBuider:RenderProcessBuider)
             {
                 this.m_shader = new MaterialShader();
                 this.m_rpoUnitBuilder = rpoUnitBuilder;
+                this.m_processBuider = processBuider;
                 RODispBuilder.s_shaders[rc.getUid()] = this.m_shader;
                 RODispBuilder.s_unitBuilders[rc.getUid()] = rpoUnitBuilder;
+                RODispBuilder.s_processBuilders[rc.getUid()] = processBuider;
             }
             getMaterialShader():MaterialShader
             {
@@ -99,7 +105,7 @@ export namespace vox
                                         }
                                         runit.tro = tro;
                                         runit.texMid = runit.tro.getMid();
-                                        RenderProcessBuider.RejoinRunitForTro(runit);
+                                        RODispBuilder.s_processBuilders[rc.getUid()].rejoinRunitForTro(runit);
                                         tro.__$attachThis();
                                         material.__$troMid = runit.tro.getMid();
                                     }
@@ -114,7 +120,7 @@ export namespace vox
                                         }
                                         runit.tro = RODispBuilder.s_emptyTRO;
                                         runit.texMid = runit.tro.getMid();
-                                        RenderProcessBuider.RejoinRunitForTro(runit);
+                                        RODispBuilder.s_processBuilders[rc.getUid()].rejoinRunitForTro(runit);
                                         material.__$troMid = runit.texMid;
                                     }
                                 }
@@ -169,7 +175,7 @@ export namespace vox
                                 }
                                 runit.tro = tro;
                                 runit.texMid = runit.tro.getMid();
-                                if(runit.__$rprouid >= 0)RenderProcessBuider.RejoinRunitForTro(runit);
+                                if(runit.__$rprouid >= 0)this.m_processBuider.rejoinRunitForTro(runit);
                                 tro.__$attachThis();
                                 material.__$troMid = runit.tro.getMid();
                             }
@@ -184,7 +190,7 @@ export namespace vox
                                 }
                                 runit.tro = RODispBuilder.s_emptyTRO;
                                 runit.texMid = runit.tro.getMid();
-                                if(runit.__$rprouid >= 0)RenderProcessBuider.RejoinRunitForTro(runit);
+                                if(runit.__$rprouid >= 0)this.m_processBuider.rejoinRunitForTro(runit);
                                 material.__$troMid = runit.texMid;
                             }
                         }
@@ -268,7 +274,7 @@ export namespace vox
                             runit.ibufStep = runit.vro.ibufStep;
                         }
                         //console.log("buildGpuDisp(), runit.ibufType: "+runit.ibufType+", runit.ibufStep: "+runit.ibufStep+", runit.ivsCount: "+runit.ivsCount);
-                        RenderProcessBuider.GetNodeByUid(processUid).addDisp(rc, disp);
+                        (this.m_processBuider.getNodeByUid(processUid) as RenderProcess).addDisp(rc, disp);
                     }
                     else
                     {

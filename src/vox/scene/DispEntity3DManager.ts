@@ -42,16 +42,18 @@ export namespace vox
         {
             private m_nodeLinker:Entity3DNodeLinker = new Entity3DNodeLinker();
             private m_rpoUnitBuilder:RPOUnitBuilder = null;
+            private m_processBuider:RenderProcessBuider = null;
             private m_waitList:IRenderEntity[] = [];
             private m_processUidList:number[] = [];
             private m_wuid:number = -1;            
             private m_dispBuilder:RODispBuilder = null;
             entityManaListener:any = null;
-            constructor(__$wuid:number, dispBuilder:RODispBuilder, rpoUnitBuilder:RPOUnitBuilder)
+            constructor(__$wuid:number, dispBuilder:RODispBuilder, rpoUnitBuilder:RPOUnitBuilder, processBuider:RenderProcessBuider)
             {
                 this.m_wuid = __$wuid;
                 this.m_dispBuilder = dispBuilder;
                 this.m_rpoUnitBuilder = rpoUnitBuilder;
+                this.m_processBuider = processBuider;
             }
 
             isEmpty():boolean
@@ -80,7 +82,7 @@ export namespace vox
                                 if(list[i] > -1)
                                 {
                                     //the value of list[i] is the uid of a node;
-                                    this.m_rprocess = RenderProcessBuider.GetNodeByUid(i);
+                                    this.m_rprocess = this.m_processBuider.getNodeByUid(i) as RenderProcess;
                                     this.m_rprocess.removeDisp(display);
                                 }
                             }
@@ -155,7 +157,7 @@ export namespace vox
                                 {
                                     disp.__$$rsign = DisplayRenderState.GO_TO_WORLD;
                                 }
-                                this.m_rprocess = RenderProcessBuider.GetNodeByUid(processUid);
+                                this.m_rprocess = this.m_processBuider.getNodeByUid(processUid) as RenderProcess;
                                 //console.log("DispEntity3DManager::addEntity(), add a ready ok entity to process.");
                                 //this.m_rprocess.addDisp(rc, disp,false);
                                 if(disp.__$ruid > -1)
@@ -256,7 +258,7 @@ export namespace vox
                             this.m_nodeLinker.addNode(node);
                             
                             let prouid = this.m_processUidList[i];
-                            this.m_rprocess = RenderProcessBuider.GetNodeByUid(prouid);
+                            this.m_rprocess = this.m_processBuider.getNodeByUid(prouid) as RenderProcess;
                             //console.log("DispEntity3DManager::update(), add a ready ok entity("+entity+") to processid("+prouid+")");
                             if(disp.__$ruid > -1)
                             {

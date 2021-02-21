@@ -71,6 +71,7 @@ export namespace vox
 
             private m_rpoUnitBuilder:RPOUnitBuilder = new RPOUnitBuilder();
             private m_rpoNodeBuilder:RPONodeBuilder = new RPONodeBuilder();
+            private m_processBuider:RenderProcessBuider = new RenderProcessBuider();
             readonly bufferUpdater:ROBufferUpdater = null;
             readonly textureSlot:TextureSlot = null;
             readonly rttStore:RTTTextureStore = null;
@@ -147,9 +148,9 @@ export namespace vox
                     this.m_renderProxy = this.m_renderInsContext.getRenderProxy();
                     this.m_adapter = this.m_renderProxy.getRenderAdapter();
                     
-                    this.m_dispBuilder = new RODispBuilder(this.m_renderProxy, this.m_rpoUnitBuilder);
+                    this.m_dispBuilder = new RODispBuilder(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider);
                     this.m_renderInsContext.setDispBuilder(this.m_dispBuilder);
-                    this.m_entity3DMana = new DispEntity3DManager(this.m_uid, this.m_dispBuilder,this.m_rpoUnitBuilder);
+                    this.m_entity3DMana = new DispEntity3DManager(this.m_uid, this.m_dispBuilder,this.m_rpoUnitBuilder, this.m_processBuider);
                     this.appendProcess(this.m_batchEnabled,this.m_processFixedState);
                     
                     let texSlot:TextureSlot = new TextureSlot();
@@ -249,7 +250,7 @@ export namespace vox
             // 生成一个新的process并添加到数组末尾
             appendProcess(batchEnabled:boolean = true,processFixedState:boolean = false):RenderProcess
             {
-                RenderProcessBuider.SetCreateParams(
+                this.m_processBuider.setCreateParams(
                     this.m_dispBuilder.getMaterialShader(),
                     this.m_rpoNodeBuilder,
                     this.m_rpoUnitBuilder,
@@ -257,7 +258,7 @@ export namespace vox
                     processFixedState
                 );
                 
-                let process:RenderProcess = RenderProcessBuider.Create();
+                let process:RenderProcess = this.m_processBuider.create() as RenderProcess;
                 
                 this.m_processes.push( process );
                 process.setWOrldParam(this.m_uid, this.m_processesLen);
@@ -266,14 +267,14 @@ export namespace vox
             }
             createSeparatedProcess(batchEnabled:boolean = true,processFixedState:boolean = false):RenderProcess
             {
-                RenderProcessBuider.SetCreateParams(
+                this.m_processBuider.setCreateParams(
                     this.m_dispBuilder.getMaterialShader(),
                     this.m_rpoNodeBuilder,
                     this.m_rpoUnitBuilder,
                     batchEnabled,
                     processFixedState
                 );
-                let process:RenderProcess = RenderProcessBuider.Create();
+                let process:RenderProcess = this.m_processBuider.create() as RenderProcess;
 
                 this.m_processes.push( process );
                 process.setWOrldParam(this.m_uid, this.m_processesLen);
