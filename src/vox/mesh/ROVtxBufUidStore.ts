@@ -62,11 +62,11 @@ export namespace vox
                     this.m_removeidList.push(index);
                 }
             }
-            getAttachCountAt(index:number):number
+            getAttachCountAt(uid:number):number
             {
-                if(index < this.m_useidList.length)
+                if(uid < this.m_useidList.length)
                 {
-                    return this.m_useidList[index];
+                    return this.m_useidList[uid];
                 }
                 return 0;
             }

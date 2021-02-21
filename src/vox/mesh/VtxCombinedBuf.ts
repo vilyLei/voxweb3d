@@ -10,6 +10,7 @@ import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as IVtxBufT from "../../vox/mesh/IVtxBuf";
 import * as VtxBufDataT from "../../vox/mesh/VtxBufData";
+import * as ROVtxBufUidStoreT from "../../vox/mesh/ROVtxBufUidStore";
 import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
 import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
 import * as VaoVertexRenderObjT from "../../vox/mesh/VaoVertexRenderObj";
@@ -20,6 +21,7 @@ import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 import IVtxBuf = IVtxBufT.vox.mesh.IVtxBuf;
 import VtxBufData = VtxBufDataT.vox.mesh.VtxBufData;
+import ROVtxBufUidStore = ROVtxBufUidStoreT.vox.mesh.ROVtxBufUidStore;
 import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
 import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
 import VaoVertexRenderObj = VaoVertexRenderObjT.vox.mesh.VaoVertexRenderObj;
@@ -243,7 +245,7 @@ export namespace vox
                     {
                         if(shdp.testVertexAttribPointerType(this.m_aTypeList[i]))
                         {
-                            vro.attribTypes.push(this.m_aTypeList[i]);
+                            vro.attribTypes.push( this.m_aTypeList[i] );
                             vro.wholeOffsetList.push( this.m_pOffsetList[i] );
                         }
                     }
@@ -256,9 +258,9 @@ export namespace vox
             }
             public disposeGpu(rc:RenderProxy):void
             {
-                if(this.isGpuEnabled())
+                if(this.isGpuEnabled() && ROVtxBufUidStore.GetInstance().getAttachCountAt(this.m_uid) < 1)
                 {
-                    console.log("VtxCombinedBuf::__$disposeGpu()... "+this);
+                    console.log("VtxCombinedBuf::__$disposeGpu()... ", this);
                     let i:number = 0;
                     let vro:IVertexRenderObj = null;
                     for(; i < this.m_vroListLen; ++i)
@@ -277,9 +279,9 @@ export namespace vox
             }
             public destroy():void
             {
-                if(!this.isGpuEnabled())
+                if(this.m_f32Buf == null)
                 {
-                    console.log("VtxCombinedBuf::__$destroy()... "+this);
+                    console.log("VtxCombinedBuf::__$destroy()... ",this);
                     this.m_aTypeList = null;
                     this.m_f32Changed = false;
                     this.m_f32 = null;

@@ -9,6 +9,7 @@ import * as VtxBufIDT from "../../vox/mesh/VtxBufID";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as IVtxBufT from "../../vox/mesh/IVtxBuf";
 import * as VtxBufDataT from "../../vox/mesh/VtxBufData";
+import * as ROVtxBufUidStoreT from "../../vox/mesh/ROVtxBufUidStore";
 import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
 import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
 import * as VaoVertexRenderObjT from "../../vox/mesh/VaoVertexRenderObj";
@@ -18,6 +19,7 @@ import VtxBufID = VtxBufIDT.vox.mesh.VtxBufID;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import IVtxBuf = IVtxBufT.vox.mesh.IVtxBuf;
 import VtxBufData = VtxBufDataT.vox.mesh.VtxBufData;
+import ROVtxBufUidStore = ROVtxBufUidStoreT.vox.mesh.ROVtxBufUidStore;
 import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
 import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
 import VaoVertexRenderObj = VaoVertexRenderObjT.vox.mesh.VaoVertexRenderObj;
@@ -177,6 +179,7 @@ export namespace vox
                     {
                         this.m_total = shdp.getLocationsTotal();
                         this.m_f32Bufs = [];
+                        
                         let i:number = 0;
                         let buf:any = null;
                         
@@ -194,9 +197,9 @@ export namespace vox
                         else
                         {
                             //console.log(">>>>>>>>vtxSepbuf use (this.bufData == null) : "+(this.bufData == null));
+                            let fs32:any = null;
                             let j:number = 0;
                             let tot:number = 0;
-                            let fs32:any = null;
                             let offset:number = 0;
                             let dataSize:number = 0;
                             for(; i < this.m_total; ++i)
@@ -210,13 +213,11 @@ export namespace vox
                                 offset = 0;
                                 dataSize = 0;
                                 tot = this.bufData.getAttributeDataTotalAt(i);
-                                //console.log("#### tot: "+tot);
+                                
                                 for(j = 0; j < tot; ++j)
                                 {
-                                    //console.log("#### i j: ",i,j);
                                     fs32 = this.bufData.getAttributeDataAt(i,j);
                                     dataSize += fs32.length;
-                                    //console.log("fs32.length: "+fs32.length);
                                     rc.arrBufSubData(fs32,offset);
                                     offset += fs32.byteLength;
                                 }
@@ -264,8 +265,8 @@ export namespace vox
                         return this.m_vroList[i];
                     }
                 }
-                //console.log("### Separated mid: "+mid+", uid: "+this.m_uid);
-                let pvro:IVertexRenderObj;
+                // console.log("### Separated mid: "+mid+", uid: "+this.m_uid);
+                let pvro:IVertexRenderObj = null;
                 if(vaoEnabled)
                 {
                     // vao 的生成要记录标记,防止重复生成, 因为同一组数据在不同的shader使用中可能组合方式不同，导致了vao可能是多样的
@@ -307,7 +308,7 @@ export namespace vox
             }
             public disposeGpu(rc:RenderProxy):void
             {
-                if(this.isGpuEnabled())
+                if(this.isGpuEnabled() && ROVtxBufUidStore.GetInstance().getAttachCountAt(this.m_uid) < 1)
                 {
                     console.log("VtxSeparatedBuf::__$disposeGpu()... "+this);
                     let i:number = 0;
@@ -329,14 +330,14 @@ export namespace vox
             }
             public destroy():void
             {
-                if(!this.isGpuEnabled())
+                if(this.m_f32Bufs == null)
                 {
                     this.m_f32List = null;
                     this.m_f32ChangedList = null;
                     this.m_f32SizeList = null;
                     this.m_f32PreSizeList = null;
 
-                    console.log("VtxSeparatedBuf::__$destroy()... "+this);
+                    console.log("VtxSeparatedBuf::__$destroy()... ",this);
                     this.m_aTypeList = null;
                     this.m_f32Changed = false;
                     this.m_f32List = null;

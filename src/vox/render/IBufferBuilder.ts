@@ -15,6 +15,7 @@ export namespace vox
     {
         export interface IBufferBuilder
         {
+            getUid():number;
             createBuf():any;
             deleteBuf(buf:any):void;
             bindArrBuf(buf:any):void;
@@ -27,6 +28,7 @@ export namespace vox
             eleBufDataMem(bytesSize:number, usage:number):void;
             useVtxAttribsPtrTypeFloat(shdp:IVtxShdCtr, buf:any,attribTypes:number[],attribTypesLen:number, wholeOffsetList:number[],wholeStride:number):void;
             useVtxAttribsPtrTypeFloatMulti(shdp:IVtxShdCtr, bufs:any[],attribTypes:number[],attribTypesLen:number, wholeOffsetList:number[],wholeStride:number):void;
+            createVertexArray():any;
             bindVertexArray(vao:any):any;
             deleteVertexArray(vao:any):void;
         }

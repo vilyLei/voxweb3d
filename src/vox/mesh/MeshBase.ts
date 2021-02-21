@@ -217,7 +217,7 @@ export namespace vox
             }
             __$detachThis():void
             {
-                if(this.m_attachCount > 0 && this.m_attachCount < 2)
+                if(this.m_attachCount == 1)
                 {
                     --this.m_attachCount;
                     console.log("MeshBase::__$detachThis() this.m_attachCount: "+this.m_attachCount);
@@ -243,7 +243,7 @@ export namespace vox
                 if(this.getAttachCount() < 1 && this.m_vbuf != null)
                 {
                     console.log("MeshBase::__$dispose()... this.m_attachCount: "+this.m_attachCount);
-                    ROVertexBuffer.Restore(this.m_vbuf);
+                    ROVertexBuffer.__$$DetachAt(this.m_vbuf.getUid());
                     this.m_vbuf = null;
                 }
             }

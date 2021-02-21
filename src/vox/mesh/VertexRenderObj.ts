@@ -130,49 +130,60 @@ export namespace vox
             {
                 return "VertexRenderObj(uid = "+this.m_uid+", type="+this.m_mid+")";
             }
+            
             private static S_FLAG_BUSY:number = 1;
             private static S_FLAG_FREE:number = 0;
-            private static m_unitFlagList:number[] = [];
-            private static m_unitListLen:number = 0;
-            private static m_unitList:VertexRenderObj[] = [];
-            private static m_freeIdList:number[] = [];
+            private static s_unitFlagList:number[] = [];
+            private static s_unitListLen:number = 0;
+            private static s_unitList:VertexRenderObj[] = [];
+            private static s_freeIdList:number[] = [];
+            //  private static s_midMap:Map<number,VertexRenderObj> = new Map();
+            //  static HasMid(mid:number):boolean
+            //  {
+            //      return VertexRenderObj.s_midMap.has(mid);
+            //  }
+            //  static GetByMid(mid:number):VertexRenderObj
+            //  {
+            //      return VertexRenderObj.s_midMap.get(mid);
+            //  }
             private static GetFreeId():number
             {
-                if(VertexRenderObj.m_freeIdList.length > 0)
+                if(VertexRenderObj.s_freeIdList.length > 0)
                 {
-                    return VertexRenderObj.m_freeIdList.pop();
+                    return VertexRenderObj.s_freeIdList.pop();
                 }
                 return -1;
             }
-            static Create(type:number,pvtxUid:number):VertexRenderObj
+            static Create(mid:number,pvtxUid:number):VertexRenderObj
             {
                 let unit:VertexRenderObj = null;
                 let index:number = VertexRenderObj.GetFreeId();
-                //console.log("VertexRenderObj::Create(), VertexRenderObj.m_unitList.length: "+VertexRenderObj.m_unitList.length);
+                //console.log("VertexRenderObj::Create(), VertexRenderObj.s_unitList.length: "+VertexRenderObj.s_unitList.length);
                 if(index >= 0)
                 {
-                    unit = VertexRenderObj.m_unitList[index];
-                    VertexRenderObj.m_unitFlagList[index] = VertexRenderObj.S_FLAG_BUSY;
-                    unit.setMidAndBufUid(type,pvtxUid);
+                    unit = VertexRenderObj.s_unitList[index];
+                    VertexRenderObj.s_unitFlagList[index] = VertexRenderObj.S_FLAG_BUSY;
+                    unit.setMidAndBufUid(mid,pvtxUid);
                 }
                 else
                 {
                     unit = new VertexRenderObj();
-                    unit.setMidAndBufUid(type,pvtxUid);
-                    VertexRenderObj.m_unitList.push( unit );
-                    VertexRenderObj.m_unitFlagList.push(VertexRenderObj.S_FLAG_BUSY);
-                    VertexRenderObj.m_unitListLen++;
+                    unit.setMidAndBufUid(mid,pvtxUid);
+                    VertexRenderObj.s_unitList.push( unit );
+                    VertexRenderObj.s_unitFlagList.push(VertexRenderObj.S_FLAG_BUSY);
+                    VertexRenderObj.s_unitListLen++;
                 }
+                //  VertexRenderObj.s_midMap.set(mid,unit);
                 return unit;
             }
             
             private static Restore(pobj:VertexRenderObj):void
             {
-                if(pobj != null && pobj.m_attachCount < 1 && VertexRenderObj.m_unitFlagList[pobj.getUid()] == VertexRenderObj.S_FLAG_BUSY)
+                if(pobj != null && pobj.m_attachCount < 1 && VertexRenderObj.s_unitFlagList[pobj.getUid()] == VertexRenderObj.S_FLAG_BUSY)
                 {
                     let uid:number = pobj.getUid();
-                    VertexRenderObj.m_freeIdList.push(uid);
-                    VertexRenderObj.m_unitFlagList[uid] = VertexRenderObj.S_FLAG_FREE;
+                    VertexRenderObj.s_freeIdList.push(uid);
+                    VertexRenderObj.s_unitFlagList[uid] = VertexRenderObj.S_FLAG_FREE;
                     pobj.__$destroy();
                 }
             }

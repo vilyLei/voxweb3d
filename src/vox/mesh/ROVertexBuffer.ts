@@ -408,11 +408,6 @@ export namespace vox
                     pobj.__$destroy();
                 }
             }
-            static Restore(pobj:ROVertexBuffer):void
-            {
-                //console.log("ROVertexBuffer::Restore, pobj: "+pobj);
-                ROVertexBuffer.s_vtxStore.__$detachAt(pobj.getUid());
-            }
             static __$$AttachAt(uid:number):void
             {
                 ROVertexBuffer.s_vtxStore.__$attachAt(uid);

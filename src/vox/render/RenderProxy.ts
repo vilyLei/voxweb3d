@@ -189,19 +189,6 @@ export namespace vox
                     this.m_camUBO.run();
                 }
             }
-            createVertexArray():any
-            {
-                let vao:any = null;
-                if(this.m_WEBGL_VER == 2)
-                {
-                    vao = this.m_rc.createVertexArray();
-                }
-                else
-                {
-                    vao = RCExtension.OES_vertex_array_object.createVertexArrayOES();
-                }
-                return vao;
-            }
             useByLocationV2(ult:any,type:number, f32Arr:Float32Array,dataSize:number,offset:number):void
             {
                 switch(type)
@@ -325,6 +312,19 @@ export namespace vox
                     this.m_rc.bindBuffer(this.m_rc.ARRAY_BUFFER, bufs[i]);
                     shdp.vertexAttribPointerTypeFloat(attribTypes[i], wholeStride, wholeOffsetList[i]);
                 }
+            }
+            createVertexArray():any
+            {
+                let vao:any = null;
+                if(this.m_WEBGL_VER == 2)
+                {
+                    vao = this.m_rc.createVertexArray();
+                }
+                else
+                {
+                    vao = RCExtension.OES_vertex_array_object.createVertexArrayOES();
+                }
+                return vao;
             }
             bindVertexArray(vao:any):any
             {
