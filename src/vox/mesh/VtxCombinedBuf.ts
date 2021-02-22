@@ -24,6 +24,8 @@ export namespace vox
             private m_uid:number = -1;
             private m_bufDataUsage:number = 0;
             private m_total:number = 0;
+            
+            version:number = -1;
             bufData:VtxBufData = null;
             constructor(bufDataUsage:number)
             {
@@ -152,13 +154,11 @@ export namespace vox
             }
             public destroy():void
             {
-                if(this.m_f32Buf == null)
-                {
-                    console.log("VtxCombinedBuf::__$destroy()... ",this);
-                    this.m_f32Changed = false;
-                    this.m_offsetList = null;
-                    this.m_f32 = null;
-                }
+                console.log("VtxCombinedBuf::__$destroy()... ",this);
+                this.m_f32Changed = false;
+                this.m_offsetList = null;
+                this.m_f32 = null;
+                this.bufData = null;
             }
             toString():string
             {

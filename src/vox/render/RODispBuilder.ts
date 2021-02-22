@@ -281,22 +281,33 @@ export namespace vox
                         // build vtx gpu data
                         if(disp.vbuf != null)
                         {
-                            //  disp.vbuf.upload(rc,shdp);
-                            //  runit.vro = disp.vbuf.createVROBegin(rc, shdp, true);
-                            
                             // build vertex gpu resoure 
                             let vtxRes:ROVertexResource = rc.Vertex;
                             let resUid:number = disp.vbuf.getUid();
                             let vtx:GpuVtxObect;
+                            let needBuild:boolean = true;
                             if(vtxRes.hasVertexRes(resUid))
                             {
                                 vtx = vtxRes.getVertexRes(resUid);
+                                needBuild = vtx.version != disp.vbuf.version;
+                                console.log("GpuVtxObect instance repeat to be used,needBuild: "+needBuild,vtx.getAttachCount());
+                                if(needBuild)
+                                {
+                                    vtx.destroy(rc);
+                                    vtx.rcuid = rc.getUid();
+                                    vtx.resUid = resUid;
+                                }
                             }
                             else
                             {
                                 vtx = new GpuVtxObect();
                                 vtx.rcuid = rc.getUid();
                                 vtx.resUid = resUid;
+                                vtxRes.addVertexRes(vtx);
+                                console.log("GpuVtxObect instance create new: ",vtx.resUid);
+                            }
+                            if(needBuild)
+                            {
                                 vtx.indices.ibufStep = disp.vbuf.getIBufStep();
                                 vtx.indices.initialize(
                                     rc,
@@ -310,12 +321,13 @@ export namespace vox
                                     shdp,
                                     disp.vbuf,
                                     resUid
-                                    )
-                                vtxRes.addVertexRes(vtx);
+                                    );
+                                vtx.version = disp.vbuf.version;
                             }
+                            vtxRes.__$attachRes(resUid);
                             runit.vro = vtx.createVRO(rc, shdp, true);
-
                             runit.vro.__$attachThis();
+
                             runit.vtxUid = runit.vro.getVtxUid();
                             
                             runit.ibufStep = runit.vro.ibufStep;

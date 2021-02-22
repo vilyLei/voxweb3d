@@ -48,7 +48,8 @@ export namespace vox
             private m_vaoEnabled:boolean = true;
             private m_f32Changed:boolean = false;
             private m_ibufStep:number = 2;// 2 or 4
- 
+
+            version:number = -1;
             drawMode:number = RenderDrawMode.ELEMENTS_TRIANGLES;
             bufData:VtxBufData = null;
             private constructor(bufDataUsage:number = VtxBufConst.VTX_STATIC_DRAW)
@@ -112,14 +113,10 @@ export namespace vox
             {
                 return this.m_ivs;
             }
-            isGpuEnabled():boolean
-            {
-                return this.m_vtxBuf.isGpuEnabled();
-            }
-            isEnabled():boolean
-            {
-                return this.m_rc != null;
-            }
+            //  isGpuEnabled():boolean
+            //  {
+            //      return this.m_vtxBuf.isGpuEnabled();
+            //  }
             isChanged():boolean
             {
                 return this.m_vtxBuf.isChanged();
@@ -189,7 +186,7 @@ export namespace vox
             }
             setData4fAt(vertexI:number,attribI:number,px:number,py:number,pz:number,pw:number):void
             {
-                if(this.m_vtxBuf.isGpuEnabled())
+                if(this.m_vtxBuf != null)
                 {
                     this.m_vtxBuf.setData4fAt(vertexI,attribI,px,py,pz,pw);
                     if(!this.m_f32Changed)
@@ -201,7 +198,7 @@ export namespace vox
             }
             setData3fAt(vertexI:number,attribI:number,px:number,py:number,pz:number):void
             {
-                if(this.m_vtxBuf.isGpuEnabled())
+                if(this.m_vtxBuf != null)
                 {
                     this.m_vtxBuf.setData3fAt(vertexI,attribI,px,py,pz);
                     if(!this.m_f32Changed)
@@ -213,7 +210,7 @@ export namespace vox
             }
             setData2fAt(vertexI:number,attribI:number,px:number,py:number):void
             {
-                if(this.m_vtxBuf.isGpuEnabled())
+                if(this.m_vtxBuf != null)
                 {
                     this.m_vtxBuf.setData2fAt(vertexI,attribI,px,py);
                     if(!this.m_f32Changed)
@@ -261,9 +258,6 @@ export namespace vox
             updateToGpu(rc:IBufferBuilder):void
             {
             }
-            disposeGpu(rc:IBufferBuilder):void
-            {
-            }
             destroy():void
             {
 
@@ -273,23 +267,22 @@ export namespace vox
             private static s_separatedBufs:IVtxBuf[] = [];
             private __$destroy():void
             {
-                if(!this.isGpuEnabled())
+                console.log("ROVertexBuffer::__$destroy()... "+this);
+                this.m_vtxBuf.destroy();
+                if(this.m_vtxBuf.getType() < 1)
                 {
-                    console.log("ROVertexBuffer::__$destroy()... "+this);
-                    this.m_vtxBuf.destroy();
-                    if(this.m_vtxBuf.getType() < 1)
-                    {
-                        ROVertexBuffer.s_combinedBufs.push(this.m_vtxBuf);
-                    }
-                    else
-                    {
-                        ROVertexBuffer.s_separatedBufs.push(this.m_vtxBuf);
-                    }
-                    this.m_vtxBuf = null;
-                    this.m_ivs = null;
-                    this.m_f32Changed = false;
-                    this.m_ivsChanged = false;
+                    ROVertexBuffer.s_combinedBufs.push(this.m_vtxBuf);
                 }
+                else
+                {
+                    ROVertexBuffer.s_separatedBufs.push(this.m_vtxBuf);
+                }
+                this.m_vtxBuf = null;
+                this.m_ivs = null;
+                this.m_f32Changed = false;
+                this.m_ivsChanged = false;
+
+                this.bufData = null;
             }
             toString():string
             {
@@ -331,6 +324,7 @@ export namespace vox
                     ROVertexBuffer.s_unitFlagList.push(ROVertexBuffer.S_FLAG_BUSY);
                     ROVertexBuffer.s_unitListLen++;
                 }
+                unit.version++;
                 //console.log("ROVertexBuffer::Create(), ROVertexBuffer.s_unitList.length: "+ROVertexBuffer.s_unitList.length+", new buf: "+unit);
                 ROVertexBuffer.s_vtxStore.__$attachAt(unit.getUid());
                 return unit;

@@ -25,7 +25,7 @@ export namespace vox
 {
     export namespace render
     {
-        export class ROVertexRes
+        class ROVertexRes
         {
             private m_vtx:IVtxBuf = null;
             private m_vtxUid:number = -1;
@@ -67,7 +67,7 @@ export namespace vox
                     }
                 }
             }
-            private uploadSapared(rc:IBufferBuilder,shdp:IVtxShdCtr):void
+            private uploadSeparated(rc:IBufferBuilder,shdp:IVtxShdCtr):void
             {
                 if(true)
                 {
@@ -147,13 +147,13 @@ export namespace vox
                     else
                     {
                         // separated buf
-                        this.uploadSapared(rc, shdp);
+                        this.uploadSeparated(rc, shdp);
                     }
                 }
             }
             private getVROMid(rc:IBufferBuilder, shdp:IVtxShdCtr, vaoEnabled:boolean):number
             {
-                let mid:number = 131 + rc.getUid();
+                let mid:number = (131 + rc.getUid()) * this.m_vtxUid;
                 if(vaoEnabled)
                 {
                     // 之所以 + 0xf0000 这样区分，是因为 shdp.getLayoutBit() 的取值范围不会超过short(double bytes)取值范围
@@ -163,85 +163,92 @@ export namespace vox
                 {
                     mid = mid * 131 + shdp.getLayoutBit();
                 }
+                
                 return mid;
             }
             
             // 创建被 RPOUnit 使用的 vro 实例
             createVRO(rc:IBufferBuilder, shdp:IVtxShdCtr, vaoEnabled:boolean):IVertexRenderObj
             {
-                let mid:number = this.getVROMid(rc,shdp,vaoEnabled);
-                
-                let i:number = 0;
-                //console.log("### Combined mid: "+mid+", uid: "+this.m_uid);
-                let pvro:IVertexRenderObj = VaoVertexRenderObj.GetByMid(mid);
-                if(pvro != null)
+                if(this.m_attribsTotal > 0)
                 {
+                    let mid:number = this.getVROMid(rc,shdp,vaoEnabled);
+                
+                    let i:number = 0;
+                    //console.log("### Combined mid: "+mid+", uid: "+this.m_uid);
+                    let pvro:IVertexRenderObj = VaoVertexRenderObj.GetByMid(mid);
+                    if(pvro != null)
+                    {
+                        return pvro;
+                    }
+                    let attribsTotal:number = this.m_attribsTotal;
+                    if(vaoEnabled)
+                    {
+                        // vao 的生成要记录标记,防止重复生成, 因为同一组数据在不同的shader使用中可能组合方式不同，导致了vao可能是多样的
+                        //console.log("VtxCombinedBuf::createVROBegin(), "+this.m_typeList+" /// "+this.m_wholeStride+" /// "+this.m_offsetList);
+                        let vro:VaoVertexRenderObj = VaoVertexRenderObj.Create(mid, this.m_vtx.getUid());
+                        vro.vao = rc.createVertexArray();
+                        rc.bindVertexArray(vro.vao);
+                        if(this.m_type < 1)
+                        {
+                            // combined buf vro
+                            rc.bindArrBuf(this.m_gpuBufs[0]);
+                            for(i = 0; i < attribsTotal; ++i)
+                            {
+                                shdp.vertexAttribPointerTypeFloat(this.m_typeList[i], this.m_wholeStride, this.m_offsetList[i]);
+                            }
+                        }
+                        else
+                        {
+                            for(i = 0; i < attribsTotal; ++i)
+                            {
+                                rc.bindArrBuf(this.m_gpuBufs[i]);
+                                shdp.vertexAttribPointerTypeFloat(this.m_typeList[i], 0, 0);
+                            }
+                        }
+                        pvro = vro;
+                        rc.bindVertexArray(null);
+                    }
+                    else
+                    {
+                        let vro:VertexRenderObj = VertexRenderObj.Create(mid, this.m_vtx.getUid());
+                        vro.shdp = shdp;
+                        vro.attribTypes = [];
+                        vro.wholeOffsetList = [];
+                        vro.wholeStride = this.m_wholeStride;
+    
+                        if(this.m_type < 1)
+                        {
+                            vro.vbuf = this.m_gpuBufs[0];
+                        }
+                        else
+                        {
+                            vro.vbufs = this.m_gpuBufs;
+                        }
+                        for(i = 0; i < attribsTotal; ++i)
+                        {
+                            if(shdp.testVertexAttribPointerType(this.m_typeList[i]))
+                            {
+                                vro.attribTypes.push( this.m_typeList[i] );
+                                vro.wholeOffsetList.push( this.m_offsetList[i] );
+                            }
+                        }
+    
+                        vro.attribTypesLen = vro.attribTypes.length;
+                        pvro = vro;
+                    }
+                    this.m_vroList.push(pvro);
+                    ++this.m_vroListLen;
                     return pvro;
                 }
-                let attribsTotal:number = this.m_attribsTotal;
-                if(vaoEnabled)
-                {
-                    // vao 的生成要记录标记,防止重复生成, 因为同一组数据在不同的shader使用中可能组合方式不同，导致了vao可能是多样的
-                    //console.log("VtxCombinedBuf::createVROBegin(), "+this.m_typeList+" /// "+this.m_wholeStride+" /// "+this.m_offsetList);
-                    let vro:VaoVertexRenderObj = VaoVertexRenderObj.Create(mid, this.m_vtx.getUid());
-                    vro.vao = rc.createVertexArray();
-                    rc.bindVertexArray(vro.vao);
-                    if(this.m_type < 1)
-                    {
-                        // combined buf vro
-                        rc.bindArrBuf(this.m_gpuBufs[0]);
-                        for(i = 0; i < attribsTotal; ++i)
-                        {
-                            shdp.vertexAttribPointerTypeFloat(this.m_typeList[i], this.m_wholeStride, this.m_offsetList[i]);
-                        }
-                    }
-                    else
-                    {
-                        for(i = 0; i < attribsTotal; ++i)
-                        {
-                            rc.bindArrBuf(this.m_gpuBufs[i]);
-                            shdp.vertexAttribPointerTypeFloat(this.m_typeList[i], 0, 0);
-                        }
-                    }
-                    pvro = vro;
-                    rc.bindVertexArray(null);
-                }
-                else
-                {
-                    let vro:VertexRenderObj = VertexRenderObj.Create(mid, this.m_vtx.getUid());
-                    vro.shdp = shdp;
-                    vro.attribTypes = [];
-                    vro.wholeOffsetList = [];
-                    vro.wholeStride = this.m_wholeStride;
-
-                    if(this.m_type < 1)
-                    {
-                        vro.vbuf = this.m_gpuBufs[0];
-                    }
-                    else
-                    {
-                        vro.vbufs = this.m_gpuBufs;
-                    }
-                    for(i = 0; i < attribsTotal; ++i)
-                    {
-                        if(shdp.testVertexAttribPointerType(this.m_typeList[i]))
-                        {
-                            vro.attribTypes.push( this.m_typeList[i] );
-                            vro.wholeOffsetList.push( this.m_offsetList[i] );
-                        }
-                    }
-
-                    vro.attribTypesLen = vro.attribTypes.length;
-                    pvro = vro;
-                }
-                this.m_vroList.push(pvro);
-                ++this.m_vroListLen;
-                return pvro;
+                return null;
             }
             destroy(rc:IBufferBuilder):void
             {
                 if(this.m_gpuBufs.length > 0)
                 {
+                    console.log("ROVertexRes::destroy(), type: "+this.m_type);
+                    this.m_type = -1;
                     let i:number = 0;
                     let vro:IVertexRenderObj = null;
                     for(; i < this.m_vroListLen; ++i)
@@ -261,7 +268,7 @@ export namespace vox
                 }
             }
         }
-        export class ROIndicesRes
+        class ROIndicesRes
         {
             private m_vtxUid:number = 0;
             private m_gpuBuf:any = null;
@@ -309,9 +316,21 @@ export namespace vox
                     }
                 }
             }
+
+            destroy(rc:IBufferBuilder):void
+            {
+                if(this.m_gpuBuf != null)
+                {
+                    rc.deleteBuf(this.m_gpuBuf);
+                    this.m_gpuBuf = null;
+                    this.m_ivs = null;
+                    
+                }
+            }
         }
         export class GpuVtxObect
         {
+            version:number = -1;
             // wait del times
             waitDelTimes:number = 0;
 			// renderer context unique id
@@ -328,15 +347,16 @@ export namespace vox
             __$attachThis():void
             {
                 ++this.m_attachCount;
+                console.log("GpuVtxObect::__$attachThis() this.m_attachCount: "+this.m_attachCount);
             }
             __$detachThis():void
             {
                 --this.m_attachCount;
-                //console.log("GpuVtxObect::__$detachThis() this.m_attachCount: "+this.m_attachCount);
+                console.log("GpuVtxObect::__$detachThis() this.m_attachCount: "+this.m_attachCount);
                 if(this.m_attachCount < 1)
                 {
                     this.m_attachCount = 0;
-                    //console.log("GpuVtxObect::__$detachThis() this.m_attachCount value is 0.");
+                    console.log("GpuVtxObect::__$detachThis() this.m_attachCount value is 0.");
                     // do something
                 }
             }
@@ -351,6 +371,15 @@ export namespace vox
                 vro.ibufStep = this.indices.ibufStep;
                 return vro;
             }
+            destroy(rc:IBufferBuilder):void
+            {
+                if(this.getAttachCount() < 1 && this.resUid >= 0)
+                {
+                    this.vertex.destroy(rc);
+                    this.indices.destroy(rc);
+                    this.resUid = -1;
+                }
+            }
         }
         // gpu vertex buffer renderer resource
         export class ROVertexResource
@@ -358,7 +387,7 @@ export namespace vox
             private m_resMap:Map<number,GpuVtxObect> = new Map();
             private m_freeMap:Map<number,GpuVtxObect> = new Map();
             // 显存的vtx buffer的总数
-            private m_texResTotal:number = 0;
+            private m_vtxResTotal:number = 0;
             private m_attachTotal:number = 0;
             private m_delay:number = 128;
 
@@ -391,7 +420,7 @@ export namespace vox
             }
             getVertexResTotal():number
             {
-                return this.m_texResTotal;
+                return this.m_vtxResTotal;
             }
             addVertexRes(object:GpuVtxObect):void
             {
@@ -399,9 +428,9 @@ export namespace vox
                 {
                     object.waitDelTimes = 0;
                     
-                    // console.log("ROTextureResource add a texture buffer(resUid="+object.resUid+"),sampler: ",object.sampler,object);
+                    console.log("ROTextureResource add a texture buffer(resUid="+object.resUid+")");
                     this.m_resMap.set(object.resUid, object);
-                    this.m_texResTotal++;
+                    this.m_vtxResTotal++;
                 }
             }
             hasVertexRes(resUid:number):boolean
@@ -412,6 +441,43 @@ export namespace vox
             {
                 return this.m_resMap.get(resUid);
             }
+            __$attachRes(resUid:number):void
+            {
+                if(this.m_resMap.has(resUid))
+                {
+                    this.m_attachTotal++;
+                    let object:GpuVtxObect = this.m_resMap.get(resUid);
+                    if(object.getAttachCount() < 1)
+                    {
+                        if(this.m_freeMap.has(resUid))
+                        {
+                            this.m_freeMap.delete(resUid);
+                        }
+                    }
+                    object.waitDelTimes = 0;
+                    object.__$attachThis();
+                }
+            }
+            __$detachRes(resUid:number):void
+            {
+                if(this.m_resMap.has(resUid))
+                {
+                    if(this.m_resMap.has(resUid))
+                    {
+                        let object:GpuVtxObect = this.m_resMap.get(resUid);
+                        if(object.getAttachCount() > 0)
+                        {
+                            this.m_attachTotal--;
+                            object.__$detachThis();
+                            if(object.getAttachCount() < 1)
+                            {
+                                // 将其加入待清理的map
+                                this.m_freeMap.set(resUid, object);
+                            }
+                        }
+                    }
+                }
+            }
             getVROByResUid(resUid:number,rc:IBufferBuilder,shdp:IVtxShdCtr,vaoEnabled:boolean):IVertexRenderObj
             {
                 let vtxObj:GpuVtxObect = this.m_resMap.get(resUid);
@@ -421,8 +487,34 @@ export namespace vox
                 }
                 return null;
             }
-            update():void
+            update(rc:IBufferBuilder):void
             {
+                this.m_delay --;
+                if(this.m_delay < 1)
+                {
+                    this.m_delay = 128;
+                    for(const [key,value] of this.m_freeMap)
+                    {
+                        value.waitDelTimes++;
+                        if(value.getAttachCount() < 1)
+                        {
+                            if(value.waitDelTimes > 5)
+                            {
+                                console.log("ROVertexResource remove a vertex buffer(resUid="+value.resUid+")");
+                                this.m_resMap.delete(value.resUid);
+                                this.m_freeMap.delete(value.resUid);
+                                
+                                value.destroy(rc);
+                                this.m_vtxResTotal--;
+                            }
+                        }
+                        else
+                        {
+                            console.log("ROVertexResource 重新使用 a vertex buffer(resUid="+value.resUid+")");
+                            this.m_freeMap.delete(value.resUid);
+                        }
+                    }
+                }
             }
 
         }

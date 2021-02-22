@@ -168,6 +168,7 @@ export namespace vox
             update():void
             {
                 this.m_renderProxy.Texture.update();
+                this.m_renderProxy.Vertex.update(this.m_renderProxy);
                 this.m_entity3DMana.update(this.m_renderProxy);
                 this.bufferUpdater.__$update(this.m_renderProxy);
             }

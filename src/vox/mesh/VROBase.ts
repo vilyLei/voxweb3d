@@ -64,11 +64,12 @@ export namespace vox
                     ROVtxBufUidStore.GetInstance().__$attachAt(this.m_vtxUid);
                 }
                 ++this.m_attachCount;
+                console.log("VROBase::__$attachThis() ("+this.m_uid+")this.m_attachCount: "+this.m_attachCount);
             }
             __$detachThis():void
             {
                 --this.m_attachCount;
-                //console.log("VROBase::__$detachThis() this.m_attachCount: "+this.m_attachCount);
+                console.log("VROBase::__$detachThis() ("+this.m_uid+")this.m_attachCount: "+this.m_attachCount);
                 if(this.m_attachCount < 1)
                 {
                     ROVtxBufUidStore.GetInstance().__$detachAt(this.m_vtxUid);
@@ -78,7 +79,7 @@ export namespace vox
             }
             protected __$destroy():void
             {
-                console.log("VROBase::__$destroy()..., "+this);
+                console.log("VROBase::__$destroy()..., ("+this.m_uid+")this.m_attachCount: "+this.m_attachCount);
                 this.m_vtxUid = -1;
                 this.ibuf = null;
             }

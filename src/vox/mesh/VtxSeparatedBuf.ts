@@ -25,6 +25,7 @@ export namespace vox
             private m_bufDataUsage:number = 0;
             private m_total:number = 0;
 
+            version:number = -1;
             bufData:VtxBufData = null;
             constructor(bufDataUsage:number)
             {
@@ -78,10 +79,6 @@ export namespace vox
             getF32DataAt(index:number):Float32Array
             {
                 return this.m_f32List[index];
-            }
-            isGpuEnabled():boolean
-            {
-                return this.m_f32Bufs != null;
             }
             isChanged():boolean
             {
@@ -167,17 +164,16 @@ export namespace vox
             
             public destroy():void
             {
-                if(this.m_f32Bufs == null)
-                {
-                    this.m_f32List = null;
-                    this.m_f32ChangedList = null;
-                    this.m_f32SizeList = null;
-                    this.m_f32PreSizeList = null;
+                this.m_f32List = null;
+                this.m_f32ChangedList = null;
+                this.m_f32SizeList = null;
+                this.m_f32PreSizeList = null;
 
-                    console.log("VtxSeparatedBuf::__$destroy()... ",this);
-                    this.m_f32Changed = false;
-                    this.m_f32List = null;
-                }
+                console.log("VtxSeparatedBuf::__$destroy()... ",this);
+                this.m_f32Changed = false;
+                this.m_f32List = null;
+
+                this.bufData = null;
             }
             toString():string
             {

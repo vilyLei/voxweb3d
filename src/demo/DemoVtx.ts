@@ -216,6 +216,13 @@ void main(){
                     this.m_targets[0].destroy();
                     this.m_targets[0] = null;
                 }
+                else
+                {
+                    let axis:Axis3DEntity = new Axis3DEntity();
+                    axis.initialize(700.0);
+                    this.m_rscene.addEntity(axis);
+                    this.m_targets[0] = (axis);
+                }
             }
         }
         run():void

@@ -261,6 +261,7 @@ export namespace vox
                             {
                                 this.m_rpoUnitBuilder.restore(runit);
                             }
+                            this.m_vtxResource.__$detachRes(disp.vbuf.getUid());
                             disp.__$$runit = null;
                             disp.__$ruid = -1;
                             if(block.isEmpty())
