@@ -285,7 +285,7 @@ export namespace vox
                     obj.width = this.getWidth();
                     obj.height = this.getHeight();
                     obj.sampler = this.getSampler();
-                    obj.texBuf = texResource.getRC().createTexture();
+                    obj.texBuf = texResource.createBuf();
                     texResource.addTextureRes(obj);
                     this.m_texBuf = obj.texBuf;
                     return true;

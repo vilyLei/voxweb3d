@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 // 只是用于视觉表现上的渲染控制, 而和transform或者非渲染的逻辑无关
-// 一个 RODisplay 和一个 RPOUnit一一对应, 一个RODisplay也只会和一个renderer相关联
+// 一个 RODisplay 和一个 IRPODisplay一一对应, 一个RODisplay也只会和一个renderer相关联
 
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as RendererStateT from "../../vox/render/RendererState";
@@ -13,7 +13,7 @@ import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
 import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
-import * as RPOUnitT from "../../vox/render/RPOUnit";
+import * as IRPODisplayT from "../../vox/render/IRPODisplay";
 
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
 import DisplayRenderState = RenderConstT.vox.render.DisplayRenderState;
@@ -22,7 +22,7 @@ import ROVertexBuffer = ROVertexBufferT.vox.mesh.ROVertexBuffer;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
-import RPOUnit = RPOUnitT.vox.render.RPOUnit;
+import IRPODisplay = IRPODisplayT.vox.render.IRPODisplay;
 export namespace vox
 {
     export namespace display
@@ -160,9 +160,9 @@ export namespace vox
                 this.__$$runit = null;
             }
             // 只能由渲染系统内部调用
-            __$ruid:number = -1;     // 用于关联RPOUnit对象
+            __$ruid:number = -1;     // 用于关联IRPODisplay对象
             __$rpuid:number = -1;    // 用于关联RPONode对象
-            __$$runit:RPOUnit = null;
+            __$$runit:IRPODisplay = null;
             __$$rsign:DisplayRenderState = DisplayRenderState.NOT_IN_WORLD;
 
             private static S_FLAG_BUSY:number = 1;

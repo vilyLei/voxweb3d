@@ -25,6 +25,9 @@ import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RenderProcessT from "../../vox/render/RenderProcess";
 import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
 import * as ROTransPoolT from "../../vox/render/ROTransPool";
+import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
+import * as IVtxBufT from "../../vox/mesh/IVtxBuf";
+import * as ROVertexResourceT from "../../vox/render/ROVertexResource";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import DisplayRenderState = RenderConstT.vox.render.DisplayRenderState;
@@ -47,6 +50,10 @@ import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 import RenderProcessBuider = RenderProcessBuiderT.vox.render.RenderProcessBuider;
 import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
 import ROTransPool = ROTransPoolT.vox.render.ROTransPool;
+import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
+import IVtxBuf = IVtxBufT.vox.mesh.IVtxBuf;
+import ROVertexResource = ROVertexResourceT.vox.render.ROVertexResource;
+import GpuVtxObect = ROVertexResourceT.vox.render.GpuVtxObect;
 
 export namespace vox
 {
@@ -233,6 +240,21 @@ export namespace vox
                 }
                 return shdp;
             }
+            //  private createGpuVtx(rc:RenderProxy,vtxBuf:IVtxBuf, shdp:IVtxShdCtr):GpuVtxObect
+            //  {
+            //      let vtxRes:ROVertexResource = rc.Vertex;
+            //      let resUid:number = vtxBuf.getUid();
+            //      if(vtxRes.hasVertexRes(resUid))
+            //      {
+            //          return vtxRes.getVertexRes(resUid);
+            //      }
+            //      let vtx:GpuVtxObect = new GpuVtxObect();
+            //      vtx.rcuid = rc.getUid();
+            //      vtx.resUid = resUid;
+            //      vtxRes.addVertexRes(vtx);
+            //      
+            //      return vtx;
+            //  }
             private buildGpuDisp(rc:RenderProxy,disp:IRODisplay,processUid:number):void
             {
                 if(disp.__$ruid < 0)
@@ -259,10 +281,41 @@ export namespace vox
                         // build vtx gpu data
                         if(disp.vbuf != null)
                         {
-                            disp.vbuf.upload(rc,shdp);
-                            runit.vro = disp.vbuf.createVROBegin(rc, shdp, true);
+                            //  disp.vbuf.upload(rc,shdp);
+                            //  runit.vro = disp.vbuf.createVROBegin(rc, shdp, true);
+                            
+                            // build vertex gpu resoure 
+                            let vtxRes:ROVertexResource = rc.Vertex;
+                            let resUid:number = disp.vbuf.getUid();
+                            let vtx:GpuVtxObect;
+                            if(vtxRes.hasVertexRes(resUid))
+                            {
+                                vtx = vtxRes.getVertexRes(resUid);
+                            }
+                            else
+                            {
+                                vtx = new GpuVtxObect();
+                                vtx.rcuid = rc.getUid();
+                                vtx.resUid = resUid;
+                                vtx.indices.ibufStep = disp.vbuf.getIBufStep();
+                                vtx.indices.initialize(
+                                    rc,
+                                    disp.vbuf.getIvsData(),
+                                    disp.vbuf.bufData,
+                                    disp.vbuf.getBufDataUsage(),
+                                    resUid
+                                    );
+                                vtx.vertex.initialize(
+                                    rc,
+                                    shdp,
+                                    disp.vbuf,
+                                    resUid
+                                    )
+                                vtxRes.addVertexRes(vtx);
+                            }
+                            runit.vro = vtx.createVRO(rc, shdp, true);
+
                             runit.vro.__$attachThis();
-                            disp.vbuf.createVROEnd();
                             runit.vtxUid = runit.vro.getVtxUid();
                             
                             runit.ibufStep = runit.vro.ibufStep;

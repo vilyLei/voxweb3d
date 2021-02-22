@@ -5,9 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as IBufferBuilderT from "../../vox/render/IBufferBuilder";
 
-import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import IBufferBuilder = IBufferBuilderT.vox.render.IBufferBuilder;
 
 export namespace vox
 {
@@ -26,8 +26,8 @@ export namespace vox
             ibufStep:number;
             getMid():number;
             getVtxUid():number;
-            run(rc:RenderProxy):void;
-            restoreThis(rc:RenderProxy):void;
+            run(rc:IBufferBuilder):void;
+            restoreThis(rc:IBufferBuilder):void;
             __$attachThis():void;
             __$detachThis():void;
         }

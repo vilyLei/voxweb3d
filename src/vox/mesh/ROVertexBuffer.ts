@@ -6,43 +6,39 @@
 /***************************************************************************/
 
 import * as RenderConstT from "../../vox/render/RenderConst";
-import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as IBufferBuilderT from "../../vox/render/IBufferBuilder";
 import * as IRenderBufferT from "../../vox/render/IRenderBuffer";
 import * as RenderBufferUpdaterT from "../../vox/render/RenderBufferUpdater";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as ROVtxBufUidStoreT from "../../vox/mesh/ROVtxBufUidStore";
 import * as VtxBufDataT from "../../vox/mesh/VtxBufData";
-import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
 import * as IVtxBufT from "../../vox/mesh/IVtxBuf";
 import * as VtxCombinedBufT from "../../vox/mesh/VtxCombinedBuf";
 import * as VtxSeparatedBufT from "../../vox/mesh/VtxSeparatedBuf";
-import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
 
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
-import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import IBufferBuilder = IBufferBuilderT.vox.render.IBufferBuilder;
 import IRenderBuffer = IRenderBufferT.vox.render.IRenderBuffer;
 import RenderBufferUpdater = RenderBufferUpdaterT.vox.render.RenderBufferUpdater;
 import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 import ROVtxBufUidStore = ROVtxBufUidStoreT.vox.mesh.ROVtxBufUidStore;
 import VtxBufData = VtxBufDataT.vox.mesh.VtxBufData;
-import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
 import IVtxBuf = IVtxBufT.vox.mesh.IVtxBuf;
 import VtxCombinedBuf = VtxCombinedBufT.vox.mesh.VtxCombinedBuf;
 import VtxSeparatedBuf = VtxSeparatedBufT.vox.mesh.VtxSeparatedBuf;
-import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
 
 export namespace vox
 {
     export namespace mesh
     {
-        export class ROVertexBuffer implements IRenderBuffer
+        export class ROVertexBuffer implements IRenderBuffer,IVtxBuf
         {
             private static s_uid:number = 0;
             private m_uid:number = 0;
             private m_bufDataUsage:number = 0;
             private m_vtxBuf:IVtxBuf = null;
 
-            private m_rc:RenderProxy = null;
+            private m_rc:IBufferBuilder = null;
 
             private m_ivs:Uint16Array|Uint32Array = null;
             private m_ivsChanged:boolean = false;
@@ -62,12 +58,19 @@ export namespace vox
             }
             private setVtxBuf(vtxBuf:IVtxBuf):void
             {
-                this.m_vtxBuf = vtxBuf;
-                if(vtxBuf != null)vtxBuf.bufData = this.bufData;
+                if(vtxBuf != this)
+                {
+                    this.m_vtxBuf = vtxBuf;
+                    if(vtxBuf != null)vtxBuf.bufData = this.bufData;
+                }
             }
             getVtxBuf():IVtxBuf
             {
                 return this.m_vtxBuf;
+            }
+            getUid():number
+            {
+                return this.m_uid;
             }
             getType():number
             {
@@ -84,11 +87,14 @@ export namespace vox
             private setBufDataUsage(bufDataUsage:number):void
             {
                 this.m_bufDataUsage = bufDataUsage;
-                if(this.m_vtxBuf != null)this.m_vtxBuf.setBufDataUsage(this.m_bufDataUsage);
             }
-            getUid():number
+            getBuffersTotal():number
             {
-                return this.m_uid;
+                return this.m_vtxBuf.getBuffersTotal();
+            }
+            getVtxAttributesTotal():number
+            {
+                return this.m_vtxBuf.getVtxAttributesTotal();
             }
             setVaoEnabled(boo:boolean):void
             {
@@ -114,12 +120,12 @@ export namespace vox
             {
                 return this.m_rc != null;
             }
+            isChanged():boolean
+            {
+                return this.m_vtxBuf.isChanged();
+            }
             setF32DataAt(index:number,float32Arr:Float32Array,stepFloatsTotal:number,setpOffsets:number[]):void
             {
-                if(this.m_vtxBuf == null)
-                {
-                    this.m_vtxBuf = new VtxCombinedBuf(this.m_bufDataUsage);
-                }
                 this.m_vtxBuf.setF32DataAt(index, float32Arr, stepFloatsTotal, setpOffsets);
                 if(!this.m_f32Changed && this.m_vtxBuf.isChanged())
                 {
@@ -226,7 +232,7 @@ export namespace vox
             {
                 return this.m_updateStatus;
             }
-            __$updateToGpu(rc:RenderProxy):void
+            __$updateToGpu(rc:IBufferBuilder):void
             {
                 if(this.m_rc != null)
                 {
@@ -252,83 +258,15 @@ export namespace vox
                     }
                 }
             }
-            upload(rc:RenderProxy,shdp:IVtxShdCtr):void
+            updateToGpu(rc:IBufferBuilder):void
             {
-                //console.log("ROVertexBuffer::upload()... this.m_rc == null: "+(this.m_rc == null)+", "+this);
-                if(this.m_rc == null)
-                {
-                    this.m_rc = rc;
-                    this.m_f32Changed = false;
-                    
-                    this.m_vtxBuf.bufData = this.bufData;
-                    this.m_vtxBuf.upload(rc, shdp);
+            }
+            disposeGpu(rc:IBufferBuilder):void
+            {
+            }
+            destroy():void
+            {
 
-                    if(this.m_ivs != null)
-                    {
-                        if(this.m_ivsBuf != null)
-                        {
-                            rc.deleteBuf(this.m_ivsBuf);
-                            this.m_ivsBuf = null;
-                        }
-                        if(this.m_ivsBuf == null)
-                        {
-                            this.m_ivsBuf = rc.createBuf();
-                        }
-                        rc.bindEleBuf(this.m_ivsBuf);
-                        if(this.bufData == null)
-                        {
-                            rc.eleBufData(this.m_ivs, this.m_bufDataUsage);
-                            this.m_ivsPreSize = this.m_ivs.length;
-                        }
-                        else
-                        {
-                            //console.log(">>>>>>>>ibuf use (this.bufData == null) : "+(this.bufData == null)+", this.bufData.getIndexDataTotal(): "+this.bufData.getIndexDataTotal());
-                            rc.eleBufDataMem(this.bufData.getIndexDataTotalBytes(),this.m_bufDataUsage);
-                            let uintArr:any = null;
-                            let offset:number = 0;
-                            let dataSize:number = 0;
-                            for(let i:number = 0, len:number = this.bufData.getIndexDataTotal(); i < len; ++i)
-                            {
-                                uintArr = this.bufData.getIndexDataAt(i);
-                                rc.eleBufSubData(uintArr, offset);
-                                offset += uintArr.byteLength;
-                                dataSize += uintArr.length;
-                            }
-                            this.m_ivsPreSize = dataSize;
-                        }
-                    }
-                }
-            }
-            // 创建被 RPOUnit 使用的 vro 实例
-            createVROBegin(rc:RenderProxy, shdp:IVtxShdCtr, vaoEnabled:boolean):IVertexRenderObj
-            {
-                let vro:IVertexRenderObj = this.m_vtxBuf.createVROBegin(rc, shdp,vaoEnabled);
-                vro.ibuf = this.m_ivsBuf;
-                vro.ibufStep = this.m_ibufStep;
-                
-                return vro;
-            }
-            createVROEnd():void
-            {
-                this.m_rc.bindVertexArray(null);
-            }
-            private __$disposeGpu(rc:RenderProxy):void
-            {
-                if(this.isGpuEnabled())
-                {
-                    if(this.m_rc != null)
-                    {
-                        console.log("ROVertexBuffer::__$disposeGpu()... "+this);
-                        this.m_vtxBuf.disposeGpu(rc);
-
-                        if(this.m_ivsBuf != null)
-                        {
-                            this.m_rc.deleteBuf(this.m_ivsBuf);
-                            this.m_ivsBuf = null;
-                        }
-                        this.m_rc = null;
-                    }
-                }
             }
             
             private static s_combinedBufs:IVtxBuf[] = [];
@@ -479,7 +417,7 @@ export namespace vox
                 let vb:ROVertexBuffer = ROVertexBuffer.Create(bufDataUsage);
                 if(ROVertexBuffer.s_combinedBufs.length > 0)
                 {
-                    let vtx:IVtxBuf = ROVertexBuffer.s_combinedBufs.pop();
+                    let vtx:VtxCombinedBuf = ROVertexBuffer.s_combinedBufs.pop() as VtxCombinedBuf;
                     vtx.setBufDataUsage(vb.getBufDataUsage());
                     vb.setVtxBuf( vtx );
                 }
@@ -552,7 +490,7 @@ export namespace vox
                 let vb:ROVertexBuffer = ROVertexBuffer.Create(bufDataUsage);
                 if(ROVertexBuffer.s_separatedBufs.length > 0)
                 {
-                    let vtx:IVtxBuf = ROVertexBuffer.s_separatedBufs.pop();
+                    let vtx:VtxSeparatedBuf = ROVertexBuffer.s_separatedBufs.pop() as VtxSeparatedBuf;
                     vtx.setBufDataUsage(vb.getBufDataUsage());
                     vb.setVtxBuf( vtx );
                 }
@@ -579,7 +517,7 @@ export namespace vox
                 let vb:ROVertexBuffer = ROVertexBuffer.Create(bufDataUsage);
                 if(ROVertexBuffer.s_separatedBufs.length > 0)
                 {
-                    let vtx:IVtxBuf = ROVertexBuffer.s_separatedBufs.pop();
+                    let vtx:VtxSeparatedBuf = ROVertexBuffer.s_separatedBufs.pop() as VtxSeparatedBuf;
                     vtx.setBufDataUsage(vb.getBufDataUsage());
                     vb.setVtxBuf( vtx );
                 }
@@ -602,7 +540,7 @@ export namespace vox
             //      return ROVertexBuffer.s_vtxStore.getAttachAllCount();
             //  }
             private static s_timeDelay:number = 128;
-            static RenderBegin(rc:RenderProxy):void
+            static RenderBegin(rc:IBufferBuilder):void
             {
                 --ROVertexBuffer.s_timeDelay;
                 if(ROVertexBuffer.s_timeDelay < 1)
@@ -628,7 +566,6 @@ export namespace vox
                                 {
                                     console.log("ROVertexBuffer remove a instance, vtxUid: "+vtxUid);
                                     vb = ROVertexBuffer.GetVtxByUid(vtxUid);
-                                    vb.__$disposeGpu(rc);
                                     ROVertexBuffer.__$Restore(vb);
                                 }
                             }

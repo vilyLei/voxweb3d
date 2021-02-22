@@ -10,6 +10,7 @@
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
+import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPONodeT from "../../vox/render/RPONode";
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
@@ -18,11 +19,12 @@ import * as RPONodeLinkerT from "../../vox/render/RPONodeLinker";
 import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as MaterialShaderT from '../../vox/material/MaterialShader';
-import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
+import * as ROVertexResourceT from "../../vox/render/ROVertexResource";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
+import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RPONode = RPONodeT.vox.render.RPONode;
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
@@ -32,7 +34,7 @@ import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
 import RenderColorMask = RODrawStateT.vox.render.RenderColorMask;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
-import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
+import ROVertexResource = ROVertexResourceT.vox.render.ROVertexResource;
 
 export namespace vox
 {
@@ -53,6 +55,8 @@ export namespace vox
 
             rpoNodeBuilder:RPONodeBuilder = null;
             rpoUnitBuilder:RPOUnitBuilder = null;
+            vtxResource:ROVertexResource = null;
+
             private m_shader:MaterialShader = null;
             constructor(shader:MaterialShader)
             {
@@ -288,7 +292,7 @@ export namespace vox
                     if(this.batchEnabled)
                     {
                         let vtxTotal:number = 0;
-                        // for drawInstances;
+                        
                         while(nextNode != null)
                         {
                             if(vtxTotal > 0)
@@ -355,8 +359,10 @@ export namespace vox
                     }
                     if(RendererDeviece.IsMobileWeb())
                     {
-                        // 如果不这么做，vro和shader attributes没有完全匹配的时候可能在移动设备上会有问题(无法正常绘制)例如 ip6s
-                        let vro:IVertexRenderObj = disp.vbuf.createVROBegin(rc, this.m_shader.getCurrentShd(), true);
+                        // 如果不这么做，vro和shader attributes没有完全匹配的时候可能在某些设备上会有问题(例如ip6s上无法正常绘制)
+                        //let vro:IVertexRenderObj = disp.vbuf.createVROBegin(rc, this.m_shader.getCurrentShd(), true);
+                        // 注意临时产生的 vro 对象的回收问题
+                        let vro:IVertexRenderObj = this.vtxResource.getVROByResUid(disp.vbuf.getUid(), rc, this.m_shader.getCurrentShd(), true);
                         vro.run(rc);
                     }
                     else
@@ -400,6 +406,8 @@ export namespace vox
                 this.procuid = -1;
                 this.m_nodeLinker.clear();
                 this.rpoNodeBuilder = null;
+                this.rpoUnitBuilder = null;
+                this.vtxResource = null;
             }
             destroy():void
             {

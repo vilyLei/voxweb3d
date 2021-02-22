@@ -6,26 +6,14 @@
 /***************************************************************************/
 
 import * as VtxBufIDT from "../../vox/mesh/VtxBufID";
-import * as RenderProxyT from "../../vox/render/RenderProxy";
-import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
+import * as IBufferBuilderT from "../../vox/render/IBufferBuilder";
 import * as IVtxBufT from "../../vox/mesh/IVtxBuf";
 import * as VtxBufDataT from "../../vox/mesh/VtxBufData";
-import * as ROVtxBufUidStoreT from "../../vox/mesh/ROVtxBufUidStore";
-import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
-import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
-import * as VaoVertexRenderObjT from "../../vox/mesh/VaoVertexRenderObj";
-import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
 
 import VtxBufID = VtxBufIDT.vox.mesh.VtxBufID;
-import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
+import IBufferBuilder = IBufferBuilderT.vox.render.IBufferBuilder;
 import IVtxBuf = IVtxBufT.vox.mesh.IVtxBuf;
 import VtxBufData = VtxBufDataT.vox.mesh.VtxBufData;
-import ROVtxBufUidStore = ROVtxBufUidStoreT.vox.mesh.ROVtxBufUidStore;
-import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
-import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
-import VaoVertexRenderObj = VaoVertexRenderObjT.vox.mesh.VaoVertexRenderObj;
-import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
 
 export namespace vox
 {
@@ -35,7 +23,6 @@ export namespace vox
         {
             private m_uid:number = -1;
             private m_bufDataUsage:number = 0;
-            private m_aTypeList:number[] = null;
             private m_total:number = 0;
             bufData:VtxBufData = null;
             constructor(bufDataUsage:number)
@@ -44,6 +31,18 @@ export namespace vox
                 this.m_bufDataUsage = bufDataUsage;
             }
             
+            getVtxBuf():IVtxBuf
+            {
+                return this;
+            }
+            getIvsData():Uint16Array | Uint32Array
+            {
+                return null;
+            }
+            getUid():number
+            {
+                return this.m_uid;
+            }
             public getType():number
             {
                 return 0;
@@ -56,19 +55,14 @@ export namespace vox
             {
                 this.m_bufDataUsage = bufDataUsage;
             }
-            getUid():number
-            {
-                return this.m_uid;
-            }
-            private m_fOffsetList:number[] = null;
-            private m_pOffsetList:number[] = null;
+            
+            private m_offsetList:number[] = null;
             private m_f32:Float32Array = null;
             private m_f32Size:number = 0;
             private m_f32PreSize:number = 0;
             private m_f32Changed:boolean = false;
             private m_f32Buf:any = null;
             private m_f32Stride:number = 0;
-            private m_wholeStride:number = 0;
             
             getBuffersTotal():number
             {
@@ -92,7 +86,7 @@ export namespace vox
             }
             setF32DataAt(index:number,float32Arr:Float32Array,stepFloatsTotal:number,setpOffsets:number[]):void
             {
-                if(setpOffsets != null)this.m_fOffsetList = setpOffsets;
+                if(setpOffsets != null)this.m_offsetList = setpOffsets;
                 this.m_f32Stride = stepFloatsTotal;
                 //console.log("VtxCombinedBuf::setF32DataAt(),"+this+" m_f32.length: "+float32Arr.length+", this.m_f32PreSize: "+this.m_f32PreSize);
                 this.m_f32 = float32Arr;
@@ -107,8 +101,7 @@ export namespace vox
             }
             setData4fAt(vertexI:number,attribI:number,px:number,py:number,pz:number,pw:number):void
             {
-                vertexI = (this.m_f32Stride * vertexI) + this.m_fOffsetList[attribI];
-                //console.log("VtxCombinedBuf::setData4fAt(), vertexI: "+vertexI+",this.m_f32Stride: "+this.m_f32Stride);
+                vertexI = (this.m_f32Stride * vertexI) + this.m_offsetList[attribI];
                 this.m_f32[vertexI++] = px;
                 this.m_f32[vertexI++] = py;
                 this.m_f32[vertexI++] = pz;
@@ -117,7 +110,7 @@ export namespace vox
             }
             setData3fAt(vertexI:number,attribI:number,px:number,py:number,pz:number):void
             {
-                vertexI = (this.m_f32Stride * vertexI) + this.m_fOffsetList[attribI];
+                vertexI = (this.m_f32Stride * vertexI) + this.m_offsetList[attribI];
                 //console.log("VtxCombinedBuf::setData3fAt(), vertexI: "+vertexI+",this.m_f32Stride: "+this.m_f32Stride);
                 this.m_f32[vertexI++] = px;
                 this.m_f32[vertexI++] = py;
@@ -126,13 +119,13 @@ export namespace vox
             }
             setData2fAt(vertexI:number,attribI:number,px:number,py:number):void
             {
-                vertexI = (this.m_f32Stride * vertexI) + this.m_fOffsetList[attribI];
+                vertexI = (this.m_f32Stride * vertexI) + this.m_offsetList[attribI];
                 //console.log("VtxCombinedBuf::setData2fAt(), vertexI: "+vertexI+",this.m_f32Stride: "+this.m_f32Stride);
                 this.m_f32[vertexI++] = px;
                 this.m_f32[vertexI++] = py;
                 this.m_f32Changed = true;
             }
-            updateToGpu(rc:RenderProxy):void
+            updateToGpu(rc:IBufferBuilder):void
             {
                 if(this.m_f32Changed)
                 {
@@ -157,135 +150,14 @@ export namespace vox
                     this.m_f32Changed = false;
                 }
             }
-            upload(rc:RenderProxy,shdp:IVtxShdCtr):void
-            {
-                //console.log("VtxCombinedBuf::upload()... ");
-                if(this.m_f32 != null)
-                {
-                    this.m_f32PreSize = this.m_f32Size;
-                    if(this.m_f32Buf == null)
-                    {
-                        this.m_f32Buf = rc.createBuf();
-                        rc.bindArrBuf(this.m_f32Buf);
-                        //  console.log("this.m_f32: "+this.m_f32);
-                        rc.arrBufData(this.m_f32, this.m_bufDataUsage);
-                    }
-                }
-                if(this.m_aTypeList == null)
-                {
-                    this.m_wholeStride = 0;
-                    this.m_aTypeList = [];
-                    this.m_pOffsetList = [];
-                    this.m_total = shdp.getLocationsTotal();
-
-                    for(let i:number = 0; i < this.m_total; ++i)
-                    {
-                        this.m_pOffsetList[i] = this.m_wholeStride;
-                        this.m_wholeStride += shdp.getLocationSizeByIndex(i) * 4;
-                        this.m_aTypeList.push( shdp.getLocationTypeByIndex(i) );
-                    }
-                }
-            }
-            getVROMid(rc:RenderProxy, shdp:IVtxShdCtr, vaoEnabled:boolean):number
-            {
-                let mid:number = 131 + rc.getUid();
-                if(vaoEnabled)
-                {
-                    // 之所以 + 0xf0000 这样区分，是因为 shdp.getLayoutBit() 的取值范围不会超过short(double bytes)取值范围
-                    mid = mid * 131 + shdp.getLayoutBit() + 0xf0000;
-                }
-                else
-                {
-                    mid = mid * 131 + shdp.getLayoutBit();
-                }
-                return mid;
-            }
-            private m_vroList:IVertexRenderObj[] = [];
-            private m_vroListLen:number = 0;
-            // 创建被 RPOUnit 使用的 vro 实例
-            createVROBegin(rc:RenderProxy, shdp:IVtxShdCtr, vaoEnabled:boolean):IVertexRenderObj
-            {
-                let mid:number = this.getVROMid(rc,shdp,vaoEnabled);
-                
-                let i:number = 0;
-                for(; i < this.m_vroListLen; ++i)
-                {
-                    if(this.m_vroList[i].getMid() == mid)
-                    {
-                        return this.m_vroList[i];
-                    }
-                }
-                //console.log("### Combined mid: "+mid+", uid: "+this.m_uid);
-                let pvro:IVertexRenderObj;
-                if(vaoEnabled)
-                {
-                    // vao 的生成要记录标记,防止重复生成, 因为同一组数据在不同的shader使用中可能组合方式不同，导致了vao可能是多样的
-                    //console.log("VtxCombinedBuf::createVROBegin(), "+this.m_aTypeList+" /// "+this.m_wholeStride+" /// "+this.m_pOffsetList);
-                    let vro:VaoVertexRenderObj = VaoVertexRenderObj.Create(mid, this.m_uid);
-                    vro.vao = rc.createVertexArray();
-                    rc.bindVertexArray(vro.vao);
-                    rc.bindArrBuf(this.m_f32Buf);
-                    
-                    for(i = 0; i < this.m_total; ++i)
-                    {
-                        shdp.vertexAttribPointerTypeFloat(this.m_aTypeList[i], this.m_wholeStride, this.m_pOffsetList[i]);
-                    }
-                    pvro = vro;
-                }
-                else
-                {
-                    let vro:VertexRenderObj = VertexRenderObj.Create(mid, this.m_uid);
-                    vro.shdp = shdp;
-                    vro.vbuf = this.m_f32Buf;
-                    vro.attribTypes = [];
-                    vro.wholeOffsetList = [];
-                    vro.wholeStride = this.m_wholeStride;
-
-                    for(i = 0; i < this.m_total; ++i)
-                    {
-                        if(shdp.testVertexAttribPointerType(this.m_aTypeList[i]))
-                        {
-                            vro.attribTypes.push( this.m_aTypeList[i] );
-                            vro.wholeOffsetList.push( this.m_pOffsetList[i] );
-                        }
-                    }
-                    vro.attribTypesLen = vro.attribTypes.length;
-                    pvro = vro;
-                }
-                this.m_vroList.push(pvro);
-                ++this.m_vroListLen;
-                return pvro;
-            }
-            public disposeGpu(rc:RenderProxy):void
-            {
-                if(this.isGpuEnabled() && ROVtxBufUidStore.GetInstance().getAttachCountAt(this.m_uid) < 1)
-                {
-                    console.log("VtxCombinedBuf::__$disposeGpu()... ", this);
-                    let i:number = 0;
-                    let vro:IVertexRenderObj = null;
-                    for(; i < this.m_vroListLen; ++i)
-                    {
-                        vro = this.m_vroList.pop();
-                        vro.restoreThis(rc);
-                        this.m_vroList[i] = null;
-                    }
-                    this.m_vroListLen = 0;
-                    if(this.m_f32Buf != null)
-                    {
-                        rc.deleteBuf(this.m_f32Buf);
-                        this.m_f32Buf = null;
-                    }
-                }
-            }
             public destroy():void
             {
                 if(this.m_f32Buf == null)
                 {
                     console.log("VtxCombinedBuf::__$destroy()... ",this);
-                    this.m_aTypeList = null;
                     this.m_f32Changed = false;
+                    this.m_offsetList = null;
                     this.m_f32 = null;
-                    this.m_pOffsetList = null;
                 }
             }
             toString():string

@@ -16,6 +16,7 @@ import * as RendererStateT from "../../vox/render/RendererState";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as ShaderUBOT from "../../vox/material/ShaderUBO";
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
+import * as IRPODisplayT from "../../vox/render/IRPODisplay";
 import * as IPoolNodeT from "../../vox/utils/IPoolNode";
 
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
@@ -29,13 +30,14 @@ import RendererState = RendererStateT.vox.render.RendererState;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import ShaderUBO = ShaderUBOT.vox.material.ShaderUBO;
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
+import IRPODisplay = IRPODisplayT.vox.render.IRPODisplay;
 import IPoolNode = IPoolNodeT.vox.utils.IPoolNode;
 
 export namespace vox
 {
     export namespace render
     {
-        export class RPOUnit implements IPoolNode
+        export class RPOUnit implements IPoolNode,IRPODisplay
         {
             uid:number = -1;
             // 记录自身和RPONode的对应关系

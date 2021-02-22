@@ -42,6 +42,7 @@ export namespace vox
                 }
                 else
                 {
+                    // 这里的内存管理需要优化
                     let i:number = this.m_useidList.length;
                     for(; i <= index; ++i)
                     {
@@ -49,12 +50,12 @@ export namespace vox
                     }
                     ++this.m_useidList[index];
                 }
-                //console.log("ROVtxBufUidStore::__$attachAt() this.m_useidList["+index+"]: "+this.m_useidList[index]);
+                console.log("ROVtxBufUidStore::__$attachAt() list["+index+"]: "+this.m_useidList[index]);
             }
             __$detachAt(index:number):void
             {
                 --this.m_useidList[index];
-                console.log("ROVtxBufUidStore::__$detachAt() this.m_useidList["+index+"]: "+this.m_useidList[index]);
+                console.log("ROVtxBufUidStore::__$detachAt() list["+index+"]: "+this.m_useidList[index]);
                 if(this.m_useidList[index] < 1)
                 {
                     this.m_useidList[index] = 0;

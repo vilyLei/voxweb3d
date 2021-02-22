@@ -31,6 +31,8 @@ export namespace vox
             createVertexArray():any;
             bindVertexArray(vao:any):any;
             deleteVertexArray(vao:any):void;
+            testVROUid(vroUid:number):boolean;
+            testRIOUid(vioUid:number):boolean;
         }
 
     }

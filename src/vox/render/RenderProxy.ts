@@ -349,6 +349,25 @@ export namespace vox
                     RCExtension.OES_vertex_array_object.deleteVertexArrayOES(vao);
                 }
             }
+            
+            testVROUid(vroUid:number):boolean
+            {
+                if(this.Vertex.vroUid != vroUid)
+                {
+                    this.Vertex.vroUid = vroUid;
+                    return true;
+                }
+                return false;
+            }
+            testRIOUid(rioUid:number):boolean
+            {
+                if(this.Vertex.rioUid != rioUid)
+                {
+                    this.Vertex.rioUid = rioUid;
+                    return true;
+                }
+                return false;
+            }
 
             drawInstanced(count:number, offset:number, instanceCount:number):void
             {

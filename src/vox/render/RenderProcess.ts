@@ -16,6 +16,7 @@ import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPONodeT from "../../vox/render/RPONode";
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
+import * as ROVertexResourceT from "../../vox/render/ROVertexResource";
 import * as RPOBlockT from "../../vox/render/RPOBlock";
 
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
@@ -27,6 +28,7 @@ import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RPONode = RPONodeT.vox.render.RPONode;
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
 import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
+import ROVertexResource = ROVertexResourceT.vox.render.ROVertexResource;
 import RPOBlock = RPOBlockT.vox.render.RPOBlock;
 
 export namespace vox
@@ -50,6 +52,7 @@ export namespace vox
             private m_shader:MaterialShader = null;
             private m_rpoNodeBuilder:RPONodeBuilder = null;
             private m_rpoUnitBuilder:RPOUnitBuilder = null;
+            private m_vtxResource:ROVertexResource = null;
             // 用于特殊绘制
             private m_proBlock:RPOBlock = null;
 
@@ -58,11 +61,12 @@ export namespace vox
             
             uid:number = -1;
             
-            constructor(shader:MaterialShader,rpoNodeBuilder:RPONodeBuilder,rpoUnitBuilder:RPOUnitBuilder, batchEnabled:boolean,processFixedState:boolean)
+            constructor(shader:MaterialShader,rpoNodeBuilder:RPONodeBuilder,rpoUnitBuilder:RPOUnitBuilder,vtxResource:ROVertexResource, batchEnabled:boolean,processFixedState:boolean)
             {
                 this.m_shader = shader;
                 this.m_rpoNodeBuilder = rpoNodeBuilder;
                 this.m_rpoUnitBuilder = rpoUnitBuilder;
+                this.m_vtxResource = vtxResource;
                 this.m_proBlock = new RPOBlock(shader);
                 this.m_batchEnabled = batchEnabled;
                 this.m_fixedState = processFixedState;
@@ -135,6 +139,8 @@ export namespace vox
                     block = new RPOBlock(this.m_shader);
                     block.rpoNodeBuilder = this.m_rpoNodeBuilder;
                     block.rpoUnitBuilder = this.m_rpoUnitBuilder;
+                    block.vtxResource = this.m_vtxResource;
+
                     block.batchEnabled = this.m_batchEnabled;
                     block.fixedState = this.m_fixedState;
                     if(block.batchEnabled)
@@ -255,7 +261,7 @@ export namespace vox
                             {
                                 this.m_rpoUnitBuilder.restore(runit);
                             }
-
+                            disp.__$$runit = null;
                             disp.__$ruid = -1;
                             if(block.isEmpty())
                             {
@@ -311,6 +317,10 @@ export namespace vox
                 }
                 this.m_blockListLen = 0;
                 this.m_blockList = [];
+                
+                this.m_rpoNodeBuilder = null;
+                this.m_rpoUnitBuilder = null;
+                this.m_vtxResource = null;
             }
             
             showInfo():void

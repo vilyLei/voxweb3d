@@ -70,6 +70,10 @@ export namespace vox
                 this.m_rcuid = rcuid;
                 this.m_gl = gl;
             }
+            createBuf():any
+            {
+                return this.m_gl.createTexture();
+            }
             getRCUid():number
             {
                 return this.m_rcuid;

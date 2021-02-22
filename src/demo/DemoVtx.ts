@@ -187,6 +187,19 @@ void main(){
                 cly.initialize(100.0,200.0,15,[tex1]);
                 this.m_rscene.addEntity(cly);
                 this.m_targets.push(cly);
+
+                let src_cly:Cylinder3DEntity = cly;
+
+                cly = new Cylinder3DEntity();
+                //cly.setMaterial(material);
+                cly.copyMeshFrom(src_cly);
+                cly.setVtxTransformMatrix(transMat);
+                cly.initialize(100.0,200.0,15,[tex1]);
+                cly.setXYZ(100.0,0.0,100.0);
+                
+                this.m_rscene.addEntity(cly);
+                this.m_targets.push(cly);
+
             }
         }
         private mouseDown(evt:any):void

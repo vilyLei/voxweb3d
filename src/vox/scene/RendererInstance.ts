@@ -245,6 +245,7 @@ export namespace vox
                     this.m_dispBuilder.getMaterialShader(),
                     this.m_rpoNodeBuilder,
                     this.m_rpoUnitBuilder,
+                    this.m_renderProxy.Vertex,
                     batchEnabled,
                     processFixedState
                 );
@@ -262,6 +263,7 @@ export namespace vox
                     this.m_dispBuilder.getMaterialShader(),
                     this.m_rpoNodeBuilder,
                     this.m_rpoUnitBuilder,
+                    this.m_renderProxy.Vertex,
                     batchEnabled,
                     processFixedState
                 );
