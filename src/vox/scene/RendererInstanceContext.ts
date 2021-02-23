@@ -47,7 +47,7 @@ export namespace vox
         export class RendererInstanceContext
         {
             private m_adapter:RenderAdapter = null;
-            private m_renderProxy:RenderProxy = null;
+            private m_renderProxy:RenderProxy = new RenderProxy();
             private m_materialProxy:RenderMaterialProxy = null;
             private m_meshProxy:RenderMeshProxy = null;
             private m_Matrix4AllocateSize:number = 0;
@@ -58,14 +58,14 @@ export namespace vox
             constructor()
             {
             }
-            setDispBuilder(builder:RODispBuilder):void
-            {
-                if(this.m_dispBuilder == null)
-                {
-                    this.m_dispBuilder = builder;
-                    this.m_materialProxy.setDispBuilder(builder);
-                }
-            }
+            //  setDispBuilder(builder:RODispBuilder):void
+            //  {
+            //      if(this.m_dispBuilder == null)
+            //      {
+            //          this.m_dispBuilder = builder;
+            //          this.m_materialProxy.setDispBuilder(builder);
+            //      }
+            //  }
             
             getDiv():any
             {
@@ -286,19 +286,20 @@ export namespace vox
                     this.m_renderProxy.setCameraParam(fov, near, far);
                 }
             }
-            initialize(param:RendererParam):void
+            initialize(param:RendererParam, builder:RODispBuilder):void
             {
                 if(this.m_Matrix4AllocateSize < 1024)
                 {
                     this.setMatrix4AllocateSize(1024);
                 }
-                if(this.m_renderProxy == null)
+                if(this.m_meshProxy == null)
                 {
-                    this.m_renderProxy = new RenderProxy();
+                    
+                    this.m_dispBuilder = builder;
                     UniformDataSlot.Initialize(this.m_renderProxy.getUid());
                     this.m_renderProxy.setCameraParam(this.m_cameraFov,this.m_cameraNear,this.m_cameraFar);
                     this.m_renderProxy.setWebGLMaxVersion(param.maxWebGLVersion);
-                    this.m_renderProxy.initialize(param);
+                    this.m_renderProxy.initialize(param, builder,builder);
                     this.m_adapter = this.m_renderProxy.getRenderAdapter();
                     this.m_adapter.bgColor.setRGBA4f(0.0,0.0,0.0,1.0);
 
@@ -306,13 +307,19 @@ export namespace vox
                     context.setViewport(0,0, context.getStage().stageWidth, context.getStage().stageHeight);
                     this.m_meshProxy = new RenderMeshProxy();
                     this.m_meshProxy.setRenderProxy(this.m_renderProxy);
-                    this.m_materialProxy = new RenderMaterialProxy();
-                    this.m_materialProxy.setRenderProxy(this.m_renderProxy);
 
                     ShdUniformTool.Initialize();
                 }
             }
-            
+            initManager(builder:RODispBuilder):void
+            {
+                if(this.m_materialProxy == null)
+                {
+                    this.m_materialProxy = new RenderMaterialProxy();
+                    this.m_materialProxy.setDispBuilder(builder);
+                    this.m_materialProxy.setRenderProxy(this.m_renderProxy);
+                }
+            }
             setClearRGBColor3f(pr:number,pg:number,pb:number)
             {
                 if(this.m_renderProxy != null)

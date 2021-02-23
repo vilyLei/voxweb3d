@@ -8,11 +8,13 @@
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
+import * as ROTextureResourceT from "../../vox/render/ROTextureResource";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 
 import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 export namespace vox
 {
@@ -85,9 +87,9 @@ export namespace vox
             /**
              * This function only be be called by the renderer inner system.
              */
-            __$$use(rc:RenderProxy):void
+            __$$use(resTex:ROTextureResource):void
             {
-                this.m_tex.__$$use(rc);
+                this.m_tex.__$$use(resTex);
             }
             /**
              * @returns the texture gpu resource is enabled or not.
@@ -104,14 +106,6 @@ export namespace vox
                 return this.m_tex.getSampler();
             }
             
-            __$setUpdateStatus(s:number):void
-            {
-                this.m_tex.__$setUpdateStatus(s);
-            }
-            __$getUpdateStatus():number
-            {
-                return this.m_tex.__$getUpdateStatus();
-            }
             __$updateToGpu(rc:RenderProxy):void
             {
                 this.m_tex.__$updateToGpu(rc);
@@ -120,9 +114,9 @@ export namespace vox
              * This function only be be called by the renderer inner system.
              * if sub class override this function, it must does call this function.
              */
-            __$$upload(rc:RenderProxy):void
+            __$$upload(texRes:ROTextureResource):void
             {
-                this.m_tex.__$$upload(rc);
+                this.m_tex.__$$upload(texRes);
             }
             
             __$destroy():void

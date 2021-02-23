@@ -75,8 +75,7 @@ export namespace vox
                     {
                         colorarr.push(this.color.r,this.color.g,this.color.b);
                     }
-                    this.m_selfMesh = new DashedLineMesh(VtxBufConst.VTX_DYNAMIC_DRAW);          
-                    this.m_selfMesh.vaoEnabled = true;
+                    this.m_selfMesh = new DashedLineMesh(VtxBufConst.VTX_DYNAMIC_DRAW);
                     this.m_selfMesh.vbWholeDataEnabled = false;
                     this.m_selfMesh.setBufSortFormat( material.getBufSortFormat() );
                     this.m_selfMesh.initialize(this.m_posarr, colorarr);

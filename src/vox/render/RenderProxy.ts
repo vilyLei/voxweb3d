@@ -26,6 +26,8 @@ import * as IBufferBuilderT from "../../vox/render/IBufferBuilder";
 
 import * as ROVertexResourceT from '../../vox/render/ROVertexResource';
 import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
+import * as IROVertexBufUpdaterT from '../../vox/render/IROVertexBufUpdater';
+import * as IROMaterialUpdaterT from '../../vox/render/IROMaterialUpdater';
 import * as DivLogT from "../../vox/utils/DivLog";
 
 import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
@@ -50,6 +52,8 @@ import IBufferBuilder = IBufferBuilderT.vox.render.IBufferBuilder;
 
 import ROVertexResource = ROVertexResourceT.vox.render.ROVertexResource;
 import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
+import IROVertexBufUpdater = IROVertexBufUpdaterT.vox.render.IROVertexBufUpdater;
+import IROMaterialUpdater = IROMaterialUpdaterT.vox.render.IROMaterialUpdater;
 import DivLog = DivLogT.vox.utils.DivLog;
 
 export namespace vox
@@ -81,6 +85,8 @@ export namespace vox
             //readonly VtxStore:ROVtxBufUidStore = null;
             readonly Vertex:ROVertexResource = null;
             readonly Texture:ROTextureResource = null;
+            readonly VtxBufUpdater:IROVertexBufUpdater = null;
+            readonly MaterialUpdater:IROMaterialUpdater = null;
 
             private static s_uid:number = 0;
             private m_uid:number = 0;
@@ -112,7 +118,7 @@ export namespace vox
             private m_autoSynViewAndStage:boolean = true;
 
             constructor()
-            {
+            {                
                 this.m_uid = RenderProxy.s_uid++;
             }
             getUid():number
@@ -515,7 +521,7 @@ export namespace vox
             {
                 this.m_adapter.readPixels(px,py,width,height,format,dataType,pixels);
             }
-            initialize(param:RendererParam):void
+            initialize(param:RendererParam,materialUpdater:IROMaterialUpdater,vtxBufUpdater:IROVertexBufUpdater):void
             {
                 let posV3:Vector3D = param.camPosition;
                 let lookAtPosV3:Vector3D = param.camLookAtPos;
@@ -534,13 +540,13 @@ export namespace vox
                 this.m_rc = this.m_adapterContext.getRC();
                 let selfT:any = this;
                 let gl:any = this.m_rc;
-                //let vtxStore:ROVtxBufUidStore = new ROVtxBufUidStore();
                 let vtxRes:ROVertexResource = new ROVertexResource(this.m_uid,gl);
                 let texRes:ROTextureResource = new ROTextureResource(this.m_uid,gl);
 
-                //selfT.VtxStore = vtxStore;
                 selfT.Vertex = vtxRes;
                 selfT.Texture = texRes;
+                selfT.MaterialUpdater = materialUpdater;                
+                selfT.VtxBufUpdater = vtxBufUpdater;
 
                 this.m_viewW = this.m_adapterContext.getViewportWidth();
                 this.m_viewH = this.m_adapterContext.getViewportHeight();

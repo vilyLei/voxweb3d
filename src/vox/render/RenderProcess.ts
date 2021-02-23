@@ -179,7 +179,19 @@ export namespace vox
                 let node:RPONode = this.m_rpoNodeBuilder.getNodeByUid(runit.__$rpuid) as RPONode;
                 node.tro = runit.tro;
                 node.texMid = node.unit.texMid;
-                this.m_blockList[node.index].rejoinNodeForTro(node);
+                this.m_blockList[node.index].rejoinNode(node);
+            }
+            rejoinRunitForVro(runit:RPOUnit):void
+            {
+                let node:RPONode = this.m_rpoNodeBuilder.getNodeByUid(runit.__$rpuid) as RPONode;
+                node.drawMode = runit.drawMode;
+                node.ivsIndex = runit.ivsIndex;
+                node.ivsCount = runit.ivsCount;
+                node.insCount = runit.insCount;
+                runit.drawOffset = runit.ivsIndex * runit.ibufStep;
+                node.vtxUid = runit.vtxUid;
+                node.vro = runit.vro;
+                this.m_blockList[node.index].rejoinNode(node);
             }
             addDisp(rc:RenderProxy, disp:IRODisplay,deferred:boolean = true):void
             {

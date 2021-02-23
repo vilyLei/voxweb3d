@@ -18,7 +18,6 @@ import * as MaterialBaseT from "../../vox/material/MaterialBase";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as TextureProxyT from '../../vox/texture/TextureProxy';
-import * as IRenderBufferT from "../../vox/render/IRenderBuffer";
 
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import AABB = AABBT.vox.geom.AABB;
@@ -28,13 +27,12 @@ import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import IRenderBuffer = IRenderBufferT.vox.render.IRenderBuffer;
 
 export namespace vox
 {
     export namespace entity
     {
-        export interface IRenderEntity extends IRenderBuffer
+        export interface IRenderEntity
         {
             // 自身所在的world的唯一id, 通过这个id可以找到对应的world
             __$wuid:number;// = -1;
@@ -66,7 +64,7 @@ export namespace vox
             __$setDrawEnabled(boo:boolean):void;
             getDrawEnabled():boolean;
             
-            __$updateToGpu(rc:RenderProxy):void;
+            //__$updateToGpu(rc:RenderProxy):void;
             updateTextureList(texList:TextureProxy[]):void;
             setVisible(boo:boolean):void;
             getVisible():boolean;

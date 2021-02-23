@@ -108,7 +108,6 @@ export namespace vox
                 if(this.getMesh() == null)
                 {
                     let mesh:RORectMesh = new RORectMesh();
-                    mesh.vaoEnabled = true;
                     mesh.flipVerticalUV = this.flipVerticalUV;
                     mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
                     mesh.axisFlag = this.m_flag;

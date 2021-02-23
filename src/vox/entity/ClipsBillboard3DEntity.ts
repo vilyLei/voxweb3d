@@ -143,7 +143,6 @@ export namespace vox
                 if(this.getMesh() == null)
                 {
                     let mesh:BillboardPlaneMesh = new BillboardPlaneMesh();
-                    mesh.vaoEnabled = true;
                     mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;          
                     mesh.flipVerticalUV = this.flipVerticalUV;
                     mesh.setBufSortFormat( material.getBufSortFormat() );

@@ -165,7 +165,6 @@ export namespace vox
                 if(this.getMesh() == null)
                 {
                     let mesh:TextRectMesh = new TextRectMesh();
-                    mesh.vaoEnabled = true;
                     mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
                     mesh.alignFactorX = this.m_alignFactorX;
                     mesh.alignFactorY = this.m_alignFactorY;

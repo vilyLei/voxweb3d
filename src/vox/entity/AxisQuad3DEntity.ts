@@ -54,7 +54,6 @@ export namespace vox
                     ];
                     let mesh:DashedQuadLineMesh = new DashedQuadLineMesh();
                     mesh.rayTestRadius = this.pickTestRadius;
-                    mesh.vaoEnabled = true;
                     mesh.vbWholeDataEnabled = true;
                     mesh.setBufSortFormat( material.getBufSortFormat() );
                     mesh.initialize(this.m_posarr, colorarr, this.m_thickness);

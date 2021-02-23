@@ -87,7 +87,7 @@ export namespace vox
             static readonly SCENE_RO_FILTER_FINISH:number = (2<<19);
             static readonly SCENE_RO_ERASE:number = 0;
         }
-        export enum DisplayRenderState
+        export enum DisplayRenderSign
         {
             // 还没有加入 world
             NOT_IN_WORLD = -1,

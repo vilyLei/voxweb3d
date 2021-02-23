@@ -7,11 +7,13 @@
 // 只是用于视觉表现上的控制, 而和transform或者非渲染的逻辑无关
 // 一个 RODisplay 和一个 IRPODisplay一一对应
 
+import * as RenderConstT from "../../vox/render/RenderConst";
 import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
 import * as IRPODisplayT from "../../vox/render/IRPODisplay";
 
+import DisplayRenderSign = RenderConstT.vox.render.DisplayRenderSign;
 import ROVertexBuffer = ROVertexBufferT.vox.mesh.ROVertexBuffer;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
@@ -43,7 +45,7 @@ export namespace vox
             getPartGroup():Uint16Array;
             createPartGroup(partsTotal:number):void;
             setDrawPartAt(index:number,ivsIndex:number, ivsCount:number):void;
-           
+            
             getUid():number;
             setTransform(trans:Matrix4):void;
             getTransform():Matrix4;
@@ -57,8 +59,8 @@ export namespace vox
             // 只能由渲染系统内部调用
             __$ruid:number;// = -1;     // 用于关联IRPODisplay对象
             __$rpuid:number;// = -1;     // 用于关联RPONode对象
-            __$$runit:IRPODisplay;
-            __$$rsign:number;// = RODisplay.NOT_IN_WORLD;
+            __$$rsign:DisplayRenderSign;// = DisplayRenderSign.NOT_IN_WORLD;
+            __$$runit:IRPODisplay;// = null
         }
     }
 }

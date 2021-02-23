@@ -9,29 +9,29 @@
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
+import * as IBufferBuilderT from "../../vox/render/IBufferBuilder";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as UniformConstT from "../../vox/material/UniformConst";
 import * as ShdProgramT from "../../vox/material/ShdProgram";
 import * as TextureProxyT from '../../vox/texture/TextureProxy';
 import * as TextureRenderObjT from '../../vox/texture/TextureRenderObj';
-import * as ShaderUniformDataT from "../../vox/material/ShaderUniformData";
 import * as ShdUniformToolT from '../../vox/material/ShdUniformTool';
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as MaterialShaderT from '../../vox/material/MaterialShader';
-import * as ROVtxBufUidStoreT from '../../vox/mesh/ROVtxBufUidStore';
 
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RenderProcessT from "../../vox/render/RenderProcess";
 import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
 import * as ROTransPoolT from "../../vox/render/ROTransPool";
-import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
-import * as IVtxBufT from "../../vox/mesh/IVtxBuf";
 import * as ROVertexResourceT from "../../vox/render/ROVertexResource";
+import * as ROTextureResourceT from "../../vox/render/ROTextureResource";
+import * as IROMaterialUpdaterT from "../../vox/render/IROMaterialUpdater";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import DisplayRenderState = RenderConstT.vox.render.DisplayRenderState;
+import DisplayRenderSign = RenderConstT.vox.render.DisplayRenderSign;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
+import IBufferBuilder = IBufferBuilderT.vox.render.IBufferBuilder;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import UniformConst = UniformConstT.vox.material.UniformConst;
 import ShdProgram = ShdProgramT.vox.material.ShdProgram;
@@ -39,72 +39,78 @@ import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureRenderObj = TextureRenderObjT.vox.texture.TextureRenderObj;
 import EmptyTexRenderObj = TextureRenderObjT.vox.texture.EmptyTexRenderObj;
 import ShdUniformTool = ShdUniformToolT.vox.material.ShdUniformTool;
-import EmptyShdUniform = ShdUniformToolT.vox.material.EmptyShdUniform;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
-import ROVtxBufUidStore = ROVtxBufUidStoreT.vox.mesh.ROVtxBufUidStore;
 
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 import RenderProcessBuider = RenderProcessBuiderT.vox.render.RenderProcessBuider;
-import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
 import ROTransPool = ROTransPoolT.vox.render.ROTransPool;
-import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
-import IVtxBuf = IVtxBufT.vox.mesh.IVtxBuf;
 import ROVertexResource = ROVertexResourceT.vox.render.ROVertexResource;
 import GpuVtxObect = ROVertexResourceT.vox.render.GpuVtxObect;
+import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
+import IROMaterialUpdater = IROMaterialUpdaterT.vox.render.IROMaterialUpdater;
 
 export namespace vox
 {
     export namespace render
     {
-        export class RODispBuilder
+        /**
+         * 本类实现了将 系统内存数据 合成为 渲染运行时系统所需的资源(包括: 渲染运行时管理数据和显存数据)
+         */
+        export class RODispBuilder implements IROMaterialUpdater
         {
-            private static s_emptyTRO:EmptyTexRenderObj = new EmptyTexRenderObj();
-            private static s_shaders:MaterialShader[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
-            private static s_unitBuilders:RPOUnitBuilder[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
-            private static s_processBuilders:RenderProcessBuider[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
             private m_disps:IRODisplay[] = [];
             private m_processUidList:number[] = [];
-            // 当前 renderer context 范围内的所有 material shader 管理 
+            // 当前 renderer context 范围内的所有 material shader 管理
+            
+            private m_emptyTRO:EmptyTexRenderObj = null;
             private m_shader:MaterialShader = null;
             private m_rpoUnitBuilder:RPOUnitBuilder = null;
             private m_processBuider:RenderProcessBuider = null;
-            constructor(rc:RenderProxy, rpoUnitBuilder:RPOUnitBuilder, processBuider:RenderProcessBuider)
+
+            private m_rc:RenderProxy = null;
+            constructor()
             {
-                this.m_shader = new MaterialShader();
-                this.m_rpoUnitBuilder = rpoUnitBuilder;
-                this.m_processBuider = processBuider;
-                RODispBuilder.s_shaders[rc.getUid()] = this.m_shader;
-                RODispBuilder.s_unitBuilders[rc.getUid()] = rpoUnitBuilder;
-                RODispBuilder.s_processBuilders[rc.getUid()] = processBuider;
+            }
+            initialize(rc:RenderProxy, rpoUnitBuilder:RPOUnitBuilder, processBuider:RenderProcessBuider):void
+            {
+                if(this.m_shader == null)
+                {
+                    this.m_rc = rc;
+                    this.m_shader = new MaterialShader();
+                    this.m_rpoUnitBuilder = rpoUnitBuilder;
+                    this.m_processBuider = processBuider;
+                    this.m_emptyTRO = new EmptyTexRenderObj(rc.Texture);
+                }
             }
             getMaterialShader():MaterialShader
             {
                 return this.m_shader;
             }
-            static UpdateDispTRO(rc:RenderProxy,disp:IRODisplay):void
+            /**
+             * update texture system memory data to gpu memory data in runtime.
+             */
+            updateDispTRO(texRes:ROTextureResource,disp:IRODisplay):void
             {
                 if(disp != null && disp.__$ruid > -1)
                 {
                     let material:MaterialBase = disp.getMaterial();
                     if(material != null)
                     {
-                        let runit:RPOUnit = RODispBuilder.s_unitBuilders[rc.getUid()].getNodeByUid(disp.__$ruid) as RPOUnit;
-                        let tro:TextureRenderObj = TextureRenderObj.GetByMid(rc.getUid(), material.__$troMid);
-                        
+                        let runit:RPOUnit = this.m_rpoUnitBuilder.getNodeByUid(disp.__$ruid) as RPOUnit;
+                        let tro:TextureRenderObj = TextureRenderObj.GetByMid(texRes.getRCUid(), material.__$troMid);
                         if(runit.tro != null && (tro == null || runit.tro.getMid() != tro.getMid()))
                         {
-                            let shader:MaterialShader = RODispBuilder.s_shaders[rc.getUid()];
-                            let shdp:ShdProgram = shader.findShdProgramByShdData(material.getShaderData());
+                            let shdp:ShdProgram = this.m_shader.findShdProgramByShdData(material.getShaderData());
                             if(shdp != null)
                             {
                                 if(shdp.getTexTotal() > 0)
                                 {
                                     if(tro == null)
                                     {
-                                        tro = TextureRenderObj.Create(rc, material.getTextureList(),shdp.getTexTotal());
+                                        tro = TextureRenderObj.Create(texRes, material.getTextureList(),shdp.getTexTotal());
                                     }
 
                                     if(runit.tro != tro)
@@ -114,23 +120,23 @@ export namespace vox
                                             runit.tro.__$detachThis();
                                         }
                                         runit.tro = tro;
-                                        runit.texMid = runit.tro.getMid();
-                                        RODispBuilder.s_processBuilders[rc.getUid()].rejoinRunitForTro(runit);
                                         tro.__$attachThis();
+                                        runit.texMid = runit.tro.getMid();
+                                        this.m_processBuider.rejoinRunitForTro(runit);
                                         material.__$troMid = runit.tro.getMid();
                                     }
                                 }
                                 else
                                 {
-                                    if(runit.tro != RODispBuilder.s_emptyTRO)
+                                    if(runit.tro != this.m_emptyTRO)
                                     {
                                         if(runit.tro != null)
                                         {
                                             runit.tro.__$detachThis();
                                         }
-                                        runit.tro = RODispBuilder.s_emptyTRO;
+                                        runit.tro = this.m_emptyTRO;
                                         runit.texMid = runit.tro.getMid();
-                                        RODispBuilder.s_processBuilders[rc.getUid()].rejoinRunitForTro(runit);
+                                        this.m_processBuider.rejoinRunitForTro(runit);
                                         material.__$troMid = runit.texMid;
                                     }
                                 }
@@ -154,7 +160,7 @@ export namespace vox
                     }
                 }
             }
-            public updateDispMaterial(rc:RenderProxy,runit:RPOUnit,disp:IRODisplay):ShdProgram
+            updateDispMaterial(rc:RenderProxy,runit:RPOUnit,disp:IRODisplay):ShdProgram
             {
                 let shdp:ShdProgram = null;
                 if(disp.__$ruid >= 0)
@@ -176,7 +182,7 @@ export namespace vox
                         let tro:TextureRenderObj = null;
                         if(shdp.getTexTotal() > 0)
                         {
-                            tro = TextureRenderObj.Create(rc, material.getTextureList(),shdp.getTexTotal());
+                            tro = TextureRenderObj.Create(rc.Texture, material.getTextureList(),shdp.getTexTotal());
                             if(runit.tro != tro)
                             {
                                 if(runit.tro != null)
@@ -184,21 +190,21 @@ export namespace vox
                                     runit.tro.__$detachThis();
                                 }
                                 runit.tro = tro;
+                                tro.__$attachThis();
                                 runit.texMid = runit.tro.getMid();
                                 if(runit.__$rprouid >= 0)this.m_processBuider.rejoinRunitForTro(runit);
-                                tro.__$attachThis();
                                 material.__$troMid = runit.tro.getMid();
                             }
                         }
                         else
                         {
-                            if(runit.tro != RODispBuilder.s_emptyTRO)
+                            if(runit.tro != this.m_emptyTRO)
                             {
                                 if(runit.tro != null)
                                 {
                                     runit.tro.__$detachThis();
                                 }
-                                runit.tro = RODispBuilder.s_emptyTRO;
+                                runit.tro = this.m_emptyTRO;
                                 runit.texMid = runit.tro.getMid();
                                 if(runit.__$rprouid >= 0)this.m_processBuider.rejoinRunitForTro(runit);
                                 material.__$troMid = runit.texMid;
@@ -240,21 +246,90 @@ export namespace vox
                 }
                 return shdp;
             }
-            //  private createGpuVtx(rc:RenderProxy,vtxBuf:IVtxBuf, shdp:IVtxShdCtr):GpuVtxObect
-            //  {
-            //      let vtxRes:ROVertexResource = rc.Vertex;
-            //      let resUid:number = vtxBuf.getUid();
-            //      if(vtxRes.hasVertexRes(resUid))
-            //      {
-            //          return vtxRes.getVertexRes(resUid);
-            //      }
-            //      let vtx:GpuVtxObect = new GpuVtxObect();
-            //      vtx.rcuid = rc.getUid();
-            //      vtx.resUid = resUid;
-            //      vtxRes.addVertexRes(vtx);
-            //      
-            //      return vtx;
-            //  }
+            /**
+             * update vertex system memory data to gpu memory data
+             */
+            updateDispVbuf(rc:IBufferBuilder,vtxRes:ROVertexResource,disp:IRODisplay):void
+            {
+                if(disp != null && disp.vbuf != null && disp.__$ruid > -1)
+                {
+                    let runit:RPOUnit = this.m_rpoUnitBuilder.getNodeByUid(disp.__$ruid) as RPOUnit;
+                    if(runit != null)
+                    {
+                        let oldResUid:number = runit.vtxUid;
+                        if(oldResUid != disp.vbuf.getUid())
+                        {
+                            if(vtxRes.hasVertexRes(oldResUid))
+                            {
+                                vtxRes.__$detachRes(oldResUid);
+                            }
+                            runit.vro.__$detachThis();
+                            
+                            let shdp:ShdProgram = this.m_shader.findShdProgramByUid(runit.shdUid);
+                            // build vtx gpu data
+                            this.buildVtxRes(rc,vtxRes,disp,runit,shdp);
+                            if(runit.__$rprouid >= 0)this.m_processBuider.rejoinRunitForVro(runit);
+                        }
+                    }
+                }
+            }
+            // build vtx gpu data
+            private buildVtxRes(rc:IBufferBuilder,vtxRes:ROVertexResource,disp:IRODisplay,runit:RPOUnit, shdp:ShdProgram):void
+            {
+                if(disp.vbuf != null)
+                {
+                    runit.ivsIndex = disp.ivsIndex;
+                    runit.ivsCount = disp.ivsCount;
+                    runit.insCount = disp.insCount;
+                    runit.visible = disp.visible;
+                    runit.drawEnabled = disp.ivsCount > 0 && disp.visible;
+                    runit.drawMode = disp.drawMode;
+                    runit.renderState = disp.renderState;
+                    runit.rcolorMask = disp.rcolorMask;
+                    runit.trisNumber = disp.trisNumber;
+
+                    // build vertex gpu resoure 
+                    //let vtxRes:ROVertexResource = rc.Vertex;
+                    let resUid:number = disp.vbuf.getUid();
+                    let vtx:GpuVtxObect;
+                    let needBuild:boolean = true;
+                    if(vtxRes.hasVertexRes(resUid))
+                    {
+                        vtx = vtxRes.getVertexRes(resUid);
+                        needBuild = vtx.version != disp.vbuf.version;
+                        console.log("GpuVtxObect instance repeat to be used,needBuild: "+needBuild,vtx.getAttachCount());
+                        if(needBuild)
+                        {
+                            vtx.destroy(rc);
+                            vtx.rcuid = rc.getUid();
+                            vtx.resUid = resUid;
+                        }
+                    }
+                    else
+                    {
+                        vtx = new GpuVtxObect();
+                        vtx.rcuid = vtxRes.getRCUid();
+                        vtx.resUid = resUid;
+                        vtxRes.addVertexRes(vtx);
+                        console.log("GpuVtxObect instance create new: ",vtx.resUid);
+                    }
+                    if(needBuild)
+                    {
+                        vtx.indices.ibufStep = disp.vbuf.getIBufStep();
+                        vtx.indices.initialize(rc,disp.vbuf);
+                        vtx.vertex.initialize(rc,shdp,disp.vbuf);
+                        vtx.version = disp.vbuf.version;
+                    }
+                    vtxRes.__$attachRes(resUid);
+                    runit.vro = vtx.createVRO(rc, shdp, true);
+                    runit.vro.__$attachThis();
+
+                    runit.vtxUid = disp.vbuf.getUid();
+                    
+                    runit.ibufStep = runit.vro.ibufStep;
+                    runit.ibufType = runit.ibufStep != 4?this.m_rc.UNSIGNED_SHORT:this.m_rc.UNSIGNED_INT;
+                }
+            }
             private buildGpuDisp(rc:RenderProxy,disp:IRODisplay,processUid:number):void
             {
                 if(disp.__$ruid < 0)
@@ -262,23 +337,16 @@ export namespace vox
                     let material:MaterialBase = disp.getMaterial();
                     if(material != null)
                     {
-                        disp.__$$rsign = DisplayRenderState.LIVE_IN_WORLD;
+                        disp.__$$rsign = DisplayRenderSign.LIVE_IN_WORLD;
                         
                         let runit:RPOUnit = this.m_rpoUnitBuilder.create() as RPOUnit;
-                        runit.ivsIndex = disp.ivsIndex;
-                        runit.ivsCount = disp.ivsCount;
-                        runit.insCount = disp.insCount;
-                        runit.visible = disp.visible;
-                        runit.drawEnabled = disp.ivsCount > 0 && disp.visible;
-                        runit.drawMode = disp.drawMode;
-                        runit.renderState = disp.renderState;
-                        runit.rcolorMask = disp.rcolorMask;
-                        runit.trisNumber = disp.trisNumber;
                         disp.__$ruid = runit.uid;
                         disp.__$$runit = runit;
                         
                         let shdp:ShdProgram = this.updateDispMaterial(rc,runit,disp);
                         // build vtx gpu data
+                        this.buildVtxRes(rc,rc.Vertex,disp,runit,shdp);
+                        /*
                         if(disp.vbuf != null)
                         {
                             // build vertex gpu resoure 
@@ -309,30 +377,20 @@ export namespace vox
                             if(needBuild)
                             {
                                 vtx.indices.ibufStep = disp.vbuf.getIBufStep();
-                                vtx.indices.initialize(
-                                    rc,
-                                    disp.vbuf.getIvsData(),
-                                    disp.vbuf.bufData,
-                                    disp.vbuf.getBufDataUsage(),
-                                    resUid
-                                    );
-                                vtx.vertex.initialize(
-                                    rc,
-                                    shdp,
-                                    disp.vbuf,
-                                    resUid
-                                    );
+                                vtx.indices.initialize(rc,disp.vbuf);
+                                vtx.vertex.initialize(rc,shdp,disp.vbuf);
                                 vtx.version = disp.vbuf.version;
                             }
                             vtxRes.__$attachRes(resUid);
                             runit.vro = vtx.createVRO(rc, shdp, true);
                             runit.vro.__$attachThis();
 
-                            runit.vtxUid = runit.vro.getVtxUid();
+                            runit.vtxUid = disp.vbuf.getUid();
                             
                             runit.ibufStep = runit.vro.ibufStep;
                             runit.ibufType = runit.ibufStep != 4?rc.UNSIGNED_SHORT:rc.UNSIGNED_INT;
                         }
+                        //*/
                         //console.log("buildGpuDisp(), runit.ibufType: "+runit.ibufType+", runit.ibufStep: "+runit.ibufStep+", runit.ivsCount: "+runit.ivsCount);
                         (this.m_processBuider.getNodeByUid(processUid) as RenderProcess).addDisp(rc, disp);
                     }
@@ -351,7 +409,7 @@ export namespace vox
                 {
                     disp = this.m_disps.shift();
                     processUid = this.m_processUidList.shift();
-                    if(disp.__$$rsign == DisplayRenderState.GO_TO_WORLD)
+                    if(disp.__$$rsign == DisplayRenderSign.GO_TO_WORLD)
                     {
                         this.buildGpuDisp(rc, disp, processUid);
                     }
@@ -398,7 +456,7 @@ export namespace vox
                     this.m_shader.useShdByUid(rc, shdUid);
                     if(tro != null)
                     {
-                        tro.run(rc);
+                        tro.run();
                     }
                 }
             }

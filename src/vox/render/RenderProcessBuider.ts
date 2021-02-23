@@ -61,6 +61,10 @@ export namespace vox
             {
                 (this.getNodeByUid(runit.__$rprouid) as RenderProcess).rejoinRunitForTro(runit);
             }
+            rejoinRunitForVro(runit:RPOUnit):void
+            {
+                (this.getNodeByUid(runit.__$rprouid) as RenderProcess).rejoinRunitForVro(runit);
+            }
         }
     }
 }

@@ -48,8 +48,7 @@ export namespace vox
                         this.color.r,this.color.g,this.color.b, this.color.a
                         , this.color.r,this.color.g,this.color.b, this.color.a
                     ];
-                    let mesh:QuadLineMesh = new QuadLineMesh();                
-                    mesh.vaoEnabled = true;
+                    let mesh:QuadLineMesh = new QuadLineMesh();
                     mesh.vbWholeDataEnabled = true;
                     mesh.initialize(this.m_posarr, colorarr, this.m_thickness);
                     this.setMesh(mesh);
@@ -127,8 +126,7 @@ export namespace vox
                     //      , this.color.r,this.color.g,this.color.b, this.color.a
                     //      , this.color.r,this.color.g,this.color.b, this.color.a
                     //  ];
-                    let mesh:QuadLineMesh = new QuadLineMesh();                
-                    mesh.vaoEnabled = true;
+                    let mesh:QuadLineMesh = new QuadLineMesh();
                     mesh.vbWholeDataEnabled = true;
                     mesh.initialize(this.m_posarr, colorarr, this.m_thickness);
                     this.setMesh(mesh);

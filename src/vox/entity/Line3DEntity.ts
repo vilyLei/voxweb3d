@@ -50,8 +50,7 @@ export namespace vox
                     let colorarr:number[] = [
                         this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b                        
                     ];
-                    let mesh:DashedLineMesh = new DashedLineMesh();                
-                    mesh.vaoEnabled = false;
+                    let mesh:DashedLineMesh = new DashedLineMesh();
                     mesh.vbWholeDataEnabled = false;
                     mesh.setBufSortFormat( material.getBufSortFormat() );
                     mesh.initialize(this.m_posarr, colorarr);

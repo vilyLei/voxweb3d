@@ -21,6 +21,7 @@ import * as DepthTextureProxyT from "../../vox/texture/DepthTextureProxy";
 import * as WrapperTextureProxyT from "../../vox/texture/WrapperTextureProxy";
 import * as RendererInstanceT from "../../vox/scene/RendererInstance";
 
+import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
@@ -81,6 +82,8 @@ export namespace vox
                     tex = new ImageTextureProxy(this.m_renderer.textureSlot,pw,ph,powerof2Boo);
                 }
                 this.m_renderer.textureSlot.addTexture(tex);
+                tex.mipmapEnabled = true;
+                tex.setWrap(TextureConst.WRAP_REPEAT);
                 return tex;
             }
             

@@ -49,7 +49,6 @@ export namespace vox
                         this.m_bufsMap.delete(uid);
                         buf = bufs.pop();
                         buf.__$updateToGpu(rc);
-                        buf.__$setUpdateStatus(0);
                         --len;
                     }
                 }

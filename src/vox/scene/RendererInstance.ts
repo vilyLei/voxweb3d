@@ -140,15 +140,20 @@ export namespace vox
                         this.m_renderInsContext = new RendererInstanceContext();
                     }
                     //console.log("param.getMatrix4AllocateSize(): "+param.getMatrix4AllocateSize());
+                    this.m_renderProxy = this.m_renderInsContext.getRenderProxy();
+                    //this.m_dispBuilder = new RODispBuilder(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider);
+                    this.m_dispBuilder = new RODispBuilder();
+
                     this.m_renderInsContext.setCameraParam(param.camProjParam.x,param.camProjParam.y,param.camProjParam.z);
                     this.m_renderInsContext.setMatrix4AllocateSize(param.getMatrix4AllocateSize());
-                    this.m_renderInsContext.initialize(param);
-                    this.m_renderProxy = this.m_renderInsContext.getRenderProxy();
+                    this.m_renderInsContext.initialize(param,this.m_dispBuilder);
                     this.m_adapter = this.m_renderProxy.getRenderAdapter();
                     this.m_uid = this.m_renderProxy.getUid();
                     
-                    this.m_dispBuilder = new RODispBuilder(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider);
-                    this.m_renderInsContext.setDispBuilder(this.m_dispBuilder);
+                    this.m_dispBuilder.initialize(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider);
+
+                    this.m_renderInsContext.initManager(this.m_dispBuilder);
+
                     this.m_entity3DMana = new DispEntity3DManager(this.m_uid, this.m_dispBuilder,this.m_rpoUnitBuilder, this.m_processBuider);
                     this.appendProcess(this.m_batchEnabled,this.m_processFixedState);
                     

@@ -168,7 +168,7 @@ export namespace vox
                     }
                 }
             }
-            updateTextureAt(index:number,tex:TextureProxy):void
+            setTextureAt(index:number,tex:TextureProxy):void
             {
                 if(index >= 0 && tex != null)
                 {

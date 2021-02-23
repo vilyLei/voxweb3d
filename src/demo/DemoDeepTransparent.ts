@@ -200,12 +200,12 @@ export namespace demo
             let depIndex1:number = 0;
             let colorIndex:number = 1;
             this.m_peelM0.setPeelEanbled(false);
-            this.m_peelM0.updateTextureAt(1,TextureStore.GetDepthTextureAt(depIndex0));
+            this.m_peelM0.setTextureAt(1,TextureStore.GetDepthTextureAt(depIndex0));
 
             if(this.m_peelEntity1 != null)this.m_peelEntity1.updateTexByMaterial(this.m_rscene.getRenderProxy());
             if(this.m_peelEntity2 != null)this.m_peelEntity2.updateTexByMaterial(this.m_rscene.getRenderProxy());
             this.m_peelEntity0.updateTexByMaterial(this.m_rscene.getRenderProxy());
-            //this.m_peelEntity0.updateTextureAt(1,this.m_depTex1,this.m_rscene.getRenderProxy());
+            //this.m_peelEntity0.setTextureAt(1,this.m_depTex1,this.m_rscene.getRenderProxy());
             this.m_rcontext.setClearRGBAColor4f(0.0, 0.0, 0.0,1.0);
             this.m_rcontext.synFBOSizeWithViewport();
             this.m_rcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(colorIndex), true, false, 0);
@@ -223,13 +223,13 @@ export namespace demo
                 if(depIndex1 > 1) depIndex1 = 0;
                 if(colorIndex > 1) colorIndex = 0;
                 this.m_peelM0.setPeelEanbled(true);
-                this.m_peelM0.updateTextureAt(1,TextureStore.GetDepthTextureAt(depIndex0));
+                this.m_peelM0.setTextureAt(1,TextureStore.GetDepthTextureAt(depIndex0));
 
                 if(this.m_peelEntity1 != null)this.m_peelEntity1.updateTexByMaterial(this.m_rscene.getRenderProxy());
                 if(this.m_peelEntity2 != null)this.m_peelEntity2.updateTexByMaterial(this.m_rscene.getRenderProxy());
                 this.m_peelEntity0.updateTexByMaterial(this.m_rscene.getRenderProxy());
                 //console.log("depIndex1: ",depIndex1,"colorIndex: ",colorIndex);
-                //this.m_peelEntity0.updateTextureAt(1,this.m_depTex0,this.m_rscene.getRenderProxy());
+                //this.m_peelEntity0.setTextureAt(1,this.m_depTex0,this.m_rscene.getRenderProxy());
                 this.m_rcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(colorIndex), true, false, 0);
                 this.m_rcontext.setRenderToTexture(TextureStore.GetDepthTextureAt(depIndex1), true, false, 1024);
                 this.m_rscene.renderBegin();

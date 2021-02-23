@@ -80,6 +80,8 @@ export namespace vox
             protected __$destroy():void
             {
                 console.log("VROBase::__$destroy()..., ("+this.m_uid+")this.m_attachCount: "+this.m_attachCount);
+                VROBase.s_midMap.delete(this.m_mid);
+                this.m_mid = 0;
                 this.m_vtxUid = -1;
                 this.ibuf = null;
             }

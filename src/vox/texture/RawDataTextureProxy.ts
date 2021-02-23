@@ -6,6 +6,7 @@
 /***************************************************************************/
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as TextureDataT from "../../vox/texture/RawTexData";
+import * as ROTextureResourceT from "../../vox/render/ROTextureResource";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
@@ -15,6 +16,7 @@ import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import RawTexData = TextureDataT.vox.texture.RawTexData;
+import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
@@ -99,12 +101,11 @@ export namespace vox
                 }
             }
             
-            protected uploadData(rc:RenderProxy):void
+            protected uploadData(texRes:ROTextureResource):void
             {
                 if(this.m_texData != null)
                 {
-                    let gl:any = rc.RContext;
-                    this.dataUploadToGpu(gl,this.m_texData, this.m_texDatas);                    
+                    this.dataUploadToGpu(texRes.getRC(),this.m_texData, this.m_texDatas);                    
                 }
             }
             __$updateToGpu(rc:RenderProxy):void
@@ -115,7 +116,7 @@ export namespace vox
                     let gl:any = rc.RContext;
 
                     let len:number = this.m_subDataList != null?this.m_subDataList.length:0;
-                    this.__$updateToGpuBegin(rc);
+                    this.__$updateToGpuBegin(rc.Texture);
                     if(len > 0)
                     {
                         let i:number = 0;

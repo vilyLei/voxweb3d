@@ -23,9 +23,7 @@ import * as RODisplayT from "../../vox/display/RODisplay";
 import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
 
 import * as RenderProxyT from "../../vox/render/RenderProxy";
-import * as RenderBufferUpdaterT from "../../vox/render/RenderBufferUpdater";
 import * as TextureProxyT from '../../vox/texture/TextureProxy';
-import * as RODispBuilderT from '../../vox/render/RODispBuilder';
 import * as ROTransPoolT from '../../vox/render/ROTransPool';
 
 
@@ -43,9 +41,7 @@ import RODisplay = RODisplayT.vox.display.RODisplay;
 import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
 
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-import RenderBufferUpdater = RenderBufferUpdaterT.vox.render.RenderBufferUpdater;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import RODispBuilder = RODispBuilderT.vox.render.RODispBuilder;
 import ROTransPool = ROTransPoolT.vox.render.ROTransPool;
 
 export namespace vox
@@ -166,32 +162,76 @@ export namespace vox
                 return this.m_drawEnabled;
             }
             // update material texture list
-            private m_updateStatus:number = -1;
             protected m_texChanged:boolean = false;
-            __$setUpdateStatus(s:number):void
+            /**
+             * users need to call this function manually
+             * 更新有两种形式, 1: 只是更改资源内部的数据, 2: 替换资源本身
+             * 更新过程可以通过DisplayEntity对象来控制，也可以通过资源本身来控制
+             */
+            updateMeshToGpu(rc:RenderProxy,deferred:boolean = true):void
             {
-                this.m_updateStatus = s;
+                if(this.m_display != null && this.m_display.__$ruid > -1)
+                {
+                    this.m_display.vbuf.updateToGpu(rc, deferred);
+                }
             }
-            __$getUpdateStatus():number
+            /**
+             * users need to call this function manually
+             * 更新有两种形式, 1: 只是更改资源内部的数据, 2: 替换资源本身
+             * 更新过程可以通过DisplayEntity对象来控制，也可以通过资源本身来控制
+             */
+            updateMaterialToGpu(rc:RenderProxy,deferred:boolean = true):void
             {
-                return this.m_updateStatus;
+                if(this.m_display != null && this.m_display.__$ruid > -1)
+                {
+                    if(this.m_texChanged)
+                    {
+                        this.m_texChanged = false;
+                        rc.MaterialUpdater.updateDispTRO(rc.Texture, this.m_display);
+                    }
+                }
             }
-            __$updateToGpu(rc:RenderProxy):void
-            {
-                this.m_texChanged = false;
-                RODispBuilder.UpdateDispTRO(rc,this.m_display);
-            }
-            updateTextureList(texList:TextureProxy[]):void
+            updateTextureList(texList:TextureProxy[],rc:RenderProxy = null):void
             {
                 if(this.m_display != null && this.m_display.__$ruid > -1)
                 {
                     if(this.m_display.getMaterial() != null)
                     {
                         this.m_display.getMaterial().setTextureList(texList);
-                        if(!this.m_texChanged)
+                        this.m_texChanged = true;
+                        if(rc != null)
                         {
-                            this.m_texChanged = true;
-                            RenderBufferUpdater.GetInstance().__$addBuf(this);
+                            this.updateMaterialToGpu(rc);
+                        }
+                    }
+                }
+            }
+            updateTextureAt(index:number, tex:TextureProxy,rc:RenderProxy = null):void
+            {
+                if(this.m_display != null && this.m_display.__$ruid > -1)
+                {
+                    if(this.m_display.getMaterial() != null)
+                    {
+                        this.m_display.getMaterial().setTextureAt(index,tex);
+                        this.m_texChanged = true;
+                        if(rc != null)
+                        {
+                            this.updateMaterialToGpu(rc);
+                        }
+                    }
+                }
+                
+            }
+            updateTexByMaterial(rc:RenderProxy = null):void
+            {
+                if(this.m_display != null && this.m_display.__$ruid > -1)
+                {
+                    if(this.m_display.getMaterial() != null)
+                    {
+                        this.m_texChanged = true;
+                        if(rc != null)
+                        {
+                            this.updateMaterialToGpu(rc);
                         }
                     }
                 }

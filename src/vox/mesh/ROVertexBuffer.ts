@@ -6,24 +6,22 @@
 /***************************************************************************/
 
 import * as RenderConstT from "../../vox/render/RenderConst";
-import * as IBufferBuilderT from "../../vox/render/IBufferBuilder";
-import * as IRenderBufferT from "../../vox/render/IRenderBuffer";
-import * as RenderBufferUpdaterT from "../../vox/render/RenderBufferUpdater";
+import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as ROVtxBufUidStoreT from "../../vox/mesh/ROVtxBufUidStore";
 import * as VtxBufDataT from "../../vox/mesh/VtxBufData";
 import * as IVtxBufT from "../../vox/mesh/IVtxBuf";
+import * as IROVtxBufT from "../../vox/render/IROVtxBuf";
 import * as VtxCombinedBufT from "../../vox/mesh/VtxCombinedBuf";
 import * as VtxSeparatedBufT from "../../vox/mesh/VtxSeparatedBuf";
 
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
-import IBufferBuilder = IBufferBuilderT.vox.render.IBufferBuilder;
-import IRenderBuffer = IRenderBufferT.vox.render.IRenderBuffer;
-import RenderBufferUpdater = RenderBufferUpdaterT.vox.render.RenderBufferUpdater;
+import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 import ROVtxBufUidStore = ROVtxBufUidStoreT.vox.mesh.ROVtxBufUidStore;
 import VtxBufData = VtxBufDataT.vox.mesh.VtxBufData;
 import IVtxBuf = IVtxBufT.vox.mesh.IVtxBuf;
+import IROVtxBuf = IROVtxBufT.vox.render.IROVtxBuf;
 import VtxCombinedBuf = VtxCombinedBufT.vox.mesh.VtxCombinedBuf;
 import VtxSeparatedBuf = VtxSeparatedBufT.vox.mesh.VtxSeparatedBuf;
 
@@ -31,25 +29,21 @@ export namespace vox
 {
     export namespace mesh
     {
-        export class ROVertexBuffer implements IRenderBuffer,IVtxBuf
+        export class ROVertexBuffer implements IVtxBuf,IROVtxBuf
         {
             private static s_uid:number = 0;
             private m_uid:number = 0;
-            private m_bufDataUsage:number = 0;
+            
             private m_vtxBuf:IVtxBuf = null;
 
-            private m_rc:IBufferBuilder = null;
-
             private m_ivs:Uint16Array|Uint32Array = null;
-            private m_ivsChanged:boolean = false;
-            private m_ivsPreSize:number = 0;
-            private m_ivsBuf:any = null;
 
-            private m_vaoEnabled:boolean = true;
-            private m_f32Changed:boolean = false;
+            private m_bufDataUsage:number = 0;
             private m_ibufStep:number = 2;// 2 or 4
 
-            version:number = -1;
+            vertexVer:number = 0;
+            indicesVer:number = 0;
+            version:number = 0;
             drawMode:number = RenderDrawMode.ELEMENTS_TRIANGLES;
             bufData:VtxBufData = null;
             private constructor(bufDataUsage:number = VtxBufConst.VTX_STATIC_DRAW)
@@ -62,12 +56,7 @@ export namespace vox
                 if(vtxBuf != this)
                 {
                     this.m_vtxBuf = vtxBuf;
-                    if(vtxBuf != null)vtxBuf.bufData = this.bufData;
                 }
-            }
-            getVtxBuf():IVtxBuf
-            {
-                return this.m_vtxBuf;
             }
             getUid():number
             {
@@ -93,18 +82,6 @@ export namespace vox
             {
                 return this.m_vtxBuf.getBuffersTotal();
             }
-            getVtxAttributesTotal():number
-            {
-                return this.m_vtxBuf.getVtxAttributesTotal();
-            }
-            setVaoEnabled(boo:boolean):void
-            {
-                this.m_vaoEnabled = boo;
-            }
-            getVaoEnabled()
-            {
-                return this.m_vaoEnabled;
-            }
             getF32DataAt(index:number):Float32Array
             {
                 return this.m_vtxBuf.getF32DataAt(index);
@@ -113,22 +90,10 @@ export namespace vox
             {
                 return this.m_ivs;
             }
-            //  isGpuEnabled():boolean
-            //  {
-            //      return this.m_vtxBuf.isGpuEnabled();
-            //  }
-            isChanged():boolean
-            {
-                return this.m_vtxBuf.isChanged();
-            }
             setF32DataAt(index:number,float32Arr:Float32Array,stepFloatsTotal:number,setpOffsets:number[]):void
             {
                 this.m_vtxBuf.setF32DataAt(index, float32Arr, stepFloatsTotal, setpOffsets);
-                if(!this.m_f32Changed && this.m_vtxBuf.isChanged())
-                {
-                    this.m_f32Changed = true;
-                    RenderBufferUpdater.GetInstance().__$addBuf(this);
-                }
+                this.vertexVer++;
             }
             setUintIVSData(uint16Or32Arr:Uint16Array | Uint32Array,status:number = VtxBufConst.VTX_STATIC_DRAW):void
             {
@@ -147,9 +112,9 @@ export namespace vox
                 }
                 
                 this.m_ivs = uint16Or32Arr;
-                if(this.m_ivsBuf != null && uint16Or32Arr != null)
+                if(uint16Or32Arr != null)
                 {
-                    this.m_ivsChanged = true;
+                    this.indicesVer++;
                 }
             }
             setUint16IVSData(uint16Arr:Uint16Array|Uint32Array,status:number = VtxBufConst.VTX_STATIC_DRAW):void
@@ -157,10 +122,7 @@ export namespace vox
                 if((uint16Arr instanceof Uint16Array))
                 {
                     this.m_ivs = uint16Arr;
-                    if(this.m_ivsBuf != null && uint16Arr != null)
-                    {
-                        this.m_ivsChanged = true;
-                    }
+                    this.indicesVer++;
                     this.m_ibufStep = 2;
                 }
                 else
@@ -173,10 +135,7 @@ export namespace vox
                 if((uint32Arr instanceof Uint32Array))
                 {
                     this.m_ivs = uint32Arr;
-                    if(this.m_ivsBuf != null && uint32Arr != null)
-                    {
-                        this.m_ivsChanged = true;
-                    }
+                    this.indicesVer++;
                     this.m_ibufStep = 4;
                 }
                 else
@@ -189,11 +148,7 @@ export namespace vox
                 if(this.m_vtxBuf != null)
                 {
                     this.m_vtxBuf.setData4fAt(vertexI,attribI,px,py,pz,pw);
-                    if(!this.m_f32Changed)
-                    {
-                        this.m_f32Changed = true;
-                        RenderBufferUpdater.GetInstance().__$addBuf(this);
-                    }
+                    this.vertexVer++;
                 }
             }
             setData3fAt(vertexI:number,attribI:number,px:number,py:number,pz:number):void
@@ -201,11 +156,7 @@ export namespace vox
                 if(this.m_vtxBuf != null)
                 {
                     this.m_vtxBuf.setData3fAt(vertexI,attribI,px,py,pz);
-                    if(!this.m_f32Changed)
-                    {
-                        this.m_f32Changed = true;
-                        RenderBufferUpdater.GetInstance().__$addBuf(this);
-                    }
+                    this.vertexVer++;
                 }
             }
             setData2fAt(vertexI:number,attribI:number,px:number,py:number):void
@@ -213,54 +164,18 @@ export namespace vox
                 if(this.m_vtxBuf != null)
                 {
                     this.m_vtxBuf.setData2fAt(vertexI,attribI,px,py);
-                    if(!this.m_f32Changed)
-                    {
-                        this.m_f32Changed = true;
-                        RenderBufferUpdater.GetInstance().__$addBuf(this);
-                    }
+                    this.vertexVer++;
                 }
             }
-            private m_updateStatus:number = -1;
-            __$setUpdateStatus(s:number):void
+            updateToGpu(rc:RenderProxy,deferred:boolean = true):void
             {
-                this.m_updateStatus = s;
+                rc.Vertex.updateToGpu(rc, this.getUid(), deferred);
             }
-            __$getUpdateStatus():number
-            {
-                return this.m_updateStatus;
-            }
-            __$updateToGpu(rc:IBufferBuilder):void
-            {
-                if(this.m_rc != null)
-                {
-                    if(this.m_ivsChanged && this.m_ivsBuf != null)
-                    {
-                        rc.bindEleBuf(this.m_ivsBuf);
-                        if(this.m_ivsPreSize >= this.m_ivs.length)
-                        {
-                            rc.eleBufSubData(this.m_ivs, this.m_bufDataUsage);
-                        }
-                        else
-                        {
-                            rc.eleBufData(this.m_ivs, this.m_bufDataUsage);
-                        }
-                        this.m_ivsPreSize = this.m_ivs.length;
-                        this.m_ivsChanged = false;
-                    }
-
-                    if(this.m_f32Changed)
-                    {
-                        this.m_vtxBuf.updateToGpu( rc );
-                        this.m_f32Changed = false;
-                    }
-                }
-            }
-            updateToGpu(rc:IBufferBuilder):void
-            {
-            }
+            /**
+             * this function is only an empty function.
+             */
             destroy():void
             {
-
             }
             
             private static s_combinedBufs:IVtxBuf[] = [];
@@ -279,8 +194,6 @@ export namespace vox
                 }
                 this.m_vtxBuf = null;
                 this.m_ivs = null;
-                this.m_f32Changed = false;
-                this.m_ivsChanged = false;
 
                 this.bufData = null;
             }
@@ -324,6 +237,8 @@ export namespace vox
                     ROVertexBuffer.s_unitFlagList.push(ROVertexBuffer.S_FLAG_BUSY);
                     ROVertexBuffer.s_unitListLen++;
                 }
+                unit.vertexVer = 0;
+                unit.indicesVer = 0;
                 unit.version++;
                 //console.log("ROVertexBuffer::Create(), ROVertexBuffer.s_unitList.length: "+ROVertexBuffer.s_unitList.length+", new buf: "+unit);
                 ROVertexBuffer.s_vtxStore.__$attachAt(unit.getUid());
@@ -412,7 +327,6 @@ export namespace vox
                 if(ROVertexBuffer.s_combinedBufs.length > 0)
                 {
                     let vtx:VtxCombinedBuf = ROVertexBuffer.s_combinedBufs.pop() as VtxCombinedBuf;
-                    vtx.setBufDataUsage(vb.getBufDataUsage());
                     vb.setVtxBuf( vtx );
                 }
                 else
@@ -485,12 +399,11 @@ export namespace vox
                 if(ROVertexBuffer.s_separatedBufs.length > 0)
                 {
                     let vtx:VtxSeparatedBuf = ROVertexBuffer.s_separatedBufs.pop() as VtxSeparatedBuf;
-                    vtx.setBufDataUsage(vb.getBufDataUsage());
                     vb.setVtxBuf( vtx );
                 }
                 else
                 {
-                    vb.setVtxBuf(new VtxSeparatedBuf(vb.getBufDataUsage()));
+                    vb.setVtxBuf(new VtxSeparatedBuf());
                 }
                 for(i = 0; i < bufTot; i++)
                 {
@@ -512,12 +425,11 @@ export namespace vox
                 if(ROVertexBuffer.s_separatedBufs.length > 0)
                 {
                     let vtx:VtxSeparatedBuf = ROVertexBuffer.s_separatedBufs.pop() as VtxSeparatedBuf;
-                    vtx.setBufDataUsage(vb.getBufDataUsage());
                     vb.setVtxBuf( vtx );
                 }
                 else
                 {
-                    vb.setVtxBuf(new VtxSeparatedBuf(vb.getBufDataUsage()));
+                    vb.setVtxBuf(new VtxSeparatedBuf());
                 }
                 for(i = 0; i < bufTot; i++)
                 {
@@ -534,7 +446,7 @@ export namespace vox
             //      return ROVertexBuffer.s_vtxStore.getAttachAllCount();
             //  }
             private static s_timeDelay:number = 128;
-            static RenderBegin(rc:IBufferBuilder):void
+            static RenderBegin(rc:RenderProxy):void
             {
                 --ROVertexBuffer.s_timeDelay;
                 if(ROVertexBuffer.s_timeDelay < 1)

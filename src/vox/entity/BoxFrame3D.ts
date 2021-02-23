@@ -35,8 +35,8 @@ export namespace vox
                 super();
                 this.m_dynColorBoo = dynColorBoo;
             }
-            private m_minV:Vector3D = new Vector3D();
-            private m_maxV:Vector3D = new Vector3D();
+            private m_minV:Vector3D = new Vector3D(-100.0,-100.0,-100.0);
+            private m_maxV:Vector3D = new Vector3D(100.0,100.0,100.0);
             private m_posarr:number[] = null;
             private m_selfMesh:DashedLineMesh = null;
             private m_currMaterial:Line3DMaterial = null;
@@ -80,9 +80,8 @@ export namespace vox
                             colorarr.push(this.color.r,this.color.g,this.color.b);
                         }
                     }
-                    this.m_selfMesh = new DashedLineMesh(VtxBufConst.VTX_DYNAMIC_DRAW);          
+                    this.m_selfMesh = new DashedLineMesh(VtxBufConst.VTX_DYNAMIC_DRAW);
                     this.m_selfMesh.rayTestRadius = this.rayTestRadius;
-                    this.m_selfMesh.vaoEnabled = false;
                     this.m_selfMesh.vbWholeDataEnabled = false;
                     this.m_selfMesh.setBufSortFormat( material.getBufSortFormat() );
                     if(this.m_dynColorBoo)
@@ -101,7 +100,7 @@ export namespace vox
                 this.m_minV.copyFrom(minV);
                 this.m_maxV.copyFrom(maxV);
                 this.m_posarr = [
-                    // bottom frame
+                    // bottom frame plane: -y, first pos: (+x,-y,+z), plane positions wrap mode: CCW
                     this.m_minV.x,this.m_minV.y,this.m_minV.z, this.m_minV.x,this.m_minV.y,this.m_maxV.z,
                     this.m_minV.x,this.m_minV.y,this.m_minV.z, this.m_maxV.x,this.m_minV.y,this.m_minV.z,
                     this.m_minV.x,this.m_minV.y,this.m_maxV.z, this.m_maxV.x,this.m_minV.y,this.m_maxV.z,
@@ -111,7 +110,7 @@ export namespace vox
                     this.m_minV.x,this.m_minV.y,this.m_maxV.z, this.m_minV.x,this.m_maxV.y,this.m_maxV.z,
                     this.m_maxV.x,this.m_minV.y,this.m_minV.z, this.m_maxV.x,this.m_maxV.y,this.m_minV.z,
                     this.m_maxV.x,this.m_minV.y,this.m_maxV.z, this.m_maxV.x,this.m_maxV.y,this.m_maxV.z,
-                    // top frame
+                    // top frame plane: +y
                     this.m_minV.x,this.m_maxV.y,this.m_minV.z, this.m_minV.x,this.m_maxV.y,this.m_maxV.z,
                     this.m_minV.x,this.m_maxV.y,this.m_minV.z, this.m_maxV.x,this.m_maxV.y,this.m_minV.z,
                     this.m_minV.x,this.m_maxV.y,this.m_maxV.z, this.m_maxV.x,this.m_maxV.y,this.m_maxV.z,
@@ -145,42 +144,148 @@ export namespace vox
                 this.createMaterial();
                 this.activeDisplay();
             }
-
+            getVertexAt(vtxIndex:number,outPos:Vector3D):void
+            {
+                if(this.m_selfMesh != null)
+                {
+                    let k:number = 0;
+                    switch(vtxIndex)
+                    {
+                        case 0:
+                            outPos.setXYZ(this.m_posarr[k],this.m_posarr[++k],this.m_posarr[++k]);
+                        break;
+                        case 1:
+                            k = 3;
+                            outPos.setXYZ(this.m_posarr[k],this.m_posarr[++k],this.m_posarr[++k]);
+                        break;
+                        case 2:
+                            k = 15;// 3 * 5
+                            outPos.setXYZ(this.m_posarr[k],this.m_posarr[++k],this.m_posarr[++k]);
+                        break;
+                        case 3:
+                            k = 9;// 3 * 3
+                            outPos.setXYZ(this.m_posarr[k],this.m_posarr[++k],this.m_posarr[++k]);
+                        break;
+                        case 4:
+                            k = 27;// 3 * 9
+                            outPos.setXYZ(this.m_posarr[k],this.m_posarr[++k],this.m_posarr[++k]);
+                        break;
+                        case 5:
+                            k = 33;// 3 * 11
+                            outPos.setXYZ(this.m_posarr[k],this.m_posarr[++k],this.m_posarr[++k]);
+                        break;
+                        case 6:
+                            k = 45;// 3 * 15
+                            outPos.setXYZ(this.m_posarr[k],this.m_posarr[++k],this.m_posarr[++k]);
+                        break;
+                        case 7:
+                            k = 39;// 3 * 13
+                            outPos.setXYZ(this.m_posarr[k],this.m_posarr[++k],this.m_posarr[++k]);
+                        break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            setVertexAt(vtxIndex:number,pos:Vector3D):void
+            {
+                if(this.m_selfMesh != null)
+                {
+                    let k:number = 0;
+                    switch(vtxIndex)
+                    {
+                        case 0:
+                            this.m_posarr[k]=pos.x;this.m_posarr[++k]=pos.y;this.m_posarr[++k]=pos.z;
+                            this.m_selfMesh.setVSXYZAt(0, pos.x,pos.y,pos.z);
+                            this.m_selfMesh.setVSXYZAt(2, pos.x,pos.y,pos.z);
+                            this.m_selfMesh.setVSXYZAt(8, pos.x,pos.y,pos.z);
+                        break;
+                        case 1:
+                            k = 3;
+                            this.m_posarr[k]=pos.x;this.m_posarr[++k]=pos.y;this.m_posarr[++k]=pos.z;
+                            this.m_selfMesh.setVSXYZAt(1, pos.x,pos.y,pos.z);
+                            this.m_selfMesh.setVSXYZAt(4, pos.x,pos.y,pos.z);
+                            this.m_selfMesh.setVSXYZAt(10, pos.x,pos.y,pos.z);
+                        break;
+                        case 2:
+                            k = 15;
+                            this.m_posarr[k]=pos.x;this.m_posarr[++k]=pos.y;this.m_posarr[++k]=pos.z;
+                            this.m_selfMesh.setVSXYZAt(5, pos.x,pos.y,pos.z);
+                            this.m_selfMesh.setVSXYZAt(7, pos.x,pos.y,pos.z);
+                            this.m_selfMesh.setVSXYZAt(14, pos.x,pos.y,pos.z);
+                        break;
+                        case 3:
+                            k = 9;
+                            this.m_posarr[k]=pos.x;this.m_posarr[++k]=pos.y;this.m_posarr[++k]=pos.z;
+                            this.m_selfMesh.setVSXYZAt(3, pos.x,pos.y,pos.z);
+                            this.m_selfMesh.setVSXYZAt(6, pos.x,pos.y,pos.z);
+                            this.m_selfMesh.setVSXYZAt(12, pos.x,pos.y,pos.z);
+                        break;
+                        case 4:
+                            k = 27;
+                            this.m_posarr[k]=pos.x;this.m_posarr[++k]=pos.y;this.m_posarr[++k]=pos.z;
+                            this.m_selfMesh.setVSXYZAt(9, pos.x,pos.y,pos.z);
+                            this.m_selfMesh.setVSXYZAt(16, pos.x,pos.y,pos.z);
+                            this.m_selfMesh.setVSXYZAt(18, pos.x,pos.y,pos.z);
+                        break;
+                        case 5:
+                            k = 33;
+                            this.m_posarr[k]=pos.x;this.m_posarr[++k]=pos.y;this.m_posarr[++k]=pos.z;
+                            this.m_selfMesh.setVSXYZAt(11, pos.x,pos.y,pos.z);
+                            this.m_selfMesh.setVSXYZAt(17, pos.x,pos.y,pos.z);
+                            this.m_selfMesh.setVSXYZAt(20, pos.x,pos.y,pos.z);
+                        break;
+                        case 6:
+                            k = 45;
+                            this.m_posarr[k]=pos.x;this.m_posarr[++k]=pos.y;this.m_posarr[++k]=pos.z;
+                            this.m_selfMesh.setVSXYZAt(15, pos.x,pos.y,pos.z);
+                            this.m_selfMesh.setVSXYZAt(21, pos.x,pos.y,pos.z);
+                            this.m_selfMesh.setVSXYZAt(23, pos.x,pos.y,pos.z);
+                        break;
+                        case 7:
+                            k = 39;
+                            this.m_posarr[k]=pos.x;this.m_posarr[++k]=pos.y;this.m_posarr[++k]=pos.z;
+                            this.m_selfMesh.setVSXYZAt(13, pos.x,pos.y,pos.z);
+                            this.m_selfMesh.setVSXYZAt(19, pos.x,pos.y,pos.z);
+                            this.m_selfMesh.setVSXYZAt(22, pos.x,pos.y,pos.z);
+                        break;
+                        default:
+                            break;
+                    }
+                }
+            }
+            updateFrame(minV:Vector3D,maxV:Vector3D):void
+            {
+                if(this.m_selfMesh != null)
+                {
+                    this.m_minV.copyFrom(minV);
+                    this.m_maxV.copyFrom(maxV);
+                    let m:DashedLineMesh = this.m_selfMesh;
+                    // bottom frame
+                    m.setVSXYZAt(0, minV.x,minV.y,minV.z);m.setVSXYZAt(1, minV.x,minV.y,maxV.z);
+                    m.setVSXYZAt(2, minV.x,minV.y,minV.z);m.setVSXYZAt(3, maxV.x,minV.y,minV.z);
+                    m.setVSXYZAt(4, minV.x,minV.y,maxV.z);m.setVSXYZAt(5, maxV.x,minV.y,maxV.z);
+                    m.setVSXYZAt(6, maxV.x,minV.y,minV.z);m.setVSXYZAt(7, maxV.x,minV.y,maxV.z);
+                    // wall frame
+                    m.setVSXYZAt(8, minV.x,minV.y,minV.z);m.setVSXYZAt(9, minV.x,maxV.y,minV.z);
+                    m.setVSXYZAt(10,minV.x,minV.y,maxV.z);m.setVSXYZAt(11,minV.x,maxV.y,maxV.z);
+                    m.setVSXYZAt(12,maxV.x,minV.y,minV.z);m.setVSXYZAt(13,maxV.x,maxV.y,minV.z);
+                    m.setVSXYZAt(14,maxV.x,minV.y,maxV.z);m.setVSXYZAt(15,maxV.x,maxV.y,maxV.z);
+                    // top frame
+                    m.setVSXYZAt(16,minV.x,maxV.y,minV.z);m.setVSXYZAt(17, minV.x,maxV.y,maxV.z);
+                    m.setVSXYZAt(18,minV.x,maxV.y,minV.z);m.setVSXYZAt(19, maxV.x,maxV.y,minV.z);
+                    m.setVSXYZAt(20,minV.x,maxV.y,maxV.z);m.setVSXYZAt(21, maxV.x,maxV.y,maxV.z);
+                    m.setVSXYZAt(22,maxV.x,maxV.y,minV.z);m.setVSXYZAt(23, maxV.x,maxV.y,maxV.z);
+                       
+                }
+            }
             private m_abVersion:number = -1;
             updateFrameByAABB(ab:AABB):void
             {
                 if(this.m_abVersion != ab.version)
                 {
                     this.m_abVersion = ab.version;
-                    this.m_minV.copyFrom(ab.min);
-                    this.m_maxV.copyFrom(ab.max);
-                    let posarr:number[] = [
-                        // bottom frame
-                        this.m_minV.x,this.m_minV.y,this.m_minV.z, this.m_minV.x,this.m_minV.y,this.m_maxV.z,
-                        this.m_minV.x,this.m_minV.y,this.m_minV.z, this.m_maxV.x,this.m_minV.y,this.m_minV.z,
-                        this.m_minV.x,this.m_minV.y,this.m_maxV.z, this.m_maxV.x,this.m_minV.y,this.m_maxV.z,
-                        this.m_maxV.x,this.m_minV.y,this.m_minV.z, this.m_maxV.x,this.m_minV.y,this.m_maxV.z,
-                        // wall frame
-                        this.m_minV.x,this.m_minV.y,this.m_minV.z, this.m_minV.x,this.m_maxV.y,this.m_minV.z,
-                        this.m_minV.x,this.m_minV.y,this.m_maxV.z, this.m_minV.x,this.m_maxV.y,this.m_maxV.z,
-                        this.m_maxV.x,this.m_minV.y,this.m_minV.z, this.m_maxV.x,this.m_maxV.y,this.m_minV.z,
-                        this.m_maxV.x,this.m_minV.y,this.m_maxV.z, this.m_maxV.x,this.m_maxV.y,this.m_maxV.z,
-                        // top frame
-                        this.m_minV.x,this.m_maxV.y,this.m_minV.z, this.m_minV.x,this.m_maxV.y,this.m_maxV.z,
-                        this.m_minV.x,this.m_maxV.y,this.m_minV.z, this.m_maxV.x,this.m_maxV.y,this.m_minV.z,
-                        this.m_minV.x,this.m_maxV.y,this.m_maxV.z, this.m_maxV.x,this.m_maxV.y,this.m_maxV.z,
-                        this.m_maxV.x,this.m_maxV.y,this.m_minV.z, this.m_maxV.x,this.m_maxV.y,this.m_maxV.z
-                    ];
-                    if(this.m_selfMesh != null)
-                    {
-                        let i:number = 0;
-                        let j:number = 0;
-                        for(; i < 24; ++i)
-                        {
-                            this.m_selfMesh.setVSXYZAt(i,posarr[j],posarr[j+1],posarr[j+2]);
-                            j += 3;
-                        }
-                    }
+                    this.updateFrame(ab.min,ab.max);
                 }
             }
             

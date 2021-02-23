@@ -212,7 +212,6 @@ export namespace vox2d
                 {
                     //bufDataUsage:number = VtxBufConst.VTX_DYNAMIC_DRAW
                     let mesh:TextRectMesh = new TextRectMesh();
-                    mesh.vaoEnabled = true;
                     mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
                     mesh.alignFactorX = this.m_alignFactorX;
                     mesh.alignFactorY = this.m_alignFactorY;

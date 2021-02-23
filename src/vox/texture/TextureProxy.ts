@@ -38,7 +38,7 @@ export namespace vox
          */
         export class TextureProxy implements IRenderBuffer
         {
-            private static __s_uid:number = 0;
+            private static s_uid:number = 0;
             private m_uid:number = -1;
             // 自身的引用计数器
             private m_attachCount:number = 0;
@@ -82,7 +82,7 @@ export namespace vox
                     throw Error("create a new textureProxy instance Error!!!");
                 }
                 this.m_slot = slot;
-                this.m_uid = TextureProxy.__s_uid++;
+                this.m_uid = TextureProxy.s_uid++;
 
                 if(texWidth  < 1) texWidth = 128;
                 if(texHeight  < 1) texHeight = 128;
@@ -108,9 +108,9 @@ export namespace vox
             /**
              * This function only be be called by the renderer inner system.
              */
-            __$$use(rc:RenderProxy):void
+            __$$use(resTex:ROTextureResource):void
             {
-                rc.Texture.bindTexture(this.getResUid());
+                resTex.bindTexture(this.getResUid());
             }
             /**
              * 被引用计数加一
@@ -247,17 +247,10 @@ export namespace vox
                 }
             }
             // sub class override
-            protected uploadData(rc:RenderProxy):void
+            protected uploadData(texRes:ROTextureResource):void
             {
             }
             
-            __$setUpdateStatus(s:number):void
-            {
-            }
-            __$getUpdateStatus():number
-            {
-                return 0;
-            }
             // sub class override
             __$updateToGpu(rc:RenderProxy):void
             {
@@ -296,16 +289,16 @@ export namespace vox
              * This function only be be called by the renderer inner system.
              * if sub class override this function, it must does call this function.
              */
-            __$$upload(rc:RenderProxy):void
+            __$$upload(texRes:ROTextureResource):void
             {
                 if(this.m_haveRData)
                 {
-                    let buildStatus:boolean = this.createTexBuf(rc.Texture);
+                    let buildStatus:boolean = this.createTexBuf(texRes);
                     if(buildStatus)
                     {
-                        this.__$updateToGpuBegin(rc);
-                        this.uploadData(rc);
-                        this.__$buildParam(rc.RContext);
+                        this.__$updateToGpuBegin(texRes);
+                        this.uploadData(texRes);
+                        this.__$buildParam(texRes.getRC());
                         this.m_generateMipmap = true;
                     }
                 }
@@ -337,10 +330,10 @@ export namespace vox
                     this.m_generateMipmap = false;
                 }
             }
-            protected __$updateToGpuBegin(rc:RenderProxy):void
+            protected __$updateToGpuBegin(texRes:ROTextureResource):void
             {
-                let gl:any = rc.RContext;
-                rc.Texture.bindTexture(this.getResUid());
+                let gl:any = texRes.getRC();
+                texRes.bindTexture(this.getResUid());
                 
                 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
                 gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premultiplyAlpha);

@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import * as TextureConstT from "../../vox/texture/TextureConst";
-import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as ROTextureResourceT from "../../vox/render/ROTextureResource";
 import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 
@@ -14,7 +14,7 @@ import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureTarget = TextureConstT.vox.texture.TextureTarget;
 import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
-import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 
@@ -46,11 +46,11 @@ export namespace vox
                     this.m_haveRData = true;
                 }
             }
-            protected uploadData(rc:RenderProxy):void
+            protected uploadData(texRes:ROTextureResource):void
             {
-                let gl:any = rc.RContext;
                 if(this.m_bytes != null)
                 {
+                    let gl:any = texRes.getRC();
                     gl.pixelStorei(gl.UNPACK_ALIGNMENT, 1);
                     gl.texImage3D(
                         gl.TEXTURE_3D,                                                  // target

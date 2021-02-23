@@ -203,7 +203,7 @@ export namespace vox
                     this.ubo.run(rc);
                 }
                 this.vro.run(rc);
-                this.tro.run(rc);
+                this.tro.run();
                 
                 if(this.shader.transformUniform != this.transUniform)
                 {

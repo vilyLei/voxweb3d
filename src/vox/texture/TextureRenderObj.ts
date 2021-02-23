@@ -7,12 +7,10 @@
 
 import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
 import * as ITextureRenderObjT from "../../vox/texture/ITextureRenderObj";
-import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 
 import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
 import ITextureRenderObj = ITextureRenderObjT.vox.texture.ITextureRenderObj;
-import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 
 export namespace vox
@@ -32,7 +30,7 @@ export namespace vox
             protected m_texTotal:number = 0;
             // max texture amount: 8
             private m_gtexList:any[] = [null,null,null,null, null,null,null,null];
-            protected m_targets:Uint16Array = new Uint16Array(8);
+            protected m_samplers:Uint16Array = new Uint16Array(8);
             protected m_texList:TextureProxy[] = null;
 			// renderer context uid
             private m_rcuid:number = 0;
@@ -64,9 +62,9 @@ export namespace vox
                 return this.m_texTotal;
             }
             
-            protected collectTexList(rc:RenderProxy, ptexList:TextureProxy[],shdTexTotal:number):void
+            protected collectTexList(texRes:ROTextureResource, ptexList:TextureProxy[],shdTexTotal:number):void
             {
-                this.m_texRes = rc.Texture;
+                this.m_texRes = texRes;
                 let i:number = 0;
                 if(this.direct)
                 {
@@ -78,8 +76,8 @@ export namespace vox
                         {
                             tex = ptexList[i];
                             tex.__$attachThis();
-                            tex.__$$upload( rc );
-                            this.m_targets[i] = tex.getSampler();
+                            tex.__$$upload( texRes );
+                            this.m_samplers[i] = tex.getSampler();
                             this.m_gtexList[i] = this.m_texRes.getTextureBuffer(tex.getResUid());
                             this.m_texRes.__$attachRes(tex.getResUid());
                             i ++;
@@ -102,20 +100,21 @@ export namespace vox
                 }
             }
             // 注意: 移动端要注意这里的切换机制是符合移动端低带宽的特点
-            run(rc:RenderProxy):void
+            run():void
             {
                 if(this.m_texRes.unlocked && this.m_texRes.texMid != this.m_mid)
                 {
                     this.m_texRes.texMid = this.m_mid;
-                    let gl:any = rc.RContext;
+                    //console.log("this.m_mid: ",this.m_mid,this.m_uid);
+                    let gl:any = this.m_texRes.getRC();
                     let texI:number = gl.TEXTURE0;
                     if(this.direct)
                     {
+                        //console.log("this.m_gtexList: ",this.m_gtexList);
                         for(let i:number = 0; i < this.m_texTotal; ++i)
                         {
-                            gl.activeTexture(texI);
-                            gl.bindTexture(this.m_targets[i], this.m_gtexList[i]);
-                            texI++;
+                            gl.activeTexture(texI++);
+                            gl.bindTexture(this.m_samplers[i], this.m_gtexList[i]);
                         }
                     }
                     else
@@ -123,9 +122,8 @@ export namespace vox
                         let list:TextureProxy[] = this.m_texList;
                         for(let i:number = 0; i < this.m_texTotal; ++i)
                         {
-                            gl.activeTexture(texI);
-                            list[i].__$$use(rc);
-                            texI++;
+                            gl.activeTexture(texI++);
+                            list[i].__$$use(this.m_texRes);
                         }
                     }
                 }
@@ -170,7 +168,7 @@ export namespace vox
             {
                 return "TextureRenderObj(uid = "+this.m_uid+", mid="+this.m_mid+")";
             }
-            static Create(rc:RenderProxy,texList:TextureProxy[],shdTexTotal:number):TextureRenderObj
+            static Create(texRes:ROTextureResource,texList:TextureProxy[],shdTexTotal:number):TextureRenderObj
             {
                 if(texList.length > 0 && shdTexTotal > 0)
                 {
@@ -186,7 +184,7 @@ export namespace vox
                         }
                         ++t;
                     }
-                    let rtoMap:Map<number, TextureRenderObj> = TextureRenderObj.s_troMaps[rc.getUid()];
+                    let rtoMap:Map<number, TextureRenderObj> = TextureRenderObj.s_troMaps[texRes.getRCUid()];
                     let tro:TextureRenderObj = null;
                     if(rtoMap.has(key))
                     {
@@ -196,18 +194,18 @@ export namespace vox
                     {
                         if(TextureRenderObj.s_freeTROList.length < 1)
                         {
-                            tro = new TextureRenderObj(rc.getUid(),key);
-                            //console.log("TextureRenderObj::Create use a new tro.getMid(): "+tro.getMid());
+                            tro = new TextureRenderObj(texRes.getRCUid(),key);
+                            //console.log("TextureRenderObj::Create use a new tex mid: "+tro.getMid());
                         }
                         else
                         {
                             tro = TextureRenderObj.s_freeTROList.pop();
-                            //console.log("TextureRenderObj::Create use an old tro.getMid(): "+tro.getMid());
+                            //console.log("TextureRenderObj::Create use an old tex mid: "+tro.getMid());
                         }
-                        tro.collectTexList(rc,texList,shdTexTotal);
+                        tro.collectTexList(texRes,texList,shdTexTotal);
                         rtoMap.set(key, tro);
                     }
-                    tro.__$setParam(rc.getUid(),key);
+                    tro.__$setParam(texRes.getRCUid(), key);
                     tro.direct = direct;
                     return tro;
                 }
@@ -233,12 +231,14 @@ export namespace vox
         
         export class EmptyTexRenderObj implements ITextureRenderObj
         {
-            constructor()
+            private m_texRes:ROTextureResource = null;
+            constructor(texRes:ROTextureResource)
             {
+                this.m_texRes = texRes;
             }
-            run(rc:RenderProxy):void
+            run():void
             {
-                rc.Texture.renderBegin();
+                this.m_texRes.renderBegin();
             }
             getMid():number
             {

@@ -8,6 +8,7 @@
 import * as ITexDataT from "../../vox/texture/ITexData";
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as ImgTexDataT from "../../vox/texture/ImgTexData";
+import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
@@ -16,6 +17,7 @@ import ITexData = ITexDataT.vox.texture.ITexData;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
 import ImgTexData = ImgTexDataT.vox.texture.ImgTexData;
+import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
@@ -103,11 +105,11 @@ export namespace vox
                     }
                 }
             }
-            protected uploadData(rc:RenderProxy):void
+            protected uploadData(texRes:ROTextureResource):void
             {
                 if(this.m_texData != null)
                 {
-                    this.dataUploadToGpu(rc.RContext,this.m_texData, this.m_texDatas);
+                    this.dataUploadToGpu(texRes.getRC(), this.m_texData, this.m_texDatas);
                 }
             }
             __$updateToGpu(rc:RenderProxy):void
@@ -118,7 +120,7 @@ export namespace vox
                     if(this.m_texData != null)
                     {
                         let gl:any = rc.RContext;
-                        this.__$updateToGpuBegin(rc);
+                        this.__$updateToGpuBegin(rc.Texture);
                         this.dataUploadToGpu(gl,this.m_texData, this.m_texDatas);                     
                         this.__$buildParam(gl);
                         this.m_generateMipmap = true;

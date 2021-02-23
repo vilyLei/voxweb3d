@@ -68,7 +68,6 @@ export namespace vox
                     let mesh:Cone3DMesh = new Cone3DMesh();
                     mesh.uScale = this.uScale;
                     mesh.vScale = this.vScale;
-                    mesh.vaoEnabled = true;
                     mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
                     mesh.setBufSortFormat( material.getBufSortFormat() );
                     mesh.initialize(this.m_radius, this.m_height, this.m_plongitudeNumSegments, 2, this.m_uvType, this.m_alignYRatio);

@@ -100,7 +100,6 @@ export namespace vox
                     {
                         mesh.setTransformMatrix(this.m_transMatrix);
                     }
-                    mesh.vaoEnabled = true;
                     mesh.m_normalType = this.m_normalType;
                     mesh.normalScale = this.normalScale;
                     mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;

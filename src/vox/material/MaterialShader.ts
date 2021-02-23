@@ -60,6 +60,10 @@ export namespace vox
                 return p;
             }
 
+            findShdProgramByUid(uid:number):ShdProgram
+            {
+                return this.m_shdList[uid];
+            }
             findShdProgram(unique_name_str:string):ShdProgram
             {
                 if(this.m_shdDict.has(unique_name_str)){return this.m_shdDict.get(unique_name_str);}

@@ -13,8 +13,6 @@ export namespace vox
         export interface IRenderBuffer
         {
             __$updateToGpu(rc:RenderProxy):void;
-            __$setUpdateStatus(s:number):void;
-            __$getUpdateStatus():number;
         }
     }
 }

@@ -62,8 +62,7 @@ export namespace vox
                             j += 4;
                         }
                     }
-                    let mesh:DashedQuadLineMesh = new DashedQuadLineMesh();                
-                    mesh.vaoEnabled = true;
+                    let mesh:DashedQuadLineMesh = new DashedQuadLineMesh();
                     mesh.vbWholeDataEnabled = true;
                     mesh.initialize(this.m_posarr, colorarr, this.m_thickness);
                     this.setMesh(mesh);

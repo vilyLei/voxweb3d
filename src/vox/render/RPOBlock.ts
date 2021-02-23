@@ -71,9 +71,9 @@ export namespace vox
             {
                 this.m_nodeLinker.addNodeAndSort(node);
             }
-            rejoinNodeForTro(node:RPONode):void
+            rejoinNode(node:RPONode):void
             {
-                if(!this.m_nodeLinker.containsNode(node))
+                if(this.m_nodeLinker.containsNode(node))
                 {
                     this.m_nodeLinker.removeNodeAndSort(node);
                     this.m_nodeLinker.addNodeAndSort(node);
@@ -181,7 +181,7 @@ export namespace vox
                                 }
                                 if(flagTBoo)
                                 {
-                                    nextNode.tro.run(rc);
+                                    nextNode.tro.run();
                                     flagTBoo = false;
                                 }
                                 unit.run2(rc);
@@ -250,7 +250,7 @@ export namespace vox
                                 }
                                 if(flagTBoo)
                                 {
-                                    nextNode.tro.run(rc);
+                                    nextNode.tro.run();
                                     flagTBoo = false;
                                 }
                                 if(unit.ubo != null)

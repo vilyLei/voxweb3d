@@ -294,7 +294,6 @@ export namespace vox
                 if(this.getMesh() == null)
                 {
                     let mesh = new Sphere3DMesh();
-                    mesh.vaoEnabled = true;
                     mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
                     mesh.setBufSortFormat( material.getBufSortFormat() );
                     mesh.initialize(this.m_radius, this.m_longitudeNumSegments, this.m_latitudeNumSegments);

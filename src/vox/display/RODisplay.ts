@@ -16,7 +16,7 @@ import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as IRPODisplayT from "../../vox/render/IRPODisplay";
 
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
-import DisplayRenderState = RenderConstT.vox.render.DisplayRenderState;
+import DisplayRenderSign = RenderConstT.vox.render.DisplayRenderSign;
 import RendererState = RendererStateT.vox.render.RendererState;
 import ROVertexBuffer = ROVertexBufferT.vox.mesh.ROVertexBuffer;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
@@ -153,7 +153,7 @@ export namespace vox
                 this.vbuf = null;
                 this.__$ruid = -1;
                 this.__$rpuid = -1;
-                this.__$$rsign = DisplayRenderState.NOT_IN_WORLD;
+                this.__$$rsign = DisplayRenderSign.NOT_IN_WORLD;
                 this.ivsIndex = 0;
                 this.ivsCount = 0;
                 this.m_partGroup = null;
@@ -162,8 +162,8 @@ export namespace vox
             // 只能由渲染系统内部调用
             __$ruid:number = -1;     // 用于关联IRPODisplay对象
             __$rpuid:number = -1;    // 用于关联RPONode对象
+            __$$rsign:DisplayRenderSign = DisplayRenderSign.NOT_IN_WORLD;
             __$$runit:IRPODisplay = null;
-            __$$rsign:DisplayRenderState = DisplayRenderState.NOT_IN_WORLD;
 
             private static S_FLAG_BUSY:number = 1;
             private static S_FLAG_FREE:number = 0;
@@ -178,6 +178,14 @@ export namespace vox
                     return RODisplay.m_freeIdList.pop();
                 }
                 return -1;
+            }
+            static GetByUid(uid:number):RODisplay
+            {
+                return RODisplay.m_unitList[uid];
+            }
+            static IsEnabledByUid(uid:number):boolean
+            {
+                return RODisplay.m_unitFlagList[uid] == RODisplay.S_FLAG_BUSY;
             }
             static Create():RODisplay
             {

@@ -102,7 +102,6 @@ export namespace vox
             drawInsBeginIndex:number = 0;
             drawInsStride:number = 0;
             drawInsTotal:number = 0;
-            vaoEnabled:boolean = false;
 
             protected buildEnd():void
             {
@@ -147,7 +146,6 @@ export namespace vox
                             ROVertexBuffer.AddFloat32Data(this.m_bufDataList[i],this.m_bufDataStepList[i],this.m_bufStatusList[i]);
                         }
                         this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
-                        this.m_vbuf.setVaoEnabled(this.vaoEnabled);
                         if(this.m_ivs != null)
                         {
                             this.m_vbuf.setUint16IVSData(this.m_ivs);

@@ -46,8 +46,7 @@ export namespace vox
             {
                 if(this.getMesh() == null)
                 {
-                    let mesh:DashedLineMesh = new DashedLineMesh();                
-                    mesh.vaoEnabled = true;
+                    let mesh:DashedLineMesh = new DashedLineMesh();
                     mesh.vbWholeDataEnabled = false;
                     mesh.setBufSortFormat( material.getBufSortFormat() );
                     mesh.initialize(this.m_posarr, null);

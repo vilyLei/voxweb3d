@@ -64,7 +64,6 @@ export namespace vox
                 if(this.getMesh() == null)
                 {
                     let mesh = new ObjData3DMesh();
-                    mesh.vaoEnabled = true;
                     mesh.moduleScale = this.moduleScale;
                     mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
                     mesh.setBufSortFormat( this.getMaterial().getBufSortFormat() );

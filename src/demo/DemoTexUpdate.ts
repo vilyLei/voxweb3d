@@ -2,7 +2,6 @@
 import * as DivLogT from "../vox/utils/DivLog";
 import * as MathConstT from "../vox/utils/MathConst";
 import * as Vector3DT from "../vox/geom/Vector3";
-import * as AABBT from "../vox/geom/AABB";
 import * as Matrix4T from "../vox/geom/Matrix4";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
@@ -15,13 +14,13 @@ import * as VtxBufConstT from "../vox/mesh/VtxBufConst";
 import * as Box3DMeshT from "../vox/mesh/Box3DMesh";
 import * as DisplayEntityT from "../vox/entity/DisplayEntity";
 import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as BoxFrame3DT from "../vox/entity/BoxFrame3D";
 import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
 import * as Box3DEntityT from "../vox/entity/Box3DEntity";
 import * as Billboard3DEntityT from "../vox/entity/Billboard3DEntity";
 import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureConstT from "../vox/texture/TextureConst";
+import * as TextureProxyT from "../vox/texture/TextureProxy";
+import * as ImageTextureProxyT from "../vox/texture/ImageTextureProxy";
 
 import * as MouseEventT from "../vox/event/MouseEvent";
 import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
@@ -32,7 +31,6 @@ import * as BaseTestMaterialT from "../demo/material/BaseTestMaterial";
 import DivLog = DivLogT.vox.utils.DivLog;
 import MathConst = MathConstT.vox.utils.MathConst;
 import Vector3D = Vector3DT.vox.geom.Vector3D;
-import AABB = AABBT.vox.geom.AABB;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import Matrix4Pool = Matrix4T.vox.geom.Matrix4Pool;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
@@ -46,13 +44,13 @@ import VtxNormalType = VtxBufConstT.vox.mesh.VtxNormalType;
 import Box3DMesh = Box3DMeshT.vox.mesh.Box3DMesh;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import BoxFrame3D = BoxFrame3DT.vox.entity.BoxFrame3D;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
+import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+import ImageTextureProxy = ImageTextureProxyT.vox.texture.ImageTextureProxy;
 
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
@@ -62,7 +60,7 @@ import BaseTestMaterial = BaseTestMaterialT.demo.material.BaseTestMaterial;
 
 export namespace demo
 {
-    export class DemoVtx
+    export class DemoTexUpdate
     {
         constructor()
         {
@@ -75,7 +73,6 @@ export namespace demo
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
 
         private m_targets:DisplayEntity[] = [];
-        private m_srcBoxFrame:BoxFrame3D = null;
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
             let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -85,7 +82,7 @@ export namespace demo
         }
         initialize():void
         {
-            console.log("DemoVtx::initialize()......");
+            console.log("DemoTexUpdate::initialize()......");
             if(this.m_rcontext == null)
             {
                 //DivLog.SetDebugEnabled(true);
@@ -112,28 +109,15 @@ export namespace demo
                 
                 this.m_rscene.getStage3D().addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
 
-                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
+                //  let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-                let tex4:TextureProxy = this.getImageTexByUrl("static/assets/yanj.jpg");
-                let tex5:TextureProxy = this.m_rscene.textureBlock.createRGBATex2D(16,16,new Color4(1.0,0.0,1.0));
+                //  let tex4:TextureProxy = this.getImageTexByUrl("static/assets/yanj.jpg");
+                //  let tex5:TextureProxy = this.m_rscene.textureBlock.createRGBATex2D(16,16,new Color4(1.0,0.0,1.0));
                 
-                let boxFrame:BoxFrame3D = new BoxFrame3D();
-                boxFrame.initialize(new Vector3D(-100,-100,-100),new Vector3D(100,100,100));
-                this.m_srcBoxFrame = boxFrame;
-
-                
-                boxFrame = new BoxFrame3D();
-                boxFrame.setMesh(this.m_srcBoxFrame.getMesh());
-                boxFrame.initialize(new Vector3D(-100,-100,-100),new Vector3D(100,100,100));
-                this.m_rscene.addEntity(boxFrame);
-                this.m_targets.push(boxFrame);
-
-                let axis:Axis3DEntity = new Axis3DEntity();
-                axis.initialize(300.0);
-                axis.setXYZ(200.0, 0.0, 0.0);
-                this.m_rscene.addEntity(axis);
-                this.m_targets.push(axis);
-                return;
+                //      let axis:Axis3DEntity = new Axis3DEntity();
+                //      axis.initialize(300.0);
+                //      this.m_rscene.addEntity(axis);
+                //      this.m_targets.push(axis);
                 //  // add common 3d display entity
                 //  var plane:Plane3DEntity = new Plane3DEntity();
                 //  //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex4]);
@@ -206,8 +190,8 @@ void main(){
                 this.m_rscene.addEntity(cly);
                 this.m_targets.push(cly);
 
+                return;
                 let src_cly:Cylinder3DEntity = cly;
-
                 cly = new Cylinder3DEntity();
                 //cly.setMaterial(material);
                 cly.copyMeshFrom(src_cly);
@@ -220,63 +204,37 @@ void main(){
 
             }
         }
-        private m_minV:Vector3D = new Vector3D(-100,-100,-100);
-        private m_maxV:Vector3D = new Vector3D(100,100,100);
-        private m_dvPos:Vector3D = new Vector3D(15,15,15);
-        private m_dvNeg:Vector3D = new Vector3D(-15,-15,-15);
-        private m_ab:AABB = new AABB();
-        private m_flag:boolean = true;
+        private updateTex():void
+        {
+            let rscene:RendererScene = this.m_rscene;
+            let entityList:DisplayEntity[] = this.m_targets;
+            let img = new Image();
+            img.onload = function(evt:any):void
+            {
+                //selfT.m_loaded = true;
+                //selfT.buildTex();
+                console.log("loaded img, and update tex res.");
+                let tex:ImageTextureProxy = rscene.textureBlock.createImageTex2D(img.width, img.height);
+                tex.setDataFromImage(img);
+                entityList[0].updateTextureList([tex],rscene.getRenderProxy());
 
-        private updateMeshData():void
-        {
-            if(this.m_flag)
-            {
-                console.log("AAAAAAAAA>>>>>>>>>>>>>>>>>>>>>>>>>");
-                this.m_targets[0].setMesh(this.m_targets[1].getMesh());
-                this.m_targets[0].updateMeshToGpu(this.m_rscene.getRenderProxy(),true);
+                //  let cly:Cylinder3DEntity = new Cylinder3DEntity();
+                //  cly.initialize(100.0,200.0,15,[tex]);
+                //  cly.setXYZ(100.0,0.0,100.0);
+                //  rscene.addEntity(cly);
             }
-            else
-            {
-                console.log("BBBBBBBBBBBBBBBBB>>>>>>>>>>>>>>>>>>>>>>>>>");
-                this.m_targets[0].setMesh(this.m_srcBoxFrame.getMesh());
-                this.m_targets[0].updateMeshToGpu(this.m_rscene.getRenderProxy(),true);
-            }
-            this.m_flag = !this.m_flag;
-        }
-        private updateVtxData():void
-        {
-            let boxFrame:BoxFrame3D = this.m_targets[0] as BoxFrame3D;
-            let index:number = 7;
-            if(this.m_flag)
-            {
-                this.m_flag = false;
-                boxFrame.getVertexAt(index, this.m_minV);
-            }
-            //console.log("min: ",this.m_minV,",max: ",this.m_maxV);
-            //boxFrame.updateFrame(this.m_minV, this.m_maxV);
-            this.m_ab.min.copyFrom(this.m_minV);
-            this.m_ab.max.copyFrom(this.m_maxV);
-            this.m_ab.updateFast();
-            //boxFrame.updateFrameByAABB(this.m_ab);
-            boxFrame.updateMeshToGpu(this.m_rscene.getRenderProxy(),true);
-            //this.m_maxV.addBy(this.m_dvPos);
-            //this.m_minV.addBy(this.m_dvPos);
-            boxFrame.setVertexAt(index,this.m_minV);
-            this.m_minV.x += 5.0;
-            //this.m_maxV.x += 5.0;
+            img.src = "static/assets/yanj.jpg";
         }
         private mouseDown(evt:any):void
         {
             console.log("mouse down...,this.m_targetDisp != null: "+(this.m_targets != null));
             if(this.m_targets != null && this.m_targets.length > 0)
             {
-                this.updateMeshData();
-                return;
-                this.updateVtxData();
+                this.updateTex();
                 return;
                 // test visible
-                //  this.m_targets[0].setVisible(!this.m_targets[0].getVisible());
-                //  return;
+                // this.m_targets[0].setVisible(!this.m_targets[0].getVisible());
+
                 if(this.m_targets[0] != null)
                 {
                     this.m_rscene.removeEntity(this.m_targets[0]);
@@ -311,7 +269,7 @@ void main(){
 
             // render end
             this.m_rscene.runEnd();
-            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }
 }

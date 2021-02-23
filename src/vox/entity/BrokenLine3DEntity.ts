@@ -49,7 +49,6 @@ export namespace vox
                 if(this.getMesh() == null)
                 {
                     let mesh:StripLineMesh = new StripLineMesh();
-                    mesh.vaoEnabled = true;
                     mesh.vbWholeDataEnabled = false;
                     mesh.setBufSortFormat( material.getBufSortFormat() );
                     mesh.initialize(this.m_posarr, null);

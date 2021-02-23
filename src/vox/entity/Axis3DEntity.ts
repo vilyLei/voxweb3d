@@ -59,7 +59,6 @@ export namespace vox
                     ];
                     let mesh:DashedLineMesh = new DashedLineMesh();
                     mesh.rayTestRadius = this.rayTestRadius;
-                    mesh.vaoEnabled = true;
                     mesh.vbWholeDataEnabled = false;
                     mesh.setBufSortFormat( material.getBufSortFormat() );
                     mesh.initialize(this.m_posarr, colorarr);
