@@ -234,6 +234,7 @@ void main(){
                 console.log("AAAAAAAAA>>>>>>>>>>>>>>>>>>>>>>>>>");
                 this.m_targets[0].setMesh(this.m_targets[1].getMesh());
                 this.m_targets[0].updateMeshToGpu(this.m_rscene.getRenderProxy(),true);
+                
             }
             else
             {
@@ -241,6 +242,8 @@ void main(){
                 this.m_targets[0].setMesh(this.m_srcBoxFrame.getMesh());
                 this.m_targets[0].updateMeshToGpu(this.m_rscene.getRenderProxy(),true);
             }
+            this.m_targets[0].updateBounds();
+            console.log("this.m_targets[0].getGlobalBounds(): ",this.m_targets[0].getGlobalBounds());
             this.m_flag = !this.m_flag;
         }
         private updateVtxData():void

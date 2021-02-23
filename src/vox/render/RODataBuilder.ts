@@ -57,7 +57,7 @@ export namespace vox
     export namespace render
     {
         /**
-         * 本类实现了将 系统内存数据 合成为 渲染运行时系统所需的资源(包括: 渲染运行时管理数据和显存数据)
+         * 本类实现了将 系统内存数据 合成为 渲染运行时系统所需的数据资源(包括: 渲染运行时管理数据和显存数据)
          */
         export class RODataBuilder implements IROMaterialUpdater
         {

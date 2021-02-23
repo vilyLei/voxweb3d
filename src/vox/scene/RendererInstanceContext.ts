@@ -18,7 +18,7 @@ import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
 import * as ShdUniformToolT from "../../vox/material/ShdUniformTool";
-import * as RODispBuilderT from "../../vox/render/RODispBuilder";
+import * as RODataBuilderT from "../../vox/render/RODataBuilder";
 import * as RendererParamT from "../../vox/scene/RendererParam";
 import * as RenderMeshProxyT from "../../vox/render/RenderMeshProxy";
 import * as RenderMaterialProxyT from "../../vox/render/RenderMaterialProxy";
@@ -35,7 +35,7 @@ import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import ShdUniformTool = ShdUniformToolT.vox.material.ShdUniformTool;
-import RODispBuilder = RODispBuilderT.vox.render.RODispBuilder;
+import RODataBuilder = RODataBuilderT.vox.render.RODataBuilder;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RenderMeshProxy = RenderMeshProxyT.vox.render.RenderMeshProxy;
 import RenderMaterialProxy = RenderMaterialProxyT.vox.render.RenderMaterialProxy;
@@ -51,14 +51,14 @@ export namespace vox
             private m_materialProxy:RenderMaterialProxy = null;
             private m_meshProxy:RenderMeshProxy = null;
             private m_Matrix4AllocateSize:number = 0;
-            private m_dispBuilder:RODispBuilder = null;
+            private m_dispBuilder:RODataBuilder = null;
             private m_cameraNear:number = 0.1;
             private m_cameraFar:number = 5000.0;
             private m_cameraFov:number = 45.0;
             constructor()
             {
             }
-            //  setDispBuilder(builder:RODispBuilder):void
+            //  setDispBuilder(builder:RODataBuilder):void
             //  {
             //      if(this.m_dispBuilder == null)
             //      {
@@ -286,7 +286,7 @@ export namespace vox
                     this.m_renderProxy.setCameraParam(fov, near, far);
                 }
             }
-            initialize(param:RendererParam, builder:RODispBuilder):void
+            initialize(param:RendererParam, builder:RODataBuilder):void
             {
                 if(this.m_Matrix4AllocateSize < 1024)
                 {
@@ -311,7 +311,7 @@ export namespace vox
                     ShdUniformTool.Initialize();
                 }
             }
-            initManager(builder:RODispBuilder):void
+            initManager(builder:RODataBuilder):void
             {
                 if(this.m_materialProxy == null)
                 {

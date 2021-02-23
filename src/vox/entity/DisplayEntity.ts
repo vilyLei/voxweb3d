@@ -338,6 +338,7 @@ export namespace vox
                 {
                     if(this.m_mesh != m && m != null)
                     {
+                        this.m_transfrom.updatedStatus |= 2;
                         this.m_mesh.__$detachVBuf(this.m_display.vbuf);
                         this.m_mesh.__$detachThis();
                         m.__$attachThis();
@@ -563,10 +564,10 @@ export namespace vox
                 {
                     if(this.m_globalBounds != null && this.m_mesh != null)
                     {
+                        this.m_transfrom.update();
                         // 这里的逻辑也有问题,需要再处理，为了支持摄像机等的拾取以及支持遮挡计算等空间管理计算
                         if(this.m_transfrom.updatedStatus > ROTransform.UPDATE_POSITION)
                         {
-                            this.m_transfrom.update();
                             let pminV:Vector3D = this.m_mesh.bounds.min;
                             let pmaxV:Vector3D = this.m_mesh.bounds.max;
                             let pvs:Float32Array = DisplayEntity.s_boundsInVS;
@@ -585,7 +586,6 @@ export namespace vox
                         }
                         else
                         {
-                            this.m_transfrom.update();
                             this.m_globalBounds.radius = this.m_mesh.bounds.radius;
                             this.m_globalBounds.radius2 = this.m_mesh.bounds.radius2;
                             this.m_globalBounds.center.copyFrom(this.m_mesh.bounds.center);

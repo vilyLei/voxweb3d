@@ -16,7 +16,7 @@ import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as ROBufferUpdaterT from "../../vox/render/ROBufferUpdater";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
-import * as RODispBuilderT from "../../vox/render/RODispBuilder";
+import * as RODataBuilderT from "../../vox/render/RODataBuilder";
 import * as RendererParamT from "../../vox/scene/RendererParam";
 import * as RenderProcessT from "../../vox/render/RenderProcess";
 import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
@@ -37,7 +37,7 @@ import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import ROBufferUpdater = ROBufferUpdaterT.vox.render.ROBufferUpdater;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
-import RODispBuilder = RODispBuilderT.vox.render.RODispBuilder;
+import RODataBuilder = RODataBuilderT.vox.render.RODataBuilder;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 import RenderProcessBuider = RenderProcessBuiderT.vox.render.RenderProcessBuider;
@@ -64,7 +64,7 @@ export namespace vox
             private m_renderProxy:RenderProxy = null;
             private m_adapter:RenderAdapter = null;
             private m_renderInsContext:RendererInstanceContext = null;
-            private m_dispBuilder:RODispBuilder = null;
+            private m_dispBuilder:RODataBuilder = null;
             private m_batchEnabled:boolean = true;
             private m_processFixedState:boolean = true;
 
@@ -81,7 +81,7 @@ export namespace vox
             {
                 return this.m_rpoNodeBuilder;
             }
-            getDispBuilder():RODispBuilder
+            getDispBuilder():RODataBuilder
             {
                 return this.m_dispBuilder;
             }
@@ -141,8 +141,8 @@ export namespace vox
                     }
                     //console.log("param.getMatrix4AllocateSize(): "+param.getMatrix4AllocateSize());
                     this.m_renderProxy = this.m_renderInsContext.getRenderProxy();
-                    //this.m_dispBuilder = new RODispBuilder(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider);
-                    this.m_dispBuilder = new RODispBuilder();
+                    //this.m_dispBuilder = new RODataBuilder(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider);
+                    this.m_dispBuilder = new RODataBuilder();
 
                     this.m_renderInsContext.setCameraParam(param.camProjParam.x,param.camProjParam.y,param.camProjParam.z);
                     this.m_renderInsContext.setMatrix4AllocateSize(param.getMatrix4AllocateSize());

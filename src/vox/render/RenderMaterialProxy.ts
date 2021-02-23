@@ -8,12 +8,12 @@
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as MaterialShaderT from "../../vox/material/MaterialShader";
-import * as RODispBuilderT from "../../vox/render/RODispBuilder";
+import * as RODataBuilderT from "../../vox/render/RODataBuilder";
 
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
-import RODispBuilder = RODispBuilderT.vox.render.RODispBuilder;
+import RODataBuilder = RODataBuilderT.vox.render.RODataBuilder;
 
 export namespace vox
 {
@@ -22,10 +22,10 @@ export namespace vox
         export class RenderMaterialProxy
         {
             private m_rc:RenderProxy = null;
-            private m_dispBuilder:RODispBuilder = null;
+            private m_dispBuilder:RODataBuilder = null;
             private m_shader:MaterialShader = null;
             
-            setDispBuilder(builder:RODispBuilder):void
+            setDispBuilder(builder:RODataBuilder):void
             {
                 if(this.m_dispBuilder == null)
                 {

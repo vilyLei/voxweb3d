@@ -12,7 +12,7 @@ import * as ShaderDataT from "../../vox/material/ShaderData";
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
-import * as RODispBuilderT from "../../vox/render/RODispBuilder";
+import * as RODataBuilderT from "../../vox/render/RODataBuilder";
 
 import * as RenderProcessT from "../../vox/render/RenderProcess";
 import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
@@ -25,7 +25,7 @@ import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import ShaderData = ShaderDataT.vox.material.ShaderData;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
-import RODispBuilder = RODispBuilderT.vox.render.RODispBuilder;
+import RODataBuilder = RODataBuilderT.vox.render.RODataBuilder;
 import RCRPObj = RPOUnitBuilderT.vox.render.RCRPObj;
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
 
@@ -46,9 +46,9 @@ export namespace vox
             private m_waitList:IRenderEntity[] = [];
             private m_processUidList:number[] = [];
             private m_wuid:number = -1;            
-            private m_dispBuilder:RODispBuilder = null;
+            private m_dispBuilder:RODataBuilder = null;
             entityManaListener:any = null;
-            constructor(__$wuid:number, dispBuilder:RODispBuilder, rpoUnitBuilder:RPOUnitBuilder, processBuider:RenderProcessBuider)
+            constructor(__$wuid:number, dispBuilder:RODataBuilder, rpoUnitBuilder:RPOUnitBuilder, processBuider:RenderProcessBuider)
             {
                 this.m_wuid = __$wuid;
                 this.m_dispBuilder = dispBuilder;
