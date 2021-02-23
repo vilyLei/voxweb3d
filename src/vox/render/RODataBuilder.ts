@@ -6,7 +6,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as IBufferBuilderT from "../../vox/render/IBufferBuilder";
@@ -28,7 +27,6 @@ import * as ROVertexResourceT from "../../vox/render/ROVertexResource";
 import * as ROTextureResourceT from "../../vox/render/ROTextureResource";
 import * as IROMaterialUpdaterT from "../../vox/render/IROMaterialUpdater";
 
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import DisplayRenderSign = RenderConstT.vox.render.DisplayRenderSign;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import IBufferBuilder = IBufferBuilderT.vox.render.IBufferBuilder;
@@ -346,51 +344,6 @@ export namespace vox
                         let shdp:ShdProgram = this.updateDispMaterial(rc,runit,disp);
                         // build vtx gpu data
                         this.buildVtxRes(rc,rc.Vertex,disp,runit,shdp);
-                        /*
-                        if(disp.vbuf != null)
-                        {
-                            // build vertex gpu resoure 
-                            let vtxRes:ROVertexResource = rc.Vertex;
-                            let resUid:number = disp.vbuf.getUid();
-                            let vtx:GpuVtxObect;
-                            let needBuild:boolean = true;
-                            if(vtxRes.hasVertexRes(resUid))
-                            {
-                                vtx = vtxRes.getVertexRes(resUid);
-                                needBuild = vtx.version != disp.vbuf.version;
-                                console.log("GpuVtxObect instance repeat to be used,needBuild: "+needBuild,vtx.getAttachCount());
-                                if(needBuild)
-                                {
-                                    vtx.destroy(rc);
-                                    vtx.rcuid = rc.getUid();
-                                    vtx.resUid = resUid;
-                                }
-                            }
-                            else
-                            {
-                                vtx = new GpuVtxObect();
-                                vtx.rcuid = rc.getUid();
-                                vtx.resUid = resUid;
-                                vtxRes.addVertexRes(vtx);
-                                console.log("GpuVtxObect instance create new: ",vtx.resUid);
-                            }
-                            if(needBuild)
-                            {
-                                vtx.indices.ibufStep = disp.vbuf.getIBufStep();
-                                vtx.indices.initialize(rc,disp.vbuf);
-                                vtx.vertex.initialize(rc,shdp,disp.vbuf);
-                                vtx.version = disp.vbuf.version;
-                            }
-                            vtxRes.__$attachRes(resUid);
-                            runit.vro = vtx.createVRO(rc, shdp, true);
-                            runit.vro.__$attachThis();
-
-                            runit.vtxUid = disp.vbuf.getUid();
-                            
-                            runit.ibufStep = runit.vro.ibufStep;
-                            runit.ibufType = runit.ibufStep != 4?rc.UNSIGNED_SHORT:rc.UNSIGNED_INT;
-                        }
-                        //*/
                         //console.log("buildGpuDisp(), runit.ibufType: "+runit.ibufType+", runit.ibufStep: "+runit.ibufStep+", runit.ivsCount: "+runit.ivsCount);
                         (this.m_processBuider.getNodeByUid(processUid) as RenderProcess).addDisp(rc, disp);
                     }
@@ -438,7 +391,6 @@ export namespace vox
                     }
                     shdp = this.m_shader.create(material.getShaderData());
                     shdp.upload( rc.RContext );
-                    let shdUid:number = shdp.getUid();
                     let texTotal:number = shdp.getTexTotal();
                     if(texEnabled && texTotal > 0)
                     {
@@ -453,7 +405,7 @@ export namespace vox
                     {
                         material.__$uniform = ShdUniformTool.BuildLocalFromData(material.createSelfUniformData(), shdp);
                     }
-                    this.m_shader.useShdByUid(rc, shdUid);
+                    this.m_shader.useShdByUid(rc, shdp.getUid());
                     if(tro != null)
                     {
                         tro.run();

@@ -38,14 +38,14 @@ export namespace vox
         export class RenderProcess implements IPoolNode
         {
             private static s_max_shdTotal:number = 1024;
-            // 记录自身所在的 RenderWorld 的id
+            // 记录自身所在的 rendererInstance id
             private m_wuid:number = -1;
-            // 记录自身所在RenderWorld 中分配到的id -> index
+            // 记录自身所在 rendererInstance 中分配到的process index
             private m_weid:number = -1;
             
             private m_nodesLen:number = 0;
             private m_enabled:boolean = true;
-            private m_blockList:RPOBlock[] = [];                                // 记录以相同shader的node为一个集合对象(RPOBlock) 的数组
+            private m_blockList:RPOBlock[] = [];                                                        // 记录以相同shader的node为一个集合对象(RPOBlock) 的数组
             private m_blockListLen:number = 0;
             private m_blockFList:Int8Array = new Int8Array(RenderProcess.s_max_shdTotal);               // 记录以相同shader的node为一个集合对象(RPOBlock)的构建状态 的数组
             private m_blockFListLen:number = RenderProcess.s_max_shdTotal;                              // 假定shader 最多为1024种
@@ -53,7 +53,7 @@ export namespace vox
             private m_rpoNodeBuilder:RPONodeBuilder = null;
             private m_rpoUnitBuilder:RPOUnitBuilder = null;
             private m_vtxResource:ROVertexResource = null;
-            // 用于特殊绘制
+            // 用于制定对象的绘制
             private m_proBlock:RPOBlock = null;
 
             private m_batchEnabled:boolean = true;
@@ -82,30 +82,6 @@ export namespace vox
                     this.m_batchEnabled = batchEnabled;
                     this.m_fixedState = processFixedState;
                 }
-                /*
-                let block:RPOBlock = null;
-                for(let i:number = 0; i < this.m_blockListLen; ++i)
-                {
-                    block = this.m_blockList[i];
-                    block.batchEnabled = this.m_batchEnabled;
-                    block.fixedState = this.m_fixedState;
-                    if(block.batchEnabled)
-                    {
-                        if(block.fixedState)
-                        {
-                            block.runMode = 2;
-                        }
-                        else
-                        {
-                            block.runMode = 1;
-                        }
-                    }
-                    else
-                    {
-                        block.runMode = 0;
-                    }
-                }
-                //*/
             }
             setWOrldParam(pwuid:number,pweid:number):void
             {
@@ -132,7 +108,7 @@ export namespace vox
                 //console.log("RenderProcess::addDisp(),uid: "+this.m_weid+" node.shdUid: "+node.shdUid+", index: "+this.uid);
                 if(node.shdUid >= RenderProcess.s_max_shdTotal)
                 {
-                    console.error("Error: Shader uid >= "+RenderProcess.s_max_shdTotal);
+                    throw Error("Shader uid >= "+RenderProcess.s_max_shdTotal);
                 }
                 if(this.m_blockFList[node.shdUid] < 0)
                 {
