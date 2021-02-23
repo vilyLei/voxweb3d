@@ -194,6 +194,7 @@ export namespace vox
                 }
             }
             getTextureList():TextureProxy[]{return this.m_texList;}
+            getTextureAt(index:number):TextureProxy{return this.m_texList[index];}
             getTextureTotal():number{return this.m_texListLen;}
             getShdTexTotal():number
             {

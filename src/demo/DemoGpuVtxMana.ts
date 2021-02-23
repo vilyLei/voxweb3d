@@ -8,6 +8,7 @@ import * as RendererInstanceT from "../vox/scene/RendererInstance";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 import * as MouseEventT from "../vox/event/MouseEvent";
 import * as Stage3DT from "../vox/display/Stage3D";
+import * as TextureStoreT from "../vox/texture/TextureStore";
 
 import * as CameraTrackT from "../vox/view/CameraTrack";
 //import * as TexManaT from "./base/TexMana";
@@ -22,6 +23,7 @@ import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import Stage3D = Stage3DT.vox.display.Stage3D;
+import TextureStore = TextureStoreT.vox.texture.TextureStore;
 
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 //import TexMana = TexManaT.demo.base.TexMana;
@@ -55,6 +57,7 @@ export namespace demo
                 this.m_renderer = new RendererInstance();
                 this.m_renderer.initialize(rparam);
                 this.m_rcontext = this.m_renderer.getRendererContext();
+                TextureStore.SetRenderer(this.m_renderer);
                 let stage3D:Stage3D = this.m_rcontext.getStage3D();
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
                 this.m_camTrack = new CameraTrack();

@@ -82,9 +82,6 @@
 //  import * as DemoSubScene from "./demo/DemoSubScene";
 //  import Demo = DemoSubScene.demo.DemoSubScene;
 
-//  import * as DemoGpuVtxMana from "./demo/DemoGpuVtxMana";
-//  import Demo = DemoGpuVtxMana.demo.DemoGpuVtxMana;
-
 //  import * as DemoEntityBounds from "./demo/DemoEntityBounds";
 //  import Demo = DemoEntityBounds.demo.DemoEntityBounds;
 
@@ -208,14 +205,17 @@
 //  import * as DemoDeepTransparent2 from "./demo/DemoDeepTransparent2";
 //  import Demo = DemoDeepTransparent2.demo.DemoDeepTransparent2;
 
+import * as DemoGpuVtxMana from "./demo/DemoGpuVtxMana";
+import Demo = DemoGpuVtxMana.demo.DemoGpuVtxMana;
+
 //  import * as DemoGpuTexMana from "./demo/DemoGpuTexMana";
 //  import Demo = DemoGpuTexMana.demo.DemoGpuTexMana;
 
 //  import * as DemoMaterial from "./demo/DemoMaterial";
 //  import Demo = DemoMaterial.demo.DemoMaterial;
 
-import * as DemoVtx from "./demo/DemoVtx";
-import Demo = DemoVtx.demo.DemoVtx;
+//  import * as DemoVtx from "./demo/DemoVtx";
+//  import Demo = DemoVtx.demo.DemoVtx;
 
 //  import * as DemoTexUpdate from "./demo/DemoTexUpdate";
 //  import Demo = DemoTexUpdate.demo.DemoTexUpdate;

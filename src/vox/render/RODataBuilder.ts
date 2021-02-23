@@ -287,7 +287,6 @@ export namespace vox
                     runit.trisNumber = disp.trisNumber;
 
                     // build vertex gpu resoure 
-                    //let vtxRes:ROVertexResource = rc.Vertex;
                     let resUid:number = disp.vbuf.getUid();
                     let vtx:GpuVtxObect;
                     let needBuild:boolean = true;

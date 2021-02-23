@@ -232,7 +232,7 @@ void main(){
             if(this.m_flag)
             {
                 this.m_targets[0].setMesh(this.m_targets[1].getMesh());
-                this.m_targets[0].updateMeshToGpu(this.m_rscene.getRenderProxy(),true);                
+                this.m_targets[0].updateMeshToGpu(this.m_rscene.getRenderProxy(),true);
             }
             else
             {

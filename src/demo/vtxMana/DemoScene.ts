@@ -99,28 +99,35 @@ export namespace demo
                 }
             }
             private m_parClipTexList:string[] = [
-                "assets/xulie_48.png",
-                "assets/xulie_08_61.png",
-                "assets/image_sequence_2x.png"
+                "static/assets/xulie_48.png",
+                "static/assets/xulie_08_61.png",
+                "static/assets/image_sequence_2x.png"
             ];
             private m_parTexList:string[] = [
-                "assets/flare_core_01.jpg",
-                "assets/flare_core_02.jpg",
-                "assets/guangyun_H_0007.png",
+                "static/assets/flare_core_01.jpg",
+                "static/assets/flare_core_02.jpg",
+                "static/assets/guangyun_H_0007.png",
             ];
+            getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
+            {
+                let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
+                ptex.mipmapEnabled = mipmapEnabled;
+                if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
+                return ptex;
+            }
             private getParClipTexAt(i:number):TextureProxy
             {
-                let tex:TextureProxy = this.m_texLoader.getImageTexByUrl(this.m_parClipTexList[i]);
+                let tex:TextureProxy = this.getImageTexByUrl(this.m_parClipTexList[i]);
                 return tex;
             }
             private getParTexAt(i:number):TextureProxy
             {
-                let tex:TextureProxy = this.m_texLoader.getImageTexByUrl(this.m_parTexList[i]);
+                let tex:TextureProxy = this.getImageTexByUrl(this.m_parTexList[i]);
                 return tex;
             }
             private getdefaultTexAt(i:number):TextureProxy
             {
-                let tex:TextureProxy = this.m_texLoader.getImageTexByUrl("default.jpg");
+                let tex:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 return tex;
             }
             private initTest():void
@@ -129,8 +136,8 @@ export namespace demo
                 //let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("default.jpg");
                 //  this.m_srcBoxEntity = new Box3DEntity();
                 //  this.m_srcBoxEntity.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[this.getdefaultTexAt(0)]);
-                let objUrl:string = "assets/obj/box01.obj";
-                objUrl = "assets/obj/letter_A.obj";
+                let objUrl:string = "static/assets/obj/box01.obj";
+                objUrl = "static/assets/obj/letter_A.obj";
                 let objDisp:ObjData3DEntity = new ObjData3DEntity();
                 objDisp.moduleScale = 10.0;//10.0 + Math.random() * 5.5;
                 objDisp.setRotationXYZ(Math.random() * 360.0,Math.random() * 360.0,Math.random() * 360.0);

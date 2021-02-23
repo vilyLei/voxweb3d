@@ -211,19 +211,20 @@ void main(){
             let img = new Image();
             img.onload = function(evt:any):void
             {
-                //selfT.m_loaded = true;
-                //selfT.buildTex();
                 console.log("loaded img, and update tex res.");
-                let tex:ImageTextureProxy = rscene.textureBlock.createImageTex2D(img.width, img.height);
+                //      let tex:ImageTextureProxy = rscene.textureBlock.createImageTex2D(img.width, img.height);
+                //      tex.setDataFromImage(img);
+                //      entityList[0].updateTextureList([tex],rscene.getRenderProxy());
+                let tex:ImageTextureProxy = entityList[0].getMaterial().getTextureAt(0) as ImageTextureProxy;
                 tex.setDataFromImage(img);
-                entityList[0].updateTextureList([tex],rscene.getRenderProxy());
-
+                tex.updateDataToGpu();
                 //  let cly:Cylinder3DEntity = new Cylinder3DEntity();
                 //  cly.initialize(100.0,200.0,15,[tex]);
                 //  cly.setXYZ(100.0,0.0,100.0);
                 //  rscene.addEntity(cly);
             }
-            img.src = "static/assets/yanj.jpg";
+            //img.src = "static/assets/yanj.jpg";
+            img.src = "static/assets/metal_02.jpg";
         }
         private mouseDown(evt:any):void
         {

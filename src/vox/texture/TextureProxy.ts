@@ -263,6 +263,7 @@ export namespace vox
             {
                 if(this.isGpuEnabled())
                 {
+                    console.log("AAAAAA updateDataToGpu...this.getResUid(): "+this.getResUid());
                     this.m_slot.addRenderBuffer(this, this.getResUid());
                 }
             }

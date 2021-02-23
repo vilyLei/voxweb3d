@@ -73,10 +73,6 @@ export namespace vox
             {
                 return this.m_textureTotal;
             }
-            //  getTextureMap():Map<number,TextureProxy>
-            //  {
-            //      return this.m_textureMap;
-            //  }
             setRenderProxy(renderProxy:RenderProxy):void
             {
                 this.m_renderProxy = renderProxy;
@@ -98,7 +94,12 @@ export namespace vox
             // 先使用map hash拦截的方式,来决定buf和renderer context避免重复的单次关联
             addRenderBuffer(buf:IRenderBuffer,bufResUid:number):void
             {
-                if(this.m_bufferUpdater != null)this.m_bufferUpdater.__$addBuf(buf, bufResUid);
+                console.log("addRenderBuffer 01...",this.m_bufferUpdater != null);
+                if(this.m_bufferUpdater != null)
+                {
+                    console.log("addRenderBuffer 02...");
+                    this.m_bufferUpdater.__$addBuf(buf, bufResUid);
+                }
             }
             addFreeUid(uid:number):void
             {

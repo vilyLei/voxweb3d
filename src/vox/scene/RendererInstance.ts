@@ -157,11 +157,12 @@ export namespace vox
                     this.m_entity3DMana = new DispEntity3DManager(this.m_uid, this.m_dispBuilder,this.m_rpoUnitBuilder, this.m_processBuider);
                     this.appendProcess(this.m_batchEnabled,this.m_processFixedState);
                     
+                    let roBufUpdater:ROBufferUpdater = new ROBufferUpdater();
                     let texSlot:TextureSlot = new TextureSlot();
                     texSlot.setRenderProxy(this.m_renderProxy);
-                    texSlot.setBufferUpdater(this.bufferUpdater);
+                    texSlot.setBufferUpdater(roBufUpdater);
                     let selfT:any = this;
-                    selfT.bufferUpdater = new ROBufferUpdater();
+                    selfT.bufferUpdater = roBufUpdater;
                     selfT.textureSlot = texSlot;
                     selfT.rttStore = new RTTTextureStore(texSlot);
                 }

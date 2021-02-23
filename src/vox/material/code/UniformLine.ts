@@ -63,7 +63,7 @@ export namespace vox
                         this.typeName +="[]";
                     }
                     this.type = MaterialConst.GetTypeByTypeNS(this.typeName);
-                    console.log("#### this.type: ",this.type,", this.typeName: ",this.typeName);
+                    //console.log("#### this.type: ",this.type,", this.typeName: ",this.typeName);
                     if(this.type < 0)
                     {
                         return false;
