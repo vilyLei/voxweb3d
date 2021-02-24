@@ -216,7 +216,9 @@ export namespace vox
                     transUniform.useByShd(this,this.m_currShd);
                 }
             }
-            
+            /**
+             * 仅仅更新单个matrix4的uniforms数据
+            */
             useUniformMat4(ult:any,mat4f32Arr:Float32Array):void
             {
                 this.m_rc.uniformMatrix4fv(ult, false, mat4f32Arr);
