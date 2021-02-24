@@ -21,6 +21,7 @@ import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
 import * as Billboard3DEntityT from "../vox/entity/Billboard3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureConstT from "../vox/texture/TextureConst";
+import * as TextureStoreT from "../vox/texture/TextureStore";
 import * as TexResLoaderT from "../vox/texture/TexResLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as DisplayEntityContainerT from "../vox/entity/DisplayEntityContainer";
@@ -52,6 +53,7 @@ import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
 import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
+import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
@@ -84,6 +86,24 @@ export namespace demo
             if(this.m_rcontext == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                
+                
+                let rparam:RendererParam = new RendererParam();
+                rparam.setMatrix4AllocateSize(8192 * 4);
+                rparam.setCamProject(45.0,10.0,3000.0);
+                rparam.setCamPosition(1500.0,1500.0,1500.0);
+                
+                this.m_rscene = new RendererScene();
+                this.m_rscene.initialize(rparam,3);
+                this.m_rscene.setRendererProcessParam(1,true,true);
+                this.m_rcontext = this.m_rscene.getRendererContext();
+                TextureStore.SetRenderer(this.m_rscene.getRenderer());
+                BillParticle.renderer = this.m_rscene.getRenderer();//this.m_renderer;
+                let stage3D:Stage3D = this.m_rcontext.getStage3D();
+                stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseUpListener);
+                this.m_camTrack = new CameraTrack();
+                this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
+
                 let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
                 let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
                 let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/guangyun_H_0007.png");
@@ -100,21 +120,7 @@ export namespace demo
                 tex3.mipmapEnabled = true;
                 tex4.mipmapEnabled = true;
                 tex5.mipmapEnabled = true;
-                
-                let rparam:RendererParam = new RendererParam();
-                rparam.setMatrix4AllocateSize(8192 * 4);
-                rparam.setCamProject(45.0,10.0,3000.0);
-                rparam.setCamPosition(1500.0,1500.0,1500.0);
-                
-                this.m_rscene = new RendererScene();
-                this.m_rscene.initialize(rparam,3);
-                this.m_rscene.setRendererProcessParam(1,true,true);
-                this.m_rcontext = this.m_rscene.getRendererContext();
-                BillParticle.renderer = this.m_rscene.getRenderer();//this.m_renderer;
-                let stage3D:Stage3D = this.m_rcontext.getStage3D();
-                stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseUpListener);
-                this.m_camTrack = new CameraTrack();
-                this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
+
 
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
                 RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);

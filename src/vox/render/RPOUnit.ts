@@ -37,8 +37,8 @@ export namespace vox
     export namespace render
     {
         /**
-         * 渲染器渲染运行时核心关键对象
-         * renderer rendering runtime core display object.
+         * 渲染器渲染运行时核心关键执行显示单元,一个unit代表着一个draw call所渲染的所有数据
+         * renderer rendering runtime core executable display unit.
          */
         export class RPOUnit implements IPoolNode,IRPODisplay
         {
@@ -201,16 +201,8 @@ export namespace vox
                 {
                     this.ubo.run(rc);
                 }
-                if(this.shader.transformUniform != this.transUniform)
-                {
-                    this.shader.transformUniform = this.transUniform;
-                    this.transUniform.use(this.shader);
-                }
-                if(this.shader.uniform != this.uniform)
-                {
-                    this.shader.uniform = this.uniform;
-                    this.uniform.use(this.shader);
-                }
+                this.shader.useTransUniform(this.transUniform);
+                this.shader.useUniform(this.uniform);
                 this.testDrawFlag();
             }
             run(rc:RenderProxy):void
@@ -222,59 +214,21 @@ export namespace vox
                 }
                 this.vro.run(rc);
                 this.tro.run();
-                
-                if(this.shader.transformUniform != this.transUniform)
-                {
-                    this.shader.transformUniform = this.transUniform;
-                    this.transUniform.use(this.shader);
-                }
-                if(this.shader.uniform != this.uniform)
-                {
-                    this.shader.uniform = this.uniform;
-                    this.uniform.use(this.shader);
-                }
+                this.shader.useTransUniform(this.transUniform);
+                this.shader.useUniform(this.uniform);
                 this.testDrawFlag();
             }
             
             runLockMaterial2():void
             {
-                this.testDrawFlag();
-                if(this.shader.uniform != this.uniform)
-                {
-                    this.shader.uniform = this.uniform;
-                    this.shader.updateUniformToCurrentShd2(this.uniform,this.transUniform);
-                }
-                else
-                {
-                    this.shader.updateUniformToCurrentShd(this.transUniform);
-                }
+                this.testDrawFlag();                
+                this.shader.useUniform2ToCurrentShd(this.uniform,this.transUniform);
             }
             runLockMaterial(rc:RenderProxy):void
             {
                 this.vro.run(rc);
                 this.testDrawFlag();
-                if(this.shader.uniform != this.uniform)
-                {
-                    this.shader.uniform = this.uniform;
-                    
-                    if(this.shader.transformUniform != this.transUniform)
-                    {
-                        this.shader.transformUniform = this.transUniform;
-                        this.shader.updateUniformToCurrentShd2(this.uniform,this.transUniform);
-                    }
-                    else
-                    {
-                        this.shader.updateUniformToCurrentShd(this.uniform);
-                    }
-                }
-                else
-                {
-                    if(this.shader.transformUniform != this.transUniform)
-                    {
-                        this.shader.transformUniform = this.transUniform;
-                        this.shader.updateUniformToCurrentShd(this.transUniform);
-                    }
-                }
+                this.shader.useUniform2ToCurrentShd(this.uniform,this.transUniform);
             }
             reset():void
             {

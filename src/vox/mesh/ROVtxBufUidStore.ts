@@ -50,12 +50,12 @@ export namespace vox
                     }
                     ++this.m_useidList[index];
                 }
-                console.log("ROVtxBufUidStore::__$attachAt() list["+index+"]: "+this.m_useidList[index]);
+                //console.log("ROVtxBufUidStore::__$attachAt() list["+index+"]: "+this.m_useidList[index]);
             }
             __$detachAt(index:number):void
             {
                 --this.m_useidList[index];
-                console.log("ROVtxBufUidStore::__$detachAt() list["+index+"]: "+this.m_useidList[index]);
+                //console.log("ROVtxBufUidStore::__$detachAt() list["+index+"]: "+this.m_useidList[index]);
                 if(this.m_useidList[index] < 1)
                 {
                     this.m_useidList[index] = 0;
@@ -80,7 +80,6 @@ export namespace vox
                 {
                     if(this.m_useidList[i] > 0)
                     {
-                        //++total;
                         total += this.m_useidList[i];
                     }
                 }

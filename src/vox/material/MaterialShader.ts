@@ -58,6 +58,22 @@ export namespace vox
                 this.m_adapter = rc.getRenderAdapter();
                 this.m_rc = rc.getRC();
             }
+            useTransUniform(transUniform:IShaderUniform):void
+            {
+                if(this.transformUniform != transUniform)
+                {
+                    this.transformUniform = transUniform;
+                    transUniform.use(this);
+                }
+            }
+            useUniform(uniform:IShaderUniform):void
+            {
+                if(this.uniform != uniform)
+                {
+                    this.uniform = uniform;
+                    uniform.use(this);
+                }
+            }
             create(shdData:ShaderData):ShdProgram
             {
                 //console.log("this.Create() begin...");
@@ -176,20 +192,38 @@ export namespace vox
                 this.m_rc = null;
                 this.m_adapter = null;
             }
-            updateUniformToCurrentShd(uniform:IShaderUniform):void
-            {
-                uniform.useByShd(this,this.m_currShd);
-            }
-            updateUniformToCurrentShd2(uniform:IShaderUniform,uniform2:IShaderUniform):void
-            {
-                uniform.useByShd(this,this.m_currShd);
-                uniform2.useByShd(this,this.m_currShd);
-            }
-            updateMaterialUniformToCurrentShd(m:MaterialBase):void
-            {
-                m.__$uniform.useByShd(this,this.m_currShd);
-            }
+            /*
             
+            useTransUniform(transUniform:IShaderUniform):void
+            {
+                if(this.transformUniform != transUniform)
+                {
+                    this.transformUniform = transUniform;
+                    transUniform.use(this);
+                }
+            }
+            */
+            useUniformToCurrentShd(uniform:IShaderUniform):void
+            {
+                if(this.uniform != uniform)
+                {
+                    this.uniform != uniform;
+                    uniform.useByShd(this,this.m_currShd);
+                }
+            }
+            useUniform2ToCurrentShd(uniform:IShaderUniform,transUniform:IShaderUniform):void
+            {
+                if(this.uniform != uniform)
+                {
+                    this.uniform != uniform;
+                    uniform.useByShd(this,this.m_currShd);
+                }
+                if(this.transformUniform != transUniform)
+                {
+                    this.transformUniform != transUniform;
+                    transUniform.useByShd(this,this.m_currShd);
+                }
+            }
             useUniformV2(ult:any,type:number, f32Arr:Float32Array,dataSize:number,offset:number):void
             {
                 switch(type)

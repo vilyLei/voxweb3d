@@ -94,8 +94,8 @@
 //  import * as DemoContainer from "./demo/DemoContainer";
 //  import Demo = DemoContainer.demo.DemoContainer;
 
-//  import * as DemoParticle from "./demo/DemoParticle";
-//  import Demo = DemoParticle.demo.DemoParticle;
+import * as DemoParticle from "./demo/DemoParticle";
+import Demo = DemoParticle.demo.DemoParticle;
 
 //  import * as DemoSphScreenRect from "./demo/DemoSphScreenRect";
 //  import Demo = DemoSphScreenRect.demo.DemoSphScreenRect;
@@ -133,8 +133,8 @@
 //  import * as DemoDepthBlur from "./demo/DemoDepthBlur";
 //  import Demo = DemoDepthBlur.demo.DemoDepthBlur;
 
-import * as DemoBase from "./demo/DemoBase";
-import Demo = DemoBase.demo.DemoBase;
+//  import * as DemoBase from "./demo/DemoBase";
+//  import Demo = DemoBase.demo.DemoBase;
 
 //  import * as DemoPNG from "./example/DemoPNG";
 //  import Demo = DemoPNG.example.DemoPNG;

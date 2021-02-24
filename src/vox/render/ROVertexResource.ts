@@ -406,12 +406,12 @@ export namespace vox
             __$attachThis():void
             {
                 ++this.m_attachCount;
-                console.log("GpuVtxObect::__$attachThis() this.m_attachCount: "+this.m_attachCount);
+                //console.log("GpuVtxObect::__$attachThis() this.m_attachCount: "+this.m_attachCount);
             }
             __$detachThis():void
             {
                 --this.m_attachCount;
-                console.log("GpuVtxObect::__$detachThis() this.m_attachCount: "+this.m_attachCount);
+                //console.log("GpuVtxObect::__$detachThis() this.m_attachCount: "+this.m_attachCount);
                 if(this.m_attachCount < 1)
                 {
                     this.m_attachCount = 0;

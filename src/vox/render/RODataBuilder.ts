@@ -328,7 +328,7 @@ export namespace vox
                     {
                         vtx = vtxRes.getVertexRes(resUid);
                         needBuild = vtx.version != disp.vbuf.version;
-                        console.log("GpuVtxObect instance repeat to be used,needBuild: "+needBuild,vtx.getAttachCount());
+                        //console.log("GpuVtxObect instance repeat to be used,needBuild: "+needBuild,vtx.getAttachCount());
                         if(needBuild)
                         {
                             vtx.destroy(rc);
