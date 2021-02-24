@@ -112,7 +112,7 @@ export namespace vox
             
             private static Restore(pobj:VaoVertexRenderObj):void
             {
-                console.log("VaoVRO Restore XXXX ("+pobj.getUid()+")pobj.m_attachCount: ",pobj.m_attachCount);
+                //console.log("VaoVRO Restore XXXX ("+pobj.getUid()+")pobj.m_attachCount: ",pobj.m_attachCount);
                 if(pobj != null && pobj.m_attachCount < 1 && VaoVertexRenderObj.s_unitFlagList[pobj.getUid()] == VaoVertexRenderObj.S_FLAG_BUSY)
                 {
                     let uid:number = pobj.getUid();

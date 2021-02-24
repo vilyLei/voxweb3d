@@ -21,6 +21,7 @@ export namespace vox
     {
         export interface IShaderUniform
         {
+            next:IShaderUniform;
             use(rc:IRenderShader):void;
             useByLocation(rc:IRenderShader,type:number,location:any,i:number):void;
             useByShd(rc:IRenderShader,shd:ShdProgram):void

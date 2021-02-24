@@ -27,7 +27,7 @@ export namespace vox
             texBuf:any = null;
             
             constructor()
-            {                
+            {
             }
             private m_attachCount:number = 0;
             __$attachThis():void

@@ -14,8 +14,6 @@ import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as IRenderShaderT from "../../vox/render/IRenderShader";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
-import * as ShaderUniformT from "../../vox/material/ShaderUniform";
-import * as MaterialBaseT from "../../vox/material/MaterialBase";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import MaterialConst = MaterialConstT.vox.material.MaterialConst;
@@ -25,8 +23,6 @@ import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import IRenderShader = IRenderShaderT.vox.render.IRenderShader;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
-import ShaderUniform = ShaderUniformT.vox.material.ShaderUniform;
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 
 export namespace vox
 {
@@ -38,7 +34,7 @@ export namespace vox
             private m_shdList:ShdProgram[] = [];
             private m_shdListLen:number = 0;
 
-            private m_sharedUniformList:ShaderUniform[] = [];
+            private m_sharedUniformList:IShaderUniform[] = [];
             private m_unlocked:boolean = true;
             private m_preuid:number = -1;
             private m_currShd:ShdProgram = null;
@@ -127,11 +123,11 @@ export namespace vox
                 this.m_unlocked = false;
             }
             
-            setSharedUniformByShd(shd:ShdProgram, uniform:ShaderUniform):void
+            setSharedUniformByShd(shd:ShdProgram, uniform:IShaderUniform):void
             {
                 this.m_sharedUniformList[shd.getUid()] = uniform;
             }
-            getSharedUniformByShd(shd:ShdProgram):ShaderUniform
+            getSharedUniformByShd(shd:ShdProgram):IShaderUniform
             {
                 return this.m_sharedUniformList[shd.getUid()];
             }
@@ -159,7 +155,7 @@ export namespace vox
                             this.m_rc.useProgram( shd.getProgram() );
                             shd.useTexLocation();
                             // use global shared uniform
-                            var uniform:ShaderUniform = this.m_sharedUniformList[shd.getUid()];
+                            var uniform:IShaderUniform = this.m_sharedUniformList[shd.getUid()];
                             while(uniform != null)
                             {
                                 uniform.use(this);
