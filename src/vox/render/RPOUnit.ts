@@ -4,7 +4,6 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// 真正被高频运行的渲染管线中的被执行对象
 
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
@@ -37,6 +36,10 @@ export namespace vox
 {
     export namespace render
     {
+        /**
+         * 渲染器渲染运行时核心关键对象
+         * renderer rendering runtime core display object.
+         */
         export class RPOUnit implements IPoolNode,IRPODisplay
         {
             uid:number = -1;
@@ -107,7 +110,7 @@ export namespace vox
             {
                 this.renderState = renderState;
                 this.rcolorMask = rcolorMask;
-                this.drawFlag = rcolorMask<<10 + this.renderState;
+                this.drawFlag = (rcolorMask<<10) + renderState;
             }
             drawThis(rc:RenderProxy):void
             {

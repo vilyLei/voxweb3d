@@ -169,6 +169,7 @@ export namespace vox
                 this.m_fragOutputTotal = 1;
                 this.m_preuid = -1;
                 this.m_currShd = null;
+                this.drawFlag = 0x0;
             }
             destroy():void
             {
