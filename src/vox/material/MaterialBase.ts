@@ -96,7 +96,7 @@ export namespace vox
                         MaterialBase.s_codeBuffer.initialize(texEnabled);
                         let shdCode_uniqueName:string = MaterialBase.s_codeBuffer.getUniqueShaderName();
                         this.m_shduns = shdCode_uniqueName;
-                        this.__initShd(this.m_shduns);
+                        this.__$initShd(this.m_shduns);
                         let shdData:ShaderData = MaterialProgram.FindData( shdCode_uniqueName );
                         if(null == shdData)
                         {
@@ -114,7 +114,7 @@ export namespace vox
                     }
                 }
             }
-            protected __initShd(pshduns:string):void
+            protected __$initShd(pshduns:string):void
             {
             }
             getShaderData():ShaderData{return this.m_shdData;}

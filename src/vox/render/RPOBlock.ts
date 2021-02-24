@@ -141,8 +141,7 @@ export namespace vox
                 {
                     this.m_shader.useShdByUid(this.shdUid);
                     
-                    this.m_shader.uniform = null;
-                    this.m_shader.transformUniform = null;
+                    this.m_shader.resetUniform();
                     
                     let unit:RPOUnit = null;
                     let vtxTotal:number = 0;
@@ -206,8 +205,7 @@ export namespace vox
                 {
                     this.m_shader.useShdByUid(this.shdUid);
 
-                    this.m_shader.uniform = null;
-                    this.m_shader.transformUniform = null;
+                    this.m_shader.resetUniform();
 
                     let unit:RPOUnit = null;
                     let vtxTotal:number = 0;
@@ -284,8 +282,7 @@ export namespace vox
                 {
                     this.m_shader.useShdByUid(this.shdUid);
                     
-                    this.m_shader.uniform = null;
-                    this.m_shader.transformUniform = null;
+                    this.m_shader.resetUniform();
 
                     let unit:RPOUnit = null;
                     let flagVBoo:boolean = false;
@@ -354,8 +351,7 @@ export namespace vox
                 {
                     if(forceUpdateUniform)
                     {
-                        this.m_shader.uniform = null;
-                        this.m_shader.transformUniform = null;
+                        this.m_shader.resetUniform();
                     }
                     if(RendererDeviece.IsMobileWeb())
                     {

@@ -20,7 +20,7 @@ import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureStoreT from "../vox/texture/TextureStore";
 import * as TextureConstT from "../vox/texture/TextureConst";
-import * as ImageTexResLoaderT from "../vox/texture/ImageTexResLoader";
+import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as RendererSceneT from "../vox/scene/RendererScene";
 import * as BaseTestMaterialT from "../demo/material/BaseTestMaterial";
@@ -46,7 +46,7 @@ import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
-import ImageTexResLoader = ImageTexResLoaderT.vox.texture.ImageTexResLoader;
+import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import BaseTestMaterial = BaseTestMaterialT.demo.material.BaseTestMaterial;
@@ -60,11 +60,11 @@ export namespace demo
         }
         private m_rscene:RendererScene = null;
         private m_rcontext:RendererInstanceContext = null;
-        static TexLoader:ImageTexResLoader = new ImageTexResLoader();
+        private m_texLoader:ImageTextureLoader = null;//new ImageTextureLoader();
         private m_camTrack:CameraTrack = null;
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
-            let ptex:TextureProxy = DemoSRIns.TexLoader.getImageTexByUrl(purl);
+            let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
             ptex.mipmapEnabled = mipmapEnabled;
             if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
             return ptex;
@@ -91,8 +91,6 @@ export namespace demo
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
                 
-                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
                 //let div = document.getElementById("app");
                 //let div:HTMLElement = this.createDiv(50,100,200,100);
                 let div:HTMLElement = this.createDiv(px,py,pw,ph);
@@ -105,6 +103,11 @@ export namespace demo
                 this.m_rscene.initialize(rparam,3);
                 this.m_rscene.updateCamera();
                 this.m_rcontext = this.m_rscene.getRendererContext();
+
+                this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );                
+                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
+
                 //this.m_rscene.getStage3D().addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
@@ -142,6 +145,7 @@ export namespace demo
         }
         run():void
         {
+            this.m_texLoader.run();
             this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
             // render begin
             this.m_rscene.runBegin();
@@ -181,12 +185,9 @@ export namespace demo
         }
         run():void
         {
-            // 分帧加载
-            DemoSRIns.TexLoader.run();
-
             this.m_statusDisp.update();
 
-            this.m_demoA.run();        
+            this.m_demoA.run();
             this.m_demoB.run();        
         }
     }

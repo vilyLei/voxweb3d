@@ -42,18 +42,20 @@ export namespace vox
             private m_preuid:number = -1;
             private m_currShd:ShdProgram = null;
             private m_fragOutputTotal:number = 1;
+            private m_rcuid:number = -1;
             private m_rc:any = null;
             private m_adapter:RenderAdapter = null;
             // material相关的uniform,默认不包括transform相关的信息
-            uniform:IShaderUniform = null;
+            private m_uniform:IShaderUniform = null;
             // 只有transform相关的信息uniform
-            transformUniform:IShaderUniform = null;
+            private m_transformUniform:IShaderUniform = null;
             // 用于记录 renderState(低10位)和ColorMask(高10位) 的状态组合
             drawFlag:number = 0x0;
 
 
             constructor(rc:RenderProxy)
             {
+                this.m_rcuid = rc.getUid();
                 this.m_adapter = rc.getRenderAdapter();
                 this.m_rc = rc.getRC();
             }
@@ -63,17 +65,17 @@ export namespace vox
             }
             useTransUniform(transUniform:IShaderUniform):void
             {
-                if(this.transformUniform != transUniform)
+                if(this.m_transformUniform != transUniform)
                 {
-                    this.transformUniform = transUniform;
+                    this.m_transformUniform = transUniform;
                     transUniform.use(this);
                 }
             }
             useUniform(uniform:IShaderUniform):void
             {
-                if(this.uniform != uniform)
+                if(this.m_uniform != uniform)
                 {
-                    this.uniform = uniform;
+                    this.m_uniform = uniform;
                     uniform.use(this);
                 }
             }
@@ -181,10 +183,13 @@ export namespace vox
             {
                 return this.m_preuid;
             }
+            resetUniform():void
+            {
+                this.m_uniform = null;
+                this.m_transformUniform = null;
+            }
             reset():void
             {
-                this.uniform = null;
-                this.transformUniform = null;
                 this.m_fragOutputTotal = 1;
                 this.m_preuid = -1;
                 this.m_currShd = null;
@@ -197,22 +202,22 @@ export namespace vox
             }
             useUniformToCurrentShd(uniform:IShaderUniform):void
             {
-                if(this.uniform != uniform)
+                if(this.m_uniform != uniform)
                 {
-                    this.uniform != uniform;
+                    this.m_uniform != uniform;
                     uniform.useByShd(this,this.m_currShd);
                 }
             }
             useUniform2ToCurrentShd(uniform:IShaderUniform,transUniform:IShaderUniform):void
             {
-                if(this.uniform != uniform)
+                if(this.m_uniform != uniform)
                 {
-                    this.uniform != uniform;
+                    this.m_uniform != uniform;
                     uniform.useByShd(this,this.m_currShd);
                 }
-                if(this.transformUniform != transUniform)
+                if(this.m_transformUniform != transUniform)
                 {
-                    this.transformUniform != transUniform;
+                    this.m_transformUniform != transUniform;
                     transUniform.useByShd(this,this.m_currShd);
                 }
             }

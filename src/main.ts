@@ -94,8 +94,8 @@
 //  import * as DemoContainer from "./demo/DemoContainer";
 //  import Demo = DemoContainer.demo.DemoContainer;
 
-import * as DemoParticle from "./demo/DemoParticle";
-import Demo = DemoParticle.demo.DemoParticle;
+//  import * as DemoParticle from "./demo/DemoParticle";
+//  import Demo = DemoParticle.demo.DemoParticle;
 
 //  import * as DemoSphScreenRect from "./demo/DemoSphScreenRect";
 //  import Demo = DemoSphScreenRect.demo.DemoSphScreenRect;
@@ -223,8 +223,8 @@ import Demo = DemoParticle.demo.DemoParticle;
 //  import * as DemoDivControl from "./demo/DemoDivControl";
 //  import Demo = DemoDivControl.demo.DemoDivControl;
 
-//  import * as DemoMultiRenderer from "./demo/DemoMultiRenderer";
-//  import Demo = DemoMultiRenderer.demo.DemoMultiRenderer;
+import * as DemoMultiRenderer from "./demo/DemoMultiRenderer";
+import Demo = DemoMultiRenderer.demo.DemoMultiRenderer;
 
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;

@@ -111,10 +111,10 @@ export namespace vox
                         }
                         if(RendererDeviece.SHADERCODE_TRACE_ENABLED)
                         {
-                            console.log("ShdProgram::createLocations(), attri aLocationTypes: "+this.m_aLocationTypes);
-                            console.log("ShdProgram::createLocations(), attri m_aLocations: "+this.m_aLocations);
-                            console.log("ShdProgram::createLocations(), attriNSList: "+attriNSList);
-                            console.log("ShdProgram::createLocations(), m_attribLIndexList: "+this.m_attribLIndexList);
+                            console.log("ShdProgram("+this.m_uid+")::createLocations(), attri aLocationTypes: "+this.m_aLocationTypes);
+                            console.log("ShdProgram("+this.m_uid+")::createLocations(), attri m_aLocations: "+this.m_aLocations);
+                            console.log("ShdProgram("+this.m_uid+")::createLocations(), attriNSList: "+attriNSList);
+                            console.log("ShdProgram("+this.m_uid+")::createLocations(), m_attribLIndexList: "+this.m_attribLIndexList);
                         }
                     }
                 }
