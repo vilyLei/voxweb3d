@@ -267,7 +267,7 @@ void main()\n\
                 {
                     return this.m_brightness;
                 }
-                createSharedUniform(rc:RenderProxy):ShaderGlobalUniform
+                createSharedUniform():ShaderGlobalUniform
                 {
                     return null;
                 }

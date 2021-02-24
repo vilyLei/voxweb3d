@@ -7,11 +7,9 @@
 
 import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as IBufferBuilderT from '../../vox/render/IBufferBuilder';
-import * as ROVertexResourceT from '../../vox/render/ROVertexResource';
 
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import IBufferBuilder = IBufferBuilderT.vox.render.IBufferBuilder;
-import ROVertexResource = ROVertexResourceT.vox.render.ROVertexResource;
 
 export namespace vox
 {
@@ -19,10 +17,11 @@ export namespace vox
     {
         export interface IROVertexBufUpdater
         {
+            updateVtxDataToGpuByUid(vtxUid:number,deferred:boolean):void;
             /**
              * update texture system memory data to gpu memory data
              */
-            updateDispVbuf(rc:IBufferBuilder,vtxRes:ROVertexResource,disp:IRODisplay):void
+            updateDispVbuf(disp:IRODisplay,deferred:boolean):void
         }
     }
 }

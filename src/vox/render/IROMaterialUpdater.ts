@@ -20,7 +20,7 @@ export namespace vox
             /**
              * update texture system memory data to gpu memory data
              */
-            updateDispTRO(texRes:ROTextureResource, disp:IRODisplay):void;
+            updateDispTRO(disp:IRODisplay,deferred:boolean):void;
         }
     }
 }

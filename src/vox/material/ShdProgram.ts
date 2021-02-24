@@ -45,6 +45,8 @@ export namespace vox
             private m_uniformDict:Map<string,UniformLine> = new Map();
             private m_uLocationDict:Map<string,any> = new Map();
 
+            private m_vtxShd:any = null;
+            private m_frgShd:any = null;
             // recode shader uniform including status
             dataUniformEnabled:boolean = false;
             
@@ -322,7 +324,6 @@ export namespace vox
                     console.log("vshd_str: \n"+vshd_str);
                 }
                 let vtxShd:any = this.loadShader(this.m_gl.VERTEX_SHADER, vshd_str);
-                
                 if(RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED)
                 {
                     if(fshd_str.indexOf(" mediump ") >= 0)
@@ -355,6 +356,8 @@ export namespace vox
                     }
                     return null;
                 }
+                this.m_vtxShd = vtxShd;
+                this.m_frgShd = frgShd;
                 return shdProgram;
             }
             
@@ -408,10 +411,17 @@ export namespace vox
             {
                 this.m_aLocations = null;
                 
-                if(this.m_texTotal > 0)this.m_texLocations.fill(null);
-                this.m_texTotal = 0;
+                if(this.m_texTotal > 0)
+                {
+                    this.m_texLocations.fill(null);
+                    this.m_texTotal = 0;
+                }
                 if(this.m_program != null)
                 {
+                    this.m_gl.deleteShader(this.m_vtxShd);
+                    this.m_gl.deleteShader(this.m_frgShd);
+                    this.m_vtxShd = null;
+                    this.m_frgShd = null;
                     this.m_gl.deleteProgram(this.m_program);
                     this.m_program = null;
                 }

@@ -82,9 +82,10 @@ export namespace vox
 
             readonly RContext:any = null;
             readonly RState:RODrawState = null;
-            //readonly VtxStore:ROVtxBufUidStore = null;
+            
             readonly Vertex:ROVertexResource = null;
             readonly Texture:ROTextureResource = null;
+
             readonly VtxBufUpdater:IROVertexBufUpdater = null;
             readonly MaterialUpdater:IROMaterialUpdater = null;
 
@@ -120,6 +121,10 @@ export namespace vox
             constructor()
             {                
                 this.m_uid = RenderProxy.s_uid++;
+            }
+            getRC():any
+            {
+                return this.m_rc;
             }
             getUid():number
             {
@@ -195,71 +200,9 @@ export namespace vox
                     this.m_camUBO.run();
                 }
             }
-            useByLocationV2(ult:any,type:number, f32Arr:Float32Array,dataSize:number,offset:number):void
-            {
-                switch(type)
-                {
-                    case MaterialConst.SHADER_MAT4:
-                        if(offset < 1)
-                        {
-                            this.m_rc.uniformMatrix4fv(ult, false, f32Arr);
-                        }
-                        else
-                        {
-                            this.m_rc.uniformMatrix4fv(ult, false, f32Arr,offset,dataSize * 16);
-                        }
-                    break;
-                    case MaterialConst.SHADER_MAT3:
-                        this.m_rc.uniformMatrix3fv(ult, false, f32Arr,0, dataSize * 9);
-                    break;
-                    case MaterialConst.SHADER_VEC4FV:
-                        this.m_rc.uniform4fv(ult, f32Arr, offset, dataSize * 4);
-                    break;
-                    case MaterialConst.SHADER_VEC3FV:
-                        this.m_rc.uniform3fv(ult, f32Arr, offset, dataSize * 3);
-                    break;
-                    case MaterialConst.SHADER_VEC4:
-	        		    this.m_rc.uniform4f(ult, f32Arr[0], f32Arr[1], f32Arr[2], f32Arr[3]);
-                    break;
-                    case MaterialConst.SHADER_VEC3:
-	        		    this.m_rc.uniform3f(ult, f32Arr[0], f32Arr[1], f32Arr[2]);
-                    break;
-                    case MaterialConst.SHADER_VEC2:
-	        		    this.m_rc.uniform2f(ult, f32Arr[0], f32Arr[1]);
-                    break;
-                    default:
-                        break;
-                }
-            }
-            
-            useByLocationV1(ult:any,type:number, f32Arr:Float32Array,dataSize:number):void
-            {
-                switch(type)
-                {
-                    case MaterialConst.SHADER_MAT4:
-                        this.m_rc.uniformMatrix4fv(ult, false, f32Arr);
-                    break;
-                    case MaterialConst.SHADER_MAT3:
-                        this.m_rc.uniformMatrix3fv(ult, false, f32Arr);
-                    break;
-                    case MaterialConst.SHADER_VEC4FV:
-                        this.m_rc.uniform4fv(ult, f32Arr, dataSize * 4);
-                    break;
-                    case MaterialConst.SHADER_VEC3FV:
-                        this.m_rc.uniform3fv(ult, f32Arr, dataSize * 3);
-                    break;
-                    case MaterialConst.SHADER_VEC4:
-	        		    this.m_rc.uniform4f(ult, f32Arr[0], f32Arr[1], f32Arr[2], f32Arr[3]);
-                    break;
-                    case MaterialConst.SHADER_VEC3:
-	        		    this.m_rc.uniform3f(ult, f32Arr[0], f32Arr[1], f32Arr[2]);
-                    break;
-                    case MaterialConst.SHADER_VEC2:
-	        		    this.m_rc.uniform2f(ult, f32Arr[0], f32Arr[1]);
-                    break;
-                    default:
-                        break;
-                }
+			getActiveAttachmentTotal():number
+			{
+                return this.m_adapter.getActiveAttachmentTotal();
             }
 
             createBuf():any
@@ -434,10 +377,6 @@ export namespace vox
             getRenderAdapter():RenderAdapter
             {
                return this.m_adapter;
-            }
-			getActiveAttachmentTotal():number
-			{
-                return this.m_adapter.getActiveAttachmentTotal();
             }
             setCameraParam(fov:number, near:number, far:number):void
             {

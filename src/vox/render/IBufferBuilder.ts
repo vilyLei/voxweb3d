@@ -7,7 +7,9 @@
 // 渲染运行时buffer相关的操作
 
 import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
+import * as IROVertexBufUpdaterT from "../../vox/render/IROVertexBufUpdater";
 import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
+import IROVertexBufUpdater = IROVertexBufUpdaterT.vox.render.IROVertexBufUpdater;
 
 export namespace vox
 {
@@ -15,6 +17,8 @@ export namespace vox
     {
         export interface IBufferBuilder
         {
+            VtxBufUpdater:IROVertexBufUpdater;
+            getRC():any
             getUid():number;
             createBuf():any;
             deleteBuf(buf:any):void;

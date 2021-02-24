@@ -204,6 +204,25 @@ void main(){
 
             }
         }
+        private updateTexData():void
+        {
+            let rscene:RendererScene = this.m_rscene;
+            let entityList:DisplayEntity[] = this.m_targets;
+            let img = new Image();
+            img.onload = function(evt:any):void
+            {
+                console.log("loaded img, and update tex res.");
+                let tex:ImageTextureProxy = rscene.textureBlock.createImageTex2D(img.width, img.height);
+                tex.setDataFromImage(img);
+                entityList[0].updateTextureList([tex],rscene.getRenderProxy());
+                //  let cly:Cylinder3DEntity = new Cylinder3DEntity();
+                //  cly.initialize(100.0,200.0,15,[tex]);
+                //  cly.setXYZ(100.0,0.0,100.0);
+                //  rscene.addEntity(cly);
+            }
+            //img.src = "static/assets/yanj.jpg";
+            img.src = "static/assets/metal_02.jpg";
+        }
         private updateTex():void
         {
             let rscene:RendererScene = this.m_rscene;
@@ -231,6 +250,8 @@ void main(){
             console.log("mouse down...,this.m_targetDisp != null: "+(this.m_targets != null));
             if(this.m_targets != null && this.m_targets.length > 0)
             {
+                this.updateTexData();
+                return;
                 this.updateTex();
                 return;
                 // test visible

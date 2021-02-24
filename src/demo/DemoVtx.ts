@@ -117,16 +117,19 @@ export namespace demo
                 let tex4:TextureProxy = this.getImageTexByUrl("static/assets/yanj.jpg");
                 let tex5:TextureProxy = this.m_rscene.textureBlock.createRGBATex2D(16,16,new Color4(1.0,0.0,1.0));
                 
-                let boxFrame:BoxFrame3D = new BoxFrame3D();
+                let boxFrame:BoxFrame3D;
+
+                boxFrame = new BoxFrame3D();
                 boxFrame.initialize(new Vector3D(-100,-100,-100),new Vector3D(100,100,100));
                 this.m_srcBoxFrame = boxFrame;
 
                 
                 boxFrame = new BoxFrame3D();
-                boxFrame.setMesh(this.m_srcBoxFrame.getMesh());
+                if(this.m_srcBoxFrame != null)boxFrame.setMesh(this.m_srcBoxFrame.getMesh());
                 boxFrame.initialize(new Vector3D(-100,-100,-100),new Vector3D(100,100,100));
                 this.m_rscene.addEntity(boxFrame);
                 this.m_targets.push(boxFrame);
+                //return;
 
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.initialize(300.0);
@@ -252,16 +255,9 @@ void main(){
                 this.m_flag = false;
                 boxFrame.getVertexAt(index, this.m_minV);
             }
-            //console.log("min: ",this.m_minV,",max: ",this.m_maxV);
-            //boxFrame.updateFrame(this.m_minV, this.m_maxV);
-            this.m_ab.min.copyFrom(this.m_minV);
-            this.m_ab.max.copyFrom(this.m_maxV);
-            this.m_ab.updateFast();
-            //boxFrame.updateFrameByAABB(this.m_ab);
-            boxFrame.updateMeshToGpu(this.m_rscene.getRenderProxy(),true);
-            //this.m_maxV.addBy(this.m_dvPos);
-            //this.m_minV.addBy(this.m_dvPos);
+            console.log("this.m_minV, ",this.m_minV);
             boxFrame.setVertexAt(index,this.m_minV);
+            boxFrame.updateMeshToGpu(this.m_rscene.getRenderProxy(),true);
             this.m_minV.x += 5.0;
             //this.m_maxV.x += 5.0;
         }
@@ -272,8 +268,8 @@ void main(){
             {
                 this.updateMeshData();
                 return;
-                this.updateVtxData();
-                return;
+                //  this.updateVtxData();
+                //  return;
                 // test visible
                 //  this.m_targets[0].setVisible(!this.m_targets[0].getVisible());
                 //  return;

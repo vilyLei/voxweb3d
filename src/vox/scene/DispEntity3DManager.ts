@@ -166,7 +166,7 @@ export namespace vox
                                 }
                                 else
                                 {
-                                    this.m_dispBuilder.addDispToProcess(rc, disp, this.m_rprocess.uid);
+                                    this.m_dispBuilder.addDispToProcess(disp, this.m_rprocess.uid);
                                 }
                                 
                                 if(this.entityManaListener != null)
@@ -224,7 +224,7 @@ export namespace vox
                 }
                 return false;
             }
-            update(rc:RenderProxy):void
+            private updateWaitList(rc:RenderProxy):void
             {
                 let len:number = this.m_waitList.length;
                 let entity:IRenderEntity = null;
@@ -266,7 +266,7 @@ export namespace vox
                             }
                             else
                             {
-                                this.m_dispBuilder.addDispToProcess(rc, disp, this.m_rprocess.uid);
+                                this.m_dispBuilder.addDispToProcess(disp, this.m_rprocess.uid);
                             }
                             
                             this.m_waitList.splice(i,1);
@@ -298,9 +298,18 @@ export namespace vox
                             this.entityManaListener.removeFromWorld(entity,this.m_wuid,-1);
                         }
                     }
-                }                
+                }
                 this.m_dispBuilder.update(rc);
-            }    
+            }
+            
+            update(rc:RenderProxy):void
+            {
+                if(this.m_waitList.length > 0)
+                {
+                    this.updateWaitList(rc);
+                }
+                this.m_dispBuilder.update(rc);
+            }
         }
     }
 }

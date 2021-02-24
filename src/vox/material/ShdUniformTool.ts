@@ -15,6 +15,7 @@ import * as CameraUniformBuilderT from "../../vox/material/shared/CameraUniformB
 import * as StageParamUniformBuilderT from "../../vox/material/shared/StageParamUniformBuilder";
 import * as CameraParamUniformBuilderT from "../../vox/material/shared/CameraParamUniformBuilder";
 import * as ViewParamUniformBuilderT from "../../vox/material/shared/ViewParamUniformBuilder";
+import * as IRenderShaderT from "../../vox/render/IRenderShader";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
@@ -29,6 +30,7 @@ import CameraUniformBuilder = CameraUniformBuilderT.vox.material.shared.CameraUn
 import StageParamUniformBuilder = StageParamUniformBuilderT.vox.material.shared.StageParamUniformBuilder;
 import CameraParamUniformBuilder = CameraParamUniformBuilderT.vox.material.shared.CameraParamUniformBuilder;
 import ViewParamUniformBuilder = ViewParamUniformBuilderT.vox.material.shared.ViewParamUniformBuilder;
+import IRenderShader = IRenderShaderT.vox.render.IRenderShader;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 
 export namespace vox
@@ -38,13 +40,13 @@ export namespace vox
         export class EmptyShdUniform extends ShaderUniform implements IShaderUniform
         {
             static EmptyUniform:EmptyShdUniform = new EmptyShdUniform();
-            use(rc:RenderProxy):void
+            use(rc:IRenderShader):void
             {
             }
-            useByLocation(rc:RenderProxy,type:number,location:any,i:number):void
+            useByLocation(rc:IRenderShader,type:number,location:any,i:number):void
             {
             }
-            useByShd(rc:RenderProxy,shd:ShdProgram):void
+            useByShd(rc:IRenderShader,shd:ShdProgram):void
             {
             }
             updateData():void

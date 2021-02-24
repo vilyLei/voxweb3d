@@ -59,7 +59,7 @@ export namespace vox
             }
             useGlobalMaterial(material:MaterialBase):void
             {
-                this.m_dispBuilder.updateGlobalMaterial(this.m_rc, material);
+                this.m_dispBuilder.updateGlobalMaterial(material);
             }
     
             toString():string

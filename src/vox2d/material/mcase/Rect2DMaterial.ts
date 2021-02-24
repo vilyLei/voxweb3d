@@ -251,7 +251,7 @@ if(!this.centerAlignEnabled)
                     this.m_paramArray[10] = pb;
                     this.m_paramArray[11] = pa;
                 }
-                createSharedUniform(rc:RenderProxy):ShaderGlobalUniform
+                createSharedUniform():ShaderGlobalUniform
                 {
                     return null;
                 }

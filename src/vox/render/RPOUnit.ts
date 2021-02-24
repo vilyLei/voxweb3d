@@ -68,6 +68,8 @@ export namespace vox
             drawMode:number = 0;
             renderState:number = 0;
             rcolorMask:number = 0;
+            // 用于记录 renderState(低10位)和ColorMask(高10位) 的状态组合
+            drawFlag:number = 0;
             vro:IVertexRenderObj = null;
             
             // transform uniform
@@ -81,7 +83,15 @@ export namespace vox
             tro:ITextureRenderObj = null;
             texMid:number = -1;
             ubo:ShaderUBO = null;
-            
+            private testDrawFlag():void
+            {
+                if(this.shader.drawFlag != this.drawFlag)
+                {
+                    this.shader.drawFlag = this.drawFlag;
+                    RenderStateObject.UseRenderState(this.renderState);
+                    RenderColorMask.UseRenderState(this.rcolorMask);
+                }
+            }
             setIvsParam(ivsIndex:number, ivsCount:number):void
             {
                 this.ivsIndex = ivsIndex;
@@ -92,6 +102,12 @@ export namespace vox
             {
                 this.visible = boo;
                 this.drawEnabled = boo && this.ivsCount > 0;
+            }
+            setDrawFlag(renderState:number,rcolorMask:number):void
+            {
+                this.renderState = renderState;
+                this.rcolorMask = rcolorMask;
+                this.drawFlag = rcolorMask<<10 + this.renderState;
             }
             drawThis(rc:RenderProxy):void
             {
@@ -185,15 +201,14 @@ export namespace vox
                 if(this.shader.transformUniform != this.transUniform)
                 {
                     this.shader.transformUniform = this.transUniform;
-                    this.transUniform.use(rc);
+                    this.transUniform.use(this.shader);
                 }
                 if(this.shader.uniform != this.uniform)
                 {
                     this.shader.uniform = this.uniform;
-                    this.uniform.use(rc);
+                    this.uniform.use(this.shader);
                 }
-                RenderStateObject.UseRenderState(this.renderState);
-                RenderColorMask.UseRenderState(this.rcolorMask);
+                this.testDrawFlag();
             }
             run(rc:RenderProxy):void
             {
@@ -208,36 +223,33 @@ export namespace vox
                 if(this.shader.transformUniform != this.transUniform)
                 {
                     this.shader.transformUniform = this.transUniform;
-                    this.transUniform.use(rc);
+                    this.transUniform.use(this.shader);
                 }
                 if(this.shader.uniform != this.uniform)
                 {
                     this.shader.uniform = this.uniform;
-                    this.uniform.use(rc);
+                    this.uniform.use(this.shader);
                 }
-                RenderStateObject.UseRenderState(this.renderState);
-                RenderColorMask.UseRenderState(this.rcolorMask);
+                this.testDrawFlag();
             }
             
-            runLockMaterial2(rc:RenderProxy):void
+            runLockMaterial2():void
             {
-                RenderStateObject.UseRenderState(this.renderState);
-                RenderColorMask.UseRenderState(this.rcolorMask);
+                this.testDrawFlag();
                 if(this.shader.uniform != this.uniform)
                 {
                     this.shader.uniform = this.uniform;
-                    this.shader.updateUniformToCurrentShd2(rc,this.uniform,this.transUniform);
+                    this.shader.updateUniformToCurrentShd2(this.uniform,this.transUniform);
                 }
                 else
                 {
-                    this.shader.updateUniformToCurrentShd(rc,this.transUniform);
+                    this.shader.updateUniformToCurrentShd(this.transUniform);
                 }
             }
             runLockMaterial(rc:RenderProxy):void
             {
                 this.vro.run(rc);
-                RenderStateObject.UseRenderState(this.renderState);
-                RenderColorMask.UseRenderState(this.rcolorMask);
+                this.testDrawFlag();
                 if(this.shader.uniform != this.uniform)
                 {
                     this.shader.uniform = this.uniform;
@@ -245,11 +257,11 @@ export namespace vox
                     if(this.shader.transformUniform != this.transUniform)
                     {
                         this.shader.transformUniform = this.transUniform;
-                        this.shader.updateUniformToCurrentShd2(rc,this.uniform,this.transUniform);
+                        this.shader.updateUniformToCurrentShd2(this.uniform,this.transUniform);
                     }
                     else
                     {
-                        this.shader.updateUniformToCurrentShd(rc,this.uniform);
+                        this.shader.updateUniformToCurrentShd(this.uniform);
                     }
                 }
                 else
@@ -257,7 +269,7 @@ export namespace vox
                     if(this.shader.transformUniform != this.transUniform)
                     {
                         this.shader.transformUniform = this.transUniform;
-                        this.shader.updateUniformToCurrentShd(rc,this.transUniform);
+                        this.shader.updateUniformToCurrentShd(this.transUniform);
                     }
                 }
             }
@@ -283,6 +295,7 @@ export namespace vox
                 this.partTotal = 0;
                 this.drawEnabled = true;
                 this.drawMode = 0;
+                this.drawFlag = 0x0;
                 this.renderState = 0;
                 this.rcolorMask = 0;
 

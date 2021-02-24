@@ -9,13 +9,13 @@ import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 import * as ShaderUniformProbeT from "../../vox/material/ShaderUniformProbe";
 import * as MaterialConstT from "../../vox/material/MaterialConst";
 import * as ShdProgramT from "../../vox/material/ShdProgram";
-import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as IRenderShaderT from "../../vox/render/IRenderShader";
 
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
 import ShaderUniformProbe = ShaderUniformProbeT.vox.material.ShaderUniformProbe;
 import MaterialConst = MaterialConstT.vox.material.MaterialConst;
 import ShdProgram = ShdProgramT.vox.material.ShdProgram;
-import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import IRenderShader = IRenderShaderT.vox.render.IRenderShader;
 
 export namespace vox
 {
@@ -80,9 +80,9 @@ export namespace vox
                 }
                 this.uniformSize = probe.uniformSlotSize;
             }
-            useByLocation(rc:RenderProxy,type:number,location:any,i:number):void{}
-            useByShd(rc:RenderProxy,shd:ShdProgram):void{}
-            use(rc:RenderProxy):void{}
+            useByLocation(rc:IRenderShader,type:number,location:any,i:number):void{}
+            useByShd(rc:IRenderShader,shd:ShdProgram):void{}
+            use(rc:IRenderShader):void{}
             updateData():void{}
             destroy():void{}
         }
@@ -94,24 +94,24 @@ export namespace vox
                 super();
             }
             
-            use(rc:RenderProxy):void
+            use(rc:IRenderShader):void
             {
                 let i:number = 0;
                 for(; i < this.uniformSize; ++i)
                 {
-                    rc.useByLocationV1(this.locations[i],this.types[i],this.dataList[i],this.dataSizeList[i]);
+                    rc.useUniformV1(this.locations[i],this.types[i],this.dataList[i],this.dataSizeList[i]);
                 }
             }
-            useByLocation(rc:RenderProxy,type:number,location:any,i:number):void
+            useByLocation(rc:IRenderShader,type:number,location:any,i:number):void
             {
-                rc.useByLocationV1(location,type,this.dataList[i],this.dataSizeList[i]);
+                rc.useUniformV1(location,type,this.dataList[i],this.dataSizeList[i]);
             }
-            useByShd(rc:RenderProxy,shd:ShdProgram):void
+            useByShd(rc:IRenderShader,shd:ShdProgram):void
             {
                 let i:number = 0;
                 for(; i < this.uniformSize; ++i)
                 {
-                    rc.useByLocationV1(shd.getUniformLocationByNS(this.uniformNameList[i]),shd.getUniformTypeByNS(this.uniformNameList[i]),this.dataList[i],this.dataSizeList[i]);
+                    rc.useUniformV1(shd.getUniformLocationByNS(this.uniformNameList[i]),shd.getUniformTypeByNS(this.uniformNameList[i]),this.dataList[i],this.dataSizeList[i]);
                 }
             }
             updateData():void
@@ -161,24 +161,24 @@ export namespace vox
             {
                 super();
             }
-            use(rc:RenderProxy):void
+            use(rc:IRenderShader):void
             {
                 let i:number = 0;
                 for(; i < this.uniformSize; ++i)
                 {
-                    rc.useByLocationV2(this.locations[i],this.types[i],this.dataList[i],this.dataSizeList[i],0);
+                    rc.useUniformV2(this.locations[i],this.types[i],this.dataList[i],this.dataSizeList[i],0);
                 }
             }
-            useByLocation(rc:RenderProxy,type:number,location:any,i:number):void
+            useByLocation(rc:IRenderShader,type:number,location:any,i:number):void
             {
-                rc.useByLocationV2(location,type,this.dataList[i],this.dataSizeList[i],0);
+                rc.useUniformV2(location,type,this.dataList[i],this.dataSizeList[i],0);
             }
-            useByShd(rc:RenderProxy,shd:ShdProgram):void
+            useByShd(rc:IRenderShader,shd:ShdProgram):void
             {
                 let i:number = 0;
                 for(; i < this.uniformSize; ++i)
                 {
-                    rc.useByLocationV2(shd.getUniformLocationByNS(this.uniformNameList[i]),shd.getUniformTypeByNS(this.uniformNameList[i]),this.dataList[i],this.dataSizeList[i],0);
+                    rc.useUniformV2(shd.getUniformLocationByNS(this.uniformNameList[i]),shd.getUniformTypeByNS(this.uniformNameList[i]),this.dataList[i],this.dataSizeList[i],0);
                 }
             }
             updateData():void

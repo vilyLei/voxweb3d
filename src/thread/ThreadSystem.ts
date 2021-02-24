@@ -143,7 +143,7 @@ export namespace thread
                 {
                     task = {taskName:ns, taskclass:taskclass,type:0,threads:[]};
                     ThreadSystem.s_tasks[taskclass] = task;
-                    //s_threadsTotal
+                    
                     for(let i:number = 0; i<ThreadSystem.s_threadsTotal;++i)
                     {
                         ThreadSystem.s_threads[i].initTaskByURL(ns,taskclass);

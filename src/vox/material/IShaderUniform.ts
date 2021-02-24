@@ -8,12 +8,12 @@
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as ShaderUniformProbeT from "../../vox/material/ShaderUniformProbe";
 import * as ShdProgramT from "../../vox/material/ShdProgram";
-import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as IRenderShaderT from "../../vox/render/IRenderShader";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import ShaderUniformProbe = ShaderUniformProbeT.vox.material.ShaderUniformProbe;
 import ShdProgram = ShdProgramT.vox.material.ShdProgram;
-import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import IRenderShader = IRenderShaderT.vox.render.IRenderShader;
 
 export namespace vox
 {
@@ -21,9 +21,9 @@ export namespace vox
     {
         export interface IShaderUniform
         {
-            use(rc:RenderProxy):void;
-            useByLocation(rc:RenderProxy,type:number,location:any,i:number):void;
-            useByShd(rc:RenderProxy,shd:ShdProgram):void
+            use(rc:IRenderShader):void;
+            useByLocation(rc:IRenderShader,type:number,location:any,i:number):void;
+            useByShd(rc:IRenderShader,shd:ShdProgram):void
             updateData():void;
             destroy():void;
         }

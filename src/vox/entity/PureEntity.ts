@@ -163,6 +163,8 @@ export namespace vox
             }
             // update material texture list
             protected m_texChanged:boolean = false;
+            
+            protected m_meshChanged:boolean = false;
             /**
              * users need to call this function manually
              * 更新有两种形式, 1: 只是更改资源内部的数据, 2: 替换资源本身
@@ -172,7 +174,16 @@ export namespace vox
             {
                 if(this.m_display != null && this.m_display.__$ruid > -1)
                 {
-                    this.m_display.vbuf.updateToGpu(rc, deferred);
+                    if(this.m_meshChanged)
+                    {
+                        this.m_meshChanged = false;
+                        rc.VtxBufUpdater.updateDispVbuf(this.m_display, deferred);
+                    }
+                    else
+                    {
+                        //this.m_display.vbuf.updateToGpu(rc, deferred);
+                        rc.VtxBufUpdater.updateVtxDataToGpuByUid(this.m_display.vbuf.getUid(),deferred);
+                    }
                 }
             }
             /**
@@ -187,7 +198,7 @@ export namespace vox
                     if(this.m_texChanged)
                     {
                         this.m_texChanged = false;
-                        rc.MaterialUpdater.updateDispTRO(rc.Texture, this.m_display);
+                        rc.MaterialUpdater.updateDispTRO(this.m_display,deferred);
                     }
                 }
             }
@@ -273,6 +284,68 @@ export namespace vox
                     this.setMaterial( entity.getMaterial() );
                 }
             }
+            
+            /**
+             * 设置几何相关的数据,必须是构建完备的mesh才能被设置进来
+             * 这个设置函数也可以动态运行时更新几何相关的顶点数据
+             */
+            setMesh(m:MeshBase):void
+            {
+                if(this.m_mesh == null)
+                {
+                    if(m != null)
+                    {
+                        if(!m.isEnabled()){m.rebuild()}
+                        if(m.isEnabled())
+                        {
+                            this.m_mesh = m;
+                            m.__$attachThis();
+                            if(this.m_display == null)
+                            {
+                                this.createDisplay();
+                            }
+                            if(this.m_display != null)
+                            {
+                                if(this.m_omat == null)
+                                {
+                                    this.m_omat = Matrix4Pool.GetMatrix();
+                                }
+                                this.m_display.setTransform(this.m_omat);
+                                
+                                this.m_display.visible = this.m_visible && this.m_drawEnabled;
+                                this.m_display.vbuf = m.__$attachVBuf();
+                                this.m_display.ivsIndex = 0;
+                                this.m_display.ivsCount = m.vtCount;
+                                this.m_display.drawMode = m.drawMode;
+                                this.m_display.trisNumber = m.trisNumber;
+                            }
+                            //console.log("DisplayEntity::setMesh(), "+this.m_display.toString()+",m.drawMode: "+m.drawMode);
+                            if(this.m_globalBounds != null)
+                            {
+                                this.m_globalBounds.copyFrom(m.bounds);
+                            }
+                        }
+                    }
+                }
+                else if(this.m_display != null && this.m_display.__$ruid > -1)
+                {
+                    if(this.m_mesh != m && m != null)
+                    {
+                        //this.m_transfrom.updatedStatus |= 2;
+                        this.m_mesh.__$detachVBuf(this.m_display.vbuf);
+                        this.m_mesh.__$detachThis();
+                        m.__$attachThis();
+                        this.m_mesh = m;
+                        this.m_display.vbuf = m.__$attachVBuf();
+                        this.m_display.ivsIndex = 0;
+                        this.m_display.ivsCount = m.vtCount;
+                        this.m_display.drawMode = m.drawMode;
+                        this.m_display.trisNumber = m.trisNumber;
+                        this.m_meshChanged = true;
+                    }
+                }
+            }
+            /*
             setMesh(m:MeshBase):void
             {
                 if(this.m_mesh == null && m != null)
@@ -309,6 +382,7 @@ export namespace vox
                     }
                 }
             }
+            //*/
             setIvsParam(ivsIndex:number,ivsCount:number):void
             {
                 if(this.m_display != null)
@@ -498,7 +572,6 @@ export namespace vox
             }
             updateMatrix():void
             {
-                
                 this.m_matChanged = true;
             }
             update():void

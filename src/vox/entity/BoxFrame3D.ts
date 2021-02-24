@@ -119,6 +119,7 @@ export namespace vox
 
                 this.createMaterial();
                 this.activeDisplay();
+                if(this.m_selfMesh == null)this.m_selfMesh = this.getMesh() as DashedLineMesh;
             }
             
             initializeByPosList8(posList8:Vector3D[]):void
@@ -143,6 +144,7 @@ export namespace vox
 
                 this.createMaterial();
                 this.activeDisplay();
+                if(this.m_selfMesh == null)this.m_selfMesh = this.getMesh() as DashedLineMesh;
             }
             getVertexAt(vtxIndex:number,outPos:Vector3D):void
             {

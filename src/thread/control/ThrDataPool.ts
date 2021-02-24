@@ -82,7 +82,7 @@ export namespace thread
             }
             isEnabled():boolean
             {
-                return this.m_dataTotal > 0 * this.m_startupFlag;
+                return (this.m_dataTotal * this.m_startupFlag) > 0;
             }
             isStartup():boolean
             {

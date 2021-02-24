@@ -109,7 +109,7 @@ export namespace vox
                 let nextNode:RPONode = this.m_nodeLinker.getBegin();
                 if(nextNode != null)
                 {
-                    this.m_shader.useShdByUid(rc,this.shdUid);
+                    this.m_shader.useShdByUid(this.shdUid);
                     let unit:RPOUnit = null;
                     while(nextNode != null)
                     {
@@ -139,7 +139,7 @@ export namespace vox
                 let nextNode:RPONode = this.m_nodeLinker.getBegin();
                 if(nextNode != null)
                 {
-                    this.m_shader.useShdByUid(rc,this.shdUid);
+                    this.m_shader.useShdByUid(this.shdUid);
                     
                     this.m_shader.uniform = null;
                     this.m_shader.transformUniform = null;
@@ -204,7 +204,7 @@ export namespace vox
                 let nextNode:RPONode = this.m_nodeLinker.getBegin();
                 if(nextNode != null)
                 {
-                    this.m_shader.useShdByUid(rc,this.shdUid);
+                    this.m_shader.useShdByUid(this.shdUid);
 
                     this.m_shader.uniform = null;
                     this.m_shader.transformUniform = null;
@@ -257,11 +257,11 @@ export namespace vox
                                 {
                                     unit.ubo.run(rc);
                                 }
-                                unit.transUniform.use(rc);
+                                unit.transUniform.use(this.m_shader);
                                 if(preUniform != unit.uniform)
                                 {
                                     preUniform = unit.uniform;
-                                    unit.uniform.use(rc);
+                                    unit.uniform.use(this.m_shader);
                                 }
                                 if(unit.partTotal < 1)
                                 {
@@ -282,7 +282,7 @@ export namespace vox
                 let nextNode:RPONode = this.m_nodeLinker.getBegin();
                 if(nextNode != null)
                 {
-                    this.m_shader.useShdByUid(rc, this.shdUid);
+                    this.m_shader.useShdByUid(this.shdUid);
                     
                     this.m_shader.uniform = null;
                     this.m_shader.transformUniform = null;
@@ -312,7 +312,7 @@ export namespace vox
                                     nextNode.vro.run(rc);
                                     flagVBoo = false;
                                 }
-                                unit.runLockMaterial2(rc);
+                                unit.runLockMaterial2();
                                 if(unit.partTotal < 1)
                                 {
                                     unit.drawThis(rc);
@@ -369,7 +369,7 @@ export namespace vox
                     {
                         unit.vro.run(rc);
                     }
-                    unit.runLockMaterial2(rc);
+                    unit.runLockMaterial2();
                     if(unit.partTotal < 1)
                     {
                         unit.drawThis(rc);

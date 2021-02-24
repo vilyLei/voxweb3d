@@ -234,7 +234,7 @@ v_mToVNVS = a_nvs.xyz * mInvMToVMMat3;\n\
                     return DirtyIronShaderBuffer.GetInstance();
                 }
                 
-                createSharedUniform(rc:RenderProxy):ShaderGlobalUniform
+                createSharedUniform():ShaderGlobalUniform
                 {
                     let headU:ShaderGlobalUniform = new ShaderGlobalUniform();
                     headU.uniformNameList = ["vV4U_0","fV4U_1"];

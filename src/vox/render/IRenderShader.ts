@@ -1,4 +1,3 @@
-
 /***************************************************************************/
 /*                                                                         */
 /*  Copyright 2018-2022 by                                                 */
@@ -10,9 +9,14 @@ export namespace vox
 {
     export namespace render
     {
-        export class ROUpdateQueue
+        /**
+         * renderer rendering runtime uniform data operations
+         */
+        export interface IRenderShader
         {
-            
+            getActiveAttachmentTotal():number;
+            useUniformV1(ult:any,type:number, f32Arr:Float32Array,dataSize:number):void;
+            useUniformV2(ult:any,type:number, f32Arr:Float32Array,dataSize:number,offset:number):void;
         }
 
     }

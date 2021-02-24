@@ -158,7 +158,7 @@ void main()
                     this.m_colorArray[2] = pb;
                     this.m_colorArray[3] = pa;
                 }
-                createSharedUniform(rc:RenderProxy):ShaderGlobalUniform
+                createSharedUniform():ShaderGlobalUniform
                 {
                     return null;
                 }

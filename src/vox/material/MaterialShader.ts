@@ -7,16 +7,22 @@
 /***************************************************************************/
 
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
+import * as MaterialConstT from "../../vox/material/MaterialConst";
 import * as ShaderDataT from "../../vox/material/ShaderData";
 import * as ShdProgramT from "../../vox/material/ShdProgram";
+import * as RenderAdapterT from "../../vox/render/RenderAdapter";
+import * as IRenderShaderT from "../../vox/render/IRenderShader";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 import * as ShaderUniformT from "../../vox/material/ShaderUniform";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+import MaterialConst = MaterialConstT.vox.material.MaterialConst;
 import ShaderData = ShaderDataT.vox.material.ShaderData;
 import ShdProgram = ShdProgramT.vox.material.ShdProgram;
+import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
+import IRenderShader = IRenderShaderT.vox.render.IRenderShader;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
 import ShaderUniform = ShaderUniformT.vox.material.ShaderUniform;
@@ -26,7 +32,7 @@ export namespace vox
 {
     export namespace material
     {
-        export class MaterialShader
+        export class MaterialShader implements IRenderShader
         {
             private m_shdDict:Map<string,ShdProgram> = new Map();
             private m_shdList:ShdProgram[] = [];
@@ -37,9 +43,21 @@ export namespace vox
             private m_preuid:number = -1;
             private m_currShd:ShdProgram = null;
             private m_fragOutputTotal:number = 1;
-
+            private m_rc:any = null;
+            private m_adapter:RenderAdapter = null;
+            // material相关的uniform,默认不包括transform相关的信息
             uniform:IShaderUniform = null;
+            // 只有transform相关的信息uniform
             transformUniform:IShaderUniform = null;
+            // 用于记录 renderState(低10位)和ColorMask(高10位) 的状态组合
+            drawFlag:number = 0x0;
+
+
+            constructor(rc:RenderProxy)
+            {
+                this.m_adapter = rc.getRenderAdapter();
+                this.m_rc = rc.getRC();
+            }
             create(shdData:ShaderData):ShdProgram
             {
                 //console.log("this.Create() begin...");
@@ -105,7 +123,7 @@ export namespace vox
             {
                 return this.m_fragOutputTotal;
             }
-            useShdByUid(rc:RenderProxy, uid:number):void
+            useShdByUid(uid:number):void
             {
                 if(this.m_unlocked)
                 {
@@ -116,19 +134,19 @@ export namespace vox
                             this.m_preuid = uid;
                             let shd:ShdProgram = this.m_shdList[uid];
                             this.m_fragOutputTotal = shd.getFragOutputTotal();
-                            if(this.m_fragOutputTotal != rc.getActiveAttachmentTotal())
+                            if(this.m_fragOutputTotal != this.getActiveAttachmentTotal())
                             {
                                 console.log("shd.getUniqueShaderName(): "+shd.getUniqueShaderName());
-                                console.log("this.m_fragOutputTotal: "+this.m_fragOutputTotal+", rc.getActiveAttachmentTotal(): "+rc.getActiveAttachmentTotal());
+                                console.log("this.m_fragOutputTotal: "+this.m_fragOutputTotal+", rc.getActiveAttachmentTotal(): "+this.getActiveAttachmentTotal());
                                 console.log("Error: MRT output amount is not equal to current shader( "+shd.toString()+" ) frag shader output amount !!!");
                             }
-                            rc.RContext.useProgram( shd.getProgram() );
+                            this.m_rc.useProgram( shd.getProgram() );
                             shd.useTexLocation();
                             // use global shared uniform
                             var uniform:ShaderUniform = this.m_sharedUniformList[shd.getUid()];
                             while(uniform != null)
                             {
-                                uniform.use(rc);
+                                uniform.use(this);
                                 uniform = uniform.next;
                             }
                             this.m_currShd = shd;
@@ -152,30 +170,94 @@ export namespace vox
                 this.m_preuid = -1;
                 this.m_currShd = null;
             }
-            updateUniformToCurrentShd(rc:RenderProxy,uniform:IShaderUniform):void
+            destroy():void
             {
-                let shd:ShdProgram = this.m_currShd;
-                if(shd != null)
+                this.m_rc = null;
+                this.m_adapter = null;
+            }
+            updateUniformToCurrentShd(uniform:IShaderUniform):void
+            {
+                uniform.useByShd(this,this.m_currShd);
+            }
+            updateUniformToCurrentShd2(uniform:IShaderUniform,uniform2:IShaderUniform):void
+            {
+                uniform.useByShd(this,this.m_currShd);
+                uniform2.useByShd(this,this.m_currShd);
+            }
+            updateMaterialUniformToCurrentShd(m:MaterialBase):void
+            {
+                m.__$uniform.useByShd(this,this.m_currShd);
+            }
+            
+            useUniformV2(ult:any,type:number, f32Arr:Float32Array,dataSize:number,offset:number):void
+            {
+                switch(type)
                 {
-                    uniform.useByShd(rc,shd);
+                    case MaterialConst.SHADER_MAT4:
+                        if(offset < 1)
+                        {
+                            this.m_rc.uniformMatrix4fv(ult, false, f32Arr);
+                        }
+                        else
+                        {
+                            this.m_rc.uniformMatrix4fv(ult, false, f32Arr,offset,dataSize * 16);
+                        }
+                    break;
+                    case MaterialConst.SHADER_MAT3:
+                        this.m_rc.uniformMatrix3fv(ult, false, f32Arr,0, dataSize * 9);
+                    break;
+                    case MaterialConst.SHADER_VEC4FV:
+                        this.m_rc.uniform4fv(ult, f32Arr, offset, dataSize * 4);
+                    break;
+                    case MaterialConst.SHADER_VEC3FV:
+                        this.m_rc.uniform3fv(ult, f32Arr, offset, dataSize * 3);
+                    break;
+                    case MaterialConst.SHADER_VEC4:
+	        		    this.m_rc.uniform4f(ult, f32Arr[0], f32Arr[1], f32Arr[2], f32Arr[3]);
+                    break;
+                    case MaterialConst.SHADER_VEC3:
+	        		    this.m_rc.uniform3f(ult, f32Arr[0], f32Arr[1], f32Arr[2]);
+                    break;
+                    case MaterialConst.SHADER_VEC2:
+	        		    this.m_rc.uniform2f(ult, f32Arr[0], f32Arr[1]);
+                    break;
+                    default:
+                        break;
                 }
             }
-            updateUniformToCurrentShd2(rc:RenderProxy,uniform:IShaderUniform,uniform2:IShaderUniform):void
+            
+            useUniformV1(ult:any,type:number, f32Arr:Float32Array,dataSize:number):void
             {
-                let shd:ShdProgram = this.m_currShd;
-                if(shd != null)
+                switch(type)
                 {
-                    uniform.useByShd(rc,shd);
-                    uniform2.useByShd(rc,shd);
+                    case MaterialConst.SHADER_MAT4:
+                        this.m_rc.uniformMatrix4fv(ult, false, f32Arr);
+                    break;
+                    case MaterialConst.SHADER_MAT3:
+                        this.m_rc.uniformMatrix3fv(ult, false, f32Arr);
+                    break;
+                    case MaterialConst.SHADER_VEC4FV:
+                        this.m_rc.uniform4fv(ult, f32Arr, dataSize * 4);
+                    break;
+                    case MaterialConst.SHADER_VEC3FV:
+                        this.m_rc.uniform3fv(ult, f32Arr, dataSize * 3);
+                    break;
+                    case MaterialConst.SHADER_VEC4:
+	        		    this.m_rc.uniform4f(ult, f32Arr[0], f32Arr[1], f32Arr[2], f32Arr[3]);
+                    break;
+                    case MaterialConst.SHADER_VEC3:
+	        		    this.m_rc.uniform3f(ult, f32Arr[0], f32Arr[1], f32Arr[2]);
+                    break;
+                    case MaterialConst.SHADER_VEC2:
+	        		    this.m_rc.uniform2f(ult, f32Arr[0], f32Arr[1]);
+                    break;
+                    default:
+                        break;
                 }
             }
-            updateMaterialUniformToCurrentShd(rc:RenderProxy,m:MaterialBase):void
-            {
-                let shd:ShdProgram = this.m_currShd;
-                if(shd != null && m.__$uniform != null)
-                {
-                    m.__$uniform.useByShd(rc,shd);
-                }
+			getActiveAttachmentTotal():number
+			{
+                return this.m_adapter.getActiveAttachmentTotal();
             }
         }
     }

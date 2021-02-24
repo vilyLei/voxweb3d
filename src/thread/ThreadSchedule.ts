@@ -5,13 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as ThreadCoreT from "../thread/control/Thrcode";
 import * as ThrDataPoolT from "../thread/control/ThrDataPool";
 import * as IThreadSendDataT from "../thread/base/IThreadSendData";
 import * as ThreadBaseT from "../thread/base/ThreadBase";
 
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import ThreadCore = ThreadCoreT.thread.control.ThreadCore;
 import ThrDataPool = ThrDataPoolT.thread.control.ThrDataPool;
 import IThreadSendData = IThreadSendDataT.thread.base.IThreadSendData;

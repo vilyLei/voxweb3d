@@ -26,7 +26,7 @@ export namespace vox
             reset():void
             {
                 this.m_rc.Vertex.renderBegin();
-                ROVertexBuffer.RenderBegin(this.m_rc);
+                ROVertexBuffer.RenderBegin();
             }
             toString():string
             {

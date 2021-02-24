@@ -205,8 +205,8 @@
 //  import * as DemoDeepTransparent2 from "./demo/DemoDeepTransparent2";
 //  import Demo = DemoDeepTransparent2.demo.DemoDeepTransparent2;
 
-import * as DemoGpuVtxMana from "./demo/DemoGpuVtxMana";
-import Demo = DemoGpuVtxMana.demo.DemoGpuVtxMana;
+//  import * as DemoGpuVtxMana from "./demo/DemoGpuVtxMana";
+//  import Demo = DemoGpuVtxMana.demo.DemoGpuVtxMana;
 
 //  import * as DemoGpuTexMana from "./demo/DemoGpuTexMana";
 //  import Demo = DemoGpuTexMana.demo.DemoGpuTexMana;
@@ -217,8 +217,8 @@ import Demo = DemoGpuVtxMana.demo.DemoGpuVtxMana;
 //  import * as DemoVtx from "./demo/DemoVtx";
 //  import Demo = DemoVtx.demo.DemoVtx;
 
-//  import * as DemoTexUpdate from "./demo/DemoTexUpdate";
-//  import Demo = DemoTexUpdate.demo.DemoTexUpdate;
+import * as DemoTexUpdate from "./demo/DemoTexUpdate";
+import Demo = DemoTexUpdate.demo.DemoTexUpdate;
 
 //  import * as DemoDivControl from "./demo/DemoDivControl";
 //  import Demo = DemoDivControl.demo.DemoDivControl;

@@ -13,6 +13,7 @@ export namespace vox
     {
         export interface IRPODisplay
         {
+            setDrawFlag(renderState:number,rcolorMask:number):void;
             setIvsParam(ivsIndex:number, ivsCount:number):void;
             setVisible(boo:boolean):void;
         }

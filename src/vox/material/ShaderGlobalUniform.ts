@@ -9,13 +9,13 @@ import * as RenderDataSlotT from "../../vox/material/UniformDataSlot";
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as ShaderUniformProbeT from "../../vox/material/ShaderUniformProbe";
 import * as ShaderUniformT from "../../vox/material/ShaderUniform";
-import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as IRenderShaderT from "../../vox/render/IRenderShader";
 
 import UniformDataSlot = RenderDataSlotT.vox.material.UniformDataSlot;
 import ShaderUniformProbe = ShaderUniformProbeT.vox.material.ShaderUniformProbe;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import ShaderUniform = ShaderUniformT.vox.material.ShaderUniform;
-import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import IRenderShader = IRenderShaderT.vox.render.IRenderShader;
 
 export namespace vox
 {
@@ -64,7 +64,7 @@ export namespace vox
                 this.types.push( probe.uniformTypes[i] );
                 this.dataSizeList.push( probe.dataSizeList[i] );
             }
-            use(rc:RenderProxy):void
+            use(rc:IRenderShader):void
             {
                 var slot:UniformDataSlot = UniformDataSlot.SlotList[this.slotId];
                 if(this.always || this.rst != slot.flagList[this.slotIndex])
@@ -75,14 +75,14 @@ export namespace vox
                     {
                         for(; i < this.slotSize; ++i)
                         {
-                            rc.useByLocationV1(this.locations[i],this.types[i],slot.dataList[this.slotIndex + i],this.dataSizeList[i]);
+                            rc.useUniformV1(this.locations[i],this.types[i],slot.dataList[this.slotIndex + i],this.dataSizeList[i]);
                         }
                     }
                     else
                     {
                         for(; i < this.slotSize; ++i)
                         {
-                            rc.useByLocationV2(this.locations[i],this.types[i],slot.dataList[this.slotIndex + i],this.dataSizeList[i],0);
+                            rc.useUniformV2(this.locations[i],this.types[i],slot.dataList[this.slotIndex + i],this.dataSizeList[i],0);
                         }
                     }
                 }

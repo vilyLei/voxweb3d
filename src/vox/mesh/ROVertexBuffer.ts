@@ -6,7 +6,6 @@
 /***************************************************************************/
 
 import * as RenderConstT from "../../vox/render/RenderConst";
-import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as ROVtxBufUidStoreT from "../../vox/mesh/ROVtxBufUidStore";
 import * as VtxBufDataT from "../../vox/mesh/VtxBufData";
@@ -16,7 +15,6 @@ import * as VtxCombinedBufT from "../../vox/mesh/VtxCombinedBuf";
 import * as VtxSeparatedBufT from "../../vox/mesh/VtxSeparatedBuf";
 
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
-import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 import ROVtxBufUidStore = ROVtxBufUidStoreT.vox.mesh.ROVtxBufUidStore;
 import VtxBufData = VtxBufDataT.vox.mesh.VtxBufData;
@@ -166,10 +164,6 @@ export namespace vox
                     this.m_vtxBuf.setData2fAt(vertexI,attribI,px,py);
                     this.vertexVer++;
                 }
-            }
-            updateToGpu(rc:RenderProxy,deferred:boolean = true):void
-            {
-                rc.Vertex.updateToGpu(rc, this.getUid(), deferred);
             }
             /**
              * this function is only an empty function.
@@ -437,16 +431,16 @@ export namespace vox
                 }
                 return vb;
             }
-            //  static __$GetVtxAttachCountAt(vtxUid:number):number
-            //  {
-            //      return ROVertexBuffer.s_vtxStore.getAttachCountAt(vtxUid);
-            //  }
-            //  static GetVtxAttachAllCount():number
-            //  {
-            //      return ROVertexBuffer.s_vtxStore.getAttachAllCount();
-            //  }
+            static GetVtxAttachCountAt(vtxUid:number):number
+            {
+                return ROVertexBuffer.s_vtxStore.getAttachCountAt(vtxUid);
+            }
+            static GetVtxAttachAllCount():number
+            {
+                return ROVertexBuffer.s_vtxStore.getAttachAllCount();
+            }
             private static s_timeDelay:number = 128;
-            static RenderBegin(rc:RenderProxy):void
+            static RenderBegin():void
             {
                 --ROVertexBuffer.s_timeDelay;
                 if(ROVertexBuffer.s_timeDelay < 1)
@@ -462,22 +456,16 @@ export namespace vox
                         let i:number = 0;
                         let vtxUid:number = 0;
                         let vb:ROVertexBuffer = null;
-                        for(; i < 16; ++i)
+                        let maxSteps:number = 16;
+                        len = len > maxSteps ? maxSteps:len;
+                        for(; i < len; ++i)
                         {
-                            if(len > 0)
+                            vtxUid = list.shift();
+                            if(store.getAttachCountAt(vtxUid) < 1)
                             {
-                                vtxUid = list.shift();
-                                --len;
-                                if(store.getAttachCountAt(vtxUid) < 1)
-                                {
-                                    console.log("ROVertexBuffer remove a instance, vtxUid: "+vtxUid);
-                                    vb = ROVertexBuffer.GetVtxByUid(vtxUid);
-                                    ROVertexBuffer.__$Restore(vb);
-                                }
-                            }
-                            else
-                            {
-                                break;
+                                console.log("ROVertexBuffer remove a instance, vtxUid: "+vtxUid);
+                                vb = ROVertexBuffer.GetVtxByUid(vtxUid);
+                                ROVertexBuffer.__$Restore(vb);
                             }
                         }
                     }

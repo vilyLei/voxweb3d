@@ -487,7 +487,7 @@ export namespace vox
             {
                 return this.m_vtxResTotal;
             }
-            updateToGpu(rc:IBufferBuilder, resUid:number, deferred:boolean):void
+            updateDataToGpu(rc:IBufferBuilder, resUid:number, deferred:boolean):void
             {
                 if(deferred)
                 {
@@ -576,7 +576,7 @@ export namespace vox
                     resUid = this.m_updateIds.shift();
                     if(this.m_resMap.has(resUid))
                     {
-                        console.log("vtxRex("+resUid+") update vtx data to gpu with deferred mode.");
+                        console.log("ROvtxRes("+resUid+") update vtx("+resUid+") data to gpu with deferred mode.");
                         this.m_resMap.get(resUid).updateToGpu(rc);
                     }
                 }

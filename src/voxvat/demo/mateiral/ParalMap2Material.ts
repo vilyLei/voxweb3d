@@ -257,7 +257,7 @@ v_VTBNM3 = mMToVTBN3;\n\
                     return ParalMap2ShaderBuffer.GetInstance();
                 }
                 
-                createSharedUniform(rc:RenderProxy):ShaderGlobalUniform
+                createSharedUniform():ShaderGlobalUniform
                 {
                     let headU:ShaderGlobalUniform = new ShaderGlobalUniform();
                     headU.uniformNameList = ["vV4U_0","fV4U_1"];

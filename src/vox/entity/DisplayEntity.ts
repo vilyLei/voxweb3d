@@ -155,7 +155,7 @@ export namespace vox
                     if(this.m_display != null)
                     {
                         this.m_display.visible = this.m_visible && boo;
-                        if(this.m_display.__$ruid > -1)
+                        if(this.m_display.__$$runit != null)
                         {
                             this.m_display.__$$runit.setVisible(this.m_display.visible);
                         }
@@ -166,12 +166,12 @@ export namespace vox
             {
                 return this.m_drawEnabled;
             }
-            // update material texture list       
             protected m_texChanged:boolean = false;
             protected m_meshChanged:boolean = false;
             /**
              * users need to call this function manually
              * 更新有两种形式, 1: 只是更改资源内部的数据, 2: 替换资源本身
+             * 更新过程可以通过DisplayEntity对象来控制，也可以通过资源本身来控制
              */
             updateMeshToGpu(rc:RenderProxy,deferred:boolean = true):void
             {
@@ -180,17 +180,19 @@ export namespace vox
                     if(this.m_meshChanged)
                     {
                         this.m_meshChanged = false;
-                        rc.VtxBufUpdater.updateDispVbuf(rc,rc.Vertex,this.m_display);
+                        rc.VtxBufUpdater.updateDispVbuf(this.m_display,deferred);
                     }
                     else
                     {
-                        this.m_display.vbuf.updateToGpu(rc, deferred);
+                        //this.m_display.vbuf.updateToGpu(rc, deferred);
+                        rc.VtxBufUpdater.updateVtxDataToGpuByUid(this.m_display.vbuf.getUid(),deferred);
                     }
                 }
             }
             /**
              * users need to call this function manually
              * 更新有两种形式, 1: 只是更改资源内部的数据, 2: 替换资源本身
+             * 更新过程可以通过DisplayEntity对象来控制，也可以通过资源本身来控制
              */
             updateMaterialToGpu(rc:RenderProxy,deferred:boolean = true):void
             {
@@ -199,7 +201,7 @@ export namespace vox
                     if(this.m_texChanged)
                     {
                         this.m_texChanged = false;
-                        rc.MaterialUpdater.updateDispTRO(rc.Texture, this.m_display);
+                        rc.MaterialUpdater.updateDispTRO(this.m_display,deferred);
                     }
                 }
             }
@@ -256,7 +258,7 @@ export namespace vox
                     if(this.m_display != null)
                     {
                         this.m_display.visible = boo && this.m_drawEnabled;
-                        if(this.m_display.__$ruid > -1)
+                        if(this.m_display.__$$runit != null)
                         {
                             this.m_display.__$$runit.setVisible(this.m_display.visible);
                         }
@@ -414,6 +416,10 @@ export namespace vox
                 if(this.m_display != null)
                 {
                     this.m_display.rcolorMask = this.m_rcolorMask;
+                    if(this.m_display.__$$runit != null)
+                    {
+                        this.m_display.__$$runit.setDrawFlag(this.m_renderState, this.m_rcolorMask);
+                    }
                 }
             }
 
@@ -423,6 +429,10 @@ export namespace vox
                 if(this.m_display != null)
                 {
                     this.m_display.rcolorMask = this.m_rcolorMask;
+                    if(this.m_display.__$$runit != null)
+                    {
+                        this.m_display.__$$runit.setDrawFlag(this.m_renderState, this.m_rcolorMask);
+                    }
                 }
             }
         
@@ -432,6 +442,10 @@ export namespace vox
                 if(this.m_display != null)
                 {
                     this.m_display.renderState = this.m_renderState;
+                    if(this.m_display.__$$runit != null)
+                    {
+                        this.m_display.__$$runit.setDrawFlag(this.m_renderState, this.m_rcolorMask);
+                    }
                 }
             }
     
@@ -441,6 +455,10 @@ export namespace vox
                 if(this.m_display != null)
                 {
                     this.m_display.renderState = this.m_renderState;
+                    if(this.m_display.__$$runit != null)
+                    {
+                        this.m_display.__$$runit.setDrawFlag(this.m_renderState, this.m_rcolorMask);
+                    }
                 }
             }
             protected createDisplay():void

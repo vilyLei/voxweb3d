@@ -309,7 +309,7 @@ export namespace vox
             }
             updateMaterialUniformToCurrentShd(material:MaterialBase):void
             {
-                this.m_dispBuilder.getMaterialShader().updateMaterialUniformToCurrentShd(this.m_renderProxy, material);
+                this.m_dispBuilder.getMaterialShader().updateMaterialUniformToCurrentShd(material);
             }
             // 首先要锁定Material才能用这种绘制方式,再者这个entity已经完全加入渲染器了渲染资源已经准备完毕,这种方式比较耗性能，只能用在特殊的地方
             drawEntityByLockMaterial(entity:IRenderEntity,forceUpdateUniform:boolean = true):void
