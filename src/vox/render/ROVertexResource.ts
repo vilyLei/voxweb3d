@@ -507,7 +507,7 @@ export namespace vox
                 {
                     object.waitDelTimes = 0;
                     
-                    console.log("ROTextureResource add a texture buffer(resUid="+object.resUid+")");
+                    //console.log("ROTextureResource add a texture buffer(resUid="+object.resUid+")");
                     this.m_resMap.set(object.resUid, object);
                     this.m_vtxResTotal++;
                 }

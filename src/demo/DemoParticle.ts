@@ -100,7 +100,7 @@ export namespace demo
                 TextureStore.SetRenderer(this.m_rscene.getRenderer());
                 BillParticle.renderer = this.m_rscene.getRenderer();//this.m_renderer;
                 let stage3D:Stage3D = this.m_rcontext.getStage3D();
-                stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseUpListener);
+                stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
@@ -214,9 +214,9 @@ export namespace demo
             }
         }
         private m_flagBoo:boolean = true;
-        mouseUpListener(evt:any):void
+        mouseDownListener(evt:any):void
         {
-            console.log("mouseUpListener call, this.m_rscene: "+this.m_rscene.toString());
+            console.log("mouseDownListener call, this.m_rscene: "+this.m_rscene.toString());
             this.m_flagBoo = !this.m_flagBoo;
         }
         pv:Vector3D = new Vector3D();

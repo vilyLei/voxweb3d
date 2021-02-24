@@ -111,7 +111,8 @@ export namespace vox
                 let i:number = 0;
                 for(; i < this.uniformSize; ++i)
                 {
-                    rc.useUniformV1(shd.getUniformLocationByNS(this.uniformNameList[i]),shd.getUniformTypeByNS(this.uniformNameList[i]),this.dataList[i],this.dataSizeList[i]);
+                    //rc.useUniformV1(shd.getUniformLocationByNS(this.uniformNameList[i]),shd.getUniformTypeByNS(this.uniformNameList[i]),this.dataList[i],this.dataSizeList[i]);
+                    rc.useUniformV1(shd.getUniformLocationByNS(this.uniformNameList[i]),this.types[i],this.dataList[i],this.dataSizeList[i]);
                 }
             }
             updateData():void
@@ -178,7 +179,8 @@ export namespace vox
                 let i:number = 0;
                 for(; i < this.uniformSize; ++i)
                 {
-                    rc.useUniformV2(shd.getUniformLocationByNS(this.uniformNameList[i]),shd.getUniformTypeByNS(this.uniformNameList[i]),this.dataList[i],this.dataSizeList[i],0);
+                    //rc.useUniformV2(shd.getUniformLocationByNS(this.uniformNameList[i]),shd.getUniformTypeByNS(this.uniformNameList[i]),this.dataList[i],this.dataSizeList[i],0);
+                    rc.useUniformV2(shd.getUniformLocationByNS(this.uniformNameList[i]),this.types[i],this.dataList[i],this.dataSizeList[i],0);
                 }
             }
             updateData():void
@@ -218,6 +220,34 @@ export namespace vox
                 this.locations = null;
                 this.dataSizeList = null;
                 this.calcModels = null;
+            }
+        }
+
+        export class ShaderTransUniform extends ShaderUniform
+        {
+            constructor()
+            {
+                super();
+            }
+            use(rc:IRenderShader):void
+            {
+                rc.useUniformMat4(this.locations[0], this.dataList[0]);
+            }
+            useByLocation(rc:IRenderShader,type:number,location:any,i:number):void
+            {
+                rc.useUniformMat4(location, this.dataList[0]);
+            }
+            useByShd(rc:IRenderShader,shd:ShdProgram):void
+            {
+                rc.useUniformMat4(shd.getUniformLocationByNS(this.uniformNameList[0]), this.dataList[0]);
+            }
+            destroy():void
+            {
+                this.dataList[0] = null;
+                this.dataList = null;
+                this.types = null;
+                this.locations = null;
+                this.dataSizeList = null;
             }
         }
     }

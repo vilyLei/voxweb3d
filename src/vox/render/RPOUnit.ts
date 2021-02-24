@@ -69,6 +69,7 @@ export namespace vox
             visible:boolean = true;
             drawEnabled:boolean = true;
             drawMode:number = 0;
+            
             renderState:number = 0;
             rcolorMask:number = 0;
             // 用于记录 renderState(低10位)和ColorMask(高10位) 的状态组合
@@ -156,39 +157,42 @@ export namespace vox
                 ++RendererState.DrawCallTimes;
                 RendererState.DrawTrisNumber += this.trisNumber;
                 let i:number = 0;
+                let gl:any = rc.RContext;
                 switch(this.drawMode)
                 {
                     case RenderDrawMode.ELEMENTS_TRIANGLES:
                         for(; i < this.partTotal;)
                         {
-                            let count:number = this.partGroup[i++];
-                            let offset:number = this.partGroup[i++];
-                            //rc.RContext.drawElements(rc.TRIANGLES, this.partGroup[i++], this.ibufType, this.partGroup[i++]);
-                            rc.RContext.drawElements(rc.TRIANGLES, count, this.ibufType, offset);
+                            // 这里面可以增加一个回调函数,这个回调函数可以对uniform(或者transformUniform)做一些数据改变，进而来控制相应的状态
+                            // 因此可以通过改变uniform实现大量的显示绘制
+                            //  let count:number = this.partGroup[i++];
+                            //  let offset:number = this.partGroup[i++];
+                            //  gl.drawElements(rc.TRIANGLES, count, this.ibufType, offset);
+                            gl.drawElements(rc.TRIANGLES, this.partGroup[i++], this.ibufType, this.partGroup[i++]);
                         }
                         break;
                     case RenderDrawMode.ELEMENTS_TRIANGLE_STRIP:
                         //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
                         //rc.RContext.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
-                        rc.RContext.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, this.ibufType, this.drawOffset);
+                        gl.drawElements(rc.TRIANGLE_STRIP, this.ivsCount, this.ibufType, this.drawOffset);
                         break;
                     case RenderDrawMode.ELEMENTS_INSTANCED_TRIANGLES:
                         //console.log("RPOUnit::run(), drawElementsInstanced(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+", insCount: "+this.insCount+")");
                         //rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.ivsIndex * this.ibufStep, this.insCount);
-                        rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.drawOffset, this.insCount);
+                        gl.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.drawOffset, this.insCount);
                         break;
                     case RenderDrawMode.ELEMENTS_TRIANGLE_FAN:
                         //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
                         //rc.RContext.drawElements(rc.TRIANGLE_FAN, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
-                        rc.RContext.drawElements(rc.TRIANGLE_FAN, this.ivsCount, this.ibufType, this.drawOffset);
+                        gl.drawElements(rc.TRIANGLE_FAN, this.ivsCount, this.ibufType, this.drawOffset);
                         break;
                     case RenderDrawMode.ARRAYS_LINES:
                         //console.log("RPOUnit::run(), drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
-                        rc.RContext.drawArrays(rc.LINES, this.ivsIndex, this.ivsCount);
+                        gl.drawArrays(rc.LINES, this.ivsIndex, this.ivsCount);
                         break;
                     case RenderDrawMode.ARRAYS_LINE_STRIP:
                         //console.log("RPOUnit::run(), drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
-                        rc.RContext.drawArrays(rc.LINE_STRIP, this.ivsIndex, this.ivsCount);
+                        gl.drawArrays(rc.LINE_STRIP, this.ivsIndex, this.ivsCount);
                         break;
                     default:
                         break;

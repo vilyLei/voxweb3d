@@ -342,7 +342,7 @@ export namespace vox
                         vtx.rcuid = vtxRes.getRCUid();
                         vtx.resUid = resUid;
                         vtxRes.addVertexRes(vtx);
-                        console.log("GpuVtxObect instance create new: ",vtx.resUid);
+                        //console.log("GpuVtxObect instance create new: ",vtx.resUid);
                     }
                     if(needBuild)
                     {

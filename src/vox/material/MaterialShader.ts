@@ -28,6 +28,9 @@ export namespace vox
 {
     export namespace material
     {
+        /**
+         * 作为渲染运行时的 material shader 相关操作的管理类
+         */
         export class MaterialShader implements IRenderShader
         {
             private m_shdDict:Map<string,ShdProgram> = new Map();
@@ -53,6 +56,10 @@ export namespace vox
             {
                 this.m_adapter = rc.getRenderAdapter();
                 this.m_rc = rc.getRC();
+            }
+            getRC():any
+            {
+                return this.m_rc;
             }
             useTransUniform(transUniform:IShaderUniform):void
             {
@@ -188,17 +195,6 @@ export namespace vox
                 this.m_rc = null;
                 this.m_adapter = null;
             }
-            /*
-            
-            useTransUniform(transUniform:IShaderUniform):void
-            {
-                if(this.transformUniform != transUniform)
-                {
-                    this.transformUniform = transUniform;
-                    transUniform.use(this);
-                }
-            }
-            */
             useUniformToCurrentShd(uniform:IShaderUniform):void
             {
                 if(this.uniform != uniform)
@@ -219,6 +215,11 @@ export namespace vox
                     this.transformUniform != transUniform;
                     transUniform.useByShd(this,this.m_currShd);
                 }
+            }
+            
+            useUniformMat4(ult:any,mat4f32Arr:Float32Array):void
+            {
+                this.m_rc.uniformMatrix4fv(ult, false, mat4f32Arr);
             }
             useUniformV2(ult:any,type:number, f32Arr:Float32Array,dataSize:number,offset:number):void
             {
@@ -256,7 +257,6 @@ export namespace vox
                         break;
                 }
             }
-            
             useUniformV1(ult:any,type:number, f32Arr:Float32Array,dataSize:number):void
             {
                 switch(type)
