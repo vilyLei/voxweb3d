@@ -84,7 +84,7 @@ export namespace vox
                 //console.log("this.Create() begin...");
                 let uns:string = shdData.getUniqueShaderName();
                 if(this.m_shdDict.has(uns)){return this.m_shdDict.get(uns);}
-                let p:ShdProgram = new ShdProgram();
+                let p:ShdProgram = new ShdProgram(this.m_shdListLen);
                 p.setShdData(shdData);
 
                 this.m_shdList[p.getUid()] = p;
@@ -161,6 +161,7 @@ export namespace vox
                                 console.log("this.m_fragOutputTotal: "+this.m_fragOutputTotal+", rc.getActiveAttachmentTotal(): "+this.getActiveAttachmentTotal());
                                 console.log("Error: MRT output amount is not equal to current shader( "+shd.toString()+" ) frag shader output amount !!!");
                             }
+                            
                             this.m_rc.useProgram( shd.getProgram() );
                             shd.useTexLocation();
                             // use global shared uniform

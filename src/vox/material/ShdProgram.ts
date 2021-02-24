@@ -24,11 +24,12 @@ export namespace vox
     {
         export class ShdProgram implements IVtxShdCtr
         {
-            private static s_uid:number = 0;
+            //private static s_uid:number = 0;
             
             private m_shdData:ShaderData = null;
             private m_uid:number = -1;
             private m_program:any = null;
+            private m_rcuid:number = -1;
             private m_gl:any = null;
 
             private m_shdUniqueName:string = "";
@@ -50,9 +51,9 @@ export namespace vox
             // recode shader uniform including status
             dataUniformEnabled:boolean = false;
             
-            constructor()
+            constructor(uid:number)
             {
-                this.m_uid = ShdProgram.s_uid++;
+                this.m_uid = uid;//ShdProgram.s_uid++;
             }
 
             setShdData(shdData:ShaderData):void
@@ -386,15 +387,17 @@ export namespace vox
             {
                 return this.m_program != null;
             }
-            upload(gl:any):void
+            upload(gl:any, rcuid:number):void
             {
                 if(this.m_program == null)
                 {
+                    this.m_rcuid = rcuid;
                     this.m_gl = gl;
                     this.m_program = this.initShdProgram();
                     if(null != this.m_program) this.createLocations();
                 }
             }
+            getRCUid():number{return this.m_rcuid;};
             uniformBlockBinding(uniform_block_ns:string,bindingIndex:number):void
             {
                 this.m_gl.uniformBlockBinding(this.m_program, this.m_gl.getUniformBlockIndex(this.m_program,uniform_block_ns), bindingIndex);

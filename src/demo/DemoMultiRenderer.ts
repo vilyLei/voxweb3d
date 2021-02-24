@@ -97,7 +97,7 @@ export namespace demo
                 //let div:HTMLElement = null;
                 let rparam:RendererParam = new RendererParam(div);
                 rparam.autoSyncRenderBufferAndWindowSize = false;
-                rparam.maxWebGLVersion = 1;
+                //rparam.maxWebGLVersion = 1;
                 rparam.setCamPosition(500.0,500.0,500.0);
                 this.m_rscene = new RendererScene();
                 this.m_rscene.initialize(rparam,3);
@@ -178,7 +178,7 @@ export namespace demo
                 this.m_inited = true;
 
                 this.m_demoA.initialize(50,100,200,100);
-                this.m_demoB.initialize(50,300,200,100);
+                //this.m_demoB.initialize(50,300,200,100);
 
                 this.m_statusDisp.initialize("rstatus",280);
             }
@@ -187,8 +187,11 @@ export namespace demo
         {
             this.m_statusDisp.update();
 
+            //  console.log("//        //");
+            //  console.log("//////////////////AAAA");
             this.m_demoA.run();
-            this.m_demoB.run();        
+            //  console.log("//////////////////BBB");
+            //this.m_demoB.run();        
         }
     }
 }

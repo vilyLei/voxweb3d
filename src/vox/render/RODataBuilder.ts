@@ -199,7 +199,7 @@ export namespace vox
                         }
                         shdp = this.m_shader.create(material.getShaderData());
                         
-                        shdp.upload( rc.RContext );
+                        shdp.upload( rc.RContext, rc.getUid());
                         runit.shdUid = shdp.getUid();
                         
                         let tro:TextureRenderObj = null;
@@ -448,7 +448,7 @@ export namespace vox
                         material.initializeByCodeBuf( texEnabled );
                     }
                     shdp = this.m_shader.create(material.getShaderData());
-                    shdp.upload( rc.RContext );
+                    shdp.upload( rc.RContext, rc.getUid() );
                     let texTotal:number = shdp.getTexTotal();
                     if(texEnabled && texTotal > 0)
                     {
