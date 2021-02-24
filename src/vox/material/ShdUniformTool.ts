@@ -25,7 +25,7 @@ import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
 import ShaderUniform = ShaderUniformT.vox.material.ShaderUniform;
 import ShaderUniformV1 = ShaderUniformT.vox.material.ShaderUniformV1;
 import ShaderUniformV2 = ShaderUniformT.vox.material.ShaderUniformV2;
-import ShaderTransUniform = ShaderUniformT.vox.material.ShaderTransUniform;
+import ShaderMat4Uniform = ShaderUniformT.vox.material.ShaderMat4Uniform;
 import IUniformBuilder = IUniformBuilderT.vox.material.shared.IUniformBuilder;
 import CameraUniformBuilder = CameraUniformBuilderT.vox.material.shared.CameraUniformBuilder;
 import StageParamUniformBuilder = StageParamUniformBuilderT.vox.material.shared.StageParamUniformBuilder;
@@ -203,7 +203,7 @@ export namespace vox
                 if(transformData != null)
                 {
                     let shdUniform:ShaderUniform;
-                    shdUniform = new ShaderTransUniform();
+                    shdUniform = new ShaderMat4Uniform();
                     shdUniform.uniformSize = 0;
                     shdUniform.uniformNameList = [];
                     shdUniform.types = [];

@@ -222,8 +222,11 @@ export namespace vox
                 this.calcModels = null;
             }
         }
-
-        export class ShaderTransUniform extends ShaderUniform
+        /**
+         * 只有一个mat4的uniform对象
+         * only one mat4 type uniform object
+         */
+        export class ShaderMat4Uniform extends ShaderUniform
         {
             constructor()
             {
