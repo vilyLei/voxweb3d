@@ -23,7 +23,8 @@ import * as MaterialBaseT from "../../vox/material/MaterialBase";
 import * as ROTransformT from "../../vox/display/ROTransform";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as RODisplayT from "../../vox/display/RODisplay";
-import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
+import * as IRenderEntityT from "../../vox/render/IRenderEntity";
+import * as IDisplayEntityT from "../../vox/entity/IDisplayEntity";
 
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as TextureProxyT from '../../vox/texture/TextureProxy';
@@ -42,7 +43,8 @@ import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import ROTransform = ROTransformT.vox.display.ROTransform;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import RODisplay = RODisplayT.vox.display.RODisplay;
-import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
+import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
+import IDisplayEntity = IDisplayEntityT.vox.entity.IDisplayEntity;
 
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
@@ -51,7 +53,7 @@ export namespace vox
 {
     export namespace entity
     {
-        export class DisplayEntity implements IRenderEntity
+        export class DisplayEntity implements IRenderEntity,IDisplayEntity
         {
             private static s_uid:number = 0;
             private m_uid:number = 0;
@@ -284,14 +286,14 @@ export namespace vox
                     this.m_transfrom.copyPositionFrom(entity.getTransform());
                 }
             }
-            copyMeshFrom(entity:IRenderEntity):void
+            copyMeshFrom(entity:IDisplayEntity):void
             {
                 if(entity != null)
                 {
                     this.setMesh( entity.getMesh() );
                 }
             }
-            copyMaterialFrom(entity:IRenderEntity):void
+            copyMaterialFrom(entity:IDisplayEntity):void
             {
                 if(entity != null)
                 {
@@ -369,6 +371,29 @@ export namespace vox
             getMesh():MeshBase
             {
                 return this.m_mesh;
+            }
+            
+            isHaveMesh():boolean
+            {
+                return this.m_mesh != null;
+            }
+            /**
+             * @return 返回true是则表示这是基于三角面的多面体, 返回false则是一个数学方程描述的几何体(例如球体)
+             */
+            isPolyhedral():boolean
+            {
+                return this.m_mesh.isPolyhedral();
+            }
+            /**
+             * @boundsHit       表示是否包围盒体已经和射线相交了
+             * @rlpv            表示物体坐标空间的射线起点
+             * @rltv            表示物体坐标空间的射线朝向
+             * @outV            如果检测相交存放物体坐标空间的交点
+             * @return          返回值 -1 表示不会进行检测,1表示相交,0表示不相交
+             */
+            testRay(rlpv:Vector3D,rltv:Vector3D,outV:Vector3D,boundsHit:boolean):number
+            {
+                return this.m_mesh.testRay(rlpv,rltv,outV,boundsHit);
             }
             setMaterial(m:MaterialBase):void
             {

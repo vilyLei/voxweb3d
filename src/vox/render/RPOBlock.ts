@@ -212,7 +212,6 @@ export namespace vox
                     let texTotal:number = 0;
                     let flagVBoo:boolean = false;
                     let flagTBoo:boolean = false;
-                    let preUniform:IShaderUniform = null;
                     RenderStateObject.UseRenderState(nextNode.unit.renderState);
                     RenderColorMask.UseRenderState(nextNode.unit.rcolorMask);
                     while(nextNode != null)
@@ -255,12 +254,8 @@ export namespace vox
                                 {
                                     unit.ubo.run(rc);
                                 }
-                                unit.transUniform.use(this.m_shader);
-                                if(preUniform != unit.uniform)
-                                {
-                                    preUniform = unit.uniform;
-                                    unit.uniform.use(this.m_shader);
-                                }
+                                this.m_shader.useTransUniform(unit.transUniform);
+                                this.m_shader.useUniform(unit.uniform);
                                 if(unit.partTotal < 1)
                                 {
                                     unit.drawThis(rc);

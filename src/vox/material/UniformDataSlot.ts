@@ -3,36 +3,48 @@ export namespace vox
 {
     export namespace material
     {
+        /**
+         * 本类作为当前 renderer instance 的共享uniform数据管理类
+         */
         export class UniformDataSlot
         {
-            constructor()
-            {
-            }
-            static SlotList:UniformDataSlot[] = [new UniformDataSlot(), new UniformDataSlot(), new UniformDataSlot(), new UniformDataSlot()];
+            // one renderer runtime by one UniformDataSlot instance.
+            private static s_slots:UniformDataSlot[] = new Array(16);
             private m_total:number = 256;
+            private m_uid:number = 0;
+            constructor(uid:number)
+            {
+                this.m_uid = uid;
+            }
+            getUid():number
+            {
+                return this.m_uid;
+            }
+            /**
+             * 记录当前的数据序号，不可随意更改
+             */
             index:number = 0;
             dataList:Float32Array[] = [];
             flagList:Uint16Array = null;
             static GetSlotAt(i:number):UniformDataSlot
             {
-                return UniformDataSlot.SlotList[i];
+                return UniformDataSlot.s_slots[i];
             }
             static Initialize(rcuid:number):void
             {
-                var slot:UniformDataSlot = UniformDataSlot.SlotList[rcuid];
-                if(slot.flagList == null)
+                let slot:UniformDataSlot = UniformDataSlot.s_slots[rcuid];
+                if(slot == null)
                 {
-                    //console.log("UniformDataSlot::Initialize()...");
-                    var i:number = 0;
-                    for(var k:number = 0; k < UniformDataSlot.SlotList.length; ++k)
+                    slot = new UniformDataSlot(rcuid);
+                    UniformDataSlot.s_slots[rcuid] = slot;
+                }
+                if(slot.flagList == null)
+                {                    
+                    slot.flagList = new Uint16Array(slot.m_total);
+                    for(let i:number = 0; i < slot.m_total; ++i)
                     {
-                        slot = UniformDataSlot.SlotList[k];
-                        slot.flagList = new Uint16Array(slot.m_total);
-                        for(i = 0; i < slot.m_total; ++i)
-                        {
-                            slot.dataList.push(null);
-                            slot.flagList[i] = 0;
-                        }
+                        slot.dataList.push(null);
+                        slot.flagList[i] = 0;
                     }
                 }
             }

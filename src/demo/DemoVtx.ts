@@ -266,10 +266,10 @@ void main(){
             console.log("mouse down...,this.m_targetDisp != null: "+(this.m_targets != null));
             if(this.m_targets != null && this.m_targets.length > 0)
             {
-                this.updateMeshData();
-                return;
-                //  this.updateVtxData();
+                //  this.updateMeshData();
                 //  return;
+                this.updateVtxData();
+                return;
                 // test visible
                 //  this.m_targets[0].setVisible(!this.m_targets[0].getVisible());
                 //  return;
@@ -307,7 +307,7 @@ void main(){
 
             // render end
             this.m_rscene.runEnd();
-            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }
 }

@@ -121,12 +121,13 @@ export namespace vox
             isPolyhedral():boolean{return true;}
             // 设置自身是否是多面体实体，根据实际需要改变相关的状态值
             setPolyhedral(boo:boolean):void{}
-            // @boundsHit       表示是否包围盒体已经和射线相交了
-            // @rlpv            表示物体坐标空间的射线起点
-            // @rltv            表示物体坐标空间的射线朝向
-            // @outV            如果检测相交存放物体坐标空间的交点
-            // @return          返回值 -1 表示不会进行检测,1表示相交,0表示不相交
-            //
+            /**
+             * @boundsHit       表示是否包围盒体已经和射线相交了
+             * @rlpv            表示物体坐标空间的射线起点
+             * @rltv            表示物体坐标空间的射线朝向
+             * @outV            如果检测相交存放物体坐标空间的交点
+             * @return          返回值 -1 表示不会进行检测,1表示相交,0表示不相交
+             */
             testRay(rlpv:Vector3D,rltv:Vector3D,outV:Vector3D,boundsHit:boolean):number
             {
                 return -1;

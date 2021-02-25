@@ -10,7 +10,6 @@ import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
 import * as RenderFilterT from "../../vox/render/RenderFilter";
 import * as RenderMaskBitfieldT from "../../vox/render/RenderMaskBitfield";
 import * as MathConstT from "../../vox/utils/MathConst";
-import * as MaterialConstT from "../../vox/material/MaterialConst";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as Vector3T from "../../vox/geom/Vector3";
 import * as Color4T from "../../vox/material/Color4";
@@ -34,7 +33,6 @@ import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
 import RenderFilter = RenderFilterT.vox.render.RenderFilter;
 import RenderMaskBitfield = RenderMaskBitfieldT.vox.render.RenderMaskBitfield;
 import MathConst = MathConstT.vox.utils.MathConst;
-import MaterialConst = MaterialConstT.vox.material.MaterialConst;
 import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 import Vector3D = Vector3T.vox.geom.Vector3D;
 import Color4 = Color4T.vox.material.Color4;
@@ -127,6 +125,10 @@ export namespace vox
                 return this.m_rc;
             }
             getUid():number
+            {
+                return this.m_uid;
+            }
+            getRCUid():number
             {
                 return this.m_uid;
             }
@@ -441,8 +443,7 @@ export namespace vox
             }
             private createMainCamera():void
             {
-                let stage:Stage3D = this.m_adapterContext.getStage();
-                this.m_mainCamera = new CameraBase(stage.getIndex());
+                this.m_mainCamera = new CameraBase(this.m_uid);
                 this.m_mainCamera.uniformEnabled = true;
                 
                 if(this.m_perspectiveEnabled)
@@ -473,7 +474,7 @@ export namespace vox
                 this.m_adapterContext.autoSyncRenderBufferAndWindowSize = param.autoSyncRenderBufferAndWindowSize;
                 this.m_adapterContext.setResizeCallback(this, this.resizeCallback);
                 this.m_adapterContext.setWebGLMaxVersion(this.m_maxWebGLVersion);
-                this.m_adapterContext.initialize(param.getDiv(),param.getRenderContextAttri());
+                this.m_adapterContext.initialize(this.m_uid, param.getDiv(),param.getRenderContextAttri());
                 this.m_WEBGL_VER = this.m_adapterContext.getWebGLVersion();
                 
                 this.m_rc = this.m_adapterContext.getRC();
@@ -557,7 +558,7 @@ export namespace vox
             }
             createCamera():CameraBase
             {
-                return new CameraBase(this.m_adapterContext.getStage().getIndex());
+                return new CameraBase(this.m_uid);
             }
             setClearRGBColor3f(pr:number,pg:number,pb:number)
             {

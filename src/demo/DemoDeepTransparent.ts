@@ -83,16 +83,16 @@ export namespace demo
             this.m_rscene.getStage3D().addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
             if(this.m_profileInstance != null)this.m_profileInstance.initialize(this.m_rscene.getRenderer());
             if(this.m_statusDisp != null)this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
-
+            //this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
             //let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
             let tex0:TextureProxy = this.getImageTexByUrl("static/assets/bg002.jpg");
             //this.m_rscene.getStage3D().stageWidth, this.m_rscene.getStage3D().stageHeight
-            this.m_depTex0 = TextureStore.CreateDepthTextureAt(0, this.m_rscene.getStage3D().stageWidth, this.m_rscene.getStage3D().stageHeight);
-            this.m_depTex1 = TextureStore.CreateDepthTextureAt(1, this.m_rscene.getStage3D().stageWidth, this.m_rscene.getStage3D().stageHeight);
+            this.m_depTex0 = this.m_rscene.textureBlock.createDepthTextureAt(0, this.m_rscene.getStage3D().stageWidth, this.m_rscene.getStage3D().stageHeight);
+            this.m_depTex1 = this.m_rscene.textureBlock.createDepthTextureAt(1, this.m_rscene.getStage3D().stageWidth, this.m_rscene.getStage3D().stageHeight);
 
             console.log("tex uids: ",tex0.getUid(), this.m_depTex0.getUid(), this.m_depTex1.getUid()
-            ,TextureStore.GetRTTTextureAt(0).getUid()
-            ,TextureStore.GetRTTTextureAt(1).getUid()
+            ,this.m_rscene.textureBlock.getRTTTextureAt(0).getUid()
+            ,this.m_rscene.textureBlock.getRTTTextureAt(1).getUid()
             );
             this.m_handleMaterial.setTextureList([this.m_depTex0,this.m_depTex1]);
             //  // add common 3d display entity
@@ -152,7 +152,7 @@ export namespace demo
             //scrPlane.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
             //scrPlane.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
             //scrPlane.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(0)]);
-            scrPlane.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(1), this.m_depTex1]);
+            scrPlane.initialize(-1.0,-1.0,2.0,2.0,[this.m_rscene.textureBlock.getRTTTextureAt(1), this.m_depTex1]);
             //scrPlane.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(0), this.m_depTex0]);
             this.m_rscene.addEntity(scrPlane, 1);
 
@@ -208,8 +208,8 @@ export namespace demo
             //this.m_peelEntity0.setTextureAt(1,this.m_depTex1,this.m_rscene.getRenderProxy());
             this.m_rcontext.setClearRGBAColor4f(0.0, 0.0, 0.0,1.0);
             this.m_rcontext.synFBOSizeWithViewport();
-            this.m_rcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(colorIndex), true, false, 0);
-            this.m_rcontext.setRenderToTexture(TextureStore.GetDepthTextureAt(depIndex1), true, false, 1024);
+            this.m_rcontext.setRenderToTexture(this.m_rscene.textureBlock.getRTTTextureAt(colorIndex), true, false, 0);
+            this.m_rcontext.setRenderToTexture(this.m_rscene.textureBlock.getDepthTextureAt(depIndex1), true, false, 1024);
             this.m_rcontext.useFBO(true, true, false);
             // to be rendering in framebuffer
             this.m_rscene.runAt(0);
@@ -223,15 +223,15 @@ export namespace demo
                 if(depIndex1 > 1) depIndex1 = 0;
                 if(colorIndex > 1) colorIndex = 0;
                 this.m_peelM0.setPeelEanbled(true);
-                this.m_peelM0.setTextureAt(1,TextureStore.GetDepthTextureAt(depIndex0));
+                this.m_peelM0.setTextureAt(1,this.m_rscene.textureBlock.getDepthTextureAt(depIndex0));
 
                 if(this.m_peelEntity1 != null)this.m_peelEntity1.updateTexByMaterial(this.m_rscene.getRenderProxy());
                 if(this.m_peelEntity2 != null)this.m_peelEntity2.updateTexByMaterial(this.m_rscene.getRenderProxy());
                 this.m_peelEntity0.updateTexByMaterial(this.m_rscene.getRenderProxy());
                 //console.log("depIndex1: ",depIndex1,"colorIndex: ",colorIndex);
                 //this.m_peelEntity0.setTextureAt(1,this.m_depTex0,this.m_rscene.getRenderProxy());
-                this.m_rcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(colorIndex), true, false, 0);
-                this.m_rcontext.setRenderToTexture(TextureStore.GetDepthTextureAt(depIndex1), true, false, 1024);
+                this.m_rcontext.setRenderToTexture(this.m_rscene.textureBlock.getRTTTextureAt(colorIndex), true, false, 0);
+                this.m_rcontext.setRenderToTexture(this.m_rscene.textureBlock.getDepthTextureAt(depIndex1), true, false, 1024);
                 this.m_rscene.renderBegin();
                 this.m_rcontext.useFBO(true, true, false);
                 this.m_rscene.runAt(0);

@@ -5,6 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as IRenderResourceT from "../../vox/render/IRenderResource";
+
+import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
 export namespace vox
 {
     export namespace render
@@ -51,7 +54,7 @@ export namespace vox
             }
         }
         // gpu texture buffer renderer resource
-        export class ROTextureResource
+        export class ROTextureResource implements IRenderResource
         {
             private m_resMap:Map<number,GpuTexObect> = new Map();
             private m_freeMap:Map<number,GpuTexObect> = new Map();
@@ -81,6 +84,10 @@ export namespace vox
             getRC():any
             {
                 return this.m_gl;
+            }
+            hasResUid(resUid:number):boolean
+            {
+                return this.m_resMap.has(resUid);
             }
             renderBegin():void
             {
@@ -136,7 +143,7 @@ export namespace vox
             /**
              * @param resUid 准备 bind 到 当前 renderer context 的 gpu texture buffer
              */
-            bindTexture(resUid:number):void
+            bindToGpu(resUid:number):void
             {
                 if(this.m_resMap.has(resUid))
                 {

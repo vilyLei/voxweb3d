@@ -11,7 +11,7 @@ import * as Vector3DT from "../../vox/geom/Vector3";
 import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as AABBT from "../../vox/geom/AABB";
 import * as CameraBaseT from "../../vox/view/CameraBase";
-import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
+import * as IRenderEntityT from "../../vox/render/IRenderEntity";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
 import * as IRaySelectorT from '../../vox/scene/IRaySelector';
 import * as RaySelectedNodeT from '../../vox/scene/RaySelectedNode';
@@ -22,7 +22,7 @@ import Vector3D = Vector3DT.vox.geom.Vector3D;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import AABB = AABBT.vox.geom.AABB;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
-import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
+import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
 import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
 import IRaySelector = IRaySelectorT.vox.scene.IRaySelector;
 import RaySelectedNode = RaySelectedNodeT.vox.scene.RaySelectedNode;
@@ -251,14 +251,14 @@ export namespace vox
                             {
                                 rayNode = this.m_rsnList[i];
                                 entity = this.m_rsnList[i].entity;
-                                if(entity.getMesh().isPolyhedral())
+                                if(entity.isPolyhedral())
                                 {
                                     if(polyTest)
                                     {
                                         mat4 = entity.getInvMatrix();
                                         mat4.transformOutVector3(rpv,invpv);
                                         mat4.deltaTransformOutVector(rtv,invtv);
-                                        flag = entity.getMesh().testRay(invpv,invtv,outv,true);
+                                        flag = entity.testRay(invpv,invtv,outv,true);
                                     }
                                     else
                                     {
@@ -270,7 +270,7 @@ export namespace vox
                                     mat4 = entity.getInvMatrix();
                                     mat4.transformOutVector3(rpv,invpv);
                                     mat4.deltaTransformOutVector(rtv,invtv);
-                                    flag = entity.getMesh().testRay(invpv,invtv,outv,true);
+                                    flag = entity.testRay(invpv,invtv,outv,true);
                                 }
                                 if(flag > 0)
                                 {
@@ -311,7 +311,7 @@ export namespace vox
                             mat4 = entity.getInvMatrix();
                             mat4.transformOutVector3(rpv,invpv);
                             mat4.deltaTransformOutVector(rtv,invtv);
-                            flag = entity.getMesh().testRay(invpv,invtv,outv,true);
+                            flag = entity.testRay(invpv,invtv,outv,true);
                             //console.log("hit flag: "+flag);
                             if(flag > 0)
                             {

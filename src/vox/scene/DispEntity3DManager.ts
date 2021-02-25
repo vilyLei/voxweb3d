@@ -10,7 +10,7 @@ import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as ShaderDataT from "../../vox/material/ShaderData";
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
-import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
+import * as IRenderEntityT from "../../vox/render/IRenderEntity";
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RODataBuilderT from "../../vox/render/RODataBuilder";
 
@@ -24,7 +24,7 @@ import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import ShaderData = ShaderDataT.vox.material.ShaderData;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
-import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
+import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
 import RODataBuilder = RODataBuilderT.vox.render.RODataBuilder;
 import RCRPObj = RPOUnitBuilderT.vox.render.RCRPObj;
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
@@ -74,18 +74,32 @@ export namespace vox
                         {
                             let puid:number = display.__$ruid;
                             let po:RCRPObj = this.m_rpoUnitBuilder.getRCRPObj(puid);
-                            let list:Int16Array = po.rcids;
-                            let len:number = RCRPObj.RenerProcessMaxTotal;
-                            
-                            for(let i:number = 0; i < len; ++i)
+                            if(po.count > 0)
                             {
-                                if(list[i] > -1)
+                                if(po.count < 2)
                                 {
-                                    //the value of list[i] is the uid of a node;
-                                    this.m_rprocess = this.m_processBuider.getNodeByUid(i) as RenderProcess;
-                                    this.m_rprocess.removeDisp(display);
+                                    if(po.rprocessUid > -1)
+                                    {
+                                        this.m_rprocess = this.m_processBuider.getNodeByUid(po.rprocessUid) as RenderProcess;
+                                        this.m_rprocess.removeDisp(display);
+                                        po.rprocessUid = -1;
+                                    }
+                                }
+                                else
+                                {
+                                    let len:number = RCRPObj.RenerProcessMaxTotal;
+                                    for(let i:number = 0; i < len; ++i)
+                                    {
+                                        if((po.idsFlag&(1<<i)) > 0)
+                                        {
+                                            // the value of list[i] is the uid of a node;
+                                            this.m_rprocess = this.m_processBuider.getNodeByUid(i) as RenderProcess;
+                                            this.m_rprocess.removeDisp(display);
+                                        }
+                                    }
                                 }
                             }
+
                             if(po.count == 0)
                             {
                                 //console.log("DispEntity3DManager::removeEntity(), remove a entity from all processes.");
@@ -200,7 +214,7 @@ export namespace vox
             testValidData(entity:IRenderEntity):boolean
             {
                 this.m_material = entity.getMaterial();
-                if(this.m_material != null && entity.getMesh() != null)
+                if(this.m_material != null && entity.isHaveMesh())
                 {
                     this.m_shdData = this.m_material.getShaderData();
                     if(this.m_shdData != null)

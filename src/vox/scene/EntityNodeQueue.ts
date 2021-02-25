@@ -5,9 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
+import * as IRenderEntityT from "../../vox/render/IRenderEntity";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
-import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
+import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
 import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
 
 export namespace vox

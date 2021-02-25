@@ -7,13 +7,11 @@
 
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 import * as ShaderUniformProbeT from "../../vox/material/ShaderUniformProbe";
-import * as MaterialConstT from "../../vox/material/MaterialConst";
 import * as ShdProgramT from "../../vox/material/ShdProgram";
 import * as IRenderShaderT from "../../vox/render/IRenderShader";
 
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
 import ShaderUniformProbe = ShaderUniformProbeT.vox.material.ShaderUniformProbe;
-import MaterialConst = MaterialConstT.vox.material.MaterialConst;
 import ShdProgram = ShdProgramT.vox.material.ShdProgram;
 import IRenderShader = IRenderShaderT.vox.render.IRenderShader;
 
@@ -73,12 +71,12 @@ export namespace vox
             {
                 this.types = [];
                 this.dataSizeList = [];
-                for(let i:number = 0; i < probe.uniformSlotSize; ++i)
+                for(let i:number = 0; i < probe.uniformsTotal; ++i)
                 {
                     this.types.push( probe.uniformTypes[i] );
                     this.dataSizeList.push( probe.dataSizeList[i] );
                 }
-                this.uniformSize = probe.uniformSlotSize;
+                this.uniformSize = probe.uniformsTotal;
             }
             useByLocation(rc:IRenderShader,type:number,location:any,i:number):void{}
             useByShd(rc:IRenderShader,shd:ShdProgram):void{}

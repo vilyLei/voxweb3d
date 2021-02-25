@@ -94,10 +94,8 @@ export namespace vox
             // 先使用map hash拦截的方式,来决定buf和renderer context避免重复的单次关联
             addRenderBuffer(buf:IRenderBuffer,bufResUid:number):void
             {
-                console.log("addRenderBuffer 01...",this.m_bufferUpdater != null);
                 if(this.m_bufferUpdater != null)
                 {
-                    console.log("addRenderBuffer 02...");
                     this.m_bufferUpdater.__$addBuf(buf, bufResUid);
                 }
             }

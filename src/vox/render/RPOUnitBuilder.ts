@@ -4,7 +4,6 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// 真正被高频运行的渲染管线中的被执行对象
 
 import * as IPoolNodeT from "../../vox/utils/IPoolNode";
 import * as PoolNodeBuilderT from "../../vox/utils/PoolNodeBuilder";
@@ -21,24 +20,18 @@ export namespace vox
         // 这个类的实例，和每一个RPOUnit或者RODisplay关联(通过唯一的uid)
         export class RCRPObj
         {
-            private static s_rcids:Int16Array = new Int16Array(
-                [
-                    -1,-1,-1,-1,-1,-1,-1,-1
-                    , -1,-1,-1,-1,-1,-1,-1,-1
-                    , -1,-1,-1,-1,-1,-1,-1,-1
-                    , -1,-1,-1,-1,-1,-1,-1,-1
-                ]
-            );
-            public static readonly RenerProcessMaxTotal:number = 32;
+            public static readonly RenerProcessMaxTotal:number = 16;
             constructor()
             {
             }
-            // 这里假定最多有 32个 RenerProcess, 每一个数组元素存放的是 RPONode 的uid, 数组的序号对应的是RenerProcess 的uid
-            rcids:Int16Array = new Int16Array(RCRPObj.RenerProcessMaxTotal);
+            // 这里假定最多有 16 个 RenerProcess, 每一个数组元素存放的是 RPONode 的uid, 数组的序号对应的是RenerProcess 的uid
+            idsFlag:number = 0x0;
             count:number = 0;
+            // 如果只有加入一个process的时候则有效
+            rprocessUid = -1;
             reset():void
             {
-                this.rcids.set(RCRPObj.s_rcids,0);
+                this.idsFlag = 0;
             }
         }
         export class RPOUnitBuilder extends PoolNodeBuilder
@@ -64,37 +57,34 @@ export namespace vox
 
             testRPNodeExists(dispRUid:number,rprocessUid:number):boolean
             {
-                return this.m_rcpoList[dispRUid].rcids[rprocessUid] > -1;
+                return (this.m_rcpoList[dispRUid].idsFlag & (1<<rprocessUid)) > 0;
             }
             testRPNodeNotExists(dispRUid:number,rprocessUid:number):boolean
             {
-                //trace("testRPNodeNotExists(), m_rcpoList["+dispRUid+"].rcids: "+m_rcpoList[dispRUid].rcids);
-                return this.m_rcpoList[dispRUid].rcids[rprocessUid] < 0;
+                return (this.m_rcpoList[dispRUid].idsFlag & (1<<rprocessUid)) < 1;
             }
             setRPNodeParam(dispRUid:number,rprocessUid:number,rponodeUid:number):number
             {
                 let po:RCRPObj = this.m_rcpoList[dispRUid];
+                let flag:number = (1<<rprocessUid);
                 if(rponodeUid > -1)
                 {
-                    if(po.rcids[rprocessUid] < 0)
+                    if((po.idsFlag & flag) < 1)
                     {
                         ++ po.count;
-                        po.rcids[rprocessUid] = rponodeUid;
+                        po.rprocessUid = rprocessUid;
+                        po.idsFlag = po.idsFlag | flag;
                     }
                 }
                 else
                 {
-                    if(po.rcids[rprocessUid] > -1)
+                    if((po.idsFlag & flag) > 0)
                     {
                         -- po.count;
-                        po.rcids[rprocessUid] = rponodeUid;
+                        po.idsFlag = po.idsFlag & (~flag);
                     }
                 }
                 return po.count;
-            }
-            getRPONodeUid(dispRUid:number,rprocessUid:number):number
-            {
-                return this.m_rcpoList[dispRUid].rcids[rprocessUid];
             }
             getRCRPObj(dispRUid:number):RCRPObj
             {

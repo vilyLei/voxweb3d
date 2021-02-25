@@ -36,8 +36,8 @@ export namespace vox
             {
                 if(rc.testVROUid(this.m_uid))
                 {
+                    //console.log("VaoVertexRenderObj::run(), rcuid: ",rc.getUid(),this.m_vtxUid, this.m_uid);
                     rc.bindVertexArray(this.vao);
-                    //console.log("VaoVertexRenderObj::run(), ## this.m_vtxUid: "+this.m_vtxUid+", this.ibuf:"+this.ibuf);
                     if(rc.testRIOUid(this.m_vtxUid))
                     {
                         rc.bindEleBuf(this.ibuf);

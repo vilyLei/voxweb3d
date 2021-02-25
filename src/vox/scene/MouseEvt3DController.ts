@@ -10,7 +10,7 @@ import * as Vector3DT from "../../vox/geom/Vector3";
 import * as MouseEventT from "../../vox/event/MouseEvent";
 import * as Stage3DT from "../../vox/display/Stage3D";
 
-import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
+import * as IRenderEntityT from "../../vox/render/IRenderEntity";
 import * as RaySelectedNodeT from '../../vox/scene/RaySelectedNode';
 import * as IRaySelectorT from '../../vox/scene/IRaySelector';
 import * as IEvt3DControllerT from '../../vox/scene/IEvt3DController';
@@ -21,7 +21,7 @@ import Vector3D = Vector3DT.vox.geom.Vector3D;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 
-import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
+import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
 import RaySelectedNode = RaySelectedNodeT.vox.scene.RaySelectedNode;
 import IRaySelector = IRaySelectorT.vox.scene.IRaySelector;
 import IEvt3DController = IEvt3DControllerT.vox.scene.IEvt3DController;

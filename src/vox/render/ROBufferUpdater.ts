@@ -48,7 +48,7 @@ export namespace vox
                         uid = this.m_uids.pop();
                         this.m_bufsMap.delete(uid);
                         buf = bufs.pop();
-                        buf.__$updateToGpu(rc);
+                        buf.__$updateToGpu(rc.Texture);
                         --len;
                     }
                 }

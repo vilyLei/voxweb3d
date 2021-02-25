@@ -11,6 +11,7 @@
 // 可支持多线程模式(主要支持多线程模式的纯粹的被渲染器接受的渲染对象)，也可支持单线程模式, 此实例不允许加入容器
 
 //import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMask";
+import * as Vector3DT from "../../vox/geom/Vector3";
 import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as AABBT from "../../vox/geom/AABB";
 import * as MouseEventT from "../../vox/event/MouseEvent";
@@ -20,7 +21,9 @@ import * as MeshBaseT from "../../vox/mesh/MeshBase";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as RODisplayT from "../../vox/display/RODisplay";
-import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
+//import * as EntityBaseT from "../../vox/entity/EntityBase";
+import * as IRenderEntityT from "../../vox/render/IRenderEntity";
+import * as IDisplayEntityT from "../../vox/entity/IDisplayEntity";
 
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as TextureProxyT from '../../vox/texture/TextureProxy';
@@ -28,6 +31,7 @@ import * as ROTransPoolT from '../../vox/render/ROTransPool';
 
 
 //import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
+import Vector3D = Vector3DT.vox.geom.Vector3D;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import Matrix4Pool = Matrix4T.vox.geom.Matrix4Pool;
 import AABB = AABBT.vox.geom.AABB;
@@ -38,7 +42,9 @@ import MeshBase = MeshBaseT.vox.mesh.MeshBase;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import RODisplay = RODisplayT.vox.display.RODisplay;
-import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
+//import EntityBase = EntityBaseT.vox.entity.EntityBase;
+import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
+import IDisplayEntity = IDisplayEntityT.vox.entity.IDisplayEntity;
 
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
@@ -48,9 +54,9 @@ export namespace vox
 {
     export namespace entity
     {
-        export class PureEntity implements IRenderEntity
+        export class PureEntity implements IRenderEntity,IDisplayEntity
         {
-            private static __s_uid:number = 0;
+            private static s_uid:number = 0;
             private m_uid:number = 0;
             // the entity is rendered entity or logic entity(doesn't exist in renderer process)
             protected m_isRenderedEntity:boolean = true;
@@ -62,7 +68,7 @@ export namespace vox
             private m_invOmat:Matrix4 = null;
             constructor()
             {
-                this.m_uid = PureEntity.__s_uid++;
+                this.m_uid = PureEntity.s_uid++;
             }
             private m_visible:boolean = true;
             private m_drawEnabled:boolean = true;
@@ -72,9 +78,9 @@ export namespace vox
             protected m_mesh:MeshBase = null;
             // 如果一个entity如果包含了多个mesh,则这个bounds就是多个mesh aabb 合并的aabb
             protected m_globalBounds:AABB = null;
-            // 自身所在的world的唯一id, 通过这个id可以找到对应的world
+            // 自身所在的renderer instance的唯一id, 通过这个id可以找到对应的renderer instance
             __$wuid:number = -1;
-            // 自身在world中被分配的唯一id, 通过这个id就能在world中快速找到自己所在的数组位置
+            // 自身在renderer instance中被分配的唯一id, 通过这个id就能在renderer instance中快速找到自己所在的数组位置
             __$weid:number = -1;
             // 记录自身所在的容器id
             __$contId:number = -1;
@@ -270,14 +276,14 @@ export namespace vox
             {
                 return this.m_isRenderedEntity;
             }
-            copyMeshFrom(entity:IRenderEntity):void
+            copyMeshFrom(entity:IDisplayEntity):void
             {
                 if(entity != null)
                 {
                     this.setMesh( entity.getMesh() );
                 }
             }
-            copyMaterialFrom(entity:IRenderEntity):void
+            copyMaterialFrom(entity:IDisplayEntity):void
             {
                 if(entity != null)
                 {
@@ -345,44 +351,6 @@ export namespace vox
                     }
                 }
             }
-            /*
-            setMesh(m:MeshBase):void
-            {
-                if(this.m_mesh == null && m != null)
-                {
-                    if(!m.isEnabled()){m.rebuild()}
-                    if(m.isEnabled())
-                    {
-                        this.m_mesh = m;
-                        m.__$attachThis();
-                        if(this.m_display == null)
-                        {
-                            this.createDisplay();
-                        }
-                        if(this.m_display != null)
-                        {
-                            if(this.m_omat == null)
-                            {
-                                this.m_omat = Matrix4Pool.GetMatrix();
-                            }
-                            
-                            this.m_display.setTransform(this.m_omat);
-                            this.m_display.visible = this.m_visible && this.m_drawEnabled;
-                            this.m_display.vbuf = m.__$attachVBuf();
-                            this.m_display.ivsIndex = 0;
-                            this.m_display.ivsCount = m.vtCount;
-                            this.m_display.drawMode = m.drawMode;
-                            this.m_display.trisNumber = m.trisNumber;
-                        }
-                        //console.log("PureEntity::setMesh(), "+this.m_display.toString()+",m.drawMode: "+m.drawMode);
-                        if(this.m_globalBounds != null)
-                        {
-                            this.m_globalBounds.copyFrom(m.bounds);
-                        }
-                    }
-                }
-            }
-            //*/
             setIvsParam(ivsIndex:number,ivsCount:number):void
             {
                 if(this.m_display != null)
@@ -398,6 +366,28 @@ export namespace vox
             getMesh():MeshBase
             {
                 return this.m_mesh;
+            }
+            isHaveMesh():boolean
+            {
+                return this.m_mesh != null;
+            }
+            /**
+             * @return 返回true是则表示这是基于三角面的多面体, 返回false则是一个数学方程描述的几何体(例如球体)
+             */
+            isPolyhedral():boolean
+            {
+                return this.m_mesh.isPolyhedral();
+            }
+            /**
+             * @boundsHit       表示是否包围盒体已经和射线相交了
+             * @rlpv            表示物体坐标空间的射线起点
+             * @rltv            表示物体坐标空间的射线朝向
+             * @outV            如果检测相交存放物体坐标空间的交点
+             * @return          返回值 -1 表示不会进行检测,1表示相交,0表示不相交
+             */
+            testRay(rlpv:Vector3D,rltv:Vector3D,outV:Vector3D,boundsHit:boolean):number
+            {
+                return this.m_mesh.testRay(rlpv,rltv,outV,boundsHit);
             }
             setMaterial(m:MaterialBase):void
             {

@@ -30,26 +30,20 @@ export namespace vox
             rst = 0;
             copyDataFromProbe(probe:ShaderUniformProbe):void
             {
-                this.types = [];
-                this.slotIndex = probe.uniformSlotIndex;
-                this.slotSize = probe.uniformSlotSize;
-                this.slotId = probe.uniformSlotId;
-                for(let i:number = 0; i < probe.uniformSlotSize; ++i)
-                {
-                    this.types.push( probe.uniformTypes[i] );
-                }
+                this.types = probe.uniformTypes.slice(0);
+                this.slotIndex = probe.getSlotBeginIndex();
+                this.slotSize = probe.uniformsTotal;
+                this.slotId = probe.getSlotUid();
             }
             copyDataFromProbeAt(i:number, probe:ShaderUniformProbe):void
             {
-                this.types = [];
-                this.slotIndex = probe.uniformSlotIndex;
-                this.slotSize = probe.uniformSlotSize;
-                this.slotId = probe.uniformSlotId;
-                //for(let i:number = 0; i < probe.uniformSlotSize; ++i)
-                //{
-                //    this.types.push( probe.uniformTypes[i] );
-                //    this.dataSizeList.push( probe.dataSizeList[i] );
-                //}
+                if(this.types == null)
+                {
+                    this.types = [];
+                }
+                this.slotIndex = probe.getSlotBeginIndex();
+                this.slotSize = probe.uniformsTotal;
+                this.slotId = probe.getSlotUid();
                 this.types.push( probe.uniformTypes[i] );
             }
             destroy():void

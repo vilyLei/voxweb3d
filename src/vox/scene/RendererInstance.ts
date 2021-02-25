@@ -15,7 +15,7 @@ import * as RenderProxyT from "../../vox/render/RenderProxy";
 
 import * as ROBufferUpdaterT from "../../vox/render/ROBufferUpdater";
 import * as CameraBaseT from "../../vox/view/CameraBase";
-import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
+import * as IRenderEntityT from "../../vox/render/IRenderEntity";
 import * as RODataBuilderT from "../../vox/render/RODataBuilder";
 import * as RendererParamT from "../../vox/scene/RendererParam";
 import * as RenderProcessT from "../../vox/render/RenderProcess";
@@ -36,7 +36,7 @@ import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 
 import ROBufferUpdater = ROBufferUpdaterT.vox.render.ROBufferUpdater;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
-import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
+import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
 import RODataBuilder = RODataBuilderT.vox.render.RODataBuilder;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;

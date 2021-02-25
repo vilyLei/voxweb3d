@@ -25,6 +25,7 @@ import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
 import * as ROTransPoolT from "../../vox/render/ROTransPool";
 import * as ROVertexResourceT from "../../vox/render/ROVertexResource";
 import * as ROTextureResourceT from "../../vox/render/ROTextureResource";
+import * as IRenderBufferT from "../../vox/render/IRenderBuffer";
 import * as IROMaterialUpdaterT from "../../vox/render/IROMaterialUpdater";
 import * as IROVertexBufUpdaterT from "../../vox/render/IROVertexBufUpdater";
 
@@ -49,6 +50,7 @@ import ROTransPool = ROTransPoolT.vox.render.ROTransPool;
 import ROVertexResource = ROVertexResourceT.vox.render.ROVertexResource;
 import GpuVtxObect = ROVertexResourceT.vox.render.GpuVtxObect;
 import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
+import IRenderBuffer = IRenderBufferT.vox.render.IRenderBuffer;
 import IROMaterialUpdater = IROMaterialUpdaterT.vox.render.IROMaterialUpdater;
 import IROVertexBufUpdater = IROVertexBufUpdaterT.vox.render.IROVertexBufUpdater;
 
@@ -74,8 +76,10 @@ export namespace vox
             private m_vtxRes:ROVertexResource = null;
             private m_texRes:ROTextureResource = null;
 
-            private m_deferredUpdateVbufs:IRODisplay[] = [];
-            private m_deferredUpdateTROs:IRODisplay[] = [];
+            private m_deferredVbufs:IRODisplay[] = [];
+            private m_deferredTROs:IRODisplay[] = [];
+            private m_deferredTextures:IRenderBuffer[] = [];
+            private m_haveDeferredUpdate:boolean = false;
             constructor()
             {
             }
@@ -97,7 +101,25 @@ export namespace vox
                 return this.m_shader;
             }
             /**
-             * update texture system memory data to gpu memory data in runtime.
+             * update single texture self system memory data to gpu memory data
+             */
+            updateTextureData(textureProxy:IRenderBuffer,deferred:boolean):void
+            {
+                if(this.m_texRes.hasResUid(textureProxy.getResUid()))
+                {
+                    if(deferred)
+                    {
+                        this.m_deferredTextures.push(textureProxy);
+                        this.m_haveDeferredUpdate = true;
+                    }
+                    else
+                    {
+                        textureProxy.__$updateToGpu(this.m_texRes);
+                    }
+                }
+            }
+            /**
+             * update display entity texture list  system memory data to gpu memory data
              */
             updateDispTRO(disp:IRODisplay,deferred:boolean):void
             {
@@ -105,7 +127,8 @@ export namespace vox
                 {
                     if(deferred)
                     {
-                        this.m_deferredUpdateTROs.push(disp);
+                        this.m_deferredTROs.push(disp);
+                        this.m_haveDeferredUpdate = true;
                     }
                     else
                     {
@@ -175,6 +198,7 @@ export namespace vox
                     {
                         this.m_disps.push(disp);
                         this.m_processUidList.push(processUid);
+                        this.m_haveDeferredUpdate = true;
                     }
                     else
                     {
@@ -282,7 +306,8 @@ export namespace vox
                 {
                     if(deferred)
                     {
-                        this.m_deferredUpdateVbufs.push(disp);
+                        this.m_deferredVbufs.push(disp);
+                        this.m_haveDeferredUpdate = true;
                     }
                     else
                     {
@@ -406,28 +431,42 @@ export namespace vox
             update(rc:RenderProxy)
             {
                 this.updateDispToProcess(rc);
-                
-                let len:number = this.m_deferredUpdateVbufs.length;
-                let i:number = 0;
-                if(len > 0)
+                if(this.m_haveDeferredUpdate)
                 {
-                    // deferred update vtx to gpu
-                    for(; i<len; ++i)
+                    this.m_haveDeferredUpdate = false;                    
+                    let len:number = this.m_deferredVbufs.length;
+                    let i:number = 0;
+                    if(len > 0)
                     {
-                        this.updateDispVbuf(this.m_deferredUpdateVbufs[i],false);
+                        // deferred update vtx to gpu
+                        for(; i<len; ++i)
+                        {
+                            this.updateDispVbuf(this.m_deferredVbufs[i],false);
+                        }
+                        this.m_deferredVbufs = [];
                     }
-                    this.m_deferredUpdateVbufs = [];
-                }
-                len = this.m_deferredUpdateTROs.length;
-                if(len > 0)
-                {
-                    // deferred update texture to gpu
-                    i = 0;
-                    for(; i<len; ++i)
+                    len = this.m_deferredTROs.length;
+                    if(len > 0)
                     {
-                        this.updateTextureTRO(this.m_deferredUpdateTROs[i]);
+                        // deferred update texture list to gpu
+                        i = 0;
+                        for(; i<len; ++i)
+                        {
+                            this.updateTextureTRO(this.m_deferredTROs[i]);
+                        }
+                        this.m_deferredTROs = [];
+                    }                
+                    len = this.m_deferredTextures.length;
+                    if(len > 0)
+                    {
+                        // deferred update single texture self system memory data to gpu memory data
+                        i = 0;
+                        for(; i<len; ++i)
+                        {
+                            this.m_deferredTextures[i].__$updateToGpu(this.m_texRes);
+                        }
+                        this.m_deferredTextures = [];
                     }
-                    this.m_deferredUpdateTROs = [];
                 }
             }
             
@@ -472,8 +511,8 @@ export namespace vox
             }
             reset():void
             {
-                this.m_deferredUpdateVbufs = [];
-                this.m_deferredUpdateTROs = [];
+                this.m_deferredVbufs = [];
+                this.m_deferredTROs = [];
             }
         }
 

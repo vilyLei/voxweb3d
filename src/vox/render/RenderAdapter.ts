@@ -58,7 +58,7 @@ export namespace vox
 				this.m_texResource = texResource;
 				this.m_rcuid = rcuid;
 			}
-			private m_index:number = 0;
+			//private m_index:number = 0;
     		private m_rc:any = null;
     		private m_colorMask:any = {mr:true,mg:true,mb:true,ma:true};
     		private m_rcontext:RAdapterContext = null;
@@ -120,7 +120,7 @@ export namespace vox
 					if(this.uViewProbe == null)
                 	{
                 	    this.uViewProbe = new UniformVec4Probe(1);
-                	    this.uViewProbe.bindSlotAt( this.m_index );
+                	    this.uViewProbe.bindSlotAt( this.m_rcuid );
                 	    this.uViewProbe.setVec4DataWithArr4([this.m_viewX,this.m_viewY,this.m_viewWidth,this.m_viewHeight]);
                 	}
 				}

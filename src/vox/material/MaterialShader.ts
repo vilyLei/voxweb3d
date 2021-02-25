@@ -63,6 +63,10 @@ export namespace vox
             {
                 return this.m_rc;
             }
+            getRCUid():number
+            {
+                return this.m_rcuid;
+            }
             useTransUniform(transUniform:IShaderUniform):void
             {
                 if(this.m_transformUniform != transUniform)

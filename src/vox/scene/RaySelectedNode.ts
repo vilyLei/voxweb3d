@@ -6,10 +6,10 @@
 /***************************************************************************/
 // Ray pick selection obj
 import * as Vector3DT from "../../vox/geom/Vector3";
-import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
+import * as IRenderEntityT from "../../vox/render/IRenderEntity";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
-import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
+import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
 
 export namespace vox
 {

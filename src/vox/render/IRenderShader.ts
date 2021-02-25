@@ -15,6 +15,7 @@ export namespace vox
         export interface IRenderShader
         {
             getRC():any;
+            getRCUid():number;
             getActiveAttachmentTotal():number;
             useUniformMat4(ult:any,mat4f32Arr:Float32Array):void;
             useUniformV1(ult:any,type:number, f32Arr:Float32Array,dataSize:number):void;

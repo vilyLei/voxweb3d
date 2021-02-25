@@ -13,7 +13,7 @@ import * as Stage3DT from "../../vox/display/Stage3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
-import * as IRenderEntityT from "../../vox/entity/IRenderEntity";
+import * as IRenderEntityT from "../../vox/render/IRenderEntity";
 import * as DisplayEntityContainerT from "../../vox/entity/DisplayEntityContainer";
 import * as RendererParamT from "../../vox/scene/RendererParam";
 import * as RenderProcessT from "../../vox/render/RenderProcess";
@@ -42,7 +42,7 @@ import Stage3D = Stage3DT.vox.display.Stage3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-import IRenderEntity = IRenderEntityT.vox.entity.IRenderEntity;
+import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
 import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
@@ -357,7 +357,7 @@ export namespace vox
                 {
                     if(entity.isRenderedEntity())
                     {
-                        if(entity.getMesh() != null)
+                        if(entity.isHaveMesh())
                         {
                             this.m_renderer.addEntity(entity,this.m_processids[processid],deferred);
                             if(this.m_rspace != null)
@@ -475,7 +475,7 @@ export namespace vox
                                 for(; i < total; ++i)
                                 {
                                     node = list[i];
-                                    if(node.entity.getMesh().isPolyhedral())
+                                    if(node.entity.isPolyhedral())
                                     {
                                         //this.m_renderer.drawEntityByLockMaterial(node.entity);
                                     }
@@ -510,7 +510,7 @@ export namespace vox
                         let status:number;
                         while(nextNode != null)
                         {
-                            if(nextNode.entity.getMesh() != null)
+                            if(nextNode.entity.isHaveMesh())
                             {
                                 pnode = nextNode;
                                 nextNode = nextNode.next;

@@ -96,6 +96,10 @@ export namespace vox
                     RenderColorMask.UseRenderState(this.rcolorMask);
                 }
             }
+            getRPOUid():number
+            {
+                return this.__$rpuid;
+            }
             setIvsParam(ivsIndex:number, ivsCount:number):void
             {
                 this.ivsIndex = ivsIndex;
@@ -205,6 +209,10 @@ export namespace vox
                 {
                     this.ubo.run(rc);
                 }
+                if(this.shader == null)
+                {
+                    console.log("this.shader == null unit this.uid: ",this.uid);
+                }
                 this.shader.useTransUniform(this.transUniform);
                 this.shader.useUniform(this.uniform);
                 this.testDrawFlag();
@@ -236,6 +244,7 @@ export namespace vox
             }
             reset():void
             {
+                console.log("reset() unit this.uid: ",this.uid);
                 this.vro.__$detachThis();
                 this.vro = null;
                 this.tro.__$detachThis();

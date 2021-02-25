@@ -6,10 +6,10 @@
 /***************************************************************************/
 
 import * as IRODisplayT from "../../vox/display/IRODisplay";
-import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
+import * as IRenderBufferT from '../../vox/render/IRenderBuffer';
 
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
-import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
+import IRenderBuffer = IRenderBufferT.vox.render.IRenderBuffer;
 
 export namespace vox
 {
@@ -18,9 +18,13 @@ export namespace vox
         export interface IROMaterialUpdater
         {
             /**
-             * update texture system memory data to gpu memory data
+             * update display entity texture list  system memory data to gpu memory data
              */
             updateDispTRO(disp:IRODisplay,deferred:boolean):void;
+            /**
+             * update single texture self system memory data to gpu memory data
+             */
+            updateTextureData(textureProxy:IRenderBuffer,deferred:boolean):void;
         }
     }
 }

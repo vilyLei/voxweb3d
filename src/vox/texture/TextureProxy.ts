@@ -11,6 +11,7 @@ import * as MathConstT from "../../vox/utils/MathConst";
 import * as ITexDataT from "../../vox/texture/ITexData";
 import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
 import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as IRenderResourceT from "../../vox/render/IRenderResource";
 import * as IRenderBufferT from "../../vox/render/IRenderBuffer";
 import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 
@@ -26,6 +27,7 @@ import ITexData = ITexDataT.vox.texture.ITexData;
 import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
 import GpuTexObect = ROTextureResourceT.vox.render.GpuTexObect;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
 import IRenderBuffer = IRenderBufferT.vox.render.IRenderBuffer;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 export namespace vox
@@ -110,7 +112,7 @@ export namespace vox
              */
             __$$use(resTex:ROTextureResource):void
             {
-                resTex.bindTexture(this.getResUid());
+                resTex.bindToGpu(this.getResUid());
             }
             /**
              * 被引用计数加一
@@ -252,19 +254,26 @@ export namespace vox
             }
             
             // sub class override
-            __$updateToGpu(rc:RenderProxy):void
+            __$updateToGpu(texRes:IRenderResource):void
             {
             }
             /**
              * 准备将数据更新到当前的 Gpu context,这是一个异步过程，在渲染运行时才会真正的提交给gpu
              * 这个函数由用户主动调用
+             * 这个函数不能被子类覆盖
              */
-            updateDataToGpu():void
+            updateDataToGpu(rc:RenderProxy = null,deferred:boolean = true):void
             {
-                if(this.isGpuEnabled())
+                if(rc != null)
                 {
-                    console.log("AAAAAA updateDataToGpu...this.getResUid(): "+this.getResUid());
-                    this.m_slot.addRenderBuffer(this, this.getResUid());
+                    rc.MaterialUpdater.updateTextureData(this, deferred);
+                }
+                else
+                {
+                    if(this.isGpuEnabled())
+                    {
+                        this.m_slot.addRenderBuffer(this, this.getResUid());
+                    }
                 }
             }
             protected createTexBuf(texResource:ROTextureResource):boolean
@@ -331,10 +340,10 @@ export namespace vox
                     this.m_generateMipmap = false;
                 }
             }
-            protected __$updateToGpuBegin(texRes:ROTextureResource):void
+            protected __$updateToGpuBegin(texRes:IRenderResource):void
             {
                 let gl:any = texRes.getRC();
-                texRes.bindTexture(this.getResUid());
+                texRes.bindToGpu(this.getResUid());
                 
                 gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL, this.flipY);
                 gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL, this.premultiplyAlpha);

@@ -7,7 +7,7 @@
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as TextureDataT from "../../vox/texture/RawTexData";
 import * as ROTextureResourceT from "../../vox/render/ROTextureResource";
-import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as IRenderResourceT from "../../vox/render/IRenderResource";
 import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as ITexDataT from "../../vox/texture/ITexData";
@@ -17,7 +17,7 @@ import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import RawTexData = TextureDataT.vox.texture.RawTexData;
 import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
-import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import ITexData = ITexDataT.vox.texture.ITexData;
@@ -108,15 +108,15 @@ export namespace vox
                     this.dataUploadToGpu(texRes.getRC(),this.m_texData, this.m_texDatas);                    
                 }
             }
-            __$updateToGpu(rc:RenderProxy):void
+            __$updateToGpu(texRes:IRenderResource):void
             {
                 // 这里之所以用这种方式判断，是为了运行时支持多 gpu context
-                if(rc.Texture.hasTextureRes(this.getResUid()))
+                if(texRes.hasResUid(this.getResUid()))
                 {
-                    let gl:any = rc.RContext;
+                    let gl:any = texRes.getRC();
 
                     let len:number = this.m_subDataList != null?this.m_subDataList.length:0;
-                    this.__$updateToGpuBegin(rc.Texture);
+                    this.__$updateToGpuBegin(texRes);
                     if(len > 0)
                     {
                         let i:number = 0;

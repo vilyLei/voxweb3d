@@ -35,41 +35,39 @@ export namespace vox
                 getFragShaderCode():string
                 {
                     let fragCode:string = 
-"\
-#version 300 es\n\
-precision mediump float;\n\
-uniform samplerCube u_sampler0;\n\
-uniform vec4 u_color;\n\
-in vec3 v_nvs;\n\
-layout(location = 0) out vec4 FragColor;\n\
-void main()\n\
-{\n\
-vec4 color4 = texture(u_sampler0, v_nvs) * u_color;\n\
-FragColor = color4 * 0.5 + 0.5 * vec4(abs(v_nvs),1.0);\n\
-}\n\
-";
+`#version 300 es
+precision mediump float;
+uniform samplerCube u_sampler0;
+uniform vec4 u_color;
+in vec3 v_nvs;
+layout(location = 0) out vec4 FragColor;
+void main()
+{
+vec4 color4 = texture(u_sampler0, v_nvs) * u_color;
+FragColor = color4 * 0.5 + 0.5 * vec4(abs(v_nvs),1.0);
+}
+`;
                     return fragCode;
                 }
                 getVtxShaderCode():string
                 {
                     let vtxCode:string = 
-"\
-#version 300 es\n\
-precision mediump float;\n\
-layout(location = 0) in vec3 a_vs;\n\
-layout(location = 1) in vec2 a_uvs;\n\
-layout(location = 2) in vec3 a_nvs;\n\
-uniform mat4 u_objMat;\n\
-uniform mat4 u_viewMat;\n\
-uniform mat4 u_projMat;\n\
-out vec3 v_nvs;\n\
-void main()\n\
-{\n\
-    vec4 wpos = u_objMat * vec4(a_vs,1.0);\n\
-    gl_Position = u_projMat * u_viewMat * wpos;\n\
-    v_nvs = a_nvs;\n\
-}\n\
-";
+`#version 300 es
+precision mediump float;
+layout(location = 0) in vec3 a_vs;
+layout(location = 1) in vec2 a_uvs;
+layout(location = 2) in vec3 a_nvs;
+uniform mat4 u_objMat;
+uniform mat4 u_viewMat;
+uniform mat4 u_projMat;
+out vec3 v_nvs;
+void main()
+{
+    vec4 wpos = u_objMat * vec4(a_vs,1.0);
+    gl_Position = u_projMat * u_viewMat * wpos;
+    v_nvs = a_nvs;
+}
+`;
                     return vtxCode;
                 }
                 getUniqueShaderName()

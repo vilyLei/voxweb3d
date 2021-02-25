@@ -5,20 +5,22 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IRenderResourceT from "../../vox/render/IRenderResource";
-
-import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
 export namespace vox
 {
     export namespace render
     {
-        export interface IRenderBuffer
+        export interface IRenderResource
         {
             /**
-             * @returns 返回自己的 纹理资源 unique id, 这个id会被对应的资源管理器使用, 此方法子类可以依据需求覆盖
+             * real renderer gpu context
              */
-            getResUid():number;
-            __$updateToGpu(res:IRenderResource):void;
+            getRC():any;
+            getRCUid():number;
+            hasResUid(resUid:number):boolean;
+            /**
+            * @param resUid 准备 bind 到 当前 renderer context 的 gpu texture buffer
+            */
+            bindToGpu(resUid:number):void;
         }
     }
 }

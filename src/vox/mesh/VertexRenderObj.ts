@@ -45,6 +45,7 @@ export namespace vox
             {
                 if(rc.testVROUid(this.m_uid))
                 {
+                    //console.log("VertexRenderObj::run(), B:",rc.getUid(),this.m_vtxUid,this.m_uid);
                     if(this.vbuf != null)
                     {
                         rc.useVtxAttribsPtrTypeFloat(this.shdp,this.vbuf, this.attribTypes,this.attribTypesLen, this.wholeOffsetList, this.wholeStride);
@@ -53,7 +54,6 @@ export namespace vox
                     {
                         rc.useVtxAttribsPtrTypeFloatMulti(this.shdp,this.vbufs, this.attribTypes,this.attribTypesLen, this.wholeOffsetList, this.wholeStride);
                     }
-                    //console.log("VertexRenderObj::run(), ## this.m_vtxUid: "+this.m_vtxUid+", this.ibuf:"+this.ibuf);
                     if(rc.testRIOUid(this.m_vtxUid))
                     {
                         rc.bindEleBuf(this.ibuf);

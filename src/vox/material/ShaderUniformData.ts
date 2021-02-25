@@ -64,11 +64,11 @@ export namespace vox
             copyDataFromProbe(probe:ShaderUniformProbe):void
             {
                 this.types = [];
-                for(let i = 0; i < probe.uniformSlotSize; ++i)
+                for(let i = 0; i < probe.uniformsTotal; ++i)
                 {
                     this.types.push( probe.uniformTypes[i] );
                 }
-                this.uniformSize = probe.uniformSlotSize;
+                this.uniformSize = probe.uniformsTotal;
             }
             destroy():void
             {

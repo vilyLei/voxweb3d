@@ -27,19 +27,16 @@ export namespace vox
     {
         export class Stage3D
         {
-            private static s_index:number = 0;
-            private m_index:number = 0;
-            constructor()
+            private m_rcuid:number = 0;
+            constructor(rcuid:number)
             {
-                this.m_index = Stage3D.s_index;
-                Stage3D.s_index ++;
-
+                this.m_rcuid = rcuid;
                 Keyboard.AddEventListener(KeyboardEvent.KEY_DOWN,this,this.keyDown);
                 Keyboard.AddEventListener(KeyboardEvent.KEY_UP,this,this.keyUp);
             }
-            getIndex():number
+            getRCUid():number
             {
-                return this.m_index;
+                return this.m_rcuid;
             }
             pixelRatio:number = 1.0;
             stageWidth:number = 800;
@@ -113,7 +110,7 @@ export namespace vox
                 {
                     //this.m_stageParamArr = new Float32Array([2.0/800.0,2.0/600.0,800.0,600.0]);
                     this.uProbe = new UniformVec4Probe(1);
-                    this.uProbe.bindSlotAt( this.m_index );
+                    this.uProbe.bindSlotAt( this.m_rcuid );
                     //this.uProbe.addVec4Data(this.m_stageParamArr, 1);
                 }
                 //  this.uProbe.setVec4Data(

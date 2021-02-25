@@ -11,6 +11,7 @@ import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
 import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
 import * as VaoVertexRenderObjT from "../../vox/mesh/VaoVertexRenderObj";
 import * as IROVtxBufT from "../../vox/render/IROVtxBuf";
+import * as IRenderResourceT from "../../vox/render/IRenderResource";
 
 import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
 import IBufferBuilder = IBufferBuilderT.vox.render.IBufferBuilder;
@@ -18,6 +19,7 @@ import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
 import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
 import VaoVertexRenderObj = VaoVertexRenderObjT.vox.mesh.VaoVertexRenderObj;
 import IROVtxBuf = IROVtxBufT.vox.render.IROVtxBuf;
+import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
 
 export namespace vox
 {
@@ -446,7 +448,7 @@ export namespace vox
             }
         }
         // gpu vertex buffer renderer resource
-        export class ROVertexResource
+        export class ROVertexResource implements IRenderResource
         {
             private m_resMap:Map<number,GpuVtxObect> = new Map();
             private m_freeMap:Map<number,GpuVtxObect> = new Map();
@@ -455,6 +457,7 @@ export namespace vox
             private m_vtxResTotal:number = 0;
             private m_attachTotal:number = 0;
             private m_delay:number = 128;
+            private m_haveDeferredUpdate:boolean = false;
 
 			// renderer context unique id
 			private m_rcuid:number = 0;
@@ -478,6 +481,14 @@ export namespace vox
             {
                 return this.m_gl;
             }
+            hasResUid(resUid:number):boolean
+            {
+                return this.m_resMap.has(resUid);
+            }
+            
+            bindToGpu(resUid:number):void
+            {
+            }
             renderBegin():void
             {
                 this.vroUid = -2;
@@ -492,6 +503,7 @@ export namespace vox
                 if(deferred)
                 {
                     this.m_updateIds.push(resUid);
+                    this.m_haveDeferredUpdate = true;
                 }
                 else
                 {
@@ -568,16 +580,20 @@ export namespace vox
             }
             update(rc:IBufferBuilder):void
             {
-                let len:number = this.m_updateIds.length;
-                len = len > 16?16:len;
-                let resUid:number;
-                for(let i:number = 0; i < len;++i)
+                if(this.m_haveDeferredUpdate)
                 {
-                    resUid = this.m_updateIds.shift();
-                    if(this.m_resMap.has(resUid))
+                    this.m_haveDeferredUpdate = false;   
+                    let len:number = this.m_updateIds.length;
+                    len = len > 16?16:len;
+                    let resUid:number;
+                    for(let i:number = 0; i < len;++i)
                     {
-                        console.log("ROvtxRes("+resUid+") update vtx("+resUid+") data to gpu with deferred mode.");
-                        this.m_resMap.get(resUid).updateToGpu(rc);
+                        resUid = this.m_updateIds.shift();
+                        if(this.m_resMap.has(resUid))
+                        {
+                            console.log("ROvtxRes("+resUid+") update vtx("+resUid+") data to gpu with deferred mode.");
+                            this.m_resMap.get(resUid).updateToGpu(rc);
+                        }
                     }
                 }
                 this.m_delay --;

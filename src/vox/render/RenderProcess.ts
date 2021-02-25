@@ -216,7 +216,7 @@ export namespace vox
             {
                 if(disp.__$ruid > -1)
                 {
-                    let nodeUId:number = this.m_rpoUnitBuilder.getRPONodeUid(disp.__$ruid,this.m_weid);
+                    let nodeUId:number = disp.__$$runit.getRPOUid();//this.m_rpoUnitBuilder.getRPONodeUid(disp.__$ruid,this.m_weid);
                     let node:RPONode = this.m_rpoNodeBuilder.getNodeByUid( nodeUId ) as RPONode;
                     // material info etc.
                     node.shdUid = node.unit.shdUid;
@@ -233,7 +233,7 @@ export namespace vox
                 {
                     if(disp.__$ruid > -1)
                     {
-                        let nodeUId:number = this.m_rpoUnitBuilder.getRPONodeUid(disp.__$ruid,this.m_weid);
+                        let nodeUId:number = disp.__$$runit.getRPOUid();//this.m_rpoUnitBuilder.getRPONodeUid(disp.__$ruid,this.m_weid);
                         let node:RPONode = this.m_rpoNodeBuilder.getNodeByUid( nodeUId ) as RPONode;
                         //console.log("removeDisp(), node != null: "+(node != null));
                         if(node != null)

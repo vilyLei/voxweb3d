@@ -1,66 +1,51 @@
 
 import * as DivLogT from "../vox/utils/DivLog";
-import * as MathConstT from "../vox/utils/MathConst";
 import * as Vector3DT from "../vox/geom/Vector3";
-import * as Matrix4T from "../vox/geom/Matrix4";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
 import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
-import * as ShaderMaterialT from "../vox/material/mcase/ShaderMaterial";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
-import * as VtxBufConstT from "../vox/mesh/VtxBufConst";
 import * as MouseEventT from "../vox/event/MouseEvent";
 
-import * as Box3DMeshT from "../vox/mesh/Box3DMesh";
-import * as DisplayEntityT from "../vox/entity/DisplayEntity";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
 import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
 import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureStoreT from "../vox/texture/TextureStore";
 import * as TextureConstT from "../vox/texture/TextureConst";
 import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as RendererSceneT from "../vox/scene/RendererScene";
-import * as BaseTestMaterialT from "../demo/material/BaseTestMaterial";
 
 import DivLog = DivLogT.vox.utils.DivLog;
-import MathConst = MathConstT.vox.utils.MathConst;
 import Vector3D = Vector3DT.vox.geom.Vector3D;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import ShaderMaterial = ShaderMaterialT.vox.material.mcase.ShaderMaterial;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-import VtxNormalType = VtxBufConstT.vox.mesh.VtxNormalType;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 
-import Box3DMesh = Box3DMeshT.vox.mesh.Box3DMesh;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import BaseTestMaterial = BaseTestMaterialT.demo.material.BaseTestMaterial;
 
 export namespace demo
 {
     class DemoSRIns
     {
+        private m_uid:number = 0;
+        private static s_uid:number = 0;
+        static RunFlag:boolean = true;
+        camRotRadian:number = Math.random() * 80.0;
         constructor()
         {
+            this.m_uid = DemoSRIns.s_uid++;
         }
         private m_rscene:RendererScene = null;
         private m_rcontext:RendererInstanceContext = null;
-        private m_texLoader:ImageTextureLoader = null;//new ImageTextureLoader();
+        private m_texLoader:ImageTextureLoader = null;
         private m_camTrack:CameraTrack = null;
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
@@ -81,13 +66,25 @@ export namespace demo
             div.style.position = 'absolute';
             return div;
         }
+        private m_texUrls:string[] = [
+            "static/assets/default.jpg",
+            "static/assets/broken_iron.jpg"
+        ];
+        private initTexture():void
+        {
+            this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
+        }
+        private getTexAt(i:number):TextureProxy
+        {
+            return this.getImageTexByUrl(this.m_texUrls[i]);
+        }
         initialize(px:number,py:number,pw:number,ph:number):void
         {
             if(this.m_rcontext == null)
             {
-                console.log("DemoSRIns::initialize()......");
+                //console.log("DemoSRIns::initialize()......");
                 //DivLog.SetDebugEnabled(true);
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
                 
@@ -103,44 +100,28 @@ export namespace demo
                 this.m_rscene.initialize(rparam,3);
                 this.m_rscene.updateCamera();
                 this.m_rcontext = this.m_rscene.getRendererContext();
-
-                this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );                
-                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-
-                //this.m_rscene.getStage3D().addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+                this.initTexture();
+                if(this.m_uid == 0)
+                {
+                    this.m_rscene.getStage3D().addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+                }
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
+                
+                this.m_camTrack.rotationOffsetAngleWorldY(this.camRotRadian);
 
-                let transMat:Matrix4 = new Matrix4();
-                //transMat.appendRotationEulerAngle(MathConst.DegreeToRadian(90.0),0.0,MathConst.DegreeToRadian(90.0));
-                transMat.appendRotationEulerAngle(0.0,0.0,MathConst.DegreeToRadian(90.0));
-                //transMat.setTranslationXYZ(-200.0,0.0,0.0);
                 let axis:Axis3DEntity = new Axis3DEntity();
-                axis.initialize(300.0);
+                axis.initializeCross(600.0);
                 this.m_rscene.addEntity(axis);
 
-                //  let cly:Cylinder3DEntity = new Cylinder3DEntity();
-                //  cly.setVtxTransformMatrix(transMat);
-                //  cly.initialize(100.0,200.0,15,[tex1]);
-                //  this.m_rscene.addEntity(cly);
-                //  // add rtt texture 3d display entity
-                //  let boxRtt:Box3DEntity = new Box3DEntity();
-                //  boxRtt.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[TextureStore.GetRTTTextureAt(0)]);
-                //  this.m_rscene.addEntity(boxRtt, 1);
-
+                let cly:Cylinder3DEntity = new Cylinder3DEntity();
+                cly.initialize(100.0,200.0,15,[this.getTexAt(1)]);
+                this.m_rscene.addEntity(cly);
             }
         }
         private mouseDown():void
         {
-            /*
-            this.m_rscene.getDiv().style.width = "600px";
-            this.m_rscene.getDiv().style.height = "400px";
-
-            //  this.m_div.style.width = "100%";
-            //  this.m_div.style.height = "100%";
-            this.m_rscene.updateRenderBufferSize();
-            //*/
+            DemoSRIns.RunFlag = !DemoSRIns.RunFlag;
             console.log("mouse down.");
         }
         run():void
@@ -168,17 +149,21 @@ export namespace demo
         private m_inited:boolean = true;
         private m_demoA:DemoSRIns = new DemoSRIns();
         private m_demoB:DemoSRIns = new DemoSRIns();
+        private m_demoC:DemoSRIns = new DemoSRIns();
+        private m_demoD:DemoSRIns = new DemoSRIns();
+
         initialize():void
         {
             console.log("DemoMultiRenderer::initialize()......");
-            // 多个 renderer实例 目前有问题
-
+            // multi renderer instances
             if(this.m_inited)
             {
                 this.m_inited = true;
 
                 this.m_demoA.initialize(50,100,200,100);
-                //this.m_demoB.initialize(50,300,200,100);
+                this.m_demoB.initialize(50,206,200,100);
+                this.m_demoC.initialize(256,100,200,100);
+                this.m_demoD.initialize(256,206,200,100);
 
                 this.m_statusDisp.initialize("rstatus",280);
             }
@@ -186,12 +171,13 @@ export namespace demo
         run():void
         {
             this.m_statusDisp.update();
-
-            //  console.log("//        //");
-            //  console.log("//////////////////AAAA");
-            this.m_demoA.run();
-            //  console.log("//////////////////BBB");
-            //this.m_demoB.run();        
+            if(DemoSRIns.RunFlag)
+            {
+                this.m_demoA.run();
+                this.m_demoB.run();
+                this.m_demoC.run();
+                this.m_demoD.run();
+            }     
         }
     }
 }

@@ -90,6 +90,7 @@ export namespace demo
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
+                
                 this.m_texBlock = new TextureBlock();
                 this.m_texBlock.setRenderer( this.m_renderer );
                 this.m_texLoader = new ImageTextureLoader(this.m_texBlock);

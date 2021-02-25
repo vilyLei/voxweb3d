@@ -217,6 +217,9 @@
 //  import * as DemoVtx from "./demo/DemoVtx";
 //  import Demo = DemoVtx.demo.DemoVtx;
 
+//  import * as DemoDelEntity from "./demo/DemoDelEntity";
+//  import Demo = DemoDelEntity.demo.DemoDelEntity;
+
 //  import * as DemoTexUpdate from "./demo/DemoTexUpdate";
 //  import Demo = DemoTexUpdate.demo.DemoTexUpdate;
 

@@ -110,7 +110,7 @@ export namespace vox
             {
                 return this.m_stencilTestEnabled;
             }
-            initialize(div:HTMLElement,rattr:any = null):void
+            initialize(rcuid:number,div:HTMLElement,rattr:any = null):void
             {
                 var pdocument:any = null;
                 var pwindow:any = null;
@@ -136,7 +136,7 @@ export namespace vox
                     this.m_div = div = this.m_viewEle.getDiv();
                     let canvas:any = this.m_canvas = this.m_viewEle.getCanvas();
 
-                    if(this.m_stage == null)this.m_stage = new Stage3D();
+                    if(this.m_stage == null)this.m_stage = new Stage3D(rcuid);
 
                     let stage:Stage3D = this.m_stage;
 

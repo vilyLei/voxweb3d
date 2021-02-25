@@ -9,7 +9,7 @@ import * as ITexDataT from "../../vox/texture/ITexData";
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as ImgTexDataT from "../../vox/texture/ImgTexData";
 import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
-import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as IRenderResourceT from "../../vox/render/IRenderResource";
 import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 
@@ -18,7 +18,7 @@ import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
 import ImgTexData = ImgTexDataT.vox.texture.ImgTexData;
 import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
-import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 
@@ -112,15 +112,15 @@ export namespace vox
                     this.dataUploadToGpu(texRes.getRC(), this.m_texData, this.m_texDatas);
                 }
             }
-            __$updateToGpu(rc:RenderProxy):void
+            __$updateToGpu(texRes:IRenderResource):void
             {
                 // 这里之所以用这种方式判断，是为了运行时支持多 gpu context
-                if(rc.Texture.hasTextureRes(this.getResUid()))
+                if(texRes.hasResUid(this.getResUid()))
                 {
                     if(this.m_texData != null)
                     {
-                        let gl:any = rc.RContext;
-                        this.__$updateToGpuBegin(rc.Texture);
+                        let gl:any = texRes.getRC();
+                        this.__$updateToGpuBegin(texRes);
                         this.dataUploadToGpu(gl,this.m_texData, this.m_texDatas);                     
                         this.__$buildParam(gl);
                         this.m_generateMipmap = true;
