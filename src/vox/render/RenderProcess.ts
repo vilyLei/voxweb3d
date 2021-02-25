@@ -169,7 +169,7 @@ export namespace vox
                 node.vro = runit.vro;
                 this.m_blockList[node.index].rejoinNode(node);
             }
-            addDisp(rc:RenderProxy, disp:IRODisplay,deferred:boolean = true):void
+            addDisp(disp:IRODisplay):void
             {
                 if(disp != null)
                 {
@@ -252,10 +252,6 @@ export namespace vox
                             this.m_vtxResource.__$detachRes(disp.vbuf.getUid());
                             disp.__$$runit = null;
                             disp.__$ruid = -1;
-                            if(block.isEmpty())
-                            {
-                                
-                            }
                         }
                     }
                 }

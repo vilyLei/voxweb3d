@@ -20,7 +20,6 @@ import * as MaterialShaderT from '../../vox/material/MaterialShader';
 
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
-import * as RenderProcessT from "../../vox/render/RenderProcess";
 import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
 import * as ROTransPoolT from "../../vox/render/ROTransPool";
 import * as ROVertexResourceT from "../../vox/render/ROVertexResource";
@@ -44,7 +43,6 @@ import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
-import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 import RenderProcessBuider = RenderProcessBuiderT.vox.render.RenderProcessBuider;
 import ROTransPool = ROTransPoolT.vox.render.ROTransPool;
 import ROVertexResource = ROVertexResourceT.vox.render.ROVertexResource;
@@ -187,22 +185,6 @@ export namespace vox
                                 }
                             }
                         }
-                    }
-                }
-            }
-            addDispToProcess(disp:IRODisplay, processUid:number,deferred:boolean = true):void
-            {
-                if(disp != null && processUid >= 0)
-                {
-                    if(deferred)
-                    {
-                        this.m_disps.push(disp);
-                        this.m_processUidList.push(processUid);
-                        this.m_haveDeferredUpdate = true;
-                    }
-                    else
-                    {
-                        this.buildGpuDisp(this.m_rc, disp, processUid);
                     }
                 }
             }
@@ -386,7 +368,7 @@ export namespace vox
                     runit.ibufType = runit.ibufStep != 4?this.m_rc.UNSIGNED_SHORT:this.m_rc.UNSIGNED_INT;
                 }
             }
-            private buildGpuDisp(rc:RenderProxy,disp:IRODisplay,processUid:number):void
+            buildGpuDisp(disp:IRODisplay):boolean
             {
                 if(disp.__$ruid < 0)
                 {
@@ -402,35 +384,21 @@ export namespace vox
                         
                         let shdp:ShdProgram = this.updateDispMaterial(runit,disp);
                         // build vtx gpu data
-                        this.buildVtxRes(rc,rc.Vertex,disp,runit,shdp);
+                        this.buildVtxRes(this.m_rc,this.m_rc.Vertex,disp,runit,shdp);
                         //console.log("buildGpuDisp(), runit.ibufType: "+runit.ibufType+", runit.ibufStep: "+runit.ibufStep+", runit.ivsCount: "+runit.ivsCount);
-                        (this.m_processBuider.getNodeByUid(processUid) as RenderProcess).addDisp(rc, disp);
+                        //(this.m_processBuider.getNodeByUid(processUid) as RenderProcess).addDisp(rc, disp);
+                        return true;
                     }
                     else
                     {
                         console.log("Error RODataBuilder::buildGpuDisp(), material is null !!!");
                     }
                 }
+                return false;
             }
-            private updateDispToProcess(rc:RenderProxy):void
+            update()
             {
-                let len:number = this.m_disps.length;
-                let disp:IRODisplay = null;
-                let processUid:number = -1;
-                while(len > 0)
-                {
-                    disp = this.m_disps.shift();
-                    processUid = this.m_processUidList.shift();
-                    if(disp.__$$rsign == DisplayRenderSign.GO_TO_WORLD)
-                    {
-                        this.buildGpuDisp(rc, disp, processUid);
-                    }
-                    --len;
-                }
-            }
-            update(rc:RenderProxy)
-            {
-                this.updateDispToProcess(rc);
+                //this.updateDispToProcess();
                 if(this.m_haveDeferredUpdate)
                 {
                     this.m_haveDeferredUpdate = false;                    

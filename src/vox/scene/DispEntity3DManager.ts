@@ -176,11 +176,14 @@ export namespace vox
                                 //this.m_rprocess.addDisp(rc, disp,false);
                                 if(disp.__$ruid > -1)
                                 {
-                                    this.m_rprocess.addDisp(rc, disp,false);
+                                    this.m_rprocess.addDisp(disp);
                                 }
                                 else
                                 {
-                                    this.m_dispBuilder.addDispToProcess(disp, this.m_rprocess.uid);
+                                    if(this.m_dispBuilder.buildGpuDisp(disp))
+                                    {
+                                        this.m_rprocess.addDisp(disp);
+                                    }
                                 }
                                 
                                 if(this.entityManaListener != null)
@@ -276,11 +279,15 @@ export namespace vox
                             //console.log("DispEntity3DManager::update(), add a ready ok entity("+entity+") to processid("+prouid+")");
                             if(disp.__$ruid > -1)
                             {
-                                this.m_rprocess.addDisp(rc, disp,false);
+                                this.m_rprocess.addDisp(disp);
                             }
                             else
                             {
-                                this.m_dispBuilder.addDispToProcess(disp, this.m_rprocess.uid);
+                                //this.m_dispBuilder.addDispToProcess(disp, this.m_rprocess.uid);
+                                if(this.m_dispBuilder.buildGpuDisp(disp))
+                                {
+                                    this.m_rprocess.addDisp(disp);
+                                }
                             }
                             
                             this.m_waitList.splice(i,1);
@@ -313,7 +320,6 @@ export namespace vox
                         }
                     }
                 }
-                this.m_dispBuilder.update(rc);
             }
             
             update(rc:RenderProxy):void
@@ -322,7 +328,7 @@ export namespace vox
                 {
                     this.updateWaitList(rc);
                 }
-                this.m_dispBuilder.update(rc);
+                this.m_dispBuilder.update();
             }
         }
     }

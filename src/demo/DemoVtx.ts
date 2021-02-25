@@ -273,6 +273,8 @@ void main(){
                 // test visible
                 //  this.m_targets[0].setVisible(!this.m_targets[0].getVisible());
                 //  return;
+                this.m_rscene.addEntity(this.m_targets[0],1);
+                return;
                 if(this.m_targets[0] != null)
                 {
                     this.m_rscene.removeEntity(this.m_targets[0]);
