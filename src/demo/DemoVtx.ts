@@ -136,91 +136,6 @@ export namespace demo
                 axis.setXYZ(200.0, 0.0, 0.0);
                 this.m_rscene.addEntity(axis);
                 this.m_targets.push(axis);
-                return;
-                //  // add common 3d display entity
-                //  var plane:Plane3DEntity = new Plane3DEntity();
-                //  //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex4]);
-                //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex5]);
-                //  this.m_rscene.addEntity(plane);
-                
-                let transMat:Matrix4 = new Matrix4();
-                //transMat.appendRotationEulerAngle(MathConst.DegreeToRadian(90.0),0.0,MathConst.DegreeToRadian(90.0));
-                transMat.appendRotationEulerAngle(0.0,0.0,MathConst.DegreeToRadian(90.0));
-                //transMat.setTranslationXYZ(-200.0,0.0,0.0);
-                //  let mesh:Box3DMesh = new Box3DMesh();
-                //  mesh.setTransformMatrix(transMat);
-                //  mesh.vaoEnabled = true;
-                //  mesh.m_normalType = VtxNormalType.FLAT;
-                //  mesh.vbWholeDataEnabled = true;
-                //  mesh.setBufSortFormat( material.getBufSortFormat() );
-                //  mesh.initialize(new Vector3D(-50.0,-100.0,-100.0),new Vector3D(50.0,100.0,100.0));
-
-                let fragCode:string = 
-                `
-precision mediump float;
-uniform sampler2D u_sampler0;
-uniform vec4 u_colors[2];
-varying vec2 v_uvs;
-void main()
-{
-    vec4 color4 = texture2D(u_sampler0, v_uvs);
-    color4 *= u_colors[0];
-    gl_FragColor = color4;
-}
-                `;
-                let vtxCode:string = 
-`
-precision mediump float;
-attribute vec3 a_vs;
-attribute vec2 a_uvs;
-uniform mat4 u_objMat;
-uniform mat4 u_viewMat;
-uniform mat4 u_projMat;
-varying vec2 v_uvs;
-void main(){
-    mat4 viewMat4 = u_viewMat * u_objMat;
-    vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);
-    gl_Position = u_projMat * viewPos;
-    v_uvs = a_uvs;
-}
-`;
-
-                let shdM:ShaderMaterial = new ShaderMaterial("testShdMaterial");
-                shdM.setFragShaderCode(fragCode);
-                shdM.setVtxShaderCode(vtxCode);
-                shdM.addUniformDataAt("u_colors",new Float32Array([1.0,0.0,1.0,1.0, 800.0,600.0,0.0,0.0]));
-
-                let material:BaseTestMaterial = new BaseTestMaterial();
-                /*
-                let material:BaseTestMaterial = new BaseTestMaterial();
-                material.initializeByCodeBuf(true);
-                let box:Box3DEntity = new Box3DEntity();
-                //box.setMesh(mesh);
-                box.setTransformMatrix(transMat);
-                box.setMaterial(material);
-                box.initialize(new Vector3D(-50.0,-100.0,-100.0),new Vector3D(50.0,100.0,100.0),[tex1]);
-                this.m_rscene.addEntity(box);
-                //*/
-                let cly:Cylinder3DEntity = new Cylinder3DEntity();
-                //cly.setMaterial(material);
-                cly.setMaterial(shdM);
-                cly.setVtxTransformMatrix(transMat);
-                cly.initialize(100.0,200.0,15,[tex1]);
-                this.m_rscene.addEntity(cly);
-                this.m_targets.push(cly);
-
-                let src_cly:Cylinder3DEntity = cly;
-
-                cly = new Cylinder3DEntity();
-                //cly.setMaterial(material);
-                cly.copyMeshFrom(src_cly);
-                cly.setVtxTransformMatrix(transMat);
-                cly.initialize(100.0,200.0,15,[tex1]);
-                cly.setXYZ(100.0,0.0,100.0);
-                
-                this.m_rscene.addEntity(cly);
-                this.m_targets.push(cly);
-
             }
         }
         private m_minV:Vector3D = new Vector3D(-100,-100,-100);
@@ -268,12 +183,12 @@ void main(){
             {
                 //  this.updateMeshData();
                 //  return;
-                this.updateVtxData();
-                return;
+                //  this.updateVtxData();
+                //  return;
                 // test visible
                 //  this.m_targets[0].setVisible(!this.m_targets[0].getVisible());
                 //  return;
-                this.m_rscene.addEntity(this.m_targets[0],1);
+                this.m_rscene.moveEntityTo(this.m_targets[0],1);
                 return;
                 if(this.m_targets[0] != null)
                 {

@@ -100,6 +100,10 @@ export namespace vox
             {
                 return this.__$rpuid;
             }
+            getRPROUid():number
+            {
+                return this.__$rprouid;
+            }
             setIvsParam(ivsIndex:number, ivsCount:number):void
             {
                 this.ivsIndex = ivsIndex;

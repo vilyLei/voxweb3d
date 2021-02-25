@@ -16,7 +16,14 @@ export namespace vox
             setDrawFlag(renderState:number,rcolorMask:number):void;
             setIvsParam(ivsIndex:number, ivsCount:number):void;
             setVisible(boo:boolean):void;
+            /**
+             * get RPONode instance unique id
+             */
             getRPOUid():number;
+            /**
+             * get RenderProcess instance unique id
+             */
+            getRPROUid():number;
         }
     }
 }

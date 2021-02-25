@@ -190,7 +190,7 @@ export namespace vox
                     {
                         if(processid > -1 && processid < this.m_processesLen)
                         {
-                            this.m_entity3DMana.addEntity(this.m_renderProxy, entity,processid,deferred);
+                            this.m_entity3DMana.addEntity(entity,processid,deferred);
                         }
                         else
                         {
@@ -210,7 +210,28 @@ export namespace vox
                     if(process.getWUid() == this.m_uid)
                     {
                         let processid:number = process.getWEid();
-                        this.m_entity3DMana.addEntity(this.m_renderProxy, entity,processid,deferred);
+                        this.m_entity3DMana.addEntity(entity,processid,deferred);
+                    }
+                }
+            }
+            /**
+             * 将已经在渲染运行时中的entity移动到指定 process uid 的 render process 中去
+             */
+            moveEntityToProcessAt(entity:IRenderEntity,dstProcessid:number):void
+            {
+                if(entity != null && entity.__$wuid == this.m_uid)
+                {
+                    if(entity.isRenderEnabled())
+                    {
+                        let srcUid:number = entity.getDisplay().__$$runit.getRPROUid();
+                        if(srcUid != dstProcessid && dstProcessid > -1 && dstProcessid < this.m_processesLen)
+                        {
+                            //this.m_entity3DMana.addEntity(this.m_renderProxy, entity,processid);
+                            let src:RenderProcess = this.m_processBuider.getNodeByUid(srcUid) as RenderProcess;
+                            src.removeDispUnit(entity.getDisplay());
+                            let dst:RenderProcess = this.m_processBuider.getNodeByUid(dstProcessid) as RenderProcess;
+                            dst.addDisp(entity.getDisplay());
+                        }
                     }
                 }
             }

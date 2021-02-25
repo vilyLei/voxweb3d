@@ -370,6 +370,13 @@ export namespace vox
                     }
                 }
             }
+            /**
+             * 将已经在渲染运行时中的entity移动到指定 process uid 的 render process 中去
+             */
+            moveEntityTo(entity:IRenderEntity,processid:number):void
+            {
+                this.m_renderer.moveEntityToProcessAt(entity,this.m_processids[processid]);
+            }
             addEntity(entity:IRenderEntity,processid:number = 0,deferred:boolean = true):void
             {
                 if(entity.__$spaceId < 0)

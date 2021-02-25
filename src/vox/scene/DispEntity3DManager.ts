@@ -128,7 +128,7 @@ export namespace vox
                     }
                 }
             }
-            addEntity(rc:RenderProxy, entity:IRenderEntity, processUid:number,deferred:boolean = false):boolean
+            addEntity(entity:IRenderEntity, processUid:number,deferred:boolean = false):boolean
             {
                 if(entity != null)
                 {

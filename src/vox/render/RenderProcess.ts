@@ -181,7 +181,7 @@ export namespace vox
                             node.unit = this.m_rpoUnitBuilder.getNodeByUid( disp.__$ruid ) as RPOUnit;
                             node.unit.shader = this.m_shader;
                             node.unit.__$rprouid = this.uid;
-                            
+                            //console.log("RenderProcess::addDisp(), renderProcess uid: ",this.uid);
                             if(disp.getPartGroup() != null)
                             {
                                 node.unit.partGroup = disp.getPartGroup().slice(0);
@@ -256,6 +256,39 @@ export namespace vox
                     }
                 }
             }
+            /**
+             * remoev display unit from this render process
+             */
+            removeDispUnit(disp:IRODisplay):void
+            {
+                if(disp != null)
+                {
+                    if(disp.__$ruid > -1)
+                    {
+                        let nodeUId:number = disp.__$$runit.getRPOUid();//this.m_rpoUnitBuilder.getRPONodeUid(disp.__$ruid,this.m_weid);
+                        let node:RPONode = this.m_rpoNodeBuilder.getNodeByUid( nodeUId ) as RPONode;
+                        //console.log("removeDisp(), node != null: "+(node != null));
+                        if(node != null)
+                        {
+                            let block:RPOBlock = this.m_blockList[node.index];
+                            block.removeNode(node);
+                            this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.m_weid, -1);
+                            
+                            --this.m_nodesLen;
+
+                            //let runit:RPOUnit = node.unit;
+                            if(this.m_rpoNodeBuilder.restore(node))
+                            {
+                                //this.m_rpoUnitBuilder.restore(runit);
+                            }
+                            //  this.m_vtxResource.__$detachRes(disp.vbuf.getUid());
+                            //  disp.__$$runit = null;
+                            //  disp.__$ruid = -1;
+                        }
+                    }
+                }
+            }
+
             run(rc:RenderProxy):void
             {
                 if(this.m_enabled && this.m_nodesLen > 0)

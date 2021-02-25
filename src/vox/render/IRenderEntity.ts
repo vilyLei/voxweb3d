@@ -82,9 +82,15 @@ export namespace vox
             activeDisplay():void;
             
             getUid():number;
-            
+            /**
+             * @returns 是否已经加入渲染器中(但是可能还没有进入真正的渲染运行时)
+             */
             isInRenderer():boolean;
+            /**
+             * @returns 是否处在渲染运行时中
+             */
             isRenderEnabled():boolean;
+            
             updateBounds():void;
             update():void;
         }
