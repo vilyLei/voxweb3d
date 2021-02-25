@@ -1,5 +1,4 @@
 
-import * as DivLogT from "../vox/utils/DivLog";
 import * as Vector3DT from "../vox/geom/Vector3";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
@@ -15,7 +14,6 @@ import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as RendererSceneT from "../vox/scene/RendererScene";
 
-import DivLog = DivLogT.vox.utils.DivLog;
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
@@ -82,16 +80,11 @@ export namespace demo
         {
             if(this.m_rcontext == null)
             {
-                //console.log("DemoSRIns::initialize()......");
-                //DivLog.SetDebugEnabled(true);
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
                 
-                //let div = document.getElementById("app");
-                //let div:HTMLElement = this.createDiv(50,100,200,100);
                 let div:HTMLElement = this.createDiv(px,py,pw,ph);
-                //let div:HTMLElement = null;
                 let rparam:RendererParam = new RendererParam(div);
                 rparam.autoSyncRenderBufferAndWindowSize = false;
                 //rparam.maxWebGLVersion = 1;
