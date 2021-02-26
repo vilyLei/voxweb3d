@@ -20,6 +20,7 @@ import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 import * as DepthTextureProxyT from "../../vox/texture/DepthTextureProxy";
 import * as WrapperTextureProxyT from "../../vox/texture/WrapperTextureProxy";
 import * as RendererInstanceT from "../../vox/scene/RendererInstance";
+import * as RTTTextureStoreT from "../../vox/texture/RTTTextureStore";
 
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
@@ -39,6 +40,8 @@ import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 import DepthTextureProxy = DepthTextureProxyT.vox.texture.DepthTextureProxy;
 import WrapperTextureProxy = WrapperTextureProxyT.vox.texture.WrapperTextureProxy;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
+import RTTTextureStore = RTTTextureStoreT.vox.texture.RTTTextureStore;
+
 
 export namespace vox
 {
@@ -50,6 +53,7 @@ export namespace vox
         export class TextureStore
         {
             private static s_texPool:TexturePool = new TexturePool();
+            private static s_rttStore:RTTTextureStore = null;
             private static s_renderer:RendererInstance = null;
             /**
              * 设置当前的渲染器
@@ -58,6 +62,10 @@ export namespace vox
             static SetRenderer(renderer:RendererInstance):void
             {
                 TextureStore.s_renderer = renderer;
+                if(TextureStore.s_rttStore == null && renderer != null)
+                {
+                    TextureStore.s_rttStore = new RTTTextureStore(renderer.textureSlot);
+                }
             }
             
             static CreateWrapperTex(pw:number,ph:number,powerof2Boo:boolean = false):WrapperTextureProxy
@@ -208,35 +216,35 @@ export namespace vox
             // reusable rtt texture resources for one renderer context
             static GetCubeRTTTextureAt(i:number):RTTTextureProxy
 	        {
-                return TextureStore.s_renderer.rttStore.getCubeRTTTextureAt(i);
+                return TextureStore.s_rttStore.getCubeRTTTextureAt(i);
             }
             static CreateCubeRTTTextureAt(i:number,pw:number,ph:number):RTTTextureProxy
 	        {
-                return TextureStore.s_renderer.rttStore.createCubeRTTTextureAt(i,pw,ph);
+                return TextureStore.s_rttStore.createCubeRTTTextureAt(i,pw,ph);
             }
             static GetRTTTextureAt(i:number):RTTTextureProxy
 	        {
-                return TextureStore.s_renderer.rttStore.getRTTTextureAt(i);
+                return TextureStore.s_rttStore.getRTTTextureAt(i);
             }
             static CreateRTTTextureAt(i:number,pw:number,ph:number):RTTTextureProxy
 	        {
-                return TextureStore.s_renderer.rttStore.createRTTTextureAt(i,pw,ph);
+                return TextureStore.s_rttStore.createRTTTextureAt(i,pw,ph);
             }
             static GetDepthTextureAt(i:number):DepthTextureProxy
 	        {
-                return TextureStore.s_renderer.rttStore.getDepthTextureAt(i);
+                return TextureStore.s_rttStore.getDepthTextureAt(i);
             }
             static CreateDepthTextureAt(i:number,pw:number,ph:number):DepthTextureProxy
 	        {
-                return TextureStore.s_renderer.rttStore.createDepthTextureAt(i,pw,ph);
+                return TextureStore.s_rttStore.createDepthTextureAt(i,pw,ph);
             }
             static GetRTTFloatTextureAt(i:number):RTTTextureProxy
 	        {
-                return TextureStore.s_renderer.rttStore.getRTTFloatTextureAt(i);
+                return TextureStore.s_rttStore.getRTTFloatTextureAt(i);
             }
             static CreateRTTFloatTextureAt(i:number,pw:number,ph:number):RTTTextureProxy
 	        {
-                return TextureStore.s_renderer.rttStore.createRTTFloatTextureAt(i,pw,ph);
+                return TextureStore.s_rttStore.createRTTFloatTextureAt(i,pw,ph);
             }
 
             private static s_dlearDelay:number = 256;
@@ -262,7 +270,7 @@ export namespace vox
                         if(value > 2)
                         {
                             freeMap.delete(key);
-                            tex = TextureStore.s_renderer.textureSlot.removeTextureByUid(key);
+                            tex = TextureStore.s_renderer.textureSlot.removeTextureByUid(key) as TextureProxy;
                             if(tex != null)
                             {
                                 TextureStore.s_texPool.addTexture(tex);                                

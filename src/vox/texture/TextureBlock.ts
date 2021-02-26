@@ -20,6 +20,7 @@ import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 import * as DepthTextureProxyT from "../../vox/texture/DepthTextureProxy";
 import * as WrapperTextureProxyT from "../../vox/texture/WrapperTextureProxy";
 import * as RendererInstanceT from "../../vox/scene/RendererInstance";
+import * as RTTTextureStoreT from "../../vox/texture/RTTTextureStore";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
@@ -40,6 +41,7 @@ import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 import DepthTextureProxy = DepthTextureProxyT.vox.texture.DepthTextureProxy;
 import WrapperTextureProxy = WrapperTextureProxyT.vox.texture.WrapperTextureProxy;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
+import RTTTextureStore = RTTTextureStoreT.vox.texture.RTTTextureStore;
 
 export namespace vox
 {
@@ -51,6 +53,7 @@ export namespace vox
         export class TextureBlock
         {
             private m_texPool:TexturePool = new TexturePool();
+            private m_rttStore:RTTTextureStore = null;
             private m_renderer:RendererInstance = null;
             /**
              * 设置当前的渲染器
@@ -59,6 +62,10 @@ export namespace vox
             setRenderer(renderer:RendererInstance):void
             {
                 this.m_renderer = renderer;
+                if(this.m_rttStore == null && renderer != null)
+                {
+                    this.m_rttStore = new RTTTextureStore(renderer.textureSlot);
+                }
             }
             
             createWrapperTex(pw:number,ph:number,powerof2Boo:boolean = false):WrapperTextureProxy
@@ -211,35 +218,35 @@ export namespace vox
             // reusable rtt texture resources for one renderer context
             getCubeRTTTextureAt(i:number):RTTTextureProxy
 	        {
-                return this.m_renderer.rttStore.getCubeRTTTextureAt(i);
+                return this.m_rttStore.getCubeRTTTextureAt(i);
             }
             createCubeRTTTextureAt(i:number,pw:number,ph:number):RTTTextureProxy
 	        {
-                return this.m_renderer.rttStore.createCubeRTTTextureAt(i,pw,ph);
+                return this.m_rttStore.createCubeRTTTextureAt(i,pw,ph);
             }
             getRTTTextureAt(i:number):RTTTextureProxy
 	        {
-                return this.m_renderer.rttStore.getRTTTextureAt(i);
+                return this.m_rttStore.getRTTTextureAt(i);
             }
             createRTTTextureAt(i:number,pw:number,ph:number):RTTTextureProxy
 	        {
-                return this.m_renderer.rttStore.createRTTTextureAt(i,pw,ph);
+                return this.m_rttStore.createRTTTextureAt(i,pw,ph);
             }
             getDepthTextureAt(i:number):DepthTextureProxy
 	        {
-                return this.m_renderer.rttStore.getDepthTextureAt(i);
+                return this.m_rttStore.getDepthTextureAt(i);
             }
             createDepthTextureAt(i:number,pw:number,ph:number):DepthTextureProxy
 	        {
-                return this.m_renderer.rttStore.createDepthTextureAt(i,pw,ph);
+                return this.m_rttStore.createDepthTextureAt(i,pw,ph);
             }
             getRTTFloatTextureAt(i:number):RTTTextureProxy
 	        {
-                return this.m_renderer.rttStore.getRTTFloatTextureAt(i);
+                return this.m_rttStore.getRTTFloatTextureAt(i);
             }
             createRTTFloatTextureAt(i:number,pw:number,ph:number):RTTTextureProxy
 	        {
-                return this.m_renderer.rttStore.createRTTFloatTextureAt(i,pw,ph);
+                return this.m_rttStore.createRTTFloatTextureAt(i,pw,ph);
             }
 
             private m_dlearDelay:number = 256;
@@ -265,7 +272,7 @@ export namespace vox
                         if(value > 2)
                         {
                             freeMap.delete(key);
-                            tex = this.m_renderer.textureSlot.removeTextureByUid(key);
+                            tex = this.m_renderer.textureSlot.removeTextureByUid(key) as TextureProxy;
                             if(tex != null)
                             {
                                 this.m_texPool.addTexture(tex);                                

@@ -7,14 +7,14 @@
 
 import * as IRenderResourceT from '../../vox/render/IRenderResource';
 import * as RenderProxyT from "../../vox/render/RenderProxy"
-import * as TextureProxyT from "../../vox/texture/TextureProxy"
+import * as IRenderTextureT from "../../vox/render/IRenderTexture"
 import * as IRenderBufferT from "../../vox/render/IRenderBuffer";
 import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as ROBufferUpdaterT from "../../vox/render/ROBufferUpdater";
 
 import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+import IRenderTexture = IRenderTextureT.vox.render.IRenderTexture;
 import IRenderBuffer = IRenderBufferT.vox.render.IRenderBuffer;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import ROBufferUpdater = ROBufferUpdaterT.vox.render.ROBufferUpdater;
@@ -29,12 +29,12 @@ export namespace vox
             private m_texResource:IRenderResource = null;
             private m_bufferUpdater:ROBufferUpdater = null;
             private m_textureTotal:number = 0;
-            private m_textureMap:Map<number,TextureProxy> = new Map();
+            private m_textureMap:Map<number,IRenderTexture> = new Map();
             private m_freeMap:Map<number,number> = new Map();
             constructor()
             {
             }
-            addTexture(texture:TextureProxy):void
+            addTexture(texture:IRenderTexture):void
             {
                 if(texture != null && !this.m_textureMap.has(texture.getUid()))
                 {
@@ -43,7 +43,7 @@ export namespace vox
                     this.m_textureTotal ++;
                 }
             }
-            getTextureByUid(uid:number):TextureProxy
+            getTextureByUid(uid:number):IRenderTexture
             {
                 return this.m_textureMap.get(uid);
             }
@@ -51,11 +51,11 @@ export namespace vox
             {
                 return this.m_textureMap.has(uid);
             }
-            removeTextureByUid(uid:number):TextureProxy
+            removeTextureByUid(uid:number):IRenderTexture
             {
                 if(this.m_textureMap.has(uid))
                 {
-                    let tex:TextureProxy = this.m_textureMap.get(uid);
+                    let tex:IRenderTexture = this.m_textureMap.get(uid);
                     if(tex.getAttachCount() < 1)
                     {
                         tex.__$destroy();

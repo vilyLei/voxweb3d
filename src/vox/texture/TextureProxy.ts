@@ -26,6 +26,7 @@ import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
 import IRenderTexture = IRenderTextureT.vox.render.IRenderTexture;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
+
 export namespace vox
 {
     export namespace texture

@@ -101,7 +101,7 @@ export namespace vox
             {
                 this.m_evtFlowEnabled = evtFlowEnabled;
                 this.m_renderer = renderer;
-                this.m_shader = renderer.getDispBuilder().getMaterialShader();
+                this.m_shader = renderer.getDataBuilder().getMaterialShader();
                 this.m_uid = 1024 + RendererSubScene.__s_uid++;
             }
             getUid():number

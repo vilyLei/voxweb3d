@@ -8,7 +8,6 @@ import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 import * as ScreenPingpongBlurT from "../vox/scene/mcase/ScreenPingpongBlur";
 
 import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
 import * as Box3DEntityT from "../vox/entity/Box3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureConstT from "../vox/texture/TextureConst";
@@ -25,7 +24,6 @@ import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 import ScreenPingpongBlur = ScreenPingpongBlurT.vox.scene.mcase.ScreenPingpongBlur;
 
 import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
@@ -71,25 +69,18 @@ export namespace demo
                 tex1.setWrap(TextureConst.WRAP_REPEAT);
                 tex1.mipmapEnabled = true;
                 
-
                 this.m_blurIns = new ScreenPingpongBlur(this.m_renderer);
                 this.m_rcontext = this.m_renderer.getRendererContext();
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
-                this.m_statusDisp.initialize("rstatus",this.m_renderer.getStage3D().viewWidth - 64);
+                this.m_statusDisp.initialize("rstatus",this.m_renderer.getStage3D().viewWidth - 80);
+
                 // add common 3d display entity
-                var plane:Plane3DEntity = new Plane3DEntity();
-                plane.name = "plane";
+                let plane:Plane3DEntity = new Plane3DEntity();
                 plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
                 this.m_renderer.addEntity(plane);
 
-                let axis:Axis3DEntity = new Axis3DEntity();
-                axis.name = "axis";
-                axis.initialize(300.0);
-                this.m_renderer.addEntity(axis);
-
                 let box:Box3DEntity = new Box3DEntity();
-                box.name = "box";
                 box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
                 this.m_renderer.addEntity(box);
             }

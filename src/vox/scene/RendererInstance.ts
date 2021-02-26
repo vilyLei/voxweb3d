@@ -28,7 +28,6 @@ import * as IRendererT from "../../vox/scene/IRenderer";
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as TextureSlotT from "../../vox/texture/TextureSlot";
-import * as RTTTextureStoreT from "../../vox/texture/RTTTextureStore";
 import * as DispEntity3DManagerT from "../../vox/scene/DispEntity3DManager";
 
 import Stage3D = Stage3DT.vox.display.Stage3D;
@@ -50,7 +49,6 @@ import IRenderer = IRendererT.vox.scene.IRenderer;
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
 import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
 import TextureSlot = TextureSlotT.vox.texture.TextureSlot;
-import RTTTextureStore = RTTTextureStoreT.vox.texture.RTTTextureStore;
 import DispEntity3DManager = DispEntity3DManagerT.vox.scene.DispEntity3DManager;
 
 export namespace vox
@@ -65,8 +63,8 @@ export namespace vox
             private m_processesLen:number = 0;
             private m_renderProxy:RenderProxy = null;
             private m_adapter:RenderAdapter = null;
+            private m_dataBuilder:RODataBuilder = null;
             private m_renderInsContext:RendererInstanceContext = null;
-            private m_dispBuilder:RODataBuilder = null;
             private m_batchEnabled:boolean = true;
             private m_processFixedState:boolean = true;
 
@@ -75,8 +73,9 @@ export namespace vox
             private m_processBuider:RenderProcessBuider = new RenderProcessBuider();
             private m_roVtxBuild:ROVtxBuilder = null;
             readonly bufferUpdater:ROBufferUpdater = null;
+            //
             readonly textureSlot:TextureSlot = null;
-            readonly rttStore:RTTTextureStore = null;
+            //readonly rttStore:RTTTextureStore = null;
             constructor()
             {
             }
@@ -95,9 +94,9 @@ export namespace vox
             {
                 return this.m_rpoNodeBuilder;
             }
-            getDispBuilder():RODataBuilder
+            getDataBuilder():RODataBuilder
             {
-                return this.m_dispBuilder;
+                return this.m_dataBuilder;
             }
             getRendererContext():RendererInstanceContext
             {
@@ -152,32 +151,33 @@ export namespace vox
                     {
                         this.m_renderInsContext = new RendererInstanceContext();
                     }
-                    //console.log("param.getMatrix4AllocateSize(): "+param.getMatrix4AllocateSize());
                     this.m_renderProxy = this.m_renderInsContext.getRenderProxy();
-                    //this.m_dispBuilder = new RODataBuilder(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider);
-                    this.m_dispBuilder = new RODataBuilder();
+                    
+                    this.m_dataBuilder = new RODataBuilder();
                     this.m_roVtxBuild = new ROVtxBuilder();
 
                     this.m_renderInsContext.setCameraParam(param.camProjParam.x,param.camProjParam.y,param.camProjParam.z);
                     this.m_renderInsContext.setMatrix4AllocateSize(param.getMatrix4AllocateSize());
-                    this.m_renderInsContext.initialize(param,this.m_dispBuilder,this.m_roVtxBuild);
+                    this.m_renderInsContext.initialize(param,this.m_dataBuilder,this.m_roVtxBuild);
                     this.m_adapter = this.m_renderProxy.getRenderAdapter();
                     this.m_uid = this.m_renderProxy.getUid();
-                    this.m_dispBuilder.initialize(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider,this.m_roVtxBuild);
+                    this.m_dataBuilder.initialize(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider,this.m_roVtxBuild);
 
-                    this.m_renderInsContext.initManager(this.m_dispBuilder);
+                    this.m_renderInsContext.initManager(this.m_dataBuilder);
 
-                    this.m_entity3DMana = new DispEntity3DManager(this.m_uid, this.m_dispBuilder,this.m_rpoUnitBuilder, this.m_processBuider);
+                    this.m_entity3DMana = new DispEntity3DManager(this.m_uid, this.m_dataBuilder,this.m_rpoUnitBuilder, this.m_processBuider);
                     this.appendProcess(this.m_batchEnabled,this.m_processFixedState);
                     
                     let roBufUpdater:ROBufferUpdater = new ROBufferUpdater();
                     let texSlot:TextureSlot = new TextureSlot();
                     texSlot.setRenderProxy(this.m_renderProxy);
                     texSlot.setBufferUpdater(roBufUpdater);
+
                     let selfT:any = this;
                     selfT.bufferUpdater = roBufUpdater;
+                    
                     selfT.textureSlot = texSlot;
-                    selfT.rttStore = new RTTTextureStore(texSlot);
+                    //selfT.rttStore = new RTTTextureStore(texSlot);
                 }
             }
             update():void
@@ -280,7 +280,7 @@ export namespace vox
             appendProcess(batchEnabled:boolean = true,processFixedState:boolean = false):RenderProcess
             {
                 this.m_processBuider.setCreateParams(
-                    this.m_dispBuilder.getMaterialShader(),
+                    this.m_dataBuilder.getMaterialShader(),
                     this.m_rpoNodeBuilder,
                     this.m_rpoUnitBuilder,
                     this.m_renderProxy.Vertex,
@@ -298,7 +298,7 @@ export namespace vox
             createSeparatedProcess(batchEnabled:boolean = true,processFixedState:boolean = false):RenderProcess
             {
                 this.m_processBuider.setCreateParams(
-                    this.m_dispBuilder.getMaterialShader(),
+                    this.m_dataBuilder.getMaterialShader(),
                     this.m_rpoNodeBuilder,
                     this.m_rpoUnitBuilder,
                     this.m_renderProxy.Vertex,
@@ -340,7 +340,7 @@ export namespace vox
             }
             updateMaterialUniformToCurrentShd(material:IRenderMaterial):void
             {
-                this.m_dispBuilder.getMaterialShader().useUniformToCurrentShd(material.__$uniform);
+                this.m_dataBuilder.getMaterialShader().useUniformToCurrentShd(material.__$uniform);
             }
             // 首先要锁定Material才能用这种绘制方式,再者这个entity已经完全加入渲染器了渲染资源已经准备完毕,这种方式比较耗性能，只能用在特殊的地方
             drawEntityByLockMaterial(entity:IRenderEntity,forceUpdateUniform:boolean = true):void
