@@ -58,8 +58,6 @@ export namespace vox
         {
             private static s_uid:number = 0;
             private m_uid:number = 0;
-            // the entity is rendered entity or logic entity(doesn't exist in renderer process)
-            protected m_isRenderedEntity:boolean = true;
             protected m_mouseEvtDispatcher:IEvtDispatcher = null;
             private m_matChanged:boolean = true;
             // local to world spcae matrix
@@ -272,10 +270,6 @@ export namespace vox
             {
                 return this.m_visible;
             }
-            isRenderedEntity():boolean
-            {
-                return this.m_isRenderedEntity;
-            }
             copyMeshFrom(entity:IDisplayEntity):void
             {
                 if(entity != null)
@@ -372,7 +366,7 @@ export namespace vox
                 return this.m_mesh != null;
             }
             /**
-             * @return 返回true是则表示这是基于三角面的多面体, 返回false则是一个数学方程描述的几何体(例如球体)
+             * @return 返回true是则表示这是基于三角面的可渲染多面体, 返回false则是一个数学方程描述的几何体(例如球体)
              */
             isPolyhedral():boolean
             {

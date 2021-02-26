@@ -363,7 +363,7 @@ export namespace vox
             {
                 if(entity.__$spaceId < 0)
                 {
-                    if(entity.isRenderedEntity())
+                    if(entity.isPolyhedral())
                     {
                         if(entity.isHaveMesh())
                         {

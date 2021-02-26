@@ -382,7 +382,7 @@ export namespace vox
             {
                 if(entity.__$spaceId < 0)
                 {
-                    if(entity.isRenderedEntity())
+                    if(entity.isPolyhedral())
                     {
                         if(entity.isHaveMesh())
                         {
@@ -394,6 +394,7 @@ export namespace vox
                         }
                         else
                         {
+                            // 这里的等待队列可能会和加入容器的操作冲突
                             // wait queue
                             if(this.m_nodeWaitLinker == null)
                             {

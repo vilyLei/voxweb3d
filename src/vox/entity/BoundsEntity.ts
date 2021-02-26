@@ -31,7 +31,6 @@ export namespace vox
             constructor(transform:ROTransform = null)
             {
                 super(transform);
-                this.m_isRenderedEntity = false;
             }
             setMaterial(m:MaterialBase):void
             {

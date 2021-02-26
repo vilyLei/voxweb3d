@@ -57,8 +57,6 @@ export namespace vox
         {
             private static s_uid:number = 0;
             private m_uid:number = 0;
-            // the entity is rendered entity or logic entity(doesn't exist in renderer process)
-            protected m_isRenderedEntity:boolean = true;
             protected m_transfrom:ROTransform = null;
             protected m_mouseEvtDispatcher:IEvtDispatcher = null;
             constructor(transform:ROTransform = null)
@@ -269,10 +267,6 @@ export namespace vox
             getVisible():boolean
             {
                 return this.m_visible;
-            }
-            isRenderedEntity():boolean
-            {
-                return this.m_isRenderedEntity;
             }
             getTransform():ROTransform
             {

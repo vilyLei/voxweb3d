@@ -57,7 +57,6 @@ export namespace vox
             
             setVisible(boo:boolean):void;
             getVisible():boolean;
-            isRenderedEntity():boolean;
             
             /**
              * @boundsHit       表示是否包围盒体已经和射线相交了
@@ -68,6 +67,9 @@ export namespace vox
              */
             testRay(rlpv:Vector3D,rltv:Vector3D,outV:Vector3D,boundsHit:boolean):number
             isHaveMesh():boolean;
+            /**
+             * @return 返回true是则表示这是基于三角面的可渲染多面体, 返回false则是一个数学方程描述的几何体(例如球体)
+             */
             isPolyhedral():boolean;
             
             getMaterial():IRenderMaterial;

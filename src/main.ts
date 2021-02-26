@@ -223,8 +223,8 @@
 //  import * as DemoVtx from "./demo/DemoVtx";
 //  import Demo = DemoVtx.demo.DemoVtx;
 
-//  import * as DemoSwapProcess from "./demo/DemoSwapProcess";
-//  import Demo = DemoSwapProcess.demo.DemoSwapProcess;
+import * as DemoSwapProcess from "./demo/DemoSwapProcess";
+import Demo = DemoSwapProcess.demo.DemoSwapProcess;
 
 //  import * as DemoDelEntity from "./demo/DemoDelEntity";
 //  import Demo = DemoDelEntity.demo.DemoDelEntity;
@@ -235,8 +235,8 @@
 //  import * as DemoDivControl from "./demo/DemoDivControl";
 //  import Demo = DemoDivControl.demo.DemoDivControl;
 
-import * as DemoMultiRenderer from "./demo/DemoMultiRenderer";
-import Demo = DemoMultiRenderer.demo.DemoMultiRenderer;
+//  import * as DemoMultiRenderer from "./demo/DemoMultiRenderer";
+//  import Demo = DemoMultiRenderer.demo.DemoMultiRenderer;
 
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;

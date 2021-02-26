@@ -44,13 +44,15 @@ export namespace vox
             
             setVisible(boo:boolean):void;
             getVisible():boolean;
-            isRenderedEntity():boolean;
             
             setMesh(m:MeshBase):void;
             getMesh():MeshBase;
             setIvsParam(ivsIndex:number,ivsCount:number):void;
 
             isHaveMesh():boolean;
+            /**
+             * @return 返回true是则表示这是基于三角面的可渲染多面体, 返回false则是一个数学方程描述的几何体(例如球体)
+             */
             isPolyhedral():boolean;
             setMaterial(m:MaterialBase):void;
             getMaterial():MaterialBase;

@@ -117,7 +117,10 @@ export namespace vox
             {
                 return this.m_transMatrix;
             }
-            // 是否是多面体实体,如果是，则可以进行三角面的相关计算等操作, 如果不是则需要进行相关的几何算法计算
+            /**
+             * @return 返回true是则表示这是基于三角面的可渲染多面体, 返回false则是一个数学方程描述的几何体(例如球体).
+             *         如果是多面体实体,则可以进行三角面的相关计算等操作, 如果不是则需要进行相关的几何算法计算.
+             */
             isPolyhedral():boolean{return true;}
             // 设置自身是否是多面体实体，根据实际需要改变相关的状态值
             setPolyhedral(boo:boolean):void{}
