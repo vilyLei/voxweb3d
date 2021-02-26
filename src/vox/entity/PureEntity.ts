@@ -383,26 +383,34 @@ export namespace vox
             {
                 return this.m_mesh.testRay(rlpv,rltv,outV,boundsHit);
             }
+            /**
+             * 只允许在加入渲染器之前设置 MaterialBase 实例
+             */
             setMaterial(m:MaterialBase):void
             {
                 if(m != null)
                 {
                     if(this.m_display == null)
                     {
-                        this.m_display = RODisplay.Create();
+                        this.createDisplay();
                         if(this.m_omat == null)
                         {
                             this.m_omat = Matrix4Pool.GetMatrix();
                         }
-                        
-                        this.m_display.setTransform(this.m_omat);
-                        this.m_display.visible = this.m_visible && this.m_drawEnabled;                    
+                        if(this.m_display == null)
+                        {
+                            this.m_display.setTransform(this.m_omat);
+                            this.m_display.visible = this.m_visible && this.m_drawEnabled;
+                        }
                     }
-                    if(this.m_display.getMaterial() != m && this.__$wuid < 0 && this.m_display.__$ruid < 0)
+                    if(this.m_display != null)
                     {
-                        this.m_display.renderState = this.m_renderState;
-                        this.m_display.rcolorMask = this.m_rcolorMask;
-                        this.m_display.setMaterial(m);
+                        if(this.m_display.getMaterial() != m && this.__$wuid < 0 && this.m_display.__$ruid < 0)
+                        {
+                            this.m_display.renderState = this.m_renderState;
+                            this.m_display.rcolorMask = this.m_rcolorMask;
+                            this.m_display.setMaterial(m);
+                        }
                     }
                 }
             }
@@ -446,6 +454,10 @@ export namespace vox
                 if(this.m_display != null)
                 {
                     this.m_display.rcolorMask = this.m_rcolorMask;
+                    if(this.m_display.__$$runit != null)
+                    {
+                        this.m_display.__$$runit.setDrawFlag(this.m_renderState, this.m_rcolorMask);
+                    }
                 }
             }
 
@@ -455,6 +467,10 @@ export namespace vox
                 if(this.m_display != null)
                 {
                     this.m_display.rcolorMask = this.m_rcolorMask;
+                    if(this.m_display.__$$runit != null)
+                    {
+                        this.m_display.__$$runit.setDrawFlag(this.m_renderState, this.m_rcolorMask);
+                    }
                 }
             }
         
@@ -464,6 +480,10 @@ export namespace vox
                 if(this.m_display != null)
                 {
                     this.m_display.renderState = this.m_renderState;
+                    if(this.m_display.__$$runit != null)
+                    {
+                        this.m_display.__$$runit.setDrawFlag(this.m_renderState, this.m_rcolorMask);
+                    }
                 }
             }
     
@@ -473,6 +493,10 @@ export namespace vox
                 if(this.m_display != null)
                 {
                     this.m_display.renderState = this.m_renderState;
+                    if(this.m_display.__$$runit != null)
+                    {
+                        this.m_display.__$$runit.setDrawFlag(this.m_renderState, this.m_rcolorMask);
+                    }
                 }
             }
             protected createDisplay():void

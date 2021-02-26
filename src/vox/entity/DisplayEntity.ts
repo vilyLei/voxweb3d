@@ -388,6 +388,9 @@ export namespace vox
             {
                 return this.m_mesh.testRay(rlpv,rltv,outV,boundsHit);
             }
+            /**
+             * 只允许在加入渲染器之前设置 MaterialBase 实例
+             */
             setMaterial(m:MaterialBase):void
             {
                 if(m != null)

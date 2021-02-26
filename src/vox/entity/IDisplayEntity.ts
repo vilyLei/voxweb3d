@@ -54,6 +54,9 @@ export namespace vox
              * @return 返回true是则表示这是基于三角面的可渲染多面体, 返回false则是一个数学方程描述的几何体(例如球体)
              */
             isPolyhedral():boolean;
+            /**
+             * 只允许在加入渲染器之前设置 MaterialBase 实例
+             */
             setMaterial(m:MaterialBase):void;
             getMaterial():MaterialBase;
             getDisplay():IRODisplay;
