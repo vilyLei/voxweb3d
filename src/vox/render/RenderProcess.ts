@@ -67,13 +67,22 @@ export namespace vox
                 this.m_rpoNodeBuilder = rpoNodeBuilder;
                 this.m_rpoUnitBuilder = rpoUnitBuilder;
                 this.m_vtxResource = vtxResource;
-                this.m_proBlock = new RPOBlock(shader);
+                this.m_proBlock = this.createBlock();
+
                 this.m_batchEnabled = batchEnabled;
                 this.m_fixedState = processFixedState;
                 for(let k:number = 0; k < this.m_blockFListLen; ++k)
                 {
                     this.m_blockFList[k] = -1;
                 }
+            }
+            private createBlock():RPOBlock
+            {
+                let block:RPOBlock = new RPOBlock(this.m_shader);
+                block.rpoNodeBuilder = this.m_rpoNodeBuilder;
+                block.rpoUnitBuilder = this.m_rpoUnitBuilder;
+                block.vtxResource = this.m_vtxResource;
+                return block;
             }
             setRenderParam(batchEnabled:boolean,processFixedState:boolean):void
             {
@@ -112,11 +121,7 @@ export namespace vox
                 }
                 if(this.m_blockFList[node.shdUid] < 0)
                 {
-                    block = new RPOBlock(this.m_shader);
-                    block.rpoNodeBuilder = this.m_rpoNodeBuilder;
-                    block.rpoUnitBuilder = this.m_rpoUnitBuilder;
-                    block.vtxResource = this.m_vtxResource;
-
+                    block = this.createBlock();
                     block.batchEnabled = this.m_batchEnabled;
                     block.fixedState = this.m_fixedState;
                     if(block.batchEnabled)
@@ -181,7 +186,6 @@ export namespace vox
                             node.unit = this.m_rpoUnitBuilder.getNodeByUid( disp.__$ruid ) as RPOUnit;
                             node.unit.shader = this.m_shader;
                             node.unit.__$rprouid = this.uid;
-                            //console.log("RenderProcess::addDisp(), renderProcess uid: ",this.uid);
                             if(disp.getPartGroup() != null)
                             {
                                 node.unit.partGroup = disp.getPartGroup().slice(0);

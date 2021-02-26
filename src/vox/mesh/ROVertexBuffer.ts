@@ -440,7 +440,10 @@ export namespace vox
                 return ROVertexBuffer.s_vtxStore.getAttachAllCount();
             }
             private static s_timeDelay:number = 128;
-            static RenderBegin():void
+            /**
+             * 放在帧循环中自动定时清理资源 system memory vertex data
+             */
+            static ClearTest():void
             {
                 --ROVertexBuffer.s_timeDelay;
                 if(ROVertexBuffer.s_timeDelay < 1)
@@ -456,7 +459,7 @@ export namespace vox
                         let i:number = 0;
                         let vtxUid:number = 0;
                         let vb:ROVertexBuffer = null;
-                        let maxSteps:number = 16;
+                        let maxSteps:number = 32;
                         len = len > maxSteps ? maxSteps:len;
                         for(; i < len; ++i)
                         {

@@ -5,27 +5,27 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as IRenderResourceT from "../../vox/render/IRenderResource";
+import * as IRenderBufferT from "../../vox/render/IRenderBuffer";
+
+import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
+import IRenderBuffer = IRenderBufferT.vox.render.IRenderBuffer;
+
 export namespace vox
 {
-    export namespace mesh
+    export namespace render
     {
-        
-        export interface IVertexRenderObj
+        export interface IRenderTexture extends IRenderBuffer
         {
-            /**
-             * indices buffer object.
-             */
-            ibuf:any;
-            /**
-             * be used by the renderer runtime, the value is 2 or 4.
-             */
-            ibufStep:number;
-            getMid():number;
-            getVtxUid():number;
-            run():void;
-            restoreThis():void;
+            isDirect():boolean;
+            getUid():number;
+            getResUid():number;
+            getSampler():number;
             __$attachThis():void;
             __$detachThis():void;
+            __$$use(res:IRenderResource):void;
+            __$$upload(res:IRenderResource):void;
+
         }
     }
 }

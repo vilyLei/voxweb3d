@@ -56,7 +56,6 @@ export namespace vox
             rpoNodeBuilder:RPONodeBuilder = null;
             rpoUnitBuilder:RPOUnitBuilder = null;
             vtxResource:ROVertexResource = null;
-
             private m_shader:MaterialShader = null;
             constructor(shader:MaterialShader)
             {
@@ -109,7 +108,7 @@ export namespace vox
                 let nextNode:RPONode = this.m_nodeLinker.getBegin();
                 if(nextNode != null)
                 {
-                    this.m_shader.useShdByUid(this.shdUid);
+                    this.m_shader.bindToGpu(this.shdUid);
                     let unit:RPOUnit = null;
                     while(nextNode != null)
                     {
@@ -139,7 +138,7 @@ export namespace vox
                 let nextNode:RPONode = this.m_nodeLinker.getBegin();
                 if(nextNode != null)
                 {
-                    this.m_shader.useShdByUid(this.shdUid);
+                    this.m_shader.bindToGpu(this.shdUid);
                     
                     this.m_shader.resetUniform();
                     
@@ -175,7 +174,7 @@ export namespace vox
                             {
                                 if(flagVBoo)
                                 {
-                                    nextNode.vro.run(rc);
+                                    nextNode.vro.run();
                                     flagVBoo = false;
                                 }
                                 if(flagTBoo)
@@ -203,7 +202,7 @@ export namespace vox
                 let nextNode:RPONode = this.m_nodeLinker.getBegin();
                 if(nextNode != null)
                 {
-                    this.m_shader.useShdByUid(this.shdUid);
+                    this.m_shader.bindToGpu(this.shdUid);
 
                     this.m_shader.resetUniform();
 
@@ -242,7 +241,7 @@ export namespace vox
                             {
                                 if(flagVBoo)
                                 {
-                                    nextNode.vro.run(rc);
+                                    nextNode.vro.run();
                                     flagVBoo = false;
                                 }
                                 if(flagTBoo)
@@ -275,7 +274,7 @@ export namespace vox
                 let nextNode:RPONode = this.m_nodeLinker.getBegin();
                 if(nextNode != null)
                 {
-                    this.m_shader.useShdByUid(this.shdUid);
+                    this.m_shader.bindToGpu(this.shdUid);
                     
                     this.m_shader.resetUniform();
 
@@ -301,7 +300,7 @@ export namespace vox
                             {
                                 if(flagVBoo)
                                 {
-                                    nextNode.vro.run(rc);
+                                    nextNode.vro.run();
                                     flagVBoo = false;
                                 }
                                 unit.runLockMaterial2();
@@ -324,7 +323,7 @@ export namespace vox
                             unit = nextNode.unit;
                             if(unit.drawEnabled)
                             {
-                                unit.runLockMaterial(rc);
+                                unit.runLockMaterial();
                                 if(unit.partTotal < 1)
                                 {
                                     unit.drawThis(rc);
@@ -353,12 +352,12 @@ export namespace vox
                         // 如果不这么做，vro和shader attributes没有完全匹配的时候可能在某些设备上会有问题(例如ip6s上无法正常绘制)
                         //let vro:IVertexRenderObj = disp.vbuf.createVROBegin(rc, this.m_shader.getCurrentShd(), true);
                         // 注意临时产生的 vro 对象的回收问题
-                        let vro:IVertexRenderObj = this.vtxResource.getVROByResUid(disp.vbuf.getUid(), rc, this.m_shader.getCurrentShd(), true);
-                        vro.run(rc);
+                        let vro:IVertexRenderObj = this.vtxResource.getVROByResUid(disp.vbuf.getUid(), this.m_shader.getCurrentShd(), true);
+                        vro.run();
                     }
                     else
                     {
-                        unit.vro.run(rc);
+                        unit.vro.run();
                     }
                     unit.runLockMaterial2();
                     if(unit.partTotal < 1)

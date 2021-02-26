@@ -284,6 +284,9 @@ export namespace vox
                 }
                 return false;
             }
+            /**
+             * @returns return system gpu context
+             */
             getRC():any{return this.m_gl;}
             getRenderState():RODrawState{return this.m_rState;}
     

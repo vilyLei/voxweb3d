@@ -228,7 +228,7 @@ export namespace vox
                 {
                     this.ubo.run(rc);
                 }
-                this.vro.run(rc);
+                this.vro.run();
                 this.tro.run();
                 this.shader.useTransUniform(this.transUniform);
                 this.shader.useUniform(this.uniform);
@@ -240,9 +240,9 @@ export namespace vox
                 this.testDrawFlag();                
                 this.shader.useUniform2ToCurrentShd(this.uniform,this.transUniform);
             }
-            runLockMaterial(rc:RenderProxy):void
+            runLockMaterial():void
             {
-                this.vro.run(rc);
+                this.vro.run();
                 this.testDrawFlag();
                 this.shader.useUniform2ToCurrentShd(this.uniform,this.transUniform);
             }

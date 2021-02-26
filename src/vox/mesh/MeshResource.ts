@@ -5,34 +5,23 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
 
-import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import ROVertexBuffer = ROVertexBufferT.vox.mesh.ROVertexBuffer;
 
 export namespace vox
 {
-    export namespace render
+    export namespace mesh
     {
-        export class RenderMeshProxy
+        export class MeshResource
         {
-            private m_rc:RenderProxy = null;
-            
-            setRenderProxy(rc:RenderProxy):void
+            /**
+             * 放在帧循环中自动定时清理资源 system memory mesh data
+             */
+            static ClearTest():void
             {
-                this.m_rc = rc;
-            }
-            reset():void
-            {
-                this.m_rc.Vertex.renderBegin();
-                ROVertexBuffer.RenderBegin();
-            }
-            toString():string
-            {
-                return "[RenderMeshProxy()]";
+                ROVertexBuffer.ClearTest();
             }
         }
-
     }
 }

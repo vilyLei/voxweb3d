@@ -7,11 +7,11 @@
 
 import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
 import * as ITextureRenderObjT from "../../vox/texture/ITextureRenderObj";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
+import * as IRenderTextureT from "../../vox/render/IRenderTexture";
 
 import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
 import ITextureRenderObj = ITextureRenderObjT.vox.texture.ITextureRenderObj;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+import IRenderTexture = IRenderTextureT.vox.render.IRenderTexture;
 
 export namespace vox
 {
@@ -25,17 +25,18 @@ export namespace vox
             private static s_freeTROList:TextureRenderObj[] = [];
             protected static s_unloacked:boolean = true;
             protected static s_preMid:number = -1;
+
             private m_uid:number = -1;
             protected m_mid:number = -1;
             protected m_texTotal:number = 0;
             // max texture amount: 8
             private m_gtexList:any[] = [null,null,null,null, null,null,null,null];
             protected m_samplers:Uint16Array = new Uint16Array(8);
-            protected m_texList:TextureProxy[] = null;
+            protected m_texList:IRenderTexture[] = null;
 			// renderer context uid
             private m_rcuid:number = 0;
             private m_texRes:ROTextureResource = null;
-            
+            // 是否收集gpu数据直接使用，true表示需要收集
             direct:boolean = true;
             private constructor(rcuid:number,texListHashId:number)
             {
@@ -48,7 +49,9 @@ export namespace vox
                 this.m_rcuid = rcuid;
                 this.m_mid = texListHashId;
             }
-            // get renderer context uid
+            /**
+             * @returns return renderer context unique id
+             */
             getRCUid():number
             {
                 return this.m_rcuid;
@@ -62,7 +65,7 @@ export namespace vox
                 return this.m_texTotal;
             }
             
-            protected collectTexList(texRes:ROTextureResource, ptexList:TextureProxy[],shdTexTotal:number):void
+            protected collectTexList(texRes:ROTextureResource, ptexList:IRenderTexture[],shdTexTotal:number):void
             {
                 this.m_texRes = texRes;
                 let i:number = 0;
@@ -71,14 +74,14 @@ export namespace vox
                     if(this.m_texTotal < 1 && ptexList.length > 0)
                     {
                         this.m_texList = ptexList;
-                        let tex:TextureProxy;
+                        let tex:IRenderTexture;
                         while(i < shdTexTotal)
                         {
                             tex = ptexList[i];
                             tex.__$attachThis();
                             tex.__$$upload( texRes );
                             this.m_samplers[i] = tex.getSampler();
-                            this.m_gtexList[i] = this.m_texRes.getTextureBuffer(tex.getResUid());
+                            this.m_gtexList[i] = this.m_texRes.getGpuBuffer(tex.getResUid());
                             this.m_texRes.__$attachRes(tex.getResUid());
                             i ++;
                         }
@@ -119,7 +122,7 @@ export namespace vox
                     }
                     else
                     {
-                        let list:TextureProxy[] = this.m_texList;
+                        let list:IRenderTexture[] = this.m_texList;
                         for(let i:number = 0; i < this.m_texTotal; ++i)
                         {
                             gl.activeTexture(texI++);
@@ -168,7 +171,7 @@ export namespace vox
             {
                 return "TextureRenderObj(uid = "+this.m_uid+", mid="+this.m_mid+")";
             }
-            static Create(texRes:ROTextureResource,texList:TextureProxy[],shdTexTotal:number):TextureRenderObj
+            static Create(texRes:ROTextureResource,texList:IRenderTexture[],shdTexTotal:number):TextureRenderObj
             {
                 if(texList.length > 0 && shdTexTotal > 0)
                 {

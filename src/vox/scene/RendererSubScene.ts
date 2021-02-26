@@ -13,6 +13,7 @@ import * as Stage3DT from "../../vox/display/Stage3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as IRenderMaterialT from "../../vox/render/IRenderMaterial";
 import * as IRenderEntityT from "../../vox/render/IRenderEntity";
 import * as DisplayEntityContainerT from "../../vox/entity/DisplayEntityContainer";
 import * as RendererParamT from "../../vox/scene/RendererParam";
@@ -21,7 +22,6 @@ import * as MaterialShaderT from "../../vox/material/MaterialShader";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
 import * as EntityNodeQueueT from "../../vox/scene/EntityNodeQueue";
 import * as Entity3DNodeLinkerT from "../../vox/scene/Entity3DNodeLinker";
-import * as MaterialBaseT from "../../vox/material/MaterialBase";
 
 import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
@@ -42,6 +42,7 @@ import Stage3D = Stage3DT.vox.display.Stage3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;
 import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
 import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;
@@ -50,7 +51,6 @@ import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
 import EntityNodeQueue = EntityNodeQueueT.vox.scene.EntityNodeQueue;
 import Entity3DNodeLinker = Entity3DNodeLinkerT.vox.scene.Entity3DNodeLinker;
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 
 import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
@@ -351,6 +351,14 @@ export namespace vox
                     }
                 }
             }
+            /**
+             * 将已经在渲染运行时中的entity移动到指定 process uid 的 render process 中去
+             * move rendering runtime displayEntity to different renderer process
+             */
+            moveEntityTo(entity:IRenderEntity,processid:number):void
+            {
+                this.m_renderer.moveEntityToProcessAt(entity,this.m_processids[processid]);
+            }
             addEntity(entity:IRenderEntity,processid:number = 0,deferred:boolean = true):void
             {
                 if(entity.__$spaceId < 0)
@@ -411,7 +419,7 @@ export namespace vox
                 }
             }
             
-            updateMaterialUniformToCurrentShd(material:MaterialBase):void
+            updateMaterialUniformToCurrentShd(material:IRenderMaterial):void
             {
                 this.m_renderer.updateMaterialUniformToCurrentShd(material);
             }
@@ -439,7 +447,7 @@ export namespace vox
                     this.m_rcontext.updateCameraDataFromCamera(this.m_camera);
                 }
                 this.m_camera.update();
-                this.m_shader.reset();
+                this.m_shader.renderBegin();
                 if(this.m_rspace != null)
                 {
                     this.m_rspace.runBegin();

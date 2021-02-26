@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import * as TextureConstT from "../../vox/texture/TextureConst";
-import * as ROTextureResourceT from "../../vox/render/ROTextureResource";
+import * as IRenderResourceT from "../../vox/render/IRenderResource";
 import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 
@@ -14,7 +14,7 @@ import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
-import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
+import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 
@@ -71,7 +71,7 @@ export namespace vox
                 this.mipmapEnabled = false;
                 this.m_haveRData = true;
             }
-            protected uploadData(texRes:ROTextureResource):void
+            protected uploadData(texRes:IRenderResource):void
             {
                 let gl:any = texRes.getRC();
                 gl.texImage2D(this.m_sampler, 0,TextureFormat.ToGL(gl,this.internalFormat),this.m_texWidth,this.m_texHeight,0,TextureFormat.ToGL(gl,this.srcFormat),TextureDataType.ToGL(gl, this.dataType), null);

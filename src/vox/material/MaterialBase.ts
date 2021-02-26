@@ -6,26 +6,28 @@
 /***************************************************************************/
 
 import * as ShaderDataT from "../../vox/material/ShaderData";
-import * as MaterialProgramT from "../../vox/material/MaterialProgram";
+import * as MaterialResourceT from "../../vox/material/MaterialResource";
 import * as ShaderUniformDataT from "../../vox/material/ShaderUniformData";
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 import * as ShaderGlobalUniformT from "../../vox/material/ShaderGlobalUniform";
 import * as TextureProxyT from '../../vox/texture/TextureProxy';
 import * as ShaderCodeBufferT from "../../vox/material/ShaderCodeBuffer";
+import * as IRenderMaterialT from "../../vox/render/IRenderMaterial";
 
 import ShaderData = ShaderDataT.vox.material.ShaderData;
-import MaterialProgram = MaterialProgramT.vox.material.MaterialProgram;
+import MaterialResource = MaterialResourceT.vox.material.MaterialResource;
 import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
 import ShaderGlobalUniform = ShaderGlobalUniformT.vox.material.ShaderGlobalUniform;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
+import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;
 
 export namespace vox
 {
     export namespace material
     {
-        export class MaterialBase
+        export class MaterialBase implements IRenderMaterial
         {
             private static s_codeBuffer:ShaderCodeBuffer = null;
             constructor()
@@ -45,8 +47,7 @@ export namespace vox
             {
                 if(this.getShaderData() == null)
                 {
-                    let shdData:ShaderData = MaterialProgram.FindData( shdCode_uniqueName );
-                    //if(shdData != null) this.setShaderData(shdData);
+                    let shdData:ShaderData = MaterialResource.FindData( shdCode_uniqueName );
                     if(shdData != null) this.m_shdData = shdData;
                 }
                 return this.getShaderData() != null;
@@ -57,10 +58,10 @@ export namespace vox
                 {
                     ShaderCodeBuffer.UseShaderBuffer(null);
                     //trace("MaterialBase::initialize(), shdCode_uniqueName: "+shdCode_uniqueName);
-                    let shdData:ShaderData = MaterialProgram.FindData( shdCode_uniqueName );
+                    let shdData:ShaderData = MaterialResource.FindData( shdCode_uniqueName );
                     if(null == shdData)
                     {
-                        shdData = MaterialProgram.CreateShdData(
+                        shdData = MaterialResource.CreateShdData(
                             shdCode_uniqueName
                             , shdCode_vshdCode
                             , shdCode_fshdCode
@@ -71,7 +72,7 @@ export namespace vox
                 }
             }
             // get a shader code buf instance, for sub class override
-            getCodeBuf()
+            getCodeBuf():ShaderCodeBuffer
             {
                 if(MaterialBase.s_codeBuffer != null)
                 {
@@ -79,6 +80,24 @@ export namespace vox
                 }
                 MaterialBase.s_codeBuffer = new ShaderCodeBuffer();
                 return MaterialBase.s_codeBuffer;
+            }
+            hasShaderData():boolean
+            {
+                if(this.m_shdData != null)
+                {
+                    if(this.m_shdData.haveTexture())
+                    {
+                        if(this.texDataEnabled())
+                        {
+                            return true;
+                        }
+                    }
+                    else
+                    {
+                        return true;
+                    }
+                }
+                return false;
             }
             initializeByCodeBuf(texEnabled:boolean = false):void
             {
@@ -97,13 +116,13 @@ export namespace vox
                         let shdCode_uniqueName:string = MaterialBase.s_codeBuffer.getUniqueShaderName();
                         this.m_shduns = shdCode_uniqueName;
                         this.__$initShd(this.m_shduns);
-                        let shdData:ShaderData = MaterialProgram.FindData( shdCode_uniqueName );
+                        let shdData:ShaderData = MaterialResource.FindData( shdCode_uniqueName );
                         if(null == shdData)
                         {
                             MaterialBase.s_codeBuffer.buildShader();
                             let shdCode_fshdCode = MaterialBase.s_codeBuffer.getFragShaderCode();
                             let shdCode_vshdCode = MaterialBase.s_codeBuffer.getVtxShaderCode();
-                            shdData = MaterialProgram.CreateShdData(
+                            shdData = MaterialResource.CreateShdData(
                                 shdCode_uniqueName
                                 , shdCode_vshdCode
                                 , shdCode_fshdCode
@@ -272,7 +291,6 @@ export namespace vox
                     {
                         for(let i:number = 0;i < this.m_texList.length;++i)
                         {
-                            //TextureRenderObj.__$DetachTexAt(this.m_texList[i].getUid());
                             this.m_texList[i].__$detachThis();
                         }
                     }

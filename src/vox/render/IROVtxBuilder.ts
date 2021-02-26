@@ -15,11 +15,14 @@ export namespace vox
 {
     export namespace render
     {
-        export interface IBufferBuilder
+        export interface IROVtxBuilder
         {
-            VtxBufUpdater:IROVertexBufUpdater;
+            RContext:any;
+            /**
+             * @returns return system gpu context
+             */
             getRC():any
-            getUid():number;
+            getRCUid():number;
             createBuf():any;
             deleteBuf(buf:any):void;
             bindArrBuf(buf:any):void;
@@ -37,6 +40,7 @@ export namespace vox
             deleteVertexArray(vao:any):void;
             testVROUid(vroUid:number):boolean;
             testRIOUid(vioUid:number):boolean;
+            renderBegin():void;
         }
 
     }

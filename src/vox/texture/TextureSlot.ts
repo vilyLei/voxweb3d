@@ -5,14 +5,14 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
+import * as IRenderResourceT from '../../vox/render/IRenderResource';
 import * as RenderProxyT from "../../vox/render/RenderProxy"
 import * as TextureProxyT from "../../vox/texture/TextureProxy"
 import * as IRenderBufferT from "../../vox/render/IRenderBuffer";
 import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as ROBufferUpdaterT from "../../vox/render/ROBufferUpdater";
 
-import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
+import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import IRenderBuffer = IRenderBufferT.vox.render.IRenderBuffer;
@@ -26,7 +26,7 @@ export namespace vox
         export class TextureSlot implements ITextureSlot
         {
             private m_renderProxy:RenderProxy = null;
-            private m_texResource:ROTextureResource = null;
+            private m_texResource:IRenderResource = null;
             private m_bufferUpdater:ROBufferUpdater = null;
             private m_textureTotal:number = 0;
             private m_textureMap:Map<number,TextureProxy> = new Map();
@@ -89,7 +89,7 @@ export namespace vox
 
             isGpuEnabledByResUid(resUid:number):boolean
             {
-                return this.m_texResource.hasTextureRes(resUid);
+                return this.m_texResource.hasResUid(resUid);
             }
             // 先使用map hash拦截的方式,来决定buf和renderer context避免重复的单次关联
             addRenderBuffer(buf:IRenderBuffer,bufResUid:number):void

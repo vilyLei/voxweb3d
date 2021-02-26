@@ -5,12 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
+import * as IRenderResourceT from '../../vox/render/IRenderResource';
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 
-import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
+import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
 import TextureTarget = TextureConstT.vox.texture.TextureTarget;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
@@ -37,28 +37,34 @@ export namespace vox
             {
                 this.m_texTarget = TextureTarget.TEXTURE_CUBE;
             }
-            uploadFromFbo(texResource:ROTextureResource, fboWidth:number, fboHeight:number):void
+            uploadFromFbo(texResource:IRenderResource, fboWidth:number, fboHeight:number):void
             {
                 let gl:any = texResource.getRC();
 
-				if(this.m_texBuf == null)
+				if(!texResource.hasResUid(this.getResUid()))
 				{
                     this.m_sampler = TextureTarget.GetValue(gl,this.m_texTarget);
                     
                     this.createTexBuf(texResource);
+                    texResource.bindToGpu(this.getResUid());
                     this.bindTexture(gl,fboWidth,fboHeight);
 
-                    //this.m_uploadBoo = false;
                     this.m_haveRData = true;
+
+                    this.m_texWidth = fboWidth;
+                    this.m_texHeight = fboHeight;
+                    this.__$buildParam(gl);
 				}
 				else if(this.getBufWidth() != fboWidth || this.getBufHeight() != fboHeight)
 				{
+                    texResource.bindToGpu(this.getResUid());
 					this.bindTexture(gl,fboWidth,fboHeight);
+                    
+                    this.m_texWidth = fboWidth;
+                    this.m_texHeight = fboHeight;
+                    this.__$buildParam(gl);
                 }
                 
-                this.m_texWidth = fboWidth;
-                this.m_texHeight = fboHeight;
-                this.__$buildParam(gl);
             }
             
 			private bindTexture(rgl:any, fboWidth:number, fboHeight:number):void
@@ -68,7 +74,7 @@ export namespace vox
 				let format:number = TextureFormat.ToGL(rgl, this.srcFormat);
 				let type:number = TextureDataType.ToGL(rgl, this.dataType);
 				
-				rgl.bindTexture(this.m_sampler, this.m_texBuf);
+				//rgl.bindTexture(this.m_sampler, this.m_texBuf);
 				
 				switch( this.m_texTarget)
 				{

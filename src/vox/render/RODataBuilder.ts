@@ -8,14 +8,15 @@
 
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
-import * as IBufferBuilderT from "../../vox/render/IBufferBuilder";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as ROVtxBuilderT from "../../vox/render/ROVtxBuilder";
 import * as UniformConstT from "../../vox/material/UniformConst";
+import * as ShaderUniformT from "../../vox/material/ShaderUniform";
 import * as ShdProgramT from "../../vox/material/ShdProgram";
-import * as TextureProxyT from '../../vox/texture/TextureProxy';
+import * as IRenderTextureT from '../../vox/render/IRenderTexture';
 import * as TextureRenderObjT from '../../vox/texture/TextureRenderObj';
 import * as ShdUniformToolT from '../../vox/material/ShdUniformTool';
-import * as MaterialBaseT from '../../vox/material/MaterialBase';
+import * as IRenderMaterialT from '../../vox/render/IRenderMaterial';
 import * as MaterialShaderT from '../../vox/material/MaterialShader';
 
 import * as RPOUnitT from "../../vox/render/RPOUnit";
@@ -30,15 +31,16 @@ import * as IROVertexBufUpdaterT from "../../vox/render/IROVertexBufUpdater";
 
 import DisplayRenderSign = RenderConstT.vox.render.DisplayRenderSign;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
-import IBufferBuilder = IBufferBuilderT.vox.render.IBufferBuilder;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import ROVtxBuilder = ROVtxBuilderT.vox.render.ROVtxBuilder;
 import UniformConst = UniformConstT.vox.material.UniformConst;
+import ShaderUniform = ShaderUniformT.vox.material.ShaderUniform;
 import ShdProgram = ShdProgramT.vox.material.ShdProgram;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+import IRenderTexture = IRenderTextureT.vox.render.IRenderTexture;
 import TextureRenderObj = TextureRenderObjT.vox.texture.TextureRenderObj;
 import EmptyTexRenderObj = TextureRenderObjT.vox.texture.EmptyTexRenderObj;
 import ShdUniformTool = ShdUniformToolT.vox.material.ShdUniformTool;
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
@@ -61,14 +63,11 @@ export namespace vox
          */
         export class RODataBuilder implements IROMaterialUpdater,IROVertexBufUpdater
         {
-            private m_disps:IRODisplay[] = [];
-            private m_processUidList:number[] = [];
-            // 当前 renderer context 范围内的所有 material shader 管理
-            
             private m_emptyTRO:EmptyTexRenderObj = null;
             private m_shader:MaterialShader = null;
             private m_rpoUnitBuilder:RPOUnitBuilder = null;
             private m_processBuider:RenderProcessBuider = null;
+            private m_roVtxBuild:ROVtxBuilder = null;
 
             private m_rc:RenderProxy = null;
             private m_vtxRes:ROVertexResource = null;
@@ -81,17 +80,18 @@ export namespace vox
             constructor()
             {
             }
-            initialize(rc:RenderProxy, rpoUnitBuilder:RPOUnitBuilder, processBuider:RenderProcessBuider):void
+            initialize(rc:RenderProxy, rpoUnitBuilder:RPOUnitBuilder, processBuider:RenderProcessBuider,roVtxBuild:ROVtxBuilder):void
             {
                 if(this.m_shader == null)
                 {
                     this.m_rc = rc;
-                    this.m_vtxRes = rc.Vertex;
-                    this.m_texRes = rc.Texture;
-                    this.m_shader = new MaterialShader(rc);
+                    this.m_vtxRes = rc.Vertex as ROVertexResource;
+                    this.m_texRes = rc.Texture as ROTextureResource;
+                    this.m_shader = new MaterialShader(rc.getRCUid(),rc.getRC(),rc.getRenderAdapter());
                     this.m_rpoUnitBuilder = rpoUnitBuilder;
                     this.m_processBuider = processBuider;
-                    this.m_emptyTRO = new EmptyTexRenderObj(rc.Texture);
+                    this.m_roVtxBuild = roVtxBuild;
+                    this.m_emptyTRO = new EmptyTexRenderObj(this.m_texRes);
                 }
             }
             getMaterialShader():MaterialShader
@@ -138,7 +138,7 @@ export namespace vox
             {
                 if(disp.__$ruid > -1)
                 {
-                    let material:MaterialBase = disp.getMaterial();
+                    let material:IRenderMaterial = disp.getMaterial();
                     if(material != null)
                     {
                         let texRes:ROTextureResource = this.m_texRes;
@@ -194,12 +194,12 @@ export namespace vox
                 if(disp.__$ruid >= 0)
                 {
                     let rc:RenderProxy = this.m_rc;
-                    let material:MaterialBase = disp.getMaterial();
+                    let material:IRenderMaterial = disp.getMaterial();
                     if(material != null)
                     {
                         if(material.getShaderData() == null)
                         {
-                            let texList:TextureProxy[] = material.getTextureList();
+                            let texList:IRenderTexture[] = material.getTextureList();
                             let texEnabled:boolean = ((texList != null && texList != null) && texList.length > 0);
                             material.initializeByCodeBuf(texEnabled);
                         }
@@ -242,7 +242,7 @@ export namespace vox
                         if(this.m_shader.getSharedUniformByShd(shdp) == null)
                         {
                             // create shared uniform
-                            this.m_shader.setSharedUniformByShd(shdp, ShdUniformTool.BuildShared(material.createSharedUniform(),rc, shdp));
+                            this.m_shader.setSharedUniformByShd(shdp, ShdUniformTool.BuildShared(material.createSharedUniform() as ShaderUniform,rc, shdp));
                         }
                         let hasTrans:boolean = shdp.hasUniformByName(UniformConst.LocalTransformMatUNS);
                         if(material.__$uniform == null)
@@ -277,7 +277,7 @@ export namespace vox
             }
             updateVtxDataToGpuByUid(vtxUid:number,deferred:boolean):void
             {
-                this.m_vtxRes.updateDataToGpu(this.m_rc,vtxUid,deferred);
+                this.m_vtxRes.updateDataToGpu(vtxUid,deferred);
             }
             /**
              * update vertex system memory data to gpu memory data
@@ -298,25 +298,25 @@ export namespace vox
                         {
                             let oldResUid:number = runit.vtxUid;
                             let vtxRes:ROVertexResource = this.m_vtxRes;
-                            if(vtxRes.hasVertexRes(oldResUid))
+                            if(vtxRes.hasResUid(oldResUid))
                             {
                                 vtxRes.__$detachRes(oldResUid);
                             }
                             runit.vro.__$detachThis();
                             
-                            let shdp:ShdProgram = this.m_shader.findShdProgramByUid(runit.shdUid);
                             // build vtx gpu data
-                            this.buildVtxRes(this.m_rc,vtxRes,disp,runit,shdp);
+                            this.buildVtxRes(disp,runit,this.m_shader.findShdProgramByUid(runit.shdUid));
                             if(runit.__$rprouid >= 0)this.m_processBuider.rejoinRunitForVro(runit);
                         }
                     }
                 }
             }
             // build vtx gpu data
-            private buildVtxRes(rc:IBufferBuilder,vtxRes:ROVertexResource,disp:IRODisplay,runit:RPOUnit, shdp:ShdProgram):void
+            private buildVtxRes(disp:IRODisplay,runit:RPOUnit, shdp:ShdProgram):void
             {
                 if(disp.vbuf != null)
                 {
+                    let vtxRes:ROVertexResource = this.m_vtxRes;
                     runit.ivsIndex = disp.ivsIndex;
                     runit.ivsCount = disp.ivsCount;
                     runit.insCount = disp.insCount;
@@ -331,15 +331,15 @@ export namespace vox
                     let resUid:number = disp.vbuf.getUid();
                     let vtx:GpuVtxObect;
                     let needBuild:boolean = true;
-                    if(vtxRes.hasVertexRes(resUid))
+                    if(vtxRes.hasResUid(resUid))
                     {
                         vtx = vtxRes.getVertexRes(resUid);
                         needBuild = vtx.version != disp.vbuf.version;
                         //console.log("GpuVtxObect instance repeat to be used,needBuild: "+needBuild,vtx.getAttachCount());
                         if(needBuild)
                         {
-                            vtx.destroy(rc);
-                            vtx.rcuid = rc.getUid();
+                            vtxRes.destroyRes(resUid);
+                            vtx.rcuid = vtxRes.getRCUid();
                             vtx.resUid = resUid;
                         }
                     }
@@ -354,12 +354,12 @@ export namespace vox
                     if(needBuild)
                     {
                         vtx.indices.ibufStep = disp.vbuf.getIBufStep();
-                        vtx.indices.initialize(rc,disp.vbuf);
-                        vtx.vertex.initialize(rc,shdp,disp.vbuf);
+                        vtx.indices.initialize(this.m_roVtxBuild, disp.vbuf);
+                        vtx.vertex.initialize(this.m_roVtxBuild, shdp,disp.vbuf);
                         vtx.version = disp.vbuf.version;
                     }
                     vtxRes.__$attachRes(resUid);
-                    runit.vro = vtx.createVRO(rc, shdp, true);
+                    runit.vro = vtx.createVRO(this.m_roVtxBuild, shdp, true);
                     runit.vro.__$attachThis();
 
                     runit.vtxUid = disp.vbuf.getUid();
@@ -372,8 +372,7 @@ export namespace vox
             {
                 if(disp.__$ruid < 0)
                 {
-                    let material:MaterialBase = disp.getMaterial();
-                    if(material != null)
+                    if(disp.getMaterial() != null)
                     {
                         disp.__$$rsign = DisplayRenderSign.LIVE_IN_WORLD;
                         
@@ -382,11 +381,7 @@ export namespace vox
                         disp.__$$runit = runit;
                         runit.setDrawFlag(disp.renderState, disp.rcolorMask);
                         
-                        let shdp:ShdProgram = this.updateDispMaterial(runit,disp);
-                        // build vtx gpu data
-                        this.buildVtxRes(this.m_rc,this.m_rc.Vertex,disp,runit,shdp);
-                        //console.log("buildGpuDisp(), runit.ibufType: "+runit.ibufType+", runit.ibufStep: "+runit.ibufStep+", runit.ivsCount: "+runit.ivsCount);
-                        //(this.m_processBuider.getNodeByUid(processUid) as RenderProcess).addDisp(rc, disp);
+                        this.buildVtxRes(disp,runit,this.updateDispMaterial(runit,disp));
                         return true;
                     }
                     else
@@ -438,7 +433,7 @@ export namespace vox
                 }
             }
             
-            updateGlobalMaterial(material:MaterialBase):void
+            updateGlobalMaterial(material:IRenderMaterial):void
             {
                 if(material != null)
                 {
@@ -446,7 +441,7 @@ export namespace vox
                     let gl:any = rc.RContext;
                     let tro:TextureRenderObj = null;
                     let shdp:ShdProgram = null;
-                    let texList:TextureProxy[] = null;
+                    let texList:IRenderTexture[] = null;
                     let texEnabled:boolean = false;
                     if(material.getShaderData() == null)
                     {
@@ -463,14 +458,14 @@ export namespace vox
                     }
                     if(this.m_shader.getSharedUniformByShd(shdp) == null)
                     {
-                        this.m_shader.setSharedUniformByShd(shdp, ShdUniformTool.BuildShared(material.createSharedUniform(),rc, shdp));
+                        this.m_shader.setSharedUniformByShd(shdp, ShdUniformTool.BuildShared(material.createSharedUniform() as ShaderUniform,rc, shdp));
                     }
                     
                     if(material.__$uniform == null)
                     {
                         material.__$uniform = ShdUniformTool.BuildLocalFromData(material.createSelfUniformData(), shdp);
                     }
-                    this.m_shader.useShdByUid(shdp.getUid());
+                    this.m_shader.bindToGpu(shdp.getUid());
                     if(tro != null)
                     {
                         tro.run();

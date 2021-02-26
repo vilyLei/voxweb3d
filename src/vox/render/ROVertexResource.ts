@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
-import * as IBufferBuilderT from "../../vox/render/IBufferBuilder";
+import * as IROVtxBuilderT from "../../vox/render/IROVtxBuilder";
 import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
 import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
 import * as VaoVertexRenderObjT from "../../vox/mesh/VaoVertexRenderObj";
@@ -14,7 +14,7 @@ import * as IROVtxBufT from "../../vox/render/IROVtxBuf";
 import * as IRenderResourceT from "../../vox/render/IRenderResource";
 
 import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
-import IBufferBuilder = IBufferBuilderT.vox.render.IBufferBuilder;
+import IROVtxBuilder = IROVtxBuilderT.vox.render.IROVtxBuilder;
 import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
 import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
 import VaoVertexRenderObj = VaoVertexRenderObjT.vox.mesh.VaoVertexRenderObj;
@@ -46,7 +46,7 @@ export namespace vox
             {
             }
             
-            updateToGpu(rc:IBufferBuilder):void
+            updateToGpu(rc:IROVtxBuilder):void
             {
                 let len:number = this.m_gpuBufs.length;
                 if(len > 0)
@@ -76,7 +76,7 @@ export namespace vox
                     }
                 }
             }
-            private uploadCombined(rc:IBufferBuilder,shdp:IVtxShdCtr):void
+            private uploadCombined(rc:IROVtxBuilder,shdp:IVtxShdCtr):void
             {
                 let vtx:IROVtxBuf = this.m_vtx;
                 let fvs:Float32Array = vtx.getF32DataAt(0);
@@ -100,7 +100,7 @@ export namespace vox
                     }
                 }
             }
-            private uploadSeparated(rc:IBufferBuilder,shdp:IVtxShdCtr):void
+            private uploadSeparated(rc:IROVtxBuilder,shdp:IVtxShdCtr):void
             {
                 let vtx:IROVtxBuf = this.m_vtx;
                 let i:number = 0;
@@ -161,7 +161,7 @@ export namespace vox
                     }
                 }
             }
-            initialize(rc:IBufferBuilder,shdp:IVtxShdCtr, vtx:IROVtxBuf):void
+            initialize(rc:IROVtxBuilder,shdp:IVtxShdCtr, vtx:IROVtxBuf):void
             {
                 if(this.m_gpuBufs.length < 1 && vtx != null)
                 {
@@ -183,9 +183,9 @@ export namespace vox
                     }
                 }
             }
-            private getVROMid(rc:IBufferBuilder, shdp:IVtxShdCtr, vaoEnabled:boolean):number
+            private getVROMid(rc:IROVtxBuilder, shdp:IVtxShdCtr, vaoEnabled:boolean):number
             {
-                let mid:number = (131 + rc.getUid()) * this.m_vtxUid;
+                let mid:number = (131 + rc.getRCUid()) * this.m_vtxUid;
                 if(vaoEnabled)
                 {
                     // 之所以 + 0xf0000 这样区分，是因为 shdp.getLayoutBit() 的取值范围不会超过short(double bytes)取值范围
@@ -200,7 +200,7 @@ export namespace vox
             }
             
             // 创建被 RPOUnit 使用的 vro 实例
-            createVRO(rc:IBufferBuilder, shdp:IVtxShdCtr, vaoEnabled:boolean):IVertexRenderObj
+            createVRO(rc:IROVtxBuilder, shdp:IVtxShdCtr, vaoEnabled:boolean):IVertexRenderObj
             {
                 if(this.m_attribsTotal > 0)
                 {
@@ -218,7 +218,7 @@ export namespace vox
                     {
                         // vao 的生成要记录标记,防止重复生成, 因为同一组数据在不同的shader使用中可能组合方式不同，导致了vao可能是多样的
                         //console.log("VtxCombinedBuf::createVROBegin(), "+this.m_typeList+" /// "+this.m_wholeStride+" /// "+this.m_offsetList);
-                        let vro:VaoVertexRenderObj = VaoVertexRenderObj.Create(mid, this.m_vtx.getUid());
+                        let vro:VaoVertexRenderObj = VaoVertexRenderObj.Create(rc, mid, this.m_vtx.getUid());
                         vro.vao = rc.createVertexArray();
                         rc.bindVertexArray(vro.vao);
                         if(this.m_type < 1)
@@ -243,7 +243,7 @@ export namespace vox
                     }
                     else
                     {
-                        let vro:VertexRenderObj = VertexRenderObj.Create(mid, this.m_vtx.getUid());
+                        let vro:VertexRenderObj = VertexRenderObj.Create(rc, mid, this.m_vtx.getUid());
                         vro.shdp = shdp;
                         vro.attribTypes = [];
                         vro.wholeOffsetList = [];
@@ -275,7 +275,7 @@ export namespace vox
                 }
                 return null;
             }
-            destroy(rc:IBufferBuilder):void
+            destroy(rc:IROVtxBuilder):void
             {
                 if(this.m_gpuBufs.length > 0)
                 {
@@ -286,7 +286,7 @@ export namespace vox
                     for(; i < this.m_vroListLen; ++i)
                     {
                         vro = this.m_vroList.pop();
-                        vro.restoreThis(rc);
+                        vro.restoreThis();
                         this.m_vroList[i] = null;
                     }
                     this.m_vroListLen = 0;
@@ -320,7 +320,7 @@ export namespace vox
             {
                 return this.m_gpuBuf;
             }
-            updateToGpu(rc:IBufferBuilder):void
+            updateToGpu(rc:IROVtxBuilder):void
             {
                 if(this.m_gpuBuf == null && this.m_ivsSize > 0)
                 {
@@ -343,7 +343,7 @@ export namespace vox
                     }
                 }
             }
-            initialize(rc:IBufferBuilder,vtx:IROVtxBuf):void
+            initialize(rc:IROVtxBuilder,vtx:IROVtxBuf):void
             {
                 if(this.m_gpuBuf == null && vtx.getIvsData() != null)
                 {
@@ -377,7 +377,7 @@ export namespace vox
                 }
             }
 
-            destroy(rc:IBufferBuilder):void
+            destroy(rc:IROVtxBuilder):void
             {
                 if(this.m_gpuBuf != null)
                 {
@@ -425,19 +425,19 @@ export namespace vox
             {
                 return this.m_attachCount;
             }
-            createVRO(rc:IBufferBuilder, shdp:IVtxShdCtr, vaoEnabled:boolean):IVertexRenderObj
+            createVRO(rc:IROVtxBuilder, shdp:IVtxShdCtr, vaoEnabled:boolean):IVertexRenderObj
             {
                 let vro:IVertexRenderObj = this.vertex.createVRO(rc, shdp,vaoEnabled);
                 vro.ibuf = this.indices.getGpuBuf();
                 vro.ibufStep = this.indices.ibufStep;
                 return vro;
             }
-            updateToGpu(rc:IBufferBuilder):void
+            updateToGpu(rc:IROVtxBuilder):void
             {
                 this.indices.updateToGpu(rc);
                 this.vertex.updateToGpu(rc);
             }
-            destroy(rc:IBufferBuilder):void
+            destroy(rc:IROVtxBuilder):void
             {
                 if(this.getAttachCount() < 1 && this.resUid >= 0)
                 {
@@ -462,21 +462,29 @@ export namespace vox
 			// renderer context unique id
 			private m_rcuid:number = 0;
             private m_gl:any = null;
+            private m_vtxBuilder:IROVtxBuilder = null;
 
-            // render vertex object unique id
-            vroUid:number = -2;
-            // indices buffer object unique id
-            rioUid:number = -3;
             unlocked:boolean = true;
-            constructor(rcuid:number, gl:any)
+            constructor(rcuid:number, gl:any,vtxBuilder:IROVtxBuilder)
             {
                 this.m_rcuid = rcuid;
                 this.m_gl = gl;
+                this.m_vtxBuilder = vtxBuilder;
             }
+            createResByParams3(resUid:number,param0:number,param1:number,param2:number):boolean
+            {
+                return false;
+            }
+            /**
+             * @returns return renderer context unique id
+             */
             getRCUid():number
             {
                 return this.m_rcuid;
             }
+            /**
+             * @returns return system gpu context
+             */
             getRC():any
             {
                 return this.m_gl;
@@ -485,20 +493,31 @@ export namespace vox
             {
                 return this.m_resMap.has(resUid);
             }
-            
+            /**
+             * bind the renderer runtime resource(by renderer runtime resource unique id) to the current renderer context
+             * @param resUid renderer runtime resource unique id
+             */
             bindToGpu(resUid:number):void
             {
             }
+            /**
+             * get system gpu context resource buf
+             * @param resUid renderer runtime resource unique id
+             * @returns system gpu context resource buf
+             */
+            getGpuBuffer(resUid:number):any
+            {
+                return null;
+            }
             renderBegin():void
             {
-                this.vroUid = -2;
-                this.rioUid = -3;
+                this.m_vtxBuilder.renderBegin();
             }
             getVertexResTotal():number
             {
                 return this.m_vtxResTotal;
             }
-            updateDataToGpu(rc:IBufferBuilder, resUid:number, deferred:boolean):void
+            updateDataToGpu(resUid:number, deferred:boolean):void
             {
                 if(deferred)
                 {
@@ -509,7 +528,7 @@ export namespace vox
                 {
                     if(this.m_resMap.has(resUid))
                     {
-                        this.m_resMap.get(resUid).updateToGpu(rc);
+                        this.m_resMap.get(resUid).updateToGpu(this.m_vtxBuilder);
                     }
                 }
             }
@@ -524,13 +543,16 @@ export namespace vox
                     this.m_vtxResTotal++;
                 }
             }
-            hasVertexRes(resUid:number):boolean
-            {
-                return this.m_resMap.has(resUid);
-            }
             getVertexRes(resUid:number):GpuVtxObect
             {
                 return this.m_resMap.get(resUid);
+            }
+            destroyRes(resUid:number):void
+            {
+                if(this.m_resMap.has(resUid))
+                {
+                    this.m_resMap.get(resUid).destroy(this.m_vtxBuilder);
+                }
             }
             __$attachRes(resUid:number):void
             {
@@ -569,16 +591,16 @@ export namespace vox
                     }
                 }
             }
-            getVROByResUid(resUid:number,rc:IBufferBuilder,shdp:IVtxShdCtr,vaoEnabled:boolean):IVertexRenderObj
+            getVROByResUid(resUid:number,shdp:IVtxShdCtr,vaoEnabled:boolean):IVertexRenderObj
             {
                 let vtxObj:GpuVtxObect = this.m_resMap.get(resUid);
                 if(vtxObj != null)
                 {
-                    return vtxObj.createVRO(rc, shdp,vaoEnabled);
+                    return vtxObj.createVRO(this.m_vtxBuilder, shdp,vaoEnabled);
                 }
                 return null;
             }
-            update(rc:IBufferBuilder):void
+            update():void
             {
                 if(this.m_haveDeferredUpdate)
                 {
@@ -592,7 +614,7 @@ export namespace vox
                         if(this.m_resMap.has(resUid))
                         {
                             console.log("ROvtxRes("+resUid+") update vtx("+resUid+") data to gpu with deferred mode.");
-                            this.m_resMap.get(resUid).updateToGpu(rc);
+                            this.m_resMap.get(resUid).updateToGpu(this.m_vtxBuilder);
                         }
                     }
                 }
@@ -611,7 +633,7 @@ export namespace vox
                                 this.m_resMap.delete(value.resUid);
                                 this.m_freeMap.delete(value.resUid);
                                 
-                                value.destroy(rc);
+                                value.destroy(this.m_vtxBuilder);
                                 this.m_vtxResTotal--;
                             }
                         }

@@ -25,6 +25,7 @@ export namespace vox
             getBufDataUsage():number;
             getBuffersTotal():number;
             getF32DataAt(index:number):Float32Array;
+            getIBufStep():number;
         }
     }
 }

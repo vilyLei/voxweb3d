@@ -28,6 +28,7 @@ import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as RendererSceneT from "../vox/scene/RendererScene";
 import * as BaseTestMaterialT from "../demo/material/BaseTestMaterial";
+import * as MeshResourceT from "../vox/mesh/MeshResource";
 
 import DivLog = DivLogT.vox.utils.DivLog;
 import MathConst = MathConstT.vox.utils.MathConst;
@@ -59,6 +60,7 @@ import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import BaseTestMaterial = BaseTestMaterialT.demo.material.BaseTestMaterial;
+import MeshResource = MeshResourceT.vox.mesh.MeshResource;
 
 export namespace demo
 {
@@ -105,9 +107,7 @@ export namespace demo
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 200);
-                //  
-                //  this.m_texBlock = new TextureBlock();
-                //  this.m_texBlock.setRenderer(this.m_rscene.getRenderer());
+
                 this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
                 
                 this.m_rscene.getStage3D().addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
@@ -181,15 +181,13 @@ export namespace demo
             console.log("mouse down...,this.m_targetDisp != null: "+(this.m_targets != null));
             if(this.m_targets != null && this.m_targets.length > 0)
             {
-                //  this.updateMeshData();
-                //  return;
-                //  this.updateVtxData();
-                //  return;
+                this.updateMeshData();
+                return;
+                this.updateVtxData();
+                return;
                 // test visible
                 //  this.m_targets[0].setVisible(!this.m_targets[0].getVisible());
                 //  return;
-                this.m_rscene.moveEntityTo(this.m_targets[0],1);
-                return;
                 if(this.m_targets[0] != null)
                 {
                     this.m_rscene.removeEntity(this.m_targets[0]);
@@ -225,6 +223,8 @@ export namespace demo
             // render end
             this.m_rscene.runEnd();
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+
+            MeshResource.ClearTest();
         }
     }
 }

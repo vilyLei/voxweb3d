@@ -8,13 +8,11 @@
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
-import * as ROTextureResourceT from "../../vox/render/ROTextureResource";
 import * as IRenderResourceT from "../../vox/render/IRenderResource";
 
 import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
 import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
 export namespace vox
 {
@@ -87,7 +85,7 @@ export namespace vox
             /**
              * This function only be be called by the renderer inner system.
              */
-            __$$use(resTex:ROTextureResource):void
+            __$$use(resTex:IRenderResource):void
             {
                 this.m_tex.__$$use(resTex);
             }
@@ -114,7 +112,7 @@ export namespace vox
              * This function only be be called by the renderer inner system.
              * if sub class override this function, it must does call this function.
              */
-            __$$upload(texRes:ROTextureResource):void
+            __$$upload(texRes:IRenderResource):void
             {
                 this.m_tex.__$$upload(texRes);
             }

@@ -186,7 +186,6 @@ export namespace vox
                     }
                     else
                     {
-                        //this.m_display.vbuf.updateToGpu(rc, deferred);
                         rc.VtxBufUpdater.updateVtxDataToGpuByUid(this.m_display.vbuf.getUid(),deferred);
                     }
                 }

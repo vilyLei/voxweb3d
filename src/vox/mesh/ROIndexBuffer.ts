@@ -5,12 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as RenderProxyT from "../../vox/render/RenderProxy";
-import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
-
-
-import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
+//  import * as RenderProxyT from "../../vox/render/RenderProxy";
+//  import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
+//  import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+//  import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 
 export namespace vox
 {
@@ -18,6 +16,7 @@ export namespace vox
     {        
         export class ROIndexBuffer
         {
+            /*
             private m_rc:RenderProxy = null;
             //
             private m_type:number = 0;
@@ -117,6 +116,7 @@ export namespace vox
             {
                 return "ROIndexBuffer()";
             }
+            //*/
         }
     }
 }

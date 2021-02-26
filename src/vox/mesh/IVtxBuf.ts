@@ -5,12 +5,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-//import * as IBufferBuilderT from "../../vox/render/IBufferBuilder";
-import * as VtxBufDataT from "../../vox/mesh/VtxBufData";
-
-//import IBufferBuilder = IBufferBuilderT.vox.render.IBufferBuilder;
-import VtxBufData = VtxBufDataT.vox.mesh.VtxBufData;
-
 export namespace vox
 {
     export namespace mesh

@@ -5,11 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-//import * as RendererDevieceT from "../../vox/render/RendererDeviece";
-import * as TextureProxyT from '../../vox/texture/TextureProxy';
+import * as IRenderTextureT from '../../vox/render/IRenderTexture';
 
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+import IRenderTexture = IRenderTextureT.vox.render.IRenderTexture;
 
 export namespace vox
 {
@@ -21,7 +19,7 @@ export namespace vox
             constructor()
             {
             }
-            private m_texList:TextureProxy[] = null;
+            private m_texList:IRenderTexture[] = null;
             private m_texEnabled:boolean = true;
             initialize(texEnabled:boolean):void
             {
@@ -34,11 +32,11 @@ export namespace vox
                 }
                 this.m_texEnabled = texEnabled;
             }
-            setTextureProxyList(texList:TextureProxy[]):void
+            setIRenderTextureList(texList:IRenderTexture[]):void
             {
                 this.m_texList = texList;
             }
-            getTextureProxyList():TextureProxy[]
+            getIRenderTextureList():IRenderTexture[]
             {
                 return this.m_texList;
             }

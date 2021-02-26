@@ -8,7 +8,7 @@
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as FrameBufferTypeT from "../../vox/render/FrameBufferType";
 import * as TextureConstT from "../../vox/texture/TextureConst";
-import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
+import * as IRenderResourceT from '../../vox/render/IRenderResource';
 import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 import * as RenderFBOProxyT from "../../vox/render/RenderFBOProxy";
 import * as Color4T from "../../vox/material/Color4";
@@ -18,9 +18,8 @@ import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import FrameBufferType = FrameBufferTypeT.vox.render.FrameBufferType;
 import TextureTarget = TextureConstT.vox.texture.TextureTarget;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
-import TextureDataType = TextureConstT.vox.texture.TextureDataType;
-import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
-import GpuTexObect = ROTextureResourceT.vox.render.GpuTexObect;
+import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
+
 import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 import RenderFBOProxy = RenderFBOProxyT.vox.render.RenderFBOProxy;
 import Color4 = Color4T.vox.material.Color4;
@@ -32,16 +31,16 @@ export namespace vox
 		export class FrameBufferObject
 		{
 			private m_uid:number = -1;
-			private static s__uid:number = 0;
+			private static s_uid:number = 0;
 			// renderer context unique id
 			private m_rcuid:number = 0;
-			private m_texResource:ROTextureResource;
-			constructor(rcuid:number,texResource:ROTextureResource,frameBufType:number)
+			private m_texRes:IRenderResource;
+			constructor(rcuid:number,texResource:IRenderResource,frameBufType:number)
     		{
 				this.m_rcuid = rcuid;
-				this.m_texResource = texResource;
+				this.m_texRes = texResource;
 				this.m_bufferLType = frameBufType;
-				this.m_uid = FrameBufferObject.s__uid++;
+				this.m_uid = FrameBufferObject.s_uid++;
     		}
 			private m_COLOR_ATTACHMENT0:number = 0x0;	
     		private m_fbo:any = null;
@@ -155,8 +154,8 @@ export namespace vox
 				if (texProxy != null)
 				{
 					targetType = texProxy.getTargetType();
-					texProxy.uploadFromFbo(this.m_texResource,this.m_width,this.m_height);
-					rTex = this.m_texResource.getTextureBuffer(texProxy.getResUid());					
+					texProxy.uploadFromFbo(this.m_texRes,this.m_width,this.m_height);
+					rTex = this.m_texRes.getGpuBuffer(texProxy.getResUid());					
 				}
 				else
 				{

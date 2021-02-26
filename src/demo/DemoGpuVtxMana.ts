@@ -9,6 +9,7 @@ import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 import * as MouseEventT from "../vox/event/MouseEvent";
 import * as Stage3DT from "../vox/display/Stage3D";
 import * as TextureStoreT from "../vox/texture/TextureStore";
+import * as MeshResourceT from "../vox/mesh/MeshResource";
 
 import * as CameraTrackT from "../vox/view/CameraTrack";
 //import * as TexManaT from "./base/TexMana";
@@ -24,6 +25,7 @@ import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
+import MeshResource = MeshResourceT.vox.mesh.MeshResource;
 
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 //import TexMana = TexManaT.demo.base.TexMana;
@@ -93,6 +95,7 @@ export namespace demo
             this.m_rcontext.updateCamera();
             
             //  //console.log("#---  end");
+            MeshResource.ClearTest();
         }
     }
 }

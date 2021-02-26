@@ -11,7 +11,7 @@ import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as Default3DMaterialT from "../../vox/material/mcase/Default3DMaterial";
 import * as ScreenPlaneMaterialT from "../../vox/material/mcase/ScreenPlaneMaterial";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
-import * as RORectMeshT from "../../vox/mesh/RORectMesh";
+import * as RORectMeshT from "../../vox/mesh/RectPlaneMesh";
 import * as ROTransformT from "../../vox/display/ROTransform";
 
 import RendererState = RendererStateT.vox.render.RendererState;
@@ -20,7 +20,7 @@ import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import Default3DMaterial = Default3DMaterialT.vox.material.mcase.Default3DMaterial;
 import ScreenPlaneMaterial = ScreenPlaneMaterialT.vox.material.mcase.ScreenPlaneMaterial;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import RORectMesh = RORectMeshT.vox.mesh.RORectMesh;
+import RectPlaneMesh = RORectMeshT.vox.mesh.RectPlaneMesh;
 import ROTransform = ROTransformT.vox.display.ROTransform;
 
 export namespace vox
@@ -107,7 +107,7 @@ export namespace vox
             {
                 if(this.getMesh() == null)
                 {
-                    let mesh:RORectMesh = new RORectMesh();
+                    let mesh:RectPlaneMesh = new RectPlaneMesh();
                     mesh.flipVerticalUV = this.flipVerticalUV;
                     mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
                     mesh.axisFlag = this.m_flag;

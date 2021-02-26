@@ -5,9 +5,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as RCExtensionT from "../../vox/render/RCExtension";
-
-import RCExtension = RCExtensionT.vox.render.RCExtension;
 export namespace vox
 {
     export namespace render

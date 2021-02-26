@@ -5,14 +5,14 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IRenderResourceT from "../../vox/render/IRenderResource";
+import * as IRenderTexResourceT from "../../vox/render/IRenderTexResource";
 
-import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
+import IRenderTexResource = IRenderTexResourceT.vox.render.IRenderTexResource;
 export namespace vox
 {
     export namespace render
     {
-        export class GpuTexObect
+        class GpuTexObect
         {
             // wait del times
             waitDelTimes:number = 0;
@@ -48,13 +48,21 @@ export namespace vox
                     // do something
                 }
             }
+            /**
+             * bind the renderer runtime resource  to the current renderer context
+             * @param gl system gpu context
+             */
+            bindToGpu(gl:any):void
+            {
+                gl.bindTexture(this.sampler, this.texBuf);
+            }
             getAttachCount():number
             {
                 return this.m_attachCount;
             }
         }
         // gpu texture buffer renderer resource
-        export class ROTextureResource implements IRenderResource
+        export class ROTextureResource implements IRenderTexResource
         {
             private m_resMap:Map<number,GpuTexObect> = new Map();
             private m_freeMap:Map<number,GpuTexObect> = new Map();
@@ -77,10 +85,32 @@ export namespace vox
             {
                 return this.m_gl.createTexture();
             }
+            createResByParams3(resUid:number,param0:number,param1:number,param2:number):boolean
+            {
+                if(!this.m_resMap.has(resUid))
+                {
+                    let obj:GpuTexObect = new GpuTexObect();
+                    obj.rcuid = this.getRCUid();
+                    obj.resUid = resUid;
+                    obj.width = param0;
+                    obj.height = param1;
+                    obj.sampler = param2;
+                    obj.texBuf = this.createBuf();
+                    this.addTextureRes(obj);
+                    return true;
+                }
+                return false;
+            }
+            /**
+             * @returns return renderer context unique id
+             */
             getRCUid():number
             {
                 return this.m_rcuid;
             }
+            /**
+             * @returns return system gpu context
+             */
             getRC():any
             {
                 return this.m_gl;
@@ -93,11 +123,14 @@ export namespace vox
             {
                 this.texMid = -1;
             }
+            /**
+             * @returns get renderer runtime texture rexource total number
+             */
             getTextureResTotal():number
             {
                 return this.m_texResTotal;
             }
-            addTextureRes(object:GpuTexObect):void
+            private addTextureRes(object:GpuTexObect):void
             {
                 if(!this.m_resMap.has(object.resUid))
                 {
@@ -108,31 +141,12 @@ export namespace vox
                     this.m_texResTotal++;
                 }
             }
-            /*
-            removeTextureRes(resUid:number):void
-            {
-                if(this.m_resMap.has(resUid))
-                {
-                    let object:GpuTexObect = this.m_resMap.get(resUid);
-                    if(object.getAttachCount() < 1)
-                    {
-                        // 如果没有任何对象引用这个 gpu texture buffer，才可以被删除
-                        this.m_gl.deleteTexture(object.texBuf);
-                        this.m_resMap.delete(resUid);
-                        this.m_texResTotal--;
-                    }
-                }
-            }
-            //*/
-            hasTextureRes(resUid:number):boolean
-            {
-                return this.m_resMap.has(resUid);
-            }
-            getTextureRes(resUid:number):GpuTexObect
-            {
-                return this.m_resMap.get(resUid);
-            }
-            getTextureBuffer(resUid:number):any
+            /**
+             * get system gpu context resource buf
+             * @param resUid renderer runtime resource unique id
+             * @returns system gpu context resource buf
+             */
+            getGpuBuffer(resUid:number):any
             {
                 if(this.m_resMap.has(resUid))
                 {
@@ -141,19 +155,21 @@ export namespace vox
                 return null;
             }
             /**
-             * @param resUid 准备 bind 到 当前 renderer context 的 gpu texture buffer
+             * bind the renderer runtime resource(by renderer runtime resource unique id) to the current renderer context
+             * @param resUid renderer runtime resource unique id
              */
             bindToGpu(resUid:number):void
             {
                 if(this.m_resMap.has(resUid))
                 {
-                    let object:GpuTexObect = this.m_resMap.get(resUid);
-                    // console.log("ROTextureResource::bindTexture(),resUid:"+resUid,",sampler: ",object.sampler,object);
-                    this.m_gl.bindTexture(object.sampler, object.texBuf);
+                    this.m_resMap.get(resUid).bindToGpu(this.m_gl);
+                    //      let object:GpuTexObect = this.m_resMap.get(resUid);
+                    //      // console.log("ROTextureResource::bindTexture(),resUid:"+resUid,",sampler: ",object.sampler,object);
+                    //      this.m_gl.bindTexture(object.sampler, object.texBuf);
                 }
             }
             /**
-             * 返回引用的总数量
+             * @returns get renderer runtime texture rexource reference total number
              */
             getAttachTotal():number
             {

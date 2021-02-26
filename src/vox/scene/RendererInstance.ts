@@ -15,14 +15,15 @@ import * as RenderProxyT from "../../vox/render/RenderProxy";
 
 import * as ROBufferUpdaterT from "../../vox/render/ROBufferUpdater";
 import * as CameraBaseT from "../../vox/view/CameraBase";
+import * as IRenderMaterialT from "../../vox/render/IRenderMaterial";
 import * as IRenderEntityT from "../../vox/render/IRenderEntity";
 import * as RODataBuilderT from "../../vox/render/RODataBuilder";
 import * as RendererParamT from "../../vox/scene/RendererParam";
 import * as RenderProcessT from "../../vox/render/RenderProcess";
 import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
+import * as ROVtxBuilderT from "../../vox/render/ROVtxBuilder";
 import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
 import * as IRendererT from "../../vox/scene/IRenderer";
-import * as MaterialBaseT from "../../vox/material/MaterialBase";
 
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
@@ -36,14 +37,15 @@ import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 
 import ROBufferUpdater = ROBufferUpdaterT.vox.render.ROBufferUpdater;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
+import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;
 import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
 import RODataBuilder = RODataBuilderT.vox.render.RODataBuilder;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 import RenderProcessBuider = RenderProcessBuiderT.vox.render.RenderProcessBuider;
+import ROVtxBuilder = ROVtxBuilderT.vox.render.ROVtxBuilder;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 import IRenderer = IRendererT.vox.scene.IRenderer;
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
 import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
@@ -71,11 +73,23 @@ export namespace vox
             private m_rpoUnitBuilder:RPOUnitBuilder = new RPOUnitBuilder();
             private m_rpoNodeBuilder:RPONodeBuilder = new RPONodeBuilder();
             private m_processBuider:RenderProcessBuider = new RenderProcessBuider();
+            private m_roVtxBuild:ROVtxBuilder = null;
             readonly bufferUpdater:ROBufferUpdater = null;
             readonly textureSlot:TextureSlot = null;
             readonly rttStore:RTTTextureStore = null;
             constructor()
             {
+            }
+            getUid():number
+            {
+                return this.m_uid;
+            }
+            /**
+             * @returns return renderer context unique id
+             */
+            getRCUid():number
+            {
+                return this.m_uid;
             }
             getRPONodeBuilder():RPONodeBuilder
             {
@@ -91,8 +105,7 @@ export namespace vox
                 {
                     return this.m_renderInsContext;
                 }
-                this.m_renderInsContext = new RendererInstanceContext();
-                return this.m_renderInsContext;
+                return null;
             }
             getRenderProxy():RenderProxy
             {
@@ -143,14 +156,14 @@ export namespace vox
                     this.m_renderProxy = this.m_renderInsContext.getRenderProxy();
                     //this.m_dispBuilder = new RODataBuilder(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider);
                     this.m_dispBuilder = new RODataBuilder();
+                    this.m_roVtxBuild = new ROVtxBuilder();
 
                     this.m_renderInsContext.setCameraParam(param.camProjParam.x,param.camProjParam.y,param.camProjParam.z);
                     this.m_renderInsContext.setMatrix4AllocateSize(param.getMatrix4AllocateSize());
-                    this.m_renderInsContext.initialize(param,this.m_dispBuilder);
+                    this.m_renderInsContext.initialize(param,this.m_dispBuilder,this.m_roVtxBuild);
                     this.m_adapter = this.m_renderProxy.getRenderAdapter();
                     this.m_uid = this.m_renderProxy.getUid();
-                    
-                    this.m_dispBuilder.initialize(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider);
+                    this.m_dispBuilder.initialize(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider,this.m_roVtxBuild);
 
                     this.m_renderInsContext.initManager(this.m_dispBuilder);
 
@@ -167,14 +180,10 @@ export namespace vox
                     selfT.rttStore = new RTTTextureStore(texSlot);
                 }
             }
-            getUid():number
-            {
-                return this.m_uid;
-            }
             update():void
             {
                 this.m_renderProxy.Texture.update();
-                this.m_renderProxy.Vertex.update(this.m_renderProxy);
+                this.m_renderProxy.Vertex.update();
                 this.m_entity3DMana.update(this.m_renderProxy);
                 this.bufferUpdater.__$update(this.m_renderProxy);
             }
@@ -216,6 +225,7 @@ export namespace vox
             }
             /**
              * 将已经在渲染运行时中的entity移动到指定 process uid 的 render process 中去
+             * move rendering runtime displayEntity to different renderer process
              */
             moveEntityToProcessAt(entity:IRenderEntity,dstProcessid:number):void
             {
@@ -328,7 +338,7 @@ export namespace vox
             {
                 return this.m_processesLen;
             }
-            updateMaterialUniformToCurrentShd(material:MaterialBase):void
+            updateMaterialUniformToCurrentShd(material:IRenderMaterial):void
             {
                 this.m_dispBuilder.getMaterialShader().useUniformToCurrentShd(material.__$uniform);
             }

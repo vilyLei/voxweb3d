@@ -1,22 +1,12 @@
 
-import * as DivLogT from "../vox/utils/DivLog";
-import * as MathConstT from "../vox/utils/MathConst";
-import * as Vector3DT from "../vox/geom/Vector3";
-import * as Matrix4T from "../vox/geom/Matrix4";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
 import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
-import * as ShaderMaterialT from "../vox/material/mcase/ShaderMaterial";
 import * as Color4T from "../vox/material/Color4";
+import * as ShaderMaterialT from "../vox/material/mcase/ShaderMaterial";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
-import * as VtxBufConstT from "../vox/mesh/VtxBufConst";
 
-import * as Box3DMeshT from "../vox/mesh/Box3DMesh";
-import * as DisplayEntityT from "../vox/entity/DisplayEntity";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
 import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as Billboard3DEntityT from "../vox/entity/Billboard3DEntity";
 import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureConstT from "../vox/texture/TextureConst";
@@ -24,34 +14,21 @@ import * as TextureConstT from "../vox/texture/TextureConst";
 import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as RendererSceneT from "../vox/scene/RendererScene";
-import * as BaseTestMaterialT from "../demo/material/BaseTestMaterial";
 
-import DivLog = DivLogT.vox.utils.DivLog;
-import MathConst = MathConstT.vox.utils.MathConst;
-import Vector3D = Vector3DT.vox.geom.Vector3D;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
-import Matrix4Pool = Matrix4T.vox.geom.Matrix4Pool;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 import Color4 = Color4T.vox.material.Color4;
 import ShaderMaterial = ShaderMaterialT.vox.material.mcase.ShaderMaterial;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-import VtxNormalType = VtxBufConstT.vox.mesh.VtxNormalType;
 
-import Box3DMesh = Box3DMeshT.vox.mesh.Box3DMesh;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import BaseTestMaterial = BaseTestMaterialT.demo.material.BaseTestMaterial;
 
 export namespace demo
 {
@@ -74,6 +51,7 @@ export namespace demo
             if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
             return ptex;
         }
+        private m_uniformData:Float32Array = null;
         initialize():void
         {
             console.log("DemoMaterial::initialize()......");
@@ -107,12 +85,6 @@ export namespace demo
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.initialize(300.0);
                 this.m_rscene.addEntity(axis);
-
-                //  // add common 3d display entity
-                //  var plane:Plane3DEntity = new Plane3DEntity();
-                //  //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex4]);
-                //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex5]);
-                //  this.m_rscene.addEntity(plane);
                 
                 let fragCode:string = 
                 `
@@ -124,7 +96,7 @@ void main()
 {
     vec4 color4 = texture2D(u_sampler0, v_uvs);
     color4 *= u_colors[0];
-    gl_FragColor = color4;
+    gl_FragColor = color4 * sin(u_colors[1]);
 }
                 `;
                 let vtxCode:string = 
@@ -144,31 +116,24 @@ void main(){
 }
 `;
 
-                let shdM:ShaderMaterial = new ShaderMaterial("testShdMaterial");
-                shdM.setFragShaderCode(fragCode);
-                shdM.setVtxShaderCode(vtxCode);
-                shdM.addUniformDataAt("u_colors",new Float32Array([0.0,1.0,0.0,1.0, 800.0,600.0,0.0,0.0]));
+                this.m_uniformData = new Float32Array([0.0,1.0,1.0,1.0, 1.0,1.0,1.0,1.0]);
+                let material:ShaderMaterial = new ShaderMaterial("testShdMaterial");
+                material.setFragShaderCode(fragCode);
+                material.setVtxShaderCode(vtxCode);
+                material.addUniformDataAt("u_colors", this.m_uniformData);
 
-                let material:BaseTestMaterial = new BaseTestMaterial();
-                /*
-                let material:BaseTestMaterial = new BaseTestMaterial();
-                material.initializeByCodeBuf(true);
-                let box:Box3DEntity = new Box3DEntity();
-                //box.setMesh(mesh);
-                box.setTransformMatrix(transMat);
-                box.setMaterial(material);
-                box.initialize(new Vector3D(-50.0,-100.0,-100.0),new Vector3D(50.0,100.0,100.0),[tex1]);
-                this.m_rscene.addEntity(box);
-                //*/
                 let cly:Cylinder3DEntity = new Cylinder3DEntity();
-                //cly.setMaterial(material);
-                cly.setMaterial(shdM);
+                cly.setMaterial(material);
                 cly.initialize(100.0,200.0,15,[tex1]);
                 this.m_rscene.addEntity(cly);
             }
         }
+        private m_time:number = 0;
         run():void
         {
+            this.m_time += 1.0;
+            this.m_uniformData[0] = Math.abs(Math.sin(this.m_time * 0.01));
+            this.m_uniformData[6] = Math.abs(Math.cos(this.m_time * 0.002));
             let pcontext:RendererInstanceContext = this.m_rcontext;
             
             // show fps status

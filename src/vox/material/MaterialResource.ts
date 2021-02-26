@@ -16,7 +16,7 @@ export namespace vox
 {
     export namespace material
     {
-        export class MaterialProgram
+        export class MaterialResource
         {
             private static s_shdDataDict:Map<string,ShaderData> = new Map();
             private static s_shdDataList:ShaderData[] = [];
@@ -24,24 +24,24 @@ export namespace vox
 
             static CreateShdData(unique_name_str:string,vshdsrc:string,fshdSrc:string):ShaderData
             {
-                //console.log("MaterialProgram.CreateShdData() begin...");
-                if(MaterialProgram.s_shdDataDict.has(unique_name_str)){return MaterialProgram.s_shdDataDict.get(unique_name_str);}
+                //console.log("MaterialResource.CreateShdData() begin...");
+                if(MaterialResource.s_shdDataDict.has(unique_name_str)){return MaterialResource.s_shdDataDict.get(unique_name_str);}
                 let p:ShaderData = new ShaderData();
                 p.initialize(unique_name_str, vshdsrc,fshdSrc);
-                MaterialProgram.s_shdDataList[p.getUid()] = p;
+                MaterialResource.s_shdDataList[p.getUid()] = p;
                 
-                ++MaterialProgram.s_shdDataListLen;
-                MaterialProgram.s_shdDataDict.set(unique_name_str,p);
+                ++MaterialResource.s_shdDataListLen;
+                MaterialResource.s_shdDataDict.set(unique_name_str,p);
                 if(RendererDeviece.SHADERCODE_TRACE_ENABLED)
                 {
-                    console.log("MaterialProgram.Create() a new ShaderProgram: ",p.toString());
+                    console.log("MaterialResource.Create() a new ShaderProgram: ",p.toString());
                 }
                 return p;
             }
 
             static FindData(unique_name_str:string):ShaderData
             {
-                if(MaterialProgram.s_shdDataDict.has(unique_name_str)){return MaterialProgram.s_shdDataDict.get(unique_name_str);}
+                if(MaterialResource.s_shdDataDict.has(unique_name_str)){return MaterialResource.s_shdDataDict.get(unique_name_str);}
                 return null;
             }
         }

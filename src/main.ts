@@ -133,6 +133,12 @@
 //  import * as DemoDepthBlur from "./demo/DemoDepthBlur";
 //  import Demo = DemoDepthBlur.demo.DemoDepthBlur;
 
+//  import * as DemoEmptyRenderer from "./demo/DemoEmptyRenderer";
+//  import Demo = DemoEmptyRenderer.demo.DemoEmptyRenderer;
+
+//  import * as DemoEmptyRendererScene from "./demo/DemoEmptyRendererScene";
+//  import Demo = DemoEmptyRendererScene.demo.DemoEmptyRendererScene;
+
 //  import * as DemoBase from "./demo/DemoBase";
 //  import Demo = DemoBase.demo.DemoBase;
 
@@ -214,8 +220,11 @@
 //  import * as DemoMaterial from "./demo/DemoMaterial";
 //  import Demo = DemoMaterial.demo.DemoMaterial;
 
-import * as DemoVtx from "./demo/DemoVtx";
-import Demo = DemoVtx.demo.DemoVtx;
+//  import * as DemoVtx from "./demo/DemoVtx";
+//  import Demo = DemoVtx.demo.DemoVtx;
+
+//  import * as DemoSwapProcess from "./demo/DemoSwapProcess";
+//  import Demo = DemoSwapProcess.demo.DemoSwapProcess;
 
 //  import * as DemoDelEntity from "./demo/DemoDelEntity";
 //  import Demo = DemoDelEntity.demo.DemoDelEntity;
@@ -226,8 +235,8 @@ import Demo = DemoVtx.demo.DemoVtx;
 //  import * as DemoDivControl from "./demo/DemoDivControl";
 //  import Demo = DemoDivControl.demo.DemoDivControl;
 
-//  import * as DemoMultiRenderer from "./demo/DemoMultiRenderer";
-//  import Demo = DemoMultiRenderer.demo.DemoMultiRenderer;
+import * as DemoMultiRenderer from "./demo/DemoMultiRenderer";
+import Demo = DemoMultiRenderer.demo.DemoMultiRenderer;
 
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;

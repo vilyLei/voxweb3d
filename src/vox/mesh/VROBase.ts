@@ -5,12 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IBufferBuilderT from "../../vox/render/IBufferBuilder";
-import * as ROVtxBufUidStoreT from "../../vox/mesh/ROVtxBufUidStore";
+import * as IROVtxBuilderT from "../../vox/render/IROVtxBuilder";
+//import * as ROVtxBufUidStoreT from "../../vox/mesh/ROVtxBufUidStore";
 import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
 
-import IBufferBuilder = IBufferBuilderT.vox.render.IBufferBuilder;
-import ROVtxBufUidStore = ROVtxBufUidStoreT.vox.mesh.ROVtxBufUidStore;
+import IROVtxBuilder = IROVtxBuilderT.vox.render.IROVtxBuilder;
+//import ROVtxBufUidStore = ROVtxBufUidStoreT.vox.mesh.ROVtxBufUidStore;
 import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
 
 export namespace vox
@@ -23,7 +23,7 @@ export namespace vox
             // vtx attribute hash map id
             protected m_mid:number = 0;
             protected m_vtxUid:number = 0;
-
+            protected m_rc:IROVtxBuilder = null;
             ibuf:any = null;
             /**
              * be used by the renderer runtime, the value is 2 or 4.
@@ -33,7 +33,10 @@ export namespace vox
             constructor()
             {
             }
-            
+            setRC(rc:IROVtxBuilder):void
+            {
+                this.m_rc = rc;
+            }
             protected setMidAndBufUid(mid:number,pvtxUid:number):void
             {
                 this.m_mid = mid;
@@ -52,17 +55,17 @@ export namespace vox
             {
                 return this.m_mid;
             }
-            run(rc:IBufferBuilder):void
+            run():void
             {
                 
             }
             protected m_attachCount:number = 0;
             __$attachThis():void
             {
-                if(this.m_attachCount < 1)
-                {
-                    ROVtxBufUidStore.GetInstance().__$attachAt(this.m_vtxUid);
-                }
+                //  if(this.m_attachCount < 1)
+                //  {
+                //      ROVtxBufUidStore.GetInstance().__$attachAt(this.m_vtxUid);
+                //  }
                 ++this.m_attachCount;
                 //console.log("VROBase::__$attachThis() ("+this.m_uid+")this.m_attachCount: "+this.m_attachCount);
             }
@@ -72,7 +75,7 @@ export namespace vox
                 //console.log("VROBase::__$detachThis() ("+this.m_uid+")this.m_attachCount: "+this.m_attachCount);
                 if(this.m_attachCount < 1)
                 {
-                    ROVtxBufUidStore.GetInstance().__$detachAt(this.m_vtxUid);
+                    //ROVtxBufUidStore.GetInstance().__$detachAt(this.m_vtxUid);
                     this.m_attachCount = 0;
                     console.log("VROBase::__$detachThis() this.m_attachCount value is 0.");
                 }
@@ -84,8 +87,9 @@ export namespace vox
                 this.m_mid = 0;
                 this.m_vtxUid = -1;
                 this.ibuf = null;
+                this.m_rc = null;
             }
-            restoreThis(rc:IBufferBuilder):void
+            restoreThis():void
             {
                 
             }

@@ -4,18 +4,16 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import * as RendererDevieceT from "../../vox/render/RendererDeviece";
+
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as MathConstT from "../../vox/utils/MathConst";
 
 import * as ITexDataT from "../../vox/texture/ITexData";
-import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as IRenderResourceT from "../../vox/render/IRenderResource";
-import * as IRenderBufferT from "../../vox/render/IRenderBuffer";
+import * as IRenderTextureT from "../../vox/render/IRenderTexture";
 import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import TextureTarget = TextureConstT.vox.texture.TextureTarget;
@@ -24,11 +22,9 @@ import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
 import MathConst = MathConstT.vox.utils.MathConst;
 
 import ITexData = ITexDataT.vox.texture.ITexData;
-import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
-import GpuTexObect = ROTextureResourceT.vox.render.GpuTexObect;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
-import IRenderBuffer = IRenderBufferT.vox.render.IRenderBuffer;
+import IRenderTexture = IRenderTextureT.vox.render.IRenderTexture;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 export namespace vox
 {
@@ -38,13 +34,12 @@ export namespace vox
         /**
          * Texture cpu memory data object
          */
-        export class TextureProxy implements IRenderBuffer
+        export class TextureProxy implements IRenderTexture
         {
             private static s_uid:number = 0;
             private m_uid:number = -1;
             // 自身的引用计数器
             private m_attachCount:number = 0;
-            protected m_texBuf:any = null;
             protected m_slot:ITextureSlot = null;
 
             protected m_miplevel:number = -1;
@@ -110,7 +105,7 @@ export namespace vox
             /**
              * This function only be be called by the renderer inner system.
              */
-            __$$use(resTex:ROTextureResource):void
+            __$$use(resTex:IRenderResource):void
             {
                 resTex.bindToGpu(this.getResUid());
             }
@@ -185,6 +180,7 @@ export namespace vox
                 this.wrap_s =  this.wrap_t = this.wrap_r = wrap;
             }
             /**
+             * 注意，这个返回值在多 renderer instance的时候，如果renderer instance 共享了这个texture，则此返回值和TextureSlot相关
              * @returns the texture gpu resource is enabled or not.
              */
             isGpuEnabled():boolean
@@ -205,10 +201,10 @@ export namespace vox
             {
                 return this.m_texTarget;
             }
-            // gpu tex buf size
+            // gpu texture buf size
             getBufWidth():number{return this.m_texBufW;}
             getBufHeight():number{return this.m_texBufH;}
-            // logic tex size
+            // logic texture size
             getWidth():number{return this.m_texWidth;}
             getHeight():number{return this.m_texHeight;}
             /**
@@ -249,7 +245,7 @@ export namespace vox
                 }
             }
             // sub class override
-            protected uploadData(texRes:ROTextureResource):void
+            protected uploadData(texRes:IRenderResource):void
             {
             }
             
@@ -276,21 +272,12 @@ export namespace vox
                     }
                 }
             }
-            protected createTexBuf(texResource:ROTextureResource):boolean
+            protected createTexBuf(texResource:IRenderResource):boolean
             {
-                let obj:GpuTexObect = texResource.getTextureRes(this.getResUid());
-                if(obj == null)
+                if(!texResource.hasResUid(this.getResUid()))
                 {
                     this.m_sampler = TextureTarget.GetValue(texResource.getRC(),this.m_texTarget);
-                    obj = new GpuTexObect();
-                    obj.rcuid = texResource.getRCUid();
-                    obj.resUid = this.getResUid();
-                    obj.width = this.getWidth();
-                    obj.height = this.getHeight();
-                    obj.sampler = this.getSampler();
-                    obj.texBuf = texResource.createBuf();
-                    texResource.addTextureRes(obj);
-                    this.m_texBuf = obj.texBuf;
+                    texResource.createResByParams3(this.getResUid(), this.getWidth(),this.getHeight(),this.m_sampler);
                     return true;
                 }
                 return false;
@@ -299,7 +286,7 @@ export namespace vox
              * This function only be be called by the renderer inner system.
              * if sub class override this function, it must does call this function.
              */
-            __$$upload(texRes:ROTextureResource):void
+            __$$upload(texRes:IRenderResource):void
             {
                 if(this.m_haveRData)
                 {
@@ -364,7 +351,6 @@ export namespace vox
                 if(this.getAttachCount() < 1)
                 {
                     this.m_attachCount = -2;
-                    this.m_texBuf = null;
                     this.m_haveRData = false;
                     this.m_texWidth = 1;
                     this.m_texHeight = 1;

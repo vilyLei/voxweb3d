@@ -12,12 +12,11 @@ import * as FrameBufferTypeT from "../../vox/render/FrameBufferType";
 import * as RenderFilterT from "../../vox/render/RenderFilter";
 import * as RenderMaskBitfieldT from "../../vox/render/RenderMaskBitfield";
 import * as RendererStateT from "../../vox/render/RendererState";
-import * as RAdapterContextT from "../../vox/render/RAdapterContext";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as Color4T from "../../vox/material/Color4";
-import * as MaterialBaseT from "../../vox/material/MaterialBase";
+import * as IRenderMaterialT from "../../vox/render/IRenderMaterial";
 import * as RenderMaterialProxyT from "../../vox/render/RenderMaterialProxy";
 import * as IRendererT from "../../vox/scene/IRenderer";
 
@@ -27,11 +26,10 @@ import FrameBufferType = FrameBufferTypeT.vox.render.FrameBufferType;
 import RenderFilter = RenderFilterT.vox.render.RenderFilter;
 import RenderMaskBitfield = RenderMaskBitfieldT.vox.render.RenderMaskBitfield;
 import RendererState = RendererStateT.vox.render.RendererState;
-import RAdapterContext = RAdapterContextT.vox.render.RAdapterContext;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;
 import Color4 = Color4T.vox.material.Color4;
 import RenderMaterialProxy = RenderMaterialProxyT.vox.render.RenderMaterialProxy;
 import IRenderer = IRendererT.vox.scene.IRenderer;
@@ -55,7 +53,7 @@ export namespace vox
             private m_enableDepth:boolean = true;
             private m_enableStencil:boolean = false;
             private m_multisampleLevel:number = 0;
-            private m_gMateiral:MaterialBase = null;
+            private m_gMateiral:IRenderMaterial = null;
             private m_rindexs:number[] = [];
             private m_texs:RTTTextureProxy[] = [null,null,null,null,null,null,null,null];
             private m_texsTot:number = 0;
@@ -146,7 +144,7 @@ export namespace vox
                     this.m_renderProxy.lockRenderState();
                 }
             }
-            useGlobalMaterial(m:MaterialBase):void
+            useGlobalMaterial(m:IRenderMaterial):void
             {
                 this.m_gMateiral = m;
             }

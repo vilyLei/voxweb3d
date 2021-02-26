@@ -6,7 +6,6 @@
 /***************************************************************************/
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as TextureDataT from "../../vox/texture/RawTexData";
-import * as ROTextureResourceT from "../../vox/render/ROTextureResource";
 import * as IRenderResourceT from "../../vox/render/IRenderResource";
 import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
@@ -16,7 +15,6 @@ import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import RawTexData = TextureDataT.vox.texture.RawTexData;
-import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
 import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
 import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
@@ -101,7 +99,7 @@ export namespace vox
                 }
             }
             
-            protected uploadData(texRes:ROTextureResource):void
+            protected uploadData(texRes:IRenderResource):void
             {
                 if(this.m_texData != null)
                 {

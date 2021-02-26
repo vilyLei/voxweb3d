@@ -34,6 +34,9 @@ export namespace vox
                 Keyboard.AddEventListener(KeyboardEvent.KEY_DOWN,this,this.keyDown);
                 Keyboard.AddEventListener(KeyboardEvent.KEY_UP,this,this.keyUp);
             }
+            /**
+             * @returns return renderer context unique id
+             */
             getRCUid():number
             {
                 return this.m_rcuid;
@@ -108,17 +111,9 @@ export namespace vox
             {
                 if(this.uProbe == null)
                 {
-                    //this.m_stageParamArr = new Float32Array([2.0/800.0,2.0/600.0,800.0,600.0]);
                     this.uProbe = new UniformVec4Probe(1);
                     this.uProbe.bindSlotAt( this.m_rcuid );
-                    //this.uProbe.addVec4Data(this.m_stageParamArr, 1);
                 }
-                //  this.uProbe.setVec4Data(
-                //      2.0/this.m_viewW
-                //      ,2.0/this.m_viewH
-                //      , this.m_viewW
-                //      ,this.m_viewH
-                //      );
                 this.uProbe.setVec4Data(
                     2.0/(this.m_viewW * this.pixelRatio)
                     ,2.0/(this.m_viewH * this.pixelRatio)

@@ -8,20 +8,20 @@
 
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as MaterialConstT from "../../vox/material/MaterialConst";
-import * as ShaderDataT from "../../vox/material/ShaderData";
+import * as IShaderDataT from "../../vox/material/IShaderData";
 import * as ShdProgramT from "../../vox/material/ShdProgram";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as IRenderShaderT from "../../vox/render/IRenderShader";
-import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as IRenderResourceT from "../../vox/render/IRenderResource";
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import MaterialConst = MaterialConstT.vox.material.MaterialConst;
-import ShaderData = ShaderDataT.vox.material.ShaderData;
+import IShaderData = IShaderDataT.vox.material.IShaderData;
 import ShdProgram = ShdProgramT.vox.material.ShdProgram;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import IRenderShader = IRenderShaderT.vox.render.IRenderShader;
-import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
 
 export namespace vox
@@ -29,9 +29,10 @@ export namespace vox
     export namespace material
     {
         /**
-         * 作为渲染运行时的 material shader 相关操作的管理类
+         * 作为渲染器运行时 material shader 资源的管理类
+         * renderer runtime material shader resource manager
          */
-        export class MaterialShader implements IRenderShader
+        export class MaterialShader implements IRenderShader,IRenderResource
         {
             private m_shdDict:Map<string,ShdProgram> = new Map();
             private m_shdList:ShdProgram[] = [];
@@ -53,16 +54,26 @@ export namespace vox
             drawFlag:number = 0x0;
 
 
-            constructor(rc:RenderProxy)
+            constructor(rcuid:number,gl:any,adapter:RenderAdapter)
             {
-                this.m_rcuid = rc.getUid();
-                this.m_adapter = rc.getRenderAdapter();
-                this.m_rc = rc.getRC();
+                this.m_rcuid = rcuid;
+                this.m_adapter = adapter;
+                this.m_rc = gl;
             }
+            createResByParams3(resUid:number,param0:number,param1:number,param2:number):boolean
+            {
+                return false;
+            }
+            /**
+             * @returns return system gpu context
+             */
             getRC():any
             {
                 return this.m_rc;
             }
+            /**
+             * @returns return renderer context unique id
+             */
             getRCUid():number
             {
                 return this.m_rcuid;
@@ -83,7 +94,7 @@ export namespace vox
                     uniform.use(this);
                 }
             }
-            create(shdData:ShaderData):ShdProgram
+            create(shdData:IShaderData):ShdProgram
             {
                 //console.log("this.Create() begin...");
                 let uns:string = shdData.getUniqueShaderName();
@@ -112,7 +123,7 @@ export namespace vox
                 if(this.m_shdDict.has(unique_name_str)){return this.m_shdDict.get(unique_name_str);}
                 return null;
             }
-            findShdProgramByShdData(shdData:ShaderData):ShdProgram
+            findShdProgramByShdData(shdData:IShaderData):ShdProgram
             {
                 if(shdData != null)
                 {
@@ -148,16 +159,29 @@ export namespace vox
             {
                 return this.m_fragOutputTotal;
             }
-            useShdByUid(uid:number):void
+            /**
+             * check whether the renderer runtime resource(by renderer runtime resource unique id) exists in the current renderer context
+             * @param resUid renderer runtime resource unique id
+             * @returns has or has not resource by unique id
+             */
+            hasResUid(resUid:number):boolean
+            {
+                return this.m_shdList[resUid] != null;
+            }
+            /**
+             * bind the renderer runtime resource(by renderer runtime resource unique id) to the current renderer context
+             * @param resUid renderer runtime resource unique id
+             */
+            bindToGpu(resUid:number):void
             {
                 if(this.m_unlocked)
                 {
-                    if(uid > -1 && uid < this.m_shdListLen)
+                    if(resUid > -1 && resUid < this.m_shdListLen)
                     {
-                        if(this.m_preuid != uid)
+                        if(this.m_preuid != resUid)
                         {
-                            this.m_preuid = uid;
-                            let shd:ShdProgram = this.m_shdList[uid];
+                            this.m_preuid = resUid;
+                            let shd:ShdProgram = this.m_shdList[resUid];
                             this.m_fragOutputTotal = shd.getFragOutputTotal();
                             if(this.m_fragOutputTotal != this.getActiveAttachmentTotal())
                             {
@@ -180,6 +204,15 @@ export namespace vox
                     }
                 }
             }
+            /**
+             * get system gpu context resource buf
+             * @param resUid renderer runtime resource unique id
+             * @returns system gpu context resource buf
+             */
+            getGpuBuffer(resUid:number):any
+            {
+                return null;
+            }
             getCurrentShd():ShdProgram
             {
                 return this.m_currShd;
@@ -193,12 +226,23 @@ export namespace vox
                 this.m_uniform = null;
                 this.m_transformUniform = null;
             }
-            reset():void
+            /**
+             * frame begin run this function
+             */
+            renderBegin():void
             {
                 this.m_fragOutputTotal = 1;
                 this.m_preuid = -1;
                 this.m_currShd = null;
                 this.drawFlag = 0x0;
+            }
+            
+            /**
+             * frame update
+             */
+            update():void
+            {
+
             }
             destroy():void
             {

@@ -10,7 +10,7 @@ import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as Rect2DMaterialT from "../../vox2d/material/mcase/Rect2DMaterial";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
-import * as RORectMeshT from "../../vox/mesh/RORectMesh";
+import * as RORectMeshT from "../../vox/mesh/RectPlaneMesh";
 import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMask";
 
 import RendererState = RendererStateT.vox.render.RendererState;
@@ -18,7 +18,7 @@ import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import Rect2DMaterial = Rect2DMaterialT.vox2d.material.mcase.Rect2DMaterial;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import RORectMesh = RORectMeshT.vox.mesh.RORectMesh;
+import RectPlaneMesh = RORectMeshT.vox.mesh.RectPlaneMesh;
 import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
 
 export namespace vox2d
@@ -78,7 +78,7 @@ export namespace vox2d
             {
                 if(this.getMesh() == null)
                 {
-                    let mesh:RORectMesh = new RORectMesh();
+                    let mesh:RectPlaneMesh = new RectPlaneMesh();
                     mesh.flipVerticalUV = this.flipVerticalUV;
                     mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
                     mesh.axisFlag = this.m_flag;

@@ -6,26 +6,14 @@
 /***************************************************************************/
 
 import * as RendererStateT from "../../vox/render/RendererState";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
-import * as MaterialBaseT from '../../vox/material/MaterialBase';
-import * as Rect2DMaterialT from "../../vox2d/material/mcase/Rect2DMaterial";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
-import * as RORectMeshT from "../../vox/mesh/RORectMesh";
 import * as RenderProcessT from "../../vox/render/RenderProcess";
 import * as RendererInstanceT from "../../vox/scene/RendererInstance";
-import * as Rect2DEntityT from "../../vox2d/entity/Rect2DEntity";
 import * as H5FontSysT from "../../vox/text/H5FontSys";
 import * as Text2DEntityT from "../../vox2d/text/Text2DEntity";
 
 import RendererState = RendererStateT.vox.render.RendererState;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
-import Rect2DMaterial = Rect2DMaterialT.vox2d.material.mcase.Rect2DMaterial;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import RORectMesh = RORectMeshT.vox.mesh.RORectMesh;
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-import Rect2DEntity = Rect2DEntityT.vox2d.entity.Rect2DEntity;
 import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
 import Text2DEntity = Text2DEntityT.vox2d.text.Text2DEntity;
 

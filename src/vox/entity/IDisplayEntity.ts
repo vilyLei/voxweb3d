@@ -4,11 +4,6 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// 对于纯粹的逻辑对象来讲, 只会和逻辑操作相关(同步)，本质和渲染表现和逻辑可以做到分离
-// 因此，这里所涉及到的主要是transform和一些逻辑行为
-// 和其他渲染相关的沟通，则依赖对应的协议，对协议的解释，则最终决定呈现结果
-// 一个此逻辑 IRenderEntity 对象可以对应一个或者多个 RODisplay, 包含对应的transform
-// 可支持多线程，也可支持单线程, 模式
 
 import * as AABBT from "../../vox/geom/AABB";
 import * as IEvt3DDispatcherT from "../../vox/event/IEvtDispatcher";

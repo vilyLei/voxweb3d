@@ -9,13 +9,13 @@
 
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as Matrix4T from "../../vox/geom/Matrix4";
-import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
-import * as MaterialBaseT from "../../vox/material/MaterialBase";
+import * as IROVtxBufT from "../../vox/render/IROVtxBuf";
+import * as IRenderMaterialT from "../../vox/render/IRenderMaterial";
 import * as IRPODisplayT from "../../vox/render/IRPODisplay";
 
 import DisplayRenderSign = RenderConstT.vox.render.DisplayRenderSign;
-import ROVertexBuffer = ROVertexBufferT.vox.mesh.ROVertexBuffer;
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+import IROVtxBuf = IROVtxBufT.vox.render.IROVtxBuf;
+import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import IRPODisplay = IRPODisplayT.vox.render.IRPODisplay;
 
@@ -34,7 +34,7 @@ export namespace vox
             trisNumber:number;// = 0;
             insCount:number;// = 0;
             drawMode:number;// = RenderDrawMode.ELEMENTS_TRIANGLES;
-            vbuf:ROVertexBuffer;// = null;
+            vbuf:IROVtxBuf;// = null;
             // record render state: shadowMode(one byte) + depthTestMode(one byte) + blendMode(one byte) + cullFaceMode(one byte)
             // its value come from: RendererState.CreateRenderState("default", CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.RENDER_OPAQUE);
             renderState:number;// = RendererState.NORMAL_STATE;
@@ -52,8 +52,8 @@ export namespace vox
             getMatrixFS32():Float32Array;
             enableDrawInstanced(offset:number, instanceCount:number):void;
             disableDrawInstanced():void;
-            getMaterial():MaterialBase;
-            setMaterial(m:MaterialBase):void;
+            getMaterial():IRenderMaterial;
+            setMaterial(m:IRenderMaterial):void;
             copyFrom(display:IRODisplay):void;
             
             // 只能由渲染系统内部调用

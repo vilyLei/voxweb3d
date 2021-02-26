@@ -5,13 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as MaterialBaseT from "../../vox/material/MaterialBase";
-import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as IRenderTexResourceT from "../../vox/render/IRenderTexResource";
+import * as IRenderMaterialT from "../../vox/render/IRenderMaterial";
 import * as MaterialShaderT from "../../vox/material/MaterialShader";
 import * as RODataBuilderT from "../../vox/render/RODataBuilder";
 
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
-import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import IRenderTexResource = IRenderTexResourceT.vox.render.IRenderTexResource;
+import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 import RODataBuilder = RODataBuilderT.vox.render.RODataBuilder;
 
@@ -21,9 +21,9 @@ export namespace vox
     {
         export class RenderMaterialProxy
         {
-            private m_rc:RenderProxy = null;
             private m_dispBuilder:RODataBuilder = null;
             private m_shader:MaterialShader = null;
+            private m_texRes:IRenderTexResource = null;
             
             setDispBuilder(builder:RODataBuilder):void
             {
@@ -33,31 +33,31 @@ export namespace vox
                     this.m_shader = builder.getMaterialShader();
                 }
             }
-            setRenderProxy(rc:RenderProxy):void
+            setTexResource(texRes:IRenderTexResource):void
             {
-                this.m_rc = rc;
+                this.m_texRes = texRes;
             }
             unlockMaterial():void
             {
                 this.m_shader.unlock();
-                this.m_rc.Texture.unlocked = true;
+                this.m_texRes.unlocked = true;
             }
             lockMaterial():void
             {
                 this.m_shader.lock();
-                this.m_rc.Texture.unlocked = false;
+                this.m_texRes.unlocked = false;
             }
             reset():void
             {
-                this.m_shader.reset();
-                this.m_rc.Texture.renderBegin();
+                this.m_shader.renderBegin();
+                this.m_texRes.renderBegin();
             }
             renderBegin():void
             {
-                this.m_shader.reset();
-                this.m_rc.Texture.renderBegin();
+                this.m_shader.renderBegin();
+                this.m_texRes.renderBegin();
             }
-            useGlobalMaterial(material:MaterialBase):void
+            useGlobalMaterial(material:IRenderMaterial):void
             {
                 this.m_dispBuilder.updateGlobalMaterial(material);
             }

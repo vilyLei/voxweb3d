@@ -21,8 +21,10 @@ import * as RAdapterContextT from "../../vox/render/RAdapterContext";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as RenderFBOProxyT from "../../vox/render/RenderFBOProxy";
 import * as RCExtensionT from "../../vox/render/RCExtension";
-import * as IBufferBuilderT from "../../vox/render/IBufferBuilder";
+import * as IROVtxBuilderT from "../../vox/render/IROVtxBuilder";
 
+import * as IRenderResourceT from '../../vox/render/IRenderResource';
+import * as IRenderTexResourceT from '../../vox/render/IRenderTexResource';
 import * as ROVertexResourceT from '../../vox/render/ROVertexResource';
 import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
 import * as IROVertexBufUpdaterT from '../../vox/render/IROVertexBufUpdater';
@@ -46,8 +48,10 @@ import RAdapterContext = RAdapterContextT.vox.render.RAdapterContext;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RenderFBOProxy = RenderFBOProxyT.vox.render.RenderFBOProxy;
 import RCExtension = RCExtensionT.vox.render.RCExtension;
-import IBufferBuilder = IBufferBuilderT.vox.render.IBufferBuilder;
+import IROVtxBuilder = IROVtxBuilderT.vox.render.IROVtxBuilder;
 
+import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
+import IRenderTexResource = IRenderTexResourceT.vox.render.IRenderTexResource;
 import ROVertexResource = ROVertexResourceT.vox.render.ROVertexResource;
 import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
 import IROVertexBufUpdater = IROVertexBufUpdaterT.vox.render.IROVertexBufUpdater;
@@ -58,7 +62,7 @@ export namespace vox
 {
     export namespace render
     {
-        export class RenderProxy implements IBufferBuilder
+        export class RenderProxy
         {
             readonly RGBA:number = 0;
             readonly UNSIGNED_BYTE:number = 0;
@@ -81,8 +85,8 @@ export namespace vox
             readonly RContext:any = null;
             readonly RState:RODrawState = null;
             
-            readonly Vertex:ROVertexResource = null;
-            readonly Texture:ROTextureResource = null;
+            readonly Vertex:IRenderResource = null;
+            readonly Texture:IRenderTexResource = null;
 
             readonly VtxBufUpdater:IROVertexBufUpdater = null;
             readonly MaterialUpdater:IROMaterialUpdater = null;
@@ -120,6 +124,9 @@ export namespace vox
             {                
                 this.m_uid = RenderProxy.s_uid++;
             }
+            /**
+             * @returns return system gpu context
+             */
             getRC():any
             {
                 return this.m_rc;
@@ -128,6 +135,9 @@ export namespace vox
             {
                 return this.m_uid;
             }
+            /**
+             * @returns return renderer context unique id
+             */
             getRCUid():number
             {
                 return this.m_uid;
@@ -206,120 +216,7 @@ export namespace vox
 			{
                 return this.m_adapter.getActiveAttachmentTotal();
             }
-
-            createBuf():any
-            {
-                return this.m_rc.createBuffer();
-            }
-            deleteBuf(buf:any):void
-            {
-                this.m_rc.deleteBuffer(buf);
-            }
-            bindArrBuf(buf:any):void
-            {
-                this.m_rc.bindBuffer(this.m_rc.ARRAY_BUFFER, buf);
-            }
-            bindEleBuf(buf:any):void
-            {
-                this.m_rc.bindBuffer(this.m_rc.ELEMENT_ARRAY_BUFFER, buf);
-            }
-            arrBufSubData(float32Arr:Float32Array, offset:number):void
-            {
-                this.m_rc.bufferSubData(this.m_rc.ARRAY_BUFFER,offset, float32Arr);
-            }
-            arrBufData(float32Arr:Float32Array, usage:number):void
-            {
-                this.m_rc.bufferData(this.m_rc.ARRAY_BUFFER, float32Arr, VtxBufConst.ToGL(this.m_rc,usage));
-            }
-            eleBufSubData(uintDataArr:Uint16Array|Uint32Array, offset:number):void
-            {
-                this.m_rc.bufferSubData(this.m_rc.ELEMENT_ARRAY_BUFFER,offset, uintDataArr);
-            }
-            eleBufData(uintDataArr:Uint16Array|Uint32Array, usage:number):void
-            {
-                this.m_rc.bufferData(this.m_rc.ELEMENT_ARRAY_BUFFER, uintDataArr, VtxBufConst.ToGL(this.m_rc,usage));
-            }
-            arrBufDataMem(bytesSize:number, usage:number):void
-            {
-                this.m_rc.bufferData(this.m_rc.ARRAY_BUFFER, bytesSize, VtxBufConst.ToGL(this.m_rc,usage));
-            }
-            eleBufDataMem(bytesSize:number, usage:number):void
-            {
-                this.m_rc.bufferData(this.m_rc.ELEMENT_ARRAY_BUFFER, bytesSize, VtxBufConst.ToGL(this.m_rc,usage));
-            }
-            useVtxAttribsPtrTypeFloat(shdp:IVtxShdCtr, buf:any,attribTypes:number[],attribTypesLen:number, wholeOffsetList:number[],wholeStride:number):void
-            {
-                this.m_rc.bindBuffer(this.m_rc.ARRAY_BUFFER, buf);
-                
-                for(let i:number = 0; i < attribTypesLen; ++i)
-                {
-                    shdp.vertexAttribPointerTypeFloat(attribTypes[i], wholeStride, wholeOffsetList[i]);
-                }
-            }
-            useVtxAttribsPtrTypeFloatMulti(shdp:IVtxShdCtr, bufs:any[],attribTypes:number[],attribTypesLen:number, wholeOffsetList:number[],wholeStride:number):void
-            {
-                for(let i:number=0; i < attribTypesLen; ++i)
-                {
-                    this.m_rc.bindBuffer(this.m_rc.ARRAY_BUFFER, bufs[i]);
-                    shdp.vertexAttribPointerTypeFloat(attribTypes[i], wholeStride, wholeOffsetList[i]);
-                }
-            }
-            createVertexArray():any
-            {
-                let vao:any = null;
-                if(this.m_WEBGL_VER == 2)
-                {
-                    vao = this.m_rc.createVertexArray();
-                }
-                else
-                {
-                    vao = RCExtension.OES_vertex_array_object.createVertexArrayOES();
-                }
-                return vao;
-            }
-            bindVertexArray(vao:any):any
-            {
-                if(this.m_WEBGL_VER == 2)
-                {
-                    this.m_rc.bindVertexArray(vao);
-                }
-                else
-                {
-                    RCExtension.OES_vertex_array_object.bindVertexArrayOES(vao);
-                }
-                return vao;
-            }
-            deleteVertexArray(vao:any):void
-            {
-                if(this.m_WEBGL_VER == 2)
-                {
-                    this.m_rc.deleteVertexArray(vao);
-                }
-                else
-                {
-                    RCExtension.OES_vertex_array_object.deleteVertexArrayOES(vao);
-                }
-            }
             
-            testVROUid(vroUid:number):boolean
-            {
-                if(this.Vertex.vroUid != vroUid)
-                {
-                    this.Vertex.vroUid = vroUid;
-                    return true;
-                }
-                return false;
-            }
-            testRIOUid(rioUid:number):boolean
-            {
-                if(this.Vertex.rioUid != rioUid)
-                {
-                    this.Vertex.rioUid = rioUid;
-                    return true;
-                }
-                return false;
-            }
-
             drawInstanced(count:number, offset:number, instanceCount:number):void
             {
                 if(this.m_WEBGL_VER == 2)
@@ -461,8 +358,16 @@ export namespace vox
             {
                 this.m_adapter.readPixels(px,py,width,height,format,dataType,pixels);
             }
-            initialize(param:RendererParam,materialUpdater:IROMaterialUpdater,vtxBufUpdater:IROVertexBufUpdater):void
+            getGLVersion():number
             {
+                return this.m_WEBGL_VER;
+            }
+            initialize(param:RendererParam,materialUpdater:IROMaterialUpdater,vtxBufUpdater:IROVertexBufUpdater,vtxBuilder:IROVtxBuilder):void
+            {
+                if(this.m_rc != null)
+                {
+                    return;
+                }
                 let posV3:Vector3D = param.camPosition;
                 let lookAtPosV3:Vector3D = param.camLookAtPos;
                 let upV3:Vector3D = param.camUpDirect;
@@ -480,7 +385,7 @@ export namespace vox
                 this.m_rc = this.m_adapterContext.getRC();
                 let selfT:any = this;
                 let gl:any = this.m_rc;
-                let vtxRes:ROVertexResource = new ROVertexResource(this.m_uid,gl);
+                let vtxRes:ROVertexResource = new ROVertexResource(this.m_uid,gl,vtxBuilder);
                 let texRes:ROTextureResource = new ROTextureResource(this.m_uid,gl);
 
                 selfT.Vertex = vtxRes;

@@ -6,10 +6,8 @@
 /***************************************************************************/
 
 import * as IRODisplayT from "../../vox/display/IRODisplay";
-import * as IBufferBuilderT from '../../vox/render/IBufferBuilder';
 
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
-import IBufferBuilder = IBufferBuilderT.vox.render.IBufferBuilder;
 
 export namespace vox
 {

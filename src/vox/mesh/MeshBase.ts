@@ -122,6 +122,7 @@ export namespace vox
             // 设置自身是否是多面体实体，根据实际需要改变相关的状态值
             setPolyhedral(boo:boolean):void{}
             /**
+             * 射线和自身的相交检测(多面体或几何函数(例如球体))
              * @boundsHit       表示是否包围盒体已经和射线相交了
              * @rlpv            表示物体坐标空间的射线起点
              * @rltv            表示物体坐标空间的射线朝向
@@ -159,7 +160,7 @@ export namespace vox
             {
                 if(this.m_vbuf == null)
                 {
-                    // create vbuf;
+                    // rebuild vbuf;
                     this.rebuild();
                 }
                 ROVertexBuffer.__$$AttachAt(this.m_vbuf.getUid());
@@ -170,7 +171,7 @@ export namespace vox
                 if(this.m_vbuf != vbuf)
                 {
                     throw Error("Fatal Error!");
-                }                
+                }
                 ROVertexBuffer.__$$DetachAt(this.m_vbuf.getUid());
             }
             isGeomDynamic():number
@@ -183,23 +184,12 @@ export namespace vox
             }
             // vertex
             getVS():Float32Array{return null;}
-            // base uv
-            getUVS():Float32Array{return null;}
-            // base nv
-            getNVS():Float32Array{return null;}
-            // base vtx color
-            getCVS():Float32Array{return null;}
-            // vertex2
-            getVS2():Float32Array{return null;}
-            // base uv2
-            getUVS2():Float32Array{return null;}
-            // base nv2
-            getNVS2():Float32Array{return null;}
-            // base vtx color2
-            getCVS2():Float32Array{return null;}
             // index bufer
             getIVS():Uint16Array | Uint32Array{return this.m_ivs;}
-
+            /**
+             * @param layoutBit vertex shader vertex attributes layout bit status.
+             *                  the value of layoutBit comes from the material shdder program.
+             */
             setBufSortFormat(layoutBit:number):void
             {
                 this.m_layoutBit = layoutBit;
@@ -254,7 +244,9 @@ export namespace vox
             {
                 return this.getAttachCount() < 1 && this.m_vbuf == null;
             }
-            // really destroy this
+            /**
+             * really destroy this instance all data
+             */
             __$destroy():void
             {
                 if(this.isResFree())

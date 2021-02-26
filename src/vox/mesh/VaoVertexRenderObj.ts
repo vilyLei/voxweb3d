@@ -5,11 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IBufferBuilderT from "../../vox/render/IBufferBuilder";
+import * as IROVtxBuilderT from "../../vox/render/IROVtxBuilder";
 import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
 import * as VROBaseT from "../../vox/mesh/VROBase";
 
-import IBufferBuilder = IBufferBuilderT.vox.render.IBufferBuilder;
+import IROVtxBuilder = IROVtxBuilderT.vox.render.IROVtxBuilder;
 import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
 import VROBase = VROBaseT.vox.mesh.VROBase;
 
@@ -32,15 +32,15 @@ export namespace vox
                 this.m_uid = VaoVertexRenderObj.s_uid++;
             }
             
-            run(rc:IBufferBuilder):void
+            run():void
             {
-                if(rc.testVROUid(this.m_uid))
+                if(this.m_rc.testVROUid(this.m_uid))
                 {
                     //console.log("VaoVertexRenderObj::run(), rcuid: ",rc.getUid(),this.m_vtxUid, this.m_uid);
-                    rc.bindVertexArray(this.vao);
-                    if(rc.testRIOUid(this.m_vtxUid))
+                    this.m_rc.bindVertexArray(this.vao);
+                    if(this.m_rc.testRIOUid(this.m_vtxUid))
                     {
-                        rc.bindEleBuf(this.ibuf);
+                        this.m_rc.bindEleBuf(this.ibuf);
                     }
                 }
             }
@@ -52,12 +52,13 @@ export namespace vox
                 this.m_vtxUid = -1;
                 this.ibuf = null;
                 this.vao = null;
+                this.m_rc = null;
             }
-            restoreThis(rc:IBufferBuilder):void
+            restoreThis():void
             {
                 if(this.vao != null)
                 {
-                    rc.deleteVertexArray(this.vao);
+                    this.m_rc.deleteVertexArray(this.vao);
                 }
                 VaoVertexRenderObj.Restore(this);
             }
@@ -87,11 +88,10 @@ export namespace vox
                 }
                 return -1;
             }
-            static Create(mid:number,pvtxUid:number):VaoVertexRenderObj
+            static Create(rc:IROVtxBuilder,mid:number,pvtxUid:number):VaoVertexRenderObj
             {
                 let unit:VaoVertexRenderObj = null;
                 let index:number = VaoVertexRenderObj.GetFreeId();
-                //console.log("VaoVertexRenderObj::Create(), VaoVertexRenderObj.s_unitList.length: "+VaoVertexRenderObj.s_unitList.length);
                 if(index >= 0)
                 {
                     unit = VaoVertexRenderObj.s_unitList[index];
@@ -106,6 +106,7 @@ export namespace vox
                     VaoVertexRenderObj.s_unitFlagList.push(VaoVertexRenderObj.S_FLAG_BUSY);
                     VaoVertexRenderObj.s_unitListLen++;
                 }
+                unit.setRC(rc);
                 VROBase.s_midMap.set(mid,unit);
                 return unit;
             }

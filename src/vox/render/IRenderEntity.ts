@@ -9,17 +9,15 @@ import * as Vector3DT from "../../vox/geom/Vector3";
 import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as AABBT from "../../vox/geom/AABB";
 import * as IEvt3DDispatcherT from "../../vox/event/IEvtDispatcher";
-import * as MaterialBaseT from "../../vox/material/MaterialBase";
+import * as IRenderMaterialT from "../../vox/render/IRenderMaterial";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
-//import * as TextureProxyT from '../../vox/texture/TextureProxy';
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import AABB = AABBT.vox.geom.AABB;
 import IEvtDispatcher = IEvt3DDispatcherT.vox.event.IEvtDispatcher;
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
-//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 
 export namespace vox
 {
@@ -47,8 +45,7 @@ export namespace vox
             drawEnabled:boolean;// = false;
             // mouse interaction enabled
             mouseEnabled:boolean;// = false;
-            
-            
+                        
             dispatchEvt(evt:any):void;
             getEvtDispatcher(evtClassType:number):IEvtDispatcher;
 
@@ -58,7 +55,6 @@ export namespace vox
             
             getDrawEnabled():boolean;
             
-            //updateTextureList(texList:TextureProxy[]):void;
             setVisible(boo:boolean):void;
             getVisible():boolean;
             isRenderedEntity():boolean;
@@ -74,7 +70,7 @@ export namespace vox
             isHaveMesh():boolean;
             isPolyhedral():boolean;
             
-            getMaterial():MaterialBase;
+            getMaterial():IRenderMaterial;
             getDisplay():IRODisplay;
             getInvMatrix():Matrix4
             getMatrix():Matrix4

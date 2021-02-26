@@ -8,8 +8,6 @@
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
-import * as ShaderDataT from "../../vox/material/ShaderData";
-import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as IRenderEntityT from "../../vox/render/IRenderEntity";
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RODataBuilderT from "../../vox/render/RODataBuilder";
@@ -22,8 +20,6 @@ import * as Entity3DNodeLinkerT from "../../vox/scene/Entity3DNodeLinker";
 import DisplayRenderSign = RenderConstT.vox.render.DisplayRenderSign;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-import ShaderData = ShaderDataT.vox.material.ShaderData;
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
 import RODataBuilder = RODataBuilderT.vox.render.RODataBuilder;
 import RCRPObj = RPOUnitBuilderT.vox.render.RCRPObj;
@@ -211,30 +207,16 @@ export namespace vox
                 }
                 return false;
             }
-            private m_material:MaterialBase = null;
-            private m_shdData:ShaderData = null;
             private m_rprocess:RenderProcess = null;
             testValidData(entity:IRenderEntity):boolean
             {
-                this.m_material = entity.getMaterial();
-                if(this.m_material != null && entity.isHaveMesh())
+                if(entity.getMaterial() != null && entity.isHaveMesh())
                 {
-                    this.m_shdData = this.m_material.getShaderData();
-                    if(this.m_shdData != null)
+                    if(entity.getMaterial().hasShaderData())
                     {
-                        if(this.m_shdData.haveTexture())
-                        {
-                            if(this.m_material.texDataEnabled())
-                            {
-                                return true;
-                            }
-                        }
-                        else
-                        {
-                            return true;
-                        }
+                        return true;
                     }
-                    else if(this.m_material.getCodeBuf() != null)
+                    else if(entity.getMaterial().getCodeBuf() != null)
                     {
                         entity.activeDisplay();
                     }

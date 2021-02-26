@@ -6,17 +6,17 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
+import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as UniformLineT from "../../vox/material/code/UniformLine";
-import * as ShaderDataT from "../../vox/material/ShaderData";
 import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
+import * as IShaderDataT from "../../vox/material/IShaderData";
 
-import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 import UniformLine = UniformLineT.vox.material.code.UniformLine;
-import ShaderData = ShaderDataT.vox.material.ShaderData;
 import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
+import IShaderData = IShaderDataT.vox.material.IShaderData;
 
 export namespace vox
 {
@@ -24,9 +24,7 @@ export namespace vox
     {
         export class ShdProgram implements IVtxShdCtr
         {
-            //private static s_uid:number = 0;
-            
-            private m_shdData:ShaderData = null;
+            private m_shdData:IShaderData = null;
             private m_uid:number = -1;
             private m_program:any = null;
             private m_rcuid:number = -1;
@@ -56,7 +54,7 @@ export namespace vox
                 this.m_uid = uid;//ShdProgram.s_uid++;
             }
 
-            setShdData(shdData:ShaderData):void
+            setShdData(shdData:IShaderData):void
             {
                 this.m_shdData = shdData;
                 this.m_shdUniqueName = shdData.getUniqueShaderName();
@@ -397,6 +395,9 @@ export namespace vox
                     if(null != this.m_program) this.createLocations();
                 }
             }
+            /**
+             * @returns return renderer context unique id
+             */
             getRCUid():number{return this.m_rcuid;};
             uniformBlockBinding(uniform_block_ns:string,bindingIndex:number):void
             {
@@ -429,6 +430,7 @@ export namespace vox
                     this.m_program = null;
                 }
                 this.m_gl = null;
+                this.m_shdData = null;
             }
         }
     }
