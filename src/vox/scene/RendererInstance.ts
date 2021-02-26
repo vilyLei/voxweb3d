@@ -73,9 +73,8 @@ export namespace vox
             private m_processBuider:RenderProcessBuider = new RenderProcessBuider();
             private m_roVtxBuild:ROVtxBuilder = null;
             readonly bufferUpdater:ROBufferUpdater = null;
-            //
+            
             readonly textureSlot:TextureSlot = null;
-            //readonly rttStore:RTTTextureStore = null;
             constructor()
             {
             }
@@ -174,10 +173,8 @@ export namespace vox
                     texSlot.setBufferUpdater(roBufUpdater);
 
                     let selfT:any = this;
-                    selfT.bufferUpdater = roBufUpdater;
-                    
+                    selfT.bufferUpdater = roBufUpdater;                    
                     selfT.textureSlot = texSlot;
-                    //selfT.rttStore = new RTTTextureStore(texSlot);
                 }
             }
             update():void
