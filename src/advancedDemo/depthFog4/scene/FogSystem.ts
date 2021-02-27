@@ -112,7 +112,7 @@ export namespace advancedDemo
                     this.factorPlane.initialize(
                         -0.5,-0.5,1.0,1.0
                         ,[
-                            this.m_middleFBO.getTextureAt(1)
+                            this.m_middleFBO.getRTTAt(1)
                             ,tex3
                         ]
                         );

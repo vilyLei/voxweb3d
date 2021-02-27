@@ -82,7 +82,6 @@ export namespace demo
                 // add common 3d display entity
 
                 var plane:Plane3DEntity = new Plane3DEntity();
-                plane.name = "plane";
                 plane.setMaterial(new DefaultMRTMaterial());
                 plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
                 this.m_renderer.addEntity(plane);
@@ -90,7 +89,6 @@ export namespace demo
 
                 let boxSize:number = 100.0;
                 let box:Box3DEntity = new Box3DEntity();
-                box.name = "box";
                 box.setMaterial(new DefaultMRTMaterial());
                 box.initialize(new Vector3D(-boxSize,-boxSize,-boxSize),new Vector3D(boxSize,boxSize,boxSize),[tex1]);
                 this.m_renderer.addEntity(box);
@@ -98,7 +96,6 @@ export namespace demo
                 boxSize = 100.0;
                 // add mrt texture 3d display entity
                 let boxMrt0:Box3DEntity = new Box3DEntity();
-                boxMrt0.name = "boxMrt0";
                 boxMrt0.initialize(new Vector3D(-boxSize,-boxSize,-boxSize),new Vector3D(boxSize,boxSize,boxSize),[this.m_texBlock.getRTTTextureAt(0)]);
                 boxMrt0.setXYZ(-150,0,-150);
                 this.m_renderer.addEntity(boxMrt0, 1);
@@ -133,13 +130,11 @@ export namespace demo
             radapter.useFBO(true, true, false);
             rinstance.runAt(0);
             // --------------------------------------------- mrt end
-
-            pcontext.setClearRGBColor3f(0.0, 3.0, 2.0);
             radapter.setRenderToBackBuffer();
             rinstance.runAt(1);
 
             pcontext.runEnd();            
-            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);;
+            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
             pcontext.updateCamera();
         }
     }

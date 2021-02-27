@@ -318,7 +318,6 @@ export namespace vox
                 {
                     this.m_materialProxy = new RenderMaterialProxy();
                     this.m_materialProxy.setDispBuilder(builder);
-                    this.m_materialProxy.setTexResource(this.m_renderProxy.Texture);
                 }
             }
             setClearRGBColor3f(pr:number,pg:number,pb:number)
@@ -352,7 +351,7 @@ export namespace vox
                     RendererState.Reset();
                     RendererState.SetDrawState(this.m_renderProxy.RState);
                     this.m_renderProxy.Vertex.renderBegin();
-                    this.m_materialProxy.reset();
+                    this.m_materialProxy.renderBegin();
                     this.m_adapter.update();
                     this.m_adapter.setClearMaskClearAll();
                     this.m_adapter.renderBegin();

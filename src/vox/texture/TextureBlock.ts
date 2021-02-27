@@ -57,6 +57,7 @@ export namespace vox
             private m_texPool:TexturePool = new TexturePool();
             private m_rttStore:RTTTextureStore = null;
             private m_renderer:RendererInstance = null;
+
             /**
              * 设置当前的渲染器
              * @param renderer 当前的渲染器
@@ -70,7 +71,10 @@ export namespace vox
                     this.m_rttStore = new RTTTextureStore(renderer.getRenderProxy());
                 }
             }
-            
+            getRTTStrore():RTTTextureStore
+            {
+                return this.m_rttStore;
+            }
             createWrapperTex(pw:number,ph:number,powerof2Boo:boolean = false):WrapperTextureProxy
             {
                 return new WrapperTextureProxy(pw,ph,powerof2Boo);

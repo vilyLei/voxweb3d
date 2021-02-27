@@ -190,7 +190,7 @@ export namespace vox
             }
             createFBOInstance():FBOInstance
             {
-                let ins:FBOInstance = new FBOInstance(this);
+                let ins:FBOInstance = new FBOInstance(this, this.textureBlock.getRTTStrore());
                 return ins; 
             }
             setClearUint24Color(colorUint24:number,alpha:number = 1.0):void
@@ -260,7 +260,9 @@ export namespace vox
             {
                 return this.m_adapter.getDevicePixelRatio();
             }
-            // very important function
+            /**
+             * very important renderer scene system function
+             */
             createSubScene():RendererSubScene
             {
                 if(this.m_renderer != null)

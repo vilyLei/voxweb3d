@@ -296,7 +296,7 @@ export namespace advancedDemo
                         //-1.0,-1.0,2.0,2.0
                         -0.5,-0.5,1.0,1.0
                         ,[
-                            this.middleFBO.getTextureAt(0)
+                            this.middleFBO.getRTTAt(0)
                         ]
                         );
                     this.m_rc.addEntity(this.factorPlane,this.m_factorPlaneIndex);
@@ -308,8 +308,8 @@ export namespace advancedDemo
                     this.m_dstPlane.initialize(
                         -1.0,-1.0,2.0,2.0
                         ,[
-                            this.colorFBO.getTextureAt(0)
-                            ,this.factorFBO.getTextureAt(0)
+                            this.colorFBO.getRTTAt(0)
+                            ,this.factorFBO.getRTTAt(0)
                         ]
                         );
                     this.m_rc.addEntity(this.m_dstPlane,this.dstPlaneIndex);

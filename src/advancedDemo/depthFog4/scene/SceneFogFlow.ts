@@ -177,9 +177,9 @@ export namespace advancedDemo
                     this.fogShow2M = new FogSphShow2Material();
                     this.fogShow2M.setTextureList(
                         [
-                            this.middleFBO.getTextureAt(1)
-                            ,this.factorFBO.getTextureAt(0)
-                            ,this.factorFBO.getTextureAt(1)
+                            this.middleFBO.getRTTAt(1)
+                            ,this.factorFBO.getRTTAt(0)
+                            ,this.factorFBO.getRTTAt(1)
                         ]
                     );
 
@@ -188,9 +188,9 @@ export namespace advancedDemo
                     this.m_dstPlane.initialize(
                         -1.0,-1.0,2.0,2.0
                         ,[
-                            this.middleFBO.getTextureAt(0)
-                            ,this.factorFBO.getTextureAt(0)
-                            ,this.factorFBO.getTextureAt(1)
+                            this.middleFBO.getRTTAt(0)
+                            ,this.factorFBO.getRTTAt(0)
+                            ,this.factorFBO.getRTTAt(1)
                         ]
                         );
                     this.m_rc.addEntity(this.m_dstPlane,this.m_dstPlaneIndex);

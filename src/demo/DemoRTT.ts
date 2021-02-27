@@ -116,7 +116,6 @@ export namespace demo
             // to be rendering in framebuffer
             this.m_rscene.runAt(0);
             // --------------------------------------------- rtt end
-            pcontext.setClearRGBColor3f(0.0, 3.0, 2.0);
             pcontext.setRenderToBackBuffer();
             // to be rendering in backbuffer
             this.m_rscene.runAt(1);

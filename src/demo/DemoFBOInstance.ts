@@ -2,7 +2,6 @@
 import * as Vector3DT from "../vox/geom/Vector3";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 
 import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
@@ -18,7 +17,6 @@ import * as RendererSceneT from "../vox/scene/RendererScene";
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 
 import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
@@ -35,11 +33,8 @@ export namespace demo
 {
     export class DemoFBOInstance
     {
-        constructor()
-        {
-        }
+        constructor(){}
         private m_rscene:RendererScene = null;
-        private m_rcontext:RendererInstanceContext = null;
         private m_texLoader:ImageTextureLoader = null;
         private m_camTrack:CameraTrack = null;
         private m_fboIns:FBOInstance = null;
@@ -53,7 +48,7 @@ export namespace demo
         }
         initialize():void
         {
-            if(this.m_rcontext == null)
+            if(this.m_rscene == null)
             {
                 console.log("DemoFBOInstance::initialize()......");
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
@@ -61,24 +56,23 @@ export namespace demo
                 //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
                 let rparam:RendererParam = new RendererParam();
-                rparam.maxWebGLVersion = 1;
                 rparam.setCamPosition(500.0,500.0,500.0);
                 this.m_rscene = new RendererScene();
                 this.m_rscene.initialize(rparam,3);
                 this.m_rscene.updateCamera();
-                this.m_rcontext = this.m_rscene.getRendererContext();
 
                 this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+
+                this.m_camTrack = new CameraTrack();
+                this.m_camTrack.bindCamera(this.m_rscene.getCamera());
+
+                this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
 
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
                 
-                this.m_camTrack = new CameraTrack();
-                this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
-                this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
-
-                // add common 3d display entity
+                // add common 3d display entity ---------------------------------- begin
                 var plane:Plane3DEntity = new Plane3DEntity();
                 plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
                 this.m_rscene.addEntity(plane);
@@ -90,43 +84,41 @@ export namespace demo
                 let box:Box3DEntity = new Box3DEntity();
                 box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
                 this.m_rscene.addEntity(box);
-                // add rtt texture 3d display entity
-                let boxRtt:Box3DEntity = new Box3DEntity();
-                boxRtt.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[this.m_rscene.textureBlock.getRTTTextureAt(0)]);
-                this.m_rscene.addEntity(boxRtt, 1);
+                // add common 3d display entity ---------------------------------- end
 
                 this.m_fboIns = this.m_rscene.createFBOInstance();
-                this.m_fboIns.setClearRGBAColor4f(0.0,0.0,3.0,1.0);
+                this.m_fboIns.setClearRGBAColor4f(0.3,0.0,0.0,1.0);   // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
                 this.m_fboIns.createFBOAt(0,512,512,true,false);
-                this.m_fboIns.setRenderToTexture(this.m_rscene.textureBlock.getRTTTextureAt(0), 0);// color
-                //this.m_fboIns.setRenderToTexture(this.m_rscene.textureBlock.getRTTTextureAt(1), 1);// others
+                this.m_fboIns.setRenderToRTTTextureAt(0, 0);          // framebuffer color attachment, output attachment index is 0
                 this.m_fboIns.setRProcessIDList([0]);
+
+                let rttBox:Box3DEntity = new Box3DEntity();
+                rttBox.initialize(
+                    new Vector3D(-100.0,-100.0,-100.0)                // box min position
+                    , new Vector3D(100.0,100.0,100.0)                 // box max position
+                    , [this.m_fboIns.getRTTAt(0)]                     // texture list
+                    );
+                this.m_rscene.addEntity(rttBox, 1);                   // add rttBox to The second renderer process
+
             }
         }
         run():void
         {
-            // 纹理数据分帧加载
             this.m_texLoader.run();
-
-            // show fps status
             this.m_statusDisp.update();
-            this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
-            // render begin
+
+            this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
             this.m_rscene.runBegin();
-            // run logic program
             this.m_rscene.update();
             
             // --------------------------------------------- rtt begin
             this.m_fboIns.run();
             // --------------------------------------------- rtt end
-            this.m_rscene.setClearRGBColor3f(0.0, 3.0, 2.0);
+            
             this.m_rscene.setRenderToBackBuffer();
-            // to be rendering in backbuffer
             this.m_rscene.runAt(1);
             
-            // render end
             this.m_rscene.runEnd();
-
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }

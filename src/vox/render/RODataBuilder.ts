@@ -98,6 +98,10 @@ export namespace vox
             {
                 return this.m_shader;
             }
+            getTextureResource():ROTextureResource
+            {
+                return this.m_texRes;
+            }
             /**
              * update single texture self system memory data to gpu memory data
              */

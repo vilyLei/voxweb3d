@@ -116,7 +116,7 @@ export namespace advancedDemo
                     this.factorEntity = new Sphere3DEntity();
                     this.factorEntity.setRenderState(rState0);
                     this.factorEntity.setMaterial(this.fogFactorM);
-                    this.factorEntity.initialize(1.0,20,20,[this.m_middleFBO.getTextureAt(1),tex3]);
+                    this.factorEntity.initialize(1.0,20,20,[this.m_middleFBO.getRTTAt(1),tex3]);
                     
                     this.m_rc.addEntity(this.factorEntity,this.m_factorFBO.getRProcessIDAt(0));
                 }

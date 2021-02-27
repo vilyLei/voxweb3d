@@ -31,11 +31,8 @@ export namespace vox
                 {
                     this.m_dispBuilder = builder;
                     this.m_shader = builder.getMaterialShader();
+                    this.m_texRes = builder.getTextureResource();
                 }
-            }
-            setTexResource(texRes:IRenderTexResource):void
-            {
-                this.m_texRes = texRes;
             }
             unlockMaterial():void
             {
@@ -47,11 +44,6 @@ export namespace vox
                 this.m_shader.lock();
                 this.m_texRes.unlocked = false;
             }
-            reset():void
-            {
-                this.m_shader.renderBegin();
-                this.m_texRes.renderBegin();
-            }
             renderBegin():void
             {
                 this.m_shader.renderBegin();
@@ -60,12 +52,7 @@ export namespace vox
             useGlobalMaterial(material:IRenderMaterial):void
             {
                 this.m_dispBuilder.updateGlobalMaterial(material);
-            }
-    
-            toString():string
-            {
-                return "RenderMaterialProxy()";
-            }
+            }    
         }
 
     }

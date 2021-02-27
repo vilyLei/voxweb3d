@@ -13,8 +13,9 @@ import * as RenderFilterT from "../../vox/render/RenderFilter";
 import * as RenderMaskBitfieldT from "../../vox/render/RenderMaskBitfield";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
-import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
+import * as RTTTextureStoreT from "../../vox/texture/RTTTextureStore";
 import * as Color4T from "../../vox/material/Color4";
 import * as IRenderMaterialT from "../../vox/render/IRenderMaterial";
 import * as RenderMaterialProxyT from "../../vox/render/RenderMaterialProxy";
@@ -27,8 +28,9 @@ import RenderFilter = RenderFilterT.vox.render.RenderFilter;
 import RenderMaskBitfield = RenderMaskBitfieldT.vox.render.RenderMaskBitfield;
 import RendererState = RendererStateT.vox.render.RendererState;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
-import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
+import RTTTextureStore = RTTTextureStoreT.vox.texture.RTTTextureStore;
 import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;
 import Color4 = Color4T.vox.material.Color4;
 import RenderMaterialProxy = RenderMaterialProxyT.vox.render.RenderMaterialProxy;
@@ -56,6 +58,7 @@ export namespace vox
             private m_gMateiral:IRenderMaterial = null;
             private m_rindexs:number[] = [];
             private m_texs:RTTTextureProxy[] = [null,null,null,null,null,null,null,null];
+            private m_texStore:RTTTextureStore = null;
             private m_texsTot:number = 0;
             private m_synFBOSizeWithViewport:boolean = true;
             private m_fboSizeFactor:number = 1.0;
@@ -65,19 +68,30 @@ export namespace vox
             private m_clearStencilBoo:boolean = false;
             private m_viewportLock:boolean = false;
             
-            constructor(render:IRenderer)
+            constructor(render:IRenderer,texStroe:RTTTextureStore)
             {
                 this.m_render = render;
+                this.m_texStore = texStroe;
                 this.m_renderProxy = render.getRenderProxy();
                 this.m_adapter = this.m_renderProxy.getRenderAdapter();
                 this.m_materialProxy = this.m_render.getRendererContext().getRenderMaterialProxy();
             }
+            /**
+             * @returns 获取当前FBOInstance所持有的 FBO 对象的 unique id (也就是序号)
+             */
             getFBOUid():number
             {
                 return this.m_fboIndex;
             }
+            /**
+             * 设置当前 FBO控制的渲染过程中所需要的 renderer process 序号(id)列表
+             */
             setRProcessIDList(list:number[]):void
             {
+                if(list.length < 1)
+                {
+                    throw Error("list.length < 1, but must: list.length >= 1");
+                }
                 this.m_rindexs = list;
             }
             getRProcessIDAt(i:number):number
@@ -187,54 +201,88 @@ export namespace vox
                     this.m_adapter.createFBOAt(fboIndex,this.m_fboType,this.m_initW,this.m_initH,enableDepth,enableStencil,multisampleLevel);
                 }
             }
-			createFBOAt(fboIndex:number, pw:number,ph:number, enableDepth:boolean = false, enableStencil:boolean = false,multisampleLevel:number = 0):void
+            /**
+             * 创建一个指定序号的 FBO(FrameBufferObject) 渲染运行时管理对象,
+             * renderer中一个序号只会对应一个唯一的 FBO 对象实例
+             * @param fboIndex FBO 对象的序号
+             * @param width FBO 对象的viewport宽度
+             * @param enableDepth FBO 对象的depth读写是否开启
+             * @param enableStencil FBO 对象的stencil读写是否开启
+             * @param multisampleLevel FBO 对象的multisample level
+             */
+			createFBOAt(fboIndex:number, width:number,height:number, enableDepth:boolean = false, enableStencil:boolean = false,multisampleLevel:number = 0):void
 			{
                 if(this.m_fboIndex < 0)
                 {
                     this.m_fboIndex = fboIndex;
                     this.m_fboType = FrameBufferType.FRAMEBUFFER;
-                    this.m_initW = pw;
-                    this.m_initH = ph;
+                    this.m_initW = width;
+                    this.m_initH = height;
                     this.m_enableDepth = enableDepth;
                     this.m_enableStencil = enableStencil;
                     this.m_multisampleLevel = multisampleLevel;
-                    this.m_adapter.createFBOAt(fboIndex,this.m_fboType,pw,ph,enableDepth,enableStencil,multisampleLevel);
+                    this.m_adapter.createFBOAt(fboIndex,this.m_fboType,width,height,enableDepth,enableStencil,multisampleLevel);
                 }
             }
-			createReadFBOAt(fboIndex:number, pw:number,ph:number, enableDepth:boolean = false, enableStencil:boolean = false,multisampleLevel:number = 0):void
+            /**
+             * 创建一个指定序号的 read FBO(FrameBufferObject) 渲染运行时管理对象,
+             * renderer中一个序号只会对应一个唯一的 FBO 对象实例
+             * @param fboIndex FBO 对象的序号
+             * @param width FBO 对象的viewport宽度
+             * @param enableDepth FBO 对象的depth读写是否开启
+             * @param enableStencil FBO 对象的stencil读写是否开启
+             * @param multisampleLevel FBO 对象的multisample level
+             */
+			createReadFBOAt(fboIndex:number, width:number,height:number, enableDepth:boolean = false, enableStencil:boolean = false,multisampleLevel:number = 0):void
 			{
                 if(this.m_fboIndex < 0)
                 {
                     this.m_fboIndex = fboIndex;
                     this.m_fboType = FrameBufferType.READ_FRAMEBUFFER;
-                    this.m_initW = pw;
-                    this.m_initH = ph;
+                    this.m_initW = width;
+                    this.m_initH = height;
                     this.m_enableDepth = enableDepth;
                     this.m_enableStencil = enableStencil;
                     this.m_multisampleLevel = multisampleLevel;
-                    this.m_adapter.createFBOAt(fboIndex,this.m_fboType,pw,ph,enableDepth,enableStencil,multisampleLevel);
+                    this.m_adapter.createFBOAt(fboIndex,this.m_fboType,width,height,enableDepth,enableStencil,multisampleLevel);
                 }
             }
-            
-			createDrawFBOAt(fboIndex:number, pw:number,ph:number, enableDepth:boolean = false, enableStencil:boolean = false,multisampleLevel:number = 0):void
+            /**
+             * 创建一个指定序号的 draw FBO(FrameBufferObject) 渲染运行时管理对象,
+             * renderer中一个序号只会对应一个唯一的 FBO 对象实例
+             * @param fboIndex FBO 对象的序号
+             * @param width FBO 对象的viewport宽度
+             * @param enableDepth FBO 对象的depth读写是否开启
+             * @param enableStencil FBO 对象的stencil读写是否开启
+             * @param multisampleLevel FBO 对象的multisample level
+             */
+			createDrawFBOAt(fboIndex:number, width:number,height:number, enableDepth:boolean = false, enableStencil:boolean = false,multisampleLevel:number = 0):void
 			{
                 if(this.m_fboIndex < 0)
                 {
                     this.m_fboIndex = fboIndex;
                     this.m_fboType = FrameBufferType.DRAW_FRAMEBUFFER;
-                    this.m_initW = pw;
-                    this.m_initH = ph;
+                    this.m_initW = width;
+                    this.m_initH = height;
                     this.m_enableDepth = enableDepth;
                     this.m_enableStencil = enableStencil;
                     this.m_multisampleLevel = multisampleLevel;
-                    this.m_adapter.createFBOAt(fboIndex,this.m_fboType,pw,ph,enableDepth,enableStencil,multisampleLevel);
+                    this.m_adapter.createFBOAt(fboIndex,this.m_fboType,width,height,enableDepth,enableStencil,multisampleLevel);
                 }
             }
-            getTextureAt(i:number):RTTTextureProxy
+            /**
+             * @returns get framebuffer output attachment texture by attachment index
+             */
+            getRTTAt(i:number):RTTTextureProxy
             {
                 return this.m_texs[i];
             }
-            setRenderToTexture(texProxy:RTTTextureProxy, outputIndex:number = 0):void
+            /**
+             * 设置渲染到纹理的目标纹理对象(可由用自行创建)和framebuffer output attachment index
+             * @param rttTexProxy 作为渲染到目标的目标纹理对象
+             * @param outputIndex framebuffer output attachment index
+             */
+            setRenderToTexture(rttTexProxy:RTTTextureProxy, outputIndex:number = 0):void
             {
                 if(outputIndex == 0)
                 {
@@ -244,8 +292,36 @@ export namespace vox
                 {
                     this.m_texsTot = outputIndex + 1;
                 }
-                this.m_texs[outputIndex] = texProxy;
+                this.m_texs[outputIndex] = rttTexProxy;
             }
+            /**
+             * 设置渲染到纹理的目标纹理对象(普通 RTT 纹理类型的目标纹理)和framebuffer output attachment index
+             * @param systemRTTTexIndex 作为渲染到目标的目标纹理对象在系统普通rtt 纹理中的序号(0 -> 15)
+             * @param outputIndex framebuffer output attachment index
+             */
+            setRenderToRTTTextureAt(systemRTTTexIndex:number, outputIndex:number = 0):void
+            {
+                this.setRenderToTexture(this.m_texStore.getRTTTextureAt(systemRTTTexIndex), outputIndex);
+            }
+            /**
+             * 设置渲染到纹理的目标纹理对象(Float RTT 纹理类型的目标纹理)和framebuffer output attachment index
+             * @param systemFloatRTTTexIndex 作为渲染到目标的目标纹理对象在系统float rtt 纹理中的序号(0 -> 15)
+             * @param outputIndex framebuffer output attachment index
+             */
+            setRenderToFloatTextureAt(systemFloatRTTTexIndex:number, outputIndex:number = 0):void
+            {
+                this.setRenderToTexture(this.m_texStore.getRTTFloatTextureAt(systemFloatRTTTexIndex), outputIndex);
+            }
+            /**
+             * 设置渲染到纹理的目标纹理对象(depth RTT 纹理类型的目标纹理)和framebuffer output attachment index
+             * @param systemDepthRTTTexIndex 作为渲染到目标的目标纹理对象在系统depth rtt 纹理中的序号(0 -> 15)
+             * @param outputIndex framebuffer output attachment index
+             */
+            setRenderToDepthTextureAt(systemDepthRTTTexIndex:number, outputIndex:number = 0):void
+            {
+                this.setRenderToTexture(this.m_texStore.getDepthTextureAt(systemDepthRTTTexIndex), outputIndex);
+            }
+
             setClearState(clearColorBoo:boolean, clearDepthBoo:boolean, clearStencilBoo:boolean = false):void
             {
                 this.m_clearColorBoo = clearColorBoo;
@@ -432,8 +508,7 @@ export namespace vox
             
             clone():FBOInstance
             {
-
-                let ins:FBOInstance = new FBOInstance(this.m_render);
+                let ins:FBOInstance = new FBOInstance(this.m_render,this.m_texStore);
                 ins.m_fboSizeFactor = this.m_fboSizeFactor;
                 ins.m_bgColor.copyFrom(this.m_bgColor);
                 ins.m_fboIndex = this.m_fboIndex;

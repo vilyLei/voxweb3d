@@ -56,7 +56,7 @@ export namespace vox
             private m_rttTexs:RTTTextureProxy[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
             private m_rttCubeTexs:RTTTextureProxy[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
             private m_rttFloatTexs:RTTTextureProxy[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
-            private m_rttDepTexs:DepthTextureProxy[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
+            private m_rttDepthTexs:DepthTextureProxy[] = [null,null,null,null,null,null,null,null,null,null,null,null,null,null,null,null];
             getCubeRTTTextureAt(i:number):RTTTextureProxy
 	        {
 	        	if (this.m_rttCubeTexs[i] != null)
@@ -122,33 +122,33 @@ export namespace vox
             }
             getDepthTextureAt(i:number):DepthTextureProxy
 	        {
-	        	if (this.m_rttDepTexs[i] != null)
+	        	if (this.m_rttDepthTexs[i] != null)
 	        	{
-                    this.m_rttDepTexs[i].__$setRenderProxy(this.m_renderProxy);
-	        		return this.m_rttDepTexs[i];
+                    this.m_rttDepthTexs[i].__$setRenderProxy(this.m_renderProxy);
+	        		return this.m_rttDepthTexs[i];
                 }
-                this.m_rttDepTexs[i] = this.createDepthTex2D(64, 64);
-                this.m_rttDepTexs[i].to2DTexture();
-                this.m_rttDepTexs[i].name = "sys_depthTex_"+i;
-                this.m_rttDepTexs[i].minFilter = TextureConst.LINEAR;
-                this.m_rttDepTexs[i].magFilter = TextureConst.LINEAR;
-	        	return this.m_rttDepTexs[i];
+                this.m_rttDepthTexs[i] = this.createDepthTex2D(64, 64);
+                this.m_rttDepthTexs[i].to2DTexture();
+                this.m_rttDepthTexs[i].name = "sys_depthTex_"+i;
+                this.m_rttDepthTexs[i].minFilter = TextureConst.LINEAR;
+                this.m_rttDepthTexs[i].magFilter = TextureConst.LINEAR;
+	        	return this.m_rttDepthTexs[i];
             }
             createDepthTextureAt(i:number,pw:number,ph:number):DepthTextureProxy
 	        {
                 pw = pw > 1?pw:1;
                 ph = ph > 1?ph:1;
-	        	if (this.m_rttDepTexs[i] != null)
+	        	if (this.m_rttDepthTexs[i] != null)
 	        	{
-                    this.m_rttDepTexs[i].__$setRenderProxy(this.m_renderProxy);
-	        		return this.m_rttDepTexs[i];
+                    this.m_rttDepthTexs[i].__$setRenderProxy(this.m_renderProxy);
+	        		return this.m_rttDepthTexs[i];
                 }
-                this.m_rttDepTexs[i] = this.createDepthTex2D(pw,ph);
-                this.m_rttDepTexs[i].to2DTexture();
-                this.m_rttDepTexs[i].name = "sys_depthTex_"+i;
-                this.m_rttDepTexs[i].minFilter = TextureConst.LINEAR;
-                this.m_rttDepTexs[i].magFilter = TextureConst.LINEAR;
-	        	return this.m_rttDepTexs[i];
+                this.m_rttDepthTexs[i] = this.createDepthTex2D(pw,ph);
+                this.m_rttDepthTexs[i].to2DTexture();
+                this.m_rttDepthTexs[i].name = "sys_depthTex_"+i;
+                this.m_rttDepthTexs[i].minFilter = TextureConst.LINEAR;
+                this.m_rttDepthTexs[i].magFilter = TextureConst.LINEAR;
+	        	return this.m_rttDepthTexs[i];
             }
             getRTTFloatTextureAt(i:number):RTTTextureProxy
 	        {
