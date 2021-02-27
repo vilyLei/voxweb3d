@@ -73,7 +73,7 @@ export namespace advancedDemo
                 //this.m_texs[index].magFilter = TextureConst.NEAREST;
                 this.m_texs[index].minFilter = TextureConst.LINEAR;
                 this.m_texs[index].magFilter = TextureConst.LINEAR;
-                return this.m_texs[index];                
+                return this.m_texs[index];
             }
             private m_middleFBO:FBOInstance = null;
             private m_parFBO:FBOInstance = null;
