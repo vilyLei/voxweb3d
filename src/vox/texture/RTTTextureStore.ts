@@ -61,7 +61,7 @@ export namespace vox
 	        {
 	        	if (this.m_rttCubeTexs[i] != null)
 	        	{
-                    this.m_rttCubeTexs[i].__$setRenderResource(this.m_renderProxy.Texture);
+                    this.m_rttCubeTexs[i].__$setRenderProxy(this.m_renderProxy);
 	        		return this.m_rttCubeTexs[i];
                 }
                 this.m_rttCubeTexs[i] = this.createRTTTex2D(32, 32);
@@ -78,7 +78,7 @@ export namespace vox
                 ph = ph > 1?ph:1;
 	        	if (this.m_rttCubeTexs[i] != null)
 	        	{
-                    this.m_rttCubeTexs[i].__$setRenderResource(this.m_renderProxy.Texture);
+                    this.m_rttCubeTexs[i].__$setRenderProxy(this.m_renderProxy);
 	        		return this.m_rttCubeTexs[i];
                 }
                 this.m_rttCubeTexs[i] = this.createRTTTex2D(pw, ph);
@@ -94,7 +94,7 @@ export namespace vox
 	        {
 	        	if (this.m_rttTexs[i] != null)
 	        	{
-                    this.m_rttTexs[i].__$setRenderResource(this.m_renderProxy.Texture);
+                    this.m_rttTexs[i].__$setRenderProxy(this.m_renderProxy);
 	        		return this.m_rttTexs[i] as RTTTextureProxy;
                 }
                 this.m_rttTexs[i] = this.createRTTTex2D(32, 32);
@@ -110,7 +110,7 @@ export namespace vox
                 ph = ph > 1?ph:1;
 	        	if (this.m_rttTexs[i] != null)
 	        	{
-                    this.m_rttTexs[i].__$setRenderResource(this.m_renderProxy.Texture);
+                    this.m_rttTexs[i].__$setRenderProxy(this.m_renderProxy);
 	        		return this.m_rttTexs[i];
                 }
                 this.m_rttTexs[i] = this.createRTTTex2D(pw, ph);
@@ -124,7 +124,7 @@ export namespace vox
 	        {
 	        	if (this.m_rttDepTexs[i] != null)
 	        	{
-                    this.m_rttDepTexs[i].__$setRenderResource(this.m_renderProxy.Texture);
+                    this.m_rttDepTexs[i].__$setRenderProxy(this.m_renderProxy);
 	        		return this.m_rttDepTexs[i];
                 }
                 this.m_rttDepTexs[i] = this.createDepthTex2D(64, 64);
@@ -140,7 +140,7 @@ export namespace vox
                 ph = ph > 1?ph:1;
 	        	if (this.m_rttDepTexs[i] != null)
 	        	{
-                    this.m_rttDepTexs[i].__$setRenderResource(this.m_renderProxy.Texture);
+                    this.m_rttDepTexs[i].__$setRenderProxy(this.m_renderProxy);
 	        		return this.m_rttDepTexs[i];
                 }
                 this.m_rttDepTexs[i] = this.createDepthTex2D(pw,ph);
@@ -154,7 +154,7 @@ export namespace vox
 	        {
 	        	if (this.m_rttFloatTexs[i] != null)
 	        	{
-                    this.m_rttFloatTexs[i].__$setRenderResource(this.m_renderProxy.Texture);
+                    this.m_rttFloatTexs[i].__$setRenderProxy(this.m_renderProxy);
 	        		return this.m_rttFloatTexs[i];
                 }
                 let tex:RTTTextureProxy = this.createRTTTex2D(64, 64);
@@ -173,7 +173,7 @@ export namespace vox
                 ph = ph > 1?ph:1;
 	        	if (this.m_rttFloatTexs[i] != null)
 	        	{
-                    this.m_rttFloatTexs[i].__$setRenderResource(this.m_renderProxy.Texture);
+                    this.m_rttFloatTexs[i].__$setRenderProxy(this.m_renderProxy);
 	        		return this.m_rttFloatTexs[i];
                 }
                 let tex:RTTTextureProxy = this.createRTTTex2D(pw, ph);

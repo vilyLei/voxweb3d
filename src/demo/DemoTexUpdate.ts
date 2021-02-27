@@ -82,9 +82,7 @@ export namespace demo
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 200);
-                //  
-                //  this.m_texBlock = new TextureBlock();
-                //  this.m_texBlock.setRenderer(this.m_rscene.getRenderer());
+
                 this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
                 
                 this.m_rscene.getStage3D().addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);

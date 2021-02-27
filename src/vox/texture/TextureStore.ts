@@ -69,6 +69,7 @@ export namespace vox
                 {
                     TextureStore.s_rttStore = new RTTTextureStore(renderer.getRenderProxy());
                 }
+                TextureResSlot.GetInstance().setRenderProxy(renderer.getRenderProxy());
             }
             
             static CreateWrapperTex(pw:number,ph:number,powerof2Boo:boolean = false):WrapperTextureProxy
@@ -135,7 +136,7 @@ export namespace vox
                 else
                 {
                     console.log("repeat use bytes texture from the texture pool.");
-                    tex.__$setRenderResource(TextureStore.s_renderer.getRenderProxy().Texture);
+                    tex.__$setRenderProxy(TextureStore.s_renderer.getRenderProxy());
                 }
                 return tex;
             }

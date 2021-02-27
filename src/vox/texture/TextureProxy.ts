@@ -41,7 +41,7 @@ export namespace vox
             private m_uid:number = -1;
             // 自身的引用计数器
             private m_attachCount:number = 0;
-            protected m_renderRes:IRenderResource = null;
+            protected m_renderProxy:RenderProxy = null;
             protected m_slot:TextureResSlot = null;
 
             protected m_miplevel:number = -1;
@@ -74,6 +74,8 @@ export namespace vox
             // webgl1环境下,这个参数值为LINEAR会报错:
             // [.WebGL-0BC70EE8]RENDER WARNING: texture bound to texture unit 1 is not renderable. It maybe non-power-of-2 and have incompatible texture filtering.
             magFilter:number = TextureConst.LINEAR;
+            // 用于记录自身变换的版本号，例如数据变换
+            version:number = 0;
             constructor(texWidth:number,texHeight:number,powerof2Boo:boolean = false)
             {
                 this.m_slot = TextureResSlot.GetInstance();                
@@ -100,9 +102,9 @@ export namespace vox
             {
                 resTex.bindToGpu(this.getResUid());
             }
-            __$setRenderResource(texRenderRes:IRenderResource):void
+            __$setRenderProxy(rc:RenderProxy):void
             {
-                this.m_renderRes = texRenderRes;
+                this.m_renderProxy = rc;
             }
             /**
              * 被引用计数加一
@@ -180,7 +182,7 @@ export namespace vox
              */
             isGpuEnabled():boolean
             {
-                return this.m_renderRes != null && this.m_renderRes.hasResUid(this.getResUid());
+                return this.m_renderProxy != null && this.m_renderProxy.Texture.hasResUid(this.getResUid());
             }
             /**
              * @returns The fragment processor texture sampler type.
@@ -257,15 +259,13 @@ export namespace vox
             {
                 if(rc != null)
                 {
+                    console.log("texture updateDataToGpu by the specific rc.");
                     rc.MaterialUpdater.updateTextureData(this, deferred);
                 }
-                else
+                else if(this.m_renderProxy != null)
                 {
-                    if(this.isGpuEnabled())
-                    {
-                        // 这里需要改进, 不能这么直接的同步更新
-                        this.__$updateToGpu(this.m_renderRes);
-                    }
+                    console.log("texture updateDataToGpu by the current rc.");
+                    this.m_renderProxy.MaterialUpdater.updateTextureData(this, deferred);
                 }
             }
             protected createTexBuf(texResource:IRenderResource):boolean
@@ -351,7 +351,7 @@ export namespace vox
                     this.m_texWidth = 1;
                     this.m_texHeight = 1;
                     this.m_slot = null;
-                    this.m_renderRes = null;
+                    this.m_renderProxy = null;
                     console.log("TextureProxy::destroy(), destroy a textureProxy instance(uid="+this.getUid()+")...");
                 }
             }

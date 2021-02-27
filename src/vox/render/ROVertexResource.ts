@@ -489,6 +489,11 @@ export namespace vox
             {
                 return this.m_gl;
             }
+            /**
+             * check whether the renderer runtime resource(by renderer runtime resource unique id) exists in the current renderer context
+             * @param resUid renderer runtime resource unique id
+             * @returns has or has not resource by unique id
+             */
             hasResUid(resUid:number):boolean
             {
                 return this.m_resMap.has(resUid);

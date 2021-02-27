@@ -26,7 +26,6 @@ export namespace vox
             __$detachThis():void;
             __$$use(res:IRenderResource):void;
             __$$upload(res:IRenderResource):void;
-            __$setRenderResource(texRenderRes:IRenderResource):void;
             __$destroy():void;
         }
     }

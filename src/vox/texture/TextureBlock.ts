@@ -64,6 +64,7 @@ export namespace vox
             setRenderer(renderer:RendererInstance):void
             {
                 this.m_renderer = renderer;
+                TextureResSlot.GetInstance().setRenderProxy(renderer.getRenderProxy());
                 if(this.m_rttStore == null && renderer != null)
                 {
                     this.m_rttStore = new RTTTextureStore(renderer.getRenderProxy());
@@ -86,6 +87,10 @@ export namespace vox
                 {
                     tex = new ImageTextureProxy(pw,ph,powerof2Boo);
                 }
+                else
+                {
+                    tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+                }
                 tex.mipmapEnabled = true;
                 tex.setWrap(TextureConst.WRAP_REPEAT);
                 return tex;
@@ -97,6 +102,10 @@ export namespace vox
                 if(tex == null)
                 {
                     tex = new FloatTextureProxy(pw,ph,powerof2Boo);
+                }
+                else
+                {                    
+                    tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
                 }
                 tex.srcFormat = TextureFormat.RGBA;
                 tex.dataType = TextureDataType.HALF_FLOAT_OES;
@@ -111,6 +120,10 @@ export namespace vox
                 if(tex == null)
                 {
                     tex = new FloatTextureProxy(pw,ph,powerof2Boo);
+                }
+                else
+                {                    
+                    tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
                 }
                 return tex;
             }
@@ -132,7 +145,7 @@ export namespace vox
                 else
                 {
                     console.log("repeat use bytes texture from the texture pool.");
-                    tex.__$setRenderResource(this.m_renderer.getRenderProxy().Texture);
+                    tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
                 }
                 return tex;
             }

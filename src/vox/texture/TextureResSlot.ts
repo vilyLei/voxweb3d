@@ -7,12 +7,14 @@
 
 import * as IRenderResourceT from '../../vox/render/IRenderResource';
 import * as RenderProxyT from "../../vox/render/RenderProxy"
+import * as TextureProxyT from "../../vox/texture/TextureProxy"
 import * as IRenderTextureT from "../../vox/render/IRenderTexture"
 import * as IRenderBufferT from "../../vox/render/IRenderBuffer";
 import * as ROBufferUpdaterT from "../../vox/render/ROBufferUpdater";
 
 import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import IRenderTexture = IRenderTextureT.vox.render.IRenderTexture;
 import IRenderBuffer = IRenderBufferT.vox.render.IRenderBuffer;
 import ROBufferUpdater = ROBufferUpdaterT.vox.render.ROBufferUpdater;
@@ -54,7 +56,7 @@ export namespace vox
             {
                 if(texture != null && !this.m_textureMap.has(texture.getUid()))
                 {
-                    //texture.__$setRenderResource(this.m_texResource);
+                    (texture as TextureProxy).__$setRenderProxy(this.m_renderProxy);
                     this.m_textureMap.set(texture.getUid(), texture);
                     this.m_textureTotal ++;
                 }
