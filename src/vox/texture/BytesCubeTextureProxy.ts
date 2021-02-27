@@ -62,7 +62,7 @@ export namespace vox
                 {
                     this.m_imgDataList = [null,null,null, null,null,null];
                 }
-                if(this.isGpuEnabled() && pw > 0 && ph > 0)
+                if(pw > 0 && ph > 0)
                 {
                     if(index == 0)
                     {
@@ -93,6 +93,7 @@ export namespace vox
                     gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, this.m_miplevel, TextureFormat.ToGL(gl,this.internalFormat),this.getWidth(),this.getWidth(),0,TextureFormat.ToGL(gl,this.srcFormat),  TextureDataType.ToGL(gl, this.dataType), imo.imgData);
 
                 }
+                this.version = 0;
             }
             toString():string
             {
@@ -100,8 +101,9 @@ export namespace vox
             }
             __$destroy():void
             {
-                if(!this.isGpuEnabled())
+                if(this.getAttachCount() < 1)
                 {
+                    this.version = 0;
                     if( this.m_imgDataList != null)
                     {
                         for(let i:number = 0; i < 6; ++i)

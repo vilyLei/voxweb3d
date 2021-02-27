@@ -259,12 +259,12 @@ export namespace vox
             {
                 if(rc != null)
                 {
-                    console.log("texture updateDataToGpu by the specific rc.");
+                    console.log("texture updateDataToGpu by the specific rc, version:"+this.version);
                     rc.MaterialUpdater.updateTextureData(this, deferred);
                 }
                 else if(this.m_renderProxy != null)
                 {
-                    console.log("texture updateDataToGpu by the current rc.");
+                    console.log("texture updateDataToGpu by the current rc, version:"+this.version);
                     this.m_renderProxy.MaterialUpdater.updateTextureData(this, deferred);
                 }
             }
@@ -300,7 +300,8 @@ export namespace vox
              * sub class can not override!!!!
              */
             protected dataUploadToGpu(gl:any,texData:ITexData,texDatas:ITexData[]):void
-            {                
+            {
+                this.version = 0;
                 let interType:any = TextureFormat.ToGL(gl,this.internalFormat);
                 let format:any = TextureFormat.ToGL(gl,this.srcFormat);
                 let type:any = TextureDataType.ToGL(gl, this.dataType);

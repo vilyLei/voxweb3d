@@ -99,6 +99,7 @@ export namespace vox
                         td.offsetx = offsetx;
                         td.offsety = offsety;
                     }
+                    this.version++;
                 }
             }
             protected uploadData(texRes:IRenderResource):void
@@ -107,11 +108,12 @@ export namespace vox
                 {
                     this.dataUploadToGpu(texRes.getRC(), this.m_texData, this.m_texDatas);
                 }
+                this.version = 0;
             }
             __$updateToGpu(texRes:IRenderResource):void
             {
                 // 这里之所以用这种方式判断，是为了运行时支持多 gpu context
-                if(texRes.hasResUid(this.getResUid()))
+                if(this.version > 0 && texRes.hasResUid(this.getResUid()))
                 {
                     if(this.m_texData != null)
                     {
@@ -127,6 +129,7 @@ export namespace vox
             {
                 if(this.getAttachCount() < 1)
                 {
+                    this.version = 0;
                     if(this.m_texDatas != null)
                     {
                         for(let i:number = 0;i<this.m_texDatasLen;++i)

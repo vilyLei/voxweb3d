@@ -118,8 +118,8 @@
 //  import * as DemoMRT2 from "./demo/DemoMRT2";
 //  import Demo = DemoMRT2.demo.DemoMRT2;
 
-import * as DemoFBOInstance from "./demo/DemoFBOInstance";
-import Demo = DemoFBOInstance.demo.DemoFBOInstance;
+//  import * as DemoFBOInstance from "./demo/DemoFBOInstance";
+//  import Demo = DemoFBOInstance.demo.DemoFBOInstance;
 
 //  import * as DemoMRT from "./demo/DemoMRT";
 //  import Demo = DemoMRT.demo.DemoMRT;
@@ -232,8 +232,8 @@ import Demo = DemoFBOInstance.demo.DemoFBOInstance;
 //  import * as DemoDelEntity from "./demo/DemoDelEntity";
 //  import Demo = DemoDelEntity.demo.DemoDelEntity;
 
-//  import * as DemoTexUpdate from "./demo/DemoTexUpdate";
-//  import Demo = DemoTexUpdate.demo.DemoTexUpdate;
+import * as DemoTexUpdate from "./demo/DemoTexUpdate";
+import Demo = DemoTexUpdate.demo.DemoTexUpdate;
 
 //  import * as DemoDivControl from "./demo/DemoDivControl";
 //  import Demo = DemoDivControl.demo.DemoDivControl;
