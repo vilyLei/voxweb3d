@@ -7,7 +7,6 @@
 
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as IRenderResourceT from "../../vox/render/IRenderResource";
-import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
@@ -15,7 +14,6 @@ import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
-import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 
 export namespace vox
@@ -24,9 +22,9 @@ export namespace vox
     {
         export class DepthTextureProxy extends RTTTextureProxy
         {
-            constructor(slot:ITextureSlot, texWidth:number,texHeight:number,powerof2Boo:boolean = false)
+            constructor(texWidth:number,texHeight:number,powerof2Boo:boolean = false)
             {
-                super(slot,texWidth,texHeight,powerof2Boo);
+                super(texWidth,texHeight,powerof2Boo);
                 this.minFilter = TextureConst.NEAREST;
                 this.magFilter = TextureConst.NEAREST;
                 this.srcFormat = TextureFormat.DEPTH_COMPONENT;

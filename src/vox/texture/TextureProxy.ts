@@ -12,7 +12,7 @@ import * as ITexDataT from "../../vox/texture/ITexData";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as IRenderResourceT from "../../vox/render/IRenderResource";
 import * as IRenderTextureT from "../../vox/render/IRenderTexture";
-import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
+import * as TextureResSlotT from "../../vox/texture/TextureResSlot";
 
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
@@ -25,7 +25,7 @@ import ITexData = ITexDataT.vox.texture.ITexData;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
 import IRenderTexture = IRenderTextureT.vox.render.IRenderTexture;
-import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
+import TextureResSlot = TextureResSlotT.vox.texture.TextureResSlot;
 
 export namespace vox
 {
@@ -41,7 +41,8 @@ export namespace vox
             private m_uid:number = -1;
             // 自身的引用计数器
             private m_attachCount:number = 0;
-            protected m_slot:ITextureSlot = null;
+            protected m_renderRes:IRenderResource = null;
+            protected m_slot:TextureResSlot = null;
 
             protected m_miplevel:number = -1;
             protected m_texWidth:number = 128;
@@ -73,13 +74,9 @@ export namespace vox
             // webgl1环境下,这个参数值为LINEAR会报错:
             // [.WebGL-0BC70EE8]RENDER WARNING: texture bound to texture unit 1 is not renderable. It maybe non-power-of-2 and have incompatible texture filtering.
             magFilter:number = TextureConst.LINEAR;
-            constructor(slot:ITextureSlot, texWidth:number,texHeight:number,powerof2Boo:boolean = false)
+            constructor(texWidth:number,texHeight:number,powerof2Boo:boolean = false)
             {
-                if(slot == null)
-                {
-                    throw Error("create a new textureProxy instance Error!!!");
-                }
-                this.m_slot = slot;
+                this.m_slot = TextureResSlot.GetInstance();                
                 this.m_uid = TextureProxy.s_uid++;
 
                 if(texWidth  < 1) texWidth = 128;
@@ -94,14 +91,7 @@ export namespace vox
                     this.m_texWidth = texWidth;
                     this.m_texHeight = texHeight;
                 }
-            }
-            __$setSlot(slot:ITextureSlot):void
-            {
-                if(this.m_slot == null && slot != null)
-                {
-                    this.m_attachCount = 0;
-                    this.m_slot = slot;
-                }
+                this.m_slot.__$$addTexture(this);
             }
             /**
              * This function only be be called by the renderer inner system.
@@ -109,6 +99,10 @@ export namespace vox
             __$$use(resTex:IRenderResource):void
             {
                 resTex.bindToGpu(this.getResUid());
+            }
+            __$setRenderResource(texRenderRes:IRenderResource):void
+            {
+                this.m_renderRes = texRenderRes;
             }
             /**
              * 被引用计数加一
@@ -186,7 +180,7 @@ export namespace vox
              */
             isGpuEnabled():boolean
             {
-                return this.m_slot.isGpuEnabledByResUid(this.getResUid());
+                return this.m_renderRes != null && this.m_renderRes.hasResUid(this.getResUid());
             }
             /**
              * @returns The fragment processor texture sampler type.
@@ -269,7 +263,8 @@ export namespace vox
                 {
                     if(this.isGpuEnabled())
                     {
-                        this.m_slot.addRenderBuffer(this, this.getResUid());
+                        // 这里需要改进, 不能这么直接的同步更新
+                        this.__$updateToGpu(this.m_renderRes);
                     }
                 }
             }
@@ -356,6 +351,7 @@ export namespace vox
                     this.m_texWidth = 1;
                     this.m_texHeight = 1;
                     this.m_slot = null;
+                    this.m_renderRes = null;
                     console.log("TextureProxy::destroy(), destroy a textureProxy instance(uid="+this.getUid()+")...");
                 }
             }

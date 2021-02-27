@@ -6,14 +6,12 @@
 /***************************************************************************/
 
 import * as TextureConstT from "../../vox/texture/TextureConst";
-import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as RawDataTextureProxyT from "../../vox/texture/RawDataTextureProxy";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
-import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import RawDataTextureProxy = RawDataTextureProxyT.vox.texture.RawDataTextureProxy;
 
 export namespace vox
@@ -22,9 +20,9 @@ export namespace vox
     {
         export class Uint16TextureProxy extends RawDataTextureProxy
         {
-            constructor(slot:ITextureSlot, texWidth:number,texHeight:number,powerof2Boo:boolean = false)
+            constructor(texWidth:number,texHeight:number,powerof2Boo:boolean = false)
             {
-                super(slot, texWidth,texHeight,powerof2Boo);
+                super(texWidth,texHeight,powerof2Boo);
                 this.m_type = TextureProxyType.Uint16;
                 this.minFilter = TextureConst.LINEAR;
                 this.dataType = TextureDataType.UNSIGNED_SHORT;

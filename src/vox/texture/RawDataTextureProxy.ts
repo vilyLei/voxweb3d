@@ -7,7 +7,6 @@
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as TextureDataT from "../../vox/texture/RawTexData";
 import * as IRenderResourceT from "../../vox/render/IRenderResource";
-import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as ITexDataT from "../../vox/texture/ITexData";
 
@@ -16,7 +15,6 @@ import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import RawTexData = TextureDataT.vox.texture.RawTexData;
 import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
-import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import ITexData = ITexDataT.vox.texture.ITexData;
 
@@ -29,9 +27,9 @@ export namespace vox
             private m_bytes:Uint8Array | Uint16Array | Float32Array = null;
             private m_subDataList:RawTexData[] = null;
             private m_texDatasLen:number = 0;
-            constructor(slot:ITextureSlot, texWidth:number,texHeight:number,powerof2Boo:boolean = false)
+            constructor(texWidth:number,texHeight:number,powerof2Boo:boolean = false)
             {
-                super(slot, texWidth,texHeight,powerof2Boo);
+                super(texWidth,texHeight,powerof2Boo);
                 this.minFilter = TextureConst.LINEAR;
             }
             private m_texData:RawTexData = null;

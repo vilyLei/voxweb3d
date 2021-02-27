@@ -97,8 +97,7 @@ export namespace vox
                     {
                         return this.m_texs[index];
                     }
-                    let tex:RTTTextureProxy = new RTTTextureProxy(this.m_renderer.textureSlot,this.m_renderer.getViewWidth(),this.m_renderer.getViewHeight());
-                    this.m_renderer.textureSlot.addTexture(tex);
+                    let tex:RTTTextureProxy = new RTTTextureProxy(this.m_renderer.getViewWidth(),this.m_renderer.getViewHeight());
                     this.m_texs[index] = tex;
                     this.m_texs[index].minFilter = TextureConst.NEAREST;
                     this.m_texs[index].magFilter = TextureConst.NEAREST;

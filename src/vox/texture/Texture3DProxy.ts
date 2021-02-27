@@ -7,7 +7,6 @@
 
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as IRenderResourceT from "../../vox/render/IRenderResource";
-import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
@@ -15,7 +14,6 @@ import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureTarget = TextureConstT.vox.texture.TextureTarget;
 import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
 import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
-import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 
 export namespace vox
@@ -26,9 +24,9 @@ export namespace vox
         {
             private m_bytes:Uint8Array = null;
             private m_tex3DDepth:number = 1;
-            constructor(slot:ITextureSlot, texWidth:number,texHeight:number,tex3DDepth:number = 1,powerof2Boo:boolean = false)
+            constructor(texWidth:number,texHeight:number,tex3DDepth:number = 1,powerof2Boo:boolean = false)
             {
-                super(slot, texWidth,texHeight,powerof2Boo);        
+                super(texWidth,texHeight,powerof2Boo);        
                 this.internalFormat = TextureFormat.R8;
                 this.srcFormat = TextureFormat.RED;
                 this.m_tex3DDepth = tex3DDepth;

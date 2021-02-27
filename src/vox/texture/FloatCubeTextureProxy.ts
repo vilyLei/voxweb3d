@@ -6,7 +6,6 @@
 /***************************************************************************/
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as IRenderResourceT from "../../vox/render/IRenderResource";
-import * as ITextureSlotT from "../../vox/texture/ITextureSlot";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
@@ -14,7 +13,6 @@ import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import TextureTarget = TextureConstT.vox.texture.TextureTarget;
 import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
 import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
-import ITextureSlot = ITextureSlotT.vox.texture.ITextureSlot;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 
 export namespace vox
@@ -25,9 +23,9 @@ export namespace vox
         export class FloatCubeTextureProxy extends TextureProxy
         {
             private m_imgDataList:any[] = null;
-            constructor(slot:ITextureSlot, texWidth:number,texHeight:number)
+            constructor(texWidth:number,texHeight:number)
             {
-                super(slot, texWidth,texHeight,false);
+                super(texWidth,texHeight,false);
                 this.m_texTarget = TextureTarget.TEXTURE_CUBE;
                 this.m_type = TextureProxyType.FloatCube;
                 this.internalFormat = TextureFormat.RGBA16F;

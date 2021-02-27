@@ -27,7 +27,6 @@ import * as IRendererT from "../../vox/scene/IRenderer";
 
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
-import * as TextureSlotT from "../../vox/texture/TextureSlot";
 import * as DispEntity3DManagerT from "../../vox/scene/DispEntity3DManager";
 
 import Stage3D = Stage3DT.vox.display.Stage3D;
@@ -48,7 +47,6 @@ import IRenderer = IRendererT.vox.scene.IRenderer;
 
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
 import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
-import TextureSlot = TextureSlotT.vox.texture.TextureSlot;
 import DispEntity3DManager = DispEntity3DManagerT.vox.scene.DispEntity3DManager;
 
 export namespace vox
@@ -74,7 +72,6 @@ export namespace vox
             private m_roVtxBuild:ROVtxBuilder = null;
             readonly bufferUpdater:ROBufferUpdater = null;
             
-            readonly textureSlot:TextureSlot = null;
             constructor()
             {
             }
@@ -168,13 +165,9 @@ export namespace vox
                     this.appendProcess(this.m_batchEnabled,this.m_processFixedState);
                     
                     let roBufUpdater:ROBufferUpdater = new ROBufferUpdater();
-                    let texSlot:TextureSlot = new TextureSlot();
-                    texSlot.setRenderProxy(this.m_renderProxy);
-                    texSlot.setBufferUpdater(roBufUpdater);
-
+                    
                     let selfT:any = this;
-                    selfT.bufferUpdater = roBufUpdater;                    
-                    selfT.textureSlot = texSlot;
+                    selfT.bufferUpdater = roBufUpdater;
                 }
             }
             update():void

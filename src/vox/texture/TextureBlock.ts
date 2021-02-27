@@ -20,6 +20,7 @@ import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 import * as DepthTextureProxyT from "../../vox/texture/DepthTextureProxy";
 import * as WrapperTextureProxyT from "../../vox/texture/WrapperTextureProxy";
 import * as RendererInstanceT from "../../vox/scene/RendererInstance";
+import * as TextureResSlotT from "../../vox/texture/TextureResSlot";
 import * as RTTTextureStoreT from "../../vox/texture/RTTTextureStore";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
@@ -41,6 +42,7 @@ import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 import DepthTextureProxy = DepthTextureProxyT.vox.texture.DepthTextureProxy;
 import WrapperTextureProxy = WrapperTextureProxyT.vox.texture.WrapperTextureProxy;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
+import TextureResSlot = TextureResSlotT.vox.texture.TextureResSlot;
 import RTTTextureStore = RTTTextureStoreT.vox.texture.RTTTextureStore;
 
 export namespace vox
@@ -64,31 +66,26 @@ export namespace vox
                 this.m_renderer = renderer;
                 if(this.m_rttStore == null && renderer != null)
                 {
-                    this.m_rttStore = new RTTTextureStore(renderer.textureSlot);
+                    this.m_rttStore = new RTTTextureStore(renderer.getRenderProxy());
                 }
             }
             
             createWrapperTex(pw:number,ph:number,powerof2Boo:boolean = false):WrapperTextureProxy
             {
-                let tex:WrapperTextureProxy = new WrapperTextureProxy(this.m_renderer.textureSlot,pw,ph,powerof2Boo);
-                this.m_renderer.textureSlot.addTexture(tex);
-                return tex;
+                return new WrapperTextureProxy(pw,ph,powerof2Boo);
             }
 
             createRTTTex2D(pw:number,ph:number,powerof2Boo:boolean = false):RTTTextureProxy
             {
-                let tex:RTTTextureProxy = new RTTTextureProxy(this.m_renderer.textureSlot,pw,ph,powerof2Boo);
-                this.m_renderer.textureSlot.addTexture(tex);
-                return tex;
+                return new RTTTextureProxy(pw,ph,powerof2Boo);
             }
             createImageTex2D(pw:number,ph:number,powerof2Boo:boolean = false):ImageTextureProxy
             {
                 let tex:ImageTextureProxy = this.m_texPool.getTexture(TextureProxyType.Image) as ImageTextureProxy;
                 if(tex == null)
                 {
-                    tex = new ImageTextureProxy(this.m_renderer.textureSlot,pw,ph,powerof2Boo);
+                    tex = new ImageTextureProxy(pw,ph,powerof2Boo);
                 }
-                this.m_renderer.textureSlot.addTexture(tex);
                 tex.mipmapEnabled = true;
                 tex.setWrap(TextureConst.WRAP_REPEAT);
                 return tex;
@@ -99,13 +96,12 @@ export namespace vox
                 let tex:FloatTextureProxy = this.m_texPool.getTexture(TextureProxyType.Float) as FloatTextureProxy;
                 if(tex == null)
                 {
-                    tex = new FloatTextureProxy(this.m_renderer.textureSlot,pw,ph,powerof2Boo);
+                    tex = new FloatTextureProxy(pw,ph,powerof2Boo);
                 }
                 tex.srcFormat = TextureFormat.RGBA;
                 tex.dataType = TextureDataType.HALF_FLOAT_OES;
                 //tex.srcFormat = TextureFormat.RGBA16F;
                 //tex.dataType = TextureDataType.FLOAT;
-                this.m_renderer.textureSlot.addTexture(tex);
                 return tex;
             }
             createFloatTex2D(pw:number,ph:number,powerof2Boo:boolean = false):FloatTextureProxy
@@ -114,50 +110,40 @@ export namespace vox
                 
                 if(tex == null)
                 {
-                    tex = new FloatTextureProxy(this.m_renderer.textureSlot,pw,ph,powerof2Boo);
+                    tex = new FloatTextureProxy(pw,ph,powerof2Boo);
                 }
-                this.m_renderer.textureSlot.addTexture(tex);
                 return tex;
             }
             createUint16Tex2D(pw:number,ph:number,powerof2Boo:boolean = false):Uint16TextureProxy
             {
-                let tex:Uint16TextureProxy = new Uint16TextureProxy(this.m_renderer.textureSlot,pw,ph,powerof2Boo);
-                this.m_renderer.textureSlot.addTexture(tex);
-                return tex;
+                return new Uint16TextureProxy(pw,ph,powerof2Boo);
             }
             createFloatCubeTex(pw:number,ph:number,powerof2Boo:boolean = false):FloatCubeTextureProxy
             {
-                let tex:FloatCubeTextureProxy = new FloatCubeTextureProxy(this.m_renderer.textureSlot,pw,ph);
-                this.m_renderer.textureSlot.addTexture(tex);
-                return tex;
+                return new FloatCubeTextureProxy(pw,ph);
             }
             createBytesTex(texW:number,texH:number):BytesTextureProxy
             {
                 let tex:BytesTextureProxy = this.m_texPool.getTexture(TextureProxyType.Bytes) as BytesTextureProxy;
                 if(tex == null)
                 {
-                    tex = new BytesTextureProxy(this.m_renderer.textureSlot,texW,texH);
+                    tex = new BytesTextureProxy(texW,texH);
                 }
                 else
                 {
                     console.log("repeat use bytes texture from the texture pool.");
-                    tex.__$setSlot(this.m_renderer.textureSlot);
+                    tex.__$setRenderResource(this.m_renderer.getRenderProxy().Texture);
                 }
-                this.m_renderer.textureSlot.addTexture(tex);
                 return tex;
             }
             
             createBytesCubeTex(texW:number,texH:number):BytesCubeTextureProxy
             {
-                let tex:BytesCubeTextureProxy = new BytesCubeTextureProxy(this.m_renderer.textureSlot,texW,texH);
-                this.m_renderer.textureSlot.addTexture(tex);
-                return tex;
+                return new BytesCubeTextureProxy(texW,texH);
             }
             createImageCubeTex(texW:number,texH:number):ImageCubeTextureProxy
             {
-                let tex:ImageCubeTextureProxy = new ImageCubeTextureProxy(this.m_renderer.textureSlot,texW,texH);
-                this.m_renderer.textureSlot.addTexture(tex);
-                return tex;
+                return new ImageCubeTextureProxy(texW,texH);
             }
             createTex3D(texW:number,texH:number, depth:number = 1):Texture3DProxy
             {
@@ -165,9 +151,7 @@ export namespace vox
                 {
                     depth = 1;
                 }
-                let tex:Texture3DProxy = new Texture3DProxy(this.m_renderer.textureSlot,texW,texH,depth);
-                this.m_renderer.textureSlot.addTexture(tex);
-                return tex;
+                return new Texture3DProxy(texW,texH,depth);
             }
             createRGBATex2D(pw:number,ph:number,color:Color4):BytesTextureProxy
             {
@@ -189,7 +173,6 @@ export namespace vox
                     k += 4;
                 }
                 tex.setDataFromBytes(bytes,0, pw,ph);
-                this.m_renderer.textureSlot.addTexture(tex);
                 return tex;
             }
             createAlphaTex2D(pw:number,ph:number,alpha:number):BytesTextureProxy
@@ -210,7 +193,6 @@ export namespace vox
                 let tex:BytesTextureProxy = this.createBytesTex(pw,ph);             
                 tex.setDataFromBytes(bytes, 0, pw, ph);
                 tex.toAlphaFormat();
-                this.m_renderer.textureSlot.addTexture(tex);
                 return tex;
             }
             
@@ -260,7 +242,7 @@ export namespace vox
                     let tex:TextureProxy;
                     this.m_dlearDelay = 256;
                     
-                    let freeMap:Map<number,number> = this.m_renderer.textureSlot.getFreeResUidMap();
+                    let freeMap:Map<number,number> = TextureResSlot.GetInstance().getFreeResUidMap();
                     let total:number = 32;
                     for(const [key,value] of freeMap)
                     {
@@ -272,7 +254,7 @@ export namespace vox
                         if(value > 2)
                         {
                             freeMap.delete(key);
-                            tex = this.m_renderer.textureSlot.removeTextureByUid(key) as TextureProxy;
+                            tex = TextureResSlot.GetInstance().removeTextureByUid(key) as TextureProxy;
                             if(tex != null)
                             {
                                 this.m_texPool.addTexture(tex);                                

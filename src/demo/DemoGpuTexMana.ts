@@ -8,6 +8,7 @@ import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 import * as MouseEventT from "../vox/event/MouseEvent";
 import * as Stage3DT from "../vox/display/Stage3D";
 import * as TextureStoreT from "../vox/texture/TextureStore";
+import * as TextureResSlotT from "../vox/texture/TextureResSlot";
 
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as DemoSceneT from "./texMana/DemoScene";
@@ -21,6 +22,7 @@ import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
+import TextureResSlot = TextureResSlotT.vox.texture.TextureResSlot;
 
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import DemoScene = DemoSceneT.demo.texMama.DemoScene;
@@ -70,7 +72,7 @@ export namespace demo
         {
             TextureStore.Update();
             this.m_scene.run();
-            this.m_statusDisp.statusInfo = "/"+this.m_rcontext.getTextureAttachTotal()+"/"+this.m_renderer.textureSlot.getTextureTotal();
+            this.m_statusDisp.statusInfo = "/"+this.m_rcontext.getTextureAttachTotal()+"/"+TextureResSlot.GetInstance().getTextureTotal();
             this.m_statusDisp.update();
 
             this.m_rcontext.setClearRGBColor3f(0.1, 0.1, 0.2);

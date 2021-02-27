@@ -9,7 +9,7 @@ import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 import * as DepthTextureProxyT from "../../vox/texture/DepthTextureProxy";
 import * as WrapperTextureProxyT from "../../vox/texture/WrapperTextureProxy";
-import * as TextureSlotT from "../../vox/texture/TextureSlot";
+import * as RenderProxyT from "../../vox/render/RenderProxy";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
@@ -17,7 +17,7 @@ import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 import DepthTextureProxy = DepthTextureProxyT.vox.texture.DepthTextureProxy;
 import WrapperTextureProxy = WrapperTextureProxyT.vox.texture.WrapperTextureProxy;
-import TextureSlot = TextureSlotT.vox.texture.TextureSlot;
+import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 
 export namespace vox
 {
@@ -28,31 +28,28 @@ export namespace vox
          */
         export class RTTTextureStore
         {
-            private m_textureSlot:TextureSlot = null;
-            constructor(textureSlot:TextureSlot)
+            private m_renderProxy:RenderProxy = null;
+            constructor(renderProxy:RenderProxy)
             {
-                this.m_textureSlot = textureSlot;
+                this.m_renderProxy = renderProxy;
             }
-            getTextureSlot():TextureSlot
+            getRenderProxy():RenderProxy
             {
-                return this.m_textureSlot;
+                return this.m_renderProxy;
             }
             createWrapperTex(pw:number,ph:number,powerof2Boo:boolean = false):WrapperTextureProxy
             {
-                let tex:WrapperTextureProxy = new WrapperTextureProxy(this.m_textureSlot,pw,ph,powerof2Boo);
-                this.m_textureSlot.addTexture(tex);
+                let tex:WrapperTextureProxy = new WrapperTextureProxy(pw,ph,powerof2Boo);
                 return tex;
             }
             createRTTTex2D(pw:number,ph:number,powerof2Boo:boolean = false):RTTTextureProxy
             {
-                let tex:RTTTextureProxy = new RTTTextureProxy(this.m_textureSlot,pw,ph,powerof2Boo);
-                this.m_textureSlot.addTexture(tex);
+                let tex:RTTTextureProxy = new RTTTextureProxy(pw,ph,powerof2Boo);
                 return tex;
             }
             createDepthTex2D(pw:number,ph:number,powerof2Boo:boolean = false):DepthTextureProxy
             {
-                let tex:DepthTextureProxy = new DepthTextureProxy(this.m_textureSlot,pw,ph,powerof2Boo);
-                this.m_textureSlot.addTexture(tex);
+                let tex:DepthTextureProxy = new DepthTextureProxy(pw,ph,powerof2Boo);
                 return tex;
             }
             // reusable rtt texture resources for one renderer context
@@ -64,7 +61,7 @@ export namespace vox
 	        {
 	        	if (this.m_rttCubeTexs[i] != null)
 	        	{
-                    this.m_rttCubeTexs[i].__$setSlot(this.m_textureSlot);
+                    this.m_rttCubeTexs[i].__$setRenderResource(this.m_renderProxy.Texture);
 	        		return this.m_rttCubeTexs[i];
                 }
                 this.m_rttCubeTexs[i] = this.createRTTTex2D(32, 32);
@@ -81,7 +78,7 @@ export namespace vox
                 ph = ph > 1?ph:1;
 	        	if (this.m_rttCubeTexs[i] != null)
 	        	{
-                    this.m_rttCubeTexs[i].__$setSlot(this.m_textureSlot);
+                    this.m_rttCubeTexs[i].__$setRenderResource(this.m_renderProxy.Texture);
 	        		return this.m_rttCubeTexs[i];
                 }
                 this.m_rttCubeTexs[i] = this.createRTTTex2D(pw, ph);
@@ -97,7 +94,7 @@ export namespace vox
 	        {
 	        	if (this.m_rttTexs[i] != null)
 	        	{
-                    this.m_rttTexs[i].__$setSlot(this.m_textureSlot);
+                    this.m_rttTexs[i].__$setRenderResource(this.m_renderProxy.Texture);
 	        		return this.m_rttTexs[i] as RTTTextureProxy;
                 }
                 this.m_rttTexs[i] = this.createRTTTex2D(32, 32);
@@ -113,7 +110,7 @@ export namespace vox
                 ph = ph > 1?ph:1;
 	        	if (this.m_rttTexs[i] != null)
 	        	{
-                    this.m_rttTexs[i].__$setSlot(this.m_textureSlot);
+                    this.m_rttTexs[i].__$setRenderResource(this.m_renderProxy.Texture);
 	        		return this.m_rttTexs[i];
                 }
                 this.m_rttTexs[i] = this.createRTTTex2D(pw, ph);
@@ -127,7 +124,7 @@ export namespace vox
 	        {
 	        	if (this.m_rttDepTexs[i] != null)
 	        	{
-                    this.m_rttDepTexs[i].__$setSlot(this.m_textureSlot);
+                    this.m_rttDepTexs[i].__$setRenderResource(this.m_renderProxy.Texture);
 	        		return this.m_rttDepTexs[i];
                 }
                 this.m_rttDepTexs[i] = this.createDepthTex2D(64, 64);
@@ -143,7 +140,7 @@ export namespace vox
                 ph = ph > 1?ph:1;
 	        	if (this.m_rttDepTexs[i] != null)
 	        	{
-                    this.m_rttDepTexs[i].__$setSlot(this.m_textureSlot);
+                    this.m_rttDepTexs[i].__$setRenderResource(this.m_renderProxy.Texture);
 	        		return this.m_rttDepTexs[i];
                 }
                 this.m_rttDepTexs[i] = this.createDepthTex2D(pw,ph);
@@ -157,7 +154,7 @@ export namespace vox
 	        {
 	        	if (this.m_rttFloatTexs[i] != null)
 	        	{
-                    this.m_rttFloatTexs[i].__$setSlot(this.m_textureSlot);
+                    this.m_rttFloatTexs[i].__$setRenderResource(this.m_renderProxy.Texture);
 	        		return this.m_rttFloatTexs[i];
                 }
                 let tex:RTTTextureProxy = this.createRTTTex2D(64, 64);
@@ -176,7 +173,7 @@ export namespace vox
                 ph = ph > 1?ph:1;
 	        	if (this.m_rttFloatTexs[i] != null)
 	        	{
-                    this.m_rttFloatTexs[i].__$setSlot(this.m_textureSlot);
+                    this.m_rttFloatTexs[i].__$setRenderResource(this.m_renderProxy.Texture);
 	        		return this.m_rttFloatTexs[i];
                 }
                 let tex:RTTTextureProxy = this.createRTTTex2D(pw, ph);
