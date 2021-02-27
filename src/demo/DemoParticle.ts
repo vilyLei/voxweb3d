@@ -228,7 +228,7 @@ export namespace demo
             //console.log("##-- begin");
             this.m_rcontext.setClearRGBColor3f(0.1, 0.1, 0.1);
             //this.m_rcontext.setClearRGBAColor4f(0.0, 0.5, 0.0,0.0);
-            this.m_rcontext.runBegin();
+            this.m_rcontext.renderBegin();
 
             this.m_rscene.update();
             this.m_rscene.run();

@@ -29,7 +29,7 @@ export namespace demo
         }
         run():void
         {
-            this.m_rcontext.runBegin();
+            this.m_rcontext.renderBegin();
 
             this.m_renderer.run();
 

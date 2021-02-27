@@ -82,7 +82,7 @@ export namespace motionDemo
             //console.log("##-- begin");
             this.m_rcontext.setClearRGBColor3f(0.0, 0.5, 0.0);
             //this.m_rcontext.setClearRGBAColor4f(0.0, 0.5, 0.0,0.0);
-            this.m_rcontext.runBegin();
+            this.m_rcontext.renderBegin();
 
             this.m_renderer.update();
             this.m_renderer.runAt(0);

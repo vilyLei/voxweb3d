@@ -340,32 +340,15 @@ export namespace vox
                 this.m_adapter.updateRenderBufferSize();
             }
 
-            runBegin():void
-            {
-                if(this.m_renderProxy != null)
-                {
-                    this.m_adapter.unlockViewport();
-                    this.m_adapter = this.m_renderProxy.getRenderAdapter();
-                    this.m_adapter.setClearDepth(1.0);
-                    RendererState.ResetInfo();
-                    RendererState.Reset();
-                    RendererState.SetDrawState(this.m_renderProxy.RState);
-                    this.m_renderProxy.Vertex.renderBegin();
-                    this.m_materialProxy.renderBegin();
-                    this.m_adapter.update();
-                    this.m_adapter.setClearMaskClearAll();
-                    this.m_adapter.renderBegin();
-                    this.m_renderProxy.useCameraData();
-                    this.m_renderProxy.updateCameraDataFromCamera( this.m_renderProxy.getCamera() );
-                }
-            }
-            
+            /**
+             * the function resets the renderer instance rendering status.
+             * you should use it on the frame starting time.
+             */
             renderBegin():void
             {
                 if(this.m_renderProxy != null)
                 {
                     this.m_adapter.unlockViewport();
-                    this.m_adapter = this.m_renderProxy.getRenderAdapter();
                     this.m_adapter.setClearDepth(1.0);
                     RendererState.ResetInfo();
                     RendererState.Reset();

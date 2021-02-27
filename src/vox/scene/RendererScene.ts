@@ -380,6 +380,12 @@ export namespace vox
             {
                 this.m_renderer.moveEntityToProcessAt(entity,this.m_processids[processid]);
             }
+            /**
+             * add an entity to the renderer process of the renderer instance
+             * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
+             * @param processid this destination renderer process id
+             * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
+             */
             addEntity(entity:IRenderEntity,processid:number = 0,deferred:boolean = true):void
             {
                 if(entity.__$spaceId < 0)
@@ -468,12 +474,16 @@ export namespace vox
                 }
                 this.m_renderProxy.getCamera().update();
                 this.m_rcontext.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
-                this.m_rcontext.runBegin();
+                this.m_rcontext.renderBegin();
                 if(this.m_rspace != null)
                 {
                     this.m_rspace.runBegin();
                 }
             }
+            /**
+             * the function resets the renderer instance rendering status.
+             * you should use it on the frame starting time.
+             */
             renderBegin():void
             {
                 this.m_adapter.unlockViewport();
@@ -535,7 +545,11 @@ export namespace vox
                 this.m_mouseTestBoo = false;
                 return flag;
             }
-            // call this function per frame
+            
+            /**
+             * update all data or status of the renderer runtime
+             * should call this function per frame
+             */
             update():void
             {
                 this.textureBlock.update();
@@ -617,7 +631,10 @@ export namespace vox
                     this.m_rspace.rayTest(this.m_mouse_rlpv, this.m_mouse_rltv);
                 }
             }
-            // rendering running
+            
+            /**
+             * run all renderer processes in the renderer instance
+             */
             run():void
             {
                 if(this.m_subscListLen > 0)
@@ -632,6 +649,10 @@ export namespace vox
                     this.m_renderer.run();
                 }
             }
+            /**
+             * run the specific renderer process by its index in the renderer instance
+             * @param index the renderer process index in the renderer instance
+             */
             runAt(index:number):void
             {
                 this.m_renderer.runAt(this.m_processids[index]);

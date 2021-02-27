@@ -120,7 +120,7 @@ export namespace demo
 
             pcontext.unlockRenderState();
             pcontext.unlockMaterial();
-            pcontext.runBegin();
+            pcontext.renderBegin();
             renderer.update();
             
             // --------------------------------------------- cubemap mrt begin
@@ -132,7 +132,7 @@ export namespace demo
 
             pcontext.setClearRGBColor3f(0.0, 3.0, 2.0);
             pcontext.setRenderToBackBuffer();
-            pcontext.runBegin();
+            pcontext.renderBegin();
             pcontext.unlockRenderState();
             renderer.runAt(1);
             

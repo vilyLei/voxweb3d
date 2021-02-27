@@ -76,7 +76,7 @@ export namespace demo
             this.m_statusDisp.update();
 
             this.m_rcontext.setClearRGBColor3f(0.1, 0.1, 0.2);
-            this.m_rcontext.runBegin();
+            this.m_rcontext.renderBegin();
 
             this.m_renderer.update();
             this.m_renderer.run();

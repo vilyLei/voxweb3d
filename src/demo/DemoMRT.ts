@@ -119,7 +119,7 @@ export namespace demo
             this.m_statusDisp.update();
 
             pcontext.setClearRGBColor3f(0.0, 0.0, 0.0);
-            pcontext.runBegin();
+            pcontext.renderBegin();
             rinstance.update();
 
             // --------------------------------------------- mrt begin

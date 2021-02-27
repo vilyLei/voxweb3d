@@ -170,6 +170,10 @@ export namespace vox
                     selfT.bufferUpdater = roBufUpdater;
                 }
             }
+            /**
+             * update all data or status of the renderer runtime
+             * should call this function per frame
+             */
             update():void
             {
                 this.m_renderProxy.Texture.update();
@@ -181,6 +185,12 @@ export namespace vox
             {
                 this.m_entity3DMana.entityManaListener = listener;
             }
+            /**
+             * add an entity to the renderer process of the renderer instance
+             * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
+             * @param processid this destination renderer process id
+             * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
+             */
             addEntity(entity:IRenderEntity,processid:number = 0,deferred:boolean = true):void
             {
                 if(entity != null)
@@ -235,7 +245,10 @@ export namespace vox
                     }
                 }
             }
-            // 这是真正的完全将entity从world中清除
+            /**
+             * remove entity from the renderer instance
+             * @param entity IRenderEntity instance
+             */
             removeEntity(entity:IRenderEntity):void
             {
                 if(entity != null && entity.__$wuid == this.m_uid)
@@ -243,7 +256,11 @@ export namespace vox
                     this.m_entity3DMana.removeEntity(entity);
                 }
             }
-            // 只是从对应的process移除这个entity的display
+            /**
+             * remove entity from the renderer process
+             * @param IRenderEntity IRenderEntity instance
+             * @param process RenderProcess instance
+             */
             removeEntityFromProcess(entity:IRenderEntity,process:RenderProcess):void
             {
                 if(process != null && process.getWUid() == this.m_uid)
@@ -254,7 +271,11 @@ export namespace vox
                     }
                 }
             }
-            // 只是通过process在当前RendererInstance实例process数组总的序号,从对应的process移除这个entity的display
+            /**
+             * remove entity from the renderer process by process index
+             * @param IRenderEntity IRenderEntity instance
+             * @param processIndex RenderProcess instance index in renderer instance
+             */
             removeEntityByProcessIndex(entity:IRenderEntity,processIndex:number):void
             {
                 if(processIndex >= 0 && processIndex < this.m_processesLen)
@@ -266,7 +287,11 @@ export namespace vox
                     }
                 }
             }
-            // 生成一个新的process并添加到数组末尾
+            /**
+             * append a new renderer process instance
+             * @param batchEnabled batch renderer runtime resource data
+             * @param processFixedState the process is fix renderer state
+             */
             appendProcess(batchEnabled:boolean = true,processFixedState:boolean = false):RenderProcess
             {
                 this.m_processBuider.setCreateParams(
@@ -285,6 +310,11 @@ export namespace vox
                 ++this.m_processesLen;
                 return process;
             }
+            /**
+             * append a independent new renderer process instance, and separate the renderer process from the renderer rendering control
+             * @param batchEnabled batch renderer runtime resource data
+             * @param processFixedState the process is fix renderer state
+             */
             createSeparatedProcess(batchEnabled:boolean = true,processFixedState:boolean = false):RenderProcess
             {
                 this.m_processBuider.setCreateParams(
@@ -340,6 +370,10 @@ export namespace vox
                     this.m_processes[ 0 ].drawLockMaterialByDisp(this.m_renderProxy,entity.getDisplay(),forceUpdateUniform);
                 }
             }
+            /**
+             * run the specific renderer process by its index in the renderer instance
+             * @param index the renderer process index in the renderer instance
+             */
             runAt(index:number):void
             {
                 this.m_processes[index].run(this.m_renderProxy);
@@ -358,6 +392,9 @@ export namespace vox
                     this.m_processes[i].run(this.m_renderProxy);
                 }
             }
+            /**
+             * run all renderer processes in the renderer instance
+             */
             run():void
             {
                 if(!this.m_entity3DMana.isEmpty())

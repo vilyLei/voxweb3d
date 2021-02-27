@@ -94,7 +94,7 @@ export namespace demo
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
             pcontext.updateCamera();
             pcontext.setClearRGBColor3f(0.0, 0.0, 0.0);
-            pcontext.runBegin();
+            pcontext.renderBegin();
             
             renderer.update();
             this.m_blurIns.synViewportSize();

@@ -127,7 +127,7 @@ export namespace demo
                 this.m_rcontext.setClearRGBColor3f(0.0, 0.0, 0.0);
                 this.m_rcontext.unlockRenderState();
                 this.m_rcontext.unlockMaterial();
-                this.m_rcontext.runBegin();
+                this.m_rcontext.renderBegin();
                 this.m_renderer.update();
                 this.m_renderAdapter.synFBOSizeWithViewport();
             }

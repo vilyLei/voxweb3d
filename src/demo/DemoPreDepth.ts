@@ -124,7 +124,7 @@ export namespace demo
             let pcontext:RendererInstanceContext = this.m_rcontext;
 
             pcontext.setClearRGBColor3f(0.0, 0.0, 0.0);
-            pcontext.runBegin();
+            pcontext.renderBegin();
             rinstance.update();
 
             // --------------------------------------------- rtt begin

@@ -135,7 +135,7 @@ export namespace demo
             //this.m_camera.perspectiveRH(this.m_camera.getFov(),this.m_camera.getAspect(),0.1,5000.0);
             //pcontext.setViewPort(0,0,this.m_viewSize.x,this.m_viewSize.y);
             pcontext.setClearRGBColor3f(0.0, 0.0, 0.0);
-            pcontext.runBegin();
+            pcontext.renderBegin();
             rinstance.update();
             //          rinstance.runAt(0);
             // --------------------------------------------- rtt begin
@@ -189,7 +189,7 @@ export namespace demo
             //this.m_texLoader.run();
             pcontext.setClearRGBColor3f(0.0, 0.0, 0.0);
             // render begin
-            pcontext.runBegin();
+            pcontext.renderBegin();
             // run logic program
             rinstance.update();
             // --------------------------------------------- rtt begin
