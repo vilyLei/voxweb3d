@@ -13,6 +13,7 @@ import * as ImageTexResLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as FBOInstanceT from "../vox/scene/FBOInstance";
 import * as RendererSceneT from "../vox/scene/RendererScene";
+import * as DefaultMRTMaterialT from "../vox/material/mcase/DefaultMRTMaterial";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
@@ -28,6 +29,7 @@ import ImageTextureLoader = ImageTexResLoaderT.vox.texture.ImageTextureLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import FBOInstance = FBOInstanceT.vox.scene.FBOInstance;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
+import DefaultMRTMaterial = DefaultMRTMaterialT.vox.material.mcase.DefaultMRTMaterial;
 
 export namespace demo
 {
@@ -39,7 +41,7 @@ export namespace demo
         private m_camTrack:CameraTrack = null;
         private m_fboIns:FBOInstance = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
-        getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
+        private getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
             let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
             ptex.mipmapEnabled = mipmapEnabled;
@@ -68,39 +70,95 @@ export namespace demo
 
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
 
-                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-                
-
-                // add common 3d display entity ---------------------------------- begin
-                var plane:Plane3DEntity = new Plane3DEntity();
-                plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
-                this.m_rscene.addEntity(plane);
-
-                let axis:Axis3DEntity = new Axis3DEntity();
-                axis.initialize(300.0);
-                this.m_rscene.addEntity(axis);
-
-                let box:Box3DEntity = new Box3DEntity();
-                box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
-                this.m_rscene.addEntity(box);
-                // add common 3d display entity ---------------------------------- end
-
-                this.m_fboIns = this.m_rscene.createFBOInstance();
-                this.m_fboIns.setClearRGBAColor4f(0.3,0.0,0.0,1.0);   // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
-                this.m_fboIns.createFBOAt(0,512,512,true,false);
-                this.m_fboIns.setRenderToRTTTextureAt(0, 0);          // framebuffer color attachment, output attachment index is 0
-                this.m_fboIns.setRProcessIDList([0]);
-
-                let rttBox:Box3DEntity = new Box3DEntity();
-                rttBox.initialize(
-                    new Vector3D(-100.0,-100.0,-100.0)                // box min position
-                    , new Vector3D(100.0,100.0,100.0)                 // box max position
-                    , [this.m_fboIns.getRTTAt(0)]                     // texture list
-                    );
-                this.m_rscene.addEntity(rttBox, 1);                   // add rttBox to The second renderer process
-
+                let useMRT:boolean = true;
+                if(useMRT)
+                {
+                    // for mrt example
+                    this.buildMRT();
+                }
+                else
+                {
+                    // for rtt example
+                    this.buildRTT();
+                }
             }
+        }
+        
+        private buildRTT():void
+        {
+            let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
+            let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
+            
+            // add common 3d display entity ---------------------------------- begin
+            var plane:Plane3DEntity = new Plane3DEntity();
+            plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
+            this.m_rscene.addEntity(plane);
+
+            let axis:Axis3DEntity = new Axis3DEntity();
+            axis.initialize(300.0);
+            this.m_rscene.addEntity(axis);
+
+            let box:Box3DEntity = new Box3DEntity();
+            box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
+            this.m_rscene.addEntity(box);
+            // add common 3d display entity ---------------------------------- end
+
+            this.m_fboIns = this.m_rscene.createFBOInstance();
+            this.m_fboIns.setClearRGBAColor4f(0.3,0.0,0.0,1.0);   // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
+            this.m_fboIns.createFBOAt(0,512,512,true,false);
+            this.m_fboIns.setRenderToRTTTextureAt(0, 0);          // framebuffer color attachment 0
+            this.m_fboIns.setRProcessIDList([0]);
+
+            let rttBox:Box3DEntity = new Box3DEntity();
+            rttBox.initialize(
+                new Vector3D(-100.0,-100.0,-100.0)                // box min position
+                , new Vector3D(100.0,100.0,100.0)                 // box max position
+                , [this.m_fboIns.getRTTAt(0)]                     // texture list from fbo rtt textures
+                );
+            this.m_rscene.addEntity(rttBox, 1);                   // add rttBox to The second renderer process
+        }
+        
+        private buildMRT():void
+        {
+            let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
+            let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
+            
+            // add common 3d display entity ---------------------------------- begin
+            var plane:Plane3DEntity = new Plane3DEntity();
+            plane.setMaterial(new DefaultMRTMaterial());
+            plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
+            this.m_rscene.addEntity(plane);
+
+            let box:Box3DEntity = new Box3DEntity();
+            box.setMaterial(new DefaultMRTMaterial());
+            box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
+            this.m_rscene.addEntity(box);
+            // add common 3d display entity ---------------------------------- end
+
+            this.m_fboIns = this.m_rscene.createFBOInstance();
+            this.m_fboIns.setClearRGBAColor4f(0.3,0.0,0.0,1.0);   // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
+            this.m_fboIns.createFBOAt(0,512,512,true,false);
+            this.m_fboIns.setRenderToRTTTextureAt(0, 0);          // framebuffer color attachment 0
+            this.m_fboIns.setRenderToRTTTextureAt(1, 1);          // framebuffer color attachment 1
+            this.m_fboIns.setRProcessIDList([0]);
+
+            let mrtBox:Box3DEntity = new Box3DEntity();
+            mrtBox.initialize(
+                new Vector3D(-100.0,-100.0,-100.0)                // box min position
+                , new Vector3D(100.0,100.0,100.0)                 // box max position
+                , [this.m_fboIns.getRTTAt(0)]                     // texture list
+                );
+            mrtBox.setXYZ(-150,0,-150);                           // set position in world space
+            this.m_rscene.addEntity(mrtBox, 1);                   // add rttBox to The second renderer process
+            
+            mrtBox = new Box3DEntity();
+            mrtBox.initialize(
+                new Vector3D(-100.0,-100.0,-100.0)                // box min position
+                , new Vector3D(100.0,100.0,100.0)                 // box max position
+                , [this.m_fboIns.getRTTAt(1)]                     // texture list from fbo rtt textures
+                );
+            mrtBox.setXYZ(150,0,150);                             // set position in world space
+            this.m_rscene.addEntity(mrtBox, 1);                   // add rttBox to The second renderer process
         }
         run():void
         {
@@ -111,9 +169,9 @@ export namespace demo
             this.m_rscene.runBegin();
             this.m_rscene.update();
             
-            // --------------------------------------------- rtt begin
+            // --------------------------------------------- fbo run begin
             this.m_fboIns.run();
-            // --------------------------------------------- rtt end
+            // --------------------------------------------- fbo run end
             
             this.m_rscene.setRenderToBackBuffer();
             this.m_rscene.runAt(1);

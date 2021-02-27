@@ -357,8 +357,8 @@ export namespace vox
                 this.m_bgColor.setRGBA4f(pr,pb,pg,pa);
             }
 			/**
-			 * @oaram			clearType, it is RenderProxy.COLOR or RenderProxy.DEPTH or RenderProxy.STENCIL or RenderProxy.DEPTH_STENCIL
-			*/
+			 * @param			clearType, it is RenderProxy.COLOR or RenderProxy.DEPTH or RenderProxy.STENCIL or RenderProxy.DEPTH_STENCIL
+			 */
             blitFrom(fboIns:FBOInstance,mask_bitfiled:number = RenderMaskBitfield.COLOR_BUFFER_BIT, filter:number = RenderFilter.NEAREST, clearType:number = -1,clearIndex:number = 0,dataArr:number[] = null):void
             {
                 if(this.m_fboIndex >= 0)
