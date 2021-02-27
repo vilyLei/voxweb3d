@@ -201,6 +201,13 @@ export namespace vox
                     this.m_adapter.createFBOAt(fboIndex,this.m_fboType,this.m_initW,this.m_initH,enableDepth,enableStencil,multisampleLevel);
                 }
             }
+			private createFBO(enableDepth:boolean, enableStencil:boolean,multisampleLevel:number = 0):void
+			{
+                this.m_enableDepth = enableDepth;
+                this.m_enableStencil = enableStencil;
+                this.m_multisampleLevel = multisampleLevel;
+                this.m_adapter.createFBOAt(this.m_fboIndex,this.m_fboType,this.m_initW,this.m_initH,enableDepth,enableStencil,multisampleLevel);
+            }
             /**
              * 创建一个指定序号的 FBO(FrameBufferObject) 渲染运行时管理对象,
              * renderer中一个序号只会对应一个唯一的 FBO 对象实例
@@ -212,16 +219,10 @@ export namespace vox
              */
 			createFBOAt(fboIndex:number, width:number,height:number, enableDepth:boolean = false, enableStencil:boolean = false,multisampleLevel:number = 0):void
 			{
-                if(this.m_fboIndex < 0)
+                if(fboIndex >= 0 && this.m_fboIndex < 0)
                 {
-                    this.m_fboIndex = fboIndex;
-                    this.m_fboType = FrameBufferType.FRAMEBUFFER;
-                    this.m_initW = width;
-                    this.m_initH = height;
-                    this.m_enableDepth = enableDepth;
-                    this.m_enableStencil = enableStencil;
-                    this.m_multisampleLevel = multisampleLevel;
-                    this.m_adapter.createFBOAt(fboIndex,this.m_fboType,width,height,enableDepth,enableStencil,multisampleLevel);
+                    this.m_fboType = FrameBufferType.FRAMEBUFFER;this.m_initW = width;this.m_initH = height;this.m_fboIndex = fboIndex;
+                    this.createFBO(enableDepth,enableStencil,multisampleLevel);
                 }
             }
             /**
@@ -235,16 +236,10 @@ export namespace vox
              */
 			createReadFBOAt(fboIndex:number, width:number,height:number, enableDepth:boolean = false, enableStencil:boolean = false,multisampleLevel:number = 0):void
 			{
-                if(this.m_fboIndex < 0)
+                if(fboIndex >= 0 && this.m_fboIndex < 0)
                 {
-                    this.m_fboIndex = fboIndex;
-                    this.m_fboType = FrameBufferType.READ_FRAMEBUFFER;
-                    this.m_initW = width;
-                    this.m_initH = height;
-                    this.m_enableDepth = enableDepth;
-                    this.m_enableStencil = enableStencil;
-                    this.m_multisampleLevel = multisampleLevel;
-                    this.m_adapter.createFBOAt(fboIndex,this.m_fboType,width,height,enableDepth,enableStencil,multisampleLevel);
+                    this.m_fboType = FrameBufferType.READ_FRAMEBUFFER;this.m_initW = width;this.m_initH = height;this.m_fboIndex = fboIndex;
+                    this.createFBO(enableDepth,enableStencil,multisampleLevel);
                 }
             }
             /**
@@ -258,16 +253,10 @@ export namespace vox
              */
 			createDrawFBOAt(fboIndex:number, width:number,height:number, enableDepth:boolean = false, enableStencil:boolean = false,multisampleLevel:number = 0):void
 			{
-                if(this.m_fboIndex < 0)
+                if(fboIndex >= 0 && this.m_fboIndex < 0)
                 {
-                    this.m_fboIndex = fboIndex;
-                    this.m_fboType = FrameBufferType.DRAW_FRAMEBUFFER;
-                    this.m_initW = width;
-                    this.m_initH = height;
-                    this.m_enableDepth = enableDepth;
-                    this.m_enableStencil = enableStencil;
-                    this.m_multisampleLevel = multisampleLevel;
-                    this.m_adapter.createFBOAt(fboIndex,this.m_fboType,width,height,enableDepth,enableStencil,multisampleLevel);
+                    this.m_fboType = FrameBufferType.DRAW_FRAMEBUFFER;this.m_initW = width;this.m_initH = height;this.m_fboIndex = fboIndex;
+                    this.createFBO(enableDepth,enableStencil,multisampleLevel);
                 }
             }
             /**
