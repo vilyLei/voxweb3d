@@ -309,7 +309,7 @@ export namespace demo
                     //  dispatcher.addEventListener(MouseEvent.MOUSE_MOVE,ctrObj,ctrObj.mouseMoveListener);
                     //  plane.setEvtDispatcher(dispatcher);
                     plane.showDoubleFace();
-                    plane.initialize(-800.0,-800.0,1600.0,1600.0,[tex3]);
+                    plane.initializeXOY(-800.0,-800.0,1600.0,1600.0,[tex3]);
                     //plane.setXYZ(Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0);
                     this.m_subScene.addEntity(plane,0);
                     //this.m_rscene.addEntity(plane,1);

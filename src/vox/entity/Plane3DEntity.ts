@@ -72,32 +72,52 @@ export namespace vox
             {
                 this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
             }
-            initialize(startX:number,startY:number,pwidth:number,pheight:number,texList:TextureProxy[] = null):void
+            /**
+             * initialize a rectangle plane ,and it parallel the 3d space XOY plane
+             * @param minX the min x axis position of the rectangle plane.
+             * @param minZ the min y axis position of the rectangle plane.
+             * @param pwidth the width of the rectangle plane.
+             * @param height the height of the rectangle plane.
+             */
+            initializeXOY(minX:number,minY:number,pwidth:number,pheight:number,texList:TextureProxy[] = null):void
             {
-                this.m_startX = startX;
-                this.m_startZ = startY;
+                this.m_startX = minX;
+                this.m_startZ = minY;
                 this.m_pwidth = pwidth;
                 this.m_plong = pheight;
                 this.m_flag = 0;
                 this.createMaterial(texList);
                 this.activeDisplay();
             }
-            initializeXOZ(startX:number,startZ:number,pwidth:number,plong:number,texList:TextureProxy[] = null):void
+            /**
+             * initialize a rectangle plane ,and it parallel the 3d space XOZ plane
+             * @param minX the min x axis position of the rectangle plane.
+             * @param minZ the min z axis position of the rectangle plane.
+             * @param pwidth the width of the rectangle plane.
+             * @param plong the long of the rectangle plane.
+             */
+            initializeXOZ(minX:number,minZ:number,pwidth:number,plong:number,texList:TextureProxy[] = null):void
             {
                 this.m_flag = 1;
-                this.m_startX = startX;
-                this.m_startZ = startZ;
+                this.m_startX = minX;
+                this.m_startZ = minZ;
                 this.m_pwidth = pwidth;
                 this.m_plong = plong;
                 this.createMaterial(texList);
                 this.activeDisplay();
             }
-            
-            initializeYOZ(startX:number,startZ:number,pwidth:number,plong:number,texList:TextureProxy[] = null):void
+            /**
+             * initialize a rectangle plane ,and it parallel the 3d space YOZ plane
+             * @param minX the min x axis position of the rectangle plane.
+             * @param minZ the min z axis position of the rectangle plane.
+             * @param pwidth the width of the rectangle plane.
+             * @param plong the long of the rectangle plane.
+             */
+            initializeYOZ(minY:number,minZ:number,pwidth:number,plong:number,texList:TextureProxy[] = null):void
             {
                 this.m_flag = 2;
-                this.m_startX = startX;
-                this.m_startZ = startZ;
+                this.m_startX = minY;
+                this.m_startZ = minZ;
                 this.m_pwidth = pwidth;
                 this.m_plong = plong;
                 this.createMaterial(texList);

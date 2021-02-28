@@ -313,7 +313,7 @@ export namespace advancedDemo
                     //this.factorPlane.setRenderStateByName("ADD02");
                     this.factorPlane.setMaterial(this.fogFactorM);
                     //this.middleFBO
-                    this.factorPlane.initialize(
+                    this.factorPlane.initializeXOY(
                         //-1.0,-1.0,2.0,2.0
                         -0.5,-0.5,1.0,1.0
                         ,[
@@ -336,7 +336,7 @@ export namespace advancedDemo
                     this.fogShowM = new FogSphShowMaterial();
                     this.m_dstPlane = new Plane3DEntity();
                     this.m_dstPlane.setMaterial(this.fogShow2M);
-                    this.m_dstPlane.initialize(
+                    this.m_dstPlane.initializeXOY(
                         -1.0,-1.0,2.0,2.0
                         ,[
                             this.middleFBO.getRTTAt(1)

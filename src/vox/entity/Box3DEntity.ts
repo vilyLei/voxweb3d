@@ -75,10 +75,29 @@ export namespace vox
             {
                 this.setRenderState(RendererState.NORMAL_STATE);
             }
+            /**
+             * initialize a box geometry data and texture data
+             * @param minV the min position of the box
+             * @param maxV the max position of the box
+             * @param texList  TextureProxy instance list
+             */
             initialize(minV:Vector3D, maxV:Vector3D,texList:TextureProxy[] = null):void
             {
                 this.m_minV = minV;
                 this.m_maxV = maxV;
+                this.createMaterial(texList);
+                this.activeDisplay();
+            }
+            /**
+             * initialize a box(geometry data and texture data) to a cube with the cube size value
+             * @param cubeSize  cube size value
+             * @param texList  TextureProxy instance list
+             */
+            initializeCube(cubeSize:number,texList:TextureProxy[] = null):void
+            {
+                cubeSize *= 0.5;
+                this.m_minV = new Vector3D(-cubeSize,-cubeSize,-cubeSize);
+                this.m_maxV = new Vector3D(cubeSize,cubeSize,cubeSize);
                 this.createMaterial(texList);
                 this.activeDisplay();
             }

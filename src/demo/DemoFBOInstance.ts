@@ -99,7 +99,7 @@ export namespace demo
             this.m_rscene.addEntity(axis);
 
             let box:Box3DEntity = new Box3DEntity();
-            box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
+            box.initializeCube(150.0,[tex1]);
             this.m_rscene.addEntity(box);
             // add common 3d display entity ---------------------------------- end
 
@@ -110,11 +110,7 @@ export namespace demo
             this.m_fboIns.setRProcessIDList([0]);
 
             let rttBox:Box3DEntity = new Box3DEntity();
-            rttBox.initialize(
-                new Vector3D(-100.0,-100.0,-100.0)                // box min position
-                , new Vector3D(100.0,100.0,100.0)                 // box max position
-                , [this.m_fboIns.getRTTAt(0)]                     // texture list from fbo rtt textures
-                );
+            rttBox.initializeCube(200.0, [this.m_fboIns.getRTTAt(0)]);
             this.m_rscene.addEntity(rttBox, 1);                   // add rttBox to The second renderer process
         }
         
@@ -131,7 +127,7 @@ export namespace demo
 
             let box:Box3DEntity = new Box3DEntity();
             box.setMaterial(new DefaultMRTMaterial());
-            box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
+            box.initializeCube(150.0,[tex1]);
             this.m_rscene.addEntity(box);
             // add common 3d display entity ---------------------------------- end
 
@@ -143,20 +139,12 @@ export namespace demo
             this.m_fboIns.setRProcessIDList([0]);
 
             let mrtBox:Box3DEntity = new Box3DEntity();
-            mrtBox.initialize(
-                new Vector3D(-100.0,-100.0,-100.0)                // box min position
-                , new Vector3D(100.0,100.0,100.0)                 // box max position
-                , [this.m_fboIns.getRTTAt(0)]                     // texture list
-                );
+            mrtBox.initializeCube(200.0, [this.m_fboIns.getRTTAt(0)]);
             mrtBox.setXYZ(-150,0,-150);                           // set position in world space
             this.m_rscene.addEntity(mrtBox, 1);                   // add rttBox to The second renderer process
             
             mrtBox = new Box3DEntity();
-            mrtBox.initialize(
-                new Vector3D(-100.0,-100.0,-100.0)                // box min position
-                , new Vector3D(100.0,100.0,100.0)                 // box max position
-                , [this.m_fboIns.getRTTAt(1)]                     // texture list from fbo rtt textures
-                );
+            mrtBox.initializeCube(200.0,[this.m_fboIns.getRTTAt(1)]);
             mrtBox.setXYZ(150,0,150);                             // set position in world space
             this.m_rscene.addEntity(mrtBox, 1);                   // add rttBox to The second renderer process
         }

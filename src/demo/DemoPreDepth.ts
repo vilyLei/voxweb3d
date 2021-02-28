@@ -112,7 +112,7 @@ export namespace demo
                 let scrM:ScreenFixedPlaneMaterial = new ScreenFixedPlaneMaterial();
                 let scrPlane:Plane3DEntity = new Plane3DEntity();
                 scrPlane.setMaterial(scrM);
-                scrPlane.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(1)]);
+                scrPlane.initializeXOY(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(1)]);
                 this.m_renderer.addEntity(scrPlane, 1);
             }
         }

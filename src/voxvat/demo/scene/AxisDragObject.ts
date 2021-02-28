@@ -104,7 +104,7 @@ export namespace demo
                     this.m_rsc.addEntity(qxozDisp,rproIndex);
                     //NONE_TRANSPARENT_ALWAYS_STATE
                     let qxoyDisp:Plane3DEntity = new Plane3DEntity();
-                    qxoyDisp.initialize(0.0,0.0,quadSize,quadSize,null);
+                    qxoyDisp.initializeXOY(0.0,0.0,quadSize,quadSize,null);
                     qxoyDisp.getMesh().setPolyhedral(false);
                     pm = qxoyDisp.getMaterial();
                     pm.setRGBA4f(0.0,0.0,1.0,quadAlpha);

@@ -184,7 +184,7 @@ export namespace demo
                 {
                     plane = new Plane3DEntity();
                     //plane.showDoubleFace();
-                    plane.initialize(0.0,0.0,200.0,150.0,[tex0]);
+                    plane.initializeXOY(0.0,0.0,200.0,150.0,[tex0]);
                     //this.m_rscene.addEntity(plane);
                     plane.setXYZ(100.0,50.0,0.0);
                     this.m_subScene.addEntity(plane);

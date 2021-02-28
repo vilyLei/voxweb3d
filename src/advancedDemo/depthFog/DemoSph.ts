@@ -240,7 +240,7 @@ export namespace advancedDemo
                     let fogShowM:FogSphShowMaterial = new FogSphShowMaterial();
                     this.m_dstPlane = new Plane3DEntity();
                     this.m_dstPlane.setMaterial(fogShowM);
-                    this.m_dstPlane.initialize(-1.0,-1.0,2.0,2.0,[this.getTextureAt(0),this.getTextureAt(1)]);
+                    this.m_dstPlane.initializeXOY(-1.0,-1.0,2.0,2.0,[this.getTextureAt(0),this.getTextureAt(1)]);
                     this.m_rc.addEntity(this.m_dstPlane,this.m_dstPlaneIndex);
                 }
             }

@@ -150,7 +150,7 @@ export namespace demo
             //scrPlane.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
             //scrPlane.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
             //scrPlane.initialize(-1.0,-1.0,2.0,2.0,[this.m_rscene.textureBlock.getRTTTextureAt(0)]);
-            scrPlane.initialize(-1.0,-1.0,2.0,2.0,[this.m_rscene.textureBlock.getRTTTextureAt(1), this.m_depTex1]);
+            scrPlane.initializeXOY(-1.0,-1.0,2.0,2.0,[this.m_rscene.textureBlock.getRTTTextureAt(1), this.m_depTex1]);
             //scrPlane.initialize(-1.0,-1.0,2.0,2.0,[this.m_rscene.textureBlock.getRTTTextureAt(0), this.m_depTex0]);
             this.m_rscene.addEntity(scrPlane, 1);
 

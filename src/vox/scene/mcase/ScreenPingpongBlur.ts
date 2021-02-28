@@ -131,7 +131,7 @@ export namespace vox
                         this.m_vMaterial.setBlurDensity(this.m_blurDensity);
                         let plane3D = new Plane3DEntity();
                         plane3D.setMaterial( this.m_vMaterial );
-                        plane3D.initialize(-1.0,-1.0, 2.0,2.0, [tex0]);
+                        plane3D.initializeXOY(-1.0,-1.0, 2.0,2.0, [tex0]);
                         this.m_renderer.addEntity(plane3D,dstProcessIndex);
                         plane3D.getDisplay().renderState = RendererState.BACK_NORMAL_ALWAYS_STATE;
                         this.m_screenPlane_0 = plane3D;
@@ -141,7 +141,7 @@ export namespace vox
                         this.m_hMaterial.setBlurDensity(this.m_blurDensity);
                         plane3D = new Plane3DEntity();
                         plane3D.setMaterial( this.m_hMaterial );
-                        plane3D.initialize(-1.0,-1.0, 2.0,2.0, [tex1]);
+                        plane3D.initializeXOY(-1.0,-1.0, 2.0,2.0, [tex1]);
                         this.m_renderer.addEntity(plane3D,dstProcessIndex);
                         plane3D.getDisplay().renderState = RendererState.BACK_NORMAL_ALWAYS_STATE;
                         this.m_screenPlane_1 = plane3D;
@@ -180,7 +180,7 @@ export namespace vox
                             this.m_vMaterial.setBlurDensity(this.m_blurDensity);
                             let plane3D = new Plane3DEntity();
                             plane3D.setMaterial( this.m_vMaterial );
-                            plane3D.initialize(-1.0,-1.0, 2.0,2.0, [tex0]);
+                            plane3D.initializeXOY(-1.0,-1.0, 2.0,2.0, [tex0]);
                             this.m_renderer.addEntity(plane3D,dstProcessIndex);
                             plane3D.getDisplay().renderState = RendererState.BACK_NORMAL_ALWAYS_STATE;
                             this.m_screenPlane_0 = plane3D;
@@ -190,7 +190,7 @@ export namespace vox
                             this.m_hMaterial.setBlurDensity(this.m_blurDensity);
                             plane3D = new Plane3DEntity();
                             plane3D.setMaterial( this.m_hMaterial );
-                            plane3D.initialize(-1.0,-1.0, 2.0,2.0, [tex1]);
+                            plane3D.initializeXOY(-1.0,-1.0, 2.0,2.0, [tex1]);
                             this.m_renderer.addEntity(plane3D,dstProcessIndex);
                             plane3D.getDisplay().renderState = RendererState.BACK_NORMAL_ALWAYS_STATE;
                             this.m_screenPlane_1 = plane3D;
@@ -266,7 +266,7 @@ export namespace vox
                             this.m_vMaterial.setBlurDensity(this.m_blurDensity);
                             let plane3D = new Plane3DEntity();
                             plane3D.setMaterial( this.m_vMaterial );
-                            plane3D.initialize(-1.0,-1.0, 2.0,2.0, [tex0]);
+                            plane3D.initializeXOY(-1.0,-1.0, 2.0,2.0, [tex0]);
                             this.m_renderer.addEntity(plane3D,dstProcessIndex);
                             plane3D.getDisplay().renderState = RendererState.BACK_NORMAL_ALWAYS_STATE;
                             this.m_screenPlane_0 = plane3D;
@@ -276,7 +276,7 @@ export namespace vox
                             this.m_hMaterial.setBlurDensity(this.m_blurDensity);
                             plane3D = new Plane3DEntity();
                             plane3D.setMaterial( this.m_hMaterial );
-                            plane3D.initialize(-1.0,-1.0, 2.0,2.0, [tex1]);
+                            plane3D.initializeXOY(-1.0,-1.0, 2.0,2.0, [tex1]);
                             this.m_renderer.addEntity(plane3D,dstProcessIndex);
                             plane3D.getDisplay().renderState = RendererState.BACK_NORMAL_ALWAYS_STATE;
                             this.m_screenPlane_1 = plane3D;

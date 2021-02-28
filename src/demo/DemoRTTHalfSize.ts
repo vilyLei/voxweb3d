@@ -107,7 +107,7 @@ export namespace demo
                 let material:ScreenFixedPlaneMaterial = new ScreenFixedPlaneMaterial();
                 let rttPlane:Plane3DEntity = new Plane3DEntity();
                 rttPlane.setMaterial(material);
-                rttPlane.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(0)]);
+                rttPlane.initializeXOY(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(0)]);
                 this.m_renderer.addEntity(rttPlane, 1);
 
                 material = new ScreenFixedPlaneMaterial();
@@ -116,7 +116,7 @@ export namespace demo
                 rttPlane.setMaterial(material);
                 //rttPlane.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(1)]);
                 TextureStore.CreateRTTTextureAt(1,256,256);
-                rttPlane.initialize(-1.0,-1.0,1.0,1.0,[TextureStore.GetRTTTextureAt(1)]);
+                rttPlane.initializeXOY(-1.0,-1.0,1.0,1.0,[TextureStore.GetRTTTextureAt(1)]);
                 this.m_renderer.addEntity(rttPlane, 2);
 
                 this.m_rcontext.createFBOAt(0,FrameBufferType.FRAMEBUFFER,this.m_viewSize.x,this.m_viewSize.y,true,false);

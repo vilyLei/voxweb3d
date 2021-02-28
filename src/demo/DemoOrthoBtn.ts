@@ -238,7 +238,7 @@ export namespace demo
                         plane = new Plane3DEntity();
                         //plane.showDoubleFace();
                         plane.flipVerticalUV = true;
-                        plane.initialize(0.0,0.0,pw,ph,[tex0]);
+                        plane.initializeXOY(0.0,0.0,pw,ph,[tex0]);
                         
                         //this.m_rscene.addEntity(plane);
                         plane.setXYZ(px,py,0.0);

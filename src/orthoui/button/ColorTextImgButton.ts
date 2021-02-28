@@ -127,7 +127,7 @@ export namespace orthoui
                 {
                     this.m_width = pwidth;
                     this.m_height = pheight;
-                    super.initialize(startX,startY,pwidth,pheight,texList);
+                    super.initializeXOY(startX,startY,pwidth,pheight,texList);
                     this.initEvtBase();
                     this.mouseEnabled = true;
                     let material:any = this.getMaterial();

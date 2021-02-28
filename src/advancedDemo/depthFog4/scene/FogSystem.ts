@@ -109,7 +109,7 @@ export namespace advancedDemo
                     this.factorPlane = new Plane3DEntity();
                     this.factorPlane.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
                     this.factorPlane.setMaterial(this.fogFactorM);
-                    this.factorPlane.initialize(
+                    this.factorPlane.initializeXOY(
                         -0.5,-0.5,1.0,1.0
                         ,[
                             this.m_middleFBO.getRTTAt(1)

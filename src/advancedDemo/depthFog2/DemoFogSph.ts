@@ -333,14 +333,14 @@ export namespace advancedDemo
                     factorPlane.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
                     //factorPlane.setRenderStateByName("ADD02");
                     factorPlane.setMaterial(this.m_fogFactorM);
-                    factorPlane.initialize(-1.0,-1.0,2.0,2.0,[this.getTextureAt(0),this.getTextureAt(1),this.getTextureAt(2)])
+                    factorPlane.initializeXOY(-1.0,-1.0,2.0,2.0,[this.getTextureAt(0),this.getTextureAt(1),this.getTextureAt(2)])
                     this.m_rc.addEntity(factorPlane,this.m_factorPlaneIndex);
                     this.m_factorPlane = factorPlane;
 
                     let fogShowM:FogSphShowMaterial = new FogSphShowMaterial();
                     this.m_dstPlane = new Plane3DEntity();
                     this.m_dstPlane.setMaterial(fogShowM);
-                    this.m_dstPlane.initialize(-1.0,-1.0,2.0,2.0,[this.getTextureAt(3),this.getTextureAt(4)])
+                    this.m_dstPlane.initializeXOY(-1.0,-1.0,2.0,2.0,[this.getTextureAt(3),this.getTextureAt(4)])
                     this.m_rc.addEntity(this.m_dstPlane,this.m_dstPlaneIndex);
                     
                     this.m_middleFBO = this.m_rc.createFBOInstance();

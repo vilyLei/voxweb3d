@@ -65,19 +65,29 @@ export namespace vox
                     this.setMesh(mesh);
                 }
             }
-            initialize(size:number = 100.0):void
+            /**
+             * initialize the axis entity mesh and geometry data
+             * @param axisSize the X/Y/Z axis length
+             */
+            initialize(axisSize:number = 100.0):void
             {
-                if(size < 10)
+                if(axisSize < 10)
                 {
-                    size = 10;
+                    axisSize = 10;
                 }
-                this.m_posarr[3] = size;
-                this.m_posarr[10] = size;
-                this.m_posarr[17] = size;
+                this.m_posarr[3] = axisSize;
+                this.m_posarr[10] = axisSize;
+                this.m_posarr[17] = axisSize;
                 this.createMaterial();
                 this.activeDisplay();
 
             }
+            /**
+             * initialize the axis entity mesh and geometry data
+             * @param sizeX the X axis length
+             * @param sizeY the Y axis length
+             * @param sizeZ the Z axis length
+             */
             initializeSizeXYZ(sizeX:number,sizeY:number,sizeZ:number):void
             {
                 this.m_posarr[3] = sizeX;
@@ -86,20 +96,23 @@ export namespace vox
                 this.createMaterial();
                 this.activeDisplay();
             }
-            
-            initializeCross(size:number = 100.0):void
+            /**
+             * initialize the cross axis entity mesh and geometry data
+             * @param axisSize the X/Y/Z axis length
+             */
+            initializeCross(axisSize:number = 100.0):void
             {
-                if(size < 10)
+                if(axisSize < 10)
                 {
-                    size = 10;
+                    axisSize = 10;
                 }
-                size *= 0.5;
-                this.m_posarr[0] = -size;
-                this.m_posarr[7] = -size;
-                this.m_posarr[14] = -size;
-                this.m_posarr[3] = size;
-                this.m_posarr[10] = size;
-                this.m_posarr[17] = size;
+                axisSize *= 0.5;
+                this.m_posarr[0] = -axisSize;
+                this.m_posarr[7] = -axisSize;
+                this.m_posarr[14] = -axisSize;
+                this.m_posarr[3] = axisSize;
+                this.m_posarr[10] = axisSize;
+                this.m_posarr[17] = axisSize;
                 this.createMaterial();
                 this.activeDisplay();
 

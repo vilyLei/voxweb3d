@@ -83,20 +83,20 @@ export namespace demo
                 scrColorPlane.name = "scrColorPlane";
                 scrColorPlane.flipVerticalUV = true;
                 scrColorPlane.setMaterial(new ScreenPlaneMaterial());
-                scrColorPlane.initialize(-1.0,-1.0,2.0,2.0,[this.getTextureAt(1)]);
+                scrColorPlane.initializeXOY(-1.0,-1.0,2.0,2.0,[this.getTextureAt(1)]);
                 renderer.addEntity(scrColorPlane,2);
 
                 var scrPlane:Plane3DEntity = new Plane3DEntity();
                 scrPlane.name = "scrPlane";
                 scrPlane.setMaterial(new ScrDepBlurMaterial());
-                scrPlane.initialize(-1.0,-1.0,2.0,2.0,[this.m_scrPingpongBlur.getDstTexture(),this.getTextureAt(0),this.getTextureAt(1)]);
+                scrPlane.initializeXOY(-1.0,-1.0,2.0,2.0,[this.m_scrPingpongBlur.getDstTexture(),this.getTextureAt(0),this.getTextureAt(1)]);
                 renderer.addEntity(scrPlane,4);
 
                 //  var scrColorPlane2:Plane3DEntity = new Plane3DEntity();
                 //  scrColorPlane2.name = "scrColorPlane2";
                 //  scrColorPlane2.flipVerticalUV = true;
                 //  scrColorPlane2.setMaterial(new ScreenPlaneMaterial());
-                //  scrColorPlane2.initialize(-1.0,-1.0,2.0,2.0,[this.getTextureAt(1)]);
+                //  scrColorPlane2.initializeXOY(-1.0,-1.0,2.0,2.0,[this.getTextureAt(1)]);
                 //  renderer.addEntity(scrColorPlane2,4);
 
                 this.m_entityMana.initialize(renderer);

@@ -114,7 +114,7 @@ export namespace demo
                 let rectPlane:Plane3DEntity = new Plane3DEntity();
                 rectPlane.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
                 rectPlane.setMaterial(rectMaterial);
-                rectPlane.initialize(-1.0,-1.0,2.0,2.0);
+                rectPlane.initializeXOY(-1.0,-1.0,2.0,2.0);
                 this.m_renderer.addEntity(rectPlane,0);
 
                 let wk:number = 5.0 / this.m_rcontext.getStage3D().stageHalfWidth;
@@ -142,7 +142,7 @@ export namespace demo
                 rectPlane = new Plane3DEntity();
                 rectPlane.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
                 rectPlane.setMaterial(rectMaterial);
-                rectPlane.initialize(-0.5,-0.5,1.0,1.0);
+                rectPlane.initializeXOY(-0.5,-0.5,1.0,1.0);
                 this.m_renderer.addEntity(rectPlane,2);
                 //rectPlane.setXYZ(0.3,0.2,0.0);
                 let k:number = this.m_rcontext.getStage3D().stageHalfWidth/this.m_rcontext.getStage3D().stageHalfHeight;
