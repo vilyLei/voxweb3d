@@ -7,14 +7,12 @@
 
 import * as IRenderResourceT from '../../vox/render/IRenderResource';
 import * as RenderProxyT from "../../vox/render/RenderProxy"
-import * as TextureProxyT from "../../vox/texture/TextureProxy"
 import * as IRenderTextureT from "../../vox/render/IRenderTexture"
 import * as IRenderBufferT from "../../vox/render/IRenderBuffer";
 import * as ROBufferUpdaterT from "../../vox/render/ROBufferUpdater";
 
 import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import IRenderTexture = IRenderTextureT.vox.render.IRenderTexture;
 import IRenderBuffer = IRenderBufferT.vox.render.IRenderBuffer;
 import ROBufferUpdater = ROBufferUpdaterT.vox.render.ROBufferUpdater;
@@ -25,13 +23,14 @@ export namespace vox
     {
         export class TextureResSlot
         {
-            private m_renderProxy:RenderProxy = null;
             private m_texResource:IRenderResource = null;
             private m_bufferUpdater:ROBufferUpdater = null;
             private m_textureTotal:number = 0;
             private m_textureMap:Map<number,IRenderTexture> = new Map();
             private m_freeMap:Map<number,number> = new Map();
             private static s_ins:TextureResSlot = null;
+            private m_texUid:number = 0;
+            private m_freeUids:number[] = [];
             constructor()
             {
                 if(TextureResSlot.s_ins != null)
@@ -49,16 +48,34 @@ export namespace vox
                 TextureResSlot.s_ins = new TextureResSlot();
                 return TextureResSlot.s_ins;
             }
+            getFreeUid():number
+            {
+                if(this.m_freeUids.length > 0)
+                {
+
+                }
+                let uid:number = this.m_texUid++;
+                return uid;
+            }
             /**
+             * 将texture实例添加到统一管理的 TextureResSlot中
              * 这个函数不允许其他地方调用
              */
             __$$addTexture(texture:IRenderTexture):void
             {
                 if(texture != null && !this.m_textureMap.has(texture.getUid()))
                 {
-                    (texture as TextureProxy).__$setRenderProxy(this.m_renderProxy);
                     this.m_textureMap.set(texture.getUid(), texture);
                     this.m_textureTotal ++;
+                }
+            }
+            __$$removeTexture(texture:IRenderTexture):void
+            {
+                if(texture != null && texture.getAttachCount() == -2 && !this.m_textureMap.has(texture.getUid()))
+                {
+                    this.m_freeUids.push(texture.getUid());
+                    texture.__$$RemoveFromSlot();
+                    this.m_textureTotal --;
                 }
             }
             getTextureByUid(uid:number):IRenderTexture
@@ -93,7 +110,6 @@ export namespace vox
             }
             setRenderProxy(renderProxy:RenderProxy):void
             {
-                this.m_renderProxy = renderProxy;
                 this.m_texResource = renderProxy.Texture;
             }
             setBufferUpdater(bufferUpdater:ROBufferUpdater):void

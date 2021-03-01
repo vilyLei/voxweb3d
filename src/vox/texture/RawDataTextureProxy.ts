@@ -108,6 +108,7 @@ export namespace vox
             __$updateToGpu(texRes:IRenderResource):void
             {
                 // 这里之所以用这种方式判断，是为了运行时支持多 gpu context
+                //console.log("RawDataTexture,__$updateToGpu, version: ",this.version,",resHas("+this.getResUid()+"):",texRes.hasResUid(this.getResUid()));
                 if(this.version > 0 && texRes.hasResUid(this.getResUid()))
                 {
                     let gl:any = texRes.getRC();
@@ -154,6 +155,7 @@ export namespace vox
                 d.offsety = py;
                 d.width = twidth;
                 d.height = theight;
+                //console.log("setPartDataFromeBytes, pos("+px+","+py+"),size("+twidth+","+twidth+")");
                 this.m_subDataList.push(d);
                 this.version++;
             }

@@ -5,19 +5,23 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as MathConstT from '../../vox/utils/MathConst';
 import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
-import * as ITextureRenderObjT from "../../vox/texture/ITextureRenderObj";
+import * as ITextureRenderObjT from "../../vox/render/ITextureRenderObj";
 import * as IRenderTextureT from "../../vox/render/IRenderTexture";
 
+import MathConst = MathConstT.vox.utils.MathConst;
 import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
-import ITextureRenderObj = ITextureRenderObjT.vox.texture.ITextureRenderObj;
+import ITextureRenderObj = ITextureRenderObjT.vox.render.ITextureRenderObj;
 import IRenderTexture = IRenderTextureT.vox.render.IRenderTexture;
 
 export namespace vox
 {
-    export namespace texture
+    export namespace render
     {
-        // texture render runtime object
+        /**
+         * renderer runtime texture resource object
+         */
         export class TextureRenderObj implements ITextureRenderObj
         {
             private static s_uid:number = 0;
@@ -30,8 +34,8 @@ export namespace vox
             protected m_mid:number = -1;
             protected m_texTotal:number = 0;
             // max texture amount: 8
-            private m_gtexList:any[] = [null,null,null,null, null,null,null,null];
-            protected m_samplers:Uint16Array = new Uint16Array(8);
+            private m_gtexList:any[] = null;
+            protected m_samplers:Uint16Array = null;
             protected m_texList:IRenderTexture[] = null;
 			// renderer context uid
             private m_rcuid:number = 0;
@@ -73,6 +77,9 @@ export namespace vox
                 {
                     if(this.m_texTotal < 1 && ptexList.length > 0)
                     {
+                        let len:number = MathConst.GetNearestCeilPow2(ptexList.length);
+                        this.m_samplers = new Uint16Array(len);
+                        this.m_gtexList = new Array(len);
                         this.m_texList = ptexList;
                         let tex:IRenderTexture;
                         while(i < shdTexTotal)
@@ -86,7 +93,7 @@ export namespace vox
                             i ++;
                         }
 
-                        this.m_texTotal = i;                        
+                        this.m_texTotal = i;
                     }
                     else
                     {

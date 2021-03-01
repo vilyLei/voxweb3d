@@ -77,12 +77,16 @@ export namespace vox
             }
             createWrapperTex(pw:number,ph:number,powerof2Boo:boolean = false):WrapperTextureProxy
             {
-                return new WrapperTextureProxy(pw,ph,powerof2Boo);
+                let tex:WrapperTextureProxy = new WrapperTextureProxy(pw,ph,powerof2Boo);
+                tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+                return tex;
             }
 
             createRTTTex2D(pw:number,ph:number,powerof2Boo:boolean = false):RTTTextureProxy
             {
-                return new RTTTextureProxy(pw,ph,powerof2Boo);
+                let tex:RTTTextureProxy = new RTTTextureProxy(pw,ph,powerof2Boo);
+                tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+                return tex;
             }
             createImageTex2D(pw:number,ph:number,powerof2Boo:boolean = false):ImageTextureProxy
             {
@@ -95,6 +99,7 @@ export namespace vox
                 {
                     tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
                 }
+                tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
                 tex.mipmapEnabled = true;
                 tex.setWrap(TextureConst.WRAP_REPEAT);
                 return tex;
@@ -106,11 +111,8 @@ export namespace vox
                 if(tex == null)
                 {
                     tex = new FloatTextureProxy(pw,ph,powerof2Boo);
-                }
-                else
-                {                    
-                    tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
-                }
+                }                
+                tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
                 tex.srcFormat = TextureFormat.RGBA;
                 tex.dataType = TextureDataType.HALF_FLOAT_OES;
                 //tex.srcFormat = TextureFormat.RGBA16F;
@@ -125,10 +127,7 @@ export namespace vox
                 {
                     tex = new FloatTextureProxy(pw,ph,powerof2Boo);
                 }
-                else
-                {                    
-                    tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
-                }
+                tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
                 return tex;
             }
             createUint16Tex2D(pw:number,ph:number,powerof2Boo:boolean = false):Uint16TextureProxy
@@ -146,21 +145,21 @@ export namespace vox
                 {
                     tex = new BytesTextureProxy(texW,texH);
                 }
-                else
-                {
-                    console.log("repeat use bytes texture from the texture pool.");
-                    tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
-                }
+                tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
                 return tex;
             }
             
             createBytesCubeTex(texW:number,texH:number):BytesCubeTextureProxy
             {
-                return new BytesCubeTextureProxy(texW,texH);
+                let tex:BytesCubeTextureProxy = new BytesCubeTextureProxy(texW,texH);
+                tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+                return tex;
             }
             createImageCubeTex(texW:number,texH:number):ImageCubeTextureProxy
             {
-                return new ImageCubeTextureProxy(texW,texH);
+                let tex:ImageCubeTextureProxy = new ImageCubeTextureProxy(texW,texH);
+                tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+                return tex;
             }
             createTex3D(texW:number,texH:number, depth:number = 1):Texture3DProxy
             {
@@ -168,7 +167,9 @@ export namespace vox
                 {
                     depth = 1;
                 }
-                return new Texture3DProxy(texW,texH,depth);
+                let tex:Texture3DProxy = new Texture3DProxy(texW,texH,depth);
+                tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+                return tex;
             }
             createRGBATex2D(pw:number,ph:number,color:Color4):BytesTextureProxy
             {
@@ -190,6 +191,8 @@ export namespace vox
                     k += 4;
                 }
                 tex.setDataFromBytes(bytes,0, pw,ph);
+                tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+                return tex;
                 return tex;
             }
             createAlphaTex2D(pw:number,ph:number,alpha:number):BytesTextureProxy
@@ -203,6 +206,7 @@ export namespace vox
                 let value:number = Math.round(alpha * 255.0);
                 bytes.fill(value,0,size);
                 tex.setDataFromBytes(bytes,0, pw,ph);
+                tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
                 return tex;
             }
             createAlphaTexBytes2D(pw:number,ph:number,bytes:Uint8Array):BytesTextureProxy
@@ -210,6 +214,7 @@ export namespace vox
                 let tex:BytesTextureProxy = this.createBytesTex(pw,ph);             
                 tex.setDataFromBytes(bytes, 0, pw, ph);
                 tex.toAlphaFormat();
+                tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
                 return tex;
             }
             
@@ -248,16 +253,16 @@ export namespace vox
                 return this.m_rttStore.createRTTFloatTextureAt(i,pw,ph);
             }
 
-            private m_dlearDelay:number = 256;
+            private m_clearDelay:number = 256;
             update():void
             {
-                if(this.m_dlearDelay < 1)
+                if(this.m_clearDelay < 1)
                 {
                     /**
                      * 准备释放回收 texture resource.
                      */
                     let tex:TextureProxy;
-                    this.m_dlearDelay = 256;
+                    this.m_clearDelay = 256;
                     
                     let freeMap:Map<number,number> = TextureResSlot.GetInstance().getFreeResUidMap();
                     let total:number = 32;
@@ -288,7 +293,7 @@ export namespace vox
                         }
                     }
                 }
-                this.m_dlearDelay --;
+                this.m_clearDelay --;
             }
             
         }

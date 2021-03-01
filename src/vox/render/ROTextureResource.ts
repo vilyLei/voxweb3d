@@ -209,7 +209,7 @@ export namespace vox
                 {
                     object.waitDelTimes = 0;
                     
-                    // console.log("ROTextureResource add a texture buffer(resUid="+object.resUid+"),sampler: ",object.sampler,object);
+                    //console.log("ROTextureResource add a texture buffer(resUid="+object.resUid+"),sampler: ",object.sampler,object);
                     this.m_resMap.set(object.resUid, object);
                     this.m_texResTotal++;
                 }

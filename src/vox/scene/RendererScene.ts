@@ -392,7 +392,7 @@ export namespace vox
                 {
                     if(entity.isPolyhedral())
                     {
-                        if(entity.isHaveMesh())
+                        if(entity.hasMesh())
                         {
                             this.m_renderer.addEntity(entity,this.m_processids[processid],deferred);
                             if(this.m_rspace != null)
@@ -571,7 +571,7 @@ export namespace vox
                         let status:number;
                         while(nextNode != null)
                         {
-                            if(nextNode.entity.isHaveMesh())
+                            if(nextNode.entity.hasMesh())
                             {
                                 pnode = nextNode;
                                 nextNode = nextNode.next;

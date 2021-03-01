@@ -214,11 +214,13 @@ export namespace vox
             }
             addEntityToProcess(entity:IRenderEntity,process:RenderProcess,deferred:boolean = true):void
             {
+                console.log("BBBBBBBBBB 00");
                 if(process != null && entity != null && entity.__$wuid < 0 && entity.__$weid < 0 && entity.__$contId < 0)
                 {
                     if(process.getWUid() == this.m_uid)
                     {
                         let processid:number = process.getWEid();
+                        console.log("BBBBBBBBBB 03, processid: ",processid);
                         this.m_entity3DMana.addEntity(entity,processid,deferred);
                     }
                 }
@@ -326,7 +328,7 @@ export namespace vox
                     processFixedState
                 );
                 let process:RenderProcess = this.m_processBuider.create() as RenderProcess;
-
+                console.log("BBVVBBBBBB process.uid: ",process.uid);
                 this.m_processes.push( process );
                 process.setWOrldParam(this.m_uid, this.m_processesLen);
                 return process;

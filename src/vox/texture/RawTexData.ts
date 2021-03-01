@@ -34,7 +34,7 @@ export namespace vox
                 }
                 else if(this.status == 0)
                 {
-                    gl.texSubImage2D(samplerTarget, this.miplevel, this.offsetx, this.offsetx,this.width, this.height, format, type, this.data);
+                    gl.texSubImage2D(samplerTarget, this.miplevel, this.offsetx, this.offsety,this.width, this.height, format, type, this.data);
                 }
                 this.status = -1;
             }

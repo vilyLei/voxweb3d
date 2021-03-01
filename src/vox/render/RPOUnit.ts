@@ -6,10 +6,10 @@
 /***************************************************************************/
 
 import * as RenderConstT from "../../vox/render/RenderConst";
-import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
+import * as IVertexRenderObjT from "../../vox/render/IVertexRenderObj";
 
 import * as MaterialShaderT from "../../vox/material/MaterialShader";
-import * as ITextureRenderObjT from "../../vox/texture/ITextureRenderObj";
+import * as ITextureRenderObjT from "../../vox/render/ITextureRenderObj";
 import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
@@ -19,10 +19,10 @@ import * as IRPODisplayT from "../../vox/render/IRPODisplay";
 import * as IPoolNodeT from "../../vox/utils/IPoolNode";
 
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
-import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
+import IVertexRenderObj = IVertexRenderObjT.vox.render.IVertexRenderObj;
 
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
-import ITextureRenderObj = ITextureRenderObjT.vox.texture.ITextureRenderObj;
+import ITextureRenderObj = ITextureRenderObjT.vox.render.ITextureRenderObj;
 import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
 import RenderColorMask = RODrawStateT.vox.render.RenderColorMask;
 import RendererState = RendererStateT.vox.render.RendererState;

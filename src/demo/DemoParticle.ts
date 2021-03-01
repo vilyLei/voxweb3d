@@ -1,62 +1,41 @@
 
 import * as Vector3DT from "../vox/geom/Vector3";
-import * as Matrix4T from "../vox/geom/Matrix4";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RenderConstT from "../vox/render/RenderConst";
 import * as RendererStateT from "../vox/render/RendererState";
 import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
-import * as RendererInstanceT from "../vox/scene/RendererInstance";
 import * as RendererSceneT from "../vox/scene/RendererScene";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 import * as MouseEventT from "../vox/event/MouseEvent";
 import * as Stage3DT from "../vox/display/Stage3D";
 
-import * as DisplayEntityT from "../vox/entity/DisplayEntity";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
 import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as Sphere3DEntityT from "../vox/entity/Sphere3DEntity";
-import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
 import * as Billboard3DEntityT from "../vox/entity/Billboard3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureConstT from "../vox/texture/TextureConst";
-import * as TextureStoreT from "../vox/texture/TextureStore";
-import * as TexResLoaderT from "../vox/texture/TexResLoader";
+import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as DisplayEntityContainerT from "../vox/entity/DisplayEntityContainer";
 import * as EntityDispT from "./base/EntityDisp";
 import * as Color4T from "../vox/material/Color4";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
-import Matrix4Pool = Matrix4T.vox.geom.Matrix4Pool;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
 import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
 import RendererState = RendererStateT.vox.render.RendererState;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
 import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
+import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
 import Color4 = Color4T.vox.material.Color4;
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 
@@ -68,22 +47,26 @@ export namespace demo
         {
         }
         private m_rscene:RendererScene = null;
-        private m_rcontext:RendererInstanceContext = null;
-        private m_texLoader:TexResLoader = new TexResLoader();
+        private m_texLoader:ImageTextureLoader = null;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_equeue:EntityDispQueue = new EntityDispQueue();
-        private m_container:DisplayEntityContainer = null;
-        private m_containerMain:DisplayEntityContainer = null;
-        private m_followEntity:DisplayEntity = null;
         private m_timeoutEnabled:boolean = true;
         private m_intervalEnabled:boolean = false;
         private m_timeoutId:any = -1;
         private m_timeIntervalId:any = -1;
+        
+        getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
+        {
+            let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
+            ptex.mipmapEnabled = mipmapEnabled;
+            if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
+            return ptex;
+        }
         initialize():void
         {
             console.log("DemoParticle::initialize()......");
-            if(this.m_rcontext == null)
+            if(this.m_rscene == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 
@@ -96,65 +79,17 @@ export namespace demo
                 this.m_rscene = new RendererScene();
                 this.m_rscene.initialize(rparam,3);
                 this.m_rscene.setRendererProcessParam(1,true,true);
-                this.m_rcontext = this.m_rscene.getRendererContext();
-                TextureStore.SetRenderer(this.m_rscene.getRenderer());
-                BillParticle.renderer = this.m_rscene.getRenderer();//this.m_renderer;
-                let stage3D:Stage3D = this.m_rcontext.getStage3D();
+                this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
+
+                let stage3D:Stage3D = this.m_rscene.getStage3D();
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
                 this.m_camTrack = new CameraTrack();
-                this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
-
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/guangyun_H_0007.png");
-                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_01.jpg");
-                let tex4:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_02.jpg");
-                let tex5:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/a_02_c.jpg");
-                BillParticle.texs.push(tex2);
-                BillParticle.texs.push(tex3);
-                BillParticle.texs.push(tex4);
-                BillParticle.texs.push(tex5);
-                tex0.mipmapEnabled = true;
-                tex1.mipmapEnabled = true;
-                tex2.mipmapEnabled = true;
-                tex3.mipmapEnabled = true;
-                tex4.mipmapEnabled = true;
-                tex5.mipmapEnabled = true;
-
+                this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
                 RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 
-                let plane:Plane3DEntity = new Plane3DEntity();
-                plane.name = "plane";
-                plane.showDoubleFace();
-                plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
-
-                let container:DisplayEntityContainer = null;
-                ///*
-                container = new DisplayEntityContainer();
-                container.addEntity(plane);
-                
-                container.setXYZ(100.0,100.0,100.0);
-                this.m_rscene.addEntity(plane);
-                //plane.setRenderStateByName("ADD01");
-                //container.update();
-                let containerB:DisplayEntityContainer = new DisplayEntityContainer();
-                containerB.addChild(container);
-                this.m_container = container;
-                this.m_containerMain = containerB;
-                this.m_rscene.addContainer(this.m_containerMain);
-                //*/
-
-                let axisEntity:Axis3DEntity = new Axis3DEntity();
-                axisEntity.name = "axisEntity";
-                axisEntity.initialize(30.0);
-                //axisEntity.setXYZ(200.0,10.0,150.0);
-                //container.addEntity(axisEntity);
-                this.m_rscene.addEntity(axisEntity);
-                this.m_followEntity = axisEntity;
-
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.name = "axis";
                 axis.initialize(300.0);
@@ -165,41 +100,16 @@ export namespace demo
                 axis.name = "axis";
                 axis.initialize(600.0);
                 this.m_rscene.addEntity(axis);
-               
-                let srcBillboard:Billboard3DEntity = new Billboard3DEntity();
-                srcBillboard.initialize(100.0,100.0, [tex2]);
-                BillParticle.srcBillboard = srcBillboard;
-                let billboard:Billboard3DEntity = new Billboard3DEntity();
-                let i:number = 0;
-                for(; i < 0; ++i)
-                {
-                    billboard = new Billboard3DEntity();
-                    billboard.setMesh(srcBillboard.getMesh());
-                    billboard.setRenderStateByName("ADD01");
-                    billboard.initialize(100.0,100.0, [tex2]);
-                    billboard.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
-                    billboard.setBrightness(Math.random());
-                    this.m_rscene.addEntity(billboard);
-                    this.m_equeue.addBillEntity(billboard,false);
-                }
                 
-                if(container != null)
-                {
-                    billboard = new Billboard3DEntity();
-                    billboard.setMesh(srcBillboard.getMesh());
-                    billboard.setRenderStateByName("ADD02");
-                    billboard.initialize(100.0,100.0, [tex2]);
-                    billboard.setXYZ(200,10,150);
-                    //container.addEntity(billboard);
-                    this.m_rscene.addEntity(billboard,1);
-                    billboard = new Billboard3DEntity();
-                    billboard.setMesh(srcBillboard.getMesh());
-                    billboard.setRenderStateByName("ADD02");
-                    billboard.initialize(100.0,100.0, [tex2]);
-                    billboard.setXYZ(-200,10,-150);
-                    //container.addEntity(billboard);
-                    this.m_rscene.addEntity(billboard,1);
-                }
+                let textures:TextureProxy[] = [];
+                textures.push( this.getImageTexByUrl("static/assets/guangyun_H_0007.png") );
+                textures.push(this.getImageTexByUrl("static/assets/flare_core_01.jpg"));
+                textures.push(this.getImageTexByUrl("static/assets/flare_core_02.jpg"));
+                textures.push(this.getImageTexByUrl("static/assets/a_02_c.jpg"));
+
+
+                DecayBrnParticle.Initialize(100.0, textures, this.m_rscene);
+                
                 if(this.m_timeoutEnabled)
                 {
                     if(this.m_intervalEnabled)
@@ -219,35 +129,21 @@ export namespace demo
             console.log("mouseDownListener call, this.m_rscene: "+this.m_rscene.toString());
             this.m_flagBoo = !this.m_flagBoo;
         }
-        pv:Vector3D = new Vector3D();
+        position:Vector3D = new Vector3D();
         delayTime:number = 10;
         run():void
         {
+            this.m_texLoader.run();
             this.m_equeue.run();
 
-            //console.log("##-- begin");
-            this.m_rcontext.setClearRGBColor3f(0.1, 0.1, 0.1);
-            //this.m_rcontext.setClearRGBAColor4f(0.0, 0.5, 0.0,0.0);
-            this.m_rcontext.renderBegin();
+            this.m_rscene.setClearRGBColor3f(0.1, 0.1, 0.1);
+            this.m_rscene.renderBegin();
 
             this.m_rscene.update();
             this.m_rscene.run();
 
             this.m_rscene.runEnd();
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-            this.m_rscene.updateCamera();
-            //this.m_rscene.cullingTest();
-            if(this.m_containerMain != null)
-            {
-                this.m_container.setRotationY(this.m_container.getRotationY() + 1.0);
-                //this.m_containerMain.setRotationY(this.m_containerMain.getRotationY() + 1.0);
-                this.m_containerMain.setRotationZ(this.m_containerMain.getRotationZ() + 1.0);
-                
-                this.pv.setXYZ(200.0,10.0,150.0);
-                this.m_container.localToGlobal(this.pv);
-                this.m_followEntity.setPosition(this.pv);
-                this.m_followEntity.update();
-            }
             
             if(!this.m_timeoutEnabled)
             {
@@ -264,29 +160,17 @@ export namespace demo
                 if(this.delayTime < 0)
                 {
                     this.delayTime = 10;
-                    let par:BillParticle = null;
-                    if(this.m_containerMain != null)
-                    {
-                        this.pv.setXYZ(-200.0,10.0,-150.0);
-                        this.m_container.localToGlobal(this.pv);
-                        par = BillParticle.Create();
-                        par.setPosition(this.pv);
-                        par.awake();
-                        this.pv.setXYZ(200.0,10.0,150.0);
-                        this.m_container.localToGlobal(this.pv);
-                        par = BillParticle.Create();
-                        par.setPosition(this.pv);
-                        par.awake();
-                    }
+                    let par:DecayBrnParticle = null;
+
                     let i:number = 0;
-                    let len:number = 80 + Math.round(Math.random() * 845);
-                    //let len:number = 10 + Math.round(Math.random() * 15);
+                    //let len:number = 80 + Math.round(Math.random() * 845);
+                    let len:number = 10 + Math.round(Math.random() * 15);
 
                     for(; i < len; ++i)
                     {
-                        this.pv.setXYZ(Math.random() * 800.0 - 400.0, Math.random() * 800.0 - 400.0,Math.random() * 800.0 - 400.0);
-                        par = BillParticle.Create();
-                        par.setPosition(this.pv);
+                        this.position.setXYZ(Math.random() * 800.0 - 400.0, Math.random() * 800.0 - 400.0,Math.random() * 800.0 - 400.0);
+                        par = DecayBrnParticle.Create();
+                        par.setPosition(this.position);
                         par.awake();
                     }
                 }
@@ -294,7 +178,7 @@ export namespace demo
                 {
                     --this.delayTime;
                 }
-                BillParticle.Run();
+                DecayBrnParticle.Run();
             }
             if(this.m_timeoutEnabled && !this.m_intervalEnabled)
             {
@@ -307,25 +191,36 @@ export namespace demo
             }
         }
     }
-    class BillParticle
+    class DecayBrnParticle
     {
-        private static s_pars:BillParticle[] = [];
-        private static s_sleepPars:BillParticle[] = [];
-        static texs:TextureProxy[] = [];        
-        static renderer:RendererInstance = null;
-        static srcBillboard:Billboard3DEntity = null;
+        private static s_pars:DecayBrnParticle[] = [];
+        private static s_sleepPars:DecayBrnParticle[] = [];
+        private static s_textures:TextureProxy[] = [];
+        private static s_rscene:RendererScene = null;
+        private static s_srcBillboard:Billboard3DEntity = null;
         private m_tar:Billboard3DEntity = null;
         private m_isAlive:boolean = true;
+        // brightness衰减速度
+        decaySpeed:number = 0.002;
         spdV0:Vector3D = new Vector3D();
         spdV1:Vector3D = new Vector3D();
         spdV2:Vector3D = new Vector3D();
+
         spdV:Vector3D = new Vector3D();
-        pv:Vector3D = new Vector3D();
+        position:Vector3D = new Vector3D();
         brightness:number = 1.0;
-        scale:number = 1.0;
+        scale:number = 0.5;
         constructor(tar:Billboard3DEntity)
         {
             this.m_tar = tar;
+        }
+        static Initialize(size:number,textures:TextureProxy[],rscene:RendererScene):void
+        {
+            DecayBrnParticle.s_rscene = rscene;
+            let srcBillboard:Billboard3DEntity = new Billboard3DEntity();
+            srcBillboard.initialize(size,size, [textures[0]]);
+            DecayBrnParticle.s_textures = textures;
+            DecayBrnParticle.s_srcBillboard = srcBillboard;
         }
         awake():void
         {
@@ -336,12 +231,13 @@ export namespace demo
             this.spdV0.setXYZ(Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5);
             this.spdV1.setXYZ(Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5);
             this.spdV2.setXYZ(Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5);
-            //this.spdV.setXYZ(Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5);
+            
             this.m_tar.update();
         }
-        setPosition(pv:Vector3D):void
+        setPosition(position:Vector3D):void
         {
-            this.m_tar.setPosition(pv);
+            this.position.copyFrom(position);
+            this.m_tar.setPosition(position);
         }
         update():void
         {
@@ -350,24 +246,22 @@ export namespace demo
                 if(this.brightness > 0.01)
                 {
                     let k0:number = Math.sin(this.brightness * 3.14) * 1.1;
-                    let k:number = 0.0;
-                    k = 1.0 - k0;
-                    let k1:number = k * k;
-                    this.spdV.x = (this.spdV0.x * k - this.spdV1.x * k0) * 0.7 + k1 * this.spdV2.x;
-                    this.spdV.y = (this.spdV0.y * k - this.spdV1.y * k0) * 0.7 + k1 * this.spdV2.y;
-                    this.spdV.z = (this.spdV0.z * k - this.spdV1.z * k0) * 0.7 + k1 * this.spdV2.z;
-                    this.m_tar.getPosition(this.pv);
+                    let k1:number = 1.0 - k0;
+                    let k2:number = k1 * k1;
+                    this.spdV.x = (this.spdV0.x * k1 - this.spdV1.x * k0) * 0.7 + k2 * this.spdV2.x;
+                    this.spdV.y = (this.spdV0.y * k1 - this.spdV1.y * k0) * 0.7 + k2 * this.spdV2.y;
+                    this.spdV.z = (this.spdV0.z * k1 - this.spdV1.z * k0) * 0.7 + k2 * this.spdV2.z;
+                    
+                    this.m_tar.getPosition(this.position);
                     this.spdV.scaleBy(k0);
-                    this.pv.addBy(this.spdV);
-                    //k = this.scale * this.brightness * this.spdV.getLength() * 0.5;
-                    k = this.scale * this.spdV.getLength() * 0.5;
-                    this.m_tar.setScaleXY(k,k);
+                    this.position.addBy(this.spdV);
+                    k1 = this.scale * this.spdV.getLength();
+                    this.m_tar.setScaleXY(k1,k1);
 
-                    this.m_tar.setPosition(this.pv);
+                    this.m_tar.setPosition(this.position);
                     this.m_tar.setBrightness(this.brightness);
                     this.m_tar.update();
-                    this.brightness -= 0.002;
-                    //this.spdV.y -= 0.001;
+                    this.brightness -= this.decaySpeed;
                 }
                 else
                 {
@@ -376,38 +270,38 @@ export namespace demo
                 }
             }
         }
-        static Color:Color4 = new Color4();
-        static Create():BillParticle
+        private static createParticle():DecayBrnParticle
         {
-            let par:BillParticle = null;
-            if(BillParticle.s_sleepPars.length > 0)
+            let billboard:Billboard3DEntity = new Billboard3DEntity();
+            billboard.setMesh(DecayBrnParticle.s_srcBillboard.getMesh());
+            billboard.setRenderStateByName("ADD02");
+            billboard.initialize(100.0,100.0, [DecayBrnParticle.s_textures[Math.floor(Math.random() * (DecayBrnParticle.s_textures.length - 0.5))]]);
+            DecayBrnParticle.s_rscene.addEntity(billboard,1);
+            let par:DecayBrnParticle = new DecayBrnParticle(billboard);
+            DecayBrnParticle.s_pars.push(par);
+            return par;
+        }
+        static Color:Color4 = new Color4();
+        static Create():DecayBrnParticle
+        {
+            let par:DecayBrnParticle = null;
+            if(DecayBrnParticle.s_sleepPars.length > 0)
             {
-                par = BillParticle.s_sleepPars.pop();
-                BillParticle.s_pars.push(par);
+                par = DecayBrnParticle.s_sleepPars.pop();
+                DecayBrnParticle.s_pars.push(par);
             }
             else
             {
-                let billboard:Billboard3DEntity = new Billboard3DEntity();
-                billboard.setMesh(BillParticle.srcBillboard.getMesh());
-                billboard.setRenderStateByName("ADD02");
-                billboard.initialize(100.0,100.0, [BillParticle.texs[Math.floor(Math.random() * (BillParticle.texs.length - 0.5))]]);
-                BillParticle.renderer.addEntity(billboard,1);
-                par = new BillParticle(billboard);
-                BillParticle.s_pars.push(par);
+                par = DecayBrnParticle.createParticle();
             }
-            par.scale = Math.random() * 0.5 + 0.5;
-
-            //par.m_tar.setRGB3f(Math.random() * 1.1 + 0.5,Math.random() * 1.1 + 0.5,Math.random() * 1.1 + 0.5);
-            //BillParticle.Color.randomRGB(1.0);
-            //BillParticle.Color.normalize(1.5);
+            par.scale = Math.random() * 0.25 + 0.25;
             par.m_tar.setRGB3f(Math.random() * 1.3 + 0.4,Math.random() * 1.3 + 0.4,Math.random() * 1.3 + 0.4);
-            //par.m_tar.setRGB3f(BillParticle.Color.r,BillParticle.Color.g,BillParticle.Color.b);
             par.m_tar.setScaleXY(par.scale,par.scale);
             return par;
         }
         static Run():void
         {
-            let pars:BillParticle[] = BillParticle.s_pars;
+            let pars:DecayBrnParticle[] = DecayBrnParticle.s_pars;
             let i:number = 0;
             let len:number = pars.length;
             
@@ -416,7 +310,7 @@ export namespace demo
                 pars[i].update();
                 if(!pars[i].m_isAlive)
                 {
-                    BillParticle.s_sleepPars.push(pars[i]);
+                    DecayBrnParticle.s_sleepPars.push(pars[i]);
                     pars.splice(i,1);
                     --i;
                     --len;

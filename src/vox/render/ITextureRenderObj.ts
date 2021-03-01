@@ -7,25 +7,16 @@
 
 export namespace vox
 {
-    export namespace mesh
+    export namespace render
     {
         
-        export interface IVertexRenderObj
+        export interface ITextureRenderObj
         {
-            /**
-             * indices buffer object.
-             */
-            ibuf:any;
-            /**
-             * be used by the renderer runtime, the value is 2 or 4.
-             */
-            ibufStep:number;
-            getMid():number;
-            getVtxUid():number;
             run():void;
-            restoreThis():void;
+            getMid():number;
             __$attachThis():void;
             __$detachThis():void;
         }
+        
     }
 }

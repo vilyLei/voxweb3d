@@ -40,7 +40,6 @@ export namespace vox
             //  name:string;// = "IRenderEntity";
             // 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMasK, 默认只会有摄像机裁剪
             spaceCullMask:number;// = 1;//SpaceCullingMasK.CAMERA;
-            //spaceCullMask:number = SpaceCullingMasK.CAMERA;
             // recorde a draw status
             drawEnabled:boolean;// = false;
             // mouse interaction enabled
@@ -52,7 +51,9 @@ export namespace vox
             getGlobalBounds():AABB;
             getLocalBounds():AABB;
             
-            
+            /**
+             * @return 返回true表示当前DisplayEntity能被绘制
+             */
             getDrawEnabled():boolean;
             
             setVisible(boo:boolean):void;
@@ -66,7 +67,10 @@ export namespace vox
              * @return          返回值 -1 表示不会进行检测,1表示相交,0表示不相交
              */
             testRay(rlpv:Vector3D,rltv:Vector3D,outV:Vector3D,boundsHit:boolean):number
-            isHaveMesh():boolean;
+            /**
+             * @return 返回true表示包含有mesh对象,反之则没有
+             */
+            hasMesh():boolean;
             /**
              * @return 返回true是则表示这是基于三角面的可渲染多面体, 返回false则是一个数学方程描述的几何体(例如球体)
              */

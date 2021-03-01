@@ -69,7 +69,7 @@ export namespace vox
                 this.m_rttCubeTexs[i].name = "sys_cube_rttTex_"+i;
                 this.m_rttCubeTexs[i].minFilter = TextureConst.LINEAR;
                 this.m_rttCubeTexs[i].magFilter = TextureConst.LINEAR;
-
+                this.m_rttCubeTexs[i].__$setRenderProxy(this.m_renderProxy);
 	        	return this.m_rttCubeTexs[i];
             }
             createCubeRTTTextureAt(i:number,pw:number,ph:number):RTTTextureProxy
@@ -86,7 +86,7 @@ export namespace vox
                 this.m_rttCubeTexs[i].name = "sys_cube_rttTex_"+i;
                 this.m_rttCubeTexs[i].minFilter = TextureConst.LINEAR;
                 this.m_rttCubeTexs[i].magFilter = TextureConst.LINEAR;
-
+                this.m_rttCubeTexs[i].__$setRenderProxy(this.m_renderProxy);
 	        	return this.m_rttCubeTexs[i];
             }
 
@@ -102,6 +102,7 @@ export namespace vox
                 this.m_rttTexs[i].name = "sys_rttTex_"+i;
                 this.m_rttTexs[i].minFilter = TextureConst.LINEAR;
                 this.m_rttTexs[i].magFilter = TextureConst.LINEAR;
+                this.m_rttTexs[i].__$setRenderProxy(this.m_renderProxy);
 	        	return this.m_rttTexs[i];
             }
             createRTTTextureAt(i:number,pw:number,ph:number):RTTTextureProxy
@@ -118,6 +119,7 @@ export namespace vox
                 this.m_rttTexs[i].name = "sys_rttTex_"+i;
                 this.m_rttTexs[i].minFilter = TextureConst.LINEAR;
                 this.m_rttTexs[i].magFilter = TextureConst.LINEAR;
+                this.m_rttTexs[i].__$setRenderProxy(this.m_renderProxy);
 	        	return this.m_rttTexs[i];
             }
             getDepthTextureAt(i:number):DepthTextureProxy
@@ -132,6 +134,7 @@ export namespace vox
                 this.m_rttDepthTexs[i].name = "sys_depthTex_"+i;
                 this.m_rttDepthTexs[i].minFilter = TextureConst.LINEAR;
                 this.m_rttDepthTexs[i].magFilter = TextureConst.LINEAR;
+                this.m_rttDepthTexs[i].__$setRenderProxy(this.m_renderProxy);
 	        	return this.m_rttDepthTexs[i];
             }
             createDepthTextureAt(i:number,pw:number,ph:number):DepthTextureProxy
@@ -148,6 +151,7 @@ export namespace vox
                 this.m_rttDepthTexs[i].name = "sys_depthTex_"+i;
                 this.m_rttDepthTexs[i].minFilter = TextureConst.LINEAR;
                 this.m_rttDepthTexs[i].magFilter = TextureConst.LINEAR;
+                this.m_rttDepthTexs[i].__$setRenderProxy(this.m_renderProxy);
 	        	return this.m_rttDepthTexs[i];
             }
             getRTTFloatTextureAt(i:number):RTTTextureProxy
@@ -165,6 +169,7 @@ export namespace vox
                 tex.srcFormat = TextureFormat.RGBA;
                 tex.dataType = TextureDataType.FLOAT;
                 tex.magFilter = TextureConst.NEAREST;
+                this.m_rttFloatTexs[i].__$setRenderProxy(this.m_renderProxy);
 	        	return tex;
             }
             createRTTFloatTextureAt(i:number,pw:number,ph:number):RTTTextureProxy
@@ -184,6 +189,7 @@ export namespace vox
                 tex.srcFormat = TextureFormat.RGBA;
                 tex.dataType = TextureDataType.FLOAT;
                 tex.magFilter = TextureConst.NEAREST;
+                this.m_rttFloatTexs[i].__$setRenderProxy(this.m_renderProxy);
 	        	return tex;
             }
         }

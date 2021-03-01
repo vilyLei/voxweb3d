@@ -8,18 +8,18 @@
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
 import * as IROVtxBuilderT from "../../vox/render/IROVtxBuilder";
-import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
-import * as VROBaseT from "../../vox/mesh/VROBase";
+import * as IVertexRenderObjT from "../../vox/render/IVertexRenderObj";
+import * as VROBaseT from "../../vox/render/VROBase";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
 import IROVtxBuilder = IROVtxBuilderT.vox.render.IROVtxBuilder;
-import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
-import VROBase = VROBaseT.vox.mesh.VROBase;
+import IVertexRenderObj = IVertexRenderObjT.vox.render.IVertexRenderObj;
+import VROBase = VROBaseT.vox.render.VROBase;
 
 export namespace vox
 {
-    export namespace mesh
+    export namespace render
     {
         export class VertexRenderObj extends VROBase
         {

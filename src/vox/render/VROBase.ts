@@ -6,16 +6,14 @@
 /***************************************************************************/
 
 import * as IROVtxBuilderT from "../../vox/render/IROVtxBuilder";
-//import * as ROVtxBufUidStoreT from "../../vox/mesh/ROVtxBufUidStore";
-import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
+import * as IVertexRenderObjT from "../../vox/render/IVertexRenderObj";
 
 import IROVtxBuilder = IROVtxBuilderT.vox.render.IROVtxBuilder;
-//import ROVtxBufUidStore = ROVtxBufUidStoreT.vox.mesh.ROVtxBufUidStore;
-import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
+import IVertexRenderObj = IVertexRenderObjT.vox.render.IVertexRenderObj;
 
 export namespace vox
 {
-    export namespace mesh
+    export namespace render
     {
         export class VROBase implements IVertexRenderObj
         {
@@ -62,20 +60,13 @@ export namespace vox
             protected m_attachCount:number = 0;
             __$attachThis():void
             {
-                //  if(this.m_attachCount < 1)
-                //  {
-                //      ROVtxBufUidStore.GetInstance().__$attachAt(this.m_vtxUid);
-                //  }
                 ++this.m_attachCount;
-                //console.log("VROBase::__$attachThis() ("+this.m_uid+")this.m_attachCount: "+this.m_attachCount);
             }
             __$detachThis():void
             {
                 --this.m_attachCount;
-                //console.log("VROBase::__$detachThis() ("+this.m_uid+")this.m_attachCount: "+this.m_attachCount);
                 if(this.m_attachCount < 1)
                 {
-                    //ROVtxBufUidStore.GetInstance().__$detachAt(this.m_vtxUid);
                     this.m_attachCount = 0;
                     console.log("VROBase::__$detachThis() this.m_attachCount value is 0.");
                 }

@@ -247,11 +247,11 @@ export namespace vox
             {
                 return null;
             }
-            //  // synchronism ubo data and src data
+            //synchronism ubo data or other displayEntity data
             updateSelfData(ro:any):void
             {
             }
-            isHaveTexture():boolean
+            hasTexture():boolean
             {
                 return this.m_shdData.haveTexture();
             }

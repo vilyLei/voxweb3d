@@ -79,7 +79,7 @@ export namespace vox
             constructor(texWidth:number,texHeight:number,powerof2Boo:boolean = false)
             {
                 this.m_slot = TextureResSlot.GetInstance();                
-                this.m_uid = TextureProxy.s_uid++;
+                this.m_uid = this.m_slot.getFreeUid();
 
                 if(texWidth  < 1) texWidth = 128;
                 if(texHeight  < 1) texHeight = 128;
@@ -259,12 +259,10 @@ export namespace vox
             {
                 if(rc != null)
                 {
-                    console.log("texture updateDataToGpu by the specific rc, version:"+this.version);
                     rc.MaterialUpdater.updateTextureData(this, deferred);
                 }
                 else if(this.m_renderProxy != null)
                 {
-                    console.log("texture updateDataToGpu by the current rc, version:"+this.version);
                     this.m_renderProxy.MaterialUpdater.updateTextureData(this, deferred);
                 }
             }
@@ -284,7 +282,7 @@ export namespace vox
              */
             __$$upload(texRes:IRenderResource):void
             {
-                if(this.m_haveRData)
+                if(this.m_haveRData && this.m_slot != null)
                 {
                     let buildStatus:boolean = this.createTexBuf(texRes);
                     if(buildStatus)
@@ -351,9 +349,23 @@ export namespace vox
                     this.m_haveRData = false;
                     this.m_texWidth = 1;
                     this.m_texHeight = 1;
-                    this.m_slot = null;
                     this.m_renderProxy = null;
                     console.log("TextureProxy::destroy(), destroy a textureProxy instance(uid="+this.getUid()+")...");
+                }
+            }
+            /**
+             * 移除之后则不能再正常使用了
+             */
+            __$$RemoveFromSlot():void
+            {
+                if(this.m_slot != null && this.getAttachCount() == -2)
+                {
+                    this.m_slot.__$$removeTexture(this);
+                    // this.m_slot 不能随便等于null,因为当前textureProxy实例还会通过this.m_slot来重复使用
+                    // 如果 this.m_slot 要等于 null, 则这个textureProxy实例及其uid需要回收
+                    this.m_slot = null;
+                    this.m_renderProxy = null;
+                    console.log("TextureProxy::RemoveFromSlot(), destroy a textureProxy instance(uid="+this.getUid()+")...");
                 }
             }
             toString():string

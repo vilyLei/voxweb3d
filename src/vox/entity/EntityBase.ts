@@ -187,7 +187,7 @@ export namespace vox
             {
                 return this.m_mesh;
             }
-            isHaveMesh():boolean
+            hasMesh():boolean
             {
                 return this.m_mesh != null;
             }

@@ -85,17 +85,11 @@
 //  import * as DemoEntityBounds from "./demo/DemoEntityBounds";
 //  import Demo = DemoEntityBounds.demo.DemoEntityBounds;
 
-//  import * as DemoFontText from "./demo/DemoFontText";
-//  import Demo = DemoFontText.demo.DemoFontText;
-
 //  import * as DemoScene from "./demo/DemoScene";
 //  import Demo = DemoScene.demo.DemoScene;
 
 //  import * as DemoContainer from "./demo/DemoContainer";
 //  import Demo = DemoContainer.demo.DemoContainer;
-
-//  import * as DemoParticle from "./demo/DemoParticle";
-//  import Demo = DemoParticle.demo.DemoParticle;
 
 //  import * as DemoSphScreenRect from "./demo/DemoSphScreenRect";
 //  import Demo = DemoSphScreenRect.demo.DemoSphScreenRect;
@@ -118,8 +112,8 @@
 //  import * as DemoMRT2 from "./demo/DemoMRT2";
 //  import Demo = DemoMRT2.demo.DemoMRT2;
 
-import * as DemoFBOInstance from "./demo/DemoFBOInstance";
-import Demo = DemoFBOInstance.demo.DemoFBOInstance;
+//  import * as DemoFBOInstance from "./demo/DemoFBOInstance";
+//  import Demo = DemoFBOInstance.demo.DemoFBOInstance;
 
 //  import * as DemoMRT from "./demo/DemoMRT";
 //  import Demo = DemoMRT.demo.DemoMRT;
@@ -232,8 +226,20 @@ import Demo = DemoFBOInstance.demo.DemoFBOInstance;
 //  import * as DemoDelEntity from "./demo/DemoDelEntity";
 //  import Demo = DemoDelEntity.demo.DemoDelEntity;
 
+//  import * as DemoText2D from "./demo/DemoText2D";
+//  import Demo = DemoText2D.demo.DemoText2D;
+
 //  import * as DemoTexUpdate from "./demo/DemoTexUpdate";
 //  import Demo = DemoTexUpdate.demo.DemoTexUpdate;
+
+import * as DemoParticle from "./demo/DemoParticle";
+import Demo = DemoParticle.demo.DemoParticle;
+
+//  import * as DemoContainerTransform from "./demo/DemoContainerTransform";
+//  import Demo = DemoContainerTransform.demo.DemoContainerTransform;
+
+//  import * as DemoFontText from "./demo/DemoFontText";
+//  import Demo = DemoFontText.demo.DemoFontText;
 
 //  import * as DemoDivControl from "./demo/DemoDivControl";
 //  import Demo = DemoDivControl.demo.DemoDivControl;

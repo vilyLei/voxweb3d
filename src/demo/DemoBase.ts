@@ -65,7 +65,7 @@ export namespace demo
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_equeue:EntityDispQueue = new EntityDispQueue();
         
-        getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
+        private getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
             let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
             ptex.mipmapEnabled = mipmapEnabled;

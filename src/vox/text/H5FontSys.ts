@@ -7,18 +7,17 @@
 
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as BytesTextureProxyT from "../../vox/texture/BytesTextureProxy";
-import * as TextureStoreT from "../../vox/texture/TextureStore";
+import * as RenderProxyT from "../../vox/render/RenderProxy";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
-//import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import BytesTextureProxy = BytesTextureProxyT.vox.texture.BytesTextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
+import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 
 export namespace vox
 {
     export namespace text
     {
-class __FontTexCharGrid
+class FontTexCharGrid
 {
   constructor()
   {
@@ -41,7 +40,7 @@ export class FontTexCharTable
   
   private m_texWidth:number = 512;
   private m_texHeight:number = 256;
-  private m_gridMp:Map<string,__FontTexCharGrid> = new Map();
+  private m_gridMp:Map<string,FontTexCharGrid> = new Map();
   layoutDataStr:string = "";
   initialize(texW:number,texH:number):void
   {
@@ -73,7 +72,7 @@ export class FontTexCharTable
       //1.0,1.0,
       //1.0,0.0,
       //0.0,0.0,
-      let grid:__FontTexCharGrid = new __FontTexCharGrid();
+      let grid:FontTexCharGrid = new FontTexCharGrid();
       let uvs:Float32Array = grid.uvs;
       let ptw:number = this.m_texWidth;
       let pth:number = this.m_texHeight;
@@ -93,19 +92,19 @@ export class FontTexCharTable
       this.m_gridMp.set(char,grid);
     }
   }
-  getGridByChar(char:string):__FontTexCharGrid
+  getGridByChar(char:string):FontTexCharGrid
   {
     return this.m_gridMp.get(char);
   }
   getUV8FromChar(char:string,outfloat8Arr:Float32Array,offset:number = 0):void
   {
-    let grid:__FontTexCharGrid = this.m_gridMp.get(char);
+    let grid:FontTexCharGrid = this.m_gridMp.get(char);
     if(grid == null)grid = this.m_gridMp.get("?");
     outfloat8Arr.set(grid.uvs,offset);
   }
   getVtxFromChar(char:string,vtxFloatArr:Float32Array,offset:number = 0):void
   {
-    let grid:__FontTexCharGrid = this.m_gridMp.get(char);
+    let grid:FontTexCharGrid = this.m_gridMp.get(char);
     if(grid == null)grid = this.m_gridMp.get("?");
     let pos_arr:number[] = [
       0,0,0,
@@ -117,7 +116,7 @@ export class FontTexCharTable
   }
   getUV8AndVtxFromChar(char:string,outFloatArr:Float32Array,vtxFloatArr:Float32Array,offsetuv:number = 0,offsetvtx:number = 0):void
   {
-    let grid:__FontTexCharGrid = this.m_gridMp.get(char);
+    let grid:FontTexCharGrid = this.m_gridMp.get(char);
     if(grid == null)grid = this.m_gridMp.get("?");
     outFloatArr.set(grid.uvs,offsetuv);
     //
@@ -132,7 +131,7 @@ export class FontTexCharTable
   
   getUV8AndSizeFromChar(char:string,outFloatArr:Float32Array,sizeArr:number[],offsetuv:number = 0):void
   {
-    let grid:__FontTexCharGrid = this.m_gridMp.get(char);
+    let grid:FontTexCharGrid = this.m_gridMp.get(char);
     if(grid == null)grid = this.m_gridMp.get("?");
     outFloatArr.set(grid.uvs,offsetuv);
     sizeArr[0] = grid.width;
@@ -141,7 +140,7 @@ export class FontTexCharTable
 
   getUV8AndOffsetXYVtxFromChar(char:string,outUint8Arr:Uint8Array,vtxFloatArr:Float32Array,offsetX:number = 0,offsetY:number = 0,offsetuv:number = 0,offsetvtx:number = 0):void
   {
-    let grid:__FontTexCharGrid = this.m_gridMp.get(char);
+    let grid:FontTexCharGrid = this.m_gridMp.get(char);
     if(grid == null)grid = this.m_gridMp.get("?");
     outUint8Arr.set(grid.uvs,offsetuv);
     let pos_arr:number[] = [
@@ -258,8 +257,6 @@ export class FontTexDataBuilder
 	}
 }
 
-//var fontTexDataBuilder = new __FontTexDataBuilder();
-//
 export class H5FontSystem
 {
   private constructor()
@@ -273,6 +270,19 @@ export class H5FontSystem
   private m_fontSize:number = 18;
   private m_fontCharTable:FontTexCharTable = new FontTexCharTable();
   private m_fontTexDataBuilder:FontTexDataBuilder = new FontTexDataBuilder();
+  private m_renderProxy:RenderProxy = null;
+  setRenderProxy(renderProxy:RenderProxy):void
+  {
+    if(renderProxy != null)
+    {
+      this.m_renderProxy = renderProxy;
+      if(this.m_texBase != null)
+      {
+        this.m_texBase.__$setRenderProxy(renderProxy);
+      }
+
+    }
+  }
   isEnabled():boolean
   {
     return this.m_canvas != null;
@@ -281,8 +291,8 @@ export class H5FontSystem
   {
     if(this.m_canvas == null)
     {
-      if(texWidth < 256) texWidth = 256;
-      if(texHeight < 256) texHeight = 256;
+      if(texWidth < 32) texWidth = 32;
+      if(texHeight < 32) texHeight = 32;
       this.m_texWidth = texWidth;
       this.m_texHeight = texHeight;
 
@@ -339,7 +349,9 @@ export class H5FontSystem
       //
       this.m_fontCharTable.initialize(this.m_texWidth, this.m_texHeight);
       //
-      this.m_texBase = TextureStore.CreateBytesTex(this.m_texWidth,this.m_texHeight);
+      this.m_texBase = new BytesTextureProxy(this.m_texWidth,this.m_texHeight);
+      this.m_texBase.__$setRenderProxy(this.m_renderProxy);
+      
       this.m_texBase.toAlphaFormat();
       this.m_texBase.mipmapEnabled = mipmapEnabled;
       this.m_texBase.minFilter = TextureConst.LINEAR;
@@ -384,7 +396,6 @@ export class H5FontSystem
   }
   
   private m_areaBytes:Uint8Array = null;
-  private m_areaSubBytes:Uint8Array = null;
   createCharsTexFromStr(srcStr:string):void
   {
 	  srcStr = this.m_fontTexDataBuilder.textFilte( srcStr );
@@ -393,66 +404,69 @@ export class H5FontSystem
 	  	//console.log("don not need rebuild tex Data");
 	  	return;
 	  }
-	  else
-	  {
-	  	//console.log("need rebuild tex Data from srcStr: "+srcStr);
-	  }
 
 	  let rawFontText = srcStr;
-	  //console.log("XXX  createCharsTexFromStr() rawFontText.length: "+rawFontText.length);
-	  //
-    //let rawUVData = m_fontTexDataBuilder.crateTextUVData(rawFontText, m_texWidth,m_texHeight, m_fontSize);
     this.m_fontTexDataBuilder.crateTextUVData(rawFontText, this.m_texWidth,this.m_texHeight, this.m_fontSize);
-	  //
-	  let fontTexData:any = this.m_ctx2D.getImageData(0,0,this.m_texWidth,this.m_texHeight);
+	 
 	  let index:number = 0;
 	  let i:number = 0;
 	  let j:number = 0;
-    let pixData:any = fontTexData.data;
     
 	  let k:number = 0;
+	  let t:number = 0;
 	  let dw:number = this.m_fontTexDataBuilder.pixMaxPos.x - this.m_fontTexDataBuilder.pixMinPos.x;
 	  let dh:number = this.m_fontTexDataBuilder.pixMaxPos.y - this.m_fontTexDataBuilder.pixMinPos.y;
-    //
-    //  if(this.m_areaSubBytes == null || this.m_areaSubBytes.length < (dw * dh * 3))
-    //  {
-    //    this.m_areaSubBytes  = new Uint8Array(dw * dh * 4);
-    //  }
-	  //  let rawBytes:Uint8Array = this.m_areaSubBytes.subarray(0,dw * dh);
-    //
+
+	  //let fontTexData:any = this.m_ctx2D.getImageData(0,0,this.m_texWidth,this.m_texHeight);
+	  let fontTexData:any = this.m_ctx2D.getImageData(this.m_fontTexDataBuilder.pixMinPos.x,this.m_fontTexDataBuilder.pixMinPos.y,dw,dh);
+    let pixData:any = fontTexData.data;
     let rawBytes:Uint8Array = new Uint8Array(dw * dh);
-	  for(i = this.m_fontTexDataBuilder.pixMinPos.y; i < this.m_fontTexDataBuilder.pixMaxPos.y; ++i)
+
+	  //  for(i = this.m_fontTexDataBuilder.pixMinPos.y; i < this.m_fontTexDataBuilder.pixMaxPos.y; ++i)
+	  //  {
+	  //  	for(j = this.m_fontTexDataBuilder.pixMinPos.x; j < this.m_fontTexDataBuilder.pixMaxPos.x; ++j)
+	  //  	{
+    //      t = i * this.m_texWidth + j;
+    //      index = t * 4;
+    //      this.m_areaBytes[t] = pixData[index + 3];
+    //      rawBytes[k] = this.m_areaBytes[t];
+    //      k++;
+	  //  	}
+	  //  }
+    let px:number = this.m_fontTexDataBuilder.pixMinPos.x;
+    let py:number = this.m_fontTexDataBuilder.pixMinPos.y;
+	  for(i = 0; i < dh; ++i)
 	  {
-	  	for(j = this.m_fontTexDataBuilder.pixMinPos.x; j < this.m_fontTexDataBuilder.pixMaxPos.x; ++j)
+	  	for(j = 0; j < dw; ++j)
 	  	{
-        index = (i * this.m_texWidth + j) * 4;
-        rawBytes[k] = pixData[index + 3];
+        t = (i + py) * this.m_texWidth + (px + j);
+        index = (i * dw + j) * 4;
+        this.m_areaBytes[t] = pixData[index + 3];
+        rawBytes[k] = this.m_areaBytes[t];
         k++;
 	  	}
 	  }
+
+    //console.log("update sub text alpha texture pixel data.");
+    //console.log("min pos: ",this.m_fontTexDataBuilder.pixMinPos.x,this.m_fontTexDataBuilder.pixMinPos.y);
 	  this.m_texBase.setPartDataFromeBytes(rawBytes,this.m_fontTexDataBuilder.pixMinPos.x,this.m_fontTexDataBuilder.pixMinPos.y,dw,dh);
+    this.m_texBase.updateDataToGpu();
   }
   private createInitTexAndChars():void
   {
     let baseChars:string = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890~`!@#$%^&*()_+-={}[]:\";\\|'<>,.?/\n ";
     let tempChars:string = "我心永恒光辉岁月";
+    
     let rawFontText:string = baseChars + tempChars;
     //let rawUVData = m_fontTexDataBuilder.crateTextUVData(rawFontText, m_texWidth,m_texHeight, m_fontSize);
     this.m_fontTexDataBuilder.crateTextUVData(rawFontText, this.m_texWidth,this.m_texHeight, this.m_fontSize);
-    //trace("fontCharTable.layoutDataStr: \n"+fontCharTable.layoutDataStr);
-    //trace("");
-    //
+
     let fontTexData:any = this.m_ctx2D.getImageData(0,0,this.m_texWidth,this.m_texHeight);
     let pixData:any = fontTexData.data;
-    //
+
     let i:number = 0;
     let j:number = 0;
     let index:number = 0;
-    //
-    //let dataStr:string = "";
-    //console.log("ucodesArr: "+ucodesArr);
-    //console.log("rawUVData: "+rawUVData);
-  
     this.m_areaBytes = new Uint8Array(this.m_texWidth * this.m_texHeight);
     let k:number = 0;
     for(i = 0; i < this.m_texHeight; ++i)
@@ -464,7 +478,7 @@ export class H5FontSystem
         k++;
       }
     }
-    //
+    //console.log("set initialization text alpha texture pixel data.");
     this.m_texBase.setDataFromBytes(this.m_areaBytes,0,this.m_texWidth,this.m_texHeight);
   }
   getTextureAt(index:number = 0):BytesTextureProxy

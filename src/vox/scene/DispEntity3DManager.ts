@@ -210,7 +210,7 @@ export namespace vox
             private m_rprocess:RenderProcess = null;
             testValidData(entity:IRenderEntity):boolean
             {
-                if(entity.getMaterial() != null && entity.isHaveMesh())
+                if(entity.getMaterial() != null && entity.hasMesh())
                 {
                     if(entity.getMaterial().hasShaderData())
                     {

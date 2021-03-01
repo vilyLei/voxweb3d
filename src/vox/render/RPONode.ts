@@ -7,13 +7,13 @@
 // 真正被高频运行的渲染管线中的被执行对象
 
 
-import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
-import * as ITextureRenderObjT from "../../vox/texture/ITextureRenderObj";
+import * as IVertexRenderObjT from "../../vox/render/IVertexRenderObj";
+import * as ITextureRenderObjT from "../../vox/render/ITextureRenderObj";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as IPoolNodeT from "../../vox/utils/IPoolNode";
 
-import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
-import ITextureRenderObj = ITextureRenderObjT.vox.texture.ITextureRenderObj;
+import IVertexRenderObj = IVertexRenderObjT.vox.render.IVertexRenderObj;
+import ITextureRenderObj = ITextureRenderObjT.vox.render.ITextureRenderObj;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import IPoolNode = IPoolNodeT.vox.utils.IPoolNode;
 

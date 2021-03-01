@@ -93,6 +93,7 @@ export namespace voxprofile
                 {
                     if(!H5FontSystem.GetInstance().isEnabled())
                     {
+                        H5FontSystem.GetInstance().setRenderProxy(renderer.getRenderProxy());
                         H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
                     }
                     this.m_renderer = renderer;
@@ -108,6 +109,7 @@ export namespace voxprofile
                     text2D.setXY(px3 - text2D.getWidth(),py2);
                     this.m_renderer.addEntityToProcess(text2D,this.m_rprocess);
                     this.m_textFPSNS = text2D;
+                    ///*
                     let pw:number = text2D.getWidth();
                     text2D = new Text2DEntity();
                     text2D.initialize("60");
@@ -156,12 +158,12 @@ export namespace voxprofile
                     text2D.setXY(px2, py2);
                     this.m_renderer.addEntityToProcess(text2D,this.m_rprocess);
                     this.m_pov = text2D;
+                    //*/
                 }
             }
             run():void
             {
-                //  if(this.m_renderer != null)
-                //  {
+                ///*
                 this.m_fpsInfo.updateFPS();
                 if(this.m_fps != this.m_fpsInfo.getFPS())
                 {
@@ -190,7 +192,7 @@ export namespace voxprofile
                     this.m_pov.setText(povNumber);
                     this.m_pov.update();
                 }
-                //RendererState.POVNumber
+                //*/
             }
             toString():string
             {

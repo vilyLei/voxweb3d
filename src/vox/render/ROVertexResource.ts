@@ -7,17 +7,17 @@
 
 import * as IVtxShdCtrT from "../../vox/material/IVtxShdCtr";
 import * as IROVtxBuilderT from "../../vox/render/IROVtxBuilder";
-import * as IVertexRenderObjT from "../../vox/mesh/IVertexRenderObj";
-import * as VertexRenderObjT from "../../vox/mesh/VertexRenderObj";
-import * as VaoVertexRenderObjT from "../../vox/mesh/VaoVertexRenderObj";
+import * as IVertexRenderObjT from "../../vox/render/IVertexRenderObj";
+import * as VertexRenderObjT from "../../vox/render/VertexRenderObj";
+import * as VaoVertexRenderObjT from "../../vox/render/VaoVertexRenderObj";
 import * as IROVtxBufT from "../../vox/render/IROVtxBuf";
 import * as IRenderResourceT from "../../vox/render/IRenderResource";
 
 import IVtxShdCtr = IVtxShdCtrT.vox.material.IVtxShdCtr;
 import IROVtxBuilder = IROVtxBuilderT.vox.render.IROVtxBuilder;
-import IVertexRenderObj = IVertexRenderObjT.vox.mesh.IVertexRenderObj;
-import VertexRenderObj = VertexRenderObjT.vox.mesh.VertexRenderObj;
-import VaoVertexRenderObj = VaoVertexRenderObjT.vox.mesh.VaoVertexRenderObj;
+import IVertexRenderObj = IVertexRenderObjT.vox.render.IVertexRenderObj;
+import VertexRenderObj = VertexRenderObjT.vox.render.VertexRenderObj;
+import VaoVertexRenderObj = VaoVertexRenderObjT.vox.render.VaoVertexRenderObj;
 import IROVtxBuf = IROVtxBufT.vox.render.IROVtxBuf;
 import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
 
@@ -322,10 +322,9 @@ export namespace vox
             }
             updateToGpu(rc:IROVtxBuilder):void
             {
-                if(this.m_gpuBuf == null && this.m_ivsSize > 0)
+                if(this.m_gpuBuf != null && this.m_ivsSize > 0)
                 {
                     let vtx:IROVtxBuf = this.m_vtx;
-                    
                     if(this.version != vtx.indicesVer)
                     {
                         this.m_ivs = vtx.getIvsData();

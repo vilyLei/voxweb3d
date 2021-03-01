@@ -49,7 +49,10 @@ export namespace vox
             getMesh():MeshBase;
             setIvsParam(ivsIndex:number,ivsCount:number):void;
 
-            isHaveMesh():boolean;
+            /**
+             * @return 返回true表示包含有mesh对象,反之则没有
+             */
+            hasMesh():boolean;
             /**
              * @return 返回true是则表示这是基于三角面的可渲染多面体, 返回false则是一个数学方程描述的几何体(例如球体)
              */
