@@ -617,7 +617,7 @@ export namespace vox
                         resUid = this.m_updateIds.shift();
                         if(this.m_resMap.has(resUid))
                         {
-                            console.log("ROvtxRes("+resUid+") update vtx("+resUid+") data to gpu with deferred mode.");
+                            //console.log("ROvtxRes("+resUid+") update vtx("+resUid+") data to gpu with deferred mode.");
                             this.m_resMap.get(resUid).updateToGpu(this.m_vtxBuilder);
                         }
                     }

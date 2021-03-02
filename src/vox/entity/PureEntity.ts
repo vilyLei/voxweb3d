@@ -74,6 +74,7 @@ export namespace vox
             private m_renderState:number = RendererState.BACK_CULLFACE_NORMAL_STATE;
             private m_display:RODisplay = null;
             protected m_mesh:MeshBase = null;
+            protected m_renderProxy:RenderProxy = null;
             // 如果一个entity如果包含了多个mesh,则这个bounds就是多个mesh aabb 合并的aabb
             protected m_globalBounds:AABB = null;
             // 自身所在的renderer instance的唯一id, 通过这个id可以找到对应的renderer instance
@@ -96,6 +97,10 @@ export namespace vox
             //
             vbWholeDataEnabled:boolean = true;
             
+            __$setRenderProxy(rc:RenderProxy):void
+            {
+                this.m_renderProxy = rc;
+            }
             protected createBounds():void
             {
                 this.m_globalBounds = new AABB();
@@ -176,17 +181,17 @@ export namespace vox
              */
             updateMeshToGpu(rc:RenderProxy,deferred:boolean = true):void
             {
-                if(this.m_display != null && this.m_display.__$ruid > -1)
+                if(rc != null) this.m_renderProxy = rc;
+                if(this.m_renderProxy != null && this.m_display != null && this.m_display.__$ruid > -1)
                 {
                     if(this.m_meshChanged)
                     {
                         this.m_meshChanged = false;
-                        rc.VtxBufUpdater.updateDispVbuf(this.m_display, deferred);
+                        this.m_renderProxy.VtxBufUpdater.updateDispVbuf(this.m_display,deferred);
                     }
                     else
                     {
-                        //this.m_display.vbuf.updateToGpu(rc, deferred);
-                        rc.VtxBufUpdater.updateVtxDataToGpuByUid(this.m_display.vbuf.getUid(),deferred);
+                        this.m_renderProxy.VtxBufUpdater.updateVtxDataToGpuByUid(this.m_display.vbuf.getUid(),deferred);
                     }
                 }
             }
@@ -197,16 +202,17 @@ export namespace vox
              */
             updateMaterialToGpu(rc:RenderProxy,deferred:boolean = true):void
             {
-                if(this.m_display != null && this.m_display.__$ruid > -1)
+                if(rc != null) this.m_renderProxy = rc;
+                if(this.m_renderProxy != null && this.m_display != null && this.m_display.__$ruid > -1)
                 {
                     if(this.m_texChanged)
                     {
                         this.m_texChanged = false;
-                        rc.MaterialUpdater.updateDispTRO(this.m_display,deferred);
+                        this.m_renderProxy.MaterialUpdater.updateDispTRO(this.m_display,deferred);
                     }
                 }
             }
-            updateTextureList(texList:TextureProxy[],rc:RenderProxy = null):void
+            updateTextureList(texList:TextureProxy[]):void
             {
                 if(this.m_display != null && this.m_display.__$ruid > -1)
                 {
@@ -214,14 +220,10 @@ export namespace vox
                     {
                         this.m_display.getMaterial().setTextureList(texList);
                         this.m_texChanged = true;
-                        if(rc != null)
-                        {
-                            this.updateMaterialToGpu(rc);
-                        }
                     }
                 }
             }
-            updateTextureAt(index:number, tex:TextureProxy,rc:RenderProxy = null):void
+            updateTextureAt(index:number, tex:TextureProxy):void
             {
                 if(this.m_display != null && this.m_display.__$ruid > -1)
                 {
@@ -229,27 +231,9 @@ export namespace vox
                     {
                         this.m_display.getMaterial().setTextureAt(index,tex);
                         this.m_texChanged = true;
-                        if(rc != null)
-                        {
-                            this.updateMaterialToGpu(rc);
-                        }
                     }
                 }
                 
-            }
-            updateTexByMaterial(rc:RenderProxy = null):void
-            {
-                if(this.m_display != null && this.m_display.__$ruid > -1)
-                {
-                    if(this.m_display.getMaterial() != null)
-                    {
-                        this.m_texChanged = true;
-                        if(rc != null)
-                        {
-                            this.updateMaterialToGpu(rc);
-                        }
-                    }
-                }
             }
             setVisible(boo:boolean):void
             {
@@ -565,6 +549,7 @@ export namespace vox
                     }
                     this.m_visible = true;
                     this.m_drawEnabled = true;
+                    this.m_renderProxy = null;
                 }
             }
             isInRenderer():boolean

@@ -88,7 +88,7 @@ export namespace demo2d
                 this.m_renderer = new RendererInstance();
                 this.m_renderer.initialize(rparam);
                 this.m_rcontext = this.m_renderer.getRendererContext();
-                let stage3D:Stage3D = this.m_rcontext.getStage3D();
+                let stage3D:Stage3D = this.m_rcontext.getStage3D() as Stage3D;
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseUpListener);
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());

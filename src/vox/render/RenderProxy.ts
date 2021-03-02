@@ -15,7 +15,7 @@ import * as Vector3T from "../../vox/geom/Vector3";
 import * as Color4T from "../../vox/material/Color4";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as RendererParamT from "../../vox/scene/RendererParam";
-import * as Stage3DT from "../../vox/display/Stage3D";
+import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
 import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RAdapterContextT from "../../vox/render/RAdapterContext";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
@@ -40,7 +40,7 @@ import Vector3D = Vector3T.vox.geom.Vector3D;
 import Color4 = Color4T.vox.material.Color4;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
-import Stage3D = Stage3DT.vox.display.Stage3D;
+import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
 import RODrawState = RODrawStateT.vox.render.RODrawState;
 import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
 import RenderColorMask = RODrawStateT.vox.render.RenderColorMask;
@@ -269,7 +269,7 @@ export namespace vox
             {
                 return this.m_adapterContext;
             }
-            getStage3D():Stage3D
+            getStage3D():IRenderStage3D
             {
                 return this.m_adapterContext.getStage();
             }
@@ -285,7 +285,7 @@ export namespace vox
             }
             getMouseXYWorldRay(rl_position:Vector3D, rl_tv:Vector3D):void
             {
-                let stage:Stage3D = this.m_adapterContext.getStage();
+                let stage:IRenderStage3D = this.m_adapterContext.getStage();
                 this.m_mainCamera.getWorldPickingRayByScreenXY(stage.mouseX,stage.mouseY,rl_position,rl_tv);
             }
             
@@ -296,7 +296,7 @@ export namespace vox
                 this.m_viewY = py;
                 this.m_viewW = pw;
                 this.m_viewH = ph;
-                let stage:Stage3D = this.m_adapterContext.getStage();
+                let stage:IRenderStage3D = this.m_adapterContext.getStage();
                 if(stage != null)
                 {
                     stage.setViewPort(pw,py,pw,ph);
@@ -322,12 +322,12 @@ export namespace vox
             {
                 if(this.m_autoSynViewAndStage)
                 {
-                    let stage:Stage3D = this.m_adapterContext.getStage();
+                    //let stage:IRenderStage3D = this.m_adapterContext.getStage();
                     
                     this.m_viewX = 0;
                     this.m_viewY = 0;
-                    this.m_viewW = stage.stageWidth;
-                    this.m_viewH = stage.stageHeight;
+                    this.m_viewW = this.m_adapterContext.getRCanvasWidth();//stage.stageWidth;
+                    this.m_viewH = this.m_adapterContext.getRCanvasHeight();//stage.stageHeight;
                     if(this.m_mainCamera == null)
                     {
                         this.createMainCamera();
@@ -362,7 +362,7 @@ export namespace vox
             {
                 return this.m_WEBGL_VER;
             }
-            initialize(param:RendererParam,materialUpdater:IROMaterialUpdater,vtxBufUpdater:IROVertexBufUpdater,vtxBuilder:IROVtxBuilder):void
+            initialize(param:RendererParam,stage:IRenderStage3D,materialUpdater:IROMaterialUpdater,vtxBufUpdater:IROVertexBufUpdater,vtxBuilder:IROVtxBuilder):void
             {
                 if(this.m_rc != null)
                 {
@@ -379,7 +379,7 @@ export namespace vox
                 this.m_adapterContext.autoSyncRenderBufferAndWindowSize = param.autoSyncRenderBufferAndWindowSize;
                 this.m_adapterContext.setResizeCallback(this, this.resizeCallback);
                 this.m_adapterContext.setWebGLMaxVersion(this.m_maxWebGLVersion);
-                this.m_adapterContext.initialize(this.m_uid, param.getDiv(),param.getRenderContextAttri());
+                this.m_adapterContext.initialize(this.m_uid,stage, param.getDiv(),param.getRenderContextAttri());
                 this.m_WEBGL_VER = this.m_adapterContext.getWebGLVersion();
                 
                 this.m_rc = this.m_adapterContext.getRC();
@@ -401,7 +401,7 @@ export namespace vox
                 
                 if(this.m_autoSynViewAndStage)
                 {
-                    let stage:Stage3D = this.m_adapterContext.getStage();
+                    let stage:IRenderStage3D = this.m_adapterContext.getStage();
                     if(stage != null)
                     {
                         this.m_viewW = stage.stageWidth;

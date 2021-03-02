@@ -136,7 +136,7 @@ export namespace demo
                 
                 this.m_rscene = new RendererScene();
                 this.m_rscene.initialize(rparam,3);
-                this.m_stage3D = this.m_rscene.getStage3D();
+                this.m_stage3D = this.m_rscene.getStage3D() as Stage3D;
                 // align to left bottom
                 this.m_rscene.getCamera().translationXYZ(this.m_stage3D.stageHalfWidth,this.m_stage3D.stageHalfHeight,1500.0);
                 this.m_rscene.updateCamera();

@@ -1,7 +1,6 @@
 
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
 import * as Color4T from "../vox/material/Color4";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 
@@ -18,7 +17,6 @@ import * as RendererSceneT from "../vox/scene/RendererScene";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 import Color4 = Color4T.vox.material.Color4;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 
@@ -45,7 +43,6 @@ export namespace demo
         }
 
         private m_rscene:RendererScene = null;
-        private m_rcontext:RendererInstanceContext = null;
         private m_texLoader:ImageTextureLoader = null;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
@@ -61,7 +58,7 @@ export namespace demo
         initialize():void
         {
             console.log("DemoSwapProcess::initialize()......");
-            if(this.m_rcontext == null)
+            if(this.m_rscene == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -73,16 +70,15 @@ export namespace demo
                 this.m_rscene = new RendererScene();
                 this.m_rscene.initialize(rparam,3);
                 this.m_rscene.updateCamera();
-                this.m_rcontext = this.m_rscene.getRendererContext();
                 
                 this.m_camTrack = new CameraTrack();
-                this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
+                this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 200);
 
                 this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
                 
-                this.m_rscene.getStage3D().addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
+                this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
 
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/yanj.jpg");
@@ -98,8 +94,7 @@ export namespace demo
                 plane.setXYZ(80,-1,80);
                 this.m_rscene.addEntity(plane, 0);
                 plane.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
-                this.m_targets.push(plane);
-                
+                this.m_targets.push(plane);                
             }
         }
         private m_isChanged:boolean = true;
@@ -121,23 +116,11 @@ export namespace demo
         }
         run():void
         {
-            let pcontext:RendererInstanceContext = this.m_rcontext;
-            
-            // show fps status
-            this.m_statusDisp.statusInfo = "/"+pcontext.getTextureResTotal()+"/"+pcontext.getTextureAttachTotal();
             this.m_statusDisp.update();
-            // 分帧加载
             this.m_texLoader.run();
-            this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
-            // render begin
-            this.m_rscene.runBegin();
 
-            // run logic program
-            this.m_rscene.update();
             this.m_rscene.run();
 
-            // render end
-            this.m_rscene.runEnd();
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }

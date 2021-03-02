@@ -4,9 +4,6 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-/*
-3D system runtime environment
-*/
 
 import * as EventBaseT from "../../vox/event/EventBase";
 import * as MouseEventT from "../../vox/event/MouseEvent";
@@ -14,6 +11,7 @@ import * as KeyboardEventT from "../../vox/event/KeyboardEvent";
 import * as KeyboardT from "../../vox/ui/Keyboard";
 import * as UniformVec4ProbeT from "../../vox/material/UniformVec4Probe";
 import * as MouseEvt3DDispatcherT from "../../vox/event/MouseEvt3DDispatcher";
+import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
 
 import EventBase = EventBaseT.vox.event.EventBase;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
@@ -21,16 +19,31 @@ import KeyboardEvent = KeyboardEventT.vox.event.KeyboardEvent;
 import Keyboard = KeyboardT.vox.ui.Keyboard;
 import UniformVec4Probe = UniformVec4ProbeT.vox.material.UniformVec4Probe;
 import MouseEvt3DDispatcher = MouseEvt3DDispatcherT.vox.event.MouseEvt3DDispatcher;
+import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
 export namespace vox
 {
     export namespace display
     {
-        export class Stage3D
+        export class Stage3D implements IRenderStage3D
         {
             private m_rcuid:number = 0;
-            constructor(rcuid:number)
+            private static s_document:any = null;
+            constructor(rcuid:number,pdocument:any)
             {
                 this.m_rcuid = rcuid;
+                if(Stage3D.s_document ==null)
+                {
+                    Stage3D.s_document = pdocument;
+                    
+                    pdocument.onkeydown = function(evt:any):void
+                    {
+                        Keyboard.KeyDown(evt);
+                    }
+                    pdocument.onkeyup = function(evt:any):void
+                    {
+                        Keyboard.KeyUp(evt);
+                    }
+                }
                 Keyboard.AddEventListener(KeyboardEvent.KEY_DOWN,this,this.keyDown);
                 Keyboard.AddEventListener(KeyboardEvent.KEY_UP,this,this.keyUp);
             }

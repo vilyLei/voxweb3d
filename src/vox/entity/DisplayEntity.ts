@@ -81,6 +81,7 @@ export namespace vox
             // 如果一个entity如果包含了多个mesh,则这个bounds就是多个mesh aabb 合并的aabb
             protected m_globalBounds:AABB = null;
             protected m_parent:IDisplayEntityContainer = null;
+            protected m_renderProxy:RenderProxy = null;
             // 自身所在的world的唯一id, 通过这个id可以找到对应的world
             __$wuid:number = -1;
             // 自身在world中被分配的唯一id, 通过这个id就能在world中快速找到自己所在的数组位置
@@ -100,6 +101,10 @@ export namespace vox
             mouseEnabled:boolean = false;
             //
             vbWholeDataEnabled:boolean = true;
+            __$setRenderProxy(rc:RenderProxy):void
+            {
+                this.m_renderProxy = rc;
+            }
             __$setParent(parent:IDisplayEntityContainer):void
             {
                 if(this.m_parent == null)
@@ -173,18 +178,19 @@ export namespace vox
              * 更新有两种形式, 1: 只是更改资源内部的数据, 2: 替换资源本身
              * 更新过程可以通过DisplayEntity对象来控制，也可以通过资源本身来控制
              */
-            updateMeshToGpu(rc:RenderProxy,deferred:boolean = true):void
+            updateMeshToGpu(rc:RenderProxy = null,deferred:boolean = true):void
             {
-                if(this.m_display != null && this.m_display.__$ruid > -1)
+                if(rc != null) this.m_renderProxy = rc;
+                if(this.m_renderProxy != null && this.m_display != null && this.m_display.__$ruid > -1)
                 {
                     if(this.m_meshChanged)
                     {
                         this.m_meshChanged = false;
-                        rc.VtxBufUpdater.updateDispVbuf(this.m_display,deferred);
+                        this.m_renderProxy.VtxBufUpdater.updateDispVbuf(this.m_display,deferred);
                     }
                     else
                     {
-                        rc.VtxBufUpdater.updateVtxDataToGpuByUid(this.m_display.vbuf.getUid(),deferred);
+                        this.m_renderProxy.VtxBufUpdater.updateVtxDataToGpuByUid(this.m_display.vbuf.getUid(),deferred);
                     }
                 }
             }
@@ -193,18 +199,22 @@ export namespace vox
              * 更新有两种形式, 1: 只是更改资源内部的数据, 2: 替换资源本身
              * 更新过程可以通过DisplayEntity对象来控制，也可以通过资源本身来控制
              */
-            updateMaterialToGpu(rc:RenderProxy,deferred:boolean = true):void
+            updateMaterialToGpu(rc:RenderProxy = null,deferred:boolean = true):void
             {
-                if(this.m_display != null && this.m_display.__$ruid > -1)
+                if(rc != null) this.m_renderProxy = rc;
+                if(this.m_renderProxy != null && this.m_display != null && this.m_display.__$ruid > -1)
                 {
                     if(this.m_texChanged)
                     {
                         this.m_texChanged = false;
-                        rc.MaterialUpdater.updateDispTRO(this.m_display,deferred);
+                        this.m_renderProxy.MaterialUpdater.updateDispTRO(this.m_display,deferred);
                     }
                 }
             }
-            updateTextureList(texList:TextureProxy[],rc:RenderProxy = null):void
+            /**
+             * set new textures list for the material of this instance.
+             */
+            setTextureList(texList:TextureProxy[]):void
             {
                 if(this.m_display != null && this.m_display.__$ruid > -1)
                 {
@@ -212,14 +222,13 @@ export namespace vox
                     {
                         this.m_display.getMaterial().setTextureList(texList);
                         this.m_texChanged = true;
-                        if(rc != null)
-                        {
-                            this.updateMaterialToGpu(rc);
-                        }
                     }
                 }
             }
-            updateTextureAt(index:number, tex:TextureProxy,rc:RenderProxy = null):void
+            /**
+             * set new texture by the index in the material textures list for the material of this instance.
+             */
+            setTextureAt(index:number, tex:TextureProxy):void
             {
                 if(this.m_display != null && this.m_display.__$ruid > -1)
                 {
@@ -227,27 +236,8 @@ export namespace vox
                     {
                         this.m_display.getMaterial().setTextureAt(index,tex);
                         this.m_texChanged = true;
-                        if(rc != null)
-                        {
-                            this.updateMaterialToGpu(rc);
-                        }
                     }
-                }
-                
-            }
-            updateTexByMaterial(rc:RenderProxy = null):void
-            {
-                if(this.m_display != null && this.m_display.__$ruid > -1)
-                {
-                    if(this.m_display.getMaterial() != null)
-                    {
-                        this.m_texChanged = true;
-                        if(rc != null)
-                        {
-                            this.updateMaterialToGpu(rc);
-                        }
-                    }
-                }
+                }                
             }
             setVisible(boo:boolean):void
             {
@@ -570,6 +560,7 @@ export namespace vox
                     this.__$setParent(null);
                     this.m_visible = true;
                     this.m_drawEnabled = true;
+                    this.m_renderProxy = null;
                 }
             }
             private static s_boundsInVS:Float32Array = new Float32Array(24);

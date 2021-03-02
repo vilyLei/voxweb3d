@@ -41,7 +41,7 @@ export namespace orthoui
                 {
                     this.m_rscene = mainRendererScene;
                     this.m_uirscene = subRendererScene;
-                    this.m_stage3D = this.m_rscene.getStage3D();
+                    this.m_stage3D = this.m_rscene.getStage3D() as Stage3D;
     
                     // mouse swing camera in the hot area.
                     let viewHotArea:BoundsButton = new BoundsButton();

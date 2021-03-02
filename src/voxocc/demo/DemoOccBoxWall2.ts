@@ -105,7 +105,7 @@ export namespace demo
                 this.m_rscene.setRendererProcessParam(1,true,true);
                 this.m_rspace = this.m_rscene.getSpace();
                                 
-                let stage3D:Stage3D = this.m_rscene.getStage3D();
+                let stage3D:Stage3D = this.m_rscene.getStage3D() as Stage3D;
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseUpListener);
                 stage3D.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener);
                 this.m_camTrack = new CameraTrack();

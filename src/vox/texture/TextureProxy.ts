@@ -104,7 +104,10 @@ export namespace vox
             }
             __$setRenderProxy(rc:RenderProxy):void
             {
-                this.m_renderProxy = rc;
+                if(this.m_slot != null)
+                {
+                    this.m_renderProxy = rc;
+                }
             }
             /**
              * 被引用计数加一
@@ -257,11 +260,8 @@ export namespace vox
              */
             updateDataToGpu(rc:RenderProxy = null,deferred:boolean = true):void
             {
-                if(rc != null)
-                {
-                    rc.MaterialUpdater.updateTextureData(this, deferred);
-                }
-                else if(this.m_renderProxy != null)
+                if(rc != null) this.m_renderProxy = rc;
+                if(this.m_renderProxy != null)
                 {
                     this.m_renderProxy.MaterialUpdater.updateTextureData(this, deferred);
                 }

@@ -103,7 +103,7 @@ export namespace demo
 
                 //this.m_renderer = this.m_rscene.getRenderer();
                 this.m_rcontext = this.m_rscene.getRendererContext();
-                let stage3D:Stage3D = this.m_rscene.getStage3D();
+                let stage3D:Stage3D = this.m_rscene.getStage3D() as Stage3D;
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseUpListener);
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());

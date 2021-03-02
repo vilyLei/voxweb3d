@@ -93,7 +93,7 @@ export namespace vox
                 {
                     this.m_nodeList[entity.__$spaceId].entity = null;                    
                     this.restoreId(entity.__$spaceId);
-                    entity.__$spaceId = -1;                    
+                    entity.__$spaceId = -1;
                 }
             }
             toString():string

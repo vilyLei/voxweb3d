@@ -59,7 +59,7 @@ export namespace vox
         }
         export class RendererSpace implements IRendererSpace
         {
-            private static __s_uid:number = 0;
+            private static s_uid:number = 0;
             private m_uid:number = -1;
             private m_renderer:IRenderer = null;
             private m_camera:CameraBase = null;
@@ -76,7 +76,7 @@ export namespace vox
             private m_entitysTotal:number = 0;
             constructor()
             {
-                this.m_uid = RendererSpace.__s_uid++;
+                this.m_uid = RendererSpace.s_uid++;
             }
             getUid():number
             {
@@ -87,7 +87,7 @@ export namespace vox
                 if(this.m_renderer == null)
                 {
                     this.m_renderer = renderer;
-                    this.m_stage3d = renderer.getStage3D();
+                    this.m_stage3d = renderer.getStage3D() as Stage3D;
                     this.m_camera = camera;
                     this.m_rpoNodeBuilder = renderer.getRPONodeBuilder();
                 }

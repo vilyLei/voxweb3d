@@ -59,7 +59,7 @@ export namespace demo
                 this.m_rscene.initialize(this.m_rparam,this.m_processTotal);
                 this.m_rscene.updateCamera();
                 this.m_rcontext = this.m_rscene.getRendererContext();
-                this.m_stage3D = this.m_rscene.getStage3D();
+                this.m_stage3D = this.m_rscene.getStage3D() as Stage3D;
                 this.m_camera = this.m_rscene.getCamera();
 
                 this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);

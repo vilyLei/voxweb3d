@@ -6,9 +6,9 @@
 /***************************************************************************/
 // 渲染场景内物体的鼠标事件控制类接口规范
 
-import * as Stage3DT from "../../vox/display/Stage3D";
+import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
 import * as IRaySelectorT from "../../vox/scene/IRaySelector";
-import Stage3D = Stage3DT.vox.display.Stage3D;
+import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
 import IRaySelector = IRaySelectorT.vox.scene.IRaySelector;
 
 
@@ -19,7 +19,7 @@ export namespace vox
     {
         export interface IEvt3DController
         {
-            initialize(stage:Stage3D):void;
+            initialize(stage:IRenderStage3D):void;
             setRaySelector(raySelector:IRaySelector):void;
             // if mouse ray pick nonething, bgMouseEvent dispatch evts
             addBGMouseEventListener(type:number,target:any,func:(evt:any)=>void,captureEnabled:boolean,bubbleEnabled:boolean):void;

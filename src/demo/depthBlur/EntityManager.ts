@@ -2,24 +2,20 @@
 import * as Vector3DT from "../../vox/geom/Vector3";
 import * as RendererInstanceT from "../../vox/scene/RendererInstance";
 import * as Box3DEntityT from "../../vox/entity/Box3DEntity";
-import * as Plane3DEntityT from "../../vox/entity/Plane3DEntity";
 import * as Billboard3DEntityT from "../../vox/entity/Billboard3DEntity";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as TextureConstT from "../../vox/texture/TextureConst";
-import * as TexResLoaderT from "../../vox/texture/TexResLoader";
-import * as ScreenPlaneMaterialT from "../../vox/material/mcase/ScreenPlaneMaterial";
+import * as ImageTextureLoaderT from "../../vox/texture/ImageTextureLoader";
 import * as EntityDispT from "../base/EntityDisp";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
+import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import EntityDisp = EntityDispT.demo.base.EntityDisp;
-import ScreenPlaneMaterial = ScreenPlaneMaterialT.vox.material.mcase.ScreenPlaneMaterial;
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 
 export namespace demo
@@ -28,16 +24,26 @@ export namespace demo
     {
         export class EntityManager
         {
-            private m_texLoader:TexResLoader = new TexResLoader();
+            private m_texLoader:ImageTextureLoader = null;
             private m_renderer:RendererInstance = null;
 
             private m_equeue:EntityDispQueue = new EntityDispQueue();
-            constructor()
-            {
-            }
+            constructor(){}
             run():void
             {
                 this.m_equeue.run();
+            }
+            
+            private getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
+            {
+                let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
+                ptex.mipmapEnabled = mipmapEnabled;
+                if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
+                return ptex;
+            }
+            setTextureLoader(texLoader:ImageTextureLoader):void
+            {
+                this.m_texLoader = texLoader;
             }
             initialize(renderer:RendererInstance):void
             {
@@ -47,7 +53,6 @@ export namespace demo
                 EntityDisp.MinV.setXYZ(-2000,-2000,-2000);
                 EntityDisp.MaxV.setXYZ(2000,2000,2000);
                 let i:number = 0;
-                //let renderer:RendererInstance = this.m_renderer;
                 let urls:string[] = [
                     "static/assets/default.jpg"
                     ,"static/assets/broken_iron.jpg"
@@ -64,7 +69,7 @@ export namespace demo
                 let texList:TextureProxy[] = [];
                 for(i = 0; i < urls.length; ++i)
                 {
-                    tex0 = this.m_texLoader.getTexAndLoadImg(urls[i]);
+                    tex0 = this.getImageTexByUrl(urls[i]);
                     tex0.mipmapEnabled = true;
                     tex0.setWrap(TextureConst.WRAP_REPEAT);
                     texList.push(tex0);
@@ -72,14 +77,12 @@ export namespace demo
                 let billTexList:TextureProxy[] = [];
                 for(i = 0; i < billUrls.length; ++i)
                 {
-                    tex0 = this.m_texLoader.getTexAndLoadImg(billUrls[i]);
+                    tex0 = this.getImageTexByUrl(billUrls[i]);
                     tex0.mipmapEnabled = true;
                     tex0.setWrap(TextureConst.WRAP_REPEAT);
                     billTexList.push(tex0);
                 }
                 
-                //var plane:Plane3DEntity = new Plane3DEntity();
-                //plane.name = "plane";
                 let boxSize:number = 80.0;
                 let scale:number = 1.0;
                 let sreBox:Box3DEntity = new Box3DEntity();

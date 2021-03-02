@@ -51,8 +51,8 @@ export namespace voxeditor
                 if(this.m_rscene == null)
                 {
                     this.m_rscene = mainRendererScene;
-                    this.m_rscene.getStage3D().addEventListener(KeyboardEvent.KEY_DOWN,this,this.keyDownListener);
-                    this.m_rscene.getStage3D().addEventListener(KeyboardEvent.KEY_UP,this,this.keyUpListener);
+                    this.m_rscene.addEventListener(KeyboardEvent.KEY_DOWN,this,this.keyDownListener);
+                    this.m_rscene.addEventListener(KeyboardEvent.KEY_UP,this,this.keyUpListener);
                 }
             }
             

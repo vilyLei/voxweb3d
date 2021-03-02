@@ -15,11 +15,11 @@ import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
 import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 
-export namespace vox
+export namespace renderingtoy
 {
-    export namespace material
+    export namespace mcase
     {
-        export namespace mcase
+        export namespace material
         {
             export class PingpongHBlurShaderBuffer extends ShaderCodeBuffer
             {
@@ -40,79 +40,76 @@ export namespace vox
                     if(RendererDeviece.IsWebGL2())
                     {
                     fragCode =
-"\
-#version 300 es\n\
-precision mediump float;\n\
-float weight[5] = float[] (0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);\n\
-uniform vec4 u_color;\n\
-uniform sampler2D u_sampler0;\n\
-in vec2 v_uvs;\n\
-out vec4 FragColor;\n\
-void main()\n\
-{\n\
-    vec2 tex_offset = u_color.a / vec2(textureSize(u_sampler0, 0));\n\
-    float dx = tex_offset.x;\n\
-    tex_offset.y = 0.0;\n\
-    vec4 result = texture(u_sampler0, v_uvs) * weight[0];\n\
-    for(int i = 1; i < 5; ++i)\n\
-    {\n\
-        tex_offset.x = dx * float(i);\n\
-        result += texture(u_sampler0, v_uvs + tex_offset) * weight[i];\n\
-        result += texture(u_sampler0, v_uvs - tex_offset) * weight[i];\n\
-    }\n\
-    FragColor = vec4(vec3(result.xyz * u_color.xyz),result.w);\n\
-}\n\
-";
+`#version 300 es
+precision mediump float;
+float weight[5] = float[] (0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);
+uniform vec4 u_color;
+uniform sampler2D u_sampler0;
+in vec2 v_uvs;
+out vec4 FragColor;
+void main()
+{
+    vec2 tex_offset = u_color.a / vec2(textureSize(u_sampler0, 0));
+    float dx = tex_offset.x;
+    tex_offset.y = 0.0;
+    vec4 result = texture(u_sampler0, v_uvs) * weight[0];
+    for(int i = 1; i < 5; ++i)
+    {
+        tex_offset.x = dx * float(i);
+        result += texture(u_sampler0, v_uvs + tex_offset) * weight[i];
+        result += texture(u_sampler0, v_uvs - tex_offset) * weight[i];
+    }
+    FragColor = vec4(vec3(result.xyz * u_color.xyz),result.w);
+}
+`;
                     }
                     else
                     {
                         fragCode =
-"\
-#version 300 es\n\
-precision mediump float;\n\
-uniform vec4 u_color;\n\
-uniform vec4 u_texSize;\n\
-uniform sampler2D u_sampler0;\n\
-in vec2 v_uvs;\n\
-out vec4 FragColor;\n\
-void main()\n\
-{\n\
-    vec2 tex_offset = u_color.a / u_texSize.xy;\n\
-    float dx = tex_offset.x;\n\
-    tex_offset.y = 0.0;\n\
-    vec4 result = texture(u_sampler0, v_uvs) * 0.227027;\n\
-    result += texture(u_sampler0, v_uvs + tex_offset) * 0.1945946;\n\
-    result += texture(u_sampler0, v_uvs - tex_offset) * 0.1945946;\n\
-    tex_offset.x = dx * 2.0;\n\
-    result += texture(u_sampler0, v_uvs + tex_offset) * 0.1216216;\n\
-    result += texture(u_sampler0, v_uvs - tex_offset) * 0.1216216;\n\
-    tex_offset.x = dx * 3.0;\n\
-    result += texture(u_sampler0, v_uvs + tex_offset) * 0.054054;\n\
-    result += texture(u_sampler0, v_uvs - tex_offset) * 0.054054;\n\
-    tex_offset.x = dx * 4.0;\n\
-    result += texture(u_sampler0, v_uvs + tex_offset) * 0.016216;\n\
-    result += texture(u_sampler0, v_uvs - tex_offset) * 0.016216;\n\
-    FragColor = vec4(vec3(result.xyz * u_color.xyz),result.w);\n\
-}\n\
-";
+`#version 300 es
+precision mediump float;
+uniform vec4 u_color;
+uniform vec4 u_texSize;
+uniform sampler2D u_sampler0;
+in vec2 v_uvs;
+out vec4 FragColor;
+void main()
+{
+    vec2 tex_offset = u_color.a / u_texSize.xy;
+    float dx = tex_offset.x;
+    tex_offset.y = 0.0;
+    vec4 result = texture(u_sampler0, v_uvs) * 0.227027;
+    result += texture(u_sampler0, v_uvs + tex_offset) * 0.1945946;
+    result += texture(u_sampler0, v_uvs - tex_offset) * 0.1945946;
+    tex_offset.x = dx * 2.0;
+    result += texture(u_sampler0, v_uvs + tex_offset) * 0.1216216;
+    result += texture(u_sampler0, v_uvs - tex_offset) * 0.1216216;
+    tex_offset.x = dx * 3.0;
+    result += texture(u_sampler0, v_uvs + tex_offset) * 0.054054;
+    result += texture(u_sampler0, v_uvs - tex_offset) * 0.054054;
+    tex_offset.x = dx * 4.0;
+    result += texture(u_sampler0, v_uvs + tex_offset) * 0.016216;
+    result += texture(u_sampler0, v_uvs - tex_offset) * 0.016216;
+    FragColor = vec4(vec3(result.xyz * u_color.xyz),result.w);
+}
+`;
                     }
                     return fragCode;
                 }
                 getVtxShaderCode():string
                 {
                     let vtxCode:string =
-"\
-#version 300 es\n\
-precision mediump float;\n\
-layout(location = 0) in vec3 a_vs;\n\
-layout(location = 1) in vec2 a_uvs;\n\
-out vec2 v_uvs;\n\
-void main()\n\
-{\n\
-    gl_Position = vec4(a_vs,1.0);\n\
-    v_uvs = vec2(a_uvs.x,1.0 - a_uvs.y);\n\
-}\n\
-";
+`#version 300 es
+precision mediump float;
+layout(location = 0) in vec3 a_vs;
+layout(location = 1) in vec2 a_uvs;
+out vec2 v_uvs;
+void main()
+{
+    gl_Position = vec4(a_vs,1.0);
+    v_uvs = vec2(a_uvs.x,1.0 - a_uvs.y);
+}
+`;
                     return vtxCode;
                 }
                 getUniqueShaderName()
@@ -150,79 +147,76 @@ void main()\n\
                     if(RendererDeviece.IsWebGL2())
                     {
                         fragCode =
-"\
-#version 300 es\n\
-precision mediump float;\n\
-float weight[5] = float[] (0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);\n\
-uniform vec4 u_color;\n\
-uniform sampler2D u_sampler0;\n\
-in vec2 v_uvs;\n\
-out vec4 FragColor;\n\
-void main()\n\
-{\n\
-    vec2 tex_offset = u_color.a / vec2(textureSize(u_sampler0, 0));\n\
-    float dy = tex_offset.y;\n\
-    tex_offset.x = 0.0;\n\
-    vec4 result = texture(u_sampler0, v_uvs) * weight[0];\n\
-    for(int i = 1; i < 5; ++i)\n\
-    {\n\
-        tex_offset.y = dy * float(i);\n\
-        result += texture(u_sampler0, v_uvs + tex_offset) * weight[i];\n\
-        result += texture(u_sampler0, v_uvs - tex_offset) * weight[i];\n\
-    }\n\
-    FragColor = vec4(vec3(result.xyz * u_color.xyz),result.w);\n\
-}\n\
-";
+`#version 300 es
+precision mediump float;
+float weight[5] = float[] (0.227027, 0.1945946, 0.1216216, 0.054054, 0.016216);
+uniform vec4 u_color;
+uniform sampler2D u_sampler0;
+in vec2 v_uvs;
+out vec4 FragColor;
+void main()
+{
+    vec2 tex_offset = u_color.a / vec2(textureSize(u_sampler0, 0));
+    float dy = tex_offset.y;
+    tex_offset.x = 0.0;
+    vec4 result = texture(u_sampler0, v_uvs) * weight[0];
+    for(int i = 1; i < 5; ++i)
+    {
+        tex_offset.y = dy * float(i);
+        result += texture(u_sampler0, v_uvs + tex_offset) * weight[i];
+        result += texture(u_sampler0, v_uvs - tex_offset) * weight[i];
+    }
+    FragColor = vec4(vec3(result.xyz * u_color.xyz),result.w);
+}
+`;
                         }
                         else
                         {
                             fragCode =
-"\
-#version 300 es\n\
-precision mediump float;\n\
-uniform vec4 u_color;\n\
-uniform vec4 u_texSize;\n\
-uniform sampler2D u_sampler0;\n\
-in vec2 v_uvs;\n\
-out vec4 FragColor;\n\
-void main()\n\
-{\n\
-    vec2 tex_offset = u_color.a / u_texSize.xy;\n\
-    float dy = tex_offset.y;\n\
-    tex_offset.x = 0.0;\n\
-    vec4 result = texture(u_sampler0, v_uvs) * 0.227027;\n\
-    result += texture(u_sampler0, v_uvs + tex_offset) * 0.1945946;\n\
-    result += texture(u_sampler0, v_uvs - tex_offset) * 0.1945946;\n\
-    tex_offset.y = dy * 2.0;\n\
-    result += texture(u_sampler0, v_uvs + tex_offset) * 0.1216216;\n\
-    result += texture(u_sampler0, v_uvs - tex_offset) * 0.1216216;\n\
-    tex_offset.y = dy * 3.0;\n\
-    result += texture(u_sampler0, v_uvs + tex_offset) * 0.054054;\n\
-    result += texture(u_sampler0, v_uvs - tex_offset) * 0.054054;\n\
-    tex_offset.y = dy * 4.0;\n\
-    result += texture(u_sampler0, v_uvs + tex_offset) * 0.016216;\n\
-    result += texture(u_sampler0, v_uvs - tex_offset) * 0.016216;\n\
-    FragColor = vec4(vec3(result.xyz * u_color.xyz),result.w);\n\
-}\n\
-";
+`#version 300 es
+precision mediump float;
+uniform vec4 u_color;
+uniform vec4 u_texSize;
+uniform sampler2D u_sampler0;
+in vec2 v_uvs;
+out vec4 FragColor;
+void main()
+{
+    vec2 tex_offset = u_color.a / u_texSize.xy;
+    float dy = tex_offset.y;
+    tex_offset.x = 0.0;
+    vec4 result = texture(u_sampler0, v_uvs) * 0.227027;
+    result += texture(u_sampler0, v_uvs + tex_offset) * 0.1945946;
+    result += texture(u_sampler0, v_uvs - tex_offset) * 0.1945946;
+    tex_offset.y = dy * 2.0;
+    result += texture(u_sampler0, v_uvs + tex_offset) * 0.1216216;
+    result += texture(u_sampler0, v_uvs - tex_offset) * 0.1216216;
+    tex_offset.y = dy * 3.0;
+    result += texture(u_sampler0, v_uvs + tex_offset) * 0.054054;
+    result += texture(u_sampler0, v_uvs - tex_offset) * 0.054054;
+    tex_offset.y = dy * 4.0;
+    result += texture(u_sampler0, v_uvs + tex_offset) * 0.016216;
+    result += texture(u_sampler0, v_uvs - tex_offset) * 0.016216;
+    FragColor = vec4(vec3(result.xyz * u_color.xyz),result.w);
+}
+`;
                     }
                     return fragCode;
                 }
                 getVtxShaderCode():string
                 {
                     let vtxCode:string =
-            "\
-            #version 300 es\n\
-            precision mediump float;\n\
-            layout(location = 0) in vec3 a_vs;\n\
-            layout(location = 1) in vec2 a_uvs;\n\
-            out vec2 v_uvs;\n\
-            void main()\n\
-            {\n\
-                gl_Position = vec4(a_vs,1.0);\n\
-                v_uvs = vec2(a_uvs.x,1.0 - a_uvs.y);\n\
-            }\n\
-            ";
+`#version 300 es
+precision mediump float;
+layout(location = 0) in vec3 a_vs;
+layout(location = 1) in vec2 a_uvs;
+out vec2 v_uvs;
+void main()
+{
+    gl_Position = vec4(a_vs,1.0);
+    v_uvs = vec2(a_uvs.x,1.0 - a_uvs.y);
+}
+`;
                     return vtxCode;
                 }
                 getUniqueShaderName()

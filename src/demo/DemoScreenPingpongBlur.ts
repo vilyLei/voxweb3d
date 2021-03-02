@@ -5,7 +5,8 @@ import * as RendererParamT from "../vox/scene/RendererParam";
 import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
 import * as RendererInstanceT from "../vox/scene/RendererInstance";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
-import * as ScreenPingpongBlurT from "../vox/scene/mcase/ScreenPingpongBlur";
+//  import * as ScreenPingpongBlurT from "../vox/scene/mcase/PingpongBlur";
+import * as PingpongBlurT from "../renderingtoy/mcase/PingpongBlur";
 
 import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
 import * as Box3DEntityT from "../vox/entity/Box3DEntity";
@@ -21,7 +22,8 @@ import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-import ScreenPingpongBlur = ScreenPingpongBlurT.vox.scene.mcase.ScreenPingpongBlur;
+//import PingpongBlur = ScreenPingpongBlurT.vox.scene.mcase.PingpongBlur;
+import PingpongBlur = PingpongBlurT.renderingtoy.mcase.PingpongBlur;
 
 import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
@@ -43,7 +45,7 @@ export namespace demo
         private m_texLoader:TexResLoader = new TexResLoader();
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
-        private m_blurIns:ScreenPingpongBlur = null;
+        private m_blurIns:PingpongBlur = null;
         initialize():void
         {
             console.log("DemoScreenPingpongBlur::initialize()......");
@@ -69,11 +71,11 @@ export namespace demo
                 tex1.setWrap(TextureConst.WRAP_REPEAT);
                 tex1.mipmapEnabled = true;
                 
-                this.m_blurIns = new ScreenPingpongBlur(this.m_renderer);
+                this.m_blurIns = new PingpongBlur(this.m_renderer);
                 this.m_rcontext = this.m_renderer.getRendererContext();
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
-                this.m_statusDisp.initialize("rstatus",this.m_renderer.getStage3D().viewWidth - 80);
+                this.m_statusDisp.initialize("rstatus",this.m_renderer.getViewWidth() - 80);
 
                 // add common 3d display entity
                 let plane:Plane3DEntity = new Plane3DEntity();

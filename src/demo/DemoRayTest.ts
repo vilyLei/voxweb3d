@@ -152,7 +152,7 @@ export namespace demo
                 this.m_raySelector = new RaySelector();
                 this.m_rspace.setRaySelector(this.m_raySelector);
                 
-                let stage3D:Stage3D = this.m_rscene.getStage3D();
+                let stage3D:Stage3D = this.m_rscene.getStage3D() as Stage3D;
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseUpListener);
                 stage3D.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener);
                 this.m_camTrack = new CameraTrack();

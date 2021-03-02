@@ -74,7 +74,7 @@ export namespace advancedDemo
                     this.m_rct = this.m_rc.getRendererContext();
                     this.m_camTrack = new CameraTrack();
                     this.m_camTrack.bindCamera(this.m_rc.getCamera());
-                    this.m_stage3D = this.m_rct.getStage3D();
+                    this.m_stage3D = this.m_rct.getStage3D() as Stage3D;
                     this.m_esc.initialize(this.m_rc);
                     
                     this.m_middleFBO = this.m_esc.middleFBO;

@@ -74,20 +74,18 @@ export namespace demo
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
-                if(this.m_profileInstance != null)this.m_profileInstance.initialize(this.m_rscene.getRenderer());
+                this.m_profileInstance.initialize(this.m_rscene.getRenderer());
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 200);
 
-                this.m_rscene.getStage3D().addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
+                this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
 
-                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-                
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.initialize(300.0);
                 this.m_rscene.addEntity(axis);
                 
                 // add common 3d display entity
-                var plane:Plane3DEntity = new Plane3DEntity();
-                plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex1]);
+                let plane:Plane3DEntity = new Plane3DEntity();
+                plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
                 this.m_rscene.addEntity(plane);
                 this.m_targets.push(plane);
             }
@@ -102,7 +100,8 @@ export namespace demo
                 console.log("loaded img, and update tex res.");
                 let tex:ImageTextureProxy = rscene.textureBlock.createImageTex2D(img.width, img.height);
                 tex.setDataFromImage(img);
-                entityList[0].updateTextureList([tex],rscene.getRenderProxy());
+                entityList[0].setTextureList([tex]);
+                entityList[0].updateMaterialToGpu(rscene.getRenderProxy());
             }
             //img.src = "static/assets/yanj.jpg";
             img.src = "static/assets/metal_02.jpg";
@@ -133,10 +132,9 @@ export namespace demo
         }
         private mouseDown(evt:any):void
         {
-            //  console.log("mouse down...,this.m_targetDisp != null: "+(this.m_targets != null));
             if(this.m_targets != null && this.m_targets.length > 0)
             {
-                let testFlag:boolean = true;
+                let testFlag:boolean = false;
                 if(testFlag)
                 {
                     this.updateTexData();
@@ -144,7 +142,7 @@ export namespace demo
                 else
                 {
                     this.updateTex();
-                }                
+                }
             }
         }
         run():void
@@ -156,21 +154,10 @@ export namespace demo
             this.m_statusDisp.update();
             this.m_texLoader.run();
 
-            this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
-            // render begin
-            this.m_rscene.runBegin();
-
-            // run logic program
-            this.m_rscene.update();
             this.m_rscene.run();
 
-            // render end
-            this.m_rscene.runEnd();
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-            if(this.m_profileInstance != null)
-            {
-                this.m_profileInstance.run();
-            }
+            this.m_profileInstance.run();
         }
     }
 }

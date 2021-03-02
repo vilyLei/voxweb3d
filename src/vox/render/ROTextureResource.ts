@@ -5,10 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-//import * as IRODataUpdaterT from "../../vox/render/IRODataUpdater";
 import * as IRenderTexResourceT from "../../vox/render/IRenderTexResource";
 
-//import IRODataUpdater = IRODataUpdaterT.vox.render.IRODataUpdater;
 import IRenderTexResource = IRenderTexResourceT.vox.render.IRenderTexResource;
 export namespace vox
 {
@@ -63,68 +61,6 @@ export namespace vox
                 return this.m_attachCount;
             }
         }
-        /*
-        //      // gpu texture buffer renderer resource data updater
-        //      export class ROTexDataUpdater implements IRODataUpdater
-        //      {
-        //          private m_resMap:Map<number,GpuTexObect> = null;
-        //          private m_list:GpuTexObect[] = [];
-		//      	// renderer context unique id
-		//      	private m_rcuid:number = 0;
-        //          private m_gl:any = null;
-        //          constructor(rcuid:number, gl:any, resMap:Map<number,GpuTexObect>)
-        //          {
-        //              this.m_rcuid = rcuid;
-        //              this.m_gl = gl;
-        //              this.m_resMap = resMap;
-        //          }
-        //          /**
-        //           * @returns return renderer context unique id
-        //           */
-        //          getRCUid():number
-        //          {
-        //              return this.m_rcuid;
-        //          }
-        //          /**
-        //           * @returns return system gpu context
-        //           */
-        //          getRC():any
-        //          {
-        //              return this.m_gl;
-        //          }
-        //          /**
-        //           * check whether the renderer runtime resource(by renderer runtime resource unique id) exists in the current renderer context
-        //           * @param resUid renderer runtime resource unique id
-        //           * @returns has or has not resource by unique id
-        //           */
-        //          hasResUid(resUid:number):boolean
-        //          {
-        //              return this.m_resMap.has(resUid);
-        //          }
-        //          /**
-        //           * bind the renderer runtime resource(by renderer runtime resource unique id) to the current renderer context
-        //           * @param resUid renderer runtime resource unique id
-        //           */
-        //          bindToGpu(resUid:number):void
-        //          {
-        //              if(this.m_resMap.has(resUid))
-        //              {
-        //                  this.m_resMap.get(resUid).bindToGpu(this.m_gl);
-        //              }
-        //          }
-        //          updateToGpu(resUid:number):void
-        //          {
-        //              if(this.m_resMap.has(resUid))
-        //              {
-        //                  //this.m_resMap.get(resUid).bindToGpu(this.m_gl);
-        //              }
-        //          }
-        //          update():void
-        //          {
-//      
-        //          }
-        //      }
-        //*/
         // gpu texture buffer renderer resource
         export class ROTextureResource implements IRenderTexResource
         {

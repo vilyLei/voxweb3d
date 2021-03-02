@@ -68,7 +68,7 @@ export namespace demo
             RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
             RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
-            this.m_rscene.getStage3D().addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
+            this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
             if(this.m_profileInstance != null)this.m_profileInstance.initialize(this.m_rscene.getRenderer());
             if(this.m_statusDisp != null)this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
 

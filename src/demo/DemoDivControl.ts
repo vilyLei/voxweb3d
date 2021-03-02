@@ -68,7 +68,7 @@ export namespace demo
                 this.m_rscene.initialize(rparam,3);
                 this.m_rscene.updateCamera();
                 this.m_rcontext = this.m_rscene.getRendererContext();
-                this.m_rscene.getStage3D().addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+                this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 

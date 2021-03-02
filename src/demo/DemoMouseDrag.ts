@@ -262,7 +262,7 @@ export namespace demo
                 this.m_evtCtr = new MouseEvt3DController();
                 this.m_rscene.setEvt3DController(this.m_evtCtr);
                 //for test
-                let stage3D:Stage3D = this.m_rscene.getStage3D();
+                let stage3D:Stage3D = this.m_rscene.getStage3D() as Stage3D;
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
                 stage3D.addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener);
                 stage3D.addEventListener(MouseEvent.MOUSE_MOVE,this,this.mouseMoveListener);

@@ -7,6 +7,7 @@
 // 整个渲染场景的入口类
 
 import * as Vector3DT from "../../vox/geom/Vector3";
+import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
 import * as Stage3DT from "../../vox/display/Stage3D";
 import * as Color4T from "../../vox/material/Color4";
 import * as CameraBaseT from "../../vox/view/CameraBase";
@@ -38,6 +39,7 @@ import * as FBOInstanceT from "../../vox/scene/FBOInstance";
 import * as RendererSubSceneT from "../../vox/scene/RendererSubScene";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
+import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import Color4 = Color4T.vox.material.Color4;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
@@ -99,8 +101,10 @@ export namespace vox
             // recorde renderer sub scenes
             private m_subscList:RendererSubScene[] = [];
             private m_subscListLen:number = 0;
+            private m_runFlag:number = -1;
 
             readonly textureBlock:TextureBlock = new TextureBlock();
+            readonly stage3D:Stage3D = null;
             constructor()
             {
                 this.m_uid = RendererScene.s_uid++;
@@ -164,7 +168,7 @@ export namespace vox
             {
                 return this.m_rcontext;
             }
-            getStage3D():Stage3D
+            getStage3D():IRenderStage3D
             {
                 return this.m_renderProxy.getStage3D();
             }
@@ -274,10 +278,20 @@ export namespace vox
                 }
                 return null;
             }
+            addEventListener(type:number,target:any,func:(evt:any)=>void,captureEnabled:boolean = true,bubbleEnabled:boolean = true):void
+            {
+                this.stage3D.addEventListener(type, target, func, captureEnabled,bubbleEnabled);
+            }
+            removeEventListener(type:number,target:any,func:(evt:any)=>void):void
+            {
+                this.stage3D.removeEventListener(type, target, func);
+            }
             initialize(rparam:RendererParam,renderProcessTotal:number = 1):void
             {
                 if(this.m_renderer == null)
                 {
+                    let selfT:any = this;
+                    selfT.stage3D = new Stage3D(this.getUid(),document);
                     if(renderProcessTotal < 1)
                     {
                         renderProcessTotal = 1;
@@ -288,6 +302,8 @@ export namespace vox
                     }
                     this.m_evtFlowEnabled = rparam.evtFlowEnabled;
                     this.m_renderer = new RendererInstance();
+                    
+                    this.m_renderer.__$setStage3D(this.stage3D);
                     this.m_renderer.initialize(rparam);
                     this.m_processids[0] = 0;
                     this.m_processidsLen++;
@@ -302,7 +318,7 @@ export namespace vox
                     this.m_rcontext = this.m_renderer.getRendererContext();
                     this.m_renderProxy = this.m_rcontext.getRenderProxy();
                     this.m_adapter = this.m_renderProxy.getRenderAdapter();
-                    let stage3D:Stage3D = this.m_renderProxy.getStage3D();
+                    let stage3D:IRenderStage3D = this.m_renderProxy.getStage3D();
                     this.m_viewW = stage3D.stageWidth;
                     this.m_viewH = stage3D.stageHeight;
 
@@ -467,6 +483,12 @@ export namespace vox
             }
             runBegin():void
             {
+                if(this.m_runFlag >= 0)
+                {
+                    this.runEnd();
+                }
+                this.m_runFlag = 0;
+
                 this.m_adapter.unlockViewport();
                 if(!this.m_renderProxy.isAutoSynViewAndStage())
                 {
@@ -552,6 +574,12 @@ export namespace vox
              */
             update():void
             {
+                if(this.m_runFlag != 0)
+                {
+                    this.runBegin();
+                }
+                this.m_runFlag = 1;
+
                 this.textureBlock.update();
 
                 // camera visible test, ray cast test, Occlusion Culling test
@@ -637,6 +665,12 @@ export namespace vox
              */
             run():void
             {
+                if(this.m_runFlag != 1)
+                {
+                    this.update();
+                }
+                this.m_runFlag = 2;
+
                 if(this.m_subscListLen > 0)
                 {
                     for(let i:number = 0; i < this.m_processidsLen; ++i)
@@ -669,6 +703,8 @@ export namespace vox
                 {
                     this.m_rspace.runEnd();
                 }
+                
+                this.m_runFlag = -1;
             }
             updateCamera():void
             {

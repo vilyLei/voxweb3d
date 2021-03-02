@@ -88,9 +88,6 @@
 //  import * as DemoScene from "./demo/DemoScene";
 //  import Demo = DemoScene.demo.DemoScene;
 
-//  import * as DemoContainer from "./demo/DemoContainer";
-//  import Demo = DemoContainer.demo.DemoContainer;
-
 //  import * as DemoSphScreenRect from "./demo/DemoSphScreenRect";
 //  import Demo = DemoSphScreenRect.demo.DemoSphScreenRect;
 
@@ -126,18 +123,6 @@
 
 //  import * as DemoScreenPingpongBlur from "./demo/DemoScreenPingpongBlur";
 //  import Demo = DemoScreenPingpongBlur.demo.DemoScreenPingpongBlur;
-
-//  import * as DemoDepthBlur from "./demo/DemoDepthBlur";
-//  import Demo = DemoDepthBlur.demo.DemoDepthBlur;
-
-//  import * as DemoEmptyRenderer from "./demo/DemoEmptyRenderer";
-//  import Demo = DemoEmptyRenderer.demo.DemoEmptyRenderer;
-
-//  import * as DemoEmptyRendererScene from "./demo/DemoEmptyRendererScene";
-//  import Demo = DemoEmptyRendererScene.demo.DemoEmptyRendererScene;
-
-//  import * as DemoBase from "./demo/DemoBase";
-//  import Demo = DemoBase.demo.DemoBase;
 
 //  import * as DemoPNG from "./example/DemoPNG";
 //  import Demo = DemoPNG.example.DemoPNG;
@@ -232,8 +217,14 @@
 //  import * as DemoTexUpdate from "./demo/DemoTexUpdate";
 //  import Demo = DemoTexUpdate.demo.DemoTexUpdate;
 
+//  import * as DemoKeyboardEvt from "./demo/DemoKeyboardEvt";
+//  import Demo = DemoKeyboardEvt.demo.DemoKeyboardEvt;
+
 import * as DemoParticle from "./demo/DemoParticle";
 import Demo = DemoParticle.demo.DemoParticle;
+
+//  import * as DemoContainer from "./demo/DemoContainer";
+//  import Demo = DemoContainer.demo.DemoContainer;
 
 //  import * as DemoContainerTransform from "./demo/DemoContainerTransform";
 //  import Demo = DemoContainerTransform.demo.DemoContainerTransform;
@@ -243,6 +234,21 @@ import Demo = DemoParticle.demo.DemoParticle;
 
 //  import * as DemoDivControl from "./demo/DemoDivControl";
 //  import Demo = DemoDivControl.demo.DemoDivControl;
+
+//  import * as DemoDepthBlur from "./demo/DemoDepthBlur";
+//  import Demo = DemoDepthBlur.demo.DemoDepthBlur;
+
+//  import * as DemoEmptyRenderer from "./demo/DemoEmptyRenderer";
+//  import Demo = DemoEmptyRenderer.demo.DemoEmptyRenderer;
+
+//  import * as DemoEmptyRendererScene from "./demo/DemoEmptyRendererScene";
+//  import Demo = DemoEmptyRendererScene.demo.DemoEmptyRendererScene;
+
+//  import * as DemoAPlane from "./demo/DemoAPlane";
+//  import Demo = DemoAPlane.demo.DemoAPlane;
+
+//  import * as DemoPrimitive from "./demo/DemoPrimitive";
+//  import Demo = DemoPrimitive.demo.DemoPrimitive;
 
 //  import * as DemoMultiRenderer from "./demo/DemoMultiRenderer";
 //  import Demo = DemoMultiRenderer.demo.DemoMultiRenderer;

@@ -8,7 +8,7 @@
 
 import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as RenderDataSlotT from "../../vox/material/UniformDataSlot";
-import * as Stage3DT from "../../vox/display/Stage3D";
+import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as RAdapterContextT from "../../vox/render/RAdapterContext";
@@ -24,7 +24,7 @@ import * as ROVtxBuilderT from "../../vox/render/ROVtxBuilder";
 
 import Matrix4Pool = Matrix4T.vox.geom.Matrix4Pool;
 import UniformDataSlot = RenderDataSlotT.vox.material.UniformDataSlot;
-import Stage3D = Stage3DT.vox.display.Stage3D;
+import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import RAdapterContext = RAdapterContextT.vox.render.RAdapterContext;
 import RendererState = RendererStateT.vox.render.RendererState;
@@ -47,9 +47,7 @@ export namespace vox
             private m_adapter:RenderAdapter = null;
             private m_renderProxy:RenderProxy = new RenderProxy();
             private m_materialProxy:RenderMaterialProxy = null;
-            //private m_meshProxy:RenderMeshProxy = null;
             private m_Matrix4AllocateSize:number = 0;
-            private m_roDataBuilder:RODataBuilder = null;
             private m_cameraNear:number = 0.1;
             private m_cameraFar:number = 5000.0;
             private m_cameraFov:number = 45.0;
@@ -93,7 +91,7 @@ export namespace vox
             {
                 return this.m_renderProxy.Texture.getAttachTotal();
             }
-            getStage3D():Stage3D
+            getStage3D():IRenderStage3D
             {
                 return this.m_renderProxy.getStage3D();
             }
@@ -222,9 +220,16 @@ export namespace vox
             {
                 this.m_adapter.bindFBOAt(index,fboType);
             }
-            setRenderToTexture(texProxy:RTTTextureProxy, enableDepth:boolean = false, enableStencil:boolean = false, outputIndex:number = 0):void
+            /**
+             * bind a texture to fbo attachment by attachment index
+             * @param texProxy  RTTTextureProxy instance
+             * @param enableDepth  enable depth buffer yes or no
+             * @param enableStencil  enable stencil buffer yes or no
+             * @param attachmentIndex  fbo attachment index
+             */
+            setRenderToTexture(texProxy:RTTTextureProxy, enableDepth:boolean = false, enableStencil:boolean = false, attachmentIndex:number = 0):void
             {
-                this.m_adapter.setRenderToTexture(texProxy,enableDepth,enableStencil,outputIndex);
+                this.m_adapter.setRenderToTexture(texProxy,enableDepth,enableStencil,attachmentIndex);
             }
             useFBO(clearColorBoo:boolean = false, clearDepthBoo:boolean = false, clearStencilBoo:boolean = false):void
             {
@@ -284,7 +289,7 @@ export namespace vox
                     this.m_renderProxy.setCameraParam(fov, near, far);
                 }
             }
-            initialize(param:RendererParam, builder:RODataBuilder, vtxBuilder:ROVtxBuilder):void
+            initialize(param:RendererParam, stage:IRenderStage3D, builder:RODataBuilder, vtxBuilder:ROVtxBuilder):void
             {
                 if(this.m_Matrix4AllocateSize < 1024)
                 {
@@ -292,13 +297,12 @@ export namespace vox
                 }
                 if(this.m_adapter == null)
                 {
-                    this.m_roDataBuilder = builder;
                     UniformDataSlot.Initialize(this.m_renderProxy.getUid());
 
                     this.m_renderProxy.setCameraParam(this.m_cameraFov,this.m_cameraNear,this.m_cameraFar);
                     this.m_renderProxy.setWebGLMaxVersion(param.maxWebGLVersion);
                     
-                    this.m_renderProxy.initialize(param, builder,builder,vtxBuilder);
+                    this.m_renderProxy.initialize(param, stage, builder,builder,vtxBuilder);
                     this.m_rcuid = this.m_renderProxy.getRCUid();
                     
                     vtxBuilder.initialize(this.m_rcuid,this.m_renderProxy.getRC(),this.m_renderProxy.getGLVersion());
@@ -307,7 +311,7 @@ export namespace vox
                     this.m_adapter.bgColor.setRGBA4f(0.0,0.0,0.0,1.0);
 
                     let context:RAdapterContext = this.m_renderProxy.getContext();
-                    context.setViewport(0,0, context.getStage().stageWidth, context.getStage().stageHeight);
+                    context.setViewport(0,0, context.getRCanvasWidth(), context.getRCanvasHeight());
 
                     ShdUniformTool.Initialize();
                 }

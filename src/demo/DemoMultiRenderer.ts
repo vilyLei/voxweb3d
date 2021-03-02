@@ -1,8 +1,5 @@
-
-import * as Vector3DT from "../vox/geom/Vector3";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 import * as MouseEventT from "../vox/event/MouseEvent";
 
@@ -14,10 +11,8 @@ import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as RendererSceneT from "../vox/scene/RendererScene";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 
@@ -42,7 +37,6 @@ export namespace demo
             this.m_uid = DemoSRIns.s_uid++;
         }
         private m_rscene:RendererScene = null;
-        private m_rcontext:RendererInstanceContext = null;
         private m_texLoader:ImageTextureLoader = null;
         private m_camTrack:CameraTrack = null;
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
@@ -54,7 +48,7 @@ export namespace demo
         }
         private createDiv(px:number,py:number,pw:number,ph:number):any
         {
-            let div:any = document.createElement('div');
+            let div:HTMLDivElement = document.createElement('div');
             div.style.width = pw + 'px';
             div.style.height = ph + 'px';
             document.body.appendChild(div);            
@@ -78,7 +72,7 @@ export namespace demo
         }
         initialize(px:number,py:number,pw:number,ph:number):void
         {
-            if(this.m_rcontext == null)
+            if(this.m_rscene == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -87,20 +81,18 @@ export namespace demo
                 let div:HTMLElement = this.createDiv(px,py,pw,ph);
                 let rparam:RendererParam = new RendererParam(div);
                 rparam.autoSyncRenderBufferAndWindowSize = false;
-                //rparam.maxWebGLVersion = 1;
+                
                 rparam.setCamPosition(500.0,500.0,500.0);
                 this.m_rscene = new RendererScene();
                 this.m_rscene.initialize(rparam,3);
                 this.m_rscene.updateCamera();
-                this.m_rcontext = this.m_rscene.getRendererContext();
                 this.initTexture();
                 if(this.m_uid == 0)
                 {
-                    this.m_rscene.getStage3D().addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+                    this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
                 }
                 this.m_camTrack = new CameraTrack();
-                this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
-                
+                this.m_camTrack.bindCamera(this.m_rscene.getCamera());                
                 this.m_camTrack.rotationOffsetAngleWorldY(this.camRotRadian);
 
                 let axis:Axis3DEntity = new Axis3DEntity();
@@ -120,23 +112,13 @@ export namespace demo
         run():void
         {
             this.m_texLoader.run();
-            this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
-            // render begin
-            this.m_rscene.runBegin();
-            // run logic program
-            this.m_rscene.update();
-            this.m_rscene.run();
-            
-            // render end
-            this.m_rscene.runEnd();
+            this.m_rscene.run();            
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }
     export class DemoMultiRenderer
     {
-        constructor()
-        {
-        }
+        constructor(){}
 
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_inited:boolean = true;

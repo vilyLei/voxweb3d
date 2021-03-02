@@ -162,7 +162,7 @@ export namespace voxvat
                 static Initialize(rscene:RendererScene):void
                 {
                     MaterialManager.s_rsc = rscene;
-                    MaterialManager.s_stage3D = rscene.getStage3D();
+                    MaterialManager.s_stage3D = rscene.getStage3D() as Stage3D;
                     for(let i:number = 0; i < 3; ++i)
                     {
                         MaterialManager.CreateMaterialAt(i,null);

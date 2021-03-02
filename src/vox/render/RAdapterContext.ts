@@ -14,6 +14,7 @@ import * as KeyboardT from "../../vox/ui/Keyboard";
 import * as Stage3DT from "../../vox/display/Stage3D";
 import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RendererStateT from "../../vox/render/RendererState";
+import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
 import * as ContextMouseEvtDispatcherT from "../../vox/render/ContextMouseEvtDispatcher";
 
 import DivLog = DivLogT.vox.utils.DivLog;
@@ -25,6 +26,7 @@ import Keyboard = KeyboardT.vox.ui.Keyboard;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import RODrawState = RODrawStateT.vox.render.RODrawState;
 import RendererState = RendererStateT.vox.render.RendererState;
+import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
 import ContextMouseEvtDispatcher = ContextMouseEvtDispatcherT.vox.render.ContextMouseEvtDispatcher;
 
 export namespace vox
@@ -52,7 +54,7 @@ export namespace vox
             offscreenRenderEnabled:boolean = false;
             private m_offcanvas:any = null;
             private m_gl:any = null;
-            private m_stage:Stage3D = null;
+            private m_stage:IRenderStage3D = null;
             
             private m_viewX:number = 0;
             private m_viewY:number = 0;
@@ -75,6 +77,10 @@ export namespace vox
                 console.log("webglcontextlost...!!!");
                 console.log(evt);
             }
+            //  __$setStage(stage:IRenderStage3D):void
+            //  {
+            //      this.m_stage = stage;
+            //  }
             setWebGLMaxVersion(webgl_ver:number):void
             {
                 if(webgl_ver == 1 || webgl_ver == 2)
@@ -110,8 +116,9 @@ export namespace vox
             {
                 return this.m_stencilTestEnabled;
             }
-            initialize(rcuid:number,div:HTMLElement,rattr:any = null):void
+            initialize(rcuid:number,stage:IRenderStage3D,div:HTMLElement,rattr:any = null):void
             {
+                this.m_stage = stage;
                 var pdocument:any = null;
                 var pwindow:any = null;
                 try
@@ -136,19 +143,7 @@ export namespace vox
                     this.m_div = div = this.m_viewEle.getDiv();
                     let canvas:any = this.m_canvas = this.m_viewEle.getCanvas();
 
-                    if(this.m_stage == null)this.m_stage = new Stage3D(rcuid);
-
-                    let stage:Stage3D = this.m_stage;
-
-                    pdocument.onkeydown = function(evt:any):void
-                    {
-                        Keyboard.KeyDown(evt);
-                    }
-                    pdocument.onkeyup = function(evt:any):void
-                    {
-                        Keyboard.KeyUp(evt);
-                    }
-                    this.m_mouseEvtDisplather.initialize(canvas,div,stage);
+                    if(stage != null)this.m_mouseEvtDisplather.initialize(canvas,div,stage);
                     this.m_devicePixelRatio = window.devicePixelRatio;
                     this.m_mouseEvtDisplather.dpr = this.m_devicePixelRatio;
                     
@@ -363,30 +358,33 @@ export namespace vox
 
                     this.m_canvas.style.width = this.m_displayWidth + 'px';
                     this.m_canvas.style.height = this.m_displayHeight + 'px';
-                    this.m_stage.stageWidth = this.m_rcanvasWidth;
-                    this.m_stage.stageHeight = this.m_rcanvasHeight;
-                    this.m_stage.viewWidth = this.m_displayWidth;
-                    this.m_stage.viewHeight = this.m_displayHeight;
-                    this.m_stage.pixelRatio = k;
-                    
-                    //  DivLog.ShowLogOnce("stageSize: "+this.m_stage.stageWidth+","+this.m_stage.stageHeight);
-                    //  DivLog.ShowLog("canvasSize: "+this.m_canvas.width+","+this.m_canvas.height);
-                    //  DivLog.ShowLog("dispSize: "+this.m_displayWidth+","+this.m_displayHeight);
-                    //  DivLog.ShowLog("pixelRatio:"+this.m_devicePixelRatio);
-                    //  console.log("display size: "+this.m_displayWidth+","+this.m_displayHeight);
-                    //  console.log("RAdapterContext::resize(), canvas.width:"+this.m_canvas.width+", canvas.height:"+this.m_canvas.height);
-                    //  console.log("RAdapterContext::resize(), stageWidth:"+this.m_stage.stageWidth+", stageHeight:"+this.m_stage.stageHeight);
-                    //  console.log("RAdapterContext::resize(), m_rcanvasWidth:"+this.m_rcanvasWidth+", m_rcanvasHeight:"+this.m_rcanvasHeight);
-                    //  console.log("RAdapterContext::resize(), stw:"+this.m_stage.stageWidth+", sth:"+this.m_stage.stageHeight);
+                    if(this.m_stage != null)
+                    {
+                        this.m_stage.stageWidth = this.m_rcanvasWidth;
+                        this.m_stage.stageHeight = this.m_rcanvasHeight;
+                        this.m_stage.viewWidth = this.m_displayWidth;
+                        this.m_stage.viewHeight = this.m_displayHeight;
+                        this.m_stage.pixelRatio = k;
+                        
+                        //  DivLog.ShowLogOnce("stageSize: "+this.m_stage.stageWidth+","+this.m_stage.stageHeight);
+                        //  DivLog.ShowLog("canvasSize: "+this.m_canvas.width+","+this.m_canvas.height);
+                        //  DivLog.ShowLog("dispSize: "+this.m_displayWidth+","+this.m_displayHeight);
+                        //  DivLog.ShowLog("pixelRatio:"+this.m_devicePixelRatio);
+                        //  console.log("display size: "+this.m_displayWidth+","+this.m_displayHeight);
+                        //  console.log("RAdapterContext::resize(), canvas.width:"+this.m_canvas.width+", canvas.height:"+this.m_canvas.height);
+                        //  console.log("RAdapterContext::resize(), stageWidth:"+this.m_stage.stageWidth+", stageHeight:"+this.m_stage.stageHeight);
+                        //  console.log("RAdapterContext::resize(), m_rcanvasWidth:"+this.m_rcanvasWidth+", m_rcanvasHeight:"+this.m_rcanvasHeight);
+                        //  console.log("RAdapterContext::resize(), stw:"+this.m_stage.stageWidth+", sth:"+this.m_stage.stageHeight);
 
-                    this.m_stage.update();
+                        this.m_stage.update();
+                    }
                     if(this.m_resizeCallback != null)
                     {
                         this.m_resizeCallback.call(this.m_resizeCallbackTarget);
                     }
                 }
             }
-            getStage():Stage3D
+            getStage():IRenderStage3D
             {
                 return this.m_stage;
             }

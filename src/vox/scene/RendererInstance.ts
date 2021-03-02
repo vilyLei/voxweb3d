@@ -4,16 +4,11 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// 整个渲染系统的入口, 一个应用中可以有多个 RendererInstance
-// DisplayEntity3D 实例只能由 RendererInstance 来管理, 一个DisplayEntity3D 实例只能加入到一个RendererInstance, 
-// 一旦DisplayEntity3D实例 从 RendererInstance 中移除，则表明其完全从渲染管理中移除, 
-// RenderProcess 只能由 RendererInstance 来创建, 并且一个process只能被一个RendererInstance实例持有, 如果是外面的逻辑自己管理process则不在这个规定的范围内
 
-import * as Stage3DT from "../../vox/display/Stage3D";
+import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 
-import * as ROBufferUpdaterT from "../../vox/render/ROBufferUpdater";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as IRenderMaterialT from "../../vox/render/IRenderMaterial";
 import * as IRenderEntityT from "../../vox/render/IRenderEntity";
@@ -29,11 +24,10 @@ import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as DispEntity3DManagerT from "../../vox/scene/DispEntity3DManager";
 
-import Stage3D = Stage3DT.vox.display.Stage3D;
+import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 
-import ROBufferUpdater = ROBufferUpdaterT.vox.render.ROBufferUpdater;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;
 import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
@@ -53,6 +47,9 @@ export namespace vox
 {
     export namespace scene
     {
+        /**
+         * kernal system, it is the renderer instance for the renderer runtime, it is very very very important class.
+         */
         export class RendererInstance implements IRenderer
         {
             private m_uid:number = -1;
@@ -62,7 +59,7 @@ export namespace vox
             private m_renderProxy:RenderProxy = null;
             private m_adapter:RenderAdapter = null;
             private m_dataBuilder:RODataBuilder = null;
-            private m_renderInsContext:RendererInstanceContext = null;
+            private m_renderInsContext:RendererInstanceContext = new RendererInstanceContext();
             private m_batchEnabled:boolean = true;
             private m_processFixedState:boolean = true;
 
@@ -70,10 +67,17 @@ export namespace vox
             private m_rpoNodeBuilder:RPONodeBuilder = new RPONodeBuilder();
             private m_processBuider:RenderProcessBuider = new RenderProcessBuider();
             private m_roVtxBuild:ROVtxBuilder = null;
-            readonly bufferUpdater:ROBufferUpdater = null;
-            
+            private m_stage3D:IRenderStage3D = null;
+
             constructor()
             {
+            }
+            __$setStage3D(stage3D:IRenderStage3D):void
+            {
+                if(stage3D != null && this.m_stage3D == null)
+                {
+                    this.m_stage3D = stage3D;
+                }
             }
             getUid():number
             {
@@ -96,18 +100,14 @@ export namespace vox
             }
             getRendererContext():RendererInstanceContext
             {
-                if(this.m_renderInsContext != null)
-                {
-                    return this.m_renderInsContext;
-                }
-                return null;
+                return this.m_renderInsContext;
             }
             getRenderProxy():RenderProxy
             {
                 return this.m_renderProxy;
             }
             
-            getStage3D():Stage3D
+            getStage3D():IRenderStage3D
             {
                 return this.m_renderProxy.getStage3D();
             }
@@ -143,10 +143,7 @@ export namespace vox
                 {
                     this.m_batchEnabled = param.batchEnabled;
                     this.m_processFixedState = param.processFixedState;
-                    if(this.m_renderInsContext == null)
-                    {
-                        this.m_renderInsContext = new RendererInstanceContext();
-                    }
+                    
                     this.m_renderProxy = this.m_renderInsContext.getRenderProxy();
                     
                     this.m_dataBuilder = new RODataBuilder();
@@ -154,7 +151,7 @@ export namespace vox
 
                     this.m_renderInsContext.setCameraParam(param.camProjParam.x,param.camProjParam.y,param.camProjParam.z);
                     this.m_renderInsContext.setMatrix4AllocateSize(param.getMatrix4AllocateSize());
-                    this.m_renderInsContext.initialize(param,this.m_dataBuilder,this.m_roVtxBuild);
+                    this.m_renderInsContext.initialize(param,this.m_stage3D,this.m_dataBuilder,this.m_roVtxBuild);
                     this.m_adapter = this.m_renderProxy.getRenderAdapter();
                     this.m_uid = this.m_renderProxy.getUid();
                     this.m_dataBuilder.initialize(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider,this.m_roVtxBuild);
@@ -163,11 +160,6 @@ export namespace vox
 
                     this.m_entity3DMana = new DispEntity3DManager(this.m_uid, this.m_dataBuilder,this.m_rpoUnitBuilder, this.m_processBuider);
                     this.appendProcess(this.m_batchEnabled,this.m_processFixedState);
-                    
-                    let roBufUpdater:ROBufferUpdater = new ROBufferUpdater();
-                    
-                    let selfT:any = this;
-                    selfT.bufferUpdater = roBufUpdater;
                 }
             }
             /**
@@ -179,7 +171,6 @@ export namespace vox
                 this.m_renderProxy.Texture.update();
                 this.m_renderProxy.Vertex.update();
                 this.m_entity3DMana.update(this.m_renderProxy);
-                this.bufferUpdater.__$update(this.m_renderProxy);
             }
             setEntityManaListener(listener:any):void
             {
@@ -201,26 +192,24 @@ export namespace vox
                         {
                             this.m_entity3DMana.addEntity(entity,processid,deferred);
                         }
-                        else
-                        {
-                            console.log("RendererInstance::addEntity(), Error: Don't find processid("+processid+").");
-                        }
+                        //  else
+                        //  {
+                        //      console.log("RendererInstance::addEntity(), Error: Don't find processid("+processid+").");
+                        //  }
                     }
-                    else
-                    {
-                        console.log("RendererInstance::addEntity(), Warn: this entity has existed in processid("+processid+").");
-                    }
+                    //  else
+                    //  {
+                    //      console.log("RendererInstance::addEntity(), Warn: this entity has existed in processid("+processid+").");
+                    //  }
                 }
             }
             addEntityToProcess(entity:IRenderEntity,process:RenderProcess,deferred:boolean = true):void
             {
-                console.log("BBBBBBBBBB 00");
                 if(process != null && entity != null && entity.__$wuid < 0 && entity.__$weid < 0 && entity.__$contId < 0)
                 {
                     if(process.getWUid() == this.m_uid)
                     {
                         let processid:number = process.getWEid();
-                        console.log("BBBBBBBBBB 03, processid: ",processid);
                         this.m_entity3DMana.addEntity(entity,processid,deferred);
                     }
                 }
@@ -328,7 +317,6 @@ export namespace vox
                     processFixedState
                 );
                 let process:RenderProcess = this.m_processBuider.create() as RenderProcess;
-                console.log("BBVVBBBBBB process.uid: ",process.uid);
                 this.m_processes.push( process );
                 process.setWOrldParam(this.m_uid, this.m_processesLen);
                 return process;

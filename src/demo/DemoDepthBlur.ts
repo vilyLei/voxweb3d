@@ -23,7 +23,7 @@ export namespace demo
         private m_scene:DispScene = new DispScene();
         initialize():void
         {
-            console.log("DemoDepthBlur::initialize()......");
+            console.log("DemoDepthBlur::initialize()...");
             if(this.m_renderer == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
@@ -34,8 +34,7 @@ export namespace demo
                 rparam.setCamPosition(1700,1700,1700);
                 this.m_renderer.initialize(rparam);
                 this.m_scene.initialize(this.m_renderer);
-                this.m_statusDisp.initialize("rstatus",this.m_renderer.getStage3D().viewWidth - 64);
-                
+                this.m_statusDisp.initialize("rstatus",this.m_renderer.getViewWidth() - 64);                
             }
         }
         run():void

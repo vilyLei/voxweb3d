@@ -7,11 +7,13 @@
 
 import * as DivLogT from "../../vox/utils/DivLog";
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
-import * as Stage3DT from "../../vox/display/Stage3D";
+import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
+//import * as Stage3DT from "../../vox/display/Stage3D";
 
 import DivLog = DivLogT.vox.utils.DivLog;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import Stage3D = Stage3DT.vox.display.Stage3D;
+//import Stage3D = Stage3DT.vox.display.Stage3D;
+import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
 export namespace vox
 {
     export namespace render
@@ -23,7 +25,7 @@ export namespace vox
             constructor()
             {
             }
-            initMobile(canvas:any, div:any, stage:Stage3D):void
+            initMobile(canvas:any, div:any, stage:IRenderStage3D):void
             {
                 var pdocument:any = null;
                 var pwindow:any = null;
@@ -144,7 +146,7 @@ export namespace vox
                     //*/
                 }
             }
-            initialize(canvas:any, div:any, stage:Stage3D):void
+            initialize(canvas:any, div:any, stage:IRenderStage3D):void
             {
                 if(RendererDeviece.IsMobileWeb())
                 {
@@ -156,7 +158,7 @@ export namespace vox
                     this.initPC(canvas,div,stage);
                 }
             }
-            private initPC(canvas:any, div:any, stage:Stage3D):void
+            private initPC(canvas:any, div:any, stage:IRenderStage3D):void
             {
                 var pdocument:any = null;
                 var pwindow:any = null;
@@ -198,7 +200,7 @@ export namespace vox
                         stage.mouseY = stage.stageHeight - py;
                         stage.mouseViewX = px;
                         stage.mouseViewY = py;
-                        //console.log("ContextMouseEvtDispatcher::onmousedown(),mouseY: "+stage.mouseY+",mouseViewY:"+stage.mouseViewY);
+                        //  console.log("ContextMouseEvtDispatcher::onmousedown(),mouseY: "+stage.mouseY+",mouseViewY:"+stage.mouseViewY);
                         //  console.log("ContextMouseEvtDispatcher::onmousedown(), rect: "+rect.width+","+rect.height);
                         //  console.log("ContextMouseEvtDispatcher::onmousedown(), pos: "+stage.mouseX+","+stage.mouseY);
                         if(evt.button == 0)

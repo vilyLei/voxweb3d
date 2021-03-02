@@ -53,7 +53,7 @@ export namespace voxvat
                 {
                     this.m_rsc = rscene;
                     this.m_ruisc = uiscene;
-                    this.m_stage3D = this.m_rsc.getStage3D();
+                    this.m_stage3D = this.m_rsc.getStage3D() as Stage3D;
                     MaterialManager.Initialize(rscene);
                     this.m_stage3D.addEventListener(EventBase.RESIZE,this,this.stageResizeListener);
                     let len:number = 3;

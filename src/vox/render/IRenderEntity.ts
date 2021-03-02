@@ -28,7 +28,7 @@ export namespace vox
          */
         export interface IRenderEntity
         {
-            // 自身所在的 RendererInstance unique id, 通过这个id可以找到对应的world
+            // 自身所在的 RendererInstance unique id, 通过这个id可以找到对应的renderer instance
             __$wuid:number;// = -1;
             // 自身在 RendererInstance 中被分配的唯一id, 通过这个id就能在world中快速找到自己所在的数组位置
             __$weid:number;// = -1;

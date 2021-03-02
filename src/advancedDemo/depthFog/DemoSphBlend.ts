@@ -207,9 +207,9 @@ export namespace advancedDemo
                     this.m_rc.updateCamera();
                     this.m_rct = this.m_rc.getRendererContext();
 
-                    this.m_rc.getStage3D().addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener);
+                    this.m_rc.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener);
 
-                    this.m_rc.getStage3D().addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
+                    this.m_rc.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
                     RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
                     RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.TRANSPARENT,DepthTestMode.RENDER_ALWAYS);
 

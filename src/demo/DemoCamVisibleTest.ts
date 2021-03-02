@@ -129,7 +129,7 @@ export namespace demo
                 this.m_rscene.setRendererProcessParam(1,true,true);
                 this.m_rcontext = this.m_rscene.getRendererContext();
                 BillParticle.renderer = this.m_rscene.getRenderer();
-                let stage3D:Stage3D = this.m_rcontext.getStage3D();
+                let stage3D:Stage3D = this.m_rcontext.getStage3D() as Stage3D;
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseUpListener);
                 stage3D.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener);
                 this.m_camTrack = new CameraTrack();

@@ -94,7 +94,7 @@ export namespace demo
                 this.m_texBlock.setRenderer( this.m_renderer );
                 this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
 
-                let stage3D:Stage3D = this.m_rcontext.getStage3D();
+                let stage3D:Stage3D = this.m_rcontext.getStage3D() as Stage3D;
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
@@ -115,7 +115,7 @@ export namespace demo
                 textBill.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
                 this.m_renderer.addEntity(textBill,1);
                 this.m_textBill = textBill;
-                //return;
+                
                 textBill = new TextBillboard3DEntity();
                 textBill.initialize("哇塞");
                 textBill.setXYZ(Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0,Math.random() * 500.0 - 250.0);
@@ -126,23 +126,33 @@ export namespace demo
                 this.m_fpsTextBill.setRGB3f(Math.random() + 0.1,Math.random() + 0.1,Math.random() + 0.1);
                 //this.m_fpsTextBill.setRGB3f(0.0,1.0,1.0);
                 this.m_fpsTextBill.setXYZ(Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0,Math.random() * 500.0 - 250.0);
-                this.m_renderer.addEntity(this.m_fpsTextBill);               
+                this.m_renderer.addEntity(this.m_fpsTextBill); 
+                this.m_fpsTextBill.__$setRenderProxy(this.m_renderer.getRenderProxy());              
 
             }
         }
         mouseDownListener(evt:any):void
         {
-            this.m_textBill.setText("事情要做好");
+            this.m_textBill.setText("事情要做好"+"."+Math.round(Math.random() * 100));
             this.m_textBill.updateMeshToGpu(this.m_renderer.getRenderProxy());
             this.m_textBill.update();
         }
+        private m_delayTime:number = 40;
         run():void
         {
-            if(this.m_fpsTextBill != null)
+            if(this.m_delayTime < 0)
             {
-                this.m_fpsTextBill.setRGB3f(Math.random() + 0.1,Math.random() + 0.1,Math.random() + 0.1);
-                this.m_fpsTextBill.setText(this.m_statusDisp.getFPSStr());
+                if(this.m_fpsTextBill != null)
+                {
+                    this.m_fpsTextBill.setRGB3f(Math.random() + 0.1,Math.random() + 0.1,Math.random() + 0.1);
+                    this.m_fpsTextBill.setText(this.m_statusDisp.getFPSStr() + "."+Math.round(Math.random() * 100));
+                    this.m_fpsTextBill.updateMeshToGpu();
+                    this.m_fpsTextBill.update();
+                }
+                this.m_delayTime = 40.0;
             }
+            this.m_delayTime --;
+            
             this.m_equeue.run();
             this.m_statusDisp.update();
 

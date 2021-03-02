@@ -134,11 +134,18 @@ export namespace vox
 			getHeight():number { return this.m_height; }
     		getFramebufferType():number{return this.m_bufferLType;}
     
-    		renderToTexAt(rgl:any, texProxy:RTTTextureProxy, outPutIndex:number):void
+            /**
+             * bind a texture to fbo attachment by attachment index
+             * @param texProxy  RTTTextureProxy instance
+             * @param enableDepth  enable depth buffer yes or no
+             * @param enableStencil  enable stencil buffer yes or no
+             * @param attachmentIndex  fbo attachment index
+             */
+    		renderToTexAt(rgl:any, texProxy:RTTTextureProxy, attachmentIndex:number):void
 			{
 				let inFormat:number = texProxy!=null?texProxy.internalFormat:-1;
 				
-				if (outPutIndex == 0)
+				if (attachmentIndex == 0)
 				{
 					// 注意, 防止多次重复调用的没必要重设
 					this.m_gl.bindFramebuffer(this.m_fboTarget, this.m_fbo);

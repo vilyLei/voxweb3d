@@ -168,7 +168,7 @@ export namespace demo
         }
         private initMobileEvt():void
         {
-            let stage3D:Stage3D = this.m_rscene.getStage3D();
+            let stage3D:Stage3D = this.m_rscene.getStage3D() as Stage3D;
             stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
             stage3D.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheelListener);
             stage3D.addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener);
@@ -233,7 +233,7 @@ export namespace demo
                 
                 this.m_rscene.enableMouseEvent(true);
                 this.m_CameraZoomController.bindCamera(this.m_rscene.getCamera());
-                this.m_CameraZoomController.initialize(this.m_rscene.getStage3D());
+                this.m_CameraZoomController.initialize(this.m_rscene.getStage3D() as Stage3D);
 
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());

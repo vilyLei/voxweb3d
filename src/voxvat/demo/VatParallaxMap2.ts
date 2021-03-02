@@ -80,7 +80,7 @@ export namespace voxvat
                     this.m_rsc.initialize(rparam,5);
                     this.m_rsc.updateCamera();
 
-                    this.m_stage3D = this.m_rsc.getStage3D();
+                    this.m_stage3D = this.m_rsc.getStage3D() as Stage3D;
                     let evtCtr:MouseEvt3DController = null;
                     let rspace:IRendererSpace = null;
                     let mainRaySelector:RayGpuSelector = new RayGpuSelector();

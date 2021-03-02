@@ -93,7 +93,7 @@ export namespace demo
                 this.m_renderer = new RendererInstance();
                 this.m_renderer.initialize(rparam);
                 this.m_rcontext = this.m_renderer.getRendererContext();
-                let stage3D:Stage3D = this.m_rcontext.getStage3D();
+                let stage3D:Stage3D = this.m_rcontext.getStage3D() as Stage3D;
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseUpListener);
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
@@ -221,12 +221,12 @@ export namespace demo
             if(this.m_runFlag > 0)
             {
                 this.m_runFlag = 0;
-                this.m_followEntity.updateTextureList([this.m_testTex1]);
+                this.m_followEntity.setTextureList([this.m_testTex1]);
             }
             else
             {
                 this.m_runFlag = 1;
-                this.m_followEntity.updateTextureList([this.m_testTex0]);
+                this.m_followEntity.setTextureList([this.m_testTex0]);
             }
         }
         run():void

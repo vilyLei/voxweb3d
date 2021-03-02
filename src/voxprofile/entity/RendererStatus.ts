@@ -109,9 +109,9 @@ export namespace voxprofile
                     text2D.setXY(px3 - text2D.getWidth(),py2);
                     this.m_renderer.addEntityToProcess(text2D,this.m_rprocess);
                     this.m_textFPSNS = text2D;
-                    ///*
                     let pw:number = text2D.getWidth();
                     text2D = new Text2DEntity();
+                    text2D.__$setRenderProxy(renderer.getRenderProxy());
                     text2D.initialize("60");
                     text2D.setXY(px2, 2.0);
                     this.m_renderer.addEntityToProcess(text2D,this.m_rprocess);
@@ -125,6 +125,7 @@ export namespace voxprofile
                     this.m_drawCallNS = text2D;
                     pw = text2D.getWidth();
                     text2D = new Text2DEntity();
+                    text2D.__$setRenderProxy(renderer.getRenderProxy());
                     text2D.initialize("00");
                     text2D.setXY(px2, py2);
                     this.m_renderer.addEntityToProcess(text2D,this.m_rprocess);
@@ -139,6 +140,7 @@ export namespace voxprofile
                     this.m_drawTrisNS = text2D;
                     pw = text2D.getWidth();
                     text2D = new Text2DEntity();
+                    text2D.__$setRenderProxy(renderer.getRenderProxy());
                     text2D.initialize("00");
                     text2D.setXY(px2, py2);
                     this.m_renderer.addEntityToProcess(text2D,this.m_rprocess);
@@ -154,21 +156,21 @@ export namespace voxprofile
                     this.m_povNS = text2D;
                     pw = text2D.getWidth();
                     text2D = new Text2DEntity();
+                    text2D.__$setRenderProxy(renderer.getRenderProxy());
                     text2D.initialize("00");
                     text2D.setXY(px2, py2);
                     this.m_renderer.addEntityToProcess(text2D,this.m_rprocess);
                     this.m_pov = text2D;
-                    //*/
                 }
             }
             run():void
             {
-                ///*
                 this.m_fpsInfo.updateFPS();
                 if(this.m_fps != this.m_fpsInfo.getFPS())
                 {
                     this.m_fps = this.m_fpsInfo.getFPS();
                     this.m_textFPS.setText(this.m_fpsInfo.getFPSStr());
+                    this.m_textFPS.updateMeshToGpu();
                     this.m_textFPS.update();
                 }
                 if(this.m_drawCalls != RendererState.DrawCallTimes)
@@ -176,6 +178,7 @@ export namespace voxprofile
                     let drawCallStr:string = (RendererState.DrawCallTimes) + "";
                     this.m_drawCalls = RendererState.DrawCallTimes;
                     this.m_drawCall.setText(drawCallStr);
+                    this.m_drawCall.updateMeshToGpu();
                     this.m_drawCall.update();
                 }
                 if(this.m_drawTris != RendererState.DrawTrisNumber)
@@ -183,6 +186,7 @@ export namespace voxprofile
                     let drawTriStr:string = (RendererState.DrawTrisNumber) + "";
                     this.m_drawTris = RendererState.DrawTrisNumber;
                     this.m_drawTri.setText(drawTriStr);
+                    this.m_drawTri.updateMeshToGpu();
                     this.m_drawTri.update();
                 }
                 if(this.m_povNumber != RendererState.POVNumber)
@@ -190,9 +194,9 @@ export namespace voxprofile
                     let povNumber:string = (RendererState.POVNumber) + "";
                     this.m_povNumber = RendererState.POVNumber;
                     this.m_pov.setText(povNumber);
+                    this.m_pov.updateMeshToGpu();
                     this.m_pov.update();
                 }
-                //*/
             }
             toString():string
             {

@@ -455,19 +455,26 @@ export namespace vox
 				}
 				return 0;
 			}
-			setRenderToTexture(texProxy:RTTTextureProxy, enableDepth:boolean = false, enableStencil:boolean = false, outputIndex:number = 0):void
+            /**
+             * bind a texture to fbo attachment by attachment index
+             * @param texProxy  RTTTextureProxy instance
+             * @param enableDepth  enable depth buffer yes or no
+             * @param enableStencil  enable stencil buffer yes or no
+             * @param attachmentIndex  fbo attachment index
+             */
+			setRenderToTexture(texProxy:RTTTextureProxy, enableDepth:boolean = false, enableStencil:boolean = false, attachmentIndex:number = 0):void
 			{
-				if (outputIndex < 0 || outputIndex >= 8)
+				if (attachmentIndex < 0 || attachmentIndex >= 8)
 				{
-					outputIndex = 0;
+					attachmentIndex = 0;
 				}
-				if (texProxy == null && outputIndex == 0)
+				if (texProxy == null && attachmentIndex == 0)
 				{
 					this.setRenderToBackBuffer(FrameBufferType.FRAMEBUFFER);
 				}
 				else
 				{
-					if (outputIndex == 0)
+					if (attachmentIndex == 0)
 					{
 						if (this.m_fboBuf != null)
 						{
@@ -516,7 +523,7 @@ export namespace vox
 					}
 					if (this.m_fboBuf != null)
 					{
-						this.m_fboBuf.renderToTexAt(this.m_rc, texProxy, outputIndex);
+						this.m_fboBuf.renderToTexAt(this.m_rc, texProxy, attachmentIndex);
 						//console.log("RenderProxy::setRenderToTexture(), fbo: ",this.m_fboBuf.getFBO());
 					}
 					this.m_fboClearBoo = true;

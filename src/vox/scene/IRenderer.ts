@@ -6,7 +6,7 @@
 /***************************************************************************/
 // 整个渲染器的入口类接口规范
 
-import * as Stage3DT from "../../vox/display/Stage3D";
+import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as IRenderMaterialT from "../../vox/render/IRenderMaterial";
@@ -14,7 +14,7 @@ import * as IRenderEntityT from "../../vox/render/IRenderEntity";
 import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
 
-import Stage3D = Stage3DT.vox.display.Stage3D;
+import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;
@@ -32,7 +32,7 @@ export namespace vox
             getRPONodeBuilder():RPONodeBuilder;
             getRenderProxy():RenderProxy;
             getRendererContext():RendererInstanceContext;
-            getStage3D():Stage3D;
+            getStage3D():IRenderStage3D;
             getCamera():CameraBase;
             addEntity(entity:IRenderEntity,processid:number,deferred:boolean):void;
             removeEntity(entity:IRenderEntity):void;

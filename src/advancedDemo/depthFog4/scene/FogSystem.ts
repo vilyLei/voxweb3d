@@ -79,7 +79,7 @@ export namespace advancedDemo
                     {
                         this.m_rc = rc;
                         this.m_rct = this.m_rc.getRendererContext();
-                        this.m_stage3D = this.m_rct.getStage3D();
+                        this.m_stage3D = this.m_rct.getStage3D() as Stage3D;
                         this.m_middleFBO = middleFBO;
                         this.m_factorFBO = factorFBO;
 

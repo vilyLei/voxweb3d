@@ -25,7 +25,7 @@ import * as GetDepthMaterialT from "../../advancedDemo/depthFog/material/GetDept
 import * as FogFactorMaterialT from "../../advancedDemo/depthFog/material/FogFactorMaterial";
 import * as FogShowMaterialT from "../../advancedDemo/depthFog/material/FogShowMaterial";
 import * as BoxSpaceMotionerT from "../../voxmotion/primtive/BoxSpaceMotioner";
-import * as ScreenPingpongBlurT from "../../vox/scene/mcase/ScreenPingpongBlur";
+import * as ScreenPingpongBlurT from "../../renderingtoy/mcase/PingpongBlur";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
@@ -57,7 +57,7 @@ import GetDepthMaterial = GetDepthMaterialT.advancedDemo.depthFog.material.GetDe
 import FogFactorMaterial = FogFactorMaterialT.advancedDemo.depthFog.material.FogFactorMaterial;
 import FogShowMaterial = FogShowMaterialT.advancedDemo.depthFog.material.FogShowMaterial;
 import BoxSpaceMotioner = BoxSpaceMotionerT.voxmotion.primitive.BoxSpaceMotioner;
-import ScreenPingpongBlur = ScreenPingpongBlurT.vox.scene.mcase.ScreenPingpongBlur;
+import ScreenPingpongBlur = ScreenPingpongBlurT.renderingtoy.mcase.PingpongBlur;
 
 export namespace advancedDemo
 {
@@ -186,7 +186,7 @@ export namespace advancedDemo
                     this.m_rc.updateCamera();
                     this.m_rct = this.m_rc.getRendererContext();
 
-                    this.m_rc.getStage3D().addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
+                    this.m_rc.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
                     RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
                     RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
 

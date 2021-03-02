@@ -6,7 +6,7 @@
 /***************************************************************************/
 // FBO Manager
 
-import * as Stage3DT from "../../vox/display/Stage3D";
+import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as FrameBufferTypeT from "../../vox/render/FrameBufferType";
 import * as RenderFilterT from "../../vox/render/RenderFilter";
@@ -21,7 +21,7 @@ import * as IRenderMaterialT from "../../vox/render/IRenderMaterial";
 import * as RenderMaterialProxyT from "../../vox/render/RenderMaterialProxy";
 import * as IRendererT from "../../vox/scene/IRenderer";
 
-import Stage3D = Stage3DT.vox.display.Stage3D;
+import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import FrameBufferType = FrameBufferTypeT.vox.render.FrameBufferType;
 import RenderFilter = RenderFilterT.vox.render.RenderFilter;
@@ -98,7 +98,7 @@ export namespace vox
             {
                 return this.m_rindexs[i];
             }
-            getStage3D():Stage3D
+            getStage3D():IRenderStage3D
             {
                 return this.m_renderProxy.getStage3D();
             }

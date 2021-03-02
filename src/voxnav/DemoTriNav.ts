@@ -187,7 +187,7 @@ export namespace voxnav
                 this.m_rscene.updateCamera();
 
                 let evtCtr:MouseEvt3DController = null;                
-                this.m_stage3D = this.m_rscene.getStage3D();
+                this.m_stage3D = this.m_rscene.getStage3D() as Stage3D;
                 // create ui renderer scene
                 rparam = new RendererParam();
                 rparam.cameraPerspectiveEnabled = false;

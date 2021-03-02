@@ -9,7 +9,7 @@
 
 import * as MathConstT from "../../vox/utils/MathConst";
 import * as Vector3DT from "../../vox/geom/Vector3";
-import * as Stage3DT from "../../vox/display/Stage3D";
+import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
@@ -38,7 +38,7 @@ import * as IEvt3DControllerT from "../../vox/scene/IEvt3DController";
 
 import MathConst = MathConstT.vox.utils.MathConst;
 import Vector3D = Vector3DT.vox.geom.Vector3D;
-import Stage3D = Stage3DT.vox.display.Stage3D;
+import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
@@ -95,8 +95,10 @@ export namespace vox
             private m_nodeWaitQueue:EntityNodeQueue = null;
             private m_perspectiveEnabled = true;
             private m_rparam:RendererParam = null;
-            private m_stage3D:Stage3D = null;
+            private m_stage3D:IRenderStage3D = null;
             private m_shader:MaterialShader = null;
+            private m_runFlag:number = -1;
+
             constructor(renderer:RendererInstance,evtFlowEnabled:boolean)
             {
                 this.m_evtFlowEnabled = evtFlowEnabled;
@@ -146,7 +148,7 @@ export namespace vox
             {
                 return this.m_rcontext;
             }
-            getStage3D():Stage3D
+            getStage3D():IRenderStage3D
             {
                 return this.m_renderProxy.getStage3D();
             }
@@ -434,10 +436,13 @@ export namespace vox
             }
             runBegin():void
             {
-                //  if(!this.m_renderProxy.isAutoSynViewAndStage())
-                //  {
-                //      this.m_renderProxy.setViewPort(this.m_viewX,this.m_viewY,this.m_viewW,this.m_viewH);
-                //  }
+                
+                if(this.m_runFlag >= 0)
+                {
+                    this.runEnd();
+                }
+                this.m_runFlag = 0;
+
                 if(this.m_renderProxy.getCamera() != this.m_camera)
                 {
                     this.m_camera.setViewXY(this.m_viewX,this.m_viewY);
@@ -501,7 +506,11 @@ export namespace vox
             // call this function per frame
             update():void
             {
-                // camera visible test, ray cast test, Occlusion Culling test
+                if(this.m_runFlag != 0)
+                {
+                    this.runBegin();
+                }
+                this.m_runFlag = 1;
 
                 this.m_mouseTestBoo = true;
                 this.m_cullingTestBoo = true;
@@ -582,6 +591,12 @@ export namespace vox
             // rendering running
             run():void
             {
+                if(this.m_runFlag != 1)
+                {
+                    this.update();
+                }
+                this.m_runFlag = 2;
+
                 for(let i:number = 0; i < this.m_processidsLen; ++i)
                 {
                     this.m_renderer.runAt(this.m_processids[i]);
@@ -601,6 +616,8 @@ export namespace vox
                 {
                     this.m_rspace.runEnd();
                 }
+                
+                this.m_runFlag = -1;             
             }
             updateCamera():void
             {

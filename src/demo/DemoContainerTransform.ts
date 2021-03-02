@@ -82,7 +82,7 @@ export namespace demo
                 this.m_rscene.setRendererProcessParam(1,true,true);
                 this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
 
-                let stage3D:Stage3D = this.m_rscene.getStage3D();
+                let stage3D:Stage3D = this.m_rscene.getStage3D() as Stage3D;
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rscene.getCamera());

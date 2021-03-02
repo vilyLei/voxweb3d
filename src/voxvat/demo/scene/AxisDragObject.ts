@@ -73,7 +73,7 @@ export namespace demo
                     this.m_axisDispatcher = dispatcher;
                     quadAxis.mouseEnabled = true;
                     
-                    this.m_rsc.getStage3D().addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener);
+                    this.m_rsc.addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener);
                 }
             }
             
@@ -158,7 +158,7 @@ export namespace demo
                         qyozDisp.mouseEnabled = true;
                         this.m_qyozDisp = qyozDisp;
                     }
-                    this.m_rsc.getStage3D().addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener);
+                    this.m_rsc.addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener);
                 }
             }
             

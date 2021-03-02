@@ -167,7 +167,7 @@ export namespace demo
                 
                 this.m_rscene = new RendererScene();
                 this.m_rscene.initialize(rparam,3);
-                this.m_stage3D = this.m_rscene.getStage3D();
+                this.m_stage3D = this.m_rscene.getStage3D() as Stage3D;
 
                 let evtCtr:MouseEvt3DController = null;
 

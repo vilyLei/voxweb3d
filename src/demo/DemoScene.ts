@@ -80,7 +80,7 @@ export namespace demo
                 this.m_rscene.setRendererProcessParam(1,true,true);
                 this.m_rscene.updateCamera();
 
-                this.m_rscene.getStage3D().addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
+                this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
                 RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 

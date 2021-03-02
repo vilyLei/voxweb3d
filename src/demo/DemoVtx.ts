@@ -110,7 +110,7 @@ export namespace demo
 
                 this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
                 
-                this.m_rscene.getStage3D().addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
+                this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
 
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
