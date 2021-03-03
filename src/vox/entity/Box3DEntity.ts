@@ -142,7 +142,7 @@ export namespace vox
             }
             toString():string
             {
-                return "[Box3DEntity(uid = "+this.getUid()+", __$wuid = "+this.__$wuid+", __$weid = "+this.__$weid+")]";
+                return "[Box3DEntity(uid = "+this.getUid()+", rseFlag = "+this.__$rseFlag+")";
             }
         }
 

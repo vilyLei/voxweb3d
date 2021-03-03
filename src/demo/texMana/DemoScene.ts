@@ -13,8 +13,8 @@ import * as Billboard3DEntityT from "../../vox/entity/Billboard3DEntity";
 import * as ClipsBillboard3DEntityT from "../../vox/entity/ClipsBillboard3DEntity";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as TextureStoreT from "../../vox/texture/TextureStore";
-import * as TextureConstT from "../../vox/texture/TextureConst";
-import * as ImageTexResLoaderT from "../../vox/texture/ImageTexResLoader";
+import * as TextureBlockT from "../../vox/texture/TextureBlock";
+import * as ImageTextureLoaderT from "../../vox/texture/ImageTextureLoader";
 import * as EntityDispT from "../base/EntityDisp";
 
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
@@ -33,8 +33,8 @@ import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import ClipsBillboard3DEntity = ClipsBillboard3DEntityT.vox.entity.ClipsBillboard3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import ImageTexResLoader = ImageTexResLoaderT.vox.texture.ImageTexResLoader;
+import TextureBlock = TextureBlockT.vox.texture.TextureBlock;
+import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import EntityDisp = EntityDispT.demo.base.EntityDisp;
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 
@@ -49,8 +49,9 @@ export namespace demo
             }
             private m_renderer:RendererInstance = null;
             private m_rcontext:RendererInstanceContext = null;
-            private m_texLoader:ImageTexResLoader = new ImageTexResLoader();
-            //private m_camTrack:CameraTrack = null;
+            
+            private m_texLoader:ImageTextureLoader;
+            private m_texBlock:TextureBlock;
             private m_equeue:EntityDispQueue = new EntityDispQueue();
             
             private m_billMeshSrc0Entity:Billboard3DEntity = null;
@@ -63,6 +64,10 @@ export namespace demo
                     this.m_rcontext = this.m_renderer.getRendererContext();               
                     RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
                     RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
+                    
+                    this.m_texBlock = new TextureBlock();
+                    this.m_texBlock.setRenderer( this.m_renderer );
+                    this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
 
                     this.initDisp();
     
@@ -96,6 +101,10 @@ export namespace demo
                 "static/assets/fruit_01.jpg",
                 "static/assets/flare_core_02.jpg"
             ];
+            private getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
+            {
+                return this.m_texLoader.getImageTexByUrl(purl);
+            }
             private getParClipTexAt(i:number):TextureProxy
             {
                 let tex:TextureProxy = this.getImageTexByUrl(this.m_parClipTexList[i]);
@@ -129,13 +138,13 @@ export namespace demo
                 this.createMaskBill(5);
                 this.createBillMaskClips(5);
             }
-            getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
-            {
-                let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
-                ptex.mipmapEnabled = mipmapEnabled;
-                if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
-                return ptex;
-            }
+            //  getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
+            //  {
+            //      let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
+            //      ptex.mipmapEnabled = mipmapEnabled;
+            //      if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
+            //      return ptex;
+            //  }
             private createBillMaskClips(total:number):void
             {
                 let bill:ClipsBillboard3DEntity = null;
@@ -277,6 +286,7 @@ export namespace demo
             }
             run():void
             {
+                this.m_texLoader.run();
                 this.m_equeue.run();
                 let disp:EntityDisp = null;
                 let dispEntity:DisplayEntity = null;

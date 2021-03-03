@@ -1,4 +1,5 @@
 
+import * as RSEntityFlagT from '../vox/scene/RSEntityFlag';
 import * as Vector3DT from "../vox/geom/Vector3";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RenderConstT from "../vox/render/RenderConst";
@@ -10,6 +11,7 @@ import * as MouseEventT from "../vox/event/MouseEvent";
 import * as Stage3DT from "../vox/display/Stage3D";
 
 import * as DisplayEntityT from "../vox/entity/DisplayEntity";
+import * as PureEntityT from "../vox/entity/PureEntity";
 import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
 import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
@@ -19,6 +21,7 @@ import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as DisplayEntityContainerT from "../vox/entity/DisplayEntityContainer";
 import * as EntityDispT from "./base/EntityDisp";
 
+import RSEntityFlag = RSEntityFlagT.vox.scene.RSEntityFlag;
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
@@ -32,6 +35,7 @@ import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+import PureEntity = PureEntityT.vox.entity.PureEntity;
 import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
 
@@ -72,6 +76,15 @@ export namespace demo
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 
+                //      let rseFlag:number = RSEntityFlag.DEFAULT;
+                //      console.log("A 0  "+rseFlag.toString(2));
+                //      rseFlag = RSEntityFlag.AddRendererUid(rseFlag, 2);
+                //      console.log("A 1  "+rseFlag.toString(2));
+                //      console.log("XXX Renderer Uid: ",RSEntityFlag.GetRendererUid(rseFlag));
+                //      rseFlag = RSEntityFlag.RemoveRendererUid(rseFlag)
+                //      console.log("B 0  "+rseFlag.toString(2));
+                //      console.log("XXXX Renderer Uid: ",RSEntityFlag.GetRendererUid(rseFlag));
+
                 let rparam:RendererParam = new RendererParam();
                 rparam.setMatrix4AllocateSize(8192 * 4);
                 rparam.setCamProject(45.0,10.0,3000.0);
@@ -98,23 +111,21 @@ export namespace demo
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 
                 let plane:Plane3DEntity = new Plane3DEntity();
+                plane.name = "a plane.";
                 plane.showDoubleFace();
                 plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
 
                 this.m_container = new DisplayEntityContainer();
-                this.m_container.addEntity(plane);
-                
+                this.m_container.addEntity(plane);                
                 this.m_container.setXYZ(100.0,100.0,100.0);
-                this.m_rscene.addEntity(plane);
 
                 this.m_containerMain = new DisplayEntityContainer();
                 this.m_containerMain.addChild(this.m_container);
                 this.m_rscene.addContainer(this.m_containerMain);
 
                 let axisEntity:Axis3DEntity = new Axis3DEntity();
-                axisEntity.initialize(30.0);
-                
-                this.m_rscene.addEntity(axisEntity);
+                axisEntity.initialize(30.0);                
+                this.m_rscene.addEntity(axisEntity, 0, false);
                 this.m_followEntity = axisEntity;
 
                 let axis:Axis3DEntity = new Axis3DEntity();
@@ -125,7 +136,23 @@ export namespace demo
                 axis = new Axis3DEntity();
                 axis.initialize(600.0);
                 this.m_rscene.addEntity(axis);
-                
+                //this.createLargeEntitys(10000 * 50);
+            }
+        }
+        private m_elist:DisplayEntity[] = [];
+        private createLargeEntitys(total:number):void
+        {
+            let src_axis:Axis3DEntity = new Axis3DEntity();
+            src_axis.initialize(600.0);
+            let entity:DisplayEntity = null;
+            for(let i:number = 0; i < total; i++)
+            {
+                let axis:Axis3DEntity = new Axis3DEntity();
+                axis.copyMeshFrom(src_axis);
+                axis.copyMaterialFrom(src_axis);
+                axis.initialize(600.0);
+                entity = axis;
+                this.m_elist.push(entity);
             }
         }
         private m_flagBoo:boolean = true;
@@ -142,12 +169,8 @@ export namespace demo
             this.m_equeue.run();
 
             this.m_rscene.setClearRGBColor3f(0.1, 0.1, 0.1);
-            this.m_rscene.renderBegin();
-
-            this.m_rscene.update();
+            
             this.m_rscene.run();
-
-            this.m_rscene.runEnd();
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
             
             if(this.m_containerMain != null)

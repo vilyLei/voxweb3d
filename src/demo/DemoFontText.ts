@@ -81,6 +81,8 @@ export namespace demo
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(500.0,500.0,500.0);
                 this.m_renderer = new RendererInstance();
+                let stage3D:Stage3D = new Stage3D(this.m_renderer.getRCUid(),document);
+                this.m_renderer.__$setStage3D(stage3D);
                 this.m_renderer.initialize(rparam);
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();
@@ -93,8 +95,6 @@ export namespace demo
                 this.m_texBlock = new TextureBlock();
                 this.m_texBlock.setRenderer( this.m_renderer );
                 this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
-
-                let stage3D:Stage3D = this.m_rcontext.getStage3D() as Stage3D;
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());

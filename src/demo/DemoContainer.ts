@@ -1,3 +1,4 @@
+import * as RSEntityFlagT from '../vox/scene/RSEntityFlag';
 import * as Vector3DT from "../vox/geom/Vector3";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RenderConstT from "../vox/render/RenderConst";
@@ -23,6 +24,7 @@ import * as DisplayEntityContainerT from "../vox/entity/DisplayEntityContainer";
 import * as EntityDispT from "./base/EntityDisp";
 import * as DecayBrnParticleT from "../particle/base/DecayBrnParticle";
 
+import RSEntityFlag = RSEntityFlagT.vox.scene.RSEntityFlag;
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
@@ -123,10 +125,10 @@ export namespace demo
                 container.addEntity(plane);
                 
                 container.setXYZ(100.0,100.0,100.0);
-                let cid:number = plane.__$contId;
-                plane.__$contId = -1;
+                //let cid:number = plane.__$contId;
+                plane.__$rseFlag = RSEntityFlag.RemoveRendererLoad(plane.__$rseFlag);
                 this.m_renderer.addEntity(plane);
-                plane.__$contId = cid;
+                plane.__$rseFlag = RSEntityFlag.AddRendererLoad(plane.__$rseFlag);
                 //plane.setRenderStateByName("ADD01");
                 //container.update();
                 let containerB:DisplayEntityContainer = new DisplayEntityContainer();

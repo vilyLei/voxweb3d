@@ -7,22 +7,22 @@
 // 独立，且使用 DisplayEntityContainer 、transform 等等机制的容器
 
 import * as MathConstT from "../../vox/utils/MathConst";
+import * as RSEntityFlagT from '../../vox/scene/RSEntityFlag';
 import * as Vector3T from "../../vox/geom/Vector3";
 import * as AABBT from "../../vox/geom/AABB";
 import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as IDisplayEntityContainerT from "../../vox/entity/IDisplayEntityContainer";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
-import * as RendererInstanceT from "../../vox/scene/RendererInstance";
 import * as IRendererT from "../../vox/scene/IRenderer";
 
 import MathConst = MathConstT.vox.utils.MathConst;
+import RSEntityFlag = RSEntityFlagT.vox.scene.RSEntityFlag;
 import Vector3D = Vector3T.vox.geom.Vector3D;
 import AABB = AABBT.vox.geom.AABB;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import Matrix4Pool = Matrix4T.vox.geom.Matrix4Pool;
 import IDisplayEntityContainer = IDisplayEntityContainerT.vox.entity.IDisplayEntityContainer;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import IRenderer = IRendererT.vox.scene.IRenderer;
 
 export namespace vox
@@ -31,7 +31,7 @@ export namespace vox
     {
         export class DisplayEntityContainer implements IDisplayEntityContainer
         {
-            private static __s_uid:number = 0;
+            private static s_uid:number = 0;
             private m_uid:number = 0;
             constructor(boundsEnabled:boolean = true)
             {
@@ -39,7 +39,7 @@ export namespace vox
                 {
                     this.createBounds();
                 }
-                this.m_uid = DisplayEntityContainer.__s_uid++;
+                this.m_uid = DisplayEntityContainer.s_uid++;
             }
             private m_transformStatus:number = 0;
             private m_rotateBoo:boolean = false;
@@ -62,8 +62,8 @@ export namespace vox
             wprocuid:number = -1;
             // 自身在world中被分配的唯一id, 通过这个id就能在world中快速找到自己所在的数组位置
             __$weid:number = -1;
-            // 记录自身所在的容器id, 不允许外外面其他代码调用
-            __$contId:number = -1;
+            // 记录自身是否再容器中(取值为0和1), 不允许外外面其他代码调用
+            __$contId:number = 0;
             // 父级, 不允许外面其他代码调用
             private __$parent:DisplayEntityContainer = null;
             private __$renderer:IRenderer = null;
@@ -99,12 +99,15 @@ export namespace vox
                     if(renderer != null)
                     {
                         // add all entities
-                        //console.log("add all entities from container, this.m_entitysTotal: "+this.m_entitysTotal+", this.wprocuid: "+this.wprocuid);
+                        console.log("add all entities from container, this.m_entitysTotal: "+this.m_entitysTotal+", this.wprocuid: "+this.wprocuid);
                         for(; i < this.m_entitysTotal; ++i)
                         {
-                            this.m_entitys[i].__$contId = -1;
+                            //this.m_entitys[i].__$contId = 0;
+                            //this.m_entitys[i].__$rseFlag = this.m_entitys[i].__$rseFlag & RSEntityFlag.CONTAINER_NOT_FLAG;
+                            this.m_entitys[i].__$rseFlag = RSEntityFlag.RemoveContainerFlag(this.m_entitys[i].__$rseFlag);
                             this.__$renderer.addEntity(this.m_entitys[i],this.wprocuid,false);
-                            this.m_entitys[i].__$contId = this.m_uid;
+                            //this.m_entitys[i].__$contId = this.m_uid;
+                            this.m_entitys[i].__$rseFlag = RSEntityFlag.AddContainerFlag(this.m_entitys[i].__$rseFlag);
                         }
                     }
                 }
@@ -165,7 +168,7 @@ export namespace vox
             }
             addChild(child:DisplayEntityContainer):void
             {
-                if(child != null && child.__$wuid < 0 && child.__$contId < 0)
+                if(child != null && child.__$wuid < 0 && child.__$contId < 1)
                 {
                     let i:number = 0;
                     for(; i < this.m_childrenTotal; ++i)
@@ -181,7 +184,7 @@ export namespace vox
                         {
                             this.m_cbvers.push(-1);
                         }
-                        child.__$contId = this.m_uid;
+                        child.__$contId = 1;
                         child.wprocuid = this.wprocuid;
                         child.__$setParent(this);
                         this.m_children.push(child);
@@ -191,14 +194,14 @@ export namespace vox
             }
             removeChild(child:DisplayEntityContainer):void
             {
-                if(child != null && child.__$contId == this.m_uid)
+                if(child != null && child.getParent() == this)
                 {
                     let i:number = 0;
                     for(; i < this.m_childrenTotal; ++i)
                     {
                         if(this.m_children[i] == child)
                         {
-                            child.__$contId = -1;
+                            child.__$contId = 0;
                             child.wprocuid = -1;
                             child.__$setParent(null);
                             this.m_children.splice(i,1);
@@ -221,7 +224,7 @@ export namespace vox
                     {
                         if(this.m_children[i].getUid() == uid)
                         {
-                            this.m_children[i].__$contId = -1;
+                            this.m_children[i].__$contId = 0;
                             this.m_children.splice(i,1);
                             if(this.m_cbvers != null)
                             {
@@ -267,7 +270,9 @@ export namespace vox
                 {
                     throw Error("Error: entity.getMesh() == null.");
                 }
-                if(entity.__$wuid < 0 && entity.__$contId < 0)
+                console.log("container addEntity entity");
+                //if(entity.__$wuid < 0 && entity.__$contId < 1)
+                if(entity.__$testContainerEnabled())
                 {
                     let i:number = 0;
                     for(; i < this.m_entitysTotal; ++i)
@@ -288,10 +293,11 @@ export namespace vox
                         entity.getTransform().setParentMatrix(this.getMatrix());
                         if(this.__$renderer != null)
                         {
-                            entity.__$contId = -1;
+                            //entity.__$contId = 0;
+                            entity.__$rseFlag = RSEntityFlag.RemoveContainerFlag(entity.__$rseFlag);
                             this.__$renderer.addEntity(this.m_entitys[i],this.wprocuid,false);
                         }
-                        entity.__$contId = this.m_uid;
+                        entity.__$rseFlag = RSEntityFlag.AddContainerFlag(entity.__$rseFlag);
                         entity.__$setParent(this);
                         entity.update();
                     }
@@ -299,14 +305,15 @@ export namespace vox
             }
             removeEntity(entity:DisplayEntity):void
             {
-                if(entity != null && entity.__$contId == this.m_uid)
+                if(entity != null && entity.__$getParent() == null)
                 {
                     let i:number = 0;
                     for(; i < this.m_entitysTotal; ++i)
                     {
                         if(this.m_entitys[i] == entity)
                         {
-                            this.m_entitys[i].__$contId = -1;
+                            //entity.__$contId = 0;
+                            entity.__$rseFlag = RSEntityFlag.AddContainerFlag(entity.__$rseFlag);
                             this.m_entitys[i].__$setParent(null);
                             this.m_entitys.splice(i,1);
                             if(this.m_ebvers != null)
@@ -328,7 +335,8 @@ export namespace vox
                     {
                         if(this.m_entitys[i].getUid() == uid)
                         {
-                            this.m_entitys[i].__$contId = -1;
+                            //this.m_entitys[i].__$contId = 0;
+                            this.m_entitys[i].__$rseFlag = RSEntityFlag.AddContainerFlag(this.m_entitys[i].__$rseFlag);
                             this.m_entitys[i].__$setParent(null);
                             this.m_entitys.splice(i,1);
                             if(this.m_ebvers != null)

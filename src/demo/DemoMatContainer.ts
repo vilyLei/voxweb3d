@@ -9,7 +9,6 @@ import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
 import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
 import * as Box3DEntityT from "../vox/entity/Box3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureStoreT from "../vox/texture/TextureStore";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as MouseEventT from "../vox/event/MouseEvent";
 import * as DemoInstanceT from "./DemoInstance";
@@ -25,7 +24,6 @@ import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import DemoInstance = DemoInstanceT.demo.DemoInstance;
@@ -97,6 +95,7 @@ export namespace demo
         private m_rotY:number = 0;
         private m_rotX0:number = Math.random() * 100.0;
         private m_rotX1:number = Math.random() * 100.0;
+        private m_rotBodyY:number = Math.random() * 100.0;
         private m_rotY0:number = 0;
         private m_rotY1:number = 0;
         private m_flag:number = 0;
@@ -197,10 +196,6 @@ export namespace demo
                 this.m_rscene.addEntity(box);
                 this.m_bodyBox = box;
                 let scale:number = 0.3;
-                //          this.m_box0.setScaleXYZ(scale,scale,scale);
-                //          this.m_box1.setScaleXYZ(scale,scale,scale);
-                //          this.m_box2.setScaleXYZ(scale,scale,scale);
-                //          this.m_box3.setScaleXYZ(scale,scale,scale);
 
                 this.m_body = new Matrix4Container();
 
@@ -242,12 +237,13 @@ export namespace demo
             {
                 
                 this.m_rotX0 += 0.2;
-                //this.m_rotX1 += 0.3;
+                this.m_rotBodyY += 0.1;
                 this.m_part0.setRotationZ(this.m_rotX0);
                 this.m_part1.setRotationZ(this.m_rotX0);
+                this.m_body.setRotationY(this.m_rotBodyY);
                 this.m_body.update();
                 this.m_body.copyMatrixTo(this.m_bodyBox.getTransform().getMatrix());
-                this.m_bodyBox
+                
                 this.m_tarA0.copyMatrixTo(this.m_box0.getTransform().getMatrix());
                 this.m_tarA1.copyMatrixTo(this.m_box1.getTransform().getMatrix());
 

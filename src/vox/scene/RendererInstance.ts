@@ -53,13 +53,14 @@ export namespace vox
         export class RendererInstance implements IRenderer
         {
             private m_uid:number = -1;
+            private static s_uid:number = 0;
             private m_entity3DMana:DispEntity3DManager = null;
             private m_processes:RenderProcess[] = [];
             private m_processesLen:number = 0;
             private m_renderProxy:RenderProxy = null;
             private m_adapter:RenderAdapter = null;
             private m_dataBuilder:RODataBuilder = null;
-            private m_renderInsContext:RendererInstanceContext = new RendererInstanceContext();
+            private m_renderInsContext:RendererInstanceContext = null;
             private m_batchEnabled:boolean = true;
             private m_processFixedState:boolean = true;
 
@@ -71,6 +72,8 @@ export namespace vox
 
             constructor()
             {
+                this.m_uid = RendererInstance.s_uid++;
+                this.m_renderInsContext = new RendererInstanceContext(this.m_uid);
             }
             __$setStage3D(stage3D:IRenderStage3D):void
             {
@@ -170,7 +173,7 @@ export namespace vox
             {
                 this.m_renderProxy.Texture.update();
                 this.m_renderProxy.Vertex.update();
-                this.m_entity3DMana.update(this.m_renderProxy);
+                this.m_entity3DMana.update();
             }
             setEntityManaListener(listener:any):void
             {
@@ -186,7 +189,9 @@ export namespace vox
             {
                 if(entity != null)
                 {
-                    if(entity.__$wuid < 0 && entity.__$weid < 0 && entity.__$contId < 0)
+                    //console.log("##### entity.__$contId: ",entity.__$contId);
+                    //if(entity.__$wuid < 0 && entity.__$weid < 0 && entity.__$contId < 1)
+                    if(entity.__$testRendererEnabled())
                     {
                         if(processid > -1 && processid < this.m_processesLen)
                         {
@@ -205,12 +210,15 @@ export namespace vox
             }
             addEntityToProcess(entity:IRenderEntity,process:RenderProcess,deferred:boolean = true):void
             {
-                if(process != null && entity != null && entity.__$wuid < 0 && entity.__$weid < 0 && entity.__$contId < 0)
+                if(process != null && entity != null)
                 {
-                    if(process.getWUid() == this.m_uid)
+                    //if(process != null && entity != null && entity.__$wuid < 0 && entity.__$weid < 0 && entity.__$contId < 1)
+                    if(entity.__$testRendererEnabled())
                     {
-                        let processid:number = process.getWEid();
-                        this.m_entity3DMana.addEntity(entity,processid,deferred);
+                        if(process.getWUid() == this.m_uid)
+                        {
+                            this.m_entity3DMana.addEntity(entity,process.getWEid(),deferred);
+                        }
                     }
                 }
             }
@@ -220,7 +228,7 @@ export namespace vox
              */
             moveEntityToProcessAt(entity:IRenderEntity,dstProcessid:number):void
             {
-                if(entity != null && entity.__$wuid == this.m_uid)
+                if(entity != null && entity.getRendererUid() == this.m_uid)
                 {
                     if(entity.isRenderEnabled())
                     {
@@ -242,7 +250,7 @@ export namespace vox
              */
             removeEntity(entity:IRenderEntity):void
             {
-                if(entity != null && entity.__$wuid == this.m_uid)
+                if(entity != null && entity.getRendererUid() == this.m_uid)
                 {
                     this.m_entity3DMana.removeEntity(entity);
                 }
@@ -256,7 +264,7 @@ export namespace vox
             {
                 if(process != null && process.getWUid() == this.m_uid)
                 {
-                    if(entity != null && entity.__$wuid == this.m_uid)
+                    if(entity != null && entity.getRendererUid() == this.m_uid)
                     {
                         process.removeDisp(entity.getDisplay());
                     }
@@ -271,7 +279,7 @@ export namespace vox
             {
                 if(processIndex >= 0 && processIndex < this.m_processesLen)
                 {
-                    if(entity != null && entity.__$wuid == this.m_uid)
+                    if(entity != null && entity.getRendererUid() == this.m_uid)
                     {
                         let process:RenderProcess = this.m_processes[processIndex];
                         process.removeDisp(entity.getDisplay());
@@ -355,7 +363,7 @@ export namespace vox
             // 首先要锁定Material才能用这种绘制方式,再者这个entity已经完全加入渲染器了渲染资源已经准备完毕,这种方式比较耗性能，只能用在特殊的地方
             drawEntityByLockMaterial(entity:IRenderEntity,forceUpdateUniform:boolean = true):void
             {
-                if(entity != null && entity.__$wuid == this.m_uid)
+                if(entity != null && entity.getRendererUid() == this.m_uid)
                 {
                     this.m_processes[ 0 ].drawLockMaterialByDisp(this.m_renderProxy,entity.getDisplay(),forceUpdateUniform);
                 }
@@ -387,7 +395,7 @@ export namespace vox
              */
             run():void
             {
-                if(!this.m_entity3DMana.isEmpty())
+                if(this.m_entity3DMana.isHaveEntity())
                 {
                     for(let i:number = 0; i < this.m_processesLen; ++i)
                     {

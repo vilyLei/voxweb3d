@@ -6,6 +6,7 @@
 /***************************************************************************/
 // 整个渲染场景的入口类
 
+import * as RSEntityFlagT from '../../vox/scene/RSEntityFlag';
 import * as Vector3DT from "../../vox/geom/Vector3";
 import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
 import * as Stage3DT from "../../vox/display/Stage3D";
@@ -38,6 +39,7 @@ import * as IEvt3DControllerT from "../../vox/scene/IEvt3DController";
 import * as FBOInstanceT from "../../vox/scene/FBOInstance";
 import * as RendererSubSceneT from "../../vox/scene/RendererSubScene";
 
+import RSEntityFlag = RSEntityFlagT.vox.scene.RSEntityFlag;
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
 import Stage3D = Stage3DT.vox.display.Stage3D;
@@ -349,7 +351,7 @@ export namespace vox
                 {
                     processid = 0;
                 }
-                if(child != null && child.__$wuid < 0 && child.__$contId < 0)
+                if(child != null && child.__$wuid < 0 && child.__$contId < 1)
                 {
                     let i:number = 0;
                     for(; i < this.m_childrenTotal; ++i)
@@ -404,7 +406,8 @@ export namespace vox
              */
             addEntity(entity:IRenderEntity,processid:number = 0,deferred:boolean = true):void
             {
-                if(entity.__$spaceId < 0)
+                //if(entity.__$spaceId < 0 && entity.__$contId < 1)
+                if(entity.__$testSpaceEnabled())
                 {
                     if(entity.isPolyhedral())
                     {
@@ -513,7 +516,7 @@ export namespace vox
                 {
                     this.m_renderProxy.setViewPort(this.m_viewX,this.m_viewY,this.m_viewW,this.m_viewH);
                 }
-                this.m_renderProxy.getCamera().update();
+                this.m_renderProxy.updateCamera();
                 this.m_rcontext.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
                 this.m_rcontext.renderBegin();
                 if(this.m_rspace != null)

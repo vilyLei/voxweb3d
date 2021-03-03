@@ -231,7 +231,7 @@ export namespace vox2d
             }
             toString():string
             {
-                return "Text2DEntity(uid = "+this.getUid()+", __$wuid = "+this.__$wuid+", __$weid = "+this.__$weid+")";
+                return "Text2DEntity(uid = "+this.getUid()+", rseFlag = "+this.__$rseFlag+")";
             }
         }
 

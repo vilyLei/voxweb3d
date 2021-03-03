@@ -303,7 +303,7 @@ export namespace vox
 
             toString():string
             {
-                return "[Sphere3DEntity(uid = "+this.getUid()+", __$wuid = "+this.__$wuid+", __$weid = "+this.__$weid+")]";
+                return "[Sphere3DEntity(uid = "+this.getUid()+", rseFlag = "+this.__$rseFlag+")]";
             }
         }
     }

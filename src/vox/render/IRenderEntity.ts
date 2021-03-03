@@ -28,15 +28,16 @@ export namespace vox
          */
         export interface IRenderEntity
         {
-            // 自身所在的 RendererInstance unique id, 通过这个id可以找到对应的renderer instance
-            __$wuid:number;// = -1;
-            // 自身在 RendererInstance 中被分配的唯一id, 通过这个id就能在world中快速找到自己所在的数组位置
-            __$weid:number;// = -1;
-            // 记录自身所在的容器id
-            __$contId:number;// = -1;
+            //  // 自身所在的 RendererInstance unique id, 通过这个id可以找到对应的renderer instance
+            //  __$wuid:number;// = -1;
+            //  // 自身在 RendererInstance 中被分配的唯一id, 通过这个id就能在world中快速找到自己所在的数组位置
+            //  __$weid:number;// = -1;
+            //  // 记录自身所在的容器id
+            //  __$contId:number;// = -1;
             // space id
             __$spaceId:number;// = -1;
-
+            //renderer scene entity flag, value default is RSEntityFlag.DEFAULT
+            __$rseFlag:number;
             //  name:string;// = "IRenderEntity";
             // 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMasK, 默认只会有摄像机裁剪
             spaceCullMask:number;// = 1;//SpaceCullingMasK.CAMERA;
@@ -44,7 +45,11 @@ export namespace vox
             drawEnabled:boolean;// = false;
             // mouse interaction enabled
             mouseEnabled:boolean;// = false;
-                        
+            __$testSpaceEnabled():boolean;
+            __$testContainerEnabled():boolean;
+            __$testRendererEnabled():boolean;
+            getRendererUid():number;
+
             dispatchEvt(evt:any):void;
             getEvtDispatcher(evtClassType:number):IEvtDispatcher;
 

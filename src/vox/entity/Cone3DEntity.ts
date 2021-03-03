@@ -77,7 +77,7 @@ export namespace vox
 
             toString():string
             {
-                return "[Cone3DEntity(uid = "+this.getUid()+", __$wuid = "+this.__$wuid+", __$weid = "+this.__$weid+")]";
+                return "[Cone3DEntity(uid = "+this.getUid()+", rseFlag = "+this.__$rseFlag+")]";
             }
         }
     }

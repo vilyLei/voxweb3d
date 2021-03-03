@@ -1,5 +1,4 @@
 
-import * as Vector3DT from "../vox/geom/Vector3";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
 import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
@@ -7,13 +6,11 @@ import * as RendererInstanceT from "../vox/scene/RendererInstance";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 import * as MouseEventT from "../vox/event/MouseEvent";
 import * as Stage3DT from "../vox/display/Stage3D";
-import * as TextureStoreT from "../vox/texture/TextureStore";
 import * as TextureResSlotT from "../vox/texture/TextureResSlot";
 
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as DemoSceneT from "./texMana/DemoScene";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
@@ -21,7 +18,6 @@ import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import Stage3D = Stage3DT.vox.display.Stage3D;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import TextureResSlot = TextureResSlotT.vox.texture.TextureResSlot;
 
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
@@ -51,10 +47,11 @@ export namespace demo
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
                 this.m_renderer = new RendererInstance();
+                let stage3D:Stage3D = new Stage3D(this.m_renderer.getRCUid(), document);
+                this.m_renderer.__$setStage3D(stage3D);
                 this.m_renderer.initialize(rparam);
                 this.m_rcontext = this.m_renderer.getRendererContext();
-                TextureStore.SetRenderer(this.m_renderer);
-                let stage3D:Stage3D = this.m_rcontext.getStage3D() as Stage3D;
+                
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
@@ -70,7 +67,6 @@ export namespace demo
         }
         run():void
         {
-            TextureStore.Update();
             this.m_scene.run();
             this.m_statusDisp.statusInfo = "/"+this.m_rcontext.getTextureAttachTotal()+"/"+TextureResSlot.GetInstance().getTextureTotal();
             this.m_statusDisp.update();

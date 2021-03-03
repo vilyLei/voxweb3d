@@ -5,8 +5,9 @@ import * as Color4T from "../vox/material/Color4";
 import * as RenderConstT from "../vox/render/RenderConst";
 import * as RendererStateT from "../vox/render/RendererState";
 import * as RendererParamT from "../vox/scene/RendererParam";
+import * as TextureConstT from "../vox/texture/TextureConst";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TexResLoaderT from "../vox/texture/TexResLoader";
+import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as RendererSceneT from "../vox/scene/RendererScene";
 import * as MouseEventT from "../vox/event/MouseEvent";
 import * as H5FontSysT from "../vox/text/H5FontSys";
@@ -26,8 +27,9 @@ import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
 import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
 import RendererState = RendererStateT.vox.render.RendererState;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
+import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
+import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
@@ -44,20 +46,19 @@ export namespace demo
 {
     export class DemoScene
     {
-        constructor()
-        {
-        }
+        constructor(){}
         
         private m_rscene:RendererScene = null;
-        private m_texLoader:TexResLoader = new TexResLoader();
+        private m_texLoader:ImageTextureLoader = null;
         private m_camTrack:CameraTrack = null;
         
-        private m_profileInstance:ProfileInstance = null;
-        getImageTexByUrl(purl:string):TextureProxy
+        private m_profileInstance:ProfileInstance = new ProfileInstance();
+        private getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
-            let tex:TextureProxy = this.m_texLoader.getTexAndLoadImg(purl);
-            tex.mipmapEnabled = true;
-            return tex;
+            let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
+            ptex.mipmapEnabled = mipmapEnabled;
+            if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
+            return ptex;
         }
         initialize():void
         {
@@ -67,9 +68,6 @@ export namespace demo
                 H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-                
                 let rparam:RendererParam = new RendererParam();
                 rparam.setMatrix4AllocateSize(8192 * 4);
                 rparam.setCamProject(45.0,10.1,5000.0);
@@ -80,14 +78,18 @@ export namespace demo
                 this.m_rscene.setRendererProcessParam(1,true,true);
                 this.m_rscene.updateCamera();
 
+                this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
                 this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
                 RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 
-
+                this.m_profileInstance.initialize(this.m_rscene.getRenderer());
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rscene.getCamera());
-
+                
+                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
+                
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.initialize(200.0);
                 this.m_rscene.addEntity(axis);
@@ -156,13 +158,10 @@ export namespace demo
         }
         run():void
         {
+            this.m_texLoader.run();
             this.m_rscene.setClearColor(this.m_bgColor);
-            this.m_rscene.runBegin();
 
-            this.m_rscene.update();
             this.m_rscene.run();
-
-            this.m_rscene.runEnd();
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);;
             
             if(this.m_profileInstance != null)

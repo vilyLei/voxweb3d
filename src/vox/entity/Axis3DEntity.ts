@@ -119,7 +119,7 @@ export namespace vox
             }
             toString():string
             {
-                return "Axis3DEntity(name="+this.name+",uid = "+this.getUid()+", __$wuid = "+this.__$wuid+", __$weid = "+this.__$weid+")";
+                return "Axis3DEntity(name="+this.name+",uid = "+this.getUid()+", rseFlag = "+this.__$rseFlag+")";
             }
         }
     }

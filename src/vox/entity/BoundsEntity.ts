@@ -59,7 +59,7 @@ export namespace vox
             }
             toString():string
             {
-                return "[BoundsEntity(uid = "+this.getUid()+", __$wuid = "+this.__$wuid+", __$weid = "+this.__$weid+")]";
+                return "BoundsEntity(uid = "+this.getUid()+", rseFlag = "+this.__$rseFlag+")";
             }
             destroy():void
             {

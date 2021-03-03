@@ -23,7 +23,7 @@ export namespace vox
     {
         export class ROTransform
         {
-            private static __s_uid:number = 0;
+            private static s_uid:number = 0;
             private static s_initData:Float32Array = new Float32Array([
 				1.0,0.0,0.0,0.0,
 				0.0,1.0,0.0,0.0,
@@ -41,7 +41,7 @@ export namespace vox
             private m_fs32:Float32Array = new Float32Array(16);
             constructor()
             {
-                this.m_uid = ROTransform.__s_uid++;
+                this.m_uid = ROTransform.s_uid++;
             }
             //private m_rotateBoo:boolean = false;
             // It is a flag that need inverted mat yes or no
@@ -276,38 +276,6 @@ export namespace vox
                     }
                     this.updateStatus = 0;
                 }
-                /*
-                if (this.updateStatus > 0)
-	        	{
-                    //trace("ROTransform::update(), m_uid: "+m_uid);
-                    //console.log("ROTransform::update(), this.m_localMat: "+this.m_localMat.toString());
-                    if(this.m_parentMat != null)
-                    {
-                        if(this.updatedStatus == ROTransform.UPDATE_PARENT_MAT)
-                        {
-                            this.m_localMat.getLocalFS32().set(this.m_fs32,0);
-                            if((this.updatedStatus&ROTransform.UPDATE_ROTATION)==ROTransform.UPDATE_ROTATION)
-                            {
-                                this.m_localMat.setRotationEulerAngle(this.m_fs32[1] * MathConst.MATH_PI_OVER_180, this.m_fs32[6] * MathConst.MATH_PI_OVER_180, this.m_fs32[9] * MathConst.MATH_PI_OVER_180); 
-                            }
-                        }
-                        this.m_omat.copyFrom(this.m_localMat);
-                        //console.log("ROTransform::update(), this.m_parentMat: "+this.m_parentMat.toString());
-                        this.m_omat.append( this.m_parentMat );
-                    }
-                    else
-                    {
-                        this.m_localMat.getLocalFS32().set(this.m_fs32,0);
-                        if((this.updatedStatus&ROTransform.UPDATE_ROTATION)==ROTransform.UPDATE_ROTATION)
-                        {
-                            this.m_localMat.setRotationEulerAngle(this.m_fs32[1] * MathConst.MATH_PI_OVER_180, this.m_fs32[6] * MathConst.MATH_PI_OVER_180, this.m_fs32[9] * MathConst.MATH_PI_OVER_180); 
-                        }
-                    }
-                    //console.log("ROTransform::update(), this.m_omat: "+this.m_omat.toString());
-                    this.updateStatus = 0;
-                    this.m_invMatEnabled = true;
-                }
-                //*/
             }
             getMatrixFS32():Float32Array
             {

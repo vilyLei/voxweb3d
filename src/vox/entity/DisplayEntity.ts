@@ -4,13 +4,8 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// 对于纯粹的逻辑对象来讲, 只会和逻辑操作相关(同步)，本质和渲染表现和逻辑可以做到分离
-// 因此，这里所涉及到的主要是transform和一些逻辑行为
-// 和其他渲染相关的沟通，则依赖对应的协议，对协议的解释，则最终决定呈现结果
-// 一个此逻辑 DisplayEntity 对象可以对应一个或者多个 RODisplay, 包含对应的transform
-// 可支持多线程，也可支持单线程, 模式
 
-//import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMask";
+import * as RSEntityFlagT from '../../vox/scene/RSEntityFlag';
 import * as Vector3T from "../../vox/geom/Vector3";
 import * as Matrix4T from "../../vox/geom/Matrix4";
 import * as AABBT from "../../vox/geom/AABB";
@@ -30,7 +25,7 @@ import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as TextureProxyT from '../../vox/texture/TextureProxy';
 
 
-//import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
+import RSEntityFlag = RSEntityFlagT.vox.scene.RSEntityFlag;
 import Vector3D = Vector3T.vox.geom.Vector3D;
 import Matrix4 = Matrix4T.vox.geom.Matrix4;
 import AABB = AABBT.vox.geom.AABB;
@@ -82,14 +77,16 @@ export namespace vox
             protected m_globalBounds:AABB = null;
             protected m_parent:IDisplayEntityContainer = null;
             protected m_renderProxy:RenderProxy = null;
-            // 自身所在的world的唯一id, 通过这个id可以找到对应的world
-            __$wuid:number = -1;
-            // 自身在world中被分配的唯一id, 通过这个id就能在world中快速找到自己所在的数组位置
-            __$weid:number = -1;
-            // 记录自身所在的容器id
-            __$contId:number = -1;
-            // space id
-            __$spaceId:number = -1;
+            
+            // 记录自身在space中的unique id
+            __$spaceId:number = 0;//最小值为1, 最大值为1048575, 即0xfffff，也就是最多只能展示1048575个entitys
+            /**
+             * 第0位到第19位总共20位存放自身在space中的 index id,
+             * 第20位开始到26位为总共7位止存放在renderer中的状态数据(renderer unique id and others)
+             * 第27位存放是否在container里面
+             * 第28位开始到30位总共三位存放renderer 载入状态 的相关信息
+             */
+            __$rseFlag:number = RSEntityFlag.DEFAULT;//renderer scene entity flag
 
             name:string = "DisplayEntity";
             // 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMasK, 默认只会有摄像机裁剪
@@ -112,9 +109,40 @@ export namespace vox
                 }
                 this.m_parent = parent;
             }
+            __$getParent():IDisplayEntityContainer
+            {
+                return this.m_parent;
+            }
             protected createBounds():void
             {
                 this.m_globalBounds = new AABB();
+            }
+            __$testSpaceEnabled():boolean
+            {
+                //return this.__$spaceId < 0 && this.__$contId < 1;
+                return (RSEntityFlag.SPACE_FLAT & this.__$rseFlag) < 1 && (RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG;
+            }
+            __$testContainerEnabled():boolean
+            {
+                //  console.log("RSEntityFlag.DEFAULT: ",RSEntityFlag.DEFAULT.toString(2));
+                //  console.log("RSEntityFlag.CONTAINER_FLAG: ",RSEntityFlag.CONTAINER_FLAG.toString(2));
+                //  console.log("this.__$rseFlag: ",this.__$rseFlag.toString(2));
+                //  console.log("testContainerEnabled(), (RSEntityFlag.RENDERER_UID_FLAT & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAT: ",(RSEntityFlag.RENDERER_UID_FLAT & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAT);
+                //  console.log("(RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG: ",(RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG);
+                //return this.__$wuid < 0 && this.__$contId < 1;
+                //return this.__$wuid == RSEntityFlag.RENDERER_UID_FLAT && (RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG;
+                return (RSEntityFlag.RENDERER_UID_FLAT & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAT && (RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG;
+            }
+            __$testRendererEnabled():boolean
+            {
+                //return this.__$wuid < 0 && this.__$weid < 0 && this.__$contId < 1;
+                //return this.__$wuid == RSEntityFlag.RENDERER_UID_FLAT && this.__$weid < 0 && (RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG;
+                //return (RSEntityFlag.RENDERER_UID_FLAT & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAT && this.__$weid < 0 && (RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG;
+                return (RSEntityFlag.RENDERER_ADN_LOAD_FLAT & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAT && (RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG;
+            }
+            getRendererUid():number
+            {
+                return RSEntityFlag.GetRendererUid(this.__$rseFlag);
             }
             dispatchEvt(evt:any):void
             {
@@ -392,7 +420,8 @@ export namespace vox
                         
                         this.m_display.visible = this.m_visible && this.m_drawEnabled;                    
                     }
-                    if(this.m_display.getMaterial() != m && this.__$wuid < 0 && this.m_display.__$ruid < 0)
+                    //if(this.m_display.getMaterial() != m && this.__$wuid == RSEntityFlag.RENDERER_UID_FLAT && this.m_display.__$ruid < 0)
+                    if(this.m_display.getMaterial() != m && (RSEntityFlag.RENDERER_UID_FLAT & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAT && this.m_display.__$ruid < 0)
                     {
                         this.m_display.renderState = this.m_renderState;
                         this.m_display.rcolorMask = this.m_rcolorMask;
@@ -535,13 +564,13 @@ export namespace vox
             destroy():void
             {
                 // 当自身被完全移出RenderWorld之后才能执行自身的destroy
-                console.log("DisplayEntity::destroy(), this.__$wuid: "+this.__$wuid+", this.__$spaceId: "+this.__$spaceId);
+                console.log("DisplayEntity::destroy(), renderer uid: "+this.getRendererUid()+", this.__$spaceId: "+this.__$spaceId);
                 if(this.m_mouseEvtDispatcher != null)
                 {
                     this.m_mouseEvtDispatcher.destroy();
                     this.m_mouseEvtDispatcher = null; 
                 }
-                if(this.m_transfrom != null && this.__$wuid < 0 && this.__$spaceId < 0)
+                if(this.m_transfrom != null && (RSEntityFlag.RENDERER_UID_FLAT & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAT && (RSEntityFlag.SPACE_FLAT & this.__$rseFlag) < 1)
                 {
                     // 这里要保证其在所有的process中都被移除
                     if(this.m_display != null)
@@ -571,7 +600,7 @@ export namespace vox
              */
             isInRenderer():boolean
             {
-                return this.__$wuid >= 0;
+                return (this.__$rseFlag & RSEntityFlag.RENDERER_UID_FLAT)  != RSEntityFlag.RENDERER_UID_FLAT;
             }
             /**
              * @returns 是否处在渲染运行时中
@@ -636,7 +665,7 @@ export namespace vox
             }
             toString():string
             {
-                return "DisplayEntity(name="+this.name+",uid = "+this.m_uid+", __$wuid = "+this.__$wuid+", __$weid = "+this.__$weid+")";
+                return "DisplayEntity(name="+this.name+",uid = "+this.m_uid+", rseFlag = "+this.__$rseFlag+")";
             }
         }
     }

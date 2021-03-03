@@ -36,7 +36,7 @@ export namespace vox
             
             private createNode():Entity3DNode
             {
-                let index:number = this.getFreeId();//Entity3DNode.GetFreeId();
+                let index:number = this.getFreeId();
                 if(index >= 0)
                 {
                     this.m_nodeFlagList[index] = 1;
@@ -77,6 +77,17 @@ export namespace vox
                     node.entity = entity;
                     entity.__$spaceId = node.spaceId;
                     return node;                        
+                }
+            }
+            initialize(total:number):void
+            {
+                if(total > 0)
+                {
+                    for(let i:number = 0; i < total; i++)
+                    {
+                        let node:Entity3DNode = this.createNode();
+                        this.m_entityList[node.spaceId] = null;
+                    }
                 }
             }
             getNodeByEntity(entity:IRenderEntity):Entity3DNode

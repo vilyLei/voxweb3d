@@ -7,6 +7,7 @@
 // 独立的渲染场景子集,也就是子渲染场景类,字渲染场景拥有子集独立的Camera3D对象和view port 区域
 // 不同的子场景，甚至可以拥有独立的matrix3D这样的数据池子
 
+import * as RSEntityFlagT from '../../vox/scene/RSEntityFlag';
 import * as MathConstT from "../../vox/utils/MathConst";
 import * as Vector3DT from "../../vox/geom/Vector3";
 import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
@@ -36,6 +37,7 @@ import * as RayGpuSelectorT from "../../vox/scene/RayGpuSelector";
 import * as MouseEvt3DControllerT from "../../vox/scene/MouseEvt3DController";
 import * as IEvt3DControllerT from "../../vox/scene/IEvt3DController";
 
+import RSEntityFlag = RSEntityFlagT.vox.scene.RSEntityFlag;
 import MathConst = MathConstT.vox.utils.MathConst;
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;

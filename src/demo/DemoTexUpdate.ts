@@ -57,7 +57,7 @@ export namespace demo
         initialize():void
         {
             console.log("DemoTexUpdate::initialize()......");
-            if(this.m_rcontext == null)
+            if(this.m_rscene == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -72,7 +72,7 @@ export namespace demo
                 this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
                 
                 this.m_camTrack = new CameraTrack();
-                this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
+                this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
                 this.m_profileInstance.initialize(this.m_rscene.getRenderer());
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 200);

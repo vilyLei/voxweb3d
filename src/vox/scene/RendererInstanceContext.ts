@@ -45,15 +45,17 @@ export namespace vox
         export class RendererInstanceContext
         {
             private m_adapter:RenderAdapter = null;
-            private m_renderProxy:RenderProxy = new RenderProxy();
+            private m_renderProxy:RenderProxy = null;
             private m_materialProxy:RenderMaterialProxy = null;
             private m_Matrix4AllocateSize:number = 0;
             private m_cameraNear:number = 0.1;
             private m_cameraFar:number = 5000.0;
             private m_cameraFov:number = 45.0;
             private m_rcuid:number = 0;
-            constructor()
+            constructor(rcuid:number)
             {
+                this.m_rcuid = rcuid;
+                this.m_renderProxy = new RenderProxy(rcuid);
             }
             
             /**

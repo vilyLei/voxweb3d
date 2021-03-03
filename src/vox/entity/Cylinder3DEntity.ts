@@ -91,7 +91,7 @@ export namespace vox
 
             toString():string
             {
-                return "[Cylinder3DEntity(uid = "+this.getUid()+", __$wuid = "+this.__$wuid+", __$weid = "+this.__$weid+")]";
+                return "[Cylinder3DEntity(uid = "+this.getUid()+", rseFlag = "+this.__$rseFlag+")]";
             }
         }
     }

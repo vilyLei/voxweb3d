@@ -184,7 +184,7 @@ export namespace vox
             }
             toString():string
             {
-                return "TextBillboard3DEntity(uid = "+this.getUid()+", __$wuid = "+this.__$wuid+", __$weid = "+this.__$weid+")";
+                return "TextBillboard3DEntity(uid = "+this.getUid()+", rseFlag = "+this.__$rseFlag+")";
             }
         }
 

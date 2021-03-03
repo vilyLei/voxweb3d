@@ -77,6 +77,7 @@ export namespace vox
             constructor()
             {
                 this.m_uid = RendererSpace.s_uid++;
+                this.m_nodeQueue.initialize(1);
             }
             getUid():number
             {

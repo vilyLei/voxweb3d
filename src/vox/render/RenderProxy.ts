@@ -90,12 +90,9 @@ export namespace vox
 
             readonly VtxBufUpdater:IROVertexBufUpdater = null;
             readonly MaterialUpdater:IROMaterialUpdater = null;
-
-            private static s_uid:number = 0;
             private m_uid:number = 0;
 
             private m_camUBO:any = null;
-            private m_mainCamera:CameraBase = null;
             private m_adapter:RenderAdapter = null;
 
             private m_adapterContext:RAdapterContext = new RAdapterContext();
@@ -120,9 +117,9 @@ export namespace vox
             // 是否舞台尺寸和view自动同步一致
             private m_autoSynViewAndStage:boolean = true;
 
-            constructor()
+            constructor(rcuid:number)
             {                
-                this.m_uid = RenderProxy.s_uid++;
+                this.m_uid = rcuid;
             }
             /**
              * @returns return system gpu context
@@ -184,8 +181,8 @@ export namespace vox
                 //  if(this.m_camUBO == null)
                 //  {
                 //      this.m_camUBO = ShaderUBOBuilder.createUBOWithDataFloatsCount("UBlock_Camera", shd, 32);
-                //      this.m_camUBO.setSubDataArrAt(0, m_mainCamera.getViewMatrix().getLocalFS32());
-                //      this.m_camUBO.setSubDataArrAt(16, m_mainCamera.getProjectMatrix().getLocalFS32());
+                //      this.m_camUBO.setSubDataArrAt(0, m_camera.getViewMatrix().getLocalFS32());
+                //      this.m_camUBO.setSubDataArrAt(16, m_camera.getProjectMatrix().getLocalFS32());
                 //      this.m_camUBO.run();
                 //  }
             }
@@ -193,10 +190,10 @@ export namespace vox
             {
                 if(camera != null)
                 {
-                    if(this.m_camSwitched || camera != this.m_mainCamera)
+                    if(this.m_camSwitched || camera != this.m_camera)
                     {
-                        this.m_camSwitched = camera != this.m_mainCamera;
-                        camera.updateCamMatToUProbe( this.m_mainCamera.matUProbe );
+                        this.m_camSwitched = camera != this.m_camera;
+                        camera.updateCamMatToUProbe( this.m_camera.matUProbe );
                         if(this.m_camUBO != null)
                         {
                             this.m_camUBO.setSubDataArrAt(0, camera.getViewMatrix().getLocalFS32());
@@ -286,7 +283,7 @@ export namespace vox
             getMouseXYWorldRay(rl_position:Vector3D, rl_tv:Vector3D):void
             {
                 let stage:IRenderStage3D = this.m_adapterContext.getStage();
-                this.m_mainCamera.getWorldPickingRayByScreenXY(stage.mouseX,stage.mouseY,rl_position,rl_tv);
+                this.m_camera.getWorldPickingRayByScreenXY(stage.mouseX,stage.mouseY,rl_position,rl_tv);
             }
             
             setViewPort(px:number,py:number,pw:number,ph:number):void
@@ -300,10 +297,10 @@ export namespace vox
                 if(stage != null)
                 {
                     stage.setViewPort(pw,py,pw,ph);
-                    if(this.m_mainCamera != null)
+                    if(this.m_camera != null)
                     {
-                        this.m_mainCamera.setViewXY(this.m_viewX,this.m_viewY);
-                        this.m_mainCamera.setViewSize(this.m_viewW,this.m_viewH, this.m_adapterContext.getDevicePixelRatio());
+                        this.m_camera.setViewXY(this.m_viewX,this.m_viewY);
+                        this.m_camera.setViewSize(this.m_viewW,this.m_viewH, this.m_adapterContext.getDevicePixelRatio());
                     }
                 }
                 this.setRCViewPort(this.m_viewX,this.m_viewY,this.m_viewW,this.m_viewH);
@@ -328,31 +325,31 @@ export namespace vox
                     this.m_viewY = 0;
                     this.m_viewW = this.m_adapterContext.getRCanvasWidth();//stage.stageWidth;
                     this.m_viewH = this.m_adapterContext.getRCanvasHeight();//stage.stageHeight;
-                    if(this.m_mainCamera == null)
+                    if(this.m_camera == null)
                     {
                         this.createMainCamera();
                     }
                     this.m_adapterContext.setViewport(this.m_viewX,this.m_viewY, this.m_viewW,this.m_viewH);
-                    this.m_mainCamera.setViewXY(this.m_viewX,this.m_viewY);
-                    this.m_mainCamera.setViewSize(this.m_viewW,this.m_viewH,this.m_adapterContext.getDevicePixelRatio());
+                    this.m_camera.setViewXY(this.m_viewX,this.m_viewY);
+                    this.m_camera.setViewSize(this.m_viewW,this.m_viewH,this.m_adapterContext.getDevicePixelRatio());
                     //console.log("resizeCallback(), this.m_viewW, this.m_viewH: "+this.m_viewW+", "+this.m_viewH);
                 }
             }
             private createMainCamera():void
             {
-                this.m_mainCamera = new CameraBase(this.m_uid);
-                this.m_mainCamera.uniformEnabled = true;
+                this.m_camera = new CameraBase(this.m_uid);
+                this.m_camera.uniformEnabled = true;
                 
                 if(this.m_perspectiveEnabled)
                 {
-                    this.m_mainCamera.perspectiveRH(MathConst.DegreeToRadian(this.m_cameraFov), this.m_viewW/this.m_viewH, this.m_cameraNear, this.m_cameraFar);
+                    this.m_camera.perspectiveRH(MathConst.DegreeToRadian(this.m_cameraFov), this.m_viewW/this.m_viewH, this.m_cameraNear, this.m_cameraFar);
                 }
                 else
                 {
-                    this.m_mainCamera.orthoRH(this.m_cameraNear, this.m_cameraFar, -0.5 * this.m_viewH, 0.5 * this.m_viewH, -0.5 * this.m_viewW, 0.5 * this.m_viewW);
+                    this.m_camera.orthoRH(this.m_cameraNear, this.m_cameraFar, -0.5 * this.m_viewH, 0.5 * this.m_viewH, -0.5 * this.m_viewW, 0.5 * this.m_viewW);
                 }
-                this.m_mainCamera.setViewXY(this.m_viewX,this.m_viewY);
-                this.m_mainCamera.setViewSize(this.m_viewW,this.m_viewH,this.m_adapterContext.getDevicePixelRatio());
+                this.m_camera.setViewXY(this.m_viewX,this.m_viewY);
+                this.m_camera.setViewSize(this.m_viewW,this.m_viewH,this.m_adapterContext.getDevicePixelRatio());
             }
             readPixels(px:number, py:number, width:number, height:number, format:number, dataType:number, pixels:Uint8Array):void
             {
@@ -408,17 +405,14 @@ export namespace vox
                         this.m_viewH = stage.stageHeight;
                     }
                 }
-                if(this.m_mainCamera == null)
+                if(this.m_camera == null)
                 {
                     this.createMainCamera();
                 }
                 this.m_adapterContext.setViewport(this.m_viewX,this.m_viewY, this.m_viewW,this.m_viewH);                
-                this.m_mainCamera.lookAtRH(posV3, lookAtPosV3, upV3);
-                this.m_mainCamera.update();
+                this.m_camera.lookAtRH(posV3, lookAtPosV3, upV3);
+                this.m_camera.update();
                 this.m_adapter.bgColor.setRGB3f(0.0,0.0,0.0);
-
-                this.m_camera = this.m_mainCamera;
-
 
                 selfT.RGBA = gl.RGBA;
                 selfT.UNSIGNED_BYTE = gl.UNSIGNED_BYTE;
@@ -504,7 +498,7 @@ export namespace vox
             }
             renderBegin()
             {
-                this.m_mainCamera.update();
+                this.m_camera.update();
                 this.m_adapter.renderBegin();
             }
             renderEnd():void

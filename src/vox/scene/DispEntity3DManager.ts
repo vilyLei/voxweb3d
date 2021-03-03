@@ -5,21 +5,19 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as RSEntityFlagT from '../../vox/scene/RSEntityFlag';
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
-import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as IRenderEntityT from "../../vox/render/IRenderEntity";
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RODataBuilderT from "../../vox/render/RODataBuilder";
 
 import * as RenderProcessT from "../../vox/render/RenderProcess";
 import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
-import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
-import * as Entity3DNodeLinkerT from "../../vox/scene/Entity3DNodeLinker";
 
+import RSEntityFlag = RSEntityFlagT.vox.scene.RSEntityFlag;
 import DisplayRenderSign = RenderConstT.vox.render.DisplayRenderSign;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
-import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
 import RODataBuilder = RODataBuilderT.vox.render.RODataBuilder;
 import RCRPObj = RPOUnitBuilderT.vox.render.RCRPObj;
@@ -27,8 +25,6 @@ import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
 
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 import RenderProcessBuider = RenderProcessBuiderT.vox.render.RenderProcessBuider;
-import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
-import Entity3DNodeLinker = Entity3DNodeLinkerT.vox.scene.Entity3DNodeLinker;
 
 export namespace vox
 {
@@ -36,34 +32,43 @@ export namespace vox
     {
         export class DispEntity3DManager
         {
-            private m_nodeLinker:Entity3DNodeLinker = new Entity3DNodeLinker();
+            //private m_nodeLinker:Entity3DNodeLinker = new Entity3DNodeLinker();
             private m_rpoUnitBuilder:RPOUnitBuilder = null;
             private m_processBuider:RenderProcessBuider = null;
             private m_waitList:IRenderEntity[] = [];
             private m_processUidList:number[] = [];
             private m_wuid:number = -1;            
             private m_dispBuilder:RODataBuilder = null;
+            private m_maxFlag:number = 0x7;//0xfffff;// 也就是最多只能展示1048575个entitys
+            private m_existencetotal:number = 0;
+            private m_rprocess:RenderProcess = null;
             entityManaListener:any = null;
-            constructor(__$wuid:number, dispBuilder:RODataBuilder, rpoUnitBuilder:RPOUnitBuilder, processBuider:RenderProcessBuider)
+            constructor(wuid:number, dispBuilder:RODataBuilder, rpoUnitBuilder:RPOUnitBuilder, processBuider:RenderProcessBuider)
             {
-                this.m_wuid = __$wuid;
+                this.m_wuid = wuid;
                 this.m_dispBuilder = dispBuilder;
                 this.m_rpoUnitBuilder = rpoUnitBuilder;
                 this.m_processBuider = processBuider;
             }
-
             isEmpty():boolean
             {
-                return this.m_nodeLinker.isEmpty();
+                return this.m_existencetotal < 1;
+            }
+            isHaveEntity():boolean
+            {
+                return this.m_existencetotal > 0;
             }
             removeEntity(entity:IRenderEntity):void
             {
-                if(entity.__$wuid == this.m_wuid && entity.__$weid > -1)
+                //if(entity.__$wuid == this.m_wuid && entity.__$weid > 0)
+                //if(entity.getRendererUid() == this.m_wuid && entity.__$weid > 0)
                 {
-                    let node:Entity3DNode = Entity3DNode.GetByUid(entity.__$weid);
-                    if(node != null && entity == node.entity)
-                    {
-                        this.m_nodeLinker.removeNode(node);
+                    this.m_existencetotal--;
+                    //let node:Entity3DNode = Entity3DNode.GetByUid(entity.__$weid);
+                    //if(node != null && entity == node.entity)
+                    //if(true)
+                    //{
+                        //this.m_nodeLinker.removeNode(node);
                         // 从所有相关process中移除这个display
                         let display:IRODisplay = entity.getDisplay();
                         if(display != null && display.__$ruid > -1)
@@ -98,7 +103,7 @@ export namespace vox
 
                             if(po.count == 0)
                             {
-                                //console.log("DispEntity3DManager::removeEntity(), remove a entity from all processes.");
+                                console.log("DispEntity3DManager::removeEntity(), remove a entity from all processes.");
                                 if(display.__$$rsign != DisplayRenderSign.LIVE_IN_WORLD)
                                 {
                                     // error!!!
@@ -112,11 +117,13 @@ export namespace vox
                             {
                                 console.error("Error: DispEntity3DManager::removeEntity(), remove a entity from all processes failed.");
                             }
-                        }
-                        Entity3DNode.Restore(node);
+                        //}
+                        //Entity3DNode.Restore(node);
                     }
-                    entity.__$wuid = -1;
-                    entity.__$weid = -1;
+                    //entity.__$wuid = RSEntityFlag.RENDERER_UID_FLAT;
+                    entity.__$rseFlag = RSEntityFlag.RemoveRendererUid(entity.__$rseFlag);
+                    //entity.__$weid = -1;
+                    entity.__$rseFlag = RSEntityFlag.RemoveRendererLoad(entity.__$rseFlag);
 
                     if(this.entityManaListener != null)
                     {
@@ -128,6 +135,7 @@ export namespace vox
             {
                 if(entity != null)
                 {
+                    //console.log("add entity into entity 3d manager.");
                     let disp:IRODisplay = entity.getDisplay();
                     if(disp != null)
                     {
@@ -145,9 +153,10 @@ export namespace vox
                             {
                                 disp.__$$rsign = DisplayRenderSign.GO_TO_WORLD;
                             }
-                            //entity.update();
-                            entity.__$weid = 999999;
-                            entity.__$wuid = this.m_wuid;
+                            //entity.__$weid = this.m_maxFlag;
+                            entity.__$rseFlag = RSEntityFlag.AddRendererLoad(entity.__$rseFlag);
+                            //entity.__$wuid = this.m_wuid;
+                            entity.__$rseFlag = RSEntityFlag.AddRendererUid(entity.__$rseFlag, this.m_wuid);
                             this.m_waitList.push(entity);
                             this.m_processUidList.push(processUid);
                             //console.log("DispEntity3DManager::addEntity(), B, this display("+disp+") has existed in processid("+processUid+").");
@@ -157,35 +166,7 @@ export namespace vox
                             // 检查数据完整性
                             if(this.testValidData(entity))
                             {
-                                entity.update();
-                                entity.__$wuid = this.m_wuid;
-                                let node:Entity3DNode = Entity3DNode.Create();
-                                node.entity = entity;
-                                entity.__$weid = node.uid;
-                                this.m_nodeLinker.addNode(node);
-                                if(disp.__$$rsign == DisplayRenderSign.NOT_IN_WORLD)
-                                {
-                                    disp.__$$rsign = DisplayRenderSign.GO_TO_WORLD;
-                                }
-                                this.m_rprocess = this.m_processBuider.getNodeByUid(processUid) as RenderProcess;
-                                //console.log("DispEntity3DManager::addEntity(), add a ready ok entity to process.");
-                                //this.m_rprocess.addDisp(rc, disp,false);
-                                if(disp.__$ruid > -1)
-                                {
-                                    this.m_rprocess.addDisp(disp);
-                                }
-                                else
-                                {
-                                    if(this.m_dispBuilder.buildGpuDisp(disp))
-                                    {
-                                        this.m_rprocess.addDisp(disp);
-                                    }
-                                }
-                                
-                                if(this.entityManaListener != null)
-                                {
-                                    this.entityManaListener.addToWorld(entity,this.m_wuid,processUid);
-                                }
+                                this.ensureAdd(entity, disp,processUid);
                             }
                             else
                             {
@@ -194,7 +175,8 @@ export namespace vox
                                 {
                                     disp.__$$rsign = DisplayRenderSign.GO_TO_WORLD;
                                 }
-                                entity.__$weid = 999999;
+                                //entity.__$weid = this.m_maxFlag;
+                                entity.__$rseFlag = RSEntityFlag.AddRendererLoad(entity.__$rseFlag);
                                 this.m_waitList.push(entity);
                                 this.m_processUidList.push(processUid);
                             }
@@ -202,12 +184,12 @@ export namespace vox
                     }
                     else
                     {
-                        entity.__$wuid = this.m_wuid;
+                        //entity.__$wuid = this.m_wuid;
+                        entity.__$rseFlag = RSEntityFlag.AddRendererUid(entity.__$rseFlag, this.m_wuid);
                     }
                 }
                 return false;
             }
-            private m_rprocess:RenderProcess = null;
             testValidData(entity:IRenderEntity):boolean
             {
                 if(entity.getMaterial() != null && entity.hasMesh())
@@ -223,16 +205,56 @@ export namespace vox
                 }
                 return false;
             }
-            private updateWaitList(rc:RenderProxy):void
+            ensureAdd(entity:IRenderEntity, disp:IRODisplay, processUid:number):void
+            {
+                entity.update();
+                //entity.__$wuid = this.m_wuid;
+                entity.__$rseFlag = RSEntityFlag.AddRendererUid(entity.__$rseFlag, this.m_wuid);
+                //  let node:Entity3DNode = Entity3DNode.Create();
+                //  node.entity = entity;
+                //  entity.__$weid = node.uid;
+                //  this.m_nodeLinker.addNode(node);
+
+                //entity.__$weid = 2;
+                entity.__$rseFlag = RSEntityFlag.RemoveRendererLoad(entity.__$rseFlag);
+
+                this.m_existencetotal++;
+
+                if(disp.__$$rsign == DisplayRenderSign.NOT_IN_WORLD)
+                {
+                    disp.__$$rsign = DisplayRenderSign.GO_TO_WORLD;
+                }
+                this.m_rprocess = this.m_processBuider.getNodeByUid(processUid) as RenderProcess;
+                //console.log("DispEntity3DManager::addEntity(), add a ready ok entity to process.");
+                //this.m_rprocess.addDisp(rc, disp,false);
+                if(disp.__$ruid > -1)
+                {
+                    this.m_rprocess.addDisp(disp);
+                }
+                else
+                {
+                    if(this.m_dispBuilder.buildGpuDisp(disp))
+                    {
+                        this.m_rprocess.addDisp(disp);
+                    }
+                }
+                
+                if(this.entityManaListener != null)
+                {
+                    this.entityManaListener.addToWorld(entity,this.m_wuid,processUid);
+                }
+            }
+            private updateWaitList():void
             {
                 let len:number = this.m_waitList.length;
                 let entity:IRenderEntity = null;
-                let node:Entity3DNode = null;
+                //let node:Entity3DNode = null;
                 let disp:IRODisplay = null;
                 for(let i:number = 0; i < len; ++i)
                 {
                     entity = this.m_waitList[i];
-                    if(entity.__$weid == 999999)
+                    //if(entity.__$weid == this.m_maxFlag)
+                    if((RSEntityFlag.RENDERER_LOAD_FLAT & entity.__$rseFlag) == RSEntityFlag.RENDERER_LOAD_FLAT)
                     {
                         if(this.testValidData(entity))
                         {
@@ -249,37 +271,11 @@ export namespace vox
                                     continue;
                                 }
                             }
-                            entity.update();
-                            entity.__$wuid = this.m_wuid;
-                            node = Entity3DNode.Create();
-                            node.entity = entity;
-                            entity.__$weid = node.uid;
-                            this.m_nodeLinker.addNode(node);
-                            
-                            let prouid = this.m_processUidList[i];
-                            this.m_rprocess = this.m_processBuider.getNodeByUid(prouid) as RenderProcess;
-                            //console.log("DispEntity3DManager::update(), add a ready ok entity("+entity+") to processid("+prouid+")");
-                            if(disp.__$ruid > -1)
-                            {
-                                this.m_rprocess.addDisp(disp);
-                            }
-                            else
-                            {
-                                //this.m_dispBuilder.addDispToProcess(disp, this.m_rprocess.uid);
-                                if(this.m_dispBuilder.buildGpuDisp(disp))
-                                {
-                                    this.m_rprocess.addDisp(disp);
-                                }
-                            }
-                            
+                            this.ensureAdd(entity, disp, this.m_processUidList[i]);
                             this.m_waitList.splice(i,1);
                             this.m_processUidList.splice(i,1);
                             --len;
                             --i;
-                            if(this.entityManaListener != null)
-                            {
-                                this.entityManaListener.addToWorld(entity,this.m_wuid,prouid);
-                            }
                         }
                     }
                     else
@@ -290,8 +286,10 @@ export namespace vox
                             disp.__$$rsign = DisplayRenderSign.NOT_IN_WORLD;
                         }
                         console.log("DispEntity3DManager::update(), remove a ready entity.");
-                        entity.__$weid = -1;
-                        entity.__$wuid = -1;
+                        //entity.__$weid = -1;
+                        //entity.__$wuid = RSEntityFlag.RENDERER_UID_FLAT;
+                        entity.__$rseFlag = RSEntityFlag.RemoveRendererLoad(entity.__$rseFlag);
+                        entity.__$rseFlag = RSEntityFlag.RemoveRendererUid(entity.__$rseFlag);
                         this.m_waitList.splice(i,1);
                         this.m_processUidList.splice(i,1);
                         --len;
@@ -304,11 +302,11 @@ export namespace vox
                 }
             }
             
-            update(rc:RenderProxy):void
+            update():void
             {
                 if(this.m_waitList.length > 0)
                 {
-                    this.updateWaitList(rc);
+                    this.updateWaitList();
                 }
                 this.m_dispBuilder.update();
             }
