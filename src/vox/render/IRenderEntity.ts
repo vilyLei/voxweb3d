@@ -36,7 +36,13 @@ export namespace vox
             //  __$contId:number;// = -1;
             // space id
             __$spaceId:number;// = -1;
-            //renderer scene entity flag, value default is RSEntityFlag.DEFAULT
+            /**
+             * renderer scene entity flag, default value is RSEntityFlag.DEFAULT
+             * 第0位到第19位总共20位存放自身在space中的 index id,
+             * 第20位开始到26位为总共7位止存放在renderer中的状态数据(renderer unique id and others)
+             * 第27位存放是否在container里面
+             * 第28位开始到30位总共三位存放renderer 载入状态 的相关信息
+             */
             __$rseFlag:number;
             //  name:string;// = "IRenderEntity";
             // 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMasK, 默认只会有摄像机裁剪
@@ -49,6 +55,10 @@ export namespace vox
             __$testContainerEnabled():boolean;
             __$testRendererEnabled():boolean;
             getRendererUid():number;
+            /**
+             * @returns 自身是否未必任何渲染器相关的系统使用
+             */
+            isFree():boolean;
 
             dispatchEvt(evt:any):void;
             getEvtDispatcher(evtClassType:number):IEvtDispatcher;

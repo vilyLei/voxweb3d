@@ -2,17 +2,17 @@ import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
 import * as RendererInstanceT from "../vox/scene/RendererInstance";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
-import * as DispSceneT from "./depthBlur/DispScene";
+import * as DepthBlurSceneT from "./depthBlur/DepthBlurScene";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-import DispScene = DispSceneT.demo.depthBlur.DispScene;
+import DepthBlurScene = DepthBlurSceneT.demo.depthBlur.DepthBlurScene;
 
 export namespace demo
 {
-    export class DemoDepthBlur
+    export class DemoDepthBlur2
     {
         constructor()
         {
@@ -20,10 +20,10 @@ export namespace demo
         private m_renderer:RendererInstance = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         
-        private m_scene:DispScene = new DispScene();
+        private m_scene:DepthBlurScene = new DepthBlurScene();
         initialize():void
         {
-            console.log("DemoDepthBlur::initialize()...");
+            console.log("DemoDepthBlur2::initialize()...");
             if(this.m_renderer == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;

@@ -14,12 +14,14 @@ import * as RenderMaskBitfieldT from "../../vox/render/RenderMaskBitfield";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
+import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as RTTTextureProxyT from "../../vox/texture/RTTTextureProxy";
 import * as RTTTextureStoreT from "../../vox/texture/RTTTextureStore";
 import * as Color4T from "../../vox/material/Color4";
 import * as IRenderMaterialT from "../../vox/render/IRenderMaterial";
 import * as RenderMaterialProxyT from "../../vox/render/RenderMaterialProxy";
 import * as IRendererT from "../../vox/scene/IRenderer";
+import * as IRenderProcessT from "../../vox/render/IRenderProcess";
 
 import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
@@ -29,12 +31,16 @@ import RenderMaskBitfield = RenderMaskBitfieldT.vox.render.RenderMaskBitfield;
 import RendererState = RendererStateT.vox.render.RendererState;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+import TextureConst = TextureConstT.vox.texture.TextureConst;
+import TextureFormat = TextureConstT.vox.texture.TextureFormat;
+import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
 import RTTTextureStore = RTTTextureStoreT.vox.texture.RTTTextureStore;
 import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;
 import Color4 = Color4T.vox.material.Color4;
 import RenderMaterialProxy = RenderMaterialProxyT.vox.render.RenderMaterialProxy;
 import IRenderer = IRendererT.vox.scene.IRenderer;
+import IRenderProcess = IRenderProcessT.vox.render.IRenderProcess;
 
 export namespace vox
 {
@@ -93,6 +99,21 @@ export namespace vox
                     throw Error("list.length < 1, but must: list.length >= 1");
                 }
                 this.m_rindexs = list;
+            }
+            /**
+             * 设置当前 FBO控制的渲染过程中所需要的 renderer process 序号(id)列表
+             */
+            setRProcessList(list:IRenderProcess[]):void
+            {
+                if(list.length < 1)
+                {
+                    throw Error("list.length < 1, but must: list.length >= 1");
+                }
+                this.m_rindexs = new Array(list.length);
+                for(let i:number = 0; i < list.length; ++i)
+                {
+                    this.m_rindexs[i] = list[i].getWEid();
+                }
             }
             getRProcessIDAt(i:number):number
             {
@@ -217,6 +238,23 @@ export namespace vox
              * @param enableStencil FBO 对象的stencil读写是否开启
              * @param multisampleLevel FBO 对象的multisample level
              */
+			createAutoSizeFBOAt(fboIndex:number,enableDepth:boolean = false, enableStencil:boolean = false,multisampleLevel:number = 0):void
+			{
+                if(fboIndex >= 0 && this.m_fboIndex < 0)
+                {
+                    this.m_fboType = FrameBufferType.FRAMEBUFFER;this.m_initW = 512;this.m_initH = 512;this.m_fboIndex = fboIndex;
+                    this.createFBO(enableDepth,enableStencil,multisampleLevel);
+                }
+            }
+            /**
+             * 创建一个指定序号的 FBO(FrameBufferObject) 渲染运行时管理对象,
+             * renderer中一个序号只会对应一个唯一的 FBO 对象实例
+             * @param fboIndex FBO 对象的序号
+             * @param width FBO 对象的viewport宽度
+             * @param enableDepth FBO 对象的depth读写是否开启
+             * @param enableStencil FBO 对象的stencil读写是否开启
+             * @param multisampleLevel FBO 对象的multisample level
+             */
 			createFBOAt(fboIndex:number, width:number,height:number, enableDepth:boolean = false, enableStencil:boolean = false,multisampleLevel:number = 0):void
 			{
                 if(fboIndex >= 0 && this.m_fboIndex < 0)
@@ -271,7 +309,7 @@ export namespace vox
              * @param rttTexProxy 作为渲染到目标的目标纹理对象
              * @param outputIndex framebuffer output attachment index
              */
-            setRenderToTexture(rttTexProxy:RTTTextureProxy, outputIndex:number = 0):void
+            setRenderToTexture(texture:RTTTextureProxy, outputIndex:number = 0):void
             {
                 if(outputIndex == 0)
                 {
@@ -281,8 +319,9 @@ export namespace vox
                 {
                     this.m_texsTot = outputIndex + 1;
                 }
-                this.m_texs[outputIndex] = rttTexProxy;
+                this.m_texs[outputIndex] = texture;
             }
+            
             /**
              * 设置渲染到纹理的目标纹理对象(普通 RTT 纹理类型的目标纹理)和framebuffer output attachment index
              * @param systemRTTTexIndex 作为渲染到目标的目标纹理对象在系统普通rtt 纹理中的序号(0 -> 15)
@@ -300,6 +339,45 @@ export namespace vox
             setRenderToFloatTextureAt(systemFloatRTTTexIndex:number, outputIndex:number = 0):void
             {
                 this.setRenderToTexture(this.m_texStore.getRTTFloatTextureAt(systemFloatRTTTexIndex), outputIndex);
+            }
+            /**
+             * 设置渲染到纹理的目标纹理对象(half Float RTT 纹理类型的目标纹理)和framebuffer output attachment index
+             * @param systemFloatRTTTexIndex 作为渲染到目标的目标纹理对象在系统float rtt 纹理中的序号(0 -> 15)
+             * @param outputIndex framebuffer output attachment index
+             */
+            setRenderToHalfFloatTexture(texture:RTTTextureProxy,outputIndex:number = 0):void
+            {
+                if(texture == null)
+                {
+                    texture = new RTTTextureProxy(128,128);
+                    texture.__$setRenderProxy(this.m_renderProxy);
+                    texture.internalFormat = TextureFormat.RGBA16F;
+                    texture.srcFormat = TextureFormat.RGBA;
+                    texture.dataType = TextureDataType.FLOAT;
+                    texture.minFilter = TextureConst.LINEAR;
+                    texture.magFilter = TextureConst.LINEAR;
+                    texture.__$setRenderProxy(this.m_renderProxy);
+                }
+                this.setRenderToTexture(texture, outputIndex);
+            }
+            /**
+             * 设置渲染到纹理的目标纹理对象(RGBA RTT 纹理类型的目标纹理)和framebuffer output attachment index
+             * @param systemFloatRTTTexIndex 作为渲染到目标的目标纹理对象在系统float rtt 纹理中的序号(0 -> 15)
+             * @param outputIndex framebuffer output attachment index
+             */
+            setRenderToRGBATexture(texture:RTTTextureProxy,outputIndex:number = 0):void
+            {
+                if(texture == null)
+                {
+                    texture = new RTTTextureProxy(32,32);
+                    texture.internalFormat = TextureFormat.RGBA;
+                    texture.srcFormat = TextureFormat.RGBA;
+                    texture.dataType = TextureDataType.UNSIGNED_BYTE;
+                    texture.minFilter = TextureConst.LINEAR;
+                    texture.magFilter = TextureConst.LINEAR;
+                    texture.__$setRenderProxy(this.m_renderProxy);
+                }
+                this.setRenderToTexture(texture, outputIndex);
             }
             /**
              * 设置渲染到纹理的目标纹理对象(depth RTT 纹理类型的目标纹理)和framebuffer output attachment index
@@ -444,6 +522,10 @@ export namespace vox
                         this.m_materialProxy.unlockMaterial();
                         this.m_materialProxy.useGlobalMaterial(this.m_gMateiral);
                         this.m_materialProxy.lockMaterial();
+                    }
+                    else
+                    {
+                        this.m_materialProxy.unlockMaterial();
                     }
                 }
             }

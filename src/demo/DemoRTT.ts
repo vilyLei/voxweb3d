@@ -76,7 +76,7 @@ export namespace demo
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
 
                 // add common 3d display entity
-                var plane:Plane3DEntity = new Plane3DEntity();
+                let plane:Plane3DEntity = new Plane3DEntity();
                 plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
                 this.m_rscene.addEntity(plane);
 

@@ -14,6 +14,7 @@ import * as IRenderMaterialT from "../../vox/render/IRenderMaterial";
 import * as IRenderEntityT from "../../vox/render/IRenderEntity";
 import * as RODataBuilderT from "../../vox/render/RODataBuilder";
 import * as RendererParamT from "../../vox/scene/RendererParam";
+import * as IRenderProcessT from "../../vox/render/IRenderProcess";
 import * as RenderProcessT from "../../vox/render/RenderProcess";
 import * as RenderProcessBuiderT from "../../vox/render/RenderProcessBuider";
 import * as ROVtxBuilderT from "../../vox/render/ROVtxBuilder";
@@ -33,6 +34,7 @@ import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;
 import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
 import RODataBuilder = RODataBuilderT.vox.render.RODataBuilder;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
+import IRenderProcess = IRenderProcessT.vox.render.IRenderProcess;
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 import RenderProcessBuider = RenderProcessBuiderT.vox.render.RenderProcessBuider;
 import ROVtxBuilder = ROVtxBuilderT.vox.render.ROVtxBuilder;
@@ -208,7 +210,7 @@ export namespace vox
                     //  }
                 }
             }
-            addEntityToProcess(entity:IRenderEntity,process:RenderProcess,deferred:boolean = true):void
+            addEntityToProcess(entity:IRenderEntity,process:IRenderProcess,deferred:boolean = true):void
             {
                 if(process != null && entity != null)
                 {
@@ -290,10 +292,12 @@ export namespace vox
              * append a new renderer process instance
              * @param batchEnabled batch renderer runtime resource data
              * @param processFixedState the process is fix renderer state
+             * @returns 
              */
-            appendProcess(batchEnabled:boolean = true,processFixedState:boolean = false):RenderProcess
+            appendProcess(batchEnabled:boolean = true,processFixedState:boolean = false):IRenderProcess
             {
                 this.m_processBuider.setCreateParams(
+                    this.m_renderProxy,
                     this.m_dataBuilder.getMaterialShader(),
                     this.m_rpoNodeBuilder,
                     this.m_rpoUnitBuilder,
@@ -314,9 +318,10 @@ export namespace vox
              * @param batchEnabled batch renderer runtime resource data
              * @param processFixedState the process is fix renderer state
              */
-            createSeparatedProcess(batchEnabled:boolean = true,processFixedState:boolean = false):RenderProcess
+            createSeparatedProcess(batchEnabled:boolean = true,processFixedState:boolean = false):IRenderProcess
             {
                 this.m_processBuider.setCreateParams(
+                    this.m_renderProxy,
                     this.m_dataBuilder.getMaterialShader(),
                     this.m_rpoNodeBuilder,
                     this.m_rpoUnitBuilder,
@@ -337,7 +342,7 @@ export namespace vox
                     this.m_processes[ index ].setRenderParam(batchEnabled, processFixedState);
                 }
             }
-            getProcessAt(index:number):RenderProcess
+            getProcessAt(index:number):IRenderProcess
             {
                 if(index > -1 && index < this.m_processesLen)
                 {
@@ -374,20 +379,20 @@ export namespace vox
              */
             runAt(index:number):void
             {
-                this.m_processes[index].run(this.m_renderProxy);
+                this.m_processes[index].run();
             }
-            runProcess(process:RenderProcess):void
+            runProcess(process:IRenderProcess):void
             {
                 if(process.getWUid() == this.m_uid)
                 {
-                    process.run(this.m_renderProxy);
+                    process.run();
                 }
             }
             runFromIndexTo(index:number):void
             {
                 for(let i:number = index; i < this.m_processesLen; ++i)
                 {
-                    this.m_processes[i].run(this.m_renderProxy);
+                    this.m_processes[i].run();
                 }
             }
             /**
@@ -399,7 +404,7 @@ export namespace vox
                 {
                     for(let i:number = 0; i < this.m_processesLen; ++i)
                     {
-                        this.m_processes[i].run(this.m_renderProxy);
+                        this.m_processes[i].run();
                     }
                 }
             }

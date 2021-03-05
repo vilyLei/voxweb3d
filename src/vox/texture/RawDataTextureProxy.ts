@@ -102,7 +102,7 @@ export namespace vox
             {
                 if(this.m_texData != null)
                 {
-                    this.dataUploadToGpu(texRes.getRC(),this.m_texData, this.m_texDatas);                    
+                    this.dataUploadToGpu(texRes.getRC(),this.m_texData, this.m_texDatas, true);                    
                 }
             }
             __$updateToGpu(texRes:IRenderResource):void
@@ -125,7 +125,7 @@ export namespace vox
                         for(; i < len; ++i)
                         {
                             d = this.m_subDataList.pop();
-                            d.updateToGpu(gl,this.m_sampler,interType,format,type);
+                            d.updateToGpu(gl,this.m_sampler,interType,format,type, false);
                             RawTexData.Restore(d);
                         }
                         //concole.log("#####upload sub texture pix data!");

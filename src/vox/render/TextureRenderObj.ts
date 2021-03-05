@@ -225,7 +225,7 @@ export namespace vox
             {
                 if(tro.getMid() > -1)
                 {
-                    //console.log("TextureRenderObj::Restore tro.getMid(): "+tro.getMid());
+                    console.log("TextureRenderObj::Restore tro.getMid(): "+tro.getMid());
                     TextureRenderObj.s_troMaps[tro.getRCUid()].delete(tro.getMid());
                     tro.__$setParam(0,0);
                     TextureRenderObj.s_freeTROList.push(tro);

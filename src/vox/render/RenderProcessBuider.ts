@@ -9,6 +9,7 @@ import * as IPoolNodeT from "../../vox/utils/IPoolNode";
 import * as PoolNodeBuilderT from "../../vox/utils/PoolNodeBuilder";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as MaterialShaderT from '../../vox/material/MaterialShader';
+import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as IRenderResourceT from "../../vox/render/IRenderResource";
@@ -19,6 +20,7 @@ import IPoolNode = IPoolNodeT.vox.utils.IPoolNode;
 import PoolNodeBuilder = PoolNodeBuilderT.vox.utils.PoolNodeBuilder;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
+import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
 import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
 import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
@@ -32,6 +34,7 @@ export namespace vox
         export class RenderProcessBuider extends PoolNodeBuilder
         {
             
+            private m_rc:RenderProxy;
             private m_shader:MaterialShader;
             private m_rpoNodeBuilder:RPONodeBuilder;
             private m_rpoUnitBuilder:RPOUnitBuilder;
@@ -39,8 +42,9 @@ export namespace vox
             private m_batchEnabled:boolean;
             private m_fixedState:boolean;
             
-            setCreateParams(shader:MaterialShader,rpoNodeBuilder:RPONodeBuilder,rpoUnitBuilder:RPOUnitBuilder,vtxResource:IRenderResource, batchEnabled:boolean,fixedState:boolean):void
+            setCreateParams(rc:RenderProxy,shader:MaterialShader,rpoNodeBuilder:RPONodeBuilder,rpoUnitBuilder:RPOUnitBuilder,vtxResource:IRenderResource, batchEnabled:boolean,fixedState:boolean):void
             {
+                this.m_rc = rc;
                 this.m_shader = shader;
                 this.m_rpoNodeBuilder = rpoNodeBuilder;
                 this.m_rpoUnitBuilder = rpoUnitBuilder;
@@ -51,6 +55,7 @@ export namespace vox
             protected createNode():IPoolNode
             {
                 return new RenderProcess(
+                    this.m_rc,
                     this.m_shader,
                     this.m_rpoNodeBuilder,
                     this.m_rpoUnitBuilder,

@@ -79,7 +79,13 @@ export namespace vox
             
             // space id
             __$spaceId:number = -1;
-            // renderer scene entity flag
+            /**
+             * renderer scene entity flag
+             * 第0位到第19位总共20位存放自身在space中的 index id,
+             * 第20位开始到26位为总共7位止存放在renderer中的状态数据(renderer unique id and others)
+             * 第27位存放是否在container里面
+             * 第28位开始到30位总共三位存放renderer 载入状态 的相关信息
+             */
             __$rseFlag:number = RSEntityFlag.DEFAULT;
 
             name:string = "PureEntity";
@@ -103,19 +109,26 @@ export namespace vox
             }
             __$testSpaceEnabled():boolean
             {
-                return (RSEntityFlag.SPACE_FLAT & this.__$rseFlag) < 1 && (RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG;
+                return RSEntityFlag.TestSpaceEnabled(this.__$rseFlag);
             }
             __$testContainerEnabled():boolean
             {
-                return (RSEntityFlag.RENDERER_UID_FLAT & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAT && (RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG;
+                return RSEntityFlag.TestContainerEnabled(this.__$rseFlag);
             }
             __$testRendererEnabled():boolean
             {
-                return (RSEntityFlag.RENDERER_ADN_LOAD_FLAT & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAT && (RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG;
+                return RSEntityFlag.TestRendererEnabled(this.__$rseFlag);
             }
             getRendererUid():number
             {
                 return RSEntityFlag.GetRendererUid(this.__$rseFlag);
+            }
+            /**
+             * @returns 自身是否未必任何渲染器相关的系统使用
+             */
+            isFree():boolean
+            {
+                return this.__$rseFlag == RSEntityFlag.DEFAULT;
             }
             dispatchEvt(evt:any):void
             {
@@ -280,7 +293,15 @@ export namespace vox
                     this.setMaterial( entity.getMaterial() );
                 }
             }
-            
+            private initDisplay(m:MeshBase):void
+            {
+                this.m_display.vbuf = m.__$attachVBuf();
+                this.m_display.ivsIndex = 0;
+                this.m_display.ivsCount = m.vtCount;
+                this.m_display.drawMode = m.drawMode;
+                this.m_display.trisNumber = m.trisNumber;
+                this.m_display.visible = this.m_visible && this.m_drawEnabled;
+            }
             /**
              * 设置几何相关的数据,必须是构建完备的mesh才能被设置进来
              * 这个设置函数也可以动态运行时更新几何相关的顶点数据
@@ -308,12 +329,7 @@ export namespace vox
                                 }
                                 this.m_display.setTransform(this.m_omat);
                                 
-                                this.m_display.visible = this.m_visible && this.m_drawEnabled;
-                                this.m_display.vbuf = m.__$attachVBuf();
-                                this.m_display.ivsIndex = 0;
-                                this.m_display.ivsCount = m.vtCount;
-                                this.m_display.drawMode = m.drawMode;
-                                this.m_display.trisNumber = m.trisNumber;
+                                this.initDisplay(m);
                             }
                             //console.log("DisplayEntity::setMesh(), "+this.m_display.toString()+",m.drawMode: "+m.drawMode);
                             if(this.m_globalBounds != null)
@@ -332,11 +348,9 @@ export namespace vox
                         this.m_mesh.__$detachThis();
                         m.__$attachThis();
                         this.m_mesh = m;
-                        this.m_display.vbuf = m.__$attachVBuf();
-                        this.m_display.ivsIndex = 0;
-                        this.m_display.ivsCount = m.vtCount;
-                        this.m_display.drawMode = m.drawMode;
-                        this.m_display.trisNumber = m.trisNumber;
+
+                        this.initDisplay(m);
+
                         this.m_meshChanged = true;
                     }
                 }
@@ -515,11 +529,6 @@ export namespace vox
                                 material.initializeByCodeBuf(texEnabled);
                             }
                             this.__activeMesh(material);
-                            // for debug
-                            this.m_display.name = this.name;
-                            this.m_display.ivsIndex = 0;
-                            this.m_display.ivsCount = this.m_mesh.vtCount;
-                            this.m_display.drawMode = this.m_mesh.drawMode;
                         }
                     }
                 }
@@ -539,7 +548,7 @@ export namespace vox
                     this.m_mouseEvtDispatcher.destroy();
                     this.m_mouseEvtDispatcher = null; 
                 }
-                if(this.m_omat != null && (RSEntityFlag.RENDERER_UID_FLAT & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAT && (RSEntityFlag.SPACE_FLAT & this.__$rseFlag) < 1)
+                if(this.m_omat != null && this.isFree())
                 {
                     // 这里要保证其在所有的process中都被移除
                     if(this.m_display != null)
@@ -562,6 +571,7 @@ export namespace vox
                     this.m_visible = true;
                     this.m_drawEnabled = true;
                     this.m_renderProxy = null;
+                    this.__$rseFlag = RSEntityFlag.DEFAULT;
                 }
             }
             isInRenderer():boolean

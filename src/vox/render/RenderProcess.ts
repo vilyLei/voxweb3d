@@ -18,6 +18,7 @@ import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as ROVertexResourceT from "../../vox/render/ROVertexResource";
 import * as RPOBlockT from "../../vox/render/RPOBlock";
+import * as IRenderProcessT from "../../vox/render/IRenderProcess";
 
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
@@ -30,19 +31,21 @@ import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
 import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
 import ROVertexResource = ROVertexResourceT.vox.render.ROVertexResource;
 import RPOBlock = RPOBlockT.vox.render.RPOBlock;
+import IRenderProcess = IRenderProcessT.vox.render.IRenderProcess;
 
 export namespace vox
 {
     export namespace render
     {
-        export class RenderProcess implements IPoolNode
+        export class RenderProcess implements IRenderProcess,IPoolNode
         {
             private static s_max_shdTotal:number = 1024;
             // 记录自身所在的 rendererInstance id
             private m_wuid:number = -1;
             // 记录自身所在 rendererInstance 中分配到的process index
             private m_weid:number = -1;
-            
+            private m_rc:RenderProxy;
+
             private m_nodesLen:number = 0;
             private m_enabled:boolean = true;
             private m_blockList:RPOBlock[] = [];                                                        // 记录以相同shader的node为一个集合对象(RPOBlock) 的数组
@@ -61,8 +64,9 @@ export namespace vox
             
             uid:number = -1;
             
-            constructor(shader:MaterialShader,rpoNodeBuilder:RPONodeBuilder,rpoUnitBuilder:RPOUnitBuilder,vtxResource:ROVertexResource, batchEnabled:boolean,processFixedState:boolean)
+            constructor(rc:RenderProxy, shader:MaterialShader,rpoNodeBuilder:RPONodeBuilder,rpoUnitBuilder:RPOUnitBuilder,vtxResource:ROVertexResource, batchEnabled:boolean,processFixedState:boolean)
             {
+                this.m_rc = rc;
                 this.m_shader = shader;
                 this.m_rpoNodeBuilder = rpoNodeBuilder;
                 this.m_rpoUnitBuilder = rpoUnitBuilder;
@@ -96,6 +100,10 @@ export namespace vox
             {
                 this.m_wuid = pwuid;
                 this.m_weid = this.m_weid = pweid;
+            }
+            getUid():number
+            {
+                return this.uid;
             }
             getWUid():number
             {
@@ -293,10 +301,11 @@ export namespace vox
                 }
             }
 
-            run(rc:RenderProxy):void
+            run():void
             {
                 if(this.m_enabled && this.m_nodesLen > 0)
                 {
+                    let rc:RenderProxy = this.m_rc;
                     if(this.m_shader.isUnLocked())
                     {
                         for(let i:number = 0; i < this.m_blockListLen; ++i)

@@ -279,11 +279,11 @@ export namespace vox
                             tex = TextureResSlot.GetInstance().removeTextureByUid(key) as TextureProxy;
                             if(tex != null)
                             {
-                                this.m_texPool.addTexture(tex);                                
+                                this.m_texPool.addTexture(tex);
                             }
                             else
                             {
-                                console.error("TextureBlock remove a texture(uid="+key+") error.");
+                                console.warn("TextureBlock remove a texture(uid="+key+") error.");
                             }
                             console.log("TextureBlock remove a texture: ",tex);
                         }

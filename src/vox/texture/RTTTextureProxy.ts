@@ -10,6 +10,7 @@ import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 
 import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
+import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureTarget = TextureConstT.vox.texture.TextureTarget;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
@@ -26,6 +27,8 @@ export namespace vox
             {
                 super(texWidth,texHeight,powerof2Boo);
                 this.m_type = TextureProxyType.RTT;
+                this.minFilter = TextureConst.NEAREST;
+                this.magFilter = TextureConst.NEAREST;
             }
             to2DTexture():void
             {

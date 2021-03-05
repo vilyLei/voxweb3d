@@ -120,6 +120,7 @@ export namespace vox
                     this.m_attachCount = 0;
                 }
                 ++this.m_attachCount;
+                //console.log("TextureProxy::__$attachThis() this(uid="+this.getUid()+").attachCount: "+this.m_attachCount);
             }
             /**
              * 被引用计数减一
@@ -129,7 +130,7 @@ export namespace vox
                 if(this.m_attachCount > 0)
                 {
                     --this.m_attachCount;
-                    console.log("TextureProxy::__$detachThis() this(uid="+this.getUid()+").attachCount: "+this.m_attachCount);
+                    //console.log("TextureProxy::__$detachThis() this(uid="+this.getUid()+").attachCount: "+this.m_attachCount);
                     if(this.m_attachCount < 1)
                     {
                         this.m_attachCount = -1;
@@ -297,7 +298,7 @@ export namespace vox
             /**
              * sub class can not override!!!!
              */
-            protected dataUploadToGpu(gl:any,texData:ITexData,texDatas:ITexData[]):void
+            protected dataUploadToGpu(gl:any,texData:ITexData,texDatas:ITexData[],force:boolean = false):void
             {
                 this.version = 0;
                 let interType:any = TextureFormat.ToGL(gl,this.internalFormat);
@@ -306,7 +307,7 @@ export namespace vox
                 let d:ITexData = texData;
                 if(texDatas == null)
                 {
-                    if(d.status > -1)d.updateToGpu(gl,this.m_sampler,interType,format,type);
+                    if(d.status > -1 || force)d.updateToGpu(gl,this.m_sampler,interType,format,type, force);
                 }
                 else
                 {
@@ -316,7 +317,7 @@ export namespace vox
                         d = ds[i];
                         if(d != null)
                         {
-                            if(d.status > -1)d.updateToGpu(gl,this.m_sampler,interType,format,type);
+                            if(d.status > -1 || force)d.updateToGpu(gl,this.m_sampler,interType,format,type, force);
                         }
                     }
                     this.m_generateMipmap = false;

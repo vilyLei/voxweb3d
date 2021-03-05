@@ -124,6 +124,18 @@
 //  import * as DemoScreenPingpongBlur from "./demo/DemoScreenPingpongBlur";
 //  import Demo = DemoScreenPingpongBlur.demo.DemoScreenPingpongBlur;
 
+//  import * as DemoPingpongBlur from "./demo/DemoPingpongBlur";
+//  import Demo = DemoPingpongBlur.demo.DemoPingpongBlur;
+
+//  import * as DemoDepthBlur from "./demo/DemoDepthBlur";
+//  import Demo = DemoDepthBlur.demo.DemoDepthBlur;
+
+import * as DemoDepthBlur2 from "./demo/DemoDepthBlur2";
+import Demo = DemoDepthBlur2.demo.DemoDepthBlur2;
+
+//  import * as DemoDepthTex from "./demo/DemoDepthTex";
+//  import Demo = DemoDepthTex.demo.DemoDepthTex;
+
 //  import * as DemoPNG from "./example/DemoPNG";
 //  import Demo = DemoPNG.example.DemoPNG;
 
@@ -184,9 +196,6 @@
 //  import * as DemoDrawGroup from "./demo/DemoDrawGroup";
 //  import Demo = DemoDrawGroup.demo.DemoDrawGroup;
 
-//  import * as DemoDepthTex from "./demo/DemoDepthTex";
-//  import Demo = DemoDepthTex.demo.DemoDepthTex;
-
 //  import * as DemoDeepTransparent from "./demo/DemoDeepTransparent";
 //  import Demo = DemoDeepTransparent.demo.DemoDeepTransparent;
 
@@ -199,8 +208,8 @@
 //  import * as DemoGpuTexMana from "./demo/DemoGpuTexMana";
 //  import Demo = DemoGpuTexMana.demo.DemoGpuTexMana;
 
-import * as DemoMaterial from "./demo/DemoMaterial";
-import Demo = DemoMaterial.demo.DemoMaterial;
+//  import * as DemoMaterial from "./demo/DemoMaterial";
+//  import Demo = DemoMaterial.demo.DemoMaterial;
 
 //  import * as DemoVtx from "./demo/DemoVtx";
 //  import Demo = DemoVtx.demo.DemoVtx;
@@ -234,9 +243,6 @@ import Demo = DemoMaterial.demo.DemoMaterial;
 
 //  import * as DemoDivControl from "./demo/DemoDivControl";
 //  import Demo = DemoDivControl.demo.DemoDivControl;
-
-//  import * as DemoDepthBlur from "./demo/DemoDepthBlur";
-//  import Demo = DemoDepthBlur.demo.DemoDepthBlur;
 
 //  import * as DemoEmptyRenderer from "./demo/DemoEmptyRenderer";
 //  import Demo = DemoEmptyRenderer.demo.DemoEmptyRenderer;

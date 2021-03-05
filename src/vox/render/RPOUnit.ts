@@ -248,7 +248,6 @@ export namespace vox
             }
             reset():void
             {
-                console.log("reset() unit this.uid: ",this.uid);
                 this.vro.__$detachThis();
                 this.vro = null;
                 this.tro.__$detachThis();

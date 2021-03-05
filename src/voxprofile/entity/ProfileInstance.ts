@@ -5,11 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as RenderProcessT from "../../vox/render/RenderProcess";
+import * as IRenderProcessT from "../../vox/render/IRenderProcess";
 import * as RendererInstanceT from "../../vox/scene/RendererInstance";
 import * as RendererStatusT from "../../voxprofile/entity/RendererStatus";
 
-import RenderProcess = RenderProcessT.vox.render.RenderProcess;
+import IRenderProcess = IRenderProcessT.vox.render.IRenderProcess;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import RendererStatus = RendererStatusT.voxprofile.entity.RendererStatus;
 
@@ -19,7 +19,7 @@ export namespace voxprofile
     {
         export class ProfileInstance
         {
-            private m_rprocess:RenderProcess = null;
+            private m_rprocess:IRenderProcess = null;
             private m_renderer:RendererInstance = null;
             private m_status:RendererStatus = null;
             

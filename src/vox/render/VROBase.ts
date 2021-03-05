@@ -68,12 +68,12 @@ export namespace vox
                 if(this.m_attachCount < 1)
                 {
                     this.m_attachCount = 0;
-                    console.log("VROBase::__$detachThis() this.m_attachCount value is 0.");
+                    //console.log("VROBase::__$detachThis() this.m_attachCount value is 0.");
                 }
             }
             protected __$destroy():void
             {
-                console.log("VROBase::__$destroy()..., ("+this.m_uid+")this.m_attachCount: "+this.m_attachCount);
+                //console.log("VROBase::__$destroy()..., ("+this.m_uid+")this.m_attachCount: "+this.m_attachCount);
                 VROBase.s_midMap.delete(this.m_mid);
                 this.m_mid = 0;
                 this.m_vtxUid = -1;

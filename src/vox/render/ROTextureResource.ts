@@ -91,6 +91,7 @@ export namespace vox
             }
             createResByParams3(resUid:number,param0:number,param1:number,param2:number):boolean
             {
+                //console.log("TexRes createResByParams3, this.m_resMap.has("+resUid+"): ",this.m_resMap.has(resUid));
                 if(!this.m_resMap.has(resUid))
                 {
                     let obj:GpuTexObect = new GpuTexObect();

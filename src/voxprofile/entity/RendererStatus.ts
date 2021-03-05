@@ -6,13 +6,13 @@
 /***************************************************************************/
 
 import * as RendererStateT from "../../vox/render/RendererState";
-import * as RenderProcessT from "../../vox/render/RenderProcess";
+import * as IRenderProcessT from "../../vox/render/IRenderProcess";
 import * as RendererInstanceT from "../../vox/scene/RendererInstance";
 import * as H5FontSysT from "../../vox/text/H5FontSys";
 import * as Text2DEntityT from "../../vox2d/text/Text2DEntity";
 
 import RendererState = RendererStateT.vox.render.RendererState;
-import RenderProcess = RenderProcessT.vox.render.RenderProcess;
+import IRenderProcess = IRenderProcessT.vox.render.IRenderProcess;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
 import Text2DEntity = Text2DEntityT.vox2d.text.Text2DEntity;
@@ -64,7 +64,7 @@ export namespace voxprofile
         }
         export class RendererStatus
         {
-            private m_rprocess:RenderProcess = null;
+            private m_rprocess:IRenderProcess = null;
             private m_renderer:RendererInstance = null;
 
             private m_fpsInfo:FPSInfo = new FPSInfo();
@@ -87,7 +87,7 @@ export namespace voxprofile
             constructor()
             {
             }
-            initialize(renderer:RendererInstance,rprocess:RenderProcess):void
+            initialize(renderer:RendererInstance,rprocess:IRenderProcess):void
             {
                 if(this.m_renderer == null)
                 {

@@ -50,7 +50,7 @@ export namespace vox
             private m_pos:Vector3D = new Vector3D();
             private m_visible:boolean = true;
             private m_parentVisible:boolean = true;
-            //protected m_localBounds:AABB = null;
+            
             protected m_globalBounds:AABB = null;
             protected m_gboundsStatus:number = -1;
             protected m_ebvers:number[] = null;
@@ -99,14 +99,11 @@ export namespace vox
                     if(renderer != null)
                     {
                         // add all entities
-                        console.log("add all entities from container, this.m_entitysTotal: "+this.m_entitysTotal+", this.wprocuid: "+this.wprocuid);
+                        // console.log("add all entities from container, this.m_entitysTotal: "+this.m_entitysTotal+", this.wprocuid: "+this.wprocuid);
                         for(; i < this.m_entitysTotal; ++i)
                         {
-                            //this.m_entitys[i].__$contId = 0;
-                            //this.m_entitys[i].__$rseFlag = this.m_entitys[i].__$rseFlag & RSEntityFlag.CONTAINER_NOT_FLAG;
                             this.m_entitys[i].__$rseFlag = RSEntityFlag.RemoveContainerFlag(this.m_entitys[i].__$rseFlag);
                             this.__$renderer.addEntity(this.m_entitys[i],this.wprocuid,false);
-                            //this.m_entitys[i].__$contId = this.m_uid;
                             this.m_entitys[i].__$rseFlag = RSEntityFlag.AddContainerFlag(this.m_entitys[i].__$rseFlag);
                         }
                     }
@@ -148,7 +145,6 @@ export namespace vox
             {
                 if(this.m_globalBounds == null)
                 {
-                    //this.m_localBounds = new AABB();
                     this.m_globalBounds = new AABB();
                     this.m_ebvers = [];
                     this.m_cbvers = [];
@@ -305,15 +301,14 @@ export namespace vox
             }
             removeEntity(entity:DisplayEntity):void
             {
-                if(entity != null && entity.__$getParent() == null)
+                if(entity != null && entity.__$getParent() == this)
                 {
                     let i:number = 0;
                     for(; i < this.m_entitysTotal; ++i)
                     {
                         if(this.m_entitys[i] == entity)
                         {
-                            //entity.__$contId = 0;
-                            entity.__$rseFlag = RSEntityFlag.AddContainerFlag(entity.__$rseFlag);
+                            entity.__$rseFlag = RSEntityFlag.RemoveContainerFlag(entity.__$rseFlag);
                             this.m_entitys[i].__$setParent(null);
                             this.m_entitys.splice(i,1);
                             if(this.m_ebvers != null)
@@ -321,6 +316,10 @@ export namespace vox
                                 this.m_ebvers.slice(i,1);
                             }
                             --this.m_entitysTotal;
+                            if(this.__$renderer != null)
+                            {
+                                this.__$renderer.removeEntity(entity);
+                            }
                             break;
                         }
                     }
@@ -335,9 +334,12 @@ export namespace vox
                     {
                         if(this.m_entitys[i].getUid() == uid)
                         {
-                            //this.m_entitys[i].__$contId = 0;
-                            this.m_entitys[i].__$rseFlag = RSEntityFlag.AddContainerFlag(this.m_entitys[i].__$rseFlag);
+                            this.m_entitys[i].__$rseFlag = RSEntityFlag.RemoveContainerFlag(this.m_entitys[i].__$rseFlag);
                             this.m_entitys[i].__$setParent(null);
+                            if(this.__$renderer != null)
+                            {
+                                this.__$renderer.removeEntity(this.m_entitys[i]);
+                            }
                             this.m_entitys.splice(i,1);
                             if(this.m_ebvers != null)
                             {

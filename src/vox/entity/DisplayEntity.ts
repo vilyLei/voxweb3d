@@ -81,12 +81,13 @@ export namespace vox
             // 记录自身在space中的unique id
             __$spaceId:number = 0;//最小值为1, 最大值为1048575, 即0xfffff，也就是最多只能展示1048575个entitys
             /**
+             * renderer scene entity flag
              * 第0位到第19位总共20位存放自身在space中的 index id,
              * 第20位开始到26位为总共7位止存放在renderer中的状态数据(renderer unique id and others)
              * 第27位存放是否在container里面
              * 第28位开始到30位总共三位存放renderer 载入状态 的相关信息
              */
-            __$rseFlag:number = RSEntityFlag.DEFAULT;//renderer scene entity flag
+            __$rseFlag:number = RSEntityFlag.DEFAULT;
 
             name:string = "DisplayEntity";
             // 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMasK, 默认只会有摄像机裁剪
@@ -98,6 +99,10 @@ export namespace vox
             mouseEnabled:boolean = false;
             //
             vbWholeDataEnabled:boolean = true;
+            protected createBounds():void
+            {
+                this.m_globalBounds = new AABB();
+            }
             __$setRenderProxy(rc:RenderProxy):void
             {
                 this.m_renderProxy = rc;
@@ -113,36 +118,31 @@ export namespace vox
             {
                 return this.m_parent;
             }
-            protected createBounds():void
-            {
-                this.m_globalBounds = new AABB();
-            }
             __$testSpaceEnabled():boolean
             {
                 //return this.__$spaceId < 0 && this.__$contId < 1;
-                return (RSEntityFlag.SPACE_FLAT & this.__$rseFlag) < 1 && (RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG;
+                return RSEntityFlag.TestSpaceEnabled(this.__$rseFlag);
             }
             __$testContainerEnabled():boolean
             {
-                //  console.log("RSEntityFlag.DEFAULT: ",RSEntityFlag.DEFAULT.toString(2));
-                //  console.log("RSEntityFlag.CONTAINER_FLAG: ",RSEntityFlag.CONTAINER_FLAG.toString(2));
-                //  console.log("this.__$rseFlag: ",this.__$rseFlag.toString(2));
-                //  console.log("testContainerEnabled(), (RSEntityFlag.RENDERER_UID_FLAT & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAT: ",(RSEntityFlag.RENDERER_UID_FLAT & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAT);
-                //  console.log("(RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG: ",(RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG);
                 //return this.__$wuid < 0 && this.__$contId < 1;
-                //return this.__$wuid == RSEntityFlag.RENDERER_UID_FLAT && (RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG;
-                return (RSEntityFlag.RENDERER_UID_FLAT & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAT && (RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG;
+                return RSEntityFlag.TestContainerEnabled(this.__$rseFlag);
             }
             __$testRendererEnabled():boolean
             {
                 //return this.__$wuid < 0 && this.__$weid < 0 && this.__$contId < 1;
-                //return this.__$wuid == RSEntityFlag.RENDERER_UID_FLAT && this.__$weid < 0 && (RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG;
-                //return (RSEntityFlag.RENDERER_UID_FLAT & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAT && this.__$weid < 0 && (RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG;
-                return (RSEntityFlag.RENDERER_ADN_LOAD_FLAT & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAT && (RSEntityFlag.CONTAINER_FLAG & this.__$rseFlag) != RSEntityFlag.CONTAINER_FLAG;
+                return RSEntityFlag.TestRendererEnabled(this.__$rseFlag);
             }
             getRendererUid():number
             {
                 return RSEntityFlag.GetRendererUid(this.__$rseFlag);
+            }
+            /**
+             * @returns 自身是否未必任何渲染器相关的系统使用
+             */
+            isFree():boolean
+            {
+                return this.__$rseFlag == RSEntityFlag.DEFAULT;
             }
             dispatchEvt(evt:any):void
             {
@@ -311,6 +311,15 @@ export namespace vox
                     this.setMaterial( entity.getMaterial() );
                 }
             }
+            private initDisplay(m:MeshBase):void
+            {
+                this.m_display.vbuf = m.__$attachVBuf();
+                this.m_display.ivsIndex = 0;
+                this.m_display.ivsCount = m.vtCount;
+                this.m_display.drawMode = m.drawMode;
+                this.m_display.trisNumber = m.trisNumber;
+                this.m_display.visible = this.m_visible && this.m_drawEnabled;
+            }
             /**
              * 设置几何相关的数据,必须是构建完备的mesh才能被设置进来
              * 这个设置函数也可以动态运行时更新几何相关的顶点数据
@@ -333,13 +342,7 @@ export namespace vox
                             if(this.m_display != null)
                             {
                                 this.m_display.setTransform(this.m_transfrom.getMatrix());
-                                
-                                this.m_display.visible = this.m_visible && this.m_drawEnabled;
-                                this.m_display.vbuf = m.__$attachVBuf();
-                                this.m_display.ivsIndex = 0;
-                                this.m_display.ivsCount = m.vtCount;
-                                this.m_display.drawMode = m.drawMode;
-                                this.m_display.trisNumber = m.trisNumber;
+                                this.initDisplay(m);
                             }
                             //console.log("DisplayEntity::setMesh(), "+this.m_display.toString()+",m.drawMode: "+m.drawMode);
                             if(this.m_globalBounds != null)
@@ -358,11 +361,7 @@ export namespace vox
                         this.m_mesh.__$detachThis();
                         m.__$attachThis();
                         this.m_mesh = m;
-                        this.m_display.vbuf = m.__$attachVBuf();
-                        this.m_display.ivsIndex = 0;
-                        this.m_display.ivsCount = m.vtCount;
-                        this.m_display.drawMode = m.drawMode;
-                        this.m_display.trisNumber = m.trisNumber;
+                        this.initDisplay(m);
                         this.m_meshChanged = true;
                     }
                 }
@@ -527,11 +526,11 @@ export namespace vox
                         if(this.getMesh() == null)
                         {
                             this.__activeMesh(material);
-                            // for debug
-                            this.m_display.name = this.name;
-                            this.m_display.ivsIndex = 0;
-                            this.m_display.ivsCount = this.m_mesh.vtCount;
-                            this.m_display.drawMode = this.m_mesh.drawMode;
+                            //  // for debug
+                            //  this.m_display.name = this.name;
+                            //  this.m_display.ivsIndex = 0;
+                            //  this.m_display.ivsCount = this.m_mesh.vtCount;
+                            //  this.m_display.drawMode = this.m_mesh.drawMode;
                         }
                     }
                 }
@@ -570,7 +569,7 @@ export namespace vox
                     this.m_mouseEvtDispatcher.destroy();
                     this.m_mouseEvtDispatcher = null; 
                 }
-                if(this.m_transfrom != null && (RSEntityFlag.RENDERER_UID_FLAT & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAT && (RSEntityFlag.SPACE_FLAT & this.__$rseFlag) < 1)
+                if(this.m_transfrom != null && this.isFree())
                 {
                     // 这里要保证其在所有的process中都被移除
                     if(this.m_display != null)
@@ -590,6 +589,7 @@ export namespace vox
                     this.m_visible = true;
                     this.m_drawEnabled = true;
                     this.m_renderProxy = null;
+                    this.__$rseFlag = RSEntityFlag.DEFAULT;
                 }
             }
             private static s_boundsInVS:Float32Array = new Float32Array(24);

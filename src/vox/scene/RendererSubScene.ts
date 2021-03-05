@@ -240,7 +240,7 @@ export namespace vox
                     let process:RenderProcess = null;
                     for(; renderProcessTotal >= 0; )
                     {
-                        process = this.m_renderer.appendProcess(rparam.batchEnabled,rparam.processFixedState);
+                        process = this.m_renderer.appendProcess(rparam.batchEnabled,rparam.processFixedState) as RenderProcess;
                         this.m_processids[this.m_processidsLen] = process.getWEid();
                         this.m_processidsLen++;
                         --renderProcessTotal;
@@ -304,7 +304,7 @@ export namespace vox
             }
             appendARendererProcess(batchEnabled:boolean = true, processFixedState:boolean = false):void
             {
-                let process:RenderProcess = this.m_renderer.appendProcess(batchEnabled, processFixedState);
+                let process:RenderProcess = this.m_renderer.appendProcess(batchEnabled, processFixedState) as RenderProcess;
                 this.m_processids[this.m_processidsLen] = process.getWEid();
                 this.m_processidsLen++;
             }

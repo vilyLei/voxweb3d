@@ -26,9 +26,9 @@ export namespace vox
             constructor()
             {
             }
-            updateToGpu(gl:any,samplerTarget:number,interType:number,format:number, type:number):void
+            updateToGpu(gl:any,samplerTarget:number,interType:number,format:number, type:number,force:boolean):void
             {
-                if(this.status == 1)
+                if(this.status == 1 || force)
                 {
                     gl.texImage2D(samplerTarget, this.miplevel, interType,format, type, this.data);
                 }

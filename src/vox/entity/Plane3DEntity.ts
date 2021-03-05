@@ -73,11 +73,20 @@ export namespace vox
                 this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
             }
             /**
+             * initialize a rectangle fix screen size plane ,and it parallel the 3d space XOY plane
+             * @param texList textures list, default value is null.
+             */
+            initializeFixScreen(texList:TextureProxy[] = null):void
+            {
+                this.initializeXOY(-1.0,-1.0,2.0,2.0,texList);
+            }
+            /**
              * initialize a rectangle plane ,and it parallel the 3d space XOY plane
              * @param minX the min x axis position of the rectangle plane.
              * @param minZ the min y axis position of the rectangle plane.
              * @param pwidth the width of the rectangle plane.
              * @param height the height of the rectangle plane.
+             * @param texList textures list, default value is null.
              */
             initializeXOY(minX:number,minY:number,pwidth:number,pheight:number,texList:TextureProxy[] = null):void
             {
@@ -95,6 +104,7 @@ export namespace vox
              * @param minZ the min z axis position of the rectangle plane.
              * @param pwidth the width of the rectangle plane.
              * @param plong the long of the rectangle plane.
+             * @param texList textures list, default value is null.
              */
             initializeXOZ(minX:number,minZ:number,pwidth:number,plong:number,texList:TextureProxy[] = null):void
             {
@@ -112,6 +122,7 @@ export namespace vox
              * @param minZ the min z axis position of the rectangle plane.
              * @param pwidth the width of the rectangle plane.
              * @param plong the long of the rectangle plane.
+             * @param texList textures list, default value is null.
              */
             initializeYOZ(minY:number,minZ:number,pwidth:number,plong:number,texList:TextureProxy[] = null):void
             {

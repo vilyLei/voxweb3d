@@ -1,11 +1,19 @@
 const path = require('path');
 const resolve = dir => path.join(__dirname, dir);
 const { ENV = '' } = process.env;
-
+//console.log("process.env: ",process.env);
+console.log("process.env: ",process.env.npm_lifecycle_script);
+let devDstStr = "./src/main.ts";
+let appDstStr = "./src/main.ts";
+if(process.env.npm_lifecycle_script == "vue-cli-service serve --voxtype=dev")
+{
+  devDstStr = "./src/dev.ts";
+  appDstStr = "./src/dev.ts";
+}
 module.exports = {
   pages: {
     index: {
-      entry: process.env.NODE_ENV === 'production' ? './src/main.ts' : './src/main.ts'
+      entry: process.env.NODE_ENV === 'production' ? appDstStr : devDstStr
     }
   },
   filenameHashing: false,

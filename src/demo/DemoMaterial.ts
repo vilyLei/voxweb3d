@@ -89,6 +89,7 @@ void main(){
         }
         run():void
         {
+            // 修改uniform数据
             this.m_time += 1.0;
             this.m_uniformData[0] = Math.abs(Math.sin(this.m_time * 0.01));
             this.m_uniformData[6] = Math.abs(Math.cos(this.m_time * 0.002));

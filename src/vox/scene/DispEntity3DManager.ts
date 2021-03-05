@@ -103,7 +103,7 @@ export namespace vox
 
                             if(po.count == 0)
                             {
-                                console.log("DispEntity3DManager::removeEntity(), remove a entity from all processes.");
+                                //console.log("DispEntity3DManager::removeEntity(), remove a entity from all processes.");
                                 if(display.__$$rsign != DisplayRenderSign.LIVE_IN_WORLD)
                                 {
                                     // error!!!
@@ -115,7 +115,7 @@ export namespace vox
                             }
                             else
                             {
-                                console.error("Error: DispEntity3DManager::removeEntity(), remove a entity from all processes failed.");
+                                console.warn("Error: DispEntity3DManager::removeEntity(), remove a entity from all processes failed.");
                             }
                         //}
                         //Entity3DNode.Restore(node);
@@ -285,9 +285,7 @@ export namespace vox
                         {
                             disp.__$$rsign = DisplayRenderSign.NOT_IN_WORLD;
                         }
-                        console.log("DispEntity3DManager::update(), remove a ready entity.");
-                        //entity.__$weid = -1;
-                        //entity.__$wuid = RSEntityFlag.RENDERER_UID_FLAT;
+                        //console.log("DispEntity3DManager::update(), remove a ready entity.");
                         entity.__$rseFlag = RSEntityFlag.RemoveRendererLoad(entity.__$rseFlag);
                         entity.__$rseFlag = RSEntityFlag.RemoveRendererUid(entity.__$rseFlag);
                         this.m_waitList.splice(i,1);

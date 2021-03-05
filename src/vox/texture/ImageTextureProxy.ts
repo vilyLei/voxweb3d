@@ -106,7 +106,7 @@ export namespace vox
             {
                 if(this.m_texData != null)
                 {
-                    this.dataUploadToGpu(texRes.getRC(), this.m_texData, this.m_texDatas);
+                    this.dataUploadToGpu(texRes.getRC(), this.m_texData, this.m_texDatas, true);
                 }
                 this.version = 0;
             }

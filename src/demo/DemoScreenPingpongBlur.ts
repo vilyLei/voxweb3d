@@ -5,7 +5,6 @@ import * as RendererParamT from "../vox/scene/RendererParam";
 import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
 import * as RendererInstanceT from "../vox/scene/RendererInstance";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
-//  import * as ScreenPingpongBlurT from "../vox/scene/mcase/PingpongBlur";
 import * as PingpongBlurT from "../renderingtoy/mcase/PingpongBlur";
 
 import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
@@ -22,7 +21,6 @@ import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-//import PingpongBlur = ScreenPingpongBlurT.vox.scene.mcase.PingpongBlur;
 import PingpongBlur = PingpongBlurT.renderingtoy.mcase.PingpongBlur;
 
 import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
@@ -72,6 +70,8 @@ export namespace demo
                 tex1.mipmapEnabled = true;
                 
                 this.m_blurIns = new PingpongBlur(this.m_renderer);
+                this.m_blurIns.setSyncViewSizeEnabled(true);
+                this.m_blurIns.bindProcessId(0,1);
                 this.m_rcontext = this.m_renderer.getRendererContext();
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
@@ -99,7 +99,7 @@ export namespace demo
             pcontext.renderBegin();
             
             renderer.update();
-            this.m_blurIns.synViewportSize();
+            //this.m_blurIns.syncViewportSize();
             this.m_blurIns.run(0,1);
 
             pcontext.runEnd();

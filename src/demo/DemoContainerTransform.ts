@@ -61,6 +61,7 @@ export namespace demo
         private m_container:DisplayEntityContainer = null;
         private m_containerMain:DisplayEntityContainer = null;
         private m_followEntity:DisplayEntity = null;
+        private m_targetEntity:DisplayEntity = null;
         
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
@@ -100,24 +101,14 @@ export namespace demo
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-                tex0.mipmapEnabled = true;
-                tex1.mipmapEnabled = true;
-
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
 
                 RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
-                
-                let plane:Plane3DEntity = new Plane3DEntity();
-                plane.name = "a plane.";
-                plane.showDoubleFace();
-                plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
 
-                this.m_container = new DisplayEntityContainer();
-                this.m_container.addEntity(plane);                
+                this.m_container = new DisplayEntityContainer(); 
                 this.m_container.setXYZ(100.0,100.0,100.0);
+                this.createPlane();
 
                 this.m_containerMain = new DisplayEntityContainer();
                 this.m_containerMain.addChild(this.m_container);
@@ -139,6 +130,16 @@ export namespace demo
                 //this.createLargeEntitys(10000 * 50);
             }
         }
+        private createPlane():void
+        {
+            
+            let plane:Plane3DEntity = new Plane3DEntity();
+            plane.name = "plane001";
+            plane.showDoubleFace();
+            plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[this.getImageTexByUrl("static/assets/default.jpg")]);
+            this.m_container.addEntity(plane);
+            this.m_targetEntity = plane;
+        }
         private m_elist:DisplayEntity[] = [];
         private createLargeEntitys(total:number):void
         {
@@ -155,16 +156,40 @@ export namespace demo
                 this.m_elist.push(entity);
             }
         }
-        private m_flagBoo:boolean = true;
         mouseDownListener(evt:any):void
         {
-            console.log("mouseDownListener call, this.m_rscene: "+this.m_rscene.toString());
-            this.m_flagBoo = !this.m_flagBoo;
+            if(this.m_targetEntity != null)
+            {
+                let destroyEnabled:boolean = true;
+                console.log("this.m_targetEntity.isFree(): ", this.m_targetEntity.isFree(),", destroyEnabled: ",destroyEnabled);
+                if(destroyEnabled)
+                {
+                    this.m_container.removeEntity(this.m_targetEntity);
+                    this.m_targetEntity.destroy();
+                    this.m_targetEntity = null;
+                }
+                else
+                {
+                    if(this.m_targetEntity.isFree())
+                    {
+                        this.m_container.addEntity(this.m_targetEntity);
+                    }
+                    else
+                    {
+                        this.m_container.removeEntity(this.m_targetEntity);
+                    }
+                }
+            }
+            else
+            {
+                this.createPlane();
+            }
         }
         position:Vector3D = new Vector3D();
         delayTime:number = 10;
         run():void
         {
+            //this.m_rscene.textureBlock.update();
             this.m_texLoader.run();
             this.m_equeue.run();
 

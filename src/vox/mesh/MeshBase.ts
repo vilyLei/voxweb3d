@@ -212,13 +212,13 @@ export namespace vox
                 if(this.m_attachCount == 1)
                 {
                     --this.m_attachCount;
-                    console.log("MeshBase::__$detachThis() this.m_attachCount: "+this.m_attachCount);
+                    //console.log("MeshBase::__$detachThis() this.m_attachCount: "+this.m_attachCount);
                     this.__$dispose();
                 }
                 else
                 {
                     --this.m_attachCount;
-                    console.log("MeshBase::__$detachThis() this.m_attachCount: "+this.m_attachCount);
+                    //console.log("MeshBase::__$detachThis() this.m_attachCount: "+this.m_attachCount);
                 }
                 if(this.m_attachCount < 1)
                 {
@@ -234,7 +234,7 @@ export namespace vox
             {
                 if(this.getAttachCount() < 1 && this.m_vbuf != null)
                 {
-                    console.log("MeshBase::__$dispose()... this.m_attachCount: "+this.m_attachCount);
+                    //console.log("MeshBase::__$dispose()... this.m_attachCount: "+this.m_attachCount);
                     ROVertexBuffer.__$$DetachAt(this.m_vbuf.getUid());
                     this.m_vbuf = null;
                 }
@@ -254,7 +254,7 @@ export namespace vox
             {
                 if(this.isResFree())
                 {
-                    console.log("MeshBase::__$destroy()... this.m_attachCount: "+this.m_attachCount);
+                    //console.log("MeshBase::__$destroy()... this.m_attachCount: "+this.m_attachCount);
                     this.m_ivs = null;
                     this.m_bufDataList = null;
                     this.m_bufDataStepList = null;

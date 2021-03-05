@@ -336,9 +336,9 @@ export namespace advancedDemo
                 this.m_rct.unlockRenderState();
                 this.m_blurIns.setBlurCount(4);
                 this.m_blurIns.setBlurDensity(1.0);
-                this.m_blurIns.synViewportSize();
+                //this.m_blurIns.syncViewportSize();
                 this.m_blurIns.setSrcTexture(this.getTextureAt(0));
-                this.m_blurIns.runBlur(this.m_blurPlaneIndex);
+                //this.m_blurIns.runBlur(this.m_blurPlaneIndex);
 
                 this.m_rct.setClearDepth(1.0);
                 // 绘制所有雾体积对象距离相机近的面
@@ -352,9 +352,9 @@ export namespace advancedDemo
                 this.m_rct.unlockRenderState();
                 this.m_blurIns1.setBlurCount(4);
                 this.m_blurIns1.setBlurDensity(1.0);
-                this.m_blurIns1.synViewportSize();
+                //this.m_blurIns1.syncViewportSize();
                 this.m_blurIns1.setSrcTexture(this.getTextureAt(1));
-                this.m_blurIns1.runBlur(this.m_blurPlaneIndex);
+                //this.m_blurIns1.runBlur(this.m_blurPlaneIndex);
 
 
                 // 绘制所有受雾效果影响的场景可渲染对象距离相机近的面(不包含雾体积对象)
