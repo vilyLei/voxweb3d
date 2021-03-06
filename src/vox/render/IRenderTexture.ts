@@ -27,7 +27,7 @@ export namespace vox
             __$$use(res:IRenderResource):void;
             __$$upload(res:IRenderResource):void;
             __$destroy():void;
-            __$$RemoveFromSlot():void;
+            __$$removeFromSlot():void;
         }
     }
 }

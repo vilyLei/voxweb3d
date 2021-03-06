@@ -95,10 +95,6 @@ export namespace vox
                 {
                     tex = new ImageTextureProxy(pw,ph,powerof2Boo);
                 }
-                else
-                {
-                    tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
-                }
                 tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
                 tex.mipmapEnabled = true;
                 tex.setWrap(TextureConst.WRAP_REPEAT);
@@ -253,7 +249,7 @@ export namespace vox
                 return this.m_rttStore.createRTTFloatTextureAt(i,pw,ph);
             }
 
-            private m_clearDelay:number = 256;
+            private m_clearDelay:number = 128;
             update():void
             {
                 if(this.m_clearDelay < 1)
@@ -262,7 +258,7 @@ export namespace vox
                      * 准备释放回收 texture resource.
                      */
                     let tex:TextureProxy;
-                    this.m_clearDelay = 256;
+                    this.m_clearDelay = 128;
                     
                     let freeMap:Map<number,number> = TextureResSlot.GetInstance().getFreeResUidMap();
                     let total:number = 32;

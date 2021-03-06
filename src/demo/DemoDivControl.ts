@@ -85,11 +85,11 @@ export namespace demo
                 axis.initialize(300.0);
                 this.m_rscene.addEntity(axis);
 
-                let cly:Cylinder3DEntity = new Cylinder3DEntity();
+                let cylinder:Cylinder3DEntity = new Cylinder3DEntity();
                 
-                cly.setVtxTransformMatrix(transMat);
-                cly.initialize(100.0,200.0,15,[tex1]);
-                this.m_rscene.addEntity(cly);
+                cylinder.setVtxTransformMatrix(transMat);
+                cylinder.initialize(100.0,200.0,15,[tex1]);
+                this.m_rscene.addEntity(cylinder);
             }
         }
         private mouseDown():void

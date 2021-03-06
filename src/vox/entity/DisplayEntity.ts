@@ -563,7 +563,7 @@ export namespace vox
             destroy():void
             {
                 // 当自身被完全移出RenderWorld之后才能执行自身的destroy
-                console.log("DisplayEntity::destroy(), renderer uid: "+this.getRendererUid()+", this.__$spaceId: "+this.__$spaceId);
+                //console.log("DisplayEntity::destroy(), renderer uid: "+this.getRendererUid()+", this.__$spaceId: "+this.__$spaceId);
                 if(this.m_mouseEvtDispatcher != null)
                 {
                     this.m_mouseEvtDispatcher.destroy();

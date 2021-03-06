@@ -304,7 +304,7 @@ export namespace demo
                         this.m_renderer.removeEntity(disp.getTarget());
                         dispEntity.destroy();
                         disp.destroy();
-                        console.log("DemoScene::run(), remove a disp, i: "+i);
+                        //console.log("DemoScene::run(), remove a disp, i: "+i);
                         --i;
                         --len;
                     }

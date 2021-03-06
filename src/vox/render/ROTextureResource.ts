@@ -230,7 +230,7 @@ export namespace vox
                         value.waitDelTimes++;
                         if(value.waitDelTimes > 5)
                         {
-                            console.log("ROTextureResource remove a texture buffer(resUid="+value.resUid+")");
+                            //console.log("ROTextureResource remove a texture buffer(resUid="+value.resUid+")");
                             this.m_resMap.delete(value.resUid);
                             this.m_freeMap.delete(value.resUid);
                             

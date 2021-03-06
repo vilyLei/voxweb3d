@@ -52,7 +52,7 @@ export namespace vox
             {
                 if(this.m_freeUids.length > 0)
                 {
-
+                    return this.m_freeUids.pop();
                 }
                 let uid:number = this.m_texUid++;
                 return uid;
@@ -69,15 +69,9 @@ export namespace vox
                     this.m_textureTotal ++;
                 }
             }
-            __$$removeTexture(texture:IRenderTexture):void
-            {
-                if(texture != null && texture.getAttachCount() == -2 && !this.m_textureMap.has(texture.getUid()))
-                {
-                    this.m_freeUids.push(texture.getUid());
-                    texture.__$$RemoveFromSlot();
-                    this.m_textureTotal --;
-                }
-            }
+            //  __$$removeTexture(texture:IRenderTexture):void
+            //  {
+            //  }
             getTextureByUid(uid:number):IRenderTexture
             {
                 return this.m_textureMap.get(uid);
@@ -93,9 +87,16 @@ export namespace vox
                     let tex:IRenderTexture = this.m_textureMap.get(uid);
                     if(tex.getAttachCount() < 1)
                     {
+                        if(this.m_freeMap.has(uid))
+                        {
+                            this.m_freeMap.delete(uid);
+                        }
                         tex.__$destroy();
-                        this.m_textureTotal --;
+                        tex.__$$removeFromSlot();
+
                         this.m_textureMap.delete(uid);
+                        this.m_freeUids.push(uid);
+                        this.m_textureTotal --;
                         return tex;
                     }
                 }

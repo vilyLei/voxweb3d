@@ -29,7 +29,7 @@ export namespace demo
         {
             return this.m_texLoader.getImageTexByUrl(purl);
         }
-        
+        private cylinder:Cylinder3DEntity = null;
         private rendererInit():void
         {
             let rparam:RendererParam = new RendererParam();
@@ -78,11 +78,12 @@ void main(){
             material.setVtxShaderCode(vtxCode);
             material.addUniformDataAt("u_colors", this.m_uniformData);
 
-            let cly:Cylinder3DEntity = new Cylinder3DEntity();
-            cly.setMaterial(material);
-            cly.initialize(100.0,200.0,15,[this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
-            this.m_rscene.addEntity(cly);
+            let cylinder:Cylinder3DEntity = new Cylinder3DEntity();
+            cylinder.setMaterial(material);
+            cylinder.initialize(100.0,200.0,15,[this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
+            this.m_rscene.addEntity(cylinder);
 
+            this.cylinder = cylinder;
             let axis:Axis3DEntity = new Axis3DEntity();
             axis.initialize(300.0);
             this.m_rscene.addEntity(axis);                

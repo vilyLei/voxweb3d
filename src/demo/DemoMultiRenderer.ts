@@ -99,9 +99,9 @@ export namespace demo
                 axis.initializeCross(600.0);
                 this.m_rscene.addEntity(axis);
 
-                let cly:Cylinder3DEntity = new Cylinder3DEntity();
-                cly.initialize(100.0,200.0,15,[this.getTexAt(1)]);
-                this.m_rscene.addEntity(cly);
+                let cylinder:Cylinder3DEntity = new Cylinder3DEntity();
+                cylinder.initialize(100.0,200.0,15,[this.getTexAt(1)]);
+                this.m_rscene.addEntity(cylinder);
             }
         }
         private mouseDown():void
