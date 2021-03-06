@@ -96,7 +96,7 @@ export namespace renderingtoy
                 scrColorPlane.flipVerticalUV = true;
                 scrColorPlane.setMaterial(new ScreenPlaneMaterial());
                 scrColorPlane.initializeFixScreen([this.m_colorFbo.getRTTAt(0)]);
-                renderer.addEntity(scrColorPlane,this.m_blurSrcProcess.getWEid());
+                renderer.addEntity(scrColorPlane,this.m_blurSrcProcess.getRPIndex());
 
                 let resultPlane:Plane3DEntity = new Plane3DEntity();
                 resultPlane.name = "resultPlane";
@@ -108,7 +108,7 @@ export namespace renderingtoy
                         this.m_colorFbo.getRTTAt(0)
                     ]
                     );
-                renderer.addEntity(resultPlane,this.m_resultProcess.getWEid());
+                renderer.addEntity(resultPlane,this.m_resultProcess.getRPIndex());
 
             }
             run():void

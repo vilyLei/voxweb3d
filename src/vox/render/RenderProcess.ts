@@ -41,7 +41,7 @@ export namespace vox
         {
             private static s_max_shdTotal:number = 1024;
             // 记录自身所在的 rendererInstance id
-            private m_wuid:number = -1;
+            private m_rcuid:number = -1;
             // 记录自身所在 rendererInstance 中分配到的process index
             private m_weid:number = -1;
             private m_rc:RenderProxy;
@@ -64,9 +64,8 @@ export namespace vox
             
             uid:number = -1;
             
-            constructor(rc:RenderProxy, shader:MaterialShader,rpoNodeBuilder:RPONodeBuilder,rpoUnitBuilder:RPOUnitBuilder,vtxResource:ROVertexResource, batchEnabled:boolean,processFixedState:boolean)
+            constructor(shader:MaterialShader,rpoNodeBuilder:RPONodeBuilder,rpoUnitBuilder:RPOUnitBuilder,vtxResource:ROVertexResource, batchEnabled:boolean,processFixedState:boolean)
             {
-                this.m_rc = rc;
                 this.m_shader = shader;
                 this.m_rpoNodeBuilder = rpoNodeBuilder;
                 this.m_rpoUnitBuilder = rpoUnitBuilder;
@@ -96,20 +95,21 @@ export namespace vox
                     this.m_fixedState = processFixedState;
                 }
             }
-            setWOrldParam(pwuid:number,pweid:number):void
+            setRendererParam(rc:RenderProxy, pweid:number):void
             {
-                this.m_wuid = pwuid;
-                this.m_weid = this.m_weid = pweid;
+                this.m_rc = rc;
+                this.m_rcuid = rc.getRCUid();
+                this.m_weid = pweid;
             }
             getUid():number
             {
                 return this.uid;
             }
-            getWUid():number
+            getRCUid():number
             {
-                return this.m_wuid;
+                return this.m_rcuid;
             }
-            getWEid():number
+            getRPIndex():number
             {
                 return this.m_weid;
             }
@@ -339,7 +339,7 @@ export namespace vox
                 this.m_nodesLen = 0;
                 this.uid = -1;
                 this.m_weid = -1;
-                this.m_wuid = -1;
+                this.m_rcuid = -1;
                 this.m_weid = -1;
                 let i:number = 0;
                 for(; i < this.m_blockListLen; ++i)

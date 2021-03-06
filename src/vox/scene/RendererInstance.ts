@@ -217,9 +217,9 @@ export namespace vox
                     //if(process != null && entity != null && entity.__$wuid < 0 && entity.__$weid < 0 && entity.__$contId < 1)
                     if(entity.__$testRendererEnabled())
                     {
-                        if(process.getWUid() == this.m_uid)
+                        if(process.getRCUid() == this.m_uid)
                         {
-                            this.m_entity3DMana.addEntity(entity,process.getWEid(),deferred);
+                            this.m_entity3DMana.addEntity(entity,process.getRPIndex(),deferred);
                         }
                     }
                 }
@@ -264,7 +264,7 @@ export namespace vox
              */
             removeEntityFromProcess(entity:IRenderEntity,process:RenderProcess):void
             {
-                if(process != null && process.getWUid() == this.m_uid)
+                if(process != null && process.getRCUid() == this.m_uid)
                 {
                     if(entity != null && entity.getRendererUid() == this.m_uid)
                     {
@@ -297,7 +297,6 @@ export namespace vox
             appendProcess(batchEnabled:boolean = true,processFixedState:boolean = false):IRenderProcess
             {
                 this.m_processBuider.setCreateParams(
-                    this.m_renderProxy,
                     this.m_dataBuilder.getMaterialShader(),
                     this.m_rpoNodeBuilder,
                     this.m_rpoUnitBuilder,
@@ -309,7 +308,7 @@ export namespace vox
                 let process:RenderProcess = this.m_processBuider.create() as RenderProcess;
                 
                 this.m_processes.push( process );
-                process.setWOrldParam(this.m_uid, this.m_processesLen);
+                process.setRendererParam(this.m_renderProxy, this.m_processesLen);
                 ++this.m_processesLen;
                 return process;
             }
@@ -321,7 +320,6 @@ export namespace vox
             createSeparatedProcess(batchEnabled:boolean = true,processFixedState:boolean = false):IRenderProcess
             {
                 this.m_processBuider.setCreateParams(
-                    this.m_renderProxy,
                     this.m_dataBuilder.getMaterialShader(),
                     this.m_rpoNodeBuilder,
                     this.m_rpoUnitBuilder,
@@ -331,7 +329,7 @@ export namespace vox
                 );
                 let process:RenderProcess = this.m_processBuider.create() as RenderProcess;
                 this.m_processes.push( process );
-                process.setWOrldParam(this.m_uid, this.m_processesLen);
+                process.setRendererParam(this.m_renderProxy, this.m_processesLen);
                 return process;
             }
             
@@ -383,7 +381,7 @@ export namespace vox
             }
             runProcess(process:IRenderProcess):void
             {
-                if(process.getWUid() == this.m_uid)
+                if(process.getRCUid() == this.m_uid)
                 {
                     process.run();
                 }

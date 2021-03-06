@@ -76,8 +76,8 @@ export namespace renderingtoy
             }
             bindProcess(srcProcess:IRenderProcess,dstProcess:IRenderProcess)
             {
-                this.m_srcProcessId = srcProcess.getWEid();
-                this.m_dstProcessId = dstProcess.getWEid();
+                this.m_srcProcessId = srcProcess.getRPIndex();
+                this.m_dstProcessId = dstProcess.getRPIndex();
             }
             setBackbufferVisible(boo:boolean):void
             {

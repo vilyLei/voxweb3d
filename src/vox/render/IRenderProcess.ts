@@ -14,14 +14,22 @@ export namespace vox
          */
         export interface IRenderProcess
         {
+            getUid():number;
             /**
-             * @returns get renderer unique id 
+             * @returns return renderer context unique id
              */
-            getWUid():number;
-            getWEid():number;
+            getRCUid():number;
+            /**
+             * @returns return a renderer process index of the renderer
+             */
+            getRPIndex():number;
             getUnitsTotal():number;
-            run():void;
             getEnabled():boolean;
+            
+            /**
+             * execute rendering
+             */
+            run():void;
         }
     }
 }

@@ -130,8 +130,8 @@
 //  import * as DemoDepthBlur from "./demo/DemoDepthBlur";
 //  import Demo = DemoDepthBlur.demo.DemoDepthBlur;
 
-import * as DemoDepthBlur2 from "./demo/DemoDepthBlur2";
-import Demo = DemoDepthBlur2.demo.DemoDepthBlur2;
+//  import * as DemoDepthBlur2 from "./demo/DemoDepthBlur2";
+//  import Demo = DemoDepthBlur2.demo.DemoDepthBlur2;
 
 //  import * as DemoDepthTex from "./demo/DemoDepthTex";
 //  import Demo = DemoDepthTex.demo.DemoDepthTex;
@@ -205,8 +205,8 @@ import Demo = DemoDepthBlur2.demo.DemoDepthBlur2;
 //  import * as DemoGpuVtxMana from "./demo/DemoGpuVtxMana";
 //  import Demo = DemoGpuVtxMana.demo.DemoGpuVtxMana;
 
-//  import * as DemoGpuTexMana from "./demo/DemoGpuTexMana";
-//  import Demo = DemoGpuTexMana.demo.DemoGpuTexMana;
+import * as DemoGpuTexMana from "./demo/DemoGpuTexMana";
+import Demo = DemoGpuTexMana.demo.DemoGpuTexMana;
 
 //  import * as DemoMaterial from "./demo/DemoMaterial";
 //  import Demo = DemoMaterial.demo.DemoMaterial;

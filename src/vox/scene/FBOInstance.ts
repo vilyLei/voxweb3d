@@ -112,7 +112,7 @@ export namespace vox
                 this.m_rindexs = new Array(list.length);
                 for(let i:number = 0; i < list.length; ++i)
                 {
-                    this.m_rindexs[i] = list[i].getWEid();
+                    this.m_rindexs[i] = list[i].getRPIndex();
                 }
             }
             getRProcessIDAt(i:number):number

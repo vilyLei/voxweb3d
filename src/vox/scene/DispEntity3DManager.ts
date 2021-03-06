@@ -60,75 +60,60 @@ export namespace vox
             }
             removeEntity(entity:IRenderEntity):void
             {
-                //if(entity.__$wuid == this.m_wuid && entity.__$weid > 0)
-                //if(entity.getRendererUid() == this.m_wuid && entity.__$weid > 0)
+                this.m_existencetotal--;
+                // 从所有相关process中移除这个display
+                let display:IRODisplay = entity.getDisplay();
+                if(display != null && display.__$ruid > -1)
                 {
-                    this.m_existencetotal--;
-                    //let node:Entity3DNode = Entity3DNode.GetByUid(entity.__$weid);
-                    //if(node != null && entity == node.entity)
-                    //if(true)
-                    //{
-                        //this.m_nodeLinker.removeNode(node);
-                        // 从所有相关process中移除这个display
-                        let display:IRODisplay = entity.getDisplay();
-                        if(display != null && display.__$ruid > -1)
-                        {
-                            let puid:number = display.__$ruid;
-                            let po:RCRPObj = this.m_rpoUnitBuilder.getRCRPObj(puid);
-                            if(po.count > 0)
-                            {
-                                if(po.count < 2)
-                                {
-                                    if(po.rprocessUid > -1)
-                                    {
-                                        this.m_rprocess = this.m_processBuider.getNodeByUid(po.rprocessUid) as RenderProcess;
-                                        this.m_rprocess.removeDisp(display);
-                                        po.rprocessUid = -1;
-                                    }
-                                }
-                                else
-                                {
-                                    let len:number = RCRPObj.RenerProcessMaxTotal;
-                                    for(let i:number = 0; i < len; ++i)
-                                    {
-                                        if((po.idsFlag&(1<<i)) > 0)
-                                        {
-                                            // the value of list[i] is the uid of a node;
-                                            this.m_rprocess = this.m_processBuider.getNodeByUid(i) as RenderProcess;
-                                            this.m_rprocess.removeDisp(display);
-                                        }
-                                    }
-                                }
-                            }
-
-                            if(po.count == 0)
-                            {
-                                //console.log("DispEntity3DManager::removeEntity(), remove a entity from all processes.");
-                                if(display.__$$rsign != DisplayRenderSign.LIVE_IN_WORLD)
-                                {
-                                    // error!!!
-                                    console.error("DispEntity3DManager::removeEntity(), Error: display.__$$rsign != RODisplay.LIVE_IN_WORLD.");
-                                }
-                                display.__$$rsign = DisplayRenderSign.NOT_IN_WORLD;
-                                // 准备移除和当前 display 对应的 RPOUnit
-                                this.m_rpoUnitBuilder.restoreByUid(puid);
-                            }
-                            else
-                            {
-                                console.warn("Error: DispEntity3DManager::removeEntity(), remove a entity from all processes failed.");
-                            }
-                        //}
-                        //Entity3DNode.Restore(node);
-                    }
-                    //entity.__$wuid = RSEntityFlag.RENDERER_UID_FLAT;
-                    entity.__$rseFlag = RSEntityFlag.RemoveRendererUid(entity.__$rseFlag);
-                    //entity.__$weid = -1;
-                    entity.__$rseFlag = RSEntityFlag.RemoveRendererLoad(entity.__$rseFlag);
-
-                    if(this.entityManaListener != null)
+                    let puid:number = display.__$ruid;
+                    let po:RCRPObj = this.m_rpoUnitBuilder.getRCRPObj(puid);
+                    if(po.count > 0)
                     {
-                        this.entityManaListener.removeFromWorld(entity,this.m_wuid,-1);
+                        if(po.count < 2)
+                        {
+                            if(po.rprocessUid > -1)
+                            {
+                                this.m_rprocess = this.m_processBuider.getNodeByUid(po.rprocessUid) as RenderProcess;
+                                this.m_rprocess.removeDisp(display);
+                                po.rprocessUid = -1;
+                            }
+                        }
+                        else
+                        {
+                            let len:number = RCRPObj.RenerProcessMaxTotal;
+                            for(let i:number = 0; i < len; ++i)
+                            {
+                                if((po.idsFlag&(1<<i)) > 0)
+                                {
+                                    // the value of list[i] is the uid of a node;
+                                    this.m_rprocess = this.m_processBuider.getNodeByUid(i) as RenderProcess;
+                                    this.m_rprocess.removeDisp(display);
+                                }
+                            }
+                        }
                     }
+                    if(po.count == 0)
+                    {
+                        //console.log("DispEntity3DManager::removeEntity(), remove a entity from all processes.");
+                        if(display.__$$rsign != DisplayRenderSign.LIVE_IN_WORLD)
+                        {
+                            // error!!!
+                            console.error("DispEntity3DManager::removeEntity(), Error: display.__$$rsign != RODisplay.LIVE_IN_WORLD.");
+                        }
+                        display.__$$rsign = DisplayRenderSign.NOT_IN_WORLD;
+                        // 准备移除和当前 display 对应的 RPOUnit
+                        this.m_rpoUnitBuilder.restoreByUid(puid);
+                    }
+                    else
+                    {
+                        console.warn("Error: DispEntity3DManager::removeEntity(), remove a entity from all processes failed.");
+                    }
+                }
+                entity.__$rseFlag = RSEntityFlag.RemoveRendererUid(entity.__$rseFlag);
+                entity.__$rseFlag = RSEntityFlag.RemoveRendererLoad(entity.__$rseFlag);
+                if(this.entityManaListener != null)
+                {
+                    this.entityManaListener.removeFromWorld(entity,this.m_wuid,-1);
                 }
             }
             addEntity(entity:IRenderEntity, processUid:number,deferred:boolean = false):boolean
@@ -153,9 +138,7 @@ export namespace vox
                             {
                                 disp.__$$rsign = DisplayRenderSign.GO_TO_WORLD;
                             }
-                            //entity.__$weid = this.m_maxFlag;
                             entity.__$rseFlag = RSEntityFlag.AddRendererLoad(entity.__$rseFlag);
-                            //entity.__$wuid = this.m_wuid;
                             entity.__$rseFlag = RSEntityFlag.AddRendererUid(entity.__$rseFlag, this.m_wuid);
                             this.m_waitList.push(entity);
                             this.m_processUidList.push(processUid);
@@ -175,7 +158,6 @@ export namespace vox
                                 {
                                     disp.__$$rsign = DisplayRenderSign.GO_TO_WORLD;
                                 }
-                                //entity.__$weid = this.m_maxFlag;
                                 entity.__$rseFlag = RSEntityFlag.AddRendererLoad(entity.__$rseFlag);
                                 this.m_waitList.push(entity);
                                 this.m_processUidList.push(processUid);
@@ -184,7 +166,6 @@ export namespace vox
                     }
                     else
                     {
-                        //entity.__$wuid = this.m_wuid;
                         entity.__$rseFlag = RSEntityFlag.AddRendererUid(entity.__$rseFlag, this.m_wuid);
                     }
                 }
