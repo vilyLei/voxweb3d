@@ -35,36 +35,34 @@ export namespace renderingtoy
             getFragShaderCode():string
             {
                 let fragCode:string = 
-"\
-#version 300 es\n\
-precision mediump float;\n\
-in vec4 v_color;\n\
-layout(location = 0) out vec4 FragColor;\n\
-void main()\n\
-{\n\
-    FragColor = vec4(vec3(v_color.w * 0.01,0.0,1.0), v_color.w);\n\
-}\n\
-";
+`#version 300 es
+precision mediump float;
+in vec4 v_color;
+layout(location = 0) out vec4 FragColor;
+void main()
+{
+    FragColor = vec4(vec3(v_color.w * 0.01,0.0,1.0), v_color.w);
+}
+`;
                 return fragCode;
             }
             getVtxShaderCode():string
             {
                 let vtxCode:string = 
-"\
-#version 300 es\n\
-precision mediump float;\n\
-layout(location = 0) in vec3 a_vs;\n\
-uniform mat4 u_objMat;\n\
-uniform mat4 u_viewMat;\n\
-uniform mat4 u_projMat;\n\
-out vec4 v_color;\n\
-void main()\n\
-{\n\
-    vec4 viewPv = u_viewMat * u_objMat * vec4(a_vs, 1.0);\n\
-    gl_Position = u_projMat * viewPv;\n\
-    v_color = vec4(abs(viewPv.xyz),length(viewPv.xyz));\n\
-}\n\
-";
+`#version 300 es
+precision mediump float;
+layout(location = 0) in vec3 a_vs;
+uniform mat4 u_objMat;
+uniform mat4 u_viewMat;
+uniform mat4 u_projMat;
+out vec4 v_color;
+void main()
+{
+    vec4 viewPv = u_viewMat * u_objMat * vec4(a_vs, 1.0);
+    gl_Position = u_projMat * viewPv;
+    v_color = vec4(abs(viewPv.xyz),length(viewPv.xyz));
+}
+`;
                 return vtxCode;
             }
             getUniqueShaderName()

@@ -234,7 +234,7 @@ export namespace demo
                     axis.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
                     axis.setScaleXYZ((Math.random() + 0.8) * scaleK,(Math.random() + 0.8) * scaleK,(Math.random() + 0.8) * scaleK);
                     axis.setRotationXYZ(Math.random() * 500.0,Math.random() * 500.0,Math.random() * 500.0);
-                    this.m_rscene.addEntity(axis);                
+                    this.m_rscene.addEntity(axis);
                     axis.name = "axis_"+i;
                     ctrObj.name = axis.name;
                     let dispatcher:MouseEvt3DDispatcher = new MouseEvt3DDispatcher();

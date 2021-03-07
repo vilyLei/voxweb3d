@@ -15,7 +15,7 @@ import * as Sphere3DEntityT from "../vox/entity/Sphere3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureStoreT from "../vox/texture/TextureStore";
 import * as TextureConstT from "../vox/texture/TextureConst";
-import * as ImageTexResLoaderT from "../vox/texture/ImageTexResLoader";
+import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as RendererSceneT from "../vox/scene/RendererScene";
 import * as DivLogT from "../vox/utils/DivLog";
@@ -41,7 +41,7 @@ import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
-import ImageTexResLoader = ImageTexResLoaderT.vox.texture.ImageTexResLoader;
+import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import DivLog = DivLogT.vox.utils.DivLog;
@@ -155,16 +155,13 @@ export namespace demo
         }
         private m_rscene:RendererScene = null;
         private m_rcontext:RendererInstanceContext = null;
-        private m_texLoader:ImageTexResLoader = new ImageTexResLoader();
+        private m_texLoader:ImageTextureLoader = null;//new ImageTextureLoader();
         private m_camTrack:CameraTrack = null;
         private m_CameraZoomController:CameraZoomController = new CameraZoomController();
         private m_profileInstance:ProfileInstance = new ProfileInstance();
-        getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
+        getImageTexByUrl(purl:string):TextureProxy
         {
-            let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
-            ptex.mipmapEnabled = mipmapEnabled;
-            if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
-            return ptex;
+            return this.m_texLoader.getImageTexByUrl(purl);
         }
         private initMobileEvt():void
         {
@@ -211,16 +208,14 @@ export namespace demo
         initialize():void
         {
             console.log("DemoMobileEvt::initialize()......");
-            if(this.m_rcontext == null)
+            if(this.m_rscene == null)
             {
                 
                 H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 DivLog.SetDebugEnabled(false);
-                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-                
+
                 let rparam:RendererParam = new RendererParam();
                 rparam.maxWebGLVersion = 1;
                 rparam.setCamProject(45,0.1,6000.0);
@@ -230,8 +225,15 @@ export namespace demo
                 this.m_rscene.updateCamera();
                 this.m_rcontext = this.m_rscene.getRendererContext();
                 this.m_profileInstance.initialize(this.m_rscene.getRenderer());
+                                
+                this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
+
+                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
                 
                 this.m_rscene.enableMouseEvent(true);
+
+
                 this.m_CameraZoomController.bindCamera(this.m_rscene.getCamera());
                 this.m_CameraZoomController.initialize(this.m_rscene.getStage3D() as Stage3D);
 
@@ -242,7 +244,7 @@ export namespace demo
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.initialize(300.0);
                 this.m_rscene.addEntity(axis);
-                //return;
+                
                 let srcBox:Box3DEntity = new Box3DEntity();
                 srcBox.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
                 let i:number = 0;

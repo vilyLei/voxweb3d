@@ -59,7 +59,7 @@ export namespace vox
             }
             private restoreId(id:number):void
             {
-                if(id >= 0 && this.m_nodeFlagList[id] == 1)
+                if(id > 0 && this.m_nodeFlagList[id] == 1)
                 {
                     //Entity3DNode.Restore(this.m_nodeList[id]);
                     this.m_freeIdList.push(id);
@@ -70,7 +70,7 @@ export namespace vox
             // 可以添加真正被渲染的实体也可以添加只是为了做检测的实体(不允许有material)
             addEntity(entity:IRenderEntity):Entity3DNode
             {
-                if(entity.__$spaceId < 0)
+                if(entity.__$spaceId < 1)
                 {
                     let node:Entity3DNode = this.createNode();
                     this.m_entityList[node.spaceId] = entity;
@@ -92,7 +92,7 @@ export namespace vox
             }
             getNodeByEntity(entity:IRenderEntity):Entity3DNode
             {
-                if(entity.__$spaceId > -1 && this.m_entityList[entity.__$spaceId] == entity)
+                if(entity.__$spaceId > 0 && this.m_entityList[entity.__$spaceId] == entity)
                 {
                     return this.m_nodeList[entity.__$spaceId];
                 }
@@ -100,11 +100,11 @@ export namespace vox
             }
             removeEntity(entity:IRenderEntity):void
             {
-                if(entity.__$spaceId > -1 && this.m_entityList[entity.__$spaceId] == entity)
+                if(entity.__$spaceId > 0 && this.m_entityList[entity.__$spaceId] == entity)
                 {
                     this.m_nodeList[entity.__$spaceId].entity = null;                    
                     this.restoreId(entity.__$spaceId);
-                    entity.__$spaceId = -1;
+                    entity.__$spaceId = 0;
                 }
             }
             toString():string

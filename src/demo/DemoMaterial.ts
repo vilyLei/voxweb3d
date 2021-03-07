@@ -1,14 +1,17 @@
-
+import * as Vector3DT from "../vox/geom/Vector3";
 import * as RendererParamT from "../vox/scene/RendererParam";
 import * as ShaderMaterialT from "../vox/material/mcase/ShaderMaterial";
+import * as MouseEventT from "../vox/event/MouseEvent";
 import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
 import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as RendererSceneT from "../vox/scene/RendererScene";
 import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 
+import Vector3D = Vector3DT.vox.geom.Vector3D;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import ShaderMaterial = ShaderMaterialT.vox.material.mcase.ShaderMaterial;
+import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
 import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
@@ -37,6 +40,7 @@ export namespace demo
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam,3);
             this.m_rscene.updateCamera();
+            this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
         }
         initialize():void
@@ -80,7 +84,8 @@ void main(){
 
             let cylinder:Cylinder3DEntity = new Cylinder3DEntity();
             cylinder.setMaterial(material);
-            cylinder.initialize(100.0,200.0,15,[this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
+            cylinder.initialize(100.0,200.0,15,[this.getImageTexByUrl("static/assets/tree_scenery.jpg")]);
+            //cylinder.setScaleXYZ(0.1,0.1,0.1);
             this.m_rscene.addEntity(cylinder);
 
             this.cylinder = cylinder;
@@ -88,13 +93,25 @@ void main(){
             axis.initialize(300.0);
             this.m_rscene.addEntity(axis);                
         }
+        private m_flag:boolean = false;
+        private m_pos:Vector3D = new Vector3D();
+        private mouseDown():void
+        {
+            this.m_flag = !this.m_flag;
+        }
         run():void
         {
             // 修改uniform数据
             this.m_time += 1.0;
             this.m_uniformData[0] = Math.abs(Math.sin(this.m_time * 0.01));
             this.m_uniformData[6] = Math.abs(Math.cos(this.m_time * 0.002));
-            
+            //  if(this.m_flag)
+            //  {
+            //      this.cylinder.setPosition(this.m_pos);
+            //      this.cylinder.update();
+            //      this.m_pos.x = this.m_pos.x;
+            //      this.m_pos.y = this.m_pos.y;
+            //  }
             // load texture resource (资源分帧加载)
             this.m_texLoader.run();
             // run rendering process (执行渲染过程)         

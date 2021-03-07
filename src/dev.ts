@@ -154,8 +154,8 @@
 //  import * as DemoOrtho from "./demo/DemoOrtho";
 //  import Demo = DemoOrtho.demo.DemoOrtho;
 
-//  import * as DemoMobileEvt from "./demo/DemoMobileEvt";
-//  import Demo = DemoMobileEvt.demo.DemoMobileEvt;
+import * as DemoMobileEvt from "./demo/DemoMobileEvt";
+import Demo = DemoMobileEvt.demo.DemoMobileEvt;
 
 //  import * as DemoFBOBlit from "./demo/DemoFBOBlit";
 //  import Demo = DemoFBOBlit.demo.DemoFBOBlit;
@@ -208,8 +208,8 @@
 //  import * as DemoGpuTexMana from "./demo/DemoGpuTexMana";
 //  import Demo = DemoGpuTexMana.demo.DemoGpuTexMana;
 
-import * as DemoMaterial from "./demo/DemoMaterial";
-import Demo = DemoMaterial.demo.DemoMaterial;
+//  import * as DemoMaterial from "./demo/DemoMaterial";
+//  import Demo = DemoMaterial.demo.DemoMaterial;
 
 //  import * as DemoVtx from "./demo/DemoVtx";
 //  import Demo = DemoVtx.demo.DemoVtx;

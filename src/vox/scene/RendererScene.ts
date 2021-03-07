@@ -620,7 +620,7 @@ export namespace vox
                         }
                     }
                 }
-                //
+                
                 let i:number = 0;
                 for(; i < this.m_childrenTotal; ++i)
                 {

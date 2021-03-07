@@ -124,7 +124,7 @@ export namespace vox
             {
                 if(entity.getGlobalBounds() != null && entity.spaceCullMask > SpaceCullingMasK.NONE)
                 {
-                    if(entity.__$spaceId < 0)
+                    if(entity.__$spaceId < 1)
                     {
                         entity.update();
                         ++this.m_entitysTotal;

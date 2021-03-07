@@ -34,42 +34,40 @@ export namespace renderingtoy
                 }
                 getFragShaderCode():string
                 {
-                    let fragCode:string = 
-"\
-precision mediump float;\n\
-uniform sampler2D u_sampler0;\n\
-uniform sampler2D u_sampler1;\n\
-uniform sampler2D u_sampler2;\n\
-uniform vec4 u_color;\n\
-varying vec2 v_texUV;\n\
-void main()\n\
-{\n\
-    vec4 blurColor4 = texture2D(u_sampler0, v_texUV);\n\
-    vec4 depthColor4 = texture2D(u_sampler1, v_texUV);\n\
-    vec4 baseColor4 = texture2D(u_sampler2, v_texUV);\n\
-    float k = (depthColor4.w - 1000.0) / 1000.0;\n\
-    if(k > 1.0 || depthColor4.r < 0.5) k = 1.0;\n\
-    if(k < 0.0) k = 0.0;\n\
-    gl_FragColor = (vec4(baseColor4.xyz * (1.0 - k) + k * blurColor4.xyz, 1.0) * u_color);\n\
-}\n\
-";
+                    let fragCode:string =
+`precision mediump float;
+uniform sampler2D u_sampler0;
+uniform sampler2D u_sampler1;
+uniform sampler2D u_sampler2;
+uniform vec4 u_color;
+varying vec2 v_texUV;
+void main()
+{
+    vec4 blurColor4 = texture2D(u_sampler0, v_texUV);
+    vec4 depthColor4 = texture2D(u_sampler1, v_texUV);
+    vec4 baseColor4 = texture2D(u_sampler2, v_texUV);
+    float k = (depthColor4.w - 1000.0) / 1000.0;
+    if(k > 1.0 || depthColor4.r < 0.5) k = 1.0;
+    if(k < 0.0) k = 0.0;
+    gl_FragColor = (vec4(baseColor4.xyz * (1.0 - k) + k * blurColor4.xyz, 1.0) * u_color);
+}
+`;
                     return fragCode;
                 }
                 getVtxShaderCode():string
                 {
-                    let vtxCode:string = 
-"\
-precision mediump float;\n\
-attribute vec3 a_vs;\n\
-attribute vec2 a_uvs;\n\
-uniform mat4 u_objMat;\n\
-varying vec2 v_texUV;\n\
-void main()\n\
-{\n\
-    gl_Position = u_objMat * vec4(a_vs,1.0);\n\
-    v_texUV = vec2(a_uvs.x,a_uvs.y);\n\
-}\n\
-";
+                    let vtxCode:string =
+`precision mediump float;
+attribute vec3 a_vs;
+attribute vec2 a_uvs;
+uniform mat4 u_objMat;
+varying vec2 v_texUV;
+void main()
+{
+    gl_Position = u_objMat * vec4(a_vs,1.0);
+    v_texUV = a_uvs.xy;
+}
+`;
                     return vtxCode;
                 }
                 getUniqueShaderName()
