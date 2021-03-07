@@ -78,11 +78,9 @@ export namespace vox
             protected m_parent:IDisplayEntityContainer = null;
             protected m_renderProxy:RenderProxy = null;
             
-            // 记录自身在space中的unique id
-            __$spaceId:number = 0;//最小值为1, 最大值为1048575, 即0xfffff，也就是最多只能展示1048575个entitys
             /**
              * renderer scene entity flag
-             * 第0位到第19位总共20位存放自身在space中的 index id,
+             * 第0位到第19位总共20位存放自身在space中的 index id(最小值为1, 最大值为1048575,默认值是0, 也就是最多只能展示1048575个entitys),
              * 第20位开始到26位为总共7位止存放在renderer中的状态数据(renderer unique id and others)
              * 第27位存放是否在container里面
              * 第28位开始到30位总共三位存放renderer 载入状态 的相关信息
@@ -121,7 +119,7 @@ export namespace vox
             __$testSpaceEnabled():boolean
             {
                 //return this.__$spaceId < 0 && this.__$contId < 1;
-                return RSEntityFlag.TestSpaceEnabled(this.__$rseFlag);
+                return RSEntityFlag.TestSpaceEnabled2(this.__$rseFlag);
             }
             __$testContainerEnabled():boolean
             {

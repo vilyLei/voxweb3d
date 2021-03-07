@@ -75,8 +75,12 @@ export namespace demo
                 this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
 
                 //let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-
                 let axis:Axis3DEntity = new Axis3DEntity();
+                axis.initialize(300.0);
+                axis.setXYZ(0.0, 0.0, 0.0);
+                this.m_rscene.addEntity(axis);
+
+                axis = new Axis3DEntity();
                 axis.initialize(300.0);
                 axis.setXYZ(200.0, 0.0, 0.0);
                 this.m_rscene.addEntity(axis);
@@ -94,7 +98,7 @@ export namespace demo
                 if(this.m_targets[0] != null)
                 {
                     console.log("this.m_targets[0].isFree(): ", this.m_targets[0].isFree());
-                    if(destroyEnabled)
+                    if(!destroyEnabled)
                     {
                         if(this.m_targets[0].isFree())
                         {
@@ -107,6 +111,7 @@ export namespace demo
                     }
                     else
                     {
+                        this.m_rscene.removeEntity(this.m_targets[0]);
                         this.m_targets[0].destroy();
                         this.m_targets[0] = null;
                     }

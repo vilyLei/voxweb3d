@@ -5,8 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as RSEntityFlagT from '../../vox/scene/RSEntityFlag';
 import * as IRenderEntityT from "../../vox/render/IRenderEntity";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
+
+import RSEntityFlag = RSEntityFlagT.vox.scene.RSEntityFlag;
 import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
 import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
 
@@ -61,7 +64,6 @@ export namespace vox
             {
                 if(id > 0 && this.m_nodeFlagList[id] == 1)
                 {
-                    //Entity3DNode.Restore(this.m_nodeList[id]);
                     this.m_freeIdList.push(id);
                     this.m_nodeFlagList[id] = 0;
                     this.m_entityList[id] = null;
@@ -70,14 +72,11 @@ export namespace vox
             // 可以添加真正被渲染的实体也可以添加只是为了做检测的实体(不允许有material)
             addEntity(entity:IRenderEntity):Entity3DNode
             {
-                if(entity.__$spaceId < 1)
-                {
-                    let node:Entity3DNode = this.createNode();
-                    this.m_entityList[node.spaceId] = entity;
-                    node.entity = entity;
-                    entity.__$spaceId = node.spaceId;
-                    return node;                        
-                }
+                let node:Entity3DNode = this.createNode();
+                this.m_entityList[node.spaceId] = entity;
+                node.entity = entity;
+                entity.__$rseFlag = RSEntityFlag.AddSpaceUid(entity.__$rseFlag, node.spaceId);
+                return node;
             }
             initialize(total:number):void
             {
@@ -92,19 +91,28 @@ export namespace vox
             }
             getNodeByEntity(entity:IRenderEntity):Entity3DNode
             {
-                if(entity.__$spaceId > 0 && this.m_entityList[entity.__$spaceId] == entity)
+                if(RSEntityFlag.TestSpaceContains(entity.__$rseFlag))
                 {
-                    return this.m_nodeList[entity.__$spaceId];
+                    let uid:number = RSEntityFlag.GetSpaceUid(entity.__$rseFlag);
+                    
+                    if(this.m_entityList[uid] == entity)
+                    {
+                        return this.m_nodeList[uid];
+                    }
                 }
                 return null;
             }
             removeEntity(entity:IRenderEntity):void
             {
-                if(entity.__$spaceId > 0 && this.m_entityList[entity.__$spaceId] == entity)
+                if(RSEntityFlag.TestSpaceContains(entity.__$rseFlag))
                 {
-                    this.m_nodeList[entity.__$spaceId].entity = null;                    
-                    this.restoreId(entity.__$spaceId);
-                    entity.__$spaceId = 0;
+                    let uid:number = RSEntityFlag.GetSpaceUid(entity.__$rseFlag);
+                    if(this.m_entityList[uid] == entity)
+                    {
+                        this.m_nodeList[uid].entity = null;
+                        this.restoreId(uid);
+                        entity.__$rseFlag = RSEntityFlag.RemoveSpaceUid(entity.__$rseFlag);
+                    }
                 }
             }
             toString():string

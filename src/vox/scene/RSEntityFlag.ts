@@ -32,16 +32,30 @@ export namespace vox
 
             // 第0位到第19位总共20位存放自身在space中的 index id(1 到 1048575(0xFFFFF), 但是不会包含0xFFFFF)
             static readonly SPACE_FLAT:number = 0xFFFFF;
-            static readonly SPACE_NOT_FLAT:number = ~0xFFFFF;
+            static readonly SPACE_NOT_FLAT:number = -0x100000;// ~0xFFFFF;
+            static AddSpaceUid(flag:number, rawUid:number):number
+            {
+                return (flag & -0x100000) | rawUid;
+            }
+            static RemoveSpaceUid(flag:number):number
+            {
+                //return flag & RSEntityFlag.SPACE_NOT_FLAT;
+                return flag & -0x100000;
+            }
+            static GetSpaceUid(flag:number):number
+            {
+                //return flag & RSEntityFlag.SPACE_FLAT;
+                return flag & 0xFFFFF;
+            }
 
 
             // 第20位开始到26位为总共7位止存放在renderer中的状态数据(renderer unique id and others),
             // 最多可以支持同时构建64个renderer instance
             static readonly RENDERER_UID_FLAT:number = 0x7F00000;// (1<<20 | 1<<21 | 1<<22 | 1<<23 | 1<<24 | 1<<25 | 1<<26);
-            static readonly RENDERER_UID_NOT_FLAT:number = ~0x7F00000;
+            static readonly RENDERER_UID_NOT_FLAT:number = -0x7f00001;// ~0x7F00000;
             static AddRendererUid(flag:number, rawUid:number):number
             {
-                return (flag & RSEntityFlag.RENDERER_UID_NOT_FLAT) | rawUid<<20;
+                return (flag & -0x7f00001) | rawUid<<20;
             }
             static RemoveRendererUid(flag:number):number
             {
@@ -70,9 +84,16 @@ export namespace vox
             static readonly RENDERER_ADN_LOAD_FLAT:number = 0x77F00000;// 0x7f00000 | 0x70000000;
 
 
+            static TestSpaceContains(flag:number):boolean
+            {
+                return (0xFFFFF & flag) > 0;
+            }
             static TestSpaceEnabled(flag:number):boolean
             {
-                //return (RSEntityFlag.SPACE_FLAT & flag) < 1 && (RSEntityFlag.CONTAINER_FLAG & flag) != RSEntityFlag.CONTAINER_FLAG;
+                return (0xFFFFF & flag) < 1;
+            }
+            static TestSpaceEnabled2(flag:number):boolean
+            {
                 return (0xFFFFF & flag) < 1 && (0x80000000 & flag) != 0x80000000;
             }
             static TestContainerEnabled(flag:number):boolean

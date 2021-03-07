@@ -154,8 +154,8 @@
 //  import * as DemoOrtho from "./demo/DemoOrtho";
 //  import Demo = DemoOrtho.demo.DemoOrtho;
 
-import * as DemoMobileEvt from "./demo/DemoMobileEvt";
-import Demo = DemoMobileEvt.demo.DemoMobileEvt;
+//  import * as DemoMobileEvt from "./demo/DemoMobileEvt";
+//  import Demo = DemoMobileEvt.demo.DemoMobileEvt;
 
 //  import * as DemoFBOBlit from "./demo/DemoFBOBlit";
 //  import Demo = DemoFBOBlit.demo.DemoFBOBlit;
@@ -217,8 +217,8 @@ import Demo = DemoMobileEvt.demo.DemoMobileEvt;
 //  import * as DemoSwapProcess from "./demo/DemoSwapProcess";
 //  import Demo = DemoSwapProcess.demo.DemoSwapProcess;
 
-//  import * as DemoDelEntity from "./demo/DemoDelEntity";
-//  import Demo = DemoDelEntity.demo.DemoDelEntity;
+import * as DemoDelEntity from "./demo/DemoDelEntity";
+import Demo = DemoDelEntity.demo.DemoDelEntity;
 
 //  import * as DemoText2D from "./demo/DemoText2D";
 //  import Demo = DemoText2D.demo.DemoText2D;

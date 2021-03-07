@@ -365,7 +365,7 @@ export namespace vox
             }
             addEntity(entity:IRenderEntity,processid:number = 0,deferred:boolean = true):void
             {
-                if(entity.__$spaceId < 0)
+                if(entity.__$testSpaceEnabled())
                 {
                     if(entity.isPolyhedral())
                     {

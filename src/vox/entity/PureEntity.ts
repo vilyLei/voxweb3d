@@ -77,11 +77,9 @@ export namespace vox
             // 如果一个entity如果包含了多个mesh,则这个bounds就是多个mesh aabb 合并的aabb
             protected m_globalBounds:AABB = null;
             
-            // space id
-            __$spaceId:number = -1;
             /**
              * renderer scene entity flag
-             * 第0位到第19位总共20位存放自身在space中的 index id,
+             * 第0位到第19位总共20位存放自身在space中的 index id(最小值为1, 最大值为1048575,默认值是0, 也就是最多只能展示1048575个entitys),
              * 第20位开始到26位为总共7位止存放在renderer中的状态数据(renderer unique id and others)
              * 第27位存放是否在container里面
              * 第28位开始到30位总共三位存放renderer 载入状态 的相关信息
@@ -109,7 +107,7 @@ export namespace vox
             }
             __$testSpaceEnabled():boolean
             {
-                return RSEntityFlag.TestSpaceEnabled(this.__$rseFlag);
+                return RSEntityFlag.TestSpaceEnabled2(this.__$rseFlag);
             }
             __$testContainerEnabled():boolean
             {
@@ -542,7 +540,6 @@ export namespace vox
             destroy():void
             {
                 // 当自身被完全移出RenderWorld之后才能执行自身的destroy
-                console.log("PureEntity::destroy(), rseFlag: "+this.__$rseFlag+", this.__$spaceId: "+this.__$spaceId);
                 if(this.m_mouseEvtDispatcher != null)
                 {
                     this.m_mouseEvtDispatcher.destroy();

@@ -9,6 +9,7 @@
 This relative module was not found:
 * ../../vox/scene/SpaceCullingMasK in ./src/vox/scene/RendererSpace.ts
 */
+import * as RSEntityFlagT from '../../vox/scene/RSEntityFlag';
 import * as Vector3DT from "../../vox/geom/Vector3";
 import * as AABBT from "../../vox/geom/AABB";
 import * as Stage3DT from "../../vox/display/Stage3D";
@@ -25,6 +26,7 @@ import * as IRendererT from "../../vox/scene/IRenderer";
 import * as IRaySelectorT from "../../vox/scene/IRaySelector";
 import * as ISpaceCullingorT from "../../vox/scene/ISpaceCullingor";
 
+import RSEntityFlag = RSEntityFlagT.vox.scene.RSEntityFlag;
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import AABB = AABBT.vox.geom.AABB;
 import Stage3D = Stage3DT.vox.display.Stage3D;
@@ -124,7 +126,7 @@ export namespace vox
             {
                 if(entity.getGlobalBounds() != null && entity.spaceCullMask > SpaceCullingMasK.NONE)
                 {
-                    if(entity.__$spaceId < 1)
+                    if(RSEntityFlag.TestSpaceEnabled( entity.__$rseFlag ))
                     {
                         entity.update();
                         ++this.m_entitysTotal;
@@ -166,19 +168,22 @@ export namespace vox
             }
             removeEntity(entity:IRenderEntity):void
             {
-                let node:Entity3DNode = this.m_nodeQueue.getNodeByEntity(entity);
-                if(node != null)
+                if(RSEntityFlag.TestSpaceContains( entity.__$rseFlag ))
                 {
-                    if(node.rstatus > 0)
+                    let node:Entity3DNode = this.m_nodeQueue.getNodeByEntity(entity);
+                    if(node != null)
                     {
-                        this.m_nodeSLinker.removeNode(node);
+                        if(node.rstatus > 0)
+                        {
+                            this.m_nodeSLinker.removeNode(node);
+                        }
+                        else
+                        {
+                            this.m_nodeWLinker.removeNode(node);
+                        }
+                        this.m_nodeQueue.removeEntity(entity);
+                        --this.m_entitysTotal;
                     }
-                    else
-                    {
-                        this.m_nodeWLinker.removeNode(node);
-                    }
-                    this.m_nodeQueue.removeEntity(entity);
-                    --this.m_entitysTotal;
                 }
             }
             update():void

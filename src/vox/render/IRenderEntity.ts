@@ -28,17 +28,9 @@ export namespace vox
          */
         export interface IRenderEntity
         {
-            //  // 自身所在的 RendererInstance unique id, 通过这个id可以找到对应的renderer instance
-            //  __$wuid:number;// = -1;
-            //  // 自身在 RendererInstance 中被分配的唯一id, 通过这个id就能在world中快速找到自己所在的数组位置
-            //  __$weid:number;// = -1;
-            //  // 记录自身所在的容器id
-            //  __$contId:number;// = -1;
-            // space id
-            __$spaceId:number;// = -1;
             /**
-             * renderer scene entity flag, default value is RSEntityFlag.DEFAULT
-             * 第0位到第19位总共20位存放自身在space中的 index id,
+             * renderer scene entity flag
+             * 第0位到第19位总共20位存放自身在space中的 index id(最小值为1, 最大值为1048575,默认值是0, 也就是最多只能展示1048575个entitys),
              * 第20位开始到26位为总共7位止存放在renderer中的状态数据(renderer unique id and others)
              * 第27位存放是否在container里面
              * 第28位开始到30位总共三位存放renderer 载入状态 的相关信息
