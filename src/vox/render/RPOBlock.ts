@@ -18,7 +18,7 @@ import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as RPONodeLinkerT from "../../vox/render/RPONodeLinker";
 import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
-import * as MaterialShaderT from '../../vox/material/MaterialShader';
+import * as RenderShaderT from '../../vox/render/RenderShader';
 import * as ROVertexResourceT from "../../vox/render/ROVertexResource";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
@@ -33,7 +33,7 @@ import RPONodeLinker = RPONodeLinkerT.vox.render.RPONodeLinker;
 import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
 import RenderColorMask = RODrawStateT.vox.render.RenderColorMask;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
+import RenderShader = RenderShaderT.vox.render.RenderShader;
 import ROVertexResource = ROVertexResourceT.vox.render.ROVertexResource;
 
 export namespace vox
@@ -56,8 +56,8 @@ export namespace vox
             rpoNodeBuilder:RPONodeBuilder = null;
             rpoUnitBuilder:RPOUnitBuilder = null;
             vtxResource:ROVertexResource = null;
-            private m_shader:MaterialShader = null;
-            constructor(shader:MaterialShader)
+            private m_shader:RenderShader = null;
+            constructor(shader:RenderShader)
             {
                 this.m_shader = shader;
                 this.m_uid = RPOBlock.__s_uid++;
@@ -109,6 +109,7 @@ export namespace vox
                 if(nextNode != null)
                 {
                     this.m_shader.bindToGpu(this.shdUid);
+                    this.m_shader.resetUniform();
                     let unit:RPOUnit = null;
                     while(nextNode != null)
                     {
@@ -139,8 +140,8 @@ export namespace vox
                 if(nextNode != null)
                 {
                     this.m_shader.bindToGpu(this.shdUid);
-                    
                     this.m_shader.resetUniform();
+
                     let unit:RPOUnit = null;
                     let vtxTotal:number = 0;
                     let texTotal:number = 0;
@@ -273,8 +274,7 @@ export namespace vox
                 let nextNode:RPONode = this.m_nodeLinker.getBegin();
                 if(nextNode != null)
                 {
-                    this.m_shader.bindToGpu(this.shdUid);
-                    
+                    this.m_shader.bindToGpu(this.shdUid);                    
                     this.m_shader.resetUniform();
 
                     let unit:RPOUnit = null;
@@ -334,6 +334,23 @@ export namespace vox
                             }
                             nextNode = nextNode.next;
                         }
+                    }
+                }
+            }
+            // 在锁定material的时候,直接绘制单个unit
+            drawUnit(rc:RenderProxy,unit:RPOUnit,disp:IRODisplay):void
+            {
+                if(unit.drawEnabled)
+                {
+                    this.m_shader.bindToGpu(unit.shdUid);
+                    unit.run(rc);
+                    if(unit.partTotal < 1)
+                    {
+                        unit.drawThis(rc);
+                    }
+                    else
+                    {
+                        unit.drawPart(rc);
                     }
                 }
             }

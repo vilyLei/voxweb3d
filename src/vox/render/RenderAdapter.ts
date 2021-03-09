@@ -546,7 +546,7 @@ export namespace vox
 						this.m_fboClearBoo = false;
 						this.m_fboBuf.use(this.m_rc);
 						this.m_activeAttachmentTotal = this.m_fboBuf.getActiveAttachmentTotal();
-						//trace("RenderProxy::__useFBO(), fbo: ", m_fboBuf->getFBO());
+
 						if (clearColorBoo)
 						{
 							this.m_fboBuf.clearOnlyColor(this.bgColor);

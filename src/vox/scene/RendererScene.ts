@@ -196,8 +196,7 @@ export namespace vox
             }
             createFBOInstance():FBOInstance
             {
-                let ins:FBOInstance = new FBOInstance(this, this.textureBlock.getRTTStrore());
-                return ins; 
+                return new FBOInstance(this, this.textureBlock.getRTTStrore());
             }
             setClearUint24Color(colorUint24:number,alpha:number = 1.0):void
             {
@@ -345,11 +344,11 @@ export namespace vox
             }
             private m_children:DisplayEntityContainer[] = [];
             private m_childrenTotal:number = 0;
-            addContainer(child:DisplayEntityContainer,processid:number = 0):void
+            addContainer(child:DisplayEntityContainer,processIndex:number = 0):void
             {
-                if(processid < 0)
+                if(processIndex < 0)
                 {
-                    processid = 0;
+                    processIndex = 0;
                 }
                 if(child != null && child.__$wuid < 0 && child.__$contId < 1)
                 {
@@ -364,7 +363,7 @@ export namespace vox
                     if(i >= this.m_childrenTotal)
                     {
                         child.__$wuid = this.m_uid;
-                        child.wprocuid = this.m_processids[processid];
+                        child.wprocuid = this.m_processids[processIndex];
                         child.__$setRenderer( this );
                         this.m_children.push(child);
                         this.m_childrenTotal++;
@@ -394,9 +393,13 @@ export namespace vox
              * 将已经在渲染运行时中的entity移动到指定 process uid 的 render process 中去
              * move rendering runtime displayEntity to different renderer process
              */
-            moveEntityTo(entity:IRenderEntity,processid:number):void
+            moveEntityTo(entity:IRenderEntity,processindex:number):void
             {
-                this.m_renderer.moveEntityToProcessAt(entity,this.m_processids[processid]);
+                this.m_renderer.moveEntityToProcessAt(entity,this.m_processids[processindex]);
+            }
+            drawEntity(entity:IRenderEntity):void
+            {
+                this.m_renderer.drawEntity(entity);
             }
             /**
              * add an entity to the renderer process of the renderer instance
@@ -404,16 +407,15 @@ export namespace vox
              * @param processid this destination renderer process id
              * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
              */
-            addEntity(entity:IRenderEntity,processid:number = 0,deferred:boolean = true):void
+            addEntity(entity:IRenderEntity,processindex:number = 0,deferred:boolean = true):void
             {
-                //if(entity.__$spaceId < 0 && entity.__$contId < 1)
                 if(entity.__$testSpaceEnabled())
                 {
                     if(entity.isPolyhedral())
                     {
                         if(entity.hasMesh())
                         {
-                            this.m_renderer.addEntity(entity,this.m_processids[processid],deferred);
+                            this.m_renderer.addEntity(entity,this.m_processids[processindex],deferred);
                             if(this.m_rspace != null)
                             {
                                 this.m_rspace.addEntity(entity);
@@ -429,13 +431,13 @@ export namespace vox
                                 this.m_nodeWaitQueue = new EntityNodeQueue();
                             }
                             let node:Entity3DNode = this.m_nodeWaitQueue.addEntity(entity);                            
-                            node.rstatus = processid;
+                            node.rstatus = processindex;
                             this.m_nodeWaitLinker.addNode(node);
                         }
                     }
                     else
                     {
-                        this.m_renderer.addEntity(entity,this.m_processids[processid],deferred);
+                        this.m_renderer.addEntity(entity,this.m_processids[processindex],deferred);
                         if(this.m_rspace != null)
                         {
                             this.m_rspace.addEntity(entity);

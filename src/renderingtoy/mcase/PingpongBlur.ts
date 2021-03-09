@@ -55,7 +55,6 @@ export namespace renderingtoy
             private m_blurCount:number = 15;
             private m_blurDensity:number = 2.0;
             private m_srcProcessId:number = 0;
-            private m_dstProcessId:number = 1;
             private m_syncViewSizeEnabled:boolean = true;
             /**
              * @param renderer RendererInstance class instance
@@ -69,15 +68,13 @@ export namespace renderingtoy
                     this.m_blurMode = blurMode;
                 }
             }
-            bindProcessId(srcProcessId:number,dstProcessId:number)
+            bindSrcProcessId(srcProcessId:number)
             {
                 this.m_srcProcessId = srcProcessId;
-                this.m_dstProcessId = dstProcessId;
             }
-            bindProcess(srcProcess:IRenderProcess,dstProcess:IRenderProcess)
+            bindSrcProcess(srcProcess:IRenderProcess)
             {
                 this.m_srcProcessId = srcProcess.getRPIndex();
-                this.m_dstProcessId = dstProcess.getRPIndex();
             }
             setBackbufferVisible(boo:boolean):void
             {
@@ -117,7 +114,7 @@ export namespace renderingtoy
                 this.m_texs[index] = tex;
                 return this.m_texs[index];
             }
-            private updateState(adapter:RenderAdapter,dstProcessId:number):void
+            private updateState(adapter:RenderAdapter):void
             {
                 if(this.m_plane0 == null)
                 {
@@ -140,27 +137,24 @@ export namespace renderingtoy
                     let plane3D:Plane3DEntity = new Plane3DEntity();
                     plane3D.setMaterial( this.m_vMaterial );
                     plane3D.initializeXOY(-1.0,-1.0, 2.0,2.0, [this.getTextureAt(0)]);
-                    this.m_renderer.addEntity(plane3D,dstProcessId);
-                    plane3D.getDisplay().renderState = RendererState.BACK_NORMAL_ALWAYS_STATE;
+                    plane3D.setRenderState( RendererState.BACK_NORMAL_ALWAYS_STATE );
                     this.m_plane0 = plane3D;
-                    this.m_plane0.setVisible(false);
                     
                     this.m_hMaterial = new PingpongBlurMaterial(mh);
                     this.m_hMaterial.setBlurDensity(this.m_blurDensity);
                     plane3D = new Plane3DEntity();
                     plane3D.setMaterial( this.m_hMaterial );
+                    plane3D.copyMeshFrom(this.m_plane0);
                     plane3D.initializeXOY(-1.0,-1.0, 2.0,2.0, [this.getTextureAt(1)]);
-                    this.m_renderer.addEntity(plane3D,dstProcessId);
-                    plane3D.getDisplay().renderState = RendererState.BACK_NORMAL_ALWAYS_STATE;
+                    plane3D.setRenderState( RendererState.BACK_NORMAL_ALWAYS_STATE );
                     this.m_plane1 = plane3D;
-                    this.m_plane1.setVisible(false);
                 }
                 let blurWidth:number = adapter.getFBOFitWidth();
                 let viewHeight:number = adapter.getFBOFitHeight();
                 this.m_vMaterial.setTexSize(blurWidth, viewHeight);
                 this.m_hMaterial.setTexSize(blurWidth, viewHeight);
             }
-            run(srcProcessId:number = -1,dstProcessId:number = -1):void
+            run(srcProcessId:number = -1):void
             {
                 let rc:RenderProxy = this.m_renderer.getRenderProxy();
                 let adapter:RenderAdapter = rc.getRenderAdapter();
@@ -174,31 +168,40 @@ export namespace renderingtoy
                 }
                 if(srcProcessId < 0)
                     srcProcessId = this.m_srcProcessId;
-                if(dstProcessId < 0)
-                    dstProcessId = this.m_dstProcessId;
+                /////////////////////////////////////////////
                 // pingpong blur executing
-                this.updateState(adapter, dstProcessId);
+                this.updateState(adapter);
                 // 将srcProcessId 里面的显示内容绘制到 fbo, 以便获取初始数据源
                 adapter.setRenderToTexture(this.getTextureAt(0), true, false, 0);
                 adapter.useFBO(true, true, false);
                 this.m_renderer.runAt(srcProcessId);
                 // bluring
-                for(let i:number = 0; i < this.m_blurCount; ++i)
+                let i:number = 0;
+                for(; i < this.m_blurCount; ++i)
                 {
-                    // 这里面是不需要处理深度的
-                    this.m_plane0.setVisible( (i%2) == 0 );
-                    this.m_plane1.setVisible((i%2) != 0);
                     adapter.setRenderToTexture(this.getTextureAt((1 - (i%2))), true, false, 0);
                     adapter.useFBO(true, true, false);
-                    this.m_renderer.runAt(dstProcessId);
+                    if((i%2) == 0)
+                    {
+                        this.m_renderer.drawEntity(this.m_plane0);
+                    }
+                    else
+                    {
+                        this.m_renderer.drawEntity(this.m_plane1);
+                    }
                 }
-                this.m_plane0.setVisible(!this.m_plane0.getVisible());
-                this.m_plane1.setVisible(!this.m_plane1.getVisible());
                 if(this.m_backbufferVisible)
                 {
                     adapter.setRenderToBackBuffer();
                     rc.unlockRenderState();
-                    this.m_renderer.runAt(dstProcessId);
+                    if((i%2) == 0)
+                    {
+                        this.m_renderer.drawEntity(this.m_plane0);
+                    }
+                    else
+                    {
+                        this.m_renderer.drawEntity(this.m_plane1);
+                    }
                 }
             }
             destroy():void

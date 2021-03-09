@@ -26,7 +26,7 @@ export namespace vox
 		/////////////////////////////////////////////////////////////////////////////////////////////////
 		export class Matrix4 implements Float32Data
 		{
-			private static ___InitData:Float32Array = new Float32Array([
+			private static s_InitData:Float32Array = new Float32Array([
 				1.0,0.0,0.0,0.0,
 				0.0,1.0,0.0,0.0,
 				0.0,0.0,1.0,0.0,
@@ -34,7 +34,7 @@ export namespace vox
 			]);
 			private static s_uid:number = 0;
 			private m_uid:number = -1;
-			private static s_tMat4 = new Matrix4();
+			private static s_tMat4:Matrix4 = new Matrix4();
 			private m_index:number = 0;
 			private m_fs32:Float32Array = null;
 			private m_localFS32:Float32Array = null;
@@ -51,7 +51,7 @@ export namespace vox
 				else
 				{
 					this.m_fs32 = new Float32Array(16);
-					this.m_fs32.set(Matrix4.___InitData,0);
+					this.m_fs32.set(Matrix4.s_InitData,0);
 					this.m_localFS32 = this.m_fs32;
 				}
 			}
@@ -81,7 +81,7 @@ export namespace vox
 			}
     		identity():void
     		{
-				this.m_localFS32.set(Matrix4.___InitData,0);
+				this.m_localFS32.set(Matrix4.s_InitData,0);
     		}
     		determinant():number
 			{

@@ -34,7 +34,7 @@ export namespace demo
                 rparam.setCamPosition(1700,1700,1700);
                 this.m_renderer.initialize(rparam);
                 this.m_scene.initialize(this.m_renderer);
-                this.m_statusDisp.initialize("rstatus",this.m_renderer.getViewWidth() - 128);                
+                this.m_statusDisp.initialize("rstatus",this.m_renderer.getViewWidth() - 256);                
             }
         }
         run():void

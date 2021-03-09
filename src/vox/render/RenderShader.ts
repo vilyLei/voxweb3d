@@ -26,13 +26,13 @@ import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
 
 export namespace vox
 {
-    export namespace material
+    export namespace render
     {
         /**
          * 作为渲染器运行时 material shader 资源的管理类
          * renderer runtime material shader resource manager
          */
-        export class MaterialShader implements IRenderShader,IRenderResource
+        export class RenderShader implements IRenderShader,IRenderResource
         {
             private m_shdDict:Map<string,ShdProgram> = new Map();
             private m_shdList:ShdProgram[] = [];
@@ -176,31 +176,28 @@ export namespace vox
             {
                 if(this.m_unlocked)
                 {
-                    if(resUid > -1 && resUid < this.m_shdListLen)
+                    if(this.m_preuid != resUid && resUid > -1 && resUid < this.m_shdListLen)
                     {
-                        if(this.m_preuid != resUid)
+                        this.m_preuid = resUid;
+                        let shd:ShdProgram = this.m_shdList[resUid];
+                        this.m_fragOutputTotal = shd.getFragOutputTotal();
+                        if(this.m_fragOutputTotal != this.getActiveAttachmentTotal())
                         {
-                            this.m_preuid = resUid;
-                            let shd:ShdProgram = this.m_shdList[resUid];
-                            this.m_fragOutputTotal = shd.getFragOutputTotal();
-                            if(this.m_fragOutputTotal != this.getActiveAttachmentTotal())
-                            {
-                                console.log("shd.getUniqueShaderName(): "+shd.getUniqueShaderName());
-                                console.log("this.m_fragOutputTotal: "+this.m_fragOutputTotal+", rc.getActiveAttachmentTotal(): "+this.getActiveAttachmentTotal());
-                                console.log("Error: MRT output amount is not equal to current shader( "+shd.toString()+" ) frag shader output amount !!!");
-                            }
-                            
-                            this.m_rc.useProgram( shd.getProgram() );
-                            shd.useTexLocation();
-                            // use global shared uniform
-                            var uniform:IShaderUniform = this.m_sharedUniformList[shd.getUid()];
-                            while(uniform != null)
-                            {
-                                uniform.use(this);
-                                uniform = uniform.next;
-                            }
-                            this.m_currShd = shd;
+                            console.log("shd.getUniqueShaderName(): "+shd.getUniqueShaderName());
+                            console.log("this.m_fragOutputTotal: "+this.m_fragOutputTotal+", rc.getActiveAttachmentTotal(): "+this.getActiveAttachmentTotal());
+                            console.log("Error: MRT output amount is not equal to current shader( "+shd.toString()+" ) frag shader output amount !!!");
                         }
+                        
+                        this.m_rc.useProgram( shd.getProgram() );
+                        shd.useTexLocation();
+                        // use global shared uniform
+                        var uniform:IShaderUniform = this.m_sharedUniformList[shd.getUid()];
+                        while(uniform != null)
+                        {
+                            uniform.use(this);
+                            uniform = uniform.next;
+                        }
+                        this.m_currShd = shd;
                     }
                 }
             }

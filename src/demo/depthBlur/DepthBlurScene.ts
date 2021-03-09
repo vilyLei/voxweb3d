@@ -35,9 +35,7 @@ export namespace demo
             private m_texBlock:TextureBlock;
 
             private m_depthBlur:DepthBlur = new DepthBlur();
-            constructor()
-            {
-            }
+            constructor(){}
             initialize(renderer:RendererInstance):void
             {
                 this.m_renderer = renderer;

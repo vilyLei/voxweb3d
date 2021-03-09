@@ -4,6 +4,9 @@
  * These are some examples for this renderer system
  */
 
+//  import * as DemoMobileEvt from "./demo/DemoMobileEvt";
+//  import Demo = DemoMobileEvt.demo.DemoMobileEvt;
+
 //  import * as DemoRTT from "./demo/DemoRTT";
 //  import Demo = DemoRTT.demo.DemoRTT;
 

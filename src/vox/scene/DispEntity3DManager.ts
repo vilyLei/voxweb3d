@@ -32,21 +32,20 @@ export namespace vox
     {
         export class DispEntity3DManager
         {
-            //private m_nodeLinker:Entity3DNodeLinker = new Entity3DNodeLinker();
             private m_rpoUnitBuilder:RPOUnitBuilder = null;
+            private m_dataBuilder:RODataBuilder = null;
             private m_processBuider:RenderProcessBuider = null;
             private m_waitList:IRenderEntity[] = [];
             private m_processUidList:number[] = [];
-            private m_wuid:number = -1;            
-            private m_dispBuilder:RODataBuilder = null;
-            private m_maxFlag:number = 0x7;//0xfffff;// 也就是最多只能展示1048575个entitys
+            private m_rendererUid:number = -1;
             private m_existencetotal:number = 0;
             private m_rprocess:RenderProcess = null;
             entityManaListener:any = null;
-            constructor(wuid:number, dispBuilder:RODataBuilder, rpoUnitBuilder:RPOUnitBuilder, processBuider:RenderProcessBuider)
+
+            constructor(rendererUid:number, RODataBuilder:RODataBuilder, rpoUnitBuilder:RPOUnitBuilder, processBuider:RenderProcessBuider)
             {
-                this.m_wuid = wuid;
-                this.m_dispBuilder = dispBuilder;
+                this.m_rendererUid = rendererUid;
+                this.m_dataBuilder = RODataBuilder;
                 this.m_rpoUnitBuilder = rpoUnitBuilder;
                 this.m_processBuider = processBuider;
             }
@@ -63,34 +62,42 @@ export namespace vox
                 this.m_existencetotal--;
                 // 从所有相关process中移除这个display
                 let display:IRODisplay = entity.getDisplay();
-                if(display != null && display.__$ruid > -1)
+                if(display != null && display.__$$runit != null)
                 {
                     let puid:number = display.__$ruid;
                     let po:RCRPObj = this.m_rpoUnitBuilder.getRCRPObj(puid);
-                    if(po.count > 0)
+                    if(po != null)
                     {
-                        if(po.count < 2)
+                        if(po.count > 0)
                         {
-                            if(po.rprocessUid > -1)
+                            if(po.count < 2)
                             {
-                                this.m_rprocess = this.m_processBuider.getNodeByUid(po.rprocessUid) as RenderProcess;
-                                this.m_rprocess.removeDisp(display);
-                                po.rprocessUid = -1;
-                            }
-                        }
-                        else
-                        {
-                            let len:number = RCRPObj.RenerProcessMaxTotal;
-                            for(let i:number = 0; i < len; ++i)
-                            {
-                                if((po.idsFlag&(1<<i)) > 0)
+                                if(po.rprocessUid > -1)
                                 {
-                                    // the value of list[i] is the uid of a node;
-                                    this.m_rprocess = this.m_processBuider.getNodeByUid(i) as RenderProcess;
+                                    this.m_rprocess = this.m_processBuider.getNodeByUid(po.rprocessUid) as RenderProcess;
                                     this.m_rprocess.removeDisp(display);
+                                    po.rprocessUid = -1;
+                                }
+                            }
+                            else
+                            {
+                                let len:number = RCRPObj.RenerProcessMaxTotal;
+                                for(let i:number = 0; i < len; ++i)
+                                {
+                                    if((po.idsFlag&(1<<i)) > 0)
+                                    {
+                                        // the value of list[i] is the uid of a node;
+                                        this.m_rprocess = this.m_processBuider.getNodeByUid(i) as RenderProcess;
+                                        this.m_rprocess.removeDisp(display);
+                                    }
                                 }
                             }
                         }
+                    }
+                    else
+                    {
+                        this.m_rprocess = this.m_processBuider.getNodeByUid(display.__$$runit.getRPROUid()) as RenderProcess;
+                        this.m_rprocess.removeDisp(display);
                     }
                     if(po.count == 0)
                     {
@@ -113,7 +120,7 @@ export namespace vox
                 entity.__$rseFlag = RSEntityFlag.RemoveRendererLoad(entity.__$rseFlag);
                 if(this.entityManaListener != null)
                 {
-                    this.entityManaListener.removeFromWorld(entity,this.m_wuid,-1);
+                    this.entityManaListener.removeFromWorld(entity,this.m_rendererUid,-1);
                 }
             }
             addEntity(entity:IRenderEntity, processUid:number,deferred:boolean = false):boolean
@@ -139,7 +146,7 @@ export namespace vox
                                 disp.__$$rsign = DisplayRenderSign.GO_TO_WORLD;
                             }
                             entity.__$rseFlag = RSEntityFlag.AddRendererLoad(entity.__$rseFlag);
-                            entity.__$rseFlag = RSEntityFlag.AddRendererUid(entity.__$rseFlag, this.m_wuid);
+                            entity.__$rseFlag = RSEntityFlag.AddRendererUid(entity.__$rseFlag, this.m_rendererUid);
                             this.m_waitList.push(entity);
                             this.m_processUidList.push(processUid);
                             //console.log("DispEntity3DManager::addEntity(), B, this display("+disp+") has existed in processid("+processUid+").");
@@ -166,7 +173,7 @@ export namespace vox
                     }
                     else
                     {
-                        entity.__$rseFlag = RSEntityFlag.AddRendererUid(entity.__$rseFlag, this.m_wuid);
+                        entity.__$rseFlag = RSEntityFlag.AddRendererUid(entity.__$rseFlag, this.m_rendererUid);
                     }
                 }
                 return false;
@@ -189,14 +196,7 @@ export namespace vox
             ensureAdd(entity:IRenderEntity, disp:IRODisplay, processUid:number):void
             {
                 entity.update();
-                //entity.__$wuid = this.m_wuid;
-                entity.__$rseFlag = RSEntityFlag.AddRendererUid(entity.__$rseFlag, this.m_wuid);
-                //  let node:Entity3DNode = Entity3DNode.Create();
-                //  node.entity = entity;
-                //  entity.__$weid = node.uid;
-                //  this.m_nodeLinker.addNode(node);
-
-                //entity.__$weid = 2;
+                entity.__$rseFlag = RSEntityFlag.AddRendererUid(entity.__$rseFlag, this.m_rendererUid);
                 entity.__$rseFlag = RSEntityFlag.RemoveRendererLoad(entity.__$rseFlag);
 
                 this.m_existencetotal++;
@@ -207,14 +207,13 @@ export namespace vox
                 }
                 this.m_rprocess = this.m_processBuider.getNodeByUid(processUid) as RenderProcess;
                 //console.log("DispEntity3DManager::addEntity(), add a ready ok entity to process.");
-                //this.m_rprocess.addDisp(rc, disp,false);
                 if(disp.__$ruid > -1)
                 {
                     this.m_rprocess.addDisp(disp);
                 }
                 else
                 {
-                    if(this.m_dispBuilder.buildGpuDisp(disp))
+                    if(this.m_dataBuilder.buildGpuDisp(disp))
                     {
                         this.m_rprocess.addDisp(disp);
                     }
@@ -222,19 +221,17 @@ export namespace vox
                 
                 if(this.entityManaListener != null)
                 {
-                    this.entityManaListener.addToWorld(entity,this.m_wuid,processUid);
+                    this.entityManaListener.addToWorld(entity,this.m_rendererUid,processUid);
                 }
             }
             private updateWaitList():void
             {
                 let len:number = this.m_waitList.length;
                 let entity:IRenderEntity = null;
-                //let node:Entity3DNode = null;
                 let disp:IRODisplay = null;
                 for(let i:number = 0; i < len; ++i)
                 {
                     entity = this.m_waitList[i];
-                    //if(entity.__$weid == this.m_maxFlag)
                     if((RSEntityFlag.RENDERER_LOAD_FLAT & entity.__$rseFlag) == RSEntityFlag.RENDERER_LOAD_FLAT)
                     {
                         if(this.testValidData(entity))
@@ -275,7 +272,7 @@ export namespace vox
                         --i;
                         if(this.entityManaListener != null)
                         {
-                            this.entityManaListener.removeFromWorld(entity,this.m_wuid,-1);
+                            this.entityManaListener.removeFromWorld(entity,this.m_rendererUid,-1);
                         }
                     }
                 }
@@ -287,7 +284,7 @@ export namespace vox
                 {
                     this.updateWaitList();
                 }
-                this.m_dispBuilder.update();
+                this.m_dataBuilder.update();
             }
         }
     }

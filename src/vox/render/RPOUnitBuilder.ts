@@ -43,7 +43,7 @@ export namespace vox
             protected createNode():IPoolNode
             {
                 let po:RCRPObj = new RCRPObj();
-                po.reset();                    
+                po.reset();
                 this.m_rcpoList.push(po);
                 return new RPOUnit();
             }

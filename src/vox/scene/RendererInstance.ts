@@ -59,6 +59,8 @@ export namespace vox
             private m_entity3DMana:DispEntity3DManager = null;
             private m_processes:RenderProcess[] = [];
             private m_processesLen:number = 0;
+            private m_sprocesses:RenderProcess[] = [];
+            private m_sprocessesLen:number = 0;
             private m_renderProxy:RenderProxy = null;
             private m_adapter:RenderAdapter = null;
             private m_dataBuilder:RODataBuilder = null;
@@ -72,6 +74,7 @@ export namespace vox
             private m_roVtxBuild:ROVtxBuilder = null;
             private m_stage3D:IRenderStage3D = null;
 
+            private m_fixProcess:RenderProcess = null;
             constructor()
             {
                 this.m_uid = RendererInstance.s_uid++;
@@ -164,6 +167,8 @@ export namespace vox
                     this.m_renderInsContext.initManager(this.m_dataBuilder);
 
                     this.m_entity3DMana = new DispEntity3DManager(this.m_uid, this.m_dataBuilder,this.m_rpoUnitBuilder, this.m_processBuider);
+                    
+                    this.m_fixProcess = this.createSeparatedProcess() as RenderProcess;
                     this.appendProcess(this.m_batchEnabled,this.m_processFixedState);
                 }
             }
@@ -184,42 +189,31 @@ export namespace vox
             /**
              * add an entity to the renderer process of the renderer instance
              * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
-             * @param processid this destination renderer process id
+             * @param processIndex this destination renderer process index of the m_processes array.
              * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
              */
-            addEntity(entity:IRenderEntity,processid:number = 0,deferred:boolean = true):void
+            addEntity(entity:IRenderEntity,processIndex:number = 0,deferred:boolean = true):void
             {
                 if(entity != null)
                 {
-                    //console.log("##### entity.__$contId: ",entity.__$contId);
-                    //if(entity.__$wuid < 0 && entity.__$weid < 0 && entity.__$contId < 1)
                     if(entity.__$testRendererEnabled())
                     {
-                        if(processid > -1 && processid < this.m_processesLen)
+                        if(processIndex > -1 && processIndex < this.m_processesLen)
                         {
-                            this.m_entity3DMana.addEntity(entity,processid,deferred);
+                            this.m_entity3DMana.addEntity(entity,this.m_processes[processIndex].getUid(),deferred);
                         }
-                        //  else
-                        //  {
-                        //      console.log("RendererInstance::addEntity(), Error: Don't find processid("+processid+").");
-                        //  }
                     }
-                    //  else
-                    //  {
-                    //      console.log("RendererInstance::addEntity(), Warn: this entity has existed in processid("+processid+").");
-                    //  }
                 }
             }
             addEntityToProcess(entity:IRenderEntity,process:IRenderProcess,deferred:boolean = true):void
             {
                 if(process != null && entity != null)
                 {
-                    //if(process != null && entity != null && entity.__$wuid < 0 && entity.__$weid < 0 && entity.__$contId < 1)
                     if(entity.__$testRendererEnabled())
                     {
                         if(process.getRCUid() == this.m_uid)
                         {
-                            this.m_entity3DMana.addEntity(entity,process.getRPIndex(),deferred);
+                            this.m_entity3DMana.addEntity(entity,process.getUid(),deferred);
                         }
                     }
                 }
@@ -283,8 +277,7 @@ export namespace vox
                 {
                     if(entity != null && entity.getRendererUid() == this.m_uid)
                     {
-                        let process:RenderProcess = this.m_processes[processIndex];
-                        process.removeDisp(entity.getDisplay());
+                        this.m_processes[processIndex].removeDisp(entity.getDisplay());
                     }
                 }
             }
@@ -297,7 +290,7 @@ export namespace vox
             appendProcess(batchEnabled:boolean = true,processFixedState:boolean = false):IRenderProcess
             {
                 this.m_processBuider.setCreateParams(
-                    this.m_dataBuilder.getMaterialShader(),
+                    this.m_dataBuilder.getRenderShader(),
                     this.m_rpoNodeBuilder,
                     this.m_rpoUnitBuilder,
                     this.m_renderProxy.Vertex,
@@ -320,7 +313,7 @@ export namespace vox
             createSeparatedProcess(batchEnabled:boolean = true,processFixedState:boolean = false):IRenderProcess
             {
                 this.m_processBuider.setCreateParams(
-                    this.m_dataBuilder.getMaterialShader(),
+                    this.m_dataBuilder.getRenderShader(),
                     this.m_rpoNodeBuilder,
                     this.m_rpoUnitBuilder,
                     this.m_renderProxy.Vertex,
@@ -328,11 +321,10 @@ export namespace vox
                     processFixedState
                 );
                 let process:RenderProcess = this.m_processBuider.create() as RenderProcess;
-                this.m_processes.push( process );
-                process.setRendererParam(this.m_renderProxy, this.m_processesLen);
+                this.m_sprocesses.push( process );
+                process.setRendererParam(this.m_renderProxy, this.m_sprocessesLen);
                 return process;
             }
-            
             setRendererProcessParam(index:number,batchEnabled:boolean,processFixedState:boolean):void
             {
                 if(index > -1 && index < this.m_processesLen)
@@ -361,14 +353,34 @@ export namespace vox
             }
             updateMaterialUniformToCurrentShd(material:IRenderMaterial):void
             {
-                this.m_dataBuilder.getMaterialShader().useUniformToCurrentShd(material.__$uniform);
+                this.m_dataBuilder.getRenderShader().useUniformToCurrentShd(material.__$uniform);
             }
-            // 首先要锁定Material才能用这种绘制方式,再者这个entity已经完全加入渲染器了渲染资源已经准备完毕,这种方式比较耗性能，只能用在特殊的地方
+            /**
+             * 绘制已经完全加入渲染器了渲染资源已经准备完毕的entity
+             * 要锁定Material才能用这种绘制方式,再者这个,这种方式比较耗性能，只能用在特殊的地方
+             */            
             drawEntityByLockMaterial(entity:IRenderEntity,forceUpdateUniform:boolean = true):void
             {
-                if(entity != null && entity.getRendererUid() == this.m_uid)
+                if(entity != null && entity.getVisible() && entity.getRendererUid() == this.m_uid)
                 {
-                    this.m_processes[ 0 ].drawLockMaterialByDisp(this.m_renderProxy,entity.getDisplay(),forceUpdateUniform);
+                    this.m_fixProcess.drawLockMaterialByDisp(entity.getDisplay(),forceUpdateUniform);
+                }
+            }
+            /**
+             * 在任意阶段绘制一个指定的 entity,只要其资源数据准备完整
+             */     
+            drawEntity(entity:IRenderEntity):void
+            {
+                if(entity != null && entity.getVisible())
+                {                    
+                    if(entity.getRendererUid() == this.m_uid)
+                    {
+                        this.m_fixProcess.drawDisp(entity.getDisplay());
+                    }
+                    else if(entity.__$testRendererEnabled())
+                    {
+                        this.m_entity3DMana.addEntity(entity,this.m_fixProcess.getUid(),false);
+                    }
                 }
             }
             /**

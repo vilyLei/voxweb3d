@@ -17,7 +17,7 @@ import * as IRenderTextureT from '../../vox/render/IRenderTexture';
 import * as TextureRenderObjT from '../../vox/render/TextureRenderObj';
 import * as ShdUniformToolT from '../../vox/material/ShdUniformTool';
 import * as IRenderMaterialT from '../../vox/render/IRenderMaterial';
-import * as MaterialShaderT from '../../vox/material/MaterialShader';
+import * as RenderShaderT from '../../vox/render/RenderShader';
 
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
@@ -41,7 +41,7 @@ import TextureRenderObj = TextureRenderObjT.vox.render.TextureRenderObj;
 import EmptyTexRenderObj = TextureRenderObjT.vox.render.EmptyTexRenderObj;
 import ShdUniformTool = ShdUniformToolT.vox.material.ShdUniformTool;
 import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;
-import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
+import RenderShader = RenderShaderT.vox.render.RenderShader;
 
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
@@ -64,7 +64,7 @@ export namespace vox
         export class RODataBuilder implements IROMaterialUpdater,IROVertexBufUpdater
         {
             private m_emptyTRO:EmptyTexRenderObj = null;
-            private m_shader:MaterialShader = null;
+            private m_shader:RenderShader = null;
             private m_rpoUnitBuilder:RPOUnitBuilder = null;
             private m_processBuider:RenderProcessBuider = null;
             private m_roVtxBuild:ROVtxBuilder = null;
@@ -87,14 +87,14 @@ export namespace vox
                     this.m_rc = rc;
                     this.m_vtxRes = rc.Vertex as ROVertexResource;
                     this.m_texRes = rc.Texture as ROTextureResource;
-                    this.m_shader = new MaterialShader(rc.getRCUid(),rc.getRC(),rc.getRenderAdapter());
+                    this.m_shader = new RenderShader(rc.getRCUid(),rc.getRC(),rc.getRenderAdapter());
                     this.m_rpoUnitBuilder = rpoUnitBuilder;
                     this.m_processBuider = processBuider;
                     this.m_roVtxBuild = roVtxBuild;
                     this.m_emptyTRO = new EmptyTexRenderObj(this.m_texRes);
                 }
             }
-            getMaterialShader():MaterialShader
+            getRenderShader():RenderShader
             {
                 return this.m_shader;
             }
@@ -140,7 +140,7 @@ export namespace vox
             }
             private updateTextureTRO(disp:IRODisplay):void
             {
-                if(disp.__$ruid > -1)
+                if(disp.__$$runit != null)
                 {
                     let material:IRenderMaterial = disp.getMaterial();
                     if(material != null)
@@ -383,6 +383,19 @@ export namespace vox
                         let runit:RPOUnit = this.m_rpoUnitBuilder.create() as RPOUnit;
                         disp.__$ruid = runit.uid;
                         disp.__$$runit = runit;
+                        
+                        if(disp.getPartGroup() != null)
+                        {
+                            runit.partGroup = disp.getPartGroup().slice(0);
+                            runit.partTotal = runit.partGroup.length;
+                            let fs:Uint16Array = runit.partGroup;
+                            for(let i:number = 0, len:number = runit.partTotal; i < len;)
+                            {
+                                i++;
+                                fs[i++] *= runit.ibufStep;
+                            }
+                        }
+
                         runit.setDrawFlag(disp.renderState, disp.rcolorMask);
                         
                         this.buildVtxRes(disp,runit,this.updateDispMaterial(runit,disp));

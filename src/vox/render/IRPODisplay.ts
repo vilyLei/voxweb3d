@@ -24,6 +24,10 @@ export namespace vox
              * get RenderProcess instance unique id
              */
             getRPROUid():number;
+            /**
+             * get Renderer shader instance unique id
+             */
+            getShaderUid():number;
         }
     }
 }

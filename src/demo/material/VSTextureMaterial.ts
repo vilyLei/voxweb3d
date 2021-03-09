@@ -17,17 +17,17 @@ export namespace demo
 {
     export namespace material
     {
-        export class VSTextureMaterialShaderBuffer extends ShaderCodeBuffer
+        export class VSTextureRenderShaderBuffer extends ShaderCodeBuffer
         {
                 constructor()
                 {
                     super();
                 }
-                private static ___s_instance:VSTextureMaterialShaderBuffer = null;
+                private static ___s_instance:VSTextureRenderShaderBuffer = null;
                 private m_uniqueName:string = "";
                 initialize(texEnabled:boolean):void
                 {
-                    //console.log("VSTextureMaterialShaderBuffer::initialize()...");
+                    //console.log("VSTextureRenderShaderBuffer::initialize()...");
                     this.m_uniqueName = "VSTextureMaterialShd";
                 }
                 getFragShaderCode():string
@@ -78,17 +78,17 @@ void main(){
                 }
                 toString():string
                 {
-                    return "[VSTextureMaterialShaderBuffer()]";
+                    return "[VSTextureRenderShaderBuffer()]";
                 }
 
-                static GetInstance():VSTextureMaterialShaderBuffer
+                static GetInstance():VSTextureRenderShaderBuffer
                 {
-                    if(VSTextureMaterialShaderBuffer.___s_instance != null)
+                    if(VSTextureRenderShaderBuffer.___s_instance != null)
                     {
-                        return VSTextureMaterialShaderBuffer.___s_instance;
+                        return VSTextureRenderShaderBuffer.___s_instance;
                     }
-                    VSTextureMaterialShaderBuffer.___s_instance = new VSTextureMaterialShaderBuffer();
-                    return VSTextureMaterialShaderBuffer.___s_instance;
+                    VSTextureRenderShaderBuffer.___s_instance = new VSTextureRenderShaderBuffer();
+                    return VSTextureRenderShaderBuffer.___s_instance;
                 }
             }
             export class VSTextureMaterial extends MaterialBase
@@ -99,7 +99,7 @@ void main(){
                 }
                 getCodeBuf():ShaderCodeBuffer
                 {
-                    return VSTextureMaterialShaderBuffer.GetInstance();
+                    return VSTextureRenderShaderBuffer.GetInstance();
                 }
                 private m_colorArray:Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
                 setRGB3f(pr:number,pg:number,pb:number):void

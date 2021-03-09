@@ -37,7 +37,6 @@ export namespace renderingtoy
             private m_opacityProcess:IRenderProcess = null;
             private m_blendProcess:IRenderProcess = null;
             private m_blurSrcProcess:IRenderProcess = null;
-            private m_blurDstProcess:IRenderProcess = null;
             private m_resultProcess:IRenderProcess = null;
 
             private m_scrDepMaterial:ScrDepBaseMaterial = new ScrDepBaseMaterial();
@@ -51,7 +50,6 @@ export namespace renderingtoy
                     this.m_renderer = renderer;
     
                     this.m_blurSrcProcess = this.m_renderer.appendProcess();
-                    this.m_blurDstProcess = this.m_renderer.appendProcess();
                     this.m_resultProcess = this.m_renderer.appendProcess();
     
                     this.m_opacityProcess = opacityProcess;
@@ -60,7 +58,7 @@ export namespace renderingtoy
                     this.m_textureBlock = textureBlock;
                     
                     this.m_blurModule = new PingpongBlur(renderer);
-                    this.m_blurModule.bindProcess(this.m_blurSrcProcess,this.m_blurDstProcess);
+                    this.m_blurModule.bindSrcProcess(this.m_blurSrcProcess);
                     this.m_blurModule.setBackbufferVisible(false);
     
                     this.m_depthFbo = new FBOInstance(renderer, textureBlock.getRTTStrore());

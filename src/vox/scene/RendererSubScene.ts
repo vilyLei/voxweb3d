@@ -19,7 +19,7 @@ import * as IRenderEntityT from "../../vox/render/IRenderEntity";
 import * as DisplayEntityContainerT from "../../vox/entity/DisplayEntityContainer";
 import * as RendererParamT from "../../vox/scene/RendererParam";
 import * as RenderProcessT from "../../vox/render/RenderProcess";
-import * as MaterialShaderT from "../../vox/material/MaterialShader";
+import * as RenderShaderT from "../../vox/render/RenderShader";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
 import * as EntityNodeQueueT from "../../vox/scene/EntityNodeQueue";
 import * as Entity3DNodeLinkerT from "../../vox/scene/Entity3DNodeLinker";
@@ -49,7 +49,7 @@ import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
 import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
-import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
+import RenderShader = RenderShaderT.vox.render.RenderShader;
 import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
 import EntityNodeQueue = EntityNodeQueueT.vox.scene.EntityNodeQueue;
 import Entity3DNodeLinker = Entity3DNodeLinkerT.vox.scene.Entity3DNodeLinker;
@@ -98,14 +98,14 @@ export namespace vox
             private m_perspectiveEnabled = true;
             private m_rparam:RendererParam = null;
             private m_stage3D:IRenderStage3D = null;
-            private m_shader:MaterialShader = null;
+            private m_shader:RenderShader = null;
             private m_runFlag:number = -1;
 
             constructor(renderer:RendererInstance,evtFlowEnabled:boolean)
             {
                 this.m_evtFlowEnabled = evtFlowEnabled;
                 this.m_renderer = renderer;
-                this.m_shader = renderer.getDataBuilder().getMaterialShader();
+                this.m_shader = renderer.getDataBuilder().getRenderShader();
                 this.m_uid = 1024 + RendererSubScene.__s_uid++;
             }
             getUid():number
@@ -310,11 +310,11 @@ export namespace vox
             }
             private m_children:DisplayEntityContainer[] = [];
             private m_childrenTotal:number = 0;
-            addContainer(child:DisplayEntityContainer,processid:number = 0):void
+            addContainer(child:DisplayEntityContainer,processIndex:number = 0):void
             {
-                if(processid < 0)
+                if(processIndex < 0)
                 {
-                    processid = 0;
+                    processIndex = 0;
                 }
                 if(child != null && child.__$wuid < 0 && child.__$contId < 0)
                 {
@@ -329,7 +329,7 @@ export namespace vox
                     if(i >= this.m_childrenTotal)
                     {
                         child.__$wuid = this.m_uid;
-                        child.wprocuid = this.m_processids[processid];
+                        child.wprocuid = this.m_processids[processIndex];
                         child.__$setRenderer( this );
                         this.m_children.push(child);
                         this.m_childrenTotal++;
@@ -359,11 +359,11 @@ export namespace vox
              * 将已经在渲染运行时中的entity移动到指定 process uid 的 render process 中去
              * move rendering runtime displayEntity to different renderer process
              */
-            moveEntityTo(entity:IRenderEntity,processid:number):void
+            moveEntityTo(entity:IRenderEntity,processIndex:number):void
             {
-                this.m_renderer.moveEntityToProcessAt(entity,this.m_processids[processid]);
+                this.m_renderer.moveEntityToProcessAt(entity,this.m_processids[processIndex]);
             }
-            addEntity(entity:IRenderEntity,processid:number = 0,deferred:boolean = true):void
+            addEntity(entity:IRenderEntity,processIndex:number = 0,deferred:boolean = true):void
             {
                 if(entity.__$testSpaceEnabled())
                 {
@@ -371,7 +371,7 @@ export namespace vox
                     {
                         if(entity.hasMesh())
                         {
-                            this.m_renderer.addEntity(entity,this.m_processids[processid],deferred);
+                            this.m_renderer.addEntity(entity,this.m_processids[processIndex],deferred);
                             if(this.m_rspace != null)
                             {
                                 this.m_rspace.addEntity(entity);
@@ -386,13 +386,13 @@ export namespace vox
                                 this.m_nodeWaitQueue = new EntityNodeQueue();
                             }
                             let node:Entity3DNode = this.m_nodeWaitQueue.addEntity(entity);
-                            node.rstatus = processid;
+                            node.rstatus = processIndex;
                             this.m_nodeWaitLinker.addNode(node);
                         }
                     }
                     else
                     {
-                        this.m_renderer.addEntity(entity,this.m_processids[processid],deferred);
+                        this.m_renderer.addEntity(entity,this.m_processids[processIndex],deferred);
                         if(this.m_rspace != null)
                         {
                             this.m_rspace.addEntity(entity);

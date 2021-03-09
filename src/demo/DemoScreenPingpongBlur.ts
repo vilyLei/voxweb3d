@@ -71,7 +71,7 @@ export namespace demo
                 
                 this.m_blurIns = new PingpongBlur(this.m_renderer);
                 this.m_blurIns.setSyncViewSizeEnabled(true);
-                this.m_blurIns.bindProcessId(0,1);
+                this.m_blurIns.bindSrcProcessId(0);
                 this.m_rcontext = this.m_renderer.getRendererContext();
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
@@ -100,7 +100,7 @@ export namespace demo
             
             renderer.update();
             //this.m_blurIns.syncViewportSize();
-            this.m_blurIns.run(0,1);
+            this.m_blurIns.run(0);
 
             pcontext.runEnd();
         }

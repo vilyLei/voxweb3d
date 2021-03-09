@@ -7,12 +7,12 @@
 
 import * as IRenderTexResourceT from "../../vox/render/IRenderTexResource";
 import * as IRenderMaterialT from "../../vox/render/IRenderMaterial";
-import * as MaterialShaderT from "../../vox/material/MaterialShader";
+import * as RenderShaderT from "../../vox/render/RenderShader";
 import * as RODataBuilderT from "../../vox/render/RODataBuilder";
 
 import IRenderTexResource = IRenderTexResourceT.vox.render.IRenderTexResource;
 import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;
-import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
+import RenderShader = RenderShaderT.vox.render.RenderShader;
 import RODataBuilder = RODataBuilderT.vox.render.RODataBuilder;
 
 export namespace vox
@@ -22,7 +22,7 @@ export namespace vox
         export class RenderMaterialProxy
         {
             private m_dispBuilder:RODataBuilder = null;
-            private m_shader:MaterialShader = null;
+            private m_shader:RenderShader = null;
             private m_texRes:IRenderTexResource = null;
             
             setDispBuilder(builder:RODataBuilder):void
@@ -30,7 +30,7 @@ export namespace vox
                 if(this.m_dispBuilder == null)
                 {
                     this.m_dispBuilder = builder;
-                    this.m_shader = builder.getMaterialShader();
+                    this.m_shader = builder.getRenderShader();
                     this.m_texRes = builder.getTextureResource();
                 }
             }

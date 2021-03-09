@@ -8,7 +8,7 @@
 import * as IPoolNodeT from "../../vox/utils/IPoolNode";
 import * as PoolNodeBuilderT from "../../vox/utils/PoolNodeBuilder";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
-import * as MaterialShaderT from '../../vox/material/MaterialShader';
+import * as RenderShaderT from '../../vox/render/RenderShader';
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as IRenderResourceT from "../../vox/render/IRenderResource";
@@ -18,7 +18,7 @@ import * as RenderProcessT from "../../vox/render/RenderProcess";
 import IPoolNode = IPoolNodeT.vox.utils.IPoolNode;
 import PoolNodeBuilder = PoolNodeBuilderT.vox.utils.PoolNodeBuilder;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
-import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
+import RenderShader = RenderShaderT.vox.render.RenderShader;
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
 import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
 import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
@@ -31,14 +31,14 @@ export namespace vox
     {
         export class RenderProcessBuider extends PoolNodeBuilder
         {
-            private m_shader:MaterialShader;
+            private m_shader:RenderShader;
             private m_rpoNodeBuilder:RPONodeBuilder;
             private m_rpoUnitBuilder:RPOUnitBuilder;
             private m_vtxResource:ROVertexResource;
             private m_batchEnabled:boolean;
             private m_fixedState:boolean;
             
-            setCreateParams(shader:MaterialShader,rpoNodeBuilder:RPONodeBuilder,rpoUnitBuilder:RPOUnitBuilder,vtxResource:IRenderResource, batchEnabled:boolean,fixedState:boolean):void
+            setCreateParams(shader:RenderShader,rpoNodeBuilder:RPONodeBuilder,rpoUnitBuilder:RPOUnitBuilder,vtxResource:IRenderResource, batchEnabled:boolean,fixedState:boolean):void
             {
                 this.m_shader = shader;
                 this.m_rpoNodeBuilder = rpoNodeBuilder;

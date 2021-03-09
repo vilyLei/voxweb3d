@@ -23,9 +23,7 @@ import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
 import * as IRendererT from "../../vox/scene/IRenderer";
 import * as Color4T from "../../vox/material/Color4";
-import * as MaterialShaderT from "../../vox/material/MaterialShader";
 import * as PixelPickIndexMaterialT from "../../vox/material/mcase/PixelPickIndexMaterial";
-import * as DivLogT from "../../vox/utils/DivLog";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import MathConst = MathConstT.vox.utils.MathConst;
@@ -45,9 +43,7 @@ import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 import IRenderer = IRendererT.vox.scene.IRenderer;
 import Color4 = Color4T.vox.material.Color4;
-import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
 import PixelPickIndexMaterial = PixelPickIndexMaterialT.vox.material.mcase.PixelPickIndexMaterial;
-import DivLog = DivLogT.vox.utils.DivLog;
 
 export namespace vox
 {

@@ -8,7 +8,7 @@
 // 只能在 RenderWorld 中创建
 
 import * as IRODisplayT from "../../vox/display/IRODisplay";
-import * as MaterialShaderT from '../../vox/material/MaterialShader';
+import * as RenderShaderT from '../../vox/render/RenderShader';
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 
 import * as IPoolNodeT from "../../vox/utils/IPoolNode";
@@ -21,7 +21,7 @@ import * as RPOBlockT from "../../vox/render/RPOBlock";
 import * as IRenderProcessT from "../../vox/render/IRenderProcess";
 
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
-import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
+import RenderShader = RenderShaderT.vox.render.RenderShader;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 
 import IPoolNode = IPoolNodeT.vox.utils.IPoolNode;
@@ -43,7 +43,7 @@ export namespace vox
             // 记录自身所在的 rendererInstance id
             private m_rcuid:number = -1;
             // 记录自身所在 rendererInstance 中分配到的process index
-            private m_weid:number = -1;
+            private m_rpIndex:number = -1;
             private m_rc:RenderProxy;
 
             private m_nodesLen:number = 0;
@@ -51,26 +51,26 @@ export namespace vox
             private m_blockList:RPOBlock[] = [];                                                        // 记录以相同shader的node为一个集合对象(RPOBlock) 的数组
             private m_blockListLen:number = 0;
             private m_blockFList:Int8Array = new Int8Array(RenderProcess.s_max_shdTotal);               // 记录以相同shader的node为一个集合对象(RPOBlock)的构建状态 的数组
-            private m_blockFListLen:number = RenderProcess.s_max_shdTotal;                              // 假定shader 最多为1024种
-            private m_shader:MaterialShader = null;
+            private m_blockFListLen:number = RenderProcess.s_max_shdTotal;                              // 假定引擎中同时存在的最多的shader 有1024种
+            private m_shader:RenderShader = null;
             private m_rpoNodeBuilder:RPONodeBuilder = null;
             private m_rpoUnitBuilder:RPOUnitBuilder = null;
             private m_vtxResource:ROVertexResource = null;
             // 用于制定对象的绘制
-            private m_proBlock:RPOBlock = null;
+            private m_fixBlock:RPOBlock = null;
 
             private m_batchEnabled:boolean = true;
             private m_fixedState:boolean = true;
             
             uid:number = -1;
             
-            constructor(shader:MaterialShader,rpoNodeBuilder:RPONodeBuilder,rpoUnitBuilder:RPOUnitBuilder,vtxResource:ROVertexResource, batchEnabled:boolean,processFixedState:boolean)
+            constructor(shader:RenderShader,rpoNodeBuilder:RPONodeBuilder,rpoUnitBuilder:RPOUnitBuilder,vtxResource:ROVertexResource, batchEnabled:boolean,processFixedState:boolean)
             {
                 this.m_shader = shader;
                 this.m_rpoNodeBuilder = rpoNodeBuilder;
                 this.m_rpoUnitBuilder = rpoUnitBuilder;
                 this.m_vtxResource = vtxResource;
-                this.m_proBlock = this.createBlock();
+                this.m_fixBlock = this.createBlock();
 
                 this.m_batchEnabled = batchEnabled;
                 this.m_fixedState = processFixedState;
@@ -95,11 +95,11 @@ export namespace vox
                     this.m_fixedState = processFixedState;
                 }
             }
-            setRendererParam(rc:RenderProxy, pweid:number):void
+            setRendererParam(rc:RenderProxy, rpIndex:number):void
             {
                 this.m_rc = rc;
                 this.m_rcuid = rc.getRCUid();
-                this.m_weid = pweid;
+                this.m_rpIndex = rpIndex;
             }
             getUid():number
             {
@@ -111,7 +111,7 @@ export namespace vox
             }
             getRPIndex():number
             {
-                return this.m_weid;
+                return this.m_rpIndex;
             }
             getUnitsTotal():number
             {
@@ -122,7 +122,7 @@ export namespace vox
                 //  注意，这里可以管理组合方式, 例如可以做更多条件的排序
                 //  这里依赖的是 shader program 和 vtx uid 来分类
                 let block:RPOBlock = null;
-                //console.log("RenderProcess::addDisp(),uid: "+this.m_weid+" node.shdUid: "+node.shdUid+", index: "+this.uid);
+                //console.log("RenderProcess::addDisp(),uid: "+this.m_rpIndex+" node.shdUid: "+node.shdUid+", index: "+this.uid);
                 if(node.shdUid >= RenderProcess.s_max_shdTotal)
                 {
                     throw Error("Shader uid >= "+RenderProcess.s_max_shdTotal);
@@ -149,7 +149,7 @@ export namespace vox
                     }
                     block.shdUid = node.shdUid;
                     block.index = this.m_blockListLen;
-                    block.procuid = this.m_weid;
+                    block.procuid = this.m_rpIndex;
                     this.m_blockList.push(block);
                     this.m_blockFList[node.shdUid] = this.m_blockListLen;
                     ++this.m_blockListLen;
@@ -166,45 +166,41 @@ export namespace vox
             rejoinRunitForTro(runit:RPOUnit):void
             {
                 let node:RPONode = this.m_rpoNodeBuilder.getNodeByUid(runit.__$rpuid) as RPONode;
-                node.tro = runit.tro;
-                node.texMid = node.unit.texMid;
-                this.m_blockList[node.index].rejoinNode(node);
+                if(node != null)
+                {
+                    node.tro = runit.tro;
+                    node.texMid = node.unit.texMid;
+                    this.m_blockList[node.index].rejoinNode(node);
+                }
             }
             rejoinRunitForVro(runit:RPOUnit):void
             {
                 let node:RPONode = this.m_rpoNodeBuilder.getNodeByUid(runit.__$rpuid) as RPONode;
-                node.drawMode = runit.drawMode;
-                node.ivsIndex = runit.ivsIndex;
-                node.ivsCount = runit.ivsCount;
-                node.insCount = runit.insCount;
-                runit.drawOffset = runit.ivsIndex * runit.ibufStep;
-                node.vtxUid = runit.vtxUid;
-                node.vro = runit.vro;
-                this.m_blockList[node.index].rejoinNode(node);
+                if(node != null)
+                {
+                    node.drawMode = runit.drawMode;
+                    node.ivsIndex = runit.ivsIndex;
+                    node.ivsCount = runit.ivsCount;
+                    node.insCount = runit.insCount;
+                    runit.drawOffset = runit.ivsIndex * runit.ibufStep;
+                    node.vtxUid = runit.vtxUid;
+                    node.vro = runit.vro;
+                    this.m_blockList[node.index].rejoinNode(node);
+                }
             }
             addDisp(disp:IRODisplay):void
             {
                 if(disp != null)
                 {
-                    if(disp.__$ruid > -1)
+                    if(disp.__$$runit != null && disp.__$$runit.getRPROUid() < 0)
                     {
-                        if(this.m_rpoUnitBuilder.testRPNodeNotExists(disp.__$ruid,this.m_weid))
+                        //if(this.m_rpoUnitBuilder.testRPNodeNotExists(disp.__$ruid,this.m_rpIndex))
+                        if(disp.__$$runit.getRPROUid() != this.uid)
                         {
                             let node:RPONode = this.m_rpoNodeBuilder.create() as RPONode;
                             node.unit = this.m_rpoUnitBuilder.getNodeByUid( disp.__$ruid ) as RPOUnit;
                             node.unit.shader = this.m_shader;
                             node.unit.__$rprouid = this.uid;
-                            if(disp.getPartGroup() != null)
-                            {
-                                node.unit.partGroup = disp.getPartGroup().slice(0);
-                                node.unit.partTotal = node.unit.partGroup.length;
-                                let fs:Uint16Array = node.unit.partGroup;
-                                for(let i:number = 0, len:number = node.unit.partTotal; i < len;)
-                                {
-                                    i++;
-                                    fs[i++] *= node.unit.ibufStep;
-                                }
-                            }
                             
                             disp.__$rpuid = node.uid;
                             node.__$ruid = disp.__$ruid;
@@ -213,22 +209,22 @@ export namespace vox
                             
                             ++this.m_nodesLen;
                             
-                            this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.m_weid, node.uid);
+                            this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.m_rpIndex, node.uid);
                             
                             this.addNodeToBlock(node);
                         }
                         else
                         {
-                            console.log("RenderProcess::addDisp(), Warn: add entity repeat in processid("+this.m_weid+").");
+                            console.log("RenderProcess::addDisp(), Warn: add entity repeat in processid("+this.m_rpIndex+").");
                         }
                     }
                 }
             }
             updateDispMateiral(disp:IRODisplay):void
             {
-                if(disp.__$ruid > -1)
+                if(disp.__$$runit != null)
                 {
-                    let nodeUId:number = disp.__$$runit.getRPOUid();//this.m_rpoUnitBuilder.getRPONodeUid(disp.__$ruid,this.m_weid);
+                    let nodeUId:number = disp.__$$runit.getRPOUid();
                     let node:RPONode = this.m_rpoNodeBuilder.getNodeByUid( nodeUId ) as RPONode;
                     // material info etc.
                     node.shdUid = node.unit.shdUid;
@@ -243,16 +239,16 @@ export namespace vox
             {
                 if(disp != null)
                 {
-                    if(disp.__$ruid > -1)
+                    if(disp.__$$runit != null)
                     {
-                        let nodeUId:number = disp.__$$runit.getRPOUid();//this.m_rpoUnitBuilder.getRPONodeUid(disp.__$ruid,this.m_weid);
+                        let nodeUId:number = disp.__$$runit.getRPOUid();
                         let node:RPONode = this.m_rpoNodeBuilder.getNodeByUid( nodeUId ) as RPONode;
                         //console.log("removeDisp(), node != null: "+(node != null));
                         if(node != null)
                         {
                             let block:RPOBlock = this.m_blockList[node.index];
                             block.removeNode(node);
-                            this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.m_weid, -1);
+                            this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.m_rpIndex, -1);
                             
                             --this.m_nodesLen;
 
@@ -264,6 +260,10 @@ export namespace vox
                             this.m_vtxResource.__$detachRes(disp.vbuf.getUid());
                             disp.__$$runit = null;
                             disp.__$ruid = -1;
+                        }
+                        else
+                        {
+                            console.error("There is no this display instance.");
                         }
                     }
                 }
@@ -277,25 +277,16 @@ export namespace vox
                 {
                     if(disp.__$ruid > -1)
                     {
-                        let nodeUId:number = disp.__$$runit.getRPOUid();//this.m_rpoUnitBuilder.getRPONodeUid(disp.__$ruid,this.m_weid);
+                        let nodeUId:number = disp.__$$runit.getRPOUid();
                         let node:RPONode = this.m_rpoNodeBuilder.getNodeByUid( nodeUId ) as RPONode;
-                        //console.log("removeDisp(), node != null: "+(node != null));
                         if(node != null)
                         {
                             let block:RPOBlock = this.m_blockList[node.index];
                             block.removeNode(node);
-                            this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.m_weid, -1);
+                            this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.m_rpIndex, -1);
                             
                             --this.m_nodesLen;
-
-                            //let runit:RPOUnit = node.unit;
-                            if(this.m_rpoNodeBuilder.restore(node))
-                            {
-                                //this.m_rpoUnitBuilder.restore(runit);
-                            }
-                            //  this.m_vtxResource.__$detachRes(disp.vbuf.getUid());
-                            //  disp.__$$runit = null;
-                            //  disp.__$ruid = -1;
+                            this.m_rpoNodeBuilder.restore(node);
                         }
                     }
                 }
@@ -322,15 +313,25 @@ export namespace vox
                     }
                 }
             }
-
-            drawLockMaterialByDisp(rc:RenderProxy,disp:IRODisplay,forceUpdateUniform:boolean):void
+            drawDisp(disp:IRODisplay):void
             {
                 if(disp != null)
                 {
-                    let unit:RPOUnit = this.m_rpoUnitBuilder.getNodeByUid( disp.__$ruid ) as RPOUnit;
+                    let unit:RPOUnit = disp.__$$runit as RPOUnit;
                     if(unit != null)
                     {
-                        this.m_proBlock.drawLockMaterialByUnit(rc,unit,disp,forceUpdateUniform);
+                        this.m_fixBlock.drawUnit(this.m_rc,unit,disp);
+                    }
+                }
+            }
+            drawLockMaterialByDisp(disp:IRODisplay,forceUpdateUniform:boolean):void
+            {
+                if(disp != null)
+                {
+                    let unit:RPOUnit = disp.__$$runit as RPOUnit;
+                    if(unit != null)
+                    {
+                        this.m_fixBlock.drawLockMaterialByUnit(this.m_rc,unit,disp,forceUpdateUniform);
                     }
                 }
             }
@@ -338,9 +339,9 @@ export namespace vox
             {
                 this.m_nodesLen = 0;
                 this.uid = -1;
-                this.m_weid = -1;
+                this.m_rpIndex = -1;
                 this.m_rcuid = -1;
-                this.m_weid = -1;
+                this.m_rpIndex = -1;
                 let i:number = 0;
                 for(; i < this.m_blockListLen; ++i)
                 {
@@ -352,6 +353,7 @@ export namespace vox
                 this.m_rpoNodeBuilder = null;
                 this.m_rpoUnitBuilder = null;
                 this.m_vtxResource = null;
+                this.m_rc = null;
             }
             
             showInfo():void
@@ -376,7 +378,7 @@ export namespace vox
             }
             toString():string
             {
-                return "[RenderProcess(uid = "+this.m_weid+")]";
+                return "[RenderProcess(uid = "+this.m_rpIndex+")]";
             }
         }
     }

@@ -43,7 +43,7 @@ export namespace demo
             this.m_cameraTrack.bindCamera(this.m_renderer.getCamera());
 
             this.m_blurModule = new PingpongBlur(this.m_renderer.getRenderer());
-            this.m_blurModule.bindProcessId(0,1);
+            this.m_blurModule.bindSrcProcessId(0);
         }
         // 构建添加可用于渲染的资源
         private addEntity():void

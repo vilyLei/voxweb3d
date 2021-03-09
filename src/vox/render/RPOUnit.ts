@@ -8,7 +8,7 @@
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as IVertexRenderObjT from "../../vox/render/IVertexRenderObj";
 
-import * as MaterialShaderT from "../../vox/material/MaterialShader";
+import * as RenderShaderT from "../../vox/render/RenderShader";
 import * as ITextureRenderObjT from "../../vox/render/ITextureRenderObj";
 import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RendererStateT from "../../vox/render/RendererState";
@@ -21,7 +21,7 @@ import * as IPoolNodeT from "../../vox/utils/IPoolNode";
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
 import IVertexRenderObj = IVertexRenderObjT.vox.render.IVertexRenderObj;
 
-import MaterialShader = MaterialShaderT.vox.material.MaterialShader;
+import RenderShader = RenderShaderT.vox.render.RenderShader;
 import ITextureRenderObj = ITextureRenderObjT.vox.render.ITextureRenderObj;
 import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
 import RenderColorMask = RODrawStateT.vox.render.RenderColorMask;
@@ -48,7 +48,7 @@ export namespace vox
             // renderProcess uid
             __$rprouid:number = -1;
 
-            shader:MaterialShader = null;
+            shader:RenderShader = null;
             
             constructor()
             {
@@ -62,6 +62,7 @@ export namespace vox
             ivsCount:number = 0;
             insCount:number = 0;
             drawOffset:number = 0;
+            
             partTotal:number = 0;               // partTotal = partGroup.length
             partGroup:Uint16Array = null;
 
@@ -96,6 +97,10 @@ export namespace vox
                     RenderColorMask.UseRenderState(this.rcolorMask);
                 }
             }
+            getUid():number
+            {
+                return this.uid;
+            }
             getRPOUid():number
             {
                 return this.__$rpuid;
@@ -103,6 +108,10 @@ export namespace vox
             getRPROUid():number
             {
                 return this.__$rprouid;
+            }
+            getShaderUid():number
+            {
+                return this.shdUid;
             }
             setIvsParam(ivsIndex:number, ivsCount:number):void
             {
@@ -266,12 +275,12 @@ export namespace vox
                 this.ivsCount = 0;
                 this.insCount = 0;
                 this.partTotal = 0;
-                this.drawEnabled = true;
                 this.drawMode = 0;
                 this.drawFlag = 0x0;
                 this.renderState = 0;
                 this.rcolorMask = 0;
 
+                this.drawEnabled = true;
                 this.shader = null;
             }
             destroy():void

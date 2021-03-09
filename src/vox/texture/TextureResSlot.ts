@@ -28,6 +28,7 @@ export namespace vox
             private m_textureTotal:number = 0;
             private m_textureMap:Map<number,IRenderTexture> = new Map();
             private m_freeMap:Map<number,number> = new Map();
+            
             private static s_ins:TextureResSlot = null;
             private m_texUid:number = 0;
             private m_freeUids:number[] = [];
@@ -69,9 +70,6 @@ export namespace vox
                     this.m_textureTotal ++;
                 }
             }
-            //  __$$removeTexture(texture:IRenderTexture):void
-            //  {
-            //  }
             getTextureByUid(uid:number):IRenderTexture
             {
                 return this.m_textureMap.get(uid);

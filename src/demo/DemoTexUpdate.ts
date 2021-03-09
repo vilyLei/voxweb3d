@@ -88,8 +88,10 @@ export namespace demo
                 plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
                 this.m_rscene.addEntity(plane);
                 this.m_targets.push(plane);
+                //this.m_disp = plane
             }
         }
+        //private m_disp:DisplayEntity = null;
         private updateTex():void
         {
             let rscene:RendererScene = this.m_rscene;
@@ -154,6 +156,7 @@ export namespace demo
             this.m_statusDisp.update();
             this.m_texLoader.run();
 
+            //this.m_rscene.drawEntity(this.m_disp);
             this.m_rscene.run();
 
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);

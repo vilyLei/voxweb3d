@@ -79,7 +79,7 @@ export namespace demo
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
 
                 this.m_blurModule = new PingpongBlur(renderer);
-                this.m_blurModule.bindProcessId(2,3);
+                this.m_blurModule.bindSrcProcessId(2);
                 this.m_blurModule.setBackbufferVisible(false);
 
                 this.initScene();

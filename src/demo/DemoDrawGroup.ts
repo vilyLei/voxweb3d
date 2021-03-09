@@ -2,42 +2,28 @@
 import * as Vector3DT from "../vox/geom/Vector3";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererStateT from "../vox/render/RendererState";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 
-import * as PureEntityT from "../vox/entity/PureEntity";
 import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureStoreT from "../vox/texture/TextureStore";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as MouseEventT from "../vox/event/MouseEvent";
+import * as StableArrayT from "../vox/utils/StableArray";
 import * as DemoInstanceT from "./DemoInstance";
 import * as ProfileInstanceT from "../voxprofile/entity/ProfileInstance";
-import * as ThreadSystemT from "../thread/ThreadSystem";
-import * as MatTransTaskT from "../demo/thread/MatTransTask";
-import * as MatCarTaskT from "../demo/thread/MatCarTask";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererState = RendererStateT.vox.render.RendererState;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 
-import PureEntity = PureEntityT.vox.entity.PureEntity;
 import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
+import StableArray = StableArrayT.vox.utils.StableArray;
+import StableArrayNode = StableArrayT.vox.utils.StableArrayNode;
 import DemoInstance = DemoInstanceT.demo.DemoInstance;
 import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
-import ThreadSystem = ThreadSystemT.thread.ThreadSystem;
-import MatTransTask = MatTransTaskT.demo.thread.MatTransTask;
-import MatCarTask = MatCarTaskT.demo.thread.MatCarTask;
 
 
 export namespace demo
@@ -50,8 +36,8 @@ export namespace demo
         }
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = null;
-        //private m_profileInstance:ProfileInstance = null;//new ProfileInstance();
         private m_profileInstance:ProfileInstance = new ProfileInstance();
+        private m_stableArr:StableArray = new StableArray();
         protected initializeSceneParam(param:RendererParam):void
         {
             this.m_processTotal = 4;
@@ -71,7 +57,7 @@ export namespace demo
             //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
             if(this.m_profileInstance != null)this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-            if(this.m_statusDisp != null)this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
+            if(this.m_statusDisp != null)this.m_statusDisp.initialize("rstatus",this.m_rscene.getRenderer().getViewWidth() - 180);
 
             let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
             
@@ -83,9 +69,10 @@ export namespace demo
             let srcPlane:Plane3DEntity = plane;
             
             //for(let i:number = 0; i < 20000; ++i)
-            for(let i:number = 0; i < 200; ++i)
+            for(let i:number = 0; i < 0; ++i)
             {
                 // 这样的操作只有一个 object matrix4 要更新到gpu所以相当于之后drawcall, 就会性能好
+                // 共享一个transform uniform
                 plane = new Plane3DEntity(plane.getTransform());
                 // 这样的操作会有20000个 object matrix4 要更新到gpu所以性能差了比上述方法差了一半
                 //plane = new Plane3DEntity();
@@ -97,9 +84,9 @@ export namespace demo
             }
             //plane.setIvsParam(3,3);
             //console.log("plane.getDisplay(): "+(plane.getDisplay())+", "+plane.getDisplay().getPartGroup());
-            //  plane.getDisplay().createPartGroup(2);
-            //  plane.getDisplay().setDrawPartAt(0, 0,3);
-            //  plane.getDisplay().setDrawPartAt(1, 3,3);
+            plane.getDisplay().createPartGroup(2);
+            plane.getDisplay().setDrawPartAt(0, 0,3);
+            plane.getDisplay().setDrawPartAt(1, 3,3);
 
             //  let axis:Axis3DEntity = new Axis3DEntity();
             //  axis.initialize(300.0);
@@ -107,17 +94,41 @@ export namespace demo
 
             console.log("------------------------------------------------------------------");
             console.log("------------------------------------------------------------------");
+
+            let k:number = 0;
+            let pnodes:StableArrayNode[] = [];
+            this.m_stableArr.initialize(4);
+            for(; k < 10; k++)
+            {
+                let node:StableArrayNode = new StableArrayNode();
+                node.uid = -1;
+                node.value = Math.round(Math.random() * 1000 - 500);
+                this.m_stableArr.addNode(node);
+                pnodes.push(node);
+            }
+            this.m_stableArr.showInfo();
+            this.m_stableArr.sort();
+            this.m_stableArr.showInfo();
+            //
+            console.log("------------------------------------------------------------------");
+            this.m_stableArr.adjustSize();
+            this.m_stableArr.showInfo();
+            //console.log();
+            console.log("----------------------------g 0--------------------------------------");
+            for(k = 0; k < 8; k++)
+            {
+                this.m_stableArr.removeNode(pnodes[Math.round(pnodes.length * Math.random() - 0.5)]);
+                //this.m_stableArr.removeNode(pnodes[k]);
+            }
+            this.m_stableArr.showInfo();
+            console.log("----------------------------g 1--------------------------------------");
+            this.m_stableArr.adjustSize();
+            this.m_stableArr.sort();
+            this.m_stableArr.showInfo();
         }
-        private m_dispTotal:number = 0;
-        private m_matTasks:MatCarTask[] = [];
-        private m_unitAmount:number = 1;
-        
-        private m_flag:number = 0;
-        private m_downFlag:number = 0;
         
         private mouseDown(evt:any):void
         {
-            this.m_downFlag++;
         }
         runBegin():void
         {
@@ -133,7 +144,6 @@ export namespace demo
             {
                 this.m_profileInstance.run();
             }
-            ThreadSystem.Run();
         }
         runEnd():void
         {

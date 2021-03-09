@@ -572,9 +572,15 @@ export namespace vox
             }
             reset():void
             {
+                let i:number = 0;
+                for(; i < this.m_texsTot; ++i)
+                {
+                    this.m_texs[i] = null;
+                }
                 this.m_runBegin = true;
                 this.m_fboIndex = -1;
                 this.m_texsTot = 0;
+                this.m_rindexs = [];
             }
             
             clone():FBOInstance

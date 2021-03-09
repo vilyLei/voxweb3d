@@ -31,9 +31,7 @@ export namespace demo
 {
     export class DemoDelEntity
     {
-        constructor()
-        {
-        }
+        constructor(){}
 
         private m_rscene:RendererScene = null;
         private m_texLoader:ImageTextureLoader = null;
