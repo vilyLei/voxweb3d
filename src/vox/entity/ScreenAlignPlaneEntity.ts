@@ -11,7 +11,7 @@ import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as ScreenPlaneMaterialT from "../../vox/material/mcase/ScreenPlaneMaterial";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as RORectMeshT from "../../vox/mesh/RectPlaneMesh";
-import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMask";
+import * as SpaceCullingMasKT from "../../vox/space/SpaceCullingMask";
 
 import RendererState = RendererStateT.vox.render.RendererState;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
@@ -19,7 +19,7 @@ import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import ScreenPlaneMaterial = ScreenPlaneMaterialT.vox.material.mcase.ScreenPlaneMaterial;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import RectPlaneMesh = RORectMeshT.vox.mesh.RectPlaneMesh;
-import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
+import SpaceCullingMasK = SpaceCullingMasKT.vox.space.SpaceCullingMasK;
 
 export namespace vox
 {

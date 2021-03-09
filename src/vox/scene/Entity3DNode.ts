@@ -102,7 +102,6 @@ export namespace vox
                     // create a new nodeIndex
                     node = new Entity3DNode();
                     Entity3DNode.m_nodeList.push( node );
-                    //Entity3DNode.m_camVisiList.push(0);
                     Entity3DNode.m_nodeFlagList.push(Entity3DNode.S_FLAG_BUSY);
                     node.uid = Entity3DNode.m_nodeListLen;
                     Entity3DNode.m_nodeListLen++;

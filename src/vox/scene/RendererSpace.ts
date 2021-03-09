@@ -12,9 +12,9 @@ This relative module was not found:
 import * as RSEntityFlagT from '../../vox/scene/RSEntityFlag';
 import * as Vector3DT from "../../vox/geom/Vector3";
 import * as AABBT from "../../vox/geom/AABB";
-import * as Stage3DT from "../../vox/display/Stage3D";
+import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
-import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMasK";
+//import * as SpaceCullingMasKT from "../../vox/space/SpaceCullingMasK";
 import * as IRenderEntityT from "../../vox/render/IRenderEntity";
 import * as IRendererSpaceT from "../../vox/scene/IRendererSpace";
 import * as RPONodeT from "../../vox/render/RPONode";
@@ -29,9 +29,9 @@ import * as ISpaceCullingorT from "../../vox/scene/ISpaceCullingor";
 import RSEntityFlag = RSEntityFlagT.vox.scene.RSEntityFlag;
 import Vector3D = Vector3DT.vox.geom.Vector3D;
 import AABB = AABBT.vox.geom.AABB;
-import Stage3D = Stage3DT.vox.display.Stage3D;
+import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
-import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
+//import SpaceCullingMasK = SpaceCullingMasKT.vox.space.SpaceCullingMasK;
 import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
 import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
 import RPONode = RPONodeT.vox.render.RPONode;
@@ -65,7 +65,7 @@ export namespace vox
             private m_uid:number = -1;
             private m_renderer:IRenderer = null;
             private m_camera:CameraBase = null;
-            private m_stage3d:Stage3D = null;
+            private m_stage3d:IRenderStage3D = null;
             private m_emptyRPONode:RPONode = new RPONode();
 
             private m_rpoNodeBuilder:RPONodeBuilder = null;
@@ -90,13 +90,13 @@ export namespace vox
                 if(this.m_renderer == null)
                 {
                     this.m_renderer = renderer;
-                    this.m_stage3d = renderer.getStage3D() as Stage3D;
+                    this.m_stage3d = renderer.getStage3D();
                     this.m_camera = camera;
                     this.m_rpoNodeBuilder = renderer.getRPONodeBuilder();
                 }
             }
             
-            getStage3D():Stage3D
+            getStage3D():IRenderStage3D
             {
                 return this.m_stage3d;
             }
@@ -264,7 +264,7 @@ export namespace vox
             runEnd():void
             {
             }
-            getCullingNodeBegin():Entity3DNode
+            getCullingNodeHead():Entity3DNode
             {
                 return this.m_nodeSLinker.getBegin();
             }

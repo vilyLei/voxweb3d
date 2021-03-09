@@ -19,7 +19,7 @@ import * as CameraTrackT from "../../vox/view/CameraTrack";
 import * as IRendererSpaceT from "../../vox/scene/IRendererSpace";
 import * as SpherePOVT from '../../voxocc/occlusion/SpherePOV';
 //import * as SphereGapPOVT from '../../voxocc/occlusion/SphereGapPOV';
-import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMask";
+import * as SpaceCullingMasKT from "../../vox/space/SpaceCullingMask";
 import * as SpaceCullingorT from '../../vox/scene/SpaceCullingor';
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
@@ -42,7 +42,7 @@ import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
 import SpherePOV = SpherePOVT.voxocc.occlusion.SpherePOV;
 //import SphereGapPOV = SphereGapPOVT.voxocc.occlusion.SphereGapPOV;
-import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
+import SpaceCullingMasK = SpaceCullingMasKT.vox.space.SpaceCullingMasK;
 import SpaceCullingor = SpaceCullingorT.vox.scene.SpaceCullingor;
 
 export namespace voxocc

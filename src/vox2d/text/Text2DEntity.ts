@@ -12,7 +12,7 @@ import * as Text2DMaterialT from "../../vox2d/material/mcase/Text2DMaterial";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as TextRectMeshT from "../../vox/text/TextRectMesh";
 import * as H5FontSysT from "../../vox/text/H5FontSys";
-import * as SpaceCullingMaskT from "../../vox/scene/SpaceCullingMask";
+import * as SpaceCullingMaskT from "../../vox/space/SpaceCullingMask";
 
 import RendererState = RendererStateT.vox.render.RendererState;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
@@ -21,7 +21,7 @@ import Text2DMaterial = Text2DMaterialT.vox2d.material.mcase.Text2DMaterial;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextRectMesh = TextRectMeshT.vox.text.TextRectMesh;
 import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
-import SpaceCullingMasK = SpaceCullingMaskT.vox.scene.SpaceCullingMasK;
+import SpaceCullingMasK = SpaceCullingMaskT.vox.space.SpaceCullingMasK;
 
 export namespace vox2d
 {

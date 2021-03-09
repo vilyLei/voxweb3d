@@ -7,7 +7,7 @@
 
 export namespace vox
 {
-    export namespace scene
+    export namespace space
     {
         export class SpaceCullingMasK
         {

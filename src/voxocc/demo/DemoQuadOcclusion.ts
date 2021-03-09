@@ -20,7 +20,7 @@ import * as BrokenLine3DEntityT from "../../vox/entity/BrokenLine3DEntity";
 import * as QuadPOVT from '../../voxocc/occlusion/QuadPOV';
 import * as QuadGapPOVT from '../../voxocc/occlusion/QuadGapPOV';
 import * as IRendererSpaceT from "../../vox/scene/IRendererSpace";
-import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMask";
+import * as SpaceCullingMasKT from "../../vox/space/SpaceCullingMask";
 import * as SpaceCullingorT from '../../vox/scene/SpaceCullingor';
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
@@ -44,7 +44,7 @@ import BrokenLine3DEntity = BrokenLine3DEntityT.vox.entity.BrokenLine3DEntity;
 import QuadPOV = QuadPOVT.voxocc.occlusion.QuadPOV;
 import QuadGapPOV = QuadGapPOVT.voxocc.occlusion.QuadGapPOV;
 import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
-import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
+import SpaceCullingMasK = SpaceCullingMasKT.vox.space.SpaceCullingMasK;
 import SpaceCullingor = SpaceCullingorT.vox.scene.SpaceCullingor;
 
 export namespace voxocc

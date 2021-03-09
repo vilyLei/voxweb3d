@@ -87,7 +87,7 @@ export namespace vox
             private m_renderer:RendererInstance = null;
             private m_processids:Uint8Array = new Uint8Array(128);
             private m_processidsLen:number = 0;
-            private m_rspace:RendererSpace = null;
+            private m_rspace:IRendererSpace = null;
             private m_mouse_rltv:Vector3D = new Vector3D();
             private m_mouse_rlpv:Vector3D = new Vector3D();
             // event flow control enable
@@ -327,8 +327,9 @@ export namespace vox
                     
                     if(this.m_rspace == null)
                     {
-                        this.m_rspace = new RendererSpace();
-                        this.m_rspace.initialize(this.m_renderer,this.m_renderProxy.getCamera());
+                        let space:RendererSpace = new RendererSpace();
+                        space.initialize(this.m_renderer,this.m_renderProxy.getCamera());
+                        this.m_rspace = space;
                     }
                 }
             }

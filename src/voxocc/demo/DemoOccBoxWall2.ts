@@ -20,7 +20,7 @@ import * as ProfileInstanceT from "../../voxprofile/entity/ProfileInstance";
 import * as CameraTrackT from "../../vox/view/CameraTrack";
 import * as IRendererSpaceT from "../../vox/scene/IRendererSpace";
 import * as SpaceCullingorT from "../../vox/scene/SpaceCullingor";
-import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMask";
+import * as SpaceCullingMasKT from "../../vox/space/SpaceCullingMask";
 import * as OccBoxWallT from "../../voxocc/demo/occwall/OccBoxWall";
 
 import Vector3D = Vector3DT.vox.geom.Vector3D;
@@ -46,7 +46,7 @@ import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
 import SpaceCullingor = SpaceCullingorT.vox.scene.SpaceCullingor;
-import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
+import SpaceCullingMasK = SpaceCullingMasKT.vox.space.SpaceCullingMasK;
 import OccBoxWall = OccBoxWallT.voxocc.demo.occwall.OccBoxWall;
 
 export namespace voxocc
