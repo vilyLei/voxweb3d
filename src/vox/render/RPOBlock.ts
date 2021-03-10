@@ -295,7 +295,7 @@ export namespace vox
                                 flagVBoo = true;
                             }
                             unit = nextNode.unit;
-                            if(unit.drawEnabled)
+                            if(nextNode.drawEnabled && unit.drawEnabled)
                             {
                                 if(flagVBoo)
                                 {
@@ -320,7 +320,7 @@ export namespace vox
                         while(nextNode != null)
                         {
                             unit = nextNode.unit;
-                            if(unit.drawEnabled)
+                            if(nextNode.drawEnabled && unit.drawEnabled)
                             {
                                 unit.runLockMaterial();
                                 if(unit.partTotal < 1)

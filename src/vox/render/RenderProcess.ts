@@ -18,6 +18,7 @@ import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as ROVertexResourceT from "../../vox/render/ROVertexResource";
 import * as RPOBlockT from "../../vox/render/RPOBlock";
+import * as RenderSortBlockT from "../../vox/render/RenderSortBlock";
 import * as IRenderProcessT from "../../vox/render/IRenderProcess";
 
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
@@ -30,6 +31,7 @@ import RPONode = RPONodeT.vox.render.RPONode;
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
 import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
 import ROVertexResource = ROVertexResourceT.vox.render.ROVertexResource;
+import RenderSortBlock = RenderSortBlockT.vox.render.RenderSortBlock;
 import RPOBlock = RPOBlockT.vox.render.RPOBlock;
 import IRenderProcess = IRenderProcessT.vox.render.IRenderProcess;
 
@@ -58,12 +60,13 @@ export namespace vox
             private m_vtxResource:ROVertexResource = null;
             // 用于制定对象的绘制
             private m_fixBlock:RPOBlock = null;
+            private m_sortBlock:RenderSortBlock = null;
 
             private m_batchEnabled:boolean = true;
             private m_fixedState:boolean = true;
+            private m_sortEnabled:boolean = false;
             
             uid:number = -1;
-            
             constructor(shader:RenderShader,rpoNodeBuilder:RPONodeBuilder,rpoUnitBuilder:RPOUnitBuilder,vtxResource:ROVertexResource, batchEnabled:boolean,processFixedState:boolean)
             {
                 this.m_shader = shader;
@@ -112,6 +115,21 @@ export namespace vox
             getRPIndex():number
             {
                 return this.m_rpIndex;
+            }
+            setSortEnabled(sortEnabled:boolean):void
+            {
+                if(this.m_nodesLen < 1)
+                {
+                    this.m_sortEnabled = sortEnabled;
+                }
+                else if(this.m_sortBlock != null)
+                {
+                    this.m_sortBlock.sortEnabled = sortEnabled;
+                }
+            }
+            getSortEnabled():boolean
+            {
+                return this.m_sortEnabled;
             }
             getUnitsTotal():number
             {
@@ -210,8 +228,23 @@ export namespace vox
                             ++this.m_nodesLen;
                             
                             this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.m_rpIndex, node.uid);
-                            
-                            this.addNodeToBlock(node);
+                            if(this.m_sortEnabled)
+                            {
+                                console.log("sort process add a disp...");
+                                if(this.m_sortBlock != null)
+                                {
+                                    this.m_sortBlock.addNode(node);
+                                }
+                                else
+                                {
+                                    this.m_sortBlock = new RenderSortBlock(this.m_shader);
+                                    this.m_sortBlock.addNode(node);
+                                }
+                            }
+                            else
+                            {
+                                this.addNodeToBlock(node);
+                            }
                         }
                         else
                         {
@@ -246,8 +279,16 @@ export namespace vox
                         //console.log("removeDisp(), node != null: "+(node != null));
                         if(node != null)
                         {
-                            let block:RPOBlock = this.m_blockList[node.index];
-                            block.removeNode(node);
+                            if(this.m_sortBlock == null)
+                            {
+                                let block:RPOBlock = this.m_blockList[node.index];
+                                block.removeNode(node);
+                            }
+                            else
+                            {
+                                this.m_sortBlock.removeNode(node);
+                            }
+
                             this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.m_rpIndex, -1);
                             
                             --this.m_nodesLen;
@@ -281,10 +322,17 @@ export namespace vox
                         let node:RPONode = this.m_rpoNodeBuilder.getNodeByUid( nodeUId ) as RPONode;
                         if(node != null)
                         {
-                            let block:RPOBlock = this.m_blockList[node.index];
-                            block.removeNode(node);
+                            if(this.m_sortBlock == null)
+                            {
+                                let block:RPOBlock = this.m_blockList[node.index];
+                                block.removeNode(node);
+                            }
+                            else
+                            {
+                                this.m_sortBlock.removeNode(node);
+                            }
                             this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.m_rpIndex, -1);
-                            
+                            node.unit.__$rprouid = -1;
                             --this.m_nodesLen;
                             this.m_rpoNodeBuilder.restore(node);
                         }
@@ -297,18 +345,32 @@ export namespace vox
                 if(this.m_enabled && this.m_nodesLen > 0)
                 {
                     let rc:RenderProxy = this.m_rc;
-                    if(this.m_shader.isUnLocked())
+                    if(this.m_sortBlock == null)
                     {
-                        for(let i:number = 0; i < this.m_blockListLen; ++i)
+                        if(this.m_shader.isUnLocked())
                         {
-                            this.m_blockList[i].run(rc);
+                            for(let i:number = 0; i < this.m_blockListLen; ++i)
+                            {
+                                this.m_blockList[i].run(rc);
+                            }
+                        }
+                        else
+                        {
+                            for(let i:number = 0; i < this.m_blockListLen; ++i)
+                            {
+                                this.m_blockList[i].runLockMaterial(rc);
+                            }
                         }
                     }
                     else
                     {
-                        for(let i:number = 0; i < this.m_blockListLen; ++i)
+                        if(this.m_shader.isUnLocked())
                         {
-                            this.m_blockList[i].runLockMaterial(rc);
+                            this.m_sortBlock.run(rc);
+                        }
+                        else
+                        {
+                            this.m_sortBlock.runLockMaterial(rc);
                         }
                     }
                 }
@@ -337,6 +399,7 @@ export namespace vox
             }
             reset():void
             {
+                this.m_sortEnabled = false;
                 this.m_nodesLen = 0;
                 this.uid = -1;
                 this.m_rpIndex = -1;
@@ -354,6 +417,11 @@ export namespace vox
                 this.m_rpoUnitBuilder = null;
                 this.m_vtxResource = null;
                 this.m_rc = null;
+                if(this.m_sortBlock != null)
+                {
+                    this.m_sortBlock.clear();
+                    this.m_sortBlock = null;
+                }
             }
             
             showInfo():void

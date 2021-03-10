@@ -25,7 +25,7 @@ export namespace vox
             getRPIndex():number;
             getUnitsTotal():number;
             getEnabled():boolean;
-            
+            getSortEnabled():boolean;
             /**
              * execute rendering
              */

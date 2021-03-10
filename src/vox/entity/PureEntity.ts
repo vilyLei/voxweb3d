@@ -78,11 +78,12 @@ export namespace vox
             protected m_globalBounds:AABB = null;
             
             /**
-             * renderer scene entity flag
+             * renderer scene entity flag, be used by the renderer system
              * 第0位到第19位总共20位存放自身在space中的 index id(最小值为1, 最大值为1048575,默认值是0, 也就是最多只能展示1048575个entitys),
              * 第20位开始到26位为总共7位止存放在renderer中的状态数据(renderer unique id and others)
              * 第27位存放是否在container里面
-             * 第28位开始到30位总共三位存放renderer 载入状态 的相关信息
+             * 第28位开始到29位总共二位存放renderer 载入状态 的相关信息
+             * 第30位位存放是否渲染运行时排序
              */
             __$rseFlag:number = RSEntityFlag.DEFAULT;
 

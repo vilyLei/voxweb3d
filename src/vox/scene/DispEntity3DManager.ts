@@ -118,6 +118,7 @@ export namespace vox
                 }
                 entity.__$rseFlag = RSEntityFlag.RemoveRendererUid(entity.__$rseFlag);
                 entity.__$rseFlag = RSEntityFlag.RemoveRendererLoad(entity.__$rseFlag);
+                entity.__$rseFlag = RSEntityFlag.RemoveSortEnabled(entity.__$rseFlag);
                 if(this.entityManaListener != null)
                 {
                     this.entityManaListener.removeFromWorld(entity,this.m_rendererUid,-1);
@@ -139,6 +140,9 @@ export namespace vox
                                 return;
                             }                
                         }
+                        this.m_rprocess = this.m_processBuider.getNodeByUid(processUid) as RenderProcess;
+                        entity.__$rseFlag = this.m_rprocess.getSortEnabled()?RSEntityFlag.AddSortEnabled(entity.__$rseFlag):RSEntityFlag.RemoveSortEnabled(entity.__$rseFlag);
+
                         if(deferred)
                         {
                             if(disp.__$$rsign == DisplayRenderSign.NOT_IN_WORLD)
@@ -266,6 +270,7 @@ export namespace vox
                         //console.log("DispEntity3DManager::update(), remove a ready entity.");
                         entity.__$rseFlag = RSEntityFlag.RemoveRendererLoad(entity.__$rseFlag);
                         entity.__$rseFlag = RSEntityFlag.RemoveRendererUid(entity.__$rseFlag);
+                        entity.__$rseFlag = RSEntityFlag.RemoveSortEnabled(entity.__$rseFlag);
                         this.m_waitList.splice(i,1);
                         this.m_processUidList.splice(i,1);
                         --len;

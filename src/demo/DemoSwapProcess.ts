@@ -79,14 +79,16 @@ export namespace demo
                 this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
                 
                 this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
-
+                
+                this.m_rscene.setAutoRenderingSort(true);
+                this.m_rscene.setProcessSortEnabledAt(0,true);
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/yanj.jpg");
                 let tex2:TextureProxy = this.getImageTexByUrl("static/assets/yanj.jpg");
                 let tex3:TextureProxy = this.m_rscene.textureBlock.createRGBATex2D(16,16,new Color4(1.0,0.0,1.0));
                 
                 let plane:Plane3DEntity = new Plane3DEntity();
-                plane.initializeXOZ(-200.0,-200.0,400.0,400.0,[tex0]);
+                plane.initializeXOZ(-300.0,-300.0,400.0,400.0,[tex0]);
                 this.m_rscene.addEntity(plane,1);
                 
                 plane = new Plane3DEntity();
@@ -94,12 +96,20 @@ export namespace demo
                 plane.setXYZ(80,-1,80);
                 this.m_rscene.addEntity(plane, 0);
                 plane.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
-                this.m_targets.push(plane);                
+                this.m_targets.push(plane);
+
+                plane = new Plane3DEntity();
+                plane.initializeXOZ(-100.0,-100.0,300.0,300.0,[tex0]);
+                plane.setXYZ(80,-10,80);
+                this.m_rscene.addEntity(plane,0);
             }
         }
         private m_isChanged:boolean = true;
         private mouseDown(evt:any):void
         {
+            this.m_rscene.setProcessSortEnabledAt(0,this.m_isChanged);
+            this.m_isChanged = !this.m_isChanged;
+            return;
             if(this.m_targets != null && this.m_targets.length > 0)
             {
                 // move rendering runtime displayEntity to different renderer process

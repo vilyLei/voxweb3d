@@ -186,6 +186,18 @@ export namespace vox
                     }
                 }
             }
+            updateEntity(entity:IRenderEntity):void
+            {
+                if(RSEntityFlag.TestSpaceContains( entity.__$rseFlag ))
+                {
+                    let node:Entity3DNode = this.m_nodeQueue.getNodeByEntity(entity);
+                    if(node != null)
+                    {
+                        node.distanceFlag = RSEntityFlag.TestSortEnabled(entity.__$rseFlag);
+                    }
+
+                }
+            }
             update():void
             {
             }
@@ -231,18 +243,24 @@ export namespace vox
                     {
                         let ab:AABB = null;
                         let cam:CameraBase = this.m_camera;
+                        let camPos:Vector3D = cam.getPosition();
                         while(nextNode != null)
                         {
-                            nextNode.drawEnabled = false;
-                            if(nextNode.entity.getVisible())
+                            if(nextNode.rpoNode.isVsible())
                             {
                                 ab = nextNode.bounds;
                                 nextNode.drawEnabled = cam.visiTestSphere2(ab.center, ab.radius);
                                 nextNode.entity.drawEnabled = nextNode.drawEnabled;
                                 nextNode.rpoNode.drawEnabled = nextNode.drawEnabled;
+                                if(nextNode.drawEnabled && nextNode.distanceFlag)
+                                {
+                                    nextNode.rpoNode.setValue(Vector3D.DistanceSquared(camPos,ab.center));
+                                    //console.log("default  a runit.value: ",nextNode.rpoNode.unit.value);
+                                }
                             }
                             else
                             {
+                                nextNode.drawEnabled = false;
                                 nextNode.entity.drawEnabled = false;
                                 nextNode.rpoNode.drawEnabled = false;
                             }

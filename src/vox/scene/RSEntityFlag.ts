@@ -67,21 +67,40 @@ export namespace vox
                 //return (flag & RSEntityFlag.RENDERER_UID_FLAT)>>20;
                 return (flag & 0x7F00000)>>20;
             }
+            //0x40000000
+            // 第30位存放 是否渲染运行时排序(rendering sort enabled) 的相关信息
+            static readonly SORT_FLAT:number = 0x40000000;// (1<<30);
+            static readonly SORT_NOT_FLAT:number = -0x40000001;// ~0x40000000;
+            static AddSortEnabled(flag:number):number
+            {
+                //return flag | RSEntityFlag.SORT_FLAT;
+                return flag | 0x40000000;
+            }
+            static RemoveSortEnabled(flag:number):number
+            {
+                //return flag & RSEntityFlag.SORT_NOT_FLAT;
+                return flag & (-0x40000001);
+            }
+            static TestSortEnabled(flag:number):boolean
+            {
+                //return (flag & RSEntityFlag.SORT_FLAT) == RSEntityFlag.SORT_FLAT;
+                return (flag & 0x40000000) == 0x40000000;
+            }
 
-            // 第28位开始到30位总共3位存放renderer 载入状态 的相关信息
-            static readonly RENDERER_LOAD_FLAT:number = 0x70000000;// (1<<28 | 1<<29 | 1<<30);
-            static readonly RENDERER_LOAD_NOT_FLAT:number = -0x70000001;// ~0x70000000;
+            // 第28位开始到29位总共2位存放renderer 载入状态 的相关信息
+            static readonly RENDERER_LOAD_FLAT:number = 0x30000000;// (1<<28 | 1<<29);
+            static readonly RENDERER_LOAD_NOT_FLAT:number = -0x30000001;// ~0x30000000;
             static AddRendererLoad(flag:number):number
             {
                 //return flag | RSEntityFlag.RENDERER_LOAD_FLAT;
-                return flag | 0x70000000;
+                return flag | 0x30000000;
             }
             static RemoveRendererLoad(flag:number):number
             {
                 //return flag & RSEntityFlag.RENDERER_LOAD_NOT_FLAT;
-                return flag & (-0x70000001);
+                return flag & (-0x30000001);
             }
-            static readonly RENDERER_ADN_LOAD_FLAT:number = 0x77F00000;// 0x7f00000 | 0x70000000;
+            static readonly RENDERER_ADN_LOAD_FLAT:number = 0x37F00000;// 0x7f00000 | 0x30000000;
 
 
             static TestSpaceContains(flag:number):boolean
@@ -104,7 +123,7 @@ export namespace vox
             static TestRendererEnabled(flag:number):boolean
             {
                 //return (RSEntityFlag.RENDERER_ADN_LOAD_FLAT & flag) == RSEntityFlag.RENDERER_UID_FLAT && (RSEntityFlag.CONTAINER_FLAG & flag) != RSEntityFlag.CONTAINER_FLAG;
-                return (0x77F00000 & flag) == 0x7F00000 && (0x80000000 & flag) != 0x80000000;
+                return (0x37F00000 & flag) == 0x7F00000 && (0x80000000 & flag) != 0x80000000;
             }
         }
     }

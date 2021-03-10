@@ -49,7 +49,14 @@ export namespace vox
 
             rvroI:number = -1;
             rtroI:number = -1;
-        
+            setValue(value:number):void
+            {
+                this.unit.value = value;
+            }
+            isVsible():boolean
+            {
+                return this.unit.drawEnabled;
+            }
             updateData():void
             {
                 let p:RPOUnit = this.unit;

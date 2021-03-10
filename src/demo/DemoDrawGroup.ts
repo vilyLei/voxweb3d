@@ -9,6 +9,7 @@ import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as MouseEventT from "../vox/event/MouseEvent";
 import * as StableArrayT from "../vox/utils/StableArray";
+import * as SortNodeLinkerT from "../vox/utils/SortNodeLinker";
 import * as DemoInstanceT from "./DemoInstance";
 import * as ProfileInstanceT from "../voxprofile/entity/ProfileInstance";
 
@@ -20,12 +21,12 @@ import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
+import SortNodeLinker = SortNodeLinkerT.vox.utils.SortNodeLinker;
+import SortNodeLinkerNode = SortNodeLinkerT.vox.utils.SortNodeLinkerNode;
 import StableArray = StableArrayT.vox.utils.StableArray;
 import StableArrayNode = StableArrayT.vox.utils.StableArrayNode;
 import DemoInstance = DemoInstanceT.demo.DemoInstance;
 import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
-
-
 export namespace demo
 {
     export class DemoDrawGroup extends DemoInstance
@@ -37,7 +38,6 @@ export namespace demo
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = null;
         private m_profileInstance:ProfileInstance = new ProfileInstance();
-        private m_stableArr:StableArray = new StableArray();
         protected initializeSceneParam(param:RendererParam):void
         {
             this.m_processTotal = 4;
@@ -93,40 +93,122 @@ export namespace demo
             //  this.m_rscene.addEntity(axis);
 
             console.log("------------------------------------------------------------------");
-            console.log("------------------------------------------------------------------");
+            this.testSortLinker();
+            //this.testStableArray();
+        }
+        private testSortLinker():void
+        {
+            
+            let sortLinker:SortNodeLinker = new SortNodeLinker();
+            console.log("-----------------------------testSortLinker-------------------------------------");
+            let k:number = 0;
+            let pnodes:SortNodeLinkerNode[] = [];
+            //sortLinker.initialize(4);
+            for(; k < 50; k++)
+            {
+                let node:SortNodeLinkerNode = new SortNodeLinkerNode();
+                node.uid = -1;
+                node.value = Math.round(Math.random() * 1000 - 500);
+                sortLinker.addNode(node);
+                pnodes.push(node);
+            }
+            //sortLinker.showInfo();
+            
+            console.log("----------------------time a--------------------------------------------");
+            let dt:number = Date.now();
+            sortLinker.sort();
+            dt = Date.now() - dt;
+            console.log("dt:",dt);
+            console.log("----------------------time b--------------------------------------------");
+            sortLinker.showInfo();
+            //return;
+            //console.log("------------------------------------------------------------------");
+            console.log("----------------------------g 0--------------------------------------");
+            for(k = 0; k < 58; k++)
+            {
+                sortLinker.removeNode(pnodes[Math.round(pnodes.length * Math.random() - 0.5)]);
+                //stableArr.removeNode(pnodes[k]);
+            }
+            sortLinker.showInfo();
+            console.log("----------------------------g 1--------------------------------------");
+            sortLinker.sort();
+            sortLinker.showInfo();
 
+            console.log("----------------------------g 2--------------------------------------");
+            this.showSortLinker(sortLinker);
+            this.showSortLinker(sortLinker);
+        }
+        
+        private showSortLinker(sortLinker:SortNodeLinker):void
+        {
+            let info:string = "";
+			let node:SortNodeLinkerNode = sortLinker.getBegin();
+            info += "("+node.value+","+node.uid+"),";
+            node = sortLinker.getNext();
+            while(node != null)
+            {
+                info += "("+node.value+","+node.uid+"),";
+                node = sortLinker.getNext();
+            }
+            console.log("XXX showSortLinker info: \n",info);
+        }
+        private showStableArray(sortLinker:StableArray):void
+        {
+            let info:string = "";
+			let node:StableArrayNode = sortLinker.getBegin();
+            info += "("+node.value+","+node.uid+"),";
+            node = sortLinker.getNext();
+            while(node != null)
+            {
+                info += "("+node.value+","+node.uid+"),";
+                node = sortLinker.getNext();
+            }
+            console.log("XXX showStableArray info: \n",info);
+        }
+        private testStableArray():void
+        {
+            console.log("-----------------------------testStableArray-------------------------------------");
             let k:number = 0;
             let pnodes:StableArrayNode[] = [];
-            this.m_stableArr.initialize(4);
+            let stableArr:StableArray = new StableArray();
+            stableArr.initialize(4);
             for(; k < 10; k++)
             {
                 let node:StableArrayNode = new StableArrayNode();
                 node.uid = -1;
                 node.value = Math.round(Math.random() * 1000 - 500);
-                this.m_stableArr.addNode(node);
+                stableArr.addNode(node);
                 pnodes.push(node);
             }
-            this.m_stableArr.showInfo();
-            this.m_stableArr.sort();
-            this.m_stableArr.showInfo();
+            //stableArr.showInfo();
+            console.log("----------------------time a--------------------------------------------");
+            let dt:number = Date.now();
+            stableArr.sort();
+            dt = Date.now() - dt;
+            console.log("dt:",dt);
+            console.log("----------------------time b--------------------------------------------");
+            stableArr.showInfo();
             //
             console.log("------------------------------------------------------------------");
-            this.m_stableArr.adjustSize();
-            this.m_stableArr.showInfo();
-            //console.log();
+            stableArr.adjustSize();
+            stableArr.showInfo();
             console.log("----------------------------g 0--------------------------------------");
             for(k = 0; k < 8; k++)
             {
-                this.m_stableArr.removeNode(pnodes[Math.round(pnodes.length * Math.random() - 0.5)]);
-                //this.m_stableArr.removeNode(pnodes[k]);
+                stableArr.removeNode(pnodes[Math.round(pnodes.length * Math.random() - 0.5)]);
+                //stableArr.removeNode(pnodes[k]);
             }
-            this.m_stableArr.showInfo();
+            stableArr.removeNode(pnodes[pnodes.length - 1]);
+            stableArr.showInfo();
             console.log("----------------------------g 1--------------------------------------");
-            this.m_stableArr.adjustSize();
-            this.m_stableArr.sort();
-            this.m_stableArr.showInfo();
+            //stableArr.adjustSize();
+            stableArr.sort();
+            stableArr.showInfo();
+
+            console.log("----------------------------g 2--------------------------------------");
+            this.showStableArray(stableArr);
+            this.showStableArray(stableArr);
         }
-        
         private mouseDown(evt:any):void
         {
         }

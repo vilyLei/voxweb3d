@@ -5,6 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as RSEntityFlagT from '../../vox/scene/RSEntityFlag';
 import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
 import * as RenderAdapterT from "../../vox/render/RenderAdapter";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
@@ -25,6 +26,7 @@ import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as DispEntity3DManagerT from "../../vox/scene/DispEntity3DManager";
 
+import RSEntityFlag = RSEntityFlagT.vox.scene.RSEntityFlag;
 import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
@@ -222,19 +224,40 @@ export namespace vox
              * 将已经在渲染运行时中的entity移动到指定 process uid 的 render process 中去
              * move rendering runtime displayEntity to different renderer process
              */
-            moveEntityToProcessAt(entity:IRenderEntity,dstProcessid:number):void
+            moveEntityToProcessAt(entity:IRenderEntity,dstProcessIndex:number):void
             {
                 if(entity != null && entity.getRendererUid() == this.m_uid)
                 {
                     if(entity.isRenderEnabled())
                     {
-                        let srcUid:number = entity.getDisplay().__$$runit.getRPROUid();
-                        if(srcUid != dstProcessid && dstProcessid > -1 && dstProcessid < this.m_processesLen)
+                        if(dstProcessIndex > -1 && dstProcessIndex < this.m_processesLen)
                         {
-                            //this.m_entity3DMana.addEntity(this.m_renderProxy, entity,processid);
+                            let srcUid:number = entity.getDisplay().__$$runit.getRPROUid();
                             let src:RenderProcess = this.m_processBuider.getNodeByUid(srcUid) as RenderProcess;
+                            let dst:RenderProcess = this.m_processes[dstProcessIndex];
+                            if(src != dst)
+                            {
+                                src.removeDispUnit(entity.getDisplay());                                
+                                entity.__$rseFlag = dst.getSortEnabled()?RSEntityFlag.AddSortEnabled(entity.__$rseFlag):RSEntityFlag.RemoveSortEnabled(entity.__$rseFlag);
+                                dst.addDisp(entity.getDisplay());
+                            }
+                        }
+                    }
+                }
+            }
+            moveEntityToProcess(entity:IRenderEntity,dstProcess:IRenderProcess):void
+            {
+                if(dstProcess != null && entity != null && entity.getRendererUid() == this.m_uid)
+                {
+                    if(entity.isRenderEnabled())
+                    {
+                        let srcUid:number = entity.getDisplay().__$$runit.getRPROUid();
+                        let src:RenderProcess = this.m_processBuider.getNodeByUid(srcUid) as RenderProcess;
+                        if(src != dstProcess)
+                        {
+                            let dst:RenderProcess = dstProcess as RenderProcess;
                             src.removeDispUnit(entity.getDisplay());
-                            let dst:RenderProcess = this.m_processBuider.getNodeByUid(dstProcessid) as RenderProcess;
+                            entity.__$rseFlag = dstProcess.getSortEnabled()?RSEntityFlag.AddSortEnabled(entity.__$rseFlag):RSEntityFlag.RemoveSortEnabled(entity.__$rseFlag);
                             dst.addDisp(entity.getDisplay());
                         }
                     }
@@ -279,6 +302,21 @@ export namespace vox
                     {
                         this.m_processes[processIndex].removeDisp(entity.getDisplay());
                     }
+                }
+            }
+            setProcessSortEnabledAt(processIndex:number,sortEnabled:boolean):void
+            {
+                if(processIndex >= 0 && processIndex < this.m_processesLen)
+                {
+                    this.m_processes[processIndex].setSortEnabled(sortEnabled);
+                }
+            }
+            setProcessSortEnabled(process:IRenderProcess,sortEnabled:boolean):void
+            {
+                if(process != null && process.getRCUid() == this.m_uid)
+                {
+                    let p:RenderProcess = process as RenderProcess;
+                    p.setSortEnabled(sortEnabled);
                 }
             }
             /**

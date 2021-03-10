@@ -23,6 +23,7 @@ export namespace vox
         {
             uid:number = -1;
             rstatus:number = 0;
+            distanceFlag:boolean = false;
             // project occlusion culling test enabled
             pcoEnabled:boolean = false;
             drawEnabled:boolean = true;

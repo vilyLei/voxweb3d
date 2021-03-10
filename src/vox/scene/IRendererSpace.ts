@@ -33,6 +33,7 @@ export namespace vox
             getCamera():CameraBase;
             addEntity(entity:IRenderEntity):void;
             removeEntity(entity:IRenderEntity):void;
+            updateEntity(entity:IRenderEntity):void;
             setSpaceCullingor(cullingor:ISpaceCullingor):void;
             setRaySelector(raySelector:IRaySelector):void;
             getRaySelector():IRaySelector;

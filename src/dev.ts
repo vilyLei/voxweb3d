@@ -190,8 +190,8 @@
 //  import * as DemoMatTransThread from "./demo/DemoMatTransThread";
 //  import Demo = DemoMatTransThread.demo.DemoMatTransThread;
 
-import * as DemoDrawGroup from "./demo/DemoDrawGroup";
-import Demo = DemoDrawGroup.demo.DemoDrawGroup;
+//  import * as DemoDrawGroup from "./demo/DemoDrawGroup";
+//  import Demo = DemoDrawGroup.demo.DemoDrawGroup;
 
 //  import * as DemoDeepTransparent from "./demo/DemoDeepTransparent";
 //  import Demo = DemoDeepTransparent.demo.DemoDeepTransparent;
@@ -211,8 +211,8 @@ import Demo = DemoDrawGroup.demo.DemoDrawGroup;
 //  import * as DemoVtx from "./demo/DemoVtx";
 //  import Demo = DemoVtx.demo.DemoVtx;
 
-//  import * as DemoSwapProcess from "./demo/DemoSwapProcess";
-//  import Demo = DemoSwapProcess.demo.DemoSwapProcess;
+import * as DemoSwapProcess from "./demo/DemoSwapProcess";
+import Demo = DemoSwapProcess.demo.DemoSwapProcess;
 
 //  import * as DemoDelEntity from "./demo/DemoDelEntity";
 //  import Demo = DemoDelEntity.demo.DemoDelEntity;

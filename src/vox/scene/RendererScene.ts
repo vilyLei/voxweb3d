@@ -18,6 +18,7 @@ import * as IRenderMaterialT from "../../vox/render/IRenderMaterial";
 import * as IRenderEntityT from "../../vox/render/IRenderEntity";
 import * as DisplayEntityContainerT from "../../vox/entity/DisplayEntityContainer";
 import * as RendererParamT from "../../vox/scene/RendererParam";
+import * as IRenderProcessT from "../../vox/render/IRenderProcess";
 import * as RenderProcessT from "../../vox/render/RenderProcess";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
 import * as EntityNodeQueueT from "../../vox/scene/EntityNodeQueue";
@@ -50,6 +51,7 @@ import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;
 import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
 import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
+import IRenderProcess = IRenderProcessT.vox.render.IRenderProcess;
 import RenderProcess = RenderProcessT.vox.render.RenderProcess;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
@@ -104,6 +106,7 @@ export namespace vox
             private m_subscList:RendererSubScene[] = [];
             private m_subscListLen:number = 0;
             private m_runFlag:number = -1;
+            private m_spaceFlag:number = -1;
 
             readonly textureBlock:TextureBlock = new TextureBlock();
             readonly stage3D:Stage3D = null;
@@ -390,13 +393,32 @@ export namespace vox
                     }
                 }
             }
+            setAutoRenderingSort(sortEnabled:boolean):void
+            {
+                this.m_spaceFlag = sortEnabled?1:0;
+            }
+            setProcessSortEnabledAt(processIndex:number,sortEnabled:boolean):void
+            {
+                this.m_renderer.setProcessSortEnabledAt(processIndex, sortEnabled);
+            }
+            setProcessSortEnabled(process:IRenderProcess,sortEnabled:boolean):void
+            {
+                this.m_renderer.setProcessSortEnabled(process, sortEnabled);
+            }
             /**
              * 将已经在渲染运行时中的entity移动到指定 process uid 的 render process 中去
              * move rendering runtime displayEntity to different renderer process
              */
             moveEntityTo(entity:IRenderEntity,processindex:number):void
             {
-                this.m_renderer.moveEntityToProcessAt(entity,this.m_processids[processindex]);
+                if(entity != null)
+                {
+                    this.m_renderer.moveEntityToProcessAt(entity,this.m_processids[processindex]);
+                    if(this.m_rspace != null)
+                    {
+                        this.m_rspace.updateEntity(entity);
+                    }
+                }
             }
             drawEntity(entity:IRenderEntity):void
             {
@@ -634,12 +656,12 @@ export namespace vox
                 if(this.m_rspace != null)
                 {
                     this.m_rspace.update();
-                }
-                if(this.m_rspace != null && this.m_cullingTestBoo)
-                {
-                    if(this.m_evt3DCtr != null || this.m_rspace.getRaySelector() != null)
+                    if(this.m_cullingTestBoo)
                     {
-                        this.m_rspace.run();
+                        if(this.m_evt3DCtr != null || this.m_spaceFlag > 0 || this.m_rspace.getRaySelector() != null)
+                        {
+                            this.m_rspace.run();
+                        }
                     }
                 }
                 if(this.m_mouseTestBoo && !this.m_evtFlowEnabled)

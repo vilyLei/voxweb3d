@@ -19,7 +19,7 @@ export namespace vox
             private m_end:Entity3DNode = null;
             constructor()
             {
-            }        
+            }
         	destroy():void
         	{
         		this.clear();

@@ -43,6 +43,7 @@ export namespace vox
         export class RPOUnit implements IPoolNode,IRPODisplay
         {
             uid:number = -1;
+            value:number = -1;
             // 记录自身和RPONode的对应关系
             __$rpuid:number = -1;
             // renderProcess uid
