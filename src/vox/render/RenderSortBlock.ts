@@ -24,8 +24,8 @@ export namespace vox
         	private m_begin:RPONode = null;
             private m_end:RPONode = null;
             private m_next:RPONode = null;
-            private m_node:RPONode = null;
-            private m_nodes:RPONode[] = [];
+            private m_node:RPOUnit = null;
+            private m_nodes:RPOUnit[] = [];
             private m_nodesTotal:number = 0;
             private m_shader:RenderShader = null;
 			private m_renderTotal:number = 0;
@@ -81,11 +81,11 @@ export namespace vox
                 this.m_shader.resetUniform();
 				
 				let unit:RPOUnit = null;
-				let nodes:RPONode[] = this.m_nodes;
+				let nodes:RPOUnit[] = this.m_nodes;
 				
 				for(let i:number = 0; i < this.m_renderTotal; ++i)
 				{
-					unit = nodes[i].unit;
+					unit = nodes[i];
 					this.m_shader.bindToGpu(unit.shdUid);
 					unit.run(rc);
 					if(unit.partTotal < 1)
@@ -104,10 +104,10 @@ export namespace vox
                 this.m_shader.resetUniform();
 				
 				let unit:RPOUnit = null;
-				let nodes:RPONode[] = this.m_nodes;
+				let nodes:RPOUnit[] = this.m_nodes;
 				for(let i:number = 0; i < this.m_renderTotal; ++i)
 				{
-					unit = nodes[i].unit;
+					unit = nodes[i];
 					this.m_shader.bindToGpu(unit.shdUid);
 					unit.vro.run();
 					unit.runLockMaterial2();
@@ -138,7 +138,7 @@ export namespace vox
 					{
 						if(next.drawEnabled && next.unit.drawEnabled)
 						{
-							this.m_nodes[i] = next;
+							this.m_nodes[i] = next.unit;
 							++i;
 						}
 						next = next.next;
@@ -149,16 +149,16 @@ export namespace vox
             }
             private sorting(low:number,high:number):number
             {
-                let arr:RPONode[] = this.m_nodes;
+                let arr:RPOUnit[] = this.m_nodes;
                 this.m_node = arr[low];                
                 while(low < high)
                 {
-                    while(low < high && arr[high].unit.value >= this.m_node.unit.value)
+                    while(low < high && arr[high].value >= this.m_node.value)
                     {
                         --high;
                     }
                     arr[low] = arr[high];
-                    while(low < high && arr[low].unit.value <= this.m_node.unit.value)
+                    while(low < high && arr[low].value <= this.m_node.value)
                     {
                         ++low;
                     }
