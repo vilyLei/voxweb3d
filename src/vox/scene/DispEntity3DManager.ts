@@ -227,6 +227,7 @@ export namespace vox
                 {
                     this.entityManaListener.addToWorld(entity,this.m_rendererUid,processUid);
                 }
+                entity.update();
             }
             private updateWaitList():void
             {

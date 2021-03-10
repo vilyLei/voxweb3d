@@ -671,6 +671,11 @@ export namespace vox
                         this.m_transfrom.update();
                     }
                 }
+                if(this.m_display != null && this.m_display.__$$runit != null)
+                {
+                    this.m_display.__$$runit.bounds = this.m_globalBounds;
+                    this.m_transfrom.getPosition(this.m_display.__$$runit.pos);
+                }
             }
             toString():string
             {

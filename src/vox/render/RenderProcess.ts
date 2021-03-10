@@ -17,8 +17,9 @@ import * as RPONodeT from "../../vox/render/RPONode";
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
 import * as RPONodeBuilderT from "../../vox/render/RPONodeBuilder";
 import * as ROVertexResourceT from "../../vox/render/ROVertexResource";
-import * as RPOBlockT from "../../vox/render/RPOBlock";
+import * as IRODisplaySorterT from '../../vox/render/IRODisplaySorter';
 import * as RenderSortBlockT from "../../vox/render/RenderSortBlock";
+import * as RPOBlockT from "../../vox/render/RPOBlock";
 import * as IRenderProcessT from "../../vox/render/IRenderProcess";
 
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
@@ -31,6 +32,7 @@ import RPONode = RPONodeT.vox.render.RPONode;
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;
 import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
 import ROVertexResource = ROVertexResourceT.vox.render.ROVertexResource;
+import IRODisplaySorter = IRODisplaySorterT.vox.render.IRODisplaySorter;
 import RenderSortBlock = RenderSortBlockT.vox.render.RenderSortBlock;
 import RPOBlock = RPOBlockT.vox.render.RPOBlock;
 import IRenderProcess = IRenderProcessT.vox.render.IRenderProcess;
@@ -61,6 +63,7 @@ export namespace vox
             // 用于制定对象的绘制
             private m_fixBlock:RPOBlock = null;
             private m_sortBlock:RenderSortBlock = null;
+			private m_sorter:IRODisplaySorter = null;
 
             private m_batchEnabled:boolean = true;
             private m_fixedState:boolean = true;
@@ -116,6 +119,18 @@ export namespace vox
             {
                 return this.m_rpIndex;
             }
+            hasSorter():boolean
+            {
+                return this.m_sorter != null;
+            }
+			setSorter(sorter:IRODisplaySorter):void
+			{
+                this.m_sorter = sorter;
+                if(this.m_sortBlock != null)
+                {
+                    this.m_sortBlock.setSorter(sorter);
+                }
+			}
             setSortEnabled(sortEnabled:boolean):void
             {
                 if(this.m_nodesLen < 1)
@@ -238,6 +253,7 @@ export namespace vox
                                 else
                                 {
                                     this.m_sortBlock = new RenderSortBlock(this.m_shader);
+                                    this.m_sortBlock.setSorter(this.m_sorter);
                                     this.m_sortBlock.addNode(node);
                                 }
                             }

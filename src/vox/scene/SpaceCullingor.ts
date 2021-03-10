@@ -113,10 +113,10 @@ export namespace vox
                             nextNode.drawEnabled = boo;
                             nextNode.entity.drawEnabled = boo;
                             nextNode.rpoNode.drawEnabled = boo;
-                            if(boo && nextNode.distanceFlag)
-                            {
-                                nextNode.rpoNode.setValue(-Vector3D.DistanceSquared(camPos,ab.center));
-                            }
+                            //  if(boo && nextNode.distanceFlag)
+                            //  {
+                            //      nextNode.rpoNode.setValue(-Vector3D.DistanceSquared(camPos,ab.center));
+                            //  }
                         }
                         nextNode = nextNode.next;
                     }

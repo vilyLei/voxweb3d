@@ -214,6 +214,9 @@
 import * as DemoSwapProcess from "./demo/DemoSwapProcess";
 import Demo = DemoSwapProcess.demo.DemoSwapProcess;
 
+//  import * as DemoRenderSort from "./demo/DemoRenderSort";
+//  import Demo = DemoRenderSort.demo.DemoRenderSort;
+
 //  import * as DemoDelEntity from "./demo/DemoDelEntity";
 //  import Demo = DemoDelEntity.demo.DemoDelEntity;
 

@@ -53,7 +53,7 @@ export namespace vox
                     this.m_nodeList.push(node);
                     this.m_entityList.push(null);
                     node.spaceId = index;
-                    node.distanceFlag = false;
+                    //node.distanceFlag = false;
                     this.m_nodeFlagList.push(1);
                     this.m_nodeIdList.push(index);
                     this.m_nodeFlagList.push(1);
@@ -76,8 +76,8 @@ export namespace vox
                 let node:Entity3DNode = this.createNode();
                 this.m_entityList[node.spaceId] = entity;
                 node.entity = entity;
-                node.distanceFlag = RSEntityFlag.TestSortEnabled(entity.__$rseFlag);
-                console.log("Queue node.distanceFlag: ",node.distanceFlag);
+                //node.distanceFlag = RSEntityFlag.TestSortEnabled(entity.__$rseFlag);
+                //console.log("Queue node.distanceFlag: ",node.distanceFlag);
                 entity.__$rseFlag = RSEntityFlag.AddSpaceUid(entity.__$rseFlag, node.spaceId);
                 return node;
             }

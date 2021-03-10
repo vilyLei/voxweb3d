@@ -5,6 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as Vector3DT from "../../vox/geom/Vector3";
+import * as AABBT from "../../vox/geom/AABB";
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as IVertexRenderObjT from "../../vox/render/IVertexRenderObj";
 
@@ -18,6 +20,8 @@ import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 import * as IRPODisplayT from "../../vox/render/IRPODisplay";
 import * as IPoolNodeT from "../../vox/utils/IPoolNode";
 
+import Vector3D = Vector3DT.vox.geom.Vector3D;
+import AABB = AABBT.vox.geom.AABB;
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
 import IVertexRenderObj = IVertexRenderObjT.vox.render.IVertexRenderObj;
 
@@ -50,7 +54,8 @@ export namespace vox
             __$rprouid:number = -1;
 
             shader:RenderShader = null;
-            
+            pos:Vector3D = new Vector3D();
+            bounds:AABB = null;
             constructor()
             {
             }
@@ -283,6 +288,7 @@ export namespace vox
 
                 this.drawEnabled = true;
                 this.shader = null;
+                this.bounds = null;
             }
             destroy():void
             {

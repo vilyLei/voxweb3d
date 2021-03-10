@@ -38,6 +38,8 @@ import * as RayGpuSelectorT from "../../vox/scene/RayGpuSelector";
 import * as MouseEvt3DControllerT from "../../vox/scene/MouseEvt3DController";
 import * as IEvt3DControllerT from "../../vox/scene/IEvt3DController";
 import * as FBOInstanceT from "../../vox/scene/FBOInstance";
+import * as IRODisplaySorterT from "../../vox/render/IRODisplaySorter";
+import * as CameraDsistanceSorterT from "../../vox/scene/CameraDsistanceSorter";
 import * as RendererSubSceneT from "../../vox/scene/RendererSubScene";
 
 import RSEntityFlag = RSEntityFlagT.vox.scene.RSEntityFlag;
@@ -73,6 +75,8 @@ import RayGpuSelector = RayGpuSelectorT.vox.scene.RayGpuSelector;
 import MouseEvt3DController = MouseEvt3DControllerT.vox.scene.MouseEvt3DController;
 import IEvt3DController = IEvt3DControllerT.vox.scene.IEvt3DController;
 import FBOInstance = FBOInstanceT.vox.scene.FBOInstance;
+import IRODisplaySorter = IRODisplaySorterT.vox.render.IRODisplaySorter;
+import CameraDsistanceSorter = CameraDsistanceSorterT.vox.scene.CameraDsistanceSorter;
 import RendererSubScene = RendererSubSceneT.vox.scene.RendererSubScene;
 
 export namespace vox
@@ -102,11 +106,11 @@ export namespace vox
 
             private m_nodeWaitLinker:Entity3DNodeLinker = null;
             private m_nodeWaitQueue:EntityNodeQueue = null;
+            private m_camDisSorter:CameraDsistanceSorter = null;
             // recorde renderer sub scenes
             private m_subscList:RendererSubScene[] = [];
             private m_subscListLen:number = 0;
             private m_runFlag:number = -1;
-            private m_spaceFlag:number = -1;
             private m_processUpdate:boolean = false;
 
             readonly textureBlock:TextureBlock = new TextureBlock();
@@ -328,7 +332,7 @@ export namespace vox
                     this.m_viewH = stage3D.stageHeight;
 
                     this.textureBlock.setRenderer(this.m_renderer);
-                    
+                    this.m_camDisSorter = new CameraDsistanceSorter(this.m_renderProxy);
                     if(this.m_rspace == null)
                     {
                         let space:RendererSpace = new RendererSpace();
@@ -396,16 +400,29 @@ export namespace vox
             }
             setAutoRenderingSort(sortEnabled:boolean):void
             {
-                this.m_spaceFlag = sortEnabled?1:0;
                 this.m_processUpdate = sortEnabled;
             }
-            setProcessSortEnabledAt(processIndex:number,sortEnabled:boolean):void
+            setProcessSortEnabledAt(processIndex:number,sortEnabled:boolean,sorter:IRODisplaySorter = null):void
             {
                 this.m_renderer.setProcessSortEnabledAt(processIndex, sortEnabled);
+                if(sortEnabled)
+                {
+                    let process:IRenderProcess = this.m_renderer.getProcessAt(processIndex);
+                    sorter = sorter != null?sorter:this.m_camDisSorter;
+                    if(process != null)
+                    {
+                        process.setSorter(sorter);
+                    }
+                }
             }
-            setProcessSortEnabled(process:IRenderProcess,sortEnabled:boolean):void
+            setProcessSortEnabled(process:IRenderProcess,sortEnabled:boolean,sorter:IRODisplaySorter = null):void
             {
                 this.m_renderer.setProcessSortEnabled(process, sortEnabled);
+                if(sortEnabled && process != null && !process.hasSorter())
+                {
+                    sorter = sorter != null?sorter:this.m_camDisSorter;
+                    process.setSorter(sorter);
+                }
             }
             /**
              * 将已经在渲染运行时中的entity移动到指定 process uid 的 render process 中去
@@ -660,7 +677,7 @@ export namespace vox
                     this.m_rspace.update();
                     if(this.m_cullingTestBoo)
                     {
-                        if(this.m_evt3DCtr != null || this.m_spaceFlag > 0 || this.m_rspace.getRaySelector() != null)
+                        if(this.m_evt3DCtr != null || this.m_processUpdate || this.m_rspace.getRaySelector() != null)
                         {
                             this.m_rspace.run();
                         }

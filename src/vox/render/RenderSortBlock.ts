@@ -9,11 +9,13 @@ import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPONodeT from "../../vox/render/RPONode";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as RenderShaderT from '../../vox/render/RenderShader';
+import * as IRODisplaySorterT from '../../vox/render/IRODisplaySorter';
 
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RPONode = RPONodeT.vox.render.RPONode;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import RenderShader = RenderShaderT.vox.render.RenderShader;
+import IRODisplaySorter = IRODisplaySorterT.vox.render.IRODisplaySorter;
 
 export namespace vox
 {
@@ -29,12 +31,16 @@ export namespace vox
             private m_nodesTotal:number = 0;
             private m_shader:RenderShader = null;
 			private m_renderTotal:number = 0;
+			private m_sorter:IRODisplaySorter = null;
 			sortEnabled:boolean = true;
             constructor(shader:RenderShader)
             {
 				this.m_shader = shader;
             }
-			
+			setSorter(sorter:IRODisplaySorter):void
+			{
+				this.m_sorter = sorter;
+			}
             showInfo():void
             {
                 let info:string = "";
@@ -68,6 +74,7 @@ export namespace vox
 					this.sortEnabled = true;
 					this.m_shader = null;
 				}
+				this.m_sorter = null;
 			}
 			update():void
 			{
@@ -82,7 +89,7 @@ export namespace vox
 				
 				let unit:RPOUnit = null;
 				let nodes:RPOUnit[] = this.m_nodes;
-				
+				//let info:string = "";
 				for(let i:number = 0; i < this.m_renderTotal; ++i)
 				{
 					unit = nodes[i];
@@ -96,7 +103,9 @@ export namespace vox
 					{
 						unit.drawPart(rc);
 					}
+					//info += unit.value+",";
 				}
+				//console.log(info);
 			}
             runLockMaterial(rc:RenderProxy):void
             {
@@ -144,21 +153,31 @@ export namespace vox
 						next = next.next;
 					}
 					this.m_renderTotal = i;
-					this.snsort(0, this.m_renderTotal - 1);					
+					
+					let flat:number = 0;
+					if(this.m_sorter != null)
+					{
+						flat = this.m_sorter.sortRODisplay(this.m_nodes,i);
+					}
+					if(flat < 1)
+					{
+						this.snsort(0, i - 1);
+					}
 				}
             }
             private sorting(low:number,high:number):number
             {
                 let arr:RPOUnit[] = this.m_nodes;
-                this.m_node = arr[low];                
+				this.m_node = arr[low];
+				let pvalue:number = this.m_node.value;
                 while(low < high)
                 {
-                    while(low < high && arr[high].value >= this.m_node.value)
+                    while(low < high && arr[high].value >= pvalue)
                     {
                         --high;
                     }
                     arr[low] = arr[high];
-                    while(low < high && arr[low].value <= this.m_node.value)
+                    while(low < high && arr[low].value <= pvalue)
                     {
                         ++low;
                     }

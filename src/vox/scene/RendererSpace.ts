@@ -188,15 +188,14 @@ export namespace vox
             }
             updateEntity(entity:IRenderEntity):void
             {
-                if(RSEntityFlag.TestSpaceContains( entity.__$rseFlag ))
-                {
-                    let node:Entity3DNode = this.m_nodeQueue.getNodeByEntity(entity);
-                    if(node != null)
-                    {
-                        node.distanceFlag = RSEntityFlag.TestSortEnabled(entity.__$rseFlag);
-                    }
-
-                }
+                //  if(RSEntityFlag.TestSpaceContains( entity.__$rseFlag ))
+                //  {
+                //      let node:Entity3DNode = this.m_nodeQueue.getNodeByEntity(entity);
+                //      //  if(node != null)
+                //      //  {
+                //      //      node.distanceFlag = RSEntityFlag.TestSortEnabled(entity.__$rseFlag);
+                //      //  }
+                //  }
             }
             update():void
             {
@@ -252,11 +251,11 @@ export namespace vox
                                 nextNode.drawEnabled = cam.visiTestSphere2(ab.center, ab.radius);
                                 nextNode.entity.drawEnabled = nextNode.drawEnabled;
                                 nextNode.rpoNode.drawEnabled = nextNode.drawEnabled;
-                                if(nextNode.drawEnabled && nextNode.distanceFlag)
-                                {
-                                    nextNode.rpoNode.setValue(-Vector3D.DistanceSquared(camPos,ab.center));
-                                    //console.log((nextNode.entity as any).name,",a runit.value: ",nextNode.rpoNode.unit.value);
-                                }
+                                //  if(nextNode.drawEnabled && nextNode.distanceFlag)
+                                //  {
+                                //      nextNode.rpoNode.setValue(-Vector3D.DistanceSquared(camPos,ab.center));
+                                //      //console.log((nextNode.entity as any).name,",a runit.value: ",nextNode.rpoNode.unit.value);
+                                //  }
                             }
                             else
                             {

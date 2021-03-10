@@ -5,6 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as IRODisplaySorterT from '../../vox/render/IRODisplaySorter';
+
+import IRODisplaySorter = IRODisplaySorterT.vox.render.IRODisplaySorter;
+
 export namespace vox
 {
     export namespace render
@@ -25,6 +29,9 @@ export namespace vox
             getRPIndex():number;
             getUnitsTotal():number;
             getEnabled():boolean;
+            hasSorter():boolean;
+            setSorter(sorter:IRODisplaySorter):void;
+            setSortEnabled(sortEnabled:boolean):void;
             getSortEnabled():boolean;
             /**
              * update rendering status
