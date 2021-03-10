@@ -27,6 +27,10 @@ export namespace vox
             getEnabled():boolean;
             getSortEnabled():boolean;
             /**
+             * update rendering status
+             */
+            update():void;
+            /**
              * execute rendering
              */
             run():void;

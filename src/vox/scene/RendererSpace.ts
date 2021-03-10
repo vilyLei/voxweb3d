@@ -254,8 +254,8 @@ export namespace vox
                                 nextNode.rpoNode.drawEnabled = nextNode.drawEnabled;
                                 if(nextNode.drawEnabled && nextNode.distanceFlag)
                                 {
-                                    nextNode.rpoNode.setValue(Vector3D.DistanceSquared(camPos,ab.center));
-                                    //console.log("default  a runit.value: ",nextNode.rpoNode.unit.value);
+                                    nextNode.rpoNode.setValue(-Vector3D.DistanceSquared(camPos,ab.center));
+                                    //console.log((nextNode.entity as any).name,",a runit.value: ",nextNode.rpoNode.unit.value);
                                 }
                             }
                             else

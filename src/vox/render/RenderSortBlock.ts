@@ -52,7 +52,7 @@ export namespace vox
         	{
 				if(this.m_shader != null)
 				{
-					this.m_nodes = [];
+					if(this.m_nodes.length > 0)this.m_nodes = [];
 					let next:RPONode = this.m_begin;
 					let curr:RPONode = null;
 					while(next != null)
@@ -68,14 +68,21 @@ export namespace vox
 					this.sortEnabled = true;
 					this.m_shader = null;
 				}
-        	}
+			}
+			update():void
+			{
+				if(this.sortEnabled)
+				{
+					this.sort();
+				}
+			}
             run(rc:RenderProxy):void
             {
-				if(this.sortEnabled)this.sort();
                 this.m_shader.resetUniform();
 				
 				let unit:RPOUnit = null;
 				let nodes:RPONode[] = this.m_nodes;
+				
 				for(let i:number = 0; i < this.m_renderTotal; ++i)
 				{
 					unit = nodes[i].unit;

@@ -339,7 +339,16 @@ export namespace vox
                     }
                 }
             }
-
+            update():void
+            {
+                if(this.m_enabled && this.m_nodesLen > 0)
+                {
+                    if(this.m_sortBlock != null)
+                    {
+                        this.m_sortBlock.update();
+                    }
+                }
+            }
             run():void
             {
                 if(this.m_enabled && this.m_nodesLen > 0)

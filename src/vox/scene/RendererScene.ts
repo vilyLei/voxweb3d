@@ -107,6 +107,7 @@ export namespace vox
             private m_subscListLen:number = 0;
             private m_runFlag:number = -1;
             private m_spaceFlag:number = -1;
+            private m_processUpdate:boolean = false;
 
             readonly textureBlock:TextureBlock = new TextureBlock();
             readonly stage3D:Stage3D = null;
@@ -396,6 +397,7 @@ export namespace vox
             setAutoRenderingSort(sortEnabled:boolean):void
             {
                 this.m_spaceFlag = sortEnabled?1:0;
+                this.m_processUpdate = sortEnabled;
             }
             setProcessSortEnabledAt(processIndex:number,sortEnabled:boolean):void
             {
@@ -663,6 +665,10 @@ export namespace vox
                             this.m_rspace.run();
                         }
                     }
+                }
+                if(this.m_processUpdate)
+                {
+                    this.m_renderer.updateAllProcess();
                 }
                 if(this.m_mouseTestBoo && !this.m_evtFlowEnabled)
                 {

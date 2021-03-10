@@ -115,7 +115,7 @@ export namespace vox
                             nextNode.rpoNode.drawEnabled = boo;
                             if(boo && nextNode.distanceFlag)
                             {
-                                nextNode.rpoNode.setValue(Vector3D.DistanceSquared(camPos,ab.center));
+                                nextNode.rpoNode.setValue(-Vector3D.DistanceSquared(camPos,ab.center));
                             }
                         }
                         nextNode = nextNode.next;

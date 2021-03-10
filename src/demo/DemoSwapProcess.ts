@@ -94,13 +94,15 @@ export namespace demo
                 plane = new Plane3DEntity();
                 plane.initializeXOZ(-200.0,-200.0,400.0,400.0,[tex1]);
                 plane.setXYZ(80,-1,80);
+                plane.name = "plane 0";
                 this.m_rscene.addEntity(plane, 0);
                 plane.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
                 this.m_targets.push(plane);
 
                 plane = new Plane3DEntity();
-                plane.initializeXOZ(-100.0,-100.0,300.0,300.0,[tex0]);
-                plane.setXYZ(80,-10,80);
+                plane.initializeXOZ(-150.0,-150.0,300.0,300.0,[tex0]);
+                plane.setXYZ(80,-100,80);
+                plane.name = "plane 1";
                 this.m_rscene.addEntity(plane,0);
             }
         }

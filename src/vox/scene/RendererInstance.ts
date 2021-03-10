@@ -184,6 +184,20 @@ export namespace vox
                 this.m_renderProxy.Vertex.update();
                 this.m_entity3DMana.update();
             }
+            updateAllProcess():void
+            {
+                for(let i:number = 0; i < this.m_processesLen; ++i)
+                {
+                    this.m_processes[i].update();
+                }
+            }
+            updateProcessAt(processIndex:number):void
+            {
+                if(processIndex > -1 && processIndex < this.m_processesLen)
+                {
+                    this.m_processes[processIndex].update();
+                }
+            }
             setEntityManaListener(listener:any):void
             {
                 this.m_entity3DMana.entityManaListener = listener;
