@@ -430,14 +430,7 @@ export namespace vox
              */
             moveEntityTo(entity:IRenderEntity,processindex:number):void
             {
-                if(entity != null)
-                {
-                    this.m_renderer.moveEntityToProcessAt(entity,this.m_processids[processindex]);
-                    if(this.m_rspace != null)
-                    {
-                        this.m_rspace.updateEntity(entity);
-                    }
-                }
+                this.m_renderer.moveEntityToProcessAt(entity,this.m_processids[processindex]);
             }
             drawEntity(entity:IRenderEntity):void
             {

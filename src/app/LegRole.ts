@@ -1,42 +1,54 @@
 
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
+import * as Vector3T from "../vox/geom/Vector3";
 import * as Color4T from "../vox/material/Color4";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 
 import * as RendererStateT from "../vox/render/RendererState";
-import * as DisplayEntityT from "../vox/entity/DisplayEntity";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureConstT from "../vox/texture/TextureConst";
+
+import * as DisplayEntityT from "../vox/entity/DisplayEntity";
+import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
+import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
+import * as Box3DEntityT from "../vox/entity/Box3DEntity";
 
 import * as MouseEventT from "../vox/event/MouseEvent";
 import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as RendererSceneT from "../vox/scene/RendererScene";
 
+import * as WlKTModuleT from "../app/calc/WlKTModule";
+
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
+import Vector3D = Vector3T.vox.geom.Vector3D;
 import Color4 = Color4T.vox.material.Color4;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 
 import RendererState = RendererStateT.vox.render.RendererState;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
+
+import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
+import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
+import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 
-export namespace demo
+import WlKTModule = WlKTModuleT.app.calc.WlKTModule;
+
+export namespace app
 {
     /**
-     * This example: rendering runtime sort renderable objects
+     * 
      */
-    export class DemoRenderSort
+    export class LegRole
     {
         constructor(){}
 
@@ -46,6 +58,7 @@ export namespace demo
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
 
         private m_targets:DisplayEntity[] = [];
+        private m_modules:WlKTModule[] = []
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
             let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -55,7 +68,7 @@ export namespace demo
         }
         initialize():void
         {
-            console.log("DemoRenderSort::initialize()......");
+            console.log("LegRole::initialize()......");
             if(this.m_rscene == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
@@ -78,59 +91,69 @@ export namespace demo
                 
                 this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
                 
-                this.m_rscene.setAutoRenderingSort(true);
-                this.m_rscene.setProcessSortEnabledAt(0,true);
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/wood_01.jpg");
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/yanj.jpg");
-                let tex2:TextureProxy = this.getImageTexByUrl("static/assets/decorativePattern_01.jpg");
+                let tex2:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 let tex3:TextureProxy = this.m_rscene.textureBlock.createRGBATex2D(16,16,new Color4(1.0,0.0,1.0));
-                
+
+                let axis:Axis3DEntity = new Axis3DEntity();
+                axis.initializeCross(600.0);
+                this.m_rscene.addEntity(axis);
+
                 let plane:Plane3DEntity = new Plane3DEntity();
-                plane.initializeXOZ(-300.0,-300.0,400.0,400.0,[tex2]);
-                plane.setXYZ(0,-60,0);
-                this.m_rscene.addEntity(plane,1);
-                
-                plane = new Plane3DEntity();
-                plane.initializeXOZ(-200.0,-200.0,400.0,400.0,[tex1]);
-                plane.setXYZ(80,-1,80);
-                this.m_rscene.addEntity(plane, 0);
-                plane.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
+                plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex0]);
+                plane.setXYZ(0.0,-1.0,0.0);
+                this.m_rscene.addEntity(plane);
                 this.m_targets.push(plane);
 
-                plane = new Plane3DEntity();
-                plane.initializeXOZ(-150.0,-150.0,300.0,300.0,[tex0]);
-                plane.setXYZ(80,-50,80);
-                this.m_rscene.addEntity(plane,0);
+                let srcModule:WlKTModule = null;
+                let mdoule:WlKTModule = new WlKTModule();
+                mdoule.initialize(this.m_rscene, [tex2]);
+                //mdoule.setScale(0.5);
+                mdoule.setRotation(Math.random() * 360);
+                mdoule.setXYZ(Math.random() * 800 - 400.0,0, Math.random() * 800 - 400.0);
+                this.m_modules.push(mdoule);
+                srcModule = mdoule;
+                
+                let i:number = 0;
+                for(; i < 5; ++i)
+                {
+                    mdoule = new WlKTModule();                
+                    mdoule.initializeFrom(srcModule);
+                    mdoule.setScale(0.2 + Math.random() * 0.7);
+                    mdoule.setRotation(Math.random() * 360);
+                    mdoule.setXYZ(Math.random() * 800 - 400.0,0, Math.random() * 800 - 400.0);
+                    this.m_modules.push(mdoule);
+                }
             }
         }
         private m_isChanged:boolean = true;
         private mouseDown(evt:any):void
         {
-            this.m_rscene.setProcessSortEnabledAt(0,this.m_isChanged);
-            this.m_isChanged = !this.m_isChanged;
-            return;
-            if(this.m_targets != null && this.m_targets.length > 0)
+            let len:number = this.m_modules.length;
+            let i:number = 0;
+            for(; i < len; ++i)
             {
-                // move rendering runtime displayEntity to different renderer process
-                if(this.m_isChanged)
-                {
-                    this.m_rscene.moveEntityTo(this.m_targets[0],2);
-                }
-                else
-                {
-                    this.m_rscene.moveEntityTo(this.m_targets[0],0);
-                }
-                this.m_isChanged = !this.m_isChanged;
+                //this.m_modules[i].run();
+                this.m_modules[i].setRotation(Math.random() * 360);
+                this.m_modules[i].setXYZ(Math.random() * 800 - 400.0,0, Math.random() * 800 - 400.0);
             }
         }
         run():void
         {
+            let len:number = this.m_modules.length;
+            let i:number = 0;
+            for(; i < len; ++i)
+            {
+                this.m_modules[i].run();
+            }
+
             this.m_statusDisp.update();
             this.m_texLoader.run();
 
             this.m_rscene.run();
 
-            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }
 }

@@ -214,8 +214,8 @@
 //  import * as DemoSwapProcess from "./demo/DemoSwapProcess";
 //  import Demo = DemoSwapProcess.demo.DemoSwapProcess;
 
-import * as DemoRenderSort from "./demo/DemoRenderSort";
-import Demo = DemoRenderSort.demo.DemoRenderSort;
+//  import * as DemoRenderSort from "./demo/DemoRenderSort";
+//  import Demo = DemoRenderSort.demo.DemoRenderSort;
 
 //  import * as DemoDelEntity from "./demo/DemoDelEntity";
 //  import Demo = DemoDelEntity.demo.DemoDelEntity;
@@ -258,6 +258,12 @@ import Demo = DemoRenderSort.demo.DemoRenderSort;
 
 //  import * as DemoMultiRenderer from "./demo/DemoMultiRenderer";
 //  import Demo = DemoMultiRenderer.demo.DemoMultiRenderer;
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+import * as LegRole from "./app/LegRole";
+import Demo = LegRole.app.LegRole;
+
 
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;

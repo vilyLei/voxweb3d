@@ -109,7 +109,6 @@ export namespace vox
 			}
             runLockMaterial(rc:RenderProxy):void
             {
-				if(this.sortEnabled)this.sort();
                 this.m_shader.resetUniform();
 				
 				let unit:RPOUnit = null;
