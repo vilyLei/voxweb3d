@@ -77,7 +77,16 @@ export namespace vox
                 return "FPS: "+this.m_fps;
             }
             //private m_date:any = new Date();
-            update():void
+            render():void
+            {
+                if(this.statusEnbled)
+                {
+                    this.m_ctx2D.clearRect(0, 0, 600, 70);
+                    this.m_ctx2D.fillText("FPS:"+this.m_fps+this.statusInfo, 5,50);
+                }
+
+            }
+            update(immediaterender:boolean = true):void
             {
                 if(this.m_delayTime > 0)
                 {
@@ -94,13 +103,12 @@ export namespace vox
                         {
                             this.m_lastTime = t - this.m_lastTime;
                             this.m_fps = Math.round(1000.0/this.m_lastTime);
+                            if(immediaterender)
+                            {
+                                this.render();
+                            }
                         }
                         this.m_lastTime = t;
-                        if(this.statusEnbled)
-                        {
-                            this.m_ctx2D.clearRect(0, 0, 600, 70);
-                            this.m_ctx2D.fillText("FPS:"+this.m_fps+this.statusInfo, 5,50);
-                        }
                     }
                     this.m_delayTime = this.delayTime;
                 }

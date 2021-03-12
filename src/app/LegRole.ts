@@ -109,20 +109,24 @@ export namespace app
                 let srcModule:WlKTModule = null;
                 let mdoule:WlKTModule = new WlKTModule();
                 mdoule.initialize(this.m_rscene, [tex2]);
-                //mdoule.setScale(0.5);
                 mdoule.setRotation(Math.random() * 360);
                 mdoule.setXYZ(Math.random() * 800 - 400.0,0, Math.random() * 800 - 400.0);
                 this.m_modules.push(mdoule);
                 srcModule = mdoule;
                 
                 let i:number = 0;
+                let scale:number = 0.2 + Math.random() * 0.7;
                 for(; i < 5; ++i)
                 {
                     mdoule = new WlKTModule();                
                     mdoule.initializeFrom(srcModule);
-                    mdoule.setScale(0.2 + Math.random() * 0.7);
+                    mdoule.setScale(scale);
                     mdoule.setRotation(Math.random() * 360);
                     mdoule.setXYZ(Math.random() * 800 - 400.0,0, Math.random() * 800 - 400.0);
+                    scale = 1.0 - scale;
+                    if(scale < 0.0)scale = 0.0;
+                    mdoule.setSpeedScale(1.0 + scale + (Math.random() * 1.0 - 0.5));
+                    //mdoule.setSpeedScale(1.8);
                     this.m_modules.push(mdoule);
                 }
             }

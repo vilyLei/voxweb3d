@@ -111,8 +111,9 @@ export namespace vox
             private m_subscList:RendererSubScene[] = [];
             private m_subscListLen:number = 0;
             private m_runFlag:number = -1;
+            private m_autoRunning:boolean = true;
             private m_processUpdate:boolean = false;
-
+            //
             readonly textureBlock:TextureBlock = new TextureBlock();
             readonly stage3D:Stage3D = null;
             constructor()
@@ -398,6 +399,10 @@ export namespace vox
                     }
                 }
             }
+            setAutoRunning(autoRunning:boolean):void
+            {
+                this.m_autoRunning = autoRunning;
+            }
             setAutoRenderingSort(sortEnabled:boolean):void
             {
                 this.m_processUpdate = sortEnabled;
@@ -523,11 +528,11 @@ export namespace vox
             }
             runBegin():void
             {
-                if(this.m_runFlag >= 0)
+                if(this.m_autoRunning)
                 {
-                    this.runEnd();
+                    if(this.m_runFlag >= 0) this.runEnd();
+                    this.m_runFlag = 0;
                 }
-                this.m_runFlag = 0;
 
                 this.m_adapter.unlockViewport();
                 if(!this.m_renderProxy.isAutoSynViewAndStage())
@@ -614,11 +619,11 @@ export namespace vox
              */
             update():void
             {
-                if(this.m_runFlag != 0)
+                if(this.m_autoRunning)
                 {
-                    this.runBegin();
+                    if(this.m_runFlag != 0) this.runBegin();
+                    this.m_runFlag = 1;
                 }
-                this.m_runFlag = 1;
 
                 this.textureBlock.update();
 
@@ -709,11 +714,11 @@ export namespace vox
              */
             run():void
             {
-                if(this.m_runFlag != 1)
+                if(this.m_autoRunning)
                 {
-                    this.update();
+                    if(this.m_runFlag != 1) this.update();
+                    this.m_runFlag = 2;
                 }
-                this.m_runFlag = 2;
 
                 if(this.m_subscListLen > 0)
                 {
@@ -747,8 +752,10 @@ export namespace vox
                 {
                     this.m_rspace.runEnd();
                 }
-                
-                this.m_runFlag = -1;
+                if(this.m_autoRunning)
+                {
+                    this.m_runFlag = -1;
+                }
             }
             updateCamera():void
             {

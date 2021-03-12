@@ -92,7 +92,7 @@ export namespace vox
 		            normals[i] = SurfaceNormalCalc.s_temp_va.x; normals[i + 1] = SurfaceNormalCalc.s_temp_va.y; normals[i + 2] = SurfaceNormalCalc.s_temp_va.z;
 		        }                
 		    }
-			static ClacTriTangent(verteies:Float32Array, uvs:Float32Array, nvs:Float32Array, triangleIndex:number, indices:Uint16Array, tangent:Vector3D, biTangent:Vector3D):void
+			static ClacTriTangent(verteies:Float32Array, uvs:Float32Array, nvs:Float32Array, triangleIndex:number, indices:Uint16Array|Uint32Array, tangent:Vector3D, biTangent:Vector3D):void
 			{
 				let j:number = triangleIndex * 3;
 				// pos
@@ -133,7 +133,7 @@ export namespace vox
 				biTangent.normalize();
 				//*/
 			}
-			static ClacTrisTangent(verteies:Float32Array, verteiesLength:number, uvs:Float32Array, nvs:Float32Array, numTriangles:number, indices:Uint16Array, tangent:Float32Array, biTangent:Float32Array):void
+			static ClacTrisTangent(verteies:Float32Array, verteiesLength:number, uvs:Float32Array, nvs:Float32Array, numTriangles:number, indices:Uint16Array | Uint32Array, tangent:Float32Array, biTangent:Float32Array):void
 			{
 				let tv3:Vector3D = new Vector3D(), btv3:Vector3D = new Vector3D();
 				let j:number = 0, k:number = 0, i:number = 0;

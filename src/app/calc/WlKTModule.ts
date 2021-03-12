@@ -24,6 +24,7 @@ export namespace app
         {
             private m_position:Vector3D = new Vector3D();
             private m_spdV:Vector3D = new Vector3D();
+            private m_spdScale:number = 1.0;
             private m_spd:number = 1.0;
             private m_scale:number = 1.0;
             private m_direcRad:number = 0;
@@ -97,9 +98,15 @@ export namespace app
             setRotation(rotation:number):void
             {
                 this.m_direcRad = MathConst.DegreeToRadian(rotation);
-                this.m_spdV.x = this.m_spd * Math.cos(this.m_direcRad);
-                this.m_spdV.z = -this.m_spd * Math.sin(this.m_direcRad);
+                this.m_spdV.x = this.m_spd * Math.cos(this.m_direcRad) * this.m_spdScale;
+                this.m_spdV.z = -this.m_spd * Math.sin(this.m_direcRad) * this.m_spdScale;
                 this.m_container.setRotationY(rotation);
+            }
+            setSpeedScale(scale:number):void
+            {
+                this.m_spdScale = scale;
+                this.m_spdV.x = this.m_spd * Math.cos(this.m_direcRad) * this.m_spdScale;
+                this.m_spdV.z = -this.m_spd * Math.sin(this.m_direcRad) * this.m_spdScale;
             }
             setScale(scale:number):void
             {
@@ -164,7 +171,7 @@ export namespace app
                 entity.setRotationXYZ(0.0,0.0, f * -this.m_stepAngle);
                 entity.update();
 
-                this.m_time += 0.08;
+                this.m_time += 0.08 * this.m_spdScale;
                 this.m_container.update();
             }
         }

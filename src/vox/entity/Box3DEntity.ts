@@ -119,7 +119,7 @@ export namespace vox
                     {
                         mesh.setTransformMatrix(this.m_transMatrix);
                     }
-                    mesh.m_normalType = this.m_normalType;
+                    mesh.normalType = this.m_normalType;
                     mesh.normalScale = this.normalScale;
                     mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
                     mesh.setBufSortFormat( material.getBufSortFormat() );
