@@ -2,12 +2,19 @@
 TypeScript WebGL 3d engine system(High Performence for very many times drawcalls(10000+), Support WebGL1 and WebGL2,WebAssembly and Multi Thread Tasks System, env: pc/web/mobile) , and code style like c++/java.
 
 Feature:
+
     1.Multi-Thread renderer core support.
+
     2.Multiple Gpu Context support.
+
     3.Independent Renderer rendering runtime, for runtime high performence.
+
     4.Auto resource management: system memory resource and Gpu memory resource, and one system memory resource for Multiple Gpu context memory resource.
+
     5.Asynchronous and convenient resource data management strategy(system memory to gpu memory), for runtime high performence. Inclde new or delete or share those system memory or gpu memory resource.
+
     6.Wasm(WebAssembly) support.
+
 
 
 Engine code in src\vox\
