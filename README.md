@@ -15,6 +15,7 @@ Feature:
 
     6.Wasm(WebAssembly) support.
 
+    7.Multiple methods to render a renderable entity, enhance rendering control flexibility.
 
 
 Engine code in src\vox\
