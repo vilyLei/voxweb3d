@@ -11,7 +11,7 @@ Feature:
 
     4.Auto resource management: system memory resource and Gpu memory resource, and one system memory resource for Multiple Gpu context memory resource.
 
-    5.Asynchronous and convenient resource data management strategy(system memory to gpu memory), for runtime high performence. Inclde new or delete or share those system memory or gpu memory resource.
+    5.Asynchronous and convenient resource data management strategy(system memory to gpu memory), for runtime high performence. Inclde: update, new, delete, share those system memory or gpu memory resource.
 
     6.Wasm(WebAssembly) support.
 
