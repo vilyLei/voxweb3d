@@ -5,10 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../../vox/geom/Vector3";
+import * as Vector3DT from "../../..//vox/math/Vector3D";
 import * as Color4T from "../../../vox/material/Color4";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import Color4 = Color4T.vox.material.Color4;
 export namespace advancedDemo
 {

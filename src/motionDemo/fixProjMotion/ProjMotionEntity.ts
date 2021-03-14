@@ -1,10 +1,10 @@
 
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as FixPosProjYMotionT from "../../vox/motion/mcase/FixPosProjYMotion";
 import * as MotionEntityBaseT from "./MotionEntityBase";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import FixPosProjYMotion = FixPosProjYMotionT.vox.motion.mcase.FixPosProjYMotion;
 import MotionEntityBase = MotionEntityBaseT.motionDemo.fixProjMotion.MotionEntityBase;

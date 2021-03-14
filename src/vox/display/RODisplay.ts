@@ -11,7 +11,7 @@ import * as RenderConstT from "../../vox/render/RenderConst";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
 import * as MaterialBaseT from "../../vox/material/MaterialBase";
-import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as Matrix4T from "../../vox/math/Matrix4";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as IRPODisplayT from "../../vox/render/IRPODisplay";
 
@@ -20,7 +20,7 @@ import DisplayRenderSign = RenderConstT.vox.render.DisplayRenderSign;
 import RendererState = RendererStateT.vox.render.RendererState;
 import ROVertexBuffer = ROVertexBufferT.vox.mesh.ROVertexBuffer;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import IRPODisplay = IRPODisplayT.vox.render.IRPODisplay;
 export namespace vox

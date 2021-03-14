@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../vox/geom/Vector3";
+import * as Vector3DT from "..//vox/math/Vector3D";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RandomRangeT from "../vox/utils/RandomRange";
 import * as Color4T from "../vox/material/Color4";
@@ -30,7 +30,7 @@ import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as MouseEvt3DDispatcherT from "../vox/event/MouseEvt3DDispatcher";
 import * as RendererSubSceneT from '../vox/scene/RendererSubScene';
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import CubeRandomRange = RandomRangeT.vox.utils.CubeRandomRange;
 import Color4 = Color4T.vox.material.Color4;

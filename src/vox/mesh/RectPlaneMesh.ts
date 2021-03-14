@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as PlaneCalcT from "../../vox/geom/PlaneCalc";
 import * as SurfaceNormalCalcT from "../../vox/geom/SurfaceNormalCalc";
 import * as RenderConstT from "../../vox/render/RenderConst";
@@ -15,7 +15,7 @@ import * as MeshBaseT from "../../vox/mesh/MeshBase";
 import * as VtxBufDataT from "../../vox/mesh/VtxBufData";
 import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import PlaneCalc = PlaneCalcT.vox.geom.PlaneCalc;
 import SurfaceNormalCalc = SurfaceNormalCalcT.vox.geom.SurfaceNormalCalc;
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;

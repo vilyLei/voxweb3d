@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../vox/geom/Vector3";
+import * as Vector3DT from "..//vox/math/Vector3D";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as FrameBufferTypeT from "../vox/render/FrameBufferType";
 import * as RenderAdapterT from "../vox/render/RenderAdapter";
@@ -19,7 +19,7 @@ import * as TexResLoaderT from "../vox/texture/TexResLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as DefaultMRTMaterialT from "../vox/material/mcase/DefaultMRTMaterial";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import FrameBufferType = FrameBufferTypeT.vox.render.FrameBufferType;
 import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;

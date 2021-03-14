@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as Matrix4T from "../../vox/math/Matrix4";
 import * as ROTransformT from "../../vox/display/ROTransform";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
@@ -13,7 +13,7 @@ import * as Default3DMaterialT from "../../vox/material/mcase/Default3DMaterial"
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as Cylinder3DMeshT from "../../vox/mesh/Cylinder3DMesh";
 
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
 import ROTransform = ROTransformT.vox.display.ROTransform;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;

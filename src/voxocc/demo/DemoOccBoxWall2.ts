@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as RandomRangeT from "../../vox/utils/RandomRange";
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as RenderConstT from "../../vox/render/RenderConst";
@@ -23,7 +23,7 @@ import * as SpaceCullingorT from "../../vox/scene/SpaceCullingor";
 import * as SpaceCullingMasKT from "../../vox/space/SpaceCullingMask";
 import * as OccBoxWallT from "../../voxocc/demo/occwall/OccBoxWall";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import CubeRandomRange = RandomRangeT.vox.utils.CubeRandomRange;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;

@@ -8,12 +8,12 @@
 
 import * as IThreadSendDataT from "../../thread/base/IThreadSendData";
 import * as ThreadTaskT from "../../thread/control/ThreadTask";
-import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as Matrix4T from "../../vox/math/Matrix4";
 import * as ThreadSystemT from "../../thread/ThreadSystem";
 
 import IThreadSendData = IThreadSendDataT.thread.base.IThreadSendData;
 import ThreadTask = ThreadTaskT.thread.control.ThreadTask;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
 import ThreadSystem = ThreadSystemT.thread.ThreadSystem;
 
 export namespace demo

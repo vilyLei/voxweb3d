@@ -1,6 +1,6 @@
 
-import * as Vector3DT from "../vox/geom/Vector3";
-import * as MathConstT from "../vox/utils/MathConst";
+import * as Vector3DT from "..//vox/math/Vector3D";
+import * as MathConstT from "../vox/math/MathConst";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RenderConstT from "../vox/render/RenderConst";
 import * as RendererStateT from "../vox/render/RendererState";
@@ -20,8 +20,8 @@ import * as TextureConstT from "../vox/texture/TextureConst";
 import * as TexResLoaderT from "../vox/texture/TexResLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
-import MathConst = MathConstT.vox.utils.MathConst;
+import Vector3D = Vector3DT.vox.math.Vector3D;
+import MathConst = MathConstT.vox.math.MathConst;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;

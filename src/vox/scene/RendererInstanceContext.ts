@@ -6,7 +6,7 @@
 /***************************************************************************/
 // 真正位于高频运行的渲染管线中的被使用的渲染关键代理对象上下文
 
-import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as Matrix4T from "../../vox/math/Matrix4";
 import * as RenderDataSlotT from "../../vox/material/UniformDataSlot";
 import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
@@ -22,7 +22,7 @@ import * as RendererParamT from "../../vox/scene/RendererParam";
 import * as RenderMaterialProxyT from "../../vox/render/RenderMaterialProxy";
 import * as ROVtxBuilderT from "../../vox/render/ROVtxBuilder";
 
-import Matrix4Pool = Matrix4T.vox.geom.Matrix4Pool;
+import Matrix4Pool = Matrix4T.vox.math.Matrix4Pool;
 import UniformDataSlot = RenderDataSlotT.vox.material.UniformDataSlot;
 import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;

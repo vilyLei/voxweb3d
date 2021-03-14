@@ -7,9 +7,9 @@
 // gpu射线检测拾取代理对象
 
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
-import * as MathConstT from "../../vox/utils/MathConst";
-import * as Vector3DT from "../../vox/geom/Vector3";
-import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as MathConstT from "../../vox/math/MathConst";
+import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Matrix4T from "../../vox/math/Matrix4";
 import * as AABBT from "../../vox/geom/AABB";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as IRenderEntityT from "../../vox/render/IRenderEntity";
@@ -26,9 +26,9 @@ import * as Color4T from "../../vox/material/Color4";
 import * as PixelPickIndexMaterialT from "../../vox/material/mcase/PixelPickIndexMaterial";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import MathConst = MathConstT.vox.utils.MathConst;
-import Vector3D = Vector3DT.vox.geom.Vector3D;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import MathConst = MathConstT.vox.math.MathConst;
+import Vector3D = Vector3DT.vox.math.Vector3D;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
 import AABB = AABBT.vox.geom.AABB;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;

@@ -6,14 +6,14 @@
 /***************************************************************************/
 
 
-import * as MathConstT from "../../../vox/utils/MathConst";
+import * as MathConstT from "../../../vox/math/MathConst";
 import * as ShaderCodeBufferT from "../../../vox/material/ShaderCodeBuffer";
 import * as ShaderUniformDataT from "../../../vox/material/ShaderUniformData";
 //import * as ShaderUniformT from "../../../vox/material/ShaderUniform";
 import * as Color4T from "../../../vox/material/Color4";
 import * as MaterialBaseT from "../../../vox/material/MaterialBase";
 
-import MathConst = MathConstT.vox.utils.MathConst;
+import MathConst = MathConstT.vox.math.MathConst;
 import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
 import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
 //import ShaderUniform = ShaderUniformT.vox.material.ShaderUniform;

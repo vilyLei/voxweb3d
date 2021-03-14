@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as MathConstT from "../../vox/utils/MathConst";
+import * as MathConstT from "../../vox/math/MathConst";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as DashedLineMeshT from '../../vox/mesh/DashedLineMesh';
@@ -14,7 +14,7 @@ import * as Color4T from '../../vox/material/Color4';
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as Rect2DFrameMaterialT from '../../vox2d/material/mcase/Rect2DMaterial';
 
-import MathConst = MathConstT.vox.utils.MathConst;
+import MathConst = MathConstT.vox.math.MathConst;
 import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 import RendererState = RendererStateT.vox.render.RendererState;
 import DashedLineMesh = DashedLineMeshT.vox.mesh.DashedLineMesh;

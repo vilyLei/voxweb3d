@@ -4,7 +4,7 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as LineT from "../../vox/geom/Line";
 import * as SurfaceNormalCalcT from "../../vox/geom/SurfaceNormalCalc";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
@@ -12,7 +12,7 @@ import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
 import * as AABBT from "../../vox/geom/AABB";
 import * as MeshBaseT from "../../vox/mesh/MeshBase"
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import RadialLine = LineT.vox.geom.RadialLine;
 import SurfaceNormalCalc = SurfaceNormalCalcT.vox.geom.SurfaceNormalCalc;
 import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;

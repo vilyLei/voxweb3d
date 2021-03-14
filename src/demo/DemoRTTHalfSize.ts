@@ -1,6 +1,6 @@
 
 import * as DivLogT from "../vox/utils/DivLog";
-import * as Vector3DT from "../vox/geom/Vector3";
+import * as Vector3DT from "..//vox/math/Vector3D";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as CameraBaseT from "../vox/view/CameraBase"
 import * as RendererParamT from "../vox/scene/RendererParam";
@@ -20,7 +20,7 @@ import * as TexResLoaderT from "../vox/texture/TexResLoader";
 import * as ScreenFixedPlaneMaterialT from "../vox/material/mcase/ScreenFixedPlaneMaterial";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import CameraBase = CameraBaseT.vox.view.CameraBase;

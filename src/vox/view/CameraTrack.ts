@@ -5,15 +5,15 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as MathConstT from "../../vox/utils/MathConst";
-import * as Vector3DT from "../../vox/geom/Vector3";
-import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as MathConstT from "../../vox/math/MathConst";
+import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Matrix4T from "../../vox/math/Matrix4";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 
-import MathConst = MathConstT.vox.utils.MathConst;
-import Vector3D = Vector3DT.vox.geom.Vector3D;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
-import Matrix4Pool = Matrix4T.vox.geom.Matrix4Pool;
+import MathConst = MathConstT.vox.math.MathConst;
+import Vector3D = Vector3DT.vox.math.Vector3D;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
+import Matrix4Pool = Matrix4T.vox.math.Matrix4Pool;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 
 export namespace vox

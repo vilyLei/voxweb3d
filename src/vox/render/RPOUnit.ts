@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as AABBT from "../../vox/geom/AABB";
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as IVertexRenderObjT from "../../vox/render/IVertexRenderObj";
@@ -20,7 +20,7 @@ import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 import * as IRPODisplayT from "../../vox/render/IRPODisplay";
 import * as IPoolNodeT from "../../vox/utils/IPoolNode";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import AABB = AABBT.vox.geom.AABB;
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
 import IVertexRenderObj = IVertexRenderObjT.vox.render.IVertexRenderObj;

@@ -5,15 +5,15 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../vox/geom/Vector3";
-import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Matrix4T from "../../vox/math/Matrix4";
 import * as AABBT from "../../vox/geom/AABB";
 import * as IEvt3DDispatcherT from "../../vox/event/IEvtDispatcher";
 import * as IRenderMaterialT from "../../vox/render/IRenderMaterial";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import Vector3D = Vector3DT.vox.math.Vector3D;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
 import AABB = AABBT.vox.geom.AABB;
 import IEvtDispatcher = IEvt3DDispatcherT.vox.event.IEvtDispatcher;
 import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;

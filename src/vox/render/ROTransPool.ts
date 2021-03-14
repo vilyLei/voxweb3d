@@ -6,10 +6,10 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as Matrix4T from "../../vox/math/Matrix4";
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
 
 export namespace vox

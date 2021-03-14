@@ -1,10 +1,10 @@
 
 
-import * as QuaternionT from "../../vox/geom/Quaternion";
-import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as QuaternionT from "../../vox/math/Quaternion";
+import * as Matrix4T from "../../vox/math/Matrix4";
 
-import Quaternion = QuaternionT.vox.geom.Quaternion;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import Quaternion = QuaternionT.vox.math.Quaternion;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
 
 export namespace vox
 {

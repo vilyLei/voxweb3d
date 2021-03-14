@@ -1,15 +1,15 @@
 
 
-import * as MathConstT from "../../vox/utils/MathConst";
-import * as Vector3T from "../../vox/geom/Vector3";
+import * as MathConstT from "../../vox/math/MathConst";
+import * as Vector3T from "../..//vox/math/Vector3D";
 import * as RendererSceneT from "../../vox/scene/RendererScene";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as DisplayEntityContainerT from "../../vox/entity/DisplayEntityContainer";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as Box3DEntityT from "../../vox/entity/Box3DEntity";
 
-import MathConst = MathConstT.vox.utils.MathConst;
-import Vector3D = Vector3T.vox.geom.Vector3D;
+import MathConst = MathConstT.vox.math.MathConst;
+import Vector3D = Vector3T.vox.math.Vector3D;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;

@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as AABBT from "../../vox/geom/AABB";
 import * as PlaneT from "../../vox/geom/Plane";
 import * as CameraBaseT from "../../vox/view/CameraBase";
@@ -7,7 +7,7 @@ import * as ISpacePOCT from "../../vox/scene/occlusion/ISpacePOV";
 import * as SphHoleOccObjT from './SphereGapPOV';
 import * as QuadGapOccObjT from './QuadGapPOV';
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import AABB = AABBT.vox.geom.AABB;
 import Plane = PlaneT.vox.geom.Plane;
 import CameraBase = CameraBaseT.vox.view.CameraBase;

@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import * as DivLogT from "../../vox/utils/DivLog";
-import * as Vector3T from "../../vox/geom/Vector3";
+import * as Vector3T from "../..//vox/math/Vector3D";
 import * as Color4T from "../../vox/material/Color4";
 import * as FrameBufferTypeT from "../../vox/render/FrameBufferType";
 import * as RenderFilterT from "../../vox/render/RenderFilter";
@@ -22,7 +22,7 @@ import * as RendererStateT from "../../vox/render/RendererState";
 import * as UniformVec4ProbeT from "../../vox/material/UniformVec4Probe";
 
 import DivLog = DivLogT.vox.utils.DivLog;
-import Vector3D = Vector3T.vox.geom.Vector3D;
+import Vector3D = Vector3T.vox.math.Vector3D;
 import Color4 = Color4T.vox.material.Color4;
 import FrameBufferType = FrameBufferTypeT.vox.render.FrameBufferType;
 import RenderFilter = RenderFilterT.vox.render.RenderFilter;

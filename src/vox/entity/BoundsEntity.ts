@@ -7,14 +7,14 @@
 // 只是为了做包围体测试或者被空间管理culling test的entity对象的逻辑实体,
 // 内部的transform机制是完整的，但是不会构建实际的display对象，不会进入渲染运行时
 
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as ROTransformT from "../../vox/display/ROTransform";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as MeshBaseT from "../../vox/mesh/BoundsMesh";
 import * as AABBT from "../../vox/geom/AABB";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import ROTransform = ROTransformT.vox.display.ROTransform;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;

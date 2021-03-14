@@ -5,15 +5,15 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../vox/geom/Vector3";
-import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Matrix4T from "../../vox/math/Matrix4";
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as AABBT from "../../vox/geom/AABB";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import Vector3D = Vector3DT.vox.math.Vector3D;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
 import AABB = AABBT.vox.geom.AABB;
 import VtxNormalType = VtxBufConstT.vox.mesh.VtxNormalType;

@@ -6,7 +6,7 @@
 /***************************************************************************/
 // 整个渲染器的空间管理类接口规范
 
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as IRenderEntityT from "../../vox/render/IRenderEntity";
@@ -14,7 +14,7 @@ import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
 import * as ISpaceCullingorT from "../../vox/scene/ISpaceCullingor";
 import * as IRaySelectorT from "../../vox/scene/IRaySelector";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;

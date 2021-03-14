@@ -1,7 +1,7 @@
 
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
-import * as Vector3T from "../vox/geom/Vector3";
+import * as Vector3T from "..//vox/math/Vector3D";
 import * as Color4T from "../vox/material/Color4";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 
@@ -23,7 +23,7 @@ import * as WlKTModuleT from "../app/calc/WlKTModule";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
-import Vector3D = Vector3T.vox.geom.Vector3D;
+import Vector3D = Vector3T.vox.math.Vector3D;
 import Color4 = Color4T.vox.material.Color4;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 

@@ -5,8 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../vox/geom/Vector3";
-import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Matrix4T from "../../vox/math/Matrix4";
 import * as ROTransformT from "../../vox/display/ROTransform";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
@@ -16,8 +16,8 @@ import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as Box3DMeshT from "../../vox/mesh/Box3DMesh";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import Vector3D = Vector3DT.vox.math.Vector3D;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
 import ROTransform = ROTransformT.vox.display.ROTransform;
 import RendererState = RendererStateT.vox.render.RendererState;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;

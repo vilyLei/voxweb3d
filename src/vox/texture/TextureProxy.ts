@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import * as TextureConstT from "../../vox/texture/TextureConst";
-import * as MathConstT from "../../vox/utils/MathConst";
+import * as MathConstT from "../../vox/math/MathConst";
 
 import * as ITexDataT from "../../vox/texture/ITexData";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
@@ -19,7 +19,7 @@ import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import TextureTarget = TextureConstT.vox.texture.TextureTarget;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
-import MathConst = MathConstT.vox.utils.MathConst;
+import MathConst = MathConstT.vox.math.MathConst;
 
 import ITexData = ITexDataT.vox.texture.ITexData;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;

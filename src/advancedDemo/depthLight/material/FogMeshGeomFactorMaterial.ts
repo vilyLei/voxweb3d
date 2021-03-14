@@ -5,13 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../../vox/geom/Vector3";
+import * as Vector3DT from "../../..//vox/math/Vector3D";
 import * as ShaderCodeBufferT from "../../../vox/material/ShaderCodeBuffer";
 import * as ShaderUniformDataT from "../../../vox/material/ShaderUniformData";
 import * as Color4T from "../../../vox/material/Color4";
 import * as MaterialBaseT from "../../../vox/material/MaterialBase";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
 import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
 import Color4 = Color4T.vox.material.Color4;

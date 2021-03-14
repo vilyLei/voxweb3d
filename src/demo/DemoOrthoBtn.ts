@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../vox/geom/Vector3";
+import * as Vector3DT from "..//vox/math/Vector3D";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RenderConstT from "../vox/render/RenderConst";
 import * as RendererStateT from "../vox/render/RendererState";
@@ -34,7 +34,7 @@ import * as MouseEvt3DDispatcherT from "../vox/event/MouseEvt3DDispatcher";
 import * as ColorRectImgButtonT from "../orthoui/button/ColorRectImgButton";
 import * as ColorButtonT from "../orthoui/button/BoundsButton";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;

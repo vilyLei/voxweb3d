@@ -5,13 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from '../../vox/geom/Vector3';
+import * as Vector3DT from '../..//vox/math/Vector3D';
 import * as DashedLineMeshT from '../../vox/mesh/StripLineMesh';
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as Line3DMaterialT from '../../vox/material/mcase/Line3DMaterial';
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import StripLineMesh = DashedLineMeshT.vox.mesh.StripLineMesh;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;

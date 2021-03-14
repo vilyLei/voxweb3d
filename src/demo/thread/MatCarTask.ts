@@ -6,10 +6,10 @@
 /***************************************************************************/
 // ThreadTask example
 
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as IThreadSendDataT from "../../thread/base/IThreadSendData";
 import * as ThreadTaskT from "../../thread/control/ThreadTask";
-import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as Matrix4T from "../../vox/math/Matrix4";
 import * as PureEntityT from "../../vox/entity/PureEntity";
 import * as IRendererT from "../../vox/scene/IRenderer";
 
@@ -18,10 +18,10 @@ import * as TextureStoreT from "../../vox/texture/TextureStore";
 import * as Box3DEntityT from "../../vox/entity/Box3DEntity";
 import * as ThreadSystemT from "../../thread/ThreadSystem";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import IThreadSendData = IThreadSendDataT.thread.base.IThreadSendData;
 import ThreadTask = ThreadTaskT.thread.control.ThreadTask;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
 import PureEntity = PureEntityT.vox.entity.PureEntity;
 import IRenderer = IRendererT.vox.scene.IRenderer;
 

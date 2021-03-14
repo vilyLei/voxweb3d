@@ -1,6 +1,6 @@
 
-import * as Vector3DT from "../../vox/geom/Vector3";
-import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Matrix4T from "../../vox/math/Matrix4";
 import * as RendererDevieceT from "../../vox/render/RendererDeviece";
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as RendererStateT from "../../vox/render/RendererState";
@@ -30,9 +30,9 @@ import * as ImageTexResLoaderT from "../../vox/texture/ImageTexResLoader";
 import * as CameraTrackT from "../../vox/view/CameraTrack";
 import * as EntityDispT from "../base/EntityDisp";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
-import Matrix4Pool = Matrix4T.vox.geom.Matrix4Pool;
+import Vector3D = Vector3DT.vox.math.Vector3D;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
+import Matrix4Pool = Matrix4T.vox.math.Matrix4Pool;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;

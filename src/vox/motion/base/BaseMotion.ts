@@ -5,10 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../../vox/geom/Vector3";
+import * as Vector3DT from "../../..//vox/math/Vector3D";
 import * as IMotionT from "../../../vox/motion/base/IMotion";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import IMotion = IMotionT.vox.motion.base.IMotion;
 
 export namespace vox

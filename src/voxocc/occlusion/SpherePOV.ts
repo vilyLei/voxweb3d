@@ -1,13 +1,13 @@
 
-import * as Vector3DT from "../../vox/geom/Vector3";
-import * as MathConstT from "../../vox/utils/MathConst";
+import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as MathConstT from "../../vox/math/MathConst";
 import * as LineT from "../../vox/geom/Line";
 import * as AABBT from "../../vox/geom/AABB";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as ISpacePOCT from "../../vox/scene/occlusion/ISpacePOV";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
-import MathConst = MathConstT.vox.utils.MathConst;
+import Vector3D = Vector3DT.vox.math.Vector3D;
+import MathConst = MathConstT.vox.math.MathConst;
 import StraightLine = LineT.vox.geom.StraightLine;
 import AABB = AABBT.vox.geom.AABB;
 import CameraBase = CameraBaseT.vox.view.CameraBase;

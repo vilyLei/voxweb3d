@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../../../vox/geom/Vector3";
+import * as Vector3DT from "../../..//vox/math/Vector3D";
 import * as Color4T from "../../../vox/material/Color4";
 import * as RenderConstT from "../../../vox/render/RenderConst";
 import * as RendererStateT from "../../../vox/render/RendererState";
@@ -13,7 +13,7 @@ import * as Box3DEntityT from "../../../vox/entity/Box3DEntity";
 import * as Sphere3DEntityT from "../../../vox/entity/Sphere3DEntity";
 import * as FogDepthUVMaterialT from "../../../advancedDemo/depthLight/material/FogDepthUVMaterial";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import Color4 = Color4T.vox.material.Color4;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;

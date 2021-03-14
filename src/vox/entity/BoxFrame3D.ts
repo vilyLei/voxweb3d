@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3T from "../../vox/geom/Vector3";
+import * as Vector3T from "../..//vox/math/Vector3D";
 import * as AABBT from "../../vox/geom/AABB";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as DashedLineMeshT from '../../vox/mesh/DashedLineMesh';
@@ -14,7 +14,7 @@ import * as Color4T from '../../vox/material/Color4';
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as Line3DMaterialT from '../../vox/material/mcase/Line3DMaterial';
 
-import Vector3D = Vector3T.vox.geom.Vector3D;
+import Vector3D = Vector3T.vox.math.Vector3D;
 import AABB = AABBT.vox.geom.AABB;
 import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 import DashedLineMesh = DashedLineMeshT.vox.mesh.DashedLineMesh;

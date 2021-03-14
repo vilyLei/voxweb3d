@@ -1,11 +1,11 @@
 
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as IRendererT from "../../vox/scene/IRenderer";
 import * as Billboard3DEntityT from "../../vox/entity/Billboard3DEntity";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as Color4T from "../../vox/material/Color4";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import IRenderer = IRendererT.vox.scene.IRenderer;
 import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;

@@ -5,12 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
-//import * as MathConstT from "../../vox/utils/MathConst";
-import * as Vector3DT from "../../vox/geom/Vector3";
+//import * as MathConstT from "../../vox/math/MathConst";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as AbsGeomBaseT from "../../vox/geom/AbsGeomBase";
 
-//import MathConst = MathConstT.vox.utils.MathConst;
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+//import MathConst = MathConstT.vox.math.MathConst;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import AbsGeomBase = AbsGeomBaseT.vox.geom.AbsGeomBase;
 
 export namespace vox

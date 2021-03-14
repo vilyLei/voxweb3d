@@ -5,12 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as MathConstT from '../../vox/utils/MathConst';
+import * as MathConstT from '../../vox/math/MathConst';
 import * as ROTextureResourceT from '../../vox/render/ROTextureResource';
 import * as ITextureRenderObjT from "../../vox/render/ITextureRenderObj";
 import * as IRenderTextureT from "../../vox/render/IRenderTexture";
 
-import MathConst = MathConstT.vox.utils.MathConst;
+import MathConst = MathConstT.vox.math.MathConst;
 import ROTextureResource = ROTextureResourceT.vox.render.ROTextureResource;
 import ITextureRenderObj = ITextureRenderObjT.vox.render.ITextureRenderObj;
 import IRenderTexture = IRenderTextureT.vox.render.IRenderTexture;

@@ -5,14 +5,14 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as DashedLineMeshT from '../../vox/mesh/DashedLineMesh';
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as Color4T from '../../vox/material/Color4';
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
 import * as Line3DMaterialT from '../../vox/material/mcase/Line3DMaterial';
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import DashedLineMesh = DashedLineMeshT.vox.mesh.DashedLineMesh;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import Color4 = Color4T.vox.material.Color4;

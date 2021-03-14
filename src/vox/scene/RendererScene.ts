@@ -7,7 +7,7 @@
 // 整个渲染场景的入口类
 
 import * as RSEntityFlagT from '../../vox/scene/RSEntityFlag';
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
 import * as Stage3DT from "../../vox/display/Stage3D";
 import * as Color4T from "../../vox/material/Color4";
@@ -43,7 +43,7 @@ import * as CameraDsistanceSorterT from "../../vox/scene/CameraDsistanceSorter";
 import * as RendererSubSceneT from "../../vox/scene/RendererSubScene";
 
 import RSEntityFlag = RSEntityFlagT.vox.scene.RSEntityFlag;
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import Color4 = Color4T.vox.material.Color4;

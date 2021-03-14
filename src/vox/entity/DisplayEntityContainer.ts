@@ -6,21 +6,21 @@
 /***************************************************************************/
 // 独立，且使用 DisplayEntityContainer 、transform 等等机制的容器
 
-import * as MathConstT from "../../vox/utils/MathConst";
+import * as MathConstT from "../../vox/math/MathConst";
 import * as RSEntityFlagT from '../../vox/scene/RSEntityFlag';
-import * as Vector3T from "../../vox/geom/Vector3";
+import * as Vector3T from "../..//vox/math/Vector3D";
 import * as AABBT from "../../vox/geom/AABB";
-import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as Matrix4T from "../../vox/math/Matrix4";
 import * as IDisplayEntityContainerT from "../../vox/entity/IDisplayEntityContainer";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as IRendererT from "../../vox/scene/IRenderer";
 
-import MathConst = MathConstT.vox.utils.MathConst;
+import MathConst = MathConstT.vox.math.MathConst;
 import RSEntityFlag = RSEntityFlagT.vox.scene.RSEntityFlag;
-import Vector3D = Vector3T.vox.geom.Vector3D;
+import Vector3D = Vector3T.vox.math.Vector3D;
 import AABB = AABBT.vox.geom.AABB;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
-import Matrix4Pool = Matrix4T.vox.geom.Matrix4Pool;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
+import Matrix4Pool = Matrix4T.vox.math.Matrix4Pool;
 import IDisplayEntityContainer = IDisplayEntityContainerT.vox.entity.IDisplayEntityContainer;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import IRenderer = IRendererT.vox.scene.IRenderer;

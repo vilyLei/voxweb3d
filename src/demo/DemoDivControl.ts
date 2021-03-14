@@ -1,6 +1,6 @@
 
-import * as MathConstT from "../vox/utils/MathConst";
-import * as Matrix4T from "../vox/geom/Matrix4";
+import * as MathConstT from "../vox/math/MathConst";
+import * as Matrix4T from "../vox/math/Matrix4";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
 import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
@@ -14,8 +14,8 @@ import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as RendererSceneT from "../vox/scene/RendererScene";
 
-import MathConst = MathConstT.vox.utils.MathConst;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import MathConst = MathConstT.vox.math.MathConst;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;

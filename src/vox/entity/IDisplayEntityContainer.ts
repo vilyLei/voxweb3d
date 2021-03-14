@@ -5,10 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3T from "../../vox/geom/Vector3";
+import * as Vector3T from "../..//vox/math/Vector3D";
 import * as AABBT from "../../vox/geom/AABB";
 
-import Vector3D = Vector3T.vox.geom.Vector3D;
+import Vector3D = Vector3T.vox.math.Vector3D;
 import AABB = AABBT.vox.geom.AABB;
 
 export namespace vox

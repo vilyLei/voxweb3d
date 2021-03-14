@@ -5,7 +5,7 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as MouseEventT from "../../vox/event/MouseEvent";
 import * as Color4T from "../../vox/material/Color4";
 import * as MouseEvt3DDispatcherT from "../../vox/event/MouseEvt3DDispatcher";
@@ -14,7 +14,7 @@ import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as Plane3DEntityT from "../../vox/entity/Plane3DEntity";
 import * as TextBillboard3DEntityT from "../../vox/text/TextBillboard3DEntity";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import Color4 = Color4T.vox.material.Color4;
 import MouseEvt3DDispatcher = MouseEvt3DDispatcherT.vox.event.MouseEvt3DDispatcher;

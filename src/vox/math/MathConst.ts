@@ -8,7 +8,7 @@
 
 export namespace vox
 {
-    export namespace utils
+    export namespace math
     {
         export class MathConst
         {

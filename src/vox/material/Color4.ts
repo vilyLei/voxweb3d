@@ -4,8 +4,8 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import * as MathConstT from "../../vox/utils/MathConst";
-import MathConst = MathConstT.vox.utils.MathConst;
+import * as MathConstT from "../../vox/math/MathConst";
+import MathConst = MathConstT.vox.math.MathConst;
 
 export namespace vox
 {

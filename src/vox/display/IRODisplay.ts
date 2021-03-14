@@ -8,7 +8,7 @@
 // 一个 RODisplay 和一个 IRPODisplay一一对应
 
 import * as RenderConstT from "../../vox/render/RenderConst";
-import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as Matrix4T from "../../vox/math/Matrix4";
 import * as IROVtxBufT from "../../vox/render/IROVtxBuf";
 import * as IRenderMaterialT from "../../vox/render/IRenderMaterial";
 import * as IRPODisplayT from "../../vox/render/IRPODisplay";
@@ -16,7 +16,7 @@ import * as IRPODisplayT from "../../vox/render/IRPODisplay";
 import DisplayRenderSign = RenderConstT.vox.render.DisplayRenderSign;
 import IROVtxBuf = IROVtxBufT.vox.render.IROVtxBuf;
 import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
 import IRPODisplay = IRPODisplayT.vox.render.IRPODisplay;
 
 export namespace vox

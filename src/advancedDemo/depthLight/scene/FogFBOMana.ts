@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../../../vox/geom/Vector3";
+import * as Vector3DT from "../../..//vox/math/Vector3D";
 import * as RendererDevieceT from "../../../vox/render/RendererDeviece";
 import * as Color4T from "../../../vox/material/Color4";
 import * as RenderConstT from "../../../vox/render/RenderConst";

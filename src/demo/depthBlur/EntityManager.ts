@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as RendererInstanceT from "../../vox/scene/RendererInstance";
 import * as Box3DEntityT from "../../vox/entity/Box3DEntity";
 import * as Billboard3DEntityT from "../../vox/entity/Billboard3DEntity";
@@ -8,7 +8,7 @@ import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as ImageTextureLoaderT from "../../vox/texture/ImageTextureLoader";
 import * as EntityDispT from "../base/EntityDisp";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;

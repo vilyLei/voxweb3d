@@ -1,9 +1,9 @@
 
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as KeyboardEventT from "../../vox/event/KeyboardEvent";
 import * as RendererSceneT from "../../vox/scene/RendererScene";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import KeyboardEvent = KeyboardEventT.vox.event.KeyboardEvent;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 

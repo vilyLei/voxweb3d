@@ -6,8 +6,8 @@
 /***************************************************************************/
 
 import * as RSEntityFlagT from '../../vox/scene/RSEntityFlag';
-import * as Vector3T from "../../vox/geom/Vector3";
-import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as Vector3T from "../..//vox/math/Vector3D";
+import * as Matrix4T from "../../vox/math/Matrix4";
 import * as AABBT from "../../vox/geom/AABB";
 import * as MouseEventT from "../../vox/event/MouseEvent";
 import * as IEvt3DDispatcherT from "../../vox/event/IEvtDispatcher";
@@ -26,8 +26,8 @@ import * as TextureProxyT from '../../vox/texture/TextureProxy';
 
 
 import RSEntityFlag = RSEntityFlagT.vox.scene.RSEntityFlag;
-import Vector3D = Vector3T.vox.geom.Vector3D;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import Vector3D = Vector3T.vox.math.Vector3D;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
 import AABB = AABBT.vox.geom.AABB;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import IEvtDispatcher = IEvt3DDispatcherT.vox.event.IEvtDispatcher;

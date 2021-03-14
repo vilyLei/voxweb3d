@@ -5,11 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../../vox/geom/Vector3";
+import * as Vector3DT from "../../..//vox/math/Vector3D";
 import * as Color4T from "../../../vox/material/Color4";
 import * as ShaderUniformProbeT from "../../../vox/material/ShaderUniformProbe";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import Color4 = Color4T.vox.material.Color4;
 import ShaderUniformProbe = ShaderUniformProbeT.vox.material.ShaderUniformProbe;
 export namespace voxvat

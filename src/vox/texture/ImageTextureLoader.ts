@@ -5,13 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as MathConstT from "../../vox/utils/MathConst";
+import * as MathConstT from "../../vox/math/MathConst";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as ImageTextureProxyT from "../../vox/texture/ImageTextureProxy";
 import * as BytesTextureProxyT from "../../vox/texture/BytesTextureProxy";
 import * as TextureBlockT from "../../vox/texture/TextureBlock";
 
-import MathConst = MathConstT.vox.utils.MathConst;
+import MathConst = MathConstT.vox.math.MathConst;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import ImageTextureProxy = ImageTextureProxyT.vox.texture.ImageTextureProxy;
 import BytesTextureProxy = BytesTextureProxyT.vox.texture.BytesTextureProxy;

@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../vox/geom/Vector3";
+import * as Vector3DT from "..//vox/math/Vector3D";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
 import * as RenderConstT from "../vox/render/RenderConst";
@@ -19,7 +19,7 @@ import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as ScreenFixedPlaneMaterialT from "../vox/material/mcase/ScreenFixedPlaneMaterial";
 import * as PSDepthMaterialT from "../demo/material/PSDepthMaterial";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;

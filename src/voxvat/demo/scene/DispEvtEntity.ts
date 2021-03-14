@@ -1,6 +1,6 @@
 
 
-import * as Vector3DT from "../../../vox/geom/Vector3";
+import * as Vector3DT from "../../..//vox/math/Vector3D";
 import * as MouseEventT from "../../../vox/event/MouseEvent";
 import * as DisplayEntityT from "../../../vox/entity/DisplayEntity";
 import * as CameraBaseT from "../../../vox/view/CameraBase";
@@ -8,7 +8,7 @@ import * as MouseEvt3DDispatcherT from "../../../vox/event/MouseEvt3DDispatcher"
 import * as ParalMap2MaterialT from "../mateiral/ParalMap2Material";
 import * as AxisDragObjectT from "./AxisDragObject";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import CameraBase = CameraBaseT.vox.view.CameraBase;

@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../vox/geom/Vector3";
+import * as Vector3DT from "..//vox/math/Vector3D";
 import * as LineT from "../vox/geom/Line";
 import * as SphereT from "../vox/geom/Sphere";
 import * as ConeT from "../vox/geom/Cone";
@@ -24,7 +24,7 @@ import * as TextureConstT from "../vox/texture/TextureConst";
 import * as TexResLoaderT from "../vox/texture/TexResLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import Sphere = SphereT.vox.geom.Sphere;
 import Cone = ConeT.vox.geom.Cone;
 import InfiniteCone = ConeT.vox.geom.InfiniteCone;

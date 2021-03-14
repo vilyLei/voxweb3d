@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../vox/geom/Vector3";
+import * as Vector3DT from "..//vox/math/Vector3D";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
 import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
@@ -25,7 +25,7 @@ import * as BoxFrame3DT from "../vox/entity/BoxFrame3D";
 import * as CameraZoomControllerT from "../voxeditor/control/CameraZoomController";
 import * as ProfileInstanceT from "../voxprofile/entity/ProfileInstance";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;

@@ -6,13 +6,13 @@
 /***************************************************************************/
 // 射线拾取器接口规范
 
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
 import * as RaySelectedNodeT from "../../vox/scene/RaySelectedNode";
 import * as IRendererT from "../../vox/scene/IRenderer";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import Entity3DNode = Entity3DNodeT.vox.scene.Entity3DNode;
 import RaySelectedNode = RaySelectedNodeT.vox.scene.RaySelectedNode;

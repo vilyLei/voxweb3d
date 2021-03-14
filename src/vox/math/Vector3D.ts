@@ -1,16 +1,16 @@
 /***************************************************************************/
 /*                                                                         */
-/*  Copyright 2018-2020 by                                                 */
+/*  Copyright 2018-2022 by                                                 */
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
 
-import * as MathConstT from "../../vox/utils/MathConst";
-import MathConst = MathConstT.vox.utils.MathConst;
+import * as MathConstT from "../../vox/math/MathConst";
+import MathConst = MathConstT.vox.math.MathConst;
 
 export namespace vox
 {
-    export namespace geom
+    export namespace math
     {
         export class Vector3D
         {

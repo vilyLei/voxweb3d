@@ -1,16 +1,16 @@
 
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as LineT from "../../vox/geom/Line";
-import * as Matrix4T from "../../vox/geom/Matrix4";
+import * as Matrix4T from "../../vox/math/Matrix4";
 
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as AxisQuad3DEntityT from "../../vox/entity/AxisQuad3DEntity";
 import * as MouseEventT from "../../vox/event/MouseEvent";
 import * as MouseEvt3DDispatcherT from "../../vox/event/MouseEvt3DDispatcher";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import StraightLine = LineT.vox.geom.StraightLine;
-import Matrix4 = Matrix4T.vox.geom.Matrix4;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
 
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import AxisQuad3DEntity = AxisQuad3DEntityT.vox.entity.AxisQuad3DEntity;

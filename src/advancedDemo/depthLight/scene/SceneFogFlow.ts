@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../../../vox/geom/Vector3";
+import * as Vector3DT from "../../..//vox/math/Vector3D";
 import * as Color4T from "../../../vox/material/Color4";
 import * as RenderConstT from "../../../vox/render/RenderConst";
 import * as RendererStateT from "../../../vox/render/RendererState";
@@ -22,7 +22,7 @@ import * as FogSystemT from "../../../advancedDemo/depthLight/scene/FogSystem";
 //import * as FogSphSystemT from "../../../advancedDemo/depthLight/scene/FogSphSystem";
 import * as BillParticleT from "../../../advancedDemo/depthLight/scene/BillParticle";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import Color4 = Color4T.vox.material.Color4;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;

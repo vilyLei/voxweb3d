@@ -4,7 +4,7 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import * as Vector3DT from "../../../vox/geom/Vector3";
+import * as Vector3DT from "../../..//vox/math/Vector3D";
 import * as Color4T from "../../../vox/material/Color4";
 import * as Stage3DT from "../../../vox/display/Stage3D";
 import * as RenderConstT from "../../../vox/render/RenderConst";
@@ -23,7 +23,7 @@ import * as FogPlaneGeomFactorMaterialT from "../../../advancedDemo/depthLight/m
 import * as FogPlaneConeFactorMaterialT from "../../../advancedDemo/depthLight/material/FogPlaneConeFactorMaterial";
 import * as FogUnitT from "../../../advancedDemo/depthLight/scene/FogUnit";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import Color4 = Color4T.vox.material.Color4;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 import CullFaceMode = RenderConstT.vox.render.CullFaceMode;

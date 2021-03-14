@@ -6,7 +6,7 @@
 /***************************************************************************/
 // 渲染场景内物体的鼠标事件控制类
 
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as MouseEventT from "../../vox/event/MouseEvent";
 import * as Stage3DT from "../../vox/display/Stage3D";
 
@@ -17,7 +17,7 @@ import * as IEvt3DControllerT from '../../vox/scene/IEvt3DController';
 import * as IEvtDispatcherT from "../../vox/event/IEvtDispatcher";
 import * as MouseEvt3DDispatcherT from "../../vox/event/MouseEvt3DDispatcher";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import Stage3D = Stage3DT.vox.display.Stage3D;
 

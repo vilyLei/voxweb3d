@@ -6,11 +6,11 @@
 /***************************************************************************/
 // Project Occlusion Volume
 
-import * as Vector3DT from "../../../vox/geom/Vector3";
+import * as Vector3DT from "../../..//vox/math/Vector3D";
 import * as AABBT from "../../../vox/geom/AABB";
 import * as CameraBaseT from "../../../vox/view/CameraBase";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import AABB = AABBT.vox.geom.AABB;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 

@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../../../vox/geom/Vector3";
+import * as Vector3DT from "../../..//vox/math/Vector3D";
 import * as TextureProxyT from "../../../vox/texture/TextureProxy";
 import * as RendererSceneT from "../../../vox/scene/RendererScene";
 
@@ -11,7 +11,7 @@ import * as IRendererSpaceT from "../../../vox/scene/IRendererSpace";
 import * as SpaceCullingorT from "../../../vox/scene/SpaceCullingor";
 import * as BoxFarFacePOVT from "../../../voxocc/occlusion/BoxFarFacePOV";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 

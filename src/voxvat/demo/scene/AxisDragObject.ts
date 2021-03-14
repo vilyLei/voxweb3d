@@ -1,6 +1,6 @@
 
 
-import * as Vector3DT from "../../../vox/geom/Vector3";
+import * as Vector3DT from "../../..//vox/math/Vector3D";
 import * as MouseEventT from "../../../vox/event/MouseEvent";
 import * as RendererStateT from "../../../vox/render/RendererState";
 import * as DisplayEntityT from "../../../vox/entity/DisplayEntity";
@@ -11,7 +11,7 @@ import * as PlaneDragControllerT from "../../../voxeditor/control/PlaneDragContr
 import * as RendererSceneT from "../../../vox/scene/RendererScene";
 import * as DragAxisQuad3DT from "../../../voxeditor/entity/DragAxisQuad3D";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import RendererState = RendererStateT.vox.render.RendererState;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;

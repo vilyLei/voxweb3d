@@ -6,7 +6,7 @@
 /***************************************************************************/
 // 整个渲染器的空间管理类接口规范
 
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as AABBT from "../../vox/geom/AABB";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as RendererStateT from "../../vox/render/RendererState";
@@ -14,7 +14,7 @@ import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
 import * as ISpacePOCT from "../../vox/scene/occlusion/ISpacePOV";
 import * as ISpaceCullingorT from '../../vox/scene/ISpaceCullingor';
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import AABB = AABBT.vox.geom.AABB;
 import CameraBase = CameraBaseT.vox.view.CameraBase;
 import RendererState = RendererStateT.vox.render.RendererState;

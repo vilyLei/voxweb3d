@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../../../vox/geom/Vector3";
+import * as Vector3DT from "../../..//vox/math/Vector3D";
 import * as EventBaseT from "../../../vox/event/EventBase";
 import * as MouseEventT from "../../../vox/event/MouseEvent";
 import * as Stage3DT from "../../../vox/display/Stage3D";
@@ -17,7 +17,7 @@ import * as TexManagerT from "./TexManager";
 import * as MaterialManagerT from "./MaterialManager";
 import * as MaterialUISceneT from "./MaterialUIScene";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import EventBase = EventBaseT.vox.event.EventBase;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import Stage3D = Stage3DT.vox.display.Stage3D;

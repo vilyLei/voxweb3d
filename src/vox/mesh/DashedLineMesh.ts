@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as LineT from "../../vox/geom/Line";
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
@@ -13,7 +13,7 @@ import * as AABBT from "../../vox/geom/AABB";
 import * as MeshBaseT from "../../vox/mesh/MeshBase";
 import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import RadialLine = LineT.vox.geom.RadialLine;
 import RenderDrawMode = RenderConstT.vox.render.RenderDrawMode;
 import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;

@@ -5,14 +5,14 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../vox/geom/Vector3";
+import * as Vector3DT from "../..//vox/math/Vector3D";
 import * as AABBT from "../../vox/geom/AABB";
 
 import * as IRPODisplayT from "../../vox/render/IRPODisplay";
 import * as IRODisplaySorterT from "../../vox/render/IRODisplaySorter";
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import AABB = AABBT.vox.geom.AABB;
 import IRPODisplay = IRPODisplayT.vox.render.IRPODisplay;
 import IRODisplaySorter = IRODisplaySorterT.vox.render.IRODisplaySorter;

@@ -1,4 +1,4 @@
-import * as Vector3DT from "../vox/geom/Vector3";
+import * as Vector3DT from "..//vox/math/Vector3D";
 import * as RendererParamT from "../vox/scene/RendererParam";
 import * as ShaderMaterialT from "../vox/material/mcase/ShaderMaterial";
 import * as MouseEventT from "../vox/event/MouseEvent";
@@ -8,7 +8,7 @@ import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as RendererSceneT from "../vox/scene/RendererScene";
 import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 
-import Vector3D = Vector3DT.vox.geom.Vector3D;
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import ShaderMaterial = ShaderMaterialT.vox.material.mcase.ShaderMaterial;
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
