@@ -262,14 +262,14 @@
 //  import * as DemoFlexMesh from "./demo/DemoFlexMesh";
 //  import Demo = DemoFlexMesh.demo.DemoFlexMesh;
 
-import * as DemoFaceDirec from "./demo/DemoFaceDirec";
-import Demo = DemoFaceDirec.demo.DemoFaceDirec;
+//  import * as DemoFaceDirec from "./demo/DemoFaceDirec";
+//  import Demo = DemoFaceDirec.demo.DemoFaceDirec;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import * as LegRole from "./app/LegRole";
-//  import Demo = LegRole.app.LegRole;
+import * as LegRole from "./app/LegRole";
+import Demo = LegRole.app.LegRole;
 
 
 let demoIns:Demo = new Demo();
