@@ -6,7 +6,7 @@
 /***************************************************************************/
 // 真正被高频运行的渲染管线中的被操作对象的行为规范
 
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as AABBT from "../../vox/geom/AABB";
 
 import Vector3D = Vector3DT.vox.math.Vector3D;

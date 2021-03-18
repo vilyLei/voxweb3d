@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as AABBT from "../../vox/geom/AABB";
 import * as PlaneT from "../../vox/geom/Plane";
 import * as CameraBaseT from "../../vox/view/CameraBase";

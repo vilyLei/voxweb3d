@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from '../..//vox/math/Vector3D';
+import * as Vector3DT from '../../vox/math/Vector3D';
 import * as DashedLineMeshT from '../../vox/mesh/DashedLineMesh';
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
@@ -62,7 +62,7 @@ export namespace vox
 
             }
             
-            initializeDashedLine(pvList:Vector3D[]):void
+            initializeBySegmentLine(pvList:Vector3D[]):void
             {
                 //this.m_posarr = [va.x,va.y,va.z, vb.x,vb.y,vb.z];
                 this.m_posarr = [];
@@ -72,6 +72,25 @@ export namespace vox
                 {
                     this.m_posarr.push(pvList[i].x,pvList[i].y,pvList[i].z);
                     this.m_posarr.push(pvList[i+1].x,pvList[i+1].y,pvList[i+1].z);
+                }
+                this.createMaterial();
+                this.activeDisplay();
+
+            }
+            initializeByPosition(pvList:Vector3D[]):void
+            {
+                //this.m_posarr = [va.x,va.y,va.z, vb.x,vb.y,vb.z];
+                this.m_posarr = [];
+                let i:number = 1;
+                let len:number = pvList.length;
+                let pos0:Vector3D;
+                let pos1:Vector3D;
+                for(; i < len; i++)
+                {
+                    pos0 = pvList[i-1];
+                    this.m_posarr.push(pos0.x,pos0.y,pos0.z);
+                    pos1 = pvList[i];
+                    this.m_posarr.push(pos1.x,pos1.y,pos1.z);
                 }
                 this.createMaterial();
                 this.activeDisplay();

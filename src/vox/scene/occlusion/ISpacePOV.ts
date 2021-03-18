@@ -6,7 +6,7 @@
 /***************************************************************************/
 // Project Occlusion Volume
 
-import * as Vector3DT from "../../..//vox/math/Vector3D";
+import * as Vector3DT from "../../../vox/math/Vector3D";
 import * as AABBT from "../../../vox/geom/AABB";
 import * as CameraBaseT from "../../../vox/view/CameraBase";
 

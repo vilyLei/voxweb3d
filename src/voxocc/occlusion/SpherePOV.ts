@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as MathConstT from "../../vox/math/MathConst";
 import * as LineT from "../../vox/geom/Line";
 import * as AABBT from "../../vox/geom/AABB";

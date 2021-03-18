@@ -142,9 +142,6 @@
 //  import * as DemoRTTCircle from "./demo/DemoRTTCircle";
 //  import Demo = DemoRTTCircle.demo.DemoRTTCircle;
 
-//  import * as DemoVSTexture from "./demo/DemoVSTexture";
-//  import Demo = DemoVSTexture.demo.DemoVSTexture;
-
 //  import * as DemoLargeVtx from "./large/DemoLargeVtx";
 //  import Demo = DemoLargeVtx.large.DemoLargeVtx;
 
@@ -262,14 +259,26 @@
 //  import * as DemoFlexMesh from "./demo/DemoFlexMesh";
 //  import Demo = DemoFlexMesh.demo.DemoFlexMesh;
 
+//  import * as DemoVSTexture from "./demo/DemoVSTexture";
+//  import Demo = DemoVSTexture.demo.DemoVSTexture;
+
+//  import * as DemoVSTexturePos from "./demo/DemoVSTexturePos";
+//  import Demo = DemoVSTexturePos.demo.DemoVSTexturePos;
+
+import * as DemoBoxGroupTrack from "./demo/DemoBoxGroupTrack";
+import Demo = DemoBoxGroupTrack.demo.DemoBoxGroupTrack;
+
 //  import * as DemoFaceDirec from "./demo/DemoFaceDirec";
 //  import Demo = DemoFaceDirec.demo.DemoFaceDirec;
 
+//  import * as DemoMotion from "./demo/DemoMotion";
+//  import Demo = DemoMotion.demo.DemoMotion;
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-import * as LegRole from "./app/LegRole";
-import Demo = LegRole.app.LegRole;
+//  import * as LegRole from "./app/LegRole";
+//  import Demo = LegRole.app.LegRole;
 
 
 let demoIns:Demo = new Demo();

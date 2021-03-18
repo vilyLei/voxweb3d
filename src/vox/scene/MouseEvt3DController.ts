@@ -6,7 +6,7 @@
 /***************************************************************************/
 // 渲染场景内物体的鼠标事件控制类
 
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as MouseEventT from "../../vox/event/MouseEvent";
 import * as Stage3DT from "../../vox/display/Stage3D";
 

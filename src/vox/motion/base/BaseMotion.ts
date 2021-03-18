@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../..//vox/math/Vector3D";
+import * as Vector3DT from "../../../vox/math/Vector3D";
 import * as IMotionT from "../../../vox/motion/base/IMotion";
 
 import Vector3D = Vector3DT.vox.math.Vector3D;
@@ -18,7 +18,6 @@ export namespace vox
         export namespace base
         {
 			/**
-			 * 
 			 * 运动轨迹控制的基类
 			 * 
 			 * @author Vily

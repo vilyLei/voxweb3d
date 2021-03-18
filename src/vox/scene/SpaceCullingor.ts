@@ -6,7 +6,7 @@
 /***************************************************************************/
 // 整个渲染器的空间管理类接口规范
 
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as AABBT from "../../vox/geom/AABB";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as RendererStateT from "../../vox/render/RendererState";

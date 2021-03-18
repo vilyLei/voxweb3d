@@ -11,7 +11,7 @@ import * as RenderFilterT from "../../vox/render/RenderFilter";
 import * as RenderMaskBitfieldT from "../../vox/render/RenderMaskBitfield";
 import * as MathConstT from "../../vox/math/MathConst";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
-import * as Vector3T from "../..//vox/math/Vector3D";
+import * as Vector3T from "../../vox/math/Vector3D";
 import * as Color4T from "../../vox/material/Color4";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as RendererParamT from "../../vox/scene/RendererParam";

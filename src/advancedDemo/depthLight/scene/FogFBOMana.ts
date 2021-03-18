@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../../..//vox/math/Vector3D";
+import * as Vector3DT from "../../../vox/math/Vector3D";
 import * as RendererDevieceT from "../../../vox/render/RendererDeviece";
 import * as Color4T from "../../../vox/material/Color4";
 import * as RenderConstT from "../../../vox/render/RenderConst";
@@ -25,7 +25,7 @@ import * as ProfileInstanceT from "../../../voxprofile/entity/ProfileInstance";
 import * as CameraTrackT from "../../../vox/view/CameraTrack";
 import * as FogSphDepthMaterialT from "../../../advancedDemo/depthLight/material/FogSphDepthMaterial";
 import * as FogSphShowMaterialT from "../../../advancedDemo/depthLight/material/FogSphShowMaterial";
-import * as BoxSpaceMotionerT from "../../../voxmotion/primtive/BoxSpaceMotioner";
+import * as BoxSpaceMotionerT from "../../../voxmotion/primitive/BoxSpaceMotioner";
 
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureFormat = TextureConstT.vox.texture.TextureFormat;

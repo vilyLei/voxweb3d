@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../..//vox/math/Vector3D";
+import * as Vector3DT from "../../../vox/math/Vector3D";
 
 import Vector3D = Vector3DT.vox.math.Vector3D;
 
@@ -16,7 +16,6 @@ export namespace vox
         export namespace base
         {
 			/**
-			 * 
 			 * 运动轨迹控制的接口
 			 * 
 			 * @author Vily

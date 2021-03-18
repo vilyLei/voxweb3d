@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as Matrix4T from "../../vox/math/Matrix4";
 import * as RenderConstT from "../../vox/render/RenderConst";
 import * as AABBT from "../../vox/geom/AABB";

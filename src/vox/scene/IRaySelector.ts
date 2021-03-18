@@ -6,7 +6,7 @@
 /***************************************************************************/
 // 射线拾取器接口规范
 
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as Entity3DNodeT from "../../vox/scene/Entity3DNode";
 import * as RaySelectedNodeT from "../../vox/scene/RaySelectedNode";

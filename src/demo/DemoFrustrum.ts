@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "..//vox/math/Vector3D";
+import * as Vector3DT from "../vox/math/Vector3D";
 import * as MathConstT from "../vox/math/MathConst";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RenderConstT from "../vox/render/RenderConst";
@@ -103,17 +103,17 @@ export namespace demo
                 let pvs:Vector3D[] = camera0.getWordFrustumVtxArr();
 
                 let fruLine:DashedLine3DEntity = new DashedLine3DEntity();
-                fruLine.initializeDashedLine([pvs[0],pvs[1],pvs[1],pvs[2],pvs[2],pvs[3],pvs[3],pvs[0]]);
+                fruLine.initializeBySegmentLine([pvs[0],pvs[1],pvs[1],pvs[2],pvs[2],pvs[3],pvs[3],pvs[0]]);
                 fruLine.setRGB3f(1.0,0.0,1.0);
                 this.m_renderer.addEntity(fruLine);
 
                 fruLine = new DashedLine3DEntity();
-                fruLine.initializeDashedLine([pvs[4],pvs[5],pvs[5],pvs[6],pvs[6],pvs[7],pvs[7],pvs[4]]);
+                fruLine.initializeBySegmentLine([pvs[4],pvs[5],pvs[5],pvs[6],pvs[6],pvs[7],pvs[7],pvs[4]]);
                 fruLine.setRGB3f(0.0,0.5,1.0);
                 this.m_renderer.addEntity(fruLine);
                 
                 fruLine = new DashedLine3DEntity();
-                fruLine.initializeDashedLine([pvs[0],pvs[4],pvs[1],pvs[5],pvs[2],pvs[6],pvs[3],pvs[7]]);
+                fruLine.initializeBySegmentLine([pvs[0],pvs[4],pvs[1],pvs[5],pvs[2],pvs[6],pvs[3],pvs[7]]);
                 fruLine.setRGB3f(0.0,0.9,0.0);
                 this.m_renderer.addEntity(fruLine);
 

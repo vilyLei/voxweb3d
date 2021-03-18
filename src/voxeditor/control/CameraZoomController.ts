@@ -7,7 +7,7 @@
 /***************************************************************************/
 // 摄像机拉近拉远的控制(主要是移动端的多点触摸)
 
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as Stage3DT from "../../vox/display/Stage3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as DivLogT from "../../vox/utils/DivLog";

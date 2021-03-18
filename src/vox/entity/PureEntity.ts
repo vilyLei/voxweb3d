@@ -11,7 +11,7 @@
 // 可支持多线程模式(主要支持多线程模式的纯粹的被渲染器接受的渲染对象)，也可支持单线程模式, 此实例不允许加入容器
 
 import * as RSEntityFlagT from '../../vox/scene/RSEntityFlag';
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as Matrix4T from "../../vox/math/Matrix4";
 import * as AABBT from "../../vox/geom/AABB";
 import * as MouseEventT from "../../vox/event/MouseEvent";

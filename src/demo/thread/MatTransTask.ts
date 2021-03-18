@@ -6,7 +6,7 @@
 /***************************************************************************/
 // ThreadTask example
 
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as IThreadSendDataT from "../../thread/base/IThreadSendData";
 import * as ThreadTaskT from "../../thread/control/ThreadTask";
 import * as Matrix4T from "../../vox/math/Matrix4";

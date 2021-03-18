@@ -10,7 +10,7 @@ This relative module was not found:
 * ../../vox/scene/SpaceCullingMasK in ./src/vox/scene/RendererSpace.ts
 */
 import * as RSEntityFlagT from '../../vox/scene/RSEntityFlag';
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as AABBT from "../../vox/geom/AABB";
 import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
 import * as CameraBaseT from "../../vox/view/CameraBase";

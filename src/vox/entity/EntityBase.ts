@@ -10,7 +10,7 @@
 // 一个此逻辑 PureEntity 对象可以对应一个或者多个 RODisplay, 包含对应的transform
 // 可支持多线程模式(主要支持多线程模式的纯粹的被渲染器接受的渲染对象)，也可支持单线程模式, 此实例不允许加入容器
 
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as Matrix4T from "../../vox/math/Matrix4";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as MeshBaseT from "../../vox/mesh/MeshBase";

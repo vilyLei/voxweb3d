@@ -7,7 +7,7 @@
 // 射线检测拾取代理对象
 
 import * as MathConstT from "../../vox/math/MathConst";
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as Matrix4T from "../../vox/math/Matrix4";
 import * as AABBT from "../../vox/geom/AABB";
 import * as CameraBaseT from "../../vox/view/CameraBase";

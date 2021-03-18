@@ -1,7 +1,7 @@
 
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
-import * as Vector3T from "..//vox/math/Vector3D";
+import * as Vector3T from "../vox/math/Vector3D";
 import * as Color4T from "../vox/material/Color4";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 
@@ -77,7 +77,7 @@ export namespace app
                 
                 let rparam:RendererParam = new RendererParam();
                 //rparam.maxWebGLVersion = 1;
-                rparam.setCamPosition(1500.0,1500.0,1500.0);
+                rparam.setCamPosition(800.0,800.0,800.0);
                 this.m_rscene = new RendererScene();
                 this.m_rscene.initialize(rparam,3);
                 this.m_rscene.updateCamera();
@@ -101,7 +101,7 @@ export namespace app
                 this.m_rscene.addEntity(axis);
 
                 let plane:Plane3DEntity = new Plane3DEntity();
-                plane.initializeXOZ(-800.0, -800.0, 1600.0, 1600.0, [tex0]);
+                plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex0]);
                 plane.setXYZ(0.0,-1.0,0.0);
                 this.m_rscene.addEntity(plane);
                 this.m_targets.push(plane);
@@ -115,10 +115,10 @@ export namespace app
                 srcModule = mdoule;
                 
                 let i:number = 0;
-                let scale:number = 0.4 + Math.random() * 0.7;
+                let scale:number = 0.2 + Math.random() * 0.7;
                 for(; i < 5; ++i)
                 {
-                    mdoule = new WlKTModule();
+                    mdoule = new WlKTModule();                
                     mdoule.initializeFrom(srcModule);
                     mdoule.setScale(scale);
                     mdoule.setRotation(Math.random() * 360);

@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as PlaneCalcT from "../../vox/geom/PlaneCalc";
 import * as SurfaceNormalCalcT from "../../vox/geom/SurfaceNormalCalc";
 import * as RenderConstT from "../../vox/render/RenderConst";

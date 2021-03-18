@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../..//vox/math/Vector3D";
+import * as Vector3DT from "../../../vox/math/Vector3D";
 import * as BaseMotionT from "../../../vox/motion/base/BaseMotion";
 import Vector3D = Vector3DT.vox.math.Vector3D;
 import BaseMotion = BaseMotionT.vox.motion.base.BaseMotion;

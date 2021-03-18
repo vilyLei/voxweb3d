@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "..//vox/math/Vector3D";
+import * as Vector3DT from "../vox/math/Vector3D";
 import * as QuaternionT from "../vox/math/Quaternion";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";

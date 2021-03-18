@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import * as DivLogT from "../../vox/utils/DivLog";
-import * as Vector3T from "../..//vox/math/Vector3D";
+import * as Vector3T from "../../vox/math/Vector3D";
 import * as Color4T from "../../vox/material/Color4";
 import * as FrameBufferTypeT from "../../vox/render/FrameBufferType";
 import * as RenderFilterT from "../../vox/render/RenderFilter";

@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../../..//vox/math/Vector3D";
+import * as Vector3DT from "../../../vox/math/Vector3D";
 import * as MathConstT from "../../../vox/math/MathConst";
 import * as MouseEventT from "../../../vox/event/MouseEvent";
 import * as RendererSceneT from "../../../vox/scene/RendererScene";

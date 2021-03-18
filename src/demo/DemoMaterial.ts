@@ -1,4 +1,4 @@
-import * as Vector3DT from "..//vox/math/Vector3D";
+import * as Vector3DT from "../vox/math/Vector3D";
 import * as RendererParamT from "../vox/scene/RendererParam";
 import * as ShaderMaterialT from "../vox/material/mcase/ShaderMaterial";
 import * as MouseEventT from "../vox/event/MouseEvent";

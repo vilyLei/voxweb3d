@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 
 import Vector3D = Vector3DT.vox.math.Vector3D;
 
@@ -37,13 +37,13 @@ export namespace voxnav
 		{
 			constructor(){}
 			// 记录计算结果的状态
-			public static TRACK_ERROR:number = -1;
+			public static readonly TRACK_ERROR:number = -1;
 			// 在路径的端点
-			public static TRACK_BEGIN:number = 0;
+			public static readonly TRACK_BEGIN:number = 0;
 			// 在路径中
-			public static TRACK_AMONG:number = 1;
+			public static readonly TRACK_AMONG:number = 1;
 			// 在路径的终点
-			public static TRACK_END:number = 2;
+			public static readonly TRACK_END:number = 2;
 			//
 			private _index:number = 0;
 			// 记录总路程
@@ -83,6 +83,14 @@ export namespace voxnav
 				}
 				this._segs.push(seg);
 		        this._endSeg = seg;
+			}
+			getPathDistance():number
+			{
+				return this._pathDis;
+			}
+			getStepsTotal(stepDis:number):number
+			{
+				return Math.ceil(this._pathDis/stepDis);
 			}
 			etPosAt(outV:Vector3D,i:number):void
 			{

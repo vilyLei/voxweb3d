@@ -1,5 +1,5 @@
 
-//import * as Vector3DT from "../../..//vox/math/Vector3D";
+//import * as Vector3DT from "../../../vox/math/Vector3D";
 import * as Stage3DT from "../../../vox/display/Stage3D";
 import * as RendererSceneT from "../../../vox/scene/RendererScene";
 

@@ -5,7 +5,7 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as MouseEventT from "../../vox/event/MouseEvent";
 import * as Color4T from "../../vox/material/Color4";
 import * as MouseEvt3DDispatcherT from "../../vox/event/MouseEvt3DDispatcher";

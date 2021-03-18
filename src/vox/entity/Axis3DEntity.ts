@@ -71,9 +71,9 @@ export namespace vox
              */
             initialize(axisSize:number = 100.0):void
             {
-                if(axisSize < 10)
+                if(axisSize < 2)
                 {
-                    axisSize = 10;
+                    axisSize = 2;
                 }
                 this.m_posarr[3] = axisSize;
                 this.m_posarr[10] = axisSize;
@@ -102,9 +102,9 @@ export namespace vox
              */
             initializeCross(axisSize:number = 100.0):void
             {
-                if(axisSize < 10)
+                if(axisSize < 2)
                 {
-                    axisSize = 10;
+                    axisSize = 2;
                 }
                 axisSize *= 0.5;
                 this.m_posarr[0] = -axisSize;

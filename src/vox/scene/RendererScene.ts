@@ -7,7 +7,7 @@
 // 整个渲染场景的入口类
 
 import * as RSEntityFlagT from '../../vox/scene/RSEntityFlag';
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as IRenderStage3DT from "../../vox/render/IRenderStage3D";
 import * as Stage3DT from "../../vox/display/Stage3D";
 import * as Color4T from "../../vox/material/Color4";

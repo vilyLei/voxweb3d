@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import * as MathConstT from "../../vox/math/MathConst";
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3DT.vox.math.Vector3D;

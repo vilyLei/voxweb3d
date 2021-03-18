@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as BaseMotionT from "../../vox/motion/base/BaseMotion";
 

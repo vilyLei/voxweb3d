@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "..//vox/math/Vector3D";
+import * as Vector3DT from "../vox/math/Vector3D";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
 import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
@@ -11,7 +11,7 @@ import * as Box3DEntityT from "../vox/entity/Box3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureStoreT from "../vox/texture/TextureStore";
 import * as TextureConstT from "../vox/texture/TextureConst";
-import * as ImageTexResLoaderT from "../vox/texture/ImageTexResLoader";
+import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as RendererSceneT from "../vox/scene/RendererScene";
 import * as VSTextureMaterialT from "./material/VSTextureMaterial";
@@ -28,7 +28,7 @@ import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureStore = TextureStoreT.vox.texture.TextureStore;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
-import ImageTexResLoader = ImageTexResLoaderT.vox.texture.ImageTexResLoader;
+import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import VSTextureMaterial = VSTextureMaterialT.demo.material.VSTextureMaterial;
@@ -42,10 +42,11 @@ export namespace demo
         }
         private m_rscene:RendererScene = null;
         private m_rcontext:RendererInstanceContext = null;
-        private m_texLoader:ImageTexResLoader = new ImageTexResLoader();
+        private m_texLoader:ImageTextureLoader = null;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
-        getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
+        
+        private getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
             let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
             ptex.mipmapEnabled = mipmapEnabled;
@@ -61,11 +62,6 @@ export namespace demo
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
-                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-                //let tex1:TextureProxy = this.getImageTexByUrl("static/assets/caustics_02.jpg");
-                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/green.jpg");
-                //let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-                
                 let rparam:RendererParam = new RendererParam();
                 rparam.maxWebGLVersion = 1;
                 rparam.setCamPosition(500.0,500.0,500.0);
@@ -74,11 +70,20 @@ export namespace demo
                 this.m_rscene.updateCamera();
                 this.m_rcontext = this.m_rscene.getRendererContext();
                 
+                this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
+
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().stageWidth - 10);
 
+                
+                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
+                //let tex1:TextureProxy = this.getImageTexByUrl("static/assets/caustics_02.jpg");
+                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/green.jpg");
+                //let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
+                
+                
                 let material:VSTextureMaterial = new VSTextureMaterial();
                 // add common 3d display entity
                 var plane:Plane3DEntity = new Plane3DEntity();
@@ -98,6 +103,7 @@ export namespace demo
         }
         run():void
         {
+            this.m_texLoader.run();
             let pcontext:RendererInstanceContext = this.m_rcontext;
             // show fps status
             this.m_statusDisp.update();

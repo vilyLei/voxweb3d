@@ -1,6 +1,6 @@
 
 import * as DivLogT from "../vox/utils/DivLog";
-import * as Vector3DT from "..//vox/math/Vector3D";
+import * as Vector3DT from "../vox/math/Vector3D";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as CameraBaseT from "../vox/view/CameraBase"
 import * as RendererParamT from "../vox/scene/RendererParam";

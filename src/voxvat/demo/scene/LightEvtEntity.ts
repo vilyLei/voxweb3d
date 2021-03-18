@@ -1,6 +1,6 @@
 
 
-import * as Vector3DT from "../../..//vox/math/Vector3D";
+import * as Vector3DT from "../../../vox/math/Vector3D";
 import * as MouseEventT from "../../../vox/event/MouseEvent";
 import * as DisplayEntityT from "../../../vox/entity/DisplayEntity";
 import * as BoundsEntityT from "../../../vox/entity/BoundsEntity";

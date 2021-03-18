@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../..//vox/math/Vector3D";
+import * as Vector3DT from "../../../vox/math/Vector3D";
 import * as ShaderCodeBufferT from "../../../vox/material/ShaderCodeBuffer";
 import * as ShaderUniformDataT from "../../../vox/material/ShaderUniformData";
 import * as Color4T from "../../../vox/material/Color4";

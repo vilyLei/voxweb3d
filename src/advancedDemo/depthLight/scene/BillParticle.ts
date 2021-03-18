@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../..//vox/math/Vector3D";
+import * as Vector3DT from "../../../vox/math/Vector3D";
 import * as TextureProxyT from "../../../vox/texture/TextureProxy";
 import * as IRendererT from "../../../vox/scene/IRenderer";
 

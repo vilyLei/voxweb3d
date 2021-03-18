@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../../..//vox/math/Vector3D";
+import * as Vector3DT from "../../../vox/math/Vector3D";
 import * as Color4T from "../../../vox/material/Color4";
 import * as RenderConstT from "../../../vox/render/RenderConst";
 import * as RendererStateT from "../../../vox/render/RendererState";
@@ -15,7 +15,7 @@ import * as Plane3DEntityT from "../../../vox/entity/Plane3DEntity";
 import * as ProfileInstanceT from "../../../voxprofile/entity/ProfileInstance";
 //import * as FogSphShowMaterialT from "../../../advancedDemo/depthLight/material/FogSphShowMaterial";
 import * as FogSphShow2MaterialT from "../../../advancedDemo/depthLight/material/FogSphShow2Material";
-import * as BoxSpaceMotionerT from "../../../voxmotion/primtive/BoxSpaceMotioner";
+import * as BoxSpaceMotionerT from "../../../voxmotion/primitive/BoxSpaceMotioner";
 import * as FogFBOManaT from "../../../advancedDemo/depthLight/scene/FogFBOMana";
 import * as RoleSceneT from "../../../advancedDemo/depthLight/scene/RoleScene";
 import * as FogSystemT from "../../../advancedDemo/depthLight/scene/FogSystem";

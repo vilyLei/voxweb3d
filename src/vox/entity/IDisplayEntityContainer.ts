@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3T from "../..//vox/math/Vector3D";
+import * as Vector3T from "../../vox/math/Vector3D";
 import * as AABBT from "../../vox/geom/AABB";
 
 import Vector3D = Vector3T.vox.math.Vector3D;

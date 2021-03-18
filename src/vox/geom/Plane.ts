@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import * as MathConstT from "../../vox/math/MathConst";
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as AbsGeomBaseT from "../../vox/geom/AbsGeomBase";
 import * as LineT from "../../vox/geom/Line";
 

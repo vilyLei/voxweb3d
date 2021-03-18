@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "..//vox/math/Vector3D";
+import * as Vector3DT from "../vox/math/Vector3D";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RandomRangeT from "../vox/utils/RandomRange";
 import * as RenderConstT from "../vox/render/RenderConst";

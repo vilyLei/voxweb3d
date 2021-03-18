@@ -1,7 +1,7 @@
 
 
 import * as MathConstT from "../../vox/math/MathConst";
-import * as Vector3T from "../..//vox/math/Vector3D";
+import * as Vector3T from "../../vox/math/Vector3D";
 import * as RendererSceneT from "../../vox/scene/RendererScene";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as DisplayEntityContainerT from "../../vox/entity/DisplayEntityContainer";

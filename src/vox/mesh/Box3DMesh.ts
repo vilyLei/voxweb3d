@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import * as MathConstT from "../../vox/math/MathConst";
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as SurfaceNormalCalcT from "../../vox/geom/SurfaceNormalCalc";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";

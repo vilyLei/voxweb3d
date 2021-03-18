@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from '../..//vox/math/Vector3D';
+import * as Vector3DT from '../../vox/math/Vector3D';
 import * as DashedLineMeshT from '../../vox/mesh/StripLineMesh';
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as MaterialBaseT from '../../vox/material/MaterialBase';

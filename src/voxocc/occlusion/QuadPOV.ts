@@ -1,6 +1,6 @@
 
 import * as MathConstT from "../../vox/math/MathConst";
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as AABBT from "../../vox/geom/AABB";
 import * as CameraBaseT from "../../vox/view/CameraBase";
 import * as ISpacePOCT from "../../vox/scene/occlusion/ISpacePOV";

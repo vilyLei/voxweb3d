@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as RendererInstanceT from "../../vox/scene/RendererInstance";
 import * as Box3DEntityT from "../../vox/entity/Box3DEntity";
 import * as Billboard3DEntityT from "../../vox/entity/Billboard3DEntity";

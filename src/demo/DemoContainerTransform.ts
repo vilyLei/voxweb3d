@@ -1,6 +1,6 @@
 
 import * as RSEntityFlagT from '../vox/scene/RSEntityFlag';
-import * as Vector3DT from "..//vox/math/Vector3D";
+import * as Vector3DT from "../vox/math/Vector3D";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RenderConstT from "../vox/render/RenderConst";
 import * as RendererStateT from "../vox/render/RendererState";

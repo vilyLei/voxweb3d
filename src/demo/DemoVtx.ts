@@ -1,7 +1,7 @@
 
 import * as DivLogT from "../vox/utils/DivLog";
 import * as MathConstT from "../vox/math/MathConst";
-import * as Vector3DT from "..//vox/math/Vector3D";
+import * as Vector3DT from "../vox/math/Vector3D";
 import * as AABBT from "../vox/geom/AABB";
 import * as Matrix4T from "../vox/math/Matrix4";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";

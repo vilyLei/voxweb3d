@@ -1,5 +1,6 @@
 
-import * as Vector3DT from "..//vox/math/Vector3D";
+import * as MathConstT from "../vox/math/MathConst";
+import * as Vector3DT from "../vox/math/Vector3D";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as RendererParamT from "../vox/scene/RendererParam";
 import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
@@ -22,6 +23,7 @@ import * as RendererSceneT from "../vox/scene/RendererScene";
 import * as ProfileInstanceT from "../voxprofile/entity/ProfileInstance";
 import * as PlaneT from "../vox/geom/Plane";
 
+import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3DT.vox.math.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
@@ -58,6 +60,7 @@ export namespace demo
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_profileInstance:ProfileInstance = new ProfileInstance();
         private m_targets:DisplayEntity[] = [];
+        private m_crossTarget:DisplayEntity = null;
 
         private getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
@@ -95,6 +98,10 @@ export namespace demo
                 axis.initialize(300.0);
                 this.m_rscene.addEntity(axis);
                 
+                
+                let cross:Axis3DEntity = new Axis3DEntity();
+                cross.initializeCross(60.0);
+                this.m_rscene.addEntity(cross);
                 // add common 3d display entity
                 //      let plane:Plane3DEntity = new Plane3DEntity();
                 //      plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
@@ -108,7 +115,7 @@ export namespace demo
                 this.createAMeshDisp(box);
 
                 this.m_rscene.setAutoRunning(false);
-                this.update();
+                this.update();               
             }
         }
         private m_nv:Vector3D = new Vector3D();
@@ -141,7 +148,7 @@ export namespace demo
             this.m_posA.subVecsTo(this.m_pos0, this.m_pos1);
             this.m_posB.subVecsTo(this.m_pos1, this.m_pos2);
             //this.m_posA.subtractBy(this.m_pos1);
-            //this.m_posB.copyFrom(this.m_pos1);
+            //this.m_posB.copzFrom(this.m_pos1);
             //this.m_posB.subtractBy(this.m_pos2);
             Vector3D.Cross(this.m_posA, this.m_posB, this.m_directV);
             this.m_directV.normalize();

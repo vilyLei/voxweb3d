@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../..//vox/math/Vector3D";
+import * as Vector3DT from "../../../vox/math/Vector3D";
 import * as BaseMotionT from "../../../vox/motion/base/BaseMotion";
 import Vector3D = Vector3DT.vox.math.Vector3D;
 import BaseMotion = BaseMotionT.vox.motion.base.BaseMotion;
@@ -54,17 +54,13 @@ export namespace vox
 				{
 					super(px,py,pz,pw);
 				}
-				//updateSpd():void
-				//{
-				//	//let t:number = Math.sqrt(this.gk);
-				//}
 				isMoving():boolean
 				{
 					return this.m_moving;
 				}
 				/**
 				 * 是否已经到达目标位置
-				 * */
+				 */
 				isArrived():boolean
 				{
 					return this.m_arrived;
@@ -72,7 +68,7 @@ export namespace vox
 				/**
 				 * 从自身当前位置做抛体运动到目标位置
 				 * 速度大小由 speed 属性定义, 注意这个属性定义的速度大小实际是 xoy平面上的速度大小
-				 * */
+				 */
 				setDstXYZ(px:number, py:number, pz:number):void
 				{
 					this.m_arrived = false;
@@ -128,7 +124,7 @@ export namespace vox
 				}
 				/**
 				 * 此函数由外部不停的调用,以实现运动控制
-				 * */
+				 */
 				run():void
 				{			
 					if (this.m_moving) {

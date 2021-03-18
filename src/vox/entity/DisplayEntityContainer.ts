@@ -8,7 +8,7 @@
 
 import * as MathConstT from "../../vox/math/MathConst";
 import * as RSEntityFlagT from '../../vox/scene/RSEntityFlag';
-import * as Vector3T from "../..//vox/math/Vector3D";
+import * as Vector3T from "../../vox/math/Vector3D";
 import * as AABBT from "../../vox/geom/AABB";
 import * as Matrix4T from "../../vox/math/Matrix4";
 import * as IDisplayEntityContainerT from "../../vox/entity/IDisplayEntityContainer";

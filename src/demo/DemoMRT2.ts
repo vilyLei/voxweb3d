@@ -1,5 +1,5 @@
 
-import * as Vector3DT from "..//vox/math/Vector3D";
+import * as Vector3DT from "../vox/math/Vector3D";
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
 import * as FrameBufferTypeT from "../vox/render/FrameBufferType";
 import * as RenderAdapterT from "../vox/render/RenderAdapter";

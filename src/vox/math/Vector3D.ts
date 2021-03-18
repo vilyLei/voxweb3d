@@ -23,7 +23,7 @@ export namespace vox
                 this.x = px;
                 this.y = py;
                 this.z = pz;
-                this.x = px;
+                this.w = pw;
             }
             setTo(px:number,py:number,pz:number,pw:number = 1.0):void
             {
@@ -79,6 +79,12 @@ export namespace vox
                     a.y = this.y;
                     a.z = this.z;
                 }
+            }
+            scaleVector(s:Vector3D):void
+            {
+                this.x *= s.x;
+                this.y *= s.y;
+                this.z *= s.z;
             }
             scaleBy(s:number):void
             {

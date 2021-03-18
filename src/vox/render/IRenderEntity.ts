@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../..//vox/math/Vector3D";
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as Matrix4T from "../../vox/math/Matrix4";
 import * as AABBT from "../../vox/geom/AABB";
 import * as IEvt3DDispatcherT from "../../vox/event/IEvtDispatcher";
