@@ -265,8 +265,8 @@
 //  import * as DemoVSTexturePos from "./demo/DemoVSTexturePos";
 //  import Demo = DemoVSTexturePos.demo.DemoVSTexturePos;
 
-import * as DemoBoxGroupTrack from "./demo/DemoBoxGroupTrack";
-import Demo = DemoBoxGroupTrack.demo.DemoBoxGroupTrack;
+//  import * as DemoBoxGroupTrack from "./demo/DemoBoxGroupTrack";
+//  import Demo = DemoBoxGroupTrack.demo.DemoBoxGroupTrack;
 
 //  import * as DemoFaceDirec from "./demo/DemoFaceDirec";
 //  import Demo = DemoFaceDirec.demo.DemoFaceDirec;
@@ -277,8 +277,8 @@ import Demo = DemoBoxGroupTrack.demo.DemoBoxGroupTrack;
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import * as LegRole from "./app/LegRole";
-//  import Demo = LegRole.app.LegRole;
+import * as LegRole from "./app/LegRole";
+import Demo = LegRole.app.LegRole;
 
 
 let demoIns:Demo = new Demo();

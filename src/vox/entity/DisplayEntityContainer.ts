@@ -11,6 +11,7 @@ import * as RSEntityFlagT from '../../vox/scene/RSEntityFlag';
 import * as Vector3T from "../../vox/math/Vector3D";
 import * as AABBT from "../../vox/geom/AABB";
 import * as Matrix4T from "../../vox/math/Matrix4";
+import * as IEntityTransformT from "../../vox/entity/IEntityTransform";
 import * as IDisplayEntityContainerT from "../../vox/entity/IDisplayEntityContainer";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as IRendererT from "../../vox/scene/IRenderer";
@@ -21,6 +22,7 @@ import Vector3D = Vector3T.vox.math.Vector3D;
 import AABB = AABBT.vox.geom.AABB;
 import Matrix4 = Matrix4T.vox.math.Matrix4;
 import Matrix4Pool = Matrix4T.vox.math.Matrix4Pool;
+import IEntityTransform = IEntityTransformT.vox.entity.IEntityTransform;
 import IDisplayEntityContainer = IDisplayEntityContainerT.vox.entity.IDisplayEntityContainer;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import IRenderer = IRendererT.vox.scene.IRenderer;
@@ -29,7 +31,7 @@ export namespace vox
 {
     export namespace entity
     {
-        export class DisplayEntityContainer implements IDisplayEntityContainer
+        export class DisplayEntityContainer implements IDisplayEntityContainer,IEntityTransform
         {
             private static s_uid:number = 0;
             private m_uid:number = 0;

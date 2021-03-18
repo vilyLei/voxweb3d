@@ -130,13 +130,6 @@ export namespace demo
                 this.m_tickModule.setVelocityFactor(0.02,0.03);
                 this.m_crossTarget = cross;
                 this.m_tickModule.toXZ(100,0);
-                // add common 3d display entity
-                //      let plane:Plane3DEntity = new Plane3DEntity();
-                //      plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
-                //      this.m_rscene.addEntity(plane);
-                //      this.m_targets.push(plane);
-                //      //this.m_disp = plane
-
 
                 this.m_rscene.setAutoRunning(false);
                 this.update();

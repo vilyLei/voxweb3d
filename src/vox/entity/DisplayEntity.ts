@@ -19,6 +19,7 @@ import * as ROTransformT from "../../vox/display/ROTransform";
 import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as RODisplayT from "../../vox/display/RODisplay";
 import * as IRenderEntityT from "../../vox/render/IRenderEntity";
+import * as IEntityTransformT from "../../vox/entity/IEntityTransform";
 import * as IDisplayEntityT from "../../vox/entity/IDisplayEntity";
 
 import * as RenderProxyT from "../../vox/render/RenderProxy";
@@ -39,6 +40,7 @@ import ROTransform = ROTransformT.vox.display.ROTransform;
 import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import RODisplay = RODisplayT.vox.display.RODisplay;
 import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
+import IEntityTransform = IEntityTransformT.vox.entity.IEntityTransform;
 import IDisplayEntity = IDisplayEntityT.vox.entity.IDisplayEntity;
 
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
@@ -48,7 +50,7 @@ export namespace vox
 {
     export namespace entity
     {
-        export class DisplayEntity implements IRenderEntity,IDisplayEntity
+        export class DisplayEntity implements IRenderEntity,IDisplayEntity,IEntityTransform
         {
             private static s_uid:number = 0;
             private m_uid:number = 0;

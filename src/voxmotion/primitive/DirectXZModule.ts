@@ -8,12 +8,12 @@
 import * as MathConstT from "../../vox/math/MathConst";
 import * as Vector3DT from "../../vox/math/Vector3D";
 import * as VelocityXZModuleT from "../../voxmotion/primitive/VelocityXZModule";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
+import * as IEntityTransformT from "../../vox/entity/IEntityTransform";
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3DT.vox.math.Vector3D;
 import VelocityXZModule = VelocityXZModuleT.voxmotion.primitive.VelocityXZModule;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+import IEntityTransform = IEntityTransformT.vox.entity.IEntityTransform;
 
 export namespace voxmotion
 {
@@ -25,14 +25,14 @@ export namespace voxmotion
             private m_pos:Vector3D = new Vector3D();
             private m_currPos:Vector3D = new Vector3D();
             private m_velModule:VelocityXZModule = new VelocityXZModule();
-            private m_target:DisplayEntity = null;
+            private m_target:IEntityTransform = null;
             private m_moving:boolean = true;
             constructor(){}
             setVelocityFactor(prevFactor:number, currFactor:number):void
             {
                 this.m_velModule.setFactor(prevFactor,currFactor);
             }
-            setTarget(target:DisplayEntity):void
+            setTarget(target:IEntityTransform):void
             {
                 this.m_target = target;
             }
@@ -43,7 +43,10 @@ export namespace voxmotion
                 this.m_velModule.setDirecXZ(px - this.m_currPos.x, pz - this.m_currPos.z);
                 this.m_moving = true;
             }
-
+            isMoving():boolean
+            {
+                return this.m_moving;
+            }
             run():void
             {
                 if(this.m_moving && this.m_target != null)

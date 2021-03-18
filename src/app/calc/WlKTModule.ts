@@ -7,6 +7,7 @@ import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as DisplayEntityContainerT from "../../vox/entity/DisplayEntityContainer";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as Box3DEntityT from "../../vox/entity/Box3DEntity";
+import * as DirectXZModuleT from "../../voxmotion/primitive/DirectXZModule";
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3T.vox.math.Vector3D;
@@ -15,6 +16,7 @@ import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
+import DirectXZModule = DirectXZModuleT.voxmotion.primitive.DirectXZModule;
 
 export namespace app
 {
@@ -29,6 +31,7 @@ export namespace app
             private m_scale:number = 1.0;
             private m_direcRad:number = 0;
             private m_stepAngle:number = 20.0;
+            private m_currAngle:number = 20.0;
             private m_minY:number = -60.0;
             private m_offsetY:number = 30.0;
             private m_rsc:RendererScene = null;
@@ -37,6 +40,7 @@ export namespace app
             private m_container:DisplayEntityContainer = new DisplayEntityContainer(true);
             private m_gL:DisplayEntity = null;
             private m_gR:DisplayEntity = null;
+            private m_tickModule:DirectXZModule = new DirectXZModule();
             constructor(){}
 
             initialize(rsc:RendererScene,texList:TextureProxy[]):void
@@ -163,12 +167,13 @@ export namespace app
                 ///this.moveOffsetXYZ(-0.4,0.0,0.0);
                 this.moveOffset();
                 let f:number = Math.sin(this.m_time);
+                this.m_currAngle = f * this.m_stepAngle;
                 let entity:DisplayEntity = this.m_gL;
-                entity.setRotationXYZ(0.0,0.0, f * this.m_stepAngle);
+                entity.setRotationXYZ(0.0,0.0, this.m_currAngle);
                 entity.update();
 
                 entity = this.m_gR;
-                entity.setRotationXYZ(0.0,0.0, f * -this.m_stepAngle);
+                entity.setRotationXYZ(0.0,0.0, -this.m_currAngle);
                 entity.update();
 
                 this.m_time += 0.08 * this.m_spdScale;
