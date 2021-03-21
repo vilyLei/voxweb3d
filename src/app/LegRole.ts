@@ -20,6 +20,7 @@ import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as RendererSceneT from "../vox/scene/RendererScene";
 
 import * as WlKTModuleT from "../app/calc/WlKTModule";
+import * as PlaneT from "../vox/geom/Plane";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
@@ -42,6 +43,7 @@ import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 
 import WlKTModule = WlKTModuleT.app.calc.WlKTModule;
+import Plane = PlaneT.vox.geom.Plane;
 
 export namespace app
 {
@@ -59,6 +61,7 @@ export namespace app
 
         private m_targets:DisplayEntity[] = [];
         private m_modules:WlKTModule[] = []
+        private m_srcModule:WlKTModule = null;
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
             let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -110,18 +113,21 @@ export namespace app
                 let mdoule:WlKTModule = new WlKTModule();
                 mdoule.initialize(this.m_rscene, [tex2]);
                 mdoule.setRotation(Math.random() * 360);
-                mdoule.setXYZ(Math.random() * 800 - 400.0,0, Math.random() * 800 - 400.0);
+                //mdoule.setXYZ(Math.random() * 800 - 400.0,0, Math.random() * 800 - 400.0);
                 this.m_modules.push(mdoule);
+                this.m_srcModule = mdoule;
                 srcModule = mdoule;
                 
                 let i:number = 0;
                 let scale:number = 0.2 + Math.random() * 0.7;
-                for(; i < 5; ++i)
+                let total:number = 0;
+                for(; i < total; ++i)
                 {
-                    mdoule = new WlKTModule();                
+                    mdoule = new WlKTModule();
                     mdoule.initializeFrom(srcModule);
                     mdoule.setScale(scale);
                     mdoule.setRotation(Math.random() * 360);
+                    
                     mdoule.setXYZ(Math.random() * 800 - 400.0,0, Math.random() * 800 - 400.0);
                     scale = 1.0 - scale;
                     if(scale < 0.0)scale = 0.0;
@@ -132,16 +138,50 @@ export namespace app
             }
         }
         private m_isChanged:boolean = true;
+        private m_pv:Vector3D = new Vector3D();
+        private m_rlpv:Vector3D = new Vector3D();
+        private m_rltv:Vector3D = new Vector3D();
+        private m_pnv:Vector3D = new Vector3D(0.0,1.0,0.0);
+        private m_pdis:number = 0.0;
         private mouseDown(evt:any):void
         {
+            if(this.m_srcModule != null)
+            {
+                this.m_rscene.getMouseXYWorldRay(this.m_rlpv, this.m_rltv);
+                Plane.IntersectionSLV2(this.m_pnv, this.m_pdis, this.m_rlpv, this.m_rltv, this.m_pv);
+                this.m_srcModule.moveToXZ(this.m_pv.x, this.m_pv.z);
+            }
+            /*
+            if(this.m_srcModule != null)
+            {
+                if(this.m_srcModule.isAwake())
+                {
+                    this.m_srcModule.sleep();
+                }
+                else
+                {
+                    this.m_srcModule.wake();
+                }
+            }
+            //*/
+            /*
             let len:number = this.m_modules.length;
             let i:number = 0;
             for(; i < len; ++i)
             {
                 //this.m_modules[i].run();
-                this.m_modules[i].setRotation(Math.random() * 360);
-                this.m_modules[i].setXYZ(Math.random() * 800 - 400.0,0, Math.random() * 800 - 400.0);
+                //  this.m_modules[i].setRotation(Math.random() * 360);
+                //  this.m_modules[i].setXYZ(Math.random() * 800 - 400.0,0, Math.random() * 800 - 400.0);
+                if(this.m_modules[i].isAwake())
+                {
+                    this.m_modules[i].sleep();
+                }
+                else
+                {
+                    this.m_modules[i].wake();
+                }
             }
+            //*/
         }
         run():void
         {

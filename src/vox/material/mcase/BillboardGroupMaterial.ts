@@ -28,7 +28,7 @@ export namespace vox
     {
         export namespace mcase
         {
-            export class BillboardShaderBuffer extends ShaderCodeBuffer
+            export class BillboardGroupShaderBuffer extends ShaderCodeBuffer
             {
                 constructor()
                 {
@@ -37,7 +37,7 @@ export namespace vox
                 private m_uniqueName:string = "";
                 initialize(texEnabled:boolean):void
                 {
-                    this.m_uniqueName = "BillboardShader";
+                    this.m_uniqueName = "BillboardGroupShader";
                 }
                 getFragShaderCode():string
                 {
@@ -64,7 +64,8 @@ FragColor = color;
 `#version 300 es
 precision mediump float;
 layout(location = 0) in vec2 a_vs;
-layout(location = 1) in vec2 a_uvs;
+layout(location = 1) in vec3 a_vs2;
+layout(location = 2) in vec2 a_uvs;
 uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
@@ -78,9 +79,9 @@ vec4 temp = u_billParam[0];
 float cosv = cos(temp.z);
 float sinv = sin(temp.z);
 vec2 vtx = vec2(a_vs.x * temp.x, a_vs.y * temp.y);
-vec2 vtx_pos = vec2(vtx.x * cosv - vtx.y * sinv, vtx.x * sinv + vtx.y * cosv);
-vec4 pos = u_viewMat * u_objMat * vec4(0.0,0.0,0.0,1.0);
-pos.xy += vtx_pos.xy;
+vtx = vec2(vtx.x * cosv - vtx.y * sinv, vtx.x * sinv + vtx.y * cosv);
+vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz,1.0);
+pos.xy += vtx.xy;
 gl_Position =  u_projMat * pos;
 v_texUV = a_uvs;
 v_colorMult = u_billParam[1];
@@ -95,21 +96,21 @@ v_colorOffset = u_billParam[2];
                 }
                 toString():string
                 {
-                    return "[BillboardShaderBuffer()]";
+                    return "[BillboardGroupShaderBuffer()]";
                 }
-                private static ___s_instance:BillboardShaderBuffer = new BillboardShaderBuffer();
-                static GetInstance():BillboardShaderBuffer
+                private static ___s_instance:BillboardGroupShaderBuffer = new BillboardGroupShaderBuffer();
+                static GetInstance():BillboardGroupShaderBuffer
                 {
-                    if(BillboardShaderBuffer.___s_instance != null)
+                    if(BillboardGroupShaderBuffer.___s_instance != null)
                     {
-                        return BillboardShaderBuffer.___s_instance;
+                        return BillboardGroupShaderBuffer.___s_instance;
                     }
-                    BillboardShaderBuffer.___s_instance = new BillboardShaderBuffer();
-                    return BillboardShaderBuffer.___s_instance;
+                    BillboardGroupShaderBuffer.___s_instance = new BillboardGroupShaderBuffer();
+                    return BillboardGroupShaderBuffer.___s_instance;
                 }
             }
 
-            export class BillboardMaterial extends MaterialBase
+            export class BillboardGroupMaterial extends MaterialBase
             {
                 constructor()
                 {
@@ -122,7 +123,7 @@ v_colorOffset = u_billParam[2];
 
                 getCodeBuf():ShaderCodeBuffer
                 {
-                    let buf:ShaderCodeBuffer = BillboardShaderBuffer.GetInstance();        
+                    let buf:ShaderCodeBuffer = BillboardGroupShaderBuffer.GetInstance();        
                     return buf;
                 }
                 createSelfUniformData():ShaderUniformData

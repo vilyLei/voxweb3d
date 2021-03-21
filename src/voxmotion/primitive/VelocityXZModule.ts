@@ -13,6 +13,9 @@ export namespace voxmotion
 {
     export namespace primitive
     {
+        /**
+         * velocity controller
+         */
         export class VelocityXZModule
         {
             private m_speed:number = 1.0;

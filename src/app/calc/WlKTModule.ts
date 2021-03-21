@@ -40,6 +40,8 @@ export namespace app
             private m_container:DisplayEntityContainer = new DisplayEntityContainer(true);
             private m_gL:DisplayEntity = null;
             private m_gR:DisplayEntity = null;
+            private m_awake:boolean = true;
+            private m_awakeFlag:boolean = true;
             private m_tickModule:DirectXZModule = new DirectXZModule();
             constructor(){}
 
@@ -52,6 +54,7 @@ export namespace app
                     
                     this.createEles( this.creatLG(-this.m_offsetY) );
                     
+                    this.m_tickModule.syncTargetUpdate = false;
                 }
             }
             private calcSpeed():void
@@ -81,6 +84,8 @@ export namespace app
                 this.m_container.addEntity(this.m_gL);
                 this.m_container.addEntity(this.m_gR);
                 this.m_rsc.addContainer(this.m_container);
+                this.m_tickModule.bindTarget(this.m_container);
+                this.m_tickModule.setVelocityFactor(0.02,0.03);
             }
             initializeFrom(module:WlKTModule):void
             {
@@ -93,7 +98,10 @@ export namespace app
                         this.createEles( module.m_gL );
                     }
                 }
-
+            }
+            setVelocityFactor(oldVelocityFactor:number, newVelocityFactor:number):void
+            {
+                this.m_tickModule.setVelocityFactor(oldVelocityFactor,newVelocityFactor);
             }
             update():void
             {
@@ -146,6 +154,11 @@ export namespace app
                 this.m_position.addBy(this.m_spdV);
                 this.m_container.setPosition(this.m_position);
             }
+            moveToXZ(px:number,pz:number):void
+            {
+                this.m_tickModule.toXZ(px,pz);
+                this.wake();
+            }
             private creatLG(offsetH:number):DisplayEntity
             {
                 let offsetY:number = offsetH;
@@ -159,25 +172,67 @@ export namespace app
                 let box:Box3DEntity = new Box3DEntity();
                 box.initialize(minV, maxV, [this.m_texList[0]]);
                 box.setXYZ(0,0,0);
-                //this.m_rsc.addEntity(box, 0, true);
                 return box;
+            }
+            isAwake():boolean
+            {
+                return this.m_awake;
+            }
+            wake():void
+            {
+                this.m_awake = true;
+                this.m_awakeFlag = true;
+            }
+            sleep():void
+            {
+                this.m_awake = false;
             }
             run():void
             {
-                ///this.moveOffsetXYZ(-0.4,0.0,0.0);
-                this.moveOffset();
-                let f:number = Math.sin(this.m_time);
-                this.m_currAngle = f * this.m_stepAngle;
-                let entity:DisplayEntity = this.m_gL;
-                entity.setRotationXYZ(0.0,0.0, this.m_currAngle);
-                entity.update();
-
-                entity = this.m_gR;
-                entity.setRotationXYZ(0.0,0.0, -this.m_currAngle);
-                entity.update();
-
-                this.m_time += 0.08 * this.m_spdScale;
-                this.m_container.update();
+                if(this.m_awakeFlag)
+                {
+                    if(this.m_awake)
+                    {
+                        //this.moveOffset();
+                        this.m_tickModule.run();
+                        this.m_awake = this.m_tickModule.isMoving();
+                        this.m_currAngle = Math.sin(this.m_time) * this.m_stepAngle;                        
+                    }
+                    else
+                    {
+                        this.m_time = 0;
+                        if(this.m_currAngle > 0.0)
+                        {
+                            this.m_currAngle -= 1.0;
+                            if(this.m_currAngle < 0.0)
+                            {
+                                this.m_currAngle = 0.5;
+                                this.m_awakeFlag = false;
+                            }
+                        }
+                        else if(this.m_currAngle < 0.0)
+                        {
+                            this.m_currAngle += 0.5;
+                            if(this.m_currAngle > 0.0)
+                            {
+                                this.m_currAngle = 0.0;
+                                this.m_awakeFlag = false;
+                            }
+                        }
+                        else
+                        {
+                            this.m_awakeFlag = false;
+                        }
+                    }
+                    let entity:DisplayEntity = this.m_gL;
+                    entity.setRotationXYZ(0.0,0.0, this.m_currAngle);
+                    entity.update();    
+                    entity = this.m_gR;
+                    entity.setRotationXYZ(0.0,0.0, -this.m_currAngle);
+                    entity.update();    
+                    this.m_time += 0.08 * this.m_spdScale;
+                    this.m_container.update();
+                }
             }
         }
     }

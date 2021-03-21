@@ -229,6 +229,9 @@
 //  import * as DemoParticle from "./demo/DemoParticle";
 //  import Demo = DemoParticle.demo.DemoParticle;
 
+import * as DemoParticleGroup from "./demo/DemoParticleGroup";
+import Demo = DemoParticleGroup.demo.DemoParticleGroup;
+
 //  import * as DemoContainer from "./demo/DemoContainer";
 //  import Demo = DemoContainer.demo.DemoContainer;
 
@@ -277,8 +280,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-import * as LegRole from "./app/LegRole";
-import Demo = LegRole.app.LegRole;
+//  import * as LegRole from "./app/LegRole";
+//  import Demo = LegRole.app.LegRole;
 
 
 let demoIns:Demo = new Demo();

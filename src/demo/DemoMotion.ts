@@ -125,8 +125,8 @@ export namespace demo
                 let cross:Axis3DEntity = new Axis3DEntity();
                 cross.initializeCross(60.0);
                 this.m_rscene.addEntity(cross);
-                this.m_tickModule.setTarget(cross);
-                this.m_tickModule.setTarget(box);
+
+                this.m_tickModule.bindTarget(box);
                 this.m_tickModule.setVelocityFactor(0.02,0.03);
                 this.m_crossTarget = cross;
                 this.m_tickModule.toXZ(100,0);
@@ -143,6 +143,7 @@ export namespace demo
         private m_fpsLimit:number = 70;
 
         private m_timeoutId:any = -1;
+
         private m_pv:Vector3D = new Vector3D();
         private m_rlpv:Vector3D = new Vector3D();
         private m_rltv:Vector3D = new Vector3D();
@@ -153,8 +154,6 @@ export namespace demo
         {
             this.m_rscene.getMouseXYWorldRay(this.m_rlpv, this.m_rltv);
             Plane.IntersectionSLV2(this.m_pnv, this.m_pdis, this.m_rlpv, this.m_rltv, this.m_pv);
-            //  this.m_crossTarget.setPosition(this.m_pv);
-            //  this.m_crossTarget.update();
             this.m_tickModule.toXZ(this.m_pv.x, this.m_pv.z);
         }
         private update():void

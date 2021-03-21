@@ -31,8 +31,7 @@ export namespace vox
             private m_uvs:Float32Array = null;
             flipVerticalUV:boolean = false;
             vtxUVEnabled:boolean = true;
-            vtxColorEnabled:boolean = false;
-            //
+            
             setUVSFloatArr(uvsFloatArr8:Float32Array):void
             {
                 if(this.m_uvs == null)
@@ -68,11 +67,6 @@ export namespace vox
                 //this.m_ivs = new Uint16Array([0,3,1,2]);
                 this.m_ivs = new Uint16Array([1,2,0,3]);
                 this.m_vs = new Float32Array([
-                    //  maxX,minY,
-                    //  minX,minY,
-                    //  minX,maxY,
-                    //  maxX,maxY
-
                     minX,minY,
                     maxX,minY,
                     maxX,maxY,

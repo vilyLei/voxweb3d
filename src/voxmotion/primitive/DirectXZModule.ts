@@ -27,12 +27,13 @@ export namespace voxmotion
             private m_velModule:VelocityXZModule = new VelocityXZModule();
             private m_target:IEntityTransform = null;
             private m_moving:boolean = true;
+            syncTargetUpdate:boolean = true;
             constructor(){}
-            setVelocityFactor(prevFactor:number, currFactor:number):void
+            setVelocityFactor(oldVelocityFactor:number, newVelocityFactor:number):void
             {
-                this.m_velModule.setFactor(prevFactor,currFactor);
+                this.m_velModule.setFactor(oldVelocityFactor,newVelocityFactor);
             }
-            setTarget(target:IEntityTransform):void
+            bindTarget(target:IEntityTransform):void
             {
                 this.m_target = target;
             }
@@ -47,6 +48,20 @@ export namespace voxmotion
             {
                 return this.m_moving;
             }
+            private m_velocityFlag:boolean = true;
+            getVelocity():Vector3D
+            {
+                return this.m_velModule.spdv;
+            }
+            /**
+             * 只有再 isMoving() 返回为 true 的时候才能单独调用
+             */
+            calcVelocity():void
+            {
+                this.m_velModule.updateDirecXZ(this.m_dstPos.x - this.m_currPos.x, this.m_dstPos.z - this.m_currPos.z);
+                this.m_velModule.run();
+                this.m_velocityFlag = false;
+            }
             run():void
             {
                 if(this.m_moving && this.m_target != null)
@@ -56,8 +71,11 @@ export namespace voxmotion
             }
             private updatePos():void
             {
-                this.m_velModule.updateDirecXZ(this.m_dstPos.x - this.m_currPos.x, this.m_dstPos.z - this.m_currPos.z);
-                this.m_velModule.run();
+                if(this.m_velocityFlag)
+                {
+                    this.calcVelocity();
+                }
+                this.m_velocityFlag = true;
                 let spdv:Vector3D = this.m_velModule.spdv;
 
                 this.m_pos.subVecsTo(this.m_currPos, this.m_dstPos);
@@ -77,7 +95,11 @@ export namespace voxmotion
                 
                 this.m_target.setPosition( this.m_currPos );
                 this.m_target.setRotationXYZ(0.0,ang,0.0);
-                this.m_target.update();
+
+                if(this.syncTargetUpdate)
+                {
+                    this.m_target.update();
+                }
             }
         }
     }
