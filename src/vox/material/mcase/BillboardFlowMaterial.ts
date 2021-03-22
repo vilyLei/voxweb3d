@@ -28,8 +28,11 @@ export namespace vox
     {
         export namespace mcase
         {
-            export class BillboardGroupShaderBuffer extends ShaderCodeBuffer
+            export class BillboardFlowShaderBuffer extends ShaderCodeBuffer
             {
+                private m_brightnessEnabled:boolean = true;
+                private m_alphaEnabled:boolean = false;
+                private m_flag:number = 0;
                 constructor()
                 {
                     super();
@@ -37,7 +40,25 @@ export namespace vox
                 private m_uniqueName:string = "";
                 initialize(texEnabled:boolean):void
                 {
-                    this.m_uniqueName = "BillboardGroupShader";
+                    this.m_uniqueName = "BillboardFlowShader";
+                }
+                setParam(brightnessEnabled:boolean, alphaEnabled:boolean):void
+                {
+                    this.m_brightnessEnabled = brightnessEnabled;
+                    this.m_alphaEnabled = alphaEnabled;
+                    this.m_flag = 0;
+                    if(this.m_brightnessEnabled && this.m_alphaEnabled)
+                    {
+                        this.m_flag = 1;
+                    }
+                    else if(this.m_brightnessEnabled)
+                    {
+                        this.m_flag = 2;
+                    }
+                    else if(this.m_alphaEnabled)
+                    {
+                        this.m_flag = 3;
+                    }
                 }
                 getFragShaderCode():string
                 {
@@ -47,80 +68,118 @@ precision mediump float;
 uniform sampler2D u_sampler0;
 in vec4 v_colorMult;
 in vec4 v_colorOffset;
-in vec2 v_texUV;
+in vec4 v_texUV;
 layout(location = 0) out vec4 FragColor;
 void main()
 {
-vec4 color = texture(u_sampler0, v_texUV);
-color.rgb = max(color.rgb * v_colorMult.xyz + v_colorOffset.xyz,0.0);
-FragColor = color;
+    vec4 color = texture(u_sampler0, v_texUV.xy);
+    color.rgb = max(color.rgb * v_colorMult.xyz + v_colorOffset.xyz,0.0);
+`;
+
+                let fadeCode:string;
+                if(this.m_flag == 1)
+                {
+                    fadeCode = 
+ `
+    color *= v_texUV.zzzz;
+`;
+                }
+                else if(this.m_flag == 2)
+                {
+                    fadeCode = 
+ `
+    color.rgb *= v_texUV.zzz;
+`;
+                }
+                else if(this.m_flag == 3)
+                {
+                    fadeCode = 
+ `
+    color.a *= v_texUV.z;
+`;
+                }
+                let endCode:string = 
+`
+    FragColor = color;
 }
 `;
-                    return fragCode;
+                    return fragCode + fadeCode + endCode;
                 }
                 getVtxShaderCode():string
                 {
                     let vtxCode:string = 
 `#version 300 es
 precision mediump float;
-layout(location = 0) in vec2 a_vs;
-layout(location = 1) in vec3 a_vs2;
+layout(location = 0) in vec4 a_vs;
+layout(location = 1) in vec4 a_vs2;
 layout(location = 2) in vec2 a_uvs;
+layout(location = 3) in vec4 a_uvs2;
+layout(location = 4) in vec4 a_nvs;
+layout(location = 5) in vec4 a_nvs2;
 uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
 uniform vec4 u_billParam[3];
 out vec4 v_colorMult;
 out vec4 v_colorOffset;
-out vec2 v_texUV;
+out vec4 v_texUV;
 void main()
 {
-vec4 temp = u_billParam[0];
-vec2 vtx = vec2(a_vs.x * temp.x, a_vs.y * temp.y);
-vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz,1.0);
-pos.xy += vtx.xy;
-gl_Position =  u_projMat * pos;
-v_texUV = a_uvs;
-v_colorMult = u_billParam[1];
-v_colorOffset = u_billParam[2];
+    vec4 temp = u_billParam[0];
+    float time = max(a_nvs.w * temp.z - a_uvs2.w, 0.0);
+    float kf = fract(time/a_uvs2.x);
+    time = kf * a_uvs2.x;
+    kf = min(kf/a_uvs2.y,1.0) * (1.0 - max((kf-a_uvs2.z)/(1.0 - a_uvs2.z),0.0));
+    vec2 vtx = a_vs.xy * temp.xy * vec2(a_vs.z + kf * a_vs.w);
+    vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz + (a_nvs.xyz + a_nvs2.xyz * vec3(time)) * vec3(time),1.0);
+    pos.xy += vtx.xy;
+    gl_Position =  u_projMat * pos;
+    v_texUV = vec4(a_uvs.xy, kf * a_vs2.w,kf);
+    v_colorMult = u_billParam[1];
+    v_colorOffset = u_billParam[2];
 }
 `;
                     return vtxCode;
                 }
                 getUniqueShaderName():string
                 {
-                    return this.m_uniqueName;
+                    return this.m_uniqueName + "_"+this.m_flag;
                 }
                 toString():string
                 {
-                    return "[BillboardGroupShaderBuffer()]";
+                    return "[BillboardFlowShaderBuffer()]";
                 }
-                private static ___s_instance:BillboardGroupShaderBuffer = new BillboardGroupShaderBuffer();
-                static GetInstance():BillboardGroupShaderBuffer
+                private static ___s_instance:BillboardFlowShaderBuffer = new BillboardFlowShaderBuffer();
+                static GetInstance():BillboardFlowShaderBuffer
                 {
-                    if(BillboardGroupShaderBuffer.___s_instance != null)
+                    if(BillboardFlowShaderBuffer.___s_instance != null)
                     {
-                        return BillboardGroupShaderBuffer.___s_instance;
+                        return BillboardFlowShaderBuffer.___s_instance;
                     }
-                    BillboardGroupShaderBuffer.___s_instance = new BillboardGroupShaderBuffer();
-                    return BillboardGroupShaderBuffer.___s_instance;
+                    BillboardFlowShaderBuffer.___s_instance = new BillboardFlowShaderBuffer();
+                    return BillboardFlowShaderBuffer.___s_instance;
                 }
             }
 
-            export class BillboardGroupMaterial extends MaterialBase
+            export class BillboardFlowMaterial extends MaterialBase
             {
-                constructor()
+                private m_brightnessEnabled:boolean = true;
+                private m_alphaEnabled:boolean = false;
+                constructor(brightnessEnabled:boolean = true,alphaEnabled:boolean = false)
                 {
                     super();
+                    this.m_brightnessEnabled = brightnessEnabled;
+                    this.m_alphaEnabled = alphaEnabled;
                 }
-                private m_rz:number = 0;
+                private m_time:number = 0;
                 private m_uniformData:Float32Array = new Float32Array([1.0,1.0,0.0,1.0, 1.0,1.0,1.0,0.0, 0.0,0.0,0.0,0.0]);
                 private m_color:Color4 = new Color4(1.0,1.0,1.0,1.0);
                 private m_brightness:number = 1.0;
 
                 getCodeBuf():ShaderCodeBuffer
                 {
-                    let buf:ShaderCodeBuffer = BillboardGroupShaderBuffer.GetInstance();        
+                    let buf:BillboardFlowShaderBuffer = BillboardFlowShaderBuffer.GetInstance();
+                    buf.setParam(this.m_brightnessEnabled, this.m_alphaEnabled);
                     return buf;
                 }
                 createSelfUniformData():ShaderUniformData
@@ -188,11 +247,16 @@ v_colorOffset = u_billParam[2];
                     this.m_uniformData[9] = pg;
                     this.m_uniformData[10] = pb;
                 }
-                getRotationZ():number{return this.m_rz;};
-                setRotationZ(degrees:number):void
+                getTime():number{return this.m_time;};
+                setTime(time:number):void
                 {
-                    this.m_rz = degrees;
-                    this.m_uniformData[2] = degrees * MathConst.MATH_PI_OVER_180;
+                    this.m_time = time;
+                    this.m_uniformData[2] = time;
+                }
+                timeAddOffset(offsetTime:number):void
+                {
+                    this.m_time += offsetTime;
+                    this.m_uniformData[2] = this.m_time;
                 }
                 getScaleX():number{return this.m_uniformData[0];}
                 getScaleY():number{return this.m_uniformData[1];}

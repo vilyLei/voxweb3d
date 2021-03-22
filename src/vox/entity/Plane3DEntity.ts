@@ -72,6 +72,28 @@ export namespace vox
             {
                 this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
             }
+            toTransparentBlend(always:boolean = false):void
+            {
+                if(always)
+                {
+                    this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+                }
+                else
+                {
+                    this.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+                }
+            }
+            toAddBlend(always:boolean = false):void
+            {
+                if(always)
+                {
+                    this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
+                }
+                else
+                {
+                    this.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
+                }
+            }
             /**
              * initialize a rectangle fix screen size plane ,and it parallel the 3d space XOY plane
              * @param texList textures list, default value is null.

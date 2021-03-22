@@ -115,6 +115,28 @@ export namespace vox
                     this.m_currMaterial.setTextureList(texList);
                 }
             }
+            toTransparentBlend(always:boolean = false):void
+            {
+                if(always)
+                {
+                    this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+                }
+                else
+                {
+                    this.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+                }
+            }
+            toAddBlend(always:boolean = false):void
+            {
+                if(always)
+                {
+                    this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
+                }
+                else
+                {
+                    this.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
+                }
+            }
             initialize(bw:number, bh:number,texList:TextureProxy[]):void
             {
                 this.m_bw = bw;
