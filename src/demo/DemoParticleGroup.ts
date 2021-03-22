@@ -20,6 +20,7 @@ import * as TextureConstT from "../vox/texture/TextureConst";
 import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as Color4T from "../vox/material/Color4";
+import * as PlaneT from "../vox/geom/Plane";
 
 import Vector3D = Vector3DT.vox.math.Vector3D;
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
@@ -44,6 +45,7 @@ import TextureConst = TextureConstT.vox.texture.TextureConst;
 import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import Color4 = Color4T.vox.material.Color4;
+import Plane = PlaneT.vox.geom.Plane;
 
 export namespace demo
 {
@@ -123,7 +125,8 @@ export namespace demo
                 //  this.m_ripple = ripple;
                 
                 ///*
-                this.initFlowOnceBill(textures);
+                this.initExplodeBill(textures);
+                //this.initFlowOnceBill(textures);
                 //this.initFlowBillOneByOne(textures);
                 //this.initFlowBill(textures);
                 //this.initFlareBill(textures);
@@ -152,6 +155,48 @@ export namespace demo
         private m_flowBill:Billboard3DFlowEntity = null;
         private m_flowOnceBill:Billboard3DFlowOnceEntity = null;
         
+        private initExplodeBill(textures:TextureProxy[]):void
+        {
+            let size:number = 100;
+            let params:number[][] = [
+                [0.0,0.0,0.5,0.5],
+                [0.5,0.0,0.5,0.5],
+                [0.0,0.5,0.5,0.5],
+                [0.5,0.5,0.5,0.5]
+            ];
+            let tex:TextureProxy = textures[textures.length - 1];
+            let total:number = 50;
+            let billboardGroup:Billboard3DFlowOnceEntity = new Billboard3DFlowOnceEntity();
+            billboardGroup.createGroup(total);
+            let pv:Vector3D = new Vector3D();
+            for(let i:number = 0; i < total; ++i)
+            {
+                size = Math.random() * Math.random() * Math.random() * 180 + 10.0;
+                billboardGroup.setSizeAndScaleAt(i,size,size,0.5,1.0);
+                let uvparam:number[] = params[Math.floor((params.length-1) * Math.random() + 0.5)];
+                billboardGroup.setUVRectAt(i, uvparam[0],uvparam[1],uvparam[2],uvparam[3]);
+                //billboardGroup.setTimeAt(i, 200.0 * Math.random() + 100, 0.4,0.6, i * 10);
+                billboardGroup.setTimeAt(i, 50.0 * Math.random() + 100, 0.4,0.6, Math.random() * 10);
+                //billboardGroup.setTimeAt(i, 100, 0.4,0.6, 1.0);
+                //billboardGroup.setBrightnessAt(i,Math.random() * 0.8 + 0.8);
+                billboardGroup.setBrightnessAt(i,1.0);
+                billboardGroup.setTimeSpeedAt(i,Math.random() * 1.0 + 0.5);
+                //billboardGroup.setPositionAt(i,100.0,0.0,100.0);
+                //billboardGroup.setPositionAt(i, Math.random() * 500.0 - 250.0,Math.random() * 500.0 - 250.0, Math.random() * 500.0 - 250.0);
+                pv.setTo(Math.random() * 60.0 - 30.0,Math.random() * 50.0 + 10.0, Math.random() * 60.0 - 30.0);
+                billboardGroup.setPositionAt(i, pv.x,pv.y,pv.z);
+                billboardGroup.setAccelerationAt(i,0.0,-0.01,0.0);
+                //billboardGroup.setVelocityAt(i,0.0,Math.random() * 1.0 + 1.0,0.0);
+                pv.normalize();
+                pv.scaleBy((Math.random() * 2.0 + 0.8));
+                billboardGroup.setVelocityAt(i,pv.x,pv.y,pv.z);
+            }
+            billboardGroup.initialize([tex]);
+            this.m_rscene.addEntity(billboardGroup);
+
+            //billboardGroup.setTime(100.0);
+            this.m_flowOnceBill = billboardGroup;
+        }
         private initFlowOnceBill(textures:TextureProxy[]):void
         {
             let size:number = 100;
@@ -214,7 +259,7 @@ export namespace demo
                 billboardGroup.setSizeAndScaleAt(i,size,size,0.5,1.0);
                 let uvparam:number[] = params[Math.floor((params.length-1) * Math.random() + 0.5)];
                 billboardGroup.setUVRectAt(i, uvparam[0],uvparam[1],uvparam[2],uvparam[3]);
-                billboardGroup.setTimeAt(i, 200.0 * Math.random() + 100, 0.4,0.6, i * 100);
+                billboardGroup.setTimeAt(i, 100.0 * Math.random() + 100, 0.4,0.6, i * 100);
                 billboardGroup.setBrightnessAt(i,Math.random() * 0.8 + 0.8);
                 billboardGroup.setTimeSpeed(i,Math.random() * 1.0 + 0.5);
                 //billboardGroup.setPositionAt(i,100.0,0.0,100.0);
@@ -335,11 +380,28 @@ export namespace demo
         }
         private m_charTex:TextureProxy = null;
         private m_ripple:TextureProxy = null;
-        private m_flagBoo:boolean = true;
+        
+        private m_pv:Vector3D = new Vector3D();
+        private m_rlpv:Vector3D = new Vector3D();
+        private m_rltv:Vector3D = new Vector3D();
+        private m_pnv:Vector3D = new Vector3D(0.0,1.0,0.0);
+        private m_pdis:number = 0.0;
         mouseDownListener(evt:any):void
         {
             console.log("mouseDownListener call, this.m_rscene: "+this.m_rscene.toString());
-            this.m_flagBoo = !this.m_flagBoo;
+            
+            if(this.m_flowOnceBill != null)
+            {
+                this.m_rscene.getMouseXYWorldRay(this.m_rlpv, this.m_rltv);
+                Plane.IntersectionSLV2(this.m_pnv, this.m_pdis, this.m_rlpv, this.m_rltv, this.m_pv);
+                console.log("this.m_pv: ",this.m_pv);
+                this.m_flowOnceBill.setXYZ(this.m_pv.x, this.m_pv.y, this.m_pv.z);
+                this.m_flowOnceBill.setAcceleration(Math.random() * 0.01 - 0.005,Math.random() * 0.005,Math.random() * 0.01 - 0.005);
+                this.m_flowOnceBill.setTime(0.0);
+                this.m_flowOnceBill.setRotationXYZ(0.0,Math.random() * 360.0,0.0);
+                this.m_flowOnceBill.update();
+                
+            }
         }
         position:Vector3D = new Vector3D();
         private testUpdate():void
@@ -382,7 +444,7 @@ export namespace demo
             this.m_texLoader.run();
             this.testUpdate();
 
-            if(this.m_flowOnceBill != null)this.m_flowOnceBill.timeAddOffset(1.0);
+            if(this.m_flowOnceBill != null)this.m_flowOnceBill.timeAddOffset(2.0);
             if(this.m_flowBill != null)this.m_flowBill.timeAddOffset(1.0);
             if(this.m_flareBill != null)this.m_flareBill.timeAddOffset(0.3);
 
@@ -393,7 +455,7 @@ export namespace demo
             this.m_rscene.run();
 
             this.m_rscene.runEnd();
-            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
             
             this.m_statusDisp.statusInfo = "/"+RendererState.DrawCallTimes;
             this.m_statusDisp.update();

@@ -157,6 +157,14 @@ export namespace vox
             {
                 return this.m_currMaterial.getBrightness();
             }
+            
+            setAcceleration(accX:number,accY:number,accZ:number):void
+            {
+                if(this.m_currMaterial != null)
+                {
+                    this.m_currMaterial.setAcceleration(accX,accY,accZ);
+                }
+            }
             getTime():number{return this.m_currMaterial.getTime();};
             setTime(time:number):void
             {

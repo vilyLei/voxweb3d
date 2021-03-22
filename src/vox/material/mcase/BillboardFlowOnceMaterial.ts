@@ -119,7 +119,7 @@ layout(location = 5) in vec4 a_nvs2;
 uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
-uniform vec4 u_billParam[3];
+uniform vec4 u_billParam[4];
 out vec4 v_colorMult;
 out vec4 v_colorOffset;
 out vec4 v_texUV;
@@ -132,7 +132,7 @@ void main()
     time = kf * a_uvs2.x;
     kf = min(kf/a_uvs2.y,1.0) * (1.0 - max((kf-a_uvs2.z)/(1.0 - a_uvs2.z),0.0));
     vec2 vtx = a_vs.xy * temp.xy * vec2(a_vs.z + kf * a_vs.w);
-    vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz + (a_nvs.xyz + a_nvs2.xyz * vec3(time)) * vec3(time),1.0);
+    vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz + (a_nvs.xyz + (u_billParam[3].xyz + a_nvs2.xyz) * vec3(time)) * vec3(time),1.0);
     pos.xy += vtx.xy;
     gl_Position =  u_projMat * pos;
     v_texUV = vec4(a_uvs.xy, kf * a_vs2.w,kf);
@@ -173,7 +173,7 @@ void main()
                     this.m_alphaEnabled = alphaEnabled;
                 }
                 private m_time:number = 0;
-                private m_uniformData:Float32Array = new Float32Array([1.0,1.0,0.0,1.0, 1.0,1.0,1.0,0.0, 0.0,0.0,0.0,0.0]);
+                private m_uniformData:Float32Array = new Float32Array([1.0,1.0,0.0,1.0, 1.0,1.0,1.0,0.0, 0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0]);
                 private m_color:Color4 = new Color4(1.0,1.0,1.0,1.0);
                 private m_brightness:number = 1.0;
 
@@ -233,10 +233,6 @@ void main()
 
                 setRGBAOffset4f(pr:number,pg:number,pb:number,pa:number):void
                 {
-                    //this.m_colorOffset.r = pr;
-                    //this.m_colorOffset.g = pg;
-                    //this.m_colorOffset.b = pb;
-                    //this.m_colorOffset.a = pa;
                     this.m_uniformData[8] = pr;
                     this.m_uniformData[9] = pg;
                     this.m_uniformData[10] = pb;
@@ -247,6 +243,12 @@ void main()
                     this.m_uniformData[8] = pr;
                     this.m_uniformData[9] = pg;
                     this.m_uniformData[10] = pb;
+                }
+                setAcceleration(accX:number,accY:number,accZ:number):void
+                {
+                    this.m_uniformData[12] = accX;
+                    this.m_uniformData[13] = accY;
+                    this.m_uniformData[14] = accZ;
                 }
                 getTime():number{return this.m_time;};
                 setTime(time:number):void

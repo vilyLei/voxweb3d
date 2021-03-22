@@ -172,7 +172,7 @@ void main()
                     this.m_alphaEnabled = alphaEnabled;
                 }
                 private m_time:number = 0;
-                private m_uniformData:Float32Array = new Float32Array([1.0,1.0,0.0,1.0, 1.0,1.0,1.0,0.0, 0.0,0.0,0.0,0.0]);
+                private m_uniformData:Float32Array = new Float32Array([1.0,1.0,0.0,1.0, 1.0,1.0,1.0,0.0, 0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0]);
                 private m_color:Color4 = new Color4(1.0,1.0,1.0,1.0);
                 private m_brightness:number = 1.0;
 
@@ -246,6 +246,12 @@ void main()
                     this.m_uniformData[8] = pr;
                     this.m_uniformData[9] = pg;
                     this.m_uniformData[10] = pb;
+                }
+                setAcceleration(accX:number,accY:number,accZ:number):void
+                {
+                    this.m_uniformData[12] = accX;
+                    this.m_uniformData[13] = accY;
+                    this.m_uniformData[14] = accZ;
                 }
                 getTime():number{return this.m_time;};
                 setTime(time:number):void

@@ -274,7 +274,7 @@ import Demo = DemoParticleGroup.demo.DemoParticleGroup;
 //  import * as DemoFaceDirec from "./demo/DemoFaceDirec";
 //  import Demo = DemoFaceDirec.demo.DemoFaceDirec;
 
-//  import * as DemoMotion from "./demo/DemoMotion";
+import * as DemoMotion from "./demo/DemoMotion";
 //  import Demo = DemoMotion.demo.DemoMotion;
 
 ///////////////////////////////////////////////////////////////////////////////
