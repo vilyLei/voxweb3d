@@ -27,17 +27,23 @@ export namespace vox
     {
         export class Billboard3DFlowEntity extends DisplayEntity
         {
+            private m_currMaterial:BillboardFlowMaterial = null;
+            private m_billMesh:BillboardPlaneFlowMesh = null;
+            private m_brightnessEnabled:boolean = true;
+            private m_alphaEnabled:boolean = false;
+            private m_clipEnabled:boolean = false;
+            private m_playOnce:boolean = false;
+            private m_direcEnabled:boolean = false;
+            flipVerticalUV:boolean = false;
             constructor(transform:ROTransform = null)
             {
                 super(transform);
                 this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
             }
-            flipVerticalUV:boolean = false;
-            private m_currMaterial:BillboardFlowMaterial = null;
-            private m_billMesh:BillboardPlaneFlowMesh = null;
             createGroup(billboardTotal:number):void
             {
-                if(billboardTotal > 0 && this.m_billMesh == null && this.getMesh() == null)
+                this.m_billMesh = this.getMesh() as BillboardPlaneFlowMesh;
+                if(billboardTotal > 0 && this.m_billMesh == null)
                 {
                     this.m_billMesh = new BillboardPlaneFlowMesh();
                     this.m_billMesh.createData(billboardTotal);
@@ -85,7 +91,13 @@ export namespace vox
                     this.m_billMesh.setTimeAt(i, lifeTime,fadeInEndFactor,fadeOutBeginFactor,beginTime);
                 }
             }
-            
+            setTimeSpeedAt(i:number, beginTime:number):void
+            {
+                if(this.m_billMesh != null)
+                {
+                    this.m_billMesh.setTimeSpeedAt(i, beginTime);
+                }
+            }
             setTimeSpeed(i:number, timeSpeed:number):void
             {
                 if(this.m_billMesh != null)
@@ -165,14 +177,21 @@ export namespace vox
                     this.m_currMaterial.setAcceleration(accX,accY,accZ);
                 }
             }
+            setClipUVParam(cn:number,total:number,du:number,dv:number):void
+            {
+                if(this.m_clipEnabled && this.m_currMaterial != null)
+                {
+                    this.m_currMaterial.setClipUVParam(cn,total,du,dv);
+                }
+            }
             getTime():number{return this.m_currMaterial.getTime();};
             setTime(time:number):void
             {
                 this.m_currMaterial.setTime(time);
             }
-            timeAddOffset(timeOffset:number):void
+            updateTime(timeOffset:number):void
             {
-                this.m_currMaterial.timeAddOffset(timeOffset);
+                this.m_currMaterial.updateTime(timeOffset);
             }
             getScaleX():number{return this.m_currMaterial.getScaleX();}
             getScaleY():number{return this.m_currMaterial.getScaleY();}
@@ -186,7 +205,8 @@ export namespace vox
             {
                 if(this.getMaterial() == null)
                 {
-                    this.m_currMaterial = new BillboardFlowMaterial();
+                    this.m_currMaterial = new BillboardFlowMaterial(this.m_brightnessEnabled,this.m_alphaEnabled, this.m_clipEnabled);
+                    this.m_currMaterial.setPlayParam(this.m_playOnce, this.m_direcEnabled);
                     this.m_currMaterial.setTextureList(texList);
                     this.setMaterial(this.m_currMaterial);
                 }
@@ -218,8 +238,16 @@ export namespace vox
                     this.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
                 }
             }
-            initialize(texList:TextureProxy[]):void
+            setPlayParam(playOnce:boolean,direcEnabled:boolean):void
             {
+                this.m_playOnce = playOnce;
+                this.m_direcEnabled = direcEnabled;
+            }
+            initialize(brightnessEnabled:boolean,alphaEnabled:boolean,clipEnabled:boolean, texList:TextureProxy[]):void
+            {
+                this.m_clipEnabled = clipEnabled;
+                this.m_brightnessEnabled = brightnessEnabled;
+                this.m_alphaEnabled = alphaEnabled;
                 if(this.m_billMesh != null)
                 {
                     this.createMaterial(texList);
@@ -257,8 +285,13 @@ export namespace vox
             {
                 this.m_transfrom.update();
             }
+            isAwake():boolean
+            {
+                return this.m_playOnce && this.m_currMaterial.getTime() < this.m_billMesh.getEndTime();
+            }
             destroy():void
             {
+                console.log("destroy flowEntity.");
                 this.m_currMaterial = null;
                 this.m_billMesh = null;
                 super.destroy();

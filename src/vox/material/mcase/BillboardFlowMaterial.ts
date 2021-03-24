@@ -5,22 +5,17 @@
 /*                                                                         */
 /***************************************************************************/
 
-
-
-
-import * as MathConstT from "../../../vox/math/MathConst";
 import * as ShaderCodeBufferT from "../../../vox/material/ShaderCodeBuffer";
 import * as ShaderUniformDataT from "../../../vox/material/ShaderUniformData";
-//import * as ShaderUniformT from "../../../vox/material/ShaderUniform";
 import * as Color4T from "../../../vox/material/Color4";
 import * as MaterialBaseT from "../../../vox/material/MaterialBase";
+import * as BillboardGroupShaderBufferT from "../../../vox/material/mcase/BillboardGroupShaderBuffer";
 
-import MathConst = MathConstT.vox.math.MathConst;
 import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
 import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
-//import ShaderUniform = ShaderUniformT.vox.material.ShaderUniform;
 import Color4 = Color4T.vox.material.Color4;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+import BillboardGroupShaderBuffer = BillboardGroupShaderBufferT.vox.material.mcase.BillboardGroupShaderBuffer;
 
 export namespace vox
 {
@@ -28,86 +23,34 @@ export namespace vox
     {
         export namespace mcase
         {
-            export class BillboardFlowShaderBuffer extends ShaderCodeBuffer
+            export class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer
             {
-                private m_brightnessEnabled:boolean = true;
-                private m_alphaEnabled:boolean = false;
-                private m_flag:number = 0;
+                playOnce:boolean = false;
+                direcEnabled:boolean = false;
                 constructor()
                 {
                     super();
                 }
-                private m_uniqueName:string = "";
                 initialize(texEnabled:boolean):void
                 {
-                    this.m_uniqueName = "BillboardFlowShader";
-                }
-                setParam(brightnessEnabled:boolean, alphaEnabled:boolean):void
-                {
-                    this.m_brightnessEnabled = brightnessEnabled;
-                    this.m_alphaEnabled = alphaEnabled;
-                    this.m_flag = 0;
-                    if(this.m_brightnessEnabled && this.m_alphaEnabled)
+                    if(this.playOnce && this.direcEnabled)
                     {
-                        this.m_flag = 1;
-                    }
-                    else if(this.m_brightnessEnabled)
+                        this.m_uniqueName = "BillboardFlowShader_OD";
+                    }else if(this.playOnce)
                     {
-                        this.m_flag = 2;
-                    }
-                    else if(this.m_alphaEnabled)
+                        this.m_uniqueName = "BillboardFlowShader_O";
+                    }else if(this.direcEnabled)
                     {
-                        this.m_flag = 3;
+                        this.m_uniqueName = "BillboardFlowShader_D";
+                    }else
+                    {
+                        this.m_uniqueName = "BillboardFlowShader";
                     }
-                }
-                getFragShaderCode():string
-                {
-                    let fragCode:string =
-`#version 300 es
-precision mediump float;
-uniform sampler2D u_sampler0;
-in vec4 v_colorMult;
-in vec4 v_colorOffset;
-in vec4 v_texUV;
-layout(location = 0) out vec4 FragColor;
-void main()
-{
-    vec4 color = texture(u_sampler0, v_texUV.xy);
-    color.rgb = max(color.rgb * v_colorMult.xyz + v_colorOffset.xyz,0.0);
-`;
-
-                let fadeCode:string;
-                if(this.m_flag == 1)
-                {
-                    fadeCode = 
- `
-    color *= v_texUV.zzzz;
-`;
-                }
-                else if(this.m_flag == 2)
-                {
-                    fadeCode = 
- `
-    color.rgb *= v_texUV.zzz;
-`;
-                }
-                else if(this.m_flag == 3)
-                {
-                    fadeCode = 
- `
-    color.a *= v_texUV.z;
-`;
-                }
-                let endCode:string = 
-`
-    FragColor = color;
-}
-`;
-                    return fragCode + fadeCode + endCode;
                 }
                 getVtxShaderCode():string
                 {
-                    let vtxCode:string = 
+                    let paramTotal:number = this.m_clipEnabled?5:4;
+                    let vtxCode0:string = 
 `#version 300 es
 precision mediump float;
 layout(location = 0) in vec4 a_vs;
@@ -119,31 +62,97 @@ layout(location = 5) in vec4 a_nvs2;
 uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
-uniform vec4 u_billParam[3];
+uniform vec4 u_billParam[`+paramTotal+`];
 out vec4 v_colorMult;
 out vec4 v_colorOffset;
 out vec4 v_texUV;
+//  void main()
+//  {
+//      vec4 temp = u_billParam[0];
+//      float time = max(a_nvs.w * temp.z - a_uvs2.w, 0.0);    
+`;
+                    let vtxCode01:string = "";
+                    if(this.direcEnabled)
+                    {
+                        vtxCode01 = 
+`
+// 3.141592653589793
+#define MATH_PI 3.14159265
+// 4.71238898038469
+#define MATH_3PER2PI 4.71238898
+// 1.5707963267948966
+#define MATH_1PER2PI 1.57079633
+
+float getRadianByXY(float dx, float dy)
+{
+    if(abs(dx) < 0.00001)
+    {
+        return (dy >= 0.0) ? MATH_1PER2PI : MATH_3PER2PI;
+    }
+    float rad = atan(dy/dx);
+    return dx >= 0.0 ? rad:(MATH_PI+rad);
+}  
+`;
+                    }
+                    let vtxCode02:string = 
+`
 void main()
 {
     vec4 temp = u_billParam[0];
-    float time = max(a_nvs.w * temp.z - a_uvs2.w, 0.0);
+    float time = max(a_nvs.w * temp.z - a_uvs2.w, 0.0);    
+`;
+                    let vtxCode1:string = "";
+                    if(this.playOnce)
+                    {
+                        vtxCode1 =
+`
+    time = min(time, a_uvs2.x);
+`;
+                    }
+                    
+                    let vtxCode2:string =
+`
     float kf = fract(time/a_uvs2.x);
+    float fi = kf;
     time = kf * a_uvs2.x;
     kf = min(kf/a_uvs2.y,1.0) * (1.0 - max((kf-a_uvs2.z)/(1.0 - a_uvs2.z),0.0));
+    // scale
     vec2 vtx = a_vs.xy * temp.xy * vec2(a_vs.z + kf * a_vs.w);
-    vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz + (a_nvs.xyz + a_nvs2.xyz * vec3(time)) * vec3(time),1.0);
+`;
+                    let vtxCode3:string;
+                    if(this.direcEnabled)
+                    {
+                        vtxCode3 = 
+`
+    vec3 timeV = vec3(time);
+    vec3 pv0 = a_vs2.xyz + (a_nvs.xyz + (u_billParam[3].xyz + a_nvs2.xyz) * timeV) * timeV;
+    timeV = vec3(time + 0.1);
+    vec3 pv1 = a_vs2.xyz + (a_nvs.xyz + (u_billParam[3].xyz + a_nvs2.xyz) * timeV) * timeV;
+
+    vec4 pos = u_viewMat * u_objMat * vec4(pv0,1.0);
+    vec4 pos1 = u_viewMat * u_objMat * vec4(pv1,1.0);
+    float rad = getRadianByXY(pos1.x - pos.x, pos1.y - pos.y);
+    float cosv = cos(rad);
+    float sinv = sin(rad);
+
+    // rotate
+    vtx = vec2(vtx.x * cosv - vtx.y * sinv, vtx.x * sinv + vtx.y * cosv);
+`;
+                    }
+                    else
+                    {
+                        vtxCode3 = 
+`
+    vec3 timeV = vec3(time);
+    vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz + (a_nvs.xyz + (u_billParam[3].xyz + a_nvs2.xyz) * timeV) * timeV,1.0);
+`;
+                    }
+let vtxCode4:string = 
+`
     pos.xy += vtx.xy;
     gl_Position =  u_projMat * pos;
-    v_texUV = vec4(a_uvs.xy, kf * a_vs2.w,kf);
-    v_colorMult = u_billParam[1];
-    v_colorOffset = u_billParam[2];
-}
 `;
-                    return vtxCode;
-                }
-                getUniqueShaderName():string
-                {
-                    return this.m_uniqueName + "_"+this.m_flag;
+                    return vtxCode0 + vtxCode01 + vtxCode02 + vtxCode1 + vtxCode2 + vtxCode3 + vtxCode4 + this.getVSEndCode(4);
                 }
                 toString():string
                 {
@@ -165,21 +174,40 @@ void main()
             {
                 private m_brightnessEnabled:boolean = true;
                 private m_alphaEnabled:boolean = false;
-                constructor(brightnessEnabled:boolean = true,alphaEnabled:boolean = false)
+                private m_clipEnabled:boolean = false;
+                private m_playOnce:boolean = false;
+                private m_direcEnabled:boolean = false;
+                private m_time:number = 0;
+                private m_uniformData:Float32Array = null;
+                private m_color:Color4 = new Color4(1.0,1.0,1.0,1.0);
+                private m_brightness:number = 1.0;
+                constructor(brightnessEnabled:boolean = true,alphaEnabled:boolean = false,clipEnabled:boolean = false)
                 {
                     super();
                     this.m_brightnessEnabled = brightnessEnabled;
                     this.m_alphaEnabled = alphaEnabled;
+                    this.m_clipEnabled = clipEnabled;
+                    if(clipEnabled)
+                    {
+                        this.m_uniformData = new Float32Array([1.0,1.0,0.0,1.0, 1.0,1.0,1.0,0.0, 0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0, 2,4,0.5,0.5]);
+                    }
+                    else
+                    {
+                        this.m_uniformData = new Float32Array([1.0,1.0,0.0,1.0, 1.0,1.0,1.0,0.0, 0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0]);
+                    }
                 }
-                private m_time:number = 0;
-                private m_uniformData:Float32Array = new Float32Array([1.0,1.0,0.0,1.0, 1.0,1.0,1.0,0.0, 0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0]);
-                private m_color:Color4 = new Color4(1.0,1.0,1.0,1.0);
-                private m_brightness:number = 1.0;
 
+                setPlayParam(playOnce:boolean,direcEnabled:boolean):void
+                {
+                    this.m_playOnce = playOnce;
+                    this.m_direcEnabled = direcEnabled;
+                }
                 getCodeBuf():ShaderCodeBuffer
                 {
                     let buf:BillboardFlowShaderBuffer = BillboardFlowShaderBuffer.GetInstance();
-                    buf.setParam(this.m_brightnessEnabled, this.m_alphaEnabled);
+                    buf.playOnce = this.m_playOnce;
+                    buf.direcEnabled = this.m_direcEnabled;
+                    buf.setParam(this.m_brightnessEnabled, this.m_alphaEnabled,this.m_clipEnabled, this.getTextureTotal() > 1);
                     return buf;
                 }
                 createSelfUniformData():ShaderUniformData
@@ -189,7 +217,6 @@ void main()
                     oum.dataList = [this.m_uniformData];
                     return oum;
                 }
-
                 
                 setRGBA4f(pr:number,pg:number,pb:number,pa:number):void
                 {
@@ -232,10 +259,6 @@ void main()
 
                 setRGBAOffset4f(pr:number,pg:number,pb:number,pa:number):void
                 {
-                    //this.m_colorOffset.r = pr;
-                    //this.m_colorOffset.g = pg;
-                    //this.m_colorOffset.b = pb;
-                    //this.m_colorOffset.a = pa;
                     this.m_uniformData[8] = pr;
                     this.m_uniformData[9] = pg;
                     this.m_uniformData[10] = pb;
@@ -246,12 +269,22 @@ void main()
                     this.m_uniformData[8] = pr;
                     this.m_uniformData[9] = pg;
                     this.m_uniformData[10] = pb;
-                }
+                }                
                 setAcceleration(accX:number,accY:number,accZ:number):void
                 {
                     this.m_uniformData[12] = accX;
                     this.m_uniformData[13] = accY;
                     this.m_uniformData[14] = accZ;
+                }
+                setClipUVParam(cn:number,total:number,du:number,dv:number):void
+                {
+                    if(this.m_clipEnabled)
+                    {
+                        this.m_uniformData[16] = cn;
+                        this.m_uniformData[17] = total;
+                        this.m_uniformData[18] = du;
+                        this.m_uniformData[19] = dv;
+                    }
                 }
                 getTime():number{return this.m_time;};
                 setTime(time:number):void
@@ -259,7 +292,7 @@ void main()
                     this.m_time = time;
                     this.m_uniformData[2] = time;
                 }
-                timeAddOffset(offsetTime:number):void
+                updateTime(offsetTime:number):void
                 {
                     this.m_time += offsetTime;
                     this.m_uniformData[2] = this.m_time;

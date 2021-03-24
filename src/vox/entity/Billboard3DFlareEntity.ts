@@ -27,14 +27,17 @@ export namespace vox
     {
         export class Billboard3DFlareEntity extends DisplayEntity
         {
+            private m_currMaterial:BillboardFlareMaterial = null;
+            private m_billMesh:BillboardPlaneFlareMesh = null;
+            private m_brightnessEnabled:boolean = true;
+            private m_alphaEnabled:boolean = false;
+            private m_clipEnabled:boolean = false;
+            flipVerticalUV:boolean = false;
             constructor(transform:ROTransform = null)
             {
                 super(transform);
                 this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
             }
-            flipVerticalUV:boolean = false;
-            private m_currMaterial:BillboardFlareMaterial = null;
-            private m_billMesh:BillboardPlaneFlareMesh = null;
             createGroup(billboardTotal:number):void
             {
                 if(billboardTotal > 0 && this.m_billMesh == null && this.getMesh() == null)
@@ -134,14 +137,21 @@ export namespace vox
             {
                 return this.m_currMaterial.getBrightness();
             }
+            setClipUVParam(cn:number,total:number,du:number,dv:number):void
+            {
+                if(this.m_clipEnabled && this.m_currMaterial != null)
+                {
+                    this.m_currMaterial.setClipUVParam(cn,total,du,dv);
+                }
+            }
             getTime():number{return this.m_currMaterial.getTime();};
             setTime(time:number):void
             {
                 this.m_currMaterial.setTime(time);
             }
-            timeAddOffset(timeOffset:number):void
+            updateTime(timeOffset:number):void
             {
-                this.m_currMaterial.timeAddOffset(timeOffset);
+                this.m_currMaterial.updateTime(timeOffset);
             }
             getScaleX():number{return this.m_currMaterial.getScaleX();}
             getScaleY():number{return this.m_currMaterial.getScaleY();}
@@ -155,7 +165,11 @@ export namespace vox
             {
                 if(this.getMaterial() == null)
                 {
-                    this.m_currMaterial = new BillboardFlareMaterial();
+                    this.m_currMaterial = new BillboardFlareMaterial(
+                        this.m_brightnessEnabled
+                        , this.m_alphaEnabled
+                        , this.m_clipEnabled
+                        );
                     this.m_currMaterial.setTextureList(texList);
                     this.setMaterial(this.m_currMaterial);
                 }
@@ -187,8 +201,11 @@ export namespace vox
                     this.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
                 }
             }
-            initialize(texList:TextureProxy[]):void
+            initialize(brightnessEnabled:boolean,alphaEnabled:boolean, clipEnabled:boolean, texList:TextureProxy[]):void
             {
+                this.m_brightnessEnabled = brightnessEnabled;
+                this.m_alphaEnabled = alphaEnabled;
+                this.m_clipEnabled = clipEnabled;
                 if(this.m_billMesh != null)
                 {
                     this.createMaterial(texList);

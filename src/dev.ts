@@ -229,8 +229,14 @@
 //  import * as DemoParticle from "./demo/DemoParticle";
 //  import Demo = DemoParticle.demo.DemoParticle;
 
-import * as DemoParticleGroup from "./demo/DemoParticleGroup";
-import Demo = DemoParticleGroup.demo.DemoParticleGroup;
+//  import * as DemoParticleGroup from "./demo/DemoParticleGroup";
+//  import Demo = DemoParticleGroup.demo.DemoParticleGroup;
+
+//  import * as DemoParticleEruption from "./demo/DemoParticleEruption";
+//  import Demo = DemoParticleEruption.demo.DemoParticleEruption;
+
+//  import * as DemoParticleClips from "./demo/DemoParticleClips";
+//  import Demo = DemoParticleClips.demo.DemoParticleClips;
 
 //  import * as DemoContainer from "./demo/DemoContainer";
 //  import Demo = DemoContainer.demo.DemoContainer;
@@ -274,14 +280,14 @@ import Demo = DemoParticleGroup.demo.DemoParticleGroup;
 //  import * as DemoFaceDirec from "./demo/DemoFaceDirec";
 //  import Demo = DemoFaceDirec.demo.DemoFaceDirec;
 
-import * as DemoMotion from "./demo/DemoMotion";
+//  import * as DemoMotion from "./demo/DemoMotion";
 //  import Demo = DemoMotion.demo.DemoMotion;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import * as LegRole from "./app/LegRole";
-//  import Demo = LegRole.app.LegRole;
+import * as LegRole from "./app/LegRole";
+import Demo = LegRole.app.LegRole;
 
 
 let demoIns:Demo = new Demo();

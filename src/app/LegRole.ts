@@ -113,6 +113,8 @@ export namespace app
                 let mdoule:WlKTModule = new WlKTModule();
                 mdoule.initialize(this.m_rscene, [tex2]);
                 mdoule.setRotation(Math.random() * 360);
+                
+                mdoule.setSpeedScale(3.0);
                 //mdoule.setXYZ(Math.random() * 800 - 400.0,0, Math.random() * 800 - 400.0);
                 this.m_modules.push(mdoule);
                 this.m_srcModule = mdoule;
@@ -131,10 +133,11 @@ export namespace app
                     mdoule.setXYZ(Math.random() * 800 - 400.0,0, Math.random() * 800 - 400.0);
                     scale = 1.0 - scale;
                     if(scale < 0.0)scale = 0.0;
-                    mdoule.setSpeedScale(1.0 + scale + (Math.random() * 1.0 - 0.5));
+                    mdoule.setSpeedScale(2.0 + scale + (Math.random() * 1.0 - 0.5));
                     //mdoule.setSpeedScale(1.8);
                     this.m_modules.push(mdoule);
                 }
+                this.update();
             }
         }
         private m_isChanged:boolean = true;
@@ -183,14 +186,26 @@ export namespace app
             }
             //*/
         }
-        run():void
+        
+        private m_timeoutId:any = -1;
+        private update():void
         {
+            if(this.m_timeoutId > -1)
+            {
+                clearTimeout(this.m_timeoutId);
+            }
+            this.m_timeoutId = setTimeout(this.update.bind(this),20);// 50 fps
+
+            
             let len:number = this.m_modules.length;
             let i:number = 0;
             for(; i < len; ++i)
             {
                 this.m_modules[i].run();
             }
+        }
+        run():void
+        {
 
             this.m_statusDisp.update();
             this.m_texLoader.run();

@@ -77,7 +77,7 @@ void main()
 vec4 temp = u_billParam[0];
 float cosv = cos(temp.z);
 float sinv = sin(temp.z);
-vec2 vtx = vec2(a_vs.x * temp.x, a_vs.y * temp.y);
+vec2 vtx = a_vs.xy * temp.xy;//vec2(a_vs.x * temp.x, a_vs.y * temp.y);
 vec2 vtx_pos = vec2(vtx.x * cosv - vtx.y * sinv, vtx.x * sinv + vtx.y * cosv);
 vec4 pos = u_viewMat * u_objMat * vec4(0.0,0.0,0.0,1.0);
 pos.xy += vtx_pos.xy;

@@ -180,8 +180,14 @@ export namespace vox
             }
             static Create(texRes:ROTextureResource,texList:IRenderTexture[],shdTexTotal:number):TextureRenderObj
             {
-                if(texList.length > 0 && shdTexTotal > 0)
+                let texTotal:number = texList.length;
+                if(texTotal > 0 && shdTexTotal > 0)
                 {
+                    if(texTotal < shdTexTotal)
+                    {
+                        throw Error("There are fewer textures than in the shader : (need "+shdTexTotal+",but only have "+texTotal+") !!!");
+                        return null;
+                    }
                     let key = 31;
                     let t:number = 0;
                     let direct:boolean = true;

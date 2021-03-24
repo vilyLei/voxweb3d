@@ -28,7 +28,10 @@ export namespace voxmotion
             private m_curr:Vector3D = new Vector3D(1.0,0.0,0.0,1.0);
             spdv:Vector3D = new Vector3D(0.0,0.0,0.0,1.0);
             constructor(){}
-
+            setSpeed(spd:number):void
+            {
+                this.m_speed = spd;
+            }
             setFactor(prevFactor:number, currFactor:number):void
             {
                 if(prevFactor > 0.9)

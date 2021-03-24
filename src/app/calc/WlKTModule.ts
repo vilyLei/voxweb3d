@@ -27,6 +27,9 @@ export namespace app
             private m_position:Vector3D = new Vector3D();
             private m_spdV:Vector3D = new Vector3D();
             private m_spdScale:number = 1.0;
+            private m_swingSpeed:number = 0.08;
+            private m_lgSwingSpeed:number = 0.5;
+
             private m_spd:number = 1.0;
             private m_scale:number = 1.0;
             private m_direcRad:number = 0;
@@ -60,6 +63,7 @@ export namespace app
             private calcSpeed():void
             {
                 this.m_spd = this.m_scale * ((this.m_offsetY - this.m_minY) * this.m_stepAngle/360.0)/ 3.1415926;
+                this.m_tickModule.setSpeed(this.m_spd);
             }
             private createEles(el:DisplayEntity):void
             {
@@ -86,6 +90,7 @@ export namespace app
                 this.m_rsc.addContainer(this.m_container);
                 this.m_tickModule.bindTarget(this.m_container);
                 this.m_tickModule.setVelocityFactor(0.02,0.03);
+                this.m_lgSwingSpeed = this.m_swingSpeed * this.m_spdScale;
             }
             initializeFrom(module:WlKTModule):void
             {
@@ -110,15 +115,20 @@ export namespace app
             setRotation(rotation:number):void
             {
                 this.m_direcRad = MathConst.DegreeToRadian(rotation);
-                this.m_spdV.x = this.m_spd * Math.cos(this.m_direcRad) * this.m_spdScale;
-                this.m_spdV.z = -this.m_spd * Math.sin(this.m_direcRad) * this.m_spdScale;
+                //  let spd:number = this.m_spd * this.m_spdScale;
+                //  //  this.m_spdV.x = spd * Math.cos(this.m_direcRad);
+                //  //  this.m_spdV.z = -spd * Math.sin(this.m_direcRad);
+                //  this.m_tickModule.setSpeed(spd);
                 this.m_container.setRotationY(rotation);
             }
             setSpeedScale(scale:number):void
             {
                 this.m_spdScale = scale;
-                this.m_spdV.x = this.m_spd * Math.cos(this.m_direcRad) * this.m_spdScale;
-                this.m_spdV.z = -this.m_spd * Math.sin(this.m_direcRad) * this.m_spdScale;
+                this.m_lgSwingSpeed = this.m_swingSpeed * this.m_spdScale;
+                let spd:number = this.m_spd * this.m_spdScale;
+                //  this.m_spdV.x = spd * Math.cos(this.m_direcRad);
+                //  this.m_spdV.z = -spd * Math.sin(this.m_direcRad);
+                this.m_tickModule.setSpeed(spd);
             }
             setScale(scale:number):void
             {
@@ -148,12 +158,12 @@ export namespace app
                 this.m_position.z += pz;
                 this.m_container.setPosition(this.m_position);
             }
-            moveOffset():void
-            {
-                //this.m_container.getPosition(this.m_position);
-                this.m_position.addBy(this.m_spdV);
-                this.m_container.setPosition(this.m_position);
-            }
+            //  moveOffset():void
+            //  {
+            //      //this.m_container.getPosition(this.m_position);
+            //      this.m_position.addBy(this.m_spdV);
+            //      this.m_container.setPosition(this.m_position);
+            //  }
             moveToXZ(px:number,pz:number):void
             {
                 this.m_tickModule.toXZ(px,pz);
@@ -193,7 +203,6 @@ export namespace app
                 {
                     if(this.m_awake)
                     {
-                        //this.moveOffset();
                         this.m_tickModule.run();
                         this.m_awake = this.m_tickModule.isMoving();
                         this.m_currAngle = Math.sin(this.m_time) * this.m_stepAngle;                        
@@ -203,16 +212,16 @@ export namespace app
                         this.m_time = 0;
                         if(this.m_currAngle > 0.0)
                         {
-                            this.m_currAngle -= 1.0;
+                            this.m_currAngle -= 2.0;
                             if(this.m_currAngle < 0.0)
                             {
-                                this.m_currAngle = 0.5;
+                                this.m_currAngle = 0.0;
                                 this.m_awakeFlag = false;
                             }
                         }
                         else if(this.m_currAngle < 0.0)
                         {
-                            this.m_currAngle += 0.5;
+                            this.m_currAngle += 2.0;
                             if(this.m_currAngle > 0.0)
                             {
                                 this.m_currAngle = 0.0;
@@ -230,7 +239,8 @@ export namespace app
                     entity = this.m_gR;
                     entity.setRotationXYZ(0.0,0.0, -this.m_currAngle);
                     entity.update();    
-                    this.m_time += 0.08 * this.m_spdScale;
+                    this.m_time += this.m_lgSwingSpeed;//0.08 * this.m_spdScale;
+                    //this.m_time += 0.05 * this.m_spdScale;
                     this.m_container.update();
                 }
             }

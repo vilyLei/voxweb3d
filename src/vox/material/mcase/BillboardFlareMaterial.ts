@@ -5,22 +5,17 @@
 /*                                                                         */
 /***************************************************************************/
 
-
-
-
-import * as MathConstT from "../../../vox/math/MathConst";
 import * as ShaderCodeBufferT from "../../../vox/material/ShaderCodeBuffer";
 import * as ShaderUniformDataT from "../../../vox/material/ShaderUniformData";
-//import * as ShaderUniformT from "../../../vox/material/ShaderUniform";
 import * as Color4T from "../../../vox/material/Color4";
 import * as MaterialBaseT from "../../../vox/material/MaterialBase";
+import * as BillboardGroupShaderBufferT from "../../../vox/material/mcase/BillboardGroupShaderBuffer";
 
-import MathConst = MathConstT.vox.math.MathConst;
 import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
 import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
-//import ShaderUniform = ShaderUniformT.vox.material.ShaderUniform;
 import Color4 = Color4T.vox.material.Color4;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+import BillboardGroupShaderBuffer = BillboardGroupShaderBufferT.vox.material.mcase.BillboardGroupShaderBuffer;
 
 export namespace vox
 {
@@ -28,85 +23,20 @@ export namespace vox
     {
         export namespace mcase
         {
-            export class BillboardFlareShaderBuffer extends ShaderCodeBuffer
+            export class BillboardFlareShaderBuffer extends BillboardGroupShaderBuffer
             {
-                private m_brightnessEnabled:boolean = true;
-                private m_alphaEnabled:boolean = false;
-                private m_flag:number = 0;
                 constructor()
                 {
                     super();
                 }
-                private m_uniqueName:string = "";
                 initialize(texEnabled:boolean):void
                 {
                     this.m_uniqueName = "BillboardFlareShader";
                 }
-                setParam(brightnessEnabled:boolean, alphaEnabled:boolean):void
-                {
-                    this.m_brightnessEnabled = brightnessEnabled;
-                    this.m_alphaEnabled = alphaEnabled;
-                    this.m_flag = 0;
-                    if(this.m_brightnessEnabled && this.m_alphaEnabled)
-                    {
-                        this.m_flag = 1;
-                    }
-                    else if(this.m_brightnessEnabled)
-                    {
-                        this.m_flag = 2;
-                    }
-                    else if(this.m_alphaEnabled)
-                    {
-                        this.m_flag = 3;
-                    }
-                }
-                getFragShaderCode():string
-                {
-                    let fragCode:string =
-`#version 300 es
-precision mediump float;
-uniform sampler2D u_sampler0;
-in vec4 v_colorMult;
-in vec4 v_colorOffset;
-in vec4 v_texUV;
-layout(location = 0) out vec4 FragColor;
-void main()
-{
-    vec4 color = texture(u_sampler0, v_texUV.xy);
-    color.rgb = max(color.rgb * v_colorMult.xyz + v_colorOffset.xyz,0.0);
-`;
-
-                let fadeCode:string;
-                if(this.m_flag == 1)
-                {
-                    fadeCode = 
- `
-    color *= v_texUV.zzzz;
-`;
-                }
-                else if(this.m_flag == 2)
-                {
-                    fadeCode = 
- `
-    color.rgb *= v_texUV.zzz;
-`;
-                }
-                else if(this.m_flag == 3)
-                {
-                    fadeCode = 
- `
-    color.a *= v_texUV.z;
-`;
-                }
-                let endCode:string = 
-`
-    FragColor = color;
-}
-`;
-                    return fragCode + fadeCode + endCode;
-                }
+                
                 getVtxShaderCode():string
                 {
+                    let paramTotal:number = this.m_clipEnabled?4:3;
                     let vtxCode:string = 
 `#version 300 es
 precision mediump float;
@@ -117,7 +47,7 @@ layout(location = 3) in vec4 a_uvs2;
 uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
-uniform vec4 u_billParam[3];
+uniform vec4 u_billParam[`+paramTotal+`];
 out vec4 v_colorMult;
 out vec4 v_colorOffset;
 out vec4 v_texUV;
@@ -125,21 +55,15 @@ void main()
 {
     vec4 temp = u_billParam[0];
     float kf = fract(a_uvs2.w * temp.z/a_uvs2.x);
+    float fi = kf;
     kf = min(kf/a_uvs2.y,1.0) * (1.0 - max((kf-a_uvs2.z)/(1.0 - a_uvs2.z),0.0));
     vec2 vtx = a_vs.xy * temp.xy * vec2(a_vs.z + kf * a_vs.w);
     vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz,1.0);
     pos.xy += vtx.xy;
     gl_Position =  u_projMat * pos;
-    v_texUV = vec4(a_uvs.xy, kf * a_vs2.w,kf);
-    v_colorMult = u_billParam[1];
-    v_colorOffset = u_billParam[2];
-}
 `;
-                    return vtxCode;
-                }
-                getUniqueShaderName():string
-                {
-                    return this.m_uniqueName + "_"+this.m_flag;
+
+                    return vtxCode + this.getVSEndCode(3);
                 }
                 toString():string
                 {
@@ -161,21 +85,31 @@ void main()
             {
                 private m_brightnessEnabled:boolean = true;
                 private m_alphaEnabled:boolean = false;
-                constructor(brightnessEnabled:boolean = true,alphaEnabled:boolean = false)
+                private m_clipEnabled:boolean = false;
+                constructor(brightnessEnabled:boolean = true,alphaEnabled:boolean = false,clipEnabled:boolean = false)
                 {
                     super();
                     this.m_brightnessEnabled = brightnessEnabled;
                     this.m_alphaEnabled = alphaEnabled;
+                    this.m_clipEnabled = clipEnabled;
+                    if(this.m_clipEnabled)
+                    {
+                        this.m_uniformData = new Float32Array([1.0,1.0,0.0,1.0, 1.0,1.0,1.0,0.0, 0.0,0.0,0.0,0.0, 2.0,4.0,0.5,0.5]);
+                    }
+                    else
+                    {
+                        this.m_uniformData = new Float32Array([1.0,1.0,0.0,1.0, 1.0,1.0,1.0,0.0, 0.0,0.0,0.0,0.0]);
+                    }
                 }
                 private m_time:number = 0;
-                private m_uniformData:Float32Array = new Float32Array([1.0,1.0,0.0,1.0, 1.0,1.0,1.0,0.0, 0.0,0.0,0.0,0.0]);
+                private m_uniformData:Float32Array = null;//new Float32Array([1.0,1.0,0.0,1.0, 1.0,1.0,1.0,0.0, 0.0,0.0,0.0,0.0, 2.0,4.0,0.5,0.5]);
                 private m_color:Color4 = new Color4(1.0,1.0,1.0,1.0);
                 private m_brightness:number = 1.0;
 
                 getCodeBuf():ShaderCodeBuffer
                 {
                     let buf:BillboardFlareShaderBuffer = BillboardFlareShaderBuffer.GetInstance();
-                    buf.setParam(this.m_brightnessEnabled, this.m_alphaEnabled);
+                    buf.setParam(this.m_brightnessEnabled, this.m_alphaEnabled,this.m_clipEnabled, this.getTextureTotal() > 1);
                     return buf;
                 }
                 createSelfUniformData():ShaderUniformData
@@ -226,10 +160,6 @@ void main()
 
                 setRGBAOffset4f(pr:number,pg:number,pb:number,pa:number):void
                 {
-                    //this.m_colorOffset.r = pr;
-                    //this.m_colorOffset.g = pg;
-                    //this.m_colorOffset.b = pb;
-                    //this.m_colorOffset.a = pa;
                     this.m_uniformData[8] = pr;
                     this.m_uniformData[9] = pg;
                     this.m_uniformData[10] = pb;
@@ -241,13 +171,23 @@ void main()
                     this.m_uniformData[9] = pg;
                     this.m_uniformData[10] = pb;
                 }
+                setClipUVParam(cn:number,total:number,du:number,dv:number):void
+                {
+                    if(this.m_clipEnabled)
+                    {
+                        this.m_uniformData[12] = cn;
+                        this.m_uniformData[13] = total;
+                        this.m_uniformData[14] = du;
+                        this.m_uniformData[15] = dv;
+                    }
+                }
                 getTime():number{return this.m_time;};
                 setTime(time:number):void
                 {
                     this.m_time = time;
                     this.m_uniformData[2] = time;
                 }
-                timeAddOffset(offsetTime:number):void
+                updateTime(offsetTime:number):void
                 {
                     this.m_time += offsetTime;
                     this.m_uniformData[2] = this.m_time;

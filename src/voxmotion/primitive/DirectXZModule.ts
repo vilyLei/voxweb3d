@@ -29,6 +29,11 @@ export namespace voxmotion
             private m_moving:boolean = true;
             syncTargetUpdate:boolean = true;
             constructor(){}
+            
+            setSpeed(spd:number):void
+            {
+                this.m_velModule.setSpeed(spd);
+            }
             setVelocityFactor(oldVelocityFactor:number, newVelocityFactor:number):void
             {
                 this.m_velModule.setFactor(oldVelocityFactor,newVelocityFactor);
