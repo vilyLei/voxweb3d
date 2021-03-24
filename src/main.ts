@@ -22,8 +22,11 @@
 //  import * as DemoDepthTex from "./demo/DemoDepthTex";
 //  import Demo = DemoDepthTex.demo.DemoDepthTex;
 
-import * as DemoMaterial from "./demo/DemoMaterial";
-import Demo = DemoMaterial.demo.DemoMaterial;
+//  import * as DemoMaterial from "./demo/DemoMaterial";
+//  import Demo = DemoMaterial.demo.DemoMaterial;
+
+import * as DemoParticleEruption from "./demo/DemoParticleEruption";
+import Demo = DemoParticleEruption.demo.DemoParticleEruption;
 
 //  import * as DemoVtx from "./demo/DemoVtx";
 //  import Demo = DemoVtx.demo.DemoVtx;
