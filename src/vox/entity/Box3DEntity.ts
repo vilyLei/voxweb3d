@@ -75,6 +75,22 @@ export namespace vox
             {
                 this.setRenderState(RendererState.NORMAL_STATE);
             }
+            scaleUVFaceAt(faceI:number, u:number,v:number,du:number,dv:number)
+            {
+                let mesh:Box3DMesh = this.getMesh() as Box3DMesh;
+                if(mesh != null)
+                {
+                    mesh.scaleUVFaceAt(faceI, u,v,du,dv);
+                }
+            }
+            reinitializeMesh()
+            {
+                let mesh:Box3DMesh = this.getMesh() as Box3DMesh;
+                if(mesh != null)
+                {
+                    mesh.reinitialize();
+                }
+            }
             /**
              * initialize a box geometry data and texture data
              * @param minV the min position of the box

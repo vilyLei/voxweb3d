@@ -19,8 +19,8 @@ import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as RendererSceneT from "../vox/scene/RendererScene";
 
+import * as CameraViewRayT from "../vox/view/CameraViewRay";
 import * as WlKTModuleT from "../app/calc/WlKTModule";
-import * as PlaneT from "../vox/geom/Plane";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
@@ -42,8 +42,8 @@ import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 
+import CameraViewRay = CameraViewRayT.vox.view.CameraViewRay;
 import WlKTModule = WlKTModuleT.app.calc.WlKTModule;
-import Plane = PlaneT.vox.geom.Plane;
 
 export namespace app
 {
@@ -58,6 +58,7 @@ export namespace app
         private m_texLoader:ImageTextureLoader = null;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
+        private m_viewRay:CameraViewRay = new CameraViewRay();
 
         private m_targets:DisplayEntity[] = [];
         private m_modules:WlKTModule[] = []
@@ -85,6 +86,8 @@ export namespace app
                 this.m_rscene.initialize(rparam,3);
                 this.m_rscene.updateCamera();
                 
+                this.m_viewRay.bindCameraAndStage(this.m_rscene.getCamera(), this.m_rscene.getStage3D());
+                this.m_viewRay.setPlaneParam(new Vector3D(0.0,1.0,0.0),0.0);
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
@@ -140,19 +143,15 @@ export namespace app
                 this.update();
             }
         }
-        private m_isChanged:boolean = true;
-        private m_pv:Vector3D = new Vector3D();
-        private m_rlpv:Vector3D = new Vector3D();
-        private m_rltv:Vector3D = new Vector3D();
-        private m_pnv:Vector3D = new Vector3D(0.0,1.0,0.0);
-        private m_pdis:number = 0.0;
         private mouseDown(evt:any):void
         {
             if(this.m_srcModule != null)
             {
-                this.m_rscene.getMouseXYWorldRay(this.m_rlpv, this.m_rltv);
-                Plane.IntersectionSLV2(this.m_pnv, this.m_pdis, this.m_rlpv, this.m_rltv, this.m_pv);
-                this.m_srcModule.moveToXZ(this.m_pv.x, this.m_pv.z);
+                
+                this.m_viewRay.intersectPiane();
+
+                let pv:Vector3D = this.m_viewRay.position;
+                this.m_srcModule.moveToXZ(pv.x, pv.z);
             }
             /*
             if(this.m_srcModule != null)

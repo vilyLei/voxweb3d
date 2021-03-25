@@ -21,9 +21,9 @@ export namespace voxmotion
     {
         export class DirectXZModule
         {
-            private m_dstPos:Vector3D = new Vector3D();
-            private m_pos:Vector3D = new Vector3D();
             private m_currPos:Vector3D = new Vector3D();
+            private m_dstPos:Vector3D = new Vector3D(0.1,0.0,0.0);
+            private m_pos:Vector3D = new Vector3D();
             private m_velModule:VelocityXZModule = new VelocityXZModule();
             private m_target:IEntityTransform = null;
             private m_moving:boolean = true;
@@ -41,6 +41,14 @@ export namespace voxmotion
             bindTarget(target:IEntityTransform):void
             {
                 this.m_target = target;
+            }
+            setCurrentXYZ(px:number,py:number,pz:number):void
+            {
+                this.m_currPos.setXYZ(px,py,pz);
+            }
+            setCurrentPosition(pv:Vector3D):void
+            {
+                this.m_currPos.copyFrom(pv);
             }
             toXZ(px:number,pz:number):void
             {
@@ -85,7 +93,7 @@ export namespace voxmotion
 
                 this.m_pos.subVecsTo(this.m_currPos, this.m_dstPos);
                 let squaredDis:number = this.m_pos.getLengthSquared();
-                let ang:number = MathConst.GetAngleByXY(spdv.x,-spdv.z);
+                let ang:number = MathConst.GetAngleByXY(-spdv.x,spdv.z) + 180;
                 if(spdv.getLengthSquared() < squaredDis)
                 {
                     this.m_pos.addVecsTo(this.m_currPos,spdv);

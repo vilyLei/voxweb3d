@@ -24,9 +24,9 @@ export namespace voxmotion
             private m_mass:number = 1.0;
             private m_prevk:number = 1.0;
             private m_currvk:number = 0.0;
-            private m_prev:Vector3D = new Vector3D(0.0,0.0,0.0,0.0);
+            private m_prev:Vector3D = new Vector3D(1.0,0.0,0.0,0.0);
             private m_curr:Vector3D = new Vector3D(1.0,0.0,0.0,1.0);
-            spdv:Vector3D = new Vector3D(0.0,0.0,0.0,1.0);
+            spdv:Vector3D = new Vector3D(1.0,0.0,0.0,1.0);
             constructor(){}
             setSpeed(spd:number):void
             {
@@ -54,7 +54,9 @@ export namespace voxmotion
             }
             setDirecXZ(dx:number, dz:number):void
             {
-                this.m_prev.copyFrom(this.m_curr);
+                //this.m_prev.copyFrom(this.m_curr);
+                this.spdv.normalize();
+                this.m_prev.copyFrom(this.spdv);
                 this.m_curr.setXYZ(dx,0.0,dz);
                 this.m_curr.normalize();
                 this.m_prevk = 1.0;

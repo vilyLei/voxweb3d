@@ -282,6 +282,27 @@ export namespace vox
                 
                 this.initData(this.m_posList);
             }
+            
+            private static s_faceIs:number[] = [4,5,3,0,2,1];// mapping: [3,5,4,2,0,1]
+            scaleUVFaceAt(faceI:number, u:number,v:number,du:number,dv:number)
+            {
+                if(this.m_uvs != null)
+                {
+                    faceI = Box3DMesh.s_faceIs[faceI];
+                    let i:number = faceI * 8;
+                    let t:number = i + 8;
+                    let uvs:Float32Array = this.m_uvs;
+                    for(; i < t; i+= 2)
+                    {
+                        uvs[i] = u + uvs[i] * du;
+                        uvs[i+1] = v + uvs[i+1] * dv;
+                    }
+                }
+            }
+            reinitialize():void
+            {
+                this.initData(this.m_posList);
+            }
             private initData(posList:number[][]):void
             {
                 let point0:number[] = posList[0];
@@ -409,69 +430,72 @@ export namespace vox
                 
         		if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX))
         		{
-        			// uv
-                    i = 0;
-                    baseI = this.vtxTotal * 2;
-                    this.m_uvs = new Float32Array(48);
-                    if(this.flipVerticalUV)
+                    if(this.m_uvs == null)
                     {
-                        while(i < baseI)
+                        // uv
+                        i = 0;
+                        baseI = this.vtxTotal * 2;
+                        this.m_uvs = new Float32Array(48);
+                        if(this.flipVerticalUV)
                         {
-                            this.m_uvs[i] = 1.0; this.m_uvs[i + 1] = 1.0;
-        			        this.m_uvs[i + 2] = 0.0; this.m_uvs[i + 3] = 1.0;
-        			        this.m_uvs[i + 4] = 0.0; this.m_uvs[i + 5] = 0.0;
-                            this.m_uvs[i + 6] = 1.0; this.m_uvs[i + 7] = 0.0;            
-                            i+=8;
+                            while(i < baseI)
+                            {
+                                this.m_uvs[i] = 1.0; this.m_uvs[i + 1] = 1.0;
+                                this.m_uvs[i + 2] = 0.0; this.m_uvs[i + 3] = 1.0;
+                                this.m_uvs[i + 4] = 0.0; this.m_uvs[i + 5] = 0.0;
+                                this.m_uvs[i + 6] = 1.0; this.m_uvs[i + 7] = 0.0;            
+                                i+=8;
+                            }
+                        }
+                        else
+                        {
+                            while(i < baseI)
+                            {
+                                this.m_uvs[i] = 0.0; this.m_uvs[i + 1] = 0.0;
+                                this.m_uvs[i + 2] = 1.0; this.m_uvs[i + 3] = 0.0;
+                                this.m_uvs[i + 4] = 1.0; this.m_uvs[i + 5] = 1.0;
+                                this.m_uvs[i + 6] = 0.0; this.m_uvs[i + 7] = 1.0;
+                                i+=8;
+                            }
+                        }
+                        if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX))
+                        {
+                            baseI = 0;
+                            while (baseI < 6)
+                            {
+                                switch (baseI)
+                                {
+                                case 0:
+                                    // -z
+                                    i = 0;
+                                    this.m_uvs[i] = 0.0; this.m_uvs[i + 1] = 1.0;
+                                    this.m_uvs[i + 2] = 1.0; this.m_uvs[i + 3] = 1.0;
+                                    this.m_uvs[i + 4] = 1.0; this.m_uvs[i + 5] = 0.0;
+                                    this.m_uvs[i + 6] = 0.0; this.m_uvs[i + 7] = 0.0;
+                                    break;
+                                case 3:
+                                    // +x
+                                    i = 24;
+                                    this.m_uvs[i] = 0.0; this.m_uvs[i + 1] = 1.0;
+                                    this.m_uvs[i + 2] = 1.0; this.m_uvs[i + 3] = 1.0;
+                                    this.m_uvs[i + 4] = 1.0; this.m_uvs[i + 5] = 0.0;
+                                    this.m_uvs[i + 6] = 0.0; this.m_uvs[i + 7] = 0.0;
+                                    break;
+                                case 5:
+                                    // -y;
+                                    i = 32;
+                                    this.m_uvs[i] = 0.0; this.m_uvs[i + 1] = 1.0;
+                                    this.m_uvs[i + 2] = 1.0; this.m_uvs[i + 3] = 1.0;
+                                    this.m_uvs[i + 4] = 1.0; this.m_uvs[i + 5] = 0.0;
+                                    this.m_uvs[i + 6] = 0.0; this.m_uvs[i + 7] = 0.0;
+                                    break;
+                                default:
+                                    break;
+                                }
+                                ++baseI;
+                            }
                         }
                     }
-                    else
-                    {
-                        while(i < baseI)
-                        {
-                            this.m_uvs[i] = 0.0; this.m_uvs[i + 1] = 0.0;
-        			        this.m_uvs[i + 2] = 1.0; this.m_uvs[i + 3] = 0.0;
-        			        this.m_uvs[i + 4] = 1.0; this.m_uvs[i + 5] = 1.0;
-        			        this.m_uvs[i + 6] = 0.0; this.m_uvs[i + 7] = 1.0;
-                            i+=8;
-                        }
-                    }
-        			if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX))
-        			{
-        				baseI = 0;
-        				while (baseI < 6)
-        				{
-        					switch (baseI)
-        					{
-        					case 0:
-        						// -z
-        						i = 0;
-        						this.m_uvs[i] = 0.0; this.m_uvs[i + 1] = 1.0;
-        						this.m_uvs[i + 2] = 1.0; this.m_uvs[i + 3] = 1.0;
-        						this.m_uvs[i + 4] = 1.0; this.m_uvs[i + 5] = 0.0;
-        						this.m_uvs[i + 6] = 0.0; this.m_uvs[i + 7] = 0.0;
-        						break;
-        					case 3:
-        						// +x
-        						i = 24;
-        						this.m_uvs[i] = 0.0; this.m_uvs[i + 1] = 1.0;
-        						this.m_uvs[i + 2] = 1.0; this.m_uvs[i + 3] = 1.0;
-        						this.m_uvs[i + 4] = 1.0; this.m_uvs[i + 5] = 0.0;
-        						this.m_uvs[i + 6] = 0.0; this.m_uvs[i + 7] = 0.0;
-        						break;
-        					case 5:
-        						// -y;
-        						i = 32;
-        						this.m_uvs[i] = 0.0; this.m_uvs[i + 1] = 1.0;
-        						this.m_uvs[i + 2] = 1.0; this.m_uvs[i + 3] = 1.0;
-        						this.m_uvs[i + 4] = 1.0; this.m_uvs[i + 5] = 0.0;
-        						this.m_uvs[i + 6] = 0.0; this.m_uvs[i + 7] = 0.0;
-        						break;
-        					default:
-        						break;
-        					}
-        					++baseI;
-        				}
-        			}
                     ROVertexBuffer.AddFloat32Data(this.m_uvs, 2);
                 }
                 

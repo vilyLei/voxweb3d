@@ -131,6 +131,8 @@ export namespace vox
             private m_omat:Matrix4 = null;
             private m_localMat:Matrix4 = null;
             private m_parentMat:Matrix4 = null;
+            private m_toParentMat:Matrix4 = null;
+            private m_toParentMatFlag:boolean = true;
             // word to local matrix
             private m_invOmat:Matrix4 = null;
             
@@ -179,6 +181,21 @@ export namespace vox
                 }
                 return this.m_omat;
             }
+            // get local to parent space matrix, maybe need call update function
+            getToParentMatrix():Matrix4
+            {
+                if (this.m_toParentMat != null)
+	        	{
+                    //  if(this.m_toParentMatFlag)
+                    //  {
+                    //      console.log("....");
+                    //      this.m_toParentMat.invert();
+                    //  }
+                    return this.m_toParentMat;
+                }
+                return this.m_omat;
+            }
+
             // local to world matrix, 使用的时候注意数据安全->防止多个显示对象拥有而出现多次修改的问题,因此此函数尽量不要用
             setParentMatrix(matrix:Matrix4):void
             {
@@ -272,6 +289,16 @@ export namespace vox
                     }
                     if((this.updateStatus & ROTransform.UPDATE_PARENT_MAT) == ROTransform.UPDATE_PARENT_MAT)
                     {
+                        if(this.m_toParentMat != null)
+                        {
+                            this.m_toParentMat.copyFrom(this.m_omat);
+                        }
+                        else
+                        {
+                            this.m_toParentMat = Matrix4Pool.GetMatrix();
+                            this.m_toParentMat.copyFrom(this.m_omat);
+                        }
+                        this.m_toParentMatFlag = true;
                         this.m_omat.append( this.m_parentMat );
                     }
                     this.updateStatus = 0;

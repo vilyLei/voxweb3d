@@ -460,6 +460,10 @@ export namespace vox
             {
                 return this.m_transfrom.getMatrix();
             }
+            getToParentMatrix():Matrix4
+            {
+                return this.m_transfrom.getToParentMatrix();
+            }
             setRenderColorMask(rt:number):void
             {
                 this.m_rcolorMask = rt;
