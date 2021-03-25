@@ -21,6 +21,7 @@ import * as RendererSceneT from "../vox/scene/RendererScene";
 import * as BoFrameAxisT from "../app/robot/BoFrameAxis";
 import * as TwoFeetUnitT from "../app/robot/TwoFeetUnit";
 import * as FourFeetUnitT from "../app/robot/FourFeetUnit";
+import * as SixFeetUnitT from "../app/robot/SixFeetUnit";
 import * as IPartStoreT from "../app/robot/IPartStore";
 import * as CameraViewRayT from "../vox/view/CameraViewRay";
 
@@ -46,6 +47,7 @@ import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import BoFrameAxis = BoFrameAxisT.app.robot.BoFrameAxis;
 import TwoFeetUnit = TwoFeetUnitT.app.robot.TwoFeetUnit;
 import FourFeetUnit = FourFeetUnitT.app.robot.FourFeetUnit;
+import SixFeetUnit = SixFeetUnitT.app.robot.SixFeetUnit;
 import IPartStore = IPartStoreT.app.robot.IPartStore;
 import CameraViewRay = CameraViewRayT.vox.view.CameraViewRay;
 
@@ -276,6 +278,7 @@ export namespace app
 
         private m_twoFUnit0:TwoFeetUnit = null;
         private m_fourFUnit0:FourFeetUnit = null;
+        private m_sixFUnit0:SixFeetUnit = null;
         private m_targets:DisplayEntity[] = [];
         private m_viewRay:CameraViewRay = new CameraViewRay();
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
@@ -358,7 +361,7 @@ export namespace app
                 this.m_twoFUnit0.initialize( this.m_rscene,0, boxPart );
                 this.m_twoFUnit0.moveToXZ(10.0,0.0);
                 //*/
-                ///*
+                /*
                 let boxPart0:BoxPartStore = new BoxPartStore();
                 boxPart0.initilize(tex0,tex2,tex1);                
                 let boxPart1:BoxPartStore = new BoxPartStore();
@@ -368,6 +371,19 @@ export namespace app
                 this.m_fourFUnit0.initialize( this.m_rscene,0, boxPart0, boxPart1);
                 this.m_fourFUnit0.moveToXZ(300.0,0.0);
                 //*/
+                ///*
+                let boxPart0:BoxPartStore = new BoxPartStore();
+                boxPart0.initilize(tex0,tex2,tex1);
+                let boxPart1:BoxPartStore = new BoxPartStore();
+                boxPart1.initilizeCopyFrom(boxPart0);
+                let boxPart2:BoxPartStore = new BoxPartStore();
+                boxPart2.initilizeCopyFrom(boxPart0);
+
+                this.m_sixFUnit0 = new SixFeetUnit();
+                this.m_sixFUnit0.initialize( this.m_rscene,0, boxPart0, boxPart1,boxPart2,100);
+                this.m_sixFUnit0.moveToXZ(300.0,0.0);
+                //*/
+                //SixFeetUnit
                 this.update();
             }
         }
@@ -380,6 +396,7 @@ export namespace app
             if(this.m_frameAxis != null)this.m_frameAxis.moveToXZ(pv.x, pv.z);
             if(this.m_twoFUnit0 != null)this.m_twoFUnit0.moveToXZ(pv.x, pv.z);
             if(this.m_fourFUnit0 != null)this.m_fourFUnit0.moveToXZ(pv.x, pv.z);
+            if(this.m_sixFUnit0 != null)this.m_sixFUnit0.moveToXZ(pv.x, pv.z);
         }
         
         private m_timeoutId:any = -1;
@@ -394,6 +411,7 @@ export namespace app
             if(this.m_frameAxis1 != null)this.m_frameAxis1.run();
             if(this.m_twoFUnit0 != null)this.m_twoFUnit0.run();
             if(this.m_fourFUnit0 != null)this.m_fourFUnit0.run();
+            if(this.m_sixFUnit0 != null)this.m_sixFUnit0.run();
         }
         run():void
         {
