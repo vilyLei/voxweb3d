@@ -37,7 +37,7 @@ export namespace app
             }
             getInitedTime():number
             {
-                return 0.5 * this.duration;
+                return Math.round(0.25 * this.duration) - 1;
             }
             calc(time:number):void
             {

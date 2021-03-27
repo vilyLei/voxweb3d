@@ -354,7 +354,7 @@ export namespace app
                 //  this.m_rscene.addEntity(plane);
                 //  this.m_targets.push(plane);
                 //*/
-                /*
+                ///*
                 let boxPart:BoxPartStore = new BoxPartStore();
                 boxPart.initilize(tex0,tex2,tex1);
                 this.m_twoFUnit0 = new TwoFeetUnit();
@@ -371,7 +371,7 @@ export namespace app
                 this.m_fourFUnit0.initialize( this.m_rscene,0, boxPart0, boxPart1);
                 this.m_fourFUnit0.moveToXZ(300.0,0.0);
                 //*/
-                ///*
+                /*
                 let boxPart0:BoxPartStore = new BoxPartStore();
                 boxPart0.initilize(tex0,tex2,tex1);
                 let boxPart1:BoxPartStore = new BoxPartStore();

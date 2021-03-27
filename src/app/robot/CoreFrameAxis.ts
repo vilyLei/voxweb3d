@@ -78,17 +78,20 @@ export namespace app
             }
             resetPose():void
             {
-                //let scale:number = this.m_angScale;
-                //this.m_angScale = 0.0;
+                let scale:number = this.m_angScale;
+                this.m_angScale = 0.0;
                 this.m_direc.factor = 0.0;
                 this.m_direc.reset();
                 this.run(0.0);
-                //this.m_angScale = scale;
+                this.m_angScale = scale;
                 this.m_direc.factor = 0.0;
             }
             private m_posV:Vector3D = new Vector3D();
             run(time:number):void
             {
+                this.m_direc.calc(time);
+                //console.log(this.m_direc.factor);
+                //this.m_direc.factor *= 2.0;
                 let factor:number = this.m_direc.factor;
                 let scale:number = this.m_angScale;
                 let coreAngle:number = 30.0 * scale;
@@ -100,7 +103,6 @@ export namespace app
                 let angleL:number = -bgAngle + bgOffsetAngle;
                 let angleR:number = bgAngle + bgOffsetAngle;
 
-                this.m_direc.calc(time);
                 this.m_engityCore.setRotationXYZ(0.0, coreAngle * factor, 0.0);
                 this.m_engityCore.update();
 
@@ -121,17 +123,17 @@ export namespace app
                 let kfL:number = ((factor + 0.5)) - 0.3;
                 let kfR:number = (1.0 - (factor + 0.5)) - 0.3;
                 
-                angleL -= sgAngle + sgOffsetAngle;
-                //angleL -= scale * (kfL * 20.0 + 10);
+                //console.log("factor, angleL,angleR: ",factor,angleL,angleR);
+                //angleL -= sgAngle + sgOffsetAngle;
+                angleL -= scale * (kfL * 20.0 + 10);
                 this.m_posV.setXYZ(0.0, this.m_bgLong, 0.0);
                 this.m_entityBGL.getToParentMatrix().transformVector3Self(this.m_posV);
                 this.m_entitySGL.setPosition(this.m_posV);
                 //this.m_entitySGL.setRotationXYZ(0.0, 0.0, -30.0 - (this.m_direc.angle * -0.2));
                 this.m_entitySGL.setRotationXYZ(0.0, 0.0, angleL);
                 this.m_entitySGL.update();
-                
-                angleR -= -sgAngle + sgOffsetAngle;
-                //angleR -= scale * (kfR * 20.0 + 10);
+                //angleR -= -sgAngle + sgOffsetAngle;
+                angleR -= scale * (kfR * 20.0 + 10);
                 this.m_posV.setXYZ(0.0, this.m_bgLong, 0.0);
                 this.m_entityBGR.getToParentMatrix().transformVector3Self(this.m_posV);
                 this.m_entitySGR.setPosition(this.m_posV);
