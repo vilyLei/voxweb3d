@@ -187,10 +187,12 @@ export namespace app
                 this.m_bgBox = new Box3DEntity();
                 this.m_bgBox.setMesh(bgMesh);
                 this.m_bgBox.initialize(new Vector3D(-15.0,this.getBGLong(),-15.0), new Vector3D(15.0,0.0,15.0),[this.m_tex1]);
+                this.updateBoxUV(this.m_bgBox);
                 
                 this.m_sgBox = new Box3DEntity();
                 this.m_sgBox.setMesh(sgMesh);
                 this.m_sgBox.initialize(new Vector3D(-10.0,this.getSGLong(),-10.0), new Vector3D(10.0,0.0,10.0),[this.m_tex1]);
+                this.updateBoxUV(this.m_sgBox);
             }
         }
         getCoreWidth():number
@@ -261,6 +263,16 @@ export namespace app
             }
             return this.m_sgRBox;
         }
+        private updateBoxUV(box:Box3DEntity):void
+        {
+            box.scaleUVFaceAt(0, 0.5,0.5,0.5,0.5);
+            box.scaleUVFaceAt(1, 0.0,0.0,0.5,0.5);
+            box.scaleUVFaceAt(2, 0.5,0.0,0.5,0.5);
+            box.scaleUVFaceAt(3, 0.0,0.5,0.5,0.5);
+            box.scaleUVFaceAt(4, 0.5,0.0,0.5,0.5);
+            box.scaleUVFaceAt(5, 0.0,0.5,0.5,0.5);
+            box.reinitializeMesh();
+        }
     }
     /**
      * a robot leg app example
@@ -293,7 +305,7 @@ export namespace app
             console.log("BoFrame::initialize()......");
             if(this.m_rscene == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
                 
@@ -320,8 +332,9 @@ export namespace app
                 
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/wood_01.jpg");
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/yanj.jpg");
-                let tex2:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-                let tex3:TextureProxy = this.m_rscene.textureBlock.createRGBATex2D(16,16,new Color4(1.0,0.0,1.0));
+                let tex2:TextureProxy = this.getImageTexByUrl("static/assets/skin_01.jpg");
+                let tex3:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
+                let tex4:TextureProxy = this.m_rscene.textureBlock.createRGBATex2D(16,16,new Color4(1.0,0.0,1.0));
 
                 let axis:Axis3DEntity = new Axis3DEntity();
                 //axis.initializeCross(600.0);
@@ -355,15 +368,18 @@ export namespace app
                 //  this.m_targets.push(plane);
                 //*/
                 ///*
+                let linePart:LinePartStore = new LinePartStore();
                 let boxPart:BoxPartStore = new BoxPartStore();
                 boxPart.initilize(tex0,tex2,tex1);
+                
                 this.m_twoFUnit0 = new TwoFeetUnit();
+                //this.m_twoFUnit0.initialize( this.m_rscene,0, linePart );
                 this.m_twoFUnit0.initialize( this.m_rscene,0, boxPart );
                 this.m_twoFUnit0.moveToXZ(10.0,0.0);
                 //*/
                 /*
                 let boxPart0:BoxPartStore = new BoxPartStore();
-                boxPart0.initilize(tex0,tex2,tex1);                
+                boxPart0.initilize(tex0,tex2,tex1);
                 let boxPart1:BoxPartStore = new BoxPartStore();
                 boxPart1.initilizeCopyFrom(boxPart0);
 
@@ -421,7 +437,7 @@ export namespace app
 
             this.m_rscene.run();
 
-            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }
 }

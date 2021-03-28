@@ -67,6 +67,7 @@ export namespace app
                 {
                     let offsetPos:Vector3D = new Vector3D(-0.5 * dis,0.0,0.0);
                     this.m_rbtModule.initialize(sc,renderProcessIndex,partStore0,offsetPos);
+                    this.m_rbtModule.toPositive();
                     offsetPos.x = 0.5 * dis;
                     this.m_rbtModule1.initialize(sc,renderProcessIndex,partStore1,offsetPos);
                     this.m_rbtModule1.toNegative();
@@ -106,10 +107,20 @@ export namespace app
                         
                         this.m_rbtModule.run();
                         this.m_rbtModule1.run();
+                        if(!this.m_awake)
+                        {
+                            this.m_rbtModule.resetNextOriginPose();
+                            this.m_rbtModule1.resetNextOriginPose();
+                        }
                     }
                     else
                     {
-                        this.m_awakeFlag = false;
+                        this.m_rbtModule.runToReset();
+                        this.m_rbtModule1.runToReset();
+                        if(this.m_rbtModule.isResetFinish())
+                        {
+                            this.m_awakeFlag = false;
+                        }
                     }
                 }
             }

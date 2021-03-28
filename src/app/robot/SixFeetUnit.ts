@@ -112,10 +112,22 @@ export namespace app
                         this.m_rbtModule.run();
                         this.m_rbtModule1.run();
                         this.m_rbtModule2.run();
+                        if(!this.m_awake)
+                        {
+                            this.m_rbtModule.resetNextOriginPose();
+                            this.m_rbtModule1.resetNextOriginPose();
+                            this.m_rbtModule2.resetNextOriginPose();
+                        }
                     }
                     else
                     {
-                        this.m_awakeFlag = false;
+                        this.m_rbtModule.runToReset();
+                        this.m_rbtModule1.runToReset();
+                        this.m_rbtModule2.runToReset();
+                        if(this.m_rbtModule.isResetFinish())
+                        {
+                            this.m_awakeFlag = false;
+                        }
                     }
                 }
             }
@@ -131,8 +143,7 @@ export namespace app
             wake():void
             {
                 this.m_awake = true;
-                this.m_awakeFlag = true;
-                
+                this.m_awakeFlag = true;                
             }
             sleep():void
             {

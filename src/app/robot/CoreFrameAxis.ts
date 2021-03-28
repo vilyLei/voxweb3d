@@ -30,6 +30,9 @@ export namespace app
             private m_halfWidth:number = 32.0;
             private m_bgLong:number = 32.0;
             private m_angScale:number = 0.6;
+
+            private m_angleL:number = 0.0;
+            private m_angleR:number = 0.0;
             constructor(){}
 
             toPositive():void
@@ -68,13 +71,21 @@ export namespace app
                     this.m_engityCore.setPosition(centerPos);
                     this.m_halfWidth = halfWidth;
                     this.m_halfSize.x = halfWidth;
-
+                    this.m_direc.initialize();
                 }
             }
             
-            getInitedTime():number
+            getBiasTime():number
             {
-                return this.m_direc.getInitedTime();
+                return this.m_direc.getBiasTime();
+            }
+            getOriginTime():number
+            {
+                return this.m_direc.getOriginTime();
+            }
+            getNextOriginTime(time:number):number
+            {
+                return this.m_direc.getNextOriginTime(time);
             }
             resetPose():void
             {
@@ -90,8 +101,7 @@ export namespace app
             run(time:number):void
             {
                 this.m_direc.calc(time);
-                //console.log(this.m_direc.factor);
-                //this.m_direc.factor *= 2.0;
+                //console.log("direc.factor: "+this.m_direc.factor);
                 let factor:number = this.m_direc.factor;
                 let scale:number = this.m_angScale;
                 let coreAngle:number = 30.0 * scale;
@@ -100,8 +110,8 @@ export namespace app
                 let sgAngle:number = factor * 40.0 * scale;
                 let sgOffsetAngle:number = 20.0 * scale;
 
-                let angleL:number = -bgAngle + bgOffsetAngle;
-                let angleR:number = bgAngle + bgOffsetAngle;
+                this.m_angleL = -bgAngle + bgOffsetAngle;
+                this.m_angleR = bgAngle + bgOffsetAngle;
 
                 this.m_engityCore.setRotationXYZ(0.0, coreAngle * factor, 0.0);
                 this.m_engityCore.update();
@@ -109,36 +119,32 @@ export namespace app
                 this.m_posV.setXYZ(0.0,0.0, -this.m_halfWidth);
                 this.m_engityCore.getToParentMatrix().transformVector3Self(this.m_posV);
                 this.m_entityBGL.setPosition(this.m_posV);
-                //this.m_entityBGL.setRotationXYZ(0.0,0.0,this.m_direc.angle * -1.0 + 30.0);
-                this.m_entityBGL.setRotationXYZ(0.0,0.0,angleL);
+                this.m_entityBGL.setRotationXYZ(0.0,0.0,this.m_angleL);
                 this.m_entityBGL.update();
 
                 this.m_posV.setXYZ(0.0,0.0, this.m_halfWidth);
                 this.m_engityCore.getToParentMatrix().transformVector3Self(this.m_posV);
                 this.m_entityBGR.setPosition(this.m_posV);
-                //this.m_entityBGR.setRotationXYZ(0.0,0.0,this.m_direc.angle * 1.0 + 30.0);
-                this.m_entityBGR.setRotationXYZ(0.0,0.0,angleR);
+                this.m_entityBGR.setRotationXYZ(0.0,0.0,this.m_angleR);
                 this.m_entityBGR.update();
                 
-                let kfL:number = ((factor + 0.5)) - 0.3;
-                let kfR:number = (1.0 - (factor + 0.5)) - 0.3;
+                //  let kfL:number = ((factor + 0.5)) - 0.3;
+                //  let kfR:number = (1.0 - (factor + 0.5)) - 0.3;
                 
                 //console.log("factor, angleL,angleR: ",factor,angleL,angleR);
-                //angleL -= sgAngle + sgOffsetAngle;
-                angleL -= scale * (kfL * 20.0 + 10);
+                this.m_angleL -= sgAngle + sgOffsetAngle;
+                //angleL -= scale * (kfL * 20.0 + 10);
                 this.m_posV.setXYZ(0.0, this.m_bgLong, 0.0);
                 this.m_entityBGL.getToParentMatrix().transformVector3Self(this.m_posV);
                 this.m_entitySGL.setPosition(this.m_posV);
-                //this.m_entitySGL.setRotationXYZ(0.0, 0.0, -30.0 - (this.m_direc.angle * -0.2));
-                this.m_entitySGL.setRotationXYZ(0.0, 0.0, angleL);
+                this.m_entitySGL.setRotationXYZ(0.0, 0.0, this.m_angleL);
                 this.m_entitySGL.update();
-                //angleR -= -sgAngle + sgOffsetAngle;
-                angleR -= scale * (kfR * 20.0 + 10);
+                this.m_angleR -= -sgAngle + sgOffsetAngle;
+                //angleR -= scale * (kfR * 20.0 + 10);
                 this.m_posV.setXYZ(0.0, this.m_bgLong, 0.0);
                 this.m_entityBGR.getToParentMatrix().transformVector3Self(this.m_posV);
                 this.m_entitySGR.setPosition(this.m_posV);
-                //this.m_entitySGR.setRotationXYZ(0.0, 0.0, -30.0 - (this.m_direc.angle * 0.2));
-                this.m_entitySGR.setRotationXYZ(0.0, 0.0, angleR);
+                this.m_entitySGR.setRotationXYZ(0.0, 0.0, this.m_angleR);
                 this.m_entitySGR.update();
                 
             }

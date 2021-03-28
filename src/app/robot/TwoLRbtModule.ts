@@ -33,7 +33,7 @@ export namespace app
             private m_partStore:IPartStore = null;
             
             private m_timeSpeed:number = 3.0;
-
+            private m_nextTime:number = 0;
             constructor(container:DisplayEntityContainer = null)
             {
                 if(container == null)
@@ -77,6 +77,7 @@ export namespace app
             {
                 if(this.m_sc == null && partStore != null)
                 {
+                    this.m_timeSpeed = 3.0 * 0.7;// * this.m_timeFactor;
                     this.m_sc = sc;
                     this.m_partStore = partStore;
                     sc.addContainer(this.m_container,renderProcessIndex);
@@ -118,14 +119,29 @@ export namespace app
             resetPose():void
             {
                 this.m_coreFAxis.resetPose();
-                //console.log("...resetPose, "+this.m_coreFAxis.getDuration());
-                this.m_time = this.m_coreFAxis.getInitedTime();
+                this.m_time = this.m_coreFAxis.getOriginTime();
+            }
+            resetNextOriginPose():void
+            {
+                this.m_nextTime = this.m_coreFAxis.getNextOriginTime(this.m_time);
             }
             run():void
             {
-                //console.log("this.m_time: "+this.m_time);
                 this.m_container.update();
-                //this.m_time = 10;
+                this.m_coreFAxis.run(this.m_time);
+                this.m_time += this.m_timeSpeed;
+            }
+            isResetFinish():boolean
+            {
+                return this.m_time >= this.m_nextTime;
+            }
+            runToReset():void
+            {
+                if(this.m_time >= this.m_nextTime)
+                {
+                    this.m_time = this.m_nextTime;
+                }
+                this.m_container.update();
                 this.m_coreFAxis.run(this.m_time);
                 this.m_time += this.m_timeSpeed;
             }

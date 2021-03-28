@@ -97,11 +97,18 @@ export namespace app
                         this.m_tickModule.run();
                         this.m_awake = this.m_tickModule.isMoving();
                         this.m_rbtModule.run();
+                        if(!this.m_awake)
+                        {
+                            this.m_rbtModule.resetNextOriginPose();
+                        }
                     }
                     else
                     {
-                        this.m_rbtModule.resetPose();
-                        this.m_awakeFlag = false;
+                        this.m_rbtModule.runToReset();
+                        if(this.m_rbtModule.isResetFinish())
+                        {
+                            this.m_awakeFlag = false;
+                        }
                     }
                 }
             }
