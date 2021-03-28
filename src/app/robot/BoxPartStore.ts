@@ -50,6 +50,7 @@ export namespace app
             private m_tex0:TextureProxy;
             private m_tex1:TextureProxy;
             private m_tex2:TextureProxy;
+            
             constructor(){}
             
             setParam(coreWidth:number, bgLong:number,sgLong:number):void

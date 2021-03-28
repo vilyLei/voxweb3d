@@ -147,11 +147,11 @@ export namespace app
                 //  this.m_targets.push(plane);
                 //*/
                 ///*
-                for(let i:number = 0; i < 20; ++i)
+                for(let i:number = 0; i < 3; ++i)
                 {
                     //let linePart0:LinePartStore = new LinePartStore();
-                    let linePart1:LinePartStore = new LinePartStore();
-                    linePart1.setParam(80.0,-40.0,-30.0);
+                    //let linePart1:LinePartStore = new LinePartStore();
+                    //linePart1.setParam(80.0,-40.0,-30.0);
                     let boxPart0:BoxPartStore = new BoxPartStore();
                     boxPart0.setSgSize(10,15);
                     boxPart0.initilize(tex0,tex2,tex1);

@@ -268,7 +268,7 @@ export namespace vox
                 {
                     throw Error("Error: entity.getMesh() == null.");
                 }
-                console.log("container addEntity entity");
+                //console.log("container addEntity entity");
                 //if(entity.__$wuid < 0 && entity.__$contId < 1)
                 if(entity.__$testContainerEnabled())
                 {

@@ -6,10 +6,12 @@
 /***************************************************************************/
 
 import * as Vector3T from "../../vox/math/Vector3D";
+import * as Matrix4T from "../../vox/math/Matrix4";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as DirecUnitT from "../../app/robot/DirecUnit";
 
 import Vector3D = Vector3T.vox.math.Vector3D;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import DirecUnit = DirecUnitT.app.robot.DirecUnit;
 
@@ -20,6 +22,7 @@ export namespace app
         export class CoreFrameAxis
         {
             private m_engityCore:DisplayEntity = null;
+            private m_entityTG:DisplayEntity = null;
             private m_entityBGL:DisplayEntity = null;
             private m_entityBGR:DisplayEntity = null;
             private m_entitySGL:DisplayEntity = null;
@@ -37,6 +40,8 @@ export namespace app
             
             private m_posV:Vector3D = new Vector3D();
 
+            private m_tgPos:Vector3D = new Vector3D();
+            private m_tgAngle:number = 20.0;
             private m_coreAngle:number = 25.0;
             private m_bgAngle:number = 30.0;
             private m_bgOffsetAngle:number = 10.0;
@@ -45,7 +50,10 @@ export namespace app
             private m_sgOffsetAngle:number = 20.0;
             private m_sgAngleDirec:number = 1.0;
 
+            private m_coreMatrix4:Matrix4 = null;//new Matrix4();
+            
             constructor(){}
+
             setCoreAngle(angle:number):void
             {
                 this.m_coreAngle = angle;
@@ -83,6 +91,12 @@ export namespace app
             {
                 return this.m_direc.duration;
             }
+            setTG(tg:DisplayEntity,tgAngle:number,offsetPosition:Vector3D):void
+            {
+                this.m_entityTG = tg;
+                this.m_tgAngle = tgAngle;
+                //this.m_tgPos.copyFrom(offsetPosition);
+            }
             setBG(bgL:DisplayEntity,bgR:DisplayEntity,bgLong:number):void
             {
                 this.m_entityBGL = bgL;
@@ -94,16 +108,19 @@ export namespace app
                 this.m_entitySGL = sgL;
                 this.m_entitySGR = sgR;
             }
-            initialize(entity:DisplayEntity,centerPos:Vector3D,halfWidth:number):void
+            initialize(coreEntity:DisplayEntity,coreCenterPos:Vector3D,halfWidth:number):void
             {
-                if(this.m_engityCore == null)
+                if(this.m_engityCore == null && coreEntity != null)
                 {
-                    this.m_engityCore = entity;
-                    this.m_centerPos.copyFrom(centerPos);
-                    this.m_engityCore.setPosition(centerPos);
+                    this.m_engityCore = coreEntity;
+                    this.m_centerPos.copyFrom(coreCenterPos);
+                    this.m_engityCore.setPosition(coreCenterPos);
                     this.m_halfWidth = halfWidth;
                     this.m_halfSize.x = halfWidth;
                     this.m_direc.initialize();
+
+                    this.m_engityCore.update();
+                    this.m_coreMatrix4 = this.m_engityCore.getToParentMatrix();
                 }
             }
             
@@ -135,24 +152,31 @@ export namespace app
                 //console.log("direc.factor: "+this.m_direc.factor);
                 let factor:number = this.m_direc.factor;
                 let scale:number = this.m_angScale;
-                let coreAngle:number = factor * this.m_coreAngle * scale;
+                //let coreAngle:number = factor * this.m_coreAngle * scale;
                 let bgAngle:number = factor * this.m_bgAngle * scale;
                 let bgOffsetAngle:number = this.m_bgOffsetAngle * scale;
 
                 this.m_angleL = -bgAngle + bgOffsetAngle;
                 this.m_angleR = bgAngle + bgOffsetAngle;
 
-                this.m_engityCore.setRotationXYZ(0.0, coreAngle, 0.0);
+                if(this.m_entityTG != null)
+                {
+                    this.m_engityCore.setRotationXYZ(0.0, factor * this.m_tgAngle * scale, 0.0);
+                    this.m_engityCore.update();
+                }
+                this.m_engityCore.setRotationXYZ(0.0, factor * this.m_coreAngle * scale, 0.0);
                 this.m_engityCore.update();
 
                 this.m_posV.setXYZ(0.0,0.0, -this.m_halfWidth);
-                this.m_engityCore.getToParentMatrix().transformVector3Self(this.m_posV);
+                //  this.m_engityCore.getToParentMatrix().transformVector3Self(this.m_posV);
+                this.m_coreMatrix4.transformVector3Self(this.m_posV);
                 this.m_entityBGL.setPosition(this.m_posV);
                 this.m_entityBGL.setRotationXYZ(0.0,0.0,this.m_angleL);
                 this.m_entityBGL.update();
 
                 this.m_posV.setXYZ(0.0,0.0, this.m_halfWidth);
-                this.m_engityCore.getToParentMatrix().transformVector3Self(this.m_posV);
+                //  this.m_engityCore.getToParentMatrix().transformVector3Self(this.m_posV);
+                this.m_coreMatrix4.transformVector3Self(this.m_posV);
                 this.m_entityBGR.setPosition(this.m_posV);
                 this.m_entityBGR.setRotationXYZ(0.0,0.0,this.m_angleR);
                 this.m_entityBGR.update();
