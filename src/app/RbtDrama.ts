@@ -54,7 +54,7 @@ export namespace app
     /**
      * a robot leg app example
      */
-    export class BoFrame
+    export class RbtDrama
     {
         constructor(){}
 
@@ -69,6 +69,7 @@ export namespace app
         private m_fourFUnit0:FourFeetUnit = null;
         private m_sixFUnit0:SixFeetUnit = null;
         private m_twoFeetBody:TwoFeetBody = null;
+        private m_twoFeetBodys:TwoFeetBody[] = [];
         private m_targets:DisplayEntity[] = [];
         private m_viewRay:CameraViewRay = new CameraViewRay();
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
@@ -80,7 +81,7 @@ export namespace app
         }
         initialize():void
         {
-            console.log("BoFrame::initialize()......");
+            console.log("RbtDrama::initialize()......");
             if(this.m_rscene == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
@@ -146,16 +147,28 @@ export namespace app
                 //  this.m_targets.push(plane);
                 //*/
                 ///*
-                let linePart0:LinePartStore = new LinePartStore();
-                let linePart1:LinePartStore = new LinePartStore();
-                linePart1.setParam(80.0,-40.0,-30.0);
-                let boxPart:BoxPartStore = new BoxPartStore();
-                boxPart.initilize(tex0,tex2,tex1);
-                
-                this.m_twoFeetBody = new TwoFeetBody();
-                //this.m_twoFeetBody.initialize( this.m_rscene,0, linePart0, linePart1,60.0);
-                this.m_twoFeetBody.initialize( this.m_rscene,0, boxPart, linePart1,80.0);
-                this.m_twoFeetBody.moveToXZ(10.0,0.0);
+                for(let i:number = 0; i < 20; ++i)
+                {
+                    //let linePart0:LinePartStore = new LinePartStore();
+                    let linePart1:LinePartStore = new LinePartStore();
+                    linePart1.setParam(80.0,-40.0,-30.0);
+                    let boxPart0:BoxPartStore = new BoxPartStore();
+                    boxPart0.setSgSize(10,15);
+                    boxPart0.initilize(tex0,tex2,tex1);
+    
+                    let boxPart1:BoxPartStore = new BoxPartStore();
+                    boxPart1.setParam(100.0,-40.0,-30.0);
+                    boxPart1.setBgSize(10,8);
+                    boxPart1.setSgSize(7,5);
+                    boxPart1.initilize(tex0,tex2,tex1);
+                    
+                    this.m_twoFeetBody = new TwoFeetBody();
+                    //this.m_twoFeetBody.initialize( this.m_rscene,0, linePart0, linePart1,60.0);
+                    //this.m_twoFeetBody.initialize( this.m_rscene,0, boxPart0, linePart1,80.0);
+                    this.m_twoFeetBody.initialize( this.m_rscene,0, boxPart0, boxPart1,80.0);
+                    //this.m_twoFeetBody.moveToXZ(10.0,0.0);
+                    this.m_twoFeetBodys.push(this.m_twoFeetBody);//TwoFeetBody
+                }
                 //*/
                 /*
                 let linePart:LinePartStore = new LinePartStore();
@@ -167,29 +180,7 @@ export namespace app
                 this.m_twoFUnit0.initialize( this.m_rscene,0, boxPart );
                 this.m_twoFUnit0.moveToXZ(10.0,0.0);
                 //*/
-                /*
-                let boxPart0:BoxPartStore = new BoxPartStore();
-                boxPart0.initilize(tex0,tex2,tex1);
-                let boxPart1:BoxPartStore = new BoxPartStore();
-                boxPart1.initilizeCopyFrom(boxPart0);
-
-                this.m_fourFUnit0 = new FourFeetUnit();
-                this.m_fourFUnit0.initialize( this.m_rscene,0, boxPart0, boxPart1);
-                this.m_fourFUnit0.moveToXZ(300.0,0.0);
-                //*/
-                /*
-                let boxPart0:BoxPartStore = new BoxPartStore();
-                boxPart0.initilize(tex0,tex2,tex1);
-                let boxPart1:BoxPartStore = new BoxPartStore();
-                boxPart1.initilizeCopyFrom(boxPart0);
-                let boxPart2:BoxPartStore = new BoxPartStore();
-                boxPart2.initilizeCopyFrom(boxPart0);
-
-                this.m_sixFUnit0 = new SixFeetUnit();
-                this.m_sixFUnit0.initialize( this.m_rscene,0, boxPart0, boxPart1,boxPart2,100);
-                this.m_sixFUnit0.moveToXZ(300.0,0.0);
-                //*/
-                //SixFeetUnit
+                
                 this.update();
             }
         }
@@ -199,10 +190,7 @@ export namespace app
             this.m_viewRay.intersectPiane();
 
             let pv:Vector3D = this.m_viewRay.position;
-            if(this.m_frameAxis != null)this.m_frameAxis.moveToXZ(pv.x, pv.z);
             if(this.m_twoFUnit0 != null)this.m_twoFUnit0.moveToXZ(pv.x, pv.z);
-            if(this.m_fourFUnit0 != null)this.m_fourFUnit0.moveToXZ(pv.x, pv.z);
-            if(this.m_sixFUnit0 != null)this.m_sixFUnit0.moveToXZ(pv.x, pv.z);
             if(this.m_twoFeetBody != null)this.m_twoFeetBody.moveToXZ(pv.x, pv.z);
         }
         
@@ -214,12 +202,18 @@ export namespace app
                 clearTimeout(this.m_timeoutId);
             }
             this.m_timeoutId = setTimeout(this.update.bind(this),50);// 50 fps
-            if(this.m_frameAxis != null)this.m_frameAxis.run();
-            if(this.m_frameAxis1 != null)this.m_frameAxis1.run();
             if(this.m_twoFUnit0 != null)this.m_twoFUnit0.run();
-            if(this.m_fourFUnit0 != null)this.m_fourFUnit0.run();
-            if(this.m_sixFUnit0 != null)this.m_sixFUnit0.run();
-            if(this.m_twoFeetBody != null)this.m_twoFeetBody.run();
+            if(this.m_twoFeetBody != null)
+            {
+                //this.m_twoFeetBody.run();
+                //this.m_twoFeetBodys.push(this.m_twoFeetBody);//TwoFeetBody
+                let body:TwoFeetBody = null;
+                for(let i:number = 0; i < this.m_twoFeetBodys.length; ++i)
+                {
+                    body = this.m_twoFeetBodys[i];
+                    body.run();
+                }
+            }
         }
         run():void
         {

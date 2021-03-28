@@ -289,8 +289,11 @@
 //  import * as LegRole from "./app/LegRole";
 //  import Demo = LegRole.app.LegRole;
 
-import * as BoFrame from "./app/BoFrame";
-import Demo = BoFrame.app.BoFrame;
+//  import * as BoFrame from "./app/BoFrame";
+//  import Demo = BoFrame.app.BoFrame;
+
+import * as RbtDrama from "./app/RbtDrama";
+import Demo = RbtDrama.app.RbtDrama;
 
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;

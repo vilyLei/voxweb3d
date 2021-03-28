@@ -92,7 +92,26 @@ export namespace vox
             {
                 this.m_posarr[3] = sizeX;
                 this.m_posarr[10] = sizeY;
+                this.m_posarr[17] = sizeZ;                
+                this.createMaterial();
+                this.activeDisplay();
+            }
+            initializeCorssSizeXYZ(sizeX:number,sizeY:number,sizeZ:number):void
+            {
+                //  this.m_posarr[3] = sizeX;
+                //  this.m_posarr[10] = sizeY;
+                //  this.m_posarr[17] = sizeZ;
+                
+                sizeX *= 0.5;
+                sizeY *= 0.5;
+                sizeZ *= 0.5;
+                this.m_posarr[0] = -sizeX;
+                this.m_posarr[7] = -sizeY;
+                this.m_posarr[14] = -sizeZ;
+                this.m_posarr[3] = sizeX;
+                this.m_posarr[10] = sizeY;
                 this.m_posarr[17] = sizeZ;
+
                 this.createMaterial();
                 this.activeDisplay();
             }

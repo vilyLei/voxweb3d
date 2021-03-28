@@ -31,6 +31,10 @@ export namespace app
             private m_coreWidth:number = 60.0;
             private m_bgLong:number = -60.0;
             private m_sgLong:number = -50.0;
+            private m_bgTopSize:number = 20.0;
+            private m_bgBottomSize:number = 10.0;
+            private m_sgTopSize:number = 10.0;
+            private m_sgBottomSize:number = 15.0;
             private m_bgBox:Box3DEntity = null;
             private m_bgLBox:Box3DEntity = null;
             private m_bgRBox:Box3DEntity = null;
@@ -42,12 +46,36 @@ export namespace app
             
             private static s_v0:Vector3D = new Vector3D(-10,-10,-10);        
             private static s_v1:Vector3D = new Vector3D(10,10,10);
-    
+            
             private m_tex0:TextureProxy;
             private m_tex1:TextureProxy;
             private m_tex2:TextureProxy;
             constructor(){}
             
+            setParam(coreWidth:number, bgLong:number,sgLong:number):void
+            {
+                this.m_coreWidth = coreWidth;
+                this.m_bgLong = bgLong;
+                this.m_sgLong = sgLong;
+            }
+            setCoreCenterXYZ(px:number,py:number,pz:number):void
+            {
+                this.m_coreCenterV.setXYZ(px,py,pz);
+            }
+            setCoreCenterY(py:number):void
+            {
+                this.m_coreCenterV.y = py;
+            }
+            setBgSize(topSize:number, bottomSize:number):void
+            {
+                this.m_bgTopSize = topSize;
+                this.m_bgBottomSize = bottomSize;
+            }
+            setSgSize(topSize:number, bottomSize:number):void
+            {
+                this.m_sgTopSize = topSize;
+                this.m_sgBottomSize = bottomSize;
+            }
             initilizeCopyFrom(store:BoxPartStore):void
             {
                 if(store != null)
@@ -84,16 +112,22 @@ export namespace app
                     let bgMesh:Box3DMesh = new Box3DMesh();
                     bgMesh.setBufSortFormat( boxBase.getMaterial().getBufSortFormat() );
                     bgMesh.initializeWithYFace(
-                        new Vector3D(-10.0,this.getBGLong(),-10.0), new Vector3D(10.0,this.getBGLong(),10.0),
-                        new Vector3D(-20.0,0.0,-20.0), new Vector3D(20.0,0.0,20.0)
+                        new Vector3D(-this.m_bgBottomSize,this.getBGLong(),-this.m_bgBottomSize),
+                        new Vector3D(this.m_bgBottomSize,this.getBGLong(),this.m_bgBottomSize),
+                        new Vector3D(-this.m_bgTopSize,0.0,-this.m_bgTopSize),
+                        new Vector3D(this.m_bgTopSize,0.0,this.m_bgTopSize)
                     );
     
                     
                     let sgMesh:Box3DMesh = new Box3DMesh();
                     sgMesh.setBufSortFormat( boxBase.getMaterial().getBufSortFormat() );
                     sgMesh.initializeWithYFace(
-                        new Vector3D(-15.0,this.getSGLong(),-15.0), new Vector3D(15.0,this.getSGLong(),15.0),
-                        new Vector3D(-10.0,0.0,-10.0), new Vector3D(10.0,0.0,10.0)
+                        new Vector3D(-this.m_sgBottomSize,this.getBGLong(),-this.m_sgBottomSize),
+                        new Vector3D(this.m_sgBottomSize,this.getBGLong(),this.m_sgBottomSize),
+                        new Vector3D(-this.m_sgTopSize,0.0,-this.m_sgTopSize),
+                        new Vector3D(this.m_sgTopSize,0.0,this.m_sgTopSize)
+                        //  new Vector3D(-15.0,this.getSGLong(),-15.0), new Vector3D(15.0,this.getSGLong(),15.0),
+                        //  new Vector3D(-10.0,0.0,-10.0), new Vector3D(10.0,0.0,10.0)
                     );
     
                     this.m_bgBox = new Box3DEntity();
@@ -127,7 +161,8 @@ export namespace app
             {
                 let coreEntity:Axis3DEntity = new Axis3DEntity();
                 //coreEntity.initializeCross(this.getCoreWidth());
-                coreEntity.initialize(this.getCoreWidth());
+                coreEntity.initializeCorssSizeXYZ(20,this.getCoreWidth(),this.getCoreWidth());
+                //coreEntity.initialize(this.getCoreWidth());
                 coreEntity.setPosition(this.getCoreCenter());
                 return coreEntity;
             }

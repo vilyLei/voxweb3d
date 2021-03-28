@@ -106,8 +106,18 @@ export namespace app
                 this.m_legModule.resetPose();
                 this.m_armModule.resetPose();
             }
+            private m_count:number = Math.round(Math.random() * 50 + 30);
             run():void
             {
+                if(this.m_count < 1)
+                {
+                    this.m_count = Math.round(Math.random() * 200 + 50);
+                    this.moveToXZ(Math.random() * 900.0 - 450,Math.random() * 900.0 - 450);
+                }
+                else
+                {
+                    this.m_count--;
+                }
                 if(this.m_awakeFlag)
                 {
                     if(this.m_awake)
