@@ -23,70 +23,88 @@ export namespace app
 {
     export namespace robot
     {
-        export class TwoFeetUnit
+        export class TwoFeetBody
         {
             private m_awake:boolean = true;
             private m_awakeFlag:boolean = true;
             private m_tickModule:DirectXZModule = new DirectXZModule();
             private m_speed:number = 3.0;
 
-            private m_rbtModule:TwoLRbtModule = null;
+            private m_legModule:TwoLRbtModule = null;
+            private m_armModule:TwoLRbtModule = null;
             constructor()
             {
-                this.m_rbtModule = new TwoLRbtModule();
+                this.m_legModule = new TwoLRbtModule();
+                this.m_armModule = new TwoLRbtModule(this.m_legModule.getContainer());
+            }
+            getLegModule():TwoLRbtModule
+            {
+                return this.m_legModule;
+            }
+            getArmModule():TwoLRbtModule
+            {
+                return this.m_armModule;
             }
             getContainer():DisplayEntityContainer
             {
-                return this.m_rbtModule.getContainer();
+                return this.m_legModule.getContainer();
             }
             toPositive():void
             {
-                this.m_rbtModule.toPositive();
+                this.m_legModule.toPositive();
             }
             toNegative():void
             {
-                this.m_rbtModule.toNegative();
+                this.m_legModule.toNegative();
             }
             setDuration(duration:number):void
             {
-                this.m_rbtModule.setDuration(duration);
+                this.m_legModule.setDuration(duration);
             }
             getDuration():number
             {
-                return this.m_rbtModule.getDuration();
+                return this.m_legModule.getDuration();
             }
             setTime(time:number):void
             {
-                this.m_rbtModule.setTime(time);
+                this.m_legModule.setTime(time);
             }
-            initialize(sc:RendererScene,renderProcessIndex:number,partStore:IPartStore = null,offsetPos:Vector3D = null):void
+            initialize(sc:RendererScene,renderProcessIndex:number,partStore0:IPartStore,partStore1:IPartStore,dis:number = 100.0):void
             {
-                if(sc != null && partStore != null)
+                if(sc != null && partStore0 != null && partStore1 != null)
                 {
-                    this.m_rbtModule.initialize(sc,renderProcessIndex,partStore,offsetPos);
+                    let offsetPos:Vector3D = new Vector3D(0.0,0.0,0.0);
+                    this.m_legModule.initialize(sc,renderProcessIndex,partStore0,offsetPos);
+                    this.m_legModule.toPositive();
+                    offsetPos.y = dis;
+                    this.m_armModule.initialize(sc,renderProcessIndex,partStore1,offsetPos);
+                    this.m_armModule.toNegative();
+                    this.m_armModule.setAngleDirec(1.0,-1.0);
+
                     this.m_tickModule.setSpeed(this.m_speed);
                     this.m_tickModule.syncTargetUpdate = false;
-                    this.m_tickModule.bindTarget(this.m_rbtModule.getContainer());
+                    this.m_tickModule.bindTarget(this.m_legModule.getContainer());
                     this.m_tickModule.setVelocityFactor(0.02,0.03);
                 }
             }
             setXYZ(px:number,py:number,pz:number):void
             {
-                this.m_rbtModule.setXYZ(px,py,pz);
+                this.m_legModule.setXYZ(px,py,pz);
                 this.m_tickModule.setCurrentXYZ(px,py,pz);
             }
             setPosition(position:Vector3D):void
             {
-                this.m_rbtModule.setPosition(position);
+                this.m_legModule.setPosition(position);
                 this.m_tickModule.setCurrentPosition(position);
             }
             getPosition(position:Vector3D):void
             {
-                this.m_rbtModule.getPosition(position);
+                this.m_legModule.getPosition(position);
             }
             resetPose():void
             {
-                this.m_rbtModule.resetPose();
+                this.m_legModule.resetPose();
+                this.m_armModule.resetPose();
             }
             run():void
             {
@@ -96,22 +114,27 @@ export namespace app
                     {
                         this.m_tickModule.run();
                         this.m_awake = this.m_tickModule.isMoving();
-                        this.m_rbtModule.run();
+                        
+                        this.m_legModule.run();
+                        this.m_armModule.run();
                         if(!this.m_awake)
                         {
-                            this.m_rbtModule.resetNextOriginPose();
+                            this.m_legModule.resetNextOriginPose();
+                            this.m_armModule.resetNextOriginPose();
                         }
                     }
                     else
                     {
-                        if(this.m_rbtModule.isResetFinish())
+                        if(this.m_legModule.isResetFinish())
                         {
                             this.m_awakeFlag = false;
-                            this.m_rbtModule.resetPose();
+                            this.m_legModule.resetPose();
+                            this.m_armModule.resetPose();
                         }
                         else
                         {
-                            this.m_rbtModule.runToReset();
+                            this.m_legModule.runToReset();
+                            this.m_armModule.runToReset();
                         }
                     }
                 }
@@ -127,8 +150,14 @@ export namespace app
             }
             wake():void
             {
+                if(!this.m_awake)
+                {
+                    this.m_legModule.toPositive();
+                    this.m_armModule.toNegative();
+                }
                 this.m_awake = true;
                 this.m_awakeFlag = true;
+                
             }
             sleep():void
             {

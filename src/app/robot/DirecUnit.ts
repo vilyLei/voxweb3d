@@ -52,11 +52,7 @@ export namespace app
             }
             getNextOriginTime(time:number):number
             {
-                let k:number = Math.ceil(Math.floor(time/(this.m_originTime))/4.0);
-                //if(this.m_flag > 0)
-                //{
-                //    return (4.0 * k) * this.m_originTime + this.m_biasTime;
-                //}
+                let k:number = Math.ceil(0.25 * Math.floor(time/(this.m_originTime)));
                 return (4.0 * k) * this.m_originTime + this.m_biasTime;
             }
             calc(time:number):void

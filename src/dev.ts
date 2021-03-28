@@ -265,7 +265,7 @@
 //  import * as DemoMultiRenderer from "./demo/DemoMultiRenderer";
 //  import Demo = DemoMultiRenderer.demo.DemoMultiRenderer;
 
-import * as DemoFlexMesh from "./demo/DemoFlexMesh";
+//  import * as DemoFlexMesh from "./demo/DemoFlexMesh";
 //  import Demo = DemoFlexMesh.demo.DemoFlexMesh;
 
 //  import * as DemoVSTexture from "./demo/DemoVSTexture";

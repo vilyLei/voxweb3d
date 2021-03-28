@@ -49,6 +49,23 @@ export namespace app
             {
                 return this.m_container;
             }
+            
+            setCoreAngle(angle:number):void
+            {
+                this.m_coreFAxis.setCoreAngle(angle);
+            }
+            setBgAngle(angle:number, OffsetAngle:number,angleDirec:number):void
+            {
+                this.m_coreFAxis.setBgAngle(angle,OffsetAngle,angleDirec);
+            }
+            setSgOffsetAngle(angle:number, OffsetAngle:number,angleDirec:number):void
+            {
+                this.m_coreFAxis.setSgOffsetAngle(angle,OffsetAngle,angleDirec);
+            }
+            setAngleDirec(bgAngleDirec:number,sgAngleDirec:number):void
+            {
+                this.m_coreFAxis.setAngleDirec(bgAngleDirec, sgAngleDirec);
+            }
             toPositive():void
             {
                 this.m_coreFAxis.toPositive();
@@ -77,7 +94,7 @@ export namespace app
             {
                 if(this.m_sc == null && partStore != null)
                 {
-                    this.m_timeSpeed = 3.0 * 0.7;// * this.m_timeFactor;
+                    this.m_timeSpeed = 3.0 * 0.7;
                     this.m_sc = sc;
                     this.m_partStore = partStore;
                     sc.addContainer(this.m_container,renderProcessIndex);
