@@ -99,6 +99,8 @@ export namespace app
             resetPose():void
             {
                 this.m_rbtModule.resetPose();
+                this.m_rbtModule1.resetPose();
+                this.m_rbtModule2.resetPose();
             }
             run():void
             {
@@ -121,12 +123,18 @@ export namespace app
                     }
                     else
                     {
-                        this.m_rbtModule.runToReset();
-                        this.m_rbtModule1.runToReset();
-                        this.m_rbtModule2.runToReset();
                         if(this.m_rbtModule.isResetFinish())
                         {
                             this.m_awakeFlag = false;
+                            this.m_rbtModule.resetPose();
+                            this.m_rbtModule1.resetPose();
+                            this.m_rbtModule2.resetPose();
+                        }
+                        else
+                        {
+                            this.m_rbtModule.runToReset();
+                            this.m_rbtModule1.runToReset();
+                            this.m_rbtModule2.runToReset();
                         }
                     }
                 }
@@ -142,6 +150,12 @@ export namespace app
             }
             wake():void
             {
+                if(!this.m_awake)
+                {
+                    this.m_rbtModule.toPositive();
+                    this.m_rbtModule1.toNegative();
+                    this.m_rbtModule2.toPositive();
+                }
                 this.m_awake = true;
                 this.m_awakeFlag = true;                
             }

@@ -104,10 +104,14 @@ export namespace app
                     }
                     else
                     {
-                        this.m_rbtModule.runToReset();
                         if(this.m_rbtModule.isResetFinish())
                         {
                             this.m_awakeFlag = false;
+                            this.m_rbtModule.resetPose();
+                        }
+                        else
+                        {
+                            this.m_rbtModule.runToReset();
                         }
                     }
                 }
