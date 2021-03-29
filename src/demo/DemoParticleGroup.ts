@@ -151,10 +151,14 @@ export namespace demo
                 
                 ///*
                 //this.initFlowBillOneByOne(this.m_textures);
-                //this.initFlowDirecBill(this.m_textures[4], null, false, true,true);
-                this.initFlowBill(this.m_textures[this.m_textures.length - 1],this.m_textures[2], true);
+                this.initFlowDirecBill(this.m_textures[4], null, false, true,true);
+                //this.initFlowBill(this.m_textures[this.m_textures.length - 1],this.m_textures[2], true);
                 //this.initFlowBill(this.m_textures[this.m_textures.length - 1],null, false, true);
+                //this.initFlowBill(this.m_textures[this.m_textures.length - 1],null, false, false);
                 //this.initFlareBill(this.m_textures[this.m_textures.length - 1], this.m_textures[1], true);
+                //this.initFlareBill(this.m_textures[this.m_textures.length - 1], this.m_textures[1], false);
+                //this.initFlareBill(this.m_textures[this.m_textures.length - 1], null, true);
+                //this.initFlareBill(this.m_textures[this.m_textures.length - 1], null, false);
                 //this.initBillGroup(this.m_textures);
                 //*/
             }

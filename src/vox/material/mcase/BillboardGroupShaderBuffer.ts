@@ -16,7 +16,10 @@
 /***************************************************************************/
 
 import * as ShaderCodeBufferT from "../../../vox/material/ShaderCodeBuffer";
+import * as BillboardFSBaseT from "../../../vox/material/mcase/BillboardFSBase";
+
 import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
+import BillboardFSBase = BillboardFSBaseT.vox.material.mcase.BillboardFSBase;
 
 export namespace vox
 {
@@ -26,11 +29,9 @@ export namespace vox
         {
             export class BillboardGroupShaderBuffer extends ShaderCodeBuffer
             {
-                private m_brightnessEnabled:boolean = true;
-                private m_alphaEnabled:boolean = false;
+                private m_billFS:BillboardFSBase = new BillboardFSBase();
                 protected m_clipEnabled:boolean = false;
                 private m_hasOffsetColorTex:boolean = false;
-                private m_flag:number = 0;
                 constructor()
                 {
                     super();
@@ -41,23 +42,9 @@ export namespace vox
                 }
                 setParam(brightnessEnabled:boolean, alphaEnabled:boolean, clipEnabled:boolean,hasOffsetColorTex:boolean):void
                 {
-                    this.m_brightnessEnabled = brightnessEnabled;
-                    this.m_alphaEnabled = alphaEnabled;
+                    this.m_billFS.setBrightnessAndAlpha(brightnessEnabled, alphaEnabled);
                     this.m_clipEnabled = clipEnabled;
                     this.m_hasOffsetColorTex = hasOffsetColorTex;
-                    this.m_flag = 0;
-                    if(this.m_brightnessEnabled && this.m_alphaEnabled)
-                    {
-                        this.m_flag = 1;
-                    }
-                    else if(this.m_brightnessEnabled)
-                    {
-                        this.m_flag = 2;
-                    }
-                    else if(this.m_alphaEnabled)
-                    {
-                        this.m_flag = 3;
-                    }
                 }
                 getClipCalcVSCode(paramIndex:number):string
                 {
@@ -65,9 +52,9 @@ export namespace vox
 `
     // calculate clip uv
     temp = u_billParam[`+paramIndex+`];
-    fi = floor(fi * temp.y)/temp.x;
-    vtx = (vec2(floor(fract(fi) * temp.x), floor(fi)) + a_uvs.xy) * temp.zw;
-    v_texUV = vec4(vtx, kf * a_vs2.w,kf);
+    float clipf = floor(fi * temp.y)/temp.x;
+    vtx = (vec2(floor(fract(clipf) * temp.x), floor(clipf)) + a_uvs.xy) * temp.zw;
+    v_texUV = vec4(vtx, kf * a_vs2.w,fi);
 `;
                     return code;
                 }
@@ -82,7 +69,7 @@ export namespace vox
                     {
                         vtxCode1 =
 `
-    v_texUV = vec4(a_uvs.xy, kf * a_vs2.w,kf);
+    v_texUV = vec4(a_uvs.xy, kf * a_vs2.w,fi);
 `;
                     }
                     let vtxCodeEnd:string =
@@ -118,61 +105,13 @@ void main()
 {
     vec4 color = texture(u_sampler0, v_texUV.xy);
 `;
-                    let fragCode2:string = "";
-                    if(this.m_hasOffsetColorTex)
-                    {
-                        fragCode2 =
-`
-    vec3 offsetColor = v_colorOffset.xyz + texture(u_sampler1, v_texUV.xy).xyz;
-`;
-                    }
-                    else
-                    {
-                        fragCode2 =
-`
-    vec3 offsetColor = v_colorOffset.xyz;
-`;
-
-                    }
-                let fadeCode:string;
-                if(this.m_flag == 1)
-                {
-                    fadeCode = 
- `
-    color.rgb = color.rgb * v_colorMult.xyz + color.aaa * offsetColor;
-    color *= v_texUV.zzzz;
-`;
-                }
-                else if(this.m_flag == 2)
-                {
-                    fadeCode = 
- `
-    color.rgb = color.rgb * v_colorMult.xyz + color.rgb * offsetColor;
-    color.rgb *= v_texUV.zzz;
-`;
-                }
-                else if(this.m_flag == 3)
-                {
-                    fadeCode = 
- `
-    color.rgb = color.rgb * v_colorMult.xyz + color.aaa * offsetColor;
-    color.a *= v_texUV.z;
-`;
-                }
-                else
-                {
-                    fadeCode = 
- `
-    color.rgb = color.rgb * v_colorMult.xyz + offsetColor;
-    color.a *= v_texUV.z;
-`;
-                }
-                let endCode:string = 
+                    let fragCode2:string = this.m_billFS.getOffsetColorCode(1,this.m_hasOffsetColorTex);
+                    let fadeCode:string = this.m_billFS.getBrnAndAlphaCode();
+                    let endCode:string = 
 `
     FragColor = color;
 }
 `;
-                    //return fragCode + fadeCode + endCode;
                     return fragCodeHead + fragCode0 + fragCode1 + fragCode2 + fadeCode + endCode;
                 }
                 getVtxShaderCode():string
@@ -181,7 +120,7 @@ void main()
                 }
                 getUniqueShaderName():string
                 {
-                    let ns:string = this.m_uniqueName + "_" + this.m_flag;
+                    let ns:string = this.m_uniqueName + "_" + this.m_billFS.getBrnAlphaStatus();
                     if(this.m_hasOffsetColorTex && this.m_clipEnabled)
                     {
                         ns += "_clipColorTex";

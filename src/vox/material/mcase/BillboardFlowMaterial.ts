@@ -65,11 +65,7 @@ uniform mat4 u_projMat;
 uniform vec4 u_billParam[`+paramTotal+`];
 out vec4 v_colorMult;
 out vec4 v_colorOffset;
-out vec4 v_texUV;
-//  void main()
-//  {
-//      vec4 temp = u_billParam[0];
-//      float time = max(a_nvs.w * temp.z - a_uvs2.w, 0.0);    
+out vec4 v_texUV; 
 `;
                     let vtxCode01:string = "";
                     if(this.direcEnabled)
@@ -128,9 +124,10 @@ void main()
     vec3 pv0 = a_vs2.xyz + (a_nvs.xyz + (u_billParam[3].xyz + a_nvs2.xyz) * timeV) * timeV;
     timeV = vec3(time + 0.1);
     vec3 pv1 = a_vs2.xyz + (a_nvs.xyz + (u_billParam[3].xyz + a_nvs2.xyz) * timeV) * timeV;
-
-    vec4 pos = u_viewMat * u_objMat * vec4(pv0,1.0);
-    vec4 pos1 = u_viewMat * u_objMat * vec4(pv1,1.0);
+    
+    mat4 voMat = u_viewMat * u_objMat;
+    vec4 pos = voMat * vec4(pv0,1.0);
+    vec4 pos1 = voMat * vec4(pv1,1.0);
     float rad = getRadianByXY(pos1.x - pos.x, pos1.y - pos.y);
     float cosv = cos(rad);
     float sinv = sin(rad);
