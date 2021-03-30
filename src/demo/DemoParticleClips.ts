@@ -206,7 +206,6 @@ export namespace demo
                 clearTimeout(this.m_timeoutId);
             }
             this.m_timeoutId = setTimeout(this.update.bind(this),20);// 50 fps
-            this.m_texLoader.run();
             this.m_rscene.update();
             if(this.m_textures[0].isDataEnough())
             {

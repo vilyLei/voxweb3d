@@ -79,7 +79,7 @@ export namespace vox
                     }
                     this.m_ivs = pivs;
                     this.m_vs = new Float32Array(total * 16);       // half size x, half size y, min scale,max scale
-                    this.m_vs2 = new Float32Array(total * 16);      // x,y,z, brightness or alpha
+                    this.m_vs2 = new Float32Array(total * 16);      // x,y,z, brightness or alpha intensity
                     this.m_vs2.fill(1.0);
                     this.m_uvs = new Float32Array(total * 8);
                     this.m_uvs2 = new Float32Array(total * 16);     // life time, the end of the fading in time point, the begin of the fading out time point

@@ -150,7 +150,6 @@ export namespace demo
         }
         run():void
         {
-            this.m_texLoader.run();
             this.m_statusDisp.update();
 
             this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);

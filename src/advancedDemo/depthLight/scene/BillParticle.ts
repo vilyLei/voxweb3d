@@ -42,7 +42,7 @@ export namespace advancedDemo
                     this.m_isAlive = true;
                     this.brightness = 1.0;
                     this.m_tar.setVisible(true);
-                    this.m_tar.setBrightness(this.brightness);
+                    this.m_tar.setFadeFactor(this.brightness);
                     this.spdV0.setXYZ(Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5);
                     this.spdV1.setXYZ(Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5);
                     this.spdV2.setXYZ(Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5);
@@ -86,7 +86,7 @@ export namespace advancedDemo
                             this.m_tar.setScaleXY(k,k);
         
                             this.m_tar.setPosition(this.pv);
-                            this.m_tar.setBrightness(this.brightness);
+                            this.m_tar.setFadeFactor(this.brightness);
                             this.m_tar.update();
                             this.brightness -= 0.002;
                             //this.spdV.y -= 0.001;
@@ -127,6 +127,7 @@ export namespace advancedDemo
                         }
                         let billboard:Billboard3DEntity = new Billboard3DEntity();
                         billboard.setMesh(this.srcBillboard.getMesh());
+                        billboard.toBrightnessBlend();
                         billboard.setRenderStateByName("ADD01");
                         billboard.initialize(100.0,100.0, [this.texs[Math.floor(Math.random() * (this.texs.length - 0.5))]]);
                         this.renderer.addEntity(billboard,this.rendererIndex,true);

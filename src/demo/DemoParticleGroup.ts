@@ -79,6 +79,7 @@ export namespace demo
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 
                 let rparam:RendererParam = new RendererParam();
+                rparam.setTickUpdateTime(20);
                 rparam.setAttriAlpha(false);
                 rparam.setMatrix4AllocateSize(8192 * 4);
                 rparam.setCamProject(45.0,10.0,3000.0);
@@ -98,7 +99,7 @@ export namespace demo
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
                 RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
-                ///*
+                /*
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.name = "axis";
                 axis.initialize(100.0);
@@ -124,6 +125,7 @@ export namespace demo
                 textures.push(this.getImageTexByUrl("static/assets/a_02_c.jpg"));
                 textures.push(this.getImageTexByUrl("static/assets/xulie_02_07.png"));
                 textures.push(this.getImageTexByUrl("static/assets/testEFT4.jpg"));
+                textures.push(this.getImageTexByUrl("static/assets/testFT4.jpg"));
                 this.m_textures = textures;
                 //      let plane:Plane3DEntity = new Plane3DEntity();
                 //      plane.initializeXOZ(-500.0,-500.0,1000.0,1000.0,[textures[0]]);
@@ -151,13 +153,16 @@ export namespace demo
                 
                 ///*
                 //this.initFlowBillOneByOne(this.m_textures);
-                this.initFlowDirecBill(this.m_textures[4], null, false, true,true);
+                //this.initFlowDirecBill(this.m_textures[4], null, false, true,true);
                 //this.initFlowBill(this.m_textures[this.m_textures.length - 1],this.m_textures[2], true);
                 //this.initFlowBill(this.m_textures[this.m_textures.length - 1],null, false, true);
+                //this.initFlowBill(this.m_textures[this.m_textures.length - 1],null, true, true);
+                //this.initFlowBill(this.m_textures[this.m_textures.length - 2],null, true, true,false,true);
                 //this.initFlowBill(this.m_textures[this.m_textures.length - 1],null, false, false);
                 //this.initFlareBill(this.m_textures[this.m_textures.length - 1], this.m_textures[1], true);
                 //this.initFlareBill(this.m_textures[this.m_textures.length - 1], this.m_textures[1], false);
                 //this.initFlareBill(this.m_textures[this.m_textures.length - 1], null, true);
+                this.initFlareBill(this.m_textures[this.m_textures.length - 2], null, true, true);
                 //this.initFlareBill(this.m_textures[this.m_textures.length - 1], null, false);
                 //this.initBillGroup(this.m_textures);
                 //*/
@@ -260,7 +265,7 @@ export namespace demo
             billGroup.setTime(5.0);
             this.m_flowBill = billGroup;
         }
-        private initFlowBill(tex:TextureProxy,colorTex:TextureProxy, clipEnabled:boolean = false, playOnce:boolean = false, direcEnabled:boolean = false):void
+        private initFlowBill(tex:TextureProxy,colorTex:TextureProxy, clipEnabled:boolean = false, playOnce:boolean = false, direcEnabled:boolean = false,clipMixEnabled:boolean = false):void
         {
             let size:number = 100;
             let params:number[][] = [
@@ -297,7 +302,7 @@ export namespace demo
                 pv.scaleBy((Math.random() * 2.0 + 0.2) * -1.0);
                 //billGroup.setVelocityAt(i,pv.x,pv.y,pv.z);
             }
-            billGroup.setPlayParam(playOnce,direcEnabled);
+            billGroup.setPlayParam(playOnce,direcEnabled,clipMixEnabled);
             if(colorTex != null)
             {
                 billGroup.initialize(true,false,clipEnabled,[tex,colorTex]);
@@ -314,7 +319,7 @@ export namespace demo
             billGroup.setTime(5.0);
             this.m_flowBill = billGroup;
         }
-        private initFlareBill(tex:TextureProxy,colorTex:TextureProxy, clipEnabled:boolean = false):void
+        private initFlareBill(tex:TextureProxy,colorTex:TextureProxy, clipEnabled:boolean = false, clipMixEnabled:boolean = false):void
         {
             let size:number = 100;
             let params:number[][] = [
@@ -323,12 +328,12 @@ export namespace demo
                 [0.0,0.5,0.5,0.5],
                 [0.5,0.5,0.5,0.5]
             ];
-            let total:number = 50;
+            let total:number = 15;
             let billGroup:Billboard3DFlareEntity = new Billboard3DFlareEntity();
             billGroup.createGroup(total);
             for(let i:number = 0; i < total; ++i)
             {
-                size = Math.random() * Math.random() * Math.random() * 180 + 10.0;
+                if(total > 1)size = Math.random() * Math.random() * Math.random() * 180 + 10.0;
                 billGroup.setSizeAndScaleAt(i,size,size,0.5,1.0);
                 if(!clipEnabled)
                 {
@@ -342,6 +347,7 @@ export namespace demo
                 //billGroup.setPositionAt(i, Math.random() * 500.0 - 250.0,Math.random() * 100.0 - 50.0, Math.random() * 500.0 - 250.0);
                 
             }
+            billGroup.setPlayParam(clipMixEnabled);
             if(colorTex != null)
             {
                 billGroup.initialize(true,false,clipEnabled,[tex,colorTex]);
@@ -423,7 +429,7 @@ export namespace demo
             }
             //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
             this.m_timeoutId = setTimeout(this.update.bind(this),20);// 50 fps
-            this.m_texLoader.run();
+
             //console.log(this.m_textures[0].isDataEnough());
             this.m_rscene.update();
             if(this.m_textures[0].isDataEnough())

@@ -97,7 +97,7 @@ export namespace demo
         run():void
         {
             // 纹理数据分帧加载
-            this.m_texLoader.run();
+            this.//m_texLoader.run();
 
             let pcontext:RendererInstanceContext = this.m_rcontext;
             // show fps status

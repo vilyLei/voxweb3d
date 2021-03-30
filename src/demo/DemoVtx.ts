@@ -210,8 +210,7 @@ export namespace demo
             // show fps status
             this.m_statusDisp.statusInfo = "/"+pcontext.getTextureResTotal()+"/"+pcontext.getTextureAttachTotal();
             this.m_statusDisp.update();
-            // 分帧加载
-            this.m_texLoader.run();
+            
             this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
             // render begin
             this.m_rscene.runBegin();

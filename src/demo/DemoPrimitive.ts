@@ -106,10 +106,10 @@ export namespace demo
                 {
                     let billboard:Billboard3DEntity = new Billboard3DEntity();
                     billboard.copyMeshFrom(srcBillboard);
-                    billboard.setRenderStateByName("ADD01");
+                    billboard.toBrightnessBlend();
                     billboard.initialize(100.0,100.0, [tex2]);
                     billboard.setXYZ(Math.random() * 500.0 - 250.0,Math.random() * 500.0 - 250.0,Math.random() * 500.0 - 250.0);
-                    billboard.setBrightness(Math.random());
+                    billboard.setFadeFactor(Math.random());
                     this.m_renderer.addEntity(billboard);
                     this.m_equeue.addBillEntity(billboard,false);
                 }
@@ -118,10 +118,10 @@ export namespace demo
                 {
                     let billboard:Billboard3DEntity = new Billboard3DEntity();
                     billboard.copyMeshFrom(srcBillboard);
-                    billboard.setRenderStateByName("ADD01");
+                    billboard.toBrightnessBlend();
                     billboard.initialize(100.0,100.0, [tex3]);
                     billboard.setXYZ(Math.random() * 500.0 - 250.0,Math.random() * 500.0 - 250.0,Math.random() * 500.0 - 250.0);
-                    billboard.setBrightness(Math.random());
+                    billboard.setFadeFactor(Math.random());
                     this.m_renderer.addEntity(billboard);
                     this.m_equeue.addBillEntity(billboard,false);
                 }
@@ -160,8 +160,7 @@ export namespace demo
         }
         run():void
         {
-            this.m_texLoader.run();
-            this.m_texBlock.update();
+            this.m_texBlock.run();
             this.m_equeue.run();
             if(this.m_statusDisp != null)this.m_statusDisp.update();
             

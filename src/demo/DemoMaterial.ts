@@ -112,8 +112,6 @@ void main(){
             //      this.m_pos.x = this.m_pos.x;
             //      this.m_pos.y = this.m_pos.y;
             //  }
-            // load texture resource (资源分帧加载)
-            this.m_texLoader.run();
             // run rendering process (执行渲染过程)         
             this.m_rscene.run();
         }

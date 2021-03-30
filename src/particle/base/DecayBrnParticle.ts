@@ -51,7 +51,7 @@ export namespace particle
                 this.m_isAlive = true;
                 this.brightness = 1.0;
                 this.m_tar.setVisible(true);
-                this.m_tar.setBrightness(this.brightness);
+                this.m_tar.setFadeFactor(this.brightness);
                 this.spdV0.setXYZ(Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5);
                 this.spdV1.setXYZ(Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5);
                 this.spdV2.setXYZ(Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5);
@@ -83,7 +83,7 @@ export namespace particle
                         this.m_tar.setScaleXY(k1,k1);
     
                         this.m_tar.setPosition(this.position);
-                        this.m_tar.setBrightness(this.brightness);
+                        this.m_tar.setFadeFactor(this.brightness);
                         this.m_tar.update();
                         this.brightness -= this.decaySpeed;
                     }

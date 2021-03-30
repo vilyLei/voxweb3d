@@ -32,6 +32,7 @@ export namespace vox
                 private m_billFS:BillboardFSBase = new BillboardFSBase();
                 protected m_clipEnabled:boolean = false;
                 private m_hasOffsetColorTex:boolean = false;
+                clipMixEnabled:boolean = false;
                 constructor()
                 {
                     super();
@@ -48,15 +49,38 @@ export namespace vox
                 }
                 getClipCalcVSCode(paramIndex:number):string
                 {
-                    let code:string =
+                    if(this.clipMixEnabled)
+                    {
+                        let code:string =
 `
     // calculate clip uv
-    temp = u_billParam[`+paramIndex+`];
-    float clipf = floor(fi * temp.y)/temp.x;
-    vtx = (vec2(floor(fract(clipf) * temp.x), floor(clipf)) + a_uvs.xy) * temp.zw;
-    v_texUV = vec4(vtx, kf * a_vs2.w,fi);
+    temp = u_billParam[`+paramIndex+`];//(x:cn,y:total,z:du,w:dv)
+    float clipf0 = floor(fi * temp.y);
+    float clipf1 = min(clipf0+1.0,temp.y-1.0);
+    clipf0 /= temp.x;
+    // vec2(floor(fract(clipf0) * temp.x), floor(clipf0)) -> ve2(cn u,rn v)
+    v_texUV.xy = (vec2(floor(fract(clipf0) * temp.x), floor(clipf0)) + a_uvs.xy) * temp.zw;
+    
+    v_factor.x = fract(fi * temp.y);
+
+    clipf1 /= temp.x;
+    v_texUV.zw = (vec2(floor(fract(clipf1) * temp.x), floor(clipf1)) + a_uvs.xy) * temp.zw;
 `;
-                    return code;
+                        return code;
+                    }
+                    else
+                    {
+                        let code:string =
+`
+    // calculate clip uv
+    temp = u_billParam[`+paramIndex+`];//(x:cn,y:total,z:du,w:dv)
+    float clipf = floor(fi * temp.y);
+    clipf /= temp.x;
+    // vec2(floor(fract(clipf) * temp.x), floor(clipf)) -> ve2(cn u,rn v)
+    v_texUV.xy = (vec2(floor(fract(clipf) * temp.x), floor(clipf)) + a_uvs.xy) * temp.zw;
+`;
+                        return code;
+                    }
                 }
                 getVSEndCode(paramIndex:number):string
                 {
@@ -69,7 +93,7 @@ export namespace vox
                     {
                         vtxCode1 =
 `
-    v_texUV = vec4(a_uvs.xy, kf * a_vs2.w,fi);
+    v_texUV = vec4(a_uvs.xy, a_uvs.xy);
 `;
                     }
                     let vtxCodeEnd:string =
@@ -100,13 +124,21 @@ uniform sampler2D u_sampler1;
 in vec4 v_colorMult;
 in vec4 v_colorOffset;
 in vec4 v_texUV;
+in vec4 v_factor;
 layout(location = 0) out vec4 FragColor;
 void main()
 {
     vec4 color = texture(u_sampler0, v_texUV.xy);
 `;
+                    if(this.m_clipEnabled && this.clipMixEnabled)
+                    {
+                        fragCode1 +=
+`
+    color = mix(color,texture(u_sampler0, v_texUV.zw),v_factor.x);
+`;
+                    }
                     let fragCode2:string = this.m_billFS.getOffsetColorCode(1,this.m_hasOffsetColorTex);
-                    let fadeCode:string = this.m_billFS.getBrnAndAlphaCode();
+                    let fadeCode:string = this.m_billFS.getBrnAndAlphaCode("v_factor");
                     let endCode:string = 
 `
     FragColor = color;
@@ -123,11 +155,15 @@ void main()
                     let ns:string = this.m_uniqueName + "_" + this.m_billFS.getBrnAlphaStatus();
                     if(this.m_hasOffsetColorTex && this.m_clipEnabled)
                     {
-                        ns += "_clipColorTex";
+                        ns += "ClipColorTex";
                     }
                     else if(this.m_clipEnabled)
                     {
-                        ns += "_clip";
+                        ns += "Clip";
+                    }
+                    else if(this.clipMixEnabled)
+                    {
+                        ns += "Mix";
                     }
                     return ns;
                 }

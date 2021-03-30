@@ -199,8 +199,6 @@ export namespace example
             let pcontext:RendererInstanceContext = this.m_rcontext;
             // show fps status
             //this.m_statusDisp.update();
-            // 分帧加载
-            this.m_texLoader.run();
 
             //this.m_rscene.setClearRGBAColor4f(0.0, 0.0, 0.0,0.0);
             this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);

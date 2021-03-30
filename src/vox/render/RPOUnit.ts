@@ -18,7 +18,7 @@ import * as RenderProxyT from "../../vox/render/RenderProxy";
 import * as ShaderUBOT from "../../vox/material/ShaderUBO";
 import * as IShaderUniformT from "../../vox/material/IShaderUniform";
 import * as IRPODisplayT from "../../vox/render/IRPODisplay";
-import * as IPoolNodeT from "../../vox/utils/IPoolNode";
+import * as IPoolNodeT from "../../vox/base/IPoolNode";
 
 import Vector3D = Vector3DT.vox.math.Vector3D;
 import AABB = AABBT.vox.geom.AABB;
@@ -34,7 +34,7 @@ import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 import ShaderUBO = ShaderUBOT.vox.material.ShaderUBO;
 import IShaderUniform = IShaderUniformT.vox.material.IShaderUniform;
 import IRPODisplay = IRPODisplayT.vox.render.IRPODisplay;
-import IPoolNode = IPoolNodeT.vox.utils.IPoolNode;
+import IPoolNode = IPoolNodeT.vox.base.IPoolNode;
 
 export namespace vox
 {

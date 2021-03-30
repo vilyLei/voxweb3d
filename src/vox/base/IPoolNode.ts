@@ -7,7 +7,7 @@
 
 export namespace vox
 {
-    export namespace utils
+    export namespace base
     {
         export interface IPoolNode
         {

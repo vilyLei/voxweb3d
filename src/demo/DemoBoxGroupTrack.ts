@@ -94,13 +94,9 @@ export namespace demo
         run():void
         {
             this.m_boxTrack.moveDistanceOffset(-1.0);
-
-            this.m_texLoader.run();
             
             // show fps status
             this.m_statusDisp.update();
-            // 分帧加载
-            this.m_texLoader.run();
             
             this.m_rscene.run();
             

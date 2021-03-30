@@ -9,7 +9,7 @@ import * as ROTransformT from "../../vox/display/ROTransform";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
-import * as BillboardMaterialT from "../../vox/material/mcase/BillboardMaterial";
+import * as Billboard3TexMixMaterialT from "../../vox/material/mcase/Billboard3TexMixMaterial";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as BillboardPlaneMeshT from "../../vox/mesh/BillboardPlaneMesh";
 
@@ -17,7 +17,7 @@ import ROTransform = ROTransformT.vox.display.ROTransform;
 import RendererState = RendererStateT.vox.render.RendererState;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
-import BillboardMaterial = BillboardMaterialT.vox.material.mcase.BillboardMaterial;
+import Billboard3TexMixMaterial = Billboard3TexMixMaterialT.vox.material.mcase.Billboard3TexMixMaterial;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import BillboardPlaneMesh = BillboardPlaneMeshT.vox.mesh.BillboardPlaneMesh;
 
@@ -25,21 +25,21 @@ export namespace vox
 {
     export namespace entity
     {
-
-        export class Billboard3DEntity extends DisplayEntity
+        export class Billboard3D3TexMixEntity extends DisplayEntity
         {
             private m_brightnessEnabled:boolean = true;
             private m_alphaEnabled:boolean = false;
+            //private m_clipEnabled:boolean = false;
+            private m_bw:number = 0;
+            private m_bh:number = 0;
+            private m_currMaterial:Billboard3TexMixMaterial = null;
+            private m_billMesh:BillboardPlaneMesh = null;
+            flipVerticalUV:boolean = false;
             constructor(transform:ROTransform = null)
             {
                 super(transform);
                 this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
             }
-            flipVerticalUV:boolean = false;
-            private m_bw:number = 0;
-            private m_bh:number = 0;
-            private m_currMaterial:BillboardMaterial = null;
-            private m_billMesh:BillboardPlaneMesh = null;
             setRGBA4f(pr:number,pg:number,pb:number,pa:number):void
             {
                 if(this.m_currMaterial != null)
@@ -81,7 +81,33 @@ export namespace vox
             {
                 return this.m_currMaterial.getFadeFactor();
             }
-            getRotationZ():number{return this.m_currMaterial.getRotationZ();};
+            setMixFactor(pa:number):void
+            {
+                if(this.m_currMaterial != null)
+                {
+                    this.m_currMaterial.setMixFactor(pa);
+                }
+            }
+            getMixFactor():number
+            {
+                return this.m_currMaterial.getMixFactor();
+            }
+            setClipUVSize(du:number, dv:number):void
+            {
+                if(this.m_currMaterial != null)
+                {
+                    this.m_currMaterial.setClipUVSize(du,dv);
+                }
+            }
+            setClipUVPosAt(i:number, pu:number, pv:number):void
+            {
+                if(this.m_currMaterial != null)
+                {
+                    this.m_currMaterial.setClipUVPosAt(i,pu,pv);
+                }
+            }
+
+            getRotationZ():number{return this.m_currMaterial.getRotationZ();}
             setRotationZ(degrees:number):void
             {
                 this.m_currMaterial.setRotationZ(degrees);
@@ -98,13 +124,13 @@ export namespace vox
             {
                 if(this.getMaterial() == null)
                 {
-                    this.m_currMaterial = new BillboardMaterial(this.m_brightnessEnabled,this.m_alphaEnabled);
+                    this.m_currMaterial = new Billboard3TexMixMaterial(this.m_brightnessEnabled,this.m_alphaEnabled, texList.length == 1);
                     this.m_currMaterial.setTextureList(texList);
                     this.setMaterial(this.m_currMaterial);
                 }
                 else
                 {
-                    this.m_currMaterial = this.getMaterial() as BillboardMaterial;
+                    this.m_currMaterial = this.getMaterial() as Billboard3TexMixMaterial;
                     this.m_currMaterial.setTextureList(texList);
                 }
             }
@@ -114,11 +140,11 @@ export namespace vox
                 this.m_alphaEnabled = true;
                 if(always)
                 {
-                    this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+                    this.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
                 }
                 else
                 {
-                    this.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+                    this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
                 }
             }
             toBrightnessBlend(always:boolean = false):void
@@ -127,11 +153,11 @@ export namespace vox
                 this.m_alphaEnabled = false;
                 if(always)
                 {
-                    this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
+                    this.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
                 }
                 else
                 {
-                    this.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
+                    this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
                 }
             }
             initializeSquare(size:number,texList:TextureProxy[]):void
@@ -143,6 +169,10 @@ export namespace vox
             }
             initialize(bw:number, bh:number,texList:TextureProxy[]):void
             {
+                if(texList == null || texList.length < 1)
+                {
+                    throw Error("texList == null or texList.length < 1 is fatal error!!!");
+                }
                 this.m_bw = bw;
                 this.m_bh = bh;
                 this.createMaterial(texList);
@@ -184,7 +214,7 @@ export namespace vox
             }
             toString():string
             {
-                return "Billboard3DEntity(uid = "+this.getUid()+", rseFlag = "+this.__$rseFlag+")";
+                return "Billboard3D3TexMixEntity(uid = "+this.getUid()+", rseFlag = "+this.__$rseFlag+")";
             }
         }
 

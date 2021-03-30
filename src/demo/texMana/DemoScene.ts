@@ -286,7 +286,7 @@ export namespace demo
             }
             run():void
             {
-                this.m_texBlock.update();
+                this.m_texBlock.run();
                 this.m_texLoader.run();
                 this.m_equeue.run();
                 let disp:EntityDisp = null;
@@ -309,7 +309,7 @@ export namespace demo
                         --len;
                     }
                 }
-                this.m_texLoader.run();
+                this.//m_texLoader.run();
             }
         }
     }

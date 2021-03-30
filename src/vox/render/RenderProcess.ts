@@ -11,7 +11,7 @@ import * as IRODisplayT from "../../vox/display/IRODisplay";
 import * as RenderShaderT from '../../vox/render/RenderShader';
 import * as RenderProxyT from "../../vox/render/RenderProxy";
 
-import * as IPoolNodeT from "../../vox/utils/IPoolNode";
+import * as IPoolNodeT from "../../vox/base/IPoolNode";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RPONodeT from "../../vox/render/RPONode";
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
@@ -26,7 +26,7 @@ import IRODisplay = IRODisplayT.vox.display.IRODisplay;
 import RenderShader = RenderShaderT.vox.render.RenderShader;
 import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 
-import IPoolNode = IPoolNodeT.vox.utils.IPoolNode;
+import IPoolNode = IPoolNodeT.vox.base.IPoolNode;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RPONode = RPONodeT.vox.render.RPONode;
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;

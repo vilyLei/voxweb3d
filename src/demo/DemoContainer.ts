@@ -164,16 +164,18 @@ export namespace demo
                 {
                     billboard = new Billboard3DEntity();
                     billboard.setMesh(srcBillboard.getMesh());
+                    billboard.toBrightnessBlend();
                     billboard.setRenderStateByName("ADD01");
                     billboard.initialize(100.0,100.0, [tex2]);
                     billboard.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
-                    billboard.setBrightness(Math.random());
+                    billboard.setFadeFactor(Math.random());
                     this.m_renderer.addEntity(billboard);
                     this.m_equeue.addBillEntity(billboard,false);
                 }
 
                 billboard = new Billboard3DEntity();
                 billboard.setMesh(srcBillboard.getMesh());
+                billboard.toBrightnessBlend();
                 billboard.setRenderStateByName("ADD02");
                 billboard.initialize(100.0,100.0, [tex2]);
                 billboard.setXYZ(200,10,150);

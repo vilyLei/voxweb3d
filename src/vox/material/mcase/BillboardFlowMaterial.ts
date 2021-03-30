@@ -5,12 +5,14 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as MathShaderCodeT from "../../../vox/material/code/MathShaderCode";
 import * as ShaderCodeBufferT from "../../../vox/material/ShaderCodeBuffer";
 import * as ShaderUniformDataT from "../../../vox/material/ShaderUniformData";
 import * as Color4T from "../../../vox/material/Color4";
 import * as MaterialBaseT from "../../../vox/material/MaterialBase";
 import * as BillboardGroupShaderBufferT from "../../../vox/material/mcase/BillboardGroupShaderBuffer";
 
+import MathShaderCode = MathShaderCodeT.vox.material.code.MathShaderCode;
 import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
 import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
 import Color4 = Color4T.vox.material.Color4;
@@ -46,6 +48,7 @@ export namespace vox
                     {
                         this.m_uniqueName = "BillboardFlowShader";
                     }
+                    this.m_uniqueName += (this.clipMixEnabled?"Mix":"");
                 }
                 getVtxShaderCode():string
                 {
@@ -59,37 +62,17 @@ layout(location = 2) in vec2 a_uvs;
 layout(location = 3) in vec4 a_uvs2;
 layout(location = 4) in vec4 a_nvs;
 layout(location = 5) in vec4 a_nvs2;
+const vec3 biasV3 = vec3(0.1);
 uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
 uniform vec4 u_billParam[`+paramTotal+`];
 out vec4 v_colorMult;
 out vec4 v_colorOffset;
-out vec4 v_texUV; 
+out vec4 v_texUV;
+out vec4 v_factor;
 `;
-                    let vtxCode01:string = "";
-                    if(this.direcEnabled)
-                    {
-                        vtxCode01 = 
-`
-// 3.141592653589793
-#define MATH_PI 3.14159265
-// 4.71238898038469
-#define MATH_3PER2PI 4.71238898
-// 1.5707963267948966
-#define MATH_1PER2PI 1.57079633
-
-float getRadianByXY(float dx, float dy)
-{
-    if(abs(dx) < 0.00001)
-    {
-        return (dy >= 0.0) ? MATH_1PER2PI : MATH_3PER2PI;
-    }
-    float rad = atan(dy/dx);
-    return dx >= 0.0 ? rad:(MATH_PI+rad);
-}  
-`;
-                    }
+                    let vtxCode01:string = this.direcEnabled?MathShaderCode.GetRadianByXY_Func():"";
                     let vtxCode02:string = 
 `
 void main()
@@ -122,7 +105,7 @@ void main()
 `
     vec3 timeV = vec3(time);
     vec3 pv0 = a_vs2.xyz + (a_nvs.xyz + (u_billParam[3].xyz + a_nvs2.xyz) * timeV) * timeV;
-    timeV = vec3(time + 0.1);
+    timeV += biasV3;
     vec3 pv1 = a_vs2.xyz + (a_nvs.xyz + (u_billParam[3].xyz + a_nvs2.xyz) * timeV) * timeV;
     
     mat4 voMat = u_viewMat * u_objMat;
@@ -148,6 +131,7 @@ let vtxCode4:string =
 `
     pos.xy += vtx.xy;
     gl_Position =  u_projMat * pos;
+    v_factor = vec4(0.0,0.0, kf * a_vs2.w,fi);
 `;
                     return vtxCode0 + vtxCode01 + vtxCode02 + vtxCode1 + vtxCode2 + vtxCode3 + vtxCode4 + this.getVSEndCode(4);
                 }
@@ -172,6 +156,7 @@ let vtxCode4:string =
                 private m_brightnessEnabled:boolean = true;
                 private m_alphaEnabled:boolean = false;
                 private m_clipEnabled:boolean = false;
+                private m_clipMixEnabled:boolean = false;
                 private m_playOnce:boolean = false;
                 private m_direcEnabled:boolean = false;
                 private m_time:number = 0;
@@ -194,16 +179,18 @@ let vtxCode4:string =
                     }
                 }
 
-                setPlayParam(playOnce:boolean,direcEnabled:boolean):void
+                setPlayParam(playOnce:boolean,direcEnabled:boolean,clipMixEnabled:boolean = false):void
                 {
                     this.m_playOnce = playOnce;
                     this.m_direcEnabled = direcEnabled;
+                    this.m_clipMixEnabled = clipMixEnabled;
                 }
                 getCodeBuf():ShaderCodeBuffer
                 {
                     let buf:BillboardFlowShaderBuffer = BillboardFlowShaderBuffer.GetInstance();
                     buf.playOnce = this.m_playOnce;
                     buf.direcEnabled = this.m_direcEnabled;
+                    buf.clipMixEnabled = this.m_clipMixEnabled;
                     buf.setParam(this.m_brightnessEnabled, this.m_alphaEnabled,this.m_clipEnabled, this.getTextureTotal() > 1);
                     return buf;
                 }

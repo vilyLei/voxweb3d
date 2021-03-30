@@ -137,7 +137,7 @@ export namespace motionDemo
                 {
                     entitys[i].run();
                 }
-                this.m_texLoader.run();
+                this.//m_texLoader.run();
             }
             private m_texList:string[] = [
                 "static/assets/default.jpg",

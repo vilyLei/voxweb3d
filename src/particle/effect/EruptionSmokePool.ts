@@ -26,12 +26,14 @@ export namespace particle
             private m_eruptionEfSrc:EruptionSomke = null;
             private m_texture:TextureProxy = null;
             private m_colorTexture:TextureProxy = null;
+            private m_clipMixEnabled:boolean = false;
             constructor(){super();}
 
-            initialize(renderer:IRenderer,processIndex:number,particleTotal:number, texture:TextureProxy,colorTexture:TextureProxy):void
+            initialize(renderer:IRenderer,processIndex:number,particleTotal:number, texture:TextureProxy,colorTexture:TextureProxy,clipMixEnabled:boolean = false):void
             {
                 if(this.m_eruptionEfSrc == null)
                 {
+                    this.m_clipMixEnabled = clipMixEnabled;
                     this.m_texture = texture;
                     this.m_colorTexture = colorTexture;
 
@@ -53,7 +55,7 @@ export namespace particle
                 if(this.m_freeEffList.length < 1)
                 {
                     eff = new EruptionSomke();
-                    eff.initializeFrom(this.m_eruptionEfSrc,texture,colorTexture);
+                    eff.initializeFrom(this.m_eruptionEfSrc,texture,colorTexture, this.m_clipMixEnabled);
                     this.m_renderer.addEntity(eff.smokeEntity, this.m_renderProcessI, false);
                 }
                 else

@@ -32,6 +32,7 @@ export namespace vox
             private m_brightnessEnabled:boolean = true;
             private m_alphaEnabled:boolean = false;
             private m_clipEnabled:boolean = false;
+            private m_clipMixEnabled:boolean = false;
             flipVerticalUV:boolean = false;
             constructor(transform:ROTransform = null)
             {
@@ -169,6 +170,7 @@ export namespace vox
                         this.m_brightnessEnabled
                         , this.m_alphaEnabled
                         , this.m_clipEnabled
+                        , this.m_clipMixEnabled
                         );
                     this.m_currMaterial.setTextureList(texList);
                     this.setMaterial(this.m_currMaterial);
@@ -183,23 +185,27 @@ export namespace vox
             {
                 if(always)
                 {
-                    this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+                    this.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
                 }
                 else
                 {
-                    this.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+                    this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
                 }
             }
-            toAddBlend(always:boolean = false):void
+            toBrightnessBlend(always:boolean = false):void
             {
                 if(always)
                 {
-                    this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
+                    this.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
                 }
                 else
                 {
-                    this.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
+                    this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
                 }
+            }
+            setPlayParam(clipMixEnabled:boolean):void
+            {
+                this.m_clipMixEnabled = clipMixEnabled;
             }
             initialize(brightnessEnabled:boolean,alphaEnabled:boolean, clipEnabled:boolean, texList:TextureProxy[]):void
             {

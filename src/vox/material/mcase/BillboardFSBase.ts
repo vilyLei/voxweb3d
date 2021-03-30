@@ -35,7 +35,7 @@ export namespace vox
                 {
                     this.m_brnAStatus = Number(brightnessEnabled) * 10 + Number(alphaEnabled);                    
                 }
-                getBrnAndAlphaCode():string
+                getBrnAndAlphaCode(factorNS:string = "v_texUV"):string
                 {
                     let fadeCode:string;
                     if(this.m_brnAStatus == 11)
@@ -43,7 +43,7 @@ export namespace vox
                         fadeCode = 
 `
     color.rgb = color.rgb * v_colorMult.xyz + color.aaa * offsetColor;
-    color *= v_texUV.zzzz;
+    color *= `+factorNS+`.zzzz;
 `;
                     }
                     else if(this.m_brnAStatus == 10)
@@ -51,7 +51,7 @@ export namespace vox
                         fadeCode = 
 `
     color.rgb = color.rgb * v_colorMult.xyz + color.rgb * offsetColor;
-    color.rgb *= v_texUV.zzz;
+    color.rgb *= `+factorNS+`.zzz;
 `;
                     }
                     else if(this.m_brnAStatus == 1)
@@ -59,7 +59,7 @@ export namespace vox
                         fadeCode = 
 `
     color.rgb = color.rgb * v_colorMult.xyz + color.aaa * offsetColor;
-    color.a *= v_texUV.z;
+    color.a *= `+factorNS+`.z;
 `;
                     }
                     else
@@ -67,12 +67,26 @@ export namespace vox
                         fadeCode = 
 `
     color.rgb = color.rgb * v_colorMult.xyz + offsetColor;
-    color.a *= v_texUV.z;
+    color.a *= `+factorNS+`.z;
 `;
                     }
                     return fadeCode;
                 }
-                
+                getMixThreeColorsCode():string
+                {
+                    let codeStr:string =
+ `
+ vec4 mixThreeColors(vec4 color0,vec4 color1,vec4 color2,float t)
+ {
+    float k0 = max(1.0 - 2.0 * t, 0.0);
+    float k = max(t - 0.5, 0.0);
+    float k1 = (1.0 - (2.0 * k)) * step(-0.00001,k);
+    k = step(0.00001,k0);
+    return mix(mix(color2,color1,k1), mix(color1,color0,k0), k);
+ }
+`;
+                    return codeStr;
+                }
                 getOffsetColorCode(sampleIndex:number,OffsetColorTexEnabled:boolean):string
                 {
                     let fragCode2:string;

@@ -5,12 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IPoolNodeT from "../../vox/utils/IPoolNode";
-import * as PoolNodeBuilderT from "../../vox/utils/PoolNodeBuilder";
+import * as IPoolNodeT from "../../vox/base/IPoolNode";
+import * as PoolNodeBuilderT from "../../vox/base/PoolNodeBuilder";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 
-import IPoolNode = IPoolNodeT.vox.utils.IPoolNode;
-import PoolNodeBuilder = PoolNodeBuilderT.vox.utils.PoolNodeBuilder;
+import IPoolNode = IPoolNodeT.vox.base.IPoolNode;
+import PoolNodeBuilder = PoolNodeBuilderT.vox.base.PoolNodeBuilder;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 
 export namespace vox

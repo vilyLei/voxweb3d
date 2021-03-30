@@ -72,7 +72,7 @@ export namespace demo
                 let rparam:RendererParam = new RendererParam();
                 rparam.setAttriAlpha(false);
                 rparam.setMatrix4AllocateSize(4096);
-                rparam.setCamProject(45.0,10.0,3000.0);
+                rparam.setCamProject(45.0,10.0,5000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
                 
                 this.m_rscene = new RendererScene();
@@ -117,6 +117,7 @@ export namespace demo
                 let plane:Plane3DEntity = new Plane3DEntity();
                 plane.initializeXOZ(-500.0,-500.0,1000.0,1000.0,[textures[0]]);
                 //plane.toTransparentBlend(false);
+                plane.setXYZ(0.0,-80.0,0.0);
                 this.m_rscene.addEntity(plane);
                 let material:any = plane.getMaterial();
                 //material.setRGB3f(0.8,0.8,0.8);
@@ -130,7 +131,7 @@ export namespace demo
                 let texFlame:TextureProxy = this.m_textures[8];
                 let texSolid:TextureProxy = this.m_textures[3];
                 this.m_eff0Pool = new EruptionEffectPool();
-                this.m_eff0Pool.initialize(this.m_rscene,1, 60,50, texFlame, texSolid);
+                this.m_eff0Pool.initialize(this.m_rscene,1, 60,50, texFlame, texSolid, true);
                 //  this.m_eff0Pool.createEffect(null);
             }
             if(this.m_eff1Pool == null)
@@ -139,7 +140,7 @@ export namespace demo
                 let texture:TextureProxy = this.m_textures[9];
                 let colorTexture:TextureProxy = this.m_textures[3];
                 this.m_eff1Pool = new EruptionSmokePool();
-                this.m_eff1Pool.initialize(this.m_rscene,1, 10, texture, colorTexture);
+                this.m_eff1Pool.initialize(this.m_rscene,1, 10, texture, colorTexture, true);
                 //  this.m_eff1Pool.createEffect(null);
             }
         }
@@ -175,7 +176,7 @@ export namespace demo
                 clearTimeout(this.m_timeoutId);
             }
             this.m_timeoutId = setTimeout(this.update.bind(this),20);// 50 fps
-            this.m_texLoader.run();
+            
             this.m_rscene.update();
             if(this.m_textures[0].isDataEnough())
             {

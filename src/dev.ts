@@ -229,6 +229,9 @@
 //  import * as DemoParticle from "./demo/DemoParticle";
 //  import Demo = DemoParticle.demo.DemoParticle;
 
+//  import * as DemoParticleMixTex from "./demo/DemoParticleMixTex";
+//  import Demo = DemoParticleMixTex.demo.DemoParticleMixTex;
+
 import * as DemoParticleGroup from "./demo/DemoParticleGroup";
 import Demo = DemoParticleGroup.demo.DemoParticleGroup;
 
@@ -282,6 +285,9 @@ import Demo = DemoParticleGroup.demo.DemoParticleGroup;
 
 //  import * as DemoMotion from "./demo/DemoMotion";
 //  import Demo = DemoMotion.demo.DemoMotion;
+
+//  import * as DemoMixProgress from "./demo/DemoMixProgress";
+//  import Demo = DemoMixProgress.demo.DemoMixProgress;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

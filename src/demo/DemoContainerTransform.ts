@@ -189,8 +189,6 @@ export namespace demo
         delayTime:number = 10;
         run():void
         {
-            //this.m_rscene.textureBlock.update();
-            this.m_texLoader.run();
             this.m_equeue.run();
 
             this.m_rscene.setClearRGBColor3f(0.1, 0.1, 0.1);

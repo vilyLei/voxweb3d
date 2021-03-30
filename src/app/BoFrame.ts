@@ -225,7 +225,6 @@ export namespace app
         {
 
             this.m_statusDisp.update();
-            this.m_texLoader.run();
 
             this.m_rscene.run();
 

@@ -108,7 +108,6 @@ export namespace demo
             // show fps status
             this.m_statusDisp.statusInfo = "/"+pcontext.getTextureResTotal()+"/"+pcontext.getTextureAttachTotal();
             this.m_statusDisp.update();
-            this.m_texLoader.run();
 
             this.m_rscene.run();
 

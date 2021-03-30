@@ -107,8 +107,7 @@ export namespace demo
         }
         run():void
         {
-            this.m_texLoader.run();
-            this.m_texBlock.update();
+            this.m_texBlock.run();
 
             this.m_statusDisp.update();
             this.m_equeue.run();

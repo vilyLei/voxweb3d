@@ -158,7 +158,6 @@ export namespace demo
         }
         run():void
         {
-            this.m_texLoader.run();
             this.m_rscene.setClearColor(this.m_bgColor);
 
             this.m_rscene.run();

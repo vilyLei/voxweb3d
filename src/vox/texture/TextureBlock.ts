@@ -6,6 +6,7 @@
 /***************************************************************************/
 import * as TextureConstT from "../../vox/texture/TextureConst";
 import * as Color4T from "../../vox/material/Color4";
+import * as IRunnableT from "../../vox/base/IRunnable";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as TexturePoolT from "../../vox/texture/TexturePool";
 import * as ImageTextureProxyT from "../../vox/texture/ImageTextureProxy";
@@ -28,6 +29,7 @@ import TextureFormat = TextureConstT.vox.texture.TextureFormat;
 import TextureDataType = TextureConstT.vox.texture.TextureDataType;
 import TextureProxyType = TextureConstT.vox.texture.TextureProxyType;
 import Color4 = Color4T.vox.material.Color4;
+import IRunnable = IRunnableT.vox.base.IRunnable;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TexturePool = TexturePoolT.vox.texture.TexturePool;
 import ImageTextureProxy = ImageTextureProxyT.vox.texture.ImageTextureProxy;
@@ -57,7 +59,42 @@ export namespace vox
             private m_texPool:TexturePool = new TexturePool();
             private m_rttStore:RTTTextureStore = null;
             private m_renderer:RendererInstance = null;
-
+            private m_texLoaders:IRunnable[] = [];
+            addTexLoader(texLoader:IRunnable):void
+            {
+                if(texLoader != null)
+                {
+                    let i:number = 0;
+                    let il:number = this.m_texLoaders.length
+                    for(; i < il;++i)
+                    {
+                        if(texLoader == this.m_texLoaders[i])
+                        {
+                            break;
+                        }
+                    }
+                    if(i >= il)
+                    {
+                        this.m_texLoaders.push(texLoader);
+                    }
+                }
+            }
+            removeTexLoader(texLoader:IRunnable):void
+            {
+                if(texLoader != null)
+                {
+                    let i:number = 0;
+                    let il:number = this.m_texLoaders.length
+                    for(; i < il;++i)
+                    {
+                        if(texLoader == this.m_texLoaders[i])
+                        {
+                            this.m_texLoaders.slice(i,1);
+                            break;
+                        }
+                    }
+                }
+            }
             /**
              * 设置当前的渲染器
              * @param renderer 当前的渲染器
@@ -250,8 +287,14 @@ export namespace vox
             }
 
             private m_clearDelay:number = 128;
-            update():void
+            run():void
             {
+                let i:number = 0;
+                let il:number = this.m_texLoaders.length;
+                for(; i < il;++i)
+                {
+                    this.m_texLoaders[i].run();
+                }
                 if(this.m_clearDelay < 1)
                 {
                     /**

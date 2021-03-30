@@ -169,7 +169,6 @@ export namespace demo
                 let pcontext:RendererInstanceContext = this.m_rcontext;
                 this.m_statusDisp.statusInfo = "/"+pcontext.getTextureResTotal()+"/"+pcontext.getTextureAttachTotal();
                 
-                this.m_texLoader.run();
                 this.m_rscene.update();
                 this.m_statusDisp.render();
             //  }

@@ -113,12 +113,23 @@ export namespace vox
             private m_runFlag:number = -1;
             private m_autoRunning:boolean = true;
             private m_processUpdate:boolean = false;
-            //
+            private m_tickId:any = -1;
+            private m_rparam:RendererParam = null;
+            
             readonly textureBlock:TextureBlock = new TextureBlock();
             readonly stage3D:Stage3D = null;
             constructor()
             {
                 this.m_uid = RendererScene.s_uid++;
+            }
+            private tickUpdate():void
+            {
+                if(this.m_tickId > -1)
+                {
+                    clearTimeout(this.m_tickId);
+                }
+                this.m_tickId = setTimeout(this.tickUpdate.bind(this),this.m_rparam.getTickUpdateTime());
+                this.textureBlock.run();
             }
             getUid():number
             {
@@ -298,8 +309,9 @@ export namespace vox
             }
             initialize(rparam:RendererParam,renderProcessTotal:number = 1):void
             {
-                if(this.m_renderer == null)
+                if(this.m_renderer == null && rparam != null)
                 {
+                    this.m_rparam = rparam;
                     let selfT:any = this;
                     selfT.stage3D = new Stage3D(this.getUid(),document);
                     if(renderProcessTotal < 1)
@@ -340,6 +352,7 @@ export namespace vox
                         space.initialize(this.m_renderer,this.m_renderProxy.getCamera());
                         this.m_rspace = space;
                     }
+                    this.tickUpdate();
                 }
             }
             setRendererProcessParam(index:number,batchEnabled:boolean,processFixedState:boolean):void
@@ -625,7 +638,6 @@ export namespace vox
                     this.m_runFlag = 1;
                 }
 
-                this.textureBlock.update();
 
                 // camera visible test, ray cast test, Occlusion Culling test
 

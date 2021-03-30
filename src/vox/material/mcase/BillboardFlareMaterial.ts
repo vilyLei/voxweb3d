@@ -31,7 +31,7 @@ export namespace vox
                 }
                 initialize(texEnabled:boolean):void
                 {
-                    this.m_uniqueName = "BillboardFlareShader";
+                    this.m_uniqueName = "BillboardFlareShader"+(this.clipMixEnabled?"Mix":"");
                 }
                 
                 getVtxShaderCode():string
@@ -51,6 +51,7 @@ uniform vec4 u_billParam[`+paramTotal+`];
 out vec4 v_colorMult;
 out vec4 v_colorOffset;
 out vec4 v_texUV;
+out vec4 v_factor;
 void main()
 {
     vec4 temp = u_billParam[0];
@@ -61,6 +62,7 @@ void main()
     vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz,1.0);
     pos.xy += vtx.xy;
     gl_Position =  u_projMat * pos;
+    v_factor = vec4(0.0,0.0, kf * a_vs2.w,fi);
 `;
 
                     return vtxCode + this.getVSEndCode(3);
@@ -86,12 +88,14 @@ void main()
                 private m_brightnessEnabled:boolean = true;
                 private m_alphaEnabled:boolean = false;
                 private m_clipEnabled:boolean = false;
-                constructor(brightnessEnabled:boolean = true,alphaEnabled:boolean = false,clipEnabled:boolean = false)
+                private m_clipMixEnabled:boolean = false;
+                constructor(brightnessEnabled:boolean = true,alphaEnabled:boolean = false,clipEnabled:boolean = false,clipMixEnabled:boolean = false)
                 {
                     super();
                     this.m_brightnessEnabled = brightnessEnabled;
                     this.m_alphaEnabled = alphaEnabled;
                     this.m_clipEnabled = clipEnabled;
+                    this.m_clipMixEnabled = clipMixEnabled;
                     if(this.m_clipEnabled)
                     {
                         this.m_uniformData = new Float32Array([1.0,1.0,0.0,1.0, 1.0,1.0,1.0,0.0, 0.0,0.0,0.0,0.0, 2.0,4.0,0.5,0.5]);
@@ -102,13 +106,14 @@ void main()
                     }
                 }
                 private m_time:number = 0;
-                private m_uniformData:Float32Array = null;//new Float32Array([1.0,1.0,0.0,1.0, 1.0,1.0,1.0,0.0, 0.0,0.0,0.0,0.0, 2.0,4.0,0.5,0.5]);
+                private m_uniformData:Float32Array = null;
                 private m_color:Color4 = new Color4(1.0,1.0,1.0,1.0);
                 private m_brightness:number = 1.0;
 
                 getCodeBuf():ShaderCodeBuffer
                 {
                     let buf:BillboardFlareShaderBuffer = BillboardFlareShaderBuffer.GetInstance();
+                    buf.clipMixEnabled = this.m_clipMixEnabled;
                     buf.setParam(this.m_brightnessEnabled, this.m_alphaEnabled,this.m_clipEnabled, this.getTextureTotal() > 1);
                     return buf;
                 }

@@ -6,12 +6,14 @@
 /***************************************************************************/
 
 import * as MathConstT from "../../vox/math/MathConst";
+import * as IRunnableT from "../../vox/base/IRunnable";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as ImageTextureProxyT from "../../vox/texture/ImageTextureProxy";
 import * as BytesTextureProxyT from "../../vox/texture/BytesTextureProxy";
 import * as TextureBlockT from "../../vox/texture/TextureBlock";
 
 import MathConst = MathConstT.vox.math.MathConst;
+import IRunnable = IRunnableT.vox.base.IRunnable;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import ImageTextureProxy = ImageTextureProxyT.vox.texture.ImageTextureProxy;
 import BytesTextureProxy = BytesTextureProxyT.vox.texture.BytesTextureProxy;
@@ -236,7 +238,7 @@ export namespace vox
                 this.m_img = null;
             }
         }
-        export class ImageTextureLoader
+        export class ImageTextureLoader implements IRunnable
         {
             private m_resMap:Map<string,ImgResUnit> = new Map();
             private m_loadedList:ImgResUnit[] = [];
@@ -251,6 +253,10 @@ export namespace vox
             constructor(texBlock:TextureBlock)
             {
                 this.m_texBlock = texBlock;
+                if(texBlock != null)
+                {
+                    texBlock.addTexLoader(this);
+                }
             }
             
             getBytesNoPremultipliedAlphaTexByUrl(purl:string,mipLevel:number = 0):BytesTextureProxy

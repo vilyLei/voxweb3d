@@ -59,7 +59,7 @@ export namespace demo
             console.log("DemoTexUpdate::initialize()......");
             if(this.m_rscene == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
                 
@@ -88,10 +88,11 @@ export namespace demo
                 plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
                 this.m_rscene.addEntity(plane);
                 this.m_targets.push(plane);
-                //this.m_disp = plane
+                //this.m_disp = plane;
 
                 this.m_rscene.setAutoRunning(false);
                 this.update();
+
             }
         }
         //private m_disp:DisplayEntity = null;
@@ -168,7 +169,6 @@ export namespace demo
             let pcontext:RendererInstanceContext = this.m_rcontext;
             this.m_statusDisp.statusInfo = "/"+pcontext.getTextureResTotal()+"/"+pcontext.getTextureAttachTotal();
             
-            this.m_texLoader.run();
             this.m_rscene.update();
             this.m_statusDisp.render();
         }

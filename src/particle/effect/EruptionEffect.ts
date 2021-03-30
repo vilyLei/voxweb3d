@@ -28,19 +28,22 @@ export namespace particle
         {
             flameEntity:Billboard3DFlowEntity = null;
             solidEntity:Billboard3DFlowEntity = null;
+            private m_clipMixEnabled:boolean = false;
             constructor(){}
-            initialize(flameTotal:number, solidTotal:number, flameTexture:TextureProxy,solidTexture:TextureProxy):void
+            initialize(flameTotal:number, solidTotal:number, flameTexture:TextureProxy,solidTexture:TextureProxy,clipMixEnabled:boolean = false):void
             {
                 if(this.solidEntity == null)
                 {
+                    this.m_clipMixEnabled = clipMixEnabled;
                     this.initFlame(null,flameTotal,flameTexture);
                     this.initSolid(null,solidTotal,solidTexture);
                 }
             }
-            initializeFrom(eruptionEff:EruptionEffect, flameTexture:TextureProxy,solidTexture:TextureProxy):void
+            initializeFrom(eruptionEff:EruptionEffect, flameTexture:TextureProxy,solidTexture:TextureProxy,clipMixEnabled:boolean = false):void
             {
                 if(eruptionEff != null && this.solidEntity == null)
                 {
+                    this.m_clipMixEnabled = clipMixEnabled;
                     this.initFlame(eruptionEff.flameEntity, 50,flameTexture);
                     this.initSolid(eruptionEff.solidEntity, 50,solidTexture);
                 }
@@ -85,7 +88,7 @@ export namespace particle
                         etity.setVelocityAt(i,pv.x,pv.y,pv.z);
                     }
                 }
-                etity.setPlayParam(true,true);
+                etity.setPlayParam(true,true, this.m_clipMixEnabled);
                 etity.initialize(false,true,false, [tex]);
                 etity.toTransparentBlend();
                 this.solidEntity = etity;
@@ -126,7 +129,7 @@ export namespace particle
                         etity.setVelocityAt(i,pv.x,pv.y,pv.z);
                     }
                 }
-                etity.setPlayParam(true,false);
+                etity.setPlayParam(true,false,this.m_clipMixEnabled);
                 etity.initialize(true,false,false,[tex]);
 
                 this.flameEntity = etity;

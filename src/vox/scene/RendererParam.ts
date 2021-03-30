@@ -24,6 +24,7 @@ export namespace vox
                 ,preserveDrawingBuffer:true
                 ,powerPreference:"high-performance"//"default"
             };
+            private m_tickUpdateTime:number = 50;// delay 50 ms
             // display 3d view buf size auto sync window size
             autoSyncRenderBufferAndWindowSize:boolean = true;
             maxWebGLVersion:number = 2;
@@ -42,6 +43,18 @@ export namespace vox
             constructor(div:HTMLElement = null)
             {
                 this.m_mainDiv = div;
+            }
+            /**
+             * @param   tickUpdateTime default value 50 ms delay
+             */
+            setTickUpdateTime(tickUpdateTime:number):void
+            {
+                tickUpdateTime = Math.round(tickUpdateTime);
+                this.m_tickUpdateTime = tickUpdateTime > 5?tickUpdateTime:5;
+            }
+            getTickUpdateTime():number
+            {
+                return this.m_tickUpdateTime;
             }
             getDiv():HTMLElement
             {

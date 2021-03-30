@@ -82,8 +82,6 @@ export namespace demo
         
         runBegin():void
         {
-            // 分帧加载
-            this.m_texLoader.run();
             // render begin
             this.m_rscene.runBegin();
             // run logic program

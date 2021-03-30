@@ -5,13 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IPoolNodeT from "../../vox/utils/IPoolNode";
+import * as IPoolNodeT from "../../vox/base/IPoolNode";
 
-import IPoolNode = IPoolNodeT.vox.utils.IPoolNode;
+import IPoolNode = IPoolNodeT.vox.base.IPoolNode;
 
 export namespace vox
 {
-    export namespace utils
+    export namespace base
     {
         export class PoolNodeBuilder
         {

@@ -126,9 +126,6 @@ export namespace demo
         run():void
         {
             this.m_statusDisp.update();
-
-            // 分帧加载
-            this.m_texLoader.run();
             
             this.m_rscene.run();
 

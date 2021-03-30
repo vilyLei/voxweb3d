@@ -26,12 +26,14 @@ export namespace particle
             private m_eruptionEfSrc:EruptionEffect = null;
             private m_flameTexture:TextureProxy = null;
             private m_solidTexture:TextureProxy = null;
+            private m_clipMixEnabled:boolean = false;
             constructor(){super();}
 
-            initialize(renderer:IRenderer,processIndex:number,flameTotal:number, solidTotal:number, flameTexture:TextureProxy,solidTexture:TextureProxy):void
+            initialize(renderer:IRenderer,processIndex:number,flameTotal:number, solidTotal:number, flameTexture:TextureProxy,solidTexture:TextureProxy,clipMixEnabled:boolean = false):void
             {
                 if(this.m_eruptionEfSrc == null)
                 {
+                    this.m_clipMixEnabled = clipMixEnabled;
                     this.m_flameTexture = flameTexture;
                     this.m_solidTexture = solidTexture;
 
@@ -53,7 +55,7 @@ export namespace particle
                 if(this.m_freeEffList.length < 1)
                 {
                     eff = new EruptionEffect();
-                    eff.initializeFrom(this.m_eruptionEfSrc,flameTexture,solidTexture);
+                    eff.initializeFrom(this.m_eruptionEfSrc, flameTexture,solidTexture, this.m_clipMixEnabled);
                     this.m_renderer.addEntity(eff.solidEntity, this.m_renderProcessI, false);
                     this.m_renderer.addEntity(eff.flameEntity, this.m_renderProcessI, false);                    
                 }

@@ -111,7 +111,6 @@ export namespace demo
         }
         run():void
         {
-            this.m_texLoader.run();
             this.m_rscene.run();            
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }

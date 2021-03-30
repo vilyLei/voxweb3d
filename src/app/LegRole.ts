@@ -205,12 +205,9 @@ export namespace app
         }
         run():void
         {
-
             this.m_statusDisp.update();
-            this.m_texLoader.run();
-
             this.m_rscene.run();
-
+            
             //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }

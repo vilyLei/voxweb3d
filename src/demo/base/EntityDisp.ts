@@ -184,14 +184,7 @@ export namespace demo
                         }
                     }
                     let t:number = Math.sin(this.m_time);
-                    if(this.alphaEnabled)
-                    {
-                        this.m_bill.setAlpha(t);
-                    }
-                    else
-                    {
-                        this.m_bill.setBrightness(t);
-                    }
+                    this.m_bill.setFadeFactor(t);
                     this.m_bill.setRotationZ(this.m_bill.getRotationZ() + this.rotSpd);
                     if(t < 0.0)
                     {

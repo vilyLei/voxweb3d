@@ -10,12 +10,12 @@
 import * as IVertexRenderObjT from "../../vox/render/IVertexRenderObj";
 import * as ITextureRenderObjT from "../../vox/render/ITextureRenderObj";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
-import * as IPoolNodeT from "../../vox/utils/IPoolNode";
+import * as IPoolNodeT from "../../vox/base/IPoolNode";
 
 import IVertexRenderObj = IVertexRenderObjT.vox.render.IVertexRenderObj;
 import ITextureRenderObj = ITextureRenderObjT.vox.render.ITextureRenderObj;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
-import IPoolNode = IPoolNodeT.vox.utils.IPoolNode;
+import IPoolNode = IPoolNodeT.vox.base.IPoolNode;
 
 export namespace vox
 {

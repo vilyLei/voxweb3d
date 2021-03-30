@@ -110,7 +110,7 @@ export namespace demo
         {
             
             this.m_texLoader.run();
-            this.m_texBlock.update();
+            this.m_texBlock.run();
 
             let pcontext:RendererInstanceContext = this.m_rcontext;
             let rinstance:RendererInstance = this.m_renderer;

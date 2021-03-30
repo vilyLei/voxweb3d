@@ -287,7 +287,7 @@ export namespace demo
                     }
                 }
 
-                this.m_texLoader.run();
+                this.//m_texLoader.run();
             }
         }
     }

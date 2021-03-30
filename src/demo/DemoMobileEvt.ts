@@ -295,9 +295,6 @@ export namespace demo
         private m_lookAtPos:Vector3D = new Vector3D();
         run():void
         {
-            
-            // 分帧加载
-            this.m_texLoader.run();
             //this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
             // render begin
             this.m_rscene.runBegin();

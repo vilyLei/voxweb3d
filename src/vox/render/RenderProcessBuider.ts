@@ -5,8 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IPoolNodeT from "../../vox/utils/IPoolNode";
-import * as PoolNodeBuilderT from "../../vox/utils/PoolNodeBuilder";
+import * as IPoolNodeT from "../../vox/base/IPoolNode";
+import * as PoolNodeBuilderT from "../../vox/base/PoolNodeBuilder";
 import * as RPOUnitT from "../../vox/render/RPOUnit";
 import * as RenderShaderT from '../../vox/render/RenderShader';
 import * as RPOUnitBuilderT from "../../vox/render/RPOUnitBuilder";
@@ -15,8 +15,8 @@ import * as IRenderResourceT from "../../vox/render/IRenderResource";
 import * as ROVertexResourceT from "../../vox/render/ROVertexResource";
 import * as RenderProcessT from "../../vox/render/RenderProcess";
 
-import IPoolNode = IPoolNodeT.vox.utils.IPoolNode;
-import PoolNodeBuilder = PoolNodeBuilderT.vox.utils.PoolNodeBuilder;
+import IPoolNode = IPoolNodeT.vox.base.IPoolNode;
+import PoolNodeBuilder = PoolNodeBuilderT.vox.base.PoolNodeBuilder;
 import RPOUnit = RPOUnitT.vox.render.RPOUnit;
 import RenderShader = RenderShaderT.vox.render.RenderShader;
 import RPOUnitBuilder = RPOUnitBuilderT.vox.render.RPOUnitBuilder;

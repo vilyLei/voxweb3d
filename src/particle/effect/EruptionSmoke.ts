@@ -24,19 +24,22 @@ export namespace particle
     {
         export class EruptionSmoke implements IParticleEffect
         {
+            private m_clipMixEnabled:boolean = false;
             smokeEntity:Billboard3DFlowEntity = null;
             constructor(){}
-            initialize(particleTotal:number, texture:TextureProxy,colorTexture:TextureProxy):void
+            initialize(particleTotal:number, texture:TextureProxy,colorTexture:TextureProxy,clipMixEnabled:boolean = false):void
             {
                 if(this.smokeEntity == null && particleTotal > 0)
                 {
+                    this.m_clipMixEnabled = clipMixEnabled;
                     this.initSmoke(null,particleTotal,texture,colorTexture);
                 }
             }
-            initializeFrom(effect:EruptionSmoke, texture:TextureProxy,colorTexture:TextureProxy):void
+            initializeFrom(effect:EruptionSmoke, texture:TextureProxy,colorTexture:TextureProxy,clipMixEnabled:boolean = false):void
             {
                 if(effect != null && this.smokeEntity == null)
                 {
+                    this.m_clipMixEnabled = clipMixEnabled;
                     this.initSmoke(effect.smokeEntity, 50,texture,colorTexture);
                 }
             }
@@ -80,7 +83,7 @@ export namespace particle
                         //entity.setVelocityAt(i,pv.x,pv.y,pv.z);
                     }
                 }
-                entity.setPlayParam(true,false);
+                entity.setPlayParam(true,false,this.m_clipMixEnabled);
                 entity.initialize(true,false,true,[tex,offsetColorTex]);
                 entity.setRGBOffset3f(Math.random() * 2.0 - 1.0,Math.random() * 2.0 - 1.0,Math.random() * 2.0 - 1.0);
                 entity.setRGB3f(0.1,0.1,0.1);

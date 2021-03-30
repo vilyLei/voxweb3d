@@ -83,7 +83,7 @@ export namespace vox
                     this.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
                 }
             }
-            toAddBlend(always:boolean = false):void
+            toBrightnessBlend(always:boolean = false):void
             {
                 if(always)
                 {
