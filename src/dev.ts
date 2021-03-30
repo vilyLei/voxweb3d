@@ -232,8 +232,8 @@
 //  import * as DemoParticleMixTex from "./demo/DemoParticleMixTex";
 //  import Demo = DemoParticleMixTex.demo.DemoParticleMixTex;
 
-import * as DemoParticleGroup from "./demo/DemoParticleGroup";
-import Demo = DemoParticleGroup.demo.DemoParticleGroup;
+//  import * as DemoParticleGroup from "./demo/DemoParticleGroup";
+//  import Demo = DemoParticleGroup.demo.DemoParticleGroup;
 
 //  import * as DemoParticleEruption from "./demo/DemoParticleEruption";
 //  import Demo = DemoParticleEruption.demo.DemoParticleEruption;
@@ -298,8 +298,8 @@ import Demo = DemoParticleGroup.demo.DemoParticleGroup;
 //  import * as BoFrame from "./app/BoFrame";
 //  import Demo = BoFrame.app.BoFrame;
 
-//  import * as RbtDrama from "./app/RbtDrama";
-//  import Demo = RbtDrama.app.RbtDrama;
+import * as RbtDrama from "./app/RbtDrama";
+import Demo = RbtDrama.app.RbtDrama;
 
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;

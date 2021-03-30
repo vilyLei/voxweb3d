@@ -23,8 +23,8 @@ export namespace app
 {
     export namespace robot
     {
-        // leg
-        export class TwoLRbtModule
+        // arm
+        export class TwoARbtModule
         {
             private m_sc:RendererScene = null;
             private m_time:number = 0;
