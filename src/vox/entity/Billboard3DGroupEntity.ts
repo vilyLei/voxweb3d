@@ -155,11 +155,11 @@ export namespace vox
             {
                 if(always)
                 {
-                    this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
+                    this.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
                 }
                 else
                 {
-                    this.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
+                    this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
                 }
             }
             initialize(texList:TextureProxy[]):void

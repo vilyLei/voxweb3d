@@ -131,7 +131,7 @@ export namespace vox
                 }
                 else
                 {
-                    this.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
+                    this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
                 }
             }
             initializeSquare(size:number,texList:TextureProxy[]):void

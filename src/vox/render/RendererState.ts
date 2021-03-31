@@ -45,6 +45,9 @@ export namespace vox
             static BACK_ADD_BLENDSORT_STATE:number = 10;
             static BACK_ADD_ALWAYS_STATE:number = 11;
             static BACK_ALPHA_ADD_ALWAYS_STATE:number = 12;
+            static NONE_ADD_ALWAYS_STATE:number = 13;
+            static NONE_ADD_BLENDSORT_STATE:number = 14;
+            static NONE_ALPHA_ADD_ALWAYS_STATE:number = 15;
 
             static Initialize():void
             {
@@ -73,6 +76,9 @@ export namespace vox
                     RendererState.BACK_ADD_BLENDSORT_STATE = RenderStateObject.Create("back_add_blendSort",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_TRANSPARENT_SORT);
                     RendererState.BACK_ADD_ALWAYS_STATE = RenderStateObject.Create("back_add_always",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                     RendererState.BACK_ALPHA_ADD_ALWAYS_STATE = RenderStateObject.Create("back_alpha_add_always",CullFaceMode.BACK,RenderBlendMode.ALPHA_ADD,DepthTestMode.RENDER_ALWAYS);
+                    RendererState.NONE_ADD_ALWAYS_STATE = RenderStateObject.Create("none_add_always",CullFaceMode.NONE,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
+                    RendererState.NONE_ADD_BLENDSORT_STATE = RenderStateObject.Create("none_add_blendSort",CullFaceMode.NONE,RenderBlendMode.ADD,DepthTestMode.RENDER_TRANSPARENT_SORT);
+                    RendererState.NONE_ALPHA_ADD_ALWAYS_STATE = RenderStateObject.Create("none_alpha_add_always",CullFaceMode.NONE,RenderBlendMode.ALPHA_ADD,DepthTestMode.RENDER_ALWAYS);
 
                 }
             }

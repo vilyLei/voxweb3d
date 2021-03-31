@@ -29,6 +29,8 @@ export namespace vox
             {
                 playOnce:boolean = false;
                 direcEnabled:boolean = false;
+                // 因为速度增加，在x轴方向缩放(拉长或者缩短)
+                spdScaleEnabled:boolean = false;
                 constructor()
                 {
                     super();
@@ -44,11 +46,12 @@ export namespace vox
                     }else if(this.direcEnabled)
                     {
                         this.m_uniqueName = "BillboardFlowShader_D";
+                        if(this.spdScaleEnabled)this.m_uniqueName += "SpdScale";
                     }else
                     {
                         this.m_uniqueName = "BillboardFlowShader";
                     }
-                    this.m_uniqueName += (this.clipMixEnabled?"Mix":"");
+                    if(this.clipMixEnabled)this.m_uniqueName += "Mix";
                 }
                 getVtxShaderCode():string
                 {
@@ -98,15 +101,26 @@ void main()
     // scale
     vec2 vtx = a_vs.xy * temp.xy * vec2(a_vs.z + kf * a_vs.w);
 `;
-                    let vtxCode3:string;
-                    if(this.direcEnabled)
-                    {
-                        vtxCode3 = 
+                    let vtxCode3:string = 
 `
     vec3 timeV = vec3(time);
-    vec3 pv0 = a_vs2.xyz + (a_nvs.xyz + (u_billParam[3].xyz + a_nvs2.xyz) * timeV) * timeV;
+    vec3 acc3 = u_billParam[3].xyz + a_nvs2.xyz;
+`;
+                    if(this.direcEnabled)
+                    {
+                        if(this.spdScaleEnabled)
+                        {
+                            vtxCode3 +=
+`
+float v0scale = clamp(length(a_nvs.xyz + acc3 * timeV)/u_billParam[1].w,1.0,u_billParam[3].w);
+vtx *= vec2(v0scale, 1.0);
+`;
+                        }
+                        vtxCode3 +=
+`
+    vec3 pv0 = a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV;
     timeV += biasV3;
-    vec3 pv1 = a_vs2.xyz + (a_nvs.xyz + (u_billParam[3].xyz + a_nvs2.xyz) * timeV) * timeV;
+    vec3 pv1 = a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV;
     
     mat4 voMat = u_viewMat * u_objMat;
     vec4 pos = voMat * vec4(pv0,1.0);
@@ -121,10 +135,9 @@ void main()
                     }
                     else
                     {
-                        vtxCode3 = 
+                        vtxCode3 += 
 `
-    vec3 timeV = vec3(time);
-    vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz + (a_nvs.xyz + (u_billParam[3].xyz + a_nvs2.xyz) * timeV) * timeV,1.0);
+    vec4 pos = u_viewMat * u_objMat * vec4(a_vs2.xyz + (a_nvs.xyz + acc3 * timeV) * timeV,1.0);
 `;
                     }
 let vtxCode4:string = 
@@ -159,6 +172,7 @@ let vtxCode4:string =
                 private m_clipMixEnabled:boolean = false;
                 private m_playOnce:boolean = false;
                 private m_direcEnabled:boolean = false;
+                private m_spdScaleEnabled:boolean = false;
                 private m_time:number = 0;
                 private m_uniformData:Float32Array = null;
                 private m_color:Color4 = new Color4(1.0,1.0,1.0,1.0);
@@ -171,19 +185,26 @@ let vtxCode4:string =
                     this.m_clipEnabled = clipEnabled;
                     if(clipEnabled)
                     {
-                        this.m_uniformData = new Float32Array([1.0,1.0,0.0,1.0, 1.0,1.0,1.0,0.0, 0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0, 2,4,0.5,0.5]);
+                        this.m_uniformData = new Float32Array([
+                            1.0,1.0,0.0,1.0,        // sx,sy,time, undefined
+                            1.0,1.0,1.0,1.0,        // r,g,b, spdScaleFactor(0.1 -> 5.0)
+                            0.0,0.0,0.0,0.0,
+                            0.0,0.0,0.0,2.0,        // whole acceleration x,y,z,  speed scale max value
+                            2,4,0.5,0.5             // clip cn, clip total, clip du, clip dv
+                        ]);
                     }
                     else
                     {
-                        this.m_uniformData = new Float32Array([1.0,1.0,0.0,1.0, 1.0,1.0,1.0,0.0, 0.0,0.0,0.0,0.0, 0.0,0.0,0.0,0.0]);
+                        this.m_uniformData = new Float32Array([1.0,1.0,0.0,1.0, 1.0,1.0,1.0,0.0, 0.0,0.0,0.0,0.0, 0.0,0.0,0.0,2.0]);
                     }
                 }
 
-                setPlayParam(playOnce:boolean,direcEnabled:boolean,clipMixEnabled:boolean = false):void
+                setPlayParam(playOnce:boolean,direcEnabled:boolean,clipMixEnabled:boolean = false,spdScaleEnabled:boolean = false):void
                 {
                     this.m_playOnce = playOnce;
                     this.m_direcEnabled = direcEnabled;
                     this.m_clipMixEnabled = clipMixEnabled;
+                    this.m_spdScaleEnabled = spdScaleEnabled;
                 }
                 getCodeBuf():ShaderCodeBuffer
                 {
@@ -191,6 +212,7 @@ let vtxCode4:string =
                     buf.playOnce = this.m_playOnce;
                     buf.direcEnabled = this.m_direcEnabled;
                     buf.clipMixEnabled = this.m_clipMixEnabled;
+                    buf.spdScaleEnabled = this.m_spdScaleEnabled;
                     buf.setParam(this.m_brightnessEnabled, this.m_alphaEnabled,this.m_clipEnabled, this.getTextureTotal() > 1);
                     return buf;
                 }
@@ -207,10 +229,10 @@ let vtxCode4:string =
                     this.m_color.r = pr;
                     this.m_color.g = pg;
                     this.m_color.b = pb;
+                    this.m_color.a = pa;
                     this.m_uniformData[4] = pr * this.m_brightness;
                     this.m_uniformData[5] = pg * this.m_brightness;
                     this.m_uniformData[6] = pb * this.m_brightness;
-                    this.m_uniformData[7] = pa;
                 }
                 setRGB3f(pr:number,pg:number,pb:number)
                 {
@@ -259,6 +281,15 @@ let vtxCode4:string =
                     this.m_uniformData[12] = accX;
                     this.m_uniformData[13] = accY;
                     this.m_uniformData[14] = accZ;
+                }
+                setSpdScaleMax(spdScaleMax:number,factor:number = 1.0):void
+                {
+                    if(spdScaleMax < 1.0) spdScaleMax = 1.0;
+                    if(spdScaleMax > 10.0) spdScaleMax = 10.0;
+                    if(factor < 0.1) factor = 0.1;
+                    if(factor > 5.0) factor = 5.0;
+                    this.m_uniformData[15] = spdScaleMax;                    
+                    this.m_uniformData[7] = factor;
                 }
                 setClipUVParam(cn:number,total:number,du:number,dv:number):void
                 {

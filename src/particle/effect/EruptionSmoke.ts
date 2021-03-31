@@ -83,6 +83,7 @@ export namespace particle
                         //entity.setVelocityAt(i,pv.x,pv.y,pv.z);
                     }
                 }
+                entity.toBrightnessBlend(false);
                 entity.setPlayParam(true,false,this.m_clipMixEnabled);
                 entity.initialize(true,false,true,[tex,offsetColorTex]);
                 entity.setRGBOffset3f(Math.random() * 2.0 - 1.0,Math.random() * 2.0 - 1.0,Math.random() * 2.0 - 1.0);

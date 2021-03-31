@@ -243,7 +243,7 @@ export namespace vox
             {
                 if(RenderStateObject.s_stsNameMap.has(objName))
                 {
-                    let po = RenderStateObject.s_stsNameMap.get(objName);
+                    let po:RenderStateObject = RenderStateObject.s_stsNameMap.get(objName);
                     return po.getUid();
                 }
                 let key = depthTestMode << 8 | blendMode<<4 | cullFaceMode;
@@ -254,7 +254,7 @@ export namespace vox
                 }
                 else
                 {
-                    let po = new RenderStateObject(cullFaceMode,blendMode,depthTestMode);
+                    let po:RenderStateObject = new RenderStateObject(cullFaceMode,blendMode,depthTestMode);
                     key = po.getUid();
                     RenderStateObject.s_stsMap.set(key, po);
                     RenderStateObject.s_stsNameMap.set(objName, po);

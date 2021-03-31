@@ -35,6 +35,7 @@ export namespace vox
             private m_direcEnabled:boolean = false;
             private m_clipEnabled:boolean = false;
             private m_clipMixEnabled:boolean = false;
+            private m_spdScaleEnabled:boolean = false;
             flipVerticalUV:boolean = false;
             constructor(transform:ROTransform = null)
             {
@@ -178,6 +179,13 @@ export namespace vox
                     this.m_currMaterial.setAcceleration(accX,accY,accZ);
                 }
             }
+            setSpdScaleMax(spdScaleMax:number,factor:number = 1.0):void
+            {
+                if(this.m_currMaterial != null)
+                {
+                    this.m_currMaterial.setSpdScaleMax(spdScaleMax,factor);
+                }
+            }
             setClipUVParam(cn:number,total:number,du:number,dv:number):void
             {
                 if(this.m_clipEnabled && this.m_currMaterial != null)
@@ -207,7 +215,7 @@ export namespace vox
                 if(this.getMaterial() == null)
                 {
                     this.m_currMaterial = new BillboardFlowMaterial(this.m_brightnessEnabled,this.m_alphaEnabled, this.m_clipEnabled);
-                    this.m_currMaterial.setPlayParam(this.m_playOnce, this.m_direcEnabled, this.m_clipMixEnabled);
+                    this.m_currMaterial.setPlayParam(this.m_playOnce, this.m_direcEnabled, this.m_clipMixEnabled,this.m_spdScaleEnabled);
                     this.m_currMaterial.setTextureList(texList);
                     this.setMaterial(this.m_currMaterial);
                 }
@@ -232,18 +240,19 @@ export namespace vox
             {
                 if(always)
                 {
-                    this.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
+                    this.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
                 }
                 else
                 {
-                    this.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
+                    this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
                 }
             }
-            setPlayParam(playOnce:boolean,direcEnabled:boolean,clipMixEnabled:boolean = false):void
+            setPlayParam(playOnce:boolean,direcEnabled:boolean,clipMixEnabled:boolean = false,spdScaleEnabled:boolean = false):void
             {
                 this.m_playOnce = playOnce;
                 this.m_direcEnabled = direcEnabled;
                 this.m_clipMixEnabled = clipMixEnabled;
+                this.m_spdScaleEnabled = spdScaleEnabled;
             }
             initialize(brightnessEnabled:boolean,alphaEnabled:boolean,clipEnabled:boolean, texList:TextureProxy[]):void
             {

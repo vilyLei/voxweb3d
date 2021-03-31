@@ -68,30 +68,41 @@ export namespace vox
                     this.getMaterial().setTextureList(texList);
                 }
             }
-            showDoubleFace():void
+            showDoubleFace(doubleFace:boolean = true):void
             {
-                this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-            }
-            toTransparentBlend(always:boolean = false):void
-            {
-                if(always)
+                if(doubleFace)
                 {
-                    this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+                    this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
                 }
                 else
                 {
-                    this.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+                    this.setRenderState(RendererState.NORMAL_STATE);
                 }
             }
-            toBrightnessBlend(always:boolean = false):void
+            toTransparentBlend(always:boolean = false,doubleFace:boolean = false):void
             {
                 if(always)
                 {
-                    this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
+                    if(doubleFace) this.setRenderState(RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
+                    else this.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
                 }
                 else
                 {
-                    this.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
+                    if(doubleFace) this.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
+                    else this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+                }
+            }
+            toBrightnessBlend(always:boolean = false,doubleFace:boolean = false):void
+            {
+                if(always)
+                {
+                    if(doubleFace) this.setRenderState(RendererState.NONE_ADD_ALWAYS_STATE);
+                    else this.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
+                }
+                else
+                {
+                    if(doubleFace) this.setRenderState(RendererState.NONE_ADD_BLENDSORT_STATE);
+                    else this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
                 }
             }
             /**

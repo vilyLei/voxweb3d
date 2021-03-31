@@ -49,9 +49,7 @@ export namespace demo
 {
     export class DemoParticleGroup
     {
-        constructor()
-        {
-        }
+        constructor(){}
         private m_rscene:RendererScene = null;
         private m_texLoader:ImageTextureLoader = null;
         private m_camTrack:CameraTrack = null;
@@ -69,11 +67,7 @@ export namespace demo
         
         initialize():void
         {
-            //4.71238898038469
             console.log("DemoParticleGroup::initialize()......");
-            console.log("MathConst.MATH_PI: ",MathConst.MATH_PI);
-            console.log("MathConst.MATH_3PER2PI: ",MathConst.MATH_3PER2PI);
-            console.log("MathConst.MATH_1PER2PI: ",MathConst.MATH_1PER2PI);
             if(this.m_rscene == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
@@ -153,7 +147,8 @@ export namespace demo
                 
                 ///*
                 //this.initFlowBillOneByOne(this.m_textures);
-                //this.initFlowDirecBill(this.m_textures[4], null, false, true,true);
+                //this.initFlowDirecBill(this.m_textures[7], null, false, true,true,true);
+                this.initFlowDirecBill(this.m_textures[4], null, false, true,true,true);
                 //this.initFlowBill(this.m_textures[this.m_textures.length - 1],this.m_textures[2], true);
                 //this.initFlowBill(this.m_textures[this.m_textures.length - 1],null, false, true);
                 //this.initFlowBill(this.m_textures[this.m_textures.length - 1],null, true, true);
@@ -162,7 +157,7 @@ export namespace demo
                 //this.initFlareBill(this.m_textures[this.m_textures.length - 1], this.m_textures[1], true);
                 //this.initFlareBill(this.m_textures[this.m_textures.length - 1], this.m_textures[1], false);
                 //this.initFlareBill(this.m_textures[this.m_textures.length - 1], null, true);
-                this.initFlareBill(this.m_textures[this.m_textures.length - 2], null, true, true);
+                //this.initFlareBill(this.m_textures[this.m_textures.length - 2], null, true, true);
                 //this.initFlareBill(this.m_textures[this.m_textures.length - 1], null, false);
                 //this.initBillGroup(this.m_textures);
                 //*/
@@ -211,7 +206,7 @@ export namespace demo
             this.m_flowBill = billGroup;
         }
         
-        private initFlowDirecBill(tex:TextureProxy,colorTex:TextureProxy, clipEnabled:boolean = false, playOnce:boolean = false, direcEnabled:boolean = false):void
+        private initFlowDirecBill(tex:TextureProxy,colorTex:TextureProxy, clipEnabled:boolean = false, playOnce:boolean = false, direcEnabled:boolean = false,spdScaleEnabled:boolean = false):void
         {
             let size:number = 100;
             let params:number[][] = [
@@ -245,10 +240,11 @@ export namespace demo
                 billGroup.setAccelerationAt(i, 0.003, -0.003, 0.0);
                 billGroup.setVelocityAt(i,0.0, 0.8 + Math.random() * 0.8, 0.0);
                 pv.normalize();
-                pv.scaleBy((Math.random() * 2.0 + 0.2) * -1.0);
-                //billGroup.setVelocityAt(i,pv.x,pv.y,pv.z);
+                pv.scaleBy((Math.random() * 2.0 + 0.5) * 1.0);
+                billGroup.setVelocityAt(i,pv.x,pv.y,pv.z);
             }
-            billGroup.setPlayParam(playOnce,direcEnabled);
+            billGroup.setPlayParam(playOnce,direcEnabled,false,spdScaleEnabled);
+            billGroup.toBrightnessBlend();
             if(colorTex != null)
             {
                 billGroup.initialize(true,false,clipEnabled,[tex,colorTex]);
@@ -258,6 +254,7 @@ export namespace demo
             {
                 billGroup.initialize(true,false,clipEnabled,[tex]);
             }
+            billGroup.setSpdScaleMax(4.0,1.0);
             //billGroup.setClipUVParam(4,16,0.25,0.25);
             billGroup.setClipUVParam(2, 4,0.5,0.5);
             this.m_rscene.addEntity(billGroup);

@@ -12,6 +12,7 @@ import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
 import * as Box3DEntityT from "../vox/entity/Box3DEntity";
 import * as Sphere3DEntityT from "../vox/entity/Sphere3DEntity";
 import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
+import * as Pipe3DEntityT from "../vox/entity/Pipe3DEntity";
 import * as Billboard3DEntityT from "../vox/entity/Billboard3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureConstT from "../vox/texture/TextureConst";
@@ -36,6 +37,7 @@ import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
 import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
+import Pipe3DEntity = Pipe3DEntityT.vox.entity.Pipe3DEntity;
 import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
@@ -69,7 +71,7 @@ export namespace demo
         {
             if(this.m_renderer == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
+                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 
                 let rparam:RendererParam = new RendererParam();
                 rparam.setCamProject(45.0,1.0,3000.0);
@@ -94,12 +96,18 @@ export namespace demo
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 
                 let i:number = 0;
-                let plane:Plane3DEntity = new Plane3DEntity();
-                //plane.showDoubleFace();
-                plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
-                //plane.initializeXOZ(-200.0,-150.0,400.0,300.0);
-                this.m_renderer.addEntity(plane);
+                //  let plane:Plane3DEntity = new Plane3DEntity();
+                //  //plane.showDoubleFace();
+                //  plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
+                //  //plane.initializeXOZ(-200.0,-150.0,400.0,300.0);
+                //  this.m_renderer.addEntity(plane);
                 
+                let pipe:Pipe3DEntity = new Pipe3DEntity();
+                pipe.showDoubleFace();
+                pipe.toBrightnessBlend(false,true);
+                pipe.initialize(50.0,260.0,8,[tex3]);
+                this.m_renderer.addEntity(pipe);
+                return;
                 let srcBillboard:Billboard3DEntity = new Billboard3DEntity();
                 srcBillboard.initialize(100.0,100.0, [tex2]);
                 for(i = 0; i < 2; ++i)
@@ -125,7 +133,6 @@ export namespace demo
                     this.m_renderer.addEntity(billboard);
                     this.m_equeue.addBillEntity(billboard,false);
                 }
-
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.initialize(300.0);
                 this.m_renderer.addEntity(axis);

@@ -88,8 +88,9 @@ export namespace particle
                         etity.setVelocityAt(i,pv.x,pv.y,pv.z);
                     }
                 }
-                etity.setPlayParam(true,true, this.m_clipMixEnabled);
+                etity.setPlayParam(true,true, this.m_clipMixEnabled,true);
                 etity.initialize(false,true,false, [tex]);
+                etity.setSpdScaleMax(4.0,1.5);
                 etity.toTransparentBlend();
                 this.solidEntity = etity;
             }
@@ -104,6 +105,7 @@ export namespace particle
                     [0.5,0.5,0.5,0.5]
                 ];
                 let etity:Billboard3DFlowEntity = new Billboard3DFlowEntity();
+                etity.toBrightnessBlend();
                 if(srcFlameEntity != null)
                 {
                     etity.copyMeshFrom(srcFlameEntity);
