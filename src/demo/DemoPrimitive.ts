@@ -14,6 +14,7 @@ import * as Sphere3DEntityT from "../vox/entity/Sphere3DEntity";
 import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
 import * as Pipe3DEntityT from "../vox/entity/Pipe3DEntity";
 import * as Billboard3DEntityT from "../vox/entity/Billboard3DEntity";
+import * as LightLine3DEntityT from "../vox/entity/LightLine3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureConstT from "../vox/texture/TextureConst";
 import * as TextureBlockT from "../vox/texture/TextureBlock";
@@ -39,6 +40,7 @@ import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
 import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
 import Pipe3DEntity = Pipe3DEntityT.vox.entity.Pipe3DEntity;
 import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
+import LightLine3DEntity = LightLine3DEntityT.vox.entity.LightLine3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureBlock = TextureBlockT.vox.texture.TextureBlock;
@@ -74,6 +76,7 @@ export namespace demo
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 
                 let rparam:RendererParam = new RendererParam();
+                rparam.setTickUpdateTime(20);
                 rparam.setCamProject(45.0,1.0,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
                 this.m_renderer = new RendererInstance();
@@ -96,12 +99,20 @@ export namespace demo
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 
                 let i:number = 0;
-                //  let plane:Plane3DEntity = new Plane3DEntity();
-                //  //plane.showDoubleFace();
-                //  plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
-                //  //plane.initializeXOZ(-200.0,-150.0,400.0,300.0);
-                //  this.m_renderer.addEntity(plane);
-                
+                let plane:Plane3DEntity = new Plane3DEntity();
+                //plane.showDoubleFace();
+                plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
+                //plane.initializeXOZ(-200.0,-150.0,400.0,300.0);
+                plane.setXYZ(0.0,-130.0,0.0);
+                this.m_renderer.addEntity(plane);
+
+                let lightLine:LightLine3DEntity = new LightLine3DEntity();
+                //lightLine.showDoubleFace();
+                //lightLine.toBrightnessBlend();
+                lightLine.initialize(new Vector3D(), new Vector3D(200.0,0.0,0.0), 200.0,[tex3]);
+                this.m_renderer.addEntity(lightLine,0);
+                return;
+
                 let pipe:Pipe3DEntity = new Pipe3DEntity();
                 pipe.showDoubleFace();
                 pipe.toBrightnessBlend(false,true);

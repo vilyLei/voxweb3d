@@ -11,18 +11,13 @@
 import * as MathConstT from "../../../vox/math/MathConst";
 import * as ShaderCodeBufferT from "../../../vox/material/ShaderCodeBuffer";
 import * as ShaderUniformDataT from "../../../vox/material/ShaderUniformData";
-//import * as ShaderUniformT from "../../../vox/material/ShaderUniform";
 import * as Color4T from "../../../vox/material/Color4";
 import * as MaterialBaseT from "../../../vox/material/MaterialBase";
-import * as BillboardFSBaseT from "../../../vox/material/mcase/BillboardFSBase";
-
 import MathConst = MathConstT.vox.math.MathConst;
 import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
 import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
-//import ShaderUniform = ShaderUniformT.vox.material.ShaderUniform;
 import Color4 = Color4T.vox.material.Color4;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
-import BillboardFSBase = BillboardFSBaseT.vox.material.mcase.BillboardFSBase;
 
 export namespace vox
 {
@@ -30,9 +25,9 @@ export namespace vox
     {
         export namespace mcase
         {
-            export class BillboardShaderBuffer extends ShaderCodeBuffer
+            export class LightLine3DShaderBuffer extends ShaderCodeBuffer
             {
-                billFS:BillboardFSBase = new BillboardFSBase();
+                //billFS:LightLine3DFSBase = new LightLine3DFSBase();
                 constructor()
                 {
                     super();
@@ -40,86 +35,77 @@ export namespace vox
                 private m_uniqueName:string = "";
                 initialize(texEnabled:boolean):void
                 {
-                    this.m_uniqueName = "BillboardShader";
+                    this.m_uniqueName = "LightLine3DShader";
                 }
                 getFragShaderCode():string
                 {
-                    ///*
                     let fragCode0:string =
 `#version 300 es
 precision mediump float;
 uniform sampler2D u_sampler0;
-in vec4 v_colorMult;
-in vec4 v_colorOffset;
 in vec2 v_texUV;
 layout(location = 0) out vec4 FragColor;
 void main()
 {
 vec4 color = texture(u_sampler0, v_texUV);
-vec3 offsetColor = v_colorOffset.rgb;
-vec4 fv4 = v_colorMult.wwww;
-`;
-                    let fadeCode:string = this.billFS.getBrnAndAlphaCode("fv4");
-                    let fragCode2:string =
-`
 FragColor = color;
 }
 `;
-                    return fragCode0 + fadeCode + fragCode2;
-//*/
+                    return fragCode0;
                 }
                 getVtxShaderCode():string
                 {
                     let vtxCode:string = 
 `#version 300 es
 precision mediump float;
-layout(location = 0) in vec2 a_vs;
+layout(location = 0) in vec4 a_vs;
 layout(location = 1) in vec2 a_uvs;
+layout(location = 2) in vec3 a_nvs;
 uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
-uniform vec4 u_billParam[3];
-out vec4 v_colorMult;
-out vec4 v_colorOffset;
+uniform vec4 u_param;
 out vec2 v_texUV;
 void main()
 {
-    vec4 temp = u_billParam[0];
-    float cosv = cos(temp.z);
-    float sinv = sin(temp.z);
-    vec2 vtx = a_vs.xy * temp.xy;
-    vec2 vtx_pos = vec2(vtx.x * cosv - vtx.y * sinv, vtx.x * sinv + vtx.y * cosv);
-    vec4 pos = u_viewMat * u_objMat * vec4(0.0,0.0,0.0,1.0);
-    pos.xy += vtx_pos.xy;
-    gl_Position =  u_projMat * pos;
-    v_texUV = a_uvs;
-    v_colorMult = u_billParam[1];
-    v_colorOffset = u_billParam[2];
+    vec4 pv0 = u_viewMat * u_objMat * vec4(a_vs.xyz,1.0);
+    vec4 pv1 = u_viewMat * u_objMat * vec4(a_nvs.xyz,1.0);
+    vec4 dv = pv1 - pv0;
+    if(a_vs.w > 0.0){
+      pv1.x = dv.y;
+      pv1.y = -dv.x;
+    }else{
+      pv1.x = -dv.y;
+      pv1.y = dv.x;
+    }
+    pv0.xyz += normalize(pv1.xyz) * abs(a_vs.w);
+    gl_Position = u_projMat * pv0;
+    v_texUV = a_uvs * u_param.xy + u_param.zw;
 }
 `;
                     return vtxCode;
                 }
                 getUniqueShaderName():string
                 {
-                    return this.m_uniqueName + "_"+this.billFS.getBrnAlphaStatus();
+                    return this.m_uniqueName;// + "_"+this.billFS.getBrnAlphaStatus();
                 }
                 toString():string
                 {
-                    return "[BillboardShaderBuffer()]";
+                    return "[LightLine3DShaderBuffer()]";
                 }
-                private static ___s_instance:BillboardShaderBuffer = new BillboardShaderBuffer();
-                static GetInstance():BillboardShaderBuffer
+                private static ___s_instance:LightLine3DShaderBuffer = new LightLine3DShaderBuffer();
+                static GetInstance():LightLine3DShaderBuffer
                 {
-                    if(BillboardShaderBuffer.___s_instance != null)
+                    if(LightLine3DShaderBuffer.___s_instance != null)
                     {
-                        return BillboardShaderBuffer.___s_instance;
+                        return LightLine3DShaderBuffer.___s_instance;
                     }
-                    BillboardShaderBuffer.___s_instance = new BillboardShaderBuffer();
-                    return BillboardShaderBuffer.___s_instance;
+                    LightLine3DShaderBuffer.___s_instance = new LightLine3DShaderBuffer();
+                    return LightLine3DShaderBuffer.___s_instance;
                 }
             }
 
-            export class BillboardMaterial extends MaterialBase
+            export class LightLine3DMaterial extends MaterialBase
             {
                 private m_brightnessEnabled:boolean = true;
                 private m_alphaEnabled:boolean = false;
@@ -129,23 +115,39 @@ void main()
                     this.m_brightnessEnabled = brightnessEnabled;
                     this.m_alphaEnabled = alphaEnabled;
                 }
-                private m_rz:number = 0;
-                private m_uniformData:Float32Array = new Float32Array([1.0,1.0,0.0,1.0, 1.0,1.0,1.0,1.0, 0.0,0.0,0.0,0.0]);
+                
+                private m_uniformData:Float32Array = new Float32Array([1.0,1.0,0.0,0.0]);
                 getCodeBuf():ShaderCodeBuffer
                 {
-                    let buf:BillboardShaderBuffer = BillboardShaderBuffer.GetInstance();
-                    buf.billFS.setBrightnessAndAlpha(this.m_brightnessEnabled,this.m_alphaEnabled);
+                    let buf:LightLine3DShaderBuffer = LightLine3DShaderBuffer.GetInstance();
+                    //buf.billFS.setBrightnessAndAlpha(this.m_brightnessEnabled,this.m_alphaEnabled);
                     return buf;
                 }
                 createSelfUniformData():ShaderUniformData
                 {
                     let oum:ShaderUniformData = new ShaderUniformData();
-                    oum.uniformNameList = ["u_billParam"];
+                    oum.uniformNameList = ["u_param"];
                     oum.dataList = [this.m_uniformData];
                     return oum;
                 }
-
-                
+                setUVParam(uScale:number,vScale:number,uOffset:number,vOffset:number):void
+                {
+                    this.m_uniformData[0] = uScale;
+                    this.m_uniformData[1] = vScale;
+                    this.m_uniformData[2] = uOffset;
+                    this.m_uniformData[3] = vOffset;
+                }
+                setUVScale(uScale:number,vScale:number):void
+                {
+                    this.m_uniformData[0] = uScale;
+                    this.m_uniformData[1] = vScale;
+                }
+                setUVOffset(uOffset:number,vOffset:number):void
+                {
+                    this.m_uniformData[2] = uOffset;
+                    this.m_uniformData[3] = vOffset;
+                }
+                /*
                 setRGBA4f(pr:number,pg:number,pb:number,pa:number):void
                 {
                     this.m_uniformData[4] = pr;
@@ -181,21 +183,7 @@ void main()
                     this.m_uniformData[9] = pg;
                     this.m_uniformData[10] = pb;
                 }
-                getRotationZ():number{return this.m_rz;};
-                setRotationZ(degrees:number):void
-                {
-                    this.m_rz = degrees;
-                    this.m_uniformData[2] = degrees * MathConst.MATH_PI_OVER_180;
-                }
-                getScaleX():number{return this.m_uniformData[0];}
-                getScaleY():number{return this.m_uniformData[1];}
-                setScaleX(p:number):void{this.m_uniformData[0] = p;}
-                setScaleY(p:number):void{this.m_uniformData[1] = p;}
-                setScaleXY(sx:number,sy:number):void
-                {
-                    this.m_uniformData[0] = sx;
-                    this.m_uniformData[1] = sy;
-                }
+                //*/
                 getUniformData():Float32Array
                 {
                     return this.m_uniformData;
