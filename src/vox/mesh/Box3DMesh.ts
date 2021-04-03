@@ -7,6 +7,7 @@
 
 import * as MathConstT from "../../vox/math/MathConst";
 import * as Vector3DT from "../../vox/math/Vector3D";
+import * as Matrix4T from "../../vox/math/Matrix4";
 import * as SurfaceNormalCalcT from "../../vox/geom/SurfaceNormalCalc";
 import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
 import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
@@ -15,6 +16,7 @@ import * as MeshBaseT from "../../vox/mesh/MeshBase";
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3DT.vox.math.Vector3D;
+import Matrix4 = Matrix4T.vox.math.Matrix4;
 import SurfaceNormalCalc = SurfaceNormalCalcT.vox.geom.SurfaceNormalCalc;
 import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 import VtxNormalType = VtxBufConstT.vox.mesh.VtxNormalType;
@@ -29,6 +31,7 @@ export namespace vox
         export class Box3DMesh extends MeshBase
         {
             private m_posList:number[][] = [null,null,null,null,null,null,null,null];
+            private m_pos:Vector3D = new Vector3D();
             constructor(bufDataUsage:number = VtxBufConst.VTX_STATIC_DRAW)
             {
                 super(bufDataUsage);
@@ -39,7 +42,7 @@ export namespace vox
             private m_uvs:Float32Array = null;
             private m_nvs:Float32Array = null;
             private m_cvs:Float32Array = null;
-            private m_unlock:boolean = true;
+            //private m_unlock:boolean = true;
 
             flipVerticalUV:boolean = false;
             getVS(){return this.m_vs;}
@@ -47,18 +50,6 @@ export namespace vox
             getNVS(){return this.m_nvs;}
             getCVS(){return this.m_cvs;}
             
-            lock():void
-            {
-                this.m_unlock = false;
-            }
-            unlock():void
-            {
-                this.m_unlock = true;
-            }
-            isUnlock():boolean
-            {
-                return this.m_unlock;
-            }
             setPositionAt(i:number, position:Vector3D):void
             {
                 if(i >= 0 && i < 8)
@@ -69,10 +60,6 @@ export namespace vox
                         arr[0] = position.x;
                         arr[1] = position.y;
                         arr[2] = position.z;
-                        if(this.m_unlock)
-                        {
-                            this.initData(this.m_posList);
-                        }
                     }
                 }
             }
@@ -96,13 +83,10 @@ export namespace vox
                     if(this.m_vs != null)
                     {
                         let arr0:number[] = this.m_posList[i];
-                        //let str:string = i + ",";
                         i++;
                         if(i == 3)i = 0;
                         else if(i == 7)i = 4;
 
-                        //str += i;
-                        //console.log("setEdgeAt str: ",str);
                         let arr1:number[] = this.m_posList[i];
                         arr0[0] = lsPA.x;
                         arr0[1] = lsPA.y;
@@ -110,10 +94,6 @@ export namespace vox
                         arr1[0] = lsPB.x;
                         arr1[1] = lsPB.y;
                         arr1[2] = lsPB.z;
-                        if(this.m_unlock)
-                        {
-                            this.initData(this.m_posList);
-                        }
                     }
                 }
             }
@@ -124,13 +104,10 @@ export namespace vox
                     if(this.m_vs != null)
                     {
                         let arr0:number[] = this.m_posList[i];
-                        //let str:string = i + ",";
                         i++;
                         if(i == 3)i = 0;
                         else if(i == 7)i = 4;
 
-                        //str += i;
-                        //console.log("setEdgeAt str: ",str);
                         let arr1:number[] = this.m_posList[i];
                         lsPA.x = arr0[0];
                         lsPA.y = arr0[1];
@@ -141,58 +118,27 @@ export namespace vox
                     }
                 }
             }
-            
+            // face order: -y,+y,+x,-z,-x,+z
+            private static s_facePosIds:number[] = [0,1,2,3, 4,5,6,7, 4,5,1,0, 5,6,2,1, 7,6,2,3, 4,7,3,0];
             setFaceAt(i:number, lsPA:Vector3D,lsPB:Vector3D,lsPC:Vector3D,lsPD:Vector3D):void
             {
                 if(i >= 0 && i < 8)
                 {
                     if(this.m_vs != null)
                     {
-                        let arr:number[];
+                        i *= 4;
                         let posList:Vector3D[] = [lsPA,lsPB,lsPC,lsPD];
-                        let ids:number[];
+                        let idList:number[] = Box3DMesh.s_facePosIds;
                         let list:number[][] = this.m_posList;
-                        switch(i)
-                        {
-                            case 0:
-                                //-y, 0,1,2,3
-                                ids = [0,1,2,3];
-                            break;
-                            case 1:
-                                //+y, 4,5,6,7
-                                ids = [4,5,6,7];
-                            break;
-                            case 2:
-                                //+x, 4,5,1,0
-                                ids = [4,5,1,0];
-                            break;
-                            case 3:
-                                //-z, 5,6,2,1
-                                ids = [5,6,2,1];
-                            break;
-                            case 4:
-                                //-x, 7,6,2,3
-                                ids = [7,6,2,3];
-                            break;
-                            case 5:
-                                //+z, 4,7,3,0
-                                ids = [4,7,3,0];
-                            break;
-                            default:
-                            break;
-                        }
+                        let arr:number[];
                         let pos:Vector3D;
-                        for(let i:number = 0; i < 4; ++i)
+                        for(let iMax:number = i+4,j:number = 0; i < iMax; ++i)
                         {
-                            arr = list[ids[i]];
-                            pos = posList[i];
+                            arr = list[idList[i]];
+                            pos = posList[j++];
                             arr[0] = pos.x;
                             arr[1] = pos.y;
                             arr[2] = pos.z;
-                        }
-                        if(this.m_unlock)
-                        {
-                            this.initData(this.m_posList);
                         }
                     }
                 }
@@ -203,49 +149,59 @@ export namespace vox
                 {
                     if(this.m_vs != null)
                     {
-                        let arr:number[];
+                        i *= 4;
                         let posList:Vector3D[] = [lsPA,lsPB,lsPC,lsPD];
-                        let ids:number[];
+                        let idList:number[] = Box3DMesh.s_facePosIds;
                         let list:number[][] = this.m_posList;
-                        switch(i)
-                        {
-                            case 0:
-                                //-y, 0,1,2,3
-                                ids = [0,1,2,3];
-                            break;
-                            case 1:
-                                //+y, 4,5,6,7
-                                ids = [4,5,6,7];
-                            break;
-                            case 2:
-                                //+x, 4,5,1,0
-                                ids = [4,5,1,0];
-                            break;
-                            case 3:
-                                //-z, 5,6,2,1
-                                ids = [5,6,2,1];
-                            break;
-                            case 4:
-                                //-x, 7,6,2,3
-                                ids = [7,6,2,3];
-                            break;
-                            case 5:
-                                //+z, 4,7,3,0
-                                ids = [4,7,3,0];
-                            break;
-                            default:
-                            break;
-                        }
+                        let arr:number[];
                         let pos:Vector3D;
-                        for(let i:number = 0; i < 4; ++i)
+                        for(let iMax:number = i+4,j:number = 0; i < iMax; ++i)
                         {
-                            arr = list[ids[i]];
-                            pos = posList[i];
+                            arr = list[idList[i]];
+                            pos = posList[j++];
                             pos.x = arr[0];
                             pos.y = arr[1];
                             pos.z = arr[2];
                         }
-                        this.initData(this.m_posList);
+                    }
+                }
+            }
+            
+            getFaceCenterAt(i:number, outV:Vector3D):void
+            {
+                if(i >= 0 && i < 8)
+                {
+                    if(this.m_vs != null)
+                    {
+                        i *= 4;
+                        let idList:number[] = Box3DMesh.s_facePosIds;
+                        let list:number[][] = this.m_posList;
+                        let arr:number[];
+                        outV.setXYZ(0.0,0.0,0.0);
+                        for(let iMax:number = i+4; i < iMax; ++i)
+                        {
+                            arr = list[idList[i]];
+                            outV.x += arr[0];
+                            outV.y += arr[1];
+                            outV.z += arr[2];
+                        }
+                        outV.scaleBy(0.33333);
+                    }
+                }
+            }
+            transformFaceAt(i:number, mat4:Matrix4):void
+            {
+                if(i >= 0 && i < 8)
+                {
+                    if(this.m_vs != null)
+                    {
+                        i *= 4;
+                        let idList:number[] = Box3DMesh.s_facePosIds;
+                        let list:number[][] = this.m_posList;
+                        for(let iMax:number = i+4; i < iMax; ++i)
+                        {
+                            mat4.transformVectorsSelf(list[idList[i]],3);
+                        }
                     }
                 }
             }
@@ -266,6 +222,7 @@ export namespace vox
         		this.m_posList[5] = [ maxV.x,maxY,minV.z ];
         		this.m_posList[6] = [ minV.x,maxY,minV.z ];
         		this.m_posList[7] = [ minV.x,maxY,maxV.z ];
+
                 this.initData(this.m_posList);
             }
             initialize(minV:Vector3D,maxV:Vector3D):void
@@ -283,12 +240,10 @@ export namespace vox
                 this.initData(this.m_posList);
             }
             
-            private static s_faceIs:number[] = [4,5,3,0,2,1];// mapping: [3,5,4,2,0,1]
             scaleUVFaceAt(faceI:number, u:number,v:number,du:number,dv:number)
             {
-                if(this.m_uvs != null)
+                if(this.m_uvs != null && faceI >= 0 && faceI < 6)
                 {
-                    faceI = Box3DMesh.s_faceIs[faceI];
                     let i:number = faceI * 8;
                     let t:number = i + 8;
                     let uvs:Float32Array = this.m_uvs;
@@ -305,106 +260,45 @@ export namespace vox
             }
             private initData(posList:number[][]):void
             {
-                let point0:number[] = posList[0];
-        		let point1:number[] = posList[1];
-        		let point2:number[] = posList[2];
-        		let point3:number[] = posList[3];
-        		let point4:number[] = posList[4];
-        		let point5:number[] = posList[5];
-        		let point6:number[] = posList[6];
-        		let point7:number[] = posList[7];
-                //
                 this.vtxTotal = 24;
-                //
                 let i:number = 0;
-                let baseI:number = 0;
                 let k:number = 0;
+                let baseI:number = 0;
                 
                 let newBuild:boolean = (this.m_ivs == null);
                 if(newBuild)
                 {
                     this.m_vs = new Float32Array(72);
                     this.m_ivs = new Uint16Array(36);
+                    let flags:number[] = [3,2,3,3,2,2];
+                    for(i = 0; i < 6; ++i)
+                    {
+                        if(flags[i] == 3)
+                        {
+                            this.m_ivs[baseI] = k + 3; this.m_ivs[baseI + 1] = k + 2; this.m_ivs[baseI + 2] = k + 1;
+                            this.m_ivs[baseI + 3] = k + 3; this.m_ivs[baseI + 4] = k + 1; this.m_ivs[baseI + 5] = k;
+                        }
+                        else
+                        {
+                            this.m_ivs[baseI] = k + 2; this.m_ivs[baseI + 1] = k + 3; this.m_ivs[baseI + 2] = k;
+                            this.m_ivs[baseI + 3] = k + 2; this.m_ivs[baseI + 4] = k; this.m_ivs[baseI + 5] = k + 1;
+                        }
+                        baseI += 6;
+                        k += 4;
+                    }
                 }
-        		//--------------------------------------------face0------------------------------------------
-        		// -z 5621->->(126,165)->(321,310)
-        		this.m_vs[i + 0] = point5[0]; this.m_vs[i + 1] = point5[1]; this.m_vs[i + 2] = point5[2];
-                this.m_vs[i + 3] = point6[0]; this.m_vs[i + 4] = point6[1]; this.m_vs[i + 5] = point6[2];
-                this.m_vs[i + 6] = point2[0]; this.m_vs[i + 7] = point2[1]; this.m_vs[i + 8] = point2[2];
-                this.m_vs[i + 9] = point1[0]; this.m_vs[i + 10] = point1[1]; this.m_vs[i + 11] = point1[2];
-                if(newBuild)
+                let idList:number[] = Box3DMesh.s_facePosIds;
+                let list:number[][] = this.m_posList;
+                let arr:number[];
+                let pvs:Float32Array = this.m_vs;
+                k = 0;
+                for(i = 0; i < this.vtxTotal; ++i)
                 {
-                    this.m_ivs[baseI] = 3; this.m_ivs[baseI+1] = 2; this.m_ivs[baseI+2] = 1;
-                    this.m_ivs[baseI + 3] = 3; this.m_ivs[baseI + 4] = 1; this.m_ivs[baseI + 5] = 0;
+                    arr = list[idList[i]];
+                    pvs.set(arr,k);
+                    k += 3;
                 }
-        		//--------------------------------------------face1------------------------------------------
-        		// +z 4730->(304,347)->(674,645)
-        		i += 12;
-                this.m_vs[i + 0] = point4[0]; this.m_vs[i + 1] = point4[1]; this.m_vs[i + 2] = point4[2];
-                this.m_vs[i + 3] = point7[0]; this.m_vs[i + 4] = point7[1]; this.m_vs[i + 5] = point7[2];
-                this.m_vs[i + 6] = point3[0]; this.m_vs[i + 7] = point3[1]; this.m_vs[i + 8] = point3[2];
-                this.m_vs[i + 9] = point0[0]; this.m_vs[i + 10] = point0[1]; this.m_vs[i + 11] = point0[2];
-                //
-                baseI += 6;
-                k += 4;
-                if(newBuild)
-                {
-                    this.m_ivs[baseI] = k+2; this.m_ivs[baseI + 1] = k+3; this.m_ivs[baseI + 2] = k;
-                    this.m_ivs[baseI + 3] = k+2; this.m_ivs[baseI + 4] = k; this.m_ivs[baseI + 5] = k+1;
-                }
-        		//--------------------------------------------face2------------------------------------------
-        		// -x 7623->(237,276)->(10 11 8,10 8 9)
-                i += 12;
-                this.m_vs[i + 0] = point7[0]; this.m_vs[i + 1] = point7[1]; this.m_vs[i + 2] = point7[2];
-                this.m_vs[i + 3] = point6[0]; this.m_vs[i + 4] = point6[1]; this.m_vs[i + 5] = point6[2];
-                this.m_vs[i + 6] = point2[0]; this.m_vs[i + 7] = point2[1]; this.m_vs[i + 8] = point2[2];
-                this.m_vs[i + 9] = point3[0]; this.m_vs[i + 10] = point3[1]; this.m_vs[i + 11] = point3[2];
-                //
-                baseI += 6;
-                k += 4;
-                if(newBuild)
-                {
-                    this.m_ivs[baseI] = k + 2; this.m_ivs[baseI + 1] = k + 3; this.m_ivs[baseI + 2] = k;
-                    this.m_ivs[baseI + 3] = k + 2; this.m_ivs[baseI + 4] = k; this.m_ivs[baseI + 5] = k + 1;   
-                }
-        		//--------------------------------------------face3------------------------------------------
-        		// +x 4510->(015,054)->(15 14 13,15 13 12 )
-                i += 12;
-                this.m_vs[i + 0] = point4[0]; this.m_vs[i + 1] = point4[1]; this.m_vs[i + 2] = point4[2];
-                this.m_vs[i + 3] = point5[0]; this.m_vs[i + 4] = point5[1]; this.m_vs[i + 5] = point5[2];
-                this.m_vs[i + 6] = point1[0]; this.m_vs[i + 7] = point1[1]; this.m_vs[i + 8] = point1[2];
-                this.m_vs[i + 9] = point0[0]; this.m_vs[i + 10] = point0[1]; this.m_vs[i + 11] = point0[2];
-                //
-                baseI += 6;
-                k += 4;
-                if(newBuild)
-                {
-                    this.m_ivs[baseI] = k + 3; this.m_ivs[baseI + 1] = k + 2; this.m_ivs[baseI + 2] = k + 1;
-                    this.m_ivs[baseI + 3] = k + 3; this.m_ivs[baseI + 4] = k + 1; this.m_ivs[baseI + 5] = k;
-                }
-        		//--------------------------------------------face4------------------------------------------//
-                // -y 0321->(210,203)->()
-                i += 12;
-                this.m_vs[i + 0] = point0[0]; this.m_vs[i + 1] = point0[1]; this.m_vs[i + 2] = point0[2];
-                this.m_vs[i + 3] = point1[0]; this.m_vs[i + 4] = point1[1]; this.m_vs[i + 5] = point1[2];
-                this.m_vs[i + 6] = point2[0]; this.m_vs[i + 7] = point2[1]; this.m_vs[i + 8] = point2[2];
-                this.m_vs[i + 9] = point3[0]; this.m_vs[i + 10] = point3[1]; this.m_vs[i + 11] = point3[2];
-                //
-                baseI += 6;
-                k += 4;
-                if(newBuild)
-                {
-                    this.m_ivs[baseI] = k + 3; this.m_ivs[baseI + 1] = k + 2; this.m_ivs[baseI + 2] = k + 1;
-                    this.m_ivs[baseI + 3] = k + 3; this.m_ivs[baseI + 4] = k + 1; this.m_ivs[baseI + 5] = k;
-                }
-        		//--------------------------------------------face5------------------------------------------					
-                // +y 4567->(567,574)
-                i += 12;
-                this.m_vs[i + 0] = point4[0]; this.m_vs[i + 1] = point4[1]; this.m_vs[i + 2] = point4[2];
-                this.m_vs[i + 3] = point5[0]; this.m_vs[i + 4] = point5[1]; this.m_vs[i + 5] = point5[2];
-                this.m_vs[i + 6] = point6[0]; this.m_vs[i + 7] = point6[1]; this.m_vs[i + 8] = point6[2];
-                this.m_vs[i + 9] = point7[0]; this.m_vs[i + 10] = point7[1]; this.m_vs[i + 11] = point7[2];
-
+                
                 this.bounds = new AABB();
                 if(this.m_transMatrix != null)
                 {
@@ -419,13 +313,6 @@ export namespace vox
                 ROVertexBuffer.Reset();
                 ROVertexBuffer.AddFloat32Data(this.m_vs,3);
 
-                baseI += 6;
-                k += 4;
-                if(newBuild)
-                {
-                    this.m_ivs[baseI] = k + 2; this.m_ivs[baseI + 1] = k + 3; this.m_ivs[baseI + 2] = k;
-                    this.m_ivs[baseI + 3] = k + 2; this.m_ivs[baseI + 4] = k; this.m_ivs[baseI + 5] = k + 1;
-                }
                 let faceTotal:number = 6;
                 
         		if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX))
@@ -514,22 +401,22 @@ export namespace vox
                             switch (baseI)
                             {
                             case 0:
-                                nz = -1.0;
-                                break;
-                            case 1:
-                                nz = 1.0;
-                                break;
-                            case 2:
-                                nx = -1.0;
-                                break;
-                            case 3:
-                                nx = 1.0;
-                                break;
-                            case 4:
                                 ny = -1.0;
                                 break;
-                            case 5:
+                            case 1:
                                 ny = 1.0;
+                                break;
+                            case 2:
+                                nx = 1.0;
+                                break;
+                            case 3:
+                                nz = -1.0;
+                                break;
+                            case 4:
+                                nx = -1.0;
+                                break;
+                            case 5:
+                                nz = 1.0;
                                 break;
                             default:
                                 break;
@@ -549,7 +436,7 @@ export namespace vox
                     }
                     else
                     {
-                        let centV:Vector3D = this.bounds.center;//new Vector3D((minV.x + maxV.x) * 0.5,(minV.y + maxV.y) * 0.5,(minV.z + maxV.z) * 0.5);
+                        let centV:Vector3D = this.bounds.center;
                         let d:number = 0.0;
                         while(baseI < this.vtxTotal)
                         {
@@ -613,11 +500,11 @@ export namespace vox
                     ROVertexBuffer.UpdateBufData(this.m_vbuf);
                 }
             }
-            setFaceUVSAt(uvslen8:Float32Array,i:number):void
+            setFaceUVSAt(i:number,uvslen8:Float32Array):void
             {
                 if(this.m_uvs != null)
                 {
-                    this.m_uvs.set(uvslen8,i * 8);
+                    this.m_uvs.set(uvslen8, i * 8);
                 }
             }
             toString():string

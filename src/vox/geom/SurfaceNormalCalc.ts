@@ -37,7 +37,7 @@ export namespace vox
 			* @param triangleIndex		triangle index of triangles
 			* @param resultNormal		result normalize Vector3D normal
 			*/
-			static ClacTrisNormal(verteies:Float32Array, triangleIndex:number, resultNormal:Vector3D):void
+			static ClacTriNormalByVS(verteies:Float32Array, triangleIndex:number, resultNormal:Vector3D):void
 			{
 				let i:number = triangleIndex * 9;
 				SurfaceNormalCalc.s_temp_va.setTo(verteies[i], verteies[i+1], verteies[i + 2]);
@@ -49,7 +49,7 @@ export namespace vox
 				resultNormal.crossBy(SurfaceNormalCalc.s_temp_vc);
 				resultNormal.normalize();
 			}
-		    ClacTriNormal(verteies:Float32Array, triangleIndex:number, indices:Uint16Array, resultNormal:Vector3D):void
+		    static ClacTriNormalByIVS(verteies:Float32Array, triangleIndex:number, indices:Uint16Array | Uint32Array, resultNormal:Vector3D):void
 		    {
 		        let j:number = triangleIndex * 3;
 		        let i:number = indices[j] * 3;
@@ -65,7 +65,7 @@ export namespace vox
 		        resultNormal.normalize();
 				//trace("						normal: ", resultNormal);
 		    }
-		    ClacTrisNormal(verteies:Float32Array, verteiesLength:number, numTriangles:number, indices:Uint16Array, normals:Float32Array):void
+		    static ClacTrisNormal(verteies:Float32Array, verteiesLength:number, numTriangles:number, indices:Uint16Array | Uint32Array, normals:Float32Array):void
 		    {
 		        let v3:Vector3D = new Vector3D();
 		        let j:number = 0, k:number = 0,i:number = 0;
@@ -75,7 +75,7 @@ export namespace vox
 		        }
 		        for (i = 0; i < numTriangles; ++i)
 		        {
-		            this.ClacTriNormal(verteies, i, indices, v3);
+		            SurfaceNormalCalc.ClacTriNormalByIVS(verteies, i, indices, v3);
 				
 		            j = i * 3;
 		            k = indices[j] * 3;
@@ -92,7 +92,7 @@ export namespace vox
 		            normals[i] = SurfaceNormalCalc.s_temp_va.x; normals[i + 1] = SurfaceNormalCalc.s_temp_va.y; normals[i + 2] = SurfaceNormalCalc.s_temp_va.z;
 		        }                
 		    }
-			static ClacTriTangent(verteies:Float32Array, uvs:Float32Array, nvs:Float32Array, triangleIndex:number, indices:Uint16Array|Uint32Array, tangent:Vector3D, biTangent:Vector3D):void
+			static ClacTriTangent(verteies:Float32Array, uvs:Float32Array, nvs:Float32Array, triangleIndex:number, indices:Uint16Array | Uint32Array, tangent:Vector3D, biTangent:Vector3D):void
 			{
 				let j:number = triangleIndex * 3;
 				// pos

@@ -9,7 +9,7 @@ import * as Vector3DT from "../../vox/math/Vector3D";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as MaterialBaseT from '../../vox/material/MaterialBase';
-import * as Default3DMaterialT from "../../vox/material/mcase/LightLine3DMaterial";
+import * as Default3DMaterialT from "../../vox/material/mcase/BillboardLine3DMaterial";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as RORectMeshT from "../../vox/mesh/LightLine3DMesh";
 import * as ROTransformT from "../../vox/display/ROTransform";
@@ -18,7 +18,7 @@ import Vector3D = Vector3DT.vox.math.Vector3D;
 import RendererState = RendererStateT.vox.render.RendererState;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
-import LightLine3DMaterial = Default3DMaterialT.vox.material.mcase.LightLine3DMaterial;
+import BillboardLine3DMaterial = Default3DMaterialT.vox.material.mcase.BillboardLine3DMaterial;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import LightLine3DMesh = RORectMeshT.vox.mesh.LightLine3DMesh;
 import ROTransform = ROTransformT.vox.display.ROTransform;
@@ -27,14 +27,11 @@ export namespace vox
 {
     export namespace entity
     {
-        export class LightLine3DEntity extends DisplayEntity
+        export class BillboardLine3DEntity extends DisplayEntity
         {
             private m_brightnessEnabled:boolean = true;
             private m_alphaEnabled:boolean = false;
-            private m_currMaterial:LightLine3DMaterial = null;
-            private m_beginPos:Vector3D = new Vector3D();
-            private m_endPos:Vector3D = new Vector3D(100.0,0.0,0.0);
-            private m_lineW:number = 10.0;
+            private m_currMaterial:BillboardLine3DMaterial = null;
             flipVerticalUV:boolean = false;
             flip90UV:boolean = false;
             constructor(transform:ROTransform = null)
@@ -46,13 +43,13 @@ export namespace vox
             {
                 if(this.getMaterial() == null)
                 {
-                    this.m_currMaterial = new LightLine3DMaterial(this.m_brightnessEnabled,this.m_alphaEnabled)
+                    this.m_currMaterial = new BillboardLine3DMaterial(this.m_brightnessEnabled,this.m_alphaEnabled)
                     this.m_currMaterial.setTextureList(texList);
                     this.setMaterial(this.m_currMaterial);
                 }
                 else
                 {
-                    this.m_currMaterial = this.getMaterial() as LightLine3DMaterial;
+                    this.m_currMaterial = this.getMaterial() as BillboardLine3DMaterial;
                     this.m_currMaterial.setTextureList(texList);
                 }
             }
@@ -119,12 +116,85 @@ export namespace vox
             {
                 return this.m_currMaterial.getFadeFactor();
             }
-            initialize(beginPos:Vector3D,endPos:Vector3D,lineW:number,texList:TextureProxy[] = null):void
+            setBeginAndEndPos(begnPos:Vector3D, endPos:Vector3D):void
             {
-                this.m_beginPos.copyFrom(beginPos);
-                this.m_endPos.copyFrom(endPos);
-                this.m_lineW = lineW;
-
+                
+                if(this.m_currMaterial != null)
+                {
+                    return this.m_currMaterial.setBeginAndEndPos(begnPos,endPos);
+                }
+            }
+            
+            setBeginPos(beginPos:Vector3D):void
+            {
+                
+                if(this.m_currMaterial != null)
+                {
+                    return this.m_currMaterial.setBeginPos(beginPos);
+                }
+            }
+            setEndPos(endPos:Vector3D):void
+            {
+                
+                if(this.m_currMaterial != null)
+                {
+                    return this.m_currMaterial.setEndPos(endPos);
+                }
+            }
+            
+            setLineWidth(lineWidth:number):void
+            {
+                if(this.m_currMaterial != null)
+                {
+                    return this.m_currMaterial.setLineWidth(lineWidth);
+                }
+            }
+            getLineWidth():number
+            {
+                if(this.m_currMaterial != null)
+                {
+                    return this.m_currMaterial.getLineWidth();
+                }
+                return 0.0;
+            }
+            
+            setUVParam(uScale:number,vScale:number,uOffset:number,vOffset:number):void
+            {
+                if(this.m_currMaterial != null)
+                {
+                    return this.m_currMaterial.setUVParam(uScale,vScale,uOffset,vOffset);
+                }
+            }
+            setUVScale(uScale:number,vScale:number):void
+            {
+                if(this.m_currMaterial != null)
+                {
+                    return this.m_currMaterial.setUVScale(uScale,vScale);
+                }
+            }
+            setUVOffset(uOffset:number,vOffset:number):void
+            {
+                if(this.m_currMaterial != null)
+                {
+                    return this.m_currMaterial.setUVOffset(uOffset,vOffset);
+                }
+            }
+            setFadeRange(fadeMin:number, fadeMax:number):void
+            {
+                if(this.m_currMaterial != null)
+                {
+                    return this.m_currMaterial.setFadeRange(fadeMin,fadeMax);
+                }
+            }
+            setUVRotation(uvDegree:number):void
+            {
+                if(this.m_currMaterial != null)
+                {
+                    return this.m_currMaterial.setUVRotation(uvDegree);
+                }
+            }
+            initialize(texList:TextureProxy[] = null):void
+            {
                 this.createMaterial(texList);
                 this.activeDisplay();
             }
@@ -137,13 +207,13 @@ export namespace vox
                     mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
                     mesh.flip90UV = this.flip90UV;
                     mesh.setBufSortFormat( material.getBufSortFormat() );
-                    mesh.initialize(this.m_beginPos,this.m_endPos,this.m_lineW);
+                    mesh.initializeBill();
                     this.setMesh(mesh);
                 }
             }
             toString():string
             {
-                return "[LightLine3DEntity]";
+                return "[BillboardLine3DEntity]";
             }
         }
     }

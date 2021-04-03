@@ -38,6 +38,7 @@ export namespace vox
             private m_minV:Vector3D = null;
             private m_maxV:Vector3D = null;
             private m_transMatrix:Matrix4 = null;
+            private m_currMesh:Box3DMesh = null;
             constructor(transform:ROTransform = null)
             {
                 super(transform);
@@ -83,12 +84,11 @@ export namespace vox
                     mesh.scaleUVFaceAt(faceI, u,v,du,dv);
                 }
             }
-            reinitializeMesh()
+            reinitializeMesh():void
             {
-                let mesh:Box3DMesh = this.getMesh() as Box3DMesh;
-                if(mesh != null)
+                if(this.m_currMesh != null)
                 {
-                    mesh.reinitialize();
+                    this.m_currMesh.reinitialize();
                 }
             }
             /**
@@ -120,17 +120,14 @@ export namespace vox
 
             protected __activeMesh(material:MaterialBase):void
             {
-                let mesh:Box3DMesh = null;
-                if(this.getMesh() == null)
+                this.m_currMesh = this.getMesh() as Box3DMesh;
+                if(this.m_currMesh == null)
                 {
-                    mesh = new Box3DMesh();
+                    this.m_currMesh = new Box3DMesh();
                 }
-                else if(this.getMesh().getIVS() == null)
+                if(this.m_currMesh != null)
                 {
-                    mesh = this.getMesh() as Box3DMesh;
-                }
-                if(mesh != null)
-                {
+                    let mesh:Box3DMesh = this.m_currMesh;
                     if(this.m_transMatrix != null)
                     {
                         mesh.setTransformMatrix(this.m_transMatrix);
@@ -147,13 +144,30 @@ export namespace vox
                 }
                 this.m_transMatrix = null;
             }
+            protected updateMesh():void
+            {
+                this.m_currMesh = this.getMesh() as Box3DMesh;
+            }
 
             setFaceUVSAt(uvslen8:Float32Array,i:number):void
             {
-                let mesh:Box3DMesh = this.getMesh() as Box3DMesh;
-                if(mesh != null)
+                if(this.m_currMesh != null)
                 {
-                    mesh.setFaceUVSAt(uvslen8, i);
+                    this.m_currMesh.setFaceUVSAt(i,uvslen8);
+                }
+            }
+            transformFaceAt(i:number, mat4:Matrix4):void
+            {
+                if(this.m_currMesh != null)
+                {
+                    this.m_currMesh.transformFaceAt(i, mat4);
+                }
+            }
+            getFaceCenterAt(i:number, outV:Vector3D):void
+            {
+                if(this.m_currMesh != null)
+                {
+                    this.m_currMesh.getFaceCenterAt(i, outV);
                 }
             }
             toString():string

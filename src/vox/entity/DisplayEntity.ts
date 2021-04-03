@@ -360,6 +360,7 @@ export namespace vox
                             {
                                 this.m_globalBounds.copyFrom(m.bounds);
                             }
+                            this.updateMesh();
                         }
                     }
                 }
@@ -374,8 +375,12 @@ export namespace vox
                         this.m_mesh = m;
                         this.initDisplay(m);
                         this.m_meshChanged = true;
+                        this.updateMesh();
                     }
                 }
+            }
+            protected updateMesh():void
+            {
             }
             setIvsParam(ivsIndex:number,ivsCount:number):void
             {

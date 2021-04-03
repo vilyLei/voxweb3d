@@ -11,6 +11,7 @@ import * as Box3DMeshT from "../vox/mesh/Box3DMesh";
 import * as DisplayEntityT from "../vox/entity/DisplayEntity";
 import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
 import * as Box3DEntityT from "../vox/entity/Box3DEntity";
+import * as Pipe3DEntityT from "../vox/entity/Pipe3DEntity";
 import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
 import * as TextureConstT from "../vox/texture/TextureConst";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
@@ -34,6 +35,7 @@ import Box3DMesh = Box3DMeshT.vox.mesh.Box3DMesh;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
+import Pipe3DEntity = Pipe3DEntityT.vox.entity.Pipe3DEntity;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
@@ -47,7 +49,7 @@ import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
 
 export namespace demo
 {
-    export class DemoFlexMesh
+    export class DemoFlexPipe
     {
         constructor(){}
 
@@ -57,8 +59,7 @@ export namespace demo
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_profileInstance:ProfileInstance = new ProfileInstance();
-        private m_targets:DisplayEntity[] = [];
-        private m_srcBox:Box3DEntity = null;
+        private m_pipe:Pipe3DEntity = null;
         private getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
             let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -68,7 +69,7 @@ export namespace demo
         }
         initialize():void
         {
-            console.log("DemoFlexMesh::initialize()......");
+            console.log("DemoFlexPipe::initialize()......");
             if(this.m_rscene == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
@@ -91,9 +92,9 @@ export namespace demo
 
                 this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
 
-                //  let axis:Axis3DEntity = new Axis3DEntity();
-                //  axis.initialize(300.0);
-                //  this.m_rscene.addEntity(axis);
+                let axis:Axis3DEntity = new Axis3DEntity();
+                axis.initialize(300.0);
+                this.m_rscene.addEntity(axis);
                 //skin_01
                 // add common 3d display entity
                 //      let plane:Plane3DEntity = new Plane3DEntity();
@@ -101,19 +102,31 @@ export namespace demo
                 //      this.m_rscene.addEntity(plane);
                 //      this.m_targets.push(plane);
                 //      //this.m_disp = plane
+                let posV:Vector3D = new Vector3D();
 
+                let pipe:Pipe3DEntity = new Pipe3DEntity();
+                pipe.showDoubleFace();
+                //pipe.toBrightnessBlend(false,true);
+                pipe.initialize(170.0,400.0,7,20,[this.getImageTexByUrl("static/assets/metal_02.jpg")],1,0.0);
+                //pipe.setXYZ(Math.random() * 500.0 - 250.0,Math.random() * 50.0 + 10.0,Math.random() * 500.0 - 250.0);
+                this.m_rscene.addEntity(pipe,1);
+                this.m_pipe = pipe;
+                //  pipe.getCircleCenterAt(1,posV);
+                //  console.log("XXX posV: ",posV);
+
+                //this.transformPipe(7);
+                this.transformPipeDo(21, 0.06, -0.05);
+                this.m_pipe.reinitialize();
+                this.m_pipe.updateMeshToGpu(this.m_rscene.getRenderProxy());
+
+                return;
                 let box:Box3DEntity = new Box3DEntity();
                 box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/skin_01.jpg")]);
                 box.setScaleXYZ(2.0,2.0,2.0);
                 //box.setRotationXYZ(-80,0,0);
                 //this.m_rscene.addEntity(box);
                 //this.updateBoxUV(box);
-                //this.m_srcBox = box;
-                //return;
-                this.createAMeshDisp(box);
-
-                this.m_rscene.setAutoRunning(false);
-                this.update();
+                //this.update();
             }
         }
         
@@ -127,133 +140,66 @@ export namespace demo
             box.scaleUVFaceAt(5, 0.0,0.5,0.5,0.5);
             box.reinitializeMesh();
         }
-        private updateBoxMesh():boolean
-        {
-            if(this.m_srcBox == null)return false;
-            this.updateBoxUV( this.m_srcBox );
-            this.m_srcBox.updateMeshToGpu(this.m_rscene.getRenderProxy());
-            return true;
-        }
-        private m_box:Box3DEntity = null;
-        private m_boxMesh:Box3DMesh = null;
-        private createAMeshDisp(entity:Box3DEntity):void
-        {
-            let mesh:Box3DMesh = new Box3DMesh();
-            this.m_boxMesh = mesh;
-            mesh.setBufSortFormat( entity.getMaterial().getBufSortFormat() );
-            mesh.initializeWithYFace(
-                new Vector3D(-60.0,-100.0,-60.0), new Vector3D(60.0,-100.0,60.0),
-                new Vector3D(-100.0,100.0,-100.0), new Vector3D(100.0,100.0,100.0)
-            );
-
-            let box:Box3DEntity = new Box3DEntity();
-            box.setMesh(mesh);
-            box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/skin_01.jpg")]);
-            this.m_pos0.setXYZ(Math.random() * 1.0 + 0.1,Math.random() * 1.0 + 0.1,Math.random() * 1.0 + 0.1);
-            this.m_pos0.normalize();
-            this.m_pos0.scaleBy(1.1);
-            (box.getMaterial() as any).setRGB3f(this.m_pos0.x,this.m_pos0.y,this.m_pos0.z);
-            this.updateBoxUV( box );
-            this.m_rscene.addEntity(box);
-            //  box.reinitializeMesh();
-            //  box.updateMeshToGpu(this.m_rscene.getRenderProxy());
-            this.m_box = box;
-        }
         private m_testFlag:boolean = true;
         private m_pos0:Vector3D = new Vector3D();
-        private m_pos1:Vector3D = new Vector3D();
-        private m_pos2:Vector3D = new Vector3D();
-        private m_pos3:Vector3D = new Vector3D();
-        private deformateDefault():void
+        private m_rotV:Vector3D = new Vector3D();
+        private m_scaleV:Vector3D = new Vector3D(1.0,1.0,1.0);
+        
+        private transformPipeDo(total:number,dradius:number,dscale:number):void
         {
-            if(this.m_testFlag)
+            this.m_rotV.setXYZ(0.0,0.0,0.0);
+            this.m_rotV.z += dradius;
+            
+
+            let mat4:Matrix4 = new Matrix4();
+            for(let i:number = 1; i < total; ++i)
             {
-                this.m_boxMesh.initialize(new Vector3D(-60.0,-100.0,-60.0), new Vector3D(60.0,100.0,60.0));
+                mat4.identity();
+                mat4.setScaleXYZ(this.m_scaleV.x,this.m_scaleV.y,this.m_scaleV.z);
+                mat4.setRotationEulerAngle(this.m_rotV.x,this.m_rotV.y,this.m_rotV.z);
+                this.m_scaleV.x += dscale;
+                this.m_scaleV.z += dscale;
+                this.m_rotV.z += dradius;
+                this.m_pipe.transformCircleAt(i,mat4);
             }
-            else
-            {
-                this.m_boxMesh.initializeWithYFace(
-                    new Vector3D(-60.0,-100.0,-60.0), new Vector3D(60.0,-100.0,60.0),
-                    new Vector3D(-100.0,100.0,-100.0), new Vector3D(100.0,100.0,100.0)
-                );
-            }
+
+            
         }
-        private deformatePosAt(i:number):void
+        private transformPipe(i:number):void
         {
-            this.m_boxMesh.getPositionAt(i, this.m_pos0);
-            this.m_pos0.x += 20.0;
-            this.m_boxMesh.setPositionAt(i, this.m_pos0);
-        }
-        private deformateEdgeAt(i:number):void
-        {
-            this.m_boxMesh.getEdgeAt(i, this.m_pos0,this.m_pos1);
-            this.m_pos0.x += 20.0;
-            this.m_pos1.x += 20.0;
-            this.m_boxMesh.setEdgeAt(i, this.m_pos0,this.m_pos1);
-        }
-        private deformateFaceAt(i:number):void
-        {
-            this.m_boxMesh.getFaceAt(i, this.m_pos0,this.m_pos1,this.m_pos2,this.m_pos3);
-            this.m_pos0.x += 5.0;this.m_pos1.x += 5.0;
-            this.m_pos2.x += 5.0;this.m_pos3.x += 5.0;
-            this.m_boxMesh.setFaceAt(i, this.m_pos0,this.m_pos1,this.m_pos2,this.m_pos3);
-        }
-        private m_mat4:Matrix4 = new Matrix4();
-        private m_transPos:Vector3D = new Vector3D();
-        private m_rotV2:Vector3D = new Vector3D();
-        private transformFaceAt(i:number):void
-        {
-            this.m_rotV2.x += Math.random() * 0.2 - 0.1;
-            this.m_rotV2.z += Math.random() * 0.2 - 0.1;
-            this.m_transPos.x += Math.random() * 2 - 1;
-            this.m_transPos.y += Math.random() * 2 - 1;
-            this.m_transPos.z += Math.random() * 2 - 1;
-            this.m_mat4.identity();
-            this.m_mat4.setRotationEulerAngle(this.m_rotV2.x,this.m_rotV2.y,this.m_rotV2.z);
-            this.m_mat4.setTranslation(this.m_transPos);
-            this.m_box.transformFaceAt(i,this.m_mat4);
+            this.m_pos0.x += 13.0;// * Math.random() * 2.0 - 1.0;
+            //this.m_pos0.y += 3.0;// * Math.random() * 2.0 - 1.0;
+            //this.m_pos0.z += 3.0;// * Math.random() * 2.0 - 1.0;
+            
+            //  this.m_rotV.x += Math.random() * 0.2 - 0.1;
+            //  this.m_rotV.y += Math.random() * 0.2 - 0.1;
+            //  this.m_rotV.z += Math.random() * 0.2 - 0.1;
+
+            let mat4:Matrix4 = new Matrix4();
+            mat4.identity();
+            mat4.setTranslation( this.m_pos0 );
+            mat4.setRotationEulerAngle(this.m_rotV.x,this.m_rotV.y,this.m_rotV.z);
+            this.m_pipe.transformCircleAt(i,mat4);
         }
         private mouseDown(evt:any):void
         {
-            let boo:boolean = this.updateBoxMesh();
-            if(boo)return;
-            let i:number = 1;
-            let type:number = 2;
-            type = 4;
-            
+            let i:number = 0;
+            let type:number = 0;
             switch(type)
             {
                 case 0:
-                    this.deformateDefault();
-                break;
-                case 1:
-                    this.deformatePosAt(i);
-                break;
-                case 2:
-                    this.deformateEdgeAt(i);
-                break;
-                case 3:
-                    this.deformateFaceAt(i);
-                break;
-                case 4:
-                    this.transformFaceAt(i);
+                    //this.transformPipe(i);
                 break;
                 default:
                 break;
             }
 
-            this.m_boxMesh.reinitialize();
-            this.m_box.updateMeshToGpu(this.m_rscene.getRenderProxy());
-            this.m_testFlag = !this.m_testFlag;
+            //  this.m_pipe.reinitialize();
+            //  this.m_pipe.updateMeshToGpu(this.m_rscene.getRenderProxy());
+            //  this.m_testFlag = !this.m_testFlag;
             
         }
-        private m_updateId:number = 0;
-        private m_currentDelta:number = 0;
-        private m_previousDelta:number = 0;
-        private m_fpsLimit:number = 70;
-
         private m_timeoutId:any = -1;
-        private m_rotV:Vector3D = new Vector3D();
         private update():void
         {
             if(this.m_timeoutId > -1)
@@ -268,22 +214,9 @@ export namespace demo
             this.m_rscene.update();
             this.m_statusDisp.render();
 
-            if(this.m_srcBox != null)
-            {
-                this.m_srcBox.setRotationXYZ(this.m_rotV.x, this.m_rotV.y, this.m_rotV.z);
-                this.m_srcBox.update();
-                this.m_rotV.x += 0.5;
-                this.m_rotV.y += 1.0;
-            }
         }
         run():void
         {
-            this.m_currentDelta = Date.now();
-            let delta:number = this.m_currentDelta - this.m_previousDelta;
-            if (this.m_fpsLimit && delta < (1000 / this.m_fpsLimit)) {
-                return;
-            }
-            this.m_previousDelta = this.m_currentDelta;
 
             this.m_statusDisp.update(false);
 
@@ -291,7 +224,7 @@ export namespace demo
             this.m_rscene.run();
             this.m_rscene.runEnd();
 
-            this.m_camTrack.rotationOffsetAngleWorldY(-1);
+            this.m_camTrack.rotationOffsetAngleWorldY(-0.5);
             //this.m_profileInstance.run();
         }
     }

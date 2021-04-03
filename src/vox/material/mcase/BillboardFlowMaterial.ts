@@ -97,7 +97,7 @@ void main()
     float kf = fract(time/a_uvs2.x);
     float fi = kf;
     time = kf * a_uvs2.x;
-    kf = min(kf/a_uvs2.y,1.0) * (1.0 - max((kf-a_uvs2.z)/(1.0 - a_uvs2.z),0.0));
+    kf = min(kf/a_uvs2.y,1.0) * (1.0 - max((kf - a_uvs2.z)/(1.0 - a_uvs2.z),0.0));
     // scale
     vec2 vtx = a_vs.xy * temp.xy * vec2(a_vs.z + kf * a_vs.w);
 `;

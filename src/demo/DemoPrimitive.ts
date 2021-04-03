@@ -15,6 +15,7 @@ import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
 import * as Pipe3DEntityT from "../vox/entity/Pipe3DEntity";
 import * as Billboard3DEntityT from "../vox/entity/Billboard3DEntity";
 import * as LightLine3DEntityT from "../vox/entity/LightLine3DEntity";
+import * as BillboardLine3DEntityT from "../vox/entity/BillboardLine3DEntity";
 import * as TextureProxyT from "../vox/texture/TextureProxy";
 import * as TextureConstT from "../vox/texture/TextureConst";
 import * as TextureBlockT from "../vox/texture/TextureBlock";
@@ -41,6 +42,7 @@ import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
 import Pipe3DEntity = Pipe3DEntityT.vox.entity.Pipe3DEntity;
 import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import LightLine3DEntity = LightLine3DEntityT.vox.entity.LightLine3DEntity;
+import BillboardLine3DEntity = BillboardLine3DEntityT.vox.entity.BillboardLine3DEntity;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import TextureConst = TextureConstT.vox.texture.TextureConst;
 import TextureBlock = TextureBlockT.vox.texture.TextureBlock;
@@ -61,7 +63,10 @@ export namespace demo
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_equeue:EntityDispQueue = new EntityDispQueue();
-        
+        private m_billLine:BillboardLine3DEntity = null;
+        private m_beginPos:Vector3D = new Vector3D(0.0,0.0,0.0);
+        private m_endPos:Vector3D = new Vector3D(0.0,500.0,-100.0);
+        private m_uvPos:Vector3D = new Vector3D(0.3,0.0);
         private getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
             let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -81,6 +86,8 @@ export namespace demo
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
                 this.m_renderer = new RendererInstance();
                 this.m_renderer.initialize(rparam);
+                this.m_renderer.appendProcess();
+                this.m_renderer.appendProcess();
                 this.m_rcontext = this.m_renderer.getRendererContext();
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
@@ -94,31 +101,63 @@ export namespace demo
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
                 let tex2:TextureProxy = this.getImageTexByUrl("static/assets/guangyun_H_0007.png");
                 let tex3:TextureProxy = this.getImageTexByUrl("static/assets/flare_core_02.jpg");
+                let tex4:TextureProxy = this.getImageTexByUrl("static/assets/flare_core_01.jpg");
                 
                 RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 
                 let i:number = 0;
+                let axis:Axis3DEntity = new Axis3DEntity();
+                axis.initialize(110.0);
+                this.m_renderer.addEntity(axis);
+                /*
                 let plane:Plane3DEntity = new Plane3DEntity();
                 //plane.showDoubleFace();
-                plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
+                plane.initializeXOZ(-500.0,-500.0,1000.0,1000.0,[tex0]);
                 //plane.initializeXOZ(-200.0,-150.0,400.0,300.0);
-                plane.setXYZ(0.0,-130.0,0.0);
+                plane.setXYZ(0.0,-100.0,0.0);
                 this.m_renderer.addEntity(plane);
-
+                //*/
+                ///*
+                let billLine:BillboardLine3DEntity = new BillboardLine3DEntity();
+                //lightLine.showDoubleFace();
+                billLine.toBrightnessBlend();
+                billLine.initialize([tex4]);
+                billLine.setBeginAndEndPos(this.m_beginPos,this.m_endPos);
+                billLine.setLineWidth(50.0);
+                billLine.setRGB3f(0.1,0.1,0.1);
+                //billLine.setUVOffset(0.0,0.5);
+                billLine.setUVOffset(this.m_uvPos.x,this.m_uvPos.y);
+                billLine.setFadeRange(0.3,0.7);
+                billLine.setRGBOffset3f(Math.random() * 1.5 + 0.1,Math.random() * 1.5 + 0.1,Math.random() * 1.5 + 0.1);
+                this.m_renderer.addEntity(billLine,1);
+                //billLine.setFadeFactor(0.5);
+                this.m_billLine = billLine;
+                //*/
+                /*
                 let lightLine:LightLine3DEntity = new LightLine3DEntity();
                 //lightLine.showDoubleFace();
-                //lightLine.toBrightnessBlend();
-                lightLine.initialize(new Vector3D(), new Vector3D(200.0,0.0,0.0), 200.0,[tex3]);
-                this.m_renderer.addEntity(lightLine,0);
-                return;
+                lightLine.toBrightnessBlend();
+                //lightLine.initialize(new Vector3D(-400.0,0.0,-400.0), new Vector3D(400.0,300.0,100.0), 200.0,[tex3]);
+                lightLine.initialize(new Vector3D(0.0,0.0,0.0), new Vector3D(0.0,500.0,-100.0), 100.0,[tex4]);
+                lightLine.setRGB3f(0.1,0.1,0.1);
+                lightLine.setRGBOffset3f(Math.random() * 1.5 + 0.1,Math.random() * 1.5 + 0.1,Math.random() * 1.5 + 0.1);
+                this.m_renderer.addEntity(lightLine,1);
+                lightLine.setFadeFactor(0.5);
+                //return;
+                //*/
+                //let posV:Vector3D = new Vector3D();
 
                 let pipe:Pipe3DEntity = new Pipe3DEntity();
                 pipe.showDoubleFace();
-                pipe.toBrightnessBlend(false,true);
-                pipe.initialize(50.0,260.0,8,[tex3]);
-                this.m_renderer.addEntity(pipe);
-                return;
+                //pipe.toBrightnessBlend(false,true);
+                pipe.initialize(50.0,200.0,8,1,[tex3]);
+                //pipe.setXYZ(Math.random() * 500.0 - 250.0,Math.random() * 50.0 + 10.0,Math.random() * 500.0 - 250.0);
+                this.m_renderer.addEntity(pipe,1);
+
+                //  pipe.getCircleCenterAt(0,posV);
+                //  console.log("XXX posV: ",posV);
+                //  return;
                 let srcBillboard:Billboard3DEntity = new Billboard3DEntity();
                 srcBillboard.initialize(100.0,100.0, [tex2]);
                 for(i = 0; i < 2; ++i)
@@ -144,9 +183,6 @@ export namespace demo
                     this.m_renderer.addEntity(billboard);
                     this.m_equeue.addBillEntity(billboard,false);
                 }
-                let axis:Axis3DEntity = new Axis3DEntity();
-                axis.initialize(300.0);
-                this.m_renderer.addEntity(axis);
 
                 let srcBox:Box3DEntity = new Box3DEntity();
                 srcBox.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
@@ -176,13 +212,29 @@ export namespace demo
                 }
             }
         }
+        private m_time:number = 0.0;
+        private m_uvRotation:number = 0.0;
         run():void
         {
+            if(this.m_billLine != null)
+            {
+                this.m_beginPos.x = 200.0 * Math.sin(this.m_time);
+                //this.m_endPos.x = 200.0 * Math.sin(this.m_time);
+                this.m_time += 0.02;
+                this.m_uvPos.x += 0.01;
+                this.m_uvPos.y += 0.01;
+                this.m_uvRotation += 1.0;
+                this.m_billLine.setUVOffset(this.m_uvPos.x,this.m_uvPos.y);
+                //this.m_billLine.setUVRotation(this.m_uvRotation);
+                //this.m_billLine.setEndPos(this.m_endPos);
+                this.m_billLine.setBeginPos(this.m_beginPos);
+                //this.m_billLine.setBeginAndEndPos(this.m_beginPos,this.m_endPos);
+            }
             this.m_texBlock.run();
             this.m_equeue.run();
             if(this.m_statusDisp != null)this.m_statusDisp.update();
             
-            this.m_rcontext.setClearRGBColor3f(0.0, 0.5, 0.0);            
+            this.m_rcontext.setClearRGBColor3f(0.0, 0.1, 0.0);
             this.m_rcontext.renderBegin();
             this.m_renderer.update();
             this.m_renderer.run();

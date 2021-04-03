@@ -5,6 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as Vector3DT from "../../vox/math/Vector3D";
 import * as Matrix4T from "../../vox/math/Matrix4";
 import * as ROTransformT from "../../vox/display/ROTransform";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
@@ -14,6 +15,7 @@ import * as Default3DMaterialT from "../../vox/material/mcase/Default3DMaterial"
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as Pipe3DMeshT from "../../vox/mesh/Pipe3DMesh";
 
+import Vector3D = Vector3DT.vox.math.Vector3D;
 import Matrix4 = Matrix4T.vox.math.Matrix4;
 import ROTransform = ROTransformT.vox.display.ROTransform;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
@@ -29,10 +31,13 @@ export namespace vox
     {
         export class Pipe3DEntity extends DisplayEntity
         {
-            private m_plongitudeNumSegments:number = 10.0;
+            private m_longitudeNum:number = 10;
+            private m_latitudeNum:number = 1;
             private m_uvType:number = 1;
             private m_alignYRatio:number = -0.5;
             private m_transMatrix:Matrix4 = null;
+            private m_currMesh:Pipe3DMesh = null;
+            
             uScale:number = 1.0;
             vScale:number = 1.0;
             m_radius:number = 50.0;
@@ -95,11 +100,12 @@ export namespace vox
                     else this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
                 }
             }
-            initialize(radius:number, height:number, longitudeNumSegments:number,texList:TextureProxy[] = null,uvType:number = 1, alignYRatio:number = -0.5):void
+            initialize(radius:number, height:number, longitudeNum:number,latitudeNum:number,texList:TextureProxy[] = null,uvType:number = 1, alignYRatio:number = -0.5):void
             {
                 this.m_radius = radius;
                 this.m_height = height;
-                this.m_plongitudeNumSegments = longitudeNumSegments;
+                this.m_longitudeNum = longitudeNum;
+                this.m_latitudeNum = latitudeNum;
                 this.m_uvType = uvType;
                 this.m_alignYRatio = alignYRatio;
             
@@ -109,25 +115,46 @@ export namespace vox
 
             protected __activeMesh(material:MaterialBase):void
             {
-                if(this.getMesh() == null)
+                this.m_currMesh = this.getMesh() as Pipe3DMesh;
+                if(this.m_currMesh == null)
                 {
-                    let mesh:Pipe3DMesh = new Pipe3DMesh();
+                    this.m_currMesh = new Pipe3DMesh();
                     
                     if(this.m_transMatrix != null)
                     {
-                        mesh.setTransformMatrix(this.m_transMatrix);
+                        this.m_currMesh.setTransformMatrix(this.m_transMatrix);
                     }
-                    mesh.uScale = this.uScale;
-                    mesh.vScale = this.vScale;
-                    mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
-                    mesh.setBufSortFormat( material.getBufSortFormat() );
-                    mesh.initialize(this.m_radius, this.m_height, this.m_plongitudeNumSegments, 2, this.m_uvType, this.m_alignYRatio);
-                    this.setMesh(mesh);
-                    mesh.setTransformMatrix(null);
+                    this.m_currMesh.uScale = this.uScale;
+                    this.m_currMesh.vScale = this.vScale;
+                    this.m_currMesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
+                    this.m_currMesh.setBufSortFormat( material.getBufSortFormat() );
+                    this.m_currMesh.initialize(this.m_radius, this.m_height, this.m_longitudeNum, this.m_latitudeNum, this.m_uvType, this.m_alignYRatio);
+                    this.setMesh(this.m_currMesh);
+                    this.m_currMesh.setTransformMatrix(null);
                 }
                 this.m_transMatrix = null;
             }
-
+            reinitialize():void
+            {
+                if(this.m_currMesh != null)
+                {
+                    this.m_currMesh.reinitialize();
+                }
+            }
+            getCircleCenterAt(i:number, outV:Vector3D):void
+            {
+                if(this.m_currMesh != null)
+                {
+                    this.m_currMesh.getCircleCenterAt(i, outV);
+                }
+            }
+            transformCircleAt(i:number, mat4:Matrix4):void
+            {
+                if(this.m_currMesh != null)
+                {
+                    this.m_currMesh.transformCircleAt(i, mat4);
+                }
+            }
             toString():string
             {
                 return "[Pipe3DEntity(uid = "+this.getUid()+", rseFlag = "+this.__$rseFlag+")]";

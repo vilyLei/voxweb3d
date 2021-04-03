@@ -262,14 +262,17 @@
 //  import * as DemoAPlane from "./demo/DemoAPlane";
 //  import Demo = DemoAPlane.demo.DemoAPlane;
 
-import * as DemoPrimitive from "./demo/DemoPrimitive";
-import Demo = DemoPrimitive.demo.DemoPrimitive;
+//  import * as DemoPrimitive from "./demo/DemoPrimitive";
+//  import Demo = DemoPrimitive.demo.DemoPrimitive;
 
 //  import * as DemoMultiRenderer from "./demo/DemoMultiRenderer";
 //  import Demo = DemoMultiRenderer.demo.DemoMultiRenderer;
 
 //  import * as DemoFlexMesh from "./demo/DemoFlexMesh";
 //  import Demo = DemoFlexMesh.demo.DemoFlexMesh;
+
+import * as DemoFlexPipe from "./demo/DemoFlexPipe";
+import Demo = DemoFlexPipe.demo.DemoFlexPipe;
 
 //  import * as DemoVSTexture from "./demo/DemoVSTexture";
 //  import Demo = DemoVSTexture.demo.DemoVSTexture;

@@ -70,7 +70,7 @@ export namespace vox
                     endPos.x,   endPos.y,   endPos.z,   -lineW,
                     beginPos.x, beginPos.y, beginPos.z, -lineW
                 ]);
-                console.log("this.m_vs: "+this.m_vs);
+                
                 let dpos:any = {x:0,y:0,z:0};
                 dpos.x = 2.0 * endPos.x - beginPos.x;
                 dpos.y = 2.0 * endPos.y - beginPos.y;
@@ -141,6 +141,90 @@ export namespace vox
 
                 this.buildEnd();
             }
+            initializeBill():void
+            {
+                if(this.m_vs != null)
+                {
+                    return;
+                }
+                // ccw is positive, left-bottom pos(minX,minY) -> right-bottom pos(maxX,minY) -> right-top pos(maxX,maxY)  -> right-top pos(minX,maxY)
+                this.m_ivs = new Uint16Array([0,1,2,0,2,3]);
+                this.m_vs = new Float32Array([
+                    3,  1,
+                    4,  1,
+                    4, -1,
+                    3, -1
+                ]);
+                
+                //  let dpos:any = {x:0,y:0,z:0};
+                //  dpos.x = 2.0 * endPos.x - beginPos.x;
+                //  dpos.y = 2.0 * endPos.y - beginPos.y;
+                //  dpos.z = 2.0 * endPos.z - beginPos.z;
+                //  
+                //  this.m_nvs = new Float32Array([
+                //    endPos.x, endPos.y, endPos.z,
+                //    dpos.x,   dpos.y,   dpos.z,
+                //    dpos.x,   dpos.y,   dpos.z,
+                //    endPos.x, endPos.y, endPos.z
+                //  ]);
+                
+                if(this.bounds == null) this.bounds = new AABB();
+                this.bounds.addXYZFloat32Arr(this.m_vs);
+                this.bounds.updateFast();
+
+                ROVertexBuffer.Reset();
+                ROVertexBuffer.AddFloat32Data(this.m_vs,2);
+                if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX))
+                {
+                    let puvs:number[];
+                    if(this.flipVerticalUV)
+                    {
+                        puvs = [
+                            0.0,0.0,
+                            1.0,0.0,
+                            1.0,1.0,
+                            0.0,1.0,
+                        ];
+                    }
+                    else
+                    {
+                      if(this.flip90UV)
+                      {
+                        puvs = [
+                        1.0,1.0,
+                        1.0,0.0,
+                        0.0,0.0,
+                        0.0,1.0
+                        ];
+                      }
+                      else
+                      {
+                        puvs = [
+                            0.0,1.0,
+                            1.0,1.0,
+                            1.0,0.0,
+                            0.0,0.0,
+                        ];
+                      }
+                    }
+                    this.m_uvs = new Float32Array(puvs);
+                    ROVertexBuffer.AddFloat32Data(this.m_uvs,2);
+                }                
+                
+                ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
+                //
+                // 如果用 VtxBufData 使用样例, 要注释掉下面四句代码
+                this.vtCount = this.m_ivs.length;
+                this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
+                this.m_vbuf.setUintIVSData(this.m_ivs);
+                this.vtxTotal = 4;
+                this.trisNumber = 2;
+                this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;
+
+
+                this.buildEnd();
+            }
+            
             
             toString():string
             {

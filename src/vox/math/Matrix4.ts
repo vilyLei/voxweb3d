@@ -1002,12 +1002,13 @@ export namespace vox
 					x * sfs32[3] + y * sfs32[7] + z * sfs32[11] + sfs32[15]
 				);
 			}
-    		transformVectors(float_vinArr:Float32Array, vinLength:number, float_voutArr:Float32Array):void
+    		transformVectors(float_vinArr:Float32Array | number[], vinLength:number, float_voutArr:Float32Array):void
 			{
 				let i:number = 0;
 				let x:number, y:number, z:number;
 				let pfs:Float32Array = this.m_localFS32;
-				while ((i + 3) <= vinLength) {
+				vinLength -= 3;
+				while (i <= vinLength) {
 					x = float_vinArr[i];
 					y = float_vinArr[i + 1];
 					z = float_vinArr[i + 2];
@@ -1017,12 +1018,29 @@ export namespace vox
 					i += 3;
 				}
 			}
-    		transformVectorsSelf(float_vinArr:Float32Array, vinLength:number):void
+    		transformVectorsSelf(float_vinArr:Float32Array | number[], vinLength:number):void
 			{
 				let i:number = 0;
 				let x:number, y:number, z:number;
 				let pfs:Float32Array = this.m_localFS32;
-				while ((i + 3) <= vinLength) {
+				vinLength -= 3;
+				while (i <= vinLength) {
+					x = float_vinArr[i];
+					y = float_vinArr[i + 1];
+					z = float_vinArr[i + 2];
+					float_vinArr[i] = x * pfs[0] + y * pfs[4] + z * pfs[8] + pfs[12];
+					float_vinArr[i + 1] = x * pfs[1] + y * pfs[5] + z * pfs[9] + pfs[13];
+					float_vinArr[i + 2] = x * pfs[2] + y * pfs[6] + z * pfs[10] + pfs[14];
+					i += 3;
+				}
+			}
+    		transformVectorsRangeSelf(float_vinArr:Float32Array | number[], begin:number, end:number):void
+			{
+				let i:number = begin;
+				let x:number, y:number, z:number;
+				let pfs:Float32Array = this.m_localFS32;
+				end -= 3;
+				while (i <= end) {
 					x = float_vinArr[i];
 					y = float_vinArr[i + 1];
 					z = float_vinArr[i + 2];

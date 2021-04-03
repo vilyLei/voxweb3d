@@ -40,26 +40,11 @@ export namespace vox
             private m_bh:number = 0;
             private m_currMaterial:BillboardMaterial = null;
             private m_billMesh:BillboardPlaneMesh = null;
-            setRGBA4f(pr:number,pg:number,pb:number,pa:number):void
-            {
-                if(this.m_currMaterial != null)
-                {
-                    this.m_currMaterial.setRGBA4f(pr,pg,pb,pa);
-                }
-            }
             setRGB3f(pr:number,pg:number,pb:number):void
             {
                 if(this.m_currMaterial != null)
                 {
                     this.m_currMaterial.setRGB3f(pr,pg,pb);
-                }
-            }
-
-            setRGBAOffset4f(pr:number,pg:number,pb:number,pa:number):void
-            {
-                if(this.m_currMaterial != null)
-                {
-                    this.m_currMaterial.setRGBAOffset4f(pr,pg,pb, pa);
                 }
             }
             setRGBOffset3f(pr:number,pg:number,pb:number):void
