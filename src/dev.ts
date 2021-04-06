@@ -271,8 +271,8 @@
 //  import * as DemoFlexMesh from "./demo/DemoFlexMesh";
 //  import Demo = DemoFlexMesh.demo.DemoFlexMesh;
 
-import * as DemoFlexPipe from "./demo/DemoFlexPipe";
-import Demo = DemoFlexPipe.demo.DemoFlexPipe;
+//  import * as DemoFlexPipe from "./demo/DemoFlexPipe";
+//  import Demo = DemoFlexPipe.demo.DemoFlexPipe;
 
 //  import * as DemoVSTexture from "./demo/DemoVSTexture";
 //  import Demo = DemoVSTexture.demo.DemoVSTexture;
@@ -301,8 +301,8 @@ import Demo = DemoFlexPipe.demo.DemoFlexPipe;
 //  import * as BoFrame from "./app/BoFrame";
 //  import Demo = BoFrame.app.BoFrame;
 
-//  import * as RbtDrama from "./app/RbtDrama";
-//  import Demo = RbtDrama.app.RbtDrama;
+import * as RbtDrama from "./app/RbtDrama";
+import Demo = RbtDrama.app.RbtDrama;
 
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;

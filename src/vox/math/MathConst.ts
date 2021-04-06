@@ -54,7 +54,7 @@ export namespace vox
             }
             static GetNearestCeilPow2(int_n:number):number
             {
-              let x = 1;
+              let x:number = 1;
               while(x < int_n) {
                 x <<= 1;
               }
@@ -79,9 +79,9 @@ export namespace vox
                 }
                 return 0.0;
             }
-            static GetMinAngle(a0:number, a1:number):number
+            static GetMinDegree(a0:number, a1:number):number
             {
-                var angle = 0;
+                let angle:number = 0;
                 if(a1 >= 270 && a0 < 90){
                     angle = (a1 - (a0 + 360)) % 180;
                 }else if (a1 <= 90 && a0 >= 270) {
@@ -94,14 +94,14 @@ export namespace vox
                 }
                 return angle;
             }
-            static GetAngleByXY(dx:number,dy:number):number
+            static GetDegreeByXY(dx:number,dy:number):number
             {
                 if(Math.abs(dx) < 0.00001)
                 {
                     if(dy >= 0) return 270;
                     else return 90;
                 }
-                var angle = Math.atan(dy/dx) * 180/Math.PI;
+                let angle = Math.atan(dy/dx) * 180/Math.PI;
                 if(dy>0 && dx>0)
                 {         
                     return angle
@@ -121,7 +121,7 @@ export namespace vox
                     if(dy >= 0) return MathConst.MATH_1PER2PI;
                     else return MathConst.MATH_3PER2PI;
                 }
-                var rad = Math.atan(dy/dx);
+                let rad:number = Math.atan(dy/dx);
                 if(dx >= 0)
                 {
                     return rad;

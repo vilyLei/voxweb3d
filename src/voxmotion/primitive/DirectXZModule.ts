@@ -27,6 +27,7 @@ export namespace voxmotion
             private m_velModule:VelocityXZModule = new VelocityXZModule();
             private m_target:IEntityTransform = null;
             private m_moving:boolean = true;
+            private m_direcDegree:number = 0.0;
             syncTargetUpdate:boolean = true;
             constructor(){}
             
@@ -82,6 +83,10 @@ export namespace voxmotion
                     this.updatePos();
                 }
             }
+            getDirecDegree():number
+            {
+                return this.m_direcDegree;
+            }
             private updatePos():void
             {
                 if(this.m_velocityFlag)
@@ -93,7 +98,7 @@ export namespace voxmotion
 
                 this.m_pos.subVecsTo(this.m_currPos, this.m_dstPos);
                 let squaredDis:number = this.m_pos.getLengthSquared();
-                let ang:number = MathConst.GetAngleByXY(-spdv.x,spdv.z) + 180;
+                this.m_direcDegree = MathConst.GetDegreeByXY(-spdv.x,spdv.z) + 180;
                 if(spdv.getLengthSquared() < squaredDis)
                 {
                     this.m_pos.addVecsTo(this.m_currPos,spdv);
@@ -107,7 +112,7 @@ export namespace voxmotion
                 }
                 
                 this.m_target.setPosition( this.m_currPos );
-                this.m_target.setRotationXYZ(0.0,ang,0.0);
+                this.m_target.setRotationXYZ(0.0,this.m_direcDegree,0.0);
 
                 if(this.syncTargetUpdate)
                 {

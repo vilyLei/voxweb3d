@@ -20,6 +20,7 @@ import * as TwoFeetUnitT from "../app/robot/TwoFeetUnit";
 import * as FourFeetUnitT from "../app/robot/FourFeetUnit";
 import * as SixFeetUnitT from "../app/robot/SixFeetUnit";
 import * as TwoFeetBodyT from "../app/robot/TwoFeetBody";
+import * as TFB2T from "../app/robot/TFB2";
 import * as LinePartStoreT from "../app/robot/LinePartStore";
 import * as BoxPartStoreT from "../app/robot/BoxPartStore";
 import * as CameraViewRayT from "../vox/view/CameraViewRay";
@@ -45,6 +46,7 @@ import TwoFeetUnit = TwoFeetUnitT.app.robot.TwoFeetUnit;
 import FourFeetUnit = FourFeetUnitT.app.robot.FourFeetUnit;
 import SixFeetUnit = SixFeetUnitT.app.robot.SixFeetUnit;
 import TwoFeetBody = TwoFeetBodyT.app.robot.TwoFeetBody;
+import TFB2 = TFB2T.app.robot.TFB2;
 import LinePartStore = LinePartStoreT.app.robot.LinePartStore;
 import BoxPartStore = BoxPartStoreT.app.robot.BoxPartStore;
 import CameraViewRay = CameraViewRayT.vox.view.CameraViewRay;
@@ -68,8 +70,11 @@ export namespace app
         private m_twoFUnit0:TwoFeetUnit = null;
         private m_fourFUnit0:FourFeetUnit = null;
         private m_sixFUnit0:SixFeetUnit = null;
-        private m_twoFeetBody:TwoFeetBody = null;
-        private m_twoFeetBodys:TwoFeetBody[] = [];
+        //  private m_twoFeetBody:TwoFeetBody = null;
+        //  private m_twoFeetBodys:TwoFeetBody[] = [];
+        //TFB2
+        private m_twoFeetBody:TFB2 = null;
+        private m_twoFeetBodys:TFB2[] = [];
         private m_targets:DisplayEntity[] = [];
         private m_viewRay:CameraViewRay = new CameraViewRay();
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
@@ -90,6 +95,7 @@ export namespace app
                 
                 let rparam:RendererParam = new RendererParam();
                 //rparam.maxWebGLVersion = 1;
+                //rparam.setCamPosition(30.0,2800.0,30.0);
                 rparam.setCamPosition(800.0,800.0,800.0);
                 //rparam.setCamPosition(1200.0,1200.0,0.0);
                 //rparam.setCamPosition(0.0,200.0,1200.0);
@@ -147,7 +153,7 @@ export namespace app
                 //  this.m_targets.push(plane);
                 //*/
                 ///*
-                for(let i:number = 0; i < 3; ++i)
+                for(let i:number = 0; i < 1; ++i)
                 {
                     //let linePart0:LinePartStore = new LinePartStore();
                     //let linePart1:LinePartStore = new LinePartStore();
@@ -158,15 +164,17 @@ export namespace app
     
                     let boxPart1:BoxPartStore = new BoxPartStore();
                     boxPart1.setParam(100.0,-40.0,-30.0);
-                    boxPart1.setBgSize(10,8);
-                    boxPart1.setSgSize(7,5);
+                    boxPart1.setBgSize(10, 8);
+                    boxPart1.setSgSize(7,  5);
                     boxPart1.initilize(tex0,tex2,tex1);
                     
-                    this.m_twoFeetBody = new TwoFeetBody();
+                    this.m_twoFeetBody = new TFB2();
                     //this.m_twoFeetBody.initialize( this.m_rscene,0, linePart0, linePart1,60.0);
                     //this.m_twoFeetBody.initialize( this.m_rscene,0, boxPart0, linePart1,80.0);
                     this.m_twoFeetBody.initialize( this.m_rscene,0, boxPart0, boxPart1,80.0);
-                    //this.m_twoFeetBody.moveToXZ(10.0,0.0);
+                    this.m_twoFeetBody.moveToXZ(100.0, 0.1);
+                    //this.m_twoFeetBody.moveToXZ(100.0,100.0);
+                    this.m_twoFeetBody.setAttPosXYZ(200.0, 100.0, 0.1);
                     this.m_twoFeetBodys.push(this.m_twoFeetBody);//TwoFeetBody
                 }
                 //*/
@@ -184,14 +192,41 @@ export namespace app
                 this.update();
             }
         }
+        private m_direcV:Vector3D = new Vector3D();
+        private m_pos:Vector3D = new Vector3D();
+        private m_pos0:Vector3D = new Vector3D();
+        private m_pos1:Vector3D = new Vector3D();
+        private m_runflag:boolean = true;
         private mouseDown(evt:any):void
         {
-                
-            this.m_viewRay.intersectPiane();
-
             let pv:Vector3D = this.m_viewRay.position;
             if(this.m_twoFUnit0 != null)this.m_twoFUnit0.moveToXZ(pv.x, pv.z);
-            if(this.m_twoFeetBody != null)this.m_twoFeetBody.moveToXZ(pv.x, pv.z);
+            //if(this.m_twoFeetBody != null)this.m_twoFeetBody.moveToXZ(pv.x, pv.z);
+            if(this.m_twoFeetBody != null)
+            {
+                this.m_direcV.copyFrom(pv);
+                this.m_direcV.y = 0.0;
+                this.m_direcV.normalize();
+
+                this.m_twoFeetBody.moveToXZ(pv.x, pv.z);
+                this.m_pos.setXYZ(pv.x + this.m_direcV.x * 130.0,100.0, pv.z + this.m_direcV.z * 130.0);
+                this.m_twoFeetBody.setAttPos(this.m_pos);
+                if(!this.m_runflag)
+                {
+                    this.m_twoFeetBody.getLEndPos(this.m_pos0);
+                    let axis:Axis3DEntity = new Axis3DEntity();
+                    axis.initialize(30.0);
+                    axis.setPosition(this.m_pos0);
+                    this.m_rscene.addEntity(axis);
+
+                    this.m_twoFeetBody.getREndPos(this.m_pos0);
+                    axis = new Axis3DEntity();
+                    axis.initialize(30.0);
+                    axis.setPosition(this.m_pos0);
+                    this.m_rscene.addEntity(axis);
+                }
+                this.m_runflag = !this.m_runflag;
+            }
         }
         
         private m_timeoutId:any = -1;
@@ -207,7 +242,7 @@ export namespace app
             {
                 //this.m_twoFeetBody.run();
                 //this.m_twoFeetBodys.push(this.m_twoFeetBody);//TwoFeetBody
-                let body:TwoFeetBody = null;
+                let body:TFB2 = null;
                 for(let i:number = 0; i < this.m_twoFeetBodys.length; ++i)
                 {
                     body = this.m_twoFeetBodys[i];
@@ -217,12 +252,16 @@ export namespace app
         }
         run():void
         {
-
+            let pv:Vector3D = this.m_viewRay.position;
+            if(this.m_twoFeetBody != null)
+            {
+                //this.m_twoFeetBody.setAttPosXYZ(pv.x,0.0, pv.z);
+            }
             this.m_statusDisp.update();
 
             this.m_rscene.run();
-
-            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+            this.m_viewRay.intersectPiane();
+            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }
 }

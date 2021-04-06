@@ -50,7 +50,14 @@ export namespace app
             {
                 return this.m_container;
             }
-            
+            setVisible(boo:boolean):void
+            {
+                this.m_container.setVisible(boo);
+            }
+            getVisible():boolean
+            {
+                return this.m_container.getVisible();
+            }
             setCoreAngle(angle:number):void
             {
                 this.m_coreFAxis.setCoreAngle(angle);
