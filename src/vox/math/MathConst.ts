@@ -82,14 +82,27 @@ export namespace vox
             static GetMinDegree(a0:number, a1:number):number
             {
                 let angle:number = 0;
-                if(a1 >= 270 && a0 < 90){
+                if(a1 >= 270 && a0 < 90)
+                {
                     angle = (a1 - (a0 + 360)) % 180;
-                }else if (a1 <= 90 && a0 >= 270) {
+                }
+                else if (a1 <= 90 && a0 >= 270)
+                {
                     angle = (a1 + 360 - a0) % 180;
-                }else {
+                }
+                else
+                {
                     angle = (a1 - a0);
-                    if (Math.abs(angle) > 180) {
-                        angle -= 360;    
+                    //  if (Math.abs(angle) > 180) {
+                    //      angle -= 360;
+                    //  }
+
+                    if ((angle) > 180) {
+                        angle -= 360;
+                        angle %= 360;
+                    }else if ((angle) < -180) {
+                        angle += 360;
+                        angle %= 360;
                     }
                 }
                 return angle;

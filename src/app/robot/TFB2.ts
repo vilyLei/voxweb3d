@@ -38,6 +38,10 @@ export namespace app
 
             private m_legModule:TwoLRbtModule = null;
             private m_armModule:TwoARbtModule = null;
+
+            static readonly FREE_RUN:number = 1001;
+            static readonly ATTACK_RUN:number = 1002;
+            private m_runMode:number = 1002;
             constructor()
             {
                 this.m_legModule = new TwoLRbtModule();
@@ -149,6 +153,10 @@ export namespace app
             }
             run():void
             {
+                this.attackRun();
+            }
+            attackRun():void
+            {
                 //this.freeTest();
                 let moveFlag:boolean = false;
                 if(this.m_awakeFlag)
@@ -157,9 +165,8 @@ export namespace app
                     {
                         this.m_tickModule.run();
                         this.m_awake = this.m_tickModule.isMoving();
-                        //let degree:number = this.m_tickModule.getDirecDegree();
+                        
                         this.m_legModule.run();
-                        this.m_legModule.getPosition(this.m_pos);
                         moveFlag = true;
 
                         if(!this.m_awake)
@@ -182,9 +189,10 @@ export namespace app
                 }
                 if(moveFlag)
                 {
+                    this.m_legModule.getPosition(this.m_pos);
                     this.m_armModule.setPosition(this.m_pos);
-                    this.m_armModule.runAtt();
                 }
+                this.m_armModule.runAtt(moveFlag);
             }
             freeRun():void
             {
@@ -238,6 +246,7 @@ export namespace app
                 if(!this.m_awake)
                 {
                     this.m_legModule.toPositive();
+                    //if(this.m_runMode == TFB2.FREE_RUN)this.m_armModule.toNegative();
                     this.m_armModule.toNegative();
                 }
                 this.m_awake = true;

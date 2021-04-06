@@ -95,7 +95,7 @@ export namespace app
                 
                 let rparam:RendererParam = new RendererParam();
                 //rparam.maxWebGLVersion = 1;
-                //rparam.setCamPosition(30.0,2800.0,30.0);
+                //rparam.setCamPosition(10.0,1800.0,10.0);
                 rparam.setCamPosition(800.0,800.0,800.0);
                 //rparam.setCamPosition(1200.0,1200.0,0.0);
                 //rparam.setCamPosition(0.0,200.0,1200.0);
@@ -172,9 +172,9 @@ export namespace app
                     //this.m_twoFeetBody.initialize( this.m_rscene,0, linePart0, linePart1,60.0);
                     //this.m_twoFeetBody.initialize( this.m_rscene,0, boxPart0, linePart1,80.0);
                     this.m_twoFeetBody.initialize( this.m_rscene,0, boxPart0, boxPart1,80.0);
-                    this.m_twoFeetBody.moveToXZ(100.0, 0.1);
+                    this.m_twoFeetBody.moveToXZ(100.0, 0.0);
                     //this.m_twoFeetBody.moveToXZ(100.0,100.0);
-                    this.m_twoFeetBody.setAttPosXYZ(200.0, 100.0, 0.1);
+                    this.m_twoFeetBody.setAttPosXYZ(200.0, 100.0, -0.1);
                     this.m_twoFeetBodys.push(this.m_twoFeetBody);//TwoFeetBody
                 }
                 //*/
@@ -211,6 +211,7 @@ export namespace app
                 this.m_twoFeetBody.moveToXZ(pv.x, pv.z);
                 this.m_pos.setXYZ(pv.x + this.m_direcV.x * 130.0,100.0, pv.z + this.m_direcV.z * 130.0);
                 this.m_twoFeetBody.setAttPos(this.m_pos);
+                /*
                 if(!this.m_runflag)
                 {
                     this.m_twoFeetBody.getLEndPos(this.m_pos0);
@@ -225,6 +226,7 @@ export namespace app
                     axis.setPosition(this.m_pos0);
                     this.m_rscene.addEntity(axis);
                 }
+                //*/
                 this.m_runflag = !this.m_runflag;
             }
         }
@@ -255,7 +257,7 @@ export namespace app
             let pv:Vector3D = this.m_viewRay.position;
             if(this.m_twoFeetBody != null)
             {
-                //this.m_twoFeetBody.setAttPosXYZ(pv.x,0.0, pv.z);
+                this.m_twoFeetBody.setAttPosXYZ(pv.x,0.0, pv.z);
             }
             this.m_statusDisp.update();
 

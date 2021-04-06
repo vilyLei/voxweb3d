@@ -137,7 +137,7 @@ export namespace app
                     let axis:Axis3DEntity = new Axis3DEntity();
                     axis.initialize(30.0);
                     axis.setXYZ(100,130,0.0);
-                    this.m_containerL.addEntity(axis);
+                    this.m_container.addEntity(axis);
 
                     let pv:Vector3D = new Vector3D();
                     pv.copyFrom(partStore.getCoreCenter());
@@ -166,15 +166,21 @@ export namespace app
             setAttPos(position:Vector3D):void
             {
                 this.m_attPos.copyFrom(position);
-                this.updateAttPose();
+
+                this.m_container.getPosition(this.m_pos);
+                let degree:number = -MathConst.GetDegreeByXY(this.m_attPos.x - this.m_pos.x, this.m_attPos.z - this.m_pos.z);
+                //  console.log("XXXX A, : ",this.m_attPos.x - this.m_pos.x, this.m_attPos.z - this.m_pos.z);
+                //  console.log("XXXX A, degree: ",degree.toFixed(3));
             }
             setAttPosXYZ(px:number,py:number,pz:number):void
             {
-                //this.m_container.getPosition(this.m_pos);
-                //let degree:number = -MathConst.GetDegreeByXY(px - this.m_pos.x, pz - this.m_pos.z);
-                //console.log("degree: "+degree);
                 this.m_attPos.setXYZ(px,py,pz);
-                this.updateAttPose();
+                
+                this.m_container.getPosition(this.m_pos);
+                let degree:number = -MathConst.GetDegreeByXY(this.m_attPos.x - this.m_pos.x, this.m_attPos.z - this.m_pos.z);
+                //  console.log("XXXX B, : ",this.m_attPos.x - this.m_pos.x, this.m_attPos.z - this.m_pos.z);
+                //  console.log("XXXX B, degree: ",degree.toFixed(3));
+
             }
             getAttPos():Vector3D
             {
@@ -193,27 +199,47 @@ export namespace app
                 //console.log("A this.m_attPos: ",this.m_attPos);
                 this.m_container.getPosition(this.m_pos);
                 let degree:number = -MathConst.GetDegreeByXY(this.m_attPos.x - this.m_pos.x, this.m_attPos.z - this.m_pos.z);
-                //let degree:number = MathConst.GetDegreeByXY(this.m_pos.x - this.m_attPos.x, this.m_attPos.z - this.m_pos.z) + 180;
+                let degreeFrom:number = this.m_container.getRotationY();
+                let degreeDis:number = MathConst.GetMinDegree((degree + 360)%360, (degreeFrom + 360)%360);
+                //let degreeDis0:number = MathConst.GetMinDegree(degree,degreeFrom);
+                let pdis:number = Math.abs(degreeDis);
+                if(pdis > 1)
+                {
+                    //console.log("A degreeDis0: "+degreeDis.toFixed(3),degree.toFixed(3));
+                    degree = degreeFrom - degreeDis * 0.2;
+                    this.setRotationY(degree);
+                    this.m_container.update();
+                }
                 this.setRotationY(degree);
                 this.m_container.update();
-                ///*
-                this.m_container.getInvMatrix().transformOutVector3(this.m_attPos, this.m_tempV);
-                this.m_containerL.getPosition(this.m_pos);
-                degree = MathConst.GetDegreeByXY(this.m_pos.x - this.m_tempV.x, this.m_tempV.z - this.m_pos.z) + 180;
-                //console.log("B degree: ",degree);
-                this.m_containerL.setRotationY(degree);
-                this.m_containerL.update();
-                //degree = MathConst.GetDegreeByXY(this.m_tempV.x - this.m_pos.x, this.m_tempV.z - this.m_pos.z);
-                //this.m_containerR.getPosition(this.m_pos);
-                //degree = MathConst.GetDegreeByXY(this.m_pos.x - this.m_tempV.x, this.m_tempV.z - this.m_pos.z) + 180;
-                this.m_containerR.setRotationY(-degree);
-                this.m_containerR.update();
-                
-                //*/
-                this.m_containerL.getInvMatrix().transformOutVector3(this.m_attPos, this.m_tempV);
-                this.m_coreFAxis.setAttLPos(this.m_tempV);
-                this.m_containerR.getInvMatrix().transformOutVector3(this.m_attPos, this.m_tempV);
-                this.m_coreFAxis.setAttRPos(this.m_tempV);
+                //if(pdis > 1)
+                //{
+                if(pdis < 30)
+                {
+                    this.m_container.getInvMatrix().transformOutVector3(this.m_attPos, this.m_tempV);
+                    this.m_containerL.getPosition(this.m_pos);
+                    let k:number = this.m_tempV.dot(Vector3D.X_AXIS);
+                    //console.log("A k: "+k.toFixed(3));
+                    //}
+                    //  if(k < 100.0)
+                    //  {
+                    //      k = 100.0;
+                    //  }
+                    this.m_tempV.copyFrom(Vector3D.X_AXIS);
+                    this.m_tempV.scaleBy(k);
+                    degree = MathConst.GetDegreeByXY(this.m_pos.x - this.m_tempV.x, this.m_tempV.z - this.m_pos.z) + 180;
+                    //  //console.log("B degree: ",degree);
+                    this.m_containerL.setRotationY(degree);
+                    this.m_containerL.update();
+                    this.m_containerR.setRotationY(-degree);
+                    this.m_containerR.update();
+                    
+                    this.m_containerL.getInvMatrix().transformOutVector3(this.m_attPos, this.m_tempV);
+                    this.m_coreFAxis.setAttLPos(this.m_tempV);
+                    this.m_containerR.getInvMatrix().transformOutVector3(this.m_attPos, this.m_tempV);
+                    this.m_coreFAxis.setAttRPos(this.m_tempV);
+                }
+
             }
             resetPose():void
             {
@@ -224,11 +250,14 @@ export namespace app
             {
                 this.m_nextTime = this.m_coreFAxis.getNextOriginTime(this.m_time);
             }
-            runAtt():void
+            runAtt(moveEnabled:boolean):void
             {
                 this.updateAttPose();
                 this.m_container.update();
-                this.m_coreFAxis.runAtt(this.m_time);
+                if(moveEnabled)
+                {
+                    this.m_coreFAxis.runAtt(this.m_time);
+                }
                 this.m_time += this.m_timeSpeed;
             }
             run():void
