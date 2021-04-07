@@ -13,6 +13,8 @@ import * as DirectXZModuleT from "../../voxmotion/primitive/DirectXZModule";
 import * as IPartStoreT from "../../app/robot/IPartStore";
 import * as TwoLRbtModuleT from "../../app/robot/TwoLRbtModule";
 import * as TwoARbtModuleT from "../../app/robot/TwoARbtModule";
+import * as WeapMoudleT from "../../app/robot/WeapMoudle";
+import * as CampTypeT from "../../app/robot/Camp";
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3T.vox.math.Vector3D;
@@ -22,6 +24,9 @@ import DirectXZModule = DirectXZModuleT.voxmotion.primitive.DirectXZModule;
 import IPartStore = IPartStoreT.app.robot.IPartStore;
 import TwoLRbtModule = TwoLRbtModuleT.app.robot.TwoLRbtModule;
 import TwoARbtModule = TwoARbtModuleT.app.robot.TwoARbtModule;
+import WeapMoudle = WeapMoudleT.app.robot.WeapMoudle;
+import CampType = CampTypeT.app.robot.CampType;
+
 
 export namespace app
 {
@@ -34,6 +39,8 @@ export namespace app
             private m_tickModule:DirectXZModule = new DirectXZModule();
             private m_speed:number = 3.0;
             private m_pos:Vector3D = new Vector3D();
+            private m_beginPos:Vector3D = new Vector3D();
+            private m_endPos:Vector3D = new Vector3D();
             private m_attPos:Vector3D = new Vector3D();
 
             private m_legModule:TwoLRbtModule = null;
@@ -42,10 +49,11 @@ export namespace app
             static readonly FREE_RUN:number = 1001;
             static readonly ATTACK_RUN:number = 1002;
             private m_runMode:number = 1002;
+            
+            weap:WeapMoudle = null;
             constructor()
             {
                 this.m_legModule = new TwoLRbtModule();
-                //this.m_armModule = new TwoARbtModule(this.m_legModule.getContainer());
                 this.m_armModule = new TwoARbtModule();
             }
             getLegModule():TwoLRbtModule
@@ -84,6 +92,8 @@ export namespace app
             {
                 if(sc != null && partStore0 != null && partStore1 != null)
                 {
+                    this.weap = new WeapMoudle(sc);
+
                     let offsetPos:Vector3D = new Vector3D(0.0,0.0,0.0);
                     this.m_legModule.initialize(sc,renderProcessIndex,partStore0,offsetPos);
                     this.m_legModule.toPositive();
@@ -115,24 +125,22 @@ export namespace app
             }
             setAttPos(position:Vector3D):void
             {
+                this.m_attPos.copyFrom(position);
                 this.m_armModule.setAttPos(position);
             }
             setAttPosXYZ(px:number,py:number,pz:number):void
             {
+                this.m_attPos.setXYZ(px,py,pz);
                 this.m_armModule.setAttPosXYZ(px,py,pz);
             }
-            getLEndPos(outV:Vector3D):void
+            getLEndPos(outV:Vector3D,k:number):void
             {
-                this.m_armModule.getLEndPos(outV);
+                this.m_armModule.getLEndPos(outV,k);
             }
-            getREndPos(outV:Vector3D):void
+            getREndPos(outV:Vector3D,k:number):void
             {
-                this.m_armModule.getREndPos(outV);
+                this.m_armModule.getREndPos(outV,k);
             }
-            //  update():void
-            //  {
-            //      this.m_armModule.update();
-            //  }
             resetPose():void
             {
                 this.m_legModule.resetPose();
@@ -153,8 +161,19 @@ export namespace app
             }
             run():void
             {
-                this.attackRun();
+                switch(this.m_runMode)
+                {
+                    case TFB2.ATTACK_RUN:
+                        this.attackRun();
+                        break;
+                    case TFB2.FREE_RUN:
+                        this.freeRun();
+                        break;
+                    default:
+                }
             }
+            private m_attDelay:number = 0;
+            private m_attWeapFlag:boolean = true;
             attackRun():void
             {
                 //this.freeTest();
@@ -193,6 +212,34 @@ export namespace app
                     this.m_armModule.setPosition(this.m_pos);
                 }
                 this.m_armModule.runAtt(moveFlag);
+                if(this.m_armModule.isAttackLock())
+                {
+                    // att to do
+                    if(this.m_attDelay < 1)
+                    {
+                        if(this.m_attWeapFlag)
+                        {
+                            this.m_armModule.getLEndPos(this.m_beginPos,1.0);
+                            //this.m_armModule.getLEndPos(this.m_endPos,3.0);
+                        }
+                        else
+                        {
+                            this.m_armModule.getREndPos(this.m_beginPos,1.0);
+                            //this.m_armModule.getREndPos(this.m_endPos,3.0);
+                        }
+                        this.m_attWeapFlag = !this.m_attWeapFlag;
+                        //console.log("this.m_beginPos,this.m_attPos: ",this.m_beginPos,this.m_attPos);
+                        this.weap.createAtt(0,this.m_beginPos,this.m_attPos,null,CampType.Blue);
+                        //this.weap.createAtt(0,this.m_beginPos,this.m_endPos);
+                        this.m_attDelay = 20;
+                    }
+                    this.m_attDelay --;
+                }
+                else
+                {
+                    this.m_attDelay = 0;
+                }
+                this.weap.run();
             }
             freeRun():void
             {

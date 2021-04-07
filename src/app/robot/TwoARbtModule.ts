@@ -42,8 +42,10 @@ export namespace app
             private m_containerR:DisplayEntityContainer = new DisplayEntityContainer();
             private m_partStore:IPartStore = null;
             
+            private m_attackLock:boolean = false;
             private m_timeSpeed:number = 3.0;
             private m_nextTime:number = 0;
+            private m_testAxis:Axis3DEntity;
             constructor(container:DisplayEntityContainer = null)
             {
                 if(container == null)
@@ -139,6 +141,14 @@ export namespace app
                     axis.setXYZ(100,130,0.0);
                     this.m_container.addEntity(axis);
 
+                    this.m_testAxis = axis;
+
+                    axis = new Axis3DEntity();
+                    axis.initialize(200.0);
+                    axis.setXYZ(0,30,0.0);
+                    this.m_container.addEntity(axis);
+
+
                     let pv:Vector3D = new Vector3D();
                     pv.copyFrom(partStore.getCoreCenter());
                     if(offsetPos != null)
@@ -166,78 +176,87 @@ export namespace app
             setAttPos(position:Vector3D):void
             {
                 this.m_attPos.copyFrom(position);
-
-                this.m_container.getPosition(this.m_pos);
-                let degree:number = -MathConst.GetDegreeByXY(this.m_attPos.x - this.m_pos.x, this.m_attPos.z - this.m_pos.z);
-                //  console.log("XXXX A, : ",this.m_attPos.x - this.m_pos.x, this.m_attPos.z - this.m_pos.z);
-                //  console.log("XXXX A, degree: ",degree.toFixed(3));
             }
             setAttPosXYZ(px:number,py:number,pz:number):void
             {
                 this.m_attPos.setXYZ(px,py,pz);
-                
-                this.m_container.getPosition(this.m_pos);
-                let degree:number = -MathConst.GetDegreeByXY(this.m_attPos.x - this.m_pos.x, this.m_attPos.z - this.m_pos.z);
-                //  console.log("XXXX B, : ",this.m_attPos.x - this.m_pos.x, this.m_attPos.z - this.m_pos.z);
-                //  console.log("XXXX B, degree: ",degree.toFixed(3));
-
             }
             getAttPos():Vector3D
             {
                 return this.m_attPos;
             }
-            getLEndPos(outV:Vector3D):void
+            getLEndPos(outV:Vector3D,k:number):void
             {
-                this.m_coreFAxis.getLEndPos(outV);
+                this.m_coreFAxis.getLEndPos(outV,k);
+                this.m_attackLock = false;
             }
-            getREndPos(outV:Vector3D):void
+            getREndPos(outV:Vector3D,k:number):void
             {
-                this.m_coreFAxis.getREndPos(outV);
+                this.m_coreFAxis.getREndPos(outV,k);
+                this.m_attackLock = false;
+            }
+            isAttackLock():boolean
+            {
+                return this.m_attackLock;
             }
             private updateAttPose():void
             {
                 //console.log("A this.m_attPos: ",this.m_attPos);
                 this.m_container.getPosition(this.m_pos);
-                let degree:number = -MathConst.GetDegreeByXY(this.m_attPos.x - this.m_pos.x, this.m_attPos.z - this.m_pos.z);
+                let degree:number = 180 + MathConst.GetDegreeByXY(this.m_pos.x - this.m_attPos.x, this.m_attPos.z - this.m_pos.z);
+                //let degree:number = MathConst.GetDegreeByXY(this.m_attPos.x - this.m_pos.x, this.m_pos.z - this.m_attPos.z);
                 let degreeFrom:number = this.m_container.getRotationY();
-                let degreeDis:number = MathConst.GetMinDegree((degree + 360)%360, (degreeFrom + 360)%360);
-                //let degreeDis0:number = MathConst.GetMinDegree(degree,degreeFrom);
+                let degreeDis:number = MathConst.GetMinDegree((degree + 360)%360, degreeFrom);
                 let pdis:number = Math.abs(degreeDis);
                 if(pdis > 1)
                 {
-                    //console.log("A degreeDis0: "+degreeDis.toFixed(3),degree.toFixed(3));
                     degree = degreeFrom - degreeDis * 0.2;
                     this.setRotationY(degree);
-                    this.m_container.update();
+                    this.m_attackLock = false;
+                }
+                else
+                {
+                    this.m_attackLock = true;
                 }
                 this.setRotationY(degree);
                 this.m_container.update();
-                //if(pdis > 1)
-                //{
-                if(pdis < 30)
+
+                this.m_container.getInvMatrix().transformOutVector3(this.m_attPos, this.m_tempV);
+                this.m_tempV.y = 0.0;
+                let kf:number = this.m_tempV.dot(Vector3D.X_AXIS);
+                if(kf > 100.0)
                 {
-                    this.m_container.getInvMatrix().transformOutVector3(this.m_attPos, this.m_tempV);
                     this.m_containerL.getPosition(this.m_pos);
-                    let k:number = this.m_tempV.dot(Vector3D.X_AXIS);
-                    //console.log("A k: "+k.toFixed(3));
-                    //}
-                    //  if(k < 100.0)
-                    //  {
-                    //      k = 100.0;
-                    //  }
-                    this.m_tempV.copyFrom(Vector3D.X_AXIS);
-                    this.m_tempV.scaleBy(k);
+                    this.m_tempV.scaleVecTo(Vector3D.X_AXIS,kf);
                     degree = MathConst.GetDegreeByXY(this.m_pos.x - this.m_tempV.x, this.m_tempV.z - this.m_pos.z) + 180;
-                    //  //console.log("B degree: ",degree);
+    
                     this.m_containerL.setRotationY(degree);
                     this.m_containerL.update();
                     this.m_containerR.setRotationY(-degree);
                     this.m_containerR.update();
                     
                     this.m_containerL.getInvMatrix().transformOutVector3(this.m_attPos, this.m_tempV);
-                    this.m_coreFAxis.setAttLPos(this.m_tempV);
+                    let py:number = this.m_tempV.y;
+                    this.m_tempV.y = 0.0;
+                    kf = this.m_tempV.dot(Vector3D.X_AXIS);
+                    if(kf > 20.0)
+                    {
+                        this.m_tempV.scaleVecTo(Vector3D.X_AXIS, kf);
+                        this.m_tempV.y = py;
+                        this.m_coreFAxis.setAttLPos(this.m_tempV);
+                    }
+    
                     this.m_containerR.getInvMatrix().transformOutVector3(this.m_attPos, this.m_tempV);
-                    this.m_coreFAxis.setAttRPos(this.m_tempV);
+                    //console.log("R m_tempV.y: "+this.m_tempV);
+                    py = this.m_tempV.y;
+                    this.m_tempV.y = 0.0;
+                    kf = this.m_tempV.dot(Vector3D.X_AXIS);
+                    if(kf > 20.0)
+                    {
+                        this.m_tempV.scaleVecTo(Vector3D.X_AXIS, kf);
+                        this.m_tempV.y = py;
+                        this.m_coreFAxis.setAttRPos(this.m_tempV);
+                    }
                 }
 
             }

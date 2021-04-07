@@ -162,14 +162,14 @@ export namespace app
             {
                 this.m_dstRPos.copyFrom(pv);
             }
-            getLEndPos(outV:Vector3D):void
+            getLEndPos(outV:Vector3D,k:number):void
             {
-                this.m_posV.setXYZ(0.0, this.m_bgLong, 0.0);
+                this.m_posV.setXYZ(0.0, this.m_bgLong * k, 0.0);
                 this.m_entitySGL.getMatrix().transformOutVector3(this.m_posV, outV);
             }
-            getREndPos(outV:Vector3D):void
+            getREndPos(outV:Vector3D,k:number):void
             {
-                this.m_posV.setXYZ(0.0, this.m_bgLong, 0.0);
+                this.m_posV.setXYZ(0.0, this.m_bgLong * k, 0.0);
                 this.m_entitySGR.getMatrix().transformOutVector3(this.m_posV, outV);
             }
             runAtt(time:number):void
@@ -217,6 +217,7 @@ export namespace app
                 this.m_entityBGL.getToParentMatrix().transformVector3Self(this.m_posV);
                 this.m_entitySGL.setPosition(this.m_posV);
                 let degree:number = MathConst.GetDegreeByXY(this.m_posV.y - this.m_dstLPos.y, this.m_dstLPos.x - this.m_posV.x);
+                //let degree:number = 180 + MathConst.GetDegreeByXY(this.m_posV.x - this.m_dstLPos.x, this.m_dstLPos.y - this.m_posV.y);
                 //this.m_angleL -= sgAngle + sgOffsetAngle;
                 //this.m_entitySGL.setRotationXYZ(0.0, 0.0, this.m_angleL);
                 this.m_entitySGL.setRotationXYZ(0.0, 0.0, degree);
@@ -225,7 +226,9 @@ export namespace app
                 this.m_posV.setXYZ(0.0, this.m_bgLong, 0.0);
                 this.m_entityBGR.getToParentMatrix().transformVector3Self(this.m_posV);
                 this.m_entitySGR.setPosition(this.m_posV);
+                //console.log("this.m_dstRPos.y: "+this.m_dstRPos.y);
                 degree = MathConst.GetDegreeByXY(this.m_posV.y - this.m_dstRPos.y, this.m_dstRPos.x - this.m_posV.x);
+                //degree = 180 + MathConst.GetDegreeByXY( this.m_posV.x - this.m_dstRPos.x, this.m_dstRPos.y - this.m_posV.y);
                 //this.m_angleR -= -sgAngle + sgOffsetAngle;
                 //this.m_entitySGR.setRotationXYZ(0.0, 0.0, this.m_angleR);
                 this.m_entitySGR.setRotationXYZ(0.0, 0.0, degree);

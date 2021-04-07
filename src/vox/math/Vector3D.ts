@@ -166,6 +166,12 @@ export namespace vox
 	        	this.z = this.z - idotn2 * nv.z;
             }
             
+            scaleVecTo(va:Vector3D, scale:number):void
+            {
+                this.x = va.x * scale;
+                this.y = va.y * scale;
+                this.z = va.z * scale;
+            }
             subVecsTo(va:Vector3D, vb:Vector3D):void
             {
                 this.x = va.x - vb.x;

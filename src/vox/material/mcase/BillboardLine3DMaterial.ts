@@ -52,7 +52,7 @@ uniform sampler2D u_sampler0;
 in vec4 v_colorMult;
 in vec4 v_colorOffset;
 in vec4 v_texUV;
-in vec2 v_fadeV;
+in vec4 v_fadeV;
 layout(location = 0) out vec4 FragColor;
 void main()
 {
@@ -61,7 +61,7 @@ vec3 offsetColor = v_colorOffset.rgb;
 float kf = v_texUV.z;
 //kf = min(kf / 0.3, 1.0) * (1.0 - max((kf - 0.7)/(1.0 - 0.7),0.0));
 kf = min(kf / v_fadeV.x, 1.0) * (1.0 - max((kf - v_fadeV.y)/(1.0 - v_fadeV.y),0.0));
-vec4 fv4 = vec4(v_colorMult.w * kf);
+vec4 fv4 = vec4(v_colorMult.w * kf * v_fadeV.w);
 `;
                     let fadeCode:string = this.billFS.getBrnAndAlphaCode("fv4");
                     let fragCode2:string =
@@ -87,7 +87,7 @@ uniform vec4 u_billParam[6];
 out vec4 v_texUV;
 out vec4 v_colorMult;
 out vec4 v_colorOffset;
-out vec2 v_fadeV;
+out vec4 v_fadeV;
 void main()
 {
     int i = int(a_vs.x);
@@ -97,16 +97,17 @@ void main()
     pv1.xy = pv1.xy - pv0.xy;
     pv1.xy = pv1.yx * (a_vs.y > 0.0 ? direcV.xy : direcV.zw);
     pv0.xy += normalize(pv1.xy) * abs(u_billParam[3].w);
-    gl_Position = u_projMat * pv0;
+    pv0 = u_projMat * pv0;
+    gl_Position = pv0;
     vec2 puv = a_uvs * u_billParam[0].xy;
-    float cosv = u_billParam[1].w;
-    float sinv = u_billParam[2].w;
+    float cosv = cos(u_billParam[2].w);
+    float sinv = sin(u_billParam[2].w);
     puv = vec2(puv.x * cosv - puv.y * sinv, puv.x * sinv + puv.y * cosv);
     v_texUV.xy = puv + u_billParam[0].zw;
     v_texUV.zw = a_uvs;
     v_colorMult = u_billParam[1];
     v_colorOffset = u_billParam[2];
-    v_fadeV = vec2(u_billParam[4].w, u_billParam[5].w);
+    v_fadeV = vec4(u_billParam[4].w, u_billParam[5].w, 1.0,1.0);
 }
 `;
                     return vtxCode;
@@ -147,9 +148,9 @@ void main()
                 }
                 
                 private m_uniformData:Float32Array = new Float32Array([
-                    1.0,1.0,0.0,0.0,        // uscale,vscale,uoffset,voffset
-                    1.0,1.0,1.0, 1.0,        // rgb scale coefficient: r,g,b, and uv rotation cos value
-                    0.0,0.0,0.0, 0.0,        // rgb offset: r,g,b, and uv rotation sin value
+                    1.0,1.0, 0.0,0.0,        // uscale,vscale,uoffset,voffset
+                    1.0,1.0,1.0, 1.0,        // rgb scale coefficient: r,g,b, fade factor(0.0 -> 1.0)default 1.0
+                    0.0,0.0,0.0, 0.0,        // rgb offset: r,g,b, and uv rotation rad
 
                     0.0,0.0,0.0, 10.0,      // begin pos x,y,z, line half width
                     100.0,0.0,0.0, 0.3,     // end pos x,y,z, fade in value
@@ -230,10 +231,10 @@ void main()
                 setUVRotation(uvDegree:number):void
                 {
                     this.m_uvRotation = uvDegree;
-                    uvDegree = MathConst.DegreeToRadian(uvDegree);
+                    //uvDegree = MathConst.DegreeToRadian(uvDegree);
                     //7,11
-                    this.m_uniformData[7] = Math.cos(uvDegree);
-                    this.m_uniformData[11] = Math.sin(uvDegree);
+                    //this.m_uniformData[7] = Math.cos(uvDegree);
+                    this.m_uniformData[11] = MathConst.DegreeToRadian(uvDegree);//Math.sin(uvDegree);
                 }
                 getUVRotation():number
                 {

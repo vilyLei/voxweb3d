@@ -133,6 +133,7 @@ export namespace demo
                 this.m_renderer.addEntity(billLine,1);
                 //billLine.setFadeFactor(0.5);
                 this.m_billLine = billLine;
+                return;
                 //*/
                 /*
                 let lightLine:LightLine3DEntity = new LightLine3DEntity();
@@ -212,12 +213,15 @@ export namespace demo
                 }
             }
         }
-        private m_time:number = 0.0;
+        private m_time:number = 1.1;
         private m_uvRotation:number = 0.0;
         run():void
         {
             if(this.m_billLine != null)
             {
+                //  this.m_time += 0.01;
+                //  this.m_billLine.setFadeFactor(Math.abs(Math.cos(this.m_time)));
+                //  /*
                 this.m_beginPos.x = 200.0 * Math.sin(this.m_time);
                 //this.m_endPos.x = 200.0 * Math.sin(this.m_time);
                 this.m_time += 0.02;
@@ -229,6 +233,7 @@ export namespace demo
                 //this.m_billLine.setEndPos(this.m_endPos);
                 this.m_billLine.setBeginPos(this.m_beginPos);
                 //this.m_billLine.setBeginAndEndPos(this.m_beginPos,this.m_endPos);
+                //*/
             }
             this.m_texBlock.run();
             this.m_equeue.run();

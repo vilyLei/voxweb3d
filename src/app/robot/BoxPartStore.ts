@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import * as Vector3T from "../../vox/math/Vector3D";
+import * as Color4T from "../../vox/material/Color4";
 import * as TextureProxyT from "../../vox/texture/TextureProxy";
 import * as Box3DMeshT from "../../vox/mesh/Box3DMesh";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
@@ -14,6 +15,7 @@ import * as Box3DEntityT from "../../vox/entity/Box3DEntity";
 import * as IPartStoreT from "../../app/robot/IPartStore";
 
 import Vector3D = Vector3T.vox.math.Vector3D;
+import Color4 = Color4T.vox.material.Color4;
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
 import Box3DMesh = Box3DMeshT.vox.mesh.Box3DMesh;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
@@ -41,7 +43,8 @@ export namespace app
             private m_sgBox:Box3DEntity = null;
             private m_sgLBox:Box3DEntity = null;
             private m_sgRBox:Box3DEntity = null;
-    
+            
+            private m_baseColor:Color4 = new Color4();
             private static s_baseBox:Box3DEntity = null;
             
             private static s_v0:Vector3D = new Vector3D(-10,-10,-10);        
@@ -51,7 +54,10 @@ export namespace app
             private m_tex1:TextureProxy;
             private m_tex2:TextureProxy;
             
-            constructor(){}
+            constructor()
+            {
+                this.m_baseColor.normalizeRandom(1.1);
+            }
             
             setParam(coreWidth:number, bgLong:number,sgLong:number):void
             {
@@ -174,7 +180,7 @@ export namespace app
                     this.m_bgLBox = new Box3DEntity();   
                     this.m_bgLBox.copyMeshFrom(this.m_bgBox);
                     this.m_bgLBox.initialize(BoxPartStore.s_v0,BoxPartStore.s_v1,[this.m_tex1]);
-                    (this.m_bgLBox.getMaterial() as any).setRGB3f(0.5,0.8,0.0);
+                    (this.m_bgLBox.getMaterial() as any).setRGB3f(this.m_baseColor.r,this.m_baseColor.g,this.m_baseColor.b);
                 }
                 return this.m_bgLBox;
             }
@@ -185,7 +191,7 @@ export namespace app
                     this.m_bgRBox = new Box3DEntity();
                     this.m_bgRBox.copyMeshFrom(this.m_bgBox);
                     this.m_bgRBox.initialize(BoxPartStore.s_v0,BoxPartStore.s_v1,[this.m_tex1]);
-                    (this.m_bgRBox.getMaterial() as any).setRGB3f(0.5,0.8,0.0);
+                    (this.m_bgRBox.getMaterial() as any).setRGB3f(this.m_baseColor.r,this.m_baseColor.g,this.m_baseColor.b);
                 }
                 return this.m_bgRBox;
             }
@@ -196,7 +202,7 @@ export namespace app
                     this.m_sgLBox = new Box3DEntity();
                     this.m_sgLBox.copyMeshFrom(this.m_sgBox);
                     this.m_sgLBox.initialize(BoxPartStore.s_v0,BoxPartStore.s_v1,[this.m_tex1]);
-                    (this.m_sgLBox.getMaterial() as any).setRGB3f(0.9,0.0,0.0);
+                    (this.m_sgLBox.getMaterial() as any).setRGB3f(this.m_baseColor.r,this.m_baseColor.g,this.m_baseColor.b);
                 }
                 return this.m_sgLBox;
             }
@@ -207,7 +213,7 @@ export namespace app
                     this.m_sgRBox = new Box3DEntity();   
                     this.m_sgRBox.copyMeshFrom(this.m_sgBox);
                     this.m_sgRBox.initialize(BoxPartStore.s_v0,BoxPartStore.s_v1,[this.m_tex1]);
-                    (this.m_sgRBox.getMaterial() as any).setRGB3f(0.9,0.0,0.0);
+                    (this.m_sgRBox.getMaterial() as any).setRGB3f(this.m_baseColor.r,this.m_baseColor.g,this.m_baseColor.b);
                 }
                 return this.m_sgRBox;
             }

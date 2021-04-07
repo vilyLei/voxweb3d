@@ -23,6 +23,7 @@ import * as TwoFeetBodyT from "../app/robot/TwoFeetBody";
 import * as TFB2T from "../app/robot/TFB2";
 import * as LinePartStoreT from "../app/robot/LinePartStore";
 import * as BoxPartStoreT from "../app/robot/BoxPartStore";
+import * as CampMoudleT from "../app/robot/CampMoudle";
 import * as CameraViewRayT from "../vox/view/CameraViewRay";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
@@ -49,6 +50,7 @@ import TwoFeetBody = TwoFeetBodyT.app.robot.TwoFeetBody;
 import TFB2 = TFB2T.app.robot.TFB2;
 import LinePartStore = LinePartStoreT.app.robot.LinePartStore;
 import BoxPartStore = BoxPartStoreT.app.robot.BoxPartStore;
+import CampMoudle = CampMoudleT.app.robot.CampMoudle;
 import CameraViewRay = CameraViewRayT.vox.view.CameraViewRay;
 
 export namespace app
@@ -77,6 +79,8 @@ export namespace app
         private m_twoFeetBodys:TFB2[] = [];
         private m_targets:DisplayEntity[] = [];
         private m_viewRay:CameraViewRay = new CameraViewRay();
+
+        private m_campModule:CampMoudle = new CampMoudle();
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
             let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -89,7 +93,7 @@ export namespace app
             console.log("RbtDrama::initialize()......");
             if(this.m_rscene == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
+                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
                 
@@ -115,6 +119,8 @@ export namespace app
                 
                 this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
                 
+                this.m_campModule.initialize(this.m_rscene);
+
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/wood_01.jpg");
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/yanj.jpg");
                 let tex2:TextureProxy = this.getImageTexByUrl("static/assets/skin_01.jpg");
@@ -172,9 +178,10 @@ export namespace app
                     //this.m_twoFeetBody.initialize( this.m_rscene,0, linePart0, linePart1,60.0);
                     //this.m_twoFeetBody.initialize( this.m_rscene,0, boxPart0, linePart1,80.0);
                     this.m_twoFeetBody.initialize( this.m_rscene,0, boxPart0, boxPart1,80.0);
-                    this.m_twoFeetBody.moveToXZ(100.0, 0.0);
+                    this.m_twoFeetBody.weap.texLoader = this.m_texLoader;
+                    this.m_twoFeetBody.moveToXZ(30.0, 0.0);
                     //this.m_twoFeetBody.moveToXZ(100.0,100.0);
-                    this.m_twoFeetBody.setAttPosXYZ(200.0, 100.0, -0.1);
+                    this.m_twoFeetBody.setAttPosXYZ(200.0, 100.0, 0.0);
                     this.m_twoFeetBodys.push(this.m_twoFeetBody);//TwoFeetBody
                 }
                 //*/
@@ -251,14 +258,15 @@ export namespace app
                     body.run();
                 }
             }
+            this.m_campModule.run();
+            if(this.m_twoFeetBody != null)
+            {
+                //  let pv:Vector3D = this.m_viewRay.position;
+                //  this.m_twoFeetBody.setAttPosXYZ(pv.x,0.0, pv.z);
+            }
         }
         run():void
         {
-            let pv:Vector3D = this.m_viewRay.position;
-            if(this.m_twoFeetBody != null)
-            {
-                this.m_twoFeetBody.setAttPosXYZ(pv.x,0.0, pv.z);
-            }
             this.m_statusDisp.update();
 
             this.m_rscene.run();
