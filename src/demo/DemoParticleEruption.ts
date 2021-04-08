@@ -157,7 +157,7 @@ export namespace demo
                 this.m_axis.update();
                 //  this.m_eff1Pool.createEffect(this.m_viewRay.position);
 
-                if(Math.random() > 0.5)
+                if(Math.random() > 10.5)
                 {
                     this.m_eff0Pool.createEffect(this.m_viewRay.position);
                 }

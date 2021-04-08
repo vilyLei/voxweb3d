@@ -18,6 +18,7 @@ export namespace particle
             setTime(time:number):void;
             updateTime(offsetTime:number):void;
             setXYZ(px:number, py:number, pz:number):void;
+            setRotationXYZ(rx:number, ry:number, rz:number):void;
             setPositionScale(scale:number):void;
             setSizeScale(scale:number):void;
             setPosition(position:Vector3D):void;

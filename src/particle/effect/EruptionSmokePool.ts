@@ -23,7 +23,7 @@ export namespace particle
     {
         export class EruptionSmokePool extends ParticleEffectPool
         {
-            private m_eruptionEfSrc:EruptionSomke = null;
+            private m_efSrcList:EruptionSomke[] = [];
             private m_texture:TextureProxy = null;
             private m_colorTexture:TextureProxy = null;
             private m_clipMixEnabled:boolean = false;
@@ -31,20 +31,45 @@ export namespace particle
 
             initialize(renderer:IRenderer,processIndex:number,particleTotal:number, texture:TextureProxy,colorTexture:TextureProxy,clipMixEnabled:boolean = false):void
             {
-                if(this.m_eruptionEfSrc == null)
+                if(this.m_texture == null)
                 {
                     this.m_clipMixEnabled = clipMixEnabled;
                     this.m_texture = texture;
                     this.m_colorTexture = colorTexture;
 
-                    this.m_renderer = renderer;                    
+                    this.m_renderer = renderer;
                     this.m_renderProcessI = processIndex;
-
-                    this.m_eruptionEfSrc = new EruptionSomke();
-                    this.m_eruptionEfSrc.initialize(particleTotal,texture,colorTexture);
+                    let efSrc:EruptionSomke = new EruptionSomke();
+                    efSrc.initialize(particleTotal,this.m_texture,this.m_colorTexture,this.m_clipMixEnabled);
+                    this.m_efSrcList.push(efSrc);
                 }
             }
-            
+            appendEffectSrc(particleTotal:number,clipMixEnabled:boolean):void
+            {
+                let efSrc:EruptionSomke = new EruptionSomke();
+                efSrc.initialize(particleTotal,this.m_texture,this.m_colorTexture,clipMixEnabled);
+                this.m_efSrcList.push(efSrc);
+            }
+            appendEffect(texture:TextureProxy,colorTexture:TextureProxy,srcIndex:number = -1):void
+            {
+                let eff:EruptionSomke = new EruptionSomke();
+                if(texture == null) texture = this.m_texture;
+                if(colorTexture == null) colorTexture = this.m_colorTexture;
+                let efSrc:EruptionSomke;
+                if(srcIndex < 0)
+                {
+                    efSrc = this.m_efSrcList[Math.floor((this.m_efSrcList.length - 0.5) * Math.random())];
+                }
+                else
+                {
+                    srcIndex = srcIndex<this.m_efSrcList.length?srcIndex:this.m_efSrcList.length-1;
+                    efSrc = this.m_efSrcList[srcIndex];
+                }
+                eff.initializeFrom(efSrc,texture,colorTexture, this.m_clipMixEnabled);
+                this.m_freeEffList.push(eff);
+                this.m_renderer.addEntity(eff.smokeEntity, this.m_renderProcessI, false);
+                eff.setVisible(false);
+            }
             createEffect(pv:Vector3D):void
             {
                 this.createEffectWithTexture(pv, this.m_texture,this.m_colorTexture);
@@ -55,7 +80,10 @@ export namespace particle
                 if(this.m_freeEffList.length < 1)
                 {
                     eff = new EruptionSomke();
-                    eff.initializeFrom(this.m_eruptionEfSrc,texture,colorTexture, this.m_clipMixEnabled);
+                    if(texture == null) texture = this.m_texture;
+                    if(colorTexture == null) colorTexture = this.m_colorTexture;
+                    let efSrc:EruptionSomke = this.m_efSrcList[Math.floor((this.m_efSrcList.length - 0.5) * Math.random())];
+                    eff.initializeFrom(efSrc,texture,colorTexture, this.m_clipMixEnabled);
                     this.m_renderer.addEntity(eff.smokeEntity, this.m_renderProcessI, false);
                 }
                 else
@@ -64,6 +92,7 @@ export namespace particle
                 }
                 this.m_effList.push(eff);
                 eff.setVisible(true);
+                eff.setRotationXYZ(0.0,Math.random() * 360.0,0.0);
                 eff.setTime(0.0);
                 //          eff.smokeEntity.setRGB3f(Math.random() + 0.2,Math.random() + 0.2,Math.random() + 0.2);
                 if(pv != null)

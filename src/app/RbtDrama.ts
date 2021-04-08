@@ -10,6 +10,7 @@ import * as TextureConstT from "../vox/texture/TextureConst";
 
 import * as DisplayEntityT from "../vox/entity/DisplayEntity";
 import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
+import * as Box3DEntityT from "../vox/entity/Box3DEntity";
 
 import * as MouseEventT from "../vox/event/MouseEvent";
 import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
@@ -24,6 +25,7 @@ import * as TFB2T from "../app/robot/TFB2";
 import * as LinePartStoreT from "../app/robot/LinePartStore";
 import * as BoxPartStoreT from "../app/robot/BoxPartStore";
 import * as CampMoudleT from "../app/robot/CampMoudle";
+import * as RedRoleT from "../app/robot/RedRole";
 import * as CameraViewRayT from "../vox/view/CameraViewRay";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
@@ -37,6 +39,7 @@ import TextureConst = TextureConstT.vox.texture.TextureConst;
 
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
+import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
@@ -51,6 +54,7 @@ import TFB2 = TFB2T.app.robot.TFB2;
 import LinePartStore = LinePartStoreT.app.robot.LinePartStore;
 import BoxPartStore = BoxPartStoreT.app.robot.BoxPartStore;
 import CampMoudle = CampMoudleT.app.robot.CampMoudle;
+import RedRole = RedRoleT.app.robot.RedRole;
 import CameraViewRay = CameraViewRayT.vox.view.CameraViewRay;
 
 export namespace app
@@ -66,12 +70,8 @@ export namespace app
         private m_texLoader:ImageTextureLoader = null;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
-        private m_frameAxis:BoFrameAxis = null;
-        private m_frameAxis1:BoFrameAxis = null;
 
         private m_twoFUnit0:TwoFeetUnit = null;
-        private m_fourFUnit0:FourFeetUnit = null;
-        private m_sixFUnit0:SixFeetUnit = null;
         //  private m_twoFeetBody:TwoFeetBody = null;
         //  private m_twoFeetBodys:TwoFeetBody[] = [];
         //TFB2
@@ -95,12 +95,12 @@ export namespace app
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-                //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
+                RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 
                 let rparam:RendererParam = new RendererParam();
                 //rparam.maxWebGLVersion = 1;
                 //rparam.setCamPosition(10.0,1800.0,10.0);
-                rparam.setCamPosition(800.0,800.0,800.0);
+                rparam.setCamPosition(1200.0,1200.0,1200.0);
                 //rparam.setCamPosition(1200.0,1200.0,0.0);
                 //rparam.setCamPosition(0.0,200.0,1200.0);
                 this.m_rscene = new RendererScene();
@@ -119,6 +119,7 @@ export namespace app
                 
                 this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
                 
+                this.m_campModule.texLoader = this.m_texLoader;
                 this.m_campModule.initialize(this.m_rscene);
 
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/wood_01.jpg");
@@ -135,30 +136,18 @@ export namespace app
                 axis = new Axis3DEntity();
                 axis.initializeCross(200.0);
                 this.m_rscene.addEntity(axis);
-                /*
-                let linePart:LinePartStore = new LinePartStore();
-                let boxPart:BoxPartStore = new BoxPartStore();
-                boxPart.initilize(tex0,tex2,tex1);
-                this.m_frameAxis = new BoFrameAxis();
-                //this.m_frameAxis.initialize( this.m_rscene, linePart );
-                this.m_frameAxis.initialize( this.m_rscene, boxPart );
-                this.m_frameAxis.moveToXZ(300.0,0.0);
 
-                let boxPart1:BoxPartStore = new BoxPartStore();
-                boxPart1.initilizeCopyFrom(boxPart);
-                //boxPart1.initilize(tex0,tex2,tex1);
-                this.m_frameAxis1 = new BoFrameAxis();
-                this.m_frameAxis1.initialize( this.m_rscene, boxPart1 );
-                this.m_frameAxis1.setXYZ(100.0,0.0,0.0);
-                this.m_frameAxis1.moveToXZ(400.0,0.0);
-                this.m_frameAxis1.toNegative();
-                //  let plane:Plane3DEntity = new Plane3DEntity();
-                //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [tex0]);
-                //  plane.setXYZ(0.0,-1.0,0.0);
-                //  this.m_rscene.addEntity(plane);
-                //  this.m_targets.push(plane);
-                //*/
-                ///*
+                let box:Box3DEntity = new Box3DEntity();
+                box.initializeCube(100.0,[tex2]);
+                box.setScaleXYZ(0.5,1.0,0.5);
+                box.setXYZ(200,0.0,200);
+                this.m_rscene.addEntity(box);
+                let redRole:RedRole = new RedRole();
+                box.getPosition(redRole.position);
+                redRole.radius = 80;
+                redRole.dispEntity = box;
+                this.m_campModule.redCamp.addRole(redRole);
+                
                 for(let i:number = 0; i < 1; ++i)
                 {
                     //let linePart0:LinePartStore = new LinePartStore();
@@ -182,20 +171,9 @@ export namespace app
                     this.m_twoFeetBody.moveToXZ(30.0, 0.0);
                     //this.m_twoFeetBody.moveToXZ(100.0,100.0);
                     this.m_twoFeetBody.setAttPosXYZ(200.0, 100.0, 0.0);
+                    this.m_twoFeetBody.roleCamp = this.m_campModule.redCamp;
                     this.m_twoFeetBodys.push(this.m_twoFeetBody);//TwoFeetBody
-                }
-                //*/
-                /*
-                let linePart:LinePartStore = new LinePartStore();
-                let boxPart:BoxPartStore = new BoxPartStore();
-                boxPart.initilize(tex0,tex2,tex1);
-                
-                this.m_twoFUnit0 = new TwoFeetUnit();
-                //this.m_twoFUnit0.initialize( this.m_rscene,0, linePart );
-                this.m_twoFUnit0.initialize( this.m_rscene,0, boxPart );
-                this.m_twoFUnit0.moveToXZ(10.0,0.0);
-                //*/
-                
+                }                
                 this.update();
             }
         }
@@ -271,7 +249,7 @@ export namespace app
 
             this.m_rscene.run();
             this.m_viewRay.intersectPiane();
-            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }
 }

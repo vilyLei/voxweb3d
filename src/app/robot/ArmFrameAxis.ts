@@ -211,7 +211,7 @@ export namespace app
             }
 
             //private m_attY:number = 180.0;
-            private runPartAtt():void
+            runPartAtt():void
             {
                 this.m_posV.setXYZ(0.0, this.m_bgLong, 0.0);
                 this.m_entityBGL.getToParentMatrix().transformVector3Self(this.m_posV);

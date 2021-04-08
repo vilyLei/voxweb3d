@@ -14,7 +14,10 @@ import * as IPartStoreT from "../../app/robot/IPartStore";
 import * as TwoLRbtModuleT from "../../app/robot/TwoLRbtModule";
 import * as TwoARbtModuleT from "../../app/robot/TwoARbtModule";
 import * as WeapMoudleT from "../../app/robot/WeapMoudle";
-import * as CampTypeT from "../../app/robot/Camp";
+import * as CampT from "../../app/robot/Camp";
+import * as IRoleCampT from "../../app/robot/IRoleCamp";
+import * as IAttackDstT from "../../app/robot/IAttackDst";
+import * as TriggerClockT from "../../app/robot/TriggerClock";
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3T.vox.math.Vector3D;
@@ -25,7 +28,11 @@ import IPartStore = IPartStoreT.app.robot.IPartStore;
 import TwoLRbtModule = TwoLRbtModuleT.app.robot.TwoLRbtModule;
 import TwoARbtModule = TwoARbtModuleT.app.robot.TwoARbtModule;
 import WeapMoudle = WeapMoudleT.app.robot.WeapMoudle;
-import CampType = CampTypeT.app.robot.CampType;
+import CampType = CampT.app.robot.CampType;
+import CampFindMode = CampT.app.robot.CampFindMode;
+import IRoleCamp = IRoleCampT.app.robot.IRoleCamp;
+import IAttackDst = IAttackDstT.app.robot.IAttackDst;
+import TriggerClock = TriggerClockT.app.robot.TriggerClock;
 
 
 export namespace app
@@ -45,11 +52,14 @@ export namespace app
 
             private m_legModule:TwoLRbtModule = null;
             private m_armModule:TwoARbtModule = null;
+            private m_clock:TriggerClock = new TriggerClock();
 
             static readonly FREE_RUN:number = 1001;
             static readonly ATTACK_RUN:number = 1002;
             private m_runMode:number = 1002;
             
+            roleCamp:IRoleCamp = null;
+            //blueCamp:IRoleCamp = null;
             weap:WeapMoudle = null;
             constructor()
             {
@@ -107,6 +117,10 @@ export namespace app
                     this.m_tickModule.syncTargetUpdate = false;
                     this.m_tickModule.bindTarget(this.m_legModule.getContainer());
                     this.m_tickModule.setVelocityFactor(0.02,0.03);
+
+                    this.m_clock.setPeriod(20);
+                    this.m_clock.setTriggerTimeAt(0,7);
+                    this.m_clock.setTriggerTimeAt(1,2);
                 }
             }
             setXYZ(px:number,py:number,pz:number):void
@@ -172,11 +186,16 @@ export namespace app
                     default:
                 }
             }
-            private m_attDelay:number = 0;
-            private m_attWeapFlag:boolean = true;
             attackRun():void
             {
                 //this.freeTest();
+                let attDst:IAttackDst = this.roleCamp!=null?this.roleCamp.findAttDst(this.m_pos,50,CampFindMode.XOZ,CampType.Red):null;
+                if(attDst != null)
+                {
+                    this.m_attPos.addVecsTo(attDst.position,attDst.attackPosOffset);
+                    this.m_armModule.setAttPos(this.m_attPos);
+                }
+
                 let moveFlag:boolean = false;
                 if(this.m_awakeFlag)
                 {
@@ -212,32 +231,22 @@ export namespace app
                     this.m_armModule.setPosition(this.m_pos);
                 }
                 this.m_armModule.runAtt(moveFlag);
+                this.m_clock.run();
                 if(this.m_armModule.isAttackLock())
                 {
-                    // att to do
-                    if(this.m_attDelay < 1)
+                    switch(this.m_clock.getTriggerIndex())
                     {
-                        if(this.m_attWeapFlag)
-                        {
+                        case 0:
                             this.m_armModule.getLEndPos(this.m_beginPos,1.0);
-                            //this.m_armModule.getLEndPos(this.m_endPos,3.0);
-                        }
-                        else
-                        {
+                            this.weap.createAtt(0,this.m_beginPos,this.m_attPos,attDst,CampType.Blue);
+                            break;
+                        case 1:
                             this.m_armModule.getREndPos(this.m_beginPos,1.0);
-                            //this.m_armModule.getREndPos(this.m_endPos,3.0);
-                        }
-                        this.m_attWeapFlag = !this.m_attWeapFlag;
-                        //console.log("this.m_beginPos,this.m_attPos: ",this.m_beginPos,this.m_attPos);
-                        this.weap.createAtt(0,this.m_beginPos,this.m_attPos,null,CampType.Blue);
-                        //this.weap.createAtt(0,this.m_beginPos,this.m_endPos);
-                        this.m_attDelay = 20;
+                            this.weap.createAtt(0,this.m_beginPos,this.m_attPos,attDst,CampType.Blue);
+                            break;
+                        default:
+                            break;
                     }
-                    this.m_attDelay --;
-                }
-                else
-                {
-                    this.m_attDelay = 0;
                 }
                 this.weap.run();
             }

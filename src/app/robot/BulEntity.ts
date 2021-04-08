@@ -43,8 +43,7 @@ export namespace app
             private m_uoffset:number = 0.0;
             private m_beginPos:Vector3D = new Vector3D();
             private m_endPos:Vector3D = new Vector3D();
-            private m_triggerData:TriggerData = null;// = new TriggerData();
-            //private m_triggerTime:number = 2;
+            private m_triggerData:TriggerData = null;
             texLoader:ImageTextureLoader = null;
             constructor(rsc:RendererScene)
             {
@@ -93,6 +92,7 @@ export namespace app
                     this.m_triggerData.attackDst = attDst;
                     this.m_triggerData.dstPos.copyFrom(pos1);
                 }
+                //this.m_entity.setVisible(false);
             }
             run():void
             {

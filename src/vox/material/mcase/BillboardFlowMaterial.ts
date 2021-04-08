@@ -70,6 +70,17 @@ uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
 uniform vec4 u_billParam[`+paramTotal+`];
+`;
+
+                if(this.m_hasOffsetColorTex && this.m_useRawUVEnabled)
+                {
+                    vtxCode0 +=
+`
+out vec4 v_uv;
+`;
+                }
+                vtxCode0 +=
+`
 out vec4 v_colorMult;
 out vec4 v_colorOffset;
 out vec4 v_texUV;
@@ -146,6 +157,13 @@ let vtxCode4:string =
     gl_Position =  u_projMat * pos;
     v_factor = vec4(0.0,0.0, kf * a_vs2.w,fi);
 `;
+                if(this.m_hasOffsetColorTex && this.m_useRawUVEnabled)
+                {
+                    vtxCode4 +=
+`
+    v_uv = vec4(a_uvs.xy,0.0,0.0);
+`;
+                }
                     return vtxCode0 + vtxCode01 + vtxCode02 + vtxCode1 + vtxCode2 + vtxCode3 + vtxCode4 + this.getVSEndCode(4);
                 }
                 toString():string

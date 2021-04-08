@@ -15,5 +15,11 @@ export namespace app
             Blue
             
         }
+        export enum CampFindMode
+        {
+            Default,
+            XOZ
+            
+        }
     }
 }

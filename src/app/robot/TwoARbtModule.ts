@@ -224,7 +224,7 @@ export namespace app
                 this.m_container.getInvMatrix().transformOutVector3(this.m_attPos, this.m_tempV);
                 this.m_tempV.y = 0.0;
                 let kf:number = this.m_tempV.dot(Vector3D.X_AXIS);
-                if(kf > 100.0)
+                if(kf > 50.0)
                 {
                     this.m_containerL.getPosition(this.m_pos);
                     this.m_tempV.scaleVecTo(Vector3D.X_AXIS,kf);
@@ -239,7 +239,7 @@ export namespace app
                     let py:number = this.m_tempV.y;
                     this.m_tempV.y = 0.0;
                     kf = this.m_tempV.dot(Vector3D.X_AXIS);
-                    if(kf > 20.0)
+                    if(kf > 15.0)
                     {
                         this.m_tempV.scaleVecTo(Vector3D.X_AXIS, kf);
                         this.m_tempV.y = py;
@@ -251,7 +251,7 @@ export namespace app
                     py = this.m_tempV.y;
                     this.m_tempV.y = 0.0;
                     kf = this.m_tempV.dot(Vector3D.X_AXIS);
-                    if(kf > 20.0)
+                    if(kf > 15.0)
                     {
                         this.m_tempV.scaleVecTo(Vector3D.X_AXIS, kf);
                         this.m_tempV.y = py;
@@ -277,6 +277,10 @@ export namespace app
                 {
                     this.m_coreFAxis.runAtt(this.m_time);
                 }
+                //  else
+                //  {
+                //      this.m_coreFAxis.runPartAtt();
+                //  }
                 this.m_time += this.m_timeSpeed;
             }
             run():void

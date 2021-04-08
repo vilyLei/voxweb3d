@@ -31,7 +31,8 @@ export namespace vox
             {
                 private m_billFS:BillboardFSBase = new BillboardFSBase();
                 protected m_clipEnabled:boolean = false;
-                private m_hasOffsetColorTex:boolean = false;
+                protected m_hasOffsetColorTex:boolean = false;
+                protected m_useRawUVEnabled:boolean = false
                 clipMixEnabled:boolean = false;
                 constructor()
                 {
@@ -119,7 +120,15 @@ uniform sampler2D u_sampler0;
 uniform sampler2D u_sampler1;
 `;
                     }
-                    let fragCode1:string =
+                    let fragCode1:string = "";
+                    if(this.m_hasOffsetColorTex && this.m_useRawUVEnabled)
+                    {
+                        fragCode1 =
+`
+in vec4 v_uv;
+`;
+                    }
+                    fragCode1 +=
 `
 in vec4 v_colorMult;
 in vec4 v_colorOffset;

@@ -87,6 +87,8 @@ export namespace particle
                 entity.setPlayParam(true,false,this.m_clipMixEnabled);
                 entity.initialize(true,false,true,[tex,offsetColorTex]);
                 entity.setRGBOffset3f(Math.random() * 2.0 - 1.0,Math.random() * 2.0 - 1.0,Math.random() * 2.0 - 1.0);
+                //entity.setRGBOffset3f(Math.random() * 2.0 - 1.0,Math.random() * 2.0 - 1.0,Math.random() * 2.0 - 1.0);
+                //entity.setRGBOffset3f(Math.random() * 1.0,Math.random() * 1.0,Math.random() * 1.0);
                 entity.setRGB3f(0.1,0.1,0.1);
                 //entity.setUVParam(3,9,0.33,0.33);
                 entity.setClipUVParam(4,16,0.25,0.25);
@@ -104,6 +106,13 @@ export namespace particle
                 if(this.smokeEntity != null)
                 {
                     this.smokeEntity.updateTime(offsetTime);
+                }
+            }
+            setRotationXYZ(rx:number, ry:number, rz:number):void
+            {
+                if(this.smokeEntity != null)
+                {
+                    this.smokeEntity.setRotationXYZ(rx,ry,rz);
                 }
             }
             setXYZ(px:number, py:number, pz:number):void

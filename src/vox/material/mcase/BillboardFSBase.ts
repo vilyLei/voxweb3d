@@ -50,7 +50,7 @@ export namespace vox
                     {
                         fadeCode = 
 `
-    color.rgb = color.rgb * v_colorMult.xyz + color.rgb * offsetColor;
+    color.rgb = min(color.rgb * v_colorMult.xyz + color.rgb * offsetColor, vec3(1.0));
     color.rgb *= `+factorNS+`.zzz;
 `;
                     }
@@ -87,15 +87,26 @@ export namespace vox
 `;
                     return codeStr;
                 }
-                getOffsetColorCode(sampleIndex:number,OffsetColorTexEnabled:boolean):string
+                getOffsetColorCode(sampleIndex:number,OffsetColorTexEnabled:boolean,useRawUVEnabled:boolean = false):string
                 {
                     let fragCode2:string;
                     if(OffsetColorTexEnabled)
                     {
-                        fragCode2 =
-`
-    vec3 offsetColor = v_colorOffset.xyz + texture(u_sampler`+sampleIndex+`, v_texUV.xy).xyz;
-`;
+                        if(useRawUVEnabled)
+                        {
+                            fragCode2 =
+    `
+        vec3 offsetColor = clamp(v_colorOffset.xyz + texture(u_sampler`+sampleIndex+`, v_uv.xy).xyz,vec3(0.0),vec3(1.0));
+    `;
+                        }
+                        else
+                        {
+                            fragCode2 =
+    `
+        vec3 offsetColor = clamp(v_colorOffset.xyz + texture(u_sampler`+sampleIndex+`, v_texUV.xy).xyz,vec3(0.0),vec3(1.0));
+    `;
+
+                        }
                     }
                     else
                     {

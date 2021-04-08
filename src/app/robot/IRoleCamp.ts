@@ -7,40 +7,23 @@
 
 import * as MathConstT from "../../vox/math/MathConst";
 import * as Vector3T from "../../vox/math/Vector3D";
-import * as IRoleCampT from "../../app/robot/IRoleCamp";
+import * as CampTypeT from "../../app/robot/Camp";
 import * as IAttackDstT from "../../app/robot/IAttackDst";
-import * as CampT from "../../app/robot/Camp";
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3T.vox.math.Vector3D;
-import IRoleCamp = IRoleCampT.app.robot.IRoleCamp;
+import CampType = CampTypeT.app.robot.CampType;
+import CampFindMode = CampTypeT.app.robot.CampFindMode;
 import IAttackDst = IAttackDstT.app.robot.IAttackDst;
-import CampType = CampT.app.robot.CampType;
-import CampFindMode = CampT.app.robot.CampFindMode;
 
 export namespace app
 {
     export namespace robot
     {
-        export class BlueCamp implements IRoleCamp
+        export interface IRoleCamp
         {
-            constructor()
-            {
-            }
-            initialize():void
-            {
-            }
-            findAttDst(pos:Vector3D, radius:number, findMode:CampFindMode,dstCampType:CampType):IAttackDst
-            {
-                if(dstCampType == CampType.Blue)
-                {
-
-                }
-                return null;
-            }
-            run():void
-            {
-            }
+            findAttDst(pos:Vector3D, radius:number, findMode:CampFindMode,dstCampType:CampType):IAttackDst;
+            run():void;
         }
     }
 }

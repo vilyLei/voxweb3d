@@ -152,6 +152,14 @@ export namespace particle
                     this.flameEntity.updateTime(offsetTime);
                 }
             }
+            setRotationXYZ(rx:number, ry:number, rz:number):void
+            {
+                if(this.solidEntity != null)
+                {
+                    this.solidEntity.setRotationXYZ(rx,ry,rz);
+                    this.flameEntity.setRotationXYZ(rx,ry,rz);
+                }
+            }
             setXYZ(px:number, py:number, pz:number):void
             {
                 if(this.solidEntity != null)
