@@ -580,6 +580,15 @@ export namespace vox
             {
                 this.m_transfrom.setScaleXYZ(sx,sy,sz);
             }
+            
+            getRotationXYZ(pv:Vector3D):void
+            {
+                this.m_transfrom.getRotationXYZ(pv);
+            }
+            getScaleXYZ(pv:Vector3D):void
+            {
+                this.m_transfrom.getScaleXYZ(pv);
+            }
             destroy():void
             {
                 // 当自身被完全移出RenderWorld之后才能执行自身的destroy

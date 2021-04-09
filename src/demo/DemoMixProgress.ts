@@ -1,17 +1,23 @@
 
 import * as RendererDevieceT from "../vox/render/RendererDeviece";
+import * as Vector3DT from "../vox/math/Vector3D";
+import * as CircleCalcT from "../vox/geom/CircleCalc";
 import * as RendererParamT from "../vox/scene/RendererParam";
 import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
 import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
+import * as BrokenLine3DEntityT from "../vox/entity/BrokenLine3DEntity";
 
 import * as MouseEventT from "../vox/event/MouseEvent";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as RendererSceneT from "../vox/scene/RendererScene";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+import Vector3D = Vector3DT.vox.math.Vector3D;
+import CircleCalc = CircleCalcT.vox.geom.CircleCalc;
 import RendererParam = RendererParamT.vox.scene.RendererParam;
 import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
+import BrokenLine3DEntity = BrokenLine3DEntityT.vox.entity.BrokenLine3DEntity;
 
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
@@ -51,8 +57,12 @@ export namespace demo
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.initialize(300.0);
                 this.m_rscene.addEntity(axis);
+
+                this.towCircleCals();
+
                 this.update();
 
+                return;
                 let totv:number = 20.0;
                 for(let i:number = 0; i <= totv;++i)
                 {
@@ -95,6 +105,38 @@ export namespace demo
                 //*/
                
             }
+        }
+        private towCircleCals():void
+        {
+
+            let cv0:Vector3D = new Vector3D();
+            let radius0:number = 90.0;
+            
+            let cv1:Vector3D = new Vector3D(-30.0,110.0,0.0);
+            let radius1:number = 120.0;
+
+            let cirL0:BrokenLine3DEntity = new BrokenLine3DEntity();
+            cirL0.initializeCircleXOY(cv0, radius0,40);
+            this.m_rscene.addEntity(cirL0);
+
+            let cirL1:BrokenLine3DEntity = new BrokenLine3DEntity();
+            cirL1.initializeCircleXOY(cv1, radius1,40);
+            this.m_rscene.addEntity(cirL1);
+
+            let outv0:Vector3D = new Vector3D();
+            let outv1:Vector3D = new Vector3D();
+            CircleCalc.CalIntersectionTwoInXOY(cv0,radius0,cv1,radius1,outv0,outv1);
+
+            let axis0:Axis3DEntity = new Axis3DEntity();
+            axis0.initialize(30.0);
+            axis0.setPosition(outv0);
+            this.m_rscene.addEntity(axis0);
+
+            let axis1:Axis3DEntity = new Axis3DEntity();
+            axis1.initialize(130.0);
+            axis1.setPosition(outv1);
+            this.m_rscene.addEntity(axis1);
+
         }
         private step(edge:number,value:number):number
         {

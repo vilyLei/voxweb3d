@@ -172,42 +172,58 @@ export namespace app
                 this.m_posV.setXYZ(0.0, this.m_bgLong * k, 0.0);
                 this.m_entitySGR.getMatrix().transformOutVector3(this.m_posV, outV);
             }
-            runAtt(time:number):void
+            private m_recoilDegreeL:number = 20;
+            private m_recoilDegreeR:number = 20;
+            setRecoilDegreeL(degree:number):void
             {
-                this.m_direc.calc(time);
-                //console.log("direc.factor: "+this.m_direc.factor);
-                let factor:number = this.m_direc.factor;
-                let scale:number = this.m_angScale;
-                //let coreAngle:number = factor * this.m_coreAngle * scale;
-                let bgAngle:number = factor * this.m_bgAngle * scale;
-                let bgOffsetAngle:number = this.m_bgOffsetAngle * scale;
-
-                this.m_angleL = -bgAngle + bgOffsetAngle;
-                this.m_angleR = bgAngle + bgOffsetAngle;
-
-                if(this.m_entityTG != null)
+                this.m_recoilDegreeL = degree;
+            }
+            setRecoilDegreeR(degree:number):void
+            {
+                this.m_recoilDegreeR = degree;
+            }
+            runAtt(time:number,force:boolean):void
+            {
+                if(force || this.m_recoilDegreeL > -1 || this.m_recoilDegreeR > -1)
                 {
-                    this.m_engityCore.setRotationXYZ(0.0, factor * this.m_tgAngle * scale, 0.0);
+                    this.m_direc.calc(time);
+                    //console.log("direc.factor: "+this.m_direc.factor);
+                    let factor:number = this.m_direc.factor;
+                    let scale:number = this.m_angScale;
+                    //let coreAngle:number = factor * this.m_coreAngle * scale;
+                    let bgAngle:number = factor * this.m_bgAngle * scale;
+                    let bgOffsetAngle:number = this.m_bgOffsetAngle * scale;
+
+                    this.m_angleL = -bgAngle + bgOffsetAngle - this.m_recoilDegreeL;
+                    this.m_angleR = bgAngle + bgOffsetAngle - this.m_recoilDegreeR;
+
+                    if(this.m_recoilDegreeL > 0)this.m_recoilDegreeL --;
+                    if(this.m_recoilDegreeR > 0)this.m_recoilDegreeR --;
+
+                    if(this.m_entityTG != null)
+                    {
+                        this.m_engityCore.setRotationXYZ(0.0, factor * this.m_tgAngle * scale, 0.0);
+                        this.m_engityCore.update();
+                    }
+                    this.m_engityCore.setRotationXYZ(0.0, factor * this.m_coreAngle * scale, 0.0);
                     this.m_engityCore.update();
+
+                    this.m_posV.setXYZ(0.0,0.0, -this.m_halfWidth);
+                    //  this.m_engityCore.getToParentMatrix().transformVector3Self(this.m_posV);
+                    this.m_coreMatrix4.transformVector3Self(this.m_posV);
+                    this.m_entityBGL.setPosition(this.m_posV);
+                    this.m_entityBGL.setRotationXYZ(0.0,0.0,this.m_angleL);
+                    this.m_entityBGL.update();
+
+                    this.m_posV.setXYZ(0.0,0.0, this.m_halfWidth);
+                    //  this.m_engityCore.getToParentMatrix().transformVector3Self(this.m_posV);
+                    this.m_coreMatrix4.transformVector3Self(this.m_posV);
+                    this.m_entityBGR.setPosition(this.m_posV);
+                    this.m_entityBGR.setRotationXYZ(0.0,0.0,this.m_angleR);
+                    this.m_entityBGR.update();
+
+                    this.runPartAtt();
                 }
-                this.m_engityCore.setRotationXYZ(0.0, factor * this.m_coreAngle * scale, 0.0);
-                this.m_engityCore.update();
-
-                this.m_posV.setXYZ(0.0,0.0, -this.m_halfWidth);
-                //  this.m_engityCore.getToParentMatrix().transformVector3Self(this.m_posV);
-                this.m_coreMatrix4.transformVector3Self(this.m_posV);
-                this.m_entityBGL.setPosition(this.m_posV);
-                this.m_entityBGL.setRotationXYZ(0.0,0.0,this.m_angleL);
-                this.m_entityBGL.update();
-
-                this.m_posV.setXYZ(0.0,0.0, this.m_halfWidth);
-                //  this.m_engityCore.getToParentMatrix().transformVector3Self(this.m_posV);
-                this.m_coreMatrix4.transformVector3Self(this.m_posV);
-                this.m_entityBGR.setPosition(this.m_posV);
-                this.m_entityBGR.setRotationXYZ(0.0,0.0,this.m_angleR);
-                this.m_entityBGR.update();
-                
-                this.runPartAtt();
             }
 
             //private m_attY:number = 180.0;

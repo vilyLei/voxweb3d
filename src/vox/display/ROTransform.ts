@@ -127,6 +127,18 @@ export namespace vox
                 this.updateStatus |= 4;
                 this.updatedStatus |= 4;
             }
+            getRotationXYZ(pv:Vector3D):void
+            {
+                pv.x = this.m_fs32[1];
+                pv.y = this.m_fs32[6];
+                pv.z = this.m_fs32[9];
+            }
+            getScaleXYZ(pv:Vector3D):void
+            {
+                pv.x = this.m_fs32[0];
+                pv.y = this.m_fs32[5];
+                pv.z = this.m_fs32[10];
+            }
             // local to world spcae matrix
             private m_omat:Matrix4 = null;
             private m_localMat:Matrix4 = null;

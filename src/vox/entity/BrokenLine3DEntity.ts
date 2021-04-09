@@ -70,6 +70,46 @@ export namespace vox
                 this.activeDisplay();
 
             }
+            initializeCircleXOY(cv:Vector3D,radius:number,segTotal:number = 10):void
+            {
+                let rad:number;
+                let pi:number = 2.0 * Math.PI;
+                this.m_posarr = new Array(3.0 * (segTotal + 1));
+                let i:number = 0;
+                for(; i < segTotal; ++i)
+                {
+                    rad = (pi * i)/segTotal;
+                    this.m_posarr[i*3] = cv.x + radius * Math.cos(rad);
+                    this.m_posarr[i*3+1] = cv.y + radius * Math.sin(rad);
+                    this.m_posarr[i*3+2] = cv.z;
+                }
+                this.m_posarr[i*3] = this.m_posarr[0];
+                this.m_posarr[i*3+1] = this.m_posarr[1];
+                this.m_posarr[i*3+2] = this.m_posarr[2];
+                this.createMaterial();
+                this.activeDisplay();
+
+            }
+            initializeCircleXOZ(cv:Vector3D,radius:number,segTotal:number = 10):void
+            {
+                let rad:number;
+                let pi:number = 2.0 * Math.PI;
+                this.m_posarr = new Array(3.0 * (segTotal + 1));
+                let i:number = 0;
+                for(; i < segTotal; ++i)
+                {
+                    rad = (pi * i)/segTotal;
+                    this.m_posarr[i*3] = cv.x + radius * Math.cos(rad);
+                    this.m_posarr[i*3+1] = cv.y;
+                    this.m_posarr[i*3+2] = cv.z + radius * Math.sin(rad);
+                }
+                this.m_posarr[i*3] = this.m_posarr[0];
+                this.m_posarr[i*3+1] = this.m_posarr[1];
+                this.m_posarr[i*3+2] = this.m_posarr[2];
+                this.createMaterial();
+                this.activeDisplay();
+
+            }
             toString():string
             {
                 return "BrokenLine3DEntity(name="+this.name+",uid = "+this.getUid()+", rseFlag = "+this.__$rseFlag+")";

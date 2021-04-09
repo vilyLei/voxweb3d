@@ -100,7 +100,8 @@ export namespace app
                 let rparam:RendererParam = new RendererParam();
                 //rparam.maxWebGLVersion = 1;
                 //rparam.setCamPosition(10.0,1800.0,10.0);
-                rparam.setCamPosition(1200.0,1200.0,1200.0);
+                //rparam.setCamPosition(1200.0,1200.0,1200.0);
+                rparam.setCamPosition(800.0,800.0,800.0);
                 //rparam.setCamPosition(1200.0,1200.0,0.0);
                 //rparam.setCamPosition(0.0,200.0,1200.0);
                 this.m_rscene = new RendererScene();
@@ -137,16 +138,24 @@ export namespace app
                 axis.initializeCross(200.0);
                 this.m_rscene.addEntity(axis);
 
-                let box:Box3DEntity = new Box3DEntity();
-                box.initializeCube(100.0,[tex2]);
-                box.setScaleXYZ(0.5,1.0,0.5);
-                box.setXYZ(200,0.0,200);
-                this.m_rscene.addEntity(box);
-                let redRole:RedRole = new RedRole();
-                box.getPosition(redRole.position);
-                redRole.radius = 80;
-                redRole.dispEntity = box;
-                this.m_campModule.redCamp.addRole(redRole);
+                let srcBox:Box3DEntity = new Box3DEntity();
+                srcBox.initializeCube(100.0,[tex2]);
+
+                for(let i:number = 0; i < 2; ++i)
+                {
+                    let box:Box3DEntity = new Box3DEntity();
+                    box.copyMeshFrom(srcBox);
+                    box.initializeCube(100.0,[tex2]);
+                    box.setScaleXYZ(0.5,1.0,0.5);
+                    //box.setXYZ(200,0.0,200);
+                    box.setXYZ(Math.random() * 600.0 - 300.0,0.0,Math.random() * 600.0 - 300.0);
+                    this.m_rscene.addEntity(box);
+                    let redRole:RedRole = new RedRole();
+                    box.getPosition(redRole.position);
+                    redRole.radius = 80;
+                    redRole.dispEntity = box;
+                    this.m_campModule.redCamp.addRole(redRole);
+                }
                 
                 for(let i:number = 0; i < 1; ++i)
                 {
@@ -184,6 +193,7 @@ export namespace app
         private m_runflag:boolean = true;
         private mouseDown(evt:any):void
         {
+            this.m_viewRay.intersectPiane();
             let pv:Vector3D = this.m_viewRay.position;
             if(this.m_twoFUnit0 != null)this.m_twoFUnit0.moveToXZ(pv.x, pv.z);
             //if(this.m_twoFeetBody != null)this.m_twoFeetBody.moveToXZ(pv.x, pv.z);

@@ -69,8 +69,8 @@ export namespace app
                     //let colorTexture:TextureProxy = this.getImageTexByUrl("static/assets/stones_02.png");
                     //let colorTexture:TextureProxy = this.getImageTexByUrl("static/assets/warter_01.jpg");
                     //let colorTexture:TextureProxy = this.getImageTexByUrl("static/assets/color_01.jpg");
-                    //let colorTexture:TextureProxy = this.getImageTexByUrl("static/assets/color_05.jpg");
-                    let colorTexture:TextureProxy = this.getImageTexByUrl("static/assets/color_06.jpg");
+                    let colorTexture:TextureProxy = this.getImageTexByUrl("static/assets/color_05.jpg");
+                    //let colorTexture:TextureProxy = this.getImageTexByUrl("static/assets/color_06.jpg");
                     //let colorTexture:TextureProxy = this.getImageTexByUrl("static/assets/RandomNoiseB.png");
                     this.m_eff1Pool = new EruptionSmokePool();
                     this.m_eff1Pool.initialize(this.m_rsc,1, 10, texture, colorTexture, true);

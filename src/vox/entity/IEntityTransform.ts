@@ -20,6 +20,8 @@ export namespace vox
             getPosition(pv:Vector3D):void;
             setRotationXYZ(rx:number,ry:number,rz:number):void;
             setScaleXYZ(sx:number,sy:number,sz:number):void;
+            getRotationXYZ(pv:Vector3D):void;
+            getScaleXYZ(pv:Vector3D):void;
             update():void;
         }
     }

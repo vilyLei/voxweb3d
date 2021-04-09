@@ -5,9 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-export namespace app
+export namespace vox
 {
-    export namespace robot
+    export namespace utils
     {
         export class TriggerClock
         {

@@ -54,6 +54,12 @@ export namespace vox
                 this.y *= a.y;
                 this.z *= a.z;
             }
+            //  rotateCW90():void
+            //  {
+            //  }
+            //  rotateCCW90():void
+            //  {
+            //  }
             normalize():void
             {
                 let d:number = Math.sqrt(this.x*this.x + this.y*this.y + this.z*this.z);

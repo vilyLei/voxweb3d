@@ -17,7 +17,7 @@ import * as WeapMoudleT from "../../app/robot/WeapMoudle";
 import * as CampT from "../../app/robot/Camp";
 import * as IRoleCampT from "../../app/robot/IRoleCamp";
 import * as IAttackDstT from "../../app/robot/IAttackDst";
-import * as TriggerClockT from "../../app/robot/TriggerClock";
+import * as TriggerClockT from "../../vox/utils/TriggerClock";
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3T.vox.math.Vector3D;
@@ -32,7 +32,7 @@ import CampType = CampT.app.robot.CampType;
 import CampFindMode = CampT.app.robot.CampFindMode;
 import IRoleCamp = IRoleCampT.app.robot.IRoleCamp;
 import IAttackDst = IAttackDstT.app.robot.IAttackDst;
-import TriggerClock = TriggerClockT.app.robot.TriggerClock;
+import TriggerClock = TriggerClockT.vox.utils.TriggerClock;
 
 
 export namespace app
@@ -206,6 +206,7 @@ export namespace app
                         
                         this.m_legModule.run();
                         moveFlag = true;
+                        // 速度朝向和主体朝向需要有一个拟合的过程
 
                         if(!this.m_awake)
                         {
@@ -214,6 +215,8 @@ export namespace app
                     }
                     else
                     {
+                        // 如果朝向不对，需要继续朝向计算
+
                         if(this.m_legModule.isResetFinish())
                         {
                             this.m_awakeFlag = false;
@@ -230,6 +233,7 @@ export namespace app
                     this.m_legModule.getPosition(this.m_pos);
                     this.m_armModule.setPosition(this.m_pos);
                 }
+
                 this.m_armModule.runAtt(moveFlag);
                 this.m_clock.run();
                 if(this.m_armModule.isAttackLock())
@@ -238,10 +242,12 @@ export namespace app
                     {
                         case 0:
                             this.m_armModule.getLEndPos(this.m_beginPos,1.0);
+                            this.m_armModule.setRecoilDegreeL(8);
                             this.weap.createAtt(0,this.m_beginPos,this.m_attPos,attDst,CampType.Blue);
                             break;
                         case 1:
                             this.m_armModule.getREndPos(this.m_beginPos,1.0);
+                            this.m_armModule.setRecoilDegreeR(8);
                             this.weap.createAtt(0,this.m_beginPos,this.m_attPos,attDst,CampType.Blue);
                             break;
                         default:

@@ -491,6 +491,15 @@ export namespace vox
                 this.m_sz = s;
                 this.m_transformStatus |= 2;
             }
+            
+            getRotationXYZ(pv:Vector3D):void
+            {
+                pv.setXYZ(this.m_rx,this.m_ry,this.m_rz);
+            }
+            getScaleXYZ(pv:Vector3D):void
+            {
+                pv.setXYZ(this.m_sx,this.m_sy,this.m_sz);
+            }
             // local matrix
             private m_localMat:Matrix4 = Matrix4Pool.GetMatrix();
             private m_invLocalMat:Matrix4 = null;

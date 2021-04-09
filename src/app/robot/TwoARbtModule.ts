@@ -13,6 +13,7 @@ import * as DisplayEntityContainerT from "../../vox/entity/DisplayEntityContaine
 import * as RendererSceneT from "../../vox/scene/RendererScene";
 import * as ArmFrameAxisT from "../../app/robot/ArmFrameAxis";
 import * as IPartStoreT from "../../app/robot/IPartStore";
+import * as DegreeTweenT from "../../vox/utils/DegreeTween";
 
 import Vector3D = Vector3T.vox.math.Vector3D;
 import MathConst = MathConstT.vox.math.MathConst;
@@ -22,6 +23,7 @@ import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntity
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import ArmFrameAxis = ArmFrameAxisT.app.robot.ArmFrameAxis;
 import IPartStore = IPartStoreT.app.robot.IPartStore;
+import DegreeTween = DegreeTweenT.vox.utils.DegreeTween;
 
 export namespace app
 {
@@ -40,6 +42,7 @@ export namespace app
             private m_container:DisplayEntityContainer = null;
             private m_containerL:DisplayEntityContainer = new DisplayEntityContainer();
             private m_containerR:DisplayEntityContainer = new DisplayEntityContainer();
+            private m_degreeTween:DegreeTween = new DegreeTween();
             private m_partStore:IPartStore = null;
             
             private m_attackLock:boolean = false;
@@ -159,6 +162,7 @@ export namespace app
                     this.m_coreFAxis.setBG(bgL,bgR, partStore.getBGLong());
                     this.m_coreFAxis.setSG(sgL,sgR);
 
+                    this.m_degreeTween.bindTarget(this.m_container);
                 }
             }
             setXYZ(px:number,py:number,pz:number):void
@@ -199,27 +203,17 @@ export namespace app
             {
                 return this.m_attackLock;
             }
+            private m_armDegree:number = 390.0;
             private updateAttPose():void
             {
                 //console.log("A this.m_attPos: ",this.m_attPos);
-                this.m_container.getPosition(this.m_pos);
-                let degree:number = 180 + MathConst.GetDegreeByXY(this.m_pos.x - this.m_attPos.x, this.m_attPos.z - this.m_pos.z);
-                //let degree:number = MathConst.GetDegreeByXY(this.m_attPos.x - this.m_pos.x, this.m_pos.z - this.m_attPos.z);
-                let degreeFrom:number = this.m_container.getRotationY();
-                let degreeDis:number = MathConst.GetMinDegree((degree + 360)%360, degreeFrom);
-                let pdis:number = Math.abs(degreeDis);
-                if(pdis > 1)
+                
+                this.m_degreeTween.runRotYByDstPos(this.m_attPos);
+                this.m_attackLock = this.m_degreeTween.isEnd();
+                if(this.m_degreeTween.isDegreeChanged())
                 {
-                    degree = degreeFrom - degreeDis * 0.2;
-                    this.setRotationY(degree);
-                    this.m_attackLock = false;
+                    this.m_container.update();
                 }
-                else
-                {
-                    this.m_attackLock = true;
-                }
-                this.setRotationY(degree);
-                this.m_container.update();
 
                 this.m_container.getInvMatrix().transformOutVector3(this.m_attPos, this.m_tempV);
                 this.m_tempV.y = 0.0;
@@ -228,7 +222,7 @@ export namespace app
                 {
                     this.m_containerL.getPosition(this.m_pos);
                     this.m_tempV.scaleVecTo(Vector3D.X_AXIS,kf);
-                    degree = MathConst.GetDegreeByXY(this.m_pos.x - this.m_tempV.x, this.m_tempV.z - this.m_pos.z) + 180;
+                    let degree:number = MathConst.GetDegreeByXY(this.m_pos.x - this.m_tempV.x, this.m_tempV.z - this.m_pos.z) + 180;
     
                     this.m_containerL.setRotationY(degree);
                     this.m_containerL.update();
@@ -269,19 +263,28 @@ export namespace app
             {
                 this.m_nextTime = this.m_coreFAxis.getNextOriginTime(this.m_time);
             }
+            setRecoilDegreeL(degree:number):void
+            {
+                this.m_coreFAxis.setRecoilDegreeL(degree);
+            }
+            setRecoilDegreeR(degree:number):void
+            {
+                this.m_coreFAxis.setRecoilDegreeR(degree);
+            }
             runAtt(moveEnabled:boolean):void
             {
                 this.updateAttPose();
                 this.m_container.update();
                 if(moveEnabled)
                 {
-                    this.m_coreFAxis.runAtt(this.m_time);
+                    this.m_coreFAxis.runAtt(this.m_time, true);
+                    this.m_time += this.m_timeSpeed;
                 }
-                //  else
-                //  {
-                //      this.m_coreFAxis.runPartAtt();
-                //  }
-                this.m_time += this.m_timeSpeed;
+                else
+                {
+                    this.m_coreFAxis.runAtt(this.m_time, false);
+                    //this.m_coreFAxis.runPartAtt();
+                }
             }
             run():void
             {

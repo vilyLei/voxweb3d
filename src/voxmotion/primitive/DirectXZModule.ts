@@ -29,6 +29,7 @@ export namespace voxmotion
             private m_moving:boolean = true;
             private m_direcDegree:number = 0.0;
             syncTargetUpdate:boolean = true;
+            syncDirecUpdate:boolean = true;
             constructor(){}
             
             setSpeed(spd:number):void
