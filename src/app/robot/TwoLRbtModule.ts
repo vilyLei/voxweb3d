@@ -11,6 +11,8 @@ import * as DisplayEntityContainerT from "../../vox/entity/DisplayEntityContaine
 import * as RendererSceneT from "../../vox/scene/RendererScene";
 import * as CoreFrameAxisT from "../../app/robot/CoreFrameAxis";
 import * as IPartStoreT from "../../app/robot/IPartStore";
+import * as IPosetureT from "../../app/robot/poseture/IPoseture";
+import * as TwoLegPostureCtrlT from "../../app/robot/poseture/TwoLegPostureCtrl";
 
 import Vector3D = Vector3T.vox.math.Vector3D;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
@@ -18,13 +20,15 @@ import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntity
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import CoreFrameAxis = CoreFrameAxisT.app.robot.CoreFrameAxis;
 import IPartStore = IPartStoreT.app.robot.IPartStore;
+import IPoseture = IPosetureT.app.robot.poseture.IPoseture;
+import TwoLegPostureCtrl = TwoLegPostureCtrlT.app.robot.poseture.TwoLegPostureCtrl;
 
 export namespace app
 {
     export namespace robot
     {
         // leg
-        export class TwoLRbtModule
+        export class TwoLRbtModule implements IPoseture
         {
             private m_sc:RendererScene = null;
             private m_time:number = 0;
@@ -35,6 +39,9 @@ export namespace app
             
             private m_timeSpeed:number = 3.0;
             private m_nextTime:number = 0;
+
+            //degreeTween:DegreeTween = new DegreeTween();
+            postureCtrl:TwoLegPostureCtrl = new TwoLegPostureCtrl();
             constructor(container:DisplayEntityContainer = null)
             {
                 if(container == null)
@@ -127,6 +134,9 @@ export namespace app
                     this.m_coreFAxis.setBG(bgL,bgR, partStore.getBGLong());
                     this.m_coreFAxis.setSG(sgL,sgR);
 
+                    //  this.degreeTween.bindTarget(this.m_container);
+
+                    this.postureCtrl.bindTarget(this);
                 }
             }
             setXYZ(px:number,py:number,pz:number):void
@@ -150,6 +160,14 @@ export namespace app
             {
                 this.m_nextTime = this.m_coreFAxis.getNextOriginTime(this.m_time);
             }
+            //  direcByDegree(degree:number):void
+            //  {
+            //      this.degreeTween.runRotY(degree);
+            //  }
+            //  direcByPos(pos:Vector3D):void
+            //  {
+            //      this.degreeTween.runRotYByDstPos(pos);
+            //  }
             run():void
             {
                 this.m_container.update();

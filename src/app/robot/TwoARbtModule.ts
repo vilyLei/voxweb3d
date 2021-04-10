@@ -42,13 +42,14 @@ export namespace app
             private m_container:DisplayEntityContainer = null;
             private m_containerL:DisplayEntityContainer = new DisplayEntityContainer();
             private m_containerR:DisplayEntityContainer = new DisplayEntityContainer();
-            private m_degreeTween:DegreeTween = new DegreeTween();
             private m_partStore:IPartStore = null;
             
             private m_attackLock:boolean = false;
             private m_timeSpeed:number = 3.0;
             private m_nextTime:number = 0;
             private m_testAxis:Axis3DEntity;
+
+            degreeTween:DegreeTween = new DegreeTween();
             constructor(container:DisplayEntityContainer = null)
             {
                 if(container == null)
@@ -162,7 +163,7 @@ export namespace app
                     this.m_coreFAxis.setBG(bgL,bgR, partStore.getBGLong());
                     this.m_coreFAxis.setSG(sgL,sgR);
 
-                    this.m_degreeTween.bindTarget(this.m_container);
+                    this.degreeTween.bindTarget(this.m_container);
                 }
             }
             setXYZ(px:number,py:number,pz:number):void
@@ -203,17 +204,26 @@ export namespace app
             {
                 return this.m_attackLock;
             }
-            private m_armDegree:number = 390.0;
-            private updateAttPose():void
+            direcByDegree(degree:number):void
             {
-                //console.log("A this.m_attPos: ",this.m_attPos);
-                
-                this.m_degreeTween.runRotYByDstPos(this.m_attPos);
-                this.m_attackLock = this.m_degreeTween.isEnd();
-                if(this.m_degreeTween.isDegreeChanged())
+                this.degreeTween.runRotY(degree);
+                if(this.degreeTween.isDegreeChanged())
                 {
                     this.m_container.update();
                 }
+            }
+            direcByPos(pos:Vector3D):void
+            {
+                this.degreeTween.runRotYByDstPos(pos);
+                if(this.degreeTween.isDegreeChanged())
+                {
+                    this.m_container.update();
+                }
+            }
+            private updateAttPose():void
+            {
+                this.direcByPos(this.m_attPos);
+                this.m_attackLock = this.degreeTween.testDegreeDis(2.0);
 
                 this.m_container.getInvMatrix().transformOutVector3(this.m_attPos, this.m_tempV);
                 this.m_tempV.y = 0.0;
@@ -252,7 +262,6 @@ export namespace app
                         this.m_coreFAxis.setAttRPos(this.m_tempV);
                     }
                 }
-
             }
             resetPose():void
             {
@@ -283,7 +292,6 @@ export namespace app
                 else
                 {
                     this.m_coreFAxis.runAtt(this.m_time, false);
-                    //this.m_coreFAxis.runPartAtt();
                 }
             }
             run():void

@@ -41,8 +41,8 @@ export namespace app
     {
         export class TFB2
         {
-            private m_awake:boolean = true;
-            private m_awakeFlag:boolean = true;
+            private m_moving:boolean = true;
+            private m_movingFlag:boolean = true;
             private m_tickModule:DirectXZModule = new DirectXZModule();
             private m_speed:number = 3.0;
             private m_pos:Vector3D = new Vector3D();
@@ -57,7 +57,9 @@ export namespace app
             static readonly FREE_RUN:number = 1001;
             static readonly ATTACK_RUN:number = 1002;
             private m_runMode:number = 1002;
-            
+
+            campType:CampType = CampType.Blue;
+
             roleCamp:IRoleCamp = null;
             //blueCamp:IRoleCamp = null;
             weap:WeapMoudle = null;
@@ -115,12 +117,13 @@ export namespace app
 
                     this.m_tickModule.setSpeed(this.m_speed);
                     this.m_tickModule.syncTargetUpdate = false;
+                    this.m_tickModule.syncDirecUpdate = false;
                     this.m_tickModule.bindTarget(this.m_legModule.getContainer());
                     this.m_tickModule.setVelocityFactor(0.02,0.03);
 
                     this.m_clock.setPeriod(20);
-                    this.m_clock.setTriggerTimeAt(0,7);
-                    this.m_clock.setTriggerTimeAt(1,2);
+                    this.m_clock.setTriggerTimeAt(0,6);
+                    this.m_clock.setTriggerTimeAt(1,1);
                 }
             }
             setXYZ(px:number,py:number,pz:number):void
@@ -184,8 +187,10 @@ export namespace app
                         this.freeRun();
                         break;
                     default:
+                        break;
                 }
             }
+            
             attackRun():void
             {
                 //this.freeTest();
@@ -197,41 +202,27 @@ export namespace app
                 }
 
                 let moveFlag:boolean = false;
-                if(this.m_awakeFlag)
+                if(this.m_movingFlag)
                 {
-                    if(this.m_awake)
+                    if(this.m_moving)
                     {
-                        this.m_tickModule.run();
-                        this.m_awake = this.m_tickModule.isMoving();
-                        
-                        this.m_legModule.run();
                         moveFlag = true;
-                        // 速度朝向和主体朝向需要有一个拟合的过程
+                        // 执行移动控制过程
+                        this.m_tickModule.run();
+                        this.m_moving = this.m_tickModule.isMoving();
 
-                        if(!this.m_awake)
-                        {
-                            this.m_legModule.resetNextOriginPose();
-                        }
+                        // 执行走动动作
+                        this.m_legModule.postureCtrl.runByDegree(this.m_tickModule.getDirecDegree());
+
+                        // 同步上半身和下半身的坐标
+                        this.m_legModule.getPosition(this.m_pos);
+                        this.m_armModule.setPosition(this.m_pos);
                     }
                     else
                     {
-                        // 如果朝向不对，需要继续朝向计算
-
-                        if(this.m_legModule.isResetFinish())
-                        {
-                            this.m_awakeFlag = false;
-                            this.m_legModule.resetPose();
-                        }
-                        else
-                        {
-                            this.m_legModule.runToReset();
-                        }
+                        this.m_legModule.postureCtrl.runByPos(this.m_attPos);
+                        this.m_movingFlag = this.m_legModule.postureCtrl.isRunning();                        
                     }
-                }
-                if(moveFlag)
-                {
-                    this.m_legModule.getPosition(this.m_pos);
-                    this.m_armModule.setPosition(this.m_pos);
                 }
 
                 this.m_armModule.runAtt(moveFlag);
@@ -243,12 +234,12 @@ export namespace app
                         case 0:
                             this.m_armModule.getLEndPos(this.m_beginPos,1.0);
                             this.m_armModule.setRecoilDegreeL(8);
-                            this.weap.createAtt(0,this.m_beginPos,this.m_attPos,attDst,CampType.Blue);
+                            this.weap.createAtt(0,this.m_beginPos,this.m_attPos,attDst, this.campType);
                             break;
                         case 1:
                             this.m_armModule.getREndPos(this.m_beginPos,1.0);
                             this.m_armModule.setRecoilDegreeR(8);
-                            this.weap.createAtt(0,this.m_beginPos,this.m_attPos,attDst,CampType.Blue);
+                            this.weap.createAtt(0,this.m_beginPos,this.m_attPos,attDst,this.campType);
                             break;
                         default:
                             break;
@@ -260,19 +251,19 @@ export namespace app
             {
                 //this.freeTest();
 
-                if(this.m_awakeFlag)
+                if(this.m_movingFlag)
                 {
-                    if(this.m_awake)
+                    if(this.m_moving)
                     {
                         this.m_tickModule.run();
-                        this.m_awake = this.m_tickModule.isMoving();
+                        this.m_moving = this.m_tickModule.isMoving();
                         let degree:number = this.m_tickModule.getDirecDegree();
                         this.m_legModule.run();
                         this.m_legModule.getPosition(this.m_pos);
                         this.m_armModule.setPosition(this.m_pos);
                         this.m_armModule.setRotationY(degree);
                         this.m_armModule.run();
-                        if(!this.m_awake)
+                        if(!this.m_moving)
                         {
                             this.m_legModule.resetNextOriginPose();
                             this.m_armModule.resetNextOriginPose();
@@ -282,7 +273,7 @@ export namespace app
                     {
                         if(this.m_legModule.isResetFinish())
                         {
-                            this.m_awakeFlag = false;
+                            this.m_movingFlag = false;
                             this.m_legModule.resetPose();
                             this.m_armModule.resetPose();
                         }
@@ -301,23 +292,23 @@ export namespace app
             }
             isAwake():boolean
             {
-                return this.m_awake;
+                return this.m_moving;
             }
             wake():void
             {
-                if(!this.m_awake)
+                if(!this.m_moving)
                 {
                     this.m_legModule.toPositive();
                     //if(this.m_runMode == TFB2.FREE_RUN)this.m_armModule.toNegative();
                     this.m_armModule.toNegative();
                 }
-                this.m_awake = true;
-                this.m_awakeFlag = true;
+                this.m_moving = true;
+                this.m_movingFlag = true;
                 
             }
             sleep():void
             {
-                this.m_awake = false;
+                this.m_moving = false;
             }
         }
     }

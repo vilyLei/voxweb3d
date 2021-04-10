@@ -113,8 +113,10 @@ export namespace voxmotion
                 }
                 
                 this.m_target.setPosition( this.m_currPos );
-                this.m_target.setRotationXYZ(0.0,this.m_direcDegree,0.0);
-
+                if(this.syncDirecUpdate)
+                {
+                    this.m_target.setRotationXYZ(0.0,this.m_direcDegree,0.0);
+                }
                 if(this.syncTargetUpdate)
                 {
                     this.m_target.update();

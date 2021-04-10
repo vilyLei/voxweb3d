@@ -21,10 +21,11 @@ export namespace vox
         {
             private m_target:IEntityTransform = null;
             private m_degreeChanged:boolean = true;
-            private m_preDegree:number = 1000.0;
+            private m_degree:number = 0.0;
             private m_dis:number = 0.0;
             private m_pv:Vector3D = new Vector3D();
             
+            syncDegreeUpdate:boolean = true;
             constructor(){}
             bindTarget(target:IEntityTransform):void
             {
@@ -34,6 +35,10 @@ export namespace vox
             {
                 return this.m_degreeChanged;
             }
+            testDegreeDis(pdis:number):boolean
+            {
+                return this.m_dis < pdis;
+            }
             isEnd():boolean
             {
                 return this.m_dis < 1.0;
@@ -41,6 +46,10 @@ export namespace vox
             isRunning():boolean
             {
                 return this.m_dis >= 1.0;
+            }
+            getDegree():number
+            {
+                return this.m_degree;
             }
             runRotYByDstPos(dstPv:Vector3D):void
             {
@@ -59,11 +68,11 @@ export namespace vox
                     let degreeDis:number = MathConst.GetMinDegree(degree, this.m_pv.y);
                     this.m_dis = Math.abs(degreeDis);
                     if(this.m_dis >= 1.0)degree = this.m_pv.y - degreeDis * 0.2;
-                    this.m_degreeChanged = Math.abs(this.m_preDegree - degree) > MathConst.MATH_MIN_POSITIVE;
+                    this.m_degreeChanged = Math.abs(this.m_degree - degree) > MathConst.MATH_MIN_POSITIVE;
                     if(this.m_degreeChanged)
                     {
-                        this.m_preDegree = degree;
-                        this.m_target.setRotationXYZ(0.0,degree,0.0);
+                        this.m_degree = degree;
+                        if(this.syncDegreeUpdate)this.m_target.setRotationXYZ(0.0,degree,0.0);
                     }
                 }
             }
