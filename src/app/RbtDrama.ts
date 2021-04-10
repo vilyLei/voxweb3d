@@ -25,7 +25,9 @@ import * as TFB2T from "../app/robot/TFB2";
 import * as LinePartStoreT from "../app/robot/LinePartStore";
 import * as BoxPartStoreT from "../app/robot/BoxPartStore";
 import * as CampMoudleT from "../app/robot/CampMoudle";
+import * as AssetsModuleT from "../app/robot/assets/AssetsModule";
 import * as RedRoleT from "../app/robot/RedRole";
+
 import * as CameraViewRayT from "../vox/view/CameraViewRay";
 
 import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
@@ -54,7 +56,9 @@ import TFB2 = TFB2T.app.robot.TFB2;
 import LinePartStore = LinePartStoreT.app.robot.LinePartStore;
 import BoxPartStore = BoxPartStoreT.app.robot.BoxPartStore;
 import CampMoudle = CampMoudleT.app.robot.CampMoudle;
+import AssetsModule = AssetsModuleT.app.robot.assets.AssetsModule;
 import RedRole = RedRoleT.app.robot.RedRole;
+
 import CameraViewRay = CameraViewRayT.vox.view.CameraViewRay;
 
 export namespace app
@@ -119,8 +123,8 @@ export namespace app
                 this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
                 
                 this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
-                
-                this.m_campModule.texLoader = this.m_texLoader;
+                AssetsModule.GetInstance().initialize(this.m_texLoader);
+
                 this.m_campModule.initialize(this.m_rscene);
 
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/wood_01.jpg");
@@ -141,7 +145,7 @@ export namespace app
                 let srcBox:Box3DEntity = new Box3DEntity();
                 srcBox.initializeCube(100.0,[tex2]);
 
-                for(let i:number = 0; i < 2; ++i)
+                for(let i:number = 0; i < 8; ++i)
                 {
                     let box:Box3DEntity = new Box3DEntity();
                     box.copyMeshFrom(srcBox);
@@ -176,7 +180,7 @@ export namespace app
                     //this.m_twoFeetBody.initialize( this.m_rscene,0, linePart0, linePart1,60.0);
                     //this.m_twoFeetBody.initialize( this.m_rscene,0, boxPart0, linePart1,80.0);
                     this.m_twoFeetBody.initialize( this.m_rscene,0, boxPart0, boxPart1,80.0);
-                    this.m_twoFeetBody.weap.texLoader = this.m_texLoader;
+                    
                     this.m_twoFeetBody.moveToXZ(30.0, 0.0);
                     //this.m_twoFeetBody.moveToXZ(100.0,100.0);
                     this.m_twoFeetBody.setAttPosXYZ(200.0, 100.0, 0.0);

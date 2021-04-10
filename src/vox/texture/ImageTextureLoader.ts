@@ -359,6 +359,10 @@ export namespace vox
                     return t.texture;
                 }
             }
+            isRunningEmpty():boolean
+            {
+                return false;
+            }
             run():void
             {
                 let i:number = 0;

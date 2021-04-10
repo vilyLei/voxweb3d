@@ -7,29 +7,26 @@
 
 import * as MathConstT from "../../vox/math/MathConst";
 import * as Vector3T from "../../vox/math/Vector3D";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
-import * as TextureConstT from "../../vox/texture/TextureConst";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
+
 import * as RendererSceneT from "../../vox/scene/RendererScene";
 import * as BillboardLine3DEntityT from "../../vox/entity/BillboardLine3DEntity";
-import * as ImageTextureLoaderT from "../../vox/texture/ImageTextureLoader";
+
 import * as IAttackDstT from "../../app/robot/IAttackDst";
 import * as TriggerDataT from "../../app/robot/TriggerData";
 import * as AttackDataPoolT from "../../app/robot/AttackDataPool";
 import * as CampTypeT from "../../app/robot/Camp";
+import * as AssetsModuleT from "../../app/robot/assets/AssetsModule";
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3T.vox.math.Vector3D;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import BillboardLine3DEntity = BillboardLine3DEntityT.vox.entity.BillboardLine3DEntity;
-import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import IAttackDst = IAttackDstT.app.robot.IAttackDst;
 import TriggerData = TriggerDataT.app.robot.TriggerData;
 import AttackDataPool = AttackDataPoolT.app.robot.AttackDataPool;
 import CampType = CampTypeT.app.robot.CampType;
+import AssetsModule = AssetsModuleT.app.robot.assets.AssetsModule;
 
 export namespace app
 {
@@ -44,17 +41,9 @@ export namespace app
             private m_beginPos:Vector3D = new Vector3D();
             private m_endPos:Vector3D = new Vector3D();
             private m_triggerData:TriggerData = null;
-            texLoader:ImageTextureLoader = null;
             constructor(rsc:RendererScene)
             {
                 this.m_rsc = rsc;
-            }
-            private getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
-            {
-                let ptex:TextureProxy = this.texLoader.getImageTexByUrl(purl);
-                ptex.mipmapEnabled = mipmapEnabled;
-                if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
-                return ptex;
             }
             initialize(type:number):void
             {
@@ -62,7 +51,7 @@ export namespace app
                 {
                     let billLine:BillboardLine3DEntity = new BillboardLine3DEntity();
                     billLine.toBrightnessBlend();
-                    billLine.initialize([this.getImageTexByUrl("static/assets/flare_core_01.jpg")]);
+                    billLine.initialize([AssetsModule.GetBulTex(type)]);
                     //billLine.initialize([this.getImageTexByUrl("static/assets/color_02.jpg")]);
                     //billLine.setLineWidth(12.0);
                     billLine.setLineWidth(20.0);
@@ -131,7 +120,6 @@ export namespace app
             destroy():void
             {
                 this.m_rsc = null;
-                this.texLoader = null;
                 this.m_entity = null;
             }
         }

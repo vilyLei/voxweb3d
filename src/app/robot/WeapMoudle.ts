@@ -8,7 +8,6 @@
 import * as MathConstT from "../../vox/math/MathConst";
 import * as Vector3T from "../../vox/math/Vector3D";
 import * as RendererSceneT from "../../vox/scene/RendererScene";
-import * as ImageTextureLoaderT from "../../vox/texture/ImageTextureLoader";
 import * as BulEntityT from "../../app/robot/BulEntity";
 import * as IAttackDstT from "../../app/robot/IAttackDst";
 import * as CampTypeT from "../../app/robot/Camp";
@@ -16,7 +15,6 @@ import * as CampTypeT from "../../app/robot/Camp";
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3T.vox.math.Vector3D;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import BulEntity = BulEntityT.app.robot.BulEntity;
 import IAttackDst = IAttackDstT.app.robot.IAttackDst;
 import CampType = CampTypeT.app.robot.CampType;
@@ -30,7 +28,6 @@ export namespace app
             private m_rsc:RendererScene = null;
             private m_freePool:BulEntity[] = [];
             private m_bulList:BulEntity[] = [];
-            texLoader:ImageTextureLoader = null;
             constructor(rsc:RendererScene)
             {
                 this.m_rsc = rsc;
@@ -46,10 +43,9 @@ export namespace app
                 else
                 {
                     bul = new BulEntity(this.m_rsc);
-                    bul.texLoader = this.texLoader;
                     bul.initialize(0);
                 }
-                bul.setPosParam(pos0, pos1, null,campType);
+                bul.setPosParam(pos0, pos1, attDst,campType);
                 this.m_bulList.push(bul);
             }
             run():void

@@ -26,6 +26,7 @@ export namespace app
             dstPos:Vector3D = new Vector3D();
             bulType:number = 0;
             delayTime:number = 2;
+            value:number = 30;
 
             status:number = 0;
             constructor()

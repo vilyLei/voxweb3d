@@ -21,9 +21,11 @@ export namespace app
             campType:CampType;
             lifeTime:number;
             radius:number;
-
-            attackPosOffset:Vector3D;
             position:Vector3D;
+
+            setVisible(visible:boolean):void;
+            getAttackPos(outPos:Vector3D):void;
+            consume(power:number):void;
             attackTest():boolean;
         }
     }

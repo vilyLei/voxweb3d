@@ -61,7 +61,6 @@ export namespace app
             campType:CampType = CampType.Blue;
 
             roleCamp:IRoleCamp = null;
-            //blueCamp:IRoleCamp = null;
             weap:WeapMoudle = null;
             constructor()
             {
@@ -193,7 +192,7 @@ export namespace app
                 let attDst:IAttackDst = this.roleCamp!=null?this.roleCamp.findAttDst(this.m_pos,50,CampFindMode.XOZ,CampType.Red):null;
                 if(attDst != null)
                 {
-                    this.m_attPos.addVecsTo(attDst.position,attDst.attackPosOffset);
+                    attDst.getAttackPos(this.m_attPos);
                     this.m_armModule.setAttPos(this.m_attPos);
                 }
 
@@ -223,7 +222,7 @@ export namespace app
 
                 this.m_armModule.runAtt(moveFlag);
                 this.m_clock.run();
-                if(this.m_armModule.isAttackLock())
+                if(attDst != null && this.m_armModule.isAttackLock())
                 {
                     let index:number = this.m_clock.getTriggerIndex();
                     if(index > -1)

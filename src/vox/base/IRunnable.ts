@@ -11,6 +11,7 @@ export namespace vox
     {
         export interface IRunnable
         {
+            isRunningEmpty():boolean;
             run():void;
         }
     }

@@ -25,6 +25,7 @@ export namespace app
         export class RedCamp implements IRoleCamp
         {
             private m_roles:IAttackDst[] = [];
+            private m_freeRoles:IAttackDst[] = [];
             private m_tempV0:Vector3D = new Vector3D();
             constructor()
             {
@@ -48,14 +49,26 @@ export namespace app
                     for(; i < len; ++i)
                     {
                         role = list[i];
-                        dis = radius + role.radius;
-                        dis *= dis;
-                        this.m_tempV0.subVecsTo(pos, role.position);
-                        //console.log();
-                        if(dis >= this.m_tempV0.getLengthSquared())
+                        if(role.lifeTime > 0)
                         {
-                            //console.log("find a role in red camp.");
-                            return role;
+                            dis = radius + role.radius;
+                            dis *= dis;
+                            this.m_tempV0.subVecsTo(pos, role.position);
+                            //console.log();
+                            if(dis >= this.m_tempV0.getLengthSquared())
+                            {
+                                //console.log("find a role in red camp.");
+                                return role;
+                            }
+                        }
+                        else
+                        {
+                            console.log("del a role, because of its life time value is less 0.");
+                            list.splice(i,1);
+                            i --;
+                            len --;
+                            this.m_freeRoles.push(role);
+                            role.setVisible(false);
                         }
                     }
                 }

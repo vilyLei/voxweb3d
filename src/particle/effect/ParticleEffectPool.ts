@@ -29,7 +29,10 @@ export namespace particle
             {
 
             }
-
+            isRunningEmpty():boolean
+            {
+                return this.m_effList.length < 1;
+            }
             run():void
             {
                 let list:IParticleEffect[] = this.m_effList;

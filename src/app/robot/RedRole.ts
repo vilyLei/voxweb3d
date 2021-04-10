@@ -24,39 +24,50 @@ export namespace app
         export class RedRole implements IAttackDst
         {
             campType:CampType = CampType.Red;
-            lifeTime:number = 100;
+            lifeTime:number = 50;
             radius:number = 50.0;
 
             attackPosOffset:Vector3D = new Vector3D(0.0,50.0,0.0);
             position:Vector3D = new Vector3D();
-
             dispEntity:DisplayEntity = null;
 
             private m_changed:boolean = true;
 
-            constructor()
-            {
-            }
+            constructor(){}
+
             setPosition(pv:Vector3D):void
             {
                 this.position.copyFrom(pv);
-                //this.dispEntity.setPosition(this.position);
                 this.m_changed = true;
             }
             setPosXYZ(px:number,py:number,pz:number):void
             {
                 this.position.setXYZ(px,py,pz);
-                //this.dispEntity.setPosition(this.position);
                 this.m_changed = true;
             }
             
+            setVisible(visible:boolean):void
+            {
+                if(this.dispEntity != null)
+                {
+                    this.dispEntity.setVisible(visible);
+                }
+            }
+            getAttackPos(outPos:Vector3D):void
+            {
+                outPos.addVecsTo(this.position,this.attackPosOffset);
+            }
+            consume(power:number):void
+            {
+                this.lifeTime -= power;
+            }
             attackTest():boolean
             {
                 return true;
             }
             run():void
             {
-                if(this.dispEntity != null)
+                if(this.dispEntity != null && this.lifeTime > 0)
                 {
                     if(this.m_changed)
                     {
