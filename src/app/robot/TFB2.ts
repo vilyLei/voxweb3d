@@ -123,7 +123,7 @@ export namespace app
 
                     this.m_clock.setPeriod(20);
                     this.m_clock.setTriggerTimeAt(0,6);
-                    this.m_clock.setTriggerTimeAt(1,1);
+                    this.m_clock.setTriggerTimeAt(1,3);
                 }
             }
             setXYZ(px:number,py:number,pz:number):void
@@ -150,13 +150,9 @@ export namespace app
                 this.m_attPos.setXYZ(px,py,pz);
                 this.m_armModule.setAttPosXYZ(px,py,pz);
             }
-            getLEndPos(outV:Vector3D,k:number):void
+            getEndPosAt(index:number, outV:Vector3D,k:number):void
             {
-                this.m_armModule.getLEndPos(outV,k);
-            }
-            getREndPos(outV:Vector3D,k:number):void
-            {
-                this.m_armModule.getREndPos(outV,k);
+                this.m_armModule.getEndPosAt(index, outV,k);
             }
             resetPose():void
             {
@@ -190,7 +186,7 @@ export namespace app
                         break;
                 }
             }
-            
+
             attackRun():void
             {
                 //this.freeTest();
@@ -229,20 +225,13 @@ export namespace app
                 this.m_clock.run();
                 if(this.m_armModule.isAttackLock())
                 {
-                    switch(this.m_clock.getTriggerIndex())
+                    let index:number = this.m_clock.getTriggerIndex();
+                    if(index > -1)
                     {
-                        case 0:
-                            this.m_armModule.getLEndPos(this.m_beginPos,1.0);
-                            this.m_armModule.setRecoilDegreeL(8);
-                            this.weap.createAtt(0,this.m_beginPos,this.m_attPos,attDst, this.campType);
-                            break;
-                        case 1:
-                            this.m_armModule.getREndPos(this.m_beginPos,1.0);
-                            this.m_armModule.setRecoilDegreeR(8);
-                            this.weap.createAtt(0,this.m_beginPos,this.m_attPos,attDst,this.campType);
-                            break;
-                        default:
-                            break;
+                        // attack 姿态控制
+                        this.m_armModule.getEndPosAt(index,this.m_beginPos,1.0);
+                        this.m_armModule.setRecoilDegreeAt(index, 8);
+                        this.weap.createAtt(0,this.m_beginPos,this.m_attPos,attDst, this.campType);
                     }
                 }
                 this.weap.run();

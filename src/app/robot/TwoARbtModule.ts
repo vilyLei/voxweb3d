@@ -190,15 +190,36 @@ export namespace app
             {
                 return this.m_attPos;
             }
-            getLEndPos(outV:Vector3D,k:number):void
+            getEndPosAt(index:number, outV:Vector3D,k:number):void
             {
-                this.m_coreFAxis.getLEndPos(outV,k);
+                switch(index)
+                {
+                    case 0:                        
+                        this.m_coreFAxis.getLEndPos(outV,k);
+                        break;
+                    case 1:                        
+                        this.m_coreFAxis.getREndPos(outV,k);
+                        break;
+                    default:
+                        break;
+
+                }
                 this.m_attackLock = false;
             }
-            getREndPos(outV:Vector3D,k:number):void
+            setRecoilDegreeAt(index:number, degree:number):void
             {
-                this.m_coreFAxis.getREndPos(outV,k);
-                this.m_attackLock = false;
+                switch(index)
+                {
+                    case 0:
+                        this.m_coreFAxis.setRecoilDegreeL(degree);
+                        break;
+                    case 1:
+                        this.m_coreFAxis.setRecoilDegreeR(degree);
+                        break;
+                    default:
+                        break;
+
+                }
             }
             isAttackLock():boolean
             {
@@ -271,14 +292,6 @@ export namespace app
             resetNextOriginPose():void
             {
                 this.m_nextTime = this.m_coreFAxis.getNextOriginTime(this.m_time);
-            }
-            setRecoilDegreeL(degree:number):void
-            {
-                this.m_coreFAxis.setRecoilDegreeL(degree);
-            }
-            setRecoilDegreeR(degree:number):void
-            {
-                this.m_coreFAxis.setRecoilDegreeR(degree);
             }
             runAtt(moveEnabled:boolean):void
             {
