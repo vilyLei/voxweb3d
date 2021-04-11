@@ -101,6 +101,10 @@ export namespace app
             {
                 this.m_container.setRotationY(rotation);
             }
+            getRotationY():number
+            {
+                return this.m_container.getRotationY();
+            }
             setTime(time:number):void
             {
                 this.m_time = time;

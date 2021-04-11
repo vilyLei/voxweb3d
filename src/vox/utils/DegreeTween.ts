@@ -67,7 +67,22 @@ export namespace vox
                     this.m_target.getRotationXYZ(this.m_pv);
                     let degreeDis:number = MathConst.GetMinDegree(degree, this.m_pv.y);
                     this.m_dis = Math.abs(degreeDis);
-                    if(this.m_dis >= 1.0)degree = this.m_pv.y - degreeDis * 0.2;
+                    let minDis:number = 2.0;
+                    if(this.m_dis >= minDis)
+                    {
+                        if(degreeDis < 0.0)
+                        {
+                            degreeDis = this.m_dis * 0.2;
+                            degreeDis = degreeDis > minDis ? degreeDis:minDis;
+                            degree = this.m_pv.y + degreeDis;
+                        }
+                        else
+                        {
+                            degreeDis = this.m_dis * 0.2;
+                            degreeDis = degreeDis > minDis ? degreeDis:minDis;
+                            degree = this.m_pv.y - degreeDis;
+                        }
+                    }
                     this.m_degreeChanged = Math.abs(this.m_degree - degree) > MathConst.MATH_MIN_POSITIVE;
                     if(this.m_degreeChanged)
                     {

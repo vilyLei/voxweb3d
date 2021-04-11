@@ -24,6 +24,7 @@ export namespace app
     {
         export class BlueCamp implements IRoleCamp
         {
+            distance:number = 0.0;
             constructor()
             {
             }

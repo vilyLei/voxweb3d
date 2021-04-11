@@ -58,6 +58,8 @@ export namespace app
             static readonly ATTACK_RUN:number = 1002;
             private m_runMode:number = 1002;
 
+            attackDis:number = 50;
+            radius:number = 100;
             campType:CampType = CampType.Blue;
 
             roleCamp:IRoleCamp = null;
@@ -189,17 +191,30 @@ export namespace app
             attackRun():void
             {
                 //this.freeTest();
-                let attDst:IAttackDst = this.roleCamp!=null?this.roleCamp.findAttDst(this.m_pos,50,CampFindMode.XOZ,CampType.Red):null;
-                if(attDst != null)
+                let attDst:IAttackDst = this.roleCamp.findAttDst(this.m_pos,this.attackDis + this.radius,CampFindMode.XOZ,CampType.Red);
+
+                let readyAttack:boolean = attDst != null;
+                if(readyAttack)
                 {
                     attDst.getAttackPos(this.m_attPos);
                     this.m_armModule.setAttPos(this.m_attPos);
                 }
 
+                let unlockDst:boolean = true;
+                if(readyAttack && this.roleCamp.distance > 0.4 * (this.attackDis + this.radius))
+                {
+                    //this.m_tickModule.stop();
+                    //this.m_moving = false;
+                    unlockDst = false;
+                }
+                else if(this.m_tickModule.isMoving())
+                {
+                    this.m_movingFlag = true;
+                }
                 let moveFlag:boolean = false;
                 if(this.m_movingFlag)
                 {
-                    if(this.m_moving)
+                    if(this.m_moving && unlockDst)
                     {
                         moveFlag = true;
                         // 执行移动控制过程
@@ -207,7 +222,14 @@ export namespace app
                         this.m_moving = this.m_tickModule.isMoving();
 
                         // 执行走动动作
-                        this.m_legModule.postureCtrl.runByDegree(this.m_tickModule.getDirecDegree());
+                        if(readyAttack)
+                        {
+                            this.m_legModule.postureCtrl.runByPos(this.m_attPos);
+                        }
+                        else
+                        {
+                            this.m_legModule.postureCtrl.runByDegree(this.m_tickModule.getDirecDegree());
+                        }
 
                         // 同步上半身和下半身的坐标
                         this.m_legModule.getPosition(this.m_pos);
@@ -222,8 +244,13 @@ export namespace app
 
                 this.m_armModule.runAtt(moveFlag);
                 this.m_clock.run();
-                if(attDst != null && this.m_armModule.isAttackLock())
+                if(readyAttack && this.m_armModule.isAttackLock())
                 {
+                    //if(MathConst.GetMinDegree(this.m_legModule.getRotationY(), this.m_armModule.getRotationY()) > 50.0)
+                    if(!moveFlag && Math.abs(this.m_legModule.getRotationY()-this.m_armModule.getRotationY()) > 50.0)
+                    {
+                        this.m_movingFlag = true;
+                    }
                     let index:number = this.m_clock.getTriggerIndex();
                     if(index > -1)
                     {

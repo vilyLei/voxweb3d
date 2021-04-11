@@ -22,6 +22,7 @@ export namespace app
     {
         export interface IRoleCamp
         {
+            distance:number;
             findAttDst(pos:Vector3D, radius:number, findMode:CampFindMode,dstCampType:CampType):IAttackDst;
             run():void;
         }

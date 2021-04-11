@@ -59,6 +59,10 @@ export namespace voxmotion
                 this.m_velModule.setDirecXZ(px - this.m_currPos.x, pz - this.m_currPos.z);
                 this.m_moving = true;
             }
+            stop():void
+            {
+                this.m_moving = false;
+            }
             isMoving():boolean
             {
                 return this.m_moving;
@@ -110,6 +114,7 @@ export namespace voxmotion
                 {
                     this.m_currPos.copyFrom(this.m_dstPos);
                     this.m_moving = false;
+                    spdv.setXYZ(0.0,0.0,0.0);
                 }
                 
                 this.m_target.setPosition( this.m_currPos );

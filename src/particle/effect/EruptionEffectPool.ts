@@ -101,7 +101,8 @@ export namespace particle
                 eff.setVisible(true);
                 eff.setTime(0.0);
                 //  eff.setPositionScale(Math.random() * 0.3 + 0.5);
-                //  eff.setSizeScale(Math.random() * 0.3 + 0.5);
+                eff.setSizeScale(0.3);
+                eff.setPositionScale(0.5);
                 //  eff.solidEntity.setRGBOffset3f(Math.random() * 0.2,Math.random() * 0.2,Math.random() * 0.2);
                 eff.solidEntity.setRGB3f(Math.random() + 0.2,Math.random() + 0.2,Math.random() + 0.2);
                 if(pv != null)

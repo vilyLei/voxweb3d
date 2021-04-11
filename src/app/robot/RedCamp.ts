@@ -35,6 +35,7 @@ export namespace app
             private m_freeRoles:IAttackDst[] = [];
             private m_tempV0:Vector3D = new Vector3D();
             private m_eff0Pool:EruptionEffectPool = null;
+            distance:number = 0.0;
             constructor()
             {
             }
@@ -79,9 +80,10 @@ export namespace app
                             dis = radius + role.radius;
                             dis *= dis;
                             this.m_tempV0.subVecsTo(pos, role.position);
-                            //console.log();
-                            if(dis >= this.m_tempV0.getLengthSquared())
+                            this.distance = this.m_tempV0.getLengthSquared();
+                            if(dis >= this.distance)
                             {
+                                this.distance = Math.sqrt(this.distance);
                                 //console.log("find a role in red camp.");
                                 return role;
                             }
