@@ -10,6 +10,9 @@ import * as Vector3T from "../../vox/math/Vector3D";
 import * as IRoleCampT from "../../app/robot/IRoleCamp";
 import * as IAttackDstT from "../../app/robot/IAttackDst";
 import * as CampT from "../../app/robot/Camp";
+import * as AssetsModuleT from "../../app/robot/assets/AssetsModule";
+import * as RendererSceneT from "../../vox/scene/RendererScene";
+import * as EruptionEffectPoolT from "../../particle/effect/EruptionEffectPool";
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3T.vox.math.Vector3D;
@@ -17,6 +20,9 @@ import IRoleCamp = IRoleCampT.app.robot.IRoleCamp;
 import IAttackDst = IAttackDstT.app.robot.IAttackDst;
 import CampType = CampT.app.robot.CampType;
 import CampFindMode = CampT.app.robot.CampFindMode;
+import AssetsModule = AssetsModuleT.app.robot.assets.AssetsModule;
+import RendererScene = RendererSceneT.vox.scene.RendererScene;
+import EruptionEffectPool = EruptionEffectPoolT.particle.effect.EruptionEffectPool;
 
 export namespace app
 {
@@ -24,14 +30,33 @@ export namespace app
     {
         export class RedCamp implements IRoleCamp
         {
+            private m_rsc:RendererScene = null;
             private m_roles:IAttackDst[] = [];
             private m_freeRoles:IAttackDst[] = [];
             private m_tempV0:Vector3D = new Vector3D();
+            private m_eff0Pool:EruptionEffectPool = null;
             constructor()
             {
             }
-            initialize():void
+            initialize(rsc:RendererScene):void
             {
+                if(this.m_rsc == null)
+                {
+                    this.m_rsc = rsc;
+
+                    if(this.m_eff0Pool == null)
+                    {
+                        //  let texFlame:TextureProxy = this.m_textures[8];//"static/assets/testEFT4.jpg"
+                        //  let texSolid:TextureProxy = this.m_textures[3];
+                        this.m_eff0Pool = new EruptionEffectPool();
+                        this.m_eff0Pool.timeSpeed = 15.0;
+                        this.m_eff0Pool.initialize(this.m_rsc,1, 60,50,
+                            AssetsModule.GetImageTexByUrl("static/assets/testEFT4.jpg"),
+                            AssetsModule.GetImageTexByUrl("static/assets/stones_02.png"),
+                            true);
+                        //  this.m_eff0Pool.createEffect(null);
+                    }
+                }
             }
             addRole(role:IAttackDst):void
             {
@@ -64,6 +89,9 @@ export namespace app
                         else
                         {
                             console.log("del a role, because of its life time value is less 0.");
+                            role.getDestroyPos(this.m_tempV0);
+                            this.m_eff0Pool.createEffect(this.m_tempV0);
+                            //m_tempV0
                             list.splice(i,1);
                             i --;
                             len --;
@@ -76,6 +104,7 @@ export namespace app
             }
             run():void
             {
+                this.m_eff0Pool.run();
             }
         }
     }

@@ -25,6 +25,7 @@ export namespace app
 
             setVisible(visible:boolean):void;
             getAttackPos(outPos:Vector3D):void;
+            getDestroyPos(outPos:Vector3D):void;
             consume(power:number):void;
             attackTest():boolean;
         }

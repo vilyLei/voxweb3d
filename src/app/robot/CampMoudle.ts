@@ -48,10 +48,12 @@ export namespace app
 
             initialize(rsc:RendererScene):void
             {
-                this.m_rsc = rsc;
-                
-                if(this.m_eff1Pool == null)
+                if(this.m_rsc == null)
                 {
+                    this.m_rsc = rsc;
+                    
+                    this.redCamp.initialize(rsc);
+
                     let texture:TextureProxy = AssetsModule.GetImageTexByUrl("static/assets/xulie_02_07.png");
                     //let colorTexture:TextureProxy = AssetsModule.GetImageTexByUrl("static/assets/stones_02.png");
                     //let colorTexture:TextureProxy = AssetsModule.GetImageTexByUrl("static/assets/warter_01.jpg");
@@ -98,6 +100,7 @@ export namespace app
                     }
                 }
                 this.m_eff1Pool.run();
+                this.redCamp.run();
             }
         }
     }

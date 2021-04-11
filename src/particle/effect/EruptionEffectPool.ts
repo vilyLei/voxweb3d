@@ -23,7 +23,7 @@ export namespace particle
     {
         export class EruptionEffectPool extends ParticleEffectPool
         {
-            private m_eruptionEfSrc:EruptionEffect = null;
+            private m_efSrcList:EruptionEffect[] = [];
             private m_flameTexture:TextureProxy = null;
             private m_solidTexture:TextureProxy = null;
             private m_clipMixEnabled:boolean = false;
@@ -31,7 +31,7 @@ export namespace particle
 
             initialize(renderer:IRenderer,processIndex:number,flameTotal:number, solidTotal:number, flameTexture:TextureProxy,solidTexture:TextureProxy,clipMixEnabled:boolean = false):void
             {
-                if(this.m_eruptionEfSrc == null)
+                if(this.m_renderer == null)
                 {
                     this.m_clipMixEnabled = clipMixEnabled;
                     this.m_flameTexture = flameTexture;
@@ -40,22 +40,55 @@ export namespace particle
                     this.m_renderer = renderer;                    
                     this.m_renderProcessI = processIndex;
 
-                    this.m_eruptionEfSrc = new EruptionEffect();
-                    this.m_eruptionEfSrc.initialize(flameTotal,solidTotal,flameTexture,solidTexture);
+                    let efSrc:EruptionEffect = new EruptionEffect();
+                    efSrc.initialize(flameTotal,solidTotal,this.m_flameTexture,this.m_solidTexture,this.m_clipMixEnabled);
+                    this.m_efSrcList.push(efSrc);
                 }
             }
             
-            createEffect(pv:Vector3D):void
+            appendEffectSrc(flameTotal:number, solidTotal:number,clipMixEnabled:boolean):void
             {
-                this.createEffectWithTexture(pv, this.m_flameTexture,this.m_solidTexture);
+                let efSrc:EruptionEffect = new EruptionEffect();
+                efSrc.initialize(flameTotal,solidTotal,this.m_flameTexture,this.m_solidTexture,clipMixEnabled);
+                this.m_efSrcList.push(efSrc);
             }
-            createEffectWithTexture(pv:Vector3D,flameTexture:TextureProxy,solidTexture:TextureProxy):void
+            appendEffect(flameTexture:TextureProxy,solidTexture:TextureProxy,srcIndex:number = -1):void
+            {
+                let eff:EruptionEffect = new EruptionEffect();
+                if(flameTexture == null) flameTexture = this.m_flameTexture;
+                if(solidTexture == null) solidTexture = this.m_solidTexture;
+                let efSrc:EruptionEffect;
+                if(srcIndex < 0)
+                {
+                    efSrc = this.m_efSrcList[Math.floor((this.m_efSrcList.length - 0.5) * Math.random())];
+                }
+                else
+                {
+                    srcIndex = srcIndex<this.m_efSrcList.length?srcIndex:this.m_efSrcList.length-1;
+                    efSrc = this.m_efSrcList[srcIndex];
+                }
+                //eff.initializeFrom(efSrc,texture,colorTexture, this.m_clipMixEnabled);
+                efSrc.initializeFrom(efSrc,flameTexture, solidTexture, this.m_clipMixEnabled);
+                this.m_freeEffList.push(eff);
+                this.m_renderer.addEntity(eff.solidEntity, this.m_renderProcessI, false);
+                this.m_renderer.addEntity(eff.flameEntity, this.m_renderProcessI, false);
+                eff.setVisible(false);
+
+            }
+            createEffect(pv:Vector3D):EruptionEffect
+            {
+                return this.createEffectWithTexture(pv, this.m_flameTexture,this.m_solidTexture);
+            }
+            createEffectWithTexture(pv:Vector3D,flameTexture:TextureProxy,solidTexture:TextureProxy):EruptionEffect
             {
                 let eff:EruptionEffect;
                 if(this.m_freeEffList.length < 1)
                 {
+                    if(flameTexture == null)flameTexture = this.m_flameTexture;
+                    if(solidTexture == null)solidTexture = this.m_solidTexture;
+                    let efSrc:EruptionEffect = this.m_efSrcList[Math.floor((this.m_efSrcList.length - 0.5) * Math.random())];
                     eff = new EruptionEffect();
-                    eff.initializeFrom(this.m_eruptionEfSrc, flameTexture,solidTexture, this.m_clipMixEnabled);
+                    eff.initializeFrom(efSrc, flameTexture,solidTexture, this.m_clipMixEnabled);
                     this.m_renderer.addEntity(eff.solidEntity, this.m_renderProcessI, false);
                     this.m_renderer.addEntity(eff.flameEntity, this.m_renderProcessI, false);                    
                 }
@@ -87,6 +120,7 @@ export namespace particle
                     eff.flameEntity.setRotationXYZ(0.0,Math.random() * 360.0,0.0);
                 }
                 eff.update();
+                return eff;
             }
         }
     }

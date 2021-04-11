@@ -11,6 +11,7 @@ import * as TextureConstT from "../vox/texture/TextureConst";
 import * as DisplayEntityT from "../vox/entity/DisplayEntity";
 import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
 import * as Box3DEntityT from "../vox/entity/Box3DEntity";
+import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
 
 import * as MouseEventT from "../vox/event/MouseEvent";
 import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
@@ -42,6 +43,7 @@ import TextureConst = TextureConstT.vox.texture.TextureConst;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
 import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
+import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 
 import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
@@ -132,6 +134,15 @@ export namespace app
                 let tex2:TextureProxy = this.getImageTexByUrl("static/assets/skin_01.jpg");
                 let tex3:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 let tex4:TextureProxy = this.m_rscene.textureBlock.createRGBATex2D(16,16,new Color4(1.0,0.0,1.0));
+
+                
+                let plane:Plane3DEntity = new Plane3DEntity();
+                plane.initializeXOZ(-500.0,-500.0,1000.0,1000.0,[this.getImageTexByUrl("static/assets/wood_01.jpg")]);
+                //plane.toTransparentBlend(false);
+                plane.setScaleXYZ(2.0,2.0,2.0);
+                plane.setXYZ(0.0,-10.0,0.0);
+                (plane.getMaterial() as any).setRGB3f(0.5,0.5,0.5);
+                this.m_rscene.addEntity(plane);
 
                 let axis:Axis3DEntity = new Axis3DEntity();
                 //axis.initializeCross(600.0);

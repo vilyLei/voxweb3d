@@ -24,10 +24,11 @@ export namespace app
         export class RedRole implements IAttackDst
         {
             campType:CampType = CampType.Red;
-            lifeTime:number = 50;
+            lifeTime:number = 150;
             radius:number = 50.0;
 
             attackPosOffset:Vector3D = new Vector3D(0.0,50.0,0.0);
+            destroyPosOffset:Vector3D = new Vector3D(0.0,15.0,0.0);
             position:Vector3D = new Vector3D();
             dispEntity:DisplayEntity = null;
 
@@ -56,6 +57,10 @@ export namespace app
             getAttackPos(outPos:Vector3D):void
             {
                 outPos.addVecsTo(this.position,this.attackPosOffset);
+            }
+            getDestroyPos(outPos:Vector3D):void
+            {
+                outPos.addVecsTo(this.position,this.destroyPosOffset);
             }
             consume(power:number):void
             {

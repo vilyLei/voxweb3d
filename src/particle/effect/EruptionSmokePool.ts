@@ -70,11 +70,11 @@ export namespace particle
                 this.m_renderer.addEntity(eff.smokeEntity, this.m_renderProcessI, false);
                 eff.setVisible(false);
             }
-            createEffect(pv:Vector3D):void
+            createEffect(pv:Vector3D):EruptionSomke
             {
-                this.createEffectWithTexture(pv, this.m_texture,this.m_colorTexture);
+                return this.createEffectWithTexture(pv, this.m_texture,this.m_colorTexture);
             }
-            createEffectWithTexture(pv:Vector3D,texture:TextureProxy,colorTexture:TextureProxy):void
+            createEffectWithTexture(pv:Vector3D,texture:TextureProxy,colorTexture:TextureProxy):EruptionSomke
             {
                 let eff:EruptionSomke;
                 if(this.m_freeEffList.length < 1)
@@ -109,6 +109,7 @@ export namespace particle
                     //  eff.smokeEntity.setRotationXYZ(0.0,Math.random() * 360.0,0.0);
                 }
                 eff.update();
+                return eff;
             }
         }
     }
