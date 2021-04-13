@@ -47,7 +47,7 @@ export namespace vox
             getIVS():Uint16Array | Uint32Array{return this.m_ivs;}
             
             //
-            initialize(radius:number, longitudeNumSegments:number, latitudeNumSegments:number):void 
+            initialize(radius:number, longitudeNumSegments:number, latitudeNumSegments:number,doubleTriFaceEnabled:boolean):void 
             {
                 if (this.vtxTotal < 1)
         		{
@@ -167,8 +167,17 @@ export namespace vox
         				}
         			}
                     this.vtxTotal = vtxVec.length;
-                    //            
-                    this.m_ivs = new Uint16Array(pivs);
+                    if(doubleTriFaceEnabled)
+                    {
+                        this.m_ivs = new Uint16Array(pivs.length * 2);
+                        this.m_ivs.set(pivs,0);
+                        pivs.reverse();
+                        this.m_ivs.set(pivs,pivs.length);
+                    }
+                    else
+                    {
+                        this.m_ivs = new Uint16Array(pivs);
+                    }
         			this.m_vs = new Float32Array(this.vtxTotal * 3);
                     i = 0;
                     for (j = 0; j < this.vtxTotal; ++j)
@@ -229,7 +238,6 @@ export namespace vox
                         ROVertexBuffer.AddFloat32Data(tvs,3);
                         ROVertexBuffer.AddFloat32Data(btvs,3);
                     }
-
                     ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
                     this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
                     this.m_vbuf.setUint16IVSData(this.m_ivs);

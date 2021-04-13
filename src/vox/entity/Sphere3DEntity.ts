@@ -262,9 +262,10 @@ export namespace vox
             {
                 super(transform);
             }
-            m_radius:number = 50.0;
-            m_longitudeNumSegments:number = 10;
-            m_latitudeNumSegments:number = 10;
+            doubleTriFaceEnabled:boolean = false;
+            private m_radius:number = 50.0;
+            private m_longitudeNumSegments:number = 10;
+            private m_latitudeNumSegments:number = 10;
 
             createMaterial(texList:TextureProxy[]):void
             {
@@ -278,6 +279,15 @@ export namespace vox
                 {
                     this.getMaterial().setTextureList(texList);
                 }
+            }
+            
+            initializeFrom(entity:DisplayEntity,texList:TextureProxy[] = null)
+            {
+                this.copyMeshFrom(entity);
+                this.copyMaterialFrom(entity);
+                
+                this.createMaterial(texList);
+                this.activeDisplay();
             }
             initialize(radius:number, longitudeNumSegments:number, latitudeNumSegments:number,texList:TextureProxy[])
             {
@@ -296,7 +306,7 @@ export namespace vox
                     let mesh = new Sphere3DMesh();
                     mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
                     mesh.setBufSortFormat( material.getBufSortFormat() );
-                    mesh.initialize(this.m_radius, this.m_longitudeNumSegments, this.m_latitudeNumSegments);
+                    mesh.initialize(this.m_radius, this.m_longitudeNumSegments, this.m_latitudeNumSegments,this.doubleTriFaceEnabled);
                     this.setMesh(mesh);
                 }
             }

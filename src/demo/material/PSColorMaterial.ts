@@ -35,69 +35,33 @@ export namespace demo
                 }
                 getFragShaderCode():string
                 {
-                    let fragCode:string = "";
-                    if(RendererDeviece.IsWebGL2())
-                    {
-                    fragCode =
-"\
-#version 300 es\n\
-precision mediump float;\n\
-layout(location = 0) out vec4 FragColor0;\n\
-void main()\n\
-{\n\
-    FragColor0 = vec4(vec3(1.0,0.5,0.6),1.0);\n\
-}\n\
-";
-                    }
-                    else
-                    {
-                        fragCode =
-"\
-precision mediump float;\n\
-void main()\n\
-{\n\
-    gl_FragColor = vec4(vec3(1.0,0.5,0.6),1.0);\n\
-}\n\
-";
-                    }
+                    let fragCode:string = 
+`
+#version 300 es
+precision mediump float;
+layout(location = 0) out vec4 FragColor0;
+void main()
+{
+    FragColor0 = vec4(vec3(1.0,0.5,0.6),1.0);
+}
+`;
                     return fragCode;
                 }
                 getVtxShaderCode():string
                 {
-                    let vtxCode:string = "";
-                    if(RendererDeviece.IsWebGL2())
-                    {
-                        vtxCode =
-"\
-#version 300 es\n\
-precision mediump float;\n\
-layout(location = 0) in vec3 a_vs;\n\
-uniform mat4 u_objMat;\n\
-uniform mat4 u_viewMat;\n\
-uniform mat4 u_projMat;\n\
-void main(){\n\
-    mat4 viewMat4 = u_viewMat * u_objMat;\n\
-    vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);\n\
-    gl_Position = u_projMat * viewPos;\n\
-}\n\
-";
-                    }
-                    else
-                    {
-                        vtxCode =
-"\
-precision mediump float;\n\
-attribute vec3 a_vs;\n\
-uniform mat4 u_objMat;\n\
-uniform mat4 u_viewMat;\n\
-uniform mat4 u_projMat;\n\
-void main(){\n\
-    mat4 viewMat4 = u_viewMat * u_objMat;\n\
-    vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);\n\
-    gl_Position = u_projMat * viewPos;\n\
-}\n\
-";
-                    }
+                    let vtxCode:string =
+`#version 300 es
+precision mediump float;
+layout(location = 0) in vec3 a_vs;
+uniform mat4 u_objMat;
+uniform mat4 u_viewMat;
+uniform mat4 u_projMat;
+void main(){
+    mat4 viewMat4 = u_viewMat * u_objMat;
+    vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);
+    gl_Position = u_projMat * viewPos;
+}
+`;
                     return vtxCode;
                 }
                 getUniqueShaderName()

@@ -24,7 +24,7 @@ export namespace vox
                 ,preserveDrawingBuffer:true
                 ,powerPreference:"high-performance"//"default"
             };
-            private m_tickUpdateTime:number = 50;// delay 50 ms
+            private m_tickUpdateTime:number = 20;// delay 50 ms
             // display 3d view buf size auto sync window size
             autoSyncRenderBufferAndWindowSize:boolean = true;
             maxWebGLVersion:number = 2;

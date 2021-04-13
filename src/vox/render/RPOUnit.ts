@@ -123,6 +123,7 @@ export namespace vox
             {
                 this.ivsIndex = ivsIndex;
                 this.ivsCount = ivsCount;
+                this.drawOffset = ivsIndex * this.ibufStep;
                 this.drawEnabled = this.visible && this.ivsCount > 0;
             }
             setVisible(boo:boolean):void

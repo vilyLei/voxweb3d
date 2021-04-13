@@ -48,6 +48,9 @@ export namespace vox
             static NONE_ADD_ALWAYS_STATE:number = 13;
             static NONE_ADD_BLENDSORT_STATE:number = 14;
             static NONE_ALPHA_ADD_ALWAYS_STATE:number = 15;
+            static FRONT_ADD_ALWAYS_STATE:number = 16;
+            static FRONT_TRANSPARENT_STATE:number = 17;
+            static FRONT_TRANSPARENT_ALWAYS_STATE:number = 18;
 
             static Initialize():void
             {
@@ -79,7 +82,10 @@ export namespace vox
                     RendererState.NONE_ADD_ALWAYS_STATE = RenderStateObject.Create("none_add_always",CullFaceMode.NONE,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                     RendererState.NONE_ADD_BLENDSORT_STATE = RenderStateObject.Create("none_add_blendSort",CullFaceMode.NONE,RenderBlendMode.ADD,DepthTestMode.RENDER_TRANSPARENT_SORT);
                     RendererState.NONE_ALPHA_ADD_ALWAYS_STATE = RenderStateObject.Create("none_alpha_add_always",CullFaceMode.NONE,RenderBlendMode.ALPHA_ADD,DepthTestMode.RENDER_ALWAYS);
-
+                    RendererState.FRONT_ADD_ALWAYS_STATE = RenderStateObject.Create("front_add_always",CullFaceMode.FRONT,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
+                    RendererState.FRONT_TRANSPARENT_STATE = RenderStateObject.Create("front_transparent",CullFaceMode.FRONT,RenderBlendMode.TRANSPARENT,DepthTestMode.RENDER_TRANSPARENT_SORT);
+                    RendererState.FRONT_TRANSPARENT_ALWAYS_STATE = RenderStateObject.Create("front_transparent_always",CullFaceMode.FRONT,RenderBlendMode.TRANSPARENT,DepthTestMode.RENDER_ALWAYS);
+                
                 }
             }
             static CreateRenderState(objName:string,cullFaceMode:number,blendMode:number,depthTestMode:number):number

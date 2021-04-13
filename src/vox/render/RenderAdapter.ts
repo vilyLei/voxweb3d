@@ -58,7 +58,7 @@ export namespace vox
 				this.m_texResource = texResource;
 				this.m_rcuid = rcuid;
 			}
-			//private m_index:number = 0;
+			private m_fontFaceFlipped:boolean = false;// default ccw
     		private m_rc:any = null;
     		private m_colorMask:any = {mr:true,mg:true,mb:true,ma:true};
     		private m_rcontext:RAdapterContext = null;
@@ -110,7 +110,7 @@ export namespace vox
     		        this.m_rc.cullFace(this.m_rc.BACK);
 					this.m_rc.enable(this.m_rc.BLEND);
 					this.m_rc.disable(this.m_rc.DITHER);
-					//this.m_rc.frontFace( this.m_rc.CCW );
+					this.m_rc.frontFace( this.m_rc.CCW );
 					//m_rc.hint(m_rc.PERSPECTIVE_CORRECTION_HINT, m_rc.NICEST);	// Really Nice Perspective Calculations
     		        this.m_clearMask = this.m_rc.COLOR_BUFFER_BIT | this.m_rc.DEPTH_BUFFER_BIT | this.m_rc.STENCIL_BUFFER_BIT;
     		        //
@@ -125,7 +125,24 @@ export namespace vox
                 	}
 				}
 			}
-			
+            /**
+             * @param faceFlipped the value is true, frontFace is CW. the value is false, frontFace is CCW. 
+             */
+			setFrontFaceFlipped(faceFlipped:boolean):void
+			{
+				if(this.m_fontFaceFlipped != faceFlipped)
+				{
+					if(faceFlipped)
+					{
+						this.m_rc.frontFace( this.m_rc.CW );
+					}
+					else
+					{
+						this.m_rc.frontFace( this.m_rc.CCW );
+					}
+					this.m_fontFaceFlipped = faceFlipped;
+				}
+			}
             getDiv():any
             {
                 return this.m_rcontext.getDiv();

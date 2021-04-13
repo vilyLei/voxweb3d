@@ -37,6 +37,10 @@ export namespace vox
                     this.m_colorArray[2] = pb;
                     this.m_colorArray[3] = pa;
                 }
+                setAlpha(pa:number):void
+                {
+                    this.m_colorArray[3] = pa;
+                }
                 createSelfUniformData():ShaderUniformData
                 {
                     let oum:ShaderUniformData = new ShaderUniformData();

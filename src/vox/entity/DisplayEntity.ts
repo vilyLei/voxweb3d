@@ -382,6 +382,14 @@ export namespace vox
             protected updateMesh():void
             {
             }
+            getIvsIndex():number
+            {
+                return this.m_display.ivsIndex;
+            }
+            getIvsCount():number
+            {
+                return this.m_display.ivsCount;
+            }
             setIvsParam(ivsIndex:number,ivsCount:number):void
             {
                 if(this.m_display != null)

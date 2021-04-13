@@ -540,7 +540,13 @@ export namespace vox
             {
                 RenderStateObject.Lock();
             }
-
+            /**
+             * @param faceFlipped the value is true, frontFace is CW. the value is false, frontFace is CCW. 
+             */
+            setFrontFaceFlipped(faceFlipped:boolean):void
+			{
+                this.m_adapter.setFrontFaceFlipped(faceFlipped);
+            }
             toString():string
             {
                 return "[Object RenderProxy()]";

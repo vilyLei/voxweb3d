@@ -6,8 +6,10 @@
 /***************************************************************************/
 
 import * as IRenderTextureT from '../../vox/render/IRenderTexture';
+import * as ShaderCodeBuilderT from "../../vox/material/code/ShaderCodeBuilder";
 
 import IRenderTexture = IRenderTextureT.vox.render.IRenderTexture;
+import ShaderCodeBuilder = ShaderCodeBuilderT.vox.material.code.ShaderCodeBuilder;
 
 export namespace vox
 {
@@ -16,6 +18,7 @@ export namespace vox
         export class ShaderCodeBuffer
         {
             private static ___s_csBuf:ShaderCodeBuffer = null;
+            protected static s_coder:ShaderCodeBuilder = new ShaderCodeBuilder();
             constructor()
             {
             }
@@ -31,6 +34,10 @@ export namespace vox
                     }
                 }
                 this.m_texEnabled = texEnabled;
+            }
+            isTexEanbled():boolean
+            {
+                return this.m_texEnabled;
             }
             setIRenderTextureList(texList:IRenderTexture[]):void
             {
@@ -51,30 +58,28 @@ export namespace vox
                 if(this.m_texEnabled)
                 {
                     codeStr = 
-"\
-#version 300 es\n\
-precision mediump float;\n\
-uniform sampler2D u_sampler0;\n\
-uniform vec4 u_color;\n\
-in vec2 v_uvs;\n\
-layout(location = 0) out vec4 FragColor;\n\
-void main(){\n\
-    FragColor = u_color * texture(u_sampler0, v_uvs);\n\
-}\n\
-";
+`#version 300 es
+precision mediump float;
+uniform sampler2D u_sampler0;
+uniform vec4 u_color;
+in vec2 v_uvs;
+layout(location = 0) out vec4 FragColor;
+void main(){
+    FragColor = u_color * texture(u_sampler0, v_uvs);
+}
+`;
                 }
                 else
                 {
                     codeStr = 
-"\
-#version 300 es\n\
-precision mediump float;\n\
-uniform vec4 u_color;\n\
-layout(location = 0) out vec4 FragColor;\n\
-void main(){\n\
-    FragColor = u_color;\n\
-}\n\
-";
+`#version 300 es
+precision mediump float;
+uniform vec4 u_color;
+layout(location = 0) out vec4 FragColor;
+void main(){
+    FragColor = u_color;
+}
+`;
 
                 }
                 return codeStr;
@@ -87,36 +92,34 @@ void main(){\n\
                 if(this.m_texEnabled)
                 {
                     codeStr =
-"\
-#version 300 es\n\
-precision mediump float;\n\
-layout(location = 0) in vec3 a_vs;\n\
-layout(location = 1) in vec2 a_uvs;\n\
-uniform mat4 u_objMat;\n\
-uniform mat4 u_viewMat;\n\
-uniform mat4 u_projMat;\n\
-out vec2 v_uvs;\n\
-void main(){\n\
-    gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs,1.0);\n\
-    v_uvs = a_uvs;\n\
-}\n\
-";
+`#version 300 es
+precision mediump float;
+layout(location = 0) in vec3 a_vs;
+layout(location = 1) in vec2 a_uvs;
+uniform mat4 u_objMat;
+uniform mat4 u_viewMat;
+uniform mat4 u_projMat;
+out vec2 v_uvs;
+void main(){
+    gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs,1.0);
+    v_uvs = a_uvs;
+}
+`;
                 }
                 else
                 {
                    
 codeStr =
-"\
-#version 300 es\n\
-precision mediump float;\n\
-layout(location = 0) in vec3 a_vs;\n\
-uniform mat4 u_objMat;\n\
-uniform mat4 u_viewMat;\n\
-uniform mat4 u_projMat;\n\
-void main(){\n\
-    gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs,1.0);\n\
-}\n\
-";
+`#version 300 es
+precision mediump float;
+layout(location = 0) in vec3 a_vs;
+uniform mat4 u_objMat;
+uniform mat4 u_viewMat;
+uniform mat4 u_projMat;
+void main(){
+    gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs,1.0);
+}
+`;
                 }
                 return codeStr;
             }

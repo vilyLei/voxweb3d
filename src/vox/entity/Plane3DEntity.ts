@@ -132,6 +132,21 @@ export namespace vox
                 this.activeDisplay();
             }
             /**
+             * initialize a square plane ,and it parallel the 3d space XOY plane
+             * @param size the width and height of the rectangle plane.
+             * @param texList textures list, default value is null.
+             */
+            initializeXOYSquare(size:number,texList:TextureProxy[] = null):void
+            {
+                this.m_startX = -0.5 * size;
+                this.m_startZ = -0.5 * size;
+                this.m_pwidth = size;
+                this.m_plong = size;
+                this.m_flag = 0;
+                this.createMaterial(texList);
+                this.activeDisplay();
+            }
+            /**
              * initialize a rectangle plane ,and it parallel the 3d space XOZ plane
              * @param minX the min x axis position of the rectangle plane.
              * @param minZ the min z axis position of the rectangle plane.
@@ -164,6 +179,21 @@ export namespace vox
                 this.m_startZ = minZ;
                 this.m_pwidth = pwidth;
                 this.m_plong = plong;
+                this.createMaterial(texList);
+                this.activeDisplay();
+            }
+            /**
+             * initialize a square plane ,and it parallel the 3d space XOZ plane
+             * @param size the width and long of the rectangle plane.
+             * @param texList textures list, default value is null.
+             */
+            initializeXOZSquare(size:number,texList:TextureProxy[] = null):void
+            {
+                this.m_flag = 1;
+                this.m_startX = -0.5 * size;
+                this.m_startZ = -0.5 * size;
+                this.m_pwidth = size;
+                this.m_plong = size;
                 this.createMaterial(texList);
                 this.activeDisplay();
             }
