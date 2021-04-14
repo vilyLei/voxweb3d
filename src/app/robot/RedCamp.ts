@@ -63,42 +63,89 @@ export namespace app
             {
                 this.m_roles.push(role);
             }
+            private m_rsn:IAttackDst = null;
+            private m_rsnList:IAttackDst[] = new Array(128);
+            private sorting(low:number,high:number):number
+            {
+                let arr:IAttackDst[] = this.m_rsnList;
+                //标记位置为待排序数组段的low处也就时枢轴值
+                this.m_rsn = arr[low];                
+                while(low < high)
+                {
+                    //  如果当前数字已经有序的位于我们的枢轴两端，我们就需要移动它的指针，是high或是low
+                    while(low < high && arr[high].attackDis >= this.m_rsn.attackDis)
+                    {
+                        --high;
+                    }
+                    // 如果当前数字不满足我们的需求，我们就需要将当前数字移动到它应在的一侧
+                    arr[low] = arr[high];                    
+                    while(low < high && arr[low].attackDis <= this.m_rsn.attackDis)
+                    {
+                        ++low;
+                    }
+                    arr[high] = arr[low];
+                }
+                arr[low] = this.m_rsn;                
+                return low;
+            }
+            private snsort(low:number,high:number):void
+            {
+                if(low < high)
+                {
+                    let pos:number = this.sorting(low, high);
+                    this.snsort(low, pos - 1);
+                    this.snsort(pos + 1, high);
+                }
+            }
             findAttDst(pos:Vector3D, radius:number,findMode:CampFindMode,dstCampType:CampType):IAttackDst
             {
                 if(dstCampType == CampType.Red)
                 {
-                    let i:number = 0;
                     let list:IAttackDst[] = this.m_roles;
                     let len:number = list.length;
-                    let role:IAttackDst = null;
-                    let dis:number;
-                    for(; i < len; ++i)
+                    if(len > 0)
                     {
-                        role = list[i];
-                        if(role.lifeTime > 0)
+                        let i:number = 0;
+                        let role:IAttackDst = null;
+                        let rsnLen:number = 0;
+                        let dis:number;
+                        for(; i < len; ++i)
                         {
-                            dis = radius + role.radius;
-                            dis *= dis;
-                            this.m_tempV0.subVecsTo(pos, role.position);
-                            this.distance = this.m_tempV0.getLengthSquared();
-                            if(dis >= this.distance)
+                            role = list[i];
+                            if(role.lifeTime > 0)
                             {
-                                this.distance = Math.sqrt(this.distance);
-                                //console.log("find a role in red camp.");
-                                return role;
+                                dis = radius + role.radius;
+                                dis *= dis;
+                                this.m_tempV0.subVecsTo(pos, role.position);
+                                this.distance = this.m_tempV0.getLengthSquared();
+                                if(dis >= this.distance)
+                                {
+                                    role.attackDis = Math.sqrt(this.distance);
+                                    this.m_rsnList[rsnLen] = role;
+                                    rsnLen++;
+                                }
+                            }
+                            else
+                            {
+                                console.log("del a role, because of its life time value is less 0.");
+                                role.getDestroyPos(this.m_tempV0);
+                                this.m_eff0Pool.createEffect(this.m_tempV0);
+                                //m_tempV0
+                                list.splice(i,1);
+                                i --;
+                                len --;
+                                this.m_freeRoles.push(role);
+                                role.setVisible(false);
                             }
                         }
-                        else
+                        if(rsnLen > 1)
                         {
-                            console.log("del a role, because of its life time value is less 0.");
-                            role.getDestroyPos(this.m_tempV0);
-                            this.m_eff0Pool.createEffect(this.m_tempV0);
-                            //m_tempV0
-                            list.splice(i,1);
-                            i --;
-                            len --;
-                            this.m_freeRoles.push(role);
-                            role.setVisible(false);
+                            this.snsort(0,rsnLen-1);
+                        }
+                        if(rsnLen > 0)
+                        {
+                            this.distance = this.m_rsnList[0].attackDis;
+                            return this.m_rsnList[0];
                         }
                     }
                 }
@@ -107,6 +154,10 @@ export namespace app
             run():void
             {
                 this.m_eff0Pool.run();
+            }
+            destroy()
+            {
+                this.m_rsnList.fill(null);
             }
         }
     }

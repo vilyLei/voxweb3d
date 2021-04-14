@@ -32,9 +32,23 @@ export namespace particle
             {
 
             }
-            isRunningEmpty():boolean
+            
+            private m_runFlag:number = 0;
+            setRunFlag(flag:number):void
             {
-                return this.m_effList.length < 1;
+                this.m_runFlag = flag;
+            }
+            getRunFlag():number
+            {
+                return this.m_runFlag;
+            }
+            isRunning():boolean
+            {
+                return true;
+            }
+            isStopped():boolean
+            {
+                return false;
             }
             run():void
             {

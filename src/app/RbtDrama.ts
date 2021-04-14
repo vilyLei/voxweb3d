@@ -28,6 +28,7 @@ import * as BoxPartStoreT from "../app/robot/BoxPartStore";
 import * as CampMoudleT from "../app/robot/CampMoudle";
 import * as AssetsModuleT from "../app/robot/assets/AssetsModule";
 import * as RedRoleT from "../app/robot/RedRole";
+import * as RunnableModuleT from "../app/robot/scene/RunnableModule";
 
 import * as CameraViewRayT from "../vox/view/CameraViewRay";
 
@@ -60,6 +61,7 @@ import BoxPartStore = BoxPartStoreT.app.robot.BoxPartStore;
 import CampMoudle = CampMoudleT.app.robot.CampMoudle;
 import AssetsModule = AssetsModuleT.app.robot.assets.AssetsModule;
 import RedRole = RedRoleT.app.robot.RedRole;
+import RunnableModule = RunnableModuleT.app.robot.scene.RunnableModule;
 
 import CameraViewRay = CameraViewRayT.vox.view.CameraViewRay;
 
@@ -87,13 +89,13 @@ export namespace app
         private m_viewRay:CameraViewRay = new CameraViewRay();
 
         private m_campModule:CampMoudle = new CampMoudle();
-        getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
-        {
-            let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
-            ptex.mipmapEnabled = mipmapEnabled;
-            if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
-            return ptex;
-        }
+        //  getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
+        //  {
+        //      let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
+        //      ptex.mipmapEnabled = mipmapEnabled;
+        //      if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
+        //      return ptex;
+        //  }
         initialize():void
         {
             console.log("RbtDrama::initialize()......");
@@ -104,10 +106,11 @@ export namespace app
                 RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 
                 let rparam:RendererParam = new RendererParam();
+                rparam.setAttriAntialias(true);
                 //rparam.maxWebGLVersion = 1;
                 //rparam.setCamPosition(10.0,1800.0,10.0);
-                //rparam.setCamPosition(1200.0,1200.0,1200.0);
-                rparam.setCamPosition(800.0,800.0,800.0);
+                rparam.setCamPosition(1200.0,1200.0,1200.0);
+                //rparam.setCamPosition(1800.0,1800.0,1800.0);
                 //rparam.setCamPosition(1200.0,1200.0,0.0);
                 //rparam.setCamPosition(0.0,200.0,1200.0);
                 this.m_rscene = new RendererScene();
@@ -123,21 +126,21 @@ export namespace app
                 this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 200);
 
                 this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
-                
+                let texLoader:ImageTextureLoader = this.m_texLoader;
                 this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
                 AssetsModule.GetInstance().initialize(this.m_texLoader);
 
                 this.m_campModule.initialize(this.m_rscene);
 
-                let tex0:TextureProxy = this.getImageTexByUrl("static/assets/wood_01.jpg");
-                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/yanj.jpg");
-                let tex2:TextureProxy = this.getImageTexByUrl("static/assets/skin_01.jpg");
-                let tex3:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
+                let tex0:TextureProxy = texLoader.getTexByUrl("static/assets/wood_01.jpg");
+                let tex1:TextureProxy = texLoader.getTexByUrl("static/assets/yanj.jpg");
+                let tex2:TextureProxy = texLoader.getTexByUrl("static/assets/skin_01.jpg");
+                let tex3:TextureProxy = texLoader.getTexByUrl("static/assets/default.jpg");
                 let tex4:TextureProxy = this.m_rscene.textureBlock.createRGBATex2D(16,16,new Color4(1.0,0.0,1.0));
 
                 
                 let plane:Plane3DEntity = new Plane3DEntity();
-                plane.initializeXOZ(-500.0,-500.0,1000.0,1000.0,[this.getImageTexByUrl("static/assets/wood_01.jpg")]);
+                plane.initializeXOZ(-500.0,-500.0,1000.0,1000.0,[texLoader.getTexByUrl("static/assets/wood_01.jpg")]);
                 //plane.toTransparentBlend(false);
                 plane.setScaleXYZ(2.0,2.0,2.0);
                 plane.setXYZ(0.0,-10.0,0.0);
@@ -156,7 +159,7 @@ export namespace app
                 let srcBox:Box3DEntity = new Box3DEntity();
                 srcBox.initializeCube(100.0,[tex2]);
 
-                for(let i:number = 0; i < 8; ++i)
+                for(let i:number = 0; i < 20; ++i)
                 {
                     let box:Box3DEntity = new Box3DEntity();
                     box.copyMeshFrom(srcBox);
@@ -220,7 +223,7 @@ export namespace app
 
                 this.m_twoFeetBody.moveToXZ(pv.x, pv.z);
                 this.m_pos.setXYZ(pv.x + this.m_direcV.x * 130.0,100.0, pv.z + this.m_direcV.z * 130.0);
-                this.m_twoFeetBody.setAttPos(this.m_pos);
+                //this.m_twoFeetBody.setAttPos(this.m_pos);
                 /*
                 if(!this.m_runflag)
                 {
@@ -262,6 +265,7 @@ export namespace app
                 }
             }
             this.m_campModule.run();
+            RunnableModule.Run();
             if(this.m_twoFeetBody != null)
             {
                 //  let pv:Vector3D = this.m_viewRay.position;
@@ -274,7 +278,7 @@ export namespace app
 
             this.m_rscene.run();
             this.m_viewRay.intersectPiane();
-            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }
 }

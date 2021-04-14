@@ -245,7 +245,21 @@ export namespace app
                     this.m_container.update();
                 }
             }
-            private updateAttPose():void
+            private m_hasDst:boolean = false;
+            private m_dstDegree:number = 0;
+            setDstDirecDegree(dstDegree:number):void
+            {
+                this.m_dstDegree = dstDegree;
+            }
+            attachDst():void
+            {
+                this.m_hasDst = true;
+            }
+            detachDst():void
+            {
+                this.m_hasDst = false;
+            }
+            private updateAttackPose():void
             {
                 this.direcByPos(this.m_attPos);
                 this.m_attackLock = this.degreeTween.testDegreeDis(2.0);
@@ -299,9 +313,16 @@ export namespace app
             }
             runAtt(moveEnabled:boolean):void
             {
-                this.updateAttPose();
+                if(this.m_hasDst)
+                {
+                    this.updateAttackPose();
+                }
+                else
+                {
+                    this.direcByDegree(this.m_dstDegree);
+                }
                 this.m_container.update();
-                if(moveEnabled)
+                if(moveEnabled || this.degreeTween.isRunning())
                 {
                     this.m_coreFAxis.runAtt(this.m_time, true);
                     this.m_time += this.m_timeSpeed;

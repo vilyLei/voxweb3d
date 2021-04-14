@@ -394,7 +394,7 @@ export namespace vox
                 this.m_viewH = this.m_adapterContext.getViewportHeight();
                 
                 this.m_adapter = new RenderAdapter(this.m_uid,texRes);
-                this.m_adapter.initialize(this.m_adapterContext);
+                this.m_adapter.initialize(this.m_adapterContext, param);
                 
                 if(this.m_autoSynViewAndStage)
                 {
@@ -546,6 +546,23 @@ export namespace vox
             setFrontFaceFlipped(faceFlipped:boolean):void
 			{
                 this.m_adapter.setFrontFaceFlipped(faceFlipped);
+            }
+            
+			/*
+			 * specifies the scale factors and units to calculate depth values.
+			 * @param factor the value is a GLfloat which sets the scale factor for the variable depth offset for each polygon. The default value is 0.
+			 * @param units the value is a which sets the multiplier by which an implementation-specific value is multiplied with to create a constant depth offset. The default value is 0.
+			 */
+			setPolygonOffset(factor:number, units:number = 0.0):void
+			{
+                this.m_adapter.setPolygonOffset(factor, units);
+            }
+			/*
+			 * reset the scale factors and units value is default value(0.0).
+			 */
+            resetPolygonOffset():void
+            {
+                this.m_adapter.resetPolygonOffset();
             }
             toString():string
             {

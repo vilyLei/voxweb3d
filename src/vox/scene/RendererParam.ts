@@ -25,6 +25,8 @@ export namespace vox
                 ,powerPreference:"high-performance"//"default"
             };
             private m_tickUpdateTime:number = 20;// delay 50 ms
+            private m_polygonOffsetEnabled:boolean = true;
+            private m_ditherEnabled:boolean = false;
             // display 3d view buf size auto sync window size
             autoSyncRenderBufferAndWindowSize:boolean = true;
             maxWebGLVersion:number = 2;
@@ -55,6 +57,22 @@ export namespace vox
             getTickUpdateTime():number
             {
                 return this.m_tickUpdateTime;
+            }
+            setPolygonOffsetEanbled(polygonOffsetEnabled:boolean):void
+            {
+                this.m_polygonOffsetEnabled = polygonOffsetEnabled;
+            }
+            getPolygonOffsetEanbled():boolean
+            {
+                return this.m_polygonOffsetEnabled;
+            }
+            setDitherEanbled(ditherEnabled:boolean):void
+            {
+                this.m_ditherEnabled = ditherEnabled;
+            }
+            getDitherEanbled():boolean
+            {
+                return this.m_ditherEnabled;
             }
             getDiv():HTMLElement
             {

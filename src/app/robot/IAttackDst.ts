@@ -23,6 +23,7 @@ export namespace app
             radius:number;
             position:Vector3D;
 
+            attackDis:number;
             setVisible(visible:boolean):void;
             getAttackPos(outPos:Vector3D):void;
             getDestroyPos(outPos:Vector3D):void;

@@ -368,7 +368,21 @@ export namespace vox
                     return t.texture;
                 }
             }
-            isRunningEmpty():boolean
+
+            private m_runFlag:number = 0;
+            setRunFlag(flag:number):void
+            {
+                this.m_runFlag = flag;
+            }
+            getRunFlag():number
+            {
+                return this.m_runFlag;
+            }
+            isRunning():boolean
+            {
+                return true;
+            }
+            isStopped():boolean
             {
                 return false;
             }

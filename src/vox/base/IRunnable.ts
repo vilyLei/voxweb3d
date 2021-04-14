@@ -11,7 +11,10 @@ export namespace vox
     {
         export interface IRunnable
         {
-            isRunningEmpty():boolean;
+            setRunFlag(flag:number):void;
+            getRunFlag():number;
+            isRunning():boolean;
+            isStopped():boolean;
             run():void;
         }
     }

@@ -32,6 +32,7 @@ export namespace app
             position:Vector3D = new Vector3D();
             dispEntity:DisplayEntity = null;
 
+            attackDis:number = 0;
             private m_changed:boolean = true;
 
             constructor(){}

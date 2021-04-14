@@ -45,8 +45,7 @@ export namespace demo
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_texLoader:ImageTextureLoader = null;
-        private m_target:Sphere3DEntity = null;
-        private m_target2:Sphere3DEntity = null;
+
         private m_runType:number = 0;
         initialize():void
         {
@@ -72,46 +71,25 @@ export namespace demo
 
                 this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
 
-                //this.m_rscene.getRenderProxy().setFrontFaceFlip(true);
+                //this.m_rscene.getRenderProxy().setFrontFaceFlipped(true);
                 ///*
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.initialize(300.0);
                 this.m_rscene.addEntity(axis);
+
                 let plane:Plane3DEntity = new Plane3DEntity();
                 plane.initializeXOZSquare(900.0,[this.m_texLoader.getTexByUrl("static/assets/wood_02.jpg")]);
                 plane.setXYZ(0.0,-200.0,0.0);
                 this.m_rscene.addEntity(plane);
                 //*/
-                //  let box:Box3DEntity = new Box3DEntity();
-                //  box.initializeCube(200.0,[this.m_texLoader.getTexByUrl("static/assets/default.jpg")]);
-                //  this.m_rscene.addEntity(box);
-                let material:BaseColorMaterial;
-                let sphere:Sphere3DEntity = new Sphere3DEntity();
-                material = new BaseColorMaterial();
-                material.setTextureList([this.m_texLoader.getTexByUrl("static/assets/default.jpg")]);
-                sphere.setMaterial(material);
-                //sphere.doubleTriFaceEnabled = true;
-                //sphere.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
-                //sphere.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-                sphere.initialize(100,10,10,[this.m_texLoader.getTexByUrl("static/assets/default.jpg")]);
-                //sphere.setIvsParam(300,30);
-                sphere.setScaleXYZ(1.4,1.4,1.4);
-                this.m_rscene.addEntity(sphere,1);
-                //return;
-                this.m_runType = 1;
-                this.m_target = sphere;
-                //color_02
-                sphere = new Sphere3DEntity();
-                sphere.copyMeshFrom(this.m_target);
-                sphere.setMaterial(new BaseColorMaterial())
-                sphere.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
-                sphere.initialize(100,10,10,[this.m_texLoader.getTexByUrl("static/assets/color_02.jpg")]);
-                //sphere.initializeFrom(this.m_target, [this.m_texLoader.getTexByUrl("static/assets/color_02.jpg")]);
-                sphere.setScaleXYZ(0.4,0.4,0.4);
-                sphere.setXYZ(-80.0,50.0,0.0);
-                //sphere.setIvsParam(300,30);
-                this.m_rscene.addEntity(sphere,1);
-                this.m_target2 = sphere;
+                /*
+                let box:Box3DEntity = new Box3DEntity();
+                box.initializeCube(200.0,[this.m_texLoader.getTexByUrl("static/assets/default.jpg")]);
+                this.m_rscene.addEntity(box,1);
+                //*/
+                
+                //this.m_runType = 2;
+                this.initBlendTest();
 
                 this.update();
 
@@ -142,7 +120,10 @@ export namespace demo
             switch(this.m_runType)
             {
                 case 1:
-                this.runBlend();
+                    this.runBlend();
+                    break;
+                case 2:
+                    this.runPolygonOffset();
                     break;
                 default:
                     this.runBase();
@@ -150,7 +131,36 @@ export namespace demo
             }
         }
 
-        
+        private m_target:Sphere3DEntity = null;
+        private initBlendTest():void
+        {
+            let material:BaseColorMaterial;
+            let sphere:Sphere3DEntity = new Sphere3DEntity();
+            material = new BaseColorMaterial();
+            material.setTextureList([this.m_texLoader.getTexByUrl("static/assets/default.jpg")]);
+            sphere.setMaterial(material);
+            //sphere.doubleTriFaceEnabled = true;
+            //sphere.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
+            //sphere.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+            sphere.initialize(100,30,30,[this.m_texLoader.getTexByUrl("static/assets/default.jpg")]);
+            //sphere.setIvsParam(300,30);
+            sphere.setScaleXYZ(1.4,1.4,1.4);
+            this.m_rscene.addEntity(sphere,1);
+            //return;
+            this.m_runType = 1;
+            this.m_target = sphere;
+            //color_02
+            sphere = new Sphere3DEntity();
+            sphere.copyMeshFrom(this.m_target);
+            sphere.setMaterial(new BaseColorMaterial())
+            sphere.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
+            sphere.initialize(100,10,10,[this.m_texLoader.getTexByUrl("static/assets/color_02.jpg")]);
+            //sphere.initializeFrom(this.m_target, [this.m_texLoader.getTexByUrl("static/assets/color_02.jpg")]);
+            sphere.setScaleXYZ(0.4,0.4,0.4);
+            sphere.setXYZ(-80.0,50.0,0.0);
+            //sphere.setIvsParam(300,30);
+            this.m_rscene.addEntity(sphere,1);
+        }
         private runBlend():void
         {
             this.m_rscene.update();
@@ -161,12 +171,11 @@ export namespace demo
             let ivsIndex:number = this.m_target.getIvsIndex();
             let ivsCount:number = this.m_target.getIvsCount();
             ///*
-            this.m_target2.setVisible(true);
             this.m_target.setIvsParam(333, 30);
             (this.m_target.getMaterial() as any).setAlpha(1.0);
             this.m_target.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
             this.m_rscene.runAt(1);
-
+            
             (this.m_target.getMaterial() as any).setAlpha(0.3);
             this.m_target.setRenderState(RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
             this.m_rscene.drawEntity(this.m_target);
@@ -184,10 +193,18 @@ export namespace demo
             this.m_rscene.drawEntity(this.m_target);
             //*/
             
-
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
-        
+        private runPolygonOffset():void
+        {
+            this.m_rscene.update();
+            this.m_rscene.runBegin();
+            this.m_rscene.getRenderProxy().setPolygonOffset(0.0,0.0);
+            this.m_rscene.runAt(0);
+            this.m_rscene.getRenderProxy().setPolygonOffset(-70,1);
+            this.m_rscene.runAt(1);
+            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+        }
         private runBase():void
         {
             this.m_rscene.run();

@@ -7,14 +7,18 @@
 
 import * as MathConstT from "../../vox/math/MathConst";
 import * as Vector3T from "../../vox/math/Vector3D";
+import * as IRunnableT from "../../vox/base/IRunnable";
 import * as RendererSceneT from "../../vox/scene/RendererScene";
+import * as RunnableModuleT from "../../app/robot/scene/RunnableModule";
 import * as BulEntityT from "../../app/robot/BulEntity";
 import * as IAttackDstT from "../../app/robot/IAttackDst";
 import * as CampTypeT from "../../app/robot/Camp";
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3T.vox.math.Vector3D;
+import IRunnable = IRunnableT.vox.base.IRunnable;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
+import RunnableModule = RunnableModuleT.app.robot.scene.RunnableModule;
 import BulEntity = BulEntityT.app.robot.BulEntity;
 import IAttackDst = IAttackDstT.app.robot.IAttackDst;
 import CampType = CampTypeT.app.robot.CampType;
@@ -23,7 +27,7 @@ export namespace app
 {
     export namespace robot
     {
-        export class WeapMoudle
+        export class WeapMoudle implements IRunnable
         {
             private m_rsc:RendererScene = null;
             private m_freePool:BulEntity[] = [];
@@ -47,6 +51,26 @@ export namespace app
                 }
                 bul.setPosParam(pos0, pos1, attDst,campType);
                 this.m_bulList.push(bul);
+                RunnableModule.RunnerQueue.addRunner( this );
+            }
+
+            
+            private m_runFlag:number = 0;
+            setRunFlag(flag:number):void
+            {
+                this.m_runFlag = flag;
+            }
+            getRunFlag():number
+            {
+                return this.m_runFlag;
+            }
+            isRunning():boolean
+            {
+                return true;
+            }
+            isStopped():boolean
+            {
+                return false;
             }
             run():void
             {
@@ -62,6 +86,10 @@ export namespace app
                         il--;
                         this.m_bulList.push(bul);
                     }
+                }
+                if(this.m_bulList.length < 1)
+                {
+                    RunnableModule.RunnerQueue.removeRunner( this );
                 }
             }
         }

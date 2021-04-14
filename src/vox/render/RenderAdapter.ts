@@ -20,6 +20,7 @@ import * as RAdapterContextT from "../../vox/render/RAdapterContext";
 import * as RODrawStateT from "../../vox/render/RODrawState";
 import * as RendererStateT from "../../vox/render/RendererState";
 import * as UniformVec4ProbeT from "../../vox/material/UniformVec4Probe";
+import * as RendererParamT from "../../vox/scene/RendererParam";
 
 import DivLog = DivLogT.vox.utils.DivLog;
 import Vector3D = Vector3T.vox.math.Vector3D;
@@ -40,6 +41,7 @@ import RenderColorMask = RODrawStateT.vox.render.RenderColorMask;
 import RenderStateObject = RODrawStateT.vox.render.RenderStateObject;
 import RendererState = RendererStateT.vox.render.RendererState;
 import UniformVec4Probe = UniformVec4ProbeT.vox.material.UniformVec4Probe;
+import RendererParam = RendererParamT.vox.scene.RendererParam;
 
 export namespace vox
 {
@@ -85,7 +87,7 @@ export namespace vox
 			private m_rState:RODrawState = null;	
 			private m_WEBGL_VER:number = 2;
             uViewProbe:UniformVec4Probe = null;
-    		initialize(context:RAdapterContext):void
+    		initialize(context:RAdapterContext,param:RendererParam):void
 			{
 				this.m_WEBGL_VER = context.getWebGLVersion();
 				if (this.m_rcontext == null)
@@ -109,8 +111,19 @@ export namespace vox
     		        this.m_rc.enable(this.m_rc.CULL_FACE);
     		        this.m_rc.cullFace(this.m_rc.BACK);
 					this.m_rc.enable(this.m_rc.BLEND);
-					this.m_rc.disable(this.m_rc.DITHER);
+					if(param.getDitherEanbled())this.m_rc.enable(this.m_rc.DITHER);
+					else this.m_rc.disable(this.m_rc.DITHER);
 					this.m_rc.frontFace( this.m_rc.CCW );
+					if(param.getPolygonOffsetEanbled())
+					{
+						console.log("enable(this.m_rc.POLYGON_OFFSET_FILL)");
+						this.m_rc.enable(this.m_rc.POLYGON_OFFSET_FILL);
+					}
+					else
+					{
+						console.log("disable(this.m_rc.POLYGON_OFFSET_FILL)");
+						this.m_rc.disable(this.m_rc.POLYGON_OFFSET_FILL);
+					}
 					//m_rc.hint(m_rc.PERSPECTIVE_CORRECTION_HINT, m_rc.NICEST);	// Really Nice Perspective Calculations
     		        this.m_clearMask = this.m_rc.COLOR_BUFFER_BIT | this.m_rc.DEPTH_BUFFER_BIT | this.m_rc.STENCIL_BUFFER_BIT;
     		        //
@@ -141,6 +154,28 @@ export namespace vox
 						this.m_rc.frontFace( this.m_rc.CCW );
 					}
 					this.m_fontFaceFlipped = faceFlipped;
+				}
+			}
+			private m_polygonOffset:boolean = false;
+			/*
+			 * specifies the scale factors and units to calculate depth values.
+			 * @param factor the value is a GLfloat which sets the scale factor for the variable depth offset for each polygon. The default value is 0.
+			 * @param units the value is a which sets the multiplier by which an implementation-specific value is multiplied with to create a constant depth offset. The default value is 0.
+			 */
+			setPolygonOffset(factor:number, units:number = 0.0):void
+			{
+				this.m_rc.polygonOffset(factor, units);
+				this.m_polygonOffset = true;
+			}
+			/*
+			 * reset the scale factors and units value is default value(0.0).
+			 */
+			resetPolygonOffset():void
+			{
+				if(this.m_polygonOffset)
+				{
+					this.m_rc.polygonOffset(0.0, 0.0);
+					this.m_polygonOffset = false;
 				}
 			}
             getDiv():any

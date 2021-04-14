@@ -283,7 +283,7 @@
 //  import * as DemoBoxGroupTrack from "./demo/DemoBoxGroupTrack";
 //  import Demo = DemoBoxGroupTrack.demo.DemoBoxGroupTrack;
 
-import * as DemoFaceDirec from "./demo/DemoFaceDirec";
+//  import * as DemoFaceDirec from "./demo/DemoFaceDirec";
 //  import Demo = DemoFaceDirec.demo.DemoFaceDirec;
 
 //  import * as DemoMotion from "./demo/DemoMotion";
@@ -292,8 +292,8 @@ import * as DemoFaceDirec from "./demo/DemoFaceDirec";
 //  import * as DemoMixProgress from "./demo/DemoMixProgress";
 //  import Demo = DemoMixProgress.demo.DemoMixProgress;
 
-import * as DemoGLState from "./demo/DemoGLState";
-import Demo = DemoGLState.demo.DemoGLState;
+//  import * as DemoGLState from "./demo/DemoGLState";
+//  import Demo = DemoGLState.demo.DemoGLState;
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -304,8 +304,8 @@ import Demo = DemoGLState.demo.DemoGLState;
 //  import * as BoFrame from "./app/BoFrame";
 //  import Demo = BoFrame.app.BoFrame;
 
-//  import * as RbtDrama from "./app/RbtDrama";
-//  import Demo = RbtDrama.app.RbtDrama;
+import * as RbtDrama from "./app/RbtDrama";
+import Demo = RbtDrama.app.RbtDrama;
 
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;
