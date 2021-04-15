@@ -29,6 +29,7 @@ import * as CampMoudleT from "../app/robot/CampMoudle";
 import * as AssetsModuleT from "../app/robot/assets/AssetsModule";
 import * as RedRoleT from "../app/robot/RedRole";
 import * as RunnableModuleT from "../app/robot/scene/RunnableModule";
+import * as TerrainT from "../app/robot/scene/Terrain";
 
 import * as CameraViewRayT from "../vox/view/CameraViewRay";
 
@@ -62,14 +63,12 @@ import CampMoudle = CampMoudleT.app.robot.CampMoudle;
 import AssetsModule = AssetsModuleT.app.robot.assets.AssetsModule;
 import RedRole = RedRoleT.app.robot.RedRole;
 import RunnableModule = RunnableModuleT.app.robot.scene.RunnableModule;
+import Terrain = TerrainT.app.robot.scene.Terrain;
 
 import CameraViewRay = CameraViewRayT.vox.view.CameraViewRay;
 
 export namespace app
 {
-    /**
-     * a robot leg app example
-     */
     export class RbtDrama
     {
         constructor(){}
@@ -107,8 +106,10 @@ export namespace app
                 
                 let rparam:RendererParam = new RendererParam();
                 rparam.setAttriAntialias(true);
+                rparam.setCamProject(45.0,30.0,9000.0);
                 //rparam.maxWebGLVersion = 1;
                 //rparam.setCamPosition(10.0,1800.0,10.0);
+                //rparam.setCamPosition(3500.0,3500.0,3500.0);
                 rparam.setCamPosition(1200.0,1200.0,1200.0);
                 //rparam.setCamPosition(1800.0,1800.0,1800.0);
                 //rparam.setCamPosition(1200.0,1200.0,0.0);
@@ -159,14 +160,15 @@ export namespace app
                 let srcBox:Box3DEntity = new Box3DEntity();
                 srcBox.initializeCube(100.0,[tex2]);
 
-                for(let i:number = 0; i < 20; ++i)
+                for(let i:number = 0; i < 25; ++i)
                 {
                     let box:Box3DEntity = new Box3DEntity();
                     box.copyMeshFrom(srcBox);
                     box.initializeCube(100.0,[tex2]);
                     box.setScaleXYZ(0.5,1.0,0.5);
                     //box.setXYZ(200,0.0,200);
-                    box.setXYZ(Math.random() * 600.0 - 300.0,0.0,Math.random() * 600.0 - 300.0);
+                    //box.setXYZ(Math.random() * 600.0 - 300.0,0.0,Math.random() * 600.0 - 300.0);
+                    box.setXYZ(Math.random() * 1000.0 - 500.0,0.0,Math.random() * 1000.0 - 500.0);
                     this.m_rscene.addEntity(box);
                     let redRole:RedRole = new RedRole();
                     box.getPosition(redRole.position);
@@ -174,7 +176,7 @@ export namespace app
                     redRole.dispEntity = box;
                     this.m_campModule.redCamp.addRole(redRole);
                 }
-                
+                let terrain:Terrain = new Terrain();
                 for(let i:number = 0; i < 1; ++i)
                 {
                     //let linePart0:LinePartStore = new LinePartStore();
@@ -191,6 +193,8 @@ export namespace app
                     boxPart1.initilize(tex0,tex2,tex1);
                     
                     this.m_twoFeetBody = new TFB2();
+                    this.m_twoFeetBody.roleCamp = this.m_campModule.redCamp;
+                    this.m_twoFeetBody.terrain = terrain;
                     //this.m_twoFeetBody.initialize( this.m_rscene,0, linePart0, linePart1,60.0);
                     //this.m_twoFeetBody.initialize( this.m_rscene,0, boxPart0, linePart1,80.0);
                     this.m_twoFeetBody.initialize( this.m_rscene,0, boxPart0, boxPart1,80.0);
@@ -198,7 +202,6 @@ export namespace app
                     this.m_twoFeetBody.moveToXZ(30.0, 0.0);
                     //this.m_twoFeetBody.moveToXZ(100.0,100.0);
                     this.m_twoFeetBody.setAttPosXYZ(200.0, 100.0, 0.0);
-                    this.m_twoFeetBody.roleCamp = this.m_campModule.redCamp;
                     this.m_twoFeetBodys.push(this.m_twoFeetBody);//TwoFeetBody
                 }                
                 this.update();
@@ -221,8 +224,8 @@ export namespace app
                 this.m_direcV.y = 0.0;
                 this.m_direcV.normalize();
 
-                this.m_twoFeetBody.moveToXZ(pv.x, pv.z);
-                this.m_pos.setXYZ(pv.x + this.m_direcV.x * 130.0,100.0, pv.z + this.m_direcV.z * 130.0);
+                this.m_twoFeetBody.moveToXZ(pv.x, pv.z,true);
+                //this.m_pos.setXYZ(pv.x + this.m_direcV.x * 130.0,100.0, pv.z + this.m_direcV.z * 130.0);
                 //this.m_twoFeetBody.setAttPos(this.m_pos);
                 /*
                 if(!this.m_runflag)

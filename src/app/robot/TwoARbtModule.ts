@@ -13,7 +13,11 @@ import * as DisplayEntityContainerT from "../../vox/entity/DisplayEntityContaine
 import * as RendererSceneT from "../../vox/scene/RendererScene";
 import * as ArmFrameAxisT from "../../app/robot/ArmFrameAxis";
 import * as IPartStoreT from "../../app/robot/IPartStore";
+import * as IAttackDstT from "../../app/robot/attack/IAttackDst";
 import * as DegreeTweenT from "../../vox/utils/DegreeTween";
+import * as TriggerClockT from "../../vox/utils/TriggerClock";
+import * as WeapMoudleT from "../../app/robot/WeapMoudle";
+import * as CampT from "../../app/robot/Camp";
 
 import Vector3D = Vector3T.vox.math.Vector3D;
 import MathConst = MathConstT.vox.math.MathConst;
@@ -23,7 +27,11 @@ import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntity
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import ArmFrameAxis = ArmFrameAxisT.app.robot.ArmFrameAxis;
 import IPartStore = IPartStoreT.app.robot.IPartStore;
+import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
 import DegreeTween = DegreeTweenT.vox.utils.DegreeTween;
+import TriggerClock = TriggerClockT.vox.utils.TriggerClock;
+import WeapMoudle = WeapMoudleT.app.robot.WeapMoudle;
+import CampType = CampT.app.robot.CampType;
 
 export namespace app
 {
@@ -49,7 +57,10 @@ export namespace app
             private m_nextTime:number = 0;
             private m_testAxis:Axis3DEntity;
 
+            private m_attackClock:TriggerClock = new TriggerClock();
             degreeTween:DegreeTween = new DegreeTween();
+            weap:WeapMoudle = null;
+            campType:CampType = CampType.Blue;
             constructor(container:DisplayEntityContainer = null)
             {
                 if(container == null)
@@ -168,6 +179,12 @@ export namespace app
                     this.m_coreFAxis.setSG(sgL,sgR);
 
                     this.degreeTween.bindTarget(this.m_container);
+
+                    
+                    this.m_attackClock.setPeriod(12);
+                    this.m_attackClock.setTriggerTimeAt(0,6);
+                    this.m_attackClock.setTriggerTimeAt(1,3);
+                    this.weap = new WeapMoudle(sc);
                 }
             }
             setXYZ(px:number,py:number,pz:number):void
@@ -182,19 +199,7 @@ export namespace app
             {
                 this.m_container.getPosition(position);
             }
-            setAttPos(position:Vector3D):void
-            {
-                this.m_attPos.copyFrom(position);
-            }
-            setAttPosXYZ(px:number,py:number,pz:number):void
-            {
-                this.m_attPos.setXYZ(px,py,pz);
-            }
-            getAttPos():Vector3D
-            {
-                return this.m_attPos;
-            }
-            getEndPosAt(index:number, outV:Vector3D,k:number):void
+            getShootPosAt(index:number, outV:Vector3D,k:number):void
             {
                 switch(index)
                 {
@@ -227,7 +232,7 @@ export namespace app
             }
             isAttackLock():boolean
             {
-                return this.m_attackLock;
+                return this.degreeTween.testDegreeDis(2.0);//this.m_attackLock;
             }
             direcByDegree(degree:number):void
             {
@@ -245,24 +250,33 @@ export namespace app
                     this.m_container.update();
                 }
             }
-            private m_hasDst:boolean = false;
+            private m_attackDst:IAttackDst = null;
             private m_dstDegree:number = 0;
             setDstDirecDegree(dstDegree:number):void
             {
                 this.m_dstDegree = dstDegree;
             }
-            attachDst():void
+            setAttackDst(attackDst:IAttackDst):void
             {
-                this.m_hasDst = true;
+                this.m_attackDst = attackDst;
+                if(attackDst != null)this.m_attackDst.getHitPos(this.m_attPos);
             }
-            detachDst():void
+            setAttPos(position:Vector3D):void
             {
-                this.m_hasDst = false;
+                this.m_attPos.copyFrom(position);
+            }
+            setAttPosXYZ(px:number,py:number,pz:number):void
+            {
+                this.m_attPos.setXYZ(px,py,pz);
+            }
+            getAttPos():Vector3D
+            {
+                return this.m_attPos;
             }
             private updateAttackPose():void
             {
                 this.direcByPos(this.m_attPos);
-                this.m_attackLock = this.degreeTween.testDegreeDis(2.0);
+                //this.m_attackLock = this.degreeTween.testDegreeDis(2.0);
 
                 this.m_container.getInvMatrix().transformOutVector3(this.m_attPos, this.m_tempV);
                 this.m_tempV.y = 0.0;
@@ -311,9 +325,26 @@ export namespace app
             {
                 this.m_nextTime = this.m_coreFAxis.getNextOriginTime(this.m_time);
             }
+            private m_beginPos:Vector3D = new Vector3D();
+            private attack():void
+            {
+                this.m_attackClock.run();
+                if(this.isAttackLock())
+                {
+                    let index:number = this.m_attackClock.getTriggerIndex();
+                    if(index > -1)
+                    {
+                        // attack 姿态控制
+                        this.getShootPosAt(index,this.m_beginPos,1.0);
+                        this.setRecoilDegreeAt(index, 8);
+                        this.weap.createAtt(0,this.m_beginPos,this.m_attPos, this.m_attackDst, this.campType);
+                    }
+                }
+            }
             runAtt(moveEnabled:boolean):void
             {
-                if(this.m_hasDst)
+                let attacking:boolean = this.m_attackDst != null;
+                if(attacking)
                 {
                     this.updateAttackPose();
                 }
@@ -330,6 +361,10 @@ export namespace app
                 else
                 {
                     this.m_coreFAxis.runAtt(this.m_time, false);
+                }
+                if(attacking)
+                {
+                    this.attack();
                 }
             }
             run():void

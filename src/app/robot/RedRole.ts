@@ -8,13 +8,13 @@
 import * as MathConstT from "../../vox/math/MathConst";
 import * as Vector3T from "../../vox/math/Vector3D";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
-import * as IAttackDstT from "../../app/robot/IAttackDst";
+import * as IAttackDstT from "../../app/robot/attack/IAttackDst";
 import * as CampTypeT from "../../app/robot/Camp";
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3T.vox.math.Vector3D;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import IAttackDst = IAttackDstT.app.robot.IAttackDst;
+import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
 import CampType = CampTypeT.app.robot.CampType;
 
 export namespace app
@@ -37,6 +37,10 @@ export namespace app
 
             constructor(){}
 
+            getPosition(pv:Vector3D):void
+            {
+                pv.copyFrom(this.position);
+            }
             setPosition(pv:Vector3D):void
             {
                 this.position.copyFrom(pv);
@@ -55,11 +59,11 @@ export namespace app
                     this.dispEntity.setVisible(visible);
                 }
             }
-            getAttackPos(outPos:Vector3D):void
+            getHitPos(outPos:Vector3D):void
             {
                 outPos.addVecsTo(this.position,this.attackPosOffset);
             }
-            getDestroyPos(outPos:Vector3D):void
+            getDestroyedPos(outPos:Vector3D):void
             {
                 outPos.addVecsTo(this.position,this.destroyPosOffset);
             }

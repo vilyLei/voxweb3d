@@ -122,6 +122,11 @@ export namespace vox
             {
                 return this.m_matrix4AllocateSize;
             }
+            /**
+             * @param fov_angle_degree the default value is 45.0
+             * @param near the default value is 10.0
+             * @param far the default value is 5000.0
+             */
             setCamProject(fov_angle_degree:number, near:number, far:number):void
             {
                 if(near >= far)

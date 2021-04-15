@@ -7,12 +7,12 @@
 
 import * as MathConstT from "../../vox/math/MathConst";
 import * as Vector3T from "../../vox/math/Vector3D";
-import * as IAttackDstT from "../../app/robot/IAttackDst";
+import * as IAttackDstT from "../../app/robot/attack/IAttackDst";
 import * as CampTypeT from "../../app/robot/Camp";
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3T.vox.math.Vector3D;
-import IAttackDst = IAttackDstT.app.robot.IAttackDst;
+import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
 import CampType = CampTypeT.app.robot.CampType;
 
 export namespace app

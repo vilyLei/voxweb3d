@@ -70,6 +70,26 @@ export namespace vox
                 this.activeDisplay();
 
             }
+            initializeSquareXOY(size:number):void
+            {
+                let px:number = size * 0.5;
+                let py:number = px;
+                let pz:number = 0.0;
+                this.m_posarr = [px,py,pz, -px,py,pz, -px,-py,pz, px,-py,pz, px,py,pz];
+                this.createMaterial();
+                this.activeDisplay();
+
+            }
+            initializeRectXOY(width:number,height:number):void
+            {
+                let px:number = width * 0.5;
+                let py:number = height * 0.5;
+                let pz:number = 0.0;
+                this.m_posarr = [px,py,pz, -px,py,pz, -px,-py,pz, px,-py,pz, px,py,pz];
+                this.createMaterial();
+                this.activeDisplay();
+
+            }
             initializeCircleXOY(cv:Vector3D,radius:number,segTotal:number = 10):void
             {
                 let rad:number;

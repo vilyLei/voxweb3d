@@ -307,6 +307,10 @@
 import * as RbtDrama from "./app/RbtDrama";
 import Demo = RbtDrama.app.RbtDrama;
 
+//  import * as DensityStatistics from "./app/density/DensityStatistics";
+//  import Demo = DensityStatistics.app.density.DensityStatistics;
+
+
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;
 if(ins.runBegin != undefined)

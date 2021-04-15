@@ -49,8 +49,8 @@ export namespace app
                 }
                 private runTest(finished:boolean):void
                 {
-                    //if(finished && this.degreeTween.testDegreeDis(10.0))
-                    if(finished && this.degreeTween.isEnd())
+                    //if(finished && this.degreeTween.isEnd())
+                    if(finished && this.degreeTween.testDegreeDis(20.0))
                     {
                         // 开始执行由走动到停止走动的动作转换
                         if(this.m_resetPoseFlag)

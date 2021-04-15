@@ -11,7 +11,7 @@ import * as Vector3T from "../../vox/math/Vector3D";
 import * as RendererSceneT from "../../vox/scene/RendererScene";
 import * as BillboardLine3DEntityT from "../../vox/entity/BillboardLine3DEntity";
 
-import * as IAttackDstT from "../../app/robot/IAttackDst";
+import * as IAttackDstT from "../../app/robot/attack/IAttackDst";
 import * as TriggerDataT from "../../app/robot/TriggerData";
 import * as AttackDataPoolT from "../../app/robot/AttackDataPool";
 import * as CampTypeT from "../../app/robot/Camp";
@@ -22,7 +22,7 @@ import Vector3D = Vector3T.vox.math.Vector3D;
 
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import BillboardLine3DEntity = BillboardLine3DEntityT.vox.entity.BillboardLine3DEntity;
-import IAttackDst = IAttackDstT.app.robot.IAttackDst;
+import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
 import TriggerData = TriggerDataT.app.robot.TriggerData;
 import AttackDataPool = AttackDataPoolT.app.robot.AttackDataPool;
 import CampType = CampTypeT.app.robot.CampType;

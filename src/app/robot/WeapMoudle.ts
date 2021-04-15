@@ -11,7 +11,7 @@ import * as IRunnableT from "../../vox/base/IRunnable";
 import * as RendererSceneT from "../../vox/scene/RendererScene";
 import * as RunnableModuleT from "../../app/robot/scene/RunnableModule";
 import * as BulEntityT from "../../app/robot/BulEntity";
-import * as IAttackDstT from "../../app/robot/IAttackDst";
+import * as IAttackDstT from "../../app/robot/attack/IAttackDst";
 import * as CampTypeT from "../../app/robot/Camp";
 
 import MathConst = MathConstT.vox.math.MathConst;
@@ -20,7 +20,7 @@ import IRunnable = IRunnableT.vox.base.IRunnable;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import RunnableModule = RunnableModuleT.app.robot.scene.RunnableModule;
 import BulEntity = BulEntityT.app.robot.BulEntity;
-import IAttackDst = IAttackDstT.app.robot.IAttackDst;
+import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
 import CampType = CampTypeT.app.robot.CampType;
 
 export namespace app

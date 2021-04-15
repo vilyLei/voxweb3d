@@ -105,6 +105,18 @@ export namespace app
             {
                 return this.m_container.getRotationY();
             }
+            runByPos(pos:Vector3D,finished:boolean):void
+            {
+                this.postureCtrl.runByPos(pos,finished);
+            }
+            runByDegree(degree:number,finished:boolean):void
+            {
+                this.postureCtrl.runByDegree(degree,finished);
+            }
+            isPoseRunning():boolean
+            {
+                return this.postureCtrl.isRunning();
+            }
             setTime(time:number):void
             {
                 this.m_time = time;
@@ -138,8 +150,6 @@ export namespace app
                     this.m_coreFAxis.setBG(bgL,bgR, partStore.getBGLong());
                     this.m_coreFAxis.setSG(sgL,sgR);
 
-                    //  this.degreeTween.bindTarget(this.m_container);
-
                     this.postureCtrl.bindTarget(this);
                 }
             }
@@ -164,14 +174,6 @@ export namespace app
             {
                 this.m_nextTime = this.m_coreFAxis.getNextOriginTime(this.m_time);
             }
-            //  direcByDegree(degree:number):void
-            //  {
-            //      this.degreeTween.runRotY(degree);
-            //  }
-            //  direcByPos(pos:Vector3D):void
-            //  {
-            //      this.degreeTween.runRotYByDstPos(pos);
-            //  }
             run():void
             {
                 this.m_container.update();

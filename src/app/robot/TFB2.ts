@@ -13,11 +13,11 @@ import * as DirectXZModuleT from "../../voxmotion/primitive/DirectXZModule";
 import * as IPartStoreT from "../../app/robot/IPartStore";
 import * as TwoLRbtModuleT from "../../app/robot/TwoLRbtModule";
 import * as TwoARbtModuleT from "../../app/robot/TwoARbtModule";
-import * as WeapMoudleT from "../../app/robot/WeapMoudle";
 import * as CampT from "../../app/robot/Camp";
 import * as IRoleCampT from "../../app/robot/IRoleCamp";
-import * as IAttackDstT from "../../app/robot/IAttackDst";
-import * as TriggerClockT from "../../vox/utils/TriggerClock";
+import * as IAttackDstT from "../../app/robot/attack/IAttackDst";
+import * as FireCtrlRadarT from "../../app/robot/attack/FireCtrlRadar";
+import * as ITerrainT from "../../app/robot/scene/ITerrain";
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3T.vox.math.Vector3D;
@@ -27,43 +27,43 @@ import DirectXZModule = DirectXZModuleT.voxmotion.primitive.DirectXZModule;
 import IPartStore = IPartStoreT.app.robot.IPartStore;
 import TwoLRbtModule = TwoLRbtModuleT.app.robot.TwoLRbtModule;
 import TwoARbtModule = TwoARbtModuleT.app.robot.TwoARbtModule;
-import WeapMoudle = WeapMoudleT.app.robot.WeapMoudle;
 import CampType = CampT.app.robot.CampType;
 import CampFindMode = CampT.app.robot.CampFindMode;
 import IRoleCamp = IRoleCampT.app.robot.IRoleCamp;
-import IAttackDst = IAttackDstT.app.robot.IAttackDst;
-import TriggerClock = TriggerClockT.vox.utils.TriggerClock;
-
+import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
+import FireCtrlRadar = FireCtrlRadarT.app.robot.attack.FireCtrlRadar;
+import ITerrain = ITerrainT.app.robot.scene.ITerrain;
 
 export namespace app
 {
     export namespace robot
     {
-        export class TFB2
+        export class TFB2 implements IAttackDst
         {
-            private m_moving:boolean = true;
+            private m_isMoving:boolean = true;
             private m_movingFlag:boolean = true;
             private m_tickModule:DirectXZModule = new DirectXZModule();
             private m_speed:number = 4.5;
-            private m_pos:Vector3D = new Vector3D();
             private m_beginPos:Vector3D = new Vector3D();
             private m_endPos:Vector3D = new Vector3D();
             private m_attPos:Vector3D = new Vector3D();
 
             private m_legModule:TwoLRbtModule = null;
             private m_armModule:TwoARbtModule = null;
-            private m_attackLock:TriggerClock = new TriggerClock();
+            //private m_attackClock:TriggerClock = new TriggerClock();
 
             static readonly FREE_RUN:number = 1001;
             static readonly ATTACK_RUN:number = 1002;
             private m_runMode:number = 1002;
-
+            private m_findRadar:FireCtrlRadar = new FireCtrlRadar();
+            position:Vector3D = new Vector3D();
             attackDis:number = 50;
             radius:number = 100;
+            lifeTime:number = 3000;
             campType:CampType = CampType.Blue;
 
+            terrain:ITerrain = null;
             roleCamp:IRoleCamp = null;
-            weap:WeapMoudle = null;
             constructor()
             {
                 this.m_legModule = new TwoLRbtModule();
@@ -105,7 +105,6 @@ export namespace app
             {
                 if(sc != null && partStore0 != null && partStore1 != null)
                 {
-                    this.weap = new WeapMoudle(sc);
 
                     let offsetPos:Vector3D = new Vector3D(0.0,0.0,0.0);
                     this.m_legModule.initialize(sc,renderProcessIndex,partStore0,offsetPos);
@@ -122,9 +121,9 @@ export namespace app
                     this.m_tickModule.bindTarget(this.m_legModule.getContainer());
                     this.m_tickModule.setVelocityFactor(0.02,0.03);
 
-                    this.m_attackLock.setPeriod(12);
-                    this.m_attackLock.setTriggerTimeAt(0,6);
-                    this.m_attackLock.setTriggerTimeAt(1,3);
+                    this.m_findRadar.dstCamp = this.roleCamp;
+                    this.m_findRadar.srcRole = this;
+                    this.m_findRadar.campType = this.campType;
                 }
             }
             setXYZ(px:number,py:number,pz:number):void
@@ -141,37 +140,123 @@ export namespace app
             {
                 this.m_legModule.getPosition(position);
             }
-            setAttPos(position:Vector3D):void
-            {
-                this.m_attPos.copyFrom(position);
-                this.m_armModule.setAttPos(position);
-            }
             setAttPosXYZ(px:number,py:number,pz:number):void
             {
                 this.m_attPos.setXYZ(px,py,pz);
                 this.m_armModule.setAttPosXYZ(px,py,pz);
-            }
-            getEndPosAt(index:number, outV:Vector3D,k:number):void
-            {
-                this.m_armModule.getEndPosAt(index, outV,k);
             }
             resetPose():void
             {
                 this.m_legModule.resetPose();
                 this.m_armModule.resetPose();
             }
-            private m_count:number = Math.round(Math.random() * 50 + 30);
+            private attackMove(readyAttack:boolean, optionalDegree:number):boolean
+            {
+                
+                let state:boolean = true;
+                // 如果接近目标则暂停
+                if(readyAttack && this.roleCamp.distance > 0.4 * (this.attackDis + this.radius))
+                {
+                    state = false;
+                }
+                else if(this.m_tickModule.isMoving())
+                {
+                    this.m_movingFlag = true;
+                }
+
+                let moveFlag:boolean = false;
+                if(this.m_movingFlag)
+                {
+                    optionalDegree = readyAttack ? optionalDegree : this.m_tickModule.getDirecDegree();
+                    state = this.m_isMoving && state;
+                    if(state)
+                    {
+                        moveFlag = true;
+                        // 执行移动控制过程
+                        this.m_tickModule.run();
+                        this.m_isMoving = this.m_tickModule.isMoving();
+                        this.m_legModule.getPosition(this.position);
+                    }
+                    //  执行leg动动作
+                    this.m_legModule.runByDegree(optionalDegree,!state);
+                    this.m_movingFlag = moveFlag?true:this.m_legModule.isPoseRunning();
+                }
+                else
+                {
+                    // attack 进行时保持上部和下部朝向一致
+                    if(readyAttack && Math.abs(this.m_legModule.getRotationY() - optionalDegree) > 50.0)
+                    {
+                        this.m_movingFlag = true;
+                    }
+                }
+                return moveFlag;
+            }
+            // 需要移动的时候才会执行
+            private armMove(pos:Vector3D,direcDegree:number):void
+            {
+                // 同步上半身和下半身的坐标
+                this.m_armModule.setPosition(pos);
+                // 目标朝向和leg一致
+                this.m_armModule.setDstDirecDegree( direcDegree );
+            }
+            private attackRun():void
+            {
+                let direcDegree:number = this.m_armModule.getRotationY();
+                let attDst:IAttackDst = this.m_findRadar.findAttDst(direcDegree);
+
+                this.m_armModule.setAttackDst(attDst);
+
+                let moveEnabled:boolean = this.attackMove(attDst != null, direcDegree);
+                if(moveEnabled)
+                {
+                    this.armMove(this.position,this.m_legModule.getRotationY());
+                }
+                this.m_armModule.runAtt(moveEnabled);
+                
+                if(moveEnabled || attDst != null)
+                {
+                    this.m_count = 30;
+                    this.m_fixPos.copyFrom(this.position);
+                }
+                else
+                {
+                    if(this.m_count < 1)
+                    {
+                        this.m_runMode = TFB2.FREE_RUN;
+                    }
+                    this.m_count--;
+                }
+            }
+            
+            private m_count:number = Math.round(Math.random() * 20 + 20);
             private m_fixPos:Vector3D = new Vector3D();
-            private freeTest():void
+            private freeRunTest():void
             {
                 if(this.m_count < 1)
                 {
-                    this.m_count = Math.round(Math.random() * 200 + 50);
-                    this.moveToXZ(Math.random() * 900.0 - 450,Math.random() * 900.0 - 450);
+                    this.m_count = Math.round(Math.random() * 30 + 30);
+                    //let pos:Vector3D = this.terrain.getFreePos();
+                    this.moveToXZ(this.m_fixPos.x + (Math.random() * 500.0) - 250.0, this.m_fixPos.z + (Math.random() * 500.0) - 250.0);
                 }
                 else
                 {
                     this.m_count--;
+                }
+            }
+            private freeRun():void
+            {
+                let direcDegree:number = this.m_armModule.getRotationY();
+                let attDst:IAttackDst = this.m_findRadar.testAttDst(direcDegree);
+                let moveEnabled:boolean = this.attackMove(false, direcDegree);
+                if(moveEnabled)
+                {
+                    this.armMove(this.position,this.m_legModule.getRotationY());
+                }
+                this.m_armModule.runAtt(moveEnabled);
+                if(!moveEnabled)this.freeRunTest();
+                if(attDst != null)
+                {
+                    this.m_runMode = TFB2.ATTACK_RUN;
                 }
             }
             run():void
@@ -188,190 +273,57 @@ export namespace app
                         break;
                 }
             }
-            private attackMove(readyAttack:boolean):boolean
-            {
-                let unlockDst:boolean = true;
-
-                if(readyAttack && this.roleCamp.distance > 0.4 * (this.attackDis + this.radius))
-                {
-                    unlockDst = false;
-                }
-                else if(this.m_tickModule.isMoving())
-                {
-                    this.m_movingFlag = true;
-                }
-                let moveFlag:boolean = false;
-                if(this.m_movingFlag)
-                {
-                    if(this.m_moving && unlockDst)
-                    {
-                        moveFlag = true;
-                        // 执行移动控制过程
-                        this.m_tickModule.run();
-                        this.m_moving = this.m_tickModule.isMoving();
-
-                        // 执行走动动作
-                        if(readyAttack)
-                        {
-                            this.m_legModule.postureCtrl.runByPos(this.m_attPos,false);
-                        }
-                        else
-                        {
-                            this.m_legModule.postureCtrl.runByDegree(this.m_tickModule.getDirecDegree(),false);
-                        }
-                    }
-                    else
-                    {
-                        if(readyAttack)
-                        {
-                            this.m_legModule.postureCtrl.runByPos(this.m_attPos,true);
-                        }
-                        else
-                        {
-                            this.m_legModule.postureCtrl.runByDegree(this.m_tickModule.getDirecDegree(),true);
-                        }
-                        this.m_movingFlag = this.m_legModule.postureCtrl.isRunning();                        
-                    }
-                }
-                else
-                {
-                    // attack 进行时保持上部和下部朝向一致
-                    if(readyAttack && Math.abs(this.m_legModule.getRotationY()-this.m_armModule.getRotationY()) > 50.0)
-                    {
-                        this.m_movingFlag = true;
-                    }
-                }
-                return moveFlag;
-            }
-            private attack(attDst:IAttackDst, readyAttack:boolean, moveFlag:boolean):void
-            {
-
-                this.m_attackLock.run();
-                if(readyAttack && this.m_armModule.isAttackLock())
-                {
-                    //if((!this.m_movingFlag || !moveFlag) && Math.abs(this.m_legModule.getRotationY()-this.m_armModule.getRotationY()) > 50.0)
-                    //  if(!moveFlag && Math.abs(this.m_legModule.getRotationY()-this.m_armModule.getRotationY()) > 50.0)
-                    //  {
-                    //      this.m_movingFlag = true;
-                    //  }
-                    let index:number = this.m_attackLock.getTriggerIndex();
-                    if(index > -1)
-                    {
-                        // attack 姿态控制
-                        this.m_armModule.getEndPosAt(index,this.m_beginPos,1.0);
-                        this.m_armModule.setRecoilDegreeAt(index, 8);
-                        this.weap.createAtt(0,this.m_beginPos,this.m_attPos,attDst, this.campType);
-                    }
-                }
-            }
-            private armRun(readyAttack:boolean, attDst:IAttackDst, moveFlag:boolean):void
-            {
-                if(moveFlag)
-                {
-                    // 同步上半身和下半身的坐标
-                    this.m_legModule.getPosition(this.m_pos);
-                    this.m_armModule.setPosition(this.m_pos);
-                    // 目标朝向和leg一致
-                    this.m_armModule.setDstDirecDegree(this.m_tickModule.getDirecDegree());
-                }
-                if(readyAttack)
-                {
-                    attDst.getAttackPos(this.m_attPos);
-                    this.m_armModule.attachDst();
-                    this.m_armModule.setAttPos(this.m_attPos);
-                }
-                else
-                {
-                    this.m_armModule.detachDst();
-                }
-                this.m_armModule.runAtt(moveFlag);
-                if(readyAttack)
-                {
-                    this.attack(attDst,readyAttack, moveFlag);
-                }
-            }
-            attackRun():void
-            {
-                let attDst:IAttackDst = this.roleCamp.findAttDst(this.m_pos,this.attackDis + this.radius,CampFindMode.XOZ,CampType.Red);
-                
-                let readyAttack:boolean = attDst != null;
-
-                let moveFlag:boolean = this.attackMove(readyAttack);
-
-                this.armRun(readyAttack, attDst, moveFlag);
-                
-                if(moveFlag || readyAttack)
-                {
-                    this.m_count = 30;
-                    //this.m_legModule.getPosition(this.m_fixPos);                    
-                }
-                else
-                {
-                    this.freeTest();
-                }
-                //  this.weap.run();
-            }
-            freeRun():void
-            {
-                //this.freeTest();
-
-                if(this.m_movingFlag)
-                {
-                    if(this.m_moving)
-                    {
-                        this.m_tickModule.run();
-                        this.m_moving = this.m_tickModule.isMoving();
-                        let degree:number = this.m_tickModule.getDirecDegree();
-                        this.m_legModule.run();
-                        this.m_legModule.getPosition(this.m_pos);
-                        this.m_armModule.setPosition(this.m_pos);
-                        this.m_armModule.setRotationY(degree);
-                        this.m_armModule.run();
-                        if(!this.m_moving)
-                        {
-                            this.m_legModule.resetNextOriginPose();
-                            this.m_armModule.resetNextOriginPose();
-                        }
-                    }
-                    else
-                    {
-                        if(this.m_legModule.isResetFinish())
-                        {
-                            this.m_movingFlag = false;
-                            this.m_legModule.resetPose();
-                            this.m_armModule.resetPose();
-                        }
-                        else
-                        {
-                            this.m_legModule.runToReset();
-                            this.m_armModule.runToReset();
-                        }
-                    }
-                }
-            }
             moveToXZ(px:number,pz:number,force:boolean = false):void
             {
                 this.m_tickModule.toXZ(px,pz);
+                if(force)
+                {
+                    this.m_runMode = TFB2.ATTACK_RUN;
+                }
                 this.wake();
             }
             isAwake():boolean
             {
-                return this.m_moving;
+                return this.m_isMoving;
             }
             wake():void
             {
-                if(!this.m_moving)
+                if(!this.m_isMoving)
                 {
                     this.m_legModule.toPositive();
                     this.m_armModule.toNegative();
                 }
-                this.m_moving = true;
+                this.m_isMoving = true;
                 this.m_movingFlag = true;
                 
             }
             sleep():void
             {
-                this.m_moving = false;
+                this.m_isMoving = false;
+            }
+
+            setVisible(visible:boolean):void
+            {
+                this.m_legModule.setVisible(visible);
+                this.m_armModule.setVisible(visible);
+            }
+            // 获得被击中位置
+            getHitPos(outPos:Vector3D):void
+            {
+
+            }
+            // 获得击中位置
+            getDestroyedPos(outPos:Vector3D):void
+            {
+
+            }
+            consume(power:number):void
+            {
+
+            }
+            attackTest():boolean
+            {
+                return true;
             }
         }
     }

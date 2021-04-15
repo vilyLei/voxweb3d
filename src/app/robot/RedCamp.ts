@@ -8,7 +8,7 @@
 import * as MathConstT from "../../vox/math/MathConst";
 import * as Vector3T from "../../vox/math/Vector3D";
 import * as IRoleCampT from "../../app/robot/IRoleCamp";
-import * as IAttackDstT from "../../app/robot/IAttackDst";
+import * as IAttackDstT from "../../app/robot/attack/IAttackDst";
 import * as CampT from "../../app/robot/Camp";
 import * as AssetsModuleT from "../../app/robot/assets/AssetsModule";
 import * as RendererSceneT from "../../vox/scene/RendererScene";
@@ -17,7 +17,7 @@ import * as EruptionEffectPoolT from "../../particle/effect/EruptionEffectPool";
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3T.vox.math.Vector3D;
 import IRoleCamp = IRoleCampT.app.robot.IRoleCamp;
-import IAttackDst = IAttackDstT.app.robot.IAttackDst;
+import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
 import CampType = CampT.app.robot.CampType;
 import CampFindMode = CampT.app.robot.CampFindMode;
 import AssetsModule = AssetsModuleT.app.robot.assets.AssetsModule;
@@ -97,7 +97,64 @@ export namespace app
                     this.snsort(pos + 1, high);
                 }
             }
-            findAttDst(pos:Vector3D, radius:number,findMode:CampFindMode,dstCampType:CampType):IAttackDst
+            testAttDst(pos:Vector3D, radius:number,findMode:CampFindMode,dstCampType:CampType,direcDegree:number,fov:number = -1):IAttackDst
+            {
+                if(dstCampType == CampType.Red)
+                {
+                    let list:IAttackDst[] = this.m_roles;
+                    let len:number = list.length;
+                    if(len > 0)
+                    {
+                        let i:number = 0;
+                        let role:IAttackDst = null;
+                        let dis:number;
+                        for(; i < len; ++i)
+                        {
+                            role = list[i];
+                            if(role.lifeTime > 0)
+                            {
+                                dis = radius + role.radius;
+                                dis *= dis;
+                                this.m_tempV0.subVecsTo(pos, role.position);
+                                this.distance = this.m_tempV0.getLengthSquared();
+                                if(dis >= this.distance)
+                                {
+                                    // 判断视野之内是否能看到
+                                    if(fov > 0)
+                                    {
+
+                                    }
+                                    role.attackDis = Math.sqrt(this.distance);
+                                    return role;
+                                }
+                            }
+                        }
+                    }
+                }
+                return null;
+            }
+            testSpecAttDst(role:IAttackDst, pos:Vector3D, radius:number,findMode:CampFindMode,dstCampType:CampType,direcDegree:number,fov:number = -1):IAttackDst
+            {
+                if(role.lifeTime > 0)
+                {
+                    let dis:number = radius + role.radius;
+                    dis *= dis;
+                    this.m_tempV0.subVecsTo(pos, role.position);
+                    this.distance = this.m_tempV0.getLengthSquared();
+                    if(dis >= this.distance)
+                    {
+                        // 判断视野之内是否能看到
+                        if(fov > 0)
+                        {
+
+                        }
+                        role.attackDis = Math.sqrt(this.distance);
+                        return role;
+                    }
+                }
+                return null;
+            }
+            findAttDst(pos:Vector3D, radius:number,findMode:CampFindMode,dstCampType:CampType,direcDegree:number,fov:number = -1):IAttackDst
             {
                 if(dstCampType == CampType.Red)
                 {
@@ -120,6 +177,11 @@ export namespace app
                                 this.distance = this.m_tempV0.getLengthSquared();
                                 if(dis >= this.distance)
                                 {
+                                    // 判断视野之内是否能看到
+                                    if(fov > 0)
+                                    {
+
+                                    }
                                     role.attackDis = Math.sqrt(this.distance);
                                     this.m_rsnList[rsnLen] = role;
                                     rsnLen++;
@@ -128,7 +190,7 @@ export namespace app
                             else
                             {
                                 console.log("del a role, because of its life time value is less 0.");
-                                role.getDestroyPos(this.m_tempV0);
+                                role.getDestroyedPos(this.m_tempV0);
                                 this.m_eff0Pool.createEffect(this.m_tempV0);
                                 //m_tempV0
                                 list.splice(i,1);
