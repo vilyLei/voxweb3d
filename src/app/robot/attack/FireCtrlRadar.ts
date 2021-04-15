@@ -49,12 +49,12 @@ export namespace app
                     this.m_currDst = null;
                     this.srcRole.getPosition(this.m_position);
                     return this.dstCamp.testAttDst(
-                    this.m_position,
-                    this.srcRole.attackDis + this.srcRole.radius,
-                    CampFindMode.XOZ,
-                    CampType.Red,
-                    direcDegree,
-                    -1
+                        this.m_position,
+                        this.srcRole.attackDis + this.srcRole.radius,
+                        CampFindMode.XOZ,
+                        CampType.Red,
+                        direcDegree,
+                        -1
                     );
                 }
                 findAttDst(direcDegree:number):IAttackDst
@@ -63,7 +63,7 @@ export namespace app
                     {
                         this.m_delay = this.m_delayTime;
                         this.srcRole.getPosition(this.m_position);
-                        if(this.m_currDst == null)
+                        if(this.m_currDst == null || this.m_currDst.lifeTime < 1)
                         {
                             this.m_currDst = this.dstCamp.findAttDst(
                                 this.m_position,

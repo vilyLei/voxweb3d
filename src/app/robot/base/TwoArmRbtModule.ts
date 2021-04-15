@@ -5,19 +5,19 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3T from "../../vox/math/Vector3D";
-import * as MathConstT from "../../vox/math/MathConst";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
-import * as Axis3DEntityT from "../../vox/entity/Axis3DEntity";
-import * as DisplayEntityContainerT from "../../vox/entity/DisplayEntityContainer";
-import * as RendererSceneT from "../../vox/scene/RendererScene";
-import * as ArmFrameAxisT from "../../app/robot/ArmFrameAxis";
-import * as IPartStoreT from "../../app/robot/IPartStore";
-import * as IAttackDstT from "../../app/robot/attack/IAttackDst";
-import * as DegreeTweenT from "../../vox/utils/DegreeTween";
-import * as TriggerClockT from "../../vox/utils/TriggerClock";
-import * as WeapMoudleT from "../../app/robot/WeapMoudle";
-import * as CampT from "../../app/robot/Camp";
+import * as Vector3T from "../../../vox/math/Vector3D";
+import * as MathConstT from "../../../vox/math/MathConst";
+import * as DisplayEntityT from "../../../vox/entity/DisplayEntity";
+import * as Axis3DEntityT from "../../../vox/entity/Axis3DEntity";
+import * as DisplayEntityContainerT from "../../../vox/entity/DisplayEntityContainer";
+import * as RendererSceneT from "../../../vox/scene/RendererScene";
+import * as ArmFrameAxisT from "../../../app/robot/ArmFrameAxis";
+import * as IPartStoreT from "../../../app/robot/IPartStore";
+import * as IAttackDstT from "../../../app/robot/attack/IAttackDst";
+import * as DegreeTweenT from "../../../vox/utils/DegreeTween";
+import * as TriggerClockT from "../../../vox/utils/TriggerClock";
+import * as WeapMoudleT from "../../../app/robot/WeapMoudle";
+import * as CampT from "../../../app/robot/Camp";
 
 import Vector3D = Vector3T.vox.math.Vector3D;
 import MathConst = MathConstT.vox.math.MathConst;
@@ -37,8 +37,10 @@ export namespace app
 {
     export namespace robot
     {
-        // arm
-        export class TwoARbtModule
+        export namespace base
+        {
+        // tow arms
+        export class TwoArmRbtModule
         {
             private m_sc:RendererScene = null;
             private m_time:number = 0;
@@ -52,7 +54,6 @@ export namespace app
             private m_containerR:DisplayEntityContainer = new DisplayEntityContainer();
             private m_partStore:IPartStore = null;
             
-            private m_attackLock:boolean = false;
             private m_timeSpeed:number = 3.0;
             private m_nextTime:number = 0;
             private m_testAxis:Axis3DEntity;
@@ -107,14 +108,6 @@ export namespace app
             {
                 this.m_coreFAxis.toNegative();
             }
-            setDuration(duration:number):void
-            {
-                this.m_coreFAxis.setDuration(duration);
-            }
-            getDuration():number
-            {
-                return this.m_coreFAxis.getDuration();
-            }
             setRotationY(rotation:number):void
             {
                 this.m_container.setRotationY(rotation);
@@ -122,10 +115,6 @@ export namespace app
             getRotationY():number
             {
                 return this.m_container.getRotationY();
-            }
-            setTime(time:number):void
-            {
-                this.m_time = time;
             }
             initialize(sc:RendererScene,renderProcessIndex:number,partStore:IPartStore = null,offsetPos:Vector3D = null):void
             {
@@ -177,7 +166,6 @@ export namespace app
                     this.m_coreFAxis.setSG(sgL,sgR);
 
                     this.degreeTween.bindTarget(this.m_container);
-
                     
                     this.m_attackClock.setPeriod(12);
                     this.m_attackClock.setTriggerTimeAt(0,6);
@@ -211,7 +199,6 @@ export namespace app
                         break;
 
                 }
-                this.m_attackLock = false;
             }
             setRecoilDegreeAt(index:number, degree:number):void
             {
@@ -230,7 +217,7 @@ export namespace app
             }
             isAttackLock():boolean
             {
-                return this.degreeTween.testDegreeDis(2.0);//this.m_attackLock;
+                return this.degreeTween.testDegreeDis(2.0);
             }
             direcByDegree(degree:number):void
             {
@@ -274,7 +261,6 @@ export namespace app
             private updateAttackPose():void
             {
                 this.direcByPos(this.m_attPos);
-                //this.m_attackLock = this.degreeTween.testDegreeDis(2.0);
 
                 this.m_container.getInvMatrix().transformOutVector3(this.m_attPos, this.m_tempV);
                 this.m_tempV.y = 0.0;
@@ -389,6 +375,7 @@ export namespace app
                 this.m_coreFAxis.run(this.m_time);
                 this.m_time += this.m_timeSpeed;
             }
+        }
         }
     }
 }

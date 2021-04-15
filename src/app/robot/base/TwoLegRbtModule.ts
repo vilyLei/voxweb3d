@@ -5,14 +5,14 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3T from "../../vox/math/Vector3D";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
-import * as DisplayEntityContainerT from "../../vox/entity/DisplayEntityContainer";
-import * as RendererSceneT from "../../vox/scene/RendererScene";
-import * as CoreFrameAxisT from "../../app/robot/CoreFrameAxis";
-import * as IPartStoreT from "../../app/robot/IPartStore";
-import * as IPosetureT from "../../app/robot/poseture/IPoseture";
-import * as TwoLegPostureCtrlT from "../../app/robot/poseture/TwoLegPostureCtrl";
+import * as Vector3T from "../../../vox/math/Vector3D";
+import * as DisplayEntityT from "../../../vox/entity/DisplayEntity";
+import * as DisplayEntityContainerT from "../../../vox/entity/DisplayEntityContainer";
+import * as RendererSceneT from "../../../vox/scene/RendererScene";
+import * as CoreFrameAxisT from "../../../app/robot/CoreFrameAxis";
+import * as IPartStoreT from "../../../app/robot/IPartStore";
+import * as IPosetureT from "../../../app/robot/poseture/IPoseture";
+import * as TwoLegPostureCtrlT from "../../../app/robot/poseture/TwoLegPostureCtrl";
 
 import Vector3D = Vector3T.vox.math.Vector3D;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
@@ -27,8 +27,10 @@ export namespace app
 {
     export namespace robot
     {
-        // leg
-        export class TwoLRbtModule implements IPoseture
+        export namespace base
+        {
+        // tow legs
+        export class TwoLegRbtModule implements IPoseture
         {
             private m_sc:RendererScene = null;
             private m_time:number = 0;
@@ -85,14 +87,6 @@ export namespace app
             {
                 this.m_coreFAxis.toNegative();
             }
-            setDuration(duration:number):void
-            {
-                this.m_coreFAxis.setDuration(duration);
-            }
-            getDuration():number
-            {
-                return this.m_coreFAxis.getDuration();
-            }
             setRotationY(rotation:number):void
             {
                 this.m_container.setRotationY(rotation);
@@ -112,10 +106,6 @@ export namespace app
             isPoseRunning():boolean
             {
                 return this.postureCtrl.isRunning();
-            }
-            setTime(time:number):void
-            {
-                this.m_time = time;
             }
             initialize(sc:RendererScene,renderProcessIndex:number,partStore:IPartStore = null,offsetPos:Vector3D = null):void
             {
@@ -190,6 +180,7 @@ export namespace app
                 this.m_coreFAxis.run(this.m_time);
                 this.m_time += this.m_timeSpeed;
             }
+        }
         }
     }
 }

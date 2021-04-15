@@ -5,19 +5,21 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as MathConstT from "../../vox/math/MathConst";
-import * as Vector3T from "../../vox/math/Vector3D";
-import * as DisplayEntityContainerT from "../../vox/entity/DisplayEntityContainer";
-import * as RendererSceneT from "../../vox/scene/RendererScene";
-import * as DirectXZModuleT from "../../voxmotion/primitive/DirectXZModule";
-import * as IPartStoreT from "../../app/robot/IPartStore";
-import * as TwoLegRbtModuleT from "../../app/robot/base/TwoLegRbtModule";
-import * as TwoArmRbtModuleT from "../../app/robot/base/TwoArmRbtModule";
-import * as CampT from "../../app/robot/Camp";
-import * as IRoleCampT from "../../app/robot/IRoleCamp";
-import * as IAttackDstT from "../../app/robot/attack/IAttackDst";
-import * as FireCtrlRadarT from "../../app/robot/attack/FireCtrlRadar";
-import * as ITerrainT from "../../app/robot/scene/ITerrain";
+import * as MathConstT from "../../../vox/math/MathConst";
+import * as Vector3T from "../../../vox/math/Vector3D";
+import * as DisplayEntityContainerT from "../../../vox/entity/DisplayEntityContainer";
+import * as RendererSceneT from "../../../vox/scene/RendererScene";
+import * as DirectXZModuleT from "../../../voxmotion/primitive/DirectXZModule";
+import * as IPartStoreT from "../../../app/robot/IPartStore";
+import * as TwoLegRbtModuleT from "../../../app/robot/base/TwoLegRbtModule";
+import * as TwoArmRbtModuleT from "../../../app/robot/base/TwoArmRbtModule";
+import * as CampT from "../../../app/robot/Camp";
+import * as IRoleCampT from "../../../app/robot/IRoleCamp";
+import * as IAttackDstT from "../../../app/robot/attack/IAttackDst";
+import * as FireCtrlRadarT from "../../../app/robot/attack/FireCtrlRadar";
+import * as ITerrainT from "../../../app/robot/scene/ITerrain";
+import * as IRunnableT from "../../../vox/base/IRunnable";
+import * as RunnableModuleT from "../../../app/robot/scene/RunnableModule";
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3T.vox.math.Vector3D;
@@ -33,26 +35,27 @@ import IRoleCamp = IRoleCampT.app.robot.IRoleCamp;
 import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
 import FireCtrlRadar = FireCtrlRadarT.app.robot.attack.FireCtrlRadar;
 import ITerrain = ITerrainT.app.robot.scene.ITerrain;
+import IRunnable = IRunnableT.vox.base.IRunnable;
+import RunnableModule = RunnableModuleT.app.robot.scene.RunnableModule;
 
 export namespace app
 {
     export namespace robot
     {
-        export class TFB2 implements IAttackDst
+        export namespace base
+        {
+        export class FourLimbRole implements IAttackDst,IRunnable
         {
             private m_isMoving:boolean = true;
             private m_movingFlag:boolean = true;
             private m_tickModule:DirectXZModule = new DirectXZModule();
             private m_speed:number = 4.5;
-            private m_beginPos:Vector3D = new Vector3D();
-            private m_endPos:Vector3D = new Vector3D();
-            private m_attPos:Vector3D = new Vector3D();
-
             private m_legModule:TwoLegRbtModule = null;
             private m_armModule:TwoArmRbtModule = null;
 
             static readonly FREE_RUN:number = 1001;
             static readonly ATTACK_RUN:number = 1002;
+
             private m_runMode:number = 1002;
 
             private m_findRadar:FireCtrlRadar = new FireCtrlRadar();
@@ -124,7 +127,6 @@ export namespace app
             }
             private attackMove(readyAttack:boolean, optionalDegree:number):boolean
             {
-                
                 let state:boolean = true;
                 // 如果接近目标则暂停
                 if(readyAttack && this.roleCamp.distance > 0.4 * (this.attackDis + this.radius))
@@ -174,7 +176,7 @@ export namespace app
             private attackRun():void
             {
                 let direcDegree:number = this.m_armModule.getRotationY();
-                let attDst:IAttackDst = this.m_findRadar.findAttDst(direcDegree);
+                let attDst:IAttackDst = this.m_findRadar!= null?this.m_findRadar.findAttDst(direcDegree):null;
 
                 this.m_armModule.setAttackDst(attDst);
 
@@ -194,7 +196,7 @@ export namespace app
                 {
                     if(this.m_count < 1)
                     {
-                        this.m_runMode = TFB2.FREE_RUN;
+                        this.m_runMode = FourLimbRole.FREE_RUN;
                     }
                     this.m_count--;
                 }
@@ -209,6 +211,7 @@ export namespace app
                     this.m_count = Math.round(Math.random() * 30 + 30);
                     //let pos:Vector3D = this.terrain.getFreePos();
                     this.moveToXZ(this.m_fixPos.x + (Math.random() * 500.0) - 250.0, this.m_fixPos.z + (Math.random() * 500.0) - 250.0);
+                    // 这个坐标需要在terrain中处理成实际可用的值
                 }
                 else
                 {
@@ -218,7 +221,7 @@ export namespace app
             private freeRun():void
             {
                 let direcDegree:number = this.m_armModule.getRotationY();
-                let attDst:IAttackDst = this.m_findRadar.testAttDst(direcDegree);
+                let attDst:IAttackDst = this.m_findRadar!= null?this.m_findRadar.testAttDst(direcDegree):null;
                 let moveEnabled:boolean = this.attackMove(false, direcDegree);
                 if(moveEnabled)
                 {
@@ -228,29 +231,46 @@ export namespace app
                 if(!moveEnabled)this.freeRunTest();
                 if(attDst != null)
                 {
-                    this.m_runMode = TFB2.ATTACK_RUN;
+                    this.m_runMode = FourLimbRole.ATTACK_RUN;
                 }
             }
             run():void
             {
                 switch(this.m_runMode)
                 {
-                    case TFB2.ATTACK_RUN:
+                    case FourLimbRole.ATTACK_RUN:
                         this.attackRun();
                         break;
-                    case TFB2.FREE_RUN:
+                    case FourLimbRole.FREE_RUN:
                         this.freeRun();
                         break;
                     default:
                         break;
                 }
             }
+            private m_flag:number = 0;
+            setRunFlag(flag:number):void
+            {
+                this.m_flag = flag;
+            }
+            getRunFlag():number
+            {
+                return this.m_flag;
+            }
+            isRunning():boolean
+            {
+                return true;
+            }
+            isStopped():boolean
+            {
+                return false;
+            }
             moveToXZ(px:number,pz:number,force:boolean = false):void
             {
                 this.m_tickModule.toXZ(px,pz);
                 if(force)
                 {
-                    this.m_runMode = TFB2.ATTACK_RUN;
+                    this.m_runMode = FourLimbRole.ATTACK_RUN;
                 }
                 this.wake();
             }
@@ -260,6 +280,7 @@ export namespace app
             }
             wake():void
             {
+                RunnableModule.RunnerQueue.addRunner( this );
                 if(!this.m_isMoving)
                 {
                     this.m_legModule.toPositive();
@@ -291,12 +312,13 @@ export namespace app
             }
             consume(power:number):void
             {
-
+                this.lifeTime -= power;
             }
             attackTest():boolean
             {
                 return true;
             }
+        }
         }
     }
 }
