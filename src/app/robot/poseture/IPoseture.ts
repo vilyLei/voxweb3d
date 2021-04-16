@@ -27,9 +27,7 @@ export namespace app
                 getPosition(position:Vector3D):void;
                 resetPose():void;
                 resetNextOriginPose():void;
-                //  direcByDegree(degree:number):void;
-                //  direcByPos(pos:Vector3D):void;
-                run():void;
+                run(moveEnabled:boolean):void;
                 isResetFinish():boolean;
                 runToReset():void;
             }

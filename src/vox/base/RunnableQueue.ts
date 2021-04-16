@@ -129,7 +129,7 @@ export namespace vox
                 if(runner != null && runner.getRunFlag() < 1)
                 {
                     let i:number = this.getFreeId();
-                    console.log("RunnableQueue::addRunner()..., flag: ",i);
+                    //console.log("RunnableQueue::addRunner()..., flag: ",i);
                     let pr:Runner = this.m_runners[i];
                     pr.flag = i;
                     pr.target = runner;

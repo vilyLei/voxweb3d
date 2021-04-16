@@ -10,11 +10,13 @@ import * as Vector3T from "../../../vox/math/Vector3D";
 import * as CampT from "../../../app/robot/Camp";
 import * as IRoleCampT from "../../../app/robot/IRoleCamp";
 import * as IAttackDstT from "../../../app/robot/attack/IAttackDst";
+import * as IDstFinderT from "../../../app/robot/attack/IDstFinder";
 
 import Vector3D = Vector3T.vox.math.Vector3D;
 import CampType = CampT.app.robot.CampType;
 import IRoleCamp = IRoleCampT.app.robot.IRoleCamp;
 import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
+import IDstFinder = IDstFinderT.app.robot.attack.IDstFinder;
 import CampFindMode = CampT.app.robot.CampFindMode;
 
 export namespace app
@@ -23,7 +25,7 @@ export namespace app
     {
         export namespace attack
         {
-            export class FireCtrlRadar
+            export class FireCtrlRadar implements IDstFinder
             {
                 private m_currDst:IAttackDst = null;
                 private m_position:Vector3D = new Vector3D();
@@ -102,6 +104,10 @@ export namespace app
                         return this.m_currDst;
                     }
                     this.m_delay --;
+                    return null;
+                }
+                findNextDst():IAttackDst
+                {
                     return null;
                 }
             }

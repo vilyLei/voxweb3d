@@ -295,6 +295,9 @@
 //  import * as DemoGLState from "./demo/DemoGLState";
 //  import Demo = DemoGLState.demo.DemoGLState;
 
+//  import * as DemoThread from "./thread/example/DemoThread";
+//  import Demo = DemoThread.thread.example.DemoThread;
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 

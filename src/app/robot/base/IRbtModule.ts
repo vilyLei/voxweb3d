@@ -6,22 +6,12 @@
 /***************************************************************************/
 
 import * as Vector3T from "../../../vox/math/Vector3D";
-import * as DisplayEntityT from "../../../vox/entity/DisplayEntity";
 import * as DisplayEntityContainerT from "../../../vox/entity/DisplayEntityContainer";
-import * as RendererSceneT from "../../../vox/scene/RendererScene";
-import * as CoreFrameAxisT from "../../../app/robot/CoreFrameAxis";
-import * as IPartStoreT from "../../../app/robot/IPartStore";
-import * as IPosetureT from "../../../app/robot/poseture/IPoseture";
-import * as TwoLegPostureCtrlT from "../../../app/robot/poseture/TwoLegPostureCtrl";
+import * as IAttackDstT from "../../../app/robot/attack/IAttackDst";
 
 import Vector3D = Vector3T.vox.math.Vector3D;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import CoreFrameAxis = CoreFrameAxisT.app.robot.CoreFrameAxis;
-import IPartStore = IPartStoreT.app.robot.IPartStore;
-import IPoseture = IPosetureT.app.robot.poseture.IPoseture;
-import TwoLegPostureCtrl = TwoLegPostureCtrlT.app.robot.poseture.TwoLegPostureCtrl;
+import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
 
 export namespace app
 {
@@ -33,21 +23,21 @@ export namespace app
             export interface IRbtModule
             {
                 getContainer():DisplayEntityContainer;
+                setAttackDst(dst:IAttackDst):void;
                 setVisible(boo:boolean):void;
                 getVisible():boolean;
                 setRotationY(rotation:number):void;
                 getRotationY():number;
-                runByPos(pos:Vector3D,finished:boolean):void;
-                runByDegree(degree:number,finished:boolean):void;
-                isPoseRunning():boolean;
+                setDstDirecDegree(degree:number):void;
+                direcByPos(pos:Vector3D,finished:boolean):void;
+                direcByDegree(degree:number,finished:boolean):void;
                 setXYZ(px:number,py:number,pz:number):void;
                 setPosition(position:Vector3D):void;
                 getPosition(position:Vector3D):void;
-                resetPose():void;
-                resetNextOriginPose():void;
-                run():void;
                 isResetFinish():boolean;
-                runToReset():void;
+                isPoseRunning():boolean;
+                resetPose():void;
+                run(moveEnabled:boolean):void;
             }
         }
     }

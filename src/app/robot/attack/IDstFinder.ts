@@ -5,30 +5,31 @@
 /*                                                                         */
 /***************************************************************************/
 
+import * as MathConstT from "../../../vox/math/MathConst";
 import * as Vector3T from "../../../vox/math/Vector3D";
 import * as CampT from "../../../app/robot/Camp";
-import * as ITerrainT from "../../../app/robot/scene/ITerrain";
+import * as IRoleCampT from "../../../app/robot/IRoleCamp";
+import * as IAttackDstT from "../../../app/robot/attack/IAttackDst";
 
 import Vector3D = Vector3T.vox.math.Vector3D;
 import CampType = CampT.app.robot.CampType;
-import ITerrain = ITerrainT.app.robot.scene.ITerrain;
+import IRoleCamp = IRoleCampT.app.robot.IRoleCamp;
+import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
+import CampFindMode = CampT.app.robot.CampFindMode;
 
 export namespace app
 {
     export namespace robot
     {
-        export namespace scene
+        export namespace attack
         {
-            export class Terrain implements ITerrain
+            export interface IDstFinder
             {
-                private m_freePos:Vector3D = new Vector3D();
-                constructor(){}
-                getFreePos(fixPos:Vector3D):Vector3D
-                {
-                    //this.m_freePos.setXYZ(Math.random() * 900.0 - 450.0,0.0,Math.random() * 900.0 - 450.0);
-                    this.m_freePos.setXYZ(fixPos.x + (Math.random() * 500.0) - 250.0, 0.0, fixPos.z + (Math.random() * 500.0) - 250.0);
-                    return this.m_freePos;
-                }
+                resetState():void;
+                setDelayTime(delayTime:number):void;
+                testAttDst(direcDegree:number):IAttackDst;
+                findAttDst(direcDegree:number):IAttackDst;
+                findNextDst():IAttackDst;
             }
         }
     }

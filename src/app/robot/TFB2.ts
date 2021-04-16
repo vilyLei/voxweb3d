@@ -150,7 +150,7 @@ export namespace app
                         this.m_legModule.getPosition(this.position);
                     }
                     //  执行leg动动作
-                    this.m_legModule.runByDegree(optionalDegree,!state);
+                    this.m_legModule.direcByDegree(optionalDegree,!state);
                     this.m_movingFlag = moveFlag?true:this.m_legModule.isPoseRunning();
                 }
                 else
@@ -183,7 +183,7 @@ export namespace app
                 {
                     this.armMove(this.position,this.m_legModule.getRotationY());
                 }
-                this.m_armModule.runAtt(moveEnabled);
+                this.m_armModule.run(moveEnabled);
                 
                 if(moveEnabled || attDst != null)
                 {
@@ -224,7 +224,7 @@ export namespace app
                 {
                     this.armMove(this.position,this.m_legModule.getRotationY());
                 }
-                this.m_armModule.runAtt(moveEnabled);
+                this.m_armModule.run(moveEnabled);
                 if(!moveEnabled)this.freeRunTest();
                 if(attDst != null)
                 {

@@ -73,7 +73,7 @@ export namespace app
                         this.m_resetPoseFlag = true;
                         this.m_running = true;
                         // 执行走动动作
-                        this.m_target.run();
+                        this.m_target.run(false);
                     }
                 }
                 runByPos(pos:Vector3D,finished:boolean):void

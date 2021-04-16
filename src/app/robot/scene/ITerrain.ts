@@ -19,7 +19,7 @@ export namespace app
         {
             export interface ITerrain
             {
-                getFreePos():Vector3D;
+                getFreePos(fixPos:Vector3D):Vector3D;
             }
         }
     }

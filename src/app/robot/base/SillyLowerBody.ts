@@ -9,22 +9,22 @@ import * as Vector3T from "../../../vox/math/Vector3D";
 import * as DisplayEntityT from "../../../vox/entity/DisplayEntity";
 import * as DisplayEntityContainerT from "../../../vox/entity/DisplayEntityContainer";
 import * as RendererSceneT from "../../../vox/scene/RendererScene";
-import * as CoreFrameAxisT from "../../../app/robot/CoreFrameAxis";
+import * as Box3DEntityT from "../../../vox/entity/Box3DEntity";
 import * as IPartStoreT from "../../../app/robot/IPartStore";
 import * as IPosetureT from "../../../app/robot/poseture/IPoseture";
+import * as DegreeTweenT from "../../../vox/utils/DegreeTween";
 import * as IAttackDstT from "../../../app/robot/attack/IAttackDst";
-import * as TwoLegPostureCtrlT from "../../../app/robot/poseture/TwoLegPostureCtrl";
 import * as IRbtModuleT from "../../../app/robot/base/IRbtModule";
 
 import Vector3D = Vector3T.vox.math.Vector3D;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import CoreFrameAxis = CoreFrameAxisT.app.robot.CoreFrameAxis;
+import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
 import IPartStore = IPartStoreT.app.robot.IPartStore;
 import IPoseture = IPosetureT.app.robot.poseture.IPoseture;
+import DegreeTween = DegreeTweenT.vox.utils.DegreeTween;
 import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
-import TwoLegPostureCtrl = TwoLegPostureCtrlT.app.robot.poseture.TwoLegPostureCtrl;
 import IRbtModule = IRbtModuleT.app.robot.base.IRbtModule;
 
 export namespace app
@@ -33,21 +33,12 @@ export namespace app
     {
         export namespace base
         {
-        // tow legs
-        export class TwoLegRbtModule implements IRbtModule,IPoseture
+        export class SillyLowerBody implements IRbtModule,IPoseture
         {
             private m_sc:RendererScene = null;
-            private m_time:number = 0;
-
-            private m_coreFAxis:CoreFrameAxis = new CoreFrameAxis();
             private m_container:DisplayEntityContainer = null;
-            private m_partStore:IPartStore = null;
             
-            private m_timeSpeed:number = 3.0;
-            private m_nextTime:number = 0;
-
-            //degreeTween:DegreeTween = new DegreeTween();
-            postureCtrl:TwoLegPostureCtrl = new TwoLegPostureCtrl();
+            degreeTween:DegreeTween = new DegreeTween();
             constructor(container:DisplayEntityContainer = null)
             {
                 if(container == null)
@@ -75,14 +66,6 @@ export namespace app
             {
                 return this.m_container.getVisible();
             }
-            toPositive():void
-            {
-                this.m_coreFAxis.toPositive();
-            }
-            toNegative():void
-            {
-                this.m_coreFAxis.toNegative();
-            }
             setRotationY(rotation:number):void
             {
                 this.m_container.setRotationY(rotation);
@@ -91,51 +74,42 @@ export namespace app
             {
                 return this.m_container.getRotationY();
             }
-            direcByPos(pos:Vector3D,finished:boolean):void
-            {
-                this.postureCtrl.runByPos(pos,finished);
-            }
             direcByDegree(degree:number,finished:boolean):void
             {
-                this.postureCtrl.runByDegree(degree,finished);
+                this.degreeTween.runRotY(degree);
+                if(this.degreeTween.isDegreeChanged())
+                {
+                    this.m_container.update();
+                }
+            }
+            direcByPos(pos:Vector3D,finished:boolean):void
+            {
+                this.degreeTween.runRotYByDstPos(pos);
+                if(this.degreeTween.isDegreeChanged())
+                {
+                    this.m_container.update();
+                }
             }
             setDstDirecDegree(degree:number):void
             {
             }
             isPoseRunning():boolean
             {
-                return this.postureCtrl.isRunning();
+                return false;
             }
-            initialize(sc:RendererScene,renderProcessIndex:number,partStore:IPartStore = null,offsetPos:Vector3D = null):void
+            initialize(sc:RendererScene,renderProcessIndex:number,box:DisplayEntity,offsetPos:Vector3D = null):void
             {
-                if(this.m_sc == null && partStore != null)
+                if(this.m_sc == null)
                 {
-                    this.m_timeSpeed = 3.0 * 0.7;
                     this.m_sc = sc;
-                    this.m_partStore = partStore;
+                    
                     sc.addContainer(this.m_container,renderProcessIndex);
+                    //  let box:Box3DEntity = new Box3DEntity();
+                    //  box.initializeSizeXYZ(50,50,50);
+                    //  box.setXYZ(0.0, 25.0, 0.0);
+                    this.m_container.addEntity(box);
 
-                    let coreEntity:DisplayEntity = partStore.getEngityCore();
-                    let bgL:DisplayEntity = partStore.getEngityBGL();
-                    let bgR:DisplayEntity = partStore.getEngityBGR();
-                    let sgL:DisplayEntity = partStore.getEngitySGL();
-                    let sgR:DisplayEntity = partStore.getEngitySGR();
-                    this.m_container.addEntity(coreEntity);
-                    this.m_container.addEntity(bgL);
-                    this.m_container.addEntity(bgR);
-                    this.m_container.addEntity(sgL);
-                    this.m_container.addEntity(sgR);
-                    let pv:Vector3D = new Vector3D();
-                    pv.copyFrom(partStore.getCoreCenter());
-                    if(offsetPos != null)
-                    {
-                        pv.addBy(offsetPos);
-                    }
-                    this.m_coreFAxis.initialize(coreEntity, pv, partStore.getCoreWidth() * 0.5);
-                    this.m_coreFAxis.setBG(bgL,bgR, partStore.getBGLong());
-                    this.m_coreFAxis.setSG(sgL,sgR);
-
-                    this.postureCtrl.bindTarget(this);
+                    this.degreeTween.bindTarget(this.m_container); 
                 }
             }
             setXYZ(px:number,py:number,pz:number):void
@@ -152,32 +126,22 @@ export namespace app
             }
             resetPose():void
             {
-                this.m_coreFAxis.resetPose();
-                this.m_time = this.m_coreFAxis.getOriginTime();
+                
             }
             resetNextOriginPose():void
             {
-                this.m_nextTime = this.m_coreFAxis.getNextOriginTime(this.m_time);
             }
             run(moveEnabled:boolean):void
             {
                 this.m_container.update();
-                this.m_coreFAxis.run(this.m_time);
-                this.m_time += this.m_timeSpeed;
             }
             isResetFinish():boolean
             {
-                return this.m_time >= this.m_nextTime;
+                return true;
             }
             runToReset():void
             {
-                if(this.m_time >= this.m_nextTime)
-                {
-                    this.m_time = this.m_nextTime;
-                }
                 this.m_container.update();
-                this.m_coreFAxis.run(this.m_time);
-                this.m_time += this.m_timeSpeed;
             }
         }
         }

@@ -9,17 +9,13 @@ export namespace app
 {
     export namespace robot
     {
-        export enum CampType
+        export namespace base
         {
-            Red,
-            Blue,
-            Green            
-        }
-        export enum CampFindMode
-        {
-            Default,
-            XOZ
-            
+            export enum RoleActMode
+            {
+                FREE_RUN = 1001,
+                ATTACK_RUN = 1002
+            }
         }
     }
 }

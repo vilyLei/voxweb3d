@@ -28,9 +28,13 @@ export namespace app
                 attackDis:number;
                 getPosition(pos:Vector3D):void;
                 setVisible(visible:boolean):void;
-                // 获得被击中位置
+                /**
+                 * 获得被击中位置
+                 */
                 getHitPos(outPos:Vector3D):void;
-                // 获得击中位置
+                /**
+                 * 获得被击毁位置
+                */
                 getDestroyedPos(outPos:Vector3D):void;
                 consume(power:number):void;
                 attackTest():boolean;

@@ -18,6 +18,7 @@ import * as DegreeTweenT from "../../../vox/utils/DegreeTween";
 import * as TriggerClockT from "../../../vox/utils/TriggerClock";
 import * as WeapMoudleT from "../../../app/robot/WeapMoudle";
 import * as CampT from "../../../app/robot/Camp";
+import * as IRbtModuleT from "../../../app/robot/base/IRbtModule";
 
 import Vector3D = Vector3T.vox.math.Vector3D;
 import MathConst = MathConstT.vox.math.MathConst;
@@ -32,6 +33,8 @@ import DegreeTween = DegreeTweenT.vox.utils.DegreeTween;
 import TriggerClock = TriggerClockT.vox.utils.TriggerClock;
 import WeapMoudle = WeapMoudleT.app.robot.WeapMoudle;
 import CampType = CampT.app.robot.CampType;
+import IRbtModule = IRbtModuleT.app.robot.base.IRbtModule;
+
 
 export namespace app
 {
@@ -40,7 +43,7 @@ export namespace app
         export namespace base
         {
         // tow arms
-        export class TwoArmRbtModule
+        export class TwoArmRbtModule implements IRbtModule
         {
             private m_sc:RendererScene = null;
             private m_time:number = 0;
@@ -87,14 +90,14 @@ export namespace app
                 return this.m_container.getVisible();
             }
             
-            setBgAngle(angle:number, OffsetAngle:number,angleDirec:number):void
-            {
-                this.m_coreFAxis.setBgAngle(angle,OffsetAngle,angleDirec);
-            }
-            setSgOffsetAngle(angle:number, OffsetAngle:number,angleDirec:number):void
-            {
-                this.m_coreFAxis.setSgOffsetAngle(angle,OffsetAngle,angleDirec);
-            }
+            //  setBgAngle(angle:number, OffsetAngle:number,angleDirec:number):void
+            //  {
+            //      this.m_coreFAxis.setBgAngle(angle,OffsetAngle,angleDirec);
+            //  }
+            //  setSgOffsetAngle(angle:number, OffsetAngle:number,angleDirec:number):void
+            //  {
+            //      this.m_coreFAxis.setSgOffsetAngle(angle,OffsetAngle,angleDirec);
+            //  }
             setAngleDirec(bgAngleDirec:number,sgAngleDirec:number):void
             {
                 this.m_coreFAxis.setAngleDirec(bgAngleDirec, sgAngleDirec);
@@ -219,7 +222,7 @@ export namespace app
             {
                 return this.degreeTween.testDegreeDis(2.0);
             }
-            direcByDegree(degree:number):void
+            direcByDegree(degree:number,finished:boolean):void
             {
                 this.degreeTween.runRotY(degree);
                 if(this.degreeTween.isDegreeChanged())
@@ -227,7 +230,7 @@ export namespace app
                     this.m_container.update();
                 }
             }
-            direcByPos(pos:Vector3D):void
+            direcByPos(pos:Vector3D,finished:boolean):void
             {
                 this.degreeTween.runRotYByDstPos(pos);
                 if(this.degreeTween.isDegreeChanged())
@@ -260,7 +263,7 @@ export namespace app
             }
             private updateAttackPose():void
             {
-                this.direcByPos(this.m_attPos);
+                this.direcByPos(this.m_attPos,false);
 
                 this.m_container.getInvMatrix().transformOutVector3(this.m_attPos, this.m_tempV);
                 this.m_tempV.y = 0.0;
@@ -325,7 +328,7 @@ export namespace app
                     }
                 }
             }
-            runAtt(moveEnabled:boolean):void
+            run(moveEnabled:boolean):void
             {
                 let attacking:boolean = this.m_attackDst != null;
                 if(attacking)
@@ -334,7 +337,7 @@ export namespace app
                 }
                 else
                 {
-                    this.direcByDegree(this.m_dstDegree);
+                    this.direcByDegree(this.m_dstDegree,false);
                 }
                 this.m_container.update();
                 if(moveEnabled || this.degreeTween.isRunning())
@@ -351,12 +354,12 @@ export namespace app
                     this.attack();
                 }
             }
-            run():void
-            {
-                this.m_container.update();
-                this.m_coreFAxis.run(this.m_time);
-                this.m_time += this.m_timeSpeed;
-            }
+            //  run():void
+            //  {
+            //      this.m_container.update();
+            //      this.m_coreFAxis.run(this.m_time);
+            //      this.m_time += this.m_timeSpeed;
+            //  }
             update():void
             {
                 this.m_container.update();
@@ -364,6 +367,10 @@ export namespace app
             isResetFinish():boolean
             {
                 return this.m_time >= this.m_nextTime;
+            }
+            isPoseRunning():boolean
+            {
+                return true;
             }
             runToReset():void
             {

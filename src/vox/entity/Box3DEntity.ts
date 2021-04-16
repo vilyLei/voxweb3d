@@ -117,6 +117,13 @@ export namespace vox
                 this.createMaterial(texList);
                 this.activeDisplay();
             }
+            initializeSizeXYZ(widthSize:number,heightSize:number,longSize:number,texList:TextureProxy[] = null):void
+            {
+                this.m_minV = new Vector3D(-widthSize * 0.5, -heightSize * 0.5, -longSize * 0.5);
+                this.m_maxV = new Vector3D(widthSize * 0.5, heightSize * 0.5, longSize * 0.5);
+                this.createMaterial(texList);
+                this.activeDisplay();
+            }
 
             protected __activeMesh(material:MaterialBase):void
             {
