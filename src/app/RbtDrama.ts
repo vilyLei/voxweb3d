@@ -73,9 +73,9 @@ export namespace app
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
 
         //FourLimbRole
-        private m_twoFeetBody:FourLimbRole = null;
-        private m_twoFeetBodys:FourLimbRole[] = [];
-        private m_targets:DisplayEntity[] = [];
+        private m_limbRole:FourLimbRole = null;
+        //private m_limbRoles:FourLimbRole[] = [];
+        //private m_targets:DisplayEntity[] = [];
         private m_viewRay:CameraViewRay = new CameraViewRay();
 
         private m_campModule:CampMoudle = new CampMoudle();
@@ -165,8 +165,8 @@ export namespace app
                     this.m_campModule.redCamp.addRole(redRole);
                 }
                 let terrain:Terrain = new Terrain();
-                
-                for(i = 0; i < 120; ++i)
+                let limbRole:FourLimbRole;
+                for(i = 0; i < 50; ++i)
                 {
                     //let linePart0:LinePartStore = new LinePartStore();
                     //let linePart1:LinePartStore = new LinePartStore();
@@ -181,19 +181,23 @@ export namespace app
                     boxPart1.setSgSize(7,  5);
                     boxPart1.initilize(tex0,tex2,tex1);
                     
-                    this.m_twoFeetBody = new FourLimbRole();
-                    this.m_twoFeetBody.roleCamp = this.m_campModule.redCamp;
-                    this.m_twoFeetBody.terrain = terrain;
-                    //this.m_twoFeetBody.initialize( this.m_rscene,0, linePart0, linePart1,60.0);
-                    //this.m_twoFeetBody.initialize( this.m_rscene,0, boxPart0, linePart1,80.0);
-                    this.m_twoFeetBody.initialize(this.m_rscene, 0, boxPart0, boxPart1, 80.0);
-                    //this.m_twoFeetBody.setXYZ(Math.random() * 500.0 - 250.0,0.0,Math.random() * 500.0 - 250.0);
+                    limbRole = new FourLimbRole();
+                    limbRole.roleCamp = this.m_campModule.redCamp;
+                    limbRole.terrain = terrain;
+                    limbRole.campType = ((i%2)==0)?CampType.Blue:CampType.Red;
+                    //this.m_limbRole.initialize( this.m_rscene,0, linePart0, linePart1,60.0);
+                    //this.m_limbRole.initialize( this.m_rscene,0, boxPart0, linePart1,80.0);
+                    limbRole.initialize(this.m_rscene, 0, boxPart0, boxPart1, 80.0);
+                    //this.m_limbRole.setXYZ(Math.random() * 500.0 - 250.0,0.0,Math.random() * 500.0 - 250.0);
                     
-                    this.m_twoFeetBody.setXYZ(Math.random() * 1600.0 - 800.0,0.0,Math.random() * 1600.0 - 800.0);
-                    this.m_twoFeetBody.moveToXZ(Math.random() * 1600.0 - 800.0,Math.random() * 1600.0 - 800.0);
-                    //this.m_twoFeetBody.moveToXZ(30.0, 0.0);
-                    this.m_twoFeetBodys.push(this.m_twoFeetBody);//TwoFeetBody
+                    limbRole.setXYZ(Math.random() * 1600.0 - 800.0,0.0,Math.random() * 1600.0 - 800.0);
+                    limbRole.moveToXZ(Math.random() * 1600.0 - 800.0,Math.random() * 1600.0 - 800.0);
+                    //this.m_limbRole.moveToXZ(30.0, 0.0);
+                    //          this.m_limbRoles.push(this.m_limbRole);//TwoFeetBody
+                    //  this.m_campModule.redCamp.addRole(limbRole);
                 }
+                this.m_limbRole = limbRole;
+
                 let srcSillyRole:SillyRole = null;
                 let lowerBox:Box3DEntity = new Box3DEntity();
                 lowerBox.initializeSizeXYZ(50.0,40,50,[tex3]);
@@ -201,7 +205,7 @@ export namespace app
                 let upperBox:Box3DEntity = new Box3DEntity();
                 upperBox.initializeSizeXYZ(30.0,20,30,[tex5]);
                 upperBox.setXYZ(0.0,50.0,0.0);
-                for(i = 0; i < 200; ++i)
+                for(i = 0; i < 0; ++i)
                 {
 
                     let sillyRole:SillyRole = new SillyRole();
@@ -227,11 +231,11 @@ export namespace app
                     sillyRole.setXYZ(Math.random() * 1600.0 - 800.0,0.0,Math.random() * 1600.0 - 800.0);
                     sillyRole.moveToXZ(Math.random() * 1600.0 - 800.0,Math.random() * 1600.0 - 800.0);
                     
-                    sillyRole.campType = CampType.Red;
+                    sillyRole.campType = CampType.Green;
                     sillyRole.terrain = terrain;
                     sillyRole.attackDis = 50;
                     sillyRole.radius = 80;
-                    sillyRole.lifeTime = 1000;
+                    sillyRole.lifeTime = 200;
                     sillyRole.wake();
                     this.m_campModule.redCamp.addRole(sillyRole);
                 }
@@ -245,9 +249,9 @@ export namespace app
         {
             this.m_viewRay.intersectPiane();
             let pv:Vector3D = this.m_viewRay.position;
-            if(this.m_twoFeetBody != null)
+            if(this.m_limbRole != null)
             {
-                this.m_twoFeetBody.moveToXZ(pv.x, pv.z,true);
+                this.m_limbRole.moveToXZ(pv.x, pv.z,true);
                 
                 this.m_runflag = !this.m_runflag;
             }
@@ -260,7 +264,7 @@ export namespace app
             {
                 clearTimeout(this.m_timeoutId);
             }
-            this.m_timeoutId = setTimeout(this.update.bind(this),50);// 50 fps
+            this.m_timeoutId = setTimeout(this.update.bind(this),50);// 20 fps
             
             this.m_campModule.run();
             RunnableModule.Run();

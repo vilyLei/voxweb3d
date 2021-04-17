@@ -82,6 +82,7 @@ export namespace app
                 }
                 sleep():void
                 {
+                    RunnableModule.RunnerQueue.removeRunner( this );
                     this.m_isMoving = false;
                 }
                 

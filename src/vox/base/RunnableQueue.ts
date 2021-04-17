@@ -141,7 +141,7 @@ export namespace vox
             {
                 if(runner != null && runner.getRunFlag() > 0)
                 {
-                    console.log("RunnableQueue::removeRunner()...");
+                    //console.log("RunnableQueue::removeRunner()...");
                     let i:number = runner.getRunFlag();
                     this.m_freeIds.push(i);
                     let pr:Runner = this.m_runners[i];

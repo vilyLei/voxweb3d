@@ -165,6 +165,7 @@ export namespace app
                     this.m_attackClock.setTriggerTimeAt(0,6);
                     this.m_attackClock.setTriggerTimeAt(1,3);
                     this.weap = new WeapMoudle(sc);
+
                 }
             }
             setXYZ(px:number,py:number,pz:number):void

@@ -63,7 +63,7 @@ export namespace app
                 }
                 addRole(role:IAttackDst):void
                 {
-                    this.m_roles.push(role);
+                    if(role != null)this.m_roles.push(role);
                 }
                 private m_rsn:IAttackDst = null;
                 private m_rsnList:IAttackDst[] = new Array(128);
@@ -99,43 +99,42 @@ export namespace app
                         this.snsort(pos + 1, high);
                     }
                 }
-                testAttDst(pos:Vector3D, radius:number,findMode:CampFindMode,dstCampType:CampType,direcDegree:number,fov:number = -1):IAttackDst
+                testAttDst(pos:Vector3D, radius:number,findMode:CampFindMode,srcCampType:CampType,direcDegree:number,fov:number = -1):IAttackDst
                 {
-                    if(dstCampType == CampType.Red)
+                    //if(srcCampType == CampType.Red)
+                    //{
+                    let list:IAttackDst[] = this.m_roles;
+                    let len:number = list.length;
+                    if(len > 0)
                     {
-                        let list:IAttackDst[] = this.m_roles;
-                        let len:number = list.length;
-                        if(len > 0)
+                        let i:number = 0;
+                        let role:IAttackDst = null;
+                        let dis:number;
+                        for(; i < len; ++i)
                         {
-                            let i:number = 0;
-                            let role:IAttackDst = null;
-                            let dis:number;
-                            for(; i < len; ++i)
+                            role = list[i];
+                            if(role.campType != srcCampType && role.lifeTime > 0)
                             {
-                                role = list[i];
-                                if(role.lifeTime > 0)
+                                dis = radius + role.radius;
+                                dis *= dis;
+                                this.m_tempV0.subVecsTo(pos, role.position);
+                                this.distance = this.m_tempV0.getLengthSquared();
+                                if(dis >= this.distance)
                                 {
-                                    dis = radius + role.radius;
-                                    dis *= dis;
-                                    this.m_tempV0.subVecsTo(pos, role.position);
-                                    this.distance = this.m_tempV0.getLengthSquared();
-                                    if(dis >= this.distance)
+                                    // 判断视野之内是否能看到
+                                    if(fov > 0)
                                     {
-                                        // 判断视野之内是否能看到
-                                        if(fov > 0)
-                                        {
-
-                                        }
-                                        role.attackDis = Math.sqrt(this.distance);
-                                        return role;
                                     }
+                                    role.attackDis = Math.sqrt(this.distance);
+                                    return role;
                                 }
                             }
                         }
                     }
+                    //}
                     return null;
                 }
-                testSpecAttDst(role:IAttackDst, pos:Vector3D, radius:number,findMode:CampFindMode,dstCampType:CampType,direcDegree:number,fov:number = -1):IAttackDst
+                testSpecAttDst(role:IAttackDst, pos:Vector3D, radius:number,findMode:CampFindMode,srcCampType:CampType,direcDegree:number,fov:number = -1):IAttackDst
                 {
                     if(role.lifeTime > 0)
                     {
@@ -148,7 +147,6 @@ export namespace app
                             // 判断视野之内是否能看到
                             if(fov > 0)
                             {
-
                             }
                             role.attackDis = Math.sqrt(this.distance);
                             return role;
@@ -156,22 +154,22 @@ export namespace app
                     }
                     return null;
                 }
-                findAttDst(pos:Vector3D, radius:number,findMode:CampFindMode,dstCampType:CampType,direcDegree:number,fov:number = -1):IAttackDst
+                findAttDst(pos:Vector3D, radius:number,findMode:CampFindMode,srcCampType:CampType,direcDegree:number,fov:number = -1):IAttackDst
                 {
-                    if(dstCampType == CampType.Red)
+                    let list:IAttackDst[] = this.m_roles;
+                    let len:number = list.length;
+                    if(len > 0)
                     {
-                        let list:IAttackDst[] = this.m_roles;
-                        let len:number = list.length;
-                        if(len > 0)
+                        let i:number = 0;
+                        let role:IAttackDst = null;
+                        let rsnLen:number = 0;
+                        let dis:number;
+                        for(; i < len; ++i)
                         {
-                            let i:number = 0;
-                            let role:IAttackDst = null;
-                            let rsnLen:number = 0;
-                            let dis:number;
-                            for(; i < len; ++i)
+                            role = list[i];
+                            if(role.lifeTime > 0)
                             {
-                                role = list[i];
-                                if(role.lifeTime > 0)
+                                if(role.campType != srcCampType)
                                 {
                                     dis = radius + role.radius;
                                     dis *= dis;
@@ -182,35 +180,34 @@ export namespace app
                                         // 判断视野之内是否能看到
                                         if(fov > 0)
                                         {
-
                                         }
                                         role.attackDis = Math.sqrt(this.distance);
                                         this.m_rsnList[rsnLen] = role;
                                         rsnLen++;
                                     }
                                 }
-                                else
-                                {
-                                    //console.log("del a role, because of its life time value is less 0.");
-                                    role.getDestroyedPos(this.m_tempV0);
-                                    this.m_eff0Pool.createEffect(this.m_tempV0);
-                                    //m_tempV0
-                                    list.splice(i,1);
-                                    i --;
-                                    len --;
-                                    this.m_freeRoles.push(role);
-                                    role.setVisible(false);
-                                }
                             }
-                            if(rsnLen > 1)
+                            else
                             {
-                                this.snsort(0,rsnLen-1);
+                                //console.log("del a role, because of its life time value is less 0.");
+                                role.getDestroyedPos(this.m_tempV0);
+                                this.m_eff0Pool.createEffect(this.m_tempV0);
+                                //m_tempV0
+                                list.splice(i,1);
+                                i --;
+                                len --;
+                                this.m_freeRoles.push(role);
+                                role.setVisible(false);
                             }
-                            if(rsnLen > 0)
-                            {
-                                this.distance = this.m_rsnList[0].attackDis;
-                                return this.m_rsnList[0];
-                            }
+                        }
+                        if(rsnLen > 1)
+                        {
+                            this.snsort(0,rsnLen-1);
+                        }
+                        if(rsnLen > 0)
+                        {
+                            this.distance = this.m_rsnList[0].attackDis;
+                            return this.m_rsnList[0];
                         }
                     }
                     return null;

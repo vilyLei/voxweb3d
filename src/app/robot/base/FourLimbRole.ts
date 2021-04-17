@@ -55,6 +55,7 @@ export namespace app
                         //this.m_legModule.setVisible(false);
 
                         offsetPos.y = dis;
+                        this.m_armModule.campType = this.campType;
                         this.m_armModule.initialize(sc,renderProcessIndex,partStore1,offsetPos);
                         this.m_armModule.toNegative();
                         this.m_armModule.setAngleDirec(1.0,-1.0);
@@ -87,14 +88,22 @@ export namespace app
                 // 获得被击中位置
                 getHitPos(outPos:Vector3D):void
                 {
+                    outPos.copyFrom(this.position);
+                    outPos.y += 80.0;
                 }
                 // 获得被击毁位置
                 getDestroyedPos(outPos:Vector3D):void
                 {
+                    outPos.copyFrom(this.position);
+                    outPos.y += 60.0;
                 }
                 consume(power:number):void
                 {
                     this.lifeTime -= power;
+                    if(this.lifeTime < 1)
+                    {
+                        this.sleep();
+                    }
                 }
                 attackTest():boolean
                 {

@@ -54,7 +54,7 @@ export namespace app
                         this.m_position,
                         this.srcRole.attackDis + this.srcRole.radius,
                         CampFindMode.XOZ,
-                        CampType.Red,
+                        this.campType,
                         direcDegree,
                         -1
                     );
@@ -71,7 +71,7 @@ export namespace app
                                 this.m_position,
                                 this.srcRole.attackDis + this.srcRole.radius,
                                 CampFindMode.XOZ,
-                                CampType.Red,
+                                this.campType,
                                 direcDegree,
                                 -1
                                 );
@@ -83,7 +83,7 @@ export namespace app
                                 this.m_position,
                                 this.srcRole.attackDis + this.srcRole.radius,
                                 CampFindMode.XOZ,
-                                CampType.Red,
+                                this.campType,
                                 direcDegree,
                                 -1
                                 );
@@ -97,7 +97,7 @@ export namespace app
                             this.m_position,
                             this.srcRole.attackDis + this.srcRole.radius,
                             CampFindMode.XOZ,
-                            CampType.Red,
+                            this.campType,
                             direcDegree,
                             -1
                             );

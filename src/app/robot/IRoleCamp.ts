@@ -23,9 +23,9 @@ export namespace app
         export interface IRoleCamp
         {
             distance:number;
-            testSpecAttDst(role:IAttackDst, pos:Vector3D, radius:number,findMode:CampFindMode,dstCampType:CampType,direcDegree:number,fov:number):IAttackDst;
-            testAttDst( pos:Vector3D, radius:number,findMode:CampFindMode,dstCampType:CampType,direcDegree:number,fov:number):IAttackDst;
-            findAttDst(pos:Vector3D, radius:number, findMode:CampFindMode,dstCampType:CampType,direcDegree:number,fov:number):IAttackDst;
+            testSpecAttDst(role:IAttackDst, pos:Vector3D, radius:number,findMode:CampFindMode,srcCampType:CampType,direcDegree:number,fov:number):IAttackDst;
+            testAttDst( pos:Vector3D, radius:number,findMode:CampFindMode,srcCampType:CampType,direcDegree:number,fov:number):IAttackDst;
+            findAttDst(pos:Vector3D, radius:number, findMode:CampFindMode,srcCampType:CampType,direcDegree:number,fov:number):IAttackDst;
             run():void;
         }
     }

@@ -12,7 +12,6 @@ import * as DisplayEntityT from "../../../vox/entity/DisplayEntity";
 import * as SillyLowerBodyT from "../../../app/robot/base/SillyLowerBody";
 import * as SillyUpperBodyT from "../../../app/robot/base/SillyUpperBody";
 import * as IAttackDstT from "../../../app/robot/attack/IAttackDst";
-import * as RunnableModuleT from "../../../app/robot/scene/RunnableModule";
 import * as RbtRoleT from "../../../app/robot/base/RbtRole";
 
 import MathConst = MathConstT.vox.math.MathConst;
@@ -23,7 +22,6 @@ import SillyLowerBody = SillyLowerBodyT.app.robot.base.SillyLowerBody;
 import SillyUpperBody = SillyUpperBodyT.app.robot.base.SillyUpperBody;
 
 import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
-import RunnableModule = RunnableModuleT.app.robot.scene.RunnableModule;
 import RbtRole = RbtRoleT.app.robot.base.RbtRole;
 
 export namespace app
@@ -108,7 +106,7 @@ export namespace app
                     this.lifeTime -= power;
                     if(this.lifeTime < 1)
                     {
-                        RunnableModule.RunnerQueue.removeRunner(this);
+                        this.sleep();
                     }
                 }
                 attackTest():boolean
