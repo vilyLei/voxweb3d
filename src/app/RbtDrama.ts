@@ -166,7 +166,7 @@ export namespace app
                 }
                 let terrain:Terrain = new Terrain();
                 let limbRole:FourLimbRole;
-                for(i = 0; i < 50; ++i)
+                for(i = 0; i < 10; ++i)
                 {
                     //let linePart0:LinePartStore = new LinePartStore();
                     //let linePart1:LinePartStore = new LinePartStore();
@@ -184,7 +184,21 @@ export namespace app
                     limbRole = new FourLimbRole();
                     limbRole.roleCamp = this.m_campModule.redCamp;
                     limbRole.terrain = terrain;
-                    limbRole.campType = ((i%2)==0)?CampType.Blue:CampType.Red;
+                    switch(i%3)
+                    {
+                        case 1:
+                            limbRole.campType = CampType.Red;
+                            break;
+                        case 2:
+                            limbRole.campType = CampType.Green;
+                            break;
+                        default:
+                            limbRole.campType = CampType.Blue;
+                            break;
+
+                    }
+                    //      limbRole.campType = ((i%2)==0)?CampType.Blue:CampType.Red;
+                    //      limbRole.campType = ((i%2)==0)?CampType.Blue:CampType.Red;
                     //this.m_limbRole.initialize( this.m_rscene,0, linePart0, linePart1,60.0);
                     //this.m_limbRole.initialize( this.m_rscene,0, boxPart0, linePart1,80.0);
                     limbRole.initialize(this.m_rscene, 0, boxPart0, boxPart1, 80.0);
@@ -194,7 +208,7 @@ export namespace app
                     limbRole.moveToXZ(Math.random() * 1600.0 - 800.0,Math.random() * 1600.0 - 800.0);
                     //this.m_limbRole.moveToXZ(30.0, 0.0);
                     //          this.m_limbRoles.push(this.m_limbRole);//TwoFeetBody
-                    //  this.m_campModule.redCamp.addRole(limbRole);
+                    this.m_campModule.redCamp.addRole(limbRole);
                 }
                 this.m_limbRole = limbRole;
 
@@ -205,7 +219,7 @@ export namespace app
                 let upperBox:Box3DEntity = new Box3DEntity();
                 upperBox.initializeSizeXYZ(30.0,20,30,[tex5]);
                 upperBox.setXYZ(0.0,50.0,0.0);
-                for(i = 0; i < 0; ++i)
+                for(i = 0; i < 130; ++i)
                 {
 
                     let sillyRole:SillyRole = new SillyRole();
@@ -231,7 +245,7 @@ export namespace app
                     sillyRole.setXYZ(Math.random() * 1600.0 - 800.0,0.0,Math.random() * 1600.0 - 800.0);
                     sillyRole.moveToXZ(Math.random() * 1600.0 - 800.0,Math.random() * 1600.0 - 800.0);
                     
-                    sillyRole.campType = CampType.Green;
+                    sillyRole.campType = CampType.Free;
                     sillyRole.terrain = terrain;
                     sillyRole.attackDis = 50;
                     sillyRole.radius = 80;

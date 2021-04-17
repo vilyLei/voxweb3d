@@ -89,7 +89,7 @@ export namespace app
                 getHitPos(outPos:Vector3D):void
                 {
                     outPos.copyFrom(this.position);
-                    outPos.y += 80.0;
+                    outPos.y += 100.0;
                 }
                 // 获得被击毁位置
                 getDestroyedPos(outPos:Vector3D):void
