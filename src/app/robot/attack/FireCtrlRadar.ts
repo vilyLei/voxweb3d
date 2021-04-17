@@ -7,17 +7,17 @@
 
 import * as MathConstT from "../../../vox/math/MathConst";
 import * as Vector3T from "../../../vox/math/Vector3D";
-import * as CampT from "../../../app/robot/Camp";
+import * as CampT from "../../../app/robot/camp/Camp";
 import * as IRoleCampT from "../../../app/robot/IRoleCamp";
 import * as IAttackDstT from "../../../app/robot/attack/IAttackDst";
 import * as IDstFinderT from "../../../app/robot/attack/IDstFinder";
 
 import Vector3D = Vector3T.vox.math.Vector3D;
-import CampType = CampT.app.robot.CampType;
+import CampType = CampT.app.robot.camp.CampType;
 import IRoleCamp = IRoleCampT.app.robot.IRoleCamp;
 import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
 import IDstFinder = IDstFinderT.app.robot.attack.IDstFinder;
-import CampFindMode = CampT.app.robot.CampFindMode;
+import CampFindMode = CampT.app.robot.camp.CampFindMode;
 
 export namespace app
 {

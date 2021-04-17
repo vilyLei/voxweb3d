@@ -11,13 +11,13 @@ import * as DisplayEntityT from "../../../vox/entity/DisplayEntity";
 import * as Axis3DEntityT from "../../../vox/entity/Axis3DEntity";
 import * as DisplayEntityContainerT from "../../../vox/entity/DisplayEntityContainer";
 import * as RendererSceneT from "../../../vox/scene/RendererScene";
-import * as ArmFrameAxisT from "../../../app/robot/ArmFrameAxis";
+import * as TwoArmBoneT from "../../../app/robot/base/TwoArmBone";
 import * as IPartStoreT from "../../../app/robot/IPartStore";
 import * as IAttackDstT from "../../../app/robot/attack/IAttackDst";
 import * as DegreeTweenT from "../../../vox/utils/DegreeTween";
 import * as TriggerClockT from "../../../vox/utils/TriggerClock";
 import * as WeapMoudleT from "../../../app/robot/WeapMoudle";
-import * as CampT from "../../../app/robot/Camp";
+import * as CampT from "../../../app/robot/camp/Camp";
 import * as IRbtModuleT from "../../../app/robot/base/IRbtModule";
 
 import Vector3D = Vector3T.vox.math.Vector3D;
@@ -26,13 +26,13 @@ import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
 import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import ArmFrameAxis = ArmFrameAxisT.app.robot.ArmFrameAxis;
+import TwoArmBone = TwoArmBoneT.app.robot.base.TwoArmBone;
 import IPartStore = IPartStoreT.app.robot.IPartStore;
 import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
 import DegreeTween = DegreeTweenT.vox.utils.DegreeTween;
 import TriggerClock = TriggerClockT.vox.utils.TriggerClock;
 import WeapMoudle = WeapMoudleT.app.robot.WeapMoudle;
-import CampType = CampT.app.robot.CampType;
+import CampType = CampT.app.robot.camp.CampType;
 import IRbtModule = IRbtModuleT.app.robot.base.IRbtModule;
 
 
@@ -51,7 +51,7 @@ export namespace app
             private m_pos:Vector3D = new Vector3D();
             private m_tempV:Vector3D = new Vector3D();
 
-            private m_coreFAxis:ArmFrameAxis = new ArmFrameAxis();
+            private m_bone:TwoArmBone = new TwoArmBone();
             private m_container:DisplayEntityContainer = null;
             private m_containerL:DisplayEntityContainer = new DisplayEntityContainer();
             private m_containerR:DisplayEntityContainer = new DisplayEntityContainer();
@@ -90,26 +90,18 @@ export namespace app
                 return this.m_container.getVisible();
             }
             
-            //  setBgAngle(angle:number, OffsetAngle:number,angleDirec:number):void
-            //  {
-            //      this.m_coreFAxis.setBgAngle(angle,OffsetAngle,angleDirec);
-            //  }
-            //  setSgOffsetAngle(angle:number, OffsetAngle:number,angleDirec:number):void
-            //  {
-            //      this.m_coreFAxis.setSgOffsetAngle(angle,OffsetAngle,angleDirec);
-            //  }
             setAngleDirec(bgAngleDirec:number,sgAngleDirec:number):void
             {
-                this.m_coreFAxis.setAngleDirec(bgAngleDirec, sgAngleDirec);
+                this.m_bone.setAngleDirec(bgAngleDirec, sgAngleDirec);
             }
             
             toPositive():void
             {
-                this.m_coreFAxis.toPositive();
+                this.m_bone.toPositive();
             }
             toNegative():void
             {
-                this.m_coreFAxis.toNegative();
+                this.m_bone.toNegative();
             }
             setRotationY(rotation:number):void
             {
@@ -144,19 +136,18 @@ export namespace app
                     this.m_containerL.addEntity(sgL);
                     this.m_containerR.addEntity(bgR);
                     this.m_containerR.addEntity(sgR);
-
+                    /*
                     let axis:Axis3DEntity = new Axis3DEntity();
                     axis.initialize(30.0);
                     axis.setXYZ(100,130,0.0);
                     this.m_container.addEntity(axis);
-
                     this.m_testAxis = axis;
 
                     axis = new Axis3DEntity();
                     axis.initialize(200.0);
                     axis.setXYZ(0,30,0.0);
                     this.m_container.addEntity(axis);
-
+                    //*/
 
                     let pv:Vector3D = new Vector3D();
                     pv.copyFrom(partStore.getCoreCenter());
@@ -164,9 +155,9 @@ export namespace app
                     {
                         pv.addBy(offsetPos);
                     }
-                    this.m_coreFAxis.initialize(coreEntity, pv, 0.0);
-                    this.m_coreFAxis.setBG(bgL,bgR, partStore.getBGLong());
-                    this.m_coreFAxis.setSG(sgL,sgR);
+                    this.m_bone.initialize(coreEntity, pv, 0.0);
+                    this.m_bone.setBG(bgL,bgR, partStore.getBGLong());
+                    this.m_bone.setSG(sgL,sgR);
 
                     this.degreeTween.bindTarget(this.m_container);
                     
@@ -193,10 +184,10 @@ export namespace app
                 switch(index)
                 {
                     case 0:                        
-                        this.m_coreFAxis.getLEndPos(outV,k);
+                        this.m_bone.getLEndPos(outV,k);
                         break;
                     case 1:                        
-                        this.m_coreFAxis.getREndPos(outV,k);
+                        this.m_bone.getREndPos(outV,k);
                         break;
                     default:
                         break;
@@ -208,10 +199,10 @@ export namespace app
                 switch(index)
                 {
                     case 0:
-                        this.m_coreFAxis.setRecoilDegreeL(degree);
+                        this.m_bone.setRecoilDegreeL(degree);
                         break;
                     case 1:
-                        this.m_coreFAxis.setRecoilDegreeR(degree);
+                        this.m_bone.setRecoilDegreeR(degree);
                         break;
                     default:
                         break;
@@ -287,7 +278,7 @@ export namespace app
                     {
                         this.m_tempV.scaleVecTo(Vector3D.X_AXIS, kf);
                         this.m_tempV.y = py;
-                        this.m_coreFAxis.setAttLPos(this.m_tempV);
+                        this.m_bone.setAttLPos(this.m_tempV);
                     }
     
                     this.m_containerR.getInvMatrix().transformOutVector3(this.m_attPos, this.m_tempV);
@@ -299,18 +290,18 @@ export namespace app
                     {
                         this.m_tempV.scaleVecTo(Vector3D.X_AXIS, kf);
                         this.m_tempV.y = py;
-                        this.m_coreFAxis.setAttRPos(this.m_tempV);
+                        this.m_bone.setAttRPos(this.m_tempV);
                     }
                 }
             }
             resetPose():void
             {
-                this.m_coreFAxis.resetPose();
-                this.m_time = this.m_coreFAxis.getOriginTime();
+                this.m_bone.resetPose();
+                this.m_time = this.m_bone.getOriginTime();
             }
             resetNextOriginPose():void
             {
-                this.m_nextTime = this.m_coreFAxis.getNextOriginTime(this.m_time);
+                this.m_nextTime = this.m_bone.getNextOriginTime(this.m_time);
             }
             private m_beginPos:Vector3D = new Vector3D();
             private attack():void
@@ -342,12 +333,12 @@ export namespace app
                 this.m_container.update();
                 if(moveEnabled || this.degreeTween.isRunning())
                 {
-                    this.m_coreFAxis.runAtt(this.m_time, true);
+                    this.m_bone.runAtt(this.m_time, true);
                     this.m_time += this.m_timeSpeed;
                 }
                 else
                 {
-                    this.m_coreFAxis.runAtt(this.m_time, false);
+                    this.m_bone.runAtt(this.m_time, false);
                 }
                 if(attacking)
                 {
@@ -357,7 +348,7 @@ export namespace app
             //  run():void
             //  {
             //      this.m_container.update();
-            //      this.m_coreFAxis.run(this.m_time);
+            //      this.m_bone.run(this.m_time);
             //      this.m_time += this.m_timeSpeed;
             //  }
             update():void
@@ -379,7 +370,7 @@ export namespace app
                     this.m_time = this.m_nextTime;
                 }
                 this.m_container.update();
-                this.m_coreFAxis.run(this.m_time);
+                this.m_bone.run(this.m_time);
                 this.m_time += this.m_timeSpeed;
             }
         }

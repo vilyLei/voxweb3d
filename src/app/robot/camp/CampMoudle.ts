@@ -5,28 +5,28 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as MathConstT from "../../vox/math/MathConst";
-import * as Vector3T from "../../vox/math/Vector3D";
-import * as RendererSceneT from "../../vox/scene/RendererScene";
-import * as AttackDataPoolT from "../../app/robot/AttackDataPool";
-import * as TriggerDataT from "../../app/robot/TriggerData";
-import * as CampTypeT from "../../app/robot/Camp";
-import * as RedCampT from "../../app/robot/RedCamp";
-import * as BlueCampT from "../../app/robot/BlueCamp";
-import * as AssetsModuleT from "../../app/robot/assets/AssetsModule";
+import * as MathConstT from "../../../vox/math/MathConst";
+import * as Vector3T from "../../../vox/math/Vector3D";
+import * as RendererSceneT from "../../../vox/scene/RendererScene";
+import * as AttackDataPoolT from "../../../app/robot/scene/AttackDataPool";
+import * as TriggerDataT from "../../../app/robot/TriggerData";
+import * as CampTypeT from "../../../app/robot/camp/Camp";
+import * as RedCampT from "../../../app/robot/camp/RedCamp";
+import * as BlueCampT from "../../../app/robot/camp/BlueCamp";
+import * as AssetsModuleT from "../../../app/robot/assets/AssetsModule";
 
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
-import * as EruptionSmokePoolT from "../../particle/effect/EruptionSmokePool";
+import * as TextureProxyT from "../../../vox/texture/TextureProxy";
+import * as EruptionSmokePoolT from "../../../particle/effect/EruptionSmokePool";
 
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3T.vox.math.Vector3D;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import AttackDataPool = AttackDataPoolT.app.robot.AttackDataPool;
+import AttackDataPool = AttackDataPoolT.app.robot.scene.AttackDataPool;
 import TriggerData = TriggerDataT.app.robot.TriggerData;
-import CampType = CampTypeT.app.robot.CampType;
-import RedCamp = RedCampT.app.robot.RedCamp;
-import BlueCamp = BlueCampT.app.robot.BlueCamp;
+import CampType = CampTypeT.app.robot.camp.CampType;
+import RedCamp = RedCampT.app.robot.camp.RedCamp;
+import BlueCamp = BlueCampT.app.robot.camp.BlueCamp;
 import AssetsModule = AssetsModuleT.app.robot.assets.AssetsModule;
 
 import TextureProxy = TextureProxyT.vox.texture.TextureProxy;

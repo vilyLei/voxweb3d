@@ -6,10 +6,10 @@
 /***************************************************************************/
 
 import * as Vector3T from "../../../vox/math/Vector3D";
-import * as CampT from "../../../app/robot/Camp";
+import * as CampT from "../../../app/robot/camp/Camp";
 
 import Vector3D = Vector3T.vox.math.Vector3D;
-import CampType = CampT.app.robot.CampType;
+import CampType = CampT.app.robot.camp.CampType;
 
 export namespace app
 {

@@ -9,13 +9,13 @@ import * as MathConstT from "../../vox/math/MathConst";
 import * as Vector3T from "../../vox/math/Vector3D";
 import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
 import * as IAttackDstT from "../../app/robot/attack/IAttackDst";
-import * as CampTypeT from "../../app/robot/Camp";
+import * as CampTypeT from "../../app/robot/camp/Camp";
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3T.vox.math.Vector3D;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
-import CampType = CampTypeT.app.robot.CampType;
+import CampType = CampTypeT.app.robot.camp.CampType;
 
 export namespace app
 {

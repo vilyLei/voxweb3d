@@ -13,8 +13,8 @@ import * as BillboardLine3DEntityT from "../../vox/entity/BillboardLine3DEntity"
 
 import * as IAttackDstT from "../../app/robot/attack/IAttackDst";
 import * as TriggerDataT from "../../app/robot/TriggerData";
-import * as AttackDataPoolT from "../../app/robot/AttackDataPool";
-import * as CampTypeT from "../../app/robot/Camp";
+import * as AttackDataPoolT from "../../app/robot/scene/AttackDataPool";
+import * as CampTypeT from "../../app/robot/camp/Camp";
 import * as AssetsModuleT from "../../app/robot/assets/AssetsModule";
 
 import MathConst = MathConstT.vox.math.MathConst;
@@ -24,8 +24,8 @@ import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import BillboardLine3DEntity = BillboardLine3DEntityT.vox.entity.BillboardLine3DEntity;
 import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
 import TriggerData = TriggerDataT.app.robot.TriggerData;
-import AttackDataPool = AttackDataPoolT.app.robot.AttackDataPool;
-import CampType = CampTypeT.app.robot.CampType;
+import AttackDataPool = AttackDataPoolT.app.robot.scene.AttackDataPool;
+import CampType = CampTypeT.app.robot.camp.CampType;
 import AssetsModule = AssetsModuleT.app.robot.assets.AssetsModule;
 
 export namespace app

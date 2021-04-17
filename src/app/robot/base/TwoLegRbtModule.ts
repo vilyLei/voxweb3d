@@ -9,7 +9,7 @@ import * as Vector3T from "../../../vox/math/Vector3D";
 import * as DisplayEntityT from "../../../vox/entity/DisplayEntity";
 import * as DisplayEntityContainerT from "../../../vox/entity/DisplayEntityContainer";
 import * as RendererSceneT from "../../../vox/scene/RendererScene";
-import * as CoreFrameAxisT from "../../../app/robot/CoreFrameAxis";
+import * as CoreFrameAxisT from "../../../app/robot/base/TwoLegBone";
 import * as IPartStoreT from "../../../app/robot/IPartStore";
 import * as IPosetureT from "../../../app/robot/poseture/IPoseture";
 import * as IAttackDstT from "../../../app/robot/attack/IAttackDst";
@@ -20,7 +20,7 @@ import Vector3D = Vector3T.vox.math.Vector3D;
 import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import CoreFrameAxis = CoreFrameAxisT.app.robot.CoreFrameAxis;
+import TwoLegBone = CoreFrameAxisT.app.robot.base.TwoLegBone;
 import IPartStore = IPartStoreT.app.robot.IPartStore;
 import IPoseture = IPosetureT.app.robot.poseture.IPoseture;
 import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
@@ -39,7 +39,7 @@ export namespace app
             private m_sc:RendererScene = null;
             private m_time:number = 0;
 
-            private m_coreFAxis:CoreFrameAxis = new CoreFrameAxis();
+            private m_bone:TwoLegBone = new TwoLegBone();
             private m_container:DisplayEntityContainer = null;
             private m_partStore:IPartStore = null;
             
@@ -77,11 +77,11 @@ export namespace app
             }
             toPositive():void
             {
-                this.m_coreFAxis.toPositive();
+                this.m_bone.toPositive();
             }
             toNegative():void
             {
-                this.m_coreFAxis.toNegative();
+                this.m_bone.toNegative();
             }
             setRotationY(rotation:number):void
             {
@@ -131,9 +131,9 @@ export namespace app
                     {
                         pv.addBy(offsetPos);
                     }
-                    this.m_coreFAxis.initialize(coreEntity, pv, partStore.getCoreWidth() * 0.5);
-                    this.m_coreFAxis.setBG(bgL,bgR, partStore.getBGLong());
-                    this.m_coreFAxis.setSG(sgL,sgR);
+                    this.m_bone.initialize(coreEntity, pv, partStore.getCoreWidth() * 0.5);
+                    this.m_bone.setBG(bgL,bgR, partStore.getBGLong());
+                    this.m_bone.setSG(sgL,sgR);
 
                     this.postureCtrl.bindTarget(this);
                 }
@@ -152,17 +152,17 @@ export namespace app
             }
             resetPose():void
             {
-                this.m_coreFAxis.resetPose();
-                this.m_time = this.m_coreFAxis.getOriginTime();
+                this.m_bone.resetPose();
+                this.m_time = this.m_bone.getOriginTime();
             }
             resetNextOriginPose():void
             {
-                this.m_nextTime = this.m_coreFAxis.getNextOriginTime(this.m_time);
+                this.m_nextTime = this.m_bone.getNextOriginTime(this.m_time);
             }
             run(moveEnabled:boolean):void
             {
                 this.m_container.update();
-                this.m_coreFAxis.run(this.m_time);
+                this.m_bone.run(this.m_time);
                 this.m_time += this.m_timeSpeed;
             }
             isResetFinish():boolean
@@ -176,7 +176,7 @@ export namespace app
                     this.m_time = this.m_nextTime;
                 }
                 this.m_container.update();
-                this.m_coreFAxis.run(this.m_time);
+                this.m_bone.run(this.m_time);
                 this.m_time += this.m_timeSpeed;
             }
         }

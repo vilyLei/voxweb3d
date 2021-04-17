@@ -50,7 +50,7 @@ export namespace app
             private m_sgOffsetAngle:number = 20.0;
             private m_sgAngleDirec:number = 1.0;
 
-            private m_coreMatrix4:Matrix4 = null;//new Matrix4();
+            private m_coreMatrix4:Matrix4 = null;
             
             constructor(){}
 

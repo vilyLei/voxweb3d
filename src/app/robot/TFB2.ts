@@ -13,7 +13,7 @@ import * as DirectXZModuleT from "../../voxmotion/primitive/DirectXZModule";
 import * as IPartStoreT from "../../app/robot/IPartStore";
 import * as TwoLegRbtModuleT from "../../app/robot/base/TwoLegRbtModule";
 import * as TwoArmRbtModuleT from "../../app/robot/base/TwoArmRbtModule";
-import * as CampT from "../../app/robot/Camp";
+import * as CampT from "../../app/robot/camp/Camp";
 import * as IRoleCampT from "../../app/robot/IRoleCamp";
 import * as IAttackDstT from "../../app/robot/attack/IAttackDst";
 import * as FireCtrlRadarT from "../../app/robot/attack/FireCtrlRadar";
@@ -27,7 +27,7 @@ import DirectXZModule = DirectXZModuleT.voxmotion.primitive.DirectXZModule;
 import IPartStore = IPartStoreT.app.robot.IPartStore;
 import TwoLegRbtModule = TwoLegRbtModuleT.app.robot.base.TwoLegRbtModule;
 import TwoArmRbtModule = TwoArmRbtModuleT.app.robot.base.TwoArmRbtModule;
-import CampType = CampT.app.robot.CampType;
+import CampType = CampT.app.robot.camp.CampType;
 
 import IRoleCamp = IRoleCampT.app.robot.IRoleCamp;
 import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;

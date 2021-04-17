@@ -7,11 +7,11 @@
 
 import * as MathConstT from "../../../vox/math/MathConst";
 import * as Vector3T from "../../../vox/math/Vector3D";
-import * as CampTypeT from "../../../app/robot/Camp";
+import * as CampTypeT from "../../../app/robot/camp/Camp";
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3T.vox.math.Vector3D;
-import CampType = CampTypeT.app.robot.CampType;
+import CampType = CampTypeT.app.robot.camp.CampType;
 export namespace app
 {
     export namespace robot

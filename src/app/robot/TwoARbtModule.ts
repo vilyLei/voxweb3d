@@ -17,7 +17,7 @@ import * as IAttackDstT from "../../app/robot/attack/IAttackDst";
 import * as DegreeTweenT from "../../vox/utils/DegreeTween";
 import * as TriggerClockT from "../../vox/utils/TriggerClock";
 import * as WeapMoudleT from "../../app/robot/WeapMoudle";
-import * as CampT from "../../app/robot/Camp";
+import * as CampT from "../../app/robot/camp/Camp";
 
 import Vector3D = Vector3T.vox.math.Vector3D;
 import MathConst = MathConstT.vox.math.MathConst;
@@ -31,7 +31,7 @@ import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
 import DegreeTween = DegreeTweenT.vox.utils.DegreeTween;
 import TriggerClock = TriggerClockT.vox.utils.TriggerClock;
 import WeapMoudle = WeapMoudleT.app.robot.WeapMoudle;
-import CampType = CampT.app.robot.CampType;
+import CampType = CampT.app.robot.camp.CampType;
 
 export namespace app
 {

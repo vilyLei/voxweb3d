@@ -20,8 +20,8 @@ import * as TwoFeetUnitT from "../app/robot/TwoFeetUnit";
 import * as FourLimbRoleT from "../app/robot/base/FourLimbRole";
 import * as LinePartStoreT from "../app/robot/LinePartStore";
 import * as BoxPartStoreT from "../app/robot/BoxPartStore";
-import * as CampMoudleT from "../app/robot/CampMoudle";
-import * as CampT from "../app/robot/Camp";
+import * as CampMoudleT from "../app/robot/camp/CampMoudle";
+import * as CampT from "../app/robot/camp/Camp";
 import * as AssetsModuleT from "../app/robot/assets/AssetsModule";
 import * as RedRoleT from "../app/robot/RedRole";
 import * as RunnableModuleT from "../app/robot/scene/RunnableModule";
@@ -52,7 +52,7 @@ import FourLimbRole = FourLimbRoleT.app.robot.base.FourLimbRole;
 import LinePartStore = LinePartStoreT.app.robot.LinePartStore;
 import BoxPartStore = BoxPartStoreT.app.robot.BoxPartStore;
 import CampMoudle = CampMoudleT.app.robot.CampMoudle;
-import CampType = CampT.app.robot.CampType;
+import CampType = CampT.app.robot.camp.CampType;
 import AssetsModule = AssetsModuleT.app.robot.assets.AssetsModule;
 import RedRole = RedRoleT.app.robot.RedRole;
 import RunnableModule = RunnableModuleT.app.robot.scene.RunnableModule;
@@ -166,7 +166,7 @@ export namespace app
                 }
                 let terrain:Terrain = new Terrain();
                 
-                for(i = 0; i < 18; ++i)
+                for(i = 0; i < 120; ++i)
                 {
                     //let linePart0:LinePartStore = new LinePartStore();
                     //let linePart1:LinePartStore = new LinePartStore();
@@ -189,8 +189,8 @@ export namespace app
                     this.m_twoFeetBody.initialize(this.m_rscene, 0, boxPart0, boxPart1, 80.0);
                     //this.m_twoFeetBody.setXYZ(Math.random() * 500.0 - 250.0,0.0,Math.random() * 500.0 - 250.0);
                     
-                    this.m_twoFeetBody.setXYZ(Math.random() * 1200.0 - 600.0,0.0,Math.random() * 1200.0 - 600.0);
-                    this.m_twoFeetBody.moveToXZ(Math.random() * 1200.0 - 600.0,Math.random() * 1200.0 - 600.0);
+                    this.m_twoFeetBody.setXYZ(Math.random() * 1600.0 - 800.0,0.0,Math.random() * 1600.0 - 800.0);
+                    this.m_twoFeetBody.moveToXZ(Math.random() * 1600.0 - 800.0,Math.random() * 1600.0 - 800.0);
                     //this.m_twoFeetBody.moveToXZ(30.0, 0.0);
                     this.m_twoFeetBodys.push(this.m_twoFeetBody);//TwoFeetBody
                 }
@@ -224,14 +224,14 @@ export namespace app
                         sillyRole.initialize(this.m_rscene,0,box0,box1);
                     }
                     
-                    sillyRole.setXYZ(Math.random() * 1200.0 - 600.0,0.0,Math.random() * 1200.0 - 600.0);
-                    sillyRole.moveToXZ(Math.random() * 1200.0 - 600.0,Math.random() * 1200.0 - 600.0);
+                    sillyRole.setXYZ(Math.random() * 1600.0 - 800.0,0.0,Math.random() * 1600.0 - 800.0);
+                    sillyRole.moveToXZ(Math.random() * 1600.0 - 800.0,Math.random() * 1600.0 - 800.0);
                     
                     sillyRole.campType = CampType.Red;
                     sillyRole.terrain = terrain;
                     sillyRole.attackDis = 50;
                     sillyRole.radius = 80;
-                    sillyRole.lifeTime = 100;
+                    sillyRole.lifeTime = 1000;
                     sillyRole.wake();
                     this.m_campModule.redCamp.addRole(sillyRole);
                 }
@@ -264,13 +264,14 @@ export namespace app
             
             this.m_campModule.run();
             RunnableModule.Run();
-            
+            this.m_rscene.update();
         }
         run():void
         {
             this.m_statusDisp.update();
-
+            this.m_rscene.runBegin();
             this.m_rscene.run();
+            this.m_rscene.runEnd();
             this.m_viewRay.intersectPiane();
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }

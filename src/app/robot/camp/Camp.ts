@@ -9,17 +9,20 @@ export namespace app
 {
     export namespace robot
     {
-        export enum CampType
+        export namespace camp
         {
-            Red,
-            Blue,
-            Green            
-        }
-        export enum CampFindMode
-        {
-            Default,
-            XOZ
-            
+            export enum CampType
+            {
+                Red,
+                Blue,
+                Green            
+            }
+            export enum CampFindMode
+            {
+                Default,
+                XOZ
+                
+            }
         }
     }
 }
