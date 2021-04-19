@@ -280,6 +280,12 @@
 //  import * as DemoVSTexturePos from "./demo/DemoVSTexturePos";
 //  import Demo = DemoVSTexturePos.demo.DemoVSTexturePos;
 
+import * as DemoFloatTex from "./demo/DemoFloatTex";
+import Demo = DemoFloatTex.demo.DemoFloatTex;
+
+//  import * as DemoFloatTex2 from "./example/DemoFloatTex2";
+//  import Demo = DemoFloatTex2.demo.DemoFloatTex2;
+
 //  import * as DemoBoxGroupTrack from "./demo/DemoBoxGroupTrack";
 //  import Demo = DemoBoxGroupTrack.demo.DemoBoxGroupTrack;
 
@@ -307,8 +313,8 @@
 //  import * as BoFrame from "./app/BoFrame";
 //  import Demo = BoFrame.app.BoFrame;
 
-import * as RbtDrama from "./app/RbtDrama";
-import Demo = RbtDrama.app.RbtDrama;
+//  import * as RbtDrama from "./app/RbtDrama";
+//  import Demo = RbtDrama.app.RbtDrama;
 
 //  import * as DensityStatistics from "./app/density/DensityStatistics";
 //  import Demo = DensityStatistics.app.density.DensityStatistics;

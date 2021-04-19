@@ -104,7 +104,7 @@ export namespace vox
                     console.log("EXT_color_buffer_float Extension can not support!");
                 }
                 
-                selfT.OES_texture_float_linear = gl.getExtension('OES_texture_float_linear');
+                //selfT.OES_texture_float_linear = gl.getExtension('OES_texture_float_linear');
                 if(selfT.OES_texture_float_linear != null)
                 console.log("Use OES_texture_float_linear Extension success!");
                 else

@@ -135,7 +135,7 @@ export namespace demo
             //tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
             tex.minFilter = TextureConst.LINEAR;
             tex.magFilter = TextureConst.LINEAR;
-            tex.setDataFromBytes(vs,0);
+            tex.setDataFromBytes(vs,0, size,size);
             return tex;
         }
         
@@ -194,7 +194,7 @@ export namespace demo
                     vs[k+3] = 255;
                 }
             }
-            tex.setDataFromBytes(vs,0);
+            tex.setDataFromBytes(vs,0, 4,4);
             //tex.mipmapEnabled = true;
             return tex;
             
@@ -313,7 +313,7 @@ export namespace demo
                 let floatTex:TextureProxy = null;
                 let bytesTex:TextureProxy = null;
                 ///*
-                //floatTex = this.createFloatTex();
+                floatTex = this.createFloatTex();
                 //floatTex = this.createRGBFloatTex();
 
                 //if(floatTex == null)bytesTex = this.createBytesTex();
@@ -332,7 +332,8 @@ export namespace demo
                 this.m_dataLoader.loadArraybuffer(purl);
                 //this.m_loaders.push(this.m_dataLoader);
                 //*/
-                ///*
+                this.m_rscene.addEntity(plane);
+                /*
                 bytesTex = this.createBytesTex2();
                 //bytesTex = this.createBytesTex();
                 let material:CubeMapMaterial = new CubeMapMaterial();
@@ -345,7 +346,6 @@ export namespace demo
                 box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[bytesTex]);
                 this.m_rscene.addEntity(box);
 
-                this.m_rscene.addEntity(plane);
                 //*/
                 //  let axis:Axis3DEntity = new Axis3DEntity();
                 //  axis.initialize(300.0);

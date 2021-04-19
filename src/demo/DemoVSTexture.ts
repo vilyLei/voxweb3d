@@ -80,8 +80,8 @@ export namespace demo
                 
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 //let tex1:TextureProxy = this.getImageTexByUrl("static/assets/caustics_02.jpg");
-                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/green.jpg");
-                //let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
+                //let tex1:TextureProxy = this.getImageTexByUrl("static/assets/green.jpg");
+                let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
                 
                 
                 let material:VSTextureMaterial = new VSTextureMaterial();
