@@ -26,6 +26,10 @@ export namespace vox
             }
             static GetTransUniform(mat:Matrix4):IShaderUniform
             {
+                if(mat.getUid() < 0)
+                {
+                    throw Error("mat.getUid() < 0");
+                }
                 return ROTransPool.s_transMap.get(mat.getUid());
             }
             static HasTransUniform(mat:Matrix4):boolean

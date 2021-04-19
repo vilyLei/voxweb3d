@@ -166,7 +166,7 @@ export namespace app
                 }
                 let terrain:Terrain = new Terrain();
                 let limbRole:FourLimbRole;
-                for(i = 0; i < 10; ++i)
+                for(i = 0; i < 100; ++i)
                 {
                     //let linePart0:LinePartStore = new LinePartStore();
                     //let linePart1:LinePartStore = new LinePartStore();
@@ -219,7 +219,7 @@ export namespace app
                 let upperBox:Box3DEntity = new Box3DEntity();
                 upperBox.initializeSizeXYZ(30.0,20,30,[tex5]);
                 upperBox.setXYZ(0.0,50.0,0.0);
-                for(i = 0; i < 130; ++i)
+                for(i = 0; i < 100; ++i)
                 {
 
                     let sillyRole:SillyRole = new SillyRole();

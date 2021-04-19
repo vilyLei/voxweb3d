@@ -22,15 +22,17 @@ Engine code in src\vox\
 
 installation:
 
-    step 1, install global nodejs(https://nodejs.org/en/),auto include npm already.
+    step 1, install global git(https://git-scm.com/downloads).
     
-    step 2, install yarn(console run: npm install -g yarn)
+    step 2, install global nodejs(https://nodejs.org/en/),auto include npm already.
     
-    step 3, enter this dir, console run: yarn install
+    step 3, install yarn(console run: npm install -g yarn)
     
-    step 4, enter this dir, console run: yarn dev, you will see success 3d display
+    step 4, enter this dir, console run: yarn install
     
-    step 5, enter this dir, console run: yarn build, build package js
+    step 5, enter this dir, console run: yarn dev, you will see success 3d display
+    
+    step 6, enter this dir, console run: yarn build, build package js
 
 about:
 

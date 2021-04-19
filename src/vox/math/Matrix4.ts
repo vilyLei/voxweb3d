@@ -33,6 +33,7 @@ export namespace vox
 				0.0,0.0,0.0,1.0
 			]);
 			private static s_uid:number = 0;
+			private static s_isolatedUid:number = 0x4ffff;
 			private m_uid:number = -1;
 			private static s_tMat4:Matrix4 = new Matrix4();
 			private m_index:number = 0;
@@ -50,6 +51,7 @@ export namespace vox
 				}
 				else
 				{
+					this.m_uid = Matrix4.s_isolatedUid++;					
 					this.m_fs32 = new Float32Array(16);
 					this.m_fs32.set(Matrix4.s_InitData,0);
 					this.m_localFS32 = this.m_fs32;
