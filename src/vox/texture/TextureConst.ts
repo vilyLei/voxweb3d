@@ -31,17 +31,14 @@ export namespace vox
             static readonly DEPTH_STENCIL:number = 352;
             static ToGL(gl:any,format:number):number
             {
-                console.log("format: ",format);
                 switch(format)
                 {
                     case TextureFormat.RGBA:
-                        console.log("TextureFormat.RGBA...");
                         break;
                     case TextureFormat.R8:
                         return gl.R8;
                     break;
                     case TextureFormat.RGB:
-                        //console.log("TextureFormat.RGB...");
                         return gl.RGB;
                     break;
                     case TextureFormat.RGB8:
@@ -54,7 +51,6 @@ export namespace vox
                         return gl.ALPHA;
                     break;
                     case TextureFormat.RGB16F:
-                        //console.log("TextureFormat.RGB16F...");
                         if(RendererDeviece.IsWebGL2())
                         {
                             return gl.RGB16F;
@@ -64,19 +60,15 @@ export namespace vox
                     case TextureFormat.RGBA16F:
                         if(RendererDeviece.IsWebGL2())
                         {
-                            console.log("TextureFormat.RGBA16F...");
                             return gl.RGBA16F;
                         }
-                        console.log("TextureFormat.RGBA...");
                         return gl.RGBA;
                     break;
                     case TextureFormat.RGB32F:
-                        console.log("TextureFormat.RGB32F...");
                         if(RendererDeviece.IsWebGL2()) gl.RGB32F;
                         return gl.RGB;
                         break;
                     case TextureFormat.RGBA32F:
-                        console.log("TextureFormat.RGB32F...");
                         if(RendererDeviece.IsWebGL2()) gl.RGBA32F;
                         return gl.RGBA;
                     break;
@@ -112,7 +104,6 @@ export namespace vox
 
             static ToGL(gl:any,type:number):number
             {
-                console.log("data type: ",type);
                 switch(type)
                 {
                     case TextureDataType.UNSIGNED_BYTE:

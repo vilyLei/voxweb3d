@@ -82,6 +82,28 @@ export namespace voxanimate
                     this.m_texData = fs;
                 }
             }
+            setPosData(posDataTex:FloatTextureProxy,posData:Float32Array, posTotal:number):void
+            {
+                if(posDataTex != null && posData != null)
+                {
+                    this.m_texSize = posDataTex.getWidth();
+                    this.m_posTotal = posTotal;
+                    this.m_posDataTex = posDataTex;
+                    this.m_texData = posData;
+                }
+            }
+            getPosDataTexture():FloatTextureProxy
+            {
+                return this.m_posDataTex;
+            }
+            getPosData():Float32Array
+            {
+                return this.m_texData;
+            }
+            getPosTotal():number
+            {
+                return this.m_posTotal;
+            }
             getDataTextureSize():number
             {
                 return this.m_texSize * this.m_texSize;

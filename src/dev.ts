@@ -262,8 +262,8 @@
 //  import * as DemoAPlane from "./demo/DemoAPlane";
 //  import Demo = DemoAPlane.demo.DemoAPlane;
 
-//  import * as DemoPrimitive from "./demo/DemoPrimitive";
-//  import Demo = DemoPrimitive.demo.DemoPrimitive;
+// import * as DemoPrimitive from "./demo/DemoPrimitive";
+// import Demo = DemoPrimitive.demo.DemoPrimitive;
 
 //  import * as DemoMultiRenderer from "./demo/DemoMultiRenderer";
 //  import Demo = DemoMultiRenderer.demo.DemoMultiRenderer;
@@ -280,8 +280,8 @@
 //  import * as DemoVSTexturePos from "./demo/DemoVSTexturePos";
 //  import Demo = DemoVSTexturePos.demo.DemoVSTexturePos;
 
-import * as DemoFloatTex from "./demo/DemoFloatTex";
-import Demo = DemoFloatTex.demo.DemoFloatTex;
+//  import * as DemoFloatTex from "./demo/DemoFloatTex";
+//  import Demo = DemoFloatTex.demo.DemoFloatTex;
 
 //  import * as DemoFloatTex2 from "./example/DemoFloatTex2";
 //  import Demo = DemoFloatTex2.demo.DemoFloatTex2;
@@ -313,8 +313,8 @@ import Demo = DemoFloatTex.demo.DemoFloatTex;
 //  import * as BoFrame from "./app/BoFrame";
 //  import Demo = BoFrame.app.BoFrame;
 
-//  import * as RbtDrama from "./app/RbtDrama";
-//  import Demo = RbtDrama.app.RbtDrama;
+import * as RbtDrama from "./app/RbtDrama";
+import Demo = RbtDrama.app.RbtDrama;
 
 //  import * as DensityStatistics from "./app/density/DensityStatistics";
 //  import Demo = DensityStatistics.app.density.DensityStatistics;

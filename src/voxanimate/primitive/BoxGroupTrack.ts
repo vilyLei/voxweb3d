@@ -23,8 +23,12 @@ export namespace voxanimate
 {
     export namespace primtive
     {
-        export class BoxGropTrack
+        export class BoxGroupTrack
         {
+            
+            private m_stepUnit:number = 1;
+            private m_unitsTotal:number = 1;
+            private m_stepFactor:number = 1.0;
             private m_radius:number = 2.0;
             private m_longFactor:number = 5.0;
             private m_spaceFactor:number = 2.0;
@@ -43,7 +47,7 @@ export namespace voxanimate
             {
                 this.m_trackScale.setXYZ(scaleX,scaleY,scaleZ);
             }
-            setTFactor(radius:number,longFactor:number,spaceFactor:number):void
+            setFactor(radius:number,longFactor:number,spaceFactor:number):void
             {
                 if(radius > 1)this.m_radius = radius;
                 if(longFactor > 1)this.m_longFactor = longFactor;
@@ -95,13 +99,28 @@ export namespace voxanimate
                 this.m_unitMinV.setXYZ(-radius,-radius,-radius * longFactor);
                 this.m_unitMaxV.copyFrom(this.m_unitMinV);
                 this.m_unitMaxV.scaleBy(-1.0);
-            } 
+            }
+            initializeFrom(srcTrack:BoxGroupTrack, texList:TextureProxy[]):void
+            {
+                if(srcTrack != null)
+                {
+                    this.animator.copyTransformFrom(srcTrack.animator);
+                    this.animator.setPosData(srcTrack.animator.getPosDataTexture(),srcTrack.animator.getPosData(),srcTrack.animator.getPosTotal());
+                    this.animator.copyMeshFrom(srcTrack.animator);
+                    let unitMinV:Vector3D = new Vector3D();
+                    unitMinV.copyFrom(srcTrack.m_unitMinV);
+                    let unitMaxV:Vector3D = new Vector3D();
+                    unitMaxV.copyFrom(srcTrack.m_unitMaxV);
+                    this.animator.initialize(unitMinV,unitMaxV,srcTrack.m_unitsTotal,srcTrack.m_stepFactor,texList);
+                }
+            }
             initialize(textureBlock:TextureBlock,stepDis:number = 0.5,texList:TextureProxy[] = null):void
             {
                 this.createTrackData();
 
                 let pos:Vector3D;
-                for(let i:number = 0; i < this.m_trackPosList.length; ++i)
+                //for(let i:number = 0; i < this.m_trackPosList.length; ++i)
+                for(let i:number = this.m_trackPosList.length - 1; i >= 0; --i)
                 {
                     pos = this.m_trackPosList[i];
                     pos.scaleVector(this.m_trackScale);
@@ -127,11 +146,11 @@ export namespace voxanimate
                     }
                 }
                 
-                let stepUnit:number = Math.floor(Math.abs(this.m_unitMinV.x * 2.0) + this.m_spaceFactor);
-                let unitsTotal:number = Math.ceil(this.m_track.getPathDistance()/stepUnit);
-                this.animator.initialize(this.m_unitMinV,this.m_unitMaxV,unitsTotal,Math.round(stepUnit/stepDis),texList);
+                this.m_stepUnit = Math.floor(Math.abs(this.m_unitMinV.x * 2.0) + this.m_spaceFactor);
+                this.m_unitsTotal = Math.ceil(this.m_track.getPathDistance()/this.m_stepUnit);
+                this.m_stepFactor = Math.round(this.m_stepUnit/stepDis);
+                this.animator.initialize(this.m_unitMinV,this.m_unitMaxV,this.m_unitsTotal,this.m_stepFactor,texList);
             }
-            
             moveDistanceOffset(distanceOffset:number):void
             {
                 this.animator.moveIdDistanceOffset(distanceOffset);
@@ -170,7 +189,7 @@ export namespace voxanimate
             }
             toString():string
             {
-                return "BoxGropTrack()";
+                return "BoxGroupTrack()";
             }
         }
 

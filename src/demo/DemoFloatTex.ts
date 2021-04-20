@@ -111,7 +111,7 @@ export namespace demo
             posTex.minFilter = TextureConst.NEAREST;
             posTex.magFilter = TextureConst.NEAREST;
             //posTex.
-            let fs:Float32Array = new Float32Array(texSize * texSize * 2);
+            let fs:Float32Array = new Float32Array(texSize * texSize * 4);
             fs.fill(1.0);
             for(let r:number = 0; r < texSize; ++r)
             {
@@ -136,7 +136,7 @@ export namespace demo
                 RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
                 let rparam:RendererParam = new RendererParam();
-                rparam.maxWebGLVersion = 1;
+                //rparam.maxWebGLVersion = 1;
                 rparam.setCamPosition(500.0,500.0,500.0);
                 this.m_rscene = new RendererScene();
                 this.m_rscene.initialize(rparam,3);

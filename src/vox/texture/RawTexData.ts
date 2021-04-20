@@ -30,9 +30,7 @@ export namespace vox
             {
                 if(this.status == 1 || force)
                 {
-                    console.log("build tex, ",this.data);
                     gl.texImage2D(samplerTarget, this.miplevel, interType,this.width,this.height,0,format, type, this.data);
-                    //gl.texImage2D(samplerTarget, this.miplevel, gl.RGBA,this.width,this.height,0,gl.RGBA, gl.FLOAT, this.data);
                 }
                 else if(this.status == 0)
                 {

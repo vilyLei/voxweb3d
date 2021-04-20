@@ -26,7 +26,9 @@ import * as AssetsModuleT from "../app/robot/assets/AssetsModule";
 import * as RedRoleT from "../app/robot/RedRole";
 import * as RunnableModuleT from "../app/robot/scene/RunnableModule";
 import * as TerrainT from "../app/robot/scene/Terrain";
+import * as BoxGroupTrackT from "../voxanimate/primitive/BoxGroupTrack";
 import * as SillyRoleT from "../app/robot/base/SillyRole";
+import * as TracWheelRoleT from "../app/robot/base/TracWheelRole";
 
 import * as CameraViewRayT from "../vox/view/CameraViewRay";
 
@@ -57,7 +59,9 @@ import AssetsModule = AssetsModuleT.app.robot.assets.AssetsModule;
 import RedRole = RedRoleT.app.robot.RedRole;
 import RunnableModule = RunnableModuleT.app.robot.scene.RunnableModule;
 import Terrain = TerrainT.app.robot.scene.Terrain;
+import BoxGroupTrack = BoxGroupTrackT.voxanimate.primtive.BoxGroupTrack;
 import SillyRole = SillyRoleT.app.robot.base.SillyRole;
+import TracWheelRole = TracWheelRoleT.app.robot.base.TracWheelRole;
 
 import CameraViewRay = CameraViewRayT.vox.view.CameraViewRay;
 
@@ -72,6 +76,7 @@ export namespace app
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
 
+        private m_boxTrack:BoxGroupTrack = new BoxGroupTrack();
         //FourLimbRole
         private m_limbRole:FourLimbRole = null;
         //private m_limbRoles:FourLimbRole[] = [];
@@ -97,6 +102,7 @@ export namespace app
                 //rparam.setCamPosition(3500.0,3500.0,3500.0);
                 //rparam.setCamPosition(1200.0,1200.0,1200.0);
                 rparam.setCamPosition(1800.0,1800.0,1800.0);
+                //rparam.setCamPosition(2800.0,2800.0,2800.0);
                 //rparam.setCamPosition(800.0,800.0,800.0);
                 //rparam.setCamPosition(1200.0,1200.0,0.0);
                 //rparam.setCamPosition(0.0,200.0,1200.0);
@@ -125,6 +131,7 @@ export namespace app
                 let tex3:TextureProxy = texLoader.getTexByUrl("static/assets/default.jpg");
                 let tex4:TextureProxy = texLoader.getTexByUrl("static/assets/warter_01.jpg");
                 let tex5:TextureProxy = texLoader.getTexByUrl("static/assets/metal_02.jpg");
+                let tex6:TextureProxy = texLoader.getTexByUrl("static/assets/image_003.jpg");
                 //let tex4:TextureProxy = this.m_rscene.textureBlock.createRGBATex2D(16,16,new Color4(1.0,0.0,1.0));
 
                 
@@ -166,7 +173,7 @@ export namespace app
                 }
                 let terrain:Terrain = new Terrain();
                 let limbRole:FourLimbRole;
-                for(i = 0; i < 100; ++i)
+                for(i = 0; i < 1; ++i)
                 {
                     //let linePart0:LinePartStore = new LinePartStore();
                     //let linePart1:LinePartStore = new LinePartStore();
@@ -212,6 +219,20 @@ export namespace app
                 }
                 this.m_limbRole = limbRole;
 
+                
+                this.m_boxTrack.setTrackScaleXYZ(0.5,0.4,1.0);
+                this.m_boxTrack.setFactor(5,5,5);
+                this.m_boxTrack.initialize(this.m_rscene.textureBlock,5.0,[tex5]);
+                this.m_boxTrack.animator.setXYZ(0.0,20.0,0.0);
+                //this.m_rscene.addEntity(this.m_boxTrack.animator);
+
+                let srcTWRole:TracWheelRole = new TracWheelRole();
+                
+                let twUpperBox:Box3DEntity = new Box3DEntity();
+                twUpperBox.initializeSizeXYZ(60.0,30,60,[tex6]);
+                twUpperBox.setXYZ(0.0,70.0,0.0);
+                srcTWRole.initialize(this.m_rscene,0,this.m_boxTrack,twUpperBox,80.0);
+
                 let srcSillyRole:SillyRole = null;
                 let lowerBox:Box3DEntity = new Box3DEntity();
                 lowerBox.initializeSizeXYZ(50.0,40,50,[tex3]);
@@ -219,7 +240,7 @@ export namespace app
                 let upperBox:Box3DEntity = new Box3DEntity();
                 upperBox.initializeSizeXYZ(30.0,20,30,[tex5]);
                 upperBox.setXYZ(0.0,50.0,0.0);
-                for(i = 0; i < 100; ++i)
+                for(i = 0; i < 0; ++i)
                 {
 
                     let sillyRole:SillyRole = new SillyRole();
@@ -291,7 +312,7 @@ export namespace app
             this.m_rscene.run();
             this.m_rscene.runEnd();
             this.m_viewRay.intersectPiane();
-            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }
 }

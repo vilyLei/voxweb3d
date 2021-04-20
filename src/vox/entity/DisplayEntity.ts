@@ -322,6 +322,14 @@ export namespace vox
                     this.setMaterial( entity.getMaterial() );
                 }
             }
+            copyTransformFrom(entity:IDisplayEntity):void
+            {
+                let pe:DisplayEntity = entity as DisplayEntity;
+                if(pe != null)
+                {
+                    this.m_transfrom.copyFrom(pe.m_transfrom);
+                }
+            }
             private initDisplay(m:MeshBase):void
             {
                 this.m_display.vbuf = m.__$attachVBuf();

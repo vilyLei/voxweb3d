@@ -90,6 +90,12 @@ export namespace vox
                     this.updatedStatus |= 1;
                 }
             }
+            copyFrom(t:ROTransform):void
+            {
+                this.m_fs32.set(t.m_fs32,0);
+                this.updatedStatus |= 1;
+                this.updateStatus |= 7;
+            }
             getRotationX():number{return this.m_fs32[1];}
             getRotationY():number{return this.m_fs32[6];}
             getRotationZ():number{return this.m_fs32[9];}
