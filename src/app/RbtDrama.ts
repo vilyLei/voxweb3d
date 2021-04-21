@@ -28,7 +28,7 @@ import * as RunnableModuleT from "../app/robot/scene/RunnableModule";
 import * as TerrainT from "../app/robot/scene/Terrain";
 import * as BoxGroupTrackT from "../voxanimate/primitive/BoxGroupTrack";
 import * as SillyRoleT from "../app/robot/base/SillyRole";
-import * as TracWheelRoleT from "../app/robot/base/TracWheelRole";
+import * as TrackWheelRoleT from "../app/robot/base/TrackWheelRole";
 
 import * as CameraViewRayT from "../vox/view/CameraViewRay";
 
@@ -61,7 +61,7 @@ import RunnableModule = RunnableModuleT.app.robot.scene.RunnableModule;
 import Terrain = TerrainT.app.robot.scene.Terrain;
 import BoxGroupTrack = BoxGroupTrackT.voxanimate.primtive.BoxGroupTrack;
 import SillyRole = SillyRoleT.app.robot.base.SillyRole;
-import TracWheelRole = TracWheelRoleT.app.robot.base.TracWheelRole;
+import TrackWheelRole = TrackWheelRoleT.app.robot.base.TrackWheelRole;
 
 import CameraViewRay = CameraViewRayT.vox.view.CameraViewRay;
 
@@ -226,7 +226,7 @@ export namespace app
                 this.m_boxTrack.animator.setXYZ(0.0,20.0,0.0);
                 //this.m_rscene.addEntity(this.m_boxTrack.animator);
 
-                let srcTWRole:TracWheelRole = new TracWheelRole();
+                let srcTWRole:TrackWheelRole = new TrackWheelRole();
                 
                 let twUpperBox:Box3DEntity = new Box3DEntity();
                 twUpperBox.initializeSizeXYZ(60.0,30,60,[tex6]);

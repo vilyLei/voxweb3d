@@ -32,7 +32,7 @@ export namespace app
     {
         export namespace base
         {
-            export class TracWheelRole extends RbtRole implements IAttackDst
+            export class TrackWheelRole extends RbtRole implements IAttackDst
             {
                 private m_renderProcessIndex:number = 0;
                 private m_legModule:TrackWheelChassis = null;
@@ -44,7 +44,7 @@ export namespace app
                 {
                     super();
                 }
-                initializeFrom(srcRole:TracWheelRole):void
+                initializeFrom(srcRole:TrackWheelRole):void
                 {
                     if(srcRole != null)
                     {
