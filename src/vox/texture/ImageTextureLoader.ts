@@ -132,7 +132,6 @@ export namespace vox
                     let offsetTex:ImageTextureProxy = this.offsetTex;
                     let bytesTex:BytesTextureProxy = this.bytesTex;
                     let imgData:any = null;
-
                     let powBoo:boolean = MathConst.IsPowerOf2(img.width) && MathConst.IsPowerOf2(img.height);
                     if(!powBoo)
                     {

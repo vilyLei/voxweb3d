@@ -15,6 +15,7 @@ import * as IPosetureT from "../../../app/robot/poseture/IPoseture";
 import * as DegreeTweenT from "../../../vox/utils/DegreeTween";
 import * as IAttackDstT from "../../../app/robot/attack/IAttackDst";
 import * as IRbtModuleT from "../../../app/robot/base/IRbtModule";
+import * as TrackWheelChassisBodyT from "../../../app/robot/base/TrackWheelChassisBody";
 import * as AssetsModuleT from "../../../app/robot/assets/AssetsModule";
 import * as BoxGroupTrackT from "../../../voxanimate/primitive/BoxGroupTrack";
 
@@ -28,6 +29,7 @@ import IPoseture = IPosetureT.app.robot.poseture.IPoseture;
 import DegreeTween = DegreeTweenT.vox.utils.DegreeTween;
 import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
 import IRbtModule = IRbtModuleT.app.robot.base.IRbtModule;
+import TrackWheelChassisBody = TrackWheelChassisBodyT.app.robot.base.TrackWheelChassisBody;
 import AssetsModule = AssetsModuleT.app.robot.assets.AssetsModule;
 import BoxGroupTrack = BoxGroupTrackT.voxanimate.primtive.BoxGroupTrack;
 
@@ -83,6 +85,8 @@ export namespace app
             }
             direcByDegree(degree:number,finished:boolean):void
             {
+                this.m_trackWheelL.moveDistanceOffset( 0.75 );
+                this.m_trackWheelR.moveDistanceOffset( 0.75 );
                 this.degreeTween.runRotY(degree);
                 if(this.degreeTween.isDegreeChanged())
                 {
@@ -104,7 +108,7 @@ export namespace app
             {
                 return false;
             }
-            initialize(sc:RendererScene,renderProcessIndex:number,srcTrackWheel:BoxGroupTrack,dis:number,offsetPos:Vector3D = null):void
+            initialize(sc:RendererScene,renderProcessIndex:number,chassisBody:TrackWheelChassisBody,srcTrackWheel:BoxGroupTrack,dis:number,offsetPos:Vector3D = null):void
             {
                 if(this.m_sc == null)
                 {
@@ -116,13 +120,13 @@ export namespace app
                     srcTrackWheel.getPosition(this.m_pos);
                     this.m_pos.z -= 0.5 * dis;
                     this.m_trackWheelL.setPosition(this.m_pos);
-                    this.m_sc.addEntity(this.m_trackWheelL.animator);
+                    this.m_container.addEntity(this.m_trackWheelL.animator);
                     
                     this.m_trackWheelR.initializeFrom(srcTrackWheel,[AssetsModule.GetImageTexByUrl("static/assets/metal_02.jpg")]);
                     srcTrackWheel.getPosition(this.m_pos);
                     this.m_pos.z += 0.5 * dis;
                     this.m_trackWheelR.setPosition(this.m_pos);
-                    this.m_sc.addEntity(this.m_trackWheelR.animator);
+                    this.m_container.addEntity(this.m_trackWheelR.animator);
 
                     this.degreeTween.bindTarget(this.m_container); 
                 }
@@ -148,6 +152,7 @@ export namespace app
             }
             run(moveEnabled:boolean):void
             {
+                console.log("chassis run...");
                 this.m_container.update();
             }
             isResetFinish():boolean

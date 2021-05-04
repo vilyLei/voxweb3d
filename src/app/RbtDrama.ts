@@ -16,17 +16,15 @@ import * as MouseEventT from "../vox/event/MouseEvent";
 import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
 import * as CameraTrackT from "../vox/view/CameraTrack";
 import * as RendererSceneT from "../vox/scene/RendererScene";
-import * as TwoFeetUnitT from "../app/robot/TwoFeetUnit";
 import * as FourLimbRoleT from "../app/robot/base/FourLimbRole";
-import * as LinePartStoreT from "../app/robot/LinePartStore";
-import * as BoxPartStoreT from "../app/robot/BoxPartStore";
+import * as FourLimbRoleFactoryT from "../app/robot/base/FourLimbRoleFactory";
+import * as TrackWheeRoleFactoryT from "../app/robot/base/TrackWheeRoleFactory";
 import * as CampMoudleT from "../app/robot/camp/CampMoudle";
 import * as CampT from "../app/robot/camp/Camp";
 import * as AssetsModuleT from "../app/robot/assets/AssetsModule";
 import * as RedRoleT from "../app/robot/RedRole";
 import * as RunnableModuleT from "../app/robot/scene/RunnableModule";
 import * as TerrainT from "../app/robot/scene/Terrain";
-import * as BoxGroupTrackT from "../voxanimate/primitive/BoxGroupTrack";
 import * as SillyRoleT from "../app/robot/base/SillyRole";
 import * as TrackWheelRoleT from "../app/robot/base/TrackWheelRole";
 
@@ -49,17 +47,15 @@ import MouseEvent = MouseEventT.vox.event.MouseEvent;
 import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import TwoFeetUnit = TwoFeetUnitT.app.robot.TwoFeetUnit;
 import FourLimbRole = FourLimbRoleT.app.robot.base.FourLimbRole;
-import LinePartStore = LinePartStoreT.app.robot.LinePartStore;
-import BoxPartStore = BoxPartStoreT.app.robot.BoxPartStore;
+import FourLimbRoleFactory = FourLimbRoleFactoryT.app.robot.base.FourLimbRoleFactory;
+import TrackWheeRoleFactory = TrackWheeRoleFactoryT.app.robot.base.TrackWheeRoleFactory;
 import CampMoudle = CampMoudleT.app.robot.CampMoudle;
 import CampType = CampT.app.robot.camp.CampType;
 import AssetsModule = AssetsModuleT.app.robot.assets.AssetsModule;
 import RedRole = RedRoleT.app.robot.RedRole;
 import RunnableModule = RunnableModuleT.app.robot.scene.RunnableModule;
 import Terrain = TerrainT.app.robot.scene.Terrain;
-import BoxGroupTrack = BoxGroupTrackT.voxanimate.primtive.BoxGroupTrack;
 import SillyRole = SillyRoleT.app.robot.base.SillyRole;
 import TrackWheelRole = TrackWheelRoleT.app.robot.base.TrackWheelRole;
 
@@ -76,11 +72,10 @@ export namespace app
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
 
-        private m_boxTrack:BoxGroupTrack = new BoxGroupTrack();
-        //FourLimbRole
         private m_limbRole:FourLimbRole = null;
-        //private m_limbRoles:FourLimbRole[] = [];
-        //private m_targets:DisplayEntity[] = [];
+        private m_flrFactory:FourLimbRoleFactory = new FourLimbRoleFactory();
+        private m_twrFactory:TrackWheeRoleFactory = new TrackWheeRoleFactory();
+        
         private m_viewRay:CameraViewRay = new CameraViewRay();
 
         private m_campModule:CampMoudle = new CampMoudle();
@@ -96,15 +91,15 @@ export namespace app
                 
                 let rparam:RendererParam = new RendererParam();
                 rparam.setAttriAntialias(true);
+                rparam.setMatrix4AllocateSize(4096 * 8)
                 rparam.setCamProject(45.0,30.0,9000.0);
-                //rparam.maxWebGLVersion = 1;
                 //rparam.setCamPosition(10.0,1800.0,10.0);
                 //rparam.setCamPosition(3500.0,3500.0,3500.0);
                 //rparam.setCamPosition(1200.0,1200.0,1200.0);
-                rparam.setCamPosition(1800.0,1800.0,1800.0);
+                //rparam.setCamPosition(1800.0,1800.0,1800.0);
                 //rparam.setCamPosition(2800.0,2800.0,2800.0);
                 //rparam.setCamPosition(800.0,800.0,800.0);
-                //rparam.setCamPosition(1200.0,1200.0,0.0);
+                rparam.setCamPosition(1200.0,1200.0,0.0);
                 //rparam.setCamPosition(0.0,200.0,1200.0);
                 this.m_rscene = new RendererScene();
                 this.m_rscene.initialize(rparam,3);
@@ -132,6 +127,7 @@ export namespace app
                 let tex4:TextureProxy = texLoader.getTexByUrl("static/assets/warter_01.jpg");
                 let tex5:TextureProxy = texLoader.getTexByUrl("static/assets/metal_02.jpg");
                 let tex6:TextureProxy = texLoader.getTexByUrl("static/assets/image_003.jpg");
+                let tex7:TextureProxy = texLoader.getTexByUrl("static/assets/metal_08.jpg");
                 //let tex4:TextureProxy = this.m_rscene.textureBlock.createRGBATex2D(16,16,new Color4(1.0,0.0,1.0));
 
                 
@@ -172,67 +168,58 @@ export namespace app
                     this.m_campModule.redCamp.addRole(redRole);
                 }
                 let terrain:Terrain = new Terrain();
+
+                this.m_flrFactory.initialize(this.m_rscene, 0, this.m_campModule.redCamp, terrain);
+                this.m_twrFactory.initialize(this.m_rscene, 0, this.m_campModule.redCamp, terrain);
+
                 let limbRole:FourLimbRole;
-                for(i = 0; i < 1; ++i)
+                let campType:CampType;
+                let bodySize:number = 40.0;
+                for(i = 0; i < 500; ++i)
                 {
-                    //let linePart0:LinePartStore = new LinePartStore();
-                    //let linePart1:LinePartStore = new LinePartStore();
-                    //linePart1.setParam(80.0,-40.0,-30.0);
-                    let boxPart0:BoxPartStore = new BoxPartStore();
-                    boxPart0.setSgSize(10,15);
-                    boxPart0.initilize(tex0,tex2,tex1);
-    
-                    let boxPart1:BoxPartStore = new BoxPartStore();
-                    boxPart1.setParam(100.0,-40.0,-30.0);
-                    boxPart1.setBgSize(10, 8);
-                    boxPart1.setSgSize(7,  5);
-                    boxPart1.initilize(tex0,tex2,tex1);
-                    
-                    limbRole = new FourLimbRole();
-                    limbRole.roleCamp = this.m_campModule.redCamp;
-                    limbRole.terrain = terrain;
+                    bodySize = Math.round(Math.random() * 60.0) + 30.0;
                     switch(i%3)
                     {
                         case 1:
-                            limbRole.campType = CampType.Red;
+                            campType = CampType.Red;
                             break;
                         case 2:
-                            limbRole.campType = CampType.Green;
+                            campType = CampType.Green;
                             break;
                         default:
-                            limbRole.campType = CampType.Blue;
+                            campType = CampType.Blue;
                             break;
 
                     }
-                    //      limbRole.campType = ((i%2)==0)?CampType.Blue:CampType.Red;
-                    //      limbRole.campType = ((i%2)==0)?CampType.Blue:CampType.Red;
-                    //this.m_limbRole.initialize( this.m_rscene,0, linePart0, linePart1,60.0);
-                    //this.m_limbRole.initialize( this.m_rscene,0, boxPart0, linePart1,80.0);
-                    limbRole.initialize(this.m_rscene, 0, boxPart0, boxPart1, 80.0);
-                    //this.m_limbRole.setXYZ(Math.random() * 500.0 - 250.0,0.0,Math.random() * 500.0 - 250.0);
-                    
+                    limbRole = this.m_flrFactory.create(tex0,tex1,tex2,campType,bodySize);
                     limbRole.setXYZ(Math.random() * 1600.0 - 800.0,0.0,Math.random() * 1600.0 - 800.0);
                     limbRole.moveToXZ(Math.random() * 1600.0 - 800.0,Math.random() * 1600.0 - 800.0);
-                    //this.m_limbRole.moveToXZ(30.0, 0.0);
-                    //          this.m_limbRoles.push(this.m_limbRole);//TwoFeetBody
+                    
                     this.m_campModule.redCamp.addRole(limbRole);
                 }
-                this.m_limbRole = limbRole;
+                //this.m_limbRole = limbRole;
 
-                
-                this.m_boxTrack.setTrackScaleXYZ(0.5,0.4,1.0);
-                this.m_boxTrack.setFactor(5,5,5);
-                this.m_boxTrack.initialize(this.m_rscene.textureBlock,5.0,[tex5]);
-                this.m_boxTrack.animator.setXYZ(0.0,20.0,0.0);
-                //this.m_rscene.addEntity(this.m_boxTrack.animator);
-
-                let srcTWRole:TrackWheelRole = new TrackWheelRole();
-                
-                let twUpperBox:Box3DEntity = new Box3DEntity();
-                twUpperBox.initializeSizeXYZ(60.0,30,60,[tex6]);
-                twUpperBox.setXYZ(0.0,70.0,0.0);
-                srcTWRole.initialize(this.m_rscene,0,this.m_boxTrack,twUpperBox,80.0);
-
+                for(i = 0; i < 500; ++i)
+                {
+                    switch(i%3)
+                    {
+                        case 1:
+                            campType = CampType.Red;
+                            break;
+                        case 2:
+                            campType = CampType.Green;
+                            break;
+                        default:
+                            campType = CampType.Blue;
+                            break;
+                    }
+                    let twRole:TrackWheelRole = this.m_twrFactory.create(tex6,tex7,tex2,campType,bodySize);
+                    twRole.setXYZ(Math.random() * 1600.0 - 800.0,0.0,Math.random() * 1600.0 - 800.0);
+                    twRole.moveToXZ(Math.random() * 1600.0 - 800.0,Math.random() * 1600.0 - 800.0);
+                    twRole.wake();
+                    this.m_campModule.redCamp.addRole(twRole);
+                }
+                ///*
                 let srcSillyRole:SillyRole = null;
                 let lowerBox:Box3DEntity = new Box3DEntity();
                 lowerBox.initializeSizeXYZ(50.0,40,50,[tex3]);
@@ -240,7 +227,7 @@ export namespace app
                 let upperBox:Box3DEntity = new Box3DEntity();
                 upperBox.initializeSizeXYZ(30.0,20,30,[tex5]);
                 upperBox.setXYZ(0.0,50.0,0.0);
-                for(i = 0; i < 0; ++i)
+                for(i = 0; i < 500; ++i)
                 {
 
                     let sillyRole:SillyRole = new SillyRole();
@@ -274,22 +261,15 @@ export namespace app
                     sillyRole.wake();
                     this.m_campModule.redCamp.addRole(sillyRole);
                 }
-
+                //*/
                 this.update();
             }
         }
 
-        private m_runflag:boolean = true;
         private mouseDown(evt:any):void
         {
             this.m_viewRay.intersectPiane();
             let pv:Vector3D = this.m_viewRay.position;
-            if(this.m_limbRole != null)
-            {
-                this.m_limbRole.moveToXZ(pv.x, pv.z,true);
-                
-                this.m_runflag = !this.m_runflag;
-            }
         }
         
         private m_timeoutId:any = -1;

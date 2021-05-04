@@ -14,6 +14,9 @@ import * as TrackWheelUpperBodyT from "../../../app/robot/base/TrackWheelUpperBo
 import * as IAttackDstT from "../../../app/robot/attack/IAttackDst";
 import * as RbtRoleT from "../../../app/robot/base/RbtRole";
 import * as BoxGroupTrackT from "../../../voxanimate/primitive/BoxGroupTrack";
+import * as FireCtrlRadarT from "../../../app/robot/attack/FireCtrlRadar";
+import * as TrackWheelWeaponBodyT from "../../../app/robot/base/TrackWheelWeaponBody";
+import * as TrackWheelChassisBodyT from "../../../app/robot/base/TrackWheelChassisBody";
 
 import MathConst = MathConstT.vox.math.MathConst;
 import Vector3D = Vector3T.vox.math.Vector3D;
@@ -25,6 +28,9 @@ import TrackWheelUpperBody = TrackWheelUpperBodyT.app.robot.base.TrackWheelUpper
 import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
 import RbtRole = RbtRoleT.app.robot.base.RbtRole;
 import BoxGroupTrack = BoxGroupTrackT.voxanimate.primtive.BoxGroupTrack;
+import FireCtrlRadar = FireCtrlRadarT.app.robot.attack.FireCtrlRadar;
+import TrackWheelWeaponBody = TrackWheelWeaponBodyT.app.robot.base.TrackWheelWeaponBody;
+import TrackWheelChassisBody = TrackWheelChassisBodyT.app.robot.base.TrackWheelChassisBody;
 
 export namespace app
 {
@@ -39,10 +45,14 @@ export namespace app
                 private m_armModule:TrackWheelUpperBody = null;
 
                 private m_srcTrackWheel:BoxGroupTrack = null;
-                private m_upperrEntity:DisplayEntity = null;
                 constructor()
                 {
                     super();
+                    
+                    this.m_legModule = new TrackWheelChassis();
+                    this.m_armModule = new TrackWheelUpperBody();
+                    this.m_motionModule = this.m_legModule;
+                    this.m_attackModule = this.m_armModule;
                 }
                 initializeFrom(srcRole:TrackWheelRole):void
                 {
@@ -52,26 +62,19 @@ export namespace app
                         this.lifeTime = srcRole.lifeTime;
                         this.attackDis = srcRole.attackDis;
                         this.radius = srcRole.radius;
-                        let upperrEntity:DisplayEntity = new DisplayEntity();
-                        upperrEntity.copyMeshFrom(srcRole.m_upperrEntity);
-                        upperrEntity.copyMaterialFrom(srcRole.m_upperrEntity);
-                        this.initialize(srcRole.getRendererScene(), srcRole.m_renderProcessIndex, srcRole.m_srcTrackWheel, upperrEntity);
+                        //this.initialize(srcRole.getRendererScene(), srcRole.m_renderProcessIndex, srcRole.m_srcTrackWheel, null, upperrEntity);
                     }
                 }
-                initialize(sc:RendererScene,renderProcessIndex:number,srcTrackWheel:BoxGroupTrack,upperrEntity:DisplayEntity,dis:number = 50.0):void
+                initialize(sc:RendererScene,renderProcessIndex:number,srcTrackWheel:BoxGroupTrack, weapBody:TrackWheelWeaponBody,chassisBody:TrackWheelChassisBody, dis:number = 50.0):void
                 {
                     if(this.m_rscene == null && sc != null)
                     {
                         this.m_rscene = sc;
                         this.m_srcTrackWheel = srcTrackWheel;
-                        this.m_upperrEntity = upperrEntity;
-
-                        this.m_legModule = new TrackWheelChassis();
-                        this.m_armModule = new TrackWheelUpperBody();
 
                         let offsetPos:Vector3D = new Vector3D(0.0,0.0,0.0);
-                        this.m_legModule.initialize(sc,renderProcessIndex,this.m_srcTrackWheel,dis, offsetPos);
-                        this.m_armModule.initialize(sc,renderProcessIndex, upperrEntity,offsetPos);
+                        this.m_legModule.initialize(sc,renderProcessIndex, chassisBody, this.m_srcTrackWheel, dis, offsetPos);
+                        this.m_armModule.initialize(sc,renderProcessIndex, weapBody, offsetPos);
 
                         this.m_moveModule.setSpeed(this.m_speed);
                         this.m_moveModule.syncTargetUpdate = false;
@@ -79,8 +82,12 @@ export namespace app
                         this.m_moveModule.bindTarget(this.m_legModule.getContainer());
                         this.m_moveModule.setVelocityFactor(0.02,0.03);
 
-                        this.m_motionModule = this.m_legModule;
-                        this.m_attackModule = this.m_armModule;
+
+                        let findRadar:FireCtrlRadar = new FireCtrlRadar();
+                        findRadar.dstCamp = this.roleCamp;
+                        findRadar.srcRole = this;
+                        findRadar.campType = this.campType;
+                        this.m_findRadar = findRadar;
                     }
                 }
                 wake():void

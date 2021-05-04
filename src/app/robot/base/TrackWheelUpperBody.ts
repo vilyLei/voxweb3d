@@ -20,6 +20,7 @@ import * as TriggerClockT from "../../../vox/utils/TriggerClock";
 import * as WeapMoudleT from "../../../app/robot/WeapMoudle";
 import * as CampT from "../../../app/robot/camp/Camp";
 import * as IRbtModuleT from "../../../app/robot/base/IRbtModule";
+import * as TrackWheelWeaponBodyT from "../../../app/robot/base/TrackWheelWeaponBody";
 
 import Vector3D = Vector3T.vox.math.Vector3D;
 import MathConst = MathConstT.vox.math.MathConst;
@@ -36,6 +37,7 @@ import TriggerClock = TriggerClockT.vox.utils.TriggerClock;
 import WeapMoudle = WeapMoudleT.app.robot.WeapMoudle;
 import CampType = CampT.app.robot.camp.CampType;
 import IRbtModule = IRbtModuleT.app.robot.base.IRbtModule;
+import TrackWheelWeaponBody = TrackWheelWeaponBodyT.app.robot.base.TrackWheelWeaponBody;
 
 
 export namespace app
@@ -52,9 +54,11 @@ export namespace app
             private m_attPos:Vector3D = new Vector3D();
             private m_pos:Vector3D = new Vector3D();
             private m_tempV:Vector3D = new Vector3D();
+            //private m_entity:DisplayEntity = null;
 
             private m_container:DisplayEntityContainer = null;
-            
+            private m_weapBody:TrackWheelWeaponBody = null;
+            private m_attackClock:TriggerClock = new TriggerClock();
             degreeTween:DegreeTween = new DegreeTween();
             campType:CampType = CampType.Blue;
             constructor(container:DisplayEntityContainer = null)
@@ -90,35 +94,23 @@ export namespace app
             {
                 return this.m_container.getRotationY();
             }
-            initialize(sc:RendererScene,renderProcessIndex:number,box:DisplayEntity,offsetPos:Vector3D = null):void
+            initialize(sc:RendererScene,renderProcessIndex:number,weapBody:TrackWheelWeaponBody,offsetPos:Vector3D = null):void
             {
                 if(this.m_sc == null)
                 {
                     this.m_sc = sc;
+                    this.m_weapBody = weapBody;
+                    this.m_weapBody.campType = this.campType;
+
                     sc.addContainer(this.m_container,renderProcessIndex);
-                    this.m_container.addEntity(box);
-
-                    //  let axis:Axis3DEntity = new Axis3DEntity();
-                    //  axis.initialize(30.0);
-                    //  axis.setXYZ(100,130,0.0);
-                    //  this.m_container.addEntity(axis);
-                    //  
-                    //  this.m_testAxis = axis;
-
-                    //  axis = new Axis3DEntity();
-                    //  axis.initialize(200.0);
-                    //  axis.setXYZ(0,30,0.0);
-                    //  this.m_container.addEntity(axis);
-
-
+                    
                     let pv:Vector3D = new Vector3D();
                     if(offsetPos != null)
                     {
                         pv.addBy(offsetPos);
                     }
 
-                    this.degreeTween.bindTarget(this.m_container);                    
-                    
+                    this.degreeTween.bindTarget(this.m_container);
                 }
             }
             setXYZ(px:number,py:number,pz:number):void
@@ -177,6 +169,10 @@ export namespace app
             {
                 return this.m_attPos;
             }
+            private attack():void
+            {
+                this.m_weapBody.run(this.m_attackDst, this.degreeTween.getDegreeDis(), this.m_attPos);
+            }
             private updateAttackPose():void
             {
                 this.direcByPos(this.m_attPos,false);
@@ -189,6 +185,7 @@ export namespace app
             }
             run(moveEnabled:boolean):void
             {
+                //console.log("tm run...");
                 let attacking:boolean = this.m_attackDst != null;
                 if(attacking)
                 {
@@ -200,6 +197,10 @@ export namespace app
                 }
                 this.m_container.update();
                 
+                if(attacking)
+                {
+                    this.attack();
+                }
             }
             update():void
             {

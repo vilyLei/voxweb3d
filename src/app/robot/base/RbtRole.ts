@@ -69,6 +69,15 @@ export namespace app
                 {
                     return this.m_rscene;
                 }
+                
+                getAttackModule():IRbtModule
+                {
+                    return this.m_attackModule;
+                }
+                getMotionModule():IRbtModule
+                {
+                    return this.m_motionModule;
+                }
                 isAwake():boolean
                 {
                     return this.m_isMoving;

@@ -35,49 +35,41 @@ export namespace example
                 getFragShaderCode():string
                 {
                     let fragCode:string = 
-"\
-#version 300 es\n\
-precision mediump float;\n\
-uniform sampler2D u_sampler0;\n\
-uniform sampler2D u_sampler1;\n\
-uniform vec4 u_color;\n\
-in vec2 v_uvs;\n\
-layout(location = 0) out vec4 FragColor;\n\
-void main(){\n\
-    vec2 puv = v_uvs * 1.0;\n\
-    //  vec3 color3 = texture(u_sampler0, puv).xyz;\n\
-    //  color3 *= u_color.xyz;\n\
-    //  FragColor = vec4(color3 + vec3(0.1),u_color.w);\n\
-    vec4 color4A = texture(u_sampler0, puv) * u_color;\n\
-    vec4 color4B = texture(u_sampler1, puv) * u_color;\n\
-    vec4 color4 = vec4(1.0);\n\
-    //color4.xyz = color4A.xyz * (1.0 - color4B.w) + color4B.w * color4B.xyz;\n\
-    color4.xyz = mix(color4A.xyz,color4B.xyz,color4B.w);\n\
-    //color4.xyz = mix(color4A.xyz,color4B.xyz,color4B.w*color4B.w);\n\
-    //color4.xyz = mix(color4B.xyz,color4A.xyz,color4B.w);\n\
-    FragColor = color4;\n\
-    //FragColor = color4B;\n\
-}\n\
-";
+`#version 300 es
+precision mediump float;
+uniform sampler2D u_sampler0;
+uniform sampler2D u_sampler1;
+uniform vec4 u_color;
+in vec2 v_uvs;
+layout(location = 0) out vec4 FragColor;
+void main(){
+    vec2 puv = v_uvs * 1.0;
+    vec4 color4A = texture(u_sampler0, puv);
+    vec4 color4B = texture(u_sampler1, puv);
+    vec4 color4 = vec4(1.0);
+    color4.xyz = color4A.xyz * sign(color4B.w);
+    FragColor = color4 * u_color;
+    FragColor.a = color4B.w;
+}
+`;
                     return fragCode;
                 }
                 getVtxShaderCode():string
                 {
                     let vtxCode:string = 
-"\
-#version 300 es\n\
-precision highp float;\n\
-layout(location = 0) in vec3 a_vs;\n\
-layout(location = 1) in vec2 a_uvs;\n\
-uniform mat4 u_objMat;\n\
-uniform mat4 u_viewMat;\n\
-uniform mat4 u_projMat;\n\
-out vec2 v_uvs;\n\
-void main(){\n\
-    gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs,1.0);\n\
-    v_uvs = a_uvs;\n\
-}\n\
-";
+`#version 300 es
+precision highp float;
+layout(location = 0) in vec3 a_vs;
+layout(location = 1) in vec2 a_uvs;
+uniform mat4 u_objMat;
+uniform mat4 u_viewMat;
+uniform mat4 u_projMat;
+out vec2 v_uvs;
+void main(){
+    gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs,1.0);
+    v_uvs = a_uvs;
+}
+`;
                     return vtxCode;
                 }
                 getUniqueShaderName()

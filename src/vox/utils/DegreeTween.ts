@@ -47,6 +47,10 @@ export namespace vox
             {
                 return this.m_dis >= 1.0;
             }
+            getDegreeDis():number
+            {
+                return this.m_dis;
+            }
             getDegree():number
             {
                 return this.m_degree;

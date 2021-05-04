@@ -346,12 +346,6 @@ export namespace app
                     this.attack();
                 }
             }
-            //  run():void
-            //  {
-            //      this.m_container.update();
-            //      this.m_bone.run(this.m_time);
-            //      this.m_time += this.m_timeSpeed;
-            //  }
             update():void
             {
                 this.m_container.update();

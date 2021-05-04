@@ -262,8 +262,8 @@
 //  import * as DemoAPlane from "./demo/DemoAPlane";
 //  import Demo = DemoAPlane.demo.DemoAPlane;
 
-// import * as DemoPrimitive from "./demo/DemoPrimitive";
-// import Demo = DemoPrimitive.demo.DemoPrimitive;
+//  import * as DemoPrimitive from "./demo/DemoPrimitive";
+//  import Demo = DemoPrimitive.demo.DemoPrimitive;
 
 //  import * as DemoMultiRenderer from "./demo/DemoMultiRenderer";
 //  import Demo = DemoMultiRenderer.demo.DemoMultiRenderer;

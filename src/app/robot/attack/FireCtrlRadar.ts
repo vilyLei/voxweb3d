@@ -41,6 +41,7 @@ export namespace app
                 resetState():void
                 {
                     this.m_currDst = null;
+                    this.m_delay = 0;
                 }
                 setDelayTime(delayTime:number):void
                 {
@@ -61,7 +62,7 @@ export namespace app
                 }
                 findAttDst(direcDegree:number):IAttackDst
                 {
-                    if(this.m_delay < 1)
+                    if(this.m_delay < 1 || this.m_currDst != null && this.m_currDst.lifeTime < 1)
                     {
                         this.m_delay = this.m_delayTime;
                         this.srcRole.getPosition(this.m_position);

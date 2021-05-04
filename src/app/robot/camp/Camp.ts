@@ -13,10 +13,10 @@ export namespace app
         {
             export enum CampType
             {
+                Free,
                 Red,
                 Blue,
-                Green,
-                Free
+                Green
             }
             export enum CampFindMode
             {
