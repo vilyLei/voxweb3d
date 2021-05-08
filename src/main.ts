@@ -4,8 +4,8 @@
  * These are some examples for this renderer system
  */
 
-//  import * as DemoMobileEvt from "./demo/DemoMobileEvt";
-//  import Demo = DemoMobileEvt.demo.DemoMobileEvt;
+import * as DemoMobileEvt from "./demo/DemoMobileEvt";
+import Demo = DemoMobileEvt.demo.DemoMobileEvt;
 
 //  import * as DemoRTT from "./demo/DemoRTT";
 //  import Demo = DemoRTT.demo.DemoRTT;
@@ -92,8 +92,8 @@
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-import * as BoFrame from "./app/BoFrame";
-import Demo = BoFrame.app.BoFrame;
+//  import * as BoFrame from "./app/BoFrame";
+//  import Demo = BoFrame.app.BoFrame;
 
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;

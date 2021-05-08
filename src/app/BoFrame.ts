@@ -18,19 +18,12 @@ import RendererScene from "../vox/scene/RendererScene";
 import CameraViewRay from "../vox/view/CameraViewRay";
 
 import BoxPartStore from "../app/robot/BoxPartStore";
-import * as BoFrameAxisT from "../app/robot/BoFrameAxis";
-import * as TwoFeetUnitT from "../app/robot/TwoFeetUnit";
-import * as FourFeetUnitT from "../app/robot/FourFeetUnit";
-import * as SixFeetUnitT from "../app/robot/SixFeetUnit";
-import * as TwoFeetBodyT from "../app/robot/TwoFeetBody";
-import * as LinePartStoreT from "../app/robot/LinePartStore";
-
-import BoFrameAxis = BoFrameAxisT.app.robot.BoFrameAxis;
-import TwoFeetUnit = TwoFeetUnitT.app.robot.TwoFeetUnit;
-import FourFeetUnit = FourFeetUnitT.app.robot.FourFeetUnit;
-import SixFeetUnit = SixFeetUnitT.app.robot.SixFeetUnit;
-import TwoFeetBody = TwoFeetBodyT.app.robot.TwoFeetBody;
-import LinePartStore = LinePartStoreT.app.robot.LinePartStore;
+import BoFrameAxis from "../app/robot/BoFrameAxis";
+import TwoFeetUnit from "../app/robot/TwoFeetUnit";
+import FourFeetUnit from "../app/robot/FourFeetUnit";
+import SixFeetUnit from "../app/robot/SixFeetUnit";
+import TwoFeetBody from "../app/robot/TwoFeetBody";
+import LinePartStore from "../app/robot/LinePartStore";
 
 export namespace app
 {

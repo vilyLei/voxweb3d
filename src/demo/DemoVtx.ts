@@ -8,7 +8,7 @@ import Matrix4Pool from "../vox/math/Matrix4Pool";
 import RendererDeviece from "../vox/render/RendererDeviece";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
-import * as ShaderMaterialT from "../vox/material/mcase/ShaderMaterial";
+import ShaderMaterial from "../vox/material/mcase/ShaderMaterial";
 import Color4 from "../vox/material/Color4";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import VtxBufConst from "../vox/mesh/VtxBufConst";
@@ -22,44 +22,14 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
+import {TextureConst} from "../vox/texture/TextureConst";
 
 import MouseEvent from "../vox/event/MouseEvent";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
-import * as BaseTestMaterialT from "../demo/material/BaseTestMaterial";
+import BaseTestMaterial from "../demo/material/BaseTestMaterial";
 import MeshResource from "../vox/mesh/MeshResource";
-
-//import DivLog = DivLogT.vox.utils.DivLog;
-//import MathConst = MathConstT.vox.math.MathConst;
-//import Vector3D = Vector3DT.vox.math.Vector3D;
-//import AABB = AABBT.vox.geom.AABB;
-//import Matrix4 = Matrix4T.vox.math.Matrix4;
-//import Matrix4Pool = Matrix4T.vox.math.Matrix4Pool;
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-//import RendererParam = RendererParamT.vox.scene.RendererParam;
-//import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-//import Color4 = Color4T.vox.material.Color4;
-import ShaderMaterial = ShaderMaterialT.vox.material.mcase.ShaderMaterial;
-
-//import Box3DMesh = Box3DMeshT.vox.mesh.Box3DMesh;
-//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-//import BoxFrame3D = BoxFrame3DT.vox.entity.BoxFrame3D;
-//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-//import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
-//import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
-//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-//import TextureConst = TextureConstT.vox.texture.TextureConst;
-
-//import MouseEvent = MouseEventT.vox.event.MouseEvent;
-//import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
-//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-//import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import BaseTestMaterial = BaseTestMaterialT.demo.material.BaseTestMaterial;
-//import MeshResource = MeshResourceT.vox.mesh.MeshResource;
 
 export namespace demo
 {

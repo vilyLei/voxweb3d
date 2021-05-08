@@ -7,20 +7,9 @@ import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import MouseEvent from "../vox/event/MouseEvent";
 import Stage3D from "../vox/display/Stage3D";
 import TextureResSlot from "../vox/texture/TextureResSlot";
-
 import CameraTrack from "../vox/view/CameraTrack";
+
 import * as DemoSceneT from "./texMana/DemoScene";
-
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-//import RendererParam = RendererParamT.vox.scene.RendererParam;
-//import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-//import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-//import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-//import MouseEvent = MouseEventT.vox.event.MouseEvent;
-//import Stage3D = Stage3DT.vox.display.Stage3D;
-//import TextureResSlot = TextureResSlotT.vox.texture.TextureResSlot;
-
-//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import DemoScene = DemoSceneT.demo.texMama.DemoScene;
 
 export namespace demo

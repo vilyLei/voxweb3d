@@ -17,7 +17,7 @@ import FloatTextureProxy from "../vox/texture/FloatTextureProxy";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
-import * as VSTexturePosMaterialT from "./material/VSTexturePosMaterial";
+import VSTexturePosMaterial from "./material/VSTexturePosMaterial";
 import PathTrack from "../voxnav/path/PathTrack";
 
 //import Vector3D = Vector3DT.vox.math.Vector3D;
@@ -38,7 +38,7 @@ import PathTrack from "../voxnav/path/PathTrack";
 //import FloatTextureProxy = FloatTextureProxyT.vox.texture.FloatTextureProxy;
 //import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 //import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import VSTexturePosMaterial = VSTexturePosMaterialT.demo.material.VSTexturePosMaterial;
+//import VSTexturePosMaterial = VSTexturePosMaterialT.demo.material.VSTexturePosMaterial;
 //import PathTrack = PathTrackT.voxnav.path.PathTrack;
 
 export namespace demo

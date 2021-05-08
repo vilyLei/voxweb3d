@@ -3,6 +3,7 @@ import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
+
 export namespace demo
 {
     /**

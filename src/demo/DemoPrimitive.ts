@@ -21,8 +21,8 @@ import {TextureConst} from "../vox/texture/TextureConst";
 import TextureBlock from "../vox/texture/TextureBlock";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
-import * as EntityDispT from "./base/EntityDisp";
 
+import * as EntityDispT from "./base/EntityDisp";
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 
 export namespace demo

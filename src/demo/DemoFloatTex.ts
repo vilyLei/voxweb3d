@@ -6,42 +6,13 @@ import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
-import Axis3DEntity from "../vox/entity/Axis3DEntity";
-import Line3DEntity from "../vox/entity/Line3DEntity";
-import DashedLine3DEntity from "../vox/entity/DashedLine3DEntity";
-import Box3DEntity from "../vox/entity/Box3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-////import * as TextureStoreT from "../vox/texture/TextureStore";
-import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
+import {TextureConst} from "../vox/texture/TextureConst";
 import FloatTextureProxy from "../vox/texture/FloatTextureProxy";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
-import * as VSTexturePosMaterialT from "./material/VSTexturePosMaterial";
-import * as FloatTexMaterialT from "./material/FloatTexMaterial";
-import PathTrack from "../voxnav/path/PathTrack";
-
-//import Vector3D = Vector3DT.vox.math.Vector3D;
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-//import RendererParam = RendererParamT.vox.scene.RendererParam;
-//import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-//import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-
-//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-//import Line3DEntity = Line3DEntityT.vox.entity.Line3DEntity;
-//import DashedLine3DEntity = DashedLine3DEntityT.vox.entity.DashedLine3DEntity;
-//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-//import TextureStore = TextureStoreT.vox.texture.TextureStore;
-//import TextureConst = TextureConstT.vox.texture.TextureConst;
-//import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
-//import FloatTextureProxy = FloatTextureProxyT.vox.texture.FloatTextureProxy;
-//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-//import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import VSTexturePosMaterial = VSTexturePosMaterialT.demo.material.VSTexturePosMaterial;
-import FloatTexMaterial = FloatTexMaterialT.demo.material.FloatTexMaterial;
-//import PathTrack = PathTrackT.voxnav.path.PathTrack;
+import FloatTexMaterial from "./material/FloatTexMaterial";
 
 export namespace demo
 {
@@ -162,67 +133,7 @@ export namespace demo
                 //plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex1,tex0]);
                 //plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[this.m_posTex,tex0]);
                 plane.initializeXOZ(0.0,0.0,200.0,150.0,[ftex]);
-                this.m_rscene.addEntity(plane);
-                return;
-                //  //let tex1:TextureProxy = this.getImageTexByUrl("static/assets/caustics_02.jpg");
-                //  let tex1:TextureProxy = this.getImageTexByUrl("static/assets/green.jpg");
-                //  //let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-
-                let curvePosList:Vector3D[] = [
-                    new Vector3D(100.0,0.0,40.0),
-                    new Vector3D(70.0,0.0,60.0),
-                    new Vector3D(-70.0,0.0,60.0),
-                    new Vector3D(-100.0,0.0,40.0),
-                    
-                    new Vector3D(-100.0,0.0,-40.0),
-                    new Vector3D(-70.0,0.0,-60.0),
-                    new Vector3D(70.0,0.0,-60.0),
-                    new Vector3D(100.0,0.0,-40.0),
-                    
-                    new Vector3D(100.0,0.0,40.0)
-                ];
-                let curveLine:DashedLine3DEntity = new DashedLine3DEntity();
-                curveLine.initializeByPosition(curvePosList);
-                this.m_rscene.addEntity(curveLine);
-
-                let axis:Axis3DEntity = new Axis3DEntity();
-                axis.initialize(310);
-                this.m_rscene.addEntity(axis);
-
-
-                let pos0:Vector3D = new Vector3D(100.0,0.0,0.0);
-                let pos1:Vector3D = new Vector3D(150.0,0.0,0.0);
-                let pos17:Vector3D = new Vector3D(200.0,50.0,0.0);
-                axis = new Axis3DEntity();
-                axis.initialize(80);
-                axis.setPosition( pos17 );
-                this.m_rscene.addEntity(axis);
-                /*
-                this.cratePosTex();
-                this.setPosAt(0,pos0);
-                this.setPosAt(1,pos1);
-                this.setPosAt(17,pos17);
-                this.showData();
-                let material:VSTexturePosMaterial = new VSTexturePosMaterial();
-                material.setTexSize(this.m_texSize);
-                material.setPosAt(17);
-                // add common 3d display entity
-                var plane:Plane3DEntity = new Plane3DEntity();
-                plane.setMaterial(material);
-                //plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex1,tex0]);
-                //plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[this.m_posTex,tex0]);
-                plane.initializeXOZ(0.0,0.0,200.0,150.0,[this.m_posTex,tex0]);
-                this.m_rscene.addEntity(plane);
-
-                //  let axis:Axis3DEntity = new Axis3DEntity();
-                //  axis.initialize(300.0);
-                //  this.m_rscene.addEntity(axis);
-
-                //  let box:Box3DEntity = new Box3DEntity();
-                //  box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
-                //  this.m_rscene.addEntity(box);
-                ///*/
-                
+                this.m_rscene.addEntity(plane);                
             }
         }
         run():void

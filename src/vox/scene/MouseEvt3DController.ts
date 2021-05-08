@@ -97,9 +97,11 @@ export default class MouseEvt3DController implements IEvt3DController
         this.m_mouseEvt.type = evt.type;
         this.m_evtTotal++;              
     }
-    // @param       evtFlowPhase: 0(none phase),1(capture phase),2(bubble phase)
-    // @param       status: 1(default process),1(deselect ray pick target)
-    // @return      1 is send evt yes,0 is send evt no,-1 is event nothing
+    /**
+     * @param       evtFlowPhase: 0(none phase),1(capture phase),2(bubble phase)
+     * @param       status: 1(default process),1(deselect ray pick target)
+     * @return      1 is send evt yes,0 is send evt no,-1 is event nothing
+     */
     run(evtFlowPhase:number,status:number):number
     {
         let flag:number = -1;

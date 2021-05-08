@@ -144,12 +144,12 @@ export namespace demo
         mouseDownListener(evt:any):void
         {
             //this.m_rscene.getStage3D().mouseMultiUp([{x:0,y:0},{x:1,y:1}]);
-            //console.log("mouseDown...");
+            console.log("mouseDown...");
             //this.m_rscene.setClearRGBColor3f(Math.random(), 0, 0);
         }
         mouseUpListener(evt:any):void
         {
-            //console.log("mouseDown...");
+            console.log("mouseUP...");
             //this.m_rscene.setClearRGBColor3f(0, Math.random(), 0);
         }
         mouseMoveListener(evt:any):void

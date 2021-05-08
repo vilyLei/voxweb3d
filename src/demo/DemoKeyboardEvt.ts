@@ -17,24 +17,6 @@ import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-//import RendererParam = RendererParamT.vox.scene.RendererParam;
-//import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-//import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-//import TextureConst = TextureConstT.vox.texture.TextureConst;
-//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-//import ImageTextureProxy = ImageTextureProxyT.vox.texture.ImageTextureProxy;
-
-//import MouseEvent = MouseEventT.vox.event.MouseEvent;
-//import KeyboardEvent = KeyboardEventT.vox.event.KeyboardEvent;
-//import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
-//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-//import RendererScene = RendererSceneT.vox.scene.RendererScene;
-//import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
-
 export namespace demo
 {
     export class DemoKeyboardEvt
