@@ -140,6 +140,11 @@ export namespace demo
             stage3D.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheelListener);
             stage3D.addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener);
             stage3D.addEventListener(MouseEvent.MOUSE_MOVE,this,this.mouseMoveListener);
+
+            stage3D.addEventListener(MouseEvent.MOUSE_BG_DOWN,this,this.test_bgmouseDownListener);
+            stage3D.addEventListener(MouseEvent.MOUSE_BG_UP,this,this.test_bgmouseUpListener);
+
+            
         }
         mouseDownListener(evt:any):void
         {
@@ -209,7 +214,6 @@ export namespace demo
 
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
-                this.m_rscene.getEvt3DController().addBGMouseEventListener(MouseEvent.MOUSE_DOWN,this,this.test_bgmouseDownListener,true,false);
 
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.initialize(300.0);

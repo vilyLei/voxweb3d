@@ -242,6 +242,25 @@ class Stage3D implements IRenderStage3D
         this.m_mouseEvt.phase = 1;
         this.m_mouseEvtDispatcher.dispatchEvt(this.m_mouseEvt);
     }
+
+    
+    mouseBgDown():void
+    {
+        this.m_mouseEvt.type = MouseEvent.MOUSE_BG_DOWN;
+        this.m_mouseEvt.mouseX = this.mouseX;
+        this.m_mouseEvt.mouseY = this.mouseY;
+        this.m_mouseEvt.target = this;
+        this.m_mouseEvt.phase = 1;
+        this.m_mouseEvtDispatcher.dispatchEvt(this.m_mouseEvt);
+    }
+    mouseBgUp():void
+    {
+        this.m_mouseEvt.type = MouseEvent.MOUSE_BG_UP;
+        this.m_mouseEvt.mouseX = this.mouseX;
+        this.m_mouseEvt.mouseY = this.mouseY;
+        this.m_mouseEvt.phase = 1;
+        this.m_mouseEvtDispatcher.dispatchEvt(this.m_mouseEvt);
+    }
     
     mouseRightClick():void
     {

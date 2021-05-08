@@ -1,18 +1,21 @@
 import MouseEvent from "../../vox/event/MouseEvent";
 import EvtNode from "../../vox/event/EvtNode";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
+
 class MouseEvt3DDispatcher implements IEvtDispatcher
 {
-    constructor()
-    {
-    }
     private m_evtNodes:EvtNode[] = [
+        null,null,null,null,
         null,null,null,null,
         null,null,null,null,
         null,null,null,null,
         null,null,null,null
     ];
-    private m_evtNodesLen:number = 15;
+    private m_evtNodesLen:number = 17;
+    constructor()
+    {
+        this.m_evtNodesLen = MouseEvent.GetEvtTypeValueBase();
+    }
     destroy():void
     {
         for(let i:number = 0;i < this.m_evtNodesLen; ++i)

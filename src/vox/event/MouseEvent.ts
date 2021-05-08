@@ -4,9 +4,10 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// 鼠标事件类
+// mouse or touch event
 
 import Vector3D from "../../vox/math/Vector3D";
+
 class MouseEvent
 {
     static EventClassType:number = 1002;
@@ -19,7 +20,7 @@ class MouseEvent
     }
     static GetEvtTypeValuesTotal():number
     {
-        return 15;
+        return 17;
     }
     static readonly MOUSE_DOWN:number = 5001;
     static readonly MOUSE_UP:number = 5002;
@@ -36,6 +37,9 @@ class MouseEvent
     static readonly MOUSE_MULTI_DOWN:number = 5013;
     static readonly MOUSE_MULTI_UP:number = 5014;
     static readonly MOUSE_MULTI_MOVE:number = 5015;
+
+    static readonly MOUSE_BG_DOWN:number = 5016;        //  mouse down do not hit any 3d object, only in stage
+    static readonly MOUSE_BG_UP:number = 5017;          //  mouse up do not hit any 3d object, only in stage
     //classType:number = 1001;
     getClassType():number
     {

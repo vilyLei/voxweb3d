@@ -15,17 +15,14 @@ import RaySelectedNode from '../../vox/scene/RaySelectedNode';
 import IRaySelector from '../../vox/scene/IRaySelector';
 import IEvt3DController from '../../vox/scene/IEvt3DController';
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
-import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
 
 export default class MouseEvt3DController implements IEvt3DController
 {
-    constructor()
-    {
-    }        
+    constructor(){}
+
     private m_stage:Stage3D = null;
     private m_raySelector:IRaySelector = null;
     private m_unlockBoo:boolean = true;
-    private m_evtbgDispather:MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
     initialize(stage:Stage3D):void
     {
         //console.log("MouseEvt3DController::initialize()......");
@@ -38,14 +35,6 @@ export default class MouseEvt3DController implements IEvt3DController
             stage.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener);   
             
         }
-    }
-    addBGMouseEventListener(type:number,target:any,func:(evt:any)=>void,captureEnabled:boolean = true,bubbleEnabled:boolean = false):void
-    {
-        this.m_evtbgDispather.addEventListener(type,target,func,captureEnabled,bubbleEnabled);
-    }
-    removeBGMouseEventListener(type:number,target:any,func:(evt:any)=>void):void
-    {
-        this.m_evtbgDispather.removeEventListener(type,target,func);
     }
     setRaySelector(raySelector:IRaySelector):void
     {
@@ -198,6 +187,7 @@ export default class MouseEvt3DController implements IEvt3DController
                         }
                         this.m_evtTarget = null;
                     }
+                    /*
                     // 加入背景事件接收处理机制
                     for(let i:number = 0;i < this.m_evtTotal;i++)
                     {
@@ -205,6 +195,21 @@ export default class MouseEvt3DController implements IEvt3DController
                         this.m_mouseEvt.target = null;
                         this.m_mouseEvt.phase = evtFlowPhase;
                         this.m_evtbgDispather.dispatchEvt(this.m_mouseEvt);
+                    }
+                    //*/
+                    if(this.m_evtTotal > 0)
+                    {
+                        switch(this.m_mouseEvt.type)
+                        {
+                            case MouseEvent.MOUSE_DOWN:
+                                this.m_stage.mouseBgDown();
+                                break;
+                            case MouseEvent.MOUSE_UP:
+                                this.m_stage.mouseBgUp();
+                                break;
+                            default:
+                                break;
+                        }
                     }
                 }
             }

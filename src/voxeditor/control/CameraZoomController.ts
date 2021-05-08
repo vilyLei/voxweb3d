@@ -12,6 +12,7 @@ import Stage3D from "../../vox/display/Stage3D";
 import CameraBase from "../../vox/view/CameraBase";
 import DivLog from "../../vox/utils/DivLog";
 import MouseEvent from "../../vox/event/MouseEvent";
+
 export default class CameraZoomController
 {
     private m_camera:CameraBase = null;
