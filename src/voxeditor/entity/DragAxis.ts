@@ -1,21 +1,18 @@
 
-import * as Vector3DT from "../../vox/math/Vector3D";
-import * as LineT from "../../vox/geom/Line";
-import * as Matrix4T from "../../vox/math/Matrix4";
+import Vector3D from "../../vox/math/Vector3D";
+import StraightLine from "../../vox/geom/StraightLine";
+import Matrix4 from "../../vox/math/Matrix4";
 
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
-import * as Axis3DEntityT from "../../vox/entity/Axis3DEntity";
-import * as MouseEventT from "../../vox/event/MouseEvent";
-import * as MouseEvt3DDispatcherT from "../../vox/event/MouseEvt3DDispatcher";
+import DisplayEntity from "../../vox/entity/DisplayEntity";
+import Axis3DEntity from "../../vox/entity/Axis3DEntity";
+import MouseEvent from "../../vox/event/MouseEvent";
+import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import StraightLine = LineT.vox.geom.StraightLine;
-import Matrix4 = Matrix4T.vox.math.Matrix4;
 
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import MouseEvt3DDispatcher = MouseEvt3DDispatcherT.vox.event.MouseEvt3DDispatcher;
+//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
+//import MouseEvent = MouseEventT.vox.event.MouseEvent;
+//import MouseEvt3DDispatcher = MouseEvt3DDispatcherT.vox.event.MouseEvt3DDispatcher;
 
 export namespace voxeditor
 {

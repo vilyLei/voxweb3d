@@ -1,50 +1,50 @@
 
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RenderConstT from "../vox/render/RenderConst";
-import * as RendererStateT from "../vox/render/RendererState";
-import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererSceneT from "../vox/scene/RendererScene";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
-import * as MouseEventT from "../vox/event/MouseEvent";
-import * as Stage3DT from "../vox/display/Stage3D";
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
+import RendererState from "../vox/render/RendererState";
+import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import RendererParam from "../vox/scene/RendererParam";
+import RendererScene from "../vox/scene/RendererScene";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
+import MouseEvent from "../vox/event/MouseEvent";
+import Stage3D from "../vox/display/Stage3D";
 
-import * as DisplayEntityT from "../vox/entity/DisplayEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as Sphere3DEntityT from "../vox/entity/Sphere3DEntity";
-import * as BoxFrame3DT from "../vox/entity/BoxFrame3D";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureConstT from "../vox/texture/TextureConst";
-import * as TexResLoaderT from "../vox/texture/TexResLoader";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as DisplayEntityContainerT from "../vox/entity/DisplayEntityContainer";
+import DisplayEntity from "../vox/entity/DisplayEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
+import BoxFrame3D from "../vox/entity/BoxFrame3D";
+import TextureProxy from "../vox/texture/TextureProxy";
+import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import CameraTrack from "../vox/view/CameraTrack";
+import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
 import * as EntityDispT from "./base/EntityDisp";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RendererState = RendererStateT.vox.render.RendererState;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import Stage3D = Stage3DT.vox.display.Stage3D;
+//import Vector3D = Vector3DT.vox.math.Vector3D;
+//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
+//import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
+//import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
+//import RendererState = RendererStateT.vox.render.RendererState;
+//import RendererParam = RendererParamT.vox.scene.RendererParam;
+//import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
+//import RendererScene = RendererSceneT.vox.scene.RendererScene;
+//import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
+//import MouseEvent = MouseEventT.vox.event.MouseEvent;
+//import Stage3D = Stage3DT.vox.display.Stage3D;
 
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-import BoxFrame3D = BoxFrame3DT.vox.entity.BoxFrame3D;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
+//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
+//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
+//import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
+//import BoxFrame3D = BoxFrame3DT.vox.entity.BoxFrame3D;
+//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+//import TextureConst = TextureConstT.vox.texture.TextureConst;
+//import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
+//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
+//import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
 
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 
@@ -58,7 +58,7 @@ export namespace demo
 
         private m_rscene:RendererScene = null;
         private m_rcontext:RendererInstanceContext = null;
-        private m_texLoader:TexResLoader = new TexResLoader();
+        private m_texLoader:ImageTextureLoader;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_equeue:EntityDispQueue = new EntityDispQueue();
@@ -76,7 +76,7 @@ export namespace demo
             ];
             for(; i < urls.length; ++i)
             {
-                this.m_texList.push( this.m_texLoader.getTexAndLoadImg(urls[i]) );
+                this.m_texList.push( this.m_texLoader.getImageTexByUrl(urls[i]) );
                 this.m_texList[i].mipmapEnabled = true;
                 this.m_texList[i].setWrap(TextureConst.WRAP_REPEAT);
             }

@@ -5,9 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../../vox/math/Vector3D";
+import Vector3D from "../../../vox/math/Vector3D";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
+//import Vector3D = Vector3DT.vox.math.Vector3D;
 
 export namespace vox
 {

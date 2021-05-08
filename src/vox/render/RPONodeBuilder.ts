@@ -5,27 +5,18 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IPoolNodeT from "../../vox/base/IPoolNode";
-import * as PoolNodeBuilderT from "../../vox/base/PoolNodeBuilder";
-import * as RPONodeT from "../../vox/render/RPONode";
+import IPoolNode from "../../vox/base/IPoolNode";
+import PoolNodeBuilder from "../../vox/base/PoolNodeBuilder";
+import RPONode from "../../vox/render/RPONode";
 
-import IPoolNode = IPoolNodeT.vox.base.IPoolNode;
-import PoolNodeBuilder = PoolNodeBuilderT.vox.base.PoolNodeBuilder;
-import RPONode = RPONodeT.vox.render.RPONode;
 
-export namespace vox
+/*
+ * render process object node pool management
+ */
+export default class RPONodeBuilder extends PoolNodeBuilder
 {
-    export namespace render
+    protected createNode():IPoolNode
     {
-        /*
-         * render process object node pool management
-         */
-        export class RPONodeBuilder extends PoolNodeBuilder
-        {
-            protected createNode():IPoolNode
-            {
-                return new RPONode();
-            }
-        }
+        return new RPONode();
     }
 }

@@ -1,15 +1,8 @@
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as ImageTextureProxyT from "../vox/texture/ImageTextureProxy";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as RendererSceneT from "../vox/scene/RendererScene";
-
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import ImageTextureProxy = ImageTextureProxyT.vox.texture.ImageTextureProxy;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-
+import RendererParam from "../vox/scene/RendererParam";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
+import CameraTrack from "../vox/view/CameraTrack";
+import RendererScene from "../vox/scene/RendererScene";
 export namespace demo
 {
     /**

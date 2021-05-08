@@ -5,25 +5,19 @@
 /*                                                                         */
 /***************************************************************************/
 
-export namespace app
+
+enum CampType
 {
-    export namespace robot
-    {
-        export namespace camp
-        {
-            export enum CampType
-            {
-                Free,
-                Red,
-                Blue,
-                Green
-            }
-            export enum CampFindMode
-            {
-                Default,
-                XOZ
-                
-            }
-        }
-    }
+    Free,
+    Red,
+    Blue,
+    Green
 }
+enum CampFindMode
+{
+    Default,
+    XOZ
+    
+}
+
+export {CampType,CampFindMode};

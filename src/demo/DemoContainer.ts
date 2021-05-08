@@ -1,64 +1,36 @@
-import * as RSEntityFlagT from '../vox/scene/RSEntityFlag';
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RenderConstT from "../vox/render/RenderConst";
-import * as RendererStateT from "../vox/render/RendererState";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
-import * as RendererInstanceT from "../vox/scene/RendererInstance";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
+import RSEntityFlag from '../vox/scene/RSEntityFlag';
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
+import RendererState from "../vox/render/RendererState";
+import RendererParam from "../vox/scene/RendererParam";
+import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import RendererInstance from "../vox/scene/RendererInstance";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
-import * as DisplayEntityT from "../vox/entity/DisplayEntity";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as Sphere3DEntityT from "../vox/entity/Sphere3DEntity";
-import * as Billboard3DEntityT from "../vox/entity/Billboard3DEntity";
-import * as BoxFrame3DT from "../vox/entity/BoxFrame3D";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureConstT from "../vox/texture/TextureConst";
-import * as TextureBlockT from "../vox/texture/TextureBlock";
-import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as DisplayEntityContainerT from "../vox/entity/DisplayEntityContainer";
+import DisplayEntity from "../vox/entity/DisplayEntity";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
+import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
+import BoxFrame3D from "../vox/entity/BoxFrame3D";
+import TextureProxy from "../vox/texture/TextureProxy";
+import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
+import TextureBlock from "../vox/texture/TextureBlock";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import CameraTrack from "../vox/view/CameraTrack";
+import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
 import * as EntityDispT from "./base/EntityDisp";
-import * as DecayBrnParticleT from "../particle/base/DecayBrnParticle";
+import DecayBrnParticle from "../particle/base/DecayBrnParticle";
 
-import RSEntityFlag = RSEntityFlagT.vox.scene.RSEntityFlag;
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RendererState = RendererStateT.vox.render.RendererState;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
-import BoxFrame3D = BoxFrame3DT.vox.entity.BoxFrame3D;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TextureBlock = TextureBlockT.vox.texture.TextureBlock;
-import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
-import DecayBrnParticle = DecayBrnParticleT.particle.base.DecayBrnParticle;
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 
 export namespace demo
 {
     export class DemoContainer
     {
-        constructor()
-        {
-        }
+        constructor(){}
         private m_renderer:RendererInstance = null;
         private m_rcontext:RendererInstanceContext = null;
         private m_texLoader:ImageTextureLoader = null;

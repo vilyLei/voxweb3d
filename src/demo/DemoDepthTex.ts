@@ -1,32 +1,19 @@
 
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererParam from "../vox/scene/RendererParam";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as DepthTextureProxyT from "../vox/texture/DepthTextureProxy";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as MouseEventT from "../vox/event/MouseEvent";
-import * as DemoInstanceT from "./DemoInstance";
-import * as ProfileInstanceT from "../voxprofile/entity/ProfileInstance";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import TextureProxy from "../vox/texture/TextureProxy";
+import DepthTextureProxy from "../vox/texture/DepthTextureProxy";
+import CameraTrack from "../vox/view/CameraTrack";
+import MouseEvent from "../vox/event/MouseEvent";
+import DemoInstance from "./DemoInstance";
+import ProfileInstance from "../voxprofile/entity/ProfileInstance";
+
 import * as DepZColorMaterialT from "../demo/material/DepZColorMaterial";
-
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import DepthTextureProxy = DepthTextureProxyT.vox.texture.DepthTextureProxy;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import DemoInstance = DemoInstanceT.demo.DemoInstance;
-import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
 import DepZColorMaterial = DepZColorMaterialT.demo.material.DepZColorMaterial;
 
 export namespace demo

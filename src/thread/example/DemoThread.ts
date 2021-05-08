@@ -1,23 +1,13 @@
-
-import * as ThreadSystemT from "../../thread/ThreadSystem";
-import * as TestNumberAddTaskT from "../../thread/control/TestNumberAddTask";
-
-import ThreadSystem = ThreadSystemT.thread.ThreadSystem;
-import TestNumberAddTask = TestNumberAddTaskT.thread.control.TestNumberAddTask;
-
-export namespace thread
+import ThreadSystem from "../../thread/ThreadSystem";
+import TestNumberAddTask from "../../thread/control/TestNumberAddTask";
+/**
+ * thread(worker) 用法示例
+ */
+export class DemoThread
 {
-    export namespace example
-    {
-        /**
-         * thread(worker) 用法示例
-         */
-        export class DemoThread
-        {
-            constructor(){}
-
-            // thread code example(demonstrate: 通过后续添加的代码字符串来扩充worker中的功能示例)
-            private m_mathAddWorkerCode:string = 
+    constructor(){}
+    // thread code example(demonstrate: 通过后续添加的代码字符串来扩充worker中的功能示例)
+    private m_mathAddWorkerCode:string = 
 `
 function ThreadAddNum()
 {
@@ -62,41 +52,37 @@ function ThreadAddNum()
 let workerIns_ThreadAddNum = new ThreadAddNum();
 `;
 
-            initialize():void
-            {
-                // 注意: m_mathAddWorkerCode 代码中描述的 getTaskClass() 返回值 要和 TestNumberAddTask 中的 getTaskClass() 返回值 要相等
-
-                ThreadSystem.InitTaskByCodeStr(this.m_mathAddWorkerCode,0);
-                ThreadSystem.Initsialize(1);
-
-                this.useTask();
-
-                this.update();
-            }
-            private m_numberAddTask:TestNumberAddTask = new TestNumberAddTask();
-            private useTask():void
-            {
-                let param:Float32Array = new Float32Array([10,11,12,13]);
-                console.log("math add input :",param);
-                ThreadSystem.AddData(this.m_numberAddTask.clacNumberList(param));   
-            }
-            private m_timeoutId:any = -1;
-            /**
-             * 定时运行 ThreadSystem
-             */
-            private update():void
-            {
-                ThreadSystem.Run();
-
-                if(this.m_timeoutId > -1)
-                {
-                    clearTimeout(this.m_timeoutId);
-                }
-                this.m_timeoutId = setTimeout(this.update.bind(this),40);// 25 fps
-            }
-            run():void
-            {
-            }
+    initialize():void
+    {
+        // 注意: m_mathAddWorkerCode 代码中描述的 getTaskClass() 返回值 要和 TestNumberAddTask 中的 getTaskClass() 返回值 要相等
+        ThreadSystem.InitTaskByCodeStr(this.m_mathAddWorkerCode,0);
+        ThreadSystem.Initsialize(1);
+        this.useTask();
+        this.update();
+    }
+    private m_numberAddTask:TestNumberAddTask = new TestNumberAddTask();
+    private useTask():void
+    {
+        let param:Float32Array = new Float32Array([10,11,12,13]);
+        console.log("math add input :",param);
+        ThreadSystem.AddData(this.m_numberAddTask.clacNumberList(param));   
+    }
+    private m_timeoutId:any = -1;
+    /**
+     * 定时运行 ThreadSystem
+     */
+    private update():void
+    {
+        ThreadSystem.Run();
+        if(this.m_timeoutId > -1)
+        {
+            clearTimeout(this.m_timeoutId);
         }
+        this.m_timeoutId = setTimeout(this.update.bind(this),40);// 25 fps
+    }
+    run():void
+    {
     }
 }
+
+export default DemoThread;

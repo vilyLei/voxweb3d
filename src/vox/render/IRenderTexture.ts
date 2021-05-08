@@ -5,29 +5,21 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IRenderResourceT from "../../vox/render/IRenderResource";
-import * as IRenderBufferT from "../../vox/render/IRenderBuffer";
+import IRenderResource from "../../vox/render/IRenderResource";
+import IRenderBuffer from "../../vox/render/IRenderBuffer";
 
-import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
-import IRenderBuffer = IRenderBufferT.vox.render.IRenderBuffer;
-
-export namespace vox
+interface IRenderTexture extends IRenderBuffer
 {
-    export namespace render
-    {
-        export interface IRenderTexture extends IRenderBuffer
-        {
-            isDirect():boolean;
-            getUid():number;
-            getResUid():number;
-            getSampler():number;
-            getAttachCount():number;
-            __$attachThis():void;
-            __$detachThis():void;
-            __$$use(res:IRenderResource):void;
-            __$$upload(res:IRenderResource):void;
-            __$destroy():void;
-            __$$removeFromSlot():void;
-        }
-    }
+    isDirect():boolean;
+    getUid():number;
+    getResUid():number;
+    getSampler():number;
+    getAttachCount():number;
+    __$attachThis():void;
+    __$detachThis():void;
+    __$$use(res:IRenderResource):void;
+    __$$upload(res:IRenderResource):void;
+    __$destroy():void;
+    __$$removeFromSlot():void;
 }
+export default IRenderTexture;

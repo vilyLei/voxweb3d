@@ -1,32 +1,18 @@
 
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererParam from "../vox/scene/RendererParam";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as MouseEventT from "../vox/event/MouseEvent";
-import * as StableArrayT from "../vox/utils/StableArray";
-import * as SortNodeLinkerT from "../vox/utils/SortNodeLinker";
-import * as DemoInstanceT from "./DemoInstance";
-import * as ProfileInstanceT from "../voxprofile/entity/ProfileInstance";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import TextureProxy from "../vox/texture/TextureProxy";
+import CameraTrack from "../vox/view/CameraTrack";
+import MouseEvent from "../vox/event/MouseEvent";
+import {StableArrayNode,StableArray} from "../vox/utils/StableArray";
+import {SortNodeLinkerNode,SortNodeLinker} from "../vox/utils/SortNodeLinker";
+import DemoInstance from "./DemoInstance";
+import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import SortNodeLinker = SortNodeLinkerT.vox.utils.SortNodeLinker;
-import SortNodeLinkerNode = SortNodeLinkerT.vox.utils.SortNodeLinkerNode;
-import StableArray = StableArrayT.vox.utils.StableArray;
-import StableArrayNode = StableArrayT.vox.utils.StableArrayNode;
-import DemoInstance = DemoInstanceT.demo.DemoInstance;
-import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
 export namespace demo
 {
     export class DemoDrawGroup extends DemoInstance

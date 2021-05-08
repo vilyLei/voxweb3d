@@ -5,86 +5,77 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as VtxBufIDT from "../../vox/mesh/VtxBufID";
-import * as IVtxBufT from "../../vox/mesh/IVtxBuf";
+import VtxBufID from "../../vox/mesh/VtxBufID";
+import IVtxBuf from "../../vox/mesh/IVtxBuf";
 
-import VtxBufID = VtxBufIDT.vox.mesh.VtxBufID;
-import IVtxBuf = IVtxBufT.vox.mesh.IVtxBuf;
-
-export namespace vox
+export default class VtxCombinedBuf implements IVtxBuf
 {
-    export namespace mesh
+    private m_uid:number = -1;
+    private m_total:number = 0;
+    
+    constructor(bufDataUsage:number)
     {
-        export class VtxCombinedBuf implements IVtxBuf
-        {
-            private m_uid:number = -1;
-            private m_total:number = 0;
-            
-            constructor(bufDataUsage:number)
-            {
-                this.m_uid = VtxBufID.CreateNewID();
-            }
-            
-            getUid():number
-            {
-                return this.m_uid;
-            }
-            public getType():number
-            {
-                return 0;
-            }
-            private m_offsetList:number[] = null;
-            private m_f32:Float32Array = null;
-            private m_f32Stride:number = 0;
-            
-            getBuffersTotal():number
-            {
-                return 1;
-            }
-            getF32DataAt(index:number):Float32Array
-            {
-                return this.m_f32;
-            }
-            setF32DataAt(index:number,float32Arr:Float32Array,stepFloatsTotal:number,setpOffsets:number[]):void
-            {
-                if(setpOffsets != null)this.m_offsetList = setpOffsets;
-                this.m_f32Stride = stepFloatsTotal;
-                //console.log("VtxCombinedBuf::setF32DataAt(),"+this+" m_f32.length: "+float32Arr.length+", this.m_f32PreSize: "+this.m_f32PreSize);
-                this.m_f32 = float32Arr;
-            }
-            setData4fAt(vertexI:number,attribI:number,px:number,py:number,pz:number,pw:number):void
-            {
-                vertexI = (this.m_f32Stride * vertexI) + this.m_offsetList[attribI];
-                this.m_f32[vertexI++] = px;
-                this.m_f32[vertexI++] = py;
-                this.m_f32[vertexI++] = pz;
-                this.m_f32[vertexI++] = pw;
-            }
-            setData3fAt(vertexI:number,attribI:number,px:number,py:number,pz:number):void
-            {
-                vertexI = (this.m_f32Stride * vertexI) + this.m_offsetList[attribI];
-                //console.log("VtxCombinedBuf::setData3fAt(), vertexI: "+vertexI+",this.m_f32Stride: "+this.m_f32Stride);
-                this.m_f32[vertexI++] = px;
-                this.m_f32[vertexI++] = py;
-                this.m_f32[vertexI++] = pz;
-            }
-            setData2fAt(vertexI:number,attribI:number,px:number,py:number):void
-            {
-                vertexI = (this.m_f32Stride * vertexI) + this.m_offsetList[attribI];
-                //console.log("VtxCombinedBuf::setData2fAt(), vertexI: "+vertexI+",this.m_f32Stride: "+this.m_f32Stride);
-                this.m_f32[vertexI++] = px;
-                this.m_f32[vertexI++] = py;
-            }
-            public destroy():void
-            {
-                console.log("VtxCombinedBuf::__$destroy()... ",this);
-                this.m_offsetList = null;
-                this.m_f32 = null;
-            }
-            toString():string
-            {
-                return "VtxCombinedBuf(uid = "+this.m_uid+")";
-            }
-        }
+        this.m_uid = VtxBufID.CreateNewID();
+    }
+    
+    getUid():number
+    {
+        return this.m_uid;
+    }
+    public getType():number
+    {
+        return 0;
+    }
+    private m_offsetList:number[] = null;
+    private m_f32:Float32Array = null;
+    private m_f32Stride:number = 0;
+    
+    getBuffersTotal():number
+    {
+        return 1;
+    }
+    getF32DataAt(index:number):Float32Array
+    {
+        return this.m_f32;
+    }
+    setF32DataAt(index:number,float32Arr:Float32Array,stepFloatsTotal:number,setpOffsets:number[]):void
+    {
+        if(setpOffsets != null)this.m_offsetList = setpOffsets;
+        this.m_f32Stride = stepFloatsTotal;
+        //console.log("VtxCombinedBuf::setF32DataAt(),"+this+" m_f32.length: "+float32Arr.length+", this.m_f32PreSize: "+this.m_f32PreSize);
+        this.m_f32 = float32Arr;
+    }
+    setData4fAt(vertexI:number,attribI:number,px:number,py:number,pz:number,pw:number):void
+    {
+        vertexI = (this.m_f32Stride * vertexI) + this.m_offsetList[attribI];
+        this.m_f32[vertexI++] = px;
+        this.m_f32[vertexI++] = py;
+        this.m_f32[vertexI++] = pz;
+        this.m_f32[vertexI++] = pw;
+    }
+    setData3fAt(vertexI:number,attribI:number,px:number,py:number,pz:number):void
+    {
+        vertexI = (this.m_f32Stride * vertexI) + this.m_offsetList[attribI];
+        //console.log("VtxCombinedBuf::setData3fAt(), vertexI: "+vertexI+",this.m_f32Stride: "+this.m_f32Stride);
+        this.m_f32[vertexI++] = px;
+        this.m_f32[vertexI++] = py;
+        this.m_f32[vertexI++] = pz;
+    }
+    setData2fAt(vertexI:number,attribI:number,px:number,py:number):void
+    {
+        vertexI = (this.m_f32Stride * vertexI) + this.m_offsetList[attribI];
+        //console.log("VtxCombinedBuf::setData2fAt(), vertexI: "+vertexI+",this.m_f32Stride: "+this.m_f32Stride);
+        this.m_f32[vertexI++] = px;
+        this.m_f32[vertexI++] = py;
+    }
+    public destroy():void
+    {
+        console.log("VtxCombinedBuf::__$destroy()... ",this);
+        this.m_offsetList = null;
+        this.m_f32 = null;
+    }
+    toString():string
+    {
+        return "VtxCombinedBuf(uid = "+this.m_uid+")";
     }
 }

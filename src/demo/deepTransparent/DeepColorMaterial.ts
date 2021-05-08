@@ -5,17 +5,17 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as ShaderCodeBufferT from "../../vox/material/ShaderCodeBuffer";
-import * as ShaderUniformDataT from "../../vox/material/ShaderUniformData";
-import * as ShaderGlobalUniformT from "../../vox/material/ShaderGlobalUniform";
-import * as MaterialBaseT from "../../vox/material/MaterialBase";
-import * as RenderProxyT from '../../vox/render/RenderProxy';
+import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
+import ShaderUniformData from "../../vox/material/ShaderUniformData";
+import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
+import MaterialBase from "../../vox/material/MaterialBase";
+import RenderProxy from '../../vox/render/RenderProxy';
 
-import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
-import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
-import ShaderGlobalUniform = ShaderGlobalUniformT.vox.material.ShaderGlobalUniform;
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
-import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+//import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
+//import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
+//import ShaderGlobalUniform = ShaderGlobalUniformT.vox.material.ShaderGlobalUniform;
+//import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+//import RenderProxy = RenderProxyT.vox.render.RenderProxy;
 
 export namespace demo
 {

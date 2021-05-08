@@ -5,49 +5,38 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IRenderProcessT from "../../vox/render/IRenderProcess";
-import * as RendererInstanceT from "../../vox/scene/RendererInstance";
-import * as RendererStatusT from "../../voxprofile/entity/RendererStatus";
-
-import IRenderProcess = IRenderProcessT.vox.render.IRenderProcess;
-import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-import RendererStatus = RendererStatusT.voxprofile.entity.RendererStatus;
-
-export namespace voxprofile
+import IRenderProcess from "../../vox/render/IRenderProcess";
+import RendererInstance from "../../vox/scene/RendererInstance";
+import RendererStatus from "../../voxprofile/entity/RendererStatus";
+export default class ProfileInstance
 {
-    export namespace entity
+    private m_rprocess:IRenderProcess = null;
+    private m_renderer:RendererInstance = null;
+    private m_status:RendererStatus = null;
+    
+    constructor()
     {
-        export class ProfileInstance
+    }
+    initialize(renderer:RendererInstance):void
+    {
+        if(this.m_renderer == null)
         {
-            private m_rprocess:IRenderProcess = null;
-            private m_renderer:RendererInstance = null;
-            private m_status:RendererStatus = null;
-            
-            constructor()
-            {
-            }
-            initialize(renderer:RendererInstance):void
-            {
-                if(this.m_renderer == null)
-                {
-                    this.m_renderer = renderer;
-                    this.m_rprocess = this.m_renderer.createSeparatedProcess();
-                    this.m_status = new RendererStatus();
-                    this.m_status.initialize(this.m_renderer, this.m_rprocess);
-                }
-            }
-            run():void
-            {
-                if(this.m_renderer != null)
-                {
-                    this.m_status.run();
-                    this.m_renderer.runProcess( this.m_rprocess );
-                }
-            }
-            toString():string
-            {
-                return "[ProfileInstance]";
-            }
+            this.m_renderer = renderer;
+            this.m_rprocess = this.m_renderer.createSeparatedProcess();
+            this.m_status = new RendererStatus();
+            this.m_status.initialize(this.m_renderer, this.m_rprocess);
         }
+    }
+    run():void
+    {
+        if(this.m_renderer != null)
+        {
+            this.m_status.run();
+            this.m_renderer.runProcess( this.m_rprocess );
+        }
+    }
+    toString():string
+    {
+        return "[ProfileInstance]";
     }
 }

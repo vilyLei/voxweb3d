@@ -5,26 +5,17 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IRODisplayT from "../../vox/display/IRODisplay";
-import * as IRenderBufferT from '../../vox/render/IRenderBuffer';
+import IRODisplay from "../../vox/display/IRODisplay";
+import IRenderBuffer from '../../vox/render/IRenderBuffer';
 
-import IRODisplay = IRODisplayT.vox.display.IRODisplay;
-import IRenderBuffer = IRenderBufferT.vox.render.IRenderBuffer;
-
-export namespace vox
+export default interface IROMaterialUpdater
 {
-    export namespace render
-    {
-        export interface IROMaterialUpdater
-        {
-            /**
-             * update display entity texture list  system memory data to gpu memory data
-             */
-            updateDispTRO(disp:IRODisplay,deferred:boolean):void;
-            /**
-             * update single texture self system memory data to gpu memory data
-             */
-            updateTextureData(textureProxy:IRenderBuffer,deferred:boolean):void;
-        }
-    }
+    /**
+     * update display entity texture list  system memory data to gpu memory data
+     */
+    updateDispTRO(disp:IRODisplay,deferred:boolean):void;
+    /**
+     * update single texture self system memory data to gpu memory data
+     */
+    updateTextureData(textureProxy:IRenderBuffer,deferred:boolean):void;
 }

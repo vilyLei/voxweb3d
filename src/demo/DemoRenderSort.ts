@@ -1,35 +1,35 @@
 
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as Color4T from "../vox/material/Color4";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererParam from "../vox/scene/RendererParam";
+import Color4 from "../vox/material/Color4";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
-import * as RendererStateT from "../vox/render/RendererState";
-import * as DisplayEntityT from "../vox/entity/DisplayEntity";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureConstT from "../vox/texture/TextureConst";
+import RendererState from "../vox/render/RendererState";
+import DisplayEntity from "../vox/entity/DisplayEntity";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import TextureProxy from "../vox/texture/TextureProxy";
+import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
 
-import * as MouseEventT from "../vox/event/MouseEvent";
-import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as RendererSceneT from "../vox/scene/RendererScene";
+import MouseEvent from "../vox/event/MouseEvent";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import CameraTrack from "../vox/view/CameraTrack";
+import RendererScene from "../vox/scene/RendererScene";
 
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import Color4 = Color4T.vox.material.Color4;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
+//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import RendererParam = RendererParamT.vox.scene.RendererParam;
+//import Color4 = Color4T.vox.material.Color4;
+//import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 
-import RendererState = RendererStateT.vox.render.RendererState;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
+//import RendererState = RendererStateT.vox.render.RendererState;
+//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
+//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+//import TextureConst = TextureConstT.vox.texture.TextureConst;
 
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
+//import MouseEvent = MouseEventT.vox.event.MouseEvent;
+//import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
+//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
+//import RendererScene = RendererSceneT.vox.scene.RendererScene;
 
 export namespace demo
 {

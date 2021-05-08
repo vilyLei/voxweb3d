@@ -5,23 +5,15 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as ROVertexBufferT from "../../vox/mesh/ROVertexBuffer";
+import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 
-import ROVertexBuffer = ROVertexBufferT.vox.mesh.ROVertexBuffer;
-
-export namespace vox
+export default class MeshResource
 {
-    export namespace mesh
+    /**
+     * 放在帧循环中自动定时清理资源 system memory mesh data
+     */
+    static ClearTest():void
     {
-        export class MeshResource
-        {
-            /**
-             * 放在帧循环中自动定时清理资源 system memory mesh data
-             */
-            static ClearTest():void
-            {
-                ROVertexBuffer.ClearTest();
-            }
-        }
+        ROVertexBuffer.ClearTest();
     }
 }

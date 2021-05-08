@@ -4,22 +4,22 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import * as RendererDevieceT from "../../vox/render/RendererDeviece";
-import * as RendererParamT from "../../vox/scene/RendererParam";
-import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
-import * as RendererSceneT from "../../vox/scene/RendererScene";
-import * as H5FontSysT from "../../vox/text/H5FontSys";
+import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererParam from "../../vox/scene/RendererParam";
+import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
+import RendererScene from "../../vox/scene/RendererScene";
+import H5FontSystem from "../../vox/text/H5FontSys";
 
-import * as CameraTrackT from "../../vox/view/CameraTrack";
+import CameraTrack from "../../vox/view/CameraTrack";
 import * as SceneFogFlow2T from "../../advancedDemo/depthLight/scene/SceneFogFlow";
 
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
+//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import RendererParam = RendererParamT.vox.scene.RendererParam;
+//import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
+//import RendererScene = RendererSceneT.vox.scene.RendererScene;
+//import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
 
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
+//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import SceneFogFlow = SceneFogFlow2T.advancedDemo.depthLight.scene.SceneFogFlow;
 
 export namespace advancedDemo

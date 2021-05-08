@@ -1,43 +1,27 @@
 
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as FrameBufferTypeT from "../vox/render/FrameBufferType";
-import * as RenderAdapterT from "../vox/render/RenderAdapter";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
-import * as RendererInstanceT from "../vox/scene/RendererInstance";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import FrameBufferType from "../vox/render/FrameBufferType";
+import RenderAdapter from "../vox/render/RenderAdapter";
+import RendererParam from "../vox/scene/RendererParam";
+import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import RendererInstance from "../vox/scene/RendererInstance";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as Billboard3DEntityT from "../vox/entity/Billboard3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureStoreT from "../vox/texture/TextureStore";
-import * as TextureConstT from "../vox/texture/TextureConst";
-import * as TexResLoaderT from "../vox/texture/TexResLoader";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as DefaultMRTMaterialT from "../vox/material/mcase/DefaultMRTMaterial";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
+import TextureProxy from "../vox/texture/TextureProxy";
+////import * as TextureStoreT from "../vox/texture/TextureStore";
+import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import CameraTrack from "../vox/view/CameraTrack";
+import DefaultMRTMaterial from "../vox/material/mcase/DefaultMRTMaterial";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import FrameBufferType = FrameBufferTypeT.vox.render.FrameBufferType;
-import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
+import TextureBlock from "../vox/texture/TextureBlock";
 
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import DefaultMRTMaterial = DefaultMRTMaterialT.vox.material.mcase.DefaultMRTMaterial;
+//import DefaultMRTMaterial = DefaultMRTMaterialT.vox.material.mcase.DefaultMRTMaterial;
 
 export namespace demo
 {
@@ -46,9 +30,10 @@ export namespace demo
         constructor()
         {
         }
+        private m_texBlock:TextureBlock;
         private m_renderer:RendererInstance = null;
         private m_rcontext:RendererInstanceContext = null;
-        private m_texLoader:TexResLoader = new TexResLoader();
+        private m_texLoader:ImageTextureLoader;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         
@@ -58,21 +43,6 @@ export namespace demo
             if(this.m_rcontext == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/fruit_01.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/metal_08.jpg");
-                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/warter_01.jpg");
-                let tex4:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_02.jpg");
-                tex0.mipmapEnabled = true;
-                tex0.setWrap(TextureConst.WRAP_REPEAT);
-                tex1.setWrap(TextureConst.WRAP_REPEAT);
-                tex1.mipmapEnabled = true;
-                tex2.setWrap(TextureConst.WRAP_REPEAT);
-                tex2.mipmapEnabled = true;
-                tex3.setWrap(TextureConst.WRAP_REPEAT);
-                tex3.mipmapEnabled = true;
-                tex4.setWrap(TextureConst.WRAP_REPEAT);
-                tex4.mipmapEnabled = true;
 
                 this.m_statusDisp.initialize("rstatus");
 
@@ -87,6 +57,25 @@ export namespace demo
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();
                 this.m_rcontext = this.m_renderer.getRendererContext();
+
+                this.m_texBlock = new TextureBlock();
+                this.m_texBlock.setRenderer( this.m_renderer );
+                this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
+                let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/fruit_01.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/metal_08.jpg");
+                let tex3:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/warter_01.jpg");
+                let tex4:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_02.jpg");
+                tex0.mipmapEnabled = true;
+                tex0.setWrap(TextureConst.WRAP_REPEAT);
+                tex1.setWrap(TextureConst.WRAP_REPEAT);
+                tex1.mipmapEnabled = true;
+                tex2.setWrap(TextureConst.WRAP_REPEAT);
+                tex2.mipmapEnabled = true;
+                tex3.setWrap(TextureConst.WRAP_REPEAT);
+                tex3.mipmapEnabled = true;
+                tex4.setWrap(TextureConst.WRAP_REPEAT);
+                tex4.mipmapEnabled = true;
 
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
@@ -139,12 +128,12 @@ export namespace demo
                 // add mrt texture 3d display entity
                 let boxMrt0:Box3DEntity = new Box3DEntity();
                 boxMrt0.name = "boxMrt0";
-                boxMrt0.initialize(new Vector3D(-boxSize,-boxSize,-boxSize),new Vector3D(boxSize,boxSize,boxSize),[TextureStore.GetRTTTextureAt(0)]);
+                boxMrt0.initialize(new Vector3D(-boxSize,-boxSize,-boxSize),new Vector3D(boxSize,boxSize,boxSize),[this.m_texBlock.getRTTTextureAt(0)]);
                 boxMrt0.setXYZ(-150,0,-150);
                 this.m_renderer.addEntity(boxMrt0, 2);
                 let boxMrt1:Box3DEntity = new Box3DEntity();
                 boxMrt1.name = "boxMrt1";
-                boxMrt1.initialize(new Vector3D(-boxSize,-boxSize,-boxSize),new Vector3D(boxSize,boxSize,boxSize),[TextureStore.GetRTTTextureAt(1)]);
+                boxMrt1.initialize(new Vector3D(-boxSize,-boxSize,-boxSize),new Vector3D(boxSize,boxSize,boxSize),[this.m_texBlock.getRTTTextureAt(1)]);
                 boxMrt1.setXYZ(150,0,150);
                 this.m_renderer.addEntity(boxMrt1, 2);
             }
@@ -165,27 +154,27 @@ export namespace demo
             // --------------------------------------------- mrt begin
             pcontext.setClearRGBColor3f(0.1, 0.0, 0.1);
             radapter.synFBOSizeWithViewport();
-            radapter.setRenderToTexture(TextureStore.GetRTTTextureAt(0), true, false, 0);
-            radapter.setRenderToTexture(TextureStore.GetRTTTextureAt(1), true, false, 1);
+            radapter.setRenderToTexture(this.m_texBlock.getRTTTextureAt(0), true, false, 0);
+            radapter.setRenderToTexture(this.m_texBlock.getRTTTextureAt(1), true, false, 1);
             radapter.useFBO(true, true, false);
             rinstance.runAt(0);
             // --------------------------------------------- mrt end
-            //  radapter.setRenderToTexture(TextureStore.GetRTTTextureAt(0), true, false, 0);
+            //  radapter.setRenderToTexture(this.m_texBlock.getRTTTextureAt(0), true, false, 0);
             //  radapter.useFBO(false, false, false);
             //  rinstance.runAt(1);
-            //  radapter.setRenderToTexture(TextureStore.GetRTTTextureAt(0), true, false, 0);
-            //  radapter.setRenderToTexture(TextureStore.GetRTTTextureAt(1), true, false, 1);
+            //  radapter.setRenderToTexture(this.m_texBlock.getRTTTextureAt(0), true, false, 0);
+            //  radapter.setRenderToTexture(this.m_texBlock.getRTTTextureAt(1), true, false, 1);
             //  radapter.useFBO(false, false, false);
             //  rinstance.runAt(3);
-            //  radapter.setRenderToTexture(TextureStore.GetRTTTextureAt(0), true, false, 0);
-            //  //radapter.setRenderToTexture(TextureStore.GetRTTTextureAt(1), true, false, 1);
+            //  radapter.setRenderToTexture(this.m_texBlock.getRTTTextureAt(0), true, false, 0);
+            //  //radapter.setRenderToTexture(this.m_texBlock.getRTTTextureAt(1), true, false, 1);
             //  radapter.useFBO(false, false, false);
             //  //radapter.useFBO(true, true, false);
             //  rinstance.runAt(4);
             /*
             pcontext.bindFBOAt(1,FrameBufferType.FRAMEBUFFER);
-            radapter.setRenderToTexture(TextureStore.GetRTTTextureAt(2), false, false, 0);
-            radapter.setRenderToTexture(TextureStore.GetRTTTextureAt(3), false, false, 1);
+            radapter.setRenderToTexture(this.m_texBlock.getRTTTextureAt(2), false, false, 0);
+            radapter.setRenderToTexture(this.m_texBlock.getRTTTextureAt(3), false, false, 1);
             radapter.useFBO(true, true, false);
             rinstance.runAt(5);
             // -------------------------------------------------------

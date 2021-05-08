@@ -1,35 +1,20 @@
 
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
-import * as RendererInstanceT from "../vox/scene/RendererInstance";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
-import * as PingpongBlurT from "../renderingtoy/mcase/PingpongBlur";
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererParam from "../vox/scene/RendererParam";
+import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import RendererInstance from "../vox/scene/RendererInstance";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
+import PingpongBlur from "../renderingtoy/mcase/PingpongBlur";
 
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureConstT from "../vox/texture/TextureConst";
-import * as TextureStoreT from "../vox/texture/TextureStore";
-import * as TexResLoaderT from "../vox/texture/TexResLoader";
-import * as CameraTrackT from "../vox/view/CameraTrack";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import TextureProxy from "../vox/texture/TextureProxy";
+import {TextureConst} from "../vox/texture/TextureConst";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import CameraTrack from "../vox/view/CameraTrack";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-import PingpongBlur = PingpongBlurT.renderingtoy.mcase.PingpongBlur;
-
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
+import TextureBlock from "../vox/texture/TextureBlock";
 
 export namespace demo
 {
@@ -38,9 +23,10 @@ export namespace demo
         constructor()
         {
         }
+        private m_texBlock:TextureBlock;
         private m_renderer:RendererInstance = null;
         private m_rcontext:RendererInstanceContext = null;
-        private m_texLoader:TexResLoader = new TexResLoader();
+        private m_texLoader:ImageTextureLoader;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_blurIns:PingpongBlur = null;
@@ -60,10 +46,13 @@ export namespace demo
                 this.m_renderer.initialize(rparam);
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();
-                TextureStore.SetRenderer(this.m_renderer);
                 
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
+                this.m_texBlock = new TextureBlock();
+                this.m_texBlock.setRenderer( this.m_renderer );
+                this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
+                
+                let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
                 tex0.mipmapEnabled = true;
                 tex0.setWrap(TextureConst.WRAP_REPEAT);
                 tex1.setWrap(TextureConst.WRAP_REPEAT);

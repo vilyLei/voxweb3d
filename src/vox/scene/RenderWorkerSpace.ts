@@ -4,20 +4,13 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// 对应RenderWorld的空间管理
 
-export namespace vox
+export default class RenderWorkerSpace
 {
-    export namespace scene
+    RunBegin():void
     {
-        export class RenderWorkerSpace
-        {
-            RunBegin():void
-            {
-            }
-            RunEnd():void
-            {
-            }
-        }
+    }
+    RunEnd():void
+    {
     }
 }

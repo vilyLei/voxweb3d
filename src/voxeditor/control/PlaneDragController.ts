@@ -1,11 +1,11 @@
 
-import * as Vector3DT from "../../vox/math/Vector3D";
-import * as PlaneT from "../../vox/geom/Plane";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
+import Vector3D from "../../vox/math/Vector3D";
+import Plane from "../../vox/geom/Plane";
+import DisplayEntity from "../../vox/entity/DisplayEntity";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import Plane = PlaneT.vox.geom.Plane;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+//import Vector3D = Vector3DT.vox.math.Vector3D;
+//import Plane = PlaneT.vox.geom.Plane;
+//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 
 export namespace voxeditor
 {

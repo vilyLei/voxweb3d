@@ -1,28 +1,28 @@
 
-//import * as Vector3DT from "../../../vox/math/Vector3D";
-import * as Stage3DT from "../../../vox/display/Stage3D";
-import * as RendererSceneT from "../../../vox/scene/RendererScene";
+//import Vector3D from "../../../vox/math/Vector3D";
+import Stage3D from "../../../vox/display/Stage3D";
+import RendererScene from "../../../vox/scene/RendererScene";
 
-import * as TextureProxyT from "../../../vox/texture/TextureProxy";
-import * as MaterialBaseT from "../../../vox/material/MaterialBase";
-import * as DisplayEntityT from "../../../vox/entity/DisplayEntity";
+import TextureProxy from "../../../vox/texture/TextureProxy";
+import MaterialBase from "../../../vox/material/MaterialBase";
+import DisplayEntity from "../../../vox/entity/DisplayEntity";
 import * as TexManagerT from "./TexManager";
 import * as MaterialParamT from "./MaterialParam";
-//import * as Default3DMaterialT from "../../../vox/material/mcase/Default3DMaterial";
+//import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
 import * as ParalMap2MaterialT from "../mateiral/ParalMap2Material";
 import * as WetWoodMaterialT from "../mateiral/WetWoodMaterial";
 import * as DirtyIronMaterialT from "../mateiral/DirtyIronMaterial";
 
-//import Vector3D = Vector3DT.vox.math.Vector3D;
-import Stage3D = Stage3DT.vox.display.Stage3D;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
+////import Vector3D = Vector3DT.vox.math.Vector3D;
+//import Stage3D = Stage3DT.vox.display.Stage3D;
+//import RendererScene = RendererSceneT.vox.scene.RendererScene;
 
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+//import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import TexManager = TexManagerT.voxvat.demo.scene.TexManager;
 import MaterialParam = MaterialParamT.voxvat.demo.scene.MaterialParam;
-//import Default3DMaterial = Default3DMaterialT.vox.material.mcase.Default3DMaterial;
+////import Default3DMaterial = Default3DMaterialT.vox.material.mcase.Default3DMaterial;
 import ParalMap2Material = ParalMap2MaterialT.voxvat.demo.material.ParalMap2Material;
 import WetWoodMaterial = WetWoodMaterialT.voxvat.demo.material.WetWoodMaterial;
 import DirtyIronMaterial = DirtyIronMaterialT.voxvat.demo.material.DirtyIronMaterial;

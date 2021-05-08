@@ -5,17 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
-export namespace app
+enum RoleActMode
 {
-    export namespace robot
-    {
-        export namespace base
-        {
-            export enum RoleActMode
-            {
-                FREE_RUN = 1001,
-                ATTACK_RUN = 1002
-            }
-        }
-    }
+    FREE_RUN = 1001,
+    ATTACK_RUN = 1002
 }
+
+export default RoleActMode;

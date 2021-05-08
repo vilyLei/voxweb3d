@@ -5,17 +5,17 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3T from "../../vox/math/Vector3D";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
-import * as Axis3DEntityT from "../../vox/entity/Axis3DEntity";
-import * as Line3DEntityT from "../../vox/entity/Line3DEntity";
-import * as IPartStoreT from "../../app/robot/IPartStore";
+import Vector3D from "../../vox/math/Vector3D";
+import DisplayEntity from "../../vox/entity/DisplayEntity";
+import Axis3DEntity from "../../vox/entity/Axis3DEntity";
+import Line3DEntity from "../../vox/entity/Line3DEntity";
+import IPartStore from "../../app/robot/IPartStore";
 
-import Vector3D = Vector3T.vox.math.Vector3D;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Line3DEntity = Line3DEntityT.vox.entity.Line3DEntity;
-import IPartStore = IPartStoreT.app.robot.IPartStore;
+//import Vector3D = Vector3T.vox.math.Vector3D;
+//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
+//import Line3DEntity = Line3DEntityT.vox.entity.Line3DEntity;
+//import IPartStore = IPartStoreT.app.robot.IPartStore;
 
 export namespace app
 {

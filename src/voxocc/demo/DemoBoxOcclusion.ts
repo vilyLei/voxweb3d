@@ -1,57 +1,29 @@
 
-import * as Vector3DT from "../../vox/math/Vector3D";
-import * as RendererDevieceT from "../../vox/render/RendererDeviece";
-import * as RandomRangeT from "../../vox/utils/RandomRange";
-import * as RenderConstT from "../../vox/render/RenderConst";
-import * as RendererStateT from "../../vox/render/RendererState";
-import * as RendererParamT from "../../vox/scene/RendererParam";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
-import * as TexResLoaderT from "../../vox/texture/TexResLoader";
-import * as RendererSceneT from "../../vox/scene/RendererScene";
-import * as MouseEventT from "../../vox/event/MouseEvent";
-import * as Stage3DT from "../../vox/display/Stage3D";
-import * as H5FontSysT from "../../vox/text/H5FontSys";
+import Vector3D from "../../vox/math/Vector3D";
+import RendererDeviece from "../../vox/render/RendererDeviece";
+import {CubeRandomRange} from "../../vox/utils/RandomRange";
+import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../../vox/render/RenderConst";
+import RendererState from "../../vox/render/RendererState";
+import RendererParam from "../../vox/scene/RendererParam";
+import TextureProxy from "../../vox/texture/TextureProxy";
+import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
+import RendererScene from "../../vox/scene/RendererScene";
+import MouseEvent from "../../vox/event/MouseEvent";
+import Stage3D from "../../vox/display/Stage3D";
+import H5FontSystem from "../../vox/text/H5FontSys";
 
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
-import * as Box3DEntityT from "../../vox/entity/Box3DEntity";
-import * as BillboardFrameT from "../../vox/entity/BillboardFrame";
-import * as ProfileInstanceT from "../../voxprofile/entity/ProfileInstance";
-import * as CameraTrackT from "../../vox/view/CameraTrack";
-import * as BoxFrame3DT from "../../vox/entity/BoxFrame3D";
-import * as BrokenLine3DEntityT from "../../vox/entity/BrokenLine3DEntity";
-import * as QuadHolePOVT from '../../voxocc/occlusion/QuadHolePOV';
-import * as BoxPOVT from '../../voxocc/occlusion/BoxPOV';
-import * as IRendererSpaceT from "../../vox/scene/IRendererSpace";
-import * as SpaceCullingMasKT from "../../vox/space/SpaceCullingMask";
-import * as SpaceCullingorT from '../../vox/scene/SpaceCullingor';
-
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import CubeRandomRange = RandomRangeT.vox.utils.CubeRandomRange;
-import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RendererState = RendererStateT.vox.render.RendererState;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import Stage3D = Stage3DT.vox.display.Stage3D;
-import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
-
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import BillboardFrame = BillboardFrameT.vox.entity.BillboardFrame;
-import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import BoxFrame3D = BoxFrame3DT.vox.entity.BoxFrame3D;
-import BrokenLine3DEntity = BrokenLine3DEntityT.vox.entity.BrokenLine3DEntity;
-import QuadHolePOV = QuadHolePOVT.voxocc.occlusion.QuadHolePOV;
-import BoxPOV = BoxPOVT.voxocc.occlusion.BoxPOV;
-import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
-import SpaceCullingMasK = SpaceCullingMasKT.vox.space.SpaceCullingMasK;
-import SpaceCullingor = SpaceCullingorT.vox.scene.SpaceCullingor;
+import DisplayEntity from "../../vox/entity/DisplayEntity";
+import Box3DEntity from "../../vox/entity/Box3DEntity";
+import BillboardFrame from "../../vox/entity/BillboardFrame";
+import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
+import CameraTrack from "../../vox/view/CameraTrack";
+import BoxFrame3D from "../../vox/entity/BoxFrame3D";
+import BrokenLine3DEntity from "../../vox/entity/BrokenLine3DEntity";
+import QuadHolePOV from '../../voxocc/occlusion/QuadHolePOV';
+import BoxPOV from '../../voxocc/occlusion/BoxPOV';
+import IRendererSpace from "../../vox/scene/IRendererSpace";
+import SpaceCullingMask from "../../vox/space/SpaceCullingMask";
+import SpaceCullingor from '../../vox/scene/SpaceCullingor';
 
 export namespace voxocc
 {
@@ -64,7 +36,7 @@ export namespace demo
         }
         
         private m_rscene:RendererScene = null;
-        private m_texLoader:TexResLoader = new TexResLoader();
+        private m_texLoader:ImageTextureLoader;
         private m_camTrack:CameraTrack = null;
         
         private m_profileInstance:ProfileInstance = new ProfileInstance();
@@ -80,20 +52,7 @@ export namespace demo
             console.log("DemoBoxOcclusion::initialize()......");
             if(this.m_rscene == null)
             {
-                H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/guangyun_H_0007.png");
-                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_01.jpg");
-                let tex4:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_02.jpg");
-                let tex5:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/a_02_c.jpg");
-                tex0.mipmapEnabled = true;
-                tex1.mipmapEnabled = true;
-                tex2.mipmapEnabled = true;
-                tex3.mipmapEnabled = true;
-                tex4.mipmapEnabled = true;
-                tex5.mipmapEnabled = true;
                 
                 let rparam:RendererParam = new RendererParam();
                 rparam.setMatrix4AllocateSize(8192 * 4);
@@ -109,6 +68,21 @@ export namespace demo
                 cullingor.addPOVObject(this.m_boxOcc0);
                 cullingor.addPOVObject(this.m_boxOcc1);
                 this.m_rspace.setSpaceCullingor(cullingor);
+                this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+
+                H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
+                let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/guangyun_H_0007.png");
+                let tex3:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_01.jpg");
+                let tex4:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_02.jpg");
+                let tex5:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/a_02_c.jpg");
+                tex0.mipmapEnabled = true;
+                tex1.mipmapEnabled = true;
+                tex2.mipmapEnabled = true;
+                tex3.mipmapEnabled = true;
+                tex4.mipmapEnabled = true;
+                tex5.mipmapEnabled = true;
                 
                 let stage3D:Stage3D = this.m_rscene.getStage3D() as Stage3D;
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseUpListener);
@@ -211,7 +185,7 @@ export namespace demo
                         //box.setXYZ(-324.0,252.0,-619.0);
                     }
                     
-                    box.spaceCullMask |= SpaceCullingMasK.POV;
+                    box.spaceCullMask |= SpaceCullingMask.POV;
                     this.m_rscene.addEntity(box);
                     this.m_dispList.push(box);
                     this.m_occStatusList.push(0);

@@ -5,11 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as ShaderUniformProbeT from "../../vox/material/ShaderUniformProbe";
-import * as ShaderUniformDataT from "../../vox/material/ShaderUniformData";
+import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
+import ShaderUniformData from "../../vox/material/ShaderUniformData";
 
-import ShaderUniformProbe = ShaderUniformProbeT.vox.material.ShaderUniformProbe;
-import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
+//import ShaderUniformProbe = ShaderUniformProbeT.vox.material.ShaderUniformProbe;
+//import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
 
 export namespace vox
 {

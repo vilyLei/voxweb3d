@@ -5,163 +5,155 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IRunnableT from "../../vox/base/IRunnable";
+import IRunnable from "../../vox/base/IRunnable";
 
-import IRunnable = IRunnableT.vox.base.IRunnable;
-
-export namespace vox
+class Runner
 {
-    export namespace base
+    prev:Runner = null;
+    next:Runner = null;
+    flag:number = 0;
+    target:IRunnable = null;
+    constructor(){}
+    reset():void
     {
-        class Runner
+        this.flag = 0;
+        this.target = null;
+    }
+}
+class RunnerLinker
+{
+    private m_begin:Runner = null;
+    private m_end:Runner = null;
+
+    constructor()
+    {
+    }
+    destroy():void
+    {
+        this.clear();
+    }
+
+    clear():void
+    {
+        this.m_begin = this.m_end = null;
+    }
+
+    getBegin():Runner
+    {
+        return this.m_begin;
+    }
+    isEmpty():boolean
+    {
+        return this.m_begin == this.m_end && this.m_end == null;
+    }
+    addNode(node:Runner)
+    {
+        if (this.m_begin == null)
         {
-            prev:Runner = null;
-            next:Runner = null;
-            flag:number = 0;
-            target:IRunnable = null;
-            constructor(){}
-            reset():void
+            this.m_end = this.m_begin = node;
+        }
+        else
+        {
+            if (this.m_end.prev != null)
             {
-                this.flag = 0;
-                this.target = null;
+                this.m_end.next = node;
+                node.prev = this.m_end;
+                this.m_end = node;
+            }
+            else
+            {
+                this.m_begin.next = node;
+                node.prev = this.m_end;
+                this.m_end = node;
             }
         }
-        class RunnerLinker
-        {
-        	private m_begin:Runner = null;
-            private m_end:Runner = null;
+        this.m_end.next = null;
+    }
 
-            constructor()
+    removeNode(node:Runner):void
+    {
+        if (node == this.m_begin)
+        {
+            if (node == this.m_end)
             {
+                this.m_begin = this.m_end = null;
             }
-        	destroy():void
-        	{
-        		this.clear();
-        	}
-        
-        	clear():void
-        	{
-        		this.m_begin = this.m_end = null;
-        	}
-        
-        	getBegin():Runner
-        	{
-        		return this.m_begin;
-        	}
-            isEmpty():boolean
+            else
             {
-                return this.m_begin == this.m_end && this.m_end == null;
+                this.m_begin = node.next;
+                this.m_begin.prev = null;
             }
-        	addNode(node:Runner)
-        	{
-        		if (this.m_begin == null)
-        		{
-        			this.m_end = this.m_begin = node;
-        		}
-        		else
-        		{
-        			if (this.m_end.prev != null)
-        			{
-        				this.m_end.next = node;
-        				node.prev = this.m_end;
-        				this.m_end = node;
-        			}
-        			else
-        			{
-        				this.m_begin.next = node;
-        				node.prev = this.m_end;
-        				this.m_end = node;
-        			}
-        		}
-        		this.m_end.next = null;
-        	}
-        
-        	removeNode(node:Runner):void
-        	{
-        		if (node == this.m_begin)
-        		{
-        			if (node == this.m_end)
-        			{
-        				this.m_begin = this.m_end = null;
-        			}
-        			else
-        			{
-        				this.m_begin = node.next;
-        				this.m_begin.prev = null;
-        			}
-        		}
-        		else if (node == this.m_end)
-        		{
-        			this.m_end = node.prev;
-        			this.m_end.next = null;
-        		}
-        		else
-        		{
-        			node.next.prev = node.prev;
-        			node.prev.next = node.next;
-        		}            
-        		node.prev = null;
-        		node.next = null;
-        	}
         }
-        export class RunnableQueue
+        else if (node == this.m_end)
         {
-            private m_linker:RunnerLinker = new RunnerLinker();
-            private m_freeIds:number[] = [];
-            private m_runners:Runner[] = [new Runner()];
-            constructor()
-            {
+            this.m_end = node.prev;
+            this.m_end.next = null;
+        }
+        else
+        {
+            node.next.prev = node.prev;
+            node.prev.next = node.next;
+        }            
+        node.prev = null;
+        node.next = null;
+    }
+}
+export default class RunnableQueue
+{
+    private m_linker:RunnerLinker = new RunnerLinker();
+    private m_freeIds:number[] = [];
+    private m_runners:Runner[] = [new Runner()];
+    constructor()
+    {
 
-            }
-            private getFreeId():number
-            {
-                if(this.m_freeIds.length > 0)
-                {
-                    return this.m_freeIds.pop();
-                }
-                let runner:Runner = new Runner();
-                runner.flag = this.m_runners.length
-                this.m_runners.push(runner);
-                return runner.flag;
-            }
-            addRunner(runner:IRunnable):void
-            {
-                if(runner != null && runner.getRunFlag() < 1)
-                {
-                    let i:number = this.getFreeId();
-                    //console.log("RunnableQueue::addRunner()..., flag: ",i);
-                    let pr:Runner = this.m_runners[i];
-                    pr.flag = i;
-                    pr.target = runner;
-                    runner.setRunFlag(i);
-                    this.m_linker.addNode(pr);
-                }
-            }
-            removeRunner(runner:IRunnable):void
-            {
-                if(runner != null && runner.getRunFlag() > 0)
-                {
-                    //console.log("RunnableQueue::removeRunner()...");
-                    let i:number = runner.getRunFlag();
-                    this.m_freeIds.push(i);
-                    let pr:Runner = this.m_runners[i];
-                    pr.flag = i;
-                    pr.target = null;
-                    runner.setRunFlag(0);
-                    this.m_linker.removeNode(pr);
-                }
-            }
-            run():void
-            {
-                let ro:Runner = this.m_linker.getBegin();
-                let next:Runner = ro;
-                while(next != null)
-                {
-                    ro = next;                    
-                    next = ro.next;
-                    ro.target.run();
-                }
-            }
+    }
+    private getFreeId():number
+    {
+        if(this.m_freeIds.length > 0)
+        {
+            return this.m_freeIds.pop();
+        }
+        let runner:Runner = new Runner();
+        runner.flag = this.m_runners.length
+        this.m_runners.push(runner);
+        return runner.flag;
+    }
+    addRunner(runner:IRunnable):void
+    {
+        if(runner != null && runner.getRunFlag() < 1)
+        {
+            let i:number = this.getFreeId();
+            //console.log("RunnableQueue::addRunner()..., flag: ",i);
+            let pr:Runner = this.m_runners[i];
+            pr.flag = i;
+            pr.target = runner;
+            runner.setRunFlag(i);
+            this.m_linker.addNode(pr);
+        }
+    }
+    removeRunner(runner:IRunnable):void
+    {
+        if(runner != null && runner.getRunFlag() > 0)
+        {
+            //console.log("RunnableQueue::removeRunner()...");
+            let i:number = runner.getRunFlag();
+            this.m_freeIds.push(i);
+            let pr:Runner = this.m_runners[i];
+            pr.flag = i;
+            pr.target = null;
+            runner.setRunFlag(0);
+            this.m_linker.removeNode(pr);
+        }
+    }
+    run():void
+    {
+        let ro:Runner = this.m_linker.getBegin();
+        let next:Runner = ro;
+        while(next != null)
+        {
+            ro = next;                    
+            next = ro.next;
+            ro.target.run();
         }
     }
 }

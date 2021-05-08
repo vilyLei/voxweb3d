@@ -1,63 +1,33 @@
 
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
-import * as Stage3DT from "../vox/display/Stage3D";
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererParam from "../vox/scene/RendererParam";
+import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
+import Stage3D from "../vox/display/Stage3D";
 
-import * as H5FontSysT from "../vox/text/H5FontSys";
-import * as DisplayEntityT from "../vox/entity/DisplayEntity";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as Sphere3DEntityT from "../vox/entity/Sphere3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureStoreT from "../vox/texture/TextureStore";
-import * as TextureConstT from "../vox/texture/TextureConst";
-import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as RendererSceneT from "../vox/scene/RendererScene";
-import * as DivLogT from "../vox/utils/DivLog";
-import * as MouseEventT from "../vox/event/MouseEvent";
-import * as MouseEvt3DDispatcherT from "../vox/event/MouseEvt3DDispatcher";
-import * as BoxFrame3DT from "../vox/entity/BoxFrame3D";
-import * as CameraZoomControllerT from "../voxeditor/control/CameraZoomController";
-import * as ProfileInstanceT from "../voxprofile/entity/ProfileInstance";
-
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-import Stage3D = Stage3DT.vox.display.Stage3D;
-
-import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import DivLog = DivLogT.vox.utils.DivLog;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import MouseEvt3DDispatcher = MouseEvt3DDispatcherT.vox.event.MouseEvt3DDispatcher;
-import BoxFrame3D = BoxFrame3DT.vox.entity.BoxFrame3D;
-import CameraZoomController = CameraZoomControllerT.voxeditor.control.CameraZoomController;
-import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
+import H5FontSystem from "../vox/text/H5FontSys";
+import DisplayEntity from "../vox/entity/DisplayEntity";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
+import TextureProxy from "../vox/texture/TextureProxy";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import CameraTrack from "../vox/view/CameraTrack";
+import RendererScene from "../vox/scene/RendererScene";
+import DivLog from "../vox/utils/DivLog";
+import MouseEvent from "../vox/event/MouseEvent";
+import MouseEvt3DDispatcher from "../vox/event/MouseEvt3DDispatcher";
+import BoxFrame3D from "../vox/entity/BoxFrame3D";
+import CameraZoomController from "../voxeditor/control/CameraZoomController";
+import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 
 export namespace demo
 {
     export class DispCtrObj
     {
-        constructor()
-        {
-        }
+        constructor(){}
         name:string = "";
         rscene:RendererScene = null;
         private m_frameDisp:BoxFrame3D = null;

@@ -5,15 +5,15 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3T from "../../vox/math/Vector3D";
-import * as Matrix4T from "../../vox/math/Matrix4";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
-import * as DirecUnitT from "../../app/robot/DirecUnit";
+import Vector3D from "../../vox/math/Vector3D";
+import Matrix4 from "../../vox/math/Matrix4";
+import DisplayEntity from "../../vox/entity/DisplayEntity";
+import DirecUnit from "../../app/robot/DirecUnit";
 
-import Vector3D = Vector3T.vox.math.Vector3D;
-import Matrix4 = Matrix4T.vox.math.Matrix4;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import DirecUnit = DirecUnitT.app.robot.DirecUnit;
+//import Vector3D = Vector3T.vox.math.Vector3D;
+//import Matrix4 = Matrix4T.vox.math.Matrix4;
+//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+//import DirecUnit = DirecUnitT.app.robot.DirecUnit;
 
 export namespace app
 {

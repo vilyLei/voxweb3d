@@ -1,45 +1,45 @@
 
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererParam from "../vox/scene/RendererParam";
+import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Line3DEntityT from "../vox/entity/Line3DEntity";
-import * as DashedLine3DEntityT from "../vox/entity/DashedLine3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureStoreT from "../vox/texture/TextureStore";
-import * as TextureConstT from "../vox/texture/TextureConst";
-import * as FloatTextureProxyT from "../vox/texture/FloatTextureProxy";
-import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as RendererSceneT from "../vox/scene/RendererScene";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import Line3DEntity from "../vox/entity/Line3DEntity";
+import DashedLine3DEntity from "../vox/entity/DashedLine3DEntity";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import TextureProxy from "../vox/texture/TextureProxy";
+////import * as TextureStoreT from "../vox/texture/TextureStore";
+import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
+import FloatTextureProxy from "../vox/texture/FloatTextureProxy";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import CameraTrack from "../vox/view/CameraTrack";
+import RendererScene from "../vox/scene/RendererScene";
 import * as VSTexturePosMaterialT from "./material/VSTexturePosMaterial";
-import * as PathTrackT from "../voxnav/path/PathTrack";
+import PathTrack from "../voxnav/path/PathTrack";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
+//import Vector3D = Vector3DT.vox.math.Vector3D;
+//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import RendererParam = RendererParamT.vox.scene.RendererParam;
+//import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
+//import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Line3DEntity = Line3DEntityT.vox.entity.Line3DEntity;
-import DashedLine3DEntity = DashedLine3DEntityT.vox.entity.DashedLine3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
-import FloatTextureProxy = FloatTextureProxyT.vox.texture.FloatTextureProxy;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
+//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
+//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
+//import Line3DEntity = Line3DEntityT.vox.entity.Line3DEntity;
+//import DashedLine3DEntity = DashedLine3DEntityT.vox.entity.DashedLine3DEntity;
+//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
+//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+//import TextureStore = TextureStoreT.vox.texture.TextureStore;
+//import TextureConst = TextureConstT.vox.texture.TextureConst;
+//import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
+//import FloatTextureProxy = FloatTextureProxyT.vox.texture.FloatTextureProxy;
+//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
+//import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import VSTexturePosMaterial = VSTexturePosMaterialT.demo.material.VSTexturePosMaterial;
-import PathTrack = PathTrackT.voxnav.path.PathTrack;
+//import PathTrack = PathTrackT.voxnav.path.PathTrack;
 
 export namespace demo
 {

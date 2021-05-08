@@ -5,24 +5,18 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3T from "../../vox/math/Vector3D";
+import Vector3D from "../../vox/math/Vector3D";
 
-import Vector3D = Vector3T.vox.math.Vector3D;
-
-export namespace vox
+interface IEntityTransform
 {
-    export namespace entity
-    {
-        export interface IEntityTransform
-        {
-            setXYZ(px:number,py:number,pz:number):void;
-            setPosition(pv:Vector3D):void;
-            getPosition(pv:Vector3D):void;
-            setRotationXYZ(rx:number,ry:number,rz:number):void;
-            setScaleXYZ(sx:number,sy:number,sz:number):void;
-            getRotationXYZ(pv:Vector3D):void;
-            getScaleXYZ(pv:Vector3D):void;
-            update():void;
-        }
-    }
+    setXYZ(px:number,py:number,pz:number):void;
+    setPosition(pv:Vector3D):void;
+    getPosition(pv:Vector3D):void;
+    setRotationXYZ(rx:number,ry:number,rz:number):void;
+    setScaleXYZ(sx:number,sy:number,sz:number):void;
+    getRotationXYZ(pv:Vector3D):void;
+    getScaleXYZ(pv:Vector3D):void;
+    update():void;
 }
+
+export default IEntityTransform;

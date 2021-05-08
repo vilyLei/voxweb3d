@@ -5,21 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IRODisplayT from "../../vox/display/IRODisplay";
+import IRODisplay from "../../vox/display/IRODisplay";
 
-import IRODisplay = IRODisplayT.vox.display.IRODisplay;
-
-export namespace vox
+export default interface IROVertexBufUpdater
 {
-    export namespace render
-    {
-        export interface IROVertexBufUpdater
-        {
-            updateVtxDataToGpuByUid(vtxUid:number,deferred:boolean):void;
-            /**
-             * update texture system memory data to gpu memory data
-             */
-            updateDispVbuf(disp:IRODisplay,deferred:boolean):void
-        }
-    }
+    updateVtxDataToGpuByUid(vtxUid:number,deferred:boolean):void;
+    /**
+     * update texture system memory data to gpu memory data
+     */
+    updateDispVbuf(disp:IRODisplay,deferred:boolean):void
 }

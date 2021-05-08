@@ -1,23 +1,14 @@
-import * as RenderConstT from "../../vox/render/RenderConst";
-import * as RendererStateT from "../../vox/render/RendererState";
-import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
-import * as RendererInstanceT from "../../vox/scene/RendererInstance";
-import * as TextureBlockT from "../../vox/texture/TextureBlock";
-import * as CameraTrackT from "../../vox/view/CameraTrack";
+import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../../vox/render/RenderConst";
+import RendererState from "../../vox/render/RendererState";
+import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
+import RendererInstance from "../../vox/scene/RendererInstance";
+import TextureBlock from "../../vox/texture/TextureBlock";
+import CameraTrack from "../../vox/view/CameraTrack";
 import * as EntityManagerT from "./EntityManager";
-import * as ImageTextureLoaderT from "../../vox/texture/ImageTextureLoader";
+import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import * as DepthBlurT from "../../renderingtoy/mcase/DepthBlur";
 
-import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RendererState = RendererStateT.vox.render.RendererState;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import TextureBlock = TextureBlockT.vox.texture.TextureBlock;
-import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import EntityManager = EntityManagerT.demo.depthBlur.EntityManager;
-import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import DepthBlur = DepthBlurT.renderingtoy.mcase.DepthBlur;
 
 export namespace demo

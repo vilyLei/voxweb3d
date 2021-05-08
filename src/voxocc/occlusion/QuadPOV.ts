@@ -1,19 +1,11 @@
 
-import * as MathConstT from "../../vox/math/MathConst";
-import * as Vector3DT from "../../vox/math/Vector3D";
-import * as AABBT from "../../vox/geom/AABB";
-import * as CameraBaseT from "../../vox/view/CameraBase";
-import * as ISpacePOCT from "../../vox/scene/occlusion/ISpacePOV";
-import * as SphOcclusionObjT from './SpherePOV';
+import MathConst from "../../vox/math/MathConst";
+import Vector3D from "../../vox/math/Vector3D";
+import AABB from "../../vox/geom/AABB";
+import CameraBase from "../../vox/view/CameraBase";
+import ISpacePOV from "../../vox/scene/occlusion/ISpacePOV";
+import SpherePOV from './SpherePOV';
 //import * as SphHoleOccObjT from './SphereGapPOV';
-
-import MathConst = MathConstT.vox.math.MathConst;
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import AABB = AABBT.vox.geom.AABB;
-import CameraBase = CameraBaseT.vox.view.CameraBase;
-import ISpacePOV = ISpacePOCT.vox.scene.occlusion.ISpacePOV;
-import SpherePOV = SphOcclusionObjT.voxocc.occlusion.SpherePOV;
-//import SphereGapPOV = SphHoleOccObjT.voxocc.occlusion.SphereGapPOV;
 
 export namespace voxocc
 {

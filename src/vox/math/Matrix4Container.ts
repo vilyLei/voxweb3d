@@ -10,14 +10,11 @@
  * 2.子级的matrix变换不会影响父级
 */
 
-import * as Vector3DT from "../../vox/math/Vector3D";
-import * as Matrix4T from "../../vox/math/Matrix4";
-import * as MathConstT from "../../vox/math/MathConst";
+import Vector3D from "../../vox/math/Vector3D";
+import Matrix4 from "../../vox/math/Matrix4";
+import Matrix4Pool from "../../vox/math/Matrix4Pool";
+import MathConst from "../../vox/math/MathConst";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import Matrix4 = Matrix4T.vox.math.Matrix4;
-import Matrix4Pool = Matrix4T.vox.math.Matrix4Pool;
-import MathConst = MathConstT.vox.math.MathConst;
 export namespace vox
 {
     export namespace math

@@ -1,15 +1,12 @@
 
-import * as Vector3DT from "../../vox/math/Vector3D";
-import * as LineT from "../../vox/geom/Line";
-import * as AABBT from "../../vox/geom/AABB";
-import * as CameraBaseT from "../../vox/view/CameraBase";
-import * as ISpacePOCT from "../../vox/scene/occlusion/ISpacePOV";
+import Vector3D from "../../vox/math/Vector3D";
+import StraightLine from "../../vox/geom/StraightLine";
+import AABB from "../../vox/geom/AABB";
+import CameraBase from "../../vox/view/CameraBase";
+import ISpacePOV from "../../vox/scene/occlusion/ISpacePOV";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import StraightLine = LineT.vox.geom.StraightLine;
-import AABB = AABBT.vox.geom.AABB;
-import CameraBase = CameraBaseT.vox.view.CameraBase;
-import ISpacePOV = ISpacePOCT.vox.scene.occlusion.ISpacePOV;
+//import CameraBase = CameraBaseT.vox.view.CameraBase;
+//import ISpacePOV = ISpacePOCT.vox.scene.occlusion.ISpacePOV;
 export namespace voxocc
 {
     export namespace occlusion

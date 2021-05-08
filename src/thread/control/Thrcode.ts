@@ -5,14 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
-export namespace thread
+class ThreadCore
 {
-    export namespace control
-    {
-        export class ThreadCore
-        {
-            // worker task manage code
-            static CodeStr:string =
+    // worker task manage code
+    static CodeStr:string =
 `
 let scriptDir = "";
 let ENV_IS_WORKER = typeof importScripts === 'function';
@@ -151,6 +147,5 @@ console.log("baseUrl: "+baseUrl);
 let thrCore = new ThreadCore();
 thrCore.initialize();
 `;
-        }
-    }
 }
+export default ThreadCore;

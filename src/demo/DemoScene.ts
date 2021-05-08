@@ -1,45 +1,45 @@
 
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as Color4T from "../vox/material/Color4";
-import * as RenderConstT from "../vox/render/RenderConst";
-import * as RendererStateT from "../vox/render/RendererState";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as TextureConstT from "../vox/texture/TextureConst";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
-import * as RendererSceneT from "../vox/scene/RendererScene";
-import * as MouseEventT from "../vox/event/MouseEvent";
-import * as H5FontSysT from "../vox/text/H5FontSys";
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import Color4 from "../vox/material/Color4";
+import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
+import RendererState from "../vox/render/RendererState";
+import RendererParam from "../vox/scene/RendererParam";
+import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
+import TextureProxy from "../vox/texture/TextureProxy";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import RendererScene from "../vox/scene/RendererScene";
+import MouseEvent from "../vox/event/MouseEvent";
+import H5FontSystem from "../vox/text/H5FontSys";
 
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as Sphere3DEntityT from "../vox/entity/Sphere3DEntity";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as ProfileInstanceT from "../voxprofile/entity/ProfileInstance";
-import * as CameraTrackT from "../vox/view/CameraTrack";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import ProfileInstance from "../voxprofile/entity/ProfileInstance";
+import CameraTrack from "../vox/view/CameraTrack";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import Color4 = Color4T.vox.material.Color4;
-import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RendererState = RendererStateT.vox.render.RendererState;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
+//import Vector3D = Vector3DT.vox.math.Vector3D;
+//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import Color4 = Color4T.vox.material.Color4;
+//import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
+//import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
+//import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
+//import RendererState = RendererStateT.vox.render.RendererState;
+//import RendererParam = RendererParamT.vox.scene.RendererParam;
+//import TextureConst = TextureConstT.vox.texture.TextureConst;
+//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+//import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
+//import RendererScene = RendererSceneT.vox.scene.RendererScene;
+//import MouseEvent = MouseEventT.vox.event.MouseEvent;
+//import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
 
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
+//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
+//import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
+//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
+//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
+//import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
+//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 
 
 export namespace demo

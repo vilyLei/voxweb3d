@@ -5,316 +5,70 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as ROTransformT from "../../vox/display/ROTransform";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
-import * as MaterialBaseT from '../../vox/material/MaterialBase';
-import * as Default3DMaterialT from "../../vox/material/mcase/Default3DMaterial";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
-import * as Sphere3DMeshT from "../../vox/mesh/Sphere3DMesh"
+import ROTransform from "../../vox/display/ROTransform";
+import DisplayEntity from "../../vox/entity/DisplayEntity";
+import MaterialBase from '../../vox/material/MaterialBase';
+import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
+import TextureProxy from "../../vox/texture/TextureProxy";
+import Sphere3DMesh from "../../vox/mesh/Sphere3DMesh"
 
-import ROTransform = ROTransformT.vox.display.ROTransform;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
-import Default3DMaterial = Default3DMaterialT.vox.material.mcase.Default3DMaterial;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import Sphere3DMesh = Sphere3DMeshT.vox.mesh.Sphere3DMesh;
-
-export namespace vox
+export default class Sphere3DEntity extends DisplayEntity
 {
-    export namespace entity
+    constructor(transform:ROTransform = null)
     {
-        /*
-        export class Sphere3DMesh extends MeshBase
+        super(transform);
+    }
+    doubleTriFaceEnabled:boolean = false;
+    private m_radius:number = 50.0;
+    private m_longitudeNumSegments:number = 10;
+    private m_latitudeNumSegments:number = 10;
+
+    createMaterial(texList:TextureProxy[]):void
+    {
+        if(this.getMaterial() == null)
         {
-            constructor(bufDataUsage:number = VtxBufConst.VTX_STATIC_DRAW)
-            {
-                super(bufDataUsage);
-            }
-            private m_longitudeNumSegments:number = 10;
-            private m_latitudeNumSegments:number = 10;	
-            private m_radius:number = 50;
-            private m_vs:Float32Array = null;
-            private m_uvs:Float32Array = null;
-            private m_nvs:Float32Array = null;
-            private m_cvs:Float32Array = null;
-            inverseUV:boolean = false;
-                
-            getVS():Float32Array{return this.m_vs;}
-            getUVS():Float32Array{return this.m_uvs;}
-            getNVS():Float32Array{return this.m_nvs;}
-            getCVS():Float32Array{return this.m_cvs;}
-            getIVS():Uint16Array{return this.m_ivs;}
-            
-            //
-            initialize(radius:number, longitudeNumSegments:number, latitudeNumSegments:number):void 
-            {
-                if (this.vtxTotal < 1)
-        		{
-                    if (radius < 0.01)return;
-                    
-                    this.bounds = new AABB();
-                    this.bounds.min.setXYZ(-radius,-radius,-radius);
-                    this.bounds.max.setXYZ(radius,radius,radius);
-                    this.bounds.updateFast();
-        			if (longitudeNumSegments < 2) longitudeNumSegments = 2;
-        			if (latitudeNumSegments < 2) latitudeNumSegments = 2;
-        			this.m_radius = Math.abs(radius);
-        			this.m_longitudeNumSegments = longitudeNumSegments;
-                    this.m_latitudeNumSegments = latitudeNumSegments;
-                
-                    if ((this.m_latitudeNumSegments+1) % 2 == 0)
-        			{
-        				this.m_latitudeNumSegments += 1;
-        			}						
-        			if(this.m_longitudeNumSegments = this.m_latitudeNumSegments)
-        			{
-        				this.m_longitudeNumSegments += 1;
-                    }
-
-        			let i:number = 1,j = 0,trisTot = 0;
-        			let yRad:number = 0.0, px = 0.0, py = 0.0;
-                    let vtx:MeshVertex = new MeshVertex(0, -this.m_radius, 0, trisTot);
-                
-                    // 计算绕 y轴 的纬度线上的点
-        			let vtxVec = [];
-        			let vtxRows:MeshVertex[][] = [];
-        			vtxRows.push( [] );
-        			let vtxRow:MeshVertex[] = vtxRows[0];
-                    vtx.u = 0.5; vtx.v = 0.5;
-                    vtx.nx = 0.0; vtx.ny = -1.0; vtx.nz = 0.0;
-        			vtxRow.push(vtx.cloneVertex());
-        			vtxVec.push(vtxRow[0]);
-        			//
-                    let pr:number = 0.0
-                    let pr2:number = this.m_radius * 2.01;
-                    let py2:number = 0.0;
-                    let f:number = 1.0 / this.m_radius;
-                    //float pz;
-        			for (; i < this.m_latitudeNumSegments; ++i)
-                    {
-        				yRad = (Math.PI * i) / this.m_latitudeNumSegments;
-                        px = Math.sin(yRad);
-                        py = Math.cos(yRad);
-        				vtx.y = -this.m_radius * py;
-        				pr = this.m_radius * px;
-                        //
-                        py2 = vtx.y;
-                        if (py2 < 0) py2 = -py2;
-                        // uv inverse yes or no
-                        if(!this.inverseUV) py2 = this.m_radius - py2;
-                        py2 /= pr2;
-                        //
-        				vtxRows.push([]);
-        				let row = vtxRows[i];
-        				for (j = 0; j < this.m_longitudeNumSegments; ++j) {
-        					yRad = (Math.PI * 2 * j) / this.m_longitudeNumSegments;
-        					++trisTot;
-                            px = Math.sin(yRad);
-                            py = Math.cos(yRad);
-        					vtx.x = px * pr;
-        					vtx.z = py * pr;
-                            vtx.index = trisTot;
-                            // calc uv
-                            px *= py2;
-                            py *= py2;
-                            vtx.u = 0.5 + px;
-                            vtx.v = 0.5 + py;
-        					//
-                            vtx.nx = vtx.x * f; vtx.ny = vtx.y * f; vtx.nz = vtx.z * f;
-                            //
-        					row.push(vtx.cloneVertex());
-        					vtxVec.push(row[j]);
-        				}
-        				row.push(row[0]);
-        			}
-        			++trisTot;
-        			vtx.index = trisTot;
-        			vtx.x = 0; vtx.y = this.m_radius; vtx.z = 0;
-                    vtx.u = 0.5; vtx.v = 0.5;
-                    vtx.nx = 0.0; vtx.ny = 1.0; vtx.nz = 0.0;
-        			vtxRows.push([]);
-        			let lastRow = vtxRows[this.m_latitudeNumSegments];
-        			lastRow.push(vtx.cloneVertex());
-        			vtxVec.push(lastRow[0]);
-
-                    let pvtx:MeshVertex = null;
-        			///////////////////////////   ///////////////////////////    ////////////////
-                    let pivs:number[] = [];
-
-        			let rowa = null;
-        			let rowb = null;
-        			i = 1;
-        			for (; i <= this.m_latitudeNumSegments; ++i)
-        			{
-        				rowa = vtxRows[i-1];
-        				rowb = vtxRows[i];
-        				for (j = 1; j <= this.m_longitudeNumSegments; ++j)
-        				{
-        					if (i == 1)
-        					{
-                                pivs.push(rowa[0].index); pivs.push(rowb[j].index); pivs.push(rowb[j - 1].index);
-        					}
-        					else if(i == this.m_latitudeNumSegments)
-        					{
-                                pivs.push(rowa[j].index); pivs.push(rowb[0].index); pivs.push(rowa[j - 1].index);
-        					}
-        					else
-        					{
-                                pivs.push(rowa[j].index); pivs.push(rowb[j - 1].index); pivs.push(rowa[j - 1].index);
-                                pivs.push(rowa[j].index); pivs.push(rowb[j].index); pivs.push(rowb[j - 1].index);
-        					}
-        				}
-        			}
-                    this.vtxTotal = vtxVec.length;
-                    //            
-                    this.m_ivs = new Uint16Array(pivs);
-        			this.m_vs = new Float32Array(this.vtxTotal * 3);
-                    i = 0;
-                    for (j = 0; j < this.vtxTotal; ++j)
-                    {
-                        pvtx = vtxVec[j];
-                        this.m_vs[i] = pvtx.x; this.m_vs[i + 1] = pvtx.y; this.m_vs[i + 2] = pvtx.z;
-                        i += 3;
-                    }
-                    ROVertexBuffer.Reset();
-                    ROVertexBuffer.AddFloat32Data(this.m_vs,3);
-                    //
-        			if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX))
-        			{
-        				// uv
-        				this.m_uvs = new Float32Array(this.vtxTotal * 2);
-                        //
-                        i = 0;
-                        for (j = 0; j < this.vtxTotal; ++j)
-                        {
-                            pvtx = vtxVec[j];
-                            //trace(tri.index0, ",", tri.index1, ",", tri.index2);
-                            this.m_uvs[i] = pvtx.u; this.m_uvs[i + 1] = pvtx.v;
-                            i += 2;
-                        }
-                        ROVertexBuffer.AddFloat32Data(this.m_uvs,2);
-        			}
-        			if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX))
-        			{
-        				this.m_nvs = new Float32Array(this.vtxTotal * 3);
-                        //
-                        i = 0;
-                        for (j = 0; j < this.vtxTotal; ++j)
-                        {
-                            pvtx = vtxVec[j];
-                            this.m_nvs[i] = pvtx.nx; this.m_nvs[i + 1] = pvtx.ny; this.m_nvs[i + 2] = pvtx.nz;							
-                            i += 3;
-                        }
-                        ROVertexBuffer.AddFloat32Data(this.m_nvs,3);
-                    }
-                    if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX))
-                    {
-        		    	this.m_cvs = new Float32Array(this.vtxTotal * 3);
-                        //
-                        i = 0;
-                        for (j = 0; j < this.vtxTotal; ++j)
-                        {
-                            this.m_cvs[i] = 1.0; this.m_cvs[i + 1] = 1.0; this.m_cvs[i + 2] = 1.0;
-                            i += 3;
-                        }
-                        ROVertexBuffer.AddFloat32Data(this.m_cvs,3);
-                    }            
-                    if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX))
-                    {
-                        let numTriangles = this.m_ivs.length / 3;
-                        let tvs = new Float32Array(this.m_vs.length);
-                        let btvs = new Float32Array(this.m_vs.length);
-                        SurfaceNormalCalc.ClacTrisTangent(this.m_vs, this.m_vs.length, this.m_uvs, this.m_nvs, numTriangles, this.m_ivs, tvs, btvs);
-                        ROVertexBuffer.AddFloat32Data(tvs,3);
-                        ROVertexBuffer.AddFloat32Data(btvs,3);
-                    }
-
-                    ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
-                    this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
-                    this.m_vbuf.setVaoEnabled(this.vaoEnabled);
-                    this.m_vbuf.setUint16IVSData(this.m_ivs);
-                    this.vtCount = this.m_ivs.length;
-                    this.trisNumber = this.vtCount/3;
-        		}
-            }
-            __$destroy():void
-            {
-                if(this.isResFree())
-                {
-                    this.bounds = null;
-
-                    this.m_vs = null;
-                    this.m_uvs = null;
-                    this.m_nvs = null;
-                    this.m_cvs = null;
-                    super.__$destroy();
-                }
-            }
-            toString():string
-            {
-                return "Sphere3DMesh()";
-            }
+            let cm:Default3DMaterial = new Default3DMaterial();
+            cm.setTextureList(texList);
+            this.setMaterial(cm);
         }
-        //*/
-        export class Sphere3DEntity extends DisplayEntity
+        else
         {
-            constructor(transform:ROTransform = null)
-            {
-                super(transform);
-            }
-            doubleTriFaceEnabled:boolean = false;
-            private m_radius:number = 50.0;
-            private m_longitudeNumSegments:number = 10;
-            private m_latitudeNumSegments:number = 10;
-
-            createMaterial(texList:TextureProxy[]):void
-            {
-                if(this.getMaterial() == null)
-                {
-                    let cm:Default3DMaterial = new Default3DMaterial();
-                    cm.setTextureList(texList);
-                    this.setMaterial(cm);
-                }
-                else
-                {
-                    this.getMaterial().setTextureList(texList);
-                }
-            }
-            
-            initializeFrom(entity:DisplayEntity,texList:TextureProxy[] = null)
-            {
-                this.copyMeshFrom(entity);
-                this.copyMaterialFrom(entity);
-                
-                this.createMaterial(texList);
-                this.activeDisplay();
-            }
-            initialize(radius:number, longitudeNumSegments:number, latitudeNumSegments:number,texList:TextureProxy[])
-            {
-                this.m_radius = radius;
-                this.m_longitudeNumSegments = longitudeNumSegments;
-                this.m_latitudeNumSegments = latitudeNumSegments;
-            
-                this.createMaterial(texList);
-                this.activeDisplay();
-            }
-
-            protected __activeMesh(material:MaterialBase):void
-            {
-                if(this.getMesh() == null)
-                {
-                    let mesh = new Sphere3DMesh();
-                    mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
-                    mesh.setBufSortFormat( material.getBufSortFormat() );
-                    mesh.initialize(this.m_radius, this.m_longitudeNumSegments, this.m_latitudeNumSegments,this.doubleTriFaceEnabled);
-                    this.setMesh(mesh);
-                }
-            }
-
-            toString():string
-            {
-                return "[Sphere3DEntity(uid = "+this.getUid()+", rseFlag = "+this.__$rseFlag+")]";
-            }
+            this.getMaterial().setTextureList(texList);
         }
+    }
+    
+    initializeFrom(entity:DisplayEntity,texList:TextureProxy[] = null)
+    {
+        this.copyMeshFrom(entity);
+        this.copyMaterialFrom(entity);
+        
+        this.createMaterial(texList);
+        this.activeDisplay();
+    }
+    initialize(radius:number, longitudeNumSegments:number, latitudeNumSegments:number,texList:TextureProxy[])
+    {
+        this.m_radius = radius;
+        this.m_longitudeNumSegments = longitudeNumSegments;
+        this.m_latitudeNumSegments = latitudeNumSegments;
+    
+        this.createMaterial(texList);
+        this.activeDisplay();
+    }
+
+    protected __activeMesh(material:MaterialBase):void
+    {
+        if(this.getMesh() == null)
+        {
+            let mesh = new Sphere3DMesh();
+            mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
+            mesh.setBufSortFormat( material.getBufSortFormat() );
+            mesh.initialize(this.m_radius, this.m_longitudeNumSegments, this.m_latitudeNumSegments,this.doubleTriFaceEnabled);
+            this.setMesh(mesh);
+        }
+    }
+
+    toString():string
+    {
+        return "[Sphere3DEntity(uid = "+this.getUid()+", rseFlag = "+this.__$rseFlag+")]";
     }
 }

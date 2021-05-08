@@ -5,23 +5,23 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3T from "../../vox/math/Vector3D";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
-import * as DisplayEntityContainerT from "../../vox/entity/DisplayEntityContainer";
-import * as RendererSceneT from "../../vox/scene/RendererScene";
+import Vector3D from "../../vox/math/Vector3D";
+import DisplayEntity from "../../vox/entity/DisplayEntity";
+import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
+import RendererScene from "../../vox/scene/RendererScene";
 import * as CoreFrameAxisT from "../../app/robot/CoreFrameAxis";
-import * as IPartStoreT from "../../app/robot/IPartStore";
-import * as IPosetureT from "../../app/robot/poseture/IPoseture";
-import * as TwoLegPostureCtrlT from "../../app/robot/poseture/TwoLegPostureCtrl";
+import IPartStore from "../../app/robot/IPartStore";
+import IPoseture from "../../app/robot/poseture/IPoseture";
+import TwoLegPostureCtrl from "../../app/robot/poseture/TwoLegPostureCtrl";
 
-import Vector3D = Vector3T.vox.math.Vector3D;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
+//import Vector3D = Vector3T.vox.math.Vector3D;
+//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+//import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
+//import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import CoreFrameAxis = CoreFrameAxisT.app.robot.CoreFrameAxis;
-import IPartStore = IPartStoreT.app.robot.IPartStore;
-import IPoseture = IPosetureT.app.robot.poseture.IPoseture;
-import TwoLegPostureCtrl = TwoLegPostureCtrlT.app.robot.poseture.TwoLegPostureCtrl;
+//import IPartStore = IPartStoreT.app.robot.IPartStore;
+//import IPoseture = IPosetureT.app.robot.poseture.IPoseture;
+//import TwoLegPostureCtrl = TwoLegPostureCtrlT.app.robot.poseture.TwoLegPostureCtrl;
 
 export namespace app
 {

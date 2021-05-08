@@ -1,28 +1,16 @@
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
-import * as MouseEventT from "../vox/event/MouseEvent";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererParam from "../vox/scene/RendererParam";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
+import MouseEvent from "../vox/event/MouseEvent";
 
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureConstT from "../vox/texture/TextureConst";
-import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as RendererSceneT from "../vox/scene/RendererScene";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
+import TextureProxy from "../vox/texture/TextureProxy";
+import {TextureConst} from "../vox/texture/TextureConst";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import CameraTrack from "../vox/view/CameraTrack";
+import RendererScene from "../vox/scene/RendererScene";
 
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
 
 export namespace demo
 {

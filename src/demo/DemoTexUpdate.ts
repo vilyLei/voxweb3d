@@ -1,37 +1,20 @@
 
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
-import * as DisplayEntityT from "../vox/entity/DisplayEntity";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as TextureConstT from "../vox/texture/TextureConst";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as ImageTextureProxyT from "../vox/texture/ImageTextureProxy";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererParam from "../vox/scene/RendererParam";
+import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
+import DisplayEntity from "../vox/entity/DisplayEntity";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import {TextureConst} from "../vox/texture/TextureConst";
+import TextureProxy from "../vox/texture/TextureProxy";
+import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
 
-import * as MouseEventT from "../vox/event/MouseEvent";
-import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as RendererSceneT from "../vox/scene/RendererScene";
-import * as ProfileInstanceT from "../voxprofile/entity/ProfileInstance";
-
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import ImageTextureProxy = ImageTextureProxyT.vox.texture.ImageTextureProxy;
-
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
+import MouseEvent from "../vox/event/MouseEvent";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import CameraTrack from "../vox/view/CameraTrack";
+import RendererScene from "../vox/scene/RendererScene";
+import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 
 export namespace demo
 {

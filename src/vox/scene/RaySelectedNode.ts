@@ -5,25 +5,16 @@
 /*                                                                         */
 /***************************************************************************/
 // Ray pick selection obj
-import * as Vector3DT from "../../vox/math/Vector3D";
-import * as IRenderEntityT from "../../vox/render/IRenderEntity";
+import Vector3D from "../../vox/math/Vector3D";
+import IRenderEntity from "../../vox/render/IRenderEntity";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
-
-export namespace vox
+export default class RaySelectedNode
 {
-    export namespace scene
-    {
-        export class RaySelectedNode
-        {
-            constructor(){}
-            entity:IRenderEntity = null;
-            // object space hit position
-            lpv:Vector3D = new Vector3D();
-            // world space hit position
-            wpv:Vector3D = new Vector3D();
-            dis:number = 0.0;
-        }
-    }
+    constructor(){}
+    entity:IRenderEntity = null;
+    // object space hit position
+    lpv:Vector3D = new Vector3D();
+    // world space hit position
+    wpv:Vector3D = new Vector3D();
+    dis:number = 0.0;
 }

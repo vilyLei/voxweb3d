@@ -1,55 +1,28 @@
 
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RenderConstT from "../vox/render/RenderConst";
-import * as RendererStateT from "../vox/render/RendererState";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
-import * as MouseEventT from "../vox/event/MouseEvent";
-import * as Stage3DT from "../vox/display/Stage3D";
-import * as IRendererSpaceT from "../vox/scene/IRendererSpace";
-import * as RendererSceneT from "../vox/scene/RendererScene";
-import * as RendererSubSceneT from '../vox/scene/RendererSubScene';
-import * as RaySelectorT from "../vox/scene/RaySelector";
-import * as MouseEvt3DControllerT from "../vox/scene/MouseEvt3DController";
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
+import RendererState from "../vox/render/RendererState";
+import RendererParam from "../vox/scene/RendererParam";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
+import MouseEvent from "../vox/event/MouseEvent";
+import Stage3D from "../vox/display/Stage3D";
+import IRendererSpace from "../vox/scene/IRendererSpace";
+import RendererScene from "../vox/scene/RendererScene";
+import RendererSubScene from '../vox/scene/RendererSubScene';
+import RaySelector from "../vox/scene/RaySelector";
+import MouseEvt3DController from "../vox/scene/MouseEvt3DController";
 
-import * as DisplayEntityT from "../vox/entity/DisplayEntity";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as Sphere3DEntityT from "../vox/entity/Sphere3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureConstT from "../vox/texture/TextureConst";
-import * as TexResLoaderT from "../vox/texture/TexResLoader";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as MouseEvt3DDispatcherT from "../vox/event/MouseEvt3DDispatcher";
-
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RendererState = RendererStateT.vox.render.RendererState;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import Stage3D = Stage3DT.vox.display.Stage3D;
-import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import RendererSubScene = RendererSubSceneT.vox.scene.RendererSubScene;
-import RaySelector = RaySelectorT.vox.scene.RaySelector;
-import MouseEvt3DController = MouseEvt3DControllerT.vox.scene.MouseEvt3DController;
-
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import MouseEvt3DDispatcher = MouseEvt3DDispatcherT.vox.event.MouseEvt3DDispatcher;
+import DisplayEntity from "../vox/entity/DisplayEntity";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
+import TextureProxy from "../vox/texture/TextureProxy";
+import {TextureConst} from "../vox/texture/TextureConst";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import CameraTrack from "../vox/view/CameraTrack";
+import MouseEvt3DDispatcher from "../vox/event/MouseEvt3DDispatcher";
 
 export namespace demo
 {
@@ -99,7 +72,7 @@ export namespace demo
         private m_subScene:RendererSubScene = null;
         private m_rspace:IRendererSpace = null;
         private m_raySelector:RaySelector = null;
-        private m_texLoader:TexResLoader = new TexResLoader();
+        private m_texLoader:ImageTextureLoader;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_delayAddEntitys:DisplayEntity[] = [];
@@ -110,19 +83,8 @@ export namespace demo
             if(this.m_rscene == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/warter_01.jpg");
-                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_02.jpg");
-                tex0.mipmapEnabled = true;
-                tex0.setWrap(TextureConst.WRAP_REPEAT);
-                tex1.mipmapEnabled = true;
-                tex1.setWrap(TextureConst.WRAP_REPEAT);
-                tex2.mipmapEnabled = true;
-                tex2.setWrap(TextureConst.WRAP_REPEAT);
-                tex3.mipmapEnabled = true;
                 
-                this.m_statusDisp.initialize("rstatus");
+                this.m_statusDisp.initialize("rstatus",180);
                 let rparam:RendererParam;
                 rparam = new RendererParam();
                 //rparam.cameraPerspectiveEnabled = false;
@@ -137,6 +99,19 @@ export namespace demo
                 // align to left bottom
                 //  this.m_rscene.getCamera().translationXYZ(this.m_stage3D.stageHalfWidth,this.m_stage3D.stageHalfHeight,1500.0);
                 //  this.m_rscene.updateCamera();
+                this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+                
+                let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/warter_01.jpg");
+                let tex3:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_02.jpg");
+                tex0.mipmapEnabled = true;
+                tex0.setWrap(TextureConst.WRAP_REPEAT);
+                tex1.mipmapEnabled = true;
+                tex1.setWrap(TextureConst.WRAP_REPEAT);
+                tex2.mipmapEnabled = true;
+                tex2.setWrap(TextureConst.WRAP_REPEAT);
+                tex3.mipmapEnabled = true;
 
                 let evtCtr:MouseEvt3DController = null;
 

@@ -1,11 +1,11 @@
 
-import * as Vector3DT from "../../vox/math/Vector3D";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
+import Vector3D from "../../vox/math/Vector3D";
+import DisplayEntity from "../../vox/entity/DisplayEntity";
 import * as Blend3VelocityMotionT from "../../vox/motion/random/Blend3VelocityMotion";
 import * as MotionEntityBaseT from "./MotionEntityBase";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+//import Vector3D = Vector3DT.vox.math.Vector3D;
+//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 import Blend3VelocityMotion = Blend3VelocityMotionT.vox.motion.random.Blend3VelocityMotion;
 import MotionEntityBase = MotionEntityBaseT.motionDemo.fixProjMotion.MotionEntityBase;
 //MotionEntityBase

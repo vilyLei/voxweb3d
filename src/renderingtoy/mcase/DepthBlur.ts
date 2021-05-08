@@ -1,24 +1,24 @@
-import * as RendererStateT from "../../vox/render/RendererState";
-import * as IRenderProcessT from "../../vox/render/IRenderProcess";
-import * as RendererInstanceT from "../../vox/scene/RendererInstance";
-import * as Plane3DEntityT from "../../vox/entity/Plane3DEntity";
-import * as TextureBlockT from "../../vox/texture/TextureBlock";
+import RendererState from "../../vox/render/RendererState";
+import IRenderProcess from "../../vox/render/IRenderProcess";
+import RendererInstance from "../../vox/scene/RendererInstance";
+import Plane3DEntity from "../../vox/entity/Plane3DEntity";
+import TextureBlock from "../../vox/texture/TextureBlock";
 import * as ScrDepBaseMaterialT from "./material/ScrDepBaseMaterial";
 import * as ScrDepBlurMaterialT from "./material/ScrDepBlurMaterial";
-import * as ScreenPlaneMaterialT from "../../vox/material/mcase/ScreenPlaneMaterial";
-import * as FBOInstanceT from "../../vox/scene/FBOInstance";
-import * as PingpongBlurT from "../../renderingtoy/mcase/PingpongBlur";
+import ScreenPlaneMaterial from "../../vox/material/mcase/ScreenPlaneMaterial";
+import FBOInstance from "../../vox/scene/FBOInstance";
+import PingpongBlur from "../../renderingtoy/mcase/PingpongBlur";
 
-import RendererState = RendererStateT.vox.render.RendererState;
-import IRenderProcess = IRenderProcessT.vox.render.IRenderProcess;
-import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import TextureBlock = TextureBlockT.vox.texture.TextureBlock;
+//import RendererState = RendererStateT.vox.render.RendererState;
+//import IRenderProcess = IRenderProcessT.vox.render.IRenderProcess;
+//import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
+//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
+//import TextureBlock = TextureBlockT.vox.texture.TextureBlock;
 import ScrDepBaseMaterial = ScrDepBaseMaterialT.renderingtoy.mcase.material.ScrDepBaseMaterial;
 import ScrDepBlurMaterial = ScrDepBlurMaterialT.renderingtoy.mcase.material.ScrDepBlurMaterial;
-import ScreenPlaneMaterial = ScreenPlaneMaterialT.vox.material.mcase.ScreenPlaneMaterial;
-import FBOInstance = FBOInstanceT.vox.scene.FBOInstance;
-import PingpongBlur = PingpongBlurT.renderingtoy.mcase.PingpongBlur;
+//import ScreenPlaneMaterial = ScreenPlaneMaterialT.vox.material.mcase.ScreenPlaneMaterial;
+//import FBOInstance = FBOInstanceT.vox.scene.FBOInstance;
+//import PingpongBlur = PingpongBlurT.renderingtoy.mcase.PingpongBlur;
 
 export namespace renderingtoy
 {

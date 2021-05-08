@@ -5,18 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IThreadSendDataT from "../../thread/base/IThreadSendData";
-
-import IThreadSendData = IThreadSendDataT.thread.base.IThreadSendData;
-
-export namespace thread
+import IThreadSendData from "../../thread/base/IThreadSendData";
+interface IThreadBase
 {
-    export namespace base
-    {
-        export interface IThreadBase
-        {
-            sendDataTo(sendData:IThreadSendData):void;
-            isFree():boolean;
-        }
-    }
+    sendDataTo(sendData:IThreadSendData):void;
+    isFree():boolean;
 }
+
+export default IThreadBase;

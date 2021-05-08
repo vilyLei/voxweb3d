@@ -1,18 +1,18 @@
 
 
-import * as Vector3DT from "../../../vox/math/Vector3D";
-import * as MouseEventT from "../../../vox/event/MouseEvent";
-import * as DisplayEntityT from "../../../vox/entity/DisplayEntity";
-import * as CameraBaseT from "../../../vox/view/CameraBase";
-import * as MouseEvt3DDispatcherT from "../../../vox/event/MouseEvt3DDispatcher";
+import Vector3D from "../../../vox/math/Vector3D";
+import MouseEvent from "../../../vox/event/MouseEvent";
+import DisplayEntity from "../../../vox/entity/DisplayEntity";
+import CameraBase from "../../../vox/view/CameraBase";
+import MouseEvt3DDispatcher from "../../../vox/event/MouseEvt3DDispatcher";
 import * as ParalMap2MaterialT from "../mateiral/ParalMap2Material";
 import * as AxisDragObjectT from "./AxisDragObject";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import CameraBase = CameraBaseT.vox.view.CameraBase;
-import MouseEvt3DDispatcher = MouseEvt3DDispatcherT.vox.event.MouseEvt3DDispatcher;
+//import Vector3D = Vector3DT.vox.math.Vector3D;
+//import MouseEvent = MouseEventT.vox.event.MouseEvent;
+//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+//import CameraBase = CameraBaseT.vox.view.CameraBase;
+//import MouseEvt3DDispatcher = MouseEvt3DDispatcherT.vox.event.MouseEvt3DDispatcher;
 import ParalMap2Material = ParalMap2MaterialT.voxvat.demo.material.ParalMap2Material;
 import AxisDragObject = AxisDragObjectT.voxvat.demo.scene.AxisDragObject;
 

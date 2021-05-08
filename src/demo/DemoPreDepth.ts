@@ -1,44 +1,27 @@
 
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RenderConstT from "../vox/render/RenderConst";
-import * as RendererStateT from "../vox/render/RendererState";
-import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
-import * as RendererInstanceT from "../vox/scene/RendererInstance";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererParam from "../vox/scene/RendererParam";
+import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
+import RendererState from "../vox/render/RendererState";
+import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import RendererInstance from "../vox/scene/RendererInstance";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureStoreT from "../vox/texture/TextureStore";
-import * as TextureConstT from "../vox/texture/TextureConst";
-import * as TexResLoaderT from "../vox/texture/TexResLoader";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as ScreenFixedPlaneMaterialT from "../vox/material/mcase/ScreenFixedPlaneMaterial";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import TextureProxy from "../vox/texture/TextureProxy";
+////import * as TextureStoreT from "../vox/texture/TextureStore";
+import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import CameraTrack from "../vox/view/CameraTrack";
+import ScreenFixedPlaneMaterial from "../vox/material/mcase/ScreenFixedPlaneMaterial";
 import * as PSDepthMaterialT from "../demo/material/PSDepthMaterial";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RendererState = RendererStateT.vox.render.RendererState;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import ScreenFixedPlaneMaterial = ScreenFixedPlaneMaterialT.vox.material.mcase.ScreenFixedPlaneMaterial;
+import TextureBlock from "../vox/texture/TextureBlock";
+//import ScreenFixedPlaneMaterial = ScreenFixedPlaneMaterialT.vox.material.mcase.ScreenFixedPlaneMaterial;
 import PSDepthMaterial = PSDepthMaterialT.demo.material.PSDepthMaterial;
 
 export namespace demo
@@ -48,9 +31,10 @@ export namespace demo
         constructor()
         {
         }
+        private m_texBlock:TextureBlock;
         private m_renderer:RendererInstance = null;
         private m_rcontext:RendererInstanceContext = null;
-        private m_texLoader:TexResLoader = new TexResLoader();
+        private m_texLoader:ImageTextureLoader;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_depMaterial:PSDepthMaterial = new PSDepthMaterial();
@@ -62,12 +46,6 @@ export namespace demo
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
-                tex0.mipmapEnabled = true;
-                tex0.setWrap(TextureConst.WRAP_REPEAT);
-                tex1.setWrap(TextureConst.WRAP_REPEAT);
-                tex1.mipmapEnabled = true;
 
                 //RendererState.CreateRenderState("depthSt",CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.RENDER_TRUE_GEQUAL);
                 RendererState.CreateRenderState("depthSt",CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.RENDER_TRUE_EQUAL);
@@ -80,8 +58,16 @@ export namespace demo
                 this.m_renderer.initialize(rparam);
                 this.m_renderer.appendProcess();
                 this.m_rcontext = this.m_renderer.getRendererContext();
-                //this.m_rMaterialProxy = this.m_rcontext.getRenderMaterialProxy();
-                //this.m_renderProxy = this.m_renderer.getRenderProxy();
+                
+                this.m_texBlock = new TextureBlock();
+                this.m_texBlock.setRenderer( this.m_renderer );
+                this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
+                let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
+                tex0.mipmapEnabled = true;
+                tex0.setWrap(TextureConst.WRAP_REPEAT);
+                tex1.setWrap(TextureConst.WRAP_REPEAT);
+                tex1.mipmapEnabled = true;
 
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
@@ -112,7 +98,7 @@ export namespace demo
                 let scrM:ScreenFixedPlaneMaterial = new ScreenFixedPlaneMaterial();
                 let scrPlane:Plane3DEntity = new Plane3DEntity();
                 scrPlane.setMaterial(scrM);
-                scrPlane.initializeXOY(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(1)]);
+                scrPlane.initializeXOY(-1.0,-1.0,2.0,2.0,[this.m_texBlock.getRTTTextureAt(1)]);
                 this.m_renderer.addEntity(scrPlane, 1);
             }
         }
@@ -131,13 +117,13 @@ export namespace demo
             pcontext.setClearRGBColor3f(0.0, 0.3, 0.0);
             pcontext.synFBOSizeWithViewport();
             pcontext.useGlobalMaterial(this.m_depMaterial);
-            pcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(0), true, false, 0);
+            pcontext.setRenderToTexture(this.m_texBlock.getRTTTextureAt(0), true, false, 0);
             pcontext.useFBO(true, true, false);
             rinstance.runAt(0);
             
             pcontext.unlockMaterial();
             pcontext.useGlobalRenderStateByName("depthSt");
-            pcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(1), true, false, 0);
+            pcontext.setRenderToTexture(this.m_texBlock.getRTTTextureAt(1), true, false, 0);
             pcontext.useFBO(true, false, false);
             rinstance.runAt(0);
             // --------------------------------------------- rtt end

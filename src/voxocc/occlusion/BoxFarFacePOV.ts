@@ -1,25 +1,14 @@
 
-import * as MathConstT from "../../vox/math/MathConst";
-import * as Vector3DT from "../../vox/math/Vector3D";
-import * as Matrix4T from "../../vox/math/Matrix4";
-import * as PlaneT from "../../vox/geom/Plane";
-import * as AABBT from "../../vox/geom/AABB";
-import * as CameraBaseT from "../../vox/view/CameraBase";
+import MathConst from "../../vox/math/MathConst";
+import Vector3D from "../../vox/math/Vector3D";
+import Matrix4 from "../../vox/math/Matrix4";
+import Plane from "../../vox/geom/Plane";
+import AABB from "../../vox/geom/AABB";
+import CameraBase from "../../vox/view/CameraBase";
 import * as OccCullingMaskT from "../../voxocc/occlusion/OccCullingMask";
-//import * as SpaceCullingMasKT from "../../vox/scene/SpaceCullingMasK";
-import * as SpherePOVT from './SpherePOV';
-import * as ISpacePOCT from "../../vox/scene/occlusion/ISpacePOV";
-
-import MathConst = MathConstT.vox.math.MathConst;
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import Matrix4 = Matrix4T.vox.math.Matrix4;
-import Plane = PlaneT.vox.geom.Plane;
-import AABB = AABBT.vox.geom.AABB;
-import CameraBase = CameraBaseT.vox.view.CameraBase;
-import SpaceCullingMasK = OccCullingMaskT.voxocc.occlusion.OccCullingMask;
-//import SpaceCullingMasK = SpaceCullingMasKT.vox.scene.SpaceCullingMasK;
-import SpherePOV = SpherePOVT.voxocc.occlusion.SpherePOV;
-import ISpacePOV = ISpacePOCT.vox.scene.occlusion.ISpacePOV;
+import SpherePOV from './SpherePOV';
+import ISpacePOV from "../../vox/scene/occlusion/ISpacePOV";
+import SpaceCullingMask = OccCullingMaskT.voxocc.occlusion.OccCullingMask;
 export namespace voxocc
 {
     export namespace occlusion
@@ -444,7 +433,7 @@ export namespace voxocc
                     if(i >= this.m_projNVTotal)
                     {
                         i = 0;
-                        if((cullMask & SpaceCullingMasK.INNER_POV_PASS) == SpaceCullingMasK.INNER_POV_PASS)
+                        if((cullMask & SpaceCullingMask.INNER_POV_PASS) == SpaceCullingMask.INNER_POV_PASS)
                         {
                             // 测试是否包含在遮挡体内部
                             if(Vector3D.Distance(cv,this.m_centerv) < (pr + this.m_sphOcc.occRadius))

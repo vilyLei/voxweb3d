@@ -5,27 +5,15 @@
 /*                                                                         */
 /***************************************************************************/
 
+import RunnableQueue from "../../../vox/base/RunnableQueue";
 
-import * as RunnableQueueT from "../../../vox/base/RunnableQueue";
-
-import RunnableQueue = RunnableQueueT.vox.base.RunnableQueue;
-
-export namespace app
+export default class RunnableModule
 {
-    export namespace robot
+    static readonly RunnerQueue:RunnableQueue = new RunnableQueue();
+    constructor(){}
+    
+    static Run():void
     {
-        export namespace scene
-        {
-            export class RunnableModule
-            {
-                static readonly RunnerQueue:RunnableQueue = new RunnableQueue();
-                constructor(){}
-                
-                static Run():void
-                {
-                    RunnableModule.RunnerQueue.run();
-                }
-            }
-        }
+        RunnableModule.RunnerQueue.run();
     }
 }

@@ -5,8 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Float32DataT from "../../vox/base/Float32Data";
-import Float32Data = Float32DataT.vox.base.Float32Data;
+import Float32Data from "../../vox/base/Float32Data";
+//import Float32Data = Float32DataT.vox.base.Float32Data;
 
 export namespace vox
 {

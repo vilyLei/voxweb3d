@@ -1,47 +1,26 @@
 
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RenderConstT from "../vox/render/RenderConst";
-import * as RendererStateT from "../vox/render/RendererState";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
-import * as RendererInstanceT from "../vox/scene/RendererInstance";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
-import * as MouseEventT from "../vox/event/MouseEvent";
-import * as Stage3DT from "../vox/display/Stage3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
+import RendererState from "../vox/render/RendererState";
+import RendererParam from "../vox/scene/RendererParam";
+import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import RendererInstance from "../vox/scene/RendererInstance";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
+import MouseEvent from "../vox/event/MouseEvent";
+import Stage3D from "../vox/display/Stage3D";
 
-import * as TextureConstT from "../vox/texture/TextureConst";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as H5FontSysT from "../vox/text/H5FontSys";
+import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
+import TextureProxy from "../vox/texture/TextureProxy";
+import H5FontSystem from "../vox/text/H5FontSys";
 
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as TextBillboard3DEntityT from "../vox/text/TextBillboard3DEntity";
-import * as TextureBlockT from "../vox/texture/TextureBlock";
-import * as TexResLoaderT from "../vox/texture/ImageTextureLoader";
-import * as CameraTrackT from "../vox/view/CameraTrack";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import TextBillboard3DEntity from "../vox/text/TextBillboard3DEntity";
+import TextureBlock from "../vox/texture/TextureBlock";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import CameraTrack from "../vox/view/CameraTrack";
+
 import * as EntityDispT from "./base/EntityDisp";
-
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RendererState = RendererStateT.vox.render.RendererState;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import Stage3D = Stage3DT.vox.display.Stage3D;
-import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
-
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import TextBillboard3DEntity = TextBillboard3DEntityT.vox.text.TextBillboard3DEntity;
-import TextureBlock = TextureBlockT.vox.texture.TextureBlock;
-import ImageTextureLoader = TexResLoaderT.vox.texture.ImageTextureLoader;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 
 export namespace demo

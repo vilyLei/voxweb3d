@@ -1,18 +1,10 @@
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as MouseEventT from "../vox/event/MouseEvent";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as RendererSceneT from "../vox/scene/RendererScene";
-import * as H5FontSysT from "../vox/text/H5FontSys";
-import * as Text2DEntityT from "../vox2d/text/Text2DEntity";
-
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
-import Text2DEntity = Text2DEntityT.vox2d.text.Text2DEntity;
+import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererParam from "../vox/scene/RendererParam";
+import MouseEvent from "../vox/event/MouseEvent";
+import CameraTrack from "../vox/view/CameraTrack";
+import RendererScene from "../vox/scene/RendererScene";
+import H5FontSystem from "../vox/text/H5FontSys";
+import Text2DEntity from "../vox2d/text/Text2DEntity";
 
 export namespace demo
 {

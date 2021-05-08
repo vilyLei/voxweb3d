@@ -6,41 +6,36 @@
 /*                                                                         */
 /***************************************************************************/
 
-export namespace vox
+class MathConst
 {
-    export namespace math
-    {
-        export class MathConst
-        {
-            static readonly MATH_MIN_POSITIVE:number = 1e-5;
-            static readonly MATH_MAX_NEGATIVE:number = -1e-5;
-            static readonly MATH_MAX_POSITIVE:number = 0xffffffe;
-            static readonly MATH_MIN_NEGATIVE:number = -0xffffffe;
-            static readonly MATH_1_OVER_255:number = 1.0/255.0;
-            static readonly MATH_PI:number = Math.PI;
-            static readonly MATH_2PI:number = MathConst.MATH_PI * 2.0;
-            static readonly MATH_3PER2PI:number = MathConst.MATH_PI * 1.5;
-            static readonly MATH_1PER2PI:number = MathConst.MATH_PI * 0.5;
-            static readonly MATH_1_OVER_PI:number = 1.0 / MathConst.MATH_PI;
-            static readonly MATH_1_OVER_360:number = 1.0 / 360.0;
-            static readonly MATH_1_OVER_180:number = 1.0 / 180.0;
-            static readonly MATH_180_OVER_PI:number = 180.0 / MathConst.MATH_PI;
-            static readonly MATH_PI_OVER_180:number = MathConst.MATH_PI / 180.0;
-            static readonly MATH_LN2:number = 0.6931471805599453;
-    
-            static IsPowerOf2(value:number):boolean
+    static readonly MATH_MIN_POSITIVE:number = 1e-5;
+    static readonly MATH_MAX_NEGATIVE:number = -1e-5;
+    static readonly MATH_MAX_POSITIVE:number = 0xffffffe;
+    static readonly MATH_MIN_NEGATIVE:number = -0xffffffe;
+    static readonly MATH_1_OVER_255:number = 1.0/255.0;
+    static readonly MATH_PI:number = Math.PI;
+    static readonly MATH_2PI:number = MathConst.MATH_PI * 2.0;
+    static readonly MATH_3PER2PI:number = MathConst.MATH_PI * 1.5;
+    static readonly MATH_1PER2PI:number = MathConst.MATH_PI * 0.5;
+    static readonly MATH_1_OVER_PI:number = 1.0 / MathConst.MATH_PI;
+    static readonly MATH_1_OVER_360:number = 1.0 / 360.0;
+    static readonly MATH_1_OVER_180:number = 1.0 / 180.0;
+    static readonly MATH_180_OVER_PI:number = 180.0 / MathConst.MATH_PI;
+    static readonly MATH_PI_OVER_180:number = MathConst.MATH_PI / 180.0;
+    static readonly MATH_LN2:number = 0.6931471805599453;
+    static IsPowerOf2(value:number):boolean
             {
                 return (value & (value - 1)) == 0;
-            }
-            static CalcNearestCeilPow2(int_n:number):number
+    }
+    static CalcNearestCeilPow2(int_n:number):number
             {
                 return Math.pow(2, Math.ceil( Math.log(int_n) / Math.LN2 ) );
-            }
-            static DegreeToRadian(degree:number):number
+    }
+    static DegreeToRadian(degree:number):number
             {
                 return MathConst.MATH_PI_OVER_180 * degree;
-            }
-            static SafeACos(x:number):number
+    }
+    static SafeACos(x:number):number
             {
                 if (x <= -1.0)
                 {
@@ -51,17 +46,17 @@ export namespace vox
                     return 0.0;
                 }
                 return Math.acos(x);
-            }
-            static GetNearestCeilPow2(int_n:number):number
+    }
+    static GetNearestCeilPow2(int_n:number):number
             {
               let x:number = 1;
               while(x < int_n) {
                 x <<= 1;
               }
               return x;
-            }
-            // ccw is positive
-            static GetMinRadian(a1:number, a0:number):number
+    }
+    // ccw is positive
+    static GetMinRadian(a1:number, a0:number):number
             {
                 a0 %= MathConst.MATH_2PI;
                 a1 %= MathConst.MATH_2PI;
@@ -78,8 +73,8 @@ export namespace vox
                     return -a1;
                 }
                 return 0.0;
-            }
-            static GetMinDegree(a0:number, a1:number):number
+    }
+    static GetMinDegree(a0:number, a1:number):number
             {
                 let angle:number = 0;
                 if(a1 >= 270 && a0 < 90)
@@ -106,8 +101,8 @@ export namespace vox
                     }
                 }
                 return angle;
-            }
-            static GetDegreeByXY(dx:number,dy:number):number
+    }
+    static GetDegreeByXY(dx:number,dy:number):number
             {
                 if(Math.abs(dx) < 0.00001)
                 {
@@ -125,9 +120,8 @@ export namespace vox
                     return 180+angle;    
                 }
                 return angle;
-            }
-    
-            static GetRadianByXY(dx:number,dy:number):number
+    }
+    static GetRadianByXY(dx:number,dy:number):number
             {
                 if(Math.abs(dx) < MathConst.MATH_MIN_POSITIVE)
                 {
@@ -143,8 +137,8 @@ export namespace vox
                 {
                     return MathConst.MATH_PI+rad;
                 }
-            }
-            static GetRadianByCos(cosv:number,dx:number,dy:number):number
+    }
+    static GetRadianByCos(cosv:number,dx:number,dy:number):number
             {
                 var rad = Math.acos(cosv);//Math.atan(dy/dx);
                 if(dx >= 0)
@@ -155,7 +149,7 @@ export namespace vox
                 {
                     return MathConst.MATH_PI+rad;
                 }
-            }
-        }
     }
 }
+
+export default MathConst;

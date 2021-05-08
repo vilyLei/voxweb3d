@@ -1,27 +1,17 @@
 
-import * as EventBaseT from "../../../vox/event/EventBase";
-import * as MouseEventT from "../../../vox/event/MouseEvent";
-import * as Stage3DT from "../../../vox/display/Stage3D";
-import * as RendererStateT from "../../../vox/render/RendererState";
-import * as RendererSceneT from "../../../vox/scene/RendererScene";
-import * as RendererSubSceneT from "../../../vox/scene/RendererSubScene";
+import EventBase from "../../../vox/event/EventBase";
+import MouseEvent from "../../../vox/event/MouseEvent";
+import Stage3D from "../../../vox/display/Stage3D";
+import RendererState from "../../../vox/render/RendererState";
+import RendererScene from "../../../vox/scene/RendererScene";
+import RendererSubScene from "../../../vox/scene/RendererSubScene";
 
-import * as TextInfoLabelT from "../../../orthoui/label/TextInfoLabel"
-import * as ColorButtonT from "../../../orthoui/button/BoundsButton";
-import * as ColorTextImgButtonT from "../../../orthoui/button/ColorTextImgButton";
+import TextInfoLabel from "../../../orthoui/label/TextInfoLabel"
+import BoundsButton from "../../../orthoui/button/BoundsButton";
+import ColorTextImgButton from "../../../orthoui/button/ColorTextImgButton";
+
 import * as MaterialManagerT from "./MaterialManager";
-
-import EventBase = EventBaseT.vox.event.EventBase;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import Stage3D = Stage3DT.vox.display.Stage3D;
-import RendererState = RendererStateT.vox.render.RendererState;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import RendererSubScene = RendererSubSceneT.vox.scene.RendererSubScene;
-
-import BoundsButton = ColorButtonT.orthoui.button.BoundsButton;
-import ColorTextImgButton = ColorTextImgButtonT.orthoui.button.ColorTextImgButton;
 import MaterialManager = MaterialManagerT.voxvat.demo.scene.MaterialManager;
-import TextInfoLabel = TextInfoLabelT.orthoui.label.TextInfoLabel;
 
 export namespace voxvat
 {

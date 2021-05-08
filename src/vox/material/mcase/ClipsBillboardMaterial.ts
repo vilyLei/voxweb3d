@@ -8,19 +8,19 @@
 
 
 
-import * as MathConstT from "../../../vox/math/MathConst";
-import * as ShaderCodeBufferT from "../../../vox/material/ShaderCodeBuffer";
-import * as ShaderUniformDataT from "../../../vox/material/ShaderUniformData";
-//import * as ShaderUniformT from "../../../vox/material/ShaderUniform";
-import * as Color4T from "../../../vox/material/Color4";
-import * as MaterialBaseT from "../../../vox/material/MaterialBase";
+import MathConst from "../../../vox/math/MathConst";
+import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
+import ShaderUniformData from "../../../vox/material/ShaderUniformData";
+//import ShaderUniform from "../../../vox/material/ShaderUniform";
+import Color4 from "../../../vox/material/Color4";
+import MaterialBase from "../../../vox/material/MaterialBase";
 
-import MathConst = MathConstT.vox.math.MathConst;
-import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
-import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
-//import ShaderUniform = ShaderUniformT.vox.material.ShaderUniform;
-import Color4 = Color4T.vox.material.Color4;
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+//import MathConst = MathConstT.vox.math.MathConst;
+//import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
+//import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
+////import ShaderUniform = ShaderUniformT.vox.material.ShaderUniform;
+//import Color4 = Color4T.vox.material.Color4;
+//import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 
 export namespace vox
 {

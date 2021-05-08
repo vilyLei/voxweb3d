@@ -4,20 +4,13 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-
-export namespace vox
+export default class MathShaderCode
 {
-    export namespace material
+    constructor(){}
+    static GetRadianByXY_Func():string
     {
-        export namespace code
-        {
-            export class MathShaderCode
-            {
-                constructor(){}
-                static GetRadianByXY_Func():string
-                {
-                    
-                    let shdCode:string = 
+        
+        let shdCode:string = 
 `
 // 3.141592653589793
 #define MATH_PI 3.14159265
@@ -28,17 +21,14 @@ export namespace vox
 
 float getRadianByXY(float dx, float dy)
 {
-    if(abs(dx) < 0.00001)
-    {
-        return (dy >= 0.0) ? MATH_1PER2PI : MATH_3PER2PI;
-    }
-    float rad = atan(dy/dx);
-    return dx >= 0.0 ? rad:(MATH_PI+rad);
+if(abs(dx) < 0.00001)
+{
+return (dy >= 0.0) ? MATH_1PER2PI : MATH_3PER2PI;
+}
+float rad = atan(dy/dx);
+return dx >= 0.0 ? rad:(MATH_PI+rad);
 }
 `;
-                    return shdCode;
-                }                
-            }
-        }
-    }
+        return shdCode;
+    }                
 }

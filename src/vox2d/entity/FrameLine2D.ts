@@ -5,23 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as MathConstT from "../../vox/math/MathConst";
-import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
-import * as RendererStateT from "../../vox/render/RendererState";
-import * as DashedLineMeshT from '../../vox/mesh/DashedLineMesh';
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
-import * as Color4T from '../../vox/material/Color4';
-import * as MaterialBaseT from '../../vox/material/MaterialBase';
-import * as Rect2DFrameMaterialT from '../../vox2d/material/mcase/Rect2DMaterial';
-
-import MathConst = MathConstT.vox.math.MathConst;
-import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
-import RendererState = RendererStateT.vox.render.RendererState;
-import DashedLineMesh = DashedLineMeshT.vox.mesh.DashedLineMesh;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Color4 = Color4T.vox.material.Color4;
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
-import Rect2DMaterial = Rect2DFrameMaterialT.vox2d.material.mcase.Rect2DMaterial;
+import MathConst from "../../vox/math/MathConst";
+import VtxBufConst from "../../vox/mesh/VtxBufConst";
+import RendererState from "../../vox/render/RendererState";
+import DashedLineMesh from '../../vox/mesh/DashedLineMesh';
+import DisplayEntity from "../../vox/entity/DisplayEntity";
+import MaterialBase from '../../vox/material/MaterialBase';
+import Rect2DMaterial from '../../vox2d/material/mcase/Rect2DMaterial';
 
 export namespace vox2d
 {

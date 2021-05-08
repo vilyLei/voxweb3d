@@ -1,20 +1,11 @@
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as ImageTexResLoaderT from "../vox/texture/ImageTextureLoader";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as RendererSceneT from "../vox/scene/RendererScene";
-import * as PingpongBlurT from "../renderingtoy/mcase/PingpongBlur";
-
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import ImageTextureLoader = ImageTexResLoaderT.vox.texture.ImageTextureLoader;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import PingpongBlur = PingpongBlurT.renderingtoy.mcase.PingpongBlur;
+import RendererParam from "../vox/scene/RendererParam";
+import TextureProxy from "../vox/texture/TextureProxy";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import CameraTrack from "../vox/view/CameraTrack";
+import RendererScene from "../vox/scene/RendererScene";
+import PingpongBlur from "../renderingtoy/mcase/PingpongBlur";
 
 export namespace demo
 {

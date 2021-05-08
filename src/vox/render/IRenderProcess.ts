@@ -5,42 +5,34 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IRODisplaySorterT from '../../vox/render/IRODisplaySorter';
+import IRODisplaySorter from '../../vox/render/IRODisplaySorter';
 
-import IRODisplaySorter = IRODisplaySorterT.vox.render.IRODisplaySorter;
-
-export namespace vox
+/**
+ * renderer rendering process class
+ */
+export default interface IRenderProcess
 {
-    export namespace render
-    {
-        /**
-         * renderer rendering process class
-         */
-        export interface IRenderProcess
-        {
-            getUid():number;
-            /**
-             * @returns return renderer context unique id
-             */
-            getRCUid():number;
-            /**
-             * @returns return a renderer process index of the renderer
-             */
-            getRPIndex():number;
-            getUnitsTotal():number;
-            getEnabled():boolean;
-            hasSorter():boolean;
-            setSorter(sorter:IRODisplaySorter):void;
-            setSortEnabled(sortEnabled:boolean):void;
-            getSortEnabled():boolean;
-            /**
-             * update rendering status
-             */
-            update():void;
-            /**
-             * execute rendering
-             */
-            run():void;
-        }
-    }
+    getUid():number;
+    /**
+     * @returns return renderer context unique id
+     */
+    getRCUid():number;
+    /**
+     * @returns return a renderer process index of the renderer
+     */
+    getRPIndex():number;
+    getUnitsTotal():number;
+    getEnabled():boolean;
+    hasSorter():boolean;
+    setSorter(sorter:IRODisplaySorter):void;
+    setSortEnabled(sortEnabled:boolean):void;
+    getSortEnabled():boolean;
+    /**
+     * update rendering status
+     */
+    update():void;
+    /**
+     * execute rendering
+     */
+    run():void;
 }

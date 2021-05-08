@@ -5,17 +5,17 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
-import * as MaterialBaseT from '../../vox/material/MaterialBase';
+import DisplayEntity from "../../vox/entity/DisplayEntity";
+import MaterialBase from '../../vox/material/MaterialBase';
 import * as ClipsBillboardMaterialT from "../../vox/material/mcase/ClipsBillboardMaterial";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
-import * as BillboardPlaneMeshT from "../../vox/mesh/BillboardPlaneMesh";
+import TextureProxy from "../../vox/texture/TextureProxy";
+import BillboardPlaneMesh from "../../vox/mesh/BillboardPlaneMesh";
 
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+//import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 import ClipsBillboardMaterial = ClipsBillboardMaterialT.vox.material.mcase.ClipsBillboardMaterial;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import BillboardPlaneMesh = BillboardPlaneMeshT.vox.mesh.BillboardPlaneMesh;
+//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+//import BillboardPlaneMesh = BillboardPlaneMeshT.vox.mesh.BillboardPlaneMesh;
 
 export namespace vox
 {

@@ -1,53 +1,36 @@
 
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as Vector3T from "../vox/math/Vector3D";
-import * as Color4T from "../vox/material/Color4";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererParam from "../vox/scene/RendererParam";
+import Vector3D from "../vox/math/Vector3D";
+import Color4 from "../vox/material/Color4";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureConstT from "../vox/texture/TextureConst";
+import TextureProxy from "../vox/texture/TextureProxy";
+import {TextureConst} from "../vox/texture/TextureConst";
 
-import * as DisplayEntityT from "../vox/entity/DisplayEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
+import DisplayEntity from "../vox/entity/DisplayEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
 
-import * as MouseEventT from "../vox/event/MouseEvent";
-import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as RendererSceneT from "../vox/scene/RendererScene";
+import MouseEvent from "../vox/event/MouseEvent";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import CameraTrack from "../vox/view/CameraTrack";
+import RendererScene from "../vox/scene/RendererScene";
+import CameraViewRay from "../vox/view/CameraViewRay";
+
+import BoxPartStore from "../app/robot/BoxPartStore";
 import * as BoFrameAxisT from "../app/robot/BoFrameAxis";
 import * as TwoFeetUnitT from "../app/robot/TwoFeetUnit";
 import * as FourFeetUnitT from "../app/robot/FourFeetUnit";
 import * as SixFeetUnitT from "../app/robot/SixFeetUnit";
 import * as TwoFeetBodyT from "../app/robot/TwoFeetBody";
 import * as LinePartStoreT from "../app/robot/LinePartStore";
-import * as BoxPartStoreT from "../app/robot/BoxPartStore";
-import * as CameraViewRayT from "../vox/view/CameraViewRay";
 
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import Vector3D = Vector3T.vox.math.Vector3D;
-import Color4 = Color4T.vox.material.Color4;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import BoFrameAxis = BoFrameAxisT.app.robot.BoFrameAxis;
 import TwoFeetUnit = TwoFeetUnitT.app.robot.TwoFeetUnit;
 import FourFeetUnit = FourFeetUnitT.app.robot.FourFeetUnit;
 import SixFeetUnit = SixFeetUnitT.app.robot.SixFeetUnit;
 import TwoFeetBody = TwoFeetBodyT.app.robot.TwoFeetBody;
 import LinePartStore = LinePartStoreT.app.robot.LinePartStore;
-import BoxPartStore = BoxPartStoreT.app.robot.BoxPartStore;
-import CameraViewRay = CameraViewRayT.vox.view.CameraViewRay;
 
 export namespace app
 {

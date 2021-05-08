@@ -5,17 +5,17 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../../vox/math/Vector3D";
-import * as TextureProxyT from "../../../vox/texture/TextureProxy";
-import * as IRendererT from "../../../vox/scene/IRenderer";
+import Vector3D from "../../../vox/math/Vector3D";
+import TextureProxy from "../../../vox/texture/TextureProxy";
+import IRenderer from "../../../vox/scene/IRenderer";
 
-import * as Billboard3DEntityT from "../../../vox/entity/Billboard3DEntity";
+import Billboard3DEntity from "../../../vox/entity/Billboard3DEntity";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import IRenderer = IRendererT.vox.scene.IRenderer;
+//import Vector3D = Vector3DT.vox.math.Vector3D;
+//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+//import IRenderer = IRendererT.vox.scene.IRenderer;
 
-import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
+//import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 export namespace advancedDemo
 {
     export namespace depthLight

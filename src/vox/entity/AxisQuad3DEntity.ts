@@ -5,17 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as DashedQuadLineMeshT from '../../vox/mesh/DashedQuadLineMesh';
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
-import * as Color4T from '../../vox/material/Color4';
-import * as MaterialBaseT from '../../vox/material/MaterialBase';
-import * as QuadLine3DMaterialT from '../../vox/material/mcase/QuadLine3DMaterial';
-
-import DashedQuadLineMesh = DashedQuadLineMeshT.vox.mesh.DashedQuadLineMesh;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Color4 = Color4T.vox.material.Color4;
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
-import QuadLine3DMaterial = QuadLine3DMaterialT.vox.material.mcase.QuadLine3DMaterial;
+import DashedQuadLineMesh from '../../vox/mesh/DashedQuadLineMesh';
+import DisplayEntity from "../../vox/entity/DisplayEntity";
+import Color4 from '../../vox/material/Color4';
+import MaterialBase from '../../vox/material/MaterialBase';
+import QuadLine3DMaterial from '../../vox/material/mcase/QuadLine3DMaterial';
 
 export namespace vox
 {

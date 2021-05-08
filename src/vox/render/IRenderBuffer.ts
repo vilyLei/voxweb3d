@@ -5,20 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IRenderResourceT from "../../vox/render/IRenderResource";
-
-import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
-export namespace vox
+import IRenderResource from "../../vox/render/IRenderResource";
+interface IRenderBuffer
 {
-    export namespace render
-    {
-        export interface IRenderBuffer
-        {
-            /**
-             * @returns 返回自己的 纹理资源 unique id, 这个id会被对应的资源管理器使用, 此方法子类可以依据需求覆盖
-             */
-            getResUid():number;
-            __$updateToGpu(res:IRenderResource):void;
-        }
-    }
+    /**
+     * @returns 返回自己的 纹理资源 unique id, 这个id会被对应的资源管理器使用, 此方法子类可以依据需求覆盖
+     */
+    getResUid():number;
+    __$updateToGpu(res:IRenderResource):void;
 }
+export default IRenderBuffer;

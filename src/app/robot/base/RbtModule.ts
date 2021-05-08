@@ -5,13 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3T from "../../../vox/math/Vector3D";
-import * as DisplayEntityContainerT from "../../../vox/entity/DisplayEntityContainer";
-import * as IPosetureT from "../../../app/robot/poseture/IPoseture";
+import Vector3D from "../../../vox/math/Vector3D";
+import DisplayEntityContainer from "../../../vox/entity/DisplayEntityContainer";
+import IPoseture from "../../../app/robot/poseture/IPoseture";
 
-import Vector3D = Vector3T.vox.math.Vector3D;
-import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
-import IPoseture = IPosetureT.app.robot.poseture.IPoseture;
+//import Vector3D = Vector3T.vox.math.Vector3D;
+//import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
+//import IPoseture = IPosetureT.app.robot.poseture.IPoseture;
 
 export namespace app
 {

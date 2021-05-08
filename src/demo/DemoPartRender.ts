@@ -1,35 +1,22 @@
 
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererStateT from "../vox/render/RendererState";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererParam from "../vox/scene/RendererParam";
+import RendererState from "../vox/render/RendererState";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
-import * as ScreenFixedAlignPlaneEntityT from "../vox/entity/ScreenFixedAlignPlaneEntity";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureStoreT from "../vox/texture/TextureStore";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as FBOInstanceT from "../vox/scene/FBOInstance";
-import * as DemoInstanceT from "./DemoInstance";
+import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import TextureProxy from "../vox/texture/TextureProxy";
+import CameraTrack from "../vox/view/CameraTrack";
+import FBOInstance from "../vox/scene/FBOInstance";
+import DemoInstance from "./DemoInstance";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererState = RendererStateT.vox.render.RendererState;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 
-import ScreenFixedAlignPlaneEntity = ScreenFixedAlignPlaneEntityT.vox.entity.ScreenFixedAlignPlaneEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import FBOInstance = FBOInstanceT.vox.scene.FBOInstance;
-import DemoInstance = DemoInstanceT.demo.DemoInstance;
+//import ScreenFixedAlignPlaneEntity = ScreenFixedAlignPlaneEntityT.vox.entity.ScreenFixedAlignPlaneEntity;
+////import DemoInstance = DemoInstanceT.demo.DemoInstance;
 
 export namespace demo
 {
@@ -70,7 +57,7 @@ export namespace demo
             this.m_fboIns0.createViewportSizeFBOAt(0,true,false,0);
             //this.m_fboIns0.setClearRGBColor3f(0.3, 0.0, 0.3);
             this.m_fboIns0.setClearUint24Color(0x002233,1.0);
-            this.m_fboIns0.setRenderToTexture(TextureStore.GetRTTTextureAt(0), 0);
+            this.m_fboIns0.setRenderToTexture(this.m_rscene.textureBlock.getRTTTextureAt(0), 0);
             this.m_fboIns0.setRProcessIDList([0]);
             this.m_fboIns0.setClearState(true,true,false);
 
@@ -78,7 +65,7 @@ export namespace demo
             this.m_fboIns1.synFBOSizeWithViewport();
             this.m_fboIns1.createViewportSizeFBOAt(1,true,false,0);
             this.m_fboIns1.setClearUint24Color(0x330033,1.0);
-            this.m_fboIns1.setRenderToTexture(TextureStore.GetRTTTextureAt(1), 0);
+            this.m_fboIns1.setRenderToTexture(this.m_rscene.textureBlock.getRTTTextureAt(1), 0);
             this.m_fboIns1.setRProcessIDList([2]);
             this.m_fboIns1.setClearState(true,true,false);
 
@@ -96,13 +83,13 @@ export namespace demo
             this.m_rscene.addEntity(box);
             //  // add rtt texture 3d display entity
             //  let boxRtt:Box3DEntity = new Box3DEntity();
-            //  boxRtt.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[TextureStore.GetRTTTextureAt(1)]);
-            //  //boxRtt.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[TextureStore.GetRTTTextureAt(0)]);
+            //  boxRtt.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[this.m_rscene.textureBlock.getRTTTextureAt(1)]);
+            //  //boxRtt.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[this.m_rscene.textureBlock.getRTTTextureAt(0)]);
             //  this.m_rscene.addEntity(boxRtt, 1);
             
             let planeRtt:ScreenFixedAlignPlaneEntity = new ScreenFixedAlignPlaneEntity();
             planeRtt.setRenderState(RendererState.BACK_NORMAL_ALWAYS_STATE);
-            planeRtt.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(1)]);
+            planeRtt.initialize(-1.0,-1.0,2.0,2.0,[this.m_rscene.textureBlock.getRTTTextureAt(1)]);
             this.m_rscene.addEntity(planeRtt, 1);
         }
         runBegin():void

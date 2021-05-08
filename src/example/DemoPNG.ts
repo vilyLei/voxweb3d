@@ -1,42 +1,42 @@
 
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererParam from "../vox/scene/RendererParam";
+import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
-import * as Color4T from "../vox/material/Color4";
-import * as RendererStateT from "../vox/render/RendererState";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as BytesTextureProxyT from "../vox/texture/BytesTextureProxy";
-import * as TextureStoreT from "../vox/texture/TextureStore";
-import * as TextureConstT from "../vox/texture/TextureConst";
-import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as RendererSceneT from "../vox/scene/RendererScene";
+import Color4 from "../vox/material/Color4";
+import RendererState from "../vox/render/RendererState";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import TextureProxy from "../vox/texture/TextureProxy";
+import BytesTextureProxy from "../vox/texture/BytesTextureProxy";
+////import * as TextureStoreT from "../vox/texture/TextureStore";
+import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import CameraTrack from "../vox/view/CameraTrack";
+import RendererScene from "../vox/scene/RendererScene";
 import * as TwoPngTexMaterialT from "./material/base/TwoPngTexMaterial";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
+//import Vector3D = Vector3DT.vox.math.Vector3D;
+//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import RendererParam = RendererParamT.vox.scene.RendererParam;
+//import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
+//import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 
-import Color4 = Color4T.vox.material.Color4;
-import RendererState = RendererStateT.vox.render.RendererState;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import BytesTextureProxy = BytesTextureProxyT.vox.texture.BytesTextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
+//import Color4 = Color4T.vox.material.Color4;
+//import RendererState = RendererStateT.vox.render.RendererState;
+//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
+//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
+//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
+//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+//import BytesTextureProxy = BytesTextureProxyT.vox.texture.BytesTextureProxy;
+//import TextureStore = TextureStoreT.vox.texture.TextureStore;
+//import TextureConst = TextureConstT.vox.texture.TextureConst;
+//import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
+//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
+//import RendererScene = RendererSceneT.vox.scene.RendererScene;
 import TwoPngTexMateria = TwoPngTexMaterialT.example.material.base.TwoPngTexMaterial;
 
 export namespace example
@@ -138,7 +138,7 @@ export namespace example
                 //tex4.minFilter = TextureConst.NEAREST_MIPMAP_LINEAR;
                 //let tex5:TextureProxy = this.getTexByUrl("./static/pics/rectBorder_01.png");
                 */
-                let colorTex:TextureProxy = TextureStore.CreateRGBATex2D(128,128,new Color4(1.0,1.0,1.0,1.0));
+                let colorTex:TextureProxy = this.m_rscene.textureBlock.createRGBATex2D(128,128,new Color4(1.0,1.0,1.0,1.0));
                 colorTex.mipmapEnabled = true;
                 //this.m_statusDisp.initialize("rstatus");
                 let material:TwoPngTexMateria = new TwoPngTexMateria();

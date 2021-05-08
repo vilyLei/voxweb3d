@@ -253,11 +253,9 @@
 //  import * as DemoDivControl from "./demo/DemoDivControl";
 //  import Demo = DemoDivControl.demo.DemoDivControl;
 
-//  import * as DemoEmptyRenderer from "./demo/DemoEmptyRenderer";
-//  import Demo = DemoEmptyRenderer.demo.DemoEmptyRenderer;
+//  import {DemoEmptyRenderer as Demo} from "./demo/DemoEmptyRenderer";
 
-//  import * as DemoEmptyRendererScene from "./demo/DemoEmptyRendererScene";
-//  import Demo = DemoEmptyRendererScene.demo.DemoEmptyRendererScene;
+//  import {DemoEmptyRendererScene as Demo} from "./demo/DemoEmptyRendererScene";
 
 //  import * as DemoAPlane from "./demo/DemoAPlane";
 //  import Demo = DemoAPlane.demo.DemoAPlane;
@@ -298,11 +296,9 @@
 //  import * as DemoMixProgress from "./demo/DemoMixProgress";
 //  import Demo = DemoMixProgress.demo.DemoMixProgress;
 
-//  import * as DemoGLState from "./demo/DemoGLState";
-//  import Demo = DemoGLState.demo.DemoGLState;
+import {DemoGLState as Demo} from "./demo/DemoGLState";
 
-//  import * as DemoThread from "./thread/example/DemoThread";
-//  import Demo = DemoThread.thread.example.DemoThread;
+//  import {DemoThread as Demo} from "./thread/example/DemoThread";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -313,8 +309,7 @@
 //  import * as BoFrame from "./app/BoFrame";
 //  import Demo = BoFrame.app.BoFrame;
 
-import * as RbtDrama from "./app/RbtDrama";
-import Demo = RbtDrama.app.RbtDrama;
+//  import {RbtDrama as Demo} from "./app/RbtDrama";
 
 //  import * as DensityStatistics from "./app/density/DensityStatistics";
 //  import Demo = DensityStatistics.app.density.DensityStatistics;

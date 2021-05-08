@@ -1,22 +1,22 @@
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererParamT from "../vox/scene/RendererParam";
+import Vector3D from "../vox/math/Vector3D";
+import RendererParam from "../vox/scene/RendererParam";
 import * as ShaderMaterialT from "../vox/material/mcase/ShaderMaterial";
-import * as MouseEventT from "../vox/event/MouseEvent";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as RendererSceneT from "../vox/scene/RendererScene";
-import * as ImageTextureLoaderT from "../vox/texture/ImageTextureLoader";
+import MouseEvent from "../vox/event/MouseEvent";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
+import TextureProxy from "../vox/texture/TextureProxy";
+import RendererScene from "../vox/scene/RendererScene";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
+//import Vector3D = Vector3DT.vox.math.Vector3D;
+//import RendererParam = RendererParamT.vox.scene.RendererParam;
 import ShaderMaterial = ShaderMaterialT.vox.material.mcase.ShaderMaterial;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
+//import MouseEvent = MouseEventT.vox.event.MouseEvent;
+//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
+//import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
+//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+//import RendererScene = RendererSceneT.vox.scene.RendererScene;
+//import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 
 export namespace demo
 {

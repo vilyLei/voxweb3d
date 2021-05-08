@@ -1,40 +1,24 @@
 
-import * as RenderConstT from "../../vox/render/RenderConst";
-import * as RendererStateT from "../../vox/render/RendererState";
-import * as Color4T from "../../vox/material/Color4";
+import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../../vox/render/RenderConst";
+import RendererState from "../../vox/render/RendererState";
+import Color4 from "../../vox/material/Color4";
 import * as BillboardRGBMaskMaterialT from "../../vox/material/mcase/BillboardRGBMaskMaterial";
 import * as ClipsBillboardMaskMaterialT from "../../vox/material/mcase/ClipsBillboardMaskMaterial";
-import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
-import * as RendererInstanceT from "../../vox/scene/RendererInstance";
+import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
+import RendererInstance from "../../vox/scene/RendererInstance";
 
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
-import * as Axis3DEntityT from "../../vox/entity/Axis3DEntity";
-import * as Billboard3DEntityT from "../../vox/entity/Billboard3DEntity";
+import DisplayEntity from "../../vox/entity/DisplayEntity";
+import Axis3DEntity from "../../vox/entity/Axis3DEntity";
+import Billboard3DEntity from "../../vox/entity/Billboard3DEntity";
 import * as ClipsBillboard3DEntityT from "../../vox/entity/ClipsBillboard3DEntity";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
-import * as TextureStoreT from "../../vox/texture/TextureStore";
-import * as TextureBlockT from "../../vox/texture/TextureBlock";
-import * as ImageTextureLoaderT from "../../vox/texture/ImageTextureLoader";
+import TextureProxy from "../../vox/texture/TextureProxy";
+import TextureBlock from "../../vox/texture/TextureBlock";
+import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import * as EntityDispT from "../base/EntityDisp";
 
-import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RendererState = RendererStateT.vox.render.RendererState;
-import Color4 = Color4T.vox.material.Color4;
 import BillboardRGBMaskMaterial = BillboardRGBMaskMaterialT.vox.material.mcase.BillboardRGBMaskMaterial;
 import ClipsBillboardMaskMaterial = ClipsBillboardMaskMaterialT.vox.material.mcase.ClipsBillboardMaskMaterial;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import ClipsBillboard3DEntity = ClipsBillboard3DEntityT.vox.entity.ClipsBillboard3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import TextureBlock = TextureBlockT.vox.texture.TextureBlock;
-import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 import EntityDisp = EntityDispT.demo.base.EntityDisp;
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 
@@ -124,7 +108,7 @@ export namespace demo
             {
                 this.m_billMeshSrc0Entity = new Billboard3DEntity();
                 // create and save mesh in m_billMeshSrc0Entity instance
-                this.m_billMeshSrc0Entity.initialize(100.0,100.0, [TextureStore.CreateRGBATex2D(16,16,new Color4(1.0,0.0,1.0))]);                
+                this.m_billMeshSrc0Entity.initialize(100.0,100.0, [this.m_texBlock.createRGBATex2D(16,16,new Color4(1.0,0.0,1.0))]);                
 
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.name = "axis";
@@ -309,7 +293,7 @@ export namespace demo
                         --len;
                     }
                 }
-                this.//m_texLoader.run();
+                this.m_texLoader.run();
             }
         }
     }

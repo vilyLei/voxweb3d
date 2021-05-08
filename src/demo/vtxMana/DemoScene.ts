@@ -1,67 +1,42 @@
 
-import * as Vector3DT from "../../vox/math/Vector3D";
-import * as Matrix4T from "../../vox/math/Matrix4";
-import * as RendererDevieceT from "../../vox/render/RendererDeviece";
-import * as RenderConstT from "../../vox/render/RenderConst";
-import * as RendererStateT from "../../vox/render/RendererState";
-import * as Color4T from "../../vox/material/Color4";
-import * as RendererParamT from "../../vox/scene/RendererParam";
-import * as MeshBaseT from "../../vox/mesh/MeshBase";
-import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
-import * as RendererInstanceT from "../../vox/scene/RendererInstance";
-import * as RenderStatusDisplayT from "../../vox/scene/RenderStatusDisplay";
-import * as MouseEventT from "../../vox/event/MouseEvent";
-import * as Stage3DT from "../../vox/display/Stage3D";
+import Vector3D from "../../vox/math/Vector3D";
+import Matrix4 from "../../vox/math/Matrix4";
+import RendererDeviece from "../../vox/render/RendererDeviece";
+import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../../vox/render/RenderConst";
+import RendererState from "../../vox/render/RendererState";
+import Color4 from "../../vox/material/Color4";
+import RendererParam from "../../vox/scene/RendererParam";
+import MeshBase from "../../vox/mesh/MeshBase";
+import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
+import RendererInstance from "../../vox/scene/RendererInstance";
+import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
+import MouseEvent from "../../vox/event/MouseEvent";
+import Stage3D from "../../vox/display/Stage3D";
 
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
-import * as Plane3DEntityT from "../../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../../vox/entity/Box3DEntity";
-import * as Sphere3DEntityT from "../../vox/entity/Sphere3DEntity";
-import * as Cylinder3DEntityT from "../../vox/entity/Cylinder3DEntity";
-import * as Billboard3DEntityT from "../../vox/entity/Billboard3DEntity";
+import DisplayEntity from "../../vox/entity/DisplayEntity";
+import Plane3DEntity from "../../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../../vox/entity/Axis3DEntity";
+import Box3DEntity from "../../vox/entity/Box3DEntity";
+import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
+import Cylinder3DEntity from "../../vox/entity/Cylinder3DEntity";
+import Billboard3DEntity from "../../vox/entity/Billboard3DEntity";
 import * as ClipsBillboard3DEntityT from "../../vox/entity/ClipsBillboard3DEntity";
-import * as ObjData3DEntityT from "../../vox/entity/ObjData3DEntity";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
-import * as TextureStoreT from "../../vox/texture/TextureStore";
-import * as TextureConstT from "../../vox/texture/TextureConst";
-//import * as TexResLoaderT from "../../vox/texture/TexResLoader";
-import * as ImageTexResLoaderT from "../../vox/texture/ImageTexResLoader";
-import * as CameraTrackT from "../../vox/view/CameraTrack";
+import ObjData3DEntity from "../../vox/entity/ObjData3DEntity";
+import TextureProxy from "../../vox/texture/TextureProxy";
+import {TextureConst} from "../../vox/texture/TextureConst";
+
+import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import * as EntityDispT from "../base/EntityDisp";
+import TextureBlock from "../../vox/texture/TextureBlock";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import Matrix4 = Matrix4T.vox.math.Matrix4;
-import Matrix4Pool = Matrix4T.vox.math.Matrix4Pool;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RendererState = RendererStateT.vox.render.RendererState;
-import Color4 = Color4T.vox.material.Color4;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import MeshBase = MeshBaseT.vox.mesh.MeshBase;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import Stage3D = Stage3DT.vox.display.Stage3D;
-
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
-import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
+//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
+//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
+//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
+//import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
+//import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
+//import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
 import ClipsBillboard3DEntity = ClipsBillboard3DEntityT.vox.entity.ClipsBillboard3DEntity;
-import ObjData3DEntity = ObjData3DEntityT.vox.entity.ObjData3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-//import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-import ImageTexResLoader = ImageTexResLoaderT.vox.texture.ImageTexResLoader;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
+//import ObjData3DEntity = ObjData3DEntityT.vox.entity.ObjData3DEntity;
 import EntityDisp = EntityDispT.demo.base.EntityDisp;
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 
@@ -76,7 +51,8 @@ export namespace demo
             }
             private m_renderer:RendererInstance = null;
             private m_rcontext:RendererInstanceContext = null;
-            private m_texLoader:ImageTexResLoader = new ImageTexResLoader();
+            private m_texLoader:ImageTextureLoader = null;
+            private m_texBlock:TextureBlock;
             //private m_camTrack:CameraTrack = null;
             private m_equeue:EntityDispQueue = new EntityDispQueue();
             private m_srcBoxEntity:Box3DEntity = null;
@@ -94,6 +70,9 @@ export namespace demo
                     RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
                     RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
 
+                    this.m_texBlock = new TextureBlock();
+                    this.m_texBlock.setRenderer( this.m_renderer );
+                    this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
                     //this.initDisp();
                     this.initTest();    
                 }
@@ -163,7 +142,7 @@ export namespace demo
 
                 this.m_billMeshSrc0Entity = new Billboard3DEntity();
                 //this.m_billMeshSrc0Entity.initialize(100.0,100.0, [this.getParTexAt(0)]);
-                this.m_billMeshSrc0Entity.initialize(100.0,100.0, [TextureStore.CreateRGBATex2D(16,16,new Color4(1.0,0.0,1.0))]);
+                this.m_billMeshSrc0Entity.initialize(100.0,100.0, [this.m_texBlock.createRGBATex2D(16,16,new Color4(1.0,0.0,1.0))]);
                 //this.m_renderer.addEntity( this.m_billMeshSrc0Entity );
 
                 let axis:Axis3DEntity = new Axis3DEntity();
@@ -287,7 +266,7 @@ export namespace demo
                     }
                 }
 
-                this.//m_texLoader.run();
+                this.m_texLoader.run();
             }
         }
     }

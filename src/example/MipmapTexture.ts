@@ -1,51 +1,24 @@
 
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
-import * as RendererStateT from "../vox/render/RendererState";
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererParam from "../vox/scene/RendererParam";
+import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as ImageTextureProxyT from "../vox/texture/ImageTextureProxy";
-import * as BytesTextureProxyT from "../vox/texture/BytesTextureProxy";
-import * as FloatTextureProxyT from "../vox/texture/FloatTextureProxy";
-import * as TextureStoreT from "../vox/texture/TextureStore";
-import * as TextureConstT from "../vox/texture/TextureConst";
-import * as ImageTexResLoaderT from "../vox/texture/ImageTexResLoader";
-import * as ImageToolT from "../vox/texture/ImageTool";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as RendererSceneT from "../vox/scene/RendererScene";
-import * as MouseEventT from "../vox/event/MouseEvent";
-import * as ProfileInstanceT from "../voxprofile/entity/ProfileInstance";
-import * as H5FontSysT from "../vox/text/H5FontSys";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import TextureProxy from "../vox/texture/TextureProxy";
+import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
+import BytesTextureProxy from "../vox/texture/BytesTextureProxy";
+import FloatTextureProxy from "../vox/texture/FloatTextureProxy";
+import {TextureConst} from "../vox/texture/TextureConst";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import ImageTool from "../vox/texture/ImageTool";
+import CameraTrack from "../vox/view/CameraTrack";
+import RendererScene from "../vox/scene/RendererScene";
+import MouseEvent from "../vox/event/MouseEvent";
+import ProfileInstance from "../voxprofile/entity/ProfileInstance";
+import H5FontSystem from "../vox/text/H5FontSys";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-import RendererState = RendererStateT.vox.render.RendererState;
-
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import ImageTextureProxy = ImageTextureProxyT.vox.texture.ImageTextureProxy;
-import BytesTextureProxy = BytesTextureProxyT.vox.texture.BytesTextureProxy;
-import FloatTextureProxy = FloatTextureProxyT.vox.texture.FloatTextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import ImageTexResLoader = ImageTexResLoaderT.vox.texture.ImageTexResLoader;
-import ImageTool = ImageToolT.vox.texture.ImageTool;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
-import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
 
 export namespace example
 {
@@ -56,7 +29,7 @@ export namespace example
         }
         private m_rscene:RendererScene = null;
         private m_rcontext:RendererInstanceContext = null;
-        private m_texLoader:ImageTexResLoader = new ImageTexResLoader();
+        private m_texLoader:ImageTextureLoader;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_targetTex:ImageTextureProxy = null;
@@ -64,7 +37,7 @@ export namespace example
         private m_profileInstance:ProfileInstance = new ProfileInstance();
         getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
-            let ptex:ImageTextureProxy = TextureStore.CreateImageTex2D(64,64);
+            let ptex:ImageTextureProxy = this.m_rscene.textureBlock.createImageTex2D(64,64);
             ptex.mipmapEnabled = true;
             if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
             let img:any = new Image();
@@ -81,7 +54,7 @@ export namespace example
         }
         getBytesTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
         {
-            let ptex:BytesTextureProxy = TextureStore.CreateBytesTex(64,64);
+            let ptex:BytesTextureProxy = this.m_rscene.textureBlock.createBytesTex(64,64);
             ptex.mipmapEnabled = true;
             if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
             let img:any = new Image();
@@ -103,8 +76,8 @@ export namespace example
         private createFloatTex():TextureProxy
         {
             let size:number = 64;
-            //let tex:FloatTextureProxy = TextureStore.CreateHalfFloatTex2D(4,4,true);
-            let tex:FloatTextureProxy = TextureStore.CreateFloatTex2D(size,size,true);
+            //let tex:FloatTextureProxy = this.m_rscene.textureBlock.createHalfFloatTex2D(4,4,true);
+            let tex:FloatTextureProxy = this.m_rscene.textureBlock.createFloatTex2D(size,size,true);
             //let vs:Float32Array = new Float32Array(tex.getWidth() * tex.getHeight() * 4);
             let vs:Float32Array = new Float32Array(tex.getWidth() * tex.getHeight() * 4);
             

@@ -5,11 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../vox/math/Vector3D";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
+import Vector3D from "../../vox/math/Vector3D";
+import DisplayEntity from "../../vox/entity/DisplayEntity";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+//import Vector3D = Vector3DT.vox.math.Vector3D;
+//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 
 export namespace voxmotion
 {

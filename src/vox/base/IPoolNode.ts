@@ -5,14 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-export namespace vox
+export default interface IPoolNode
 {
-    export namespace base
-    {
-        export interface IPoolNode
-        {
-            uid:number;
-            reset():void;
-        }
-    }
+    uid:number;
+    reset():void;
 }

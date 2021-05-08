@@ -1,27 +1,23 @@
 
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as CircleCalcT from "../vox/geom/CircleCalc";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as BrokenLine3DEntityT from "../vox/entity/BrokenLine3DEntity";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import Vector3D from "../vox/math/Vector3D";
+import CircleCalc from "../vox/geom/CircleCalc";
+import RendererParam from "../vox/scene/RendererParam";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import BrokenLine3DEntity from "../vox/entity/BrokenLine3DEntity";
 
-import * as MouseEventT from "../vox/event/MouseEvent";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as RendererSceneT from "../vox/scene/RendererScene";
+import MouseEvent from "../vox/event/MouseEvent";
+import CameraTrack from "../vox/view/CameraTrack";
+import RendererScene from "../vox/scene/RendererScene";
 
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import CircleCalc = CircleCalcT.vox.geom.CircleCalc;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import BrokenLine3DEntity = BrokenLine3DEntityT.vox.entity.BrokenLine3DEntity;
+//import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
+//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
+//import BrokenLine3DEntity = BrokenLine3DEntityT.vox.entity.BrokenLine3DEntity;
 
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
+//import MouseEvent = MouseEventT.vox.event.MouseEvent;
+//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
+//import RendererScene = RendererSceneT.vox.scene.RendererScene;
 
 export namespace demo
 {

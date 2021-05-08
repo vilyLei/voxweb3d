@@ -6,27 +6,15 @@
 /***************************************************************************/
 // ThreadTask example
 
-import * as Vector3DT from "../../vox/math/Vector3D";
-import * as IThreadSendDataT from "../../thread/base/IThreadSendData";
-import * as ThreadTaskT from "../../thread/control/ThreadTask";
-import * as Matrix4T from "../../vox/math/Matrix4";
-import * as PureEntityT from "../../vox/entity/PureEntity";
-import * as IRendererT from "../../vox/scene/IRenderer";
+import Vector3D from "../../vox/math/Vector3D";
+import IThreadSendData from "../../thread/base/IThreadSendData";
+import ThreadTask from "../../thread/control/ThreadTask";
+import Matrix4 from "../../vox/math/Matrix4";
+import PureEntity from "../../vox/entity/PureEntity";
+import IRenderer from "../../vox/scene/IRenderer";
 
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
-import * as TextureStoreT from "../../vox/texture/TextureStore";
-import * as Box3DEntityT from "../../vox/entity/Box3DEntity";
-
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import IThreadSendData = IThreadSendDataT.thread.base.IThreadSendData;
-import ThreadTask = ThreadTaskT.thread.control.ThreadTask;
-import Matrix4 = Matrix4T.vox.math.Matrix4;
-import PureEntity = PureEntityT.vox.entity.PureEntity;
-import IRenderer = IRendererT.vox.scene.IRenderer;
-
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
+import TextureProxy from "../../vox/texture/TextureProxy";
+import Box3DEntity from "../../vox/entity/Box3DEntity";
 
 export namespace demo
 {

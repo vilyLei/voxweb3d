@@ -1,56 +1,31 @@
 
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as LineT from "../vox/geom/Line";
-import * as SphereT from "../vox/geom/Sphere";
-import * as ConeT from "../vox/geom/Cone";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RenderConstT from "../vox/render/RenderConst";
-import * as RendererStateT from "../vox/render/RendererState";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
-import * as RendererInstanceT from "../vox/scene/RendererInstance";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
+import Vector3D from "../vox/math/Vector3D";
+import Sphere from "../vox/geom/Sphere";
+import Cone from "../vox/geom/Cone";
+import InfiniteCone from "../vox/geom/InfiniteCone";
 
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Line3DEntityT from "../vox/entity/Line3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as Sphere3DEntityT from "../vox/entity/Sphere3DEntity";
-import * as Cylinder3DEntityT from "../vox/entity/Cylinder3DEntity";
-import * as Cone3DEntityT from "../vox/entity/Cone3DEntity";
-import * as Billboard3DEntityT from "../vox/entity/Billboard3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureConstT from "../vox/texture/TextureConst";
-import * as TexResLoaderT from "../vox/texture/TexResLoader";
-import * as CameraTrackT from "../vox/view/CameraTrack";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
+import RendererState from "../vox/render/RendererState";
+import RendererParam from "../vox/scene/RendererParam";
+import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import RendererInstance from "../vox/scene/RendererInstance";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import Sphere = SphereT.vox.geom.Sphere;
-import Cone = ConeT.vox.geom.Cone;
-import InfiniteCone = ConeT.vox.geom.InfiniteCone;
-import StraightLine = LineT.vox.geom.StraightLine;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RendererState = RendererStateT.vox.render.RendererState;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import Line3DEntity from "../vox/entity/Line3DEntity";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
+import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
+import Cone3DEntity from "../vox/entity/Cone3DEntity";
+import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
+import TextureProxy from "../vox/texture/TextureProxy";
+import {TextureConst} from "../vox/texture/TextureConst";
 
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Line3DEntity = Line3DEntityT.vox.entity.Line3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
-import Cone3DEntity = Cone3DEntityT.vox.entity.Cone3DEntity;
-import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import TextureBlock from "../vox/texture/TextureBlock";
+import CameraTrack from "../vox/view/CameraTrack";
 
 export namespace demo
 {
@@ -61,7 +36,8 @@ export namespace demo
         }
         private m_renderer:RendererInstance = null;
         private m_rcontext:RendererInstanceContext = null;
-        private m_texLoader:TexResLoader = new TexResLoader();
+        private m_texLoader:ImageTextureLoader;
+        private m_texBlock:TextureBlock;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         initialize():void
@@ -70,15 +46,6 @@ export namespace demo
             if(this.m_rcontext == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/guangyun_H_0007.png");
-                tex0.mipmapEnabled = true;
-                tex0.setWrap(TextureConst.WRAP_REPEAT);
-                tex1.mipmapEnabled = true;
-                tex1.setWrap(TextureConst.WRAP_REPEAT);
-                tex2.mipmapEnabled = true;
-                tex2.setWrap(TextureConst.WRAP_REPEAT);
                 
                 this.m_statusDisp.initialize("rstatus");
                 let rparam:RendererParam = new RendererParam();
@@ -89,7 +56,22 @@ export namespace demo
                 this.m_rcontext = this.m_renderer.getRendererContext();
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
+
+                this.m_texBlock = new TextureBlock();
+                this.m_texBlock.setRenderer(this.m_renderer);
+                this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
+
                 
+                let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/guangyun_H_0007.png");
+                tex0.mipmapEnabled = true;
+                tex0.setWrap(TextureConst.WRAP_REPEAT);
+                tex1.mipmapEnabled = true;
+                tex1.setWrap(TextureConst.WRAP_REPEAT);
+                tex2.mipmapEnabled = true;
+                tex2.setWrap(TextureConst.WRAP_REPEAT);
+
                 RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 

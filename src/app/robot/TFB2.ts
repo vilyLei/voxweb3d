@@ -5,34 +5,19 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as MathConstT from "../../vox/math/MathConst";
-import * as Vector3T from "../../vox/math/Vector3D";
-import * as DisplayEntityContainerT from "../../vox/entity/DisplayEntityContainer";
-import * as RendererSceneT from "../../vox/scene/RendererScene";
-import * as DirectXZModuleT from "../../voxmotion/primitive/DirectXZModule";
-import * as IPartStoreT from "../../app/robot/IPartStore";
-import * as TwoLegRbtModuleT from "../../app/robot/base/TwoLegRbtModule";
-import * as TwoArmRbtModuleT from "../../app/robot/base/TwoArmRbtModule";
-import * as CampT from "../../app/robot/camp/Camp";
-import * as IRoleCampT from "../../app/robot/IRoleCamp";
-import * as IAttackDstT from "../../app/robot/attack/IAttackDst";
-import * as FireCtrlRadarT from "../../app/robot/attack/FireCtrlRadar";
-import * as ITerrainT from "../../app/robot/scene/ITerrain";
-
-import MathConst = MathConstT.vox.math.MathConst;
-import Vector3D = Vector3T.vox.math.Vector3D;
-import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import DirectXZModule = DirectXZModuleT.voxmotion.primitive.DirectXZModule;
-import IPartStore = IPartStoreT.app.robot.IPartStore;
-import TwoLegRbtModule = TwoLegRbtModuleT.app.robot.base.TwoLegRbtModule;
-import TwoArmRbtModule = TwoArmRbtModuleT.app.robot.base.TwoArmRbtModule;
-import CampType = CampT.app.robot.camp.CampType;
-
-import IRoleCamp = IRoleCampT.app.robot.IRoleCamp;
-import IAttackDst = IAttackDstT.app.robot.attack.IAttackDst;
-import FireCtrlRadar = FireCtrlRadarT.app.robot.attack.FireCtrlRadar;
-import ITerrain = ITerrainT.app.robot.scene.ITerrain;
+import MathConst from "../../vox/math/MathConst";
+import Vector3D from "../../vox/math/Vector3D";
+import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
+import RendererScene from "../../vox/scene/RendererScene";
+import DirectXZModule from "../../voxmotion/primitive/DirectXZModule";
+import IPartStore from "../../app/robot/IPartStore";
+import TwoLegRbtModule from "../../app/robot/base/TwoLegRbtModule";
+import TwoArmRbtModule from "../../app/robot/base/TwoArmRbtModule";
+import {CampType} from "../../app/robot/camp/Camp";
+import IRoleCamp from "../../app/robot/IRoleCamp";
+import IAttackDst from "../../app/robot/attack/IAttackDst";
+import FireCtrlRadar from "../../app/robot/attack/FireCtrlRadar";
+import ITerrain from "../../app/robot/scene/ITerrain";
 
 export namespace app
 {

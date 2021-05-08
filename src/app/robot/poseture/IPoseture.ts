@@ -5,32 +5,18 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as MathConstT from "../../../vox/math/MathConst";
-import * as Vector3T from "../../../vox/math/Vector3D";
-import * as DisplayEntityContainerT from "../../../vox/entity/DisplayEntityContainer";
+import Vector3D from "../../../vox/math/Vector3D";
+import DisplayEntityContainer from "../../../vox/entity/DisplayEntityContainer";
 
-import MathConst = MathConstT.vox.math.MathConst;
-import Vector3D = Vector3T.vox.math.Vector3D;
-import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
-
-export namespace app
+export default interface IPoseture
 {
-    export namespace robot
-    {
-        export namespace poseture
-        {
-            export interface IPoseture
-            {
-                getContainer():DisplayEntityContainer;
-                setXYZ(px:number,py:number,pz:number):void;
-                setPosition(position:Vector3D):void;
-                getPosition(position:Vector3D):void;
-                resetPose():void;
-                resetNextOriginPose():void;
-                run(moveEnabled:boolean):void;
-                isResetFinish():boolean;
-                runToReset():void;
-            }
-        }
-    }
+    getContainer():DisplayEntityContainer;
+    setXYZ(px:number,py:number,pz:number):void;
+    setPosition(position:Vector3D):void;
+    getPosition(position:Vector3D):void;
+    resetPose():void;
+    resetNextOriginPose():void;
+    run(moveEnabled:boolean):void;
+    isResetFinish():boolean;
+    runToReset():void;
 }

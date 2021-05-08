@@ -4,11 +4,11 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import * as Vector3DT from "../../../vox/math/Vector3D";
-//import * as Color4T from "../../../vox/material/Color4";
+import Vector3D from "../../../vox/math/Vector3D";
+//import Color4 from "../../../vox/material/Color4";
 import * as MotionFogUnitT from "../../../advancedDemo/depthLight/scene/MotionFogUnit";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
+//import Vector3D = Vector3DT.vox.math.Vector3D;
 import MotionFogUnit = MotionFogUnitT.advancedDemo.depthLight.scene.MotionFogUnit;
 
 export namespace advancedDemo

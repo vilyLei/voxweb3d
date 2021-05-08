@@ -4,15 +4,10 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-export namespace vox
+class RenderMaskBitfield
 {
-    export namespace render
-    {
-        export class RenderMaskBitfield
-        {
-			static readonly COLOR_BUFFER_BIT:number = 131;
-			static readonly DEPTH_BUFFER_BIT:number = 132;
-			static readonly STENCIL_BUFFER_BIT:number = 133;
-		}
-	}
+	static readonly COLOR_BUFFER_BIT:number = 131;
+	static readonly DEPTH_BUFFER_BIT:number = 132;
+	static readonly STENCIL_BUFFER_BIT:number = 133;
 }
+export default RenderMaskBitfield;

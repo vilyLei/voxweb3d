@@ -5,21 +5,21 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3T from "../../vox/math/Vector3D";
-import * as DisplayEntityT from "../../vox/entity/DisplayEntity";
-import * as DisplayEntityContainerT from "../../vox/entity/DisplayEntityContainer";
-import * as RendererSceneT from "../../vox/scene/RendererScene";
-import * as DirectXZModuleT from "../../voxmotion/primitive/DirectXZModule";
+import Vector3D from "../../vox/math/Vector3D";
+import DisplayEntity from "../../vox/entity/DisplayEntity";
+import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
+import RendererScene from "../../vox/scene/RendererScene";
+import DirectXZModule from "../../voxmotion/primitive/DirectXZModule";
 import * as CoreFrameAxisT from "../../app/robot/CoreFrameAxis";
-import * as IPartStoreT from "../../app/robot/IPartStore";
+import IPartStore from "../../app/robot/IPartStore";
 
-import Vector3D = Vector3T.vox.math.Vector3D;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import DirectXZModule = DirectXZModuleT.voxmotion.primitive.DirectXZModule;
+//import Vector3D = Vector3T.vox.math.Vector3D;
+//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+//import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
+//import RendererScene = RendererSceneT.vox.scene.RendererScene;
+//import DirectXZModule = DirectXZModuleT.voxmotion.primitive.DirectXZModule;
 import CoreFrameAxis = CoreFrameAxisT.app.robot.CoreFrameAxis;
-import IPartStore = IPartStoreT.app.robot.IPartStore;
+//import IPartStore = IPartStoreT.app.robot.IPartStore;
 
 export namespace app
 {

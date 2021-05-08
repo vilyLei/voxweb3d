@@ -5,22 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3T from "../../../vox/math/Vector3D";
-import * as CampT from "../../../app/robot/camp/Camp";
-
-import Vector3D = Vector3T.vox.math.Vector3D;
-import CampType = CampT.app.robot.camp.CampType;
-
-export namespace app
+import Vector3D from "../../../vox/math/Vector3D";
+export default interface ITerrain
 {
-    export namespace robot
-    {
-        export namespace scene
-        {
-            export interface ITerrain
-            {
-                getFreePos(fixPos:Vector3D):Vector3D;
-            }
-        }
-    }
+    getFreePos(fixPos:Vector3D):Vector3D;
 }

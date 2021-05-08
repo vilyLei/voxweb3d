@@ -1,61 +1,58 @@
 
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RandomRangeT from "../vox/utils/RandomRange";
-import * as RenderConstT from "../vox/render/RenderConst";
-import * as RendererStateT from "../vox/render/RendererState";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TexResLoaderT from "../vox/texture/TexResLoader";
-import * as IRendererSpaceT from "../vox/scene/IRendererSpace";
-import * as RendererSceneT from "../vox/scene/RendererScene";
-import * as RaySelectorT from "../vox/scene/RaySelector";
-import * as MouseEventT from "../vox/event/MouseEvent";
-import * as Stage3DT from "../vox/display/Stage3D";
-import * as H5FontSysT from "../vox/text/H5FontSys";
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import { CubeRandomRange } from "../vox/utils/RandomRange";
+import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
+import RendererState from "../vox/render/RendererState";
+import RendererParam from "../vox/scene/RendererParam";
+import TextureProxy from "../vox/texture/TextureProxy";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import IRendererSpace from "../vox/scene/IRendererSpace";
+import RendererScene from "../vox/scene/RendererScene";
+import RaySelector from "../vox/scene/RaySelector";
+import MouseEvent from "../vox/event/MouseEvent";
+import Stage3D from "../vox/display/Stage3D";
+import H5FontSystem from "../vox/text/H5FontSys";
 
-import * as DisplayEntityT from "../vox/entity/DisplayEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as BoundsEntityT from "../vox/entity/BoundsEntity";
-import * as BillboardFrameT from "../vox/entity/BillboardFrame";
-import * as BoxFrame3DT from "../vox/entity/BoxFrame3D";
-import * as ProfileInstanceT from "../voxprofile/entity/ProfileInstance";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as RaySelectedNodeT from '../vox/scene/RaySelectedNode';
-import * as IEvt3DDispatcherT from "../vox/event/IEvtDispatcher";
-import * as MouseEvt3DDispatcherT from "../vox/event/MouseEvt3DDispatcher";
+import DisplayEntity from "../vox/entity/DisplayEntity";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import BoundsEntity from "../vox/entity/BoundsEntity";
+import BillboardFrame from "../vox/entity/BillboardFrame";
+import BoxFrame3D from "../vox/entity/BoxFrame3D";
+import ProfileInstance from "../voxprofile/entity/ProfileInstance";
+import CameraTrack from "../vox/view/CameraTrack";
+import RaySelectedNode from '../vox/scene/RaySelectedNode';
+import IEvtDispatcher from "../vox/event/IEvtDispatcher";
+import MouseEvt3DDispatcher from "../vox/event/MouseEvt3DDispatcher";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import CubeRandomRange = RandomRangeT.vox.utils.CubeRandomRange;
-import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RendererState = RendererStateT.vox.render.RendererState;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import RaySelector = RaySelectorT.vox.scene.RaySelector;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import Stage3D = Stage3DT.vox.display.Stage3D;
-import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
+//import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
+//import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
+//import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
+//import RendererState = RendererStateT.vox.render.RendererState;
+//import RendererParam = RendererParamT.vox.scene.RendererParam;
+//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+//import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
+//import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
+//import RendererScene = RendererSceneT.vox.scene.RendererScene;
+//import RaySelector = RaySelectorT.vox.scene.RaySelector;
+//import MouseEvent = MouseEventT.vox.event.MouseEvent;
+//import Stage3D = Stage3DT.vox.display.Stage3D;
+//import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
 
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import BoundsEntity = BoundsEntityT.vox.entity.BoundsEntity;
-import BillboardFrame = BillboardFrameT.vox.entity.BillboardFrame;
-import BoxFrame3D = BoxFrame3DT.vox.entity.BoxFrame3D;
-import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import RaySelectedNode = RaySelectedNodeT.vox.scene.RaySelectedNode;
-import IEvtDispatcher = IEvt3DDispatcherT.vox.event.IEvtDispatcher;
-import MouseEvt3DDispatcher = MouseEvt3DDispatcherT.vox.event.MouseEvt3DDispatcher;
+//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
+//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
+//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
+//import BoundsEntity = BoundsEntityT.vox.entity.BoundsEntity;
+//import BillboardFrame = BillboardFrameT.vox.entity.BillboardFrame;
+//import BoxFrame3D = BoxFrame3DT.vox.entity.BoxFrame3D;
+//import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
+//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
+//import RaySelectedNode = RaySelectedNodeT.vox.scene.RaySelectedNode;
+//import IEvtDispatcher = IEvt3DDispatcherT.vox.event.IEvtDispatcher;
+//import MouseEvt3DDispatcher = MouseEvt3DDispatcherT.vox.event.MouseEvt3DDispatcher;
 
 
 export namespace demo
@@ -113,7 +110,7 @@ export namespace demo
         
         private m_rscene:RendererScene = null;
         private m_rspace:IRendererSpace = null;
-        private m_texLoader:TexResLoader = new TexResLoader();
+        private m_texLoader:ImageTextureLoader;
         private m_camTrack:CameraTrack = null;
         
         private m_profileInstance:ProfileInstance = new ProfileInstance();
@@ -127,12 +124,12 @@ export namespace demo
             {
                 H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/assets/guangyun_H_0007.png");
-                let tex3:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_01.jpg");
-                let tex4:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/flare_core_02.jpg");
-                let tex5:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/a_02_c.jpg");
+                let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/assets/guangyun_H_0007.png");
+                let tex3:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_01.jpg");
+                let tex4:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_02.jpg");
+                let tex5:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/a_02_c.jpg");
                 tex0.mipmapEnabled = true;
                 tex1.mipmapEnabled = true;
                 tex2.mipmapEnabled = true;
@@ -243,7 +240,7 @@ export namespace demo
                         box.setXYZ(150.0,0.0,0.0);
                     }
                     box.mouseEnabled = true;
-                    //box.spaceCullMask |= SpaceCullingMasK.POV;
+                    //box.spaceCullMask |= SpaceCullingMask.POV;
                     this.m_rscene.addEntity(box);
                     box.getPosition(pv);
 

@@ -1,26 +1,26 @@
 
-import * as Vector3DT from "../../../vox/math/Vector3D";
-import * as TextureProxyT from "../../../vox/texture/TextureProxy";
-import * as RendererSceneT from "../../../vox/scene/RendererScene";
+import Vector3D from "../../../vox/math/Vector3D";
+import TextureProxy from "../../../vox/texture/TextureProxy";
+import RendererScene from "../../../vox/scene/RendererScene";
 
-import * as Box3DEntityT from "../../../vox/entity/Box3DEntity";
-import * as BoxFrame3DT from "../../../vox/entity/BoxFrame3D";
-import * as QuadHolePOVT from "../../../voxocc/occlusion/QuadHolePOV";
+import Box3DEntity from "../../../vox/entity/Box3DEntity";
+import BoxFrame3D from "../../../vox/entity/BoxFrame3D";
+import QuadHolePOV from "../../../voxocc/occlusion/QuadHolePOV";
 import * as OccCullingMaskT from "../../../voxocc/occlusion/OccCullingMask";
-import * as IRendererSpaceT from "../../../vox/scene/IRendererSpace";
-import * as SpaceCullingorT from "../../../vox/scene/SpaceCullingor";
+import IRendererSpace from "../../../vox/scene/IRendererSpace";
+import SpaceCullingor from "../../../vox/scene/SpaceCullingor";
 import * as BoxFarFacePOVT from "../../../voxocc/occlusion/BoxFarFacePOV";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
+//import Vector3D = Vector3DT.vox.math.Vector3D;
+//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+//import RendererScene = RendererSceneT.vox.scene.RendererScene;
 
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import BoxFrame3D = BoxFrame3DT.vox.entity.BoxFrame3D;
-import QuadHolePOV = QuadHolePOVT.voxocc.occlusion.QuadHolePOV;
-import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
-import SpaceCullingMasK = OccCullingMaskT.voxocc.occlusion.OccCullingMask;
-import SpaceCullingor = SpaceCullingorT.vox.scene.SpaceCullingor;
+//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
+//import BoxFrame3D = BoxFrame3DT.vox.entity.BoxFrame3D;
+//import QuadHolePOV = QuadHolePOVT.voxocc.occlusion.QuadHolePOV;
+//import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
+import SpaceCullingMask = OccCullingMaskT.voxocc.occlusion.OccCullingMask;
+//import SpaceCullingor = SpaceCullingorT.vox.scene.SpaceCullingor;
 import BoxFarFacePOV = BoxFarFacePOVT.voxocc.occlusion.BoxFarFacePOV;
 
 export namespace voxocc
@@ -76,10 +76,10 @@ export namespace voxocc
                             box.setMesh(srcBox.getMesh());
                             box.initialize(minV, sizeV, texList);
                             box.setPosition(pV);
-                            box.spaceCullMask |= SpaceCullingMasK.POV;
+                            box.spaceCullMask |= SpaceCullingMask.POV;
                             if(cullingor != null)
                             {
-                                box.spaceCullMask |= SpaceCullingMasK.INNER_POV_PASS;
+                                box.spaceCullMask |= SpaceCullingMask.INNER_POV_PASS;
                             }
                             if(pr > -1 && pc > -1)
                             {
@@ -195,10 +195,10 @@ export namespace voxocc
                             box.setMesh(srcBox.getMesh());
                             box.initialize(minV, sizeV, texList);
                             box.setPosition(pV);
-                            box.spaceCullMask |= SpaceCullingMasK.POV;
+                            box.spaceCullMask |= SpaceCullingMask.POV;
                             if(cullingor != null)
                             {
-                                box.spaceCullMask |= SpaceCullingMasK.INNER_POV_PASS;
+                                box.spaceCullMask |= SpaceCullingMask.INNER_POV_PASS;
                             }
                             if(pr > -1 && pc > -1)
                             {

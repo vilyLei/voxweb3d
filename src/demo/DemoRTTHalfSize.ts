@@ -1,45 +1,27 @@
 
-import * as DivLogT from "../vox/utils/DivLog";
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as CameraBaseT from "../vox/view/CameraBase"
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
-import * as RendererInstanceT from "../vox/scene/RendererInstance";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
-import * as FrameBufferTypeT from "../vox/render/FrameBufferType";
-import * as RendererStateT from "../vox/render/RendererState";
+import DivLog from "../vox/utils/DivLog";
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import CameraBase from "../vox/view/CameraBase"
+import RendererParam from "../vox/scene/RendererParam";
+import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import RendererInstance from "../vox/scene/RendererInstance";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
+import FrameBufferType from "../vox/render/FrameBufferType";
+import RendererState from "../vox/render/RendererState";
 
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureStoreT from "../vox/texture/TextureStore";
-import * as TextureConstT from "../vox/texture/TextureConst";
-import * as TexResLoaderT from "../vox/texture/TexResLoader";
-import * as ScreenFixedPlaneMaterialT from "../vox/material/mcase/ScreenFixedPlaneMaterial";
-import * as CameraTrackT from "../vox/view/CameraTrack";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import TextureProxy from "../vox/texture/TextureProxy";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import CameraBase = CameraBaseT.vox.view.CameraBase;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-import FrameBufferType = FrameBufferTypeT.vox.render.FrameBufferType;
-import RendererState = RendererStateT.vox.render.RendererState;
+import {TextureConst} from "../vox/texture/TextureConst";
+import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
+import ScreenFixedPlaneMaterial from "../vox/material/mcase/ScreenFixedPlaneMaterial";
+import CameraTrack from "../vox/view/CameraTrack";
 
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-import ScreenFixedPlaneMaterial = ScreenFixedPlaneMaterialT.vox.material.mcase.ScreenFixedPlaneMaterial;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import DivLog = DivLogT.vox.utils.DivLog;
+import TextureBlock from "../vox/texture/TextureBlock";
+
 
 export namespace demo
 {
@@ -48,9 +30,10 @@ export namespace demo
         constructor()
         {
         }
+        private m_texBlock:TextureBlock;
         private m_renderer:RendererInstance = null;
         private m_rcontext:RendererInstanceContext = null;
-        private m_texLoader:TexResLoader = new TexResLoader();
+        private m_texLoader:ImageTextureLoader;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_camera:CameraBase = null;
@@ -64,12 +47,6 @@ export namespace demo
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
                 DivLog.SetDebugEnabled(true);
-                let tex0:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/assets/broken_iron.jpg");
-                tex0.mipmapEnabled = true;
-                tex0.setWrap(TextureConst.WRAP_REPEAT);
-                tex1.setWrap(TextureConst.WRAP_REPEAT);
-                tex1.mipmapEnabled = true;
 
                 let rparam:RendererParam = new RendererParam();
                 rparam.maxWebGLVersion = 1;
@@ -81,6 +58,16 @@ export namespace demo
                 this.m_renderer.appendProcess();
                 this.m_rcontext = this.m_renderer.getRendererContext();
                 this.m_camera = this.m_rcontext.getCamera();
+
+                this.m_texBlock = new TextureBlock();
+                this.m_texBlock.setRenderer( this.m_renderer );
+                this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
+                let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
+                tex0.mipmapEnabled = true;
+                tex0.setWrap(TextureConst.WRAP_REPEAT);
+                tex1.setWrap(TextureConst.WRAP_REPEAT);
+                tex1.mipmapEnabled = true;
 
                 this.m_viewSize.x = this.m_rcontext.getStage3D().stageWidth;
                 this.m_viewSize.y = this.m_rcontext.getStage3D().stageHeight;
@@ -107,16 +94,16 @@ export namespace demo
                 let material:ScreenFixedPlaneMaterial = new ScreenFixedPlaneMaterial();
                 let rttPlane:Plane3DEntity = new Plane3DEntity();
                 rttPlane.setMaterial(material);
-                rttPlane.initializeXOY(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(0)]);
+                rttPlane.initializeXOY(-1.0,-1.0,2.0,2.0,[this.m_texBlock.getRTTTextureAt(0)]);
                 this.m_renderer.addEntity(rttPlane, 1);
 
                 material = new ScreenFixedPlaneMaterial();
                 rttPlane = new Plane3DEntity();
                 rttPlane.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
                 rttPlane.setMaterial(material);
-                //rttPlane.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(1)]);
-                TextureStore.CreateRTTTextureAt(1,256,256);
-                rttPlane.initializeXOY(-1.0,-1.0,1.0,1.0,[TextureStore.GetRTTTextureAt(1)]);
+                //rttPlane.initialize(-1.0,-1.0,2.0,2.0,[this.m_texBlock.getRTTTextureAt(1)]);
+                this.m_texBlock.createRTTTextureAt(1,256,256);
+                rttPlane.initializeXOY(-1.0,-1.0,1.0,1.0,[this.m_texBlock.getRTTTextureAt(1)]);
                 this.m_renderer.addEntity(rttPlane, 2);
 
                 this.m_rcontext.createFBOAt(0,FrameBufferType.FRAMEBUFFER,this.m_viewSize.x,this.m_viewSize.y,true,false);
@@ -142,7 +129,7 @@ export namespace demo
             pcontext.setClearRGBColor3f(0.1, 0.0, 0.1);
             pcontext.synFBOSizeWithViewport();
             pcontext.bindFBOAt(0,FrameBufferType.FRAMEBUFFER);
-            pcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(0), true, false, 0);
+            pcontext.setRenderToTexture(this.m_texBlock.getRTTTextureAt(0), true, false, 0);
             pcontext.useFBO(true, true, false);
             rinstance.runAt(0);
             //              //pcontext.asynFBOSizeWithViewport();
@@ -151,7 +138,7 @@ export namespace demo
             {
                 pcontext.setFBOSizeFactorWithViewPort(0.5);
                 pcontext.bindFBOAt(1,FrameBufferType.FRAMEBUFFER);
-                pcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(1), true, false, 0);
+                pcontext.setRenderToTexture(this.m_texBlock.getRTTTextureAt(1), true, false, 0);
                 pcontext.useFBO(true, true, false);
                 rinstance.runAt(0);
             }
@@ -161,7 +148,7 @@ export namespace demo
                 pcontext.lockViewport();
                 pcontext.setFBOSizeFactorWithViewPort(0.5);
                 pcontext.bindFBOAt(1,FrameBufferType.FRAMEBUFFER);
-                pcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(1), true, false, 0);
+                pcontext.setRenderToTexture(this.m_texBlock.getRTTTextureAt(1), true, false, 0);
                 pcontext.useFBO(true, true, false);
                 rinstance.runAt(0);
                 pcontext.unlockViewport();
@@ -195,7 +182,7 @@ export namespace demo
             // --------------------------------------------- rtt begin
             pcontext.setClearRGBColor3f(0.1, 0.0, 0.1);
             pcontext.synFBOSizeWithViewport();
-            pcontext.setRenderToTexture(TextureStore.GetRTTTextureAt(0), true, false, 0);
+            pcontext.setRenderToTexture(this.m_texBlock.getRTTTextureAt(0), true, false, 0);
             pcontext.useFBO(true, true, false);
             // to be rendering in framebuffer
             rinstance.runAt(0);

@@ -5,11 +5,11 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as ShaderCodeBufferT from "../../../vox/material/ShaderCodeBuffer";
-import * as BillboardMaterialT from "../../../vox/material/mcase/BillboardMaterial";
+import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
+import BillboardMaterial from "../../../vox/material/mcase/BillboardMaterial";
 
-import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
-import BillboardMaterial = BillboardMaterialT.vox.material.mcase.BillboardMaterial;
+//import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
+//import BillboardMaterial = BillboardMaterialT.vox.material.mcase.BillboardMaterial;
 
 export namespace vox
 {

@@ -4,18 +4,11 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-
-export namespace vox
+export default class VtxBufID
 {
-    export namespace mesh
+    private static __s_uid:number = 0;
+    static CreateNewID():number
     {
-        export class VtxBufID
-        {
-            private static __s_uid:number = 0;
-            static CreateNewID():number
-            {
-                return VtxBufID.__s_uid++;
-            }
-        }
+        return VtxBufID.__s_uid++;
     }
 }

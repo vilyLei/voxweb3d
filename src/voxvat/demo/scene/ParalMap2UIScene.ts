@@ -1,35 +1,21 @@
 
-import * as Vector3DT from "../../../vox/math/Vector3D";
-import * as EventBaseT from "../../../vox/event/EventBase";
-import * as MouseEventT from "../../../vox/event/MouseEvent";
-import * as Stage3DT from "../../../vox/display/Stage3D";
-import * as RendererStateT from "../../../vox/render/RendererState";
-import * as RendererSceneT from "../../../vox/scene/RendererScene";
-import * as RendererSubSceneT from "../../../vox/scene/RendererSubScene";
+import Vector3D from "../../../vox/math/Vector3D";
+import EventBase from "../../../vox/event/EventBase";
+import MouseEvent from "../../../vox/event/MouseEvent";
+import Stage3D from "../../../vox/display/Stage3D";
+import RendererState from "../../../vox/render/RendererState";
+import RendererScene from "../../../vox/scene/RendererScene";
+import RendererSubScene from "../../../vox/scene/RendererSubScene";
 
-import * as ColorButtonT from "../../../orthoui/button/BoundsButton";
-import * as ColorRectImgButtonT from "../../../orthoui/button/ColorRectImgButton";
-//import * as TextInfoLabelT from "../../../orthoui/label/TextInfoLabel"
-import * as CameraSwingBoundsControllerT from "../../../orthoui/ctrl/CameraSwingBoundsController";
-import * as CameraMoveControllerT from "../../../voxeditor/control/CameraMoveController";
+import BoundsButton from "../../../orthoui/button/BoundsButton";
+import ColorRectImgButton from "../../../orthoui/button/ColorRectImgButton";
+import CameraSwingBoundsController from "../../../orthoui/ctrl/CameraSwingBoundsController";
+import CameraMoveController from "../../../voxeditor/control/CameraMoveController";
 import * as AxisDragObjectT from "./AxisDragObject";
 import * as TexManagerT from "./TexManager";
 import * as MaterialManagerT from "./MaterialManager";
 import * as MaterialUISceneT from "./MaterialUIScene";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import EventBase = EventBaseT.vox.event.EventBase;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import Stage3D = Stage3DT.vox.display.Stage3D;
-import RendererState = RendererStateT.vox.render.RendererState;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import RendererSubScene = RendererSubSceneT.vox.scene.RendererSubScene;
-
-import BoundsButton = ColorButtonT.orthoui.button.BoundsButton;
-import ColorRectImgButton = ColorRectImgButtonT.orthoui.button.ColorRectImgButton;
-//import TextInfoLabel = TextInfoLabelT.orthoui.label.TextInfoLabel;
-import CameraSwingBoundsController = CameraSwingBoundsControllerT.orthoui.ctrl.CameraSwingBoundsController;
-import CameraMoveController = CameraMoveControllerT.voxeditor.control.CameraMoveController;
 import AxisDragObject = AxisDragObjectT.voxvat.demo.scene.AxisDragObject;
 import TexManager = TexManagerT.voxvat.demo.scene.TexManager;
 import MaterialManager = MaterialManagerT.voxvat.demo.scene.MaterialManager;

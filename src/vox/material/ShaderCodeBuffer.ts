@@ -5,59 +5,55 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IRenderTextureT from '../../vox/render/IRenderTexture';
-import * as ShaderCodeBuilderT from "../../vox/material/code/ShaderCodeBuilder";
+import IRenderTexture from '../../vox/render/IRenderTexture';
+import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
+//
+//import IRenderTexture = IRenderTextureT.vox.render.IRenderTexture;
+//import ShaderCodeBuilder = ShaderCodeBuilderT.vox.material.code.ShaderCodeBuilder;
 
-import IRenderTexture = IRenderTextureT.vox.render.IRenderTexture;
-import ShaderCodeBuilder = ShaderCodeBuilderT.vox.material.code.ShaderCodeBuilder;
-
-export namespace vox
+class ShaderCodeBuffer
 {
-    export namespace material
+    private static ___s_csBuf:ShaderCodeBuffer = null;
+    protected static s_coder:ShaderCodeBuilder = new ShaderCodeBuilder();
+    constructor()
     {
-        export class ShaderCodeBuffer
+    }
+    private m_texList:IRenderTexture[] = null;
+    private m_texEnabled:boolean = true;
+    initialize(texEnabled:boolean):void
+    {
+        if(ShaderCodeBuffer.___s_csBuf != null)
         {
-            private static ___s_csBuf:ShaderCodeBuffer = null;
-            protected static s_coder:ShaderCodeBuilder = new ShaderCodeBuilder();
-            constructor()
+            if(ShaderCodeBuffer.___s_csBuf != this)
             {
+                ShaderCodeBuffer.___s_csBuf.initialize(texEnabled);
             }
-            private m_texList:IRenderTexture[] = null;
-            private m_texEnabled:boolean = true;
-            initialize(texEnabled:boolean):void
-            {
-                if(ShaderCodeBuffer.___s_csBuf != null)
-                {
-                    if(ShaderCodeBuffer.___s_csBuf != this)
-                    {
-                        ShaderCodeBuffer.___s_csBuf.initialize(texEnabled);
-                    }
-                }
-                this.m_texEnabled = texEnabled;
-            }
-            isTexEanbled():boolean
-            {
-                return this.m_texEnabled;
-            }
-            setIRenderTextureList(texList:IRenderTexture[]):void
-            {
-                this.m_texList = texList;
-            }
-            getIRenderTextureList():IRenderTexture[]
-            {
-                return this.m_texList;
-            }
-            buildShader():void
-            {
-            }
-            getFragShaderCode():string
-            {
-                if(ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getFragShaderCode();
-                //
-                let codeStr:string = "";
-                if(this.m_texEnabled)
-                {
-                    codeStr = 
+        }
+        this.m_texEnabled = texEnabled;
+    }
+    isTexEanbled():boolean
+    {
+        return this.m_texEnabled;
+    }
+    setIRenderTextureList(texList:IRenderTexture[]):void
+    {
+        this.m_texList = texList;
+    }
+    getIRenderTextureList():IRenderTexture[]
+    {
+        return this.m_texList;
+    }
+    buildShader():void
+    {
+    }
+    getFragShaderCode():string
+    {
+        if(ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getFragShaderCode();
+        //
+        let codeStr:string = "";
+        if(this.m_texEnabled)
+        {
+            codeStr = 
 `#version 300 es
 precision mediump float;
 uniform sampler2D u_sampler0;
@@ -68,10 +64,10 @@ void main(){
     FragColor = u_color * texture(u_sampler0, v_uvs);
 }
 `;
-                }
-                else
-                {
-                    codeStr = 
+        }
+        else
+        {
+            codeStr = 
 `#version 300 es
 precision mediump float;
 uniform vec4 u_color;
@@ -81,17 +77,17 @@ void main(){
 }
 `;
 
-                }
-                return codeStr;
-            }
-            getVtxShaderCode():string
-            {
-                if(ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getVtxShaderCode();
-                //
-                let codeStr:string = "";
-                if(this.m_texEnabled)
-                {
-                    codeStr =
+        }
+        return codeStr;
+    }
+    getVtxShaderCode():string
+    {
+        if(ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getVtxShaderCode();
+        //
+        let codeStr:string = "";
+        if(this.m_texEnabled)
+        {
+            codeStr =
 `#version 300 es
 precision mediump float;
 layout(location = 0) in vec3 a_vs;
@@ -105,9 +101,9 @@ void main(){
     v_uvs = a_uvs;
 }
 `;
-                }
-                else
-                {
+        }
+        else
+        {
                    
 codeStr =
 `#version 300 es
@@ -120,26 +116,25 @@ void main(){
     gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs,1.0);
 }
 `;
-                }
-                return codeStr;
-            }
-            getUniqueShaderName():string
-            {
-                if(ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getUniqueShaderName();
-                if(this.m_texEnabled)
-                {
-                    return "vox_default_shd_tex";
-                }                
-                return "vox_default_shd";
-            }
-            toString():string
-            {
-                return "[ShaderCodeBuffer()]";
-            }
-            static UseShaderBuffer(buf:ShaderCodeBuffer):void
-            {
-                ShaderCodeBuffer.___s_csBuf = buf;
-            }
         }
+        return codeStr;
+    }
+    getUniqueShaderName():string
+    {
+        if(ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getUniqueShaderName();
+        if(this.m_texEnabled)
+        {
+            return "vox_default_shd_tex";
+        }                
+        return "vox_default_shd";
+    }
+    toString():string
+    {
+        return "[ShaderCodeBuffer()]";
+    }
+    static UseShaderBuffer(buf:ShaderCodeBuffer):void
+    {
+        ShaderCodeBuffer.___s_csBuf = buf;
     }
 }
+export default ShaderCodeBuffer;

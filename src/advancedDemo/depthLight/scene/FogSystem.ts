@@ -4,42 +4,25 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import * as Vector3DT from "../../../vox/math/Vector3D";
-import * as Color4T from "../../../vox/material/Color4";
-import * as Stage3DT from "../../../vox/display/Stage3D";
-import * as RenderConstT from "../../../vox/render/RenderConst";
-import * as TextureConstT from "../../../vox/texture/TextureConst";
-import * as TextureProxyT from "../../../vox/texture/TextureProxy";
-import * as TexResLoaderT from "../../../vox/texture/TexResLoader";
+import Vector3D from "../../../vox/math/Vector3D";
+import Color4 from "../../../vox/material/Color4";
+import Stage3D from "../../../vox/display/Stage3D";
+import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../../../vox/render/RenderConst";
+import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../../../vox/texture/TextureConst";
+import TextureProxy from "../../../vox/texture/TextureProxy";
+import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
 
-import * as CameraBaseT from "../../../vox/view/CameraBase";
-import * as RendererStateT from "../../../vox/render/RendererState";
-import * as RendererInstanceContextT from "../../../vox/scene/RendererInstanceContext";
-import * as FBOInstanceT from "../../../vox/scene/FBOInstance";
-import * as RendererSceneT from "../../../vox/scene/RendererScene";
+import CameraBase from "../../../vox/view/CameraBase";
+import RendererState from "../../../vox/render/RendererState";
+import RendererInstanceContext from "../../../vox/scene/RendererInstanceContext";
+import FBOInstance from "../../../vox/scene/FBOInstance";
+import RendererScene from "../../../vox/scene/RendererScene";
 
-import * as Plane3DEntityT from "../../../vox/entity/Plane3DEntity";
+import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import * as FogPlaneGeomFactorMaterialT from "../../../advancedDemo/depthLight/material/FogPlaneGeomFactorMaterial";
 import * as FogPlaneConeFactorMaterialT from "../../../advancedDemo/depthLight/material/FogPlaneConeFactorMaterial";
 import * as FogUnitT from "../../../advancedDemo/depthLight/scene/FogUnit";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import Color4 = Color4T.vox.material.Color4;
-import Stage3D = Stage3DT.vox.display.Stage3D;
-import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-
-import CameraBase = CameraBaseT.vox.view.CameraBase;
-import RendererState = RendererStateT.vox.render.RendererState;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import FBOInstance = FBOInstanceT.vox.scene.FBOInstance;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 import FogPlaneGeomFactorMaterial = FogPlaneGeomFactorMaterialT.advancedDemo.depthLight.material.FogPlaneGeomFactorMaterial;
 import FogPlaneConeFactorMaterial = FogPlaneConeFactorMaterialT.advancedDemo.depthLight.material.FogPlaneConeFactorMaterial;
 import FogUnit = FogUnitT.advancedDemo.depthLight.scene.FogUnit;
@@ -63,7 +46,7 @@ export namespace advancedDemo
                 private m_factorFBO:FBOInstance = null;
                 private m_stage3D:Stage3D = null;
 
-                texLoader:TexResLoader = null;
+                texLoader:ImageTextureLoader = null;
                 factorPlaneIndex:number = 0;
                 maxRadius:number = 800.0;
                 factorPlane:Plane3DEntity;
@@ -71,7 +54,7 @@ export namespace advancedDemo
                 fogFactorM:FogPlaneConeFactorMaterial;
                 getImageTexByUrl(pns:string):TextureProxy
                 {
-                    let tex:TextureProxy = this.texLoader.getTexAndLoadImg("static/voxgl/assets/"+pns);
+                    let tex:TextureProxy = this.texLoader.getImageTexByUrl("static/voxgl/assets/"+pns);
                     tex.setWrap(TextureConst.WRAP_REPEAT);
                     tex.mipmapEnabled = true;
                     return tex;

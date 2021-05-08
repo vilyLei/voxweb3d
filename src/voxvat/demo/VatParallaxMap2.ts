@@ -5,39 +5,33 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as RendererDevieceT from "../../vox/render/RendererDeviece";
-import * as RendererParamT from "../../vox/scene/RendererParam";
-import * as MouseEvt3DControllerT from "../../vox/scene/MouseEvt3DController";
-import * as Stage3DT from "../../vox/display/Stage3D";
-import * as H5FontSysT from "../../vox/text/H5FontSys";
-import * as IRendererSpaceT from "../../vox/scene/IRendererSpace";
-import * as RenderConstT from "../../vox/render/RenderConst";
-import * as RendererStateT from "../../vox/render/RendererState";
-import * as RendererSceneT from "../../vox/scene/RendererScene";
-import * as RendererSubSceneT from "../../vox/scene/RendererSubScene";
-import * as ProfileInstanceT from "../../voxprofile/entity/ProfileInstance";
+import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererParam from "../../vox/scene/RendererParam";
+import MouseEvt3DController from "../../vox/scene/MouseEvt3DController";
+import Stage3D from "../../vox/display/Stage3D";
+import H5FontSystem from "../../vox/text/H5FontSys";
+import IRendererSpace from "../../vox/scene/IRendererSpace";
+import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../../vox/render/RenderConst";
+import RendererState from "../../vox/render/RendererState";
+import RendererScene from "../../vox/scene/RendererScene";
+import RendererSubScene from "../../vox/scene/RendererSubScene";
+import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
 
-import * as RaySelectorT from "../../vox/scene/RaySelector";
-import * as RayGpuSelectorT from "../../vox/scene/RayGpuSelector";
+import RaySelector from "../../vox/scene/RaySelector";
+import RayGpuSelector from "../../vox/scene/RayGpuSelector";
 import * as ParalMap2SceneT from "./scene/ParalMap2Scene";
 import * as ParalMap2UISceneT from "./scene/ParalMap2UIScene";
 
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import MouseEvt3DController = MouseEvt3DControllerT.vox.scene.MouseEvt3DController;
-import Stage3D = Stage3DT.vox.display.Stage3D;
-import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
-import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
-import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RendererState = RendererStateT.vox.render.RendererState;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import RendererSubScene = RendererSubSceneT.vox.scene.RendererSubScene;
-import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
+//import MouseEvt3DController = MouseEvt3DControllerT.vox.scene.MouseEvt3DController;
+//import Stage3D = Stage3DT.vox.display.Stage3D;
+//import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
 
-import RaySelector = RaySelectorT.vox.scene.RaySelector;
-import RayGpuSelector = RayGpuSelectorT.vox.scene.RayGpuSelector;
+//import RendererScene = RendererSceneT.vox.scene.RendererScene;
+//import RendererSubScene = RendererSubSceneT.vox.scene.RendererSubScene;
+//import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
+
+//import RaySelector = RaySelectorT.vox.scene.RaySelector;
+//import RayGpuSelector = RayGpuSelectorT.vox.scene.RayGpuSelector;
 import ParalMap2Scene = ParalMap2SceneT.voxvat.demo.scene.ParalMap2Scene;
 import ParalMap2UIScene = ParalMap2UISceneT.voxvat.demo.scene.ParalMap2UIScene;
 

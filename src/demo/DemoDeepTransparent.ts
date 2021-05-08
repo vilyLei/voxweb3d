@@ -1,45 +1,45 @@
 
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererStateT from "../vox/render/RendererState";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererParam from "../vox/scene/RendererParam";
+import RendererState from "../vox/render/RendererState";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
-import * as MaterialBaseT from "../vox/material/MaterialBase";
-import * as DisplayEntityT from "../vox/entity/DisplayEntity";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as Sphere3DEntityT from "../vox/entity/Sphere3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as DepthTextureProxyT from "../vox/texture/DepthTextureProxy";
-import * as TextureStoreT from "../vox/texture/TextureStore";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as MouseEventT from "../vox/event/MouseEvent";
-import * as DemoInstanceT from "./DemoInstance";
-import * as ProfileInstanceT from "../voxprofile/entity/ProfileInstance";
+import MaterialBase from "../vox/material/MaterialBase";
+import DisplayEntity from "../vox/entity/DisplayEntity";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
+import TextureProxy from "../vox/texture/TextureProxy";
+import DepthTextureProxy from "../vox/texture/DepthTextureProxy";
+////import * as TextureStoreT from "../vox/texture/TextureStore";
+import CameraTrack from "../vox/view/CameraTrack";
+import MouseEvent from "../vox/event/MouseEvent";
+import DemoInstance from "./DemoInstance";
+import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import * as DeepColorMaterialT from "../demo/deepTransparent/DeepColorMaterial";
 import * as PeelColorMaterialT from "../demo/deepTransparent/PeelColorMaterial";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererState = RendererStateT.vox.render.RendererState;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
+//import Vector3D = Vector3DT.vox.math.Vector3D;
+//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import RendererParam = RendererParamT.vox.scene.RendererParam;
+//import RendererState = RendererStateT.vox.render.RendererState;
+//import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import DepthTextureProxy = DepthTextureProxyT.vox.texture.DepthTextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import DemoInstance = DemoInstanceT.demo.DemoInstance;
-import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
+//import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
+//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
+//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
+//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
+//import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
+//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+//import DepthTextureProxy = DepthTextureProxyT.vox.texture.DepthTextureProxy;
+//import TextureStore = TextureStoreT.vox.texture.TextureStore;
+//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
+//import MouseEvent = MouseEventT.vox.event.MouseEvent;
+////import DemoInstance = DemoInstanceT.demo.DemoInstance;
+//import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
 import DeepColorMaterial = DeepColorMaterialT.demo.deepTransparent.DeepColorMaterial;
 import PeelColorMaterial = PeelColorMaterialT.demo.deepTransparent.PeelColorMaterial;
 
@@ -151,9 +151,9 @@ export namespace demo
             scrPlane.setMaterial(material);
             //scrPlane.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
             //scrPlane.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
-            //scrPlane.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(0)]);
+            //scrPlane.initialize(-1.0,-1.0,2.0,2.0,[this.m_rscene.textureBlock.getRTTTextureAt(0)]);
             scrPlane.initializeXOY(-1.0,-1.0,2.0,2.0,[this.m_rscene.textureBlock.getRTTTextureAt(1), this.m_depTex1]);
-            //scrPlane.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(0), this.m_depTex0]);
+            //scrPlane.initialize(-1.0,-1.0,2.0,2.0,[this.m_rscene.textureBlock.getRTTTextureAt(0), this.m_depTex0]);
             this.m_rscene.addEntity(scrPlane, 1);
 
             console.log("------------------------------------------------------------------");
@@ -198,7 +198,7 @@ export namespace demo
             let depIndex1:number = 0;
             let colorIndex:number = 1;
             this.m_peelM0.setPeelEanbled(false);
-            this.m_peelM0.setTextureAt(1,TextureStore.GetDepthTextureAt(depIndex0));
+            this.m_peelM0.setTextureAt(1,this.m_rscene.textureBlock.getDepthTextureAt(depIndex0));
 
             if(this.m_peelEntity1 != null)this.m_peelEntity1.updateMaterialToGpu(this.m_rscene.getRenderProxy());
             if(this.m_peelEntity2 != null)this.m_peelEntity2.updateMaterialToGpu(this.m_rscene.getRenderProxy());

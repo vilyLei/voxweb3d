@@ -5,29 +5,24 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as IRenderResourceT from '../../vox/render/IRenderResource';
-import IRenderResource = IRenderResourceT.vox.render.IRenderResource;
-export namespace vox
+import IRenderResource from '../../vox/render/IRenderResource';
+
+/**
+ * the renderer runtime texture resource management implements
+ */
+export interface IRenderTexResource extends IRenderResource
 {
-    export namespace render
-    {
-        /**
-         * the renderer runtime texture resource management implements
-         */
-        export interface IRenderTexResource extends IRenderResource
-        {
-            /**
-             * unlocked value will determine whether to lock
-             */
-            unlocked:boolean;
-            /**
-             * @returns get renderer runtime texture rexource total number
-             */
-            getTextureResTotal():number;
-            /**
-             * @returns get renderer runtime texture rexource reference total number
-             */
-            getAttachTotal():number;
-        }
-    }
+    /**
+     * unlocked value will determine whether to lock
+     */
+    unlocked:boolean;
+    /**
+     * @returns get renderer runtime texture rexource total number
+     */
+    getTextureResTotal():number;
+    /**
+     * @returns get renderer runtime texture rexource reference total number
+     */
+    getAttachTotal():number;
 }
+export default IRenderTexResource;

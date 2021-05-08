@@ -4,16 +4,10 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-
-export namespace vox
+class FrameBufferType
 {
-    export namespace render
-    {
-        export class FrameBufferType
-        {
-			static FRAMEBUFFER:number = 71;
-			static DRAW_FRAMEBUFFER:number = 72;
-			static READ_FRAMEBUFFER:number = 73;
-		}
-	}
+	static FRAMEBUFFER:number = 71;
+	static DRAW_FRAMEBUFFER:number = 72;
+	static READ_FRAMEBUFFER:number = 73;
 }
+export default FrameBufferType;

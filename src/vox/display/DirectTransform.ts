@@ -6,18 +6,13 @@
 /***************************************************************************/
 // 只是用transform 和一个 DirectTransform 一一对应, 只是记录transform的最终形态
 
-import * as MathConstT from "../../vox/math/MathConst";
-import * as Vector3T from "../../vox/math/Vector3D";
-import * as Matrix4T from "../../vox/math/Matrix4";
-import * as ROTransformT from "../../vox/display/ROTransform";
+import Vector3D from "../../vox/math/Vector3D";
+import Matrix4 from "../../vox/math/Matrix4";
+import Matrix4Pool from "../../vox/math/Matrix4Pool";
+import ROTransform from "../../vox/display/ROTransform";
 
-import MathConst = MathConstT.vox.math.MathConst;
-import Vector3D = Vector3T.vox.math.Vector3D;
-import Matrix4 = Matrix4T.vox.math.Matrix4;
-import Matrix4Pool = Matrix4T.vox.math.Matrix4Pool;
-import ROTransform = ROTransformT.vox.display.ROTransform;
+//import ROTransform = ROTransformT.vox.display.ROTransform;
 
-//DirectTransform
 export namespace vox
 {
     export namespace display

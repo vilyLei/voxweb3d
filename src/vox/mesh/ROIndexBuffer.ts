@@ -5,10 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
-//  import * as RenderProxyT from "../../vox/render/RenderProxy";
-//  import * as VtxBufConstT from "../../vox/mesh/VtxBufConst";
-//  import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-//  import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
+//  import RenderProxy from "../../vox/render/RenderProxy";
+//  import VtxBufConst from "../../vox/mesh/VtxBufConst";
+//  //import RenderProxy = RenderProxyT.vox.render.RenderProxy;
+//  //import VtxBufConst = VtxBufConstT.vox.mesh.VtxBufConst;
 
 export namespace vox
 {

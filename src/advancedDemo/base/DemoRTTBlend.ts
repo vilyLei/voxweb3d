@@ -1,51 +1,26 @@
 
-import * as Vector3DT from "../../vox/math/Vector3D";
-import * as RendererDevieceT from "../../vox/render/RendererDeviece";
-import * as Color4T from "../../vox/material/Color4";
-import * as RenderConstT from "../../vox/render/RenderConst";
-import * as RendererStateT from "../../vox/render/RendererState";
-import * as RendererParamT from "../../vox/scene/RendererParam";
-import * as TextureProxyT from "../../vox/texture/TextureProxy";
-import * as TextureStoreT from "../../vox/texture/TextureStore";
-import * as TexResLoaderT from "../../vox/texture/TexResLoader";
-import * as RendererInstanceContextT from "../../vox/scene/RendererInstanceContext";
-import * as RendererSceneT from "../../vox/scene/RendererScene";
-import * as MouseEventT from "../../vox/event/MouseEvent";
-import * as H5FontSysT from "../../vox/text/H5FontSys";
+import Vector3D from "../../vox/math/Vector3D";
+import RendererDeviece from "../../vox/render/RendererDeviece";
+import Color4 from "../../vox/material/Color4";
+import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../../vox/render/RenderConst";
+import RendererState from "../../vox/render/RendererState";
+import RendererParam from "../../vox/scene/RendererParam";
+import TextureProxy from "../../vox/texture/TextureProxy";
+import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
+import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
+import RendererScene from "../../vox/scene/RendererScene";
+import MouseEvent from "../../vox/event/MouseEvent";
+import H5FontSystem from "../../vox/text/H5FontSys";
 
-import * as Box3DEntityT from "../../vox/entity/Box3DEntity";
-import * as Sphere3DEntityT from "../../vox/entity/Sphere3DEntity";
-import * as Plane3DEntityT from "../../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../../vox/entity/Axis3DEntity";
-import * as Billboard3DEntityT from "../../vox/entity/Billboard3DEntity";
-import * as ScreenAlignPlaneEntityT from "../../vox/entity/ScreenAlignPlaneEntity";
-import * as ProfileInstanceT from "../../voxprofile/entity/ProfileInstance";
-import * as CameraTrackT from "../../vox/view/CameraTrack";
+import Box3DEntity from "../../vox/entity/Box3DEntity";
+import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
+import Plane3DEntity from "../../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../../vox/entity/Axis3DEntity";
+import Billboard3DEntity from "../../vox/entity/Billboard3DEntity";
+import ScreenAlignPlaneEntity from "../../vox/entity/ScreenAlignPlaneEntity";
+import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
+import CameraTrack from "../../vox/view/CameraTrack";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import Color4 = Color4T.vox.material.Color4;
-import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RendererState = RendererStateT.vox.render.RendererState;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
-
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
-import ScreenAlignPlaneEntity = ScreenAlignPlaneEntityT.vox.entity.ScreenAlignPlaneEntity;
-import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 
 export namespace advancedDemo
 {
@@ -53,11 +28,9 @@ export namespace advancedDemo
     {
         export class DemoRTTBlend
         {
-            constructor()
-            {
-            }
+            constructor(){}
             private m_rc:RendererScene = null;
-            private m_texLoader:TexResLoader = new TexResLoader();
+            private m_texLoader:ImageTextureLoader;
             private m_camTrack:CameraTrack = null;
             private m_rct:RendererInstanceContext = null;
             private m_profileInstance:ProfileInstance = null;
@@ -65,7 +38,7 @@ export namespace advancedDemo
             private m_bill1:Billboard3DEntity = null;
             getImageTexByUrl(pns:string):TextureProxy
             {
-                let tex:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/voxgl/assets/"+pns);
+                let tex:TextureProxy = this.m_texLoader.getImageTexByUrl("static/voxgl/assets/"+pns);
                 tex.mipmapEnabled = true;
                 return tex;
             }
@@ -125,21 +98,21 @@ export namespace advancedDemo
 
                     //  let size:number = 700.0;
                     //  let rttTexBox:Box3DEntity = new Box3DEntity();
-                    //  rttTexBox.initialize(new Vector3D(-size,-size,-size),new Vector3D(size,size,size),[TextureStore.GetRTTTextureAt(3)]);
+                    //  rttTexBox.initialize(new Vector3D(-size,-size,-size),new Vector3D(size,size,size),[this.m_rc.textureBlock.getRTTTextureAt(3)]);
                     //  this.m_rc.addEntity(rttTexBox,3);
                     let scrP:ScreenAlignPlaneEntity = new ScreenAlignPlaneEntity();
                     //scrP.setRenderState(RendererState.BACK_NORMAL_ALWAYS_STATE);
-                    scrP.setRenderStateByName("ADD02");
-                    scrP.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(3)]);
+                    scrP.setRenderStateByName("ADD02");//this.m_rc.textureBlock.g
+                    scrP.initialize(-1.0,-1.0,2.0,2.0,[this.m_rc.textureBlock.getRTTTextureAt(3)]);
                     this.m_rc.addEntity(scrP,3);
 
                     let dstP0:ScreenAlignPlaneEntity = new ScreenAlignPlaneEntity();
                     dstP0.setRenderStateByName("ADD02");
-                    dstP0.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(0)]);
+                    dstP0.initialize(-1.0,-1.0,2.0,2.0,[this.m_rc.textureBlock.getRTTTextureAt(0)]);
                     this.m_rc.addEntity(dstP0,4);
                     let dstP1:ScreenAlignPlaneEntity = new ScreenAlignPlaneEntity();
                     dstP1.setRenderStateByName("ADD02");
-                    dstP1.initialize(-1.0,-1.0,2.0,2.0,[TextureStore.GetRTTTextureAt(1)]);
+                    dstP1.initialize(-1.0,-1.0,2.0,2.0,[this.m_rc.textureBlock.getRTTTextureAt(1)]);
                     this.m_rc.addEntity(dstP1,4);
 
                     this.m_profileInstance = new ProfileInstance();
@@ -165,7 +138,7 @@ export namespace advancedDemo
                 this.m_rc.runAt(0);
                 this.m_rc.runAt(1);
                 
-                //  this.m_rct.setRenderToTexture(TextureStore.GetRTTTextureAt(3), true, false, 0);
+                //  this.m_rct.setRenderToTexture(this.m_rc.textureBlock.getRTTTextureAt(3), true, false, 0);
                 //  this.m_rct.useFBO(true, true, false);
                 //  this.m_rc.runAt(0);
                 //  this.m_rc.runAt(1);
@@ -175,10 +148,10 @@ export namespace advancedDemo
                 this.m_bill1.setXYZ(300.0,0.0,0.0);
                 this.m_bill1.update();
 
-                //  this.m_rct.setRenderToTexture(TextureStore.GetRTTTextureAt(0), true, false, 0);
+                //  this.m_rct.setRenderToTexture(this.m_rc.textureBlock.getRTTTextureAt(0), true, false, 0);
                 //  this.m_rct.useFBO(true, true, false);
                 //  this.m_rc.runAt(0);
-                //  this.m_rct.setRenderToTexture(TextureStore.GetRTTTextureAt(1), true, false, 0);
+                //  this.m_rct.setRenderToTexture(this.m_rc.textureBlock.getRTTTextureAt(1), true, false, 0);
                 //  this.m_rct.useFBO(true, true, false);
                 //  this.m_rc.runAt(1);
                 ///*
@@ -189,14 +162,14 @@ export namespace advancedDemo
                     this.m_bill0.update();
                     this.m_bill1.setXYZ(300.0,0.0,i * 60.0);
                     this.m_bill1.update();
-                    this.m_rct.setRenderToTexture(TextureStore.GetRTTTextureAt(0), true, false, 0);
+                    this.m_rct.setRenderToTexture(this.m_rc.textureBlock.getRTTTextureAt(0), true, false, 0);
                     this.m_rct.useFBO(true, true, false);
                     this.m_rc.runAt(0);
-                    this.m_rct.setRenderToTexture(TextureStore.GetRTTTextureAt(1), true, false, 0);
+                    this.m_rct.setRenderToTexture(this.m_rc.textureBlock.getRTTTextureAt(1), true, false, 0);
                     this.m_rct.useFBO(true, true, false);
                     this.m_rc.runAt(1);
                     
-                    this.m_rct.setRenderToTexture(TextureStore.GetRTTTextureAt(3), true, false, 0);
+                    this.m_rct.setRenderToTexture(this.m_rc.textureBlock.getRTTTextureAt(3), true, false, 0);
                     this.m_rct.useFBO(i < 1, false, false);
                     this.m_rc.runAt(4);
                     this.m_rc.runAt(5);

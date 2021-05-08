@@ -4,18 +4,12 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-
-export namespace vox
+interface Float32Data
 {
-    export namespace base
-    {
-		/////////////////////////////////////////////////////////////////////////////////////////////////
-		export interface Float32Data
-		{
-			getCapacity():number;
-			getLocalFS32():Float32Array;
-			getFS32():Float32Array;
-			getFSIndex():number;
-		}		
-	}
+	getCapacity():number;
+	getLocalFS32():Float32Array;
+	getFS32():Float32Array;
+	getFSIndex():number;
 }
+
+export default Float32Data;

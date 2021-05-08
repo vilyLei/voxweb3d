@@ -5,19 +5,19 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as Vector3DT from "../../../vox/math/Vector3D";
-import * as RendererDevieceT from "../../../vox/render/RendererDeviece";
-import * as ShaderCodeBufferT from "../../../vox/material/ShaderCodeBuffer";
-import * as ShaderUniformDataT from "../../../vox/material/ShaderUniformData";
-import * as Color4T from "../../../vox/material/Color4";
-import * as MaterialBaseT from "../../../vox/material/MaterialBase";
+import Vector3D from "../../../vox/math/Vector3D";
+import RendererDeviece from "../../../vox/render/RendererDeviece";
+import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
+import ShaderUniformData from "../../../vox/material/ShaderUniformData";
+import Color4 from "../../../vox/material/Color4";
+import MaterialBase from "../../../vox/material/MaterialBase";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
-import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
-import Color4 = Color4T.vox.material.Color4;
-import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
+//import Vector3D = Vector3DT.vox.math.Vector3D;
+//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
+//import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
+//import Color4 = Color4T.vox.material.Color4;
+//import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
 
 
 export namespace advancedDemo

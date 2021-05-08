@@ -5,53 +5,47 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as RCExtensionT from "../../vox/render/RCExtension";
-import * as RAdapterContextT from "../../vox/render/RAdapterContext";
+import RCExtension from "../../vox/render/RCExtension";
+import RAdapterContext from "../../vox/render/RAdapterContext";
 
-import RCExtension = RCExtensionT.vox.render.RCExtension;
-import RAdapterContext = RAdapterContextT.vox.render.RAdapterContext;
-export namespace vox
+//import RCExtension = RCExtensionT.vox.render.RCExtension;
+//import RAdapterContext = RAdapterContextT.vox.render.RAdapterContext;
+class RenderFBOProxy
 {
-    export namespace render
+    private static m_rc:any = null;
+    private static m_webGLVer:number = 2;
+    public static readonly COLOR_ATTACHMENT0:number = 0x0;
+    static SetRenderer(pr:RAdapterContext,):void
     {
-        export class RenderFBOProxy
+        RenderFBOProxy.m_rc = pr.getRC();
+        RenderFBOProxy.m_webGLVer = pr.getWebGLVersion();
+        let thisT:any = RenderFBOProxy;
+        if(RenderFBOProxy.m_webGLVer == 1)
         {
-            private static m_rc:any = null;
-            private static m_webGLVer:number = 2;
-            public static readonly COLOR_ATTACHMENT0:number = 0x0;
-
-            static SetRenderer(pr:RAdapterContext,):void
+            if (RCExtension.WEBGL_draw_buffers != null)
             {
-                RenderFBOProxy.m_rc = pr.getRC();
-                RenderFBOProxy.m_webGLVer = pr.getWebGLVersion();
-                let thisT:any = RenderFBOProxy;
-                if(RenderFBOProxy.m_webGLVer == 1)
-                {
-                    if (RCExtension.WEBGL_draw_buffers != null)
-                    {
-                        thisT.COLOR_ATTACHMENT0 = RCExtension.WEBGL_draw_buffers.COLOR_ATTACHMENT0_WEBGL;
-                    }
-                    else
-                    {
-                        thisT.COLOR_ATTACHMENT0 = RenderFBOProxy.m_rc.COLOR_ATTACHMENT0;
-                    }
-                }
-                else
-                {
-                    thisT.COLOR_ATTACHMENT0 = RenderFBOProxy.m_rc.COLOR_ATTACHMENT0;
-                }
+                thisT.COLOR_ATTACHMENT0 = RCExtension.WEBGL_draw_buffers.COLOR_ATTACHMENT0_WEBGL;
             }
-            static DrawBuffers(attachments:number[]):void
+            else
             {
-                if(RenderFBOProxy.m_webGLVer == 2)
-                {
-                    RenderFBOProxy.m_rc.drawBuffers(attachments);
-                }
-                else if (RCExtension.WEBGL_draw_buffers != null)
-                {
-                    RCExtension.WEBGL_draw_buffers.drawBuffersWEBGL(attachments);
-                }
+                thisT.COLOR_ATTACHMENT0 = RenderFBOProxy.m_rc.COLOR_ATTACHMENT0;
             }
+        }
+        else
+        {
+            thisT.COLOR_ATTACHMENT0 = RenderFBOProxy.m_rc.COLOR_ATTACHMENT0;
+        }
+    }
+    static DrawBuffers(attachments:number[]):void
+    {
+        if(RenderFBOProxy.m_webGLVer == 2)
+        {
+            RenderFBOProxy.m_rc.drawBuffers(attachments);
+        }
+        else if (RCExtension.WEBGL_draw_buffers != null)
+        {
+            RCExtension.WEBGL_draw_buffers.drawBuffersWEBGL(attachments);
         }
     }
 }
+export default RenderFBOProxy;

@@ -4,16 +4,9 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-
-export namespace vox
+export default interface IRefCounter
 {
-    export namespace utils
-    {
-        export interface IRefCounter
-        {
-            __$attachThis():void;
-            __$detachThis():void;
-            getAttachCount():number;
-        }
-    }
+    __$attachThis():void;
+    __$detachThis():void;
+    getAttachCount():number;
 }

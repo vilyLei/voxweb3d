@@ -1,18 +1,18 @@
 
-import * as Vector3DT from "../../../vox/math/Vector3D";
-import * as Color4T from "../../../vox/material/Color4";
-import * as RenderConstT from "../../../vox/render/RenderConst";
-import * as RendererStateT from "../../../vox/render/RendererState";
-import * as TextureConstT from "../../../vox/texture/TextureConst";
-import * as TextureProxyT from "../../../vox/texture/TextureProxy";
-import * as TexResLoaderT from "../../../vox/texture/TexResLoader";
-import * as RendererInstanceContextT from "../../../vox/scene/RendererInstanceContext";
-import * as FBOInstanceT from "../../../vox/scene/FBOInstance";
-import * as RendererSceneT from "../../../vox/scene/RendererScene";
-import * as MouseEventT from "../../../vox/event/MouseEvent";
+import Vector3D from "../../../vox/math/Vector3D";
+import Color4 from "../../../vox/material/Color4";
+import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../../../vox/render/RenderConst";
+import RendererState from "../../../vox/render/RendererState";
+import {TextureConst} from "../../../vox/texture/TextureConst";
+import TextureProxy from "../../../vox/texture/TextureProxy";
+import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
+import RendererInstanceContext from "../../../vox/scene/RendererInstanceContext";
+import FBOInstance from "../../../vox/scene/FBOInstance";
+import RendererScene from "../../../vox/scene/RendererScene";
+import MouseEvent from "../../../vox/event/MouseEvent";
 
-import * as Plane3DEntityT from "../../../vox/entity/Plane3DEntity";
-import * as ProfileInstanceT from "../../../voxprofile/entity/ProfileInstance";
+import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
+import ProfileInstance from "../../../voxprofile/entity/ProfileInstance";
 //import * as FogSphShowMaterialT from "../../../advancedDemo/depthLight/material/FogSphShowMaterial";
 import * as FogSphShow2MaterialT from "../../../advancedDemo/depthLight/material/FogSphShow2Material";
 import * as BoxSpaceMotionerT from "../../../voxmotion/primitive/BoxSpaceMotioner";
@@ -22,22 +22,6 @@ import * as FogSystemT from "../../../advancedDemo/depthLight/scene/FogSystem";
 //import * as FogSphSystemT from "../../../advancedDemo/depthLight/scene/FogSphSystem";
 import * as BillParticleT from "../../../advancedDemo/depthLight/scene/BillParticle";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import Color4 = Color4T.vox.material.Color4;
-import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RendererState = RendererStateT.vox.render.RendererState;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import FBOInstance = FBOInstanceT.vox.scene.FBOInstance;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
 import FogSphShow2Material = FogSphShow2MaterialT.advancedDemo.depthLight.material.FogSphShow2Material;
 import BoxSpaceMotioner = BoxSpaceMotionerT.voxmotion.primitive.BoxSpaceMotioner;
 import FogFBOMana = FogFBOManaT.advancedDemo.depthLight.scene.FogFBOMana;
@@ -60,7 +44,7 @@ export namespace advancedDemo
 
             private m_rc:RendererScene = null;
             private m_rct:RendererInstanceContext = null;
-            private m_texLoader:TexResLoader = new TexResLoader();
+            private m_texLoader:ImageTextureLoader;
             private m_profileInstance:ProfileInstance = null;
             private m_fogSys:FogSystem = null;
             //private m_fogSys:FogSphSystem = null;
@@ -68,7 +52,7 @@ export namespace advancedDemo
             private m_billGroup:BillParticleGroup = null;
             getImageTexByUrl(pns:string):TextureProxy
             {
-                let tex:TextureProxy = this.m_texLoader.getTexAndLoadImg("static/voxgl/assets/"+pns);
+                let tex:TextureProxy = this.m_texLoader.getImageTexByUrl("static/voxgl/assets/"+pns);
                 tex.setWrap(TextureConst.WRAP_REPEAT);
                 tex.mipmapEnabled = true;
                 return tex;

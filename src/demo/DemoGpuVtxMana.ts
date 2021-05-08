@@ -1,34 +1,16 @@
 
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as QuaternionT from "../vox/math/Quaternion";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererInstanceContextT from "../vox/scene/RendererInstanceContext";
-import * as RendererInstanceT from "../vox/scene/RendererInstance";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
-import * as MouseEventT from "../vox/event/MouseEvent";
-import * as Stage3DT from "../vox/display/Stage3D";
-import * as TextureStoreT from "../vox/texture/TextureStore";
-import * as MeshResourceT from "../vox/mesh/MeshResource";
-
-import * as CameraTrackT from "../vox/view/CameraTrack";
-//import * as TexManaT from "./base/TexMana";
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererParam from "../vox/scene/RendererParam";
+import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
+import RendererInstance from "../vox/scene/RendererInstance";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
+import MouseEvent from "../vox/event/MouseEvent";
+import Stage3D from "../vox/display/Stage3D";
+import MeshResource from "../vox/mesh/MeshResource";
+import CameraTrack from "../vox/view/CameraTrack";
 import * as DemoSceneT from "./vtxMana/DemoScene";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import Quaternion = QuaternionT.vox.math.Quaternion;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import Stage3D = Stage3DT.vox.display.Stage3D;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import MeshResource = MeshResourceT.vox.mesh.MeshResource;
-
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-//import TexMana = TexManaT.demo.base.TexMana;
 import DemoScene = DemoSceneT.demo.vtxMana.DemoScene;
 
 export namespace demo
@@ -42,7 +24,6 @@ export namespace demo
         private m_rcontext:RendererInstanceContext = null;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
-        //private m_texMana:TexMana = new TexMana();
         private m_scene:DemoScene = new DemoScene();
         initialize():void
         {
@@ -59,7 +40,6 @@ export namespace demo
                 this.m_renderer = new RendererInstance();
                 this.m_renderer.initialize(rparam);
                 this.m_rcontext = this.m_renderer.getRendererContext();
-                TextureStore.SetRenderer(this.m_renderer);
                 let stage3D:Stage3D = this.m_rcontext.getStage3D() as Stage3D;
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
                 this.m_camTrack = new CameraTrack();

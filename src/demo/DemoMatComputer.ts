@@ -1,40 +1,39 @@
 
-import * as Vector3DT from "../vox/math/Vector3D";
-import * as RendererDevieceT from "../vox/render/RendererDeviece";
-import * as RendererParamT from "../vox/scene/RendererParam";
-import * as RendererStateT from "../vox/render/RendererState";
-import * as RenderStatusDisplayT from "../vox/scene/RenderStatusDisplay";
+import Vector3D from "../vox/math/Vector3D";
+import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererParam from "../vox/scene/RendererParam";
+import RendererState from "../vox/render/RendererState";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
-import * as ScreenFixedAlignPlaneEntityT from "../vox/entity/ScreenFixedAlignPlaneEntity";
-import * as Plane3DEntityT from "../vox/entity/Plane3DEntity";
-import * as Axis3DEntityT from "../vox/entity/Axis3DEntity";
-import * as Box3DEntityT from "../vox/entity/Box3DEntity";
-import * as TextureProxyT from "../vox/texture/TextureProxy";
-import * as TextureStoreT from "../vox/texture/TextureStore";
-import * as CameraTrackT from "../vox/view/CameraTrack";
-import * as MouseEventT from "../vox/event/MouseEvent";
-import * as DemoInstanceT from "./DemoInstance";
-import * as ProfileInstanceT from "../voxprofile/entity/ProfileInstance";
-import * as ThreadSystemT from "../thread/ThreadSystem";
+import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import TextureProxy from "../vox/texture/TextureProxy";
+////import * as TextureStoreT from "../vox/texture/TextureStore";
+import CameraTrack from "../vox/view/CameraTrack";
+import MouseEvent from "../vox/event/MouseEvent";
+import DemoInstance from "./DemoInstance";
+import ProfileInstance from "../voxprofile/entity/ProfileInstance";
+import ThreadSystem from "../thread/ThreadSystem";
 import * as MatComputerTaskT from "../demo/thread/MatComputerTask";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-import RendererParam = RendererParamT.vox.scene.RendererParam;
-import RendererState = RendererStateT.vox.render.RendererState;
-import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
+//import Vector3D = Vector3DT.vox.math.Vector3D;
+//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import RendererParam = RendererParamT.vox.scene.RendererParam;
+//import RendererState = RendererStateT.vox.render.RendererState;
+//import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
 
-import ScreenFixedAlignPlaneEntity = ScreenFixedAlignPlaneEntityT.vox.entity.ScreenFixedAlignPlaneEntity;
-import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TextureStore = TextureStoreT.vox.texture.TextureStore;
-import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-import MouseEvent = MouseEventT.vox.event.MouseEvent;
-import DemoInstance = DemoInstanceT.demo.DemoInstance;
-import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
-import ThreadSystem = ThreadSystemT.thread.ThreadSystem;
+//import ScreenFixedAlignPlaneEntity = ScreenFixedAlignPlaneEntityT.vox.entity.ScreenFixedAlignPlaneEntity;
+//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
+//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
+//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
+//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
+//import TextureStore = TextureStoreT.vox.texture.TextureStore;
+//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
+//import MouseEvent = MouseEventT.vox.event.MouseEvent;
+////import DemoInstance = DemoInstanceT.demo.DemoInstance;
+//import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
 import MatComputerTask = MatComputerTaskT.demo.thread.MatComputerTask;
 
 

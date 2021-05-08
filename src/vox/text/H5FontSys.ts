@@ -5,18 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
-import * as TextureConstT from "../../vox/texture/TextureConst";
-import * as BytesTextureProxyT from "../../vox/texture/BytesTextureProxy";
-import * as RenderProxyT from "../../vox/render/RenderProxy";
+import {TextureConst} from "../../vox/texture/TextureConst";
+import BytesTextureProxy from "../../vox/texture/BytesTextureProxy";
+import RenderProxy from "../../vox/render/RenderProxy";
 
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import BytesTextureProxy = BytesTextureProxyT.vox.texture.BytesTextureProxy;
-import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-
-export namespace vox
-{
-    export namespace text
-    {
 class FontTexCharGrid
 {
   constructor()
@@ -257,7 +249,7 @@ export class FontTexDataBuilder
 	}
 }
 
-export class H5FontSystem
+class H5FontSystem
 {
   private constructor()
   {
@@ -496,5 +488,5 @@ export class H5FontSystem
     return H5FontSystem.s_ins;
   }
 }
-    }
-}
+
+export default H5FontSystem;

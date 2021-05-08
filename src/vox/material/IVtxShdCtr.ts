@@ -6,21 +6,14 @@
 /*                                                                         */
 /***************************************************************************/
 
-export namespace vox
+export default interface IVtxShdCtr
 {
-    export namespace material
-    {
-        export interface IVtxShdCtr
-        {
-            getLayoutBit():number;
-            getLocationsTotal():number;
-            getLocationTypeByIndex(index:number):number;
-            getLocationSizeByIndex(index:number):number;
-            
-            testVertexAttribPointerType(attribType:number):boolean;
-            vertexAttribPointerTypeFloat(attribType:number, stride:number, offset:number):void;
-            getVertexAttribByTpye(attribType:number):number;
-
-        }
-    }
+    getLayoutBit():number;
+    getLocationsTotal():number;
+    getLocationTypeByIndex(index:number):number;
+    getLocationSizeByIndex(index:number):number;
+    
+    testVertexAttribPointerType(attribType:number):boolean;
+    vertexAttribPointerTypeFloat(attribType:number, stride:number, offset:number):void;
+    getVertexAttribByTpye(attribType:number):number;
 }

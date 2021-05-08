@@ -1,32 +1,17 @@
 
-import * as Vector3DT from "../../../vox/math/Vector3D";
-import * as Color4T from "../../../vox/material/Color4";
-import * as RenderConstT from "../../../vox/render/RenderConst";
-import * as RendererStateT from "../../../vox/render/RendererState";
-import * as TextureConstT from "../../../vox/texture/TextureConst";
-import * as TextureProxyT from "../../../vox/texture/TextureProxy";
-import * as TexResLoaderT from "../../../vox/texture/TexResLoader";
-import * as RendererSceneT from "../../../vox/scene/RendererScene";
+import Vector3D from "../../../vox/math/Vector3D";
+import Color4 from "../../../vox/material/Color4";
+import RendererState from "../../../vox/render/RendererState";
+import {TextureConst} from "../../../vox/texture/TextureConst";
+import TextureProxy from "../../../vox/texture/TextureProxy";
+import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
+import RendererScene from "../../../vox/scene/RendererScene";
 
-import * as DisplayEntityT from "../../../vox/entity/DisplayEntity";
-import * as Box3DEntityT from "../../../vox/entity/Box3DEntity";
-import * as Sphere3DEntityT from "../../../vox/entity/Sphere3DEntity";
+import DisplayEntity from "../../../vox/entity/DisplayEntity";
+import Box3DEntity from "../../../vox/entity/Box3DEntity";
+import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
 import * as FogDepthUVMaterialT from "../../../advancedDemo/depthLight/material/FogDepthUVMaterial";
 
-import Vector3D = Vector3DT.vox.math.Vector3D;
-import Color4 = Color4T.vox.material.Color4;
-import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-import RendererState = RendererStateT.vox.render.RendererState;
-import TextureConst = TextureConstT.vox.texture.TextureConst;
-import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-import RendererScene = RendererSceneT.vox.scene.RendererScene;
-
-import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
 import FogDepthUVMaterial = FogDepthUVMaterialT.advancedDemo.depthLight.material.FogDepthUVMaterial;
 export namespace advancedDemo
 {
@@ -41,10 +26,10 @@ export namespace advancedDemo
             }
 
             private m_rc:RendererScene = null;
-            texLoader:TexResLoader = null;
+            texLoader:ImageTextureLoader = null;
             getImageTexByUrl(pns:string):TextureProxy
             {
-                let tex:TextureProxy = this.texLoader.getTexAndLoadImg("static/voxgl/assets/"+pns);
+                let tex:TextureProxy = this.texLoader.getImageTexByUrl("static/voxgl/assets/"+pns);
                 tex.setWrap(TextureConst.WRAP_REPEAT);
                 tex.mipmapEnabled = true;
                 return tex;
@@ -206,7 +191,6 @@ export namespace advancedDemo
             }
             run():void
             {
-
             }
         }
     }
