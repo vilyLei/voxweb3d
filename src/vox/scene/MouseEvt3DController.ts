@@ -197,9 +197,9 @@ export default class MouseEvt3DController implements IEvt3DController
                         this.m_evtbgDispather.dispatchEvt(this.m_mouseEvt);
                     }
                     //*/
-                    if(this.m_evtTotal > 0)
+                    for(let i:number = 0;i < this.m_evtTotal;i++)
                     {
-                        switch(this.m_mouseEvt.type)
+                        switch(this.m_evtTypes[i])
                         {
                             case MouseEvent.MOUSE_DOWN:
                                 this.m_stage.mouseBgDown();

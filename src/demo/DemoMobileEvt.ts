@@ -150,6 +150,7 @@ export namespace demo
         {
             //this.m_rscene.getStage3D().mouseMultiUp([{x:0,y:0},{x:1,y:1}]);
             console.log("mouseDown...");
+            //DivLog.ShowLog("mouseDown");
             //this.m_rscene.setClearRGBColor3f(Math.random(), 0, 0);
         }
         mouseUpListener(evt:any):void
