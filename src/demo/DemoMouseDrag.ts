@@ -22,7 +22,6 @@ import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import BoxFrame3D from "../vox/entity/BoxFrame3D";
-import AxisDragController from "../voxeditor/control/AxisDragController";
 import DragAxis from "../voxeditor/entity/DragAxis";
 import DragAxisQuad3D from "../voxeditor/entity/DragAxisQuad3D";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
@@ -144,39 +143,7 @@ export namespace demo
             }
         }
     }
-    export class AxisCtrlObj extends DispCtrObj
-    {
-        private m_controller:AxisDragController = new AxisDragController();
-        static AxisSelectedObj:DispCtrObj = null;
-        constructor()
-        {
-            super();
-        }
-        public updateDrag(rpv:Vector3D, rtv:Vector3D):void
-        {
-            if(DispCtrObj.Draging && this.dispEntity != null)
-            {
-                this.m_controller.updateDrag(rpv, rtv);
-                this.updateFrameBox();
-            }
-        }
-        mouseUpListener(evt:any):void
-        {
-            AxisCtrlObj.AxisSelectedObj = null;
-        }
-        mouseDownListener(evt:any):void
-        {
-            super.mouseDownListener(evt);
-            DispCtrObj.MeshDragAxis.deselect();
-            DispCtrObj.MeshDragAxis.setVisible(false);
-            AxisCtrlObj.AxisSelectedObj = this;
-            DispCtrObj.Draging = true;
-
-            this.m_controller.targetEntity = this.dispEntity;
-            this.m_controller.dragBegin(evt.lpos, evt.raypv,evt.raytv);            
-            
-        }
-    }
+    
     export class DemoMouseDrag
     {
         constructor(){}
@@ -225,20 +192,13 @@ export namespace demo
                 this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
 
                 
-                let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/guangyun_H_0007.png");
-                let tex3:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_01.jpg");
-                let tex4:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_02.jpg");
-                let tex5:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/a_02_c.jpg");
-                let tex6:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/metal_08.jpg");
-                tex0.mipmapEnabled = true;
-                tex1.mipmapEnabled = true;
-                tex2.mipmapEnabled = true;
-                tex3.mipmapEnabled = true;
-                tex4.mipmapEnabled = true;
-                tex5.mipmapEnabled = true;
-                tex6.mipmapEnabled = true;
+                let tex0:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/guangyun_H_0007.png");
+                let tex3:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/flare_core_01.jpg");
+                let tex4:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/flare_core_02.jpg");
+                let tex5:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/a_02_c.jpg");
+                let tex6:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/metal_08.jpg");
                 
                 RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
@@ -389,7 +349,6 @@ export namespace demo
         mouseUpListener(evt:any):void
         {
             console.log("stage mouse up, evt.phase: ",evt.phase);
-            AxisCtrlObj.AxisSelectedObj = null;
             DispCtrObj.MeshDragAxis.deselect();
             DispCtrObj.Draging = false;
         }
@@ -410,13 +369,7 @@ export namespace demo
         }
         private mouseCtrUpdate():void
         {
-            if(AxisCtrlObj.AxisSelectedObj != null)
-            {
-                this.m_rscene.getMouseXYWorldRay(this.m_rpv, this.m_rtv);
-                AxisCtrlObj.AxisSelectedObj.updateDrag(this.m_rpv, this.m_rtv);
-                DispCtrObj.Draging = true;
-            }
-            else if(DispCtrObj.MeshDragAxis.isSelected())
+            if(DispCtrObj.MeshDragAxis.isSelected())
             {
                 this.m_rscene.getMouseXYWorldRay(this.m_rpv, this.m_rtv);
                 DispCtrObj.MeshDragAxis.updateDrag(this.m_rpv, this.m_rtv);

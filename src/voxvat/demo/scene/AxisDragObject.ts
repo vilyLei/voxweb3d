@@ -171,7 +171,7 @@ export namespace demo
             }
             protected axisMouseDownListener(evt:any):void
             {
-                this.m_axisDragCtr.targetEntity = this.m_axisDisp;
+                this.m_axisDragCtr.bindTarget(this.m_axisDisp);//targetEntity = this.m_axisDisp;
                 this.m_axisDragCtr.dragBegin(evt.lpos, evt.raypv,evt.raytv);
                 this.m_mouseDownBoo = true;
 

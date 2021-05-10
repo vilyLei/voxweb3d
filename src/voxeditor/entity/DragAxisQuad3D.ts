@@ -47,7 +47,6 @@ export default class DragAxisQuad3D extends AxisQuad3DEntity
     }
     select():void
     {
-
     }
     deselect():void
     {
@@ -173,6 +172,7 @@ export default class DragAxisQuad3D extends AxisQuad3DEntity
 
         this.m_rpv.copyFrom(evt.raypv);
         this.m_rtv.copyFrom(evt.raytv);
+        
         this.calcClosePos(this.m_rpv, this.m_rtv);
         this.m_initV.copyFrom( this.m_outV );
         this.getPosition(this.m_initPos);        
