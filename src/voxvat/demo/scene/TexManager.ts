@@ -3,6 +3,7 @@
 import { TextureConst } from "../../../vox/texture/TextureConst";
 import TextureProxy from "../../../vox/texture/TextureProxy";
 import ImageTextureLoader from "../../../vox/texture/ImageTextureLoader";
+import TextureBlock from "../../../vox/texture/TextureBlock";
 
 export namespace voxvat
 {
@@ -13,6 +14,10 @@ export namespace voxvat
             export class TexManager
             {
                 static TexLoader:ImageTextureLoader = null;
+                static Initialize(texBlock:TextureBlock):void
+                {
+                    TexManager.TexLoader = new ImageTextureLoader(texBlock);
+                }
                 static CreateTexByUrl(purl:string):TextureProxy
                 {
                     let tex:TextureProxy = TexManager.TexLoader.getImageTexByUrl(purl);

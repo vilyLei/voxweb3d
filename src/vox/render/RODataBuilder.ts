@@ -307,7 +307,8 @@ export default class RODataBuilder implements IROMaterialUpdater,IROVertexBufUpd
             runit.ivsCount = disp.ivsCount;
             runit.insCount = disp.insCount;
             runit.visible = disp.visible;
-            runit.drawEnabled = disp.ivsCount > 0 && disp.visible;
+            //runit.drawEnabled = disp.ivsCount > 0 && disp.visible;
+            runit.setVisible( disp.visible );
             runit.drawMode = disp.drawMode;
             runit.renderState = disp.renderState;
             runit.rcolorMask = disp.rcolorMask;

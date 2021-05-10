@@ -9,8 +9,7 @@ import DivLog from "../../vox/utils/DivLog";
 import RendererDeviece from "../../vox/render/RendererDeviece";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 
-//import DivLog = DivLogT.vox.utils.DivLog;
- class ContextMouseEvtDispatcher
+class ContextMouseEvtDispatcher
 {
     private m_singleDown:boolean = false;
     dpr:number = 1.0;

@@ -399,7 +399,7 @@ export default class DisplayEntity implements IRenderEntity,IDisplayEntity,IEnti
      */
     isPolyhedral():boolean
     {
-        return this.m_mesh.isPolyhedral();
+        return this.m_mesh != null && this.m_mesh.isPolyhedral();
     }
     /**
      * @boundsHit       表示是否包围盒体已经和射线相交了
@@ -634,15 +634,18 @@ export default class DisplayEntity implements IRenderEntity,IDisplayEntity,IEnti
             this.update();
         }
     }
+    
+    private m_transStatus:number = ROTransform.UPDATE_TRANSFORM;
     update():void
-    {
-        if(this.m_transfrom.updateStatus != ROTransform.UPDATE_NONE)
+    {        
+        if(this.m_transfrom.updatedStatus > this.m_transStatus)this.m_transStatus = this.m_transfrom.updatedStatus;
+        if(this.m_transStatus != ROTransform.UPDATE_NONE)
         {
             if(this.m_globalBounds != null && this.m_mesh != null)
             {
                 this.m_transfrom.update();
                 // 这里的逻辑也有问题,需要再处理，为了支持摄像机等的拾取以及支持遮挡计算等空间管理计算
-                if(this.m_transfrom.updatedStatus > ROTransform.UPDATE_POSITION)
+                if(this.m_transStatus > ROTransform.UPDATE_POSITION)
                 {
                     let pminV:Vector3D = this.m_mesh.bounds.min;
                     let pmaxV:Vector3D = this.m_mesh.bounds.max;
@@ -654,7 +657,7 @@ export default class DisplayEntity implements IRenderEntity,IDisplayEntity,IEnti
                     pvs[12] = pminV.x;pvs[13] = pmaxV.y;pvs[14] = pminV.z;
                     pvs[15] = pmaxV.x;pvs[16] = pmaxV.y;pvs[17] = pminV.z;
                     pvs[18] = pminV.x;pvs[19] = pmaxV.y;pvs[20] = pmaxV.z;
-                    pvs[21] = pmaxV.x;pvs[22] = pmaxV.y;pvs[23] = pmaxV.z;            
+                    pvs[21] = pmaxV.x;pvs[22] = pmaxV.y;pvs[23] = pmaxV.z;
                     this.m_transfrom.getMatrix().transformVectors(pvs,24,DisplayEntity.s_boundsOutVS);
                     this.m_globalBounds.reset();
                     this.m_globalBounds.addXYZFloat32Arr(DisplayEntity.s_boundsOutVS);
@@ -678,6 +681,7 @@ export default class DisplayEntity implements IRenderEntity,IDisplayEntity,IEnti
             {
                 this.m_transfrom.update();
             }
+            this.m_transStatus = ROTransform.UPDATE_NONE;
         }
         if(this.m_display != null && this.m_display.__$$runit != null)
         {

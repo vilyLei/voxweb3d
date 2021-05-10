@@ -6,10 +6,10 @@ import RendererState from "../../../vox/render/RendererState";
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import MouseEvt3DDispatcher from "../../../vox/event/MouseEvt3DDispatcher";
-import * as AxisDragControllerT from "../../../voxeditor/control/AxisDragController";
+import AxisDragController from "../../../voxeditor/control/AxisDragController";
 import * as PlaneDragControllerT from "../../../voxeditor/control/PlaneDragController";
 import RendererScene from "../../../vox/scene/RendererScene";
-import * as DragAxisQuad3DT from "../../../voxeditor/entity/DragAxisQuad3D";
+import DragAxisQuad3D from "../../../voxeditor/entity/DragAxisQuad3D";
 
 //import Vector3D = Vector3DT.vox.math.Vector3D;
 //import MouseEvent = MouseEventT.vox.event.MouseEvent;
@@ -17,10 +17,10 @@ import * as DragAxisQuad3DT from "../../../voxeditor/entity/DragAxisQuad3D";
 //import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
 //import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
 //import MouseEvt3DDispatcher = MouseEvt3DDispatcherT.vox.event.MouseEvt3DDispatcher;
-import AxisDragController = AxisDragControllerT.voxeditor.control.AxisDragController;
+//import AxisDragController = AxisDragControllerT.voxeditor.control.AxisDragController;
 import PlaneDragController = PlaneDragControllerT.voxeditor.control.PlaneDragController;
 //import RendererScene = RendererSceneT.vox.scene.RendererScene;
-import DragAxisQuad3D = DragAxisQuad3DT.voxeditor.entity.DragAxisQuad3D;
+//import DragAxisQuad3D = DragAxisQuad3DT.voxeditor.entity.DragAxisQuad3D;
 
 export namespace voxvat
 {

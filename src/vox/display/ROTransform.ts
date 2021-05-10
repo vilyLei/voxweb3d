@@ -36,9 +36,8 @@ export default class ROTransform
     //private m_rotateBoo:boolean = false;
     // It is a flag that need inverted mat yes or no
     private m_invMatEnabled:boolean = false;
-    //public version:number = -1;
-    updatedStatus:number = 1;
-    updateStatus:number = 7;
+    updatedStatus:number = ROTransform.UPDATE_POSITION;
+    updateStatus:number = ROTransform.UPDATE_TRANSFORM;
     getUid():number{return this.m_uid;}
     getX():number{return this.m_fs32[12];}
     getY():number{return this.m_fs32[13];}
@@ -226,7 +225,7 @@ export default class ROTransform
     {
         if(matrix != null)
         {
-            this.updateStatus = 0;
+            this.updateStatus = ROTransform.UPDATE_NONE;
             this.m_invMatEnabled = true;
             this.m_omat.copyFrom(matrix);
         }
@@ -235,7 +234,7 @@ export default class ROTransform
     {
         if(matrix != null)
         {
-            this.updateStatus = 0;
+            this.updateStatus = ROTransform.UPDATE_NONE;
             this.m_invMatEnabled = true;
             if(this.m_localMat == this.m_omat)
             {
@@ -277,6 +276,8 @@ export default class ROTransform
         //trace("ROTransform::update(), updateStatus: "+updateStatus);
         if(this.updateStatus > 0)
         {
+            this.m_invMatEnabled = true;
+            this.updateStatus = this.updateStatus | this.updatedStatus;
             if((this.updateStatus & ROTransform.UPDATE_TRANSFORM) > 0)
             {
                 this.m_localMat.getLocalFS32().set(this.m_fs32,0);
@@ -307,7 +308,7 @@ export default class ROTransform
                 this.m_toParentMatFlag = true;
                 this.m_omat.append( this.m_parentMat );
             }
-            this.updateStatus = 0;
+            this.updateStatus = ROTransform.UPDATE_NONE;
         }
     }
     getMatrixFS32():Float32Array

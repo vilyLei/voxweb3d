@@ -22,16 +22,6 @@ import RayGpuSelector from "../../vox/scene/RayGpuSelector";
 import * as ParalMap2SceneT from "./scene/ParalMap2Scene";
 import * as ParalMap2UISceneT from "./scene/ParalMap2UIScene";
 
-//import MouseEvt3DController = MouseEvt3DControllerT.vox.scene.MouseEvt3DController;
-//import Stage3D = Stage3DT.vox.display.Stage3D;
-//import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
-
-//import RendererScene = RendererSceneT.vox.scene.RendererScene;
-//import RendererSubScene = RendererSubSceneT.vox.scene.RendererSubScene;
-//import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
-
-//import RaySelector = RaySelectorT.vox.scene.RaySelector;
-//import RayGpuSelector = RayGpuSelectorT.vox.scene.RayGpuSelector;
 import ParalMap2Scene = ParalMap2SceneT.voxvat.demo.scene.ParalMap2Scene;
 import ParalMap2UIScene = ParalMap2UISceneT.voxvat.demo.scene.ParalMap2UIScene;
 

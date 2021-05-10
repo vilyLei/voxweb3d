@@ -121,7 +121,7 @@ class RAdapterContext
             this.m_viewEle.createViewEle(pdocument,this.autoSyncRenderBufferAndWindowSize);
             this.m_div = div = this.m_viewEle.getDiv();
             let canvas:any = this.m_canvas = this.m_viewEle.getCanvas();
-            if(stage != null)this.m_mouseEvtDisplather.initialize(canvas,div,stage);
+            //if(stage != null)this.m_mouseEvtDisplather.initialize(canvas,div,stage);
             this.m_devicePixelRatio = window.devicePixelRatio;
             this.m_mouseEvtDisplather.dpr = this.m_devicePixelRatio;
             
@@ -194,6 +194,7 @@ class RAdapterContext
             device.MAX_VIEWPORT_HEIGHT = viewPortIMS[1];
             RCExtension.Initialize(this.m_webGLVersion,this.m_gl);
             RendererDeviece.Initialize([this.m_webGLVersion]);
+            if(stage != null)this.m_mouseEvtDisplather.initialize(canvas,div,stage);
             //  console.log("viewPortIMS: ",viewPortIMS);
             //  console.log("MAX_TEXTURE_SIZE: ",RendererDeviece.MAX_TEXTURE_SIZE);
             //  console.log("MAX_RENDERBUFFER_SIZE: ",RendererDeviece.MAX_RENDERBUFFER_SIZE);

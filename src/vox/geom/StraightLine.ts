@@ -89,19 +89,34 @@ export class StraightLine extends AbsGeomBase
 		AbsGeomBase.__tV2.normalize();
 		PlaneCalc.IntersectionSLV2(AbsGeomBase.__tV2, AbsGeomBase.__tV2.dot(lapv), lbpv, lbtv, outV);
 	}
-	// 计算两条异面直线距离最近的点,而且这个点落在空间直线b线上
+	/**
+	 * 计算两条异面直线距离最近的点,而且这个点落在空间直线b线上
+	 * @param lapv 直线 a 上的一个点
+	 * @param latv 直线 a 的朝向
+	 * @param lbpv 直线 b 上的一个点
+	 * @param lbtv 直线 b 的朝向
+	 * @param outV 落于直线 b 上的 最近点
+	 */
 	static CalcTwoSLCloseV2(lapv:Vector3D, latv:Vector3D, lbpv:Vector3D, lbtv:Vector3D, outV:Vector3D):void
 	{
 		Vector3D.Cross(latv, lbtv, AbsGeomBase.__tV1);
 		Vector3D.Cross(latv, AbsGeomBase.__tV1, AbsGeomBase.__tV2);
 		AbsGeomBase.__tV2.normalize();
 		PlaneCalc.IntersectionSLV2(AbsGeomBase.__tV2, AbsGeomBase.__tV2.dot(lapv), lbpv, lbtv, outV);
-		// 计算点在空间直线a上的投影
-		outV.subtractBy(lapv);
-		outV.w = outV.dot(latv);
-		outV.x = outV.w * latv.x + lapv.x;
-		outV.y = outV.w * latv.y + lapv.y;
-		outV.z = outV.w * latv.z + lapv.z;
+		//	// 计算点在空间直线a上的投影
+		//	outV.subtractBy(lapv);
+		//	outV.w = outV.dot(latv);
+		//	outV.x = outV.w * latv.x + lapv.x;
+		//	outV.y = outV.w * latv.y + lapv.y;
+		//	outV.z = outV.w * latv.z + lapv.z;
+		//	outV.w = 1.0;
+
+		// 计算点在空间直线b上的投影
+		outV.subtractBy(lbpv);
+		outV.w = outV.dot(lbtv);
+		outV.x = outV.w * lbtv.x + lbpv.x;
+		outV.y = outV.w * lbtv.y + lbpv.y;
+		outV.z = outV.w * lbtv.z + lbpv.z;
 		outV.w = 1.0;
 	}
 	// 计算两条异面直线距离最近的点,而且这个点落在这两个空间直线上

@@ -49,6 +49,7 @@ export default class MouseEvt3DController implements IEvt3DController
     private m_evtYList:Float32Array = new Float32Array(64);
     private m_evtWheelDeltaYs:Float32Array = new Float32Array(64);
     private m_evtTotal:number = 0;
+    private m_unlockMouseEvt:boolean = true;
     private mouseWheeelListener(evt:any):void
     {
         this.m_evtTypes[this.m_evtTotal] = (evt.type);
@@ -70,21 +71,27 @@ export default class MouseEvt3DController implements IEvt3DController
     }
     private mouseDownListener(evt:any):void
     {
-        this.m_evtTypes[this.m_evtTotal] = (evt.type);
-        this.m_evtXList[this.m_evtTotal] = (evt.mouseX);
-        this.m_evtYList[this.m_evtTotal] = (evt.mouseY);
-        this.m_evtWheelDeltaYs[this.m_evtTotal] = (0);
-        this.m_mouseEvt.type = evt.type;
-        this.m_evtTotal++;
+        if(this.m_unlockMouseEvt)
+        {
+            this.m_evtTypes[this.m_evtTotal] = (evt.type);
+            this.m_evtXList[this.m_evtTotal] = (evt.mouseX);
+            this.m_evtYList[this.m_evtTotal] = (evt.mouseY);
+            this.m_evtWheelDeltaYs[this.m_evtTotal] = (0);
+            this.m_mouseEvt.type = evt.type;
+            this.m_evtTotal++;
+        }
     }
     private mouseUpListener(evt:any):void
     {
-        this.m_evtTypes[this.m_evtTotal] = (evt.type);
-        this.m_evtXList[this.m_evtTotal] = (evt.mouseX);
-        this.m_evtYList[this.m_evtTotal] = (evt.mouseY);
-        this.m_evtWheelDeltaYs[this.m_evtTotal] = (0);
-        this.m_mouseEvt.type = evt.type;
-        this.m_evtTotal++;              
+        if(this.m_unlockMouseEvt)
+        {
+            this.m_evtTypes[this.m_evtTotal] = (evt.type);
+            this.m_evtXList[this.m_evtTotal] = (evt.mouseX);
+            this.m_evtYList[this.m_evtTotal] = (evt.mouseY);
+            this.m_evtWheelDeltaYs[this.m_evtTotal] = (0);
+            this.m_mouseEvt.type = evt.type;
+            this.m_evtTotal++;
+        }       
     }
     /**
      * @param       evtFlowPhase: 0(none phase),1(capture phase),2(bubble phase)
@@ -95,7 +102,8 @@ export default class MouseEvt3DController implements IEvt3DController
     {
         let flag:number = -1;
         if(this.m_unlockBoo)
-        {
+        {            
+            let i:number = 0;
             flag = this.m_evtTotal>0?0:-1;
             let dispatcher:IEvtDispatcher = null;
             let node:RaySelectedNode;
@@ -187,17 +195,7 @@ export default class MouseEvt3DController implements IEvt3DController
                         }
                         this.m_evtTarget = null;
                     }
-                    /*
-                    // 加入背景事件接收处理机制
-                    for(let i:number = 0;i < this.m_evtTotal;i++)
-                    {
-                        this.m_mouseEvt.type = this.m_evtTypes[i];
-                        this.m_mouseEvt.target = null;
-                        this.m_mouseEvt.phase = evtFlowPhase;
-                        this.m_evtbgDispather.dispatchEvt(this.m_mouseEvt);
-                    }
-                    //*/
-                    for(let i:number = 0;i < this.m_evtTotal;i++)
+                    for(i = 0; i < this.m_evtTotal; i++)
                     {
                         switch(this.m_evtTypes[i])
                         {
@@ -212,6 +210,24 @@ export default class MouseEvt3DController implements IEvt3DController
                         }
                     }
                 }
+                ///*
+                this.m_unlockMouseEvt = false;
+                for(i = 0;i < this.m_evtTotal;i++)
+                {
+                    switch(this.m_evtTypes[i])
+                    {
+                        case MouseEvent.MOUSE_DOWN:
+                            this.m_stage.mouseDown(2);
+                            break;
+                        case MouseEvent.MOUSE_UP:
+                            this.m_stage.mouseUp(2);
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                this.m_unlockMouseEvt = true;
+                //*/
             }
             if(flag == 0 && dispatcher != null)
             {
@@ -223,10 +239,6 @@ export default class MouseEvt3DController implements IEvt3DController
     }
     runEnd():void
     {
-        //  if(this.m_mouseEvt.type == 5001)
-        //  {
-        //      console.log("this.m_mouseEvt.type: "+this.m_mouseEvt.type);
-        //  }
         this.m_evtTotal = 0;
         this.m_mouseEvt.type = 0;
     }

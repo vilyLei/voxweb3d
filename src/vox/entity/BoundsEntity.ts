@@ -49,6 +49,10 @@ export default class BoundsEntity extends DisplayEntity
     {
         return "BoundsEntity(uid = "+this.getUid()+", rseFlag = "+this.__$rseFlag+")";
     }
+    isPolyhedral():boolean
+    {
+        return false;
+    }
     destroy():void
     {
         super.destroy();

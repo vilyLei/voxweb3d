@@ -7,14 +7,18 @@
 
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MaterialBase from '../../vox/material/MaterialBase';
+import ROTransform from '../../vox/display/ROTransform';
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import ObjData3DMesh from "../../vox/mesh/obj/ObjData3DMesh";
 
 export default class ObjData3DEntity extends DisplayEntity
 {
-    moduleScale = 1.0;
-    dataIsZxy = false;
+    moduleScale:number = 1.0;
+    dataIsZxy:boolean = false;
+    constructor(transform:ROTransform = null){
+        super(transform);
+    }
     private m_str:string = "";
     private createMaterial(texList:TextureProxy[])
     {
@@ -32,33 +36,49 @@ export default class ObjData3DEntity extends DisplayEntity
     initialize(objDataStr:string,texList:TextureProxy[] = null):void
     {
         this.m_str = objDataStr;
-        this.activeDisplay();        
+        this.activeDisplay();
     }
     initializeByObjDataUrl(objDataUrl:string,texList:TextureProxy[] = null):void
     {
         this.createMaterial(texList);
         if(this.getMesh() == null)
         {
-            let t_self:any = this;
-            let client:any = new XMLHttpRequest();
-            client.open('GET', objDataUrl);
-            client.onload = function(p:any):void
-            {
-                t_self.initialize(client.responseText, texList);
-            }
-            client.send();
+            let self:ObjData3DEntity = this;
+            let request:XMLHttpRequest = new XMLHttpRequest();
+            request.open('GET', objDataUrl, true);
+
+            request.onload = () => {
+                if (request.status <= 206 && status,request.responseText.indexOf(" OBJ ") > 0) {
+                    self.initialize(request.responseText, texList);
+                }
+                else {
+                    console.error("load obj format module url error: ",objDataUrl);
+                }
+            };
+            request.onerror = e => {
+              console.error("load obj format module url error: ",objDataUrl);
+            };
+            
+            request.send();
         }
     }    
     protected __activeMesh(material:MaterialBase):void
     {
         if(this.getMesh() == null)
         {
-            let mesh = new ObjData3DMesh();
+            let mesh:ObjData3DMesh = new ObjData3DMesh();
             mesh.moduleScale = this.moduleScale;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             mesh.setBufSortFormat( this.getMaterial().getBufSortFormat() );
             mesh.initialize(this.m_str,this.dataIsZxy);
             this.setMesh(mesh);
         }
+    }
+    /**
+     * @return 返回true是则表示这是基于三角面的多面体, 返回false则是一个数学方程描述的几何体(例如球体)
+     */
+    isPolyhedral():boolean
+    {
+        return true;
     }
 }

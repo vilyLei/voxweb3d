@@ -57,7 +57,6 @@ class RendererDeviece
         {
             RendererDeviece.s_WEBGL_VER = infoArr[0];
             RendererDeviece.s_inited = false;
-            
             RendererDeviece.TestMobileWeb();
         }
     }
@@ -67,19 +66,27 @@ class RendererDeviece
     {
         return RendererDeviece.s_mobileWeb;
     }
-    private static TestMobileWeb()
+    private static TestMobileWeb():boolean
     {
-        if (/mobile/.test(location.href)) RendererDeviece.s_mobileWeb = true;
-        if (/Android/i.test(navigator.userAgent)) {            
+        if (/mobile/.test(location.href))
+        {
+            RendererDeviece.s_mobileWeb = true;
+            return true;
+        }
+        if (/Android/i.test(navigator.userAgent)) {
             if (/Mobile/i.test(navigator.userAgent)) {            
               RendererDeviece.s_mobileWeb = true;
+              return true;
             } else {            
               RendererDeviece.s_mobileWeb = false;
+              return false;
             }            
         } else if (/webOS|iPhone|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent)) {
             RendererDeviece.s_mobileWeb = true;
+            return true;
         }
         RendererDeviece.s_mobileWeb = false;
+        return false;
     }
 }
 

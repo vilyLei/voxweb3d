@@ -73,9 +73,6 @@
 //  import * as DemoMouseEvent from "./demo/DemoMouseEvent";
 //  import Demo = DemoMouseEvent.demo.DemoMouseEvent;
 
-//  import * as DemoMouseDrag from "./demo/DemoMouseDrag";
-//  import Demo = DemoMouseDrag.demo.DemoMouseDrag;
-
 //  import * as DemoLockDrawEntity from "./demo/DemoLockDrawEntity";
 //  import Demo = DemoLockDrawEntity.demo.DemoLockDrawEntity;
 
@@ -151,9 +148,6 @@
 //  import * as DemoOrtho from "./demo/DemoOrtho";
 //  import Demo = DemoOrtho.demo.DemoOrtho;
 
-//  import * as DemoMobileEvt from "./demo/DemoMobileEvt";
-//  import Demo = DemoMobileEvt.demo.DemoMobileEvt;
-
 //  import * as DemoFBOBlit from "./demo/DemoFBOBlit";
 //  import Demo = DemoFBOBlit.demo.DemoFBOBlit;
 
@@ -210,9 +204,6 @@
 
 //  import * as DemoSwapProcess from "./demo/DemoSwapProcess";
 //  import Demo = DemoSwapProcess.demo.DemoSwapProcess;
-
-//  import * as DemoRenderSort from "./demo/DemoRenderSort";
-//  import Demo = DemoRenderSort.demo.DemoRenderSort;
 
 //  import * as DemoDelEntity from "./demo/DemoDelEntity";
 //  import Demo = DemoDelEntity.demo.DemoDelEntity;
@@ -296,9 +287,21 @@
 //  import * as DemoMixProgress from "./demo/DemoMixProgress";
 //  import Demo = DemoMixProgress.demo.DemoMixProgress;
 
-import {DemoGLState as Demo} from "./demo/DemoGLState";
+//  import {DemoRenderSort as Demo} from "./demo/DemoRenderSort";
+
+//  import {DemoGLState as Demo} from "./demo/DemoGLState";
 
 //  import {DemoThread as Demo} from "./thread/example/DemoThread";
+
+//  import * as DemoMobileEvt from "./demo/DemoMobileEvt";
+//  import Demo = DemoMobileEvt.demo.DemoMobileEvt;
+
+import * as DemoMouseDrag from "./demo/DemoMouseDrag";
+import Demo = DemoMouseDrag.demo.DemoMouseDrag;
+
+//  import * as DemoObj3DModule from "./demo/DemoObj3DModule";
+//  import Demo = DemoObj3DModule.demo.DemoObj3DModule;
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

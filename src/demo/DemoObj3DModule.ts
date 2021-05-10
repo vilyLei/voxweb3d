@@ -1,14 +1,16 @@
 
 import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
-import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import ObjData3DEntity from "../vox/entity/ObjData3DEntity";
 import {TextureConst} from "../vox/texture/TextureConst";
 import TextureProxy from "../vox/texture/TextureProxy";
 import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
+import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 import MouseEvent from "../vox/event/MouseEvent";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
@@ -18,16 +20,16 @@ import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 
 export namespace demo
 {
-    export class DemoTexUpdate
+    export class DemoObj3DModule
     {
         constructor(){}
 
+        private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_rscene:RendererScene = null;
         private m_rcontext:RendererInstanceContext = null;
         private m_texLoader:ImageTextureLoader = null;
         private m_camTrack:CameraTrack = null;
-        private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
-        private m_profileInstance:ProfileInstance = new ProfileInstance();
+        private m_profileInstance:ProfileInstance = null;
         private m_targets:DisplayEntity[] = [];
 
         private getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
@@ -39,7 +41,7 @@ export namespace demo
         }
         initialize():void
         {
-            console.log("DemoTexUpdate::initialize()......");
+            console.log("DemoObj3DModule::initialize()......");
             if(this.m_rscene == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
@@ -57,85 +59,47 @@ export namespace demo
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-                this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-                this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 200);
+                //this.m_profileInstance = new ProfileInstance();
+                //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
                 this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
+                this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 200);
 
-                let axis:Axis3DEntity = new Axis3DEntity();
-                axis.initialize(300.0);
-                this.m_rscene.addEntity(axis);
-                
+                //              let axis:Axis3DEntity = new Axis3DEntity();
+                //              axis.initialize(300.0);
+                //              this.m_rscene.addEntity(axis);
+                /*
                 // add common 3d display entity
                 let plane:Plane3DEntity = new Plane3DEntity();
                 plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
                 this.m_rscene.addEntity(plane);
                 this.m_targets.push(plane);
                 //this.m_disp = plane;
-
-                this.m_rscene.setAutoRunning(false);
+                //*/
+                //this.m_rscene.setAutoRunning(false);
                 this.update();
 
-            }
-        }
-        //private m_disp:DisplayEntity = null;
-        private updateTex():void
-        {
-            let rscene:RendererScene = this.m_rscene;
-            let entityList:DisplayEntity[] = this.m_targets;
-            let img:HTMLImageElement = new Image();
-            img.onload = function(evt:any):void
-            {
-                console.log("loaded img, and update tex res.");
-                let tex:ImageTextureProxy = rscene.textureBlock.createImageTex2D(img.width, img.height);
-                tex.setDataFromImage(img);
-                entityList[0].setTextureList([tex]);
-                entityList[0].updateMaterialToGpu(rscene.getRenderProxy());
-            }
-            //img.src = "static/assets/yanj.jpg";
-            img.src = "static/assets/metal_02.jpg";
-        }
-        private updateTexData():void
-        {
-            let rscene:RendererScene = this.m_rscene;
-            let entityList:DisplayEntity[] = this.m_targets;
-            let img:HTMLImageElement = new Image();
-            img.onload = function(evt:any):void
-            {
-                console.log("loaded img, and update tex res.");
-                let tex:ImageTextureProxy = entityList[0].getMaterial().getTextureAt(0) as ImageTextureProxy;
+                //return;
+                let objUrl:string = "static/assets/obj/box01.obj";
+                objUrl = "static/assets/obj/building_001.obj";
+                let objDisp:ObjData3DEntity = new ObjData3DEntity();
+                //objDisp.mouseEnabled = true;
+                objDisp.moduleScale = 3.0;
+                objDisp.initializeByObjDataUrl(objUrl,[this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
+                //objDisp.setXYZ(Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0);
+                this.m_rscene.addEntity(objDisp);
 
-                tex.setDataFromImage(img);
-                let defaultUpdate:boolean = true;
-                if(defaultUpdate)
-                {
-                    tex.updateDataToGpu();
-                }
-                else
-                {
-                    tex.updateDataToGpu(rscene.getRenderProxy(),true);
-                }
             }
-            //img.src = "static/assets/yanj.jpg";
-            img.src = "static/assets/metal_02.jpg";
         }
         private mouseDown(evt:any):void
         {
             if(this.m_targets != null && this.m_targets.length > 0)
             {
-                let testFlag:boolean = false;
-                if(testFlag)
-                {
-                    this.updateTexData();
-                }
-                else
-                {
-                    this.updateTex();
-                }
+                
             }
         }
-        
         private m_timeoutId:any = -1;
+
         private update():void
         {
             if(this.m_timeoutId > -1)
@@ -145,7 +109,6 @@ export namespace demo
             //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
             this.m_timeoutId = setTimeout(this.update.bind(this),50);// 20 fps
             let pcontext:RendererInstanceContext = this.m_rcontext;
-            this.m_statusDisp.statusInfo = "/"+pcontext.getTextureResTotal()+"/"+pcontext.getTextureAttachTotal();
             
             this.m_rscene.update();
             this.m_statusDisp.render();
@@ -159,7 +122,8 @@ export namespace demo
             this.m_rscene.runEnd();
 
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-            this.m_profileInstance.run();
+            if(this.m_profileInstance != null)this.m_profileInstance.run();
+            this.m_statusDisp.statusInfo = "/"+RendererState.DrawCallTimes;
         }
     }
 }

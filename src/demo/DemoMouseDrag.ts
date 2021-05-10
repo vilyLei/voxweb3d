@@ -23,44 +23,15 @@ import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import BoxFrame3D from "../vox/entity/BoxFrame3D";
-import * as AxisDragControllerT from "../voxeditor/control/AxisDragController";
-import * as DragAxisT from "../voxeditor/entity/DragAxis";
-import * as DragAxisQuad3DT from "../voxeditor/entity/DragAxisQuad3D";
+import AxisDragController from "../voxeditor/control/AxisDragController";
+import DragAxis from "../voxeditor/entity/DragAxis";
+import DragAxisQuad3D from "../voxeditor/entity/DragAxisQuad3D";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import CameraTrack from "../vox/view/CameraTrack";
 import MouseEvt3DDispatcher from "../vox/event/MouseEvt3DDispatcher";
 import ObjData3DEntity from "../vox/entity/ObjData3DEntity";
 
-//import Color4 = Color4T.vox.material.Color4;
-//import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-//import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-//import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-//import RendererState = RendererStateT.vox.render.RendererState;
-//import RendererParam = RendererParamT.vox.scene.RendererParam;
-//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-//import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-//import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
-//import RendererScene = RendererSceneT.vox.scene.RendererScene;
-//import RayGpuSelector = RayGpuSelectorT.vox.scene.RayGpuSelector;
-//import MouseEvt3DController = MouseEvt3DControllerT.vox.scene.MouseEvt3DController;
-//import EventBase = EventBaseT.vox.event.EventBase;
-//import MouseEvent = MouseEventT.vox.event.MouseEvent;
-//import Stage3D = Stage3DT.vox.display.Stage3D;
-//import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
-
-//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-//import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-//import BoxFrame3D = BoxFrame3DT.vox.entity.BoxFrame3D;
-import AxisDragController = AxisDragControllerT.voxeditor.control.AxisDragController;
-import DragAxis = DragAxisT.voxeditor.entity.DragAxis;
-import DragAxisQuad3D = DragAxisQuad3DT.voxeditor.entity.DragAxisQuad3D;
-//import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
-//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-//import MouseEvt3DDispatcher = MouseEvt3DDispatcherT.vox.event.MouseEvt3DDispatcher;
-//import ObjData3DEntity = ObjData3DEntityT.vox.entity.ObjData3DEntity;
+//import AxisDragController = AxisDragControllerT.voxeditor.control.AxisDragController;
 
 
 export namespace demo
@@ -151,7 +122,7 @@ export namespace demo
             if(DispCtrObj.SelectedCtrlObj == this)
             {
                 DispCtrObj.MeshDragAxis.setVisible(true);
-                DispCtrObj.MeshDragAxis.targetEntity = this.dispEntity;
+                DispCtrObj.MeshDragAxis.bindTarget(this.dispEntity);
                 if(this.dispEntity != null)
                 {
                     DispCtrObj.MeshDragAxis.copyPositionFrom(this.dispEntity);
@@ -212,16 +183,14 @@ export namespace demo
     }
     export class DemoMouseDrag
     {
-        constructor()
-        {
-        }
+        constructor(){}
         
         private m_rscene:RendererScene = null;
         private m_rspace:IRendererSpace = null;
         private m_texLoader:ImageTextureLoader;
         private m_camTrack:CameraTrack = null;
         
-        private m_profileInstance:ProfileInstance = null;//new ProfileInstance();
+        private m_profileInstance:ProfileInstance;// = new ProfileInstance();
         private m_evtCtr:MouseEvt3DController = null;
         initialize():void
         {
@@ -230,22 +199,9 @@ export namespace demo
             {
                 H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
-                let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/guangyun_H_0007.png");
-                let tex3:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_01.jpg");
-                let tex4:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_02.jpg");
-                let tex5:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/a_02_c.jpg");
-                let tex6:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/metal_08.jpg");
-                tex0.mipmapEnabled = true;
-                tex1.mipmapEnabled = true;
-                tex2.mipmapEnabled = true;
-                tex3.mipmapEnabled = true;
-                tex4.mipmapEnabled = true;
-                tex5.mipmapEnabled = true;
-                tex6.mipmapEnabled = true;
                 
                 let rparam:RendererParam = new RendererParam();
+                rparam.setAttriAntialias(true);
                 rparam.setMatrix4AllocateSize(8192 * 4);
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
@@ -265,17 +221,43 @@ export namespace demo
                 stage3D.addEventListener(MouseEvent.MOUSE_MOVE,this,this.mouseMoveListener);
                 stage3D.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener);
                 stage3D.addEventListener(EventBase.RESIZE,this,this.stageResizeListener);
+                stage3D.addEventListener(MouseEvent.MOUSE_BG_DOWN,this,this.mouseBgDownListener);
+                stage3D.addEventListener(MouseEvent.MOUSE_BG_UP,this,this.mouseBgUpListener);
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rscene.getCamera());
+
+                
+                this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
+
+                
+                let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/guangyun_H_0007.png");
+                let tex3:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_01.jpg");
+                let tex4:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_02.jpg");
+                let tex5:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/a_02_c.jpg");
+                let tex6:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/metal_08.jpg");
+                tex0.mipmapEnabled = true;
+                tex1.mipmapEnabled = true;
+                tex2.mipmapEnabled = true;
+                tex3.mipmapEnabled = true;
+                tex4.mipmapEnabled = true;
+                tex5.mipmapEnabled = true;
+                tex6.mipmapEnabled = true;
                 
                 RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 this.m_rscene.updateCamera();
 
+                let testAxis:Axis3DEntity = new Axis3DEntity();
+                testAxis.initialize(300);
+                //testAxis.setXYZ(-50.0,0.0,0.0);
+                this.m_rscene.addEntity(testAxis);
+
                 let pv:Vector3D = new Vector3D();
                 
+
                 let axis:Axis3DEntity = null;
-                //DispCtrObj.MeshDragAxis = new DragAxis();
                 DispCtrObj.MeshDragAxis = new DragAxisQuad3D();
 
                 let i:number = 0;
@@ -286,8 +268,6 @@ export namespace demo
                 {
                     if(i > 0)
                     {
-                        axisCtrObj = new AxisCtrlObj();
-                        axisCtrObj.rscene = this.m_rscene;
                         axis = new Axis3DEntity();
                         axis.initialize(200.0 + Math.random() * 100.0);
                         axis.mouseEnabled = true;
@@ -295,16 +275,9 @@ export namespace demo
                         axis.setScaleXYZ((Math.random() + 0.8) * scaleK,(Math.random() + 0.8) * scaleK,(Math.random() + 0.8) * scaleK);
                         axis.setRotationXYZ(Math.random() * 500.0,Math.random() * 500.0,Math.random() * 500.0);
                         this.m_rscene.addEntity(axis);
-                        axisCtrObj.dispEntity = axis;
                         axis.name = "axis_"+i;
-                        axisCtrObj.name = axis.name;
-                        let dispatcher:MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
-                        dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,axisCtrObj,axisCtrObj.mouseDownListener);
-                        dispatcher.addEventListener(MouseEvent.MOUSE_UP,axisCtrObj,axisCtrObj.mouseUpListener);
-                        dispatcher.addEventListener(MouseEvent.MOUSE_OVER,axisCtrObj,axisCtrObj.mouseOverListener);
-                        dispatcher.addEventListener(MouseEvent.MOUSE_OUT,axisCtrObj,axisCtrObj.mouseOutListener);
-                        dispatcher.addEventListener(MouseEvent.MOUSE_MOVE,axisCtrObj,axisCtrObj.mouseMoveListener);
-                        axis.setEvtDispatcher(dispatcher);
+
+                        this.useEvt(axis);
                     }
                     else
                     {
@@ -328,24 +301,13 @@ export namespace demo
                 let plane:Plane3DEntity = null;
                 for(i = 0; i < 5; ++i)
                 {
-                    ctrObj = new DispCtrObj();
-                    ctrObj.rscene = this.m_rscene;
                     plane = new Plane3DEntity();
-                    ctrObj.dispEntity = plane;
-                    plane.name = "plane_"+i;
-                    ctrObj.name = plane.name;
-                    let dispatcher:MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
-                    dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,ctrObj,ctrObj.mouseDownListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_UP,ctrObj,ctrObj.mouseUpListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_OVER,ctrObj,ctrObj.mouseOverListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_OUT,ctrObj,ctrObj.mouseOutListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_MOVE,ctrObj,ctrObj.mouseMoveListener);
-                    plane.setEvtDispatcher(dispatcher);
                     plane.showDoubleFace();
                     plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
                     plane.setXYZ(Math.random() * 3000.0 - 1500.0,Math.random() * 3000.0 - 1500.0,Math.random() * 2000.0 - 1000.0);
                     this.m_rscene.addEntity(plane);
-                    plane.mouseEnabled = true;
+
+                    this.useEvt(plane);
                 }
 
                 let srcBox:Box3DEntity = new Box3DEntity();
@@ -353,21 +315,10 @@ export namespace demo
                 total = 5;
                 let box:Box3DEntity = null;
                 for(i = 0; i < total; ++i)
-                {
-                    ctrObj = new DispCtrObj();
-                    ctrObj.rscene = this.m_rscene;
+                {                    
                     box = new Box3DEntity();
-                    ctrObj.dispEntity = box;
-                    box.name = "box_"+i;
-                    ctrObj.name = box.name;
-                    let dispatcher:MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
-                    //dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,this,this.entityMouseDownListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,ctrObj,ctrObj.mouseDownListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_UP,ctrObj,ctrObj.mouseUpListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_OVER,ctrObj,ctrObj.mouseOverListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_OUT,ctrObj,ctrObj.mouseOutListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_MOVE,ctrObj,ctrObj.mouseMoveListener);
-                    box.setEvtDispatcher(dispatcher);
+                    this.useEvt(box);
+
                     if(srcBox != null)box.setMesh(srcBox.getMesh());
                     box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
                     if(total > 1)
@@ -382,26 +333,15 @@ export namespace demo
                     {
                         box.setXYZ(150.0,0.0,0.0);
                     }
-                    box.mouseEnabled = true;
                     this.m_rscene.addEntity(box);
 
                 }
                 let sph:Sphere3DEntity = null;
                 for(i = 0; i < 5; ++i)
                 {
-                    ctrObj = new DispCtrObj();
-                    ctrObj.rscene = this.m_rscene;
                     sph = new Sphere3DEntity();
-                    ctrObj.dispEntity = sph;
-                    sph.name = "sphere_"+i;
-                    ctrObj.name = sph.name;
-                    let dispatcher:MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
-                    dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,ctrObj,ctrObj.mouseDownListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_UP,ctrObj,ctrObj.mouseUpListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_OVER,ctrObj,ctrObj.mouseOverListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_OUT,ctrObj,ctrObj.mouseOutListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_MOVE,ctrObj,ctrObj.mouseMoveListener);
-                    sph.setEvtDispatcher(dispatcher);
+                    this.useEvt(sph);
+
                     sph.initialize(100,20,20,[tex1]);
                     if(total > 1)
                     {
@@ -412,35 +352,53 @@ export namespace demo
                     {
                         sph.setXYZ(150.0,0.0,0.0);
                     }
-                    sph.mouseEnabled = true;
                     this.m_rscene.addEntity(sph);
                 }
 
                 
-                let objUrl:string = "assets/obj/box01.obj";
-                objUrl = "assets/obj/building_001.obj";
+                let objUrl:string = "static/assets/obj/box01.obj";
+                objUrl = "static/assets/obj/building_001.obj";
                 let objDisp:ObjData3DEntity = new ObjData3DEntity();
-                objDisp.mouseEnabled = true;
-                ctrObj = new DispCtrObj();
-                ctrObj.rscene = this.m_rscene;
-                ctrObj.dispEntity = objDisp;
-                let dispatcher:MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
-                dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,ctrObj,ctrObj.mouseDownListener);
-                dispatcher.addEventListener(MouseEvent.MOUSE_UP,ctrObj,ctrObj.mouseUpListener);
-                dispatcher.addEventListener(MouseEvent.MOUSE_OVER,ctrObj,ctrObj.mouseOverListener);
-                dispatcher.addEventListener(MouseEvent.MOUSE_OUT,ctrObj,ctrObj.mouseOutListener);
-                dispatcher.addEventListener(MouseEvent.MOUSE_MOVE,ctrObj,ctrObj.mouseMoveListener);
-                objDisp.setEvtDispatcher(dispatcher);
-
+                this.useEvt(objDisp);
                 objDisp.moduleScale = 3.0;
                 objDisp.initializeByObjDataUrl(objUrl,[tex6]);
                 objDisp.setXYZ(Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0);
                 this.m_rscene.addEntity(objDisp);
             }
         }
+        private useEvt(objDisp:DisplayEntity):void
+        {
+            objDisp.mouseEnabled = true;
+            let ctrObj:DispCtrObj = new DispCtrObj();
+            ctrObj.rscene = this.m_rscene;
+            ctrObj.dispEntity = objDisp;
+            let dispatcher:MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
+            dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,ctrObj,ctrObj.mouseDownListener);
+            dispatcher.addEventListener(MouseEvent.MOUSE_UP,ctrObj,ctrObj.mouseUpListener);
+            dispatcher.addEventListener(MouseEvent.MOUSE_OVER,ctrObj,ctrObj.mouseOverListener);
+            dispatcher.addEventListener(MouseEvent.MOUSE_OUT,ctrObj,ctrObj.mouseOutListener);
+            dispatcher.addEventListener(MouseEvent.MOUSE_MOVE,ctrObj,ctrObj.mouseMoveListener);
+            //dispatcher.addEventListener(MouseEvent.MOUSE_BG_DOWN,ctrObj,ctrObj.mouseBgDownListener);
+            objDisp.setEvtDispatcher(dispatcher);
+        }
         stageResizeListener(evt:any):void
         {
             console.log("Demo stageResizeListener call, Stage resize().");
+        }
+        private mouseBgDownListener(evt:any):void
+        {
+            if(!this.m_evtCtr.isSelected())
+            {
+                console.log("mouseBgDownListener.");
+                DispCtrObj.MeshDragAxis.setVisible(false);
+                DispCtrObj.Draging = false;
+            }
+        }
+        private mouseBgUpListener(evt:any):void
+        {
+            //  DispCtrObj.MeshDragAxis.deselect();
+            //  DispCtrObj.Draging = false;
+            //  AxisCtrlObj.AxisSelectedObj = null;
         }
         mouseWheeelListener(evt:any):void
         {
@@ -457,7 +415,6 @@ export namespace demo
             }
         }
         private m_bgColor:Color4 = new Color4(0.0, 0.3, 0.1);
-        private m_mouseDownBoo:boolean = false;
         private m_mouseUpBoo:boolean = false;
         // 鼠标动了, 摄像机动了, 被渲染对象本身动了,都可能形成mouse move事件
         mouseMoveListener(evt:any):void
@@ -465,30 +422,37 @@ export namespace demo
         }
         mouseDownListener(evt:any):void
         {
-            this.m_bgColor.setRGB3f(0.4 * Math.random(),0.4 * Math.random(),0.4 * Math.random());
-            this.m_mouseDownBoo = true;
-            console.log("stage mouse down.");
+            if(evt.phase == 1)
+            {
+                this.m_bgColor.setRGB3f(0.4 * Math.random(),0.4 * Math.random(),0.4 * Math.random());
+                console.log("stage mouse down.");
+            }
         }
         mouseUpListener(evt:any):void
         {
-            this.m_mouseUpBoo = true;
-        }
-        entityMouseDownListener(evt:any):void
-        {
-            //this.m_mouseDownBoo = true;
+            if(evt.phase == 1)
+            {
+                console.log("stage mouse up.");
+                this.m_mouseUpBoo = true;
+
+                //  //this.m_mouseUpBoo = false;
+                //  AxisCtrlObj.AxisSelectedObj = null;
+                //  DispCtrObj.MeshDragAxis.deselect();
+                //  DispCtrObj.Draging = false;
+            }
         }
         private m_rpv:Vector3D = new Vector3D();
         private m_rtv:Vector3D = new Vector3D();
         run():void
         {
-            this.m_rscene.setClearRGBColor3f(this.m_bgColor.r,this.m_bgColor.g,this.m_bgColor.b);
+            this.m_rscene.setClearColor(this.m_bgColor);
             this.m_rscene.runBegin();
 
             this.m_rscene.update();
             this.m_rscene.run();
+            this.m_rscene.runEnd();
             this.mouseCtrUpdate();
 
-            this.m_rscene.runEnd();
             //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
             this.m_rscene.updateCamera();
             
@@ -499,7 +463,6 @@ export namespace demo
         }
         private mouseCtrUpdate():void
         {
-
             if(AxisCtrlObj.AxisSelectedObj != null)
             {
                 this.m_rscene.getMouseXYWorldRay(this.m_rpv, this.m_rtv);
@@ -519,23 +482,9 @@ export namespace demo
             if(this.m_mouseUpBoo)
             {
                 this.m_mouseUpBoo = false;
-                if(AxisCtrlObj.AxisSelectedObj != null)
-                {
-                    AxisCtrlObj.AxisSelectedObj = null;
-                }
+                AxisCtrlObj.AxisSelectedObj = null;
                 DispCtrObj.MeshDragAxis.deselect();
                 DispCtrObj.Draging = false;
-            }
-            if(this.m_mouseDownBoo)
-            {
-                this.m_mouseDownBoo = false;
-                if(!this.m_evtCtr.isSelected())
-                {
-                    console.log("mouse down ready deselect.");
-                    DispCtrObj.MeshDragAxis.setVisible(false);
-                    //  DispCtrObj.SelectedCtrlObj = null;
-                    DispCtrObj.Draging = false;
-                }
             }
         }
     }
