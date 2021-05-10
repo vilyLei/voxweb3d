@@ -30,9 +30,6 @@ import CameraTrack from "../vox/view/CameraTrack";
 import MouseEvt3DDispatcher from "../vox/event/MouseEvt3DDispatcher";
 import ObjData3DEntity from "../vox/entity/ObjData3DEntity";
 
-//import AxisDragController = AxisDragControllerT.voxeditor.control.AxisDragController;
-
-
 export namespace demo
 {
     export class DispCtrObj
@@ -45,7 +42,6 @@ export namespace demo
         rscene:RendererScene = null;
 
         protected m_frameDisp:BoxFrame3D = null;
-        //static MeshDragAxis:DragAxis = null;
         static MeshDragAxis:DragAxisQuad3D = null;
         static Draging:boolean = false;
         static SelectedCtrlObj:DispCtrObj = null;
@@ -249,7 +245,7 @@ export namespace demo
                 this.m_rscene.updateCamera();
 
                 let saxis:DragAxisQuad3D = new DragAxisQuad3D();
-                saxis.initialize(500.0,6.0);
+                saxis.initialize(500.0,10.0);
                 this.m_rscene.addEntity(saxis);
                 DispCtrObj.MeshDragAxis = saxis;
 
@@ -381,7 +377,6 @@ export namespace demo
             }
         }
         private m_bgColor:Color4 = new Color4(0.0, 0.3, 0.1);
-        private m_mouseUpBoo:boolean = false;
         // 鼠标动了, 摄像机动了, 被渲染对象本身动了,都可能形成mouse move事件
         mouseMoveListener(evt:any):void
         {
@@ -389,10 +384,7 @@ export namespace demo
         mouseDownListener(evt:any):void
         {
             console.log("stage mouse down, evt.phase: ",evt.phase);
-            if(evt.phase == 1)
-            {
-                this.m_bgColor.setRGB3f(0.4 * Math.random(),0.4 * Math.random(),0.4 * Math.random());
-            }
+            this.m_bgColor.setRGB3f(0.4 * Math.random(),0.4 * Math.random(),0.4 * Math.random());
         }
         mouseUpListener(evt:any):void
         {
@@ -406,15 +398,11 @@ export namespace demo
         run():void
         {
             this.m_rscene.setClearColor(this.m_bgColor);
-            this.m_rscene.runBegin();
 
-            this.m_rscene.update();
-            this.m_rscene.run();
-            this.m_rscene.runEnd();
-
+            this.m_rscene.run(true);
             this.mouseCtrUpdate();
 
-            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
             if(this.m_profileInstance != null)
             {
                 this.m_profileInstance.run();

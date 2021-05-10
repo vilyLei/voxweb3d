@@ -682,7 +682,7 @@ export default class RendererScene implements IRenderer
     /**
      * run all renderer processes in the renderer instance
      */
-    run():void
+    run(autoCycle:boolean = false):void
     {
         if(this.m_autoRunning)
         {
@@ -700,6 +700,10 @@ export default class RendererScene implements IRenderer
         else
         {
             this.m_renderer.run();
+        }
+        if(autoCycle)
+        {
+            this.runEnd();
         }
     }
     /**
