@@ -1,3 +1,9 @@
+/***************************************************************************/
+/*                                                                         */
+/*  Copyright 2018-2022 by                                                 */
+/*  Vily(vily313@126.com)                                                  */
+/*                                                                         */
+/***************************************************************************/
 
 import Vector3D from "../../vox/math/Vector3D";
 import StraightLine from "../../vox/geom/StraightLine";
@@ -10,10 +16,14 @@ import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
 
 export default class DragAxis extends Axis3DEntity
 {
-    targetEntity:DisplayEntity = null;
+    private m_targetEntity:DisplayEntity = null;
     constructor()
     {
         super();
+    }
+    bindTarget(target:DisplayEntity):void
+    {
+        this.m_targetEntity = target;
     }
     initialize(size:number = 100.0):void
     {
@@ -45,7 +55,7 @@ export default class DragAxis extends Axis3DEntity
     }
     destroy():void
     {
-        this.targetEntity = null;
+        this.m_targetEntity = null;
         super.destroy();
     }
     
@@ -58,36 +68,43 @@ export default class DragAxis extends Axis3DEntity
     private m_outV:Vector3D = new Vector3D();
     private m_initV:Vector3D = new Vector3D();
 
+    private m_mat4:Matrix4 = new Matrix4();
+    private m_invMat4:Matrix4 = new Matrix4();
+
     private calcClosePos(rpv:Vector3D, rtv:Vector3D):void
     {
         if(this.m_flag > -1)
         {
-            
-            let mat4:Matrix4 = this.getTransform().getInvMatrix();
+            let mat4:Matrix4 = this.m_invMat4;
             mat4.transformVector3Self(rpv);
             mat4.deltaTransformVectorSelf(rtv);
             let outV:Vector3D = this.m_outV;
             StraightLine.CalcTwoSLCloseV2(rpv,rtv, this.m_axis_pv,this.m_axis_tv,outV);
-            mat4 = this.getTransform().getMatrix();
+            mat4 = this.m_mat4;
             mat4.transformVector3Self(outV);
         }
     }
+    private m_rpv:Vector3D = new Vector3D();
+    private m_rtv:Vector3D = new Vector3D();
     public updateDrag(rpv:Vector3D, rtv:Vector3D):void
     {
         if(this.m_flag > -1)
         {
-            this.calcClosePos(rpv,rtv);
+            this.m_rpv.copyFrom(rpv);
+            this.m_rtv.copyFrom(rtv);
+            this.calcClosePos(this.m_rpv,this.m_rtv);
+            
             this.m_dv.copyFrom(this.m_outV);
             this.m_dv.subtractBy(this.m_initV);
             this.m_pos.copyFrom(this.m_initPos);
             this.m_pos.addBy(this.m_dv);
             this.setPosition(this.m_pos);
             this.update();
-            if(this.targetEntity != null)
+            if(this.m_targetEntity != null)
             {
-                //console.log("this.targetEntity: "+this.targetEntity.toString());
-                this.targetEntity.setPosition(this.m_pos);
-                this.targetEntity.update();
+                //console.log("this.m_targetEntity: "+this.m_targetEntity.toString());
+                this.m_targetEntity.setPosition(this.m_pos);
+                this.m_targetEntity.update();
             }
         }
     }
@@ -95,7 +112,7 @@ export default class DragAxis extends Axis3DEntity
     mouseDownListener(evt:any):void
     {
         //console.log("DragAxis::mouseDownListener().");
-        //console.log("this.targetEntity != null: "+(this.targetEntity != null));
+        //console.log("this.m_targetEntity != null: "+(this.m_targetEntity != null));
         // console.log("evt.lpos: "+evt.lpos.toString()+",evt.wpos: "+evt.wpos.toString());
         let px:number = Math.abs(evt.lpos.x);
         let py:number = Math.abs(evt.lpos.y);
@@ -148,8 +165,14 @@ export default class DragAxis extends Axis3DEntity
                     break;        
             }
         }
+        
+        this.m_mat4.copyFrom(this.getTransform().getMatrix());
+        this.m_invMat4.copyFrom(this.getTransform().getInvMatrix());
+        
+        this.m_rpv.copyFrom(evt.raypv);
+        this.m_rtv.copyFrom(evt.raytv);
         // console.log("AxisCtrlObj::mouseDownListener(). this.m_flag: "+this.m_flag);
-        this.calcClosePos(evt.raypv,evt.raytv);
+        this.calcClosePos(this.m_rpv, this.m_rtv);
         this.m_initV.copyFrom( this.m_outV );
         this.getPosition(this.m_initPos);            
     }

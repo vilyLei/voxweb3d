@@ -10,8 +10,7 @@ import TextureProxy from "../vox/texture/TextureProxy";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import IRendererSpace from "../vox/scene/IRendererSpace";
 import RendererScene from "../vox/scene/RendererScene";
-import RayGpuSelector from "../vox/scene/RayGpuSelector";
-import MouseEvt3DController from "../vox/scene/MouseEvt3DController";
+import IEvt3DController from "../vox/scene/IEvt3DController";
 import MouseEvent from "../vox/event/MouseEvent";
 import EventBase from "../vox/event/EventBase";
 import Stage3D from "../vox/display/Stage3D";
@@ -142,9 +141,10 @@ export namespace demo
         }
         updateFrameBox():void
         {
-            if(this.m_frameDisp != null && this.dispEntity != null)
+            if(this.rscene != null && this.m_frameDisp != null && this.dispEntity != null)
             {
                 this.m_frameDisp.updateFrameByAABB(this.dispEntity.getGlobalBounds());
+                this.m_frameDisp.updateMeshToGpu(this.rscene.getRenderProxy());
             }
         }
     }
@@ -190,8 +190,8 @@ export namespace demo
         private m_texLoader:ImageTextureLoader;
         private m_camTrack:CameraTrack = null;
         
-        private m_profileInstance:ProfileInstance;// = new ProfileInstance();
-        private m_evtCtr:MouseEvt3DController = null;
+        private m_profileInstance:ProfileInstance = new ProfileInstance();
+        private m_evtCtr:IEvt3DController = null;
         initialize():void
         {
             console.log("DemoMouseDrag::initialize()......");
@@ -210,14 +210,13 @@ export namespace demo
                 this.m_rscene.initialize(rparam,3);
                 this.m_rscene.setRendererProcessParam(1,true,true);
                 this.m_rspace = this.m_rscene.getSpace();
-                //this.m_rspace.setRaySelector( new RaySelector() );
-                this.m_rspace.setRaySelector( new RayGpuSelector() );
-                this.m_evtCtr = new MouseEvt3DController();
-                this.m_rscene.setEvt3DController(this.m_evtCtr);
+                
+                this.m_rscene.enableMouseEvent(true);
+                this.m_evtCtr = this.m_rscene.getEvt3DController();
                 //for test
                 let stage3D:Stage3D = this.m_rscene.getStage3D() as Stage3D;
-                stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
-                stage3D.addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener);
+                stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener,true,false);
+                stage3D.addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener,false,true);
                 stage3D.addEventListener(MouseEvent.MOUSE_MOVE,this,this.mouseMoveListener);
                 stage3D.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener);
                 stage3D.addEventListener(EventBase.RESIZE,this,this.stageResizeListener);
@@ -249,43 +248,27 @@ export namespace demo
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 this.m_rscene.updateCamera();
 
-                let testAxis:Axis3DEntity = new Axis3DEntity();
-                testAxis.initialize(300);
-                //testAxis.setXYZ(-50.0,0.0,0.0);
-                this.m_rscene.addEntity(testAxis);
-
-                let pv:Vector3D = new Vector3D();
-                
+                let saxis:DragAxisQuad3D = new DragAxisQuad3D();
+                saxis.initialize(500.0,6.0);
+                this.m_rscene.addEntity(saxis);
+                DispCtrObj.MeshDragAxis = saxis;
 
                 let axis:Axis3DEntity = null;
-                DispCtrObj.MeshDragAxis = new DragAxisQuad3D();
 
                 let i:number = 0;
                 let scaleK:number = 1.0;
-                let ctrObj:DispCtrObj = null;
-                let axisCtrObj:AxisCtrlObj = null;
                 for(i = 0; i < 8; ++i)
                 {
-                    if(i > 0)
-                    {
-                        axis = new Axis3DEntity();
-                        axis.initialize(200.0 + Math.random() * 100.0);
-                        axis.mouseEnabled = true;
-                        axis.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
-                        axis.setScaleXYZ((Math.random() + 0.8) * scaleK,(Math.random() + 0.8) * scaleK,(Math.random() + 0.8) * scaleK);
-                        axis.setRotationXYZ(Math.random() * 500.0,Math.random() * 500.0,Math.random() * 500.0);
-                        this.m_rscene.addEntity(axis);
-                        axis.name = "axis_"+i;
+                    axis = new Axis3DEntity();
+                    axis.initialize(200.0 + Math.random() * 100.0);
+                    axis.mouseEnabled = true;
+                    axis.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
+                    axis.setScaleXYZ((Math.random() + 0.8) * scaleK,(Math.random() + 0.8) * scaleK,(Math.random() + 0.8) * scaleK);
+                    axis.setRotationXYZ(Math.random() * 500.0,Math.random() * 500.0,Math.random() * 500.0);
+                    this.m_rscene.addEntity(axis);
+                    axis.name = "axis_"+i;
+                    this.useEvt(axis);
 
-                        this.useEvt(axis);
-                    }
-                    else
-                    {
-                        //let saxis:Axis3DEntity = DispCtrObj.MeshDragAxis;
-                        let saxis:DragAxisQuad3D = DispCtrObj.MeshDragAxis;
-                        saxis.initialize(500.0,6.0);
-                        this.m_rscene.addEntity(saxis); 
-                    }
                 }
 
                 //return;
@@ -321,18 +304,11 @@ export namespace demo
 
                     if(srcBox != null)box.setMesh(srcBox.getMesh());
                     box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
-                    if(total > 1)
-                    {
-                        box.setScaleXYZ((Math.random() + 0.8) * scaleK,(Math.random() + 0.8) * scaleK,(Math.random() + 0.8) * scaleK);
-                        box.setRotationXYZ(Math.random() * 500.0,Math.random() * 500.0,Math.random() * 500.0);
-                        //box.setXYZ(Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0);
-                        cubeRange.calc();
-                        box.setPosition(cubeRange.value);
-                    }
-                    else
-                    {
-                        box.setXYZ(150.0,0.0,0.0);
-                    }
+                    box.setScaleXYZ((Math.random() + 0.8) * scaleK,(Math.random() + 0.8) * scaleK,(Math.random() + 0.8) * scaleK);
+                    box.setRotationXYZ(Math.random() * 500.0,Math.random() * 500.0,Math.random() * 500.0);
+                    //box.setXYZ(Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0);
+                    cubeRange.calc();
+                    box.setPosition(cubeRange.value);
                     this.m_rscene.addEntity(box);
 
                 }
@@ -343,15 +319,8 @@ export namespace demo
                     this.useEvt(sph);
 
                     sph.initialize(100,20,20,[tex1]);
-                    if(total > 1)
-                    {
-                        cubeRange.calc();
-                        sph.setPosition(cubeRange.value);
-                    }
-                    else
-                    {
-                        sph.setXYZ(150.0,0.0,0.0);
-                    }
+                    cubeRange.calc();
+                    sph.setPosition(cubeRange.value);
                     this.m_rscene.addEntity(sph);
                 }
 
@@ -396,9 +365,6 @@ export namespace demo
         }
         private mouseBgUpListener(evt:any):void
         {
-            //  DispCtrObj.MeshDragAxis.deselect();
-            //  DispCtrObj.Draging = false;
-            //  AxisCtrlObj.AxisSelectedObj = null;
         }
         mouseWheeelListener(evt:any):void
         {
@@ -422,24 +388,18 @@ export namespace demo
         }
         mouseDownListener(evt:any):void
         {
+            console.log("stage mouse down, evt.phase: ",evt.phase);
             if(evt.phase == 1)
             {
                 this.m_bgColor.setRGB3f(0.4 * Math.random(),0.4 * Math.random(),0.4 * Math.random());
-                console.log("stage mouse down.");
             }
         }
         mouseUpListener(evt:any):void
         {
-            if(evt.phase == 1)
-            {
-                console.log("stage mouse up.");
-                this.m_mouseUpBoo = true;
-
-                //  //this.m_mouseUpBoo = false;
-                //  AxisCtrlObj.AxisSelectedObj = null;
-                //  DispCtrObj.MeshDragAxis.deselect();
-                //  DispCtrObj.Draging = false;
-            }
+            console.log("stage mouse up, evt.phase: ",evt.phase);
+            AxisCtrlObj.AxisSelectedObj = null;
+            DispCtrObj.MeshDragAxis.deselect();
+            DispCtrObj.Draging = false;
         }
         private m_rpv:Vector3D = new Vector3D();
         private m_rtv:Vector3D = new Vector3D();
@@ -451,11 +411,10 @@ export namespace demo
             this.m_rscene.update();
             this.m_rscene.run();
             this.m_rscene.runEnd();
+
             this.mouseCtrUpdate();
 
-            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-            this.m_rscene.updateCamera();
-            
+            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
             if(this.m_profileInstance != null)
             {
                 this.m_profileInstance.run();
@@ -478,13 +437,6 @@ export namespace demo
                 {
                     DispCtrObj.SelectedCtrlObj.updateFrameBox();
                 }
-            }
-            if(this.m_mouseUpBoo)
-            {
-                this.m_mouseUpBoo = false;
-                AxisCtrlObj.AxisSelectedObj = null;
-                DispCtrObj.MeshDragAxis.deselect();
-                DispCtrObj.Draging = false;
             }
         }
     }
