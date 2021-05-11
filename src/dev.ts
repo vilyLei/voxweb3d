@@ -28,9 +28,6 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-import * as DemoOrthoSubScene from "./demo/DemoOrthoSubScene";
-import Demo = DemoOrthoSubScene.demo.DemoOrthoSubScene;
-
 //  import * as DemoQuadLine from "./demo/DemoQuadLine";
 //  import Demo = DemoQuadLine.demo.DemoQuadLine;
 
@@ -286,6 +283,9 @@ import Demo = DemoOrthoSubScene.demo.DemoOrthoSubScene;
 //  import {DemoGLState as Demo} from "./demo/DemoGLState";
 
 //  import {DemoThread as Demo} from "./thread/example/DemoThread";
+
+import * as DemoOrthoSubScene from "./demo/DemoOrthoSubScene";
+import Demo = DemoOrthoSubScene.demo.DemoOrthoSubScene;
 
 //  import * as DemoOrthoBtn from "./demo/DemoOrthoBtn";
 //  import Demo = DemoOrthoBtn.demo.DemoOrthoBtn;
