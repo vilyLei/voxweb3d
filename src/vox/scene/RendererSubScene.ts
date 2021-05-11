@@ -10,6 +10,7 @@
 import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
+import SubStage3D from "../../vox/display/SubStage3D";
 import CameraBase from "../../vox/view/CameraBase";
 import RenderAdapter from "../../vox/render/RenderAdapter";
 import RenderProxy from "../../vox/render/RenderProxy";
@@ -65,7 +66,7 @@ export default class RendererSubScene implements IRenderer
     private m_stage3D:IRenderStage3D = null;
     private m_shader:RenderShader = null;
     private m_runFlag:number = -1;
-
+    private m_currStage3D:SubStage3D = null;
     constructor(renderer:RendererInstance,evtFlowEnabled:boolean)
     {
         this.m_evtFlowEnabled = evtFlowEnabled;
@@ -119,6 +120,10 @@ export default class RendererSubScene implements IRenderer
     {
         return this.m_renderProxy.getStage3D();
     }
+    getCurrentStage3D():IRenderStage3D
+    {
+        return this.m_currStage3D;
+    }
     getCamera():CameraBase
     {
         return this.m_camera;
@@ -150,7 +155,11 @@ export default class RendererSubScene implements IRenderer
     {
         if(evt3DCtr != null)
         {
-            evt3DCtr.initialize(this.getStage3D());
+            if(this.m_currStage3D == null)
+            {
+                this.m_currStage3D = new SubStage3D(this.m_renderProxy.getRCUid(),null);
+            }
+            evt3DCtr.initialize(this.getStage3D(),this.m_currStage3D);
             evt3DCtr.setRaySelector(this.m_rspace.getRaySelector());
         }
         this.m_evt3DCtr = evt3DCtr;
@@ -187,6 +196,14 @@ export default class RendererSubScene implements IRenderer
     getDevicePixelRatio():number
     {
         return this.m_adapter.getDevicePixelRatio();
+    }
+    addEventListener(type:number,target:any,func:(evt:any)=>void,captureEnabled:boolean = true,bubbleEnabled:boolean = false):void
+    {
+        this.m_currStage3D.addEventListener(type, target, func, captureEnabled,bubbleEnabled);
+    }
+    removeEventListener(type:number,target:any,func:(evt:any)=>void):void
+    {
+        this.m_currStage3D.removeEventListener(type, target, func);
     }
     initialize(rparam:RendererParam,renderProcessTotal:number = 1,createNewCamera:boolean = true):void
     {
@@ -556,7 +573,7 @@ export default class RendererSubScene implements IRenderer
         }
     }
     // rendering running
-    run():void
+    run(autoCycle:boolean = false):void
     {
         if(this.m_runFlag != 1)
         {
@@ -567,6 +584,10 @@ export default class RendererSubScene implements IRenderer
         for(let i:number = 0; i < this.m_processidsLen; ++i)
         {
             this.m_renderer.runAt(this.m_processids[i]);
+        }
+        if(autoCycle)
+        {
+            this.runEnd();
         }
     }
     runAt(index:number):void

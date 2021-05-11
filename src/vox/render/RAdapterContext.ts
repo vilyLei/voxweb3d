@@ -244,13 +244,16 @@ class RAdapterContext
             console.log("initialize WebGL failure!");
         }
     }
+    loseContext():void
+    {
+        this.m_gl.loseContext();
+    }
+    /**
+     * @returns return gpu context lost status
+     */
     isContextLost():boolean
     {
-        if(this.m_gl != null)
-        {
-            return this.m_gl.isContextLost();
-        }
-        return false;
+        return this.m_gl.isContextLost();
     }
     /**
      * @returns return system gpu context

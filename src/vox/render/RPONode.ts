@@ -44,7 +44,7 @@ export default class RPONode implements IPoolNode
     }
     isVsible():boolean
     {
-        return this.unit.drawEnabled;
+        return this.unit == null || this.unit.drawEnabled;
     }
     updateData():void
     {

@@ -383,7 +383,7 @@ export class RendererInstance implements IRenderer
      */            
     drawEntityByLockMaterial(entity:IRenderEntity,forceUpdateUniform:boolean = true):void
     {
-        if(entity != null && entity.getVisible() && entity.getRendererUid() == this.m_uid)
+        if(entity != null && entity.getVisible() && entity.getRendererUid() == this.m_uid && !this.m_renderProxy.isContextLost())
         {
             this.m_fixProcess.drawLockMaterialByDisp(entity.getDisplay(),forceUpdateUniform);
         }
@@ -393,7 +393,7 @@ export class RendererInstance implements IRenderer
      */     
     drawEntity(entity:IRenderEntity):void
     {
-        if(entity != null && entity.getVisible())
+        if(entity != null && entity.getVisible() && !this.m_renderProxy.isContextLost())
         {                    
             if(entity.getRendererUid() == this.m_uid)
             {
@@ -411,20 +411,26 @@ export class RendererInstance implements IRenderer
      */
     runAt(index:number):void
     {
-        this.m_processes[index].run();
+        if(!this.m_renderProxy.isContextLost())
+        {
+            this.m_processes[index].run();
+        }
     }
     runProcess(process:IRenderProcess):void
     {
-        if(process.getRCUid() == this.m_uid)
+        if(process.getRCUid() == this.m_uid && !this.m_renderProxy.isContextLost())
         {
             process.run();
         }
     }
     runFromIndexTo(index:number):void
     {
-        for(let i:number = index; i < this.m_processesLen; ++i)
+        if(!this.m_renderProxy.isContextLost())
         {
-            this.m_processes[i].run();
+            for(let i:number = index; i < this.m_processesLen; ++i)
+            {
+                this.m_processes[i].run();
+            }
         }
     }
     /**
@@ -432,7 +438,7 @@ export class RendererInstance implements IRenderer
      */
     run():void
     {
-        if(this.m_entity3DMana.isHaveEntity())
+        if(this.m_entity3DMana.isHaveEntity() && !this.m_renderProxy.isContextLost())
         {
             for(let i:number = 0; i < this.m_processesLen; ++i)
             {

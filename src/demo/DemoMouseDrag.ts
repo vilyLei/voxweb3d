@@ -8,12 +8,10 @@ import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
 import TextureProxy from "../vox/texture/TextureProxy";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
-import IRendererSpace from "../vox/scene/IRendererSpace";
 import RendererScene from "../vox/scene/RendererScene";
 import IEvt3DController from "../vox/scene/IEvt3DController";
 import MouseEvent from "../vox/event/MouseEvent";
 import EventBase from "../vox/event/EventBase";
-import Stage3D from "../vox/display/Stage3D";
 import H5FontSystem from "../vox/text/H5FontSys";
 
 import DisplayEntity from "../vox/entity/DisplayEntity";
@@ -22,12 +20,12 @@ import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import BoxFrame3D from "../vox/entity/BoxFrame3D";
-import DragAxis from "../voxeditor/entity/DragAxis";
 import DragAxisQuad3D from "../voxeditor/entity/DragAxisQuad3D";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import CameraTrack from "../vox/view/CameraTrack";
 import MouseEvt3DDispatcher from "../vox/event/MouseEvt3DDispatcher";
 import ObjData3DEntity from "../vox/entity/ObjData3DEntity";
+import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 
 export namespace demo
 {
@@ -149,9 +147,9 @@ export namespace demo
         constructor(){}
         
         private m_rscene:RendererScene = null;
-        private m_rspace:IRendererSpace = null;
         private m_texLoader:ImageTextureLoader;
         private m_camTrack:CameraTrack = null;
+        private m_stageDragSwinger:CameraStageDragSwinger = new CameraStageDragSwinger();
         
         private m_profileInstance:ProfileInstance = new ProfileInstance();
         private m_evtCtr:IEvt3DController = null;
@@ -172,26 +170,24 @@ export namespace demo
                 this.m_rscene = new RendererScene();
                 this.m_rscene.initialize(rparam,3);
                 this.m_rscene.setRendererProcessParam(1,true,true);
-                this.m_rspace = this.m_rscene.getSpace();
-                
+
                 this.m_rscene.enableMouseEvent(true);
                 this.m_evtCtr = this.m_rscene.getEvt3DController();
-                //for test
-                let stage3D:Stage3D = this.m_rscene.getStage3D() as Stage3D;
-                stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener,true,false);
-                stage3D.addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener,false,true);
-                stage3D.addEventListener(MouseEvent.MOUSE_MOVE,this,this.mouseMoveListener);
-                stage3D.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener);
-                stage3D.addEventListener(EventBase.RESIZE,this,this.stageResizeListener);
-                stage3D.addEventListener(MouseEvent.MOUSE_BG_DOWN,this,this.mouseBgDownListener);
-                stage3D.addEventListener(MouseEvent.MOUSE_BG_UP,this,this.mouseBgUpListener);
+                
+                this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(),this.m_rscene.getCamera());
+                
+                this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener,true,false);
+                this.m_rscene.addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener,false,true);
+                this.m_rscene.addEventListener(MouseEvent.MOUSE_MOVE,this,this.mouseMoveListener);
+                this.m_rscene.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener);
+                this.m_rscene.addEventListener(EventBase.RESIZE,this,this.stageResizeListener);
+                this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN,this,this.mouseBgDownListener);
+                this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_UP,this,this.mouseBgUpListener);
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-                
                 this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
 
-                
                 let tex0:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
                 let tex2:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/guangyun_H_0007.png");
@@ -357,7 +353,7 @@ export namespace demo
         run():void
         {
             this.m_rscene.setClearColor(this.m_bgColor);
-
+            this.m_stageDragSwinger.runWithYAxis();
             this.m_rscene.run(true);
             this.mouseCtrUpdate();
 

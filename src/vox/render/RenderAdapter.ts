@@ -354,6 +354,18 @@ class RenderAdapter
 	{
 		return this.m_rcontext.getDevicePixelRatio();
 	}
+	
+    loseContext():void
+    {
+        this.m_rcontext.loseContext();
+    }
+    /**
+     * @returns return gpu context lost status
+     */
+    isContextLost():boolean
+    {
+		return this.m_rcontext.isContextLost();
+	}
 	// read data format include float or unsigned byte ,etc.
 	readPixels(px:number, py:number, width:number, height:number, format:number, dataType:number, pixels:Uint8Array):void
 	{

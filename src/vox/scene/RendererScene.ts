@@ -205,7 +205,7 @@ export default class RendererScene implements IRenderer
     {
         if(evt3DCtr != null)
         {
-            evt3DCtr.initialize(this.getStage3D());
+            evt3DCtr.initialize(this.getStage3D(),this.getStage3D());
             evt3DCtr.setRaySelector(this.m_rspace.getRaySelector());
         }
         this.m_evt3DCtr = evt3DCtr;
@@ -257,7 +257,7 @@ export default class RendererScene implements IRenderer
         }
         return null;
     }
-    addEventListener(type:number,target:any,func:(evt:any)=>void,captureEnabled:boolean = true,bubbleEnabled:boolean = true):void
+    addEventListener(type:number,target:any,func:(evt:any)=>void,captureEnabled:boolean = true,bubbleEnabled:boolean = false):void
     {
         this.stage3D.addEventListener(type, target, func, captureEnabled,bubbleEnabled);
     }

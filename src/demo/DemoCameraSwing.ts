@@ -1,14 +1,11 @@
 
 import Vector3D from "../vox/math/Vector3D";
 import RendererDeviece from "../vox/render/RendererDeviece";
-import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import MouseEvent from "../vox/event/MouseEvent";
-import MouseEvt3DController from "../vox/scene/MouseEvt3DController";
 import Stage3D from "../vox/display/Stage3D";
-import IRendererSpace from "../vox/scene/IRendererSpace";
 import RendererSubScene from '../vox/scene/RendererSubScene';
 import RendererScene from "../vox/scene/RendererScene";
 
@@ -18,48 +15,19 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import ObjData3DEntity from "../vox/entity/ObjData3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
-import RaySelector from "../vox/scene/RaySelector";
 import ColorRectImgButton from "../orthoui/button/ColorRectImgButton";
 import BoundsButton from "../orthoui/button/BoundsButton";
+import CameraDragSwinger from "../voxeditor/control/CameraDragSwinger";
+import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 
-//import Vector3D = Vector3DT.vox.math.Vector3D;
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-//import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-//import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-//import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-//import RendererState = RendererStateT.vox.render.RendererState;
-//import RendererParam = RendererParamT.vox.scene.RendererParam;
-//import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-//import MouseEvent = MouseEventT.vox.event.MouseEvent;
-//import MouseEvt3DController = MouseEvt3DControllerT.vox.scene.MouseEvt3DController;
-//import Stage3D = Stage3DT.vox.display.Stage3D;
-//import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
-//import RendererScene = RendererSceneT.vox.scene.RendererScene;
-//import RendererSubScene = RendererSubSceneT.vox.scene.RendererSubScene;
-
-//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-//import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-//import ObjData3DEntity = ObjData3DEntityT.vox.entity.ObjData3DEntity;
-//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-//import TextureConst = TextureConstT.vox.texture.TextureConst;
-//import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-//import RaySelector = RaySelectorT.vox.scene.RaySelector;
-//import ColorRectImgButton = ColorRectImgButtonT.orthoui.button.ColorRectImgButton;
-//import BoundsButton = ColorButtonT.orthoui.button.BoundsButton;
 
 export namespace demo
 {
     export class DemoCameraSwing
     {
-        constructor()
-        {
-        }
+        constructor(){}
         
         private m_rscene:RendererScene = null;
         private m_uiscene:RendererSubScene = null;
@@ -67,25 +35,15 @@ export namespace demo
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
         private m_stage3D:Stage3D = null;
+        private m_dragSwinger:CameraDragSwinger = new CameraDragSwinger();
+        private m_stageDragSwinger:CameraStageDragSwinger = new CameraStageDragSwinger();
         initialize():void
         {
             console.log("DemoCameraSwing::initialize()......");
             if(this.m_rscene == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/warter_01.jpg");
-                let tex3:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/bt_reset_01.png");
-                tex0.mipmapEnabled = true;
-                tex0.setWrap(TextureConst.WRAP_REPEAT);
-                tex1.mipmapEnabled = true;
-                tex1.setWrap(TextureConst.WRAP_REPEAT);
-                tex2.mipmapEnabled = true;
-                tex2.setWrap(TextureConst.WRAP_REPEAT);
-                tex3.mipmapEnabled = true;
-                
-                this.m_statusDisp.initialize("rstatus");
+                this.m_statusDisp.initialize("rstatus", 180);
                 
                 let rparam:RendererParam = new RendererParam();
                 rparam.setMatrix4AllocateSize(8192 * 4);
@@ -94,11 +52,15 @@ export namespace demo
                 
                 this.m_rscene = new RendererScene();
                 this.m_rscene.initialize(rparam,3);
-                //this.m_rscene.setRendererProcessParam(1,true,true);
-                this.m_rscene.updateCamera();
+                this.m_rscene.enableMouseEvent(true);
+                
+                //this.m_dragSwinger.initialize(this.m_rscene.getStage3D(),this.m_rscene.getCamera());
+                this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(),this.m_rscene.getCamera());
 
-                let evtCtr:MouseEvt3DController = null;                
                 this.m_stage3D = this.m_rscene.getStage3D() as Stage3D;
+                
+                //this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN,this,this.mouseDownListener);
+                //this.m_stage3D.addEventListener(MouseEvent.MOUSE_BG_DOWN,this,this.mouseDownListener);
 
                 rparam = new RendererParam();
                 rparam.cameraPerspectiveEnabled = false;
@@ -107,19 +69,19 @@ export namespace demo
                 let subScene:RendererSubScene = null;
                 subScene = this.m_rscene.createSubScene();
                 subScene.initialize(rparam);
-                // init mouse pick system
-                let rspace:IRendererSpace = subScene.getSpace();
-                let raySelector:RaySelector = new RaySelector();
-                rspace.setRaySelector(raySelector);
-                evtCtr = new MouseEvt3DController();
-                subScene.setEvt3DController(evtCtr);
+
+                this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+                
+                let tex0:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/warter_01.jpg");
+                let tex3:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/bt_reset_01.png");
+                
+                subScene.enableMouseEvent(false);
                 this.m_uiscene = subScene;
                 // left bottom align, is origin position.
                 this.m_uiscene.getCamera().translationXYZ(this.m_stage3D.stageHalfWidth,this.m_stage3D.stageHalfHeight,1500.0);
-                this.m_uiscene.getCamera().update();
 
-                RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
-                RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 // mouse swing camera in the hot area.
                 let viewHotArea:BoundsButton = new BoundsButton();
                 viewHotArea.initializeBtn2D(this.m_stage3D.stageWidth, this.m_stage3D.stageHeight);
@@ -166,17 +128,13 @@ export namespace demo
                     this.m_rscene.addEntity(box);
                 }
                 let objUrl:string;
-                objUrl = "assets/obj/env_03.obj";
+                objUrl = "static/assets/obj/env_03.obj";
                 let objDisp:ObjData3DEntity = new ObjData3DEntity();
                 objDisp.moduleScale = 10.0;
                 objDisp.initializeByObjDataUrl(objUrl,[tex2]);
                 this.m_rscene.addEntity(objDisp);
             }
         }
-        
-        private m_mouseX:number = 0.0;
-        private m_mouseY:number = 0.0;
-        private m_mouseDownBoo:boolean = false;
         
         private resetCameraListener(evt:any):void
         {
@@ -185,15 +143,13 @@ export namespace demo
         }
         private mouseDownListener(evt:any):void
         {
-            //console.log("mouseDownListener call, this.m_rscene: "+this.m_rscene.toString());
-            this.m_mouseX = this.m_stage3D.mouseX;
-            this.m_mouseY = this.m_stage3D.mouseY;
-            this.m_mouseDownBoo = true;
+            console.log("mouseDownListener call, this.m_rscene: "+this.m_rscene.toString());
+            //this.m_dragSwinger.enabled();
         }
         private mouseUpListener(evt:any):void
         {
-            //console.log("mouseUpListener call, this.m_rscene: "+this.m_rscene.toString());
-            this.m_mouseDownBoo = false;
+            console.log("mouseUpListener call, this.m_rscene: "+this.m_rscene.toString());
+            //this.m_dragSwinger.disable();
         }
         private mouseWheeelListener(evt:any):void
         {
@@ -208,45 +164,18 @@ export namespace demo
                 this.m_rscene.getCamera().forward(25.0);
             }
         }
-        private updateMouseDrag():void
-        {
-            let dx:number = this.m_mouseX - this.m_stage3D.mouseX;
-            let dy:number = this.m_mouseY - this.m_stage3D.mouseY;
-            let abs_dx:number = Math.abs(dx);
-            let abs_dy:number = Math.abs(dy);
-            if(abs_dx > abs_dy)
-            {
-                if(abs_dx > 0.5)this.m_rscene.getCamera().swingHorizontalWithAxis(dx * 0.2,Vector3D.Y_AXIS);
-            }
-            else
-            {
-                if(abs_dy > 0.5)this.m_rscene.getCamera().swingVertical(dy * -0.2);
-            }
-            this.m_mouseX = this.m_stage3D.mouseX;
-            this.m_mouseY = this.m_stage3D.mouseY;
-        }
         run():void
         {
             this.m_statusDisp.update();
-            if(this.m_mouseDownBoo)
-            {
-                this.updateMouseDrag();
-            }
+
+            //  this.m_dragSwinger.runWithYAxis();
+            this.m_stageDragSwinger.runWithYAxis();
             // main renderer scene
             this.m_rscene.setClearRGBColor3f(0.0, 0.5, 0.0);
-            this.m_rscene.runBegin();
-            this.m_rscene.update();
-            this.m_rscene.run();
+            
+            this.m_rscene.run(true);
 
-            // ortho ui renderer scene
-            this.m_uiscene.runBegin();
-            this.m_uiscene.update();
-            this.m_uiscene.cullingTest();
-            this.m_uiscene.run();
-            this.m_uiscene.runEnd();
-
-            this.m_rscene.runEnd();
-            this.m_rscene.updateCamera();
+            if(this.m_uiscene != null)this.m_uiscene.run(true);
 
         }
     }

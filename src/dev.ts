@@ -28,14 +28,8 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-//  import * as DemoOrthoSubScene from "./demo/DemoOrthoSubScene";
-//  import Demo = DemoOrthoSubScene.demo.DemoOrthoSubScene;
-
-//  import * as DemoOrthoBtn from "./demo/DemoOrthoBtn";
-//  import Demo = DemoOrthoBtn.demo.DemoOrthoBtn;
-
-//  import * as DemoCameraSwing from "./demo/DemoCameraSwing";
-//  import Demo = DemoCameraSwing.demo.DemoCameraSwing;
+import * as DemoOrthoSubScene from "./demo/DemoOrthoSubScene";
+import Demo = DemoOrthoSubScene.demo.DemoOrthoSubScene;
 
 //  import * as DemoQuadLine from "./demo/DemoQuadLine";
 //  import Demo = DemoQuadLine.demo.DemoQuadLine;
@@ -293,11 +287,17 @@
 
 //  import {DemoThread as Demo} from "./thread/example/DemoThread";
 
+//  import * as DemoOrthoBtn from "./demo/DemoOrthoBtn";
+//  import Demo = DemoOrthoBtn.demo.DemoOrthoBtn;
+
 //  import * as DemoMobileEvt from "./demo/DemoMobileEvt";
 //  import Demo = DemoMobileEvt.demo.DemoMobileEvt;
 
-import * as DemoMouseDrag from "./demo/DemoMouseDrag";
-import Demo = DemoMouseDrag.demo.DemoMouseDrag;
+//  import * as DemoMouseDrag from "./demo/DemoMouseDrag";
+//  import Demo = DemoMouseDrag.demo.DemoMouseDrag;
+
+//  import * as DemoCameraSwing from "./demo/DemoCameraSwing";
+//  import Demo = DemoCameraSwing.demo.DemoCameraSwing;
 
 //  import * as DemoObj3DModule from "./demo/DemoObj3DModule";
 //  import Demo = DemoObj3DModule.demo.DemoObj3DModule;

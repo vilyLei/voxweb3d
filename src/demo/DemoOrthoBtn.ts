@@ -4,16 +4,13 @@ import RendererDeviece from "../vox/render/RendererDeviece";
 import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
-import RendererInstance from "../vox/scene/RendererInstance";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import MouseEvent from "../vox/event/MouseEvent";
-import KeyboardEvent from "../vox/event/KeyboardEvent";
 import Stage3D from "../vox/display/Stage3D";
 import IRendererSpace from "../vox/scene/IRendererSpace";
 import RendererScene from "../vox/scene/RendererScene";
 import RendererSubScene from '../vox/scene/RendererSubScene';
 import RaySelector from "../vox/scene/RaySelector";
-import RayGpuSelector from "../vox/scene/RayGpuSelector";
 import MouseEvt3DController from "../vox/scene/MouseEvt3DController";
 
 import DisplayEntity from "../vox/entity/DisplayEntity";
@@ -34,42 +31,6 @@ import MouseEvt3DDispatcher from "../vox/event/MouseEvt3DDispatcher";
 import ColorRectImgButton from "../orthoui/button/ColorRectImgButton";
 import BoundsButton from "../orthoui/button/BoundsButton";
 
-//import Vector3D = Vector3DT.vox.math.Vector3D;
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-//import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-//import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-//import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-//import RendererState = RendererStateT.vox.render.RendererState;
-//import RendererParam = RendererParamT.vox.scene.RendererParam;
-//import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-//import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-//import MouseEvent = MouseEventT.vox.event.MouseEvent;
-//import KeyboardEvent = KeyboardEventT.vox.event.KeyboardEvent;
-//import Stage3D = Stage3DT.vox.display.Stage3D;
-//import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
-//import RendererScene = RendererSceneT.vox.scene.RendererScene;
-//import RendererSubScene = RendererSubSceneT.vox.scene.RendererSubScene;
-//import RaySelector = RaySelectorT.vox.scene.RaySelector;
-//import RayGpuSelector = RayGpuSelectorT.vox.scene.RayGpuSelector;
-//import MouseEvt3DController = MouseEvt3DControllerT.vox.scene.MouseEvt3DController;
-
-//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-//import BoundsEntity = BoundsEntityT.vox.entity.BoundsEntity;
-//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-//import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-//import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
-//import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
-//import BrokenLine3DEntity = BrokenLine3DEntityT.vox.entity.BrokenLine3DEntity;
-//import ObjData3DEntity = ObjData3DEntityT.vox.entity.ObjData3DEntity;
-//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-//import TextureConst = TextureConstT.vox.texture.TextureConst;
-//import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-//import MouseEvt3DDispatcher = MouseEvt3DDispatcherT.vox.event.MouseEvt3DDispatcher;
-//import ColorRectImgButton = ColorRectImgButtonT.orthoui.button.ColorRectImgButton;
-//import BoundsButton = ColorButtonT.orthoui.button.BoundsButton;
 
 export namespace demo
 {
@@ -134,11 +95,9 @@ export namespace demo
         private m_rscene:RendererScene = null;
         private m_subScene:RendererSubScene = null;
         private m_boundsLine:BrokenLine3DEntity = null;
-        private m_rspace:IRendererSpace = null;
         private m_texLoader:ImageTextureLoader;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
-        private m_delayAddEntitys:DisplayEntity[] = [];
         private m_stage3D:Stage3D = null;
         initialize():void
         {
@@ -146,17 +105,6 @@ export namespace demo
             if(this.m_rscene == null)
             {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/warter_01.jpg");
-                let tex3:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/fruit_01.jpg");
-                tex0.mipmapEnabled = true;
-                tex0.setWrap(TextureConst.WRAP_REPEAT);
-                tex1.mipmapEnabled = true;
-                tex1.setWrap(TextureConst.WRAP_REPEAT);
-                tex2.mipmapEnabled = true;
-                tex2.setWrap(TextureConst.WRAP_REPEAT);
-                tex3.mipmapEnabled = true;
                 
                 this.m_statusDisp.initialize("rstatus");
                 let rparam:RendererParam;
@@ -169,13 +117,19 @@ export namespace demo
                 this.m_rscene.initialize(rparam,3);
                 this.m_stage3D = this.m_rscene.getStage3D() as Stage3D;
 
-                let evtCtr:MouseEvt3DController = null;
+                this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+                let tex0:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/warter_01.jpg");
+                let tex3:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/fruit_01.jpg");
 
-                this.m_rspace = this.m_rscene.getSpace();
-                this.m_rspace.setRaySelector(new RayGpuSelector());
-                //this.m_rspace.setRaySelector(new RaySelector());
-                evtCtr = new MouseEvt3DController();
-                this.m_rscene.setEvt3DController(evtCtr);
+                let evtCtr:MouseEvt3DController = null;
+                this.m_rscene.enableMouseEvent( true );
+                //  this.m_rspace = this.m_rscene.getSpace();
+                //  this.m_rspace.setRaySelector(new RayGpuSelector());
+                //  //this.m_rspace.setRaySelector(new RaySelector());
+                //  evtCtr = new MouseEvt3DController();
+                //  this.m_rscene.setEvt3DController(evtCtr);
                 
                 rparam = new RendererParam();
                 rparam.cameraPerspectiveEnabled = false;
@@ -184,22 +138,21 @@ export namespace demo
                 let subScene:RendererSubScene = null;
                 subScene = this.m_rscene.createSubScene();
                 subScene.initialize(rparam);
-                let rspace:IRendererSpace = subScene.getSpace();
-                rspace.setRaySelector(new RaySelector());
-                evtCtr = new MouseEvt3DController();
-                subScene.setEvt3DController(evtCtr);
+                
+                subScene.enableMouseEvent(false);
                 this.m_subScene = subScene;
                 // align to left bottom
                 this.m_subScene.getCamera().translationXYZ(this.m_stage3D.stageHalfWidth,this.m_stage3D.stageHalfHeight,1500.0);
                 this.m_subScene.getCamera().update();
 
-                this.m_stage3D.addEventListener(MouseEvent.MOUSE_CLICK,this,this.mouseClickListener);
-                this.m_stage3D.addEventListener(MouseEvent.MOUSE_DOUBLE_CLICK,this,this.mouseDoubleClickListener);
-                //  this.m_stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
-                //  this.m_stage3D.addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener);
-                //  this.m_stage3D.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener);
-                //  this.m_stage3D.addEventListener(KeyboardEvent.KEY_DOWN,this,this.keyDownListener);
-                //  this.m_stage3D.addEventListener(KeyboardEvent.KEY_UP,this,this.keyUpListener);
+                this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
+                this.m_rscene.addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener);
+                this.m_rscene.addEventListener(MouseEvent.MOUSE_CLICK,this,this.mouseClickListener);
+                this.m_rscene.addEventListener(MouseEvent.MOUSE_DOUBLE_CLICK,this,this.mouseDoubleClickListener);
+
+                
+                //  this.m_subScene.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
+                //  this.m_subScene.addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener);
 
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rscene.getCamera());
@@ -207,11 +160,6 @@ export namespace demo
                 RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
                 
-                let imgBtn:ColorRectImgButton = new ColorRectImgButton();
-                imgBtn.initialize(0.0,0.0,50.0,50.0,[tex3]);
-                this.m_subScene.addEntity(imgBtn);
-                imgBtn.setXY(80.0,60.0);
-
                 let boundsBtn:BoundsButton = new BoundsButton();
                 boundsBtn.initializeBtn2D(50.0,50.0);
                 this.m_subScene.addEntity(boundsBtn);
@@ -221,8 +169,11 @@ export namespace demo
                 this.m_boundsLine.initializeQuad(new Vector3D(),new Vector3D(50.0),new Vector3D(50.0,50.0),new Vector3D(0.0,50.0));
                 this.m_subScene.addEntity(this.m_boundsLine);
                 //return;
-                let evtCtrObj:DispEvtevtCtrObj;
-                let dispatcher:MouseEvt3DDispatcher;
+                let imgBtn:ColorRectImgButton = new ColorRectImgButton();
+                imgBtn.initialize(0.0,0.0,50.0,50.0,[tex3]);
+                this.m_subScene.addEntity(imgBtn);
+                imgBtn.setXY(80.0,60.0);
+
                 let i:number = 0;
                 let j:number = 0;
                 let plane:Plane3DEntity;
@@ -236,36 +187,23 @@ export namespace demo
                         let px:number = 330.0 + (pw + 20.0) * j;
                         let py:number = 30.0 + (ph + 20.0) * i;
                         plane = new Plane3DEntity();
+                        plane.name = "plane_"+i;
                         //plane.showDoubleFace();
                         plane.flipVerticalUV = true;
                         plane.initializeXOY(0.0,0.0,pw,ph,[tex0]);
-                        
-                        //this.m_rscene.addEntity(plane);
                         plane.setXYZ(px,py,0.0);
                         this.m_subScene.addEntity(plane);
-                        plane.getDisplay().name = "plane_"+i;
                         
                         let boundsMin:Vector3D = new Vector3D(0.0,0.0,0.0);
                         let boundsMax:Vector3D = new Vector3D(pw,ph,0.0);
                         // 作为不会被渲染的逻辑体对象，可以被遮挡剔除和射线拾取的过程处理
                         let boundsDisp:BoundsEntity = new BoundsEntity();
+                        boundsDisp.name = "bounds_plane_"+i;
                         boundsDisp.initialize(boundsMin,boundsMax);
                         boundsDisp.setXYZ(px,py,0.0);
                         this.m_subScene.addEntity(boundsDisp);
-                        boundsDisp.mouseEnabled = true;
 
-                        evtCtrObj = new DispEvtevtCtrObj();
-                        evtCtrObj.disp = plane;
-                        evtCtrObj.name = "plane_"+i;
-                        dispatcher = new MouseEvt3DDispatcher();
-                        dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,evtCtrObj,evtCtrObj.mouseDownListener);
-                        dispatcher.addEventListener(MouseEvent.MOUSE_UP,evtCtrObj,evtCtrObj.mouseUpListener);
-                        dispatcher.addEventListener(MouseEvent.MOUSE_OVER,evtCtrObj,evtCtrObj.mouseOverListener);
-                        dispatcher.addEventListener(MouseEvent.MOUSE_OUT,evtCtrObj,evtCtrObj.mouseOutListener);
-                        dispatcher.addEventListener(MouseEvent.MOUSE_MOVE,evtCtrObj,evtCtrObj.mouseMoveListener);
-                        boundsDisp.setEvtDispatcher(dispatcher);
-                        //plane.setEvtDispatcher(dispatcher);                    
-                        //plane.mouseEnabled = true;
+                        this.useEvt(plane,boundsDisp);
                     }
                 }
                 
@@ -278,51 +216,45 @@ export namespace demo
                 for(i = 0; i < 3; ++i)
                 {
                     box = new Box3DEntity();
+                    box.name = "box_"+i;
                     box.initialize(new Vector3D(-50.0,-50.0,-50.0),new Vector3D(50.0,50.0,5.0),[tex1]);
                     box.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
                     this.m_rscene.addEntity(box);
 
-                    evtCtrObj = new DispEvtevtCtrObj();
-                    evtCtrObj.disp = box;
-                    evtCtrObj.name = "box_"+i;
-                    dispatcher = new MouseEvt3DDispatcher();
-                    dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,evtCtrObj,evtCtrObj.mouseDownListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_UP,evtCtrObj,evtCtrObj.mouseUpListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_OVER,evtCtrObj,evtCtrObj.mouseOverListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_OUT,evtCtrObj,evtCtrObj.mouseOutListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_MOVE,evtCtrObj,evtCtrObj.mouseMoveListener);
-                    box.setEvtDispatcher(dispatcher);
-                    box.mouseEnabled = true;
+                    this.useEvt(box);
 
                 }
                 for(i = 0; i < 3; ++i)
                 {
                     sphere = new Sphere3DEntity();
+                    sphere.name = "sphere_"+i;
                     sphere.initialize(110.0,15,15,[tex1]);
                     sphere.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
                     this.m_rscene.addEntity(sphere);
-                    sphere.getDisplay().name = "sphere";
 
-                    evtCtrObj = new DispEvtevtCtrObj();
-                    evtCtrObj.disp = sphere;
-                    evtCtrObj.name = "sphere_"+i;
-                    dispatcher = new MouseEvt3DDispatcher();
-                    dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,evtCtrObj,evtCtrObj.mouseDownListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_UP,evtCtrObj,evtCtrObj.mouseUpListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_OVER,evtCtrObj,evtCtrObj.mouseOverListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_OUT,evtCtrObj,evtCtrObj.mouseOutListener);
-                    dispatcher.addEventListener(MouseEvent.MOUSE_MOVE,evtCtrObj,evtCtrObj.mouseMoveListener);
-                    sphere.setEvtDispatcher(dispatcher);                    
-                    sphere.mouseEnabled = true;
+                    this.useEvt(sphere);
                 }
-
-                //  let objUrl:string;
-                //  objUrl = "assets/obj/env_03.obj";
-                //  let objDisp:ObjData3DEntity = new ObjData3DEntity();
-                //  objDisp.moduleScale = 10.0;
-                //  objDisp.initializeByObjDataUrl(objUrl,[tex2]);
-                //  this.m_delayAddEntitys.push(objDisp);
             }
+        }
+        private useEvt(disp:DisplayEntity, evtTarget:any = null):void
+        {
+            let evtCtrObj:DispEvtevtCtrObj = new DispEvtevtCtrObj();
+            evtCtrObj.disp = disp;
+            evtCtrObj.name = disp.name;
+            let dispatcher:MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
+            dispatcher.addEventListener(MouseEvent.MOUSE_DOWN,evtCtrObj,evtCtrObj.mouseDownListener);
+            dispatcher.addEventListener(MouseEvent.MOUSE_UP,evtCtrObj,evtCtrObj.mouseUpListener);
+            dispatcher.addEventListener(MouseEvent.MOUSE_OVER,evtCtrObj,evtCtrObj.mouseOverListener);
+            dispatcher.addEventListener(MouseEvent.MOUSE_OUT,evtCtrObj,evtCtrObj.mouseOutListener);
+            dispatcher.addEventListener(MouseEvent.MOUSE_MOVE,evtCtrObj,evtCtrObj.mouseMoveListener);
+            if(evtTarget != null)
+            {
+                evtTarget.setEvtDispatcher(dispatcher); 
+            }else{
+                
+                disp.setEvtDispatcher(dispatcher); 
+            }           
+            disp.mouseEnabled = true;
         }
         boundsBtnOverListener(evt:any):void
         {
@@ -334,25 +266,6 @@ export namespace demo
             console.log("boundsBtnOutListener call.");
             this.m_boundsLine.setRGB3f(1.0,1.0,1.0);
         }
-        private m_mouseX:number = 0.0;
-        private m_mouseY:number = 0.0;
-        private m_mouseDownBoo:boolean = false;
-        private m_dragDirec:number = 0;
-        keyDownListener(evt:any):void
-        {
-            console.log("keyDownListener call, key: "+evt.key+",repeat: "+evt.repeat);
-        }
-        keyUpListener(evt:any):void
-        {
-            console.log("keyUpListener call, key: "+evt.key+",repeat: "+evt.repeat);
-            switch(evt.key)
-            {
-                case "z":
-                    console.log("reset cam lookAt.");
-                    this.m_rscene.getCamera().lookAtRH(new Vector3D(1500.0,1500.0,1500.0),new Vector3D(),new Vector3D(0.0,1.0,0.0));
-                break;
-            }
-        }
         mouseDoubleClickListener(evt:any):void
         {
             console.log("mouseDoubleClickListener call, this.m_rscene: "+this.m_rscene.toString());
@@ -363,87 +276,24 @@ export namespace demo
         }
         mouseDownListener(evt:any):void
         {
-            //console.log("mouseDownListener call, this.m_rscene: "+this.m_rscene.toString());
-            this.m_mouseX = this.m_stage3D.mouseX;
-            this.m_mouseY = this.m_stage3D.mouseY;
-            this.m_mouseDownBoo = true;
+            console.log("mouseDownListener call, this.m_rscene: "+this.m_rscene.toString());
         }
         mouseUpListener(evt:any):void
         {
-            //console.log("mouseUpListener call, this.m_rscene: "+this.m_rscene.toString());
-            this.m_mouseDownBoo = false;
-        }
-        mouseWheeelListener(evt:any):void
-        {
-            //console.log("mouseWheeelListener call, evt.wheelDeltaY: "+evt.wheelDeltaY);
-            if(evt.wheelDeltaY < 0)
-            {
-                // zoom in
-                this.m_rscene.getCamera().forward(-25.0);
-            }
-            else
-            {
-                // zoom out
-                this.m_rscene.getCamera().forward(25.0);
-            }
-        }
-        private updateMouseDrag():void
-        {
-            let dx:number = this.m_mouseX - this.m_stage3D.mouseX;
-            let dy:number = this.m_mouseY - this.m_stage3D.mouseY;
-            let abs_dx:number = Math.abs(dx);
-            let abs_dy:number = Math.abs(dy);
-            if(abs_dx > abs_dy)
-            {
-                if(abs_dx > 0.5)this.m_rscene.getCamera().swingHorizontal(dx * 0.002);
-            }
-            else
-            {
-                if(abs_dy > 0.5)this.m_rscene.getCamera().swingVertical(dy * 0.002);
-            }
-            this.m_mouseX = this.m_stage3D.mouseX;
-            this.m_mouseY = this.m_stage3D.mouseY;
-        }
-        private updateLoad():void
-        {
-            if(this.m_delayAddEntitys.length > 0)
-            {
-                let len:number = this.m_delayAddEntitys.length;
-                for(let i:number = 0; i < len; ++i)
-                {
-                    if(this.m_delayAddEntitys[i].getMesh() != null)
-                    {
-                        this.m_rscene.addEntity(this.m_delayAddEntitys[i]);
-                        this.m_delayAddEntitys.splice(i,1);
-                        --i;
-                        --len;
-                    }
-                }
-            }
+            console.log("mouseUpListener call, this.m_rscene: "+this.m_rscene.toString());
         }
         run():void
         {
             this.m_statusDisp.update();
-            //  this.updateLoad();
-            //  if(this.m_mouseDownBoo)
-            //  {
-            //      this.updateMouseDrag();
-            //  }
-            this.m_rscene.setViewPort(0,0,this.m_stage3D.stageWidth,this.m_stage3D.stageHeight);
+            //this.m_rscene.setViewPort(0,0,this.m_stage3D.stageWidth,this.m_stage3D.stageHeight);
             this.m_rscene.setClearRGBColor3f(0.0, 0.5, 0.0);
-            this.m_rscene.runBegin();
-            this.m_rscene.update();
-            this.m_rscene.run();
+            
+            this.m_rscene.run(true);
 
             //this.m_subScene.setViewPort(0,0,this.m_stage3D.stageWidth,this.m_stage3D.stageHeight);
-            this.m_subScene.runBegin();
-            this.m_subScene.update();
-            this.m_subScene.run();
-            this.m_subScene.runEnd();
+            this.m_subScene.run(true);
 
-            this.m_rscene.runEnd();
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-            this.m_rscene.updateCamera();
         }
     }
 }

@@ -56,7 +56,7 @@ class ContextMouseEvtDispatcher
                     stage.mouseViewX = px;
                     stage.mouseViewY = py;
                     selfT.m_singleDown = true;
-                    stage.mouseDown();
+                    stage.mouseDown(1);
                 }
                 else
                 {
@@ -81,7 +81,7 @@ class ContextMouseEvtDispatcher
                 let py = 0;
                 if(list.length < 1)
                 {
-                    stage.mouseUp();
+                    stage.mouseUp(1);
                 }
                 else
                 {
@@ -195,7 +195,7 @@ class ContextMouseEvtDispatcher
                 //  console.log("ContextMouseEvtDispatcher::onmousedown(), pos: "+stage.mouseX+","+stage.mouseY);
                 if(evt.button == 0)
                 {
-                    stage.mouseDown();
+                    stage.mouseDown(1);
                 }else if(evt.button == 2)
                 {
                     stage.mouseRightDown();
@@ -214,7 +214,7 @@ class ContextMouseEvtDispatcher
                 //
                 if(evt.button == 0)
                 {
-                    stage.mouseUp();
+                    stage.mouseUp(1);
                 }
                 else if(evt.button == 2)
                 {

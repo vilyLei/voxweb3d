@@ -514,6 +514,18 @@ class RenderProxy
     {
         this.m_adapter.resetPolygonOffset();
     }
+    
+    loseContext():void
+    {
+        this.m_adapter.loseContext();
+    }
+    /**
+     * @returns return gpu context lost status
+     */
+    isContextLost():boolean
+    {
+        return this.m_adapter.isContextLost();
+    }
     toString():string
     {
         return "[Object RenderProxy()]";

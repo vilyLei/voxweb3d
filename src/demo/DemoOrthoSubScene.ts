@@ -101,17 +101,10 @@ export namespace demo
                 //  this.m_rscene.updateCamera();
                 this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
                 
-                let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/warter_01.jpg");
-                let tex3:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_02.jpg");
-                tex0.mipmapEnabled = true;
-                tex0.setWrap(TextureConst.WRAP_REPEAT);
-                tex1.mipmapEnabled = true;
-                tex1.setWrap(TextureConst.WRAP_REPEAT);
-                tex2.mipmapEnabled = true;
-                tex2.setWrap(TextureConst.WRAP_REPEAT);
-                tex3.mipmapEnabled = true;
+                let tex0:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/warter_01.jpg");
+                let tex3:TextureProxy = this.m_texLoader.getTexByUrl("static/assets/flare_core_02.jpg");
 
                 let evtCtr:MouseEvt3DController = null;
 

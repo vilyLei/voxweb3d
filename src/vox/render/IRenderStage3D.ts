@@ -7,7 +7,6 @@
 
 import UniformVec4Probe from "../../vox/material/UniformVec4Probe";
 
-//import UniformVec4Probe = UniformVec4ProbeT.vox.material.UniformVec4Probe;
 interface IRenderStage3D
 {
     uProbe:UniformVec4Probe;
@@ -38,8 +37,10 @@ interface IRenderStage3D
     
     update():void;
     
-    mouseDown():void;
-    mouseUp():void;
+    mouseDown(phase:number):void;
+    mouseUp(phase:number):void;
+    mouseBgDown():void;
+    mouseBgUp():void;
     mouseClick():void;
     mouseDoubleClick():void;
     mouseRightDown():void;

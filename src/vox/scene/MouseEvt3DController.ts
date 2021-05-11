@@ -8,7 +8,7 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 import MouseEvent from "../../vox/event/MouseEvent";
-import Stage3D from "../../vox/display/Stage3D";
+import IRenderStage3D from "../../vox/render/IRenderStage3D";
 
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import RaySelectedNode from '../../vox/scene/RaySelectedNode';
@@ -18,22 +18,27 @@ import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 
 export default class MouseEvt3DController implements IEvt3DController
 {
-    constructor(){}
-
-    private m_stage:Stage3D = null;
+    private m_mainStage:IRenderStage3D = null;
+    private m_currStage:IRenderStage3D = null;
     private m_raySelector:IRaySelector = null;
     private m_unlockBoo:boolean = true;
-    initialize(stage:Stage3D):void
+    private static s_uid:number = 0;
+    private m_uid:number = 0;
+    constructor(){
+        this.m_uid = MouseEvt3DController.s_uid++;
+    }
+
+    initialize(mainStage:IRenderStage3D,currStage:IRenderStage3D):void
     {
         //console.log("MouseEvt3DController::initialize()......");
-        if(this.m_stage == null)
-        {
-            this.m_stage = stage;
-            stage.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
-            stage.addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener);
-            stage.addEventListener(MouseEvent.MOUSE_MOVE,this,this.mouseMoveListener);
-            stage.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener);   
-            
+        if(this.m_mainStage == null)
+        {            
+            this.m_mainStage = mainStage;
+            this.m_currStage = currStage;
+            mainStage.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener,true,false);
+            mainStage.addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener,true,false);
+            mainStage.addEventListener(MouseEvent.MOUSE_MOVE,this,this.mouseMoveListener,true,false);
+            mainStage.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener,true,false);
         }
     }
     setRaySelector(raySelector:IRaySelector):void
@@ -49,7 +54,7 @@ export default class MouseEvt3DController implements IEvt3DController
     private m_evtYList:Float32Array = new Float32Array(64);
     private m_evtWheelDeltaYs:Float32Array = new Float32Array(64);
     private m_evtTotal:number = 0;
-    private m_unlockMouseEvt:boolean = true;
+    private static s_unlockMouseEvt:boolean = true;
     private mouseWheeelListener(evt:any):void
     {
         this.m_evtTypes[this.m_evtTotal] = (evt.type);
@@ -71,7 +76,7 @@ export default class MouseEvt3DController implements IEvt3DController
     }
     private mouseDownListener(evt:any):void
     {
-        if(this.m_unlockMouseEvt)
+        if(MouseEvt3DController.s_unlockMouseEvt)
         {
             this.m_evtTypes[this.m_evtTotal] = (evt.type);
             this.m_evtXList[this.m_evtTotal] = (evt.mouseX);
@@ -83,7 +88,7 @@ export default class MouseEvt3DController implements IEvt3DController
     }
     private mouseUpListener(evt:any):void
     {
-        if(this.m_unlockMouseEvt)
+        if(MouseEvt3DController.s_unlockMouseEvt)
         {
             this.m_evtTypes[this.m_evtTotal] = (evt.type);
             this.m_evtXList[this.m_evtTotal] = (evt.mouseX);
@@ -111,8 +116,27 @@ export default class MouseEvt3DController implements IEvt3DController
             let wpv:Vector3D;;
             if(flag > -1)
             {
-                node = status<1?this.m_raySelector.getSelectedNode():null;
                 
+                if(this.m_currStage != this.m_mainStage && this.m_currStage != null)
+                {
+                    MouseEvt3DController.s_unlockMouseEvt = false;
+                    for(i = 0;i < this.m_evtTotal;i++)
+                    {
+                        switch(this.m_evtTypes[i])
+                        {
+                            case MouseEvent.MOUSE_DOWN:
+                                this.m_currStage.mouseDown(1);
+                                break;
+                            case MouseEvent.MOUSE_UP:
+                                this.m_currStage.mouseUp(1);
+                                break;
+                            default:
+                                break;
+                        }
+                    }
+                    MouseEvt3DController.s_unlockMouseEvt = true;
+                }
+                node = status<1?this.m_raySelector.getSelectedNode():null;                
                 if(node != null)
                 {
                     lpv = node.lpv;
@@ -195,39 +219,43 @@ export default class MouseEvt3DController implements IEvt3DController
                         }
                         this.m_evtTarget = null;
                     }
-                    for(i = 0; i < this.m_evtTotal; i++)
+                    if(this.m_currStage != null)
+                    {
+                        for(i = 0; i < this.m_evtTotal; i++)
+                        {
+                            switch(this.m_evtTypes[i])
+                            {
+                                case MouseEvent.MOUSE_DOWN:
+                                    this.m_currStage.mouseBgDown();
+                                    break;
+                                case MouseEvent.MOUSE_UP:
+                                    this.m_currStage.mouseBgUp();
+                                    break;
+                                default:
+                                    break;
+                            }
+                        }
+                    }
+                }
+                if(this.m_currStage != null)
+                {
+                    MouseEvt3DController.s_unlockMouseEvt = false;
+                    for(i = 0;i < this.m_evtTotal;i++)
                     {
                         switch(this.m_evtTypes[i])
                         {
                             case MouseEvent.MOUSE_DOWN:
-                                this.m_stage.mouseBgDown();
+                                this.m_currStage.mouseDown(2);
                                 break;
                             case MouseEvent.MOUSE_UP:
-                                this.m_stage.mouseBgUp();
+                                this.m_currStage.mouseUp(2);
                                 break;
                             default:
                                 break;
                         }
                     }
+                    MouseEvt3DController.s_unlockMouseEvt = true;
                 }
-                ///*
-                this.m_unlockMouseEvt = false;
-                for(i = 0;i < this.m_evtTotal;i++)
-                {
-                    switch(this.m_evtTypes[i])
-                    {
-                        case MouseEvent.MOUSE_DOWN:
-                            this.m_stage.mouseDown(2);
-                            break;
-                        case MouseEvent.MOUSE_UP:
-                            this.m_stage.mouseUp(2);
-                            break;
-                        default:
-                            break;
-                    }
-                }
-                this.m_unlockMouseEvt = true;
-                //*/
             }
             if(flag == 0 && dispatcher != null)
             {

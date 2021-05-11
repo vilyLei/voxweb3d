@@ -11,11 +11,8 @@ import IRaySelector from "../../vox/scene/IRaySelector";
 
 export default interface IEvt3DController
 {
-    initialize(stage:IRenderStage3D):void;
+    initialize(mainStage:IRenderStage3D,currStage:IRenderStage3D):void;
     setRaySelector(raySelector:IRaySelector):void;
-    //  // if mouse ray pick nonething, bgMouseEvent dispatch evts
-    //  addBGMouseEventListener(type:number,target:any,func:(evt:any)=>void,captureEnabled:boolean,bubbleEnabled:boolean):void;
-    //  removeBGMouseEventListener(type:number,target:any,func:(evt:any)=>void):void;
     // @param       evtFlowPhase: 0(none phase),1(capture phase),2(bubble phase)
     // @param       status: 1(default process),1(deselect ray pick target)
     // @return      1 is send evt yes,0 is send evt no,-1 is event nothing
