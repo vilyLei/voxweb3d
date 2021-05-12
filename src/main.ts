@@ -73,8 +73,7 @@ import Demo = DemoMobileEvt.demo.DemoMobileEvt;
 //  import * as DemoGpuTexMana from "./demo/DemoGpuTexMana";
 //  import Demo = DemoGpuTexMana.demo.DemoGpuTexMana;
 
-//  import * as DemoAPlane from "./demo/DemoAPlane";
-//  import Demo = DemoAPlane.demo.DemoAPlane;
+//  import {DemoAPlane as Demo} from "./demo/DemoAPlane";
 
 //  import * as DemoPrimitive from "./demo/DemoPrimitive";
 //  import Demo = DemoPrimitive.demo.DemoPrimitive;
@@ -82,11 +81,9 @@ import Demo = DemoMobileEvt.demo.DemoMobileEvt;
 //  import * as DemoMultiRenderer from "./demo/DemoMultiRenderer";
 //  import Demo = DemoMultiRenderer.demo.DemoMultiRenderer;
 
-//  import * as DemoEmptyRenderer from "./demo/DemoEmptyRenderer";
-//  import Demo = DemoEmptyRenderer.demo.DemoEmptyRenderer;
+//  import {DemoEmptyRenderer as Demo} from "./demo/DemoEmptyRenderer";
 
-//  import * as DemoEmptyRendererScene from "./demo/DemoEmptyRendererScene";
-//  import Demo = DemoEmptyRendererScene.demo.DemoEmptyRendererScene;
+//  import {DemoEmptyRendererScene as Demo} from "./demo/DemoEmptyRendererScene";
 
 
 ///////////////////////////////////////////////////////////////////////////////

@@ -120,10 +120,11 @@ export class RendererInstance implements IRenderer
             this.m_renderProxy.updateCamera();
         }
     }
-    initialize(param:RendererParam):void
+    initialize(param:RendererParam = null):void
     {
         if(this.m_renderProxy == null)
         {
+            if(param == null) param = new RendererParam();
             this.m_batchEnabled = param.batchEnabled;
             this.m_processFixedState = param.processFixedState;
             

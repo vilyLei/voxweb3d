@@ -163,10 +163,6 @@ export default class ScreenFixedPlaneMaterial extends MaterialBase
     }
     createSelfUniformData():ShaderUniformData
     {
-        if(this.getTextureList() == null)
-        {
-            return null;
-        }
         let oum:ShaderUniformData = new ShaderUniformData();
         oum.uniformNameList = ["u_color"];
         oum.dataList = [this.m_colorArray];

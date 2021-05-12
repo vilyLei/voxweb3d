@@ -25,12 +25,12 @@ export default class CameraDragSwinger {
     private m_mouseY: number = 0.0;
     private m_enabled: boolean = false;
 
-    enabled(): void {
+    attach(): void {
         this.m_mouseX = this.m_stage3D.mouseX;
         this.m_mouseY = this.m_stage3D.mouseY;
         this.m_enabled = true;
     }
-    disable(): void {
+    detach(): void {
         this.m_enabled = false;
     }
     runWithYAxis(): void {

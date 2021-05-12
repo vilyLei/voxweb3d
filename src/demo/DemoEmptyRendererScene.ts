@@ -1,20 +1,16 @@
-import RendererParam from "../vox/scene/RendererParam";
 import RendererScene from "../vox/scene/RendererScene";
 
 /**
  * A empty RendererScene instance example
  */
-export class DemoEmptyRendererScene
-{
-    constructor(){}
-    private m_rscene:RendererScene = null;
-    initialize():void
-    {
+export class DemoEmptyRendererScene {
+    private m_rscene: RendererScene = null;
+    constructor() { }
+    initialize(): void {
         this.m_rscene = new RendererScene();
-        this.m_rscene.initialize(new RendererParam(),3);
+        this.m_rscene.initialize();
     }
-    run():void
-    {
+    run(): void {
         this.m_rscene.run();
     }
 }

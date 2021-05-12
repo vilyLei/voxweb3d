@@ -1,30 +1,26 @@
-import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RendererInstance from "../vox/scene/RendererInstance";
 
 /**
  * A empty Renderer instance example
  */
-export class DemoEmptyRenderer
-{
-    constructor(){}
+export class DemoEmptyRenderer {
+    constructor() { }
 
-    private m_renderer:RendererInstance = null;
-    private m_rcontext:RendererInstanceContext = null;
+    private m_renderer: RendererInstance = null;
+    private m_rcontext: RendererInstanceContext = null;
 
-    initialize():void
-    {
+    initialize(): void {
         this.m_renderer = new RendererInstance();
-        this.m_renderer.initialize(new RendererParam());
+        this.m_renderer.initialize();
         this.m_rcontext = this.m_renderer.getRendererContext();
     }
-    run():void
-    {
+    run(): void {
         this.m_rcontext.renderBegin();
 
         this.m_renderer.run();
 
-        this.m_rcontext.runEnd();            
+        this.m_rcontext.runEnd();
     }
 }
 

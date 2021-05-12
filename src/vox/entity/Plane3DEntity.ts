@@ -14,81 +14,66 @@ import TextureProxy from "../../vox/texture/TextureProxy";
 import RectPlaneMesh from "../../vox/mesh/RectPlaneMesh";
 import ROTransform from "../../vox/display/ROTransform";
 
-export default class Plane3DEntity extends DisplayEntity
-{
-    private m_startX:number = 0;
-    private m_startZ:number = 0;
-    private m_pwidth:number = 0;
-    private m_plong:number = 0;
-    private m_flag:number = 0;
-    flipVerticalUV:boolean = false;
-    private m_screenAlignEnabled:boolean = false;
-    constructor(transform:ROTransform = null)
-    {
+export default class Plane3DEntity extends DisplayEntity {
+    private m_startX: number = 0;
+    private m_startZ: number = 0;
+    private m_pwidth: number = 0;
+    private m_plong: number = 0;
+    private m_flag: number = 0;
+    flipVerticalUV: boolean = false;
+    private m_screenAlignEnabled: boolean = false;
+    constructor(transform: ROTransform = null) {
         super(transform);
     }
     // 是否是平铺在屏幕上
-    setScreenAlignEnable(enable:boolean):void
-    {
+    setScreenAlignEnable(enable: boolean): void {
         this.m_screenAlignEnabled = enable;
     }
-    createMaterial(texList:TextureProxy[]):void
-    {
-        if(this.getMaterial() == null)
-        {
+    createMaterial(texList: TextureProxy[]): void {
+        if (this.getMaterial() == null) {
             //ScreenPlaneMaterial
-            if(this.m_screenAlignEnabled)
-            {
-                let cm:ScreenPlaneMaterial = new ScreenPlaneMaterial();
+            if (this.m_screenAlignEnabled) {
+                let cm: ScreenPlaneMaterial = new ScreenPlaneMaterial();
                 cm.setTextureList(texList);
                 this.setMaterial(cm);
             }
-            else
-            {
-                let cm:Default3DMaterial = new Default3DMaterial();
+            else {
+                let cm: Default3DMaterial = new Default3DMaterial();
                 cm.setTextureList(texList);
                 this.setMaterial(cm);
             }
         }
-        else
-        {
+        else {
             this.getMaterial().setTextureList(texList);
         }
     }
-    showDoubleFace(doubleFace:boolean = true):void
-    {
-        if(doubleFace)
-        {
-            this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+    showDoubleFace(always: boolean = false, doubleFace: boolean = true): void {
+        if (always) {
+            if (doubleFace) this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
+            else this.setRenderState(RendererState.BACK_CULLFACE_NORMAL_ALWAYS_STATE);
         }
-        else
-        {
-            this.setRenderState(RendererState.NORMAL_STATE);
+        else {
+            if (doubleFace) this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+            else this.setRenderState(RendererState.NORMAL_STATE);
         }
     }
-    toTransparentBlend(always:boolean = false,doubleFace:boolean = false):void
-    {
-        if(always)
-        {
-            if(doubleFace) this.setRenderState(RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
+    toTransparentBlend(always: boolean = false, doubleFace: boolean = false): void {
+        if (always) {
+            if (doubleFace) this.setRenderState(RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
             else this.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
         }
-        else
-        {
-            if(doubleFace) this.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
+        else {
+            if (doubleFace) this.setRenderState(RendererState.NONE_TRANSPARENT_STATE);
             else this.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         }
     }
-    toBrightnessBlend(always:boolean = false,doubleFace:boolean = false):void
-    {
-        if(always)
-        {
-            if(doubleFace) this.setRenderState(RendererState.NONE_ADD_ALWAYS_STATE);
+    toBrightnessBlend(always: boolean = false, doubleFace: boolean = false): void {
+        if (always) {
+            if (doubleFace) this.setRenderState(RendererState.NONE_ADD_ALWAYS_STATE);
             else this.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
         }
-        else
-        {
-            if(doubleFace) this.setRenderState(RendererState.NONE_ADD_BLENDSORT_STATE);
+        else {
+            if (doubleFace) this.setRenderState(RendererState.NONE_ADD_BLENDSORT_STATE);
             else this.setRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
         }
     }
@@ -96,9 +81,8 @@ export default class Plane3DEntity extends DisplayEntity
      * initialize a rectangle fix screen size plane ,and it parallel the 3d space XOY plane
      * @param texList textures list, default value is null.
      */
-    initializeFixScreen(texList:TextureProxy[] = null):void
-    {
-        this.initializeXOY(-1.0,-1.0,2.0,2.0,texList);
+    initializeFixScreen(texList: TextureProxy[] = null): void {
+        this.initializeXOY(-1.0, -1.0, 2.0, 2.0, texList);
     }
     /**
      * initialize a rectangle plane ,and it parallel the 3d space XOY plane
@@ -108,8 +92,7 @@ export default class Plane3DEntity extends DisplayEntity
      * @param height the height of the rectangle plane.
      * @param texList textures list, default value is null.
      */
-    initializeXOY(minX:number,minY:number,pwidth:number,pheight:number,texList:TextureProxy[] = null):void
-    {
+    initializeXOY(minX: number, minY: number, pwidth: number, pheight: number, texList: TextureProxy[] = null): void {
         this.m_startX = minX;
         this.m_startZ = minY;
         this.m_pwidth = pwidth;
@@ -123,8 +106,7 @@ export default class Plane3DEntity extends DisplayEntity
      * @param size the width and height of the rectangle plane.
      * @param texList textures list, default value is null.
      */
-    initializeXOYSquare(size:number,texList:TextureProxy[] = null):void
-    {
+    initializeXOYSquare(size: number, texList: TextureProxy[] = null): void {
         this.m_startX = -0.5 * size;
         this.m_startZ = -0.5 * size;
         this.m_pwidth = size;
@@ -141,8 +123,7 @@ export default class Plane3DEntity extends DisplayEntity
      * @param plong the long of the rectangle plane.
      * @param texList textures list, default value is null.
      */
-    initializeXOZ(minX:number,minZ:number,pwidth:number,plong:number,texList:TextureProxy[] = null):void
-    {
+    initializeXOZ(minX: number, minZ: number, pwidth: number, plong: number, texList: TextureProxy[] = null): void {
         this.m_flag = 1;
         this.m_startX = minX;
         this.m_startZ = minZ;
@@ -159,8 +140,7 @@ export default class Plane3DEntity extends DisplayEntity
      * @param plong the long of the rectangle plane.
      * @param texList textures list, default value is null.
      */
-    initializeYOZ(minY:number,minZ:number,pwidth:number,plong:number,texList:TextureProxy[] = null):void
-    {
+    initializeYOZ(minY: number, minZ: number, pwidth: number, plong: number, texList: TextureProxy[] = null): void {
         this.m_flag = 2;
         this.m_startX = minY;
         this.m_startZ = minZ;
@@ -174,8 +154,7 @@ export default class Plane3DEntity extends DisplayEntity
      * @param size the width and long of the rectangle plane.
      * @param texList textures list, default value is null.
      */
-    initializeXOZSquare(size:number,texList:TextureProxy[] = null):void
-    {
+    initializeXOZSquare(size: number, texList: TextureProxy[] = null): void {
         this.m_flag = 1;
         this.m_startX = -0.5 * size;
         this.m_startZ = -0.5 * size;
@@ -184,21 +163,18 @@ export default class Plane3DEntity extends DisplayEntity
         this.createMaterial(texList);
         this.activeDisplay();
     }
-    protected __activeMesh(material:MaterialBase)
-    {
-        if(this.getMesh() == null)
-        {
-            let mesh:RectPlaneMesh = new RectPlaneMesh();
+    protected __activeMesh(material: MaterialBase) {
+        if (this.getMesh() == null) {
+            let mesh: RectPlaneMesh = new RectPlaneMesh();
             mesh.flipVerticalUV = this.flipVerticalUV;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             mesh.axisFlag = this.m_flag;
-            mesh.setBufSortFormat( material.getBufSortFormat() );
-            mesh.initialize(this.m_startX,this.m_startZ,this.m_pwidth,this.m_plong);
+            mesh.setBufSortFormat(material.getBufSortFormat());
+            mesh.initialize(this.m_startX, this.m_startZ, this.m_pwidth, this.m_plong);
             this.setMesh(mesh);
         }
     }
-    toString():string
-    {
+    toString(): string {
         return "[Plane3DEntity]";
     }
 }

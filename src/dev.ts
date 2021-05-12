@@ -136,9 +136,6 @@
 //  import * as VatParallaxMap2 from "./voxvat/demo/VatParallaxMap2";
 //  import Demo = VatParallaxMap2.voxvat.demo.VatParallaxMap2;
 
-//  import * as DemoOrtho from "./demo/DemoOrtho";
-//  import Demo = DemoOrtho.demo.DemoOrtho;
-
 //  import * as DemoFBOBlit from "./demo/DemoFBOBlit";
 //  import Demo = DemoFBOBlit.demo.DemoFBOBlit;
 
@@ -239,8 +236,7 @@
 
 //  import {DemoEmptyRendererScene as Demo} from "./demo/DemoEmptyRendererScene";
 
-//  import * as DemoAPlane from "./demo/DemoAPlane";
-//  import Demo = DemoAPlane.demo.DemoAPlane;
+//  import {DemoAPlane as Demo} from "./demo/DemoAPlane";
 
 //  import * as DemoPrimitive from "./demo/DemoPrimitive";
 //  import Demo = DemoPrimitive.demo.DemoPrimitive;
@@ -284,8 +280,13 @@
 
 //  import {DemoThread as Demo} from "./thread/example/DemoThread";
 
-import * as DemoOrthoSubScene from "./demo/DemoOrthoSubScene";
-import Demo = DemoOrthoSubScene.demo.DemoOrthoSubScene;
+//  import * as DemoOrtho from "./demo/DemoOrtho";
+//  import Demo = DemoOrtho.demo.DemoOrtho;
+
+import {DemoMultiRendererScene as Demo} from "./demo/DemoMultiRendererScene";
+
+//  import * as DemoOrthoSubScene from "./demo/DemoOrthoSubScene";
+//  import Demo = DemoOrthoSubScene.demo.DemoOrthoSubScene;
 
 //  import * as DemoOrthoBtn from "./demo/DemoOrthoBtn";
 //  import Demo = DemoOrthoBtn.demo.DemoOrthoBtn;
