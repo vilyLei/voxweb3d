@@ -106,7 +106,7 @@ export namespace demo
                 this.m_crossTarget = cross;
                 this.m_tickModule.toXZ(100,0);
 
-                this.m_rscene.setAutoRunning(false);
+                this.m_rscene.setAutoRunningEnabled(false);
                 this.update();
                 
 

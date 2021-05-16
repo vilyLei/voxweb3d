@@ -216,7 +216,7 @@ export namespace demo
                 this.m_wrapperTex.attachTex(this.m_rscene.textureBlock.getDepthTextureAt(depIndex0));
                 this.m_rcontext.setRenderToTexture(this.m_rscene.textureBlock.getRTTTextureAt(colorIndex), true, false, 0);
                 this.m_rcontext.setRenderToTexture(this.m_rscene.textureBlock.getDepthTextureAt(depIndex1), true, false, 1024);
-                this.m_rscene.renderBegin();
+                this.m_rscene.runBegin();
                 this.m_rcontext.useFBO(true, true, false);
                 this.m_rscene.runAt(0);
             }

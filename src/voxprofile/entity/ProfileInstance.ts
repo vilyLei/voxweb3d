@@ -27,11 +27,11 @@ export default class ProfileInstance
             this.m_status.initialize(this.m_renderer, this.m_rprocess);
         }
     }
-    run():void
+    run(syncStageSize: boolean = false):void
     {
         if(this.m_renderer != null)
         {
-            this.m_status.run();
+            this.m_status.run(syncStageSize);
             this.m_renderer.runProcess( this.m_rprocess );
         }
     }

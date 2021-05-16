@@ -32,16 +32,19 @@ export default class MouseDragController {
     }
     detach(): void {
     }
+    // move only in x-axis
     lockX(minX: number = -0xfffff, maxX: number = 0xfffff): void {
         this.m_lockStatus = 2;
         this.m_xRange[0] = minX;
         this.m_xRange[1] = maxX;
     }
+    // move only in y-axis
     lockY(minY: number = -0xfffff, maxY: number = 0xfffff): void {
         this.m_lockStatus = 1;
         this.m_yRange[0] = minY;
         this.m_yRange[1] = maxY;
     }
+    // move only in a rectangle
     lockXY(minX: number = -0xfffff, maxX: number = 0xfffff, minY: number = -0xfffff, maxY: number = 0xfffff): void {
         this.m_lockStatus = 3;
         this.m_xRange[0] = minX;

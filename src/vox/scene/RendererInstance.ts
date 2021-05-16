@@ -456,6 +456,9 @@ export class RendererInstance implements IRenderer
         }
         return total;
     }
+    renderflush(): void {
+        this.m_renderProxy.flush();
+    }
     toString():string
     {
         return "[RendererInstance(uid = "+this.m_uid+")]";

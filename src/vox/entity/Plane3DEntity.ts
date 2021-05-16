@@ -50,7 +50,7 @@ export default class Plane3DEntity extends DisplayEntity {
     showDoubleFace(always: boolean = false, doubleFace: boolean = true): void {
         if (always) {
             if (doubleFace) this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
-            else this.setRenderState(RendererState.BACK_CULLFACE_NORMAL_ALWAYS_STATE);
+            else this.setRenderState(RendererState.BACK_NORMAL_ALWAYS_STATE);
         }
         else {
             if (doubleFace) this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);

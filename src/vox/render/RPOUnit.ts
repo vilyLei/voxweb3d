@@ -141,11 +141,11 @@ export default class RPOUnit implements IPoolNode,IRPODisplay
                 rc.RContext.drawElements(rc.TRIANGLE_FAN, this.ivsCount, this.ibufType, this.drawOffset);
                 break;
             case RenderDrawMode.ARRAYS_LINES:
-                //console.log("RPOUnit::run(), drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
+                //console.log("RPOUnit::run(), ARRAYS_LINES drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
                 rc.RContext.drawArrays(rc.LINES, this.ivsIndex, this.ivsCount);
                 break;
             case RenderDrawMode.ARRAYS_LINE_STRIP:
-                //console.log("RPOUnit::run(), drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
+                //console.log("RPOUnit::run(), ARRAYS_LINE_STRIP drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
                 rc.RContext.drawArrays(rc.LINE_STRIP, this.ivsIndex, this.ivsCount);
                 break;
             default:

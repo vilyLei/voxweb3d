@@ -91,7 +91,7 @@ export namespace demo
                 //return;
                 this.createAMeshDisp(box);
 
-                this.m_rscene.setAutoRunning(false);
+                this.m_rscene.setAutoRunningEnabled(false);
                 this.update();
             }
         }

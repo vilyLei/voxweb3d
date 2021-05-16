@@ -51,12 +51,13 @@ class RendererDeviece
     {
         return RendererDeviece.s_devicePixelRatio;
     }
-    static Initialize = function(infoArr:number[])
+    static Initialize(infoArr:number[])
     {
         if(RendererDeviece.s_inited)
         {
-            RendererDeviece.s_WEBGL_VER = infoArr[0];
             RendererDeviece.s_inited = false;
+
+            RendererDeviece.s_WEBGL_VER = infoArr[0];
             RendererDeviece.TestMobileWeb();
         }
     }

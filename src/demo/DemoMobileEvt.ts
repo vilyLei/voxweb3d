@@ -141,7 +141,7 @@ export namespace demo
         private m_texLoader:ImageTextureLoader = null;
         private m_camTrack:CameraTrack = null;
         private m_CameraZoomController:CameraZoomController = new CameraZoomController();
-        private m_profileInstance:ProfileInstance;// = new ProfileInstance();
+        private m_profileInstance:ProfileInstance;
         getImageTexByUrl(purl:string):TextureProxy
         {
             return this.m_texLoader.getImageTexByUrl(purl);
@@ -209,6 +209,7 @@ export namespace demo
                 this.m_rscene.initialize(rparam,3);
                 this.m_rscene.updateCamera();
                 this.m_rcontext = this.m_rscene.getRendererContext();
+                this.m_profileInstance = new ProfileInstance();
                 if(this.m_profileInstance != null)this.m_profileInstance.initialize(this.m_rscene.getRenderer());
                 
                 this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );

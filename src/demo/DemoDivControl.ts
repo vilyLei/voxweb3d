@@ -44,7 +44,7 @@ export namespace demo
                 //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
                 
                 //let div:any = document.getElementById("app");
-                let div:HTMLElement = null;
+                let div:HTMLDivElement = null;
                 let rparam:RendererParam = new RendererParam(div);
                 rparam.autoSyncRenderBufferAndWindowSize = false;
                 rparam.maxWebGLVersion = 1;

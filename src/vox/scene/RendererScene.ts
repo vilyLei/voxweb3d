@@ -41,12 +41,14 @@ import FBOInstance from "../../vox/scene/FBOInstance";
 import IRODisplaySorter from "../../vox/render/IRODisplaySorter";
 import CameraDsistanceSorter from "../../vox/scene/CameraDsistanceSorter";
 import RendererSubScene from "../../vox/scene/RendererSubScene";
+import RenderShader from "../render/RenderShader";
 
 export default class RendererScene implements IRenderer {
     private static s_uid: number = 0;
     private m_uid: number = -1;
     private m_adapter: RenderAdapter = null;
     private m_renderProxy: RenderProxy = null;
+    private m_shader: RenderShader = null;
     private m_rcontext: RendererInstanceContext = null;
     private m_renderer: RendererInstance = null;
     private m_processids: Uint8Array = new Uint8Array(128);
@@ -57,6 +59,7 @@ export default class RendererScene implements IRenderer {
     // event flow control enable
     private m_evtFlowEnabled: boolean = false;
     private m_evt3DCtr: IEvt3DController = null;
+    private m_mouseEvtEnabled: boolean = true;
     private m_viewX: number = 0.0;
     private m_viewY: number = 0.0;
     private m_viewW: number = 800.0
@@ -180,7 +183,9 @@ export default class RendererScene implements IRenderer {
         }
         this.m_evt3DCtr = evt3DCtr;
     }
-    private m_mouseEvtEnabled: boolean = true;
+    isRayPickSelected(): boolean {
+        return this.m_evt3DCtr != null && this.m_evt3DCtr.isSelected();
+    }
     enableMouseEvent(gpuTestEnabled: boolean = true): void {
         if (this.m_evt3DCtr == null) {
             if (gpuTestEnabled) {
@@ -224,9 +229,9 @@ export default class RendererScene implements IRenderer {
         this.stage3D.removeEventListener(type, target, func);
     }
     initialize(rparam: RendererParam = null, renderProcessTotal: number = 3): void {
-        
+
         if (this.m_renderer == null) {
-            if(rparam == null) rparam = new  RendererParam();
+            if (rparam == null) rparam = new RendererParam();
             this.m_rparam = rparam;
             let selfT: any = this;
             selfT.stage3D = new Stage3D(this.getUid(), document);
@@ -256,7 +261,7 @@ export default class RendererScene implements IRenderer {
             let stage3D: IRenderStage3D = this.m_renderProxy.getStage3D();
             this.m_viewW = stage3D.stageWidth;
             this.m_viewH = stage3D.stageHeight;
-
+            this.m_shader = this.m_renderer.getDataBuilder().getRenderShader();
             this.textureBlock.setRenderer(this.m_renderer);
             this.m_camDisSorter = new CameraDsistanceSorter(this.m_renderProxy);
             if (this.m_rspace == null) {
@@ -312,7 +317,7 @@ export default class RendererScene implements IRenderer {
             }
         }
     }
-    setAutoRunning(autoRunning: boolean): void {
+    setAutoRunningEnabled(autoRunning: boolean): void {
         this.m_autoRunning = autoRunning;
     }
     setAutoRenderingSort(sortEnabled: boolean): void {
@@ -412,8 +417,13 @@ export default class RendererScene implements IRenderer {
     getRenderUnitsTotal(): number {
         return this.m_renderer.getRenderUnitsTotal();
     }
-    runBegin(): void {
-        if (this.m_autoRunning) {
+    /**
+     * the function resets the renderer scene status.
+     * you should use it on the frame starting time.
+     */
+    runBegin(autoCycle: boolean = true, contextBeginEnabled: boolean = true): void {
+
+        if (autoCycle && this.m_autoRunning) {
             if (this.m_runFlag >= 0) this.runEnd();
             this.m_runFlag = 0;
         }
@@ -422,28 +432,35 @@ export default class RendererScene implements IRenderer {
         if (!this.m_renderProxy.isAutoSynViewAndStage()) {
             this.m_renderProxy.setViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
         }
-        this.m_renderProxy.getCamera().update();
+        this.m_renderProxy.updateCamera();
+        this.m_shader.renderBegin();
         this.m_rcontext.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
-        this.m_rcontext.renderBegin();
+        if (contextBeginEnabled) {
+            this.m_rcontext.renderBegin();
+        }
+
         if (this.m_rspace != null) {
             this.m_rspace.runBegin();
         }
     }
     /**
-     * the function resets the renderer instance rendering status.
-     * you should use it on the frame starting time.
+     * the function only resets the renderer instance rendering status.
+     * you should use it before the run or runAt function is called.
      */
-    renderBegin(): void {
+    renderBegin(contextBeginEnabled: boolean = true): void {
         this.m_adapter.unlockViewport();
         if (!this.m_renderProxy.isAutoSynViewAndStage()) {
             this.m_renderProxy.setViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
         }
         this.m_renderProxy.updateCamera();
+        this.m_shader.renderBegin();
         this.m_rcontext.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
-        this.m_rcontext.renderBegin();
-        if (this.m_rspace != null) {
-            this.m_rspace.runBegin();
+        if (contextBeginEnabled) {
+            this.m_rcontext.renderBegin();
         }
+    }
+    renderContextBegin(): void {
+        this.m_rcontext.renderBegin();
     }
     synFBOSizeWithViewport(): void {
         this.m_rcontext.synFBOSizeWithViewport();
@@ -488,12 +505,12 @@ export default class RendererScene implements IRenderer {
      * update all data or status of the renderer runtime
      * should call this function per frame
      */
-    update(): void {
-        if (this.m_autoRunning) {
+    update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
+
+        if (autoCycle && this.m_autoRunning) {
             if (this.m_runFlag != 0) this.runBegin();
             this.m_runFlag = 1;
         }
-
 
         // camera visible test, ray cast test, Occlusion Culling test
 
@@ -544,7 +561,12 @@ export default class RendererScene implements IRenderer {
             this.m_renderer.updateAllProcess();
         }
         if (this.m_mouseTestBoo && !this.m_evtFlowEnabled) {
-            this.runMouseTest(1, 0);
+            if (mouseEventEnabled) {
+                this.runMouseTest(1, 0);
+            }
+            else if (this.m_evt3DCtr != null) {
+                this.m_evt3DCtr.mouseOutEventTarget();
+            }
         }
     }
     // 运行渲染可见性裁剪测试，射线检测等空间管理机制
@@ -565,11 +587,13 @@ export default class RendererScene implements IRenderer {
     /**
      * run all renderer processes in the renderer instance
      */
-    run(autoCycle: boolean = false): void {
-        if (this.m_autoRunning) {
+    run(autoCycle: boolean = true): void {
+
+        if (autoCycle && this.m_autoRunning) {
             if (this.m_runFlag != 1) this.update();
             this.m_runFlag = 2;
         }
+
         this.runnableQueue.run();
         if (this.m_subscListLen > 0) {
             for (let i: number = 0; i < this.m_processidsLen; ++i) {
@@ -601,6 +625,11 @@ export default class RendererScene implements IRenderer {
         }
         if (this.m_autoRunning) {
             this.m_runFlag = -1;
+        }
+    }
+    renderFlush(): void {
+        if (this.m_renderProxy != null) {
+            this.m_renderProxy.flush();
         }
     }
     updateCamera(): void {

@@ -54,6 +54,8 @@ export default class MouseEvt3DController implements IEvt3DController
     private m_evtYList:Float32Array = new Float32Array(64);
     private m_evtWheelDeltaYs:Float32Array = new Float32Array(64);
     private m_evtTotal:number = 0;
+    //private m_node:RaySelectedNode = null;
+    private m_evtFlowPhase:number = -1;
     private static s_unlockMouseEvt:boolean = true;
     private mouseWheeelListener(evt:any):void
     {
@@ -98,6 +100,26 @@ export default class MouseEvt3DController implements IEvt3DController
             this.m_evtTotal++;
         }       
     }
+    mouseOutEventTarget(): number
+    {
+        if(this.m_evtTarget != null)
+        {
+            let dispatcher:IEvtDispatcher = this.m_evtTarget.getEvtDispatcher(MouseEvent.EventClassType);
+            if(dispatcher != null)
+            {
+                this.m_mouseOutEvt.phase = this.m_evtFlowPhase;
+                this.m_mouseOutEvt.type = MouseEvent.MOUSE_OUT;
+                this.m_mouseOutEvt.mouseX = this.m_mouseEvt.mouseX;
+                this.m_mouseOutEvt.mouseY = this.m_mouseEvt.mouseY;
+                this.m_mouseOutEvt.target = this.m_evtTarget;
+                this.m_raySelector.getRay(this.m_mouseOutEvt.raypv,this.m_mouseOutEvt.raytv);
+                this.m_evtTarget = null;
+                return dispatcher.dispatchEvt(this.m_mouseOutEvt);
+            }
+            this.m_evtTarget = null;
+        }
+        return 0;
+    }
     /**
      * @param       evtFlowPhase: 0(none phase),1(capture phase),2(bubble phase)
      * @param       status: 1(default process),1(deselect ray pick target)
@@ -107,13 +129,14 @@ export default class MouseEvt3DController implements IEvt3DController
     {
         let flag:number = -1;
         if(this.m_unlockBoo)
-        {            
+        {
+            this.m_evtFlowPhase = evtFlowPhase;
             let i:number = 0;
             flag = this.m_evtTotal>0?0:-1;
             let dispatcher:IEvtDispatcher = null;
             let node:RaySelectedNode;
-            let lpv:Vector3D;;
-            let wpv:Vector3D;;
+            let lpv:Vector3D;
+            let wpv:Vector3D;
             if(flag > -1)
             {
                 
@@ -136,7 +159,7 @@ export default class MouseEvt3DController implements IEvt3DController
                     }
                     MouseEvt3DController.s_unlockMouseEvt = true;
                 }
-                node = status<1?this.m_raySelector.getSelectedNode():null;                
+                node = status<1?this.m_raySelector.getSelectedNode():null;
                 if(node != null)
                 {
                     lpv = node.lpv;
@@ -204,21 +227,22 @@ export default class MouseEvt3DController implements IEvt3DController
                 }
                 else
                 {
-                    if(this.m_evtTarget != null)
-                    {
-                        dispatcher = this.m_evtTarget.getEvtDispatcher(MouseEvent.EventClassType);
-                        if(dispatcher != null)
-                        {
-                            this.m_mouseOutEvt.phase = evtFlowPhase;
-                            this.m_mouseOutEvt.type = MouseEvent.MOUSE_OUT;
-                            this.m_mouseOutEvt.mouseX = this.m_mouseEvt.mouseX;
-                            this.m_mouseOutEvt.mouseY = this.m_mouseEvt.mouseY;
-                            this.m_mouseOutEvt.target = this.m_evtTarget;
-                            this.m_raySelector.getRay(this.m_mouseOutEvt.raypv,this.m_mouseOutEvt.raytv);
-                            flag += dispatcher.dispatchEvt(this.m_mouseOutEvt);
-                        }
-                        this.m_evtTarget = null;
-                    }
+                    //  if(this.m_evtTarget != null)
+                    //  {
+                    //      dispatcher = this.m_evtTarget.getEvtDispatcher(MouseEvent.EventClassType);
+                    //      if(dispatcher != null)
+                    //      {
+                    //          this.m_mouseOutEvt.phase = evtFlowPhase;
+                    //          this.m_mouseOutEvt.type = MouseEvent.MOUSE_OUT;
+                    //          this.m_mouseOutEvt.mouseX = this.m_mouseEvt.mouseX;
+                    //          this.m_mouseOutEvt.mouseY = this.m_mouseEvt.mouseY;
+                    //          this.m_mouseOutEvt.target = this.m_evtTarget;
+                    //          this.m_raySelector.getRay(this.m_mouseOutEvt.raypv,this.m_mouseOutEvt.raytv);
+                    //          flag += dispatcher.dispatchEvt(this.m_mouseOutEvt);
+                    //      }
+                    //      this.m_evtTarget = null;
+                    //  }
+                    flag += this.mouseOutEventTarget();
                     if(this.m_currStage != null)
                     {
                         for(i = 0; i < this.m_evtTotal; i++)

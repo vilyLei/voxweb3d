@@ -4,8 +4,8 @@
  * These are some examples for this renderer system
  */
 
-import * as DemoMobileEvt from "./demo/DemoMobileEvt";
-import Demo = DemoMobileEvt.demo.DemoMobileEvt;
+//  import * as DemoMobileEvt from "./demo/DemoMobileEvt";
+//  import Demo = DemoMobileEvt.demo.DemoMobileEvt;
 
 //  import * as DemoRTT from "./demo/DemoRTT";
 //  import Demo = DemoRTT.demo.DemoRTT;
@@ -78,13 +78,14 @@ import Demo = DemoMobileEvt.demo.DemoMobileEvt;
 //  import * as DemoPrimitive from "./demo/DemoPrimitive";
 //  import Demo = DemoPrimitive.demo.DemoPrimitive;
 
-//  import * as DemoMultiRenderer from "./demo/DemoMultiRenderer";
-//  import Demo = DemoMultiRenderer.demo.DemoMultiRenderer;
+//  import {DemoMultiRenderer as Demo} from "./demo/DemoMultiRenderer";
 
 //  import {DemoEmptyRenderer as Demo} from "./demo/DemoEmptyRenderer";
 
 //  import {DemoEmptyRendererScene as Demo} from "./demo/DemoEmptyRendererScene";
 
+
+import {DemoMultiGpuContext as Demo} from "./demo/DemoMultiGpuContext";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

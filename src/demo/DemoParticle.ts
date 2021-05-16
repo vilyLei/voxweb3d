@@ -116,12 +116,8 @@ export namespace demo
             this.m_equeue.run();
 
             this.m_rscene.setClearRGBColor3f(0.1, 0.1, 0.1);
-            this.m_rscene.renderBegin();
-
-            this.m_rscene.update();
             this.m_rscene.run();
 
-            this.m_rscene.runEnd();
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
             
             if(!this.m_timeoutEnabled)

@@ -76,7 +76,7 @@ export namespace demo
                 this.m_targets.push(plane);
                 //this.m_disp = plane;
                 //*/
-                //this.m_rscene.setAutoRunning(false);
+                //this.m_rscene.setAutoRunningEnabled(false);
                 this.update();
 
                 //return;

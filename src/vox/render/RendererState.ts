@@ -37,7 +37,6 @@ class RendererState
     static FRONT_TRANSPARENT_STATE:number = 17;
     static FRONT_TRANSPARENT_ALWAYS_STATE:number = 18;
     static NONE_CULLFACE_NORMAL_ALWAYS_STATE:number = 19;
-    static BACK_CULLFACE_NORMAL_ALWAYS_STATE:number = 20;
     static Initialize():void
     {
         if(RendererState.s_initBoo)
@@ -69,7 +68,6 @@ class RendererState
             RendererState.FRONT_TRANSPARENT_STATE = RenderStateObject.Create("front_transparent",CullFaceMode.FRONT,RenderBlendMode.TRANSPARENT,DepthTestMode.RENDER_TRANSPARENT_SORT);
             RendererState.FRONT_TRANSPARENT_ALWAYS_STATE = RenderStateObject.Create("front_transparent_always",CullFaceMode.FRONT,RenderBlendMode.TRANSPARENT,DepthTestMode.RENDER_ALWAYS);
             RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE = RenderStateObject.Create("none_normal_always",CullFaceMode.NONE,RenderBlendMode.NORMAL,DepthTestMode.RENDER_ALWAYS);
-            RendererState.BACK_CULLFACE_NORMAL_ALWAYS_STATE = RenderStateObject.Create("back_normal_always",CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.RENDER_ALWAYS);
         }
     }
     static CreateRenderState(objName:string,cullFaceMode:number,blendMode:number,depthTestMode:number):number
@@ -105,11 +103,12 @@ class RendererState
     {
         RenderStateObject.LockDepthTestMode( depthTestMode );
     }
-    static Reset():void
+    static Reset(gl:any):void
     {
         RenderColorMask.Reset();
         RenderStateObject.Reset();
-        RendererState.Rstate.roColorMask = -11;
+        RendererState.Rstate.reset();
+        RendererState.Rstate.setRenderer(gl);
     }
     static SetDrawState(rstate:RODrawState):void
     {

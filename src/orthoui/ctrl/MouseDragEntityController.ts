@@ -49,6 +49,16 @@ export default class MouseDragEntityController extends RunnableObject {
             this.m_dispatcher = dispatcher;
         }
     }
+    setScaleXYZ(sx: number, sy: number, sz: number): void {
+        if (this.m_targetEntity != null) {
+            this.m_targetEntity.setScaleXYZ(sx, sy, sz);
+        }
+    }
+    setXYZ(px: number, py: number, pz: number): void {
+        if (this.m_targetEntity != null) {
+            this.m_targetEntity.setXYZ(px, py, pz);
+        }
+    }
     protected mouseMoveListener(evt: any): void {
     }
     protected mouseOverListener(evt: any): void {
@@ -76,9 +86,12 @@ export default class MouseDragEntityController extends RunnableObject {
             this.m_pos.x = this.dragController.x;
             this.m_pos.y = this.dragController.y;
             this.m_targetEntity.setPosition(this.m_pos);
-            this.m_targetEntity.update();
+            this.updateTargetEntity();
             this.drag();
         }
+    }
+    updateTargetEntity(): void {
+        this.m_targetEntity.update();
     }
     getPosition(outV: Vector3D): void {
         outV.copyFrom(this.m_pos);

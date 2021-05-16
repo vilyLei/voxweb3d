@@ -61,9 +61,6 @@
 //  import * as DemoRayTest from "./demo/DemoRayTest";
 //  import Demo = DemoRayTest.demo.DemoRayTest;
 
-//  import * as DemoMouseEvent from "./demo/DemoMouseEvent";
-//  import Demo = DemoMouseEvent.demo.DemoMouseEvent;
-
 //  import * as DemoLockDrawEntity from "./demo/DemoLockDrawEntity";
 //  import Demo = DemoLockDrawEntity.demo.DemoLockDrawEntity;
 
@@ -241,9 +238,6 @@
 //  import * as DemoPrimitive from "./demo/DemoPrimitive";
 //  import Demo = DemoPrimitive.demo.DemoPrimitive;
 
-//  import * as DemoMultiRenderer from "./demo/DemoMultiRenderer";
-//  import Demo = DemoMultiRenderer.demo.DemoMultiRenderer;
-
 //  import * as DemoFlexMesh from "./demo/DemoFlexMesh";
 //  import Demo = DemoFlexMesh.demo.DemoFlexMesh;
 
@@ -283,7 +277,16 @@
 //  import * as DemoOrtho from "./demo/DemoOrtho";
 //  import Demo = DemoOrtho.demo.DemoOrtho;
 
-import {DemoMultiRendererScene as Demo} from "./demo/DemoMultiRendererScene";
+//  import * as DemoMouseEvent from "./demo/DemoMouseEvent";
+//  import Demo = DemoMouseEvent.demo.DemoMouseEvent;
+
+//  import {DemoMultiRendererScene as Demo} from "./demo/DemoMultiRendererScene";
+
+//  import {DemoMultiRendererScene2 as Demo} from "./demo/DemoMultiRendererScene2";
+
+import {DemoMultiGpuContext as Demo} from "./demo/DemoMultiGpuContext";
+
+//  import {DemoMultiRenderer as Demo} from "./demo/DemoMultiRenderer";
 
 //  import * as DemoOrthoSubScene from "./demo/DemoOrthoSubScene";
 //  import Demo = DemoOrthoSubScene.demo.DemoOrthoSubScene;

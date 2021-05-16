@@ -38,7 +38,7 @@ class RendererParam
 
     batchEnabled:boolean = true;
     processFixedState:boolean = false;
-    constructor(div:HTMLElement = null)
+    constructor(div:HTMLDivElement = null)
     {
         this.m_mainDiv = div;
     }

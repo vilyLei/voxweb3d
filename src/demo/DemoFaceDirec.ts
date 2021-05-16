@@ -103,7 +103,7 @@ export namespace demo
                 //this.m_rscene.addEntity(box);
                 this.createAMeshDisp(box);
 
-                this.m_rscene.setAutoRunning(false);
+                this.m_rscene.setAutoRunningEnabled(false);
                 this.update();               
             }
         }

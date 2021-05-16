@@ -427,7 +427,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
                 if (this.getMesh() == null) {
                     this.__activeMesh(material);
                     //  // for debug
-                    //  this.m_display.name = this.name;
+                    this.m_display.name = this.name;
                     //  this.m_display.ivsIndex = 0;
                     //  this.m_display.ivsCount = this.m_mesh.vtCount;
                     //  this.m_display.drawMode = this.m_mesh.drawMode;
