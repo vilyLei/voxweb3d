@@ -279,8 +279,8 @@ export class DemoMultiRendererScene {
             this.m_camTrack2 = new CameraTrack();
             this.m_camTrack2.bindCamera(this.m_rendererRightScene.getCamera());
 
-            RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.RENDER_BLEND);
-            RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.RENDER_ALWAYS);
+            RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
+            RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
             
             this.m_leftScene.initialize(this.m_rendererLeftScene,this.m_texLoader);
             this.m_rightScene.initialize(this.m_rendererRightScene,this.m_texLoader);

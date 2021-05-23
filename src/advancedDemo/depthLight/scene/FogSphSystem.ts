@@ -74,7 +74,7 @@ export namespace advancedDemo
                 private initFog():void
                 {
                     let i:number = 0;
-                    let rState0:number = RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
+                    let rState0:number = RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
                     let rState1:number = RendererState.BACK_TRANSPARENT_ALWAYS_STATE;
                     this.maxRadius = 800.0;//141.25;
                     let baseRadius:number = this.maxRadius;
@@ -91,7 +91,7 @@ export namespace advancedDemo
                         //  fogUnit.pos.setXYZ(0.0,0.0,0.0);
                         this.m_fogUnits.push(fogUnit);
                     }
-                    rState0 = RendererState.CreateRenderState("factorSphState",CullFaceMode.FRONT,RenderBlendMode.TRANSPARENT,DepthTestMode.RENDER_ALWAYS);
+                    rState0 = RendererState.CreateRenderState("factorSphState",CullFaceMode.FRONT,RenderBlendMode.TRANSPARENT,DepthTestMode.ALWAYS);
                     let tex3:TextureProxy = this.getImageTexByUrl("displacement_03.jpg");
                     this.fogFactorM = new FogMeshGeomFactorMaterial();
                     this.factorEntity = new Sphere3DEntity();

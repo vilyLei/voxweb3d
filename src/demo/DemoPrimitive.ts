@@ -80,8 +80,8 @@ export namespace demo
                 let tex3:TextureProxy = this.getImageTexByUrl("static/assets/flare_core_02.jpg");
                 let tex4:TextureProxy = this.getImageTexByUrl("static/assets/flare_core_01.jpg");
                 
-                RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
-                RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
+                RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.BLEND);
+                RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
                 
                 let i:number = 0;
                 let axis:Axis3DEntity = new Axis3DEntity();

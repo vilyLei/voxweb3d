@@ -284,7 +284,7 @@
 
 //  import {DemoMultiRendererScene2 as Demo} from "./demo/DemoMultiRendererScene2";
 
-import {DemoMultiGpuContext as Demo} from "./demo/DemoMultiGpuContext";
+//  import {DemoMultiGpuContext as Demo} from "./demo/DemoMultiGpuContext";
 
 //  import {DemoMultiRenderer as Demo} from "./demo/DemoMultiRenderer";
 
@@ -302,6 +302,12 @@ import {DemoMultiGpuContext as Demo} from "./demo/DemoMultiGpuContext";
 
 //  import * as DemoCameraSwing from "./demo/DemoCameraSwing";
 //  import Demo = DemoCameraSwing.demo.DemoCameraSwing;
+
+//  import * as DemoHdrCylindricalMap from "./demo/DemoHdrCylindricalMap";
+//  import Demo = DemoHdrCylindricalMap.demo.DemoHdrCylindricalMap;
+
+import * as DemoStencil from "./demo/DemoStencil";
+import Demo = DemoStencil.demo.DemoStencil;
 
 //  import * as DemoObj3DModule from "./demo/DemoObj3DModule";
 //  import Demo = DemoObj3DModule.demo.DemoObj3DModule;

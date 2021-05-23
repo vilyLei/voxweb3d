@@ -10,8 +10,6 @@ import RCExtension from "../../vox/render/RCExtension";
 import RendererDeviece from "../../vox/render/RendererDeviece";
 import RViewElement from "../../vox/render/RViewElement";
 import Color4 from "../../vox/material/Color4";
-import { RODrawState } from "../../vox/render/RODrawState";
-import RendererState from "../../vox/render/RendererState";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import ContextMouseEvtDispatcher from "../../vox/render/ContextMouseEvtDispatcher";
 
@@ -19,7 +17,6 @@ class RAdapterContext {
     constructor() { }
 	private static s_uid:number = 0;
 	private m_uid:number = RAdapterContext.s_uid++;
-    private m_rState: RODrawState = null;
     private m_mouseEvtDisplather: ContextMouseEvtDispatcher = new ContextMouseEvtDispatcher();
     private m_div: HTMLElement = null;
     private m_canvas: HTMLCanvasElement = null;
@@ -39,8 +36,8 @@ class RAdapterContext {
     private m_maxWebGLVersion: number = 2;
     private m_webGLVersion: number = 2;
     private m_devicePixelRatio: number = 1.0;
-    private m_viewEle: RViewElement = new RViewElement();
-    readonly bgColor: Color4 = new Color4();
+
+    private m_viewEle: RViewElement = new RViewElement();    
     // display 3d view buf size auto sync window size
     autoSyncRenderBufferAndWindowSize: boolean = true;
     //
@@ -73,10 +70,10 @@ class RAdapterContext {
     getCanvas(): any {
         return this.m_canvas;
     }
-    getDepthTestEnabled(): boolean {
+    isDepthTestEnabled(): boolean {
         return this.m_depthTestEnabled;
     }
-    getStencilTestEnabled(): boolean {
+    isStencilTestEnabled(): boolean {
         return this.m_stencilTestEnabled;
     }
     initialize(rcuid: number, stage: IRenderStage3D, div: HTMLElement, rattr: any = null): void {
@@ -93,14 +90,12 @@ class RAdapterContext {
             console.log("RAdapterContext::initialize(), document is undefined.");
         }
         if (pdocument != null) {
-            RendererState.Initialize();
-            this.m_rState = RendererState.Rstate;
-
+            
             this.m_viewEle.setDiv(div);
             this.m_viewEle.createViewEle(pdocument, this.autoSyncRenderBufferAndWindowSize);
             this.m_div = div = this.m_viewEle.getDiv();
             let canvas: any = this.m_canvas = this.m_viewEle.getCanvas();
-            //if(stage != null)this.m_mouseEvtDisplather.initialize(canvas,div,stage);
+            
             this.m_devicePixelRatio = window.devicePixelRatio;
             this.m_mouseEvtDisplather.dpr = this.m_devicePixelRatio;
 
@@ -195,8 +190,6 @@ class RAdapterContext {
                 }
             }
 
-            this.m_rState.setRenderer(this.m_gl);
-
             canvas.addEventListener('webglcontextrestored', this.contextrestoredHandler, false);
             canvas.addEventListener('webglcontextlost', this.contextlostHandler, false);
             //if(this.autoSyncRenderBufferAndWindowSize)
@@ -229,7 +222,7 @@ class RAdapterContext {
      * @returns return system gpu context
      */
     getRC(): any { return this.m_gl; }
-    getRenderState(): RODrawState { return this.m_rState; }
+    //getRenderState(): RODrawState { return this.m_rState; }
     setScissorEnabled(boo: boolean): void {
         if (boo) {
             if (!this.m_scissorEnabled) {

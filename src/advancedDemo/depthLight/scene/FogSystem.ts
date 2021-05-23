@@ -77,7 +77,7 @@ export namespace advancedDemo
                 {
                     console.log("DepthLight FosSystem initFog.");
                     let i:number = 0;
-                    let rState0:number = RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
+                    let rState0:number = RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
                     let rState1:number = RendererState.BACK_TRANSPARENT_ALWAYS_STATE;
                     this.maxRadius = 800.0;//141.25;
                     let baseRadius:number = this.maxRadius;

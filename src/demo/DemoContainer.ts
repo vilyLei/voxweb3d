@@ -80,8 +80,8 @@ export namespace demo
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
                 let tex2:TextureProxy = this.getImageTexByUrl("static/assets/guangyun_H_0007.png");
                 //DecayBrnParticle.texs.push(tex2);
-                RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
-                RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
+                RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.BLEND);
+                RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
                 
                 DecayBrnParticle.Initialize(200.0, [tex2], this.m_renderer);
 

@@ -20,41 +20,13 @@ import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
+import {TextureConst} from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import * as EntityDispT from "./base/EntityDisp";
-import * as PSColorMaterialT from "./material/PSColorMaterial";
+import PSColorMaterial from "./material/PSColorMaterial";
 
-//import Vector3D = Vector3DT.vox.math.Vector3D;
-//import Matrix4 = Matrix4T.vox.math.Matrix4;
-//import Matrix4Pool = Matrix4T.vox.math.Matrix4Pool;
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-//import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-//import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-//import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-//import RendererState = RendererStateT.vox.render.RendererState;
-//import RendererParam = RendererParamT.vox.scene.RendererParam;
-//import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-//import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-//import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-//import MouseEvent = MouseEventT.vox.event.MouseEvent;
-//import Stage3D = Stage3DT.vox.display.Stage3D;
-
-//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-//import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-//import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
-//import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
-//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-//import TextureConst = TextureConstT.vox.texture.TextureConst;
-//import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-//import EntityDisp = EntityDispT.demo.base.EntityDisp;
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
-import PSColorMaterial = PSColorMaterialT.demo.material.PSColorMaterial;
 
 export namespace demo
 {
@@ -99,8 +71,8 @@ export namespace demo
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
                 
-                RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
-                RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
+                RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.BLEND);
+                RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
                 
                 let i:number = 0;
                 

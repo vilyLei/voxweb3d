@@ -28,6 +28,7 @@ import ROTextureResource from '../../vox/render/ROTextureResource';
 import IROVertexBufUpdater from '../../vox/render/IROVertexBufUpdater';
 import IROMaterialUpdater from '../../vox/render/IROMaterialUpdater';
 import DivLog from "../../vox/utils/DivLog";
+import RendererState from "./RendererState";
 
 class RenderProxy {
     readonly RGBA: number = 0;
@@ -283,6 +284,9 @@ class RenderProxy {
         this.m_WEBGL_VER = this.m_adapterContext.getWebGLVersion();
 
         this.m_rc = this.m_adapterContext.getRC();
+        RendererState.Initialize();
+        RendererState.Rstate.setRenderContext( this.m_adapterContext );
+
         let selfT: any = this;
         let gl: any = this.m_rc;
         let vtxRes: ROVertexResource = new ROVertexResource(this.m_uid, gl, vtxBuilder);
@@ -295,7 +299,7 @@ class RenderProxy {
         this.m_viewH = this.m_adapterContext.getViewportHeight();
 
         this.m_adapter = new RenderAdapter(this.m_uid, texRes);
-        this.m_adapter.initialize(this.m_adapterContext, param);
+        this.m_adapter.initialize(this.m_adapterContext, param, RendererState.Rstate);
 
         if (this.m_autoSynViewAndStage) {
             let stage: IRenderStage3D = this.m_adapterContext.getStage();
@@ -344,7 +348,7 @@ class RenderProxy {
         classRenderMaskBitfield.DEPTH_BUFFER_BIT = gl.DEPTH_BUFFER_BIT;
         classRenderMaskBitfield.STENCIL_BUFFER_BIT = gl.STENCIL_BUFFER_BIT;
         RenderFBOProxy.SetRenderer(this.m_adapterContext);
-        selfT.RState = this.m_adapterContext.getRenderState();
+        selfT.RState = RendererState.Rstate;//this.m_adapterContext.getRenderState();
         selfT.RContext = this.m_rc;
     }
     flush(): void {

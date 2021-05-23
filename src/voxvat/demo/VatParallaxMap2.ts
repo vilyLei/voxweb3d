@@ -75,8 +75,8 @@ export namespace voxvat
                     evtCtr = new MouseEvt3DController();
                     this.m_rsc.setEvt3DController(evtCtr);
 
-                    RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
-                    RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
+                    RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.BLEND);
+                    RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
 
                     this.m_ruisc = this.m_rsc.createSubScene();
                     rparam = new RendererParam();

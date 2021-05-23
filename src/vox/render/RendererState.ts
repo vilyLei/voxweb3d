@@ -4,13 +4,13 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-
+import RAdapterContext from "../../vox/render/RAdapterContext";
 import {RenderColorMask,RenderStateObject,RODrawState} from "../../vox/render/RODrawState";
 import {CullFaceMode, RenderBlendMode, DepthTestMode} from "../../vox/render/RenderConst";
 class RendererState
 {
     private static s_initBoo:boolean = true;
-    static Rstate:RODrawState = null;
+    static readonly Rstate:RODrawState = null;
     static DrawCallTimes:number = 0;
     static DrawTrisNumber:number = 0;
     static POVNumber:number = 0;
@@ -42,32 +42,33 @@ class RendererState
         if(RendererState.s_initBoo)
         {
             RendererState.s_initBoo = false;
-            RendererState.Rstate = new RODrawState();
+            let state:any = RendererState;
+            state.Rstate = new RODrawState();
             RenderColorMask.Rstate = RendererState.Rstate;
             RenderStateObject.Rstate = RendererState.Rstate;
             RendererState.ALL_TRUE_COLOR_MASK = RenderColorMask.Create("all_true",true,true,true,true);
             RendererState.ALL_FALSE_COLOR_MASK = RenderColorMask.Create("all_false",false,false,false,false);
             
-            RendererState.BACK_CULLFACE_NORMAL_STATE = RenderStateObject.Create("normal",CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.RENDER_OPAQUE);
-            RendererState.FRONT_CULLFACE_NORMAL_STATE = RenderStateObject.Create("front_normal",CullFaceMode.FRONT,RenderBlendMode.NORMAL,DepthTestMode.RENDER_OPAQUE);
-            RendererState.NONE_CULLFACE_NORMAL_STATE = RenderStateObject.Create("none_normal",CullFaceMode.NONE,RenderBlendMode.NORMAL,DepthTestMode.RENDER_OPAQUE);
-            RendererState.ALL_CULLFACE_NORMAL_STATE = RenderStateObject.Create("all_cull_normal",CullFaceMode.FRONT_AND_BACK,RenderBlendMode.NORMAL,DepthTestMode.RENDER_OPAQUE);
-            RendererState.BACK_NORMAL_ALWAYS_STATE = RenderStateObject.Create("back_normal_always",CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.RENDER_ALWAYS);
-            RendererState.BACK_TRANSPARENT_STATE = RenderStateObject.Create("back_transparent",CullFaceMode.BACK,RenderBlendMode.TRANSPARENT,DepthTestMode.RENDER_TRANSPARENT_SORT);
-            RendererState.BACK_TRANSPARENT_ALWAYS_STATE = RenderStateObject.Create("back_transparent_always",CullFaceMode.BACK,RenderBlendMode.TRANSPARENT,DepthTestMode.RENDER_ALWAYS);
-            RendererState.NONE_TRANSPARENT_STATE = RenderStateObject.Create("none_transparent",CullFaceMode.NONE,RenderBlendMode.TRANSPARENT,DepthTestMode.RENDER_TRANSPARENT_SORT);
-            RendererState.NONE_TRANSPARENT_ALWAYS_STATE = RenderStateObject.Create("none_transparent_always",CullFaceMode.NONE,RenderBlendMode.TRANSPARENT,DepthTestMode.RENDER_ALWAYS);
-            RendererState.FRONT_CULLFACE_GREATER_STATE = RenderStateObject.Create("front_greater",CullFaceMode.FRONT,RenderBlendMode.NORMAL,DepthTestMode.RENDER_TRUE_GREATER);
-            RendererState.BACK_ADD_BLENDSORT_STATE = RenderStateObject.Create("back_add_blendSort",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_TRANSPARENT_SORT);
-            RendererState.BACK_ADD_ALWAYS_STATE = RenderStateObject.Create("back_add_always",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
-            RendererState.BACK_ALPHA_ADD_ALWAYS_STATE = RenderStateObject.Create("back_alpha_add_always",CullFaceMode.BACK,RenderBlendMode.ALPHA_ADD,DepthTestMode.RENDER_ALWAYS);
-            RendererState.NONE_ADD_ALWAYS_STATE = RenderStateObject.Create("none_add_always",CullFaceMode.NONE,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
-            RendererState.NONE_ADD_BLENDSORT_STATE = RenderStateObject.Create("none_add_blendSort",CullFaceMode.NONE,RenderBlendMode.ADD,DepthTestMode.RENDER_TRANSPARENT_SORT);
-            RendererState.NONE_ALPHA_ADD_ALWAYS_STATE = RenderStateObject.Create("none_alpha_add_always",CullFaceMode.NONE,RenderBlendMode.ALPHA_ADD,DepthTestMode.RENDER_ALWAYS);
-            RendererState.FRONT_ADD_ALWAYS_STATE = RenderStateObject.Create("front_add_always",CullFaceMode.FRONT,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
-            RendererState.FRONT_TRANSPARENT_STATE = RenderStateObject.Create("front_transparent",CullFaceMode.FRONT,RenderBlendMode.TRANSPARENT,DepthTestMode.RENDER_TRANSPARENT_SORT);
-            RendererState.FRONT_TRANSPARENT_ALWAYS_STATE = RenderStateObject.Create("front_transparent_always",CullFaceMode.FRONT,RenderBlendMode.TRANSPARENT,DepthTestMode.RENDER_ALWAYS);
-            RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE = RenderStateObject.Create("none_normal_always",CullFaceMode.NONE,RenderBlendMode.NORMAL,DepthTestMode.RENDER_ALWAYS);
+            RendererState.BACK_CULLFACE_NORMAL_STATE = RenderStateObject.Create("normal",CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.OPAQUE);
+            RendererState.FRONT_CULLFACE_NORMAL_STATE = RenderStateObject.Create("front_normal",CullFaceMode.FRONT,RenderBlendMode.NORMAL,DepthTestMode.OPAQUE);
+            RendererState.NONE_CULLFACE_NORMAL_STATE = RenderStateObject.Create("none_normal",CullFaceMode.NONE,RenderBlendMode.NORMAL,DepthTestMode.OPAQUE);
+            RendererState.ALL_CULLFACE_NORMAL_STATE = RenderStateObject.Create("all_cull_normal",CullFaceMode.FRONT_AND_BACK,RenderBlendMode.NORMAL,DepthTestMode.OPAQUE);
+            RendererState.BACK_NORMAL_ALWAYS_STATE = RenderStateObject.Create("back_normal_always",CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.ALWAYS);
+            RendererState.BACK_TRANSPARENT_STATE = RenderStateObject.Create("back_transparent",CullFaceMode.BACK,RenderBlendMode.TRANSPARENT,DepthTestMode.TRANSPARENT_SORT);
+            RendererState.BACK_TRANSPARENT_ALWAYS_STATE = RenderStateObject.Create("back_transparent_always",CullFaceMode.BACK,RenderBlendMode.TRANSPARENT,DepthTestMode.ALWAYS);
+            RendererState.NONE_TRANSPARENT_STATE = RenderStateObject.Create("none_transparent",CullFaceMode.NONE,RenderBlendMode.TRANSPARENT,DepthTestMode.TRANSPARENT_SORT);
+            RendererState.NONE_TRANSPARENT_ALWAYS_STATE = RenderStateObject.Create("none_transparent_always",CullFaceMode.NONE,RenderBlendMode.TRANSPARENT,DepthTestMode.ALWAYS);
+            RendererState.FRONT_CULLFACE_GREATER_STATE = RenderStateObject.Create("front_greater",CullFaceMode.FRONT,RenderBlendMode.NORMAL,DepthTestMode.TRUE_GREATER);
+            RendererState.BACK_ADD_BLENDSORT_STATE = RenderStateObject.Create("back_add_blendSort",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.TRANSPARENT_SORT);
+            RendererState.BACK_ADD_ALWAYS_STATE = RenderStateObject.Create("back_add_always",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
+            RendererState.BACK_ALPHA_ADD_ALWAYS_STATE = RenderStateObject.Create("back_alpha_add_always",CullFaceMode.BACK,RenderBlendMode.ALPHA_ADD,DepthTestMode.ALWAYS);
+            RendererState.NONE_ADD_ALWAYS_STATE = RenderStateObject.Create("none_add_always",CullFaceMode.NONE,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
+            RendererState.NONE_ADD_BLENDSORT_STATE = RenderStateObject.Create("none_add_blendSort",CullFaceMode.NONE,RenderBlendMode.ADD,DepthTestMode.TRANSPARENT_SORT);
+            RendererState.NONE_ALPHA_ADD_ALWAYS_STATE = RenderStateObject.Create("none_alpha_add_always",CullFaceMode.NONE,RenderBlendMode.ALPHA_ADD,DepthTestMode.ALWAYS);
+            RendererState.FRONT_ADD_ALWAYS_STATE = RenderStateObject.Create("front_add_always",CullFaceMode.FRONT,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
+            RendererState.FRONT_TRANSPARENT_STATE = RenderStateObject.Create("front_transparent",CullFaceMode.FRONT,RenderBlendMode.TRANSPARENT,DepthTestMode.TRANSPARENT_SORT);
+            RendererState.FRONT_TRANSPARENT_ALWAYS_STATE = RenderStateObject.Create("front_transparent_always",CullFaceMode.FRONT,RenderBlendMode.TRANSPARENT,DepthTestMode.ALWAYS);
+            RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE = RenderStateObject.Create("none_normal_always",CullFaceMode.NONE,RenderBlendMode.NORMAL,DepthTestMode.ALWAYS);
         }
     }
     static CreateRenderState(objName:string,cullFaceMode:number,blendMode:number,depthTestMode:number):number
@@ -103,23 +104,48 @@ class RendererState
     {
         RenderStateObject.LockDepthTestMode( depthTestMode );
     }
-    static Reset(gl:any):void
+    static Reset(context:RAdapterContext):void
     {
         RenderColorMask.Reset();
         RenderStateObject.Reset();
+        RendererState.Rstate.setRenderContext(context);
         RendererState.Rstate.reset();
-        RendererState.Rstate.setRenderer(gl);
-    }
-    static SetDrawState(rstate:RODrawState):void
-    {
-        RenderColorMask.Rstate = rstate;
-        RenderStateObject.Rstate = rstate;
     }
     static ResetInfo():void
     {
         RendererState.DrawCallTimes = 0;
         RendererState.DrawTrisNumber = 0;
         RendererState.POVNumber = 0;
+    }
+    
+    static SetDepthTestEnable(enable:boolean): void {
+        
+        RendererState.Rstate.setDepthTestEnable( enable );
+    }
+    /**
+     * 设置 gpu stencilFunc 状态
+     * @param func Specifies the test function. Eight symbolic constants are valid: GL_NEVER, GL_LESS, GL_LEQUAL, GL_GREATER, GL_GEQUAL, GL_EQUAL, GL_NOTEQUAL, and GL_ALWAYS. The initial value is GL_ALWAYS.
+     * @param ref a GLint type number, value range: [0,2n−1];
+     * @param mask GLint type number
+     */
+    static SetStencilFunc(func:number, ref:number, mask:number): void {
+        RendererState.Rstate.setStencilFunc( func, ref, mask );
+    }
+    /**
+     * 设置 gpu stencilMask 状态
+     * @param mask GLint type number
+     */
+    static SetStencilMask(mask:number): void {
+        RendererState.Rstate.setStencilMask( mask );
+    }
+    /**
+     * 设置 gpu stencilOp 状态
+     * @param fail Specifies the action to take when the stencil test fails. Eight symbolic constants are accepted: GL_KEEP, GL_ZERO, GL_REPLACE, GL_INCR, GL_INCR_WRAP, GL_DECR, GL_DECR_WRAP, and GL_INVERT. The initial value is GL_KEEP.
+     * @param zfail Specifies the stencil action when the stencil test passes, but the depth test fails. dpfail accepts the same symbolic constants as sfail. The initial value is GL_KEEP.
+     * @param zpass Specifies the stencil action when both the stencil test and the depth test pass, or when the stencil test passes and either there is no depth buffer or depth testing is not enabled. dppass accepts the same symbolic constants as sfail. The initial value is GL_KEEP.
+     */
+    static SetStencilOp(fail: number, zfail: number, zpass: number): void {
+        RendererState.Rstate.setStencilOp( fail,  zfail, zpass);
     }
 }
 

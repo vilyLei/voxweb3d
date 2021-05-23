@@ -14,7 +14,7 @@ import RenderMaskBitfield from "../../vox/render/RenderMaskBitfield";
 import ROTextureResource from '../../vox/render/ROTextureResource';
 import FrameBufferObject from "../../vox/render/FrameBufferObject";
 import { CullFaceMode, DepthTestMode } from "../../vox/render/RenderConst";
-import { TextureFormat, TextureDataType, TextureTarget } from "../../vox/texture/TextureConst";
+import { TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 import RAdapterContext from "../../vox/render/RAdapterContext";
 import { RODrawState, RenderStateObject, RenderColorMask } from "../../vox/render/RODrawState";
@@ -23,12 +23,12 @@ import UniformVec4Probe from "../../vox/material/UniformVec4Probe";
 import RendererParam from "../../vox/scene/RendererParam";
 
 class RenderAdapter {
-	private static s_uid:number = 0;
-	private m_uid:number = RenderAdapter.s_uid++;
+	private static s_uid: number = 0;
+	private m_uid: number = RenderAdapter.s_uid++;
 	// renderer context uid
 	private m_rcuid: number = 0;
 	private m_texResource: ROTextureResource = null;
-	private m_rc: any = null;
+	private m_gl: any = null;
 	private m_fontFaceFlipped: boolean = false;// default ccw
 	private m_colorMask: any = { mr: true, mg: true, mb: true, ma: true };
 	private m_rcontext: RAdapterContext = null;
@@ -47,7 +47,7 @@ class RenderAdapter {
 	private m_preDepth: number = 0.0;
 	private m_fboViewSize: Vector3D = new Vector3D(0, 0, 800, 600);
 	private m_fboSizeFactor: number = 1.0;
-	//private m_clearStencil:number = 0x0;
+	private m_clearStencil: number = 0x0;
 	private m_fboBiltRect: Uint16Array = new Uint16Array(8);
 	private m_fboViewRect: Uint16Array = new Uint16Array(4);
 	private m_activeAttachmentTotal: number = 1;
@@ -62,43 +62,41 @@ class RenderAdapter {
 		this.m_rcuid = rcuid;
 	}
 
-	initialize(context: RAdapterContext, param: RendererParam): void {
-		this.m_webglVer = context.getWebGLVersion();
+	initialize(context: RAdapterContext, param: RendererParam, rState: RODrawState): void {
 		if (this.m_rcontext == null) {
+			this.m_webglVer = context.getWebGLVersion();
+			this.m_rState = rState;
+			this.m_rcontext = context;
+			this.m_gl = context.getRC();
 
-			this.m_rcontext = context;			
-			this.m_rc = context.getRC();
+			this.m_gl.disable(this.m_gl.SCISSOR_TEST);
+			if (context.isDepthTestEnabled()) this.m_gl.enable(this.m_gl.DEPTH_TEST);
+			else this.m_gl.disable(this.m_gl.DEPTH_TEST);
 
-			this.m_rc.disable(this.m_rc.SCISSOR_TEST);
-			let flag:boolean = context.getDepthTestEnabled();
-			if (flag) this.m_rc.enable(this.m_rc.DEPTH_TEST);
-			else this.m_rc.disable(this.m_rc.DEPTH_TEST);
+			if (context.isStencilTestEnabled()) this.m_gl.enable(this.m_gl.STENCIL_TEST);
+			else this.m_gl.disable(this.m_gl.STENCIL_TEST);
 
-			if (context.getStencilTestEnabled()) {
-				this.m_rc.enable(this.m_rc.STENCIL_TEST);
-			} else this.m_rc.disable(this.m_rc.STENCIL_TEST);
+			this.m_gl.enable(this.m_gl.CULL_FACE);
+			this.m_gl.cullFace(this.m_gl.BACK);
+			this.m_gl.enable(this.m_gl.BLEND);
 
-			this.m_rc.enable(this.m_rc.CULL_FACE);
-			this.m_rc.cullFace(this.m_rc.BACK);
-			this.m_rc.enable(this.m_rc.BLEND);
-
-			if (param.getDitherEanbled()) this.m_rc.enable(this.m_rc.DITHER);
-			else this.m_rc.disable(this.m_rc.DITHER);
-			this.m_rc.frontFace(this.m_rc.CCW);
+			if (param.getDitherEanbled()) this.m_gl.enable(this.m_gl.DITHER);
+			else this.m_gl.disable(this.m_gl.DITHER);
+			this.m_gl.frontFace(this.m_gl.CCW);
 			if (param.getPolygonOffsetEanbled()) {
-				this.m_rc.enable(this.m_rc.POLYGON_OFFSET_FILL);
+				this.m_gl.enable(this.m_gl.POLYGON_OFFSET_FILL);
 			}
 			else {
-				this.m_rc.disable(this.m_rc.POLYGON_OFFSET_FILL);
+				this.m_gl.disable(this.m_gl.POLYGON_OFFSET_FILL);
 			}
-			
-			//m_rc.hint(m_rc.PERSPECTIVE_CORRECTION_HINT, m_rc.NICEST);	// Really Nice Perspective Calculations
-			this.m_clearMask = this.m_rc.COLOR_BUFFER_BIT | this.m_rc.DEPTH_BUFFER_BIT | this.m_rc.STENCIL_BUFFER_BIT;
+
+			//m_gl.hint(m_gl.PERSPECTIVE_CORRECTION_HINT, m_gl.NICEST);	// Really Nice Perspective Calculations
+			this.m_clearMask = this.m_gl.COLOR_BUFFER_BIT | this.m_gl.DEPTH_BUFFER_BIT | this.m_gl.STENCIL_BUFFER_BIT;
 			//
-			this.m_rState = context.getRenderState();
+			//this.m_rState = context.getRenderState();
 			//console.log("RenderAdapter::initialize() finish...");
 			if (this.uViewProbe == null) {
-				let self:any = this;
+				let self: any = this;
 				self.uViewProbe = new UniformVec4Probe(1);
 				this.uViewProbe.bindSlotAt(this.m_rcuid);
 				this.uViewProbe.setVec4DataWithArr4([this.m_viewX, this.m_viewY, this.m_viewWidth, this.m_viewHeight]);
@@ -111,10 +109,10 @@ class RenderAdapter {
 	setFrontFaceFlipped(faceFlipped: boolean): void {
 		if (this.m_fontFaceFlipped != faceFlipped) {
 			if (faceFlipped) {
-				this.m_rc.frontFace(this.m_rc.CW);
+				this.m_gl.frontFace(this.m_gl.CW);
 			}
 			else {
-				this.m_rc.frontFace(this.m_rc.CCW);
+				this.m_gl.frontFace(this.m_gl.CCW);
 			}
 			this.m_fontFaceFlipped = faceFlipped;
 		}
@@ -126,7 +124,7 @@ class RenderAdapter {
 	 * @param units the value is a which sets the multiplier by which an implementation-specific value is multiplied with to create a constant depth offset. The default value is 0.
 	 */
 	setPolygonOffset(factor: number, units: number = 0.0): void {
-		this.m_rc.polygonOffset(factor, units);
+		this.m_gl.polygonOffset(factor, units);
 		this.m_polygonOffset = true;
 	}
 	/*
@@ -134,7 +132,7 @@ class RenderAdapter {
 	 */
 	resetPolygonOffset(): void {
 		if (this.m_polygonOffset) {
-			this.m_rc.polygonOffset(0.0, 0.0);
+			this.m_gl.polygonOffset(0.0, 0.0);
 			this.m_polygonOffset = false;
 		}
 	}
@@ -168,44 +166,51 @@ class RenderAdapter {
 		this.m_colorMask.ma = ma;
 	}
 	setClearMaskClearAll(): void {
-		this.m_clearMask = this.m_rc.COLOR_BUFFER_BIT | this.m_rc.DEPTH_BUFFER_BIT | this.m_rc.STENCIL_BUFFER_BIT;
+		this.m_clearMask = this.m_gl.COLOR_BUFFER_BIT | this.m_gl.DEPTH_BUFFER_BIT | this.m_gl.STENCIL_BUFFER_BIT;
 	}
 	setClearMaskClearOnlyColor(): void {
-		this.m_clearMask = this.m_rc.COLOR_BUFFER_BIT;
+		this.m_clearMask = this.m_gl.COLOR_BUFFER_BIT;
 	}
 	setClearMaskClearOnlyDepthAndStencil(): void {
-		this.m_clearMask = this.m_rc.DEPTH_BUFFER_BIT | this.m_rc.STENCIL_BUFFER_BIT;
+		this.m_clearMask = this.m_gl.DEPTH_BUFFER_BIT | this.m_gl.STENCIL_BUFFER_BIT;
 	}
 	setScissorRect(px: number, py: number, pw: number, ph: number): void {
 		if (this.m_scissorEnabled) {
-			this.m_rc.scissor(px, py, pw, ph);
+			this.m_gl.scissor(px, py, pw, ph);
 		}
 	}
 	setScissorEnabled(enabled: boolean): void {
 		if (enabled) {
 			if (!this.m_scissorEnabled) {
 				this.m_scissorEnabled = true;
-				this.m_rc.enable(this.m_rc.SCISSOR_TEST);
+				this.m_gl.enable(this.m_gl.SCISSOR_TEST);
 			}
 		}
 		else if (this.m_scissorEnabled) {
 			this.m_scissorEnabled = false;
-			this.m_rc.disable(this.m_rc.SCISSOR_TEST);
+			this.m_gl.disable(this.m_gl.SCISSOR_TEST);
 		}
 	}
 	clear(): void {
-		//m_rc.clearStencil(m_clearStencil);
+
 		if (this.m_preDepth !== this.m_clearDepth) {
 			this.m_preDepth = this.m_clearDepth;
-			this.m_rc.clearDepth(this.m_clearDepth);
+			this.m_gl.clearDepth(this.m_clearDepth);
 		}
-		this.m_rc.clearColor(this.bgColor.r, this.bgColor.g, this.bgColor.b, this.bgColor.a);
-		this.m_rc.clear(this.m_clearMask);
+		if (this.m_rcontext.isStencilTestEnabled()) {
+			this.m_gl.clearStencil(this.m_clearStencil);
+		}
+		this.m_gl.clearColor(this.bgColor.r, this.bgColor.g, this.bgColor.b, this.bgColor.a);
+		this.m_gl.clear(this.m_clearMask);
+
+		if (this.m_rcontext.isStencilTestEnabled()) {
+			this.m_gl.stencilMask(0x0);
+		}
 	}
 	reset(): void {
 		this.m_rState.setCullFaceMode(CullFaceMode.BACK);
-		this.m_rState.setDepthTestMode(DepthTestMode.RENDER_OPAQUE);
-		RendererState.Reset(this.m_rc);
+		this.m_rState.setDepthTestMode(DepthTestMode.OPAQUE);
+		RendererState.Reset(this.m_gl);
 	}
 	getRenderContext(): RAdapterContext {
 		return this.m_rcontext;
@@ -219,7 +224,7 @@ class RenderAdapter {
 			RenderColorMask.Unlock();
 			RenderColorMask.UseRenderState(RenderColorMask.ALL_TRUE_COLOR_MASK);
 			// for back buffer
-			//this.m_rc.clearDepth(1.0);
+			//this.m_gl.clearDepth(1.0);
 			this.clear();
 		}
 	}
@@ -248,7 +253,7 @@ class RenderAdapter {
 				this.uViewProbe.update();
 				DivLog.ShowLog("reseizeViewPort: " + this.m_viewX + "," + this.m_viewY + "," + this.m_viewWidth + "," + this.m_viewHeight);
 				//console.log("reseizeViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
-				this.m_rc.viewport(
+				this.m_gl.viewport(
 					this.m_viewX,
 					this.m_viewY,
 					this.m_viewWidth,
@@ -279,7 +284,7 @@ class RenderAdapter {
 				this.uViewProbe.update();
 				DivLog.ShowLog("reseizeFBOViewPort: " + this.m_viewX + "," + this.m_viewY + "," + this.m_viewWidth + "," + this.m_viewHeight);
 				//console.log("reseizeFBOViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
-				this.m_rc.viewport(
+				this.m_gl.viewport(
 					this.m_viewX,
 					this.m_viewY,
 					this.m_viewWidth,
@@ -329,7 +334,7 @@ class RenderAdapter {
 	}
 	// read data format include float or unsigned byte ,etc.
 	readPixels(px: number, py: number, width: number, height: number, format: number, dataType: number, pixels: Uint8Array): void {
-		this.m_rc.readPixels(px, py, width, height, TextureFormat.ToGL(this.m_rc, format), TextureDataType.ToGL(this.m_rc, dataType), pixels);
+		this.m_gl.readPixels(px, py, width, height, TextureFormat.ToGL(this.m_gl, format), TextureDataType.ToGL(this.m_gl, dataType), pixels);
 	}
 	setFBOViewRect(px: number, py: number, pw: number, ph: number): void {
 		this.m_fboViewRect[0] = px;
@@ -349,7 +354,7 @@ class RenderAdapter {
 			this.m_fboBuf.multisampleLevel = multisampleLevel;
 			this.m_fboBuf.writeDepthEnabled = enableDepth;
 			this.m_fboBuf.writeStencilEnabled = enableStencil;
-			this.m_fboBuf.initialize(this.m_rc, pw, ph);
+			this.m_fboBuf.initialize(this.m_gl, pw, ph);
 			this.m_fboBufList[index] = this.m_fboBuf;
 			this.m_fboBuf.sizeFixed = true;
 		}
@@ -441,15 +446,15 @@ class RenderAdapter {
 			if (attachmentIndex == 0) {
 				if (this.m_fboBuf != null) {
 					if (this.m_synFBOSizeWithViewport) {
-						this.m_fboBuf.initialize(this.m_rc, Math.floor(this.m_rcontext.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getFBOHeight() * this.m_fboSizeFactor));
+						this.m_fboBuf.initialize(this.m_gl, Math.floor(this.m_rcontext.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getFBOHeight() * this.m_fboSizeFactor));
 					}
 					else {
-						//this.m_fboBuf.initialize(this.m_rc, texProxy.getWidth(), texProxy.getHeight());
+						//this.m_fboBuf.initialize(this.m_gl, texProxy.getWidth(), texProxy.getHeight());
 						if (this.m_fboViewRectBoo) {
-							this.m_fboBuf.initialize(this.m_rc, this.m_fboViewRect[2], this.m_fboViewRect[3]);
+							this.m_fboBuf.initialize(this.m_gl, this.m_fboViewRect[2], this.m_fboViewRect[3]);
 						}
 						else if (!this.m_fboBuf.sizeFixed) {
-							this.m_fboBuf.initialize(this.m_rc, texProxy.getWidth(), texProxy.getHeight());
+							this.m_fboBuf.initialize(this.m_gl, texProxy.getWidth(), texProxy.getHeight());
 						}
 					}
 				}
@@ -460,21 +465,21 @@ class RenderAdapter {
 						this.m_fboBuf.writeDepthEnabled = enableDepth;
 						this.m_fboBuf.writeStencilEnabled = enableStencil;
 						if (this.m_synFBOSizeWithViewport) {
-							this.m_fboBuf.initialize(this.m_rc, Math.floor(this.m_rcontext.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getFBOHeight() * this.m_fboSizeFactor));
+							this.m_fboBuf.initialize(this.m_gl, Math.floor(this.m_rcontext.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getFBOHeight() * this.m_fboSizeFactor));
 						}
 						else {
 							if (this.m_fboViewRectBoo) {
-								this.m_fboBuf.initialize(this.m_rc, this.m_fboViewRect[2], this.m_fboViewRect[3]);
+								this.m_fboBuf.initialize(this.m_gl, this.m_fboViewRect[2], this.m_fboViewRect[3]);
 							}
 							else {
-								this.m_fboBuf.initialize(this.m_rc, texProxy.getWidth(), texProxy.getHeight());
+								this.m_fboBuf.initialize(this.m_gl, texProxy.getWidth(), texProxy.getHeight());
 							}
 						}
 					}
 				}
 			}
 			if (this.m_fboBuf != null) {
-				this.m_fboBuf.renderToTexAt(this.m_rc, texProxy, attachmentIndex);
+				this.m_fboBuf.renderToTexAt(this.m_gl, texProxy, attachmentIndex);
 				//console.log("RenderProxy::setRenderToTexture(), fbo: ",this.m_fboBuf.getFBO());
 			}
 			this.m_fboClearBoo = true;
@@ -490,7 +495,7 @@ class RenderAdapter {
 		if (this.m_fboBuf != null) {
 			if (this.m_fboClearBoo) {
 				this.m_fboClearBoo = false;
-				this.m_fboBuf.use(this.m_rc);
+				this.m_fboBuf.use(this.m_gl);
 				this.m_activeAttachmentTotal = this.m_fboBuf.getActiveAttachmentTotal();
 				if (clearColorBoo) {
 					this.m_fboBuf.clearOnlyColor(this.bgColor);
@@ -515,8 +520,8 @@ class RenderAdapter {
 					this.m_fboBuf.clearOnlyStencil(0xff);
 				}
 				if (this.m_webglVer == 1) {
-					//m_rc.colorMask(m_colorMask.mr,m_colorMask.mg,m_colorMask.mb,m_colorMask.ma);
-					this.m_rc.clear(this.m_clearMask);
+					//m_gl.colorMask(m_colorMask.mr,m_colorMask.mg,m_colorMask.mb,m_colorMask.ma);
+					this.m_gl.clear(this.m_clearMask);
 				}
 
 				this.m_fboBiltRect[4] = this.m_fboBiltRect[0] = this.m_viewX;
@@ -543,7 +548,7 @@ class RenderAdapter {
 	}
 	setRenderToBackBuffer(frameBufferType: number = FrameBufferType.FRAMEBUFFER): void {
 		this.m_activeAttachmentTotal = 1;
-		FrameBufferObject.BindToBackbuffer(this.m_rc, frameBufferType);
+		FrameBufferObject.BindToBackbuffer(this.m_gl, frameBufferType);
 		this.reseizeViewPort();
 	}
 
@@ -583,13 +588,13 @@ class RenderAdapter {
 			this.m_fboBufList[readFBOIndex].bind(FrameBufferType.READ_FRAMEBUFFER);
 		}
 		else {
-			FrameBufferObject.BindToBackbuffer(this.m_rc, FrameBufferType.READ_FRAMEBUFFER);
+			FrameBufferObject.BindToBackbuffer(this.m_gl, FrameBufferType.READ_FRAMEBUFFER);
 		}
 		if (writeFBOIndex >= 0 && this.m_fboBufList[writeFBOIndex] != null) {
 			this.m_fboBufList[writeFBOIndex].bind(FrameBufferType.DRAW_FRAMEBUFFER);
 		}
 		else {
-			FrameBufferObject.BindToBackbuffer(this.m_rc, FrameBufferType.DRAW_FRAMEBUFFER);
+			FrameBufferObject.BindToBackbuffer(this.m_gl, FrameBufferType.DRAW_FRAMEBUFFER);
 		}
 		if (clearType > 0) {
 			if (clearIndex < 0) {
@@ -601,11 +606,11 @@ class RenderAdapter {
 			if (dataArr == null) {
 				dataArr = [0.0, 0.0, 0.0, 1.0];
 			}
-			this.m_rc.clearBufferfv(clearType, clearIndex, dataArr);
+			this.m_gl.clearBufferfv(clearType, clearIndex, dataArr);
 		}
 		let fs: Uint16Array = this.m_fboBiltRect;
 		//copyTexSubImage2D 可以在gles2中代替下面的函数
-		this.m_rc.blitFramebuffer(fs[0], fs[1], fs[2], fs[3], fs[4], fs[5], fs[6], fs[7], mask_bitfiled, filter);
+		this.m_gl.blitFramebuffer(fs[0], fs[1], fs[2], fs[3], fs[4], fs[5], fs[6], fs[7], mask_bitfiled, filter);
 	}
 }
 export default RenderAdapter;

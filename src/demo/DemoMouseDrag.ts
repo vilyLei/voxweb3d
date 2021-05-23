@@ -168,8 +168,8 @@ export namespace demo {
                 let tex5: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/a_02_c.jpg");
                 let tex6: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/metal_08.jpg");
 
-                RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.RENDER_BLEND);
-                RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.RENDER_ALWAYS);
+                RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
+                RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
                 this.m_rscene.updateCamera();
 
                 let saxis: DragAxisQuad3D = new DragAxisQuad3D();

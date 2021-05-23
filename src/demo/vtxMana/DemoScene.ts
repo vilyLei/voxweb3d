@@ -67,8 +67,8 @@ export namespace demo
                 {
                     this.m_renderer = renderer;
                     this.m_rcontext = this.m_renderer.getRendererContext();               
-                    RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
-                    RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
+                    RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.BLEND);
+                    RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
 
                     this.m_texBlock = new TextureBlock();
                     this.m_texBlock.setRenderer( this.m_renderer );

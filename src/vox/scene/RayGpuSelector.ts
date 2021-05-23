@@ -385,7 +385,7 @@ export default class RayGpuSelector implements IRaySelector
         proxy.clearRenderBuffer();
         this.m_uintArray[3] = 0;
         RendererState.LockBlendMode(RenderBlendMode.OPAQUE);
-        RendererState.LockDepthTestMode(DepthTestMode.RENDER_OPAQUE);
+        RendererState.LockDepthTestMode(DepthTestMode.OPAQUE);
         let rcontext:RendererInstanceContext = this.m_renderer.getRendererContext();
         rcontext.unlockMaterial();
         rcontext.unlockRenderState();

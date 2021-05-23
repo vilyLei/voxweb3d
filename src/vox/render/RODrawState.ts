@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../../vox/render/RenderConst";
+import RAdapterContext from "../../vox/render/RAdapterContext";
 
 export class RenderColorMask {
     private static s_uid: number = 0;
@@ -265,46 +266,60 @@ export class RODrawState {
     private m_blendMode: number = RenderBlendMode.NORMAL;
     private m_cullMode: number = CullFaceMode.NONE;
     private m_depthTestType: number = DepthTestMode.DISABLE;
-    private s_blendDisabled: boolean = true;
-    private s_cullDisabled: boolean = true;
+    private m_blendDisabled: boolean = true;
+    private m_cullDisabled: boolean = true;
+    private m_context: RAdapterContext = null;
     private m_gl: any = null;
-
     public roColorMask: number = -11;
-    //public drawcallTimes:number = 0;
     constructor() {
     }
     reset(): void {
-        //  this.m_blendMode = RenderBlendMode.NORMAL;
-        //  this.m_cullMode = CullFaceMode.NONE;
-        //  this.m_depthTestType = DepthTestMode.DISABLE;
         this.roColorMask = -11;
     }
-    setRenderer(gl: any): void {
-        this.m_gl = gl;
+    setRenderContext(context: RAdapterContext): void {
+        this.m_context = context;
+        this.m_gl = context.getRC();
     }
     setColorMask(mr: boolean, mg: boolean, mb: boolean, ma: boolean): void {
         this.m_gl.colorMask(mr, mg, mb, ma);
+    }
+    setStencilFunc(func:number, ref:number, mask:number): void {
+        this.m_gl.stencilFunc( func, ref, mask );
+    }
+    setStencilMask(mask:number): void {
+        this.m_gl.stencilMask( mask );
+    }
+    setStencilOp(fail: number, zfail: number, zpass: number): void {
+        this.m_gl.stencilOp( fail, zfail, zpass );
+    }
+    setDepthTestEnable(enable:boolean): void {
+        if(enable) {
+            this.m_gl.enable(this.m_gl.DEPTH_TEST);
+        }
+        else {
+            this.m_gl.disable(this.m_gl.DEPTH_TEST);
+        }
     }
     setCullFaceMode(mode: number): void {
         switch (mode) {
             case CullFaceMode.BACK:
                 if (this.m_cullMode != mode) {
                     this.m_cullMode = mode;
-                    if (this.s_cullDisabled) { this.s_cullDisabled = false; this.m_gl.enable(this.m_gl.CULL_FACE); }
+                    if (this.m_cullDisabled) { this.m_cullDisabled = false; this.m_gl.enable(this.m_gl.CULL_FACE); }
                     this.m_gl.cullFace(this.m_gl.BACK);
                 }
                 break;
             case CullFaceMode.FRONT:
                 if (this.m_cullMode != mode) {
                     this.m_cullMode = mode;
-                    if (this.s_cullDisabled) { this.s_cullDisabled = false; this.m_gl.enable(this.m_gl.CULL_FACE); }
+                    if (this.m_cullDisabled) { this.m_cullDisabled = false; this.m_gl.enable(this.m_gl.CULL_FACE); }
                     this.m_gl.cullFace(this.m_gl.FRONT);
                 }
                 break;
             case CullFaceMode.FRONT_AND_BACK:
                 if (this.m_cullMode != mode) {
                     this.m_cullMode = mode;
-                    if (this.s_cullDisabled) { this.s_cullDisabled = false; this.m_gl.enable(this.m_gl.CULL_FACE); }
+                    if (this.m_cullDisabled) { this.m_cullDisabled = false; this.m_gl.enable(this.m_gl.CULL_FACE); }
                     this.m_gl.cullFace(this.m_gl.FRONT_AND_BACK);
                 }
                 break;
@@ -312,8 +327,8 @@ export class RODrawState {
             case CullFaceMode.DISABLE:
                 if (this.m_cullMode != mode) {
                     this.m_cullMode = mode;
-                    if (!this.s_cullDisabled) {
-                        this.s_cullDisabled = true;
+                    if (!this.m_cullDisabled) {
+                        this.m_cullDisabled = true;
                         this.m_gl.disable(this.m_gl.CULL_FACE);
                     }
                 }
@@ -328,46 +343,46 @@ export class RODrawState {
             this.m_blendMode = mode;
             switch (mode) {
                 case RenderBlendMode.NORMAL:
-                    if (this.s_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.s_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
+                    if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
                     this.m_gl.blendFunc(this.m_gl.ONE, this.m_gl.ZERO);
                     //trace("use blendMode NORMAL.");
                     break;
                 case RenderBlendMode.TRANSPARENT:
-                    if (this.s_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.s_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
+                    if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
                     this.m_gl.blendFunc(this.m_gl.SRC_ALPHA, this.m_gl.ONE_MINUS_SRC_ALPHA);
                     //trace("use blendMode TRANSPARENT.");
                     break;
                 case RenderBlendMode.ALPHA_ADD:
-                    if (this.s_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.s_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
+                    if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
                     this.m_gl.blendFunc(this.m_gl.ONE, this.m_gl.ONE_MINUS_SRC_ALPHA);
                     break;
                 case RenderBlendMode.ADD:
-                    if (this.s_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.s_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
+                    if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
                     this.m_gl.blendFunc(this.m_gl.SRC_ALPHA, this.m_gl.ONE);
                     //trace("use blendMode ADD.");
                     break;
                 case RenderBlendMode.ADD2:
-                    if (this.s_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.s_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
+                    if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
                     this.m_gl.blendFunc(this.m_gl.ONE, this.m_gl.ONE);
                     break;
                 case RenderBlendMode.INVERSE_ALPHA:
-                    if (this.s_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.s_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
+                    if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
                     this.m_gl.blendFunc(this.m_gl.ONE, this.m_gl.SRC_ALPHA);
                     break;
                 case RenderBlendMode.BLAZE:
-                    if (this.s_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.s_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
+                    if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
                     this.m_gl.blendFunc(this.m_gl.SRC_COLOR, this.m_gl.ONE);
                     break;
                 case RenderBlendMode.OVERLAY:
-                    if (this.s_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.s_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
+                    if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
                     this.m_gl.blendFunc(this.m_gl.DST_COLOR, this.m_gl.DST_ALPHA);
                     break;
                 case RenderBlendMode.OVERLAY2:
-                    if (this.s_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.s_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
+                    if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
                     this.m_gl.blendFunc(this.m_gl.DST_COLOR, this.m_gl.SRC_ALPHA);
                     break;
                 case RenderBlendMode.DISABLE:
-                    if (!this.s_blendDisabled) { this.m_gl.disable(this.m_gl.BLEND); this.s_blendDisabled = true; }
+                    if (!this.m_blendDisabled) { this.m_gl.disable(this.m_gl.BLEND); this.m_blendDisabled = true; }
                     break;
                 default:
                     break;
@@ -380,43 +395,43 @@ export class RODrawState {
             //trace("RendererBase::setDepthTest(),type：",std::to_string(static_cast<int>(type)));
 
             switch (type) {
-                case DepthTestMode.RENDER_ALWAYS:
-                    //console.log("RENDER_ALWAYS type: ", type,this.m_gl.ALWAYS);
+                case DepthTestMode.ALWAYS:
+                    //console.log("ALWAYS type: ", type,this.m_gl.ALWAYS);
                     this.m_gl.depthMask(false); this.m_gl.depthFunc(this.m_gl.ALWAYS);
                     break;
-                case DepthTestMode.RENDER_SKY:
+                case DepthTestMode.SKY:
                     this.m_gl.depthMask(true); this.m_gl.depthFunc(this.m_gl.LEQUAL);
                     break;
-                case DepthTestMode.RENDER_OPAQUE:
-                    //console.log("RENDER_OPAQUE type: ", type,this.m_gl.LESS);
+                case DepthTestMode.OPAQUE:
+                    //console.log("OPAQUE type: ", type,this.m_gl.LESS);
                     this.m_gl.depthMask(true); this.m_gl.depthFunc(this.m_gl.LESS);
                     break;
-                case DepthTestMode.RENDER_OPAQUE_OVERHEAD:
+                case DepthTestMode.OPAQUE_OVERHEAD:
                     this.m_gl.depthMask(false); this.m_gl.depthFunc(this.m_gl.EQUAL);
                     break;
-                case DepthTestMode.RENDER_DECALS:
+                case DepthTestMode.DECALS:
                     this.m_gl.depthMask(false); this.m_gl.depthFunc(this.m_gl.LEQUAL);
                     break;
-                case DepthTestMode.RENDER_BLEND:
+                case DepthTestMode.BLEND:
                     //if (list.next != null) list = sortByAverageZ(list);
                     this.m_gl.depthMask(false); this.m_gl.depthFunc(this.m_gl.LESS);
                     break;
-                case DepthTestMode.RENDER_WIRE_FRAME:
+                case DepthTestMode.WIRE_FRAME:
                     this.m_gl.depthMask(true); this.m_gl.depthFunc(this.m_gl.LEQUAL);
                     break;
-                case DepthTestMode.RENDER_NEXT_LAYER:
+                case DepthTestMode.NEXT_LAYER:
                     this.m_gl.depthMask(false); this.m_gl.depthFunc(this.m_gl.ALWAYS);
                     break;
-                case DepthTestMode.RENDER_TRUE_EQUAL:
+                case DepthTestMode.TRUE_EQUAL:
                     this.m_gl.depthMask(true); this.m_gl.depthFunc(this.m_gl.EQUAL);
                     break;
-                case DepthTestMode.RENDER_TRUE_GREATER:
+                case DepthTestMode.TRUE_GREATER:
                     this.m_gl.depthMask(true); this.m_gl.depthFunc(this.m_gl.GREATER);
                     break;
-                case DepthTestMode.RENDER_TRUE_GEQUAL:
+                case DepthTestMode.TRUE_GEQUAL:
                     this.m_gl.depthMask(true); this.m_gl.depthFunc(this.m_gl.GEQUAL);
                     break;
-                case DepthTestMode.RENDER_WIRE_FRAME_NEXT:
+                case DepthTestMode.WIRE_FRAME_NEXT:
                     break;
                 default:
                     break;

@@ -336,13 +336,13 @@ export default class RendererInstanceContext
         {
             this.m_adapter.unlockViewport();
             this.m_adapter.setClearDepth(1.0);
-            RendererState.ResetInfo();
-            RendererState.Reset(this.m_renderProxy.RContext);
             this.m_renderProxy.Vertex.renderBegin();
             this.m_materialProxy.renderBegin();
             this.m_adapter.update();
             this.m_adapter.setClearMaskClearAll();
             this.m_adapter.renderBegin();
+            RendererState.ResetInfo();
+            RendererState.Reset(this.m_renderProxy.getRenderAdapter().getRenderContext());
             this.m_renderProxy.useCameraData();
             this.m_renderProxy.updateCameraDataFromCamera( this.m_renderProxy.getCamera() );
         }

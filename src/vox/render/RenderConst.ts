@@ -36,39 +36,39 @@ export class CullFaceMode {
     static readonly DISABLE: number = 0;
 }
 export class DepthTestMode {
-    static readonly RENDER_NEVER: number = 1;
+    static readonly NEVER: number = 1;
     //glDepthMask(false); glDepthFunc(GL_ALWAYS);
-    static readonly RENDER_ALWAYS: number = 2;
+    static readonly ALWAYS: number = 2;
     //glDepthMask(true); glDepthFunc(GL_LEQUAL);
-    static readonly RENDER_SKY: number = 3;
-    static readonly RENDER_TRUE_LESS_EQUAL: number = 3;
+    static readonly SKY: number = 3;
+    static readonly TRUE_LESS_EQUAL: number = 3;
     //glDepthMask(true); glDepthFunc(GL_LESS);
-    static readonly RENDER_OPAQUE: number = 4;
-    static readonly RENDER_TRUE_LESS: number = 4;
+    static readonly OPAQUE: number = 4;
+    static readonly TRUE_LESS: number = 4;
     //glDepthMask(false); glDepthFunc(GL_EQUAL);
-    static readonly RENDER_OPAQUE_OVERHEAD: number = 5;
-    static readonly RENDER_FALSE_EQUAL: number = 5;
+    static readonly OPAQUE_OVERHEAD: number = 5;
+    static readonly FALSE_EQUAL: number = 5;
     //glDepthMask(false); glDepthFunc(GL_LESS);
-    static readonly RENDER_FALSE_LESS: number = 6;
-    static readonly RENDER_BLEND: number = 6;
-    static readonly RENDER_BLEND_SORT: number = 6;
-    static readonly RENDER_TRANSPARENT_SORT: number = 6;
+    static readonly FALSE_LESS: number = 6;
+    static readonly BLEND: number = 6;
+    static readonly BLEND_SORT: number = 6;
+    static readonly TRANSPARENT_SORT: number = 6;
     //glDepthMask(TRUE); glDepthFunc(GL_LEQUAL);
-    static readonly RENDER_TRUE_LEQUAL: number = 7;
-    static readonly RENDER_WIRE_FRAME: number = 7;
+    static readonly TRUE_LEQUAL: number = 7;
+    static readonly WIRE_FRAME: number = 7;
     //
     //glDepthMask(false); glDepthFunc(GL_LEQUAL);
-    static readonly RENDER_FALSE_LEQUAL: number = 8;
-    static readonly RENDER_DECALS: number = 8;
+    static readonly FALSE_LEQUAL: number = 8;
+    static readonly DECALS: number = 8;
     //glDepthMask(false); glDepthFunc(GL_ALWAYS);
-    static readonly RENDER_NEXT_LAYER: number = 11;
-    static readonly RENDER_WIRE_FRAME_NEXT: number = 12;
+    static readonly NEXT_LAYER: number = 11;
+    static readonly WIRE_FRAME_NEXT: number = 12;
     //glDepthMask(true); glDepthFunc(GL_EQUAL);
-    static RENDER_TRUE_EQUAL: number = 13;
+    static TRUE_EQUAL: number = 13;
     //glDepthMask(true); glDepthFunc(GL_GREATER);
-    static RENDER_TRUE_GREATER: number = 14;
+    static TRUE_GREATER: number = 14;
     //glDepthMask(true); glDepthFunc(GL_GEQUAL);
-    static RENDER_TRUE_GEQUAL: number = 15;
+    static TRUE_GEQUAL: number = 15;
     static DISABLE: number = 0;
 }
 export class RenderConst {

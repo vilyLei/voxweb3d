@@ -26,7 +26,7 @@ interface IRODisplay
     drawMode:number;// = RenderDrawMode.ELEMENTS_TRIANGLES;
     vbuf:IROVtxBuf;// = null;
     // record render state: shadowMode(one byte) + depthTestMode(one byte) + blendMode(one byte) + cullFaceMode(one byte)
-    // its value come from: RendererState.CreateRenderState("default", CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.RENDER_OPAQUE);
+    // its value come from: RendererState.CreateRenderState("default", CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.OPAQUE);
     renderState:number;// = RendererState.NORMAL_STATE;
     rcolorMask:number;// = RendererState.ALL_TRUE_COLOR_MASK;
     // mouse interaction enabled flag

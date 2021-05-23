@@ -53,9 +53,9 @@ export namespace motionDemo
                 this.m_srcShadow.initializeXOZ(-100,-100,200.0,200,[this.getTexAt(4)]);
 
                 
-                RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_BLEND);
-                RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.RENDER_ALWAYS);
-                RendererState.CreateRenderState("transparent02",CullFaceMode.BACK,RenderBlendMode.TRANSPARENT,DepthTestMode.RENDER_ALWAYS);
+                RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.BLEND);
+                RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
+                RendererState.CreateRenderState("transparent02",CullFaceMode.BACK,RenderBlendMode.TRANSPARENT,DepthTestMode.ALWAYS);
 
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.name = "axis_big";
