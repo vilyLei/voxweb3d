@@ -306,12 +306,18 @@
 //  import * as DemoHdrCylindricalMap from "./demo/DemoHdrCylindricalMap";
 //  import Demo = DemoHdrCylindricalMap.demo.DemoHdrCylindricalMap;
 
-import * as DemoStencil from "./demo/DemoStencil";
-import Demo = DemoStencil.demo.DemoStencil;
+//  import {DemoStencil as Demo} from "./demo/DemoStencil";
 
 //  import * as DemoObj3DModule from "./demo/DemoObj3DModule";
 //  import Demo = DemoObj3DModule.demo.DemoObj3DModule;
 
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+//  import {DemoAdsLight as Demo} from "./demo/DemoAdsLight";
+
+import {DemoLighting as Demo} from "./pbr/DemoLighting";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

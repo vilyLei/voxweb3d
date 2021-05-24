@@ -150,7 +150,6 @@ export namespace demo
         {
             let stage3D:Stage3D = this.m_rscene.getStage3D() as Stage3D;
             stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
-            stage3D.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheelListener);
             stage3D.addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener);
             stage3D.addEventListener(MouseEvent.MOUSE_MOVE,this,this.mouseMoveListener);
 
@@ -171,10 +170,6 @@ export namespace demo
         {
             //console.log("mouseDown...");
             //this.m_rscene.setClearRGBColor3f(Math.random(), 0, Math.random());
-        }
-        mouseWheelListener(evt:any):void
-        {
-            //this.m_CameraZoomController.setMoevDistance(evt.wheelDeltaY * 0.5);
         }
         
         private test_bgmouseDownListener(evt:any):void
@@ -288,7 +283,6 @@ export namespace demo
                 ctrObj.createDisp({target:entity});
             }
         }
-        private m_lookAtPos:Vector3D = new Vector3D();
         run():void
         {
             //this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
@@ -300,7 +294,7 @@ export namespace demo
             // render end
             this.m_rscene.runEnd();
             //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-            this.m_CameraZoomController.run(this.m_lookAtPos, 50.0);
+            this.m_CameraZoomController.run(null, 50.0);
             if(this.m_profileInstance != null) this.m_profileInstance.run();
         }
     }
