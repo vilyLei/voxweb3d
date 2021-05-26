@@ -22,7 +22,7 @@ class AdsLightShaderBuffer extends ShaderCodeBuffer {
     }
     getFragShaderCode(): string {
         let fragCode: string =
-            `#version 300 es
+`#version 300 es
 precision mediump float;
 uniform sampler2D u_sampler0;
 
@@ -84,7 +84,7 @@ void main()
     }
     getVtxShaderCode(): string {
         let vtxCode: string =
-            `#version 300 es
+`#version 300 es
 precision mediump float;
 
 layout(location = 0) in vec3 a_vs;

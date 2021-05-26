@@ -8,7 +8,7 @@
 // 摄像机拉近拉远的控制(主要是移动端的多点触摸)
 
 import Vector3D from "../../vox/math/Vector3D";
-import Stage3D from "../../vox/display/Stage3D";
+import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import CameraBase from "../../vox/view/CameraBase";
 import DivLog from "../../vox/utils/DivLog";
 import MouseEvent from "../../vox/event/MouseEvent";
@@ -40,14 +40,14 @@ export default class CameraZoomController
     {
         this.m_camera = camera;
     }
-    initialize(stage3D:Stage3D):void
+    initialize(stage3D:IRenderStage3D):void
     {
         if(this.m_initBoo)
         {
             this.m_initBoo = false;
-            stage3D.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheelListener);
-            stage3D.addEventListener(MouseEvent.MOUSE_MULTI_MOVE,this,this.mouseMultiMoveListener);
-            stage3D.addEventListener(MouseEvent.MOUSE_MULTI_UP,this,this.mouseMultiUpListener);
+            stage3D.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheelListener, true, true);
+            stage3D.addEventListener(MouseEvent.MOUSE_MULTI_MOVE,this,this.mouseMultiMoveListener, true, true);
+            stage3D.addEventListener(MouseEvent.MOUSE_MULTI_UP,this,this.mouseMultiUpListener, true, true);
         }
     }
     

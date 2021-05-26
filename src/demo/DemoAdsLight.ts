@@ -36,6 +36,7 @@ export class DemoAdsLight {
             RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
             let rparam: RendererParam = new RendererParam();
+            rparam.maxWebGLVersion = 2;
             rparam.setCamPosition(800.0, 800.0, 800.0);
             rparam.setAttriAntialias(true);
             rparam.setAttriStencil(true);
@@ -56,9 +57,9 @@ export class DemoAdsLight {
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
-            let axis: Axis3DEntity = new Axis3DEntity();
-            axis.initialize(500.0);
-            this.m_rscene.addEntity(axis);
+            //  let axis: Axis3DEntity = new Axis3DEntity();
+            //  axis.initialize(500.0);
+            //  this.m_rscene.addEntity(axis);
 
             let adsMaterial: AdsLightMaterial = new AdsLightMaterial();
             // add common 3d display entity

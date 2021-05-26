@@ -37,8 +37,8 @@ class FloatTextureProxy extends RawDataTextureProxy
     toRGBFormat():void
     {
         this.srcFormat = TextureFormat.RGB;
-        this.internalFormat = TextureFormat.RGB;
-        this.unpackAlignment = 3;
+        this.internalFormat = TextureFormat.RGB16F;
+        this.unpackAlignment = 1;
     }
     toRGBAFormat():void
     {

@@ -8,7 +8,6 @@ import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import { TextureConst } from "../vox/texture/TextureConst";
 import TextureProxy from "../vox/texture/TextureProxy";
-import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
 
 import MouseEvent from "../vox/event/MouseEvent";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
@@ -19,7 +18,11 @@ import HdrClyMapMaterial from "./material/HdrClyMapMaterial";
 import Vector3D from "../vox/math/Vector3D";
 import URLTool from "../vox/utils/URLTool";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
+import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
+import { RGBE,RGBEParser } from '../vox/assets/RGBEParser.js';
+import BytesTextureProxy from "../vox/texture/BytesTextureProxy";
+import BinaryLoader from "../vox/assets/BinaryLoader";
 
 export namespace demo {
     export class DemoHdrCylindricalMap {
@@ -32,6 +35,7 @@ export namespace demo {
         private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
         private m_profileInstance: ProfileInstance = new ProfileInstance();
         private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
+        private m_CameraZoomController: CameraZoomController = new CameraZoomController();
         
         private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
             let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -45,7 +49,7 @@ export namespace demo {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
-                let purl: string = 'https://lt3d.oss-cn-hangzhou.aliyuncs.com/vr/HP8JkiCBwDeJ2XzH3FAY.pto?reawe=5.fg';
+                let purl: string = 'https://ko.hou.aliyuncs.com/vr/hghyDeJ2XzH3FAY.pto?reawe=5.fg';
                 let fileSuffix: any = URLTool.GetURLFileSuffix(purl);
                 console.log("fileSuffix: ", fileSuffix);
 
@@ -58,6 +62,11 @@ export namespace demo {
                 this.m_rcontext = this.m_rscene.getRendererContext();
                 this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
                 
+                this.m_rscene.enableMouseEvent(true);
+                
+                this.m_CameraZoomController.bindCamera(this.m_rscene.getCamera());
+                this.m_CameraZoomController.initialize(this.m_rscene.getStage3D());
+
                 this.m_rscene.enableMouseEvent(true);
                 this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
@@ -73,32 +82,54 @@ export namespace demo {
                 axis.initialize(300.0);
                 this.m_rscene.addEntity(axis);
 
-                let v3: Vector3D = new Vector3D();
-                this.m_rscene.getCamera().getInvertViewMatrix().transformVector3Self(v3);
-                console.log("v3: ", v3);
-                //  // add common 3d display entity
-                //  let plane:Plane3DEntity = new Plane3DEntity();
-                //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
-                //  this.m_rscene.addEntity(plane);
-                //  this.m_targets.push(plane);
-                //  //this.m_disp = plane;
 
-                let material: HdrClyMapMaterial = new HdrClyMapMaterial();
-                material.initializeByCodeBuf(true);
-                let sph: Sphere3DEntity = new Sphere3DEntity();
-                sph.setMaterial(material);
-
-                //sph.initialize(200.0,20,20,[this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
-                sph.initialize(200.0, 20, 20, [this.getImageTexByUrl("static/assets/hdr/night_free_Bg.jpg")]);
-                this.m_rscene.addEntity(sph);
-                this.update();
-
+                let loader: BinaryLoader = new BinaryLoader();
+                loader.load("static/assets/hdr/night_free_Env_512x256.hdr", this);
+                //loader.load("static/assets/hdr/memorial.hdr", this);
+                //loader.load("static/assets/hdr/HDR_029_Sky_Cloudy_Env.hdr", this);
             }
         }
-        private mouseDown(evt: any): void {
-            console.log("mouse down... ...");
+        private m_hdrRGBEMaterial: HdrClyMapMaterial = null;
+        private mouseDown(evt: any): void
+        {
+            if(this.m_hdrRGBEMaterial != null) {
+                let exposure: number = evt.mouseX/200.0;
+                this.m_hdrRGBEMaterial.setExposure( exposure );
+            }
         }
 
+        private createByteTexByBytes(bytes: Uint8Array, pw: number, ph: number): BytesTextureProxy {
+            
+            let posTex: BytesTextureProxy = this.m_rscene.textureBlock.createBytesTex(pw, ph);
+            posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
+            //posTex.mipmapEnabled = false;
+            //posTex.minFilter = TextureConst.NEAREST;
+            //posTex.magFilter = TextureConst.NEAREST;
+
+            posTex.setDataFromBytes(bytes, 0, pw, ph);
+            return posTex;
+        }
+        loaded(buffer: ArrayBuffer, uuid: string): void {
+            console.log("loaded... uuid: ", uuid,buffer.byteLength);
+
+
+            let parser:RGBEParser = new RGBEParser();
+            let rgbe:RGBE = parser.parse(buffer);
+            console.log("parse finish, rgbeData: ",rgbe);
+
+            let ftex:TextureProxy = this.createByteTexByBytes(rgbe.data as Uint8Array, rgbe.width, rgbe.height);
+
+            this.m_hdrRGBEMaterial = new HdrClyMapMaterial();
+            let sph: Sphere3DEntity = new Sphere3DEntity();
+            sph.setMaterial(this.m_hdrRGBEMaterial);
+            sph.initialize(200.0, 20, 20, [ftex]);
+            sph.setXYZ(Math.random() * 700.0 - 350.0, Math.random() * 700.0 - 350.0, Math.random() * 700.0 - 350.0);
+            this.m_rscene.addEntity(sph);
+            this.update();            
+        }
+        loadError(status: number, uuid: string): void {
+
+        }
         private m_timeoutId: any = -1;
         private update(): void {
             if (this.m_timeoutId > -1) {
@@ -116,6 +147,7 @@ export namespace demo {
             this.m_statusDisp.update(false);
 
             this.m_stageDragSwinger.runWithYAxis();
+            this.m_CameraZoomController.run(null, 30.0);
             
             this.m_rscene.run(true);
 

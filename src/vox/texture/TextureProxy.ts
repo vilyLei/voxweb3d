@@ -48,6 +48,9 @@ export class TextureProxy implements IRenderTexture
     mipmapEnabled:boolean = false;
     flipY:boolean = false;
     premultiplyAlpha:boolean = false;
+    /**
+     * the value contains (1,2,4,8) 
+     */
     unpackAlignment:number = 4;
     minFilter:number = TextureConst.LINEAR_MIPMAP_LINEAR;
     // webgl1环境下,这个参数值为LINEAR会报错:

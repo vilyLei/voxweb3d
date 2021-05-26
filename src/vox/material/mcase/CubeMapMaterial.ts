@@ -33,8 +33,9 @@ in vec3 v_nvs;
 layout(location = 0) out vec4 FragColor;
 void main()
 {
-vec4 color4 = texture(u_sampler0, v_nvs) * u_color;
-FragColor = color4 * 0.5 + 0.5 * vec4(abs(v_nvs),1.0);
+vec3 color3 = texture(u_sampler0, v_nvs).xyz;
+color3 = u_color.xyz;
+FragColor = vec4(color3 * 0.6, 1.0) + 0.4 * vec4(abs(v_nvs),1.0);
 }
 `;
         return fragCode;

@@ -253,8 +253,12 @@
 //  import * as DemoFloatTex from "./demo/DemoFloatTex";
 //  import Demo = DemoFloatTex.demo.DemoFloatTex;
 
+//  import * as DemoCubeFloatTex from "./demo/DemoCubeFloatTex";
+//  import Demo = DemoCubeFloatTex.demo.DemoCubeFloatTex;
+
 //  import * as DemoFloatTex2 from "./example/DemoFloatTex2";
 //  import Demo = DemoFloatTex2.demo.DemoFloatTex2;
+
 
 //  import * as DemoBoxGroupTrack from "./demo/DemoBoxGroupTrack";
 //  import Demo = DemoBoxGroupTrack.demo.DemoBoxGroupTrack;

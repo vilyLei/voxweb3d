@@ -5,9 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 // renderer context Extensions
- class RCExtension
-{
-    
+class RCExtension
+{    
+    static readonly OES_standard_derivatives:any = null;
+    static readonly EXT_shader_texture_lod:any = null;
     static readonly WEBGL_draw_buffers:any = null;
     static readonly OES_vertex_array_object:any = null;
     static readonly ANGLE_instanced_arrays:any = null;
@@ -22,14 +23,41 @@
     static readonly WEBGL_debug_renderer_info:any = null;
     static Initialize(webVer:number, gl:any):void
     {
-        let selfT:any = this;//RCExtension;
+        let selfT:any = this;
         if(webVer == 1)
         {
+            //#extension OES_standard_derivatives : enable
+            selfT.OES_standard_derivatives = gl.getExtension('OES_standard_derivatives');
+            if(selfT.OES_standard_derivatives != null)
+            console.log("Use OES_standard_derivatives Extension success!");
+            else
+            console.log("OES_standard_derivatives Extension can not support!");
+            //#extension GL_EXT_shader_texture_lod : enable
+            selfT.EXT_shader_texture_lod = gl.getExtension('EXT_shader_texture_lod');
+            if(selfT.EXT_shader_texture_lod != null)
+            console.log("Use EXT_shader_texture_lod Extension success!");
+            else
+            console.log("EXT_shader_texture_lod Extension can not support!");
+/*
+<script type="x-shader/x-fragment">
+#extension GL_EXT_shader_texture_lod : enable
+#extension GL_OES_standard_derivatives : enable
+
+uniform sampler2D myTexture;
+varying vec2 texcoord;
+
+void main(){
+  gl_FragColor = texture2DGradEXT(myTexture, mod(texcoord, vec2(0.1, 0.5)),
+                                  dFdx(texcoord), dFdy(texcoord));
+}
+</script>
+*/
             selfT.WEBGL_draw_buffers = gl.getExtension('WEBGL_draw_buffers');
             if(selfT.WEBGL_draw_buffers != null)
             console.log("Use WEBGL_draw_buffers Extension success!");
             else
             console.log("WEBGL_draw_buffers Extension can not support!");
+
             selfT.OES_vertex_array_object = gl.getExtension('OES_vertex_array_object');
             if(selfT.OES_vertex_array_object != null)
             console.log("Use OES_vertex_array_object Extension success!");
@@ -75,7 +103,18 @@
         }
         else
         {
-            
+            selfT.OES_standard_derivatives = gl.getExtension('OES_standard_derivatives');
+            if(selfT.OES_standard_derivatives != null)
+            console.log("Use OES_standard_derivatives Extension success!");
+            else
+            console.log("OES_standard_derivatives Extension can not support!");
+
+            selfT.EXT_shader_texture_lod = gl.getExtension('EXT_shader_texture_lod');
+            if(selfT.EXT_shader_texture_lod != null)
+            console.log("Use EXT_shader_texture_lod Extension success!");
+            else
+            console.log("EXT_shader_texture_lod Extension can not support!");
+
             selfT.EXT_color_buffer_half_float = gl.getExtension('EXT_color_buffer_half_float');
             if(selfT.EXT_color_buffer_half_float != null)
             console.log("Use EXT_color_buffer_half_float Extension success!");

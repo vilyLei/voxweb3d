@@ -11,21 +11,20 @@ import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
 import Vector3D from "../../vox/math/Vector3D";
 
-class PBRLightingShaderBuffer extends ShaderCodeBuffer {
+class PBRTexLightingShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: PBRLightingShaderBuffer = new PBRLightingShaderBuffer();
+    private static ___s_instance: PBRTexLightingShaderBuffer = new PBRTexLightingShaderBuffer();
     private m_uniqueName: string = "";
     initialize(texEnabled: boolean): void {
-        //console.log("PBRLightingShaderBuffer::initialize()...");
-        this.m_uniqueName = "PBRLightingShd";
+        //console.log("PBRTexLightingShaderBuffer::initialize()...");
+        this.m_uniqueName = "PBRTexLightingShd";
     }
     getFragShaderCode(): string {
         let fragCode: string =
 `#version 300 es
 precision highp float;
-//uniform sampler2D u_sampler0;
 
 out vec4 FragColor;
 in vec2 TexCoords;
@@ -33,28 +32,41 @@ in vec3 WorldPos;
 in vec3 Normal;
 
 // material parameters
-uniform vec4 u_albedo;
-uniform vec4 u_params; //[metallic,roughness,ao, 1.0]
+uniform sampler2D u_sampler0;// albedoMap
+uniform sampler2D u_sampler1;// normalMap
+uniform sampler2D u_sampler2;// metallicMap
+uniform sampler2D u_sampler3;// roughnessMap
+uniform sampler2D u_sampler4;// aoMap
 
 // lights
 uniform vec4 u_lightPositions[4];
 uniform vec4 u_lightColors[4];
 
-uniform vec4 u_camPos;
+uniform vec3 u_camPos;
 
-#define PI 3.141592653589793
-#define PI2 6.283185307179586
-#define PI_HALF 1.5707963267948966
-#define RECIPROCAL_PI 0.3183098861837907
-#define RECIPROCAL_PI2 0.15915494309189535
-#define EPSILON 1e-6
+const float PI = 3.14159265359;
 // ----------------------------------------------------------------------------
-#define saturate(a) clamp( a, 0.0, 1.0 )
-//  // handy value clamping to 0 - 1 range
-//  float saturate(in float value)
-//  {
-//      return clamp(value, 0.0, 1.0);
-//  }
+// Easy trick to get tangent-normals to world-space to keep PBR code simplified.
+// Don't worry if you don't get what's going on; you generally want to do normal 
+// mapping the usual way for performance anways; I do plan make a note of this 
+// technique somewhere later in the normal mapping tutorial.
+vec3 getNormalFromMap()
+{
+    vec3 tangentNormal = texture(u_sampler1, TexCoords).xyz * 2.0 - 1.0;
+
+    vec3 Q1  = dFdx(WorldPos);
+    vec3 Q2  = dFdy(WorldPos);
+    vec2 st1 = dFdx(TexCoords);
+    vec2 st2 = dFdy(TexCoords);
+
+    vec3 N   = normalize(Normal);
+    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
+    vec3 B  = -normalize(cross(N, T));
+    mat3 TBN = mat3(T, B, N);
+
+    return normalize(TBN * tangentNormal);
+}
+// ----------------------------------------------------------------------------
 float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
     float a = roughness*roughness;
@@ -66,7 +78,7 @@ float DistributionGGX(vec3 N, vec3 H, float roughness)
     float denom = (NdotH2 * (a2 - 1.0) + 1.0);
     denom = PI * denom * denom;
 
-    return nom / max(denom, 0.0000001); // prevent divide by zero for roughness=0.0 and NdotH=1.0
+    return nom / denom;
 }
 // ----------------------------------------------------------------------------
 float GeometrySchlickGGX(float NdotV, float roughness)
@@ -90,133 +102,51 @@ float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
     return ggx1 * ggx2;
 }
 // ----------------------------------------------------------------------------
-// @param cosTheta is clamp(dot(H, V), 0.0, 1.0)
 vec3 fresnelSchlick(float cosTheta, vec3 F0)
 {
     return F0 + (1.0 - F0) * pow(max(1.0 - cosTheta, 0.0), 5.0);
 }
-vec3 fresnelSchlick2(vec3 specularColor, vec3 L, vec3 H)
-{
-   return specularColor + (1.0 - specularColor) * pow(1.0 - saturate(dot(L, H)), 5.0);
-}
-//fresnelSchlick2(specularColor, L, H) * ((SpecularPower + 2) / 8 ) * pow(saturate(dot(N, H)), SpecularPower) * dotNL;
-
 #define  OneOnLN2_x6 8.656171// == 1/ln(2) * 6 (6 is SpecularPower of 5 + 1)
 vec3 fresnelSchlick3(vec3 specularColor, float dot, float glossiness)
 {
 	return specularColor + (max(vec3(glossiness), specularColor) - specularColor) * exp2(-OneOnLN2_x6 * dot); 
 }
-vec3 fresnelSchlickWithRoughness(vec3 specularColor, vec3 L, vec3 N, float gloss)
-{
-   return specularColor + (max(vec3(gloss), specularColor) - specularColor) * pow(1.0 - saturate(dot(L, N)), 5.0);
-}
-vec3 ACESToneMapping(vec3 color, float adapted_lum)
-{
-	const float A = 2.51f;
-	const float B = 0.03f;
-	const float C = 2.43f;
-	const float D = 0.59f;
-	const float E = 0.14f;
-
-	color *= adapted_lum;
-	return (color * (A * color + B)) / (color * (C * color + D) + E);
-}
-
-//color = color / (color + vec3(1.0));
-vec3 reinhard(vec3 v)
-{
-    return v / (vec3(1.0) + v);
-}
-vec3 reinhard_extended(vec3 v, float max_white)
-{
-    vec3 numerator = v * (1.0f + (v / vec3(max_white * max_white)));
-    return numerator / (1.0f + v);
-}
-float luminance(vec3 v)
-{
-    return dot(v, vec3(0.2126f, 0.7152f, 0.0722f));
-}
-
-vec3 change_luminance(vec3 c_in, float l_out)
-{
-    float l_in = luminance(c_in);
-    return c_in * (l_out / l_in);
-}
-vec3 reinhard_extended_luminance(vec3 v, float max_white_l)
-{
-    float l_old = luminance(v);
-    float numerator = l_old * (1.0f + (l_old / (max_white_l * max_white_l)));
-    float l_new = numerator / (1.0f + l_old);
-    return change_luminance(v, l_new);
-}
-vec3 ReinhardToneMapping( vec3 color, float toneMappingExposure ) {
-
-	color *= toneMappingExposure;
-	return saturate( color / ( vec3( 1.0 ) + color ) );
-
-}
-
-// expects values in the range of [0,1]x[0,1], returns values in the [0,1] range.
-// do not collapse into a single function per: http://byteblacksmith.com/improvements-to-the-canonical-one-liner-glsl-rand-for-opengl-es-2-0/
-highp float rand( const in vec2 uv ) {
-	const highp float a = 12.9898, b = 78.233, c = 43758.5453;
-	highp float dt = dot( uv.xy, vec2( a,b ) ), sn = mod( dt, PI );
-	return fract(sin(sn) * c);
-}
-// based on https://www.shadertoy.com/view/MslGR8
-vec3 dithering( vec3 color ) {
-    //Calculate grid position
-    float grid_position = rand( gl_FragCoord.xy );
-
-    //Shift the individual colors differently, thus making it even harder to see the dithering pattern
-    vec3 dither_shift_RGB = vec3( 0.25 / 255.0, -0.25 / 255.0, 0.25 / 255.0 );
-
-    //modify shift acording to grid position.
-    dither_shift_RGB = mix( 2.0 * dither_shift_RGB, -2.0 * dither_shift_RGB, grid_position );
-
-    //shift the color by dither_shift
-    return color + dither_shift_RGB;
-}
 // ----------------------------------------------------------------------------
 void main()
 {
-    vec3 color = vec3(0.0);
+    vec3 albedo     = pow(texture(u_sampler0, TexCoords).rgb, vec3(2.2));
+    float metallic  = texture(u_sampler2, TexCoords).r;
+    float roughness = texture(u_sampler3, TexCoords).r;
+    float ao        = texture(u_sampler4, TexCoords).r;
 
-    float metallic = u_params.x;
-    float roughness = u_params.y;
-    float ao = u_params.z;
+    vec3 N = getNormalFromMap();
+    vec3 V = normalize(u_camPos - WorldPos);
 
-    vec3 N = normalize(Normal);
-    vec3 V = normalize(u_camPos.xyz - WorldPos);
-    vec3 albedo = u_albedo.xyz;
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
     vec3 F0 = vec3(0.04); 
-    F0 = mix(F0, albedo.xyz, metallic);// * vec3(0.0,0.9,0.0);
+    F0 = mix(F0, albedo, metallic);
 
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    
     for(int i = 0; i < 4; ++i) 
     {
         // calculate per-light radiance
         vec3 L = normalize(u_lightPositions[i].xyz - WorldPos);
         vec3 H = normalize(V + L);
         float distance = length(u_lightPositions[i].xyz - WorldPos);
-        //float attenuation = 1.0 / (1.0 + (distance * distance));
-        
+        //float attenuation = 1.0 / (distance * distance);
         float attenuation = 1.0 / (1.0 + 0.001 * distance + 0.0003 * distance * distance);
         vec3 radiance = u_lightColors[i].xyz * attenuation;
 
         // Cook-Torrance BRDF
         float NDF = DistributionGGX(N, H, roughness);   
-        float G   = GeometrySmith(N, V, L, roughness);
-        //vec3 F    = fresnelSchlick(clamp(dot(H, V), 0.0, 1.0), F0);
-        vec3 F    = fresnelSchlick3(F0,clamp(dot(H, V), 0.0, 1.0), 0.9);
-        
+        float G   = GeometrySmith(N, V, L, roughness);      
+        vec3 F    = fresnelSchlick(max(dot(H, V), 0.0), F0);
+           
         vec3 nominator    = NDF * G * F; 
-        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
-        vec3 specular = nominator / max(denominator, 0.001); // prevent divide by zero for NdotV=0.0 or NdotL=0.0
+        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0) + 0.001; // 0.001 to prevent divide by zero.
+        vec3 specular = nominator / denominator;
         
         // kS is equal to Fresnel
         vec3 kS = F;
@@ -230,26 +160,23 @@ void main()
         kD *= 1.0 - metallic;	  
 
         // scale light by NdotL
-        float NdotL = max(dot(N, L), 0.0);
+        float NdotL = max(dot(N, L), 0.0);        
 
         // add to outgoing radiance Lo
-        Lo += (kD * albedo.xyz / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
-        
-    }
+        Lo += (kD * albedo / PI + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
+    }   
+    
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
-    vec3 ambient = vec3(0.03) * albedo.xyz * ao;
-
-    color = ambient + Lo;
+    vec3 ambient = vec3(0.03) * albedo * ao;
+    
+    vec3 color = ambient + Lo;
 
     // HDR tonemapping
-    color = reinhard( color );
-    //color = reinhard_extended( color, 3.0 );
-    //color = reinhard_extended_luminance( color, 5.0 );
-    //color = ACESToneMapping(color, 1.0);
+    color = color / (color + vec3(1.0));
     // gamma correct
     color = pow(color, vec3(1.0/2.2));
-    //color = dithering(color);
+
     FragColor = vec4(color, 1.0);
 }
 `;
@@ -280,7 +207,6 @@ void main(){
 
     WorldPos = wPos.xyz;
     TexCoords = a_uvs;
-    //Normal = mat3(u_objMat) * a_nvs;
     Normal = normalize(a_nvs * inverse(mat3(u_objMat)));;
 }
 `;
@@ -291,21 +217,21 @@ void main(){
         return this.m_uniqueName;
     }
     toString(): string {
-        return "[PBRLightingShaderBuffer()]";
+        return "[PBRTexLightingShaderBuffer()]";
     }
 
-    static GetInstance(): PBRLightingShaderBuffer {
-        return PBRLightingShaderBuffer.___s_instance;
+    static GetInstance(): PBRTexLightingShaderBuffer {
+        return PBRTexLightingShaderBuffer.___s_instance;
     }
 }
 
-export default class PBRLightingMaterial extends MaterialBase {
+export default class PBRTexLightingMaterial extends MaterialBase {
     constructor() {
         super();
     }
 
     getCodeBuf(): ShaderCodeBuffer {
-        return PBRLightingShaderBuffer.GetInstance();
+        return PBRTexLightingShaderBuffer.GetInstance();
     }
 
     private m_albedo: Float32Array = new Float32Array([0.5, 0.0, 0.0, 0.0]);
@@ -351,11 +277,11 @@ export default class PBRLightingMaterial extends MaterialBase {
     createSelfUniformData(): ShaderUniformData {
 
         //  console.log("this.m_albedo: ",this.m_albedo);
-        console.log("this.m_params: ",this.m_params);
+        //  console.log("this.m_params: ",this.m_params);
         //  console.log("this.m_camPos: ",this.m_camPos);
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_albedo", "u_params", "u_lightPositions", "u_lightColors", "u_camPos"];
-        oum.dataList = [this.m_albedo, this.m_params, this.m_lightPositions, this.u_lightColors, this.m_camPos];
+        oum.uniformNameList = ["u_albedo", "u_lightPositions", "u_lightColors", "u_camPos"];
+        oum.dataList = [this.m_albedo, this.m_lightPositions, this.u_lightColors, this.m_camPos];
         return oum;
     }
 }

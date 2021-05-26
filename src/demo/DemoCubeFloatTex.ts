@@ -17,16 +17,17 @@ import RendererScene from "../vox/scene/RendererScene";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
-import FloatTexMaterial from "./material/FloatTexMaterial";
-import HDRRGBETexMaterial from "./material/HDRRGBETexMaterial";
 import ILoaderListerner from "../vox/assets/ILoaderListerner";
 import BinaryLoader from "../vox/assets/BinaryLoader";
 
-import { RGBE,RGBEParser } from '../vox/assets/RGBEParser.js';
 import BytesTextureProxy from "../vox/texture/BytesTextureProxy";
 import MouseEvent from "../vox/event/MouseEvent";
+import FloatCubeMapMaterial from "../vox/material/mcase/FloatCubeMapMaterial";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import FloatCubeTextureProxy from "../vox/texture/FloatCubeTextureProxy";
+
 export namespace demo {
-    export class DemoFloatTex implements ILoaderListerner {
+    export class DemoCubeFloatTex implements ILoaderListerner {
         constructor() { }
         private m_rscene: RendererScene = null;
         private m_rcontext: RendererInstanceContext = null;
@@ -66,7 +67,7 @@ export namespace demo {
         }
 
         private createFloatTexByBytes(fs: Float32Array, pw: number, ph: number): FloatTextureProxy {
-            
+
             let posTex: FloatTextureProxy = this.m_rscene.textureBlock.createFloatTex2D(pw, ph);
             posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
             //posTex.mipmapEnabled = false;
@@ -77,7 +78,7 @@ export namespace demo {
             return posTex;
         }
         private createByteTexByBytes(bytes: Uint8Array, pw: number, ph: number): BytesTextureProxy {
-            
+
             let posTex: BytesTextureProxy = this.m_rscene.textureBlock.createBytesTex(pw, ph);
             posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
             //posTex.mipmapEnabled = false;
@@ -88,7 +89,7 @@ export namespace demo {
             return posTex;
         }
         initialize(): void {
-            console.log("DemoFloatTex::initialize()......");
+            console.log("DemoCubeFloatTex::initialize()......");
             if (this.m_rcontext == null) {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -119,52 +120,49 @@ export namespace demo {
                 axis.initialize(500.0);
                 this.m_rscene.addEntity(axis);
 
-                //this.initFloatTexEntity();
-                this.initHdrRGBEFloatTexEntity();
+                this.initFloatCube();
             }
         }
-        private initFloatTexEntity(): void {
+        private initFloatCube(): void {
 
-            let tex: TextureProxy = this.createFloatTex();
-            let material: FloatTexMaterial = new FloatTexMaterial();
-            material.setTextureList([tex]);
-            
-            var plane: Plane3DEntity = new Plane3DEntity();
-            plane.setMaterial(material);
-            
-            plane.initializeXOZ(0.0, 0.0, 200.0, 150.0, [tex]);
-            this.m_rscene.addEntity(plane);
-        }
-        private initHdrRGBEFloatTexEntity(): void {
-            
             let loader: BinaryLoader = new BinaryLoader();
-            loader.load("static/assets/hdr/night_free_Env_512x256.hdr", this);
+            loader.load("static/bytes/s.bin", this);
         }
-        private m_hdrRGBEMaterial: HDRRGBETexMaterial = null;
-        private mouseDown(evt: any): void
-        {
-            if(this.m_hdrRGBEMaterial != null) {
-                let exposure: number = evt.mouseX/200.0;
-                this.m_hdrRGBEMaterial.setExposure( exposure );
+        private m_targetMaterial: FloatCubeMapMaterial = null;
+        private mouseDown(evt: any): void {
+            if (this.m_targetMaterial != null) {
+                let exposure: number = Math.max(evt.mouseX - 20, 0.0) / 200.0;
+                this.m_targetMaterial.setExposure(exposure);
             }
         }
         loaded(buffer: ArrayBuffer, uuid: string): void {
-            console.log("loaded... uuid: ", uuid,buffer.byteLength);
+            console.log("loaded... uuid: ", uuid, buffer.byteLength);
+            let begin: number = 0;
+            let width: number = 128;
+            let height: number = 128;
+            let size: number = width * height * 3;
+            let fs32: Float32Array = new Float32Array(buffer);
+            let subArr: Float32Array = null;
 
+            let tex: FloatCubeTextureProxy;
+            tex = this.m_rscene.textureBlock.createFloatCubeTex(width, height);
+            tex.toRGBFormat();
+            tex.mipmapEnabled = false;
+            for (let i: number = 0, len: number = 6; i < len; ++i) {
+                subArr = fs32.slice(begin, begin + size);
+                console.log("width,height: ", width, height, ", subArr.length: ", subArr.length);
+                tex.setDataFromBytesToFaceAt(i, subArr, width, height, 0);
+                //width = width>>1;
+                //height = height>>1;
+            }
+            let material: FloatCubeMapMaterial = new FloatCubeMapMaterial();
+            this.m_targetMaterial = material;
+            let box: Box3DEntity = new Box3DEntity();
 
-            let parser:RGBEParser = new RGBEParser();
-            let rgbe:RGBE = parser.parse(buffer);
-            console.log("parse rgbeData: ",rgbe);
-
-            let ftex:TextureProxy = this.createByteTexByBytes(rgbe.data as Uint8Array, rgbe.width, rgbe.height);
-
-            this.m_hdrRGBEMaterial = new HDRRGBETexMaterial();
-            this.m_hdrRGBEMaterial.setTextureList([ftex]);
-            // add common 3d display entity
-            var plane: Plane3DEntity = new Plane3DEntity();
-            plane.setMaterial(this.m_hdrRGBEMaterial);
-            plane.initializeXOZ(0.0, 0.0, 200.0, 150.0, [ftex]);
-            this.m_rscene.addEntity(plane);
+            box.useGourandNormal();
+            box.setMaterial(material);
+            box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex]);
+            this.m_rscene.addEntity(box);
         }
         loadError(status: number, uuid: string): void {
 
@@ -176,8 +174,8 @@ export namespace demo {
             this.m_statusDisp.update();
 
             this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
-            this.m_rscene.run( true);
-            
+            this.m_rscene.run(true);
+
             //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
     }

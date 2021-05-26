@@ -25,11 +25,9 @@ export default class CameraStageDragSwinger {
     }
 
     private mouseDownListener(evt: any): void {
-        console.log("CameraStageDragSwinger mouseDownListener call...");
         this.m_dragSwinger.attach();
     }
     private mouseUpListener(evt: any): void {
-        console.log("CameraStageDragSwinger mouseUpListener call...");
         this.m_dragSwinger.detach();
     }
     runWithYAxis(): void {

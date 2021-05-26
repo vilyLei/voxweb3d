@@ -6,26 +6,24 @@
 /***************************************************************************/
 
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
-import MaterialBase from "../../vox/material/MaterialBase";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
+import MaterialBase from "../../vox/material/MaterialBase";
 
-class HdrClyMapShaderBuffer extends ShaderCodeBuffer {
+class HDRRGBETexRenderShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: HdrClyMapShaderBuffer = new HdrClyMapShaderBuffer();
+    private static ___s_instance: HDRRGBETexRenderShaderBuffer = null;
     private m_uniqueName: string = "";
     initialize(texEnabled: boolean): void {
-        //console.log("HdrClyMapShaderBuffer::initialize()...");
-        this.m_uniqueName = "HdrClyMapShd";
+        //console.log("HDRRGBETexRenderShaderBuffer::initialize()...");
+        this.m_uniqueName = "HDRRGBETexMaterialShd";
     }
-
     getFragShaderCode(): string {
         let fragCode: string =
-`#version 300 es
+            `#version 300 es
 precision mediump float;
-const float PI = 3.14159265359;
-
+uniform sampler2D u_sampler0;
 uniform vec4 u_color;
 uniform vec4 u_param;
 
@@ -54,80 +52,31 @@ vec4 LinearTosRGB( in vec4 value ){
 vec4 RGBEToLinear( in vec4 value ){
 	return vec4( value.rgb * exp2( value.a * 255.0 - 128.0 ), 1.0 );
 }
-
-// expects values in the range of [0,1]x[0,1], returns values in the [0,1] range.
-// do not collapse into a single function per: http://byteblacksmith.com/improvements-to-the-canonical-one-liner-glsl-rand-for-opengl-es-2-0/
-highp float rand( const in vec2 uv ) {
-	const highp float a = 12.9898, b = 78.233, c = 43758.5453;
-	highp float dt = dot( uv.xy, vec2( a,b ) ), sn = mod( dt, PI );
-	return fract(sin(sn) * c);
-}
-// based on https://www.shadertoy.com/view/MslGR8
-vec3 dithering( vec3 color ) {
-    //Calculate grid position
-    float grid_position = rand( gl_FragCoord.xy );
-
-    //Shift the individual colors differently, thus making it even harder to see the dithering pattern
-    vec3 dither_shift_RGB = vec3( 0.25 / 255.0, -0.25 / 255.0, 0.25 / 255.0 );
-
-    //modify shift acording to grid position.
-    dither_shift_RGB = mix( 2.0 * dither_shift_RGB, -2.0 * dither_shift_RGB, grid_position );
-
-    //shift the color by dither_shift
-    return color + dither_shift_RGB;
-}
-uniform sampler2D u_sampler0;
-
-in vec3 v_nv;
-in vec3 v_param;
-in vec3 v_wVtxPos;
-in vec3 v_wViewPos;
-layout(location = 0) out vec4 FragColor0;
-vec2 calcUV() {
-    vec3 nor = normalize(v_nv);
-	vec3 viewDir = -1.0 * normalize(v_wViewPos - v_wVtxPos);
-	vec3 refl = reflect(viewDir,nor);
-	float u = 1.0 - ((atan(refl.x,refl.z) / PI + 1.0) * 0.5);
-	float v = acos(refl.y) / PI;
-	return vec2(u, v);
-}
-void main() {
-
-    vec2 uv = calcUV();
-    //  vec4 color4 = texture(u_sampler0, uv);
-    //  FragColor0 = color4;
-    vec4 color4 = texture(u_sampler0, uv);
-    color4 = RGBEToLinear(color4);
-    color4.rgb = toneMapping(color4.rgb);
-    color4 = LinearTosRGB(color4);
-    color4.rgb = dithering( color4.rgb );
-    FragColor0 = vec4(color4.rgb,1.0) * u_color;
+in vec2 v_uv;
+layout(location = 0) out vec4 FragColor;
+void main(){
+vec4 color4 = texture(u_sampler0, v_uv);
+color4 = RGBEToLinear(color4);
+color4.rgb = toneMapping(color4.rgb);
+color4 = LinearTosRGB(color4);
+FragColor = vec4(color4.rgb,1.0) * u_color;
 }
 `;
         return fragCode;
     }
     getVtxShaderCode(): string {
         let vtxCode: string =
-`#version 300 es
-precision mediump float;
+            `#version 300 es
+precision highp float;
 layout(location = 0) in vec3 a_vs;
-layout(location = 1) in vec3 a_nvs;
+layout(location = 1) in vec2 a_uvs;
 uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
-out vec3 v_nv;
-out vec3 v_param;
-out vec3 v_wVtxPos;
-out vec3 v_wViewPos;
+out vec2 v_uv;
 void main(){
-    vec4 viewWorldPos = inverse(u_viewMat) * vec4(0.0,0.0,0.0,1.0);
-    vec4 wpos = u_objMat * vec4(a_vs, 1.0);
-    vec4 viewPos = u_viewMat * wpos;
-    gl_Position = u_projMat * viewPos;
-    v_nv = a_nvs;
-    v_param = vec3(length(normalize(wpos.xyz - viewWorldPos.xyz)));
-    v_wVtxPos = wpos.xyz;
-    v_wViewPos = viewWorldPos.xyz;
+    v_uv = a_uvs;
+    gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs.xyz,1.0);
 }
 `;
         return vtxCode;
@@ -137,21 +86,23 @@ void main(){
         return this.m_uniqueName;
     }
     toString(): string {
-        return "[HdrClyMapShaderBuffer()]";
+        return "[HDRRGBETexRenderShaderBuffer()]";
     }
 
-    static GetInstance(): HdrClyMapShaderBuffer {
-        return HdrClyMapShaderBuffer.___s_instance;
+    static GetInstance(): HDRRGBETexRenderShaderBuffer {
+        if (HDRRGBETexRenderShaderBuffer.___s_instance != null) {
+            return HDRRGBETexRenderShaderBuffer.___s_instance;
+        }
+        HDRRGBETexRenderShaderBuffer.___s_instance = new HDRRGBETexRenderShaderBuffer();
+        return HDRRGBETexRenderShaderBuffer.___s_instance;
     }
 }
-
-export default class HdrClyMapMaterial extends MaterialBase {
+export default class HDRRGBETexMaterial extends MaterialBase {
     constructor() {
         super();
     }
-
     getCodeBuf(): ShaderCodeBuffer {
-        return HdrClyMapShaderBuffer.GetInstance();
+        return HDRRGBETexRenderShaderBuffer.GetInstance();
     }
     private m_colorArray: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
     private m_param: Float32Array = new Float32Array([1.0, 0.0, 0.0, 0.0]);
@@ -175,5 +126,4 @@ export default class HdrClyMapMaterial extends MaterialBase {
         oum.dataList = [this.m_colorArray, this.m_param];
         return oum;
     }
-
 }
