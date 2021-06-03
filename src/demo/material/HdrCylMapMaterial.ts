@@ -9,15 +9,15 @@ import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import MaterialBase from "../../vox/material/MaterialBase";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 
-class HdrClyMapShaderBuffer extends ShaderCodeBuffer {
+class HdrCylShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: HdrClyMapShaderBuffer = new HdrClyMapShaderBuffer();
+    private static ___s_instance: HdrCylShaderBuffer = new HdrCylShaderBuffer();
     private m_uniqueName: string = "";
     initialize(texEnabled: boolean): void {
-        //console.log("HdrClyMapShaderBuffer::initialize()...");
-        this.m_uniqueName = "HdrClyMapShd";
+        //console.log("HdrCylShaderBuffer::initialize()...");
+        this.m_uniqueName = "HdrCylShd";
     }
 
     getFragShaderCode(): string {
@@ -137,21 +137,21 @@ void main(){
         return this.m_uniqueName;
     }
     toString(): string {
-        return "[HdrClyMapShaderBuffer()]";
+        return "[HdrCylShaderBuffer()]";
     }
 
-    static GetInstance(): HdrClyMapShaderBuffer {
-        return HdrClyMapShaderBuffer.___s_instance;
+    static GetInstance(): HdrCylShaderBuffer {
+        return HdrCylShaderBuffer.___s_instance;
     }
 }
 
-export default class HdrClyMapMaterial extends MaterialBase {
+export default class HdrCylMaterial extends MaterialBase {
     constructor() {
         super();
     }
 
     getCodeBuf(): ShaderCodeBuffer {
-        return HdrClyMapShaderBuffer.GetInstance();
+        return HdrCylShaderBuffer.GetInstance();
     }
     private m_colorArray: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
     private m_param: Float32Array = new Float32Array([1.0, 0.0, 0.0, 0.0]);

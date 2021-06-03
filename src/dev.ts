@@ -307,10 +307,12 @@
 //  import * as DemoCameraSwing from "./demo/DemoCameraSwing";
 //  import Demo = DemoCameraSwing.demo.DemoCameraSwing;
 
-//  import * as DemoHdrCylindricalMap from "./demo/DemoHdrCylindricalMap";
-//  import Demo = DemoHdrCylindricalMap.demo.DemoHdrCylindricalMap;
+import * as DemoHdrCylindricalMap from "./demo/DemoHdrCylindricalMap";
+import Demo = DemoHdrCylindricalMap.demo.DemoHdrCylindricalMap;
 
 //  import {DemoStencil as Demo} from "./demo/DemoStencil";
+
+//  import {DemoPreDepthTransparent as Demo} from "./demo/DemoPreDepthTransparent";
 
 //  import * as DemoObj3DModule from "./demo/DemoObj3DModule";
 //  import Demo = DemoObj3DModule.demo.DemoObj3DModule;
@@ -321,7 +323,7 @@
 
 //  import {DemoAdsLight as Demo} from "./demo/DemoAdsLight";
 
-import {DemoLighting as Demo} from "./pbr/DemoLighting";
+//  import {DemoLighting as Demo} from "./pbr/DemoLighting";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

@@ -300,6 +300,22 @@ export class RODrawState {
             this.m_gl.disable(this.m_gl.DEPTH_TEST);
         }
     }
+    setCullFaceEnable(enable:boolean): void {
+        if(enable) {
+            this.m_gl.enable(this.m_gl.CULL_FACE);
+        }
+        else {
+            this.m_gl.disable(this.m_gl.CULL_FACE);
+        }
+    }
+    setBlendEnable(enable:boolean): void {
+        if(enable) {
+            this.m_gl.enable(this.m_gl.BLEND);
+        }
+        else {
+            this.m_gl.disable(this.m_gl.BLEND);
+        }
+    }
     setCullFaceMode(mode: number): void {
         switch (mode) {
             case CullFaceMode.BACK:
@@ -350,7 +366,7 @@ export class RODrawState {
                 case RenderBlendMode.TRANSPARENT:
                     if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
                     this.m_gl.blendFunc(this.m_gl.SRC_ALPHA, this.m_gl.ONE_MINUS_SRC_ALPHA);
-                    //trace("use blendMode TRANSPARENT.");
+                    //console.log("use blendMode TRANSPARENT.");
                     break;
                 case RenderBlendMode.ALPHA_ADD:
                     if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }

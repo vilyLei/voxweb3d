@@ -14,7 +14,7 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
-import HdrClyMapMaterial from "./material/HdrClyMapMaterial";
+import HdrCylMapMaterial from "./material/HdrCylMapMaterial";
 import Vector3D from "../vox/math/Vector3D";
 import URLTool from "../vox/utils/URLTool";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
@@ -23,6 +23,7 @@ import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import { RGBE,RGBEParser } from '../vox/assets/RGBEParser.js';
 import BytesTextureProxy from "../vox/texture/BytesTextureProxy";
 import BinaryLoader from "../vox/assets/BinaryLoader";
+import CylindricMapMaterial from "./material/CylindricMapMaterial";
 
 export namespace demo {
     export class DemoHdrCylindricalMap {
@@ -37,8 +38,8 @@ export namespace demo {
         private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
         private m_CameraZoomController: CameraZoomController = new CameraZoomController();
         
-        private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-            let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
+        private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true,powerOf2Fix:boolean = false): TextureProxy {
+            let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl,0,false, powerOf2Fix);
             ptex.mipmapEnabled = mipmapEnabled;
             if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
             return ptex;
@@ -48,14 +49,16 @@ export namespace demo {
             if (this.m_rscene == null) {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-                //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
+                RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 let purl: string = 'https://ko.hou.aliyuncs.com/vr/hghyDeJ2XzH3FAY.pto?reawe=5.fg';
                 let fileSuffix: any = URLTool.GetURLFileSuffix(purl);
                 console.log("fileSuffix: ", fileSuffix);
 
                 let rparam: RendererParam = new RendererParam();
+                //rparam.maxWebGLVersion = 1;
+                rparam.setAttriAntialias( true );
                 //rparam.setCamPosition(800.0,800.0,800.0);
-                rparam.setCamPosition(10.0, 100.0, 1800.0);
+                rparam.setCamPosition(30.0, 100.0, 3800.0);
                 this.m_rscene = new RendererScene();
                 this.m_rscene.initialize(rparam, 3);
                 this.m_rscene.updateCamera();
@@ -78,18 +81,48 @@ export namespace demo {
 
                 this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
-                let axis: Axis3DEntity = new Axis3DEntity();
-                axis.initialize(300.0);
-                this.m_rscene.addEntity(axis);
+                //  let axis: Axis3DEntity = new Axis3DEntity();
+                //  axis.initialize(300.0);
+                //  this.m_rscene.addEntity(axis);
 
-
-                let loader: BinaryLoader = new BinaryLoader();
-                loader.load("static/assets/hdr/night_free_Env_512x256.hdr", this);
-                //loader.load("static/assets/hdr/memorial.hdr", this);
-                //loader.load("static/assets/hdr/HDR_029_Sky_Cloudy_Env.hdr", this);
+                this.initCommonTest();
+                //this.initHdrTest();
             }
         }
-        private m_hdrRGBEMaterial: HdrClyMapMaterial = null;
+        
+        private initCommonTest(): void {
+            let posTex: TextureProxy = this.getImageTexByUrl("static/assets/hdr/night_free_Bg.jpg");
+            //let posTex: TextureProxy = this.getImageTexByUrl("static/assets/vrTest.jpg",true,true,true);
+            //let posTex: TextureProxy = this.getImageTexByUrl("static/assets/redBullSolo.jpg",true,true,false);
+            posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
+            posTex.minFilter = TextureConst.LINEAR;
+            posTex.mipmapEnabled = true;
+            let material: CylindricMapMaterial = new CylindricMapMaterial();
+            let sph: Sphere3DEntity = new Sphere3DEntity();
+            sph.setMaterial( material );
+
+            let isShowFront: boolean = true;
+            if(isShowFront) {
+                sph.showFrontFace();
+                material.showFront();
+            } else {
+                sph.showBackFace();
+                material.showBack();
+            }
+            sph.initialize(400.0, 50, 50, [posTex]);
+            this.m_rscene.addEntity(sph);
+            //(sph.getMaterial() as any).setRGBA4f(0.0,1.0,0.0, 0.5);
+            this.m_rscene.addEntity(sph);
+            
+        }
+        private initHdrTest(): void {
+
+            let loader: BinaryLoader = new BinaryLoader();
+            loader.load("static/assets/hdr/night_free_Env_512x256.hdr", this);
+            //loader.load("static/assets/hdr/memorial.hdr", this);
+            //loader.load("static/assets/hdr/HDR_029_Sky_Cloudy_Env.hdr", this);
+        }
+        private m_hdrRGBEMaterial: HdrCylMapMaterial = null;
         private mouseDown(evt: any): void
         {
             if(this.m_hdrRGBEMaterial != null) {
@@ -119,11 +152,11 @@ export namespace demo {
 
             let ftex:TextureProxy = this.createByteTexByBytes(rgbe.data as Uint8Array, rgbe.width, rgbe.height);
 
-            this.m_hdrRGBEMaterial = new HdrClyMapMaterial();
+            this.m_hdrRGBEMaterial = new HdrCylMapMaterial();
             let sph: Sphere3DEntity = new Sphere3DEntity();
             sph.setMaterial(this.m_hdrRGBEMaterial);
-            sph.initialize(200.0, 20, 20, [ftex]);
-            sph.setXYZ(Math.random() * 700.0 - 350.0, Math.random() * 700.0 - 350.0, Math.random() * 700.0 - 350.0);
+            sph.initialize(400.0, 20, 20, [ftex]);
+            //sph.setXYZ(Math.random() * 700.0 - 350.0, Math.random() * 700.0 - 350.0, Math.random() * 700.0 - 350.0);
             this.m_rscene.addEntity(sph);
             this.update();            
         }
@@ -143,11 +176,12 @@ export namespace demo {
             this.m_rscene.update();
             this.m_statusDisp.render();
         }
+        private m_lookAt: Vector3D = new Vector3D();
         run(): void {
             this.m_statusDisp.update(false);
 
             this.m_stageDragSwinger.runWithYAxis();
-            this.m_CameraZoomController.run(null, 30.0);
+            this.m_CameraZoomController.run(this.m_lookAt, 30.0);
             
             this.m_rscene.run(true);
 

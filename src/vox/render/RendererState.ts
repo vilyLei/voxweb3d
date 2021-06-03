@@ -14,29 +14,30 @@ class RendererState
     static DrawCallTimes:number = 0;
     static DrawTrisNumber:number = 0;
     static POVNumber:number = 0;
-    public static ALL_TRUE_COLOR_MASK:number = 0;
-    public static ALL_FALSE_COLOR_MASK:number = 1;
-    static NORMAL_STATE:number = 0;
-    static BACK_CULLFACE_NORMAL_STATE:number = 0;
-    static FRONT_CULLFACE_NORMAL_STATE:number = 1;
-    static NONE_CULLFACE_NORMAL_STATE:number = 2;
-    static ALL_CULLFACE_NORMAL_STATE:number = 3;
-    static BACK_NORMAL_ALWAYS_STATE:number = 4;
-    static BACK_TRANSPARENT_STATE:number = 5;
-    static BACK_TRANSPARENT_ALWAYS_STATE:number = 6;
-    static NONE_TRANSPARENT_STATE:number = 7;
-    static NONE_TRANSPARENT_ALWAYS_STATE:number = 8;
-    static FRONT_CULLFACE_GREATER_STATE:number = 9;
-    static BACK_ADD_BLENDSORT_STATE:number = 10;
-    static BACK_ADD_ALWAYS_STATE:number = 11;
-    static BACK_ALPHA_ADD_ALWAYS_STATE:number = 12;
-    static NONE_ADD_ALWAYS_STATE:number = 13;
-    static NONE_ADD_BLENDSORT_STATE:number = 14;
-    static NONE_ALPHA_ADD_ALWAYS_STATE:number = 15;
-    static FRONT_ADD_ALWAYS_STATE:number = 16;
-    static FRONT_TRANSPARENT_STATE:number = 17;
-    static FRONT_TRANSPARENT_ALWAYS_STATE:number = 18;
-    static NONE_CULLFACE_NORMAL_ALWAYS_STATE:number = 19;
+    static readonly COLOR_MASK_ALL_TRUE:number = 0;
+    static readonly COLOR_MASK_ALL_FALSE:number = 1;
+
+    static readonly NORMAL_STATE:number = 0;
+    static readonly BACK_CULLFACE_NORMAL_STATE:number = 0;
+    static readonly FRONT_CULLFACE_NORMAL_STATE:number = 1;
+    static readonly NONE_CULLFACE_NORMAL_STATE:number = 2;
+    static readonly ALL_CULLFACE_NORMAL_STATE:number = 3;
+    static readonly BACK_NORMAL_ALWAYS_STATE:number = 4;
+    static readonly BACK_TRANSPARENT_STATE:number = 5;
+    static readonly BACK_TRANSPARENT_ALWAYS_STATE:number = 6;
+    static readonly NONE_TRANSPARENT_STATE:number = 7;
+    static readonly NONE_TRANSPARENT_ALWAYS_STATE:number = 8;
+    static readonly FRONT_CULLFACE_GREATER_STATE:number = 9;
+    static readonly BACK_ADD_BLENDSORT_STATE:number = 10;
+    static readonly BACK_ADD_ALWAYS_STATE:number = 11;
+    static readonly BACK_ALPHA_ADD_ALWAYS_STATE:number = 12;
+    static readonly NONE_ADD_ALWAYS_STATE:number = 13;
+    static readonly NONE_ADD_BLENDSORT_STATE:number = 14;
+    static readonly NONE_ALPHA_ADD_ALWAYS_STATE:number = 15;
+    static readonly FRONT_ADD_ALWAYS_STATE:number = 16;
+    static readonly FRONT_TRANSPARENT_STATE:number = 17;
+    static readonly FRONT_TRANSPARENT_ALWAYS_STATE:number = 18;
+    static readonly NONE_CULLFACE_NORMAL_ALWAYS_STATE:number = 19;
     static Initialize():void
     {
         if(RendererState.s_initBoo)
@@ -46,29 +47,29 @@ class RendererState
             state.Rstate = new RODrawState();
             RenderColorMask.Rstate = RendererState.Rstate;
             RenderStateObject.Rstate = RendererState.Rstate;
-            RendererState.ALL_TRUE_COLOR_MASK = RenderColorMask.Create("all_true",true,true,true,true);
-            RendererState.ALL_FALSE_COLOR_MASK = RenderColorMask.Create("all_false",false,false,false,false);
+            state.COLOR_MASK_ALL_TRUE = RenderColorMask.Create("all_true",true,true,true,true);
+            state.COLOR_MASK_ALL_FALSE = RenderColorMask.Create("all_false",false,false,false,false);
             
-            RendererState.BACK_CULLFACE_NORMAL_STATE = RenderStateObject.Create("normal",CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.OPAQUE);
-            RendererState.FRONT_CULLFACE_NORMAL_STATE = RenderStateObject.Create("front_normal",CullFaceMode.FRONT,RenderBlendMode.NORMAL,DepthTestMode.OPAQUE);
-            RendererState.NONE_CULLFACE_NORMAL_STATE = RenderStateObject.Create("none_normal",CullFaceMode.NONE,RenderBlendMode.NORMAL,DepthTestMode.OPAQUE);
-            RendererState.ALL_CULLFACE_NORMAL_STATE = RenderStateObject.Create("all_cull_normal",CullFaceMode.FRONT_AND_BACK,RenderBlendMode.NORMAL,DepthTestMode.OPAQUE);
-            RendererState.BACK_NORMAL_ALWAYS_STATE = RenderStateObject.Create("back_normal_always",CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.ALWAYS);
-            RendererState.BACK_TRANSPARENT_STATE = RenderStateObject.Create("back_transparent",CullFaceMode.BACK,RenderBlendMode.TRANSPARENT,DepthTestMode.TRANSPARENT_SORT);
-            RendererState.BACK_TRANSPARENT_ALWAYS_STATE = RenderStateObject.Create("back_transparent_always",CullFaceMode.BACK,RenderBlendMode.TRANSPARENT,DepthTestMode.ALWAYS);
-            RendererState.NONE_TRANSPARENT_STATE = RenderStateObject.Create("none_transparent",CullFaceMode.NONE,RenderBlendMode.TRANSPARENT,DepthTestMode.TRANSPARENT_SORT);
-            RendererState.NONE_TRANSPARENT_ALWAYS_STATE = RenderStateObject.Create("none_transparent_always",CullFaceMode.NONE,RenderBlendMode.TRANSPARENT,DepthTestMode.ALWAYS);
-            RendererState.FRONT_CULLFACE_GREATER_STATE = RenderStateObject.Create("front_greater",CullFaceMode.FRONT,RenderBlendMode.NORMAL,DepthTestMode.TRUE_GREATER);
-            RendererState.BACK_ADD_BLENDSORT_STATE = RenderStateObject.Create("back_add_blendSort",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.TRANSPARENT_SORT);
-            RendererState.BACK_ADD_ALWAYS_STATE = RenderStateObject.Create("back_add_always",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
-            RendererState.BACK_ALPHA_ADD_ALWAYS_STATE = RenderStateObject.Create("back_alpha_add_always",CullFaceMode.BACK,RenderBlendMode.ALPHA_ADD,DepthTestMode.ALWAYS);
-            RendererState.NONE_ADD_ALWAYS_STATE = RenderStateObject.Create("none_add_always",CullFaceMode.NONE,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
-            RendererState.NONE_ADD_BLENDSORT_STATE = RenderStateObject.Create("none_add_blendSort",CullFaceMode.NONE,RenderBlendMode.ADD,DepthTestMode.TRANSPARENT_SORT);
-            RendererState.NONE_ALPHA_ADD_ALWAYS_STATE = RenderStateObject.Create("none_alpha_add_always",CullFaceMode.NONE,RenderBlendMode.ALPHA_ADD,DepthTestMode.ALWAYS);
-            RendererState.FRONT_ADD_ALWAYS_STATE = RenderStateObject.Create("front_add_always",CullFaceMode.FRONT,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
-            RendererState.FRONT_TRANSPARENT_STATE = RenderStateObject.Create("front_transparent",CullFaceMode.FRONT,RenderBlendMode.TRANSPARENT,DepthTestMode.TRANSPARENT_SORT);
-            RendererState.FRONT_TRANSPARENT_ALWAYS_STATE = RenderStateObject.Create("front_transparent_always",CullFaceMode.FRONT,RenderBlendMode.TRANSPARENT,DepthTestMode.ALWAYS);
-            RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE = RenderStateObject.Create("none_normal_always",CullFaceMode.NONE,RenderBlendMode.NORMAL,DepthTestMode.ALWAYS);
+            state.BACK_CULLFACE_NORMAL_STATE = RenderStateObject.Create("normal",CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.OPAQUE);
+            state.FRONT_CULLFACE_NORMAL_STATE = RenderStateObject.Create("front_normal",CullFaceMode.FRONT,RenderBlendMode.NORMAL,DepthTestMode.OPAQUE);
+            state.NONE_CULLFACE_NORMAL_STATE = RenderStateObject.Create("none_normal",CullFaceMode.NONE,RenderBlendMode.NORMAL,DepthTestMode.OPAQUE);
+            state.ALL_CULLFACE_NORMAL_STATE = RenderStateObject.Create("all_cull_normal",CullFaceMode.FRONT_AND_BACK,RenderBlendMode.NORMAL,DepthTestMode.OPAQUE);
+            state.BACK_NORMAL_ALWAYS_STATE = RenderStateObject.Create("back_normal_always",CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.ALWAYS);
+            state.BACK_TRANSPARENT_STATE = RenderStateObject.Create("back_transparent",CullFaceMode.BACK,RenderBlendMode.TRANSPARENT,DepthTestMode.TRANSPARENT_SORT);
+            state.BACK_TRANSPARENT_ALWAYS_STATE = RenderStateObject.Create("back_transparent_always",CullFaceMode.BACK,RenderBlendMode.TRANSPARENT,DepthTestMode.ALWAYS);
+            state.NONE_TRANSPARENT_STATE = RenderStateObject.Create("none_transparent",CullFaceMode.NONE,RenderBlendMode.TRANSPARENT,DepthTestMode.TRANSPARENT_SORT);
+            state.NONE_TRANSPARENT_ALWAYS_STATE = RenderStateObject.Create("none_transparent_always",CullFaceMode.NONE,RenderBlendMode.TRANSPARENT,DepthTestMode.ALWAYS);
+            state.FRONT_CULLFACE_GREATER_STATE = RenderStateObject.Create("front_greater",CullFaceMode.FRONT,RenderBlendMode.NORMAL,DepthTestMode.TRUE_GREATER);
+            state.BACK_ADD_BLENDSORT_STATE = RenderStateObject.Create("back_add_blendSort",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.TRANSPARENT_SORT);
+            state.BACK_ADD_ALWAYS_STATE = RenderStateObject.Create("back_add_always",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
+            state.BACK_ALPHA_ADD_ALWAYS_STATE = RenderStateObject.Create("back_alpha_add_always",CullFaceMode.BACK,RenderBlendMode.ALPHA_ADD,DepthTestMode.ALWAYS);
+            state.NONE_ADD_ALWAYS_STATE = RenderStateObject.Create("none_add_always",CullFaceMode.NONE,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
+            state.NONE_ADD_BLENDSORT_STATE = RenderStateObject.Create("none_add_blendSort",CullFaceMode.NONE,RenderBlendMode.ADD,DepthTestMode.TRANSPARENT_SORT);
+            state.NONE_ALPHA_ADD_ALWAYS_STATE = RenderStateObject.Create("none_alpha_add_always",CullFaceMode.NONE,RenderBlendMode.ALPHA_ADD,DepthTestMode.ALWAYS);
+            state.FRONT_ADD_ALWAYS_STATE = RenderStateObject.Create("front_add_always",CullFaceMode.FRONT,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
+            state.FRONT_TRANSPARENT_STATE = RenderStateObject.Create("front_transparent",CullFaceMode.FRONT,RenderBlendMode.TRANSPARENT,DepthTestMode.TRANSPARENT_SORT);
+            state.FRONT_TRANSPARENT_ALWAYS_STATE = RenderStateObject.Create("front_transparent_always",CullFaceMode.FRONT,RenderBlendMode.TRANSPARENT,DepthTestMode.ALWAYS);
+            state.NONE_CULLFACE_NORMAL_ALWAYS_STATE = RenderStateObject.Create("none_normal_always",CullFaceMode.NONE,RenderBlendMode.NORMAL,DepthTestMode.ALWAYS);
         }
     }
     static CreateRenderState(objName:string,cullFaceMode:number,blendMode:number,depthTestMode:number):number
@@ -121,6 +122,10 @@ class RendererState
     static SetDepthTestEnable(enable:boolean): void {
         
         RendererState.Rstate.setDepthTestEnable( enable );
+    }
+    static SetBlendEnable(enable:boolean): void {
+        
+        RendererState.Rstate.setBlendEnable( enable );
     }
     /**
      * 设置 gpu stencilFunc 状态

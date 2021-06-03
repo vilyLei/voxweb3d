@@ -13,6 +13,7 @@ import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
 import ImageCubeTextureProxy from "../../vox/texture/ImageCubeTextureProxy";
 import BytesTextureProxy from "../../vox/texture/BytesTextureProxy";
 import TextureBlock from "../../vox/texture/TextureBlock";
+import RendererDeviece from "../render/RendererDeviece";
 
 
 function generateCanvasMipmapsAt(src:any)
@@ -80,7 +81,7 @@ class ImgResUnit
 
     texture:ImageTextureProxy = null;
     bytesTex:BytesTextureProxy = null;
-    
+    powerOf2Fix:boolean = false;
     offsetTex:ImageTextureProxy = null;
     premultipliedAlpha:boolean = true;
     constructor(purl:string,mipLv:number)
@@ -123,12 +124,12 @@ class ImgResUnit
             let bytesTex:BytesTextureProxy = this.bytesTex;
             let imgData:any = null;
             let powBoo:boolean = MathConst.IsPowerOf2(img.width) && MathConst.IsPowerOf2(img.height);
-            if(!powBoo)
+            if(!powBoo && !this.powerOf2Fix)
             {
-                let pwidth:number = MathConst.CalcNearestCeilPow2(img.width);                            
-                let pheight:number = MathConst.CalcNearestCeilPow2(img.height);
-                if(pwidth > 2048)pwidth = 2048;
-                if(pheight > 2048)pwidth = 2048;
+                let pwidth:number = MathConst.CalcCeilPowerOfTwo(img.width);                            
+                let pheight:number = MathConst.CalcCeilPowerOfTwo(img.height);
+                if(pwidth > RendererDeviece.MAX_TEXTURE_SIZE)pwidth = RendererDeviece.MAX_TEXTURE_SIZE;
+                if(pheight > RendererDeviece.MAX_TEXTURE_SIZE)pwidth = RendererDeviece.MAX_TEXTURE_SIZE;
                 console.log("image canvas size: "+pwidth+","+pheight);
                 let dobj:any = createImageCanvas(img, pwidth,pheight);
                 let mipLv:number = this.m_mipLv;
@@ -185,6 +186,9 @@ class ImgResUnit
             {
                 if(tex != null)
                 {
+                    if(this.powerOf2Fix) {
+                        console.log("image img size: "+img.width+","+img.height);
+                    }
                     tex.setDataFromImage(img,this.m_mipLv);                                
                     tex.name = this.m_img.src;
                 }
@@ -310,9 +314,9 @@ export default class ImageTextureLoader implements IRunnable
         }
     }
     
-    getTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
+    getTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true, powerOf2Fix:boolean = false):TextureProxy
     {
-        let ptex:TextureProxy = this.getImageTexByUrl(purl);
+        let ptex:TextureProxy = this.getImageTexByUrl(purl, 0, false, powerOf2Fix);
         ptex.mipmapEnabled = mipmapEnabled;
         if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
@@ -386,7 +390,7 @@ export default class ImageTextureLoader implements IRunnable
         }
         return null;
     }
-    getImageTexByUrl(purl:string,mipLevel:number = 0,offsetTexEnabled:boolean = false):ImageTextureProxy
+    getImageTexByUrl(purl:string,mipLevel:number = 0,offsetTexEnabled:boolean = false, powerOf2Fix:boolean = false):ImageTextureProxy
     {
         if(purl == "")
         {
@@ -397,6 +401,7 @@ export default class ImageTextureLoader implements IRunnable
         if(t == null)
         {
             t = new ImgResUnit(purl,mipLevel);
+            t.powerOf2Fix = powerOf2Fix;
             if(offsetTexEnabled)
             {
                 t.offsetTex = this.m_texBlock.createImageTex2D(1,1);

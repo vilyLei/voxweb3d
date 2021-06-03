@@ -38,7 +38,7 @@ export default class RODisplay implements IRODisplay
     // record render state: shadowMode(one byte) + depthTestMode(one byte) + blendMode(one byte) + cullFaceMode(one byte)
     // its value come from: RendererState.CreateRenderState("default", CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.OPAQUE);
     renderState:number = RendererState.NORMAL_STATE;
-    rcolorMask:number = RendererState.ALL_TRUE_COLOR_MASK;
+    rcolorMask:number = RendererState.COLOR_MASK_ALL_TRUE;
     // mouse interaction enabled flag
     mouseEnabled:boolean = false;
     private m_partGroup:Uint16Array = null;

@@ -48,7 +48,7 @@ export default class PureEntity implements IRenderEntity,IDisplayEntity
     }
     private m_visible:boolean = true;
     private m_drawEnabled:boolean = true;
-    private m_rcolorMask:number = RendererState.ALL_TRUE_COLOR_MASK;
+    private m_rcolorMask:number = RendererState.COLOR_MASK_ALL_TRUE;
     private m_renderState:number = RendererState.BACK_CULLFACE_NORMAL_STATE;
     private m_display:RODisplay = null;
     protected m_mesh:MeshBase = null;

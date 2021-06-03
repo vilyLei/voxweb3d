@@ -20,9 +20,10 @@ import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger"
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
 import RendererState from "../vox/render/RendererState";
-import RenderProxy from "../vox/render/RenderProxy";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import { CullFaceMode, DepthTestMode, RenderBlendMode } from "../vox/render/RenderConst";
 
-export class DemoStencil {
+export class DemoPreDepthTransparent {
     constructor() { }
 
     private m_rscene: RendererScene = null;
@@ -31,12 +32,10 @@ export class DemoStencil {
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_profileInstance: ProfileInstance = new ProfileInstance();
+
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_CameraZoomController: CameraZoomController = new CameraZoomController();
 
-    private m_material:any = null;
-    private m_entity:DisplayEntity = null;
-    private m_renderProxy:RenderProxy = null;
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
@@ -44,7 +43,7 @@ export class DemoStencil {
         return ptex;
     }
     initialize(): void {
-        console.log("DemoStencil::initialize()......");
+        console.log("DemoPreDepthTransparent::initialize()......");
         if (this.m_rscene == null) {
             RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
             RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -57,7 +56,6 @@ export class DemoStencil {
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
             this.m_rcontext = this.m_rscene.getRendererContext();
-            this.m_renderProxy = this.m_rcontext.getRenderProxy();
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
             
@@ -69,26 +67,36 @@ export class DemoStencil {
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-            this.m_profileInstance.initialize(this.m_rscene.getRenderer());
+            //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
             this.m_statusDisp.initialize("rstatus", this.m_rscene.getStage3D().viewWidth - 200);
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
-            let axis: Axis3DEntity = new Axis3DEntity();
-            axis.initialize(500.0);
-            this.m_rscene.addEntity(axis,1);
+            
+            RendererState.CreateRenderState("depthSt",CullFaceMode.NONE,RenderBlendMode.TRANSPARENT,DepthTestMode.FALSE_LEQUAL);
+            //RendererState.CreateRenderState("depthSt",CullFaceMode.NONE,RenderBlendMode.TRANSPARENT,DepthTestMode.TRUE_EQUAL);
+            //RendererState.CreateRenderState("depthSt", CullFaceMode.BACK, RenderBlendMode.NORMAL, DepthTestMode.TRUE_EQUAL);
+
+            //  let axis: Axis3DEntity = new Axis3DEntity();
+            //  axis.initialize(500.0);
+            //  this.m_rscene.addEntity(axis,1);
 
             // add common 3d display entity
-            let plane:Plane3DEntity = new Plane3DEntity();
-            plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
-            this.m_rscene.addEntity(plane,0);
+            //  let plane:Plane3DEntity = new Plane3DEntity();
+            //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
+            //  (plane.getMaterial() as any).setRGBA4f(1.0,0.0,0.0, 0.5);
+            //  this.m_rscene.addEntity(plane);
+
+            //  let box:Box3DEntity = new Box3DEntity();
+            //  box.initializeSizeXYZ(800.0,8.0,800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
+            //  (box.getMaterial() as any).setRGBA4f(1.0,0.0,0.0, 0.5);
+            //  this.m_rscene.addEntity(box);
+
             let sph: Sphere3DEntity = new Sphere3DEntity();
             //sph.initialize(200.0,20,20,[this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
             sph.initialize(200.0, 20, 20, [this.getImageTexByUrl("static/assets/default.jpg")]);
-            this.m_rscene.addEntity(sph,2);
-
-            this.m_entity = sph;
-            this.m_material = sph.getMaterial() as any;
+            this.m_rscene.addEntity(sph);
+            (sph.getMaterial() as any).setRGBA4f(0.0,1.0,0.0, 0.5);
 
             this.update();
 
@@ -110,50 +118,34 @@ export class DemoStencil {
     }
     
     run(): void {
-
         this.m_statusDisp.update(false);
-        
+
         this.m_stageDragSwinger.runWithYAxis();
         this.m_CameraZoomController.run(null, 30.0);
 
-        let gl:any = this.m_renderProxy.RContext;
-        //this.m_rscene.run(true);
-        this.m_rscene.runBegin();
-        this.m_rscene.update();
-        RendererState.SetStencilMask(0x00);
-        this.m_rscene.runAt(0);
-        this.m_rscene.runAt(1);
-
-        let scale:number = 1.0;
-        RendererState.SetStencilOp(gl.KEEP, gl.KEEP, gl.REPLACE); 
-
-        RendererState.SetStencilFunc(gl.ALWAYS, 1, 0xFF); 
-        RendererState.SetStencilMask(0xFF);
-
-        this.m_material.setRGB3f(1.0,1.0,1.0);
-        this.m_entity.setScaleXYZ(scale,scale,scale);
-        this.m_entity.update();
-
-        this.m_rscene.runAt(2);
-
-        RendererState.SetStencilFunc(gl.NOTEQUAL, 1, 0xFF); 
-        RendererState.SetStencilMask(0x00);
+        this.m_rscene.setClearRGBAColor4f(0.0,0.0,0.0,1.0);
+        //  this.m_rscene.run(true);
         
-        //RendererState.SetDepthTestEnable( false );
-
-        scale = 1.02;
-        this.m_entity.setScaleXYZ(scale,scale,scale);
-        this.m_entity.update();
-        this.m_material.setRGB3f(20.0,0.0,0.0);
-        this.m_rscene.runAt(2);
-
-        //RendererState.SetDepthTestEnable( true );
-
+        this.m_rscene.update();
+        this.m_rscene.runBegin();
+        
+        //this.m_rcontext.useGlobalRenderState(RendererState.BACK_TRANSPARENT_STATE);
+        //  RendererState.SetBlendEnable(false);
+        //  this.m_rcontext.useGlobalColorMask(RendererState.COLOR_MASK_ALL_FALSE);
+        //  this.m_rscene.runAt(0);
+        //  this.m_rcontext.unlockColorMask();
+        //  RendererState.SetBlendEnable(true);
+        //  this.m_rcontext.useGlobalColorMask(RendererState.COLOR_MASK_ALL_TRUE);
+        //  //this.m_rcontext.useGlobalRenderState(RendererState.NONE_TRANSPARENT_STATE);
+        
+        this.m_rcontext.useGlobalRenderState(RendererState.NONE_TRANSPARENT_ALWAYS_STATE);
+        //this.m_rcontext.useGlobalRenderStateByName("depthSt");
+        this.m_rscene.runAt(0);
+        //this.m_rcontext.unlockRenderState();
         this.m_rscene.runEnd();
 
-        RendererState.SetStencilMask(0xFF);
         //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-        this.m_profileInstance.run();
+        //this.m_profileInstance.run();
     }
 }
-export default DemoStencil;
+export default DemoPreDepthTransparent;

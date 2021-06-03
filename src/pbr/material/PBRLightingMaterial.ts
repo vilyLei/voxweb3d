@@ -34,7 +34,8 @@ in vec3 Normal;
 
 // material parameters
 uniform vec4 u_albedo;
-uniform vec4 u_params; //[metallic,roughness,ao, 1.0]
+uniform vec4 u_params; //[metallic,roughness,ao, F0 offset]
+uniform vec4 u_F0; //[metallic,roughness,ao, F0 offset]
 
 // lights
 uniform vec4 u_lightPositions[4];
@@ -49,12 +50,25 @@ uniform vec4 u_camPos;
 #define RECIPROCAL_PI2 0.15915494309189535
 #define EPSILON 1e-6
 // ----------------------------------------------------------------------------
+// handy value clamping to 0 - 1 range
 #define saturate(a) clamp( a, 0.0, 1.0 )
-//  // handy value clamping to 0 - 1 range
-//  float saturate(in float value)
-//  {
-//      return clamp(value, 0.0, 1.0);
-//  }
+
+// Trowbridge-Reitz(Generalized-Trowbridge-Reitz，GTR)
+
+float DistributionGTR1(float NdotH, float roughness)
+{
+    if (roughness >= 1.0) return 1.0/PI;
+    float a2 = roughness * roughness;
+    float t = 1.0 + (a2 - 1.0)*NdotH*NdotH;
+    return (a2 - 1.0) / (PI * log(a2) *t);
+}
+float DistributionGTR2(float NdotH, float roughness)
+{
+    float a2 = roughness * roughness;
+    float t = 1.0 + (a2 - 1.0) * NdotH * NdotH;
+    return a2 / (PI * t * t);
+}
+
 float DistributionGGX(vec3 N, vec3 H, float roughness)
 {
     float a = roughness*roughness;
@@ -68,6 +82,12 @@ float DistributionGGX(vec3 N, vec3 H, float roughness)
 
     return nom / max(denom, 0.0000001); // prevent divide by zero for roughness=0.0 and NdotH=1.0
 }
+
+
+float GeometryImplicit(float NdotV, float NdotL) {
+    return NdotL * NdotV;
+}
+
 // ----------------------------------------------------------------------------
 float GeometrySchlickGGX(float NdotV, float roughness)
 {
@@ -191,7 +211,7 @@ void main()
     vec3 albedo = u_albedo.xyz;
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
-    vec3 F0 = vec3(0.04); 
+    vec3 F0 = vec3(0.04) + u_F0.xyz; 
     F0 = mix(F0, albedo.xyz, metallic);// * vec3(0.0,0.9,0.0);
 
     // reflectance equation
@@ -310,6 +330,7 @@ export default class PBRLightingMaterial extends MaterialBase {
 
     private m_albedo: Float32Array = new Float32Array([0.5, 0.0, 0.0, 0.0]);
     private m_params: Float32Array = new Float32Array([0.0, 0.0, 1.0, 0.0]);
+    private m_F0: Float32Array = new Float32Array([0.0, 0.0, 0.0, 0.0]);
     private m_camPos: Float32Array = new Float32Array([500.0, 500.0, 500.0, 1.0]);
     private m_lightPositions: Float32Array = new Float32Array(4 * 4);
     private u_lightColors: Float32Array = new Float32Array(4 * 4);
@@ -327,6 +348,12 @@ export default class PBRLightingMaterial extends MaterialBase {
     setAO(ao: number): void {
 
         this.m_params[2] = ao;
+    }
+    setF0(f0x: number, f0y: number, f0z: number): void {
+
+        this.m_F0[0] = f0x;
+        this.m_F0[1] = f0y;
+        this.m_F0[2] = f0z;
     }
     setPosAt(i: number, px: number, py: number, pz: number): void {
 
@@ -354,8 +381,8 @@ export default class PBRLightingMaterial extends MaterialBase {
         console.log("this.m_params: ",this.m_params);
         //  console.log("this.m_camPos: ",this.m_camPos);
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_albedo", "u_params", "u_lightPositions", "u_lightColors", "u_camPos"];
-        oum.dataList = [this.m_albedo, this.m_params, this.m_lightPositions, this.u_lightColors, this.m_camPos];
+        oum.uniformNameList = ["u_albedo", "u_params", "u_lightPositions", "u_lightColors", "u_camPos", "u_F0"];
+        oum.dataList = [this.m_albedo, this.m_params, this.m_lightPositions, this.u_lightColors, this.m_camPos,this.m_F0];
         return oum;
     }
 }

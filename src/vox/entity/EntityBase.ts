@@ -31,7 +31,7 @@ export default class EntityBase
     constructor()
     {
     }
-    protected m_rcolorMask:number = RendererState.ALL_TRUE_COLOR_MASK;
+    protected m_rcolorMask:number = RendererState.COLOR_MASK_ALL_TRUE;
     protected m_renderState:number = RendererState.BACK_CULLFACE_NORMAL_STATE;
     protected m_display:RODisplay = null;
     protected m_mesh:MeshBase = null;

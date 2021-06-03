@@ -114,6 +114,40 @@ export default class RendererInstanceContext
             this.m_renderProxy.updateCameraDataFromCamera(cam);
         }
     }
+    
+    lockRenderColorMask():void
+    {
+        if(this.m_renderProxy != null)
+        {
+            this.m_renderProxy.lockRenderState();
+        }
+    }
+    unlockColorMask():void
+    {
+        if(this.m_renderProxy != null)
+        {
+            this.m_renderProxy.unlockRenderState();
+        }
+    }
+    useGlobalColorMask(colorMask:number):void
+    {
+        if(this.m_renderProxy != null)
+        {
+            this.m_renderProxy.unlockRenderColorMask();
+            this.m_renderProxy.useRenderColorMask(colorMask);
+            this.m_renderProxy.lockRenderColorMask();
+        }
+    }
+    useGlobalRenderColorMaskByName(stateNS:string):void
+    {
+        if(this.m_renderProxy != null)
+        {
+            this.m_renderProxy.unlockRenderColorMask();
+            this.m_renderProxy.useRenderColorMask( RendererState.GetRenderColorMaskByName(stateNS));
+            this.m_renderProxy.lockRenderColorMask();
+        }
+    }
+
     lockRenderState():void
     {
         if(this.m_renderProxy != null)

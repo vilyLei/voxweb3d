@@ -220,12 +220,11 @@ export class TextureProxy implements IRenderTexture
             //gl.DONT_CARE
             //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.NICEST);
             //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.FASTEST);
-            if(this.m_generateMipmap)
-            {
-                gl.generateMipmap(this.m_sampler);
-            }
         }
-        
+        if(this.m_generateMipmap)
+        {
+            gl.generateMipmap(this.m_sampler);
+        }
         if(this.m_texTarget == TextureTarget.TEXTURE_3D)
         {
             gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_BASE_LEVEL, 0);

@@ -2,7 +2,7 @@
 import Vector3D from "../vox/math/Vector3D";
 import RendererDeviece from "../vox/render/RendererDeviece";
 import RendererParam from "../vox/scene/RendererParam";
-import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
+import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RendererInstance from "../vox/scene/RendererInstance";
@@ -12,8 +12,7 @@ import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-////import * as TextureStoreT from "../vox/texture/TextureStore";
-import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
+
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import ScreenFixedPlaneMaterial from "../vox/material/mcase/ScreenFixedPlaneMaterial";
@@ -24,97 +23,88 @@ import TextureBlock from "../vox/texture/TextureBlock";
 //import ScreenFixedPlaneMaterial = ScreenFixedPlaneMaterialT.vox.material.mcase.ScreenFixedPlaneMaterial;
 import PSDepthMaterial = PSDepthMaterialT.demo.material.PSDepthMaterial;
 
-export namespace demo
-{
-    export class DemoPreDepth
-    {
-        constructor()
-        {
+export namespace demo {
+    export class DemoPreDepth {
+        constructor() {
         }
-        private m_texBlock:TextureBlock;
-        private m_renderer:RendererInstance = null;
-        private m_rcontext:RendererInstanceContext = null;
-        private m_texLoader:ImageTextureLoader;
-        private m_camTrack:CameraTrack = null;
-        private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
-        private m_depMaterial:PSDepthMaterial = new PSDepthMaterial();
-        initialize():void
-        {
+        private m_texBlock: TextureBlock;
+        private m_renderer: RendererInstance = null;
+        private m_rcontext: RendererInstanceContext = null;
+        private m_texLoader: ImageTextureLoader;
+        private m_camTrack: CameraTrack = null;
+        private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
+        private m_depMaterial: PSDepthMaterial = new PSDepthMaterial();
+        initialize(): void {
             console.log("DemoPreDepth::initialize()......");
-            if(this.m_rcontext == null)
-            {
+            if (this.m_rcontext == null) {
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
                 RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
                 RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
-                //RendererState.CreateRenderState("depthSt",CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.TRUE_GEQUAL);
-                RendererState.CreateRenderState("depthSt",CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.TRUE_EQUAL);
+                RendererState.CreateRenderState("depthSt",CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.TRUE_GEQUAL);
+                //RendererState.CreateRenderState("depthSt", CullFaceMode.BACK, RenderBlendMode.NORMAL, DepthTestMode.TRUE_EQUAL);
 
-                this.m_statusDisp.initialize("rstatus");
-
-                let rparam:RendererParam = new RendererParam();
-                rparam.setCamProject(45.0,30.0,5000.0);
+                let rparam: RendererParam = new RendererParam();
+                rparam.setCamProject(45.0, 30.0, 5000.0);
                 this.m_renderer = new RendererInstance();
                 this.m_renderer.initialize(rparam);
                 this.m_renderer.appendProcess();
                 this.m_rcontext = this.m_renderer.getRendererContext();
-                
+
+                this.m_statusDisp.initialize("rstatus", this.m_rcontext.getViewportWidth() - 180);
+
                 this.m_texBlock = new TextureBlock();
-                this.m_texBlock.setRenderer( this.m_renderer );
+                this.m_texBlock.setRenderer(this.m_renderer);
                 this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
-                let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
-                tex0.mipmapEnabled = true;
-                tex0.setWrap(TextureConst.WRAP_REPEAT);
-                tex1.setWrap(TextureConst.WRAP_REPEAT);
-                tex1.mipmapEnabled = true;
+                let tex0: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/default.jpg");
+                let tex1: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/broken_iron.jpg");
+
 
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
                 // add common 3d display entity
-                var plane:Plane3DEntity = new Plane3DEntity();
+                var plane: Plane3DEntity = new Plane3DEntity();
                 plane.name = "plane";
-                plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
+                plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [tex0]);
                 this.m_renderer.addEntity(plane);
 
-                let axis:Axis3DEntity = new Axis3DEntity();
-                axis.name = "axis";
-                axis.initialize(300.0);
-                this.m_renderer.addEntity(axis);
+                //  let axis:Axis3DEntity = new Axis3DEntity();
+                //  axis.name = "axis";
+                //  axis.initialize(300.0);
+                //  this.m_renderer.addEntity(axis);
 
-                let scale:number = 0.5;
-                let box:Box3DEntity;
-                let box_minV:Vector3D = new Vector3D(-100.0,-100.0,-100.0);
-                let box_maxV:Vector3D = new Vector3D(100.0,100.0,100.0);
-                for(let i:number = 0;i < 100;++i)
-                {
+                let scale: number = 0.5;
+                let box: Box3DEntity;
+                let box_minV: Vector3D = new Vector3D(-100.0, -100.0, -100.0);
+                let box_maxV: Vector3D = new Vector3D(100.0, 100.0, 100.0);
+                for (let i: number = 0; i < 100; ++i) {
                     box = new Box3DEntity();
                     box.initialize(box_minV, box_maxV, [tex1]);
-                    box.setScaleXYZ(scale,scale,scale);
-                    box.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
+                    box.setScaleXYZ(scale, scale, scale);
+                    box.setXYZ(Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0);
                     this.m_renderer.addEntity(box);
                 }
                 // add rtt texture display entity
-                let scrM:ScreenFixedPlaneMaterial = new ScreenFixedPlaneMaterial();
-                let scrPlane:Plane3DEntity = new Plane3DEntity();
+                let scrM: ScreenFixedPlaneMaterial = new ScreenFixedPlaneMaterial();
+                let scrPlane: Plane3DEntity = new Plane3DEntity();
                 scrPlane.setMaterial(scrM);
-                scrPlane.initializeXOY(-1.0,-1.0,2.0,2.0,[this.m_texBlock.getRTTTextureAt(1)]);
+                scrPlane.initializeXOY(-1.0, -1.0, 2.0, 2.0, [this.m_texBlock.getRTTTextureAt(1)]);
                 this.m_renderer.addEntity(scrPlane, 1);
             }
         }
-        run():void
-        {
+        run(): void {
             this.m_statusDisp.update();
+            this.m_texBlock.run();
 
-            let rinstance:RendererInstance = this.m_renderer;
-            let pcontext:RendererInstanceContext = this.m_rcontext;
+            let rinstance: RendererInstance = this.m_renderer;
+            let pcontext: RendererInstanceContext = this.m_rcontext;
 
             pcontext.setClearRGBColor3f(0.0, 0.0, 0.0);
             pcontext.renderBegin();
             rinstance.update();
-
+            
             // --------------------------------------------- rtt begin
-            pcontext.setClearRGBColor3f(0.0, 0.3, 0.0);
+            pcontext.setClearRGBColor3f(0.0, 0.0, 0.0);
             pcontext.synFBOSizeWithViewport();
             pcontext.useGlobalMaterial(this.m_depMaterial);
             pcontext.setRenderToTexture(this.m_texBlock.getRTTTextureAt(0), true, false, 0);
@@ -132,7 +122,8 @@ export namespace demo
             pcontext.setRenderToBackBuffer();
             rinstance.runAt(1);
 
-            pcontext.runEnd();            
+            pcontext.runEnd();
+            
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
             pcontext.updateCamera();
         }

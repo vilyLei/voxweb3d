@@ -19,7 +19,6 @@ import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
 import Vector3D from "../vox/math/Vector3D";
 import Color4 from "../vox/material/Color4";
-import Stage3D from "../vox/display/Stage3D";
 
 import PBRLightingMaterial from "../pbr/material/PBRLightingMaterial";
 import PBRTexLightingMaterial from "./material/PBRTexLightingMaterial";
@@ -34,6 +33,7 @@ export class DemoLighting {
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_CameraZoomController: CameraZoomController = new CameraZoomController();
+
     private m_materials:PBRLightingMaterial[] = [];
     private m_texMaterials:PBRTexLightingMaterial[] = [];
     
@@ -56,9 +56,9 @@ export class DemoLighting {
             
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-            this.m_CameraZoomController.bindCamera(this.m_rscene.getCamera());
-            this.m_CameraZoomController.initialize(this.m_rscene.getStage3D() as Stage3D);
             this.m_rscene.enableMouseEvent(true);
+            this.m_CameraZoomController.bindCamera(this.m_rscene.getCamera());
+            this.m_CameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
             this.m_camTrack = new CameraTrack();
@@ -79,8 +79,8 @@ export class DemoLighting {
             //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
             //  this.m_rscene.addEntity(plane);
 
-            //this.initLighting();
-            this.initTexLighting();
+            this.initLighting();
+            //this.initTexLighting();
 
             this.update();
 
@@ -232,7 +232,9 @@ export class DemoLighting {
         material.setMetallic( metallic );
         material.setRoughness( roughness );
         material.setAO( ao );
-
+        let f0:number = Math.random() * 0.9;
+        //material.setF0(Math.random() * 0.9, Math.random() * 0.9, Math.random() * 0.9);
+        //material.setF0(f0,f0,f0);
         material.setCamPos(this.m_rscene.getCamera().getPosition());
 
         this.m_materials.push(material);
