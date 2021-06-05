@@ -101,7 +101,7 @@ export default class PureEntity implements IRenderEntity,IDisplayEntity
         return RSEntityFlag.GetRendererUid(this.__$rseFlag);
     }
     /**
-     * @returns 自身是否未必任何渲染器相关的系统使用
+     * @returns 自身是否未必被任何渲染器相关的系统使用
      */
     isFree():boolean
     {

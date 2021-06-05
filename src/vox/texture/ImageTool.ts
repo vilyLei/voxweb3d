@@ -7,8 +7,38 @@
 
 import RendererDeviece from "../../vox/render/RendererDeviece";
 import MathConst from "../../vox/math/MathConst";
+/**
+ * 在不支持npot的情况下，计算出清晰度损失尽可能小的pot纹理尺寸
+ * @param pw 原图的宽
+ * @param ph 原图的高
+ * @returns 返回计算得到的宽和高,存放在具有两个元素的数组里:[width,height]
+ */
+export function calcTextueImagePowerSize(pw:number, ph: number): number[] {
+            
+    let k0: number = pw / ph;
 
-        
+    let power2W: number;            
+    let power2H: number;
+    if(k0 > 1.0) {
+        if(pw > RendererDeviece.MAX_TEXTURE_SIZE) {
+            pw = RendererDeviece.MAX_TEXTURE_SIZE;
+            ph = pw/k0;
+        }
+        power2W = MathConst.CalcCeilPowerOfTwo(pw);
+        power2H = MathConst.CalcCeilPowerOfTwo(power2W/k0);
+    }
+    else {
+        if(ph > RendererDeviece.MAX_TEXTURE_SIZE) {
+            ph = RendererDeviece.MAX_TEXTURE_SIZE;
+            pw = ph * k0;
+        }
+        power2H = MathConst.CalcCeilPowerOfTwo(ph);
+        power2W = MathConst.CalcCeilPowerOfTwo(power2H * k0);
+    }
+    
+    return [power2W, power2H];
+}
+
 function createJpgCanvas(img:any, pw:number,ph:number):any
 {
     var canvas:any = document.createElement('canvas');

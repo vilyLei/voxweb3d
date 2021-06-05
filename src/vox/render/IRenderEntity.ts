@@ -39,7 +39,7 @@ export default interface IRenderEntity
     __$testRendererEnabled():boolean;
     getRendererUid():number;
     /**
-     * @returns 自身是否未必任何渲染器相关的系统使用
+     * @returns 自身是否未被任何渲染器相关的系统使用
      */
     isFree():boolean;
     dispatchEvt(evt:any):void;
