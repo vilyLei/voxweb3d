@@ -17,6 +17,7 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
+import { ObjLoader } from "../vox/assets/ObjLoader";
 
 export namespace demo
 {
@@ -88,6 +89,10 @@ export namespace demo
                 objDisp.initializeByObjDataUrl(objUrl,[this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
                 //objDisp.setXYZ(Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0);
                 this.m_rscene.addEntity(objDisp);
+                
+                let url:string = "static/assets/obj/objTest01.zip";
+                let objLoader:ObjLoader = new ObjLoader();
+                objLoader.load(url);
 
             }
         }

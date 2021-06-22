@@ -120,7 +120,8 @@ export namespace demo {
                 this.m_rscene.addEntity(axis);
 
                 //this.initFloatTexEntity();
-                this.initHdrRGBEFloatTexEntity();
+                //this.initHdrRGBEFloatTexEntity();
+                this.initHdrFloatTexEntity();
             }
         }
         private initFloatTexEntity(): void {
@@ -138,7 +139,14 @@ export namespace demo {
         private initHdrRGBEFloatTexEntity(): void {
             
             let loader: BinaryLoader = new BinaryLoader();
+            loader.uuid = "rgbe_hdr";
             loader.load("static/assets/hdr/night_free_Env_512x256.hdr", this);
+        }
+        private initHdrFloatTexEntity(): void {
+            
+            let loader: BinaryLoader = new BinaryLoader();
+            loader.uuid = "float_hdr";
+            loader.load("static/assets/hdr/floatHdr.hdr", this);
         }
         private m_hdrRGBEMaterial: HDRRGBETexMaterial = null;
         private mouseDown(evt: any): void
@@ -151,6 +159,14 @@ export namespace demo {
         loaded(buffer: ArrayBuffer, uuid: string): void {
             console.log("loaded... uuid: ", uuid,buffer.byteLength);
 
+            if(uuid == "rgbe_hdr") {
+                this.initRGBE(buffer);
+            }
+            else if(uuid == "float_hdr") {
+                this.initFloat(buffer);
+            }
+        }
+        private initRGBE(buffer: ArrayBuffer): void {
 
             let parser:RGBEParser = new RGBEParser();
             let rgbe:RGBE = parser.parse(buffer);
@@ -164,6 +180,18 @@ export namespace demo {
             var plane: Plane3DEntity = new Plane3DEntity();
             plane.setMaterial(this.m_hdrRGBEMaterial);
             plane.initializeXOZ(0.0, 0.0, 200.0, 150.0, [ftex]);
+            this.m_rscene.addEntity(plane);
+        }
+        private initFloat(buffer: ArrayBuffer): void {
+
+            let tex: TextureProxy = this.createFloatTex();
+            let material: FloatTexMaterial = new FloatTexMaterial();
+            material.setTextureList([tex]);
+            
+            var plane: Plane3DEntity = new Plane3DEntity();
+            plane.setMaterial(material);
+            
+            plane.initializeXOZ(0.0, 0.0, 200.0, 150.0, [tex]);
             this.m_rscene.addEntity(plane);
         }
         loadError(status: number, uuid: string): void {

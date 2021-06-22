@@ -25,33 +25,60 @@ class FloatCubeTextureProxy extends TextureProxy {
         this.minFilter = TextureConst.NEAREST;
         this.magFilter = TextureConst.NEAREST;
     }
+    toRGBFormatFloat32F(): void {
+        this.unpackAlignment = 1;
+        this.srcFormat = TextureFormat.RGB;
+        this.internalFormat = TextureFormat.RGB32F;
+        this.minFilter = TextureConst.NEAREST;
+        this.magFilter = TextureConst.NEAREST;
+    }
     setDataFromBytesToFaceAt(index: number, bytes: Float32Array, pw: number, ph: number, miplevel: number = 0) {
         if (this.m_imgDataList == null) {
             this.m_imgDataList = [null, null, null, null, null, null];
         }
         if (pw > 0 && ph > 0) {
-            if (index == 0) {
+            if (index == 0 && miplevel < 1) {
                 this.m_texWidth = pw;
                 this.m_texHeight = ph;
                 this.m_miplevel = miplevel;
             }
-            this.m_imgDataList[index] = { imgData: bytes, miplevel: miplevel };
-            let k: number = 5;
-            for (; k >= 0; --k) {
-                if (this.m_imgDataList[k] == null) {
-                    break;
-                }
+            if (this.m_imgDataList[index] == null) {
+                this.m_imgDataList[index] = new Array(16);
             }
-            this.m_haveRData = k < 0;
+            let arr: any[] = this.m_imgDataList[index];
+            arr[miplevel] = { width: pw, height: ph, imgData: bytes, miplevel: miplevel };
+            
+            this.m_haveRData = arr[miplevel].imgData != null;
         }
     }
 
     protected uploadData(texRes: IRenderResource): void {
         let gl: any = texRes.getRC();
         let imo: any = null;
+        let width: number = this.getWidth();
+        let height: number = this.getHeight();
+        let pw: number;
+        let ph: number;
         for (let i: number = 0; i < 6; ++i) {
-            imo = this.m_imgDataList[i];
-            gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, this.m_miplevel, TextureFormat.ToGL(gl, this.internalFormat), this.getWidth(), this.getWidth(), 0, TextureFormat.ToGL(gl, this.srcFormat), TextureDataType.ToGL(gl, this.dataType), imo.imgData);
+
+            let arr: any[] = this.m_imgDataList[i];
+            if (this.mipmapEnabled && this.m_generateMipmap) {
+                imo = arr[0];
+                gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, 0, TextureFormat.ToGL(gl, this.internalFormat), width, height, 0, TextureFormat.ToGL(gl, this.srcFormat), TextureDataType.ToGL(gl, this.dataType), imo.imgData);
+            } else {
+                pw = width;
+                ph = height;
+                let j: number = 0;
+                for (; (pw > 1 || ph > 1);) {
+                    if (arr[j] != null) {
+                        imo = arr[j];
+                        gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, j, TextureFormat.ToGL(gl, this.internalFormat), pw, ph, 0, TextureFormat.ToGL(gl, this.srcFormat), TextureDataType.ToGL(gl, this.dataType), imo.imgData);
+                    }
+                    if (pw > 1) pw >>= 1;
+                    if (ph > 1) ph >>= 1;
+                    ++j;
+                }
+            }
         }
     }
     toString(): string {

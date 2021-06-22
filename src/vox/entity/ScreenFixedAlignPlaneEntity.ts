@@ -24,11 +24,17 @@ export default class ScreenFixedAlignPlaneEntity extends DisplayEntity {
     constructor() {
         super();
     }
+    setUVScale(scaleU: number, scaleV: number): void {
+        if (this.m_currMaterial != null) this.m_currMaterial.setUVScale(scaleU, scaleV);
+    }
+    setUVTranslation(offsetU: number, offsetV: number): void {
+        if (this.m_currMaterial != null) this.m_currMaterial.setUVTranslation(offsetU, offsetV);
+    }
     setRGB3f(pr: number, pg: number, pb: number): void {
-        this.m_currMaterial.setRGB3f(pr, pg, pb);
+        if (this.m_currMaterial != null) this.m_currMaterial.setRGB3f(pr, pg, pb);
     }
     setRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
-        this.m_currMaterial.setRGBA4f(pr, pg, pb, pa);
+        if (this.m_currMaterial != null) this.m_currMaterial.setRGBA4f(pr, pg, pb, pa);
     }
     createMaterial(texList: TextureProxy[]): void {
         if (this.getMaterial() == null) {

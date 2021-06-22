@@ -221,7 +221,7 @@ export class TextureProxy implements IRenderTexture
             //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.NICEST);
             //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.FASTEST);
         }
-        if(this.m_generateMipmap)
+        if(this.mipmapEnabled && this.m_generateMipmap)
         {
             gl.generateMipmap(this.m_sampler);
         }

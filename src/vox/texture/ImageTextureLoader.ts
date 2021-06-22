@@ -124,7 +124,11 @@ class ImgResUnit
             let bytesTex:BytesTextureProxy = this.bytesTex;
             let imgData:any = null;
             let powBoo:boolean = MathConst.IsPowerOf2(img.width) && MathConst.IsPowerOf2(img.height);
-            if(!powBoo && !this.powerOf2Fix)
+            let powerOf2Fix: boolean = this.powerOf2Fix;
+            if(RendererDeviece.IsWebGL1()) {
+                powerOf2Fix = true;
+            }
+            if(!powBoo && powerOf2Fix)
             {
                 let pwidth:number = MathConst.CalcCeilPowerOfTwo(img.width);                            
                 let pheight:number = MathConst.CalcCeilPowerOfTwo(img.height);
@@ -186,7 +190,7 @@ class ImgResUnit
             {
                 if(tex != null)
                 {
-                    if(this.powerOf2Fix) {
+                    if(!this.powerOf2Fix) {
                         console.log("image img size: "+img.width+","+img.height);
                     }
                     tex.setDataFromImage(img,this.m_mipLv);                                

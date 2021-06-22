@@ -15,9 +15,6 @@ import IRenderShader from "../../vox/render/IRenderShader";
 import IRenderResource from "../../vox/render/IRenderResource";
 import IShaderUniform from "../../vox/material/IShaderUniform";
 
-//import MaterialConst = MaterialConstT.vox.material.MaterialConst;
-//import IShaderData = IShaderDataT.vox.material.IShaderData;
-
 /**
  * 作为渲染器运行时 material shader 资源的管理类
  * renderer runtime material shader resource manager

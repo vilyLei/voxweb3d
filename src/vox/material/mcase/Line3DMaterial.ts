@@ -31,14 +31,13 @@ class Line3DShaderBuffer extends ShaderCodeBuffer
     getFragShaderCode():string
     {
         let fragCode:string = 
-"\
-precision mediump float;\n\
-varying vec3 v_vtxColor;\n\
-void main()\n\
-{\
-gl_FragColor = vec4(v_vtxColor, 1.0);\n\
-}\n\
-";
+`precision mediump float;
+varying vec3 v_vtxColor;
+void main()
+{
+gl_FragColor = vec4(v_vtxColor, 1.0);
+}
+`;
         return fragCode;
     }
     getVtxShaderCode():string
@@ -63,18 +62,18 @@ attribute vec3 a_cvs;\n\
 ";
         }
             vtxCode +=
-"\
-uniform mat4 u_objMat;\n\
-uniform mat4 u_viewMat;\n\
-uniform mat4 u_projMat;\n\
-varying vec3 v_vtxColor;\n\
-void main()\n\
-{\n\
-vec4 pv = u_projMat * u_viewMat * u_objMat * vec4(a_vs,1.0);\n\
-// pixels move offset, and no perspective error.\n\
-//  pv.xy = (pv.xy/pv.w - vec2(0.5)) * pv.w;\n\
-gl_Position = pv;\n\
-";
+`
+uniform mat4 u_objMat;
+uniform mat4 u_viewMat;
+uniform mat4 u_projMat;
+varying vec3 v_vtxColor;
+void main()
+{
+vec4 pv = u_projMat * u_viewMat * u_objMat * vec4(a_vs,1.0);
+// pixels move offset, and no perspective error.
+//  pv.xy = (pv.xy/pv.w - vec2(0.5)) * pv.w;
+gl_Position = pv;
+`;
 
         if(this.dynColorEnabled)
         {

@@ -138,7 +138,7 @@ export class RbtDrama
             let limbRole:FourLimbRole;
             let campType:CampType;
             let bodySize:number = 40.0;
-            for(i = 0; i < 10; ++i)
+            for(i = 0; i < 200; ++i)
             {
                 bodySize = Math.round(Math.random() * 60.0) + 30.0;
                 switch(i%3)
@@ -163,7 +163,7 @@ export class RbtDrama
             }
             //this.m_limbRole = limbRole;
 
-            for(i = 0; i < 10; ++i)
+            for(i = 0; i < 1000; ++i)
             {
                 switch(i%3)
                 {
@@ -192,7 +192,7 @@ export class RbtDrama
             let upperBox:Box3DEntity = new Box3DEntity();
             upperBox.initializeSizeXYZ(30.0,20,30,[tex5]);
             upperBox.setXYZ(0.0,50.0,0.0);
-            for(i = 0; i < 10; ++i)
+            for(i = 0; i < 100; ++i)
             {
 
                 let sillyRole:SillyRole = new SillyRole();

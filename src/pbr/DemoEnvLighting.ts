@@ -20,10 +20,86 @@ import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import Vector3D from "../vox/math/Vector3D";
 import Color4 from "../vox/material/Color4";
 
-import PBRLightingMaterial from "../pbr/material/PBRLightingMaterial";
-import PBRTexLightingMaterial from "./material/PBRTexLightingMaterial";
+import BinaryLoader from "../vox/assets/BinaryLoader";
 
-export class DemoLighting {
+import PBREnvLightingMaterial from "../pbr/material/PBREnvLightingMaterial";
+import PBRTexLightingMaterial from "./material/PBRTexLightingMaterial";
+import FloatCubeTextureProxy from "../vox/texture/FloatCubeTextureProxy";
+
+class TextureLoader {
+
+    protected m_rscene: RendererScene = null;
+    texture: FloatCubeTextureProxy = null;
+    constructor() {        
+    }
+    
+    loadTextureWithUrl(url:string, rscene: RendererScene): void {
+        //let url: string = "static/bytes/s.bin";
+        let loader: BinaryLoader = new BinaryLoader();
+        loader.uuid = url;
+        loader.load(url, this);
+        this.m_rscene = rscene;
+
+        this.texture = this.m_rscene.textureBlock.createFloatCubeTex(32, 32);
+    }
+    loaded(buffer: ArrayBuffer, uuid: string): void {
+        //console.log("loaded... uuid: ", uuid, buffer.byteLength);
+        this.parseTextureBuffer(buffer);
+        this.m_rscene = null;
+        this.texture = null;
+    }
+    loadError(status: number, uuid: string): void {
+    }
+    
+    protected parseTextureBuffer(buffer: ArrayBuffer): void {
+        let begin: number = 0;
+        let width: number = 128;
+        let height: number = 128;
+        let size: number = width * height * 3;
+        let fs32: Float32Array = new Float32Array(buffer);
+        let subArr: Float32Array = null;
+        let tex: FloatCubeTextureProxy = this.texture;
+        tex.toRGBFormat();
+        for (let i: number = 0, len: number = 6; i < len; ++i) {
+            subArr = fs32.slice(begin, begin + size);
+            console.log("width,height: ", width, height, ", subArr.length: ", subArr.length);
+            tex.setDataFromBytesToFaceAt(i, subArr, width, height, 0);
+            begin += size;
+        }
+    }
+}
+
+class SpecularTextureLoader extends TextureLoader {
+
+    constructor() {
+        super();
+    }
+    protected parseTextureBuffer(buffer: ArrayBuffer): void {
+        let begin: number = 0;
+        let width: number = 128;
+        let height: number = 128;
+        
+        let fs32: Float32Array = new Float32Array(buffer);
+        let subArr: Float32Array = null;
+
+        let tex: FloatCubeTextureProxy = this.texture;
+        tex.toRGBFormat();
+        tex.mipmapEnabled = false;
+        
+        for (let j = 0; j < 9; j++) {
+            for (let i = 0; i < 6; i++) {
+                const size = width * height * 3;
+                subArr = fs32.slice(begin, begin + size);
+                tex.setDataFromBytesToFaceAt(i, subArr, width, height, j);
+                begin += size;
+            }
+            width >>= 1;
+            height >>= 1;
+        }
+    }
+}
+
+export class DemoEnvLighting {
     constructor() { }
 
     private m_rscene: RendererScene = null;
@@ -34,20 +110,21 @@ export class DemoLighting {
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_CameraZoomController: CameraZoomController = new CameraZoomController();
 
-    private m_materials:PBRLightingMaterial[] = [];
+    private m_materials:PBREnvLightingMaterial[] = [];
     private m_texMaterials:PBRTexLightingMaterial[] = [];
     
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         return this.m_texLoader.getTexByUrl(purl,wrapRepeat,mipmapEnabled);
     }
     initialize(): void {
-        console.log("DemoLighting::initialize()......");
+        console.log("DemoEnvLighting::initialize()......");
         if (this.m_rscene == null) {
             RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
             RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
-            console.log("1.0/PI: ", 1.0 / Math.PI);
+            
             let rparam: RendererParam = new RendererParam();
+            //rparam.maxWebGLVersion = 1;
             rparam.setCamPosition(800.0, 800.0, 800.0);
             rparam.setAttriAntialias(true);
             //rparam.setAttriStencil(true);
@@ -80,18 +157,27 @@ export class DemoLighting {
             //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
             //  this.m_rscene.addEntity(plane);
 
-            this.initLighting();
-            //this.initTexLighting();
+            this.initFloatCube();
 
             this.update();
 
         }
     }
+    private initFloatCube(): void {
+
+        let envMapUrl: string = "static/bytes/s.bin";
+
+        //let loader:TextureLoader = new TextureLoader();
+        let loader:SpecularTextureLoader = new SpecularTextureLoader();
+        loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
+        this.initLighting(null,loader.texture);
+    }
+    
     private initTexLighting(): void {
 
         let radius:number = 150.0;
-        let rn:number = 7;
-        let cn:number = 7;
+        let rn:number = 3;
+        let cn:number = 3;
         let roughness: number = 0.0;
         let metallic: number = 0.0;
         let disV3:Vector3D = new Vector3D(radius * 2.0 + 50.0, radius * 2.0 + 50.0, 0.0);
@@ -113,7 +199,7 @@ export class DemoLighting {
 
                 let sph: Sphere3DEntity = new Sphere3DEntity();
                 let material:PBRTexLightingMaterial = this.makeTexMaterial(metallic, roughness, 1.0);
-                //let material:PBRLightingMaterial = this.makeMaterial(metallic, roughness, 1.3);
+                //let material:PBREnvLightingMaterial = this.makeMaterial(metallic, roughness, 1.3);
                 sph.setMaterial(material);
                 sph.initialize(radius, 20, 20, this.getTexList(nameList[Math.round(Math.random() * 10000) % nameList.length]));
 
@@ -127,11 +213,11 @@ export class DemoLighting {
             }
         }
     }
-    private initLighting(): void {
+    private initLighting(d_envTex: FloatCubeTextureProxy,s_envTex: FloatCubeTextureProxy): void {
 
         let radius:number = 150.0;
-        let rn:number = 7;
-        let cn:number = 7;
+        let rn:number = 3;
+        let cn:number = 3;
         let roughness: number = 0.0;
         let metallic: number = 0.0;
         let disV3:Vector3D = new Vector3D(radius * 2.0 + 50.0, radius * 2.0 + 50.0, 0.0);
@@ -142,16 +228,19 @@ export class DemoLighting {
         {
             metallic = Math.max(rn - 1,0.001);
             metallic = i / metallic;
+            //metallic = 1.0;
             for(let j:number = 0; j < cn; ++j)
             {
                 roughness = Math.max(cn - 1,0.001);
                 roughness = j / roughness;
+                //roughness = 0.0;
 
                 let sph: Sphere3DEntity = new Sphere3DEntity();
-                //let material:PBRLightingMaterial = this.makeMaterial(0.0, 0.2, 1.0);
-                let material:PBRLightingMaterial = this.makeMaterial(metallic, roughness, 1.3);
+                //let material:PBREnvLightingMaterial = this.makeMaterial(0.0, 0.2, 1.0);
+                let material:PBREnvLightingMaterial = this.makeMaterial(metallic, roughness, 1.3);
                 sph.setMaterial(material);
-                sph.initialize(radius, 20, 20, [this.getImageTexByUrl("static/assets/noise.jpg")]);
+                //sph.initialize(radius, 20, 20, [this.getImageTexByUrl("static/assets/noise.jpg")]);
+                sph.initialize(radius, 20, 20, [s_envTex]);
 
                 pos.copyFrom( beginPos );
                 pos.x += disV3.x * j;
@@ -211,7 +300,7 @@ export class DemoLighting {
         }
         return material;
     }
-    private makeMaterial(metallic: number, roughness: number, ao: number): PBRLightingMaterial
+    private makeMaterial(metallic: number, roughness: number, ao: number): PBREnvLightingMaterial
     {
         let dis: number = 700.0;
         let disZ: number = 400.0;
@@ -229,7 +318,7 @@ export class DemoLighting {
             new Color4(colorSize, colorSize, colorSize)
         ];
 
-        let material:PBRLightingMaterial = new PBRLightingMaterial();
+        let material:PBREnvLightingMaterial = new PBREnvLightingMaterial();
         material.setMetallic( metallic );
         material.setRoughness( roughness );
         material.setAO( ao );
@@ -290,4 +379,4 @@ export class DemoLighting {
         //this.m_profileInstance.run();
     }
 }
-export default DemoLighting;
+export default DemoEnvLighting;
