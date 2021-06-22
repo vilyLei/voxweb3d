@@ -81,12 +81,12 @@ export namespace demo {
 
                 this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
-                //  let axis: Axis3DEntity = new Axis3DEntity();
-                //  axis.initialize(300.0);
-                //  this.m_rscene.addEntity(axis);
+                let axis: Axis3DEntity = new Axis3DEntity();
+                axis.initialize(300.0);
+                this.m_rscene.addEntity(axis);
 
-                this.initCommonTest();
-                //this.initHdrTest();
+                //this.initCommonTest();
+                this.initHdrTest();
             }
         }
         
@@ -110,8 +110,6 @@ export namespace demo {
                 material.showBack();
             }
             sph.initialize(400.0, 50, 50, [posTex]);
-            this.m_rscene.addEntity(sph);
-            //(sph.getMaterial() as any).setRGBA4f(0.0,1.0,0.0, 0.5);
             this.m_rscene.addEntity(sph);
             
         }

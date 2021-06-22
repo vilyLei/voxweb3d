@@ -55,11 +55,11 @@ vec4 RGBEToLinear( in vec4 value ){
 in vec2 v_uv;
 layout(location = 0) out vec4 FragColor;
 void main(){
-vec4 color4 = texture(u_sampler0, v_uv);
-color4 = RGBEToLinear(color4);
-color4.rgb = toneMapping(color4.rgb);
-color4 = LinearTosRGB(color4);
-FragColor = vec4(color4.rgb,1.0) * u_color;
+    vec4 color4 = texture(u_sampler0, v_uv);
+    color4 = RGBEToLinear(color4);
+    color4.rgb = toneMapping(color4.rgb);
+    color4 = LinearTosRGB(color4);
+    FragColor = vec4(color4.rgb,1.0) * u_color;
 }
 `;
         return fragCode;

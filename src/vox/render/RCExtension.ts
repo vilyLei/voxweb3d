@@ -32,7 +32,15 @@ class RCExtension
             console.log("Use OES_standard_derivatives Extension success!");
             else
             console.log("OES_standard_derivatives Extension can not support!");
-            //#extension GL_EXT_shader_texture_lod : enable
+            //#extension GL_EXT_shader_texture_lod : enable, for example: textureCubeLodEXT(envMap, dir, mipLv)
+            // vec4 texture2DLodEXT(sampler2D sampler, vec2 coord, float lod)
+            // vec4 texture2DProjLodEXT(sampler2D sampler, vec3 coord, float lod)
+            // vec4 texture2DProjLodEXT(sampler2D sampler, vec4 coord, float lod)
+            // vec4 textureCubeLodEXT(samplerCube sampler, vec3 coord, float lod)
+            // vec4 texture2DGradEXT(sampler2D sampler, vec2 P, vec2 dPdx, vec2 dPdy)
+            // vec4 texture2DProjGradEXT(sampler2D sampler, vec3 P, vec2 dPdx, vec2 dPdy)
+            // vec4 texture2DProjGradEXT(sampler2D sampler, vec4 P, vec2 dPdx, vec2 dPdy)
+            // vec4 textureCubeGradEXT(samplerCube sampler, vec3 P, vec3 dPdx, vec3 dPdy)
             selfT.EXT_shader_texture_lod = gl.getExtension('EXT_shader_texture_lod');
             if(selfT.EXT_shader_texture_lod != null)
             console.log("Use EXT_shader_texture_lod Extension success!");

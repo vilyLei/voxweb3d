@@ -44,16 +44,10 @@ uniform sampler2D u_sampler0;\n\
 varying vec2 v_texUV;\n\
 ";
         }
-        else
-        {
 
-            fragCode +=
-"\
-uniform vec4 u_color;\n\
-";
-        }
         fragCode +=
 "\
+uniform vec4 u_color;\n\
 void main()\n\
 {\n\
 ";
@@ -61,7 +55,7 @@ void main()\n\
         {
             fragCode +=
 "\
-gl_FragColor = texture2D(u_sampler0, v_texUV);\n\
+gl_FragColor = texture2D(u_sampler0, v_texUV) * u_color;\n\
 ";
         }
         else
@@ -88,6 +82,7 @@ attribute vec3 a_vs;\n\
         {
             vtxCode +=
 "\
+uniform vec4 u_param;\n\
 attribute vec2 a_uvs;\n\
 varying vec2 v_texUV;\n\
 ";
@@ -102,7 +97,7 @@ gl_Position = vec4(a_vs,1.0);\n\
         {
             vtxCode +=
 "\
-v_texUV = a_uvs;\n\
+v_texUV.xy = u_param.zw + (a_uvs.xy * u_param.xy);\n\
 ";
         }
         vtxCode +=
@@ -144,6 +139,15 @@ export default class ScreenFixedPlaneMaterial extends MaterialBase
         return ScreenFixedPlaneShaderBuffer.GetInstance();
     }
     private m_colorArray:Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
+    private m_param:Float32Array = new Float32Array([1.0,1.0,0.0,0.0]);
+    setUVScale(scaleU: number, scaleV: number): void {
+        this.m_param[0] = scaleU;
+        this.m_param[1] = scaleU;
+    }
+    setUVTranslation(offsetU: number, offsetV: number): void {
+        this.m_param[2] = offsetU;
+        this.m_param[3] = offsetV;
+    }
     setRGB3f(pr:number,pg:number,pb:number):void
     {
         this.m_colorArray[0] = pr;
@@ -164,8 +168,8 @@ export default class ScreenFixedPlaneMaterial extends MaterialBase
     createSelfUniformData():ShaderUniformData
     {
         let oum:ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_color"];
-        oum.dataList = [this.m_colorArray];
+        oum.uniformNameList = ["u_color", "u_param"];
+        oum.dataList = [this.m_colorArray,this.m_param];
         return oum;
     }
 }

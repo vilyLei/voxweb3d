@@ -127,8 +127,7 @@
 //  import * as DemoRTTCircle from "./demo/DemoRTTCircle";
 //  import Demo = DemoRTTCircle.demo.DemoRTTCircle;
 
-//  import * as DemoLargeVtx from "./large/DemoLargeVtx";
-//  import Demo = DemoLargeVtx.large.DemoLargeVtx;
+//  import {DemoLargeVtx as Demo} from "./large/DemoLargeVtx";
 
 //  import * as VatParallaxMap2 from "./voxvat/demo/VatParallaxMap2";
 //  import Demo = VatParallaxMap2.voxvat.demo.VatParallaxMap2;
@@ -196,8 +195,7 @@
 //  import * as DemoText2D from "./demo/DemoText2D";
 //  import Demo = DemoText2D.demo.DemoText2D;
 
-//  import * as DemoTexUpdate from "./demo/DemoTexUpdate";
-//  import Demo = DemoTexUpdate.demo.DemoTexUpdate;
+//  import {DemoTexUpdate as Demo} from "./demo/DemoTexUpdate";
 
 //  import * as DemoKeyboardEvt from "./demo/DemoKeyboardEvt";
 //  import Demo = DemoKeyboardEvt.demo.DemoKeyboardEvt;
@@ -253,8 +251,7 @@
 //  import * as DemoFloatTex from "./demo/DemoFloatTex";
 //  import Demo = DemoFloatTex.demo.DemoFloatTex;
 
-//  import * as DemoCubeFloatTex from "./demo/DemoCubeFloatTex";
-//  import Demo = DemoCubeFloatTex.demo.DemoCubeFloatTex;
+//  import {DemoCubeFloatTex as Demo} from "./demo/DemoCubeFloatTex";
 
 //  import * as DemoFloatTex2 from "./example/DemoFloatTex2";
 //  import Demo = DemoFloatTex2.demo.DemoFloatTex2;
@@ -307,10 +304,14 @@
 //  import * as DemoCameraSwing from "./demo/DemoCameraSwing";
 //  import Demo = DemoCameraSwing.demo.DemoCameraSwing;
 
-import * as DemoHdrCylindricalMap from "./demo/DemoHdrCylindricalMap";
-import Demo = DemoHdrCylindricalMap.demo.DemoHdrCylindricalMap;
+//  import * as DemoHdrCylindricalMap from "./demo/DemoHdrCylindricalMap";
+//  import Demo = DemoHdrCylindricalMap.demo.DemoHdrCylindricalMap;
+
+//  import {DemoRGBETex as Demo} from "./demo/DemoRGBETex";
 
 //  import {DemoStencil as Demo} from "./demo/DemoStencil";
+
+//  import {DemoFileSystem as Demo} from "./demo/DemoFileSystem";
 
 //  import {DemoPreDepthTransparent as Demo} from "./demo/DemoPreDepthTransparent";
 
@@ -324,6 +325,10 @@ import Demo = DemoHdrCylindricalMap.demo.DemoHdrCylindricalMap;
 //  import {DemoAdsLight as Demo} from "./demo/DemoAdsLight";
 
 //  import {DemoLighting as Demo} from "./pbr/DemoLighting";
+
+//  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
+
+import {DemoLargeVtxPBR as Demo} from "./large/DemoLargeVtxPBR";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

@@ -46,7 +46,7 @@ export namespace demo
                 //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
                 let rparam:RendererParam = new RendererParam();
-                rparam.maxWebGLVersion = 1;
+                //rparam.maxWebGLVersion = 1;
                 rparam.setCamPosition(500.0,500.0,500.0);
                 this.m_rscene = new RendererScene();
                 this.m_rscene.initialize(rparam,3);
@@ -60,11 +60,13 @@ export namespace demo
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
-                this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().stageWidth - 10);
+                this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 200);
 
                 let bg:ScreenFixedAlignPlaneEntity = new ScreenFixedAlignPlaneEntity();
                 bg.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
                 bg.initialize(-1.0,-1.0,2.0,2.0, [tex0]);
+                bg.setUVScale(8,8);
+                bg.setRGB3f(0.2,0.1,0.2);
                 this.m_rscene.addEntity(bg);
                 // add common 3d display entity
                 var plane:Plane3DEntity = new Plane3DEntity();

@@ -234,7 +234,6 @@ export default class GLSLConverter
 
         const regExp2:RegExp = /\btexture\b/g;
         codeStr = codeStr.replace(regExp2, "texture2D");
-
         const regExp3:RegExp = /" "/g;
         let shaderStr:string = codeStr;
         // 替换 frag (layout) out
@@ -293,8 +292,8 @@ export default class GLSLConverter
                 keyName = subStr.slice(subStr.lastIndexOf(" ")+1);
                 tempReg = new RegExp(keyName,"g");
                 codeStr = codeStr.replace(tempReg, "gl_FragColor");
-                tempReg = new RegExp("out ","g");
-                codeStr = codeStr.replace(tempReg, "//out ");
+                tempReg = /\bout\b/g;    
+                codeStr = codeStr.replace(tempReg, "//out");
             
             }
         }
@@ -333,6 +332,9 @@ export default class GLSLConverter
                     if(j > 0)
                     {
                         t = codeStr.lastIndexOf("texture2D",j-1);
+                        if(t < 0) {
+                            break;
+                        }
                         subStr = codeStr.slice(t, j);
                         codeStr = codeStr.slice(0,t) + "textureCube(" + codeStr.slice(j);
                     }

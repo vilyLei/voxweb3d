@@ -25,7 +25,7 @@ export default class BinaryLoader {
         }
         request.responseType = "blob";
         request.onload = (e) => {
-            console.log("loaded binary buffer request.status: ", request.status);
+            console.log("loaded binary buffer request.status: ", request.status,e);
             if (request.status <= 206) {
                 reader.readAsArrayBuffer(request.response);
             }
