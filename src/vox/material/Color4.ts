@@ -64,9 +64,9 @@ class Color4
     }
     normalizeRandom(density:number = 1.0):void
     {
-        this.r = Math.random() * density;
-        this.g = Math.random() * density;
-        this.b = Math.random() * density;
+        this.r = Math.random();
+        this.g = Math.random();
+        this.b = Math.random();
         let d = Math.sqrt(this.r*this.r + this.g*this.g + this.b*this.b);
         if (d > MathConst.MATH_MIN_POSITIVE)
         {

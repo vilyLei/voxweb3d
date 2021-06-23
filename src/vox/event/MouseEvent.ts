@@ -8,7 +8,7 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 
-class MouseEvent
+export default class MouseEvent
 {
     static EventClassType:number = 1002;
     constructor()
@@ -74,4 +74,3 @@ class MouseEvent
         return "[MouseEvent]";
     }
 }
-export default MouseEvent;

@@ -159,6 +159,8 @@ export class DemoEnvLighting {
 
             this.initFloatCube();
 
+            //this.initTexLighting();
+
             this.update();
 
         }
@@ -216,8 +218,8 @@ export class DemoEnvLighting {
     private initLighting(d_envTex: FloatCubeTextureProxy,s_envTex: FloatCubeTextureProxy): void {
 
         let radius:number = 150.0;
-        let rn:number = 3;
-        let cn:number = 3;
+        let rn:number = 7;
+        let cn:number = 7;
         let roughness: number = 0.0;
         let metallic: number = 0.0;
         let disV3:Vector3D = new Vector3D(radius * 2.0 + 50.0, radius * 2.0 + 50.0, 0.0);
@@ -276,10 +278,10 @@ export class DemoEnvLighting {
         ];
         let colorSize:number = 300.0;
         let colorList:Color4[] = [
-            new Color4(colorSize, colorSize, colorSize),
-            new Color4(colorSize, colorSize, colorSize),
-            new Color4(colorSize, colorSize, colorSize),
-            new Color4(colorSize, colorSize, colorSize)
+            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
+            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
+            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
+            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize)
         ];
 
         let material:PBRTexLightingMaterial = new PBRTexLightingMaterial();
@@ -298,6 +300,7 @@ export class DemoEnvLighting {
             let color: Color4 = colorList[i];
             material.setColorAt(i, color.r, color.g, color.b);
         }
+        material.setColor(Math.random(),Math.random(),Math.random());
         return material;
     }
     private makeMaterial(metallic: number, roughness: number, ao: number): PBREnvLightingMaterial
@@ -312,10 +315,10 @@ export class DemoEnvLighting {
         ];
         let colorSize:number = 300.0;
         let colorList:Color4[] = [
-            new Color4(colorSize, colorSize, colorSize),
-            new Color4(colorSize, colorSize, colorSize),
-            new Color4(colorSize, colorSize, colorSize),
-            new Color4(colorSize, colorSize, colorSize)
+            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
+            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
+            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
+            new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize)
         ];
 
         let material:PBREnvLightingMaterial = new PBREnvLightingMaterial();
@@ -336,6 +339,7 @@ export class DemoEnvLighting {
             let color: Color4 = colorList[i];
             material.setColorAt(i, color.r, color.g, color.b);
         }
+        material.setColor(Math.random(),Math.random(),Math.random());
         return material;
     }
     private mouseDown(evt: any): void {
@@ -361,16 +365,11 @@ export class DemoEnvLighting {
         this.m_statusDisp.update(false);
 
         this.m_stageDragSwinger.runWithYAxis();
-        this.m_CameraZoomController.run(null, 30.0);
+        this.m_CameraZoomController.run(Vector3D.ZERO, 30.0);
         
-        for(let i: number = 0, il: number = this.m_materials.length; i < il; ++i) {
-
-            this.m_materials[i].setCamPos(this.m_rscene.getCamera().getPosition());
-        }
-        for(let i: number = 0, il: number = this.m_texMaterials.length; i < il; ++i) {
-
-            this.m_texMaterials[i].setCamPos(this.m_rscene.getCamera().getPosition());
-        }
+        //  for(let i: number = 0, il: number = this.m_materials.length; i < il; ++i) {
+        //      this.m_materials[i].setCamPos(this.m_rscene.getCamera().getPosition());
+        //  }
 
 
         this.m_rscene.run(true);

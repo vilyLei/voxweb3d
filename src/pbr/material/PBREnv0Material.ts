@@ -11,15 +11,20 @@ import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
 import Vector3D from "../../vox/math/Vector3D";
 
-class PBREnvLightingShaderBuffer extends ShaderCodeBuffer {
+class PBREnv0ShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: PBREnvLightingShaderBuffer = new PBREnvLightingShaderBuffer();
+    private static ___s_instance: PBREnv0ShaderBuffer = new PBREnv0ShaderBuffer();
     private m_uniqueName: string = "";
+    velvetEnabled:boolean = true;
+    toneMappingEnabled:boolean = true;
+    envMapEnabled:boolean = true;
+    scatterEnabled:boolean = true;
+    specularBleedEnabled:boolean = true;
     initialize(texEnabled: boolean): void {
-        //console.log("PBREnvLightingShaderBuffer::initialize()...");
-        this.m_uniqueName = "PBREnvLightingShd";
+        //console.log("PBREnv0ShaderBuffer::initialize()...");
+        this.m_uniqueName = "PBREnv0Shd";
     }
     getFragShaderCode(): string {
 
@@ -41,13 +46,19 @@ class PBREnvLightingShaderBuffer extends ShaderCodeBuffer {
 #define VOX_TextureCubeLod textureLod
 `;
         }
+        if(this.velvetEnabled) fragCode += "\n#define VOX_VELVET";
+        if(this.toneMappingEnabled) fragCode += "\n#define VOX_TONE_MAPPING";
+        if(this.envMapEnabled) fragCode += "\n#define VOX_ENV_MAP";
+        if(this.scatterEnabled) fragCode += "\n#define VOX_SCATTER";
+        if(this.specularBleedEnabled) fragCode += "\n#define VOX_SPECULAR_BLEED";
+        
         fragCode +=
 `
 precision highp float;
 //uniform sampler2D u_sampler0;
 uniform samplerCube u_sampler0;
 
-//uniform mat4 u_viewMat;
+uniform mat4 u_viewMat;
 
 out vec4 FragColor;
 in vec2 v_texUV;
@@ -57,14 +68,14 @@ in vec3 v_camPos;
 
 // material parameters
 uniform vec4 u_albedo;
-uniform vec4 u_params; //[metallic,roughness,ao, F0 offset]
+uniform vec4 u_params[4]; //[metallic,roughness,ao, F0 offset]
 uniform vec4 u_F0; //[metallic,roughness,ao, F0 offset]
 
 // lights
 uniform vec4 u_lightPositions[4];
 uniform vec4 u_lightColors[4];
 
-uniform vec4 u_camPos;
+//uniform vec4 u_camPos;
 
 #define PI 3.141592653589793
 #define PI2 6.283185307179586
@@ -129,8 +140,8 @@ float DistributionGGX(vec3 N, vec3 H, float roughness)
 }
 
 
-float GeometryImplicit(float NdotV, float NdotL) {
-    return NdotL * NdotV;
+float GeometryImplicit(float NdotV, float dotNL) {
+    return dotNL * NdotV;
 }
 
 // ----------------------------------------------------------------------------
@@ -148,9 +159,9 @@ float GeometrySchlickGGX(float NdotV, float roughness)
 float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 {
     float NdotV = max(dot(N, V), 0.0);
-    float NdotL = max(dot(N, L), 0.0); 
+    float dotNL = max(dot(N, L), 0.0); 
     float ggx2 = GeometrySchlickGGX(NdotV, roughness);
-    float ggx1 = GeometrySchlickGGX(NdotL, roughness);
+    float ggx1 = GeometrySchlickGGX(dotNL, roughness);
 
     return ggx1 * ggx2;
 }
@@ -221,12 +232,6 @@ vec3 ReinhardToneMapping( vec3 color, float toneMappingExposure ) {
 	return saturate( color / ( vec3( 1.0 ) + color ) );
 
 }
-vec4 LinearTosRGB( in vec4 value ){
-	return vec4( mix( pow( value.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), value.rgb * 12.92, vec3( lessThanEqual( value.rgb, vec3( 0.0031308 ) ) ) ), value.a );
-}
-vec3 LinearTosRGB( in vec3 value ){
-	return vec3( mix( pow( value.rgb, vec3( 0.41666 ) ) * 1.055 - vec3( 0.055 ), value.rgb * 12.92, vec3( lessThanEqual( value.rgb, vec3( 0.0031308 ) ) ) ));
-}
 #define VOX_GAMMA 2.2
 vec3 gammaCorrectionInv(vec3 color) 
 {
@@ -268,44 +273,71 @@ vec3 rotate(vec3 dir, float radian)
 	result.z = sin(radian) * dir.x + cos(radian) * dir.z;
 	return result;
 }
-//  vec3 getEnvDir(float rotateAngle, vec3 normal)
-//  {
-//  	vec3 worldNormal = inverseTransformDirection( normal, u_viewMat );
-//  	vec3 worldInvE = normalize(v_worldPos.xyz - v_camPos.xyz);
-//  	vec3 worldR = reflect(worldInvE, normalize(worldNormal));
-//  	worldR.z = -worldR.z;
-//  	worldR.y = -worldR.y;
-//  	worldR = rotate(worldR, rotateAngle);
-//  	float preX = worldR.x;
-//  	float preZ = worldR.z;
-//  	return worldR;
-//  }
-vec3 getWorldEnvDir2(float rotateAngle, vec3 worldNormal, vec3 worldInvE)
-{
-	//vec3 worldInvE = normalize(v_worldPos.xyz - v_camPos.xyz);
-	vec3 worldR = reflect(worldInvE, worldNormal);
-	worldR.z = -worldR.z;
-	worldR.y = -worldR.y;
-	return rotate(worldR, rotateAngle);
-}
+
 vec3 getWorldEnvDir(float rotateAngle, vec3 worldNormal,vec3 worldInvE)
 {
 	vec3 worldR = reflect(worldInvE, worldNormal);
     worldR.zy *= vec2(-1.0);
 	return rotate(worldR, rotateAngle);
 }
+
+float FD_Schlick(float VoH, float f0, float f90) 
+{
+	return f0 + (f90 - f0) * pow(1.0 - VoH, 5.0);
+}
+vec3 FD_Schlick(const in vec3 specularColor, const in float dotLH) {
+
+	// Original approximation by Christophe Schlick '94
+	//float fresnel = pow( 1.0 - dotLH, 5.0 );
+	// Optimized variant (presented by Epic at SIGGRAPH '13)
+	// https://cdn2.unrealengine.com/Resources/files/2013SiggraphPresentationsNotes-26915738.pdf
+
+	float fresnel = exp2((-5.55473 * dotLH - 6.98316) * dotLH);
+	return (vec3(1.0) - specularColor) * fresnel + specularColor;
+}
+
+#ifdef VOX_VELVET
+	float FD_Burley(float linearRoughness, float NoV, float NoL, float LoH)
+	{
+		float f90 = 0.5 + 2.0 * linearRoughness * LoH * LoH;
+		float lightScatter = FD_Schlick(NoL, 1.0, f90);
+		float viewScatter = FD_Schlick(NoV, 1.0, f90);
+		return lightScatter * viewScatter;
+	}
+	float getColorFactorIntensity(float NoV, float frontScale, float sideScale)
+	{
+		float invNoV = 1.0 - NoV;
+		float x2 = invNoV * invNoV;
+		float x3 = x2 * invNoV;
+		float x4 = x3 * invNoV;
+		float x5 = x4 * invNoV;
+		float y = clamp(-10.15 * x5 + 20.189 * x4 - 12.811 * x3 + 4.0585 * x2 - 0.2931 * invNoV, 0.0, 1.0);
+		float sideFactorIntensity = mix(frontScale, sideScale, y);
+		return sideFactorIntensity;
+	}
+#else
+	float FD_Burley(float linearRoughness, float NoV, float NoL, float LoH, float frontScale, float sideScale)
+	{
+		float f90 = 0.5 + 2.0 * linearRoughness * LoH * LoH;
+		float lightScatter = FD_Schlick(NoL, 1.0, f90);
+		float viewScatter = FD_Schlick(NoV, frontScale, sideScale * f90);
+		return lightScatter * viewScatter;
+	}
+#endif
 // ----------------------------------------------------------------------------
 void main()
 {
     vec3 color = vec3(0.0);
 
-    float metallic = u_params.x;
-    float roughness = u_params.y;
-    float ao = u_params.z;
+    float metallic = u_params[0].x;
+    float roughness = u_params[0].y;
+    float ao = u_params[0].z;
 
-    float matGlossiness = roughness;//0.15;
-    float matReflectionIntensity = 0.5;
-    float glossinessSquare = matGlossiness * matGlossiness;
+    float colorGlossiness = u_params[1].x;//0.15;
+    float reflectionIntensity = u_params[1].y;//0.1;
+    float glossinessSquare = colorGlossiness * colorGlossiness;
+    float specularPower = exp2(16.0 * glossinessSquare + 1.0);
+
 
     vec3 N = normalize(v_normal);
     vec3 V = normalize(v_camPos.xyz - v_worldPos);
@@ -320,85 +352,111 @@ void main()
     vec3 specularColor = vec3(1.0);
 
     specularColor = gammaCorrectionInv(specularColor);
+    albedo = gammaCorrectionInv(albedo);
 
-    specularColor = vec3(mix(0.025 * matReflectionIntensity, 0.078 * matReflectionIntensity, matGlossiness));
-    specularColor = mix(specularColor, diffuseColor, matGlossiness);
+    specularColor = vec3(mix(0.025 * reflectionIntensity, 0.078 * reflectionIntensity, colorGlossiness));
+    if(metallic > 0.0){
+        vec3 specularColorMetal = mix(vec3(0.04), albedo, metallic);
+        float ratio = clamp(8.0 * metallic, 0.0, 1.0);
+        specularColor = mix(specularColor, specularColorMetal, ratio);
+    }
+    albedo = mix(albedo, vec3(0.0), metallic);
     
-    vec3 baseSpecularColor = specularColor;
-    float mipLv = 7.0 - glossinessSquare * 7.0;
     
-	vec3 envDir = -getWorldEnvDir(0.0/*envLightRotateAngle*/, N, -V); // env map upside down
-	envDir.x = -envDir.x;
-    // specularEnvColor = vec3(1.0)/*envMapIntensity*/ * textureCubeLodEXT(sEnvMap, dir, mipLv).xyz;
-    // vec3 sEnvColor3 = texture(u_sampler0, N).xyz;
-    // vec3 sEnvColor3 = textureLod(u_sampler0, N, mipLv).xyz;
-    // vec3 sEnvColor3 = textureCubeLodEXT(u_sampler0, N, mipLv).xyz;
-    // vec3 specularEnvColor3 = VOX_TextureCubeLod(u_sampler0, N, mipLv).xyz;
-    
-    vec3 specularEnvColor3 = VOX_TextureCubeLod(u_sampler0, envDir, mipLv).xyz;
-    specularEnvColor3 = pow(specularEnvColor3, vec3(3.0));
-    specularEnvColor3 = (1.0 - roughness) * LinearTosRGB(specularEnvColor3);
-    specularColor += fresnelSchlick3(specularColor, dotNV, 0.25 * matReflectionIntensity) * specularEnvColor3;
+    specularColor *= u_params[3].xyz;
+    #ifdef VOX_ENV_MAP
+        float mipLv = 8.0 - glossinessSquare * 8.0;
+	    vec3 envDir = -getWorldEnvDir(0.0/*envLightRotateAngle*/, N, -V); // env map upside down
+	    envDir.x = -envDir.x;
+        vec3 specularEnvColor3 = VOX_TextureCubeLod(u_sampler0, envDir, mipLv).xyz;
+        specularColor = fresnelSchlick3(specularColor, dotNV, 0.25 * reflectionIntensity) * specularEnvColor3;
+    #endif
 
+    float frontColorScale = u_params[1].z;//0.5;
+    float sideColorScale = u_params[1].w;//1.0;
     // reflectance equation
     vec3 Lo = vec3(0.0);
-    //specularColor = vec3(metallic) * specularColor;
+    vec3 scatterIntensity = u_params[2].www;
+    vec3 diffuse = albedo.xyz / PI;
     for(int i = 0; i < 4; ++i) 
     {
         // calculate per-light radiance
         vec3 L = normalize(u_lightPositions[i].xyz - v_worldPos);
         vec3 H = normalize(V + L);
+
+        // scale light by dotNL
+        float dotNL = max(dot(N, L), 0.0);
+        float dotLH = max(dot(L, H), 0.0);
+        float dotNH = max(dot(N, H), 0.0);
+
         float distance = length(u_lightPositions[i].xyz - v_worldPos);
         //float attenuation = 1.0 / (1.0 + (distance * distance));
         
-        float attenuation = 1.0 / (1.0 + 0.001 * distance + 0.0003 * distance * distance);
+        float attenuation = 1.0 / (1.0 + 0.001 * distance + 0.0001 * distance * distance);
         vec3 radiance = u_lightColors[i].xyz * attenuation;
+
 
         // Cook-Torrance BRDF
         float NDF = DistributionGGX(N, H, roughness);
         float G   = GeometrySmith(N, V, L, roughness);
         //vec3 F    = fresnelSchlick(clamp(dot(H, V), 0.0, 1.0), F0);
-        vec3 F    = fresnelSchlick3(F0,clamp(dot(H, V), 0.0, 1.0), 0.9);
-        //vec3 F    = fresnelSchlick3(F0,dotNV, 0.9);
+        //vec3 F    = fresnelSchlick3(F0,clamp(dot(H, V), 0.0, 1.0), roughness);
+        vec3 F    = fresnelSchlick3(F0, dotNV, roughness);
         
         vec3 nominator    = NDF * G * F;
-        float denominator = 4.0 * max(dot(N, V), 0.0) * max(dot(N, L), 0.0);
-        vec3 specular = nominator / max(denominator, 0.001); // prevent divide by zero for NdotV=0.0 or NdotL=0.0
+        float denominator = 4.0 * dotNV * dotNL;
+        vec3 specular = nominator / max(denominator, 0.001); // prevent divide by zero for NdotV=0.0 or dotNL=0.0
         
-        // kS is equal to Fresnel
-        vec3 kS = F;
-        // for energy conservation, the diffuse and specular light can't
-        // be above 1.0 (unless the surface emits light); to preserve this
-        // relationship the diffuse component (kD) should equal 1.0 - kS.
-        vec3 kD = vec3(1.0) - kS;
-        // multiply kD by the inverse metalness such that only non-metals
-        // have diffuse lighting, or a linear blend if partly metal (pure metals
-        // have no diffuse light).
-        kD *= 1.0 - metallic;
+        vec3 kD = vec3(1.0) - F;
+        kD *= vec3(1.0 - metallic);
 
-        // scale light by NdotL
-        float NdotL = max(dot(N, L), 0.0);
-        //specularColor = fresnelSchlick3(baseSpecularColor, clamp(dot(H, V), 0.0, 1.0), 0.25 * matReflectionIntensity) * specularEnvColor3;
+        #ifdef VOX_VELVET
+            float fdBurley = FD_Burley(1.0 - colorGlossiness, dotNV, dotNL, dotLH);
+        #else
+            float fdBurley = FD_Burley(1.0 - colorGlossiness, dotNV, dotNL, dotLH, frontColorScale, sideColorScale);
+        #endif
+        #ifdef VOX_SCATTER
+            vec3 specularScatter = scatterIntensity * fresnelSchlick3(specularColor, dotLH, 1.0) * ((specularPower + 2.0) * 0.125) * pow(dotNH, specularPower);
+        #else
+            vec3 specularScatter = vec3(1.0);
+        #endif
         // add to outgoing radiance Lo
-        Lo += (kD * albedo.xyz / PI + specularColor + specular) * radiance * NdotL;  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
+        radiance *= dotNL;
+
+        #ifdef VOX_SPECULAR_BLEED
+            vec3 d_color = fdBurley * radiance * kD * diffuse * specularScatter;
+        #else
+            vec3 d_color = fdBurley * radiance * kD * diffuse;
+        #endif
+        vec3 s_color = specular * radiance * specularScatter;
+        Lo += (d_color + s_color);  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
         
     }
+    Lo += specularColor;
+
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
-    vec3 ambient = vec3(0.03) * albedo.xyz * ao;
+    vec3 ambient = u_params[2].xyz * albedo.xyz * ao;
 
+	#ifdef VOX_VELVET
+		float sideIntensity = getColorFactorIntensity(dotNV, frontColorScale, sideColorScale);
+		ambient *= sideIntensity;
+		Lo *= sideIntensity * frontColorScale;
+	#endif
     color = ambient + Lo;
 
+    //color = dithering(color);
     // HDR tonemapping
-    color = reinhard( color );
+    #ifdef VOX_TONE_MAPPING
+        color = reinhard( color );
+    #endif
     //color = reinhard_extended( color, 3.0 );
     //color = reinhard_extended_luminance( color, 5.0 );
     //color = ACESToneMapping(color, 1.0);
-    //color = LinearTosRGB(color);
+
     // gamma correct
     color = gammaCorrection(color);
 
-    //color = dithering(color);
     FragColor = vec4(color, 1.0);
 }
 `;
@@ -439,41 +497,95 @@ void main(){
     }
     getUniqueShaderName() {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
-        return this.m_uniqueName;
+        let ns: string = this.m_uniqueName;
+        if(this.velvetEnabled) ns += "_velvet";
+        if(this.toneMappingEnabled) ns += "_toneMapping";
+        if(this.envMapEnabled) ns += "_envMap";
+        if(this.scatterEnabled) ns += "_scatter";
+        if(this.specularBleedEnabled) ns += "_specBleed";
+        return ns;
     }
     toString(): string {
-        return "[PBREnvLightingShaderBuffer()]";
+        return "[PBREnv0ShaderBuffer()]";
     }
 
-    static GetInstance(): PBREnvLightingShaderBuffer {
-        return PBREnvLightingShaderBuffer.___s_instance;
+    static GetInstance(): PBREnv0ShaderBuffer {
+        return PBREnv0ShaderBuffer.___s_instance;
     }
 }
 
-export default class PBREnvLightingMaterial extends MaterialBase {
+export default class PBREnv0Material extends MaterialBase {
     constructor() {
         super();
     }
 
+    velvetEnabled:boolean = false;    
+    toneMappingEnabled:boolean = true;
+    envMapEnabled:boolean = true;
+    scatterEnabled:boolean = true;
+    specularBleedEnabled:boolean = true;
+    
     getCodeBuf(): ShaderCodeBuffer {
-        return PBREnvLightingShaderBuffer.GetInstance();
+        let buf: PBREnv0ShaderBuffer = PBREnv0ShaderBuffer.GetInstance();
+        buf.velvetEnabled = this.velvetEnabled;
+        buf.toneMappingEnabled = this.toneMappingEnabled;
+        buf.envMapEnabled = this.envMapEnabled;
+        buf.scatterEnabled = this.scatterEnabled;
+        buf.specularBleedEnabled = this.specularBleedEnabled;
+        return buf;
     }
 
-    private m_albedo: Float32Array = new Float32Array([0.5, 0.0, 0.0, 0.0]);
-    private m_params: Float32Array = new Float32Array([0.0, 0.0, 1.0, 0.0]);
+    private m_albedo: Float32Array = new Float32Array([0.0, 0.5, 0.0, 0.0]);
+    private m_params: Float32Array = new Float32Array([
+        0.0, 0.0, 1.0, 0.0,     // [metallic,roughness,ao, F0 offset]
+        0.1,                   // colorGlossiness
+        0.1,                   // reflectionIntensity
+        0.5,                   // frontColorScale
+        0.5,                   // sideColorScale
+
+        0.1,0.1,0.1,           // ambient factor x,y,z
+        1.0,                   // scatterIntensity
+        1.0,1.0,1.0,           // env map specular color factor x,y,z
+        1.0                    // undefined
+        ]);
     private m_F0: Float32Array = new Float32Array([0.0, 0.0, 0.0, 0.0]);
     private m_camPos: Float32Array = new Float32Array([500.0, 500.0, 500.0, 1.0]);
     private m_lightPositions: Float32Array = new Float32Array(4 * 4);
-    private u_lightColors: Float32Array = new Float32Array(4 * 4);
+    private m_lightColors: Float32Array = new Float32Array(4 * 4);
+    setScatterIntensity(value: number): void {
 
+        this.m_params[11] = Math.min(Math.max(value, 0.01), 512.0);
+    }
+    setColorGlossiness(value: number): void {
+
+        this.m_params[4] = Math.min(Math.max(value, 0.001), 10.0);
+    }
+    setReflectionIntensity(value: number): void {
+
+        this.m_params[5] = Math.min(Math.max(value, 0.001), 10.0);
+    }
+    
+    setColorScale(frontScale: number, sideScale: number): void {
+
+        this.m_params[6] = Math.min(Math.max(frontScale, 0.001), 10.0);
+        this.m_params[7] = Math.min(Math.max(sideScale, 0.001), 10.0);
+    }
+    setEnvSpecylarColorFactor(fx:number, fy: number, fz:number):void {
+        this.m_params[12] = fx;
+        this.m_params[13] = fy;
+        this.m_params[14] = fz;
+    }
+    setAmbientFactor(fx:number, fy: number, fz:number):void {
+        this.m_params[8] = fx;
+        this.m_params[9] = fy;
+        this.m_params[10] = fz;
+    }
     setMetallic(metallic: number): void {
 
-        this.m_params[0] = Math.min(Math.max(metallic, 0.05), 1.0);
+        this.m_params[0] = Math.min(Math.max(metallic, 0.001), 1.0);
     }
     setRoughness(roughness: number): void {
-
-        roughness = Math.min(Math.max(roughness, 0.05), 1.0);
-        this.m_params[1] = roughness;
+        this.m_params[1] = Math.min(Math.max(roughness, 0.005), 1.0);
     }
     setAO(ao: number): void {
 
@@ -492,33 +604,33 @@ export default class PBREnvLightingMaterial extends MaterialBase {
         this.m_lightPositions[i + 1] = py;
         this.m_lightPositions[i + 2] = pz;
     }
-    setColor(pr: number, pg: number, pb: number): void {
-
+    setAlbedoColor(pr: number, pg: number, pb: number): void {
         this.m_albedo[0] = pr;
         this.m_albedo[1] = pg;
         this.m_albedo[2] = pb;
     }
-    setColorAt(i: number, pr: number, pg: number, pb: number): void {
+    setLightColorAt(i: number, pr: number, pg: number, pb: number): void {
 
         i *= 4;
-        this.u_lightColors[i] = pr;
-        this.u_lightColors[i + 1] = pg;
-        this.u_lightColors[i + 2] = pb;
+        this.m_lightColors[i] = pr;
+        this.m_lightColors[i + 1] = pg;
+        this.m_lightColors[i + 2] = pb;
     }
     setCamPos(pos: Vector3D): void {
 
         this.m_camPos[0] = pos.x;
         this.m_camPos[1] = pos.y;
         this.m_camPos[2] = pos.z;
+        //console.log(pos);
     }
     createSelfUniformData(): ShaderUniformData {
 
         //  console.log("this.m_albedo: ",this.m_albedo);
-        console.log("this.m_params: ",this.m_params);
+        //console.log("this.m_params: ",this.m_params);
         //  console.log("this.m_camPos: ",this.m_camPos);
         let oum: ShaderUniformData = new ShaderUniformData();
         oum.uniformNameList = ["u_albedo", "u_params", "u_lightPositions", "u_lightColors", "u_camPos", "u_F0"];
-        oum.dataList = [this.m_albedo, this.m_params, this.m_lightPositions, this.u_lightColors, this.m_camPos,this.m_F0];
+        oum.dataList = [this.m_albedo, this.m_params, this.m_lightPositions, this.m_lightColors, this.m_camPos,this.m_F0];
         return oum;
     }
 }

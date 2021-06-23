@@ -324,11 +324,13 @@
 
 //  import {DemoAdsLight as Demo} from "./demo/DemoAdsLight";
 
+//  import {DemoTextureCubeUV as Demo} from "./pbr/DemoTextureCubeUV";
+
 //  import {DemoLighting as Demo} from "./pbr/DemoLighting";
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
-import {DemoLargeVtxPBR as Demo} from "./large/DemoLargeVtxPBR";
+import {DemoModulePBR as Demo} from "./pbr/DemoModulePBR";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

@@ -30,6 +30,7 @@ out vec4 FragColor;
 in vec2 TexCoords;
 in vec3 WorldPos;
 in vec3 Normal;
+in vec3 v_camPos;
 
 // material parameters
 uniform sampler2D u_sampler0;// albedoMap
@@ -42,7 +43,7 @@ uniform sampler2D u_sampler4;// aoMap
 uniform vec4 u_lightPositions[4];
 uniform vec4 u_lightColors[4];
 
-uniform vec3 u_camPos;
+//uniform vec3 u_camPos;
 
 const float PI = 3.14159265359;
 // ----------------------------------------------------------------------------
@@ -120,7 +121,7 @@ void main()
     float ao        = texture(u_sampler4, TexCoords).r;
 
     vec3 N = getNormalFromMap();
-    vec3 V = normalize(u_camPos - WorldPos);
+    vec3 V = normalize(v_camPos - WorldPos);
 
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
@@ -198,6 +199,7 @@ uniform mat4 u_projMat;
 out vec2 TexCoords;
 out vec3 WorldPos;
 out vec3 Normal;
+out vec3 v_camPos;
 
 void main(){
 
@@ -207,7 +209,8 @@ void main(){
 
     WorldPos = wPos.xyz;
     TexCoords = a_uvs;
-    Normal = normalize(a_nvs * inverse(mat3(u_objMat)));;
+    Normal = normalize(a_nvs * inverse(mat3(u_objMat)));
+    v_camPos = (inverse(u_viewMat) * vec4(0.0,0.0,0., 1.0)).xyz;
 }
 `;
         return vtxCode;
@@ -260,6 +263,12 @@ export default class PBRTexLightingMaterial extends MaterialBase {
         this.m_lightPositions[i] = px;
         this.m_lightPositions[i + 1] = py;
         this.m_lightPositions[i + 2] = pz;
+    }
+    setColor(pr: number, pg: number, pb: number): void {
+
+        this.m_albedo[0] = pr;
+        this.m_albedo[1] = pg;
+        this.m_albedo[2] = pb;
     }
     setColorAt(i: number, pr: number, pg: number, pb: number): void {
 
