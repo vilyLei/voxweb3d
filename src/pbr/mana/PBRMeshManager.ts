@@ -224,18 +224,16 @@ export default class PBRMeshManager {
 }
   private initMaterial(): void {
 
+    let rm: ColorPBRMaterial = this.makeTexMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
     /*
     let envMapUrl: string = "static/bytes/s.bin";
     //let loader:TextureLoader = new TextureLoader();
     let loader:SpecularTextureLoader = new SpecularTextureLoader();
     loader.loadTextureWithUrl(envMapUrl, this.rscene);
 
-    let rm: ColorPBRMaterial = this.makeTexMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);//new ColorPBRMaterial();
     rm.setTextureList([loader.texture]);
     //*/
-    //loadDDS()
-    
-    let rm: ColorPBRMaterial = this.makeTexMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);//new ColorPBRMaterial();
+    ///*
     rm.setTextureList([this.loadDDS()]);
     //*/
     /*
@@ -249,7 +247,6 @@ export default class PBRMeshManager {
     ];
     
     let cubeTex0:TextureProxy = this.texLoader.getCubeTexAndLoadImg("static/assets/cubeMap",urls);  
-    let rm: ColorPBRMaterial = this.makeTexMaterial(Math.random(), Math.random(), 0.2 + Math.random() * 0.9);//new ColorPBRMaterial();
     rm.setTextureList([cubeTex0]);
     //*/
   }

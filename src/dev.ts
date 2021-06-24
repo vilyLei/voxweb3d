@@ -301,8 +301,7 @@
 //  import * as DemoCameraSwing from "./demo/DemoCameraSwing";
 //  import Demo = DemoCameraSwing.demo.DemoCameraSwing;
 
-//  import * as DemoHdrCylindricalMap from "./demo/DemoHdrCylindricalMap";
-//  import Demo = DemoHdrCylindricalMap.demo.DemoHdrCylindricalMap;
+//  import {DemoHdrCylindricalMap as Demo} from "./demo/DemoHdrCylindricalMap";
 
 //  import {DemoRGBETex as Demo} from "./demo/DemoRGBETex";
 

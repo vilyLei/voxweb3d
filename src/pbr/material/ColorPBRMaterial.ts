@@ -412,7 +412,6 @@ void main()
     #endif
     albedo = mix(albedo, F0, metallic);
     
-    
     specularColor *= u_params[3].xyz;
 
     #ifdef VOX_ENV_MAP
@@ -420,6 +419,7 @@ void main()
 	    vec3 envDir = -getWorldEnvDir(0.0/*envLightRotateAngle*/, N, -V); // env map upside down
 	    envDir.x = -envDir.x;
         vec3 specularEnvColor3 = VOX_TextureCubeLod(u_sampler0, envDir, mipLv).xyz;
+        //specularEnvColor3 = reinhardToneMapping(specularEnvColor3,1.0);
         specularColor = fresnelSchlick3(specularColor, dotNV, 0.25 * reflectionIntensity) * specularEnvColor3;
     #endif
 

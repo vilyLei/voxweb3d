@@ -167,6 +167,7 @@ export class DemoModulePBR
             //  this.m_meshMana.material.setMetallic(1.0);
             //  this.m_meshMana.material.setRoughness(0.7);
             //this.m_meshMana.material.setAlbedoColor(2.0, 2.0, 2.0);
+            this.m_meshMana.material.setAmbientFactor(0.02, 0.02, 0.02);
             this.m_meshMana.material.setToneMapingExposure(2.0);
             this.m_meshMana.material.setReflectionIntensity(0.1);
             //this.m_meshMana.material.setColorScale(1.0,2.0);
