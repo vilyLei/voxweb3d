@@ -25,6 +25,7 @@ import BinaryLoader from "../vox/assets/BinaryLoader";
 import PBREnvLightingMaterial from "../pbr/material/PBREnvLightingMaterial";
 import PBRTexLightingMaterial from "./material/PBRTexLightingMaterial";
 import FloatCubeTextureProxy from "../vox/texture/FloatCubeTextureProxy";
+import { TextureConst } from "../vox/texture/TextureConst";
 
 class TextureLoader {
 
@@ -85,7 +86,9 @@ class SpecularTextureLoader extends TextureLoader {
         let tex: FloatCubeTextureProxy = this.texture;
         tex.toRGBFormat();
         tex.mipmapEnabled = false;
-        
+        tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
+        tex.magFilter = TextureConst.LINEAR;
+
         for (let j = 0; j < 9; j++) {
             for (let i = 0; i < 6; i++) {
                 const size = width * height * 3;

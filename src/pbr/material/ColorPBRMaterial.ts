@@ -23,6 +23,8 @@ class ColorPBRShaderBuffer extends ShaderCodeBuffer {
     scatterEnabled:boolean = true;
     specularBleedEnabled:boolean = true;
     metallicCorrection:boolean = true;
+    gammaCorrection:boolean = true;
+    absorbEnabled:boolean = false;
     initialize(texEnabled: boolean): void {
         //console.log("ColorPBRShaderBuffer::initialize()...");
         this.m_uniqueName = "ColorPBRShd";
@@ -54,6 +56,8 @@ class ColorPBRShaderBuffer extends ShaderCodeBuffer {
         if(this.scatterEnabled) fragCode += "\n#define VOX_SCATTER";
         if(this.specularBleedEnabled) fragCode += "\n#define VOX_SPECULAR_BLEED";
         if(this.metallicCorrection) fragCode += "\n#define VOX_METALLIC_CORRECTION";
+        if(this.gammaCorrection) fragCode += "\n#define VOX_GAMMA_CORRECTION";
+        if(this.absorbEnabled) fragCode += "\n#define VOX_ABSORB";
         
         fragCode +=
 `
@@ -229,20 +233,48 @@ vec3 reinhard_extended_luminance(vec3 v, float max_white_l)
     float l_new = numerator / (1.0 + l_old);
     return change_luminance(v, l_new);
 }
-vec3 ReinhardToneMapping( vec3 color, float toneMappingExposure ) {
+vec3 tonemapReinhard(vec3 color, float exposure) {
+  vec3 c = color * exposure;
+  return c / (1.0 + c);
+}
+vec3 reinhardToneMapping( vec3 color, float toneMappingExposure ) {
 
 	color *= toneMappingExposure;
 	return saturate( color / ( vec3( 1.0 ) + color ) );
 
 }
+//Convert color to linear space
 #define VOX_GAMMA 2.2
-vec3 gammaCorrectionInv(vec3 color) 
+vec3 gammaToLinear(vec3 color) 
 {
-	return pow(color, vec3(VOX_GAMMA));
+    #ifdef VOX_GAMMA_CORRECTION
+	    return pow(color, vec3(VOX_GAMMA));
+    #else
+        return color;
+    #endif
 }
-vec3 gammaCorrection(vec3 color) 
+vec3 linearToGamma(vec3 color) 
 { 
-	return pow(color, vec3(1.0 / VOX_GAMMA)); 
+    #ifdef VOX_GAMMA_CORRECTION
+	    return pow(color, vec3(1.0 / VOX_GAMMA)); 
+    #else
+        return color;
+    #endif
+}
+vec4 gammaToLinear(vec4 color) {
+    #ifdef VOX_GAMMA_CORRECTION
+        return vec4(pow(color.rgb, vec3(VOX_GAMMA)), color.a);
+    #else
+        return color;
+    #endif
+}
+
+vec4 linearToGamma(vec4 color) {
+    #ifdef VOX_GAMMA_CORRECTION
+        return vec4(pow(color.rgb, vec3(1.0 / VOX_GAMMA)), color.a);
+    #else
+        return color;
+    #endif
 }
 // expects values in the range of [0,1]x[0,1], returns values in the [0,1] range.
 // do not collapse into a single function per: http://byteblacksmith.com/improvements-to-the-canonical-one-liner-glsl-rand-for-opengl-es-2-0/
@@ -298,7 +330,23 @@ vec3 FD_Schlick(const in vec3 specularColor, const in float dotLH) {
 	float fresnel = exp2((-5.55473 * dotLH - 6.98316) * dotLH);
 	return (vec3(1.0) - specularColor) * fresnel + specularColor;
 }
+vec3 fixSeams(vec3 vec, float mipmapIndex, float cubeTexsize) {
+    float scale = 1.0 - exp2(mipmapIndex) / cubeTexsize;
+    float M = max(max(abs(vec.x), abs(vec.y)), abs(vec.z));
+    if (abs(vec.x) != M) vec.x *= scale;
+    if (abs(vec.y) != M) vec.y *= scale;
+    if (abs(vec.z) != M) vec.z *= scale;
+    return vec;
+}
 
+vec3 fixSeams(vec3 vec, float cubeTexsize ) {
+    float scale = 1.0 - 1.0 / cubeTexsize;
+    float M = max(max(abs(vec.x), abs(vec.y)), abs(vec.z));
+    if (abs(vec.x) != M) vec.x *= scale;
+    if (abs(vec.y) != M) vec.y *= scale;
+    if (abs(vec.z) != M) vec.z *= scale;
+    return vec;
+}
 #ifdef VOX_WOOL
 	float FD_Burley(float linearRoughness, float NoV, float NoL, float LoH)
 	{
@@ -336,11 +384,10 @@ void main()
     float roughness = u_params[0].y;
     float ao = u_params[0].z;
 
-    float colorGlossiness = u_params[1].x;//0.15;
-    float reflectionIntensity = u_params[1].y;//0.1;
+    float colorGlossiness = 1.0 - roughness;
+    float reflectionIntensity = u_params[1].y;
     float glossinessSquare = colorGlossiness * colorGlossiness;
-    float specularPower = exp2(16.0 * glossinessSquare + 1.0);
-
+    float specularPower = exp2(8.0 * glossinessSquare + 1.0);
 
     vec3 N = normalize(v_normal);
     vec3 V = normalize(v_camPos.xyz - v_worldPos);
@@ -348,46 +395,43 @@ void main()
     vec3 albedo = u_albedo.xyz;
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
-    vec3 F0 = vec3(0.04) + u_F0.xyz;
-    F0 = mix(F0, albedo.xyz, metallic);// * vec3(0.0,0.9,0.0);
+    vec3 F0 = u_F0.xyz + vec3(0.04);
+    F0 = mix(F0, albedo.xyz, metallic);
 
-    vec3 diffuseColor = albedo.xyz;//vec3(0.925);
-    vec3 specularColor = vec3(1.0);
+    vec3 diffuseColor = albedo.xyz;
+    albedo = gammaToLinear(albedo);
 
-    specularColor = gammaCorrectionInv(specularColor);
-    albedo = gammaCorrectionInv(albedo);
-
-    specularColor = vec3(mix(0.025 * reflectionIntensity, 0.078 * reflectionIntensity, colorGlossiness));
+    vec3 specularColor = vec3(mix(0.025 * reflectionIntensity, 0.078 * reflectionIntensity, colorGlossiness));
+    //specularColor = gammaToLinear(specularColor);
     #ifdef VOX_METALLIC_CORRECTION
         //if(metallic > 0.0){
-            vec3 specularColorMetal = mix(vec3(0.04), albedo, metallic);
-            float ratio = clamp(8.0 * metallic, 0.0, 1.0);
+            vec3 specularColorMetal = mix(F0, albedo, metallic);
+            float ratio = clamp(metallic, 0.0, 1.0);
             specularColor = mix(specularColor, specularColorMetal, ratio);
         //}
     #endif
-    albedo = mix(albedo, vec3(0.0), metallic);
+    albedo = mix(albedo, F0, metallic);
     
     
     specularColor *= u_params[3].xyz;
+
     #ifdef VOX_ENV_MAP
-        float mipLv = 8.0 - glossinessSquare * 8.0;
+        float mipLv = 7.0 - glossinessSquare * 7.0;
 	    vec3 envDir = -getWorldEnvDir(0.0/*envLightRotateAngle*/, N, -V); // env map upside down
 	    envDir.x = -envDir.x;
         vec3 specularEnvColor3 = VOX_TextureCubeLod(u_sampler0, envDir, mipLv).xyz;
-        specularEnvColor3 = fresnelSchlick3(specularColor, dotNV, 0.25 * reflectionIntensity) * specularEnvColor3;
-        mipLv = (1.0 - roughness);
-        mipLv = mipLv * mipLv;
-        mipLv *= mipLv;
-        specularColor = mix(specularColor, specularEnvColor3, mipLv);
+        specularColor = fresnelSchlick3(specularColor, dotNV, 0.25 * reflectionIntensity) * specularEnvColor3;
     #endif
 
     float frontColorScale = u_params[1].z;
     float sideColorScale = u_params[1].w;
 
     // reflectance equation
-    vec3 Lo = vec3(0.0);
-    vec3 scatterIntensity = u_params[2].www;
+    
     vec3 diffuse = albedo.xyz * RECIPROCAL_PI;
+    vec3 d_color = vec3(0.0);
+    vec3 s_color = vec3(0.0);
+    vec3 scatterIntensity = u_params[2].www;
     for(int i = 0; i < 4; ++i) 
     {
         // calculate per-light radiance
@@ -421,9 +465,9 @@ void main()
         kD *= vec3(1.0 - metallic);
 
         #ifdef VOX_WOOL
-            float fdBurley = FD_Burley(1.0 - colorGlossiness, dotNV, dotNL, dotLH);
+            float fdBurley = FD_Burley(roughness, dotNV, dotNL, dotLH);
         #else
-            float fdBurley = FD_Burley(1.0 - colorGlossiness, dotNV, dotNL, dotLH, frontColorScale, sideColorScale);
+            float fdBurley = FD_Burley(roughness, dotNV, dotNL, dotLH, frontColorScale, sideColorScale);
         #endif
         #ifdef VOX_SCATTER
             vec3 specularScatter = scatterIntensity * fresnelSchlick3(specularColor, dotLH, 1.0) * ((specularPower + 2.0) * 0.125) * pow(dotNH, specularPower);
@@ -434,16 +478,18 @@ void main()
         radiance *= dotNL;
 
         #ifdef VOX_SPECULAR_BLEED
-            vec3 d_color = fdBurley * radiance * kD * diffuse * specularScatter;
+            d_color += fdBurley * radiance * kD * specularScatter;
         #else
-            vec3 d_color = fdBurley * radiance * kD * diffuse;
+            d_color += fdBurley * radiance * kD;
         #endif
-        vec3 s_color = specular * radiance * specularScatter;
-        Lo += (d_color + s_color);  // note that we already multiplied the BRDF by the Fresnel (kS) so we won't multiply by kS again
-        
+        s_color += specular * radiance * specularScatter;        
     }
-    Lo += specularColor;
-
+    
+    #ifdef VOX_ABSORB
+        vec3 Lo = d_color * diffuse + (s_color + specularColor) * reflectionIntensity;
+    #else
+        vec3 Lo = d_color * diffuse + (s_color + specularColor);
+    #endif
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
     vec3 ambient = u_params[2].xyz * albedo.xyz * ao;
@@ -458,14 +504,15 @@ void main()
     //color = dithering(color);
     // HDR tonemapping
     #ifdef VOX_TONE_MAPPING
-        color = reinhard( color );
+        //color = reinhard( color );
+        color = tonemapReinhard( color, u_params[1].x );
+        //color = reinhard_extended( color, u_params[1].x );
+        //color = reinhard_extended_luminance( color, u_params[1].x );
+        //color = ACESToneMapping(color, u_params[1].x);
     #endif
-    //color = reinhard_extended( color, 3.0 );
-    //color = reinhard_extended_luminance( color, 5.0 );
-    //color = ACESToneMapping(color, 1.0);
 
     // gamma correct
-    color = gammaCorrection(color);
+    color = linearToGamma(color);
 
     FragColor = vec4(color, 1.0);
 }
@@ -514,6 +561,8 @@ void main(){
         if(this.scatterEnabled) ns += "_scatter";
         if(this.specularBleedEnabled) ns += "_specBleed";
         if(this.metallicCorrection) ns += "_metCorr";
+        if(this.gammaCorrection) ns += "_gammaCorr";
+        if(this.absorbEnabled) ns += "_absorb";
         return ns;
     }
     toString(): string {
@@ -538,6 +587,10 @@ export default class ColorPBRMaterial extends MaterialBase {
     specularBleedEnabled:boolean = true;
     // 是否开启 metalness 修正
     metallicCorrection:boolean = true;
+    // 是否开启 gamma矫正
+    gammaCorrection:boolean = true;
+    // 是否开启吸收光能的模式
+    absorbEnabled:boolean = true;
     
     getCodeBuf(): ShaderCodeBuffer {
         let buf: ColorPBRShaderBuffer = ColorPBRShaderBuffer.GetInstance();
@@ -547,13 +600,15 @@ export default class ColorPBRMaterial extends MaterialBase {
         buf.scatterEnabled = this.scatterEnabled;
         buf.specularBleedEnabled = this.specularBleedEnabled;
         buf.metallicCorrection = this.metallicCorrection;
+        buf.gammaCorrection = this.gammaCorrection;
+        buf.absorbEnabled = this.absorbEnabled;
         return buf;
     }
 
     private m_albedo: Float32Array = new Float32Array([0.0, 0.5, 0.0, 0.0]);
     private m_params: Float32Array = new Float32Array([
         0.0, 0.0, 1.0, 0.0,     // [metallic,roughness,ao, F0 offset]
-        0.1,                   // colorGlossiness
+        1.0,                   // tone map exposure
         0.1,                   // reflectionIntensity
         0.5,                   // frontColorScale
         0.5,                   // sideColorScale
@@ -571,13 +626,13 @@ export default class ColorPBRMaterial extends MaterialBase {
 
         this.m_params[11] = Math.min(Math.max(value, 0.01), 512.0);
     }
-    setColorGlossiness(value: number): void {
+    setToneMapingExposure(value: number): void {
 
-        this.m_params[4] = Math.min(Math.max(value, 0.001), 10.0);
+        this.m_params[4] = Math.min(Math.max(value, 0.1), 128.0);
     }
     setReflectionIntensity(value: number): void {
 
-        this.m_params[5] = Math.min(Math.max(value, 0.001), 10.0);
+        this.m_params[5] = Math.min(Math.max(value, 0.001), 1.0);
     }
     
     setColorScale(frontScale: number, sideScale: number): void {

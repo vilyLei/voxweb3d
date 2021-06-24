@@ -211,24 +211,25 @@ export class TextureProxy implements IRenderTexture
         // texture filter
         gl.texParameteri(this.m_sampler, gl.TEXTURE_MIN_FILTER, TextureConst.GetConst(gl,this.minFilter));
         gl.texParameteri(this.m_sampler, gl.TEXTURE_MAG_FILTER, TextureConst.GetConst(gl,this.magFilter));
-        if (this.mipmapEnabled && MathConst.IsPowerOf2(this.m_texWidth) && MathConst.IsPowerOf2(this.m_texHeight))
+        //  if (this.mipmapEnabled && MathConst.IsPowerOf2(this.m_texWidth) && MathConst.IsPowerOf2(this.m_texHeight))
+        //  {
+        //      if(this.m_texTarget == TextureTarget.TEXTURE_3D)
+        //      {
+        //          gl.texParameteri(this.m_sampler, gl.TEXTURE_WRAP_R, TextureConst.GetConst(gl,this.wrap_r));
+        //      }
+        //      //gl.DONT_CARE
+        //      //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.NICEST);
+        //      //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.FASTEST);
+        //  }
+        if(this.m_texTarget == TextureTarget.TEXTURE_3D)
         {
-            if(this.m_texTarget == TextureTarget.TEXTURE_3D)
-            {
-                gl.texParameteri(this.m_sampler, gl.TEXTURE_WRAP_R, TextureConst.GetConst(gl,this.wrap_r));
-            }
-            //gl.DONT_CARE
-            //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.NICEST);
-            //gl.hint(gl.GENERATE_MIPMAP_HINT, gl.FASTEST);
+            gl.texParameteri(this.m_sampler, gl.TEXTURE_WRAP_R, TextureConst.GetConst(gl,this.wrap_r));
+            gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_BASE_LEVEL, 0);
+            gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAX_LEVEL, Math.log2(this.m_texWidth));
         }
         if(this.mipmapEnabled && this.m_generateMipmap)
         {
             gl.generateMipmap(this.m_sampler);
-        }
-        if(this.m_texTarget == TextureTarget.TEXTURE_3D)
-        {
-            gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_BASE_LEVEL, 0);
-            gl.texParameteri(gl.TEXTURE_3D, gl.TEXTURE_MAX_LEVEL, Math.log2(this.m_texWidth));
         }
     }
     // sub class override

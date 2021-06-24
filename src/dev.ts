@@ -79,9 +79,6 @@
 //  import * as DemoGeom from "./demo/DemoGeom";
 //  import Demo = DemoGeom.demo.DemoGeom;
 
-//  import * as DemoCubeMap from "./demo/DemoCubeMap";
-//  import Demo = DemoCubeMap.demo.DemoCubeMap;
-
 //  import * as DemoPreDepth from "./demo/DemoPreDepth";
 //  import Demo = DemoPreDepth.demo.DemoPreDepth;
 
@@ -318,6 +315,7 @@
 //  import * as DemoObj3DModule from "./demo/DemoObj3DModule";
 //  import Demo = DemoObj3DModule.demo.DemoObj3DModule;
 
+//  import {DemoCubeMap as Demo} from "./demo/DemoCubeMap";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

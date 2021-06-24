@@ -24,6 +24,7 @@ class FloatCubeTextureProxy extends TextureProxy {
         this.internalFormat = TextureFormat.RGB16F;
         this.minFilter = TextureConst.NEAREST;
         this.magFilter = TextureConst.NEAREST;
+        this.mipmapEnabled = false;
     }
     toRGBFormatFloat32F(): void {
         this.unpackAlignment = 1;
@@ -31,6 +32,17 @@ class FloatCubeTextureProxy extends TextureProxy {
         this.internalFormat = TextureFormat.RGB32F;
         this.minFilter = TextureConst.NEAREST;
         this.magFilter = TextureConst.NEAREST;
+        this.mipmapEnabled = false;
+    }
+    toRGBAFormat(): void {
+        this.unpackAlignment = 4;
+        this.srcFormat = TextureFormat.RGBA;
+        this.internalFormat = TextureFormat.RGBA;
+    }
+    toRGBAFormatFloat32F(): void {
+        this.unpackAlignment = 4;
+        this.srcFormat = TextureFormat.RGBA;
+        this.internalFormat = TextureFormat.RGBA32F;
     }
     setDataFromBytesToFaceAt(index: number, bytes: Float32Array, pw: number, ph: number, miplevel: number = 0) {
         if (this.m_imgDataList == null) {
@@ -69,17 +81,18 @@ class FloatCubeTextureProxy extends TextureProxy {
                 pw = width;
                 ph = height;
                 let j: number = 0;
-                for (; (pw > 1 || ph > 1);) {
+                for (; (pw > 0 || ph > 0);) {
                     if (arr[j] != null) {
                         imo = arr[j];
                         gl.texImage2D(gl.TEXTURE_CUBE_MAP_POSITIVE_X + i, j, TextureFormat.ToGL(gl, this.internalFormat), pw, ph, 0, TextureFormat.ToGL(gl, this.srcFormat), TextureDataType.ToGL(gl, this.dataType), imo.imgData);
                     }
-                    if (pw > 1) pw >>= 1;
-                    if (ph > 1) ph >>= 1;
+                    if (pw > 0) pw >>= 1;
+                    if (ph > 0) ph >>= 1;
                     ++j;
                 }
             }
         }
+        this.version = 0;
     }
     toString(): string {
         return "[FloatCubeTextureProxy(name:" + this.name + ",uid=" + this.getUid() + ",width=" + this.getWidth() + ",height=" + this.getHeight() + ")]";

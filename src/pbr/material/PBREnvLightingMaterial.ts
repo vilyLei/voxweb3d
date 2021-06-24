@@ -303,7 +303,7 @@ void main()
     float roughness = u_params.y;
     float ao = u_params.z;
 
-    float matGlossiness = roughness;//0.15;
+    float matGlossiness = 1.0 - roughness;//0.15;
     float matReflectionIntensity = 0.5;
     float glossinessSquare = matGlossiness * matGlossiness;
 

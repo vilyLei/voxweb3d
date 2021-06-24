@@ -111,11 +111,11 @@ void main(){
         }
         else
         {
-            selfT.OES_standard_derivatives = gl.getExtension('OES_standard_derivatives');
-            if(selfT.OES_standard_derivatives != null)
-            console.log("Use OES_standard_derivatives Extension success!");
-            else
-            console.log("OES_standard_derivatives Extension can not support!");
+            //  selfT.OES_standard_derivatives = gl.getExtension('OES_standard_derivatives');
+            //  if(selfT.OES_standard_derivatives != null)
+            //  console.log("Use OES_standard_derivatives Extension success!");
+            //  else
+            //  console.log("OES_standard_derivatives Extension can not support!");
 
             selfT.EXT_shader_texture_lod = gl.getExtension('EXT_shader_texture_lod');
             if(selfT.EXT_shader_texture_lod != null)
@@ -134,6 +134,7 @@ void main(){
             console.log("Use OES_texture_half_float_linear Extension success!");
             else
             console.log("OES_texture_half_float_linear Extension can not support!");
+
             selfT.EXT_color_buffer_float = gl.getExtension('EXT_color_buffer_float');
             if(selfT.EXT_color_buffer_float != null)
             console.log("Use EXT_color_buffer_float Extension success!");
@@ -141,7 +142,7 @@ void main(){
             console.log("EXT_color_buffer_float Extension can not support!");
         }
         
-        //selfT.OES_texture_float_linear = gl.getExtension('OES_texture_float_linear');
+        selfT.OES_texture_float_linear = gl.getExtension('OES_texture_float_linear');
         if(selfT.OES_texture_float_linear != null)
         console.log("Use OES_texture_float_linear Extension success!");
         else

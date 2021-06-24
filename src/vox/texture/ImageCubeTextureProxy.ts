@@ -16,6 +16,10 @@ class ImageCubeTextureProxy extends TextureProxy
         super(texWidth,texHeight,false);
         this.m_texTarget = TextureTarget.TEXTURE_CUBE;
         this.m_type = TextureProxyType.ImageCube;
+        this.internalFormat = TextureFormat.RGBA;
+        this.srcFormat = TextureFormat.RGBA;
+        this.dataType = TextureDataType.UNSIGNED_BYTE;
+        this.mipmapEnabled = true;
     }
     
     setDataFromImageToFaceAt(index:number,img:any, miplevel:number = 0)
@@ -34,16 +38,8 @@ class ImageCubeTextureProxy extends TextureProxy
                     this.m_texHeight = img.height;
                     this.m_miplevel = miplevel;
                 }
-                this.m_imgDataList[index] = {imgData:img,miplevel:miplevel};
-                let k:number = 5;
-                for(; k >= 0; --k)
-                {
-                    if(this.m_imgDataList[k] == null)
-                    {
-                        break;
-                    }
-                }
-                this.m_haveRData = k<0;
+                this.m_imgDataList[index] = {imgData:img,miplevel:miplevel};                
+                this.m_haveRData = this.m_imgDataList[index] != null;
             }
         }
     }

@@ -27,15 +27,52 @@ class CubeMapShaderBuffer extends ShaderCodeBuffer
         let fragCode:string = 
 `#version 300 es
 precision mediump float;
+
+#define VOX_GAMMA 2.2
+#define VOX_GAMMA_CORRECTION
+vec3 gammaToLinear(vec3 color) 
+{
+    #ifdef VOX_GAMMA_CORRECTION
+	    return pow(color, vec3(VOX_GAMMA));
+    #else
+        return color;
+    #endif
+}
+vec3 linearToGamma(vec3 color) 
+{ 
+    #ifdef VOX_GAMMA_CORRECTION
+	    return pow(color, vec3(1.0 / VOX_GAMMA)); 
+    #else
+        return color;
+    #endif
+}
+vec4 gammaToLinear(vec4 color) {
+    #ifdef VOX_GAMMA_CORRECTION
+        return vec4(pow(color.rgb, vec3(VOX_GAMMA)), color.a);
+    #else
+        return color;
+    #endif
+}
+
+vec4 linearToGamma(vec4 color) {
+    #ifdef VOX_GAMMA_CORRECTION
+        return vec4(pow(color.rgb, vec3(1.0 / VOX_GAMMA)), color.a);
+    #else
+        return color;
+    #endif
+}
+
 uniform samplerCube u_sampler0;
 uniform vec4 u_color;
 in vec3 v_nvs;
 layout(location = 0) out vec4 FragColor;
 void main()
 {
-vec3 color3 = texture(u_sampler0, v_nvs).xyz;
-color3 = u_color.xyz;
-FragColor = vec4(color3 * 0.6, 1.0) + 0.4 * vec4(abs(v_nvs),1.0);
+    vec3 color3 = texture(u_sampler0, v_nvs).xyz;
+    //vec3 color3 = gammaToLinear(texture(u_sampler0, v_nvs).xyz);
+    //vec3 color3 = linearToGamma(texture(u_sampler0, v_nvs).xyz);
+    //vec3 color3 = textureLod(u_sampler0, v_nvs, 2.0).xyz;
+    FragColor = vec4(color3, 1.0);// + 0.2 * vec4(abs(v_nvs) * u_color.xyz,1.0);
 }
 `;
         return fragCode;

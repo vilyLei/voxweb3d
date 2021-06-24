@@ -2,7 +2,6 @@
 import Vector3D from "../vox/math/Vector3D";
 import MouseEvent from "../vox/event/MouseEvent";
 import RendererDeviece from "../vox/render/RendererDeviece";
-import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
@@ -13,9 +12,12 @@ import TextureProxy from "../vox/texture/TextureProxy";
 import {TextureConst} from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
+
+import RendererParam from "../vox/scene/RendererParam";
 import RendererScene from "../vox/scene/RendererScene";
+
 import DecodeQueue from "../large/parse/DecodeQueue";
-import PBRMeshManager from "../large/mana/PBRMeshManager";
+import PBRMeshManager from "../pbr/mana/PBRMeshManager";
 
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
@@ -92,6 +94,9 @@ export class DemoModulePBR
             this.m_meshMana.rscene = this.m_rscene;
             this.m_meshMana.texLoader = this.m_texLoader;
             this.m_meshMana.initialize();
+            
+
+            this.m_rscene.setClearRGBColor3f(0.7,0.7,0.7);
             //this.m_meshMana.loadMeshFile("static/modules/box01.md");
             /*
             this.m_meshMana.moduleScale = 1.0;
@@ -131,6 +136,7 @@ export class DemoModulePBR
             this.m_meshMana.material.envMapEnabled = true;
             this.m_meshMana.material.specularBleedEnabled = true;
             this.m_meshMana.material.metallicCorrection = true;
+            this.m_meshMana.material.absorbEnabled = false;
             /*
             let value: number = 0.2;
             this.m_meshMana.material.setColorScale(1.0,1.0);
@@ -160,15 +166,17 @@ export class DemoModulePBR
             //*/
             //  this.m_meshMana.material.setMetallic(1.0);
             //  this.m_meshMana.material.setRoughness(0.7);
+            //this.m_meshMana.material.setAlbedoColor(2.0, 2.0, 2.0);
+            this.m_meshMana.material.setToneMapingExposure(2.0);
+            this.m_meshMana.material.setReflectionIntensity(0.1);
+            //this.m_meshMana.material.setColorScale(1.0,2.0);
 
-
-            this.m_rscene.setClearRGBColor3f(0.7,0.7,0.7);
         }
     }
     private mouseDown(evt: any): void {
-        let k:number = (evt.mouseX - 50.0)/300.0;
+        let k:number = (evt.mouseX - 50.0)/400.0;
         this.m_meshManas[0].material.setRoughness( k );
-        k = (evt.mouseY - 50.0)/300.0;
+        k = (evt.mouseY - 50.0)/400.0;
         this.m_meshManas[0].material.setMetallic( k );
     }
     private update():void {

@@ -139,6 +139,12 @@ export default class RendererScene implements IRenderer {
     getStage3D(): IRenderStage3D {
         return this.m_renderProxy.getStage3D();
     }
+    getViewWidth(): number {
+        return this.m_renderProxy.getStage3D().viewWidth;
+    }
+    getViewHeight(): number {
+        return this.m_renderProxy.getStage3D().viewHeight;
+    }
     getCamera(): CameraBase {
         return this.m_renderProxy.getCamera();
     }
