@@ -40,9 +40,13 @@ class MathConst {
     static DegreeToRadian(degree: number): number {
         return MathConst.MATH_PI_OVER_180 * degree;
     }
-    static Log2(x:number): number {        
-        return Math.log(x) / Math.LN2;
-      }
+    static Log2(f: number): number {
+        return Math.log(f) / Math.LN2;
+    }
+    static GetMaxMipMapLevel(width: number, height: number): number {
+        return  Math.round(MathConst.Log2(Math.max(width, height)) + 1);
+    }
+
     static SafeACos(x: number): number {
         if (x <= -1.0) {
             return MathConst.MATH_PI;

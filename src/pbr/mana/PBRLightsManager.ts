@@ -7,15 +7,13 @@ import DRACODecoder from "../../large/parse/DRACODecoder";
 import DecodeQueue from "../../large/parse/DecodeQueue";
 import RcodMesh from "../../large/mesh/RcodMesh";
 
-import ColorPBRMaterial from "../../pbr/material/ColorPBRMaterial";
+import ColorLightsPBRMaterial from "../../pbr/material/ColorLightsPBRMaterial";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import RendererScene from "../../vox/scene/RendererScene";
 import TextureProxy from "../../vox/texture/TextureProxy";
 
 import { TextureConst } from "../../vox/texture/TextureConst";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
-import RendererState from "../../vox/render/RendererState";
-import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 import FloatCubeTextureProxy from "../../vox/texture/FloatCubeTextureProxy";
 
 import BinaryLoader from "../../vox/assets/BinaryLoader";
@@ -98,7 +96,7 @@ class SpecularTextureLoader extends TextureLoader {
   }
 }
 
-export default class PBRMeshManager {
+export default class PBRLightsManager {
   decoder: DRACODecoder = null;
   rscene: RendererScene = null;
   texLoader: ImageTextureLoader = null;
@@ -110,7 +108,7 @@ export default class PBRMeshManager {
   offsetPos: Vector3D = new Vector3D();
   initialize(): void {
     if (this.decoder == null) {
-      this.uid = PBRMeshManager.s_uid++;
+      this.uid = PBRLightsManager.s_uid++;
       let durl: string = "./static/modules/decode/";
       this.decoder = new DRACODecoder(durl);
     }
@@ -137,38 +135,72 @@ export default class PBRMeshManager {
   moduleScale: number = 1.0;
   lightBaseDis: number = 700.0;
   lightPosList:Vector3D[] = null;
-  material:ColorPBRMaterial = null;
-  private makeTexMaterial(metallic: number, roughness: number, ao: number): ColorPBRMaterial
+  material:ColorLightsPBRMaterial = null;
+
+  private setPointLightParam(lightsTotal: number, material:ColorLightsPBRMaterial, colorSize:number = 10.0): void {
+
+    let posList:Vector3D[] = new Array(lightsTotal);
+    for (let i: number = 0; i < lightsTotal; ++i)
+    {
+      let pv:Vector3D = posList[i] = new Vector3D();
+      pv.setXYZ(Math.random() - 0.5,0.0,Math.random() - 0.5);
+      pv.normalize();
+      pv.scaleBy(this.lightBaseDis + Math.random() * 100.0);
+      pv.y = (Math.random() - 0.5) * (this.lightBaseDis * 2.0);
+    }
+    this.lightPosList = posList;
+    let colorList:Color4[] = new Array(lightsTotal);
+    for (let i: number = 0; i < lightsTotal; ++i)
+    {
+      colorList[i] = new Color4();
+      colorList[i].normalizeRandom(colorSize);
+    }
+
+    
+    for (let i: number = 0; i < lightsTotal; ++i)
+    {
+        let pos: Vector3D = posList[i];
+        material.setPointLightPosAt(i, pos.x, pos.y, pos.z);
+        let color: Color4 = colorList[i];
+        material.setPointLightColorAt(i, color.r, color.g, color.b);
+    }
+  }
+  private setParallelLightParam(lightsTotal: number, material:ColorLightsPBRMaterial, colorSize:number = 10.0): void {
+
+    let posList:Vector3D[] = new Array(lightsTotal);
+    for (let i: number = 0; i < lightsTotal; ++i)
+    {
+      let pv:Vector3D = posList[i] = new Vector3D();
+      pv.setXYZ(Math.random() - 0.5,0.0,Math.random() - 0.5);
+      pv.normalize();
+      pv.scaleBy(this.lightBaseDis + Math.random() * 100.0);
+      pv.y = (Math.random() - 0.5) * (this.lightBaseDis * 2.0);
+    }
+    this.lightPosList = posList;
+    
+    let colorList:Color4[] = new Array(lightsTotal);
+    for (let i: number = 0; i < lightsTotal; ++i)
+    {
+      colorList[i] = new Color4();
+      colorList[i].normalizeRandom(colorSize);
+    }
+
+    
+    for (let i: number = 0; i < lightsTotal; ++i)
+    {
+        let pos: Vector3D = posList[i];
+        pos.normalize();
+        material.setParallelLightDirecAt(i, pos.x, pos.y, pos.z);
+        let color: Color4 = colorList[i];
+        material.setParallelLightColorAt(i, color.r, color.g, color.b);
+    }
+  }
+  private makeTexMaterial(metallic: number, roughness: number, ao: number): ColorLightsPBRMaterial
   {
-      let dis: number = 700.0;
-      let disZ: number = 400.0;
-      let posList:Vector3D[] = [
-          new Vector3D(-dis,  dis, disZ),
-          new Vector3D( dis,  dis, disZ),
-          new Vector3D(-dis, -dis, disZ),
-          new Vector3D( dis, -dis, disZ)
-      ];
-      for (let i: number = 0; i < 4; ++i)
-      {
-        let pv:Vector3D = posList[i];
-        pv.setXYZ(Math.random() - 0.5,0.0,Math.random() - 0.5);
-        pv.normalize();
-        pv.scaleBy(this.lightBaseDis + Math.random() * 100.0);
-        pv.y = (Math.random() - 0.5) * (this.lightBaseDis * 2.0);
-      }
-      this.lightPosList = posList;
-      let colorSize:number = 10.0;
-      let colorList:Color4[] = [
-          new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-          new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-          new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize),
-          new Color4(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize)
-      ];
-      for (let i: number = 0; i < 4; ++i)
-      {
-        colorList[i].normalizeRandom(colorSize);
-      }
-      let material:ColorPBRMaterial = new ColorPBRMaterial();
+      let pointLightsTotal: number = 4;
+      let parallelLightsTotal: number = 2;
+
+      let material:ColorLightsPBRMaterial = new ColorLightsPBRMaterial(pointLightsTotal, parallelLightsTotal);
       material.setMetallic( metallic );
       material.setRoughness( roughness );
       material.setAO( ao );
@@ -177,16 +209,12 @@ export default class PBRMeshManager {
       console.log("roughness: ",roughness);
       console.log("ao: ",ao);
 
+      this.setPointLightParam(pointLightsTotal, material, 5.0);
+      this.setParallelLightParam(parallelLightsTotal, material, 1.0);
+
       this.material = material;
 
-      for (let i: number = 0; i < 4; ++i)
-      {
-          let pos: Vector3D = posList[i];
-          material.setPosAt(i, pos.x, pos.y, pos.z);
-          let color: Color4 = colorList[i];
-          material.setLightColorAt(i, color.r, color.g, color.b);
-      }
-      colorSize = 2.0;
+      let colorSize: number = 2.0;
       material.setAlbedoColor(Math.random() * colorSize,Math.random() * colorSize,Math.random() * colorSize);
       colorSize = 0.8;
       material.setF0(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize);
@@ -212,6 +240,7 @@ export default class PBRMeshManager {
     floatCubeTex.mipmapEnabled = false;
     floatCubeTex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
     floatCubeTex.magFilter = TextureConst.LINEAR;
+    
 
     let ddsUrl: string = "static/bytes/forestReflection.dds";
     let loader: DDSLoader = new DDSLoader();
@@ -222,8 +251,8 @@ export default class PBRMeshManager {
 }
   private initMaterial(): void {
 
-    let rm: ColorPBRMaterial = this.makeTexMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
-    ///*
+    let rm: ColorLightsPBRMaterial = this.makeTexMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
+    /*
     let envMapUrl: string = "static/bytes/s.bin";
     //let loader:TextureLoader = new TextureLoader();
     let loader:SpecularTextureLoader = new SpecularTextureLoader();
@@ -231,7 +260,7 @@ export default class PBRMeshManager {
 
     rm.setTextureList([loader.texture]);
     //*/
-    /*
+    ///*
     rm.setTextureList([this.loadDDS()]);
     //*/
     /*
@@ -268,7 +297,7 @@ export default class PBRMeshManager {
         //    rm.initializeByCodeBuf(true);
         //    rm.setTextureList([tex1]);
 
-        let rm: ColorPBRMaterial = this.material;
+        let rm: ColorLightsPBRMaterial = this.material;
         rm.initializeByCodeBuf(true);
         //rm = pl.getMaterial();
         let entity: DisplayEntity = new DisplayEntity();
@@ -323,7 +352,7 @@ export default class PBRMeshManager {
 
         //console.log("segments.length: " + segments.length);
         let v: Uint8Array = new Uint8Array(buffer);
-        PBRMeshManager.p(v, segments);
+        PBRLightsManager.p(v, segments);
 
         let node: LoaderNode = new LoaderNode();
         node.uid = this.uid;

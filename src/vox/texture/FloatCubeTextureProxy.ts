@@ -37,12 +37,18 @@ class FloatCubeTextureProxy extends TextureProxy {
     toRGBAFormat(): void {
         this.unpackAlignment = 4;
         this.srcFormat = TextureFormat.RGBA;
-        this.internalFormat = TextureFormat.RGBA;
+        this.internalFormat = TextureFormat.RGBA16F;
     }
     toRGBAFormatFloat32F(): void {
         this.unpackAlignment = 4;
         this.srcFormat = TextureFormat.RGBA;
         this.internalFormat = TextureFormat.RGBA32F;
+    }
+    toRGBAFormatHalfFloat(): void {
+        this.unpackAlignment = 1;
+        this.srcFormat = TextureFormat.RGBA;
+        this.dataType = TextureDataType.HALF_FLOAT;
+        this.internalFormat = TextureFormat.RGBA16F;
     }
     setDataFromBytesToFaceAt(index: number, bytes: Float32Array, pw: number, ph: number, miplevel: number = 0) {
         if (this.m_imgDataList == null) {

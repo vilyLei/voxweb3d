@@ -327,7 +327,9 @@
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
-import {DemoModulePBR as Demo} from "./pbr/DemoModulePBR";
+//  import {DemoModulePBR as Demo} from "./pbr/DemoModulePBR";
+
+import {DemoLightsPBR as Demo} from "./pbr/DemoLightsPBR";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

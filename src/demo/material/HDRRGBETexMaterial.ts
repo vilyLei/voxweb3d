@@ -32,8 +32,8 @@ uniform vec4 u_param;
 
 vec3 reinhard_extended(vec3 v, float max_white)
 {
-    vec3 numerator = v * (vec3(1.0f) + (v / vec3(max_white * max_white)));
-    return numerator / (vec3(1.0f) + v);
+    vec3 numerator = v * (vec3(1.0) + (v / vec3(max_white * max_white)));
+    return numerator / (vec3(1.0) + v);
 }
 vec3 ReinhardToneMapping( vec3 color ){
     float toneMappingExposure = u_param.x;
@@ -41,8 +41,8 @@ vec3 ReinhardToneMapping( vec3 color ){
 	return saturate( color /( vec3( 1.0 ) + color ) );
     
     //  float max_white = 0.2;
-    //  vec3 numerator = color * (vec3(1.0f) + (color / vec3(max_white * max_white)));
-    //  return numerator / (vec3(1.0f) + color);
+    //  vec3 numerator = color * (vec3(1.0) + (color / vec3(max_white * max_white)));
+    //  return numerator / (vec3(1.0) + color);
 }
 vec3 toneMapping( vec3 color ){ return ReinhardToneMapping( color ); }
 

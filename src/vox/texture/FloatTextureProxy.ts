@@ -46,7 +46,7 @@ class FloatTextureProxy extends RawDataTextureProxy
         this.internalFormat = TextureFormat.RGBA;
         this.unpackAlignment = 4;
     }
-    uploadFromBytes(bytes:Float32Array, miplevel:number = 0,imgWidth:number = -1,imgHeight:number = -1,offsetx:number = 0,offsety:number = 0,rebuild:boolean = false):void
+    setDataFromBytes(bytes:Float32Array, miplevel:number = 0,imgWidth:number = -1,imgHeight:number = -1,offsetx:number = 0,offsety:number = 0,rebuild:boolean = false):void
     {
         super.setDataFromBytes(bytes, miplevel, imgWidth, imgHeight, offsetx, offsety, rebuild);
     }

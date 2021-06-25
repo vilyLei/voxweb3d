@@ -48,8 +48,8 @@ export namespace demo {
             let posTex: FloatTextureProxy = this.m_rscene.textureBlock.createFloatTex2D(texSize, texSize);
             posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
             posTex.mipmapEnabled = true;
-            //posTex.minFilter = TextureConst.NEAREST;
-            //posTex.magFilter = TextureConst.NEAREST;
+            posTex.minFilter = TextureConst.NEAREST;
+            posTex.magFilter = TextureConst.NEAREST;
             //posTex.
             let fs: Float32Array = new Float32Array(texSize * texSize * 4);
             fs.fill(1.0);

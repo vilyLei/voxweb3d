@@ -10,12 +10,13 @@ import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
 import Vector3D from "../../vox/math/Vector3D";
+import MathConst from "../../vox/math/MathConst";
 
-class ColorPBRShaderBuffer extends ShaderCodeBuffer {
+class ColorLightsPBRShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: ColorPBRShaderBuffer = new ColorPBRShaderBuffer();
+    private static ___s_instance: ColorLightsPBRShaderBuffer = new ColorLightsPBRShaderBuffer();
     private m_uniqueName: string = "";
     woolEnabled:boolean = true;
     toneMappingEnabled:boolean = true;
@@ -25,14 +26,18 @@ class ColorPBRShaderBuffer extends ShaderCodeBuffer {
     metallicCorrection:boolean = true;
     gammaCorrection:boolean = true;
     absorbEnabled:boolean = false;
+    
+    pointLightsTotal: number = 4;
+    parallelLightsTotal: number = 0;
     initialize(texEnabled: boolean): void {
-        //console.log("ColorPBRShaderBuffer::initialize()...");
-        this.m_uniqueName = "ColorPBRShd";
+        //console.log("ColorLightsPBRShaderBuffer::initialize()...");
+        this.m_uniqueName = "ColorLightsPBRShd";
     }
     getFragShaderCode(): string {
 
         let fragCode: string =
 `#version 300 es
+precision highp float;
 `;
         if(RendererDeviece.IsWebGL1()) {
 
@@ -58,16 +63,25 @@ class ColorPBRShaderBuffer extends ShaderCodeBuffer {
         if(this.metallicCorrection) fragCode += "\n#define VOX_METALLIC_CORRECTION";
         if(this.gammaCorrection) fragCode += "\n#define VOX_GAMMA_CORRECTION";
         if(this.absorbEnabled) fragCode += "\n#define VOX_ABSORB";
-        
+
+        let lightsTotal: number = this.pointLightsTotal + this.parallelLightsTotal;
+        if(this.pointLightsTotal > 0) fragCode += "\n#define VOX_POINT_LIGHTS_TOTAL " + this.pointLightsTotal;
+        else fragCode += "\n#define VOX_POINT_LIGHTS_TOTAL 0";
+        if(this.parallelLightsTotal > 0) fragCode += "\n#define VOX_PARALLEL_LIGHTS_TOTAL " + this.parallelLightsTotal;
+        else fragCode += "\n#define VOX_PARALLEL_LIGHTS_TOTAL 0";
+        if(lightsTotal > 0) fragCode += "\n#define VOX_LIGHTS_TOTAL " + lightsTotal;
+        else fragCode += "\n#define VOX_LIGHTS_TOTAL 0";
+
+        fragCode += "\n";
+
         fragCode +=
 `
-precision highp float;
-//uniform sampler2D u_sampler0;
 uniform samplerCube u_sampler0;
 
 uniform mat4 u_viewMat;
 
 out vec4 FragColor;
+
 in vec2 v_texUV;
 in vec3 v_worldPos;
 in vec3 v_normal;
@@ -75,12 +89,14 @@ in vec3 v_camPos;
 
 // material parameters
 uniform vec4 u_albedo;
-uniform vec4 u_params[4]; //[metallic,roughness,ao, F0 offset]
-uniform vec4 u_F0; //[metallic,roughness,ao, F0 offset]
+uniform vec4 u_params[4];
+uniform vec4 u_F0;
 
-// lights
-uniform vec4 u_lightPositions[4];
-uniform vec4 u_lightColors[4];
+// point and parallel lights
+#if VOX_LIGHTS_TOTAL > 0
+    uniform vec4 u_lightPositions[VOX_LIGHTS_TOTAL];
+    uniform vec4 u_lightColors[VOX_LIGHTS_TOTAL];
+#endif
 
 //uniform vec4 u_camPos;
 
@@ -125,14 +141,14 @@ float DistributionGTR1(float NdotH, float roughness)
     float t = 1.0 + (a2 - 1.0)*NdotH*NdotH;
     return (a2 - 1.0) / (PI * log(a2) *t);
 }
-float DistributionGTR2(float NdotH, float roughness)
+float distributionGTR2(float NdotH, float roughness)
 {
     float a2 = roughness * roughness;
     float t = 1.0 + (a2 - 1.0) * NdotH * NdotH;
     return a2 / (PI * t * t);
 }
 
-float DistributionGGX(vec3 N, vec3 H, float roughness)
+float distributionGGX(vec3 N, vec3 H, float roughness)
 {
     float a = roughness*roughness;
     float a2 = a*a;
@@ -147,12 +163,12 @@ float DistributionGGX(vec3 N, vec3 H, float roughness)
 }
 
 
-float GeometryImplicit(float NdotV, float dotNL) {
+float geometryImplicit(float NdotV, float dotNL) {
     return dotNL * NdotV;
 }
 
 // ----------------------------------------------------------------------------
-float GeometrySchlickGGX(float NdotV, float roughness)
+float geometrySchlickGGX(float NdotV, float roughness)
 {
     float r = (roughness + 1.0);
     float k = (r*r) / 8.0;
@@ -163,12 +179,12 @@ float GeometrySchlickGGX(float NdotV, float roughness)
     return nom / denom;
 }
 // ----------------------------------------------------------------------------
-float GeometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
+float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 {
     float NdotV = max(dot(N, V), 0.0);
     float dotNL = max(dot(N, L), 0.0); 
-    float ggx2 = GeometrySchlickGGX(NdotV, roughness);
-    float ggx1 = GeometrySchlickGGX(dotNL, roughness);
+    float ggx2 = geometrySchlickGGX(NdotV, roughness);
+    float ggx1 = geometrySchlickGGX(dotNL, roughness);
 
     return ggx1 * ggx2;
 }
@@ -194,7 +210,7 @@ vec3 fresnelSchlickWithRoughness(vec3 specularColor, vec3 L, vec3 N, float gloss
 {
    return specularColor + (max(vec3(gloss), specularColor) - specularColor) * pow(1.0 - saturate(dot(L, N)), 5.0);
 }
-vec3 ACESToneMapping(vec3 color, float adapted_lum)
+vec3 acesToneMapping(vec3 color, float adapted_lum)
 {
 	const float A = 2.51;
 	const float B = 0.03;
@@ -362,8 +378,8 @@ vec3 fixSeams(vec3 vec, float cubeTexsize ) {
 		float x3 = x2 * invNoV;
 		float x4 = x3 * invNoV;
 		float x5 = x4 * invNoV;
-		float y = clamp(-10.15 * x5 + 20.189 * x4 - 12.811 * x3 + 4.0585 * x2 - 0.2931 * invNoV, 0.0, 1.0);
-		float sideFactorIntensity = mix(frontScale, sideScale, y);
+		float k = clamp(-10.15 * x5 + 20.189 * x4 - 12.811 * x3 + 4.0585 * x2 - 0.2931 * invNoV, 0.0, 1.0);
+		float sideFactorIntensity = mix(frontScale, sideScale, k);
 		return sideFactorIntensity;
 	}
 #else
@@ -375,6 +391,69 @@ vec3 fixSeams(vec3 vec, float cubeTexsize ) {
 		return lightScatter * viewScatter;
 	}
 #endif
+struct RadianceLight {
+	vec3 diffuse;
+	vec3 specular;
+    vec3 scatterIntensity;
+    vec3 F0;
+    vec3 N;
+    vec3 V;
+    vec3 L;
+    vec3 specularColor;
+
+    float dotNV;
+    float frontIntensity;
+    float sideIntensity;
+    float specularPower;
+};
+void calcPBRLight(float roughness, vec3 rm, in vec3 inColor, inout RadianceLight rL) {
+    // rm is remainder metallic: vec3(1.0 - metallic)
+    ///*
+    vec3 H = normalize(rL.V + rL.L);
+
+    // scale light by dotNL
+    float dotNL = max(dot(rL.N, rL.L), 0.0);
+    float dotLH = max(dot(rL.L, H), 0.0);
+    float dotNH = max(dot(rL.N, H), 0.0);
+
+
+
+    // Cook-Torrance BRDF
+    float NDF = distributionGGX(rL.N, H, roughness);
+    float G   = geometrySmith(rL.N, rL.V, rL.L, roughness);
+    //vec3 F    = fresnelSchlick(clamp(dot(H, rL.V), 0.0, 1.0), rL.F0);
+    //vec3 F    = fresnelSchlick3(rL.F0,clamp(dot(H, V), 0.0, 1.0), roughness);
+    vec3 F    = fresnelSchlick3(rL.F0, rL.dotNV, roughness);
+    
+    vec3 nominator    = NDF * G * F;
+    float denominator = 4.0 * rL.dotNV * dotNL;
+    vec3 specular = nominator / max(denominator, 0.001); // prevent divide by zero for NdotV=0.0 or dotNL=0.0
+    
+    vec3 kD = (vec3(1.0) - F ) * rm;
+
+    #ifdef VOX_WOOL
+        float fdBurley = FD_Burley(roughness, rL.dotNV, dotNL, dotLH);
+    #else
+        float fdBurley = FD_Burley(roughness, rL.dotNV, dotNL, dotLH, rL.frontIntensity, rL.sideIntensity);
+    #endif
+    #ifdef VOX_SCATTER
+        vec3 specularScatter = rL.scatterIntensity * fresnelSchlick3(rL.specularColor, dotLH, 1.0) * ((rL.specularPower + 2.0) * 0.125) * pow(dotNH, rL.specularPower);
+    #else
+        vec3 specularScatter = vec3(1.0);
+    #endif
+    
+    // add to outgoing radiance Lo
+    inColor *= dotNL;
+
+    #ifdef VOX_SPECULAR_BLEED
+        rL.diffuse += fdBurley * inColor * kD * specularScatter;
+    #else
+        rL.diffuse += fdBurley * inColor * kD;
+    #endif
+
+    rL.specular += specular * inColor * specularScatter;
+    //*/
+}
 // ----------------------------------------------------------------------------
 void main()
 {
@@ -414,7 +493,8 @@ void main()
     specularColor *= u_params[3].xyz;
 
     #ifdef VOX_ENV_MAP
-        float mipLv = 7.0 - glossinessSquare * 7.0;
+        float mipLv = u_params[3].w;
+        mipLv -= glossinessSquare * mipLv;
 	    vec3 envDir = -getWorldEnvDir(0.0/*envLightRotateAngle*/, N, -V); // env map upside down
 	    envDir.x = -envDir.x;
         vec3 specularEnvColor3 = VOX_TextureCubeLod(u_sampler0, envDir, mipLv).xyz;
@@ -423,83 +503,62 @@ void main()
         specularColor = fresnelSchlick3(specularColor, dotNV, 0.25 * reflectionIntensity) * specularEnvColor3;
     #endif
 
-    float frontColorScale = u_params[1].z;
-    float sideColorScale = u_params[1].w;
+    float frontIntensity = u_params[1].z;
+    float sideIntensity = u_params[1].w;
 
     // reflectance equation
     
+    RadianceLight rL;
+
     vec3 diffuse = albedo.xyz * RECIPROCAL_PI;
-    vec3 d_color = vec3(0.0);
-    vec3 s_color = vec3(0.0);
     vec3 rm = vec3(1.0 - metallic); // remainder metallic
-    vec3 scatterIntensity = u_params[2].www;
-    for(int i = 0; i < 4; ++i) 
-    {
-        // calculate per-light radiance
-        vec3 L = (u_lightPositions[i].xyz - v_worldPos);
 
-        float distance = length(L);     
-        float attenuation = 1.0 / (1.0 + 0.001 * distance + 0.0001 * distance * distance);
+    rL.scatterIntensity = u_params[2].www;
+    rL.F0 = F0;
+    rL.specularColor = specularColor;
+    rL.dotNV = dotNV;
+    rL.N = N;
+    rL.V = V;
+    rL.specularPower = specularPower;
+    rL.frontIntensity = frontIntensity;
+    rL.sideIntensity = sideIntensity;
 
-        L = normalize(u_lightPositions[i].xyz - v_worldPos);
-        vec3 H = normalize(V + L);
-
-        // scale light by dotNL
-        float dotNL = max(dot(N, L), 0.0);
-        float dotLH = max(dot(L, H), 0.0);
-        float dotNH = max(dot(N, H), 0.0);
-
-        vec3 radiance = u_lightColors[i].xyz * attenuation;
-
-
-        // Cook-Torrance BRDF
-        float NDF = DistributionGGX(N, H, roughness);
-        float G   = GeometrySmith(N, V, L, roughness);
-        //vec3 F    = fresnelSchlick(clamp(dot(H, V), 0.0, 1.0), F0);
-        //vec3 F    = fresnelSchlick3(F0,clamp(dot(H, V), 0.0, 1.0), roughness);
-        vec3 F    = fresnelSchlick3(F0, dotNV, roughness);
-        
-        vec3 nominator    = NDF * G * F;
-        float denominator = 4.0 * dotNV * dotNL;
-        vec3 specular = nominator / max(denominator, 0.001); // prevent divide by zero for NdotV=0.0 or dotNL=0.0
-        
-        vec3 kD = (vec3(1.0) - F ) * rm;
-
-        #ifdef VOX_WOOL
-            float fdBurley = FD_Burley(roughness, dotNV, dotNL, dotLH);
-        #else
-            float fdBurley = FD_Burley(roughness, dotNV, dotNL, dotLH, frontColorScale, sideColorScale);
-        #endif
-        #ifdef VOX_SCATTER
-            vec3 specularScatter = scatterIntensity * fresnelSchlick3(specularColor, dotLH, 1.0) * ((specularPower + 2.0) * 0.125) * pow(dotNH, specularPower);
-        #else
-            vec3 specularScatter = vec3(1.0);
-        #endif
-        
-        // add to outgoing radiance Lo
-        radiance *= dotNL;
-
-        #ifdef VOX_SPECULAR_BLEED
-            d_color += fdBurley * radiance * kD * specularScatter;
-        #else
-            d_color += fdBurley * radiance * kD;
-        #endif
-        s_color += specular * radiance * specularScatter;        
-    }
+    // point light progress
+    #if VOX_POINT_LIGHTS_TOTAL > 0
+        for(int i = 0; i < VOX_POINT_LIGHTS_TOTAL; ++i) 
+        {
+            // calculate per-light radiance
+            vec3 L = (u_lightPositions[i].xyz - v_worldPos);
+            float distance = length(L);
+            float attenuation = 1.0 / (1.0 + 0.001 * distance + 0.0001 * distance * distance);
+            vec3 inColor = u_lightColors[i].xyz * attenuation;
+            rL.L = normalize(L);
+            calcPBRLight(roughness, rm, inColor, rL);
+        }
+    #endif
+    // parallel light progress
+    #if VOX_PARALLEL_LIGHTS_TOTAL > 0
+        for(int i = VOX_POINT_LIGHTS_TOTAL; i < VOX_LIGHTS_TOTAL; ++i) 
+        {
+            rL.L = normalize(u_lightPositions[i].xyz);
+            calcPBRLight(roughness, rm, u_lightColors[i].xyz, rL);
+        }
+    #endif
     
     #ifdef VOX_ABSORB
-        vec3 Lo = d_color * diffuse + (s_color + specularColor) * reflectionIntensity;
+        vec3 Lo = rL.diffuse * diffuse + (rL.specular + specularColor) * reflectionIntensity;
     #else
-        vec3 Lo = d_color * diffuse + (s_color + specularColor);
+        vec3 Lo = rL.diffuse * diffuse + (rL.specular + specularColor);
     #endif
+    
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
     vec3 ambient = u_params[2].xyz * albedo.xyz * ao;
 
 	#ifdef VOX_WOOL
-		float sideIntensity = getColorFactorIntensity(dotNV, frontColorScale, sideColorScale);
+		sideIntensity = getColorFactorIntensity(dotNV, frontIntensity, sideIntensity);
 		ambient *= sideIntensity;
-		Lo *= sideIntensity * frontColorScale;
+		Lo *= sideIntensity * frontIntensity;
 	#endif
     color = ambient + Lo;
 
@@ -510,7 +569,7 @@ void main()
         color = tonemapReinhard( color, u_params[1].x );
         //color = reinhard_extended( color, u_params[1].x );
         //color = reinhard_extended_luminance( color, u_params[1].x );
-        //color = ACESToneMapping(color, u_params[1].x);
+        //color = acesToneMapping(color, u_params[1].x);
     #endif
 
     // gamma correct
@@ -557,6 +616,7 @@ void main(){
     getUniqueShaderName() {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         let ns: string = this.m_uniqueName;
+
         if(this.woolEnabled) ns += "_wool";
         if(this.toneMappingEnabled) ns += "_toneMapping";
         if(this.envMapEnabled) ns += "_envMap";
@@ -565,20 +625,54 @@ void main(){
         if(this.metallicCorrection) ns += "_metCorr";
         if(this.gammaCorrection) ns += "_gammaCorr";
         if(this.absorbEnabled) ns += "_absorb";
+        
+        if(this.pointLightsTotal > 0) ns += "_" + this.pointLightsTotal;
+        if(this.parallelLightsTotal > 0) ns += "_" + this.parallelLightsTotal;
+        
         return ns;
     }
     toString(): string {
-        return "[ColorPBRShaderBuffer()]";
+        return "[ColorLightsPBRShaderBuffer()]";
     }
 
-    static GetInstance(): ColorPBRShaderBuffer {
-        return ColorPBRShaderBuffer.___s_instance;
+    static GetInstance(): ColorLightsPBRShaderBuffer {
+        return ColorLightsPBRShaderBuffer.___s_instance;
     }
 }
 
-export default class ColorPBRMaterial extends MaterialBase {
-    constructor() {
+export default class ColorLightsPBRMaterial extends MaterialBase {
+
+    private m_pointLightsTotal: number = 4;
+    private m_parallelLightsTotal: number = 0;
+    
+    private m_albedo: Float32Array = new Float32Array([0.0, 0.5, 0.0, 0.0]);
+    private m_params: Float32Array = new Float32Array([
+        0.0, 0.0, 1.0, 0.0,     // [metallic,roughness,ao, F0 offset]
+        1.0,                   // tone map exposure
+        0.1,                   // reflectionIntensity
+        1.0,                   // frontColorScale
+        1.0,                   // sideColorScale
+
+        0.1,0.1,0.1,           // ambient factor x,y,z
+        1.0,                   // scatterIntensity
+        1.0,1.0,1.0,           // env map specular color factor x,y,z
+        7.0                    // maxMipLv
+        ]);
+    private m_F0: Float32Array = new Float32Array([0.0, 0.0, 0.0, 0.0]);
+    private m_camPos: Float32Array = new Float32Array([500.0, 500.0, 500.0, 1.0]);
+    private m_lightPositions: Float32Array;
+    private m_lightColors: Float32Array;
+
+    constructor( pointLightsTotal: number = 2, parallelLightsTotal: number = 0 ) {
         super();
+        this.m_pointLightsTotal = pointLightsTotal;
+        this.m_parallelLightsTotal = parallelLightsTotal;
+
+        let total: number = pointLightsTotal + parallelLightsTotal;
+        if(total > 0) {
+            this.m_lightPositions = new Float32Array(4 * total);
+            this.m_lightColors = new Float32Array(4 * total);
+        }
     }
 
     woolEnabled:boolean = false;    
@@ -595,7 +689,7 @@ export default class ColorPBRMaterial extends MaterialBase {
     absorbEnabled:boolean = true;
     
     getCodeBuf(): ShaderCodeBuffer {
-        let buf: ColorPBRShaderBuffer = ColorPBRShaderBuffer.GetInstance();
+        let buf: ColorLightsPBRShaderBuffer = ColorLightsPBRShaderBuffer.GetInstance();
         buf.woolEnabled = this.woolEnabled;
         buf.toneMappingEnabled = this.toneMappingEnabled;
         buf.envMapEnabled = this.envMapEnabled;
@@ -604,26 +698,14 @@ export default class ColorPBRMaterial extends MaterialBase {
         buf.metallicCorrection = this.metallicCorrection;
         buf.gammaCorrection = this.gammaCorrection;
         buf.absorbEnabled = this.absorbEnabled;
+
+        buf.pointLightsTotal = this.m_pointLightsTotal;
+        buf.parallelLightsTotal = this.m_parallelLightsTotal;
         return buf;
     }
-
-    private m_albedo: Float32Array = new Float32Array([0.0, 0.5, 0.0, 0.0]);
-    private m_params: Float32Array = new Float32Array([
-        0.0, 0.0, 1.0, 0.0,     // [metallic,roughness,ao, F0 offset]
-        1.0,                   // tone map exposure
-        0.1,                   // reflectionIntensity
-        0.5,                   // frontColorScale
-        0.5,                   // sideColorScale
-
-        0.1,0.1,0.1,           // ambient factor x,y,z
-        1.0,                   // scatterIntensity
-        1.0,1.0,1.0,           // env map specular color factor x,y,z
-        1.0                    // undefined
-        ]);
-    private m_F0: Float32Array = new Float32Array([0.0, 0.0, 0.0, 0.0]);
-    private m_camPos: Float32Array = new Float32Array([500.0, 500.0, 500.0, 1.0]);
-    private m_lightPositions: Float32Array = new Float32Array(4 * 4);
-    private m_lightColors: Float32Array = new Float32Array(4 * 4);
+    setEnvMapSize(textureWidth: number, textureHeight: number): void {
+        this.m_params[15] = MathConst.GetMaxMipMapLevel(textureWidth, textureHeight);
+    }
     setScatterIntensity(value: number): void {
 
         this.m_params[11] = Math.min(Math.max(value, 0.01), 512.0);
@@ -639,8 +721,8 @@ export default class ColorPBRMaterial extends MaterialBase {
     
     setColorScale(frontScale: number, sideScale: number): void {
 
-        this.m_params[6] = Math.min(Math.max(frontScale, 0.001), 10.0);
-        this.m_params[7] = Math.min(Math.max(sideScale, 0.001), 10.0);
+        this.m_params[6] = Math.min(Math.max(frontScale, 0.001), 32.0);
+        this.m_params[7] = Math.min(Math.max(sideScale, 0.001), 32.0);
     }
     setEnvSpecylarColorFactor(fx:number, fy: number, fz:number):void {
         this.m_params[12] = fx;
@@ -669,24 +751,49 @@ export default class ColorPBRMaterial extends MaterialBase {
         this.m_F0[1] = f0y;
         this.m_F0[2] = f0z;
     }
-    setPosAt(i: number, px: number, py: number, pz: number): void {
-
-        i *= 4;
-        this.m_lightPositions[i] = px;
-        this.m_lightPositions[i + 1] = py;
-        this.m_lightPositions[i + 2] = pz;
+    setPointLightPosAt(i: number, px: number, py: number, pz: number): void {
+        if(i >= 0 && i < this.m_pointLightsTotal) {
+            i *= 4;
+            this.m_lightPositions[i] = px;
+            this.m_lightPositions[i + 1] = py;
+            this.m_lightPositions[i + 2] = pz;
+        }
     }
+    setPointLightColorAt(i: number, pr: number, pg: number, pb: number): void {
+        
+        if(i >= 0 && i < this.m_pointLightsTotal) {
+            i *= 4;
+            this.m_lightColors[i] = pr;
+            this.m_lightColors[i + 1] = pg;
+            this.m_lightColors[i + 2] = pb;
+        }
+    }
+    
+    setParallelLightDirecAt(i: number, px: number, py: number, pz: number): void {
+
+        if(i >= 0 && i < this.m_parallelLightsTotal) {
+            i += this.m_pointLightsTotal;
+            i *= 4;
+            this.m_lightPositions[i] = px;
+            this.m_lightPositions[i + 1] = py;
+            this.m_lightPositions[i + 2] = pz;
+        }
+    }
+    setParallelLightColorAt(i: number, pr: number, pg: number, pb: number): void {
+
+        if(i >= 0 && i < this.m_parallelLightsTotal) {
+            i += this.m_pointLightsTotal;
+            i *= 4;
+            this.m_lightColors[i] = pr;
+            this.m_lightColors[i + 1] = pg;
+            this.m_lightColors[i + 2] = pb;
+        }
+    }
+
     setAlbedoColor(pr: number, pg: number, pb: number): void {
         this.m_albedo[0] = pr;
         this.m_albedo[1] = pg;
         this.m_albedo[2] = pb;
-    }
-    setLightColorAt(i: number, pr: number, pg: number, pb: number): void {
-
-        i *= 4;
-        this.m_lightColors[i] = pr;
-        this.m_lightColors[i + 1] = pg;
-        this.m_lightColors[i + 2] = pb;
     }
     setCamPos(pos: Vector3D): void {
 
@@ -696,9 +803,6 @@ export default class ColorPBRMaterial extends MaterialBase {
     }
     createSelfUniformData(): ShaderUniformData {
 
-        //  console.log("this.m_albedo: ",this.m_albedo);
-        //console.log("this.m_params: ",this.m_params);
-        //  console.log("this.m_camPos: ",this.m_camPos);
         let oum: ShaderUniformData = new ShaderUniformData();
         oum.uniformNameList = ["u_albedo", "u_params", "u_lightPositions", "u_lightColors", "u_camPos", "u_F0"];
         oum.dataList = [this.m_albedo, this.m_params, this.m_lightPositions, this.m_lightColors, this.m_camPos,this.m_F0];
