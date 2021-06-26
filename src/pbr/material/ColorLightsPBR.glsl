@@ -11,9 +11,8 @@ uniform mat4 u_viewMat;
 
 out vec4 FragColor;
 
-in vec2 v_texUV;
 in vec3 v_worldPos;
-in vec3 v_normal;
+in vec3 v_worldNormal;
 in vec3 v_camPos;
 
 // material parameters
@@ -223,7 +222,7 @@ vec4 linearToGamma(vec4 color) {
 }
 // expects values in the range of [0,1]x[0,1], returns values in the [0,1] range.
 // do not collapse into a single function per: http://byteblacksmith.com/improvements-to-the-canonical-one-liner-glsl-rand-for-opengl-es-2-0/
-highp float rand( const in vec2 uv ) {
+highp float randUV( const in vec2 uv ) {
 	const highp float a = 12.9898, b = 78.233, c = 43758.5453;
 	highp float dt = dot( uv.xy, vec2( a,b ) ), sn = mod( dt, PI );
 	return fract(sin(sn) * c);
@@ -231,7 +230,7 @@ highp float rand( const in vec2 uv ) {
 // based on https://www.shadertoy.com/view/MslGR8
 vec3 dithering( vec3 color ) {
     //Calculate grid position
-    float grid_position = rand( gl_FragCoord.xy );
+    float grid_position = randUV( gl_FragCoord.xy );
 
     //Shift the individual colors differently, thus making it even harder to see the dithering pattern
     vec3 dither_shift_RGB = vec3( 0.25 / 255.0, -0.25 / 255.0, 0.25 / 255.0 );
@@ -381,6 +380,21 @@ void calcPBRLight(float roughness, vec3 rm, in vec3 inColor, inout RadianceLight
     rL.specular += specular * inColor * specularScatter;
 
 }
+
+const vec2 noise2 = vec2(12.9898,78.233);
+const vec3 noise3 = vec3(12.9898,78.233,158.5453);
+vec2 rand(vec2 seed,float intensity) {
+
+  float noiseX = (fract(sin(dot(seed, noise2)) * 43758.5453));
+  float noiseY = (fract(sin(dot(seed, noise2 * 2.0)) * 43758.5453));
+  return vec2(noiseX,noiseY) * intensity;
+}
+vec3 rand(vec3 seed, float intensity) {
+  float noiseX = (fract(sin(dot(seed, noise3)) * 43758.5453));
+  float noiseY = (fract(sin(dot(seed, noise3 * 2.0)) * 43758.5453));
+  float noiseZ = (fract(sin(dot(seed, noise3 * 3.0)) * 43758.5453));
+  return vec3(noiseX, noiseY, noiseZ) * intensity;
+}
 // ----------------------------------------------------------------------------
 void main()
 {
@@ -395,7 +409,7 @@ void main()
     float glossinessSquare = colorGlossiness * colorGlossiness;
     float specularPower = exp2(8.0 * glossinessSquare + 1.0);
 
-    vec3 N = normalize(v_normal);
+    vec3 N = normalize(v_worldNormal);
     vec3 V = normalize(v_camPos.xyz - v_worldPos);
     float dotNV = clamp(dot(N, V), 0.0, 1.0);
     vec3 albedo = u_albedo.xyz;
@@ -420,8 +434,9 @@ void main()
     specularColor *= u_params[3].xyz;
 
     #ifdef VOX_ENV_MAP
-        float mipLv = u_params[3].w;
+        float mipLv = floor(u_params[3].w);
         mipLv -= glossinessSquare * mipLv;
+        mipLv += 100.0 * fract(u_params[3].w);
 	    vec3 envDir = -getWorldEnvDir(0.0/*envLightRotateAngle*/, N, -V); // env map upside down
 	    envDir.x = -envDir.x;
         vec3 specularEnvColor3 = VOX_TextureCubeLod(u_sampler0, envDir, mipLv).xyz;

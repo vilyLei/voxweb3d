@@ -77,14 +77,14 @@ precision highp float;
         else fragCode += "\n#define VOX_LIGHTS_TOTAL 0";
 
         fragCode += "\n";
-        
+
         return fragCode + ColorLightsPBR.frag;
     }
     getVtxShaderCode(): string {
         let vtxCode: string =
 `#version 300 es
 precision highp float;
-
+#define VOX_NORMAL_NOISE
 layout(location = 0) in vec3 a_vs;
 layout(location = 1) in vec2 a_uvs;
 layout(location = 2) in vec3 a_nvs;
@@ -93,21 +93,36 @@ uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
 
-out vec2 v_texUV;
 out vec3 v_worldPos;
-out vec3 v_normal;
+out vec3 v_worldNormal;
 out vec3 v_camPos;
 
-void main(){
+const vec2 noise2 = vec2(12.9898,78.233);
+const vec3 noise3 = vec3(12.9898,78.233,158.5453);
+vec2 rand(vec2 seed,float intensity) {
 
+  float noiseX = (fract(sin(dot(seed, noise2)) * 43758.5453));
+  float noiseY = (fract(sin(dot(seed, noise2 * 2.0)) * 43758.5453));
+  return vec2(noiseX,noiseY) * intensity;
+}
+vec3 rand(vec3 seed, float intensity) {
+  float noiseX = (fract(sin(dot(seed, noise3)) * 43758.5453));
+  float noiseY = (fract(sin(dot(seed, noise3 * 2.0)) * 43758.5453));
+  float noiseZ = (fract(sin(dot(seed, noise3 * 3.0)) * 43758.5453));
+  return vec3(noiseX, noiseY, noiseZ) * intensity;
+}
+void main(){
+    
     vec4 wPos = u_objMat * vec4(a_vs, 1.0);
     vec4 viewPos = u_viewMat * wPos;
     gl_Position = u_projMat * viewPos;
 
     v_worldPos = wPos.xyz;
-    v_texUV = a_uvs;
-    //v_normal = mat3(u_objMat) * a_nvs;
-    v_normal = normalize(a_nvs * inverse(mat3(u_objMat)));
+    
+    v_worldNormal = normalize(a_nvs * inverse(mat3(u_objMat)));
+    #ifdef VOX_NORMAL_NOISE
+        v_worldNormal += (rand(a_nvs, 1.0)) * 0.1;
+    #endif
     v_camPos = (inverse(u_viewMat) * vec4(0.0,0.0,0.0, 1.0)).xyz;
 }
 `;
@@ -157,7 +172,7 @@ export default class ColorLightsPBRMaterial extends MaterialBase {
         0.1,0.1,0.1,           // ambient factor x,y,z
         1.0,                   // scatterIntensity
         1.0,1.0,1.0,           // env map specular color factor x,y,z
-        7.0                    // maxMipLv
+        7.01                   // maxMipLv: 10.0 * 0.01 + 7 - k * 7
         ]);
     private m_F0: Float32Array = new Float32Array([0.0, 0.0, 0.0, 0.0]);
     private m_camPos: Float32Array = new Float32Array([500.0, 500.0, 500.0, 1.0]);
@@ -205,10 +220,14 @@ export default class ColorLightsPBRMaterial extends MaterialBase {
         return buf;
     }
     /**
-     * @param maxMipLevel envmap texture lod max mipmap level
+     * (lod mipmap level) = base + (maxMipLevel - k * maxMipLevel)
+     * @param maxMipLevel envmap texture lod max mipmap level, the vaue is a int number
+     * @param base envmap texture lod max mipmap level base
      */
-    setEnvMapMaxMipLevel(maxMipLevel: number): void {
-        this.m_params[15] = maxMipLevel;
+    setEnvMapMaxMipLevel(maxMipLevel: number, base:number = 0): void {
+        maxMipLevel = Math.min(Math.max(maxMipLevel, 0.0), 14.0);
+        base = Math.min(Math.max(base, 0.0), 12.0);
+        this.m_params[15] = Math.round(maxMipLevel) + base * 0.01;
     }
     setEnvMapMaxMipLevelWithSize(envMapWidth: number, envMapHeight: number, mipmapLvFactor: number = 1.0): void {
         this.m_envMapWidth = envMapWidth;

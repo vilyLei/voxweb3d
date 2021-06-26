@@ -109,12 +109,12 @@ export class DemoLightsPBR
             this.m_meshMana.lightBaseDis = 900.0;
             this.m_meshMana.loadMeshFile("static/modules/cloth400w.md");
             //*/
-            /*
+            ///*
             this.m_meshMana.moduleScale = 3.0;
             this.m_meshMana.offsetPos.setXYZ(0.0,-350.0,0.0);
             this.m_meshMana.loadMeshFile("static/modules/loveass.md");
             //*/
-            ///*
+            /*
             this.m_meshMana.lightBaseDis = 900.0;
             this.m_meshMana.moduleScale = 0.5;
             this.m_meshMana.offsetPos.setXYZ(0.0,200.0,0.0);
@@ -176,7 +176,7 @@ export class DemoLightsPBR
             this.m_meshMana.material.setAmbientFactor(0.02, 0.02, 0.02);
             this.m_meshMana.material.setToneMapingExposure(2.0);
             this.m_meshMana.material.setReflectionIntensity(0.1);
-            this.m_meshMana.material.setEnvMapMaxMipLevel(5.0);
+            this.m_meshMana.material.setEnvMapMaxMipLevel(5.0,3.0);
             //this.m_meshMana.material.setColorScale(1.0,2.0);
 
         }

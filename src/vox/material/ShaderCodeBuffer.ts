@@ -7,9 +7,6 @@
 
 import IRenderTexture from '../../vox/render/IRenderTexture';
 import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
-//
-//import IRenderTexture = IRenderTextureT.vox.render.IRenderTexture;
-//import ShaderCodeBuilder = ShaderCodeBuilderT.vox.material.code.ShaderCodeBuilder;
 
 class ShaderCodeBuffer
 {
