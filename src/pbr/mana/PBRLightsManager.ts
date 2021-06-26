@@ -252,7 +252,7 @@ export default class PBRLightsManager {
   private initMaterial(): void {
 
     let rm: ColorLightsPBRMaterial = this.makeTexMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
-    /*
+    ///*
     let envMapUrl: string = "static/bytes/s.bin";
     //let loader:TextureLoader = new TextureLoader();
     let loader:SpecularTextureLoader = new SpecularTextureLoader();
@@ -260,7 +260,7 @@ export default class PBRLightsManager {
 
     rm.setTextureList([loader.texture]);
     //*/
-    ///*
+    /*
     rm.setTextureList([this.loadDDS()]);
     //*/
     /*

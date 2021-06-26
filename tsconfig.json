@@ -11,6 +11,11 @@
         "dom",
         "dom.iterable"
       ],
+      "resolveJsonModule": true,
+      "baseUrl": "./",
+      //"strict": true,
+      "strictNullChecks": false,
+      "noEmit": true,
       "target": "ESNext",
       //"target": "es5",
       "allowJs": true,
@@ -24,5 +29,6 @@
       "noImplicitAny": true,
       /*"declaration": true,*/
   },
+  "include": ["./src/**/*"],
   "exclude": [ "build", "node_modules" ]
 }

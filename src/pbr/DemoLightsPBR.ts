@@ -176,6 +176,7 @@ export class DemoLightsPBR
             this.m_meshMana.material.setAmbientFactor(0.02, 0.02, 0.02);
             this.m_meshMana.material.setToneMapingExposure(2.0);
             this.m_meshMana.material.setReflectionIntensity(0.1);
+            this.m_meshMana.material.setEnvMapMaxMipLevel(5.0);
             //this.m_meshMana.material.setColorScale(1.0,2.0);
 
         }
