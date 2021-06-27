@@ -7,8 +7,6 @@
 
 uniform samplerCube u_sampler0;
 
-uniform mat4 u_viewMat;
-
 out vec4 FragColor;
 
 in vec3 v_worldPos;
@@ -34,9 +32,52 @@ uniform vec4 u_F0;
 #define RECIPROCAL_PI 0.3183098861837907
 #define RECIPROCAL_PI2 0.15915494309189535
 #define EPSILON 1e-6
+
+const vec3 vec3One = vec3(1.0);
 // ----------------------------------------------------------------------------
+
+// handy value clamping to 0 - 1 range
+#define saturate(a) clamp( a, 0.0, 1.0 )
+
+//Convert color to linear space
+#define VOX_GAMMA 2.2
+const vec3 vec3Gamma = vec3(VOX_GAMMA);
+const vec3 vec3ReciprocalGamma = vec3(1.0 / VOX_GAMMA);
+
+vec3 gammaToLinear(vec3 color) 
+{
+    #ifdef VOX_GAMMA_CORRECTION
+	    return pow(color, vec3Gamma);
+    #else
+        return color;
+    #endif
+}
+vec3 linearToGamma(vec3 color) 
+{ 
+    #ifdef VOX_GAMMA_CORRECTION
+	    return pow(color, vec3ReciprocalGamma); 
+    #else
+        return color;
+    #endif
+}
+vec4 gammaToLinear(vec4 color) {
+    #ifdef VOX_GAMMA_CORRECTION
+        return vec4(pow(color.rgb, vec3Gamma), color.a);
+    #else
+        return color;
+    #endif
+}
+
+vec4 linearToGamma(vec4 color) {
+    #ifdef VOX_GAMMA_CORRECTION
+        return vec4(pow(color.rgb, vec3ReciprocalGamma), color.a);
+    #else
+        return color;
+    #endif
+}
+
 vec3 approximationSRGBToLinear(vec3 srgbColor) {
-    return pow(srgbColor, vec3(2.2));
+    return pow(srgbColor, vec3Gamma);
 }
 vec3 approximationLinearToSRCB(vec3 linearColor) {
     return pow(linearColor, vec3(1.0/2.2));
@@ -56,9 +97,6 @@ vec3 accurateLinearToSRGB(vec3 linearColor) {
 
     return srgb;
 }
-
-// handy value clamping to 0 - 1 range
-#define saturate(a) clamp( a, 0.0, 1.0 )
 
 // Trowbridge-Reitz(Generalized-Trowbridge-Reitz，GTR)
 
@@ -150,10 +188,10 @@ vec3 acesToneMapping(vec3 color, float adapted_lum)
 	return (color * (A * color + B)) / (color * (C * color + D) + E);
 }
 
-//color = color / (color + vec3(1.0));
+//color = color / (color + vec3One);
 vec3 reinhard(vec3 v)
 {
-    return v / (vec3(1.0) + v);
+    return v / (vec3One + v);
 }
 vec3 reinhard_extended(vec3 v, float max_white)
 {
@@ -187,39 +225,6 @@ vec3 reinhardToneMapping( vec3 color, float toneMappingExposure ) {
 	return saturate( color / ( vec3( 1.0 ) + color ) );
 
 }
-//Convert color to linear space
-#define VOX_GAMMA 2.2
-vec3 gammaToLinear(vec3 color) 
-{
-    #ifdef VOX_GAMMA_CORRECTION
-	    return pow(color, vec3(VOX_GAMMA));
-    #else
-        return color;
-    #endif
-}
-vec3 linearToGamma(vec3 color) 
-{ 
-    #ifdef VOX_GAMMA_CORRECTION
-	    return pow(color, vec3(1.0 / VOX_GAMMA)); 
-    #else
-        return color;
-    #endif
-}
-vec4 gammaToLinear(vec4 color) {
-    #ifdef VOX_GAMMA_CORRECTION
-        return vec4(pow(color.rgb, vec3(VOX_GAMMA)), color.a);
-    #else
-        return color;
-    #endif
-}
-
-vec4 linearToGamma(vec4 color) {
-    #ifdef VOX_GAMMA_CORRECTION
-        return vec4(pow(color.rgb, vec3(1.0 / VOX_GAMMA)), color.a);
-    #else
-        return color;
-    #endif
-}
 // expects values in the range of [0,1]x[0,1], returns values in the [0,1] range.
 // do not collapse into a single function per: http://byteblacksmith.com/improvements-to-the-canonical-one-liner-glsl-rand-for-opengl-es-2-0/
 highp float randUV( const in vec2 uv ) {
@@ -241,9 +246,6 @@ vec3 dithering( vec3 color ) {
     //shift the color by dither_shift
     return color + dither_shift_RGB;
 }
-vec3 inverseTransformDirection( in vec3 dir, in mat4 matrix ) {
-	return normalize( ( vec4( dir, 0.0 ) * matrix ).xyz );
-}
 vec3 rotateY(vec3 dir, float radian)
 {
 	vec3 result;
@@ -259,7 +261,12 @@ vec3 getWorldEnvDir(float rotateAngle, vec3 worldNormal,vec3 worldInvE)
     worldR.zy *= vec2(-1.0);
 	return rotateY(worldR, rotateAngle);
 }
-
+vec3 getWorldEnvDir(vec3 worldNormal,vec3 worldInvE)
+{
+	vec3 worldR = reflect(worldInvE, worldNormal);
+    worldR.zy *= vec2(-1.0);
+    return worldR;
+}
 float FD_Schlick(float VoH, float f0, float f90) 
 {
 	return f0 + (f90 - f0) * pow(1.0 - VoH, 5.0);
@@ -272,7 +279,7 @@ vec3 FD_Schlick(const in vec3 specularColor, const in float dotLH) {
 	// https://cdn2.unrealengine.com/Resources/files/2013SiggraphPresentationsNotes-26915738.pdf
 
 	float fresnel = exp2((-5.55473 * dotLH - 6.98316) * dotLH);
-	return (vec3(1.0) - specularColor) * fresnel + specularColor;
+	return (vec3One - specularColor) * fresnel + specularColor;
 }
 vec3 fixSeams(vec3 vec, float mipmapIndex, float cubeTexsize) {
     float scale = 1.0 - exp2(mipmapIndex) / cubeTexsize;
@@ -355,7 +362,7 @@ void calcPBRLight(float roughness, vec3 rm, in vec3 inColor, inout RadianceLight
     float denominator = 4.0 * rL.dotNV * dotNL;
     vec3 specular = nominator / max(denominator, 0.001); // prevent divide by zero for NdotV=0.0 or dotNL=0.0
     
-    vec3 kD = (vec3(1.0) - F ) * rm;
+    vec3 kD = (vec3One - F ) * rm;
 
     #ifdef VOX_WOOL
         float fdBurley = FD_Burley(roughness, rL.dotNV, dotNL, dotLH);
@@ -365,7 +372,7 @@ void calcPBRLight(float roughness, vec3 rm, in vec3 inColor, inout RadianceLight
     #ifdef VOX_SCATTER
         vec3 specularScatter = rL.scatterIntensity * fresnelSchlick3(rL.specularColor, dotLH, 1.0) * ((rL.specularPower + 2.0) * 0.125) * pow(dotNH, rL.specularPower);
     #else
-        vec3 specularScatter = vec3(1.0);
+        vec3 specularScatter = vec3One;
     #endif
     
     // add to outgoing radiance Lo
@@ -409,6 +416,7 @@ void main()
     float glossinessSquare = colorGlossiness * colorGlossiness;
     float specularPower = exp2(8.0 * glossinessSquare + 1.0);
 
+    //vec3 N = normalize(v_worldNormal + rand(v_worldNormal,1.0)*0.02);
     vec3 N = normalize(v_worldNormal);
     vec3 V = normalize(v_camPos.xyz - v_worldPos);
     float dotNV = clamp(dot(N, V), 0.0, 1.0);
@@ -434,15 +442,14 @@ void main()
     specularColor *= u_params[3].xyz;
 
     #ifdef VOX_ENV_MAP
-        float mipLv = floor(u_params[3].w);
-        mipLv -= glossinessSquare * mipLv;
-        mipLv += 100.0 * fract(u_params[3].w);
-	    vec3 envDir = -getWorldEnvDir(0.0/*envLightRotateAngle*/, N, -V); // env map upside down
-	    envDir.x = -envDir.x;
-        vec3 specularEnvColor3 = VOX_TextureCubeLod(u_sampler0, envDir, mipLv).xyz;
-        //specularEnvColor3 = reinhardToneMapping(specularEnvColor3,1.0);
-        specularEnvColor3 = gammaToLinear(specularEnvColor3);
-        specularColor = fresnelSchlick3(specularColor, dotNV, 0.25 * reflectionIntensity) * specularEnvColor3;
+        float mipLv = 100.0 * fract(u_params[3].w);
+        mipLv = (mipLv - glossinessSquare * mipLv) + floor(u_params[3].w);
+        mipLv = max(mipLv, 0.0);
+	    vec3 envVec = -getWorldEnvDir(N, -V);
+	    envVec.x = -envVec.x;
+        envVec = VOX_TextureCubeLod(u_sampler0, envVec, mipLv).xyz;
+        // envVec = linearToGamma(envVec);
+        specularColor = fresnelSchlick3(specularColor, dotNV, 0.25 * reflectionIntensity) * envVec;
     #endif
 
     float frontIntensity = u_params[1].z;
@@ -465,7 +472,7 @@ void main()
     rL.frontIntensity = frontIntensity;
     rL.sideIntensity = sideIntensity;
 
-    // point light progress
+    // point light process
     #if VOX_POINT_LIGHTS_TOTAL > 0
         for(int i = 0; i < VOX_POINT_LIGHTS_TOTAL; ++i) 
         {
@@ -478,20 +485,23 @@ void main()
             calcPBRLight(roughness, rm, inColor, rL);
         }
     #endif
-    // parallel light progress
+    // parallel light process
     #if VOX_PARALLEL_LIGHTS_TOTAL > 0
         for(int i = VOX_POINT_LIGHTS_TOTAL; i < VOX_LIGHTS_TOTAL; ++i) 
         {
+            // calculate per-light radiance
             rL.L = normalize(u_lightPositions[i].xyz);
             calcPBRLight(roughness, rm, u_lightColors[i].xyz, rL);
         }
     #endif
     
+    specularColor = (rL.specular + specularColor);
+
     #ifdef VOX_ABSORB
-        vec3 Lo = rL.diffuse * diffuse + (rL.specular + specularColor) * reflectionIntensity;
-    #else
-        vec3 Lo = rL.diffuse * diffuse + (rL.specular + specularColor);
+        specularColor *= vec3(reflectionIntensity);
     #endif
+
+    vec3 Lo = rL.diffuse * diffuse + specularColor;
     
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).

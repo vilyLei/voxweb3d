@@ -1054,6 +1054,7 @@ class CameraBase
             this.m_vpMat.identity();
             this.m_vpMat.copyFrom(this.m_viewMat);
             this.m_vpMat.append(this.m_projMat);
+
             this.__calcTestParam();
             // very very important !!!
             this.updateUniformData();

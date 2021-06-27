@@ -27,6 +27,7 @@ class ColorLightsPBRShaderBuffer extends ShaderCodeBuffer {
     metallicCorrection:boolean = true;
     gammaCorrection:boolean = true;
     absorbEnabled:boolean = false;
+    normalNoiseEnabled:boolean = false;
     
     pointLightsTotal: number = 4;
     parallelLightsTotal: number = 0;
@@ -84,7 +85,12 @@ precision highp float;
         let vtxCode: string =
 `#version 300 es
 precision highp float;
-#define VOX_NORMAL_NOISE
+`;
+        if(this.normalNoiseEnabled) vtxCode += "\n#define VOX_NORMAL_NOISE";
+
+        vtxCode += "\n";
+        vtxCode +=
+`
 layout(location = 0) in vec3 a_vs;
 layout(location = 1) in vec2 a_uvs;
 layout(location = 2) in vec3 a_nvs;
@@ -121,7 +127,7 @@ void main(){
     
     v_worldNormal = normalize(a_nvs * inverse(mat3(u_objMat)));
     #ifdef VOX_NORMAL_NOISE
-        v_worldNormal += (rand(a_nvs, 1.0)) * 0.1;
+        v_worldNormal += (rand(a_nvs, 1.0)) * 0.05;
     #endif
     v_camPos = (inverse(u_viewMat) * vec4(0.0,0.0,0.0, 1.0)).xyz;
 }
@@ -140,6 +146,7 @@ void main(){
         if(this.metallicCorrection) ns += "_metCorr";
         if(this.gammaCorrection) ns += "_gammaCorr";
         if(this.absorbEnabled) ns += "_absorb";
+        if(this.normalNoiseEnabled) ns += "_nNoise";
         
         if(this.pointLightsTotal > 0) ns += "_" + this.pointLightsTotal;
         if(this.parallelLightsTotal > 0) ns += "_" + this.parallelLightsTotal;
@@ -172,7 +179,7 @@ export default class ColorLightsPBRMaterial extends MaterialBase {
         0.1,0.1,0.1,           // ambient factor x,y,z
         1.0,                   // scatterIntensity
         1.0,1.0,1.0,           // env map specular color factor x,y,z
-        7.01                   // maxMipLv: 10.0 * 0.01 + 7 - k * 7
+        7.01                   // envmap lod maxMipLv info
         ]);
     private m_F0: Float32Array = new Float32Array([0.0, 0.0, 0.0, 0.0]);
     private m_camPos: Float32Array = new Float32Array([500.0, 500.0, 500.0, 1.0]);
@@ -203,6 +210,7 @@ export default class ColorLightsPBRMaterial extends MaterialBase {
     gammaCorrection:boolean = true;
     // 是否开启吸收光能的模式
     absorbEnabled:boolean = true;
+    normalNoiseEnabled:boolean = false;
     
     getCodeBuf(): ShaderCodeBuffer {
         let buf: ColorLightsPBRShaderBuffer = ColorLightsPBRShaderBuffer.GetInstance();
@@ -214,6 +222,7 @@ export default class ColorLightsPBRMaterial extends MaterialBase {
         buf.metallicCorrection = this.metallicCorrection;
         buf.gammaCorrection = this.gammaCorrection;
         buf.absorbEnabled = this.absorbEnabled;
+        buf.normalNoiseEnabled = this.normalNoiseEnabled;
 
         buf.pointLightsTotal = this.m_pointLightsTotal;
         buf.parallelLightsTotal = this.m_parallelLightsTotal;
@@ -224,15 +233,16 @@ export default class ColorLightsPBRMaterial extends MaterialBase {
      * @param maxMipLevel envmap texture lod max mipmap level, the vaue is a int number
      * @param base envmap texture lod max mipmap level base
      */
-    setEnvMapMaxMipLevel(maxMipLevel: number, base:number = 0): void {
+    setEnvMapMaxMipLevel(maxMipLevel: number, base:number = 0.0): void {
         maxMipLevel = Math.min(Math.max(maxMipLevel, 0.0), 14.0);
-        base = Math.min(Math.max(base, 0.0), 12.0);
-        this.m_params[15] = Math.round(maxMipLevel) + base * 0.01;
+        base = Math.min(Math.max(base, -7.0), 12.0);
+        this.m_params[15] = base + Math.round(maxMipLevel) * 0.01;
     }
-    setEnvMapMaxMipLevelWithSize(envMapWidth: number, envMapHeight: number, mipmapLvFactor: number = 1.0): void {
+    setEnvMapMaxMipLevelWithSize(envMapWidth: number, envMapHeight: number, base: number = 0.0): void {
         this.m_envMapWidth = envMapWidth;
         this.m_envMapHeight = envMapHeight;
-        this.m_params[15] = MathConst.GetMaxMipMapLevel(envMapWidth, envMapHeight) * mipmapLvFactor;
+        base = Math.min(Math.max(base, -7.0), 12.0);
+        this.m_params[15] = base + MathConst.GetMaxMipMapLevel(envMapWidth, envMapHeight) * 0.01;
     }
     setScatterIntensity(value: number): void {
 
@@ -252,7 +262,7 @@ export default class ColorLightsPBRMaterial extends MaterialBase {
         this.m_params[6] = Math.min(Math.max(frontScale, 0.001), 32.0);
         this.m_params[7] = Math.min(Math.max(sideScale, 0.001), 32.0);
     }
-    setEnvSpecylarColorFactor(fx:number, fy: number, fz:number):void {
+    setEnvSpecularColorFactor(fx:number, fy: number, fz:number):void {
         this.m_params[12] = fx;
         this.m_params[13] = fy;
         this.m_params[14] = fz;
