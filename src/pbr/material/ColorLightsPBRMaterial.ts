@@ -28,6 +28,7 @@ class ColorLightsPBRShaderBuffer extends ShaderCodeBuffer {
     gammaCorrection:boolean = true;
     absorbEnabled:boolean = false;
     normalNoiseEnabled:boolean = false;
+    pixelNormalNoiseEnabled:boolean = false;
     
     pointLightsTotal: number = 4;
     parallelLightsTotal: number = 0;
@@ -68,6 +69,7 @@ precision highp float;
         if(this.metallicCorrection) fragCode += "\n#define VOX_METALLIC_CORRECTION";
         if(this.gammaCorrection) fragCode += "\n#define VOX_GAMMA_CORRECTION";
         if(this.absorbEnabled) fragCode += "\n#define VOX_ABSORB";
+        if(this.pixelNormalNoiseEnabled) fragCode += "\n#define VOX_PIXEL_NORMAL_NOISE";
 
         let lightsTotal: number = this.pointLightsTotal + this.parallelLightsTotal;
         if(this.pointLightsTotal > 0) fragCode += "\n#define VOX_POINT_LIGHTS_TOTAL " + this.pointLightsTotal;
@@ -105,17 +107,17 @@ out vec3 v_camPos;
 
 const vec2 noise2 = vec2(12.9898,78.233);
 const vec3 noise3 = vec3(12.9898,78.233,158.5453);
-vec2 rand(vec2 seed,float intensity) {
+vec2 rand(vec2 seed) {
 
   float noiseX = (fract(sin(dot(seed, noise2)) * 43758.5453));
   float noiseY = (fract(sin(dot(seed, noise2 * 2.0)) * 43758.5453));
-  return vec2(noiseX,noiseY) * intensity;
+  return vec2(noiseX,noiseY);
 }
-vec3 rand(vec3 seed, float intensity) {
+vec3 rand(vec3 seed) {
   float noiseX = (fract(sin(dot(seed, noise3)) * 43758.5453));
   float noiseY = (fract(sin(dot(seed, noise3 * 2.0)) * 43758.5453));
   float noiseZ = (fract(sin(dot(seed, noise3 * 3.0)) * 43758.5453));
-  return vec3(noiseX, noiseY, noiseZ) * intensity;
+  return vec3(noiseX, noiseY, noiseZ);
 }
 void main(){
     
@@ -127,7 +129,7 @@ void main(){
     
     v_worldNormal = normalize(a_nvs * inverse(mat3(u_objMat)));
     #ifdef VOX_NORMAL_NOISE
-        v_worldNormal += (rand(a_nvs, 1.0)) * 0.05;
+        v_worldNormal += (rand(a_nvs)) * 0.1;
     #endif
     v_camPos = (inverse(u_viewMat) * vec4(0.0,0.0,0.0, 1.0)).xyz;
 }
@@ -146,6 +148,7 @@ void main(){
         if(this.metallicCorrection) ns += "_metCorr";
         if(this.gammaCorrection) ns += "_gammaCorr";
         if(this.absorbEnabled) ns += "_absorb";
+        if(this.pixelNormalNoiseEnabled) ns += "_pixelNNoise";
         if(this.normalNoiseEnabled) ns += "_nNoise";
         
         if(this.pointLightsTotal > 0) ns += "_" + this.pointLightsTotal;
@@ -170,7 +173,7 @@ export default class ColorLightsPBRMaterial extends MaterialBase {
     private m_envMapHeight: number = 128;
     private m_albedo: Float32Array = new Float32Array([0.0, 0.5, 0.0, 0.0]);
     private m_params: Float32Array = new Float32Array([
-        0.0, 0.0, 1.0, 0.0,     // [metallic,roughness,ao, F0 offset]
+        0.0, 0.0, 1.0, 0.02,   // [metallic,roughness,ao, pixel noise intensity]
         1.0,                   // tone map exposure
         0.1,                   // reflectionIntensity
         1.0,                   // frontColorScale
@@ -179,7 +182,7 @@ export default class ColorLightsPBRMaterial extends MaterialBase {
         0.1,0.1,0.1,           // ambient factor x,y,z
         1.0,                   // scatterIntensity
         1.0,1.0,1.0,           // env map specular color factor x,y,z
-        7.01                   // envmap lod maxMipLv info
+        0.07                   // envMap lod mipMapLv parameter((100.0 * fract(0.07)) - (100.0 * fract(0.07)) * k + floor(0.07))
         ]);
     private m_F0: Float32Array = new Float32Array([0.0, 0.0, 0.0, 0.0]);
     private m_camPos: Float32Array = new Float32Array([500.0, 500.0, 500.0, 1.0]);
@@ -211,6 +214,7 @@ export default class ColorLightsPBRMaterial extends MaterialBase {
     // 是否开启吸收光能的模式
     absorbEnabled:boolean = true;
     normalNoiseEnabled:boolean = false;
+    pixelNormalNoiseEnabled:boolean = false;
     
     getCodeBuf(): ShaderCodeBuffer {
         let buf: ColorLightsPBRShaderBuffer = ColorLightsPBRShaderBuffer.GetInstance();
@@ -223,26 +227,31 @@ export default class ColorLightsPBRMaterial extends MaterialBase {
         buf.gammaCorrection = this.gammaCorrection;
         buf.absorbEnabled = this.absorbEnabled;
         buf.normalNoiseEnabled = this.normalNoiseEnabled;
+        buf.pixelNormalNoiseEnabled = this.pixelNormalNoiseEnabled;
 
         buf.pointLightsTotal = this.m_pointLightsTotal;
         buf.parallelLightsTotal = this.m_parallelLightsTotal;
         return buf;
     }
+    setPixelNormalNoiseIntensity(intensity: number): void {
+        intensity = Math.min(Math.max(intensity, 0.0), 2.0);
+        this.m_params[3] = intensity;
+    }
     /**
      * (lod mipmap level) = base + (maxMipLevel - k * maxMipLevel)
      * @param maxMipLevel envmap texture lod max mipmap level, the vaue is a int number
-     * @param base envmap texture lod max mipmap level base
+     * @param base envmap texture lod max mipmap level base, value range: -7.0 -> 12.0
      */
-    setEnvMapMaxMipLevel(maxMipLevel: number, base:number = 0.0): void {
+    setEnvMapLodMipMapLevel(maxMipLevel: number, base:number = 0.0): void {
         maxMipLevel = Math.min(Math.max(maxMipLevel, 0.0), 14.0);
         base = Math.min(Math.max(base, -7.0), 12.0);
-        this.m_params[15] = base + Math.round(maxMipLevel) * 0.01;
+        this.m_params[15] = Math.round(maxMipLevel) * 0.01 + base;
     }
-    setEnvMapMaxMipLevelWithSize(envMapWidth: number, envMapHeight: number, base: number = 0.0): void {
+    setEnvMapLodMipMapLevelWithSize(envMapWidth: number, envMapHeight: number, base: number = 0.0): void {
         this.m_envMapWidth = envMapWidth;
         this.m_envMapHeight = envMapHeight;
         base = Math.min(Math.max(base, -7.0), 12.0);
-        this.m_params[15] = base + MathConst.GetMaxMipMapLevel(envMapWidth, envMapHeight) * 0.01;
+        this.m_params[15] = MathConst.GetMaxMipMapLevel(envMapWidth, envMapHeight) * 0.01 + base;
     }
     setScatterIntensity(value: number): void {
 

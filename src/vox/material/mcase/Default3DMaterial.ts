@@ -7,13 +7,21 @@
 
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
+import ShaderCodeBuffer from "../ShaderCodeBuffer";
 export default class Default3DMaterial extends MaterialBase
 {
+    private m_colorArray:Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
+    vtxColorEnabled: boolean = false;
     constructor()
     {
         super();
+    }// get a shader code buf instance, for sub class override
+    getCodeBuf():ShaderCodeBuffer
+    {
+        let buf: ShaderCodeBuffer = super.getCodeBuf();
+        buf.vtxColorEnabled = this.vtxColorEnabled;
+        return buf;
     }
-    private m_colorArray:Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
     setRGB3f(pr:number,pg:number,pb:number):void
     {
         this.m_colorArray[0] = pr;

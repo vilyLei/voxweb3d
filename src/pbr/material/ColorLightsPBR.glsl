@@ -390,17 +390,17 @@ void calcPBRLight(float roughness, vec3 rm, in vec3 inColor, inout RadianceLight
 
 const vec2 noise2 = vec2(12.9898,78.233);
 const vec3 noise3 = vec3(12.9898,78.233,158.5453);
-vec2 rand(vec2 seed,float intensity) {
+vec2 rand(vec2 seed) {
 
   float noiseX = (fract(sin(dot(seed, noise2)) * 43758.5453));
   float noiseY = (fract(sin(dot(seed, noise2 * 2.0)) * 43758.5453));
-  return vec2(noiseX,noiseY) * intensity;
+  return vec2(noiseX,noiseY);
 }
-vec3 rand(vec3 seed, float intensity) {
+vec3 rand(vec3 seed) {
   float noiseX = (fract(sin(dot(seed, noise3)) * 43758.5453));
   float noiseY = (fract(sin(dot(seed, noise3 * 2.0)) * 43758.5453));
   float noiseZ = (fract(sin(dot(seed, noise3 * 3.0)) * 43758.5453));
-  return vec3(noiseX, noiseY, noiseZ) * intensity;
+  return vec3(noiseX, noiseY, noiseZ);
 }
 // ----------------------------------------------------------------------------
 void main()
@@ -416,8 +416,11 @@ void main()
     float glossinessSquare = colorGlossiness * colorGlossiness;
     float specularPower = exp2(8.0 * glossinessSquare + 1.0);
 
-    //vec3 N = normalize(v_worldNormal + rand(v_worldNormal,1.0)*0.02);
+    #ifdef VOX_PIXEL_NORMAL_NOISE
+    vec3 N = normalize(v_worldNormal + rand(v_worldNormal) * u_params[0].w);
+    #else
     vec3 N = normalize(v_worldNormal);
+    #endif
     vec3 V = normalize(v_camPos.xyz - v_worldPos);
     float dotNV = clamp(dot(N, V), 0.0, 1.0);
     vec3 albedo = u_albedo.xyz;
@@ -442,14 +445,16 @@ void main()
     specularColor *= u_params[3].xyz;
 
     #ifdef VOX_ENV_MAP
-        float mipLv = 100.0 * fract(u_params[3].w);
-        mipLv = (mipLv - glossinessSquare * mipLv) + floor(u_params[3].w);
-        mipLv = max(mipLv, 0.0);
-	    vec3 envVec = -getWorldEnvDir(N, -V);
-	    envVec.x = -envVec.x;
-        envVec = VOX_TextureCubeLod(u_sampler0, envVec, mipLv).xyz;
-        // envVec = linearToGamma(envVec);
-        specularColor = fresnelSchlick3(specularColor, dotNV, 0.25 * reflectionIntensity) * envVec;
+        float mipLv = floor(100.0 * fract(u_params[3].w));
+        mipLv -= glossinessSquare * mipLv;
+        mipLv = max(mipLv + floor(u_params[3].w), 0.0);
+	    //vec3 envDir = -getWorldEnvDir(normalize(N + normalPerturb), -V);
+	    vec3 envDir = -getWorldEnvDir(N, -V);
+	    envDir.x = -envDir.x;
+        vec3 specularEnvColor3 = VOX_TextureCubeLod(u_sampler0, envDir, mipLv).xyz;
+        //specularEnvColor3 = reinhardToneMapping(specularEnvColor3,1.0);
+        specularEnvColor3 = gammaToLinear(specularEnvColor3);
+        specularColor = fresnelSchlick3(specularColor, dotNV, 0.25 * reflectionIntensity) * specularEnvColor3;
     #endif
 
     float frontIntensity = u_params[1].z;

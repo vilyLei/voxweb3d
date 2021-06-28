@@ -19,6 +19,9 @@ import FloatCubeTextureProxy from "../../vox/texture/FloatCubeTextureProxy";
 import BinaryLoader from "../../vox/assets/BinaryLoader";
 import Color4 from "../../vox/material/Color4";
 import DDSLoader from "../../vox/assets/DDSLoader";
+import Sphere3DMesh from "../../vox/mesh/Sphere3DMesh";
+import Box3DMesh from "../../vox/mesh/Box3DMesh";
+import { VtxNormalType } from "../../vox/mesh/VtxBufConst";
 
 
 class TextureLoader {
@@ -282,31 +285,35 @@ export default class PBRLightsManager {
       if (DecodeQueue.dst_uid == this.uid) {
         // 通过源数据构建mesh
         let list: DecodeNode[] = DecodeQueue.GetResList();
-        let gbuf: any = null;
-        let mesh: RcodMesh = null;
-
+        
         let scale: number = this.moduleScale;
         console.log("createMesh2 this.offsetPos: ", this.offsetPos, this.uid + ", list.length: " + list.length);
 
-        gbuf = list[0].gbuf;
-        mesh = new RcodMesh();
-        ///*
-        //  let pl:Plane3DEntity = new Plane3DEntity();
-        //  pl.initialize(0,0,40,40,[tex0]);
-        //    let rm: RcoTextureMaterial = new RcoTextureMaterial();
-        //    rm.initializeByCodeBuf(true);
-        //    rm.setTextureList([tex1]);
-
         let rm: ColorLightsPBRMaterial = this.material;
         rm.initializeByCodeBuf(true);
-        //rm = pl.getMaterial();
+        
         let entity: DisplayEntity = new DisplayEntity();
         entity.setMaterial(rm);
-        //entity.setPosition(this.offsetPos);
-        //console.log("rm.getBufSortFormat(): "+rm.getBufSortFormat());
+        ///*
+        let mesh: RcodMesh = new RcodMesh();
         mesh.setBufSortFormat(rm.getBufSortFormat());
         mesh.vbWholeDataEnabled = false;
-        mesh.initialize2(gbuf, list);
+        mesh.initialize2(list[0].gbuf, list);
+        //*/
+        /*
+        let mesh:Sphere3DMesh = new Sphere3DMesh();
+        mesh.setBufSortFormat(rm.getBufSortFormat());
+        mesh.initialize(150.0,30,30,false);
+        this.offsetPos.setXYZ(0,0,0);
+        //*/
+        /*
+        let mesh: Box3DMesh = new Box3DMesh();
+        mesh.normalType = VtxNormalType.GOURAND;
+        mesh.setBufSortFormat(rm.getBufSortFormat());
+        mesh.initialize(new Vector3D(-130,-130,-130), new Vector3D(130,130,130));
+        this.offsetPos.setXYZ(0,0,0);
+        //*/
+
         entity.setMesh(mesh);
         entity.setScaleXYZ(scale, scale, scale);
 
@@ -322,7 +329,7 @@ export default class PBRLightsManager {
         this.centerV.copyFrom(mesh.bounds.center);
         DecodeQueue.MeshDataEanbled = false;
         DecodeQueue.LoadEnabled = true;
-        this.mesh = mesh;
+        //this.mesh = mesh;
         this.entity = entity;
         return true;
       }

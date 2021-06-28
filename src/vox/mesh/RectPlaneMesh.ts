@@ -15,6 +15,7 @@ import MeshBase from "../../vox/mesh/MeshBase";
 import VtxBufData from "../../vox/mesh/VtxBufData";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 import {RenderDrawMode} from "../../vox/render/RenderConst";
+import Color4 from "../material/Color4";
 
 export default class RectPlaneMesh extends MeshBase
 {
@@ -22,6 +23,11 @@ export default class RectPlaneMesh extends MeshBase
     {
         super(bufDataUsage);
     }
+    color0:Color4 = new Color4();
+    color1:Color4 = new Color4();
+    color2:Color4 = new Color4();
+    color3:Color4 = new Color4();
+
     offsetU:number = 0.0;
     offsetV:number = 0.0;
     uScale:number = 1.0;
@@ -152,10 +158,10 @@ export default class RectPlaneMesh extends MeshBase
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX))
         {
             this.m_cvs = new Float32Array([
-                1.0,1.0,1.0,
-                1.0,1.0,1.0,
-                1.0,1.0,1.0,
-                1.0,1.0,1.0
+                this.color0.r, this.color0.g, this.color0.b,
+                this.color1.r, this.color1.g, this.color1.b,
+                this.color2.r, this.color2.g, this.color2.b,
+                this.color3.r, this.color3.g, this.color3.b
             ]);
             ROVertexBuffer.AddFloat32Data(this.m_cvs,3);
         }

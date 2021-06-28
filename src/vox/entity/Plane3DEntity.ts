@@ -13,6 +13,7 @@ import ScreenPlaneMaterial from "../../vox/material/mcase/ScreenPlaneMaterial";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import RectPlaneMesh from "../../vox/mesh/RectPlaneMesh";
 import ROTransform from "../../vox/display/ROTransform";
+import Color4 from "../material/Color4";
 
 export default class Plane3DEntity extends DisplayEntity {
     private m_startX: number = 0;
@@ -20,8 +21,16 @@ export default class Plane3DEntity extends DisplayEntity {
     private m_pwidth: number = 0;
     private m_plong: number = 0;
     private m_flag: number = 0;
-    flipVerticalUV: boolean = false;
     private m_screenAlignEnabled: boolean = false;
+
+    readonly color0:Color4 = new Color4();
+    readonly color1:Color4 = new Color4();
+    readonly color2:Color4 = new Color4();
+    readonly color3:Color4 = new Color4();
+    
+    flipVerticalUV: boolean = false;
+    vtxColorEnabled: boolean = false;
+    
     constructor(transform: ROTransform = null) {
         super(transform);
     }
@@ -39,6 +48,7 @@ export default class Plane3DEntity extends DisplayEntity {
             }
             else {
                 let cm: Default3DMaterial = new Default3DMaterial();
+                cm.vtxColorEnabled = this.vtxColorEnabled;
                 cm.setTextureList(texList);
                 this.setMaterial(cm);
             }
@@ -166,6 +176,12 @@ export default class Plane3DEntity extends DisplayEntity {
     protected __activeMesh(material: MaterialBase) {
         if (this.getMesh() == null) {
             let mesh: RectPlaneMesh = new RectPlaneMesh();
+
+            mesh.color0.copyFrom( this.color0 );
+            mesh.color1.copyFrom( this.color1 );
+            mesh.color2.copyFrom( this.color2 );
+            mesh.color3.copyFrom( this.color3 );
+
             mesh.flipVerticalUV = this.flipVerticalUV;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             mesh.axisFlag = this.m_flag;

@@ -21,114 +21,128 @@ class Rect2DShaderBuffer extends ShaderCodeBuffer
     private m_uniqueName:string = "";
     private m_hasTex:boolean = false;
     centerAlignEnabled:boolean = false;
+    vtxColorEnabled:boolean = false;
     initialize(texEnabled:boolean):void
     {
         console.log("Rect2DShaderBuffer::initialize()... texEnabled: "+texEnabled);
         this.m_uniqueName = "Rect2DShd";
         this.m_hasTex = texEnabled;
-        if(texEnabled)
-        {
-            this.m_uniqueName += "_tex";
-        }
-        if(this.centerAlignEnabled)
-        {
-            this.m_uniqueName += "_center";
-        }
+        if(texEnabled) this.m_uniqueName += "_tex";
+        if(this.centerAlignEnabled) this.m_uniqueName += "_center";
+        if(this.vtxColorEnabled) this.m_uniqueName += "_vtxColor";
     }
     getFragShaderCode():string
     {
         let fragCode:string = 
-"\
-precision mediump float;\n\
-varying vec4 v_color;\n\
-";
+`
+precision mediump float;
+varying vec4 v_color;
+`;
         if(this.m_hasTex)
         {
 
             fragCode +=
-"\
-uniform sampler2D u_sampler0;\n\
-varying vec2 v_texUV;\n\
-";
+`
+uniform sampler2D u_sampler0;
+varying vec2 v_texUV;
+`;
         }
         fragCode +=
-"\
-void main()\n\
-{\n\
-";
+`
+void main()
+{
+`;
         if(this.m_hasTex)
         {
             fragCode +=
-"\
-gl_FragColor = texture2D(u_sampler0, v_texUV) * v_color;\n\
-";
+`
+    gl_FragColor = texture2D(u_sampler0, v_texUV) * v_color;
+`;
         }
         else
         {
             fragCode +=
-"\
-gl_FragColor = v_color;\n\
-";
+`
+    gl_FragColor = v_color;
+`;
         }
         fragCode +=
-"\
-}\n\
-";
+`
+}
+`;
         return fragCode;
     }
     getVtxShaderCode():string
     {
         let vtxCode:string = 
-"\
-precision mediump float;\n\
-attribute vec3 a_vs;\n\
-uniform vec4 u_stageParam;\n\
-uniform vec4 u_params[3];\n\
-varying vec4 v_color;\n\
-";
+`
+precision mediump float;
+attribute vec3 a_vs;
+uniform vec4 u_stageParam;
+uniform vec4 u_params[3];
+varying vec4 v_color;
+`;
         if(this.m_hasTex)
         {
             vtxCode +=
-"\
-attribute vec2 a_uvs;\n\
-varying vec2 v_texUV;\n\
-";
+`
+attribute vec2 a_uvs;
+varying vec2 v_texUV;
+`;
+        }
+        if(this.vtxColorEnabled)
+        {
+            vtxCode +=
+`
+attribute vec3 a_cvs;
+`;
         }
         vtxCode +=
-"\
-void main()\n\
-{\n\
-vec4 pv4 = vec4(a_vs.xyz,1.0);\n\
-pv4.xy *= u_params[1].xy;\n\
-float cosv = cos(u_params[1].w);\n\
-float sinv = sin(u_params[1].w);\n\
-pv4.xy = vec2(pv4.x * cosv - pv4.y * sinv, pv4.x * sinv + pv4.y * cosv);\n\
-pv4.xy += u_params[0].xy;\n\
-pv4.xy *= u_stageParam.xy;\n\
-";
+`
+void main()
+{
+    vec4 pv4 = vec4(a_vs.xyz,1.0);
+    pv4.xy *= u_params[1].xy;
+    float cosv = cos(u_params[1].w);
+    float sinv = sin(u_params[1].w);
+    pv4.xy = vec2(pv4.x * cosv - pv4.y * sinv, pv4.x * sinv + pv4.y * cosv);
+    pv4.xy += u_params[0].xy;
+    pv4.xy *= u_stageParam.xy;
+`;
+
 if(!this.centerAlignEnabled)
 {
 vtxCode +=
-"\
-pv4.xy += -1.0;\n\
-";
+`
+    pv4.xy += -1.0;
+`;
 }
 vtxCode +=
-"\
-gl_Position = pv4;\n\
-";
+`
+    gl_Position = pv4;
+`;
         if(this.m_hasTex)
         {
             vtxCode +=
-"\
-v_texUV = vec2(a_uvs.x, 1.0 - a_uvs.y);\n\
-";
+`
+    v_texUV = vec2(a_uvs.x, 1.0 - a_uvs.y);
+`;
         }
         vtxCode +=
-"\
-v_color = u_params[2];\n\
-}\n\
-";
+`
+    v_color = u_params[2];
+`;
+        if(this.vtxColorEnabled)
+        {
+            vtxCode +=
+`
+    v_color.xyz *= a_cvs.xyz;
+`;
+        }
+        vtxCode +=
+`
+}
+`;
         return vtxCode;
     }
     getUniqueShaderName()
@@ -155,16 +169,20 @@ v_color = u_params[2];\n\
 export default class Rect2DMaterial extends MaterialBase
 {
     private m_centerAlignEnabled:boolean = false;
-    constructor(centerAlignEnabled:boolean = false)
+    private m_vtxColorEnabled:boolean = false;
+    constructor(centerAlignEnabled:boolean = false,vtxColorEnabled:boolean = false)
     {
         super();
         this.m_centerAlignEnabled = centerAlignEnabled;
+        this.m_vtxColorEnabled = vtxColorEnabled;
     }
     private m_r:number = 0.0
     getCodeBuf():ShaderCodeBuffer
     {
-        Rect2DShaderBuffer.GetInstance().centerAlignEnabled = this.m_centerAlignEnabled;
-        return Rect2DShaderBuffer.GetInstance();
+        let buf: Rect2DShaderBuffer = Rect2DShaderBuffer.GetInstance();
+        buf.centerAlignEnabled = this.m_centerAlignEnabled;
+        buf.vtxColorEnabled = this.m_vtxColorEnabled;
+        return buf;
     }
     private m_paramArray:Float32Array = new Float32Array([0.0,0.0,0.0,0.0, 1.0,1.0,0.0,0.0, 1.0,1.0,1.0,1.0]);
     setXY(px:number,py:number):void

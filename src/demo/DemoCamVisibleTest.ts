@@ -1,4 +1,5 @@
 
+import Color4 from '../vox/material/Color4';
 import Vector3D from "../vox/math/Vector3D";
 import Matrix4 from "../vox/math/Matrix4";
 import Matrix4Pool from "../vox/math/Matrix4Pool";
@@ -16,6 +17,7 @@ import MouseEvent from "../vox/event/MouseEvent";
 import Stage3D from "../vox/display/Stage3D";
 import H5FontSystem from "../vox/text/H5FontSys";
 
+import Rect2DEntity from "../vox2d/entity/Rect2DEntity";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
@@ -25,49 +27,13 @@ import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import ScreenAlignPlaneEntity from "../vox/entity/ScreenAlignPlaneEntity";
 import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
-import * as Rect2DEntityT from "../vox2d/entity/Rect2DEntity";
 import Text2DEntity from "../vox2d/text/Text2DEntity";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import CameraTrack from "../vox/view/CameraTrack";
 import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
 import * as EntityDispT from "./base/EntityDisp";
-import Color4 from '../vox/material/Color4';
 
-//import Vector3D = Vector3DT.vox.math.Vector3D;
-//import Matrix4 = Matrix4T.vox.math.Matrix4;
-//import Matrix4Pool = Matrix4T.vox.math.Matrix4Pool;
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-//import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-//import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-//import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-//import RendererState = RendererStateT.vox.render.RendererState;
-//import RendererParam = RendererParamT.vox.scene.RendererParam;
-//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-//import TextureConst = TextureConstT.vox.texture.TextureConst;
-//import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-//import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-//import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-//import RendererScene = RendererSceneT.vox.scene.RendererScene;
-//import MouseEvent = MouseEventT.vox.event.MouseEvent;
-//import Stage3D = Stage3DT.vox.display.Stage3D;
-//import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
 
-//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-//import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-//import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
-//import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
-//import ScreenAlignPlaneEntity = ScreenAlignPlaneEntityT.vox.entity.ScreenAlignPlaneEntity;
-//import ScreenFixedAlignPlaneEntity = ScreenFixedAlignPlaneEntityT.vox.entity.ScreenFixedAlignPlaneEntity;
-import Rect2DEntity = Rect2DEntityT.vox2d.entity.Rect2DEntity;
-//import Text2DEntity = Text2DEntityT.vox2d.text.Text2DEntity;
-//import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
-//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-//import DisplayEntityContainer = DisplayEntityContainerT.vox.entity.DisplayEntityContainer;
-//import EntityDisp = EntityDispT.demo.base.EntityDisp;
-//import Color4 = Color4T.vox.material.Color4;
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 
 export namespace demo
@@ -103,22 +69,6 @@ export namespace demo
             {
                 H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,true,false);
                 RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/guangyun_H_0007.png");
-                let tex3:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_01.jpg");
-                let tex4:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_02.jpg");
-                let tex5:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/a_02_c.jpg");
-                BillParticle.texs.push(tex2);
-                BillParticle.texs.push(tex3);
-                BillParticle.texs.push(tex4);
-                BillParticle.texs.push(tex5);
-                tex0.mipmapEnabled = true;
-                tex1.mipmapEnabled = true;
-                tex2.mipmapEnabled = true;
-                tex3.mipmapEnabled = true;
-                tex4.mipmapEnabled = true;
-                tex5.mipmapEnabled = true;
                 
                 let rparam:RendererParam = new RendererParam();
                 rparam.setMatrix4AllocateSize(8192 * 4);
@@ -129,6 +79,8 @@ export namespace demo
                 this.m_rscene.initialize(rparam,3);
                 this.m_rscene.setRendererProcessParam(1,true,true);
                 this.m_rcontext = this.m_rscene.getRendererContext();
+                this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+
                 BillParticle.renderer = this.m_rscene.getRenderer();
                 let stage3D:Stage3D = this.m_rcontext.getStage3D() as Stage3D;
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseUpListener);
@@ -139,6 +91,17 @@ export namespace demo
                 RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.BLEND);
                 RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
                 
+                let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
+                let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
+                let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/guangyun_H_0007.png");
+                let tex3:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_01.jpg");
+                let tex4:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_02.jpg");
+                let tex5:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/a_02_c.jpg");
+                BillParticle.texs.push(tex2);
+                BillParticle.texs.push(tex3);
+                BillParticle.texs.push(tex4);
+                BillParticle.texs.push(tex5);
+
                 let i:number = 0;
                 let total:number = 10;
 
@@ -151,10 +114,17 @@ export namespace demo
                 //  alignFixedPlane.initialize(-0.5,-0.5,1.0,1.0,[tex1]);
                 //  this.m_rscene.addEntity(alignFixedPlane);
                 //  //Rect2DEntity
-                //              let rect2DDisp:Rect2DEntity = new Rect2DEntity();
-                //              rect2DDisp.initialize(0.0,0.0,120.0,160.0,[tex0]);
-                //              rect2DDisp.setRotation(30.0);
-                //              this.m_rscene.addEntity(rect2DDisp);
+                let rect2DDisp:Rect2DEntity = new Rect2DEntity();
+                rect2DDisp.vtxColorEnabled = true;
+                rect2DDisp.color0.setRGB3f(1.0,1.0,1.0);
+                rect2DDisp.color1.setRGB3f(1.0,0.0,0.0);
+                rect2DDisp.color2.setRGB3f(0.0,0.0,0.0);
+                rect2DDisp.color3.setRGB3f(0.0,1.0,0.0);
+                //rect2DDisp.initialize(0.0,0.0,120.0,160.0,[tex0]);
+                rect2DDisp.initialize(0.0,0.0,120.0,160.0);
+                rect2DDisp.setRotation(30.0);
+                rect2DDisp.setXY(100.0,180.0);
+                this.m_rscene.addEntity(rect2DDisp);
                 //              this.m_rect2DDisp = rect2DDisp;
                 
                 //      rect2DDisp = new Rect2DEntity();
@@ -216,9 +186,9 @@ export namespace demo
             //  this.m_equeue.run();
             
             //console.log("##-- begin");
-            this.m_rcontext.setClearRGBColor3f(0.1, 0.6, 0.1);
+            this.m_rscene.setClearRGBColor3f(0.1, 0.6, 0.1);
             //this.m_rcontext.setClearRGBAColor4f(0.0, 0.5, 0.0,0.0);
-            this.m_rcontext.renderBegin();
+            this.m_rscene.renderBegin();
 
             this.m_rscene.update();
             this.m_rscene.cullingTest();
@@ -226,7 +196,7 @@ export namespace demo
 
             this.m_rscene.runEnd();
             //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-            this.m_rscene.updateCamera();
+            //this.m_rscene.updateCamera();
             if(this.m_containerMain != null)
             {
                 this.m_container.setRotationY(this.m_container.getRotationY() + 1.0);

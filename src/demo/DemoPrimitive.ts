@@ -87,13 +87,17 @@ export namespace demo
                 let axis:Axis3DEntity = new Axis3DEntity();
                 axis.initialize(110.0);
                 this.m_renderer.addEntity(axis);
-                /*
+                ///*
                 let plane:Plane3DEntity = new Plane3DEntity();
+                plane.color0.setRGB3f(1.0,0.0,0.0);
+                plane.color2.setRGB3f(0.0,1.0,0.0);
+                plane.vtxColorEnabled = true;
                 //plane.showDoubleFace();
                 plane.initializeXOZ(-500.0,-500.0,1000.0,1000.0,[tex0]);
                 //plane.initializeXOZ(-200.0,-150.0,400.0,300.0);
                 plane.setXYZ(0.0,-100.0,0.0);
                 this.m_renderer.addEntity(plane);
+                //return;
                 //*/
                 ///*
                 let billLine:BillboardLine3DEntity = new BillboardLine3DEntity();
@@ -110,7 +114,7 @@ export namespace demo
                 this.m_renderer.addEntity(billLine,1);
                 //billLine.setFadeFactor(0.5);
                 this.m_billLine = billLine;
-                return;
+                //return;
                 //*/
                 /*
                 let lightLine:LightLine3DEntity = new LightLine3DEntity();
@@ -125,14 +129,16 @@ export namespace demo
                 //return;
                 //*/
                 //let posV:Vector3D = new Vector3D();
-
+                ///*
                 let pipe:Pipe3DEntity = new Pipe3DEntity();
                 pipe.showDoubleFace();
                 //pipe.toBrightnessBlend(false,true);
                 pipe.initialize(50.0,200.0,8,1,[tex3]);
                 //pipe.setXYZ(Math.random() * 500.0 - 250.0,Math.random() * 50.0 + 10.0,Math.random() * 500.0 - 250.0);
                 this.m_renderer.addEntity(pipe,1);
-
+                //return;
+                //*/
+                ///*
                 //  pipe.getCircleCenterAt(0,posV);
                 //  console.log("XXX posV: ",posV);
                 //  return;
@@ -161,7 +167,7 @@ export namespace demo
                     this.m_renderer.addEntity(billboard);
                     this.m_equeue.addBillEntity(billboard,false);
                 }
-
+                //*/
                 let srcBox:Box3DEntity = new Box3DEntity();
                 srcBox.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
                 
@@ -170,10 +176,12 @@ export namespace demo
                 {
                     box = new Box3DEntity();
                     if(srcBox != null)box.setMesh(srcBox.getMesh());
+                    //box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
                     box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
                     box.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
                     this.m_renderer.addEntity(box);
                 }
+                
                 for(i = 0; i < 1; ++i)
                 {
                     let sphere:Sphere3DEntity = new Sphere3DEntity();
