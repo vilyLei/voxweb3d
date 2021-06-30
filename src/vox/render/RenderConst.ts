@@ -21,18 +21,37 @@ export class RenderBlendMode {
     static readonly TRANSPARENT: number = 2;
     static readonly ALPHA_ADD: number = 3;
     static readonly ADD: number = 4;
-    static readonly ADD2: number = 5;
+    static readonly ADD_LINEAR: number = 5;
     static readonly INVERSE_ALPHA: number = 6;
     static readonly BLAZE: number = 7;
     static readonly OVERLAY: number = 8;
     static readonly OVERLAY2: number = 8;
     static readonly DISABLE: number = 0;
+    //static readonly MAX: number = 8;
+}
+export class GLBlendMode {
+    static readonly ZERO: number = 1;
+    static readonly ONE: number = 1;
+    static readonly SRC_COLOR: number = 1;
+    static readonly DST_COLOR: number = 1;
+    static readonly SRC_ALPHA: number = 1;
+    static readonly DST_ALPHA: number = 1;
+    static readonly ONE_MINUS_SRC_ALPHA: number = 1;
+}
+export class GLBlendEquation {
+    static readonly FUNC_ADD: number = 1;
+    static readonly FUNC_SUBTRACT: number = 1;
+    static readonly FUNC_REVERSE_SUBTRACT: number = 1;
+    static readonly MIN_EXT: number = 1;
+    static readonly MAX_EXT: number = 1;
+    static readonly MIN: number = 1;
+    static readonly MAX: number = 1;
 }
 export class CullFaceMode {
     static readonly BACK: number = 1;
     static readonly FRONT: number = 2;
     static readonly FRONT_AND_BACK: number = 3;
-    static readonly NONE: number = 4;
+    static readonly NONE: number = 0;
     static readonly DISABLE: number = 0;
 }
 export class DepthTestMode {

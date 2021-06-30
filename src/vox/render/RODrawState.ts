@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../../vox/render/RenderConst";
+import { RenderBlendMode, CullFaceMode, DepthTestMode, GLBlendEquation } from "../../vox/render/RenderConst";
 import RAdapterContext from "../../vox/render/RAdapterContext";
 
 export class RenderColorMask {
@@ -125,6 +125,10 @@ export class RenderStateObject {
     private static s_depthTestMode: number = -1;
     private static s_stsMap: Map<number, RenderStateObject> = new Map();
     private static s_stsNameMap: Map<string, RenderStateObject> = new Map();
+    private static s_blendModeNameMap: Map<string, number> = new Map();
+    private static s_blendModeIndexMap: Map<number, number> = new Map();
+    private static s_blendModeIndex: number = 0;
+    private static s_blendModes: number[][] = new Array(256);
     private static s_unlocked: boolean = true;
     static NORMAL_STATE: number = 0;
     static BACK_CULLFACE_NORMAL_STATE: number = 0;
@@ -173,11 +177,12 @@ export class RenderStateObject {
             //  console.log("RenderStateObject::use(), m_blendMode: "+this.m_blendMode+",m_depthTestMode: "+this.m_depthTestMode+", m_uid: "+this.m_uid);
             RenderStateObject.Rstate.setCullFaceMode(this.m_cullFaceMode);
             //RenderStateObject.Rstate.setBlendMode(this.m_blendMode);
+            let list: number[] = RenderStateObject.s_blendModes[RenderStateObject.m_blendMode];
             if (RenderStateObject.m_blendMode < 0) {
-                RenderStateObject.Rstate.setBlendMode(this.m_blendMode);
+                RenderStateObject.Rstate.setBlendMode(this.m_blendMode, RenderStateObject.s_blendModes[this.m_blendMode]);
             }
             else {
-                RenderStateObject.Rstate.setBlendMode(RenderStateObject.m_blendMode);
+                RenderStateObject.Rstate.setBlendMode(RenderStateObject.m_blendMode,RenderStateObject.s_blendModes[RenderStateObject.m_blendMode]);
             }
             //RenderStateObject.Rstate.setDepthTestMode(this.m_depthTestMode);
             if (RenderStateObject.s_depthTestMode < 0) {
@@ -189,6 +194,75 @@ export class RenderStateObject {
             //
             RenderStateObject.s_state = this.m_uid;
         }
+    }
+    
+    static CreateBlendModeSeparate(name:string, srcRGB: number, dstRGB: number, srcAlpha: number, dstAlpha: number, equationRGB: number = 0, equationAlpha: number = 0): number {
+        if(name != null && name != "") {
+
+            let b: number;
+            if (RenderStateObject.s_blendModeNameMap.has(name)) {
+                b = RenderStateObject.s_blendModeNameMap.get(name);
+                return RenderStateObject.s_blendModeIndexMap.get(b);
+            }
+            if(equationRGB < 1) {
+                equationRGB = GLBlendEquation.FUNC_ADD;
+            }
+            if(equationAlpha < 1) {
+                equationAlpha = GLBlendEquation.FUNC_ADD;
+            }
+            let type: number = 0;
+            b = 31;
+            b = b * 131 + srcRGB;
+            b = b * 131 + dstRGB;
+            if(srcAlpha > 0 && dstAlpha > 0) {
+                b = b * 131 + srcAlpha;
+                b = b * 131 + dstAlpha;
+                type = 1;
+            }
+            if (RenderStateObject.s_blendModeIndexMap.has(b)) {
+                console.warn("This blendmode value already exists, its name is "+name+".");
+                RenderStateObject.s_blendModeNameMap.set(name,b);
+                return RenderStateObject.s_blendModeIndexMap.get(b);
+            }
+            let index: number = ++RenderStateObject.s_blendModeIndex;
+
+            RenderStateObject.s_blendModeNameMap.set(name,b);
+            RenderStateObject.s_blendModeIndexMap.set(b, index);
+            let list:number[] = [type, equationRGB, equationAlpha, 0, srcRGB, dstRGB, srcAlpha, dstAlpha];
+            RenderStateObject.s_blendModes[index] = list;
+            return index;
+        }
+        return 0;
+    }
+    
+    static CreateBlendMode(name:string, srcColor: number, dstColor: number, blendEquation: number = 0): number {
+        if(name != null && name != "") {
+
+            let b: number;
+            if (RenderStateObject.s_blendModeNameMap.has(name)) {
+                b = RenderStateObject.s_blendModeNameMap.get(name);
+                return RenderStateObject.s_blendModeIndexMap.get(b);
+            }
+            if(blendEquation < 1) {
+                blendEquation = GLBlendEquation.FUNC_ADD;
+            }
+            let type: number = 0;
+            b = 31;
+            b = b * 131 + srcColor;
+            b = b * 131 + dstColor;
+            if (RenderStateObject.s_blendModeIndexMap.has(b)) {
+                return RenderStateObject.s_blendModeIndexMap.get(b);
+            }
+            let index: number = ++RenderStateObject.s_blendModeIndex;
+
+            RenderStateObject.s_blendModeNameMap.set(name,b);
+            RenderStateObject.s_blendModeIndexMap.set(b, index);
+            let list:number[] = [type, blendEquation, 0, srcColor, dstColor, 0, 0];
+            console.log("list: ",list);
+            RenderStateObject.s_blendModes[index] = list;
+            return index;
+        }
+        return 0;
     }
     static Create(objName: string, cullFaceMode: number, blendMode: number, depthTestMode: number): number {
         if (RenderStateObject.s_stsNameMap.has(objName)) {
@@ -266,7 +340,6 @@ export class RODrawState {
     private m_blendMode: number = RenderBlendMode.NORMAL;
     private m_cullMode: number = CullFaceMode.NONE;
     private m_depthTestType: number = DepthTestMode.DISABLE;
-    private m_blendDisabled: boolean = true;
     private m_cullDisabled: boolean = true;
     private m_context: RAdapterContext = null;
     private m_gl: any = null;
@@ -317,91 +390,39 @@ export class RODrawState {
         }
     }
     setCullFaceMode(mode: number): void {
-        switch (mode) {
-            case CullFaceMode.BACK:
-                if (this.m_cullMode != mode) {
-                    this.m_cullMode = mode;
-                    if (this.m_cullDisabled) { this.m_cullDisabled = false; this.m_gl.enable(this.m_gl.CULL_FACE); }
-                    this.m_gl.cullFace(this.m_gl.BACK);
-                }
-                break;
-            case CullFaceMode.FRONT:
-                if (this.m_cullMode != mode) {
-                    this.m_cullMode = mode;
-                    if (this.m_cullDisabled) { this.m_cullDisabled = false; this.m_gl.enable(this.m_gl.CULL_FACE); }
-                    this.m_gl.cullFace(this.m_gl.FRONT);
-                }
-                break;
-            case CullFaceMode.FRONT_AND_BACK:
-                if (this.m_cullMode != mode) {
-                    this.m_cullMode = mode;
-                    if (this.m_cullDisabled) { this.m_cullDisabled = false; this.m_gl.enable(this.m_gl.CULL_FACE); }
-                    this.m_gl.cullFace(this.m_gl.FRONT_AND_BACK);
-                }
-                break;
-            case CullFaceMode.NONE:
-            case CullFaceMode.DISABLE:
-                if (this.m_cullMode != mode) {
-                    this.m_cullMode = mode;
-                    if (!this.m_cullDisabled) {
-                        this.m_cullDisabled = true;
-                        this.m_gl.disable(this.m_gl.CULL_FACE);
-                    }
-                }
-                break;
-            default:
-                break;
+        
+        if (this.m_cullMode != mode) {
+            this.m_cullMode = mode;
+            if(mode != CullFaceMode.NONE) {
+                if (this.m_cullDisabled) { this.m_cullDisabled = false; this.m_gl.enable(this.m_gl.CULL_FACE); }
+                this.m_gl.cullFace(mode);
+            }
+            else if (!this.m_cullDisabled) {                
+                this.m_cullDisabled = true;
+                this.m_gl.disable(this.m_gl.CULL_FACE);
+            }
         }
     }
-    setBlendMode(mode: number): void {
+    setBlendMode(mode: number, params: number[]): void {
         if (this.m_blendMode != mode) {
-            //trace("this.m_blendMode: "+this.m_blendMode + ","+mode);
+            //console.log("this.m_blendMode: "+this.m_blendMode + ",mode: "+mode, params);
             this.m_blendMode = mode;
-            switch (mode) {
-                case RenderBlendMode.NORMAL:
-                    if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
+            if(mode > 0) {
+
+                if(params[0] < 1) {
+                    //FUNC_ADD
+                    this.m_gl.blendEquation(this.m_gl.FUNC_ADD);
                     this.m_gl.blendFunc(this.m_gl.ONE, this.m_gl.ZERO);
-                    //trace("use blendMode NORMAL.");
-                    break;
-                case RenderBlendMode.TRANSPARENT:
-                    if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
-                    this.m_gl.blendFunc(this.m_gl.SRC_ALPHA, this.m_gl.ONE_MINUS_SRC_ALPHA);
-                    //console.log("use blendMode TRANSPARENT.");
-                    break;
-                case RenderBlendMode.ALPHA_ADD:
-                    if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
-                    this.m_gl.blendFunc(this.m_gl.ONE, this.m_gl.ONE_MINUS_SRC_ALPHA);
-                    break;
-                case RenderBlendMode.ADD:
-                    if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
-                    this.m_gl.blendFunc(this.m_gl.SRC_ALPHA, this.m_gl.ONE);
-                    //trace("use blendMode ADD.");
-                    break;
-                case RenderBlendMode.ADD2:
-                    if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
-                    this.m_gl.blendFunc(this.m_gl.ONE, this.m_gl.ONE);
-                    break;
-                case RenderBlendMode.INVERSE_ALPHA:
-                    if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
-                    this.m_gl.blendFunc(this.m_gl.ONE, this.m_gl.SRC_ALPHA);
-                    break;
-                case RenderBlendMode.BLAZE:
-                    if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
-                    this.m_gl.blendFunc(this.m_gl.SRC_COLOR, this.m_gl.ONE);
-                    break;
-                case RenderBlendMode.OVERLAY:
-                    if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
-                    this.m_gl.blendFunc(this.m_gl.DST_COLOR, this.m_gl.DST_ALPHA);
-                    break;
-                case RenderBlendMode.OVERLAY2:
-                    if (this.m_blendDisabled) { this.m_gl.enable(this.m_gl.BLEND); this.m_blendDisabled = false; this.m_gl.blendEquation(this.m_gl.FUNC_ADD); }
-                    this.m_gl.blendFunc(this.m_gl.DST_COLOR, this.m_gl.SRC_ALPHA);
-                    break;
-                case RenderBlendMode.DISABLE:
-                    if (!this.m_blendDisabled) { this.m_gl.disable(this.m_gl.BLEND); this.m_blendDisabled = true; }
-                    break;
-                default:
-                    break;
+                    this.m_gl.blendEquation(params[1]);
+                    this.m_gl.blendFunc(params[3], params[4]);
+                }
+                else {
+                    this.m_gl.blendEquationSeparate(params[1], params[2]);
+                    this.m_gl.blendFuncSeparate(params[2], params[3],params[4], params[5]);
+                }
+            }
+            else {
+                this.m_gl.disable(this.m_gl.BLEND);
             }
         }
     }

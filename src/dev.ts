@@ -197,17 +197,13 @@
 //  import * as DemoKeyboardEvt from "./demo/DemoKeyboardEvt";
 //  import Demo = DemoKeyboardEvt.demo.DemoKeyboardEvt;
 
-//  import * as DemoParticle from "./demo/DemoParticle";
-//  import Demo = DemoParticle.demo.DemoParticle;
+//  import {DemoParticle as Demo} from "./demo/DemoParticle";
 
-//  import * as DemoParticleMixTex from "./demo/DemoParticleMixTex";
-//  import Demo = DemoParticleMixTex.demo.DemoParticleMixTex;
+//  import {DemoParticleMixTex as Demo} from "./demo/DemoParticleMixTex";
 
-//  import * as DemoParticleGroup from "./demo/DemoParticleGroup";
-//  import Demo = DemoParticleGroup.demo.DemoParticleGroup;
+//  import {DemoParticleGroup as Demo} from "./demo/DemoParticleGroup";
 
-//  import * as DemoParticleEruption from "./demo/DemoParticleEruption";
-//  import Demo = DemoParticleEruption.demo.DemoParticleEruption;
+//  import {DemoParticleEruption as Demo} from "./demo/DemoParticleEruption";
 
 //  import * as DemoParticleClips from "./demo/DemoParticleClips";
 //  import Demo = DemoParticleClips.demo.DemoParticleClips;
@@ -309,6 +305,8 @@
 //  import {DemoRGBETex as Demo} from "./demo/DemoRGBETex";
 
 //  import {DemoStencil as Demo} from "./demo/DemoStencil";
+
+//  import {DemoBlendMode as Demo} from "./demo/DemoBlendMode";
 
 //  import {DemoFileSystem as Demo} from "./demo/DemoFileSystem";
 

@@ -12,6 +12,7 @@ import RViewElement from "../../vox/render/RViewElement";
 import Color4 from "../../vox/material/Color4";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import ContextMouseEvtDispatcher from "../../vox/render/ContextMouseEvtDispatcher";
+import { GLBlendMode, GLBlendEquation, CullFaceMode } from "./RenderConst";
 
 class RAdapterContext {
     constructor() { }
@@ -148,6 +149,31 @@ class RAdapterContext {
                 throw Error("WebGL initialization failure.");
                 return;
             }
+            let gl: any = this.m_gl;
+            let glBlendMode: any = GLBlendMode;
+            
+            glBlendMode.ZERO = gl.ZERO;
+            glBlendMode.ONE = gl.ONE;
+            glBlendMode.SRC_COLOR = gl.SRC_COLOR;
+            glBlendMode.DST_COLOR = gl.DST_COLOR;
+            glBlendMode.SRC_ALPHA = gl.SRC_ALPHA;
+            glBlendMode.DST_ALPHA = gl.DST_ALPHA;
+            glBlendMode.ONE_MINUS_SRC_ALPHA = gl.ONE_MINUS_SRC_ALPHA;
+
+            let glBlendEq: any = GLBlendEquation;
+            glBlendEq.FUNC_ADD = gl.FUNC_ADD;
+            glBlendEq.FUNC_SUBTRACT = gl.FUNC_SUBTRACT;
+            glBlendEq.FUNC_REVERSE_SUBTRACT = gl.FUNC_REVERSE_SUBTRACT;
+            glBlendEq.MIN_EXT = gl.MIN_EXT;
+            glBlendEq.MAX_EXT = gl.MAX_EXT;
+            glBlendEq.MIN = gl.MIN;
+            glBlendEq.MAX = gl.MAX;
+
+            let glFaceCull: any = CullFaceMode;
+            glFaceCull.BACK = gl.BACK;
+            glFaceCull.FRONT = gl.FRONT;
+            glFaceCull.FRONT_AND_BACK = gl.FRONT_AND_BACK;
+
             let device: any = RendererDeviece;
             //MAX_RENDERBUFFER_SIZE
             device.MAX_TEXTURE_SIZE = this.m_gl.getParameter(this.m_gl.MAX_TEXTURE_SIZE);

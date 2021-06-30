@@ -90,9 +90,9 @@ export namespace demo
                 //objDisp.setXYZ(Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0,Math.random() * 2000.0 - 1000.0);
                 this.m_rscene.addEntity(objDisp);
                 
-                let url:string = "static/assets/obj/objTest01.zip";
-                let objLoader:ObjLoader = new ObjLoader();
-                objLoader.load(url);
+                //  let url:string = "static/assets/obj/objTest01.zip";
+                //  let objLoader:ObjLoader = new ObjLoader();
+                //  objLoader.load(url);
 
             }
         }

@@ -26,6 +26,9 @@ import TrackWheelRole from "../app/robot/base/TrackWheelRole";
 
 import CameraViewRay from "../vox/view/CameraViewRay";
 
+import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
+import CameraZoomController from "../voxeditor/control/CameraZoomController";
+
 export class RbtDrama
 {
     constructor(){}
@@ -43,6 +46,8 @@ export class RbtDrama
 
     private m_campModule:CampMoudle = new CampMoudle();
     
+    private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
+    private m_CameraZoomController: CameraZoomController = new CameraZoomController();
     initialize():void
     {
         console.log("RbtDrama::initialize()......");
@@ -73,6 +78,11 @@ export class RbtDrama
 
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
+
+            this.m_rscene.enableMouseEvent(true);
+            this.m_CameraZoomController.bindCamera(this.m_rscene.getCamera());
+            this.m_CameraZoomController.initialize(this.m_rscene.getStage3D());
+            this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
             this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 200);
 
@@ -253,9 +263,11 @@ export class RbtDrama
     run():void
     {
         this.m_statusDisp.update();
-        this.m_rscene.runBegin();
-        this.m_rscene.run();
-        this.m_rscene.runEnd();
+        this.m_stageDragSwinger.runWithYAxis();
+        this.m_CameraZoomController.run(null, 30.0);
+
+        this.m_rscene.run(true);
+
         this.m_viewRay.intersectPiane();
         //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
     }
