@@ -193,7 +193,7 @@ export class RenderStateObject {
             if(equationAlpha < 1) {
                 equationAlpha = GLBlendEquation.FUNC_ADD;
             }
-            let type: number = 0;
+            let type: number = 1;
             b = 31;
             b = b * 131 + srcRGB;
             b = b * 131 + dstRGB;
@@ -211,7 +211,7 @@ export class RenderStateObject {
 
             RenderStateObject.s_blendModeNameMap.set(name,b);
             RenderStateObject.s_blendModeIndexMap.set(b, index);
-            let list:number[] = [type, equationRGB, equationAlpha, 0, srcRGB, dstRGB, srcAlpha, dstAlpha];
+            let list:number[] = [type, equationRGB, equationAlpha, srcRGB, dstRGB, srcAlpha, dstAlpha];
             RenderStateObject.s_blendModes[index] = list;
             return index;
         }
@@ -241,7 +241,7 @@ export class RenderStateObject {
             RenderStateObject.s_blendModeNameMap.set(name,b);
             RenderStateObject.s_blendModeIndexMap.set(b, index);
             let list:number[] = [type, blendEquation, 0, srcColor, dstColor, 0, 0];
-            console.log("list: ",list);
+            //console.log("list: ",list);
             RenderStateObject.s_blendModes[index] = list;
             return index;
         }
@@ -405,7 +405,7 @@ export class RODrawState {
                 }
                 else {
                     this.m_gl.blendEquationSeparate(params[1], params[2]);
-                    this.m_gl.blendFuncSeparate(params[2], params[3],params[4], params[5]);
+                    this.m_gl.blendFuncSeparate(params[3], params[4],params[5], params[6]);
                 }
             }
             else {

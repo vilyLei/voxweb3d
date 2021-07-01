@@ -20,12 +20,12 @@ import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger"
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
 import RendererState from "../vox/render/RendererState";
+import { GLBlendMode, CullFaceMode, DepthTestMode } from "../../src/vox/render/RenderConst";
 
 export class DemoBlendMode {
     constructor() { }
 
     private m_rscene: RendererScene = null;
-    private m_rcontext: RendererInstanceContext = null;
     private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
@@ -53,7 +53,7 @@ export class DemoBlendMode {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
-            this.m_rcontext = this.m_rscene.getRendererContext();
+            
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
             
             this.m_rscene.enableMouseEvent(true);
@@ -83,6 +83,45 @@ export class DemoBlendMode {
         //  this.m_rscene.addEntity(axis,0);
         //return;
         // add common 3d display entity
+        let plane:Plane3DEntity;
+        plane = new Plane3DEntity();
+        plane.showDoubleFace();
+        //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/displacement_01.jpg")]);
+        plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/eve_01.jpg")]);
+        this.m_rscene.addEntity(plane,0);
+        //plane.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
+        
+        let blendModeSpec0: number = RendererState.CreateBlendModeSeparate("blendModeSpec0"
+        , GLBlendMode.SRC_ALPHA
+        , GLBlendMode.ONE
+        , GLBlendMode.ZERO
+        , GLBlendMode.ONE_MINUS_SRC_ALPHA
+        )
+        let renderSt0: number = RendererState.CreateRenderState("renderSt0"
+        , CullFaceMode.NONE
+        , blendModeSpec0
+        , DepthTestMode.TRANSPARENT_SORT
+        )
+        plane = new Plane3DEntity();
+        //plane.premultiplyAlpha = true;
+        //let tex: TextureProxy = this.getImageTexByUrl("static/assets/green_rect3.png",true,true);
+        //let tex: TextureProxy = this.getImageTexByUrl("static/assets/stones_02.png",true,true);
+        let tex: TextureProxy = this.getImageTexByUrl("static/assets/cloud01.png",true,true);
+        //tex.premultiplyAlpha = true;
+        plane.initializeXOZ(-200.0, -200.0, 400.0, 400.0, [tex]);
+        plane.setXYZ(0.0,1.0,0.0);
+        (plane.getMaterial() as any).setAlpha(0.7);
+        this.m_rscene.addEntity(plane,1);
+        //plane.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
+        plane.setRenderState(renderSt0);
+    }
+    private test02(): void {
+
+        //  let axis: Axis3DEntity = new Axis3DEntity();
+        //  axis.initialize(500.0);
+        //  this.m_rscene.addEntity(axis,0);
+        //return;
+        // add common 3d display entity
         let plane:Plane3DEntity = new Plane3DEntity();
         //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/displacement_01.jpg")]);
         plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/eve_01.jpg")]);
@@ -91,16 +130,16 @@ export class DemoBlendMode {
         plane = new Plane3DEntity();
         plane.premultiplyAlpha = true;
         //let tex: TextureProxy = this.getImageTexByUrl("static/assets/green_rect3.png",true,true);
-        let tex: TextureProxy = this.getImageTexByUrl("static/assets/stones_02.png",true,true);
-        //let tex: TextureProxy = this.getImageTexByUrl("static/assets/cloud01.png",true,true);
+        //let tex: TextureProxy = this.getImageTexByUrl("static/assets/stones_02.png",true,true);
+        let tex: TextureProxy = this.getImageTexByUrl("static/assets/cloud01.png",true,true);
         tex.premultiplyAlpha = true;
         plane.initializeXOZ(-200.0, -200.0, 400.0, 400.0, [tex]);
         plane.setXYZ(0.0,1.0,0.0);
-        (plane.getMaterial() as any).setAlpha(0.3);
+        (plane.getMaterial() as any).setAlpha(0.7);
         this.m_rscene.addEntity(plane,1);
         plane.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
     }
-    private test02(): void {
+    private test03(): void {
 
         let axis: Axis3DEntity = new Axis3DEntity();
         axis.initialize(500.0);
