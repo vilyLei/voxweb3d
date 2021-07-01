@@ -48,7 +48,7 @@ export class DemoParticleEruption
             RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
             
             let rparam:RendererParam = new RendererParam();
-            rparam.setAttriAlpha(false);
+            //rparam.setAttriAlpha(false);
             rparam.setMatrix4AllocateSize(4096);
             rparam.setCamProject(45.0,10.0,5000.0);
             rparam.setCamPosition(1500.0,1500.0,1500.0);
@@ -109,6 +109,7 @@ export class DemoParticleEruption
             let texFlame:TextureProxy = this.m_textures[8];
             let texSolid:TextureProxy = this.m_textures[3];
             this.m_eff0Pool = new EruptionEffectPool();
+            this.m_eff0Pool.solidPremultiplyAlpha = true;
             this.m_eff0Pool.initialize(this.m_rscene,1, 60,50, texFlame, texSolid, true);
             //  this.m_eff0Pool.createEffect(null);
         }

@@ -25,6 +25,7 @@ export default class Billboard3DFlowEntity extends DisplayEntity
     private m_clipMixEnabled:boolean = false;
     private m_spdScaleEnabled:boolean = false;
     flipVerticalUV:boolean = false;
+    premultiplyAlpha:boolean = false;
     constructor(transform:ROTransform = null)
     {
         super(transform);
@@ -205,6 +206,7 @@ export default class Billboard3DFlowEntity extends DisplayEntity
             this.m_currMaterial = new BillboardFlowMaterial(this.m_brightnessEnabled,this.m_alphaEnabled, this.m_clipEnabled);
             this.m_currMaterial.setPlayParam(this.m_playOnce, this.m_direcEnabled, this.m_clipMixEnabled,this.m_spdScaleEnabled);
             this.m_currMaterial.setTextureList(texList);
+            this.m_currMaterial.premultiplyAlpha = this.premultiplyAlpha;
             this.setMaterial(this.m_currMaterial);
         }
         else

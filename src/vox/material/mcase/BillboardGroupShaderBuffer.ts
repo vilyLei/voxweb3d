@@ -101,6 +101,11 @@ v_colorOffset = u_billParam[2];
         let fragCodeHead:string =
 `#version 300 es
 precision mediump float;
+`;
+        if(this.premultiplyAlpha) fragCodeHead += "\n#define VOX_PREMULTIPLY_ALPHA";
+
+        fragCodeHead +=
+`
 uniform sampler2D u_sampler0;
 `;
         let fragCode0:string = "";
@@ -141,6 +146,9 @@ color = mix(color,texture(u_sampler0, v_texUV.zw),v_factor.x);
         let fadeCode:string = this.m_billFS.getBrnAndAlphaCode("v_factor");
         let endCode:string = 
 `
+#ifdef VOX_PREMULTIPLY_ALPHA
+    color.xyz *= color.a;
+#endif
 FragColor = color;
 }
 `;
@@ -165,6 +173,7 @@ FragColor = color;
         {
             ns += "Mix";
         }
+        if(this.premultiplyAlpha) ns += "PreMAlpha";
         return ns;
     }
     toString():string

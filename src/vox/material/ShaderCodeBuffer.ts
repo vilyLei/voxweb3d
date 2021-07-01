@@ -18,6 +18,7 @@ class ShaderCodeBuffer
     private m_texList:IRenderTexture[] = null;
     private m_texEnabled:boolean = true;
     vtxColorEnabled: boolean = false;
+    premultiplyAlpha: boolean = false;
     initialize(texEnabled:boolean):void
     {
         if(ShaderCodeBuffer.___s_csBuf != null)
@@ -49,7 +50,7 @@ class ShaderCodeBuffer
         if(ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getFragShaderCode();
         
         let codeStr:string = "#version 300 es\nprecision mediump float;";
-
+        if(this.premultiplyAlpha) codeStr += "\n#define VOX_PREMULTIPLY_ALPHA";
         if(this.m_texEnabled)
         {
             codeStr += "\n#define VOX_USE_MAP";
@@ -78,7 +79,13 @@ void main(){
     #ifdef VOX_USE_VTX_COLOR
         FragColor *= vec4(v_cvs.xyz,1.0);
     #endif
-    FragColor *= u_color;
+    #ifdef VOX_PREMULTIPLY_ALPHA
+        FragColor.rgb *= u_color.xyz;
+        FragColor.a *= u_color.w;
+        FragColor.rgb *= u_color.aaa;
+    #else
+        FragColor *= u_color;
+    #endif
 }
 `;
         return codeStr;
@@ -139,6 +146,7 @@ void main(){
 
         if(this.m_texEnabled) ns += "_tex";
         if(this.vtxColorEnabled) ns += "_vtxColor";
+        if(this.premultiplyAlpha) ns += "_preMulAlpha";
         return ns;
     }
     toString():string

@@ -48,7 +48,8 @@ export class DemoBlendMode {
             let rparam: RendererParam = new RendererParam();
             rparam.setCamPosition(800.0,800.0,800.0);
             rparam.setAttriAntialias( true );
-            rparam.setAttriStencil(true);
+            //rparam.setAttriStencil(true);
+            rparam.setAttriAlpha(true);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
@@ -68,24 +69,53 @@ export class DemoBlendMode {
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
-            let axis: Axis3DEntity = new Axis3DEntity();
-            axis.initialize(500.0);
-            this.m_rscene.addEntity(axis,0);
-            //return;
-            // add common 3d display entity
-            let plane:Plane3DEntity = new Plane3DEntity();
-            plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
-            this.m_rscene.addEntity(plane,0);
-            plane.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
-            let sph: Sphere3DEntity = new Sphere3DEntity();
-            //sph.initialize(200.0,20,20,[this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
-            sph.initialize(200.0, 20, 20, [this.getImageTexByUrl("static/assets/default.jpg")]);
-            this.m_rscene.addEntity(sph,2);
-            sph.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
+            this.test01();
 
             this.update();
 
         }
+    }
+    
+    private test01(): void {
+
+        //  let axis: Axis3DEntity = new Axis3DEntity();
+        //  axis.initialize(500.0);
+        //  this.m_rscene.addEntity(axis,0);
+        //return;
+        // add common 3d display entity
+        let plane:Plane3DEntity = new Plane3DEntity();
+        //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/displacement_01.jpg")]);
+        plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/eve_01.jpg")]);
+        this.m_rscene.addEntity(plane,0);
+        //plane.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
+        plane = new Plane3DEntity();
+        plane.premultiplyAlpha = true;
+        //let tex: TextureProxy = this.getImageTexByUrl("static/assets/green_rect3.png",true,true);
+        let tex: TextureProxy = this.getImageTexByUrl("static/assets/stones_02.png",true,true);
+        //let tex: TextureProxy = this.getImageTexByUrl("static/assets/cloud01.png",true,true);
+        tex.premultiplyAlpha = true;
+        plane.initializeXOZ(-200.0, -200.0, 400.0, 400.0, [tex]);
+        plane.setXYZ(0.0,1.0,0.0);
+        (plane.getMaterial() as any).setAlpha(0.3);
+        this.m_rscene.addEntity(plane,1);
+        plane.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
+    }
+    private test02(): void {
+
+        let axis: Axis3DEntity = new Axis3DEntity();
+        axis.initialize(500.0);
+        this.m_rscene.addEntity(axis,0);
+        //return;
+        // add common 3d display entity
+        let plane:Plane3DEntity = new Plane3DEntity();
+        plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
+        this.m_rscene.addEntity(plane,0);
+        plane.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
+        let sph: Sphere3DEntity = new Sphere3DEntity();
+        //sph.initialize(200.0,20,20,[this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
+        sph.initialize(200.0, 20, 20, [this.getImageTexByUrl("static/assets/default.jpg")]);
+        this.m_rscene.addEntity(sph,2);
+        sph.setRenderState(RendererState.BACK_ADD_ALWAYS_STATE);
     }
     private mouseDown(evt: any): void {
         console.log("mouse down... ...");

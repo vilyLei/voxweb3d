@@ -220,7 +220,8 @@ class RenderAdapter {
 			this.m_fboSizeFactor = 1.0;
 			this.reseizeViewPort();
 			RenderStateObject.Unlock();
-			RenderStateObject.UseRenderState(RenderStateObject.NORMAL_STATE);
+			
+			RenderStateObject.UseRenderState(RendererState.NORMAL_STATE);
 			RenderColorMask.Unlock();
 			RenderColorMask.UseRenderState(RenderColorMask.ALL_TRUE_COLOR_MASK);
 			// for back buffer

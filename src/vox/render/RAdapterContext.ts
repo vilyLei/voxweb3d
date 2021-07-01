@@ -173,7 +173,7 @@ class RAdapterContext {
             glFaceCull.BACK = gl.BACK;
             glFaceCull.FRONT = gl.FRONT;
             glFaceCull.FRONT_AND_BACK = gl.FRONT_AND_BACK;
-
+            console.log(">>>>>>>>>>>>>>>>>>>>>>>>>");
             let device: any = RendererDeviece;
             //MAX_RENDERBUFFER_SIZE
             device.MAX_TEXTURE_SIZE = this.m_gl.getParameter(this.m_gl.MAX_TEXTURE_SIZE);

@@ -39,6 +39,7 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer
             this.m_uniqueName = "BillboardFlowShader";
         }
         if(this.clipMixEnabled)this.m_uniqueName += "Mix";
+        if(this.premultiplyAlpha)this.m_uniqueName += "PreMAlpha";
     }
     getVtxShaderCode():string
     {
@@ -182,6 +183,7 @@ export default class BillboardFlowMaterial extends MaterialBase
     private m_uniformData:Float32Array = null;
     private m_color:Color4 = new Color4(1.0,1.0,1.0,1.0);
     private m_brightness:number = 1.0;
+    premultiplyAlpha: boolean = false;
     constructor(brightnessEnabled:boolean = true,alphaEnabled:boolean = false,clipEnabled:boolean = false)
     {
         super();
@@ -218,6 +220,7 @@ export default class BillboardFlowMaterial extends MaterialBase
         buf.direcEnabled = this.m_direcEnabled;
         buf.clipMixEnabled = this.m_clipMixEnabled;
         buf.spdScaleEnabled = this.m_spdScaleEnabled;
+        buf.premultiplyAlpha = this.premultiplyAlpha;
         buf.setParam(this.m_brightnessEnabled, this.m_alphaEnabled,this.m_clipEnabled, this.getTextureTotal() > 1);
         return buf;
     }

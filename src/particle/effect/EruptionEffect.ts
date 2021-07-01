@@ -8,8 +8,8 @@
 import Vector3D from "../../vox/math/Vector3D";
 import Billboard3DFlowEntity from "../../vox/entity/Billboard3DFlowEntity";
 import TextureProxy from "../../vox/texture/TextureProxy";
-import {TextureConst} from "../../vox/texture/TextureConst";
 import IParticleEffect from "../../particle/effect/IParticleEffect";
+import RendererState from "../../../src/vox/render/RendererState";
 
 export default class EruptionEffect implements IParticleEffect
 {
@@ -44,11 +44,8 @@ export default class EruptionEffect implements IParticleEffect
             [0.0,0.5,0.5,0.5],
             [0.5,0.5,0.5,0.5]
         ];
-        //tex.premultiplyAlpha = true;
-        tex.minFilter = TextureConst.NEAREST;
-        tex.magFilter = TextureConst.NEAREST;
-        //let total:number = 50;
         let etity:Billboard3DFlowEntity = new Billboard3DFlowEntity();
+        etity.premultiplyAlpha = tex.premultiplyAlpha;
         if(srcSolidEntity != null)
         {
             etity.copyMeshFrom(srcSolidEntity);
@@ -78,7 +75,12 @@ export default class EruptionEffect implements IParticleEffect
         etity.setPlayParam(true,true, this.m_clipMixEnabled,true);
         etity.initialize(false,true,false, [tex]);
         etity.setSpdScaleMax(4.0,1.5);
-        etity.toTransparentBlend();
+        if(tex.premultiplyAlpha) {
+            etity.setRenderState(RendererState.BACK_ALPHA_ADD_ALWAYS_STATE);
+        }
+        else {
+            etity.toTransparentBlend();
+        }
         this.solidEntity = etity;
     }
 
@@ -91,7 +93,10 @@ export default class EruptionEffect implements IParticleEffect
             [0.0,0.5,0.5,0.5],
             [0.5,0.5,0.5,0.5]
         ];
+        
+        tex.premultiplyAlpha = tex.premultiplyAlpha;
         let etity:Billboard3DFlowEntity = new Billboard3DFlowEntity();
+        etity.premultiplyAlpha = tex.premultiplyAlpha;
         etity.toBrightnessBlend();
         if(srcFlameEntity != null)
         {

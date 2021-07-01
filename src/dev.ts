@@ -264,8 +264,6 @@
 
 //  import {DemoRenderSort as Demo} from "./demo/DemoRenderSort";
 
-//  import {DemoGLState as Demo} from "./demo/DemoGLState";
-
 //  import {DemoThread as Demo} from "./thread/example/DemoThread";
 
 //  import * as DemoOrtho from "./demo/DemoOrtho";
@@ -304,9 +302,11 @@
 
 //  import {DemoRGBETex as Demo} from "./demo/DemoRGBETex";
 
+//  import {DemoGLState as Demo} from "./demo/DemoGLState";
+
 //  import {DemoStencil as Demo} from "./demo/DemoStencil";
 
-//  import {DemoBlendMode as Demo} from "./demo/DemoBlendMode";
+import {DemoBlendMode as Demo} from "./demo/DemoBlendMode";
 
 //  import {DemoFileSystem as Demo} from "./demo/DemoFileSystem";
 
@@ -330,7 +330,7 @@
 
 //  import {DemoModulePBR as Demo} from "./pbr/DemoModulePBR";
 
-import {DemoLightsPBR as Demo} from "./pbr/DemoLightsPBR";
+//  import {DemoLightsPBR as Demo} from "./pbr/DemoLightsPBR";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////

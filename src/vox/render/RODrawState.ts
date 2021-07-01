@@ -25,20 +25,16 @@ export class RenderColorMask {
     private m_gBoo: boolean = true;
     private m_bBoo: boolean = true;
     private m_aBoo: boolean = true;
-    private m_state: number = 0;
+    //private m_state: number = 0;
     constructor(rBoo: boolean, gBoo: boolean, bBoo: boolean, aBoo: boolean) {
         this.m_uid = RenderColorMask.s_uid++;
         this.m_rBoo = rBoo;
         this.m_gBoo = gBoo;
         this.m_bBoo = bBoo;
         this.m_aBoo = aBoo;
-        this.m_state = (this.m_rBoo ? 1 << 6 : 0) | (this.m_gBoo ? 1 << 4 : 0) | (this.m_bBoo ? 1 << 2 : 0) | (this.m_aBoo ? 1 : 0);
     }
     getUid(): number {
         return this.m_uid;
-    }
-    getState(): number {
-        return this.m_state;
     }
     getR(): boolean {
         return this.m_rBoo;
@@ -130,15 +126,6 @@ export class RenderStateObject {
     private static s_blendModeIndex: number = 0;
     private static s_blendModes: number[][] = new Array(256);
     private static s_unlocked: boolean = true;
-    static NORMAL_STATE: number = 0;
-    static BACK_CULLFACE_NORMAL_STATE: number = 0;
-    static FRONT_CULLFACE_NORMAL_STATE: number = 1;
-    static NONE_CULLFACE_NORMAL_STATE: number = 2;
-    static ALL_CULLFACE_NORMAL_STATE: number = 3;
-    static BACK_NORMAL_ALWAYS_STATE: number = 4;
-    static BACK_TRANSPARENT_STATE: number = 5;
-    static BACK_TRANSPARENT_ALWAYS_STATE: number = 6;
-    static NONE_TRANSPARENT_STATE: number = 7;
     static Rstate: RODrawState = null;
     private m_uid: number = -1;
     private m_cullFaceMode: number = 0;
@@ -148,19 +135,15 @@ export class RenderStateObject {
     private m_depthTestMode: number = 0;
     // shadow status Mode(receive | make | receive and make | none)
     private m_shadowMode: number = 0;
-    private m_state: number = 0;
+
     constructor(cullFaceMode: number, blendMode: number, depthTestMode: number) {
         this.m_uid = RenderStateObject.s_uid++;
         this.m_cullFaceMode = cullFaceMode;
         this.m_blendMode = blendMode;
         this.m_depthTestMode = depthTestMode;
-        this.m_state = this.m_shadowMode << 12 | this.m_depthTestMode << 8 | this.m_blendMode << 4 | this.m_cullFaceMode;
     }
     getUid(): number {
         return this.m_uid;
-    }
-    getState(): number {
-        return this.m_state;
     }
     getCullFaceMode(): number {
         return this.m_cullFaceMode;
@@ -269,7 +252,11 @@ export class RenderStateObject {
             let po: RenderStateObject = RenderStateObject.s_stsNameMap.get(objName);
             return po.getUid();
         }
-        let key: number = depthTestMode << 8 | blendMode << 4 | cullFaceMode;
+        //let key: number = depthTestMode << 8 | blendMode << 4 | cullFaceMode;
+        let key: number = 31;
+        key = key * 131 + depthTestMode;
+        key = key * 131 + blendMode;
+        key = key * 131 + cullFaceMode;
         if (RenderStateObject.s_stsMap.has(key)) {
             let po = RenderStateObject.s_stsMap.get(key);
             key = po.getUid();
@@ -450,7 +437,6 @@ export class RODrawState {
                     this.m_gl.depthMask(false); this.m_gl.depthFunc(this.m_gl.LEQUAL);
                     break;
                 case DepthTestMode.BLEND:
-                    //if (list.next != null) list = sortByAverageZ(list);
                     this.m_gl.depthMask(false); this.m_gl.depthFunc(this.m_gl.LESS);
                     break;
                 case DepthTestMode.WIRE_FRAME:

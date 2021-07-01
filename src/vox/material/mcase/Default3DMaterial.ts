@@ -12,6 +12,7 @@ export default class Default3DMaterial extends MaterialBase
 {
     private m_colorArray:Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
     vtxColorEnabled: boolean = false;
+    premultiplyAlpha: boolean = false;
     constructor()
     {
         super();
@@ -20,6 +21,7 @@ export default class Default3DMaterial extends MaterialBase
     {
         let buf: ShaderCodeBuffer = super.getCodeBuf();
         buf.vtxColorEnabled = this.vtxColorEnabled;
+        buf.premultiplyAlpha = this.premultiplyAlpha;
         return buf;
     }
     setRGB3f(pr:number,pg:number,pb:number):void

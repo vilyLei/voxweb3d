@@ -37,6 +37,7 @@ class RendererState {
     static readonly FRONT_TRANSPARENT_STATE: number = 17;
     static readonly FRONT_TRANSPARENT_ALWAYS_STATE: number = 18;
     static readonly NONE_CULLFACE_NORMAL_ALWAYS_STATE: number = 19;
+    static readonly BACK_ALPHA_ADD_BLENDSORT_STATE: number = 20;
     static Initialize(): void {
         if (RendererState.s_initBoo) {
             RendererState.s_initBoo = false;
@@ -83,6 +84,8 @@ class RendererState {
             state.FRONT_TRANSPARENT_STATE = rso.Create("front_transparent", CullFaceMode.FRONT, RenderBlendMode.TRANSPARENT, DepthTestMode.TRANSPARENT_SORT);
             state.FRONT_TRANSPARENT_ALWAYS_STATE = rso.Create("front_transparent_always", CullFaceMode.FRONT, RenderBlendMode.TRANSPARENT, DepthTestMode.ALWAYS);
             state.NONE_CULLFACE_NORMAL_ALWAYS_STATE = rso.Create("none_normal_always", CullFaceMode.NONE, RenderBlendMode.NORMAL, DepthTestMode.ALWAYS);
+            state.BACK_ALPHA_ADD_BLENDSORT_STATE = rso.Create("back_alpha_add_blendSort", CullFaceMode.BACK, RenderBlendMode.ALPHA_ADD, DepthTestMode.TRANSPARENT_SORT);
+
         }
     }
 

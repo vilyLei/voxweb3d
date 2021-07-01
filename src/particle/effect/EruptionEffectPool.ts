@@ -17,6 +17,8 @@ export default class EruptionEffectPool extends ParticleEffectPool
     private m_flameTexture:TextureProxy = null;
     private m_solidTexture:TextureProxy = null;
     private m_clipMixEnabled:boolean = false;
+    solidPremultiplyAlpha: boolean = false;
+    flamePremultiplyAlpha: boolean = false;
     constructor(){super();}
 
     initialize(renderer:IRenderer,processIndex:number,flameTotal:number, solidTotal:number, flameTexture:TextureProxy,solidTexture:TextureProxy,clipMixEnabled:boolean = false):void
@@ -26,8 +28,10 @@ export default class EruptionEffectPool extends ParticleEffectPool
             this.m_clipMixEnabled = clipMixEnabled;
             this.m_flameTexture = flameTexture;
             this.m_solidTexture = solidTexture;
+            this.m_solidTexture.premultiplyAlpha = this.solidPremultiplyAlpha;
+            this.m_flameTexture.premultiplyAlpha = this.flamePremultiplyAlpha;
 
-            this.m_renderer = renderer;                    
+            this.m_renderer = renderer;
             this.m_renderProcessI = processIndex;
 
             let efSrc:EruptionEffect = new EruptionEffect();
