@@ -22,6 +22,7 @@ import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
 import IRenderer from "../../vox/scene/IRenderer";
 import Color4 from "../../vox/material/Color4";
 import PixelPickIndexMaterial from "../../vox/material/mcase/PixelPickIndexMaterial";
+import DebugFlag from "../debug/DebugFlag";
 
 export default class RayGpuSelector implements IRaySelector
 {
@@ -372,21 +373,21 @@ export default class RayGpuSelector implements IRaySelector
     private m_uintList:Uint8Array = new Uint8Array(256);
     private gpuPick(total:number):void
     {
+        let rcontext:RendererInstanceContext = this.m_renderer.getRendererContext();
         let proxy:RenderProxy = this.m_renderer.getRenderProxy();
         let pmx:number = proxy.getStage3D().mouseX;
         //let pmy:number = proxy.getStage3D().stageHeight - proxy.getStage3D().mouseY;
         let pmy:number = proxy.getStage3D().mouseY;
-        proxy.Vertex.renderBegin();
-        proxy.getClearRGBAColor4f(this.m_initColor);
-        proxy.setClearRGBAColor4f(0.0,0.0,0.0,0.0);
-        proxy.setScissorEnabled(true);
-        //proxy.setScissorRect(pmx - 64, pmy - 64, 128,128);
-        proxy.setScissorRect(pmx, pmy, 1,1);
-        proxy.clearRenderBuffer();
+        rcontext.vertexRenderBegin();
+        rcontext.getClearRGBAColor4f(this.m_initColor);
+        rcontext.setClearRGBAColor4f(0.0,0.0,0.0,0.0);
+        rcontext.setScissorEnabled(true);
+        
+        rcontext.setScissorRect(pmx, pmy, 1,1);
+        rcontext.clearBackBuffer();
         this.m_uintArray[3] = 0;
         RendererState.LockBlendMode(RenderBlendMode.OPAQUE);
         RendererState.LockDepthTestMode(DepthTestMode.OPAQUE);
-        let rcontext:RendererInstanceContext = this.m_renderer.getRendererContext();
         rcontext.unlockMaterial();
         rcontext.unlockRenderState();
         rcontext.useGlobalMaterial(this.m_indexMaterial);
@@ -395,8 +396,7 @@ export default class RayGpuSelector implements IRaySelector
         let entity:IRenderEntity = null;
         let j:number = -1;
         let i:number = 0;
-        //DivLog.ShowLogOnce("total: "+total);
-        //RendererDeviece.SHOWLOG_ENABLED = true;
+        
         for(; i < total; ++i)
         {
             rayNode = this.m_rsnList[i];
@@ -417,14 +417,13 @@ export default class RayGpuSelector implements IRaySelector
         }
         RendererState.UnlockBlendMode();
         RendererState.UnlockDepthTestMode();
-        //RendererDeviece.SHOWLOG_ENABLED = false;
+        
         //DivLog.ShowLog("uintArray[3]: "+this.m_uintArray[3]+", "+(((this.m_uintArray[0])<<8) + this.m_uintArray[1] + this.m_uintArray[2]/255.0));
         if(this.m_uintArray[3] > 1)
         {
-            //console.log("this.m_uintArray: "+this.m_uintArray);
+            
             i = this.m_uintList[this.m_uintArray[3] - 2];
             rayNode = this.m_rsnList[i];
-            //let depth:number = this.m_uintArray[0] * 255.0 + this.m_uintArray[1] + this.m_uintArray[2]/255.0;  
             let depth:number = ((this.m_uintArray[0])<<8) + this.m_uintArray[1] + this.m_uintArray[2]/255.0;
             //DivLog.ShowLog("depth: "+depth);
             if(this.m_selectedNode != null)
@@ -449,13 +448,15 @@ export default class RayGpuSelector implements IRaySelector
                 this.m_selectedNode = rayNode;
             }
         }
-        proxy.setScissorEnabled(false);
+        rcontext.setScissorEnabled(false);
         rcontext.unlockMaterial();
         rcontext.unlockRenderState();
         RendererState.UnlockBlendMode();
         RendererState.UnlockDepthTestMode();
         
-        proxy.setClearRGBAColor4f(this.m_initColor.r,this.m_initColor.g,this.m_initColor.b,this.m_initColor.a);
+        rcontext.setClearRGBAColor4f(this.m_initColor.r,this.m_initColor.g,this.m_initColor.b,this.m_initColor.a);
+
+        rcontext.resetState();
     }
     
     // @param           the cameraDistance is the distance between camera position and a position

@@ -204,8 +204,8 @@ export default class ROTransform
     // local to world matrix, 使用的时候注意数据安全->防止多个显示对象拥有而出现多次修改的问题,因此此函数尽量不要用
     setParentMatrix(matrix:Matrix4):void
     {
-        //console.log("sTOTransform::etParentMatrix(), this.m_parentMat != matrix: "+(this.m_parentMat != matrix));
-        //if(matrix != null)console.log("sTOTransform::etParentMatrix(), this.m_parentMat: "+matrix.toString());
+        //  console.log("sTOTransform::etParentMatrix(), this.m_parentMat != matrix: ",(this.m_parentMat != matrix),this.m_uid);
+        
         this.m_parentMat = matrix;
         this.m_invMatEnabled = true;
         if(this.m_parentMat != null)
@@ -213,11 +213,13 @@ export default class ROTransform
             if(this.m_localMat == this.m_omat)
             {
                 this.updateStatus = ROTransform.UPDATE_TRANSFORM;
+                this.updatedStatus = this.updateStatus;
                 this.m_localMat = Matrix4Pool.GetMatrix();
             }
             else
             {
                 this.updateStatus |= ROTransform.UPDATE_PARENT_MAT;
+                this.updatedStatus = this.updateStatus;
             }
         }
     }

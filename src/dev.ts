@@ -283,8 +283,7 @@
 //  import * as DemoOrthoSubScene from "./demo/DemoOrthoSubScene";
 //  import Demo = DemoOrthoSubScene.demo.DemoOrthoSubScene;
 
-//  import * as DemoOrthoBtn from "./demo/DemoOrthoBtn";
-//  import Demo = DemoOrthoBtn.demo.DemoOrthoBtn;
+//  import {DemoOrthoBtn as Demo} from "./demo/DemoOrthoBtn";
 
 //  import * as DemoMobileEvt from "./demo/DemoMobileEvt";
 //  import Demo = DemoMobileEvt.demo.DemoMobileEvt;
@@ -306,7 +305,7 @@
 
 //  import {DemoStencil as Demo} from "./demo/DemoStencil";
 
-import {DemoBlendMode as Demo} from "./demo/DemoBlendMode";
+//  import {DemoBlendMode as Demo} from "./demo/DemoBlendMode";
 
 //  import {DemoFileSystem as Demo} from "./demo/DemoFileSystem";
 
@@ -330,9 +329,10 @@ import {DemoBlendMode as Demo} from "./demo/DemoBlendMode";
 
 //  import {DemoModulePBR as Demo} from "./pbr/DemoModulePBR";
 
-//  import {DemoLightsPBR as Demo} from "./pbr/DemoLightsPBR";
+import {DemoLightsPBR as Demo} from "./pbr/DemoLightsPBR";
 
 ///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////     APP    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 //  import * as LegRole from "./app/LegRole";
@@ -346,6 +346,14 @@ import {DemoBlendMode as Demo} from "./demo/DemoBlendMode";
 //  import * as DensityStatistics from "./app/density/DensityStatistics";
 //  import Demo = DensityStatistics.app.density.DensityStatistics;
 
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////     UI     ////////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+//  import {DemoOrthoBtn as Demo} from "./orthoui/demos/DemoOrthoBtn";
+
+
+///////////////////////////////////////////////////////////////////////////////
 
 let demoIns:Demo = new Demo();
 let ins:any = demoIns;

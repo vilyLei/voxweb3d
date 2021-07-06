@@ -1,4 +1,4 @@
-import MouseEvent from "../../vox/event/MouseEvent";
+import EventBase from "../../vox/event/EventBase";
 
 export default class EvtNode
 {
@@ -40,7 +40,7 @@ export default class EvtNode
     }
     
     // @return      1 is send evt yes,0 is send evt no
-    dispatch(evt:MouseEvent):number
+    dispatch(evt:EventBase):number
     {
         let flag:number = 0;
         let len:number = this.m_hosts.length;
@@ -55,7 +55,7 @@ export default class EvtNode
         return flag;
     }
     //@return if the evt can be dispatched in this node,it returns 1,otherwise it returns 0
-    passTestEvt(evt:MouseEvent):number
+    passTestEvt(evt:EventBase):number
     {
         let len:number = this.m_hosts.length;
         for(let i:number = 0; i < len; ++i)

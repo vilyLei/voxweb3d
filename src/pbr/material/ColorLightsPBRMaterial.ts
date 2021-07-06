@@ -285,8 +285,14 @@ export default class ColorLightsPBRMaterial extends MaterialBase {
 
         this.m_params[0] = Math.min(Math.max(metallic, 0.05), 1.0);
     }
+    getMetallic(): number {
+        return this.m_params[0];
+    }
     setRoughness(roughness: number): void {
         this.m_params[1] = Math.min(Math.max(roughness, 0.05), 1.0);
+    }
+    getRoughness(): number {
+        return this.m_params[1];
     }
     setAO(ao: number): void {
 

@@ -21,6 +21,7 @@ import RODataBuilder from "../../vox/render/RODataBuilder";
 import RendererParam from "../../vox/scene/RendererParam";
 import RenderMaterialProxy from "../../vox/render/RenderMaterialProxy";
 import ROVtxBuilder from "../../vox/render/ROVtxBuilder";
+import Color4 from "../material/Color4";
 
 export default class RendererInstanceContext
 {
@@ -203,6 +204,9 @@ export default class RendererInstanceContext
             this.m_materialProxy.lockMaterial();
         }
     }
+    clearBackBuffer() :void {
+        this.m_renderProxy.clearBackBuffer();
+    }
     setScissorRect(px:number, py:number, pw:number, ph:number):void
     {
         this.m_adapter.setScissorRect(px, py, pw, ph);
@@ -342,24 +346,22 @@ export default class RendererInstanceContext
     }
     setClearRGBColor3f(pr:number,pg:number,pb:number)
     {
-        if(this.m_renderProxy != null)
-        {
-            this.m_renderProxy.setClearRGBColor3f(pr,pg,pb);
-        }
+        this.m_renderProxy.setClearRGBColor3f(pr,pg,pb);
     }
     setClearRGBAColor4f(pr:number,pg:number,pb:number,pa:number):void
     {
-        if(this.m_renderProxy != null)
-        {
-            this.m_renderProxy.setClearRGBAColor4f(pr,pg,pb,pa);
-        }
+        this.m_renderProxy.setClearRGBAColor4f(pr,pg,pb,pa);
     }
-    
+    getClearRGBAColor4f(color4: Color4): void {
+        color4.copyFrom(this.m_adapter.bgColor);
+    }
     updateRenderBufferSize():void
     {
         this.m_adapter.updateRenderBufferSize();
     }
-
+    vertexRenderBegin() {
+        this.m_renderProxy.Vertex.renderBegin();
+    }
     /**
      * the function resets the renderer instance rendering status.
      * you should use it on the frame starting time.
@@ -380,6 +382,10 @@ export default class RendererInstanceContext
             this.m_renderProxy.useCameraData();
             this.m_renderProxy.updateCameraDataFromCamera( this.m_renderProxy.getCamera() );
         }
+    }
+    resetState(): void {
+        RendererState.ResetState();
+        this.m_materialProxy.renderBegin();
     }
     runEnd():void
     {

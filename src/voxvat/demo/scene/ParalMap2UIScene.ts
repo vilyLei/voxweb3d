@@ -117,6 +117,7 @@ export namespace voxvat
                     rcbt.setRenderState( RendererState.BACK_TRANSPARENT_STATE );
                     rcbt.initialize(0.0,0.0,64.0,64.0,[TexManager.CreateTexByUrl("static/assets/bt_cancel_01.png")]);
                     this.m_ruisc.addEntity(rcbt);
+                    
                     rcbt.setXYZ((this.m_stage3D.stageWidth - 128 - 2) * devK, 0.0,0.1);
                     rcbt.addEventListener(MouseEvent.MOUSE_UP,this,this.cancelSelectListener);
                     this.m_cancelSelectBtn = rcbt;

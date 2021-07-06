@@ -224,6 +224,9 @@ export default class RendererScene implements IRenderer {
             let subsc: RendererSubScene = new RendererSubScene(this.m_renderer, this.m_evtFlowEnabled);
             this.m_subscList.push(subsc);
             this.m_subscListLen++;
+
+            let sc: any = subsc;
+            sc.textureBlock = this.textureBlock;
             return subsc;
         }
         return null;
@@ -301,7 +304,7 @@ export default class RendererScene implements IRenderer {
             }
             if (i >= this.m_childrenTotal) {
                 child.__$wuid = this.m_uid;
-                child.wprocuid = this.m_processids[processIndex];
+                child.wprocuid = processIndex;//this.m_processids[processIndex];
                 child.__$setRenderer(this);
                 this.m_children.push(child);
                 this.m_childrenTotal++;
@@ -512,7 +515,7 @@ export default class RendererScene implements IRenderer {
      * should call this function per frame
      */
     update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
-
+        this.stage3D.enterFrame();
         if (autoCycle && this.m_autoRunning) {
             if (this.m_runFlag != 0) this.runBegin();
             this.m_runFlag = 1;

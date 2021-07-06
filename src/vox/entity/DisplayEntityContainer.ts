@@ -71,7 +71,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer,I
             if(renderer == null)
             {
                 // remove all entities from container
-                console.log("remove all entities from container, this.m_entitysTotal: "+this.m_entitysTotal);
+                //console.log("remove all entities from container, this.m_entitysTotal: "+this.m_entitysTotal);
                 for(; i < this.m_entitysTotal; ++i)
                 {
                     this.__$renderer.removeEntity(this.m_entitys[i]);

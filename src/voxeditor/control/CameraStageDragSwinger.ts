@@ -30,6 +30,9 @@ export default class CameraStageDragSwinger {
     private mouseUpListener(evt: any): void {
         this.m_dragSwinger.detach();
     }
+    detach(): void {
+        this.m_dragSwinger.detach();
+    }
     runWithYAxis(): void {
         this.m_dragSwinger.runWithYAxis();
     }

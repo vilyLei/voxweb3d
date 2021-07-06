@@ -1,3 +1,10 @@
+/***************************************************************************/
+/*                                                                         */
+/*  Copyright 2018-2022 by                                                 */
+/*  Vily(vily313@126.com)                                                  */
+/*                                                                         */
+/***************************************************************************/
+
 import MouseEvent from "../../vox/event/MouseEvent";
 import EvtNode from "../../vox/event/EvtNode";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
@@ -6,7 +13,7 @@ class MouseEvt3DDispatcher implements IEvtDispatcher {
     private m_evtNodes: EvtNode[] = null;
     private m_evtNodesLen: number = 17;
     constructor() {
-        this.m_evtNodesLen = MouseEvent.GetEvtTypeValueBase();
+        this.m_evtNodesLen = MouseEvent.GetMouseEvtTypeValueBase();
         this.m_evtNodes = new Array(this.m_evtNodesLen);
     }
     getClassType(): number {
@@ -20,8 +27,8 @@ class MouseEvt3DDispatcher implements IEvtDispatcher {
     // @return      1 is send evt yes,0 is send evt no
     dispatchEvt(evt: any): number {
         if (evt != null) {
-            let t: number = evt.type - MouseEvent.GetEvtTypeValueBase();
-            if (t >= 0 && t < MouseEvent.GetEvtTypeValuesTotal()) {
+            let t: number = evt.type - MouseEvent.GetMouseEvtTypeValueBase();
+            if (t >= 0 && t < MouseEvent.GetMouseEvtTypeValuesTotal()) {
                 if (this.m_evtNodes[t] != null) return this.m_evtNodes[t].dispatch(evt);
             }
             else {
@@ -34,8 +41,8 @@ class MouseEvt3DDispatcher implements IEvtDispatcher {
     //@return if the evt can be dispatched in this node,it returns 1,otherwise it returns 0
     passTestEvt(evt: MouseEvent): number {
         if (evt != null) {
-            let t: number = evt.type - MouseEvent.GetEvtTypeValueBase();
-            if (t >= 0 && t < MouseEvent.GetEvtTypeValuesTotal()) {
+            let t: number = evt.type - MouseEvent.GetMouseEvtTypeValueBase();
+            if (t >= 0 && t < MouseEvent.GetMouseEvtTypeValuesTotal()) {
                 return this.m_evtNodes[t].passTestEvt(evt);
             }
         }
@@ -43,7 +50,7 @@ class MouseEvt3DDispatcher implements IEvtDispatcher {
     }
     //@return if the evt phase is in this node,it returns 1,otherwise it returns 0
     passTestPhase(phase: number): number {
-        let len: number = MouseEvent.GetEvtTypeValuesTotal();
+        let len: number = MouseEvent.GetMouseEvtTypeValuesTotal();
         for (let i: number = 0; i < len; ++i) {
             if (this.m_evtNodes[i] != null && this.m_evtNodes[i].passTestPhase(phase) == 1) {
                 return 1;
@@ -53,8 +60,8 @@ class MouseEvt3DDispatcher implements IEvtDispatcher {
     }
     addEventListener(type: number, target: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
         if (func != null && target != null) {
-            let t: number = type - MouseEvent.GetEvtTypeValueBase();
-            if (t >= 0 && t < MouseEvent.GetEvtTypeValuesTotal()) {
+            let t: number = type - MouseEvent.GetMouseEvtTypeValueBase();
+            if (t >= 0 && t < MouseEvent.GetMouseEvtTypeValuesTotal()) {
                 //(capture phase),2(bubble phase)
                 let phase: number = 0;
                 if (captureEnabled != bubbleEnabled) {
@@ -80,9 +87,12 @@ class MouseEvt3DDispatcher implements IEvtDispatcher {
     }
     removeEventListener(type: number, target: any, func: (evt: any) => void): void {
         if (func != null && target != null) {
-            let t: number = type - MouseEvent.GetEvtTypeValueBase();
-            if (t >= 0 && t < MouseEvent.GetEvtTypeValuesTotal()) {
-                if (this.m_evtNodes[t] != null) this.m_evtNodes[t].removeListener(target, func);
+            let t: number = type - MouseEvent.GetMouseEvtTypeValueBase();
+            if (t >= 0 && t < MouseEvent.GetMouseEvtTypeValuesTotal()) {
+                if (this.m_evtNodes[t] != null)
+                {
+                    this.m_evtNodes[t].removeListener(target, func);
+                }
             }
             //  else
             //  {

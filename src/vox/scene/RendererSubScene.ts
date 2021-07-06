@@ -36,6 +36,7 @@ import RaySelector from "../../vox/scene/RaySelector";
 import RayGpuSelector from "../../vox/scene/RayGpuSelector";
 import MouseEvt3DController from "../../vox/scene/MouseEvt3DController";
 import IEvt3DController from "../../vox/scene/IEvt3DController";
+import TextureBlock from "../texture/TextureBlock";
 
 export default class RendererSubScene implements IRenderer {
     private static __s_uid: number = 0;
@@ -68,6 +69,9 @@ export default class RendererSubScene implements IRenderer {
     private m_runFlag: number = -1;
     private m_autoRunning: boolean = true;
     private m_currStage3D: SubStage3D = null;
+    
+    readonly textureBlock: TextureBlock = null;
+
     constructor(renderer: RendererInstance, evtFlowEnabled: boolean) {
         this.m_evtFlowEnabled = evtFlowEnabled;
         this.m_renderer = renderer;
@@ -251,7 +255,7 @@ export default class RendererSubScene implements IRenderer {
         if (processIndex < 0) {
             processIndex = 0;
         }
-        if (child != null && child.__$wuid < 0 && child.__$contId < 0) {
+        if (child != null && child.__$wuid < 0 && child.__$contId < 1) {
             let i: number = 0;
             for (; i < this.m_childrenTotal; ++i) {
                 if (this.m_children[i] == child) {
@@ -260,7 +264,7 @@ export default class RendererSubScene implements IRenderer {
             }
             if (i >= this.m_childrenTotal) {
                 child.__$wuid = this.m_uid;
-                child.wprocuid = this.m_processids[processIndex];
+                child.wprocuid = processIndex;//this.m_processids[processIndex];
                 child.__$setRenderer(this);
                 this.m_children.push(child);
                 this.m_childrenTotal++;
@@ -447,6 +451,8 @@ export default class RendererSubScene implements IRenderer {
      */
     update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
 
+        this.m_currStage3D.enterFrame();
+        
         if (autoCycle && this.m_autoRunning) {
             if (this.m_runFlag != 0) this.runBegin();
             this.m_runFlag = 1;

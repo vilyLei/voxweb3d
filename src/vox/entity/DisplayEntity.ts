@@ -25,6 +25,7 @@ import IDisplayEntity from "../../vox/entity/IDisplayEntity";
 
 import RenderProxy from "../../vox/render/RenderProxy";
 import TextureProxy from '../../vox/texture/TextureProxy';
+import DebugFlag from '../debug/DebugFlag';
 
 
 
@@ -505,7 +506,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     }
     updateBounds(): void {
         if (this.m_transfrom != null) {
-            this.m_transfrom.setX(this.m_transfrom.getX());
+            this.m_transStatus = ROTransform.UPDATE_TRANSFORM;
             this.update();
         }
     }
@@ -551,6 +552,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
                 this.m_transfrom.update();
             }
             this.m_transStatus = ROTransform.UPDATE_NONE;
+            this.m_transfrom.updatedStatus = this.m_transStatus;
         }
         if (this.m_display != null && this.m_display.__$$runit != null) {
             this.m_display.__$$runit.bounds = this.m_globalBounds;

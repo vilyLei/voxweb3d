@@ -14,14 +14,6 @@ import IRenderEntity from "../../vox/render/IRenderEntity";
 import RPONodeBuilder from "../../vox/render/RPONodeBuilder";
 import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
 
-//import IRenderStage3D = IRenderStage3DT.vox.render.IRenderStage3D;
-//import CameraBase = CameraBaseT.vox.view.CameraBase;
-//import RenderProxy = RenderProxyT.vox.render.RenderProxy;
-//import IRenderMaterial = IRenderMaterialT.vox.render.IRenderMaterial;
-//import IRenderEntity = IRenderEntityT.vox.render.IRenderEntity;
-//import RPONodeBuilder = RPONodeBuilderT.vox.render.RPONodeBuilder;
-//import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-
 interface IRenderer
 {
     getUid():number;

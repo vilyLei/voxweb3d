@@ -90,8 +90,8 @@ export namespace voxvat
                     evtCtr = new MouseEvt3DController();
                     this.m_ruisc.setEvt3DController(evtCtr);
                     // left bottom align, is origin position.
-                    let px:number = this.m_stage3D.stageHalfWidth;// * this.m_rsc.getDevicePixelRatio();
-                    let py:number = this.m_stage3D.stageHalfHeight;// * this.m_rsc.getDevicePixelRatio();
+                    let px:number = this.m_stage3D.stageHalfWidth;
+                    let py:number = this.m_stage3D.stageHalfHeight;
                     this.m_ruisc.getCamera().translationXYZ(
                         px
                         ,py

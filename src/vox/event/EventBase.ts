@@ -13,6 +13,7 @@ class EventBase
     {
     }
     static RESIZE:number = 3001;
+    static ENTER_FRAME:number = 3002;
     //classType:number = 1001;
     getClassType():number
     {

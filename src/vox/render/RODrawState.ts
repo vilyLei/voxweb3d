@@ -7,6 +7,7 @@
 
 import { RenderBlendMode, CullFaceMode, DepthTestMode, GLBlendEquation } from "../../vox/render/RenderConst";
 import RAdapterContext from "../../vox/render/RAdapterContext";
+import DebugFlag from "../debug/DebugFlag";
 
 export class RenderColorMask {
     private static s_uid: number = 0;
@@ -156,8 +157,9 @@ export class RenderStateObject {
     }
     use(): void {
         if (RenderStateObject.s_state != this.m_uid) {
+
             //  console.log("this.m_uid: ",this.m_uid);
-            //  console.log("RenderStateObject::use(), m_blendMode: "+this.m_blendMode+",m_depthTestMode: "+this.m_depthTestMode+", m_uid: "+this.m_uid);
+            
             RenderStateObject.Rstate.setCullFaceMode(this.m_cullFaceMode);
             //RenderStateObject.Rstate.setBlendMode(this.m_blendMode);
             let list: number[] = RenderStateObject.s_blendModes[RenderStateObject.m_blendMode];
@@ -167,7 +169,6 @@ export class RenderStateObject {
             else {
                 RenderStateObject.Rstate.setBlendMode(RenderStateObject.m_blendMode,RenderStateObject.s_blendModes[RenderStateObject.m_blendMode]);
             }
-            //RenderStateObject.Rstate.setDepthTestMode(this.m_depthTestMode);
             if (RenderStateObject.s_depthTestMode < 0) {
                 RenderStateObject.Rstate.setDepthTestMode(this.m_depthTestMode);
             }
@@ -299,16 +300,20 @@ export class RenderStateObject {
             }
         }
     }
+    private static s_preBlendMode: number = -1;
+    private static s_preDepthTestMode: number = -1;
     static UnlockBlendMode(): void {
-        RenderStateObject.m_blendMode = -1;
+        RenderStateObject.m_blendMode = RenderStateObject.s_preBlendMode;
     }
-    static LockBlendMode(cullFaceMode: number): void {
-        RenderStateObject.m_blendMode = cullFaceMode;
+    static LockBlendMode(blendMode: number): void {
+        RenderStateObject.s_preBlendMode = RenderStateObject.m_blendMode;
+        RenderStateObject.m_blendMode = blendMode;
     }
     static UnlockDepthTestMode(): void {
-        RenderStateObject.s_depthTestMode = -1;
+        RenderStateObject.s_depthTestMode = RenderStateObject.s_preDepthTestMode;
     }
     static LockDepthTestMode(depthTestMode: number): void {
+        RenderStateObject.s_preDepthTestMode = RenderStateObject.s_depthTestMode;
         RenderStateObject.s_depthTestMode = depthTestMode;
     }
     static Lock(): void {
@@ -414,6 +419,7 @@ export class RODrawState {
         }
     }
     setDepthTestMode(type: number): void {
+
         if (this.m_depthTestType != type) {
             this.m_depthTestType = type;
             //trace("RendererBase::setDepthTest(),type：",std::to_string(static_cast<int>(type)));

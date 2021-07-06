@@ -382,13 +382,14 @@ class RenderProxy {
     setRenderToBackBuffer(): void {
         this.m_adapter.setRenderToBackBuffer();
     }
-    clearRenderBuffer(): void {
+    clearBackBuffer(): void {
         this.m_adapter.clear();
     }
     renderBegin() {
         this.m_camera.update();
         this.m_adapter.renderBegin();
     }
+
     renderEnd(): void {
     }
     useRenderStateByName(stateName: string): void {

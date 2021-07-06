@@ -61,9 +61,12 @@ class Stage3D implements IRenderStage3D
     private m_viewW:number = 1.0
     private m_viewH:number = 1.0;
     // mouse event dispatcher
-    private m_mouseEvtDispatcher:MouseEvt3DDispatcher = new MouseEvt3DDispatcher();            
+    private m_mouseEvtDispatcher:MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
     private m_resize_listener:((evt:any)=>void)[] = [];
     private m_resize_ers:any[] = [];
+    private m_enterFrame_listener:((evt:any)=>void)[] = [];
+    private m_enterFrame_ers:any[] = [];
+
     private m_keyEvt:KeyboardEvent = new KeyboardEvent();
     private m_keyDown_listener:((evt:any)=>void)[] = [];
     private m_keyDown_ers:any[] = [];
@@ -188,6 +191,7 @@ class Stage3D implements IRenderStage3D
             this.m_resize_listener[i].call(this.m_resize_ers[i],evt);
         }
     }
+
     mouseDown(phase:number = 1):void
     {
         this.m_mouseEvt.type = MouseEvent.MOUSE_DOWN;
@@ -333,6 +337,16 @@ class Stage3D implements IRenderStage3D
         this.m_mouseEvt.posArray = posArray;
         this.m_mouseEvtDispatcher.dispatchEvt(this.m_mouseEvt);
     }
+    private m_enterFrameEvt: EventBase = new EventBase();
+    enterFrame():void
+    {
+        this.m_enterFrameEvt.type = EventBase.ENTER_FRAME;
+        let len:number = this.m_enterFrame_listener.length;
+        for(var i:number = 0; i < len; ++i)
+        {
+            this.m_enterFrame_listener[i].call(this.m_enterFrame_ers[i],this.m_enterFrameEvt);
+        }
+    }
     addEventListener(type:number,target:any,func:(evt:any)=>void,captureEnabled:boolean = true,bubbleEnabled:boolean = true):void
     {
         if(func != null && target != null)
@@ -354,6 +368,21 @@ class Stage3D implements IRenderStage3D
                         this.m_resize_listener.push(func);
                     }
                 break;
+                case EventBase.ENTER_FRAME:
+                    for(i = this.m_enterFrame_listener.length - 1; i >= 0; --i)
+                    {
+                        if(target === this.m_enterFrame_ers[i])
+                        {
+                            break;
+                        }
+                    }
+                    if(i < 0)
+                    {
+                        this.m_enterFrame_ers.push(target);
+                        this.m_enterFrame_listener.push(func);
+                    }
+                break;
+                
                 case KeyboardEvent.KEY_DOWN:
                     for(i = this.m_keyDown_listener.length - 1; i >= 0; --i)
                     {
@@ -402,6 +431,17 @@ class Stage3D implements IRenderStage3D
                         {
                             this.m_resize_ers.splice(i,1);
                             this.m_resize_listener.splice(i,1);
+                            break;
+                        }
+                    }
+                break;
+                case EventBase.ENTER_FRAME:
+                    for(i = this.m_enterFrame_listener.length - 1; i >= 0; --i)
+                    {
+                        if(target === this.m_enterFrame_ers[i])
+                        {
+                            this.m_enterFrame_ers.splice(i,1);
+                            this.m_enterFrame_listener.splice(i,1);
                             break;
                         }
                     }

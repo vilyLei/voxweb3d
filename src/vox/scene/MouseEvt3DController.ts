@@ -59,6 +59,10 @@ export default class MouseEvt3DController implements IEvt3DController
     private static s_unlockMouseEvt:boolean = true;
     private mouseWheeelListener(evt:any):void
     {
+        if(this.m_currStage != null) {
+            this.m_currStage.mouseX = this.m_mainStage.mouseX;
+            this.m_currStage.mouseY = this.m_mainStage.mouseY;
+        }
         this.m_evtTypes[this.m_evtTotal] = (evt.type);
         this.m_evtXList[this.m_evtTotal] = (evt.mouseX);
         this.m_evtYList[this.m_evtTotal] = (evt.mouseY);
@@ -69,6 +73,11 @@ export default class MouseEvt3DController implements IEvt3DController
     // 鼠标动了, 摄像机动了, 被渲染对象本身动了,都可能形成mouse move事件
     private mouseMoveListener(evt:any):void
     {
+        if(this.m_currStage != null) {
+            this.m_currStage.mouseX = this.m_mainStage.mouseX;
+            this.m_currStage.mouseY = this.m_mainStage.mouseY;
+            //this.m_currStage.mouseMove();
+        }
         this.m_evtTypes[this.m_evtTotal] = (evt.type);
         this.m_evtXList[this.m_evtTotal] = (evt.mouseX);
         this.m_evtYList[this.m_evtTotal] = (evt.mouseY);
@@ -78,6 +87,10 @@ export default class MouseEvt3DController implements IEvt3DController
     }
     private mouseDownListener(evt:any):void
     {
+        if(this.m_currStage != null) {
+            this.m_currStage.mouseX = this.m_mainStage.mouseX;
+            this.m_currStage.mouseY = this.m_mainStage.mouseY;
+        }
         if(MouseEvt3DController.s_unlockMouseEvt)
         {
             this.m_evtTypes[this.m_evtTotal] = (evt.type);
@@ -90,6 +103,10 @@ export default class MouseEvt3DController implements IEvt3DController
     }
     private mouseUpListener(evt:any):void
     {
+        if(this.m_currStage != null) {
+            this.m_currStage.mouseX = this.m_mainStage.mouseX;
+            this.m_currStage.mouseY = this.m_mainStage.mouseY;
+        }
         if(MouseEvt3DController.s_unlockMouseEvt)
         {
             this.m_evtTypes[this.m_evtTotal] = (evt.type);
@@ -102,6 +119,10 @@ export default class MouseEvt3DController implements IEvt3DController
     }
     mouseOutEventTarget(): number
     {
+        if(this.m_currStage != null) {
+            this.m_currStage.mouseX = this.m_mainStage.mouseX;
+            this.m_currStage.mouseY = this.m_mainStage.mouseY;
+        }
         if(this.m_evtTarget != null)
         {
             let dispatcher:IEvtDispatcher = this.m_evtTarget.getEvtDispatcher(MouseEvent.EventClassType);
@@ -152,6 +173,9 @@ export default class MouseEvt3DController implements IEvt3DController
                                 break;
                             case MouseEvent.MOUSE_UP:
                                 this.m_currStage.mouseUp(1);
+                                break;
+                            case MouseEvent.MOUSE_MOVE:
+                                this.m_currStage.mouseMove();
                                 break;
                             default:
                                 break;
@@ -274,6 +298,9 @@ export default class MouseEvt3DController implements IEvt3DController
                             case MouseEvent.MOUSE_UP:
                                 this.m_currStage.mouseUp(2);
                                 break;
+                            //  case MouseEvent.MOUSE_MOVE:
+                            //      this.m_currStage.mouseMove();
+                            //      break;
                             default:
                                 break;
                         }

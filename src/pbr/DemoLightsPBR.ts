@@ -22,6 +22,11 @@ import PBRLightsManager from "../pbr/mana/PBRLightsManager";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
+import RendererSubScene from "../vox/scene/RendererSubScene";
+import ProgressBar from "../orthoui/demos/base/ProgressBar";
+import ProgressDataEvent from "../vox/event/ProgressDataEvent";
+import UITexTool from "../orthoui/demos/base/UITexTool";
+
 
 
 export class DemoLightsPBR
@@ -65,6 +70,7 @@ export class DemoLightsPBR
             this.m_rscene.updateCamera();
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+            this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);
 
             this.m_rscene.enableMouseEvent(true);
             this.m_CameraZoomController.bindCamera(this.m_rscene.getCamera());
@@ -98,7 +104,7 @@ export class DemoLightsPBR
             this.m_meshMana.initialize();
             
 
-            this.m_rscene.setClearRGBColor3f(0.7,0.7,0.7);
+            this.m_rscene.setClearRGBColor3f(0.2,0.2,0.2);
             //this.m_meshMana.loadMeshFile("static/modules/box01.md");
             /*
             this.m_meshMana.moduleScale = 1.0;
@@ -142,8 +148,8 @@ export class DemoLightsPBR
             this.m_meshMana.material.envMapEnabled = true;
             this.m_meshMana.material.specularBleedEnabled = true;
             this.m_meshMana.material.metallicCorrection = true;
-            this.m_meshMana.material.absorbEnabled = false;
-            this.m_meshMana.material.normalNoiseEnabled = false;
+            this.m_meshMana.material.absorbEnabled = true;
+            this.m_meshMana.material.normalNoiseEnabled = true;
             this.m_meshMana.material.pixelNormalNoiseEnabled = true;
             /*
             let value: number = 0.2;
@@ -180,16 +186,128 @@ export class DemoLightsPBR
             this.m_meshMana.material.setReflectionIntensity(0.5);
             //  this.m_meshMana.material.setEnvMapLodMipMapLevel(3.0,4.0);
             //this.m_meshMana.material.setEnvSpecularColorFactor(0.0,3.0,0.0);
-            //this.m_meshMana.material.setColorScale(0.5,0.5);
+            this.m_meshManas[0].material.setColorScale( this.m_sideScale, this.m_surfaceScale );
+            this.m_meshManas[0].material.setScatterIntensity( 1.0 );
             this.m_meshMana.material.setPixelNormalNoiseIntensity(0.07);
 
+            this.initUI();
+        }
+    }
+    
+    private m_ruisc:RendererSubScene = null;
+    private initUI(): void {
+        
+        let rparam: RendererParam = new RendererParam();
+        rparam.cameraPerspectiveEnabled = false;
+        rparam.setCamProject(45.0, 0.1, 3000.0);
+        rparam.setCamPosition(0.0, 0.0, 1500.0);
+
+        let subScene: RendererSubScene = null;
+        subScene = this.m_rscene.createSubScene();
+        subScene.initialize(rparam);
+        subScene.enableMouseEvent(true);
+        this.m_ruisc = subScene;
+        let stage = this.m_rscene.getStage3D();
+        //this.m_ruisc.getCamera().translationXYZ(this.m_rscene.getViewWidth() * 0.5, this.m_rscene.getViewHeight() * 0.5, 1500.0);
+        this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
+        this.m_ruisc.getCamera().update();
+        UITexTool.GetInstance().initialize( this.m_rscene );
+        
+        
+        this.initCtrlBars();
+    }
+    
+    private m_btnSize: number = 32;
+    private m_bgLength: number = 200.0;
+    private m_btnPX: number = 150.0;
+    private m_btnPY: number = 10.0;
+
+    private m_sideScale: number = 0.5;
+    private m_surfaceScale: number = 0.5;
+    private createBtn(ns:string, progress: number, value: number = 0.0):ProgressBar {
+
+        let proBar: ProgressBar = new ProgressBar();
+        proBar.uuid = ns;
+        proBar.initialize( this.m_ruisc , ns, this.m_btnSize, this.m_bgLength);
+        if(value < 0.001) {
+            proBar.setProgress( progress, false );
+        }
+        else {
+            proBar.setValue( value, false );
+        }
+        proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.progressChange);
+        proBar.setXY(this.m_btnPX, this.m_btnPY);
+        this.m_btnPY += this.m_btnSize + 1;
+        return proBar;
+    }
+    private initCtrlBars(): void {
+        
+        if(RendererDeviece.IsMobileWeb()) {
+            this.m_btnSize = 64;
+            this.m_btnPX = 280;
+            this.m_btnPY = 30;
+        }
+        let proBarA: ProgressBar;
+        let proBarB: ProgressBar;
+        this.createBtn("metal", this.m_meshMana.material.getMetallic());
+        this.createBtn("rough", this.m_meshMana.material.getRoughness());
+        this.createBtn("noise", 0.07);
+        this.createBtn("reflection", 0.5);
+        proBarA = this.createBtn("side", 0,this.m_sideScale);
+        proBarB = this.createBtn("surface",0, this.m_surfaceScale);
+        proBarB.minValue = proBarA.minValue = 0.1;
+        proBarB.maxValue = proBarA.maxValue = 30.0;
+        proBarA.setValue(this.m_sideScale, false);
+        proBarB.setValue(this.m_surfaceScale, false);
+
+        proBarA = this.createBtn("scatter",0, 1.0);
+        proBarA.minValue = 0.1;
+        proBarA.maxValue = 128.0;
+        proBarA.setValue(1.0, false);
+        
+    }
+    private progressChange(evt: any): void {
+        
+        let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
+        //console.log("progressChange, progress: ",progEvt.progress);
+        //this.m_meshManas[0].material.setMetallic( progEvt.progress );
+        let progress: number = progEvt.progress;
+        switch(progEvt.uuid) {
+            case "metal":
+                this.m_meshManas[0].material.setMetallic( progress );
+                break;
+            case "rough":
+                this.m_meshManas[0].material.setRoughness( progress );
+                break;
+            case "noise":
+                this.m_meshManas[0].material.setPixelNormalNoiseIntensity( progress );
+                break;
+            case "reflection":
+                this.m_meshManas[0].material.setReflectionIntensity( progress );
+                break;
+            case "side":
+                this.m_sideScale = progEvt.value;
+                this.m_meshManas[0].material.setColorScale( this.m_sideScale, this.m_surfaceScale );
+                break;
+            case "surface":
+                this.m_surfaceScale = progEvt.value;
+                this.m_meshManas[0].material.setColorScale( this.m_sideScale, this.m_surfaceScale );
+                break;
+            case "scatter":
+                this.m_meshManas[0].material.setScatterIntensity( progEvt.value );
+                break;
+            default:
+            break;
         }
     }
     private mouseDown(evt: any): void {
-        let k:number = (evt.mouseX - 50.0)/400.0;
-        this.m_meshManas[0].material.setRoughness( k );
-        k = (evt.mouseY - 50.0)/400.0;
-        this.m_meshManas[0].material.setMetallic( k );
+        //  let k:number = (evt.mouseX - 50.0)/400.0;
+        //  this.m_meshManas[0].material.setRoughness( k );
+        //  k = (evt.mouseY - 50.0)/400.0;
+        //  this.m_meshManas[0].material.setMetallic( k );
+    }
+    private mouseUp(evt: any): void {
+
     }
     private update():void {
 
@@ -207,21 +325,45 @@ export class DemoLightsPBR
     {
         this.update();
 
-        //this.m_meshManas[0].material.setRoughness( Math.abs(Math.sin(this.m_time)));
-        //this.m_time += 0.01;
-
         this.m_stageDragSwinger.runWithYAxis();
         this.m_CameraZoomController.run(this.m_lookAtV, 30.0);
-        this.m_rscene.run(true);
-        
 
-        ///this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+        // current rendering strategy
+        //  this.m_rscene.run(true);
+        //  if(this.m_ruisc != null) this.m_ruisc.run( true );
 
         
-        if(this.m_profileInstance != null)
-        {
-            this.m_profileInstance.run();
-        }
+        /////////////////////////////////////////////////////// ---- mouseTest begin.
+        let pickFlag: boolean = true;
+
+        this.m_ruisc.runBegin(true, true);
+        this.m_ruisc.update(false, true);
+        pickFlag = this.m_ruisc.isRayPickSelected();
+
+        this.m_rscene.runBegin(false);
+        this.m_rscene.update(false, !pickFlag);
+        //pickFlag = pickFlag || this.m_rscene.isRayPickSelected();
+
+        /////////////////////////////////////////////////////// ---- mouseTest end.
+
+        
+        /////////////////////////////////////////////////////// ---- rendering begin.
+        this.m_rscene.renderBegin();
+        this.m_rscene.run(false);
+        this.m_rscene.runEnd();
+
+        this.m_ruisc.renderBegin();
+        this.m_ruisc.run(false);
+        this.m_ruisc.runEnd();
+        
+        /////////////////////////////////////////////////////// ---- rendering end.
+
+
+        ///this.m_camTrack.rotationOffsetAngleWorldY(-0.2);        
+        //  if(this.m_profileInstance != null)
+        //  {
+        //      this.m_profileInstance.run();
+        //  }
     }
 }
     

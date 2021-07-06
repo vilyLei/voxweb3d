@@ -7,18 +7,19 @@
 // mouse or touch event
 
 import Vector3D from "../../vox/math/Vector3D";
-
-export default class MouseEvent
+import EventBase from "./EventBase";
+export default class MouseEvent extends EventBase
 {
     static EventClassType:number = 1002;
     constructor()
     {
+        super();
     }
-    static GetEvtTypeValueBase():number
+    static GetMouseEvtTypeValueBase():number
     {
         return 5001;
     }
-    static GetEvtTypeValuesTotal():number
+    static GetMouseEvtTypeValuesTotal():number
     {
         return 17;
     }

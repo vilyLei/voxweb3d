@@ -120,6 +120,11 @@ class RendererState {
     static LockDepthTestMode(depthTestMode: number): void {
         RenderStateObject.LockDepthTestMode(depthTestMode);
     }
+    static ResetState(): void {
+        RenderColorMask.Reset();
+        RenderStateObject.Reset();
+        RendererState.Rstate.reset();
+    }
     static Reset(context: RAdapterContext): void {
         RenderColorMask.Reset();
         RenderStateObject.Reset();

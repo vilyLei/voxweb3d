@@ -392,15 +392,17 @@ const vec2 noise2 = vec2(12.9898,78.233);
 const vec3 noise3 = vec3(12.9898,78.233,158.5453);
 vec2 rand(vec2 seed) {
 
-  float noiseX = (fract(sin(dot(seed, noise2)) * 43758.5453));
-  float noiseY = (fract(sin(dot(seed, noise2 * 2.0)) * 43758.5453));
-  return vec2(noiseX,noiseY);
+    float noiseX = (fract(sin(dot(seed, noise2)) * 43758.5453));
+    float noiseY = (fract(sin(dot(seed, noise2 * 2.0)) * 43758.5453));
+    return vec2(noiseX,noiseY);
 }
 vec3 rand(vec3 seed) {
-  float noiseX = (fract(sin(dot(seed, noise3)) * 43758.5453));
-  float noiseY = (fract(sin(dot(seed, noise3 * 2.0)) * 43758.5453));
-  float noiseZ = (fract(sin(dot(seed, noise3 * 3.0)) * 43758.5453));
-  return vec3(noiseX, noiseY, noiseZ);
+    float scale = 1.0;
+    float scale2 = 43758.54;
+    float noiseX = (fract(sin(scale * dot(seed, noise3)) * scale2));
+    float noiseY = (fract(sin(scale * dot(seed, noise3 * 2.0)) * scale2));
+    float noiseZ = (fract(sin(scale * dot(seed, noise3 * 3.0)) * scale2));
+    return vec3(noiseX, noiseY, noiseZ);
 }
 // ----------------------------------------------------------------------------
 void main()

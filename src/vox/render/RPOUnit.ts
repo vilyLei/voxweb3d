@@ -19,6 +19,7 @@ import ShaderUBO from "../../vox/material/ShaderUBO";
 import IShaderUniform from "../../vox/material/IShaderUniform";
 import IRPODisplay from "../../vox/render/IRPODisplay";
 import IPoolNode from "../../vox/base/IPoolNode";
+import DebugFlag from "../debug/DebugFlag";
 
 
 /**

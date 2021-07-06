@@ -22,6 +22,10 @@ class MathConst {
     static readonly MATH_180_OVER_PI: number = 180.0 / MathConst.MATH_PI;
     static readonly MATH_PI_OVER_180: number = MathConst.MATH_PI / 180.0;
     static readonly MATH_LN2: number = 0.6931471805599453;
+    
+    static Clamp(value: number, min: number, max: number): number {
+        return Math.max( Math.min(value, max), min);
+    }
     static IsPowerOf2(value: number): boolean {
         return (value & (value - 1)) == 0;
     }
