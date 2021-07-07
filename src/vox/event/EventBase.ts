@@ -9,6 +9,7 @@
 class EventBase
 {
     static EventClassType:number = 1001;
+    uuid: string = "";
     constructor()
     {
     }
@@ -26,6 +27,7 @@ class EventBase
     type:number = EventBase.RESIZE;
     // 事件发送者
     target:any = null;
+    data: any = null;
     __$preventBoo:boolean = false;
     preventDefault():void
     {

@@ -6,6 +6,7 @@ import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 import DullButton from "../button/DullButton";
 import Color4 from "../../vox/material/Color4";
 import Line3DEntity from "../../vox/entity/Line3DEntity";
+import Vector3D from "../../vox/math/Vector3D";
 
 export default class RGBColorPanel extends DisplayEntityContainer
 {
@@ -17,8 +18,10 @@ export default class RGBColorPanel extends DisplayEntityContainer
     private m_width:number = 100.0;
     private m_height:number = 100.0;
     private m_posZ:number = 0.0;
+    private m_rn:number = 0.0;
     private m_colors: Color4[] = null;
     private m_selectColorGrid: DullButton = null;
+    private m_selectFrame: Line3DEntity = null;
     uuid: string = "RGBColorPanel";
 
     initialize(gridSize: number, total: number): void {
@@ -37,12 +40,15 @@ export default class RGBColorPanel extends DisplayEntityContainer
         let pr: number;
         let pg: number;
         let pb: number;
+        this.m_rn = rn;
 
-        let startX: number = 2.0;
-        let startY: number = 2.0;
+        let startX: number = 0.0;
+        let startY: number = 0.0;
         
         this.m_selectColorGrid = new DullButton();
-        this.m_selectColorGrid.initialize(0,0, 64, 64);
+        this.m_selectColorGrid.initialize(0,0, gridSize, gridSize);
+        this.m_selectColorGrid.copyMeshFrom(srcGrid);
+        this.m_selectColorGrid.setScaleXYZ(2.0,2.0,1.0);
         this.m_selectColorGrid.setXY(startX, startY + rn * size);
         //pgrid.setRGB3f(1.0,0.0,0.333);
         this.addEntity(this.m_selectColorGrid);
@@ -74,17 +80,35 @@ export default class RGBColorPanel extends DisplayEntityContainer
                 this.addEntity(grid);
                 grid.index = index ++;
                 grid.addEventListener(MouseEvent.MOUSE_DOWN, this, this.gridMouseDown);
+                //grid.addEventListener(MouseEvent.MOUSE_OVER, this, this.gridMouseOver);
             }
         }
 
-        let rectLine:Line3DEntity = new Line3DEntity();
-        rectLine.initializeRectXOY(0,0, cn * size + 4, rn * size + 4);
-        this.addEntity(rectLine);
+        this.m_selectFrame = new Line3DEntity();
+        this.m_selectFrame.dynColorEnabled = true;
+        this.m_selectFrame.initializeRectXOY(1,1, gridSize - 2, gridSize - 2);
+        this.m_selectFrame.setXYZ(0.0,0.0,0.1);
+        this.addEntity(this.m_selectFrame);
+        this.m_selectFrame.setVisible(false);
     }
+    private gridMouseOver(evt: any): void {
+
+    }
+    private m_pv: Vector3D = new Vector3D();
     private gridMouseDown(evt: any): void {
-        //console.log("gridMouseDown(), evt.target.index: ",evt.target.index);
-        console.log("gridMouseDown(), color: ",this.m_colors[evt.target.index] );
-        this.m_selectColorGrid.setRGBColor(this.m_colors[evt.target.index]);
+        this.m_selectFrame.setVisible(true);
+        evt.target.getPosition(this.m_pv);
+        this.m_pv.z = 0.1;
+        this.m_selectFrame.setPosition(this.m_pv);
+        this.m_selectFrame.update();
+        let color: Color4 = this.m_colors[evt.target.index];
+        
+        let pr: number = 1.5 * (1.0 - color.r);//, Math.abs(0.0 - color.r));
+        let pg: number = 1.5 * (1.0 - color.g);//, Math.abs(0.0 - color.g));
+        let pb: number = 1.5 * (1.0 - color.b);//, Math.abs(0.0 - color.b));
+
+        (this.m_selectFrame.getMaterial() as any).setRGB3f(pr,pg,pb);
+        this.m_selectColorGrid.setRGBColor(color);
         
     }
     setXY(px:number,py:number):void

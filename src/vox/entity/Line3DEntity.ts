@@ -18,9 +18,10 @@ export default class Line3DEntity extends DisplayEntity
     {
         super();
     }
-    color:Color4 = new Color4(1.0,0.0,0.0,1.0);
     private m_posarr:number[] = null;//[100.0,0.0,0.0, 0.0,0,0];
     private m_colorarr:number[] = null;//[100.0,0.0,0.0, 0.0,0,0];
+    color:Color4 = new Color4(1.0,0.0,0.0,1.0);
+    dynColorEnabled: boolean = false;
     setRGB3f(pr:number,pg:number,pb:number):void
     {
         this.color.setRGB3f(pr,pg,pb);
@@ -29,7 +30,7 @@ export default class Line3DEntity extends DisplayEntity
     {
         if(this.getMaterial() == null)
         {
-            let cm:Line3DMaterial = new Line3DMaterial();
+            let cm:Line3DMaterial = new Line3DMaterial(this.dynColorEnabled);
             this.setMaterial(cm);
         }
     }
@@ -78,12 +79,14 @@ export default class Line3DEntity extends DisplayEntity
     {
         pw += px;
         ph += py;
-        this.m_colorarr = [
-            this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b,
-            this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b,
-            this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b,
-            this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b
-        ];
+        if(!this.dynColorEnabled) {
+            this.m_colorarr = [
+                this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b,
+                this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b,
+                this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b,
+                this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b
+            ];
+        }
         this.m_posarr = [px,py,0.0, pw,py,0.0,  pw,py,0.0, pw,ph,0.0,  pw,ph,0.0,px,ph,0.0, px,ph,0.0,px,py,0.0];
 
         this.createMaterial();

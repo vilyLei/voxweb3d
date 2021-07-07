@@ -9,7 +9,7 @@ import EventBase from "./EventBase";
 export default class SelectionEvent extends EventBase
 {
     static SELECT:number = 3201;
-    uuid:string = "SelectionEvent";
+    
     flag: boolean = true;
     constructor()
     {

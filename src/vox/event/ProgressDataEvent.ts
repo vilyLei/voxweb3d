@@ -9,7 +9,7 @@ import EventBase from "./EventBase";
 export default class ProgressDataEvent extends EventBase
 {
     static PROGRESS:number = 3101;
-    uuid:string = "ProgressDataEvent";
+    
     progress: number = 0.0;
     minValue: number = 0.0;
     maxValue: number = 1.0;
