@@ -570,7 +570,7 @@ export default class PBREnv0Material extends MaterialBase {
         this.m_params[6] = Math.min(Math.max(frontScale, 0.001), 10.0);
         this.m_params[7] = Math.min(Math.max(sideScale, 0.001), 10.0);
     }
-    setEnvSpecylarColorFactor(fx:number, fy: number, fz:number):void {
+    setEnvSpecularColorFactor(fx:number, fy: number, fz:number):void {
         this.m_params[12] = fx;
         this.m_params[13] = fy;
         this.m_params[14] = fz;

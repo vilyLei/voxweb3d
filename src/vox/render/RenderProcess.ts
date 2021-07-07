@@ -167,7 +167,9 @@ export default class RenderProcess implements IRenderProcess,IPoolNode
             this.m_blockList.push(block);
             this.m_blockFList[node.shdUid] = this.m_blockListLen;
             ++this.m_blockListLen;
-            //console.log("RenderProcess::addDisp(), create a new RPOBlock instance: "+block);
+            //  console.log("RenderProcess::addDisp(), this.uid: ",this.getUid());
+            //  console.log("RenderProcess::addDisp(), create a new RPOBlock instance, block: ",block);
+            //  console.log("RenderProcess::addDisp(), create a new RPOBlock instance, this.m_blockList: ",this.m_blockList);
         }
         else
         {
@@ -223,7 +225,8 @@ export default class RenderProcess implements IRenderProcess,IPoolNode
                     
                     ++this.m_nodesLen;
                     
-                    this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.m_rpIndex, node.uid);
+                    //this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.m_rpIndex, node.uid);
+                    this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.getUid(), node.uid);
                     if(this.m_sortEnabled)
                     {
                         console.log("sort process add a disp...");
@@ -273,7 +276,8 @@ export default class RenderProcess implements IRenderProcess,IPoolNode
             {
                 let nodeUId:number = disp.__$$runit.getRPOUid();
                 let node:RPONode = this.m_rpoNodeBuilder.getNodeByUid( nodeUId ) as RPONode;
-                //console.log("removeDisp(), node != null: "+(node != null));
+                //  console.log("removeDisp(), nodeUId: ",nodeUId, ", this.uid: ",this.getUid());
+                //  console.log("removeDisp(), node != null: "+(node != null),", this.m_blockList: ",this.m_blockList);
                 if(node != null)
                 {
                     if(this.m_sortBlock == null)
@@ -286,7 +290,8 @@ export default class RenderProcess implements IRenderProcess,IPoolNode
                         this.m_sortBlock.removeNode(node);
                     }
 
-                    this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.m_rpIndex, -1);
+                    // this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.m_rpIndex, -1);
+                    this.m_rpoUnitBuilder.setRPNodeParam(disp.__$ruid, this.getUid(), -1);
                     
                     --this.m_nodesLen;
 

@@ -12,7 +12,7 @@
         "dom.iterable"
       ],
       "resolveJsonModule": true,
-      "baseUrl": "./",
+      //"baseUrl": "./",
       //"strict": true,
       "strictNullChecks": false,
       "noEmit": true,

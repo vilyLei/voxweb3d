@@ -4,20 +4,21 @@ import ImageTextureProxy from "../../../vox/texture/ImageTextureProxy";
 import RendererScene from "../../../vox/scene/RendererScene";
 import RendererDeviece from "../../../vox/render/RendererDeviece";
 
-export class UITexTool {
+export class CanvasTextureTool {
     private m_sc: RendererScene = null;
-    private static s_ins: UITexTool = null;
+    private static s_ins: CanvasTextureTool = null;
+    private static s_texMap: Map<string, TextureProxy> = new Map();
     constructor() {
-        if (UITexTool.s_ins != null) {
-            throw Error("class UITexTool is a singleton class.");
+        if (CanvasTextureTool.s_ins != null) {
+            throw Error("class CanvasTextureTool is a singleton class.");
         }
-        UITexTool.s_ins = this;
+        CanvasTextureTool.s_ins = this;
     }
-    static GetInstance(): UITexTool {
-        if (UITexTool.s_ins != null) {
-            return UITexTool.s_ins;
+    static GetInstance(): CanvasTextureTool {
+        if (CanvasTextureTool.s_ins != null) {
+            return CanvasTextureTool.s_ins;
         }
-        return new UITexTool();
+        return new CanvasTextureTool();
     }
     initialize(sc: RendererScene): void {
         if (this.m_sc == null) {
@@ -26,9 +27,14 @@ export class UITexTool {
     }
 
     createCharTexture(chars: string, size: number, fontStyle: string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(255,255,255,0.3)"): TextureProxy {
-        
+        if(chars == null || chars == "" || size < 8) {
+            return null;
+        }
         //size = Math.round(size * RendererDeviece.GetDevicePixelRatio());
-
+        let keyStr: string = chars + "_" + size + fontStyle + "_" + bgStyle;
+        if(CanvasTextureTool.s_texMap.has(keyStr)) {
+            return CanvasTextureTool.s_texMap.get(keyStr);
+        }
         let width: number = size;
         let height: number = size;
         if(chars.length > 1) {
@@ -84,6 +90,7 @@ export class UITexTool {
         let tex: ImageTextureProxy = this.m_sc.textureBlock.createImageTex2D(size, size);
         tex.premultiplyAlpha = true;
         tex.setDataFromImage(canvas);
+        CanvasTextureTool.s_texMap.set(keyStr, tex);
         return tex;
     }
     private getPixelsBounds(data: Uint8ClampedArray, width: number, height: number, threshold: number = 100): any {
@@ -134,4 +141,4 @@ export class UITexTool {
         return tex;
     }
 }
-export default UITexTool;
+export default CanvasTextureTool;

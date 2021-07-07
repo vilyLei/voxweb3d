@@ -179,7 +179,6 @@ export default class PBRLightsManager {
       pv.scaleBy(this.lightBaseDis + Math.random() * 100.0);
       pv.y = (Math.random() - 0.5) * (this.lightBaseDis * 2.0);
     }
-    this.lightPosList = posList;
     
     let colorList:Color4[] = new Array(lightsTotal);
     for (let i: number = 0; i < lightsTotal; ++i)

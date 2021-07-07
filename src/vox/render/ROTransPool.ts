@@ -23,7 +23,8 @@ export default class ROTransPool
         {
             throw Error("mat.getUid() < 0");
         }
-        return ROTransPool.s_transMap.get(mat.getUid());
+        if(ROTransPool.s_transMap.has(mat.getUid()))return ROTransPool.s_transMap.get(mat.getUid());
+        return null;
     }
     static HasTransUniform(mat:Matrix4):boolean
     {

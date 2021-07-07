@@ -189,18 +189,6 @@ export default class ColorLightsPBRMaterial extends MaterialBase {
     private m_lightPositions: Float32Array;
     private m_lightColors: Float32Array;
 
-    constructor( pointLightsTotal: number = 2, parallelLightsTotal: number = 0 ) {
-        super();
-        this.m_pointLightsTotal = pointLightsTotal;
-        this.m_parallelLightsTotal = parallelLightsTotal;
-
-        let total: number = pointLightsTotal + parallelLightsTotal;
-        if(total > 0) {
-            this.m_lightPositions = new Float32Array(4 * total);
-            this.m_lightColors = new Float32Array(4 * total);
-        }
-    }
-
     woolEnabled:boolean = false;    
     toneMappingEnabled:boolean = true;
     envMapEnabled:boolean = true;
@@ -216,6 +204,17 @@ export default class ColorLightsPBRMaterial extends MaterialBase {
     normalNoiseEnabled:boolean = false;
     pixelNormalNoiseEnabled:boolean = false;
     
+    constructor( pointLightsTotal: number = 2, parallelLightsTotal: number = 0 ) {
+        super();
+        this.m_pointLightsTotal = pointLightsTotal;
+        this.m_parallelLightsTotal = parallelLightsTotal;
+
+        let total: number = pointLightsTotal + parallelLightsTotal;
+        if(total > 0) {
+            this.m_lightPositions = new Float32Array(4 * total);
+            this.m_lightColors = new Float32Array(4 * total);
+        }
+    }
     getCodeBuf(): ShaderCodeBuffer {
         let buf: ColorLightsPBRShaderBuffer = ColorLightsPBRShaderBuffer.GetInstance();
         buf.woolEnabled = this.woolEnabled;
@@ -232,6 +231,30 @@ export default class ColorLightsPBRMaterial extends MaterialBase {
         buf.pointLightsTotal = this.m_pointLightsTotal;
         buf.parallelLightsTotal = this.m_parallelLightsTotal;
         return buf;
+    }
+    copyFrom(dst:ColorLightsPBRMaterial): void {
+        
+        this.woolEnabled = dst.woolEnabled;
+        this.toneMappingEnabled = dst.toneMappingEnabled;
+        this.envMapEnabled = dst.envMapEnabled;
+        this.scatterEnabled = dst.scatterEnabled;
+        this.specularBleedEnabled = dst.specularBleedEnabled;
+        this.metallicCorrection = dst.metallicCorrection;
+        this.gammaCorrection = dst.gammaCorrection;
+        this.absorbEnabled = dst.absorbEnabled;
+        this.normalNoiseEnabled = dst.normalNoiseEnabled;
+        this.pixelNormalNoiseEnabled = dst.pixelNormalNoiseEnabled;
+
+        this.m_pointLightsTotal = dst.m_pointLightsTotal;
+        this.m_parallelLightsTotal = dst.m_parallelLightsTotal;
+        if(dst.m_lightPositions != null)this.m_lightPositions = dst.m_lightPositions.slice();
+        if(dst.m_lightColors != null)this.m_lightColors = dst.m_lightColors.slice();
+
+        this.m_albedo = dst.m_albedo.slice();
+        this.m_params = dst.m_params.slice();
+        this.m_F0 = dst.m_F0.slice();
+        this.m_camPos = dst.m_camPos.slice();
+        this.setTextureList( dst.getTextureList().slice() );
     }
     setPixelNormalNoiseIntensity(intensity: number): void {
         intensity = Math.min(Math.max(intensity, 0.0), 2.0);
@@ -266,10 +289,12 @@ export default class ColorLightsPBRMaterial extends MaterialBase {
         this.m_params[5] = Math.min(Math.max(value, 0.001), 1.0);
     }
     
-    setColorScale(frontScale: number, sideScale: number): void {
+    setSurfaceIntensity(surfaceIntensity: number): void {
 
-        this.m_params[6] = Math.min(Math.max(frontScale, 0.001), 32.0);
-        this.m_params[7] = Math.min(Math.max(sideScale, 0.001), 32.0);
+        this.m_params[6] = Math.min(Math.max(surfaceIntensity, 0.001), 32.0);
+    }
+    setSideIntensity(sideIntensity: number): void {
+        this.m_params[7] = Math.min(Math.max(sideIntensity, 0.001), 32.0);
     }
     setEnvSpecularColorFactor(fx:number, fy: number, fz:number):void {
         this.m_params[12] = fx;

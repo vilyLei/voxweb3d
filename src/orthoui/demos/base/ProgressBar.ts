@@ -11,7 +11,7 @@ import RendererSubScene from "../../../vox/scene/RendererSubScene";
 import ColorRectImgButton from "../../../orthoui/button/ColorRectImgButton";
 import ImageTextureProxy from "../../../vox/texture/ImageTextureProxy";
 import DisplayEntityContainer from "../../../vox/entity/DisplayEntityContainer";
-import UITexTool from "./UITexTool";
+import CanvasTextureTool from "./CanvasTextureTool";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import BoundsButton from "../../button/BoundsButton";
 import MathConst from "../../../vox/math/MathConst";
@@ -23,7 +23,7 @@ import EventBase from "../../../vox/event/EventBase";
 export class ProgressBar {
     private m_ruisc: RendererSubScene = null;
     private m_dispatcher: EventBaseDispatcher = new EventBaseDispatcher();
-    private m_progressEvt: ProgressDataEvent = new ProgressDataEvent();
+    private m_currEvent: ProgressDataEvent = new ProgressDataEvent();
 
     private m_container: DisplayEntityContainer = null;
     private m_addBtn: ColorRectImgButton = null;
@@ -37,7 +37,7 @@ export class ProgressBar {
     private m_barLength: number = 1.0;
     private m_barBgX: number = 1.0;
     private m_progress: number = 0.0;
-    private m_progressName: string = "";
+    private m_barName: string = "";
 
     private m_posZ: number = 0.0;
     private m_value: number = 0.0;
@@ -49,12 +49,12 @@ export class ProgressBar {
     step: number = 1.0;
     constructor() { }
 
-    initialize(ruisc: RendererSubScene,name:string = "", btnSize: number = 64.0, barBgLength: number = 200.0): void {
-        console.log("ProgressBar::initialize()......, ruisc: ", ruisc);
+    initialize(ruisc: RendererSubScene,name:string = "prog", btnSize: number = 64.0, barBgLength: number = 200.0): void {
+
         if (this.m_ruisc == null) {
 
             this.m_ruisc = ruisc;
-            this.m_progressName = name;
+            this.m_barName = name;
             this.m_btnSize = btnSize;
             this.m_barInitLength = barBgLength;
 
@@ -82,8 +82,8 @@ export class ProgressBar {
         let container: DisplayEntityContainer = new DisplayEntityContainer();
         this.m_container = container;
 
-        if(this.m_progressName != null && this.m_progressName.length > 0) {
-            let tex:TextureProxy = UITexTool.GetInstance().createCharTexture(this.m_progressName, size, "rgba(180,180,180,1.0)");
+        if(this.m_barName != null && this.m_barName.length > 0) {
+            let tex:TextureProxy = CanvasTextureTool.GetInstance().createCharTexture(this.m_barName, size, "rgba(180,180,180,1.0)");
             let nameBtn: ColorRectImgButton = new ColorRectImgButton();
             nameBtn.premultiplyAlpha = true;
             nameBtn.flipVerticalUV = true;
@@ -105,7 +105,7 @@ export class ProgressBar {
         subBtn.outColor.setRGB3f(1.0, 1.0, 1.0);
         subBtn.overColor.setRGB3f(1.0, 1.0, 0.0);
         subBtn.downColor.setRGB3f(1.0, 0.0, 1.0);
-        subBtn.initialize(0.0, 0.0, size, size, [UITexTool.GetInstance().createCharTexture("-", size)]);
+        subBtn.initialize(0.0, 0.0, size, size, [CanvasTextureTool.GetInstance().createCharTexture("-", size)]);
         subBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         container.addEntity(subBtn);
 
@@ -116,7 +116,7 @@ export class ProgressBar {
         addBtn.outColor.setRGB3f(1.0, 1.0, 1.0);
         addBtn.overColor.setRGB3f(1.0, 1.0, 0.0);
         addBtn.downColor.setRGB3f(1.0, 0.0, 1.0);
-        addBtn.initialize(0.0, 0.0, size, size, [UITexTool.GetInstance().createCharTexture("+", size)]);
+        addBtn.initialize(0.0, 0.0, size, size, [CanvasTextureTool.GetInstance().createCharTexture("+", size)]);
         addBtn.setXYZ(this.m_barInitLength + size, 0, 0);
         addBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         container.addEntity(addBtn);
@@ -126,20 +126,18 @@ export class ProgressBar {
 
         this.m_ruisc.addContainer(container);
 
-
         this.m_subBtn = subBtn;
         this.m_addBtn = addBtn;
 
-        this.m_subBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.btnDown);
-        this.m_addBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.btnDown);
-        //this.m_barBoundsBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.btnDown);
+        this.m_addBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.btnMouseDown);
+        this.m_subBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.btnMouseDown);
         this.setProgress( this.m_progress );
     }
     private initProBg(container: DisplayEntityContainer, px: number, py: number, width: number, height: number): void {
 
         let bgPlane: Plane3DEntity = new Plane3DEntity();
         bgPlane.premultiplyAlpha = true;
-        bgPlane.initializeXOY(0, 0, 1, height, [UITexTool.GetInstance().createWhiteTex()]);
+        bgPlane.initializeXOY(0, 0, 1, height, [CanvasTextureTool.GetInstance().createWhiteTex()]);
         bgPlane.setScaleXYZ(width, 1.0, 1.0);
         bgPlane.setXYZ(px, py, 0.0);
         (bgPlane.getMaterial() as any).setAlpha(0.15);
@@ -148,7 +146,7 @@ export class ProgressBar {
 
         let barPlane: Plane3DEntity = new Plane3DEntity();
         barPlane.premultiplyAlpha = true;
-        barPlane.initializeXOY(0, 0, 1, height, [UITexTool.GetInstance().createWhiteTex()]);
+        barPlane.initializeXOY(0, 0, 1, height, [CanvasTextureTool.GetInstance().createWhiteTex()]);
         barPlane.setXYZ(px, py, 0.0);
         (barPlane.getMaterial() as any).setAlpha(0.3);
         barPlane.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
@@ -189,14 +187,15 @@ export class ProgressBar {
     }
     private sendEvt(): void {
 
-        this.m_progressEvt.target = this;
-        this.m_progressEvt.minValue = this.minValue;
-        this.m_progressEvt.maxValue = this.maxValue;
-        this.m_progressEvt.value = this.m_value;
-        this.m_progressEvt.progress = this.m_progress;
-        this.m_progressEvt.phase = 1;
-        this.m_progressEvt.uuid = this.uuid;
-        this.m_dispatcher.dispatchEvt( this.m_progressEvt );
+        this.m_currEvent.target = this;
+        this.m_currEvent.type = ProgressDataEvent.PROGRESS;
+        this.m_currEvent.minValue = this.minValue;
+        this.m_currEvent.maxValue = this.maxValue;
+        this.m_currEvent.value = this.m_value;
+        this.m_currEvent.progress = this.m_progress;
+        this.m_currEvent.phase = 1;
+        this.m_currEvent.uuid = this.uuid;
+        this.m_dispatcher.dispatchEvt( this.m_currEvent );
     }
     setProgressLength(length: number, sendEvtEnabled: boolean = true): void {
         
@@ -242,7 +241,7 @@ export class ProgressBar {
     private barMouseOut(evt: any): void {
         (this.m_barPlane.getMaterial() as any).setAlpha(0.3);
     }
-    private btnDown(evt: any): void {
+    private btnMouseDown(evt: any): void {
         this.m_autoDelay = 0;
         if (evt.target == this.m_subBtn) {
             this.m_changeStep = -this.step;

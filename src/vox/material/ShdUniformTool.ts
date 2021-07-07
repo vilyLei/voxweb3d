@@ -194,6 +194,36 @@ export default class ShdUniformTool
         }
         return ShdUniformTool.s_emptyUniform;
     }
+    static UpdateLocalFromTransformV(dstUniform: IShaderUniform, transformData:Float32Array, shdp:ShdProgram):IShaderUniform
+    {
+        if(transformData != null)
+        {
+            let shdUniform:ShaderUniform;
+            let srcUniform:ShaderMat4Uniform = dstUniform as ShaderMat4Uniform;
+            if(srcUniform == null) {
+                srcUniform = new ShaderMat4Uniform();
+                shdUniform = srcUniform;
+                shdUniform.uniformSize = 0;
+                shdUniform.uniformNameList = [];
+                shdUniform.types = [];
+                shdUniform.locations = [];
+                shdUniform.dataList = [];
+                shdUniform.dataSizeList = [];
+                shdUniform.uniformSize += 1;
+                shdUniform.uniformNameList.push( "u_objMat" );
+                shdUniform.types.push( shdp.getUniformTypeByNS("u_objMat") );
+                shdUniform.locations.push( shdp.getUniformLocationByNS("u_objMat") );
+                shdUniform.dataList.push(transformData);
+                shdUniform.dataSizeList.push(1);
+            } else {
+                shdUniform = srcUniform;
+                shdUniform.locations = [];
+                shdUniform.locations.push( shdp.getUniformLocationByNS("u_objMat") );
+            }
+            return shdUniform;
+        }
+        return ShdUniformTool.s_emptyUniform;
+    }
     static BuildLocalFromData(uniformData:ShaderUniformData, shdp:ShdProgram):IShaderUniform
     {
         if(uniformData != null)

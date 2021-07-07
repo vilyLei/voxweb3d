@@ -154,7 +154,7 @@ export class DemoModulePBR
             //this.m_meshMana.material.setColorGlossiness(0.8);
             this.m_meshMana.material.setMetallic(0.1);
             this.m_meshMana.material.setRoughness(0.8);
-            //this.m_meshMana.material.setEnvSpecylarColorFactor(0.0,0.0,0.0);
+            //this.m_meshMana.material.setEnvSpecularColorFactor(0.0,0.0,0.0);
             //*/
             /*
             this.m_meshMana.material.setMetallic(1.0);
@@ -162,7 +162,7 @@ export class DemoModulePBR
             this.m_meshMana.material.setRoughness(0.99);
             this.m_meshMana.material.setAO(1.0);
             this.m_meshMana.material.setAmbientFactor(0.01,0.01,0.01);
-            //this.m_meshMana.material.setEnvSpecylarColorFactor(1.0,0.3,0.4);
+            //this.m_meshMana.material.setEnvSpecularColorFactor(1.0,0.3,0.4);
             //*/
             //  this.m_meshMana.material.setMetallic(1.0);
             //  this.m_meshMana.material.setRoughness(0.7);

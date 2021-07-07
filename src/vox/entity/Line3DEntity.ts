@@ -20,6 +20,7 @@ export default class Line3DEntity extends DisplayEntity
     }
     color:Color4 = new Color4(1.0,0.0,0.0,1.0);
     private m_posarr:number[] = null;//[100.0,0.0,0.0, 0.0,0,0];
+    private m_colorarr:number[] = null;//[100.0,0.0,0.0, 0.0,0,0];
     setRGB3f(pr:number,pg:number,pb:number):void
     {
         this.color.setRGB3f(pr,pg,pb);
@@ -36,13 +37,11 @@ export default class Line3DEntity extends DisplayEntity
     {
         if(this.getMesh() == null)
         {
-            let colorarr:number[] = [
-                this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b                        
-            ];
+
             let mesh:DashedLineMesh = new DashedLineMesh();
             mesh.vbWholeDataEnabled = false;
             mesh.setBufSortFormat( material.getBufSortFormat() );
-            mesh.initialize(this.m_posarr, colorarr);
+            mesh.initialize(this.m_posarr, this.m_colorarr);
             this.setMesh(mesh);
         }
     }
@@ -67,9 +66,28 @@ export default class Line3DEntity extends DisplayEntity
             this.m_posarr[4] = end.y;
             this.m_posarr[5] = end.z;
         }
+        
+        this.m_colorarr = [
+            this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b                        
+        ];
         this.createMaterial();
         this.activeDisplay();
 
+    }
+    initializeRectXOY(px:number,py:number,pw:number,ph:number):void
+    {
+        pw += px;
+        ph += py;
+        this.m_colorarr = [
+            this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b,
+            this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b,
+            this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b,
+            this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b
+        ];
+        this.m_posarr = [px,py,0.0, pw,py,0.0,  pw,py,0.0, pw,ph,0.0,  pw,ph,0.0,px,ph,0.0, px,ph,0.0,px,py,0.0];
+
+        this.createMaterial();
+        this.activeDisplay();
     }
     toString():string
     {

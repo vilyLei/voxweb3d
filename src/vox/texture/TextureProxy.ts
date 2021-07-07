@@ -109,7 +109,7 @@ export class TextureProxy implements IRenderTexture
             this.m_attachCount = 0;
         }
         ++this.m_attachCount;
-        //console.log("TextureProxy::__$attachThis() this(uid="+this.getUid()+").attachCount: "+this.m_attachCount);
+        console.log("TextureProxy::__$attachThis() this(uid="+this.getUid()+").attachCount: "+this.m_attachCount);
     }
     /**
      * 被引用计数减一
@@ -119,7 +119,7 @@ export class TextureProxy implements IRenderTexture
         if(this.m_attachCount > 0)
         {
             --this.m_attachCount;
-            //console.log("TextureProxy::__$detachThis() this(uid="+this.getUid()+").attachCount: "+this.m_attachCount);
+            console.log("TextureProxy::__$detachThis() this(uid="+this.getUid()+").attachCount: "+this.m_attachCount);
             if(this.m_attachCount < 1)
             {
                 this.m_attachCount = -1;
@@ -345,10 +345,10 @@ export class TextureProxy implements IRenderTexture
             // this.m_slot.__$$removeTexture(this);
             // this.m_slot 不能随便等于null,因为当前textureProxy实例还会通过this.m_slot来重复使用
             // 如果 this.m_slot 要等于 null, 则这个textureProxy实例及其uid需要回收
+            console.log("TextureProxy::RemoveFromSlot(), destroy a textureProxy instance(uid="+this.getUid()+")...");
             this.m_slot = null;
             this.m_renderProxy = null;
             this.m_uid = -1;
-            //console.log("TextureProxy::RemoveFromSlot(), destroy a textureProxy instance(uid="+this.getUid()+")...");
         }
     }
     toString():string

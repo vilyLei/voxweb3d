@@ -231,6 +231,8 @@ export default class GLSLConverter
         // 防止函数中的in 被替换
         const regExpToFuncIn:RegExp = new RegExp("_fref_", "g");
         codeStr = codeStr.replace(regExpToFuncIn, " in ");
+        
+        //codeStr = codeStr.replace(regExp1, "varying");
 
         const regExp2:RegExp = /\btexture\b/g;
         codeStr = codeStr.replace(regExp2, "texture2D");

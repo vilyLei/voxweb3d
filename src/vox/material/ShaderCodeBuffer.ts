@@ -7,6 +7,7 @@
 
 import IRenderTexture from '../../vox/render/IRenderTexture';
 import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
+import RendererDeviece from '../render/RendererDeviece';
 
 class ShaderCodeBuffer
 {
@@ -51,6 +52,10 @@ class ShaderCodeBuffer
         
         let codeStr:string = "#version 300 es\nprecision mediump float;";
         if(this.premultiplyAlpha) codeStr += "\n#define VOX_PREMULTIPLY_ALPHA";
+        
+        if(RendererDeviece.IsWebGL2()) codeStr += "\n#define VOX_IN in";
+        else codeStr += "\n#define VOX_IN varying";
+
         if(this.m_texEnabled)
         {
             codeStr += "\n#define VOX_USE_MAP";
@@ -58,7 +63,7 @@ class ShaderCodeBuffer
 `
 #ifdef VOX_USE_MAP
     uniform sampler2D u_sampler0;
-    in vec2 v_uvs;
+    VOX_IN vec2 v_uvs;
 #endif
 `;
         }
@@ -67,7 +72,7 @@ class ShaderCodeBuffer
         codeStr += 
 `
 #ifdef VOX_USE_VTX_COLOR
-    in vec3 v_cvs;
+    VOX_IN vec3 v_cvs;
 #endif
 uniform vec4 u_color;
 layout(location = 0) out vec4 FragColor;

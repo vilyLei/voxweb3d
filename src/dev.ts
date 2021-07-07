@@ -109,14 +109,12 @@
 //  import * as DemoPingpongBlur from "./demo/DemoPingpongBlur";
 //  import Demo = DemoPingpongBlur.demo.DemoPingpongBlur;
 
-//  import * as DemoDepthBlur from "./demo/DemoDepthBlur";
-//  import Demo = DemoDepthBlur.demo.DemoDepthBlur;
+//  import {DemoDepthBlur as Demo} from "./demo/DemoDepthBlur";
 
 //  import * as DemoDepthBlur2 from "./demo/DemoDepthBlur2";
 //  import Demo = DemoDepthBlur2.demo.DemoDepthBlur2;
 
-//  import * as DemoDepthTex from "./demo/DemoDepthTex";
-//  import Demo = DemoDepthTex.demo.DemoDepthTex;
+//  import {DemoDepthTex as Demo} from "./demo/DemoDepthTex";
 
 //  import * as DemoPNG from "./example/DemoPNG";
 //  import Demo = DemoPNG.example.DemoPNG;
@@ -186,8 +184,7 @@
 //  import * as DemoSwapProcess from "./demo/DemoSwapProcess";
 //  import Demo = DemoSwapProcess.demo.DemoSwapProcess;
 
-//  import * as DemoDelEntity from "./demo/DemoDelEntity";
-//  import Demo = DemoDelEntity.demo.DemoDelEntity;
+//  import {DemoDelEntity as Demo} from "./demo/DemoDelEntity";
 
 //  import * as DemoText2D from "./demo/DemoText2D";
 //  import Demo = DemoText2D.demo.DemoText2D;
@@ -329,7 +326,7 @@
 
 //  import {DemoModulePBR as Demo} from "./pbr/DemoModulePBR";
 
-import {DemoLightsPBR as Demo} from "./pbr/DemoLightsPBR";
+//  import {DemoLightsPBR as Demo} from "./pbr/DemoLightsPBR";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////
@@ -351,6 +348,8 @@ import {DemoLightsPBR as Demo} from "./pbr/DemoLightsPBR";
 ///////////////////////////////////////////////////////////////////////////////
 
 //  import {DemoOrthoBtn as Demo} from "./orthoui/demos/DemoOrthoBtn";
+
+import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
 
 
 ///////////////////////////////////////////////////////////////////////////////

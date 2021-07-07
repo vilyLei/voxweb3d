@@ -33,8 +33,10 @@ import EventBase from "../../vox/event/EventBase";
 import SelectionBar from "./base/SelectionBar";
 import SelectionEvent from "../../vox/event/SelectionEvent";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
+import RGBColorPanel from "../panel/RGBColorPanel";
+import Line3DEntity from "../../vox/entity/Line3DEntity";
 
-export class DemoOrthoBtn {
+export class DemoOrthoPanel {
     constructor() { }
 
     private m_rscene: RendererScene = null;
@@ -55,7 +57,7 @@ export class DemoOrthoBtn {
         return ptex;
     }
     initialize(): void {
-        console.log("DemoOrthoBtn::initialize()......");
+        console.log("DemoOrthoPanel::initialize()......");
         if (this.m_rscene == null) {
             RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
             RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -78,7 +80,7 @@ export class DemoOrthoBtn {
 
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
-
+            /*
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.initialize(500.0);
             this.m_rscene.addEntity(axis);
@@ -96,7 +98,12 @@ export class DemoOrthoBtn {
             plane.setXYZ(0.0, 50.0, 0.0);
             this.m_rscene.addEntity(plane);
             this.m_plane2 = plane;
-
+            //*/
+            
+            let rectLine:Line3DEntity = new Line3DEntity();
+            rectLine.initializeRectXOY(0,0, 100,100);
+            this.m_rscene.addEntity(rectLine);
+        
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
             this.m_statusDisp.initialize("rstatus", this.m_rscene.getStage3D().viewWidth - 200);
 
@@ -132,23 +139,10 @@ export class DemoOrthoBtn {
         this.initUI();
     }
     private initUI(): void {
-        let size: number = 64;
-        let px: number = 200;
-        let py: number = 10;
-        let proBar: ProgressBar = new ProgressBar();
-        proBar.initialize(this.m_ruisc, "prog");
-        proBar.setProgress(1.0);
-        proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.progressChange);
-        proBar.setXY(px, py);
-        py += 64 + 1;
-
-        let selectBar: SelectionBar = new SelectionBar();
-        selectBar.initialize(this.m_ruisc, "select");
-        selectBar.addEventListener(SelectionEvent.SELECT, this, this.selectChange);
-        selectBar.setXY(px, py);
-        selectBar.deselect(false);
-        py += 64 + 1;
-
+        let plane: RGBColorPanel = new RGBColorPanel();
+        plane.initialize(32,4);
+        plane.setXY(50,50);
+        this.m_ruisc.addContainer(plane);
     }
     private progressChange(evt: any): void {
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
@@ -158,25 +152,7 @@ export class DemoOrthoBtn {
     private selectChange(evt: any): void {
         let progEvt: SelectionEvent = evt as SelectionEvent;
         console.log("selectChange, flag: ", progEvt.flag, this.m_plane2);
-        //this.m_axis.setVisible( progEvt.flag );
-        ///*
-        ///*
-        this.m_rscene.removeEntity(this.m_plane2);
-        let material: Default3DMaterial = new Default3DMaterial();
-        if(progEvt.flag) {
-            material.setTextureList([this.getImageTexByUrl("static/assets/default.jpg")]);
-            material.initializeByCodeBuf(true);
-        }
-        else {
-            material.setTextureList([this.getImageTexByUrl("static/assets/box_wood01.jpg")]);
-            material.initializeByCodeBuf(true);
-        }
-        this.m_plane2.setMaterial(material);
         
-        this.m_rscene.addEntity(this.m_plane2);
-        //*/
-        //this.m_plane2.updateMaterialToGpu( this.m_rscene.getRenderProxy() );
-        //*/
     }
     private mouseDown(evt: any): void {
         console.log("mouse down... ...");
@@ -246,4 +222,4 @@ export class DemoOrthoBtn {
     }
 
 }
-export default DemoOrthoBtn;
+export default DemoOrthoPanel;

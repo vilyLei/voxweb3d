@@ -242,6 +242,7 @@ export default class RPOUnit implements IPoolNode,IRPODisplay
     }
     reset():void
     {
+        //  console.log("RPOUnit::reset(), uid: ",this.getUid());
         this.vro.__$detachThis();
         this.vro = null;
         this.tro.__$detachThis();

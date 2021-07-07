@@ -242,14 +242,18 @@ export default class RODataBuilder implements IROMaterialUpdater,IROVertexBufUpd
                     {
                         //console.log("disp.getTransform().getUid(): "+disp.getTransform().getUid());
                         runit.transUniform = ROTransPool.GetTransUniform(disp.getTransform());
-                        //console.log("updateDispMaterial(), get runit.transUniform: ",runit.transUniform);
+                        //console.log("RODataBuilder::updateDispMaterial(), get runit.transUniform: ",runit.transUniform);
                     }
                 }
+                //  console.log("RODataBuilder::updateDispMaterial(), runit.uid: ",runit.getUid());
+                //  console.log("RODataBuilder::updateDispMaterial(), runit.transUniform == null: ",runit.transUniform == null);
                 if(runit.transUniform == null)
                 {
                     runit.transUniform = ShdUniformTool.BuildLocalFromTransformV(hasTrans?disp.getMatrixFS32():null, shdp);
                     ROTransPool.SetTransUniform(disp.getTransform(), runit.transUniform);
-                    //console.log("create transUniform");
+                }
+                else {
+                    runit.transUniform = ShdUniformTool.UpdateLocalFromTransformV(runit.transUniform, hasTrans?disp.getMatrixFS32():null, shdp);
                 }
                 runit.uniform = material.__$uniform;
                 
