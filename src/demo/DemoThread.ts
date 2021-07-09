@@ -21,29 +21,6 @@ import TestNumberAddTask from "../thread/control/TestNumberAddTask";
 import TestNumberMultTask from "../thread/control/TestNumberMultTask";
 import TestNumberMathTask from "../thread/control/TestNumberMathTask";
 
-//import Vector3D = Vector3DT.vox.math.Vector3D;
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
-//import RendererParam = RendererParamT.vox.scene.RendererParam;
-//import RendererState = RendererStateT.vox.render.RendererState;
-//import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-
-
-//import IThreadSendData = IThreadSendDataT.thread.base.IThreadSendData;
-//import ScreenFixedAlignPlaneEntity = ScreenFixedAlignPlaneEntityT.vox.entity.ScreenFixedAlignPlaneEntity;
-//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-//import TextureStore = TextureStoreT.vox.texture.TextureStore;
-//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-//import MouseEvent = MouseEventT.vox.event.MouseEvent;
-////import DemoInstance = DemoInstanceT.demo.DemoInstance;
-//import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
-//import TestNumberAddTask = TestNumberAddTaskT.thread.control.TestNumberAddTask;
-//import TestNumberMultTask = TestNumberMultTaskT.thread.control.TestNumberMultTask;
-//import TestNumberMathTask = TestNumberMathTaskT.thread.control.TestNumberMathTask;
-
-
 export namespace demo
 {
     export class DemoThread extends DemoInstance

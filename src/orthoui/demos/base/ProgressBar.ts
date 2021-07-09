@@ -19,6 +19,7 @@ import TextureProxy from "../../../vox/texture/TextureProxy";
 import EventBaseDispatcher from "../../../vox/event/EventBaseDispatcher";
 import ProgressDataEvent from "../../../vox/event/ProgressDataEvent";
 import EventBase from "../../../vox/event/EventBase";
+import Vector3D from "../../../vox/math/Vector3D";
 
 export class ProgressBar {
     private m_ruisc: RendererSubScene = null;
@@ -47,8 +48,21 @@ export class ProgressBar {
     minValue: number = 0.0;
     maxValue: number = 1.0;
     step: number = 1.0;
+
     constructor() { }
 
+    open(): void {
+        this.m_container.setVisible(true);
+    }
+    close(): void {
+        this.m_container.setVisible(false);
+    }
+    isOpen(): boolean {
+        return this.m_container.getVisible();
+    }
+    isClosed(): boolean {
+        return !this.m_container.getVisible();
+    }
     initialize(ruisc: RendererSubScene,name:string = "prog", btnSize: number = 64.0, barBgLength: number = 200.0): void {
 
         if (this.m_ruisc == null) {
@@ -69,6 +83,16 @@ export class ProgressBar {
         this.m_dispatcher.removeEventListener(type, listener, func);
     }
     
+    getPosition(pv: Vector3D):void {
+        if (this.m_container != null) {
+            this.m_container.getPosition(pv);
+        }
+    }
+    setPosition(pv: Vector3D):void {
+        if (this.m_container != null) {
+            this.m_container.setPosition(pv);
+        }
+    }
     setXY(px: number, py: number, force: boolean = true): void {
         if (this.m_container != null) {
             this.m_container.setXYZ(px, py, this.m_posZ);
@@ -97,6 +121,7 @@ export class ProgressBar {
             container.addEntity(nameBtn);
 
             this.m_nameBtn = nameBtn;
+            this.m_nameBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.nameBtnMouseDown);
         }
 
         let subBtn: ColorRectImgButton = new ColorRectImgButton();
@@ -179,15 +204,16 @@ export class ProgressBar {
 
         this.m_value = this.minValue + (this.maxValue - this.minValue) * this.m_progress;
         if(sendEvtEnabled) {
-            this.sendEvt();
+            this.sendEvt(2);
         }
     }
     getProgress(): number {
         return this.m_progress;
     }
-    private sendEvt(): void {
+    private sendEvt(status: number): void {
 
         this.m_currEvent.target = this;
+        this.m_currEvent.status = status;
         this.m_currEvent.type = ProgressDataEvent.PROGRESS;
         this.m_currEvent.minValue = this.minValue;
         this.m_currEvent.maxValue = this.maxValue;
@@ -206,10 +232,13 @@ export class ProgressBar {
 
         this.m_value = this.minValue + (this.maxValue - this.minValue) * this.m_progress;
         if(sendEvtEnabled) {
-            this.sendEvt();
+            this.sendEvt(2);
         }
     }
     private m_moveMin: number = 0;
+    private nameBtnMouseDown(evt: any): void {
+        this.sendEvt(0);
+    }
     private barMouseDown(evt: any): void {
         //console.log("barMouseDown");
         this.m_moveMin = evt.mouseX - this.m_progress * this.m_barInitLength;

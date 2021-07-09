@@ -19,6 +19,7 @@ export default interface IRendererSpace
 {
     // 可以添加真正被渲染的实体也可以添加只是为了做几何/空间检测的实体(不允许有material)
     getStage3D():IRenderStage3D;
+    setCamera(camera:CameraBase):void;
     getCamera():CameraBase;
     addEntity(entity:IRenderEntity):void;
     removeEntity(entity:IRenderEntity):void;

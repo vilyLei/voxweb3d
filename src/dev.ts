@@ -91,8 +91,7 @@
 //  import * as DemoMRT2 from "./demo/DemoMRT2";
 //  import Demo = DemoMRT2.demo.DemoMRT2;
 
-//  import * as DemoFBOInstance from "./demo/DemoFBOInstance";
-//  import Demo = DemoFBOInstance.demo.DemoFBOInstance;
+//  import { DemoFBOInstance as Demo } from "./demo/DemoFBOInstance";
 
 //  import * as DemoMRT from "./demo/DemoMRT";
 //  import Demo = DemoMRT.demo.DemoMRT;
@@ -100,8 +99,7 @@
 //  import * as DemoCubeMapMRT from "./demo/DemoCubeMapMRT";
 //  import Demo = DemoCubeMapMRT.demo.DemoCubeMapMRT;
 
-//  import * as DemoFrustrum from "./demo/DemoFrustrum";
-//  import Demo = DemoFrustrum.demo.DemoFrustrum;
+//  import {DemoFrustrum as Demo} from "./demo/DemoFrustrum";
 
 //  import * as DemoScreenPingpongBlur from "./demo/DemoScreenPingpongBlur";
 //  import Demo = DemoScreenPingpongBlur.demo.DemoScreenPingpongBlur;
@@ -135,7 +133,7 @@
 
 //  import * as DemoLargeVtx from "./large/DemoLargeVtx";
 //  import Demo = DemoLargeVtx.large.DemoLargeVtx;
-//
+
 //  import * as TwoTexture from "./example/TwoTexture";
 //  import Demo = TwoTexture.example.TwoTexture;
 
@@ -226,8 +224,7 @@
 //  import * as DemoPrimitive from "./demo/DemoPrimitive";
 //  import Demo = DemoPrimitive.demo.DemoPrimitive;
 
-//  import * as DemoFlexMesh from "./demo/DemoFlexMesh";
-//  import Demo = DemoFlexMesh.demo.DemoFlexMesh;
+//  import {DemoFlexMesh as Demo} from "./demo/DemoFlexMesh";
 
 //  import * as DemoFlexPipe from "./demo/DemoFlexPipe";
 //  import Demo = DemoFlexPipe.demo.DemoFlexPipe;
@@ -313,6 +310,8 @@
 
 //  import {DemoCubeMap as Demo} from "./demo/DemoCubeMap";
 
+import {DemoProjectPlane as Demo} from "./demo/DemoProjectPlane";
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -349,45 +348,39 @@
 
 //  import {DemoOrthoBtn as Demo} from "./orthoui/demos/DemoOrthoBtn";
 
-import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
+// import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
 
 
 ///////////////////////////////////////////////////////////////////////////////
 
-let demoIns:Demo = new Demo();
-let ins:any = demoIns;
-if(ins.runBegin != undefined)
-{
-    function main1():void
-    {
+let demoIns: Demo = new Demo();
+let ins: any = demoIns;
+if (ins.runBegin != undefined) {
+    function main1(): void {
         console.log("------ demo --- init ------");
         ins.initialize();
-        function mainLoop(now:any):void
-        {
+        function mainLoop(now: any): void {
             ins.runBegin();
             ins.run();
             ins.runEnd();
             window.requestAnimationFrame(mainLoop);
         }
         window.requestAnimationFrame(mainLoop);
-        console.log("------ demo --- running ------"); 
+        console.log("------ demo --- running ------");
     }
     //
     main1();
 }
-else
-{
-    function main2():void
-    {
+else {
+    function main2(): void {
         console.log("------ demo --- init ------");
         demoIns.initialize();
-        function mainLoop(now:any):void
-        {
+        function mainLoop(now: any): void {
             demoIns.run();
             window.requestAnimationFrame(mainLoop);
         }
         window.requestAnimationFrame(mainLoop);
-        console.log("------ demo --- running ------"); 
+        console.log("------ demo --- running ------");
     }
     //
     main2();

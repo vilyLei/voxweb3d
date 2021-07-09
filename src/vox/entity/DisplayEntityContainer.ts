@@ -412,6 +412,13 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer,I
         this.m_pos.z = pz;
         this.m_transformStatus |= 1;
     }
+    offsetPosition(pv:Vector3D):void
+    {
+        this.m_pos.x += pv.x;
+        this.m_pos.y += pv.y;
+        this.m_pos.z += pv.z;
+        this.m_transformStatus |= 1;
+    }
     setPosition(pv:Vector3D):void
     {
         this.m_pos.x = pv.x;

@@ -1,5 +1,6 @@
 
 import RendererDeviece from "../../vox/render/RendererDeviece";
+import MouseEvent from "../../vox/event/MouseEvent";
 
 import TextureProxy from "../../vox/texture/TextureProxy";
 import {TextureConst} from "../../vox/texture/TextureConst";
@@ -17,6 +18,9 @@ import CanvasTextureTool from "../../orthoui/demos/base/CanvasTextureTool";
 import SelectionEvent from "../../vox/event/SelectionEvent";
 import SelectionBar from "../../orthoui/demos/base/SelectionBar";
 import ColorLightsPBRMaterial from "../material/ColorLightsPBRMaterial";
+import RGBColorPanel, { RGBColoSelectEvent } from "../../orthoui/panel/RGBColorPanel";
+import Color4 from "../../vox/material/Color4";
+import Vector3D from "../../vox/math/Vector3D";
 
 export class PBRLightsUI
 {
@@ -45,6 +49,8 @@ export class PBRLightsUI
         {
             this.m_rscene = rscene;;
 
+            this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDown);
+            new MouseEvent
             this.m_texLoader = texLoader;
 
 
@@ -58,7 +64,7 @@ export class PBRLightsUI
             this.m_meshMana.material.specularBleedEnabled = true;
             this.m_meshMana.material.metallicCorrection = true;
             this.m_meshMana.material.absorbEnabled = false;
-            this.m_meshMana.material.normalNoiseEnabled = true;
+            this.m_meshMana.material.normalNoiseEnabled = false;
             this.m_meshMana.material.pixelNormalNoiseEnabled = true;
             /*
             let value: number = 0.2;
@@ -129,10 +135,16 @@ export class PBRLightsUI
     
     private m_btnSize: number = 24;
     private m_bgLength: number = 200.0;
-    private m_btnPX: number = 150.0;
+    private m_btnPX: number = 102.0;
     private m_btnPY: number = 10.0;
-    
-    private createSelectBtn(ns:string, selectNS:string, deselectNS:string, flag: boolean, ):SelectionBar {
+    private m_rgbPanel: RGBColorPanel;
+    private m_colorIntensity: number = 1.0;
+    private m_F0Color: Color4 = new Color4(0.0,0.0,0.0);
+    private m_albedoColor: Color4 = new Color4(0.2,0.2,0.2);
+    private m_ambientColor: Color4 = new Color4(0.1,0.1,0.1);
+    private m_btns: any[] = [];
+    private m_menuBtn: SelectionBar = null;
+    private createSelectBtn(ns:string, selectNS:string, deselectNS:string, flag: boolean, visibleAlways: boolean = false):SelectionBar {
 
         let selectBar: SelectionBar = new SelectionBar();
         selectBar.uuid = ns;
@@ -146,9 +158,10 @@ export class PBRLightsUI
         }
         selectBar.setXY(this.m_btnPX, this.m_btnPY);
         this.m_btnPY += this.m_btnSize + 1;
+        if(!visibleAlways)this.m_btns.push(selectBar);
         return selectBar;
     }
-    private createBtn(ns:string, progress: number, value: number = 0.0):ProgressBar {
+    private createBtn(ns:string, progress: number, value: number = 0.0, visibleAlways: boolean = false):ProgressBar {
 
         let proBar: ProgressBar = new ProgressBar();
         proBar.uuid = ns;
@@ -162,10 +175,11 @@ export class PBRLightsUI
         proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.progressChange);
         proBar.setXY(this.m_btnPX, this.m_btnPY);
         this.m_btnPY += this.m_btnSize + 1;
+        if(!visibleAlways)this.m_btns.push(proBar);
         return proBar;
     }
     
-    private createValueBtn(ns:string, value: number, minValue: number, maxValue: number):ProgressBar {
+    private createValueBtn(ns:string, value: number, minValue: number, maxValue: number, visibleAlways: boolean = false):ProgressBar {
 
         let proBar: ProgressBar = new ProgressBar();
         proBar.uuid = ns;
@@ -177,6 +191,7 @@ export class PBRLightsUI
         proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.progressChange);
         proBar.setXY(this.m_btnPX, this.m_btnPY);
         this.m_btnPY += this.m_btnSize + 1;
+        if(!visibleAlways)this.m_btns.push(proBar);
         return proBar;
     }
     private initCtrlBars(): void {
@@ -186,6 +201,9 @@ export class PBRLightsUI
             this.m_btnPX = 280;
             this.m_btnPY = 30;
         }
+        this.m_menuBtn = this.createSelectBtn("","Menu Open","Menu Close",false,true);
+        this.m_menuBtn.uuid = "menuCtrl";
+
         this.createBtn("metal", this.m_meshMana.material.getMetallic());
         this.createBtn("rough", this.m_meshMana.material.getRoughness());
         this.createBtn("noise", 0.07);
@@ -196,34 +214,104 @@ export class PBRLightsUI
         this.createValueBtn("scatter", 1.0, 0.1, 128.0);
 
         this.createSelectBtn("absorb","ON","OFF",false);
-        this.createValueBtn("tone", 2.0, 0.1, 128.0);        
+        this.createSelectBtn("vtxNoise","ON","OFF",false);
+        this.createValueBtn("tone", 2.0, 0.1, 128.0);
+        this.createValueBtn("F0Color", 1.0, 0.01, 32.0);
+        this.createValueBtn("albedo", 1.0, 0.01, 5.0);
+        this.createValueBtn("ambient", 1.0, 0.01, 1.0);        
+        
+        this.m_rgbPanel = new RGBColorPanel();
+        this.m_rgbPanel.initialize(32,4);
+        this.m_rgbPanel.addEventListener(RGBColoSelectEvent.COLOR_SELECT, this, this.selectColor);
+        this.m_rgbPanel.setXY(this.m_btnPX, this.m_btnPY);
+        this.ruisc.addContainer(this.m_rgbPanel);
+        this.m_rgbPanel.close();
+        
     }
-    //private create
+    private selectColor(evt: any): void {
+        let currEvt: RGBColoSelectEvent = evt as RGBColoSelectEvent;
+        switch(this.m_currUUID) {
+            case "F0Color":
+                this.m_F0Color.copyFrom(currEvt.color);
+                this.m_meshManas[0].material.setF0(
+                    this.m_F0Color.r * this.m_colorIntensity,
+                    this.m_F0Color.g * this.m_colorIntensity,
+                    this.m_F0Color.b * this.m_colorIntensity);
+                break;
+            case "albedo":
+                this.m_albedoColor.copyFrom(currEvt.color);
+                this.m_meshManas[0].material.setAlbedoColor(
+                    this.m_albedoColor.r * this.m_colorIntensity,
+                    this.m_albedoColor.g * this.m_colorIntensity,
+                    this.m_albedoColor.b * this.m_colorIntensity);
+                break;
+            case "ambient":
+                this.m_ambientColor.copyFrom(currEvt.color);
+                this.m_meshManas[0].material.setAmbientFactor(
+                    this.m_ambientColor.r * this.m_colorIntensity,
+                    this.m_ambientColor.g * this.m_colorIntensity,
+                    this.m_ambientColor.b * this.m_colorIntensity);
+                break;
+            default:
+                break;
+        }
+    }
+    private m_pos: Vector3D = new Vector3D();
     private selectChange(evt: any): void {
         
         let selectEvt: SelectionEvent = evt as SelectionEvent;
         let flag: boolean = selectEvt.flag;
 
-        let material: ColorLightsPBRMaterial = new ColorLightsPBRMaterial();
-        material.copyFrom( this.m_meshMana.material );
+        let material: ColorLightsPBRMaterial = null;
         
-        this.m_rscene.removeEntity( this.m_meshMana.entity );
         switch(selectEvt.uuid) {
             case "absorb":
+                material = new ColorLightsPBRMaterial();
+                material.copyFrom( this.m_meshMana.material );
                 material.absorbEnabled = flag;
+                break;
+            case "vtxNoise":
+                material = new ColorLightsPBRMaterial();
+                material.copyFrom( this.m_meshMana.material );
+                material.normalNoiseEnabled = flag;
+                break;
+            case "menuCtrl":
+                if(!flag) {
+                    for(let i: number = 0; i < this.m_btns.length; ++i) {
+                        this.m_btns[i].open();
+                    }
+                    this.m_menuBtn.getPosition(this.m_pos);
+                    this.m_pos.x = this.m_btnPX;
+                    this.m_menuBtn.setPosition(this.m_pos);
+                }
+                else {
+                    for(let i: number = 0; i < this.m_btns.length; ++i) {
+                        this.m_btns[i].close();
+                    }
+                    this.m_menuBtn.getPosition(this.m_pos);
+                    this.m_pos.x = 0;
+                    this.m_menuBtn.setPosition(this.m_pos);
+                }
+                return;
                 break;
             default:
                 break;
         }
-        material.initializeByCodeBuf(true);
-        this.m_meshMana.entity.setMaterial(material);
-        this.m_rscene.addEntity( this.m_meshMana.entity );
-        this.m_meshMana.material = material;
+        if(material != null) {
+            this.m_rscene.removeEntity( this.m_meshMana.entity );
+            material.initializeByCodeBuf(true);
+            this.m_meshMana.entity.setMaterial(material);
+            this.m_rscene.addEntity( this.m_meshMana.entity );
+            this.m_meshMana.material = material;
+        }
+        this.m_rgbPanel.close();
     }
+    private m_currUUID:string = "";
     private progressChange(evt: any): void {
         
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
         let progress: number = progEvt.progress;
+        this.m_currUUID = progEvt.uuid;
         switch(progEvt.uuid) {
             case "metal":
                 this.m_meshManas[0].material.setMetallic( progress );
@@ -251,9 +339,55 @@ export class PBRLightsUI
             case "tone":
                 this.m_meshManas[0].material.setToneMapingExposure( progEvt.value );
                 break;
+            case "F0Color":
+                if(progEvt.status != 0) {
+                    this.m_colorIntensity = progEvt.value;
+                    this.m_meshManas[0].material.setF0(
+                        this.m_F0Color.r * this.m_colorIntensity,
+                        this.m_F0Color.g * this.m_colorIntensity,
+                        this.m_F0Color.b * this.m_colorIntensity);
+                }
+                else {
+                    if(this.m_rgbPanel.isClosed())this.m_rgbPanel.open();
+                    else this.m_rgbPanel.close();
+                }
+                return;
+                break;
+            case "albedo":
+                if(progEvt.status != 0) {
+                    this.m_colorIntensity = progEvt.value;
+                    this.m_meshManas[0].material.setAlbedoColor(
+                        this.m_albedoColor.r * this.m_colorIntensity,
+                        this.m_albedoColor.g * this.m_colorIntensity,
+                        this.m_albedoColor.b * this.m_colorIntensity);
+                }
+                else {
+                    if(this.m_rgbPanel.isClosed())this.m_rgbPanel.open();
+                    else this.m_rgbPanel.close();
+                }
+                return;
+                break;
+            case "ambient":
+                if(progEvt.status != 0) {
+                    this.m_colorIntensity = progEvt.value;
+                    this.m_meshManas[0].material.setAmbientFactor(
+                        this.m_ambientColor.r * this.m_colorIntensity,
+                        this.m_ambientColor.g * this.m_colorIntensity,
+                        this.m_ambientColor.b * this.m_colorIntensity);
+                }
+                else {
+                    if(this.m_rgbPanel.isClosed())this.m_rgbPanel.open();
+                    else this.m_rgbPanel.close();
+                }
+                return;
+                break;
             default:
             break;
         }
+        this.m_rgbPanel.close();
+    }
+    private mouseBgDown(evt: any): void {
+        this.m_rgbPanel.close();
     }
 }
     

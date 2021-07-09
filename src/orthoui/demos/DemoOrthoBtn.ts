@@ -33,6 +33,9 @@ import EventBase from "../../vox/event/EventBase";
 import SelectionBar from "./base/SelectionBar";
 import SelectionEvent from "../../vox/event/SelectionEvent";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
+import RGBColorPanel, { RGBColoSelectEvent } from "../panel/RGBColorPanel";
+import Color4 from "../../vox/material/Color4";
+import Vector3D from "../../vox/math/Vector3D";
 
 export class DemoOrthoBtn {
     constructor() { }
@@ -101,6 +104,7 @@ export class DemoOrthoBtn {
             this.m_statusDisp.initialize("rstatus", this.m_rscene.getStage3D().viewWidth - 200);
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+            this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDown);
             //this.m_rscene.addEventListener(MouseEvent.MOUSE_MOVE, this, this.mouseMove);
             //this.m_rscene.addEventListener(EventBase.ENTER_FRAME, this, this.enterFrame);
 
@@ -112,6 +116,9 @@ export class DemoOrthoBtn {
     }
 
     private m_ruisc: RendererSubScene = null;
+    private m_rgbPanel: RGBColorPanel;
+    private m_colorIntensity: number = 1.0;
+    private m_color: Color4 = new Color4();
     private initUIScene(): void {
 
         let rparam: RendererParam = new RendererParam();
@@ -136,6 +143,7 @@ export class DemoOrthoBtn {
         let px: number = 200;
         let py: number = 10;
         let proBar: ProgressBar = new ProgressBar();
+        proBar.uuid = "prog";
         proBar.initialize(this.m_ruisc, "prog");
         proBar.setProgress(1.0);
         proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.progressChange);
@@ -149,11 +157,61 @@ export class DemoOrthoBtn {
         selectBar.deselect(false);
         py += 64 + 1;
 
+        let colorBar: ProgressBar = new ProgressBar();
+        colorBar.uuid = "color";
+        colorBar.initialize(this.m_ruisc, "color");
+        colorBar.setProgress(1.0);
+        colorBar.minValue = 0.0;
+        colorBar.maxValue = 2.0;
+        colorBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.progressChange);
+        colorBar.setXY(px, py);
+        py += 64 + 1;
+
+        
+        this.m_rgbPanel = new RGBColorPanel();
+        this.m_rgbPanel.initialize(32,4);
+        this.m_rgbPanel.addEventListener(RGBColoSelectEvent.COLOR_SELECT, this, this.selectColor);
+        this.m_rgbPanel.setXY(px,py);
+        this.m_ruisc.addContainer(this.m_rgbPanel);
+        this.m_rgbPanel.close();        
+    }
+    private selectColor(evt: any): void {
+        let currEvt: RGBColoSelectEvent = evt as RGBColoSelectEvent;
+        this.m_color.copyFrom(currEvt.color);
+        //this.m_color.scaleBy();
+        (this.m_plane.getMaterial() as any).setRGB3f(
+            this.m_color.r * this.m_colorIntensity,
+            this.m_color.g * this.m_colorIntensity,
+            this.m_color.b * this.m_colorIntensity);
     }
     private progressChange(evt: any): void {
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
         console.log("progressChange, progress: ", progEvt.progress);
-        (this.m_plane.getMaterial() as any).setRGB3f(1.0, progEvt.progress, 1.0);
+        switch(evt.uuid)
+        {
+            case "prog":
+                this.m_colorIntensity = progEvt.progress;
+                (this.m_plane.getMaterial() as any).setRGB3f(progEvt.progress, 1.0,1.0);
+                break;
+            case "color":
+                if(progEvt.status != 0) {
+                    this.m_colorIntensity = progEvt.value;
+                    (this.m_plane.getMaterial() as any).setRGB3f(
+                        this.m_color.r * this.m_colorIntensity,
+                        this.m_color.g * this.m_colorIntensity,
+                        this.m_color.b * this.m_colorIntensity);
+                }
+                else {
+                    if(this.m_rgbPanel.isClosed())this.m_rgbPanel.open();
+                    else this.m_rgbPanel.close();
+                }
+                return;
+                break;
+            default:
+                break;
+        }
+        //(this.m_plane.getMaterial() as any).setRGB3f(1.0, progEvt.progress, 1.0);
+        this.m_rgbPanel.close();
     }
     private selectChange(evt: any): void {
         let progEvt: SelectionEvent = evt as SelectionEvent;
@@ -177,6 +235,10 @@ export class DemoOrthoBtn {
         //*/
         //this.m_plane2.updateMaterialToGpu( this.m_rscene.getRenderProxy() );
         //*/
+        this.m_rgbPanel.close();
+    }
+    private mouseBgDown(evt: any): void {
+        this.m_rgbPanel.close();
     }
     private mouseDown(evt: any): void {
         console.log("mouse down... ...");
@@ -205,8 +267,9 @@ export class DemoOrthoBtn {
         this.m_statusDisp.update(false);
 
         this.m_stageDragSwinger.runWithYAxis();
-        this.m_CameraZoomController.run(null, 30.0);
-        let renderingType: number = 0;
+        this.m_CameraZoomController.run(Vector3D.ZERO, 30.0);
+        
+        let renderingType: number = 1;
         if(renderingType < 1) {
             // current rendering strategy
             this.m_rscene.run( true );

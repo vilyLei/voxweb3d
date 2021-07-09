@@ -10,19 +10,19 @@ import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import ShaderCodeBuilder from "../../../vox/material/code/ShaderCodeBuilder";
 
-class BaseColorShaderBuffer extends ShaderCodeBuffer
+class ViewMirrorShaderBuffer extends ShaderCodeBuffer
 {
     constructor()
     {
         super();
     }
-    private static ___s_instance:BaseColorShaderBuffer = new BaseColorShaderBuffer();
+    private static ___s_instance:ViewMirrorShaderBuffer = new ViewMirrorShaderBuffer();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
         super.initialize(texEnabled);
-        //console.log("BaseColorShaderBuffer::initialize()...,texEnabled: "+texEnabled);
-        this.m_uniqueName = "BaseColorShd";                    
+        //console.log("ViewMirrorShaderBuffer::initialize()...,texEnabled: "+texEnabled);
+        this.m_uniqueName = "ViewMirrorShd";                    
     }
     private buildThisCode():void
     {
@@ -38,6 +38,7 @@ class BaseColorShaderBuffer extends ShaderCodeBuffer
         coder.addVarying("vec4", "v_colorFactor");
         coder.addFragOutput("vec4", "FragColor0");
         coder.addFragUniform("vec4","u_color");
+        coder.addVertUniform("vec4","u_mirrorNormal");
         coder.useVertSpaceMats(true,true,true);
 
     }
@@ -58,7 +59,7 @@ FragColor0 = colorFactor * u_color * texture(u_sampler0, v_uv.xy);
         else
         {
             ShaderCodeBuffer.s_coder.addFragMainCode("\tFragColor0 = u_color");
-        }                    
+        }
         
         return ShaderCodeBuffer.s_coder.buildFragCode();                    
     }
@@ -67,11 +68,15 @@ FragColor0 = colorFactor * u_color * texture(u_sampler0, v_uv.xy);
         
         let coder:ShaderCodeBuilder = ShaderCodeBuffer.s_coder;
         coder.addVertMainCode(
+
+`vec4 wpos = u_objMat * vec4(a_vs, 1.0);
+wpos.xyz = reflect(wpos.xyz, u_mirrorNormal.xyz);
+vec3 nv = mat3(u_viewMat) * u_mirrorNormal.xyz;
+
+vec4 viewPos = u_viewMat * wpos;
+gl_Position = dot(nv, vec3(0.0,0.0,1.0)) > 0.01 ? u_projMat * viewPos : vec4(0.0,0.0,-2.0,1.0);
 `
-mat4 viewMat4 = u_viewMat * u_objMat;
-vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);
-gl_Position = u_projMat * viewPos;
-`
+
         );
         if(this.isTexEanbled())
         {
@@ -86,15 +91,15 @@ gl_Position = u_projMat * viewPos;
     }
     toString():string
     {
-        return "[BaseColorShaderBuffer()]";
+        return "[ViewMirrorShaderBuffer()]";
     }
-    static GetInstance():BaseColorShaderBuffer
+    static GetInstance():ViewMirrorShaderBuffer
     {
-        return BaseColorShaderBuffer.___s_instance;
+        return ViewMirrorShaderBuffer.___s_instance;
     }
 }
 
-export default class BaseColorMaterial extends MaterialBase
+export default class ViewMirrorMaterial extends MaterialBase
 {
     constructor()
     {
@@ -103,10 +108,11 @@ export default class BaseColorMaterial extends MaterialBase
     
     getCodeBuf():ShaderCodeBuffer
     {        
-        return BaseColorShaderBuffer.GetInstance();
+        return ViewMirrorShaderBuffer.GetInstance();
     }
     
     private m_colorArray:Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
+    private m_mirrorArray:Float32Array = new Float32Array([0.0,1.0,0.0,1.0]);
     setRGB3f(pr:number,pg:number,pb:number):void
     {
         this.m_colorArray[0] = pr;
@@ -124,11 +130,27 @@ export default class BaseColorMaterial extends MaterialBase
     {
         this.m_colorArray[3] = pa;
     }
+    useXMirror(): void {
+        this.m_mirrorArray[0] = 1.0;
+        this.m_mirrorArray[1] = 0.0;
+        this.m_mirrorArray[2] = 0.0;
+    }
+    useYMirror(): void {
+        this.m_mirrorArray[0] = 0.0;
+        this.m_mirrorArray[1] = 1.0;
+        this.m_mirrorArray[2] = 0.0;
+    }
+    useZMirror(): void {
+        this.m_mirrorArray[0] = 0.0;
+        this.m_mirrorArray[1] = 0.0;
+        this.m_mirrorArray[2] = 1.0;
+    }
+
     createSelfUniformData():ShaderUniformData
     {
         let oum:ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_color"];
-        oum.dataList = [this.m_colorArray];
+        oum.uniformNameList = ["u_color","u_mirrorNormal"];
+        oum.dataList = [this.m_colorArray, this.m_mirrorArray];
         return oum;
     }
 }

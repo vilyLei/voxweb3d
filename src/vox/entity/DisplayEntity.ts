@@ -443,6 +443,10 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     setXYZ(px: number, py: number, pz: number): void {
         this.m_transfrom.setXYZ(px, py, pz);
     }
+    offsetPosition(pv:Vector3D):void
+    {
+        this.m_transfrom.offsetPosition(pv);
+    }
     setPosition(pv: Vector3D): void {
         this.m_transfrom.setPosition(pv);
     }

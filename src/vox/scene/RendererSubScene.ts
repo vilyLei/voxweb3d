@@ -37,6 +37,7 @@ import RayGpuSelector from "../../vox/scene/RayGpuSelector";
 import MouseEvt3DController from "../../vox/scene/MouseEvt3DController";
 import IEvt3DController from "../../vox/scene/IEvt3DController";
 import TextureBlock from "../texture/TextureBlock";
+import FBOInstance from "./FBOInstance";
 
 export default class RendererSubScene implements IRenderer {
     private static __s_uid: number = 0;
@@ -125,6 +126,9 @@ export default class RendererSubScene implements IRenderer {
     }
     createCamera(): CameraBase {
         return this.m_renderProxy.createCamera();
+    }
+    createFBOInstance(): FBOInstance {
+        return new FBOInstance(this, this.textureBlock.getRTTStrore());
     }
     setClearRGBColor3f(pr: number, pg: number, pb: number) {
         if (this.m_renderProxy != null) {
@@ -221,7 +225,7 @@ export default class RendererSubScene implements IRenderer {
     private createMainCamera(): void {
         this.m_camera = this.m_renderProxy.createCamera();
         this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
-        this.m_camera.setViewSize(this.m_viewW, this.m_viewH, this.m_adapter.getDevicePixelRatio());
+        this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
         let vec3: Vector3D = this.m_rparam.camProjParam;
         if (this.m_perspectiveEnabled) {
             this.m_camera.perspectiveRH(MathConst.DegreeToRadian(vec3.x), this.m_viewW / this.m_viewH, vec3.y, vec3.z);
@@ -353,6 +357,11 @@ export default class RendererSubScene implements IRenderer {
     showInfoAt(index: number): void {
         this.m_renderer.showInfoAt(index);
     }
+    
+    updateCameraData(camera: CameraBase): void {
+
+        this.m_rcontext.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
+    }
     /**
      * the function resets the renderer scene status.
      * you should use it on the frame starting time.
@@ -371,7 +380,7 @@ export default class RendererSubScene implements IRenderer {
         this.m_shader.renderBegin();
         if (this.m_renderProxy.getCamera() != this.m_camera) {
             this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
-            this.m_camera.setViewSize(this.m_viewW, this.m_viewH, this.m_adapter.getDevicePixelRatio());
+            this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
             this.m_renderProxy.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
             this.m_renderProxy.reseizeRCViewPort();
             this.m_camera.update();
@@ -393,7 +402,7 @@ export default class RendererSubScene implements IRenderer {
 
         if (this.m_renderProxy.getCamera() != this.m_camera) {
             this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
-            this.m_camera.setViewSize(this.m_viewW, this.m_viewH, this.m_adapter.getDevicePixelRatio());
+            this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
             this.m_renderProxy.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
             this.m_renderProxy.reseizeRCViewPort();
             this.m_camera.update();

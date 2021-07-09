@@ -67,6 +67,9 @@ export default class RendererSpace implements IRendererSpace
     {
         return this.m_stage3d;
     }
+    setCamera(camera:CameraBase) :void {
+        this.m_camera = camera;
+    }
     getCamera():CameraBase
     {
         return this.m_camera;

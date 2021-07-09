@@ -366,7 +366,7 @@ export default class RendererInstanceContext
      * the function resets the renderer instance rendering status.
      * you should use it on the frame starting time.
      */
-    renderBegin():void
+    renderBegin(cameraDataUpdate: boolean = true):void
     {
         if(this.m_renderProxy != null)
         {
@@ -379,8 +379,10 @@ export default class RendererInstanceContext
             this.m_adapter.renderBegin();
             RendererState.ResetInfo();
             RendererState.Reset(this.m_renderProxy.getRenderAdapter().getRenderContext());
-            this.m_renderProxy.useCameraData();
-            this.m_renderProxy.updateCameraDataFromCamera( this.m_renderProxy.getCamera() );
+            if(cameraDataUpdate) {
+                this.m_renderProxy.useCameraData();
+                this.m_renderProxy.updateCameraDataFromCamera( this.m_renderProxy.getCamera() );
+            }
         }
     }
     resetState(): void {

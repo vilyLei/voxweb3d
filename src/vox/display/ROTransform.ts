@@ -53,6 +53,14 @@ export default class ROTransform
         this.updateStatus |= 1;
         this.updatedStatus |= 1;
     }
+    offsetPosition(pv:Vector3D):void
+    {
+        this.m_fs32[12] += pv.x;
+        this.m_fs32[13] += pv.y;
+        this.m_fs32[14] += pv.z;
+        this.updateStatus |= 1;
+        this.updatedStatus |= 1;
+    }
     setPosition(pv:Vector3D):void
     {
         this.m_fs32[12] = pv.x;

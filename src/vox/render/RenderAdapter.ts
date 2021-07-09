@@ -252,7 +252,7 @@ class RenderAdapter {
 					this.m_viewHeight
 				);
 				this.uViewProbe.update();
-				DivLog.ShowLog("reseizeViewPort: " + this.m_viewX + "," + this.m_viewY + "," + this.m_viewWidth + "," + this.m_viewHeight);
+				//DivLog.ShowLog("reseizeViewPort: " + this.m_viewX + "," + this.m_viewY + "," + this.m_viewWidth + "," + this.m_viewHeight);
 				//console.log("reseizeViewPort: "+this.m_viewX+","+this.m_viewY+","+this.m_viewWidth+","+this.m_viewHeight);
 				this.m_gl.viewport(
 					this.m_viewX,

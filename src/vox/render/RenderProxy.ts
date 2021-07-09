@@ -205,7 +205,10 @@ class RenderProxy {
         let stage: IRenderStage3D = this.m_adapterContext.getStage();
         this.m_camera.getWorldPickingRayByScreenXY(stage.mouseX, stage.mouseY, rl_position, rl_tv);
     }
-
+    testViewPortChanged(px: number, py: number, pw: number, ph: number): boolean {
+        
+        return this.m_viewX != px || this.m_viewY != py || this.m_viewW != pw || this.m_viewH != ph;
+    }
     setViewPort(px: number, py: number, pw: number, ph: number): void {
         this.m_autoSynViewAndStage = false;
         this.m_viewX = px;
@@ -217,7 +220,7 @@ class RenderProxy {
             stage.setViewPort(pw, py, pw, ph);
             if (this.m_camera != null) {
                 this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
-                this.m_camera.setViewSize(this.m_viewW, this.m_viewH, this.m_adapterContext.getDevicePixelRatio());
+                this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
             }
         }
         this.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
@@ -243,7 +246,7 @@ class RenderProxy {
             }
             this.m_adapterContext.setViewport(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
             this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
-            this.m_camera.setViewSize(this.m_viewW, this.m_viewH, this.m_adapterContext.getDevicePixelRatio());
+            this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
             //console.log("resizeCallback(), this.m_viewW, this.m_viewH: "+this.m_viewW+", "+this.m_viewH);
         }
     }
@@ -258,7 +261,7 @@ class RenderProxy {
             this.m_camera.orthoRH(this.m_cameraNear, this.m_cameraFar, -0.5 * this.m_viewH, 0.5 * this.m_viewH, -0.5 * this.m_viewW, 0.5 * this.m_viewW);
         }
         this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
-        this.m_camera.setViewSize(this.m_viewW, this.m_viewH, this.m_adapterContext.getDevicePixelRatio());
+        this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
     }
     readPixels(px: number, py: number, width: number, height: number, format: number, dataType: number, pixels: Uint8Array): void {
         this.m_adapter.readPixels(px, py, width, height, format, dataType, pixels);

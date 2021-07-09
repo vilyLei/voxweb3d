@@ -24,6 +24,8 @@ export default class Box3DEntity extends DisplayEntity
     private m_maxV:Vector3D = null;
     private m_transMatrix:Matrix4 = null;
     private m_currMesh:Box3DMesh = null;
+    // uvPartsNumber value is 4 or 6
+    uvPartsNumber: number = 0;
     constructor(transform:ROTransform = null)
     {
         super(transform);
@@ -127,6 +129,7 @@ export default class Box3DEntity extends DisplayEntity
             mesh.normalType = this.m_normalType;
             mesh.normalScale = this.normalScale;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
+            mesh.uvPartsNumber = this.uvPartsNumber;
             mesh.setBufSortFormat( material.getBufSortFormat() );
             mesh.initialize(this.m_minV, this.m_maxV);
             this.m_minV = null;

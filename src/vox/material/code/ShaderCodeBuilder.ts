@@ -42,6 +42,9 @@ private m_fragUniformTypes:string[] = [];
 private m_varyingNames:string[] = [];
 private m_varyingTypes:string[] = [];
 
+private m_defineNames:string[] = [];
+private m_defineValues:string[] = [];
+
 private m_textureSampleTypes:string[] = [];
 
 private m_objMat:boolean = false;
@@ -77,9 +80,17 @@ private m_projMat:boolean = false;
         this.m_fragUniformNames = [];
         this.m_fragUniformTypes = [];
 
+        this.m_defineNames = [];
+        this.m_defineValues = [];
+
         this.m_textureSampleTypes = [];
     }
     
+    addDefine(name:string,value:string = ""):void
+    {
+        this.m_defineNames.push(name);
+        this.m_defineValues.push(value);
+    }
     addVertLayout(type:string,name:string):void
     {
         this.m_vertLayoutNames.push(name);
@@ -181,23 +192,35 @@ private m_projMat:boolean = false;
     }
     buildVertCode():string
     {
+        let i:number = 0;
+        let len:number = 0;
         let code:string = "";
+        
         if(RendererDeviece.IsWebGL2())
         {
             code += this.m_versionDeclare;
         }
         code += this.m_preciousCode;
-        let i:number = 0;
-        let len:number = this.m_vertLayoutNames.length;
+
+        len = this.m_defineNames.length;
+        for(i = 0; i < len; i++)
+        {
+            if(this.m_defineValues[i] != "") {
+                code += "\n#define "+this.m_defineNames[i] +" "+this.m_defineValues[i];
+            }
+            else {
+                code += "\n#define "+this.m_defineNames[i];
+            }
+        }
         
-        for(; i < len; i++)
+        len = this.m_vertLayoutNames.length;
+        for(i = 0; i < len; i++)
         {
             code += "\nlayout(location = "+i+") in "+this.m_vertLayoutTypes[i] +" "+this.m_vertLayoutNames[i]+";";
         }
 
-        i = 0;
         len = this.m_vertUniformTypes.length;
-        for(; i < len; i++)
+        for(i = 0; i < len; i++)
         {
             code += "\nuniform "+this.m_vertUniformTypes[i] +" "+ this.m_vertUniformNames[i]+";";
         }
@@ -205,9 +228,8 @@ private m_projMat:boolean = false;
         if(this.m_viewMat) code += "\nuniform mat4 u_viewMat;";
         if(this.m_projMat) code += "\nuniform mat4 u_projMat;";
 
-        i = 0;
         len = this.m_varyingNames.length;
-        for(; i < len; i++)
+        for(i = 0; i < len; i++)
         {
             code += "\nout "+this.m_varyingTypes[i] +" "+this.m_varyingNames[i]+";";
         }

@@ -19,6 +19,7 @@ import TextureProxy from "../../../vox/texture/TextureProxy";
 import EventBaseDispatcher from "../../../vox/event/EventBaseDispatcher";
 import EventBase from "../../../vox/event/EventBase";
 import SelectionEvent from "../../../vox/event/SelectionEvent";
+import Vector3D from "../../../vox/math/Vector3D";
 
 export class SelectionBar {
     private m_ruisc: RendererSubScene = null;
@@ -40,7 +41,18 @@ export class SelectionBar {
     uuid: string = "selectionBar";
 
     constructor() { }
-
+    open(): void {
+        this.m_container.setVisible(true);
+    }
+    close(): void {
+        this.m_container.setVisible(false);
+    }
+    isOpen(): boolean {
+        return this.m_container.getVisible();
+    }
+    isClosed(): boolean {
+        return !this.m_container.getVisible();
+    }
     initialize(ruisc: RendererSubScene, barName: string = "select", select_name:string = "Yes", deselect_name:string = "No", btnSize: number = 64.0): void {
        
         if (this.m_ruisc == null) {
@@ -67,6 +79,16 @@ export class SelectionBar {
             this.m_container.setXYZ(px, py, this.m_posZ);
             if (force)
                 this.m_container.update();
+        }
+    }
+    getPosition(pv: Vector3D):void {
+        if (this.m_container != null) {
+            this.m_container.getPosition(pv);
+        }
+    }
+    setPosition(pv: Vector3D):void {
+        if (this.m_container != null) {
+            this.m_container.setPosition(pv);
         }
     }
     private initBody(): void {

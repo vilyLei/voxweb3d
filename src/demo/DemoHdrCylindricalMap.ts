@@ -169,8 +169,6 @@ export class DemoHdrCylindricalMap {
         this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
         let pcontext: RendererInstanceContext = this.m_rcontext;
         this.m_statusDisp.statusInfo = "/" + pcontext.getTextureResTotal() + "/" + pcontext.getTextureAttachTotal();
-
-        this.m_rscene.update();
         this.m_statusDisp.render();
     }
     private m_lookAt: Vector3D = new Vector3D();

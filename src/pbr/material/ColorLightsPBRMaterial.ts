@@ -171,7 +171,7 @@ export default class ColorLightsPBRMaterial extends MaterialBase {
     private m_parallelLightsTotal: number = 0;
     private m_envMapWidth: number = 128;
     private m_envMapHeight: number = 128;
-    private m_albedo: Float32Array = new Float32Array([0.0, 0.5, 0.0, 0.0]);
+    private m_albedo: Float32Array = new Float32Array([0.2, 0.2, 0.2, 0.0]);
     private m_params: Float32Array = new Float32Array([
         0.0, 0.0, 1.0, 0.02,   // [metallic,roughness,ao, pixel noise intensity]
         1.0,                   // tone map exposure
@@ -301,6 +301,7 @@ export default class ColorLightsPBRMaterial extends MaterialBase {
         this.m_params[13] = fy;
         this.m_params[14] = fz;
     }
+    //ambient factor x,y,z
     setAmbientFactor(fx:number, fy: number, fz:number):void {
         this.m_params[8] = fx;
         this.m_params[9] = fy;

@@ -10,14 +10,18 @@ import DashedLineMesh from '../../vox/mesh/DashedLineMesh';
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MaterialBase from '../../vox/material/MaterialBase';
 import Line3DMaterial from '../../vox/material/mcase/Line3DMaterial';
+import Color4 from '../material/Color4';
+import CameraBase from '../view/CameraBase';
 export default class DashedLine3DEntity extends DisplayEntity
 {
     private m_currMaterial:Line3DMaterial = null;
+    dynColorEnabled: boolean = true;
     constructor()
     {
         super();
     }
     private m_posarr:number[] = null;
+    private m_colorarr:number[] = null;
 
     setRGB3f(pr:number,pg:number,pb:number)
     {
@@ -27,7 +31,7 @@ export default class DashedLine3DEntity extends DisplayEntity
     {
         if(this.getMaterial() == null)
         {
-            this.m_currMaterial = new Line3DMaterial(true);
+            this.m_currMaterial = new Line3DMaterial(this.dynColorEnabled);
             this.setMaterial(this.m_currMaterial);
         }
     }
@@ -38,7 +42,7 @@ export default class DashedLine3DEntity extends DisplayEntity
             let mesh:DashedLineMesh = new DashedLineMesh();
             mesh.vbWholeDataEnabled = false;
             mesh.setBufSortFormat( material.getBufSortFormat() );
-            mesh.initialize(this.m_posarr, null);
+            mesh.initialize(this.m_posarr, this.m_colorarr);
             this.setMesh(mesh);
         }
     }
@@ -50,8 +54,49 @@ export default class DashedLine3DEntity extends DisplayEntity
         this.activeDisplay();
 
     }
-    
-    initializeBySegmentLine(pvList:Vector3D[]):void
+    initiazlizeFrustrum(camera:CameraBase): void {
+        
+        let pvs:Vector3D[] = camera.getWordFrustumVtxArr();
+        this.m_posarr = new Array(72);
+        this.m_colorarr = new Array(72);
+
+        let ids:number[] = [
+            0,1,1,2,2,3,3,0,    // far plane
+            4,5,5,6,6,7,7,4,    // near plane
+            0,4,1,5,2,6,3,7,    // side plane
+        ];
+        let farColor: Color4 = new Color4(1.0,0.0,1.0,1.0);
+        let nearColor: Color4 = new Color4(0.0,0.5,1.0);
+        let sideColor: Color4 = new Color4(0.0,0.9,0.0);
+        let colors: Color4[] = [
+            farColor,farColor,farColor,farColor,        farColor,farColor,farColor,farColor,
+            nearColor,nearColor,nearColor,nearColor,    nearColor,nearColor,nearColor,nearColor,
+            sideColor,sideColor,sideColor,sideColor,    sideColor,sideColor,sideColor,sideColor,
+        ];
+        let pv: Vector3D;
+        let color: Color4;
+        let j: number = 0;
+        for(let i: number = 0; i < ids.length; i++) {
+
+            pv = pvs[ ids[i] ];
+            color = colors[ i ];
+
+            this.m_posarr[j    ] = pv.x;
+            this.m_posarr[j + 1] = pv.y;
+            this.m_posarr[j + 2] = pv.z;
+
+            this.m_colorarr[j    ] = color.r;
+            this.m_colorarr[j + 1] = color.g;
+            this.m_colorarr[j + 2] = color.b;
+            
+            j += 3;
+        }
+        this.dynColorEnabled = false;
+        
+        this.createMaterial();
+        this.activeDisplay();
+    }
+    initializeBySegmentLine(pvList:Vector3D[],colors: Color4[] = null):void
     {
         //this.m_posarr = [va.x,va.y,va.z, vb.x,vb.y,vb.z];
         this.m_posarr = [];
@@ -61,6 +106,29 @@ export default class DashedLine3DEntity extends DisplayEntity
         {
             this.m_posarr.push(pvList[i].x,pvList[i].y,pvList[i].z);
             this.m_posarr.push(pvList[i+1].x,pvList[i+1].y,pvList[i+1].z);
+        }
+        if(colors != null) {
+            this.dynColorEnabled = false;
+        }
+        if(!this.dynColorEnabled) {
+            if(colors == null) {
+                this.m_colorarr = this.m_posarr.slice();
+                this.m_colorarr.fill(1.0);
+            }
+            else {
+                this.m_colorarr = new Array(this.m_posarr.length);
+                let j: number = 0;
+                let color: Color4;
+                for(i = 0; i < len; i++)
+                {
+                    color = colors[i];
+                    this.m_colorarr[j    ] = color.r;
+                    this.m_colorarr[j + 1] = color.g;
+                    this.m_colorarr[j + 2] = color.b;
+                    j += 3;
+                }
+            }
+            
         }
         this.createMaterial();
         this.activeDisplay();

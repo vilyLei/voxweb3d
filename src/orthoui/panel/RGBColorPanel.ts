@@ -8,13 +8,30 @@ import Color4 from "../../vox/material/Color4";
 import Line3DEntity from "../../vox/entity/Line3DEntity";
 import Vector3D from "../../vox/math/Vector3D";
 
+import EventBase from "../../vox/event/EventBase";
+import EventBaseDispatcher from "../../vox/event/EventBaseDispatcher";
+export class RGBColoSelectEvent extends EventBase
+{
+    static COLOR_SELECT:number = 33001;
+    color: Color4;
+    constructor()
+    {
+        super();
+        this.type = RGBColoSelectEvent.COLOR_SELECT;
+    }
+    toString():string
+    {
+        return "[SelectionEvent]";
+    }
+}
 export default class RGBColorPanel extends DisplayEntityContainer
 {
     constructor()
     {
         super();
     }
-    
+    private m_dispatcher: EventBaseDispatcher = new EventBaseDispatcher();
+    private m_currEvent: RGBColoSelectEvent = new RGBColoSelectEvent();
     private m_width:number = 100.0;
     private m_height:number = 100.0;
     private m_posZ:number = 0.0;
@@ -23,7 +40,32 @@ export default class RGBColorPanel extends DisplayEntityContainer
     private m_selectColorGrid: DullButton = null;
     private m_selectFrame: Line3DEntity = null;
     uuid: string = "RGBColorPanel";
-
+    open(): void {
+        this.setVisible(true);
+    }
+    close(): void {
+        this.setVisible(false);
+    }
+    isOpen(): boolean {
+        return this.getVisible();
+    }
+    isClosed(): boolean {
+        return !this.getVisible();
+    }
+    getWidth():number
+    {
+        return this.m_width;
+    }
+    getHeight():number
+    {
+        return this.m_height;
+    }
+    addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
+        this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
+    }
+    removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
+        this.m_dispatcher.removeEventListener(type, listener, func);
+    }
     initialize(gridSize: number, total: number): void {
         total = 4;
 
@@ -35,7 +77,7 @@ export default class RGBColorPanel extends DisplayEntityContainer
         let px: number;
         let py: number;
         let rn: number = 8;
-        let cn: number = 8;// * total;
+        let cn: number = 8;
         let index: number = 0;
         let pr: number;
         let pg: number;
@@ -44,7 +86,9 @@ export default class RGBColorPanel extends DisplayEntityContainer
 
         let startX: number = 0.0;
         let startY: number = 0.0;
-        
+        this.m_width = cn * size - dis;
+        this.m_height = rn * size - dis;
+
         this.m_selectColorGrid = new DullButton();
         this.m_selectColorGrid.initialize(0,0, gridSize, gridSize);
         this.m_selectColorGrid.copyMeshFrom(srcGrid);
@@ -65,7 +109,7 @@ export default class RGBColorPanel extends DisplayEntityContainer
                 }
             }
         }
-        console.log("this.m_colors: ",this.m_colors);
+        
         index = 0;
         for(let i: number = 0; i < rn; ++i) {
             py = i * size;
@@ -94,6 +138,16 @@ export default class RGBColorPanel extends DisplayEntityContainer
     private gridMouseOver(evt: any): void {
 
     }
+    
+    private sendEvt(color: Color4): void {
+
+        this.m_currEvent.target = this;
+        this.m_currEvent.type = RGBColoSelectEvent.COLOR_SELECT;
+        this.m_currEvent.color = color;
+        this.m_currEvent.phase = 1;
+        this.m_currEvent.uuid = this.uuid;
+        this.m_dispatcher.dispatchEvt( this.m_currEvent );
+    }
     private m_pv: Vector3D = new Vector3D();
     private gridMouseDown(evt: any): void {
         this.m_selectFrame.setVisible(true);
@@ -109,7 +163,7 @@ export default class RGBColorPanel extends DisplayEntityContainer
 
         (this.m_selectFrame.getMaterial() as any).setRGB3f(pr,pg,pb);
         this.m_selectColorGrid.setRGBColor(color);
-        
+        this.sendEvt(color);
     }
     setXY(px:number,py:number):void
     {
@@ -121,14 +175,6 @@ export default class RGBColorPanel extends DisplayEntityContainer
         this.m_posZ = pz;
         super.setXYZ(px,py,pz);
         this.update();
-    }
-    getWidth():number
-    {
-        return this.m_width;
-    }
-    getHeight():number
-    {
-        return this.m_height;
     }
     destory():void
     {
