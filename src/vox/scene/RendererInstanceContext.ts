@@ -259,7 +259,8 @@ export default class RendererInstanceContext
     {
         if(this.m_adapter != null)
         {
-            this.m_adapter.setRenderToBackBuffer();
+            this.m_adapter.setRenderToBackBuffer();            
+            this.m_materialProxy.renderBegin();
         }
     }
     lockViewport():void
@@ -387,6 +388,9 @@ export default class RendererInstanceContext
     }
     resetState(): void {
         RendererState.ResetState();
+        this.m_materialProxy.renderBegin();
+    }
+    resetmaterial(): void {
         this.m_materialProxy.renderBegin();
     }
     runEnd():void

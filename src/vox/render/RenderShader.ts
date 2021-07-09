@@ -215,6 +215,7 @@ export default class RenderShader implements IRenderShader,IRenderResource
         this.m_preuid = -1;
         this.m_currShd = null;
         this.drawFlag = 0x0;
+        //this.resetUniform();
     }
     
     /**

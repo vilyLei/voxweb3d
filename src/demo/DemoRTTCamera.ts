@@ -27,7 +27,7 @@ import FBOInstance from "../vox/scene/FBOInstance";
 import CameraBase from "../vox/view/CameraBase";
 import MathConst from "../vox/math/MathConst";
 
-export class DemoProjectPlane {
+export class DemoRTTCamera {
     constructor() { }
 
     private m_rscene: RendererScene = null;
@@ -45,7 +45,7 @@ export class DemoProjectPlane {
         return ptex;
     }
     initialize(): void {
-        console.log("DemoProjectPlane::initialize()......");
+        console.log("DemoRTTCamera::initialize()......");
         if (this.m_rscene == null) {
             RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
             RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -113,8 +113,8 @@ export class DemoProjectPlane {
 
         let plane:Plane3DEntity = new Plane3DEntity();
         plane.flipVerticalUV = true;
-        plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.m_fboIns.getRTTAt(0)]);
-        //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
+        //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.m_fboIns.getRTTAt(0)]);
+        plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
         this.m_rscene.addEntity(plane, 1);
 
         let scrPlane: ScreenAlignPlaneEntity =  new ScreenAlignPlaneEntity();
@@ -126,8 +126,7 @@ export class DemoProjectPlane {
         this.m_rttCamera = new CameraBase(0);
         this.m_rttCamera.name = "m_rttCamera";
         this.m_rttCamera.lookAtRH(new Vector3D(-800.0,-800.0,800.0), new Vector3D(0.0,0.0,0.0), new Vector3D(0.0,1.0,0.0));
-        //this.m_rttCamera.perspectiveRH(MathConst.DegreeToRadian(45.0),viewWidth/viewHeight,150.1,5000.0);
-        this.m_rttCamera.orthoRH(150.1,5000.0, -0.5 * viewHeight, 0.5 * viewHeight, -0.5 * viewWidth, 0.5 * viewWidth);
+        this.m_rttCamera.perspectiveRH(MathConst.DegreeToRadian(45.0),viewWidth/viewHeight,150.1,2000.0);
         this.m_rttCamera.setViewXY(0,0);
         this.m_rttCamera.setViewSize(viewWidth, viewHeight);
         this.m_rttCamera.update();
@@ -211,4 +210,4 @@ export class DemoProjectPlane {
 
     }
 }
-export default DemoProjectPlane;
+export default DemoRTTCamera;

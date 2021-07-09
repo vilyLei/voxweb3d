@@ -162,24 +162,23 @@ class CameraBase {
     }
     getAspect(): number { return this.m_aspect; }
     getViewFieldZoom(): number { return this.m_viewFieldZoom; }
-    orthoRH(zNear: number, zFar: number, b: number, t: number, l: number, r: number, devPRatio: number = 1.0): void {
+    orthoRH(zNear: number, zFar: number, b: number, t: number, l: number, r: number): void {
         if (this.m_unlock) {
             this.m_zNear = zNear;
             this.m_zFar = zFar;
             this.m_b = b; this.m_t = t; this.m_l = l; this.m_r = r;
-            //this.m_projMat.orthoRH(Math.floor(devPRatio * b), Math.floor(devPRatio * t), Math.floor(devPRatio * l), Math.floor(devPRatio * r), zNear, zFar,devPRatio);
             this.m_projMat.orthoRH(b, t, l, r, zNear, zFar);
             this.m_perspectiveEnabled = false;
             this.m_rightHandEnabled = true;
             this.m_changed = true;
         }
     }
-    orthoLH(zNear: number, zFar: number, b: number, t: number, l: number, r: number, devPRatio: number = 1.0): void {
+    orthoLH(zNear: number, zFar: number, b: number, t: number, l: number, r: number): void {
         if (this.m_unlock) {
             this.m_zNear = zNear;
             this.m_zFar = zFar;
             this.m_b = b; this.m_t = t; this.m_l = l; this.m_r = r;
-            this.m_projMat.orthoLH(Math.floor(devPRatio * b), Math.floor(devPRatio * t), Math.floor(devPRatio * l), Math.floor(devPRatio * r), zNear, zFar);
+            this.m_projMat.orthoLH(b, t, l, r, zNear, zFar);
             this.m_perspectiveEnabled = false;
             this.m_rightHandEnabled = false;
             this.m_changed = true;
@@ -216,7 +215,7 @@ class CameraBase {
                     }
                 }
                 else {
-                    this.orthoRH(this.m_zNear, this.m_zFar, -0.5 * ph, 0.5 * ph, -0.5 * pw, 0.5 * pw, 1.0);
+                    this.orthoRH(this.m_zNear, this.m_zFar, -0.5 * ph, 0.5 * ph, -0.5 * pw, 0.5 * pw);
                 }
             }
         }

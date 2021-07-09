@@ -436,20 +436,25 @@ export default class RendererScene implements IRenderer {
         return this.m_renderer.getRenderUnitsTotal();
     }
     private m_currCamera: CameraBase = null;
-    useCamera(camera: CameraBase, unlockViewport: boolean = true): void {
+    useCamera(camera: CameraBase): void {
 
-        if(unlockViewport)this.m_adapter.unlockViewport();
+        //if(unlockViewport)this.m_adapter.unlockViewport();
         this.m_currCamera = camera;
         this.m_renderProxy.setRCViewPort(camera.getViewX(), camera.getViewY(), camera.getViewWidth(), camera.getViewHeight());
+        this.m_renderProxy.reseizeRCViewPort();
         camera.update();
         this.m_renderProxy.updateCameraDataFromCamera(camera);
     }
-    useMainCamera(unlockViewport: boolean = true): void {
+    useMainCamera(): void {
 
-        if(unlockViewport)this.m_adapter.unlockViewport();
+        //if(unlockViewport)this.m_adapter.unlockViewport();
         this.m_renderProxy.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
+        this.m_renderProxy.reseizeRCViewPort();
         this.m_renderProxy.updateCamera();
         this.m_renderProxy.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
+    }
+    resetState(): void {
+        this.m_rcontext.resetState();
     }
     /**
      * the function resets the renderer scene status.
