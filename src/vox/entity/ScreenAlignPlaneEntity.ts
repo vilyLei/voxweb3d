@@ -34,6 +34,14 @@ export default class ScreenAlignPlaneEntity extends DisplayEntity
     {
         this.m_currMaterial.setRGBA4f(pr,pg,pb,pa);
     }
+    setOffsetRGB3f(pr:number,pg:number,pb:number):void
+    {
+        this.m_currMaterial.setOffsetRGB3f(pr,pg,pb);
+    }
+    setOffsetRGBA4f(pr:number,pg:number,pb:number,pa:number):void
+    {
+        this.m_currMaterial.setOffsetRGBA4f(pr,pg,pb,pa);
+    }
     createMaterial(texList:TextureProxy[]):void
     {
         if(this.getMaterial() == null)

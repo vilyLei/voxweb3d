@@ -61,9 +61,9 @@ class CameraBase {
     private m_perspectiveEnabled: boolean = false;
     private m_project2Enabled: boolean = false;
     private m_rightHandEnabled: boolean = true;
-    private m_rotateX: number = 0.0;
-    private m_rotateY: number = 0.0;
-    private m_rotateZ: number = 0.0;
+    private m_rotV: Vector3D = new Vector3D(0.0,0.0,0.0);
+    private m_scaleV: Vector3D = new Vector3D(1.0,1.0,1.0);
+    
     private m_viewFieldZoom: number = 1.0;
     private m_changed: boolean = true;
     private m_unlock: boolean = true;
@@ -111,12 +111,12 @@ class CameraBase {
             this.m_changed = true;
         }
     }
-    //
-    getLookAtLH(camPos: Vector3D, lookAtPos: Vector3D, up: Vector3D, outViewMat: Matrix4): void {
-        outViewMat.lookAtLH(camPos, lookAtPos, up);
+    
+    getLookAtLHToCamera(camera: CameraBase): void {
+        camera.lookAtLH(this.m_camPos, this.m_lookAtPos, this.m_up);
     }
-    getLookAtRH(camPos: Vector3D, lookAtPos: Vector3D, up: Vector3D, outViewMat: Matrix4): void {
-        outViewMat.lookAtRH(camPos, lookAtPos, up);
+    getLookAtRHToCamera(camera: CameraBase): void {
+        camera.lookAtRH(this.m_camPos, this.m_lookAtPos, this.m_up);
     }
     perspectiveLH(fovy: number, aspect: number, zNear: number, zFar: number): void {
         if (this.m_unlock) {
@@ -184,10 +184,10 @@ class CameraBase {
             this.m_changed = true;
         }
     }
-    perspectiveEnabled(): boolean {
+    isPerspectiveEnabled(): boolean {
         return this.m_perspectiveEnabled;
     }
-    rightHandEnabled(): boolean {
+    isRightHandEnabled(): boolean {
         return this.m_rightHandEnabled;
     }
     setViewXY(px: number, py: number): void {
@@ -447,13 +447,19 @@ class CameraBase {
         this.setPerspectiveEnabled(tarCam.getPerspectiveEnabled());
         this.m_viewInvertMat.copyFrom(tarCam.getViewInvMatrix());
     }
+    private m_tempNV: Vector3D = new Vector3D();
+    private m_tempUPV: Vector3D = new Vector3D();
+    private m_tempRV: Vector3D = new Vector3D();
+    private m_tempCamPos: Vector3D = new Vector3D();
+    private m_tempLookAtPos: Vector3D = new Vector3D();
     // view space axis z
-    getNV(): Vector3D { return this.m_lookDirectNV; }
+    getNV(): Vector3D { this.m_tempNV.copyFrom(this.m_lookDirectNV); return this.m_tempNV;}
     // view space axis y
-    getUV(): Vector3D { return this.m_up; }
+    getUV(): Vector3D { this.m_tempUPV.copyFrom(this.m_up); return this.m_tempUPV; }
     // view space axis x
-    getRV(): Vector3D { return this.m_initRV; }
-    getPosition() { return this.m_camPos; }
+    getRV(): Vector3D { this.m_tempRV.copyFrom(this.m_initRV); return this.m_tempRV; }
+    getPosition():Vector3D { this.m_tempCamPos.copyFrom(this.m_camPos); return this.m_tempCamPos; }
+    getLookAtPosition(): Vector3D { this.m_tempLookAtPos.copyFrom(this.m_lookAtPos); return this.m_tempLookAtPos; }
     setLookAtPosition(px: number, py: number, pz: number): void {
         if (this.m_unlock) {
             this.m_lookAtPos.setTo(px, py, pz);
@@ -467,7 +473,7 @@ class CameraBase {
     }
     getPerspectiveEnabled(): boolean { return this.m_perspectiveEnabled; }
     setPerspectiveEnabled(boo: boolean): void { this.m_perspectiveEnabled = boo; }
-    getLookAtPosition(): Vector3D { return this.m_lookAtPos; }
+
     private m_rotDegree: number = 0.0;
     private m_rotAxis: Vector3D = new Vector3D();
     private m_rotPivotPoint: Vector3D = null;
@@ -481,17 +487,28 @@ class CameraBase {
             this.m_axisRotEnabled = true;
         }
     }
-    setRotationX(degree: number): void { this.m_rotateX = degree; this.m_changed = true; this.m_axisRotEnabled = false; }
-    getRotationX(): number { return this.m_rotateX; }
-    setRotationY(degree: number): void { this.m_rotateY = degree; this.m_changed = true; this.m_axisRotEnabled = false; }
-    getRotationY(): number { return this.m_rotateY; }
-    setRotationZ(degree: number): void { this.m_rotateZ = degree; this.m_changed = true; this.m_axisRotEnabled = false; }
-    getRotationZ() { return this.m_rotateZ; }
+    setRotationX(degree: number): void { this.m_rotV.x = degree; this.m_changed = true; this.m_axisRotEnabled = false; }
+    getRotationX(): number { return this.m_rotV.x; }
+    setRotationY(degree: number): void { this.m_rotV.y = degree; this.m_changed = true; this.m_axisRotEnabled = false; }
+    getRotationY(): number { return this.m_rotV.y; }
+    setRotationZ(degree: number): void { this.m_rotV.z = degree; this.m_changed = true; this.m_axisRotEnabled = false; }
+    getRotationZ() { return this.m_rotV.z; }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
         if (this.m_unlock) {
-            this.m_rotateX = rx;
-            this.m_rotateY = ry;
-            this.m_rotateZ = rz;
+            this.m_rotV.setXYZ(rx,ry,rz);
+            this.m_changed = true;
+            this.m_axisRotEnabled = false;
+        }
+    }
+    setScaleX(degree: number): void { this.m_scaleV.x = degree; this.m_changed = true; this.m_axisRotEnabled = false; }
+    getScaleX(): number { return this.m_scaleV.x; }
+    setScaleY(degree: number): void { this.m_scaleV.y = degree; this.m_changed = true; this.m_axisRotEnabled = false; }
+    getScaleY(): number { return this.m_scaleV.y; }
+    setScaleZ(degree: number): void { this.m_scaleV.z = degree; this.m_changed = true; this.m_axisRotEnabled = false; }
+    getScaleZ() { return this.m_scaleV.z; }
+    setScaleXYZ(rx: number, ry: number, rz: number): void {
+        if (this.m_unlock) {
+            this.m_scaleV.setXYZ(rx,ry,rz);
             this.m_changed = true;
             this.m_axisRotEnabled = false;
         }
@@ -631,14 +648,21 @@ class CameraBase {
         this.m_invViewMat.invert();
         //
         let plane: Plane = null;
-        let tanv = Math.tan(this.m_fovy * 0.5);
-        let halfMinH = this.m_zNear * tanv;
-        let halfMinW = halfMinH * this.m_aspect;
+        let halfMinH: number = this.m_viewHalfH;
+        let halfMinW: number = this.m_viewHalfW;
+        let halfMaxH: number = this.m_viewHalfH;
+        let halfMaxW: number = this.m_viewHalfW;
+        if(this.m_perspectiveEnabled) {
+            let tanv: number =  Math.tan(this.m_fovy * 0.5);
+            halfMinH = this.m_zNear * tanv;
+            halfMinW = halfMinH * this.m_aspect;
+            halfMaxH = this.m_zFar * tanv;
+            halfMaxW = halfMaxH * this.m_aspect;
+        }
+        
+        //console.log("CameraBase::__calcTestParam(), (halfMinW, halfMinH): "+halfMinW+", "+halfMinH);
         this.m_nearPlaneHalfW = halfMinW;
         this.m_nearPlaneHalfH = halfMinH;
-        //trace("CameraBase::__calcTestParam(), (halfMinW, halfMinH): "+halfMinW+", "+halfMinH);
-        let halfMaxH = this.m_zFar * tanv;
-        let halfMaxW = halfMaxH * this.m_aspect;
         // inner view space
         this.m_nearWCV.setTo(0, 0, -this.m_zNear);
         this.m_farWCV.setTo(0, 0, -this.m_zFar);
@@ -662,12 +686,12 @@ class CameraBase {
         this.m_wFrustumVtxArr[8] = this.m_nearWCV;
         this.m_wFrustumVtxArr[9] = this.m_farWCV;
         this.m_wFrustumVtxArr[11] = this.m_wNV;
-        //
+        // far face
         this.m_wFrustumVtxArr[0].setTo(-halfMaxW, -halfMaxH, -this.m_zFar);
         this.m_wFrustumVtxArr[1].setTo(halfMaxW, -halfMaxH, -this.m_zFar);
         this.m_wFrustumVtxArr[2].setTo(halfMaxW, halfMaxH, -this.m_zFar);
         this.m_wFrustumVtxArr[3].setTo(-halfMaxW, halfMaxH, -this.m_zFar);
-        //
+        // near face
         this.m_wFrustumVtxArr[4].setTo(-halfMinW, -halfMinH, -this.m_zNear);
         this.m_wFrustumVtxArr[5].setTo(halfMinW, -halfMinH, -this.m_zNear);
         this.m_wFrustumVtxArr[6].setTo(halfMinW, halfMinH, -this.m_zNear);
@@ -927,7 +951,8 @@ class CameraBase {
             }
             else {
                 this.m_matrix.identity();
-                this.m_matrix.appendRotationEulerAngle(this.m_rotateX * MathConst.MATH_PI_OVER_180, this.m_rotateY * MathConst.MATH_PI_OVER_180, this.m_rotateZ * MathConst.MATH_PI_OVER_180);
+                this.m_matrix.appendScaleXYZ(this.m_scaleV.x, this.m_scaleV.y, this.m_scaleV.z);
+                this.m_matrix.appendRotationEulerAngle(this.m_rotV.x * MathConst.MATH_PI_OVER_180, this.m_rotV.y * MathConst.MATH_PI_OVER_180, this.m_rotV.z * MathConst.MATH_PI_OVER_180);
             }
             if (this.m_lookRHEnabled) {
                 this.m_viewMat.lookAtRH(this.m_camPos, this.m_lookAtPos, this.m_up);

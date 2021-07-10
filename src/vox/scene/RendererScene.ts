@@ -157,6 +157,13 @@ export default class RendererScene implements IRenderer {
     getCamera(): CameraBase {
         return this.m_renderProxy.getCamera();
     }
+    asynFBOSizeWithViewport(): void {        
+        this.m_rcontext.asynFBOSizeWithViewport();
+    }
+    synFBOSizeWithViewport(): void {        
+        this.m_rcontext.synFBOSizeWithViewport();
+    }
+    
     cameraLock(): void {
         this.m_renderProxy.cameraLock();
     }
@@ -436,17 +443,20 @@ export default class RendererScene implements IRenderer {
         return this.m_renderer.getRenderUnitsTotal();
     }
     private m_currCamera: CameraBase = null;
-    useCamera(camera: CameraBase): void {
+    useCamera(camera: CameraBase, syncCamView: boolean = false): void {
 
         //if(unlockViewport)this.m_adapter.unlockViewport();
         this.m_currCamera = camera;
-        this.m_renderProxy.setRCViewPort(camera.getViewX(), camera.getViewY(), camera.getViewWidth(), camera.getViewHeight());
-        this.m_renderProxy.reseizeRCViewPort();
+        if(syncCamView) {
+            this.m_renderProxy.setRCViewPort(camera.getViewX(), camera.getViewY(), camera.getViewWidth(), camera.getViewHeight());
+            this.m_renderProxy.reseizeRCViewPort();
+        }
         camera.update();
         this.m_renderProxy.updateCameraDataFromCamera(camera);
     }
     useMainCamera(): void {
-
+        //  let camera: CameraBase = this.m_renderProxy.getCamera();
+        //  this.m_renderProxy.setRCViewPort(camera.getViewX(), camera.getViewY(), camera.getViewWidth(), camera.getViewHeight());
         //if(unlockViewport)this.m_adapter.unlockViewport();
         this.m_renderProxy.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
         this.m_renderProxy.reseizeRCViewPort();
@@ -481,33 +491,34 @@ export default class RendererScene implements IRenderer {
             this.m_rcontext.renderBegin(this.m_currCamera == null);
         }
 
-        this.m_currCamera = null;
         if (this.m_rspace != null) {
             this.m_rspace.setCamera(this.m_currCamera == null ? this.m_renderProxy.getCamera() : this.m_currCamera);
             this.m_rspace.runBegin();
         }
+        this.m_currCamera = null;
     }
     /**
      * the function only resets the renderer instance rendering status.
      * you should use it before the run or runAt function is called.
      */
     renderBegin(contextBeginEnabled: boolean = true): void {
-        this.m_adapter.unlockViewport();
-        if (!this.m_renderProxy.isAutoSynViewAndStage()) {
-            this.m_renderProxy.setViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
+        if(this.m_currCamera == null) {
+            this.m_adapter.unlockViewport();
+            let boo: boolean = this.m_renderProxy.testViewPortChanged(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
+            if (!this.m_renderProxy.isAutoSynViewAndStage() || boo) {
+                this.m_renderProxy.setViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
+            }
+            this.m_renderProxy.updateCamera();
+            this.m_renderProxy.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
         }
         this.m_shader.renderBegin();
-        this.m_renderProxy.updateCamera();
-        this.m_renderProxy.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
         if (contextBeginEnabled) {
-            this.m_rcontext.renderBegin();
+            this.m_rcontext.renderBegin(this.m_currCamera == null);
         }
+        this.m_currCamera = null;
     }
     renderContextBegin(): void {
         this.m_rcontext.renderBegin();
-    }
-    synFBOSizeWithViewport(): void {
-        this.m_rcontext.synFBOSizeWithViewport();
     }
     private m_mouseTestBoo: boolean = true;
     private m_cullingTestBoo: boolean = true;

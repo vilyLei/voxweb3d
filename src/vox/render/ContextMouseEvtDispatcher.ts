@@ -201,6 +201,7 @@ class ContextMouseEvtDispatcher
                     stage.mouseRightDown();
                 }
             }
+            /*
             canvas.onmouseup = function(evt:any):void
             {
                 let rect = div.getBoundingClientRect();
@@ -221,6 +222,31 @@ class ContextMouseEvtDispatcher
                     stage.mouseRightUp();
                 }
             }
+            */
+            ///*
+            document.onmouseup = function(evt:any):void
+            {
+                let rect = div.getBoundingClientRect();
+                let px = 0 | (selfT.dpr * (evt.clientX - rect.left));
+                let py = 0 | (selfT.dpr * (evt.clientY - rect.top));
+                py = stage.stageHeight - py;
+                if(px >= 0 && py >= 0 && px < stage.viewWidth && py < stage.viewHeight) {
+                    stage.mouseX = px;
+                    stage.mouseY = py;
+                    stage.mouseViewX = px;
+                    stage.mouseViewY = stage.stageHeight - py;
+                    //console.log("ContextMouseEvtDispatcher::document::onmouseup(): ",px,py,rect);
+                }
+                if(evt.button == 0)
+                {
+                    stage.mouseUp(1);
+                }
+                else if(evt.button == 2)
+                {
+                    stage.mouseRightUp();
+                }
+            }
+            //*/
             canvas.onmousemove = function(evt:any):void
             {
                 //console.log("ContextMouseEvtDispatcher::onmouseMove"+evt.pageX+","+evt.pageY);

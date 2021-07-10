@@ -142,6 +142,7 @@ export class PBRLightsUI
     private m_F0Color: Color4 = new Color4(0.0,0.0,0.0);
     private m_albedoColor: Color4 = new Color4(0.2,0.2,0.2);
     private m_ambientColor: Color4 = new Color4(0.1,0.1,0.1);
+    private m_specularColor: Color4 = new Color4(1.0,1.0,1.0);
     private m_btns: any[] = [];
     private m_menuBtn: SelectionBar = null;
     private createSelectBtn(ns:string, selectNS:string, deselectNS:string, flag: boolean, visibleAlways: boolean = false):SelectionBar {
@@ -218,8 +219,10 @@ export class PBRLightsUI
         this.createValueBtn("tone", 2.0, 0.1, 128.0);
         this.createValueBtn("F0Color", 1.0, 0.01, 32.0);
         this.createValueBtn("albedo", 1.0, 0.01, 5.0);
-        this.createValueBtn("ambient", 1.0, 0.01, 1.0);        
-        
+        this.createValueBtn("ambient", 1.0, 0.01, 1.0);
+        this.createValueBtn("specular", 1.0, 0.01, 1.0);
+        //setEnvSpecularColorFactor
+
         this.m_rgbPanel = new RGBColorPanel();
         this.m_rgbPanel.initialize(32,4);
         this.m_rgbPanel.addEventListener(RGBColoSelectEvent.COLOR_SELECT, this, this.selectColor);
@@ -234,23 +237,30 @@ export class PBRLightsUI
             case "F0Color":
                 this.m_F0Color.copyFrom(currEvt.color);
                 this.m_meshManas[0].material.setF0(
-                    this.m_F0Color.r * this.m_colorIntensity,
-                    this.m_F0Color.g * this.m_colorIntensity,
-                    this.m_F0Color.b * this.m_colorIntensity);
+                    this.m_F0Color.r * this.m_F0Color.a,
+                    this.m_F0Color.g * this.m_F0Color.a,
+                    this.m_F0Color.b * this.m_F0Color.a);
                 break;
             case "albedo":
                 this.m_albedoColor.copyFrom(currEvt.color);
                 this.m_meshManas[0].material.setAlbedoColor(
-                    this.m_albedoColor.r * this.m_colorIntensity,
-                    this.m_albedoColor.g * this.m_colorIntensity,
-                    this.m_albedoColor.b * this.m_colorIntensity);
+                    this.m_albedoColor.r * this.m_albedoColor.a,
+                    this.m_albedoColor.g * this.m_albedoColor.a,
+                    this.m_albedoColor.b * this.m_albedoColor.a);
                 break;
             case "ambient":
                 this.m_ambientColor.copyFrom(currEvt.color);
                 this.m_meshManas[0].material.setAmbientFactor(
-                    this.m_ambientColor.r * this.m_colorIntensity,
-                    this.m_ambientColor.g * this.m_colorIntensity,
-                    this.m_ambientColor.b * this.m_colorIntensity);
+                    this.m_ambientColor.r * this.m_ambientColor.a,
+                    this.m_ambientColor.g * this.m_ambientColor.a,
+                    this.m_ambientColor.b * this.m_ambientColor.a);
+                break;
+            case "specular":
+                this.m_specularColor.copyFrom(currEvt.color);
+                this.m_meshManas[0].material.setEnvSpecularColorFactor(
+                    this.m_specularColor.r * this.m_specularColor.a,
+                    this.m_specularColor.g * this.m_specularColor.a,
+                    this.m_specularColor.b * this.m_specularColor.a);
                 break;
             default:
                 break;
@@ -340,12 +350,12 @@ export class PBRLightsUI
                 this.m_meshManas[0].material.setToneMapingExposure( progEvt.value );
                 break;
             case "F0Color":
+                this.m_F0Color.a = progEvt.value;
                 if(progEvt.status != 0) {
-                    this.m_colorIntensity = progEvt.value;
                     this.m_meshManas[0].material.setF0(
-                        this.m_F0Color.r * this.m_colorIntensity,
-                        this.m_F0Color.g * this.m_colorIntensity,
-                        this.m_F0Color.b * this.m_colorIntensity);
+                        this.m_F0Color.r * this.m_F0Color.a,
+                        this.m_F0Color.g * this.m_F0Color.a,
+                        this.m_F0Color.b * this.m_F0Color.a);
                 }
                 else {
                     if(this.m_rgbPanel.isClosed())this.m_rgbPanel.open();
@@ -354,12 +364,12 @@ export class PBRLightsUI
                 return;
                 break;
             case "albedo":
+                this.m_albedoColor.a = progEvt.value;
                 if(progEvt.status != 0) {
-                    this.m_colorIntensity = progEvt.value;
                     this.m_meshManas[0].material.setAlbedoColor(
-                        this.m_albedoColor.r * this.m_colorIntensity,
-                        this.m_albedoColor.g * this.m_colorIntensity,
-                        this.m_albedoColor.b * this.m_colorIntensity);
+                        this.m_albedoColor.r * this.m_albedoColor.a,
+                        this.m_albedoColor.g * this.m_albedoColor.a,
+                        this.m_albedoColor.b * this.m_albedoColor.a);
                 }
                 else {
                     if(this.m_rgbPanel.isClosed())this.m_rgbPanel.open();
@@ -368,12 +378,26 @@ export class PBRLightsUI
                 return;
                 break;
             case "ambient":
+                this.m_ambientColor.a = progEvt.value;
                 if(progEvt.status != 0) {
-                    this.m_colorIntensity = progEvt.value;
                     this.m_meshManas[0].material.setAmbientFactor(
-                        this.m_ambientColor.r * this.m_colorIntensity,
-                        this.m_ambientColor.g * this.m_colorIntensity,
-                        this.m_ambientColor.b * this.m_colorIntensity);
+                        this.m_ambientColor.r * this.m_ambientColor.a,
+                        this.m_ambientColor.g * this.m_ambientColor.a,
+                        this.m_ambientColor.b * this.m_ambientColor.a);
+                }
+                else {
+                    if(this.m_rgbPanel.isClosed())this.m_rgbPanel.open();
+                    else this.m_rgbPanel.close();
+                }
+                return;
+                break;
+            case "specular":
+                this.m_specularColor.a = progEvt.value;
+                if(progEvt.status != 0) {
+                    this.m_meshManas[0].material.setEnvSpecularColorFactor(
+                        this.m_specularColor.r * this.m_specularColor.a,
+                        this.m_specularColor.g * this.m_specularColor.a,
+                        this.m_specularColor.b * this.m_specularColor.a);
                 }
                 else {
                     if(this.m_rgbPanel.isClosed())this.m_rgbPanel.open();

@@ -42,6 +42,7 @@ uniform vec4 u_color;\n\
             fragCode +=
 "\
 uniform sampler2D u_sampler0;\n\
+uniform vec4 u_offsetColor;\n\
 varying vec2 v_texUV;\n\
 ";
         }
@@ -54,7 +55,7 @@ void main()\n\
         {
             fragCode +=
 "\
-gl_FragColor = texture2D(u_sampler0, v_texUV) * u_color;\n\
+gl_FragColor = texture2D(u_sampler0, v_texUV) * u_color + u_offsetColor;\n\
 ";
         }
         else
@@ -138,6 +139,7 @@ export default class ScreenPlaneMaterial extends MaterialBase
         return ScreenPlaneShaderBuffer.GetInstance();
     }
     private m_colorArray:Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
+    private m_offsetColorArray:Float32Array = new Float32Array([0.0,0.0,0.0,0.0]);
     setRGB3f(pr:number,pg:number,pb:number):void
     {
         this.m_colorArray[0] = pr;
@@ -151,6 +153,19 @@ export default class ScreenPlaneMaterial extends MaterialBase
         this.m_colorArray[2] = pb;
         this.m_colorArray[3] = pa;
     }
+    setOffsetRGB3f(pr:number,pg:number,pb:number):void
+    {
+        this.m_offsetColorArray[0] = pr;
+        this.m_offsetColorArray[1] = pg;
+        this.m_offsetColorArray[2] = pb;
+    }
+    setOffsetRGBA4f(pr:number,pg:number,pb:number,pa:number):void
+    {
+        this.m_offsetColorArray[0] = pr;
+        this.m_offsetColorArray[1] = pg;
+        this.m_offsetColorArray[2] = pb;
+        this.m_offsetColorArray[3] = pa;
+    }
     createSharedUniform():ShaderGlobalUniform
     {
         return null;
@@ -158,8 +173,8 @@ export default class ScreenPlaneMaterial extends MaterialBase
     createSelfUniformData():ShaderUniformData
     {
         let oum:ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_color"];
-        oum.dataList = [this.m_colorArray];
+        oum.uniformNameList = ["u_color", "u_offsetColor"];
+        oum.dataList = [this.m_colorArray, this.m_offsetColorArray];
         return oum;
     }
 }

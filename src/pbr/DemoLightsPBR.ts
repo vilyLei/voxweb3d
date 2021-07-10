@@ -23,6 +23,11 @@ import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger"
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import RendererSubScene from "../vox/scene/RendererSubScene";
 import PBRLightsUI from "./mana/PBRLightsUI";
+import ProjectToneMaterial from "../demo/material/ProjectToneMaterial";
+import FBOInstance from "../vox/scene/FBOInstance";
+import CameraBase from "../vox/view/CameraBase";
+import ScreenAlignPlaneEntity from "../vox/entity/ScreenAlignPlaneEntity";
+import FrustrumFrame3DEntity from "../vox/entity/FrustrumFrame3DEntity";
 
 
 
@@ -40,7 +45,7 @@ export class DemoLightsPBR
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_CameraZoomController: CameraZoomController = new CameraZoomController();
     private m_uiModule: PBRLightsUI = new PBRLightsUI();
-
+    private m_reflectPlaneY: number = -220.0;
     getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
     {
         let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -91,9 +96,9 @@ export class DemoLightsPBR
             //this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().stageWidth - 10);
             this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
-            let axis:Axis3DEntity = new Axis3DEntity();
-            axis.initialize(700.0);
-            this.m_rscene.addEntity(axis);
+            //  let axis:Axis3DEntity = new Axis3DEntity();
+            //  axis.initialize(700.0);
+            //  this.m_rscene.addEntity(axis, 1);
 
             this.m_meshMana = new PBRLightsManager();
 
@@ -113,12 +118,14 @@ export class DemoLightsPBR
             this.m_meshMana.lightBaseDis = 900.0;
             this.m_meshMana.loadMeshFile("static/modules/cloth400w.md");
             //*/
-            /*
+            ///*
+            this.m_reflectPlaneY = -580.0;
             this.m_meshMana.moduleScale = 3.0;
             this.m_meshMana.offsetPos.setXYZ(0.0,-350.0,0.0);
             this.m_meshMana.loadMeshFile("static/modules/loveass.md");
             //*/
-            ///*
+            /*
+            this.m_reflectPlaneY = -220.0;
             this.m_meshMana.lightBaseDis = 900.0;
             this.m_meshMana.moduleScale = 0.5;
             this.m_meshMana.offsetPos.setXYZ(0.0,200.0,0.0);
@@ -130,25 +137,97 @@ export class DemoLightsPBR
             this.m_meshMana.offsetPos.setXYZ(0.0,-350.0,0.0);
             this.m_meshMana.loadMeshFile("static/modules/scarf.md");
             //*/
-            this.m_meshManas.push( this.m_meshMana );
-            
-            let posList:Vector3D[] = this.m_meshMana.lightPosList;
-            if(posList != null) {
-                for(let i:number = 0; i < posList.length; ++i) {
-                    let crossAxis:Axis3DEntity = new Axis3DEntity();
-                    crossAxis.initializeCross(30.0);
-                    crossAxis.setPosition(posList[i]);
-                    this.m_rscene.addEntity(crossAxis);
+            if(this.m_meshMana != null) {
+                this.m_meshManas.push( this.m_meshMana );
+                
+                let posList:Vector3D[] = this.m_meshMana.lightPosList;
+                if(posList != null) {
+                    for(let i:number = 0; i < posList.length; ++i) {
+                        let crossAxis:Axis3DEntity = new Axis3DEntity();
+                        crossAxis.initializeCross(30.0);
+                        crossAxis.setPosition(posList[i]);
+                        this.m_rscene.addEntity(crossAxis, 1);
+                    }
                 }
+                this.m_uiModule.initialize(this.m_rscene, this.m_texLoader, this.m_meshMana);
+                this.m_ruisc = this.m_uiModule.ruisc;
             }
+            //*/
 
-            this.m_uiModule.initialize(this.m_rscene, this.m_texLoader, this.m_meshMana);
-            this.m_ruisc = this.m_uiModule.ruisc;
+            this.initMirrorRTT();
         }
     }
     
     
+    private m_projType: number = 0;
+    private m_fboIns: FBOInstance = null;
+    private m_rttCamera:CameraBase = null;
+    private m_viewWidth: number = 2048.0;
+    private m_viewHeight: number = 2048.0;
+    private m_toneMaterial: ProjectToneMaterial;
+
+    private initMirrorRTT(): void {
+        this.m_projType = 1;
+
+        
+        //  let box: Box3DEntity = new Box3DEntity();
+        //  box.uvPartsNumber = 6;
+        //  box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixParts.jpg")]);
+        //  box.setScaleXYZ(2.0, 2.0, 2.0);
+        //  this.m_rscene.addEntity(box, 0);
+
+        
+        this.m_fboIns = this.m_rscene.createFBOInstance();
+        this.m_fboIns.asynFBOSizeWithViewport();
+        this.m_fboIns.setClearRGBAColor4f(0.0,0.0,0.0,1.0);   // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
+        this.m_fboIns.createFBOAt(0,512,512,true,false);
+        this.m_fboIns.setRenderToRTTTextureAt(0, 0);          // framebuffer color attachment 0
+        this.m_fboIns.setRProcessIDList([0]);
+
+        //  let scrPlane: ScreenAlignPlaneEntity =  new ScreenAlignPlaneEntity();
+        //  scrPlane.initialize(-0.9,-0.9,0.4,0.4, [this.m_fboIns.getRTTAt(0)]);
+        //  scrPlane.setOffsetRGB3f(0.1,0.1,0.1);
+        //  this.m_rscene.addEntity(scrPlane, 1);
+        
+        let camera: CameraBase = this.m_rscene.getCamera();
+        let camPos: Vector3D = camera.getPosition();
+        camPos.y *= -1.0;
+
+        let viewWidth: number = this.m_viewWidth;
+        let viewHeight: number = this.m_viewHeight;
+        this.m_rttCamera = new CameraBase(0);
+        this.m_rttCamera.name = "m_rttCamera";
+        this.m_rttCamera.lookAtRH(camPos, new Vector3D(0.0,0.0,0.0), new Vector3D(0.0,1.0,0.0));
+        //this.m_rttCamera.perspectiveRH(MathConst.DegreeToRadian(45.0),viewWidth/viewHeight,50.1,5000.0);
+        this.m_rttCamera.orthoRH(50.1,10000.0, -0.5 * viewHeight, 0.5 * viewHeight, -0.5 * viewWidth, 0.5 * viewWidth);
+        this.m_rttCamera.setViewXY(0,0);
+        this.m_rttCamera.setViewSize(viewWidth, viewHeight);
+        this.m_rttCamera.update();
+        
+        let texList: TextureProxy[] = [
+            this.m_fboIns.getRTTAt(0),
+            this.getImageTexByUrl("static/assets/brickwall_big.jpg"),
+            this.getImageTexByUrl("static/assets/brickwall_normal.jpg")
+        ];
+        let toneMaterial: ProjectToneMaterial = new ProjectToneMaterial();
+        toneMaterial.setToneMatrix(this.m_rttCamera.getVPMatrix());
+        this.m_toneMaterial = toneMaterial;
+        let plane:Plane3DEntity = new Plane3DEntity();
+        plane.flipVerticalUV = true;
+        plane.setMaterial(toneMaterial);
+        plane.initializeXOZ(-800.0, -800.0, 1600.0, 1600.0, texList);
+        plane.setXYZ(0, this.m_reflectPlaneY, 0);
+        this.m_rscene.addEntity(plane, 1);
+
+        //  let frustrum:FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
+        //  frustrum.initiazlize( this.m_rttCamera );
+        //  frustrum.setScaleXYZ(0.5,0.5,0.5);
+        //  this.m_rscene.addEntity( frustrum, 1);
+        
+    }
+    private m_runFlag: boolean = true;
     private mouseDown(evt: any): void {
+        this.m_runFlag = true;
     }
     private mouseUp(evt: any): void {
 
@@ -166,6 +245,13 @@ export class DemoLightsPBR
     
     run():void
     {
+        //  if(this.m_runFlag) {
+        //      this.m_runFlag = false;
+        //  }
+        //  else {
+        //      return;
+        //  }
+
         this.update();
 
         this.m_stageDragSwinger.runWithYAxis();
@@ -178,7 +264,7 @@ export class DemoLightsPBR
         
         /////////////////////////////////////////////////////// ---- mouseTest begin.
         let pickFlag: boolean = true;
-
+        ///*
         this.m_ruisc.runBegin(true, true);
         this.m_ruisc.update(false, true);
         pickFlag = this.m_ruisc.isRayPickSelected();
@@ -189,15 +275,44 @@ export class DemoLightsPBR
 
         /////////////////////////////////////////////////////// ---- mouseTest end.
 
-        
+        //*/
         /////////////////////////////////////////////////////// ---- rendering begin.
-        this.m_rscene.renderBegin();
-        this.m_rscene.run(false);
-        this.m_rscene.runEnd();
+        if(this.m_projType == 0) {
 
-        this.m_ruisc.renderBegin();
-        this.m_ruisc.run(false);
-        this.m_ruisc.runEnd();
+            this.m_rscene.renderBegin();
+            this.m_rscene.run(false);
+            this.m_rscene.runEnd();
+    
+            this.m_ruisc.renderBegin();
+            this.m_ruisc.run(false);
+            this.m_ruisc.runEnd();
+
+        }
+        else {
+            let camera: CameraBase = this.m_rscene.getCamera();
+            let camPos: Vector3D = camera.getPosition();
+            
+            camPos.y *= -1.0;
+            this.m_rttCamera.setPosition(camPos);
+            this.m_rscene.useCamera(this.m_rttCamera);
+            this.m_rscene.renderBegin();
+            // --------------------------------------------- fbo run begin
+            this.m_fboIns.run();
+            // --------------------------------------------- fbo run end
+            this.m_toneMaterial.setProjNV(this.m_rttCamera.getNV());
+            this.m_rscene.setRenderToBackBuffer();
+            //this.m_rscene.
+            this.m_rscene.useMainCamera();
+            this.m_rscene.runAt(0);
+            this.m_rscene.runAt(1);
+            this.m_rscene.runEnd();
+
+            ///*
+            this.m_ruisc.renderBegin();
+            this.m_ruisc.run(false);
+            this.m_ruisc.runEnd();
+            //*/
+        }
         
         /////////////////////////////////////////////////////// ---- rendering end.
 

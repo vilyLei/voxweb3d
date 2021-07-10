@@ -27,6 +27,9 @@ precision mediump float;
 }
 `;
 
+private m_defineNames:string[] = [];
+private m_defineValues:string[] = [];
+
 private m_vertLayoutNames:string[] = [];
 private m_vertLayoutTypes:string[] = [];
 
@@ -42,8 +45,10 @@ private m_fragUniformTypes:string[] = [];
 private m_varyingNames:string[] = [];
 private m_varyingTypes:string[] = [];
 
-private m_defineNames:string[] = [];
-private m_defineValues:string[] = [];
+
+private m_fragFunctionBlocks:string[] = [];
+private m_vtxFunctionBlocks:string[] = [];
+
 
 private m_textureSampleTypes:string[] = [];
 
@@ -79,6 +84,9 @@ private m_projMat:boolean = false;
 
         this.m_fragUniformNames = [];
         this.m_fragUniformTypes = [];
+
+        this.m_fragFunctionBlocks = [];
+        this.m_vtxFunctionBlocks = [];
 
         this.m_defineNames = [];
         this.m_defineValues = [];
@@ -116,7 +124,14 @@ private m_projMat:boolean = false;
         this.m_fragUniformNames.push(name);
         this.m_fragUniformTypes.push(type);
     }
-    //m_textureSampleTypes
+    addFragFunction(codeBlock:string):void
+    {
+        this.m_fragFunctionBlocks.push(codeBlock);
+    }
+    addVtxFunction(codeBlock:string):void
+    {
+        this.m_vtxFunctionBlocks.push(codeBlock);
+    }
     addTextureSample2D():void
     {
         this.m_textureSampleTypes.push("sampler2D");
@@ -177,6 +192,13 @@ private m_projMat:boolean = false;
         }
 
         i = 0;
+        len = this.m_fragFunctionBlocks.length;
+        for(; i < len; i++)
+        {
+            code += "\n"+this.m_fragFunctionBlocks[i];
+        }
+
+        i = 0;
         len = this.m_fragOutputNames.length;
         for(; i < len; i++)
         {
@@ -232,6 +254,13 @@ private m_projMat:boolean = false;
         for(i = 0; i < len; i++)
         {
             code += "\nout "+this.m_varyingTypes[i] +" "+this.m_varyingNames[i]+";";
+        }
+
+        i = 0;
+        len = this.m_vtxFunctionBlocks.length;
+        for(; i < len; i++)
+        {
+            code += "\n"+this.m_vtxFunctionBlocks[i];
         }
 
         code += this.m_mainBeginCode;

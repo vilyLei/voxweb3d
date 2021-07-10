@@ -26,6 +26,7 @@ import ViewMirrorMaterial from "../vox/material/mcase/ViewMirrorMaterial";
 import FBOInstance from "../vox/scene/FBOInstance";
 import CameraBase from "../vox/view/CameraBase";
 import MathConst from "../vox/math/MathConst";
+import ProjectToneMaterial from "./material/ProjectToneMaterial";
 
 export class DemoProjectPlane {
     constructor() { }
@@ -90,9 +91,14 @@ export class DemoProjectPlane {
             this.update();
         }
     }
+
     private m_projType: number = 0;
     private m_fboIns: FBOInstance = null;
-    private m_rttCamera:CameraBase = null;
+    private m_rttCamera:CameraBase = null;    
+    private m_viewWidth: number = 1024.0;
+    private m_viewHeight: number = 1024.0;
+    private m_toneMaterial: ProjectToneMaterial;
+
     private initMirrorRTT(): void {
         this.m_projType = 0;
 
@@ -101,42 +107,58 @@ export class DemoProjectPlane {
         box.uvPartsNumber = 6;
         box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixParts.jpg")]);
         box.setScaleXYZ(2.0, 2.0, 2.0);
-        box.setXYZ(0.0, 170.0, 0.0);
+        //box.setXYZ(0.0, 170.0, 0.0);
         this.m_rscene.addEntity(box, 0);
 
         
         this.m_fboIns = this.m_rscene.createFBOInstance();
-        this.m_fboIns.setClearRGBAColor4f(0.3,0.0,0.0,1.0);   // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
+        this.m_fboIns.asynFBOSizeWithViewport();
+        this.m_fboIns.setClearRGBAColor4f(0.0,0.0,0.0,1.0);   // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
         this.m_fboIns.createFBOAt(0,512,512,true,false);
         this.m_fboIns.setRenderToRTTTextureAt(0, 0);          // framebuffer color attachment 0
         this.m_fboIns.setRProcessIDList([0]);
 
-        let plane:Plane3DEntity = new Plane3DEntity();
-        plane.flipVerticalUV = true;
-        plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.m_fboIns.getRTTAt(0)]);
-        //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
-        this.m_rscene.addEntity(plane, 1);
-
         let scrPlane: ScreenAlignPlaneEntity =  new ScreenAlignPlaneEntity();
         scrPlane.initialize(-0.9,-0.9,0.4,0.4, [this.m_fboIns.getRTTAt(0)]);
+        scrPlane.setOffsetRGB3f(0.1,0.1,0.1);
         this.m_rscene.addEntity(scrPlane, 1);
 
-        let viewWidth: number = 512.0;
-        let viewHeight: number = 512.0;
+        let camera: CameraBase = this.m_rscene.getCamera();
+        let camPos: Vector3D = camera.getPosition();
+        camPos.y *= -1.0;
+        let viewWidth: number = this.m_viewWidth;
+        let viewHeight: number = this.m_viewHeight;
         this.m_rttCamera = new CameraBase(0);
         this.m_rttCamera.name = "m_rttCamera";
-        this.m_rttCamera.lookAtRH(new Vector3D(-800.0,-800.0,800.0), new Vector3D(0.0,0.0,0.0), new Vector3D(0.0,1.0,0.0));
-        //this.m_rttCamera.perspectiveRH(MathConst.DegreeToRadian(45.0),viewWidth/viewHeight,150.1,5000.0);
-        this.m_rttCamera.orthoRH(150.1,5000.0, -0.5 * viewHeight, 0.5 * viewHeight, -0.5 * viewWidth, 0.5 * viewWidth);
+        this.m_rttCamera.lookAtRH(camPos, new Vector3D(0.0,0.0,0.0), new Vector3D(0.0,1.0,0.0));
+        //this.m_rttCamera.perspectiveRH(MathConst.DegreeToRadian(45.0),viewWidth/viewHeight,50.1,5000.0);
+        this.m_rttCamera.orthoRH(50.1,5000.0, -0.5 * viewHeight, 0.5 * viewHeight, -0.5 * viewWidth, 0.5 * viewWidth);
         this.m_rttCamera.setViewXY(0,0);
         this.m_rttCamera.setViewSize(viewWidth, viewHeight);
         this.m_rttCamera.update();
-            
+        
+        
+        let texList: TextureProxy[] = [
+            this.m_fboIns.getRTTAt(0),
+            this.getImageTexByUrl("static/assets/brickwall_big.jpg"),
+            this.getImageTexByUrl("static/assets/brickwall_normal.jpg")
+        ];
+        let toneMaterial: ProjectToneMaterial = new ProjectToneMaterial();
+        toneMaterial.setToneMatrix(this.m_rttCamera.getVPMatrix());
+        this.m_toneMaterial = toneMaterial;
+        let plane:Plane3DEntity = new Plane3DEntity();
+        plane.flipVerticalUV = true;
+        plane.setMaterial(toneMaterial);
+        plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, texList);
+        plane.setXYZ(0,-170, 0);
+        //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
+        this.m_rscene.addEntity(plane, 1);
+
         let frustrum:FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
         frustrum.initiazlize( this.m_rttCamera );
         frustrum.setScaleXYZ(0.5,0.5,0.5);
         this.m_rscene.addEntity( frustrum, 1);
-
+        
     }
     private initMirrorY(): void {
 
@@ -186,13 +208,23 @@ export class DemoProjectPlane {
         this.m_statusDisp.update(false);
         this.m_stageDragSwinger.runWithYAxis();
         this.m_CameraZoomController.run(Vector3D.ZERO, 30.0);
-
+        
         if(this.m_projType == 1) {
 
             this.m_rscene.run(true);
         }
         else {
-            this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
+            let camera: CameraBase = this.m_rscene.getCamera();
+            let camPos: Vector3D = camera.getPosition();
+            camPos.y *= -1.0;
+            this.m_rttCamera.setPosition(camPos);
+            //  this.m_rttCamera.lookAtRH(camPos, camera.getLookAtPosition(), camera.getUV());        
+            //  let viewWidth: number = this.m_viewWidth;
+            //  let viewHeight: number = this.m_viewHeight;
+            //  //this.m_rttCamera.perspectiveRH(MathConst.DegreeToRadian(45.0),viewWidth/viewHeight,50.1,5000.0);
+            //  this.m_rttCamera.orthoRH(50.1,5000.0, -0.5 * viewHeight, 0.5 * viewHeight, -0.5 * viewWidth, 0.5 * viewWidth);
+
+            this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
             this.m_rscene.useCamera(this.m_rttCamera);
             this.m_rscene.runBegin();
             this.m_rscene.update(false);
@@ -200,7 +232,7 @@ export class DemoProjectPlane {
             // --------------------------------------------- fbo run begin
             this.m_fboIns.run();
             // --------------------------------------------- fbo run end
-            
+            this.m_toneMaterial.setProjNV(this.m_rttCamera.getNV());
             this.m_rscene.setRenderToBackBuffer();
             this.m_rscene.useMainCamera();
             this.m_rscene.runAt(0);
