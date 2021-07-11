@@ -311,7 +311,6 @@ class H5FontSystem
       if(this.m_canvas == null)
       {
         this.m_canvas = document.createElement('canvas');
-        document.body.appendChild(this.m_canvas);
 
         this.m_canvas.style.width = '128px';
         this.m_canvas.style.height = '128px';
@@ -327,7 +326,8 @@ class H5FontSystem
       this.m_canvas.height = texHeight;
       //console.log("H5FontSystem::initialize(), canvas_visible: "+canvas_visible);
       if(canvas_visible)
-      {
+      {        
+        document.body.appendChild(this.m_canvas);
         this.m_canvas.style.visibility = "visible";
       }
       else

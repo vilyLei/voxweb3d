@@ -86,8 +86,6 @@ export class DemoLightsPBR
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-            //H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
-
             let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
             //let tex1:TextureProxy = this.getImageTexByUrl("static/assets/caustics_02.jpg");
             let tex1:TextureProxy = this.getImageTexByUrl("static/assets/green.jpg");
@@ -162,8 +160,8 @@ export class DemoLightsPBR
     private m_projType: number = 0;
     private m_fboIns: FBOInstance = null;
     private m_rttCamera:CameraBase = null;
-    private m_viewWidth: number = 2048.0;
-    private m_viewHeight: number = 2048.0;
+    private m_viewWidth: number = 3000.0;
+    private m_viewHeight: number = 3000.0;
     private m_toneMaterial: ProjectToneMaterial;
 
     private initMirrorRTT(): void {
