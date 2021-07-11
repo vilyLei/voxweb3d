@@ -95,6 +95,9 @@ class RenderProxy {
     isAutoSynViewAndStage(): boolean {
         return this.m_autoSynViewAndStage;
     }
+    enableSynViewAndStage(): void {
+        this.m_autoSynViewAndStage = true;
+    }
 
     lockViewport(): void {
         this.m_adapter.lockViewport();
@@ -234,6 +237,7 @@ class RenderProxy {
         this.m_adapter.reseizeViewPort();
     }
     private resizeCallback(): void {
+        //console.log("resizeCallback(), m_autoSynViewAndStage: "+this.m_autoSynViewAndStage);
         if (this.m_autoSynViewAndStage) {
             //let stage:IRenderStage3D = this.m_adapterContext.getStage();
 
@@ -247,7 +251,7 @@ class RenderProxy {
             this.m_adapterContext.setViewport(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
             this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
             this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
-            //console.log("resizeCallback(), this.m_viewW, this.m_viewH: "+this.m_viewW+", "+this.m_viewH);
+            console.log("resizeCallback(), this.m_viewW, this.m_viewH: "+this.m_viewW+", "+this.m_viewH);
         }
     }
     private createMainCamera(): void {

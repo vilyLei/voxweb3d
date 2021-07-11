@@ -32,7 +32,7 @@ export default interface IDisplayEntity
     
     
     __$setDrawEnabled(boo:boolean):void;
-    getDrawEnabled():boolean;
+    isDrawEnabled():boolean;
     
     setVisible(boo:boolean):void;
     getVisible():boolean;

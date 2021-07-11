@@ -50,7 +50,7 @@ export default interface IRenderEntity
     /**
      * @return 返回true表示当前DisplayEntity能被绘制
      */
-    getDrawEnabled():boolean;
+    isDrawEnabled():boolean;
     
     setVisible(boo:boolean):void;
     getVisible():boolean;

@@ -145,7 +145,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
             }
         }
     }
-    getDrawEnabled(): boolean {
+    isDrawEnabled(): boolean {
         return this.m_drawEnabled;
     }
     protected m_texChanged: boolean = false;

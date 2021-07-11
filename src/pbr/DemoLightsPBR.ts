@@ -303,6 +303,7 @@ export class DemoLightsPBR
             this.m_rscene.setRenderToBackBuffer();
             //this.m_rscene.
             this.m_rscene.useMainCamera();
+            //this.m_rscene.enableSynViewAndStage();
             this.m_rscene.runAt(0);
             this.m_rscene.runAt(1);
             this.m_rscene.runEnd();

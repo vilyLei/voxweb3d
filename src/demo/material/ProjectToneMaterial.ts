@@ -107,14 +107,12 @@ pv.xy += vec2(0.5);
 float factorX = (pv.x < 0.0 || pv.x > 1.0) ? 0.0 : 1.0;
 float factorY = (pv.y < 0.0 || pv.y > 1.0) ? 0.0 : 1.0;
 factorX *= factorY;
-factorY = factorX * max(dot(nv.xyz, u_projNV.xyz), 0.0);
+factorY = factorX * max(dot(nv.xyz, u_projNV.xyz), 0.01);
 
 vec4 baseColor4 = texture(u_sampler1, v_uv.xy) * u_color;
 vec4 reflectColor4 = texture(u_sampler0, pv.xy);
-baseColor4.xyz = mix(reflectColor4.xyz, baseColor4.xyz, factorY) * 0.3 + reflectColor4.xyz * 0.2 + baseColor4.xyz * 0.5;
+baseColor4.xyz = mix(reflectColor4.xyz, baseColor4.xyz, factorY) * 0.5 + reflectColor4.xyz * 0.2 + baseColor4.xyz * 0.3;
 FragColor0 = baseColor4;
-//  reflectColor4.xyz *= vec3( factorX * factorY );
-//  FragColor0 = (reflectColor4 * 0.7 + baseColor4 * 0.7) * 0.8;
 `
             );
         }

@@ -215,7 +215,7 @@ export default class RendererSpace implements IRendererSpace
                 let camPos:Vector3D = cam.getPosition();
                 while(nextNode != null)
                 {
-                    if(nextNode.rpoNode.isVsible())
+                    if(nextNode.rpoNode.isVsible() && nextNode.entity.isDrawEnabled())
                     {
                         ab = nextNode.bounds;
                         nextNode.drawEnabled = cam.visiTestSphere2(ab.center, ab.radius);

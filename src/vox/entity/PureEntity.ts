@@ -168,7 +168,7 @@ export default class PureEntity implements IRenderEntity,IDisplayEntity
             }
         }
     }
-    getDrawEnabled():boolean
+    isDrawEnabled():boolean
     {
         return this.m_drawEnabled;
     }

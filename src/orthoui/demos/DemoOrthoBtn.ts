@@ -149,7 +149,7 @@ export class DemoOrthoBtn {
         proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.progressChange);
         proBar.setXY(px, py);
         py += 64 + 1;
-
+        /*
         let selectBar: SelectionBar = new SelectionBar();
         selectBar.initialize(this.m_ruisc, "select");
         selectBar.addEventListener(SelectionEvent.SELECT, this, this.selectChange);
@@ -173,7 +173,8 @@ export class DemoOrthoBtn {
         this.m_rgbPanel.addEventListener(RGBColoSelectEvent.COLOR_SELECT, this, this.selectColor);
         this.m_rgbPanel.setXY(px,py);
         this.m_ruisc.addContainer(this.m_rgbPanel);
-        this.m_rgbPanel.close();        
+        this.m_rgbPanel.close();
+        //*/
     }
     private selectColor(evt: any): void {
         let currEvt: RGBColoSelectEvent = evt as RGBColoSelectEvent;
@@ -211,7 +212,7 @@ export class DemoOrthoBtn {
                 break;
         }
         //(this.m_plane.getMaterial() as any).setRGB3f(1.0, progEvt.progress, 1.0);
-        this.m_rgbPanel.close();
+        if(this.m_rgbPanel != null)this.m_rgbPanel.close();
     }
     private selectChange(evt: any): void {
         let progEvt: SelectionEvent = evt as SelectionEvent;
@@ -235,10 +236,10 @@ export class DemoOrthoBtn {
         //*/
         //this.m_plane2.updateMaterialToGpu( this.m_rscene.getRenderProxy() );
         //*/
-        this.m_rgbPanel.close();
+        if(this.m_rgbPanel != null)this.m_rgbPanel.close();
     }
     private mouseBgDown(evt: any): void {
-        this.m_rgbPanel.close();
+        if(this.m_rgbPanel != null)this.m_rgbPanel.close();
     }
     private mouseDown(evt: any): void {
         console.log("mouse down... ...");

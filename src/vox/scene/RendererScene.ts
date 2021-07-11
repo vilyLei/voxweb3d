@@ -455,16 +455,20 @@ export default class RendererScene implements IRenderer {
         this.m_renderProxy.updateCameraDataFromCamera(camera);
     }
     useMainCamera(): void {
-        //  let camera: CameraBase = this.m_renderProxy.getCamera();
-        //  this.m_renderProxy.setRCViewPort(camera.getViewX(), camera.getViewY(), camera.getViewWidth(), camera.getViewHeight());
+        let camera: CameraBase = this.m_renderProxy.getCamera();
+        this.m_renderProxy.setRCViewPort(camera.getViewX(), camera.getViewY(), camera.getViewWidth(), camera.getViewHeight());
         //if(unlockViewport)this.m_adapter.unlockViewport();
-        this.m_renderProxy.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
+        //this.m_renderProxy.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
+        //console.log("camera.getViewWidth(): ",camera.getViewWidth());
         this.m_renderProxy.reseizeRCViewPort();
         this.m_renderProxy.updateCamera();
         this.m_renderProxy.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
     }
     resetState(): void {
         this.m_rcontext.resetState();
+    }
+    enableSynViewAndStage(): void {
+        this.m_renderProxy.enableSynViewAndStage();
     }
     /**
      * the function resets the renderer scene status.
