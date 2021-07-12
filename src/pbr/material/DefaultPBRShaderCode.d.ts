@@ -4,11 +4,6 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
+import IAbstractShader from "../../vox/material/IAbstractShader";
 
-export default interface IAbstractShader
-{
-    vert: string;
-    frag: string;
-    frag_head: string;
-    frag_body: string;
-}
+export const DefaultPBRShaderCode:IAbstractShader;

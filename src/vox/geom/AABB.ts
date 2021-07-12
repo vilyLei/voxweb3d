@@ -26,6 +26,15 @@ class AABB
 	constructor()
 	{
 	}
+	getLong(): number {
+		return this.m_long;
+	}
+	getWidth(): number {
+		return this.m_width;
+	}
+	getHeight(): number {
+		return this.m_height;
+	}
 	reset():void
 	{
 		this.min.setXYZ(MathConst.MATH_MAX_POSITIVE, MathConst.MATH_MAX_POSITIVE, MathConst.MATH_MAX_POSITIVE);

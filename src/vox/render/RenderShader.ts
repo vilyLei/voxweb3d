@@ -37,7 +37,7 @@ export default class RenderShader implements IRenderShader,IRenderResource
     // 只有transform相关的信息uniform
     private m_transformUniform:IShaderUniform = null;
     // 用于记录 renderState(低10位)和ColorMask(高10位) 的状态组合
-    drawFlag:number = 0x0;
+    drawFlag:number = -1;
     constructor(rcuid:number,gl:any,adapter:RenderAdapter)
     {
         this.m_rcuid = rcuid;
@@ -214,7 +214,7 @@ export default class RenderShader implements IRenderShader,IRenderResource
         this.m_fragOutputTotal = 1;
         this.m_preuid = -1;
         this.m_currShd = null;
-        this.drawFlag = 0x0;
+        this.drawFlag = -1;
         //this.resetUniform();
     }
     

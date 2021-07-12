@@ -109,7 +109,7 @@ export class TextureProxy implements IRenderTexture
             this.m_attachCount = 0;
         }
         ++this.m_attachCount;
-        console.log("TextureProxy::__$attachThis() this(uid="+this.getUid()+").attachCount: "+this.m_attachCount);
+        //console.log("TextureProxy::__$attachThis() this(uid="+this.getUid()+").attachCount: "+this.m_attachCount);
     }
     /**
      * 被引用计数减一
@@ -119,7 +119,7 @@ export class TextureProxy implements IRenderTexture
         if(this.m_attachCount > 0)
         {
             --this.m_attachCount;
-            console.log("TextureProxy::__$detachThis() this(uid="+this.getUid()+").attachCount: "+this.m_attachCount);
+            //console.log("TextureProxy::__$detachThis() this(uid="+this.getUid()+").attachCount: "+this.m_attachCount);
             if(this.m_attachCount < 1)
             {
                 this.m_attachCount = -1;

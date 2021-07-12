@@ -27,6 +27,9 @@ precision mediump float;
 }
 `;
 
+private m_fragExt:string[] = [];
+private m_vertExt:string[] = [];
+
 private m_defineNames:string[] = [];
 private m_defineValues:string[] = [];
 
@@ -69,6 +72,9 @@ private m_projMat:boolean = false;
 
         this.m_vertMainCode = "";
         this.m_fragMainCode = "";
+
+        this.m_vertExt = [];
+        this.m_fragExt = [];
 
         this.m_vertLayoutNames = [];
         this.m_vertLayoutTypes = [];
@@ -151,6 +157,15 @@ private m_projMat:boolean = false;
         this.m_projMat = true;
     }
 
+    addVertExtend(code:string):void
+    {
+        this.m_vertExt.push(code);
+    }
+    addFragExtend(code:string):void
+    {
+        this.m_fragExt.push(code);
+    }
+
     addVertMainCode(code:string):void
     {
         this.m_vertMainCode += code;
@@ -162,16 +177,24 @@ private m_projMat:boolean = false;
     
     buildFragCode():string
     {
+        let i:number = 0;
+        let len:number = 0;
         let code:string = "";
+
         if(RendererDeviece.IsWebGL2())
         {
             code += this.m_versionDeclare;
         }
+
+        i = 0;
+        len = this.m_fragExt.length;
+        for(; i < len; i++)
+        {
+            code += "\n"+this.m_fragExt[i];
+        }
+
         code += this.m_preciousCode;
 
-        
-        let i:number = 0;
-        let len:number = 0;
         i = 0;
         len = this.m_textureSampleTypes.length;
         for(; i < len; i++)
@@ -222,6 +245,14 @@ private m_projMat:boolean = false;
         {
             code += this.m_versionDeclare;
         }
+        
+        i = 0;
+        len = this.m_vertExt.length;
+        for(; i < len; i++)
+        {
+            code += "\n"+this.m_vertExt[i];
+        }
+
         code += this.m_preciousCode;
 
         len = this.m_defineNames.length;

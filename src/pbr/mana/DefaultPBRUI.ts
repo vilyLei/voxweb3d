@@ -9,7 +9,7 @@ import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import RendererParam from "../../vox/scene/RendererParam";
 import RendererScene from "../../vox/scene/RendererScene";
 
-import PBRLightsManager from "../../pbr/mana/PBRLightsManager";
+import DefaultPBRCase from "../../pbr/mana/DefaultPBRCase";
 
 import RendererSubScene from "../../vox/scene/RendererSubScene";
 import ProgressBar from "../../orthoui/demos/base/ProgressBar";
@@ -17,18 +17,18 @@ import ProgressDataEvent from "../../vox/event/ProgressDataEvent";
 import CanvasTextureTool from "../../orthoui/demos/base/CanvasTextureTool";
 import SelectionEvent from "../../vox/event/SelectionEvent";
 import SelectionBar from "../../orthoui/demos/base/SelectionBar";
-import ColorLightsPBRMaterial from "../material/ColorLightsPBRMaterial";
+import DefaultPBRMaterial from "../material/DefaultPBRMaterial";
 import RGBColorPanel, { RGBColoSelectEvent } from "../../orthoui/panel/RGBColorPanel";
 import Color4 from "../../vox/material/Color4";
 import Vector3D from "../../vox/math/Vector3D";
 
-export class PBRLightsUI
+export class DefaultPBRUI
 {
     constructor(){}
     private m_rscene:RendererScene = null;
     private m_texLoader:ImageTextureLoader = null;
-    private m_meshMana:PBRLightsManager = null;
-    private m_meshManas:PBRLightsManager[] = [];
+    private m_meshMana:DefaultPBRCase = null;
+    private m_meshManas:DefaultPBRCase[] = [];
 
     private m_sideScale: number = 0.5;
     private m_surfaceScale: number = 0.5;
@@ -42,9 +42,9 @@ export class PBRLightsUI
         return ptex;
     }
     
-    initialize(rscene:RendererScene, texLoader: ImageTextureLoader, meshMana: PBRLightsManager):void
+    initialize(rscene:RendererScene, texLoader: ImageTextureLoader, meshMana: DefaultPBRCase):void
     {
-        console.log("PBRLightsUI::initialize()......");
+        console.log("DefaultPBRUI::initialize()......");
         if(this.m_rscene == null)
         {
             this.m_rscene = rscene;;
@@ -293,16 +293,16 @@ export class PBRLightsUI
         let selectEvt: SelectionEvent = evt as SelectionEvent;
         let flag: boolean = selectEvt.flag;
 
-        let material: ColorLightsPBRMaterial = null;
+        let material: DefaultPBRMaterial = null;
         
         switch(selectEvt.uuid) {
             case "absorb":
-                material = new ColorLightsPBRMaterial();
+                material = new DefaultPBRMaterial();
                 material.copyFrom( this.m_meshMana.material );
                 material.absorbEnabled = flag;
                 break;
             case "vtxNoise":
-                material = new ColorLightsPBRMaterial();
+                material = new DefaultPBRMaterial();
                 material.copyFrom( this.m_meshMana.material );
                 material.normalNoiseEnabled = flag;
                 break;
@@ -440,4 +440,4 @@ export class PBRLightsUI
     }
 }
     
-export default PBRLightsUI;
+export default DefaultPBRUI;

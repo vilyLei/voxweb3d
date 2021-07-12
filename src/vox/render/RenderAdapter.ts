@@ -158,6 +158,8 @@ class RenderAdapter {
 	getViewportHeight(): number { return this.m_rcontext.getViewportHeight(); }
 	getFBOFitWidth(): number { return this.m_rcontext.getFBOWidth(); }
 	getFBOFitHeight(): number { return this.m_rcontext.getFBOHeight(); }
+	getRCanvasWidth(): number { return this.m_rcontext.getRCanvasWidth(); }
+	getRCanvasHeight(): number { return this.m_rcontext.getRCanvasHeight(); }
 
 	setColorMask(mr: boolean, mg: boolean, mb: boolean, ma: boolean): void {
 		this.m_colorMask.mr = mr;

@@ -64,7 +64,8 @@ class RendererState {
             rBlendMode.OVERLAY = rso.CreateBlendMode("OVERLAY",GLBlendMode.DST_COLOR,GLBlendMode.DST_ALPHA,GLBlendEquation.FUNC_ADD);
             rBlendMode.OVERLAY2 = rso.CreateBlendMode("OVERLAY2",GLBlendMode.DST_COLOR,GLBlendMode.SRC_ALPHA,GLBlendEquation.FUNC_ADD);
 
-            state.BACK_CULLFACE_NORMAL_STATE = rso.Create("normal", CullFaceMode.BACK, RenderBlendMode.NORMAL, DepthTestMode.OPAQUE);
+            state.NORMAL_STATE = rso.Create("normal", CullFaceMode.BACK, RenderBlendMode.NORMAL, DepthTestMode.OPAQUE);
+            state.BACK_CULLFACE_NORMAL_STATE = state.NORMAL_STATE;
             state.FRONT_CULLFACE_NORMAL_STATE = rso.Create("front_normal", CullFaceMode.FRONT, RenderBlendMode.NORMAL, DepthTestMode.OPAQUE);
             state.NONE_CULLFACE_NORMAL_STATE = rso.Create("none_normal", CullFaceMode.NONE, RenderBlendMode.NORMAL, DepthTestMode.OPAQUE);
             state.ALL_CULLFACE_NORMAL_STATE = rso.Create("all_cull_normal", CullFaceMode.FRONT_AND_BACK, RenderBlendMode.NORMAL, DepthTestMode.OPAQUE);

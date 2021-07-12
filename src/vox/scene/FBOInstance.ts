@@ -210,7 +210,6 @@ export default class FBOInstance
      * 创建一个指定序号的 FBO(FrameBufferObject) 渲染运行时管理对象,
      * renderer中一个序号只会对应一个唯一的 FBO 对象实例
      * @param fboIndex FBO 对象的序号
-     * @param width FBO 对象的viewport宽度
      * @param enableDepth FBO 对象的depth读写是否开启
      * @param enableStencil FBO 对象的stencil读写是否开启
      * @param multisampleLevel FBO 对象的multisample level
@@ -227,7 +226,8 @@ export default class FBOInstance
      * 创建一个指定序号的 FBO(FrameBufferObject) 渲染运行时管理对象,
      * renderer中一个序号只会对应一个唯一的 FBO 对象实例
      * @param fboIndex FBO 对象的序号
-     * @param width FBO 对象的viewport宽度
+     * @param width FBO 对象的viewport width, if width < 1, viewport width is stage width;
+     * @param height FBO 对象的viewport height, if height < 1, viewport width is stage height;
      * @param enableDepth FBO 对象的depth读写是否开启
      * @param enableStencil FBO 对象的stencil读写是否开启
      * @param multisampleLevel FBO 对象的multisample level
@@ -237,6 +237,8 @@ export default class FBOInstance
         if(fboIndex >= 0 && this.m_fboIndex < 0)
         {
             this.m_fboType = FrameBufferType.FRAMEBUFFER;this.m_initW = width;this.m_initH = height;this.m_fboIndex = fboIndex;
+            if(this.m_initW < 1) this.m_initW = this.m_adapter.getRCanvasWidth();
+            if(this.m_initH < 1) this.m_initH = this.m_adapter.getRCanvasHeight();
             this.createFBO(enableDepth,enableStencil,multisampleLevel);
         }
     }
@@ -244,7 +246,8 @@ export default class FBOInstance
      * 创建一个指定序号的 read FBO(FrameBufferObject) 渲染运行时管理对象,
      * renderer中一个序号只会对应一个唯一的 FBO 对象实例
      * @param fboIndex FBO 对象的序号
-     * @param width FBO 对象的viewport宽度
+     * @param width FBO 对象的viewport width, if width < 1, viewport width is stage width;
+     * @param height FBO 对象的viewport height, if height < 1, viewport width is stage height;
      * @param enableDepth FBO 对象的depth读写是否开启
      * @param enableStencil FBO 对象的stencil读写是否开启
      * @param multisampleLevel FBO 对象的multisample level
@@ -254,6 +257,8 @@ export default class FBOInstance
         if(fboIndex >= 0 && this.m_fboIndex < 0)
         {
             this.m_fboType = FrameBufferType.READ_FRAMEBUFFER;this.m_initW = width;this.m_initH = height;this.m_fboIndex = fboIndex;
+            if(this.m_initW < 1) this.m_initW = this.m_adapter.getRCanvasWidth();
+            if(this.m_initH < 1) this.m_initH = this.m_adapter.getRCanvasHeight();
             this.createFBO(enableDepth,enableStencil,multisampleLevel);
         }
     }
@@ -261,7 +266,8 @@ export default class FBOInstance
      * 创建一个指定序号的 draw FBO(FrameBufferObject) 渲染运行时管理对象,
      * renderer中一个序号只会对应一个唯一的 FBO 对象实例
      * @param fboIndex FBO 对象的序号
-     * @param width FBO 对象的viewport宽度
+     * @param width FBO 对象的viewport width, if width < 1, viewport width is stage width;
+     * @param height FBO 对象的viewport height, if height < 1, viewport width is stage height;
      * @param enableDepth FBO 对象的depth读写是否开启
      * @param enableStencil FBO 对象的stencil读写是否开启
      * @param multisampleLevel FBO 对象的multisample level
@@ -271,6 +277,8 @@ export default class FBOInstance
         if(fboIndex >= 0 && this.m_fboIndex < 0)
         {
             this.m_fboType = FrameBufferType.DRAW_FRAMEBUFFER;this.m_initW = width;this.m_initH = height;this.m_fboIndex = fboIndex;
+            if(this.m_initW < 1) this.m_initW = this.m_adapter.getRCanvasWidth();
+            if(this.m_initH < 1) this.m_initH = this.m_adapter.getRCanvasHeight();
             this.createFBO(enableDepth,enableStencil,multisampleLevel);
         }
     }

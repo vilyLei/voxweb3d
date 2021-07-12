@@ -16,13 +16,13 @@ import RendererParam from "../vox/scene/RendererParam";
 import RendererScene from "../vox/scene/RendererScene";
 
 import DecodeQueue from "../large/parse/DecodeQueue";
-import PBRLightsManager from "../pbr/mana/PBRLightsManager";
+import DefaultPBRCase from "../pbr/mana/DefaultPBRCase";
 
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import RendererSubScene from "../vox/scene/RendererSubScene";
-import PBRLightsUI from "./mana/PBRLightsUI";
+import DefaultPBRUI from "./mana/DefaultPBRUI";
 import ProjectToneMaterial from "../demo/material/ProjectToneMaterial";
 import MirrorToneMaterial from "../demo/material/MirrorToneMaterial";
 import FBOInstance from "../vox/scene/FBOInstance";
@@ -35,7 +35,7 @@ import RendererState from "../vox/render/RendererState";
 
 
 
-export class DemoLightsPBR
+export class DemoDefaultPBR
 {
     constructor(){}
     private m_rscene:RendererScene = null;
@@ -43,12 +43,12 @@ export class DemoLightsPBR
     private m_texLoader:ImageTextureLoader = null;
     private m_camTrack:CameraTrack = null;
     private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
-    private m_meshMana:PBRLightsManager = null;
-    private m_meshManas:PBRLightsManager[] = [];
+    private m_meshMana:DefaultPBRCase = null;
+    private m_meshManas:DefaultPBRCase[] = [];
     private m_profileInstance:ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_CameraZoomController: CameraZoomController = new CameraZoomController();
-    private m_uiModule: PBRLightsUI = new PBRLightsUI();
+    private m_uiModule: DefaultPBRUI = new DefaultPBRUI();
     private m_reflectPlaneY: number = -220.0;
     getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
     {
@@ -60,7 +60,7 @@ export class DemoLightsPBR
     
     initialize():void
     {
-        console.log("DemoLightsPBR::initialize()......");
+        console.log("DemoDefaultPBR::initialize()......");
         if(this.m_rscene == null)
         {
             RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
@@ -90,19 +90,13 @@ export class DemoLightsPBR
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-            let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
-            //let tex1:TextureProxy = this.getImageTexByUrl("static/assets/caustics_02.jpg");
-            let tex1:TextureProxy = this.getImageTexByUrl("static/assets/green.jpg");
-            //let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-            
-            //this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().stageWidth - 10);
             this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
             //  let axis:Axis3DEntity = new Axis3DEntity();
             //  axis.initialize(700.0);
             //  this.m_rscene.addEntity(axis, 1);
 
-            this.m_meshMana = new PBRLightsManager();
+            this.m_meshMana = new DefaultPBRCase();
 
             this.m_meshMana.rscene = this.m_rscene;
             this.m_meshMana.texLoader = this.m_texLoader;
@@ -125,19 +119,6 @@ export class DemoLightsPBR
             this.m_meshMana.moduleScale = 3.0;
             this.m_meshMana.offsetPos.setXYZ(0.0,-350.0,0.0);
             this.m_meshMana.loadMeshFile("static/modules/loveass.md");
-            //*/
-            /*
-            this.m_reflectPlaneY = -220.0;
-            this.m_meshMana.lightBaseDis = 900.0;
-            this.m_meshMana.moduleScale = 0.5;
-            this.m_meshMana.offsetPos.setXYZ(0.0,200.0,0.0);
-            this.m_meshMana.loadMeshFile("static/modules/stainlessSteel.md");
-            //*/
-            /*
-            this.m_meshMana.lightBaseDis = 900.0;
-            this.m_meshMana.moduleScale = 1.0;
-            this.m_meshMana.offsetPos.setXYZ(0.0,-350.0,0.0);
-            this.m_meshMana.loadMeshFile("static/modules/scarf.md");
             //*/
             if(this.m_meshMana != null) {
                 this.m_meshManas.push( this.m_meshMana );
@@ -272,9 +253,11 @@ export class DemoLightsPBR
         /////////////////////////////////////////////////////// ---- mouseTest begin.
         let pickFlag: boolean = true;
         ///*
-        this.m_ruisc.runBegin(true, true);
-        this.m_ruisc.update(false, true);
-        pickFlag = this.m_ruisc.isRayPickSelected();
+        if(this.m_ruisc != null) {
+            this.m_ruisc.runBegin(true, true);
+            this.m_ruisc.update(false, true);
+            pickFlag = this.m_ruisc.isRayPickSelected();
+        }
 
         this.m_rscene.runBegin(false);
         this.m_rscene.update(false, !pickFlag);
@@ -337,8 +320,10 @@ export class DemoLightsPBR
         this.m_rscene.runAt(1);
         this.m_rscene.runEnd();
 
-        this.m_ruisc.renderBegin();
-        this.m_ruisc.run(false);
+        if(this.m_ruisc != null) {
+            this.m_ruisc.renderBegin();
+            this.m_ruisc.run(false);
+        }
         this.m_ruisc.runEnd();
     }
     private mirrorProjRun(): void {
@@ -364,8 +349,10 @@ export class DemoLightsPBR
         this.m_rscene.runAt(1);
         this.m_rscene.runEnd();
 
-        this.m_ruisc.renderBegin();
-        this.m_ruisc.run(false);
+        if(this.m_ruisc != null) {
+            this.m_ruisc.renderBegin();
+            this.m_ruisc.run(false);
+        }
         this.m_ruisc.runEnd();
     }
     private mirrorRun(): void {
@@ -374,10 +361,12 @@ export class DemoLightsPBR
         this.m_rscene.run(false);
         this.m_rscene.runEnd();
 
-        this.m_ruisc.renderBegin();
-        this.m_ruisc.run(false);
+        if(this.m_ruisc != null) {
+            this.m_ruisc.renderBegin();
+            this.m_ruisc.run(false);
+        }
         this.m_ruisc.runEnd();
     }
 }
     
-export default DemoLightsPBR;
+export default DemoDefaultPBR;

@@ -13,24 +13,28 @@ import Matrix4 from "../../vox/math/Matrix4";
 import Vector3D from "../../vox/math/Vector3D";
 import RendererDeviece from "../../vox/render/RendererDeviece";
 
-class ProjectToneShaderBuffer extends ShaderCodeBuffer
+class MirrorToneShaderBuffer extends ShaderCodeBuffer
 {
     constructor()
     {
         super();
     }
-    private static ___s_instance:ProjectToneShaderBuffer = new ProjectToneShaderBuffer();
+    private static ___s_instance:MirrorToneShaderBuffer = new MirrorToneShaderBuffer();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
         super.initialize(texEnabled);
-        //console.log("ProjectToneShaderBuffer::initialize()...,texEnabled: "+texEnabled);
-        this.m_uniqueName = "ProjectToneShd";
+        //console.log("MirrorToneShaderBuffer::initialize()...,texEnabled: "+texEnabled);
+        this.m_uniqueName = "MirrorToneShd";
     }
     private buildThisCode():void
     {
         let coder:ShaderCodeBuilder = ShaderCodeBuffer.s_coder;
         coder.reset();
+        if(RendererDeviece.IsWebGL1()) {
+            coder.addFragExtend("#extension GL_OES_standard_derivatives : enable");
+            //coder.addFragExtend("#extension GL_EXT_shader_texture_lod : enable");
+        }
         coder.addVertLayout("vec3","a_vs");
         if(this.isTexEanbled())
         {
@@ -42,15 +46,11 @@ class ProjectToneShaderBuffer extends ShaderCodeBuffer
             coder.addVarying("vec2", "v_uv");
             coder.addVarying("vec3", "v_nv");
         }
-        
-        if(RendererDeviece.IsWebGL1()) {
-            coder.addFragExtend("#extension GL_OES_standard_derivatives : enable");
-            //coder.addFragExtend("#extension GL_EXT_shader_texture_lod : enable");
-        }
         coder.addVarying("vec4", "v_wpos");
         coder.addFragOutput("vec4", "FragColor0");
         coder.addFragUniform("vec4","u_color");
-        coder.addFragUniform("mat4","u_toneMat");
+        //coder.addFragUniform("mat4","u_toneMat");
+        coder.addFragUniform("vec4","u_stageParam");
         coder.addFragUniform("vec4","u_projNV");
         coder.addFragFunction(
 `
@@ -101,24 +101,12 @@ vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 wpos, vec3 nv)
 
 vec3 nv = getNormalFromMap(u_sampler2, v_uv.xy, v_wpos.xyz, v_nv.xyz);
 
-//vec4 pv = u_toneMat * v_wpos;
-vec4 wpos = v_wpos;
-wpos.xyz += nv  * vec3(60.0);// use nomal map
-vec4 pv = u_toneMat * wpos;
-pv.xyz /= pv.www;
-//pv.xy += rand(pv.xy) * 0.01;// noise
-//pv.xy *= vec2(0.2);// 扩大
-pv.xy *= vec2(0.5);
-pv.xy += vec2(0.5);
-//  float factorX = (pv.x < 0.0 || pv.x > 1.0) ? 0.0 : 1.0;
-//  float factorY = (pv.y < 0.0 || pv.y > 1.0) ? 0.0 : 1.0;
-//  factorX *= factorY;
 float factorY = max(dot(nv.xyz, u_projNV.xyz), 0.01);
+vec2 mirrorUV = gl_FragCoord.xy/u_stageParam.zw;
 
+vec4 reflectColor4 = texture(u_sampler0, mirrorUV.xy + (nv  * vec3(0.02)).xy);
 vec4 baseColor4 = texture(u_sampler1, v_uv.xy) * u_color;
-vec4 reflectColor4 = texture(u_sampler0, pv.xy);
-//baseColor4.xyz = mix(reflectColor4.xyz, baseColor4.xyz, factorY) * 0.5 + reflectColor4.xyz * 0.2 + baseColor4.xyz * 0.3;
-baseColor4.xyz = mix(reflectColor4.xyz, baseColor4.xyz, factorY) * 0.6 + reflectColor4.xyz * 0.2 + baseColor4.xyz * 0.2;
+baseColor4.xyz = mix(reflectColor4.xyz, baseColor4.xyz, factorY) * 0.5 + reflectColor4.xyz * 0.2 + baseColor4.xyz * 0.3;
 FragColor0 = baseColor4;
 `
             );
@@ -155,15 +143,15 @@ FragColor0 = baseColor4;
     }
     toString():string
     {
-        return "[ProjectToneShaderBuffer()]";
+        return "[MirrorToneShaderBuffer()]";
     }
-    static GetInstance():ProjectToneShaderBuffer
+    static GetInstance():MirrorToneShaderBuffer
     {
-        return ProjectToneShaderBuffer.___s_instance;
+        return MirrorToneShaderBuffer.___s_instance;
     }
 }
 
-export default class ProjectToneMaterial extends MaterialBase
+export default class MirrorToneMaterial extends MaterialBase
 {
     constructor()
     {
@@ -172,12 +160,11 @@ export default class ProjectToneMaterial extends MaterialBase
     
     getCodeBuf():ShaderCodeBuffer
     {        
-        return ProjectToneShaderBuffer.GetInstance();
+        return MirrorToneShaderBuffer.GetInstance();
     }
     
     private m_colorArray:Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
     private m_projNV:Float32Array = new Float32Array([0.0,1.0,0.0,1.0]);
-    private m_toneMatrix: Matrix4 = null;
     setProjNV(nv: Vector3D):void
     {
         //console.log("nv: ",nv);
@@ -203,15 +190,11 @@ export default class ProjectToneMaterial extends MaterialBase
     {
         this.m_colorArray[3] = pa;
     }
-    setToneMatrix(mat4: Matrix4): void {
-        this.m_toneMatrix = mat4;
-    }
-
     createSelfUniformData():ShaderUniformData
     {
         let oum:ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_color","u_toneMat","u_projNV"];
-        oum.dataList = [this.m_colorArray, this.m_toneMatrix.getLocalFS32(), this.m_projNV];
+        oum.uniformNameList = ["u_color", "u_projNV"];
+        oum.dataList = [this.m_colorArray, this.m_projNV];
         return oum;
     }
 }

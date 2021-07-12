@@ -448,7 +448,7 @@ export default class RendererScene implements IRenderer {
         //if(unlockViewport)this.m_adapter.unlockViewport();
         this.m_currCamera = camera;
         if(syncCamView) {
-            this.m_renderProxy.setRCViewPort(camera.getViewX(), camera.getViewY(), camera.getViewWidth(), camera.getViewHeight());
+            this.m_renderProxy.setRCViewPort(camera.getViewX(), camera.getViewY(), camera.getViewWidth(), camera.getViewHeight(), true);
             this.m_renderProxy.reseizeRCViewPort();
         }
         camera.update();
@@ -456,10 +456,7 @@ export default class RendererScene implements IRenderer {
     }
     useMainCamera(): void {
         let camera: CameraBase = this.m_renderProxy.getCamera();
-        this.m_renderProxy.setRCViewPort(camera.getViewX(), camera.getViewY(), camera.getViewWidth(), camera.getViewHeight());
-        //if(unlockViewport)this.m_adapter.unlockViewport();
-        //this.m_renderProxy.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
-        //console.log("camera.getViewWidth(): ",camera.getViewWidth());
+        this.m_renderProxy.setRCViewPort(camera.getViewX(), camera.getViewY(), camera.getViewWidth(), camera.getViewHeight(), true);
         this.m_renderProxy.reseizeRCViewPort();
         this.m_renderProxy.updateCamera();
         this.m_renderProxy.updateCameraDataFromCamera(this.m_renderProxy.getCamera());

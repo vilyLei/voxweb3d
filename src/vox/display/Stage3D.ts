@@ -118,12 +118,13 @@ class Stage3D implements IRenderStage3D
             this.uProbe = new UniformVec4Probe(1);
             this.uProbe.bindSlotAt( this.m_rcuid );
         }
-        this.uProbe.setVec4Data(
-            2.0/(this.m_viewW * this.pixelRatio)
-            ,2.0/(this.m_viewH * this.pixelRatio)
-            , this.m_viewW * this.pixelRatio
-            ,this.m_viewH * this.pixelRatio
-            );
+        //  this.uProbe.setVec4Data(
+        //      2.0/(this.m_viewW * this.pixelRatio)
+        //      ,2.0/(this.m_viewH * this.pixelRatio)
+        //      , this.m_viewW * this.pixelRatio
+        //      ,this.m_viewH * this.pixelRatio
+        //      );
+        this.uProbe.setVec4Data( 2.0/this.stageWidth,2.0/this.stageHeight, this.stageWidth,this.stageHeight );
         this.uProbe.update();
         this.m_preStageWidth = this.m_viewW;
         this.m_preStageHeight = this.m_viewH;

@@ -228,8 +228,8 @@ class RenderProxy {
         }
         this.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
     }
-    setRCViewPort(px: number, py: number, pw: number, ph: number): void {
-        this.m_autoSynViewAndStage = false;
+    setRCViewPort(px: number, py: number, pw: number, ph: number,autoSynViewAndStage: boolean = false): void {
+        this.m_autoSynViewAndStage = autoSynViewAndStage;
         this.m_adapterContext.setViewport(px, py, pw, ph);
     }
     reseizeRCViewPort(): void {
@@ -239,19 +239,19 @@ class RenderProxy {
     private resizeCallback(): void {
         //console.log("resizeCallback(), m_autoSynViewAndStage: "+this.m_autoSynViewAndStage);
         if (this.m_autoSynViewAndStage) {
-            //let stage:IRenderStage3D = this.m_adapterContext.getStage();
-
             this.m_viewX = 0;
             this.m_viewY = 0;
-            this.m_viewW = this.m_adapterContext.getRCanvasWidth();//stage.stageWidth;
-            this.m_viewH = this.m_adapterContext.getRCanvasHeight();//stage.stageHeight;
+            this.m_viewW = this.m_adapterContext.getRCanvasWidth();
+            this.m_viewH = this.m_adapterContext.getRCanvasHeight();
+
             if (this.m_camera == null) {
                 this.createMainCamera();
             }
+
+            console.log("resizeCallback(), viewW,viewH: ", this.m_viewW+","+this.m_viewH);
             this.m_adapterContext.setViewport(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
             this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
             this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
-            console.log("resizeCallback(), this.m_viewW, this.m_viewH: "+this.m_viewW+", "+this.m_viewH);
         }
     }
     private createMainCamera(): void {

@@ -314,6 +314,8 @@
 
 //  import {DemoProjectPlane as Demo} from "./demo/DemoProjectPlane";
 
+//  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
+
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -327,7 +329,9 @@
 
 //  import {DemoModulePBR as Demo} from "./pbr/DemoModulePBR";
 
-import {DemoLightsPBR as Demo} from "./pbr/DemoLightsPBR";
+//  import {DemoLightsPBR as Demo} from "./pbr/DemoLightsPBR";
+
+import {DemoDefaultPBR as Demo} from "./pbr/DemoDefaultPBR";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////

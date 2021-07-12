@@ -5,10 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
-export default interface IAbstractShader
-{
-    vert: string;
-    frag: string;
-    frag_head: string;
-    frag_body: string;
-}
+import shader_frag_body from "./defaultPBR_fragBody.glsl";
+import shader_frag_head from "./defaultPBR_fragHead.glsl";
+
+const DefaultPBRShaderCode = {
+    vert: "",
+    frag_head: shader_frag_head,
+    frag_body: shader_frag_body
+};
+
+export {DefaultPBRShaderCode};

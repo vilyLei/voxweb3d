@@ -57,11 +57,15 @@ export default class Box3DEntity extends DisplayEntity
     }
     showBackFace():void
     {
-        this.setRenderState(RendererState.NORMAL_STATE);
+        this.setRenderState(RendererState.BACK_CULLFACE_NORMAL_STATE);
     }
     showFrontFace():void
     {
         this.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
+    }
+    showAllFace():void
+    {
+        this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
     }
     scaleUVFaceAt(faceI:number, u:number,v:number,du:number,dv:number)
     {

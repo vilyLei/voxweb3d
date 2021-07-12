@@ -156,9 +156,10 @@ export class RenderStateObject {
         return this.m_blendMode;
     }
     use(): void {
+        
         if (RenderStateObject.s_state != this.m_uid) {
 
-            //  console.log("this.m_uid: ",this.m_uid);
+            //console.log("RenderStateObject this.m_uid: ",this.m_uid);
             
             RenderStateObject.Rstate.setCullFaceMode(this.m_cullFaceMode);
             //RenderStateObject.Rstate.setBlendMode(this.m_blendMode);
