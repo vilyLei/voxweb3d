@@ -146,8 +146,10 @@ export class DemoDefaultPBR
                 let param: PBRParamEntity = new PBRParamEntity();
                 param.entity = this.m_meshMana.entity;
                 param.material = this.m_meshMana.material;
+                param.pbrUI = this.m_uiModule;
+                param.colorPanel = this.m_uiModule.rgbPanel;
                 this.m_uiModule.setParamEntity( param );
-                param.updateColor();
+                param.initialize();
 
             }
 
@@ -160,7 +162,8 @@ export class DemoDefaultPBR
     
     private m_mirrorEntities:MirrorProjEntity[] = [];
     private initPlaneReflection(): void {
-        
+
+        let param: PBRParamEntity;
         //  let box: Box3DEntity = new Box3DEntity();
         //  box.uvPartsNumber = 6;
         //  box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixParts.jpg")]);
@@ -211,6 +214,14 @@ export class DemoDefaultPBR
         plane.setXYZ(0, this.m_reflectPlaneY, 0);
         this.m_rscene.addEntity(plane, 1);
 
+        param = new PBRParamEntity();
+        param.entity = plane;
+        param.material = material;
+        param.pbrUI = this.m_uiModule;
+        param.colorPanel = this.m_uiModule.rgbPanel;
+        //this.m_uiModule.setParamEntity( param );
+        param.initialize();
+
         //  let frustrum:FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
         //  frustrum.initiazlize( this.m_rttCamera );
         //  frustrum.setScaleXYZ(0.5,0.5,0.5);
@@ -237,11 +248,13 @@ export class DemoDefaultPBR
         this.m_mirrorEntities.push( mEntity );
         
         
-        let param: PBRParamEntity = new PBRParamEntity();
+        param = new PBRParamEntity();
         param.entity = sph;
         param.material = material;
-        this.m_uiModule.setParamEntity( param );
-        param.updateColor();
+        param.pbrUI = this.m_uiModule;
+        param.colorPanel = this.m_uiModule.rgbPanel;
+        //this.m_uiModule.setParamEntity( param );
+        param.initialize();
         
     }
     private m_runFlag: boolean = true;

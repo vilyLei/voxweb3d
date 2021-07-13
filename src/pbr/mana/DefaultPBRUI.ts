@@ -3,7 +3,7 @@ import RendererDeviece from "../../vox/render/RendererDeviece";
 import MouseEvent from "../../vox/event/MouseEvent";
 
 import TextureProxy from "../../vox/texture/TextureProxy";
-import {TextureConst} from "../../vox/texture/TextureConst";
+import { TextureConst } from "../../vox/texture/TextureConst";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 
 import RendererParam from "../../vox/scene/RendererParam";
@@ -22,19 +22,19 @@ import RGBColorPanel, { RGBColoSelectEvent } from "../../orthoui/panel/RGBColorP
 import Color4 from "../../vox/material/Color4";
 import Vector3D from "../../vox/math/Vector3D";
 import IPBRUI from "./IPBRUI";
-import PBRParamEntity, { ColorParamUnit } from "./PBRParamEntity";
+import { ColorParamUnit } from "./PBRParamUnit";
+import IPBRParamEntity from "./IPBRParamEntity";
 
-export class DefaultPBRUI implements IPBRUI
-{
-    constructor(){}
-    
-    private m_rscene:RendererScene = null;
-    private m_texLoader:ImageTextureLoader = null;
-    
-    ruisc:RendererSubScene = null;
+export class DefaultPBRUI implements IPBRUI {
+    constructor() { }
+
+    private m_rscene: RendererScene = null;
+    private m_texLoader: ImageTextureLoader = null;
+
+    ruisc: RendererSubScene = null;
 
     rgbPanel: RGBColorPanel;
-    
+
     metalBtn: ProgressBar;
     roughBtn: ProgressBar;
     noiseBtn: ProgressBar;
@@ -47,39 +47,42 @@ export class DefaultPBRUI implements IPBRUI
     albedoBtn: ProgressBar;
     ambientBtn: ProgressBar;
     specularBtn: ProgressBar;
-    getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
-    {
-        let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
+    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
-        if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
+        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
-    
-    initialize(rscene:RendererScene, texLoader: ImageTextureLoader):void
-    {
+
+    initialize(rscene: RendererScene, texLoader: ImageTextureLoader): void {
         console.log("DefaultPBRUI::initialize()......");
-        if(this.m_rscene == null)
-        {
+        if (this.m_rscene == null) {
             this.m_rscene = rscene;;
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDown);
-            
+
             this.m_texLoader = texLoader;
 
-            CanvasTextureTool.GetInstance().initialize( this.m_rscene );
+            CanvasTextureTool.GetInstance().initialize(this.m_rscene);
             this.initUIScene();
         }
     }
+    private m_opening: boolean = false;
     close(): void {
         this.menuCtrl(false);
         this.m_menuBtn.select(false);
+        this.m_opening = false;
     }
     open(): void {
         this.menuCtrl(true);
         this.m_menuBtn.deselect(true);
+        this.m_opening = true;
+    }
+    isOpen(): boolean {
+        return this.m_opening;
     }
     private initUIScene(): void {
-        
+
         let rparam: RendererParam = new RendererParam();
         rparam.cameraPerspectiveEnabled = false;
         rparam.setCamProject(45.0, 0.1, 3000.0);
@@ -94,19 +97,19 @@ export class DefaultPBRUI implements IPBRUI
         //this.ruisc.getCamera().translationXYZ(this.m_rscene.getViewWidth() * 0.5, this.m_rscene.getViewHeight() * 0.5, 1500.0);
         this.ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
         this.ruisc.getCamera().update();
-        
-        
+
+
         this.initUI();
 
     }
-    
+
     private initUI(): void {
-        
+
         this.initCtrlBars();
 
     }
-    private m_paramEntity: PBRParamEntity;
-    setParamEntity(param: PBRParamEntity): void {
+    private m_paramEntity: IPBRParamEntity;
+    setParamEntity(param: IPBRParamEntity): void {
         this.m_paramEntity = param;
         this.m_paramEntity.pbrUI = this;
         this.m_paramEntity.colorPanel = this.rgbPanel;
@@ -115,16 +118,16 @@ export class DefaultPBRUI implements IPBRUI
     private m_bgLength: number = 200.0;
     private m_btnPX: number = 102.0;
     private m_btnPY: number = 10.0;
-    
+
     private m_btns: any[] = [];
     private m_menuBtn: SelectionBar = null;
-    private createSelectBtn(ns:string, uuid: string, selectNS:string, deselectNS:string, flag: boolean, visibleAlways: boolean = false):SelectionBar {
+    private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionBar {
 
         let selectBar: SelectionBar = new SelectionBar();
         selectBar.uuid = uuid;
-        selectBar.initialize(this.ruisc, ns, selectNS, deselectNS,this.m_btnSize);
+        selectBar.initialize(this.ruisc, ns, selectNS, deselectNS, this.m_btnSize);
         selectBar.addEventListener(SelectionEvent.SELECT, this, this.selectChange);
-        if(flag) {
+        if (flag) {
             selectBar.select(false);
         }
         else {
@@ -132,76 +135,76 @@ export class DefaultPBRUI implements IPBRUI
         }
         selectBar.setXY(this.m_btnPX, this.m_btnPY);
         this.m_btnPY += this.m_btnSize + 1;
-        if(!visibleAlways)this.m_btns.push(selectBar);
+        if (!visibleAlways) this.m_btns.push(selectBar);
         return selectBar;
     }
-    private createProgressBtn(ns:string, uuid: string, progress: number, visibleAlways: boolean = false):ProgressBar {
+    private createProgressBtn(ns: string, uuid: string, progress: number, visibleAlways: boolean = false): ProgressBar {
 
         let proBar: ProgressBar = new ProgressBar();
         proBar.uuid = uuid;
-        proBar.initialize( this.ruisc , ns, this.m_btnSize, this.m_bgLength);
-        proBar.setProgress( progress, false );
+        proBar.initialize(this.ruisc, ns, this.m_btnSize, this.m_bgLength);
+        proBar.setProgress(progress, false);
         proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.progressChange);
         proBar.setXY(this.m_btnPX, this.m_btnPY);
         this.m_btnPY += this.m_btnSize + 1;
-        if(!visibleAlways)this.m_btns.push(proBar);
+        if (!visibleAlways) this.m_btns.push(proBar);
         return proBar;
     }
-    
-    private createValueBtn(ns:string, uuid: string, value: number, minValue: number, maxValue: number, visibleAlways: boolean = false):ProgressBar {
+
+    private createValueBtn(ns: string, uuid: string, value: number, minValue: number, maxValue: number, visibleAlways: boolean = false): ProgressBar {
 
         let proBar: ProgressBar = new ProgressBar();
         proBar.uuid = uuid;
-        proBar.initialize( this.ruisc , ns, this.m_btnSize, this.m_bgLength);
+        proBar.initialize(this.ruisc, ns, this.m_btnSize, this.m_bgLength);
         proBar.minValue = minValue;
         proBar.maxValue = maxValue;
-        proBar.setValue( value, false );
-        
+        proBar.setValue(value, false);
+
         proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.progressChange);
         proBar.setXY(this.m_btnPX, this.m_btnPY);
         this.m_btnPY += this.m_btnSize + 1;
-        if(!visibleAlways)this.m_btns.push(proBar);
+        if (!visibleAlways) this.m_btns.push(proBar);
         return proBar;
     }
     private initCtrlBars(): void {
-        
-        if(RendererDeviece.IsMobileWeb()) {
+
+        if (RendererDeviece.IsMobileWeb()) {
             this.m_btnSize = 64;
             this.m_btnPX = 280;
             this.m_btnPY = 30;
         }
-        this.m_menuBtn = this.createSelectBtn("","menuCtrl","Menu Open","Menu Close",false,true);
+        this.m_menuBtn = this.createSelectBtn("", "menuCtrl", "Menu Open", "Menu Close", false, true);
         ///*
-        this.metalBtn = this.createProgressBtn("metal","metal", 0.5);
-        this.roughBtn = this.createProgressBtn("rough","rough", 0.5);
-        this.noiseBtn = this.createProgressBtn("noise","noise", 0.07);
-        this.reflectionBtn = this.createProgressBtn("reflection","reflection", 0.5);
+        this.metalBtn = this.createProgressBtn("metal", "metal", 0.5);
+        this.roughBtn = this.createProgressBtn("rough", "rough", 0.5);
+        this.noiseBtn = this.createProgressBtn("noise", "noise", 0.07);
+        this.reflectionBtn = this.createProgressBtn("reflection", "reflection", 0.5);
 
-        this.sideBtn = this.createValueBtn("side","side", 1.0, 0.1, 30.0);
-        this.surfaceBtn = this.createValueBtn("surface","surface", 1.0, 0.1, 30.0);
-        this.scatterBtn = this.createValueBtn("scatter","scatter", 1.0, 0.1, 128.0);
-        this.toneBtn = this.createValueBtn("tone","tone", 2.0, 0.1, 128.0);
+        this.sideBtn = this.createValueBtn("side", "side", 1.0, 0.1, 30.0);
+        this.surfaceBtn = this.createValueBtn("surface", "surface", 1.0, 0.1, 30.0);
+        this.scatterBtn = this.createValueBtn("scatter", "scatter", 1.0, 0.1, 128.0);
+        this.toneBtn = this.createValueBtn("tone", "tone", 2.0, 0.1, 128.0);
 
-        this.createSelectBtn("absorb","absorb","ON","OFF",false);
-        this.createSelectBtn("vtxNoise","vtxNoise","ON","OFF",false);
+        this.createSelectBtn("absorb", "absorb", "ON", "OFF", false);
+        this.createSelectBtn("vtxNoise", "vtxNoise", "ON", "OFF", false);
 
-        this.f0ColorBtn = this.createValueBtn("F0Color","F0Color", 1.0, 0.01, 32.0);
-        this.albedoBtn = this.createValueBtn("albedo","albedo", 0.2, 0.01, 5.0);
-        this.ambientBtn = this.createValueBtn("ambient","ambient", 0.1, 0.01, 1.0);
-        this.specularBtn = this.createValueBtn("specular","specular", 1.0, 0.01, 1.0);
-        
+        this.f0ColorBtn = this.createValueBtn("F0Color", "F0Color", 1.0, 0.01, 32.0);
+        this.albedoBtn = this.createValueBtn("albedo", "albedo", 0.2, 0.01, 5.0);
+        this.ambientBtn = this.createValueBtn("ambient", "ambient", 0.1, 0.01, 1.0);
+        this.specularBtn = this.createValueBtn("specular", "specular", 1.0, 0.01, 1.0);
+
         this.rgbPanel = new RGBColorPanel();
-        this.rgbPanel.initialize(32,4);
+        this.rgbPanel.initialize(32, 4);
         this.rgbPanel.addEventListener(RGBColoSelectEvent.COLOR_SELECT, this, this.selectColor);
         this.rgbPanel.setXY(this.m_btnPX, this.m_btnPY);
         this.ruisc.addContainer(this.rgbPanel);
         this.rgbPanel.close();
         //*/
-        
+
     }
     private selectColor(evt: any): void {
         let currEvt: RGBColoSelectEvent = evt as RGBColoSelectEvent;
-        switch(this.m_currUUID) {
+        switch (this.m_currUUID) {
             case "F0Color":
                 this.m_paramEntity.f0.setColor(currEvt.color, currEvt.colorId, -1);
                 break;
@@ -220,8 +223,8 @@ export class DefaultPBRUI implements IPBRUI
     }
     private menuCtrl(flag: boolean): void {
 
-        if(flag) {
-            for(let i: number = 0; i < this.m_btns.length; ++i) {
+        if (flag) {
+            for (let i: number = 0; i < this.m_btns.length; ++i) {
                 this.m_btns[i].open();
             }
             this.m_menuBtn.getPosition(this.m_pos);
@@ -229,32 +232,32 @@ export class DefaultPBRUI implements IPBRUI
             this.m_menuBtn.setPosition(this.m_pos);
         }
         else {
-            for(let i: number = 0; i < this.m_btns.length; ++i) {
+            for (let i: number = 0; i < this.m_btns.length; ++i) {
                 this.m_btns[i].close();
             }
             this.m_menuBtn.getPosition(this.m_pos);
             this.m_pos.x = 0;
             this.m_menuBtn.setPosition(this.m_pos);
         }
-        if(this.rgbPanel != null)this.rgbPanel.close();
+        if (this.rgbPanel != null) this.rgbPanel.close();
     }
     private m_pos: Vector3D = new Vector3D();
     private selectChange(evt: any): void {
-        
+
         let selectEvt: SelectionEvent = evt as SelectionEvent;
         let flag: boolean = selectEvt.flag;
 
         let material: DefaultPBRMaterial = null;
-        
-        switch(selectEvt.uuid) {
+
+        switch (selectEvt.uuid) {
             case "absorb":
                 material = new DefaultPBRMaterial();
-                material.copyFrom( this.m_paramEntity.material );
+                material.copyFrom(this.m_paramEntity.material);
                 material.absorbEnabled = flag;
                 break;
             case "vtxNoise":
                 material = new DefaultPBRMaterial();
-                material.copyFrom( this.m_paramEntity.material );
+                material.copyFrom(this.m_paramEntity.material);
                 material.normalNoiseEnabled = flag;
                 break;
             case "menuCtrl":
@@ -264,48 +267,48 @@ export class DefaultPBRUI implements IPBRUI
             default:
                 break;
         }
-        if(material != null) {
-            this.m_rscene.removeEntity( this.m_paramEntity.entity );
+        if (material != null) {
+            this.m_rscene.removeEntity(this.m_paramEntity.entity);
             material.initializeByCodeBuf(true);
             this.m_paramEntity.entity.setMaterial(material);
-            this.m_rscene.addEntity( this.m_paramEntity.entity );
+            this.m_rscene.addEntity(this.m_paramEntity.entity);
             this.m_paramEntity.material = material;
         }
-        if(this.rgbPanel != null) this.rgbPanel.close();
+        if (this.rgbPanel != null) this.rgbPanel.close();
     }
-    private m_currUUID:string = "";
+    private m_currUUID: string = "";
     private progressChange(evt: any): void {
-        
+
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
         let progress: number = progEvt.progress;
         this.m_currUUID = progEvt.uuid;
         let colorParamUnit: ColorParamUnit;
-        switch(progEvt.uuid) {
+        switch (progEvt.uuid) {
             case "metal":
-                this.m_paramEntity.material.setMetallic( progress );
+                this.m_paramEntity.material.setMetallic(progress);
                 break;
             case "rough":
-                this.m_paramEntity.material.setRoughness( progress );
+                this.m_paramEntity.material.setRoughness(progress);
                 break;
             case "noise":
-                this.m_paramEntity.material.setPixelNormalNoiseIntensity( progress );
+                this.m_paramEntity.material.setPixelNormalNoiseIntensity(progress);
                 break;
             case "reflection":
-                this.m_paramEntity.material.setReflectionIntensity( progress );
+                this.m_paramEntity.material.setReflectionIntensity(progress);
                 break;
             case "side":
                 //this.m_paramEntity.sideScale = progEvt.value;
-                this.m_paramEntity.material.setSideIntensity( progEvt.value );
+                this.m_paramEntity.material.setSideIntensity(progEvt.value);
                 break;
             case "surface":
                 //this.m_paramEntity.surfaceScale = progEvt.value;
-                this.m_paramEntity.material.setSurfaceIntensity( progEvt.value );
+                this.m_paramEntity.material.setSurfaceIntensity(progEvt.value);
                 break;
             case "scatter":
-                this.m_paramEntity.material.setScatterIntensity( progEvt.value );
+                this.m_paramEntity.material.setScatterIntensity(progEvt.value);
                 break;
             case "tone":
-                this.m_paramEntity.material.setToneMapingExposure( progEvt.value );
+                this.m_paramEntity.material.setToneMapingExposure(progEvt.value);
                 break;
             case "F0Color":
                 colorParamUnit = this.m_paramEntity.f0;
@@ -320,14 +323,14 @@ export class DefaultPBRUI implements IPBRUI
                 colorParamUnit = this.m_paramEntity.specular;
                 break;
             default:
-            break;
+                break;
         }
-        if(colorParamUnit != null) {
-            if(progEvt.status != 0) {
+        if (colorParamUnit != null) {
+            if (progEvt.status != 0) {
                 colorParamUnit.setColor(null, -1, progEvt.value);
             }
             else {
-                if(this.rgbPanel.isClosed()){
+                if (this.rgbPanel.isClosed()) {
                     this.rgbPanel.open();
                     colorParamUnit.selectColor();
                 } else {
@@ -336,11 +339,11 @@ export class DefaultPBRUI implements IPBRUI
             }
             return;
         }
-        if(this.rgbPanel != null) this.rgbPanel.close();
+        if (this.rgbPanel != null) this.rgbPanel.close();
     }
     private mouseBgDown(evt: any): void {
-        if(this.rgbPanel != null) this.rgbPanel.close();
+        if (this.rgbPanel != null) this.rgbPanel.close();
     }
 }
-    
+
 export default DefaultPBRUI;

@@ -282,8 +282,7 @@
 //  import * as DemoMobileEvt from "./demo/DemoMobileEvt";
 //  import Demo = DemoMobileEvt.demo.DemoMobileEvt;
 
-//  import * as DemoMouseDrag from "./demo/DemoMouseDrag";
-//  import Demo = DemoMouseDrag.demo.DemoMouseDrag;
+//  import {DemoMouseDrag as Demo} from "./demo/DemoMouseDrag";
 
 //  import * as DemoCameraSwing from "./demo/DemoCameraSwing";
 //  import Demo = DemoCameraSwing.demo.DemoCameraSwing;

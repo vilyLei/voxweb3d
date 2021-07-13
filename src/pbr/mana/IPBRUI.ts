@@ -1,5 +1,6 @@
 import ProgressBar from "../../orthoui/demos/base/ProgressBar";
 import RGBColorPanel from "../../orthoui/panel/RGBColorPanel";
+import IPBRParamEntity from "./IPBRParamEntity";
 
 
 export default interface IPBRUI
@@ -18,4 +19,5 @@ export default interface IPBRUI
     ambientBtn: ProgressBar;
     specularBtn: ProgressBar;
 
+    setParamEntity(param: IPBRParamEntity): void
 }

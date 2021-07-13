@@ -248,7 +248,7 @@ export default class DefaultPBRCase {
         let rm: DefaultPBRMaterial = this.material;
         
         let entity: DisplayEntity = this.entity;
-        /*
+        ///*
         //rm.setTextureList( [this.texList[0]] );
         rm.diffuseMapEnabled = true;
         rm.normalMapEnabled = true;
@@ -270,7 +270,7 @@ export default class DefaultPBRCase {
         mesh.initialize(150.0,30,30,false);
         this.offsetPos.setXYZ(0,0,0);
         //*/
-        ///*
+        /*
         rm.diffuseMapEnabled = true;
         rm.normalMapEnabled = true;
         rm.setTextureList( this.texList );
