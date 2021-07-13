@@ -13,6 +13,7 @@ import EventBaseDispatcher from "../../vox/event/EventBaseDispatcher";
 export class RGBColoSelectEvent extends EventBase
 {
     static COLOR_SELECT:number = 33001;
+    colorId: number = 0;
     color: Color4;
     constructor()
     {
@@ -37,6 +38,7 @@ export default class RGBColorPanel extends DisplayEntityContainer
     private m_posZ:number = 0.0;
     private m_rn:number = 0.0;
     private m_colors: Color4[] = null;
+    private m_grids: DullButton[] = null;
     private m_selectColorGrid: DullButton = null;
     private m_selectFrame: Line3DEntity = null;
     uuid: string = "RGBColorPanel";
@@ -110,6 +112,8 @@ export default class RGBColorPanel extends DisplayEntityContainer
             }
         }
         
+        this.m_grids = new Array(rn * cn);
+
         index = 0;
         for(let i: number = 0; i < rn; ++i) {
             py = i * size;
@@ -122,6 +126,9 @@ export default class RGBColorPanel extends DisplayEntityContainer
                 grid.setRGBColor(this.m_colors[index]);
                 grid.setXY(startX + px, startY + py);
                 this.addEntity(grid);
+
+                this.m_grids[index] = grid;
+
                 grid.index = index ++;
                 grid.addEventListener(MouseEvent.MOUSE_DOWN, this, this.gridMouseDown);
                 //grid.addEventListener(MouseEvent.MOUSE_OVER, this, this.gridMouseOver);
@@ -135,13 +142,23 @@ export default class RGBColorPanel extends DisplayEntityContainer
         this.addEntity(this.m_selectFrame);
         this.m_selectFrame.setVisible(false);
     }
+    private m_outColor: Color4 = new Color4();
+    getColorById(id: number): Color4 {
+        this.m_outColor.copyFrom(this.m_colors[id]);
+        return this.m_outColor;
+    }
+    getRandomColorId(): number {
+        
+        return Math.round(Math.random() * (this.m_colors.length - 1));
+    }
     private gridMouseOver(evt: any): void {
 
     }
     
-    private sendEvt(color: Color4): void {
+    private sendEvt(color: Color4, id: number): void {
 
         this.m_currEvent.target = this;
+        this.m_currEvent.colorId = id;
         this.m_currEvent.type = RGBColoSelectEvent.COLOR_SELECT;
         this.m_currEvent.color = color;
         this.m_currEvent.phase = 1;
@@ -150,12 +167,22 @@ export default class RGBColorPanel extends DisplayEntityContainer
     }
     private m_pv: Vector3D = new Vector3D();
     private gridMouseDown(evt: any): void {
+
+        let id: number = evt.target.index;
+        let color: Color4 = this.m_colors[id];
+        this.selectColorById( id );
+        this.sendEvt(color, id);
+    }
+    selectColorById(id: number): void {
+
         this.m_selectFrame.setVisible(true);
-        evt.target.getPosition(this.m_pv);
+        
+        let grid:DullButton = this.m_grids[id];
+        grid.getPosition(this.m_pv);
         this.m_pv.z = 0.1;
         this.m_selectFrame.setPosition(this.m_pv);
         this.m_selectFrame.update();
-        let color: Color4 = this.m_colors[evt.target.index];
+        let color: Color4 = this.m_colors[id];
         
         let pr: number = 1.5 * (1.0 - color.r);//, Math.abs(0.0 - color.r));
         let pg: number = 1.5 * (1.0 - color.g);//, Math.abs(0.0 - color.g));
@@ -163,7 +190,6 @@ export default class RGBColorPanel extends DisplayEntityContainer
 
         (this.m_selectFrame.getMaterial() as any).setRGB3f(pr,pg,pb);
         this.m_selectColorGrid.setRGBColor(color);
-        this.sendEvt(color);
     }
     setXY(px:number,py:number):void
     {

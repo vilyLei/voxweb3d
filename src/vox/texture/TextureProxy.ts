@@ -267,6 +267,7 @@ export class TextureProxy implements IRenderTexture
         if(this.m_haveRData && this.m_slot != null)
         {
             let buildStatus:boolean = this.createTexBuf(texRes);
+            //console.log("Tex __$$upload buildStatus: ",buildStatus, ",resUid: ", this.getResUid());
             if(buildStatus)
             {
                 this.__$updateToGpuBegin(texRes);

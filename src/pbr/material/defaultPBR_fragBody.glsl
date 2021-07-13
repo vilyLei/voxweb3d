@@ -13,22 +13,21 @@ void main()
     float glossinessSquare = colorGlossiness * colorGlossiness;
     float specularPower = exp2(8.0 * glossinessSquare + 1.0);
 
-    #ifdef VOX_PIXEL_NORMAL_NOISE
-        #ifdef VOX_USE_NORMALE_MAP
-        vec3 N = getNormalFromMap(u_sampler2, v_uv.xy, v_worldPos.xyz, v_worldNormal.xyz)
-        N = normalize(N + rand(N) * u_params[0].w);
-        #else
-        vec3 N = normalize(v_worldNormal + rand(v_worldNormal) * u_params[0].w);
-        #endif
-    #else
-        vec3 N = normalize(v_worldNormal);
+    vec3 N = v_worldNormal;
+    #ifdef VOX_NORMAL_MAP
+        N = getNormalFromMap(VOX_NORMAL_MAP, v_uv.xy, v_worldPos.xyz, v_worldNormal.xyz);
     #endif
+    #ifdef VOX_PIXEL_NORMAL_NOISE
+        N = normalize(N + rand(N) * u_params[0].w);
+    #else
+        N = normalize(N);
+    #endif
+
     vec3 V = normalize(v_camPos.xyz - v_worldPos);
     float dotNV = clamp(dot(N, V), 0.0, 1.0);
-    #ifdef VOX_USE_DIFFUSE_MAP
-    vec3 albedo = u_albedo.xyz * texture(u_sampler1, v_uv.xy);
+    #ifdef VOX_DIFFUSE_MAP
+    vec3 albedo = u_albedo.xyz * texture(VOX_DIFFUSE_MAP, v_uv.xy).xyz;
     #else
-    //VOX_USE_NORMALE_MAP
     vec3 albedo = u_albedo.xyz;
     #endif
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
@@ -51,10 +50,10 @@ void main()
     
     specularColor *= u_params[3].xyz;
 
+    float mipLv = floor(100.0 * fract(u_params[3].w));
+    mipLv -= glossinessSquare * mipLv;
+    mipLv = max(mipLv + floor(u_params[3].w), 0.0);
     #ifdef VOX_ENV_MAP
-        float mipLv = floor(100.0 * fract(u_params[3].w));
-        mipLv -= glossinessSquare * mipLv;
-        mipLv = max(mipLv + floor(u_params[3].w), 0.0);
 	    //vec3 envDir = -getWorldEnvDir(normalize(N + normalPerturb), -V);
 	    vec3 envDir = -getWorldEnvDir(N, -V);
 	    envDir.x = -envDir.x;
@@ -138,6 +137,12 @@ void main()
 
     // gamma correct
     color = linearToGamma(color);
-
+    #ifdef VOX_MIRROR_PROJ_MAP
+        float factorY = max(dot(N.xyz, u_mirrorProjNV.xyz), 0.01);
+        vec4 mirrorColor4 = texture(VOX_MIRROR_PROJ_MAP, (gl_FragCoord.xy/u_stageParam.zw) + (N  * vec3(0.02)).xy);
+        //vec4 mirrorColor4 = VOX_Texture2DLod(VOX_MIRROR_PROJ_MAP, (gl_FragCoord.xy/u_stageParam.zw) + (N  * vec3(0.02)).xy, 7.0);
+        mirrorColor4.xyz = mix(mirrorColor4.xyz, color.xyz, factorY) * 0.4 + mirrorColor4.xyz * 0.2;
+        color.xyz = mirrorColor4.xyz + color.xyz * 0.3;
+    #endif
     FragColor = vec4(color, 1.0);
 }

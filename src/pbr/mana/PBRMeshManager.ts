@@ -21,6 +21,7 @@ import FloatCubeTextureProxy from "../../vox/texture/FloatCubeTextureProxy";
 import BinaryLoader from "../../vox/assets/BinaryLoader";
 import Color4 from "../../vox/material/Color4";
 import DDSLoader from "../../vox/assets/DDSLoader";
+import DecodeData from "../../large/parse/DecodeData";
 
 
 class TextureLoader {
@@ -323,8 +324,8 @@ export default class PBRMeshManager {
 
         //console.log("segments.length: " + segments.length);
         let v: Uint8Array = new Uint8Array(buffer);
-        PBRMeshManager.p(v, segments);
-
+        DecodeData.p(v, segments);
+        
         let node: LoaderNode = new LoaderNode();
         node.uid = this.uid;
         node.dracoLoader = this.decoder;
@@ -335,37 +336,5 @@ export default class PBRMeshManager {
         DecodeQueue.AddLoaderNode(node);
       }
     );
-  }
-
-  // 加密解密
-  static p(d: Uint8Array, m: DecodeSegment[]) {
-    let tr = 0;
-    if (m.length > 0) {
-      tr = gg(m[0].range[1], m[0].range[0]);
-    }
-    for (let i = 0; i < m.length; i++) {
-      c(d, m[i].range[0], m[i].range[1], tr);
-    }
-
-    function c(d: Uint8Array, s: number, e: number, tt: number) {
-      let m = Math.floor((e - s) / 2);
-      // let b = pg(d, s, e, tt);
-      for (let i = s; i < s + m; i++) {
-        d[i] = d[i] ^ d[m + i];
-        d[m + i] = d[i] ^ d[m + i];
-        d[i] = d[i] ^ d[m + i];
-      }
-      for (let j = s; j + 1 < e; j += 2) {
-        d[j + 1] = d[j] ^ d[j + 1];
-        d[j] = d[j] ^ d[j + 1];
-      }
-    }
-
-    function gg(p: number, t: number) {
-      let i = p + t;
-      let j = i + p;
-      let k = j + t;
-      return p + t + k;
-    }
   }
 }

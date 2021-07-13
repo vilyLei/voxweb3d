@@ -226,7 +226,7 @@ class RenderProxy {
                 this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
             }
         }
-        this.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
+        this.m_adapterContext.setViewport(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
     }
     setRCViewPort(px: number, py: number, pw: number, ph: number,autoSynViewAndStage: boolean = false): void {
         this.m_autoSynViewAndStage = autoSynViewAndStage;

@@ -123,7 +123,7 @@ export default class RendererScene implements IRenderer {
             this.m_viewY = camera.getViewY();
             this.m_viewW = camera.getViewWidth();
             this.m_viewH = camera.getViewHeight();
-            this.m_renderProxy.setViewPort(this.m_viewX,this.m_viewY, this.m_viewW,this.m_viewH);
+            this.m_renderProxy.setViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
         }
     }
     // apply new view port rectangle area
@@ -157,13 +157,13 @@ export default class RendererScene implements IRenderer {
     getCamera(): CameraBase {
         return this.m_renderProxy.getCamera();
     }
-    asynFBOSizeWithViewport(): void {        
+    asynFBOSizeWithViewport(): void {
         this.m_rcontext.asynFBOSizeWithViewport();
     }
-    synFBOSizeWithViewport(): void {        
+    synFBOSizeWithViewport(): void {
         this.m_rcontext.synFBOSizeWithViewport();
     }
-    
+
     cameraLock(): void {
         this.m_renderProxy.cameraLock();
     }
@@ -447,7 +447,7 @@ export default class RendererScene implements IRenderer {
 
         //if(unlockViewport)this.m_adapter.unlockViewport();
         this.m_currCamera = camera;
-        if(syncCamView) {
+        if (syncCamView) {
             this.m_renderProxy.setRCViewPort(camera.getViewX(), camera.getViewY(), camera.getViewWidth(), camera.getViewHeight(), true);
             this.m_renderProxy.reseizeRCViewPort();
         }
@@ -477,10 +477,16 @@ export default class RendererScene implements IRenderer {
             if (this.m_runFlag >= 0) this.runEnd();
             this.m_runFlag = 0;
         }
-        if(this.m_currCamera == null) {
+        if (this.m_currCamera == null) {
             this.m_adapter.unlockViewport();
-            let boo: boolean = this.m_renderProxy.testViewPortChanged(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
-            if (!this.m_renderProxy.isAutoSynViewAndStage() || boo) {
+            //let boo: boolean = this.m_renderProxy.testViewPortChanged(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
+            //if (!this.m_renderProxy.isAutoSynViewAndStage() || boo) {
+            if (this.m_renderProxy.isAutoSynViewAndStage()) {
+                this.m_viewX = this.m_rcontext.getViewportX();
+                this.m_viewY = this.m_rcontext.getViewportY();
+                this.m_viewW = this.m_rcontext.getViewportWidth();
+                this.m_viewH = this.m_rcontext.getViewportHeight();
+            } else {
                 this.m_renderProxy.setViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
             }
             this.m_renderProxy.updateCamera();
@@ -503,10 +509,18 @@ export default class RendererScene implements IRenderer {
      * you should use it before the run or runAt function is called.
      */
     renderBegin(contextBeginEnabled: boolean = true): void {
-        if(this.m_currCamera == null) {
+        if (this.m_currCamera == null) {
             this.m_adapter.unlockViewport();
-            let boo: boolean = this.m_renderProxy.testViewPortChanged(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
-            if (!this.m_renderProxy.isAutoSynViewAndStage() || boo) {
+            //  let boo: boolean = this.m_renderProxy.testViewPortChanged(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
+            //  if (!this.m_renderProxy.isAutoSynViewAndStage() || boo) {
+            //      this.m_renderProxy.setViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
+            //  }
+            if (this.m_renderProxy.isAutoSynViewAndStage()) {
+                this.m_viewX = this.m_rcontext.getViewportX();
+                this.m_viewY = this.m_rcontext.getViewportY();
+                this.m_viewW = this.m_rcontext.getViewportWidth();
+                this.m_viewH = this.m_rcontext.getViewportHeight();
+            } else {
                 this.m_renderProxy.setViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
             }
             this.m_renderProxy.updateCamera();

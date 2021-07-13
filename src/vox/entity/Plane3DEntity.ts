@@ -55,7 +55,7 @@ export default class Plane3DEntity extends DisplayEntity {
                 this.setMaterial(cm);
             }
         }
-        else {
+        else if(texList != null && this.getMaterial().getTextureTotal() < 1){
             this.getMaterial().setTextureList(texList);
         }
     }

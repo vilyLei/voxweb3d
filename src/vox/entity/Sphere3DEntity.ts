@@ -70,7 +70,7 @@ export default class Sphere3DEntity extends DisplayEntity
             cm.setTextureList(texList);
             this.setMaterial(cm);
         }
-        else
+        else if(texList != null)
         {
             this.getMaterial().setTextureList(texList);
         }
@@ -84,7 +84,7 @@ export default class Sphere3DEntity extends DisplayEntity
         this.createMaterial(texList);
         this.activeDisplay();
     }
-    initialize(radius:number, longitudeNumSegments:number, latitudeNumSegments:number,texList:TextureProxy[])
+    initialize(radius:number, longitudeNumSegments:number, latitudeNumSegments:number,texList:TextureProxy[] = null)
     {
         this.m_radius = radius;
         this.m_longitudeNumSegments = longitudeNumSegments;

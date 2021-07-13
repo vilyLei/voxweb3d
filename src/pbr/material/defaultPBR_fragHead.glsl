@@ -1,7 +1,5 @@
 
 // default pbr glsl
-// envSpecularMap
-uniform samplerCube u_sampler0;
 
 out vec4 FragColor;
 

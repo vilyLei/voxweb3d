@@ -51,7 +51,7 @@ class MirrorToneShaderBuffer extends ShaderCodeBuffer
         coder.addFragUniform("vec4","u_color");
         //coder.addFragUniform("mat4","u_toneMat");
         coder.addFragUniform("vec4","u_stageParam");
-        coder.addFragUniform("vec4","u_projNV");
+        coder.addFragUniform("vec4","u_mirrorProjNV");
         coder.addFragFunction(
 `
 const vec2 noise2 = vec2(12.9898,78.233);
@@ -98,15 +98,17 @@ vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 wpos, vec3 nv)
         {
             ShaderCodeBuffer.s_coder.addFragMainCode(
 `
-
 vec3 nv = getNormalFromMap(u_sampler2, v_uv.xy, v_wpos.xyz, v_nv.xyz);
 
-float factorY = max(dot(nv.xyz, u_projNV.xyz), 0.01);
+float factorY = max(dot(nv.xyz, u_mirrorProjNV.xyz), 0.01);
 vec2 mirrorUV = gl_FragCoord.xy/u_stageParam.zw;
-
 vec4 reflectColor4 = texture(u_sampler0, mirrorUV.xy + (nv  * vec3(0.02)).xy);
+//vec4 reflectColor4 = textureLod(u_sampler0, mirrorUV.xy, 9.0);
+
 vec4 baseColor4 = texture(u_sampler1, v_uv.xy) * u_color;
-baseColor4.xyz = mix(reflectColor4.xyz, baseColor4.xyz, factorY) * 0.5 + reflectColor4.xyz * 0.2 + baseColor4.xyz * 0.3;
+
+reflectColor4.xyz = mix(reflectColor4.xyz, baseColor4.xyz, factorY) * 0.4 + reflectColor4.xyz * 0.2;
+baseColor4.xyz = reflectColor4.xyz + baseColor4.xyz * 0.3;
 FragColor0 = baseColor4;
 `
             );
@@ -164,13 +166,13 @@ export default class MirrorToneMaterial extends MaterialBase
     }
     
     private m_colorArray:Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
-    private m_projNV:Float32Array = new Float32Array([0.0,1.0,0.0,1.0]);
+    private m_mirrorProjNV:Float32Array = new Float32Array([0.0,1.0,0.0,1.0]);
     setProjNV(nv: Vector3D):void
     {
         //console.log("nv: ",nv);
-        this.m_projNV[0] = nv.x;
-        this.m_projNV[1] = nv.y;
-        this.m_projNV[2] = nv.z;
+        this.m_mirrorProjNV[0] = nv.x;
+        this.m_mirrorProjNV[1] = nv.y;
+        this.m_mirrorProjNV[2] = nv.z;
     }
 
     setRGB3f(pr:number,pg:number,pb:number):void
@@ -193,8 +195,8 @@ export default class MirrorToneMaterial extends MaterialBase
     createSelfUniformData():ShaderUniformData
     {
         let oum:ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_color", "u_projNV"];
-        oum.dataList = [this.m_colorArray, this.m_projNV];
+        oum.uniformNameList = ["u_color", "u_mirrorProjNV"];
+        oum.dataList = [this.m_colorArray, this.m_mirrorProjNV];
         return oum;
     }
 }

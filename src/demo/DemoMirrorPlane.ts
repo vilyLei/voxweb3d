@@ -53,7 +53,7 @@ export class DemoMirrorPlane {
             //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
             let rparam: RendererParam = new RendererParam();
-            rparam.maxWebGLVersion = 1;
+            //rparam.maxWebGLVersion = 1;
             rparam.setCamPosition(800.0, 800.0, 800.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
@@ -117,9 +117,9 @@ export class DemoMirrorPlane {
 
         
         this.m_fboIns = this.m_rscene.createFBOInstance();
-        //this.m_fboIns.asynFBOSizeWithViewport();
+        this.m_fboIns.asynFBOSizeWithViewport();
         this.m_fboIns.setClearRGBAColor4f(0.0,0.0,0.0,1.0);   // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
-        this.m_fboIns.createFBOAt(0,-1,-1,true,false);
+        this.m_fboIns.createFBOAt(0,512,512,true,false);
         this.m_fboIns.setRenderToRTTTextureAt(0, 0);          // framebuffer color attachment 0
         this.m_fboIns.setRProcessIDList([0]);
 
@@ -227,6 +227,7 @@ export class DemoMirrorPlane {
             this.m_rscene.runBegin();
             this.m_rscene.update(false);
             
+            let nv: Vector3D = this.m_rscene.getCamera().getNV();
             // --------------------------------------------- fbo run begin
             //m_tempPosV
             this.m_targetEntity.getPosition( this.m_tempPosV );
@@ -241,9 +242,9 @@ export class DemoMirrorPlane {
 
             this.m_fboIns.run();
             // --------------------------------------------- fbo run end
-            this.m_toneMaterial.setProjNV(this.m_rttCamera.getNV());
+            nv.y *= -1.0;
+            this.m_toneMaterial.setProjNV(nv);
             this.m_rscene.setRenderToBackBuffer();
-            this.m_rscene.useMainCamera();
             
             this.m_targetEntity.showBackFace();
             this.m_targetEntity.setScaleXYZ(this.m_tempScaleV.x, this.m_tempScaleV.y, this.m_tempScaleV.z);

@@ -22,6 +22,8 @@ import DDSLoader from "../../vox/assets/DDSLoader";
 import Sphere3DMesh from "../../vox/mesh/Sphere3DMesh";
 import Box3DMesh from "../../vox/mesh/Box3DMesh";
 import { VtxNormalType } from "../../vox/mesh/VtxBufConst";
+import DefaultPBRLight from "./DefaultPBRLight";
+import DecodeData from "../../large/parse/DecodeData";
 
 
 class TextureLoader {
@@ -100,11 +102,13 @@ class SpecularTextureLoader extends TextureLoader {
 }
 
 export default class DefaultPBRCase {
+
+  uid: number = -1;
+  static s_uid: number = 0;
   decoder: DRACODecoder = null;
   rscene: RendererScene = null;
   texLoader: ImageTextureLoader = null;
-  uid: number = -1;
-  static s_uid: number = 0;
+  lightModule: DefaultPBRLight = null;
   constructor() {
 
   }
@@ -115,12 +119,15 @@ export default class DefaultPBRCase {
       let durl: string = "./static/modules/decode/";
       this.decoder = new DRACODecoder(durl);
     }
+    
+    this.texList = [
+      null
+      , this.getImageTexByUrl("static/assets/brickwall_big.jpg")
+      //, this.getImageTexByUrl("static/assets/default.jpg")
+      , this.getImageTexByUrl("static/assets/brickwall_normal.jpg")
+    ];
   }
   run(): boolean {
-    //  if(this.material != null) {
-    //    //this.material.setCamPos( this.rscene.getCamera().getPosition() );
-    //    //return true;
-    //  }
     return this.createMesh();
   }
   getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
@@ -136,73 +143,11 @@ export default class DefaultPBRCase {
   mesh: RcodMesh = null;
   entity: DisplayEntity = null;
   moduleScale: number = 1.0;
-  lightBaseDis: number = 700.0;
-  lightPosList:Vector3D[] = null;
   material:DefaultPBRMaterial = null;
 
-  private setPointLightParam(lightsTotal: number, material:DefaultPBRMaterial, colorSize:number = 10.0): void {
-
-    let posList:Vector3D[] = new Array(lightsTotal);
-    for (let i: number = 0; i < lightsTotal; ++i)
-    {
-      let pv:Vector3D = posList[i] = new Vector3D();
-      pv.setXYZ(Math.random() - 0.5,0.0,Math.random() - 0.5);
-      pv.normalize();
-      pv.scaleBy(this.lightBaseDis + Math.random() * 100.0);
-      pv.y = (Math.random() - 0.5) * (this.lightBaseDis * 2.0);
-    }
-    this.lightPosList = posList;
-    let colorList:Color4[] = new Array(lightsTotal);
-    for (let i: number = 0; i < lightsTotal; ++i)
-    {
-      colorList[i] = new Color4();
-      colorList[i].normalizeRandom(colorSize);
-    }
-
-    
-    for (let i: number = 0; i < lightsTotal; ++i)
-    {
-        let pos: Vector3D = posList[i];
-        material.setPointLightPosAt(i, pos.x, pos.y, pos.z);
-        let color: Color4 = colorList[i];
-        material.setPointLightColorAt(i, color.r, color.g, color.b);
-    }
-  }
-  private setParallelLightParam(lightsTotal: number, material:DefaultPBRMaterial, colorSize:number = 10.0): void {
-
-    let posList:Vector3D[] = new Array(lightsTotal);
-    for (let i: number = 0; i < lightsTotal; ++i)
-    {
-      let pv:Vector3D = posList[i] = new Vector3D();
-      pv.setXYZ(Math.random() - 0.5,0.0,Math.random() - 0.5);
-      pv.normalize();
-      pv.scaleBy(this.lightBaseDis + Math.random() * 100.0);
-      pv.y = (Math.random() - 0.5) * (this.lightBaseDis * 2.0);
-    }
-    
-    let colorList:Color4[] = new Array(lightsTotal);
-    for (let i: number = 0; i < lightsTotal; ++i)
-    {
-      colorList[i] = new Color4();
-      colorList[i].normalizeRandom(colorSize);
-    }
-
-    
-    for (let i: number = 0; i < lightsTotal; ++i)
-    {
-        let pos: Vector3D = posList[i];
-        pos.normalize();
-        material.setParallelLightDirecAt(i, pos.x, pos.y, pos.z);
-        let color: Color4 = colorList[i];
-        material.setParallelLightColorAt(i, color.r, color.g, color.b);
-    }
-  }
-  private makeTexMaterial(metallic: number, roughness: number, ao: number): DefaultPBRMaterial
+  makeTexMaterial(metallic: number, roughness: number, ao: number): DefaultPBRMaterial
   {
-      let pointLightsTotal: number = 4;
-      let parallelLightsTotal: number = 2;
-
-      let material:DefaultPBRMaterial = new DefaultPBRMaterial(pointLightsTotal, parallelLightsTotal);
+      let material:DefaultPBRMaterial = new DefaultPBRMaterial(this.lightModule.getPointLightTotal(), this.lightModule.getDirecLightTotal());
       material.setMetallic( metallic );
       material.setRoughness( roughness );
       material.setAO( ao );
@@ -211,18 +156,24 @@ export default class DefaultPBRCase {
       console.log("roughness: ",roughness);
       console.log("ao: ",ao);
 
-      this.setPointLightParam(pointLightsTotal, material, 5.0);
-      this.setParallelLightParam(parallelLightsTotal, material, 1.0);
-
-      this.material = material;
+      this.lightModule.setLightToMaterial(material);
 
       let colorSize: number = 2.0;
       material.setAlbedoColor(Math.random() * colorSize,Math.random() * colorSize,Math.random() * colorSize);
       colorSize = 0.8;
       material.setF0(Math.random() * colorSize, Math.random() * colorSize, Math.random() * colorSize);
       material.setScatterIntensity(Math.random() * 128.0 + 1.0);
-      //material.setAmbientFactor(Math.random(),Math.random(),Math.random());
       material.setAmbientFactor(0.01,0.01,0.01);
+
+      
+      material.woolEnabled = true;
+      material.toneMappingEnabled = true;
+      material.envMapEnabled = true;
+      material.specularBleedEnabled = true;
+      material.metallicCorrection = true;
+      material.absorbEnabled = false;
+      material.normalNoiseEnabled = false;
+      material.pixelNormalNoiseEnabled = true;
       return material;
   }
   
@@ -250,20 +201,26 @@ export default class DefaultPBRCase {
     loader.uuid = ddsUrl;
     loader.load(ddsUrl);
     return loader.texture;
-}
+  }
+  texList: TextureProxy[];
   private initMaterial(): void {
 
+    
+    this.entity = new DisplayEntity();
+
     let rm: DefaultPBRMaterial = this.makeTexMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
+    
+    this.material = rm;
     ///*
     let envMapUrl: string = "static/bytes/s.bin";
     //let loader:TextureLoader = new TextureLoader();
     let loader:SpecularTextureLoader = new SpecularTextureLoader();
     loader.loadTextureWithUrl(envMapUrl, this.rscene);
-
-    rm.setTextureList([loader.texture]);
+    this.texList[0] = loader.texture;
     //*/
     /*
-    rm.setTextureList([this.loadDDS()]);
+    this.texList[0] = this.loadDDS();
+    //rm.setTextureList([this.loadDDS()]);
     //*/
     /*
     let urls = [
@@ -289,30 +246,44 @@ export default class DefaultPBRCase {
         console.log("createMesh2 this.offsetPos: ", this.offsetPos, this.uid + ", list.length: " + list.length);
 
         let rm: DefaultPBRMaterial = this.material;
-        rm.initializeByCodeBuf(true);
         
-        let entity: DisplayEntity = new DisplayEntity();
-        entity.setMaterial(rm);
+        let entity: DisplayEntity = this.entity;
         /*
+        //rm.setTextureList( [this.texList[0]] );
+        rm.diffuseMapEnabled = true;
+        rm.normalMapEnabled = true;
+        rm.setTextureList( this.texList );
+        rm.initializeByCodeBuf(true);
         let mesh: RcodMesh = new RcodMesh();
         mesh.setBufSortFormat(rm.getBufSortFormat());
         mesh.vbWholeDataEnabled = false;
         mesh.initialize2(list[0].gbuf, list);
         //*/
-        ///*
+        /*
+        //rm.setTextureList( [this.texList[0]] );
+        rm.diffuseMapEnabled = true;
+        rm.normalMapEnabled = true;
+        rm.setTextureList( this.texList );
+        rm.initializeByCodeBuf(true);
         let mesh:Sphere3DMesh = new Sphere3DMesh();
         mesh.setBufSortFormat(rm.getBufSortFormat());
         mesh.initialize(150.0,30,30,false);
         this.offsetPos.setXYZ(0,0,0);
         //*/
-        /*
+        ///*
+        rm.diffuseMapEnabled = true;
+        rm.normalMapEnabled = true;
+        rm.setTextureList( this.texList );
+        rm.initializeByCodeBuf(true);
         let mesh: Box3DMesh = new Box3DMesh();
-        mesh.normalType = VtxNormalType.GOURAND;
+        //mesh.normalType = VtxNormalType.GOURAND;
         mesh.setBufSortFormat(rm.getBufSortFormat());
-        mesh.initialize(new Vector3D(-130,-130,-130), new Vector3D(130,130,130));
+        let size: number = 100.0;
+        mesh.initialize(new Vector3D(-size,-size,-size), new Vector3D(size,size,size));
         this.offsetPos.setXYZ(0,0,0);
         //*/
 
+        entity.setMaterial(rm);
         entity.setMesh(mesh);
         entity.setScaleXYZ(scale, scale, scale);
 
@@ -358,8 +329,8 @@ export default class DefaultPBRCase {
 
         //console.log("segments.length: " + segments.length);
         let v: Uint8Array = new Uint8Array(buffer);
-        DefaultPBRCase.p(v, segments);
-
+        DecodeData.p(v, segments);
+        
         let node: LoaderNode = new LoaderNode();
         node.uid = this.uid;
         node.dracoLoader = this.decoder;
@@ -372,35 +343,4 @@ export default class DefaultPBRCase {
     );
   }
 
-  // 加密解密
-  static p(d: Uint8Array, m: DecodeSegment[]) {
-    let tr = 0;
-    if (m.length > 0) {
-      tr = gg(m[0].range[1], m[0].range[0]);
-    }
-    for (let i = 0; i < m.length; i++) {
-      c(d, m[i].range[0], m[i].range[1], tr);
-    }
-
-    function c(d: Uint8Array, s: number, e: number, tt: number) {
-      let m = Math.floor((e - s) / 2);
-      // let b = pg(d, s, e, tt);
-      for (let i = s; i < s + m; i++) {
-        d[i] = d[i] ^ d[m + i];
-        d[m + i] = d[i] ^ d[m + i];
-        d[i] = d[i] ^ d[m + i];
-      }
-      for (let j = s; j + 1 < e; j += 2) {
-        d[j + 1] = d[j] ^ d[j + 1];
-        d[j] = d[j] ^ d[j + 1];
-      }
-    }
-
-    function gg(p: number, t: number) {
-      let i = p + t;
-      let j = i + p;
-      let k = j + t;
-      return p + t + k;
-    }
-  }
 }

@@ -95,6 +95,7 @@ class ROTextureResource implements IRenderTexResource
             obj.height = param1;
             obj.sampler = param2;
             obj.texBuf = this.createBuf();
+            obj.texBuf.resUid = resUid;
             this.addTextureRes(obj);
             return true;
         }
