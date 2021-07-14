@@ -11,7 +11,7 @@ import MouseEvent from "../../vox/event/MouseEvent";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
 import DefaultPBRMaterial from "../material/DefaultPBRMaterial";
 import IPBRUI from "./IPBRUI";
-import {ColorParamUnit,F0ColorParamUnit,AmbientParamUnit,SpecularParamUnit} from "./PBRParamUnit";
+import {ColorParamUnit,AlbedoParamUnit,F0ColorParamUnit,AmbientParamUnit,SpecularParamUnit} from "./PBRParamUnit";
 import IPBRParamEntity from "./IPBRParamEntity";
 
 export default class PBRParamEntity implements IPBRParamEntity{
@@ -26,7 +26,7 @@ export default class PBRParamEntity implements IPBRParamEntity{
     sideScale: number = 0.5;
     surfaceScale: number = 0.5;
 
-    albedo: ColorParamUnit = new ColorParamUnit();
+    albedo: AlbedoParamUnit = new AlbedoParamUnit();
     f0: F0ColorParamUnit = new F0ColorParamUnit();
     ambient: AmbientParamUnit = new AmbientParamUnit();
     specular: SpecularParamUnit = new SpecularParamUnit();
@@ -54,21 +54,26 @@ export default class PBRParamEntity implements IPBRParamEntity{
             this.specular.initialize(material, this.pbrUI.specularBtn, this.colorPanel, value, 0.01, 1.0);
 
             this.pbrUI.noiseBtn.maxValue = 2.0;
+            this.pbrUI.noiseBtn.step = 0.1;
             this.pbrUI.noiseBtn.setValue(0.07,false);
 
             this.pbrUI.sideBtn.minValue = 0.0;
+            this.pbrUI.sideBtn.step = 0.1;
             this.pbrUI.sideBtn.maxValue = 32.0;
             this.pbrUI.sideBtn.setValue(1.0,false);
 
             this.pbrUI.surfaceBtn.minValue = 0.0;
+            this.pbrUI.surfaceBtn.step = 0.1;
             this.pbrUI.surfaceBtn.maxValue = 32.0;
             this.pbrUI.surfaceBtn.setValue(1.0,false);
 
             this.pbrUI.scatterBtn.minValue = 0.1;
+            this.pbrUI.scatterBtn.step = 0.1;
             this.pbrUI.scatterBtn.maxValue = 128.0;
             this.pbrUI.scatterBtn.setValue(1.0,false);
 
             this.pbrUI.toneBtn.minValue = 0.1;
+            this.pbrUI.toneBtn.step = 0.1;
             this.pbrUI.toneBtn.maxValue = 128.0;
             this.pbrUI.toneBtn.setValue(2.0,false);
         }
@@ -91,6 +96,12 @@ export default class PBRParamEntity implements IPBRParamEntity{
             this.pbrUI.surfaceBtn.setValue(this.material.getSideIntensity(), false);
             this.pbrUI.scatterBtn.setValue(this.material.getScatterIntensity(), false);
             this.pbrUI.toneBtn.setValue(this.material.getToneMapingExposure(), false);
+
+            
+            //  this.albedo.selectColor();
+            //  this.f0.selectColor();
+            //  this.ambient.selectColor();
+            //  this.specular.selectColor();
         }
     }
     deselect(): void {
@@ -99,17 +110,18 @@ export default class PBRParamEntity implements IPBRParamEntity{
 
     
     mouseOverListener(evt: any): void {
-        console.log("PBRParamEntity mouseOverListener");
+        //console.log("PBRParamEntity mouseOverListener");
     }
     mouseOutListener(evt: any): void {
-        console.log("PBRParamEntity mouseOutListener");
+        //console.log("PBRParamEntity mouseOutListener");
     }
     mouseDownListener(evt: any): void {
-        console.log("PBRParamEntity mouseDownListener");
+        //console.log("PBRParamEntity mouseDownListener");
     }
     mouseUpListener(evt: any): void {
-        console.log("PBRParamEntity mouseUpListener");
+        //console.log("PBRParamEntity mouseUpListener");
         this.pbrUI.setParamEntity( this );
+        this.select();
     }
 
     private initMouseEvt(): void {

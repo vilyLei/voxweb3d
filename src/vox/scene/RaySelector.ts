@@ -329,5 +329,8 @@ export default class RaySelector implements IRaySelector
             //      console.log("NNNNNNNNNNNNNNNo Ray hit failure.");
             //  }
         }
-    }            
+    }
+    clear(): void {
+        this.m_selectedNode = null;
+    }
 }

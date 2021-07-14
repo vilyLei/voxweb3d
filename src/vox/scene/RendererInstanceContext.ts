@@ -259,7 +259,7 @@ export default class RendererInstanceContext
     {
         if(this.m_adapter != null)
         {
-            this.m_adapter.setRenderToBackBuffer();            
+            this.m_adapter.setRenderToBackBuffer();
             this.m_materialProxy.renderBegin();
         }
     }
@@ -392,6 +392,9 @@ export default class RendererInstanceContext
     }
     resetmaterial(): void {
         this.m_materialProxy.renderBegin();
+    }
+    resetUniform(): void {
+        this.m_materialProxy.resetUniform();
     }
     runEnd():void
     {

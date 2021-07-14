@@ -12,7 +12,7 @@ import RViewElement from "../../vox/render/RViewElement";
 import Color4 from "../../vox/material/Color4";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import ContextMouseEvtDispatcher from "../../vox/render/ContextMouseEvtDispatcher";
-import { GLBlendMode, GLBlendEquation, CullFaceMode } from "./RenderConst";
+import { GLBlendMode, GLBlendEquation, CullFaceMode, GLStencilFunc, GLStencilOp } from "./RenderConst";
 
 class RAdapterContext {
     constructor() { }
@@ -150,8 +150,28 @@ class RAdapterContext {
                 return;
             }
             let gl: any = this.m_gl;
-            let glBlendMode: any = GLBlendMode;
+            gl.rcuid = rcuid;
             
+            let glStencilFunc: any = GLStencilFunc;
+            glStencilFunc.NEVER = gl.NEVER;
+            glStencilFunc.LESS = gl.LESS;
+            glStencilFunc.EQUAL = gl.EQUAL;
+            glStencilFunc.GREATER = gl.GREATER;
+            glStencilFunc.NOTEQUAL = gl.NOTEQUAL;
+            glStencilFunc.GEQUAL = gl.GEQUAL;
+            glStencilFunc.ALWAYS = gl.ALWAYS;
+
+            let stendilOp: any = GLStencilOp;
+            stendilOp.KEEP = gl.KEEP;
+            stendilOp.ZERO = gl.ZERO;
+            stendilOp.REPLACE = gl.REPLACE;
+            stendilOp.INCR = gl.INCR;
+            stendilOp.INCR_WRAP = gl.INCR_WRAP;
+            stendilOp.DECR = gl.DECR;
+            stendilOp.DECR_WRAP = gl.DECR_WRAP;
+            stendilOp.INVERT = gl.INVERT;
+
+            let glBlendMode: any = GLBlendMode;            
             glBlendMode.ZERO = gl.ZERO;
             glBlendMode.ONE = gl.ONE;
             glBlendMode.SRC_COLOR = gl.SRC_COLOR;
@@ -160,6 +180,7 @@ class RAdapterContext {
             glBlendMode.DST_ALPHA = gl.DST_ALPHA;
             glBlendMode.ONE_MINUS_SRC_ALPHA = gl.ONE_MINUS_SRC_ALPHA;
 
+            
             let glBlendEq: any = GLBlendEquation;
             glBlendEq.FUNC_ADD = gl.FUNC_ADD;
             glBlendEq.FUNC_SUBTRACT = gl.FUNC_SUBTRACT;
@@ -357,6 +378,10 @@ class RAdapterContext {
             this.m_viewWidth = pw;
             this.m_viewHeight = ph;
         }
+    }
+    testViewPortChanged(px: number, py: number, pw: number, ph: number): boolean {
+        
+        return this.m_viewX != px || this.m_viewY != py || this.m_viewWidth != pw || this.m_viewHeight != ph;
     }
     getViewportX(): number {
         return this.m_viewX;

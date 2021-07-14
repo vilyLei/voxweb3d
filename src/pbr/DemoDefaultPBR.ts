@@ -4,6 +4,7 @@ import MouseEvent from "../vox/event/MouseEvent";
 import RendererDeviece from "../vox/render/RendererDeviece";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
+import DisplayEntity from "../vox/entity/DisplayEntity";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import Box3DEntity from "../vox/entity/Box3DEntity";
@@ -36,6 +37,8 @@ import DefaultPBRLight from "../pbr/mana/DefaultPBRLight";
 import DefaultPBRMaterial from "../pbr/material/DefaultPBRMaterial";
 import MirrorProjEntity from "./mana/MirrorProjEngity";
 import PBRParamEntity from "./mana/PBRParamEntity";
+import RendererState from "../vox/render/RendererState";
+import { GLStencilFunc, GLStencilOp } from "../vox/render/RenderConst";
 
 
 
@@ -54,6 +57,7 @@ export class DemoDefaultPBR
     private m_CameraZoomController: CameraZoomController = new CameraZoomController();
     private m_uiModule: DefaultPBRUI = new DefaultPBRUI();
     private m_reflectPlaneY: number = -220.0;
+    private m_paramEntities:PBRParamEntity[] = [];
     getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
     {
         let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -73,6 +77,7 @@ export class DemoDefaultPBR
             
             let rparam:RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
+            rparam.setAttriStencil(true);
             rparam.setAttriAntialias(true);
             rparam.setCamPosition(1500.0,1500.0,2000.0);
             rparam.setCamProject(45,50.0,10000.0)
@@ -90,7 +95,7 @@ export class DemoDefaultPBR
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-            this.m_statusDisp.initialize("rstatus", this.m_rscene.getViewWidth() - 200);
+            this.m_statusDisp.initialize("rstatus", 300);
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
@@ -150,7 +155,7 @@ export class DemoDefaultPBR
                 param.colorPanel = this.m_uiModule.rgbPanel;
                 this.m_uiModule.setParamEntity( param );
                 param.initialize();
-
+                this.m_paramEntities.push(param);
             }
 
             this.initPlaneReflection();
@@ -221,6 +226,7 @@ export class DemoDefaultPBR
         param.colorPanel = this.m_uiModule.rgbPanel;
         //this.m_uiModule.setParamEntity( param );
         param.initialize();
+        this.m_paramEntities.push(param);
 
         //  let frustrum:FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
         //  frustrum.initiazlize( this.m_rttCamera );
@@ -232,30 +238,33 @@ export class DemoDefaultPBR
         mEntity.mirrorPlane = plane;
         this.m_mirrorEntities.push( mEntity );
 
-        
-        material = this.m_meshMana.makeTexMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
-        material.setTextureList( [this.m_meshMana.texList[0]] );
-        
-        let sph:Sphere3DEntity = new Sphere3DEntity();
-        sph.setMaterial( material );
-        sph.initialize(80,20,20);
-        sph.setXYZ(680,100,180);
-        this.m_rscene.addEntity(sph);
-
-        mEntity = new MirrorProjEntity();
-        mEntity.entity = sph;
-        mEntity.mirrorPlane = plane;
-        this.m_mirrorEntities.push( mEntity );
-        
-        
-        param = new PBRParamEntity();
-        param.entity = sph;
-        param.material = material;
-        param.pbrUI = this.m_uiModule;
-        param.colorPanel = this.m_uiModule.rgbPanel;
-        //this.m_uiModule.setParamEntity( param );
-        param.initialize();
-        
+        let sph:Sphere3DEntity;
+        let rad: number;
+        let radius: number;
+        for(let i: number = 0; i < 5; ++i) {
+            rad = Math.random() * 100.0;
+            radius = Math.random() * 250.0 + 550.0;
+            material = this.m_meshMana.makeTexMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
+            material.setTextureList( [this.m_meshMana.texList[0]] );        
+            sph = new Sphere3DEntity();
+            sph.setMaterial( material );
+            sph.initialize(80 + Math.random() * 100.0,20,20);
+            //sph.setXYZ(680,100,280);
+            sph.setXYZ(radius * Math.cos(rad), 100 + Math.random() * 400.0, radius * Math.sin(rad));
+            this.m_rscene.addEntity(sph);
+    
+            mEntity = new MirrorProjEntity();
+            mEntity.entity = sph;
+            mEntity.mirrorPlane = plane;
+            this.m_mirrorEntities.push( mEntity );
+            param = new PBRParamEntity();
+            param.entity = sph;
+            param.material = material;
+            param.pbrUI = this.m_uiModule;
+            param.colorPanel = this.m_uiModule.rgbPanel;
+            param.initialize();
+            this.m_paramEntities.push(param);
+        }
     }
     private m_runFlag: boolean = true;
     private mouseDown(evt: any): void {
@@ -275,6 +284,8 @@ export class DemoDefaultPBR
             let boo:boolean = this.m_meshManas[i].run();
         }
     }
+    private m_uiStageHalfWidth: number = -1;
+    private m_uiStageHalfHeight: number = -1;
     run():void
     {
         /*
@@ -287,8 +298,8 @@ export class DemoDefaultPBR
         //*/
 
         this.update();
-
-
+        let stage = this.m_ruisc.getStage3D();
+        this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
         this.m_stageDragSwinger.runWithYAxis();
         this.m_CameraZoomController.run(Vector3D.ZERO, 30.0);
 
@@ -301,14 +312,18 @@ export class DemoDefaultPBR
         
         /////////////////////////////////////////////////////// ---- mouseTest begin.
         let pickFlag: boolean = true;
+        //  for(let i: number = 0; i < this.m_paramEntities.length; ++i) {
+        //      this.m_paramEntities[i].entity.mouseEnabled = this.m_uiModule.isOpen();
+        //  }
         ///*
         if(this.m_ruisc != null) {
             this.m_ruisc.runBegin(true, true);
             this.m_ruisc.update(false, true);
             pickFlag = this.m_ruisc.isRayPickSelected();
         }
-
+        let sboo: boolean = this.m_uiModule.isOpen();
         this.m_rscene.runBegin(false);
+        this.m_rscene.setRayTestEanbled(sboo);
         this.m_rscene.update(false, !pickFlag);
         //pickFlag = pickFlag || this.m_rscene.isRayPickSelected();
 
@@ -324,10 +339,13 @@ export class DemoDefaultPBR
         //  {
         //      this.m_profileInstance.run();
         //  }
+        DebugFlag.Flag_0 = 0;
     }
     private mirrorReflectRun(): void {
 
+        
         this.m_rscene.renderBegin();
+        ///*
         // --------------------------------------------- fbo run begin
         
         for(let i: number = 0; i < this.m_mirrorEntities.length; ++i) {
@@ -335,20 +353,63 @@ export class DemoDefaultPBR
         }
         this.m_fboIns.run();
         // --------------------------------------------- fbo run end
-        let nv: Vector3D = this.m_rscene.getCamera().getNV();
-        nv.y *= -1.0;
-        this.m_toneMaterial.setProjNV(nv);
+        
         this.m_rscene.setRenderToBackBuffer();
-        //this.m_rscene.useMainCamera();
         
         for(let i: number = 0; i < this.m_mirrorEntities.length; ++i) {
             this.m_mirrorEntities[i].toNormal();
+        }
+        //*/
+        let nv: Vector3D = this.m_rscene.getCamera().getNV();
+        nv.y *= -1.0;
+        this.m_toneMaterial.setProjNV(nv);
+
+        
+        let entity:DisplayEntity = null;
+        let material: DefaultPBRMaterial = null;
+        if(this.m_uiModule.isOpen() && this.m_uiModule.getParamEntity() != null) {
+            entity = this.m_uiModule.getParamEntity().entity;
+            material = this.m_uiModule.getParamEntity().material;
+            if(!entity.isInRenderer()) {
+                entity = null;
+            }
+        }
+        if(entity != null) {
+            RendererState.SetStencilMask(0x0);
+            entity.setVisible(false);
         }
 
         this.m_rscene.runAt(0);
         this.m_rscene.runAt(1);
         this.m_rscene.runAt(2);
+
+        if(entity != null) {
+            let scaleV: Vector3D = new Vector3D();
+            entity.getScaleXYZ(scaleV);
+
+            RendererState.SetStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);
+            RendererState.SetStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF); 
+            RendererState.SetStencilMask(0xFF);
+            entity.setVisible( true );
+            this.m_rscene.drawEntity(entity);
+            
+            RendererState.SetStencilFunc(GLStencilFunc.NOTEQUAL, 1, 0xFF); 
+            RendererState.SetStencilMask(0x0);
+            let identity: number = material.getToneMapingExposure();
+            material.setToneMapingExposure(32.0);
+            entity.setScaleXYZ(scaleV.x + 0.1, scaleV.y + 0.1, scaleV.z + 0.1);
+            entity.update();
+            this.m_rscene.drawEntity(entity);
+
+            material.setToneMapingExposure(identity);
+            entity.setScaleXYZ(scaleV.x, scaleV.y, scaleV.z);
+            entity.update();
+            RendererState.SetStencilFunc(GLStencilFunc.ALWAYS, 1, 0x0);
+            RendererState.SetStencilMask(0xFF);
+            //*/
+        }
         this.m_rscene.runEnd();
+        
 
         if(this.m_ruisc != null) {
             this.m_ruisc.renderBegin();

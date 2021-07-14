@@ -328,8 +328,13 @@ export class RenderStateObject {
     }
 }
 
-
+class ROStateUnit {
+    constructor(){}
+    stencilMask: number = -1;
+}
 export class RODrawState {
+    private m_units: ROStateUnit[] = new Array(128);
+    private m_unit:ROStateUnit = null;
     private m_blendMode: number = RenderBlendMode.NORMAL;
     private m_cullMode: number = CullFaceMode.NONE;
     private m_depthTestType: number = DepthTestMode.DISABLE;
@@ -345,6 +350,11 @@ export class RODrawState {
     setRenderContext(context: RAdapterContext): void {
         this.m_context = context;
         this.m_gl = context.getRC();
+        let rcui = this.m_gl.rcuid as number;
+        this.m_unit = this.m_units[rcui];
+        if(this.m_unit == null) {
+            this.m_unit = this.m_units[rcui] = new ROStateUnit();
+        }
     }
     setColorMask(mr: boolean, mg: boolean, mb: boolean, ma: boolean): void {
         this.m_gl.colorMask(mr, mg, mb, ma);
@@ -353,7 +363,10 @@ export class RODrawState {
         this.m_gl.stencilFunc( func, ref, mask );
     }
     setStencilMask(mask:number): void {
-        this.m_gl.stencilMask( mask );
+        if(this.m_unit.stencilMask != mask && mask >= 0) {
+            this.m_unit.stencilMask = mask;
+            this.m_gl.stencilMask( mask );
+        }
     }
     setStencilOp(fail: number, zfail: number, zpass: number): void {
         this.m_gl.stencilOp( fail, zfail, zpass );

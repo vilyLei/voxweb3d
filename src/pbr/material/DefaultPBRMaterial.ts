@@ -82,12 +82,13 @@ precision highp float;
         if (this.absorbEnabled) fragCode += "\n#define VOX_ABSORB";
         if (this.pixelNormalNoiseEnabled) fragCode += "\n#define VOX_PIXEL_NORMAL_NOISE";
         
-        if (this.diffuseMapEnabled && this.texturesTotal > 1) fragCode += "\n#define VOX_DIFFUSE_MAP u_sampler1";
+        let texIndex: number = 1;
+        if (this.diffuseMapEnabled && this.texturesTotal > 1) fragCode += "\n#define VOX_DIFFUSE_MAP u_sampler"+(texIndex++);
         if (this.normalMapEnabled && this.texturesTotal > 1) {
             fragCode += "\n#define VOX_USE_NORMALE_MAP";
-            fragCode += "\n#define VOX_NORMAL_MAP u_sampler2";
+            fragCode += "\n#define VOX_NORMAL_MAP u_sampler"+(texIndex++);
         }
-        if (mirrorProjEnabled) fragCode += "\n#define VOX_MIRROR_PROJ_MAP u_sampler" + (this.texturesTotal - 1);
+        if (mirrorProjEnabled) fragCode += "\n#define VOX_MIRROR_PROJ_MAP u_sampler"+(texIndex++);
 
         console.log("this.texturesTotal: ", this.texturesTotal);
 

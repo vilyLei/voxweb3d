@@ -27,6 +27,9 @@ import FBOInstance from "../vox/scene/FBOInstance";
 import CameraBase from "../vox/view/CameraBase";
 import MathConst from "../vox/math/MathConst";
 import MirrorToneMaterial from "./material/MirrorToneMaterial";
+import RendererState from "../vox/render/RendererState";
+import { GLStencilFunc, GLStencilOp } from "../vox/render/RenderConst";
+import DebugFlag from "../vox/debug/DebugFlag";
 
 export class DemoMirrorPlane {
     constructor() { }
@@ -54,6 +57,7 @@ export class DemoMirrorPlane {
 
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
+            rparam.setAttriStencil(true);
             rparam.setCamPosition(800.0, 800.0, 800.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
@@ -111,17 +115,17 @@ export class DemoMirrorPlane {
         box.uvPartsNumber = 6;
         box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixParts.jpg")]);
         box.setScaleXYZ(2.0, 2.0, 2.0);
-        //box.setXYZ(0.0, 170.0, 0.0);
-        this.m_rscene.addEntity(box, 0);
+        this.m_rscene.addEntity(box);
         this.m_targetEntity = box;
 
-        
+        ///*
         this.m_fboIns = this.m_rscene.createFBOInstance();
         this.m_fboIns.asynFBOSizeWithViewport();
         this.m_fboIns.setClearRGBAColor4f(0.0,0.0,0.0,1.0);   // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
         this.m_fboIns.createFBOAt(0,512,512,true,false);
         this.m_fboIns.setRenderToRTTTextureAt(0, 0);          // framebuffer color attachment 0
         this.m_fboIns.setRProcessIDList([0]);
+        this.m_rscene.setRenderToBackBuffer();
 
         let scrPlane: ScreenAlignPlaneEntity =  new ScreenAlignPlaneEntity();
         scrPlane.initialize(-0.9,-0.9,0.4,0.4, [this.m_fboIns.getRTTAt(0)]);
@@ -162,7 +166,8 @@ export class DemoMirrorPlane {
         //  let frustrum:FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
         //  frustrum.initiazlize( this.m_rttCamera );
         //  frustrum.setScaleXYZ(0.5,0.5,0.5);
-        //  this.m_rscene.addEntity( frustrum, 1);
+        //  this.m_rscene.addEntity( frustrum, 2);
+        //*/
         
     }
     private initMirrorY(): void {
@@ -191,6 +196,7 @@ export class DemoMirrorPlane {
     private mouseDown(evt: any): void {
 
         this.m_flag = true;
+        DebugFlag.Flag_0 = 1;
     }
     private m_timeoutId: any = -1;
     private update(): void {
@@ -221,7 +227,6 @@ export class DemoMirrorPlane {
         }
         else {
             
-            this.m_refPlane.getPosition(this.m_pv);
             
             this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
             this.m_rscene.runBegin();
@@ -229,7 +234,8 @@ export class DemoMirrorPlane {
             
             let nv: Vector3D = this.m_rscene.getCamera().getNV();
             // --------------------------------------------- fbo run begin
-            //m_tempPosV
+            ///*
+            this.m_refPlane.getPosition(this.m_pv);
             this.m_targetEntity.getPosition( this.m_tempPosV );
             this.m_targetEntity.getScaleXYZ( this.m_tempScaleV );
             this.m_targetEntity.setScaleXYZ(this.m_tempScaleV.x, -this.m_tempScaleV.y, this.m_tempScaleV.z);
@@ -250,11 +256,45 @@ export class DemoMirrorPlane {
             this.m_targetEntity.setScaleXYZ(this.m_tempScaleV.x, this.m_tempScaleV.y, this.m_tempScaleV.z);
             this.m_targetEntity.setPosition( this.m_tempPosV );
             this.m_targetEntity.update();
+            //*/
+            /*
+            this.m_rscene.runAt(0);
+            this.m_rscene.runAt(1);
+            this.m_rscene.runEnd();
+            //*/
+            ///*
+            if(DebugFlag.Flag_0 > 0) {
+                DebugFlag.Flag_0 ++;
+            }
+            let entity: DisplayEntity = this.m_targetEntity;
+            let material: any = entity.getMaterial();
+            RendererState.SetStencilMask(0x0);
+            entity.setVisible(false);
 
             this.m_rscene.runAt(0);
             this.m_rscene.runAt(1);
             
+            RendererState.SetStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);
+            RendererState.SetStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF); 
+            RendererState.SetStencilMask(0xFF);
+            entity.setVisible( true );
+            this.m_rscene.drawEntity(entity);
+            RendererState.SetStencilFunc(GLStencilFunc.NOTEQUAL, 1, 0xFF); 
+            RendererState.SetStencilMask(0x0);
+            
+            material.setRGB3f(1.0,0.0,0.0);
+            entity.setScaleXYZ(2.1,2.1,2.1);
+            entity.update();
+            this.m_rscene.drawEntity(entity);
+
+            material.setRGB3f(1.0,1.0,1.0);
+            entity.setScaleXYZ(2.0,2.0,2.0);
+            entity.update();
+            RendererState.SetStencilMask(0xFF);
+
             this.m_rscene.runEnd();
+            DebugFlag.Flag_0 = 0;
+            //*/
         }
 
     }

@@ -363,6 +363,33 @@ export default class RendererSubScene implements IRenderer {
         this.m_rcontext.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
     }
     /**
+     * the function only resets the renderer instance rendering status.
+     * you should use it before the run or runAt function is called.
+     */
+    renderBegin(contextBeginEnabled: boolean = false): void {
+
+        if (contextBeginEnabled) {
+            this.m_rcontext.renderBegin();
+        }
+        if (this.m_renderProxy.getCamera() != this.m_camera) {
+            //let boo: boolean = this.m_renderProxy.testViewPortChanged(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
+            if(this.m_renderProxy.isAutoSynViewAndStage()) {
+                this.m_viewX = this.m_renderProxy.getViewX();
+                this.m_viewY = this.m_renderProxy.getViewY();
+                this.m_viewW = this.m_renderProxy.getViewWidth();
+                this.m_viewH = this.m_renderProxy.getViewHeight();
+            }
+            this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
+            this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
+            this.m_renderProxy.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH, this.m_renderProxy.isAutoSynViewAndStage());
+            this.m_renderProxy.reseizeRCViewPort();
+        }
+        this.m_camera.update();
+        this.m_rcontext.updateCameraDataFromCamera(this.m_camera);
+        this.m_shader.renderBegin();
+
+    }
+    /**
      * the function resets the renderer scene status.
      * you should use it on the frame starting time.
      */
@@ -372,53 +399,22 @@ export default class RendererSubScene implements IRenderer {
             if (this.m_runFlag >= 0) this.runEnd();
             this.m_runFlag = 0;
         }
-        //this.m_adapter.unlockViewport();
-
-        if (contextBeginEnabled) {
-            this.m_rcontext.renderBegin();
-        }
-        this.m_shader.renderBegin();
-        if (this.m_renderProxy.getCamera() != this.m_camera) {
-            this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
-            this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
-            this.m_renderProxy.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
-            this.m_renderProxy.reseizeRCViewPort();
-            this.m_camera.update();
-            this.m_rcontext.updateCameraDataFromCamera(this.m_camera);
-        }
-        else {
-            this.m_camera.update();
-            this.m_rcontext.updateCameraDataFromCamera(this.m_camera);
-        }
+        this.renderBegin( contextBeginEnabled );        
         if (this.m_rspace != null) {
+            //this.m_rspace.setCamera(camFlag ? this.m_renderProxy.getCamera() : this.m_currCamera);
+            this.m_rspace.setCamera(this.m_camera);
             this.m_rspace.runBegin();
         }
     }
-    /**
-     * the function only resets the renderer instance rendering status.
-     * you should use it before the run or runAt function is called.
-     */
-    renderBegin(contextBeginEnabled: boolean = false): void {
 
-        if (this.m_renderProxy.getCamera() != this.m_camera) {
-            this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
-            this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
-            this.m_renderProxy.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
-            this.m_renderProxy.reseizeRCViewPort();
-            this.m_camera.update();
-            this.m_rcontext.updateCameraDataFromCamera(this.m_camera);
-        }
-        else {
-            this.m_camera.update();
-        }
-        this.m_shader.renderBegin();
-        if (contextBeginEnabled) {
-            this.m_rcontext.renderBegin();
-        }
-    }
     private m_mouseTestBoo: boolean = true;
     private m_cullingTestBoo: boolean = true;
-    private m_rayTestBoo: boolean = true;
+    private m_rayTestFlag: boolean = true;
+    private m_rayTestEnabled: boolean = true;
+
+    setRayTestEanbled(enabled: boolean): void {
+        this.m_rayTestEnabled = enabled;
+    }
     /**
      * @param evtFlowPhase  0(none phase),1(capture phase),2(bubble phase)
      * @param status: 1(default process),1(deselect ray pick target)
@@ -427,11 +423,16 @@ export default class RendererSubScene implements IRenderer {
     runMouseTest(evtFlowPhase: number, status: number): number {
         let flag: number = -1;
         if (this.m_evt3DCtr != null && this.m_mouseEvtEnabled) {
-            if (this.m_rayTestBoo && this.m_evt3DCtr.getEvtType() > 0) {
-                this.mouseRayTest();
+            if (this.m_rayTestFlag && this.m_evt3DCtr.getEvtType() > 0) {
                 // 是否对已经获得的拾取列表做进一步的gpu拾取
                 let selector: IRaySelector = this.m_rspace.getRaySelector();
                 if (selector != null) {
+                    if(this.m_rayTestEnabled) {
+                        this.mouseRayTest();
+                    }
+                    else {
+                        selector.clear();
+                    }
                     // 如果有gpu拾取则进入这个管理器, 这个管理器得到最终的拾取结果再和前面的计算结果做比较
                     let total: number = selector.getSelectedNodesTotal();
                     if (total > 1) {
@@ -446,7 +447,7 @@ export default class RendererSubScene implements IRenderer {
                         }
                     }
                 }
-                this.m_rayTestBoo = false;
+                this.m_rayTestFlag = false;
             }
             flag = this.m_evt3DCtr.run(evtFlowPhase, status);
         }
@@ -469,7 +470,7 @@ export default class RendererSubScene implements IRenderer {
 
         this.m_mouseTestBoo = true;
         this.m_cullingTestBoo = true;
-        this.m_rayTestBoo = true;
+        this.m_rayTestFlag = true;
 
         // wait mesh data ready to finish
         if (this.m_nodeWaitLinker != null) {

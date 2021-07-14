@@ -29,6 +29,45 @@ export class RenderBlendMode {
     static readonly DISABLE: number = 0;
     //static readonly MAX: number = 8;
 }
+/**
+ * gl.NEVER:           Never pass.
+ * gl.LESS:            Pass if (ref & mask) <  (stencil & mask).
+ * gl.EQUAL:           Pass if (ref & mask) =  (stencil & mask).
+ * gl.LEQUAL:          Pass if (ref & mask) <= (stencil & mask).
+ * gl.GREATER:         Pass if (ref & mask) >  (stencil & mask).
+ * gl.NOTEQUAL:        Pass if (ref & mask) != (stencil & mask).
+ * gl.GEQUAL:          Pass if (ref & mask) >= (stencil & mask).
+ * gl.ALWAYS:          Always pass.
+ */
+export class GLStencilFunc {
+    static readonly NEVER: number = 1;
+    static readonly LESS: number = 1;
+    static readonly EQUAL: number = 1;
+    static readonly GREATER: number = 1;
+    static readonly NOTEQUAL: number = 1;
+    static readonly GEQUAL: number = 1;
+    static readonly ALWAYS: number = 1;
+}
+/**
+ * gl.KEEP              Keeps the current value.
+ * gl.ZERO              Sets the stencil buffer value to 0.
+ * gl.REPLACE           Sets the stencil buffer value to the reference value as specified by WebGLRenderingContext.stencilFunc().
+ * gl.INCR              Increments the current stencil buffer value. Clamps to the maximum representable unsigned value.
+ * gl.INCR_WRAP         Increments the current stencil buffer value. Wraps stencil buffer value to zero when incrementing the maximum representable unsigned value.
+ * gl.DECR              Decrements the current stencil buffer value. Clamps to 0.
+ * gl.DECR_WRAP         Decrements the current stencil buffer value. Wraps stencil buffer value to the maximum representable unsigned value when decrementing a stencil buffer value of 0.
+ * gl.INVERT            Inverts the current stencil buffer value bitwise.
+ */
+export class GLStencilOp {
+    static readonly KEEP: number = 1;
+    static readonly ZERO: number = 1;
+    static readonly REPLACE: number = 1;
+    static readonly INCR: number = 1;
+    static readonly INCR_WRAP: number = 1;
+    static readonly DECR: number = 1;
+    static readonly DECR_WRAP: number = 1;
+    static readonly INVERT: number = 1;
+}
 export class GLBlendMode {
     static readonly ZERO: number = 1;
     static readonly ONE: number = 1;

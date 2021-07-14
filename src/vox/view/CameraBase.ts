@@ -204,7 +204,7 @@ class CameraBase {
                 this.m_viewHalfW = pw * 0.5;
                 this.m_viewHalfH = ph * 0.5;
 
-                console.log("setViewSize, pw:"+pw+",ph:"+ph);
+                //console.log("setViewSize, pw:"+pw+",ph:"+ph);
                 if (this.m_perspectiveEnabled) {
                     if (this.m_project2Enabled) {
                         if (this.m_rightHandEnabled) this.perspectiveRH2(this.m_fovy, pw, ph, this.m_zNear, this.m_zFar);
@@ -242,7 +242,9 @@ class CameraBase {
         }
     }
     translationXYZ(px: number, py: number, pz: number): void {
-        if (this.m_unlock) {
+        this.m_tempV.setXYZ(px,py,pz);
+        if (this.m_unlock && Vector3D.DistanceSquared(this.m_camPos, this.m_tempV) > 0.01) {
+            
             this.m_camPos.setTo(px, py, pz);
             this.m_lookAtPos.x = px + this.m_lookAtDirec.x;
             this.m_lookAtPos.y = py + this.m_lookAtDirec.y;

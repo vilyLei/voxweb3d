@@ -21,6 +21,10 @@ import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
 import RendererState from "../vox/render/RendererState";
 import RenderProxy from "../vox/render/RenderProxy";
+import { GLStencilFunc, GLStencilOp } from "../vox/render/RenderConst";
+import Vector3D from "../vox/math/Vector3D";
+import DebugFlag from "../vox/debug/DebugFlag";
+import Box3DEntity from "../vox/entity/Box3DEntity";
 
 export class DemoStencil {
     constructor() { }
@@ -81,14 +85,22 @@ export class DemoStencil {
             // add common 3d display entity
             let plane:Plane3DEntity = new Plane3DEntity();
             plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
-            this.m_rscene.addEntity(plane,0);
-            let sph: Sphere3DEntity = new Sphere3DEntity();
-            //sph.initialize(200.0,20,20,[this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
-            sph.initialize(200.0, 20, 20, [this.getImageTexByUrl("static/assets/default.jpg")]);
-            this.m_rscene.addEntity(sph,2);
+            this.m_rscene.addEntity(plane,1);
 
-            this.m_entity = sph;
-            this.m_material = sph.getMaterial() as any;
+            //  let sph: Sphere3DEntity = new Sphere3DEntity();
+            //  //sph.initialize(200.0,20,20,[this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
+            //  sph.initialize(200.0, 20, 20, [this.getImageTexByUrl("static/assets/default.jpg")]);
+            //  this.m_rscene.addEntity(sph,0);
+            //  this.m_entity = sph;
+            //  this.m_material = sph.getMaterial() as any;
+            //  //this.m_rscene.addEntity(sph,2);
+
+            let box: Box3DEntity = new Box3DEntity();
+            box.initializeCube(200.0,[this.getImageTexByUrl("static/assets/default.jpg")]);
+            this.m_rscene.addEntity(box,0);
+            this.m_entity = box;
+            this.m_material = box.getMaterial() as any;
+
 
             this.update();
 
@@ -96,6 +108,7 @@ export class DemoStencil {
     }
     private mouseDown(evt: any): void {
         console.log("mouse down... ...");
+        DebugFlag.Flag_0 = 1;
     }
 
     private m_timeoutId: any = -1;
@@ -108,26 +121,76 @@ export class DemoStencil {
 
         this.m_statusDisp.render();
     }
-    
     run(): void {
+        this.run01();
+    }
+    run01(): void {
+
+        this.m_statusDisp.update(false);
+        
+        this.m_stageDragSwinger.runWithYAxis();
+        this.m_CameraZoomController.run(Vector3D.ZERO, 30.0);
+        if(DebugFlag.Flag_0 > 0) {
+            DebugFlag.Flag_0++;
+        }
+        this.m_rscene.runBegin();
+        
+        RendererState.SetStencilMask(0x0);
+        //this.m_entity.setVisible(false);
+
+
+        this.m_rscene.update();
+        //this.m_rscene.runAt(0);
+        //this.m_rscene.runAt(1);
+        
+        RendererState.SetStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);        
+        RendererState.SetStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF); 
+        RendererState.SetStencilMask(0xFF);
+
+        this.m_entity.setVisible( true );
+        this.m_rscene.drawEntity(this.m_entity);
+
+        RendererState.SetStencilFunc(GLStencilFunc.NOTEQUAL, 1, 0xFF); 
+        RendererState.SetStencilMask(0x0);
+        
+
+        let scale:number = 1.1;
+        this.m_material.setRGB3f(20.0,0.0,0.0);
+        this.m_entity.setScaleXYZ(scale,scale,scale);
+        this.m_entity.update();
+        this.m_rscene.drawEntity(this.m_entity);
+
+        scale = 1.0;
+        this.m_entity.setScaleXYZ(scale,scale,scale);
+        this.m_entity.update();
+        this.m_material.setRGB3f(1.0,1.0,1.0);
+        RendererState.SetStencilMask(0xFF);
+
+        this.m_rscene.runEnd();
+
+        DebugFlag.Flag_0 = 0;
+        //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+        //this.m_profileInstance.run();
+    }
+    
+    run02(): void {
 
         this.m_statusDisp.update(false);
         
         this.m_stageDragSwinger.runWithYAxis();
         this.m_CameraZoomController.run(null, 30.0);
 
-        let gl:any = this.m_renderProxy.RContext;
         //this.m_rscene.run(true);
         this.m_rscene.runBegin();
         this.m_rscene.update();
         RendererState.SetStencilMask(0x00);
         this.m_rscene.runAt(0);
         this.m_rscene.runAt(1);
-
+        
         let scale:number = 1.0;
-        RendererState.SetStencilOp(gl.KEEP, gl.KEEP, gl.REPLACE); 
-
-        RendererState.SetStencilFunc(gl.ALWAYS, 1, 0xFF); 
+        RendererState.SetStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);
+        
+        RendererState.SetStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF); 
         RendererState.SetStencilMask(0xFF);
 
         this.m_material.setRGB3f(1.0,1.0,1.0);
@@ -136,7 +199,7 @@ export class DemoStencil {
 
         this.m_rscene.runAt(2);
 
-        RendererState.SetStencilFunc(gl.NOTEQUAL, 1, 0xFF); 
+        RendererState.SetStencilFunc(GLStencilFunc.NOTEQUAL, 1, 0xFF); 
         RendererState.SetStencilMask(0x00);
         
         //RendererState.SetDepthTestEnable( false );

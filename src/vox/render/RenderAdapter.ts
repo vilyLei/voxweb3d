@@ -73,8 +73,13 @@ class RenderAdapter {
 			if (context.isDepthTestEnabled()) this.m_gl.enable(this.m_gl.DEPTH_TEST);
 			else this.m_gl.disable(this.m_gl.DEPTH_TEST);
 
-			if (context.isStencilTestEnabled()) this.m_gl.enable(this.m_gl.STENCIL_TEST);
-			else this.m_gl.disable(this.m_gl.STENCIL_TEST);
+			if (context.isStencilTestEnabled()) {
+				this.m_gl.enable(this.m_gl.STENCIL_TEST);
+			}
+			else {
+				console.warn("STENCIL_TEST disable !!!");
+				this.m_gl.disable(this.m_gl.STENCIL_TEST);
+			}
 
 			this.m_gl.enable(this.m_gl.CULL_FACE);
 			this.m_gl.cullFace(this.m_gl.BACK);
@@ -204,10 +209,10 @@ class RenderAdapter {
 		}
 		this.m_gl.clearColor(this.bgColor.r, this.bgColor.g, this.bgColor.b, this.bgColor.a);
 		this.m_gl.clear(this.m_clearMask);
+		//	if (this.m_rcontext.isStencilTestEnabled()) {
+		//		this.m_gl.stencilMask(0x0);
+		//	}
 
-		if (this.m_rcontext.isStencilTestEnabled()) {
-			this.m_gl.stencilMask(0x0);
-		}
 	}
 	reset(): void {
 		this.m_rState.setCullFaceMode(CullFaceMode.BACK);

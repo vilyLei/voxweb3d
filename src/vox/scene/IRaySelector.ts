@@ -30,4 +30,5 @@ export default interface IRaySelector
     getSelectedNodes():RaySelectedNode[];
     getSelectedNodesTotal():number;
     run():void;
+    clear(): void;
 }

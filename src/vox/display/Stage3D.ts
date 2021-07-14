@@ -230,7 +230,7 @@ class Stage3D implements IRenderStage3D
         this.m_mouseEvt.phase = 1;
         this.m_mouseEvtDispatcher.dispatchEvt(this.m_mouseEvt);
     }
-    mouseRightDown():void
+    mouseRightDown(phase:number = 1):void
     {
         this.m_mouseEvt.type = MouseEvent.MOUSE_RIGHT_DOWN;
         this.m_mouseEvt.mouseX = this.mouseX;
@@ -239,7 +239,7 @@ class Stage3D implements IRenderStage3D
         this.m_mouseEvt.phase = 1;
         this.m_mouseEvtDispatcher.dispatchEvt(this.m_mouseEvt);
     }
-    mouseRightUp():void
+    mouseRightUp(phase:number = 1):void
     {
         this.m_mouseEvt.type = MouseEvent.MOUSE_RIGHT_UP;
         this.m_mouseEvt.mouseX = this.mouseX;
@@ -337,6 +337,13 @@ class Stage3D implements IRenderStage3D
         this.m_mouseEvt.phase = 1;
         this.m_mouseEvt.posArray = posArray;
         this.m_mouseEvtDispatcher.dispatchEvt(this.m_mouseEvt);
+    }
+    
+    mouseWindowUp(phase:number = 1):void
+    {
+    }
+    mouseWindowRightUp(phase:number = 1):void
+    {
     }
     private m_enterFrameEvt: EventBase = new EventBase();
     enterFrame():void

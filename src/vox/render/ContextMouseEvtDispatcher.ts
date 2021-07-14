@@ -198,10 +198,10 @@ class ContextMouseEvtDispatcher
                     stage.mouseDown(1);
                 }else if(evt.button == 2)
                 {
-                    stage.mouseRightDown();
+                    stage.mouseRightDown(1);
                 }
             }
-            /*
+            ///*
             canvas.onmouseup = function(evt:any):void
             {
                 let rect = div.getBoundingClientRect();
@@ -219,31 +219,20 @@ class ContextMouseEvtDispatcher
                 }
                 else if(evt.button == 2)
                 {
-                    stage.mouseRightUp();
+                    stage.mouseRightUp(1);
                 }
             }
-            */
+            //*/
             ///*
             document.onmouseup = function(evt:any):void
             {
-                let rect = div.getBoundingClientRect();
-                let px = 0 | (selfT.dpr * (evt.clientX - rect.left));
-                let py = 0 | (selfT.dpr * (evt.clientY - rect.top));
-                py = stage.stageHeight - py;
-                if(px >= 0 && py >= 0 && px < stage.viewWidth && py < stage.viewHeight) {
-                    stage.mouseX = px;
-                    stage.mouseY = py;
-                    stage.mouseViewX = px;
-                    stage.mouseViewY = stage.stageHeight - py;
-                    //console.log("ContextMouseEvtDispatcher::document::onmouseup(): ",px,py,rect);
-                }
                 if(evt.button == 0)
                 {
-                    stage.mouseUp(1);
+                    stage.mouseWindowUp(1);
                 }
                 else if(evt.button == 2)
                 {
-                    stage.mouseRightUp();
+                    stage.mouseWindowRightUp(1);
                 }
             }
             //*/

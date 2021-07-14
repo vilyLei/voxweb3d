@@ -458,6 +458,9 @@ export default class RayGpuSelector implements IRaySelector
 
         rcontext.resetState();
     }
+    clear(): void {
+        this.m_selectedNode = null;
+    }
     
     // @param           the cameraDistance is the distance between camera position and a position
     private getWorldPosByRayDistance(cameraDistance:number,tv:Vector3D,camPv:Vector3D,resultV:Vector3D):void

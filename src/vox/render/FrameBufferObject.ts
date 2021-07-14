@@ -548,6 +548,7 @@ class FrameBufferObject
 				console.log("FrameBufferObject::createNewFBO(), create success...,size: "+pw+","+ph);
 			}
 		}
+		FrameBufferObject.BindToBackbuffer(rgl, this.m_bufferLType);
 	}
 	static BindToBackbuffer(rc:any,frameBufferType:number):void
 	{

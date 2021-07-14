@@ -212,6 +212,13 @@ class RenderProxy {
         
         return this.m_viewX != px || this.m_viewY != py || this.m_viewW != pw || this.m_viewH != ph;
     }
+    testRCViewPortChanged(px: number, py: number, pw: number, ph: number): boolean {
+        return this.m_adapterContext.testViewPortChanged(px,py,pw,ph);
+    }
+    getViewX(): number {return this.m_viewX;}
+    getViewY(): number {return this.m_viewY;}
+    getViewWidth(): number {return this.m_viewW;}
+    getViewHeight(): number {return this.m_viewH;}
     setViewPort(px: number, py: number, pw: number, ph: number): void {
         this.m_autoSynViewAndStage = false;
         this.m_viewX = px;

@@ -40,6 +40,10 @@ export default class RenderMaterialProxy
         this.m_shader.renderBegin();
         this.m_texRes.renderBegin();
     }
+    resetUniform():void
+    {
+        this.m_shader.resetUniform();
+    }
     useGlobalMaterial(material:IRenderMaterial):void
     {
         this.m_dispBuilder.updateGlobalMaterial(material);

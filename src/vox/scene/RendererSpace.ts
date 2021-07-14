@@ -212,7 +212,7 @@ export default class RendererSpace implements IRendererSpace
             {
                 let ab:AABB = null;
                 let cam:CameraBase = this.m_camera;
-                let camPos:Vector3D = cam.getPosition();
+                //let camPos:Vector3D = cam.getPosition();
                 while(nextNode != null)
                 {
                     if(nextNode.rpoNode.isVsible() && nextNode.entity.isDrawEnabled())

@@ -67,19 +67,16 @@ export class DefaultPBRUI implements IPBRUI {
             this.initUIScene();
         }
     }
-    private m_opening: boolean = false;
     close(): void {
         this.menuCtrl(false);
         this.m_menuBtn.select(false);
-        this.m_opening = false;
     }
     open(): void {
         this.menuCtrl(true);
         this.m_menuBtn.deselect(true);
-        this.m_opening = true;
     }
     isOpen(): boolean {
-        return this.m_opening;
+        return !this.m_menuBtn.isSelected();
     }
     private initUIScene(): void {
 
@@ -113,6 +110,9 @@ export class DefaultPBRUI implements IPBRUI {
         this.m_paramEntity = param;
         this.m_paramEntity.pbrUI = this;
         this.m_paramEntity.colorPanel = this.rgbPanel;
+    }
+    getParamEntity(): IPBRParamEntity {
+        return this.m_paramEntity;
     }
     private m_btnSize: number = 24;
     private m_bgLength: number = 200.0;
@@ -277,6 +277,7 @@ export class DefaultPBRUI implements IPBRUI {
         if (this.rgbPanel != null) this.rgbPanel.close();
     }
     private m_currUUID: string = "";
+    private m_colorParamUnit: ColorParamUnit = null;
     private progressChange(evt: any): void {
 
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
@@ -327,6 +328,11 @@ export class DefaultPBRUI implements IPBRUI {
         }
         if (colorParamUnit != null) {
             if (progEvt.status != 0) {
+                if(this.m_colorParamUnit != colorParamUnit) {
+                    colorParamUnit.selectColor();
+                    this.m_colorParamUnit = colorParamUnit;
+                    return;
+                }
                 colorParamUnit.setColor(null, -1, progEvt.value);
             }
             else {
@@ -338,6 +344,9 @@ export class DefaultPBRUI implements IPBRUI {
                 }
             }
             return;
+        }
+        else {
+            this.m_colorParamUnit = null;
         }
         if (this.rgbPanel != null) this.rgbPanel.close();
     }

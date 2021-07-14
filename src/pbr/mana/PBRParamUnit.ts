@@ -31,7 +31,7 @@ export class ColorParamUnit {
         this.btn = pBtn;
         this.colorPanel = colorPanel;
         this.name = this.btn.uuid;
-
+        this.btn.step = 0.1;
         let colorId: number = this.colorPanel.getRandomColorId();
         let color: Color4 = this.colorPanel.getColorById(colorId);
         this.identity = identity;
@@ -60,13 +60,33 @@ export class ColorParamUnit {
         let id = this.colorId;
         let identity = this.identity;
         console.log(this.name + " setMaterialColor: ", color, id, identity);
-        this.material.setEnvSpecularColorFactor(color.r * identity, color.g * identity, color.b * identity);
+        //this.material.setEnvSpecularColorFactor(color.r * identity, color.g * identity, color.b * identity);
     }
     getColorid(): number {
         return this.colorId;
     }
     selectColor(): void {
         this.colorPanel.selectColorById(this.colorId);
+        let color: Color4 = this.colorPanel.getColorById(this.colorId);
+        //console.log(this.name + " selectColor: ", color,this.colorId, this.identity);
+        this.btn.setValue(this.identity, false);
+        this.selectColorInfo();
+    }
+    protected selectColorInfo(): void {
+    }
+}
+
+export class AlbedoParamUnit extends ColorParamUnit{
+    constructor() {
+        super();
+    }
+    protected setMaterialColor(): void {
+        
+        let color = this.color;
+        let id = this.colorId;
+        let identity = this.identity;
+        //console.log(this.name + " setMaterialColor: ", color, id, identity);
+        this.material.setAlbedoColor(color.r * identity, color.g * identity, color.b * identity);
     }
 }
 
@@ -79,11 +99,10 @@ export class F0ColorParamUnit extends ColorParamUnit{
         let color = this.color;
         let id = this.colorId;
         let identity = this.identity;
-        console.log(this.name + " setMaterialColor: ", color, id, identity);
-        this.material.setEnvSpecularColorFactor(color.r * identity, color.g * identity, color.b * identity);
+        //console.log(this.name + " setMaterialColor: ", color, id, identity);
+        this.material.setF0(color.r * identity, color.g * identity, color.b * identity);
     }
 }
-
 export class AmbientParamUnit extends ColorParamUnit{
     constructor() {
         super();
@@ -93,8 +112,8 @@ export class AmbientParamUnit extends ColorParamUnit{
         let color = this.color;
         let id = this.colorId;
         let identity = this.identity;
-        console.log(this.name + " setMaterialColor: ", color, id, identity);
-        this.material.setEnvSpecularColorFactor(color.r * identity, color.g * identity, color.b * identity);
+        //console.log(this.name + " setMaterialColor: ", color, id, identity);
+        this.material.setAmbientFactor(color.r * identity, color.g * identity, color.b * identity);
     }
 }
 export class SpecularParamUnit extends ColorParamUnit{
@@ -106,7 +125,7 @@ export class SpecularParamUnit extends ColorParamUnit{
         let color = this.color;
         let id = this.colorId;
         let identity = this.identity;
-        console.log(this.name + " setMaterialColor: ", color, id, identity);
+        //console.log(this.name + " setMaterialColor: ", color, id, identity);
         this.material.setEnvSpecularColorFactor(color.r * identity, color.g * identity, color.b * identity);
     }
 }

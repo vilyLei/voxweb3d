@@ -252,7 +252,14 @@ export default class DefaultPBRCase {
         //rm.setTextureList( [this.texList[0]] );
         rm.diffuseMapEnabled = true;
         rm.normalMapEnabled = true;
-        rm.setTextureList( this.texList );
+        let texList: TextureProxy[] = [
+          this.texList[0]
+          //, this.texList[1]
+          , this.texList[2]
+        ];
+        rm.setTextureList( texList );
+        rm.diffuseMapEnabled = false;
+        rm.normalMapEnabled = true;
         rm.initializeByCodeBuf(true);
         let mesh: RcodMesh = new RcodMesh();
         mesh.setBufSortFormat(rm.getBufSortFormat());
