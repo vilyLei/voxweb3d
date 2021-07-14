@@ -250,7 +250,7 @@ export class DemoDefaultPBR
             sph.setMaterial( material );
             sph.initialize(80 + Math.random() * 100.0,20,20);
             //sph.setXYZ(680,100,280);
-            sph.setXYZ(radius * Math.cos(rad), 100 + Math.random() * 400.0, radius * Math.sin(rad));
+            sph.setXYZ(radius * Math.cos(rad), Math.random() * 500.0, radius * Math.sin(rad));
             this.m_rscene.addEntity(sph);
     
             mEntity = new MirrorProjEntity();
@@ -364,29 +364,46 @@ export class DemoDefaultPBR
         nv.y *= -1.0;
         this.m_toneMaterial.setProjNV(nv);
 
-        
-        let entity:DisplayEntity = null;
-        let material: DefaultPBRMaterial = null;
-        if(this.m_uiModule.isOpen() && this.m_uiModule.getParamEntity() != null) {
-            entity = this.m_uiModule.getParamEntity().entity;
-            material = this.m_uiModule.getParamEntity().material;
-            if(!entity.isInRenderer()) {
-                entity = null;
-            }
-        }
-        if(entity != null) {
-            RendererState.SetStencilMask(0x0);
-            entity.setVisible(false);
-        }
+        let entity:DisplayEntity = this.selectEdgeTarget();
 
         this.m_rscene.runAt(0);
         this.m_rscene.runAt(1);
         this.m_rscene.runAt(2);
 
+        this.useSelectedEdge( entity );
+
+        this.m_rscene.runEnd();
+        
+
+        if(this.m_ruisc != null) {
+            this.m_ruisc.renderBegin();
+            this.m_ruisc.run(false);
+            this.m_ruisc.runEnd();
+        }
+    }
+    private selectEdgeTarget(): DisplayEntity {
+        
+        let entity:DisplayEntity = null;
+        //let material: DefaultPBRMaterial = null;
+        if(this.m_uiModule.isOpen() && this.m_uiModule.getParamEntity() != null) {
+            entity = this.m_uiModule.getParamEntity().entity;
+            //material = this.m_uiModule.getParamEntity().material;
+            if(!entity.isInRenderer()) {
+                entity = null;
+            }
+            if(entity != null) {
+                RendererState.SetStencilMask(0x0);
+                entity.setVisible(false);
+            }
+        }
+        return entity;
+    }
+    private useSelectedEdge(entity: DisplayEntity): void {
         if(entity != null) {
+
             let scaleV: Vector3D = new Vector3D();
             entity.getScaleXYZ(scaleV);
-
+            let material: DefaultPBRMaterial = entity.getMaterial() as DefaultPBRMaterial;
             RendererState.SetStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);
             RendererState.SetStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF); 
             RendererState.SetStencilMask(0xFF);
@@ -406,17 +423,7 @@ export class DemoDefaultPBR
             entity.update();
             RendererState.SetStencilFunc(GLStencilFunc.ALWAYS, 1, 0x0);
             RendererState.SetStencilMask(0xFF);
-            //*/
         }
-        this.m_rscene.runEnd();
-        
-
-        if(this.m_ruisc != null) {
-            this.m_ruisc.renderBegin();
-            this.m_ruisc.run(false);
-            this.m_ruisc.runEnd();
-        }
-        //this.m_rscene.synFBOSizeWithViewport();
     }
 }
     
