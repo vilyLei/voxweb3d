@@ -125,6 +125,7 @@ export default class DefaultPBRCase {
       , this.getImageTexByUrl("static/assets/brickwall_big.jpg")
       //, this.getImageTexByUrl("static/assets/default.jpg")
       , this.getImageTexByUrl("static/assets/brickwall_normal.jpg")
+      //, this.getImageTexByUrl("static/assets/disp/lava_03_NRM.png")
     ];
   }
   run(): boolean {
@@ -203,6 +204,9 @@ export default class DefaultPBRCase {
     return loader.texture;
   }
   texList: TextureProxy[];
+  
+  diffuseMapEnabled: boolean = false;
+  normalMapEnabled: boolean = false;
   private initMaterial(): void {
 
     
@@ -250,16 +254,21 @@ export default class DefaultPBRCase {
         let entity: DisplayEntity = this.entity;
         ///*
         //rm.setTextureList( [this.texList[0]] );
-        rm.diffuseMapEnabled = true;
-        rm.normalMapEnabled = true;
+        //  rm.diffuseMapEnabled = true;
+        //  rm.normalMapEnabled = true;
         let texList: TextureProxy[] = [
           this.texList[0]
-          //, this.texList[1]
-          , this.texList[2]
         ];
+        if(this.diffuseMapEnabled) {
+          texList.push(this.texList[1]);
+        }
+        if(this.normalMapEnabled) {
+          texList.push(this.texList[2]);
+        }
         rm.setTextureList( texList );
-        rm.diffuseMapEnabled = false;
-        rm.normalMapEnabled = true;
+        rm.diffuseMapEnabled = this.diffuseMapEnabled;
+        rm.normalMapEnabled = this.normalMapEnabled;
+
         rm.initializeByCodeBuf(true);
         let mesh: RcodMesh = new RcodMesh();
         mesh.setBufSortFormat(rm.getBufSortFormat());
@@ -316,6 +325,7 @@ export default class DefaultPBRCase {
   private m_meshDataUrl: string = "";
   loadMeshFile(furl: string): void {
     this.initMaterial();
+    
     let loader: BufferLoader = new BufferLoader();
     loader.load(
       furl,

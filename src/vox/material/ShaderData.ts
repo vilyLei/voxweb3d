@@ -22,6 +22,7 @@ export default class ShaderData implements IShaderData
 
     private static s_codeParser:ShaderCodeParser = new ShaderCodeParser();
     private m_uid:number = -1;
+    adaptationEnabled: boolean = true;
     constructor()
     {
         this.m_uid = ShaderData.s_uid++;
@@ -70,10 +71,12 @@ export default class ShaderData implements IShaderData
     }
     initialize(unique_ns:string,vshdsrc:string,fshdSrc:string):void
     {
-        if(RendererDeviece.IsWebGL1())
-        {
-            vshdsrc = GLSLConverter.Es3VtxShaderToES2(vshdsrc);
-            fshdSrc = GLSLConverter.Es3FragShaderToES2(fshdSrc);
+        if(this.adaptationEnabled) {
+            if(RendererDeviece.IsWebGL1())
+            {
+                vshdsrc = GLSLConverter.Es3VtxShaderToES2(vshdsrc);
+                fshdSrc = GLSLConverter.Es3FragShaderToES2(fshdSrc);
+            }
         }
         this.parseCode(vshdsrc,fshdSrc);
         let pattributes:AttributeLine[] = ShaderData.s_codeParser.attributes;

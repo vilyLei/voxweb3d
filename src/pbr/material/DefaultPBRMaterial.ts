@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import RendererDeviece from "../../vox/render/RendererDeviece";
+import GLSLConverter from "../../vox/material/code/GLSLConverter";
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
@@ -40,36 +41,45 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     parallelLightsTotal: number = 0;
     texturesTotal: number = 1;
     initialize(texEnabled: boolean): void {
-        //console.log("DefaultPBRShaderBuffer::initialize()...");
         this.m_uniqueName = "DefaultPBRShd";
+        this.adaptationEnabled = false;
+        console.log("DefaultPBRShaderBuffer::initialize()...，adaptationEnabled: ", this.adaptationEnabled);
     }
     getFragShaderCode(): string {
         //  console.log("DefaultPBR",DefaultPBR);
         //  console.log("DefaultPBR.frag",DefaultPBR.frag);
         //  console.log("DefaultPBR end.");
 
-        let fragCode: string =
-            `#version 300 es
-precision highp float;
-`;
+        let fragCode: string = "";
+        if (RendererDeviece.IsWebGL2()) {
+            fragCode = "#version 300 es";
+        }
         if (RendererDeviece.IsWebGL1()) {
 
             fragCode +=
-                `
+`
 #extension GL_OES_standard_derivatives : enable
 #extension GL_EXT_shader_texture_lod : enable
+#define VOX_IN varying
 #define VOX_TextureCubeLod textureCubeLodEXT
 #define VOX_Texture2DLod texture2DLodEXT
+#define VOX_Texture2D texture2D
+precision highp float;
 `;
         }
         else {
 
             fragCode +=
-                `
+`
+#define VOX_OUT out
+#define VOX_IN in
 #define VOX_TextureCubeLod textureLod
 #define VOX_Texture2DLod textureLod
+#define VOX_Texture2D texture
+precision highp float;
 `;
         }
+        
         let mirrorProjEnabled: boolean = this.mirrorProjEnabled && this.texturesTotal > 1;
         // 毛料表面效果
         if (this.woolEnabled) fragCode += "\n#define VOX_WOOL";
@@ -92,9 +102,6 @@ precision highp float;
 
         console.log("this.texturesTotal: ", this.texturesTotal);
 
-        //  if (this.texturesTotal > 1) fragCode += "\n#define VOX_USE_DIFFUSE_MAP";
-        //  if (this.texturesTotal > 2) fragCode += "\n#define VOX_USE_NORMALE_MAP";
-
         let lightsTotal: number = this.pointLightsTotal + this.parallelLightsTotal;
         if (this.pointLightsTotal > 0) fragCode += "\n#define VOX_POINT_LIGHTS_TOTAL " + this.pointLightsTotal;
         else fragCode += "\n#define VOX_POINT_LIGHTS_TOTAL 0";
@@ -103,13 +110,20 @@ precision highp float;
         if (lightsTotal > 0) fragCode += "\n#define VOX_LIGHTS_TOTAL " + lightsTotal;
         else fragCode += "\n#define VOX_LIGHTS_TOTAL 0";
 
-        let codeHead: string = "\nuniform samplerCube u_sampler0;";
+        let codeHead: string = "";
+        if (RendererDeviece.IsWebGL1()) {
+            codeHead += "\n#define FragOutColor gl_FragColor";
+        }
+        else {
+            codeHead += "\nout vec4 FragOutColor;";
+        }
+        codeHead += "\nuniform samplerCube u_sampler0;";
         if (this.texturesTotal > 1) {
             this.m_has2DMap = true;
             for (let i: number = 1; i < this.texturesTotal; ++i) {
                 codeHead += "\nuniform sampler2D u_sampler" + i + ";";
             }
-            codeHead += "\nin vec2 v_uv;";
+            codeHead += "\nVOX_IN vec2 v_uv;";
         }
 
         if (mirrorProjEnabled) {
@@ -118,29 +132,58 @@ precision highp float;
         }
 
         codeHead += DefaultPBRShaderCode.frag_head;
+        //  const regExp3:RegExp = /\bVOX_IN\b/g;
+        //  codeHead = codeHead.replace(regExp3, "varying");
+        //  //VOX_IN
         let codeBody: string = DefaultPBRShaderCode.frag_body;
         return fragCode + codeHead + codeBody;
     }
     getVtxShaderCode(): string {
 
-        let vtxCode: string =
-`#version 300 es
+        let vtxCode: string = "";
+        if (RendererDeviece.IsWebGL2()) {
+            vtxCode ="#version 300 es"
+        }
+        vtxCode +=
+`
 precision highp float;
 `;
         if (this.normalNoiseEnabled) vtxCode += "\n#define VOX_NORMAL_NOISE";
         if (this.texturesTotal > 1) vtxCode += "\n#define VOX_USE_2D_MAP";
 
         vtxCode += "\n";
-        vtxCode +=
+        if (RendererDeviece.IsWebGL1()) {
+            
+            vtxCode +=
 `
+#define VOX_OUT varying
+attribute vec3 a_vs;
+attribute vec3 a_nvs;
+`;
+                if (this.m_has2DMap) {
+                    vtxCode +=
+`
+attribute vec2 a_uvs;
+`;
+            }
+            vtxCode += "\n"+GLSLConverter.__glslInverseMat3;
+            vtxCode += "\n"+GLSLConverter.__glslInverseMat4;
+        }
+        else {
+
+            vtxCode +=
+`
+#define VOX_OUT out
 layout(location = 0) in vec3 a_vs;
 layout(location = 1) in vec3 a_nvs;
 `;
-        if (this.m_has2DMap) {
-            vtxCode +=
+            if (this.m_has2DMap) {
+                vtxCode +=
 `
 layout(location = 2) in vec2 a_uvs;
 `;
+            }
+            
         }
         vtxCode +=
             `
@@ -149,14 +192,14 @@ uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
 
-out vec3 v_worldPos;
-out vec3 v_worldNormal;
-out vec3 v_camPos;
+VOX_OUT vec3 v_worldPos;
+VOX_OUT vec3 v_worldNormal;
+VOX_OUT vec3 v_camPos;
 `;
         if (this.m_has2DMap) {
             vtxCode +=
-                `
-out vec2 v_uv;
+`
+VOX_OUT vec2 v_uv;
 `;
         }
         vtxCode +=
@@ -319,6 +362,10 @@ export default class DefaultPBRMaterial extends MaterialBase {
         this.absorbEnabled = dst.absorbEnabled;
         this.normalNoiseEnabled = dst.normalNoiseEnabled;
         this.pixelNormalNoiseEnabled = dst.pixelNormalNoiseEnabled;
+
+        this.mirrorProjEnabled = dst.mirrorProjEnabled;
+        this.diffuseMapEnabled = dst.diffuseMapEnabled;
+        this.normalMapEnabled = dst.normalMapEnabled;
 
         this.m_pointLightsTotal = dst.m_pointLightsTotal;
         this.m_parallelLightsTotal = dst.m_parallelLightsTotal;

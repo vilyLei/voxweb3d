@@ -3,6 +3,7 @@ import TextureProxy from "../../../vox/texture/TextureProxy";
 import ImageTextureProxy from "../../../vox/texture/ImageTextureProxy";
 import RendererScene from "../../../vox/scene/RendererScene";
 import RendererDeviece from "../../../vox/render/RendererDeviece";
+import MathConst from "../../../vox/math/MathConst";
 
 export class CanvasTextureTool {
     private m_sc: RendererScene = null;
@@ -35,10 +36,14 @@ export class CanvasTextureTool {
         if(CanvasTextureTool.s_texMap.has(keyStr)) {
             return CanvasTextureTool.s_texMap.get(keyStr);
         }
+        
+        if(RendererDeviece.IsWebGL1()) {
+            size = MathConst.CalcCeilPowerOfTwo(size);
+        }
         let width: number = size;
         let height: number = size;
         if(chars.length > 1) {
-            width = size * chars.length;
+            width = size * chars.length;            
         }
         
         let canvas = document.createElement('canvas');
@@ -51,15 +56,19 @@ export class CanvasTextureTool {
         canvas.style.backgroundColor = 'transparent';
         //canvas.style.pointerEvents = 'none';
 
-        
         let ctx2D = canvas.getContext("2d");
         ctx2D.font = (size - 4) + "px Verdana";
         //ctx2D.textBaseline = "top" || "hanging" || "middle" || "alphabetic" || "ideographic" || "bottom";
         ctx2D.textBaseline = "top";
         var metrics: any = ctx2D.measureText(chars);
         let texWidth: number = metrics.width;
+        
         if(chars.length > 1) {
             width = Math.round(texWidth + 8);
+            if(RendererDeviece.IsWebGL1()) {
+                width = MathConst.CalcCeilPowerOfTwo(width);
+            }
+            //preW = width;
             canvas.width = width;
             ctx2D = canvas.getContext("2d");
             ctx2D.font = (size - 4) + "px Verdana";
@@ -72,10 +81,20 @@ export class CanvasTextureTool {
         ctx2D.fillStyle = fontStyle;
         //ctx2D.fillText(chars, (size - texWidth) * 0.5, size - (size - metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent * 2.0) * 0.5);
         if(RendererDeviece.IsMobileWeb()) {
-            ctx2D.fillText(chars, (width - texWidth) * 0.5, -4);
+            if(RendererDeviece.IsWebGL1()) {
+                ctx2D.fillText(chars, (width - texWidth) - 4, -4);
+            }
+            else {
+                ctx2D.fillText(chars, (width - texWidth) * 0.5, -4);
+            }
         }
         else {
-            ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
+            if(RendererDeviece.IsWebGL1()) {
+                ctx2D.fillText(chars, (width - texWidth) - 4, 4);
+            }
+            else {
+                ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
+            }
         }
         //ctx2D.fillText(chars, (size - texWidth) * 0.5, (size - metrics.fontBoundingBoxDescent) * 0.5);
 

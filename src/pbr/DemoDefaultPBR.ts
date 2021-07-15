@@ -124,11 +124,53 @@ export class DemoDefaultPBR
             this.m_meshMana.lightBaseDis = 900.0;
             this.m_meshMana.loadMeshFile("static/modules/cloth400w.md");
             //*/
-            ///*
+            /*
+            this.m_meshMana.diffuseMapEnabled = true;
+            this.m_meshMana.normalMapEnabled = false;
             this.m_reflectPlaneY = -580.0;
             this.m_meshMana.moduleScale = 3.0;
             this.m_meshMana.offsetPos.setXYZ(0.0,-350.0,0.0);
             this.m_meshMana.loadMeshFile("static/modules/loveass.md");
+            //*/
+            /*
+            this.m_meshMana.diffuseMapEnabled = true;
+            this.m_meshMana.normalMapEnabled = true;
+            this.m_reflectPlaneY = -220.0;
+            this.m_meshMana.moduleScale = 0.5;
+            this.m_meshMana.offsetPos.setXYZ(0.0,200.0,0.0);
+            this.m_meshMana.loadMeshFile("static/modules/stainlessSteel.md");
+            //*/
+            /*
+            this.m_meshMana.diffuseMapEnabled = false;
+            this.m_meshMana.normalMapEnabled = false;
+            this.m_reflectPlaneY = -580.0;
+            this.m_meshMana.moduleScale = 1.0;
+            this.m_meshMana.offsetPos.setXYZ(0.0,-350.0,0.0);
+            this.m_meshMana.loadMeshFile("static/modules/scarf.md");
+            //*/
+            ///*
+            this.m_meshMana.diffuseMapEnabled = false;
+            this.m_meshMana.normalMapEnabled = false;
+            this.m_reflectPlaneY = -200.0;
+            this.m_meshMana.moduleScale = 300.0;
+            this.m_meshMana.offsetPos.setXYZ(0.0,-150.0,0.0);
+            this.m_meshMana.loadMeshFile("static/modules/car.md");
+            //*/
+            /*
+            this.m_meshMana.diffuseMapEnabled = false;
+            this.m_meshMana.normalMapEnabled = false;
+            this.m_reflectPlaneY = -200.0;
+            this.m_meshMana.moduleScale = 600.0;
+            this.m_meshMana.offsetPos.setXYZ(0.0,-150.0,0.0);
+            this.m_meshMana.loadMeshFile("static/modules/bunny.md");
+            //*/
+            /*
+            this.m_meshMana.diffuseMapEnabled = false;
+            this.m_meshMana.normalMapEnabled = false;
+            this.m_reflectPlaneY = -580.0;
+            this.m_meshMana.moduleScale = 1.0;
+            this.m_meshMana.offsetPos.setXYZ(0.0,100.0,0.0);
+            this.m_meshMana.loadMeshFile("static/modules/changClo.md");
             //*/
             ///*
             if(this.m_meshMana != null) {
@@ -147,15 +189,19 @@ export class DemoDefaultPBR
                 this.m_uiModule.initialize(this.m_rscene, this.m_texLoader);
                 this.m_ruisc = this.m_uiModule.ruisc;
                 this.m_uiModule.close();
-
-                let param: PBRParamEntity = new PBRParamEntity();
-                param.entity = this.m_meshMana.entity;
-                param.material = this.m_meshMana.material;
-                param.pbrUI = this.m_uiModule;
-                param.colorPanel = this.m_uiModule.rgbPanel;
-                this.m_uiModule.setParamEntity( param );
-                param.initialize();
-                this.m_paramEntities.push(param);
+                ///*
+                if(this.m_meshMana.entity != null)
+                {
+                    let param: PBRParamEntity = new PBRParamEntity();
+                    param.entity = this.m_meshMana.entity;
+                    param.material = this.m_meshMana.material;
+                    param.pbrUI = this.m_uiModule;
+                    param.colorPanel = this.m_uiModule.rgbPanel;
+                    this.m_uiModule.setParamEntity( param );
+                    param.initialize();
+                    this.m_paramEntities.push(param);
+                }
+                //*/
             }
 
             this.initPlaneReflection();
@@ -169,12 +215,7 @@ export class DemoDefaultPBR
     private initPlaneReflection(): void {
 
         let param: PBRParamEntity;
-        //  let box: Box3DEntity = new Box3DEntity();
-        //  box.uvPartsNumber = 6;
-        //  box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixParts.jpg")]);
-        //  box.setScaleXYZ(2.0, 2.0, 2.0);
-        //  this.m_rscene.addEntity(box, 0);
-        
+
         this.m_fboIns = this.m_rscene.createFBOInstance();
         this.m_fboIns.asynFBOSizeWithViewport();
         this.m_fboIns.setClearRGBAColor4f(0.0,0.0,0.0,1.0);   // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
@@ -200,7 +241,11 @@ export class DemoDefaultPBR
         let toneMaterial: MirrorToneMaterial = new MirrorToneMaterial();
         this.m_toneMaterial = toneMaterial;
 
-        let material: DefaultPBRMaterial = this.m_meshMana.makeTexMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
+        let mEntity: MirrorProjEntity = null;
+        let plane:Plane3DEntity = null;
+        let material: DefaultPBRMaterial;
+        ///*
+        material = this.m_meshMana.makeTexMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
         material.setTextureList( [
             this.m_meshMana.texList[0]
             , this.getImageTexByUrl("static/assets/brickwall_big.jpg")
@@ -211,7 +256,7 @@ export class DemoDefaultPBR
         material.mirrorProjEnabled = true;
         material.diffuseMapEnabled = true;
         material.normalMapEnabled = true;
-        let plane:Plane3DEntity = new Plane3DEntity();
+        plane = new Plane3DEntity();
         plane.flipVerticalUV = true;
         //plane.setMaterial(toneMaterial);
         plane.setMaterial(material);
@@ -224,24 +269,25 @@ export class DemoDefaultPBR
         param.material = material;
         param.pbrUI = this.m_uiModule;
         param.colorPanel = this.m_uiModule.rgbPanel;
-        //this.m_uiModule.setParamEntity( param );
         param.initialize();
         this.m_paramEntities.push(param);
+        //*/
 
         //  let frustrum:FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
         //  frustrum.initiazlize( this.m_rttCamera );
         //  frustrum.setScaleXYZ(0.5,0.5,0.5);
         //  this.m_rscene.addEntity( frustrum, 1);
-
-        let mEntity: MirrorProjEntity = new MirrorProjEntity();
-        mEntity.entity = this.m_meshMana.entity;
-        mEntity.mirrorPlane = plane;
-        this.m_mirrorEntities.push( mEntity );
-
-        let sph:Sphere3DEntity;
+        if(plane != null) {
+            mEntity = new MirrorProjEntity();
+            mEntity.entity = this.m_meshMana.entity;
+            mEntity.mirrorPlane = plane;
+            this.m_mirrorEntities.push( mEntity );
+        }
+        let sph: Sphere3DEntity;
         let rad: number;
         let radius: number;
-        for(let i: number = 0; i < 5; ++i) {
+        for(let i: number = 0; i < 3; ++i) {
+
             rad = Math.random() * 100.0;
             radius = Math.random() * 250.0 + 550.0;
             material = this.m_meshMana.makeTexMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
@@ -249,7 +295,6 @@ export class DemoDefaultPBR
             sph = new Sphere3DEntity();
             sph.setMaterial( material );
             sph.initialize(80 + Math.random() * 100.0,20,20);
-            //sph.setXYZ(680,100,280);
             sph.setXYZ(radius * Math.cos(rad), Math.random() * 500.0, radius * Math.sin(rad));
             this.m_rscene.addEntity(sph);
     
@@ -298,8 +343,11 @@ export class DemoDefaultPBR
         //*/
 
         this.update();
-        let stage = this.m_ruisc.getStage3D();
-        this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
+        if(this.m_ruisc != null) {
+
+            let stage = this.m_ruisc.getStage3D();
+            this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
+        }
         this.m_stageDragSwinger.runWithYAxis();
         this.m_CameraZoomController.run(Vector3D.ZERO, 30.0);
 
@@ -384,10 +432,8 @@ export class DemoDefaultPBR
     private selectEdgeTarget(): DisplayEntity {
         
         let entity:DisplayEntity = null;
-        //let material: DefaultPBRMaterial = null;
         if(this.m_uiModule.isOpen() && this.m_uiModule.getParamEntity() != null) {
             entity = this.m_uiModule.getParamEntity().entity;
-            //material = this.m_uiModule.getParamEntity().material;
             if(!entity.isInRenderer()) {
                 entity = null;
             }
@@ -405,7 +451,7 @@ export class DemoDefaultPBR
             entity.getScaleXYZ(scaleV);
             let material: DefaultPBRMaterial = entity.getMaterial() as DefaultPBRMaterial;
             RendererState.SetStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);
-            RendererState.SetStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF); 
+            RendererState.SetStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF);
             RendererState.SetStencilMask(0xFF);
             entity.setVisible( true );
             this.m_rscene.drawEntity(entity);
@@ -414,7 +460,9 @@ export class DemoDefaultPBR
             RendererState.SetStencilMask(0x0);
             let identity: number = material.getToneMapingExposure();
             material.setToneMapingExposure(32.0);
-            entity.setScaleXYZ(scaleV.x + 0.1, scaleV.y + 0.1, scaleV.z + 0.1);
+
+            let ds: number = 1.0 + 20.0/Math.max(entity.getGlobalBounds().getLong(), entity.getGlobalBounds().getWidth(),entity.getGlobalBounds().getHeight());
+            entity.setScaleXYZ(scaleV.x * ds, scaleV.y * ds, scaleV.z * ds);
             entity.update();
             this.m_rscene.drawEntity(entity);
 

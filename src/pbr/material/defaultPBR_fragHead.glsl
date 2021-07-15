@@ -1,11 +1,9 @@
 
 // default pbr glsl
 
-out vec4 FragColor;
-
-in vec3 v_worldPos;
-in vec3 v_worldNormal;
-in vec3 v_camPos;
+VOX_IN vec3 v_worldPos;
+VOX_IN vec3 v_worldNormal;
+VOX_IN vec3 v_camPos;
 
 // material parameters
 uniform vec4 u_albedo;
@@ -401,7 +399,7 @@ vec3 rand(vec3 seed) {
 #ifdef VOX_USE_NORMALE_MAP
 vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 wpos, vec3 nv)
 {
-    vec3 tangentNormal = texture(texSampler, texUV).xyz * 2.0 - 1.0;
+    vec3 tangentNormal = VOX_Texture2D(texSampler, texUV).xyz * 2.0 - 1.0;
 
     vec3 Q1  = dFdx(wpos);
     vec3 Q2  = dFdy(wpos);

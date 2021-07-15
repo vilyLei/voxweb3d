@@ -31,8 +31,7 @@
 //  import * as DemoQuadLine from "./demo/DemoQuadLine";
 //  import Demo = DemoQuadLine.demo.DemoQuadLine;
 
-//  import * as DemoObjModel from "./demo/DemoObjModel";
-//  import Demo = DemoObjModel.demo.DemoObjModel;
+//  import {DemoObjModel as Demo} from "./demo/DemoObjModel";
 
 //  import * as DemoTexture from "./demo/DemoTexture";
 //  import Demo = DemoTexture.demo.DemoTexture;

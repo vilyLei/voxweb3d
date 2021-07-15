@@ -29,4 +29,5 @@ export default interface IPBRParamEntity {
     select(): void;
     deselect(): void;
 
+    updateColor(): void;
 }

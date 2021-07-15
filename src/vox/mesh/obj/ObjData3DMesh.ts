@@ -35,12 +35,12 @@ export default class ObjData3DMesh extends MeshBase
         this.m_vs = new Float32Array( this.m_parser.getVS() );
         this.m_uvs = new Float32Array( this.m_parser.getUVS() );
         this.m_ivs = new Uint16Array( this.m_parser.getIVS() );
-        //
+        
         this.bounds = new AABB();
         this.bounds.addXYZFloat32Arr(this.m_vs);
         this.bounds.update();
         this.vtxTotal = this.m_vs.length / 3;
-        //
+        
         ROVertexBuffer.Reset();
         ROVertexBuffer.AddFloat32Data(this.m_vs,3);
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX))

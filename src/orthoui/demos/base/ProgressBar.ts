@@ -117,7 +117,6 @@ export class ProgressBar {
             nameBtn.initialize(0.0, 0.0, tex.getWidth(), size, [tex]);
             nameBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
             nameBtn.setXYZ(-1.0 * nameBtn.getWidth() - 1.0,0.0,0.0);
-            //this.m_ruisc.addEntity(nameBtn);
             container.addEntity(nameBtn);
 
             this.m_nameBtn = nameBtn;

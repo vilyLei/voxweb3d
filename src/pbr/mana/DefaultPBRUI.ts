@@ -24,6 +24,9 @@ import Vector3D from "../../vox/math/Vector3D";
 import IPBRUI from "./IPBRUI";
 import { ColorParamUnit } from "./PBRParamUnit";
 import IPBRParamEntity from "./IPBRParamEntity";
+import ColorRectImgButton from "../../orthoui/button/ColorRectImgButton";
+import RendererState from "../../vox/render/RendererState";
+import MathConst from "../../vox/math/MathConst";
 
 export class DefaultPBRUI implements IPBRUI {
     constructor() { }
@@ -76,7 +79,7 @@ export class DefaultPBRUI implements IPBRUI {
         this.m_menuBtn.deselect(true);
     }
     isOpen(): boolean {
-        return !this.m_menuBtn.isSelected();
+        return this.m_menuBtn != null && !this.m_menuBtn.isSelected();
     }
     private initUIScene(): void {
 
@@ -101,7 +104,7 @@ export class DefaultPBRUI implements IPBRUI {
     }
 
     private initUI(): void {
-
+        
         this.initCtrlBars();
 
     }
@@ -171,7 +174,11 @@ export class DefaultPBRUI implements IPBRUI {
         if (RendererDeviece.IsMobileWeb()) {
             this.m_btnSize = 64;
             this.m_btnPX = 280;
-            this.m_btnPY = 30;
+            this.m_btnPY = 30;            
+        }
+        if(RendererDeviece.IsWebGL1()) {
+            this.m_btnPX += 32;
+            this.m_btnSize = MathConst.CalcCeilPowerOfTwo(this.m_btnSize);
         }
         this.m_menuBtn = this.createSelectBtn("", "menuCtrl", "Menu Open", "Menu Close", false, true);
         ///*
@@ -270,9 +277,11 @@ export class DefaultPBRUI implements IPBRUI {
         if (material != null) {
             this.m_rscene.removeEntity(this.m_paramEntity.entity);
             material.initializeByCodeBuf(true);
+            this.m_paramEntity.material = material;
             this.m_paramEntity.entity.setMaterial(material);
             this.m_rscene.addEntity(this.m_paramEntity.entity);
             this.m_paramEntity.material = material;
+            this.m_paramEntity.updateColor();
         }
         if (this.rgbPanel != null) this.rgbPanel.close();
     }

@@ -28,6 +28,11 @@ export default class Plane3DEntity extends DisplayEntity {
     readonly color2:Color4 = new Color4();
     readonly color3:Color4 = new Color4();
     
+    offsetU:number = 0.0;
+    offsetV:number = 0.0;
+    uScale:number = 1.0;
+    vScale:number = 1.0;
+
     flipVerticalUV: boolean = false;
     vtxColorEnabled: boolean = false;
     premultiplyAlpha: boolean = false;
@@ -183,6 +188,11 @@ export default class Plane3DEntity extends DisplayEntity {
             mesh.color1.copyFrom( this.color1 );
             mesh.color2.copyFrom( this.color2 );
             mesh.color3.copyFrom( this.color3 );
+            
+            mesh.uScale = this.uScale;
+            mesh.vScale = this.vScale;
+            mesh.offsetU = this.offsetU;
+            mesh.offsetV = this.offsetV;
 
             mesh.flipVerticalUV = this.flipVerticalUV;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;

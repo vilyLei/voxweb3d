@@ -39,7 +39,7 @@ export default class MaterialBase implements IRenderMaterial
         }
         return this.getShaderData() != null;
     }
-    initialize(shdCode_uniqueName:string,shdCode_vshdCode:string,shdCode_fshdCode:string):void
+    initialize(shdCode_uniqueName:string,shdCode_vshdCode:string,shdCode_fshdCode:string,adaptationEnabled: boolean = true):void
     {
         if(this.getShaderData() == null)
         {
@@ -52,6 +52,7 @@ export default class MaterialBase implements IRenderMaterial
                     shdCode_uniqueName
                     , shdCode_vshdCode
                     , shdCode_fshdCode
+                    , adaptationEnabled
                 );
             }
             this.m_shduns = shdCode_uniqueName;
@@ -113,6 +114,7 @@ export default class MaterialBase implements IRenderMaterial
                         shdCode_uniqueName
                         , shdCode_vshdCode
                         , shdCode_fshdCode
+                        , buf.adaptationEnabled
                     );
                 }
                 ShaderCodeBuffer.UseShaderBuffer(null);

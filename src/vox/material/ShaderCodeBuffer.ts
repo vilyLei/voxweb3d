@@ -13,13 +13,17 @@ class ShaderCodeBuffer
 {
     private static ___s_csBuf:ShaderCodeBuffer = null;
     protected static s_coder:ShaderCodeBuilder = new ShaderCodeBuilder();
+
+    private m_texList:IRenderTexture[] = null;
+    private m_texEnabled:boolean = true;
+
+    vtxColorEnabled: boolean = false;
+    premultiplyAlpha: boolean = false;
+
+    adaptationEnabled: boolean = true;
     constructor()
     {
     }
-    private m_texList:IRenderTexture[] = null;
-    private m_texEnabled:boolean = true;
-    vtxColorEnabled: boolean = false;
-    premultiplyAlpha: boolean = false;
     initialize(texEnabled:boolean):void
     {
         if(ShaderCodeBuffer.___s_csBuf != null)

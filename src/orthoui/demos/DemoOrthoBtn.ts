@@ -64,6 +64,7 @@ export class DemoOrthoBtn {
             RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
             let rparam: RendererParam = new RendererParam();
+            //rparam.maxWebGLVersion = 1;
             rparam.setCamPosition(800.0, 800.0, 800.0);
             rparam.setAttriAntialias(true);
             //rparam.setAttriStencil(true);
@@ -89,19 +90,19 @@ export class DemoOrthoBtn {
 
             let plane: Plane3DEntity;
 
-            plane = new Plane3DEntity();
-            plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
-            this.m_rscene.addEntity(plane);
-            this.m_plane = plane;
+            //  plane = new Plane3DEntity();
+            //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
+            //  this.m_rscene.addEntity(plane);
+            //  this.m_plane = plane;
 
-            plane = new Plane3DEntity();
-            plane.initializeXOZ(-200.0, -200.0, 400.0, 400.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
-            plane.setXYZ(0.0, 50.0, 0.0);
-            this.m_rscene.addEntity(plane);
-            this.m_plane2 = plane;
+            //  plane = new Plane3DEntity();
+            //  plane.initializeXOZ(-200.0, -200.0, 400.0, 400.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
+            //  plane.setXYZ(0.0, 50.0, 0.0);
+            //  this.m_rscene.addEntity(plane);
+            //  this.m_plane2 = plane;
 
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-            this.m_statusDisp.initialize("rstatus", this.m_rscene.getStage3D().viewWidth - 200);
+            this.m_statusDisp.initialize("rstatus", 300);
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDown);
@@ -138,7 +139,125 @@ export class DemoOrthoBtn {
 
         this.initUI();
     }
+    
+    private m_btnSize: number = 24;
+    private m_bgLength: number = 200.0;
+    private m_btnPX: number = 102.0;
+    private m_btnPY: number = 10.0;
+
+    private m_btns: any[] = [];
+    private m_menuBtn: SelectionBar = null;
+    private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionBar {
+
+        let selectBar: SelectionBar = new SelectionBar();
+        selectBar.uuid = uuid;
+        selectBar.initialize(this.m_ruisc, ns, selectNS, deselectNS, this.m_btnSize);
+        selectBar.addEventListener(SelectionEvent.SELECT, this, this.selectChange);
+        if (flag) {
+            selectBar.select(false);
+        }
+        else {
+            selectBar.deselect(false);
+        }
+        selectBar.setXY(this.m_btnPX, this.m_btnPY);
+        this.m_btnPY += this.m_btnSize + 1;
+        if (!visibleAlways) this.m_btns.push(selectBar);
+        return selectBar;
+    }
+    private createProgressBtn(ns: string, uuid: string, progress: number, visibleAlways: boolean = false): ProgressBar {
+
+        let proBar: ProgressBar = new ProgressBar();
+        proBar.uuid = uuid;
+        proBar.initialize(this.m_ruisc, ns, this.m_btnSize, this.m_bgLength);
+        proBar.setProgress(progress, false);
+        proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.progressChange);
+        proBar.setXY(this.m_btnPX, this.m_btnPY);
+        this.m_btnPY += this.m_btnSize + 1;
+        if (!visibleAlways) this.m_btns.push(proBar);
+        return proBar;
+    }
+
+    private createValueBtn(ns: string, uuid: string, value: number, minValue: number, maxValue: number, visibleAlways: boolean = false): ProgressBar {
+
+        let proBar: ProgressBar = new ProgressBar();
+        proBar.uuid = uuid;
+        proBar.initialize(this.m_ruisc, ns, this.m_btnSize, this.m_bgLength);
+        proBar.minValue = minValue;
+        proBar.maxValue = maxValue;
+        proBar.setValue(value, false);
+
+        proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.progressChange);
+        proBar.setXY(this.m_btnPX, this.m_btnPY);
+        this.m_btnPY += this.m_btnSize + 1;
+        if (!visibleAlways) this.m_btns.push(proBar);
+        return proBar;
+    }
+    private initCtrlBars(): void {
+
+        if (RendererDeviece.IsMobileWeb()) {
+            this.m_btnSize = 64;
+            this.m_btnPX = 280;
+            this.m_btnPY = 30;            
+        }
+        if(RendererDeviece.IsWebGL1()) {
+            this.m_btnPX += 32;
+        }
+
+        
+        this.m_menuBtn = this.createSelectBtn("", "menuCtrl", "Menu Open", "Menu Close", false, true);
+        ///*
+        this.metalBtn = this.createProgressBtn("metal", "metal", 0.5);
+        this.roughBtn = this.createProgressBtn("rough", "rough", 0.5);
+        this.noiseBtn = this.createProgressBtn("noise", "noise", 0.07);
+        this.reflectionBtn = this.createProgressBtn("reflection", "reflection", 0.5);
+
+        this.sideBtn = this.createValueBtn("side", "side", 1.0, 0.1, 30.0);
+        ///*
+        this.surfaceBtn = this.createValueBtn("surface", "surface", 1.0, 0.1, 30.0);
+        this.scatterBtn = this.createValueBtn("scatter", "scatter", 1.0, 0.1, 128.0);
+        this.toneBtn = this.createValueBtn("tone", "tone", 2.0, 0.1, 128.0);
+        ///*
+        this.createSelectBtn("absorb", "absorb", "ON", "OFF", false);
+        this.createSelectBtn("vtxNoise", "vtxNoise", "ON", "OFF", false);
+
+        this.f0ColorBtn = this.createValueBtn("F0Color", "F0Color", 1.0, 0.01, 32.0);
+        this.albedoBtn = this.createValueBtn("albedo", "albedo", 0.2, 0.01, 5.0);
+        this.ambientBtn = this.createValueBtn("ambient", "ambient", 0.1, 0.01, 1.0);
+        this.specularBtn = this.createValueBtn("specular", "specular", 1.0, 0.01, 1.0);
+        //*/
+    }
+    
+    metalBtn: ProgressBar;
+    roughBtn: ProgressBar;
+    noiseBtn: ProgressBar;
+    reflectionBtn: ProgressBar;
+    sideBtn: ProgressBar;
+    surfaceBtn: ProgressBar;
+    scatterBtn: ProgressBar;
+    toneBtn: ProgressBar;
+    f0ColorBtn: ProgressBar;
+    albedoBtn: ProgressBar;
+    ambientBtn: ProgressBar;
+    specularBtn: ProgressBar;
     private initUI(): void {
+
+        this.initCtrlBars();
+        return;
+        /*
+        let size: number = 32;
+        let tex:TextureProxy = CanvasTextureTool.GetInstance().createCharTexture("AAXX", size, "rgba(180,180,180,1.0)");
+        let nameBtn: ColorRectImgButton = new ColorRectImgButton();
+        nameBtn.premultiplyAlpha = true;
+        nameBtn.flipVerticalUV = true;
+        nameBtn.outColor.setRGB3f(1.0, 1.0, 1.0);
+        nameBtn.overColor.setRGB3f(1.0, 1.0, 0.0);
+        nameBtn.downColor.setRGB3f(1.0, 0.0, 1.0);
+        nameBtn.initialize(0.0, 0.0, tex.getWidth(), size, [tex]);
+        nameBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+        nameBtn.setXYZ(100,200.0,0.0);
+        this.m_ruisc.addEntity(nameBtn);
+        //*/
+        /*
         let size: number = 64;
         let px: number = 200;
         let py: number = 10;
@@ -149,6 +268,7 @@ export class DemoOrthoBtn {
         proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.progressChange);
         proBar.setXY(px, py);
         py += 64 + 1;
+        //*/
         /*
         let selectBar: SelectionBar = new SelectionBar();
         selectBar.initialize(this.m_ruisc, "select");
@@ -269,7 +389,7 @@ export class DemoOrthoBtn {
 
         this.m_stageDragSwinger.runWithYAxis();
         this.m_CameraZoomController.run(Vector3D.ZERO, 30.0);
-        
+        this.m_rscene.setClearRGBColor3f(0.0, 0.2, 0.0);
         let renderingType: number = 1;
         if(renderingType < 1) {
             // current rendering strategy
