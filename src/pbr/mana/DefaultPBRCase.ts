@@ -123,6 +123,7 @@ export default class DefaultPBRCase {
     this.texList = [
       null
       , this.getImageTexByUrl("static/assets/brickwall_big.jpg")
+      //, this.getImageTexByUrl("static/assets/color_02.jpg")
       //, this.getImageTexByUrl("static/assets/default.jpg")
       , this.getImageTexByUrl("static/assets/brickwall_normal.jpg")
       //, this.getImageTexByUrl("static/assets/disp/lava_03_NRM.png")

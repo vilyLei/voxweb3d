@@ -1,14 +1,9 @@
 
 // default pbr glsl
 
-VOX_IN vec3 v_worldPos;
-VOX_IN vec3 v_worldNormal;
-VOX_IN vec3 v_camPos;
-
 // material parameters
 uniform vec4 u_albedo;
 uniform vec4 u_params[4];
-uniform vec4 u_F0;
 
 // point and parallel lights
 #if VOX_LIGHTS_TOTAL > 0
@@ -26,6 +21,7 @@ uniform vec4 u_F0;
 #define EPSILON 1e-6
 
 const vec3 vec3One = vec3(1.0);
+//const vec3 vec3_Z = vec3(0.0,0.0,1.0);
 // ----------------------------------------------------------------------------
 
 // handy value clamping to 0 - 1 range
@@ -411,6 +407,7 @@ vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 wpos, vec3 nv)
     vec3 B  = -normalize(cross(N, T));
     mat3 TBN = mat3(T, B, N);
 
-    return normalize(TBN * tangentNormal);
+    return TBN * tangentNormal;
+    //return normalize(TBN * tangentNormal);
 }
 #endif

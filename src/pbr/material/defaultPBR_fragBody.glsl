@@ -15,7 +15,7 @@ void main()
     
     vec3 N = v_worldNormal;
     #ifdef VOX_NORMAL_MAP
-        N = getNormalFromMap(VOX_NORMAL_MAP, v_uv.xy, v_worldPos.xyz, v_worldNormal.xyz);
+        N = normalize(mix(v_worldNormal.xyz, getNormalFromMap(VOX_NORMAL_MAP, v_uv.xy, v_worldPos.xyz, v_worldNormal.xyz),u_paramLocal[0].w));
     #endif
     #ifdef VOX_PIXEL_NORMAL_NOISE
         N = normalize(N + rand(N) * u_params[0].w);
@@ -32,7 +32,7 @@ void main()
     #endif
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
-    vec3 F0 = u_F0.xyz + vec3(0.04);
+    vec3 F0 = u_paramLocal[0].xyz + vec3(0.04);
     F0 = mix(F0, albedo.xyz, metallic);
 
     vec3 diffuseColor = albedo.xyz;

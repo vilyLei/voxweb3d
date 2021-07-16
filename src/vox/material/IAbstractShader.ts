@@ -8,6 +8,8 @@
 export default interface IAbstractShader
 {
     vert: string;
+    vert_head: string;
+    vert_body: string;
     frag: string;
     frag_head: string;
     frag_body: string;

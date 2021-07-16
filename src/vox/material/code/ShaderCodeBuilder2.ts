@@ -8,17 +8,17 @@
 
 import RendererDeviece from "../../../vox/render/RendererDeviece";
 
-export default class ShaderCodeBuilder {
+export default class ShaderCodeBuilder2 {
 
     private m_versionDeclare: string =
-        `#version 300 es
+`#version 300 es
 `;
     private m_preciousCode: string =
-        `
+`
 precision mediump float;
 `;
     private m_mainBeginCode: string =
-        `
+`
 \nvoid main(){
 `;
     private m_mainEndCode: string =
@@ -61,6 +61,8 @@ precision mediump float;
     private m_vertMainCode: string = "";
     private m_fragMainCode: string = "";
 
+    normalMapEanbled: boolean = false;
+    mapLodEanbled: boolean = false;
     constructor() { }
 
     reset() {
@@ -98,7 +100,7 @@ precision mediump float;
         this.m_textureSampleTypes = [];
     }
     useHighPrecious(): void {
-        this.m_preciousCode = "precision high float;";
+        this.m_preciousCode = "precision highp float;";
     }
     useMediumPrecious(): void {
         this.m_preciousCode = "precision mediump float;";
@@ -180,7 +182,30 @@ precision mediump float;
             code += "\n" + this.m_fragExt[i];
         }
 
-        code += this.m_preciousCode;
+        if(RendererDeviece.IsWebGL1()) {
+            if(this.normalMapEanbled) {
+                code += "\n#extension GL_OES_standard_derivatives : enable";
+            }
+            if(this.mapLodEanbled) {
+                code += "\n#extension GL_EXT_shader_texture_lod : enable";
+            }
+        }
+        
+        if(RendererDeviece.IsWebGL2()) {
+            code += "\n#define VOX_IN in";
+            code += "\n#define VOX_TextureCubeLod textureLod";
+            code += "\n#define VOX_Texture2DLod textureLod";
+            code += "\n#define VOX_Texture2D texture";
+            
+        }
+        else {
+            code += "\n#define VOX_IN varying";
+            code += "\n#define VOX_TextureCubeLod textureCubeLodEXT";
+            code += "\n#define VOX_Texture2DLod texture2DLodEXT";
+            code += "\n#define VOX_Texture2D texture2D";
+        }
+
+        code += "\n"+this.m_preciousCode;
 
         len = this.m_defineNames.length;
         for (i = 0; i < len; i++) {
@@ -189,6 +214,23 @@ precision mediump float;
             }
             else {
                 code += "\n#define " + this.m_defineNames[i];
+            }
+        }
+
+        i = 0;
+        len = this.m_fragOutputNames.length;
+        if(RendererDeviece.IsWebGL2()) {
+            for (; i < len; i++) {
+                code += "\nlayout(location = "+i+") out " + this.m_fragOutputTypes[i] + " " + this.m_fragOutputNames[i] + ";";
+            }
+        } else {
+            if(len < 2) {
+                code += "\n#define " + this.m_fragOutputNames[i] + " gl_FragColor";
+            }
+            else {
+                for (; i < len; i++) {
+                    code += "\nout " + this.m_fragOutputTypes[i] + " " + this.m_fragOutputNames[i] + ";";
+                }
             }
         }
 
@@ -202,10 +244,17 @@ precision mediump float;
         for (; i < len; i++) {
             code += "\nuniform " + this.m_fragUniformTypes[i] + " " + this.m_fragUniformNames[i] + ";";
         }
-        i = 0;
+        
         len = this.m_varyingNames.length;
-        for (; i < len; i++) {
-            code += "\nin " + this.m_varyingTypes[i] + " " + this.m_varyingNames[i] + ";";
+        if(RendererDeviece.IsWebGL2()) {
+            for (i = 0; i < len; i++) {
+                code += "\nin " + this.m_varyingTypes[i] + " " + this.m_varyingNames[i] + ";";
+            }
+        }
+        else {
+            for (i = 0; i < len; i++) {
+                code += "\nvarying " + this.m_varyingTypes[i] + " " + this.m_varyingNames[i] + ";";
+            }
         }
 
         i = 0;
@@ -214,17 +263,10 @@ precision mediump float;
             code += "\n" + this.m_fragFunctionBlocks[i];
         }
 
-        i = 0;
-        len = this.m_fragOutputNames.length;
-        for (; i < len; i++) {
-            code += "\nout " + this.m_fragOutputTypes[i] + " " + this.m_fragOutputNames[i] + ";";
-        }
 
-        code += this.m_mainBeginCode;
-
-        code += this.m_fragMainCode;
-
-        code += this.m_mainEndCode;
+        //  code += this.m_mainBeginCode;
+        //  code += this.m_fragMainCode;
+        //  code += this.m_mainEndCode;
         return code;
     }
     buildVertCode(): string {
@@ -242,8 +284,14 @@ precision mediump float;
             code += "\n" + this.m_vertExt[i];
         }
 
-        code += this.m_preciousCode;
+        code += "\n"+this.m_preciousCode;
 
+        if(RendererDeviece.IsWebGL2()) {
+            code += "\n#define VOX_OUT in";
+        }
+        else {
+            code += "\n#define VOX_OUT varying";
+        }
         len = this.m_defineNames.length;
         for (i = 0; i < len; i++) {
             if (this.m_defineValues[i] != "") {
@@ -255,8 +303,16 @@ precision mediump float;
         }
 
         len = this.m_vertLayoutNames.length;
-        for (i = 0; i < len; i++) {
-            code += "\nlayout(location = " + i + ") in " + this.m_vertLayoutTypes[i] + " " + this.m_vertLayoutNames[i] + ";";
+        if(RendererDeviece.IsWebGL2()) {
+            for (i = 0; i < len; i++) {
+                code += "\nlayout(location = " + i + ") in " + this.m_vertLayoutTypes[i] + " " + this.m_vertLayoutNames[i] + ";";
+            }
+        }
+        else {
+
+            for (i = 0; i < len; i++) {
+                code += "\nattribute " + this.m_vertLayoutTypes[i] + " " + this.m_vertLayoutNames[i] + ";";
+            }
         }
 
         len = this.m_vertUniformTypes.length;
@@ -267,9 +323,18 @@ precision mediump float;
         if (this.m_viewMat) code += "\nuniform mat4 u_viewMat;";
         if (this.m_projMat) code += "\nuniform mat4 u_projMat;";
 
+        
         len = this.m_varyingNames.length;
-        for (i = 0; i < len; i++) {
-            code += "\nout " + this.m_varyingTypes[i] + " " + this.m_varyingNames[i] + ";";
+        if(RendererDeviece.IsWebGL2()) {
+            for (i = 0; i < len; i++) {
+                code += "\nout " + this.m_varyingTypes[i] + " " + this.m_varyingNames[i] + ";";
+            }
+        }
+        else {
+            for (i = 0; i < len; i++) {
+                code += "\nvarying " + this.m_varyingTypes[i] + " " + this.m_varyingNames[i] + ";";
+            }
+
         }
 
         i = 0;
@@ -278,11 +343,9 @@ precision mediump float;
             code += "\n" + this.m_vertFunctionBlocks[i];
         }
 
-        code += this.m_mainBeginCode;
-
-        code += this.m_vertMainCode;
-
-        code += this.m_mainEndCode;
+        //  code += this.m_mainBeginCode;
+        //  code += this.m_vertMainCode;
+        //  code += this.m_mainEndCode;
         return code;
     }
 }

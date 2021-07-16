@@ -15,7 +15,6 @@ import MathConst from "../../vox/math/MathConst";
 import { DefaultPBRShaderCode } from "./DefaultPBRShaderCode";
 import Color4 from "../../vox/material/Color4";
 
-import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
 class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
@@ -50,103 +49,163 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
         //  console.log("DefaultPBR",DefaultPBR);
         //  console.log("DefaultPBR.frag",DefaultPBR.frag);
         //  console.log("DefaultPBR end.");
+
+        let fragCode: string = "";
+        if (RendererDeviece.IsWebGL2()) {
+            fragCode = "#version 300 es";
+        }
+        if (RendererDeviece.IsWebGL1()) {
+
+            fragCode +=
+`
+#extension GL_OES_standard_derivatives : enable
+#extension GL_EXT_shader_texture_lod : enable
+#define VOX_IN varying
+#define VOX_TextureCubeLod textureCubeLodEXT
+#define VOX_Texture2DLod texture2DLodEXT
+#define VOX_Texture2D texture2D
+precision highp float;
+`;
+        }
+        else {
+
+            fragCode +=
+`
+#define VOX_OUT out
+#define VOX_IN in
+#define VOX_TextureCubeLod textureLod
+#define VOX_Texture2DLod textureLod
+#define VOX_Texture2D texture
+precision highp float;
+`;
+        }
+        
+        let mirrorProjEnabled: boolean = this.mirrorProjEnabled && this.texturesTotal > 1;
+        // 毛料表面效果
+        if (this.woolEnabled) fragCode += "\n#define VOX_WOOL";
+        if (this.toneMappingEnabled) fragCode += "\n#define VOX_TONE_MAPPING";
+        if (this.envMapEnabled) fragCode += "\n#define VOX_ENV_MAP";
+        if (this.scatterEnabled) fragCode += "\n#define VOX_SCATTER";
+        if (this.specularBleedEnabled) fragCode += "\n#define VOX_SPECULAR_BLEED";
+        if (this.metallicCorrection) fragCode += "\n#define VOX_METALLIC_CORRECTION";
+        if (this.gammaCorrection) fragCode += "\n#define VOX_GAMMA_CORRECTION";
+        if (this.absorbEnabled) fragCode += "\n#define VOX_ABSORB";
+        if (this.pixelNormalNoiseEnabled) fragCode += "\n#define VOX_PIXEL_NORMAL_NOISE";
+        
+        let texIndex: number = 1;
+        if (this.diffuseMapEnabled && this.texturesTotal > 1) fragCode += "\n#define VOX_DIFFUSE_MAP u_sampler"+(texIndex++);
+        if (this.normalMapEnabled && this.texturesTotal > 1) {
+            fragCode += "\n#define VOX_USE_NORMALE_MAP";
+            fragCode += "\n#define VOX_NORMAL_MAP u_sampler"+(texIndex++);
+        }
+        if (mirrorProjEnabled) fragCode += "\n#define VOX_MIRROR_PROJ_MAP u_sampler"+(texIndex++);
+
+        console.log("this.texturesTotal: ", this.texturesTotal);
+
+        let lightsTotal: number = this.pointLightsTotal + this.parallelLightsTotal;
+        if (this.pointLightsTotal > 0) fragCode += "\n#define VOX_POINT_LIGHTS_TOTAL " + this.pointLightsTotal;
+        else fragCode += "\n#define VOX_POINT_LIGHTS_TOTAL 0";
+        if (this.parallelLightsTotal > 0) fragCode += "\n#define VOX_PARALLEL_LIGHTS_TOTAL " + this.parallelLightsTotal;
+        else fragCode += "\n#define VOX_PARALLEL_LIGHTS_TOTAL 0";
+        if (lightsTotal > 0) fragCode += "\n#define VOX_LIGHTS_TOTAL " + lightsTotal;
+        else fragCode += "\n#define VOX_LIGHTS_TOTAL 0";
+
+        let codeHead: string = "";
+        if (RendererDeviece.IsWebGL1()) {
+            codeHead += "\n#define FragOutColor gl_FragColor";
+        }
+        else {
+            codeHead += "\nout vec4 FragOutColor;";
+        }
+        codeHead += "\nuniform samplerCube u_sampler0;";
         if (this.texturesTotal > 1) {
             this.m_has2DMap = true;
+            for (let i: number = 1; i < this.texturesTotal; ++i) {
+                codeHead += "\nuniform sampler2D u_sampler" + i + ";";
+            }
+            codeHead += "\nVOX_IN vec2 v_uv;";
         }
-        this.buildThisCode();
 
-        let codeHead: string = this.m_codeBuilder.buildFragCode();
+        if (mirrorProjEnabled) {
+            codeHead += "\nuniform vec4 u_stageParam;";
+            codeHead += "\nuniform vec4 u_mirrorProjNV;";
+        }
+
         codeHead += DefaultPBRShaderCode.frag_head;
         //  const regExp3:RegExp = /\bVOX_IN\b/g;
         //  codeHead = codeHead.replace(regExp3, "varying");
         //  //VOX_IN
         let codeBody: string = DefaultPBRShaderCode.frag_body;
-        return codeHead + codeBody;
-    }
-    private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
-    private buildThisCode():void
-    {
-        let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
-        coder.normalMapEanbled = this.normalMapEnabled;
-        coder.mapLodEanbled = true;
-        coder.reset();
-        coder.useHighPrecious();
-        //  if(RendererDeviece.IsWebGL1()) {
-        //      coder.addFragExtend("#extension GL_OES_standard_derivatives : enable");
-        //      coder.addFragExtend("#extension GL_EXT_shader_texture_lod : enable");
-        //  }
-        
-        let mirrorProjEnabled: boolean = this.mirrorProjEnabled && this.texturesTotal > 1;
-        if (this.normalNoiseEnabled) coder.addDefine("VOX_NORMAL_NOISE");
-        if (this.texturesTotal > 1) coder.addDefine("VOX_USE_2D_MAP");
-        
-        // 毛料表面效果
-        if (this.woolEnabled) coder.addDefine("VOX_WOOL");
-        if (this.toneMappingEnabled) coder.addDefine("VOX_TONE_MAPPING");
-        if (this.envMapEnabled) coder.addDefine("VOX_ENV_MAP");
-        if (this.scatterEnabled) coder.addDefine("VOX_SCATTER");
-        if (this.specularBleedEnabled) coder.addDefine("VOX_SPECULAR_BLEED");
-        if (this.metallicCorrection) coder.addDefine("VOX_METALLIC_CORRECTION");
-        if (this.gammaCorrection) coder.addDefine("VOX_GAMMA_CORRECTION");
-        if (this.absorbEnabled) coder.addDefine("VOX_ABSORB");
-        if (this.pixelNormalNoiseEnabled) coder.addDefine("VOX_PIXEL_NORMAL_NOISE");
-
-        
-        let texIndex: number = 1;
-        if (this.diffuseMapEnabled && this.texturesTotal > 1) coder.addDefine("VOX_DIFFUSE_MAP","u_sampler"+(texIndex++));
-        if (this.normalMapEnabled && this.texturesTotal > 1) {
-            coder.addDefine("VOX_USE_NORMALE_MAP");
-            coder.addDefine("VOX_NORMAL_MAP","u_sampler"+(texIndex++));
-        }
-        if (mirrorProjEnabled) coder.addDefine("VOX_MIRROR_PROJ_MAP", "u_sampler"+(texIndex++));
-
-        console.log("this.texturesTotal: ", this.texturesTotal);
-
-        let lightsTotal: number = this.pointLightsTotal + this.parallelLightsTotal;
-        if (this.pointLightsTotal > 0)  coder.addDefine("VOX_POINT_LIGHTS_TOTAL", ""+this.pointLightsTotal);
-        else coder.addDefine("VOX_POINT_LIGHTS_TOTAL","0");
-        if (this.parallelLightsTotal > 0) coder.addDefine("VOX_PARALLEL_LIGHTS_TOTAL", ""+this.parallelLightsTotal);
-        else coder.addDefine("VOX_PARALLEL_LIGHTS_TOTAL","0");
-        if (lightsTotal > 0) coder.addDefine("VOX_LIGHTS_TOTAL",""+lightsTotal);
-        else coder.addDefine("VOX_LIGHTS_TOTAL", "0");
-
-        coder.addTextureSampleCube();
-        for(let i: number = 1; i < this.texturesTotal; ++i) {
-            coder.addTextureSample2D();
-        }
-        coder.addVertLayout("vec3","a_vs");
-        coder.addVertLayout("vec3","a_nvs");
-        if (this.m_has2DMap) {
-            coder.addVertLayout("vec2","a_uvs");
-            coder.addVertUniform("vec4","u_paramLocal[2]");
-            coder.addVarying("vec2","v_uv");
-        }        
-        coder.addFragUniform("vec4","u_paramLocal[2]");
-
-        coder.addVarying("vec3","v_worldPos");
-        coder.addVarying("vec3","v_worldNormal");
-        coder.addVarying("vec3","v_camPos");
-
-        if (mirrorProjEnabled) {
-            coder.addFragUniform("vec4","u_stageParam");
-            coder.addFragUniform("vec4","u_mirrorProjNV");
-        }
-
-        if (RendererDeviece.IsWebGL1()) {
-            coder.addVertFunction(GLSLConverter.__glslInverseMat3);
-            coder.addVertFunction(GLSLConverter.__glslInverseMat4);
-        }
-        coder.useVertSpaceMats(true,true,true);
-        coder.addFragOutput("vec4","FragOutColor");
-
+        return fragCode + codeHead + codeBody;
     }
     getVtxShaderCode(): string {
 
-        let vtxCode: string = this.m_codeBuilder.buildVertCode();
+        let vtxCode: string = "";
+        if (RendererDeviece.IsWebGL2()) {
+            vtxCode ="#version 300 es"
+        }
+        vtxCode +=
+`
+precision highp float;
+`;
+        if (this.normalNoiseEnabled) vtxCode += "\n#define VOX_NORMAL_NOISE";
+        if (this.texturesTotal > 1) vtxCode += "\n#define VOX_USE_2D_MAP";
 
+        vtxCode += "\n";
+        if (RendererDeviece.IsWebGL1()) {
+            
+            vtxCode +=
+`
+#define VOX_OUT varying
+attribute vec3 a_vs;
+attribute vec3 a_nvs;
+`;
+                if (this.m_has2DMap) {
+                    vtxCode +=
+`
+attribute vec2 a_uvs;
+uniform vec4 u_paramLocal[2];
+`;
+            }
+            vtxCode += "\n"+GLSLConverter.__glslInverseMat3;
+            vtxCode += "\n"+GLSLConverter.__glslInverseMat4;
+        }
+        else {
+
+            vtxCode +=
+`
+#define VOX_OUT out
+layout(location = 0) in vec3 a_vs;
+layout(location = 1) in vec3 a_nvs;
+`;
+            if (this.m_has2DMap) {
+                vtxCode +=
+`
+layout(location = 2) in vec2 a_uvs;
+uniform vec4 u_paramLocal[2];
+`;
+            }
+            
+        }
+        vtxCode +=
+ `
+uniform mat4 u_objMat;
+uniform mat4 u_viewMat;
+uniform mat4 u_projMat;
+
+VOX_OUT vec3 v_worldPos;
+VOX_OUT vec3 v_worldNormal;
+VOX_OUT vec3 v_camPos;
+`;
+        if (this.m_has2DMap) {
+            vtxCode +=
+`
+VOX_OUT vec2 v_uv;
+`;
+        }
         vtxCode += DefaultPBRShaderCode.vert_head;
         vtxCode += DefaultPBRShaderCode.vert_body;
-
+        
         return vtxCode;
     }
     getUniqueShaderName() {

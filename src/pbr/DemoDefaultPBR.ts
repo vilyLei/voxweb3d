@@ -148,15 +148,16 @@ export class DemoDefaultPBR
             this.m_meshMana.offsetPos.setXYZ(0.0,-350.0,0.0);
             this.m_meshMana.loadMeshFile("static/modules/scarf.md");
             //*/
-            ///*
-            this.m_meshMana.diffuseMapEnabled = false;
+            /*
+            this.m_meshMana.diffuseMapEnabled = true;
             this.m_meshMana.normalMapEnabled = false;
             this.m_reflectPlaneY = -200.0;
             this.m_meshMana.moduleScale = 300.0;
             this.m_meshMana.offsetPos.setXYZ(0.0,-150.0,0.0);
             this.m_meshMana.loadMeshFile("static/modules/car.md");
+            this.m_meshMana.material.setUVScale(0.1,0.1);
             //*/
-            /*
+            ///*
             this.m_meshMana.diffuseMapEnabled = false;
             this.m_meshMana.normalMapEnabled = false;
             this.m_reflectPlaneY = -200.0;
@@ -256,6 +257,7 @@ export class DemoDefaultPBR
         material.mirrorProjEnabled = true;
         material.diffuseMapEnabled = true;
         material.normalMapEnabled = true;
+        material.setUVScale(3.0,3.0);
         plane = new Plane3DEntity();
         plane.flipVerticalUV = true;
         //plane.setMaterial(toneMaterial);
