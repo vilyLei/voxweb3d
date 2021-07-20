@@ -35,7 +35,7 @@ export class DemoHdrCylindricalMap {
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
-    private m_CameraZoomController: CameraZoomController = new CameraZoomController();
+    private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true,powerOf2Fix:boolean = false): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl,0,false, powerOf2Fix);
@@ -66,8 +66,8 @@ export class DemoHdrCylindricalMap {
             
             this.m_rscene.enableMouseEvent(true);
             
-            this.m_CameraZoomController.bindCamera(this.m_rscene.getCamera());
-            this.m_CameraZoomController.initialize(this.m_rscene.getStage3D());
+            this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
+            this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
 
             this.m_rscene.enableMouseEvent(true);
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
@@ -176,7 +176,7 @@ export class DemoHdrCylindricalMap {
         this.m_statusDisp.update(false);
 
         this.m_stageDragSwinger.runWithYAxis();
-        this.m_CameraZoomController.run(this.m_lookAt, 30.0);
+        this.m_cameraZoomController.run(this.m_lookAt, 30.0);
         
         this.m_rscene.run(true);
 

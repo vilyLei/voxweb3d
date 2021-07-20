@@ -159,6 +159,7 @@ class ROVertexRes
             this.m_type = vtx.getType();
             this.m_attribsTotal = shdp.getLocationsTotal();
 
+            console.log("ROVertexRes::initialize()...,this.m_attribsTotal: ",this.m_attribsTotal);
             if(this.m_type < 1)
             {
                 // combined buf
@@ -171,37 +172,44 @@ class ROVertexRes
             }
         }
     }
-    private getVROMid(rc:IROVtxBuilder, shdp:IVtxShdCtr, vaoEnabled:boolean):number
+    /**
+     * get vro object attribute mix id
+     */
+    private getVROMid(rc:IROVtxBuilder, shdp:IVtxShdCtr, vaoEnabled:boolean,ibufId: number):number
     {
         let mid:number = (131 + rc.getRCUid()) * this.m_vtxUid;
         if(vaoEnabled)
         {
             // 之所以 + 0xf0000 这样区分，是因为 shdp.getLayoutBit() 的取值范围不会超过short(double bytes)取值范围
-            mid = mid * 131 + shdp.getLayoutBit() + 0xf0000;
+            //  mid = mid * 131 + shdp.getLayoutBit() + 0xf0000;
+            mid = mid * 131 + shdp.getMid();
+            mid = mid * 131 + 3;
         }
         else
         {
-            mid = mid * 131 + shdp.getLayoutBit();
+            //mid = mid * 131 + shdp.getLayoutBit();
+            mid = mid * 131 + shdp.getMid();
         }
-        
+        mid = mid * 131 + shdp.getLocationsTotal();
+        mid = mid * 131 + ibufId;
+
         return mid;
     }
     
     // 创建被 RPOUnit 使用的 vro 实例
-    createVRO(rc:IROVtxBuilder, shdp:IVtxShdCtr, vaoEnabled:boolean):IVertexRenderObj
+    createVRO(rc:IROVtxBuilder, shdp:IVtxShdCtr, vaoEnabled:boolean, ibuf: any, ibufId: number):IVertexRenderObj
     {
-        if(this.m_attribsTotal > 0)
+        let attribsTotal: number = shdp.getLocationsTotal();
+        if((this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal)
         {
-            let mid:number = this.getVROMid(rc,shdp,vaoEnabled);
+            let mid:number = this.getVROMid(rc,shdp,vaoEnabled,ibufId);
         
             let i:number = 0;
-            //console.log("### Combined mid: "+mid+", uid: "+this.m_uid);
             let pvro:IVertexRenderObj = VaoVertexRenderObj.GetByMid(mid);
             if(pvro != null)
             {
                 return pvro;
             }
-            let attribsTotal:number = this.m_attribsTotal;
             if(vaoEnabled)
             {
                 // vao 的生成要记录标记,防止重复生成, 因为同一组数据在不同的shader使用中可能组合方式不同，导致了vao可能是多样的
@@ -227,6 +235,8 @@ class ROVertexRes
                     }
                 }
                 pvro = vro;
+                vro.ibuf = ibuf;
+                //rc.bindEleBuf(ibuf);
                 rc.bindVertexArray(null);
             }
             else
@@ -255,6 +265,7 @@ class ROVertexRes
                 }
 
                 vro.attribTypesLen = vro.attribTypes.length;
+                vro.ibuf = ibuf;
                 pvro = vro;
             }
             this.m_vroList.push(pvro);
@@ -290,15 +301,21 @@ class ROVertexRes
 }
 class ROIndicesRes
 {
-    version:number;
+    private m_uid: number = 0;
+    private static s_uid: number = 0;
     private m_vtx:IROVtxBuf = null;
     private m_vtxUid:number = 0;
     private m_gpuBuf:any = null;
     private m_ivsSize:number = 0;
     private m_ivs:Uint16Array|Uint32Array;
+    version:number;
     ibufStep:number = 0;
     constructor()
     {
+        this.m_uid = (ROIndicesRes.s_uid + 1);
+    }
+    getUid(): number {
+        return this.m_uid;
     }
     getVtxUid():number
     {
@@ -414,8 +431,8 @@ class GpuVtxObect
     }
     createVRO(rc:IROVtxBuilder, shdp:IVtxShdCtr, vaoEnabled:boolean):IVertexRenderObj
     {
-        let vro:IVertexRenderObj = this.vertex.createVRO(rc, shdp,vaoEnabled);
-        vro.ibuf = this.indices.getGpuBuf();
+        let vro:IVertexRenderObj = this.vertex.createVRO(rc, shdp,vaoEnabled,this.indices.getGpuBuf(), this.indices.getUid());
+        //vro.ibuf = this.indices.getGpuBuf();
         vro.ibufStep = this.indices.ibufStep;
         return vro;
     }

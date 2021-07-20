@@ -227,11 +227,12 @@ precision mediump float;
             if(len < 2) {
                 code += "\n#define " + this.m_fragOutputNames[i] + " gl_FragColor";
             }
-            else {
-                for (; i < len; i++) {
-                    code += "\nout " + this.m_fragOutputTypes[i] + " " + this.m_fragOutputNames[i] + ";";
-                }
-            }
+            //  else {
+            //      //  for (; i < len; i++) {
+            //      //      //code += "\nout gl_FragData" + this.m_fragOutputTypes[i] + " " + this.m_fragOutputNames[i] + ";";
+            //      //      //code += "\nout gl_FragData[" + i + " " + this.m_fragOutputNames[i] + ";";
+            //      //  }
+            //  }
         }
 
         i = 0;
@@ -265,8 +266,15 @@ precision mediump float;
 
 
         //  code += this.m_mainBeginCode;
-        //  code += this.m_fragMainCode;
+        code += this.m_fragMainCode;
         //  code += this.m_mainEndCode;
+        len = this.m_fragOutputNames.length;
+        if(len > 1) {
+            for (i = 0; i < len; i++) {
+                let tempReg = new RegExp(this.m_fragOutputNames[i],"g");
+                code = code.replace(tempReg, "gl_FragData["+i+"]");
+            }
+        }
         return code;
     }
     buildVertCode(): string {
@@ -344,7 +352,7 @@ precision mediump float;
         }
 
         //  code += this.m_mainBeginCode;
-        //  code += this.m_vertMainCode;
+        code += this.m_vertMainCode;
         //  code += this.m_mainEndCode;
         return code;
     }

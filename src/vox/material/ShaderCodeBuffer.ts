@@ -19,8 +19,10 @@ class ShaderCodeBuffer
 
     vtxColorEnabled: boolean = false;
     premultiplyAlpha: boolean = false;
-
-    adaptationEnabled: boolean = true;
+    /**
+     * 是否自适应转换shader版本
+     */
+    adaptationShaderVersion: boolean = true;
     constructor()
     {
     }
@@ -83,7 +85,8 @@ layout(location = 0) out vec4 FragColor;
 void main(){
     FragColor = vec4(1.0);
     #ifdef VOX_USE_MAP
-        FragColor *= texture(u_sampler0, v_uvs);
+        //  FragColor *= texture(u_sampler0, vec2(v_uvs[0],v_uvs[1]));
+        FragColor *= texture(u_sampler0, v_uvs.xy);
     #endif
     #ifdef VOX_USE_VTX_COLOR
         FragColor *= vec4(v_cvs.xyz,1.0);

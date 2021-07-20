@@ -164,6 +164,17 @@ vec3 fresnelSchlickWithRoughness(vec3 specularColor, vec3 L, vec3 N, float gloss
 {
    return specularColor + (max(vec3(gloss), specularColor) - specularColor) * pow(1.0 - saturate(dot(L, N)), 5.0);
 }
+
+//float ambientOcclusion = ( texture2D( aoMap, vUv2 ).r - 1.0 ) * aoMapIntensity + 1.0;
+//float dotNV = saturate( dot( normal, viewDir ) );
+//specular *= computeSpecularOcclusion( dotNV, ambientOcclusion, specularRoughness );
+// ref: https://seblagarde.files.wordpress.com/2015/07/course_notes_moving_frostbite_to_pbr_v32.pdf
+float computeSpecularOcclusion( const in float dotNV, const in float ambientOcclusion, const in float roughness ) {
+
+	return saturate( pow( dotNV + ambientOcclusion, exp2( - 16.0 * roughness - 1.0 ) ) - 1.0 + ambientOcclusion );
+
+}
+
 vec3 acesToneMapping(vec3 color, float adapted_lum)
 {
 	const float A = 2.51;

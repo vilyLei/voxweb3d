@@ -54,7 +54,7 @@ export class DemoDefaultPBR
     private m_meshManas:DefaultPBRCase[] = [];
     private m_profileInstance:ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
-    private m_CameraZoomController: CameraZoomController = new CameraZoomController();
+    private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     private m_uiModule: DefaultPBRUI = new DefaultPBRUI();
     private m_reflectPlaneY: number = -220.0;
     private m_paramEntities:PBRParamEntity[] = [];
@@ -89,8 +89,8 @@ export class DemoDefaultPBR
             this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);
 
             this.m_rscene.enableMouseEvent(true);
-            this.m_CameraZoomController.bindCamera(this.m_rscene.getCamera());
-            this.m_CameraZoomController.initialize(this.m_rscene.getStage3D());
+            this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
+            this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
@@ -158,8 +158,8 @@ export class DemoDefaultPBR
             this.m_meshMana.material.setUVScale(0.1,0.1);
             //*/
             ///*
-            this.m_meshMana.diffuseMapEnabled = false;
-            this.m_meshMana.normalMapEnabled = false;
+            this.m_meshMana.diffuseMapEnabled = true;
+            this.m_meshMana.normalMapEnabled = true;
             this.m_reflectPlaneY = -200.0;
             this.m_meshMana.moduleScale = 600.0;
             this.m_meshMana.offsetPos.setXYZ(0.0,-150.0,0.0);
@@ -351,7 +351,7 @@ export class DemoDefaultPBR
             this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
         }
         this.m_stageDragSwinger.runWithYAxis();
-        this.m_CameraZoomController.run(Vector3D.ZERO, 30.0);
+        this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
 
         //  // current rendering strategy
         //  this.m_rscene.run(true);
@@ -436,7 +436,7 @@ export class DemoDefaultPBR
         let entity:DisplayEntity = null;
         if(this.m_uiModule.isOpen() && this.m_uiModule.getParamEntity() != null) {
             entity = this.m_uiModule.getParamEntity().entity;
-            if(!entity.isInRenderer()) {
+            if(!entity.isRenderEnabled()) {
                 entity = null;
             }
             if(entity != null) {

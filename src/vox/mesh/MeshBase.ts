@@ -146,6 +146,10 @@ export default class MeshBase
     {
         this.m_layoutBit = layoutBit;
     }
+    getBufSortFormat():number
+    {
+        return this.m_layoutBit;
+    }
     isVBufEnabledAt(i:number):boolean
     {
         return (i&this.m_layoutBit) > 0;

@@ -10,6 +10,7 @@ import VtxBufData from "../../vox/mesh/VtxBufData";
 //import VtxBufData = VtxBufDataT.vox.mesh.VtxBufData;
 interface IROVtxBuf
 {
+    layoutBit: number;
     vertexVer:number;
     indicesVer:number;
     version:number;

@@ -140,7 +140,7 @@ export namespace demo
         private m_rcontext:RendererInstanceContext = null;
         private m_texLoader:ImageTextureLoader = null;
         private m_camTrack:CameraTrack = null;
-        private m_CameraZoomController:CameraZoomController = new CameraZoomController();
+        private m_cameraZoomController:CameraZoomController = new CameraZoomController();
         private m_profileInstance:ProfileInstance;
         getImageTexByUrl(purl:string):TextureProxy
         {
@@ -214,8 +214,8 @@ export namespace demo
                 
                 this.m_rscene.enableMouseEvent(true);
 
-                this.m_CameraZoomController.bindCamera(this.m_rscene.getCamera());
-                this.m_CameraZoomController.initialize(this.m_rscene.getStage3D() as Stage3D);
+                this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
+                this.m_cameraZoomController.initialize(this.m_rscene.getStage3D() as Stage3D);
 
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
@@ -294,7 +294,7 @@ export namespace demo
             // render end
             this.m_rscene.runEnd();
             //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-            this.m_CameraZoomController.run(null, 50.0);
+            this.m_cameraZoomController.run(null, 50.0);
             if(this.m_profileInstance != null) this.m_profileInstance.run();
         }
     }

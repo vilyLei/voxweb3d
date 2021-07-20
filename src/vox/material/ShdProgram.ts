@@ -34,7 +34,7 @@ export default class ShdProgram implements IVtxShdCtr {
     private m_frgShd: any = null;
     // recode shader uniform including status
     dataUniformEnabled: boolean = false;
-
+    
     constructor(uid: number) {
         this.m_uid = uid;//ShdProgram.s_uid++;
     }
@@ -136,6 +136,9 @@ export default class ShdProgram implements IVtxShdCtr {
 
     getLayoutBit(): number {
         return this.m_shdData.getLayoutBit();
+    }
+    getMid(): number {
+        return this.m_shdData.getMid();
     }
     getFragOutputTotal(): number {
         return this.m_shdData.getFragOutputTotal();

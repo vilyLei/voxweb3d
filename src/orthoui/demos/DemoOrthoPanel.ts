@@ -45,7 +45,7 @@ export class DemoOrthoPanel {
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
-    private m_CameraZoomController: CameraZoomController = new CameraZoomController();
+    private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     private m_plane: Plane3DEntity = null;
     private m_plane2: Plane3DEntity = null;
     private m_axis: Axis3DEntity = null;
@@ -74,8 +74,8 @@ export class DemoOrthoPanel {
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             this.m_rscene.enableMouseEvent(true);
-            this.m_CameraZoomController.bindCamera(this.m_rscene.getCamera());
-            this.m_CameraZoomController.initialize(this.m_rscene.getStage3D());
+            this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
+            this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
             this.m_camTrack = new CameraTrack();
@@ -181,7 +181,7 @@ export class DemoOrthoPanel {
         this.m_statusDisp.update(false);
 
         this.m_stageDragSwinger.runWithYAxis();
-        this.m_CameraZoomController.run(null, 30.0);
+        this.m_cameraZoomController.run(null, 30.0);
         let renderingType: number = 0;
         if(renderingType < 1) {
             // current rendering strategy

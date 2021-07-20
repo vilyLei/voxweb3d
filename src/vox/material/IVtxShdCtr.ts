@@ -9,6 +9,7 @@
 export default interface IVtxShdCtr
 {
     getLayoutBit():number;
+    getMid():number;
     getLocationsTotal():number;
     getLocationTypeByIndex(index:number):number;
     getLocationSizeByIndex(index:number):number;

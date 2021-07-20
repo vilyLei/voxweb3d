@@ -46,7 +46,7 @@ export class DemoOrthoBtn {
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
-    private m_CameraZoomController: CameraZoomController = new CameraZoomController();
+    private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     private m_plane: Plane3DEntity = null;
     private m_plane2: Plane3DEntity = null;
     private m_axis: Axis3DEntity = null;
@@ -76,8 +76,8 @@ export class DemoOrthoBtn {
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             this.m_rscene.enableMouseEvent(true);
-            this.m_CameraZoomController.bindCamera(this.m_rscene.getCamera());
-            this.m_CameraZoomController.initialize(this.m_rscene.getStage3D());
+            this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
+            this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
             this.m_camTrack = new CameraTrack();
@@ -93,7 +93,7 @@ export class DemoOrthoBtn {
             //  plane = new Plane3DEntity();
             //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
             //  this.m_rscene.addEntity(plane);
-            //  this.m_plane = plane;
+            //this.m_plane = plane;
 
             //  plane = new Plane3DEntity();
             //  plane.initializeXOZ(-200.0, -200.0, 400.0, 400.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
@@ -388,7 +388,7 @@ export class DemoOrthoBtn {
         this.m_statusDisp.update(false);
 
         this.m_stageDragSwinger.runWithYAxis();
-        this.m_CameraZoomController.run(Vector3D.ZERO, 30.0);
+        this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
         this.m_rscene.setClearRGBColor3f(0.0, 0.2, 0.0);
         let renderingType: number = 1;
         if(renderingType < 1) {

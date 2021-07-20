@@ -13,6 +13,7 @@ export default interface IShaderData
     getVSCodeStr():string;
     getFSCodeStr():string;
     getLayoutBit():number;
+    getMid():number;
     getFragOutputTotal():number;
     getAttriSizeList():number[];
     getTexUniformNames():string[];

@@ -47,7 +47,7 @@ export class DemoLightsPBR
     private m_meshManas:PBRLightsManager[] = [];
     private m_profileInstance:ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
-    private m_CameraZoomController: CameraZoomController = new CameraZoomController();
+    private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     private m_uiModule: PBRLightsUI = new PBRLightsUI();
     private m_reflectPlaneY: number = -220.0;
     getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
@@ -80,8 +80,8 @@ export class DemoLightsPBR
             this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);
 
             this.m_rscene.enableMouseEvent(true);
-            this.m_CameraZoomController.bindCamera(this.m_rscene.getCamera());
-            this.m_CameraZoomController.initialize(this.m_rscene.getStage3D());
+            this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
+            this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
@@ -262,7 +262,7 @@ export class DemoLightsPBR
 
 
         this.m_stageDragSwinger.runWithYAxis();
-        this.m_CameraZoomController.run(Vector3D.ZERO, 30.0);
+        this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
 
         // current rendering strategy
         //  this.m_rscene.run(true);

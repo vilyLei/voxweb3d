@@ -38,7 +38,7 @@ export class DemoFrustrum
     private m_camTrack:CameraTrack = null;
 
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
-    private m_CameraZoomController: CameraZoomController = new CameraZoomController();
+    private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
     private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
     private m_tarDisp:Sphere3DEntity = null;
@@ -57,8 +57,8 @@ export class DemoFrustrum
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             this.m_rscene.enableMouseEvent(true);
-            this.m_CameraZoomController.bindCamera(this.m_rscene.getCamera());
-            this.m_CameraZoomController.initialize(this.m_rscene.getStage3D());
+            this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
+            this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
             this.m_statusDisp.initialize("rstatus", this.m_rscene.getViewWidth() - 180);

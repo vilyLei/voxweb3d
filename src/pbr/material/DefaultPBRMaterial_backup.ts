@@ -42,8 +42,8 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     texturesTotal: number = 1;
     initialize(texEnabled: boolean): void {
         this.m_uniqueName = "DefaultPBRShd";
-        this.adaptationEnabled = false;
-        console.log("DefaultPBRShaderBuffer::initialize()...，adaptationEnabled: ", this.adaptationEnabled);
+        this.adaptationShaderVersion = false;
+        console.log("DefaultPBRShaderBuffer::initialize()...，adaptationShaderVersion: ", this.adaptationShaderVersion);
     }
     getFragShaderCode(): string {
         //  console.log("DefaultPBR",DefaultPBR);

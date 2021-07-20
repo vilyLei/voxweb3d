@@ -43,8 +43,8 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     texturesTotal: number = 1;
     initialize(texEnabled: boolean): void {
         this.m_uniqueName = "DefaultPBRShd";
-        this.adaptationEnabled = false;
-        console.log("DefaultPBRShaderBuffer::initialize()...，adaptationEnabled: ", this.adaptationEnabled);
+        this.adaptationShaderVersion = false;
+        console.log("DefaultPBRShaderBuffer::initialize()...，adaptationShaderVersion: ", this.adaptationShaderVersion);
     }
     getFragShaderCode(): string {
         //  console.log("DefaultPBR",DefaultPBR);
@@ -55,13 +55,16 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
         }
         this.buildThisCode();
 
-        let codeHead: string = this.m_codeBuilder.buildFragCode();
-        codeHead += DefaultPBRShaderCode.frag_head;
-        //  const regExp3:RegExp = /\bVOX_IN\b/g;
-        //  codeHead = codeHead.replace(regExp3, "varying");
-        //  //VOX_IN
-        let codeBody: string = DefaultPBRShaderCode.frag_body;
-        return codeHead + codeBody;
+        this.m_codeBuilder.addFragMainCode(DefaultPBRShaderCode.frag_head);
+        this.m_codeBuilder.addFragMainCode(DefaultPBRShaderCode.frag_body);
+        return this.m_codeBuilder.buildFragCode();
+        //  let codeHead: string = this.m_codeBuilder.buildFragCode();
+        //  codeHead += DefaultPBRShaderCode.frag_head;
+        //  //  const regExp3:RegExp = /\bVOX_IN\b/g;
+        //  //  codeHead = codeHead.replace(regExp3, "varying");
+        //  //  //VOX_IN
+        //  let codeBody: string = DefaultPBRShaderCode.frag_body;
+        //  return codeHead + codeBody;
     }
     private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private buildThisCode():void
@@ -71,10 +74,6 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
         coder.mapLodEanbled = true;
         coder.reset();
         coder.useHighPrecious();
-        //  if(RendererDeviece.IsWebGL1()) {
-        //      coder.addFragExtend("#extension GL_OES_standard_derivatives : enable");
-        //      coder.addFragExtend("#extension GL_EXT_shader_texture_lod : enable");
-        //  }
         
         let mirrorProjEnabled: boolean = this.mirrorProjEnabled && this.texturesTotal > 1;
         if (this.normalNoiseEnabled) coder.addDefine("VOX_NORMAL_NOISE");
@@ -142,21 +141,24 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     }
     getVtxShaderCode(): string {
 
-        let vtxCode: string = this.m_codeBuilder.buildVertCode();
+        //  let vtxCode: string = this.m_codeBuilder.buildVertCode();
+        //  vtxCode += DefaultPBRShaderCode.vert_head;
+        //  vtxCode += DefaultPBRShaderCode.vert_body;
+        //  return vtxCode;
 
-        vtxCode += DefaultPBRShaderCode.vert_head;
-        vtxCode += DefaultPBRShaderCode.vert_body;
+        this.m_codeBuilder.addVertMainCode(DefaultPBRShaderCode.vert_head);
+        this.m_codeBuilder.addVertMainCode(DefaultPBRShaderCode.vert_body);
 
-        return vtxCode;
+        return this.m_codeBuilder.buildVertCode();
     }
     getUniqueShaderName() {
         let ns: string = this.m_uniqueName;
 
-        if (this.woolEnabled) ns += "_wool";
-        if (this.toneMappingEnabled) ns += "_toneMapping";
-        if (this.envMapEnabled) ns += "_envMap";
-        if (this.scatterEnabled) ns += "_scatter";
-        if (this.specularBleedEnabled) ns += "_specBleed";
+        if (this.woolEnabled) ns += "_wl";
+        if (this.toneMappingEnabled) ns += "_tm";
+        if (this.envMapEnabled) ns += "_envM";
+        if (this.scatterEnabled) ns += "_sct";
+        if (this.specularBleedEnabled) ns += "_specBl";
         if (this.metallicCorrection) ns += "_metCorr";
         if (this.gammaCorrection) ns += "_gammaCorr";
         if (this.absorbEnabled) ns += "_absorb";

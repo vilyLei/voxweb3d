@@ -15,12 +15,12 @@ export default class MaterialResource
     private static s_shdDataList:ShaderData[] = [];
     private static s_shdDataListLen:number = 0;
 
-    static CreateShdData(unique_name_str:string,vshdsrc:string,fshdSrc:string,adaptationEnabled: boolean):ShaderData
+    static CreateShdData(unique_name_str:string,vshdsrc:string,fshdSrc:string,adaptationShaderVersion: boolean):ShaderData
     {
         //console.log("MaterialResource.CreateShdData() begin...");
         if(MaterialResource.s_shdDataDict.has(unique_name_str)){return MaterialResource.s_shdDataDict.get(unique_name_str);}
         let p:ShaderData = new ShaderData();
-        p.adaptationEnabled = adaptationEnabled;
+        p.adaptationShaderVersion = adaptationShaderVersion;
         p.initialize(unique_name_str, vshdsrc,fshdSrc);
         MaterialResource.s_shdDataList[p.getUid()] = p;
         

@@ -6,6 +6,7 @@
 /***************************************************************************/
 export default interface IVtxBuf
 {
+    layoutBit: number;
     getUid():number;
     getType():number;
     getBuffersTotal():number;

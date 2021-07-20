@@ -32,7 +32,7 @@ export class DemoLighting {
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
-    private m_CameraZoomController: CameraZoomController = new CameraZoomController();
+    private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
     private m_materials:PBRLightingMaterial[] = [];
     private m_texMaterials:PBRTexLightingMaterial[] = [];
@@ -58,8 +58,8 @@ export class DemoLighting {
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             this.m_rscene.enableMouseEvent(true);
-            this.m_CameraZoomController.bindCamera(this.m_rscene.getCamera());
-            this.m_CameraZoomController.initialize(this.m_rscene.getStage3D());
+            this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
+            this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
             this.m_camTrack = new CameraTrack();
@@ -254,7 +254,7 @@ export class DemoLighting {
     }
     mouseWheelListener(evt:any):void
     {
-        //this.m_CameraZoomController.setMoevDistance(evt.wheelDeltaY * 0.5);
+        //this.m_cameraZoomController.setMoevDistance(evt.wheelDeltaY * 0.5);
     }
 
     private m_timeoutId: any = -1;
@@ -272,7 +272,7 @@ export class DemoLighting {
         this.m_statusDisp.update(false);
 
         this.m_stageDragSwinger.runWithYAxis();
-        this.m_CameraZoomController.run(null, 30.0);
+        this.m_cameraZoomController.run(null, 30.0);
         
         for(let i: number = 0, il: number = this.m_materials.length; i < il; ++i) {
 

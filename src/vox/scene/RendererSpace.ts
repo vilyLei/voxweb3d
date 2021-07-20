@@ -138,7 +138,7 @@ export default class RendererSpace implements IRendererSpace
     }
     removeEntity(entity:IRenderEntity):void
     {
-        if(RSEntityFlag.TestSpaceContains( entity.__$rseFlag ))
+        if(entity != null && RSEntityFlag.TestSpaceContains( entity.__$rseFlag ))
         {
             let node:Entity3DNode = this.m_nodeQueue.getNodeByEntity(entity);
             if(node != null)
