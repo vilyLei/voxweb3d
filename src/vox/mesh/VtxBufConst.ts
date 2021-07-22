@@ -6,7 +6,6 @@
 /***************************************************************************/
 
 import BitConst from "../../vox/utils/BitConst";
-//import BitConst = BitConstT.vox.utils.BitConst;
 
 class VtxBufConst
 {
@@ -23,16 +22,6 @@ class VtxBufConst
     static VTX_STATIC_COPY:number = 6;
     static VTX_DYNAMIC_COPY:number = 7;
     static VTX_STREAM_COPY:number = 8;
-    //  static VBUF_VS:number = 3001;
-    //  static VBUF_VS2:number = 3002;
-    //  static VBUF_UVS:number = 3003;
-    //  static VBUF_UVS2:number = 3004;
-    //  static VBUF_NVS:number = 3005;
-    //  static VBUF_NVS2:number = 3006;
-    //  static VBUF_CVS:number = 3007;
-    //  static VBUF_CVS2:number = 3008;
-    //  static VBUF_TVS:number = 3009;
-    //  static VBUF_TVS2:number = 3010;
 
     static VBUF_VS:number = 3001;
     static VBUF_UVS:number = 3002;

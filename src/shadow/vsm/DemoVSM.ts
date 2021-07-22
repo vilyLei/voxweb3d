@@ -36,7 +36,7 @@ import Matrix4 from "../../vox/math/Matrix4";
 import Cylinder3DEntity from "../../vox/entity/Cylinder3DEntity";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 
-export class DemoBase {
+export class DemoVSM {
     constructor() { }
 
     private m_rscene: RendererScene = null;
@@ -54,7 +54,7 @@ export class DemoBase {
         return ptex;
     }
     initialize(): void {
-        console.log("DemoBase::initialize()......");
+        console.log("DemoVSM::initialize()......");
         if (this.m_rscene == null) {
             RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
             RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -106,6 +106,8 @@ export class DemoBase {
     private m_shadowMapH: number = 128;
     private m_shadowViewW: number = 1300;
     private m_shadowViewH: number = 1300;
+    private m_direcMatrix: Matrix4 = new Matrix4();
+    private m_factorMatrix: Matrix4 = new Matrix4();
     private initConfig(): void {
         
         this.m_fboDepth = this.m_rscene.createFBOInstance();
@@ -131,7 +133,7 @@ export class DemoBase {
         this.m_fboOccBlurH.asynFBOSizeWithViewport();
         this.m_fboOccBlurH.setClearRGBAColor4f(1.0,1.0,1.0,1.0);
         this.m_fboOccBlurH.createFBOAt(0, this.m_shadowMapW,this.m_shadowMapH, true,false);
-        this.m_fboOccBlurH.setRenderToRTTTextureAt(2, 0);
+        this.m_fboOccBlurH.setRenderToRTTTextureAt(0, 0);
         this.m_fboOccBlurH.setRProcessIDList([2]);
 
         
@@ -157,8 +159,6 @@ export class DemoBase {
         
         this.m_depMaterial.__$attachThis();
 
-        //  let viewWidth: number = 1024.0;
-        //  let viewHeight: number = 1024.0;
         let viewWidth: number = this.m_shadowViewW;
         let viewHeight: number = this.m_shadowViewH;
         this.m_direcCamera = new CameraBase(0);
@@ -171,23 +171,16 @@ export class DemoBase {
 
         let frustrum:FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
         frustrum.initiazlize( this.m_direcCamera );
-        //frustrum.setScaleXYZ(0.5,0.5,0.5);
         this.m_rscene.addEntity( frustrum, 3);
         
-        let testMatrix: Matrix4 = new Matrix4();
-        testMatrix.identity();
-        testMatrix.setScaleXYZ(0.5,0.5,0.5);
-        testMatrix.setTranslationXYZ(0.5,0.5,0.5);
-        console.log("testMatrix shadowMatrix: ");
-        console.log(testMatrix.toString());
-
-        let shadowMatrix: Matrix4 = new Matrix4();
+        this.m_factorMatrix.identity();
+        this.m_factorMatrix.setScaleXYZ(0.5,0.5,0.5);
+        this.m_factorMatrix.setTranslationXYZ(0.5,0.5,0.5);
+        console.log("m_direcMatrix this.m_direcMatrix: ");
+        console.log(this.m_direcMatrix.toString());
         
-        shadowMatrix.copyFrom(this.m_direcCamera.getVPMatrix());
-        shadowMatrix.append(testMatrix);
         
-        let shadowTex: TextureProxy = this.m_fboOccBlurH.getRTTAt(0);
-        //let shadowTex: TextureProxy = this.m_fboDepth.getRTTAt(0);
+        let shadowTex: TextureProxy = this.m_fboDepth.getRTTAt(0);
         let shadowMaterial: ShadowEntityMaterial = new ShadowEntityMaterial();
         // add common 3d display entity
         let plane:Plane3DEntity = new Plane3DEntity();
@@ -195,7 +188,7 @@ export class DemoBase {
         shadowMaterial.setShadowRadius(this.m_setShadowRadius);
         shadowMaterial.setShadowBias(this.m_shadowBias);
         shadowMaterial.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
-        shadowMaterial.setShadowMatrix( shadowMatrix );
+        shadowMaterial.setShadowMatrix( this.m_direcMatrix );
         shadowMaterial.setDirec(this.m_direcCamera.getNV());
         plane.setMaterial(shadowMaterial);
         plane.initializeXOZ(-600.0, -600.0, 1200.0, 1200.0, [this.getImageTexByUrl("static/assets/brickwall_big.jpg"), shadowTex]);
@@ -208,7 +201,7 @@ export class DemoBase {
         shadowMaterial.setShadowRadius(this.m_setShadowRadius);
         shadowMaterial.setShadowBias(this.m_shadowBias);
         shadowMaterial.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
-        shadowMaterial.setShadowMatrix( shadowMatrix );
+        shadowMaterial.setShadowMatrix( this.m_direcMatrix );
         shadowMaterial.setDirec(this.m_direcCamera.getNV());
         box.setMaterial(shadowMaterial);        
         box.initializeCube(200.0, [this.getImageTexByUrl("static/assets/metal_02.jpg"), shadowTex]);
@@ -223,7 +216,7 @@ export class DemoBase {
         shadowMaterial.setShadowRadius(this.m_setShadowRadius);
         shadowMaterial.setShadowBias(this.m_shadowBias);
         shadowMaterial.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
-        shadowMaterial.setShadowMatrix( shadowMatrix );
+        shadowMaterial.setShadowMatrix( this.m_direcMatrix );
         shadowMaterial.setDirec(this.m_direcCamera.getNV());
         cyl.setMaterial(shadowMaterial);
         cyl.initialize(80.0,200.0,20,[this.getImageTexByUrl("static/assets/noise.jpg"), shadowTex]);
@@ -236,7 +229,7 @@ export class DemoBase {
         shadowMaterial.setShadowRadius(this.m_setShadowRadius);
         shadowMaterial.setShadowBias(this.m_shadowBias);
         shadowMaterial.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
-        shadowMaterial.setShadowMatrix( shadowMatrix );
+        shadowMaterial.setShadowMatrix( this.m_direcMatrix );
         shadowMaterial.setDirec(this.m_direcCamera.getNV());
         sph.setMaterial(shadowMaterial);
         sph.initialize(80.0,20.0,20,[this.getImageTexByUrl("static/assets/metal_02.jpg"), shadowTex]);
@@ -249,7 +242,7 @@ export class DemoBase {
         shadowMaterial.setShadowRadius(this.m_setShadowRadius);
         shadowMaterial.setShadowBias(this.m_shadowBias);
         shadowMaterial.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
-        shadowMaterial.setShadowMatrix( shadowMatrix );
+        shadowMaterial.setShadowMatrix( this.m_direcMatrix );
         shadowMaterial.setDirec(this.m_direcCamera.getNV());
         sph.setMaterial(shadowMaterial);
         sph.initialize(80.0,20.0,20,[this.getImageTexByUrl("static/assets/metal_08.jpg"), shadowTex]);
@@ -258,23 +251,6 @@ export class DemoBase {
         this.m_rscene.addEntity(sph);
 
 
-        //box_wood01
-        
-        let depthScrPlane: ScreenFixedAlignPlaneEntity =  new ScreenFixedAlignPlaneEntity();
-        depthScrPlane.initialize(-1.0,-1.0,0.4,0.4, [this.m_fboDepth.getRTTAt(0)]);
-        //depthScrPlane.initialize(-1.0,-1.0,2.0,2.0, [this.m_fboDepth.getRTTAt(0)]);
-        this.m_rscene.addEntity(depthScrPlane, 3);
-
-        let occBlurVScrPlane: ScreenFixedAlignPlaneEntity =  new ScreenFixedAlignPlaneEntity();
-        occBlurVScrPlane.initialize(-0.59,-1.0, 0.4,0.4, [this.m_fboOccBlurV.getRTTAt(0)]);
-        //occBlurVScrPlane.initialize(-1.0,-1.0,2.0,2.0, [this.m_fboOccBlurV.getRTTAt(0)]);
-        this.m_rscene.addEntity(occBlurVScrPlane, 3);
-        ///*
-        let occBlurHScrPlane: ScreenFixedAlignPlaneEntity =  new ScreenFixedAlignPlaneEntity();
-        occBlurHScrPlane.initialize(-0.18,-1.0, 0.4,0.4, [this.m_fboOccBlurH.getRTTAt(0)]);
-        //occBlurHScrPlane.initialize(-1.0,-1.0,2.0,2.0, [this.m_fboOccBlurH.getRTTAt(0)]);
-        this.m_rscene.addEntity(occBlurHScrPlane, 3);
-        //*/
     }
     private m_flag: boolean = true;
     private mouseDown(evt: any): void {
@@ -292,6 +268,7 @@ export class DemoBase {
 
         this.m_statusDisp.render();
     }
+    private m_shadowCamVersion: number = -1;
     run(): void {
 
         //  if(this.m_flag) {
@@ -300,7 +277,12 @@ export class DemoBase {
         //  else {
         //      return;
         //  }
-        
+        // update shadow direc matrix
+        if(this.m_direcCamera.version != this.m_shadowCamVersion) {
+            this.m_shadowCamVersion = this.m_direcCamera.version;
+            this.m_direcMatrix.copyFrom(this.m_direcCamera.getVPMatrix());
+            this.m_direcMatrix.append(this.m_factorMatrix);
+        }
         this.m_statusDisp.update(false);
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
@@ -311,10 +293,8 @@ export class DemoBase {
         this.m_fboDepth.run(true,true);
         this.m_rscene.useMainCamera();
 
-        ///*
         this.m_fboOccBlurV.run();
         this.m_fboOccBlurH.run();
-        //*/
         
 
         this.m_fboDepth.setRenderToBackBuffer();
@@ -326,4 +306,4 @@ export class DemoBase {
 
     }
 }
-export default DemoBase;
+export default DemoVSM;

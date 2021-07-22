@@ -301,6 +301,18 @@ export default class RendererSubScene implements IRenderer {
     moveEntityTo(entity: IRenderEntity, processIndex: number): void {
         this.m_renderer.moveEntityToProcessAt(entity, this.m_processids[processIndex]);
     }
+    drawEntity(entity: IRenderEntity,force: boolean = true): void {
+        if(force) {
+            this.m_rcontext.resetUniform();
+        }
+        this.m_renderer.drawEntity(entity);
+    }
+    /**
+     * add an entity to the renderer process of the renderer instance
+     * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
+     * @param processid this destination renderer process id
+     * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
+     */
     addEntity(entity: IRenderEntity, processIndex: number = 0, deferred: boolean = true): void {
         if (entity.__$testSpaceEnabled()) {
             if (entity.isPolyhedral()) {

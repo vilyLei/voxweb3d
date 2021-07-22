@@ -24,7 +24,7 @@ class RendererDeviece
     // true: force vertex shader precision to highp
     public static VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED:boolean = true;
     // true: force fragment shader precision to highp
-    public static FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED:boolean = false;
+    public static FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED:boolean = true;
     // worker multi threads enabled yes or no
     private static s_threadEnabled:boolean = true;
     static SetThreadEnabled(boo:boolean):void

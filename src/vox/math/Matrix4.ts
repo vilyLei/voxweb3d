@@ -42,6 +42,11 @@ class Matrix4 implements Float32Data
 			this.m_localFS32 = this.m_fs32;
 		}
 	}
+	setData(data:number[]): void {
+		if(data.length == 16) {
+			this.m_localFS32.set(data);
+		}
+	}
 	getCapacity():number
 	{
 		return 16;

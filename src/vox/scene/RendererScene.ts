@@ -519,10 +519,11 @@ export default class RendererScene implements IRenderer {
             if (this.m_runFlag >= 0) this.runEnd();
             this.m_runFlag = 0;
         }
-        let camFlag: boolean = this.m_currCamera == null;
+        let cam = this.m_currCamera;
+        let camFlag: boolean = cam == null;
         this.renderBegin(contextBeginEnabled);
         if (this.m_rspace != null) {
-            this.m_rspace.setCamera(camFlag ? this.m_renderProxy.getCamera() : this.m_currCamera);
+            this.m_rspace.setCamera(camFlag ? this.m_renderProxy.getCamera() : cam);
             this.m_rspace.runBegin();
         }
     }

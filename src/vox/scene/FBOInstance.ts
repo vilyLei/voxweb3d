@@ -20,6 +20,7 @@ import RTTTextureStore from "../../vox/texture/RTTTextureStore";
 import Color4 from "../../vox/material/Color4";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import RenderMaterialProxy from "../../vox/render/RenderMaterialProxy";
+import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderer from "../../vox/scene/IRenderer";
 import IRenderProcess from "../../vox/render/IRenderProcess";
 import RendererInstanceContext from "./RendererInstanceContext";
@@ -32,7 +33,7 @@ export default class FBOInstance {
     private m_rcontext: RendererInstanceContext = null;
     private m_bgColor: Color4 = new Color4();
     private m_render: IRenderer = null;
-    private m_runBegin: boolean = true;
+    private m_runFlag: boolean = true;
     private m_fboIndex: number = -1;
     private m_fboType: number = -1;
     private m_initW: number = 128;
@@ -416,8 +417,8 @@ export default class FBOInstance {
         }
     }
     private runBeginDo(): void {
-        if (this.m_runBegin) {
-            this.m_runBegin = false;
+        if (this.m_runFlag) {
+            this.m_runFlag = false;
             this.m_renderProxy.getClearRGBAColor4f(this.m_backBufferColor);
             
             if (this.m_viewportLock) {
@@ -463,7 +464,7 @@ export default class FBOInstance {
             for (let i: number = 0, len: number = this.m_rindexs.length; i < len; ++i) {
                 this.m_render.runAt(this.m_rindexs[i]);
             }
-            this.m_runBegin = true;
+            this.m_runFlag = true;
         }
         if(lockRenderState) this.unlockRenderState();
         if(lockMaterial) this.unlockMaterial();
@@ -475,28 +476,36 @@ export default class FBOInstance {
                 this.runBeginDo();
             }
             else {
-                this.m_runBegin = true;
+                this.m_runFlag = true;
             }
             this.m_render.runAt(this.m_rindexs[index]);
         }
     }
-
+    //new IRenderEntity
+    drawEntity(entity: IRenderEntity,force: boolean = true): void {
+        if(!this.m_runFlag) {
+            this.m_render.drawEntity(entity, force);
+        }
+    }
     runBegin(): void {
         if (this.m_fboIndex >= 0 && this.m_rindexs != null) {
-            this.m_runBegin = true;
+            this.m_runFlag = true;
             this.runBeginDo();
         }
     }
     runEnd(): void {
-        this.m_runBegin = true;
-        this.m_adapter.unlockViewport();
+        this.m_renderProxy.setClearColor(this.m_backBufferColor);
+        this.m_runFlag = true;
+        if (this.m_viewportLock) {
+            this.m_adapter.unlockViewport();
+        }
     }
     reset(): void {
         let i: number = 0;
         for (; i < this.m_texsTot; ++i) {
             this.m_texs[i] = null;
         }
-        this.m_runBegin = true;
+        this.m_runFlag = false;
         this.m_fboIndex = -1;
         this.m_texsTot = 0;
         this.m_rindexs = [];
@@ -512,6 +521,7 @@ export default class FBOInstance {
         ins.m_texsTot = this.m_texsTot;
         ins.m_enableDepth = this.m_enableDepth;
         ins.m_enableStencil = this.m_enableStencil;
+        ins.m_synFBOSizeWithViewport = this.m_synFBOSizeWithViewport;
 
         ins.m_initW = this.m_initW;
         ins.m_initH = this.m_initH;

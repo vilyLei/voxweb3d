@@ -108,7 +108,7 @@ precision mediump float;
     useLowPrecious(): void {
         this.m_preciousCode = "precision lowp float;";
     }
-    addDefine(name: string, value: string = ""): void {
+    addDefine(name: string, value: string = "1"): void {
         this.m_defineNames.push(name);
         this.m_defineValues.push(value);
     }
@@ -171,7 +171,9 @@ precision mediump float;
         let i: number = 0;
         let len: number = 0;
         let code: string = "";
-
+        if(RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED) {
+            this.useHighPrecious();
+        }
         if (RendererDeviece.IsWebGL2()) {
             code += this.m_versionDeclare;
         }
@@ -282,6 +284,9 @@ precision mediump float;
         let len: number = 0;
         let code: string = "";
 
+        if(RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED) {
+            this.useHighPrecious();
+        }
         if (RendererDeviece.IsWebGL2()) {
             code += this.m_versionDeclare;
         }
@@ -295,7 +300,7 @@ precision mediump float;
         code += "\n"+this.m_preciousCode;
 
         if(RendererDeviece.IsWebGL2()) {
-            code += "\n#define VOX_OUT in";
+            code += "\n#define VOX_OUT out";
         }
         else {
             code += "\n#define VOX_OUT varying";
