@@ -46,7 +46,7 @@ class DepthShaderBuffer extends ShaderCodeBuffer
         //  }
         coder.addVarying("vec4", "v_pos");
         coder.addFragOutput("vec4", "FragColor0");
-        coder.addFragUniform("vec4","u_color");
+        //coder.addFragUniform("vec4","u_color");
         //coder.addFragUniform("vec4","u_stageParam");
 
         coder.useVertSpaceMats(true,true,true);
@@ -126,20 +126,9 @@ export default class DepthMaterial extends MaterialBase
     {        
         return DepthShaderBuffer.GetInstance();
     }
-    
-    private m_colorArray:Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
 
-    setRGB3f(pr:number,pg:number,pb:number):void
-    {
-        this.m_colorArray[0] = pr;
-        this.m_colorArray[1] = pg;
-        this.m_colorArray[2] = pb;
-    }
     createSelfUniformData():ShaderUniformData
     {
-        let oum:ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_color"];
-        oum.dataList = [this.m_colorArray];
-        return oum;
+        return null;
     }
 }

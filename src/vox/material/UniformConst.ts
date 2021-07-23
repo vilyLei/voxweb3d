@@ -31,4 +31,8 @@ export default class UniformConst
      * view port param shader uniform name string, vec4: [viewPortX, viewPortY, viewPortWidth, viewPortHeight]
      */
     static ViewParamUNS:string = "u_viewParam";
+
+    static ShadowMatrixUNS:string = "u_shadowMat";
+    
+    static ShadowVSMParamsUNS:string = "u_vsmParams";
 }

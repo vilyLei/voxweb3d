@@ -29,6 +29,8 @@ interface IRenderer {
     drawEntity(entity: IRenderEntity, force: boolean): void;
     showInfoAt(index: number): void;
     runAt(index: number): void;
+    useCamera(camera: CameraBase, syncCamView: boolean): void;
+    useMainCamera(): void;
     updateCamera(): void;
 }
 export default IRenderer;

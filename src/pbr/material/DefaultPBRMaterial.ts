@@ -128,7 +128,7 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
 
         if (mirrorProjEnabled) {
             coder.addFragUniform("vec4","u_stageParam");
-            coder.addFragUniform("vec4","u_mirrorProjNV");
+            coder.addFragUniform("vec4","u_mirrorParams",2);
         }
 
         if (RendererDeviece.IsWebGL1()) {
@@ -204,10 +204,17 @@ export default class DefaultPBRMaterial extends MaterialBase {
     private m_paramLocal: Float32Array = new Float32Array(
         [
             0.0, 0.0, 0.0, 1.0      // f0.r,f0.g,f0.b, mormalMapIntentity(0.0,1.0)
-            ,1.0, 1.0, 0.0, 0.0     // uv scaleX, uv scaleY, undefined, undefined
+            ,1.0, 1.0, 1.0, 0.3     // uv scaleX, uv scaleY, undefine, undefine
         ]);
     private m_camPos: Float32Array = new Float32Array([500.0, 500.0, 500.0, 1.0]);
-    private m_mirrorProjNV: Float32Array = new Float32Array([0.0, 1.0, 0.0, 1.0]);
+    private m_mirrorParam: Float32Array = new Float32Array(
+        [
+            0.0, 1.0, 0.0           // mirror plane nv(x,y,z)
+            , 1.0                   // undefine
+
+            , 1.0, 0.3              // mirror scale, mirror mix scale
+            , 0.0, 0.0              // undefine, undefine
+        ]);
     private m_lightPositions: Float32Array;
     private m_lightColors: Float32Array;
 
@@ -307,11 +314,18 @@ export default class DefaultPBRMaterial extends MaterialBase {
     getPixelNormalNoiseIntensity(): number {
         return this.m_params[3];
     }
-    setProjNV(nv: Vector3D): void {
+    setMirrorPlaneNV(nv: Vector3D): void {
         //console.log("nv: ",nv);
-        this.m_mirrorProjNV[0] = nv.x;
-        this.m_mirrorProjNV[1] = nv.y;
-        this.m_mirrorProjNV[2] = nv.z;
+        this.m_mirrorParam[0] = nv.x;
+        this.m_mirrorParam[1] = nv.y;
+        this.m_mirrorParam[2] = nv.z;
+    }
+    
+    setMirrorIntensity(intensity: number): void {
+        this.m_mirrorParam[4] = Math.min(Math.max(intensity, 0.01), 2.0);
+    }
+    setMirrorMixFactor(factor: number): void {
+        this.m_mirrorParam[5] = Math.min(Math.max(factor, 0.01), 2.0);
     }
     /**
      * (lod mipmap level) = base + (maxMipLevel - k * maxMipLevel)
@@ -487,8 +501,8 @@ export default class DefaultPBRMaterial extends MaterialBase {
     createSelfUniformData(): ShaderUniformData {
 
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_albedo", "u_params", "u_lightPositions", "u_lightColors", "u_camPos", "u_paramLocal", "u_mirrorProjNV"];
-        oum.dataList = [this.m_albedo, this.m_params, this.m_lightPositions, this.m_lightColors, this.m_camPos, this.m_paramLocal, this.m_mirrorProjNV];
+        oum.uniformNameList = ["u_albedo", "u_params", "u_lightPositions", "u_lightColors", "u_camPos", "u_paramLocal", "u_mirrorParams"];
+        oum.dataList = [this.m_albedo, this.m_params, this.m_lightPositions, this.m_lightColors, this.m_camPos, this.m_paramLocal, this.m_mirrorParam];
         return oum;
     }
 }

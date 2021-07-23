@@ -195,6 +195,11 @@ export default class RendererScene implements IRenderer {
         this.m_rcontext.setRenderToBackBuffer();
     }
 
+    drawBackBufferToCanvas(dstCanvas: HTMLCanvasElement): void {
+        let srcCanvas = this.getCanvas();
+        var ctx = dstCanvas.getContext("2d");
+		ctx.drawImage(srcCanvas,0,0, dstCanvas.width,dstCanvas.height);
+    }
     updateRenderBufferSize(): void {
         this.m_adapter.updateRenderBufferSize();
     }
@@ -237,7 +242,7 @@ export default class RendererScene implements IRenderer {
      */
     createSubScene(): RendererSubScene {
         if (this.m_renderer != null) {
-            let subsc: RendererSubScene = new RendererSubScene(this.m_renderer, this.m_evtFlowEnabled);
+            let subsc: RendererSubScene = new RendererSubScene(this, this.m_renderer, this.m_evtFlowEnabled);
             this.m_subscList.push(subsc);
             this.m_subscListLen++;
 

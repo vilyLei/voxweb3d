@@ -124,12 +124,22 @@ precision mediump float;
         this.m_varyingNames.push(name);
         this.m_varyingTypes.push(type);
     }
-    addVertUniform(type: string, name: string): void {
-        this.m_vertUniformNames.push(name);
+    addVertUniform(type: string, name: string, arrayLength: number = 0): void {
+        if(arrayLength > 0) {
+            this.m_vertUniformNames.push(name + "["+arrayLength+"]");
+        }
+        else {
+            this.m_vertUniformNames.push(name);
+        }
         this.m_vertUniformTypes.push(type);
     }
-    addFragUniform(type: string, name: string): void {
-        this.m_fragUniformNames.push(name);
+    addFragUniform(type: string, name: string, arrayLength: number = 0): void {
+        if(arrayLength > 0) {
+            this.m_fragUniformNames.push(name + "["+arrayLength+"]");
+        }
+        else {
+            this.m_fragUniformNames.push(name);
+        }
         this.m_fragUniformTypes.push(type);
     }
     addFragFunction(codeBlock: string): void {

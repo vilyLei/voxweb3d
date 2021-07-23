@@ -138,11 +138,12 @@ void main()
     // gamma correct
     color = linearToGamma(color);
     #ifdef VOX_MIRROR_PROJ_MAP
-        float factorY = max(dot(N.xyz, u_mirrorProjNV.xyz), 0.01);
+        float factorY = max(dot(N.xyz, u_mirrorParams[0].xyz), 0.01);
         vec4 mirrorColor4 = VOX_Texture2D(VOX_MIRROR_PROJ_MAP, (gl_FragCoord.xy/u_stageParam.zw) + (N  * vec3(0.02)).xy);
         //vec4 mirrorColor4 = VOX_Texture2DLod(VOX_MIRROR_PROJ_MAP, (gl_FragCoord.xy/u_stageParam.zw) + (N  * vec3(0.02)).xy, 7.0);
         mirrorColor4.xyz = mix(mirrorColor4.xyz, color.xyz, factorY) * 0.4 + mirrorColor4.xyz * 0.2;
-        color.xyz = mirrorColor4.xyz + color.xyz * 0.3;
+        //color.xyz = mirrorColor4.xyz * 1.0 + color.xyz * 0.3;
+        color.xyz = mirrorColor4.xyz * u_mirrorParams[1].x + color.xyz  * u_mirrorParams[1].y;
     #endif
     FragOutColor = vec4(color, 1.0);
 }

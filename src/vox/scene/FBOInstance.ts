@@ -148,6 +148,14 @@ export default class FBOInstance {
     }
 
     setGlobalMaterial(m: IRenderMaterial): void {
+        if(this.m_gMateiral != m) {
+            if(this.m_gMateiral != null) {
+                this.m_gMateiral.__$detachThis();
+            }
+            if(m != null) {
+                m.__$attachThis();
+            }
+        }
         this.m_gMateiral = m;
     }
     lockMaterial(): void {
@@ -270,7 +278,7 @@ export default class FBOInstance {
      * @param rttTexProxy 作为渲染到目标的目标纹理对象
      * @param outputIndex framebuffer output attachment index
      */
-    setRenderToTexture(texture: RTTTextureProxy, outputIndex: number = 0): void {
+    setRenderToTexture(texture: RTTTextureProxy, outputIndex: number = 0): RTTTextureProxy {
         if (outputIndex == 0) {
             this.m_texsTot = 1;
         }
@@ -278,6 +286,7 @@ export default class FBOInstance {
             this.m_texsTot = outputIndex + 1;
         }
         this.m_texs[outputIndex] = texture;
+        return texture;
     }
 
     /**
@@ -301,7 +310,7 @@ export default class FBOInstance {
      * @param systemFloatRTTTexIndex 作为渲染到目标的目标纹理对象在系统float rtt 纹理中的序号(0 -> 15)
      * @param outputIndex framebuffer output attachment index
      */
-    setRenderToHalfFloatTexture(texture: RTTTextureProxy, outputIndex: number = 0): void {
+    setRenderToHalfFloatTexture(texture: RTTTextureProxy, outputIndex: number = 0): RTTTextureProxy {
         if (texture == null) {
             texture = new RTTTextureProxy(128, 128);
             texture.__$setRenderProxy(this.m_renderProxy);
@@ -312,14 +321,14 @@ export default class FBOInstance {
             texture.magFilter = TextureConst.LINEAR;
             texture.__$setRenderProxy(this.m_renderProxy);
         }
-        this.setRenderToTexture(texture, outputIndex);
+        return this.setRenderToTexture(texture, outputIndex);
     }
     /**
      * 设置渲染到纹理的目标纹理对象(RGBA RTT 纹理类型的目标纹理)和framebuffer output attachment index
      * @param systemFloatRTTTexIndex 作为渲染到目标的目标纹理对象在系统float rtt 纹理中的序号(0 -> 15)
      * @param outputIndex framebuffer output attachment index
      */
-    setRenderToRGBATexture(texture: RTTTextureProxy, outputIndex: number = 0): void {
+    setRenderToRGBATexture(texture: RTTTextureProxy, outputIndex: number = 0): RTTTextureProxy {
         if (texture == null) {
             texture = new RTTTextureProxy(32, 32);
             texture.internalFormat = TextureFormat.RGBA;
@@ -329,15 +338,15 @@ export default class FBOInstance {
             texture.magFilter = TextureConst.LINEAR;
             texture.__$setRenderProxy(this.m_renderProxy);
         }
-        this.setRenderToTexture(texture, outputIndex);
+        return this.setRenderToTexture(texture, outputIndex);
     }
     /**
      * 设置渲染到纹理的目标纹理对象(depth RTT 纹理类型的目标纹理)和framebuffer output attachment index
      * @param systemDepthRTTTexIndex 作为渲染到目标的目标纹理对象在系统depth rtt 纹理中的序号(0 -> 15)
      * @param outputIndex framebuffer output attachment index
      */
-    setRenderToDepthTextureAt(systemDepthRTTTexIndex: number, outputIndex: number = 0): void {
-        this.setRenderToTexture(this.m_texStore.getDepthTextureAt(systemDepthRTTTexIndex), outputIndex);
+    setRenderToDepthTextureAt(systemDepthRTTTexIndex: number, outputIndex: number = 0): RTTTextureProxy {
+        return this.setRenderToTexture(this.m_texStore.getDepthTextureAt(systemDepthRTTTexIndex), outputIndex);
     }
 
     setClearState(clearColorBoo: boolean, clearDepthBoo: boolean, clearStencilBoo: boolean = false): void {
@@ -454,7 +463,7 @@ export default class FBOInstance {
             }
         }
     }
-    run(lockRenderState:boolean = false,lockMaterial:boolean = false): void {
+    run(lockRenderState:boolean = false,lockMaterial:boolean = false, autoEnd: boolean = true): void {
 
         if(lockRenderState) this.lockRenderState();
         if(lockMaterial) this.lockMaterial();
@@ -468,7 +477,9 @@ export default class FBOInstance {
         }
         if(lockRenderState) this.unlockRenderState();
         if(lockMaterial) this.unlockMaterial();
-
+        if(autoEnd) {
+            this.runEnd();
+        }
     }
     runAt(index: number): void {
         if (this.m_fboIndex >= 0 && this.m_rindexs != null) {
@@ -500,6 +511,13 @@ export default class FBOInstance {
             this.m_adapter.unlockViewport();
         }
     }
+    
+    useCamera(camera: CameraBase, syncCamView: boolean = false): void {
+        this.m_render.useCamera(camera, syncCamView);
+    }
+    useMainCamera(): void {
+        this.m_render.useMainCamera();
+    }
     reset(): void {
         let i: number = 0;
         for (; i < this.m_texsTot; ++i) {
@@ -509,6 +527,10 @@ export default class FBOInstance {
         this.m_fboIndex = -1;
         this.m_texsTot = 0;
         this.m_rindexs = [];
+        if(this.m_gMateiral != null) {
+            this.m_gMateiral.__$detachThis();
+            this.m_gMateiral = null;
+        }
     }
 
     clone(): FBOInstance {

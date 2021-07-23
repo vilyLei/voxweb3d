@@ -320,7 +320,9 @@
 
 //  import {DemoBase as Demo} from "./shadow/vsm/DemoBase";
 
-import {DemoVSM as Demo} from "./shadow/vsm/DemoVSM";
+//  import {DemoVSM as Demo} from "./shadow/vsm/DemoVSM";
+
+//  import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     light    ////////////////////////////////////
@@ -338,7 +340,7 @@ import {DemoVSM as Demo} from "./shadow/vsm/DemoVSM";
 
 //  import {DemoLightsPBR as Demo} from "./pbr/DemoLightsPBR";
 
-//  import {DemoDefaultPBR as Demo} from "./pbr/DemoDefaultPBR";
+import {DemoDefaultPBR as Demo} from "./pbr/DemoDefaultPBR";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////

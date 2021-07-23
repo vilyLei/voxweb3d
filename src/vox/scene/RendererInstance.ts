@@ -113,6 +113,10 @@ export class RendererInstance implements IRenderer
             return this.m_renderProxy.createCamera();
         }
     }
+    useCamera(camera: CameraBase, syncCamView: boolean = false): void {
+    }
+    useMainCamera(): void {
+    }
     updateCamera():void
     {
         if(this.m_renderProxy != null)

@@ -64,7 +64,7 @@ export default class ShaderGlobalUniform extends ShaderUniform
             else
             {
                 for(; i < this.uniformsTotal; ++i)
-                {
+                {                    
                     rc.useUniformV2(this.locations[i],this.types[i],slot.dataList[this.slotIndex + i],this.dataSizeList[i],0);
                 }
             }

@@ -46,6 +46,7 @@ export default class RendererSubScene implements IRenderer {
     private m_renderProxy: RenderProxy = null;
     private m_rcontext: RendererInstanceContext = null;
     private m_renderer: RendererInstance = null;
+    private m_parent: IRenderer = null;
     private m_processids: Uint8Array = new Uint8Array(128);
     private m_processidsLen: number = 0;
     private m_rspace: RendererSpace = null;
@@ -73,8 +74,9 @@ export default class RendererSubScene implements IRenderer {
     
     readonly textureBlock: TextureBlock = null;
 
-    constructor(renderer: RendererInstance, evtFlowEnabled: boolean) {
+    constructor(parent: IRenderer, renderer: RendererInstance, evtFlowEnabled: boolean) {
         this.m_evtFlowEnabled = evtFlowEnabled;
+        this.m_parent = parent;
         this.m_renderer = renderer;
         this.m_shader = renderer.getDataBuilder().getRenderShader();
         this.m_uid = 1024 + RendererSubScene.__s_uid++;
@@ -576,6 +578,12 @@ export default class RendererSubScene implements IRenderer {
         if (this.m_autoRunning) {
             this.m_runFlag = -1;
         }
+    }
+    useCamera(camera: CameraBase, syncCamView: boolean = false): void {
+        this.m_parent.useCamera(camera, syncCamView);
+    }
+    useMainCamera(): void {
+        this.m_parent.useMainCamera();
     }
     updateCamera(): void {
         if (this.m_camera != null) {

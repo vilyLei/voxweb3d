@@ -21,5 +21,7 @@ interface IRenderMaterial
     getShaderData():IShaderData;
     getTextureList():IRenderTexture[];
     getCodeBuf():ShaderCodeBuffer;
+    __$attachThis():void;
+    __$detachThis():void;
 }
 export default IRenderMaterial;

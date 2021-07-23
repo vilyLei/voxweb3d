@@ -75,6 +75,9 @@ class ShaderUniformProbe
     addVec4Data(f32:Float32Array,vec4Total:number):void
     {
         //console.log("addVec4Data() slot("+this.m_slot.getUid()+")");
+        if(vec4Total < (f32.length / 4)) {
+            console.warn("vec4 uniform array total are not equal to the vec4Total value.");
+        }
         this.m_fsList.push(f32);
         this.uniformTypes.push(MaterialConst.SHADER_VEC4);
         this.dataSizeList.push(vec4Total);

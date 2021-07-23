@@ -246,6 +246,7 @@ export class DemoDefaultPBR
         let plane:Plane3DEntity = null;
         let material: DefaultPBRMaterial;
         ///*
+        // mirror plane
         material = this.m_meshMana.makeTexMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
         material.setTextureList( [
             this.m_meshMana.texList[0]
@@ -258,9 +259,10 @@ export class DemoDefaultPBR
         material.diffuseMapEnabled = true;
         material.normalMapEnabled = true;
         material.setUVScale(3.0,3.0);
+        material.setMirrorIntensity(0.3);
+        material.setMirrorMixFactor(0.9);
         plane = new Plane3DEntity();
         plane.flipVerticalUV = true;
-        //plane.setMaterial(toneMaterial);
         plane.setMaterial(material);
         plane.initializeXOZ(-1100.0, -1100.0, 2200.0, 2200.0, texList);
         plane.setXYZ(0, this.m_reflectPlaneY, 0);

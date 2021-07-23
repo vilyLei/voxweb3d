@@ -27,7 +27,8 @@ import CameraBase from "../../vox/view/CameraBase";
 import MathConst from "../../vox/math/MathConst";
 import DepthMaterial from "./material/DepthMaterial";
 import OccBlurMaterial from "./material/OccBlurMaterial";
-import ShadowEntityMaterial from "./material/ShadowEntityMaterial";
+import ShadowVSMMaterial from "./material/ShadowVSMMaterial";
+import ShadowVSMData from "./material/ShadowVSMData";
 import RendererState from "../../vox/render/RendererState";
 import { GLStencilFunc, GLStencilOp } from "../../vox/render/RenderConst";
 import DebugFlag from "../../vox/debug/DebugFlag";
@@ -35,6 +36,7 @@ import ScreenFixedAlignPlaneEntity from "../../vox/entity/ScreenFixedAlignPlaneE
 import Matrix4 from "../../vox/math/Matrix4";
 import Cylinder3DEntity from "../../vox/entity/Cylinder3DEntity";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
+import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 
 export class DemoVSM {
     constructor() { }
@@ -46,6 +48,8 @@ export class DemoVSM {
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
+
+    private m_vsmData: ShadowVSMData = null;
     private m_targetEntity: DisplayEntity = null;
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -62,7 +66,9 @@ export class DemoVSM {
 
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
+            //rparam.setAttriAlpha(false);
             rparam.setAttriStencil(true);
+            //rparam.setAttripreserveDrawingBuffer(true);
             rparam.setCamPosition(800.0, 800.0, 800.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 4);
@@ -84,177 +90,149 @@ export class DemoVSM {
 
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.initialize(300.0);
-            this.m_rscene.addEntity(axis);
+            this.m_rscene.addEntity(axis, 3);
 
-            this.m_rscene.setClearRGBColor3f(0.1,0.2,0.1);
+            this.m_rscene.setClearRGBColor3f(0.1, 0.2, 0.1);
             this.initConfig();
             this.update();
         }
     }
 
-    private m_direcCamera:CameraBase = null;
-    private m_depMaterial: DepthMaterial = new DepthMaterial();
-    //private m_occMaterial: OccBlurMaterial = new OccBlurMaterial();
+    private m_direcCamera: CameraBase = null;
     private m_fboDepth: FBOInstance = null;
-    private m_fboOccBlurH: FBOInstance = null;
-    private m_fboOccBlurV: FBOInstance = null;
-    private m_horOccBlurPlane: Plane3DEntity = null;
+    private m_fboOccBlur: FBOInstance = null;
     private m_verOccBlurPlane: Plane3DEntity = null;
+    private m_horOccBlurPlane: Plane3DEntity = null;
+
     private m_shadowBias: number = -0.0005;
     private m_setShadowRadius: number = 2.0;
     private m_shadowMapW: number = 128;
     private m_shadowMapH: number = 128;
     private m_shadowViewW: number = 1300;
     private m_shadowViewH: number = 1300;
-    private m_direcMatrix: Matrix4 = new Matrix4();
-    private m_factorMatrix: Matrix4 = new Matrix4();
+    private m_depthRtt: RTTTextureProxy = null;
+    private m_occBlurRtt: RTTTextureProxy = null;
+
     private initConfig(): void {
-        
+
+        this.m_vsmData = new ShadowVSMData();
+        this.m_vsmData.initialize();
+
         this.m_fboDepth = this.m_rscene.createFBOInstance();
         this.m_fboDepth.asynFBOSizeWithViewport();
-        this.m_fboDepth.setClearRGBAColor4f(1.0,1.0,1.0,1.0);
-        this.m_fboDepth.createFBOAt(0, this.m_shadowMapW,this.m_shadowMapH, true,false);
-        this.m_fboDepth.setRenderToRTTTextureAt(0, 0);
+        this.m_fboDepth.setClearRGBAColor4f(1.0, 1.0, 1.0, 1.0);
+        this.m_fboDepth.createFBOAt(0, this.m_shadowMapW, this.m_shadowMapH, true, false);
+        this.m_depthRtt = this.m_fboDepth.setRenderToRGBATexture(null, 0);
         this.m_fboDepth.setRProcessIDList([0]);
-
-        //this.m_fboDepth.setGlobalRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
         this.m_fboDepth.setGlobalRenderState(RendererState.NORMAL_STATE);
-        this.m_fboDepth.setGlobalMaterial(this.m_depMaterial);
+        this.m_fboDepth.setGlobalMaterial(new DepthMaterial());
 
-        
-        this.m_fboOccBlurV = this.m_rscene.createFBOInstance();
-        this.m_fboOccBlurV.asynFBOSizeWithViewport();
-        this.m_fboOccBlurV.setClearRGBAColor4f(1.0,1.0,1.0,1.0);
-        this.m_fboOccBlurV.createFBOAt(0, this.m_shadowMapW,this.m_shadowMapH, true,false);
-        this.m_fboOccBlurV.setRenderToRTTTextureAt(1, 0);
-        this.m_fboOccBlurV.setRProcessIDList([1]);
-        
-        this.m_fboOccBlurH = this.m_rscene.createFBOInstance();
-        this.m_fboOccBlurH.asynFBOSizeWithViewport();
-        this.m_fboOccBlurH.setClearRGBAColor4f(1.0,1.0,1.0,1.0);
-        this.m_fboOccBlurH.createFBOAt(0, this.m_shadowMapW,this.m_shadowMapH, true,false);
-        this.m_fboOccBlurH.setRenderToRTTTextureAt(0, 0);
-        this.m_fboOccBlurH.setRProcessIDList([2]);
+        this.m_fboOccBlur = this.m_rscene.createFBOInstance();
+        this.m_fboOccBlur.asynFBOSizeWithViewport();
+        this.m_fboOccBlur.setClearRGBAColor4f(1.0, 1.0, 1.0, 1.0);
+        this.m_fboOccBlur.createFBOAt(0, this.m_shadowMapW, this.m_shadowMapH, true, false);
+        this.m_occBlurRtt = this.m_fboOccBlur.setRenderToRGBATexture(null, 0);
 
-        
+
         let occMaterial: OccBlurMaterial;
-        let occBlurPlane: Plane3DEntity;
-
-        occMaterial = new OccBlurMaterial( false );
+        occMaterial = new OccBlurMaterial(false);
         occMaterial.setShadowRadius(this.m_setShadowRadius);
-        occBlurPlane =  new Plane3DEntity();
-        occBlurPlane.setMaterial( occMaterial );
-        occBlurPlane.initializeXOY(-1,-1,2,2, [this.m_fboDepth.getRTTAt(0)]);
-        this.m_rscene.addEntity(occBlurPlane, 1);
-        this.m_verOccBlurPlane = occBlurPlane;
+        let verOccBlurPlane: Plane3DEntity = new Plane3DEntity();
+        verOccBlurPlane.setMaterial(occMaterial);
+        verOccBlurPlane.initializeXOY(-1, -1, 2, 2, [this.m_depthRtt]);
+        //this.m_rscene.addEntity(verOccBlurPlane, 1);
+        this.m_verOccBlurPlane = verOccBlurPlane;
 
-        occMaterial = new OccBlurMaterial( true );
+        occMaterial = new OccBlurMaterial(true);
         occMaterial.setShadowRadius(this.m_setShadowRadius);
-        occBlurPlane =  new Plane3DEntity();
-        occBlurPlane.setMaterial( occMaterial );
-        occBlurPlane.initializeXOY(-1,-1,2,2, [this.m_fboOccBlurV.getRTTAt(0)]);
-        this.m_rscene.addEntity(occBlurPlane, 2);
-        this.m_horOccBlurPlane = occBlurPlane;
-
-        
-        this.m_depMaterial.__$attachThis();
+        let horOccBlurPlane: Plane3DEntity = new Plane3DEntity();
+        horOccBlurPlane.copyMeshFrom(verOccBlurPlane);
+        horOccBlurPlane.setMaterial(occMaterial);
+        horOccBlurPlane.initializeXOY(-1, -1, 2, 2, [this.m_occBlurRtt]);
+        //this.m_rscene.addEntity(horOccBlurPlane, 2);
+        this.m_horOccBlurPlane = horOccBlurPlane;
 
         let viewWidth: number = this.m_shadowViewW;
         let viewHeight: number = this.m_shadowViewH;
         this.m_direcCamera = new CameraBase(0);
-        this.m_direcCamera.lookAtRH(new Vector3D(600.0,800.0,-600.0), new Vector3D(0.0,0.0,0.0), new Vector3D(0.0,1.0,0.0));
-        this.m_direcCamera.orthoRH(0.1,1900.0, -0.5 * viewHeight, 0.5 * viewHeight, -0.5 * viewWidth, 0.5 * viewWidth);
-        this.m_direcCamera.setViewXY(0,0);
+        this.m_direcCamera.lookAtRH(new Vector3D(600.0, 800.0, -600.0), new Vector3D(0.0, 0.0, 0.0), new Vector3D(0.0, 1.0, 0.0));
+        this.m_direcCamera.orthoRH(0.1, 1900.0, -0.5 * viewHeight, 0.5 * viewHeight, -0.5 * viewWidth, 0.5 * viewWidth);
+        this.m_direcCamera.setViewXY(0, 0);
         this.m_direcCamera.setViewSize(viewWidth, viewHeight);
         this.m_direcCamera.update();
-        
 
-        let frustrum:FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
-        frustrum.initiazlize( this.m_direcCamera );
-        this.m_rscene.addEntity( frustrum, 3);
-        
-        this.m_factorMatrix.identity();
-        this.m_factorMatrix.setScaleXYZ(0.5,0.5,0.5);
-        this.m_factorMatrix.setTranslationXYZ(0.5,0.5,0.5);
-        console.log("m_direcMatrix this.m_direcMatrix: ");
-        console.log(this.m_direcMatrix.toString());
-        
-        
-        let shadowTex: TextureProxy = this.m_fboDepth.getRTTAt(0);
-        let shadowMaterial: ShadowEntityMaterial = new ShadowEntityMaterial();
+        this.m_vsmData.updateShadowCamera(this.m_direcCamera);
+        this.m_vsmData.setShadowRadius(this.m_setShadowRadius);
+        this.m_vsmData.setShadowBias(this.m_shadowBias);
+        this.m_vsmData.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
+        this.m_vsmData.upadate();
+
+        this.initSceneObjs();
+    }
+    private initSceneObjs(): void {
+
+        let frustrum: FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
+        frustrum.initiazlize(this.m_direcCamera);
+        this.m_rscene.addEntity(frustrum, 3);
+
+        let shadowTex: TextureProxy = this.m_depthRtt;
+        let shadowMaterial: ShadowVSMMaterial;
+
         // add common 3d display entity
-        let plane:Plane3DEntity = new Plane3DEntity();
-        shadowMaterial = new ShadowEntityMaterial();
-        shadowMaterial.setShadowRadius(this.m_setShadowRadius);
-        shadowMaterial.setShadowBias(this.m_shadowBias);
-        shadowMaterial.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
-        shadowMaterial.setShadowMatrix( this.m_direcMatrix );
-        shadowMaterial.setDirec(this.m_direcCamera.getNV());
+
+        let plane: Plane3DEntity = new Plane3DEntity();
+        shadowMaterial = new ShadowVSMMaterial();
+        shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
+        shadowMaterial.setVSMData(this.m_vsmData);
         plane.setMaterial(shadowMaterial);
-        plane.initializeXOZ(-600.0, -600.0, 1200.0, 1200.0, [this.getImageTexByUrl("static/assets/brickwall_big.jpg"), shadowTex]);
+        plane.initializeXOZ(-600.0, -600.0, 1200.0, 1200.0, [shadowTex, this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
         plane.setXYZ(0.0, -1.0, 0.0);
         this.m_rscene.addEntity(plane);
         this.m_targetEntity = plane;
 
-        let box:Box3DEntity = new Box3DEntity();
-        shadowMaterial = new ShadowEntityMaterial();
-        shadowMaterial.setShadowRadius(this.m_setShadowRadius);
-        shadowMaterial.setShadowBias(this.m_shadowBias);
-        shadowMaterial.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
-        shadowMaterial.setShadowMatrix( this.m_direcMatrix );
-        shadowMaterial.setDirec(this.m_direcCamera.getNV());
-        box.setMaterial(shadowMaterial);        
-        box.initializeCube(200.0, [this.getImageTexByUrl("static/assets/metal_02.jpg"), shadowTex]);
-        
+        let box: Box3DEntity = new Box3DEntity();
+        shadowMaterial = new ShadowVSMMaterial();
+        shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
+        shadowMaterial.setVSMData(this.m_vsmData);
+        box.setMaterial(shadowMaterial);
+        box.initializeCube(200.0, [shadowTex, this.getImageTexByUrl("static/assets/metal_02.jpg")]);
         this.m_rscene.addEntity(box);
-        box.setRotationXYZ(Math.random() * 300.0,Math.random() * 300.0,Math.random() * 300.0);
-        box.setXYZ(230.0,100.0,0.0);
+        //box.setRotationXYZ(Math.random() * 300.0,Math.random() * 300.0,Math.random() * 300.0);
+        box.setRotationXYZ(100.0, -60.0, 0.0);
+        box.setXYZ(230.0, 100.0, 0.0);
         box.update();
-        
-        let cyl:Cylinder3DEntity = new Cylinder3DEntity();
-        shadowMaterial = new ShadowEntityMaterial();
-        shadowMaterial.setShadowRadius(this.m_setShadowRadius);
-        shadowMaterial.setShadowBias(this.m_shadowBias);
-        shadowMaterial.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
-        shadowMaterial.setShadowMatrix( this.m_direcMatrix );
-        shadowMaterial.setDirec(this.m_direcCamera.getNV());
+
+        let cyl: Cylinder3DEntity = new Cylinder3DEntity();
+        shadowMaterial = new ShadowVSMMaterial();
+        shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
+        shadowMaterial.setVSMData(this.m_vsmData);
         cyl.setMaterial(shadowMaterial);
-        cyl.initialize(80.0,200.0,20,[this.getImageTexByUrl("static/assets/noise.jpg"), shadowTex]);
+        cyl.initialize(80.0, 200.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/noise.jpg")]);
         this.m_rscene.addEntity(cyl);
-        cyl.setXYZ(-230.0,100.0,0.0);
+        cyl.setXYZ(-230.0, 100.0, 0.0);
 
-        
-        let sph:Sphere3DEntity = new Sphere3DEntity();
-        shadowMaterial = new ShadowEntityMaterial();
-        shadowMaterial.setShadowRadius(this.m_setShadowRadius);
-        shadowMaterial.setShadowBias(this.m_shadowBias);
-        shadowMaterial.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
-        shadowMaterial.setShadowMatrix( this.m_direcMatrix );
-        shadowMaterial.setDirec(this.m_direcCamera.getNV());
+
+        let sph: Sphere3DEntity = new Sphere3DEntity();
+        shadowMaterial = new ShadowVSMMaterial();
+        shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
+        shadowMaterial.setVSMData(this.m_vsmData);
         sph.setMaterial(shadowMaterial);
-        sph.initialize(80.0,20.0,20,[this.getImageTexByUrl("static/assets/metal_02.jpg"), shadowTex]);
+        sph.initialize(80.0, 20.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/metal_02.jpg")]);
         this.m_rscene.addEntity(sph);
-        sph.setXYZ(-230.0,100.0,-200.0);
+        sph.setXYZ(-230.0, 100.0, -200.0);
 
-        
         sph = new Sphere3DEntity();
-        shadowMaterial = new ShadowEntityMaterial();
-        shadowMaterial.setShadowRadius(this.m_setShadowRadius);
-        shadowMaterial.setShadowBias(this.m_shadowBias);
-        shadowMaterial.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
-        shadowMaterial.setShadowMatrix( this.m_direcMatrix );
-        shadowMaterial.setDirec(this.m_direcCamera.getNV());
+        shadowMaterial = new ShadowVSMMaterial();
+        shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
+        shadowMaterial.setVSMData(this.m_vsmData);
         sph.setMaterial(shadowMaterial);
-        sph.initialize(80.0,20.0,20,[this.getImageTexByUrl("static/assets/metal_08.jpg"), shadowTex]);
-        sph.setScaleXYZ(1.2,1.2,1.2);
-        sph.setXYZ(-40.0,100.0,-180.0);
+        sph.initialize(80.0, 20.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/metal_08.jpg")]);
+        sph.setScaleXYZ(1.2, 1.2, 1.2);
+        sph.setXYZ(-40.0, 100.0, -180.0);
         this.m_rscene.addEntity(sph);
-
-
     }
     private m_flag: boolean = true;
     private mouseDown(evt: any): void {
-
         this.m_flag = true;
         DebugFlag.Flag_0 = 1;
     }
@@ -269,6 +247,7 @@ export class DemoVSM {
         this.m_statusDisp.render();
     }
     private m_shadowCamVersion: number = -1;
+    private m_buildShadowDelay: number = 120;
     run(): void {
 
         //  if(this.m_flag) {
@@ -277,11 +256,12 @@ export class DemoVSM {
         //  else {
         //      return;
         //  }
+
         // update shadow direc matrix
-        if(this.m_direcCamera.version != this.m_shadowCamVersion) {
+        if (this.m_direcCamera.version != this.m_shadowCamVersion) {
             this.m_shadowCamVersion = this.m_direcCamera.version;
-            this.m_direcMatrix.copyFrom(this.m_direcCamera.getVPMatrix());
-            this.m_direcMatrix.append(this.m_factorMatrix);
+            this.m_vsmData.updateShadowCamera(this.m_direcCamera);
+            this.m_vsmData.upadate();
         }
         this.m_statusDisp.update(false);
         this.m_stageDragSwinger.runWithYAxis();
@@ -289,21 +269,34 @@ export class DemoVSM {
 
         this.m_rscene.update(true);
 
-        this.m_rscene.useCamera(this.m_direcCamera);
-        this.m_fboDepth.run(true,true);
-        this.m_rscene.useMainCamera();
+        if(this.m_buildShadowDelay > 0) {
+            if(this.m_buildShadowDelay % 15 == 0) {
+                this.buildShadow();
+            }
+            this.m_buildShadowDelay--;
+        }
 
-        this.m_fboOccBlurV.run();
-        this.m_fboOccBlurH.run();
-        
-
-        this.m_fboDepth.setRenderToBackBuffer();
-        
-        this.m_rscene.runAt(0);
-        
-        this.m_rscene.runAt(3);
+        this.m_rscene.run();
         this.m_rscene.runEnd();
 
+    }
+    private buildShadow(): void {
+
+        this.m_fboDepth.useCamera(this.m_direcCamera);
+        this.m_fboDepth.run(true, true);        
+        this.m_fboDepth.useMainCamera();
+        // drawing vertical
+        this.m_fboOccBlur.setRenderToRGBATexture(this.m_occBlurRtt, 0);
+        this.m_fboOccBlur.runBegin();
+        this.m_fboOccBlur.drawEntity(this.m_verOccBlurPlane);
+        this.m_fboOccBlur.runEnd();
+        // drawing horizonal
+        this.m_fboOccBlur.setRenderToRGBATexture(this.m_depthRtt, 0);        
+        this.m_fboOccBlur.runBegin();
+        this.m_fboOccBlur.drawEntity(this.m_horOccBlurPlane);
+        this.m_fboOccBlur.runEnd();
+        
+        this.m_fboOccBlur.setRenderToBackBuffer();
     }
 }
 export default DemoVSM;
