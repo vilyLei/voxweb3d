@@ -310,6 +310,8 @@
 
 //  import {DemoRTTCamera as Demo} from "./demo/DemoRTTCamera";
 
+import {DemoRTTCube as Demo} from "./demo/DemoRTTCube";
+
 //  import {DemoProjectPlane as Demo} from "./demo/DemoProjectPlane";
 
 //  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
@@ -340,7 +342,7 @@
 
 //  import {DemoLightsPBR as Demo} from "./pbr/DemoLightsPBR";
 
-import {DemoDefaultPBR as Demo} from "./pbr/DemoDefaultPBR";
+//  import {DemoDefaultPBR as Demo} from "./pbr/DemoDefaultPBR";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////

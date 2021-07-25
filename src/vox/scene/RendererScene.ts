@@ -469,6 +469,10 @@ export default class RendererScene implements IRenderer {
         this.m_renderProxy.updateCamera();
         this.m_renderProxy.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
     }
+    updateCameraDataFromCamera(camera: CameraBase): void {
+        
+        this.m_renderProxy.updateCameraDataFromCamera( camera );
+    }
     /**
      * reset renderer rendering state
      */

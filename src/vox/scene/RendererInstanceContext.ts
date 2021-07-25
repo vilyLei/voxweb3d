@@ -255,6 +255,14 @@ export default class RendererInstanceContext
     {
         this.m_adapter.useFBO(clearColorBoo,clearDepthBoo,clearStencilBoo);
     }
+    
+	resetFBOAttachmentMask(boo: boolean): void {
+		this.m_adapter.resetFBOAttachmentMask(boo);
+	}
+	setFBOAttachmentMaskAt(index: number, boo: boolean): void {
+        this.m_adapter.setFBOAttachmentMaskAt(index, boo);
+    }
+    
     setRenderToBackBuffer():void
     {
         if(this.m_adapter != null)
