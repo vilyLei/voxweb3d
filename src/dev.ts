@@ -95,8 +95,7 @@
 //  import * as DemoMRT from "./demo/DemoMRT";
 //  import Demo = DemoMRT.demo.DemoMRT;
 
-//  import * as DemoCubeMapMRT from "./demo/DemoCubeMapMRT";
-//  import Demo = DemoCubeMapMRT.demo.DemoCubeMapMRT;
+//  import {DemoCubeMapMRT as Demo} from "./demo/DemoCubeMapMRT";
 
 //  import {DemoFrustrum as Demo} from "./demo/DemoFrustrum";
 

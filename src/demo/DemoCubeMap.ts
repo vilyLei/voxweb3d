@@ -190,9 +190,9 @@ export class DemoCubeMap {
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-            this.useDDSCubeTex();
+            //this.useDDSCubeTex();
             //this.useFloatDataCubeTex();
-            //this.useSixImageCubeTex();
+            this.useSixImageCubeTex();
             /*
             let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
             var plane:Plane3DEntity = new Plane3DEntity();

@@ -25,6 +25,8 @@ import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import FBOInstance from "../vox/scene/FBOInstance";
 import CameraBase from "../vox/view/CameraBase";
 import MathConst from "../vox/math/MathConst";
+import CubeRTTScene from "./base/CubeRTTScene";
+import CubeMapMaterial from "../vox/material/mcase/CubeMapMaterial";
 
 export class DemoRTTCube {
     constructor() { }
@@ -81,56 +83,77 @@ export class DemoRTTCube {
             //      this.m_targets.push(plane);
             //      //this.m_disp = plane
 
-            //testTex
-            
-            this.initMirrorRTT();
+            this.initSceneObjs();
+            this.initCubeRTT();
 
             this.update();
         }
     }
+
+    private m_cubeRTTSC: CubeRTTScene = new CubeRTTScene();
+
     private m_projType: number = 0;
     private m_fboIns: FBOInstance = null;
     private m_rttCamera:CameraBase = null;
-    private initMirrorRTT(): void {
-        this.m_projType = 0;
+    private m_targetBox: Box3DEntity;
+    private initSceneObjs(): void {
+        
+        let box: Box3DEntity;
 
-        let box: Box3DEntity = new Box3DEntity();
-        box.uvPartsNumber = 6;
-        box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixParts.jpg")]);
+        let dis: number = 600.0;
+        let posList: Vector3D[] = [
+            new Vector3D(dis, 0.0, 0.0),
+            new Vector3D(-dis, 0.0, 0.0),
+
+            new Vector3D(0.0, dis, 0.0),
+            new Vector3D(0.0, -dis, 0.0),
+            
+            new Vector3D(0.0, 0.0, dis),
+            new Vector3D(0.0, 0.0, -dis),
+            
+        ];
+        for(let i: number = 0; i < posList.length; ++i) {
+
+            box = new Box3DEntity();
+            box.uvPartsNumber = 6;
+            box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixParts.jpg")]);
+            box.setScaleXYZ(2.0, 2.0, 2.0);
+            //box.setXYZ(0.0, 170.0, 0.0);
+            box.setPosition( posList[i] );
+            this.m_rscene.addEntity(box, 0);
+        }
+
+        
+        this.m_cubeRTTSC.initialize(this.m_rscene, 512.0, 512.0);
+
+        let urls = [
+            "static/assets/hw_morning/morning_ft.jpg",
+            "static/assets/hw_morning/morning_bk.jpg",
+            "static/assets/hw_morning/morning_up.jpg",
+            "static/assets/hw_morning/morning_dn.jpg",
+            "static/assets/hw_morning/morning_rt.jpg",
+            "static/assets/hw_morning/morning_lf.jpg"
+        ];
+
+        let cubeTex0: TextureProxy = this.m_texLoader.getCubeTexAndLoadImg("static/assets/cubeMap", urls);
+
+        box = new Box3DEntity();
+        box.useGourandNormal();
+        box.setMaterial(new CubeMapMaterial());
+
+        //  box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
+        box.initializeCube(100.0, [ this.m_cubeRTTSC.getCubeTexture() ]);
+        //box.initializeCube(100.0, [ cubeTex0 ]);
         box.setScaleXYZ(2.0, 2.0, 2.0);
-        box.setXYZ(0.0, 170.0, 0.0);
+        //box.setXYZ(0.0, 170.0, 0.0);
         this.m_rscene.addEntity(box, 0);
-        
-        this.m_fboIns = this.m_rscene.createFBOInstance();
-        this.m_fboIns.setClearRGBAColor4f(0.3,0.0,0.0,1.0);   // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
-        this.m_fboIns.createFBOAt(0,512,512,true,false);
-        this.m_fboIns.setRenderToRTTTextureAt(0, 0);          // framebuffer color attachment 0
-        this.m_fboIns.setRProcessIDList([0]);
+        this.m_targetBox = box;
 
-        let plane:Plane3DEntity = new Plane3DEntity();
-        plane.flipVerticalUV = true;
-        //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.m_fboIns.getRTTAt(0)]);
-        plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
-        this.m_rscene.addEntity(plane, 1);
+        this.m_cubeRTTSC.setDispEntity(this.m_targetBox);
+    }
+    private initCubeRTT(): void {
 
-        let scrPlane: ScreenAlignPlaneEntity =  new ScreenAlignPlaneEntity();
-        scrPlane.initialize(-0.9,-0.9,0.4,0.4, [this.m_fboIns.getRTTAt(0)]);
-        this.m_rscene.addEntity(scrPlane, 1);
-
-        let viewWidth: number = 512.0;
-        let viewHeight: number = 512.0;
-        this.m_rttCamera = new CameraBase(0);
-        this.m_rttCamera.name = "rttCamera";
-        this.m_rttCamera.lookAtRH(new Vector3D(-800.0,-800.0,800.0), new Vector3D(0.0,0.0,0.0), new Vector3D(0.0,1.0,0.0));
-        this.m_rttCamera.perspectiveRH(MathConst.DegreeToRadian(45.0),viewWidth/viewHeight,150.1,2000.0);
-        this.m_rttCamera.setViewXY(0, 0);
-        this.m_rttCamera.setViewSize(viewWidth, viewHeight);
-        this.m_rttCamera.update();
-        
-        let frustrum:FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
-        frustrum.initiazlize( this.m_rttCamera );
-        frustrum.setScaleXYZ(0.5,0.5,0.5);
-        this.m_rscene.addEntity( frustrum, 1);
+        this.m_projType = 0;
 
     }
     private m_flag: boolean = true;
@@ -156,6 +179,7 @@ export class DemoRTTCube {
         //  else {
         //      return;
         //  }
+
         this.m_statusDisp.update(false);
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
@@ -166,16 +190,18 @@ export class DemoRTTCube {
         }
         else {
             this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
-            this.m_rscene.useCamera(this.m_rttCamera);
+            //this.m_rscene.useCamera(this.m_rttCamera);
             this.m_rscene.runBegin();
             this.m_rscene.update(false);
             
             // --------------------------------------------- fbo run begin
-            this.m_fboIns.run();
+            //this.m_fboIns.run();
+            this.m_cubeRTTSC.run();
             // --------------------------------------------- fbo run end
             
             this.m_rscene.setRenderToBackBuffer();
             this.m_rscene.useMainCamera();
+
             this.m_rscene.runAt(0);
             this.m_rscene.runAt(1);
             

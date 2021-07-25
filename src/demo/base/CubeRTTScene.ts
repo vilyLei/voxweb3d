@@ -12,6 +12,7 @@ import ImageCubeTextureProxy from "../../vox/texture/ImageCubeTextureProxy";
 import RendererScene from "../../vox/scene/RendererScene";
 import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
+import FrameBufferType from "../../vox/render/FrameBufferType";
 class CameraList
 {
     private m_cams: CameraBase[] = null;
@@ -69,23 +70,33 @@ class CameraList
 
 export default class CubeRTTScene
 {
-    private static __s_id: number = 0;
-    private m_id: number = CubeRTTScene.__s_id++;
+    private static s_id: number = 0;
+    private m_id: number = CubeRTTScene.s_id++;
     private m_tarEntity: DisplayEntity = null;
     private m_initFlag: boolean = true;
-    private m_camList: CameraList = new CameraList();
+    private m_camList: CameraList = null;
     private m_enabled: boolean = true;
     private m_texProxy: RTTTextureProxy = null;
-    private m_texW: number = 512.0;//pw;
-    private m_texH: number = 512.0;//ph;
+    private m_texW: number = 512.0;
+    private m_texH: number = 512.0;
     private m_rscene: RendererScene = null;
     constructor()
     {
-        this.m_id = CubeRTTScene.__s_id++;
+        this.m_id = CubeRTTScene.s_id++;
     }
-    initialize(pw: number, ph: number): void {
+    initialize(sc: RendererScene, pw: number, ph: number): void {
         this.m_texW = pw;
         this.m_texH = ph;
+        this.m_rscene = sc;
+        if(this.m_camList == null)
+        {
+            this.m_camList = new CameraList();
+            this.m_initFlag = false;
+            this.m_camList.create(new Vector3D(0.0,0.0,0.0), this.m_texW, this.m_texH);
+            this.getCubeTexture();
+            let rctx: RendererInstanceContext = sc.getRendererContext();
+            rctx.createFBOAt(0, FrameBufferType.FRAMEBUFFER, 512,512,true,false,0);
+        }
     }
     getId(): number
     {
@@ -121,35 +132,48 @@ export default class CubeRTTScene
     {
         return this.m_enabled;
     }
-    run(renderer: RendererScene)
+    run()
     {
         if(this.m_enabled)
         {
-            this.m_rscene = renderer;
-
-            if(this.m_initFlag)
+            if(this.m_camList == null)
             {
+                this.m_camList = new CameraList();
                 this.m_initFlag = false;
                 this.m_camList.create(new Vector3D(0.0,0.0,0.0), this.m_texW, this.m_texH);
                 this.getCubeTexture();
             }
             this.setDispVisible(false);
 
+            let renderer = this.m_rscene;
+
             let rctx: RendererInstanceContext = renderer.getRendererContext();
             let camList: CameraList = this.m_camList;
+
             let attachmentTot: number = 1;
 
-            renderer.updateCameraDataFromCamera( camList.getAt(0) );        
-            rctx.setFBOAttachmentMaskAt(0,true);
+            //console.log("draw cube face 0.");
+
+
+            renderer.setClearRGBColor3f(0.1,0.2,0.1);
+            rctx.resetFBOAttachmentMask(false);
+
+            renderer.updateCameraDataFromCamera( camList.getAt(0) );   
+            rctx.setFBOAttachmentMaskAt(0,true);            
+
             rctx.setRenderToTexture(this.m_texProxy, true, false, 0);
             rctx.useFBO(true, true, false);
             renderer.runAt(0);
+
+            //console.log("draw cube face 1.");
             renderer.updateCameraDataFromCamera( camList.getAt(1) );
             rctx.setFBOAttachmentMaskAt(0,false);
             rctx.setFBOAttachmentMaskAt(1,true);
             rctx.setRenderToTexture(this.m_texProxy, true, false, 0);
             rctx.useFBO(true, true, false);
             renderer.runAt(0);
+
+            //console.log("draw cube face end.");
         
             renderer.updateCameraDataFromCamera( camList.getAt(2) );
             rctx.setFBOAttachmentMaskAt(1,false);
@@ -176,6 +200,9 @@ export default class CubeRTTScene
             rctx.setRenderToTexture(this.m_texProxy, true, false, 0);
             rctx.useFBO(true, true, false);
             renderer.runAt(0);
+
+            //*/
+
             this.setDispVisible(true);
         }
     }

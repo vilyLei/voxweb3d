@@ -66,6 +66,7 @@ class FrameBufferObject
 			this.m_attachmentMaskList[i] = boo;
 			--i;
 		}
+		//console.log("resetAttachmentMask, this.m_attachmentMaskList: ",this.m_attachmentMaskList);
 	}
 	setAttachmentMaskAt(index:number, boo:boolean):void
 	{
@@ -194,27 +195,31 @@ class FrameBufferObject
 			this.framebufferTexture2D(rgl, targetType, inFormat, rTex);					
 			break;
 		case TextureTarget.TEXTURE_CUBE:
+			let cubeAttachmentTot: number = 0;
 			for (let i:number = 0; i < 6; ++i)
 			{
-				if(this.m_attachmentMaskList[this.m_activeAttachmentTotal])
+				//if(this.m_attachmentMaskList[this.m_activeAttachmentTotal])
+				if(this.m_attachmentMaskList[i])
 				{
 					rgl.framebufferTexture2D(this.m_fboTarget, this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex, rgl.TEXTURE_CUBE_MAP_POSITIVE_X + i, rTex, 0);
 					++this.m_attachmentIndex;
 					if (rTex != null)
 					{
-						this.m_texTargetTypes[this.m_activeAttachmentTotal] = targetType;
+						this.m_texTargetTypes[this.m_activeAttachmentTotal + i] = targetType;
 					}
 					else
 					{
-						this.m_texTargetTypes[this.m_activeAttachmentTotal] = 0;
+						this.m_texTargetTypes[this.m_activeAttachmentTotal + i] = 0;
 					}
+					cubeAttachmentTot++;
 				}
 				else
 				{
-					this.m_texTargetTypes[this.m_activeAttachmentTotal] = 0;
+					this.m_texTargetTypes[this.m_activeAttachmentTotal + i] = 0;
 				}
-				++this.m_activeAttachmentTotal;
 			}
+			cubeAttachmentTot = cubeAttachmentTot > 0 ? cubeAttachmentTot : 6;
+			this.m_activeAttachmentTotal += cubeAttachmentTot;
 			break;
 		case TextureTarget.TEXTURE_SHADOW_2D:
 			if(this.m_attachmentMaskList[this.m_activeAttachmentTotal])
@@ -249,6 +254,7 @@ class FrameBufferObject
 		this.m_gl = rgl;
 		if (this.m_fbo != null)
 		{
+			//console.log("this.m_preAttachIndex,this.m_attachmentIndex: ",this.m_preAttachIndex,this.m_attachmentIndex,this.m_activeAttachmentTotal);
 			if (this.m_activeAttachmentTotal > 1)
 			{
 				if (this.m_preAttachIndex != this.m_attachmentIndex)
