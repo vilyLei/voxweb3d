@@ -20,7 +20,7 @@ class CameraList {
         return this.m_cams[i];
     }
 
-    create(posV: Vector3D, pw: number, ph: number): void {
+    create(posV: Vector3D, pw: number, ph: number, type: number): void {
 
         if (this.m_initFlag) {
             this.m_cams = [
@@ -34,15 +34,25 @@ class CameraList {
             let near: number = 1.0;
             let far: number = 5000.0;
             
+            if(type > 0) {
+                // camera look at outer
+                this.m_cams[0].lookAtRH(posV, new Vector3D(posV.x + dis, posV.y + 0.0, posV.z + 0.0), new Vector3D(0, -1, 0));
+                this.m_cams[1].lookAtRH(posV, new Vector3D(posV.x - dis, posV.y + 0.0, posV.z + 0.0), new Vector3D(0, -1, 0));
+                this.m_cams[2].lookAtRH(posV, new Vector3D(posV.x + 0.0, posV.y + dis, posV.z + 0.0), new Vector3D(0, 0, 1));
+                this.m_cams[3].lookAtRH(posV, new Vector3D(posV.x + 0.0, posV.y - dis, posV.z + 0.0), new Vector3D(0, 0, -1));
+                this.m_cams[4].lookAtRH(posV, new Vector3D(posV.x + 0.0, posV.y + 0.0, posV.z + dis), new Vector3D(0, -1, 0));
+                this.m_cams[5].lookAtRH(posV, new Vector3D(posV.x + 0.0, posV.y + 0.0, posV.z - dis), new Vector3D(0, -1, 0));
+            }
+            else {
+                // camera look at inner, it is error...
+                this.m_cams[0].lookAtRH(new Vector3D(posV.x + dis, posV.y + 0.0, posV.z + 0.0), posV, new Vector3D(0, -1, 0));
+                this.m_cams[1].lookAtRH(new Vector3D(posV.x - dis, posV.y + 0.0, posV.z + 0.0), posV, new Vector3D(0, -1, 0));
+                this.m_cams[2].lookAtRH(new Vector3D(posV.x + 0.0, posV.y + dis, posV.z + 0.0), posV, new Vector3D(0, 0, 1));
+                this.m_cams[3].lookAtRH(new Vector3D(posV.x + 0.0, posV.y - dis, posV.z + 0.0), posV, new Vector3D(0, 0, -1));
+                this.m_cams[4].lookAtRH(new Vector3D(posV.x + 0.0, posV.y + 0.0, posV.z + dis), posV, new Vector3D(0, -1, 0));
+                this.m_cams[5].lookAtRH(new Vector3D(posV.x + 0.0, posV.y + 0.0, posV.z - dis), posV, new Vector3D(0, -1, 0));
+            }
             let kaspect: number = pw / ph;
-            
-            this.m_cams[0].lookAtRH(posV, new Vector3D(posV.x - dis, posV.y + 0.0, posV.z + 0.0), new Vector3D(0, -1, 0));
-            this.m_cams[1].lookAtRH(posV, new Vector3D(posV.x - dis, posV.y + 0.0, posV.z + 0.0), new Vector3D(0, -1, 0));
-            this.m_cams[2].lookAtRH(posV, new Vector3D(posV.x + 0.0, posV.y + dis, posV.z + 0.0), new Vector3D(0, 0, 1));
-            this.m_cams[3].lookAtRH(posV, new Vector3D(posV.x + 0.0, posV.y - dis, posV.z + 0.0), new Vector3D(0, 0, -1));
-            this.m_cams[4].lookAtRH(posV, new Vector3D(posV.x + 0.0, posV.y + 0.0, posV.z + dis), new Vector3D(0, -1, 0));
-            this.m_cams[5].lookAtRH(posV, new Vector3D(posV.x + 0.0, posV.y + 0.0, posV.z - dis), new Vector3D(0, -1, 0));
-
             for(let i: number = 0; i < 6; ++i) {
                 this.m_cams[i].perspectiveRH(fovAngRad, kaspect, near, far);
                 this.m_cams[i].update();
@@ -79,7 +89,7 @@ export default class CubeRTTScene {
             if(centerV == null) {
                 centerV = new Vector3D(0.0, 0.0, 0.0);
             }
-            this.m_camList.create(centerV, this.m_texW, this.m_texH);
+            this.m_camList.create(centerV, this.m_texW, this.m_texH, -1);
 
             
             let rctx: RendererInstanceContext = this.m_rscene.getRendererContext();
@@ -153,7 +163,6 @@ export default class CubeRTTScene {
         this.m_fboIns.setAttachmentMaskAt(j, true);
         this.m_fboIns.renderToTextureAt(0);
         this.m_fboIns.run(false,false,false,false);
-        //this.m_fboIns.runAt(rpcI, false);
 
     }
     private runAttachment(i: number, j: number, rpcI: number = 0): void {
@@ -169,7 +178,7 @@ export default class CubeRTTScene {
     }
     run() {
         if (this.m_enabled) {
-
+            let visible: boolean = this.m_tarEntity.getVisible();
             this.setDispVisible(false);
             let fboInsEnabled: boolean = true;
             let rpci: number = 0;
@@ -190,7 +199,6 @@ export default class CubeRTTScene {
                 if (this.mipmapEnabled) {
                     fboIns.generateMipmapTextureAt(0);
                 }
-                //fboIns.runEnd();
                 
             }
             else {
@@ -213,7 +221,7 @@ export default class CubeRTTScene {
                     this.m_texProxy.generateMipmap(this.m_rscene.getRenderProxy().Texture);
                 }
             }
-            this.setDispVisible(true);
+            this.setDispVisible(visible);
         }
     }
 

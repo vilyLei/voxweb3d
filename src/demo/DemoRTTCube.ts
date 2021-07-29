@@ -72,9 +72,9 @@ export class DemoRTTCube {
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
-            //  let axis: Axis3DEntity = new Axis3DEntity();
-            //  axis.initialize(300.0);
-            //  this.m_rscene.addEntity(axis);
+            let axis: Axis3DEntity = new Axis3DEntity();
+            axis.initialize(600.0);
+            this.m_rscene.addEntity(axis);
 
             this.initSceneObjs();
             this.initCubeRTT();
@@ -113,9 +113,14 @@ export class DemoRTTCube {
             box.setPosition( posList[i] );
             this.m_rscene.addEntity(box, 0);
         }
-
         
-        /*
+        box = new Box3DEntity();
+        box.uvPartsNumber = 6;
+        box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixParts.jpg")]);
+        box.setScaleXYZ(2.0, 2.0, 2.0);
+        this.m_rscene.addEntity(box, 0);
+        
+        ///*
         let urls = [
             "static/assets/hw_morning/morning_ft.jpg",
             "static/assets/hw_morning/morning_bk.jpg",
@@ -128,24 +133,27 @@ export class DemoRTTCube {
         //*/
 
         let cubeRTTMipMapEnabled: boolean = true;
-        let cubeMaterial: CubeMapMaterial = new CubeMapMaterial( cubeRTTMipMapEnabled );
-        cubeMaterial.setTextureLodLevel(2);
-        box = new Box3DEntity();
-        box.useGourandNormal();
-        box.setMaterial(cubeMaterial);
 
         this.m_cubeRTTSC.mipmapEnabled = cubeRTTMipMapEnabled;
         this.m_cubeRTTSC.initialize(this.m_rscene, 256.0, 256.0);
         this.m_cubeRTTSC.setClearRGBAColor4f(0.0,0.0,0.0,1.0);
         this.m_cubeRTTSC.setRProcessIDList( [0] );
-
+        
+        let cubeMaterial: CubeMapMaterial = new CubeMapMaterial( cubeRTTMipMapEnabled );
+        cubeMaterial.setTextureLodLevel(2);
+        
+        box = new Box3DEntity();
+        box.useGourandNormal();
+        box.setMaterial(cubeMaterial);
         //  box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
         box.initializeCube(200.0, [ this.m_cubeRTTSC.getCubeTexture() ]);
+        //  box.initializeCube(200.0, [ cubeTex0 ]);
         box.setScaleXYZ(2.0, 2.0, 2.0);
         this.m_rscene.addEntity(box, 0);
+        this.m_cubeRTTSC.setDispEntity(box);
         this.m_targetBox = box;
+        
 
-        this.m_cubeRTTSC.setDispEntity(this.m_targetBox);
     }
     private initCubeRTT(): void {
 
@@ -156,6 +164,10 @@ export class DemoRTTCube {
     private mouseDown(evt: any): void {
 
         this.m_flag = true;
+        if(this.m_targetBox != null) {
+            this.m_targetBox.setVisible(!this.m_targetBox.getVisible());
+            //this.m_targetBox.setVisible(false);
+        }
     }
     private m_timeoutId: any = -1;
     private update(): void {
