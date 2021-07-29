@@ -35,6 +35,7 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     normalNoiseEnabled: boolean = false;
     pixelNormalNoiseEnabled: boolean = false;
     mirrorProjEnabled: boolean = false;
+    mirrorMapLodEnabled: boolean = false;
     diffuseMapEnabled: boolean = false;
     normalMapEnabled: boolean = false;
 
@@ -71,7 +72,7 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     {
         let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
         coder.normalMapEanbled = this.normalMapEnabled;
-        coder.mapLodEanbled = true;
+        coder.mapLodEnabled = true;
         coder.reset();
         coder.useHighPrecious();
         
@@ -98,6 +99,7 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
             coder.addDefine("VOX_NORMAL_MAP","u_sampler"+(texIndex++));
         }
         if (mirrorProjEnabled) coder.addDefine("VOX_MIRROR_PROJ_MAP", "u_sampler"+(texIndex++));
+        if (this.mirrorMapLodEnabled) coder.addDefine("VOX_MIRROR_MAP_LOD", "1");
 
         console.log("this.texturesTotal: ", this.texturesTotal);
 
@@ -210,7 +212,7 @@ export default class DefaultPBRMaterial extends MaterialBase {
     private m_mirrorParam: Float32Array = new Float32Array(
         [
             0.0, 1.0, 0.0           // mirror plane nv(x,y,z)
-            , 1.0                   // undefine
+            , 1.0                   // mirror map lod level
 
             , 1.0, 0.3              // mirror scale, mirror mix scale
             , 0.0, 0.0              // undefine, undefine
@@ -239,6 +241,7 @@ export default class DefaultPBRMaterial extends MaterialBase {
      */
     pixelNormalNoiseEnabled: boolean = false;
     mirrorProjEnabled: boolean = false;
+    mirrorMapLodEnabled: boolean = false;
     diffuseMapEnabled: boolean = false;
     normalMapEnabled: boolean = false;
 
@@ -266,6 +269,7 @@ export default class DefaultPBRMaterial extends MaterialBase {
         buf.normalNoiseEnabled = this.normalNoiseEnabled;
         buf.pixelNormalNoiseEnabled = this.pixelNormalNoiseEnabled;
         buf.mirrorProjEnabled = this.mirrorProjEnabled;
+        buf.mirrorMapLodEnabled = this.mirrorMapLodEnabled;
         buf.diffuseMapEnabled = this.diffuseMapEnabled;
         buf.normalMapEnabled = this.normalMapEnabled;
 
@@ -288,6 +292,7 @@ export default class DefaultPBRMaterial extends MaterialBase {
         this.pixelNormalNoiseEnabled = dst.pixelNormalNoiseEnabled;
 
         this.mirrorProjEnabled = dst.mirrorProjEnabled;
+        this.mirrorMapLodEnabled = dst.mirrorMapLodEnabled;
         this.diffuseMapEnabled = dst.diffuseMapEnabled;
         this.normalMapEnabled = dst.normalMapEnabled;
 
@@ -320,7 +325,9 @@ export default class DefaultPBRMaterial extends MaterialBase {
         this.m_mirrorParam[1] = nv.y;
         this.m_mirrorParam[2] = nv.z;
     }
-    
+    setMirrorMapLodLevel(lodLv: number): void {
+        this.m_mirrorParam[3] = lodLv;
+    }
     setMirrorIntensity(intensity: number): void {
         this.m_mirrorParam[4] = Math.min(Math.max(intensity, 0.01), 2.0);
     }

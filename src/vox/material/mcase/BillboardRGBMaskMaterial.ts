@@ -8,29 +8,20 @@
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import BillboardMaterial from "../../../vox/material/mcase/BillboardMaterial";
 
-//import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
-//import BillboardMaterial = BillboardMaterialT.vox.material.mcase.BillboardMaterial;
-
-export namespace vox
+export class BillboardRGBMaskShaderBuffer extends ShaderCodeBuffer
 {
-    export namespace material
+    constructor()
     {
-        export namespace mcase
-        {
-            export class BillboardRGBMaskShaderBuffer extends ShaderCodeBuffer
-            {
-                constructor()
-                {
-                    super();
-                }
-                private m_uniqueName:string = "";
-                initialize(texEnabled:boolean):void
-                {
-                    this.m_uniqueName = "BillboardRGBMaskShader";
-                }
-                getFragShaderCode():string
-                {
-                    let fragCode:string =
+        super();
+    }
+    private m_uniqueName:string = "";
+    initialize(texEnabled:boolean):void
+    {
+        this.m_uniqueName = "BillboardRGBMaskShader";
+    }
+    getFragShaderCode():string
+    {
+        let fragCode:string =
 `#version 300 es
 precision mediump float;
 uniform sampler2D u_sampler0;
@@ -50,11 +41,11 @@ color.a = maskColor.a;
 FragColor = color;
 }
 `;
-                    return fragCode;
-                }
-                getVtxShaderCode():string
-                {
-                    let vtxCode:string = 
+        return fragCode;
+    }
+    getVtxShaderCode():string
+    {
+        let vtxCode:string = 
 `#version 300 es
 precision mediump float;
 layout(location = 0) in vec2 a_vs;
@@ -81,40 +72,37 @@ v_colorMult = u_billParam[1];
 v_colorOffset = u_billParam[2];
 }
 `;
-                    return vtxCode;
-                }
-                getUniqueShaderName():string
-                {
-                    return this.m_uniqueName;
-                }
-                toString():string
-                {
-                    return "[BillboardRGBMaskShaderBuffer()]";
-                }
-                private static ___s_instance:BillboardRGBMaskShaderBuffer = new BillboardRGBMaskShaderBuffer();
-                static GetInstance():BillboardRGBMaskShaderBuffer
-                {
-                    if(BillboardRGBMaskShaderBuffer.___s_instance != null)
-                    {
-                        return BillboardRGBMaskShaderBuffer.___s_instance;
-                    }
-                    BillboardRGBMaskShaderBuffer.___s_instance = new BillboardRGBMaskShaderBuffer();
-                    return BillboardRGBMaskShaderBuffer.___s_instance;
-                }
-            }
-
-            export class BillboardRGBMaskMaterial extends BillboardMaterial
-            {
-                constructor()
-                {
-                    super();
-                }
-                getCodeBuf():ShaderCodeBuffer
-                {
-                    let buf:ShaderCodeBuffer = BillboardRGBMaskShaderBuffer.GetInstance();        
-                    return buf;
-                }                
-            }
-        }
+        return vtxCode;
     }
+    getUniqueShaderName():string
+    {
+        return this.m_uniqueName;
+    }
+    toString():string
+    {
+        return "[BillboardRGBMaskShaderBuffer()]";
+    }
+    private static ___s_instance:BillboardRGBMaskShaderBuffer = new BillboardRGBMaskShaderBuffer();
+    static GetInstance():BillboardRGBMaskShaderBuffer
+    {
+        if(BillboardRGBMaskShaderBuffer.___s_instance != null)
+        {
+            return BillboardRGBMaskShaderBuffer.___s_instance;
+        }
+        BillboardRGBMaskShaderBuffer.___s_instance = new BillboardRGBMaskShaderBuffer();
+        return BillboardRGBMaskShaderBuffer.___s_instance;
+    }
+}
+
+export default class BillboardRGBMaskMaterial extends BillboardMaterial
+{
+    constructor()
+    {
+        super();
+    }
+    getCodeBuf():ShaderCodeBuffer
+    {
+        let buf:ShaderCodeBuffer = BillboardRGBMaskShaderBuffer.GetInstance();        
+        return buf;
+    }                
 }

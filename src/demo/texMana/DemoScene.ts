@@ -2,23 +2,20 @@
 import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../../vox/render/RenderConst";
 import RendererState from "../../vox/render/RendererState";
 import Color4 from "../../vox/material/Color4";
-import * as BillboardRGBMaskMaterialT from "../../vox/material/mcase/BillboardRGBMaskMaterial";
-import * as ClipsBillboardMaskMaterialT from "../../vox/material/mcase/ClipsBillboardMaskMaterial";
+import BillboardRGBMaskMaterial from "../../vox/material/mcase/BillboardRGBMaskMaterial";
+import ClipsBillboardMaskMaterial from "../../vox/material/mcase/ClipsBillboardMaskMaterial";
 import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
 
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
 import Billboard3DEntity from "../../vox/entity/Billboard3DEntity";
-import * as ClipsBillboard3DEntityT from "../../vox/entity/ClipsBillboard3DEntity";
+import ClipsBillboard3DEntity from "../../vox/entity/ClipsBillboard3DEntity";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import TextureBlock from "../../vox/texture/TextureBlock";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import * as EntityDispT from "../base/EntityDisp";
 
-import BillboardRGBMaskMaterial = BillboardRGBMaskMaterialT.vox.material.mcase.BillboardRGBMaskMaterial;
-import ClipsBillboardMaskMaterial = ClipsBillboardMaskMaterialT.vox.material.mcase.ClipsBillboardMaskMaterial;
-import ClipsBillboard3DEntity = ClipsBillboard3DEntityT.vox.entity.ClipsBillboard3DEntity;
 import EntityDisp = EntityDispT.demo.base.EntityDisp;
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 

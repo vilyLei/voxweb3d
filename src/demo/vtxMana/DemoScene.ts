@@ -20,7 +20,7 @@ import Box3DEntity from "../../vox/entity/Box3DEntity";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 import Cylinder3DEntity from "../../vox/entity/Cylinder3DEntity";
 import Billboard3DEntity from "../../vox/entity/Billboard3DEntity";
-import * as ClipsBillboard3DEntityT from "../../vox/entity/ClipsBillboard3DEntity";
+import ClipsBillboard3DEntity from "../../vox/entity/ClipsBillboard3DEntity";
 import ObjData3DEntity from "../../vox/entity/ObjData3DEntity";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import {TextureConst} from "../../vox/texture/TextureConst";
@@ -29,14 +29,6 @@ import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import * as EntityDispT from "../base/EntityDisp";
 import TextureBlock from "../../vox/texture/TextureBlock";
 
-//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-//import Sphere3DEntity = Sphere3DEntityT.vox.entity.Sphere3DEntity;
-//import Cylinder3DEntity = Cylinder3DEntityT.vox.entity.Cylinder3DEntity;
-//import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
-import ClipsBillboard3DEntity = ClipsBillboard3DEntityT.vox.entity.ClipsBillboard3DEntity;
-//import ObjData3DEntity = ObjData3DEntityT.vox.entity.ObjData3DEntity;
 import EntityDisp = EntityDispT.demo.base.EntityDisp;
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 

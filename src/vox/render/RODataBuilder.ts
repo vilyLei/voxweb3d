@@ -466,6 +466,7 @@ export default class RODataBuilder implements IROMaterialUpdater,IROVertexBufUpd
             {
                 material.__$uniform = ShdUniformTool.BuildLocalFromData(material.createSelfUniformData(), shdp);
             }
+            this.m_shader.__$globalUniform = material.__$uniform;
             this.m_shader.bindToGpu(shdp.getUid());
             if(tro != null)
             {

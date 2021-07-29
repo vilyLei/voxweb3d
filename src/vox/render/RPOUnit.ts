@@ -229,10 +229,10 @@ export default class RPOUnit implements IPoolNode,IRPODisplay
         this.testDrawFlag();
     }
     
-    runLockMaterial2():void
+    runLockMaterial2(puniform:IShaderUniform):void
     {
         this.testDrawFlag();                
-        this.shader.useUniform2ToCurrentShd(this.uniform,this.transUniform);
+        this.shader.useUniform2ToCurrentShd(puniform==null?this.uniform:puniform,this.transUniform);
     }
     runLockMaterial():void
     {

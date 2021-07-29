@@ -27,13 +27,14 @@ import FBOInstance from "../vox/scene/FBOInstance";
 import CameraBase from "../vox/view/CameraBase";
 import MathConst from "../vox/math/MathConst";
 import MirrorToneMaterial from "./material/MirrorToneMaterial";
-import RendererState from "../vox/render/RendererState";
-import { GLStencilFunc, GLStencilOp } from "../vox/render/RenderConst";
+
 import DebugFlag from "../vox/debug/DebugFlag";
+import StencilOutline from "../renderingtoy/mcase/outline/StencilOutline";
 
 export class DemoMirrorPlane {
     constructor() { }
 
+    private m_stencilOutline: StencilOutline = new StencilOutline();
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
@@ -72,11 +73,11 @@ export class DemoMirrorPlane {
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-            this.m_profileInstance.initialize(this.m_rscene.getRenderer());
+            //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
             this.m_statusDisp.initialize("rstatus", this.m_rscene.getStage3D().viewWidth - 200);
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
-
+            this.m_stencilOutline.initialize( this.m_rscene );
             //  let axis: Axis3DEntity = new Axis3DEntity();
             //  axis.initialize(300.0);
             //  this.m_rscene.addEntity(axis);
@@ -108,6 +109,7 @@ export class DemoMirrorPlane {
     private m_tempPosV: Vector3D = new Vector3D();
     private m_tempScaleV: Vector3D = new Vector3D();
     private m_targetEntity: Box3DEntity = null;
+    private m_mirrorTexLodEnabled: boolean = true;
     private initPlaneReflection(): void {
         this.m_projType = 0;
         
@@ -126,6 +128,9 @@ export class DemoMirrorPlane {
         this.m_fboIns.setRenderToRTTTextureAt(0, 0);          // framebuffer color attachment 0
         this.m_fboIns.setRProcessIDList([0]);
         this.m_rscene.setRenderToBackBuffer();
+        if(this.m_mirrorTexLodEnabled) {
+            this.m_fboIns.getRTTAt(0).enableMipmap();
+        }
 
         let scrPlane: ScreenAlignPlaneEntity =  new ScreenAlignPlaneEntity();
         scrPlane.initialize(-0.9,-0.9,0.4,0.4, [this.m_fboIns.getRTTAt(0)]);
@@ -138,7 +143,7 @@ export class DemoMirrorPlane {
         let viewWidth: number = this.m_viewWidth;
         let viewHeight: number = this.m_viewHeight;
         this.m_rttCamera = new CameraBase(0);
-        this.m_rttCamera.name = "m_rttCamera";
+        this.m_rttCamera.name = "rttCamera";
         this.m_rttCamera.lookAtRH(camPos, new Vector3D(0.0,0.0,0.0), new Vector3D(0.0,1.0,0.0));
         this.m_rttCamera.perspectiveRH(MathConst.DegreeToRadian(45.0),viewWidth/viewHeight,50.1,10000.0);
         //this.m_rttCamera.orthoRH(50.1,10000.0, -0.5 * viewHeight, 0.5 * viewHeight, -0.5 * viewWidth, 0.5 * viewWidth);
@@ -152,7 +157,9 @@ export class DemoMirrorPlane {
             this.getImageTexByUrl("static/assets/brickwall_big.jpg"),
             this.getImageTexByUrl("static/assets/brickwall_normal.jpg")
         ];
-        let toneMaterial: MirrorToneMaterial = new MirrorToneMaterial();
+        ///*
+        let toneMaterial: MirrorToneMaterial = new MirrorToneMaterial( this.m_mirrorTexLodEnabled );
+        toneMaterial.setTextureLodLevel(6);
         this.m_toneMaterial = toneMaterial;
         let plane:Plane3DEntity = new Plane3DEntity();
         plane.flipVerticalUV = true;
@@ -162,13 +169,15 @@ export class DemoMirrorPlane {
         //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
         this.m_rscene.addEntity(plane, 1);
         this.m_refPlane = plane;
+        //*/
 
         //  let frustrum:FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
         //  frustrum.initiazlize( this.m_rttCamera );
         //  frustrum.setScaleXYZ(0.5,0.5,0.5);
         //  this.m_rscene.addEntity( frustrum, 2);
-        //*/
-        
+
+        this.m_stencilOutline.setTarget(this.m_targetEntity);
+        this.m_stencilOutline.setRGB3f(0.5,1.0,0.0);
     }
     private initMirrorY(): void {
 
@@ -216,7 +225,7 @@ export class DemoMirrorPlane {
         //  else {
         //      return;
         //  }
-        
+        //console.log("run begin...");
         this.m_statusDisp.update(false);
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
@@ -234,7 +243,6 @@ export class DemoMirrorPlane {
             
             let nv: Vector3D = this.m_rscene.getCamera().getNV();
             // --------------------------------------------- fbo run begin
-            ///*
             this.m_refPlane.getPosition(this.m_pv);
             this.m_targetEntity.getPosition( this.m_tempPosV );
             this.m_targetEntity.getScaleXYZ( this.m_tempScaleV );
@@ -247,6 +255,9 @@ export class DemoMirrorPlane {
             this.m_targetEntity.update();
 
             this.m_fboIns.run();
+            if(this.m_mirrorTexLodEnabled) {
+                this.m_fboIns.generateMipmapTextureAt(0);
+            }
             // --------------------------------------------- fbo run end
             nv.y *= -1.0;
             this.m_toneMaterial.setProjNV(nv);
@@ -256,45 +267,15 @@ export class DemoMirrorPlane {
             this.m_targetEntity.setScaleXYZ(this.m_tempScaleV.x, this.m_tempScaleV.y, this.m_tempScaleV.z);
             this.m_targetEntity.setPosition( this.m_tempPosV );
             this.m_targetEntity.update();
-            //*/
-            /*
+            
+            // draw outline
+            this.m_stencilOutline.drawBegin();
             this.m_rscene.runAt(0);
             this.m_rscene.runAt(1);
-            this.m_rscene.runEnd();
-            //*/
-            ///*
-            if(DebugFlag.Flag_0 > 0) {
-                DebugFlag.Flag_0 ++;
-            }
-            let entity: DisplayEntity = this.m_targetEntity;
-            let material: any = entity.getMaterial();
-            RendererState.SetStencilMask(0x0);
-            entity.setVisible(false);
-
-            this.m_rscene.runAt(0);
-            this.m_rscene.runAt(1);
-            
-            RendererState.SetStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);
-            RendererState.SetStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF); 
-            RendererState.SetStencilMask(0xFF);
-            entity.setVisible( true );
-            this.m_rscene.drawEntity(entity);
-            RendererState.SetStencilFunc(GLStencilFunc.NOTEQUAL, 1, 0xFF); 
-            RendererState.SetStencilMask(0x0);
-            
-            material.setRGB3f(1.0,0.0,0.0);
-            entity.setScaleXYZ(2.1,2.1,2.1);
-            entity.update();
-            this.m_rscene.drawEntity(entity);
-
-            material.setRGB3f(1.0,1.0,1.0);
-            entity.setScaleXYZ(2.0,2.0,2.0);
-            entity.update();
-            RendererState.SetStencilMask(0xFF);
+            this.m_stencilOutline.draw();
+            this.m_stencilOutline.drawEnd();
 
             this.m_rscene.runEnd();
-            DebugFlag.Flag_0 = 0;
-            //*/
         }
 
     }

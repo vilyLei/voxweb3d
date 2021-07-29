@@ -32,5 +32,8 @@ interface IRenderer {
     useCamera(camera: CameraBase, syncCamView: boolean): void;
     useMainCamera(): void;
     updateCamera(): void;
+    //  renderBegin(contextBeginEnabled: boolean): void
+    //  runBegin(autoCycle: boolean, contextBeginEnabled: boolean): void;
+    //  setRayTestEanbled(enabled: boolean): void;
 }
 export default IRenderer;

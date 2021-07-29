@@ -29,6 +29,7 @@ import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import TextureBlock from "../../vox/texture/TextureBlock";
 import IRenderer from "../../vox/scene/IRenderer";
+import IRendererScene from "../../vox/scene/IRendererScene";
 import IRendererSpace from "../../vox/scene/IRendererSpace";
 import RendererSpace from "../../vox/scene/RendererSpace";
 import RaySelectedNode from "../../vox/scene/RaySelectedNode";
@@ -43,7 +44,7 @@ import CameraDsistanceSorter from "../../vox/scene/CameraDsistanceSorter";
 import RendererSubScene from "../../vox/scene/RendererSubScene";
 import RenderShader from "../render/RenderShader";
 
-export default class RendererScene implements IRenderer {
+export default class RendererScene implements IRenderer,IRendererScene {
     private static s_uid: number = 0;
     private m_uid: number = -1;
     private m_adapter: RenderAdapter = null;
@@ -198,7 +199,7 @@ export default class RendererScene implements IRenderer {
     drawBackBufferToCanvas(dstCanvas: HTMLCanvasElement): void {
         let srcCanvas = this.getCanvas();
         var ctx = dstCanvas.getContext("2d");
-		ctx.drawImage(srcCanvas,0,0, dstCanvas.width,dstCanvas.height);
+        ctx.drawImage(srcCanvas, 0, 0, dstCanvas.width, dstCanvas.height);
     }
     updateRenderBufferSize(): void {
         this.m_adapter.updateRenderBufferSize();
@@ -377,8 +378,8 @@ export default class RendererScene implements IRenderer {
     moveEntityTo(entity: IRenderEntity, processindex: number): void {
         this.m_renderer.moveEntityToProcessAt(entity, this.m_processids[processindex]);
     }
-    drawEntity(entity: IRenderEntity,force: boolean = true): void {
-        if(force) {
+    drawEntity(entity: IRenderEntity, force: boolean = true): void {
+        if (force) {
             this.m_rcontext.resetUniform();
         }
         this.m_renderer.drawEntity(entity);
@@ -439,9 +440,17 @@ export default class RendererScene implements IRenderer {
     updateMaterialUniformToCurrentShd(material: IRenderMaterial): void {
         this.m_renderer.updateMaterialUniformToCurrentShd(material);
     }
-    // 首先要锁定Material才能用这种绘制方式,再者这个entity已经完全加入渲染器了渲染资源已经准备完毕,这种方式比较耗性能，只能用在特殊的地方
-    drawEntityByLockMaterial(entity: IRenderEntity): void {
-        this.m_renderer.drawEntityByLockMaterial(entity);
+    /**
+     * 设定 global material 的情况下 单独渲染绘制指定 IRenderEntity 实例
+     * 先锁定global aterial才能用这种绘制方式,而且要保证这个entity已经完全加入渲染器了渲染资源已经准备完毕.这种方式比较耗性能,只能用在特殊的地方
+     * @param entity 需要指定绘制的 IRenderEntity 实例
+     * @param useGlobalUniform 是否使用当前 global material 所携带的 uniform
+     * @param forceUpdateUniform 是否强制更新当前 global material 所对应的 shader program 的 uniform
+     */
+    drawEntityByLockMaterial(entity: IRenderEntity, useGlobalUniform: boolean = false,  forceUpdateUniform: boolean = true): void {
+        if(entity.isRenderEnabled()) {
+            this.m_renderer.drawEntityByLockMaterial(entity, useGlobalUniform, forceUpdateUniform);
+        }
     }
     showInfoAt(index: number): void {
         this.m_renderer.showInfoAt(index);
@@ -463,6 +472,7 @@ export default class RendererScene implements IRenderer {
         this.m_renderProxy.updateCameraDataFromCamera(camera);
     }
     useMainCamera(): void {
+        this.m_currCamera = null;
         let camera: CameraBase = this.m_renderProxy.getCamera();
         this.m_renderProxy.setRCViewPort(camera.getViewX(), camera.getViewY(), camera.getViewWidth(), camera.getViewHeight(), true);
         this.m_renderProxy.reseizeRCViewPort();
@@ -470,8 +480,8 @@ export default class RendererScene implements IRenderer {
         this.m_renderProxy.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
     }
     updateCameraDataFromCamera(camera: CameraBase): void {
-        
-        this.m_renderProxy.updateCameraDataFromCamera( camera );
+
+        this.m_renderProxy.updateCameraDataFromCamera(camera);
     }
     /**
      * reset renderer rendering state
@@ -502,7 +512,7 @@ export default class RendererScene implements IRenderer {
                 this.m_viewY = this.m_renderProxy.getViewY();
                 this.m_viewW = this.m_renderProxy.getViewWidth();
                 this.m_viewH = this.m_renderProxy.getViewHeight();
-                if(boo) {
+                if (boo) {
                     this.m_renderProxy.setRCViewPort(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH, true);
                     this.m_renderProxy.reseizeRCViewPort();
                 }
@@ -554,11 +564,11 @@ export default class RendererScene implements IRenderer {
         let flag: number = -1;
         if (this.m_evt3DCtr != null && this.m_mouseEvtEnabled) {
             if (this.m_rayTestFlag && this.m_evt3DCtr.getEvtType() > 0) {
-                
+
                 // 是否对已经获得的拾取列表做进一步的gpu拾取
                 let selector: IRaySelector = this.m_rspace.getRaySelector();
                 if (selector != null) {
-                    if(this.m_rayTestEnabled) {
+                    if (this.m_rayTestEnabled) {
                         this.mouseRayTest();
                     }
                     else {

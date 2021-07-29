@@ -2,12 +2,7 @@
 import Vector3D from "../../vox/math/Vector3D";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Billboard3DEntity from "../../vox/entity/Billboard3DEntity";
-import * as ClipsBillboard3DEntityT from "../../vox/entity/ClipsBillboard3DEntity";
-
-//import Vector3D = Vector3DT.vox.math.Vector3D;
-//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-//import Billboard3DEntity = Billboard3DEntityT.vox.entity.Billboard3DEntity;
-import ClipsBillboard3DEntity = ClipsBillboard3DEntityT.vox.entity.ClipsBillboard3DEntity;
+import ClipsBillboard3DEntity from "../../vox/entity/ClipsBillboard3DEntity";
 
 export namespace demo
 {

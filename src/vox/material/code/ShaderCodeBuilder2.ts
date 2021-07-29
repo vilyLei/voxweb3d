@@ -62,7 +62,7 @@ precision mediump float;
     private m_fragMainCode: string = "";
 
     normalMapEanbled: boolean = false;
-    mapLodEanbled: boolean = false;
+    mapLodEnabled: boolean = false;
     constructor() { }
 
     reset() {
@@ -157,10 +157,10 @@ precision mediump float;
     addTextureSample3D(): void {
         this.m_textureSampleTypes.push("sampler3D");
     }
-    useVertSpaceMats(objMat: boolean, viewMat: boolean = false, projMat: boolean = true): void {
-        this.m_objMat = true;
-        this.m_viewMat = true;
-        this.m_projMat = true;
+    useVertSpaceMats(objMatEnabled: boolean, viewMatEnabled: boolean = false, projMatEnabled: boolean = true): void {
+        this.m_objMat = objMatEnabled;
+        this.m_viewMat = viewMatEnabled;
+        this.m_projMat = projMatEnabled;
     }
 
     addVertExtend(code: string): void {
@@ -178,6 +178,7 @@ precision mediump float;
     }
 
     buildFragCode(): string {
+        
         let i: number = 0;
         let len: number = 0;
         let code: string = "";
@@ -198,22 +199,28 @@ precision mediump float;
             if(this.normalMapEanbled) {
                 code += "\n#extension GL_OES_standard_derivatives : enable";
             }
-            if(this.mapLodEanbled) {
+            if(this.mapLodEnabled) {
                 code += "\n#extension GL_EXT_shader_texture_lod : enable";
             }
         }
         
         if(RendererDeviece.IsWebGL2()) {
             code += "\n#define VOX_IN in";
-            code += "\n#define VOX_TextureCubeLod textureLod";
-            code += "\n#define VOX_Texture2DLod textureLod";
+            if(this.mapLodEnabled) {
+                code += "\n#define VOX_TextureCubeLod textureLod";
+                code += "\n#define VOX_Texture2DLod textureLod";
+            }
             code += "\n#define VOX_Texture2D texture";
+            code += "\n#define VOX_TextureCube texture";
             
         }
         else {
             code += "\n#define VOX_IN varying";
-            code += "\n#define VOX_TextureCubeLod textureCubeLodEXT";
-            code += "\n#define VOX_Texture2DLod texture2DLodEXT";
+            if(this.mapLodEnabled) {
+                code += "\n#define VOX_TextureCubeLod textureCubeLodEXT";
+                code += "\n#define VOX_Texture2DLod texture2DLodEXT";
+            }
+            code += "\n#define VOX_TextureCube textureCube";
             code += "\n#define VOX_Texture2D texture2D";
         }
 
@@ -227,24 +234,6 @@ precision mediump float;
             else {
                 code += "\n#define " + this.m_defineNames[i];
             }
-        }
-
-        i = 0;
-        len = this.m_fragOutputNames.length;
-        if(RendererDeviece.IsWebGL2()) {
-            for (; i < len; i++) {
-                code += "\nlayout(location = "+i+") out " + this.m_fragOutputTypes[i] + " " + this.m_fragOutputNames[i] + ";";
-            }
-        } else {
-            if(len < 2) {
-                code += "\n#define " + this.m_fragOutputNames[i] + " gl_FragColor";
-            }
-            //  else {
-            //      //  for (; i < len; i++) {
-            //      //      //code += "\nout gl_FragData" + this.m_fragOutputTypes[i] + " " + this.m_fragOutputNames[i] + ";";
-            //      //      //code += "\nout gl_FragData[" + i + " " + this.m_fragOutputNames[i] + ";";
-            //      //  }
-            //  }
         }
 
         i = 0;
@@ -276,15 +265,29 @@ precision mediump float;
             code += "\n" + this.m_fragFunctionBlocks[i];
         }
 
+        i = 0;
+        len = this.m_fragOutputNames.length;
+        if(RendererDeviece.IsWebGL2()) {
+            for (; i < len; i++) {
+                code += "\nlayout(location = "+i+") out " + this.m_fragOutputTypes[i] + " " + this.m_fragOutputNames[i] + ";";
+            }
+        } else {
+            if(len == 1) {
+                code += "\n#define " + this.m_fragOutputNames[i] + " gl_FragColor";
+            }
+        }
+
 
         //  code += this.m_mainBeginCode;
         code += this.m_fragMainCode;
         //  code += this.m_mainEndCode;
         len = this.m_fragOutputNames.length;
-        if(len > 1) {
-            for (i = 0; i < len; i++) {
-                let tempReg = new RegExp(this.m_fragOutputNames[i],"g");
-                code = code.replace(tempReg, "gl_FragData["+i+"]");
+        if(RendererDeviece.IsWebGL1()) {
+            if(len > 1) {
+                for (i = 0; i < len; i++) {
+                    let tempReg = new RegExp(this.m_fragOutputNames[i],"g");
+                    code = code.replace(tempReg, "gl_FragData["+i+"]");
+                }
             }
         }
         return code;

@@ -28,6 +28,7 @@ import RPONodeBuilder from "../../vox/render/RPONodeBuilder";
 import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import IRenderer from "../../vox/scene/IRenderer";
+import IRendererScene from "../../vox/scene/IRendererScene";
 import RaySelectedNode from "../../vox/scene/RaySelectedNode";
 import IRendererSpace from "../../vox/scene/IRendererSpace";
 import RendererSpace from "../../vox/scene/RendererSpace";
@@ -39,7 +40,7 @@ import IEvt3DController from "../../vox/scene/IEvt3DController";
 import TextureBlock from "../texture/TextureBlock";
 import FBOInstance from "./FBOInstance";
 
-export default class RendererSubScene implements IRenderer {
+export default class RendererSubScene implements IRenderer, IRendererScene {
     private static __s_uid: number = 0;
     private m_uid: number = -1;
     private m_adapter: RenderAdapter = null;

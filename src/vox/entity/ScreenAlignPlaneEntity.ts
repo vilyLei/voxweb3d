@@ -13,54 +13,51 @@ import TextureProxy from "../../vox/texture/TextureProxy";
 import RectPlaneMesh from "../../vox/mesh/RectPlaneMesh";
 import SpaceCullingMask from "../../vox/space/SpaceCullingMask";
 
-export default class ScreenAlignPlaneEntity extends DisplayEntity
-{
-    private m_startX:number = 0;
-    private m_startZ:number = 0;
-    private m_pwidth:number = 0;
-    private m_plong:number = 0;
-    private m_flag:number = 0;
-    private m_currMaterial:ScreenPlaneMaterial = null;
-    flipVerticalUV:boolean = false;
-    constructor()
-    {
+export default class ScreenAlignPlaneEntity extends DisplayEntity {
+    private m_startX: number = 0;
+    private m_startZ: number = 0;
+    private m_pwidth: number = 0;
+    private m_plong: number = 0;
+    private m_flag: number = 0;
+    private m_currMaterial: ScreenPlaneMaterial = null;
+    flipVerticalUV: boolean = false;
+    mapLodEnabled: boolean = false;
+    constructor() {
         super();
     }
-    setRGB3f(pr:number,pg:number,pb:number):void
-    {
-        this.m_currMaterial.setRGB3f(pr,pg,pb);
+    setRGB3f(pr: number, pg: number, pb: number): void {
+        this.m_currMaterial.setRGB3f(pr, pg, pb);
     }
-    setRGBA4f(pr:number,pg:number,pb:number,pa:number):void
-    {
-        this.m_currMaterial.setRGBA4f(pr,pg,pb,pa);
+    setRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
+        this.m_currMaterial.setRGBA4f(pr, pg, pb, pa);
     }
-    setOffsetRGB3f(pr:number,pg:number,pb:number):void
-    {
-        this.m_currMaterial.setOffsetRGB3f(pr,pg,pb);
+    setOffsetRGB3f(pr: number, pg: number, pb: number): void {
+        this.m_currMaterial.setOffsetRGB3f(pr, pg, pb);
     }
-    setOffsetRGBA4f(pr:number,pg:number,pb:number,pa:number):void
-    {
-        this.m_currMaterial.setOffsetRGBA4f(pr,pg,pb,pa);
+    setOffsetRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
+        this.m_currMaterial.setOffsetRGBA4f(pr, pg, pb, pa);
     }
-    createMaterial(texList:TextureProxy[]):void
-    {
-        if(this.getMaterial() == null)
-        {
+
+    setTextureLodLevel(lodLv: number): void {
+        if(this.mapLodEnabled) {
+            this.m_currMaterial.setTextureLodLevel( lodLv );
+        }
+    }
+    createMaterial(texList: TextureProxy[]): void {
+        if (this.getMaterial() == null) {
             this.m_currMaterial = new ScreenPlaneMaterial();
+            this.m_currMaterial.mapLodEnabled = this.mapLodEnabled;
             this.m_currMaterial.setTextureList(texList);
             this.setMaterial(this.m_currMaterial);
         }
-        else
-        {
+        else {
             this.getMaterial().setTextureList(texList);
         }
     }
-    showDoubleFace():void
-    {
+    showDoubleFace(): void {
         this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
     }
-    initialize(startX:number,startY:number,pwidth:number,pheight:number,texList:TextureProxy[] = null):void
-    {
+    initialize(startX: number, startY: number, pwidth: number, pheight: number, texList: TextureProxy[] = null): void {
         this.m_startX = startX;
         this.m_startZ = startY;
         this.m_pwidth = pwidth;
@@ -70,27 +67,23 @@ export default class ScreenAlignPlaneEntity extends DisplayEntity
         this.createMaterial(texList);
         this.activeDisplay();
     }
-    protected __activeMesh(material:MaterialBase)
-    {
-        if(this.getMesh() == null)
-        {
-            let mesh:RectPlaneMesh = new RectPlaneMesh();
+    protected __activeMesh(material: MaterialBase) {
+        if (this.getMesh() == null) {
+            let mesh: RectPlaneMesh = new RectPlaneMesh();
             mesh.flipVerticalUV = this.flipVerticalUV;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             mesh.axisFlag = 0;
-            mesh.setBufSortFormat( material.getBufSortFormat() );
-            mesh.initialize(this.m_startX,this.m_startZ,this.m_pwidth,this.m_plong);
+            mesh.setBufSortFormat(material.getBufSortFormat());
+            mesh.initialize(this.m_startX, this.m_startZ, this.m_pwidth, this.m_plong);
             this.setMesh(mesh);
         }
     }
-    
-    destroy():void
-    {
+
+    destroy(): void {
         super.destroy();
         this.m_currMaterial = null;
     }
-    toString():string
-    {
+    toString(): string {
         return "[ScreenAlignPlaneEntity]";
     }
 }

@@ -16,7 +16,11 @@ export default class Default3DMaterial extends MaterialBase
     constructor()
     {
         super();
-    }// get a shader code buf instance, for sub class override
+    }
+    /**
+     * get a shader code buf instance, for sub class override
+     * @returns a ShaderCodeBuffer class instance
+     */
     getCodeBuf():ShaderCodeBuffer
     {
         let buf: ShaderCodeBuffer = super.getCodeBuf();

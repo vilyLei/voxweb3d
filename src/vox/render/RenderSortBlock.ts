@@ -108,7 +108,7 @@ export default class RenderSortBlock
 			unit = nodes[i];
 			this.m_shader.bindToGpu(unit.shdUid);
 			unit.vro.run();
-			unit.runLockMaterial2();
+			unit.runLockMaterial2(null);
 			if(unit.partTotal < 1)
 			{
 				unit.drawThis(rc);

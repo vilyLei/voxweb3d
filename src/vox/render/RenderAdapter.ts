@@ -367,7 +367,6 @@ class RenderAdapter {
 			this.m_fboBuf.sizeFixed = true;
 		}
 	}
-
 	resizeFBOAt(index: number, pw: number, ph: number): void {
 		if (index > 7) {
 			index = 7;
@@ -377,6 +376,7 @@ class RenderAdapter {
 		}
 		if (this.m_fboBufList[this.m_fboIndex] != null) {
 			this.m_fboBufList[this.m_fboIndex].resize(pw, ph);
+			//this.m_fboBufList[this.m_fboIndex].initialize(this.m_gl, pw, ph);
 		}
 	}
 	getFBOWidthAt(index: number): number {
@@ -398,7 +398,11 @@ class RenderAdapter {
 	asynFBOSizeWithViewport(): void {
 		this.m_synFBOSizeWithViewport = false;
 	}
-	// if synFBOSizeWithViewport is true, fbo size = factor * view port size;
+	// 
+	/**
+	 * if synFBOSizeWithViewport is true, fbo size = factor * view port size;
+	 * @param factor exmple: the value of factor is 0.5
+	 */
 	setFBOSizeFactorWithViewPort(factor: number): void {
 		this.m_fboSizeFactor = factor;
 	}
@@ -430,6 +434,7 @@ class RenderAdapter {
 			this.m_fboBuf.setAttachmentMaskAt(index, boo);
 		}
 	}
+
 	getFBOAttachmentTotal(): number {
 		if (this.m_fboBuf != null) {
 			return this.m_fboBuf.getAttachmentTotal();
@@ -457,7 +462,6 @@ class RenderAdapter {
 						this.m_fboBuf.initialize(this.m_gl, Math.floor(this.m_rcontext.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getFBOHeight() * this.m_fboSizeFactor));
 					}
 					else {
-						//this.m_fboBuf.initialize(this.m_gl, texProxy.getWidth(), texProxy.getHeight());
 						if (this.m_fboViewRectBoo) {
 							this.m_fboBuf.initialize(this.m_gl, this.m_fboViewRect[2], this.m_fboViewRect[3]);
 						}
@@ -547,6 +551,9 @@ class RenderAdapter {
 						this.m_fboViewSize.setTo(0, 0, Math.floor(this.m_rcontext.getFBOWidth() * this.m_fboSizeFactor), Math.floor(this.m_rcontext.getFBOHeight() * this.m_fboSizeFactor));
 					}
 					else {
+						if(this.m_fboBuf.isSizeChanged()) {
+							this.m_fboBuf.initialize(this.m_gl, this.m_fboBuf.getWidth(), this.m_fboBuf.getHeight());
+						}
 						this.m_fboViewSize.setTo(0, 0, this.m_fboBuf.getWidth(), this.m_fboBuf.getHeight());
 					}
 					this.reseizeFBOViewPort();

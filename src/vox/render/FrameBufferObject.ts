@@ -47,9 +47,9 @@ class FrameBufferObject
 	private m_clearColorArr = new Float32Array(4);
 	private m_stencilValueArr = new Int16Array(4);
 	private m_fboSizeChanged:boolean = false;
-	//
+
+	textureLevel: number = 0;
 	sizeFixed:boolean = false;
-	//devPRatio:number = 1.0;
 	writeDepthEnabled:boolean = true;
 	writeStencilEnabled:boolean = false;
 	multisampleEnabled:boolean = false;
@@ -145,8 +145,8 @@ class FrameBufferObject
 		if (texProxy != null)
 		{
 			targetType = texProxy.getTargetType();
+			rTex = this.m_texRes.getGpuBuffer(texProxy.getResUid());
 			texProxy.uploadFromFbo(this.m_texRes,this.m_width,this.m_height);
-			rTex = this.m_texRes.getGpuBuffer(texProxy.getResUid());					
 		}
 		else
 		{
@@ -159,15 +159,15 @@ class FrameBufferObject
 		switch(inFormat)
 		{
 			case TextureFormat.DEPTH_COMPONENT:
-				rgl.framebufferTexture2D(this.m_fboTarget, this.m_gl.DEPTH_ATTACHMENT, rgl.TEXTURE_2D, rTex,0);
+				rgl.framebufferTexture2D(this.m_fboTarget, this.m_gl.DEPTH_ATTACHMENT, rgl.TEXTURE_2D, rTex, this.textureLevel);
 			break;
 			case TextureFormat.DEPTH_STENCIL:
-				rgl.framebufferTexture2D(this.m_fboTarget, this.m_gl.DEPTH_STENCIL_ATTACHMENT, rgl.TEXTURE_2D, rTex,0);
+				rgl.framebufferTexture2D(this.m_fboTarget, this.m_gl.DEPTH_STENCIL_ATTACHMENT, rgl.TEXTURE_2D, rTex, this.textureLevel);
 			break;
 			default:
 				if(this.m_attachmentMaskList[this.m_activeAttachmentTotal])
 				{
-					rgl.framebufferTexture2D(this.m_fboTarget, this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex, rgl.TEXTURE_2D, rTex, 0);
+					rgl.framebufferTexture2D(this.m_fboTarget, this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex, rgl.TEXTURE_2D, rTex, this.textureLevel);
 					++this.m_attachmentIndex;
 					if (rTex != null)
 					{
@@ -201,7 +201,7 @@ class FrameBufferObject
 				//if(this.m_attachmentMaskList[this.m_activeAttachmentTotal])
 				if(this.m_attachmentMaskList[i])
 				{
-					rgl.framebufferTexture2D(this.m_fboTarget, this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex, rgl.TEXTURE_CUBE_MAP_POSITIVE_X + i, rTex, 0);
+					rgl.framebufferTexture2D(this.m_fboTarget, this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex, rgl.TEXTURE_CUBE_MAP_POSITIVE_X + i, rTex, this.textureLevel);
 					++this.m_attachmentIndex;
 					if (rTex != null)
 					{
@@ -224,7 +224,7 @@ class FrameBufferObject
 		case TextureTarget.TEXTURE_SHADOW_2D:
 			if(this.m_attachmentMaskList[this.m_activeAttachmentTotal])
 			{
-				rgl.framebufferTexture2D(this.m_gl.FRAMEBUFFER, this.m_gl.DEPTH_ATTACHMENT, this.m_gl.TEXTURE_2D, rTex, 0);
+				rgl.framebufferTexture2D(this.m_gl.FRAMEBUFFER, this.m_gl.DEPTH_ATTACHMENT, this.m_gl.TEXTURE_2D, rTex, this.textureLevel);
 				if (rTex != null)
 				{
 					this.m_texTargetTypes[this.m_activeAttachmentTotal] = targetType;
@@ -348,6 +348,7 @@ class FrameBufferObject
 	{
 		this.m_gl = rgl;
 		this.m_COLOR_ATTACHMENT0 = RenderFBOProxy.COLOR_ATTACHMENT0;
+		console.log("this.m_fboSizeChanged: ",this.m_fboSizeChanged);
 		if(this.m_fboSizeChanged)
 		{
 			pw = this.m_resizeW;
@@ -356,7 +357,7 @@ class FrameBufferObject
 		if (this.m_fbo == null)
 		{
 			this.createNewFBO(rgl, pw, ph);
-			//console.log("FrameBufferObject create a new fbo: "+this);
+			console.log("FrameBufferObject create a new fbo: "+this);
 		}
 		else if (this.m_width != pw || this.m_height != ph)
 		{
@@ -364,6 +365,10 @@ class FrameBufferObject
 			this.createNewFBO(rgl, pw, ph);
 			console.log("FrameBufferObject ready rebuild another new fbo's Renderbuffers.fbo: "+this);
 		}
+		this.m_fboSizeChanged = false;
+	}
+	isSizeChanged(): boolean {
+		return this.m_fboSizeChanged;
 	}
 	destroy(rgl:any):void
 	{

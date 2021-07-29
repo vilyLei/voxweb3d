@@ -119,6 +119,7 @@ export default class RenderShader implements IRenderShader,IRenderResource
     unlock():void
     {
         this.m_unlocked = true;
+        this.__$globalUniform = null;
     }
     isUnLocked():boolean
     {
@@ -239,6 +240,7 @@ export default class RenderShader implements IRenderShader,IRenderResource
             uniform.useByShd(this,this.m_currShd);
         }
     }
+    __$globalUniform:IShaderUniform = null;
     useUniform2ToCurrentShd(uniform:IShaderUniform,transUniform:IShaderUniform):void
     {
         if(this.m_uniform != uniform)

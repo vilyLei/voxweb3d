@@ -90,7 +90,7 @@ export namespace demo
                 this.m_scrDepMaterial.__$attachThis();
                 let scrColorPlane:Plane3DEntity = new Plane3DEntity();
                 scrColorPlane.name = "scrColorPlane";
-                scrColorPlane.flipVerticalUV = true;
+                //scrColorPlane.flipVerticalUV = true;
                 scrColorPlane.setMaterial(new ScreenPlaneMaterial());
                 scrColorPlane.initializeXOY(-1.0,-1.0,2.0,2.0,[this.getTextureAt(1)]);
                 renderer.addEntity(scrColorPlane,2);

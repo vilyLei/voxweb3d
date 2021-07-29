@@ -23,6 +23,12 @@ class WrapperTextureProxy extends TextureProxy
     {
         return this.m_tex.getResUid();
     }
+    // gpu texture buf size
+    getBufWidth():number{return this.m_tex.getBufWidth();}
+    getBufHeight():number{return this.m_tex.getBufHeight();}
+    // logic texture size
+    getWidth():number{return this.m_tex.getWidth();}
+    getHeight():number{return this.m_tex.getHeight();}
     /**
      * @returns 返回true, 表示当前纹理对象是渲染直接使用其对应的显存资源的对象
      *          返回false, 表示不能直接使用对应的显存资源

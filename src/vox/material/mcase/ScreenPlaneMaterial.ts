@@ -9,117 +9,108 @@ import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import MaterialBase from "../../../vox/material/MaterialBase";
+import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
 
-class ScreenPlaneShaderBuffer extends ShaderCodeBuffer
-{
-    constructor()
-    {
+class ScreenPlaneShaderBuffer extends ShaderCodeBuffer {
+    constructor() {
         super();
     }
-    private static ___s_instance:ScreenPlaneShaderBuffer = null;
-    private m_uniqueName:string = "";
-    private m_hasTex:boolean = false;
-    initialize(texEnabled:boolean):void
-    {
-        console.log("ScreenPlaneShaderBuffer::initialize()... texEnabled: "+texEnabled);
+    private static ___s_instance: ScreenPlaneShaderBuffer = null;
+    private m_codeBuilder: ShaderCodeBuilder2 = new ShaderCodeBuilder2();
+    private m_uniqueName: string = "";
+    private m_hasTex: boolean = false;
+    mapLodEnabled: boolean = false;
+    initialize(texEnabled: boolean): void {
         this.m_uniqueName = "ScreenPlaneShd";
         this.m_hasTex = texEnabled;
-        if(texEnabled)
-        {
+        if (texEnabled) {
             this.m_uniqueName += "_tex";
+            if(this.mapLodEnabled) this.m_uniqueName += "Lod";
         }
     }
-    getFragShaderCode():string
-    {
-        let fragCode:string = 
-"\
-precision mediump float;\n\
-uniform vec4 u_color;\n\
-";
-        if(this.m_hasTex)
-        {
 
-            fragCode +=
-"\
-uniform sampler2D u_sampler0;\n\
-uniform vec4 u_offsetColor;\n\
-varying vec2 v_texUV;\n\
-";
+    private buildThisCode(): void {
+        let coder: ShaderCodeBuilder2 = this.m_codeBuilder;
+        coder.reset();
+        coder.addVertLayout("vec3", "a_vs");
+        if (this.m_hasTex) {
+            coder.mapLodEnabled = this.mapLodEnabled;
+            coder.addVertLayout("vec2", "a_uvs");
+            coder.addTextureSample2D();
+            coder.addVarying("vec2", "v_uv");
         }
-        fragCode +=
-"\
-void main()\n\
-{\n\
-";
-        if(this.m_hasTex)
-        {
-            fragCode +=
-"\
-gl_FragColor = texture2D(u_sampler0, v_texUV) * u_color + u_offsetColor;\n\
-";
+        else {
+            coder.mapLodEnabled = false;
         }
-        else
-        {
-            fragCode +=
-"\
-gl_FragColor = u_color;\n\
-";
-        }
-        fragCode +=
-"\
-}\n\
-";
-        return fragCode;
+        coder.addFragOutput("vec4", "FragColor0");
+        coder.addFragUniform("vec4", "u_param", 3);
+
+        coder.useVertSpaceMats(true, false, false);
+        coder.addFragFunction("");
     }
-    getVtxShaderCode():string
-    {
-        let vtxCode:string = 
-"\
-precision mediump float;\n\
-attribute vec3 a_vs;\n\
-uniform mat4 u_objMat;\n\
-";
-        if(this.m_hasTex)
-        {
-            vtxCode +=
-"\
-attribute vec2 a_uvs;\n\
-varying vec2 v_texUV;\n\
-";
+    getFragShaderCode(): string {
+        this.buildThisCode();
+        if (this.m_hasTex) {
+            this.m_codeBuilder.addFragMainCode(
+                `
+void main() {
+    #ifdef VOX_Texture2DLod
+    vec4 color4 = VOX_Texture2DLod(u_sampler0, v_uv, u_param[2].w);
+    #else
+    vec4 color4 = VOX_Texture2D(u_sampler0, v_uv);
+    #endif
+    color4 *= u_param[0];
+    color4 += u_param[1];
+    FragColor0 = color4;
+}
+`
+            );
         }
-        vtxCode +=
-"\
-void main()\n\
-{\n\
-gl_Position = u_objMat * vec4(a_vs,1.0);\n\
-";
-        if(this.m_hasTex)
-        {
-            vtxCode +=
-"\
-v_texUV = a_uvs;\n\
-";
+        else {
+
+            this.m_codeBuilder.addFragMainCode(
+                `
+void main() {
+    FragColor0 = u_param[0] + u_param[1];
+}
+`
+            );
         }
-        vtxCode +=
-"\
-}\n\
-";
-        return vtxCode;
+        return this.m_codeBuilder.buildFragCode();
     }
-    getUniqueShaderName()
-    {
+    getVtxShaderCode(): string {
+        if (this.m_hasTex) {
+            this.m_codeBuilder.addVertMainCode(
+                `
+void main() {
+    gl_Position = u_objMat * vec4(a_vs,1.0);
+    v_uv = a_uvs.xy;
+}
+`
+            );
+        }
+        else {
+
+            this.m_codeBuilder.addVertMainCode(
+                `
+void main() {
+    gl_Position = u_objMat * vec4(a_vs,1.0);
+}
+`
+            );
+        }
+        return this.m_codeBuilder.buildVertCode();
+    }
+    getUniqueShaderName() {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
-    toString():string
-    {
+    toString(): string {
         return "[ScreenPlaneShaderBuffer()]";
     }
 
-    static GetInstance():ScreenPlaneShaderBuffer
-    {
-        if(ScreenPlaneShaderBuffer.___s_instance != null)
-        {
+    static GetInstance(): ScreenPlaneShaderBuffer {
+        if (ScreenPlaneShaderBuffer.___s_instance != null) {
             return ScreenPlaneShaderBuffer.___s_instance;
         }
         ScreenPlaneShaderBuffer.___s_instance = new ScreenPlaneShaderBuffer();
@@ -127,54 +118,55 @@ v_texUV = a_uvs;\n\
     }
 }
 
-export default class ScreenPlaneMaterial extends MaterialBase
-{
-    constructor()
-    {
+export default class ScreenPlaneMaterial extends MaterialBase {
+    mapLodEnabled: boolean = false;
+    constructor() {
         super();
     }
-    
-    getCodeBuf():ShaderCodeBuffer
-    {
-        return ScreenPlaneShaderBuffer.GetInstance();
+
+    getCodeBuf(): ShaderCodeBuffer {
+        let buf: ScreenPlaneShaderBuffer = ScreenPlaneShaderBuffer.GetInstance();
+        buf.mapLodEnabled = this.mapLodEnabled;
+        return buf;
     }
-    private m_colorArray:Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
-    private m_offsetColorArray:Float32Array = new Float32Array([0.0,0.0,0.0,0.0]);
-    setRGB3f(pr:number,pg:number,pb:number):void
-    {
-        this.m_colorArray[0] = pr;
-        this.m_colorArray[1] = pg;
-        this.m_colorArray[2] = pb;
+    private m_param: Float32Array = new Float32Array(
+        [
+            1.0, 1.0, 1.0, 1.0
+            , 0.0, 0.0, 0.0, 0.0
+            , 0.0, 0.0, 0.0, 0.0
+        ]);
+    setRGB3f(pr: number, pg: number, pb: number): void {
+        this.m_param[0] = pr;
+        this.m_param[1] = pg;
+        this.m_param[2] = pb;
     }
-    setRGBA4f(pr:number,pg:number,pb:number,pa:number):void
-    {
-        this.m_colorArray[0] = pr;
-        this.m_colorArray[1] = pg;
-        this.m_colorArray[2] = pb;
-        this.m_colorArray[3] = pa;
+    setRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
+        this.m_param[0] = pr;
+        this.m_param[1] = pg;
+        this.m_param[2] = pb;
+        this.m_param[3] = pa;
     }
-    setOffsetRGB3f(pr:number,pg:number,pb:number):void
-    {
-        this.m_offsetColorArray[0] = pr;
-        this.m_offsetColorArray[1] = pg;
-        this.m_offsetColorArray[2] = pb;
+    setOffsetRGB3f(pr: number, pg: number, pb: number): void {
+        this.m_param[0] = pr;
+        this.m_param[1] = pg;
+        this.m_param[2] = pb;
     }
-    setOffsetRGBA4f(pr:number,pg:number,pb:number,pa:number):void
-    {
-        this.m_offsetColorArray[0] = pr;
-        this.m_offsetColorArray[1] = pg;
-        this.m_offsetColorArray[2] = pb;
-        this.m_offsetColorArray[3] = pa;
+    setOffsetRGBA4f(pr: number, pg: number, pb: number, pa: number): void {
+        this.m_param[0] = pr;
+        this.m_param[1] = pg;
+        this.m_param[2] = pb;
+        this.m_param[3] = pa;
     }
-    createSharedUniform():ShaderGlobalUniform
-    {
+    setTextureLodLevel(lodLv: number): void {
+        this.m_param[11] = lodLv;
+    }
+    createSharedUniform(): ShaderGlobalUniform {
         return null;
     }
-    createSelfUniformData():ShaderUniformData
-    {
-        let oum:ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_color", "u_offsetColor"];
-        oum.dataList = [this.m_colorArray, this.m_offsetColorArray];
+    createSelfUniformData(): ShaderUniformData {
+        let oum: ShaderUniformData = new ShaderUniformData();
+        oum.uniformNameList = ["u_param"];
+        oum.dataList = [this.m_param];
         return oum;
     }
 }

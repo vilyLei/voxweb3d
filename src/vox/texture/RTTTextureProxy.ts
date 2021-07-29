@@ -21,13 +21,32 @@ class RTTTextureProxy extends TextureProxy
     {
         this.m_texTarget = TextureTarget.TEXTURE_2D;
     }
+    
+    enableMipmap():void
+    {
+        this.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
+        this.magFilter = TextureConst.LINEAR;
+        this.mipmapEnabled = true;
+    }
+    disableMipmap():void
+    {
+        this.minFilter = TextureConst.NEAREST;
+        this.magFilter = TextureConst.NEAREST;
+        this.mipmapEnabled = false;
+    }
     toCubeTexture():void
     {
         this.m_texTarget = TextureTarget.TEXTURE_CUBE;
     }
+    setSize(fboTextureWidth:number, fboTextureHeight:number): void {
+        this.m_texWidth = fboTextureWidth;
+        this.m_texHeight = fboTextureHeight;
+    }
     uploadFromFbo(texResource:IRenderResource, fboWidth:number, fboHeight:number):void
     {
         let gl:any = texResource.getRC();
+        let mEnabled: boolean = this.mipmapEnabled;
+        this.mipmapEnabled = false;
 		if(!texResource.hasResUid(this.getResUid()))
 		{
             this.m_sampler = TextureTarget.GetValue(gl,this.m_texTarget);
@@ -49,6 +68,7 @@ class RTTTextureProxy extends TextureProxy
             this.m_texHeight = fboHeight;
             this.__$buildParam(gl);
         }
+        this.mipmapEnabled = mEnabled;
         
     }
     

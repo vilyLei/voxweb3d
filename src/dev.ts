@@ -60,9 +60,6 @@
 //  import * as DemoRayTest from "./demo/DemoRayTest";
 //  import Demo = DemoRayTest.demo.DemoRayTest;
 
-//  import * as DemoLockDrawEntity from "./demo/DemoLockDrawEntity";
-//  import Demo = DemoLockDrawEntity.demo.DemoLockDrawEntity;
-
 //  import * as DemoSubScene from "./demo/DemoSubScene";
 //  import Demo = DemoSubScene.demo.DemoSubScene;
 
@@ -101,9 +98,6 @@
 
 //  import * as DemoScreenPingpongBlur from "./demo/DemoScreenPingpongBlur";
 //  import Demo = DemoScreenPingpongBlur.demo.DemoScreenPingpongBlur;
-
-//  import * as DemoPingpongBlur from "./demo/DemoPingpongBlur";
-//  import Demo = DemoPingpongBlur.demo.DemoPingpongBlur;
 
 //  import {DemoDepthBlur as Demo} from "./demo/DemoDepthBlur";
 
@@ -159,11 +153,7 @@
 //  import * as DemoDrawGroup from "./demo/DemoDrawGroup";
 //  import Demo = DemoDrawGroup.demo.DemoDrawGroup;
 
-//  import * as DemoDeepTransparent from "./demo/DemoDeepTransparent";
-//  import Demo = DemoDeepTransparent.demo.DemoDeepTransparent;
-
-//  import * as DemoDeepTransparent2 from "./demo/DemoDeepTransparent2";
-//  import Demo = DemoDeepTransparent2.demo.DemoDeepTransparent2;
+//  import {DemoDeepTransparent as Demo} from "./demo/DemoDeepTransparent";
 
 //  import * as DemoGpuVtxMana from "./demo/DemoGpuVtxMana";
 //  import Demo = DemoGpuVtxMana.demo.DemoGpuVtxMana;
@@ -213,14 +203,15 @@
 //  import * as DemoDivControl from "./demo/DemoDivControl";
 //  import Demo = DemoDivControl.demo.DemoDivControl;
 
+//  import {DemoLockDrawEntity as Demo} from "./demo/DemoLockDrawEntity";
+
 //  import {DemoEmptyRenderer as Demo} from "./demo/DemoEmptyRenderer";
 
 //  import {DemoEmptyRendererScene as Demo} from "./demo/DemoEmptyRendererScene";
 
 //  import {DemoAPlane as Demo} from "./demo/DemoAPlane";
 
-//  import * as DemoPrimitive from "./demo/DemoPrimitive";
-//  import Demo = DemoPrimitive.demo.DemoPrimitive;
+//  import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
 
 //  import {DemoFlexMesh as Demo} from "./demo/DemoFlexMesh";
 
@@ -309,6 +300,12 @@
 
 //  import {DemoRTTCamera as Demo} from "./demo/DemoRTTCamera";
 
+//  import {DemoDeepTransparent2 as Demo} from "./demo/DemoDeepTransparent2";
+
+//  import {DemoPingpongBlur as Demo} from "./demo/DemoPingpongBlur";
+
+//  import {DemoRTTLod as Demo} from "./demo/DemoRTTLod";
+
 import {DemoRTTCube as Demo} from "./demo/DemoRTTCube";
 
 //  import {DemoProjectPlane as Demo} from "./demo/DemoProjectPlane";
@@ -342,6 +339,8 @@ import {DemoRTTCube as Demo} from "./demo/DemoRTTCube";
 //  import {DemoLightsPBR as Demo} from "./pbr/DemoLightsPBR";
 
 //  import {DemoDefaultPBR as Demo} from "./pbr/DemoDefaultPBR";
+
+//  import {DemoDefaultPBR2 as Demo} from "./pbr/DemoDefaultPBR2";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////

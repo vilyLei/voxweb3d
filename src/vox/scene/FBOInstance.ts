@@ -26,7 +26,7 @@ import IRenderProcess from "../../vox/render/IRenderProcess";
 import RendererInstanceContext from "./RendererInstanceContext";
 
 export default class FBOInstance {
-    private m_backBufferColor:Color4 = new Color4();
+    private m_backBufferColor: Color4 = new Color4();
     private m_adapter: RenderAdapter = null;
     private m_renderProxy: RenderProxy = null;
     private m_materialProxy: RenderMaterialProxy = null;
@@ -124,7 +124,7 @@ export default class FBOInstance {
     useGlobalRenderStateByName(stateNS: string): void {
         this.m_rcontext.useGlobalRenderStateByName(stateNS);
     }
-    
+
     setGlobalRenderState(state: number): void {
         this.m_gRState = state;
     }
@@ -132,7 +132,7 @@ export default class FBOInstance {
         this.m_gRState = RendererState.GetRenderStateByName(stateNS);
     }
     lockRenderState(): void {
-        if(this.m_gRState >= 0) {
+        if (this.m_gRState >= 0) {
             this.m_rcontext.useGlobalRenderState(this.m_gRState);
         }
         else {
@@ -148,18 +148,18 @@ export default class FBOInstance {
     }
 
     setGlobalMaterial(m: IRenderMaterial): void {
-        if(this.m_gMateiral != m) {
-            if(this.m_gMateiral != null) {
+        if (this.m_gMateiral != m) {
+            if (this.m_gMateiral != null) {
                 this.m_gMateiral.__$detachThis();
             }
-            if(m != null) {
+            if (m != null) {
                 m.__$attachThis();
             }
         }
         this.m_gMateiral = m;
     }
     lockMaterial(): void {
-        if(this.m_gMateiral != null) {
+        if (this.m_gMateiral != null) {
             this.m_rcontext.useGlobalMaterial(this.m_gMateiral);
         }
         else {
@@ -267,11 +267,23 @@ export default class FBOInstance {
             this.createFBO(enableDepth, enableStencil, multisampleLevel);
         }
     }
+
+    resizeFBOAt(fboIndex: number, width: number, height: number): void {
+        if (fboIndex >= 0 && this.m_fboIndex < 0) {
+            this.m_adapter.resizeFBOAt(fboIndex, width, height);
+        }
+    }
+    resizeFBO(width: number, height: number): void {
+        this.m_adapter.resizeFBOAt(this.m_fboIndex, width, height);
+    }
     /**
      * @returns get framebuffer output attachment texture by attachment index
      */
     getRTTAt(i: number): RTTTextureProxy {
         return this.m_texs[i];
+    }
+    generateMipmapTextureAt(i: number): void {
+        this.m_texs[i].generateMipmap(this.m_renderProxy.Texture);
     }
     /**
      * 设置渲染到纹理的目标纹理对象(可由用自行创建)和framebuffer output attachment index
@@ -367,6 +379,14 @@ export default class FBOInstance {
     getFBOWidth(): number { return this.m_adapter.getFBOWidthAt(this.m_fboIndex); }
     getFBOHeight(): number { return this.m_adapter.getFBOHeightAt(this.m_fboIndex); }
 
+
+    resetAttachmentMask(boo: boolean): void {
+        this.m_adapter.resetFBOAttachmentMask(boo);
+    }
+    setAttachmentMaskAt(index: number, boo: boolean): void {
+        this.m_adapter.setFBOAttachmentMaskAt(index, boo);
+    }
+
     setClearRGBColor3f(pr: number, pg: number, pb: number) {
         this.m_bgColor.setRGB3f(pr, pg, pb);
     }
@@ -425,11 +445,15 @@ export default class FBOInstance {
             this.m_adapter.blitFBO(fboIns.getFBOUid(), this.m_fboIndex, RenderMaskBitfield.STENCIL_BUFFER_BIT, filter, clearType, clearIndex, dataArr);
         }
     }
+    renderToTextureAt(i: number, attachmentIndex: number = 0): void {
+        this.m_adapter.setRenderToTexture(this.m_texs[i], this.m_enableDepth, this.m_enableStencil, attachmentIndex);
+        this.m_adapter.useFBO(this.m_clearColorBoo, this.m_clearDepthBoo, this.m_clearStencilBoo);
+    }
     private runBeginDo(): void {
         if (this.m_runFlag) {
             this.m_runFlag = false;
             this.m_renderProxy.getClearRGBAColor4f(this.m_backBufferColor);
-            
+
             if (this.m_viewportLock) {
                 this.m_adapter.lockViewport();
             }
@@ -463,27 +487,28 @@ export default class FBOInstance {
             }
         }
     }
-    run(lockRenderState:boolean = false,lockMaterial:boolean = false, autoEnd: boolean = true): void {
+    run(lockRenderState: boolean = false, lockMaterial: boolean = false, autoEnd: boolean = true, autoRunBegin: boolean = true): void {
 
-        if(lockRenderState) this.lockRenderState();
-        if(lockMaterial) this.lockMaterial();
+        if (lockRenderState) this.lockRenderState();
+        if (lockMaterial) this.lockMaterial();
 
         if (this.m_fboIndex >= 0 && this.m_rindexs != null) {
-            this.runBeginDo();
+            if (autoRunBegin)
+                this.runBeginDo();
             for (let i: number = 0, len: number = this.m_rindexs.length; i < len; ++i) {
                 this.m_render.runAt(this.m_rindexs[i]);
             }
             this.m_runFlag = true;
         }
-        if(lockRenderState) this.unlockRenderState();
-        if(lockMaterial) this.unlockMaterial();
-        if(autoEnd) {
+        if (lockRenderState) this.unlockRenderState();
+        if (lockMaterial) this.unlockMaterial();
+        if (autoEnd) {
             this.runEnd();
         }
     }
-    runAt(index: number): void {
+    runAt(index: number, autoRunBegin: boolean = true): void {
         if (this.m_fboIndex >= 0 && this.m_rindexs != null) {
-            if (index == 0) {
+            if (index == 0 && autoRunBegin) {
                 this.runBeginDo();
             }
             else {
@@ -493,8 +518,8 @@ export default class FBOInstance {
         }
     }
     //new IRenderEntity
-    drawEntity(entity: IRenderEntity,force: boolean = true): void {
-        if(!this.m_runFlag) {
+    drawEntity(entity: IRenderEntity, force: boolean = true): void {
+        if (!this.m_runFlag) {
             this.m_render.drawEntity(entity, force);
         }
     }
@@ -511,7 +536,7 @@ export default class FBOInstance {
             this.m_adapter.unlockViewport();
         }
     }
-    
+
     useCamera(camera: CameraBase, syncCamView: boolean = false): void {
         this.m_render.useCamera(camera, syncCamView);
     }
@@ -527,7 +552,7 @@ export default class FBOInstance {
         this.m_fboIndex = -1;
         this.m_texsTot = 0;
         this.m_rindexs = [];
-        if(this.m_gMateiral != null) {
+        if (this.m_gMateiral != null) {
             this.m_gMateiral.__$detachThis();
             this.m_gMateiral = null;
         }

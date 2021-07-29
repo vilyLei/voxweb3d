@@ -43,7 +43,7 @@ import StencilOutline from "../renderingtoy/mcase/outline/StencilOutline";
 
 
 
-export class DemoDefaultPBR
+export class DemoDefaultPBR2
 {
     constructor(){}
     private m_rscene:RendererScene = null;
@@ -70,7 +70,7 @@ export class DemoDefaultPBR
     
     initialize():void
     {
-        console.log("DemoDefaultPBR::initialize()......");
+        console.log("DemoDefaultPBR2::initialize()......");
         if(this.m_rscene == null)
         {
             RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
@@ -217,6 +217,7 @@ export class DemoDefaultPBR
     private m_toneMaterial: any;
     
     private m_mirrorEntities:MirrorProjEntity[] = [];
+    private m_mirrorMapLodEnabled: boolean = true;
     private initPlaneReflection(): void {
 
         let param: PBRParamEntity;
@@ -258,8 +259,14 @@ export class DemoDefaultPBR
             , this.getImageTexByUrl("static/assets/brickwall_normal.jpg")
             , this.m_fboIns.getRTTAt(0)
         ] );
+        this.m_mirrorMapLodEnabled = true;
+        if(this.m_mirrorMapLodEnabled) {
+            this.m_fboIns.getRTTAt(0).enableMipmap();
+            material.setMirrorMapLodLevel(3.0);
+        }
         material.pixelNormalNoiseEnabled = true;
         material.mirrorProjEnabled = true;
+        material.mirrorMapLodEnabled = this.m_mirrorMapLodEnabled;
         material.diffuseMapEnabled = true;
         material.normalMapEnabled = true;
         material.setUVScale(3.0,3.0);
@@ -363,26 +370,10 @@ export class DemoDefaultPBR
         //  DebugFlag.Flag_0 = 0;
         //  return;
 
-        
-        /////////////////////////////////////////////////////// ---- mouseTest begin.
-        //  for(let i: number = 0; i < this.m_paramEntities.length; ++i) {
-        //      this.m_paramEntities[i].entity.mouseEnabled = this.m_uiModule.isOpen();
-        //  }
-        ///*
-        
-        /////////////////////////////////////////////////////// ---- mouseTest end.
-
         this.renderBegin();
 
         this.render();
-        /////////////////////////////////////////////////////// ---- rendering end.
 
-
-        /// this.m_camTrack.rotationOffsetAngleWorldY(-0.2);        
-        //  if(this.m_profileInstance != null)
-        //  {
-        //      this.m_profileInstance.run();
-        //  }
         DebugFlag.Flag_0 = 0;
     }
     private renderBegin(): void {
@@ -403,13 +394,16 @@ export class DemoDefaultPBR
         
         this.m_rscene.renderBegin();
         ///*
-        // --------------------------------------------- fbo run begin
+        // --------------------------------------------- mirror inverted reflection fbo run begin
         
         for(let i: number = 0; i < this.m_mirrorEntities.length; ++i) {
             this.m_mirrorEntities[i].toMirror();
         }
         this.m_fboIns.run();
-        // --------------------------------------------- fbo run end
+        if(this.m_mirrorMapLodEnabled) {
+            this.m_fboIns.generateMipmapTextureAt(0);
+        }
+        // --------------------------------------------- mirror inverted reflection fbo run end
         
         this.m_rscene.setRenderToBackBuffer();
         
@@ -434,18 +428,10 @@ export class DemoDefaultPBR
         this.m_rscene.run(false);
 
         this.m_stencilOutline.draw();
-        //*/
         // draw outline end
-        /*
-        // draw outline begin
-        let entity:DisplayEntity = this.selectEdgeTarget();
         //  this.m_rscene.runAt(0);
         //  this.m_rscene.runAt(1);
         //  this.m_rscene.runAt(2);
-        this.m_rscene.run(false);
-        this.useSelectedEdge( entity );
-        // draw outline end
-        //*/
 
         this.m_rscene.runEnd();
         
@@ -456,50 +442,6 @@ export class DemoDefaultPBR
             this.m_ruisc.runEnd();
         }
     }
-    private selectEdgeTarget(): DisplayEntity {
-        
-        let entity:DisplayEntity = null;
-        if(this.m_uiModule.isOpen() && this.m_uiModule.getParamEntity() != null) {
-            entity = this.m_uiModule.getParamEntity().entity;
-            if(!entity.isRenderEnabled()) {
-                entity = null;
-            }
-            if(entity != null) {
-                RendererState.SetStencilMask(0x0);
-                entity.setVisible(false);
-            }
-        }
-        return entity;
-    }
-    private useSelectedEdge(entity: DisplayEntity): void {
-        if(entity != null) {
-
-            let scaleV: Vector3D = new Vector3D();
-            entity.getScaleXYZ(scaleV);
-            let material: DefaultPBRMaterial = entity.getMaterial() as DefaultPBRMaterial;
-            RendererState.SetStencilOp(GLStencilOp.KEEP, GLStencilOp.KEEP, GLStencilOp.REPLACE);
-            RendererState.SetStencilFunc(GLStencilFunc.ALWAYS, 1, 0xFF);
-            RendererState.SetStencilMask(0xFF);
-            entity.setVisible( true );
-            this.m_rscene.drawEntity(entity);
-            
-            RendererState.SetStencilFunc(GLStencilFunc.NOTEQUAL, 1, 0xFF); 
-            RendererState.SetStencilMask(0x0);
-            let identity: number = material.getToneMapingExposure();
-            material.setToneMapingExposure(32.0);
-
-            let ds: number = 1.0 + 10.0/Math.max(entity.getGlobalBounds().getLong(), entity.getGlobalBounds().getWidth(),entity.getGlobalBounds().getHeight());
-            entity.setScaleXYZ(scaleV.x * ds, scaleV.y * ds, scaleV.z * ds);
-            entity.update();
-            this.m_rscene.drawEntity(entity);
-
-            material.setToneMapingExposure(identity);
-            entity.setScaleXYZ(scaleV.x, scaleV.y, scaleV.z);
-            entity.update();
-            RendererState.SetStencilFunc(GLStencilFunc.ALWAYS, 1, 0x0);
-            RendererState.SetStencilMask(0xFF);
-        }
-    }
 }
     
-export default DemoDefaultPBR;
+export default DemoDefaultPBR2;

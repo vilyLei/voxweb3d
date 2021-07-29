@@ -86,17 +86,25 @@ export default class FrustrumFrame3DEntity extends DisplayEntity
         this.createMaterial();
         this.activeDisplay();
     }
-    updateFrame(camera:CameraBase) {
-        let mesh:DashedLineMesh = this.getMesh() as DashedLineMesh;
-        if(mesh != null) {
-            let pvs:Vector3D[] = camera.getWordFrustumVtxArr();    
-            let ids:number[] = this.m_ids;
-            let pv: Vector3D;
-            for(let i: number = 0; i < ids.length; i++) {
-                pv = pvs[ ids[i] ];    
-                mesh.setVSXYZAt(i, pv.x,pv.y,pv.z);
+    private m_cameraVersion: number = -1;
+    updateFrame(camera:CameraBase): boolean {
+
+        if(this.m_cameraVersion != camera.version) {
+
+            this.m_cameraVersion = camera.version;
+            let mesh:DashedLineMesh = this.getMesh() as DashedLineMesh;
+            if(mesh != null) {
+                let pvs:Vector3D[] = camera.getWordFrustumVtxArr();    
+                let ids:number[] = this.m_ids;
+                let pv: Vector3D;
+                for(let i: number = 0; i < ids.length; i++) {
+                    pv = pvs[ ids[i] ];    
+                    mesh.setVSXYZAt(i, pv.x,pv.y,pv.z);
+                }
+                return true;
             }
         }
+        return false;
     }
     toString():string
     {
