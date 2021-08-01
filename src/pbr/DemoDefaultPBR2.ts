@@ -41,6 +41,8 @@ import RendererState from "../vox/render/RendererState";
 import { GLStencilFunc, GLStencilOp } from "../vox/render/RenderConst";
 import StencilOutline from "../renderingtoy/mcase/outline/StencilOutline";
 
+import CubeRttBuilder from "../renderingtoy/mcase/CubeRTTBuilder";
+
 
 
 export class DemoDefaultPBR2
@@ -61,6 +63,7 @@ export class DemoDefaultPBR2
     private m_reflectPlaneY: number = -220.0;
     private m_paramEntities:PBRParamEntity[] = [];
     private m_materialBuilder: MaterialBuilder = new MaterialBuilder();
+    private m_cubeRTTBuilder: CubeRttBuilder = new CubeRttBuilder();
     getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
     {
         let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -284,6 +287,14 @@ export class DemoDefaultPBR2
         plane.initializeXOZ(-1100.0, -1100.0, 2200.0, 2200.0, texList);
         plane.setXYZ(0, this.m_reflectPlaneY, 0);
         this.m_rscene.addEntity(plane, 1);
+
+        let cubeRTTMipMapEnabled: boolean = true;
+        let rttPos: Vector3D = new Vector3D(0.0, 0.0, 0.0);
+        this.m_cubeRTTBuilder.mipmapEnabled = cubeRTTMipMapEnabled;
+        this.m_cubeRTTBuilder.initialize(this.m_rscene, 256.0, 256.0, rttPos);
+        //this.m_cubeRTTBuilder.setClearRGBAColor4f(0.0,0.0,0.0,1.0);
+        this.m_cubeRTTBuilder.setRProcessIDList( [1] );
+        
 
         param = new PBRParamEntity();
         param.entity = plane;

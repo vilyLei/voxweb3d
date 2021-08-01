@@ -31,7 +31,7 @@ class RTTCameraList {
             let far: number = 5000.0;
             
             if(type > 0) {
-                // camera look at outer
+                //  // camera look at outer
                 this.m_cams[0].lookAtRH(posV, new Vector3D(posV.x + dis, posV.y + 0.0, posV.z + 0.0), new Vector3D(0, -1, 0));
                 this.m_cams[1].lookAtRH(posV, new Vector3D(posV.x - dis, posV.y + 0.0, posV.z + 0.0), new Vector3D(0, -1, 0));
                 this.m_cams[2].lookAtRH(posV, new Vector3D(posV.x + 0.0, posV.y + dis, posV.z + 0.0), new Vector3D(0, 0, 1));

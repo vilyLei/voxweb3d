@@ -71,7 +71,7 @@ export class DemoRTTCube {
 
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.initialize(600.0);
-            this.m_rscene.addEntity(axis);
+            this.m_rscene.addEntity(axis, 1);
 
             this.initSceneObjs();
             this.initCubeRTT();
@@ -111,11 +111,11 @@ export class DemoRTTCube {
             this.m_rscene.addEntity(box, 0);
         }
         
-        box = new Box3DEntity();
-        box.uvPartsNumber = 6;
-        box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixParts.jpg")]);
-        box.setScaleXYZ(2.0, 2.0, 2.0);
-        this.m_rscene.addEntity(box, 0);
+        //  box = new Box3DEntity();
+        //  box.uvPartsNumber = 6;
+        //  box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixParts.jpg")]);
+        //  box.setScaleXYZ(2.0, 2.0, 2.0);
+        //  this.m_rscene.addEntity(box, 0);
         
         ///*
         let urls = [
@@ -130,14 +130,14 @@ export class DemoRTTCube {
         //*/
 
         let cubeRTTMipMapEnabled: boolean = true;
-
+        let rttPos: Vector3D = new Vector3D(250.0, 0.0, 0.0);
         this.m_cubeRTTBuilder.mipmapEnabled = cubeRTTMipMapEnabled;
-        this.m_cubeRTTBuilder.initialize(this.m_rscene, 256.0, 256.0);
+        this.m_cubeRTTBuilder.initialize(this.m_rscene, 256.0, 256.0, rttPos);
         //this.m_cubeRTTBuilder.setClearRGBAColor4f(0.0,0.0,0.0,1.0);
         this.m_cubeRTTBuilder.setRProcessIDList( [0] );
         
         let cubeMaterial: CubeMapMaterial = new CubeMapMaterial( cubeRTTMipMapEnabled );
-        cubeMaterial.setTextureLodLevel(2);
+        cubeMaterial.setTextureLodLevel(3.5);
         
         box = new Box3DEntity();
         box.useGourandNormal();
@@ -146,6 +146,8 @@ export class DemoRTTCube {
         box.initializeCube(200.0, [ this.m_cubeRTTBuilder.getCubeTexture() ]);
         //  box.initializeCube(200.0, [ cubeTex0 ]);
         box.setScaleXYZ(2.0, 2.0, 2.0);
+        box.setPosition( rttPos );
+        //this.m_rscene.addEntity(box, 1);
         this.m_rscene.addEntity(box, 0);
         this.m_cubeRTTBuilder.setDispEntity(box);
         this.m_targetBox = box;
@@ -192,6 +194,7 @@ export class DemoRTTCube {
             this.m_rscene.run(true);
         }
         else {
+
             this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
             this.m_rscene.runBegin();
             this.m_rscene.update(false);
@@ -200,7 +203,7 @@ export class DemoRTTCube {
             this.m_cubeRTTBuilder.run();
             // --------------------------------------------- fbo run end
             
-            this.m_rscene.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);
+            this.m_rscene.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);
             this.m_rscene.setRenderToBackBuffer();
             this.m_rscene.useMainCamera();
 

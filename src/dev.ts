@@ -306,7 +306,7 @@
 
 //  import {DemoRTTLod as Demo} from "./demo/DemoRTTLod";
 
-//  import {DemoRTTCube as Demo} from "./demo/DemoRTTCube";
+import {DemoRTTCube as Demo} from "./demo/DemoRTTCube";
 
 //  import {DemoProjectPlane as Demo} from "./demo/DemoProjectPlane";
 
@@ -340,7 +340,7 @@
 
 //  import {DemoDefaultPBR as Demo} from "./pbr/DemoDefaultPBR";
 
-import {DemoDefaultPBR2 as Demo} from "./pbr/DemoDefaultPBR2";
+//  import {DemoDefaultPBR2 as Demo} from "./pbr/DemoDefaultPBR2";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////
