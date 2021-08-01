@@ -1,19 +1,15 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
-import Billboard3DEntity from "../../vox/entity/Billboard3DEntity";
-import ClipsBillboard3DEntity from "../../vox/entity/ClipsBillboard3DEntity";
-
 import CameraBase from "../../vox/view/CameraBase";
 import MathConst from "../../vox/math/MathConst";
-//import TextureProxy from "../../vox/texture/TextureProxy";
-import ImageCubeTextureProxy from "../../vox/texture/ImageCubeTextureProxy";
 import RendererScene from "../../vox/scene/RendererScene";
 import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 import FrameBufferType from "../../vox/render/FrameBufferType";
 import FBOInstance from "../../vox/scene/FBOInstance";
-class CameraList {
+
+class RTTCameraList {
     private m_cams: CameraBase[] = null;
     private m_initFlag: boolean = true;
     getAt(i: number): CameraBase {
@@ -62,12 +58,12 @@ class CameraList {
     }
 }
 
-export default class CubeRTTScene {
+export default class CubeRttBuilder {
     private static s_id: number = 0;
-    private m_id: number = CubeRTTScene.s_id++;
+    private m_id: number = CubeRttBuilder.s_id++;
     private m_tarEntity: DisplayEntity = null;
     private m_initFlag: boolean = true;
-    private m_camList: CameraList = null;
+    private m_camList: RTTCameraList = null;
     private m_enabled: boolean = true;
     private m_texProxy: RTTTextureProxy = null;
     private m_texW: number = 512.0;
@@ -77,52 +73,36 @@ export default class CubeRTTScene {
     private m_initFbo: boolean = true;
     mipmapEnabled: boolean = false;
     constructor() {
-        this.m_id = CubeRTTScene.s_id++;
+        this.m_id = CubeRttBuilder.s_id++;
     }
-    initialize(sc: RendererScene, pw: number, ph: number,centerV: Vector3D = null): void {
+    initialize(sc: RendererScene, pw: number, ph: number,centerV: Vector3D = null, fboIndex: number = 0): void {
         this.m_texW = pw;
         this.m_texH = ph;
         this.m_rscene = sc;
         if (this.m_camList == null) {
-            this.m_camList = new CameraList();
+            this.m_camList = new RTTCameraList();
             this.m_initFlag = false;
             if(centerV == null) {
                 centerV = new Vector3D(0.0, 0.0, 0.0);
             }
-            this.m_camList.create(centerV, this.m_texW, this.m_texH, -1);
+            this.m_camList.create(centerV, this.m_texW, this.m_texH, 1);
 
-            
             let rctx: RendererInstanceContext = this.m_rscene.getRendererContext();
-            rctx.createFBOAt(0, FrameBufferType.FRAMEBUFFER, this.m_texW, this.m_texH, true, false, 0);
+            rctx.createFBOAt(fboIndex, FrameBufferType.FRAMEBUFFER, this.m_texW, this.m_texH, true, false, 0);
 
             this.m_fboIns = this.m_rscene.createFBOInstance();
             this.m_fboIns.asynFBOSizeWithViewport();
-            this.m_fboIns.setClearRGBAColor4f(1.0, 1.0, 1.0, 1.0);   // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
-            this.m_fboIns.createFBOAt(0, this.m_texW, this.m_texH, true, false);
-            this.m_fboIns.setRenderToTexture(this.getCubeTexture(), 0);          // framebuffer color attachment 0
+            this.m_fboIns.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);                  // set rtt background clear rgba(r=0.0,g=0.0,b=0.0,0.0) color
+            this.m_fboIns.createFBOAt(fboIndex, this.m_texW, this.m_texH, true, false);
+            this.m_fboIns.setRenderToTexture(this.getCubeTexture(), 0);             // framebuffer color attachment 0
             this.m_fboIns.setRProcessIDList([0]);
         }
     }
     getId(): number {
         return this.m_id;
     }
-    /*
-    enableMipmap(): void {
-        if (this.m_texProxy != null) {
-            this.mipmapEnabled = true;
-            this.m_texProxy.enableMipmap();
-        }
-    }
-    disableMipmap(): void {        
-        if (this.m_texProxy != null) {
-            this.mipmapEnabled = false;
-            this.m_texProxy.disableMipmap();
-        }
-    }
-    //*/
     getCubeTexture(): RTTTextureProxy {
         if (this.m_texProxy == null) {
-            //this.m_texProxy = this.m_rscene.textureBlock.createCubeRTTTextureAt(0, 128,128);
             this.m_texProxy = new RTTTextureProxy(128, 128);
             this.m_texProxy.toCubeTexture();
             if (this.mipmapEnabled) {
@@ -201,8 +181,7 @@ export default class CubeRTTScene {
                 }
                 
             }
-            else {
-                rctx.setClearRGBColor3f(1.0,1.0,1.0);
+            else {                
                 rctx.resetFBOAttachmentMask(false);
                 for (; j < 6;) {
                     this.runAttachment(i, j, rpci);

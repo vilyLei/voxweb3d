@@ -22,10 +22,7 @@ import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
-import FBOInstance from "../vox/scene/FBOInstance";
-import CameraBase from "../vox/view/CameraBase";
-import MathConst from "../vox/math/MathConst";
-import CubeRTTScene from "./base/CubeRTTScene";
+import CubeRttBuilder from "../renderingtoy/mcase/CubeRTTBuilder";
 import CubeMapMaterial from "../vox/material/mcase/CubeMapMaterial";
 
 export class DemoRTTCube {
@@ -83,7 +80,7 @@ export class DemoRTTCube {
         }
     }
 
-    private m_cubeRTTSC: CubeRTTScene = new CubeRTTScene();
+    private m_cubeRTTBuilder: CubeRttBuilder = new CubeRttBuilder();
 
     private m_projType: number = 0;
     private m_targetBox: Box3DEntity;
@@ -134,10 +131,10 @@ export class DemoRTTCube {
 
         let cubeRTTMipMapEnabled: boolean = true;
 
-        this.m_cubeRTTSC.mipmapEnabled = cubeRTTMipMapEnabled;
-        this.m_cubeRTTSC.initialize(this.m_rscene, 256.0, 256.0);
-        this.m_cubeRTTSC.setClearRGBAColor4f(0.0,0.0,0.0,1.0);
-        this.m_cubeRTTSC.setRProcessIDList( [0] );
+        this.m_cubeRTTBuilder.mipmapEnabled = cubeRTTMipMapEnabled;
+        this.m_cubeRTTBuilder.initialize(this.m_rscene, 256.0, 256.0);
+        //this.m_cubeRTTBuilder.setClearRGBAColor4f(0.0,0.0,0.0,1.0);
+        this.m_cubeRTTBuilder.setRProcessIDList( [0] );
         
         let cubeMaterial: CubeMapMaterial = new CubeMapMaterial( cubeRTTMipMapEnabled );
         cubeMaterial.setTextureLodLevel(2);
@@ -146,11 +143,11 @@ export class DemoRTTCube {
         box.useGourandNormal();
         box.setMaterial(cubeMaterial);
         //  box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
-        box.initializeCube(200.0, [ this.m_cubeRTTSC.getCubeTexture() ]);
+        box.initializeCube(200.0, [ this.m_cubeRTTBuilder.getCubeTexture() ]);
         //  box.initializeCube(200.0, [ cubeTex0 ]);
         box.setScaleXYZ(2.0, 2.0, 2.0);
         this.m_rscene.addEntity(box, 0);
-        this.m_cubeRTTSC.setDispEntity(box);
+        this.m_cubeRTTBuilder.setDispEntity(box);
         this.m_targetBox = box;
         
 
@@ -165,8 +162,7 @@ export class DemoRTTCube {
 
         this.m_flag = true;
         if(this.m_targetBox != null) {
-            this.m_targetBox.setVisible(!this.m_targetBox.getVisible());
-            //this.m_targetBox.setVisible(false);
+            //this.m_targetBox.setVisible(!this.m_targetBox.getVisible());
         }
     }
     private m_timeoutId: any = -1;
@@ -201,10 +197,10 @@ export class DemoRTTCube {
             this.m_rscene.update(false);
             
             // --------------------------------------------- fbo run begin
-            this.m_cubeRTTSC.run();
+            this.m_cubeRTTBuilder.run();
             // --------------------------------------------- fbo run end
             
-            this.m_rscene.setClearRGBColor3f(0.3, 0.0, 0.0);
+            this.m_rscene.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);
             this.m_rscene.setRenderToBackBuffer();
             this.m_rscene.useMainCamera();
 
