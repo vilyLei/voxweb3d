@@ -54,10 +54,10 @@ void main()
     mipLv -= glossinessSquare * mipLv;
     mipLv = max(mipLv + floor(u_params[3].w), 0.0);
     #ifdef VOX_ENV_MAP
-	    //vec3 envDir = -getWorldEnvDir(normalize(N + normalPerturb), -V);
 	    vec3 envDir = -getWorldEnvDir(N, -V);
 	    envDir.x = -envDir.x;
         vec3 specularEnvColor3 = VOX_TextureCubeLod(u_sampler0, envDir, mipLv).xyz;
+        
         //specularEnvColor3 = reinhardToneMapping(specularEnvColor3,1.0);
         specularEnvColor3 = gammaToLinear(specularEnvColor3);
         specularColor = fresnelSchlick3(specularColor, dotNV, 0.25 * reflectionIntensity) * specularEnvColor3;
@@ -66,8 +66,7 @@ void main()
     float frontIntensity = u_params[1].z;
     float sideIntensity = u_params[1].w;
 
-    // reflectance equation
-    
+    // reflectance equation    
     RadianceLight rL;
 
     vec3 diffuse = albedo.xyz * RECIPROCAL_PI;
@@ -106,12 +105,16 @@ void main()
         }
     #endif
     
+    #ifdef VOX_INDIRECT_ENV_MAP
+        rL.L = vec3(0.0, -1.0, 0.0);
+        calcPBRLight(roughness, rm, 1.5 * VOX_TextureCubeLod(VOX_INDIRECT_ENV_MAP, N, 5.0).xyz, rL);
+    #endif
+
     specularColor = (rL.specular + specularColor);
 
     #ifdef VOX_ABSORB
         specularColor *= vec3(reflectionIntensity);
     #endif
-
     vec3 Lo = rL.diffuse * diffuse + specularColor;
     
     // ambient lighting (note that the next IBL tutorial will replace 
@@ -123,8 +126,10 @@ void main()
 		ambient *= sideIntensity;
 		Lo *= sideIntensity * frontIntensity;
 	#endif
+
     color = ambient + Lo;
 
+    
     //color = dithering(color);
     // HDR tonemapping
     #ifdef VOX_TONE_MAPPING
@@ -134,9 +139,9 @@ void main()
         //color = reinhard_extended_luminance( color, u_params[1].x );
         //color = acesToneMapping(color, u_params[1].x);
     #endif
-
     // gamma correct
     color = linearToGamma(color);
+        
     // mirror inverted reflection
     #ifdef VOX_MIRROR_PROJ_MAP
         float factorY = max(dot(N.xyz, u_mirrorParams[0].xyz), 0.01);

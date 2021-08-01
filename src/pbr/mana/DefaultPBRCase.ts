@@ -24,6 +24,7 @@ import Box3DMesh from "../../vox/mesh/Box3DMesh";
 import { VtxNormalType } from "../../vox/mesh/VtxBufConst";
 import DefaultPBRLight from "./DefaultPBRLight";
 import DecodeData from "../../large/parse/DecodeData";
+import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 
 
 class TextureLoader {
@@ -205,7 +206,7 @@ export default class DefaultPBRCase {
     return loader.texture;
   }
   texList: TextureProxy[];
-  
+  indirectEnvMap: TextureProxy = null;
   diffuseMapEnabled: boolean = false;
   normalMapEnabled: boolean = false;
   private initMaterial(): void {
@@ -265,6 +266,11 @@ export default class DefaultPBRCase {
         }
         if(this.normalMapEnabled) {
           texList.push(this.texList[2]);
+        }
+        
+        if(this.indirectEnvMap != null) {
+          texList.push(this.indirectEnvMap);
+          rm.indirectEnvMapEnabled = true;
         }
         rm.setTextureList( texList );
         rm.diffuseMapEnabled = this.diffuseMapEnabled;

@@ -92,14 +92,21 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
         if (this.absorbEnabled) coder.addDefine("VOX_ABSORB");
         if (this.pixelNormalNoiseEnabled) coder.addDefine("VOX_PIXEL_NORMAL_NOISE");
 
-        
+        coder.addTextureSampleCube();
         let texIndex: number = 1;
-        if (this.diffuseMapEnabled && this.texturesTotal > 1) coder.addDefine("VOX_DIFFUSE_MAP","u_sampler"+(texIndex++));
+        if (this.diffuseMapEnabled && this.texturesTotal > 1) {
+            coder.addDefine("VOX_DIFFUSE_MAP","u_sampler"+(texIndex++));
+            coder.addTextureSample2D();
+        }
         if (this.normalMapEnabled && this.texturesTotal > 1) {
             coder.addDefine("VOX_USE_NORMALE_MAP");
             coder.addDefine("VOX_NORMAL_MAP","u_sampler"+(texIndex++));
+            coder.addTextureSample2D();
         }
-        if (mirrorProjEnabled) coder.addDefine("VOX_MIRROR_PROJ_MAP", "u_sampler"+(texIndex++));
+        if (mirrorProjEnabled) {
+            coder.addDefine("VOX_MIRROR_PROJ_MAP", "u_sampler"+(texIndex++));
+            coder.addTextureSample2D();
+        }
         if (this.mirrorMapLodEnabled) coder.addDefine("VOX_MIRROR_MAP_LOD", "1");
 
         console.log("this.texturesTotal: ", this.texturesTotal);
@@ -112,10 +119,15 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
         if (lightsTotal > 0) coder.addDefine("VOX_LIGHTS_TOTAL",""+lightsTotal);
         else coder.addDefine("VOX_LIGHTS_TOTAL", "0");
 
-        coder.addTextureSampleCube();
-        for(let i: number = 1; i < this.texturesTotal; ++i) {
-            coder.addTextureSample2D();
-        }
+        //  let texTotal: number = this.texturesTotal;
+        //  coder.addTextureSampleCube();
+        //  if (this.indirectEnvMapEnabled) {
+        //      texTotal -= 1;
+        //  }
+        //  for(let i: number = 1; i < texTotal; ++i) {
+        //      coder.addTextureSample2D();
+        //  }
+        
         if (this.indirectEnvMapEnabled) {
             coder.addDefine("VOX_INDIRECT_ENV_MAP", "u_sampler"+(texIndex++));
             coder.addTextureSampleCube();
@@ -163,15 +175,17 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
 
         if (this.woolEnabled) ns += "_wl";
         if (this.toneMappingEnabled) ns += "_tm";
-        if (this.envMapEnabled) ns += "_envM";
-        if (this.scatterEnabled) ns += "_sct";
-        if (this.specularBleedEnabled) ns += "_specBl";
-        if (this.metallicCorrection) ns += "_metCorr";
-        if (this.gammaCorrection) ns += "_gammaCorr";
-        if (this.absorbEnabled) ns += "_absorb";
-        if (this.pixelNormalNoiseEnabled) ns += "_pixelNNoise";
-        if (this.mirrorProjEnabled && this.texturesTotal > 1) ns += "_mirPrj";
+        if (this.envMapEnabled) ns += "EnvM";
+        if (this.scatterEnabled) ns += "Sct";
+        if (this.specularBleedEnabled) ns += "SpecBl";
+        if (this.metallicCorrection) ns += "MetCorr";
+        if (this.gammaCorrection) ns += "GammaCorr";
+        if (this.absorbEnabled) ns += "Absorb";
+        if (this.pixelNormalNoiseEnabled) ns += "PNNoise";
+        if (this.mirrorProjEnabled && this.texturesTotal > 1) ns += "MirPrj";
         if (this.normalNoiseEnabled) ns += "_nNoise";
+        if (this.indirectEnvMapEnabled) ns += "IndirEnv";
+        if (this.normalMapEnabled) ns += "NorMap";
 
         if (this.pointLightsTotal > 0) ns += "_" + this.pointLightsTotal;
         if (this.parallelLightsTotal > 0) ns += "_" + this.parallelLightsTotal;

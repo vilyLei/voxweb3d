@@ -205,7 +205,6 @@ export class DemoRTTCube {
             
             this.m_rscene.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);
             this.m_rscene.setRenderToBackBuffer();
-            this.m_rscene.useMainCamera();
 
             this.m_rscene.runAt(0);
             this.m_rscene.runAt(1);

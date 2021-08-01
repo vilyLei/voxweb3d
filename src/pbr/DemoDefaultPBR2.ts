@@ -42,6 +42,7 @@ import { GLStencilFunc, GLStencilOp } from "../vox/render/RenderConst";
 import StencilOutline from "../renderingtoy/mcase/outline/StencilOutline";
 
 import CubeRttBuilder from "../renderingtoy/mcase/CubeRTTBuilder";
+import CubeMapMaterial from "../vox/material/mcase/CubeMapMaterial";
 
 
 
@@ -126,6 +127,13 @@ export class DemoDefaultPBR2
             this.m_meshMana.initialize();
             
             this.m_rscene.setClearRGBColor3f(0.2,0.2,0.2);
+
+            let cubeRTTMipMapEnabled: boolean = true;
+            let rttPos: Vector3D = new Vector3D(0.0, 0.0, 0.0);
+            this.m_cubeRTTBuilder.mipmapEnabled = cubeRTTMipMapEnabled;
+            this.m_cubeRTTBuilder.initialize(this.m_rscene, 256.0, 256.0, rttPos);
+            //this.m_cubeRTTBuilder.setClearRGBAColor4f(0.0,0.0,0.0,1.0);
+            this.m_cubeRTTBuilder.setRProcessIDList( [1] );
             //this.m_meshMana.loadMeshFile("static/modules/box01.md");
             /*
             this.m_meshMana.moduleScale = 1.0;
@@ -170,8 +178,10 @@ export class DemoDefaultPBR2
             this.m_meshMana.material.setUVScale(0.1,0.1);
             //*/
             ///*
+            this.m_meshMana.indirectEnvMap = this.m_cubeRTTBuilder.getCubeTexture();
             this.m_meshMana.diffuseMapEnabled = true;
             this.m_meshMana.normalMapEnabled = true;
+            //this.m_meshMana.indirectEnvMap = true;
             this.m_reflectPlaneY = -200.0;
             this.m_meshMana.moduleScale = 600.0;
             this.m_meshMana.offsetPos.setXYZ(0.0,-150.0,0.0);
@@ -234,7 +244,7 @@ export class DemoDefaultPBR2
         this.m_fboIns = this.m_rscene.createFBOInstance();
         this.m_fboIns.asynFBOSizeWithViewport();
         this.m_fboIns.setClearRGBAColor4f(0.0,0.0,0.0,1.0);   // set rtt background clear rgb(r=0.3,g=0.0,b=0.0) color
-        this.m_fboIns.createFBOAt(0,512,512,true,false);
+        this.m_fboIns.createFBOAt(1,512,512,true,false);
         this.m_fboIns.setRenderToRTTTextureAt(0, 0);          // framebuffer color attachment 0
         this.m_fboIns.setRProcessIDList([0]);
 
@@ -288,13 +298,32 @@ export class DemoDefaultPBR2
         plane.setXYZ(0, this.m_reflectPlaneY, 0);
         this.m_rscene.addEntity(plane, 1);
 
-        let cubeRTTMipMapEnabled: boolean = true;
-        let rttPos: Vector3D = new Vector3D(0.0, 0.0, 0.0);
-        this.m_cubeRTTBuilder.mipmapEnabled = cubeRTTMipMapEnabled;
-        this.m_cubeRTTBuilder.initialize(this.m_rscene, 256.0, 256.0, rttPos);
-        //this.m_cubeRTTBuilder.setClearRGBAColor4f(0.0,0.0,0.0,1.0);
-        this.m_cubeRTTBuilder.setRProcessIDList( [1] );
+        let cubeRTTMipMapEnabled: boolean = this.m_cubeRTTBuilder.mipmapEnabled;
+        //  let cubeRTTMipMapEnabled: boolean = true;
+        //  let rttPos: Vector3D = new Vector3D(0.0, 0.0, 0.0);
+        //  this.m_cubeRTTBuilder.mipmapEnabled = cubeRTTMipMapEnabled;
+        //  this.m_cubeRTTBuilder.initialize(this.m_rscene, 256.0, 256.0, rttPos);
+        //  //this.m_cubeRTTBuilder.setClearRGBAColor4f(0.0,0.0,0.0,1.0);
+        //  this.m_cubeRTTBuilder.setRProcessIDList( [1] );
+
         
+        let cubeMaterial: CubeMapMaterial = new CubeMapMaterial( cubeRTTMipMapEnabled );
+        cubeMaterial.setTextureLodLevel(3.5);
+        
+        let box: Box3DEntity = new Box3DEntity();
+        box.useGourandNormal();
+        box.setMaterial(cubeMaterial);
+        //box.initializeCube(300.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
+        box.initializeCube(200.0, [ this.m_cubeRTTBuilder.getCubeTexture() ]);
+        //  box.initializeCube(200.0, [ cubeTex0 ]);
+        //box.setScaleXYZ(2.0, 2.0, 2.0);
+        box.setPosition( new Vector3D(800.0,300.0,200.0) );
+        //this.m_rscene.addEntity(box, 1);
+        this.m_rscene.addEntity(box, 2);
+        
+        let axis: Axis3DEntity = new Axis3DEntity();
+        axis.initialize(1000.0);
+        this.m_rscene.addEntity(axis, 2);
 
         param = new PBRParamEntity();
         param.entity = plane;
@@ -323,13 +352,30 @@ export class DemoDefaultPBR2
             rad = Math.random() * 100.0;
             radius = Math.random() * 250.0 + 550.0;
             material = this.m_meshMana.makeTexMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
-            material.setTextureList( [this.m_meshMana.texList[0]] );        
+            material.setTextureList( [
+                this.m_meshMana.texList[0]
+                //  ,this.getImageTexByUrl("static/assets/disp/box_COLOR.png")
+                //  ,this.getImageTexByUrl("static/assets/disp/box_NRM.png")
+
+                //  ,this.getImageTexByUrl("static/assets/noise.jpg")
+                //  ,this.getImageTexByUrl("static/assets/disp/lava_03_COLOR.png")
+                //  ,this.getImageTexByUrl("static/assets/disp/lava_03_NRM.png")
+
+                ,this.getImageTexByUrl("static/assets/disp/metal_08_COLOR.png")
+                ,this.getImageTexByUrl("static/assets/disp/metal_08_NRM.png")
+
+                ,this.m_cubeRTTBuilder.getCubeTexture()
+                //lava_03
+            ] );
+            material.diffuseMapEnabled = true;
+            material.normalMapEnabled = true;
+            material.indirectEnvMapEnabled = true;
             sph = new Sphere3DEntity();
             sph.setMaterial( material );
             sph.initialize(80 + Math.random() * 100.0,20,20);
             sph.setXYZ(radius * Math.cos(rad), Math.random() * 500.0, radius * Math.sin(rad));
             this.m_rscene.addEntity(sph);
-    
+
             mEntity = new MirrorProjEntity();
             mEntity.entity = sph;
             mEntity.mirrorPlane = plane;
@@ -408,9 +454,12 @@ export class DemoDefaultPBR2
     }
     private render(): void {
 
-        
         this.m_rscene.renderBegin();
         ///*
+        // --------------------------------------------- cube rtt runbegin
+        this.m_cubeRTTBuilder.run();
+        // --------------------------------------------- cube rtt run end            
+        this.m_rscene.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);
         // --------------------------------------------- mirror inverted reflection fbo run begin
         
         for(let i: number = 0; i < this.m_mirrorEntities.length; ++i) {
@@ -422,6 +471,11 @@ export class DemoDefaultPBR2
         }
         // --------------------------------------------- mirror inverted reflection fbo run end
         
+        // --------------------------------------------- cube rtt runbegin
+        //this.m_cubeRTTBuilder.run();
+        // --------------------------------------------- cube rtt run end            
+        //this.m_rscene.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);
+
         this.m_rscene.setRenderToBackBuffer();
         
         for(let i: number = 0; i < this.m_mirrorEntities.length; ++i) {

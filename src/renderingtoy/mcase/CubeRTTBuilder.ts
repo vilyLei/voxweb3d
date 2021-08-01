@@ -116,15 +116,11 @@ export default class CubeRttBuilder {
     setDispEntity(dispEntity: DisplayEntity) {
         this.m_tarEntity = dispEntity;
     }
-    setDispVisible(boo: boolean): void {
-        this.m_tarEntity.setVisible(boo);
-    }
-    getDispVisible(): boolean {
-        return this.m_tarEntity.getVisible();
-    }
     setEnabled(boo: boolean): void {
         this.m_enabled = boo;
-        this.m_tarEntity.setVisible(boo);
+        if(this.m_tarEntity != null) {
+            this.m_tarEntity.setVisible(boo);
+        }
     }
     getEnabled(): boolean {
         return this.m_enabled;
@@ -158,8 +154,12 @@ export default class CubeRttBuilder {
     }
     run() {
         if (this.m_enabled) {
-            let visible: boolean = this.m_tarEntity.getVisible();
-            this.setDispVisible(false);
+            let visible: boolean = false;
+            if(this.m_tarEntity != null) {
+                visible = this.m_tarEntity.getVisible();
+                //this.setDispVisible(false);
+                this.m_tarEntity.setVisible(false);
+            }
             let fboInsEnabled: boolean = true;
             let rpci: number = 0;
             let i: number = 0;
@@ -200,7 +200,11 @@ export default class CubeRttBuilder {
                     this.m_texProxy.generateMipmap(this.m_rscene.getRenderProxy().Texture);
                 }
             }
-            this.setDispVisible(visible);
+            if(this.m_tarEntity != null) {
+                //this.setDispVisible(visible);
+                this.m_tarEntity.setVisible( visible );
+            }
+            this.m_rscene.useMainCamera();
         }
     }
 
