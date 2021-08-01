@@ -147,7 +147,7 @@ export class DefaultPBRUI implements IPBRUI {
         proBar.uuid = uuid;
         proBar.initialize(this.ruisc, ns, this.m_btnSize, this.m_bgLength);
         proBar.setProgress(progress, false);
-        proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.progressChange);
+        proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.valueChange);
         proBar.setXY(this.m_btnPX, this.m_btnPY);
         this.m_btnPY += this.m_btnSize + 1;
         if (!visibleAlways) this.m_btns.push(proBar);
@@ -163,7 +163,7 @@ export class DefaultPBRUI implements IPBRUI {
         proBar.maxValue = maxValue;
         proBar.setValue(value, false);
 
-        proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.progressChange);
+        proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.valueChange);
         proBar.setXY(this.m_btnPX, this.m_btnPY);
         this.m_btnPY += this.m_btnSize + 1;
         if (!visibleAlways) this.m_btns.push(proBar);
@@ -287,10 +287,11 @@ export class DefaultPBRUI implements IPBRUI {
     }
     private m_currUUID: string = "";
     private m_colorParamUnit: ColorParamUnit = null;
-    private progressChange(evt: any): void {
+    private valueChange(evt: any): void {
 
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
-        let progress: number = progEvt.progress;
+        let progress: number = progEvt.value;
+        
         this.m_currUUID = progEvt.uuid;
         let colorParamUnit: ColorParamUnit;
         switch (progEvt.uuid) {

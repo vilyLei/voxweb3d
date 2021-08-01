@@ -38,6 +38,7 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     mirrorMapLodEnabled: boolean = false;
     diffuseMapEnabled: boolean = false;
     normalMapEnabled: boolean = false;
+    indirectEnvMapEnabled: boolean = false;
 
     pointLightsTotal: number = 4;
     parallelLightsTotal: number = 0;
@@ -114,6 +115,10 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
         coder.addTextureSampleCube();
         for(let i: number = 1; i < this.texturesTotal; ++i) {
             coder.addTextureSample2D();
+        }
+        if (this.indirectEnvMapEnabled) {
+            coder.addDefine("VOX_INDIRECT_ENV_MAP", "u_sampler"+(texIndex++));
+            coder.addTextureSampleCube();
         }
         coder.addVertLayout("vec3","a_vs");
         coder.addVertLayout("vec3","a_nvs");
@@ -244,6 +249,7 @@ export default class DefaultPBRMaterial extends MaterialBase {
     mirrorMapLodEnabled: boolean = false;
     diffuseMapEnabled: boolean = false;
     normalMapEnabled: boolean = false;
+    indirectEnvMapEnabled: boolean = false;
 
     constructor(pointLightsTotal: number = 2, parallelLightsTotal: number = 0) {
         super();
@@ -272,6 +278,7 @@ export default class DefaultPBRMaterial extends MaterialBase {
         buf.mirrorMapLodEnabled = this.mirrorMapLodEnabled;
         buf.diffuseMapEnabled = this.diffuseMapEnabled;
         buf.normalMapEnabled = this.normalMapEnabled;
+        buf.indirectEnvMapEnabled = this.indirectEnvMapEnabled;
 
         buf.pointLightsTotal = this.m_pointLightsTotal;
         buf.parallelLightsTotal = this.m_parallelLightsTotal;
@@ -295,6 +302,7 @@ export default class DefaultPBRMaterial extends MaterialBase {
         this.mirrorMapLodEnabled = dst.mirrorMapLodEnabled;
         this.diffuseMapEnabled = dst.diffuseMapEnabled;
         this.normalMapEnabled = dst.normalMapEnabled;
+        this.indirectEnvMapEnabled = dst.indirectEnvMapEnabled;
 
         this.m_pointLightsTotal = dst.m_pointLightsTotal;
         this.m_parallelLightsTotal = dst.m_parallelLightsTotal;

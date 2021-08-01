@@ -25,7 +25,6 @@ import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
 import RendererSubScene from "../vox/scene/RendererSubScene";
 import DefaultPBRUI from "./mana/DefaultPBRUI";
-import ProjectToneMaterial from "../demo/material/ProjectToneMaterial";
 import MirrorToneMaterial from "../demo/material/MirrorToneMaterial";
 import FBOInstance from "../vox/scene/FBOInstance";
 import CameraBase from "../vox/view/CameraBase";
@@ -35,6 +34,7 @@ import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import DebugFlag from "../vox/debug/DebugFlag";
 import DefaultPBRLight from "../pbr/mana/DefaultPBRLight";
 import DefaultPBRMaterial from "../pbr/material/DefaultPBRMaterial";
+import MaterialBuilder from "../pbr/mana/MaterialBuilder";
 import MirrorProjEntity from "./mana/MirrorProjEngity";
 import PBRParamEntity from "./mana/PBRParamEntity";
 import RendererState from "../vox/render/RendererState";
@@ -60,6 +60,7 @@ export class DemoDefaultPBR2
     private m_uiModule: DefaultPBRUI = new DefaultPBRUI();
     private m_reflectPlaneY: number = -220.0;
     private m_paramEntities:PBRParamEntity[] = [];
+    private m_materialBuilder: MaterialBuilder = new MaterialBuilder();
     getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
     {
         let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -108,10 +109,14 @@ export class DemoDefaultPBR2
             //  let axis:Axis3DEntity = new Axis3DEntity();
             //  axis.initialize(700.0);
             //  this.m_rscene.addEntity(axis, 1);
+
             let lightModule: DefaultPBRLight = new DefaultPBRLight();
             lightModule.create(4,2);
             this.m_meshMana = new DefaultPBRCase();
             this.m_meshMana.lightModule = lightModule;
+
+            this.m_materialBuilder.lightModule = lightModule;
+            this.m_materialBuilder.texLoader = this.m_texLoader;
 
             this.m_meshMana.rscene = this.m_rscene;
             this.m_meshMana.texLoader = this.m_texLoader;
@@ -220,6 +225,7 @@ export class DemoDefaultPBR2
     private m_mirrorMapLodEnabled: boolean = true;
     private initPlaneReflection(): void {
 
+        let matBuilder:MaterialBuilder = this.m_materialBuilder;
         let param: PBRParamEntity;
 
         this.m_fboIns = this.m_rscene.createFBOInstance();
@@ -252,7 +258,7 @@ export class DemoDefaultPBR2
         let material: DefaultPBRMaterial;
         ///*
         // mirror plane
-        material = this.m_meshMana.makeTexMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
+        material = matBuilder.makeDefaultPBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
         material.setTextureList( [
             this.m_meshMana.texList[0]
             , this.getImageTexByUrl("static/assets/brickwall_big.jpg")
@@ -262,7 +268,7 @@ export class DemoDefaultPBR2
         this.m_mirrorMapLodEnabled = true;
         if(this.m_mirrorMapLodEnabled) {
             this.m_fboIns.getRTTAt(0).enableMipmap();
-            material.setMirrorMapLodLevel(3.0);
+            material.setMirrorMapLodLevel(2.0);
         }
         material.pixelNormalNoiseEnabled = true;
         material.mirrorProjEnabled = true;

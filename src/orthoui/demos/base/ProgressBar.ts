@@ -47,7 +47,7 @@ export class ProgressBar {
 
     minValue: number = 0.0;
     maxValue: number = 1.0;
-    step: number = 1.0;
+    step: number = 0.1;
 
     constructor() { }
 

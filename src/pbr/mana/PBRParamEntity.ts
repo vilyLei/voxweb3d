@@ -45,11 +45,11 @@ export default class PBRParamEntity implements IPBRParamEntity{
             let material: DefaultPBRMaterial = this.material;
 
             let value: number = 0.1 + Math.random() * 0.5;
-            this.albedo.initialize(material, this.pbrUI.albedoBtn, this.colorPanel, value, 0.01, 2.0);
+            this.albedo.initialize(material, this.pbrUI.albedoBtn, this.colorPanel, value, 0.01, 10.0);
             value = 0.1 + Math.random() * 0.5;
-            this.f0.initialize(material, this.pbrUI.f0ColorBtn, this.colorPanel, value, 0.01, 1.0);
+            this.f0.initialize(material, this.pbrUI.f0ColorBtn, this.colorPanel, value, 0.01, 32.0);
             value = 0.01 + Math.random() * 0.2;
-            this.ambient.initialize(material, this.pbrUI.ambientBtn, this.colorPanel, value, 0.01, 1.0);
+            this.ambient.initialize(material, this.pbrUI.ambientBtn, this.colorPanel, value, 0.01, 5.0);
             value = 0.01 + Math.random() * 0.2;
             this.specular.initialize(material, this.pbrUI.specularBtn, this.colorPanel, value, 0.01, 1.0);
 

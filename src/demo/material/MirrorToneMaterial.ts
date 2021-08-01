@@ -32,10 +32,6 @@ class MirrorToneShaderBuffer extends ShaderCodeBuffer {
         coder.normalMapEanbled = true;
         coder.mapLodEnabled = this.mapLodEnabled;
         coder.reset();
-        //  if(RendererDeviece.IsWebGL1()) {
-        //      coder.addFragExtend("#extension GL_OES_standard_derivatives : enable");
-        //      //coder.addFragExtend("#extension GL_EXT_shader_texture_lod : enable");
-        //  }
         coder.addVertLayout("vec3", "a_vs");
         //if(this.isTexEanbled())
         //{
