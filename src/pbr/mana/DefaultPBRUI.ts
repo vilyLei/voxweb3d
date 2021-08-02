@@ -50,6 +50,11 @@ export class DefaultPBRUI implements IPBRUI {
     albedoBtn: ProgressBar;
     ambientBtn: ProgressBar;
     specularBtn: ProgressBar;
+
+    
+    absorbBtn: SelectionBar;
+    vtxNoiseBtn: SelectionBar;
+
     getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
@@ -192,8 +197,8 @@ export class DefaultPBRUI implements IPBRUI {
         this.scatterBtn = this.createValueBtn("scatter", "scatter", 1.0, 0.1, 128.0);
         this.toneBtn = this.createValueBtn("tone", "tone", 2.0, 0.1, 128.0);
 
-        this.createSelectBtn("absorb", "absorb", "ON", "OFF", false);
-        this.createSelectBtn("vtxNoise", "vtxNoise", "ON", "OFF", false);
+        this.absorbBtn = this.createSelectBtn("absorb", "absorb", "ON", "OFF", false);
+        this.vtxNoiseBtn = this.createSelectBtn("vtxNoise", "vtxNoise", "ON", "OFF", false);
 
         this.f0ColorBtn = this.createValueBtn("F0Color", "F0Color", 1.0, 0.01, 32.0);
         this.albedoBtn = this.createValueBtn("albedo", "albedo", 0.2, 0.01, 5.0);
@@ -259,13 +264,15 @@ export class DefaultPBRUI implements IPBRUI {
         switch (selectEvt.uuid) {
             case "absorb":
                 material = new DefaultPBRMaterial();
-                material.copyFrom(this.m_paramEntity.material);
+                material.copyFrom(this.m_paramEntity.getMaterial());
                 material.absorbEnabled = flag;
+                this.m_paramEntity.absorbEnabled = flag;
                 break;
             case "vtxNoise":
                 material = new DefaultPBRMaterial();
-                material.copyFrom(this.m_paramEntity.material);
+                material.copyFrom(this.m_paramEntity.getMaterial());
                 material.normalNoiseEnabled = flag;
+                this.m_paramEntity.vtxNoiseEnabled = flag;
                 break;
             case "menuCtrl":
                 this.menuCtrl(!flag);
@@ -277,11 +284,9 @@ export class DefaultPBRUI implements IPBRUI {
         if (material != null) {
             this.m_rscene.removeEntity(this.m_paramEntity.entity);
             material.initializeByCodeBuf(true);
-            this.m_paramEntity.material = material;
+            this.m_paramEntity.setMaterial( material );
             this.m_paramEntity.entity.setMaterial(material);
             this.m_rscene.addEntity(this.m_paramEntity.entity);
-            this.m_paramEntity.material = material;
-            this.m_paramEntity.updateColor();
         }
         if (this.rgbPanel != null) this.rgbPanel.close();
     }
@@ -292,34 +297,42 @@ export class DefaultPBRUI implements IPBRUI {
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
         let progress: number = progEvt.value;
         
+        let material: DefaultPBRMaterial = this.m_paramEntity.getMaterial();
+        let mirrorMaterial: DefaultPBRMaterial = this.m_paramEntity.getMirrorMaterial();
         this.m_currUUID = progEvt.uuid;
         let colorParamUnit: ColorParamUnit;
         switch (progEvt.uuid) {
             case "metal":
-                this.m_paramEntity.material.setMetallic(progress);
+                material.setMetallic(progress);
+                if(mirrorMaterial != null) mirrorMaterial.setMetallic(progress);
                 break;
             case "rough":
-                this.m_paramEntity.material.setRoughness(progress);
+                material.setRoughness(progress);
+                if(mirrorMaterial != null) mirrorMaterial.setRoughness(progress);
                 break;
             case "noise":
-                this.m_paramEntity.material.setPixelNormalNoiseIntensity(progress);
+                material.setPixelNormalNoiseIntensity(progress);
+                if(mirrorMaterial != null) mirrorMaterial.setPixelNormalNoiseIntensity(progress);
                 break;
             case "reflection":
-                this.m_paramEntity.material.setReflectionIntensity(progress);
+                material.setReflectionIntensity(progress);
+                if(mirrorMaterial != null) mirrorMaterial.setReflectionIntensity(progress);
                 break;
             case "side":
-                //this.m_paramEntity.sideScale = progEvt.value;
-                this.m_paramEntity.material.setSideIntensity(progEvt.value);
+                material.setSideIntensity(progEvt.value);
+                if(mirrorMaterial != null) mirrorMaterial.setSideIntensity(progEvt.value);
                 break;
             case "surface":
-                //this.m_paramEntity.surfaceScale = progEvt.value;
-                this.m_paramEntity.material.setSurfaceIntensity(progEvt.value);
+                material.setSurfaceIntensity(progEvt.value);
+                if(mirrorMaterial != null) mirrorMaterial.setSurfaceIntensity(progEvt.value);
                 break;
             case "scatter":
-                this.m_paramEntity.material.setScatterIntensity(progEvt.value);
+                material.setScatterIntensity(progEvt.value);
+                if(mirrorMaterial != null) mirrorMaterial.setScatterIntensity(progEvt.value);
                 break;
             case "tone":
-                this.m_paramEntity.material.setToneMapingExposure(progEvt.value);
+                material.setToneMapingExposure(progEvt.value);
+                if(mirrorMaterial != null) mirrorMaterial.setToneMapingExposure(progEvt.value);
                 break;
             case "F0Color":
                 colorParamUnit = this.m_paramEntity.f0;

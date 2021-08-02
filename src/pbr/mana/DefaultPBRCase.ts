@@ -35,7 +35,7 @@ class TextureLoader {
   }
   
   loadTextureWithUrl(url:string, rscene: RendererScene): void {
-      //let url: string = "static/bytes/s.bin";
+      //let url: string = "static/bytes/spe.mdf";
       let loader: BinaryLoader = new BinaryLoader();
       loader.uuid = url;
       loader.load(url, this);
@@ -218,7 +218,7 @@ export default class DefaultPBRCase {
     
     this.material = rm;
     ///*
-    let envMapUrl: string = "static/bytes/s.bin";
+    let envMapUrl: string = "static/bytes/spe.mdf";
     //let loader:TextureLoader = new TextureLoader();
     let loader:SpecularTextureLoader = new SpecularTextureLoader();
     loader.loadTextureWithUrl(envMapUrl, this.rscene);

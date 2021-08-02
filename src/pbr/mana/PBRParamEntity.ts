@@ -17,24 +17,25 @@ import IPBRParamEntity from "./IPBRParamEntity";
 export default class PBRParamEntity implements IPBRParamEntity{
 
     private m_initFlag: boolean = true;
+    private m_material: DefaultPBRMaterial = null;
+    private m_mirrorMaterial: DefaultPBRMaterial = null;
 
     entity: DisplayEntity;
     colorPanel: RGBColorPanel = null;
     pbrUI: IPBRUI = null;
-    material: DefaultPBRMaterial = null;
-
-    sideScale: number = 0.5;
-    surfaceScale: number = 0.5;
 
     albedo: AlbedoParamUnit = new AlbedoParamUnit();
     f0: F0ColorParamUnit = new F0ColorParamUnit();
     ambient: AmbientParamUnit = new AmbientParamUnit();
     specular: SpecularParamUnit = new SpecularParamUnit();
+    
+    absorbEnabled: boolean = false;
+    vtxNoiseEnabled: boolean = false;
 
     constructor() { }
 
     initialize(): void {
-        if(this.m_initFlag) {
+        if( this.m_initFlag ) {
             this.m_initFlag = false;
             this.initMouseEvt();
             this.updateColor();
@@ -42,9 +43,11 @@ export default class PBRParamEntity implements IPBRParamEntity{
     }
     updateColor(): void {
         if (this.colorPanel != null) {
-            let material: DefaultPBRMaterial = this.material;
 
-            let value: number = 0.1 + Math.random() * 0.5;
+            let material: DefaultPBRMaterial = this.m_material;
+
+            let value: number = 0.5 + Math.random() * 2.0;
+            //this.albedo.identity = 3.0;
             this.albedo.initialize(material, this.pbrUI.albedoBtn, this.colorPanel, value, 0.01, 10.0);
             value = 0.1 + Math.random() * 0.5;
             this.f0.initialize(material, this.pbrUI.f0ColorBtn, this.colorPanel, value, 0.01, 5.0);
@@ -81,29 +84,58 @@ export default class PBRParamEntity implements IPBRParamEntity{
         }
     }
     
+    setMaterial(material: DefaultPBRMaterial): void {
+        this.m_material = material;
+        this.albedo.material = material;
+        this.f0.material = material;
+        this.ambient.material = material;
+        this.specular.material = material;
+    }
+    getMaterial(): DefaultPBRMaterial {
+        return this.m_material;
+    }
+    setMirrorMaterial(material: DefaultPBRMaterial): void {
+        this.m_mirrorMaterial = material;
+        this.albedo.mirrorMaterial = material;
+        this.f0.mirrorMaterial = material;
+        this.ambient.mirrorMaterial = material;
+        this.specular.mirrorMaterial = material;
+    }
+    getMirrorMaterial(): DefaultPBRMaterial {
+        return this.m_mirrorMaterial;
+    }
     select(): void {
         if (this.colorPanel != null) {
+
+            let material: DefaultPBRMaterial = this.m_material;
 
             this.albedo.selectColor();
             this.f0.selectColor();
             this.ambient.selectColor();
             this.specular.selectColor();
 
-            this.pbrUI.metalBtn.setValue(this.material.getMetallic(), false);
-            this.pbrUI.roughBtn.setValue(this.material.getRoughness(), false);
-            this.pbrUI.noiseBtn.setValue(this.material.getPixelNormalNoiseIntensity(), false);
-            this.pbrUI.reflectionBtn.setValue( this.material.getReflectionIntensity(), false);
+            this.pbrUI.metalBtn.setValue( material.getMetallic(), false );
+            this.pbrUI.roughBtn.setValue( material.getRoughness(), false );
+            this.pbrUI.noiseBtn.setValue( material.getPixelNormalNoiseIntensity(), false );
+            this.pbrUI.reflectionBtn.setValue( material.getReflectionIntensity(), false );
 
-            this.pbrUI.sideBtn.setValue(this.material.getSideIntensity(), false);
-            this.pbrUI.surfaceBtn.setValue(this.material.getSideIntensity(), false);
-            this.pbrUI.scatterBtn.setValue(this.material.getScatterIntensity(), false);
-            this.pbrUI.toneBtn.setValue(this.material.getToneMapingExposure(), false);
+            this.pbrUI.sideBtn.setValue( material.getSideIntensity(), false );
+            this.pbrUI.surfaceBtn.setValue( material.getSideIntensity(), false );
+            this.pbrUI.scatterBtn.setValue( material.getScatterIntensity(), false );
+            this.pbrUI.toneBtn.setValue( material.getToneMapingExposure(), false );
 
-            
-            //  this.albedo.selectColor();
-            //  this.f0.selectColor();
-            //  this.ambient.selectColor();
-            //  this.specular.selectColor();
+            if( this.absorbEnabled ) {
+                this.pbrUI.absorbBtn.select(false);
+            }
+            else {
+                this.pbrUI.absorbBtn.deselect(false);
+            }
+            if( this.vtxNoiseEnabled ) {
+                this.pbrUI.vtxNoiseBtn.select(false);
+            }
+            else {
+                this.pbrUI.vtxNoiseBtn.deselect(false);
+            }
         }
     }
     deselect(): void {

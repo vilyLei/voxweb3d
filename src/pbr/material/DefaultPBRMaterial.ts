@@ -299,7 +299,7 @@ export default class DefaultPBRMaterial extends MaterialBase {
         buf.texturesTotal = this.getTextureTotal();
         return buf;
     }
-    copyFrom(dst: DefaultPBRMaterial): void {
+    copyFrom(dst: DefaultPBRMaterial, texEnabled:boolean = true): void {
 
         this.woolEnabled = dst.woolEnabled;
         this.toneMappingEnabled = dst.toneMappingEnabled;
@@ -320,16 +320,109 @@ export default class DefaultPBRMaterial extends MaterialBase {
 
         this.m_pointLightsTotal = dst.m_pointLightsTotal;
         this.m_parallelLightsTotal = dst.m_parallelLightsTotal;
-        if (dst.m_lightPositions != null) this.m_lightPositions = dst.m_lightPositions.slice();
-        if (dst.m_lightColors != null) this.m_lightColors = dst.m_lightColors.slice();
 
-        this.m_albedo = dst.m_albedo.slice();
-        this.m_params = dst.m_params.slice();
-        this.m_paramLocal = dst.m_paramLocal.slice();
-        this.m_camPos = dst.m_camPos.slice();
-        this.setTextureList(dst.getTextureList().slice());
+        if (dst.m_lightPositions == null || dst.m_lightPositions.length != this.m_lightPositions.length) {
+            this.m_lightPositions = dst.m_lightPositions.slice();
+        }
+        else {
+            this.m_lightPositions.set(dst.m_lightPositions);
+        }
+        if (dst.m_lightColors == null || dst.m_lightColors.length != this.m_lightColors.length) {
+            this.m_lightColors = dst.m_lightColors.slice();
+        }
+        else {
+            this.m_lightColors.set(dst.m_lightColors);
+        }
+
+        if(this.m_albedo == null || this.m_albedo.length != dst.m_albedo.length) {
+            this.m_albedo = dst.m_albedo.slice();
+        }
+        else {
+            this.m_albedo.set(dst.m_albedo);
+        }
+        
+        if(this.m_params == null || this.m_params.length != dst.m_params.length) {
+            this.m_params = dst.m_params.slice();
+        }
+        else {
+            this.m_params.set(dst.m_params);
+        }
+        if(this.m_paramLocal == null || this.m_paramLocal.length != dst.m_paramLocal.length) {
+            this.m_paramLocal = dst.m_paramLocal.slice();
+        }
+        else {
+            this.m_paramLocal.set(dst.m_paramLocal);
+        }
+        if(this.m_camPos == null || this.m_camPos.length != dst.m_camPos.length) {
+            this.m_camPos = dst.m_camPos.slice();
+        }
+        else {
+            this.m_camPos.set(dst.m_camPos);
+        }
+        if(this.m_mirrorParam == null || this.m_mirrorParam.length != dst.m_mirrorParam.length) {
+            this.m_mirrorParam = dst.m_mirrorParam.slice();
+        }
+        else {
+            this.m_mirrorParam.set(dst.m_mirrorParam);
+        }
+        if(texEnabled) {
+            this.setTextureList(dst.getTextureList().slice());
+        }
     }
     
+    clone(): DefaultPBRMaterial {
+        let dst: DefaultPBRMaterial = new DefaultPBRMaterial(this.m_pointLightsTotal,this.m_parallelLightsTotal);
+        dst.woolEnabled = this.woolEnabled;
+        dst.toneMappingEnabled = this.toneMappingEnabled;
+        dst.envMapEnabled = this.envMapEnabled;
+        dst.scatterEnabled = this.scatterEnabled;
+        dst.specularBleedEnabled = this.specularBleedEnabled;
+        dst.metallicCorrection = this.metallicCorrection;
+        dst.gammaCorrection = this.gammaCorrection;
+        dst.absorbEnabled = this.absorbEnabled;
+        dst.normalNoiseEnabled = this.normalNoiseEnabled;
+        dst.pixelNormalNoiseEnabled = this.pixelNormalNoiseEnabled;
+        dst.mirrorProjEnabled = this.mirrorProjEnabled;
+        dst.mirrorMapLodEnabled = this.mirrorMapLodEnabled;
+        dst.diffuseMapEnabled = this.diffuseMapEnabled;
+        dst.normalMapEnabled = this.normalMapEnabled;
+        dst.indirectEnvMapEnabled = this.indirectEnvMapEnabled;
+        dst.m_pointLightsTotal = this.m_pointLightsTotal;
+        dst.m_parallelLightsTotal = this.m_parallelLightsTotal;
+
+        dst.m_lightPositions.set(this.m_lightPositions);
+        dst.m_lightColors.set(this.m_lightColors);
+
+        this.m_albedo.set(dst.m_albedo);
+        
+        if(this.m_params == null || this.m_params.length != dst.m_params.length) {
+            this.m_params = dst.m_params.slice();
+        }
+        else {
+            this.m_params.set(dst.m_params);
+        }
+        if(this.m_paramLocal == null || this.m_paramLocal.length != dst.m_paramLocal.length) {
+            this.m_paramLocal = dst.m_paramLocal.slice();
+        }
+        else {
+            this.m_paramLocal.set(dst.m_paramLocal);
+        }
+        if(this.m_camPos == null || this.m_camPos.length != dst.m_camPos.length) {
+            this.m_camPos = dst.m_camPos.slice();
+        }
+        else {
+            this.m_camPos.set(dst.m_camPos);
+        }
+        if(this.m_mirrorParam == null || this.m_mirrorParam.length != dst.m_mirrorParam.length) {
+            this.m_mirrorParam = dst.m_mirrorParam.slice();
+        }
+        else {
+            this.m_mirrorParam.set(dst.m_mirrorParam);
+        }
+        
+        this.setTextureList(dst.getTextureList().slice());
+        return dst;
+    }
     seNormalMapIntensity(intensity: number): void {
         intensity = Math.min(Math.max(intensity, 0.0), 1.0);
         this.m_paramLocal[4] = intensity;

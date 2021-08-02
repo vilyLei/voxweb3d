@@ -282,6 +282,9 @@ export default class FBOInstance {
     getRTTAt(i: number): RTTTextureProxy {
         return this.m_texs[i];
     }
+    enableMipmapRTTAt(i: number): void {
+        this.m_texs[i].enableMipmap();
+    }
     generateMipmapTextureAt(i: number): void {
         this.m_texs[i].generateMipmap(this.m_renderProxy.Texture);
     }

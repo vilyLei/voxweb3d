@@ -35,7 +35,7 @@ import DebugFlag from "../vox/debug/DebugFlag";
 import DefaultPBRLight from "../pbr/mana/DefaultPBRLight";
 import DefaultPBRMaterial from "../pbr/material/DefaultPBRMaterial";
 import MaterialBuilder from "../pbr/mana/MaterialBuilder";
-import MirrorProjEntity from "./mana/MirrorProjEngity";
+import MirrorProjEntity from "./mana/MirrorProjEntity";
 import PBRParamEntity from "./mana/PBRParamEntity";
 import RendererState from "../vox/render/RendererState";
 import { GLStencilFunc, GLStencilOp } from "../vox/render/RenderConst";
@@ -195,6 +195,10 @@ export class DemoDefaultPBR2
             this.m_meshMana.offsetPos.setXYZ(0.0,100.0,0.0);
             this.m_meshMana.loadMeshFile("static/modules/changClo.md");
             //*/
+            
+            this.m_uiModule.initialize(this.m_rscene, this.m_texLoader);
+            this.m_ruisc = this.m_uiModule.ruisc;
+            this.m_uiModule.close();
             ///*
             if(this.m_meshMana != null) {
                 this.m_meshManas.push( this.m_meshMana );
@@ -208,23 +212,23 @@ export class DemoDefaultPBR2
                         this.m_rscene.addEntity(crossAxis, 1);
                     }
                 }
-                
+                /*
                 this.m_uiModule.initialize(this.m_rscene, this.m_texLoader);
                 this.m_ruisc = this.m_uiModule.ruisc;
                 this.m_uiModule.close();
-                ///*
+                //*/
+
                 if(this.m_meshMana.entity != null)
                 {
                     let param: PBRParamEntity = new PBRParamEntity();
                     param.entity = this.m_meshMana.entity;
-                    param.material = this.m_meshMana.material;
+                    param.setMaterial( this.m_meshMana.material );
                     param.pbrUI = this.m_uiModule;
                     param.colorPanel = this.m_uiModule.rgbPanel;
-                    this.m_uiModule.setParamEntity( param );
+                    //  this.m_uiModule.setParamEntity( param );
                     param.initialize();
                     this.m_paramEntities.push(param);
                 }
-                //*/
             }
 
             this.initPlaneReflection();
@@ -299,13 +303,7 @@ export class DemoDefaultPBR2
         this.m_rscene.addEntity(plane, 1);
 
         let cubeRTTMipMapEnabled: boolean = this.m_cubeRTTBuilder.mipmapEnabled;
-        //  let cubeRTTMipMapEnabled: boolean = true;
-        //  let rttPos: Vector3D = new Vector3D(0.0, 0.0, 0.0);
-        //  this.m_cubeRTTBuilder.mipmapEnabled = cubeRTTMipMapEnabled;
-        //  this.m_cubeRTTBuilder.initialize(this.m_rscene, 256.0, 256.0, rttPos);
-        //  //this.m_cubeRTTBuilder.setClearRGBAColor4f(0.0,0.0,0.0,1.0);
-        //  this.m_cubeRTTBuilder.setRProcessIDList( [1] );
-
+        
         
         let cubeMaterial: CubeMapMaterial = new CubeMapMaterial( cubeRTTMipMapEnabled );
         cubeMaterial.setTextureLodLevel(3.5);
@@ -327,7 +325,7 @@ export class DemoDefaultPBR2
 
         param = new PBRParamEntity();
         param.entity = plane;
-        param.material = material;
+        param.setMaterial( material );
         param.pbrUI = this.m_uiModule;
         param.colorPanel = this.m_uiModule.rgbPanel;
         param.initialize();
@@ -351,7 +349,7 @@ export class DemoDefaultPBR2
 
             rad = Math.random() * 100.0;
             radius = Math.random() * 250.0 + 550.0;
-            material = this.m_meshMana.makeTexMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
+            material = matBuilder.makeDefaultPBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
             material.setTextureList( [
                 this.m_meshMana.texList[0]
                 //  ,this.getImageTexByUrl("static/assets/disp/box_COLOR.png")
@@ -382,7 +380,7 @@ export class DemoDefaultPBR2
             this.m_mirrorEntities.push( mEntity );
             param = new PBRParamEntity();
             param.entity = sph;
-            param.material = material;
+            param.setMaterial( material );
             param.pbrUI = this.m_uiModule;
             param.colorPanel = this.m_uiModule.rgbPanel;
             param.initialize();

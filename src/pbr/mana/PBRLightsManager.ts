@@ -33,7 +33,7 @@ class TextureLoader {
   }
   
   loadTextureWithUrl(url:string, rscene: RendererScene): void {
-      //let url: string = "static/bytes/s.bin";
+      //let url: string = "static/bytes/spe.mdf";
       let loader: BinaryLoader = new BinaryLoader();
       loader.uuid = url;
       loader.load(url, this);
@@ -256,7 +256,7 @@ export default class PBRLightsManager {
 
     let rm: ColorLightsPBRMaterial = this.makeTexMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
     ///*
-    let envMapUrl: string = "static/bytes/s.bin";
+    let envMapUrl: string = "static/bytes/spe.mdf";
     //let loader:TextureLoader = new TextureLoader();
     let loader:SpecularTextureLoader = new SpecularTextureLoader();
     loader.loadTextureWithUrl(envMapUrl, this.rscene);

@@ -17,6 +17,7 @@ import IPBRUI from "./IPBRUI";
 export class ColorParamUnit {
     name: string;
     material: DefaultPBRMaterial;
+    mirrorMaterial: DefaultPBRMaterial;
     color: Color4 = new Color4(0.0, 0.0, 0.0);
     identity: number = 1.0;
     colorId: number = 0;
@@ -87,6 +88,7 @@ export class AlbedoParamUnit extends ColorParamUnit{
         let identity = this.identity;
         //console.log(this.name + " setMaterialColor: ", color, id, identity);
         this.material.setAlbedoColor(color.r * identity, color.g * identity, color.b * identity);
+        if(this.mirrorMaterial != null)this.mirrorMaterial.setAlbedoColor(color.r * identity, color.g * identity, color.b * identity);
     }
 }
 
@@ -101,6 +103,7 @@ export class F0ColorParamUnit extends ColorParamUnit{
         let identity = this.identity;
         //console.log(this.name + " setMaterialColor: ", color, id, identity);
         this.material.setF0(color.r * identity, color.g * identity, color.b * identity);
+        if(this.mirrorMaterial != null)this.mirrorMaterial.setF0(color.r * identity, color.g * identity, color.b * identity);
     }
 }
 export class AmbientParamUnit extends ColorParamUnit{
@@ -114,6 +117,7 @@ export class AmbientParamUnit extends ColorParamUnit{
         let identity = this.identity;
         //console.log(this.name + " setMaterialColor: ", color, id, identity);
         this.material.setAmbientFactor(color.r * identity, color.g * identity, color.b * identity);
+        if(this.mirrorMaterial != null)this.mirrorMaterial.setAmbientFactor(color.r * identity, color.g * identity, color.b * identity);
     }
 }
 export class SpecularParamUnit extends ColorParamUnit{
@@ -127,5 +131,6 @@ export class SpecularParamUnit extends ColorParamUnit{
         let identity = this.identity;
         //console.log(this.name + " setMaterialColor: ", color, id, identity);
         this.material.setEnvSpecularColorFactor(color.r * identity, color.g * identity, color.b * identity);
+        if(this.mirrorMaterial != null)this.mirrorMaterial.setEnvSpecularColorFactor(color.r * identity, color.g * identity, color.b * identity);
     }
 }

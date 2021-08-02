@@ -35,7 +35,7 @@ import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import DebugFlag from "../vox/debug/DebugFlag";
 import DefaultPBRLight from "../pbr/mana/DefaultPBRLight";
 import DefaultPBRMaterial from "../pbr/material/DefaultPBRMaterial";
-import MirrorProjEntity from "./mana/MirrorProjEngity";
+import MirrorProjEntity from "./mana/MirrorProjEntity";
 import PBRParamEntity from "./mana/PBRParamEntity";
 import RendererState from "../vox/render/RendererState";
 import { GLStencilFunc, GLStencilOp } from "../vox/render/RenderConst";
@@ -199,7 +199,7 @@ export class DemoDefaultPBR
                 {
                     let param: PBRParamEntity = new PBRParamEntity();
                     param.entity = this.m_meshMana.entity;
-                    param.material = this.m_meshMana.material;
+                    param.setMaterial( this.m_meshMana.material );
                     param.pbrUI = this.m_uiModule;
                     param.colorPanel = this.m_uiModule.rgbPanel;
                     this.m_uiModule.setParamEntity( param );
@@ -274,7 +274,7 @@ export class DemoDefaultPBR
 
         param = new PBRParamEntity();
         param.entity = plane;
-        param.material = material;
+        param.setMaterial( material );
         param.pbrUI = this.m_uiModule;
         param.colorPanel = this.m_uiModule.rgbPanel;
         param.initialize();
@@ -312,7 +312,7 @@ export class DemoDefaultPBR
             this.m_mirrorEntities.push( mEntity );
             param = new PBRParamEntity();
             param.entity = sph;
-            param.material = material;
+            param.setMaterial( material );
             param.pbrUI = this.m_uiModule;
             param.colorPanel = this.m_uiModule.rgbPanel;
             param.initialize();

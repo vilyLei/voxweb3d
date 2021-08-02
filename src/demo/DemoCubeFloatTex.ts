@@ -141,7 +141,7 @@ export class DemoCubeFloatTex implements ILoaderListerner {
         if(uuid == "static/bytes/d.bin") {
             this.parseDCubeMap(buffer);
         }
-        else if(uuid == "static/bytes/s.bin") {
+        else if(uuid == "static/bytes/spe.mdf") {
             this.parseSCubeMap(buffer);
         }
     }

@@ -290,7 +290,7 @@ export namespace demo {
 
                 //let purl:string = "static/bytes/Ints.bin";
                 //let purl:string = "static/bytes/d.bin";
-                let purl: string = "static/bytes/s.bin";
+                let purl: string = "static/bytes/spe.mdf";
                 this.m_dataLoader.loadArraybuffer(purl);
                 this.m_loaders.push(this.m_dataLoader);
                 //*/

@@ -340,7 +340,9 @@
 
 //  import {DemoDefaultPBR as Demo} from "./pbr/DemoDefaultPBR";
 
-import {DemoDefaultPBR2 as Demo} from "./pbr/DemoDefaultPBR2";
+//  import {DemoDefaultPBR2 as Demo} from "./pbr/DemoDefaultPBR2";
+
+import {DemoDefaultPBR3 as Demo} from "./pbr/DemoDefaultPBR3";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////

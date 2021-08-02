@@ -11,11 +11,10 @@ import RendererState from "../../../vox/render/RendererState";
 import RTTTextureProxy from "../../../vox/texture/RTTTextureProxy";
 
 export class ShadowVSMModule {
-    constructor() { }
 
     private m_rscene: RendererScene = null;
     private m_vsmData: ShadowVSMData = null;
-    
+
     private m_direcCamera: CameraBase = null;
     private m_fboDepth: FBOInstance = null;
     private m_fboOccBlur: FBOInstance = null;
@@ -32,7 +31,10 @@ export class ShadowVSMModule {
     private m_viewHeight: number = 1300;
     private m_depthRtt: RTTTextureProxy = null;
     private m_occBlurRtt: RTTTextureProxy = null;
-
+    private m_fboIndex: number = 0;
+    constructor(fboIndex: number) {
+        this.m_fboIndex = fboIndex;
+    }
 
     initialize(rscene: RendererScene, processIDList: number[]): void {
         if (this.m_rscene == null) {
@@ -57,13 +59,13 @@ export class ShadowVSMModule {
     }
     setShadowIntensity(intensity: number): void {
         this.m_shadowIntensity = intensity;
-        if(this.m_vsmData != null) {
+        if (this.m_vsmData != null) {
             this.m_vsmData.setShadowIntensity(this.m_shadowIntensity);
         }
     }
     setColorIntensity(intensity: number): void {
         this.m_colorIntensity = intensity;
-        if(this.m_vsmData != null) {
+        if (this.m_vsmData != null) {
             this.m_vsmData.setColorIntensity(this.m_colorIntensity);
         }
     }
@@ -86,7 +88,7 @@ export class ShadowVSMModule {
         this.m_fboDepth = this.m_rscene.createFBOInstance();
         this.m_fboDepth.asynFBOSizeWithViewport();
         this.m_fboDepth.setClearRGBAColor4f(1.0, 1.0, 1.0, 1.0);
-        this.m_fboDepth.createFBOAt(0, this.m_shadowMapW, this.m_shadowMapH, true, false);
+        this.m_fboDepth.createFBOAt(this.m_fboIndex, this.m_shadowMapW, this.m_shadowMapH, true, false);
         this.m_depthRtt = this.m_fboDepth.setRenderToRGBATexture(null, 0);
         this.m_fboDepth.setRProcessIDList(processIDList);
         this.m_fboDepth.setGlobalRenderState(RendererState.NORMAL_STATE);
@@ -95,7 +97,7 @@ export class ShadowVSMModule {
         this.m_fboOccBlur = this.m_rscene.createFBOInstance();
         this.m_fboOccBlur.asynFBOSizeWithViewport();
         this.m_fboOccBlur.setClearRGBAColor4f(1.0, 1.0, 1.0, 1.0);
-        this.m_fboOccBlur.createFBOAt(0, this.m_shadowMapW, this.m_shadowMapH, true, false);
+        this.m_fboOccBlur.createFBOAt(this.m_fboIndex, this.m_shadowMapW, this.m_shadowMapH, true, false);
         this.m_occBlurRtt = this.m_fboOccBlur.setRenderToRGBATexture(null, 0);
 
 
@@ -133,7 +135,7 @@ export class ShadowVSMModule {
     }
     private m_shadowCamVersion: number = -1;
     private m_buildShadowDelay: number = 120;
-    
+
     upateData(): void {
         this.m_shadowCamVersion = this.m_direcCamera.version;
         this.m_vsmData.upadate();

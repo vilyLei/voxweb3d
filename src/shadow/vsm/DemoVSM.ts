@@ -118,10 +118,11 @@ export class DemoVSM {
         this.m_vsmData = new ShadowVSMData();
         this.m_vsmData.initialize();
 
+        let fboIndex: number = 0;
         this.m_fboDepth = this.m_rscene.createFBOInstance();
         this.m_fboDepth.asynFBOSizeWithViewport();
         this.m_fboDepth.setClearRGBAColor4f(1.0, 1.0, 1.0, 1.0);
-        this.m_fboDepth.createFBOAt(0, this.m_shadowMapW, this.m_shadowMapH, true, false);
+        this.m_fboDepth.createFBOAt(fboIndex, this.m_shadowMapW, this.m_shadowMapH, true, false);
         this.m_depthRtt = this.m_fboDepth.setRenderToRGBATexture(null, 0);
         this.m_fboDepth.setRProcessIDList([0]);
         this.m_fboDepth.setGlobalRenderState(RendererState.NORMAL_STATE);
@@ -130,7 +131,7 @@ export class DemoVSM {
         this.m_fboOccBlur = this.m_rscene.createFBOInstance();
         this.m_fboOccBlur.asynFBOSizeWithViewport();
         this.m_fboOccBlur.setClearRGBAColor4f(1.0, 1.0, 1.0, 1.0);
-        this.m_fboOccBlur.createFBOAt(0, this.m_shadowMapW, this.m_shadowMapH, true, false);
+        this.m_fboOccBlur.createFBOAt(fboIndex, this.m_shadowMapW, this.m_shadowMapH, true, false);
         this.m_occBlurRtt = this.m_fboOccBlur.setRenderToRGBATexture(null, 0);
 
 
@@ -283,7 +284,7 @@ export class DemoVSM {
     private buildShadow(): void {
 
         this.m_fboDepth.useCamera(this.m_direcCamera);
-        this.m_fboDepth.run(true, true);        
+        this.m_fboDepth.run(true, true);
         this.m_fboDepth.useMainCamera();
         // drawing vertical
         this.m_fboOccBlur.setRenderToRGBATexture(this.m_occBlurRtt, 0);

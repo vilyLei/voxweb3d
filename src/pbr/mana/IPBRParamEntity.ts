@@ -16,15 +16,18 @@ export default interface IPBRParamEntity {
     entity: DisplayEntity;
     colorPanel: RGBColorPanel;
     pbrUI: IPBRUI;
-    material: DefaultPBRMaterial;
-
-    sideScale: number;
-    surfaceScale: number;
+    absorbEnabled: boolean;
+    vtxNoiseEnabled: boolean;
 
     albedo: ColorParamUnit;
     f0: F0ColorParamUnit;
     ambient: AmbientParamUnit;
     specular: SpecularParamUnit;
+
+    setMaterial(material: DefaultPBRMaterial): void;
+    getMaterial(): DefaultPBRMaterial;    
+    setMirrorMaterial(material: DefaultPBRMaterial): void;
+    getMirrorMaterial(): DefaultPBRMaterial;
 
     select(): void;
     deselect(): void;

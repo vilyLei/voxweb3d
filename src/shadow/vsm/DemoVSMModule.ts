@@ -36,7 +36,7 @@ export class DemoVSMModule {
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
-    private m_vsmModule: ShadowVSMModule = new ShadowVSMModule();
+    private m_vsmModule: ShadowVSMModule;
 
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -77,9 +77,9 @@ export class DemoVSMModule {
             this.m_rscene.addEntity(axis, 1);
 
             this.m_rscene.setClearRGBColor3f(0.1, 0.2, 0.1);
-            
-            this.m_vsmModule.setMapSize(128.0,128.0);
-            this.m_vsmModule.setCameraViewSize(1300,1300);
+            this.m_vsmModule = new ShadowVSMModule(0);
+            this.m_vsmModule.setMapSize(128.0, 128.0);
+            this.m_vsmModule.setCameraViewSize(1300, 1300);
             this.m_vsmModule.setShadowRadius(2);
             this.m_vsmModule.setShadowBias(-0.0005);
             this.m_vsmModule.initialize(this.m_rscene, [0]);
