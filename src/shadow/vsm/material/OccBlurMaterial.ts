@@ -180,10 +180,6 @@ export default class OccBlurMaterial extends MaterialBase
     {
         this.m_param[3] = radius;
     }
-    createSharedUniform():ShaderGlobalUniform
-    {
-        return null;
-    }
     createSelfUniformData():ShaderUniformData
     {
         let oum:ShaderUniformData = new ShaderUniformData();

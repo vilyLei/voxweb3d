@@ -15,6 +15,8 @@ class ShaderUniform implements IShaderUniform
     constructor()
     {
     }
+    uns: string = "";
+    program: any = null;
     types:number[] = null;
     uniformSize:number = 0;
     uniformNameList:string[] = null;
@@ -209,6 +211,7 @@ class ShaderUniformV2 extends ShaderUniform
         this.locations = null;
         this.dataSizeList = null;
         this.calcModels = null;
+        this.program = null;
     }
 }
 /**

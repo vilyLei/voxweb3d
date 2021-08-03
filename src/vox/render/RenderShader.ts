@@ -31,6 +31,7 @@ export default class RenderShader implements IRenderShader,IRenderResource
     private m_fragOutputTotal:number = 1;
     private m_rcuid:number = -1;
     private m_rc:any = null;
+    private m_gpuProgram: any = null;
     private m_adapter:RenderAdapter = null;
     // material相关的uniform,默认不包括transform相关的信息
     private m_uniform:IShaderUniform = null;
@@ -54,6 +55,12 @@ export default class RenderShader implements IRenderShader,IRenderResource
     getRC():any
     {
         return this.m_rc;
+    }
+    /**
+     * @returns return current gpu shader  program
+     */
+    getGPUProgram(): any {
+        return this.m_gpuProgram;
     }
     /**
      * @returns return renderer context unique id
@@ -173,9 +180,10 @@ export default class RenderShader implements IRenderShader,IRenderResource
                         console.error("Error: MRT output amount is not equal to current shader( "+shd.toString()+" ) frag shader output amount !!!");
                     //}
                 }
-                
-                this.m_rc.useProgram( shd.getProgram() );
+                this.m_gpuProgram = shd.getGPUProgram();
+                this.m_rc.useProgram( this.m_gpuProgram );
                 shd.useTexLocation();
+                // console.log("use a new shader uid: ",shd.getUid(),",uns: ",shd.getUniqueShaderName());
                 // use global shared uniform
                 var uniform:IShaderUniform = this.m_sharedUniformList[shd.getUid()];
                 while(uniform != null)

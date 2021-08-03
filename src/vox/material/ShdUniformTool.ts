@@ -107,8 +107,9 @@ export default class ShdUniformTool
             ShdUniformTool.s_uniformDict.delete(builderNS);
         }
     }
-    static BuildShared(guniform:ShaderUniform, rc:RenderProxy,shdp:ShdProgram):ShaderUniform
+    static BuildShared(guniforms:ShaderUniform[], rc:RenderProxy,shdp:ShdProgram):ShaderUniform
     {
+        let guniform:ShaderUniform;
         let headU:ShaderUniform = null;
         let prevU:ShaderUniform = null;
         let builders:IUniformBuilder[] = ShdUniformTool.s_builders;
@@ -131,13 +132,18 @@ export default class ShdUniformTool
                 prevU = puo;
             }
         }
-        if(guniform == null)
+
+        if(guniforms == null)
         {
             guniform = headU;
         }
         else if(headU != null)
         {
-            prevU.next = guniform;
+            for(let i: number = 0; i < guniforms.length; ++i) {
+                prevU.next = guniforms[i];
+                prevU = prevU.next;
+            }
+            //prevU.next = guniform;
             guniform = headU;
         }
         

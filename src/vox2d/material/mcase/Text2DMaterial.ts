@@ -253,10 +253,6 @@ export default class Text2DMaterial extends MaterialBase
     {
         return this.m_brightness;
     }
-    createSharedUniform():ShaderGlobalUniform
-    {
-        return null;
-    }
     createSelfUniformData():ShaderUniformData
     {
         let oum:ShaderUniformData = new ShaderUniformData();

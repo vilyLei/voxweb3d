@@ -25,6 +25,19 @@ export default class ShaderGlobalUniform extends ShaderUniform
         super();
         this.always = false;
     }
+    clone(): ShaderGlobalUniform {
+
+        let guniform: ShaderGlobalUniform = new ShaderGlobalUniform();        
+        guniform.types = this.types.slice(0);
+        guniform.uniformNameList = this.uniformNameList.slice(0);
+        guniform.dataSizeList = this.dataSizeList.slice(0);
+        guniform.slotIndex = this.slotIndex;
+        guniform.uniformsTotal = this.uniformsTotal;
+        guniform.slotId = this.slotId;
+        guniform.always = this.always;
+        guniform.rst = this.rst;
+        return guniform;
+    }
     // for multi uniforms data src, for example: camera, lightGroup
     copyDataFromProbe(probe:ShaderUniformProbe):void
     {
@@ -52,6 +65,15 @@ export default class ShaderGlobalUniform extends ShaderUniform
         let slot:UniformDataSlot = UniformDataSlot.GetSlotAt(rc.getRCUid());
         if(this.always || this.rst != slot.flagList[this.slotIndex])
         {
+            //  if(rc.getGPUProgram() == null) {
+            //      console.warn("current gpu shader program is null");
+            //  }
+            //  if(this.program != null) {
+            //      console.log("have gpu shader program in this global uniform, program: ",this.program,this.locations);
+            //  }
+            //  if(this.program != null && rc.getGPUProgram() != this.program) {
+            //      console.warn("current gpu shader program can't match this global uniform.");
+            //  }
             this.rst = slot.flagList[this.slotIndex];
             let i:number = 0;
             if(RendererDeviece.IsWebGL1())
@@ -63,6 +85,7 @@ export default class ShaderGlobalUniform extends ShaderUniform
             }
             else
             {
+                //console.log("this.uniformsTotal: ",this.uniformsTotal,this.dataSizeList[0]);
                 for(; i < this.uniformsTotal; ++i)
                 {                    
                     rc.useUniformV2(this.locations[i],this.types[i],slot.dataList[this.slotIndex + i],this.dataSizeList[i],0);

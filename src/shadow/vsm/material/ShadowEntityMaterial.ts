@@ -8,10 +8,9 @@
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
+import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import MaterialBase from "../../../vox/material/MaterialBase";
-import ShaderCodeBuilder from "../../../vox/material/code/ShaderCodeBuilder";
 import Vector3D from "../../../vox/math/Vector3D";
-import RendererDeviece from "../../../vox/render/RendererDeviece";
 import Matrix4 from "../../../vox/math/Matrix4";
 
 class ShadowEntityShaderBuffer extends ShaderCodeBuffer {
@@ -36,20 +35,18 @@ class ShadowEntityShaderBuffer extends ShaderCodeBuffer {
         //      //coder.addFragExtend("#extension GL_EXT_shader_texture_lod : enable");
         //  }
         coder.addVertLayout("vec3", "a_vs");
-        //if(this.isTexEanbled())
-        //{
+        
         coder.addVertLayout("vec2", "a_uvs");
         coder.addVertLayout("vec3", "a_nvs");
         coder.addTextureSample2D();
         coder.addTextureSample2D();
-        //}
+
         coder.addVarying("vec2", "v_uv");
         coder.addVarying("vec3", "v_nv");
         coder.addVarying("vec4", "v_pos");
         coder.addFragOutput("vec4", "FragColor0");
         coder.addFragUniform("vec4", "u_color");
         coder.addFragUniform("vec4", "u_param[3]");
-        //  coder.addFragUniform("mat4","u_shadowMat");
         coder.addVertUniform("mat4", "u_shadowMat");
 
         coder.useVertSpaceMats(true, true, true);
@@ -213,6 +210,10 @@ export default class ShadowEntityMaterial extends MaterialBase {
         this.m_shadowParam[8] = -v3.x;
         this.m_shadowParam[9] = -v3.y;
         this.m_shadowParam[10] = -v3.z;
+    }
+    createSharedUniforms():ShaderGlobalUniform[]
+    {
+        return null;
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();

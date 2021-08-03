@@ -7,8 +7,10 @@
 /***************************************************************************/
 
 import RendererDeviece from "../../../vox/render/RendererDeviece";
+import IUniformParam from "../../../vox/material/IUniformParam";
+import IShaderCodeBuilder from "./IShaderCodeBuilder";
 
-export default class ShaderCodeBuilder2 {
+export default class ShaderCodeBuilder2 implements IShaderCodeBuilder {
 
     private m_versionDeclare: string =
 `#version 300 es
@@ -133,6 +135,9 @@ precision mediump float;
         }
         this.m_vertUniformTypes.push(type);
     }
+    addVertUniformParam(unifromParam: IUniformParam): void {        
+        this.addVertUniform(unifromParam.type,unifromParam.name, unifromParam.arrayLength);
+    }
     addFragUniform(type: string, name: string, arrayLength: number = 0): void {
         if(arrayLength > 0) {
             this.m_fragUniformNames.push(name + "["+arrayLength+"]");
@@ -142,6 +147,10 @@ precision mediump float;
         }
         this.m_fragUniformTypes.push(type);
     }
+    addFragUniformParam(unifromParam: IUniformParam): void {        
+        this.addFragUniform(unifromParam.type,unifromParam.name, unifromParam.arrayLength);
+    }
+    //IUniformParam
     addFragFunction(codeBlock: string): void {
         this.m_fragFunctionBlocks.push(codeBlock);
     }

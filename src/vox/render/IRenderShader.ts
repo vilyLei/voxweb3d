@@ -8,18 +8,21 @@
 /**
  * renderer rendering runtime uniform data operations
  */
-export default interface IRenderShader
-{
+export default interface IRenderShader {
     /**
      * @returns return system gpu context
      */
-    getRC():any;
+    getRC(): any;
+    /**
+     * @returns return current gpu shader  program
+     */
+     getGPUProgram(): any;
     /**
      * @returns return renderer context unique id
      */
-    getRCUid():number;
-    getActiveAttachmentTotal():number;
-    useUniformMat4(ult:any,mat4f32Arr:Float32Array):void;
-    useUniformV1(ult:any,type:number, f32Arr:Float32Array,dataSize:number):void;
-    useUniformV2(ult:any,type:number, f32Arr:Float32Array,dataSize:number,offset:number):void;
+    getRCUid(): number;
+    getActiveAttachmentTotal(): number;
+    useUniformMat4(ult: any, mat4f32Arr: Float32Array): void;
+    useUniformV1(ult: any, type: number, f32Arr: Float32Array, dataSize: number): void;
+    useUniformV2(ult: any, type: number, f32Arr: Float32Array, dataSize: number, offset: number): void;
 }

@@ -11,13 +11,13 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MouseEvent from "../../vox/event/MouseEvent";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
 import Color4 from "../../vox/material/Color4";
-import DefaultPBRMaterial from "../material/DefaultPBRMaterial";
+import IPBRMaterial from "../material/IPBRMaterial";
 import IPBRUI from "./IPBRUI";
 
 export class ColorParamUnit {
     name: string;
-    material: DefaultPBRMaterial;
-    mirrorMaterial: DefaultPBRMaterial;
+    material: IPBRMaterial;
+    mirrorMaterial: IPBRMaterial;
     color: Color4 = new Color4(0.0, 0.0, 0.0);
     identity: number = 1.0;
     colorId: number = 0;
@@ -26,7 +26,7 @@ export class ColorParamUnit {
     btn: ProgressBar = null;
     constructor() {
     }
-    initialize(material: DefaultPBRMaterial, pBtn: ProgressBar, colorPanel: RGBColorPanel, identity: number, minValue: number, maxValue: number): void {
+    initialize(material: IPBRMaterial, pBtn: ProgressBar, colorPanel: RGBColorPanel, identity: number, minValue: number, maxValue: number): void {
 
         this.material = material;
         this.btn = pBtn;

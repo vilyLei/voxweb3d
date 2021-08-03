@@ -25,6 +25,7 @@ import ShadowVSMModule from "./base/ShadowVSMModule";
 import DebugFlag from "../../vox/debug/DebugFlag";
 import Cylinder3DEntity from "../../vox/entity/Cylinder3DEntity";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
+import EnvLightData from "../../light/base/EnvLightData";
 
 export class DemoVSMModule {
     constructor() { }
@@ -37,6 +38,7 @@ export class DemoVSMModule {
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     private m_vsmModule: ShadowVSMModule;
+    private m_envData: EnvLightData;
 
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -47,11 +49,12 @@ export class DemoVSMModule {
     initialize(): void {
         console.log("DemoVSMModule::initialize()......");
         if (this.m_rscene == null) {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
+            RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
             //rparam.setAttriAlpha(false);
             rparam.setAttriStencil(true);
+            rparam.setAttriAntialias(true);
             //rparam.setAttripreserveDrawingBuffer(true);
             rparam.setCamPosition(800.0, 800.0, 800.0);
             this.m_rscene = new RendererScene();
@@ -77,6 +80,10 @@ export class DemoVSMModule {
             this.m_rscene.addEntity(axis, 1);
 
             this.m_rscene.setClearRGBColor3f(0.1, 0.2, 0.1);
+            this.m_envData = new EnvLightData();
+            this.m_envData.initialize();
+            this.m_envData.setFogColorRGB3f(0.0,0.8,0.1);
+
             this.m_vsmModule = new ShadowVSMModule(0);
             this.m_vsmModule.setMapSize(128.0, 128.0);
             this.m_vsmModule.setCameraViewSize(1300, 1300);
@@ -98,6 +105,7 @@ export class DemoVSMModule {
         this.m_rscene.addEntity(frustrum, 1);
 
         let vsmData = this.m_vsmModule.getVSMData();
+        let envData = this.m_envData;
         //let shadowTex: TextureProxy = this.m_depthRtt;
         let shadowTex: TextureProxy = this.m_vsmModule.getShadowMap();
         let shadowMaterial: ShadowVSMMaterial;
@@ -108,6 +116,7 @@ export class DemoVSMModule {
         shadowMaterial = new ShadowVSMMaterial();
         //shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
         shadowMaterial.setVSMData(vsmData);
+        shadowMaterial.setEnvData(envData);
         plane.setMaterial(shadowMaterial);
         plane.initializeXOZ(-600.0, -600.0, 1200.0, 1200.0, [shadowTex, this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
         plane.setXYZ(0.0, -1.0, 0.0);
@@ -117,6 +126,7 @@ export class DemoVSMModule {
         shadowMaterial = new ShadowVSMMaterial();
         //shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
         shadowMaterial.setVSMData(vsmData);
+        shadowMaterial.setEnvData(envData);
         box.setMaterial(shadowMaterial);
         box.initializeCube(200.0, [shadowTex, this.getImageTexByUrl("static/assets/metal_02.jpg")]);
         this.m_rscene.addEntity(box);
@@ -129,6 +139,7 @@ export class DemoVSMModule {
         shadowMaterial = new ShadowVSMMaterial();
         //shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
         shadowMaterial.setVSMData(vsmData);
+        shadowMaterial.setEnvData(envData);
         cyl.setMaterial(shadowMaterial);
         cyl.initialize(80.0, 200.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/noise.jpg")]);
         this.m_rscene.addEntity(cyl);
@@ -139,6 +150,7 @@ export class DemoVSMModule {
         shadowMaterial = new ShadowVSMMaterial();
         //shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
         shadowMaterial.setVSMData(vsmData);
+        shadowMaterial.setEnvData(envData);
         sph.setMaterial(shadowMaterial);
         sph.initialize(80.0, 20.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/metal_02.jpg")]);
         this.m_rscene.addEntity(sph);
@@ -148,6 +160,7 @@ export class DemoVSMModule {
         shadowMaterial = new ShadowVSMMaterial();
         //shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
         shadowMaterial.setVSMData(vsmData);
+        shadowMaterial.setEnvData(envData);
         sph.setMaterial(shadowMaterial);
         sph.initialize(80.0, 20.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/metal_08.jpg")]);
         sph.setScaleXYZ(1.2, 1.2, 1.2);

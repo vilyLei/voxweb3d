@@ -15,7 +15,7 @@ interface IRenderMaterial
     __$troMid:number;
     __$uniform:IShaderUniform;
     initializeByCodeBuf(textureEnabled:boolean):void;
-    createSharedUniform():IShaderUniform;
+    createSharedUniforms():IShaderUniform[];
     createSelfUniformData():ShaderUniformData;
     hasShaderData():boolean;
     getShaderData():IShaderData;

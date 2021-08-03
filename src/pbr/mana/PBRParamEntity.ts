@@ -9,7 +9,7 @@ import RGBColorPanel from "../../orthoui/panel/RGBColorPanel";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MouseEvent from "../../vox/event/MouseEvent";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
-import DefaultPBRMaterial from "../material/DefaultPBRMaterial";
+import IPBRMaterial from "../material/IPBRMaterial";
 import IPBRUI from "./IPBRUI";
 import {ColorParamUnit,AlbedoParamUnit,F0ColorParamUnit,AmbientParamUnit,SpecularParamUnit} from "./PBRParamUnit";
 import IPBRParamEntity from "./IPBRParamEntity";
@@ -17,8 +17,8 @@ import IPBRParamEntity from "./IPBRParamEntity";
 export default class PBRParamEntity implements IPBRParamEntity{
 
     private m_initFlag: boolean = true;
-    private m_material: DefaultPBRMaterial = null;
-    private m_mirrorMaterial: DefaultPBRMaterial = null;
+    private m_material: IPBRMaterial = null;
+    private m_mirrorMaterial: IPBRMaterial = null;
 
     entity: DisplayEntity;
     colorPanel: RGBColorPanel = null;
@@ -44,11 +44,10 @@ export default class PBRParamEntity implements IPBRParamEntity{
     updateColor(): void {
         if (this.colorPanel != null) {
 
-            let material: DefaultPBRMaterial = this.m_material;
+            let material: IPBRMaterial = this.m_material;
 
-            let value: number = 0.5 + Math.random() * 2.0;
-            //this.albedo.identity = 3.0;
-            this.albedo.initialize(material, this.pbrUI.albedoBtn, this.colorPanel, value, 0.01, 10.0);
+            let value: number = 1.0 + Math.random() * 2.0;
+            this.albedo.initialize(material, this.pbrUI.albedoBtn, this.colorPanel, value, 0.01, 16.0);
             value = 0.1 + Math.random() * 0.5;
             this.f0.initialize(material, this.pbrUI.f0ColorBtn, this.colorPanel, value, 0.01, 5.0);
             value = 0.01 + Math.random() * 0.2;
@@ -84,30 +83,30 @@ export default class PBRParamEntity implements IPBRParamEntity{
         }
     }
     
-    setMaterial(material: DefaultPBRMaterial): void {
+    setMaterial(material: IPBRMaterial): void {
         this.m_material = material;
         this.albedo.material = material;
         this.f0.material = material;
         this.ambient.material = material;
         this.specular.material = material;
     }
-    getMaterial(): DefaultPBRMaterial {
+    getMaterial(): IPBRMaterial {
         return this.m_material;
     }
-    setMirrorMaterial(material: DefaultPBRMaterial): void {
+    setMirrorMaterial(material: IPBRMaterial): void {
         this.m_mirrorMaterial = material;
         this.albedo.mirrorMaterial = material;
         this.f0.mirrorMaterial = material;
         this.ambient.mirrorMaterial = material;
         this.specular.mirrorMaterial = material;
     }
-    getMirrorMaterial(): DefaultPBRMaterial {
+    getMirrorMaterial(): IPBRMaterial {
         return this.m_mirrorMaterial;
     }
     select(): void {
         if (this.colorPanel != null) {
 
-            let material: DefaultPBRMaterial = this.m_material;
+            let material: IPBRMaterial = this.m_material;
 
             this.albedo.selectColor();
             this.f0.selectColor();

@@ -161,10 +161,6 @@ export default class ScreenFixedPlaneMaterial extends MaterialBase
         this.m_colorArray[2] = pb;
         this.m_colorArray[3] = pa;
     }
-    createSharedUniform():ShaderGlobalUniform
-    {
-        return null;
-    }
     createSelfUniformData():ShaderUniformData
     {
         let oum:ShaderUniformData = new ShaderUniformData();

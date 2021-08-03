@@ -5,11 +5,11 @@
 uniform vec4 u_albedo;
 uniform vec4 u_params[4];
 
-// point and parallel lights
-#if VOX_LIGHTS_TOTAL > 0
-    uniform vec4 u_lightPositions[VOX_LIGHTS_TOTAL];
-    uniform vec4 u_lightColors[VOX_LIGHTS_TOTAL];
-#endif
+//  // point and parallel lights
+//  #if VOX_LIGHTS_TOTAL > 0
+//      uniform vec4 u_lightPositions[VOX_LIGHTS_TOTAL];
+//      uniform vec4 u_lightColors[VOX_LIGHTS_TOTAL];
+//  #endif
 
 //uniform vec4 u_camPos;
 

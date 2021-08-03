@@ -17,7 +17,8 @@ import ProgressDataEvent from "../../vox/event/ProgressDataEvent";
 import CanvasTextureTool from "../../orthoui/demos/base/CanvasTextureTool";
 import SelectionEvent from "../../vox/event/SelectionEvent";
 import SelectionBar from "../../orthoui/demos/base/SelectionBar";
-import DefaultPBRMaterial from "../material/DefaultPBRMaterial";
+//import IPBRMaterial from "../material/IPBRMaterial";
+import IPBRMaterial from "../material/IPBRMaterial";
 import RGBColorPanel, { RGBColoSelectEvent } from "../../orthoui/panel/RGBColorPanel";
 import Color4 from "../../vox/material/Color4";
 import Vector3D from "../../vox/math/Vector3D";
@@ -27,6 +28,7 @@ import IPBRParamEntity from "./IPBRParamEntity";
 import ColorRectImgButton from "../../orthoui/button/ColorRectImgButton";
 import RendererState from "../../vox/render/RendererState";
 import MathConst from "../../vox/math/MathConst";
+import MaterialBase from "../../vox/material/MaterialBase";
 
 export class DefaultPBRUI implements IPBRUI {
     constructor() { }
@@ -51,7 +53,7 @@ export class DefaultPBRUI implements IPBRUI {
     ambientBtn: ProgressBar;
     specularBtn: ProgressBar;
 
-    
+
     absorbBtn: SelectionBar;
     vtxNoiseBtn: SelectionBar;
 
@@ -62,8 +64,8 @@ export class DefaultPBRUI implements IPBRUI {
         return ptex;
     }
 
-    initialize(rscene: RendererScene, texLoader: ImageTextureLoader): void {
-        console.log("DefaultPBRUI::initialize()......");
+    initialize(rscene: RendererScene, texLoader: ImageTextureLoader, buildDisplay: boolean = true): void {
+
         if (this.m_rscene == null) {
             this.m_rscene = rscene;;
 
@@ -72,21 +74,25 @@ export class DefaultPBRUI implements IPBRUI {
             this.m_texLoader = texLoader;
 
             CanvasTextureTool.GetInstance().initialize(this.m_rscene);
-            this.initUIScene();
+            this.initUIScene(buildDisplay);
         }
     }
     close(): void {
-        this.menuCtrl(false);
-        this.m_menuBtn.select(false);
+        if (this.m_menuBtn != null) {
+            this.menuCtrl(false);
+            this.m_menuBtn.select(false);
+        }
     }
     open(): void {
-        this.menuCtrl(true);
-        this.m_menuBtn.deselect(true);
+        if (this.m_menuBtn != null) {
+            this.menuCtrl(true);
+            this.m_menuBtn.deselect(true);
+        }
     }
     isOpen(): boolean {
         return this.m_menuBtn != null && !this.m_menuBtn.isSelected();
     }
-    private initUIScene(): void {
+    private initUIScene(buildDisplay: boolean): void {
 
         let rparam: RendererParam = new RendererParam();
         rparam.cameraPerspectiveEnabled = false;
@@ -103,13 +109,14 @@ export class DefaultPBRUI implements IPBRUI {
         this.ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
         this.ruisc.getCamera().update();
 
-
-        this.initUI();
+        if (buildDisplay) {
+            this.initUI();
+        }
 
     }
 
     private initUI(): void {
-        
+
         this.initCtrlBars();
 
     }
@@ -179,9 +186,9 @@ export class DefaultPBRUI implements IPBRUI {
         if (RendererDeviece.IsMobileWeb()) {
             this.m_btnSize = 64;
             this.m_btnPX = 280;
-            this.m_btnPY = 30;            
+            this.m_btnPY = 30;
         }
-        if(RendererDeviece.IsWebGL1()) {
+        if (RendererDeviece.IsWebGL1()) {
             this.m_btnPX += 32;
             this.m_btnSize = MathConst.CalcCeilPowerOfTwo(this.m_btnSize);
         }
@@ -259,18 +266,20 @@ export class DefaultPBRUI implements IPBRUI {
         let selectEvt: SelectionEvent = evt as SelectionEvent;
         let flag: boolean = selectEvt.flag;
 
-        let material: DefaultPBRMaterial = null;
+        let material: IPBRMaterial = null;
 
         switch (selectEvt.uuid) {
             case "absorb":
-                material = new DefaultPBRMaterial();
-                material.copyFrom(this.m_paramEntity.getMaterial());
+                material = (this.m_paramEntity.getMaterial() as IPBRMaterial).clone();
+                //material = new IPBRMaterial();
+                //material.copyFrom(this.m_paramEntity.getMaterial());
                 material.absorbEnabled = flag;
                 this.m_paramEntity.absorbEnabled = flag;
                 break;
             case "vtxNoise":
-                material = new DefaultPBRMaterial();
-                material.copyFrom(this.m_paramEntity.getMaterial());
+                //  material = new IPBRMaterial();
+                //  material.copyFrom(this.m_paramEntity.getMaterial());
+                material = (this.m_paramEntity.getMaterial() as IPBRMaterial).clone();
                 material.normalNoiseEnabled = flag;
                 this.m_paramEntity.vtxNoiseEnabled = flag;
                 break;
@@ -284,8 +293,8 @@ export class DefaultPBRUI implements IPBRUI {
         if (material != null) {
             this.m_rscene.removeEntity(this.m_paramEntity.entity);
             material.initializeByCodeBuf(true);
-            this.m_paramEntity.setMaterial( material );
-            this.m_paramEntity.entity.setMaterial(material);
+            this.m_paramEntity.setMaterial(material);
+            this.m_paramEntity.entity.setMaterial(material as any);
             this.m_rscene.addEntity(this.m_paramEntity.entity);
         }
         if (this.rgbPanel != null) this.rgbPanel.close();
@@ -295,44 +304,45 @@ export class DefaultPBRUI implements IPBRUI {
     private valueChange(evt: any): void {
 
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
-        let progress: number = progEvt.value;
-        
-        let material: DefaultPBRMaterial = this.m_paramEntity.getMaterial();
-        let mirrorMaterial: DefaultPBRMaterial = this.m_paramEntity.getMirrorMaterial();
+        let value: number = progEvt.value;
+
+        let material: IPBRMaterial = this.m_paramEntity.getMaterial();
+        let mirrorMaterial: IPBRMaterial = this.m_paramEntity.getMirrorMaterial();
         this.m_currUUID = progEvt.uuid;
         let colorParamUnit: ColorParamUnit;
+        //  console.log("value: ",value);
         switch (progEvt.uuid) {
             case "metal":
-                material.setMetallic(progress);
-                if(mirrorMaterial != null) mirrorMaterial.setMetallic(progress);
+                material.setMetallic(value);
+                if (mirrorMaterial != null) mirrorMaterial.setMetallic(value);
                 break;
             case "rough":
-                material.setRoughness(progress);
-                if(mirrorMaterial != null) mirrorMaterial.setRoughness(progress);
+                material.setRoughness(value);
+                if (mirrorMaterial != null) mirrorMaterial.setRoughness(value);
                 break;
             case "noise":
-                material.setPixelNormalNoiseIntensity(progress);
-                if(mirrorMaterial != null) mirrorMaterial.setPixelNormalNoiseIntensity(progress);
+                material.setPixelNormalNoiseIntensity(value);
+                if (mirrorMaterial != null) mirrorMaterial.setPixelNormalNoiseIntensity(value);
                 break;
             case "reflection":
-                material.setReflectionIntensity(progress);
-                if(mirrorMaterial != null) mirrorMaterial.setReflectionIntensity(progress);
+                material.setReflectionIntensity(value);
+                if (mirrorMaterial != null) mirrorMaterial.setReflectionIntensity(value);
                 break;
             case "side":
                 material.setSideIntensity(progEvt.value);
-                if(mirrorMaterial != null) mirrorMaterial.setSideIntensity(progEvt.value);
+                if (mirrorMaterial != null) mirrorMaterial.setSideIntensity(progEvt.value);
                 break;
             case "surface":
                 material.setSurfaceIntensity(progEvt.value);
-                if(mirrorMaterial != null) mirrorMaterial.setSurfaceIntensity(progEvt.value);
+                if (mirrorMaterial != null) mirrorMaterial.setSurfaceIntensity(progEvt.value);
                 break;
             case "scatter":
                 material.setScatterIntensity(progEvt.value);
-                if(mirrorMaterial != null) mirrorMaterial.setScatterIntensity(progEvt.value);
+                if (mirrorMaterial != null) mirrorMaterial.setScatterIntensity(progEvt.value);
                 break;
             case "tone":
                 material.setToneMapingExposure(progEvt.value);
-                if(mirrorMaterial != null) mirrorMaterial.setToneMapingExposure(progEvt.value);
+                if (mirrorMaterial != null) mirrorMaterial.setToneMapingExposure(progEvt.value);
                 break;
             case "F0Color":
                 colorParamUnit = this.m_paramEntity.f0;
@@ -351,7 +361,7 @@ export class DefaultPBRUI implements IPBRUI {
         }
         if (colorParamUnit != null) {
             if (progEvt.status != 0) {
-                if(this.m_colorParamUnit != colorParamUnit) {
+                if (this.m_colorParamUnit != colorParamUnit) {
                     colorParamUnit.selectColor();
                     this.m_colorParamUnit = colorParamUnit;
                     return;

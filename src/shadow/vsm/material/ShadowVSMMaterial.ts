@@ -10,12 +10,10 @@ import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import MaterialBase from "../../../vox/material/MaterialBase";
-import ShaderCodeBuilder from "../../../vox/material/code/ShaderCodeBuilder";
-import Vector3D from "../../../vox/math/Vector3D";
-import RendererDeviece from "../../../vox/render/RendererDeviece";
-import Matrix4 from "../../../vox/math/Matrix4";
 import ShadowVSMData from "./ShadowVSMData";
-import UniformConst from "../../../vox/material/UniformConst";
+import EnvLightData from "../../../light/base/EnvLightData";
+
+import { VSMShaderCode } from "./VSMShaderCode";
 
 class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
     constructor() {
@@ -24,6 +22,9 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
     private static ___s_instance: ShadowVSMShaderBuffer = new ShadowVSMShaderBuffer();
     private m_codeBuilder: ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName: string = "";
+    
+    vsmData: ShadowVSMData = null;
+    envData: EnvLightData = null;
     initialize(texEnabled: boolean): void {
         super.initialize(texEnabled);
         //console.log("ShadowVSMShaderBuffer::initialize()...,texEnabled: "+texEnabled);
@@ -45,78 +46,31 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
         coder.addVarying("vec2", "v_uv");
         coder.addVarying("vec3", "v_nv");
         coder.addVarying("vec4", "v_pos");
+        coder.addVarying("float", "v_fogDepth");
         coder.addFragOutput("vec4", "FragColor0");
-        coder.addFragUniform("vec4", UniformConst.ShadowVSMParamsUNS, 3);
-        coder.addVertUniform("mat4", UniformConst.ShadowMatrixUNS);
+
+        this.vsmData.useUniforms( coder );
+        if(this.envData != null) {
+            coder.addDefine("VOX_FOG", "1");
+            coder.addDefine("VOX_FOG_EXP2", "1");
+            this.envData.useUniforms( coder );
+        }
+        
         coder.addFragUniform("vec4", "u_color");
 
         coder.useVertSpaceMats(true, true, true);
-        coder.addFragFunction(
-            `
+        coder.addFragFunction(VSMShaderCode.frag_head);
 
-vec4 pack2HalfToRGBA( vec2 v ) {
-	vec4 r = vec4( v.x, fract( v.x * 255.0 ), v.y, fract( v.y * 255.0 ));
-	return vec4( r.x - r.y / 255.0, r.y, r.z - r.w / 255.0, r.w);
-}
-vec2 unpackRGBATo2Half( vec4 v ) {
-	return vec2( v.x + ( v.y / 255.0 ), v.z + ( v.w / 255.0 ) );
-}
-
-vec2 texture2DDistribution( sampler2D shadow, vec2 uv ) {
-
-    return unpackRGBATo2Half( texture( shadow, uv ) );
-
-}
-float VSMShadow (sampler2D shadow, vec2 uv, float compare ) {
-
-    float occlusion = 1.0;
-
-    vec2 distribution = texture2DDistribution( shadow, uv );
-
-    float hard_shadow = step( compare , distribution.x ); // Hard Shadow
-
-    if (hard_shadow != 1.0 ) {
-
-        float distance = compare - distribution.x ;
-        float variance = max( 0.0, distribution.y * distribution.y );
-        float softness_probability = variance / (variance + distance * distance ); // Chebeyshevs inequality
-        softness_probability = clamp( ( softness_probability - 0.3 ) / ( 0.95 - 0.3 ), 0.0, 1.0 ); // 0.3 reduces light bleed
-        occlusion = clamp( max( hard_shadow, softness_probability ), 0.0, 1.0 );
-
-    }
-    return occlusion;
-
-}
-float getVSMShadow( sampler2D shadowMap, vec2 shadowMapSize, float shadowBias, float shadowRadius, vec4 shadowCoord ) {
-
-    float shadow = 1.0;
-    
-    shadowCoord.xyz /= shadowCoord.w;
-    shadowCoord.z += shadowBias;
-    
-    // if ( something && something ) breaks ATI OpenGL shader compiler
-    // if ( all( something, something ) ) using this instead
-
-    bvec4 inFrustumVec = bvec4 ( shadowCoord.x >= 0.0, shadowCoord.x <= 1.0, shadowCoord.y >= 0.0, shadowCoord.y <= 1.0 );
-    bool inFrustum = all( inFrustumVec );
-
-    bvec2 frustumTestVec = bvec2( inFrustum, shadowCoord.z <= 1.0 );
-
-    bool frustumTest = all( frustumTestVec );
-
-    if ( frustumTest ) {
-        shadow = VSMShadow( shadowMap, shadowCoord.xy, shadowCoord.z );
-    }
-    return shadow;
-}
-`
-        );
     }
     getFragShaderCode(): string {
         this.buildThisCode();
 
         this.m_codeBuilder.addFragMainCode(
 `
+const float fogNear = 500.0;
+const float fogFar = 3500.0;
+//const float fogDensity = 0.0005;
+//const vec3 fogColor = vec3(0.3,0.0,1.0);
 void main() {
     vec4 color = texture( u_sampler1, v_uv );
 
@@ -128,7 +82,26 @@ void main() {
     f = u_vsmParams[1].z;
     shadow = shadow * (1.0 - f) + f;
     color.xyz *= u_color.xyz;
+
     FragColor0 = vec4(color.xyz * vec3(shadow), 1.0);
+
+    #ifdef VOX_FOG
+        vec3 fogColor = u_envLightParams[2].xyz;
+    	#ifdef VOX_FOG_EXP2
+            float fogDensity = u_envLightParams[2].w;
+    		float fogFactor = 1.0 - exp( - fogDensity * fogDensity * v_fogDepth * v_fogDepth );
+
+    	#else
+
+            float fogNear = u_envLightParams[1].z;
+            float fogFar = u_envLightParams[1].w;
+    		float fogFactor = smoothstep( fogNear, fogFar, v_fogDepth );
+
+    	#endif
+
+    	FragColor0.rgb = mix( FragColor0.rgb, fogColor, fogFactor );
+
+    #endif
 }
 `
         );
@@ -146,6 +119,7 @@ void main() {
     v_nv = normalize(a_nvs * inverse(mat3(u_objMat)));
     //wpos.xyz += a_nvs.xyz * 0.05;
     v_pos = u_shadowMat * wpos;
+    v_fogDepth = -viewPos.z;
 }
 `
         );
@@ -153,7 +127,6 @@ void main() {
 
     }
     getUniqueShaderName() {
-        //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
     toString(): string {
@@ -166,15 +139,22 @@ void main() {
 
 export default class ShadowVSMMaterial extends MaterialBase {
     private m_vsmData: ShadowVSMData = null;
+    private m_envData: EnvLightData = null;
     constructor() {
         super();
     }
 
     getCodeBuf(): ShaderCodeBuffer {
-        return ShadowVSMShaderBuffer.GetInstance();
+        let buf: ShadowVSMShaderBuffer = ShadowVSMShaderBuffer.GetInstance();
+        buf.vsmData = this.m_vsmData;
+        buf.envData = this.m_envData;
+        return buf;
     }
     setVSMData( vsm: ShadowVSMData ): void {
         this.m_vsmData = vsm;
+    }
+    setEnvData( envData: EnvLightData ): void {
+        this.m_envData = envData;
     }
     private m_colorData: Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
     
@@ -183,9 +163,12 @@ export default class ShadowVSMMaterial extends MaterialBase {
         this.m_colorData[1] = g;
         this.m_colorData[2] = b;
     }
-    createSharedUniform():ShaderGlobalUniform
+    createSharedUniforms():ShaderGlobalUniform[]
     {
-        return this.m_vsmData.getGlobalUinform();
+        if(this.m_envData != null) {
+            return [this.m_vsmData.getGlobalUinform(), this.m_envData.getGlobalUinform()];
+        }
+        return [this.m_vsmData.getGlobalUinform()];
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();

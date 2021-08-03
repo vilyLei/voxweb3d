@@ -6,17 +6,19 @@
 /***************************************************************************/
 
 import DefaultPBRMaterial from "../../pbr/material/DefaultPBRMaterial";
+import DefaultPBRMaterial2 from "../../pbr/material/DefaultPBRMaterial2";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import { TextureConst } from "../../vox/texture/TextureConst";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import DefaultPBRLight from "./DefaultPBRLight";
 import Color4 from "../../vox/material/Color4";
+import GlobalLightData from "../../light/base/GlobalLightData";
 
 export default class MaterialBuilder {
 
     texLoader: ImageTextureLoader = null;
     lightModule: DefaultPBRLight = null;
-    
+    lightData: GlobalLightData = null;
     constructor() {
     }
 
@@ -31,21 +33,6 @@ export default class MaterialBuilder {
         material.setMetallic(metallic);
         material.setRoughness(roughness);
         material.setAO(ao);
-        /*
-        this.lightModule.setLightToMaterial(material);
-        let colorSize: number = 2.0;
-        let pr: number = Math.random() * colorSize;
-        let pg: number = Math.random() * colorSize;
-        let pb: number = Math.random() * colorSize;
-        material.setAlbedoColor(pr, pg, pb);
-        colorSize = 0.8;
-        pr = Math.random() * colorSize;
-        pg = Math.random() * colorSize;
-        pb = Math.random() * colorSize;
-        material.setF0(pr, pg, pb);
-        material.setScatterIntensity(Math.random() * 128.0 + 1.0);
-        material.setAmbientFactor(0.01, 0.01, 0.01);
-        //*/
         material.woolEnabled = true;
         material.toneMappingEnabled = true;
         material.envMapEnabled = true;
@@ -54,6 +41,25 @@ export default class MaterialBuilder {
         material.absorbEnabled = false;
         material.normalNoiseEnabled = false;
         material.pixelNormalNoiseEnabled = true;
+        this.lightModule.setLightToMaterial(material);
+        return material;
+    }
+    makeDefaultPBRMaterial2(metallic: number, roughness: number, ao: number): DefaultPBRMaterial2 {
+        let material: DefaultPBRMaterial2 = new DefaultPBRMaterial2(this.lightData.getPointLightTotal(), this.lightData.getDirecLightTotal());
+        material.setMetallic(metallic);
+        material.setRoughness(roughness);
+        material.setAO(ao);
+
+        material.woolEnabled = true;
+        material.toneMappingEnabled = true;
+        material.envMapEnabled = true;
+        material.specularBleedEnabled = true;
+        material.metallicCorrection = true;
+        material.absorbEnabled = false;
+        material.normalNoiseEnabled = false;
+        material.pixelNormalNoiseEnabled = true;
+        material.setLightData( this.lightData );
+
         return material;
     }
 }

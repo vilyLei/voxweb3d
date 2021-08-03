@@ -100,7 +100,6 @@ export class ShadowVSMModule {
         this.m_fboOccBlur.createFBOAt(this.m_fboIndex, this.m_shadowMapW, this.m_shadowMapH, true, false);
         this.m_occBlurRtt = this.m_fboOccBlur.setRenderToRGBATexture(null, 0);
 
-
         let occMaterial: OccBlurMaterial;
         occMaterial = new OccBlurMaterial(false);
         occMaterial.setShadowRadius(this.m_shadowRadius);

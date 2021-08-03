@@ -16,8 +16,11 @@ import { DefaultPBRShaderCode } from "./DefaultPBRShaderCode";
 import IPBRMaterial from "./IPBRMaterial";
 import Color4 from "../../vox/material/Color4";
 
+import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
 import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
+import GlobalLightData from "../../light/base/GlobalLightData";
 import UniformConst from "../../vox/material/UniformConst";
+
 class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
@@ -45,6 +48,9 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     pointLightsTotal: number = 4;
     parallelLightsTotal: number = 0;
     texturesTotal: number = 1;
+
+    lightData: GlobalLightData = null;
+
     initialize(texEnabled: boolean): void {
         this.m_uniqueName = "DefaultPBRShd";
         this.adaptationShaderVersion = false;
@@ -140,13 +146,12 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
         coder.addVarying("vec3","v_worldNormal");
         coder.addVarying("vec3","v_camPos");
 
-        if(lightsTotal > 0) {
-            coder.addFragUniform("vec4", "u_lightPositions", lightsTotal);
-            coder.addFragUniform("vec4", "u_lightColors", lightsTotal);
-        }
         if (mirrorProjEnabled) {
             coder.addFragUniform("vec4","u_stageParam");
             coder.addFragUniform("vec4","u_mirrorParams",2);
+        }
+        if(lightsTotal > 0) {
+            this.lightData.useUniforms( coder );
         }
 
         if (RendererDeviece.IsWebGL1()) {
@@ -178,7 +183,7 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
         if (this.scatterEnabled) ns += "Sct";
         if (this.specularBleedEnabled) ns += "SpecBl";
         if (this.metallicCorrection) ns += "MetCorr";
-        if (this.gammaCorrection) ns += "GammaCorr";
+        if (this.gammaCorrection) ns += "GmaCorr";
         if (this.absorbEnabled) ns += "Absorb";
         if (this.pixelNormalNoiseEnabled) ns += "PNNoise";
         if (this.mirrorProjEnabled && this.texturesTotal > 1) ns += "MirPrj";
@@ -186,11 +191,12 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
         if (this.indirectEnvMapEnabled) ns += "IndirEnv";
         if (this.normalMapEnabled) ns += "NorMap";
 
-        if (this.pointLightsTotal > 0) ns += "_" + this.pointLightsTotal;
-        if (this.parallelLightsTotal > 0) ns += "_" + this.parallelLightsTotal;
+        if (this.pointLightsTotal > 0) ns += "LP" + this.pointLightsTotal;
+        if (this.parallelLightsTotal > 0) ns += "LD" + this.parallelLightsTotal;
 
         ns += "_T" + this.texturesTotal;
         this.m_uniqueName = ns;
+        console.log("XXXX getUniqueShaderName(), ns:",ns);
         return ns;
     }
     toString(): string {
@@ -202,7 +208,7 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     }
 }
 
-export default class DefaultPBRMaterial extends MaterialBase implements IPBRMaterial {
+export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMaterial {
 
     private m_pointLightsTotal: number = 4;
     private m_parallelLightsTotal: number = 0;
@@ -235,8 +241,9 @@ export default class DefaultPBRMaterial extends MaterialBase implements IPBRMate
             , 1.0, 0.3              // mirror scale, mirror mix scale
             , 0.0, 0.0              // undefine, undefine
         ]);
-    private m_lightPositions: Float32Array;
-    private m_lightColors: Float32Array;
+    //  private m_lightPositions: Float32Array;
+    //  private m_lightColors: Float32Array;
+    private m_lightData: GlobalLightData;
 
     woolEnabled: boolean = false;
     toneMappingEnabled: boolean = true;
@@ -268,12 +275,6 @@ export default class DefaultPBRMaterial extends MaterialBase implements IPBRMate
         super();
         this.m_pointLightsTotal = pointLightsTotal;
         this.m_parallelLightsTotal = parallelLightsTotal;
-
-        let total: number = pointLightsTotal + parallelLightsTotal;
-        if (total > 0) {
-            this.m_lightPositions = new Float32Array(4 * total);
-            this.m_lightColors = new Float32Array(4 * total);
-        }
     }
     getCodeBuf(): ShaderCodeBuffer {
         let buf: DefaultPBRShaderBuffer = DefaultPBRShaderBuffer.GetInstance();
@@ -296,9 +297,11 @@ export default class DefaultPBRMaterial extends MaterialBase implements IPBRMate
         buf.pointLightsTotal = this.m_pointLightsTotal;
         buf.parallelLightsTotal = this.m_parallelLightsTotal;
         buf.texturesTotal = this.getTextureTotal();
+
+        buf.lightData = this.m_lightData;
         return buf;
     }
-    copyFrom(dst: DefaultPBRMaterial, texEnabled:boolean = true): void {
+    copyFrom(dst: DefaultPBRMaterial2, texEnabled:boolean = true): void {
 
         this.woolEnabled = dst.woolEnabled;
         this.toneMappingEnabled = dst.toneMappingEnabled;
@@ -319,19 +322,6 @@ export default class DefaultPBRMaterial extends MaterialBase implements IPBRMate
 
         this.m_pointLightsTotal = dst.m_pointLightsTotal;
         this.m_parallelLightsTotal = dst.m_parallelLightsTotal;
-
-        if (dst.m_lightPositions == null || dst.m_lightPositions.length != this.m_lightPositions.length) {
-            this.m_lightPositions = dst.m_lightPositions.slice();
-        }
-        else {
-            this.m_lightPositions.set(dst.m_lightPositions);
-        }
-        if (dst.m_lightColors == null || dst.m_lightColors.length != this.m_lightColors.length) {
-            this.m_lightColors = dst.m_lightColors.slice();
-        }
-        else {
-            this.m_lightColors.set(dst.m_lightColors);
-        }
 
         if(this.m_albedo == null || this.m_albedo.length != dst.m_albedo.length) {
             this.m_albedo = dst.m_albedo.slice();
@@ -369,8 +359,8 @@ export default class DefaultPBRMaterial extends MaterialBase implements IPBRMate
         }
     }
     
-    clone(): DefaultPBRMaterial {
-        let dst: DefaultPBRMaterial = new DefaultPBRMaterial(this.m_pointLightsTotal,this.m_parallelLightsTotal);
+    clone(): DefaultPBRMaterial2 {
+        let dst: DefaultPBRMaterial2 = new DefaultPBRMaterial2(this.m_pointLightsTotal,this.m_parallelLightsTotal);
         dst.woolEnabled = this.woolEnabled;
         dst.toneMappingEnabled = this.toneMappingEnabled;
         dst.envMapEnabled = this.envMapEnabled;
@@ -389,9 +379,6 @@ export default class DefaultPBRMaterial extends MaterialBase implements IPBRMate
         dst.m_pointLightsTotal = this.m_pointLightsTotal;
         dst.m_parallelLightsTotal = this.m_parallelLightsTotal;
 
-        dst.m_lightPositions.set(this.m_lightPositions);
-        dst.m_lightColors.set(this.m_lightColors);
-
         dst.m_albedo.set(this.m_albedo);
         dst.m_params.set(this.m_params);
         dst.m_paramLocal.set(this.m_paramLocal);
@@ -401,6 +388,11 @@ export default class DefaultPBRMaterial extends MaterialBase implements IPBRMate
         dst.setTextureList(this.getTextureList().slice());
         return dst;
     }
+
+    setLightData(lightData: GlobalLightData): void {
+        this.m_lightData = lightData;        
+    }
+
     seNormalMapIntensity(intensity: number): void {
         intensity = Math.min(Math.max(intensity, 0.0), 1.0);
         this.m_paramLocal[4] = intensity;
@@ -542,45 +534,6 @@ export default class DefaultPBRMaterial extends MaterialBase implements IPBRMate
         scaleV.x = this.m_paramLocal[4];
         scaleV.y = this.m_paramLocal[5];
     }
-    setPointLightPosAt(i: number, px: number, py: number, pz: number): void {
-        if (i >= 0 && i < this.m_pointLightsTotal) {
-            i *= 4;
-            this.m_lightPositions[i] = px;
-            this.m_lightPositions[i + 1] = py;
-            this.m_lightPositions[i + 2] = pz;
-        }
-    }
-    setPointLightColorAt(i: number, pr: number, pg: number, pb: number): void {
-
-        if (i >= 0 && i < this.m_pointLightsTotal) {
-            i *= 4;
-            this.m_lightColors[i] = pr;
-            this.m_lightColors[i + 1] = pg;
-            this.m_lightColors[i + 2] = pb;
-        }
-    }
-
-    setParallelLightDirecAt(i: number, px: number, py: number, pz: number): void {
-
-        if (i >= 0 && i < this.m_parallelLightsTotal) {
-            i += this.m_pointLightsTotal;
-            i *= 4;
-            this.m_lightPositions[i] = px;
-            this.m_lightPositions[i + 1] = py;
-            this.m_lightPositions[i + 2] = pz;
-        }
-    }
-    setParallelLightColorAt(i: number, pr: number, pg: number, pb: number): void {
-
-        if (i >= 0 && i < this.m_parallelLightsTotal) {
-            i += this.m_pointLightsTotal;
-            i *= 4;
-            this.m_lightColors[i] = pr;
-            this.m_lightColors[i + 1] = pg;
-            this.m_lightColors[i + 2] = pb;
-        }
-    }
-
     setAlbedoColor(pr: number, pg: number, pb: number): void {
         this.m_albedo[0] = pr;
         this.m_albedo[1] = pg;
@@ -598,11 +551,26 @@ export default class DefaultPBRMaterial extends MaterialBase implements IPBRMate
         this.m_camPos[1] = pos.y;
         this.m_camPos[2] = pos.z;
     }
+    ///*
+    createSharedUniforms():ShaderGlobalUniform[]
+    {
+        let gu: ShaderGlobalUniform = this.m_lightData.getGlobalUinform();
+        gu.uns = this.getShdUniqueName();
+        return [gu];
+    }
     createSelfUniformData(): ShaderUniformData {
-
+        let oum: ShaderUniformData = new ShaderUniformData();
+        oum.uniformNameList = ["u_albedo", "u_params", "u_camPos", "u_paramLocal", "u_mirrorParams"];
+        oum.dataList = [this.m_albedo, this.m_params, this.m_camPos, this.m_paramLocal, this.m_mirrorParam];
+        return oum;
+    }
+    //*/
+    /*
+    createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
         oum.uniformNameList = ["u_albedo", "u_params", "u_lightPositions", "u_lightColors", "u_camPos", "u_paramLocal", "u_mirrorParams"];
         oum.dataList = [this.m_albedo, this.m_params, this.m_lightPositions, this.m_lightColors, this.m_camPos, this.m_paramLocal, this.m_mirrorParam];
         return oum;
     }
+    //*/
 }

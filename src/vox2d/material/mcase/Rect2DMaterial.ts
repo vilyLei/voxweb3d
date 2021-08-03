@@ -255,10 +255,6 @@ export default class Rect2DMaterial extends MaterialBase
         this.m_paramArray[10] = pb;
         this.m_paramArray[11] = pa;
     }
-    createSharedUniform():ShaderGlobalUniform
-    {
-        return null;
-    }
     createSelfUniformData():ShaderUniformData
     {
         let oum:ShaderUniformData = new ShaderUniformData();

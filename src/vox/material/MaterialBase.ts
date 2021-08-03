@@ -228,7 +228,7 @@ export default class MaterialBase implements IRenderMaterial
         return false;
     }
     
-    createSharedUniform():ShaderGlobalUniform
+    createSharedUniforms():ShaderGlobalUniform[]
     {
         return null;
     }

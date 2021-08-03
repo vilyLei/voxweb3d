@@ -103,10 +103,13 @@ export default class ShdProgram implements IVtxShdCtr {
                     if (!uninforms[i].isTex) {
                         uns = uninforms[i].name;
                         ul = this.m_gl.getUniformLocation(this.m_program, uns);
+
                         if (RendererDeviece.SHADERCODE_TRACE_ENABLED) {
                             console.log("ShdProgram::createLocations() uniform, ul " + ul + ", uninforms[" + i + "].name: " + uns);
                         }
                         if (ul != null) {
+                            ul.uniformName = uns;
+                            ul.uniqueName = this.m_shdUniqueName;
                             uninforms[i].location = ul;
                             this.m_uniformDict.set(uns, uninforms[i]);
                             this.m_uLocationDict.set(uns, ul);
@@ -314,6 +317,7 @@ export default class ShdProgram implements IVtxShdCtr {
             this.m_rcuid = rcuid;
             this.m_gl = gl;
             this.m_program = this.initShdProgram();
+            this.m_program.uniqueName = this.m_shdUniqueName;
             if (null != this.m_program) this.createLocations();
         }
     }
@@ -327,7 +331,10 @@ export default class ShdProgram implements IVtxShdCtr {
     toString(): string {
         return "[ShdProgram(uniqueName = " + this.m_shdUniqueName + ")]";
     }
-    getProgram(): any {
+    /**
+     * @returns return current gpu shader  program
+     */
+    getGPUProgram(): any {
         return this.m_program;
     }
     destroy(): void {

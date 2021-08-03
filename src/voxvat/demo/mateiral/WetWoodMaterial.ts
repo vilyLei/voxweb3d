@@ -206,12 +206,12 @@ v_mToVNVS = a_nvs.xyz * mInvMToVMMat3;
                     return WetWoodShaderBuffer.GetInstance();
                 }
                 
-                createSharedUniform():ShaderGlobalUniform
+                createSharedUniforms():ShaderGlobalUniform[]
                 {
                     let headU:ShaderGlobalUniform = new ShaderGlobalUniform();
                     headU.uniformNameList = ["vV4U_0","fV4U_1"];
                     headU.copyDataFromProbe(ParalLightData.getUProbe());
-                    return headU;
+                    return [headU];
                 }
                 createSelfUniformData():ShaderUniformData
                 {

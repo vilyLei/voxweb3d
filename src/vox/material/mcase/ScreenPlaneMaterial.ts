@@ -160,9 +160,6 @@ export default class ScreenPlaneMaterial extends MaterialBase {
     setTextureLodLevel(lodLv: number): void {
         this.m_param[11] = lodLv;
     }
-    createSharedUniform(): ShaderGlobalUniform {
-        return null;
-    }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
         oum.uniformNameList = ["u_param"];

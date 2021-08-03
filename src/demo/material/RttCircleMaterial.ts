@@ -131,10 +131,6 @@ export default class RttCircleMaterial extends MaterialBase
         this.m_colorArray[2] = pb;
         this.m_colorArray[3] = pa;
     }
-    createSharedUniform():ShaderGlobalUniform
-    {
-        return null;
-    }
     createSelfUniformData():ShaderUniformData
     {
         if(this.getTextureList() == null)

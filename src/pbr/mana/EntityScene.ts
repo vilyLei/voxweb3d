@@ -8,12 +8,13 @@ import RendererScene from "../../vox/scene/RendererScene";
 import DefaultPBRUI from "./DefaultPBRUI";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 
-import DefaultPBRMaterial from "../../pbr/material/DefaultPBRMaterial";
+import DefaultPBRMaterial2 from "../../pbr/material/DefaultPBRMaterial2";
 import MaterialBuilder from "../../pbr/mana/MaterialBuilder";
 import MirrorProjEntity from "./MirrorProjEntity";
 import PBRParamEntity from "./PBRParamEntity";
 import MirrorEffector from "./MirrorEffector";
 import CubeRttBuilder from "../../renderingtoy/mcase/CubeRTTBuilder";
+import GlobalLightData from "../../light/base/GlobalLightData";
 
 
 export default class EntityScene
@@ -29,9 +30,12 @@ export default class EntityScene
     private m_cubeRTTBuilder: CubeRttBuilder;
 
     private m_mirrorRprIndex: number = 3;
+    private m_lightData: GlobalLightData = new GlobalLightData();
+
     constructor(materialBuilder: MaterialBuilder, cubeRTTBuilder: CubeRttBuilder) {
         this.m_materialBuilder = materialBuilder;
         this.m_cubeRTTBuilder = cubeRTTBuilder;
+        
     }
 
     getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
@@ -48,10 +52,14 @@ export default class EntityScene
         {
             this.m_rscene = rscene;
             this.m_texLoader = texLoader;
-            this.m_uiModule = uiModule;            
-            this.m_envMap = envMap;            
+            this.m_uiModule = uiModule;
+            this.m_envMap = envMap;
             this.m_mirrorEffector = mirrorEffector;
-            
+            this.m_lightData.initialize(4, 2);
+            this.m_lightData.buildData();
+
+            this.m_materialBuilder.lightData = this.m_lightData;
+
             this.m_mirrorRprIndex = 3;
             this.m_mirrorEffector.envMap = this.m_envMap;
             this.m_mirrorEffector.materialBuilder = this.m_materialBuilder;            
@@ -65,18 +73,30 @@ export default class EntityScene
 
         let matBuilder:MaterialBuilder = this.m_materialBuilder;
         let param: PBRParamEntity;
-        let material: DefaultPBRMaterial;
+        let material: DefaultPBRMaterial2;
 
         this.m_paramEntities.push( this.m_mirrorEffector.getPlaneParamEntity() );
+
+        let urls = [
+            "static/assets/hw_morning/morning_ft.jpg",
+            "static/assets/hw_morning/morning_bk.jpg",
+            "static/assets/hw_morning/morning_up.jpg",
+            "static/assets/hw_morning/morning_dn.jpg",
+            "static/assets/hw_morning/morning_rt.jpg",
+            "static/assets/hw_morning/morning_lf.jpg"
+        ];
+        let cubeTex0: TextureProxy = this.m_texLoader.getCubeTexAndLoadImg("static/assets/cubeMap", urls);
+        
 
         let sph: Sphere3DEntity;
         let rad: number;
         let radius: number;
-        for(let i: number = 0; i < 3; ++i) {
+        let total: number = 3;
+        for(let i: number = 0; i < total; ++i) {
 
             rad = Math.random() * 100.0;
             radius = Math.random() * 250.0 + 550.0;
-            material = matBuilder.makeDefaultPBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
+            material = matBuilder.makeDefaultPBRMaterial2(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
             material.setTextureList( [
                 this.m_envMap
                 //  ,this.getImageTexByUrl("static/assets/disp/box_COLOR.png")
@@ -90,6 +110,7 @@ export default class EntityScene
                 //  ,this.getImageTexByUrl("static/assets/disp/metal_08_NRM.png")
 
                 ,this.m_cubeRTTBuilder.getCubeTexture()
+                //,cubeTex0
             ] );
             material.diffuseMapEnabled = true;
             material.normalMapEnabled = true;
@@ -109,7 +130,7 @@ export default class EntityScene
             param.initialize();
             this.m_paramEntities.push(param);
 
-            let mirMaterial: DefaultPBRMaterial = matBuilder.makeDefaultPBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
+            let mirMaterial: DefaultPBRMaterial2 = matBuilder.makeDefaultPBRMaterial2(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
             mirMaterial.copyFrom(material, false);
             let texList: TextureProxy[] = material.getTextureList();
             mirMaterial.setTextureList([texList[0],texList[1],texList[2]]);
@@ -130,6 +151,6 @@ export default class EntityScene
         }
     }
     update(): void {
-
+        //this.m_lightData.update();
     }
 }

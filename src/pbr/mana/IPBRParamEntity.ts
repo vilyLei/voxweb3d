@@ -7,7 +7,7 @@
 
 import RGBColorPanel from "../../orthoui/panel/RGBColorPanel";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
-import DefaultPBRMaterial from "../material/DefaultPBRMaterial";
+import IPBRMaterial from "../material/IPBRMaterial";
 import IPBRUI from "./IPBRUI";
 import {ColorParamUnit,F0ColorParamUnit,AmbientParamUnit,SpecularParamUnit} from "./PBRParamUnit";
 
@@ -24,10 +24,10 @@ export default interface IPBRParamEntity {
     ambient: AmbientParamUnit;
     specular: SpecularParamUnit;
 
-    setMaterial(material: DefaultPBRMaterial): void;
-    getMaterial(): DefaultPBRMaterial;    
-    setMirrorMaterial(material: DefaultPBRMaterial): void;
-    getMirrorMaterial(): DefaultPBRMaterial;
+    setMaterial(material: IPBRMaterial): void;
+    getMaterial(): IPBRMaterial;    
+    setMirrorMaterial(material: IPBRMaterial): void;
+    getMirrorMaterial(): IPBRMaterial;
 
     select(): void;
     deselect(): void;

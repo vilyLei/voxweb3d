@@ -12,20 +12,27 @@ import UniformConst from "../../../vox/material/UniformConst";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import ShaderUniformProbe from "../../../vox/material/ShaderUniformProbe";
 import CameraBase from "../../../vox/view/CameraBase";
+import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
 
 export default class ShadowVSMData {
     
     private m_uProbe: ShaderUniformProbe = null;
     private m_suo:ShaderGlobalUniform = null;
-    private m_uslotIndex: number = 0;
     private m_direcMatrix: Matrix4 = null;
     private m_params: Float32Array = null;
     private m_offetMatrix: Matrix4 = null;
     private m_camVersion: number = -1;
     private m_dirty: boolean = false;
+    private m_uslotIndex: number = 0;
 
     constructor(slotIndex: number = 0) {
         this.m_uslotIndex = slotIndex;
+    }
+    useUniforms(builder: IShaderCodeBuilder): void {
+        if (this.m_uProbe != null) {            
+            builder.addFragUniformParam(UniformConst.ShadowVSMParams);
+            builder.addVertUniformParam(UniformConst.ShadowMatrix);
+        }
     }
     initialize(): void {
 
@@ -58,21 +65,26 @@ export default class ShadowVSMData {
             this.m_uProbe = new ShaderUniformProbe();
             this.m_uProbe.bindSlotAt(this.m_uslotIndex);
             this.m_uProbe.addMat4Data(this.m_direcMatrix.getLocalFS32(), 1);
-            this.m_uProbe.addVec4Data(this.m_params, 3);
+            this.m_uProbe.addVec4Data(this.m_params, UniformConst.ShadowVSMParams.arrayLength);
 
             
             this.m_suo = new ShaderGlobalUniform();
-            this.m_suo.uniformNameList = [UniformConst.ShadowMatrixUNS, UniformConst.ShadowVSMParamsUNS];
+            this.m_suo.uniformNameList = [UniformConst.ShadowMatrix.name, UniformConst.ShadowVSMParams.name];
             this.m_suo.copyDataFromProbe( this.m_uProbe );
 
             this.m_uProbe.update();
         }
     }
     getGlobalUinform(): ShaderGlobalUniform {
-        return this.m_suo;
+        return this.m_suo.clone();
+    }
+    getGlobalUinformAt(i: number): ShaderGlobalUniform {
+        let suo: ShaderGlobalUniform = new ShaderGlobalUniform();
+        suo.copyDataFromProbeAt(i, this.m_uProbe);        
+        return suo;
     }
     updateShadowCamera(camera: CameraBase): void {
-        console.log("this.m_camVersion,camera.version: ",this.m_camVersion,camera.version);
+        //console.log("this.m_camVersion,camera.version: ",this.m_camVersion,camera.version);
         if(this.m_camVersion != camera.version) {
 
             this.m_camVersion = camera.version;

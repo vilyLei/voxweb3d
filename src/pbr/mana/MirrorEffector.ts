@@ -11,7 +11,7 @@ import FBOInstance from "../../vox/scene/FBOInstance";
 import CameraBase from "../../vox/view/CameraBase";
 
 import PBRParamEntity from "./PBRParamEntity";
-import DefaultPBRMaterial from "../../pbr/material/DefaultPBRMaterial";
+import DefaultPBRMaterial2 from "../../pbr/material/DefaultPBRMaterial2";
 import MaterialBuilder from "../../pbr/mana/MaterialBuilder";
 import MirrorProjEntity from "./MirrorProjEntity";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
@@ -83,10 +83,10 @@ export class MirrorEffector
         
         let mEntity: MirrorProjEntity = null;
         let plane:Plane3DEntity = null;
-        let material: DefaultPBRMaterial;
+        let material: DefaultPBRMaterial2;
         ///*
         // mirror plane
-        material = this.materialBuilder.makeDefaultPBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
+        material = this.materialBuilder.makeDefaultPBRMaterial2(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
         material.setTextureList( [
             this.envMap
             , this.getImageTexByUrl("static/assets/brickwall_big.jpg")
