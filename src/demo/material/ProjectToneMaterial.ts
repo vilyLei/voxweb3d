@@ -19,7 +19,7 @@ class ProjectToneShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:ProjectToneShaderBuffer = new ProjectToneShaderBuffer();
+    private static s_instance:ProjectToneShaderBuffer = new ProjectToneShaderBuffer();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -148,7 +148,7 @@ FragColor0 = baseColor4;
         );
         return coder.buildVertCode();
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -159,7 +159,7 @@ FragColor0 = baseColor4;
     }
     static GetInstance():ProjectToneShaderBuffer
     {
-        return ProjectToneShaderBuffer.___s_instance;
+        return ProjectToneShaderBuffer.s_instance;
     }
 }
 

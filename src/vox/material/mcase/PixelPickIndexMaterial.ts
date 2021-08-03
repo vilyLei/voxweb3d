@@ -16,7 +16,7 @@ export class PixelPickIndexShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:PixelPickIndexShaderBuffer = new PixelPickIndexShaderBuffer();
+    private static s_instance:PixelPickIndexShaderBuffer = new PixelPickIndexShaderBuffer();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -65,7 +65,7 @@ gl_Position = u_projMat * viewPos;
 `;
         return vtxCode;
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -77,7 +77,7 @@ gl_Position = u_projMat * viewPos;
 
     static GetInstance():PixelPickIndexShaderBuffer
     {
-        return PixelPickIndexShaderBuffer.___s_instance;
+        return PixelPickIndexShaderBuffer.s_instance;
     }
 }
 

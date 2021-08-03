@@ -16,7 +16,7 @@ class BaseColorShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:BaseColorShaderBuffer = new BaseColorShaderBuffer();
+    private static s_instance:BaseColorShaderBuffer = new BaseColorShaderBuffer();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -79,7 +79,7 @@ gl_Position = u_projMat * viewPos;
         }
         return coder.buildVertCode();
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -90,7 +90,7 @@ gl_Position = u_projMat * viewPos;
     }
     static GetInstance():BaseColorShaderBuffer
     {
-        return BaseColorShaderBuffer.___s_instance;
+        return BaseColorShaderBuffer.s_instance;
     }
 }
 

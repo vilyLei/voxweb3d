@@ -59,15 +59,15 @@ v_factor = vec4(0.0,0.0, kf * a_vs2.w,fi);
     {
         return "[BillboardFlareShaderBuffer()]";
     }
-    private static ___s_instance:BillboardFlareShaderBuffer = new BillboardFlareShaderBuffer();
+    private static s_instance:BillboardFlareShaderBuffer = new BillboardFlareShaderBuffer();
     static GetInstance():BillboardFlareShaderBuffer
     {
-        if(BillboardFlareShaderBuffer.___s_instance != null)
+        if(BillboardFlareShaderBuffer.s_instance != null)
         {
-            return BillboardFlareShaderBuffer.___s_instance;
+            return BillboardFlareShaderBuffer.s_instance;
         }
-        BillboardFlareShaderBuffer.___s_instance = new BillboardFlareShaderBuffer();
-        return BillboardFlareShaderBuffer.___s_instance;
+        BillboardFlareShaderBuffer.s_instance = new BillboardFlareShaderBuffer();
+        return BillboardFlareShaderBuffer.s_instance;
     }
 }
 

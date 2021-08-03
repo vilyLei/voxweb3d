@@ -16,7 +16,7 @@ class ViewMirrorShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:ViewMirrorShaderBuffer = new ViewMirrorShaderBuffer();
+    private static s_instance:ViewMirrorShaderBuffer = new ViewMirrorShaderBuffer();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -84,7 +84,7 @@ gl_Position = dot(nv, vec3(0.0,0.0,1.0)) > 0.01 ? u_projMat * viewPos : vec4(0.0
         }
         return coder.buildVertCode();
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -95,7 +95,7 @@ gl_Position = dot(nv, vec3(0.0,0.0,1.0)) > 0.01 ? u_projMat * viewPos : vec4(0.0
     }
     static GetInstance():ViewMirrorShaderBuffer
     {
-        return ViewMirrorShaderBuffer.___s_instance;
+        return ViewMirrorShaderBuffer.s_instance;
     }
 }
 

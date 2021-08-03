@@ -65,7 +65,7 @@ v_color = u_billParam[1] * vec4(a_cvs.xyz,1.0);\n\
 "
         return vtxCode;
     }
-    getUniqueShaderName():string
+    getUniqueShaderName(): string
     {
         return this.m_uniqueName;
     }
@@ -73,15 +73,15 @@ v_color = u_billParam[1] * vec4(a_cvs.xyz,1.0);\n\
     {
         return "[BillboardFrameShaderBuffer()]";
     }
-    private static ___s_instance:BillboardFrameShaderBuffer = new BillboardFrameShaderBuffer();
+    private static s_instance:BillboardFrameShaderBuffer = new BillboardFrameShaderBuffer();
     static GetInstance():BillboardFrameShaderBuffer
     {
-        if(BillboardFrameShaderBuffer.___s_instance != null)
+        if(BillboardFrameShaderBuffer.s_instance != null)
         {
-            return BillboardFrameShaderBuffer.___s_instance;
+            return BillboardFrameShaderBuffer.s_instance;
         }
-        BillboardFrameShaderBuffer.___s_instance = new BillboardFrameShaderBuffer();
-        return BillboardFrameShaderBuffer.___s_instance;
+        BillboardFrameShaderBuffer.s_instance = new BillboardFrameShaderBuffer();
+        return BillboardFrameShaderBuffer.s_instance;
     }
 }
 

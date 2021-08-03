@@ -32,7 +32,7 @@ export namespace advancedDemo
                 {
                     super();
                 }
-                private static ___s_instance:FogPlaneConeFactorShaderBuffer = new FogPlaneConeFactorShaderBuffer();
+                private static s_instance:FogPlaneConeFactorShaderBuffer = new FogPlaneConeFactorShaderBuffer();
                 private m_uniqueName:string = "";
                 initialize(texEnabled:boolean):void
                 {
@@ -132,7 +132,7 @@ gl_Position = u_objMat * vec4(a_vs,1.0);\n\
 ";
                     return vtxCode;
                 }
-                getUniqueShaderName()
+                getUniqueShaderName(): string
                 {
                     //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
                     return this.m_uniqueName;
@@ -144,7 +144,7 @@ gl_Position = u_objMat * vec4(a_vs,1.0);\n\
 
                 static GetInstance():FogPlaneConeFactorShaderBuffer
                 {
-                    return FogPlaneConeFactorShaderBuffer.___s_instance;
+                    return FogPlaneConeFactorShaderBuffer.s_instance;
                 }
             }
             

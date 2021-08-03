@@ -13,7 +13,7 @@ class HdrCylShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: HdrCylShaderBuffer = new HdrCylShaderBuffer();
+    private static s_instance: HdrCylShaderBuffer = new HdrCylShaderBuffer();
     private m_uniqueName: string = "";
     initialize(texEnabled: boolean): void {
         //console.log("HdrCylShaderBuffer::initialize()...");
@@ -132,7 +132,7 @@ void main(){
 `;
         return vtxCode;
     }
-    getUniqueShaderName() {
+    getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
@@ -141,7 +141,7 @@ void main(){
     }
 
     static GetInstance(): HdrCylShaderBuffer {
-        return HdrCylShaderBuffer.___s_instance;
+        return HdrCylShaderBuffer.s_instance;
     }
 }
 

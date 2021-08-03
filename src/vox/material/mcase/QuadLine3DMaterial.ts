@@ -16,7 +16,7 @@ class QuadLine3DShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:QuadLine3DShaderBuffer = null;
+    private static s_instance:QuadLine3DShaderBuffer = null;
     private m_uniqueName:string = "";
     dynColorEnabled:boolean = false;
     initialize(texEnabled:boolean):void
@@ -109,7 +109,7 @@ v_vtxColor = a_cvs;\n\
 ";
         return vtxCode;
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -121,12 +121,12 @@ v_vtxColor = a_cvs;\n\
 
     static GetInstance():QuadLine3DShaderBuffer
     {
-        if(QuadLine3DShaderBuffer.___s_instance != null)
+        if(QuadLine3DShaderBuffer.s_instance != null)
         {
-            return QuadLine3DShaderBuffer.___s_instance;
+            return QuadLine3DShaderBuffer.s_instance;
         }
-        QuadLine3DShaderBuffer.___s_instance = new QuadLine3DShaderBuffer();
-        return QuadLine3DShaderBuffer.___s_instance;
+        QuadLine3DShaderBuffer.s_instance = new QuadLine3DShaderBuffer();
+        return QuadLine3DShaderBuffer.s_instance;
     }
 }
 

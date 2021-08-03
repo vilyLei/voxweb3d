@@ -19,7 +19,7 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: ShadowVSMShaderBuffer = new ShadowVSMShaderBuffer();
+    private static s_instance: ShadowVSMShaderBuffer = new ShadowVSMShaderBuffer();
     private m_codeBuilder: ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName: string = "";
     
@@ -45,21 +45,23 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
 
         coder.addVarying("vec2", "v_uv");
         coder.addVarying("vec3", "v_nv");
-        coder.addVarying("vec4", "v_pos");
+        coder.addVarying("vec4", "v_shadowPos");
         coder.addVarying("float", "v_fogDepth");
         coder.addFragOutput("vec4", "FragColor0");
 
         this.vsmData.useUniforms( coder );
+
         if(this.envData != null) {
             coder.addDefine("VOX_FOG", "1");
             coder.addDefine("VOX_FOG_EXP2", "1");
             this.envData.useUniforms( coder );
         }
-        
+        coder.addDefine("VOX_VSM_MAP", "u_sampler0");
         coder.addFragUniform("vec4", "u_color");
 
         coder.useVertSpaceMats(true, true, true);
         coder.addFragFunction(VSMShaderCode.frag_head);
+        coder.vertMatrixInverseEnabled = true;
 
     }
     getFragShaderCode(): string {
@@ -67,28 +69,20 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
 
         this.m_codeBuilder.addFragMainCode(
 `
-const float fogNear = 500.0;
-const float fogFar = 3500.0;
-//const float fogDensity = 0.0005;
-//const vec3 fogColor = vec3(0.3,0.0,1.0);
-void main() {
-    vec4 color = texture( u_sampler1, v_uv );
 
-    float shadow = getVSMShadow( u_sampler0, u_vsmParams[1].xy, u_vsmParams[0].x, u_vsmParams[0].z, v_pos );
-    float shadowIntensity = 1.0 - u_vsmParams[0].w;
-    shadow = clamp(shadow, 0.0, 1.0) * (1.0 - shadowIntensity) + shadowIntensity;
-    float f = clamp(dot(v_nv,u_vsmParams[2].xyz),0.0,1.0);
-    shadow = f > 0.0001 ? min(shadow,clamp(f, shadowIntensity,1.0)) : shadowIntensity;
-    f = u_vsmParams[1].z;
-    shadow = shadow * (1.0 - f) + f;
+void main() {
+    vec4 color = VOX_Texture2D( u_sampler1, v_uv );
+
+    float factor = getVSMShadowFactor(v_shadowPos);
     color.xyz *= u_color.xyz;
 
-    FragColor0 = vec4(color.xyz * vec3(shadow), 1.0);
+    FragColor0 = vec4(color.xyz * vec3(factor), 1.0);
 
     #ifdef VOX_FOG
         vec3 fogColor = u_envLightParams[2].xyz;
     	#ifdef VOX_FOG_EXP2
             float fogDensity = u_envLightParams[2].w;
+            // v_fogDepth = -viewPos.z;
     		float fogFactor = 1.0 - exp( - fogDensity * fogDensity * v_fogDepth * v_fogDepth );
 
     	#else
@@ -118,7 +112,9 @@ void main() {
     v_uv = a_uvs.xy;
     v_nv = normalize(a_nvs * inverse(mat3(u_objMat)));
     //wpos.xyz += a_nvs.xyz * 0.05;
-    v_pos = u_shadowMat * wpos;
+
+    v_shadowPos = u_shadowMat * wpos;
+
     v_fogDepth = -viewPos.z;
 }
 `
@@ -126,14 +122,14 @@ void main() {
         return this.m_codeBuilder.buildVertCode();
 
     }
-    getUniqueShaderName() {
+    getUniqueShaderName(): string {
         return this.m_uniqueName;
     }
     toString(): string {
         return "[ShadowVSMShaderBuffer()]";
     }
     static GetInstance(): ShadowVSMShaderBuffer {
-        return ShadowVSMShaderBuffer.___s_instance;
+        return ShadowVSMShaderBuffer.s_instance;
     }
 }
 

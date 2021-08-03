@@ -24,8 +24,6 @@ import BoxFrame3D from "../vox/entity/BoxFrame3D";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 
-export namespace demo
-{
     class DispCtrObj
     {
         constructor(){}
@@ -298,4 +296,4 @@ export namespace demo
             if(this.m_profileInstance != null) this.m_profileInstance.run();
         }
     }
-}
+    export default DemoMobileEvt;

@@ -27,7 +27,7 @@ export namespace demo
                 {
                     super();
                 }
-                private static ___s_instance:DepZColorShaderBuffer = null;
+                private static s_instance:DepZColorShaderBuffer = null;
                 private m_uniqueName:string = "";
                 private m_hasTex:boolean = false;
                 initialize(texEnabled:boolean):void
@@ -94,7 +94,7 @@ void main()
 `;
                     return vtxCode;
                 }
-                getUniqueShaderName()
+                getUniqueShaderName(): string
                 {
                     //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
                     return this.m_uniqueName;
@@ -106,12 +106,12 @@ void main()
 
                 static GetInstance():DepZColorShaderBuffer
                 {
-                    if(DepZColorShaderBuffer.___s_instance != null)
+                    if(DepZColorShaderBuffer.s_instance != null)
                     {
-                        return DepZColorShaderBuffer.___s_instance;
+                        return DepZColorShaderBuffer.s_instance;
                     }
-                    DepZColorShaderBuffer.___s_instance = new DepZColorShaderBuffer();
-                    return DepZColorShaderBuffer.___s_instance;
+                    DepZColorShaderBuffer.s_instance = new DepZColorShaderBuffer();
+                    return DepZColorShaderBuffer.s_instance;
                 }
             }
             

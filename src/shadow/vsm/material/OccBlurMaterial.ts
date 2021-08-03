@@ -18,7 +18,7 @@ class OccBlurShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:OccBlurShaderBuffer = null;
+    private static s_instance:OccBlurShaderBuffer = null;
     private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName:string = "";
     private m_hasTex:boolean = false;
@@ -139,7 +139,7 @@ void main() {
     {
         return this.m_codeBuilder.buildVertCode();
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName + (this.horizonal?"_h":"_v");
@@ -151,12 +151,12 @@ void main() {
 
     static GetInstance():OccBlurShaderBuffer
     {
-        if(OccBlurShaderBuffer.___s_instance != null)
+        if(OccBlurShaderBuffer.s_instance != null)
         {
-            return OccBlurShaderBuffer.___s_instance;
+            return OccBlurShaderBuffer.s_instance;
         }
-        OccBlurShaderBuffer.___s_instance = new OccBlurShaderBuffer();
-        return OccBlurShaderBuffer.___s_instance;
+        OccBlurShaderBuffer.s_instance = new OccBlurShaderBuffer();
+        return OccBlurShaderBuffer.s_instance;
     }
 }
 

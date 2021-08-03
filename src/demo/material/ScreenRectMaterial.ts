@@ -28,7 +28,7 @@ export namespace demo
                 {
                     super();
                 }
-                private static ___s_instance:ScreenRectShaderBuffer = new ScreenRectShaderBuffer();
+                private static s_instance:ScreenRectShaderBuffer = new ScreenRectShaderBuffer();
                 private m_uniqueName:string = "";
                 initialize(texEnabled:boolean):void
                 {
@@ -65,7 +65,7 @@ gl_Position = u_objMat * vec4(a_vs,1.0);\n\
 ";
                     return vtxCode;
                 }
-                getUniqueShaderName()
+                getUniqueShaderName(): string
                 {
                     //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
                     return this.m_uniqueName;
@@ -77,7 +77,7 @@ gl_Position = u_objMat * vec4(a_vs,1.0);\n\
 
                 static GetInstance():ScreenRectShaderBuffer
                 {
-                    return ScreenRectShaderBuffer.___s_instance;
+                    return ScreenRectShaderBuffer.s_instance;
                 }
             }
             

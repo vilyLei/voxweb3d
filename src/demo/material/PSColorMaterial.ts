@@ -14,7 +14,7 @@ class PSColorShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:PSColorShaderBuffer = new PSColorShaderBuffer();
+    private static s_instance:PSColorShaderBuffer = new PSColorShaderBuffer();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -51,7 +51,7 @@ gl_Position = u_projMat * viewPos;
 `;
         return vtxCode;
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -63,7 +63,7 @@ gl_Position = u_projMat * viewPos;
 
     static GetInstance():PSColorShaderBuffer
     {
-        return PSColorShaderBuffer.___s_instance;
+        return PSColorShaderBuffer.s_instance;
     }
 }
 

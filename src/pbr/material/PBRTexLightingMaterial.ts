@@ -15,7 +15,7 @@ class PBRTexLightingShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: PBRTexLightingShaderBuffer = new PBRTexLightingShaderBuffer();
+    private static s_instance: PBRTexLightingShaderBuffer = new PBRTexLightingShaderBuffer();
     private m_uniqueName: string = "";
     initialize(texEnabled: boolean): void {
         //console.log("PBRTexLightingShaderBuffer::initialize()...");
@@ -215,7 +215,7 @@ void main(){
 `;
         return vtxCode;
     }
-    getUniqueShaderName() {
+    getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
@@ -224,7 +224,7 @@ void main(){
     }
 
     static GetInstance(): PBRTexLightingShaderBuffer {
-        return PBRTexLightingShaderBuffer.___s_instance;
+        return PBRTexLightingShaderBuffer.s_instance;
     }
 }
 

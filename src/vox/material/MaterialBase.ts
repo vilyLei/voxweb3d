@@ -101,7 +101,7 @@ export default class MaterialBase implements IRenderMaterial
                 ShaderCodeBuffer.UseShaderBuffer( buf );
                 //
                 MaterialBase.s_codeBuffer.initialize(texEnabled);
-                let shdCode_uniqueName:string = MaterialBase.s_codeBuffer.getUniqueShaderName();
+                let shdCode_uniqueName:string = MaterialBase.s_codeBuffer.getUniqueShaderName(): string;
                 this.m_shduns = shdCode_uniqueName;
                 this.__$initShd(this.m_shduns);
                 let shdData:ShaderData = MaterialResource.FindData( shdCode_uniqueName );

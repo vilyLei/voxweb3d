@@ -25,7 +25,7 @@ export namespace renderingtoy
                 {
                     super();
                 }
-                private static ___s_instance:ScrDepBlurShaderBuffer = null;
+                private static s_instance:ScrDepBlurShaderBuffer = null;
                 private m_uniqueName:string = "";
                 initialize(texEnabled:boolean):void
                 {
@@ -70,7 +70,7 @@ void main()
 `;
                     return vtxCode;
                 }
-                getUniqueShaderName()
+                getUniqueShaderName(): string
                 {
                     //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
                     return this.m_uniqueName;
@@ -82,12 +82,12 @@ void main()
 
                 static GetInstance():ScrDepBlurShaderBuffer
                 {
-                    if(ScrDepBlurShaderBuffer.___s_instance != null)
+                    if(ScrDepBlurShaderBuffer.s_instance != null)
                     {
-                        return ScrDepBlurShaderBuffer.___s_instance;
+                        return ScrDepBlurShaderBuffer.s_instance;
                     }
-                    ScrDepBlurShaderBuffer.___s_instance = new ScrDepBlurShaderBuffer();
-                    return ScrDepBlurShaderBuffer.___s_instance;
+                    ScrDepBlurShaderBuffer.s_instance = new ScrDepBlurShaderBuffer();
+                    return ScrDepBlurShaderBuffer.s_instance;
                 }
             }
             

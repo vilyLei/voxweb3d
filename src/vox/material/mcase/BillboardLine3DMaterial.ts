@@ -94,7 +94,7 @@ v_fadeV = vec4(u_billParam[4].w, u_billParam[5].w, 1.0,1.0);
 `;
         return vtxCode;
     }
-    getUniqueShaderName():string
+    getUniqueShaderName(): string
     {
         return this.m_uniqueName + "_"+this.billFS.getBrnAlphaStatus();
     }
@@ -102,15 +102,15 @@ v_fadeV = vec4(u_billParam[4].w, u_billParam[5].w, 1.0,1.0);
     {
         return "[BillboardLine3DShaderBuffer()]";
     }
-    private static ___s_instance:BillboardLine3DShaderBuffer = new BillboardLine3DShaderBuffer();
+    private static s_instance:BillboardLine3DShaderBuffer = new BillboardLine3DShaderBuffer();
     static GetInstance():BillboardLine3DShaderBuffer
     {
-        if(BillboardLine3DShaderBuffer.___s_instance != null)
+        if(BillboardLine3DShaderBuffer.s_instance != null)
         {
-            return BillboardLine3DShaderBuffer.___s_instance;
+            return BillboardLine3DShaderBuffer.s_instance;
         }
-        BillboardLine3DShaderBuffer.___s_instance = new BillboardLine3DShaderBuffer();
-        return BillboardLine3DShaderBuffer.___s_instance;
+        BillboardLine3DShaderBuffer.s_instance = new BillboardLine3DShaderBuffer();
+        return BillboardLine3DShaderBuffer.s_instance;
     }
 }
 

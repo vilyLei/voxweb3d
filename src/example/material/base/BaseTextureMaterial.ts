@@ -25,7 +25,7 @@ export namespace example
                 {
                     super();
                 }
-                private static ___s_instance:BaseTextureShaderBuffer = null;
+                private static s_instance:BaseTextureShaderBuffer = null;
                 private m_uniqueName:string = "";
                 initialize(texEnabled:boolean):void
                 {
@@ -85,7 +85,7 @@ void main(){\n\
 ";
                     return vtxCode;
                 }
-                getUniqueShaderName()
+                getUniqueShaderName(): string
                 {
                     //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
                     return this.m_uniqueName;
@@ -97,12 +97,12 @@ void main(){\n\
 
                 static GetInstance():BaseTextureShaderBuffer
                 {
-                    if(BaseTextureShaderBuffer.___s_instance != null)
+                    if(BaseTextureShaderBuffer.s_instance != null)
                     {
-                        return BaseTextureShaderBuffer.___s_instance;
+                        return BaseTextureShaderBuffer.s_instance;
                     }
-                    BaseTextureShaderBuffer.___s_instance = new BaseTextureShaderBuffer();
-                    return BaseTextureShaderBuffer.___s_instance;
+                    BaseTextureShaderBuffer.s_instance = new BaseTextureShaderBuffer();
+                    return BaseTextureShaderBuffer.s_instance;
                 }
             }
             export class BaseTextureMaterial extends MaterialBase

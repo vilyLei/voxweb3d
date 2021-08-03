@@ -29,7 +29,7 @@ export namespace advancedDemo
                 {
                     super();
                 }
-                private static ___s_instance:FogDepthUVShaderBuffer = new FogDepthUVShaderBuffer();
+                private static s_instance:FogDepthUVShaderBuffer = new FogDepthUVShaderBuffer();
                 private m_uniqueName:string = "";
                 initialize(texEnabled:boolean):void
                 {
@@ -82,7 +82,7 @@ void main(){\n\
 ";
                     return vtxCode;
                 }
-                getUniqueShaderName()
+                getUniqueShaderName(): string
                 {
                     //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
                     return this.m_uniqueName;
@@ -94,7 +94,7 @@ void main(){\n\
 
                 static GetInstance():FogDepthUVShaderBuffer
                 {
-                    return FogDepthUVShaderBuffer.___s_instance;
+                    return FogDepthUVShaderBuffer.s_instance;
                 }
             }
             

@@ -16,7 +16,7 @@ class ScreenFixedPlaneShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:ScreenFixedPlaneShaderBuffer = null;
+    private static s_instance:ScreenFixedPlaneShaderBuffer = null;
     private m_uniqueName:string = "";
     private m_hasTex:boolean = false;
     initialize(texEnabled:boolean):void
@@ -106,7 +106,7 @@ v_texUV.xy = u_param.zw + (a_uvs.xy * u_param.xy);\n\
 ";
         return vtxCode;
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -118,12 +118,12 @@ v_texUV.xy = u_param.zw + (a_uvs.xy * u_param.xy);\n\
 
     static GetInstance():ScreenFixedPlaneShaderBuffer
     {
-        if(ScreenFixedPlaneShaderBuffer.___s_instance != null)
+        if(ScreenFixedPlaneShaderBuffer.s_instance != null)
         {
-            return ScreenFixedPlaneShaderBuffer.___s_instance;
+            return ScreenFixedPlaneShaderBuffer.s_instance;
         }
-        ScreenFixedPlaneShaderBuffer.___s_instance = new ScreenFixedPlaneShaderBuffer();
-        return ScreenFixedPlaneShaderBuffer.___s_instance;
+        ScreenFixedPlaneShaderBuffer.s_instance = new ScreenFixedPlaneShaderBuffer();
+        return ScreenFixedPlaneShaderBuffer.s_instance;
     }
 }
 

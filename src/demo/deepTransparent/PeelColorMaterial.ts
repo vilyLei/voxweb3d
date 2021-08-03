@@ -15,7 +15,7 @@ constructor()
 {
     super();
 }
-private static ___s_instance:PeelColorShaderBuffer = new PeelColorShaderBuffer();
+private static s_instance:PeelColorShaderBuffer = new PeelColorShaderBuffer();
 private m_uniqueName:string = "";
 initialize(texEnabled:boolean):void
 {
@@ -99,7 +99,7 @@ v_uvs = a_uvs;
 `;
     return vtxCode;
 }
-getUniqueShaderName()
+getUniqueShaderName(): string
 {
     //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
     return this.m_uniqueName;
@@ -111,7 +111,7 @@ toString():string
 
 static GetInstance():PeelColorShaderBuffer
 {
-    return PeelColorShaderBuffer.___s_instance;
+    return PeelColorShaderBuffer.s_instance;
 }
 }
 

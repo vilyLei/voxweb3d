@@ -14,7 +14,7 @@ class CubeMapShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: CubeMapShaderBuffer = null;
+    private static s_instance: CubeMapShaderBuffer = null;
     private m_codeBuilder: ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName: string = "";
     mapLodEnabled: boolean = false;
@@ -113,7 +113,7 @@ void main()
         );
         return this.m_codeBuilder.buildVertCode();
     }
-    getUniqueShaderName() {
+    getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
@@ -122,11 +122,11 @@ void main()
     }
 
     static GetInstance(): CubeMapShaderBuffer {
-        if (CubeMapShaderBuffer.___s_instance != null) {
-            return CubeMapShaderBuffer.___s_instance;
+        if (CubeMapShaderBuffer.s_instance != null) {
+            return CubeMapShaderBuffer.s_instance;
         }
-        CubeMapShaderBuffer.___s_instance = new CubeMapShaderBuffer();
-        return CubeMapShaderBuffer.___s_instance;
+        CubeMapShaderBuffer.s_instance = new CubeMapShaderBuffer();
+        return CubeMapShaderBuffer.s_instance;
     }
 }
 

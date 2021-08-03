@@ -16,7 +16,7 @@ class Line3DShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:Line3DShaderBuffer = null;
+    private static s_instance:Line3DShaderBuffer = null;
     private m_uniqueName:string = "";
     dynColorEnabled:boolean = false;
     initialize(texEnabled:boolean):void
@@ -95,7 +95,7 @@ v_vtxColor = a_cvs;\n\
 ";
         return vtxCode;
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -107,12 +107,12 @@ v_vtxColor = a_cvs;\n\
 
     static GetInstance():Line3DShaderBuffer
     {
-        if(Line3DShaderBuffer.___s_instance != null)
+        if(Line3DShaderBuffer.s_instance != null)
         {
-            return Line3DShaderBuffer.___s_instance;
+            return Line3DShaderBuffer.s_instance;
         }
-        Line3DShaderBuffer.___s_instance = new Line3DShaderBuffer();
-        return Line3DShaderBuffer.___s_instance;
+        Line3DShaderBuffer.s_instance = new Line3DShaderBuffer();
+        return Line3DShaderBuffer.s_instance;
     }
 }
 

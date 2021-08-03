@@ -15,7 +15,7 @@ class TextureCubeUVShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: TextureCubeUVShaderBuffer = new TextureCubeUVShaderBuffer();
+    private static s_instance: TextureCubeUVShaderBuffer = new TextureCubeUVShaderBuffer();
     private m_uniqueName: string = "";
     initialize(texEnabled: boolean): void {
         //console.log("TextureCubeUVShaderBuffer::initialize()...");
@@ -318,7 +318,7 @@ void main(){
 `;
         return vtxCode;
     }
-    getUniqueShaderName() {
+    getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
@@ -327,7 +327,7 @@ void main(){
     }
 
     static GetInstance(): TextureCubeUVShaderBuffer {
-        return TextureCubeUVShaderBuffer.___s_instance;
+        return TextureCubeUVShaderBuffer.s_instance;
     }
 }
 

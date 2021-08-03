@@ -15,7 +15,7 @@ class VSTexturePosIdRenderShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:VSTexturePosIdRenderShaderBuffer = null;
+    private static s_instance:VSTexturePosIdRenderShaderBuffer = null;
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -66,7 +66,7 @@ void main(){
 `;
         return vtxCode;
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -77,12 +77,12 @@ void main(){
     }
     static GetInstance():VSTexturePosIdRenderShaderBuffer
     {
-        if(VSTexturePosIdRenderShaderBuffer.___s_instance != null)
+        if(VSTexturePosIdRenderShaderBuffer.s_instance != null)
         {
-            return VSTexturePosIdRenderShaderBuffer.___s_instance;
+            return VSTexturePosIdRenderShaderBuffer.s_instance;
         }
-        VSTexturePosIdRenderShaderBuffer.___s_instance = new VSTexturePosIdRenderShaderBuffer();
-        return VSTexturePosIdRenderShaderBuffer.___s_instance;
+        VSTexturePosIdRenderShaderBuffer.s_instance = new VSTexturePosIdRenderShaderBuffer();
+        return VSTexturePosIdRenderShaderBuffer.s_instance;
     }
 }
 export class VSTexturePosIdMaterial extends MaterialBase

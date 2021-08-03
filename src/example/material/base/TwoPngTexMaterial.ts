@@ -25,7 +25,7 @@ export namespace example
                 {
                     super();
                 }
-                private static ___s_instance:TwoPngTexShaderBuffer = null;
+                private static s_instance:TwoPngTexShaderBuffer = null;
                 private m_uniqueName:string = "";
                 initialize(texEnabled:boolean):void
                 {
@@ -72,7 +72,7 @@ void main(){
 `;
                     return vtxCode;
                 }
-                getUniqueShaderName()
+                getUniqueShaderName(): string
                 {
                     //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
                     return this.m_uniqueName;
@@ -84,12 +84,12 @@ void main(){
 
                 static GetInstance():TwoPngTexShaderBuffer
                 {
-                    if(TwoPngTexShaderBuffer.___s_instance != null)
+                    if(TwoPngTexShaderBuffer.s_instance != null)
                     {
-                        return TwoPngTexShaderBuffer.___s_instance;
+                        return TwoPngTexShaderBuffer.s_instance;
                     }
-                    TwoPngTexShaderBuffer.___s_instance = new TwoPngTexShaderBuffer();
-                    return TwoPngTexShaderBuffer.___s_instance;
+                    TwoPngTexShaderBuffer.s_instance = new TwoPngTexShaderBuffer();
+                    return TwoPngTexShaderBuffer.s_instance;
                 }
             }
             export class TwoPngTexMaterial extends MaterialBase

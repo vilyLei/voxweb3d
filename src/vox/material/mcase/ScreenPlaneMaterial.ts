@@ -15,7 +15,7 @@ class ScreenPlaneShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: ScreenPlaneShaderBuffer = null;
+    private static s_instance: ScreenPlaneShaderBuffer = null;
     private m_codeBuilder: ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName: string = "";
     private m_hasTex: boolean = false;
@@ -101,7 +101,7 @@ void main() {
         }
         return this.m_codeBuilder.buildVertCode();
     }
-    getUniqueShaderName() {
+    getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
@@ -110,11 +110,11 @@ void main() {
     }
 
     static GetInstance(): ScreenPlaneShaderBuffer {
-        if (ScreenPlaneShaderBuffer.___s_instance != null) {
-            return ScreenPlaneShaderBuffer.___s_instance;
+        if (ScreenPlaneShaderBuffer.s_instance != null) {
+            return ScreenPlaneShaderBuffer.s_instance;
         }
-        ScreenPlaneShaderBuffer.___s_instance = new ScreenPlaneShaderBuffer();
-        return ScreenPlaneShaderBuffer.___s_instance;
+        ScreenPlaneShaderBuffer.s_instance = new ScreenPlaneShaderBuffer();
+        return ScreenPlaneShaderBuffer.s_instance;
     }
 }
 

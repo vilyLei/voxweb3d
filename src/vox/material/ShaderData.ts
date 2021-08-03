@@ -234,7 +234,7 @@ export default class ShaderData implements IShaderData
         }
         return 0;
     }
-    getUniqueShaderName():string
+    getUniqueShaderName(): string
     {
         return this.m_shdUniqueName;
     }

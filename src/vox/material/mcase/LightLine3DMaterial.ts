@@ -80,7 +80,7 @@ v_colorOffset = u_billParam[2];
 `;
         return vtxCode;
     }
-    getUniqueShaderName():string
+    getUniqueShaderName(): string
     {
         return this.m_uniqueName + "_"+this.billFS.getBrnAlphaStatus();
     }
@@ -88,15 +88,15 @@ v_colorOffset = u_billParam[2];
     {
         return "[LightLine3DShaderBuffer()]";
     }
-    private static ___s_instance:LightLine3DShaderBuffer = new LightLine3DShaderBuffer();
+    private static s_instance:LightLine3DShaderBuffer = new LightLine3DShaderBuffer();
     static GetInstance():LightLine3DShaderBuffer
     {
-        if(LightLine3DShaderBuffer.___s_instance != null)
+        if(LightLine3DShaderBuffer.s_instance != null)
         {
-            return LightLine3DShaderBuffer.___s_instance;
+            return LightLine3DShaderBuffer.s_instance;
         }
-        LightLine3DShaderBuffer.___s_instance = new LightLine3DShaderBuffer();
-        return LightLine3DShaderBuffer.___s_instance;
+        LightLine3DShaderBuffer.s_instance = new LightLine3DShaderBuffer();
+        return LightLine3DShaderBuffer.s_instance;
     }
 }
 

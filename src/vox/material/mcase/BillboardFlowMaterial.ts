@@ -158,15 +158,15 @@ v_uv = vec4(a_uvs.xy,0.0,0.0);
     {
         return "[BillboardFlowShaderBuffer()]";
     }
-    private static ___s_instance:BillboardFlowShaderBuffer = new BillboardFlowShaderBuffer();
+    private static s_instance:BillboardFlowShaderBuffer = new BillboardFlowShaderBuffer();
     static GetInstance():BillboardFlowShaderBuffer
     {
-        if(BillboardFlowShaderBuffer.___s_instance != null)
+        if(BillboardFlowShaderBuffer.s_instance != null)
         {
-            return BillboardFlowShaderBuffer.___s_instance;
+            return BillboardFlowShaderBuffer.s_instance;
         }
-        BillboardFlowShaderBuffer.___s_instance = new BillboardFlowShaderBuffer();
-        return BillboardFlowShaderBuffer.___s_instance;
+        BillboardFlowShaderBuffer.s_instance = new BillboardFlowShaderBuffer();
+        return BillboardFlowShaderBuffer.s_instance;
     }
 }
 

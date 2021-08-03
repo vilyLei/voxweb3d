@@ -23,7 +23,7 @@ export namespace demo
             {
                 super();
             }
-            private static ___s_instance:ScrDepBaseShaderBuffer = null;
+            private static s_instance:ScrDepBaseShaderBuffer = null;
             private m_uniqueName:string = "";
             initialize(texEnabled:boolean):void
             {
@@ -65,7 +65,7 @@ void main()\n\
 ";
                 return vtxCode;
             }
-            getUniqueShaderName()
+            getUniqueShaderName(): string
             {
                 //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
                 return this.m_uniqueName;
@@ -77,12 +77,12 @@ void main()\n\
 
             static GetInstance():ScrDepBaseShaderBuffer
             {
-                if(ScrDepBaseShaderBuffer.___s_instance != null)
+                if(ScrDepBaseShaderBuffer.s_instance != null)
                 {
-                    return ScrDepBaseShaderBuffer.___s_instance;
+                    return ScrDepBaseShaderBuffer.s_instance;
                 }
-                ScrDepBaseShaderBuffer.___s_instance = new ScrDepBaseShaderBuffer();
-                return ScrDepBaseShaderBuffer.___s_instance;
+                ScrDepBaseShaderBuffer.s_instance = new ScrDepBaseShaderBuffer();
+                return ScrDepBaseShaderBuffer.s_instance;
             }
         }
             

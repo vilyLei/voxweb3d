@@ -17,7 +17,7 @@ class Text2DShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:Text2DShaderBuffer = null;
+    private static s_instance:Text2DShaderBuffer = null;
     private m_uniqueName:string = "";
     private m_hasTex:boolean = false;
     initialize(texEnabled:boolean):void
@@ -120,7 +120,7 @@ v_color = u_params[2];\n\
 ";
         return vtxCode;
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -132,12 +132,12 @@ v_color = u_params[2];\n\
 
     static GetInstance():Text2DShaderBuffer
     {
-        if(Text2DShaderBuffer.___s_instance != null)
+        if(Text2DShaderBuffer.s_instance != null)
         {
-            return Text2DShaderBuffer.___s_instance;
+            return Text2DShaderBuffer.s_instance;
         }
-        Text2DShaderBuffer.___s_instance = new Text2DShaderBuffer();
-        return Text2DShaderBuffer.___s_instance;
+        Text2DShaderBuffer.s_instance = new Text2DShaderBuffer();
+        return Text2DShaderBuffer.s_instance;
     }
 }
 

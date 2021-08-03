@@ -41,7 +41,7 @@ class RawCodeShaderBuffer extends ShaderCodeBuffer
     {
         return this.m_vtxCode;
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;

@@ -15,7 +15,7 @@ export class DeepColorShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:DeepColorShaderBuffer = null;
+    private static s_instance:DeepColorShaderBuffer = null;
     private m_uniqueName:string = "";
     private m_hasTex:boolean = false;
     initialize(texEnabled:boolean):void
@@ -81,7 +81,7 @@ v_texUV = a_uvs;
 `;
         return vtxCode;
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -93,12 +93,12 @@ v_texUV = a_uvs;
 
     static GetInstance():DeepColorShaderBuffer
     {
-        if(DeepColorShaderBuffer.___s_instance != null)
+        if(DeepColorShaderBuffer.s_instance != null)
         {
-            return DeepColorShaderBuffer.___s_instance;
+            return DeepColorShaderBuffer.s_instance;
         }
-        DeepColorShaderBuffer.___s_instance = new DeepColorShaderBuffer();
-        return DeepColorShaderBuffer.___s_instance;
+        DeepColorShaderBuffer.s_instance = new DeepColorShaderBuffer();
+        return DeepColorShaderBuffer.s_instance;
     }
 }
 

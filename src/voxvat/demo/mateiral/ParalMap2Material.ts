@@ -33,7 +33,7 @@ export namespace voxvat
                 {
                     super();
                 }
-                private static ___s_instance:ParalMap2ShaderBuffer = new ParalMap2ShaderBuffer();
+                private static s_instance:ParalMap2ShaderBuffer = new ParalMap2ShaderBuffer();
                 private m_uniqueName:string = "";
                 initialize(texEnabled:boolean):void
                 {
@@ -192,7 +192,7 @@ v_VTBNM3 = mMToVTBN3;\n\
 ";
                     return vtxCode;
                 }
-                getUniqueShaderName()
+                getUniqueShaderName(): string
                 {
                     //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
                     return this.m_uniqueName;
@@ -204,7 +204,7 @@ v_VTBNM3 = mMToVTBN3;\n\
 
                 static GetInstance():ParalMap2ShaderBuffer
                 {
-                    return ParalMap2ShaderBuffer.___s_instance;
+                    return ParalMap2ShaderBuffer.s_instance;
                 }
             }
             

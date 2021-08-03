@@ -19,7 +19,7 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: DefaultPBRShaderBuffer = new DefaultPBRShaderBuffer();
+    private static s_instance: DefaultPBRShaderBuffer = new DefaultPBRShaderBuffer();
     private m_uniqueName: string = "";
     private m_has2DMap: boolean = false;
 
@@ -208,7 +208,7 @@ VOX_OUT vec2 v_uv;
         
         return vtxCode;
     }
-    getUniqueShaderName() {
+    getUniqueShaderName(): string {
         let ns: string = this.m_uniqueName;
 
         if (this.woolEnabled) ns += "_wool";
@@ -235,7 +235,7 @@ VOX_OUT vec2 v_uv;
     }
 
     static GetInstance(): DefaultPBRShaderBuffer {
-        return DefaultPBRShaderBuffer.___s_instance;
+        return DefaultPBRShaderBuffer.s_instance;
     }
 }
 

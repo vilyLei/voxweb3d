@@ -123,7 +123,7 @@ v_texUV.zw = a_uvs.xy;\n\
 "
         return vtxCode;
     }
-    getUniqueShaderName():string
+    getUniqueShaderName(): string
     {
         return this.m_uniqueName;
     }
@@ -131,15 +131,15 @@ v_texUV.zw = a_uvs.xy;\n\
     {
         return "[ClipsBillboardMaskShaderBuffer()]";
     }
-    private static ___s_instance:ClipsBillboardMaskShaderBuffer = new ClipsBillboardMaskShaderBuffer();
+    private static s_instance:ClipsBillboardMaskShaderBuffer = new ClipsBillboardMaskShaderBuffer();
     static GetInstance():ClipsBillboardMaskShaderBuffer
     {
-        if(ClipsBillboardMaskShaderBuffer.___s_instance != null)
+        if(ClipsBillboardMaskShaderBuffer.s_instance != null)
         {
-            return ClipsBillboardMaskShaderBuffer.___s_instance;
+            return ClipsBillboardMaskShaderBuffer.s_instance;
         }
-        ClipsBillboardMaskShaderBuffer.___s_instance = new ClipsBillboardMaskShaderBuffer();
-        return ClipsBillboardMaskShaderBuffer.___s_instance;
+        ClipsBillboardMaskShaderBuffer.s_instance = new ClipsBillboardMaskShaderBuffer();
+        return ClipsBillboardMaskShaderBuffer.s_instance;
     }
 }
 

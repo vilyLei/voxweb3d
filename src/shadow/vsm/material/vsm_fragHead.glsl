@@ -9,7 +9,7 @@ vec2 unpackRGBATo2Half( vec4 v ) {
 
 vec2 texture2DDistribution( sampler2D shadow, vec2 uv ) {
 
-    return unpackRGBATo2Half( texture( shadow, uv ) );
+    return unpackRGBATo2Half( VOX_Texture2D( shadow, uv ) );
 
 }
 float VSMShadow (sampler2D shadow, vec2 uv, float compare ) {
@@ -53,4 +53,14 @@ float getVSMShadow( sampler2D shadowMap, vec2 shadowMapSize, float shadowBias, f
         shadow = VSMShadow( shadowMap, shadowCoord.xy, shadowCoord.z );
     }
     return shadow;
+}
+float getVSMShadowFactor(vec4 shadowPos) {
+    
+    float shadow = getVSMShadow( VOX_VSM_MAP, u_vsmParams[1].xy, u_vsmParams[0].x, u_vsmParams[0].z, shadowPos );
+    float shadowIntensity = 1.0 - u_vsmParams[0].w;
+    shadow = clamp(shadow, 0.0, 1.0) * (1.0 - shadowIntensity) + shadowIntensity;
+    float f = clamp(dot(v_nv,u_vsmParams[2].xyz),0.0,1.0);
+    shadow = f > 0.0001 ? min(shadow,clamp(f, shadowIntensity,1.0)) : shadowIntensity;
+    f = u_vsmParams[1].z;
+    return shadow * (1.0 - f) + f;
 }

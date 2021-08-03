@@ -16,7 +16,7 @@ class BaseTestShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:BaseTestShaderBuffer = new BaseTestShaderBuffer();
+    private static s_instance:BaseTestShaderBuffer = new BaseTestShaderBuffer();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -72,7 +72,7 @@ v_uvs = a_uvs;
 `;
         return vtxCode;
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -84,7 +84,7 @@ v_uvs = a_uvs;
 
     static GetInstance():BaseTestShaderBuffer
     {
-        return BaseTestShaderBuffer.___s_instance;
+        return BaseTestShaderBuffer.s_instance;
     }
 }
 

@@ -19,7 +19,7 @@ class DepthShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:DepthShaderBuffer = new DepthShaderBuffer();
+    private static s_instance:DepthShaderBuffer = new DepthShaderBuffer();
     private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
@@ -100,7 +100,7 @@ void main() {
         return this.m_codeBuilder.buildVertCode();
 
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -111,7 +111,7 @@ void main() {
     }
     static GetInstance():DepthShaderBuffer
     {
-        return DepthShaderBuffer.___s_instance;
+        return DepthShaderBuffer.s_instance;
     }
 }
 

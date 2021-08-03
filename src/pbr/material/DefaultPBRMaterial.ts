@@ -22,7 +22,7 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: DefaultPBRShaderBuffer = new DefaultPBRShaderBuffer();
+    private static s_instance: DefaultPBRShaderBuffer = new DefaultPBRShaderBuffer();
     private m_uniqueName: string = "";
     private m_has2DMap: boolean = false;
 
@@ -169,7 +169,7 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
 
         return this.m_codeBuilder.buildVertCode();
     }
-    getUniqueShaderName() {
+    getUniqueShaderName(): string {
         let ns: string = this.m_uniqueName;
 
         if (this.woolEnabled) ns += "_wl";
@@ -198,7 +198,7 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     }
 
     static GetInstance(): DefaultPBRShaderBuffer {
-        return DefaultPBRShaderBuffer.___s_instance;
+        return DefaultPBRShaderBuffer.s_instance;
     }
 }
 

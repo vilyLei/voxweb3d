@@ -15,7 +15,7 @@ class FloatTexRenderShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:FloatTexRenderShaderBuffer = null;
+    private static s_instance:FloatTexRenderShaderBuffer = null;
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -62,7 +62,7 @@ gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs.xyz,1.0);
 `;
         return vtxCode;
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -74,12 +74,12 @@ gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs.xyz,1.0);
 
     static GetInstance():FloatTexRenderShaderBuffer
     {
-        if(FloatTexRenderShaderBuffer.___s_instance != null)
+        if(FloatTexRenderShaderBuffer.s_instance != null)
         {
-            return FloatTexRenderShaderBuffer.___s_instance;
+            return FloatTexRenderShaderBuffer.s_instance;
         }
-        FloatTexRenderShaderBuffer.___s_instance = new FloatTexRenderShaderBuffer();
-        return FloatTexRenderShaderBuffer.___s_instance;
+        FloatTexRenderShaderBuffer.s_instance = new FloatTexRenderShaderBuffer();
+        return FloatTexRenderShaderBuffer.s_instance;
     }
 }
 export default class FloatTexMaterial extends MaterialBase

@@ -17,7 +17,7 @@ class DefaultMRTShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:DefaultMRTShaderBuffer = new DefaultMRTShaderBuffer();
+    private static s_instance:DefaultMRTShaderBuffer = new DefaultMRTShaderBuffer();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -105,7 +105,7 @@ v_uvs = a_uvs;
         }
         return vtxCode;
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -117,7 +117,7 @@ v_uvs = a_uvs;
 
     static GetInstance():DefaultMRTShaderBuffer
     {
-        return DefaultMRTShaderBuffer.___s_instance;
+        return DefaultMRTShaderBuffer.s_instance;
     }
 }
 

@@ -14,7 +14,7 @@ class AdsLightShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: AdsLightShaderBuffer = new AdsLightShaderBuffer();
+    private static s_instance: AdsLightShaderBuffer = new AdsLightShaderBuffer();
     private m_uniqueName: string = "";
     initialize(texEnabled: boolean): void {
         //console.log("AdsLightShaderBuffer::initialize()...");
@@ -116,7 +116,7 @@ void main(){
 `;
         return vtxCode;
     }
-    getUniqueShaderName() {
+    getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
@@ -125,7 +125,7 @@ void main(){
     }
 
     static GetInstance(): AdsLightShaderBuffer {
-        return AdsLightShaderBuffer.___s_instance;
+        return AdsLightShaderBuffer.s_instance;
     }
 }
 

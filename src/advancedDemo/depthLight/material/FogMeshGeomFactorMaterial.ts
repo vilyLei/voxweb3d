@@ -30,7 +30,7 @@ export namespace advancedDemo
                 {
                     super();
                 }
-                private static ___s_instance:FogMeshGeomFactorShaderBuffer = new FogMeshGeomFactorShaderBuffer();
+                private static s_instance:FogMeshGeomFactorShaderBuffer = new FogMeshGeomFactorShaderBuffer();
                 private m_uniqueName:string = "";
                 initialize(texEnabled:boolean):void
                 {
@@ -115,7 +115,7 @@ void main()\n\
 ";
                     return vtxCode;
                 }
-                getUniqueShaderName()
+                getUniqueShaderName(): string
                 {
                     //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
                     return this.m_uniqueName;
@@ -127,7 +127,7 @@ void main()\n\
 
                 static GetInstance():FogMeshGeomFactorShaderBuffer
                 {
-                    return FogMeshGeomFactorShaderBuffer.___s_instance;
+                    return FogMeshGeomFactorShaderBuffer.s_instance;
                 }
             }
             

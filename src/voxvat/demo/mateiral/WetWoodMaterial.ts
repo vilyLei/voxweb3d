@@ -26,7 +26,7 @@ export namespace voxvat
                 {
                     super();
                 }
-                private static ___s_instance:WetWoodShaderBuffer = new WetWoodShaderBuffer();
+                private static s_instance:WetWoodShaderBuffer = new WetWoodShaderBuffer();
                 private m_uniqueName:string = "";
                 initialize(texEnabled:boolean):void
                 {
@@ -144,7 +144,7 @@ v_mToVNVS = a_nvs.xyz * mInvMToVMMat3;
 `;
                     return vtxCode;
                 }
-                getUniqueShaderName()
+                getUniqueShaderName(): string
                 {
                     //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
                     return this.m_uniqueName;
@@ -156,7 +156,7 @@ v_mToVNVS = a_nvs.xyz * mInvMToVMMat3;
 
                 static GetInstance():WetWoodShaderBuffer
                 {
-                    return WetWoodShaderBuffer.___s_instance;
+                    return WetWoodShaderBuffer.s_instance;
                 }
             }
             

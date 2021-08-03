@@ -30,7 +30,7 @@ export namespace advancedDemo
                 {
                     super();
                 }
-                private static ___s_instance:FogSphShowShaderBuffer = new FogSphShowShaderBuffer();
+                private static s_instance:FogSphShowShaderBuffer = new FogSphShowShaderBuffer();
                 private m_uniqueName:string = "";
                 initialize(texEnabled:boolean):void
                 {
@@ -76,7 +76,7 @@ v_texUV = vec2(a_uvs.x,a_uvs.y);\n\
 ";
                     return vtxCode;
                 }
-                getUniqueShaderName()
+                getUniqueShaderName(): string
                 {
                     //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
                     return this.m_uniqueName;
@@ -88,7 +88,7 @@ v_texUV = vec2(a_uvs.x,a_uvs.y);\n\
 
                 static GetInstance():FogSphShowShaderBuffer
                 {
-                    return FogSphShowShaderBuffer.___s_instance;
+                    return FogSphShowShaderBuffer.s_instance;
                 }
             }
             

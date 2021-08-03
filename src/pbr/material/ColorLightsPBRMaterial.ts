@@ -17,7 +17,7 @@ class ColorLightsPBRShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: ColorLightsPBRShaderBuffer = new ColorLightsPBRShaderBuffer();
+    private static s_instance: ColorLightsPBRShaderBuffer = new ColorLightsPBRShaderBuffer();
     private m_uniqueName: string = "";
     woolEnabled:boolean = true;
     toneMappingEnabled:boolean = true;
@@ -136,7 +136,7 @@ void main(){
 `;
         return vtxCode;
     }
-    getUniqueShaderName() {
+    getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         let ns: string = this.m_uniqueName;
 
@@ -161,7 +161,7 @@ void main(){
     }
 
     static GetInstance(): ColorLightsPBRShaderBuffer {
-        return ColorLightsPBRShaderBuffer.___s_instance;
+        return ColorLightsPBRShaderBuffer.s_instance;
     }
 }
 

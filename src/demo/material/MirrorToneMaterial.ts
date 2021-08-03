@@ -17,7 +17,7 @@ class MirrorToneShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: MirrorToneShaderBuffer = new MirrorToneShaderBuffer();
+    private static s_instance: MirrorToneShaderBuffer = new MirrorToneShaderBuffer();
     private m_shdodeBuilder: ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName: string = "";
     mapLodEnabled: boolean = false;
@@ -135,7 +135,7 @@ void main(){
         );
         return coder.buildVertCode();
     }
-    getUniqueShaderName() {
+    getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
@@ -143,7 +143,7 @@ void main(){
         return "[MirrorToneShaderBuffer()]";
     }
     static GetInstance(): MirrorToneShaderBuffer {
-        return MirrorToneShaderBuffer.___s_instance;
+        return MirrorToneShaderBuffer.s_instance;
     }
 }
 

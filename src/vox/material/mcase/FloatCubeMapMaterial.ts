@@ -13,7 +13,7 @@ class FloatCubeMapShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: FloatCubeMapShaderBuffer = null;
+    private static s_instance: FloatCubeMapShaderBuffer = null;
     private m_uniqueName: string = "";
     initialize(texEnabled: boolean): void {
         //console.log("FloatCubeMapShaderBuffer::initialize()...");
@@ -120,7 +120,7 @@ void main()
 `;
         return vtxCode;
     }
-    getUniqueShaderName() {
+    getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
@@ -129,11 +129,11 @@ void main()
     }
 
     static GetInstance(): FloatCubeMapShaderBuffer {
-        if (FloatCubeMapShaderBuffer.___s_instance != null) {
-            return FloatCubeMapShaderBuffer.___s_instance;
+        if (FloatCubeMapShaderBuffer.s_instance != null) {
+            return FloatCubeMapShaderBuffer.s_instance;
         }
-        FloatCubeMapShaderBuffer.___s_instance = new FloatCubeMapShaderBuffer();
-        return FloatCubeMapShaderBuffer.___s_instance;
+        FloatCubeMapShaderBuffer.s_instance = new FloatCubeMapShaderBuffer();
+        return FloatCubeMapShaderBuffer.s_instance;
     }
 }
 

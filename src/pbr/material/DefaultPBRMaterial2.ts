@@ -13,19 +13,20 @@ import MaterialBase from "../../vox/material/MaterialBase";
 import Vector3D from "../../vox/math/Vector3D";
 import MathConst from "../../vox/math/MathConst";
 import { DefaultPBRShaderCode } from "./DefaultPBRShaderCode";
+import { VSMShaderCode } from "../../shadow/vsm/material/VSMShaderCode";
 import IPBRMaterial from "./IPBRMaterial";
 import Color4 from "../../vox/material/Color4";
 
 import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
 import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
 import GlobalLightData from "../../light/base/GlobalLightData";
-import UniformConst from "../../vox/material/UniformConst";
+import ShadowVSMData from "../../shadow/vsm/material/ShadowVSMData";
 
 class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: DefaultPBRShaderBuffer = new DefaultPBRShaderBuffer();
+    private static s_instance: DefaultPBRShaderBuffer = new DefaultPBRShaderBuffer();
     private m_uniqueName: string = "";
     private m_has2DMap: boolean = false;
 
@@ -44,12 +45,14 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     diffuseMapEnabled: boolean = false;
     normalMapEnabled: boolean = false;
     indirectEnvMapEnabled: boolean = false;
+    shadowReceiveEnabled: boolean = false;
 
     pointLightsTotal: number = 4;
     parallelLightsTotal: number = 0;
     texturesTotal: number = 1;
 
     lightData: GlobalLightData = null;
+    vsmData: ShadowVSMData = null;
 
     initialize(texEnabled: boolean): void {
         this.m_uniqueName = "DefaultPBRShd";
@@ -154,27 +157,28 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
             this.lightData.useUniforms( coder );
         }
 
-        if (RendererDeviece.IsWebGL1()) {
-            coder.addVertFunction(GLSLConverter.__glslInverseMat3);
-            coder.addVertFunction(GLSLConverter.__glslInverseMat4);
-        }
+        coder.vertMatrixInverseEnabled = true;
+        //  if (RendererDeviece.IsWebGL1()) {
+        //      coder.addVertFunction(GLSLConverter.__glslInverseMat3);
+        //      coder.addVertFunction(GLSLConverter.__glslInverseMat4);
+        //  }
         coder.useVertSpaceMats(true,true,true);
         coder.addFragOutput("vec4","FragOutColor");
+        if(this.shadowReceiveEnabled) {
+            this.vsmData.useUniforms( coder );
+            coder.addFragFunction(VSMShaderCode.frag_head);
+        }
 
     }
     getVtxShaderCode(): string {
-
-        //  let vtxCode: string = this.m_codeBuilder.buildVertCode();
-        //  vtxCode += DefaultPBRShaderCode.vert_head;
-        //  vtxCode += DefaultPBRShaderCode.vert_body;
-        //  return vtxCode;
 
         this.m_codeBuilder.addVertMainCode(DefaultPBRShaderCode.vert_head);
         this.m_codeBuilder.addVertMainCode(DefaultPBRShaderCode.vert_body);
 
         return this.m_codeBuilder.buildVertCode();
     }
-    getUniqueShaderName() {
+    getUniqueShaderName(): string {
+
         let ns: string = this.m_uniqueName;
 
         if (this.woolEnabled) ns += "_wl";
@@ -190,13 +194,14 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
         if (this.normalNoiseEnabled) ns += "_nNoise";
         if (this.indirectEnvMapEnabled) ns += "IndirEnv";
         if (this.normalMapEnabled) ns += "NorMap";
+        if (this.shadowReceiveEnabled) ns += "Shadow";
 
         if (this.pointLightsTotal > 0) ns += "LP" + this.pointLightsTotal;
         if (this.parallelLightsTotal > 0) ns += "LD" + this.parallelLightsTotal;
 
         ns += "_T" + this.texturesTotal;
         this.m_uniqueName = ns;
-        console.log("XXXX getUniqueShaderName(), ns:",ns);
+        
         return ns;
     }
     toString(): string {
@@ -204,7 +209,7 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     }
 
     static GetInstance(): DefaultPBRShaderBuffer {
-        return DefaultPBRShaderBuffer.___s_instance;
+        return DefaultPBRShaderBuffer.s_instance;
     }
 }
 
@@ -241,9 +246,8 @@ export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMat
             , 1.0, 0.3              // mirror scale, mirror mix scale
             , 0.0, 0.0              // undefine, undefine
         ]);
-    //  private m_lightPositions: Float32Array;
-    //  private m_lightColors: Float32Array;
     private m_lightData: GlobalLightData;
+    private m_vsmData: ShadowVSMData = null;
 
     woolEnabled: boolean = false;
     toneMappingEnabled: boolean = true;
@@ -270,6 +274,7 @@ export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMat
     diffuseMapEnabled: boolean = false;
     normalMapEnabled: boolean = false;
     indirectEnvMapEnabled: boolean = false;
+    shadowReceiveEnabled: boolean = false;
 
     constructor(pointLightsTotal: number = 2, parallelLightsTotal: number = 0) {
         super();
@@ -293,12 +298,14 @@ export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMat
         buf.diffuseMapEnabled = this.diffuseMapEnabled;
         buf.normalMapEnabled = this.normalMapEnabled;
         buf.indirectEnvMapEnabled = this.indirectEnvMapEnabled;
+        buf.shadowReceiveEnabled = this.shadowReceiveEnabled;
 
         buf.pointLightsTotal = this.m_pointLightsTotal;
         buf.parallelLightsTotal = this.m_parallelLightsTotal;
         buf.texturesTotal = this.getTextureTotal();
 
         buf.lightData = this.m_lightData;
+        buf.vsmData = this.m_vsmData;
         return buf;
     }
     copyFrom(dst: DefaultPBRMaterial2, texEnabled:boolean = true): void {
@@ -319,9 +326,12 @@ export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMat
         this.diffuseMapEnabled = dst.diffuseMapEnabled;
         this.normalMapEnabled = dst.normalMapEnabled;
         this.indirectEnvMapEnabled = dst.indirectEnvMapEnabled;
+        this.shadowReceiveEnabled = dst.shadowReceiveEnabled;
 
         this.m_pointLightsTotal = dst.m_pointLightsTotal;
         this.m_parallelLightsTotal = dst.m_parallelLightsTotal;
+        this.m_lightData = dst.m_lightData;
+        this.m_vsmData = dst.m_vsmData;
 
         if(this.m_albedo == null || this.m_albedo.length != dst.m_albedo.length) {
             this.m_albedo = dst.m_albedo.slice();
@@ -378,6 +388,8 @@ export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMat
         dst.indirectEnvMapEnabled = this.indirectEnvMapEnabled;
         dst.m_pointLightsTotal = this.m_pointLightsTotal;
         dst.m_parallelLightsTotal = this.m_parallelLightsTotal;
+        this.m_lightData = dst.m_lightData;
+        this.m_vsmData = dst.m_vsmData;
 
         dst.m_albedo.set(this.m_albedo);
         dst.m_params.set(this.m_params);
@@ -389,6 +401,9 @@ export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMat
         return dst;
     }
 
+    setVSMData( vsm: ShadowVSMData ): void {
+        this.m_vsmData = vsm;
+    }
     setLightData(lightData: GlobalLightData): void {
         this.m_lightData = lightData;        
     }
@@ -551,12 +566,17 @@ export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMat
         this.m_camPos[1] = pos.y;
         this.m_camPos[2] = pos.z;
     }
-    ///*
     createSharedUniforms():ShaderGlobalUniform[]
     {
-        let gu: ShaderGlobalUniform = this.m_lightData.getGlobalUinform();
-        gu.uns = this.getShdUniqueName();
-        return [gu];
+        let glu: ShaderGlobalUniform = this.m_lightData.getGlobalUinform();
+        glu.uns = this.getShdUniqueName();
+        if(this.shadowReceiveEnabled) {
+            
+            let gsu: ShaderGlobalUniform = this.m_vsmData.getGlobalUinform();
+            gsu.uns = this.getShdUniqueName();
+            return [glu, gsu];
+        }
+        return [glu];
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
@@ -564,13 +584,4 @@ export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMat
         oum.dataList = [this.m_albedo, this.m_params, this.m_camPos, this.m_paramLocal, this.m_mirrorParam];
         return oum;
     }
-    //*/
-    /*
-    createSelfUniformData(): ShaderUniformData {
-        let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_albedo", "u_params", "u_lightPositions", "u_lightColors", "u_camPos", "u_paramLocal", "u_mirrorParams"];
-        oum.dataList = [this.m_albedo, this.m_params, this.m_lightPositions, this.m_lightColors, this.m_camPos, this.m_paramLocal, this.m_mirrorParam];
-        return oum;
-    }
-    //*/
 }

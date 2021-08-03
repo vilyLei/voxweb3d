@@ -13,7 +13,7 @@ class CylindricMapShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: CylindricMapShaderBuffer = new CylindricMapShaderBuffer();
+    private static s_instance: CylindricMapShaderBuffer = new CylindricMapShaderBuffer();
     private m_uniqueName: string = "";
     initialize(texEnabled: boolean): void {
         //console.log("CylindricMapShaderBuffer::initialize()...");
@@ -79,7 +79,7 @@ void main(){
 `;
         return vtxCode;
     }
-    getUniqueShaderName() {
+    getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
@@ -88,7 +88,7 @@ void main(){
     }
 
     static GetInstance(): CylindricMapShaderBuffer {
-        return CylindricMapShaderBuffer.___s_instance;
+        return CylindricMapShaderBuffer.s_instance;
     }
 }
 

@@ -15,7 +15,7 @@ class CubeMapMRTShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:CubeMapMRTShaderBuffer = new CubeMapMRTShaderBuffer();
+    private static s_instance:CubeMapMRTShaderBuffer = new CubeMapMRTShaderBuffer();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -72,7 +72,7 @@ v_uvs = a_uvs;
 `;
         return vtxCode;
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -84,7 +84,7 @@ v_uvs = a_uvs;
 
     static GetInstance():CubeMapMRTShaderBuffer
     {
-        return CubeMapMRTShaderBuffer.___s_instance;
+        return CubeMapMRTShaderBuffer.s_instance;
     }
 }
 

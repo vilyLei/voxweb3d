@@ -15,7 +15,7 @@ class ColorPBRShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: ColorPBRShaderBuffer = new ColorPBRShaderBuffer();
+    private static s_instance: ColorPBRShaderBuffer = new ColorPBRShaderBuffer();
     private m_uniqueName: string = "";
     woolEnabled:boolean = true;
     toneMappingEnabled:boolean = true;
@@ -554,7 +554,7 @@ void main(){
 `;
         return vtxCode;
     }
-    getUniqueShaderName() {
+    getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         let ns: string = this.m_uniqueName;
         if(this.woolEnabled) ns += "_wool";
@@ -572,7 +572,7 @@ void main(){
     }
 
     static GetInstance(): ColorPBRShaderBuffer {
-        return ColorPBRShaderBuffer.___s_instance;
+        return ColorPBRShaderBuffer.s_instance;
     }
 }
 

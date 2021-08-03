@@ -67,7 +67,7 @@ v_colorMult = u_billParam[1];
 `;
         return vtxCode;
     }
-    getUniqueShaderName():string
+    getUniqueShaderName(): string
     {
         return this.m_uniqueName;
     }
@@ -75,15 +75,15 @@ v_colorMult = u_billParam[1];
     {
         return "[BillboardAlphaTexShaderBuffer()]";
     }
-    private static ___s_instance:BillboardAlphaTexShaderBuffer = new BillboardAlphaTexShaderBuffer();
+    private static s_instance:BillboardAlphaTexShaderBuffer = new BillboardAlphaTexShaderBuffer();
     static GetInstance():BillboardAlphaTexShaderBuffer
     {
-        if(BillboardAlphaTexShaderBuffer.___s_instance != null)
+        if(BillboardAlphaTexShaderBuffer.s_instance != null)
         {
-            return BillboardAlphaTexShaderBuffer.___s_instance;
+            return BillboardAlphaTexShaderBuffer.s_instance;
         }
-        BillboardAlphaTexShaderBuffer.___s_instance = new BillboardAlphaTexShaderBuffer();
-        return BillboardAlphaTexShaderBuffer.___s_instance;
+        BillboardAlphaTexShaderBuffer.s_instance = new BillboardAlphaTexShaderBuffer();
+        return BillboardAlphaTexShaderBuffer.s_instance;
     }
 }
 

@@ -89,7 +89,7 @@ v_texUV = getGridUV(v_colorOffset.w,a_uvs.xy,vec2(floor(temp.w),floor(10.1 * fra
 "
         return vtxCode;
     }
-    getUniqueShaderName():string
+    getUniqueShaderName(): string
     {
         return this.m_uniqueName;
     }
@@ -97,15 +97,15 @@ v_texUV = getGridUV(v_colorOffset.w,a_uvs.xy,vec2(floor(temp.w),floor(10.1 * fra
     {
         return "[ClipsBillboardShaderBuffer()]";
     }
-    private static ___s_instance:ClipsBillboardShaderBuffer = new ClipsBillboardShaderBuffer();
+    private static s_instance:ClipsBillboardShaderBuffer = new ClipsBillboardShaderBuffer();
     static GetInstance():ClipsBillboardShaderBuffer
     {
-        if(ClipsBillboardShaderBuffer.___s_instance != null)
+        if(ClipsBillboardShaderBuffer.s_instance != null)
         {
-            return ClipsBillboardShaderBuffer.___s_instance;
+            return ClipsBillboardShaderBuffer.s_instance;
         }
-        ClipsBillboardShaderBuffer.___s_instance = new ClipsBillboardShaderBuffer();
-        return ClipsBillboardShaderBuffer.___s_instance;
+        ClipsBillboardShaderBuffer.s_instance = new ClipsBillboardShaderBuffer();
+        return ClipsBillboardShaderBuffer.s_instance;
     }
 }
 

@@ -17,7 +17,7 @@ class Rect2DShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:Rect2DShaderBuffer = null;
+    private static s_instance:Rect2DShaderBuffer = null;
     private m_uniqueName:string = "";
     private m_hasTex:boolean = false;
     centerAlignEnabled:boolean = false;
@@ -145,7 +145,7 @@ vtxCode +=
 `;
         return vtxCode;
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -157,12 +157,12 @@ vtxCode +=
 
     static GetInstance():Rect2DShaderBuffer
     {
-        if(Rect2DShaderBuffer.___s_instance != null)
+        if(Rect2DShaderBuffer.s_instance != null)
         {
-            return Rect2DShaderBuffer.___s_instance;
+            return Rect2DShaderBuffer.s_instance;
         }
-        Rect2DShaderBuffer.___s_instance = new Rect2DShaderBuffer();
-        return Rect2DShaderBuffer.___s_instance;
+        Rect2DShaderBuffer.s_instance = new Rect2DShaderBuffer();
+        return Rect2DShaderBuffer.s_instance;
     }
 }
 

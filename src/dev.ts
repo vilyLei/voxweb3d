@@ -268,8 +268,7 @@
 
 //  import {DemoOrthoBtn as Demo} from "./demo/DemoOrthoBtn";
 
-//  import * as DemoMobileEvt from "./demo/DemoMobileEvt";
-//  import Demo = DemoMobileEvt.demo.DemoMobileEvt;
+//  import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
 
 //  import {DemoMouseDrag as Demo} from "./demo/DemoMouseDrag";
 
@@ -320,7 +319,7 @@
 
 //  import {DemoVSM as Demo} from "./shadow/vsm/DemoVSM";
 
-import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
+//  import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     light    ////////////////////////////////////
@@ -342,7 +341,7 @@ import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
 
 //  import {DemoDefaultPBR2 as Demo} from "./pbr/DemoDefaultPBR2";
 
-//  import {DemoDefaultPBR3 as Demo} from "./pbr/DemoDefaultPBR3";
+import {DemoDefaultPBR3 as Demo} from "./pbr/DemoDefaultPBR3";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////

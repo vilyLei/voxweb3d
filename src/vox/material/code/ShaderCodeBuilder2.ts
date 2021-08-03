@@ -9,6 +9,7 @@
 import RendererDeviece from "../../../vox/render/RendererDeviece";
 import IUniformParam from "../../../vox/material/IUniformParam";
 import IShaderCodeBuilder from "./IShaderCodeBuilder";
+import GLSLConverter from "./GLSLConverter";
 
 export default class ShaderCodeBuilder2 implements IShaderCodeBuilder {
 
@@ -65,6 +66,8 @@ precision mediump float;
 
     normalMapEanbled: boolean = false;
     mapLodEnabled: boolean = false;
+    vertMatrixInverseEnabled: boolean = false;
+    fragMatrixInverseEnabled: boolean = false;
     constructor() { }
 
     reset() {
@@ -268,6 +271,10 @@ precision mediump float;
             }
         }
 
+        if (this.fragMatrixInverseEnabled && RendererDeviece.IsWebGL1()) {
+            this.addVertFunction(GLSLConverter.__glslInverseMat3);
+            this.addVertFunction(GLSLConverter.__glslInverseMat4);
+        }
         i = 0;
         len = this.m_fragFunctionBlocks.length;
         for (; i < len; i++) {
@@ -371,7 +378,10 @@ precision mediump float;
             }
 
         }
-
+        if (this.vertMatrixInverseEnabled && RendererDeviece.IsWebGL1()) {
+            this.addVertFunction(GLSLConverter.__glslInverseMat3);
+            this.addVertFunction(GLSLConverter.__glslInverseMat4);
+        }
         i = 0;
         len = this.m_vertFunctionBlocks.length;
         for (; i < len; i++) {

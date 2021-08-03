@@ -17,7 +17,7 @@ class ShadowEntityShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: ShadowEntityShaderBuffer = new ShadowEntityShaderBuffer();
+    private static s_instance: ShadowEntityShaderBuffer = new ShadowEntityShaderBuffer();
     private m_codeBuilder: ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName: string = "";
     initialize(texEnabled: boolean): void {
@@ -150,7 +150,7 @@ void main() {
         return this.m_codeBuilder.buildVertCode();
 
     }
-    getUniqueShaderName() {
+    getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
@@ -158,7 +158,7 @@ void main() {
         return "[ShadowEntityShaderBuffer()]";
     }
     static GetInstance(): ShadowEntityShaderBuffer {
-        return ShadowEntityShaderBuffer.___s_instance;
+        return ShadowEntityShaderBuffer.s_instance;
     }
 }
 

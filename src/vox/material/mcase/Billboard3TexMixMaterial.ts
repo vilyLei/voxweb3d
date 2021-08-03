@@ -124,7 +124,7 @@ void main()
 `;
         return vtxCode;
     }
-    getUniqueShaderName():string
+    getUniqueShaderName(): string
     {
         return this.m_uniqueName + "_"+this.billFS.getBrnAlphaStatus()+(this.clipEnabled?"c":"");
     }
@@ -132,15 +132,15 @@ void main()
     {
         return "[Billboard3TexMixShaderBuffer()]";
     }
-    private static ___s_instance:Billboard3TexMixShaderBuffer = new Billboard3TexMixShaderBuffer();
+    private static s_instance:Billboard3TexMixShaderBuffer = new Billboard3TexMixShaderBuffer();
     static GetInstance():Billboard3TexMixShaderBuffer
     {
-        if(Billboard3TexMixShaderBuffer.___s_instance != null)
+        if(Billboard3TexMixShaderBuffer.s_instance != null)
         {
-            return Billboard3TexMixShaderBuffer.___s_instance;
+            return Billboard3TexMixShaderBuffer.s_instance;
         }
-        Billboard3TexMixShaderBuffer.___s_instance = new Billboard3TexMixShaderBuffer();
-        return Billboard3TexMixShaderBuffer.___s_instance;
+        Billboard3TexMixShaderBuffer.s_instance = new Billboard3TexMixShaderBuffer();
+        return Billboard3TexMixShaderBuffer.s_instance;
     }
 }
 

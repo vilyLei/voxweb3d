@@ -158,7 +158,7 @@ FragColor = color;
     {
         return ""
     }
-    getUniqueShaderName():string
+    getUniqueShaderName(): string
     {
         let ns:string = this.m_uniqueName + "_" + this.m_billFS.getBrnAlphaStatus();
         if(this.m_hasOffsetColorTex && this.m_clipEnabled)

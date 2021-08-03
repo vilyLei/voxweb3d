@@ -17,7 +17,7 @@ class PingpongHBlurShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:PingpongHBlurShaderBuffer = new PingpongHBlurShaderBuffer();
+    private static s_instance:PingpongHBlurShaderBuffer = new PingpongHBlurShaderBuffer();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -101,7 +101,7 @@ void main()
 `;
         return vtxCode;
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -113,7 +113,7 @@ void main()
 
     static GetInstance():PingpongHBlurShaderBuffer
     {
-        return PingpongHBlurShaderBuffer.___s_instance;
+        return PingpongHBlurShaderBuffer.s_instance;
     }
 }
 
@@ -123,7 +123,7 @@ export class PingpongVBlurShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:PingpongVBlurShaderBuffer = new PingpongVBlurShaderBuffer();
+    private static s_instance:PingpongVBlurShaderBuffer = new PingpongVBlurShaderBuffer();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -209,7 +209,7 @@ void main()
 `;
         return vtxCode;
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("V ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -221,7 +221,7 @@ void main()
 
     static GetInstance():PingpongVBlurShaderBuffer
     {
-        return PingpongVBlurShaderBuffer.___s_instance;
+        return PingpongVBlurShaderBuffer.s_instance;
     }
 }
 

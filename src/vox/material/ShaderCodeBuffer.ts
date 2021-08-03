@@ -151,7 +151,7 @@ void main(){
 `;
         return codeStr;
     }
-    getUniqueShaderName():string
+    getUniqueShaderName(): string
     {
         if(ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getUniqueShaderName();
         let ns: string = "vox_default_shd";

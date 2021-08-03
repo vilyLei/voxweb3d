@@ -14,7 +14,7 @@ export namespace demo {
             constructor() {
                 super();
             }
-            private static ___s_instance: PSDepthShaderBuffer = new PSDepthShaderBuffer();
+            private static s_instance: PSDepthShaderBuffer = new PSDepthShaderBuffer();
             private m_uniqueName: string = "";
             initialize(texEnabled: boolean): void {
                 //console.log("PSDepthShaderBuffer::initialize()...");
@@ -51,7 +51,7 @@ void main(){
 `;
                 return vtxCode;
             }
-            getUniqueShaderName() {
+            getUniqueShaderName(): string {
                 //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
                 return this.m_uniqueName;
             }
@@ -60,7 +60,7 @@ void main(){
             }
 
             static GetInstance(): PSDepthShaderBuffer {
-                return PSDepthShaderBuffer.___s_instance;
+                return PSDepthShaderBuffer.s_instance;
             }
         }
 

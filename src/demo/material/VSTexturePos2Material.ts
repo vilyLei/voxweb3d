@@ -23,7 +23,7 @@ export namespace demo
                 {
                     super();
                 }
-                private static ___s_instance:VSTexturePos2RenderShaderBuffer = null;
+                private static s_instance:VSTexturePos2RenderShaderBuffer = null;
                 private m_uniqueName:string = "";
                 initialize(texEnabled:boolean):void
                 {
@@ -75,7 +75,7 @@ void main(){
 `;
                     return vtxCode;
                 }
-                getUniqueShaderName()
+                getUniqueShaderName(): string
                 {
                     //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
                     return this.m_uniqueName;
@@ -87,12 +87,12 @@ void main(){
 
                 static GetInstance():VSTexturePos2RenderShaderBuffer
                 {
-                    if(VSTexturePos2RenderShaderBuffer.___s_instance != null)
+                    if(VSTexturePos2RenderShaderBuffer.s_instance != null)
                     {
-                        return VSTexturePos2RenderShaderBuffer.___s_instance;
+                        return VSTexturePos2RenderShaderBuffer.s_instance;
                     }
-                    VSTexturePos2RenderShaderBuffer.___s_instance = new VSTexturePos2RenderShaderBuffer();
-                    return VSTexturePos2RenderShaderBuffer.___s_instance;
+                    VSTexturePos2RenderShaderBuffer.s_instance = new VSTexturePos2RenderShaderBuffer();
+                    return VSTexturePos2RenderShaderBuffer.s_instance;
                 }
             }
             export class VSTexturePos2Material extends MaterialBase

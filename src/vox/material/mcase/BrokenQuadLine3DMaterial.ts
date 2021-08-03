@@ -14,7 +14,7 @@ class BrokenQuadLine3DShaderBuffer extends ShaderCodeBuffer
     {
         super();
     }
-    private static ___s_instance:BrokenQuadLine3DShaderBuffer = null;
+    private static s_instance:BrokenQuadLine3DShaderBuffer = null;
     private m_uniqueName:string = "";
     dynColorEnabled:boolean = false;
     initialize(texEnabled:boolean):void
@@ -119,7 +119,7 @@ v_vtxColor = a_cvs;
         vtxCode += "\n}";
         return vtxCode;
     }
-    getUniqueShaderName()
+    getUniqueShaderName(): string
     {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
@@ -131,12 +131,12 @@ v_vtxColor = a_cvs;
 
     static GetInstance():BrokenQuadLine3DShaderBuffer
     {
-        if(BrokenQuadLine3DShaderBuffer.___s_instance != null)
+        if(BrokenQuadLine3DShaderBuffer.s_instance != null)
         {
-            return BrokenQuadLine3DShaderBuffer.___s_instance;
+            return BrokenQuadLine3DShaderBuffer.s_instance;
         }
-        BrokenQuadLine3DShaderBuffer.___s_instance = new BrokenQuadLine3DShaderBuffer();
-        return BrokenQuadLine3DShaderBuffer.___s_instance;
+        BrokenQuadLine3DShaderBuffer.s_instance = new BrokenQuadLine3DShaderBuffer();
+        return BrokenQuadLine3DShaderBuffer.s_instance;
     }
 }
 

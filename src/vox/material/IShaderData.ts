@@ -33,5 +33,5 @@ export default interface IShaderData
     getUniformTypeByNS(ns:string):number;
     hasUniformByName(ns:string):boolean;
     getUniformLengthByNS(ns:string):number;
-    getUniqueShaderName():string;
+    getUniqueShaderName(): string;
 }

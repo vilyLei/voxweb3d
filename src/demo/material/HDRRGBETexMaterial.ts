@@ -13,7 +13,7 @@ class HDRRGBETexRenderShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: HDRRGBETexRenderShaderBuffer = null;
+    private static s_instance: HDRRGBETexRenderShaderBuffer = null;
     private m_uniqueName: string = "";
     initialize(texEnabled: boolean): void {
         //console.log("HDRRGBETexRenderShaderBuffer::initialize()...");
@@ -81,7 +81,7 @@ void main(){
 `;
         return vtxCode;
     }
-    getUniqueShaderName() {
+    getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
@@ -90,11 +90,11 @@ void main(){
     }
 
     static GetInstance(): HDRRGBETexRenderShaderBuffer {
-        if (HDRRGBETexRenderShaderBuffer.___s_instance != null) {
-            return HDRRGBETexRenderShaderBuffer.___s_instance;
+        if (HDRRGBETexRenderShaderBuffer.s_instance != null) {
+            return HDRRGBETexRenderShaderBuffer.s_instance;
         }
-        HDRRGBETexRenderShaderBuffer.___s_instance = new HDRRGBETexRenderShaderBuffer();
-        return HDRRGBETexRenderShaderBuffer.___s_instance;
+        HDRRGBETexRenderShaderBuffer.s_instance = new HDRRGBETexRenderShaderBuffer();
+        return HDRRGBETexRenderShaderBuffer.s_instance;
     }
 }
 export default class HDRRGBETexMaterial extends MaterialBase {

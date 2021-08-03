@@ -15,7 +15,7 @@ class PBREnv0ShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static ___s_instance: PBREnv0ShaderBuffer = new PBREnv0ShaderBuffer();
+    private static s_instance: PBREnv0ShaderBuffer = new PBREnv0ShaderBuffer();
     private m_uniqueName: string = "";
     velvetEnabled:boolean = true;
     toneMappingEnabled:boolean = true;
@@ -495,7 +495,7 @@ void main(){
 `;
         return vtxCode;
     }
-    getUniqueShaderName() {
+    getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         let ns: string = this.m_uniqueName;
         if(this.velvetEnabled) ns += "_velvet";
@@ -510,7 +510,7 @@ void main(){
     }
 
     static GetInstance(): PBREnv0ShaderBuffer {
-        return PBREnv0ShaderBuffer.___s_instance;
+        return PBREnv0ShaderBuffer.s_instance;
     }
 }
 
