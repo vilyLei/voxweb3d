@@ -144,9 +144,6 @@ void main()
     #ifdef VOX_USE_SHADOW
 
     float factor = getVSMShadowFactor(v_shadowPos);
-    //FragOutColor = vec4(vec3(factor), 1.0);
-    //  FragOutColor = VOX_Texture2D(u_sampler4, gl_FragCoord.xy/vec2(300.0));
-    //return;
     color *= vec3(factor);
     
     #endif
@@ -169,5 +166,11 @@ void main()
     #endif
     
 
+    #ifdef VOX_USE_FOG
+
+    useFog( color );
+
+    #endif
+    
     FragOutColor = vec4(color, 1.0);
 }

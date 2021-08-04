@@ -16,6 +16,7 @@ import MirrorEffector from "./MirrorEffector";
 import CubeRttBuilder from "../../renderingtoy/mcase/CubeRTTBuilder";
 import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
 import GlobalLightData from "../../light/base/GlobalLightData";
+import EnvLightData from "../../light/base/EnvLightData";
 
 
 export default class EntityScene
@@ -33,6 +34,9 @@ export default class EntityScene
 
     private m_mirrorRprIndex: number = 3;
     private m_lightData: GlobalLightData = new GlobalLightData();
+    private m_envData: EnvLightData;
+
+    fogEnabled: boolean = true;
 
     constructor(materialBuilder: MaterialBuilder, cubeRTTBuilder: CubeRttBuilder, vsmModule: ShadowVSMModule) {
 
@@ -63,7 +67,16 @@ export default class EntityScene
 
             this.m_materialBuilder.lightData = this.m_lightData;
 
+            this.m_envData = new EnvLightData();
+            this.m_envData.initialize();
+            this.m_envData.setFogNear(800.0);
+            this.m_envData.setFogFar(4000.0);
+            this.m_envData.setFogDensity(0.0002);
+            this.m_envData.setFogColorRGB3f(0.0,0.8,0.1);
+
             this.m_mirrorRprIndex = 3;
+            this.m_mirrorEffector.fogEnabled = this.fogEnabled;
+            this.m_mirrorEffector.envData = this.m_envData;
             this.m_mirrorEffector.envMap = this.m_envMap;
             this.m_mirrorEffector.vsmModule = this.m_vsmModule;
             this.m_mirrorEffector.materialBuilder = this.m_materialBuilder;            
@@ -106,12 +119,13 @@ export default class EntityScene
             material = matBuilder.makeDefaultPBRMaterial2(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
             
             material.shadowReceiveEnabled = true;
-
+            material.fogEnabled = this.fogEnabled;
             material.indirectEnvMapEnabled = true;
             material.envMapEnabled = true;
             material.diffuseMapEnabled = true;
             material.normalMapEnabled = true;
-
+            let uvscale: number = Math.random() * 7.0 + 0.6;
+            material.setUVScale(uvscale, uvscale);
             let ptexList: TextureProxy[] = [
                 this.m_envMap,
                 //  ,this.getImageTexByUrl("static/assets/disp/box_COLOR.png")
@@ -131,6 +145,9 @@ export default class EntityScene
             if(material.shadowReceiveEnabled) {
                 ptexList.push( shadowTex );
                 material.setVSMData( vsmData );
+            }
+            if(material.fogEnabled) {
+                material.setEnvData( this.m_envData );
             }
             material.setTextureList( ptexList );
 

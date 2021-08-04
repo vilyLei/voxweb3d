@@ -210,7 +210,7 @@ export class DefaultPBRUI implements IPBRUI {
         this.f0ColorBtn = this.createValueBtn("F0Color", "F0Color", 1.0, 0.01, 32.0);
         this.albedoBtn = this.createValueBtn("albedo", "albedo", 0.2, 0.01, 5.0);
         this.ambientBtn = this.createValueBtn("ambient", "ambient", 0.1, 0.01, 1.0);
-        this.specularBtn = this.createValueBtn("specular", "specular", 1.0, 0.01, 1.0);
+        this.specularBtn = this.createValueBtn("specular", "specular", 1.0, 0.01, 10.0);
 
         this.rgbPanel = new RGBColorPanel();
         this.rgbPanel.initialize(32, 4);

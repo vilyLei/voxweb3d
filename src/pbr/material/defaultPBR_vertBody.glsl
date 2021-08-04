@@ -28,4 +28,10 @@ void main(){
         calcShadowPos( wpos );
 
     #endif
+    
+    #ifdef VOX_USE_FOG
+
+    calcFogDepth( viewPos );
+
+    #endif
 }

@@ -17,6 +17,7 @@ import DefaultPBRMaterial2 from "../../pbr/material/DefaultPBRMaterial2";
 import MaterialBuilder from "../../pbr/mana/MaterialBuilder";
 import MirrorProjEntity from "./MirrorProjEntity";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
+import EnvLightData from "../../light/base/EnvLightData";
 
 export class MirrorEffector
 {
@@ -25,10 +26,12 @@ export class MirrorEffector
     private m_uiModule:DefaultPBRUI = null;
     private m_rprocessIDList: number[] = [0];
     private m_fboIndex: number = 1;
+    envData: EnvLightData;
     reflectPlaneY: number = -220.0;
     materialBuilder: MaterialBuilder;
     envMap: TextureProxy = null;
     vsmModule: ShadowVSMModule = null;
+    fogEnabled: boolean = false;
     constructor(fboIndex: number) {
         this.m_fboIndex = fboIndex;
     }
@@ -95,7 +98,7 @@ export class MirrorEffector
         ///*
         // mirror plane
         material = this.materialBuilder.makeDefaultPBRMaterial2(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
-        
+        material.fogEnabled = this.fogEnabled;
         material.shadowReceiveEnabled = true;
         material.pixelNormalNoiseEnabled = true;
         material.mirrorProjEnabled = true;
@@ -117,6 +120,9 @@ export class MirrorEffector
         if(this.m_mirrorMapLodEnabled) {
             this.m_fboIns.enableMipmapRTTAt(0);
             material.setMirrorMapLodLevel(2.0);
+        }
+        if(material.fogEnabled) {
+            material.setEnvData( this.envData );
         }
         material.setUVScale(3.0,3.0);
         material.setMirrorIntensity(0.9);

@@ -21,6 +21,7 @@ import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
 import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
 import GlobalLightData from "../../light/base/GlobalLightData";
 import ShadowVSMData from "../../shadow/vsm/material/ShadowVSMData";
+import EnvLightData from "../../light/base/EnvLightData";
 import UniformConst from "../../vox/material/UniformConst";
 
 class DefaultPBR2ShaderBuffer extends ShaderCodeBuffer {
@@ -47,6 +48,7 @@ class DefaultPBR2ShaderBuffer extends ShaderCodeBuffer {
     normalMapEnabled: boolean = false;
     indirectEnvMapEnabled: boolean = false;
     shadowReceiveEnabled: boolean = false;
+    fogEnabled: boolean = false;
 
     pointLightsTotal: number = 4;
     parallelLightsTotal: number = 0;
@@ -54,6 +56,7 @@ class DefaultPBR2ShaderBuffer extends ShaderCodeBuffer {
 
     lightData: GlobalLightData = null;
     vsmData: ShadowVSMData = null;
+    envData: EnvLightData = null;
 
     initialize(texEnabled: boolean): void {
         this.m_uniqueName = "DefaultPBR2Shd";
@@ -149,6 +152,9 @@ class DefaultPBR2ShaderBuffer extends ShaderCodeBuffer {
         if(lightsTotal > 0) {
             this.lightData.useUniforms( coder );
         }
+        if(this.fogEnabled && this.envData != null) {
+            this.envData.useUniformsForFog( coder );
+        }
 
         coder.vertMatrixInverseEnabled = true;
         
@@ -186,6 +192,7 @@ class DefaultPBR2ShaderBuffer extends ShaderCodeBuffer {
         if (this.indirectEnvMapEnabled) ns += "IndirEnv";
         if (this.normalMapEnabled) ns += "NorMap";
         if (this.shadowReceiveEnabled) ns += "Shadow";
+        if (this.fogEnabled) ns += "Fog";
 
         if (this.pointLightsTotal > 0) ns += "LP" + this.pointLightsTotal;
         if (this.parallelLightsTotal > 0) ns += "LD" + this.parallelLightsTotal;
@@ -239,6 +246,7 @@ export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMat
         ]);
     private m_lightData: GlobalLightData;
     private m_vsmData: ShadowVSMData = null;
+    private m_envData: EnvLightData = null;
 
     woolEnabled: boolean = false;
     toneMappingEnabled: boolean = true;
@@ -266,6 +274,7 @@ export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMat
     normalMapEnabled: boolean = false;
     indirectEnvMapEnabled: boolean = false;
     shadowReceiveEnabled: boolean = false;
+    fogEnabled: boolean = false;
 
     constructor(pointLightsTotal: number = 2, parallelLightsTotal: number = 0) {
         super();
@@ -291,6 +300,7 @@ export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMat
         buf.normalMapEnabled = this.normalMapEnabled;
         buf.indirectEnvMapEnabled = this.indirectEnvMapEnabled;
         buf.shadowReceiveEnabled = this.shadowReceiveEnabled;
+        buf.fogEnabled = this.fogEnabled;
 
         buf.pointLightsTotal = this.m_pointLightsTotal;
         buf.parallelLightsTotal = this.m_parallelLightsTotal;
@@ -298,6 +308,7 @@ export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMat
 
         buf.lightData = this.m_lightData;
         buf.vsmData = this.m_vsmData;
+        buf.envData = this.m_envData;
         return buf;
     }
     copyFrom(dst: DefaultPBRMaterial2, texEnabled:boolean = true): void {
@@ -318,11 +329,13 @@ export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMat
         this.normalMapEnabled = dst.normalMapEnabled;
         this.indirectEnvMapEnabled = dst.indirectEnvMapEnabled;
         this.shadowReceiveEnabled = dst.shadowReceiveEnabled;
+        this.fogEnabled = dst.fogEnabled;
 
         this.m_pointLightsTotal = dst.m_pointLightsTotal;
         this.m_parallelLightsTotal = dst.m_parallelLightsTotal;
         this.m_lightData = dst.m_lightData;
         this.m_vsmData = dst.m_vsmData;
+        this.m_envData = dst.m_envData;
 
         if(this.m_albedo == null || this.m_albedo.length != dst.m_albedo.length) {
             this.m_albedo = dst.m_albedo.slice();
@@ -361,8 +374,9 @@ export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMat
     }
     
     clone(): DefaultPBRMaterial2 {
+
         let dst: DefaultPBRMaterial2 = new DefaultPBRMaterial2(this.m_pointLightsTotal,this.m_parallelLightsTotal);
-        
+
         dst.woolEnabled = this.woolEnabled;
         dst.toneMappingEnabled = this.toneMappingEnabled;
         dst.envMapEnabled = this.envMapEnabled;
@@ -383,10 +397,13 @@ export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMat
         dst.indirectEnvMapEnabled = this.indirectEnvMapEnabled;
         dst.shadowReceiveEnabled = this.shadowReceiveEnabled;
 
+        dst.fogEnabled = this.fogEnabled;
+
         dst.m_pointLightsTotal = this.m_pointLightsTotal;
         dst.m_parallelLightsTotal = this.m_parallelLightsTotal;
         dst.m_lightData = this.m_lightData;
         dst.m_vsmData = this.m_vsmData;
+        dst.m_envData = this.m_envData;
 
         dst.m_albedo.set(this.m_albedo);
         dst.m_params.set(this.m_params);
@@ -403,6 +420,9 @@ export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMat
     }
     setLightData(lightData: GlobalLightData): void {
         this.m_lightData = lightData;        
+    }
+    setEnvData( envData: EnvLightData ): void {
+        this.m_envData = envData;
     }
 
     seNormalMapIntensity(intensity: number): void {
@@ -573,13 +593,18 @@ export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMat
         */
         let glu: ShaderGlobalUniform = this.m_lightData.getGlobalUinform();
         glu.uns = this.getShdUniqueName();
+        let list: ShaderGlobalUniform[] = [glu];
         if(this.shadowReceiveEnabled && this.m_vsmData != null) {
-            
-            let gsu: ShaderGlobalUniform = this.m_vsmData.getGlobalUinform();
-            gsu.uns = this.getShdUniqueName();
-            return [glu, gsu];
+            glu = this.m_vsmData.getGlobalUinform();
+            glu.uns = this.getShdUniqueName();
+            list.push(glu);
         }
-        return [glu];
+        if(this.fogEnabled && this.m_envData != null) {
+            glu = this.m_envData.getGlobalUinform();
+            glu.uns = this.getShdUniqueName();
+            list.push(glu);
+        }
+        return list;
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
