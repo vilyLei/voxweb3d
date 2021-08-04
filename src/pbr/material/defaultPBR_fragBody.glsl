@@ -56,8 +56,9 @@ void main()
     #ifdef VOX_ENV_MAP
 	    vec3 envDir = -getWorldEnvDir(N, -V);
 	    envDir.x = -envDir.x;
-        vec3 specularEnvColor3 = VOX_TextureCubeLod(u_sampler0, envDir, mipLv).xyz;
-        
+        vec3 specularEnvColor3 = VOX_TextureCubeLod(VOX_ENV_MAP, envDir, mipLv).xyz;
+        //  FragOutColor = vec4(specularEnvColor3, 1.0);
+        //  return;
         //specularEnvColor3 = reinhardToneMapping(specularEnvColor3,1.0);
         specularEnvColor3 = gammaToLinear(specularEnvColor3);
         specularColor = fresnelSchlick3(specularColor, dotNV, 0.25 * reflectionIntensity) * specularEnvColor3;
@@ -139,6 +140,17 @@ void main()
         //color = reinhard_extended_luminance( color, u_params[1].x );
         //color = acesToneMapping(color, u_params[1].x);
     #endif
+    
+    #ifdef VOX_USE_SHADOW
+
+    float factor = getVSMShadowFactor(v_shadowPos);
+    //FragOutColor = vec4(vec3(factor), 1.0);
+    //  FragOutColor = VOX_Texture2D(u_sampler4, gl_FragCoord.xy/vec2(300.0));
+    //return;
+    color *= vec3(factor);
+    
+    #endif
+
     // gamma correct
     color = linearToGamma(color);
         
@@ -155,5 +167,7 @@ void main()
         //color.xyz = mirrorColor4.xyz * 1.0 + color.xyz * 0.3;
         color.xyz = mirrorColor4.xyz * u_mirrorParams[1].x + color.xyz  * u_mirrorParams[1].y;
     #endif
+    
+
     FragOutColor = vec4(color, 1.0);
 }

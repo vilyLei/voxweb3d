@@ -4,21 +4,6 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
+import IAbstractShader from "../../vox/material/IAbstractShader";
 
-import vsm_frag_head from "./vsm_fragHead.glsl";
-let __$shader_vsm_vert_head =
-`
-void calcShadowPos(in vec4 wpos) {
-    v_shadowPos = u_shadowMat * wpos;
-}
-`;
-const VSMShaderCode = {
-    vert: "",
-    vert_head: __$shader_vsm_vert_head,
-    vert_body: "",
-    frag: "",
-    frag_head: vsm_frag_head,
-    frag_body: ""
-};
-
-export { VSMShaderCode };
+export const EnvShaderCode:IAbstractShader;

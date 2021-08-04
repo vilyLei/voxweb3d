@@ -18,34 +18,19 @@ export default class AttributeLine
     typeName:string = "";
     name:string = "";
     layoutEnabled:boolean = true;
+    
     parseCode(codeStr:string):void
     {
-        let SEMICOLON:string = ";";
-        let SPACE:string = " ";
+        const SEMICOLON:string = ";";
+        const SPACE:string = " ";
+        // 去掉两头的空格
+        codeStr = codeStr.replace(/^\s*|\s*$/g,"");
         let i:number = codeStr.indexOf(SEMICOLON);
         if(i > 0)codeStr = codeStr.slice(0,i);
-        i = codeStr.indexOf(SPACE);
-        let j:number = 0;
-        let str:string = "";
-        let arr:string[] = [];
-        while( i>=0 )
-        {
-            str = codeStr.slice(j,i);
-            if(str.length > 0){arr.push(str);}
-            j = i+1;
-            i = codeStr.indexOf(SPACE,j);
-        }
-        str = codeStr.slice(j,codeStr.length);
-        if(str.length > 0){arr.push(str);}
-        if(this.layoutEnabled)
-        {
-            this.typeName = arr[arr.length - 2];
-            this.name = arr[arr.length - 1];
-        }else
-        {
-            this.typeName = arr[arr.length - 2];
-            this.name = arr[arr.length - 1];
-        }
+        let arr:string[] = codeStr.split(SPACE);
+       
+        this.typeName = arr[arr.length - 2];
+        this.name = arr[arr.length - 1];
     
         this.type = MaterialConst.GetTypeByTypeNS(this.typeName);
         this.typeSize = parseInt(this.typeName.slice(this.typeName.length - 1));

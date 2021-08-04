@@ -13,8 +13,6 @@ import MaterialBase from "../../../vox/material/MaterialBase";
 import ShadowVSMData from "./ShadowVSMData";
 import EnvLightData from "../../../light/base/EnvLightData";
 
-import { VSMShaderCode } from "./VSMShaderCode";
-
 class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
@@ -44,23 +42,18 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
         coder.addTextureSample2D();
 
         coder.addVarying("vec2", "v_uv");
-        coder.addVarying("vec3", "v_nv");
-        coder.addVarying("vec4", "v_shadowPos");
-        coder.addVarying("float", "v_fogDepth");
+        coder.addVarying("vec3", "v_worldNormal");
         coder.addFragOutput("vec4", "FragColor0");
 
         this.vsmData.useUniforms( coder );
 
         if(this.envData != null) {
-            coder.addDefine("VOX_FOG", "1");
-            coder.addDefine("VOX_FOG_EXP2", "1");
-            this.envData.useUniforms( coder );
+            this.envData.useUniformsForFog( coder );
         }
         coder.addDefine("VOX_VSM_MAP", "u_sampler0");
         coder.addFragUniform("vec4", "u_color");
 
         coder.useVertSpaceMats(true, true, true);
-        coder.addFragFunction(VSMShaderCode.frag_head);
         coder.vertMatrixInverseEnabled = true;
 
     }
@@ -69,31 +62,28 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
 
         this.m_codeBuilder.addFragMainCode(
 `
-
 void main() {
     vec4 color = VOX_Texture2D( u_sampler1, v_uv );
 
-    float factor = getVSMShadowFactor(v_shadowPos);
+
     color.xyz *= u_color.xyz;
 
-    FragColor0 = vec4(color.xyz * vec3(factor), 1.0);
+    #ifdef VOX_USE_SHADOW
 
-    #ifdef VOX_FOG
-        vec3 fogColor = u_envLightParams[2].xyz;
-    	#ifdef VOX_FOG_EXP2
-            float fogDensity = u_envLightParams[2].w;
-            // v_fogDepth = -viewPos.z;
-    		float fogFactor = 1.0 - exp( - fogDensity * fogDensity * v_fogDepth * v_fogDepth );
+    float factor = getVSMShadowFactor(v_shadowPos);
+    color.xyz *= vec3(factor);
 
-    	#else
+    //FragColor0 = vec4(vec3(factor), 1.0);
+    //  FragColor0 = VOX_Texture2D(u_sampler0, gl_FragCoord.xy/vec2(300.0));
+    //  return;
 
-            float fogNear = u_envLightParams[1].z;
-            float fogFar = u_envLightParams[1].w;
-    		float fogFactor = smoothstep( fogNear, fogFar, v_fogDepth );
+    #endif
+    
+    FragColor0 = vec4(color.xyz, 1.0);
 
-    	#endif
+    #ifdef VOX_USE_FOG
 
-    	FragColor0.rgb = mix( FragColor0.rgb, fogColor, fogFactor );
+    useFog( FragColor0.rgb );
 
     #endif
 }
@@ -110,12 +100,20 @@ void main() {
     vec4 viewPos = u_viewMat * wpos;
     gl_Position =  u_projMat * viewPos;
     v_uv = a_uvs.xy;
-    v_nv = normalize(a_nvs * inverse(mat3(u_objMat)));
+    v_worldNormal = normalize(a_nvs * inverse(mat3(u_objMat)));
     //wpos.xyz += a_nvs.xyz * 0.05;
 
-    v_shadowPos = u_shadowMat * wpos;
+    #ifdef VOX_USE_SHADOW
 
-    v_fogDepth = -viewPos.z;
+    calcShadowPos( wpos );
+
+    #endif
+
+    #ifdef VOX_USE_FOG
+
+    calcFogDepth(viewPos);
+
+    #endif
 }
 `
         );

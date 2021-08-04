@@ -21,6 +21,7 @@ export class ShadowVSMModule {
     private m_verOccBlurPlane: Plane3DEntity = null;
     private m_horOccBlurPlane: Plane3DEntity = null;
 
+    private m_camPos: Vector3D = new Vector3D(600.0, 800.0, -600.0);
     private m_shadowBias: number = -0.0005;
     private m_shadowRadius: number = 2.0;
     private m_shadowIntensity: number = 0.8;
@@ -29,6 +30,8 @@ export class ShadowVSMModule {
     private m_shadowMapH: number = 128;
     private m_viewWidth: number = 1300;
     private m_viewHeight: number = 1300;
+    private m_near: number = 0.01;
+    private m_far: number = 3000.0;
     private m_depthRtt: RTTTextureProxy = null;
     private m_occBlurRtt: RTTTextureProxy = null;
     private m_fboIndex: number = 0;
@@ -36,9 +39,10 @@ export class ShadowVSMModule {
         this.m_fboIndex = fboIndex;
     }
 
-    initialize(rscene: RendererScene, processIDList: number[]): void {
+    initialize(rscene: RendererScene, processIDList: number[], buildShadowDelay: number = 120): void {
         if (this.m_rscene == null) {
             this.m_rscene = rscene;
+            this.m_buildShadowDelay = buildShadowDelay;
             this.initConfig(processIDList);
         }
     }
@@ -46,6 +50,15 @@ export class ShadowVSMModule {
     setMapSize(mapW: number, mapH: number): void {
         this.m_shadowMapW = mapW;
         this.m_shadowMapH = mapH;
+    }
+    seetCameraPosition(pos: Vector3D): void {
+        this.m_camPos.copyFrom( pos );
+    }
+    setCameraNear(near: number): void {
+        this.m_near = near;
+    }
+    setCameraFar(far: number): void {
+        this.m_far = far;
     }
     setCameraViewSize(viewW: number, viewH: number): void {
         this.m_viewWidth = viewW;
@@ -118,9 +131,11 @@ export class ShadowVSMModule {
 
         let viewWidth: number = this.m_viewWidth;
         let viewHeight: number = this.m_viewHeight;
+        console.log("shadowCam viewWidth: ",viewWidth);
+        console.log("shadowCam viewHeight: ",viewHeight);
         this.m_direcCamera = new CameraBase(0);
-        this.m_direcCamera.lookAtRH(new Vector3D(600.0, 800.0, -600.0), new Vector3D(0.0, 0.0, 0.0), new Vector3D(0.0, 1.0, 0.0));
-        this.m_direcCamera.orthoRH(0.1, 1900.0, -0.5 * viewHeight, 0.5 * viewHeight, -0.5 * viewWidth, 0.5 * viewWidth);
+        this.m_direcCamera.lookAtRH(this.m_camPos, new Vector3D(0.0, 0.0, 0.0), new Vector3D(0.0, 1.0, 0.0));
+        this.m_direcCamera.orthoRH(this.m_near, this.m_far, -0.5 * viewHeight, 0.5 * viewHeight, -0.5 * viewWidth, 0.5 * viewWidth);
         this.m_direcCamera.setViewXY(0, 0);
         this.m_direcCamera.setViewSize(viewWidth, viewHeight);
         this.m_direcCamera.update();
@@ -136,6 +151,7 @@ export class ShadowVSMModule {
     private m_buildShadowDelay: number = 120;
 
     upateData(): void {
+        this.m_buildShadowDelay = 32;
         this.m_shadowCamVersion = this.m_direcCamera.version;
         this.m_vsmData.upadate();
     }

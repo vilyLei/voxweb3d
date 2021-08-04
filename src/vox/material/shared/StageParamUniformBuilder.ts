@@ -17,10 +17,10 @@ export default class StageParamUniformBuilder implements IUniformBuilder
     create( rc:RenderProxy,shdp:ShdProgram):ShaderUniform
     {
         let suo:ShaderGlobalUniform = null;
-        if(shdp.hasUniformByName(UniformConst.StageParamUNS))
+        if(shdp.hasUniformByName(UniformConst.StageParam.name))
         {
             suo = new ShaderGlobalUniform();
-            suo.uniformNameList = [UniformConst.StageParamUNS];
+            suo.uniformNameList = [UniformConst.StageParam.name];
             suo.copyDataFromProbe(rc.getStage3D().uProbe);                    
         }
         return suo;                

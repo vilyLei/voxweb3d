@@ -67,9 +67,9 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     private buildThisCode():void
     {
         let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
+        coder.reset();
         coder.normalMapEanbled = this.normalMapEnabled;
         coder.mapLodEnabled = true;
-        coder.reset();
         coder.useHighPrecious();
         
         let mirrorProjEnabled: boolean = this.mirrorProjEnabled && this.texturesTotal > 1;
@@ -79,7 +79,7 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
         // 毛料表面效果
         if (this.woolEnabled) coder.addDefine("VOX_WOOL");
         if (this.toneMappingEnabled) coder.addDefine("VOX_TONE_MAPPING");
-        if (this.envMapEnabled) coder.addDefine("VOX_ENV_MAP");
+        
         if (this.scatterEnabled) coder.addDefine("VOX_SCATTER");
         if (this.specularBleedEnabled) coder.addDefine("VOX_SPECULAR_BLEED");
         if (this.metallicCorrection) coder.addDefine("VOX_METALLIC_CORRECTION");
@@ -87,14 +87,16 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
         if (this.absorbEnabled) coder.addDefine("VOX_ABSORB");
         if (this.pixelNormalNoiseEnabled) coder.addDefine("VOX_PIXEL_NORMAL_NOISE");
 
-        coder.addTextureSampleCube();
-        let texIndex: number = 1;
+        let texIndex: number = 0;
+        if (this.envMapEnabled && this.texturesTotal > 0) {
+            coder.addDefine("VOX_ENV_MAP","u_sampler"+(texIndex++));
+            coder.addTextureSampleCube();
+        }
         if (this.diffuseMapEnabled && this.texturesTotal > 1) {
             coder.addDefine("VOX_DIFFUSE_MAP","u_sampler"+(texIndex++));
             coder.addTextureSample2D();
         }
         if (this.normalMapEnabled && this.texturesTotal > 1) {
-            coder.addDefine("VOX_USE_NORMALE_MAP");
             coder.addDefine("VOX_NORMAL_MAP","u_sampler"+(texIndex++));
             coder.addTextureSample2D();
         }

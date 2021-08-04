@@ -58,7 +58,19 @@ class ShadowMat4UniformParam implements IUniformParam{
      */
     readonly arrayLength: number = 0;
 }
-
+class StageUniformParam implements IUniformParam{
+    constructor() { }
+    readonly type: string = "vec4";
+    readonly data: Float32Array = null;
+    /**
+     * uniform name string
+     */
+    readonly name: string = "u_stageParam";
+    /**
+     * uniform array length
+     */
+    readonly arrayLength: number = 0;
+}
 class GlobalLightUniform {
     constructor() { }
     readonly type: string = "vec4";
@@ -85,22 +97,16 @@ export default class UniformConst {
     /**
      * stage param shader uniform name string, vec4: [2.0/stageWidth,2.0/stageHeight, stageWidth,stageHeight]
      */
-    static readonly StageParamUNS: string = "u_stageParam";
+    static readonly StageParam: StageUniformParam = new StageUniformParam();
     /**
      * view port param shader uniform name string, vec4: [viewPortX, viewPortY, viewPortWidth, viewPortHeight]
      */
     static readonly ViewParamUNS: string = "u_viewParam";
 
-    //static readonly ShadowMatrixUNS: string = "u_shadowMat";
     static readonly ShadowMatrix: ShadowMat4UniformParam = new ShadowMat4UniformParam();
     static readonly ShadowVSMParams: ShadowVSMParams = new ShadowVSMParams();
 
-    //static readonly GlobalLightPositinListUNS: string = "u_lightPositions";
-    //static readonly GlobalLightColorListUNS: string = "u_lightColors";
-    //GlobalLightUniform
-
     static readonly GlobalLight: GlobalLightUniform = new GlobalLightUniform();
-
     static readonly EnvLightParams: EnvLightParam = new EnvLightParam();
 
 }

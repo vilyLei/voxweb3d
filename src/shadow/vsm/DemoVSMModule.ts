@@ -85,8 +85,10 @@ export class DemoVSMModule {
             this.m_envData.setFogColorRGB3f(0.0,0.8,0.1);
 
             this.m_vsmModule = new ShadowVSMModule(0);
-            this.m_vsmModule.setMapSize(128.0, 128.0);
-            this.m_vsmModule.setCameraViewSize(1300, 1300);
+            this.m_vsmModule.seetCameraPosition( new Vector3D(20,800,20) );
+            this.m_vsmModule.setCameraFar(3000.0);
+            this.m_vsmModule.setMapSize(512.0, 512.0);
+            this.m_vsmModule.setCameraViewSize(4000, 4000);
             this.m_vsmModule.setShadowRadius(2);
             this.m_vsmModule.setShadowBias(-0.0005);
             this.m_vsmModule.initialize(this.m_rscene, [0]);
@@ -154,7 +156,7 @@ export class DemoVSMModule {
         sph.setMaterial(shadowMaterial);
         sph.initialize(80.0, 20.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/metal_02.jpg")]);
         this.m_rscene.addEntity(sph);
-        sph.setXYZ(-230.0, 100.0, -200.0);
+        sph.setXYZ(-230.0, 300.0, -200.0);
 
         sph = new Sphere3DEntity();
         shadowMaterial = new ShadowVSMMaterial();

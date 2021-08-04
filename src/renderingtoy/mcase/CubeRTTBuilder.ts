@@ -153,7 +153,7 @@ export default class CubeRttBuilder {
         renderer.runAt(rpcI);
     }
     run() {
-        if (this.m_enabled) {
+        if (this.m_enabled && this.m_rscene != null) {
             let visible: boolean = false;
             if(this.m_tarEntity != null) {
                 visible = this.m_tarEntity.getVisible();

@@ -5,20 +5,20 @@
 /*                                                                         */
 /***************************************************************************/
 
-import vsm_frag_head from "./vsm_fragHead.glsl";
-let __$shader_vsm_vert_head =
-`
-void calcShadowPos(in vec4 wpos) {
-    v_shadowPos = u_shadowMat * wpos;
+import env_frag_head from "./env_fragHead.glsl";
+let __$shader_env_vert_head =
+    `
+void calcFogDepth(in vec4 viewPos) {
+    v_fogDepth = -viewPos.z;
 }
 `;
-const VSMShaderCode = {
+const EnvShaderCode = {
     vert: "",
-    vert_head: __$shader_vsm_vert_head,
+    vert_head: __$shader_env_vert_head,
     vert_body: "",
     frag: "",
-    frag_head: vsm_frag_head,
+    frag_head: env_frag_head,
     frag_body: ""
 };
 
-export { VSMShaderCode };
+export { EnvShaderCode };

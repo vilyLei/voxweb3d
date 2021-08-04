@@ -9,6 +9,7 @@ import UniformConst from "../../vox/material/UniformConst";
 import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
 import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
+import { EnvShaderCode } from "../material/EnvShaderCode";
 
 export default class EnvLightData {
 
@@ -56,6 +57,18 @@ export default class EnvLightData {
     useUniforms(builder: IShaderCodeBuilder): void {
         if (this.m_uProbe != null) {
             builder.addFragUniformParam(UniformConst.EnvLightParams);
+        }
+    }
+    useUniformsForFog(builder: IShaderCodeBuilder,fogExp2Enabled: boolean = true): void {
+        if (this.m_uProbe != null) {
+            builder.addFragUniformParam(UniformConst.EnvLightParams);
+            builder.addDefine("VOX_USE_FOG", "1");
+            if(fogExp2Enabled) {
+                builder.addDefine("VOX_FOG_EXP2", "1");
+            }
+            builder.addVarying("float", "v_fogDepth");
+            builder.addFragFunction( EnvShaderCode.frag_head );
+            builder.addVertFunction( EnvShaderCode.vert_head );
         }
     }
     initialize(): void {

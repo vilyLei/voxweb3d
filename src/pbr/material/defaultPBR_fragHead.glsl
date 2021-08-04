@@ -5,14 +5,6 @@
 uniform vec4 u_albedo;
 uniform vec4 u_params[4];
 
-//  // point and parallel lights
-//  #if VOX_LIGHTS_TOTAL > 0
-//      uniform vec4 u_lightPositions[VOX_LIGHTS_TOTAL];
-//      uniform vec4 u_lightColors[VOX_LIGHTS_TOTAL];
-//  #endif
-
-//uniform vec4 u_camPos;
-
 #define PI 3.141592653589793
 #define PI2 6.283185307179586
 #define PI_HALF 1.5707963267948966
@@ -403,7 +395,7 @@ vec3 rand(vec3 seed) {
     float noiseZ = (fract(sin(scale * dot(seed, noise3 * 3.0)) * scale2));
     return vec3(noiseX, noiseY, noiseZ);
 }
-#ifdef VOX_USE_NORMALE_MAP
+#ifdef VOX_NORMAL_MAP
 vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 wpos, vec3 nv)
 {
     vec3 tangentNormal = VOX_Texture2D(texSampler, texUV).xyz * 2.0 - 1.0;

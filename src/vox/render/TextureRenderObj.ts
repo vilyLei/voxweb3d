@@ -87,7 +87,7 @@ export namespace vox {
                     this.m_texTotal = shdTexTotal;
                 }
                 while (i < ptexList.length) {
-                    ptexList[i].__$detachThis();
+                    ptexList[i++].__$attachThis();
                 }
             }
             // 注意: 移动端要注意这里的切换机制是符合移动端低带宽的特点

@@ -103,6 +103,11 @@ precision mediump float;
         this.m_defineValues = [];
 
         this.m_textureSampleTypes = [];
+
+        this.normalMapEanbled = false;
+        this.mapLodEnabled = false;
+        this.vertMatrixInverseEnabled = false;
+        this.fragMatrixInverseEnabled = false;
     }
     useHighPrecious(): void {
         this.m_preciousCode = "precision highp float;";
@@ -169,7 +174,7 @@ precision mediump float;
     addTextureSample3D(): void {
         this.m_textureSampleTypes.push("sampler3D");
     }
-    useVertSpaceMats(objMatEnabled: boolean, viewMatEnabled: boolean = false, projMatEnabled: boolean = true): void {
+    useVertSpaceMats(objMatEnabled: boolean = true, viewMatEnabled: boolean = true, projMatEnabled: boolean = true): void {
         this.m_objMat = objMatEnabled;
         this.m_viewMat = viewMatEnabled;
         this.m_projMat = projMatEnabled;

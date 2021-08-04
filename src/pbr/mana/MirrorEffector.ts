@@ -10,6 +10,8 @@ import DefaultPBRUI from "./DefaultPBRUI";
 import FBOInstance from "../../vox/scene/FBOInstance";
 import CameraBase from "../../vox/view/CameraBase";
 
+import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
+
 import PBRParamEntity from "./PBRParamEntity";
 import DefaultPBRMaterial2 from "../../pbr/material/DefaultPBRMaterial2";
 import MaterialBuilder from "../../pbr/mana/MaterialBuilder";
@@ -26,6 +28,7 @@ export class MirrorEffector
     reflectPlaneY: number = -220.0;
     materialBuilder: MaterialBuilder;
     envMap: TextureProxy = null;
+    vsmModule: ShadowVSMModule = null;
     constructor(fboIndex: number) {
         this.m_fboIndex = fboIndex;
     }
@@ -84,25 +87,37 @@ export class MirrorEffector
         let mEntity: MirrorProjEntity = null;
         let plane:Plane3DEntity = null;
         let material: DefaultPBRMaterial2;
+        
+        let vsmData = this.vsmModule.getVSMData();
+        let shadowTex = this.vsmModule.getShadowMap();
+
+        this.m_mirrorMapLodEnabled = true;
         ///*
         // mirror plane
         material = this.materialBuilder.makeDefaultPBRMaterial2(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
-        material.setTextureList( [
-            this.envMap
-            , this.getImageTexByUrl("static/assets/brickwall_big.jpg")
-            , this.getImageTexByUrl("static/assets/brickwall_normal.jpg")
-            , this.m_fboIns.getRTTAt(0)
-        ] );
-        this.m_mirrorMapLodEnabled = true;
-        if(this.m_mirrorMapLodEnabled) {
-            this.m_fboIns.enableMipmapRTTAt(0);
-            material.setMirrorMapLodLevel(2.0);
-        }
+        
+        material.shadowReceiveEnabled = true;
         material.pixelNormalNoiseEnabled = true;
         material.mirrorProjEnabled = true;
         material.mirrorMapLodEnabled = this.m_mirrorMapLodEnabled;
         material.diffuseMapEnabled = true;
         material.normalMapEnabled = true;
+        let ptexList: TextureProxy[] = [
+            this.envMap
+            , this.getImageTexByUrl("static/assets/brickwall_big.jpg")
+            , this.getImageTexByUrl("static/assets/brickwall_normal.jpg")
+            , this.m_fboIns.getRTTAt(0)
+        ]
+        
+        if(material.shadowReceiveEnabled) {
+            ptexList.push( shadowTex );
+            material.setVSMData( vsmData );
+        }
+        material.setTextureList( ptexList );
+        if(this.m_mirrorMapLodEnabled) {
+            this.m_fboIns.enableMipmapRTTAt(0);
+            material.setMirrorMapLodLevel(2.0);
+        }
         material.setUVScale(3.0,3.0);
         material.setMirrorIntensity(0.9);
         material.setMirrorMixFactor(0.2);
@@ -120,8 +135,8 @@ export class MirrorEffector
         param.pbrUI = this.m_uiModule;
         param.colorPanel = this.m_uiModule.rgbPanel;
         param.initialize();
-        //this.m_paramEntities.push(param);
         this.m_planeParam = param;
+        //*/
 
     }
     getPlane(): Plane3DEntity {
@@ -143,11 +158,7 @@ export class MirrorEffector
     render(): void {
 
         
-        // --------------------------------------------- mirror inverted reflection fbo run begin
-        
-        //  for(let i: number = 0; i < this.m_mirrorEntities.length; ++i) {
-        //      this.m_mirrorEntities[i].toMirror();
-        //  }
+        // --------------------------------------------- mirror inverted reflection fbo run begin        
 
         this.m_fboIns.run();
         if(this.m_mirrorMapLodEnabled) {
@@ -157,10 +168,6 @@ export class MirrorEffector
         
         this.m_rscene.setRenderToBackBuffer();
         
-        //  for(let i: number = 0; i < this.m_mirrorEntities.length; ++i) {
-        //      this.m_mirrorEntities[i].toNormal();
-        //  }
-        //*/
         
     }
 }

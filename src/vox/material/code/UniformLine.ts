@@ -27,21 +27,10 @@ export default class UniformLine
             return false;
         }
         const SPACE:string = " ";
+        codeStr = codeStr.replace(/^\s*|\s*$/g,"");
         if(i > 0)codeStr = codeStr.slice(0,i);
-        i = codeStr.indexOf(SPACE);
-        let j:number = 0;
-        let str:string = "";
-        let arr:string[] = [];
-        while( i>=0 )
-        {
-            str = codeStr.slice(j,i);
-            if(str.length > 0){arr.push(str);}
-            j = i+1;
-            i = codeStr.indexOf(SPACE,j);
-        }
-        str = codeStr.slice(j,codeStr.length);
-        if(str.length > 0){arr.push(str);}
-        
+        let arr:string[] = codeStr.split(SPACE);
+       
         this.typeName = arr[arr.length - 2];
         this.name = arr[arr.length - 1];
         i = this.name.indexOf("[");

@@ -13,11 +13,12 @@ import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import ShaderUniformProbe from "../../../vox/material/ShaderUniformProbe";
 import CameraBase from "../../../vox/view/CameraBase";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
+import { VSMShaderCode } from "./VSMShaderCode";
 
 export default class ShadowVSMData {
-    
+
     private m_uProbe: ShaderUniformProbe = null;
-    private m_suo:ShaderGlobalUniform = null;
+    private m_suo: ShaderGlobalUniform = null;
     private m_direcMatrix: Matrix4 = null;
     private m_params: Float32Array = null;
     private m_offetMatrix: Matrix4 = null;
@@ -29,9 +30,13 @@ export default class ShadowVSMData {
         this.m_uslotIndex = slotIndex;
     }
     useUniforms(builder: IShaderCodeBuilder): void {
-        if (this.m_uProbe != null) {            
+        if (this.m_uProbe != null) {
+            builder.addDefine("VOX_USE_SHADOW", "1");
             builder.addFragUniformParam(UniformConst.ShadowVSMParams);
             builder.addVertUniformParam(UniformConst.ShadowMatrix);
+            builder.addFragFunction(VSMShaderCode.frag_head);           
+            builder.addVertFunction(VSMShaderCode.vert_head);           
+            builder.addVarying("vec4", "v_shadowPos");
         }
     }
     initialize(): void {
@@ -40,10 +45,10 @@ export default class ShadowVSMData {
 
             this.m_direcMatrix = new Matrix4();
             this.m_offetMatrix = new Matrix4();
-            
+
             this.m_offetMatrix.identity();
-            this.m_offetMatrix.setScaleXYZ(0.5,0.5,0.5);
-            this.m_offetMatrix.setTranslationXYZ(0.5,0.5,0.5);
+            this.m_offetMatrix.setScaleXYZ(0.5, 0.5, 0.5);
+            this.m_offetMatrix.setTranslationXYZ(0.5, 0.5, 0.5);
 
             this.m_params = new Float32Array(
                 [
@@ -51,12 +56,12 @@ export default class ShadowVSMData {
                     , 0.0               // shadowNormalBias
                     , 4                 // shadowRadius
                     , 0.8               // shadow intensity
-            
+
                     , 512, 512          // shadowMapSize(width, height)
                     , 0.1               // color intensity
                     , 0.0               // undefined
-            
-                    
+
+
                     , 1.0, 1.0, 1.0      // direc light nv(x,y,z)
                     , 0.0                // undefined
                 ]
@@ -67,10 +72,10 @@ export default class ShadowVSMData {
             this.m_uProbe.addMat4Data(this.m_direcMatrix.getLocalFS32(), 1);
             this.m_uProbe.addVec4Data(this.m_params, UniformConst.ShadowVSMParams.arrayLength);
 
-            
+
             this.m_suo = new ShaderGlobalUniform();
             this.m_suo.uniformNameList = [UniformConst.ShadowMatrix.name, UniformConst.ShadowVSMParams.name];
-            this.m_suo.copyDataFromProbe( this.m_uProbe );
+            this.m_suo.copyDataFromProbe(this.m_uProbe);
 
             this.m_uProbe.update();
         }
@@ -80,12 +85,12 @@ export default class ShadowVSMData {
     }
     getGlobalUinformAt(i: number): ShaderGlobalUniform {
         let suo: ShaderGlobalUniform = new ShaderGlobalUniform();
-        suo.copyDataFromProbeAt(i, this.m_uProbe);        
+        suo.copyDataFromProbeAt(i, this.m_uProbe);
         return suo;
     }
     updateShadowCamera(camera: CameraBase): void {
         //console.log("this.m_camVersion,camera.version: ",this.m_camVersion,camera.version);
-        if(this.m_camVersion != camera.version) {
+        if (this.m_camVersion != camera.version) {
 
             this.m_camVersion = camera.version;
             this.m_direcMatrix.copyFrom(camera.getVPMatrix());

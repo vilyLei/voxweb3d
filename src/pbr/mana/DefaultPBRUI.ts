@@ -305,7 +305,9 @@ export class DefaultPBRUI implements IPBRUI {
 
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
         let value: number = progEvt.value;
-
+        if(this.m_paramEntity == null) {
+            return;
+        }
         let material: IPBRMaterial = this.m_paramEntity.getMaterial();
         let mirrorMaterial: IPBRMaterial = this.m_paramEntity.getMirrorMaterial();
         this.m_currUUID = progEvt.uuid;

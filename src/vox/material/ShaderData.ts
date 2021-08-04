@@ -76,6 +76,7 @@ export default class ShaderData implements IShaderData
     }
     initialize(unique_ns:string,vshdsrc:string,fshdSrc:string):void
     {
+        this.m_shdUniqueName = unique_ns;
         if(this.adaptationShaderVersion) {
             if(RendererDeviece.IsWebGL1())
             {
@@ -151,6 +152,7 @@ export default class ShaderData implements IShaderData
             }
             ++i;
         }
+
         this.m_mid = mid;
         this.m_texTotal = ShaderData.s_codeParser.texTotal;
         this.m_useTex = this.m_texTotal > 0;

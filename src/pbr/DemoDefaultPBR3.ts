@@ -103,7 +103,7 @@ export class DemoDefaultPBR3 {
             let posList: Vector3D[] = lightModule.getPointList();
             if (posList != null) {
                 let tot: number = posList.length;
-                //tot = 0;
+                tot = 0;
                 for (let i: number = 0; i < tot; ++i) {
                     let crossAxis: Axis3DEntity = new Axis3DEntity();
                     crossAxis.initializeCross(30.0);
@@ -115,14 +115,17 @@ export class DemoDefaultPBR3 {
             this.m_rscene.setClearRGBColor3f(0.2, 0.2, 0.2);
 
 
-            this.m_vsmModule = new ShadowVSMModule(0);
+            this.m_vsmModule = new ShadowVSMModule(2);
+            this.m_vsmModule.seetCameraPosition(new Vector3D(160, 800, 160));
+            //this.m_vsmModule.setCameraNear( 0.01 );
+            this.m_vsmModule.setCameraFar(2000.0);
             this.m_vsmModule.setMapSize(128.0, 128.0);
-            this.m_vsmModule.setCameraViewSize(1300, 1300);
-            this.m_vsmModule.setShadowRadius(2);
+            this.m_vsmModule.setCameraViewSize(2000, 2000);
+            this.m_vsmModule.setShadowRadius(2.0);
             this.m_vsmModule.setShadowBias(-0.0005);
-            this.m_vsmModule.initialize(this.m_rscene, [0]);
-            this.m_vsmModule.setShadowIntensity(0.8);
-            this.m_vsmModule.setColorIntensity(0.3);
+            this.m_vsmModule.initialize(this.m_rscene, [0], 3000);
+            this.m_vsmModule.setShadowIntensity(0.7);
+            this.m_vsmModule.setColorIntensity(0.4);
 
             let cubeRTTMipMapEnabled: boolean = true;
             let rttPos: Vector3D = new Vector3D(0.0, 0.0, 0.0);
@@ -143,7 +146,7 @@ export class DemoDefaultPBR3 {
             this.m_mirrorEffector = new MirrorEffector(1);
             this.m_mirrorEffector.reflectPlaneY = this.m_reflectPlaneY;
 
-            this.m_entityScene = new EntityScene(this.m_materialBuilder, this.m_cubeRTTBuilder);
+            this.m_entityScene = new EntityScene(this.m_materialBuilder, this.m_cubeRTTBuilder, this.m_vsmModule);
             this.m_entityScene.initialize(this.m_rscene, this.m_texLoader, this.m_uiModule, this.m_envMap, this.m_mirrorEffector);
 
         }
@@ -215,8 +218,6 @@ export class DemoDefaultPBR3 {
 
         // --------------------------------------------- cube rtt runbegin
         this.m_cubeRTTBuilder.run();
-        //  this.m_rscene.getRendererContext().resetmaterial();
-        //  this.m_rscene.getRendererContext().resetUniform();
         // --------------------------------------------- cube rtt run end
         this.m_rscene.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);
 

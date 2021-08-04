@@ -14,6 +14,7 @@ import MirrorProjEntity from "./MirrorProjEntity";
 import PBRParamEntity from "./PBRParamEntity";
 import MirrorEffector from "./MirrorEffector";
 import CubeRttBuilder from "../../renderingtoy/mcase/CubeRTTBuilder";
+import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
 import GlobalLightData from "../../light/base/GlobalLightData";
 
 
@@ -28,14 +29,16 @@ export default class EntityScene
 
     private m_materialBuilder: MaterialBuilder;    
     private m_cubeRTTBuilder: CubeRttBuilder;
+    private m_vsmModule: ShadowVSMModule;
 
     private m_mirrorRprIndex: number = 3;
     private m_lightData: GlobalLightData = new GlobalLightData();
 
-    constructor(materialBuilder: MaterialBuilder, cubeRTTBuilder: CubeRttBuilder) {
+    constructor(materialBuilder: MaterialBuilder, cubeRTTBuilder: CubeRttBuilder, vsmModule: ShadowVSMModule) {
+
         this.m_materialBuilder = materialBuilder;
         this.m_cubeRTTBuilder = cubeRTTBuilder;
-        
+        this.m_vsmModule = vsmModule;        
     }
 
     getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
@@ -62,6 +65,7 @@ export default class EntityScene
 
             this.m_mirrorRprIndex = 3;
             this.m_mirrorEffector.envMap = this.m_envMap;
+            this.m_mirrorEffector.vsmModule = this.m_vsmModule;
             this.m_mirrorEffector.materialBuilder = this.m_materialBuilder;            
             this.m_mirrorEffector.initialize(this.m_rscene, this.m_texLoader, this.m_uiModule, [this.m_mirrorRprIndex]);
 
@@ -76,7 +80,7 @@ export default class EntityScene
         let material: DefaultPBRMaterial2;
 
         this.m_paramEntities.push( this.m_mirrorEffector.getPlaneParamEntity() );
-
+        /*
         let urls = [
             "static/assets/hw_morning/morning_ft.jpg",
             "static/assets/hw_morning/morning_bk.jpg",
@@ -86,42 +90,57 @@ export default class EntityScene
             "static/assets/hw_morning/morning_lf.jpg"
         ];
         let cubeTex0: TextureProxy = this.m_texLoader.getCubeTexAndLoadImg("static/assets/cubeMap", urls);
-        
+        //*/
+        let vsmData = this.m_vsmModule.getVSMData();
+        let shadowTex = this.m_vsmModule.getShadowMap();
 
         let sph: Sphere3DEntity;
         let rad: number;
         let radius: number;
         let total: number = 3;
+        
         for(let i: number = 0; i < total; ++i) {
 
             rad = Math.random() * 100.0;
             radius = Math.random() * 250.0 + 550.0;
             material = matBuilder.makeDefaultPBRMaterial2(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
-            material.setTextureList( [
-                this.m_envMap
+            
+            material.shadowReceiveEnabled = true;
+
+            material.indirectEnvMapEnabled = true;
+            material.envMapEnabled = true;
+            material.diffuseMapEnabled = true;
+            material.normalMapEnabled = true;
+
+            let ptexList: TextureProxy[] = [
+                this.m_envMap,
                 //  ,this.getImageTexByUrl("static/assets/disp/box_COLOR.png")
                 //  ,this.getImageTexByUrl("static/assets/disp/box_NRM.png")
 
                 //  ,this.getImageTexByUrl("static/assets/noise.jpg")
-                ,this.getImageTexByUrl("static/assets/disp/lava_03_COLOR.png")
-                ,this.getImageTexByUrl("static/assets/disp/lava_03_NRM.png")
+                this.getImageTexByUrl("static/assets/disp/lava_03_COLOR.png"),
+                this.getImageTexByUrl("static/assets/disp/lava_03_NRM.png"),
 
                 //  ,this.getImageTexByUrl("static/assets/disp/metal_08_COLOR.png")
                 //  ,this.getImageTexByUrl("static/assets/disp/metal_08_NRM.png")
 
-                ,this.m_cubeRTTBuilder.getCubeTexture()
-                //,cubeTex0
-            ] );
-            material.diffuseMapEnabled = true;
-            material.normalMapEnabled = true;
-            material.indirectEnvMapEnabled = true;
+            ];
+            if(material.indirectEnvMapEnabled) {
+                ptexList.push( this.m_cubeRTTBuilder.getCubeTexture() );
+            }
+            if(material.shadowReceiveEnabled) {
+                ptexList.push( shadowTex );
+                material.setVSMData( vsmData );
+            }
+            material.setTextureList( ptexList );
+
             let pr: number = 80 + Math.random() * 100.0;
             sph = new Sphere3DEntity();
             sph.setMaterial( material );
             sph.initialize(pr, 20, 20);
             sph.setXYZ(radius * Math.cos(rad), Math.random() * 500.0, radius * Math.sin(rad));
             this.m_rscene.addEntity(sph);
-
+            
             param = new PBRParamEntity();
             param.entity = sph;
             param.setMaterial( material );
@@ -129,13 +148,19 @@ export default class EntityScene
             param.colorPanel = this.m_uiModule.rgbPanel;
             param.initialize();
             this.m_paramEntities.push(param);
-
+            
             let mirMaterial: DefaultPBRMaterial2 = matBuilder.makeDefaultPBRMaterial2(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
             mirMaterial.copyFrom(material, false);
             let texList: TextureProxy[] = material.getTextureList();
-            mirMaterial.setTextureList([texList[0],texList[1],texList[2]]);
-            mirMaterial.diffuseMapEnabled = true;
-            mirMaterial.normalMapEnabled = true;
+            if(material.envMapEnabled) {
+                mirMaterial.setTextureList(texList.slice(1));
+            }
+            else {
+                mirMaterial.setTextureList(texList.slice(0));
+            }
+            mirMaterial.envMapEnabled = false;
+            mirMaterial.diffuseMapEnabled = material.diffuseMapEnabled;
+            mirMaterial.normalMapEnabled = material.normalMapEnabled;
             mirMaterial.indirectEnvMapEnabled = false;
             mirMaterial.pixelNormalNoiseEnabled = false;
 
