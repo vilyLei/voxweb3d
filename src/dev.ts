@@ -239,21 +239,17 @@
 //  import * as DemoFaceDirec from "./demo/DemoFaceDirec";
 //  import Demo = DemoFaceDirec.demo.DemoFaceDirec;
 
-//  import * as DemoMotion from "./demo/DemoMotion";
-//  import Demo = DemoMotion.demo.DemoMotion;
+//  import {DemoMotion as Demo} from "./demo/DemoMotion";
 
-//  import * as DemoMixProgress from "./demo/DemoMixProgress";
-//  import Demo = DemoMixProgress.demo.DemoMixProgress;
+//  import {DemoMixProgress as Demo} from "./demo/DemoMixProgress";
 
 //  import {DemoRenderSort as Demo} from "./demo/DemoRenderSort";
 
 //  import {DemoThread as Demo} from "./thread/example/DemoThread";
 
-//  import * as DemoOrtho from "./demo/DemoOrtho";
-//  import Demo = DemoOrtho.demo.DemoOrtho;
+//  import {DemoOrtho as Demo} from "./demo/DemoOrtho";
 
-//  import * as DemoMouseEvent from "./demo/DemoMouseEvent";
-//  import Demo = DemoMouseEvent.demo.DemoMouseEvent;
+//  import {DemoMouseEvent as Demo} from "./demo/DemoMouseEvent";
 
 //  import {DemoMultiRendererScene as Demo} from "./demo/DemoMultiRendererScene";
 
@@ -263,8 +259,7 @@
 
 //  import {DemoMultiRenderer as Demo} from "./demo/DemoMultiRenderer";
 
-//  import * as DemoOrthoSubScene from "./demo/DemoOrthoSubScene";
-//  import Demo = DemoOrthoSubScene.demo.DemoOrthoSubScene;
+//  import {DemoOrthoSubScene as Demo} from "./demo/DemoOrthoSubScene";
 
 //  import {DemoOrthoBtn as Demo} from "./demo/DemoOrthoBtn";
 
@@ -272,11 +267,9 @@
 
 //  import {DemoMouseDrag as Demo} from "./demo/DemoMouseDrag";
 
-//  import * as DemoCameraSwing from "./demo/DemoCameraSwing";
-//  import Demo = DemoCameraSwing.demo.DemoCameraSwing;
+//  import {DemoCameraSwing as Demo} from "./demo/DemoCameraSwing";
 
-//  import * as DemoCamVisibleTest from "./demo/DemoCamVisibleTest";
-//  import Demo = DemoCamVisibleTest.demo.DemoCamVisibleTest;
+//  import {DemoCamVisibleTest as Demo} from "./demo/DemoCamVisibleTest";
 
 //  import {DemoHdrCylindricalMap as Demo} from "./demo/DemoHdrCylindricalMap";
 
@@ -292,8 +285,7 @@
 
 //  import {DemoPreDepthTransparent as Demo} from "./demo/DemoPreDepthTransparent";
 
-//  import * as DemoObj3DModule from "./demo/DemoObj3DModule";
-//  import Demo = DemoObj3DModule.demo.DemoObj3DModule;
+//  import {DemoObj3DModule as Demo} from "./demo/DemoObj3DModule";
 
 //  import {DemoCubeMap as Demo} from "./demo/DemoCubeMap";
 
@@ -341,7 +333,9 @@
 
 //  import {DemoDefaultPBR2 as Demo} from "./pbr/DemoDefaultPBR2";
 
-import {DemoDefaultPBR3 as Demo} from "./pbr/DemoDefaultPBR3";
+//  import {DemoDefaultPBR3 as Demo} from "./pbr/DemoDefaultPBR3";
+
+import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////

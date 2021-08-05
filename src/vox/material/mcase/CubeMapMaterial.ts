@@ -21,6 +21,7 @@ class CubeMapShaderBuffer extends ShaderCodeBuffer {
     gammaCorrectionEanbled: boolean = false;
     initialize(texEnabled: boolean): void {
         //console.log("CubeMapShaderBuffer::initialize()...");
+        this.adaptationShaderVersion = false;
         this.m_uniqueName = "CubeMapShd";
         if (this.mapLodEnabled) this.m_uniqueName += "Lod";
         if (this.gammaCorrectionEanbled) this.m_uniqueName += "Gamma";

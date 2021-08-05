@@ -109,7 +109,9 @@ void main()
     
     #ifdef VOX_INDIRECT_ENV_MAP
         rL.L = vec3(0.0, -1.0, 0.0);
-        calcPBRLight(roughness, rm, 1.5 * VOX_TextureCubeLod(VOX_INDIRECT_ENV_MAP, N, 5.0).xyz, rL);
+        color = VOX_TextureCubeLod(VOX_INDIRECT_ENV_MAP, N, 5.0).xyz;
+        calcPBRLight(roughness, rm, 1.5 * color, rL);
+        color *= max(dot(N, rL.L), 0.0) * 0.1;
     #endif
 
     specularColor = (rL.specular + specularColor);
@@ -129,7 +131,7 @@ void main()
 		Lo *= sideIntensity * frontIntensity;
 	#endif
 
-    color = ambient + Lo;
+    color += ambient + Lo;
 
     
     //color = dithering(color);

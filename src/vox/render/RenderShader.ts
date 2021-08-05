@@ -33,6 +33,7 @@ export default class RenderShader implements IRenderShader,IRenderResource
     private m_rc:any = null;
     private m_gpuProgram: any = null;
     private m_adapter:RenderAdapter = null;
+    private m_guniform:IShaderUniform = null;
     // material相关的uniform,默认不包括transform相关的信息
     private m_uniform:IShaderUniform = null;
     // 只有transform相关的信息uniform
@@ -164,9 +165,9 @@ export default class RenderShader implements IRenderShader,IRenderResource
      */
     bindToGpu(resUid:number):void
     {
-        if(this.m_unlocked)
+        if(this.m_unlocked && resUid > -1 && resUid < this.m_shdListLen)
         {
-            if(this.m_preuid != resUid && resUid > -1 && resUid < this.m_shdListLen)
+            if(this.m_preuid != resUid)
             {
                 this.m_preuid = resUid;
                 
@@ -185,13 +186,23 @@ export default class RenderShader implements IRenderShader,IRenderResource
                 shd.useTexLocation();
                 // console.log("use a new shader uid: ",shd.getUid(),",uns: ",shd.getUniqueShaderName(): string);
                 // use global shared uniform
-                var uniform:IShaderUniform = this.m_sharedUniformList[shd.getUid()];
+                let uniform:IShaderUniform = this.m_sharedUniformList[shd.getUid()];
+                this.m_guniform = uniform;
                 while(uniform != null)
                 {
                     uniform.use(this);
                     uniform = uniform.next;
                 }
                 this.m_currShd = shd;
+            }
+            else if(this.m_guniform == null && this.m_currShd != null){
+                let uniform:IShaderUniform = this.m_sharedUniformList[this.m_currShd.getUid()];
+                this.m_guniform = uniform;
+                while(uniform != null)
+                {
+                    uniform.use(this);
+                    uniform = uniform.next;
+                }
             }
         }
     }
@@ -216,6 +227,7 @@ export default class RenderShader implements IRenderShader,IRenderResource
     {
         this.m_uniform = null;
         this.m_transformUniform = null;
+        this.m_guniform = null;
     }
     /**
      * frame begin run this function

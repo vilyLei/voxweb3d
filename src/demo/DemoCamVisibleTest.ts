@@ -1,14 +1,11 @@
 
 import Color4 from '../vox/material/Color4';
 import Vector3D from "../vox/math/Vector3D";
-import Matrix4 from "../vox/math/Matrix4";
-import Matrix4Pool from "../vox/math/Matrix4Pool";
 import RendererDeviece from "../vox/render/RendererDeviece";
 import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
 import TextureProxy from "../vox/texture/TextureProxy";
-import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RendererInstance from "../vox/scene/RendererInstance";
@@ -19,14 +16,8 @@ import H5FontSystem from "../vox/text/H5FontSys";
 
 import Rect2DEntity from "../vox2d/entity/Rect2DEntity";
 import DisplayEntity from "../vox/entity/DisplayEntity";
-import Plane3DEntity from "../vox/entity/Plane3DEntity";
-import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import Box3DEntity from "../vox/entity/Box3DEntity";
-import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
-import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
-import ScreenAlignPlaneEntity from "../vox/entity/ScreenAlignPlaneEntity";
-import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
 import Text2DEntity from "../vox2d/text/Text2DEntity";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import CameraTrack from "../vox/view/CameraTrack";
@@ -36,359 +27,356 @@ import * as EntityDispT from "./base/EntityDisp";
 
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 
-export namespace demo
+export class DemoCamVisibleTest
 {
-    export class DemoCamVisibleTest
+    constructor()
     {
-        constructor()
+    }
+    
+    private m_rscene:RendererScene = null;
+    private m_rcontext:RendererInstanceContext = null;
+    private m_texLoader:ImageTextureLoader;
+    private m_camTrack:CameraTrack = null;
+    private m_equeue:EntityDispQueue = new EntityDispQueue();
+    private m_container:DisplayEntityContainer = null;
+    private m_containerMain:DisplayEntityContainer = null;
+    private m_followEntity:DisplayEntity = null;
+    private m_rect2DDisp:Rect2DEntity = null;
+    private m_timeoutEnabled:boolean = true;
+    private m_intervalEnabled:boolean = false;
+    private m_timeoutId:any = -1;
+    private m_timeIntervalId:number = -1;
+
+    
+    private m_textFPSNS:Text2DEntity = null;
+    private m_textFPS:Text2DEntity = null;
+    private m_profileInstance:ProfileInstance = new ProfileInstance();
+    initialize():void
+    {
+        console.log("DemoCamVisibleTest::initialize()......");
+        if(this.m_rcontext == null)
         {
-        }
-        
-        private m_rscene:RendererScene = null;
-        private m_rcontext:RendererInstanceContext = null;
-        private m_texLoader:ImageTextureLoader;
-        private m_camTrack:CameraTrack = null;
-        private m_equeue:EntityDispQueue = new EntityDispQueue();
-        private m_container:DisplayEntityContainer = null;
-        private m_containerMain:DisplayEntityContainer = null;
-        private m_followEntity:DisplayEntity = null;
-        private m_rect2DDisp:Rect2DEntity = null;
-        private m_timeoutEnabled:boolean = true;
-        private m_intervalEnabled:boolean = false;
-        private m_timeoutId:any = -1;
-        private m_timeIntervalId:number = -1;
-
-        
-        private m_textFPSNS:Text2DEntity = null;
-        private m_textFPS:Text2DEntity = null;
-        private m_profileInstance:ProfileInstance = new ProfileInstance();
-        initialize():void
-        {
-            console.log("DemoCamVisibleTest::initialize()......");
-            if(this.m_rcontext == null)
-            {
-                H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,true,false);
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                
-                let rparam:RendererParam = new RendererParam();
-                rparam.setMatrix4AllocateSize(8192 * 4);
-                rparam.setCamProject(45.0,0.1,3000.0);
-                rparam.setCamPosition(1500.0,1500.0,1500.0);
-                
-                this.m_rscene = new RendererScene();
-                this.m_rscene.initialize(rparam,3);
-                this.m_rscene.setRendererProcessParam(1,true,true);
-                this.m_rcontext = this.m_rscene.getRendererContext();
-                this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-
-                BillParticle.renderer = this.m_rscene.getRenderer();
-                let stage3D:Stage3D = this.m_rcontext.getStage3D() as Stage3D;
-                stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseUpListener);
-                stage3D.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener);
-                this.m_camTrack = new CameraTrack();
-                this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
-                
-                RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.BLEND);
-                RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
-                
-                let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
-                let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
-                let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/guangyun_H_0007.png");
-                let tex3:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_01.jpg");
-                let tex4:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_02.jpg");
-                let tex5:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/a_02_c.jpg");
-                BillParticle.texs.push(tex2);
-                BillParticle.texs.push(tex3);
-                BillParticle.texs.push(tex4);
-                BillParticle.texs.push(tex5);
-
-                let i:number = 0;
-                let total:number = 10;
-
-                //  let alignPlane:ScreenAlignPlaneEntity = new ScreenAlignPlaneEntity();
-                //  alignPlane.initialize(-0.5,-0.5,1.0,1.0,[tex1]);
-                //  this.m_rscene.addEntity(alignPlane);
-
-                
-                //  let alignFixedPlane:ScreenFixedAlignPlaneEntity = new ScreenFixedAlignPlaneEntity();
-                //  alignFixedPlane.initialize(-0.5,-0.5,1.0,1.0,[tex1]);
-                //  this.m_rscene.addEntity(alignFixedPlane);
-                //  //Rect2DEntity
-                let rect2DDisp:Rect2DEntity = new Rect2DEntity();
-                rect2DDisp.vtxColorEnabled = true;
-                rect2DDisp.color0.setRGB3f(1.0,1.0,1.0);
-                rect2DDisp.color1.setRGB3f(1.0,0.0,0.0);
-                rect2DDisp.color2.setRGB3f(0.0,0.0,0.0);
-                rect2DDisp.color3.setRGB3f(0.0,1.0,0.0);
-                //rect2DDisp.initialize(0.0,0.0,120.0,160.0,[tex0]);
-                rect2DDisp.initialize(0.0,0.0,120.0,160.0);
-                rect2DDisp.setRotation(30.0);
-                rect2DDisp.setXY(100.0,180.0);
-                this.m_rscene.addEntity(rect2DDisp);
-                //              this.m_rect2DDisp = rect2DDisp;
-                
-                //      rect2DDisp = new Rect2DEntity();
-                //      rect2DDisp.initialize(0.0,0.0,120.0,160.0,[tex0]);
-                //      rect2DDisp.setXY(100.0,80.0);
-                //      //rect2DDisp.setRotation(30.0);
-                //      this.m_rscene.addEntity(rect2DDisp);
-                this.m_profileInstance = new ProfileInstance();
-                this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-
-                let text2D:Text2DEntity = null;
-                text2D = new Text2DEntity();
-                text2D.initialize("我心永恒,ABCefg.H:");
-                text2D.setXY(20.0,320.0);
-                text2D.setRGB3f(0.0,0.0,0.0);
-                text2D.setAlpha(0.5);
-                //text2D.setScale(2.0);
-                this.m_rscene.addEntity(text2D,1);
-                
-                let srcBox:Box3DEntity = new Box3DEntity();
-                srcBox.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
-                //srcBox = null;
-                let box:Box3DEntity = null;
-                for(i = 0; i < total; ++i)
-                {
-                    box = new Box3DEntity();
-                    if(srcBox != null)box.setMesh(srcBox.getMesh());
-                    box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
-                    if(total > 1)box.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
-                    //if(total > 1)box.setXYZ(Math.random() * 8000.0 - 4000.0,Math.random() * 8000.0 - 4000.0,Math.random() * 8000.0 - 4000.0);
-                    this.m_rscene.addEntity(box);
-                }
-            }
-        }
-        private m_flagBoo:boolean = true;
-        mouseWheeelListener(evt:any):void
-        {
-            //console.log("mouseWheeelListener call, evt.wheelDeltaY: "+evt.wheelDeltaY);
-            if(evt.wheelDeltaY < 0)
-            {
-                // zoom in
-                this.m_rscene.getCamera().forward(-125.0);
-            }
-            else
-            {
-                // zoom out
-                this.m_rscene.getCamera().forward(125.0);
-            }
-        }
-        mouseUpListener(evt:any):void
-        {
-            console.log("mouseUpListener call, this.m_rscene: "+this.m_rscene.toString());
-            this.m_flagBoo = !this.m_flagBoo;
-        }
-        pv:Vector3D = new Vector3D();
-        delayTime:number = 10;
-        run():void
-        {
-            //  this.m_equeue.run();
+            H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,true,false);
+            RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
             
-            //console.log("##-- begin");
-            this.m_rscene.setClearRGBColor3f(0.1, 0.6, 0.1);
-            //this.m_rcontext.setClearRGBAColor4f(0.0, 0.5, 0.0,0.0);
-            this.m_rscene.renderBegin();
+            let rparam:RendererParam = new RendererParam();
+            rparam.setMatrix4AllocateSize(8192 * 4);
+            rparam.setCamProject(45.0,0.1,3000.0);
+            rparam.setCamPosition(1500.0,1500.0,1500.0);
+            
+            this.m_rscene = new RendererScene();
+            this.m_rscene.initialize(rparam,3);
+            this.m_rscene.setRendererProcessParam(1,true,true);
+            this.m_rcontext = this.m_rscene.getRendererContext();
+            this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-            this.m_rscene.update();
-            this.m_rscene.cullingTest();
-            this.m_rscene.run();
+            BillParticle.renderer = this.m_rscene.getRenderer();
+            let stage3D:Stage3D = this.m_rcontext.getStage3D() as Stage3D;
+            stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseUpListener);
+            stage3D.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener);
+            this.m_camTrack = new CameraTrack();
+            this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
+            
+            RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.BLEND);
+            RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
+            
+            let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
+            let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
+            let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/guangyun_H_0007.png");
+            let tex3:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_01.jpg");
+            let tex4:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/flare_core_02.jpg");
+            let tex5:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/a_02_c.jpg");
+            BillParticle.texs.push(tex2);
+            BillParticle.texs.push(tex3);
+            BillParticle.texs.push(tex4);
+            BillParticle.texs.push(tex5);
 
-            this.m_rscene.runEnd();
-            //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-            //this.m_rscene.updateCamera();
-            if(this.m_containerMain != null)
-            {
-                this.m_container.setRotationY(this.m_container.getRotationY() + 1.0);
-                //this.m_containerMain.setRotationY(this.m_containerMain.getRotationY() + 1.0);
-                this.m_containerMain.setRotationZ(this.m_containerMain.getRotationZ() + 1.0);
-                
-                this.pv.setXYZ(200.0,10.0,150.0);
-                this.m_container.localToGlobal(this.pv);
-                this.m_followEntity.setPosition(this.pv);
-                this.m_followEntity.update();
-            }
-            if(this.m_rect2DDisp != null)
-            {
-                this.m_rect2DDisp.setRotation(this.m_rect2DDisp.getRotation() + 1.0);
-            }
-            //  if(!this.m_timeoutEnabled)
-            //  {
-            //      this.parRun();
-            //  }
-            if(this.m_profileInstance != null)
-            {
-                this.m_profileInstance.run();
-            }
-        }
-        //async parRun()
-        parRun():void
-        {
-            if(this.m_flagBoo)
-            {
-                if(this.delayTime < 0)
-                {
-                    this.delayTime = 10;
-                    let par:BillParticle = null;
-                    if(this.m_containerMain != null)
-                    {
-                        this.pv.setXYZ(-200.0,10.0,-150.0);
-                        this.m_container.localToGlobal(this.pv);
-                        par = BillParticle.Create();
-                        par.setPosition(this.pv);
-                        par.awake();
-                        this.pv.setXYZ(200.0,10.0,150.0);
-                        this.m_container.localToGlobal(this.pv);
-                        par = BillParticle.Create();
-                        par.setPosition(this.pv);
-                        par.awake();
-                    }
-                    let i:number = 0;
-                    //let len:number = 80 + Math.round(Math.random() * 845);
-                    let len:number = 10 + Math.round(Math.random() * 15);
+            let i:number = 0;
+            let total:number = 10;
 
-                    for(; i < len; ++i)
-                    {
-                        this.pv.setXYZ(Math.random() * 800.0 - 400.0, Math.random() * 800.0 - 400.0,Math.random() * 800.0 - 400.0);
-                        par = BillParticle.Create();
-                        par.setPosition(this.pv);
-                        par.awake();
-                    }
-                }
-                else
-                {
-                    --this.delayTime;
-                }
-                BillParticle.Run();
-            }
-            if(this.m_timeoutEnabled && !this.m_intervalEnabled)
+            //  let alignPlane:ScreenAlignPlaneEntity = new ScreenAlignPlaneEntity();
+            //  alignPlane.initialize(-0.5,-0.5,1.0,1.0,[tex1]);
+            //  this.m_rscene.addEntity(alignPlane);
+
+            
+            //  let alignFixedPlane:ScreenFixedAlignPlaneEntity = new ScreenFixedAlignPlaneEntity();
+            //  alignFixedPlane.initialize(-0.5,-0.5,1.0,1.0,[tex1]);
+            //  this.m_rscene.addEntity(alignFixedPlane);
+            //  //Rect2DEntity
+            let rect2DDisp:Rect2DEntity = new Rect2DEntity();
+            rect2DDisp.vtxColorEnabled = true;
+            rect2DDisp.color0.setRGB3f(1.0,1.0,1.0);
+            rect2DDisp.color1.setRGB3f(1.0,0.0,0.0);
+            rect2DDisp.color2.setRGB3f(0.0,0.0,0.0);
+            rect2DDisp.color3.setRGB3f(0.0,1.0,0.0);
+            //rect2DDisp.initialize(0.0,0.0,120.0,160.0,[tex0]);
+            rect2DDisp.initialize(0.0,0.0,120.0,160.0);
+            rect2DDisp.setRotation(30.0);
+            rect2DDisp.setXY(100.0,180.0);
+            this.m_rscene.addEntity(rect2DDisp);
+            //              this.m_rect2DDisp = rect2DDisp;
+            
+            //      rect2DDisp = new Rect2DEntity();
+            //      rect2DDisp.initialize(0.0,0.0,120.0,160.0,[tex0]);
+            //      rect2DDisp.setXY(100.0,80.0);
+            //      //rect2DDisp.setRotation(30.0);
+            //      this.m_rscene.addEntity(rect2DDisp);
+            this.m_profileInstance = new ProfileInstance();
+            this.m_profileInstance.initialize(this.m_rscene.getRenderer());
+
+            let text2D:Text2DEntity = null;
+            text2D = new Text2DEntity();
+            text2D.initialize("我心永恒,ABCefg.H:");
+            text2D.setXY(20.0,320.0);
+            text2D.setRGB3f(0.0,0.0,0.0);
+            text2D.setAlpha(0.5);
+            //text2D.setScale(2.0);
+            this.m_rscene.addEntity(text2D,1);
+            
+            let srcBox:Box3DEntity = new Box3DEntity();
+            srcBox.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
+            //srcBox = null;
+            let box:Box3DEntity = null;
+            for(i = 0; i < total; ++i)
             {
-                //console.log("setTimeout..."+this);
-                if(this.m_timeoutId > -1)
-                {
-                    clearTimeout(this.m_timeoutId);
-                }
-                this.m_timeoutId = setTimeout(this.parRun.bind(this),25);
+                box = new Box3DEntity();
+                if(srcBox != null)box.setMesh(srcBox.getMesh());
+                box.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
+                if(total > 1)box.setXYZ(Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0,Math.random() * 1000.0 - 500.0);
+                //if(total > 1)box.setXYZ(Math.random() * 8000.0 - 4000.0,Math.random() * 8000.0 - 4000.0,Math.random() * 8000.0 - 4000.0);
+                this.m_rscene.addEntity(box);
             }
         }
     }
-    class BillParticle
+    private m_flagBoo:boolean = true;
+    mouseWheeelListener(evt:any):void
     {
-        private static s_pars:BillParticle[] = [];
-        private static s_sleepPars:BillParticle[] = [];
-        static texs:TextureProxy[] = [];        
-        static renderer:RendererInstance = null;
-        static srcBillboard:Billboard3DEntity = null;
-        private m_tar:Billboard3DEntity = null;
-        private m_isAlive:boolean = true;
-        spdV0:Vector3D = new Vector3D();
-        spdV1:Vector3D = new Vector3D();
-        spdV2:Vector3D = new Vector3D();
-        spdV:Vector3D = new Vector3D();
-        pv:Vector3D = new Vector3D();
-        brightness:number = 1.0;
-        scale:number = 1.0;
-        constructor(tar:Billboard3DEntity)
+        //console.log("mouseWheeelListener call, evt.wheelDeltaY: "+evt.wheelDeltaY);
+        if(evt.wheelDeltaY < 0)
         {
-            this.m_tar = tar;
+            // zoom in
+            this.m_rscene.getCamera().forward(-125.0);
         }
-        awake():void
+        else
         {
-            this.m_isAlive = true;
-            this.brightness = 1.0;
-            this.m_tar.setVisible(true);
-            this.m_tar.setFadeFactor(this.brightness);
-            this.spdV0.setXYZ(Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5);
-            this.spdV1.setXYZ(Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5);
-            this.spdV2.setXYZ(Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5);
-            //this.spdV.setXYZ(Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5);
-            this.m_tar.update();
+            // zoom out
+            this.m_rscene.getCamera().forward(125.0);
         }
-        setPosition(pv:Vector3D):void
-        {
-            this.m_tar.setPosition(pv);
-        }
-        update():void
-        {
-            if(this.m_isAlive)
-            {
-                if(this.brightness > 0.01)
-                {
-                    let k0:number = Math.sin(this.brightness * 3.14) * 1.1;
-                    let k:number = 0.0;
-                    k = 1.0 - k0;
-                    let k1:number = k * k;
-                    this.spdV.x = (this.spdV0.x * k - this.spdV1.x * k0) * 0.7 + k1 * this.spdV2.x;
-                    this.spdV.y = (this.spdV0.y * k - this.spdV1.y * k0) * 0.7 + k1 * this.spdV2.y;
-                    this.spdV.z = (this.spdV0.z * k - this.spdV1.z * k0) * 0.7 + k1 * this.spdV2.z;
-                    this.m_tar.getPosition(this.pv);
-                    this.spdV.scaleBy(k0);
-                    this.pv.addBy(this.spdV);
-                    //k = this.scale * this.brightness * this.spdV.getLength() * 0.5;
-                    k = this.scale * this.spdV.getLength() * 0.5;
-                    this.m_tar.setScaleXY(k,k);
+    }
+    mouseUpListener(evt:any):void
+    {
+        console.log("mouseUpListener call, this.m_rscene: "+this.m_rscene.toString());
+        this.m_flagBoo = !this.m_flagBoo;
+    }
+    pv:Vector3D = new Vector3D();
+    delayTime:number = 10;
+    run():void
+    {
+        //  this.m_equeue.run();
+        
+        //console.log("##-- begin");
+        this.m_rscene.setClearRGBColor3f(0.1, 0.6, 0.1);
+        //this.m_rcontext.setClearRGBAColor4f(0.0, 0.5, 0.0,0.0);
+        this.m_rscene.renderBegin();
 
-                    this.m_tar.setPosition(this.pv);
-                    this.m_tar.setFadeFactor(this.brightness);
-                    this.m_tar.update();
-                    this.brightness -= 0.002;
-                    //this.spdV.y -= 0.001;
-                }
-                else
-                {
-                    this.m_isAlive = false;
-                    this.m_tar.setVisible(false);
-                }
-            }
-        }
-        static Color:Color4 = new Color4();
-        static Create():BillParticle
+        this.m_rscene.update();
+        this.m_rscene.cullingTest();
+        this.m_rscene.run();
+
+        this.m_rscene.runEnd();
+        //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+        //this.m_rscene.updateCamera();
+        if(this.m_containerMain != null)
         {
-            let par:BillParticle = null;
-            if(BillParticle.s_sleepPars.length > 0)
+            this.m_container.setRotationY(this.m_container.getRotationY() + 1.0);
+            //this.m_containerMain.setRotationY(this.m_containerMain.getRotationY() + 1.0);
+            this.m_containerMain.setRotationZ(this.m_containerMain.getRotationZ() + 1.0);
+            
+            this.pv.setXYZ(200.0,10.0,150.0);
+            this.m_container.localToGlobal(this.pv);
+            this.m_followEntity.setPosition(this.pv);
+            this.m_followEntity.update();
+        }
+        if(this.m_rect2DDisp != null)
+        {
+            this.m_rect2DDisp.setRotation(this.m_rect2DDisp.getRotation() + 1.0);
+        }
+        //  if(!this.m_timeoutEnabled)
+        //  {
+        //      this.parRun();
+        //  }
+        if(this.m_profileInstance != null)
+        {
+            this.m_profileInstance.run();
+        }
+    }
+    //async parRun()
+    parRun():void
+    {
+        if(this.m_flagBoo)
+        {
+            if(this.delayTime < 0)
             {
-                par = BillParticle.s_sleepPars.pop();
-                BillParticle.s_pars.push(par);
+                this.delayTime = 10;
+                let par:BillParticle = null;
+                if(this.m_containerMain != null)
+                {
+                    this.pv.setXYZ(-200.0,10.0,-150.0);
+                    this.m_container.localToGlobal(this.pv);
+                    par = BillParticle.Create();
+                    par.setPosition(this.pv);
+                    par.awake();
+                    this.pv.setXYZ(200.0,10.0,150.0);
+                    this.m_container.localToGlobal(this.pv);
+                    par = BillParticle.Create();
+                    par.setPosition(this.pv);
+                    par.awake();
+                }
+                let i:number = 0;
+                //let len:number = 80 + Math.round(Math.random() * 845);
+                let len:number = 10 + Math.round(Math.random() * 15);
+
+                for(; i < len; ++i)
+                {
+                    this.pv.setXYZ(Math.random() * 800.0 - 400.0, Math.random() * 800.0 - 400.0,Math.random() * 800.0 - 400.0);
+                    par = BillParticle.Create();
+                    par.setPosition(this.pv);
+                    par.awake();
+                }
             }
             else
             {
-                let billboard:Billboard3DEntity = new Billboard3DEntity();
-                billboard.setMesh(BillParticle.srcBillboard.getMesh());
-                billboard.toBrightnessBlend();
-                billboard.setRenderStateByName("ADD02");
-                billboard.initialize(100.0,100.0, [BillParticle.texs[Math.floor(Math.random() * (BillParticle.texs.length - 0.5))]]);
-                BillParticle.renderer.addEntity(billboard,1);
-                par = new BillParticle(billboard);
-                BillParticle.s_pars.push(par);
+                --this.delayTime;
             }
-            par.scale = Math.random() * 0.5 + 0.5;
-
-            //par.m_tar.setRGB3f(Math.random() * 1.1 + 0.5,Math.random() * 1.1 + 0.5,Math.random() * 1.1 + 0.5);
-            //BillParticle.Color.randomRGB(1.0);
-            //BillParticle.Color.normalize(1.5);
-            par.m_tar.setRGB3f(Math.random() * 1.3 + 0.4,Math.random() * 1.3 + 0.4,Math.random() * 1.3 + 0.4);
-            //par.m_tar.setRGB3f(BillParticle.Color.r,BillParticle.Color.g,BillParticle.Color.b);
-            par.m_tar.setScaleXY(par.scale,par.scale);
-            return par;
+            BillParticle.Run();
         }
-        static Run():void
+        if(this.m_timeoutEnabled && !this.m_intervalEnabled)
         {
-            let pars:BillParticle[] = BillParticle.s_pars;
-            let i:number = 0;
-            let len:number = pars.length;
-            
-            for(; i < len; ++i)
+            //console.log("setTimeout..."+this);
+            if(this.m_timeoutId > -1)
             {
-                pars[i].update();
-                if(!pars[i].m_isAlive)
-                {
-                    BillParticle.s_sleepPars.push(pars[i]);
-                    pars.splice(i,1);
-                    --i;
-                    --len;
-                }
+                clearTimeout(this.m_timeoutId);
             }
+            this.m_timeoutId = setTimeout(this.parRun.bind(this),25);
         }
-
     }
 }
+class BillParticle
+{
+    private static s_pars:BillParticle[] = [];
+    private static s_sleepPars:BillParticle[] = [];
+    static texs:TextureProxy[] = [];        
+    static renderer:RendererInstance = null;
+    static srcBillboard:Billboard3DEntity = null;
+    private m_tar:Billboard3DEntity = null;
+    private m_isAlive:boolean = true;
+    spdV0:Vector3D = new Vector3D();
+    spdV1:Vector3D = new Vector3D();
+    spdV2:Vector3D = new Vector3D();
+    spdV:Vector3D = new Vector3D();
+    pv:Vector3D = new Vector3D();
+    brightness:number = 1.0;
+    scale:number = 1.0;
+    constructor(tar:Billboard3DEntity)
+    {
+        this.m_tar = tar;
+    }
+    awake():void
+    {
+        this.m_isAlive = true;
+        this.brightness = 1.0;
+        this.m_tar.setVisible(true);
+        this.m_tar.setFadeFactor(this.brightness);
+        this.spdV0.setXYZ(Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5);
+        this.spdV1.setXYZ(Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5);
+        this.spdV2.setXYZ(Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5);
+        //this.spdV.setXYZ(Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5, Math.random() * 3.0 - 1.5);
+        this.m_tar.update();
+    }
+    setPosition(pv:Vector3D):void
+    {
+        this.m_tar.setPosition(pv);
+    }
+    update():void
+    {
+        if(this.m_isAlive)
+        {
+            if(this.brightness > 0.01)
+            {
+                let k0:number = Math.sin(this.brightness * 3.14) * 1.1;
+                let k:number = 0.0;
+                k = 1.0 - k0;
+                let k1:number = k * k;
+                this.spdV.x = (this.spdV0.x * k - this.spdV1.x * k0) * 0.7 + k1 * this.spdV2.x;
+                this.spdV.y = (this.spdV0.y * k - this.spdV1.y * k0) * 0.7 + k1 * this.spdV2.y;
+                this.spdV.z = (this.spdV0.z * k - this.spdV1.z * k0) * 0.7 + k1 * this.spdV2.z;
+                this.m_tar.getPosition(this.pv);
+                this.spdV.scaleBy(k0);
+                this.pv.addBy(this.spdV);
+                //k = this.scale * this.brightness * this.spdV.getLength() * 0.5;
+                k = this.scale * this.spdV.getLength() * 0.5;
+                this.m_tar.setScaleXY(k,k);
+
+                this.m_tar.setPosition(this.pv);
+                this.m_tar.setFadeFactor(this.brightness);
+                this.m_tar.update();
+                this.brightness -= 0.002;
+                //this.spdV.y -= 0.001;
+            }
+            else
+            {
+                this.m_isAlive = false;
+                this.m_tar.setVisible(false);
+            }
+        }
+    }
+    static Color:Color4 = new Color4();
+    static Create():BillParticle
+    {
+        let par:BillParticle = null;
+        if(BillParticle.s_sleepPars.length > 0)
+        {
+            par = BillParticle.s_sleepPars.pop();
+            BillParticle.s_pars.push(par);
+        }
+        else
+        {
+            let billboard:Billboard3DEntity = new Billboard3DEntity();
+            billboard.setMesh(BillParticle.srcBillboard.getMesh());
+            billboard.toBrightnessBlend();
+            billboard.setRenderStateByName("ADD02");
+            billboard.initialize(100.0,100.0, [BillParticle.texs[Math.floor(Math.random() * (BillParticle.texs.length - 0.5))]]);
+            BillParticle.renderer.addEntity(billboard,1);
+            par = new BillParticle(billboard);
+            BillParticle.s_pars.push(par);
+        }
+        par.scale = Math.random() * 0.5 + 0.5;
+
+        //par.m_tar.setRGB3f(Math.random() * 1.1 + 0.5,Math.random() * 1.1 + 0.5,Math.random() * 1.1 + 0.5);
+        //BillParticle.Color.randomRGB(1.0);
+        //BillParticle.Color.normalize(1.5);
+        par.m_tar.setRGB3f(Math.random() * 1.3 + 0.4,Math.random() * 1.3 + 0.4,Math.random() * 1.3 + 0.4);
+        //par.m_tar.setRGB3f(BillParticle.Color.r,BillParticle.Color.g,BillParticle.Color.b);
+        par.m_tar.setScaleXY(par.scale,par.scale);
+        return par;
+    }
+    static Run():void
+    {
+        let pars:BillParticle[] = BillParticle.s_pars;
+        let i:number = 0;
+        let len:number = pars.length;
+        
+        for(; i < len; ++i)
+        {
+            pars[i].update();
+            if(!pars[i].m_isAlive)
+            {
+                BillParticle.s_sleepPars.push(pars[i]);
+                pars.splice(i,1);
+                --i;
+                --len;
+            }
+        }
+    }
+}
+export default DemoCamVisibleTest;
