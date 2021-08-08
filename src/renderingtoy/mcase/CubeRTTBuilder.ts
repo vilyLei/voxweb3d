@@ -134,8 +134,6 @@ export default class CubeRttBuilder {
     }
     private runAttachmentFboIns(i: number, j: number, rpcI: number = 0): void {
 
-        let rctx: RendererInstanceContext = this.m_rscene.getRendererContext();
-        rctx.resetUniform();
         this.m_fboIns.useCamera(this.m_camList.getAt(j));
         this.m_fboIns.setAttachmentMaskAt(i, false);
         this.m_fboIns.setAttachmentMaskAt(j, true);
@@ -147,6 +145,7 @@ export default class CubeRttBuilder {
 
         let renderer = this.m_rscene;
         let rctx: RendererInstanceContext = renderer.getRendererContext();
+        rctx.resetUniform();
         renderer.updateCameraDataFromCamera(this.m_camList.getAt(j));
         rctx.setFBOAttachmentMaskAt(i, false);
         rctx.setFBOAttachmentMaskAt(j, true);

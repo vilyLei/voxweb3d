@@ -469,6 +469,8 @@ export default class RendererScene implements IRenderer,IRendererScene {
             this.m_renderProxy.reseizeRCViewPort();
         }
         camera.update();
+        
+        this.m_rcontext.resetUniform();
         this.m_renderProxy.updateCameraDataFromCamera(camera);
     }
     useMainCamera(): void {
@@ -477,6 +479,7 @@ export default class RendererScene implements IRenderer,IRendererScene {
         this.m_renderProxy.setRCViewPort(camera.getViewX(), camera.getViewY(), camera.getViewWidth(), camera.getViewHeight(), true);
         this.m_renderProxy.reseizeRCViewPort();
         this.m_renderProxy.updateCamera();
+        this.m_rcontext.resetUniform();
         this.m_renderProxy.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
     }
     updateCameraDataFromCamera(camera: CameraBase): void {

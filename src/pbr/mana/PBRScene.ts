@@ -206,7 +206,8 @@ export default class PBRScene
             sph = new Sphere3DEntity();
             sph.setMaterial( material );
             sph.initialize(pr, 20, 20);
-            sph.setXYZ(radius * Math.cos(rad), Math.random() * 500.0, radius * Math.sin(rad));
+            //sph.setXYZ(radius * Math.cos(rad), Math.random() * 500.0, radius * Math.sin(rad));
+            sph.setXYZ(radius * Math.cos(rad), i * 30 - 210 + pr + 5, radius * Math.sin(rad));
             this.m_rscene.addEntity(sph);
             
             param = new PBRParamEntity();

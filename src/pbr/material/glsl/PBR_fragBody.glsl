@@ -109,9 +109,22 @@ void main()
     
     #ifdef VOX_INDIRECT_ENV_MAP
         rL.L = vec3(0.0, -1.0, 0.0);
-        color = VOX_TextureCubeLod(VOX_INDIRECT_ENV_MAP, N, 5.0).xyz;
-        calcPBRLight(roughness, rm, 1.5 * color, rL);
-        color *= max(dot(N, rL.L), 0.0) * 0.1;
+        float ifactor = clamp(abs(v_worldPos.y - -210.0) / 300.0, 0.0,1.0);
+        float lv = 1.0 + 6.0 * ifactor;
+        #ifdef VOX_ENV_MAP
+            color = VOX_TextureCubeLod(VOX_INDIRECT_ENV_MAP, envDir, lv).xyz;
+            rL.specularColor = fresnelSchlick3(specularColor, dotNV, 0.25 * reflectionIntensity) * color;
+            color = VOX_TextureCubeLod(VOX_INDIRECT_ENV_MAP, N, lv).xyz;
+        #else
+            color = VOX_TextureCubeLod(VOX_INDIRECT_ENV_MAP, N, lv).xyz;
+            rL.specularColor = fresnelSchlick3(specularColor, dotNV, 0.25 * reflectionIntensity) * color;
+        #endif
+        calcPBRLight(roughness, rm, 2.0 * color, rL);
+        ifactor = 1.0 - ifactor;
+        float ifactor2 = max(dot(N, rL.L), 0.0);
+        color *= ifactor2 * ifactor2 * (ifactor * ifactor) * ((1.0 - metallic) * roughness) * 0.5;
+        //  FragOutColor = vec4(color * 100.0, 1.0);
+        //  return;
     #endif
 
     specularColor = (rL.specular + specularColor);
@@ -123,7 +136,7 @@ void main()
     
     // ambient lighting (note that the next IBL tutorial will replace 
     // this ambient lighting with environment lighting).
-    vec3 ambient = u_params[2].xyz * albedo.xyz * ao;
+    vec3 ambient = ((color + u_params[2].xyz) * albedo.xyz) * ao;
 
 	#ifdef VOX_WOOL
 		sideIntensity = getColorFactorIntensity(dotNV, frontIntensity, sideIntensity);
@@ -131,7 +144,7 @@ void main()
 		Lo *= sideIntensity * frontIntensity;
 	#endif
 
-    color += ambient + Lo;
+    color = ambient + Lo;
 
     
     //color = dithering(color);
