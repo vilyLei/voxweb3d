@@ -329,13 +329,13 @@
 
 //  import {DemoLightsPBR as Demo} from "./pbr/DemoLightsPBR";
 
-//  import {DemoDefaultPBR as Demo} from "./pbr/DemoDefaultPBR";
+import {DemoDefaultPBR as Demo} from "./pbr/DemoDefaultPBR";
 
 //  import {DemoDefaultPBR2 as Demo} from "./pbr/DemoDefaultPBR2";
 
 //  import {DemoDefaultPBR3 as Demo} from "./pbr/DemoDefaultPBR3";
 
-import {DemoPBR as Demo} from "./pbr/DemoPBR";
+//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////

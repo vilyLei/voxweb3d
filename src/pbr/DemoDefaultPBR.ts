@@ -161,13 +161,32 @@ export class DemoDefaultPBR
             this.m_meshMana.loadMeshFile("static/modules/car.md");
             this.m_meshMana.material.setUVScale(0.1,0.1);
             //*/
-            ///*
+            /*
             this.m_meshMana.diffuseMapEnabled = true;
             this.m_meshMana.normalMapEnabled = true;
             this.m_reflectPlaneY = -200.0;
             this.m_meshMana.moduleScale = 600.0;
             this.m_meshMana.offsetPos.setXYZ(0.0,-150.0,0.0);
             this.m_meshMana.loadMeshFile("static/modules/bunny.md");
+            //*/
+            
+            /*
+            this.m_meshMana.diffuseMapEnabled = false;
+            this.m_meshMana.normalMapEnabled = false;
+            this.m_reflectPlaneY = -200.0;
+            this.m_meshMana.moduleScale = 1.0;
+            this.m_meshMana.offsetPos.setXYZ(0.0,0.0,0.0);
+            this.m_meshMana.loadMeshFile("static/modules/longxia.md");
+            //*/
+            ///*
+            this.m_meshMana.diffuseMapEnabled = false;
+            this.m_meshMana.normalMapEnabled = true;
+            this.m_reflectPlaneY = -200.0;
+            this.m_meshMana.uscale = 2.0;
+            this.m_meshMana.vscale = 2.0;
+            this.m_meshMana.moduleScale = 100.0;
+            this.m_meshMana.offsetPos.setXYZ(0.0,0.0,0.0);
+            this.m_meshMana.loadMeshFile("static/modules/longxiaPincer2.md");
             //*/
             /*
             this.m_meshMana.diffuseMapEnabled = false;
@@ -294,12 +313,12 @@ export class DemoDefaultPBR
         let sph: Sphere3DEntity;
         let rad: number;
         let radius: number;
-        for(let i: number = 0; i < 3; ++i) {
+        for(let i: number = 0; i < 0; ++i) {
 
             rad = Math.random() * 100.0;
             radius = Math.random() * 250.0 + 550.0;
             material = this.m_meshMana.makeTexMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
-            material.setTextureList( [this.m_meshMana.texList[0]] );        
+            material.setTextureList( [this.m_meshMana.texList[0]] );  
             sph = new Sphere3DEntity();
             sph.setMaterial( material );
             sph.initialize(80 + Math.random() * 100.0,20,20);

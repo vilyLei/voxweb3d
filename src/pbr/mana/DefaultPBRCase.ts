@@ -25,6 +25,7 @@ import { VtxNormalType } from "../../vox/mesh/VtxBufConst";
 import DefaultPBRLight from "./DefaultPBRLight";
 import DecodeData from "../../large/parse/DecodeData";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
+import RendererState from "../../vox/render/RendererState";
 
 
 class TextureLoader {
@@ -123,10 +124,12 @@ export default class DefaultPBRCase {
     
     this.texList = [
       null
-      , this.getImageTexByUrl("static/assets/brickwall_big.jpg")
+      //, this.getImageTexByUrl("static/assets/brickwall_big.jpg")
+      , this.getImageTexByUrl("static/assets/rock_a.jpg")
       //, this.getImageTexByUrl("static/assets/color_02.jpg")
       //, this.getImageTexByUrl("static/assets/default.jpg")
-      , this.getImageTexByUrl("static/assets/brickwall_normal.jpg")
+      //, this.getImageTexByUrl("static/assets/brickwall_normal.jpg")
+      , this.getImageTexByUrl("static/assets/rock_a_n.jpg")
       //, this.getImageTexByUrl("static/assets/disp/lava_03_NRM.png")
     ];
   }
@@ -209,6 +212,8 @@ export default class DefaultPBRCase {
   indirectEnvMap: TextureProxy = null;
   diffuseMapEnabled: boolean = false;
   normalMapEnabled: boolean = false;
+  uscale: number = 1.0;
+  vscale: number = 1.0;
   private initMaterial(): void {
 
     
@@ -249,7 +254,7 @@ export default class DefaultPBRCase {
         let list: DecodeNode[] = DecodeQueue.GetResList();
         
         let scale: number = this.moduleScale;
-        console.log("createMesh2 this.offsetPos: ", this.offsetPos, this.uid + ", list.length: " + list.length);
+        console.log("scale: "+scale + ", createMesh2 this.offsetPos: ", this.offsetPos, this.uid + ", list.length: " + list.length);
 
         let rm: DefaultPBRMaterial = this.material;
         
@@ -275,7 +280,7 @@ export default class DefaultPBRCase {
         rm.setTextureList( texList );
         rm.diffuseMapEnabled = this.diffuseMapEnabled;
         rm.normalMapEnabled = this.normalMapEnabled;
-
+        rm.setUVScale( this.uscale, this.vscale);
         rm.initializeByCodeBuf(true);
         let mesh: RcodMesh = new RcodMesh();
         mesh.setBufSortFormat(rm.getBufSortFormat());
@@ -315,7 +320,8 @@ export default class DefaultPBRCase {
         pv.scaleBy(-1.0);
         pv.addBy(this.offsetPos);
         entity.setPosition(pv);
-        //entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+        
+        //entity.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
         this.rscene.addEntity(entity);
 
         //console.log("mesh.bounds.center: ",mesh.bounds.center);

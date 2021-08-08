@@ -226,7 +226,7 @@ export default class DefaultPBRMaterial extends MaterialBase implements IPBRMate
     private m_paramLocal: Float32Array = new Float32Array(
         [
             0.0, 0.0, 0.0, 1.0      // f0.r,f0.g,f0.b, mormalMapIntentity(0.0,1.0)
-            ,1.0, 1.0, 1.0, 0.3     // uv scaleX, uv scaleY, undefine, undefine
+            ,0.001, 0.001, 1.0, 0.3     // uv scaleX, uv scaleY, undefine, undefine
         ]);
     private m_camPos: Float32Array = new Float32Array([500.0, 500.0, 500.0, 1.0]);
     private m_mirrorParam: Float32Array = new Float32Array(
