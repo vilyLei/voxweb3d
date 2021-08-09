@@ -80,8 +80,12 @@ export class DemoDraco extends DemoInstance implements DracoTaskListener {
         this.m_wasmLoader.load(this.onWasmLoaded, this);
         //  this.m_moduleScale = 1.0;
         //  this.loadMeshFile( "static/assets/modules/loveass.rawmd" );
-        this.m_moduleScale = 100.0;
-        this.loadMeshFile( "static/assets/modules/car.rawmd" );
+
+        //  this.m_moduleScale = 100.0;
+        //  this.loadMeshFile( "static/assets/modules/car.rawmd" );
+
+        this.m_moduleScale = 10.0;
+        this.loadMeshFile( "static/assets/modules/longxiaPincer.rawmd" );
     }
     private m_meshBuffer: ArrayBuffer = null;
     private m_segs: number[] = [];

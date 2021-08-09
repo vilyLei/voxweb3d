@@ -169,7 +169,7 @@ export class DemoDefaultPBR2
             this.m_meshMana.offsetPos.setXYZ(0.0,-350.0,0.0);
             this.m_meshMana.loadMeshFile("static/modules/scarf.md");
             //*/
-            ///*
+            /*
             this.m_meshMana.diffuseMapEnabled = true;
             this.m_meshMana.normalMapEnabled = false;
             this.m_meshMana.dataFilterEnbaled = true;
@@ -178,6 +178,17 @@ export class DemoDefaultPBR2
             this.m_meshMana.offsetPos.setXYZ(0.0,-150.0,0.0);
             this.m_meshMana.loadMeshFile("static/modules/car.md");
             this.m_meshMana.material.setUVScale(0.1,0.1);
+            //*/
+            ///*
+            this.m_meshMana.diffuseMapEnabled = false;
+            this.m_meshMana.normalMapEnabled = true;
+            this.m_meshMana.saveEnabled = false;
+            this.m_reflectPlaneY = -200.0;
+            this.m_meshMana.uscale = 2.0;
+            this.m_meshMana.vscale = 2.0;
+            this.m_meshMana.moduleScale = 100.0;
+            this.m_meshMana.offsetPos.setXYZ(0.0,0.0,0.0);
+            this.m_meshMana.loadMeshFile("static/modules/longxiaPincer2.md");
             //*/
             /*
             this.m_meshMana.indirectEnvMap = this.m_cubeRTTBuilder.getCubeTexture();
