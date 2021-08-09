@@ -128,7 +128,7 @@ export class DemoDefaultPBR
             this.m_meshMana.lightBaseDis = 900.0;
             this.m_meshMana.loadMeshFile("static/modules/cloth400w.md");
             //*/
-            /*
+            ///*
             this.m_meshMana.diffuseMapEnabled = true;
             this.m_meshMana.normalMapEnabled = false;
             this.m_reflectPlaneY = -580.0;
@@ -178,7 +178,7 @@ export class DemoDefaultPBR
             this.m_meshMana.offsetPos.setXYZ(0.0,0.0,0.0);
             this.m_meshMana.loadMeshFile("static/modules/longxia.md");
             //*/
-            ///*
+            /*
             this.m_meshMana.diffuseMapEnabled = false;
             this.m_meshMana.normalMapEnabled = true;
             this.m_reflectPlaneY = -200.0;

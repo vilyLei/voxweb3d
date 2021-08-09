@@ -17,6 +17,7 @@ class ThrDataPool
     private m_waitList:IThreadSendData[] = [];
     
     private m_dataTotal:number = 0;
+    private m_dataHaveTotal:number = 0;
     private m_startupFlag:number = 0;
     constructor(){}
     sendDataTo(thread:IThreadBase):boolean
@@ -63,6 +64,7 @@ class ThrDataPool
         {
             thrData.sendStatus = 0;
             this.m_dataTotal++;
+            this.m_dataHaveTotal++;
             this.m_startupFlag = 1;
             this.m_dataList.push(thrData);
         }
@@ -77,6 +79,7 @@ class ThrDataPool
     }
     isEnabled():boolean
     {
+        //console.log(this.m_dataHaveTotal,this.m_dataTotal,this.m_startupFlag);
         return (this.m_dataTotal * this.m_startupFlag) > 0;
     }
     isStartup():boolean

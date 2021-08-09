@@ -336,6 +336,41 @@ export default class DefaultPBRCase {
     return false;
   }
   private m_meshDataUrl: string = "";
+  dataFilterEnbaled: boolean = true;
+  saveEnabled: boolean = false;
+  
+  private downloadBinFile2(binData: any): void {
+      var downloadBlob: any, downloadURL: any;
+      console.log("downloadBinFile2, binData: ", binData);
+      downloadBlob = function(data:any, fileName: string, mimeType: any) {
+      var blob: Blob, url:string;
+      blob = new Blob([data], {
+          type: mimeType
+      });
+      url = window.URL.createObjectURL(blob);
+      downloadURL(url, fileName);
+      setTimeout(function() {
+          return window.URL.revokeObjectURL(url);
+      }, 1000);
+      };
+
+      downloadURL = function(data: any, fileName: string): void {
+          var a: any;
+          a = document.createElement('a');
+          a.href = data;
+          a.download = fileName;
+          document.body.appendChild(a);
+          a.style = 'display: none';
+          a.click();
+          a.remove();
+      }
+
+      //  var samplerData = new Int8Array(128);
+      //  for(let i:number = 0; i < samplerData.length; ++i) {
+      //      samplerData[i] = i;
+      //  }
+      downloadBlob(binData, 'example.rawmd', 'application/octet-stream');
+  }
   loadMeshFile(furl: string): void {
     this.initMaterial();
     
@@ -358,8 +393,13 @@ export default class DefaultPBRCase {
         }
 
         //console.log("segments.length: " + segments.length);
-        let v: Uint8Array = new Uint8Array(buffer);
-        DecodeData.p(v, segments);
+        if(this.dataFilterEnbaled) {
+          let v: Uint8Array = new Uint8Array(buffer);
+          DecodeData.p(v, segments);
+          if(this.saveEnabled) {
+            this.downloadBinFile2( v );
+          }
+        }
         
         let node: LoaderNode = new LoaderNode();
         node.uid = this.uid;

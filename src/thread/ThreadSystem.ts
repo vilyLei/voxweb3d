@@ -13,171 +13,180 @@ import ThreadBase from "../thread/base/ThreadBase";
 
 //import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
 
-class ThreadSystem
-{
+class ThreadSystem {
     // allow ThreadSystem initialize yes or no
-    private static s_initBoo:boolean = true;
-    private static s_maxThreadsTotal:number = 0;
-    private static s_thrSupportFlag:number = -1;
-    private static s_codeBlob:Blob = null;
-    private static s_tasks:any[] = [null,null,null,null,null,null,null,null,null,null,null,null];
-    private static s_threads:ThreadBase[] = [];
-    private static s_threadsTotal:number = 0;
-    private static s_pool:ThrDataPool = new ThrDataPool();
-    static Run():void
-    {
-        if(ThreadSystem.GetThreadEnabled())
-        {
-            if(ThreadSystem.s_pool.isEnabled())
-            {
-                let tot:number = 0;
-                for(let i:number = 0; i < ThreadSystem.s_threadsTotal; ++i)
-                {
-                    if(ThreadSystem.s_pool.isEnabled())
-                    {
-                        if(ThreadSystem.s_threads[i].isFree())
-                        {
+    private static s_initBoo: boolean = true;
+    private static s_maxThreadsTotal: number = 0;
+    private static s_thrSupportFlag: number = -1;
+    private static s_codeBlob: Blob = null;
+    private static s_tasks: any[] = [null, null, null, null, null, null, null, null];
+    private static s_threads: ThreadBase[] = [null, null, null, null, null, null, null, null];
+    private static s_threadsTotal: number = 0;
+    private static s_pool: ThrDataPool = new ThrDataPool();
+    private static s_specList: IThreadSendData[] = [];
+    private static s_specIndices: number[] = [];
+    static SendDataToWorkerAt(i: number, sendData: IThreadSendData): void {
+        if(i >= 0 && i < ThreadSystem.s_maxThreadsTotal) {
+            if(i >= ThreadSystem.s_threadsTotal) {
+                ThreadSystem.CreateThread();
+            }
+            if (sendData != null && sendData.sendStatus < 0) {
+                sendData.sendStatus = 0;
+                if (ThreadSystem.s_threads[i].isFree()) {
+                    ThreadSystem.s_threads[i].sendDataTo( sendData );
+                }
+                else {
+                    ThreadSystem.s_specList.push(sendData);
+                    ThreadSystem.s_specIndices.push(i);
+                }
+            }
+        }
+    }
+    static Run(): void {
+        if (ThreadSystem.GetThreadEnabled()) {
+            let specList: IThreadSendData[] = ThreadSystem.s_specList;
+            let tot: number = specList.length;
+            let thrTot: number = ThreadSystem.s_threadsTotal;
+            let i: number = 0;
+            for (; i < tot; ++i) {
+                let j: number = ThreadSystem.s_specIndices[i];
+                if (ThreadSystem.s_threads[j].isFree()) {
+                    ThreadSystem.s_threads[j].sendDataTo( specList[i] );
+                    specList.splice(i, 1);
+                    ThreadSystem.s_specIndices.splice(i, 1);
+                    i --;
+                    tot --;
+                    thrTot --;
+                }
+                if(thrTot < 1) {
+                    break;
+                }                    
+            }
+            if (ThreadSystem.s_pool.isEnabled()) {
+                tot = 0;
+                for (i = 0; i < ThreadSystem.s_threadsTotal; ++i) {
+                    //console.log("ThreadSystem.s_threads["+i+"].isFree(): ",ThreadSystem.s_threads[i].isFree(),ThreadSystem.s_pool.isEnabled());
+                    if (ThreadSystem.s_pool.isEnabled()) {
+                        if (ThreadSystem.s_threads[i].isFree()) {
                             ThreadSystem.s_pool.sendDataTo(ThreadSystem.s_threads[i]);
                         }
-                        if(ThreadSystem.s_threads[i].isFree())
-                        {
+                        if (ThreadSystem.s_threads[i].isFree()) {
                             ++tot;
                         }
                     }
                 }
-                if(tot < 1 && ThreadSystem.s_pool.isEnabled())
-                {
+                if (tot < 1 && ThreadSystem.s_pool.isEnabled()) {
                     ThreadSystem.CreateThread();
                 }
             }
         }
     }
-    static AddData(thrData:IThreadSendData):void
-    {
-        if(thrData != null && thrData.srcuid >= 0)
-        {
+    static AddData(thrData: IThreadSendData): void {
+        if (thrData != null && thrData.srcuid >= 0) {
             ThreadSystem.s_pool.addData(thrData);
         }
     }
-    private static GetAFreeThread():ThreadBase
-    {
-        for(let i:number = 0; i < ThreadSystem.s_threadsTotal; ++i)
-        {
-            if(ThreadSystem.s_threads[i].isFree())
-            {
+    static LockThreadAt(i: number): void {
+        ThreadSystem.s_threads[i].unlock = false;
+    }
+    static UnlockThreadAt(i: number): void {
+        ThreadSystem.s_threads[i].unlock = true;
+    }
+    private static GetAFreeThread(): ThreadBase {
+        for (let i: number = 0; i < ThreadSystem.s_threadsTotal; ++i) {
+            if (ThreadSystem.s_threads[i].isFree()) {
                 return ThreadSystem.s_threads[i];
             }
         }
         return null;
     }
-    static GetMaxThreadsTotal():number
-    {
+    static GetMaxThreadsTotal(): number {
         return ThreadSystem.s_maxThreadsTotal;
     }
     // 当前系统是否开启 worker multi threads
-    static SetThreadEnabled(boo:boolean):void
-    {
-        if(ThreadSystem.s_thrSupportFlag > 0)ThreadSystem.s_thrSupportFlag = boo?2:1;
+    static SetThreadEnabled(boo: boolean): void {
+        if (ThreadSystem.s_thrSupportFlag > 0) ThreadSystem.s_thrSupportFlag = boo ? 2 : 1;
         RendererDeviece.SetThreadEnabled(boo);
     }
-    static GetThreadEnabled():boolean
-    {
-      return RendererDeviece.GetThreadEnabled();
+    static GetThreadEnabled(): boolean {
+        return RendererDeviece.GetThreadEnabled();
     }
     // runtime support worker multi thrads yes or no
-    static IsSupported():boolean
-    {
-        if(ThreadSystem.s_thrSupportFlag > 0)
-        {
+    static IsSupported(): boolean {
+        if (ThreadSystem.s_thrSupportFlag > 0) {
             return ThreadSystem.s_thrSupportFlag == 2;
         }
-        let boo:boolean = (typeof(Worker)!=="undefined") && (typeof(Blob)!=="undefined");
-        ThreadSystem.s_thrSupportFlag = boo?2:1;
+        let boo: boolean = (typeof (Worker) !== "undefined") && (typeof (Blob) !== "undefined");
+        ThreadSystem.s_thrSupportFlag = boo ? 2 : 1;
         RendererDeviece.SetThreadEnabled(boo);
         return boo;
     }
-    private static CreateThread():void
-    {
-        if(ThreadSystem.s_threadsTotal < ThreadSystem.s_maxThreadsTotal)
-        {
-            let thread:ThreadBase = new ThreadBase();
+    private static CreateThread(): void {
+        if (ThreadSystem.s_threadsTotal < ThreadSystem.s_maxThreadsTotal) {
+            let thread: ThreadBase = new ThreadBase();
             thread.pool = ThreadSystem.s_pool;
             thread.initialize(ThreadSystem.s_codeBlob);
-            ThreadSystem.s_threads.push(thread);
+            ThreadSystem.s_threads[ThreadSystem.s_threadsTotal] = thread;
+            console.log("Create Thread("+ThreadSystem.s_threadsTotal+")");
             ThreadSystem.s_threadsTotal++;
-            
-            let task:any;
-            for(let i:number = 0,len:number=ThreadSystem.s_tasks.length; i<len;++i)
-            {
+            let task: any;
+            for (let i: number = 0, len: number = ThreadSystem.s_tasks.length; i < len; ++i) {
                 task = ThreadSystem.s_tasks[i];
-                if(task != null)
-                {
-                    switch(task.type)
-                    {
+                if (task != null) {
+                    switch (task.type) {
                         case 0:
-                            thread.initTaskByURL(task.taskName,task.taskclass);
-                        break;
+                            thread.initTaskByURL(task.taskName, task.taskclass, task.moduleName);
+                            break;
                         case 2:
-                            thread.initTaskByCodeStr(task.srccode,task.taskclass);
-                        break;
+                            thread.initTaskByCodeStr(task.srccode, task.taskclass, task.moduleName);
+                            break;
                         default:
-                        break;
+                            break;
                     }
                 }
             }
         }
     }
-    
-    static InitTaskByURL(ns:string,taskclass:number):void
-    {
-        if(ns != "" && taskclass >= 0 && taskclass < ThreadSystem.s_tasks.length)
-        {
-            let task:any = ThreadSystem.s_tasks[taskclass];
-            if(task == null)
-            {
-                task = {taskName:ns, taskclass:taskclass,type:0,threads:[]};
+
+    static InitTaskByURL(ns: string, taskclass: number, moduleName: string = ""): void {
+        if (ns != "" && taskclass >= 0 && taskclass < ThreadSystem.s_tasks.length) {
+            let task: any = ThreadSystem.s_tasks[taskclass];
+            if (task == null) {
+                task = { taskName: ns, taskclass: taskclass, type: 0, threads: [], moduleName: moduleName };
                 ThreadSystem.s_tasks[taskclass] = task;
-                
-                for(let i:number = 0; i<ThreadSystem.s_threadsTotal;++i)
-                {
-                    ThreadSystem.s_threads[i].initTaskByURL(ns,taskclass);
+
+                for (let i: number = 0; i < ThreadSystem.s_threadsTotal; ++i) {
+                    ThreadSystem.s_threads[i].initTaskByURL(ns, taskclass, moduleName);
                 }
-                
+
             }
         }
     }
-    static InitTaskByCodeStr(codestr:string,taskclass:number):void
-    {
-        if(codestr != "" && taskclass >= 0 && taskclass < ThreadSystem.s_tasks.length)
-        {
-            let task:any = ThreadSystem.s_tasks[taskclass];
-            if(task == null)
-            {
-                task = {srccode:codestr,type:2, taskclass:taskclass,threads:[]};
+    static InitTaskByCodeStr(codestr: string, taskclass: number, moduleName: string = ""): void {
+        if (codestr != "" && taskclass >= 0 && taskclass < ThreadSystem.s_tasks.length) {
+            let task: any = ThreadSystem.s_tasks[taskclass];
+            if (task == null) {
+                task = { srccode: codestr, type: 2, taskclass: taskclass, threads: [], moduleName: moduleName };
                 ThreadSystem.s_tasks[taskclass] = task;
                 //s_threadsTotal
-                for(let i:number = 0; i<ThreadSystem.s_threadsTotal;++i)
-                {
-                    ThreadSystem.s_threads[i].initTaskByCodeStr(codestr,taskclass);
+                for (let i: number = 0; i < ThreadSystem.s_threadsTotal; ++i) {
+                    ThreadSystem.s_threads[i].initTaskByCodeStr(codestr, taskclass, moduleName);
                 }
-                
+
             }
         }
     }
     /**
      * @param maxThreadsTotal 最大子线程数量
      */
-    static Initsialize(maxThreadsTotal:number):void
-    {
-        if(ThreadSystem.s_initBoo)
-        {
-            if(ThreadSystem.GetThreadEnabled() && ThreadSystem.IsSupported())
-            {
+    static Initsialize(maxThreadsTotal: number, codeStr: string = ""): void {
+        if (ThreadSystem.s_initBoo) {
+            if (ThreadSystem.GetThreadEnabled() && ThreadSystem.IsSupported()) {
                 //console.log("ThreadCore.CodeStr: \n",ThreadCore.CodeStr);
-                
-                let bolb:Blob = new Blob([ThreadCore.CodeStr]);
-                
-                if(maxThreadsTotal < 1)maxThreadsTotal = 1;
+
+                let bolb: Blob = new Blob([ThreadCore.CodeStr + codeStr]);
+
+                if (maxThreadsTotal < 1) maxThreadsTotal = 1;
                 ThreadSystem.s_codeBlob = bolb;
                 ThreadSystem.s_maxThreadsTotal = maxThreadsTotal;
                 ThreadSystem.CreateThread();

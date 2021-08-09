@@ -132,8 +132,7 @@
 //  import * as MipmapTexture from "./example/MipmapTexture";
 //  import Demo = MipmapTexture.example.MipmapTexture;
 
-//  import * as DemoThread from "./demo/DemoThread";
-//  import Demo = DemoThread.demo.DemoThread;
+//  import {DemoThread as Demo} from "./demo/DemoThread";
 
 //  import * as DemoThreadSchedule from "./demo/DemoThreadSchedule";
 //  import Demo = DemoThreadSchedule.demo.DemoThreadSchedule;
@@ -303,6 +302,8 @@
 
 //  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
 
+import {DemoDraco as Demo} from "./demo/DemoDraco";
+
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -329,7 +330,7 @@
 
 //  import {DemoLightsPBR as Demo} from "./pbr/DemoLightsPBR";
 
-import {DemoDefaultPBR as Demo} from "./pbr/DemoDefaultPBR";
+//  import {DemoDefaultPBR as Demo} from "./pbr/DemoDefaultPBR";
 
 //  import {DemoDefaultPBR2 as Demo} from "./pbr/DemoDefaultPBR2";
 
