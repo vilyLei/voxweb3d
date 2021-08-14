@@ -111,6 +111,7 @@ export default class PBREntityManager
         mirMaterial.normalMapEnabled = material.normalMapEnabled;
         mirMaterial.indirectEnvMapEnabled = false;
         mirMaterial.pixelNormalNoiseEnabled = false;
+        mirMaterial.aoMapEnabled = false;
 
         let mirEntity: DisplayEntity = new DisplayEntity();
         mirEntity.copyMeshFrom( param.entity );

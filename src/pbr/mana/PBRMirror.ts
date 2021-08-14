@@ -105,11 +105,13 @@ export class PBRMirror
         material.mirrorMapLodEnabled = this.m_mirrorMapLodEnabled;
         material.diffuseMapEnabled = true;
         material.normalMapEnabled = true;
+        material.aoMapEnabled = true;
         this.m_material = material;
         let ptexList: TextureProxy[] = [
             this.envMap
             , this.getImageTexByUrl("static/assets/brickwall_big.jpg")
             , this.getImageTexByUrl("static/assets/brickwall_normal.jpg")
+            , this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg")
             , this.m_fboIns.getRTTAt(0)
         ]
         

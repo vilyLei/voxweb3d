@@ -45,6 +45,7 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
     mirrorMapLodEnabled: boolean = false;
     diffuseMapEnabled: boolean = false;
     normalMapEnabled: boolean = false;
+    aoMapEnabled: boolean = false;
     indirectEnvMapEnabled: boolean = false;
     shadowReceiveEnabled: boolean = false;
     fogEnabled: boolean = false;
@@ -98,6 +99,11 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
         if (this.normalMapEnabled) {
             this.m_has2DMap = true;
             coder.addDefine("VOX_NORMAL_MAP","u_sampler"+(texIndex++));
+            coder.addTextureSample2D();
+        }
+        if (this.aoMapEnabled) {
+            this.m_has2DMap = true;
+            coder.addDefine("VOX_AO_MAP","u_sampler"+(texIndex++));
             coder.addTextureSample2D();
         }
         if (this.m_has2DMap) {
@@ -191,6 +197,7 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
         if (this.normalNoiseEnabled) ns += "_nNoise";
         if (this.indirectEnvMapEnabled) ns += "IndirEnv";
         if (this.normalMapEnabled) ns += "NorMap";
+        if (this.aoMapEnabled) ns += "AoMap";
         if (this.shadowReceiveEnabled) ns += "Shadow";
         if (this.fogEnabled) ns += "Fog";
 
@@ -272,6 +279,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     mirrorMapLodEnabled: boolean = false;
     diffuseMapEnabled: boolean = false;
     normalMapEnabled: boolean = false;
+    aoMapEnabled: boolean = false;
     indirectEnvMapEnabled: boolean = false;
     shadowReceiveEnabled: boolean = false;
     fogEnabled: boolean = false;
@@ -298,6 +306,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         buf.mirrorMapLodEnabled = this.mirrorMapLodEnabled;
         buf.diffuseMapEnabled = this.diffuseMapEnabled;
         buf.normalMapEnabled = this.normalMapEnabled;
+        buf.aoMapEnabled = this.aoMapEnabled;
         buf.indirectEnvMapEnabled = this.indirectEnvMapEnabled;
         buf.shadowReceiveEnabled = this.shadowReceiveEnabled;
         buf.fogEnabled = this.fogEnabled;
@@ -327,6 +336,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         this.mirrorMapLodEnabled = dst.mirrorMapLodEnabled;
         this.diffuseMapEnabled = dst.diffuseMapEnabled;
         this.normalMapEnabled = dst.normalMapEnabled;
+        this.aoMapEnabled = dst.aoMapEnabled;
         this.indirectEnvMapEnabled = dst.indirectEnvMapEnabled;
         this.shadowReceiveEnabled = dst.shadowReceiveEnabled;
         this.fogEnabled = dst.fogEnabled;
@@ -394,11 +404,11 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
 
         dst.diffuseMapEnabled = this.diffuseMapEnabled;
         dst.normalMapEnabled = this.normalMapEnabled;
+        dst.aoMapEnabled = this.aoMapEnabled;
         dst.indirectEnvMapEnabled = this.indirectEnvMapEnabled;
         dst.shadowReceiveEnabled = this.shadowReceiveEnabled;
 
         dst.fogEnabled = this.fogEnabled;
-
         dst.m_pointLightsTotal = this.m_pointLightsTotal;
         dst.m_parallelLightsTotal = this.m_parallelLightsTotal;
         dst.m_lightData = this.m_lightData;
@@ -437,16 +447,15 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         return this.m_params[3];
     }
     setMirrorViewNV(nv: Vector3D): void {
-        console.log("nv: ",nv);
         this.m_mirrorParam[0] = nv.x;
         this.m_mirrorParam[1] = nv.y;
         this.m_mirrorParam[2] = nv.z;
     }
     setMirrorPlaneNV(nv: Vector3D): void {
-        //console.log("nv: ",nv);
-        this.m_mirrorParam[0] = nv.x;
-        this.m_mirrorParam[1] = nv.y;
-        this.m_mirrorParam[2] = nv.z;
+        //  //console.log("nv: ",nv);
+        //  this.m_mirrorParam[0] = nv.x;
+        //  this.m_mirrorParam[1] = nv.y;
+        //  this.m_mirrorParam[2] = nv.z;
     }
     setMirrorMapLodLevel(lodLv: number): void {
         this.m_mirrorParam[3] = lodLv;

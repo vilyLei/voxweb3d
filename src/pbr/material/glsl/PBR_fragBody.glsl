@@ -7,7 +7,12 @@ void main()
     float metallic = u_params[0].x;
     float roughness = u_params[0].y;
     float ao = u_params[0].z;
-
+    #ifdef VOX_AO_MAP
+    color = VOX_Texture2D(VOX_AO_MAP, v_uv.xy).xyz;
+    ao = mix(1.0, color.x, ao);
+    //  FragOutColor = vec4(vec3(ao), 1.0);
+    //  return;
+    #endif
     float colorGlossiness = 1.0 - roughness;
     float reflectionIntensity = u_params[1].y;
     float glossinessSquare = colorGlossiness * colorGlossiness;
@@ -123,8 +128,6 @@ void main()
         ifactor = 1.0 - ifactor;
         float ifactor2 = max(dot(N, rL.L), 0.0);
         color *= ifactor2 * ifactor2 * (ifactor * ifactor) * ((1.0 - metallic) * roughness) * 0.5;
-        //  FragOutColor = vec4(color * 100.0, 1.0);
-        //  return;
     #endif
 
     specularColor = (rL.specular + specularColor);
@@ -170,7 +173,7 @@ void main()
         vec4 mirrorColor4 = VOX_Texture2D(VOX_MIRROR_PROJ_MAP, (gl_FragCoord.xy/u_stageParam.zw) + (N  * vec3(0.02)).xy);
         #endif
         mirrorColor4.xyz = mix(mirrorColor4.xyz, color.xyz, factorY) * 0.4 + mirrorColor4.xyz * 0.2;
-        color.xyz = mirrorColor4.xyz * u_mirrorParams[1].x + color.xyz  * u_mirrorParams[1].y;
+        color.xyz = mirrorColor4.xyz * u_mirrorParams[1].x * ao + color.xyz  * u_mirrorParams[1].y;
     #endif
     
 

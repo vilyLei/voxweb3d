@@ -50,14 +50,6 @@ export default class PBRScene
 
     }
 
-    getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
-    {
-        let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
-    }
-    
     initialize(rscene:RendererScene, texLoader:ImageTextureLoader, uiModule: DefaultPBRUI):void
     {
         if(this.m_rscene == null)
@@ -164,19 +156,21 @@ export default class PBRScene
         let rad: number;
         let radius: number;
         let total: number = 4;
-        //let ptexList: TextureProxy[]
+        
         this.m_entityManager.createTexList();
         this.m_entityManager.addTexture(this.m_envMap);
         this.m_entityManager.addTextureByUrl("static/assets/noise.jpg");
         this.m_entityManager.addTextureByUrl("static/assets/disp/lava_03_NRM.png");
+        this.m_entityManager.addTextureByUrl("static/assets/disp/lava_03_OCC.png");
         for(let i: number = 0; i < total; ++i) {
 
             rad = Math.random() * 100.0;
             radius = Math.random() * 250.0 + 550.0;
 
             let uvscale: number = Math.random() * 7.0 + 0.6;
-            
+
             material = this.m_entityManager.createMaterial(uvscale,uvscale);
+            material.aoMapEnabled = true;
             let pr: number = 80 + Math.random() * 100.0;
             sph = new Sphere3DEntity();
             sph.setMaterial( material );
