@@ -61,9 +61,9 @@ export default class PBREntityUtils
     addTextureByUrl(url: string): void {
         this.m_texList.push(this.getImageTexByUrl( url ));
     }
-    createMaterial(uscale: number, vscale: number): PBRMaterial {
+    createMaterial(uscale: number, vscale: number, ptexList: TextureProxy[] = null): PBRMaterial {
         
-        let ptexList: TextureProxy[] = this.m_texList;
+        if(ptexList == null) ptexList = this.m_texList;
         let vsmData = this.m_vsmModule.getVSMData();
         let shadowTex = this.m_vsmModule.getShadowMap();
         let matBuilder:PBRMaterialBuilder = this.m_materialBuilder;

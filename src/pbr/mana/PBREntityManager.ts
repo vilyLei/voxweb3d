@@ -53,18 +53,18 @@ export default class PBREntityManager implements DracoTaskListener
     ];
     private m_modules: string[] = [
         //"static/assets/modules/bunny.rawmd",
-        "static/assets/modules/stainlessSteel.rawmd",
+        //"static/assets/modules/stainlessSteel.rawmd",
         //"static/assets/modules/loveass.rawmd"
-        //"static/assets/modules/loveass.rawmd"
+        //"static/assets/modules/car01.rawmd"
+        "static/assets/modules/longxiaPincer.rawmd"
     ];
     private m_scale: number = 1.0;
     private m_pos: Vector3D = null;
     private m_scales: number[] = [
-        //100,
+        100,
         //1.0,
-        0.5,
-        //600.0,
-        //2.0
+        //0.5,
+        //20.0
     ];
     private loadNext(): void {
         if(this.m_modules.length > 0) {
@@ -91,8 +91,6 @@ export default class PBREntityManager implements DracoTaskListener
         entity.setMaterial( material );
         entity.setMesh( mesh );
         entity.setScaleXYZ(scale, scale, scale);
-        //entity.setPosition( this.m_pos );
-        //entity.setXYZ(radius * Math.cos(rad), i * 30 + (this.m_reflectPlaneY + 10) + pr + 5, radius * Math.sin(rad));
         this.m_rscene.addEntity(entity);
         let pos: Vector3D = new Vector3D();
         entity.getPosition( pos );

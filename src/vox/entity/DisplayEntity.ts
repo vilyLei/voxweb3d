@@ -540,15 +540,13 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
                     this.m_globalBounds.update();
                 }
                 else {
-                    this.m_globalBounds.radius = this.m_mesh.bounds.radius;
-                    this.m_globalBounds.radius2 = this.m_mesh.bounds.radius2;
-                    this.m_globalBounds.center.copyFrom(this.m_mesh.bounds.center);
-                    this.m_transfrom.getPosition(DisplayEntity.s_pos);
-                    this.m_globalBounds.center.addBy(DisplayEntity.s_pos);
-                    this.m_globalBounds.min.copyFrom(this.m_mesh.bounds.min);
-                    this.m_globalBounds.min.addBy(DisplayEntity.s_pos);
-                    this.m_globalBounds.max.copyFrom(this.m_mesh.bounds.max);
-                    this.m_globalBounds.max.addBy(DisplayEntity.s_pos);
+                    let matrix = this.m_transfrom.getMatrix();
+                    let bounds = this.m_mesh.bounds;
+                    let gbounds = this.m_globalBounds;
+                    matrix.transformOutVector3(bounds.min, gbounds.min);
+                    matrix.transformOutVector3(bounds.max, gbounds.max);
+                    gbounds.center.addVecsTo(gbounds.min, gbounds.max);
+                    gbounds.center.scaleBy(0.5);
                     ++this.m_globalBounds.version;
                 }
             }
