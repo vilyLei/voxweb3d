@@ -8,6 +8,7 @@
 import {TextureConst} from "../../vox/texture/TextureConst";
 import BytesTextureProxy from "../../vox/texture/BytesTextureProxy";
 import RenderProxy from "../../vox/render/RenderProxy";
+import RendererDeviece from "../render/RendererDeviece";
 
 class FontTexCharGrid
 {
@@ -281,6 +282,10 @@ class H5FontSystem
   }
   initialize(canvas_id_name:string,fontSize:number = 10, texWidth:number = 512,texHeight:number = 512,canvas_visible:boolean = false,mipmapEnabled:boolean = false)
   {
+    if(RendererDeviece.IsMobileWeb()) {
+      fontSize *= 2;
+      texWidth = texHeight = texHeight * 2;
+    }
     if(this.m_canvas == null)
     {
       if(texWidth < 32) texWidth = 32;

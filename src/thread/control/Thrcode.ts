@@ -55,7 +55,7 @@ function ThreadCore() {
                 break;
             case INIT_TASK:
                 let param = data.param;
-                console.log("worker INIT_TASK param.type: ", param.type);
+                ///console.log("worker INIT_TASK param.type: ", param.type);
                 switch (param.type) {
                     case 0:
                         if (taskSTList[param.taskclass] < 1) {
@@ -84,8 +84,9 @@ function ThreadCore() {
                                 tmcodeStr += "self.__$TaskSlot[miclass] = " + mins + ";";
                                 tmcodeStr += "var INIT_TASK = 3701;";
                                 tmcodeStr += "postMessage({cmd: INIT_TASK, taskclass: miclass});";
-                                console.log(tmcodeStr);
                                 eval(tmcodeStr);
+                                //  let blob = new Blob([tmcodeStr]);
+                                //  importScripts(URL.createObjectURL(blob));
                             }
                         }
                         break;

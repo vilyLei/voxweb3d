@@ -8,7 +8,6 @@
 
 import IThreadSendData from "../../thread/base/IThreadSendData";
 import ThreadTask from "../../thread/control/ThreadTask";
-
 import ThreadSystem from "../../thread/ThreadSystem";
 
 class DracoSendData implements IThreadSendData {
@@ -121,8 +120,8 @@ class DracoSendData implements IThreadSendData {
 }
 
 export interface DracoTaskListener {
-    parse(module: any, index: number, total: number): void;
-    parseFinish(modules: any[], total: number): void;
+    dracoParse(module: any, index: number, total: number): void;
+    dracoParseFinish(modules: any[], total: number): void;
 }
 class DracoTask extends ThreadTask {
     private m_enabled: boolean = true;
@@ -134,7 +133,6 @@ class DracoTask extends ThreadTask {
     constructor(taskTotal: number) {
         super();
         DracoTask.s_taskTotal = taskTotal;
-        //s_initedTaskTotal
     }
     reset(): void {
         super.reset();
@@ -224,16 +222,16 @@ class DracoTask extends ThreadTask {
                 break;
             case "DRACO_PARSE":
                 this.m_enabled = true;
+                this.m_parseIndex++;
+                this.m_modules.push(data.data.module);
                 if (this.m_listener != null) {
-                    this.m_parseIndex++;
-                    this.m_modules.push(data.data.module);
                     //console.log("this.isFinished(): ", this.isFinished());
                     if (this.isFinished()) {
-                        this.m_listener.parseFinish(this.m_modules, this.getParseTotal());
+                        this.m_listener.dracoParseFinish(this.m_modules, this.getParseTotal());
                     }
                     else {
                         this.parseNextSeg();
-                        this.m_listener.parse(data.data.module, this.getParsedIndex(), this.getParseTotal());
+                        this.m_listener.dracoParse(data.data.module, this.getParsedIndex(), this.getParseTotal());
                     }
                 }
                 break;

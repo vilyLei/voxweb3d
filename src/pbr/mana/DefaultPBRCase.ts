@@ -395,7 +395,7 @@ export default class DefaultPBRCase {
         //console.log("segments.length: " + segments.length);
         if(this.dataFilterEnbaled) {
           let v: Uint8Array = new Uint8Array(buffer);
-          DecodeData.p(v, segments);
+          DecodeData.d(v, segments);
           if(this.saveEnabled) {
             this.downloadBinFile2( v );
           }

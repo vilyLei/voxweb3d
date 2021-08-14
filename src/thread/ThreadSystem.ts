@@ -127,7 +127,9 @@ class ThreadSystem {
             thread.pool = ThreadSystem.s_pool;
             thread.initialize(ThreadSystem.s_codeBlob);
             ThreadSystem.s_threads[ThreadSystem.s_threadsTotal] = thread;
+
             console.log("Create Thread("+ThreadSystem.s_threadsTotal+")");
+            
             ThreadSystem.s_threadsTotal++;
             let task: any;
             for (let i: number = 0, len: number = ThreadSystem.s_tasks.length; i < len; ++i) {
@@ -184,7 +186,7 @@ class ThreadSystem {
             if (ThreadSystem.GetThreadEnabled() && ThreadSystem.IsSupported()) {
                 //console.log("ThreadCore.CodeStr: \n",ThreadCore.CodeStr);
 
-                let bolb: Blob = new Blob([ThreadCore.CodeStr + codeStr]);
+                let bolb: Blob = new Blob([codeStr + ThreadCore.CodeStr]);
 
                 if (maxThreadsTotal < 1) maxThreadsTotal = 1;
                 ThreadSystem.s_codeBlob = bolb;

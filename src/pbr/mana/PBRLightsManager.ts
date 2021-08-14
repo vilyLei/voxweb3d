@@ -360,7 +360,7 @@ export default class PBRLightsManager {
         //console.log("segments.length: " + segments.length);
         let v: Uint8Array = new Uint8Array(buffer);
         
-        DecodeData.p(v, segments);
+        DecodeData.d(v, segments);
         
         let node: LoaderNode = new LoaderNode();
         node.uid = this.uid;

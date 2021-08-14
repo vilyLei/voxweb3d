@@ -5,6 +5,7 @@ export default class MeshBufferLoader
     private m_info:string = "";
     private m_buffer:ArrayBuffer = null;
     private m_loadStatus:number = 0;
+    paramSuffix: string = ".pmd"
     constructor()
     {
     }
@@ -13,7 +14,7 @@ export default class MeshBufferLoader
         let selfT:MeshBufferLoader = this;
         //let si:number = purl.lastIndexOf("/");
         let si:number = purl.lastIndexOf(".");
-        let infoUrl:string = purl.slice(0,si) + "_param.txt";
+        let infoUrl:string = purl.slice(0,si) + this.paramSuffix;
         //console.log("infoUrl: "+infoUrl);
         this.loadParam(infoUrl, callback);
         const reader = new FileReader();

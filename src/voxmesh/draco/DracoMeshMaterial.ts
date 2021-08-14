@@ -30,10 +30,18 @@ precision highp float;
 uniform vec4 u_param;
 in vec2 v_uv;
 in vec3 v_nv;
+in vec3 v_pv;
 layout(location = 0) out vec4 FragColor0;
+
+vec3 getVtxFlatNormal(vec3 pos) {
+    vec3 fdx = dFdx(pos);
+    vec3 fdy = dFdy(pos);
+    return normalize(cross(fdx, fdy));
+}
 void main()
 {
-    FragColor0 = vec4(abs(v_nv.xyz), 1.0);
+    //FragColor0 = vec4(abs(v_nv.xyz), 1.0);
+    FragColor0 = vec4(abs(getVtxFlatNormal(v_pv)), 1.0);
 }
 `;
         return fragCode;
@@ -51,12 +59,14 @@ uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
 out vec2 v_uv;
 out vec3 v_nv;
+out vec3 v_pv;
 void main(){
     mat4 viewMat4 = u_viewMat * u_objMat;
     vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);
     gl_Position = u_projMat * viewPos;
     v_uv = a_uvs;
     v_nv = a_nvs;
+    v_pv = a_vs;
 }
 `;
         return vtxCode;
