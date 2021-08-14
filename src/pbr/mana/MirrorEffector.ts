@@ -125,8 +125,8 @@ export class MirrorEffector
             material.setEnvData( this.envData );
         }
         material.setUVScale(3.0,3.0);
-        material.setMirrorIntensity(0.4);
-        material.setMirrorMixFactor(0.3);
+        material.setMirrorIntensity(0.3);
+        material.setMirrorMixFactor(0.7);
         plane = new Plane3DEntity();
         plane.flipVerticalUV = true;
         plane.setMaterial(material);

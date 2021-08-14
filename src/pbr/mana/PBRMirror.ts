@@ -148,6 +148,11 @@ export class PBRMirror
         //*/
 
     }
+    setY(py: number): void {
+        this.reflectPlaneY = py;
+        this.m_plane.setXYZ(0, this.reflectPlaneY, 0);
+        this.m_plane.update();
+    }
     getPlane(): Plane3DEntity {
         return this.m_plane;
     }

@@ -28,7 +28,7 @@ export default class PBREntityManager implements DracoTaskListener
     private m_paramEntities:PBRParamEntity[] = [];
     private m_dracoMeshLoader: DracoMeshBuilder = new DracoMeshBuilder();
     private m_reflectPlaneY: number = -220.0;
-    aoMapEnabled: boolean = true;
+    aoMapEnabled: boolean = false;
     constructor() {
 
     }
@@ -43,26 +43,28 @@ export default class PBREntityManager implements DracoTaskListener
             this.m_dracoMeshLoader.initialize(2);
             this.m_dracoMeshLoader.setListener( this );
 
-            this.initPrimitive();
             this.loadNext();
+            this.initPrimitive();
         }
     }
-    
+    private m_posList: Vector3D[] = [
+        new Vector3D(0,200,0)
+        //new Vector3D(0,0,0)
+    ];
     private m_modules: string[] = [
         //"static/assets/modules/bunny.rawmd",
-        "static/assets/modules/loveass.rawmd"
+        "static/assets/modules/stainlessSteel.rawmd",
+        //"static/assets/modules/loveass.rawmd"
+        //"static/assets/modules/loveass.rawmd"
     ];
     private m_scale: number = 1.0;
     private m_pos: Vector3D = null;
     private m_scales: number[] = [
         //100,
         //1.0,
+        0.5,
         //600.0,
-        1.0
-    ];
-    private m_posList: Vector3D[] = [
-        //new Vector3D(-300.0,0.0,0.0),
-        new Vector3D(300.0,0.0,0.0),
+        //2.0
     ];
     private loadNext(): void {
         if(this.m_modules.length > 0) {
@@ -73,18 +75,6 @@ export default class PBREntityManager implements DracoTaskListener
     }
     dracoParse(pmodule: any, index: number, total: number): void {
         //console.log("parse progress: "+index+"/"+total);
-        /*
-        let scale: number = this.m_scale;
-        let mesh: DracoMesh = new DracoMesh();
-        mesh.initialize([pmodule]);
-        let material: DracoMeshMaterial = new DracoMeshMaterial();
-        let entity: DisplayEntity = new DisplayEntity();
-        entity.setMesh(mesh);
-        entity.setMaterial( material );
-        entity.setScaleXYZ(scale, scale, scale);
-        entity.setPosition(this.m_pos);
-        this.m_rscene.addEntity(entity);
-        //*/
     }
     dracoParseFinish(modules: any[], total: number): void {
 
@@ -101,8 +91,16 @@ export default class PBREntityManager implements DracoTaskListener
         entity.setMaterial( material );
         entity.setMesh( mesh );
         entity.setScaleXYZ(scale, scale, scale);
+        //entity.setPosition( this.m_pos );
         //entity.setXYZ(radius * Math.cos(rad), i * 30 + (this.m_reflectPlaneY + 10) + pr + 5, radius * Math.sin(rad));
         this.m_rscene.addEntity(entity);
+        let pos: Vector3D = new Vector3D();
+        entity.getPosition( pos );
+        let pv: Vector3D = entity.getGlobalBounds().min;
+        pos.y += (this.m_reflectPlaneY - pv.y) + 70.0;
+        entity.setPosition( pos );
+        entity.update();
+
         this.addParamEntity(entity, material);
     }
     private initPrimitive(): void {
@@ -128,12 +126,15 @@ export default class PBREntityManager implements DracoTaskListener
         
         this.m_entityUtils.createTexList();
         this.m_entityUtils.addTexture(this.m_envMap);
-        this.m_entityUtils.addTextureByUrl("static/assets/noise.jpg");
-        this.m_entityUtils.addTextureByUrl("static/assets/disp/lava_03_NRM.png");
-        this.m_entityUtils.addTextureByUrl("static/assets/disp/lava_03_OCC.png");
+        //this.m_entityUtils.addTextureByUrl("static/assets/noise.jpg");
+        this.m_entityUtils.addTextureByUrl("static/assets/disp/normal_4_256_COLOR.png");
+        this.m_entityUtils.addTextureByUrl("static/assets/disp/normal_4_256_NRM.png");
+        if(this.aoMapEnabled) {
+            this.m_entityUtils.addTextureByUrl("static/assets/disp/normal_4_256_OCC.png");
+        }
 
         material = this.m_entityUtils.createMaterial(1,1);
-        material.aoMapEnabled = true;
+        material.aoMapEnabled = this.aoMapEnabled;
         let srcSph = new Sphere3DEntity();
         srcSph.setMaterial( material );
         srcSph.initialize(100.0, 20, 20);

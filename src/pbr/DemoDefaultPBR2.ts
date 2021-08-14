@@ -153,9 +153,11 @@ export class DemoDefaultPBR2
             this.m_meshMana.dataFilterEnbaled = false;
             this.m_meshMana.loadMeshFile("static/modules/loveass.rawmd");
             //*/
-            /*
+            ///*
             this.m_meshMana.diffuseMapEnabled = true;
             this.m_meshMana.normalMapEnabled = true;
+            this.m_meshMana.dataFilterEnbaled = true;
+            this.m_meshMana.saveEnabled = false;
             this.m_reflectPlaneY = -220.0;
             this.m_meshMana.moduleScale = 0.5;
             this.m_meshMana.offsetPos.setXYZ(0.0,200.0,0.0);
@@ -195,11 +197,11 @@ export class DemoDefaultPBR2
             this.m_meshMana.offsetPos.setXYZ(0.0,0.0,0.0);
             this.m_meshMana.loadMeshFile("static/modules/longxiaPincer2.md");
             //*/
-            ////*
+            /*
             this.m_meshMana.indirectEnvMap = this.m_cubeRTTBuilder.getCubeTexture();
             this.m_meshMana.diffuseMapEnabled = true;
             this.m_meshMana.normalMapEnabled = true;
-            this.m_meshMana.saveEnabled = true;
+            this.m_meshMana.saveEnabled = false;
             //this.m_meshMana.indirectEnvMap = true;
             this.m_reflectPlaneY = -200.0;
             this.m_meshMana.moduleScale = 600.0;
