@@ -102,11 +102,11 @@ export class DemoDraco extends DemoInstance implements DracoTaskListener {
             this.m_dracoMeshLoader.load( this.m_urls.pop() );
         }
     }
-    dracoParse(module: any, index: number, total: number): void {
+    dracoParse(pmodule: any, index: number, total: number): void {
         //console.log("parse progress: "+index+"/"+total);
         let scale: number = this.m_scale;
         let mesh: DracoMesh = new DracoMesh();
-        mesh.initialize([module]);
+        mesh.initialize([pmodule]);
         let material: DracoMeshMaterial = new DracoMeshMaterial();
         let entity: DisplayEntity = new DisplayEntity();
         entity.setMesh(mesh);

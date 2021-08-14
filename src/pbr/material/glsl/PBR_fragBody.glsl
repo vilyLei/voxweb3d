@@ -166,13 +166,13 @@ void main()
     
     // mirror inverted reflection
     #ifdef VOX_MIRROR_PROJ_MAP
-        float factorY = max(dot(N.xyz, u_mirrorParams[0].xyz), 0.01);
+        float factorY = max(dot(N.xyz, u_mirrorParams[0].xyz), 0.01) * 0.7;
         #ifdef VOX_MIRROR_MAP_LOD
         vec4 mirrorColor4 = ao * VOX_Texture2DLod(VOX_MIRROR_PROJ_MAP, (gl_FragCoord.xy/u_stageParam.zw) + (N  * vec3(0.02)).xy, u_mirrorParams[0].w);
         #else
         vec4 mirrorColor4 = ao * VOX_Texture2D(VOX_MIRROR_PROJ_MAP, (gl_FragCoord.xy/u_stageParam.zw) + (N  * vec3(0.02)).xy);
         #endif
-        mirrorColor4.xyz = mix(mirrorColor4.xyz, color.xyz, factorY) * 0.4 + mirrorColor4.xyz * 0.2;
+        mirrorColor4.xyz = mix(mirrorColor4.xyz, color.xyz, factorY);
         color.xyz = mirrorColor4.xyz * u_mirrorParams[1].x + color.xyz  * u_mirrorParams[1].y;
     #endif
     

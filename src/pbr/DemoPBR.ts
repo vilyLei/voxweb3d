@@ -3,7 +3,6 @@ import Vector3D from "../vox/math/Vector3D";
 import MouseEvent from "../vox/event/MouseEvent";
 import RendererDeviece from "../vox/render/RendererDeviece";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
-import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 
@@ -69,11 +68,6 @@ export class DemoPBR {
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-
-            //  let axis:Axis3DEntity = new Axis3DEntity();
-            //  axis.initialize(700.0);
-            //  this.m_rscene.addEntity(axis, 1);
-
 
             this.m_rscene.setClearRGBColor3f(0.2, 0.2, 0.2);
 
@@ -145,11 +139,13 @@ export class DemoPBR {
     }
     private render(): void {
 
+        // ------------------------------------- draw(render) scene begin
         this.m_rscene.renderBegin();
+        
+        // ------------------------------------- draw(render) scene effect data
+        this.m_pbrScene.prerender();
 
-        this.m_pbrScene.render();
-
-        // ------------------------------------- draw outline begin
+        // ------------------------------------- draw(render) outline begin
         if (this.m_uiModule.isOpen() && this.m_uiModule.getParamEntity() != null) {
             this.m_stencilOutline.setTarget(this.m_uiModule.getParamEntity().entity);
             this.m_stencilOutline.startup();
@@ -158,16 +154,16 @@ export class DemoPBR {
             this.m_stencilOutline.quit();
         }
         this.m_stencilOutline.drawBegin();
-
-        this.m_rscene.runAt(0);
-        this.m_rscene.runAt(1);
-        this.m_rscene.runAt(2);
+        // ------------------------------------- draw(render) normal scene begin
+        this.m_pbrScene.render();
+        // ------------------------------------- draw(render) normal scene end
         this.m_stencilOutline.draw();
-        // ------------------------------------- draw outline end
+        // ------------------------------------- draw(render) outline end
 
         this.m_rscene.runEnd();
+        // ------------------------------------- draw(render) scene end
 
-        // render ui
+        // ------------------------------------- render ui
         if (this.m_ruisc != null) {
             this.m_ruisc.renderBegin();
             this.m_ruisc.run(false);

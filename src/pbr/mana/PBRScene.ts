@@ -48,7 +48,6 @@ export default class PBRScene
     {
         if(this.m_rscene == null)
         {
-            
             this.m_rscene = rscene;
             this.m_texLoader = texLoader;
             this.m_uiModule = uiModule;
@@ -132,8 +131,9 @@ export default class PBRScene
     }
     
     update(): void {
+        this.m_entityManager.run();
     }
-    render(): void {
+    prerender(): void {
         // --------------------------------------------- vsm runbegin
         this.m_vsmModule.run();
         // --------------------------------------------- vsm rtt end
@@ -144,5 +144,10 @@ export default class PBRScene
         this.m_rscene.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);
 
         this.m_mirrorEffector.render();
+    }
+    render(): void {
+        this.m_rscene.runAt(0);
+        this.m_rscene.runAt(1);
+        this.m_rscene.runAt(2);
     }
 }
