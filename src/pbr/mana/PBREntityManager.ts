@@ -24,6 +24,7 @@ export default class PBREntityManager
     private m_cubeRTTBuilder: CubeRttBuilder;
     private m_vsmModule: ShadowVSMModule;
     private m_envData: EnvLightData;
+    private m_texList: TextureProxy[] = null;
     private m_mirrorRprIndex: number = 3;
 
     fogEnabled: boolean = true;
@@ -43,15 +44,26 @@ export default class PBREntityManager
            this.m_mirrorRprIndex = mirrorRprIndex; 
         }
     }
-    private getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
+    getImageTexByUrl(purl:string,wrapRepeat:boolean = true,mipmapEnabled = true):TextureProxy
     {
         let ptex:TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
         if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
-    createMaterial(ptexList: TextureProxy[], uscale: number, vscale: number): PBRMaterial {
+    createTexList(): TextureProxy[] {
+        this.m_texList = [];
+        return this.m_texList;
+    }
+    addTexture(tex: TextureProxy): void {
+        this.m_texList.push(tex);
+    }
+    addTextureByUrl(url: string): void {
+        this.m_texList.push(this.getImageTexByUrl( url ));
+    }
+    createMaterial(uscale: number, vscale: number): PBRMaterial {
         
+        let ptexList: TextureProxy[] = this.m_texList;
         let vsmData = this.m_vsmModule.getVSMData();
         let shadowTex = this.m_vsmModule.getShadowMap();
         let matBuilder:PBRMaterialBuilder = this.m_materialBuilder;

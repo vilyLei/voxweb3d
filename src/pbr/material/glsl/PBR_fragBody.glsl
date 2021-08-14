@@ -146,15 +146,9 @@ void main()
 
     color = ambient + Lo;
 
-    
-    //color = dithering(color);
     // HDR tonemapping
     #ifdef VOX_TONE_MAPPING
-        //color = reinhard( color );
         color = tonemapReinhard( color, u_params[1].x );
-        //color = reinhard_extended( color, u_params[1].x );
-        //color = reinhard_extended_luminance( color, u_params[1].x );
-        //color = acesToneMapping(color, u_params[1].x);
     #endif
     
     #ifdef VOX_USE_SHADOW
@@ -175,9 +169,7 @@ void main()
         #else
         vec4 mirrorColor4 = VOX_Texture2D(VOX_MIRROR_PROJ_MAP, (gl_FragCoord.xy/u_stageParam.zw) + (N  * vec3(0.02)).xy);
         #endif
-        //vec4 mirrorColor4 = VOX_Texture2DLod(VOX_MIRROR_PROJ_MAP, (gl_FragCoord.xy/u_stageParam.zw) + (N  * vec3(0.02)).xy, 7.0);
         mirrorColor4.xyz = mix(mirrorColor4.xyz, color.xyz, factorY) * 0.4 + mirrorColor4.xyz * 0.2;
-        //color.xyz = mirrorColor4.xyz * 1.0 + color.xyz * 0.3;
         color.xyz = mirrorColor4.xyz * u_mirrorParams[1].x + color.xyz  * u_mirrorParams[1].y;
     #endif
     

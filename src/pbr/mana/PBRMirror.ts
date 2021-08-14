@@ -62,6 +62,7 @@ export class PBRMirror
     private m_planeParam: PBRParamEntity = null;
     private m_mirrorEntities:MirrorProjEntity[] = [];
     private m_mirrorMapLodEnabled: boolean = true;
+    private m_material: PBRMaterial;
     private initMirrorEffect(): void {
 
         this.m_fboIns = this.m_rscene.createFBOInstance();
@@ -104,6 +105,7 @@ export class PBRMirror
         material.mirrorMapLodEnabled = this.m_mirrorMapLodEnabled;
         material.diffuseMapEnabled = true;
         material.normalMapEnabled = true;
+        this.m_material = material;
         let ptexList: TextureProxy[] = [
             this.envMap
             , this.getImageTexByUrl("static/assets/brickwall_big.jpg")
@@ -163,8 +165,10 @@ export class PBRMirror
     render(): void {
 
         
-        // --------------------------------------------- mirror inverted reflection fbo run begin        
-
+        // --------------------------------------------- mirror inverted reflection fbo run begin
+        let nv: Vector3D = this.m_rscene.getCamera().getNV();
+        nv.y *= -1.0;
+        this.m_material.setMirrorViewNV( nv );
         this.m_fboIns.run();
         if(this.m_mirrorMapLodEnabled) {
             this.m_fboIns.generateMipmapTextureAt(0);

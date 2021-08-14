@@ -411,6 +411,5 @@ vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 wpos, vec3 nv)
     mat3 TBN = mat3(T, B, N);
 
     return TBN * tangentNormal;
-    //return normalize(TBN * tangentNormal);
 }
 #endif

@@ -164,28 +164,19 @@ export default class PBRScene
         let rad: number;
         let radius: number;
         let total: number = 4;
-        
+        //let ptexList: TextureProxy[]
+        this.m_entityManager.createTexList();
+        this.m_entityManager.addTexture(this.m_envMap);
+        this.m_entityManager.addTextureByUrl("static/assets/noise.jpg");
+        this.m_entityManager.addTextureByUrl("static/assets/disp/lava_03_NRM.png");
         for(let i: number = 0; i < total; ++i) {
 
             rad = Math.random() * 100.0;
             radius = Math.random() * 250.0 + 550.0;
 
             let uvscale: number = Math.random() * 7.0 + 0.6;
-            let ptexList: TextureProxy[] = [
-                this.m_envMap,
-                //  ,this.getImageTexByUrl("static/assets/disp/box_COLOR.png")
-                //  ,this.getImageTexByUrl("static/assets/disp/box_NRM.png")
-
-                this.getImageTexByUrl("static/assets/noise.jpg"),
-                //this.getImageTexByUrl("static/assets/disp/lava_03_COLOR.png"),
-                this.getImageTexByUrl("static/assets/disp/lava_03_NRM.png"),
-
-                //  ,this.getImageTexByUrl("static/assets/disp/metal_08_COLOR.png")
-                //  ,this.getImageTexByUrl("static/assets/disp/metal_08_NRM.png")
-
-            ];
-
-            material = this.m_entityManager.createMaterial(ptexList, uvscale,uvscale);
+            
+            material = this.m_entityManager.createMaterial(uvscale,uvscale);
             let pr: number = 80 + Math.random() * 100.0;
             sph = new Sphere3DEntity();
             sph.setMaterial( material );

@@ -62,19 +62,6 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
         this.adaptationShaderVersion = false;
         console.log("PBRShaderBuffer::initialize()...，adaptationShaderVersion: ", this.adaptationShaderVersion);
     }
-    getFragShaderCode(): string {
-        //  console.log("DefaultPBR",DefaultPBR);
-        //  console.log("DefaultPBR.frag",DefaultPBR.frag);
-        //  console.log("DefaultPBR end.");
-        if (this.texturesTotal > 1) {
-            this.m_has2DMap = true;
-        }
-        this.buildThisCode();
-
-        this.m_codeBuilder.addFragMainCode(PBRShaderCode.frag_head);
-        this.m_codeBuilder.addFragMainCode(PBRShaderCode.frag_body);
-        return this.m_codeBuilder.buildFragCode();
-    }
     private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private buildThisCode():void
     {
@@ -86,8 +73,7 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
         
         let mirrorProjEnabled: boolean = this.mirrorProjEnabled && this.texturesTotal > 0;
         if (this.normalNoiseEnabled) coder.addDefine("VOX_NORMAL_NOISE");
-        if (this.texturesTotal > 1) coder.addDefine("VOX_USE_2D_MAP");
-        
+
         // 毛料表面效果
         if (this.woolEnabled) coder.addDefine("VOX_WOOL");
         if (this.toneMappingEnabled) coder.addDefine("VOX_TONE_MAPPING");
@@ -105,12 +91,17 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
             coder.addTextureSampleCube();
         }
         if (this.diffuseMapEnabled) {
+            this.m_has2DMap = true;
             coder.addDefine("VOX_DIFFUSE_MAP","u_sampler"+(texIndex++));
             coder.addTextureSample2D();
         }
         if (this.normalMapEnabled) {
+            this.m_has2DMap = true;
             coder.addDefine("VOX_NORMAL_MAP","u_sampler"+(texIndex++));
             coder.addTextureSample2D();
+        }
+        if (this.m_has2DMap) {
+            coder.addDefine("VOX_USE_2D_MAP");
         }
         if (mirrorProjEnabled) {
             coder.addDefine("VOX_MIRROR_PROJ_MAP", "u_sampler"+(texIndex++));
@@ -165,6 +156,16 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
             coder.addTextureSample2D();
         }
 
+    }
+    getFragShaderCode(): string {
+        //  console.log("DefaultPBR",DefaultPBR);
+        //  console.log("DefaultPBR.frag",DefaultPBR.frag);
+        //  console.log("DefaultPBR end.");
+        this.buildThisCode();
+
+        this.m_codeBuilder.addFragMainCode(PBRShaderCode.frag_head);
+        this.m_codeBuilder.addFragMainCode(PBRShaderCode.frag_body);
+        return this.m_codeBuilder.buildFragCode();
     }
     getVtxShaderCode(): string {
 
@@ -237,7 +238,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     private m_camPos: Float32Array = new Float32Array([500.0, 500.0, 500.0, 1.0]);
     private m_mirrorParam: Float32Array = new Float32Array(
         [
-            0.0, 1.0, 0.0           // mirror plane nv(x,y,z)
+            0.0, 0.0, -1.0           // mirror view nv(x,y,z)
             , 1.0                   // mirror map lod level
 
             , 1.0, 0.3              // mirror scale, mirror mix scale
@@ -434,6 +435,12 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     }
     getPixelNormalNoiseIntensity(): number {
         return this.m_params[3];
+    }
+    setMirrorViewNV(nv: Vector3D): void {
+        console.log("nv: ",nv);
+        this.m_mirrorParam[0] = nv.x;
+        this.m_mirrorParam[1] = nv.y;
+        this.m_mirrorParam[2] = nv.z;
     }
     setMirrorPlaneNV(nv: Vector3D): void {
         //console.log("nv: ",nv);
