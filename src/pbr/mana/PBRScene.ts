@@ -18,8 +18,10 @@ import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
 import GlobalLightData from "../../light/base/GlobalLightData";
 import EnvLightData from "../../light/base/EnvLightData";
 import DefaultPBRLight from "../../pbr/mana/DefaultPBRLight";
+import PBREntityManager from "../../pbr/mana/PBREntityManager";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
 import { SpecularTextureLoader } from "../mana/TextureLoader";
+import DisplayEntity from "../../vox/entity/DisplayEntity";
 
 
 export default class PBRScene
@@ -37,6 +39,7 @@ export default class PBRScene
 
     private m_mirrorRprIndex: number = 3;
     private m_lightData: GlobalLightData = new GlobalLightData();
+    private m_entityManager: PBREntityManager = null;
     private m_envData: EnvLightData;
 
     private m_reflectPlaneY: number = -220.0;
@@ -95,6 +98,7 @@ export default class PBRScene
 
             let cubeRTTMipMapEnabled: boolean = true;
             let rttPos: Vector3D = new Vector3D(0.0, 0.0, 0.0);
+            // for indirect light
             this.m_cubeRTTBuilder = new CubeRttBuilder();
             this.m_cubeRTTBuilder.mipmapEnabled = cubeRTTMipMapEnabled;
             this.m_cubeRTTBuilder.initialize(this.m_rscene, 256.0, 256.0, rttPos);
@@ -133,13 +137,14 @@ export default class PBRScene
             this.m_mirrorEffector.materialBuilder = this.m_materialBuilder;            
             this.m_mirrorEffector.initialize(this.m_rscene, this.m_texLoader, this.m_uiModule, [this.m_mirrorRprIndex]);
 
+            this.m_entityManager = new PBREntityManager(this.m_materialBuilder, this.m_cubeRTTBuilder, this.m_vsmModule, this.m_envData);
+            this.m_entityManager.initialize(this.m_rscene, texLoader, this.m_mirrorEffector, this.m_mirrorRprIndex);
             this.initObjs();
         }
     }
     
     private initObjs(): void {
 
-        let matBuilder:PBRMaterialBuilder = this.m_materialBuilder;
         let param: PBRParamEntity;
         let material: PBRMaterial;
 
@@ -155,28 +160,17 @@ export default class PBRScene
         ];
         let cubeTex0: TextureProxy = this.m_texLoader.getCubeTexAndLoadImg("static/assets/cubeMap", urls);
         //*/
-        let vsmData = this.m_vsmModule.getVSMData();
-        let shadowTex = this.m_vsmModule.getShadowMap();
-
         let sph: Sphere3DEntity;
         let rad: number;
         let radius: number;
-        let total: number = 3;
+        let total: number = 4;
         
         for(let i: number = 0; i < total; ++i) {
 
             rad = Math.random() * 100.0;
             radius = Math.random() * 250.0 + 550.0;
-            material = matBuilder.makePBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
-            
-            material.shadowReceiveEnabled = true;
-            material.fogEnabled = this.m_fogEnabled;
-            material.indirectEnvMapEnabled = true;
-            material.envMapEnabled = true;
-            material.diffuseMapEnabled = true;
-            material.normalMapEnabled = true;
+
             let uvscale: number = Math.random() * 7.0 + 0.6;
-            material.setUVScale(uvscale, uvscale);
             let ptexList: TextureProxy[] = [
                 this.m_envMap,
                 //  ,this.getImageTexByUrl("static/assets/disp/box_COLOR.png")
@@ -190,24 +184,13 @@ export default class PBRScene
                 //  ,this.getImageTexByUrl("static/assets/disp/metal_08_NRM.png")
 
             ];
-            if(material.indirectEnvMapEnabled) {
-                ptexList.push( this.m_cubeRTTBuilder.getCubeTexture() );
-            }
-            if(material.shadowReceiveEnabled) {
-                ptexList.push( shadowTex );
-                material.setVSMData( vsmData );
-            }
-            if(material.fogEnabled) {
-                material.setEnvData( this.m_envData );
-            }
-            material.setTextureList( ptexList );
 
+            material = this.m_entityManager.createMaterial(ptexList, uvscale,uvscale);
             let pr: number = 80 + Math.random() * 100.0;
             sph = new Sphere3DEntity();
             sph.setMaterial( material );
             sph.initialize(pr, 20, 20);
-            //sph.setXYZ(radius * Math.cos(rad), Math.random() * 500.0, radius * Math.sin(rad));
-            sph.setXYZ(radius * Math.cos(rad), i * 30 - 210 + pr + 5, radius * Math.sin(rad));
+            sph.setXYZ(radius * Math.cos(rad), i * 30 + (this.m_reflectPlaneY + 10) + pr + 5, radius * Math.sin(rad));
             this.m_rscene.addEntity(sph);
             
             param = new PBRParamEntity();
@@ -217,31 +200,8 @@ export default class PBRScene
             param.colorPanel = this.m_uiModule.rgbPanel;
             param.initialize();
             this.m_paramEntities.push(param);
+            this.m_entityManager.createMirrorEntity(param, material);
             
-            let mirMaterial: PBRMaterial = matBuilder.makePBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
-            mirMaterial.copyFrom(material, false);
-            let texList: TextureProxy[] = material.getTextureList();
-            if(material.envMapEnabled) {
-                mirMaterial.setTextureList(texList.slice(1));
-            }
-            else {
-                mirMaterial.setTextureList(texList.slice(0));
-            }
-            mirMaterial.envMapEnabled = false;
-            mirMaterial.diffuseMapEnabled = material.diffuseMapEnabled;
-            mirMaterial.normalMapEnabled = material.normalMapEnabled;
-            mirMaterial.indirectEnvMapEnabled = false;
-            mirMaterial.pixelNormalNoiseEnabled = false;
-
-            let mirSph: Sphere3DEntity = new Sphere3DEntity();
-            mirSph.copyMeshFrom(sph);
-            mirSph.setMaterial(mirMaterial);
-            mirSph.initialize(80,20,20);
-            mirSph.copyTransformFrom(sph);
-            this.m_rscene.addEntity(mirSph, this.m_mirrorRprIndex);
-            this.m_mirrorEffector.addMirrorEntity( mirSph );
-
-            param.setMirrorMaterial( mirMaterial );
         }
     }
     update(): void {
