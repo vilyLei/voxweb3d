@@ -122,7 +122,7 @@ export class PBRMirror
         material.setTextureList( ptexList );
         if(this.m_mirrorMapLodEnabled) {
             this.m_fboIns.enableMipmapRTTAt(0);
-            material.setMirrorMapLodLevel(2.0);
+            material.setMirrorMapLodLevel(1.0);
         }
         if(material.fogEnabled) {
             material.setEnvData( this.envData );

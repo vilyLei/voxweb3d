@@ -10,8 +10,7 @@ void main()
     #ifdef VOX_AO_MAP
     color = VOX_Texture2D(VOX_AO_MAP, v_uv.xy).xyz;
     ao = mix(1.0, color.x, ao);
-    //  FragOutColor = vec4(vec3(ao), 1.0);
-    //  return;
+    
     #endif
     float colorGlossiness = 1.0 - roughness;
     float reflectionIntensity = u_params[1].y;
@@ -166,14 +165,15 @@ void main()
     
     // mirror inverted reflection
     #ifdef VOX_MIRROR_PROJ_MAP
-        float factorY = max(dot(N.xyz, u_mirrorParams[0].xyz), 0.01) * 0.3 + 0.4;
+        float factorY = max(dot(N, V), 0.01) * 0.4 + 0.4;
+        ao *= 0.7;
         #ifdef VOX_MIRROR_MAP_LOD
         vec4 mirrorColor4 = ao * VOX_Texture2DLod(VOX_MIRROR_PROJ_MAP, (gl_FragCoord.xy/u_stageParam.zw) + (N  * vec3(0.02)).xy, u_mirrorParams[0].w);
         #else
         vec4 mirrorColor4 = ao * VOX_Texture2D(VOX_MIRROR_PROJ_MAP, (gl_FragCoord.xy/u_stageParam.zw) + (N  * vec3(0.02)).xy);
         #endif
-        mirrorColor4.xyz = mix(mirrorColor4.xyz, color.xyz, factorY);
-        color.xyz = mirrorColor4.xyz * u_mirrorParams[1].x + color.xyz  * u_mirrorParams[1].y;
+        factorY = mix(1.0, factorY, glossinessSquare);
+        color.xyz = mix(mirrorColor4.xyz, color.xyz, factorY);
     #endif
     
 
