@@ -27,6 +27,13 @@ import Cylinder3DEntity from "../../vox/entity/Cylinder3DEntity";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 import EnvLightData from "../../light/base/EnvLightData";
 
+import DracoMesh from "../../voxmesh/draco/DracoMesh";
+import {DracoTaskListener} from "../../voxmesh/draco/DracoTask";
+import DracoMeshBuilder from "../../voxmesh/draco/DracoMeshBuilder";
+import ThreadSystem from "../../thread/ThreadSystem";
+import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
+import DisplayEntity from "../../vox/entity/DisplayEntity";
+
 export class DemoVSMModule {
     constructor() { }
 
@@ -39,6 +46,8 @@ export class DemoVSMModule {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     private m_vsmModule: ShadowVSMModule;
     private m_envData: EnvLightData;
+    private m_dracoMeshLoader: DracoMeshBuilder = new DracoMeshBuilder();
+    private m_reflectPlaneY: number = 0.0;
 
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -56,7 +65,7 @@ export class DemoVSMModule {
             rparam.setAttriStencil(true);
             rparam.setAttriAntialias(true);
             //rparam.setAttripreserveDrawingBuffer(true);
-            rparam.setCamPosition(800.0, 800.0, 800.0);
+            rparam.setCamPosition(1000.0, 1000.0, 1000.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
@@ -85,22 +94,91 @@ export class DemoVSMModule {
             this.m_envData.setFogColorRGB3f(0.0,0.8,0.1);
 
             this.m_vsmModule = new ShadowVSMModule(0);
-            this.m_vsmModule.seetCameraPosition( new Vector3D(20,800,20) );
+            this.m_vsmModule.seetCameraPosition( new Vector3D(120,800,120) );
+            this.m_vsmModule.setCameraNear(10.0);
             this.m_vsmModule.setCameraFar(3000.0);
             this.m_vsmModule.setMapSize(512.0, 512.0);
             this.m_vsmModule.setCameraViewSize(4000, 4000);
             this.m_vsmModule.setShadowRadius(2);
             this.m_vsmModule.setShadowBias(-0.0005);
-            this.m_vsmModule.initialize(this.m_rscene, [0]);
+            this.m_vsmModule.initialize(this.m_rscene, [0], 3000);
             this.m_vsmModule.setShadowIntensity(0.8);
             this.m_vsmModule.setColorIntensity(0.3);
 
+            this.m_dracoMeshLoader.initialize(2);
+            this.m_dracoMeshLoader.setListener( this );
+
             this.initSceneObjs();
             this.update();
+            
+
         }
     }
 
+    private m_posList: Vector3D[] = [
+        new Vector3D(0,200,0)
+        //new Vector3D(0,0,0)
+    ];
+    private m_modules: string[] = [
+        //"static/assets/modules/bunny.rawmd",
+        //"static/assets/modules/stainlessSteel.rawmd",
+        //"static/assets/modules/loveass.rawmd"
+        //"static/assets/modules/car01.rawmd"
+        "static/assets/modules/longxiaPincer.rawmd"
+    ];
+    private m_scale: number = 1.0;
+    private m_pos: Vector3D = null;
+    private m_scales: number[] = [
+        100,
+        //1.0,
+        //0.5,
+        //20.0
+    ];
+    private loadNext(): void {
+        if(this.m_modules.length > 0) {
+            this.m_pos = this.m_posList.pop();
+            this.m_scale = this.m_scales.pop();
+            this.m_dracoMeshLoader.load( this.m_modules.pop() );
+        }
+    }
+    dracoParse(pmodule: any, index: number, total: number): void {
+        //console.log("parse progress: "+index+"/"+total);
+    }
+    dracoParseFinish(modules: any[], total: number): void {
+
+        console.log("dracoParseFinish, modules: ", modules);
+
+        let vsmData = this.m_vsmModule.getVSMData();
+        let envData = this.m_envData;
+        //let shadowTex: TextureProxy = this.m_depthRtt;
+        let shadowTex: TextureProxy = this.m_vsmModule.getShadowMap();
+        
+        let mesh: DracoMesh = new DracoMesh();
+        mesh.initialize(modules);
+
+        let uvscale: number = Math.random() * 7.0 + 0.6;        
+        let shadowMaterial: ShadowVSMMaterial = new ShadowVSMMaterial();
+        shadowMaterial.setVSMData(vsmData);
+        shadowMaterial.setEnvData(envData);
+        shadowMaterial.setTextureList([shadowTex, this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
+        let scale = this.m_scale;
+        let entity: DisplayEntity = new DisplayEntity();
+        entity.setMaterial( shadowMaterial );
+        entity.setMesh( mesh );
+        entity.setScaleXYZ(scale, scale, scale);
+        //entity.setRotationXYZ(0, 50, 0);
+        this.m_rscene.addEntity(entity);
+        let pos: Vector3D = new Vector3D();
+        entity.getPosition( pos );
+        let pv: Vector3D = entity.getGlobalBounds().min;
+        pos.y += (this.m_reflectPlaneY - pv.y) + 370.0;
+        entity.setPosition( pos );
+        entity.update();
+
+    }
     private initSceneObjs(): void {
+
+        this.loadNext();
 
         let frustrum: FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
         frustrum.initiazlize(this.m_vsmModule.getCamera());
@@ -181,6 +259,7 @@ export class DemoVSMModule {
         this.m_timeoutId = setTimeout(this.update.bind(this), 40);// 20 fps
 
         this.m_statusDisp.render();
+        ThreadSystem.Run();
     }
     run(): void {
 

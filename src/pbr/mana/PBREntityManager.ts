@@ -11,10 +11,11 @@ import PBREntityUtils from "./PBREntityUtils";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 
+import Vector3D from "../../vox/math/Vector3D";
+
 import DracoMesh from "../../voxmesh/draco/DracoMesh";
 import {DracoTaskListener} from "../../voxmesh/draco/DracoTask";
 import DracoMeshBuilder from "../../voxmesh/draco/DracoMeshBuilder";
-import Vector3D from "../../vox/math/Vector3D";
 import ThreadSystem from "../../thread/ThreadSystem";
 
 
@@ -91,6 +92,7 @@ export default class PBREntityManager implements DracoTaskListener
         entity.setMaterial( material );
         entity.setMesh( mesh );
         entity.setScaleXYZ(scale, scale, scale);
+        //entity.setRotationXYZ(0, Math.random() * 300, 0);
         this.m_rscene.addEntity(entity);
         let pos: Vector3D = new Vector3D();
         entity.getPosition( pos );

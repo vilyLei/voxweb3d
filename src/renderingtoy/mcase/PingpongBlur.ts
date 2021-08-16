@@ -119,13 +119,6 @@ export default class PingpongBlur
     {
         return this.getTextureAt(this.m_blurCount%2);
     }
-    //  public setSrcTexture(tex:RTTTextureProxy):void
-    //  {
-    //      if(tex != null) {
-    //          this.m_texs[0] = tex;
-    //          this.m_wrapperTexs[0].attachTex(tex);
-    //      }
-    //  }
     
     public swapTextureAt(index:number,newRTTTex: RTTTextureProxy):void
     {

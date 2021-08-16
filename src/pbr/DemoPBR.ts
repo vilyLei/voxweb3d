@@ -45,8 +45,7 @@ export class DemoPBR {
             //rparam.maxWebGLVersion = 1;
             rparam.setAttriStencil(true);
             rparam.setAttriAntialias(true);
-            rparam.setCamPosition(1500.0, 1500.0, 2000.0);
-            rparam.setCamProject(45, 50.0, 10000.0)
+            rparam.setCamPosition(1800.0, 1800.0, 1800.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 4);
             this.m_rscene.updateCamera();

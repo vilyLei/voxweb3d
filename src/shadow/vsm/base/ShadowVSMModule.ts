@@ -10,6 +10,8 @@ import ShadowVSMData from "../material/ShadowVSMData";
 import RendererState from "../../../vox/render/RendererState";
 import RTTTextureProxy from "../../../vox/texture/RTTTextureProxy";
 
+import PingpongBlur from "../../../renderingtoy/mcase/PingpongBlur";
+
 export class ShadowVSMModule {
 
     private m_rscene: RendererScene = null;
@@ -20,6 +22,7 @@ export class ShadowVSMModule {
     private m_fboOccBlur: FBOInstance = null;
     private m_verOccBlurPlane: Plane3DEntity = null;
     private m_horOccBlurPlane: Plane3DEntity = null;
+    private m_blurModule:PingpongBlur = null;
 
     private m_camPos: Vector3D = new Vector3D(600.0, 800.0, -600.0);
     private m_shadowBias: number = -0.0005;
@@ -35,15 +38,16 @@ export class ShadowVSMModule {
     private m_depthRtt: RTTTextureProxy = null;
     private m_occBlurRtt: RTTTextureProxy = null;
     private m_fboIndex: number = 0;
+    
     constructor(fboIndex: number) {
         this.m_fboIndex = fboIndex;
     }
 
-    initialize(rscene: RendererScene, processIDList: number[], buildShadowDelay: number = 120): void {
+    initialize(rscene: RendererScene, processIDList: number[], buildShadowDelay: number = 120, blurEnabled: boolean = false): void {
         if (this.m_rscene == null) {
             this.m_rscene = rscene;
             this.m_buildShadowDelay = buildShadowDelay;
-            this.initConfig(processIDList);
+            this.initConfig(processIDList, false);
         }
     }
 
@@ -84,6 +88,9 @@ export class ShadowVSMModule {
     }
 
     getShadowMap(): RTTTextureProxy {
+        if(this.m_blurModule != null) {
+            return this.m_blurModule.getDstTexture();
+        }
         return this.m_depthRtt;
     }
     getVSMData(): ShadowVSMData {
@@ -92,7 +99,7 @@ export class ShadowVSMModule {
     getCamera(): CameraBase {
         return this.m_direcCamera;
     }
-    private initConfig(processIDList: number[]): void {
+    private initConfig(processIDList: number[], blurEnabled: boolean = false): void {
 
         this.m_vsmData = new ShadowVSMData();
         this.m_vsmData.initialize();
@@ -128,6 +135,17 @@ export class ShadowVSMModule {
         horOccBlurPlane.setMaterial(occMaterial);
         horOccBlurPlane.initializeXOY(-1, -1, 2, 2, [this.m_occBlurRtt]);
         this.m_horOccBlurPlane = horOccBlurPlane;
+
+        if(blurEnabled) {
+            this.m_blurModule = new PingpongBlur(this.m_rscene.getRenderer());
+            this.m_blurModule.setBlurCount(2);
+            this.m_blurModule.setSyncViewSizeEnabled(false);
+            this.m_blurModule.setFBOSize(this.m_shadowMapW, this.m_shadowMapH);
+            this.m_blurModule.setBlurDensity(1.0);
+            //this.m_blurModule.bindSrcProcessId(0);
+            this.m_blurModule.bindDrawEntity(this.m_verOccBlurPlane);
+            this.m_blurModule.setBackbufferVisible(false);
+        }
 
         let viewWidth: number = this.m_viewWidth;
         let viewHeight: number = this.m_viewHeight;
@@ -186,7 +204,10 @@ export class ShadowVSMModule {
         this.m_fboOccBlur.runBegin();
         this.m_fboOccBlur.drawEntity(this.m_horOccBlurPlane);
         this.m_fboOccBlur.runEnd();
-
+        // pingpong blur
+        if(this.m_blurModule != null) {
+            this.m_blurModule.run();
+        }
         this.m_fboOccBlur.setRenderToBackBuffer();
     }
 }

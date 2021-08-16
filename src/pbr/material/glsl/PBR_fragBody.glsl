@@ -153,12 +153,6 @@ void main()
         color = tonemapReinhard( color, u_params[1].x );
     #endif
     
-    #ifdef VOX_USE_SHADOW
-
-    float factor = getVSMShadowFactor(v_shadowPos);
-    color *= vec3(factor);
-    
-    #endif
 
     // gamma correct
     color = linearToGamma(color);
@@ -166,7 +160,7 @@ void main()
     // mirror inverted reflection
     #ifdef VOX_MIRROR_PROJ_MAP
         float factorY = max(dot(N, V), 0.01) * 0.4 + 0.4;
-        ao *= 0.7;
+        ao *= 0.8;
         #ifdef VOX_MIRROR_MAP_LOD
         vec4 mirrorColor4 = ao * VOX_Texture2DLod(VOX_MIRROR_PROJ_MAP, (gl_FragCoord.xy/u_stageParam.zw) + (N  * vec3(0.02)).xy, u_mirrorParams[0].w);
         #else
@@ -177,6 +171,13 @@ void main()
     #endif
     
 
+    #ifdef VOX_USE_SHADOW
+
+    float factor = getVSMShadowFactor(v_shadowPos);
+    color *= vec3(factor);
+    
+    #endif
+    
     #ifdef VOX_USE_FOG
 
     useFog( color );

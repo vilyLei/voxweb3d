@@ -348,7 +348,7 @@ class FrameBufferObject
 	{
 		this.m_gl = rgl;
 		this.m_COLOR_ATTACHMENT0 = RenderFBOProxy.COLOR_ATTACHMENT0;
-		console.log("this.m_fboSizeChanged: ",this.m_fboSizeChanged);
+		
 		if(this.m_fboSizeChanged)
 		{
 			pw = this.m_resizeW;
