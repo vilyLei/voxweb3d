@@ -38,7 +38,7 @@ uniform sampler2D u_sampler1;
 varying vec2 v_texUV;
 uniform vec4 u_colors[2];
 uniform vec4 u_stSize;
-uniform vec4 u_cameraParam;
+uniform vec4 u_frustumParam;
 
 float viewZToPerspectiveDepth( const in float viewZ, const in float near, const in float far ) {
 return (( near + viewZ ) * far ) / (( far - near ) * viewZ );
@@ -58,7 +58,7 @@ void main()
 {
 vec2 sv2 = vec2(gl_FragCoord.x/u_stSize.x,gl_FragCoord.y/u_stSize.y);
 vec4 color4 = texture2D(u_sampler0, v_texUV * 0.0 + sv2);
-float depth = readDepth( u_sampler1, sv2, u_cameraParam.x,u_cameraParam.y);
+float depth = readDepth( u_sampler1, sv2, u_frustumParam.x,u_frustumParam.y);
 color4.xyz = color4.xyz * 0.8 + 0.2 * vec3(1.0 - depth);
 gl_FragColor = color4;
 }

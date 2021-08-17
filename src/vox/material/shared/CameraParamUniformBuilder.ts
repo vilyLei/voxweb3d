@@ -17,10 +17,10 @@ export default class CameraParamUniformBuilder implements IUniformBuilder
     create( rc:RenderProxy,shdp:ShdProgram):ShaderUniform
     {
         let suo:ShaderGlobalUniform = null;
-        if(shdp.hasUniformByName(UniformConst.CameraParamUNS))
+        if(shdp.hasUniformByName(UniformConst.FrustumParamUNS))
         {
             suo = new ShaderGlobalUniform();
-            suo.uniformNameList = [UniformConst.CameraParamUNS];
+            suo.uniformNameList = [UniformConst.FrustumParamUNS];
             suo.copyDataFromProbe(rc.getCamera().ufrustumProbe);
         }
         return suo;                

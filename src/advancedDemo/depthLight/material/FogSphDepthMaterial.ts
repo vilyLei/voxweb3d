@@ -66,14 +66,14 @@ layout(location = 1) in vec2 a_uvs;\n\
 uniform mat4 u_objMat;\n\
 uniform mat4 u_viewMat;\n\
 uniform mat4 u_projMat;\n\
-uniform vec4 u_cameraParam;\n\
+uniform vec4 u_frustumParam;\n\
 out vec4 v_color;\n\
 out vec2 v_uv;\n\
 void main(){\n\
     vec4 posV = u_objMat * vec4(a_vs, 1.0);\n\
     vec4 viewPv = u_viewMat * posV;\n\
     gl_Position = u_projMat * viewPv;\n\
-    v_color = vec4(viewPv.xyz,length(viewPv.xyz)/u_cameraParam.y);\n\
+    v_color = vec4(viewPv.xyz,length(viewPv.xyz)/u_frustumParam.y);\n\
     v_uv = a_uvs;\n\
 }\n\
 ";

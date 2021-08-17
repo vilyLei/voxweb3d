@@ -89,9 +89,6 @@
 
 //  import { DemoFBOInstance as Demo } from "./demo/DemoFBOInstance";
 
-//  import * as DemoMRT from "./demo/DemoMRT";
-//  import Demo = DemoMRT.demo.DemoMRT;
-
 //  import {DemoCubeMapMRT as Demo} from "./demo/DemoCubeMapMRT";
 
 //  import {DemoFrustrum as Demo} from "./demo/DemoFrustrum";
@@ -223,8 +220,7 @@
 //  import * as DemoVSTexturePos from "./demo/DemoVSTexturePos";
 //  import Demo = DemoVSTexturePos.demo.DemoVSTexturePos;
 
-//  import * as DemoFloatTex from "./demo/DemoFloatTex";
-//  import Demo = DemoFloatTex.demo.DemoFloatTex;
+//  import {DemoFloatTex as Demo} from "./demo/DemoFloatTex";
 
 //  import {DemoCubeFloatTex as Demo} from "./demo/DemoCubeFloatTex";
 
@@ -304,6 +300,8 @@
 
 //  import {DemoDraco as Demo} from "./demo/DemoDraco";
 
+//  import {DemoMRT as Demo} from "./demo/DemoMRT";
+
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -313,6 +311,8 @@
 //  import {DemoVSM as Demo} from "./shadow/vsm/DemoVSM";
 
 //  import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
+
+import {DemoSSAO as Demo} from "./shadow/ssao/DemoSSAO";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     light    ////////////////////////////////////
@@ -336,7 +336,7 @@
 
 //  import {DemoDefaultPBR3 as Demo} from "./pbr/DemoDefaultPBR3";
 
-import {DemoPBR as Demo} from "./pbr/DemoPBR";
+//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////

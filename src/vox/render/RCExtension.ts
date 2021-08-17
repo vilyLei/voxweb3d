@@ -1,3 +1,5 @@
+import DivLog from "../utils/DivLog";
+
 /***************************************************************************/
 /*                                                                         */
 /*  Copyright 2018-2020 by                                                 */
@@ -6,7 +8,7 @@
 /***************************************************************************/
 // renderer context Extensions
 class RCExtension
-{    
+{
     static readonly OES_standard_derivatives:any = null;
     static readonly EXT_shader_texture_lod:any = null;
     static readonly WEBGL_draw_buffers:any = null;
@@ -65,6 +67,7 @@ void main(){
             console.log("Use WEBGL_draw_buffers Extension success!");
             else
             console.log("WEBGL_draw_buffers Extension can not support!");
+            //DivLog.ShowLog("selfT.WEBGL_draw_buffers != null: "+(selfT.WEBGL_draw_buffers != null));
 
             selfT.OES_vertex_array_object = gl.getExtension('OES_vertex_array_object');
             if(selfT.OES_vertex_array_object != null)

@@ -15,7 +15,7 @@ class RenderFBOProxy
     private static m_rc:any = null;
     private static m_webGLVer:number = 2;
     public static readonly COLOR_ATTACHMENT0:number = 0x0;
-    static SetRenderer(pr:RAdapterContext,):void
+    static SetRenderer(pr:RAdapterContext):void
     {
         RenderFBOProxy.m_rc = pr.getRC();
         RenderFBOProxy.m_webGLVer = pr.getWebGLVersion();

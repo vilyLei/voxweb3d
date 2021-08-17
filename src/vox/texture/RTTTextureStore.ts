@@ -150,8 +150,8 @@ export class RTTTextureStore
         }
         let tex:RTTTextureProxy = this.createRTTTex2D(64, 64);
         tex.to2DTexture();
+        this.m_rttFloatTexs[i] = tex;
         this.m_rttFloatTexs[i].name = "sys_rttFloatTex_"+i;
-    	this.m_rttFloatTexs[i] = tex;
         tex.internalFormat = TextureFormat.RGBA16F;
         tex.srcFormat = TextureFormat.RGBA;
         tex.dataType = TextureDataType.FLOAT;
@@ -170,8 +170,8 @@ export class RTTTextureStore
         }
         let tex:RTTTextureProxy = this.createRTTTex2D(pw, ph);
         tex.to2DTexture();
-        this.m_rttFloatTexs[i].name = "sys_rttFloatTex_"+i;
     	this.m_rttFloatTexs[i] = tex;
+        this.m_rttFloatTexs[i].name = "sys_rttFloatTex_"+i;
         tex.internalFormat = TextureFormat.RGBA16F;
         tex.srcFormat = TextureFormat.RGBA;
         tex.dataType = TextureDataType.FLOAT;

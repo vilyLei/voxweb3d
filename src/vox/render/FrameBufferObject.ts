@@ -128,9 +128,11 @@ class FrameBufferObject
 	renderToTexAt(rgl:any, texProxy:RTTTextureProxy, attachmentIndex:number):void
 	{
 		let inFormat:number = texProxy!=null?texProxy.internalFormat:-1;
-		
+		this.m_gl = rgl;
+
 		if (attachmentIndex == 0)
 		{
+			this.m_preFTIndex = 0;
 			// 注意, 防止多次重复调用的没必要重设
 			this.m_gl.bindFramebuffer(this.m_fboTarget, this.m_fbo);
 			if(inFormat != TextureFormat.DEPTH_COMPONENT)
@@ -154,20 +156,46 @@ class FrameBufferObject
 		}
 		this.framebufferTextureBind(rgl,targetType, inFormat, rTex);
 	}
+	private m_preAttachments: Uint32Array = new Uint32Array([0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0]);
+	private m_preTragets: Uint32Array = new Uint32Array([0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0, 0,0,0,0,0]);
+	private m_preFTIndex: number = 0;
+	private glFramebufferTex2D(attachment: number, rTex:any):void
+	{
+		let rgl:any = this.m_gl;
+		rgl.framebufferTexture2D(this.m_fboTarget, attachment, rgl.TEXTURE_2D, rTex, 0);
+
+		this.m_preAttachments[this.m_preFTIndex] = attachment;
+		this.m_preTragets[this.m_preFTIndex] = rgl.TEXTURE_2D;
+
+		this.m_preFTIndex++;
+	}
+	private glFramebufferTexCube(attachment: number, cubeFaceIndex: number, rTex:any):void
+	{
+		let rgl:any = this.m_gl;
+		rgl.framebufferTexture2D(this.m_fboTarget, attachment, rgl.TEXTURE_CUBE_MAP_POSITIVE_X + cubeFaceIndex, rTex, 0);
+		
+		this.m_preAttachments[this.m_preFTIndex] = attachment;
+		this.m_preTragets[this.m_preFTIndex] = rgl.TEXTURE_CUBE_MAP_POSITIVE_X + cubeFaceIndex;
+
+		this.m_preFTIndex++;
+	}
 	private framebufferTexture2D(rgl:any,targetType:number, inFormat:number,rTex:any):void
 	{
 		switch(inFormat)
 		{
 			case TextureFormat.DEPTH_COMPONENT:
-				rgl.framebufferTexture2D(this.m_fboTarget, this.m_gl.DEPTH_ATTACHMENT, rgl.TEXTURE_2D, rTex, this.textureLevel);
+				//rgl.framebufferTexture2D(this.m_fboTarget, this.m_gl.DEPTH_ATTACHMENT, rgl.TEXTURE_2D, rTex, this.textureLevel);
+				this.glFramebufferTex2D(this.m_gl.DEPTH_ATTACHMENT, rTex);
 			break;
 			case TextureFormat.DEPTH_STENCIL:
-				rgl.framebufferTexture2D(this.m_fboTarget, this.m_gl.DEPTH_STENCIL_ATTACHMENT, rgl.TEXTURE_2D, rTex, this.textureLevel);
+				//rgl.framebufferTexture2D(this.m_fboTarget, this.m_gl.DEPTH_STENCIL_ATTACHMENT, rgl.TEXTURE_2D, rTex, this.textureLevel);
+				this.glFramebufferTex2D(this.m_gl.DEPTH_STENCIL_ATTACHMENT, rTex);
 			break;
 			default:
 				if(this.m_attachmentMaskList[this.m_activeAttachmentTotal])
 				{
-					rgl.framebufferTexture2D(this.m_fboTarget, this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex, rgl.TEXTURE_2D, rTex, this.textureLevel);
+					//rgl.framebufferTexture2D(this.m_fboTarget, this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex, rgl.TEXTURE_2D, rTex, this.textureLevel);
+					this.glFramebufferTex2D(this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex, rTex);
 					++this.m_attachmentIndex;
 					if (rTex != null)
 					{
@@ -198,10 +226,10 @@ class FrameBufferObject
 			let cubeAttachmentTot: number = 0;
 			for (let i:number = 0; i < 6; ++i)
 			{
-				//if(this.m_attachmentMaskList[this.m_activeAttachmentTotal])
 				if(this.m_attachmentMaskList[i])
 				{
-					rgl.framebufferTexture2D(this.m_fboTarget, this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex, rgl.TEXTURE_CUBE_MAP_POSITIVE_X + i, rTex, this.textureLevel);
+					//rgl.framebufferTexture2D(this.m_fboTarget, this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex, rgl.TEXTURE_CUBE_MAP_POSITIVE_X + i, rTex, this.textureLevel);
+					this.glFramebufferTexCube(this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex, i, rTex);
 					++this.m_attachmentIndex;
 					if (rTex != null)
 					{
@@ -224,7 +252,8 @@ class FrameBufferObject
 		case TextureTarget.TEXTURE_SHADOW_2D:
 			if(this.m_attachmentMaskList[this.m_activeAttachmentTotal])
 			{
-				rgl.framebufferTexture2D(this.m_gl.FRAMEBUFFER, this.m_gl.DEPTH_ATTACHMENT, this.m_gl.TEXTURE_2D, rTex, this.textureLevel);
+				//rgl.framebufferTexture2D(this.m_gl.FRAMEBUFFER, this.m_gl.DEPTH_ATTACHMENT, this.m_gl.TEXTURE_2D, rTex, this.textureLevel);
+				this.glFramebufferTex2D(this.m_gl.DEPTH_ATTACHMENT, rTex);
 				if (rTex != null)
 				{
 					this.m_texTargetTypes[this.m_activeAttachmentTotal] = targetType;
@@ -259,19 +288,31 @@ class FrameBufferObject
 			{
 				if (this.m_preAttachIndex != this.m_attachmentIndex)
 				{
-					this.m_preAttachIndex = this.m_attachmentIndex;
 					let attachments:number[] = [];
-					for (let i = 0; i < this.m_preAttachIndex; ++i)
+					let i = 0;
+					for (; i < this.m_attachmentIndex; ++i)
 					{
 						attachments.push(this.m_COLOR_ATTACHMENT0 + i);
 					}
+					if(this.m_preAttachIndex > this.m_attachmentIndex) {
+						for (; i < this.m_preAttachIndex; ++i) {
+							this.m_gl.framebufferTexture2D(this.m_fboTarget, this.m_preAttachments[i], this.m_preTragets[i], null, 0);
+						}
+					}
 					// support webgl2 and webgl1
 					RenderFBOProxy.DrawBuffers(attachments);
+					this.m_preAttachIndex = this.m_attachmentIndex;
 				}
 			}
 			else if (this.m_preAttachIndex != this.m_attachmentIndex)
 			{
-				RenderFBOProxy.DrawBuffers([this.m_COLOR_ATTACHMENT0]);
+				if(this.m_preAttachIndex > this.m_attachmentIndex) {
+					for (let i: number = 1; i < this.m_preAttachIndex; ++i) {
+						this.m_gl.framebufferTexture2D(this.m_fboTarget, this.m_preAttachments[i], this.m_preTragets[i], null, 0);
+					}
+				}
+				let attachments:number[] = [this.m_COLOR_ATTACHMENT0];
+				RenderFBOProxy.DrawBuffers( attachments );
 				this.m_preAttachIndex = this.m_attachmentIndex;
 			}
 			this.m_preAttachTotal = this.m_activeAttachmentTotal;

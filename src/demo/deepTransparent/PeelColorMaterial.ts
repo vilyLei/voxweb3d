@@ -29,7 +29,7 @@ getFragShaderCode():string
 precision mediump float;
 uniform sampler2D u_sampler0;
 uniform sampler2D u_sampler1;
-uniform vec4 u_cameraParam;
+uniform vec4 u_frustumParam;
 uniform vec4 u_colors[2];
 varying vec2 v_uvs;
 

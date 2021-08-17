@@ -501,8 +501,8 @@ export default class FBOInstance {
             for (let i: number = 0, len: number = this.m_rindexs.length; i < len; ++i) {
                 this.m_render.runAt(this.m_rindexs[i]);
             }
-            this.m_runFlag = true;
         }
+        this.m_runFlag = true;
         if (lockRenderState) this.unlockRenderState();
         if (lockMaterial) this.unlockMaterial();
         if (autoEnd) {
@@ -520,7 +520,7 @@ export default class FBOInstance {
             this.m_render.runAt(this.m_rindexs[index]);
         }
     }
-    //new IRenderEntity
+    
     drawEntity(entity: IRenderEntity, force: boolean = true): void {
         if (!this.m_runFlag) {
             this.m_render.drawEntity(entity, force);

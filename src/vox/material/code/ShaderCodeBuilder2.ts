@@ -213,6 +213,9 @@ precision mediump float;
         }
 
         if(RendererDeviece.IsWebGL1()) {
+            if(this.m_fragOutputNames.length > 1) {
+                code += "\n#extension GL_EXT_draw_buffers: require";
+            }
             if(this.normalMapEanbled) {
                 code += "\n#extension GL_OES_standard_derivatives : enable";
             }
@@ -240,8 +243,12 @@ precision mediump float;
             code += "\n#define VOX_TextureCube textureCube";
             code += "\n#define VOX_Texture2D texture2D";
         }
-
-        code += "\n"+this.m_preciousCode;
+        if(RendererDeviece.IsMobileWeb()) {
+            code += "\nprecision highp float;";
+        }
+        else {
+            code += "\n"+this.m_preciousCode;
+        }
 
         len = this.m_defineNames.length;
         for (i = 0; i < len; i++) {
@@ -331,7 +338,13 @@ precision mediump float;
             code += "\n" + this.m_vertExt[i];
         }
 
-        code += "\n"+this.m_preciousCode;
+        if(RendererDeviece.IsMobileWeb()) {
+            code += "\nprecision highp float;";
+        }
+        else {
+            code += "\n"+this.m_preciousCode;
+        }
+        //code += "\n"+this.m_preciousCode;
 
         if(RendererDeviece.IsWebGL2()) {
             code += "\n#define VOX_OUT out";

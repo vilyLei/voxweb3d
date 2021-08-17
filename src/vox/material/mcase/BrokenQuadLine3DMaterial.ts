@@ -59,7 +59,7 @@ attribute vec4 a_vs2;
 `
 attribute vec4 a_cvs2;
 uniform vec4 u_stageParam;
-uniform vec4 u_cameraParam;
+uniform vec4 u_frustumParam;
 uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
@@ -72,24 +72,24 @@ vec4 pv1 = voMat4 * vec4(a_vs.xyz, 1.0);
 vec4 pv1b = pv1;
 vec4 pv2 = voMat4 * vec4(a_vs2.xyz, 1.0);
 
-float f = (pv1.z > -u_cameraParam[0]) ? 1.0 : 0.0;
+float f = (pv1.z > -u_frustumParam[0]) ? 1.0 : 0.0;
 vec3 dir = pv2.xyz - pv1.xyz;
 vec3 pv3 = ((pv1.z - 1.0)/(pv1.z - pv2.z + 0.000001)) * dir;
 pv3 = (pv1.xyz + pv3) * f;
 pv1.xyz = pv1.xyz * (1.0 - f) + pv3;
 // calc screen pos
 dir = pv2.xyz - pv1.xyz;
-f = abs(pv1.z) * u_cameraParam[3] / u_cameraParam[0] / u_stageParam[2];
+f = abs(pv1.z) * u_frustumParam[3] / u_frustumParam[0] / u_stageParam[2];
 pv3 = normalize(cross(dir, pv1.xyz)) * f;
 
-f = (pv0.z > -u_cameraParam[0]) ? 1.0 : 0.0;
+f = (pv0.z > -u_frustumParam[0]) ? 1.0 : 0.0;
 dir = pv1b.xyz - pv0.xyz;
 vec3 pv3b = ((pv0.z - 1.0)/(pv0.z - pv1b.z + 0.000001)) * dir;
 pv3b = (pv0.xyz + pv3b) * f;
 pv0.xyz = pv0.xyz * (1.0 - f) + pv3b;
 // calc screen pos
 dir = pv1b.xyz - pv0.xyz;
-f = abs(pv0.z) * u_cameraParam[3] / u_cameraParam[0] / u_stageParam[2];
+f = abs(pv0.z) * u_frustumParam[3] / u_frustumParam[0] / u_stageParam[2];
 pv3b = normalize(cross(dir, pv0.xyz)) * f;
 
 //  if(dot(pv3,pv3b) < 0.0)

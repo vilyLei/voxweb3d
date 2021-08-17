@@ -66,7 +66,7 @@ attribute vec4 a_cvs;\n\
             vtxCode +=
 "\
 uniform vec4 u_stageParam;\n\
-uniform vec4 u_cameraParam;\n\
+uniform vec4 u_frustumParam;\n\
 uniform mat4 u_objMat;\n\
 uniform mat4 u_viewMat;\n\
 uniform mat4 u_projMat;\n\
@@ -77,12 +77,12 @@ mat4 voMat4 = u_viewMat * u_objMat;\n\
 vec4 pv1 = voMat4 * vec4(a_vs.xyz, 1.0);\n\
 vec4 pv2 = voMat4 * vec4(a_vs2.xyz, 1.0);\n\
 vec3 dir = pv2.xyz - pv1.xyz;\n\
-float f = (pv1.z > -u_cameraParam[0]) ? 1.0 : 0.0;\n\
+float f = (pv1.z > -u_frustumParam[0]) ? 1.0 : 0.0;\n\
 vec3 pv3 = ((pv1.z - 1.0)/(pv1.z - pv2.z + 0.000001)) * dir;\n\
 pv3 = (pv1.xyz + pv3) * f;\n\
 pv1.xyz = pv1.xyz * (1.0 - f) + pv3;\n\
 // calc screen pos\n\
-f = a_vs.w * abs(pv1.z) * u_cameraParam[3] / u_cameraParam[0] / u_stageParam[2];\n\
+f = a_vs.w * abs(pv1.z) * u_frustumParam[3] / u_frustumParam[0] / u_stageParam[2];\n\
 dir = pv2.xyz - pv1.xyz;\n\
 pv3 = normalize(cross(dir, pv1.xyz)) * f;\n\
 gl_Position = u_projMat * vec4(pv3 + pv1.xyz, 1.0);\n\

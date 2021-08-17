@@ -48,7 +48,7 @@ precision mediump float;\n\
 uniform sampler2D u_sampler0;\n\
 //uniform sampler2D u_sampler1;\n\
 uniform vec4 u_coneParam[7];\n\
-uniform vec4 u_cameraParam;\n\
+uniform vec4 u_frustumParam;\n\
 uniform vec4 u_viewParam;\n\
 layout(location = 0) out vec4 OutputColor0;\n\
 layout(location = 1) out vec4 OutputColor1;\n\
@@ -56,10 +56,10 @@ void main()\n\
 {\n\
     vec2 sv2 = vec2(gl_FragCoord.x/u_viewParam.z,gl_FragCoord.y/u_viewParam.w);\n\
     vec4 middColor4 = texture(u_sampler0, sv2);\n\
-    middColor4.w *= u_cameraParam.y;\n\
+    middColor4.w *= u_frustumParam.y;\n\
     float radius = u_coneParam[1].w;\n\
     sv2 = 2.0 * (sv2 - 0.5);\n\
-    vec3 nearPV = vec3(sv2 * u_cameraParam.zw,-u_cameraParam.x);\n\
+    vec3 nearPV = vec3(sv2 * u_frustumParam.zw,-u_frustumParam.x);\n\
     vec3 ltv = normalize(nearPV);\n\
     vec3 sphCV = u_coneParam[1].xyz;\n\
     vec3 lpv = dot(ltv,sphCV) * ltv;\n\

@@ -91,9 +91,9 @@ export default class UniformConst {
      */
     static readonly CameraProjectiveMatUNS: string = "u_projMat";
     /**
-     * camera param shader uniform name string,vec4: [camera zNear,camera zFar, camera nearPlaneHalfW, camera nearPlaneHalfH]
+     * camera frustrum param shader uniform name string,vec4: [camera zNear,camera zFar, camera nearPlaneHalfW, camera nearPlaneHalfH]
      */
-    static readonly CameraParamUNS: string = "u_cameraParam";
+    static readonly FrustumParamUNS: string = "u_frustumParam";
     /**
      * stage param shader uniform name string, vec4: [2.0/stageWidth,2.0/stageHeight, stageWidth,stageHeight]
      */

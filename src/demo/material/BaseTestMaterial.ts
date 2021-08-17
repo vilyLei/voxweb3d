@@ -30,7 +30,7 @@ class BaseTestShaderBuffer extends ShaderCodeBuffer
 precision mediump float;
 uniform sampler2D u_sampler0;
 //uniform sampler2D u_sampler1;
-//uniform vec4 u_cameraParam;
+//uniform vec4 u_frustumParam;
 uniform vec4 u_colors[2];
 //  The common structure uniform is the bad implements, it is low runtime performeance, because:
 //  gl.getUniformLocation(shd_program, u_baseParam.color);

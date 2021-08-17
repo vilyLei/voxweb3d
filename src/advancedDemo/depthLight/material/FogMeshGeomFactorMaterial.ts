@@ -46,7 +46,7 @@ precision mediump float;\n\
 uniform sampler2D u_sampler0;\n\
 uniform sampler2D u_sampler1;\n\
 uniform vec4 u_sphParam[5];\n\
-uniform vec4 u_cameraParam;\n\
+uniform vec4 u_frustumParam;\n\
 uniform vec4 u_viewParam;\n\
 layout(location = 0) out vec4 OutputColor0;\n\
 layout(location = 1) out vec4 OutputColor1;\n\
@@ -54,10 +54,10 @@ void main()\n\
 {\n\
     vec2 sv2 = vec2(gl_FragCoord.x/u_viewParam.z,gl_FragCoord.y/u_viewParam.w);\n\
     vec4 middColor4 = texture(u_sampler0, sv2);\n\
-    middColor4.w *= u_cameraParam.y;\n\
+    middColor4.w *= u_frustumParam.y;\n\
     float radius = u_sphParam[1].w;\n\
     sv2 = 2.0 * (sv2 - 0.5);\n\
-    vec3 nearPV = vec3(sv2 * u_cameraParam.zw,-u_cameraParam.x);\n\
+    vec3 nearPV = vec3(sv2 * u_frustumParam.zw,-u_frustumParam.x);\n\
     vec3 ltv = normalize(nearPV);\n\
     vec3 sphCV = u_sphParam[1].xyz;\n\
     vec3 lpv = dot(ltv,sphCV) * ltv;\n\
@@ -73,7 +73,7 @@ void main()\n\
         outV = k * ltv + lpv;\n\
         //\n\
         vec3 bv = ltv * sqrt(radius * radius - dis * dis);\n\
-        //float farDis = min(u_cameraParam.y,length(outV + bv));\n\
+        //float farDis = min(u_frustumParam.y,length(outV + bv));\n\
         lpv = outV + bv;\n\
         float farDis = length(lpv);\n\
         float nearDis = max(length(outV - bv),length(nearPV));\n\

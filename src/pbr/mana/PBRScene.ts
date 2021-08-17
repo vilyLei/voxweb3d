@@ -94,12 +94,12 @@ export default class PBRScene
             this.m_vsmModule.seetCameraPosition(new Vector3D(10, 800, 10));
             this.m_vsmModule.setCameraNear( 10.0 );
             this.m_vsmModule.setCameraFar( 3000.0 );
-            this.m_vsmModule.setMapSize(512.0, 512.0);
-            this.m_vsmModule.setCameraViewSize(4000, 4000);
-            this.m_vsmModule.setShadowRadius(2.0);
+            this.m_vsmModule.setMapSize(128.0, 128.0);
+            this.m_vsmModule.setCameraViewSize(3000, 3000);
+            this.m_vsmModule.setShadowRadius(4.0);
             this.m_vsmModule.setShadowBias(-0.0005);
             this.m_vsmModule.initialize(this.m_rscene, [0,1], 3000);
-            this.m_vsmModule.setShadowIntensity(0.6);
+            this.m_vsmModule.setShadowIntensity(0.95);
             this.m_vsmModule.setColorIntensity(0.4);       
 
 

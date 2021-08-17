@@ -103,6 +103,7 @@ export class DemoMouseEvent {
     private m_camTrack: CameraTrack = null;
 
     private m_profileInstance: ProfileInstance = new ProfileInstance();
+    
     initialize(): void {
         console.log("DemoMouseEvent::initialize()......");
         if (this.m_rscene == null) {
@@ -293,14 +294,9 @@ export class DemoMouseEvent {
         this.m_rscene.run(false);
         this.m_rscene.runEnd();
 
-        //  this.m_rscene.runBegin();
-        //  this.m_rscene.update();
-        //  this.m_rscene.cullingTest();
-        //  this.m_rscene.run();
-        //  this.m_rscene.runEnd();
 
         this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-        this.m_rscene.updateCamera();
+        //this.m_rscene.updateCamera();
 
         if (this.m_profileInstance != null) {
             this.m_profileInstance.run();

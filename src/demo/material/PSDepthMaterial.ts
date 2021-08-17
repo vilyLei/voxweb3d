@@ -40,13 +40,13 @@ layout(location = 0) in vec3 a_vs;
 uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
-uniform vec4 u_cameraParam;
+uniform vec4 u_frustumParam;
 out vec4 v_depthV;
 void main(){
     mat4 viewMat4 = u_viewMat * u_objMat;
     vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);
     gl_Position = u_projMat * viewPos;
-    v_depthV = vec4(vec3(1.0),length(viewPos.xyz)/u_cameraParam.y);
+    v_depthV = vec4(vec3(1.0),length(viewPos.xyz)/u_frustumParam.y);
 }
 `;
                 return vtxCode;
