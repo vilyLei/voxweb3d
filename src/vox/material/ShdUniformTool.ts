@@ -13,7 +13,7 @@ import {ShaderUniform, ShaderUniformV1, ShaderUniformV2,ShaderMat4Uniform} from 
 import IUniformBuilder from "../../vox/material/shared/IUniformBuilder";
 import CameraUniformBuilder from "../../vox/material/shared/CameraUniformBuilder";
 import StageParamUniformBuilder from "../../vox/material/shared/StageParamUniformBuilder";
-import CameraParamUniformBuilder from "../../vox/material/shared/CameraParamUniformBuilder";
+import FrustumUniformBuilder from "../../vox/material/shared/FrustumUniformBuilder";
 import ViewParamUniformBuilder from "../../vox/material/shared/ViewParamUniformBuilder";
 import IRenderShader from "../../vox/render/IRenderShader";
 import RenderProxy from "../../vox/render/RenderProxy";
@@ -56,7 +56,7 @@ export default class ShdUniformTool
             builder = new StageParamUniformBuilder();
             ShdUniformTool.s_builders.push(builder);
             ShdUniformTool.s_uniformDict.set(builder.getIDNS(),builder);
-            builder = new CameraParamUniformBuilder();
+            builder = new FrustumUniformBuilder();
             ShdUniformTool.s_builders.push(builder);
             ShdUniformTool.s_uniformDict.set(builder.getIDNS(),builder);
             builder = new ViewParamUniformBuilder();
@@ -155,9 +155,17 @@ export default class ShdUniformTool
         {
             // normalize uniform
             let pdata:ShaderUniform = guniform;
+            //  let boo: boolean = false;
+            //  if(pdata.uns == "u_projMat") {
+            //      boo = true;
+            //      console.log("u_projMat global build begin pdata.uns: ",pdata.uns);
+            //  }
             let i:number = 0;
             while(pdata != null)
             {
+                //  if(boo) {
+                //      console.log("### u_projMat global build...pdata.uns: ",pdata.uns);
+                //  }
                 if(pdata.uniformNameList != null && pdata.locations == null)
                 {
                     pdata.types = [];
@@ -171,9 +179,13 @@ export default class ShdUniformTool
                     //console.log("global uniform names: "+pdata.uniformNameList);
                     //console.log("global uniform types: "+pdata.types);
                     //console.log("global uniform locations: "+pdata.locations);
+                    
                 }
                 pdata = pdata.next;
             }
+            //  if(boo) {
+            //      console.log("u_projMat global build end pdata.uns: u_projMat.");
+            //  }
         }
         return guniform;                
     }

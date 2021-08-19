@@ -20,6 +20,7 @@ export default class ViewParamUniformBuilder implements IUniformBuilder
         if(shdp.hasUniformByName(UniformConst.ViewParamUNS))
         {
             suo = new ShaderGlobalUniform();
+            suo.uns = UniformConst.ViewParamUNS;
             suo.uniformNameList = [UniformConst.ViewParamUNS];
             suo.copyDataFromProbe(rc.getRenderAdapter().uViewProbe);
         }

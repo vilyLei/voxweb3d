@@ -195,11 +195,16 @@ export default class RendererInstanceContext
             this.m_materialProxy.unlockMaterial();
         }
     }
-    useGlobalMaterial(m:IRenderMaterial):void
+    useGlobalMaterial(m:IRenderMaterial,texUnlock: boolean = false):void
     {
         if(this.m_materialProxy != null)
         {
             this.m_materialProxy.unlockMaterial();
+            if(texUnlock) {
+                this.m_materialProxy.unlockTexture();
+            }else {
+                this.m_materialProxy.lockTexture();
+            }
             this.m_materialProxy.useGlobalMaterial(m);
             this.m_materialProxy.lockMaterial();
         }

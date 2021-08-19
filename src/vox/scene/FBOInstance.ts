@@ -19,7 +19,7 @@ import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 import RTTTextureStore from "../../vox/texture/RTTTextureStore";
 import Color4 from "../../vox/material/Color4";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
-import RenderMaterialProxy from "../../vox/render/RenderMaterialProxy";
+//import RenderMaterialProxy from "../../vox/render/RenderMaterialProxy";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderer from "../../vox/scene/IRenderer";
 import IRenderProcess from "../../vox/render/IRenderProcess";
@@ -29,7 +29,7 @@ export default class FBOInstance {
     private m_backBufferColor: Color4 = new Color4();
     private m_adapter: RenderAdapter = null;
     private m_renderProxy: RenderProxy = null;
-    private m_materialProxy: RenderMaterialProxy = null;
+    //private m_materialProxy: RenderMaterialProxy = null;
     private m_rcontext: RendererInstanceContext = null;
     private m_bgColor: Color4 = new Color4();
     private m_render: IRenderer = null;
@@ -54,13 +54,14 @@ export default class FBOInstance {
     private m_clearDepthBoo: boolean = true;
     private m_clearStencilBoo: boolean = false;
     private m_viewportLock: boolean = false;
+    private m_texUnlock: boolean = false;
 
     constructor(render: IRenderer, texStroe: RTTTextureStore) {
         this.m_render = render;
         this.m_texStore = texStroe;
         this.m_renderProxy = render.getRenderProxy();
         this.m_adapter = this.m_renderProxy.getRenderAdapter();
-        this.m_materialProxy = this.m_render.getRendererContext().getRenderMaterialProxy();
+        //this.m_materialProxy = this.m_render.getRendererContext().getRenderMaterialProxy();
         this.m_rcontext = render.getRendererContext();
     }
     /**
@@ -142,12 +143,13 @@ export default class FBOInstance {
     unlockRenderState(): void {
         this.m_renderProxy.unlockRenderState();
     }
-
-    useGlobalMaterial(m: IRenderMaterial): void {
-        this.m_rcontext.useGlobalMaterial(m);
+    useGlobalMaterial(m: IRenderMaterial, texUnlock: boolean = false): void {
+        this.m_texUnlock = texUnlock;
+        this.m_rcontext.useGlobalMaterial(m, this.m_texUnlock);
     }
 
-    setGlobalMaterial(m: IRenderMaterial): void {
+    setGlobalMaterial(m: IRenderMaterial, texUnlock: boolean = false): void {
+        this.m_texUnlock = texUnlock;
         if (this.m_gMateiral != m) {
             if (this.m_gMateiral != null) {
                 this.m_gMateiral.__$detachThis();
@@ -160,14 +162,14 @@ export default class FBOInstance {
     }
     lockMaterial(): void {
         if (this.m_gMateiral != null) {
-            this.m_rcontext.useGlobalMaterial(this.m_gMateiral);
+            this.m_rcontext.useGlobalMaterial(this.m_gMateiral, this.m_texUnlock);
         }
         else {
-            this.m_materialProxy.lockMaterial();
+            this.m_rcontext.lockMaterial();
         }
     }
     unlockMaterial(): void {
-        this.m_materialProxy.unlockMaterial();
+        this.m_rcontext.unlockMaterial();
     }
 
     synFBOSizeWithViewport(): void {
@@ -481,19 +483,17 @@ export default class FBOInstance {
             }
             this.m_adapter.useFBO(this.m_clearColorBoo, this.m_clearDepthBoo, this.m_clearStencilBoo);
             if (this.m_gMateiral != null) {
-                this.m_materialProxy.unlockMaterial();
-                this.m_materialProxy.useGlobalMaterial(this.m_gMateiral);
-                this.m_materialProxy.lockMaterial();
+                this.m_rcontext.useGlobalMaterial(this.m_gMateiral, this.m_texUnlock);
             }
             else {
-                this.m_materialProxy.unlockMaterial();
+                this.m_rcontext.unlockMaterial();
             }
         }
     }
     run(lockRenderState: boolean = false, lockMaterial: boolean = false, autoEnd: boolean = true, autoRunBegin: boolean = true): void {
 
         if (lockRenderState) this.lockRenderState();
-        if (lockMaterial) this.lockMaterial();
+        if (lockMaterial && !autoRunBegin) this.lockMaterial();
 
         if (this.m_fboIndex >= 0 && this.m_rindexs != null) {
             if (autoRunBegin)
@@ -504,7 +504,9 @@ export default class FBOInstance {
         }
         this.m_runFlag = true;
         if (lockRenderState) this.unlockRenderState();
-        if (lockMaterial) this.unlockMaterial();
+        if (lockMaterial){
+            this.unlockMaterial();
+        }
         if (autoEnd) {
             this.runEnd();
         }

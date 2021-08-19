@@ -28,11 +28,12 @@ import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 import EnvLightData from "../../light/base/EnvLightData";
 
 import DracoMesh from "../../voxmesh/draco/DracoMesh";
-import {DracoTaskListener} from "../../voxmesh/draco/DracoTask";
+import { DracoTaskListener } from "../../voxmesh/draco/DracoTask";
 import DracoMeshBuilder from "../../voxmesh/draco/DracoMeshBuilder";
 import ThreadSystem from "../../thread/ThreadSystem";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
+import DivLog from "../../vox/utils/DivLog";
 
 export class DemoVSMModule {
     constructor() { }
@@ -56,11 +57,51 @@ export class DemoVSMModule {
         return ptex;
     }
     private initTestEvt(): void {
-
+        DivLog.SetDebugEnabled(true);
         //let rscene: RendererScene = this.m_rscene;
         //let color: Color4 = this.m_clearColor;
-        /*
+        // 缩放
+        //<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+        try {
+            document.body.addEventListener('touchmove', function (e) {
+                DivLog.ShowLog("touchmove");
+                e.preventDefault(); //阻止默认的处理方式(阻止下拉滑动的效果)
+              }, {passive: false}); //passive 参数不能省略，用来兼容ios和android
+            // 禁用双击缩放
+            document.addEventListener("touchstart", function (event) {
+                DivLog.ShowLog("touchstart");
+                if (event.touches.length > 1) {
+                    event.preventDefault();
+                }
+            });
+            var lastTouchEnd = 0;
+            document.addEventListener(
+                "touchend",
+                function (event) {
+                    
+                    DivLog.ShowLog("touchend");
+                    var now = new Date().getTime();
+                    if (now - lastTouchEnd <= 300) {
+                        event.preventDefault();
+                    }
+                    lastTouchEnd = now;
+                },
+                false
+            );
+            // 禁用双指手势操作
+            document.addEventListener("gesturestart", function (event) {
+                DivLog.ShowLog("gesturestart");
+                event.preventDefault();
+            });
+        } catch (error) { }
+        var meta = document.createElement('meta');
+        meta.name = "viewport";
+        meta.content = "width=device-width,initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no";
+        document.getElementsByTagName('head')[0].appendChild(meta);
+        return;
+        ///*
         window.onload = () => {
+            /*
             window.addEventListener('touchstart', function (event) {
                 if (event.touches.length > 1) {
                     //color.randomRGB(1.0);
@@ -76,15 +117,43 @@ export class DemoVSMModule {
                 }
                 lastTouchEnd = now;
             }, false);
+            */
+            document.addEventListener('touchstart', function (event) {
+                if (event.touches.length > 1) {
+                    event.preventDefault();  //阻止元素的默认行为
+                }
+            })
+            var lastTouchEnd = 0;
+            document.addEventListener('touchend', function (event) {
+                var now = (new Date()).getTime();
+                if (now - lastTouchEnd <= 300) {
+                    event.preventDefault();
+                }
+                lastTouchEnd = now;  //当前为最后一次触摸
+            }, false)
+
             //  var meta = document.createElement('meta');
             //  meta.name = "viewport";
             //  meta.content = "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no";
             //  document.getElementsByTagName('head')[0].appendChild(meta);
+            //  var meta = document.createElement('meta');
+            //  meta.name = "HandheldFriendly";
+            //  meta.content = "true";
+            //  document.getElementsByTagName('head')[0].appendChild(meta);
+
             var meta = document.createElement('meta');
-            meta.name = "HandheldFriendly";
-            meta.content = "true";
+            meta.name = "viewport";
+            //meta.content = "width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover";
+            meta.content = "user-scalable=0";
             document.getElementsByTagName('head')[0].appendChild(meta);
+            /**
+             * <meta
+      name="viewport"
+      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover"
+    />
+            */
             //<meta name="HandheldFriendly" content="true">
+            /*
             document.documentElement.addEventListener('touchstart', function (event) {
                 if (event.touches.length > 1) {
                     event.preventDefault();
@@ -93,6 +162,7 @@ export class DemoVSMModule {
             document.documentElement.addEventListener('touchmove', function (event) {
                 event.preventDefault();      
             }, false);
+            //*/
         }
         //*/
     }
@@ -132,10 +202,10 @@ export class DemoVSMModule {
             this.m_rscene.setClearRGBColor3f(0.1, 0.2, 0.1);
             this.m_envData = new EnvLightData();
             this.m_envData.initialize();
-            this.m_envData.setFogColorRGB3f(0.0,0.8,0.1);
+            this.m_envData.setFogColorRGB3f(0.0, 0.8, 0.1);
 
             this.m_vsmModule = new ShadowVSMModule(0);
-            this.m_vsmModule.seetCameraPosition( new Vector3D(120,800,120) );
+            this.m_vsmModule.seetCameraPosition(new Vector3D(120, 800, 120));
             this.m_vsmModule.setCameraNear(10.0);
             this.m_vsmModule.setCameraFar(3000.0);
             this.m_vsmModule.setMapSize(512.0, 512.0);
@@ -147,7 +217,7 @@ export class DemoVSMModule {
             this.m_vsmModule.setColorIntensity(0.3);
 
             this.m_dracoMeshLoader.initialize(2);
-            this.m_dracoMeshLoader.setListener( this );
+            this.m_dracoMeshLoader.setListener(this);
 
             this.initSceneObjs();
             this.update();
@@ -157,7 +227,7 @@ export class DemoVSMModule {
     }
 
     private m_posList: Vector3D[] = [
-        new Vector3D(0,200,0)
+        new Vector3D(0, 200, 0)
         //new Vector3D(0,0,0)
     ];
     private m_modules: string[] = [
@@ -176,10 +246,10 @@ export class DemoVSMModule {
         //20.0
     ];
     private loadNext(): void {
-        if(this.m_modules.length > 0) {
+        if (this.m_modules.length > 0) {
             this.m_pos = this.m_posList.pop();
             this.m_scale = this.m_scales.pop();
-            this.m_dracoMeshLoader.load( this.m_modules.pop() );
+            this.m_dracoMeshLoader.load(this.m_modules.pop());
         }
     }
     dracoParse(pmodule: any, index: number, total: number): void {
@@ -193,27 +263,27 @@ export class DemoVSMModule {
         let envData = this.m_envData;
         //let shadowTex: TextureProxy = this.m_depthRtt;
         let shadowTex: TextureProxy = this.m_vsmModule.getShadowMap();
-        
+
         let mesh: DracoMesh = new DracoMesh();
         mesh.initialize(modules);
 
-        let uvscale: number = Math.random() * 7.0 + 0.6;        
+        let uvscale: number = Math.random() * 7.0 + 0.6;
         let shadowMaterial: ShadowVSMMaterial = new ShadowVSMMaterial();
         shadowMaterial.setVSMData(vsmData);
         shadowMaterial.setEnvData(envData);
         shadowMaterial.setTextureList([shadowTex, this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
         let scale = this.m_scale;
         let entity: DisplayEntity = new DisplayEntity();
-        entity.setMaterial( shadowMaterial );
-        entity.setMesh( mesh );
+        entity.setMaterial(shadowMaterial);
+        entity.setMesh(mesh);
         entity.setScaleXYZ(scale, scale, scale);
         //entity.setRotationXYZ(0, 50, 0);
         this.m_rscene.addEntity(entity);
         let pos: Vector3D = new Vector3D();
-        entity.getPosition( pos );
+        entity.getPosition(pos);
         let pv: Vector3D = entity.getGlobalBounds().min;
         pos.y += (this.m_reflectPlaneY - pv.y) + 370.0;
-        entity.setPosition( pos );
+        entity.setPosition(pos);
         entity.update();
 
     }

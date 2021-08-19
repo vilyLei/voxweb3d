@@ -23,18 +23,21 @@ export default class CameraUniformBuilder implements IUniformBuilder
         if(shdp.hasUniformByName(UniformConst.CameraViewMatUNS) && shdp.hasUniformByName(UniformConst.CameraProjectiveMatUNS))
         {
             suo = new ShaderGlobalUniform();
+            suo.uns = "u_viewAndProjMat";
             suo.uniformNameList = [UniformConst.CameraViewMatUNS,UniformConst.CameraProjectiveMatUNS];
             suo.copyDataFromProbe(cam.matUProbe);
         }
         else if(shdp.hasUniformByName(UniformConst.CameraViewMatUNS))
         {
             suo = new ShaderGlobalUniform();
+            suo.uns = "u_viewMat";
             suo.uniformNameList = [UniformConst.CameraViewMatUNS];
             suo.copyDataFromProbeAt(0,cam.matUProbe);
         }
         else if(shdp.hasUniformByName(UniformConst.CameraProjectiveMatUNS))
         {
             suo = new ShaderGlobalUniform();
+            suo.uns = "u_projMat";
             suo.uniformNameList = [UniformConst.CameraProjectiveMatUNS];
             suo.copyDataFromProbeAt(1,cam.matUProbe);
         }

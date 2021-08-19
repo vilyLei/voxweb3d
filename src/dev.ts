@@ -312,7 +312,11 @@
 
 //  import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
 
-import {DemoSSAO as Demo} from "./shadow/ssao/DemoSSAO";
+//  import {DemoSSAO as Demo} from "./shadow/ssao/DemoSSAO";
+
+//  import {DemoSSAO2 as Demo} from "./shadow/ssao/DemoSSAO2";
+
+import {DemoSSAO3 as Demo} from "./shadow/ssao/DemoSSAO3";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     light    ////////////////////////////////////

@@ -10,20 +10,20 @@ import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
 
-class AOPostShaderBuffer extends ShaderCodeBuffer
+class AOEntityShaderBuffer extends ShaderCodeBuffer
 {
     constructor()
     {
         super();
     }
-    private static s_instance:AOPostShaderBuffer = new AOPostShaderBuffer();
+    private static s_instance:AOEntityShaderBuffer = new AOEntityShaderBuffer();
     private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
         super.initialize(texEnabled);
-        //console.log("AOPostShaderBuffer::initialize()...,texEnabled: "+texEnabled);
-        this.m_uniqueName = "AOPostShd";
+        //console.log("AOEntityShaderBuffer::initialize()...,texEnabled: "+texEnabled);
+        this.m_uniqueName = "AOEntityShd";
         this.adaptationShaderVersion = false;
     }
     private buildThisCode():void
@@ -31,18 +31,20 @@ class AOPostShaderBuffer extends ShaderCodeBuffer
 
         let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
         coder.reset();
+        //coder.vertMatrixInverseEnabled = true;
 
         coder.addVertLayout("vec3","a_vs");
         coder.addVertLayout("vec2","a_uvs");
+        coder.addVertLayout("vec3","a_nvs");
         
         coder.addVarying("vec2", "v_uv");
+        coder.addVarying("vec3", "v_nv");
 
         coder.addFragOutput("vec4", "FragColor0");
 
         coder.addTextureSample2D();
-        coder.addTextureSample2D();
 
-        coder.useVertSpaceMats(false,false,false);
+        coder.useVertSpaceMats(true,true,true);
 
         coder.addFragFunction(
 `
@@ -58,10 +60,7 @@ class AOPostShaderBuffer extends ShaderCodeBuffer
 `
 void main() {
     vec4 color = VOX_Texture2D( u_sampler0, v_uv );
-    float ao = VOX_Texture2D( u_sampler1, v_uv ).r;
-    //FragColor0 = vec4(vec3(ao * ao), 1.0);
-    ao *= ao;
-    FragColor0 = vec4(mix(vec3(0.0), color.xyz, ao), 1.0);
+    FragColor0 = vec4(color.xyz * abs(v_nv), 1.0);
 }
 `
                         );
@@ -73,7 +72,12 @@ void main() {
         this.m_codeBuilder.addVertMainCode(
 `
 void main() {
-    gl_Position = vec4(a_vs,1.0);
+    mat4 viewMat4 =u_viewMat * u_objMat;
+    vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);
+
+    gl_Position = u_projMat * viewPos;
+
+    v_nv = a_nvs;
     v_uv = a_uvs.xy;
 }
 `
@@ -88,15 +92,15 @@ void main() {
     }
     toString():string
     {
-        return "[AOPostShaderBuffer()]";
+        return "[AOEntityShaderBuffer()]";
     }
-    static GetInstance():AOPostShaderBuffer
+    static GetInstance():AOEntityShaderBuffer
     {
-        return AOPostShaderBuffer.s_instance;
+        return AOEntityShaderBuffer.s_instance;
     }
 }
 
-export default class AOPostMaterial extends MaterialBase
+export default class AOEntityMaterial extends MaterialBase
 {
     constructor()
     {
@@ -105,7 +109,7 @@ export default class AOPostMaterial extends MaterialBase
     
     getCodeBuf():ShaderCodeBuffer
     {        
-        return AOPostShaderBuffer.GetInstance();
+        return AOEntityShaderBuffer.GetInstance();
     }
 
     createSelfUniformData():ShaderUniformData

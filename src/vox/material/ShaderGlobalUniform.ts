@@ -54,11 +54,11 @@ export default class ShaderGlobalUniform extends ShaderUniform
             this.types = [];
             this.dataSizeList = [];
         }
-        this.slotIndex = probe.getSlotBeginIndex();
-        this.uniformsTotal = probe.uniformsTotal;
+        this.slotIndex = probe.getSlotBeginIndex() + i;
+        this.uniformsTotal = 1;
         this.slotId = probe.getSlotUid();
-        this.types[i] = probe.uniformTypes[i];
-        this.dataSizeList[i] = probe.dataSizeList[i];
+        this.types[0] = probe.uniformTypes[i];
+        this.dataSizeList[0] = probe.dataSizeList[i];
     }
     use(rc:IRenderShader):void
     {
@@ -85,7 +85,7 @@ export default class ShaderGlobalUniform extends ShaderUniform
             }
             else
             {
-                //console.log("this.uniformsTotal: ",this.uniformsTotal,this.dataSizeList[0]);
+                //console.log(this.uns, ", GlobalUniform this.uniformsTotal: ",this.uniformsTotal,this.dataSizeList);
                 for(; i < this.uniformsTotal; ++i)
                 {                    
                     rc.useUniformV2(this.locations[i],this.types[i],slot.dataList[this.slotIndex + i],this.dataSizeList[i],0);

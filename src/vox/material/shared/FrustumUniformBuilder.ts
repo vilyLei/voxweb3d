@@ -12,7 +12,7 @@ import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import IUniformBuilder from "../../../vox/material/shared/IUniformBuilder";
 import RenderProxy from "../../../vox/render/RenderProxy";
 
-export default class CameraParamUniformBuilder implements IUniformBuilder
+export default class FrustumUniformBuilder implements IUniformBuilder
 {
     create( rc:RenderProxy,shdp:ShdProgram):ShaderUniform
     {
@@ -20,6 +20,7 @@ export default class CameraParamUniformBuilder implements IUniformBuilder
         if(shdp.hasUniformByName(UniformConst.FrustumParamUNS))
         {
             suo = new ShaderGlobalUniform();
+            suo.uns = UniformConst.FrustumParamUNS;
             suo.uniformNameList = [UniformConst.FrustumParamUNS];
             suo.copyDataFromProbe(rc.getCamera().ufrustumProbe);
         }
@@ -27,6 +28,6 @@ export default class CameraParamUniformBuilder implements IUniformBuilder
     }
     getIDNS():string
     {
-        return "CameraParamUniformBuilder";
+        return "FrustumUniformBuilder";
     }
 }

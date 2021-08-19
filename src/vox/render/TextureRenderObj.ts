@@ -92,9 +92,10 @@ export namespace vox {
             }
             // 注意: 移动端要注意这里的切换机制是符合移动端低带宽的特点
             run(): void {
+                //console.log("this.m_texRes.unlocked: ",this.m_texRes.unlocked,this.m_texRes.texMid != this.m_mid);
                 if (this.m_texRes.unlocked && this.m_texRes.texMid != this.m_mid) {
                     this.m_texRes.texMid = this.m_mid;
-                    //console.log("this.m_mid: ",this.m_mid,this.m_uid);
+                    //console.log("this.m_mid: ",this.m_mid,this.m_uid, this.m_texList);
                     let gl: any = this.m_texRes.getRC();
                     let texI: number = gl.TEXTURE0;
                     if (this.direct) {

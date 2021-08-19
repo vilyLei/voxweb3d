@@ -57,9 +57,13 @@ precision mediump float;
 
     private m_textureSampleTypes: string[] = [];
 
-    private m_objMat: boolean = false;
-    private m_viewMat: boolean = false;
-    private m_projMat: boolean = false;
+    private m_vertObjMat: boolean = false;
+    private m_vertViewMat: boolean = false;
+    private m_vertProjMat: boolean = false;
+    
+    private m_fragObjMat: boolean = false;
+    private m_fragViewMat: boolean = false;
+    private m_fragProjMat: boolean = false;
 
     private m_vertMainCode: string = "";
     private m_fragMainCode: string = "";
@@ -71,9 +75,12 @@ precision mediump float;
     constructor() { }
 
     reset() {
-        this.m_objMat = false;
-        this.m_viewMat = false;
-        this.m_projMat = false;
+        this.m_vertObjMat = false;
+        this.m_vertViewMat = false;
+        this.m_vertProjMat = false;
+        this.m_fragObjMat = false;
+        this.m_fragViewMat = false;
+        this.m_fragProjMat = false;
 
         this.m_vertMainCode = "";
         this.m_fragMainCode = "";
@@ -175,9 +182,14 @@ precision mediump float;
         this.m_textureSampleTypes.push("sampler3D");
     }
     useVertSpaceMats(objMatEnabled: boolean = true, viewMatEnabled: boolean = true, projMatEnabled: boolean = true): void {
-        this.m_objMat = objMatEnabled;
-        this.m_viewMat = viewMatEnabled;
-        this.m_projMat = projMatEnabled;
+        this.m_vertObjMat = objMatEnabled;
+        this.m_vertViewMat = viewMatEnabled;
+        this.m_vertProjMat = projMatEnabled;
+    }
+    useFragSpaceMats(objMatEnabled: boolean = true, viewMatEnabled: boolean = true, projMatEnabled: boolean = true): void {
+        this.m_fragObjMat = objMatEnabled;
+        this.m_fragViewMat = viewMatEnabled;
+        this.m_fragProjMat = projMatEnabled;
     }
 
     addVertExtend(code: string): void {
@@ -270,7 +282,10 @@ precision mediump float;
         for (; i < len; i++) {
             code += "\nuniform " + this.m_fragUniformTypes[i] + " " + this.m_fragUniformNames[i] + ";";
         }
-        
+        if (this.m_fragObjMat) code += "\nuniform mat4 u_objMat;";
+        if (this.m_fragViewMat) code += "\nuniform mat4 u_viewMat;";
+        if (this.m_fragProjMat) code += "\nuniform mat4 u_projMat;";
+
         len = this.m_varyingNames.length;
         if(RendererDeviece.IsWebGL2()) {
             for (i = 0; i < len; i++) {
@@ -379,9 +394,9 @@ precision mediump float;
         for (i = 0; i < len; i++) {
             code += "\nuniform " + this.m_vertUniformTypes[i] + " " + this.m_vertUniformNames[i] + ";";
         }
-        if (this.m_objMat) code += "\nuniform mat4 u_objMat;";
-        if (this.m_viewMat) code += "\nuniform mat4 u_viewMat;";
-        if (this.m_projMat) code += "\nuniform mat4 u_projMat;";
+        if (this.m_vertObjMat) code += "\nuniform mat4 u_objMat;";
+        if (this.m_vertViewMat) code += "\nuniform mat4 u_viewMat;";
+        if (this.m_vertProjMat) code += "\nuniform mat4 u_projMat;";
 
         
         len = this.m_varyingNames.length;

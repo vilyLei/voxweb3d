@@ -374,7 +374,6 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
     updateGlobalMaterial(material: IRenderMaterial): void {
         if (material != null) {
             let rc: RenderProxy = this.m_rc;
-            let gl: any = rc.RContext;
             let tro: TextureRenderObj = null;
             let shdp: ShdProgram = null;
             let texList: IRenderTexture[] = null;
@@ -384,11 +383,14 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
                 texEnabled = (texList != null && texList.length > 0);
                 material.initializeByCodeBuf(texEnabled);
             }
+            else {
+                texList = material.getTextureList();
+            }
             shdp = this.m_shader.create(material.getShaderData());
             shdp.upload(rc.RContext, rc.getUid());
             let texTotal: number = shdp.getTexTotal();
-            if (texEnabled && texTotal > 0) {
-                tro = TextureRenderObj.Create(gl, texList, texTotal);
+            if (texTotal > 0) {
+                tro = TextureRenderObj.Create(this.m_texRes, texList, texTotal);
             }
             if (this.m_shader.getSharedUniformByShd(shdp) == null) {
                 

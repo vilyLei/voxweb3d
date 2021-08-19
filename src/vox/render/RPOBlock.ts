@@ -35,7 +35,7 @@ export default class RPOBlock {
     rpoUnitBuilder: RPOUnitBuilder = null;
     vtxResource: ROVertexResource = null;
     private m_shader: RenderShader = null;
-    constructor(shader: RenderShader) {
+    constructor(shader: RenderShader, ) {
         this.m_shader = shader;
         this.m_uid = RPOBlock.__s_uid++;
     }
@@ -205,6 +205,9 @@ export default class RPOBlock {
         if (nextNode != null) {
             this.m_shader.bindToGpu(this.shdUid);
             this.m_shader.resetUniform();
+            let texUnlock: boolean = this.m_shader.isTextureUnLocked();
+            rc.Texture.unlocked = texUnlock;
+            
             let unit: RPOUnit = null;
             let flagVBoo: boolean = false;
             if (this.batchEnabled) {
@@ -222,6 +225,9 @@ export default class RPOBlock {
                     if (nextNode.drawEnabled && unit.drawEnabled) {
                         if (flagVBoo) {
                             nextNode.vro.run();
+                            if(texUnlock) {
+                                nextNode.tro.run();
+                            }
                             flagVBoo = false;
                         }
                         unit.runLockMaterial2(null);
@@ -240,6 +246,9 @@ export default class RPOBlock {
                     unit = nextNode.unit;
                     if (nextNode.drawEnabled && unit.drawEnabled) {
                         unit.runLockMaterial();
+                        if(texUnlock) {
+                            nextNode.tro.run();
+                        }
                         if (unit.partTotal < 1) {
                             unit.drawThis(rc);
                         }
@@ -250,6 +259,7 @@ export default class RPOBlock {
                     nextNode = nextNode.next;
                 }
             }
+            rc.Texture.unlocked = false;
         }
     }
     // 在锁定material的时候,直接绘制单个unit

@@ -35,6 +35,15 @@ export default class RenderMaterialProxy
         this.m_shader.lock();
         this.m_texRes.unlocked = false;
     }
+    
+    unlockTexture():void
+    {
+        this.m_shader.textureUnlock();
+    }
+    lockTexture():void
+    {
+        this.m_shader.textureLock();
+    }
     renderBegin():void
     {
         this.m_shader.renderBegin();

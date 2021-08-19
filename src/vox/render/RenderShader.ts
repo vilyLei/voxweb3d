@@ -26,6 +26,7 @@ export default class RenderShader implements IRenderShader,IRenderResource
     private m_shdListLen:number = 0;
     private m_sharedUniformList:IShaderUniform[] = [];
     private m_unlocked:boolean = true;
+    private m_texUnlocked:boolean = false;
     private m_preuid:number = -1;
     private m_currShd:ShdProgram = null;
     private m_fragOutputTotal:number = 1;
@@ -137,6 +138,20 @@ export default class RenderShader implements IRenderShader,IRenderResource
     {
         this.m_unlocked = false;
     }
+
+    
+    textureUnlock():void
+    {
+        this.m_texUnlocked = true;
+    }
+    isTextureUnLocked():boolean
+    {
+        return this.m_texUnlocked;
+    }
+    textureLock():void
+    {
+        this.m_texUnlocked = false;
+    }
     
     setSharedUniformByShd(shd:ShdProgram, uniform:IShaderUniform):void
     {
@@ -187,6 +202,11 @@ export default class RenderShader implements IRenderShader,IRenderResource
                 // console.log("use a new shader uid: ",shd.getUid(),",uns: ",shd.getUniqueShaderName(): string);
                 // use global shared uniform
                 let uniform:IShaderUniform = this.m_sharedUniformList[shd.getUid()];
+                //  let boo: boolean = false;
+                //  if((uniform as any).uns == "u_projMat") {
+                //      console.log("only use projMat begin");
+                //      boo = true;
+                //  }
                 this.m_guniform = uniform;
                 while(uniform != null)
                 {
@@ -194,6 +214,9 @@ export default class RenderShader implements IRenderShader,IRenderResource
                     uniform = uniform.next;
                 }
                 this.m_currShd = shd;
+                //  if( boo ) {
+                //      console.log("only use projMat end");
+                //  }
             }
             else if(this.m_guniform == null && this.m_currShd != null){
                 let uniform:IShaderUniform = this.m_sharedUniformList[this.m_currShd.getUid()];
