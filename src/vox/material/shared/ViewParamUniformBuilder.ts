@@ -17,11 +17,11 @@ export default class ViewParamUniformBuilder implements IUniformBuilder
     create( rc:RenderProxy,shdp:ShdProgram):ShaderUniform
     {
         let suo:ShaderGlobalUniform = null;
-        if(shdp.hasUniformByName(UniformConst.ViewParamUNS))
+        if(shdp.hasUniformByName(UniformConst.ViewParam.name))
         {
             suo = new ShaderGlobalUniform();
-            suo.uns = UniformConst.ViewParamUNS;
-            suo.uniformNameList = [UniformConst.ViewParamUNS];
+            suo.uns = UniformConst.ViewParam.name;
+            suo.uniformNameList = [UniformConst.ViewParam.name];
             suo.copyDataFromProbe(rc.getRenderAdapter().uViewProbe);
         }
         return suo;                

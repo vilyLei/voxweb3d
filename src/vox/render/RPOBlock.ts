@@ -19,6 +19,7 @@ import { RenderStateObject, RenderColorMask } from "../../vox/render/RODrawState
 import RenderProxy from "../../vox/render/RenderProxy";
 import RenderShader from '../../vox/render/RenderShader';
 import ROVertexResource from "../../vox/render/ROVertexResource";
+import DebugFlag from "../debug/DebugFlag";
 
 export default class RPOBlock {
     private static __s_uid: number = 0;
@@ -106,20 +107,19 @@ export default class RPOBlock {
             let flagVBoo: boolean = false;
             let flagTBoo: boolean = false;
             while (nextNode != null) {
-                if (vtxTotal > 0) {
-                    vtxTotal--;
-                }
-                else {
-                    vtxTotal = this.m_nodeLinker.getVtxTotalAt(nextNode.rvroI) - 1;
+                if (vtxTotal < 1) {
+                    vtxTotal = this.m_nodeLinker.getVtxTotalAt(nextNode.rvroI);
+                    if(DebugFlag.Flag_0 > 0) {
+                        console.log("  $$ vtxTotal: ",vtxTotal);
+                    }
                     flagVBoo = true;
                 }
-                if (texTotal > 0) {
-                    texTotal--;
-                }
-                else {
-                    texTotal = this.m_nodeLinker.getTexTotalAt(nextNode.rtroI) - 1;
+                vtxTotal--;
+                if (texTotal < 1) {
+                    texTotal = this.m_nodeLinker.getTexTotalAt(nextNode.rtroI);
                     flagTBoo = true;
                 }
+                texTotal--;
                 if (nextNode.drawEnabled) {
                     unit = nextNode.unit;
                     if (unit.drawEnabled) {
@@ -157,20 +157,16 @@ export default class RPOBlock {
             RenderStateObject.UseRenderState(nextNode.unit.renderState);
             RenderColorMask.UseRenderState(nextNode.unit.rcolorMask);
             while (nextNode != null) {
-                if (vtxTotal > 0) {
-                    vtxTotal--;
-                }
-                else {
-                    vtxTotal = this.m_nodeLinker.getVtxTotalAt(nextNode.rvroI) - 1;
+                if (vtxTotal < 0) {
+                    vtxTotal = this.m_nodeLinker.getVtxTotalAt(nextNode.rvroI);
                     flagVBoo = true;
                 }
-                if (texTotal > 0) {
-                    texTotal--;
-                }
-                else {
-                    texTotal = this.m_nodeLinker.getTexTotalAt(nextNode.rtroI) - 1;
+                vtxTotal--;
+                if (texTotal < 0) {
+                    texTotal = this.m_nodeLinker.getTexTotalAt(nextNode.rtroI);
                     flagTBoo = true;
                 }
+                texTotal--;
 
                 if (nextNode.drawEnabled) {
                     unit = nextNode.unit;
@@ -214,21 +210,20 @@ export default class RPOBlock {
                 let vtxTotal: number = 0;
 
                 while (nextNode != null) {
-                    if (vtxTotal > 0) {
-                        vtxTotal--;
-                    }
-                    else {
-                        vtxTotal = this.m_nodeLinker.getVtxTotalAt(nextNode.rvroI) - 1;
+                    if (vtxTotal < 1) {
+                        vtxTotal = this.m_nodeLinker.getVtxTotalAt(nextNode.rvroI);
                         flagVBoo = true;
                     }
+                    vtxTotal--;
+
                     unit = nextNode.unit;
                     if (nextNode.drawEnabled && unit.drawEnabled) {
                         if (flagVBoo) {
                             nextNode.vro.run();
-                            if(texUnlock) {
-                                nextNode.tro.run();
-                            }
                             flagVBoo = false;
+                        }
+                        if(texUnlock) {
+                            nextNode.tro.run();
                         }
                         unit.runLockMaterial2(null);
                         if (unit.partTotal < 1) {

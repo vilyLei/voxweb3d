@@ -136,8 +136,8 @@ export class RTTTextureStore
         this.m_rttDepthTexs[i] = this.createDepthTex2D(pw,ph);
         this.m_rttDepthTexs[i].to2DTexture();
         this.m_rttDepthTexs[i].name = "sys_depthTex_"+i;
-        this.m_rttDepthTexs[i].minFilter = TextureConst.LINEAR;
-        this.m_rttDepthTexs[i].magFilter = TextureConst.LINEAR;
+        this.m_rttDepthTexs[i].minFilter = TextureConst.NEAREST;
+        this.m_rttDepthTexs[i].magFilter = TextureConst.NEAREST;
         this.m_rttDepthTexs[i].__$setRenderProxy(this.m_renderProxy);
     	return this.m_rttDepthTexs[i];
     }
@@ -155,6 +155,7 @@ export class RTTTextureStore
         tex.internalFormat = TextureFormat.RGBA16F;
         tex.srcFormat = TextureFormat.RGBA;
         tex.dataType = TextureDataType.FLOAT;
+        tex.minFilter = TextureConst.NEAREST;
         tex.magFilter = TextureConst.NEAREST;
         this.m_rttFloatTexs[i].__$setRenderProxy(this.m_renderProxy);
     	return tex;
@@ -175,6 +176,7 @@ export class RTTTextureStore
         tex.internalFormat = TextureFormat.RGBA16F;
         tex.srcFormat = TextureFormat.RGBA;
         tex.dataType = TextureDataType.FLOAT;
+        tex.minFilter = TextureConst.NEAREST;
         tex.magFilter = TextureConst.NEAREST;
         this.m_rttFloatTexs[i].__$setRenderProxy(this.m_renderProxy);
     	return tex;

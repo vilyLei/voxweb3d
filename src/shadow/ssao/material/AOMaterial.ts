@@ -10,6 +10,7 @@ import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import SSAONoiseData from "./SSAONoiseData";
+import UniformConst from "../../../vox/material/UniformConst";
 
 class AOShaderBuffer extends ShaderCodeBuffer
 {
@@ -42,6 +43,8 @@ class AOShaderBuffer extends ShaderCodeBuffer
         coder.addFragOutput("vec4", "FragColor0");
 
         coder.addDefine("AO_SamplesTotal", ""+this.samplesTotal);
+        coder.addFragUniformParam(UniformConst.FrustumParam);
+        coder.addFragUniformParam(UniformConst.ViewParam);
         // tex normal
         coder.addTextureSample2D();
         // tex noise
@@ -63,10 +66,6 @@ class AOShaderBuffer extends ShaderCodeBuffer
         this.m_codeBuilder.addFragMainCode(
 `
 uniform vec3 u_aoSamples[AO_SamplesTotal];
-//uniform mat4 u_projMat;
-uniform vec4 u_viewParam;
-
-uniform vec4 u_frustumParam;
 
 const float radius = 100.0;
 const float bias = 1.0;
@@ -102,16 +101,11 @@ void main()
     noiseScale.xy = 1.0/u_viewParam.zw;
     vec4 baseNormal = VOX_Texture2D(u_sampler0, v_uv);
     vec3 normal = baseNormal.xyz;
-    //  //FragColor0 = vec4(normal, 1.0);
-    //  FragColor0 = VOX_Texture2D(u_sampler1, v_uv);
-    //  //FragColor0 = vec4(1.0,0.0,1.0,1.0);
-    //  return;
-    //vec2 uv = (v_uv - 0.5 ) / vec2(0.5,0.5);
+
     vec2 uv = scale2 * (v_uv - halfOne );
     vec3 fragPos = clacViewPosBySPAndVZ(uv, baseNormal.w);
     fragPos.z = -fragPos.z;
     
-    //vec3 randomVec = normalize(VOX_Texture2D(u_sampler1, v_uv * noiseScale + fract( sin(dot(v_uv.xy+fract(baseNormal.x * 12.9867), vec2(12.9898, 78.233)))* 43758.5453 )).xyz);
     vec3 randomVec = normalize(VOX_Texture2D(u_sampler1, v_uv * noiseScale + 0.1 * rand(v_uv)).xyz);
     
     //0.0->1.0 => -1.0 -> 1.0
@@ -128,7 +122,7 @@ void main()
     {
         // from tangent to view-space
         vec3 sample3 = tbnMat3 * u_aoSamples[i];
-        float pr = radius * (0.5 + 0.5 * (fract( dot(fract(v_uv.xy * float(i+1) * 12.9898), sample3.xy))));
+        float pr = radius * (0.05 + 0.95 * (fract( dot(v_uv.xy * float(i) * 12.9898, sample3.xy))));
         sample3 = fragPos + sample3 * pr;
         
         // project sample position (to sample texture) (to get position on screen/texture)
@@ -141,10 +135,12 @@ void main()
         offset.xy = offset.xy * 0.5 + 0.5;
         // get sample depth
         
-        float sampleDepth = -VOX_Texture2D(u_sampler0, offset.xy).w;;
+        float sampleDepth = -VOX_Texture2D(u_sampler0, offset.xy).w;
         // range check & accumulate
         float rangeCheck = smoothstep(0.0, 1.0, pr / abs(fragPos.z - sampleDepth));
         occlusion += (sampleDepth >= (sample3.z + bias) ? 1.0 : 0.0) * rangeCheck;
+        // highlight dege glow
+        //occlusion += (sampleDepth < (sample3.z + bias) ? 1.0 : 0.0) * rangeCheck;
     }
 
     FragColor0 = vec4(vec3(min(1.0 - ( occlusion / total), 1.0)), 1.0);
@@ -161,7 +157,6 @@ void main()
 void main()
 {
     gl_Position = vec4(a_vs,1.0);
-    //v_uv = vec2(a_uvs.x, 1.0 - a_uvs.y);
     v_uv = a_uvs.xy;
 }
 `
@@ -205,7 +200,7 @@ export default class AOMaterial extends MaterialBase
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
         oum.uniformNameList = [ "u_aoSamples" ];
-        let fs: Float32Array = this.m_ssaoData.calcSampleKernel( this.m_samplesTotal );
+        let fs: Float32Array = this.m_ssaoData.calcSampleKernel( this.m_samplesTotal, 1 );
         fs = fs.subarray(0,this.m_samplesTotal * 3);
         oum.dataList = [ fs ];
         return oum;

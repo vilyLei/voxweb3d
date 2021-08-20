@@ -17,11 +17,11 @@ export default class FrustumUniformBuilder implements IUniformBuilder
     create( rc:RenderProxy,shdp:ShdProgram):ShaderUniform
     {
         let suo:ShaderGlobalUniform = null;
-        if(shdp.hasUniformByName(UniformConst.FrustumParamUNS))
+        if(shdp.hasUniformByName( UniformConst.FrustumParam.name ))
         {
             suo = new ShaderGlobalUniform();
-            suo.uns = UniformConst.FrustumParamUNS;
-            suo.uniformNameList = [UniformConst.FrustumParamUNS];
+            suo.uns = UniformConst.FrustumParam.name;
+            suo.uniformNameList = [UniformConst.FrustumParam.name];
             suo.copyDataFromProbe(rc.getCamera().ufrustumProbe);
         }
         return suo;                

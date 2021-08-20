@@ -21,13 +21,17 @@ import Color4 from "../../vox/material/Color4";
 import Box3DEntity from "../../vox/entity/Box3DEntity";
 import FBOInstance from "../../vox/scene/FBOInstance";
 import AOPreMaterial from "./material/AOPreMaterial";
+import AONVMaterial from "./material/AONVMaterial";
 import Vector3D from "../../vox/math/Vector3D";
 import SSAONoiseData from "./material/SSAONoiseData";
 import AOEntityMaterial from "./material/AOEntityMaterial";
+import AODeferredEntityMaterial from "./material/AODeferredEntityMaterial";
 import AOMaterial from "./material/AOMaterial";
 import AOPostMaterial from "./material/AOPostMaterial";
 import ScreenAlignPlaneEntity from "../../vox/entity/ScreenAlignPlaneEntity";
 import PingpongBlur from "../../renderingtoy/mcase/PingpongBlur";
+import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
+import Billboard3DEntity from "../../vox/entity/Billboard3DEntity";
 
 export class DemoSSAO3 {
     constructor() { }
@@ -116,21 +120,20 @@ export class DemoSSAO3 {
     }
     private m_aoSrcPlane: ScreenAlignPlaneEntity;
     private m_aoDstPlane: ScreenAlignPlaneEntity;
-    private m_aoPreMaterial: AOPreMaterial;
-    private initTest(): void {
+    private m_aoPreMaterial: AONVMaterial;
+    private initSceneObjs(): void {
 
-        this.m_aoPreMaterial = new AOPreMaterial();
-        this.m_aoPreMaterial.initializeByCodeBuf(true);
-        this.m_aoPreMaterial.setTextureList([this.getImageTexByUrl("static/assets/wood_01.jpg")]);
+        let aoTex: RTTTextureProxy = this.m_blurModule.getDstTexture();
+        //let aoTex: RTTTextureProxy = this.m_aoFBO.getRTTAt(0);
 
         let plane: Plane3DEntity = new Plane3DEntity();
         plane.setMaterial( new AOEntityMaterial() );
-        plane.initializeXOZSquare(800.0, [this.getImageTexByUrl("static/assets/wood_01.jpg")]);
+        plane.initializeXOZSquare(800.0, [this.getImageTexByUrl("static/assets/wood_01.jpg"), aoTex]);
         this.m_rscene.addEntity(plane);
         ///*
         let box: Box3DEntity = new Box3DEntity();
         box.setMaterial( new AOEntityMaterial() );
-        box.initializeCube(300.0, [this.getImageTexByUrl("static/assets/box_wood01.jpg")]);
+        box.initializeCube(300.0, [this.getImageTexByUrl("static/assets/box_wood01.jpg"), aoTex]);
         this.m_rscene.addEntity(box);
         let srcBox: Box3DEntity = box;
         let scale: number = 1.0;
@@ -138,7 +141,7 @@ export class DemoSSAO3 {
             box = new Box3DEntity();
             box.setMaterial( new AOEntityMaterial() );
             box.copyMeshFrom(srcBox);
-            box.initializeCube(300.0, [this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
+            box.initializeCube(300.0, [this.getImageTexByUrl("static/assets/brickwall_big.jpg"), aoTex]);
             scale = 0.1 + Math.random() * 0.8;
             box.setScaleXYZ(scale, scale, scale);
             box.setXYZ(Math.random() * 600.0 - 300.0, Math.random() * 200.0, Math.random() * 600.0 - 300.0);
@@ -147,32 +150,46 @@ export class DemoSSAO3 {
 
         }
         //*/
+
+        let textures:TextureProxy[] = [];
+        textures.push( this.getImageTexByUrl("static/assets/guangyun_H_0007.png") );
+        textures.push(this.getImageTexByUrl("static/assets/flare_core_01.jpg"));
+        textures.push(this.getImageTexByUrl("static/assets/flare_core_02.jpg"));
+        textures.push(this.getImageTexByUrl("static/assets/a_02_c.jpg"));
+        let size: number = 100.0;
+        for(let i: number = 0; i < 60; ++i) {
+            size = 10.0 + Math.random() * 30.0;
+            let particle:Billboard3DEntity = new Billboard3DEntity();
+            particle.initialize(size,size, [textures[Math.round(Math.random() * (textures.length - 1))]]);
+            particle.setXYZ(Math.random() * 600.0 - 300.0, Math.random() * 500.0 - 200.0, Math.random() * 600.0 - 300.0);
+            this.m_rscene.addEntity(particle,1);
+        }
+    }
+    private initTest(): void {
+
+        this.m_aoPreMaterial = new AONVMaterial();
+        this.m_aoPreMaterial.initializeByCodeBuf(false);
+
         this.m_aoPreFBO = this.m_rscene.createFBOInstance();
-        this.m_aoPreFBO.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);   // set rtt background clear rgb(r=0.0,g=0.0,b=0.0) color
+        this.m_aoPreFBO.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);    // set rtt background clear rgb(r=0.0,g=0.0,b=0.0) color
         this.m_aoPreFBO.createFBOAt(0, 512, 512, true, false);
-        this.m_aoPreFBO.setGlobalMaterial( this.m_aoPreMaterial, true );
-        if (RendererDeviece.IsWebGL2()) {
-            this.m_aoPreFBO.setRenderToRTTTextureAt(0, 0);      // framebuffer color attachment 0: color texture
-        }
-        else {
-            this.m_aoPreFBO.setRenderToFloatTextureAt(0, 0);    // framebuffer color attachment 0: color texture
-        }
-        this.m_aoPreFBO.setRenderToFloatTextureAt(1, 1);        // framebuffer color attachment 1: normal texture
+        this.m_aoPreFBO.setGlobalMaterial( this.m_aoPreMaterial, false );
+        this.m_aoPreFBO.setRenderToFloatTextureAt(0, 0);            // framebuffer color attachment 0: normal texture
+        //this.m_aoPreFBO.setRenderToRTTTextureAt(0, 0);            // framebuffer color attachment 0: normal texture
         this.m_aoPreFBO.setRProcessIDList([0]);
 
         let aoNoise: SSAONoiseData = new SSAONoiseData();
         aoNoise.initialize(this.m_rscene.textureBlock);
-        let aoMaterial: AOMaterial = new AOMaterial(aoNoise, 16);
+        let aoMaterial: AOMaterial = new AOMaterial(aoNoise, 9);
         this.m_aoSrcPlane = new ScreenAlignPlaneEntity();
         this.m_aoSrcPlane.setMaterial(aoMaterial);
-        this.m_aoSrcPlane.initialize(-1.0, -1.0, 2.0, 2.0, [this.m_aoPreFBO.getRTTAt(1), aoNoise.createNoiseTex()]);
+        this.m_aoSrcPlane.initialize(-1.0, -1.0, 2.0, 2.0, [this.m_aoPreFBO.getRTTAt(0), aoNoise.createNoiseTex()]);
         //this.m_rscene.addEntity(this.m_aoSrcPlane, 1);
 
         this.m_aoFBO = this.m_rscene.createFBOInstance();
         this.m_aoFBO.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);      // set rtt background clear rgb(r=0.0,g=0.0,b=0.0) color
         this.m_aoFBO.createFBOAt(0, 512, 512, true, false);
-        this.m_aoFBO.setRenderToRTTTextureAt(2, 0);             // framebuffer color attachment 0: ao color texture
-        //this.m_aoFBO.setRProcessIDList([1]);
+        this.m_aoFBO.setRenderToRTTTextureAt(1, 0);             // framebuffer color attachment 0: ao color texture
 
         this.m_aoDstPlane = new ScreenAlignPlaneEntity();
         this.m_aoDstPlane.initialize(-1.0, -1.0, 2.0, 2.0, [this.m_aoFBO.getRTTAt(0)]);
@@ -186,18 +203,22 @@ export class DemoSSAO3 {
         this.m_blurModule.setBlurDensity(1.0);
         this.m_blurModule.bindDrawEntity(this.m_aoDstPlane);
         this.m_blurModule.setBackbufferVisible(false);
-
+        /*
         let postMaterial: AOPostMaterial = new AOPostMaterial()
         let aoPostPlane: ScreenAlignPlaneEntity = new ScreenAlignPlaneEntity();
         aoPostPlane.setMaterial(postMaterial);
         aoPostPlane.initialize(-1.0, -1.0, 2.0, 2.0, [this.m_aoPreFBO.getRTTAt(0), this.m_blurModule.getDstTexture()]);
         this.m_rscene.addEntity(aoPostPlane, 1);
+        //*/
         
-        
+        this.initSceneObjs();
+
+        /*
         let srcPlane: ScreenAlignPlaneEntity = new ScreenAlignPlaneEntity();
-        //srcPlane.initialize(-1.0, -1.0, 1.0, 1.0, [this.m_aoPreFBO.getRTTAt(1)]);
-        srcPlane.initialize(-1.0, -1.0, 1.0, 1.0, [this.m_aoFBO.getRTTAt(0)]);
-        //this.m_rscene.addEntity(srcPlane, 2);
+        srcPlane.initialize(-1.0, -1.0, 1.0, 1.0, [this.m_aoPreFBO.getRTTAt(0)]);
+        //srcPlane.initialize(-1.0, -1.0, 1.0, 1.0, [this.m_aoFBO.getRTTAt(0)]);
+        this.m_rscene.addEntity(srcPlane, 2);
+        //*/
     }
 
     private m_flag: boolean = true;
@@ -237,12 +258,8 @@ export class DemoSSAO3 {
         this.m_rscene.update();
 
         // --------------------------------------------- fbo run begin
-        if(this.m_aoPreMaterial.texDataEnabled()) {
-            
-            //this.m_aoPreFBO.setGlobalMaterial( this.m_aoPreMaterial );
-            this.m_aoPreFBO.run(false,true);
-            //console.log("       ##### render st01...");
-        }
+        this.m_aoPreFBO.run(false,true);
+        //console.log("       ##### render st01...");
 
         this.m_aoFBO.runBegin();
         this.m_aoFBO.drawEntity(this.m_aoSrcPlane);
@@ -257,6 +274,7 @@ export class DemoSSAO3 {
         this.m_rscene.setRenderToBackBuffer();
 
         //this.m_rscene.setClearColor( this.m_clearColor );
+        this.m_rscene.runAt(0);
         this.m_rscene.runAt(1);
         this.m_rscene.runAt(2);
 

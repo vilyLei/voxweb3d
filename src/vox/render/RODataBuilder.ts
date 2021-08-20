@@ -14,7 +14,7 @@ import UniformConst from "../../vox/material/UniformConst";
 import ShaderUniform from "../../vox/material/ShaderUniform";
 import ShdProgram from "../../vox/material/ShdProgram";
 import IRenderTexture from '../../vox/render/IRenderTexture';
-import * as TextureRenderObjT from '../../vox/render/TextureRenderObj';
+import { TextureRenderObj, EmptyTexRenderObj } from '../../vox/render/TextureRenderObj';
 import ShdUniformTool from '../../vox/material/ShdUniformTool';
 import IRenderMaterial from '../../vox/render/IRenderMaterial';
 import RenderShader from '../../vox/render/RenderShader';
@@ -28,20 +28,6 @@ import ROTextureResource from "../../vox/render/ROTextureResource";
 import IRenderBuffer from "../../vox/render/IRenderBuffer";
 import IROMaterialUpdater from "../../vox/render/IROMaterialUpdater";
 import IROVertexBufUpdater from "../../vox/render/IROVertexBufUpdater";
-
-
-//import ROVtxBuilder = ROVtxBuilderT.vox.render.ROVtxBuilder;
-//import UniformConst = UniformConstT.vox.material.UniformConst;
-//import ShaderUniform = ShaderUniformT.vox.material.ShaderUniform;
-
-import TextureRenderObj = TextureRenderObjT.vox.render.TextureRenderObj;
-import EmptyTexRenderObj = TextureRenderObjT.vox.render.EmptyTexRenderObj;
-//import ShdUniformTool = ShdUniformToolT.vox.material.ShdUniformTool;
-
-//import RenderProcessBuider = RenderProcessBuiderT.vox.render.RenderProcessBuider;
-
-//import IROMaterialUpdater = IROMaterialUpdaterT.vox.render.IROMaterialUpdater;
-//import IROVertexBufUpdater = IROVertexBufUpdaterT.vox.render.IROVertexBufUpdater;
 
 /**
  * 本类实现了将 系统内存数据 合成为 渲染运行时系统所需的数据资源(包括: 渲染运行时管理数据和显存数据)
@@ -193,7 +179,7 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
                     // create shared uniform
                     let sharedMList: ShaderUniform[] = material.createSharedUniforms() as ShaderUniform[];
                     if (sharedMList != null) {
-                        for(let i: number = 0; i < sharedMList.length; ++i) {
+                        for (let i: number = 0; i < sharedMList.length; ++i) {
                             sharedMList[i].program = shdp.getGPUProgram();
                         }
                     }
@@ -393,10 +379,10 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
                 tro = TextureRenderObj.Create(this.m_texRes, texList, texTotal);
             }
             if (this.m_shader.getSharedUniformByShd(shdp) == null) {
-                
+
                 let sharedMList: ShaderUniform[] = material.createSharedUniforms() as ShaderUniform[];
                 if (sharedMList != null) {
-                    for(let i: number = 0; i < sharedMList.length; ++i) {
+                    for (let i: number = 0; i < sharedMList.length; ++i) {
                         sharedMList[i].program = shdp.getGPUProgram();
                     }
                 }

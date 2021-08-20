@@ -8,6 +8,7 @@
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
+import UniformConst from "../../../vox/material/UniformConst";
 import MaterialBase from "../../../vox/material/MaterialBase";
 
 class AOEntityShaderBuffer extends ShaderCodeBuffer
@@ -41,7 +42,10 @@ class AOEntityShaderBuffer extends ShaderCodeBuffer
         coder.addVarying("vec3", "v_nv");
 
         coder.addFragOutput("vec4", "FragColor0");
-
+        coder.addFragUniformParam( UniformConst.ViewParam );
+        // color texture
+        coder.addTextureSample2D();
+        // ao texture
         coder.addTextureSample2D();
 
         coder.useVertSpaceMats(true,true,true);
@@ -59,8 +63,15 @@ class AOEntityShaderBuffer extends ShaderCodeBuffer
         this.m_codeBuilder.addFragMainCode(
 `
 void main() {
+
     vec4 color = VOX_Texture2D( u_sampler0, v_uv );
-    FragColor0 = vec4(color.xyz * abs(v_nv), 1.0);
+    vec4 factor4 = VOX_Texture2D( u_sampler1, gl_FragCoord.xy/u_viewParam.zw );
+    factor4.x *= factor4.x;
+    
+    //FragColor0 = vec4(vec3(factor4.x), 1.0);
+    FragColor0 = vec4(mix(vec3(0.0), color.xyz, factor4.x)  + 0.001 * abs(v_nv), 1.0);
+    //FragColor0 = vec4(mix(vec3(0.0), color.xyz, factor4.x), 1.0);
+    //FragColor0 = vec4(color.xyz, 1.0);
 }
 `
                         );
@@ -72,7 +83,8 @@ void main() {
         this.m_codeBuilder.addVertMainCode(
 `
 void main() {
-    mat4 viewMat4 =u_viewMat * u_objMat;
+
+    mat4 viewMat4 = u_viewMat * u_objMat;
     vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);
 
     gl_Position = u_projMat * viewPos;

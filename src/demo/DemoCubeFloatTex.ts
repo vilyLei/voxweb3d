@@ -124,7 +124,7 @@ export class DemoCubeFloatTex implements ILoaderListerner {
         }
     }
     private initFloatCube(): void {
-        let url: string = "static/bytes/d.bin";
+        let url: string = "static/bytes/dif.mdf";
         let loader: BinaryLoader = new BinaryLoader();
         loader.uuid = url;
         loader.load(url, this);
@@ -138,7 +138,7 @@ export class DemoCubeFloatTex implements ILoaderListerner {
     }
     loaded(buffer: ArrayBuffer, uuid: string): void {
         console.log("loaded... uuid: ", uuid, buffer.byteLength);
-        if(uuid == "static/bytes/d.bin") {
+        if(uuid == "static/bytes/dif.mdf") {
             this.parseDCubeMap(buffer);
         }
         else if(uuid == "static/bytes/spe.mdf") {

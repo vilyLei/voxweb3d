@@ -49,14 +49,14 @@ export class DemoFloatTex implements ILoaderListerner {
         posTex.mipmapEnabled = true;
         posTex.minFilter = TextureConst.NEAREST;
         posTex.magFilter = TextureConst.NEAREST;
-        //posTex.
+        
         let fs: Float32Array = new Float32Array(texSize * texSize * 4);
         fs.fill(1.0);
         for (let r: number = 0; r < texSize; ++r) {
             for (let c: number = 0; c < texSize; ++c) {
                 let k: number = (r * texSize + c) * 4;
                 //fs[k + 0] = 50.0;
-                fs[k + 1] = 0.0;
+                fs[k + 1] = r/texSize;
                 //fs[k + 2] = 0.0;
             }
         }
@@ -118,9 +118,9 @@ export class DemoFloatTex implements ILoaderListerner {
             axis.initialize(500.0);
             this.m_rscene.addEntity(axis);
 
-            //this.initFloatTexEntity();
+            this.initFloatTexEntity();
             //this.initHdrRGBEFloatTexEntity();
-            this.initHdrFloatTexEntity();
+            //this.initHdrFloatTexEntity();
         }
     }
     private initFloatTexEntity(): void {

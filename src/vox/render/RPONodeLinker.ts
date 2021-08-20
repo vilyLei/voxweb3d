@@ -197,6 +197,7 @@ export default class RPONodeLinker
 		//  有些需要排序, 有些不需要排序
 		//trace("RPONodeLinker::addNodeAndSort(), node: "+node);
 		// 首先依据相同的顶点紧凑排序, 然后再以纹理组合排列, 因此用 顶点的key与tex序列的key组合为一个新的key
+		//console.log("addNodeAndSort node.vtxUid: ",node.vtxUid, node.unit.__$dispNS);
 		let pnode:RPONode = this.m_unitMap.get(node.vtxUid);
 		if (pnode == null)
 		{
@@ -250,6 +251,7 @@ export default class RPONodeLinker
 							node.next = pnode.next;
 							node.prev = pnode;
 							pnode.next = node;
+							
 							break;
 						}
 						else
@@ -264,7 +266,17 @@ export default class RPONodeLinker
 							}
 							if(pnode.next == this.m_end)
 							{
-								pnode = null;
+								if(this.m_end.vtxUid != node.vtxUid)
+								{
+									// append after pnode
+									pnode.next.prev = node;
+									node.next = pnode.next;
+									node.prev = pnode;
+									pnode.next = node;
+								}
+								else {
+									pnode = null;
+								}
 								break;
 							}
 							pnode = pnode.next;

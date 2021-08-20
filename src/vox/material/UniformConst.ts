@@ -45,6 +45,9 @@ class EnvLightParam implements IUniformParam{
      */
     readonly arrayLength: number = 3;
 }
+/**
+ * shadow view matatrix4 float32array data
+ */
 class ShadowMat4UniformParam implements IUniformParam{
     constructor() { }
     readonly type: string = "mat4";
@@ -58,6 +61,9 @@ class ShadowMat4UniformParam implements IUniformParam{
      */
     readonly arrayLength: number = 0;
 }
+/**
+ * stage param shader uniform name string, vec4: [2.0/stageWidth,2.0/stageHeight, stageWidth,stageHeight]
+ */
 class StageUniformParam implements IUniformParam{
     constructor() { }
     readonly type: string = "vec4";
@@ -66,6 +72,39 @@ class StageUniformParam implements IUniformParam{
      * uniform name string
      */
     readonly name: string = "u_stageParam";
+    /**
+     * uniform array length
+     */
+    readonly arrayLength: number = 0;
+}
+
+/**
+ * view port param shader uniform name string, vec4: [viewPortX, viewPortY, viewPortWidth, viewPortHeight]
+ */
+ class ViewUniformParam implements IUniformParam{
+    constructor() { }
+    readonly type: string = "vec4";
+    readonly data: Float32Array = null;
+    /**
+     * uniform name string
+     */
+    readonly name: string = "u_viewParam";
+    /**
+     * uniform array length
+     */
+    readonly arrayLength: number = 0;
+}
+/**
+ * camera frustrum param shader uniform name string,vec4: [camera zNear,camera zFar, camera nearPlaneHalfW, camera nearPlaneHalfH]
+ */
+class FrustumUniformParam implements IUniformParam{
+    constructor() { }
+    readonly type: string = "vec4";
+    readonly data: Float32Array = null;
+    /**
+     * uniform name string
+     */
+    readonly name: string = "u_frustumParam";
     /**
      * uniform array length
      */
@@ -93,7 +132,8 @@ export default class UniformConst {
     /**
      * camera frustrum param shader uniform name string,vec4: [camera zNear,camera zFar, camera nearPlaneHalfW, camera nearPlaneHalfH]
      */
-    static readonly FrustumParamUNS: string = "u_frustumParam";
+    //static readonly FrustumParamUNS: string = "u_frustumParam";
+    static readonly FrustumParam: FrustumUniformParam = new FrustumUniformParam();
     /**
      * stage param shader uniform name string, vec4: [2.0/stageWidth,2.0/stageHeight, stageWidth,stageHeight]
      */
@@ -101,7 +141,7 @@ export default class UniformConst {
     /**
      * view port param shader uniform name string, vec4: [viewPortX, viewPortY, viewPortWidth, viewPortHeight]
      */
-    static readonly ViewParamUNS: string = "u_viewParam";
+    static readonly ViewParam: ViewUniformParam = new ViewUniformParam();
 
     static readonly ShadowMatrix: ShadowMat4UniformParam = new ShadowMat4UniformParam();
     static readonly ShadowVSMParams: ShadowVSMParams = new ShadowVSMParams();

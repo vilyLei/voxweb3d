@@ -23,7 +23,7 @@ import FBOInstance from "../../vox/scene/FBOInstance";
 import AOPreMaterial from "./material/AOPreMaterial";
 import Vector3D from "../../vox/math/Vector3D";
 import SSAONoiseData from "./material/SSAONoiseData";
-import AOEntityMaterial from "./material/AOEntityMaterial";
+import AODeferredEntityMaterial from "./material/AODeferredEntityMaterial";
 import AOMaterial from "./material/AOMaterial";
 import AOPostMaterial from "./material/AOPostMaterial";
 import ScreenAlignPlaneEntity from "../../vox/entity/ScreenAlignPlaneEntity";
@@ -124,19 +124,19 @@ export class DemoSSAO2 {
         this.m_aoPreMaterial.setTextureList([this.getImageTexByUrl("static/assets/wood_01.jpg")]);
 
         let plane: Plane3DEntity = new Plane3DEntity();
-        plane.setMaterial( new AOEntityMaterial() );
+        plane.setMaterial( new AODeferredEntityMaterial() );
         plane.initializeXOZSquare(800.0, [this.getImageTexByUrl("static/assets/wood_01.jpg")]);
         this.m_rscene.addEntity(plane);
         ///*
         let box: Box3DEntity = new Box3DEntity();
-        box.setMaterial( new AOEntityMaterial() );
+        box.setMaterial( new AODeferredEntityMaterial() );
         box.initializeCube(300.0, [this.getImageTexByUrl("static/assets/box_wood01.jpg")]);
         this.m_rscene.addEntity(box);
         let srcBox: Box3DEntity = box;
         let scale: number = 1.0;
         for (let i: number = 0; i < 5; ++i) {
             box = new Box3DEntity();
-            box.setMaterial( new AOEntityMaterial() );
+            box.setMaterial( new AODeferredEntityMaterial() );
             box.copyMeshFrom(srcBox);
             box.initializeCube(300.0, [this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
             scale = 0.1 + Math.random() * 0.8;

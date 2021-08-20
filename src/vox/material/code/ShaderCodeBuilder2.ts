@@ -142,25 +142,30 @@ precision mediump float;
         this.m_varyingTypes.push(type);
     }
     addVertUniform(type: string, name: string, arrayLength: number = 0): void {
-        if(arrayLength > 0) {
-            this.m_vertUniformNames.push(name + "["+arrayLength+"]");
+        
+        if(!this.m_fragUniformNames.includes(name)) {
+            if(arrayLength > 0) {
+                this.m_vertUniformNames.push(name + "["+arrayLength+"]");
+            }
+            else {
+                this.m_vertUniformNames.push(name);
+            }
+            this.m_vertUniformTypes.push(type);
         }
-        else {
-            this.m_vertUniformNames.push(name);
-        }
-        this.m_vertUniformTypes.push(type);
     }
     addVertUniformParam(unifromParam: IUniformParam): void {        
         this.addVertUniform(unifromParam.type,unifromParam.name, unifromParam.arrayLength);
     }
     addFragUniform(type: string, name: string, arrayLength: number = 0): void {
-        if(arrayLength > 0) {
-            this.m_fragUniformNames.push(name + "["+arrayLength+"]");
+        if(!this.m_fragUniformNames.includes(name)) {
+            if(arrayLength > 0) {
+                this.m_fragUniformNames.push(name + "["+arrayLength+"]");
+            }
+            else {
+                this.m_fragUniformNames.push(name);
+            }
+            this.m_fragUniformTypes.push(type);
         }
-        else {
-            this.m_fragUniformNames.push(name);
-        }
-        this.m_fragUniformTypes.push(type);
     }
     addFragUniformParam(unifromParam: IUniformParam): void {        
         this.addFragUniform(unifromParam.type,unifromParam.name, unifromParam.arrayLength);
