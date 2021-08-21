@@ -19,7 +19,7 @@ import { RenderStateObject, RenderColorMask } from "../../vox/render/RODrawState
 import RenderProxy from "../../vox/render/RenderProxy";
 import RenderShader from '../../vox/render/RenderShader';
 import ROVertexResource from "../../vox/render/ROVertexResource";
-import DebugFlag from "../debug/DebugFlag";
+//import DebugFlag from "../debug/DebugFlag";
 
 export default class RPOBlock {
     private static __s_uid: number = 0;
@@ -109,9 +109,6 @@ export default class RPOBlock {
             while (nextNode != null) {
                 if (vtxTotal < 1) {
                     vtxTotal = this.m_nodeLinker.getVtxTotalAt(nextNode.rvroI);
-                    if(DebugFlag.Flag_0 > 0) {
-                        console.log("  $$ vtxTotal: ",vtxTotal);
-                    }
                     flagVBoo = true;
                 }
                 vtxTotal--;

@@ -10,20 +10,20 @@ import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
 
-class AONVShaderBuffer extends ShaderCodeBuffer
+class AONVAndZShaderBuffer extends ShaderCodeBuffer
 {
     constructor()
     {
         super();
     }
-    private static s_instance:AONVShaderBuffer = new AONVShaderBuffer();
+    private static s_instance:AONVAndZShaderBuffer = new AONVAndZShaderBuffer();
     private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
         super.initialize(texEnabled);
-        //console.log("AONVShaderBuffer::initialize()...,texEnabled: "+texEnabled);
-        this.m_uniqueName = "AONVShd";
+        //console.log("AONVAndZShaderBuffer::initialize()...,texEnabled: "+texEnabled);
+        this.m_uniqueName = "AONVAndZShd";
         this.adaptationShaderVersion = false;
     }
     private buildThisCode():void
@@ -37,7 +37,7 @@ class AONVShaderBuffer extends ShaderCodeBuffer
         coder.addVertLayout("vec2","a_uvs");
         coder.addVertLayout("vec3","a_nvs");
         
-        //coder.addVarying("float", "v_posZ");
+        coder.addVarying("float", "v_posZ");
         coder.addVarying("vec3", "v_nv");
         coder.addVarying("vec2", "v_uv");
 
@@ -58,7 +58,7 @@ class AONVShaderBuffer extends ShaderCodeBuffer
         this.m_codeBuilder.addFragMainCode(
 `
 void main() {
-    FragColor0 = vec4(normalize(v_nv), 1.0);
+    FragColor0 = vec4(normalize(v_nv), v_posZ);
 }
 `
                         );
@@ -78,7 +78,7 @@ void main() {
     mat3 viewMat3 = inverse(mat3(viewMat4));
 
     v_uv = a_uvs;
-    //v_posZ = -viewPos.z;
+    v_posZ = -viewPos.z;
     v_nv = a_nvs * viewMat3;
 }
 `
@@ -93,15 +93,15 @@ void main() {
     }
     toString():string
     {
-        return "[AONVShaderBuffer()]";
+        return "[AONVAndZShaderBuffer()]";
     }
-    static GetInstance():AONVShaderBuffer
+    static GetInstance():AONVAndZShaderBuffer
     {
-        return AONVShaderBuffer.s_instance;
+        return AONVAndZShaderBuffer.s_instance;
     }
 }
 
-export default class AONVMaterial extends MaterialBase
+export default class AONVAndZMaterial extends MaterialBase
 {
     constructor()
     {
@@ -110,7 +110,7 @@ export default class AONVMaterial extends MaterialBase
     
     getCodeBuf():ShaderCodeBuffer
     {        
-        return AONVShaderBuffer.GetInstance();
+        return AONVAndZShaderBuffer.GetInstance();
     }
 
     createSelfUniformData():ShaderUniformData

@@ -80,7 +80,7 @@ export default class SSAONoiseData
             dataArr[k+2] = v3.z;
             k += 3;
         }
-        console.log(str);
+        //console.log(str);
         return dataArr;
     }
     calcSampleKernel2(total: number): Float32Array

@@ -74,7 +74,7 @@ class FrameBufferObject
 	}
 	getActiveAttachmentTotal():number
 	{
-		return this.m_activeAttachmentTotal;
+		return this.m_haveDepthTex ? this.m_activeAttachmentTotal - 1 : this.m_activeAttachmentTotal;
 	}
 	getAttachmentTotal():number
 	{
@@ -132,10 +132,11 @@ class FrameBufferObject
 
 		if (attachmentIndex == 0)
 		{
-			this.m_preFTIndex = 0;
+			this.m_preFTIndex = 0;			
+			this.m_haveDepthTex = false;
 			// 注意, 防止多次重复调用的没必要重设
 			this.m_gl.bindFramebuffer(this.m_fboTarget, this.m_fbo);
-			if(inFormat != TextureFormat.DEPTH_COMPONENT)
+			if(inFormat != TextureFormat.DEPTH_COMPONENT && inFormat != TextureFormat.DEPTH_STENCIL)
 			{
 				this.m_activeAttachmentTotal = 0;
 				this.m_attachmentIndex = 0;
@@ -179,21 +180,30 @@ class FrameBufferObject
 
 		this.m_preFTIndex++;
 	}
+	private m_haveDepthTex: boolean = false;
 	private framebufferTexture2D(rgl:any,targetType:number, inFormat:number,rTex:any):void
 	{
+		let attachment: number = -1;
 		switch(inFormat)
 		{
 			case TextureFormat.DEPTH_COMPONENT:
-				//rgl.framebufferTexture2D(this.m_fboTarget, this.m_gl.DEPTH_ATTACHMENT, rgl.TEXTURE_2D, rTex, this.textureLevel);
-				this.glFramebufferTex2D(this.m_gl.DEPTH_ATTACHMENT, rTex);
+				this.m_haveDepthTex = true;
+				attachment = this.m_gl.DEPTH_ATTACHMENT;
+				//rgl.framebufferTexture2D(this.m_fboTarget, this.m_gl.DEPTH_ATTACHMENT, rgl.TEXTURE_2D, rTex, 0);
+				//this.glFramebufferTex2D(this.m_gl.DEPTH_ATTACHMENT, rTex);
 			break;
 			case TextureFormat.DEPTH_STENCIL:
-				//rgl.framebufferTexture2D(this.m_fboTarget, this.m_gl.DEPTH_STENCIL_ATTACHMENT, rgl.TEXTURE_2D, rTex, this.textureLevel);
-				this.glFramebufferTex2D(this.m_gl.DEPTH_STENCIL_ATTACHMENT, rTex);
+				this.m_haveDepthTex = true;
+				attachment = this.m_gl.DEPTH_STENCIL_ATTACHMENT;
+				//rgl.framebufferTexture2D(this.m_fboTarget, this.m_gl.DEPTH_STENCIL_ATTACHMENT, rgl.TEXTURE_2D, rTex, 0);
+				//this.glFramebufferTex2D(this.m_gl.DEPTH_STENCIL_ATTACHMENT, rTex);
 			break;
 			default:
+				attachment = this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex;
+				/*
 				if(this.m_attachmentMaskList[this.m_activeAttachmentTotal])
 				{
+					
 					//rgl.framebufferTexture2D(this.m_fboTarget, this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex, rgl.TEXTURE_2D, rTex, this.textureLevel);
 					this.glFramebufferTex2D(this.m_COLOR_ATTACHMENT0 + this.m_attachmentIndex, rTex);
 					++this.m_attachmentIndex;
@@ -211,7 +221,28 @@ class FrameBufferObject
 					this.m_texTargetTypes[this.m_activeAttachmentTotal] = 0;
 				}
 				++this.m_activeAttachmentTotal;
+				//*/
 			break;
+		}
+		if(attachment > 0) {
+			if(this.m_attachmentMaskList[this.m_activeAttachmentTotal])
+			{
+				this.glFramebufferTex2D(attachment, rTex);
+				++this.m_attachmentIndex;
+				if (rTex != null)
+				{
+					this.m_texTargetTypes[this.m_activeAttachmentTotal] = targetType;
+				}
+				else
+				{
+					this.m_texTargetTypes[this.m_activeAttachmentTotal] = 0;
+				}
+			}
+			else
+			{
+				this.m_texTargetTypes[this.m_activeAttachmentTotal] = 0;
+			}
+			++this.m_activeAttachmentTotal;
 		}
 	}
 	private framebufferTextureBind(rgl:any, targetType:number,inFormat:number, rTex:any):void
@@ -300,6 +331,7 @@ class FrameBufferObject
 						}
 					}
 					// support webgl2 and webgl1
+					//console.log("AAA attachments 0: ",attachments);
 					RenderFBOProxy.DrawBuffers(attachments);
 					this.m_preAttachIndex = this.m_attachmentIndex;
 				}
@@ -312,6 +344,7 @@ class FrameBufferObject
 					}
 				}
 				let attachments:number[] = [this.m_COLOR_ATTACHMENT0];
+				//console.log("AAA attachments 1: ",attachments);
 				RenderFBOProxy.DrawBuffers( attachments );
 				this.m_preAttachIndex = this.m_attachmentIndex;
 			}
@@ -398,13 +431,13 @@ class FrameBufferObject
 		if (this.m_fbo == null)
 		{
 			this.createNewFBO(rgl, pw, ph);
-			console.log("FrameBufferObject create a new fbo: "+this);
+			console.log("FrameBufferObject create a new fbo: ",this);
 		}
 		else if (this.m_width != pw || this.m_height != ph)
 		{
 			// ready rebuild some new fbo's Renderbuffers.
 			this.createNewFBO(rgl, pw, ph);
-			console.log("FrameBufferObject ready rebuild another new fbo's Renderbuffers.fbo: "+this);
+			console.log("FrameBufferObject ready rebuild another new fbo's Renderbuffers.fbo: ",this);
 		}
 		this.m_fboSizeChanged = false;
 	}
@@ -553,12 +586,15 @@ class FrameBufferObject
 		{
 		case FrameBufferType.DRAW_FRAMEBUFFER:
 			this.m_fboTarget = rgl.DRAW_FRAMEBUFFER;
+			//console.log("create FrameBufferType is DRAW_FRAMEBUFFER.");
 			break;
 		case FrameBufferType.READ_FRAMEBUFFER:
 			this.m_fboTarget = rgl.READ_FRAMEBUFFER;
+			//console.log("create FrameBufferType is READ_FRAMEBUFFER.");
 			break;
 		default:
 			this.m_fboTarget = rgl.FRAMEBUFFER;
+			//console.log("create FrameBufferType is FRAMEBUFFER.");
 			break;
 		}
 		rgl.bindFramebuffer(this.m_fboTarget, this.m_fbo);

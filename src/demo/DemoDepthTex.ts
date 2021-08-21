@@ -13,8 +13,7 @@ import MouseEvent from "../vox/event/MouseEvent";
 import DemoInstance from "./DemoInstance";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 
-import * as DepZColorMaterialT from "../demo/material/DepZColorMaterial";
-import DepZColorMaterial = DepZColorMaterialT.demo.material.DepZColorMaterial;
+import DepZColorMaterial from "../demo/material/DepZColorMaterial";
 
 export class DemoDepthTex extends DemoInstance
 {
@@ -86,7 +85,7 @@ export class DemoDepthTex extends DemoInstance
         this.m_rcontext.synFBOSizeWithViewport();
         this.m_rcontext.setRenderToTexture(this.m_rscene.textureBlock.getRTTTextureAt(0), true, false, 0);
         // 这里用深度纹理获得绘制rtt texture 不需要管attachment index
-        this.m_rcontext.setRenderToTexture(this.m_depTex, true, false, 1024);
+        this.m_rcontext.setRenderToTexture(this.m_depTex, true, false, 1);
         this.m_rcontext.useFBO(true, true, false);
         // to be rendering in framebuffer
         this.m_rscene.runAt(0);

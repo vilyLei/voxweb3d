@@ -452,6 +452,7 @@ class RenderAdapter {
 		if (attachmentIndex < 0 || attachmentIndex >= 8) {
 			attachmentIndex = 0;
 		}
+		//console.log("attachmentIndex: ",attachmentIndex);
 		if (texProxy == null && attachmentIndex == 0) {
 			this.setRenderToBackBuffer(FrameBufferType.FRAMEBUFFER);
 		}
