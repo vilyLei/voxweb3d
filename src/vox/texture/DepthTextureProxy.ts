@@ -8,6 +8,7 @@
 import {TextureConst,TextureFormat,TextureDataType,TextureProxyType} from "../../vox/texture/TextureConst";
 import IRenderResource from "../../vox/render/IRenderResource";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
+import RCExtension from "../render/RCExtension";
 
 class DepthTextureProxy extends RTTTextureProxy
 {

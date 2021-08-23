@@ -56,120 +56,11 @@ export class DemoVSMModule {
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
-    private initTestEvt(): void {
-        DivLog.SetDebugEnabled(true);
-        //let rscene: RendererScene = this.m_rscene;
-        //let color: Color4 = this.m_clearColor;
-        // 缩放
-        //<meta name="viewport" content="width=device-width,initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
-        try {
-            document.body.addEventListener('touchmove', function (e) {
-                DivLog.ShowLog("touchmove");
-                e.preventDefault(); //阻止默认的处理方式(阻止下拉滑动的效果)
-              }, {passive: false}); //passive 参数不能省略，用来兼容ios和android
-            // 禁用双击缩放
-            document.addEventListener("touchstart", function (event) {
-                DivLog.ShowLog("touchstart");
-                if (event.touches.length > 1) {
-                    event.preventDefault();
-                }
-            });
-            var lastTouchEnd = 0;
-            document.addEventListener(
-                "touchend",
-                function (event) {
-                    
-                    DivLog.ShowLog("touchend");
-                    var now = new Date().getTime();
-                    if (now - lastTouchEnd <= 300) {
-                        event.preventDefault();
-                    }
-                    lastTouchEnd = now;
-                },
-                false
-            );
-            // 禁用双指手势操作
-            document.addEventListener("gesturestart", function (event) {
-                DivLog.ShowLog("gesturestart");
-                event.preventDefault();
-            });
-        } catch (error) { }
-        var meta = document.createElement('meta');
-        meta.name = "viewport";
-        meta.content = "width=device-width,initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no";
-        document.getElementsByTagName('head')[0].appendChild(meta);
-        return;
-        ///*
-        window.onload = () => {
-            /*
-            window.addEventListener('touchstart', function (event) {
-                if (event.touches.length > 1) {
-                    //color.randomRGB(1.0);
-                    event.preventDefault();
-                }
-            });
-            var lastTouchEnd = 0;
-            window.addEventListener('touchend', function (event) {
-                var now = (new Date()).getTime();
-                if (now - lastTouchEnd <= 300) {
-                    //color.randomRGB(1.0);
-                    event.preventDefault();
-                }
-                lastTouchEnd = now;
-            }, false);
-            */
-            document.addEventListener('touchstart', function (event) {
-                if (event.touches.length > 1) {
-                    event.preventDefault();  //阻止元素的默认行为
-                }
-            })
-            var lastTouchEnd = 0;
-            document.addEventListener('touchend', function (event) {
-                var now = (new Date()).getTime();
-                if (now - lastTouchEnd <= 300) {
-                    event.preventDefault();
-                }
-                lastTouchEnd = now;  //当前为最后一次触摸
-            }, false)
-
-            //  var meta = document.createElement('meta');
-            //  meta.name = "viewport";
-            //  meta.content = "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no";
-            //  document.getElementsByTagName('head')[0].appendChild(meta);
-            //  var meta = document.createElement('meta');
-            //  meta.name = "HandheldFriendly";
-            //  meta.content = "true";
-            //  document.getElementsByTagName('head')[0].appendChild(meta);
-
-            var meta = document.createElement('meta');
-            meta.name = "viewport";
-            //meta.content = "width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover";
-            meta.content = "user-scalable=0";
-            document.getElementsByTagName('head')[0].appendChild(meta);
-            /**
-             * <meta
-      name="viewport"
-      content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=0,viewport-fit=cover"
-    />
-            */
-            //<meta name="HandheldFriendly" content="true">
-            /*
-            document.documentElement.addEventListener('touchstart', function (event) {
-                if (event.touches.length > 1) {
-                    event.preventDefault();
-                }
-            }, false);
-            document.documentElement.addEventListener('touchmove', function (event) {
-                event.preventDefault();      
-            }, false);
-            //*/
-        }
-        //*/
-    }
     initialize(): void {
         console.log("DemoVSMModule::initialize()......");
         if (this.m_rscene == null) {
             RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+            //DivLog.SetDebugEnabled(true);
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
             //rparam.setAttriAlpha(false);
@@ -221,7 +112,6 @@ export class DemoVSMModule {
 
             this.initSceneObjs();
             this.update();
-            this.initTestEvt();
 
         }
     }

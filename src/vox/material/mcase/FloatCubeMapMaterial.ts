@@ -80,7 +80,8 @@ void main()
 {
     vec3 envDir = -getEnvDir(0.0/*envLightRotateAngle*/, v_nvs); // env map upside down
 	envDir.x = -envDir.x;
-    vec3 color3 = texture(u_sampler0, v_nvs).xyz;
+    //vec3 color3 = texture(u_sampler0, v_nvs).xyz;
+    vec3 color3 = textureLod(u_sampler0, v_nvs, 3.0).xyz;
     //vec3 color3 = texture(u_sampler0, envDir).xyz;
     //vec3 color3 = textureLod(u_sampler0, envDir, 0.0).xyz;
     

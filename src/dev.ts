@@ -84,6 +84,8 @@
 //  import * as DemoRTT from "./demo/DemoRTT";
 //  import Demo = DemoRTT.demo.DemoRTT;
 
+//  import {DemoFloatRTT as Demo} from "./demo/DemoFloatRTT";
+
 //  import * as DemoMRT2 from "./demo/DemoMRT2";
 //  import Demo = DemoMRT2.demo.DemoMRT2;
 
@@ -227,7 +229,6 @@
 //  import * as DemoFloatTex2 from "./example/DemoFloatTex2";
 //  import Demo = DemoFloatTex2.demo.DemoFloatTex2;
 
-
 //  import * as DemoBoxGroupTrack from "./demo/DemoBoxGroupTrack";
 //  import Demo = DemoBoxGroupTrack.demo.DemoBoxGroupTrack;
 
@@ -320,7 +321,7 @@
 
 //  import {DemoSSAO3 as Demo} from "./shadow/ssao/DemoSSAO3";
 
-import {DemoSSAO4 as Demo} from "./shadow/ssao/DemoSSAO4";
+//  import {DemoSSAO4 as Demo} from "./shadow/ssao/DemoSSAO4";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     light    ////////////////////////////////////
@@ -344,7 +345,7 @@ import {DemoSSAO4 as Demo} from "./shadow/ssao/DemoSSAO4";
 
 //  import {DemoDefaultPBR3 as Demo} from "./pbr/DemoDefaultPBR3";
 
-//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
+import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////

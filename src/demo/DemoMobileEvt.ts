@@ -135,7 +135,6 @@ export class DemoMobileEvt {
         stage3D.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.test_bgmouseDownListener);
         stage3D.addEventListener(MouseEvent.MOUSE_BG_UP, this, this.test_bgmouseUpListener);
 
-        this.initTestEvt();
     }
     mouseDownListener(evt: any): void {
         console.log("mouseDown...");
@@ -161,35 +160,7 @@ export class DemoMobileEvt {
         console.log("test_bgmouseMoveListener");
     }
     private m_clearColor: Color4 = new Color4();
-    private initTestEvt(): void {
 
-        //let rscene: RendererScene = this.m_rscene;
-        let color: Color4 = this.m_clearColor;
-        window.onload = () => {
-            document.addEventListener('touchstart', function (event) {
-                if (event.touches.length > 1) {
-                    color.randomRGB(1.0);
-                    event.preventDefault();
-                }
-            });
-            var lastTouchEnd = 0;
-            document.addEventListener('touchend', function (event) {
-                var now = (new Date()).getTime();
-                if (now - lastTouchEnd <= 300) {
-                    color.randomRGB(1.0);
-                    event.preventDefault();
-                }
-                lastTouchEnd = now;
-            }, false);
-
-            var meta = document.createElement('meta');
-            meta.name = "viewport";
-            meta.content = "width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no";
-            document.getElementsByTagName('head')[0].appendChild(meta);
-
-            //<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no">
-        }
-    }
     initialize(): void {
         console.log("DemoMobileEvt::initialize()......");
         if (this.m_rscene == null) {

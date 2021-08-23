@@ -63,8 +63,7 @@ void main()
 	    vec3 envDir = -getWorldEnvDir(N, -V);
 	    envDir.x = -envDir.x;
         vec3 specularEnvColor3 = VOX_TextureCubeLod(VOX_ENV_MAP, envDir, mipLv).xyz;
-
-        //specularEnvColor3 = reinhardToneMapping(specularEnvColor3,1.0);
+        
         specularEnvColor3 = gammaToLinear(specularEnvColor3);
         specularColor = fresnelSchlick3(specularColor, dotNV, 0.25 * reflectionIntensity) * specularEnvColor3;
     #endif

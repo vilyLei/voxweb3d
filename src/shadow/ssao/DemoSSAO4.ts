@@ -53,28 +53,6 @@ export class DemoSSAO4 {
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
-    private initTestEvt(): void {
-
-        //let rscene: RendererScene = this.m_rscene;
-        let color: Color4 = this.m_clearColor;
-        window.onload = () => {
-            document.addEventListener('touchstart', function (event) {
-                if (event.touches.length > 1) {
-                    color.randomRGB(1.0);
-                    event.preventDefault();
-                }
-            })
-            var lastTouchEnd = 0;
-            document.addEventListener('touchend', function (event) {
-                var now = (new Date()).getTime();
-                if (now - lastTouchEnd <= 300) {
-                    color.randomRGB(1.0);
-                    event.preventDefault();
-                }
-                lastTouchEnd = now;
-            }, false)
-        }
-    }
     initialize(): void {
 
         console.log("DemoSSAO4::initialize()......");
@@ -84,6 +62,7 @@ export class DemoSSAO4 {
             //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
             let rparam: RendererParam = new RendererParam();
             rparam.maxWebGLVersion = 1;
+            rparam.setCamProject(45, 800,5000.0);
             rparam.setCamPosition(800.0, 800.0, 800.0);
             rparam.setAttriAntialias(true);
             rparam.setAttriStencil(true);
@@ -113,7 +92,6 @@ export class DemoSSAO4 {
             this.update();
 
             this.initTest();
-            this.initTestEvt();
         }
     }
     private m_aoSrcPlane: ScreenAlignPlaneEntity;
@@ -126,6 +104,8 @@ export class DemoSSAO4 {
 
 
         let depthTex: DepthTextureProxy = this.m_rscene.textureBlock.getDepthTextureAt(0);
+        depthTex.toDepthUnsignedInt();
+        //depthTex.toDepthAndStencil();
         this.m_aoPreFBO = this.m_rscene.createFBOInstance();
         this.m_aoPreFBO.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);   // set rtt background clear rgb(r=0.0,g=0.0,b=0.0) color
         this.m_aoPreFBO.createFBOAt(0, 512, 512, true, false);
@@ -137,11 +117,13 @@ export class DemoSSAO4 {
         //*
         let aoNoise: SSAONoiseData = new SSAONoiseData();
         aoNoise.initialize(this.m_rscene.textureBlock);
-
+        //random.png
+        let noiseTex: TextureProxy = aoNoise.createNoiseTex();
+        //let noiseTex: TextureProxy = this.getImageTexByUrl("static/assets/random.png");
         let aoMaterial: AODepTexMaterial = new AODepTexMaterial(aoNoise, 16);
         this.m_aoSrcPlane = new ScreenAlignPlaneEntity();
         this.m_aoSrcPlane.setMaterial(aoMaterial);
-        this.m_aoSrcPlane.initialize(-1.0, -1.0, 2.0, 2.0, [this.m_aoPreFBO.getRTTAt(0), aoNoise.createNoiseTex(), this.m_aoPreFBO.getRTTAt(1)]);
+        this.m_aoSrcPlane.initialize(-1.0, -1.0, 2.0, 2.0, [this.m_aoPreFBO.getRTTAt(0), noiseTex, this.m_aoPreFBO.getRTTAt(1)]);
         //this.m_rscene.addEntity(this.m_aoSrcPlane, 1);
 
         this.m_aoFBO = this.m_rscene.createFBOInstance();

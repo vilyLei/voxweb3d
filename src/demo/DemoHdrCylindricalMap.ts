@@ -54,7 +54,7 @@ export class DemoHdrCylindricalMap {
             console.log("fileSuffix: ", fileSuffix);
 
             let rparam: RendererParam = new RendererParam();
-            //rparam.maxWebGLVersion = 1;
+            rparam.maxWebGLVersion = 1;
             rparam.setAttriAntialias( true );
             //rparam.setCamPosition(800.0,800.0,800.0);
             rparam.setCamPosition(30.0, 100.0, 3800.0);

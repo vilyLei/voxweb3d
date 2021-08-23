@@ -212,8 +212,9 @@ export class DefaultPBRUI implements IPBRUI {
         this.ambientBtn = this.createValueBtn("ambient", "ambient", 0.1, 0.01, 1.0);
         this.specularBtn = this.createValueBtn("specular", "specular", 1.0, 0.01, 10.0);
 
+        let flag: boolean = RendererDeviece.IsIpadOS();
         this.rgbPanel = new RGBColorPanel();
-        this.rgbPanel.initialize(32, 4);
+        this.rgbPanel.initialize(flag ? 64 : 32, 4);
         this.rgbPanel.addEventListener(RGBColoSelectEvent.COLOR_SELECT, this, this.selectColor);
         this.rgbPanel.setXY(this.m_btnPX, this.m_btnPY);
         this.ruisc.addContainer(this.rgbPanel);

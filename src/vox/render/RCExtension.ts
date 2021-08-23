@@ -18,6 +18,7 @@ class RCExtension
     static readonly EXT_color_buffer_half_float:any = null;
     static readonly OES_texture_float_linear:any = null;
     static readonly OES_texture_half_float_linear:any = null;
+    static readonly OES_texture_half_float:any = null;
     static readonly OES_texture_float:any = null;
     static readonly OES_element_index_uint:any = null;
     static readonly EXT_blend_minmax:any = null;
@@ -89,6 +90,13 @@ void main(){
             console.log("Use EXT_color_buffer_half_float Extension success!");
             else
             console.log("EXT_color_buffer_half_float Extension can not support!");
+            
+            selfT.OES_texture_half_float = gl.getExtension('OES_texture_half_float');
+            if(selfT.OES_texture_half_float != null)
+            console.log("Use OES_texture_half_float Extension success!");
+            else
+            console.log("OES_texture_half_float Extension can not support!");
+
             selfT.OES_texture_half_float_linear = gl.getExtension('OES_texture_half_float_linear');
             if(selfT.OES_texture_half_float_linear != null)
             console.log("Use OES_texture_half_float_linear Extension success!");

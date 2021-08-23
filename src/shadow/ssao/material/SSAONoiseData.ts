@@ -10,6 +10,7 @@ import MathConst from "../../../vox/math/MathConst";
 import Vector3D from "../../../vox/math/Vector3D";
 import TextureBlock from "../../../vox/texture/TextureBlock";
 import FloatTextureProxy from "../../../vox/texture/FloatTextureProxy";
+import { TextureConst } from "../../../vox/texture/TextureConst";
 
 export default class SSAONoiseData
 {
@@ -150,7 +151,9 @@ export default class SSAONoiseData
         this.m_u8Pixels = pixels;
 
         let tex: FloatTextureProxy = this.m_texBlock.createFloatTex2D(width, width);
-        tex.mipmapEnabled = true;
+        tex.mipmapEnabled = false;
+        tex.minFilter = TextureConst.NEAREST;
+        tex.magFilter = TextureConst.NEAREST;
         tex.setDataFromBytes(pixels, 0, width, width);
         return tex;
     }

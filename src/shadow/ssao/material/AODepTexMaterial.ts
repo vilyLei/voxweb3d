@@ -116,7 +116,8 @@ void main()
     fragPos.z = -fragPos.z;
     
     vec3 randomVec = normalize(VOX_Texture2D(u_sampler1, v_uv * noiseScale + 0.1 * rand(v_uv)).xyz);
-    
+    //  FragColor0 = vec4(vec3(randomVec), 1.0);
+    //  return;
     //0.0->1.0 => -1.0 -> 1.0
     randomVec = randomVec * 2.0 - 1.0;
     randomVec.z = 0.0;
@@ -143,13 +144,13 @@ void main()
         // transform to range 0.0 - 1.0
         offset.xy = offset.xy * 0.5 + 0.5;
         // get sample depth
-        
-        float sampleDepth = -VOX_Texture2D(u_sampler0, offset.xy).w;
+
+        float sampleDepth = VOX_Texture2D( u_sampler2, offset.xy ).x;
+        sampleDepth = perspectiveDepthToViewZ(sampleDepth, u_frustumParam.x, u_frustumParam.y);
+        //float sampleDepth = -VOX_Texture2D(u_sampler0, offset.xy).w;
         // range check & accumulate
         float rangeCheck = smoothstep(0.0, 1.0, pr / abs(fragPos.z - sampleDepth));
         occlusion += (sampleDepth >= (sample3.z + bias) ? 1.0 : 0.0) * rangeCheck;
-        // highlight dege glow
-        //occlusion += (sampleDepth < (sample3.z + bias) ? 1.0 : 0.0) * rangeCheck;
     }
 
     FragColor0 = vec4(vec3(min(1.0 - ( occlusion / total), 1.0)), 1.0);

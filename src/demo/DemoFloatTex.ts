@@ -25,6 +25,8 @@ import BinaryLoader from "../vox/assets/BinaryLoader";
 import { RGBE,RGBEParser } from '../vox/assets/RGBEParser.js';
 import BytesTextureProxy from "../vox/texture/BytesTextureProxy";
 import MouseEvent from "../vox/event/MouseEvent";
+import DivLog from "../vox/utils/DivLog";
+import RCExtension from "../vox/render/RCExtension";
 export class DemoFloatTex implements ILoaderListerner {
     constructor() { }
     private m_rscene: RendererScene = null;
@@ -42,25 +44,43 @@ export class DemoFloatTex implements ILoaderListerner {
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
-    private createFloatTex(): FloatTextureProxy {
-        let texSize: number = 32;
-        let posTex: FloatTextureProxy = this.m_rscene.textureBlock.createFloatTex2D(texSize, texSize);
-        posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
-        posTex.mipmapEnabled = true;
-        posTex.minFilter = TextureConst.NEAREST;
-        posTex.magFilter = TextureConst.NEAREST;
+    private createFloatTex(size: number = 32, mipmap:boolean = false): FloatTextureProxy {
         
-        let fs: Float32Array = new Float32Array(texSize * texSize * 4);
-        fs.fill(1.0);
-        for (let r: number = 0; r < texSize; ++r) {
-            for (let c: number = 0; c < texSize; ++c) {
-                let k: number = (r * texSize + c) * 4;
-                //fs[k + 0] = 50.0;
-                fs[k + 1] = r/texSize;
-                //fs[k + 2] = 0.0;
-            }
+        let posTex: FloatTextureProxy = this.m_rscene.textureBlock.createFloatTex2D(size, size);
+        posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
+        posTex.mipmapEnabled = !mipmap;
+        if(RendererDeviece.IsWebGL2()) {
+            posTex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
+            posTex.magFilter = TextureConst.LINEAR;
         }
-        posTex.setDataFromBytes(fs, 0, texSize, texSize);
+        else {
+            //posTex.minFilter = TextureConst.NEAREST;
+            posTex.minFilter = TextureConst.NEAREST_MIPMAP_NEAREST;
+            //posTex.minFilter = TextureConst.NEAREST_MIPMAP_LINEAR;
+            //posTex.minFilter = TextureConst.LINEAR_MIPMAP_NEAREST;
+            posTex.magFilter = TextureConst.NEAREST;
+        }
+        
+        let texSize: number = size;
+        let total: number = Math.log2(size) + 1;
+        let i: number = 0;
+        while(i < total) {
+            console.log("texSize: ",texSize);
+            let fs: Float32Array = new Float32Array(texSize * texSize * 4);
+            fs.fill(1.0);
+            for (let r: number = 0; r < texSize; ++r) {
+                for (let c: number = 0; c < texSize; ++c) {
+                    let k: number = (r * texSize + c) * 4;
+                    fs[k + 0] = i/total;
+                    fs[k + 1] = r/texSize;
+                    fs[k + 2] = 0.0;
+                }
+            }
+            posTex.setDataFromBytes(fs, i, texSize, texSize);
+            texSize = texSize>>1;
+            i++;
+        }
+
         return posTex;
     }
 
@@ -93,6 +113,7 @@ export class DemoFloatTex implements ILoaderListerner {
             RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
+            DivLog.SetDebugEnabled( true );
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
             rparam.setCamPosition(500.0, 500.0, 500.0);
@@ -118,6 +139,7 @@ export class DemoFloatTex implements ILoaderListerner {
             axis.initialize(500.0);
             this.m_rscene.addEntity(axis);
 
+            //this.initFloatTex();
             this.initFloatTexEntity();
             //this.initHdrRGBEFloatTexEntity();
             //this.initHdrFloatTexEntity();
@@ -125,7 +147,7 @@ export class DemoFloatTex implements ILoaderListerner {
     }
     private initFloatTexEntity(): void {
 
-        let tex: TextureProxy = this.createFloatTex();
+        let tex: TextureProxy = this.createFloatTex(32, true);
         let material: FloatTexMaterial = new FloatTexMaterial();
         material.setTextureList([tex]);
         
@@ -134,6 +156,12 @@ export class DemoFloatTex implements ILoaderListerner {
         
         plane.initializeXOZ(0.0, 0.0, 200.0, 150.0, [tex]);
         this.m_rscene.addEntity(plane);
+    }
+    private initFloatTex(): void {
+
+        let loader: BinaryLoader = new BinaryLoader();
+        loader.uuid = "float_tex";
+        loader.load("static/bytes/spe.mdf", this);
     }
     private initHdrRGBEFloatTexEntity(): void {
         
@@ -163,7 +191,73 @@ export class DemoFloatTex implements ILoaderListerner {
         }
         else if(uuid == "float_hdr") {
             this.initFloat(buffer);
+        } else if(uuid == "float_tex") {
+            this.initFloatTexDisp(buffer);
         }
+    }
+    private initFloatTexDisp(buffer: ArrayBuffer): void {
+        let begin: number = 0;
+        let width: number = 128;
+        let height: number = 128;
+        let size: number = width * height * 3;
+        let fs32: Float32Array = new Float32Array(buffer);
+        let subArr: Float32Array = null;
+
+        //Math.log2(height);
+        console.log("Math.log2(height): ",Math.log2(height));
+        
+        let tex: FloatTextureProxy = this.m_rscene.textureBlock.createFloatTex2D(width, height);
+        tex.toRGBFormat();
+        tex.mipmapEnabled = false;
+        for (let j: number = 0; j < 8; j++) {
+            for (let i: number = 0; i < 1; i++) {
+                if(width < 0 || j != 1) {
+                    break;
+                }
+                const size = width * height * 3;
+                subArr = fs32.slice(begin, begin + size);
+                /*
+                let dstArr = new Float32Array(width * height * 4);
+                let total: number = width * height;
+
+                for(let k: number = 0; k < total; ++k) {
+                    let p: number = k * 4;
+                    let t: number = k * 3;
+                    dstArr[p] = subArr[t];
+                    dstArr[p+1] = subArr[t+1];
+                    dstArr[p+2] = subArr[t+2];
+                    dstArr[p+3] = 1.0;
+                }
+                subArr = dstArr;
+                //*/
+                console.log(j,"width: ", width, subArr.length, 64 * 64 * 3);
+                tex.setDataFromBytes(subArr, 0, width, width, 0,0);
+                begin += size;
+            }
+            width >>= 1;
+            height >>= 1;
+        }
+
+        DivLog.ShowLog("EXT_shader_texture_lod!=null: "+(RCExtension.EXT_shader_texture_lod != null));
+        DivLog.ShowLog("OES_texture_float_linear!=null: "+(RCExtension.OES_texture_float_linear != null));
+        if(RendererDeviece.IsWebGL2()) {
+            tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
+            tex.magFilter = TextureConst.LINEAR;
+        }
+        else {
+            tex.minFilter = TextureConst.NEAREST;
+            tex.magFilter = TextureConst.NEAREST;
+        }
+        tex.minFilter = TextureConst.NEAREST;
+        tex.magFilter = TextureConst.NEAREST;
+
+        let material: FloatTexMaterial = new FloatTexMaterial();
+        material.setTextureList([tex]);
+
+        let plane: Plane3DEntity = new Plane3DEntity();
+        plane.setMaterial(material);        
+        plane.initializeXOZ(0.0, 0.0, 200.0, 150.0, [tex]);
+        this.m_rscene.addEntity(plane);
     }
     private initRGBE(buffer: ArrayBuffer): void {
 

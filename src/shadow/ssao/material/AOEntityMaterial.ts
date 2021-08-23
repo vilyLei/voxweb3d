@@ -69,8 +69,8 @@ void main() {
     factor4.x *= factor4.x;
     
     //FragColor0 = vec4(vec3(factor4.x), 1.0);
-    FragColor0 = vec4(mix(vec3(0.0), color.xyz, factor4.x)  + 0.001 * abs(v_nv), 1.0);
-    //FragColor0 = vec4(mix(vec3(0.0), color.xyz, factor4.x), 1.0);
+    //FragColor0 = vec4(mix(vec3(0.0), color.xyz, factor4.x)  + 0.001 * abs(v_nv), 1.0);
+    FragColor0 = vec4(mix(vec3(0.0), color.xyz, factor4.x), 1.0);
     //FragColor0 = vec4(color.xyz, 1.0);
 }
 `

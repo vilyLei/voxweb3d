@@ -111,7 +111,8 @@ export class TextureDataType
                 return gl.HALF_FLOAT;
             break;
             case TextureDataType.HALF_FLOAT_OES:
-                return gl.HALF_FLOAT_OES;
+                if(RCExtension.OES_texture_half_float != null) return RCExtension.OES_texture_half_float.HALF_FLOAT_OES;
+                return gl.FLOAT;
                 break;
             case TextureDataType.UNSIGNED_SHORT:
                 return gl.UNSIGNED_SHORT;
@@ -228,10 +229,6 @@ export class TextureConst
     static readonly NEAREST_MIPMAP_NEAREST:number = 4004;
     static readonly LINEAR_MIPMAP_NEAREST:number = 4005;
     static readonly NEAREST_MIPMAP_LINEAR:number = 4006;
-    //  static readonly TEX_PROXY2D:number = 5001;
-    //  static readonly TEX_BYTES2D:number = 5002;
-    //  static readonly TEX_PROXYCUBE:number = 5003;
-    //  static readonly TEX_PROXY3D:number = 5004;
     static GetConst(gl:any,param:number):number
     {
         switch(param)

@@ -68,7 +68,7 @@ class RTTTextureProxy extends TextureProxy {
         let format: number = TextureFormat.ToGL(rgl, this.srcFormat);
         let type: number = TextureDataType.ToGL(rgl, this.dataType);
 
-        console.log(this,", fboWidth, fboHeight: ",fboWidth, fboHeight, interType,format);
+        //console.log(this,", fboWidth, fboHeight: ",fboWidth, fboHeight, interType,format);
         switch (this.m_texTarget) {
             case TextureTarget.TEXTURE_2D:
                 rgl.texImage2D(rgl.TEXTURE_2D, 0, interType, fboWidth, fboHeight, 0, format, type, null);

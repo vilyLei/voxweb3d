@@ -8,6 +8,7 @@
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
+import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
 
 class FloatTexRenderShaderBuffer extends ShaderCodeBuffer
 {
@@ -16,31 +17,73 @@ class FloatTexRenderShaderBuffer extends ShaderCodeBuffer
         super();
     }
     private static s_instance:FloatTexRenderShaderBuffer = null;
+    private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
         //console.log("FloatTexRenderShaderBuffer::initialize()...");
         this.m_uniqueName = "FloatTexMaterialShd";
+        this.adaptationShaderVersion = false;
+    }
+    
+    private buildThisCode():void
+    {
+        let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
+        coder.reset();
+        //coder.vertMatrixInverseEnabled = true;
+        coder.mapLodEnabled = true;
+
+        coder.addVertLayout("vec3","a_vs");
+        coder.addVertLayout("vec2","a_uvs");
+        
+        coder.addVarying("vec2", "v_uv");
+
+        coder.addFragOutput("vec4", "FragColor0");
+        coder.addFragUniform("vec4","u_color");
+        
+        coder.addTextureSample2D();
+
+        coder.useVertSpaceMats(true,true,true);
+
+        coder.addFragFunction(
+`
+
+`
+        );
     }
     getFragShaderCode():string
     {
-        let fragCode:string = 
-`#version 300 es
-precision mediump float;
-uniform sampler2D u_sampler0;
-uniform vec4 u_color;
-in vec2 v_uv;
-//  in vec4 v_color;
-layout(location = 0) out vec4 FragColor;
-void main(){
-vec4 color4 = texture(u_sampler0, v_uv) * u_color;
-FragColor = color4;
+        this.buildThisCode();
+        
+        this.m_codeBuilder.addFragMainCode(
+`
+void main() {
+    //vec4 color4 = VOX_Texture2DLod( u_sampler0, v_uv, 4.0 ) * u_color;
+    vec4 color4 = VOX_Texture2D( u_sampler0, v_uv) * u_color;
+    FragColor0 = color4;
 }
-`;
-        return fragCode;
+`
+                                    );
+                    
+                    return this.m_codeBuilder.buildFragCode();
     }
     getVtxShaderCode():string
     {
+        
+        this.m_codeBuilder.addVertMainCode(
+`
+void main() {
+
+    mat4 viewMat4 = u_viewMat * u_objMat;
+    vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);
+
+    gl_Position = u_projMat * viewPos;
+    v_uv = a_uvs.xy;
+}
+`
+                                    );
+        return this.m_codeBuilder.buildVertCode();
+        /*
         let vtxCode:string = 
 `#version 300 es
 precision highp float;
@@ -61,6 +104,7 @@ gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs.xyz,1.0);
 }
 `;
         return vtxCode;
+        //*/
     }
     getUniqueShaderName(): string
     {

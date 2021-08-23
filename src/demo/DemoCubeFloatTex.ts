@@ -124,7 +124,7 @@ export class DemoCubeFloatTex implements ILoaderListerner {
         }
     }
     private initFloatCube(): void {
-        let url: string = "static/bytes/dif.mdf";
+        let url: string = "static/bytes/spe.mdf";
         let loader: BinaryLoader = new BinaryLoader();
         loader.uuid = url;
         loader.load(url, this);
@@ -188,6 +188,7 @@ export class DemoCubeFloatTex implements ILoaderListerner {
         let tex: FloatCubeTextureProxy;
         tex = this.m_rscene.textureBlock.createFloatCubeTex(width, height);
         tex.toRGBFormat();
+        tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
         tex.mipmapEnabled = false;
         //let begin:number = 0;
         for (let j = 0; j < 9; j++) {

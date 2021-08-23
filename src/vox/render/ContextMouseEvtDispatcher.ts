@@ -48,8 +48,8 @@ class ContextMouseEvtDispatcher
                 let py:number = 0;
                 if(list.length < 2)
                 {
-                    px = 0 | (selfT.dpr * (evt.targetTouches[0].pageX - this.offsetLeft));
-                    py = 0 | (selfT.dpr * (evt.targetTouches[0].pageY - this.offsetTop));
+                    px = 0 | (selfT.dpr * evt.targetTouches[0].pageX);
+                    py = 0 | (selfT.dpr * evt.targetTouches[0].pageY);
                     
                     stage.mouseX = px;
                     stage.mouseY = stage.stageHeight - py;
@@ -63,8 +63,8 @@ class ContextMouseEvtDispatcher
                     let posArray:any[] = [];
                     for(let i:number = 0; i < list.length; ++i)
                     {
-                        px = 0 | (selfT.dpr * (evt.targetTouches[i].pageX - this.offsetLeft));
-                        py = 0 | (selfT.dpr * (evt.targetTouches[i].pageY - this.offsetTop));
+                        px = 0 | (selfT.dpr * evt.targetTouches[i].pageX);
+                        py = 0 | (selfT.dpr * evt.targetTouches[i].pageY);
                         posArray.push( {x:px, y:py} );
                     }
                     stage.mouseMultiDown(posArray);
@@ -88,8 +88,8 @@ class ContextMouseEvtDispatcher
                     let posArray:any[] = [];
                     for(let i:number = 0; i < list.length; ++i)
                     {
-                        px = 0 | (selfT.dpr * (evt.targetTouches[i].pageX - this.offsetLeft));
-                        py = 0 | (selfT.dpr * (evt.targetTouches[i].pageY - this.offsetTop));
+                        px = 0 | (selfT.dpr * evt.targetTouches[i].pageX);
+                        py = 0 | (selfT.dpr * evt.targetTouches[i].pageY);
                         posArray.push( {x:px, y:py} );
                     }
                     stage.mouseMultiUp(posArray);
@@ -107,13 +107,14 @@ class ContextMouseEvtDispatcher
             },false);
             ///*
             div.addEventListener('touchmove',function(evt:any){
+                evt.preventDefault(); //阻止屏幕滚动的默认行为
                 let list:any[] = evt.targetTouches;
                 let px:number = 0;
                 let py:number = 0;
                 if(selfT.m_singleDown)
                 {
-                    px = 0 | (selfT.dpr * (list[0].pageX - this.offsetLeft));
-                    py = 0 | (selfT.dpr * (list[0].pageY - this.offsetTop));
+                    px = 0 | (selfT.dpr * list[0].pageX);
+                    py = 0 | (selfT.dpr * list[0].pageY);
                     stage.mouseViewX = px;
                     stage.mouseViewY = py;                            
                     stage.mouseX = px;
@@ -125,21 +126,27 @@ class ContextMouseEvtDispatcher
                     let posArray:any[] = [];
                     for(let i:number = 0; i < list.length; ++i)
                     {
-                        px = 0 | (selfT.dpr * (evt.targetTouches[i].pageX - this.offsetLeft));
-                        py = 0 | (selfT.dpr * (evt.targetTouches[i].pageY - this.offsetTop));
+                        px = 0 | (selfT.dpr * evt.targetTouches[i].pageX);
+                        py = 0 | (selfT.dpr * evt.targetTouches[i].pageY);
                         posArray.push( {x:px, y:py} );
                     }
                     stage.mouseMultiMove(posArray);
                 }
-                //DivLog.showLogOnce("touchmove "+list.length+", px,py: "+(px|0)+","+(0|py));
-                evt.preventDefault(); //阻止屏幕滚动的默认行为
-            },false);
+                //DivLog.ShowLog("touchmove "+list.length+", px,py: "+(px|0)+","+(0|py));
+            },{passive: false},false);
+            //},false);
             //*/
+            if(RendererDeviece.IsIpadOS()) {
+                let meta = document.createElement('meta');
+                meta.name = "viewport";
+                meta.content = "width=device-width,initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no";
+                document.getElementsByTagName('head')[0].appendChild(meta);
+            }
         }
     }
     initialize(canvas:any, div:any, stage:IRenderStage3D):void
     {
-        if(RendererDeviece.IsMobileWeb())
+        if(RendererDeviece.IsMobileWeb() || RendererDeviece.IsIpadOS())
         {
             this.initMobile(canvas,div,stage);
         }
