@@ -85,7 +85,7 @@ export class DemoSSAO3 {
             RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
             let rparam: RendererParam = new RendererParam();
-            //rparam.maxWebGLVersion = 1;
+            //  rparam.maxWebGLVersion = 1;
             rparam.setCamPosition(800.0, 800.0, 800.0);
             rparam.setAttriAntialias(true);
             rparam.setAttriStencil(true);
@@ -171,15 +171,11 @@ export class DemoSSAO3 {
         this.m_aoPreMaterial.initializeByCodeBuf(false);
         
         this.m_aoPreFBO = this.m_rscene.createFBOInstance();
-        this.m_aoPreFBO.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);    // set rtt background clear rgb(r=0.0,g=0.0,b=0.0) color
+        this.m_aoPreFBO.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);        // set rtt background clear rgb(r=0.0,g=0.0,b=0.0) color
         this.m_aoPreFBO.createFBOAt(0, 512, 512, true, false);
         this.m_aoPreFBO.setGlobalMaterial( this.m_aoPreMaterial, false );
-        this.m_aoPreFBO.setRenderToFloatTextureAt(0, 0);            // framebuffer color attachment 0: normal texture
-        //this.m_aoPreFBO.setRenderToTexture(this.m_aoPreRttTex, 0);            // framebuffer color attachment 0: normal texture
+        this.m_aoPreFBO.setRenderToFloatTextureAt(0, 0);                // framebuffer color attachment 0: normal texture
         this.m_aoPreFBO.setRProcessIDList([0]);
-        if(RendererDeviece.IsWebGL1()) {
-            this.m_aoPreFBO.getRTTAt(0).dataType = TextureDataType.HALF_FLOAT_OES;
-        }
 
         let aoNoise: SSAONoiseData = new SSAONoiseData();
         aoNoise.initialize(this.m_rscene.textureBlock);

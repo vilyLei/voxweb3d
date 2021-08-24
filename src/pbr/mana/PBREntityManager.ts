@@ -17,6 +17,7 @@ import DracoMesh from "../../voxmesh/draco/DracoMesh";
 import {DracoTaskListener} from "../../voxmesh/draco/DracoTask";
 import DracoMeshBuilder from "../../voxmesh/draco/DracoMeshBuilder";
 import ThreadSystem from "../../thread/ThreadSystem";
+import HdrBrnCubeMapMapMaterial from "../../vox/material/mcase/HdrBrnCubeMapMaterial";
 
 
 export default class PBREntityManager implements DracoTaskListener
@@ -161,6 +162,19 @@ export default class PBREntityManager implements DracoTaskListener
 
             this.addParamEntity(sph, material);
         }
+        //  let ufmaterial: HdrBrnCubeMapMapMaterial = new HdrBrnCubeMapMapMaterial();
+        
+        //  let box: Box3DEntity = new Box3DEntity();        
+        //  box.useGourandNormal();
+        //  box.setMaterial(material);
+        //  box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex]);
+        //  this.m_rscene.addEntity(box);
+
+        //  console.log("this.m_envMap>>>>>>>>>>>>>>: ",this.m_envMap);
+        //  let ufsph: Sphere3DEntity = new Sphere3DEntity();
+        //  ufsph.setMaterial(ufmaterial);
+        //  ufsph.initialize(100.0,30,30, [this.m_envMap]);
+        //  this.m_rscene.addEntity(ufsph, 3);
     }
     private addParamEntity(entity: DisplayEntity, material: PBRMaterial): void {
         let param: PBRParamEntity = new PBRParamEntity();

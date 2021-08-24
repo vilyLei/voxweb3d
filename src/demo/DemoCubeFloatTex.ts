@@ -26,6 +26,8 @@ import FloatCubeMapMaterial from "../vox/material/mcase/FloatCubeMapMaterial";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import FloatCubeTextureProxy from "../vox/texture/FloatCubeTextureProxy";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
+import HdrBrnCubeMapMapMaterial from "../vox/material/mcase/HdrBrnCubeMapMaterial";
+import BytesCubeTextureProxy from "../vox/texture/BytesCubeTextureProxy";
 
 export class DemoCubeFloatTex implements ILoaderListerner {
     constructor() { }
@@ -121,15 +123,24 @@ export class DemoCubeFloatTex implements ILoaderListerner {
             this.m_rscene.addEntity(axis);
 
             this.initFloatCube();
+            //this.initHdrBrnCube();
         }
     }
     private initFloatCube(): void {
         let url: string = "static/bytes/spe.mdf";
+        //let url: string = "static/bytes/dif.mdf";
         let loader: BinaryLoader = new BinaryLoader();
         loader.uuid = url;
         loader.load(url, this);
     }
-    private m_targetMaterial: FloatCubeMapMaterial = null;
+    private initHdrBrnCube(): void {
+        let url: string = "static/bytes/spe.hdrBrn";
+        //let url: string = "static/bytes/dif.hdrBrn";
+        let loader: BinaryLoader = new BinaryLoader();
+        loader.uuid = url;
+        loader.load(url, this);
+    }
+    private m_targetMaterial: any = null;
     private mouseDown(evt: any): void {
         if (this.m_targetMaterial != null) {
             let exposure: number = Math.max(evt.mouseX - 20, 0.0) / 200.0;
@@ -143,6 +154,12 @@ export class DemoCubeFloatTex implements ILoaderListerner {
         }
         else if(uuid == "static/bytes/spe.mdf") {
             this.parseSCubeMap(buffer);
+        }
+        else if(uuid == "static/bytes/spe.hdrBrn") {
+            this.parseHdrBrnCubeMap(buffer);
+        }
+        else if(uuid == "static/bytes/dif.hdrBrn") {
+            this.parseHdrBrnCubeMap(buffer);
         }
     }
     loadError(status: number, uuid: string): void {
@@ -172,10 +189,60 @@ export class DemoCubeFloatTex implements ILoaderListerner {
         this.m_targetMaterial = material;
         let box: Box3DEntity = new Box3DEntity();
         
-        box.useGourandNormal();
-        box.setMaterial(material);
-        box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex]);
-        this.m_rscene.addEntity(box);
+        //  box.useGourandNormal();
+        //  box.setMaterial(material);
+        //  box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex]);
+        //  this.m_rscene.addEntity(box);
+        
+        let sph: Sphere3DEntity = new Sphere3DEntity();
+        sph.setMaterial(material);
+        sph.initialize(100.0,30,30, [tex]);
+        this.m_rscene.addEntity(sph);
+    }
+    private parseHdrBrnCubeMap(buffer: ArrayBuffer): void {
+
+        let currBytes: Uint8Array = new Uint8Array(buffer);
+        let begin: number = 0;
+        let width: number = Math.pow(2,currBytes[24]);
+        let height: number = Math.pow(2,currBytes[25]);
+        let mipMapMaxLv: number = currBytes[26];
+        console.log("parseHdrBrnCubeMap, width: ",width, "height: ",height);
+        let size: number = 0;
+        let bytes: Uint8Array = currBytes.subarray(32);
+        let tex: BytesCubeTextureProxy  = this.m_rscene.textureBlock.createBytesCubeTex(width, height);
+        if(mipMapMaxLv > 1) {
+            tex.mipmapEnabled = false;
+            tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
+            tex.magFilter = TextureConst.LINEAR;
+        }
+        else {
+            tex.mipmapEnabled = true;
+            tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
+            tex.magFilter = TextureConst.LINEAR;
+        }
+        for (let j = 0; j < mipMapMaxLv; j++) {
+            for (let i = 0; i < 6; i++) {
+                size = width * height * 4;
+                tex.setDataFromBytesToFaceAt(i, bytes.subarray(begin, begin + size), width, height, j);
+                begin += size;
+            }
+            width >>= 1;
+            height >>= 1;
+        }
+
+        let material: HdrBrnCubeMapMapMaterial = new HdrBrnCubeMapMapMaterial();
+        this.m_targetMaterial = material;
+        //  let box: Box3DEntity = new Box3DEntity();        
+        //  box.useGourandNormal();
+        //  box.setMaterial(material);
+        //  box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex]);
+        //  this.m_rscene.addEntity(box);
+
+        
+        let sph: Sphere3DEntity = new Sphere3DEntity();
+        sph.setMaterial(material);
+        sph.initialize(100.0,30,30, [tex]);
+        this.m_rscene.addEntity(sph);
     }
     private parseSCubeMap(buffer: ArrayBuffer): void {
         let begin: number = 0;

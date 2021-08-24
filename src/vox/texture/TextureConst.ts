@@ -104,7 +104,6 @@ export class TextureDataType
                 return gl.BYTE;
             break;
             case TextureDataType.FLOAT:
-                //console.log("TextureDataType.FLOAT...");
                 return gl.FLOAT;
             break;
             case TextureDataType.HALF_FLOAT:

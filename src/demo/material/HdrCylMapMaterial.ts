@@ -54,6 +54,12 @@ vec4 LinearTosRGB( in vec4 value ){
 vec4 RGBEToLinear( in vec4 value ){
 	return vec4( value.rgb * exp2( value.a * 255.0 - 128.0 ), 1.0 );
 }
+vec4 LinearToRGBE( in vec4 value ) {
+  float maxComponent = max( max( value.r, value.g ), value.b );
+  float fExp = clamp( ceil( log2( maxComponent ) ), -128.0, 127.0 );
+  return vec4( value.rgb / exp2( fExp ), ( fExp + 128.0 ) / 255.0 );
+  // return vec4( value.brg, ( 3.0 + 128.0 ) / 256.0 );
+}
 
 // expects values in the range of [0,1]x[0,1], returns values in the [0,1] range.
 // do not collapse into a single function per: http://byteblacksmith.com/improvements-to-the-canonical-one-liner-glsl-rand-for-opengl-es-2-0/

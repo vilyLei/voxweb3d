@@ -106,6 +106,7 @@ export default class PBREntityUtils
         else {
             mirMaterial.setTextureList(texList.slice(0));
         }
+        mirMaterial.hdrBrnEnabled = false;
         mirMaterial.envMapEnabled = false;
         mirMaterial.diffuseMapEnabled = material.diffuseMapEnabled;
         mirMaterial.normalMapEnabled = material.normalMapEnabled;

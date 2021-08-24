@@ -10,19 +10,19 @@ import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
 import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
 
-class FloatTexRenderShaderBuffer extends ShaderCodeBuffer
+class UfloatFromBytesRenderShaderBuffer extends ShaderCodeBuffer
 {
     constructor()
     {
         super();
     }
-    private static s_instance:FloatTexRenderShaderBuffer = null;
+    private static s_instance:UfloatFromBytesRenderShaderBuffer = null;
     private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
-        //console.log("FloatTexRenderShaderBuffer::initialize()...");
-        this.m_uniqueName = "FloatTexMaterialShd";
+        //console.log("UfloatFromBytesRenderShaderBuffer::initialize()...");
+        this.m_uniqueName = "UfloatFromBytesMaterialShd";
         this.adaptationShaderVersion = false;
     }
     
@@ -57,10 +57,49 @@ class FloatTexRenderShaderBuffer extends ShaderCodeBuffer
         
         this.m_codeBuilder.addFragMainCode(
 `
+/*
+// Encoding/decoding [0..1) floats into 8 bit/channel RGBA. Note that 1.0 will not be encoded properly.
+inline vec4 EncodeFloatRGBA( float v )
+{
+    vec4 kEncodeMul = vec4(1.0, 255.0, 65025.0, 16581375.0);
+    float kEncodeBit = 1.0/255.0;
+    vec4 enc = kEncodeMul * v;
+    enc = fract (enc);
+    enc -= enc.yzww * kEncodeBit;
+    return enc;
+}
+inline float DecodeFloatRGBA( vec4 enc )
+{
+    vec4 kDecodeDot = vec4(1.0, 1/255.0, 1/65025.0, 1/16581375.0);
+    return dot( enc, kDecodeDot );
+}
+
+// Encoding/decoding [0..1) floats into 8 bit/channel RG. Note that 1.0 will not be encoded properly.
+inline vec2 EncodeFloatRG( float v )
+{
+    vec2 kEncodeMul = vec2(1.0, 255.0);
+    float kEncodeBit = 1.0/255.0;
+    vec2 enc = kEncodeMul * v;
+    enc = fract (enc);
+    enc.x -= enc.y * kEncodeBit;
+    return enc;
+}
+inline float DecodeFloatRG( vec2 enc )
+{
+    vec2 kDecodeDot = vec2(1.0, 1.0/255.0);
+    return dot( enc, kDecodeDot );
+}
+//*/
+
+const vec4 hdrBrnDecodeVec4 = vec4(255.0, 2.55, 0.0255, 0.000255);
+float rgbaToHdrBrn(in vec4 color) {
+    return dot(hdrBrnDecodeVec4, color);
+}
 void main() {
-    vec4 color4 = VOX_Texture2DLod( u_sampler0, v_uv, 6.0 ) * u_color;
-    //vec4 color4 = VOX_Texture2D( u_sampler0, v_uv) * u_color;
-    FragColor0 = color4;
+    vec4 color4 = VOX_Texture2DLod( u_sampler0, v_uv, 3.0 ) * u_color;
+    //vec4 color4 = VOX_Texture2D( u_sampler0, v_uv);
+    float brn = rgbaToHdrBrn(color4);
+    FragColor0 = vec4(vec3(brn), 1.0) * u_color;
 }
 `
                                     );
@@ -91,20 +130,20 @@ void main() {
     }
     toString():string
     {
-        return "[FloatTexRenderShaderBuffer()]";
+        return "[UfloatFromBytesRenderShaderBuffer()]";
     }
 
-    static GetInstance():FloatTexRenderShaderBuffer
+    static GetInstance():UfloatFromBytesRenderShaderBuffer
     {
-        if(FloatTexRenderShaderBuffer.s_instance != null)
+        if(UfloatFromBytesRenderShaderBuffer.s_instance != null)
         {
-            return FloatTexRenderShaderBuffer.s_instance;
+            return UfloatFromBytesRenderShaderBuffer.s_instance;
         }
-        FloatTexRenderShaderBuffer.s_instance = new FloatTexRenderShaderBuffer();
-        return FloatTexRenderShaderBuffer.s_instance;
+        UfloatFromBytesRenderShaderBuffer.s_instance = new UfloatFromBytesRenderShaderBuffer();
+        return UfloatFromBytesRenderShaderBuffer.s_instance;
     }
 }
-export default class FloatTexMaterial extends MaterialBase
+export default class UfloatFromBytesMaterial extends MaterialBase
 {
     constructor()
     {
@@ -112,7 +151,7 @@ export default class FloatTexMaterial extends MaterialBase
     }
     getCodeBuf():ShaderCodeBuffer
     {
-        return FloatTexRenderShaderBuffer.GetInstance();
+        return UfloatFromBytesRenderShaderBuffer.GetInstance();
     }
     private m_colorArray:Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
     private m_posParam:Float32Array = new Float32Array([1.0/16,0.0,0.0,0.0]);

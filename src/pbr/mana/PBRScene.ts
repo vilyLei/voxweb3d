@@ -39,7 +39,7 @@ export default class PBRScene
     private m_reflectPlaneY: number = -220.0;
 
     fogEnabled: boolean = true;
-
+    hdrBrnEnabled: boolean = true;
     constructor() {
 
     }
@@ -53,7 +53,11 @@ export default class PBRScene
             this.m_uiModule = uiModule;
             
             let envMapUrl: string = "static/bytes/spe.mdf";
+            if(this.hdrBrnEnabled) {
+                envMapUrl = "static/bytes/spe.hdrBrn";
+            }
             let loader: SpecularTextureLoader = new SpecularTextureLoader();
+            loader.hdrBrnEnabled = this.hdrBrnEnabled;
             loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
             this.m_envMap = loader.texture;
 
@@ -61,6 +65,7 @@ export default class PBRScene
             lightModule.create(4, 2);
 
             this.m_materialBuilder = new PBRMaterialBuilder();
+            this.m_materialBuilder.hdrBrnEnabled = this.hdrBrnEnabled;
 
             this.m_lightData.initialize(4, 2);
             this.m_lightData.buildData();
@@ -149,5 +154,6 @@ export default class PBRScene
         this.m_rscene.runAt(0);
         this.m_rscene.runAt(1);
         this.m_rscene.runAt(2);
+        //this.m_rscene.runAt(3);
     }
 }

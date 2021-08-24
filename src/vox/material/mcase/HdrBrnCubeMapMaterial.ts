@@ -8,31 +8,57 @@
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
+import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
 
-class FloatCubeMapShaderBuffer extends ShaderCodeBuffer {
+class HdrBrnCubeMapMapShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static s_instance: FloatCubeMapShaderBuffer = null;
+    private static s_instance: HdrBrnCubeMapMapShaderBuffer = null;
+    private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName: string = "";
     initialize(texEnabled: boolean): void {
-        //console.log("FloatCubeMapShaderBuffer::initialize()...");
-        this.m_uniqueName = "FloatCubeMapShd";
+        //console.log("HdrBrnCubeMapMapShaderBuffer::initialize()...");
+        this.m_uniqueName = "HdrBrnCubeMapMapShd";
+        this.adaptationShaderVersion = false;
+    }
+    
+    private buildThisCode():void
+    {
+        let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
+        coder.reset();
+        coder.vertMatrixInverseEnabled = true;
+        coder.mapLodEnabled = true;
+
+        coder.addVertLayout("vec3","a_vs");
+        coder.addVertLayout("vec2","a_uvs");
+        coder.addVertLayout("vec3","a_nvs");
+        
+        coder.addVarying("vec3", "v_nvs");
+        coder.addVarying("vec3", "v_worldPos");
+        coder.addVarying("vec3", "v_camPos");
+
+        coder.addFragOutput("vec4", "FragColor0");
+        coder.addFragUniform("vec4","u_color");
+        coder.addFragUniform("vec4","u_param");
+        coder.addFragUniform("vec4","u_camPos");
+        coder.addFragUniform("mat4","u_viewMat");
+        
+        coder.addTextureSampleCube();
+
+        coder.useVertSpaceMats(true,true,true);
+
+        coder.addFragFunction(
+`
+
+`
+        );
     }
     getFragShaderCode(): string {
-        let fragCode: string =
-`#version 300 es
-precision mediump float;
-
-uniform samplerCube u_sampler0;
-uniform mat4 u_viewMat;
-uniform vec4 u_color;
-uniform vec4 u_param;
-uniform vec4 u_camPos;
-
-in vec3 v_nvs;
-in vec3 v_worldPos;
-in vec3 v_camPos;
+        this.buildThisCode();
+        
+        this.m_codeBuilder.addFragMainCode(
+`
 
 // handy value clamping to 0 - 1 range
 #define saturate(a) clamp( a, 0.0, 1.0 )
@@ -75,41 +101,32 @@ vec3 getEnvDir(float rotateAngle, vec3 normal)
 	float preZ = worldR.z;
 	return worldR;
 }
-layout(location = 0) out vec4 FragColor;
+const vec4 hdrBrnDecodeVec4 = vec4(255.0, 2.55, 0.0255, 0.000255);
+float rgbaToHdrBrn(in vec4 color) {
+    return dot(hdrBrnDecodeVec4, color);
+}
 void main()
 {
     vec3 envDir = -getEnvDir(0.0/*envLightRotateAngle*/, v_nvs); // env map upside down
 	envDir.x = -envDir.x;
-    //vec3 color3 = texture(u_sampler0, v_nvs).xyz;
-    vec3 color3 = textureLod(u_sampler0, v_nvs, 4.0).xyz;
-    //vec3 color3 = texture(u_sampler0, envDir).xyz;
-    //vec3 color3 = textureLod(u_sampler0, envDir, 0.0).xyz;
+    vec4 color4 = VOX_TextureCubeLod(u_sampler0, v_nvs, 4.0);
+    color4.xyz = vec3( rgbaToHdrBrn(color4) );
     
-    color3 = toneMapping( color3 );
-    vec4 color4 = vec4(color3, 1.0);
+    color4.xyz = toneMapping( color4.xyz );
+    color4 = vec4(color4.xyz, 1.0);
     color4 = LinearTosRGB( color4 );
     color4.xyz *= u_color.xyz;
-    FragColor = color4;// + 0.001 * vec4(abs(v_nvs),1.0);
-    //  if(abs(length(v_camPos.xyz) - length(u_camPos.xyz)) < 0.01) {
-    //      FragColor.xyzw = vec4(1.0,0.0,0.0,1.0);
-    //  }
+    FragColor0 = color4;
 }
-`;
-        return fragCode;
+`
+        );
+        return this.m_codeBuilder.buildFragCode();
     }
     getVtxShaderCode(): string {
-        let vtxCode: string =
-`#version 300 es
-precision mediump float;
-layout(location = 0) in vec3 a_vs;
-layout(location = 1) in vec2 a_uvs;
-layout(location = 2) in vec3 a_nvs;
-uniform mat4 u_objMat;
-uniform mat4 u_viewMat;
-uniform mat4 u_projMat;
-out vec3 v_nvs;
-out vec3 v_worldPos;
-out vec3 v_camPos;
+
+        
+        this.m_codeBuilder.addVertMainCode(
+`
 void main()
 {
     vec4 wpos = u_objMat * vec4(a_vs,1.0);
@@ -118,33 +135,34 @@ void main()
     v_nvs = a_nvs;
     v_worldPos = wpos.xyz;
 }
-`;
-        return vtxCode;
+`
+        );
+        return this.m_codeBuilder.buildVertCode();
     }
     getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
     toString(): string {
-        return "[FloatCubeMapShaderBuffer()]";
+        return "[HdrBrnCubeMapMapShaderBuffer()]";
     }
 
-    static GetInstance(): FloatCubeMapShaderBuffer {
-        if (FloatCubeMapShaderBuffer.s_instance != null) {
-            return FloatCubeMapShaderBuffer.s_instance;
+    static GetInstance(): HdrBrnCubeMapMapShaderBuffer {
+        if (HdrBrnCubeMapMapShaderBuffer.s_instance != null) {
+            return HdrBrnCubeMapMapShaderBuffer.s_instance;
         }
-        FloatCubeMapShaderBuffer.s_instance = new FloatCubeMapShaderBuffer();
-        return FloatCubeMapShaderBuffer.s_instance;
+        HdrBrnCubeMapMapShaderBuffer.s_instance = new HdrBrnCubeMapMapShaderBuffer();
+        return HdrBrnCubeMapMapShaderBuffer.s_instance;
     }
 }
 
-export default class FloatCubeMapMaterial extends MaterialBase {
+export default class HdrBrnCubeMapMapMaterial extends MaterialBase {
     constructor() {
         super();
     }
 
     getCodeBuf(): ShaderCodeBuffer {
-        return FloatCubeMapShaderBuffer.GetInstance();
+        return HdrBrnCubeMapMapShaderBuffer.GetInstance();
     }
     private m_colorArray: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
     private m_param: Float32Array = new Float32Array([1.0, 0.0, 0.0, 0.0]);

@@ -49,6 +49,7 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
     indirectEnvMapEnabled: boolean = false;
     shadowReceiveEnabled: boolean = false;
     fogEnabled: boolean = false;
+    hdrBrnEnabled: boolean = false;
 
     pointLightsTotal: number = 4;
     parallelLightsTotal: number = 0;
@@ -119,6 +120,7 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
         }
         console.log("this.texturesTotal: ", this.texturesTotal, ", texIndex: ",texIndex);
         if (this.mirrorMapLodEnabled) coder.addDefine("VOX_MIRROR_MAP_LOD", "1");
+        if (this.hdrBrnEnabled) coder.addDefine("VOX_HDR_BRN", "1");
         
         let lightsTotal: number = this.pointLightsTotal + this.parallelLightsTotal;
         if (this.pointLightsTotal > 0)  coder.addDefine("VOX_POINT_LIGHTS_TOTAL", ""+this.pointLightsTotal);
@@ -200,6 +202,7 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
         if (this.aoMapEnabled) ns += "AoMap";
         if (this.shadowReceiveEnabled) ns += "Shadow";
         if (this.fogEnabled) ns += "Fog";
+        if (this.hdrBrnEnabled) ns += "HdrBrn";
 
         if (this.pointLightsTotal > 0) ns += "LP" + this.pointLightsTotal;
         if (this.parallelLightsTotal > 0) ns += "LD" + this.parallelLightsTotal;
@@ -283,7 +286,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     indirectEnvMapEnabled: boolean = false;
     shadowReceiveEnabled: boolean = false;
     fogEnabled: boolean = false;
-
+    hdrBrnEnabled: boolean = false;
     constructor(pointLightsTotal: number = 2, parallelLightsTotal: number = 0) {
         super();
         this.m_pointLightsTotal = pointLightsTotal;
@@ -310,6 +313,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         buf.indirectEnvMapEnabled = this.indirectEnvMapEnabled;
         buf.shadowReceiveEnabled = this.shadowReceiveEnabled;
         buf.fogEnabled = this.fogEnabled;
+        buf.hdrBrnEnabled = this.hdrBrnEnabled;
 
         buf.pointLightsTotal = this.m_pointLightsTotal;
         buf.parallelLightsTotal = this.m_parallelLightsTotal;
@@ -340,6 +344,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         this.indirectEnvMapEnabled = dst.indirectEnvMapEnabled;
         this.shadowReceiveEnabled = dst.shadowReceiveEnabled;
         this.fogEnabled = dst.fogEnabled;
+        this.hdrBrnEnabled = dst.hdrBrnEnabled;
 
         this.m_pointLightsTotal = dst.m_pointLightsTotal;
         this.m_parallelLightsTotal = dst.m_parallelLightsTotal;

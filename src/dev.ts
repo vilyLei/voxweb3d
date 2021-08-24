@@ -81,8 +81,7 @@
 //  import * as DemoRTTHalfSize from "./demo/DemoRTTHalfSize";
 //  import Demo = DemoRTTHalfSize.demo.DemoRTTHalfSize;
 
-//  import * as DemoRTT from "./demo/DemoRTT";
-//  import Demo = DemoRTT.demo.DemoRTT;
+//  import {DemoRTT as Demo} from "./demo/DemoRTT";
 
 //  import {DemoFloatRTT as Demo} from "./demo/DemoFloatRTT";
 
@@ -186,11 +185,9 @@
 
 //  import {DemoParticleEruption as Demo} from "./demo/DemoParticleEruption";
 
-//  import * as DemoParticleClips from "./demo/DemoParticleClips";
-//  import Demo = DemoParticleClips.demo.DemoParticleClips;
+//  import {DemoParticleClips as Demo} from "./demo/DemoParticleClips";
 
-//  import * as DemoContainer from "./demo/DemoContainer";
-//  import Demo = DemoContainer.demo.DemoContainer;
+//  import {DemoContainer as Demo} from "./demo/DemoContainer";
 
 //  import * as DemoContainerTransform from "./demo/DemoContainerTransform";
 //  import Demo = DemoContainerTransform.demo.DemoContainerTransform;

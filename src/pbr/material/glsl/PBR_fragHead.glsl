@@ -413,3 +413,9 @@ vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 wpos, vec3 nv)
     return TBN * tangentNormal;
 }
 #endif
+#ifdef VOX_HDR_BRN
+const vec4 hdrBrnDecodeVec4 = vec4(255.0, 2.55, 0.0255, 0.000255);
+float rgbaToHdrBrn(in vec4 color) {
+    return dot(hdrBrnDecodeVec4, color);
+}
+#endif
