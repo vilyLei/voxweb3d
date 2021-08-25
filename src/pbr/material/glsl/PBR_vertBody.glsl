@@ -7,12 +7,14 @@ void main(){
 
     v_worldPos = wpos.xyz;
     
-    v_worldNormal = normalize(a_nvs * inverse(mat3(u_objMat)));
-
-    #ifdef VOX_NORMAL_NOISE
-
-        v_worldNormal += (rand(a_nvs)) * 0.1;
-
+    #ifndef VOX_VTX_FLAT_NORMAL
+        v_worldNormal = normalize(a_nvs * inverse(mat3(u_objMat)));
+    
+        #ifdef VOX_NORMAL_NOISE
+    
+            v_worldNormal += (rand(a_nvs)) * 0.1;
+    
+        #endif
     #endif
 
     v_camPos = (inverse(u_viewMat) * vec4(0.0,0.0,0.0, 1.0)).xyz;

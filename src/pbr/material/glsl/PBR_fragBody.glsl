@@ -1,5 +1,6 @@
 
 // ----------------------------------------------------------------------------
+
 void main()
 {
     vec3 color = vec3(0.0);
@@ -16,10 +17,16 @@ void main()
     float reflectionIntensity = u_params[1].y;
     float glossinessSquare = colorGlossiness * colorGlossiness;
     float specularPower = exp2(8.0 * glossinessSquare + 1.0);
-    
-    vec3 N = v_worldNormal;
+
+    worldPos = v_worldPos;
+    #ifdef VOX_VTX_FLAT_NORMAL
+        worldNormal = getVtxFlatNormal(worldPos);
+    #else
+        worldNormal = v_worldNormal;
+    #endif
+    vec3 N = worldNormal;
     #ifdef VOX_NORMAL_MAP
-        N = normalize(mix(v_worldNormal.xyz, getNormalFromMap(VOX_NORMAL_MAP, v_uv.xy, v_worldPos.xyz, v_worldNormal.xyz),u_paramLocal[0].w));
+        N = normalize(mix(N, getNormalFromMap(VOX_NORMAL_MAP, v_uv.xy, worldPos.xyz, N),u_paramLocal[0].w));
     #endif
 
     #ifdef VOX_PIXEL_NORMAL_NOISE
@@ -28,7 +35,7 @@ void main()
         N = normalize(N);
     #endif
 
-    vec3 V = normalize(v_camPos.xyz - v_worldPos);
+    vec3 V = normalize(v_camPos.xyz - worldPos);
     float dotNV = clamp(dot(N, V), 0.0, 1.0);
     #ifdef VOX_DIFFUSE_MAP
     vec3 albedo = u_albedo.xyz * VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv.xy).xyz;
@@ -96,7 +103,7 @@ void main()
         for(int i = 0; i < VOX_POINT_LIGHTS_TOTAL; ++i) 
         {
             // calculate per-light radiance
-            vec3 L = (u_lightPositions[i].xyz - v_worldPos);
+            vec3 L = (u_lightPositions[i].xyz - worldPos);
             float distance = length(L);
             float attenuation = 1.0 / (1.0 + 0.001 * distance + 0.0001 * distance * distance);
             vec3 inColor = u_lightColors[i].xyz * attenuation;
@@ -116,7 +123,7 @@ void main()
     
     #ifdef VOX_INDIRECT_ENV_MAP
         rL.L = vec3(0.0, -1.0, 0.0);
-        float ifactor = clamp(abs(v_worldPos.y - -210.0) / 300.0, 0.0,1.0);
+        float ifactor = clamp(abs(worldPos.y - -210.0) / 300.0, 0.0,1.0);
         float lv = 1.0 + 6.0 * ifactor;
         #ifdef VOX_ENV_MAP
             color = VOX_TextureCubeLod(VOX_INDIRECT_ENV_MAP, envDir, lv).xyz;

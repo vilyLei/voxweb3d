@@ -43,6 +43,7 @@ export class DemoPBR {
 
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
+            rparam.setCamProject(45,30.0,7000.0);
             rparam.setAttriStencil(true);
             rparam.setAttriAntialias(true);
             rparam.setCamPosition(1800.0, 1800.0, 1800.0);

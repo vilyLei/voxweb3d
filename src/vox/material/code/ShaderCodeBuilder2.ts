@@ -65,7 +65,9 @@ precision mediump float;
     private m_fragViewMat: boolean = false;
     private m_fragProjMat: boolean = false;
 
+    private m_vertHeadCode: string = "";
     private m_vertMainCode: string = "";
+    private m_fragHeadCode: string = "";
     private m_fragMainCode: string = "";
 
     normalMapEanbled: boolean = false;
@@ -82,7 +84,9 @@ precision mediump float;
         this.m_fragViewMat = false;
         this.m_fragProjMat = false;
 
+        this.m_vertHeadCode = "";
         this.m_vertMainCode = "";
+        this.m_fragHeadCode = "";
         this.m_fragMainCode = "";
 
         this.m_vertExt = [];
@@ -204,8 +208,14 @@ precision mediump float;
         this.m_fragExt.push(code);
     }
 
+    addVertHeadCode(code: string): void {
+        this.m_vertHeadCode += code;
+    }
     addVertMainCode(code: string): void {
         this.m_vertMainCode += code;
+    }
+    addFragHeadCode(code: string): void {
+        this.m_fragHeadCode += code;
     }
     addFragMainCode(code: string): void {
         this.m_fragMainCode += code;
@@ -307,6 +317,9 @@ precision mediump float;
             this.addVertFunction(GLSLConverter.__glslInverseMat3);
             this.addVertFunction(GLSLConverter.__glslInverseMat4);
         }
+
+        code += this.m_fragHeadCode;
+
         i = 0;
         len = this.m_fragFunctionBlocks.length;
         for (; i < len; i++) {
@@ -416,10 +429,14 @@ precision mediump float;
             }
 
         }
+        
         if (this.vertMatrixInverseEnabled && RendererDeviece.IsWebGL1()) {
             this.addVertFunction(GLSLConverter.__glslInverseMat3);
             this.addVertFunction(GLSLConverter.__glslInverseMat4);
         }
+        
+        code += this.m_vertHeadCode;
+
         i = 0;
         len = this.m_vertFunctionBlocks.length;
         for (; i < len; i++) {

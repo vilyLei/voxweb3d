@@ -280,6 +280,9 @@ class H5FontSystem
   {
     return this.m_canvas != null;
   }
+  getFontSize(): number {
+    return this.m_fontSize;
+  }
   initialize(canvas_id_name:string,fontSize:number = 10, texWidth:number = 512,texHeight:number = 512,canvas_visible:boolean = false,mipmapEnabled:boolean = false)
   {
     if(RendererDeviece.IsMobileWeb()) {

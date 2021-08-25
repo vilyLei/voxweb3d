@@ -108,12 +108,15 @@ export default class PingpongBlur
     }
     setFBOSize(fboWidth:number, fboHeight:number):void
     {
-        this.m_fboWidth = fboWidth;
-        this.m_fboHeight = fboHeight;
-        this.m_syncViewSizeEnabled = false;
-
-        if(this.m_texs[0] != null) this.m_texs[0].setSize(fboWidth,fboHeight);
-        if(this.m_texs[1] != null) this.m_texs[1].setSize(fboWidth,fboHeight);
+        if(Math.abs(this.m_fboWidth - fboWidth) > 0.1 || Math.abs(this.m_fboHeight - fboHeight)) {
+            
+            this.m_fboWidth = fboWidth;
+            this.m_fboHeight = fboHeight;
+            this.m_syncViewSizeEnabled = false;
+    
+            if(this.m_texs[0] != null) this.m_texs[0].setSize(fboWidth,fboHeight);
+            if(this.m_texs[1] != null) this.m_texs[1].setSize(fboWidth,fboHeight);
+        }
     }
     public getDstTexture():RTTTextureProxy
     {

@@ -153,7 +153,7 @@ export class DemoDefaultPBR2
             this.m_meshMana.dataFilterEnbaled = false;
             this.m_meshMana.loadMeshFile("static/modules/loveass.rawmd");
             //*/
-            ///*
+            /*
             this.m_meshMana.diffuseMapEnabled = true;
             this.m_meshMana.normalMapEnabled = true;
             this.m_meshMana.dataFilterEnbaled = true;
@@ -162,6 +162,28 @@ export class DemoDefaultPBR2
             this.m_meshMana.moduleScale = 0.5;
             this.m_meshMana.offsetPos.setXYZ(0.0,200.0,0.0);
             this.m_meshMana.loadMeshFile("static/modules/stainlessSteel.md");
+            //*/
+            /*
+            this.m_meshMana.diffuseMapEnabled = true;
+            this.m_meshMana.normalMapEnabled = true;
+            this.m_meshMana.dataFilterEnbaled = true;
+            //this.m_meshMana.saveEnabled = true;
+            this.m_reflectPlaneY = -220.0;
+            this.m_meshMana.moduleScale = 1.0;
+            this.m_meshMana.offsetPos.setXYZ(0.0,400.0,0.0);
+            this.m_meshMana.loadMeshFile("static/modules/cloth02.md");
+            //*/
+            ///*
+            this.m_meshMana.diffuseMapEnabled = false;
+            this.m_meshMana.normalMapEnabled = false;
+            this.m_meshMana.dataFilterEnbaled = true;
+            this.m_meshMana.saveEnabled = true;
+            this.m_meshMana.uscale = 10.0;
+            this.m_meshMana.vscale = 1.0;
+            this.m_reflectPlaneY = -220.0;
+            this.m_meshMana.moduleScale = 100.0;
+            this.m_meshMana.offsetPos.setXYZ(0.0,0.0,0.0);
+            this.m_meshMana.loadMeshFile("static/modules/lobster.md");
             //*/
             /*
             this.m_meshMana.diffuseMapEnabled = false;

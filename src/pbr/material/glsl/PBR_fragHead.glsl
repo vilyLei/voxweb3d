@@ -1,6 +1,8 @@
 
 // default pbr glsl
 
+vec3 worldPos;
+vec3 worldNormal;
 // material parameters
 uniform vec4 u_albedo;
 uniform vec4 u_params[4];
@@ -414,8 +416,16 @@ vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 wpos, vec3 nv)
 }
 #endif
 #ifdef VOX_HDR_BRN
+
 const vec4 hdrBrnDecodeVec4 = vec4(255.0, 2.55, 0.0255, 0.000255);
 float rgbaToHdrBrn(in vec4 color) {
     return dot(hdrBrnDecodeVec4, color);
+}
+#endif
+
+#ifdef VOX_VTX_FLAT_NORMAL
+
+vec3 getVtxFlatNormal(const in vec3 pos) {
+    return normalize(cross(dFdx(pos), dFdy(pos)));
 }
 #endif

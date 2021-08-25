@@ -41,7 +41,11 @@ vec3 getVtxFlatNormal(vec3 pos) {
 void main()
 {
     //FragColor0 = vec4(abs(v_nv.xyz), 1.0);
-    FragColor0 = vec4(abs(getVtxFlatNormal(v_pv)), 1.0);
+    vec3 pnv = getVtxFlatNormal(v_pv);
+    //float dis = length(v_nv - pnv);
+    float dis = length(v_nv - normalize(v_pv));
+    FragColor0 = vec4(abs(vec3(dis) * pnv), 1.0);
+    //FragColor0 = vec4(abs(v_nv), 1.0);
 }
 `;
         return fragCode;

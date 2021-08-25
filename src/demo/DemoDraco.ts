@@ -19,6 +19,7 @@ import DisplayEntity from "../vox/entity/DisplayEntity";
 
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
+import DivLog from "../vox/utils/DivLog";
 
 export class DemoDraco extends DemoInstance implements DracoTaskListener {
     constructor() {
@@ -35,12 +36,13 @@ export class DemoDraco extends DemoInstance implements DracoTaskListener {
     protected initializeSceneParam(param: RendererParam): void {
         this.m_processTotal = 4;
         param.maxWebGLVersion = 2;
+        param.setAttriAntialias(true);
         param.setCamProject(45, 1.0, 10000.0)
         param.setCamPosition(1500.0, 1500.0, 1500.0);
         
     }
     protected initializeSceneObj(): void {
-        console.log("DemoDraco::initialize()......");
+
         this.m_camTrack = new CameraTrack();
         this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
@@ -80,20 +82,23 @@ export class DemoDraco extends DemoInstance implements DracoTaskListener {
         this.loadNext();
     }
     private m_urls: string[] = [
-        "static/assets/modules/bunny.rawmd",
-        "static/assets/modules/loveass.rawmd"
+        //  "static/assets/modules/bunny.rawmd",
+        //  "static/assets/modules/loveass.rawmd",
+        "static/assets/modules/lobster.rawmd"
     ];
     private m_scale: number = 1.0;
     private m_pos: Vector3D = null;
     private m_scales: number[] = [
-        //100,
-        //1.0,
-        600.0,
-        1.0
+        //  300.0,
+        //  1.0,
+        50
+        //1.0
     ];
     private m_posList: Vector3D[] = [
-        new Vector3D(-300.0,0.0,0.0),
-        new Vector3D(300.0,0.0,0.0),
+        //  new Vector3D(-300.0,0.0,0.0),
+        //  new Vector3D(300.0,0.0,300.0),
+        new Vector3D(300.0,0.0,-300.0),
+        //new Vector3D(300.0,-700.0,0.0),
     ];
     private loadNext(): void {
         if(this.m_urls.length > 0) {
@@ -117,6 +122,7 @@ export class DemoDraco extends DemoInstance implements DracoTaskListener {
     }
     dracoParseFinish(modules: any[], total: number): void {
         if(modules.length == 1) {
+            console.log("modules: ",modules);
             let scale: number = this.m_scale;
             let mesh: DracoMesh = new DracoMesh();
             mesh.initialize(modules);

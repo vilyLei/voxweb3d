@@ -58,7 +58,8 @@ export default class PBREntityManager implements DracoTaskListener
         //"static/assets/modules/stainlessSteel.rawmd",
         //"static/assets/modules/loveass.rawmd"
         //"static/assets/modules/car01.rawmd"
-        "static/assets/modules/longxiaPincer.rawmd"
+        //"static/assets/modules/longxiaPincer.rawmd"
+        "static/assets/modules/lobster.rawmd"
     ];
     private m_scale: number = 1.0;
     private m_pos: Vector3D = null;
@@ -87,6 +88,7 @@ export default class PBREntityManager implements DracoTaskListener
 
         let uvscale: number = Math.random() * 7.0 + 0.6;        
         let material: PBRMaterial = this.m_entityUtils.createMaterial(uvscale,uvscale);
+        material.vtxFlatNormal = true;
         material.aoMapEnabled = this.aoMapEnabled;
         let scale = this.m_scale;
         let entity: DisplayEntity = new DisplayEntity();

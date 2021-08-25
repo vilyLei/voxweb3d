@@ -40,6 +40,7 @@ export default class PBRScene
 
     fogEnabled: boolean = true;
     hdrBrnEnabled: boolean = true;
+    vtxFlatNormal: boolean = true;
     constructor() {
 
     }
@@ -66,8 +67,9 @@ export default class PBRScene
 
             this.m_materialBuilder = new PBRMaterialBuilder();
             this.m_materialBuilder.hdrBrnEnabled = this.hdrBrnEnabled;
+            this.m_materialBuilder.vtxFlatNormal = this.vtxFlatNormal;
 
-            this.m_lightData.initialize(4, 2);
+            this.m_lightData.initialize(0, 2);
             this.m_lightData.buildData();
 
             this.m_materialBuilder.lightData = this.m_lightData;

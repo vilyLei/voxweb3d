@@ -67,8 +67,8 @@ class AOShaderBuffer extends ShaderCodeBuffer
 `
 uniform vec3 u_aoSamples[AO_SamplesTotal];
 
-const float radius = 100.0;
-const float bias = 1.0;
+const float radius = 80.0;
+const float bias = 0.1;
 
 // tile noise VOX_Texture2D over screen based on screen dimensions divided by noise size
 const vec2 scale2 = vec2(2.0);
@@ -98,7 +98,7 @@ vec3 rand(vec3 seed) {
 }
 void main()
 {
-    noiseScale.xy = 1.0/u_viewParam.zw;
+    noiseScale.xy = 4.0/u_viewParam.zw;
     vec4 baseNormal = VOX_Texture2D(u_sampler0, v_uv);
     vec3 normal = baseNormal.xyz;
 
@@ -106,11 +106,11 @@ void main()
     vec3 fragPos = clacViewPosBySPAndVZ(uv, baseNormal.w);
     fragPos.z = -fragPos.z;
     
-    vec3 randomVec = normalize(VOX_Texture2D(u_sampler1, v_uv * noiseScale + 0.1 * rand(v_uv)).xyz);
+    vec3 randomVec = normalize(VOX_Texture2D(u_sampler1, v_uv * noiseScale + 0.5 * rand(v_uv)).xyz);
     
     //0.0->1.0 => -1.0 -> 1.0
-    randomVec = randomVec * 2.0 - 1.0;
-    randomVec.z = 0.0;
+    //randomVec = randomVec * 2.0 - 1.0;
+    //randomVec.z = 0.0;
     // create TBN change-of-basis matrix: from tangent-space to view-space
     vec3 tangent = normalize(randomVec - normal * dot(randomVec, normal));
     vec3 bitangent = cross(normal, tangent);
@@ -122,22 +122,22 @@ void main()
     {
         // from tangent to view-space
         vec3 sample3 = tbnMat3 * u_aoSamples[i];
-        float pr = radius * (0.05 + 0.95 * (fract( dot(v_uv.xy * float(i) * 12.9898, sample3.xy))));
+        float pr = radius * (0.1 + 0.9 * (fract( dot(v_uv.xy * float(i) * 37.3197, sample3.xy))));
         sample3 = fragPos + sample3 * pr;
         
         // project sample position (to sample texture) (to get position on screen/texture)
-        vec4 offset = vec4(sample3, 1.0);
+        vec4 offset = u_projMat * vec4(sample3, 1.0);
         // from view to clip-space
-        offset = u_projMat * offset;
+        //offset = u_projMat * offset;
         // perspective divide
         offset.xy /= offset.w;
         // transform to range 0.0 - 1.0
         offset.xy = offset.xy * 0.5 + 0.5;
-        // get sample depth
-        
+        // get sample depth        
         float sampleDepth = -VOX_Texture2D(u_sampler0, offset.xy).w;
         // range check & accumulate
-        float rangeCheck = smoothstep(0.0, 1.0, pr / abs(fragPos.z - sampleDepth));
+        float rangeCheck = (pr/radius) * smoothstep(0.0, 1.0, pr / abs(fragPos.z - sampleDepth));
+        //float rangeCheck = smoothstep(0.0, 1.0, pr / abs(fragPos.z - sampleDepth));
         occlusion += (sampleDepth >= (sample3.z + bias) ? 1.0 : 0.0) * rangeCheck;
         // highlight dege glow
         //occlusion += (sampleDepth < (sample3.z + bias) ? 1.0 : 0.0) * rangeCheck;

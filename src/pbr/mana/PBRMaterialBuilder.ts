@@ -19,6 +19,7 @@ export default class PBRMaterialBuilder {
     texLoader: ImageTextureLoader = null;
     lightData: GlobalLightData = null;
     hdrBrnEnabled: boolean = false;
+    vtxFlatNormal: boolean = false;
     constructor() {
     }
 
@@ -31,6 +32,7 @@ export default class PBRMaterialBuilder {
     makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {
         let material: PBRMaterial = new PBRMaterial(this.lightData.getPointLightTotal(), this.lightData.getDirecLightTotal());
         material.hdrBrnEnabled = this.hdrBrnEnabled;
+        material.vtxFlatNormal = this.vtxFlatNormal;
         material.setMetallic(metallic);
         material.setRoughness(roughness);
         material.setAO(ao);

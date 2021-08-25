@@ -10,6 +10,7 @@ import IRenderProcess from "../../vox/render/IRenderProcess";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import H5FontSystem from "../../vox/text/H5FontSys";
 import Text2DEntity from "../../vox2d/text/Text2DEntity";
+import RendererDeviece from "../../vox/render/RendererDeviece";
 class FPSInfo {
     private m_fps: number = 60;
     private m_lastTime: number = 0;
@@ -68,16 +69,20 @@ export default class RendererStatus {
     }
     initialize(renderer: RendererInstance, rprocess: IRenderProcess): void {
         if (this.m_renderer == null) {
+            let fontSize: number = 18;
             if (!H5FontSystem.GetInstance().isEnabled()) {
                 H5FontSystem.GetInstance().setRenderProxy(renderer.getRenderProxy());
-                H5FontSystem.GetInstance().initialize("fontTex", 18, 512, 512, false, false);
+                H5FontSystem.GetInstance().initialize("fontTex", fontSize, 512, 512, false, false);
             }
             this.m_renderer = renderer;
             this.m_rprocess = rprocess;
-            //addEntityToProcess
-            let hDis: number = 20.0;
+            
+            let hDis: number = H5FontSystem.GetInstance().getFontSize() + 2;
             let py2: number = 2.0;
             let px2: number = 100.0;
+            if(RendererDeviece.IsMobileWeb()) {
+                px2 *= H5FontSystem.GetInstance().getFontSize() / fontSize;
+            }
             let px3: number = px2 - 10.0;
             let text2D: Text2DEntity = null;
             text2D = new Text2DEntity();

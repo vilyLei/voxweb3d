@@ -33,7 +33,14 @@ import PingpongBlur from "../../renderingtoy/mcase/PingpongBlur";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 import Billboard3DEntity from "../../vox/entity/Billboard3DEntity";
 
-export class DemoSSAO3 {
+
+import DracoMesh from "../../voxmesh/draco/DracoMesh";
+import {DracoTaskListener} from "../../voxmesh/draco/DracoTask";
+import DracoMeshBuilder from "../../voxmesh/draco/DracoMeshBuilder";
+import ThreadSystem from "../../thread/ThreadSystem";
+import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
+import DisplayEntity from "../../vox/entity/DisplayEntity";
+export class DemoSSAO3 implements DracoTaskListener {
     constructor() { }
 
     private m_rscene: RendererScene = null;
@@ -47,6 +54,8 @@ export class DemoSSAO3 {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
     private m_blurModule: PingpongBlur = null;
+    
+    private m_dracoMeshLoader: DracoMeshBuilder = new DracoMeshBuilder();
 
     private m_clearColor: Color4 = new Color4();
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
@@ -54,28 +63,6 @@ export class DemoSSAO3 {
         ptex.mipmapEnabled = mipmapEnabled;
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
-    }
-    private initTestEvt(): void {
-
-        //let rscene: RendererScene = this.m_rscene;
-        let color: Color4 = this.m_clearColor;
-        window.onload = () => {
-            document.addEventListener('touchstart', function (event) {
-                if (event.touches.length > 1) {
-                    color.randomRGB(1.0);
-                    event.preventDefault();
-                }
-            })
-            var lastTouchEnd = 0;
-            document.addEventListener('touchend', function (event) {
-                var now = (new Date()).getTime();
-                if (now - lastTouchEnd <= 300) {
-                    color.randomRGB(1.0);
-                    event.preventDefault();
-                }
-                lastTouchEnd = now;
-            }, false)
-        }
     }
     initialize(): void {
 
@@ -86,7 +73,7 @@ export class DemoSSAO3 {
             //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
             let rparam: RendererParam = new RendererParam();
             //  rparam.maxWebGLVersion = 1;
-            rparam.setCamPosition(800.0, 800.0, 800.0);
+            rparam.setCamPosition(1800.0, 1800.0, 1800.0);
             rparam.setAttriAntialias(true);
             rparam.setAttriStencil(true);
             this.m_rscene = new RendererScene();
@@ -115,7 +102,12 @@ export class DemoSSAO3 {
             this.update();
 
             this.initTest();
-            this.initTestEvt();
+
+            
+            this.m_dracoMeshLoader.initialize(2);
+            this.m_dracoMeshLoader.setListener( this );
+
+            this.loadNext();
         }
     }
     private m_aoSrcPlane: ScreenAlignPlaneEntity;
@@ -128,8 +120,9 @@ export class DemoSSAO3 {
 
         let plane: Plane3DEntity = new Plane3DEntity();
         plane.setMaterial( new AOEntityMaterial() );
-        plane.initializeXOZSquare(800.0, [this.getImageTexByUrl("static/assets/wood_01.jpg"), aoTex]);
+        plane.initializeXOZSquare(1600.0, [this.getImageTexByUrl("static/assets/wood_01.jpg"), aoTex]);
         this.m_rscene.addEntity(plane);
+        //return;
         ///*
         let box: Box3DEntity = new Box3DEntity();
         box.setMaterial( new AOEntityMaterial() );
@@ -144,7 +137,7 @@ export class DemoSSAO3 {
             box.initializeCube(300.0, [this.getImageTexByUrl("static/assets/brickwall_big.jpg"), aoTex]);
             scale = 0.1 + Math.random() * 0.8;
             box.setScaleXYZ(scale, scale, scale);
-            box.setXYZ(Math.random() * 600.0 - 300.0, Math.random() * 200.0, Math.random() * 600.0 - 300.0);
+            box.setXYZ(Math.random() * 1200.0 - 600.0, Math.random() * 200.0, Math.random() * 1200.0 - 600.0);
             box.setRotationXYZ(Math.random() * 300.0, Math.random() * 300.0, Math.random() * 300.0);
             this.m_rscene.addEntity(box);
 
@@ -182,7 +175,7 @@ export class DemoSSAO3 {
         let aoMaterial: AOMaterial = new AOMaterial(aoNoise, 9);
         this.m_aoSrcPlane = new ScreenAlignPlaneEntity();
         this.m_aoSrcPlane.setMaterial(aoMaterial);
-        this.m_aoSrcPlane.initialize(-1.0, -1.0, 2.0, 2.0, [this.m_aoPreFBO.getRTTAt(0), aoNoise.createNoiseTex()]);
+        this.m_aoSrcPlane.initialize(-1.0, -1.0, 2.0, 2.0, [this.m_aoPreFBO.getRTTAt(0), aoNoise.createNoiseTex(128)]);
         //this.m_rscene.addEntity(this.m_aoSrcPlane, 1);
 
         this.m_aoFBO = this.m_rscene.createFBOInstance();
@@ -194,12 +187,14 @@ export class DemoSSAO3 {
         this.m_aoDstPlane.initialize(-1.0, -1.0, 2.0, 2.0, [this.m_aoFBO.getRTTAt(0)]);
         //this.m_rscene.addEntity(this.m_aoDstPlane, 1);
 
-        let size: number = 512;
+        let size: number = 256;
+        let pw: number = Math.round(this.m_rscene.getViewWidth() * 0.5);
+        let ph: number = Math.round(this.m_rscene.getViewHeight() * 0.5);
         this.m_blurModule = new PingpongBlur(this.m_rscene.getRenderer());
         this.m_blurModule.setBlurCount(2);
         this.m_blurModule.setSyncViewSizeEnabled(false);
-        this.m_blurModule.setFBOSize(size, size);
-        this.m_blurModule.setBlurDensity(1.0);
+        this.m_blurModule.setFBOSize(pw, ph);
+        this.m_blurModule.setBlurDensity(0.6);
         this.m_blurModule.bindDrawEntity(this.m_aoDstPlane);
         this.m_blurModule.setBackbufferVisible(false);
         /*
@@ -212,10 +207,10 @@ export class DemoSSAO3 {
         
         this.initSceneObjs();
 
-        /*
+        ///*
         let srcPlane: ScreenAlignPlaneEntity = new ScreenAlignPlaneEntity();
-        srcPlane.initialize(-1.0, -1.0, 1.0, 1.0, [this.m_aoPreFBO.getRTTAt(0)]);
-        //srcPlane.initialize(-1.0, -1.0, 1.0, 1.0, [this.m_aoFBO.getRTTAt(0)]);
+        //srcPlane.initialize(-1.0, -1.0, 1.0, 1.0, [this.m_aoPreFBO.getRTTAt(0)]);
+        srcPlane.initialize(-1.0, -1.0, 0.8, 0.8, [this.m_aoFBO.getRTTAt(0)]);
         this.m_rscene.addEntity(srcPlane, 2);
         //*/
     }
@@ -236,6 +231,7 @@ export class DemoSSAO3 {
         this.m_statusDisp.render();
     }
     run(): void {
+        ThreadSystem.Run();
         //  if(this.m_flag) {
         //      this.m_flag = false;
         //  }
@@ -280,6 +276,64 @@ export class DemoSSAO3 {
         this.m_rscene.runEnd();
         //*/
         //this.m_profileInstance.run();
+    }
+    
+    private m_urls: string[] = [
+        "static/assets/modules/bunny.rawmd",
+        "static/assets/modules/loveass.rawmd",
+        "static/assets/modules/cloth02.rawmd"
+    ];
+    private m_scale: number = 1.0;
+    private m_pos: Vector3D = null;
+    private m_scales: number[] = [
+        300.0,
+        1.0,
+        1.0
+    ];
+    private m_posList: Vector3D[] = [
+        new Vector3D(-600.0,0.0,-600.0),
+        new Vector3D(600.0,0.0,600.0),
+        new Vector3D(0.0,0.0,0.0),
+    ];
+    private loadNext(): void {
+        if(this.m_urls.length > 0) {
+            this.m_pos = this.m_posList.pop();
+            this.m_scale = this.m_scales.pop();
+            this.m_dracoMeshLoader.load( this.m_urls.pop() );
+        }
+    }
+    dracoParse(pmodule: any, index: number, total: number): void {
+    }
+    dracoParseFinish(modules: any[], total: number): void {
+
+        console.log("dracoParseFinish, modules total: ", total);
+
+        let mesh: DracoMesh = new DracoMesh();
+        mesh.initialize(modules);
+        let aoTex: RTTTextureProxy = this.m_blurModule.getDstTexture();
+        let material: AOEntityMaterial = new AOEntityMaterial()
+        material.initializeByCodeBuf( true );
+        //material.setTextureList( [this.getImageTexByUrl("static/assets/noise.jpg"), aoTex] );
+        material.setTextureList( [this.getImageTexByUrl("static/assets/wood_01.jpg"), aoTex] );
+        let scale = this.m_scale;
+        
+        let entity: DisplayEntity = new DisplayEntity();
+        entity.setMaterial( material );
+        entity.setMesh( mesh );
+        entity.setScaleXYZ(scale, scale, scale);
+        //entity.setRotationXYZ(0, Math.random() * 300, 0);
+        this.m_rscene.addEntity(entity);
+        let pos: Vector3D = new Vector3D();
+        entity.getPosition( pos );
+        let pv: Vector3D = entity.getGlobalBounds().min;
+        pos.y += (0 - pv.y) + 70.0;
+        pos.x += this.m_pos.x;
+        pos.z += this.m_pos.z;
+        entity.setPosition( pos );
+        entity.update();
+        this.m_rscene.addEntity(entity);
+
+        this.loadNext();
     }
 }
 export default DemoSSAO3;
