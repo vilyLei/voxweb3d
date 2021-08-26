@@ -10,6 +10,11 @@ import IUniformParam from "../../../vox/material/IUniformParam";
 
 export default interface IShaderCodeBuilder {
 
+    normalMapEanbled: boolean;
+    mapLodEnabled: boolean;
+    vertMatrixInverseEnabled: boolean;
+    fragMatrixInverseEnabled: boolean;
+
     addDefine(name: string, value: string): void;
     addVarying(type: string, name: string): void;
     
@@ -18,6 +23,13 @@ export default interface IShaderCodeBuilder {
     addFragUniformParam(unifromParam: IUniformParam): void;
     addFragUniform(type: string, name: string, arrayLength: number): void;
 
+    isHaveTexture(): boolean;
+
     addFragFunction(codeBlock: string): void;
     addVertFunction(codeBlock: string): void;
+
+    addVertHeadCode(codeBlock: string): void;
+    addVertMainCode(codeBlock: string): void;
+    addFragHeadCode(codeBlock: string): void;
+    addFragMainCode(codeBlock: string): void;
 }

@@ -143,7 +143,6 @@ export default class ShdUniformTool
                 prevU.next = guniforms[i];
                 prevU = prevU.next;
             }
-            //prevU.next = guniform;
             guniform = headU;
         }
         
@@ -277,9 +276,10 @@ export default class ShdUniformTool
                         shdUniform.dataList.push(pdata.dataList[i]);
                         shdUniform.dataSizeList.push(shdp.getUniformLengthByNS(pdata.uniformNameList[i]));
                     }
-                    //  console.log("local uniform frome data names: "+shdUniform.uniformNameList);
-                    //  console.log("local uniform frome data types: "+shdUniform.types);
-                    //  console.log("local uniform frome data locations: "+shdUniform.locations);
+                    //  console.log("local uniform frome data names: ",shdUniform.uniformNameList);
+                    //  console.log("local uniform frome data types: ",shdUniform.types);
+                    //  console.log("local uniform frome data locations: ",shdUniform.locations);
+                    //  console.log("local uniform frome data dataSizeList: ",shdUniform.dataSizeList);
                 }
                 pdata = pdata.next;
             }

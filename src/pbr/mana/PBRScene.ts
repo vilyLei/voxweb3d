@@ -40,7 +40,7 @@ export default class PBRScene
 
     fogEnabled: boolean = true;
     hdrBrnEnabled: boolean = true;
-    vtxFlatNormal: boolean = true;
+    vtxFlatNormal: boolean = false;
     constructor() {
 
     }

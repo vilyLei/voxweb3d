@@ -18,6 +18,7 @@ import PBRMaterialBuilder from "../../pbr/mana/PBRMaterialBuilder";
 import MirrorProjEntity from "./MirrorProjEntity";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import EnvLightData from "../../light/base/EnvLightData";
+import PBRShaderDecorator from "../material/PBRShaderDecorator";
 
 export class PBRMirror
 {
@@ -98,14 +99,27 @@ export class PBRMirror
         ///*
         // mirror plane
         material = this.materialBuilder.makePBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
-        material.fogEnabled = this.fogEnabled;
-        material.shadowReceiveEnabled = true;
-        material.pixelNormalNoiseEnabled = true;
-        material.mirrorProjEnabled = true;
-        material.mirrorMapLodEnabled = this.m_mirrorMapLodEnabled;
-        material.diffuseMapEnabled = true;
-        material.normalMapEnabled = true;
-        material.aoMapEnabled = true;
+
+        let decorator: PBRShaderDecorator = material.decorator;
+
+        decorator.fogEnabled = this.fogEnabled;
+        decorator.shadowReceiveEnabled = true;
+        decorator.pixelNormalNoiseEnabled = true;
+        decorator.mirrorProjEnabled = true;
+        decorator.mirrorMapLodEnabled = this.m_mirrorMapLodEnabled;
+        decorator.diffuseMapEnabled = true;
+        decorator.normalMapEnabled = true;
+        decorator.aoMapEnabled = true;
+
+        // material.fogEnabled = this.fogEnabled;
+        // material.shadowReceiveEnabled = true;
+        // material.pixelNormalNoiseEnabled = true;
+        // material.mirrorProjEnabled = true;
+        // material.mirrorMapLodEnabled = this.m_mirrorMapLodEnabled;
+        // material.diffuseMapEnabled = true;
+        // material.normalMapEnabled = true;
+        // material.aoMapEnabled = true;
+
         this.m_material = material;
         let ptexList: TextureProxy[] = [
             this.envMap
@@ -115,17 +129,19 @@ export class PBRMirror
             , this.m_fboIns.getRTTAt(0)
         ]
         
-        if(material.shadowReceiveEnabled) {
+        if(decorator.shadowReceiveEnabled) {
             ptexList.push( shadowTex );
-            material.setVSMData( vsmData );
+            //material.setVSMData( vsmData );
+            material.decorator.vsmData = vsmData;
         }
         material.setTextureList( ptexList );
         if(this.m_mirrorMapLodEnabled) {
             this.m_fboIns.enableMipmapRTTAt(0);
             material.setMirrorMapLodLevel(1.0);
         }
-        if(material.fogEnabled) {
-            material.setEnvData( this.envData );
+        if(decorator.fogEnabled) {
+            //material.setEnvData( this.envData );
+            material.decorator.envData = this.envData;
         }
         material.setUVScale(3.0,3.0);
         material.setMirrorIntensity(0.9);

@@ -272,16 +272,12 @@ export class DefaultPBRUI implements IPBRUI {
         switch (selectEvt.uuid) {
             case "absorb":
                 material = (this.m_paramEntity.getMaterial() as IPBRMaterial).clone();
-                //material = new IPBRMaterial();
-                //material.copyFrom(this.m_paramEntity.getMaterial());
-                material.absorbEnabled = flag;
+                material.decorator.absorbEnabled = flag;
                 this.m_paramEntity.absorbEnabled = flag;
                 break;
             case "vtxNoise":
-                //  material = new IPBRMaterial();
-                //  material.copyFrom(this.m_paramEntity.getMaterial());
                 material = (this.m_paramEntity.getMaterial() as IPBRMaterial).clone();
-                material.normalNoiseEnabled = flag;
+                material.decorator.normalNoiseEnabled = flag;
                 this.m_paramEntity.vtxNoiseEnabled = flag;
                 break;
             case "menuCtrl":

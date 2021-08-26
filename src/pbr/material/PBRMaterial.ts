@@ -5,215 +5,39 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
-import GLSLConverter from "../../vox/material/code/GLSLConverter";
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
 import Vector3D from "../../vox/math/Vector3D";
 import MathConst from "../../vox/math/MathConst";
-import { PBRShaderCode } from "./glsl/PBRShaderCode";
 import IPBRMaterial from "./IPBRMaterial";
+import PBRShaderDecorator from "./PBRShaderDecorator";
 import Color4 from "../../vox/material/Color4";
 
 import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
-import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
 import GlobalLightData from "../../light/base/GlobalLightData";
 import ShadowVSMData from "../../shadow/vsm/material/ShadowVSMData";
 import EnvLightData from "../../light/base/EnvLightData";
-import UniformConst from "../../vox/material/UniformConst";
 
 class PBRShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
     private static s_instance: PBRShaderBuffer = new PBRShaderBuffer();
-    private m_uniqueName: string = "";
-    private m_has2DMap: boolean = false;
-
-    woolEnabled: boolean = true;
-    toneMappingEnabled: boolean = true;
-    envMapEnabled: boolean = true;
-    scatterEnabled: boolean = true;
-    specularBleedEnabled: boolean = true;
-    metallicCorrection: boolean = true;
-    gammaCorrection: boolean = true;
-    absorbEnabled: boolean = false;
-    normalNoiseEnabled: boolean = false;
-    pixelNormalNoiseEnabled: boolean = false;
-    mirrorProjEnabled: boolean = false;
-    mirrorMapLodEnabled: boolean = false;
-    diffuseMapEnabled: boolean = false;
-    normalMapEnabled: boolean = false;
-    aoMapEnabled: boolean = false;
-    indirectEnvMapEnabled: boolean = false;
-    shadowReceiveEnabled: boolean = false;
-    fogEnabled: boolean = false;
-    hdrBrnEnabled: boolean = false;
-    vtxFlatNormal: boolean = false;
-
-    pointLightsTotal: number = 4;
-    parallelLightsTotal: number = 0;
-    texturesTotal: number = 1;
-
-    lightData: GlobalLightData = null;
-    vsmData: ShadowVSMData = null;
-    envData: EnvLightData = null;
-
+    decorator: PBRShaderDecorator = null;
+    
     initialize(texEnabled: boolean): void {
-        this.m_uniqueName = "PBRShd";
-        this.adaptationShaderVersion = false;
-        console.log("PBRShaderBuffer::initialize()...，adaptationShaderVersion: ", this.adaptationShaderVersion);
     }
-    private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
-    private buildThisCode():void
-    {
-        let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
-        coder.reset();
-        coder.normalMapEanbled = this.normalMapEnabled;
-        coder.mapLodEnabled = true;
-        coder.useHighPrecious();
-        
-        let mirrorProjEnabled: boolean = this.mirrorProjEnabled && this.texturesTotal > 0;
-        if (this.normalNoiseEnabled) coder.addDefine("VOX_NORMAL_NOISE");
-
-        // 毛料表面效果
-        if (this.woolEnabled) coder.addDefine("VOX_WOOL");
-        if (this.toneMappingEnabled) coder.addDefine("VOX_TONE_MAPPING");
-        if (this.scatterEnabled) coder.addDefine("VOX_SCATTER");
-        if (this.specularBleedEnabled) coder.addDefine("VOX_SPECULAR_BLEED");
-        if (this.metallicCorrection) coder.addDefine("VOX_METALLIC_CORRECTION");
-        if (this.gammaCorrection) coder.addDefine("VOX_GAMMA_CORRECTION");
-        if (this.absorbEnabled) coder.addDefine("VOX_ABSORB");
-        if (this.pixelNormalNoiseEnabled) coder.addDefine("VOX_PIXEL_NORMAL_NOISE");
-        
-        let texIndex: number = 0;
-        console.log("this.envMapEnabled,this.texturesTotal: ",this.envMapEnabled,this.texturesTotal);
-        if (this.envMapEnabled && this.texturesTotal > 0) {
-            coder.addDefine("VOX_ENV_MAP","u_sampler"+(texIndex++));
-            coder.addTextureSampleCube();
-        }
-        if (this.diffuseMapEnabled) {
-            this.m_has2DMap = true;
-            coder.addDefine("VOX_DIFFUSE_MAP","u_sampler"+(texIndex++));
-            coder.addTextureSample2D();
-        }
-        if (this.normalMapEnabled) {
-            this.m_has2DMap = true;
-            coder.addDefine("VOX_NORMAL_MAP","u_sampler"+(texIndex++));
-            coder.addTextureSample2D();
-        }
-        if (this.aoMapEnabled) {
-            this.m_has2DMap = true;
-            coder.addDefine("VOX_AO_MAP","u_sampler"+(texIndex++));
-            coder.addTextureSample2D();
-        }
-        if (this.m_has2DMap) {
-            coder.addDefine("VOX_USE_2D_MAP");
-        }
-        if (mirrorProjEnabled) {
-            coder.addDefine("VOX_MIRROR_PROJ_MAP", "u_sampler"+(texIndex++));
-            coder.addTextureSample2D();
-        }
-        if (this.indirectEnvMapEnabled) {
-            coder.addDefine("VOX_INDIRECT_ENV_MAP", "u_sampler"+(texIndex++));
-            coder.addTextureSampleCube();
-        }
-        console.log("this.texturesTotal: ", this.texturesTotal, ", texIndex: ",texIndex);
-        if (this.mirrorMapLodEnabled) coder.addDefine("VOX_MIRROR_MAP_LOD", "1");
-        if (this.hdrBrnEnabled) coder.addDefine("VOX_HDR_BRN", "1");
-        if (this.vtxFlatNormal) coder.addDefine("VOX_VTX_FLAT_NORMAL", "1");
-        
-        let lightsTotal: number = this.pointLightsTotal + this.parallelLightsTotal;
-        if (this.pointLightsTotal > 0)  coder.addDefine("VOX_POINT_LIGHTS_TOTAL", ""+this.pointLightsTotal);
-        else coder.addDefine("VOX_POINT_LIGHTS_TOTAL","0");
-        if (this.parallelLightsTotal > 0) coder.addDefine("VOX_PARALLEL_LIGHTS_TOTAL", ""+this.parallelLightsTotal);
-        else coder.addDefine("VOX_PARALLEL_LIGHTS_TOTAL","0");
-        if (lightsTotal > 0) coder.addDefine("VOX_LIGHTS_TOTAL",""+lightsTotal);
-        else coder.addDefine("VOX_LIGHTS_TOTAL", "0");
-
-        coder.addVertLayout("vec3","a_vs");
-        coder.addVertLayout("vec3","a_nvs");
-        if (this.m_has2DMap) {
-            coder.addVertLayout("vec2","a_uvs");
-            coder.addVertUniform("vec4","u_paramLocal[2]");
-            coder.addVarying("vec2","v_uv");
-        }
-        coder.addFragUniform("vec4","u_paramLocal[2]");
-
-        coder.addVarying("vec3","v_worldPos");
-        coder.addVarying("vec3","v_worldNormal");
-        coder.addVarying("vec3","v_camPos");
-
-        if (mirrorProjEnabled) {
-            coder.addFragUniformParam(UniformConst.StageParam);
-            coder.addFragUniform("vec4","u_mirrorParams",2);
-        }
-        if(lightsTotal > 0) {
-            this.lightData.useUniforms( coder );
-        }
-        if(this.fogEnabled && this.envData != null) {
-            this.envData.useUniformsForFog( coder );
-        }
-
-        coder.vertMatrixInverseEnabled = true;
-        
-        coder.useVertSpaceMats(true,true,true);
-        coder.addFragOutput("vec4","FragOutColor");
-        if(this.shadowReceiveEnabled && this.vsmData != null) {
-            this.vsmData.useUniforms( coder );
-            coder.addDefine("VOX_VSM_MAP", "u_sampler"+(texIndex++));
-            coder.addTextureSample2D();
-        }
-
-    }
+    
     getFragShaderCode(): string {
-        //  console.log("DefaultPBR",DefaultPBR);
-        //  console.log("DefaultPBR.frag",DefaultPBR.frag);
-        //  console.log("DefaultPBR end.");
-        this.buildThisCode();
-
-        this.m_codeBuilder.addFragHeadCode(PBRShaderCode.frag_head);
-        this.m_codeBuilder.addFragMainCode(PBRShaderCode.frag_body);
-        return this.m_codeBuilder.buildFragCode();
+        
+        return this.decorator.getFragShaderCode();
     }
     getVtxShaderCode(): string {
-
-        this.m_codeBuilder.addVertHeadCode(PBRShaderCode.vert_head);
-        this.m_codeBuilder.addVertMainCode(PBRShaderCode.vert_body);
-
-        return this.m_codeBuilder.buildVertCode();
+        return this.decorator.getVtxShaderCode();
     }
     getUniqueShaderName(): string {
-
-        let ns: string = this.m_uniqueName;
-
-        if (this.woolEnabled) ns += "_wl";
-        if (this.toneMappingEnabled) ns += "_tm";
-        if (this.envMapEnabled) ns += "EnvM";
-        if (this.scatterEnabled) ns += "Sct";
-        if (this.specularBleedEnabled) ns += "SpecBl";
-        if (this.metallicCorrection) ns += "MetCorr";
-        if (this.gammaCorrection) ns += "GmaCorr";
-        if (this.absorbEnabled) ns += "Absorb";
-        if (this.pixelNormalNoiseEnabled) ns += "PNNoise";
-        if (this.mirrorProjEnabled) ns += "MirPrj";
-        if (this.normalNoiseEnabled) ns += "_nNoise";
-        if (this.indirectEnvMapEnabled) ns += "IndirEnv";
-        if (this.normalMapEnabled) ns += "NorMap";
-        if (this.aoMapEnabled) ns += "AoMap";
-        if (this.shadowReceiveEnabled) ns += "Shadow";
-        if (this.fogEnabled) ns += "Fog";
-        if (this.hdrBrnEnabled) ns += "HdrBrn";
-        if (this.vtxFlatNormal) ns += "vtxFlagN";
-
-        if (this.pointLightsTotal > 0) ns += "LP" + this.pointLightsTotal;
-        if (this.parallelLightsTotal > 0) ns += "LD" + this.parallelLightsTotal;
-
-        ns += "_T" + this.texturesTotal;
-        this.m_uniqueName = ns;
-        
-        return ns;
+        return this.decorator.getUniqueShaderName();
     }
     toString(): string {
         return "[PBRShaderBuffer()]";
@@ -257,40 +81,11 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
             , 1.0, 0.3              // mirror scale, mirror mix scale
             , 0.0, 0.0              // undefine, undefine
         ]);
-    private m_lightData: GlobalLightData;
-    private m_vsmData: ShadowVSMData = null;
-    private m_envData: EnvLightData = null;
-
-    woolEnabled: boolean = false;
-    toneMappingEnabled: boolean = true;
-    envMapEnabled: boolean = true;
-    // 模拟镜面高光部分出现的表面散射
-    scatterEnabled: boolean = true;
-    specularBleedEnabled: boolean = true;
-    // 是否开启 metalness 修正
-    metallicCorrection: boolean = true;
-    // 是否开启 gamma矫正
-    gammaCorrection: boolean = true;
-    // 是否开启吸收光能的模式
-    absorbEnabled: boolean = true;
-    /**
-     * vtx normal noise
-     */
-    normalNoiseEnabled: boolean = false;
-    /**
-     * frag normal noise
-     */
-    pixelNormalNoiseEnabled: boolean = false;
-    mirrorProjEnabled: boolean = false;
-    mirrorMapLodEnabled: boolean = false;
-    diffuseMapEnabled: boolean = false;
-    normalMapEnabled: boolean = false;
-    aoMapEnabled: boolean = false;
-    indirectEnvMapEnabled: boolean = false;
-    shadowReceiveEnabled: boolean = false;
-    fogEnabled: boolean = false;
-    hdrBrnEnabled: boolean = false;
-    vtxFlatNormal: boolean = false;
+    //  private m_lightData: GlobalLightData;
+    //  private m_vsmData: ShadowVSMData = null;
+    //  private m_envData: EnvLightData = null;
+    
+    decorator: PBRShaderDecorator = null;
 
     constructor(pointLightsTotal: number = 2, parallelLightsTotal: number = 0) {
         super();
@@ -298,67 +93,21 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         this.m_parallelLightsTotal = parallelLightsTotal;
     }
     getCodeBuf(): ShaderCodeBuffer {
-        
+
+        //  this.decorator.vsmData = this.m_vsmData;
+        //  this.decorator.envData = this.m_envData;
+        this.decorator.texturesTotal = this.getTextureTotal();
+        this.decorator.initialize();
         let buf: PBRShaderBuffer = PBRShaderBuffer.GetInstance();
-        buf.woolEnabled = this.woolEnabled;
-        buf.toneMappingEnabled = this.toneMappingEnabled;
-        buf.envMapEnabled = this.envMapEnabled;
-        buf.scatterEnabled = this.scatterEnabled;
-        buf.specularBleedEnabled = this.specularBleedEnabled;
-        buf.metallicCorrection = this.metallicCorrection;
-        buf.gammaCorrection = this.gammaCorrection;
-        buf.absorbEnabled = this.absorbEnabled;
-        buf.normalNoiseEnabled = this.normalNoiseEnabled;
-        buf.pixelNormalNoiseEnabled = this.pixelNormalNoiseEnabled;
-        buf.mirrorProjEnabled = this.mirrorProjEnabled;
-        buf.mirrorMapLodEnabled = this.mirrorMapLodEnabled;
-        buf.diffuseMapEnabled = this.diffuseMapEnabled;
-        buf.normalMapEnabled = this.normalMapEnabled;
-        buf.aoMapEnabled = this.aoMapEnabled;
-        buf.indirectEnvMapEnabled = this.indirectEnvMapEnabled;
-        buf.shadowReceiveEnabled = this.shadowReceiveEnabled;
-        buf.fogEnabled = this.fogEnabled;
-        buf.hdrBrnEnabled = this.hdrBrnEnabled;
-        buf.vtxFlatNormal = this.vtxFlatNormal;
-
-        buf.pointLightsTotal = this.m_pointLightsTotal;
-        buf.parallelLightsTotal = this.m_parallelLightsTotal;
-        buf.texturesTotal = this.getTextureTotal();
-
-        buf.lightData = this.m_lightData;
-        buf.vsmData = this.m_vsmData;
-        buf.envData = this.m_envData;
+        buf.decorator = this.decorator;
         return buf;
     }
     copyFrom(dst: PBRMaterial, texEnabled:boolean = true): void {
 
-        this.woolEnabled = dst.woolEnabled;
-        this.toneMappingEnabled = dst.toneMappingEnabled;
-        this.envMapEnabled = dst.envMapEnabled;
-        this.scatterEnabled = dst.scatterEnabled;
-        this.specularBleedEnabled = dst.specularBleedEnabled;
-        this.metallicCorrection = dst.metallicCorrection;
-        this.gammaCorrection = dst.gammaCorrection;
-        this.absorbEnabled = dst.absorbEnabled;
-        this.normalNoiseEnabled = dst.normalNoiseEnabled;
-        this.pixelNormalNoiseEnabled = dst.pixelNormalNoiseEnabled;
-        this.mirrorProjEnabled = dst.mirrorProjEnabled;
-        this.mirrorMapLodEnabled = dst.mirrorMapLodEnabled;
-        this.diffuseMapEnabled = dst.diffuseMapEnabled;
-        this.normalMapEnabled = dst.normalMapEnabled;
-        this.aoMapEnabled = dst.aoMapEnabled;
-        this.indirectEnvMapEnabled = dst.indirectEnvMapEnabled;
-        this.shadowReceiveEnabled = dst.shadowReceiveEnabled;
-        this.fogEnabled = dst.fogEnabled;
-        this.hdrBrnEnabled = dst.hdrBrnEnabled;
-        this.vtxFlatNormal = dst.vtxFlatNormal;
-
-        this.m_pointLightsTotal = dst.m_pointLightsTotal;
-        this.m_parallelLightsTotal = dst.m_parallelLightsTotal;
-        this.m_lightData = dst.m_lightData;
-        this.m_vsmData = dst.m_vsmData;
-        this.m_envData = dst.m_envData;
-
+        if(this.decorator == null)this.decorator = new PBRShaderDecorator();
+        this.decorator.copyFrom( dst.decorator );
+        this.decorator.initialize();
+        
         if(this.m_albedo == null || this.m_albedo.length != dst.m_albedo.length) {
             this.m_albedo = dst.m_albedo.slice();
         }
@@ -398,34 +147,9 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     clone(): PBRMaterial {
 
         let dst: PBRMaterial = new PBRMaterial(this.m_pointLightsTotal,this.m_parallelLightsTotal);
-
-        dst.woolEnabled = this.woolEnabled;
-        dst.toneMappingEnabled = this.toneMappingEnabled;
-        dst.envMapEnabled = this.envMapEnabled;
-        dst.scatterEnabled = this.scatterEnabled;
-
-        dst.specularBleedEnabled = this.specularBleedEnabled;
-        dst.metallicCorrection = this.metallicCorrection;
-        dst.gammaCorrection = this.gammaCorrection;
-        dst.absorbEnabled = this.absorbEnabled;
-
-        dst.normalNoiseEnabled = this.normalNoiseEnabled;
-        dst.pixelNormalNoiseEnabled = this.pixelNormalNoiseEnabled;
-        dst.mirrorProjEnabled = this.mirrorProjEnabled;
-        dst.mirrorMapLodEnabled = this.mirrorMapLodEnabled;
-
-        dst.diffuseMapEnabled = this.diffuseMapEnabled;
-        dst.normalMapEnabled = this.normalMapEnabled;
-        dst.aoMapEnabled = this.aoMapEnabled;
-        dst.indirectEnvMapEnabled = this.indirectEnvMapEnabled;
-        dst.shadowReceiveEnabled = this.shadowReceiveEnabled;
-
-        dst.fogEnabled = this.fogEnabled;
-        dst.m_pointLightsTotal = this.m_pointLightsTotal;
-        dst.m_parallelLightsTotal = this.m_parallelLightsTotal;
-        dst.m_lightData = this.m_lightData;
-        dst.m_vsmData = this.m_vsmData;
-        dst.m_envData = this.m_envData;
+        if(dst.decorator == null)dst.decorator = new PBRShaderDecorator();
+        dst.decorator.copyFrom( this.decorator );
+        dst.decorator.initialize();
 
         dst.m_albedo.set(this.m_albedo);
         dst.m_params.set(this.m_params);
@@ -436,7 +160,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         dst.setTextureList(this.getTextureList().slice());
         return dst;
     }
-
+    /*
     setVSMData( vsm: ShadowVSMData ): void {
         this.m_vsmData = vsm;
     }
@@ -446,7 +170,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     setEnvData( envData: EnvLightData ): void {
         this.m_envData = envData;
     }
-
+    //*/
     seNormalMapIntensity(intensity: number): void {
         intensity = Math.min(Math.max(intensity, 0.0), 1.0);
         this.m_paramLocal[4] = intensity;
@@ -612,20 +336,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     }
     createSharedUniforms():ShaderGlobalUniform[]
     {
-        let glu: ShaderGlobalUniform = this.m_lightData.getGlobalUinform();
-        glu.uns = this.getShdUniqueName();
-        let list: ShaderGlobalUniform[] = [glu];
-        if(this.shadowReceiveEnabled && this.m_vsmData != null) {
-            glu = this.m_vsmData.getGlobalUinform();
-            glu.uns = this.getShdUniqueName();
-            list.push(glu);
-        }
-        if(this.fogEnabled && this.m_envData != null) {
-            glu = this.m_envData.getGlobalUinform();
-            glu.uns = this.getShdUniqueName();
-            list.push(glu);
-        }
-        return list;
+        return this.decorator.createSharedUniforms();
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();

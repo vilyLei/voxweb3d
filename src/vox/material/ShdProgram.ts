@@ -28,6 +28,7 @@ export default class ShdProgram implements IVtxShdCtr {
     private m_texLocations: any[] = null;
     private m_attribLIndexList: number[] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
     private m_attribTypeSizeList: number[] = [-1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1, -1];
+    private m_attriSizeList: number[] = null;
     private m_uniformDict: Map<string, UniformLine> = new Map();
     private m_uLocationDict: Map<string, any> = new Map();
     private m_vtxShd: any = null;
@@ -83,11 +84,19 @@ export default class ShdProgram implements IVtxShdCtr {
                     this.dataUniformEnabled = true;
                     ++i;
                 }
+                this.m_attriSizeList = [];
+                for(i = 0; i < this.m_attribTypeSizeList.length; ++i) {
+                    if(this.m_attribTypeSizeList[i] > 0) {
+                        this.m_attriSizeList.push(this.m_attribTypeSizeList[i]);
+                    }
+                }
                 if (RendererDeviece.SHADERCODE_TRACE_ENABLED) {
                     console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attri aLocationTypes: " + this.m_aLocationTypes);
                     console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attri m_aLocations: " + this.m_aLocations);
                     console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attriNSList: " + attriNSList);
-                    console.log("ShdProgram(" + this.m_uid + ")::createLocations(), m_attribLIndexList: " + this.m_attribLIndexList);
+                    console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attribLIndexList: " + this.m_attribLIndexList);
+                    console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attribTypeSizeList: " + this.m_attribTypeSizeList);
+                    console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attriSizeList: " + this.m_attriSizeList);
                 }
             }
         }
@@ -158,6 +167,28 @@ export default class ShdProgram implements IVtxShdCtr {
 
     private m_attrid: number = 0;
     private m_attridIndex: number = 0;
+    
+    testVertexAttribPointerOffset(offsetList: number[]): boolean {
+        let flag: boolean = false;
+        if(offsetList != null && this.m_attriSizeList != null) {
+            if(offsetList.length == this.m_attriSizeList.length) {
+                let offset: number = 0;
+                let i: number = 0;
+                for(; i < this.m_attriSizeList.length; ++i) {
+                    if(offset != offsetList[i]) {
+                        break;
+                    }
+                    offset += this.m_attriSizeList[i] * 4;
+                }
+                flag = i >= this.m_attriSizeList.length;
+            }
+        }
+        if(!flag) {
+            console.error("顶点数据layout和顶点着色器中的layout("+this.m_attriSizeList+")不匹配");
+            throw Error("Shader program vertx attributes layout can not match float attribute vertex data !!!");
+        }
+        return flag;
+    }
     vertexAttribPointerType(attribType: number, size: number, type: number, normalized: boolean, stride: number, offset: number): void {
         this.m_attrid = this.m_attribLIndexList[attribType];
         if (this.m_attrid > -1) {
@@ -220,16 +251,14 @@ export default class ShdProgram implements IVtxShdCtr {
         return this.m_uLocationDict.get(ns);
     }
     getUniformTypeNameByNS(ns: string): string {
-        let uniform: UniformLine = this.m_uniformDict.get(ns);
-        if (uniform != null) {
-            return uniform.typeName;
+        if (this.m_uniformDict.has(ns)) {
+            return this.m_uniformDict.get(ns).typeName;
         }
         return "";
     }
     getUniformTypeByNS(ns: string): number {
-        let uniform: UniformLine = this.m_uniformDict.get(ns);
-        if (uniform != null) {
-            return uniform.type;
+        if (this.m_uniformDict.has(ns)) {
+            return this.m_uniformDict.get(ns).type;
         }
         return 0;
     }
@@ -238,7 +267,7 @@ export default class ShdProgram implements IVtxShdCtr {
     }
     getUniformLengthByNS(ns: string): number {
         if (this.m_uniformDict.has(ns)) {
-            this.m_uniformDict.get(ns).arrLength;
+            return this.m_uniformDict.get(ns).arrLength;
         }
         return 0;
     }
@@ -339,7 +368,7 @@ export default class ShdProgram implements IVtxShdCtr {
     }
     destroy(): void {
         this.m_aLocations = null;
-
+        this.m_attriSizeList = null;
         if (this.m_texTotal > 0) {
             this.m_texLocations.fill(null);
             this.m_texTotal = 0;

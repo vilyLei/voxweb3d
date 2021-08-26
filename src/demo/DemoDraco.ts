@@ -82,20 +82,21 @@ export class DemoDraco extends DemoInstance implements DracoTaskListener {
         this.loadNext();
     }
     private m_urls: string[] = [
-        //  "static/assets/modules/bunny.rawmd",
+        //"static/assets/modules/bunny.rawmd",
         //  "static/assets/modules/loveass.rawmd",
+        //"static/assets/modules/lobster.rawmd"
         "static/assets/modules/lobster.rawmd"
     ];
     private m_scale: number = 1.0;
     private m_pos: Vector3D = null;
     private m_scales: number[] = [
-        //  300.0,
+        //300.0,
         //  1.0,
         50
         //1.0
     ];
     private m_posList: Vector3D[] = [
-        //  new Vector3D(-300.0,0.0,0.0),
+        //new Vector3D(-300.0,0.0,0.0),
         //  new Vector3D(300.0,0.0,300.0),
         new Vector3D(300.0,0.0,-300.0),
         //new Vector3D(300.0,-700.0,0.0),

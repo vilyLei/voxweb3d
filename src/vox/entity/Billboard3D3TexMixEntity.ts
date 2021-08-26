@@ -18,7 +18,6 @@ export default class Billboard3D3TexMixEntity extends DisplayEntity
 {
     private m_brightnessEnabled:boolean = true;
     private m_alphaEnabled:boolean = false;
-    //private m_clipEnabled:boolean = false;
     private m_bw:number = 0;
     private m_bh:number = 0;
     private m_currMaterial:Billboard3TexMixMaterial = null;

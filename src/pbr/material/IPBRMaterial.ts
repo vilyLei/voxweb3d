@@ -7,34 +7,38 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 import Color4 from "../../vox/material/Color4";
+import PBRShaderDecorator from "../material/PBRShaderDecorator";
 
 export default interface IPBRMaterial {
 
-    woolEnabled: boolean;
-    toneMappingEnabled: boolean;
-    envMapEnabled: boolean;
-    // 模拟镜面高光部分出现的表面散射
-    scatterEnabled: boolean;
-    specularBleedEnabled: boolean;
-    // 是否开启 metalness 修正
-    metallicCorrection: boolean;
-    // 是否开启 gamma矫正
-    gammaCorrection: boolean;
-    // 是否开启吸收光能的模式
-    absorbEnabled: boolean;
-    /**
-     * vtx normal noise
-     */
-    normalNoiseEnabled: boolean;
-    /**
-     * frag normal noise
-     */
-    pixelNormalNoiseEnabled: boolean;
-    mirrorProjEnabled: boolean;
-    mirrorMapLodEnabled: boolean;
-    diffuseMapEnabled: boolean;
-    normalMapEnabled: boolean;
-    indirectEnvMapEnabled: boolean;
+    // woolEnabled: boolean;
+    // toneMappingEnabled: boolean;
+    // envMapEnabled: boolean;
+    // // 模拟镜面高光部分出现的表面散射
+    // scatterEnabled: boolean;
+    // specularBleedEnabled: boolean;
+    // // 是否开启 metalness 修正
+    // metallicCorrection: boolean;
+    // // 是否开启 gamma矫正
+    // gammaCorrection: boolean;
+    // // 是否开启吸收光能的模式
+    // absorbEnabled: boolean;
+    // /**
+    //  * vtx normal noise
+    //  */
+    // normalNoiseEnabled: boolean;
+    // /**
+    //  * frag normal noise
+    //  */
+    // pixelNormalNoiseEnabled: boolean;
+    // mirrorProjEnabled: boolean;
+    // mirrorMapLodEnabled: boolean;
+    // diffuseMapEnabled: boolean;
+    // normalMapEnabled: boolean;
+    // indirectEnvMapEnabled: boolean;
+
+    decorator: PBRShaderDecorator;
+
     initializeByCodeBuf(texEnabled: boolean):void;
     copyFrom(dst: IPBRMaterial, texEnabled:boolean): void;
     clone(): IPBRMaterial;

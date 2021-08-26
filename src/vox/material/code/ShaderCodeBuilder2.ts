@@ -56,6 +56,7 @@ precision mediump float;
 
 
     private m_textureSampleTypes: string[] = [];
+    private m_textureMacroNames: string[] = [];
 
     private m_vertObjMat: boolean = false;
     private m_vertViewMat: boolean = false;
@@ -69,6 +70,7 @@ precision mediump float;
     private m_vertMainCode: string = "";
     private m_fragHeadCode: string = "";
     private m_fragMainCode: string = "";
+    private m_use2DMap: boolean = false;
 
     normalMapEanbled: boolean = false;
     mapLodEnabled: boolean = false;
@@ -83,6 +85,8 @@ precision mediump float;
         this.m_fragObjMat = false;
         this.m_fragViewMat = false;
         this.m_fragProjMat = false;
+
+        this.m_use2DMap = false;
 
         this.m_vertHeadCode = "";
         this.m_vertMainCode = "";
@@ -114,6 +118,7 @@ precision mediump float;
         this.m_defineValues = [];
 
         this.m_textureSampleTypes = [];
+        this.m_textureMacroNames = [];
 
         this.normalMapEanbled = false;
         this.mapLodEnabled = false;
@@ -181,14 +186,26 @@ precision mediump float;
     addVertFunction(codeBlock: string): void {
         this.m_vertFunctionBlocks.push(codeBlock);
     }
-    addTextureSample2D(): void {
+    addTextureSample2D(macroName:string = "",map2DEnabled: boolean = true): void {
         this.m_textureSampleTypes.push("sampler2D");
+        this.m_textureMacroNames.push(macroName);
+        if(map2DEnabled) {
+            this.m_use2DMap = true;
+        }
     }
-    addTextureSampleCube(): void {
+    addTextureSampleCube(macroName:string = ""): void {
         this.m_textureSampleTypes.push("samplerCube");
+        this.m_textureMacroNames.push(macroName);
     }
-    addTextureSample3D(): void {
+    addTextureSample3D(macroName:string = ""): void {
         this.m_textureSampleTypes.push("sampler3D");
+        this.m_textureMacroNames.push(macroName);
+    }
+    isHaveTexture(): boolean {
+        return this.m_textureSampleTypes.length > 0;
+    }
+    isHaveTexture2D(): boolean {
+        return this.m_use2DMap;
     }
     useVertSpaceMats(objMatEnabled: boolean = true, viewMatEnabled: boolean = true, projMatEnabled: boolean = true): void {
         this.m_vertObjMat = objMatEnabled;
@@ -283,15 +300,27 @@ precision mediump float;
                 code += "\n#define " + this.m_defineNames[i] + " " + this.m_defineValues[i];
             }
             else {
-                code += "\n#define " + this.m_defineNames[i];
+                code += "\n#define " + this.m_defineNames[i] + " 1";
             }
         }
+
+        i = 0;
+        len = this.m_textureMacroNames.length;
+        for (; i < len; i++) {
+            if(this.m_textureMacroNames[i] != "") {
+                code += "\n#define " + this.m_textureMacroNames[i] + " u_sampler" + i + "";
+            }
+        }
+        if(this.m_use2DMap) {
+            code += "\n#define VOX_USE_2D_MAP 1";
+        }        
 
         i = 0;
         len = this.m_textureSampleTypes.length;
         for (; i < len; i++) {
             code += "\nuniform " + this.m_textureSampleTypes[i] + " u_sampler" + i + ";";
         }
+
         i = 0;
         len = this.m_fragUniformTypes.length;
         for (; i < len; i++) {
@@ -394,6 +423,10 @@ precision mediump float;
                 code += "\n#define " + this.m_defineNames[i];
             }
         }
+        
+        if(this.m_use2DMap) {
+            code += "\n#define VOX_USE_2D_MAP 1";
+        }
 
         len = this.m_vertLayoutNames.length;
         if(RendererDeviece.IsWebGL2()) {
@@ -427,7 +460,6 @@ precision mediump float;
             for (i = 0; i < len; i++) {
                 code += "\nvarying " + this.m_varyingTypes[i] + " " + this.m_varyingNames[i] + ";";
             }
-
         }
         
         if (this.vertMatrixInverseEnabled && RendererDeviece.IsWebGL1()) {

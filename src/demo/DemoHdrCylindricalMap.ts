@@ -113,12 +113,12 @@ export class DemoHdrCylindricalMap {
         
     }
     private initHdrTest(): void {
-        //studio_lowContrast
+        
         let loader: BinaryLoader = new BinaryLoader();
-        //loader.load("static/assets/hdr/night_free_Env_512x256.hdr", this);
+        loader.load("static/assets/hdr/night_free_Env_512x256.hdr", this);
         //loader.load("static/assets/hdr/cool_white.hdr", this);
         //loader.load("static/assets/hdr/studio_lowContrast.hdr", this);
-        loader.load("static/assets/hdr/studioLight_gray.hdr", this);
+        //loader.load("static/assets/hdr/studioLight_gray.hdr", this);
         //loader.load("static/assets/hdr/memorial.hdr", this);
         //loader.load("static/assets/hdr/HDR_029_Sky_Cloudy_Env.hdr", this);
     }

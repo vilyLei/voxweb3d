@@ -322,6 +322,8 @@ export default class RenderShader implements IRenderShader,IRenderResource
                 this.m_rc.uniformMatrix3fv(ult, false, f32Arr,0, dataSize * 9);
             break;
             case MaterialConst.SHADER_VEC4FV:
+                //console.log("MaterialConst.SHADER_VEC4FV dataSize: ",dataSize);
+                //console.log(f32Arr);
                 this.m_rc.uniform4fv(ult, f32Arr, offset, dataSize * 4);
             break;
             case MaterialConst.SHADER_VEC3FV:

@@ -23,6 +23,7 @@ import GlobalLightData from "../../light/base/GlobalLightData";
 import ShadowVSMData from "../../shadow/vsm/material/ShadowVSMData";
 import EnvLightData from "../../light/base/EnvLightData";
 import UniformConst from "../../vox/material/UniformConst";
+import PBRShaderDecorator from "./PBRShaderDecorator";
 
 class DefaultPBR2ShaderBuffer extends ShaderCodeBuffer {
     constructor() {
@@ -275,7 +276,8 @@ export default class DefaultPBRMaterial2 extends MaterialBase implements IPBRMat
     indirectEnvMapEnabled: boolean = false;
     shadowReceiveEnabled: boolean = false;
     fogEnabled: boolean = false;
-
+    
+    decorator: PBRShaderDecorator = null;
     constructor(pointLightsTotal: number = 2, parallelLightsTotal: number = 0) {
         super();
         this.m_pointLightsTotal = pointLightsTotal;

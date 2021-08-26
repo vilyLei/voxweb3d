@@ -18,6 +18,7 @@ import Color4 from "../../vox/material/Color4";
 
 import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
 import UniformConst from "../../vox/material/UniformConst";
+import PBRShaderDecorator from "./PBRShaderDecorator";
 class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
@@ -265,7 +266,8 @@ export default class DefaultPBRMaterial extends MaterialBase implements IPBRMate
     diffuseMapEnabled: boolean = false;
     normalMapEnabled: boolean = false;
     indirectEnvMapEnabled: boolean = false;
-
+    
+    decorator: PBRShaderDecorator = null;
     constructor(pointLightsTotal: number = 2, parallelLightsTotal: number = 0) {
         super();
         this.m_pointLightsTotal = pointLightsTotal;

@@ -89,15 +89,17 @@ export class DemoParticleMixTex
             //  //bill.setFadeFactor(0.1);
             //  this.m_rscene.addEntity(bill);
             let scale:number = 2.0;
+            ///*
             let plane:Plane3DEntity = new Plane3DEntity();
             plane.initializeXOZ(-300.0,-300.0,600.0,600.0,[textures[0]]);
             plane.setScaleXYZ(scale,scale,scale);
             plane.setXYZ(0.0,-80.0,0.0);
             this.m_rscene.addEntity(plane);
+            //*/
             
             let mixBill:Billboard3D3TexMixEntity = new Billboard3D3TexMixEntity();
             //mixBill.toBrightnessBlend();
-            mixBill.toTransparentBlend();
+            //mixBill.toTransparentBlend();
             //mixBill.initializeSquare(100.0,[textures[4],textures[5],textures[6]]);
             //mixBill.initializeSquare(100.0,[textures[7],textures[1],textures[2]]);
             //mixBill.initializeSquare(100.0,[textures[8]]);

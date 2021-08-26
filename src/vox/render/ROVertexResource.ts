@@ -139,14 +139,15 @@ class ROVertexRes
         }
         if(this.m_typeList == null)
         {
-            this.m_wholeStride = 0;
             this.m_typeList = new Array(this.m_attribsTotal);
             this.m_offsetList = new Array(this.m_attribsTotal);
-            this.m_offsetList.fill(0);
             for(let i:number = 0; i < this.m_attribsTotal; ++i)
             {
+                this.m_offsetList[i] = this.m_wholeStride;
+                this.m_wholeStride += shdp.getLocationSizeByIndex(i) * 4;
                 this.m_typeList[i] = ( shdp.getLocationTypeByIndex(i) );
             }
+            this.m_wholeStride = 0;
         }
     }
     initialize(rc:IROVtxBuilder,shdp:IVtxShdCtr, vtx:IROVtxBuf):void
@@ -210,10 +211,13 @@ class ROVertexRes
             {
                 return pvro;
             }
+            //console.log("VtxCombinedBuf::createVROBegin(), this.m_type: ",this.m_type);
+            shdp.testVertexAttribPointerOffset(this.m_offsetList);
             if(vaoEnabled)
             {
                 // vao 的生成要记录标记,防止重复生成, 因为同一组数据在不同的shader使用中可能组合方式不同，导致了vao可能是多样的
                 //console.log("VtxCombinedBuf::createVROBegin(), "+this.m_typeList+" /// "+this.m_wholeStride+" /// "+this.m_offsetList);
+                //console.log("VtxCombinedBuf::createVROBegin(), "+this.m_type);
                 let vro:VaoVertexRenderObj = VaoVertexRenderObj.Create(rc, mid, this.m_vtx.getUid());
                 vro.vao = rc.createVertexArray();
                 rc.bindVertexArray(vro.vao);
@@ -260,7 +264,8 @@ class ROVertexRes
                     if(shdp.testVertexAttribPointerType(this.m_typeList[i]))
                     {
                         vro.attribTypes.push( this.m_typeList[i] );
-                        vro.wholeOffsetList.push( this.m_offsetList[i] );
+                        //vro.wholeOffsetList.push( this.m_offsetList[i] );
+                        vro.wholeOffsetList.push( 0 );
                     }
                 }
 

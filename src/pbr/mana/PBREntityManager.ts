@@ -86,10 +86,15 @@ export default class PBREntityManager implements DracoTaskListener
         let mesh: DracoMesh = new DracoMesh();
         mesh.initialize(modules);
 
-        let uvscale: number = Math.random() * 7.0 + 0.6;        
+        let uvscale: number = 10.0;//Math.random() * 7.0 + 0.6;        
         let material: PBRMaterial = this.m_entityUtils.createMaterial(uvscale,uvscale);
-        material.vtxFlatNormal = true;
-        material.aoMapEnabled = this.aoMapEnabled;
+        let texList: TextureProxy[] = material.getTextureList().slice(0);
+        texList[1] = this.m_entityUtils.getImageTexByUrl("static/assets/color_02.jpg");
+        material.setTextureList(texList);
+        material.decorator.diffuseMapEnabled = true;
+        material.decorator.normalMapEnabled = true;
+        material.decorator.vtxFlatNormal = true;
+        material.decorator.aoMapEnabled = this.aoMapEnabled;
         let scale = this.m_scale;
         let entity: DisplayEntity = new DisplayEntity();
         entity.setMaterial( material );
@@ -137,7 +142,7 @@ export default class PBREntityManager implements DracoTaskListener
         }
 
         material = this.m_entityUtils.createMaterial(1,1);
-        material.aoMapEnabled = this.aoMapEnabled;
+        material.decorator.aoMapEnabled = this.aoMapEnabled;
         let srcSph = new Sphere3DEntity();
         srcSph.setMaterial( material );
         srcSph.initialize(100.0, 20, 20);
@@ -151,7 +156,7 @@ export default class PBREntityManager implements DracoTaskListener
             uvscale = Math.random() * 7.0 + 0.6;
 
             material = this.m_entityUtils.createMaterial(uvscale,uvscale);
-            material.aoMapEnabled = this.aoMapEnabled;
+            material.decorator.aoMapEnabled = this.aoMapEnabled;
             scale = 0.8 + Math.random();
             let pr: number = scale * 100.0;
             sph = new Sphere3DEntity();

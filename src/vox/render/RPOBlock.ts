@@ -74,11 +74,14 @@ export default class RPOBlock {
         }
     }
     private run0(rc: RenderProxy): void {
+
         let nextNode: RPONode = this.m_nodeLinker.getBegin();
         if (nextNode != null) {
+            
             this.m_shader.bindToGpu(this.shdUid);
             this.m_shader.resetUniform();
             let unit: RPOUnit = null;
+            
             while (nextNode != null) {
                 if (nextNode.drawEnabled) {
                     unit = nextNode.unit;
@@ -97,36 +100,40 @@ export default class RPOBlock {
         }
     }
     private run1(rc: RenderProxy): void {
+        
         let nextNode: RPONode = this.m_nodeLinker.getBegin();
         if (nextNode != null) {
+            
             this.m_shader.bindToGpu(this.shdUid);
             this.m_shader.resetUniform();
             let unit: RPOUnit = null;
-            let vtxTotal: number = 0;
-            let texTotal: number = 0;
-            let flagVBoo: boolean = false;
-            let flagTBoo: boolean = false;
+            let vtxTotal: number = this.m_nodeLinker.getVtxTotalAt(nextNode.rvroI);
+            let texTotal: number = this.m_nodeLinker.getTexTotalAt(nextNode.rtroI);
+            let vtxFlag: boolean = vtxTotal > 0;
+            let texFlag: boolean = texTotal > 0;
+
+            //console.log("run1",vtxFlag,texFlag);
             while (nextNode != null) {
                 if (vtxTotal < 1) {
                     vtxTotal = this.m_nodeLinker.getVtxTotalAt(nextNode.rvroI);
-                    flagVBoo = true;
+                    vtxFlag = true;
                 }
                 vtxTotal--;
                 if (texTotal < 1) {
                     texTotal = this.m_nodeLinker.getTexTotalAt(nextNode.rtroI);
-                    flagTBoo = true;
+                    texFlag = true;
                 }
                 texTotal--;
                 if (nextNode.drawEnabled) {
                     unit = nextNode.unit;
                     if (unit.drawEnabled) {
-                        if (flagVBoo) {
+                        if (vtxFlag) {
                             nextNode.vro.run();
-                            flagVBoo = false;
+                            vtxFlag = false;
                         }
-                        if (flagTBoo) {
+                        if (texFlag) {
                             nextNode.tro.run();
-                            flagTBoo = false;
+                            texFlag = false;
                         }
                         unit.run2(rc);
                         if (unit.partTotal < 1) {
@@ -142,39 +149,41 @@ export default class RPOBlock {
         }
     }
     private run2(rc: RenderProxy): void {
+        
         let nextNode: RPONode = this.m_nodeLinker.getBegin();
         if (nextNode != null) {
             this.m_shader.bindToGpu(this.shdUid);
             this.m_shader.resetUniform();
             let unit: RPOUnit = null;
-            let vtxTotal: number = 0;
-            let texTotal: number = 0;
-            let flagVBoo: boolean = false;
-            let flagTBoo: boolean = false;
             RenderStateObject.UseRenderState(nextNode.unit.renderState);
             RenderColorMask.UseRenderState(nextNode.unit.rcolorMask);
+
+            let vtxTotal: number = this.m_nodeLinker.getVtxTotalAt(nextNode.rvroI);
+            let texTotal: number = this.m_nodeLinker.getTexTotalAt(nextNode.rtroI);
+            let vtxFlag: boolean = vtxTotal > 0;
+            let texFlag: boolean = texTotal > 0;
             while (nextNode != null) {
                 if (vtxTotal < 0) {
                     vtxTotal = this.m_nodeLinker.getVtxTotalAt(nextNode.rvroI);
-                    flagVBoo = true;
+                    vtxFlag = true;
                 }
                 vtxTotal--;
                 if (texTotal < 0) {
                     texTotal = this.m_nodeLinker.getTexTotalAt(nextNode.rtroI);
-                    flagTBoo = true;
+                    texFlag = true;
                 }
                 texTotal--;
 
                 if (nextNode.drawEnabled) {
                     unit = nextNode.unit;
                     if (unit.drawEnabled) {
-                        if (flagVBoo) {
+                        if (vtxFlag) {
                             nextNode.vro.run();
-                            flagVBoo = false;
+                            vtxFlag = false;
                         }
-                        if (flagTBoo) {
+                        if (texFlag) {
                             nextNode.tro.run();
-                            flagTBoo = false;
+                            texFlag = false;
                         }
                         if (unit.ubo != null) {
                             unit.ubo.run(rc);
@@ -202,22 +211,23 @@ export default class RPOBlock {
             rc.Texture.unlocked = texUnlock;
             
             let unit: RPOUnit = null;
-            let flagVBoo: boolean = false;
             if (this.batchEnabled) {
-                let vtxTotal: number = 0;
+
+                let vtxTotal: number = this.m_nodeLinker.getVtxTotalAt(nextNode.rvroI);
+                let vtxFlag: boolean = vtxTotal > 0;
 
                 while (nextNode != null) {
                     if (vtxTotal < 1) {
                         vtxTotal = this.m_nodeLinker.getVtxTotalAt(nextNode.rvroI);
-                        flagVBoo = true;
+                        vtxFlag = true;
                     }
                     vtxTotal--;
 
                     unit = nextNode.unit;
                     if (nextNode.drawEnabled && unit.drawEnabled) {
-                        if (flagVBoo) {
+                        if (vtxFlag) {
                             nextNode.vro.run();
-                            flagVBoo = false;
+                            vtxFlag = false;
                         }
                         if(texUnlock) {
                             nextNode.tro.run();

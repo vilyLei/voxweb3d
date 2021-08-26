@@ -243,10 +243,10 @@ export default class BillboardPlaneFlowMesh extends MeshBase
     {
         ROVertexBuffer.Reset();
         ROVertexBuffer.AddFloat32Data(this.m_vs,4);
-        ROVertexBuffer.AddFloat32Data(this.m_vs2,4);
         ROVertexBuffer.AddFloat32Data(this.m_uvs,2);
-        ROVertexBuffer.AddFloat32Data(this.m_uvs2,4);
         ROVertexBuffer.AddFloat32Data(this.m_nvs,4);
+        ROVertexBuffer.AddFloat32Data(this.m_vs2,4);
+        ROVertexBuffer.AddFloat32Data(this.m_uvs2,4);
         ROVertexBuffer.AddFloat32Data(this.m_nvs2,4);
         
         ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;

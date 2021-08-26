@@ -13,6 +13,7 @@ import CubeRttBuilder from "../../renderingtoy/mcase/CubeRTTBuilder";
 import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
 import EnvLightData from "../../light/base/EnvLightData";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
+import PBRShaderDecorator from "../material/PBRShaderDecorator";
 
 
 export default class PBREntityUtils
@@ -69,25 +70,28 @@ export default class PBREntityUtils
         let matBuilder:PBRMaterialBuilder = this.m_materialBuilder;
         let material: PBRMaterial;
         material = matBuilder.makePBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
-        
-        material.shadowReceiveEnabled = true;
-        material.fogEnabled = this.fogEnabled;
-        material.indirectEnvMapEnabled = true;
-        material.envMapEnabled = true;
-        material.diffuseMapEnabled = true;
-        material.normalMapEnabled = true;
-        
+
+        let decorator: PBRShaderDecorator = material.decorator;
+        decorator.shadowReceiveEnabled = true;
+        decorator.fogEnabled = this.fogEnabled;
+        decorator.indirectEnvMapEnabled = true;
+        decorator.envMapEnabled = true;
+        decorator.diffuseMapEnabled = true;
+        decorator.normalMapEnabled = true;
+
         material.setUVScale(uscale,vscale);
         
-        if(material.indirectEnvMapEnabled) {
+        if(decorator.indirectEnvMapEnabled) {
             ptexList.push( this.m_cubeRTTBuilder.getCubeTexture() );
         }
-        if(material.shadowReceiveEnabled) {
+        if(decorator.shadowReceiveEnabled) {
             ptexList.push( shadowTex );
-            material.setVSMData( vsmData );
+            //material.setVSMData( vsmData );
+            material.decorator.vsmData = vsmData;
         }
-        if(material.fogEnabled) {
-            material.setEnvData( this.m_envData );
+        if(decorator.fogEnabled) {
+            //material.setEnvData( this.m_envData );
+            material.decorator.envData = this.m_envData;
         }
         material.setTextureList( ptexList );
         return material;
@@ -95,24 +99,26 @@ export default class PBREntityUtils
     createMirrorEntity(param: PBRParamEntity,material: PBRMaterial): void {
         
         let matBuilder:PBRMaterialBuilder = this.m_materialBuilder;
-        //let param: PBRParamEntity;
 
         let mirMaterial: PBRMaterial = matBuilder.makePBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
         mirMaterial.copyFrom(material, false);
+        let decorator: PBRShaderDecorator = material.decorator;
+
         let texList: TextureProxy[] = material.getTextureList();
-        if(material.envMapEnabled) {
+        if(decorator.envMapEnabled) {
             mirMaterial.setTextureList(texList.slice(1));
         }
         else {
             mirMaterial.setTextureList(texList.slice(0));
         }
-        mirMaterial.hdrBrnEnabled = false;
-        mirMaterial.envMapEnabled = false;
-        mirMaterial.diffuseMapEnabled = material.diffuseMapEnabled;
-        mirMaterial.normalMapEnabled = material.normalMapEnabled;
-        mirMaterial.indirectEnvMapEnabled = false;
-        mirMaterial.pixelNormalNoiseEnabled = false;
-        mirMaterial.aoMapEnabled = false;
+        let mirDecorator: PBRShaderDecorator = mirMaterial.decorator;        
+        mirDecorator.hdrBrnEnabled = false;
+        mirDecorator.envMapEnabled = false;
+        mirDecorator.diffuseMapEnabled = decorator.diffuseMapEnabled;
+        mirDecorator.normalMapEnabled = decorator.normalMapEnabled;
+        mirDecorator.indirectEnvMapEnabled = false;
+        mirDecorator.pixelNormalNoiseEnabled = false;
+        mirDecorator.aoMapEnabled = false;
 
         let mirEntity: DisplayEntity = new DisplayEntity();
         mirEntity.copyMeshFrom( param.entity );

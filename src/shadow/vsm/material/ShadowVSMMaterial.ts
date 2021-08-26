@@ -59,13 +59,17 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
     }
     getFragShaderCode(): string {
         this.buildThisCode();
-
+        this.m_codeBuilder.addFragHeadCode(
+`
+vec3 worldNormal;
+`
+        )
         this.m_codeBuilder.addFragMainCode(
 `
 void main() {
     vec4 color = VOX_Texture2D( u_sampler1, v_uv );
 
-
+    worldNormal = v_worldNormal;
     color.xyz *= u_color.xyz;
 
     #ifdef VOX_USE_SHADOW

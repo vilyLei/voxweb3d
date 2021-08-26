@@ -207,10 +207,10 @@ export default class RPOUnit implements IPoolNode,IRPODisplay
         {
             this.ubo.run(rc);
         }
-        if(this.shader == null)
-        {
-            console.log("this.shader == null unit this.uid: ",this.uid);
-        }
+        //  if(this.shader == null)
+        //  {
+        //      console.log("this.shader == null unit this.uid: ",this.uid);
+        //  }
         this.shader.useTransUniform(this.transUniform);
         this.shader.useUniform(this.uniform);
         this.testDrawFlag();
