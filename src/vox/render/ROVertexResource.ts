@@ -12,6 +12,7 @@ import VertexRenderObj from "../../vox/render/VertexRenderObj";
 import VaoVertexRenderObj from "../../vox/render/VaoVertexRenderObj";
 import IROVtxBuf from "../../vox/render/IROVtxBuf";
 import IRenderResource from "../../vox/render/IRenderResource";
+import DivLog from "../utils/DivLog";
 
 class ROVertexRes
 {
@@ -212,7 +213,8 @@ class ROVertexRes
                 return pvro;
             }
             //console.log("VtxCombinedBuf::createVROBegin(), this.m_type: ",this.m_type);
-            shdp.testVertexAttribPointerOffset(this.m_offsetList);
+            let flag: boolean = shdp.testVertexAttribPointerOffset(this.m_offsetList);
+            //DivLog.ShowLog("createVRO testVertexAttribPointerOffset flag: "+flag);
             if(vaoEnabled)
             {
                 // vao 的生成要记录标记,防止重复生成, 因为同一组数据在不同的shader使用中可能组合方式不同，导致了vao可能是多样的

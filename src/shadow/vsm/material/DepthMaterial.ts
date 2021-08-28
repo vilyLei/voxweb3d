@@ -34,21 +34,11 @@ class DepthShaderBuffer extends ShaderCodeBuffer
 
         let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
         coder.reset();
-        if(RendererDeviece.IsWebGL1()) {
-            coder.addFragExtend("#extension GL_OES_standard_derivatives : enable");
-            //coder.addFragExtend("#extension GL_EXT_shader_texture_lod : enable");
-        }
         coder.addVertLayout("vec3","a_vs");
-        //  if(this.isTexEanbled())
-        //  {
-        //      coder.addVertLayout("vec2","a_uvs");
-        //      coder.addVertLayout("vec3","a_nvs");
-        //  }
+        
         coder.addVarying("vec4", "v_pos");
         coder.addFragOutput("vec4", "FragColor0");
-        //coder.addFragUniform("vec4","u_color");
-        //coder.addFragUniform("vec4","u_stageParam");
-
+        
         coder.useVertSpaceMats(true,true,true);
         coder.addFragFunction(
 `

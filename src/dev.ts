@@ -296,7 +296,7 @@
 
 //  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
 
-import {DemoDraco as Demo} from "./demo/DemoDraco";
+//  import {DemoDraco as Demo} from "./demo/DemoDraco";
 
 //  import {DemoMRT as Demo} from "./demo/DemoMRT";
 
@@ -342,7 +342,7 @@ import {DemoDraco as Demo} from "./demo/DemoDraco";
 
 //  import {DemoDefaultPBR3 as Demo} from "./pbr/DemoDefaultPBR3";
 
-//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
+import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////

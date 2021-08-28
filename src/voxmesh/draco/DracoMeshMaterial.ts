@@ -8,6 +8,7 @@
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
+import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
 
 export class DracoMeshShaderBuffer extends ShaderCodeBuffer
 {
@@ -16,14 +17,63 @@ export class DracoMeshShaderBuffer extends ShaderCodeBuffer
         super();
     }
     private static s_instance:DracoMeshShaderBuffer = new DracoMeshShaderBuffer();
+    private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
         //console.log("DracoMeshShaderBuffer::initialize()...");
         this.m_uniqueName = "DracoMeshShd";
     }
+    private buildThisCode():void
+    {
+
+        let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
+        coder.reset();
+        coder.derivatives = true;
+        
+        coder.addVertLayout("vec3","a_vs");
+        coder.addVertLayout("vec2","a_uvs");
+        coder.addVertLayout("vec3","a_nvs");
+        
+        coder.addVarying("vec2", "v_uv");
+        coder.addVarying("vec3", "v_nv");
+        coder.addVarying("vec3", "v_pv");
+        coder.addFragOutput("vec4", "FragColor0");
+        coder.addFragUniform("vec4", "u_param");
+        
+        coder.useVertSpaceMats(true,true,true);
+
+        coder.addFragFunction(
+`
+vec3 getVtxFlatNormal(vec3 pos) {
+    vec3 fdx = dFdx(pos);
+    vec3 fdy = dFdy(pos);
+    return normalize(cross(fdx, fdy));
+}
+`
+        );
+    }
     getFragShaderCode():string
     {
+        
+        this.buildThisCode();
+
+        this.m_codeBuilder.addFragMainCode(
+`
+void main() {
+
+    //FragColor0 = vec4(abs(v_nv.xyz), 1.0);
+    vec3 pnv = getVtxFlatNormal(v_pv);
+    //float dis = length(v_nv - pnv);
+    float dis = length(v_nv - normalize(v_pv));
+    FragColor0 = vec4(abs(vec3(dis) * pnv), 1.0);
+    //FragColor0 = vec4(abs(v_nv), 1.0);
+}
+`
+        );
+
+        return this.m_codeBuilder.buildFragCode();
+/*
         let fragCode:string = 
 `#version 300 es
 precision highp float;
@@ -49,9 +99,24 @@ void main()
 }
 `;
         return fragCode;
+        //*/
     }
     getVtxShaderCode():string
     {
+        
+        this.m_codeBuilder.addVertMainCode(
+`
+void main(){
+    mat4 viewMat4 = u_viewMat * u_objMat;
+    vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);
+    gl_Position = u_projMat * viewPos;
+    v_uv = a_uvs;
+    v_nv = a_nvs;
+    v_pv = a_vs;
+}
+`
+        );
+        return this.m_codeBuilder.buildVertCode();
         let vtxCode:string = 
 `#version 300 es
 precision highp float;

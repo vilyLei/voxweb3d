@@ -27,6 +27,7 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
     decorator: PBRShaderDecorator = null;
     
     initialize(texEnabled: boolean): void {
+        this.adaptationShaderVersion = false;
     }
     
     getFragShaderCode(): string {

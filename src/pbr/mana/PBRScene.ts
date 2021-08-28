@@ -142,6 +142,7 @@ export default class PBRScene
     }
     private m_cubeRTTTimes: number = 2001;
     prerender(): void {
+        
         // --------------------------------------------- vsm runbegin
         this.m_vsmModule.run();
         // --------------------------------------------- vsm rtt end

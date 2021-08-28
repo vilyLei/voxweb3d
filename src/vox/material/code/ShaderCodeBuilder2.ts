@@ -74,6 +74,7 @@ precision mediump float;
 
     normalMapEanbled: boolean = false;
     mapLodEnabled: boolean = false;
+    derivatives: boolean = false;
     vertMatrixInverseEnabled: boolean = false;
     fragMatrixInverseEnabled: boolean = false;
     constructor() { }
@@ -260,7 +261,7 @@ precision mediump float;
             if(this.m_fragOutputNames.length > 1) {
                 code += "\n#extension GL_EXT_draw_buffers: require";
             }
-            if(this.normalMapEanbled) {
+            if(this.normalMapEanbled || this.derivatives) {
                 code += "\n#extension GL_OES_standard_derivatives : enable";
             }
             if(this.mapLodEnabled) {

@@ -46,8 +46,7 @@ export default class PBREntityManager
             this.m_envMap = envMap;
             
             this.m_dracoMeshLoader.initialize(2);
-            
-            
+                        
             this.m_dracoModule.entityUtils = this.m_entityUtils;
             this.m_dracoModule.uiModule = this.m_uiModule;
             this.m_dracoModule.paramEntities = this.m_paramEntities;

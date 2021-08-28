@@ -42,11 +42,12 @@ export class DemoPBR {
             //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
             let rparam: RendererParam = new RendererParam();
-            //rparam.maxWebGLVersion = 1;
+            rparam.maxWebGLVersion = 1;
             rparam.setCamProject(45,50.0,10000.0);
             rparam.setAttriStencil(true);
             rparam.setAttriAntialias(true);
             rparam.setCamPosition(2000.0, 2000.0, 2000.0);
+            rparam.setCamLookAtPos( this.m_lookV.x, this.m_lookV.y, this.m_lookV.z );
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 5);
             this.m_rscene.updateCamera();

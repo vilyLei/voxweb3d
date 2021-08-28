@@ -17,6 +17,7 @@ import {DracoModuleLoader, DracoWholeModuleLoader, DracoMultiPartsModuleLoader} 
 
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
+import DivLog from "../vox/utils/DivLog";
 
 export class DemoDraco extends DemoInstance {
     constructor() {
@@ -30,8 +31,8 @@ export class DemoDraco extends DemoInstance {
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
-    private moduleLoader: DracoModuleLoader = new DracoWholeModuleLoader();
-    //private moduleLoader: DracoModuleLoader = new DracoMultiPartsModuleLoader();
+    //private moduleLoader: DracoModuleLoader = new DracoWholeModuleLoader();
+    private moduleLoader: DracoModuleLoader = new DracoMultiPartsModuleLoader();
     protected initializeSceneParam(param: RendererParam): void {
         this.m_processTotal = 4;
         param.maxWebGLVersion = 2;
@@ -42,6 +43,9 @@ export class DemoDraco extends DemoInstance {
     }
     protected initializeSceneObj(): void {
 
+        DivLog.SetDebugEnabled( true );
+        DivLog.ShowLog("initializeSceneObj...");
+
         this.m_camTrack = new CameraTrack();
         this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
@@ -49,7 +53,7 @@ export class DemoDraco extends DemoInstance {
         RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
         //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
         this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
-        this.m_profileInstance.initialize(this.m_rscene.getRenderer());
+        //  this.m_profileInstance.initialize(this.m_rscene.getRenderer());
         this.m_statusDisp.initialize("rstatus", this.m_rscene.getStage3D().viewWidth - 180);
 
         this.m_rscene.enableMouseEvent(true);
@@ -93,9 +97,9 @@ export class DemoDraco extends DemoInstance {
     }
     run(): void {
         this.m_rscene.run();
-        if (this.m_profileInstance != null) {
-            this.m_profileInstance.run();
-        }
+        //  if (this.m_profileInstance != null) {
+        //      this.m_profileInstance.run();
+        //  }
         ThreadSystem.Run();
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);

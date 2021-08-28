@@ -6,6 +6,7 @@ import DracoMeshMaterial from "../../voxmesh/draco/DracoMeshMaterial";
 import DracoMeshBuilder from "../../voxmesh/draco/DracoMeshBuilder";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import RendererScene from "../../vox/scene/RendererScene";
+import DivLog from "../../vox/utils/DivLog";
 
 
 export class DracoModuleLoader {
@@ -45,11 +46,11 @@ export class DracoWholeModuleLoader extends DracoModuleLoader implements DracoTa
 
         this.m_urls = [
             //"static/assets/modules/bunny.rawmd",
-            "static/assets/modules/loveass.rawmd",
+            //"static/assets/modules/loveass.rawmd",
             //"static/assets/modules/lobster.rawmd"
             //"static/assets/modules/lobster.rawmd"
             //"static/assets/modules/cloST22.rawmd"
-            //"static/assets/modules/skirt/dracos_41.drc.zip"
+            "static/assets/modules/skirt/dracos_41.drc.zip"
         ];
     }
     initialize(rscene: RendererScene, dracoMeshLoader: DracoMeshBuilder): void {
@@ -100,6 +101,8 @@ export class DracoWholeModuleLoader extends DracoModuleLoader implements DracoTa
     dracoParseFinish(modules: any[], total: number): void {
         if (modules.length == 1) {
             console.log("dracoParseFinish modules: ", modules);
+            DivLog.ShowLog("dracoParseFinish modules...");
+            
             let scale: number = this.m_scale;
             let material: DracoMeshMaterial = new DracoMeshMaterial();
             material.initializeByCodeBuf( false );
