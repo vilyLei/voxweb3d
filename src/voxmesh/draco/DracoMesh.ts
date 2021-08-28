@@ -43,7 +43,7 @@ export default class DracoMesh extends MeshBase {
         if(pnvs == undefined) {
             console.warn("mesh origin normal is undefined.");
             pnvs = new Float32Array(pvs.length);
-            SurfaceNormalCalc.ClacTrisNormal(pvs,pvs.length,pivs.length / 3, pivs, pnvs);
+            SurfaceNormalCalc.ClacTrisNormal(pvs,pvs.length, pivs.length / 3, pivs, pnvs);
         }
         else {
             pnvs = pnvs.subarray(1);
@@ -81,7 +81,7 @@ export default class DracoMesh extends MeshBase {
             if(pnvs == undefined) {
                 console.warn("mesh origin normal is undefined.");
                 pnvs = new Float32Array(pvs.length);
-                SurfaceNormalCalc.ClacTrisNormal(pvs,pvs.length, pivs / 3, pivs, pnvs);
+                SurfaceNormalCalc.ClacTrisNormal(pvs,pvs.length, pivs.length / 3, pivs, pnvs);
             }
             else {
                 pnvs = pnvs.subarray(1);
@@ -98,9 +98,9 @@ export default class DracoMesh extends MeshBase {
             
             indexOffset += pvs.length / 3;
             bufData.addAttributeDataAt(0, pvs, 3);
-            //if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)){
-            bufData.addAttributeDataAt(1, puvs, 2);
-            //}
+            if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)){
+                bufData.addAttributeDataAt(1, puvs, 2);
+            }
             bufData.addAttributeDataAt(2, pnvs, 3);
             bufData.addIndexData(pivs);
         }

@@ -43,9 +43,8 @@ export class DemoDraco extends DemoInstance {
     }
     protected initializeSceneObj(): void {
 
-        DivLog.SetDebugEnabled( true );
-        DivLog.ShowLog("initializeSceneObj...");
-
+        //DivLog.SetDebugEnabled( true );
+        
         this.m_camTrack = new CameraTrack();
         this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 

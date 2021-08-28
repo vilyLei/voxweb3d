@@ -101,7 +101,6 @@ export class DracoWholeModuleLoader extends DracoModuleLoader implements DracoTa
     dracoParseFinish(modules: any[], total: number): void {
         if (modules.length == 1) {
             console.log("dracoParseFinish modules: ", modules);
-            DivLog.ShowLog("dracoParseFinish modules...");
             
             let scale: number = this.m_scale;
             let material: DracoMeshMaterial = new DracoMeshMaterial();

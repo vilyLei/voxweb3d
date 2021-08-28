@@ -88,6 +88,8 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader
         let texList: TextureProxy[];
         let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6;        
         let material: PBRMaterial = this.entityUtils.createMaterial(uvscale,uvscale);
+        
+        material.decorator.indirectEnvMapEnabled = true;
         const keyNS: string = "/dracos_42";
         if(this.m_url.indexOf(keyNS) > 0) {
 
@@ -97,17 +99,30 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader
             material.decorator.aoMapEnabled = false;
             material.decorator.shadowReceiveEnabled = false;
             texList = this.entityUtils.createTexListFoMaterial(material, this.envMap, this.entityUtils.getImageTexByUrl("static/assets/noise.jpg"));
-            //texList = this.entityUtils.createTexListFoMaterial(material, this.envMap);
         }
         else {
-            texList = material.getTextureList().slice(0);
-            texList[1] = this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg");
-            texList[2] = this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/normal.jpg");
-            texList[3] = this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
+            
+
+            //  texList = material.getTextureList().slice(0);
+            //  texList[1] = this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg");
+            //  texList[2] = this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/normal.jpg");
+            //  texList[3] = this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
             material.decorator.diffuseMapEnabled = true;
             material.decorator.normalMapEnabled = true;
+            material.decorator.aoMapEnabled = true;
             material.decorator.vtxFlatNormal = false;
             material.decorator.aoMapEnabled = this.aoMapEnabled;
+            let aoTex: TextureProxy = null;
+            if(material.decorator.aoMapEnabled) {
+                aoTex = this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
+            }
+            texList = this.entityUtils.createTexListFoMaterial(
+                material,
+                this.envMap,
+                this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg"),
+                this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/normal.jpg"),
+                aoTex
+            );
         }
 
         material.setTextureList(texList);
@@ -144,6 +159,6 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader
         param.colorPanel = this.uiModule.rgbPanel;
         param.initialize();
         this.paramEntities.push(param);
-        this.entityUtils.createMirrorEntity(param, material);
+        //this.entityUtils.createMirrorEntity(param, material);
     }
 }

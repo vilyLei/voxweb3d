@@ -101,8 +101,8 @@ export default class PBRShaderDecorator {
         let coder:ShaderCodeBuilder2 = PBRShaderDecorator.s_codeBuilder;
         coder.reset();
         coder.normalMapEanbled = this.normalMapEnabled;
-        
         coder.mapLodEnabled = true;
+        
         coder.useHighPrecious();
         
         let mirrorProjEnabled: boolean = this.mirrorProjEnabled && this.texturesTotal > 0;

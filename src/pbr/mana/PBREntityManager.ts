@@ -60,6 +60,7 @@ export default class PBREntityManager
             urls.push("static/assets/modules/skirt/dracos_"+ 42 +".drc.zip");
 
             for(let i: number = 0; i < urlsTotal; ++i) {
+            //for(let i: number = 5; i < 6; ++i) {
                 urls.push("static/assets/modules/skirt/dracos_"+ i +".drc.zip");
             }
             urlsTotal = urls.length;
@@ -130,7 +131,7 @@ export default class PBREntityManager
         let scale: number = 1.0;
         let uvscale: number;
         total = posList.length;
-        //total = 0;
+        total = 0;
         for(let i: number = 0; i < total; ++i) {
 
             rad = Math.random() * 100.0;
@@ -171,6 +172,7 @@ export default class PBREntityManager
         //  this.m_rscene.addEntity(box);
 
         //  console.log("this.m_envMap>>>>>>>>>>>>>>: ",this.m_envMap);
+        /*
         material = this.m_entityUtils.createMaterial(1,1);
         material.decorator.diffuseMapEnabled = true;
         material.decorator.normalMapEnabled = false;
@@ -181,12 +183,12 @@ export default class PBREntityManager
         material.setRoughness(0.4);
         let texList: TextureProxy[] = this.m_entityUtils.createTexListFoMaterial(material, this.m_envMap, this.m_entityUtils.getImageTexByUrl("static/assets/noise.jpg"));
         material.setTextureList(texList);
-        let ufsph: Sphere3DEntity = new Sphere3DEntity();
-        ufsph.setMaterial(material);
-        ufsph.showFrontFace();
-        ufsph.initialize(3000.0,30,30, texList);
-        this.m_rscene.addEntity(ufsph, 4);
-
+        let envSph: Sphere3DEntity = new Sphere3DEntity();
+        envSph.setMaterial(material);
+        envSph.showFrontFace();
+        envSph.initialize(3000.0,30,30, texList);
+        this.m_rscene.addEntity(envSph, 4);
+        //*/
         /*
         let ufmaterial: HdrBrnCubeMapMapMaterial = new HdrBrnCubeMapMapMaterial();
         ufmaterial.setMipmapLevel(3.5);
