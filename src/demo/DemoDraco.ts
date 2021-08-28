@@ -30,8 +30,8 @@ export class DemoDraco extends DemoInstance {
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
-    //private moduleLoader: DracoModuleLoader = new DracoWholeModuleLoader();
-    private moduleLoader: DracoModuleLoader = new DracoMultiPartsModuleLoader();
+    private moduleLoader: DracoModuleLoader = new DracoWholeModuleLoader();
+    //private moduleLoader: DracoModuleLoader = new DracoMultiPartsModuleLoader();
     protected initializeSceneParam(param: RendererParam): void {
         this.m_processTotal = 4;
         param.maxWebGLVersion = 2;

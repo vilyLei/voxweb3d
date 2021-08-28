@@ -45,11 +45,11 @@ export class DracoWholeModuleLoader extends DracoModuleLoader implements DracoTa
 
         this.m_urls = [
             //"static/assets/modules/bunny.rawmd",
-            //  "static/assets/modules/loveass.rawmd",
+            "static/assets/modules/loveass.rawmd",
             //"static/assets/modules/lobster.rawmd"
             //"static/assets/modules/lobster.rawmd"
             //"static/assets/modules/cloST22.rawmd"
-            "static/assets/modules/skirt/dracos_41.drc.zip"
+            //"static/assets/modules/skirt/dracos_41.drc.zip"
         ];
     }
     initialize(rscene: RendererScene, dracoMeshLoader: DracoMeshBuilder): void {
@@ -85,9 +85,11 @@ export class DracoWholeModuleLoader extends DracoModuleLoader implements DracoTa
     dracoParse(pmodule: any, index: number, total: number): void {
         
         let scale: number = this.m_scale;
-        let mesh: DracoMesh = new DracoMesh();
-        mesh.initialize([pmodule]);
         let material: DracoMeshMaterial = new DracoMeshMaterial();
+        material.initializeByCodeBuf(false);
+        let mesh: DracoMesh = new DracoMesh();
+        mesh.setBufSortFormat(material.getBufSortFormat());
+        mesh.initialize([pmodule]);
         let entity: DisplayEntity = new DisplayEntity();
         entity.setMesh(mesh);
         entity.setMaterial(material);
@@ -99,9 +101,11 @@ export class DracoWholeModuleLoader extends DracoModuleLoader implements DracoTa
         if (modules.length == 1) {
             console.log("dracoParseFinish modules: ", modules);
             let scale: number = this.m_scale;
-            let mesh: DracoMesh = new DracoMesh();
-            mesh.initialize(modules);
             let material: DracoMeshMaterial = new DracoMeshMaterial();
+            material.initializeByCodeBuf( false );
+            let mesh: DracoMesh = new DracoMesh();
+            mesh.setBufSortFormat(material.getBufSortFormat());
+            mesh.initialize(modules);
             let entity: DisplayEntity = new DisplayEntity();
             entity.setMesh(mesh);
             entity.setMaterial(material);
