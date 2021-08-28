@@ -18,21 +18,29 @@ export default class MirrorProjEntity {
     mirrorPlane: DisplayEntity = null;
     constructor(){}
 
-    toMirror(): void {
+    toMirror(type: number = 0): void {
         
-        this.mirrorPlane.getPosition(this.m_pv);
+        if(type == 0) {
 
-        this.entity.getPosition( this.m_tempPosV );
-        this.entity.getScaleXYZ( this.m_tempScaleV );
-        this.entity.setScaleXYZ(this.m_tempScaleV.x, -this.m_tempScaleV.y, this.m_tempScaleV.z);
-        this.entity.update();
-        
-        let maxV: Vector3D = this.entity.getGlobalBounds().max;
-        let dh: number = maxV.y - this.m_pv.y;
-        
-        this.entity.setXYZ(this.m_tempPosV.x, (this.m_tempPosV.y - dh - 0.1), this.m_tempPosV.z);
-        this.entity.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
-        this.entity.update();
+            this.mirrorPlane.getPosition(this.m_pv);
+    
+            this.entity.getPosition( this.m_tempPosV );
+            this.entity.getScaleXYZ( this.m_tempScaleV );
+            this.entity.setScaleXYZ(this.m_tempScaleV.x, -this.m_tempScaleV.y, this.m_tempScaleV.z);
+            this.entity.update();
+            
+            let maxV: Vector3D = this.entity.getGlobalBounds().max;
+            let dh: number = maxV.y - this.m_pv.y;
+            
+            this.entity.setXYZ(this.m_tempPosV.x, (this.m_tempPosV.y - dh - 0.1), this.m_tempPosV.z);
+            this.entity.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
+            this.entity.update();
+        }
+        else {
+            this.entity.getScaleXYZ( this.m_tempScaleV );
+            this.entity.setScaleXYZ(this.m_tempScaleV.x, -this.m_tempScaleV.y, this.m_tempScaleV.z);
+            this.entity.update();
+        }
     }
     toNormal(): void {
         

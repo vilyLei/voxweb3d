@@ -64,7 +64,7 @@ export class PBRWholeDracoModule extends DracoWholeModuleLoader
         param.colorPanel = this.uiModule.rgbPanel;
         param.initialize();
         this.paramEntities.push(param);
-        this.entityUtils.createMirrorEntity(param, material);
+        this.entityUtils.createMirrorEntity(param, material, 1);
     }
 }
 
@@ -147,11 +147,11 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader
         //  entity.setPosition( pos );
         //  entity.update();
 
-        this.addParamEntity(entity, material);
+        this.addParamEntity(entity, material, 1);
         
         this.loadNext();
     }
-    private addParamEntity(entity: DisplayEntity, material: PBRMaterial): void {
+    private addParamEntity(entity: DisplayEntity, material: PBRMaterial, mirrorType: number): void {
         let param: PBRParamEntity = new PBRParamEntity();
         param.entity = entity;
         param.setMaterial( material );
@@ -159,6 +159,6 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader
         param.colorPanel = this.uiModule.rgbPanel;
         param.initialize();
         this.paramEntities.push(param);
-        //this.entityUtils.createMirrorEntity(param, material);
+        this.entityUtils.createMirrorEntity(param, material, mirrorType);
     }
 }

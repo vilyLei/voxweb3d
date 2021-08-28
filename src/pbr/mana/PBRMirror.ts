@@ -174,13 +174,13 @@ export class PBRMirror {
     getPlaneParamEntity(): PBRParamEntity {
         return this.m_planeParam;
     }
-    addMirrorEntity(entity: DisplayEntity): void {
+    addMirrorEntity(entity: DisplayEntity, mirrorType: number): void {
 
         let mEntity: MirrorProjEntity = new MirrorProjEntity();
         mEntity.entity = entity;
         mEntity.mirrorPlane = this.getPlane();
 
-        mEntity.toMirror();
+        mEntity.toMirror(mirrorType);
 
         this.m_mirrorEntities.push(mEntity);
     }

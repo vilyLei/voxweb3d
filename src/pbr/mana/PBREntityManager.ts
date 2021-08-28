@@ -38,7 +38,9 @@ export default class PBREntityManager
 
     }
     initialize(rscene:RendererScene, entityUtils: PBREntityUtils, mirrorEffector: PBRMirror,uiModule: DefaultPBRUI, envMap: TextureProxy): void {
+
         if(this.m_rscene != rscene) {
+
             this.m_rscene = rscene;
             this.m_entityUtils = entityUtils;
             this.m_mirrorEffector = mirrorEffector;
@@ -64,7 +66,7 @@ export default class PBREntityManager
                 urls.push("static/assets/modules/skirt/dracos_"+ i +".drc.zip");
             }
             urlsTotal = urls.length;
-            //urlsTotal = 0;
+            
             this.m_dracoModule.initialize(this.m_rscene, this.m_dracoMeshLoader);
             this.m_dracoModule.setUrlList(urls);
             this.m_dracoModule.setPartsTotal(urlsTotal);
@@ -131,7 +133,7 @@ export default class PBREntityManager
         let scale: number = 1.0;
         let uvscale: number;
         total = posList.length;
-        total = 0;
+        
         for(let i: number = 0; i < total; ++i) {
 
             rad = Math.random() * 100.0;
@@ -162,7 +164,7 @@ export default class PBREntityManager
             sph.setPosition(posList[i]);
             this.m_rscene.addEntity(sph);
 
-            this.addParamEntity(sph, material);
+            this.addParamEntity(sph, material, 0);
         }
 
         //  let box: Box3DEntity = new Box3DEntity();        
@@ -172,7 +174,7 @@ export default class PBREntityManager
         //  this.m_rscene.addEntity(box);
 
         //  console.log("this.m_envMap>>>>>>>>>>>>>>: ",this.m_envMap);
-        /*
+        ///*
         material = this.m_entityUtils.createMaterial(1,1);
         material.decorator.diffuseMapEnabled = true;
         material.decorator.normalMapEnabled = false;
@@ -199,7 +201,7 @@ export default class PBREntityManager
         this.m_rscene.addEntity(ufsph, 4);
         //*/
     }
-    private addParamEntity(entity: DisplayEntity, material: PBRMaterial): void {
+    private addParamEntity(entity: DisplayEntity, material: PBRMaterial, mirrorType: number): void {
         let param: PBRParamEntity = new PBRParamEntity();
         param.entity = entity;
         param.setMaterial( material );
@@ -207,7 +209,7 @@ export default class PBREntityManager
         param.colorPanel = this.m_uiModule.rgbPanel;
         param.initialize();
         this.m_paramEntities.push(param);
-        this.m_entityUtils.createMirrorEntity(param, material);
+        this.m_entityUtils.createMirrorEntity(param, material, mirrorType);
     }
     run(): void {
         ThreadSystem.Run();
