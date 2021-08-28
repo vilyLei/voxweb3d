@@ -53,9 +53,14 @@ export default class PBRShaderDecorator {
     envData: EnvLightData = null;
 
     initialize(): void {
-
-        this.pointLightsTotal = this.lightData.getPointLightTotal();
-        this.parallelLightsTotal = this.lightData.getDirecLightTotal();
+        if(this.lightData != null) {
+            this.pointLightsTotal = this.lightData.getPointLightTotal();
+            this.parallelLightsTotal = this.lightData.getDirecLightTotal();
+        }
+        else {
+            this.pointLightsTotal = 0;
+            this.parallelLightsTotal = 0;
+        }
     }
     copyFrom(src: PBRShaderDecorator): void {
         
@@ -207,9 +212,14 @@ export default class PBRShaderDecorator {
     
     createSharedUniforms():ShaderGlobalUniform[]
     {
-        let glu: ShaderGlobalUniform = this.lightData.getGlobalUinform();
-        glu.uns = this.getUniqueShaderName();
-        let list: ShaderGlobalUniform[] = [glu];
+        let glu: ShaderGlobalUniform;
+        let list: ShaderGlobalUniform[] = [];
+        
+        if(this.lightData != null) {
+            glu = this.lightData.getGlobalUinform();
+            glu.uns = this.getUniqueShaderName();
+            list.push(glu);
+        }
         if(this.shadowReceiveEnabled && this.vsmData != null) {
             glu = this.vsmData.getGlobalUinform();
             glu.uns = this.getUniqueShaderName();
@@ -220,7 +230,7 @@ export default class PBRShaderDecorator {
             glu.uns = this.getUniqueShaderName();
             list.push(glu);
         }
-        return list;
+        return list.length > 0 ? list : null;
     }
     getUniqueShaderName(): string {
 

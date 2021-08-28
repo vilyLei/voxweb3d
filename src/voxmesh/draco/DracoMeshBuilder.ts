@@ -19,6 +19,8 @@ export class DracoMeshBuilder {
     private m_wasmLoader: DracoWasmLoader = null;
     private m_dracoTask: DracoTask = null;
     private m_threadsTotal: number = 1;
+    multiBuffers: boolean = true;
+    zipParseEnabled: boolean = false;
     setListener(l: DracoTaskListener): void {
         this.m_listener = l;
         if(this.m_dracoTask != null) {
@@ -46,8 +48,9 @@ export class DracoMeshBuilder {
     private m_meshBuffer: ArrayBuffer = null;
     private m_segs: number[] = [];
     private loadMeshFile(furl: string): void {
-
         let loader: MeshBufferLoader = new MeshBufferLoader();
+        loader.multiBuffers = this.multiBuffers;
+        loader.zipParseEnabled = this.zipParseEnabled;
         loader.load(
             furl,
             (buffer: ArrayBuffer, param: string) => {

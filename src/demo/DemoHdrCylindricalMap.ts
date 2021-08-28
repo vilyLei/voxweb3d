@@ -84,23 +84,25 @@ export class DemoHdrCylindricalMap {
             axis.initialize(300.0);
             this.m_rscene.addEntity(axis);
 
-            //this.initCommonTest();
-            this.initHdrTest();
+            this.initCommonTest();
+            //this.initHdrTest();
         }
     }
     
     private initCommonTest(): void {
         let posTex: TextureProxy = this.getImageTexByUrl("static/assets/hdr/night_free_Bg.jpg");
+        //let posTex: TextureProxy = this.getImageTexByUrl("static/assets/hdr/orangeRoom.jpg");
         //let posTex: TextureProxy = this.getImageTexByUrl("static/assets/vrTest.jpg",true,true,true);
         //let posTex: TextureProxy = this.getImageTexByUrl("static/assets/redBullSolo.jpg",true,true,false);
-        posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
+        //posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         posTex.minFilter = TextureConst.LINEAR;
-        posTex.mipmapEnabled = true;
+        posTex.magFilter = TextureConst.LINEAR;
+        //posTex.mipmapEnabled = true;
         let material: CylindricMapMaterial = new CylindricMapMaterial();
         let sph: Sphere3DEntity = new Sphere3DEntity();
         sph.setMaterial( material );
 
-        let isShowFront: boolean = true;
+        let isShowFront: boolean = false;
         if(isShowFront) {
             sph.showFrontFace();
             material.showFront();
@@ -108,7 +110,7 @@ export class DemoHdrCylindricalMap {
             sph.showBackFace();
             material.showBack();
         }
-        sph.initialize(400.0, 50, 50, [posTex]);
+        sph.initialize(800.0, 50, 50, [posTex]);
         this.m_rscene.addEntity(sph);
         
     }

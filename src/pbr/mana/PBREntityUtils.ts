@@ -52,6 +52,30 @@ export default class PBREntityUtils
         if(wrapRepeat)ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
+    createTexListFoMaterial(material: PBRMaterial, env:TextureProxy, diffuse:TextureProxy = null, normal:TextureProxy = null, ao:TextureProxy = null): TextureProxy[] {
+        let texList: TextureProxy[] = [env];
+        if(diffuse != null) {
+            texList.push(diffuse)
+        }
+        if(normal != null) {
+            texList.push(normal)
+        }
+        if(ao != null) {
+            texList.push(ao)
+        }
+        let decorator: PBRShaderDecorator = material.decorator;
+        let shadowTex = this.m_vsmModule.getShadowMap();
+        let vsmData = this.m_vsmModule.getVSMData();
+        if(decorator.indirectEnvMapEnabled) {
+            texList.push( this.m_cubeRTTBuilder.getCubeTexture() );
+        }
+        if(decorator.shadowReceiveEnabled) {
+            texList.push( shadowTex );
+            material.decorator.vsmData = vsmData;
+        }
+        return texList;
+    }
+    
     createTexList(): TextureProxy[] {
         this.m_texList = [];
         return this.m_texList;

@@ -140,22 +140,30 @@ export default class PBRScene
     update(): void {
         this.m_entityManager.run();
     }
+    private m_cubeRTTTimes: number = 2001;
     prerender(): void {
         // --------------------------------------------- vsm runbegin
         this.m_vsmModule.run();
         // --------------------------------------------- vsm rtt end
 
         // --------------------------------------------- cube rtt runbegin
-        this.m_cubeRTTBuilder.run();
+        if(this.m_cubeRTTTimes > 0) {
+           this.m_cubeRTTTimes--;
+           if(this.m_cubeRTTTimes%15 == 0) {
+                this.m_cubeRTTBuilder.run();
+           }
+        }
         // --------------------------------------------- cube rtt run end
         this.m_rscene.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);
 
         this.m_mirrorEffector.render();
+        
+        this.m_rscene.setRenderToBackBuffer();
     }
     render(): void {
         this.m_rscene.runAt(0);
         this.m_rscene.runAt(1);
         this.m_rscene.runAt(2);
-        //this.m_rscene.runAt(3);
+        this.m_rscene.runAt(4);
     }
 }

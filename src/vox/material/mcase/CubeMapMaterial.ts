@@ -29,8 +29,8 @@ class CubeMapShaderBuffer extends ShaderCodeBuffer {
 
     private buildThisCode(): void {
         let coder: ShaderCodeBuilder2 = this.m_codeBuilder;
-        coder.mapLodEnabled = this.mapLodEnabled;
         coder.reset();
+        coder.mapLodEnabled = this.mapLodEnabled;
         coder.addTextureSampleCube();
         coder.addVertLayout("vec3", "a_vs");
         coder.addVertLayout("vec3", "a_nvs");

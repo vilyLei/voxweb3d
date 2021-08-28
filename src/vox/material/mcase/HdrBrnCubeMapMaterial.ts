@@ -107,9 +107,10 @@ float rgbaToHdrBrn(in vec4 color) {
 }
 void main()
 {
-    vec3 envDir = -getEnvDir(0.0/*envLightRotateAngle*/, v_nvs); // env map upside down
-	envDir.x = -envDir.x;
-    vec4 color4 = VOX_TextureCubeLod(u_sampler0, v_nvs, 4.0);
+    //vec3 envDir = -getEnvDir(0.0/*envLightRotateAngle*/, v_nvs); // env map upside down
+	//envDir.x = -envDir.x;
+    vec3 envDir = v_nvs; // env map upside down
+    vec4 color4 = VOX_TextureCubeLod(u_sampler0, v_nvs, u_param.w);
     color4.xyz = vec3( rgbaToHdrBrn(color4) );
     
     color4.xyz = toneMapping( color4.xyz );
@@ -130,7 +131,7 @@ void main()
 void main()
 {
     vec4 wpos = u_objMat * vec4(a_vs,1.0);
-    gl_Position = u_projMat * u_viewMat * wpos;
+    gl_Position = u_projMat * u_viewMat * vec4(a_vs,1.0);
     v_camPos = (inverse(u_viewMat) * vec4(0.0,0.0,0.0,1.0)).xyz;
     v_nvs = a_nvs;
     v_worldPos = wpos.xyz;
@@ -165,10 +166,13 @@ export default class HdrBrnCubeMapMapMaterial extends MaterialBase {
         return HdrBrnCubeMapMapShaderBuffer.GetInstance();
     }
     private m_colorArray: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
-    private m_param: Float32Array = new Float32Array([1.0, 0.0, 0.0, 0.0]);
+    private m_param: Float32Array = new Float32Array([1.0, 0.0, 0.0, 3.0]);
     private m_camPos: Float32Array = new Float32Array([1.0, 0.0, 0.0, 0.0]);
     setExposure(exposure: number): void {
         this.m_param[0] = exposure;
+    }
+    setMipmapLevel(lv: number): void {
+        this.m_param[3] = lv;
     }
     setcamPos(px: number, py: number, pz: number): void {
         this.m_camPos[0] = px;

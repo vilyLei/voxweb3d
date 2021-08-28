@@ -11,16 +11,20 @@ import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 import AABB from "../../vox/geom/AABB";
 import MeshBase from "../../vox/mesh/MeshBase";
 import { RenderDrawMode } from "../../vox/render/RenderConst";
+import SurfaceNormalCalc from "../../vox/geom/SurfaceNormalCalc";
 
 export default class DracoMesh extends MeshBase {
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         super(bufDataUsage);
     }
-    moduleScale: number = 1.0;
+    private static s_dracoVtxTotal: number = 0;
+    private static s_dracoTriTotal: number = 0;
     private m_vs: Float32Array = null;
     private m_uvs: Float32Array = null;
     private m_nvs: Float32Array = null;
-    //
+
+    moduleScale: number = 1.0;
+
     getVS(): Float32Array { return this.m_vs; }
     getUVS(): Float32Array { return this.m_uvs; }
     getNVS(): Float32Array { return this.m_nvs; }
@@ -51,25 +55,33 @@ export default class DracoMesh extends MeshBase {
             let puvs: any = module["uv"];
             let pnvs: any = module["normal"];
             let pivs: any = module["indices"];
-
             
             pvs = pvs.subarray(1);
             puvs = puvs.subarray(1);
-            pnvs = pnvs.subarray(1);
-
+            
+            if(pnvs == undefined) {
+                console.warn("mesh origin normal is undefined.");
+                pnvs = new Float32Array(pvs.length);
+                SurfaceNormalCalc.ClacTrisNormal(pvs,pvs.length,this.m_ivs.length / 3, this.m_ivs, pnvs);
+            }
+            else {
+                pnvs = pnvs.subarray(1);
+            }
+            
             subLen = pivs.length;
             this.bounds.addXYZFloat32Arr(pvs);
-            //console.log("p: "+p,indexOffset,",subLen: "+subLen);
-            //console.log(indexOffset,",A pivs: \n",pivs);
+            
             if (indexOffset > 0) {
                 for (j = 0; j < subLen; ++j) {
                     pivs[j] += indexOffset;
                 }
             }
-            //console.log("B pivs: \n",pivs);
+            
             indexOffset += pvs.length / 3;
             bufData.addAttributeDataAt(0, pvs, 3);
-            bufData.addAttributeDataAt(1, puvs, 2);
+            if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)){
+                bufData.addAttributeDataAt(1, puvs, 2);
+            }
             bufData.addAttributeDataAt(2, pnvs, 3);
             bufData.addIndexData(pivs);
         }
@@ -80,7 +92,10 @@ export default class DracoMesh extends MeshBase {
         this.vtxTotal = bufData.getVerticesTotal();
         this.trisNumber = bufData.getTrianglesTotal();
 
+        DracoMesh.s_dracoVtxTotal += this.vtxTotal;
+        DracoMesh.s_dracoTriTotal += this.trisNumber;
         console.log("vtCount: " + this.vtCount+", trisNumber: "+this.trisNumber);
+        console.log("draco vtCount: " + DracoMesh.s_dracoVtxTotal + ", draco trisNumber: "+ DracoMesh.s_dracoTriTotal);
         this.buildEnd();
     }
 

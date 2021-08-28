@@ -171,7 +171,8 @@ export default class ShdProgram implements IVtxShdCtr {
     testVertexAttribPointerOffset(offsetList: number[]): boolean {
         let flag: boolean = false;
         if(offsetList != null && this.m_attriSizeList != null) {
-            if(offsetList.length == this.m_attriSizeList.length) {
+            // 使用大于等于，例如绘制深度图的时候不需要法线和uv而只需要顶点数据即可
+            if(offsetList.length >= this.m_attriSizeList.length) {
                 let offset: number = 0;
                 let i: number = 0;
                 for(; i < this.m_attriSizeList.length; ++i) {

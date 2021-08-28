@@ -260,10 +260,18 @@ export class DemoCubeMap {
     }
     private createCubeBox(cubeTex: TextureProxy): void {
 
+        cubeTex.mipmapEnabled = true;
+        cubeTex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
+        cubeTex.magFilter = TextureConst.LINEAR;
+        let cubeMaterial: CubeMapMaterial = new CubeMapMaterial(true);
+        cubeMaterial.setTextureLodLevel( 7.0 );
+        //cubeMaterial.setTextureList
+        let size: number = 500.0;
         let box: Box3DEntity = new Box3DEntity();
         box.useGourandNormal();
-        box.setMaterial(new CubeMapMaterial());
-        box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [cubeTex]);
+        box.showFrontFace();
+        box.setMaterial(cubeMaterial);
+        box.initialize(new Vector3D(-size, -size, -size), new Vector3D(size,size,size), [cubeTex]);
         this.m_rscene.addEntity(box);
     }
     private mouseDown(evt: any): void {

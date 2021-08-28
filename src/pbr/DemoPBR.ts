@@ -43,12 +43,12 @@ export class DemoPBR {
 
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
-            rparam.setCamProject(45,30.0,7000.0);
+            rparam.setCamProject(45,50.0,10000.0);
             rparam.setAttriStencil(true);
             rparam.setAttriAntialias(true);
-            rparam.setCamPosition(1800.0, 1800.0, 1800.0);
+            rparam.setCamPosition(2000.0, 2000.0, 2000.0);
             this.m_rscene = new RendererScene();
-            this.m_rscene.initialize(rparam, 4);
+            this.m_rscene.initialize(rparam, 5);
             this.m_rscene.updateCamera();
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
@@ -93,6 +93,7 @@ export class DemoPBR {
         this.m_statusDisp.update(true);
         this.m_pbrScene.update();
     }
+    private m_lookV: Vector3D = new Vector3D(0.0,300.0,0.0);
     run(): void {
         /*
         if(this.m_runFlag) {
@@ -110,7 +111,7 @@ export class DemoPBR {
             this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
         }
         this.m_stageDragSwinger.runWithYAxis();
-        this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
+        this.m_cameraZoomController.run(this.m_lookV, 30.0);
 
         //  // current rendering strategy
         //  this.m_rscene.run(true);

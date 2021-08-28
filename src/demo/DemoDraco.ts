@@ -11,17 +11,14 @@ import MouseEvent from "../vox/event/MouseEvent";
 import DemoInstance from "./DemoInstance";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import ThreadSystem from "../thread/ThreadSystem";
-import {DracoTaskListener} from "../voxmesh/draco/DracoTask";
-import DracoMesh from "../voxmesh/draco/DracoMesh";
-import DracoMeshMaterial from "../voxmesh/draco/DracoMeshMaterial";
 import DracoMeshBuilder from "../voxmesh/draco/DracoMeshBuilder";
-import DisplayEntity from "../vox/entity/DisplayEntity";
+import {DracoModuleLoader, DracoWholeModuleLoader, DracoMultiPartsModuleLoader} from "../voxmesh/draco/DracoModuleLoader";
+
 
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
-import DivLog from "../vox/utils/DivLog";
 
-export class DemoDraco extends DemoInstance implements DracoTaskListener {
+export class DemoDraco extends DemoInstance {
     constructor() {
         super();
     }
@@ -33,13 +30,15 @@ export class DemoDraco extends DemoInstance implements DracoTaskListener {
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
+    //private moduleLoader: DracoModuleLoader = new DracoWholeModuleLoader();
+    private moduleLoader: DracoModuleLoader = new DracoMultiPartsModuleLoader();
     protected initializeSceneParam(param: RendererParam): void {
         this.m_processTotal = 4;
         param.maxWebGLVersion = 2;
         param.setAttriAntialias(true);
         param.setCamProject(45, 1.0, 10000.0)
         param.setCamPosition(1500.0, 1500.0, 1500.0);
-        
+
     }
     protected initializeSceneObj(): void {
 
@@ -77,65 +76,12 @@ export class DemoDraco extends DemoInstance implements DracoTaskListener {
         console.log("------------------------------------------------------------------");
 
         this.m_dracoMeshLoader.initialize(2);
-        this.m_dracoMeshLoader.setListener( this );
         
-        this.loadNext();
-    }
-    private m_urls: string[] = [
-        //"static/assets/modules/bunny.rawmd",
-        //  "static/assets/modules/loveass.rawmd",
-        //"static/assets/modules/lobster.rawmd"
-        "static/assets/modules/lobster.rawmd"
-    ];
-    private m_scale: number = 1.0;
-    private m_pos: Vector3D = null;
-    private m_scales: number[] = [
-        //300.0,
-        //  1.0,
-        50
-        //1.0
-    ];
-    private m_posList: Vector3D[] = [
-        //new Vector3D(-300.0,0.0,0.0),
-        //  new Vector3D(300.0,0.0,300.0),
-        new Vector3D(300.0,0.0,-300.0),
-        //new Vector3D(300.0,-700.0,0.0),
-    ];
-    private loadNext(): void {
-        if(this.m_urls.length > 0) {
-            this.m_pos = this.m_posList.pop();
-            this.m_scale = this.m_scales.pop();
-            this.m_dracoMeshLoader.load( this.m_urls.pop() );
-        }
-    }
-    dracoParse(pmodule: any, index: number, total: number): void {
-        //console.log("parse progress: "+index+"/"+total);
-        let scale: number = this.m_scale;
-        let mesh: DracoMesh = new DracoMesh();
-        mesh.initialize([pmodule]);
-        let material: DracoMeshMaterial = new DracoMeshMaterial();
-        let entity: DisplayEntity = new DisplayEntity();
-        entity.setMesh(mesh);
-        entity.setMaterial( material );
-        entity.setScaleXYZ(scale, scale, scale);
-        entity.setPosition(this.m_pos);
-        this.m_rscene.addEntity(entity);
-    }
-    dracoParseFinish(modules: any[], total: number): void {
-        if(modules.length == 1) {
-            console.log("modules: ",modules);
-            let scale: number = this.m_scale;
-            let mesh: DracoMesh = new DracoMesh();
-            mesh.initialize(modules);
-            let material: DracoMeshMaterial = new DracoMeshMaterial();
-            let entity: DisplayEntity = new DisplayEntity();
-            entity.setMesh(mesh);
-            entity.setMaterial( material );
-            entity.setScaleXYZ(scale, scale, scale);
-            entity.setPosition(this.m_pos);
-            this.m_rscene.addEntity(entity);
-        }
-        this.loadNext();
+        this.moduleLoader.initialize(this.m_rscene, this.m_dracoMeshLoader);
+        this.moduleLoader.setPartsTotal(30);
+        this.moduleLoader.setScale( 1.0 );
+        this.moduleLoader.setPosition(new Vector3D(0.0, -400.0, 0.0));
+        this.moduleLoader.loadNext();
     }
     private mouseDown(evt: any): void {
         console.log("mouse down evt: ", evt);

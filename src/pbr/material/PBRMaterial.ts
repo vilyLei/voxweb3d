@@ -50,8 +50,6 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
 
 export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
 
-    private m_pointLightsTotal: number = 4;
-    private m_parallelLightsTotal: number = 0;
     private m_envMapWidth: number = 128;
     private m_envMapHeight: number = 128;
     private m_albedo: Float32Array = new Float32Array([0.2, 0.2, 0.2, 0.0]);
@@ -81,16 +79,12 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
             , 1.0, 0.3              // mirror scale, mirror mix scale
             , 0.0, 0.0              // undefine, undefine
         ]);
-    //  private m_lightData: GlobalLightData;
-    //  private m_vsmData: ShadowVSMData = null;
-    //  private m_envData: EnvLightData = null;
-    
+    ///////////////////////////////////////////////////////
+
     decorator: PBRShaderDecorator = null;
 
-    constructor(pointLightsTotal: number = 2, parallelLightsTotal: number = 0) {
+    constructor() {
         super();
-        this.m_pointLightsTotal = pointLightsTotal;
-        this.m_parallelLightsTotal = parallelLightsTotal;
     }
     getCodeBuf(): ShaderCodeBuffer {
 
@@ -146,7 +140,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     
     clone(): PBRMaterial {
 
-        let dst: PBRMaterial = new PBRMaterial(this.m_pointLightsTotal,this.m_parallelLightsTotal);
+        let dst: PBRMaterial = new PBRMaterial();
         if(dst.decorator == null)dst.decorator = new PBRShaderDecorator();
         dst.decorator.copyFrom( this.decorator );
         dst.decorator.initialize();
