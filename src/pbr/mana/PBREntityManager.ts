@@ -62,7 +62,6 @@ export default class PBREntityManager
             urls.push("static/assets/modules/skirt/dracos_"+ 42 +".drc.zip");
 
             for(let i: number = 0; i < urlsTotal; ++i) {
-            //for(let i: number = 5; i < 6; ++i) {
                 urls.push("static/assets/modules/skirt/dracos_"+ i +".drc.zip");
             }
             urlsTotal = urls.length;
@@ -159,6 +158,7 @@ export default class PBREntityManager
             sph.setMaterial( material );
             if(srcSph != null)sph.copyMeshFrom( srcSph );
             sph.initialize(100.0, 20, 20);
+            //sph.setRotationXYZ(Math.random() * 300.0, Math.random() * 300.0, Math.random() * 300.0);
             sph.setScaleXYZ(scale, scale, scale);
             posList[i].y += (this.m_reflectPlaneY + 10) + pr + 5;
             sph.setPosition(posList[i]);

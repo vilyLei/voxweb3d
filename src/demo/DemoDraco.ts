@@ -81,6 +81,14 @@ export class DemoDraco extends DemoInstance {
         this.m_dracoMeshLoader.initialize(2);
         
         this.moduleLoader.initialize(this.m_rscene, this.m_dracoMeshLoader);
+        let urlsTotal: number = 20;
+        let urls: string[] = [];            
+        for(let i: number = 0; i < 30; ++i) {
+            urls.push("static/assets/modules/skirt01/dracos_"+ i +".drc.zip");
+        }
+        urlsTotal = urls.length;            
+        this.moduleLoader.setUrlList(urls);
+
         this.moduleLoader.setPartsTotal(30);
         this.moduleLoader.setScale( 1.0 );
         this.moduleLoader.setPosition(new Vector3D(0.0, -400.0, 0.0));

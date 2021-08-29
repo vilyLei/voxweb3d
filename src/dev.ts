@@ -342,7 +342,7 @@
 
 //  import {DemoDefaultPBR3 as Demo} from "./pbr/DemoDefaultPBR3";
 
-import {DemoPBR as Demo} from "./pbr/DemoPBR";
+//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////
@@ -373,6 +373,7 @@ import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
 
+import {DemoUITexAtlas as Demo} from "./orthoui/demos/DemoUITexAtlas";
 
 ///////////////////////////////////////////////////////////////////////////////
 
