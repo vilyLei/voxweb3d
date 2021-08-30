@@ -34,6 +34,7 @@ export default class RectPlaneMesh extends MeshBase
     vScale:number = 1.0;
     flipVerticalUV:boolean = false;
     axisFlag:number = 0;
+    uvs: Float32Array = null;
     //
     private m_polyhedralBoo:boolean = true;
     private m_vs:Float32Array = null
@@ -102,23 +103,28 @@ export default class RectPlaneMesh extends MeshBase
         ROVertexBuffer.AddFloat32Data(this.m_vs,3);
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX))
         {
-            if(this.flipVerticalUV)
-            {
-                this.m_uvs = new Float32Array([
-                    this.offsetU + 0.0 * this.uScale,    this.offsetV + 1.0 * this.vScale,
-                    this.offsetU + 1.0 * this.uScale,    this.offsetV + 1.0 * this.vScale,
-                    this.offsetU + 1.0 * this.uScale,    this.offsetV + 0.0 * this.vScale,
-                    this.offsetU + 0.0 * this.uScale,    this.offsetV + 0.0 * this.vScale
-                ]);
+            if(this.uvs == null) {
+                if(this.flipVerticalUV)
+                {
+                    this.m_uvs = new Float32Array([
+                        this.offsetU + 0.0 * this.uScale,    this.offsetV + 1.0 * this.vScale,
+                        this.offsetU + 1.0 * this.uScale,    this.offsetV + 1.0 * this.vScale,
+                        this.offsetU + 1.0 * this.uScale,    this.offsetV + 0.0 * this.vScale,
+                        this.offsetU + 0.0 * this.uScale,    this.offsetV + 0.0 * this.vScale
+                    ]);
+                }
+                else
+                {
+                    this.m_uvs = new Float32Array([
+                        this.offsetU + 0.0 * this.uScale,    this.offsetV + 0.0 * this.vScale,
+                        this.offsetU + 1.0 * this.uScale,    this.offsetV + 0.0 * this.vScale,
+                        this.offsetU + 1.0 * this.uScale,    this.offsetV + 1.0 * this.vScale,
+                        this.offsetU + 0.0 * this.uScale,    this.offsetV + 1.0 * this.vScale
+                    ]);
+                }
             }
-            else
-            {
-                this.m_uvs = new Float32Array([
-                    this.offsetU + 0.0 * this.uScale,    this.offsetV + 0.0 * this.vScale,
-                    this.offsetU + 1.0 * this.uScale,    this.offsetV + 0.0 * this.vScale,
-                    this.offsetU + 1.0 * this.uScale,    this.offsetV + 1.0 * this.vScale,
-                    this.offsetU + 0.0 * this.uScale,    this.offsetV + 1.0 * this.vScale
-                ]);
+            else {
+                this.m_uvs = this.uvs;
             }
             ROVertexBuffer.AddFloat32Data(this.m_uvs,2);
         }
@@ -271,6 +277,9 @@ export default class RectPlaneMesh extends MeshBase
             this.m_uvs = null;
             this.m_nvs = null;
             this.m_cvs = null;
+
+            this.uvs = null;
+            
             super.__$destroy();
         }
     }

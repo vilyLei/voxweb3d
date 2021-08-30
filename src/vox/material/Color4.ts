@@ -56,6 +56,12 @@ class Color4
         this.g *= s;
         this.b *= s;
     }
+    inverseRGB():void
+    {
+        this.r = 1.0 - this.r;
+        this.g = 1.0 - this.g;
+        this.b = 1.0 - this.b;
+    }
     randomRGB(density:number = 1.0):void
     {
         this.r = Math.random() * density;
@@ -85,6 +91,42 @@ class Color4
             this.g = density * this.g/d;
             this.b = density * this.b/d;
         }
+    }
+    
+    /**
+     * @returns for example: rgba(255,255,255,1.0)
+     */
+    getCSSDecRGBAColor(): string {
+        return "rgba("+Math.floor(this.r * 255.0)+","+Math.floor(this.g * 255.0)+","+Math.floor(this.b * 255.0)+","+this.a.toFixed(4)+")";
+    }
+    /**
+     * @returns for example: #350b7e
+     */
+    getCSSHeXRGBColor(): string {
+        let str: string = "#";
+        let t: number = Math.floor(this.r * 255.0);
+        if(t < 0xf) {
+            str += "0"+t.toString(16);
+        }
+        else {
+            str += ""+t.toString(16);
+        }
+        
+        t = Math.floor(this.g * 255.0);
+        if(t < 0xf) {
+            str += "0"+t.toString(16);
+        }
+        else {
+            str += ""+t.toString(16);
+        }
+        t = Math.floor(this.b * 255.0);
+        if(t < 0xf) {
+            str += "0"+t.toString(16);
+        }
+        else {
+            str += ""+t.toString(16);
+        }
+        return str;
     }
     toString():string
     {

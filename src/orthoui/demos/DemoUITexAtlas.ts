@@ -38,7 +38,161 @@ import Color4 from "../../vox/material/Color4";
 import Vector3D from "../../vox/math/Vector3D";
 import Line3DEntity from "../../vox/entity/Line3DEntity";
 import AABB2D from "../../vox/geom/AABB2D";
+import TextureAtlas from "../../vox/texture/TextureAtlas";
+import { TexArea } from "../../vox/texture/TexAreaNode";
 
+class AltasSample {
+
+    constructor() {
+    }
+
+    initialize(px: number, py: number): void {
+
+        this.initTestAtlas(px, py);
+    }
+    private createImage(width: number, height: number,fillStyle: string = "#770000"): HTMLCanvasElement {
+
+        //  let width: number = 78;
+        //  let height: number = 50;
+        let canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.style.display = 'bolck';
+        canvas.style.left = '0px';
+        canvas.style.top = '0px';
+        canvas.style.position = 'absolute';
+        //canvas.style.visibility = "hidden";
+        let ctx2D = canvas.getContext("2d");
+        ctx2D.fillStyle = fillStyle;//"#770000";
+        ctx2D.fillRect(0,0, width,height);
+
+        return canvas;
+    }
+    
+    canvas0: HTMLCanvasElement = null;
+    canvas1: HTMLCanvasElement = null;
+
+    private m_canvas2d0: any = null;
+    private m_canvas2d1: any = null;
+    altas0: TextureAtlas = null;
+    altas1: TextureAtlas = null;
+    private m_total_0: number = 0;
+    private m_total_1: number = 0;
+    private m_total_all: number = 200;
+    private initTestAtlas(px: number, py: number): void {
+
+        let color:Color4 = new Color4();
+        let canvasWidth: number = 1024;
+        let canvasHeight: number = 1024;
+
+        let canvas0 = this.createImage(canvasWidth,canvasHeight, "#000000");        
+        canvas0.style.width = '300px';
+        canvas0.style.height = '300px';
+        canvas0.style.left = px + 'px';
+        canvas0.style.top = py + 'px';
+        this.canvas0 = canvas0;
+        //canvas.style.visibility = "hidden";
+        let canvas2d0 = canvas0.getContext("2d");
+        document.body.appendChild( canvas0 );
+
+        let canvas1 = this.createImage(canvasWidth,canvasHeight, "#000000");        
+        canvas1.style.width = '300px';
+        canvas1.style.height = '300px';
+        canvas1.style.left = px + 'px';
+        canvas1.style.top = py + 310 + 'px';
+        this.canvas1 = canvas1;
+        //canvas.style.visibility = "hidden";
+        let canvas2d1 = canvas1.getContext("2d");
+        document.body.appendChild( canvas1 );
+
+        let fontColor: Color4 = new Color4();
+        
+        let altas0: TextureAtlas = new TextureAtlas(canvasWidth,canvasHeight);
+        let altas1: TextureAtlas = new TextureAtlas(canvasWidth,canvasHeight);
+        altas0.setMinSize(16);
+        altas1.setMinSize(16);
+
+        this.altas0 = altas0;
+        this.altas1 = altas1;
+        this.m_canvas2d0 = canvas2d0;
+        this.m_canvas2d1 = canvas2d1;
+        
+        for(let i: number = 0; i < this.m_total_all; i++) {
+            color.randomRGB();
+            fontColor.copyFrom(color);
+            fontColor.inverseRGB();
+            let image: any;
+            let factor: number = Math.random();
+            if(factor > 0.8) {
+                image = this.createImage(30 + Math.round(20 * Math.random()),30 + Math.round(20 * Math.random()), color.getCSSHeXRGBColor());
+            }
+            else if(factor > 0.5) {
+                if(Math.random() > 0.5) {
+                    image = this.createImage(10 + Math.round(100 * Math.random()),10 + Math.round(100 * Math.random()), color.getCSSHeXRGBColor());
+                }
+                else {
+                    image = this.createImage(10 + Math.round(30 * Math.random()),60 + Math.round(60 * Math.random()), color.getCSSHeXRGBColor());
+                }
+            }
+            else {
+                let colorNS: string = color.getCSSHeXRGBColor();
+                let total: number = Math.round( Math.random() * 6);
+                for(let j: number = 0; j < total; j++) {
+                    colorNS = j + "" + colorNS;
+                }
+                image = altas0.createCharsTexture(colorNS,40,fontColor.getCSSDecRGBAColor(), color.getCSSDecRGBAColor());
+            }
+            //let image = this.createImage(30 + Math.round(80 * Math.random()),30 + Math.round(80 * Math.random()), color.getCSSHeXRGBColor());
+            //let image = this.createImage(10 + Math.round(100 * Math.random()),10 + Math.round(100 * Math.random()), color.getCSSHeXRGBColor());
+            //let image = altas.createCharsTexture(colorNS,40,fontColor.getCSSDecRGBAColor(), color.getCSSDecRGBAColor());
+
+            let area: TexArea = altas0.addImageDebug("img"+i, image, canvas2d0);
+            if(area == null) {
+                area = altas1.addImageDebug("img"+i, image, canvas2d1);
+                if(area != null) {
+                    this.m_total_1++;
+                }
+            }
+            else {
+                this.m_total_0++;
+            }
+        }
+
+        console.log("total_0: ",this.m_total_0);
+        console.log("total_1: ",this.m_total_1);
+        console.log(this.m_total_all+",left total: ",(this.m_total_all - (this.m_total_0 + this.m_total_1)));
+    }
+    private m_speI: number = 0;
+    addImageBySize(pw: number, ph: number): void {
+
+        let color:Color4 = new Color4();
+        color.randomRGB();
+        //  color.r = 1;
+        //  color.g = 0;
+        //  color.b = 0;
+        this.m_total_all ++;
+        let image = this.createImage(pw, ph, color.getCSSHeXRGBColor());
+        let area: TexArea = this.altas0.addImageDebug("imgSpe"+this.m_speI, image, this.m_canvas2d0);
+        if(area == null) {
+            area = this.altas1.addImageDebug("imgSpe"+this.m_speI, image, this.m_canvas2d1);
+            if(area != null) {
+                console.log("B addImageBySize success.");
+                this.m_total_1++;
+                this.m_speI++;
+            }
+        }
+        else {
+            console.log("A addImageBySize success.");
+            this.m_total_0++;
+            this.m_speI++;
+        }
+
+        
+        console.log("addImageBySize total_0: ",this.m_total_0);
+        console.log("addImageBySize total_1: ",this.m_total_1);
+        console.log(this.m_total_all+",left total: ",(this.m_total_all - (this.m_total_0 + this.m_total_1)));
+    }
+}
 export class DemoUITexAtlas {
     constructor() { }
 
@@ -62,7 +216,7 @@ export class DemoUITexAtlas {
     initialize(): void {
         console.log("DemoUITexAtlas::initialize()......");
         if (this.m_rscene == null) {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+            RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
             RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
             let rparam: RendererParam = new RendererParam();
@@ -90,11 +244,23 @@ export class DemoUITexAtlas {
             this.m_rscene.addEntity(axis);
             this.m_axis = axis;
 
+            let uMin: number = 0.0;
+            let vMin: number = 0.0;
+            let uMax: number = 0.5;
+            let vMax: number = 0.5;
             let plane: Plane3DEntity;
-
-            //  plane = new Plane3DEntity();
-            //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
-            //  this.m_rscene.addEntity(plane);
+            /*
+            plane = new Plane3DEntity();
+            plane.uvs = new Float32Array([
+                
+                uMin, vMin,
+                uMax, vMin,
+                uMax, vMax,
+                uMin, vMax
+            ]);
+            plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/testEFT4.jpg")]);
+            this.m_rscene.addEntity(plane);
+            //*/
             //this.m_plane = plane;
 
             //  plane = new Plane3DEntity();
@@ -118,6 +284,7 @@ export class DemoUITexAtlas {
     }
 
     private m_ruisc: RendererSubScene = null;
+    private m_atlasSample0:AltasSample = null;
     private initUIScene(): void {
 
         let rparam: RendererParam = new RendererParam();
@@ -135,9 +302,44 @@ export class DemoUITexAtlas {
         this.m_ruisc.getCamera().update();
         //CanvasTextureTool.GetInstance().initialize(this.m_rscene);
 
-        this.initTest();
+        //this.initTestGeom();
+        //this.initTestAtlas();
+
+        this.m_atlasSample0 = new AltasSample();
+        this.m_atlasSample0.initialize(10,10);
+        let tex:ImageTextureProxy = this.m_rscene.textureBlock.createImageTex2D(1,1);
+        
+        //img0
+        let plane: Plane3DEntity;
+
+        let uMin: number = 0.0;
+        let vMin: number = 0.0;
+        let uMax: number = 0.5;
+        let vMax: number = 0.5;
+        plane = new Plane3DEntity();
+        plane.uvs = new Float32Array([
+            
+            uMin, vMin,
+            uMax, vMin,
+            uMax, vMax,
+            uMin, vMax
+        ]);
+        let texNS: string = "img"+(10 + Math.round(Math.random() * 100));
+        let texArea: TexArea = this.m_atlasSample0.altas0.getAreaByName( texNS );
+        if(texArea == null) {
+            texArea = this.m_atlasSample0.altas1.getAreaByName( texNS );
+            tex.setDataFromImage(this.m_atlasSample0.canvas1);
+        }
+        else {
+            tex.setDataFromImage(this.m_atlasSample0.canvas0);
+        }
+        plane.uvs = texArea.uvs;
+        console.log("plane.uvs: ",plane.uvs);
+        //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/testEFT4.jpg")]);
+        plane.initializeXOZ(-400.0, -200.0, 800.0, 400.0, [tex]);
+        this.m_rscene.addEntity(plane);
     }
-    private initTest(): void {
+    private initTestGeom(): void {
         
         let rect0: AABB2D = new AABB2D();
         rect0.x = 10;
@@ -174,6 +376,8 @@ export class DemoUITexAtlas {
     private mouseDown(evt: any): void {
         console.log("mouse down... ...");
         DebugFlag.Flag_0 = 1;
+        //this.m_atlasSample0.addImageBySize(33,35);
+        this.m_atlasSample0.addImageBySize(10 + Math.round(100 * Math.random()), 10 + Math.round(100 * Math.random()));
     }
     private mouseMove(evt: any): void {
         console.log("mouse move... ...");
@@ -222,6 +426,7 @@ export class DemoUITexAtlas {
 
 
             /////////////////////////////////////////////////////// ---- rendering begin.
+
             this.m_rscene.renderBegin();
             this.m_rscene.run(false);
             this.m_rscene.runEnd();
@@ -229,7 +434,6 @@ export class DemoUITexAtlas {
             this.m_ruisc.renderBegin();
             this.m_ruisc.run(false);
             this.m_ruisc.runEnd();
-
             /////////////////////////////////////////////////////// ---- rendering end.
 
         }

@@ -23,10 +23,22 @@ export default class AABB2D
 	{
 		this.x = px;
 		this.y = py;
-		this.width = pheight;
+		this.width = pwidth;
 		this.height = pheight;
 
 		this.update();
+	}
+	copyFrom(dst: AABB2D): void {
+
+		this.x = dst.x;
+		this.y = dst.y;
+		this.m_right = dst.m_right;
+		this.m_top = dst.m_top;
+		this.width = dst.width;
+		this.height = dst.height;
+	}
+	clone(): AABB2D {
+		return new AABB2D(this.x,this.y,this.width, this.height);
 	}
 	/**
 	 * 当前矩形是否包含某一点(同一坐标空间的点)

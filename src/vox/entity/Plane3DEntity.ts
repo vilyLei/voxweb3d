@@ -33,6 +33,7 @@ export default class Plane3DEntity extends DisplayEntity {
     uScale:number = 1.0;
     vScale:number = 1.0;
 
+    uvs: Float32Array = null;
     flipVerticalUV: boolean = false;
     vtxColorEnabled: boolean = false;
     premultiplyAlpha: boolean = false;
@@ -188,6 +189,8 @@ export default class Plane3DEntity extends DisplayEntity {
             mesh.color1.copyFrom( this.color1 );
             mesh.color2.copyFrom( this.color2 );
             mesh.color3.copyFrom( this.color3 );
+            
+            mesh.uvs = this.uvs;
             
             mesh.uScale = this.uScale;
             mesh.vScale = this.vScale;
