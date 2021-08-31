@@ -154,7 +154,6 @@ export default class PBRShaderDecorator {
         else coder.addDefine("VOX_LIGHTS_TOTAL", "0");
 
         coder.addVertLayout("vec3","a_vs");
-        coder.addVertLayout("vec3","a_nvs");
         
         this.m_has2DMap = coder.isHaveTexture2D();
         if (this.m_has2DMap) {
@@ -162,6 +161,8 @@ export default class PBRShaderDecorator {
             coder.addVertUniform("vec4","u_paramLocal",2);
             coder.addVarying("vec2","v_uv");
         }
+        coder.addVertLayout("vec3","a_nvs");
+        
         coder.addFragUniform("vec4","u_paramLocal",2);
         coder.addFragUniform("vec4","u_albedo");
         coder.addFragUniform("vec4","u_params", 4);

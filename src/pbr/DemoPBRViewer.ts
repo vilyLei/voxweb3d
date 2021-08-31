@@ -68,8 +68,6 @@ export class ViewerDracoModule extends DracoWholeModuleLoader
             texList.push( this.getImageTexByUrl("static/assets/disp/normal_4_256_OCC.png"));
         }
 
-        let mesh: DracoMesh = new DracoMesh();
-        mesh.initialize(modules);
 
         let uvscale: number = 1.0;//0.01;//Math.random() * 7.0 + 0.6;        
         let material: PBRMaterial = this.viewer.createMaterial(uvscale,uvscale);
@@ -82,8 +80,13 @@ export class ViewerDracoModule extends DracoWholeModuleLoader
         material.decorator.normalMapEnabled = true;
         material.decorator.vtxFlatNormal = false;
         material.decorator.aoMapEnabled = this.aoMapEnabled;
-        let scale: number = 1.0;
+        material.initializeByCodeBuf(true);
+        let scale: number = 3.0;
         let entity: DisplayEntity = new DisplayEntity();
+        
+        let mesh: DracoMesh = new DracoMesh();
+        mesh.setBufSortFormat(material.getBufSortFormat());
+        mesh.initialize(modules);
         entity.setMaterial( material );
         entity.setMesh( mesh );
         entity.setScaleXYZ(scale, scale, scale);
@@ -272,6 +275,7 @@ export class DemoPBRViewer {
         axis.initialize(300.0);
         this.m_rscene.addEntity(axis);
 
+        
         let texList: TextureProxy[] = [];
         
         texList.push(this.m_envMap);
@@ -299,7 +303,6 @@ export class DemoPBRViewer {
                 }
             }
         }
-        return;
         let material: PBRMaterial;
         let sph: Sphere3DEntity;
         material = this.createMaterial(1,1);
@@ -312,7 +315,7 @@ export class DemoPBRViewer {
         let scale: number = 1.0;
         let uvscale: number;
         let total: number = posList.length;
-        total = 0;
+        
         console.log("total: ",total);
         let rad: number;
         for(let i: number = 0; i < total; ++i) {

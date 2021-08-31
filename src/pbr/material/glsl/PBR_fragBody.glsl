@@ -26,7 +26,8 @@ void main()
     #endif
     vec3 N = worldNormal;
     #ifdef VOX_NORMAL_MAP
-        N = normalize(mix(N, getNormalFromMap(VOX_NORMAL_MAP, v_uv.xy, worldPos.xyz, N),u_paramLocal[0].w));
+        N = getNormalFromMap(VOX_NORMAL_MAP, v_uv.xy, worldPos.xyz, worldNormal);
+        N = normalize(mix(worldNormal, N, u_paramLocal[0].w));
     #endif
 
     #ifdef VOX_PIXEL_NORMAL_NOISE

@@ -55,11 +55,11 @@ export default class DracoMesh extends MeshBase {
 
         if (this.bounds == null) this.bounds = new AABB();
 
-        //this.vtCount = this.m_ivs.length;
-        //this.vtxTotal = this.vtCount / 3;
-        //this.trisNumber = this.m_vs.length / 3;
         this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;
 
+        if (!this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)){
+            console.warn("DracoMesh uvs apply failure.");
+        }
         let bufData: VtxBufData = new VtxBufData(3);
 
         let listLen: number = list.length;

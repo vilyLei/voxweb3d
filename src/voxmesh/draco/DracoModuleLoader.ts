@@ -86,7 +86,7 @@ export class DracoWholeModuleLoader extends DracoModuleLoader implements DracoTa
         }
     }
     dracoParse(pmodule: any, index: number, total: number): void {
-        
+        /*
         let scale: number = this.m_scale;
         let material: DracoMeshMaterial = new DracoMeshMaterial();
         material.initializeByCodeBuf(false);
@@ -99,9 +99,10 @@ export class DracoWholeModuleLoader extends DracoModuleLoader implements DracoTa
         entity.setScaleXYZ(scale, scale, scale);
         entity.setPosition(this.m_pos);
         this.m_rscene.addEntity(entity);
+        ///*/
     }
     dracoParseFinish(modules: any[], total: number): void {
-        if (modules.length == 1) {
+        if (modules.length == 1 || true) {
             console.log("dracoParseFinish modules: ", modules);
             
             let scale: number = this.m_scale;
