@@ -173,7 +173,7 @@ export class DemoDefaultPBR2
             this.m_meshMana.offsetPos.setXYZ(0.0,400.0,0.0);
             this.m_meshMana.loadMeshFile("static/modules/cloth02.md");
             //*/
-            ///*
+            //  /*
             this.m_meshMana.diffuseMapEnabled = false;
             this.m_meshMana.normalMapEnabled = false;
             this.m_meshMana.dataFilterEnbaled = true;
@@ -183,7 +183,7 @@ export class DemoDefaultPBR2
             this.m_reflectPlaneY = -220.0;
             this.m_meshMana.moduleScale = 100.0;
             this.m_meshMana.offsetPos.setXYZ(0.0,0.0,0.0);
-            this.m_meshMana.loadMeshFile("static/modules/lobster.md");
+            this.m_meshMana.loadMeshFile("static/modules/clothRoll.md");
             //*/
             /*
             this.m_meshMana.diffuseMapEnabled = false;

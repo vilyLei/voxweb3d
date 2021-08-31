@@ -74,6 +74,11 @@ export default class RendererInstanceContext
     {
         return this.m_renderProxy.Texture.getAttachTotal();
     }
+    
+    getDevicePixelRatio():number
+    {
+        return this.m_adapter.getDevicePixelRatio();
+    }
     getStage3D():IRenderStage3D
     {
         return this.m_renderProxy.getStage3D();

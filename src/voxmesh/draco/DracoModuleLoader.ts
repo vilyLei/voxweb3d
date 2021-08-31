@@ -47,10 +47,12 @@ export class DracoWholeModuleLoader extends DracoModuleLoader implements DracoTa
         this.m_urls = [
             //"static/assets/modules/bunny.rawmd",
             //"static/assets/modules/loveass.rawmd",
+            //"static/assets/modules/curtain.rawmd",
+            "static/assets/modules/clothRoll.rawmd",
             //"static/assets/modules/lobster.rawmd"
             //"static/assets/modules/lobster.rawmd"
             //"static/assets/modules/cloST22.rawmd"
-            "static/assets/modules/skirt/dracos_41.drc.zip"
+            //"static/assets/modules/skirt/dracos_41.drc.zip"
         ];
     }
     initialize(rscene: RendererScene, dracoMeshLoader: DracoMeshBuilder): void {

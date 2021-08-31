@@ -413,9 +413,11 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
         this.m_display = RODisplay.Create();
     }
     activeDisplay(): void {
+        
         if (this.m_display != null) {
             let material: MaterialBase = this.m_display.getMaterial();
             if (material != null) {
+                
                 if (material.getShaderData() == null) {
                     if (material.getCodeBuf() != null) {
                         if (material.getShaderData() == null) {
@@ -425,6 +427,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
                         }
                     }
                 }
+                
                 if (this.getMesh() == null) {
                     this.__activeMesh(material);
                     //  // for debug

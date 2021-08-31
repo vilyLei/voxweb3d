@@ -83,6 +83,11 @@ export default class AABB2D
 		this.m_right = this.width + this.x;
 		this.m_top = this.height + this.y;
 	}
+	flipY(height: number): void {
+		this.y = height = this.y;
+		this.m_right = this.width + this.x;
+		this.m_top = this.height + this.y;
+	}
 	getX(): number {
 		return this.x;
 	}

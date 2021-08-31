@@ -23,21 +23,21 @@ export default class Plane3DEntity extends DisplayEntity {
     private m_flag: number = 0;
     private m_screenAlignEnabled: boolean = false;
 
-    readonly color0:Color4 = new Color4();
-    readonly color1:Color4 = new Color4();
-    readonly color2:Color4 = new Color4();
-    readonly color3:Color4 = new Color4();
-    
-    offsetU:number = 0.0;
-    offsetV:number = 0.0;
-    uScale:number = 1.0;
-    vScale:number = 1.0;
+    readonly color0: Color4 = new Color4();
+    readonly color1: Color4 = new Color4();
+    readonly color2: Color4 = new Color4();
+    readonly color3: Color4 = new Color4();
+
+    offsetU: number = 0.0;
+    offsetV: number = 0.0;
+    uScale: number = 1.0;
+    vScale: number = 1.0;
 
     uvs: Float32Array = null;
     flipVerticalUV: boolean = false;
     vtxColorEnabled: boolean = false;
     premultiplyAlpha: boolean = false;
-    
+
     constructor(transform: ROTransform = null) {
         super(transform);
     }
@@ -61,17 +61,21 @@ export default class Plane3DEntity extends DisplayEntity {
                 this.setMaterial(cm);
             }
         }
-        else if(texList != null && this.getMaterial().getTextureTotal() < 1){
+        else if (texList != null && this.getMaterial().getTextureTotal() < 1) {
             this.getMaterial().setTextureList(texList);
         }
     }
     showDoubleFace(always: boolean = false, doubleFace: boolean = true): void {
         if (always) {
-            if (doubleFace) this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
+            if (doubleFace) {
+                this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_ALWAYS_STATE);
+            }
             else this.setRenderState(RendererState.BACK_NORMAL_ALWAYS_STATE);
         }
         else {
-            if (doubleFace) this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+            if (doubleFace) {
+                this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+            }
             else this.setRenderState(RendererState.NORMAL_STATE);
         }
     }
@@ -185,13 +189,13 @@ export default class Plane3DEntity extends DisplayEntity {
         if (this.getMesh() == null) {
             let mesh: RectPlaneMesh = new RectPlaneMesh();
 
-            mesh.color0.copyFrom( this.color0 );
-            mesh.color1.copyFrom( this.color1 );
-            mesh.color2.copyFrom( this.color2 );
-            mesh.color3.copyFrom( this.color3 );
-            
+            mesh.color0.copyFrom(this.color0);
+            mesh.color1.copyFrom(this.color1);
+            mesh.color2.copyFrom(this.color2);
+            mesh.color3.copyFrom(this.color3);
+
             mesh.uvs = this.uvs;
-            
+
             mesh.uScale = this.uScale;
             mesh.vScale = this.vScale;
             mesh.offsetU = this.offsetU;

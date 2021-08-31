@@ -1,9 +1,5 @@
 
-import { TextureConst } from "../../vox/texture/TextureConst";
-import TextureProxy from "../../vox/texture/TextureProxy";
 import AABB2D from "../geom/AABB2D";
-import MathConst from "../math/MathConst";
-import RendererDeviece from "../render/RendererDeviece";
 
 
 export enum TexAreaFillType {
@@ -16,12 +12,21 @@ export enum TexAreaFillType {
 }
 export class TexArea {
     uniqueNS: string = "TexArea";
+    // 自身在列表数组中的序号
+    listIndex: number = -1;
+    atlasUid: number = 0;
+    /**
+     * 占据的区域
+     */
     rect: AABB2D = null;
+    // 纹理覆盖实际区域
+    texRect: AABB2D = null;
     offset: number = 2;
     minSize: number = 32;
     readonly uvs: Float32Array = new Float32Array(8);
     constructor(px: number = 0.0, py: number = 0.0, pwidth: number = 100.0, pheight: number = 100.0) {
         this.rect = new AABB2D(px, py, pwidth, pheight);
+        this.texRect = new AABB2D(px, py, pwidth, pheight);
     }
     copyFrom(dst: TexArea): void {
         this.uniqueNS = dst.uniqueNS;
@@ -37,20 +42,16 @@ export class TexArea {
 export class TexAreaNode {
     rect: AABB2D = null;
     subNodes: TexAreaNode[] = null;
-
+    
+    uniqueNS: string = "TexAreaNode";
     subIndex: number = 0;
-    //minSize: number = 32;
+    
     // 记录自身的填满方式
     protected m_fillType: TexAreaFillType = TexAreaFillType.NONE;
 
     constructor(px: number = 0.0, py: number = 0.0, pwidth: number = 100.0, pheight: number = 100.0) {
         this.rect = new AABB2D(px, py, pwidth, pheight);
     }
-    //  isFull(): boolean {
-    //      if (this.subNodes == null) {
-    //          return true;
-    //      }
-    //  }
     protected isFull(): boolean {
 
         if (this.subNodes == null) {
@@ -59,12 +60,12 @@ export class TexAreaNode {
 
         let node: TexAreaNode = null;
         let nodes: TexAreaNode[] = this.subNodes;
-        if(nodes.length == 1) {
+        if (nodes.length == 1) {
             return true;
         }
-        for(let i: number = 0; i < nodes.length; ++i) {
-            node = nodes[ i ];
-            if(!node.isFull()) {
+        for (let i: number = 0; i < nodes.length; ++i) {
+            node = nodes[i];
+            if (!node.isFull()) {
                 return false;
             }
         }
@@ -79,10 +80,10 @@ export class TexAreaNode {
             let halfW: number = this.rect.width * 0.5;
             let halfH: number = this.rect.height * 0.5;
             // // 四区域均分
-            let leftBottomAreaNode: TexAreaNode = new TexAreaNode(  rect.x,             rect.y,                 halfW, halfH  );
-            let rightBottomAreaNode: TexAreaNode = new TexAreaNode( rect.x + halfW,     rect.y,                 halfW, halfH  );
-            let rightTopAreaNode: TexAreaNode = new TexAreaNode(    rect.x + halfW,     rect.y + halfH,         halfW, halfH  );
-            let leftTopAreaNode: TexAreaNode = new TexAreaNode(     rect.x,             rect.y + halfH,         halfW, halfH  );
+            let leftBottomAreaNode: TexAreaNode = new TexAreaNode(rect.x, rect.y, halfW, halfH);
+            let rightBottomAreaNode: TexAreaNode = new TexAreaNode(rect.x + halfW, rect.y, halfW, halfH);
+            let rightTopAreaNode: TexAreaNode = new TexAreaNode(rect.x + halfW, rect.y + halfH, halfW, halfH);
+            let leftTopAreaNode: TexAreaNode = new TexAreaNode(rect.x, rect.y + halfH, halfW, halfH);
 
             /*
             // // 四区域不均分, 会产生更多的无效碎片
@@ -99,24 +100,24 @@ export class TexAreaNode {
                 leftTopAreaNode
             ];
 
-            for(let i: number = 0; i < this.subNodes.length; ++i) {
+            for (let i: number = 0; i < this.subNodes.length; ++i) {
                 this.subNodes[i].subIndex = i;
             }
             let node: TexAreaNode = this.subNodes[0];
             // 通过面积排序, 优先使用面积小的
             this.subNodes.sort((a, b) => { return a.rect.width * a.rect.height - b.rect.width * b.rect.height });
             this.m_fillType = TexAreaFillType.FOUR;
-            boo = node.fillOne(texArea, map);
+            boo = node.fillOne(texArea);
         }
         else {
-            
+
             let node: TexAreaNode = null;
             let nodes: TexAreaNode[] = this.subNodes;
-            for(let i: number = 0; i < nodes.length; ++i) {
-                node = nodes[ i ];
-                if(!node.isFull()) {
-                    boo = node.addTexArea(texArea, map);
-                    if(boo) {
+            for (let i: number = 0; i < nodes.length; ++i) {
+                node = nodes[i];
+                if (!node.isFull()) {
+                    boo = node.addTexArea(texArea);
+                    if (boo) {
                         break;
                     }
                 }
@@ -125,25 +126,25 @@ export class TexAreaNode {
         return boo;
     }
     ///*
-    
-    protected fillThree(texArea: TexArea, map: Map<string, TexArea>): boolean {
+
+    protected fillThree(texArea: TexArea): boolean {
 
         let boo: boolean = false;
         if (this.subNodes == null) {
             let rect: AABB2D = this.rect;
             let srcR: AABB2D = texArea.rect;
-            
+
             // // 三区域不均分，尽量保留最大可用空间
-            let areaNode0: TexAreaNode = new TexAreaNode(  rect.x,   rect.y,       srcR.width, srcR.height  );
+            let areaNode0: TexAreaNode = new TexAreaNode(rect.x, rect.y, srcR.width, srcR.height);
             let areaNode1: TexAreaNode;
             let areaNode2: TexAreaNode;
-            if(srcR.width > srcR.height) {
-                areaNode1 = new TexAreaNode( rect.x + srcR.width,    rect.y,       this.rect.width - srcR.width, this.rect.height  );
-                areaNode2 = new TexAreaNode( rect.x,    rect.y + srcR.height,      srcR.width, this.rect.height - srcR.height  );
+            if (srcR.width > srcR.height) {
+                areaNode1 = new TexAreaNode(rect.x + srcR.width, rect.y, this.rect.width - srcR.width, this.rect.height);
+                areaNode2 = new TexAreaNode(rect.x, rect.y + srcR.height, srcR.width, this.rect.height - srcR.height);
             }
             else {
-                areaNode1 = new TexAreaNode( rect.x + srcR.width,    rect.y,       this.rect.width - srcR.width, srcR.height );
-                areaNode2 = new TexAreaNode( rect.x,    rect.y + srcR.height,      this.rect.width, this.rect.height - srcR.height  );
+                areaNode1 = new TexAreaNode(rect.x + srcR.width, rect.y, this.rect.width - srcR.width, srcR.height);
+                areaNode2 = new TexAreaNode(rect.x, rect.y + srcR.height, this.rect.width, this.rect.height - srcR.height);
             }
             this.subNodes = [
                 areaNode0,
@@ -151,7 +152,7 @@ export class TexAreaNode {
                 areaNode2
             ];
 
-            for(let i: number = 0; i < this.subNodes.length; ++i) {
+            for (let i: number = 0; i < this.subNodes.length; ++i) {
                 this.subNodes[i].subIndex = i;
                 //  if(this.subNodes[i].rect.width < texArea.minSize || this.subNodes[i].rect.height < texArea.minSize) {
                 //      console.log("new subnode less minSize.");
@@ -163,22 +164,22 @@ export class TexAreaNode {
             let a: TexAreaNode = this.subNodes[1];
             let b: TexAreaNode = this.subNodes[2];
             // 指定排序,优先使用面积小的
-            if(a.rect.width * a.rect.height > b.rect.width * b.rect.height) {
+            if (a.rect.width * a.rect.height > b.rect.width * b.rect.height) {
                 this.subNodes[1] = b;
                 this.subNodes[2] = a;
             }
             this.m_fillType = TexAreaFillType.THREE;
-            return this.subNodes[0].fillOne(texArea, map);
+            return this.subNodes[0].fillOne(texArea);
         }
         else {
-            
+
             let node: TexAreaNode = null;
             let nodes: TexAreaNode[] = this.subNodes;
-            for(let i: number = 0; i < nodes.length; ++i) {
-                node = nodes[ i ];
-                if(!node.isFull()) {
-                    boo = node.addTexArea(texArea, map);
-                    if(boo) {
+            for (let i: number = 0; i < nodes.length; ++i) {
+                node = nodes[i];
+                if (!node.isFull()) {
+                    boo = node.addTexArea(texArea);
+                    if (boo) {
                         break;
                     }
                 }
@@ -186,14 +187,14 @@ export class TexAreaNode {
         }
         return boo;
     }
-    protected fillTwoH(texArea: TexArea, map: Map<string, TexArea>): boolean {
+    protected fillTwoH(texArea: TexArea): boolean {
 
         if (this.subNodes == null) {
-            
+
             let width0: number = texArea.rect.width;
             let width1: number = this.rect.width - texArea.rect.width;
             let height: number = this.rect.height;
-    
+
             let rect: AABB2D = this.rect;
             let leftArea: TexAreaNode = new TexAreaNode(rect.x, rect.y, width0, height);
             let rightArea: TexAreaNode = new TexAreaNode(rect.x + width0, rect.y, width1, height);
@@ -203,23 +204,23 @@ export class TexAreaNode {
             ];
 
             this.m_fillType = TexAreaFillType.TWO_H;
-            return leftArea.fillOne(texArea, map);
+            return leftArea.fillOne(texArea);
         }
 
-        if(!this.subNodes[1].isFull()) {
-            return this.subNodes[1].addTexArea(texArea, map);
+        if (!this.subNodes[1].isFull()) {
+            return this.subNodes[1].addTexArea(texArea);
         }
         return false;
     }
-    protected fillTwoV(texArea: TexArea, map: Map<string, TexArea>): boolean {
-        
+    protected fillTwoV(texArea: TexArea): boolean {
+
         if (this.subNodes == null) {
 
             let width: number = this.rect.width;
-    
+
             let height0: number = texArea.rect.height;
             let height1: number = this.rect.height - texArea.rect.height;
-    
+
             let rect: AABB2D = this.rect;
             let bottomArea: TexAreaNode = new TexAreaNode(rect.x, rect.y, width, height0);
             let topArea: TexAreaNode = new TexAreaNode(rect.x, rect.y + height0, width, height1);
@@ -228,15 +229,15 @@ export class TexAreaNode {
                 topArea
             ];
             this.m_fillType = TexAreaFillType.TWO_V;
-            return bottomArea.fillOne(texArea, map);
+            return bottomArea.fillOne(texArea);
         }
-        if(!this.subNodes[1].isFull()) {
-            return this.subNodes[1].addTexArea(texArea, map);
+        if (!this.subNodes[1].isFull()) {
+            return this.subNodes[1].addTexArea(texArea);
         }
         return false;
     }
     //*/
-    protected fillOne(texArea: TexArea, map: Map<string, TexArea>): boolean {
+    protected fillOne(texArea: TexArea): boolean {
 
         let boo: boolean = true;
         if (this.subNodes == null) {
@@ -247,24 +248,42 @@ export class TexAreaNode {
             texArea.rect.x = this.rect.x;
             texArea.rect.y = this.rect.y;
             texArea.update();
+            this.uniqueNS = texArea.uniqueNS;
             //console.log("fillOne: ",texArea);
         }
         return boo;
+    }
+    findByXY(px: number, py: number): TexAreaNode {
+        if(this.rect.containsXY(px,py)) {
+            if (this.subNodes != null) {
+                if(this.m_fillType == TexAreaFillType.ONE) {
+                    return this;
+                }
+                let node: TexAreaNode;
+                for (let i: number = 0; i < this.subNodes.length; ++i) {
+                    node = this.subNodes[i].findByXY(px,py);
+                    if(node != null) {
+                        return node;
+                    }
+                }
+            }
+        }
+        return null;
     }
     /**
      * 添加 texture area 到当前空间管理节点,  默认用四分法均分这个区域无法分的情况再不平衡的2分法(横向或者纵向),叶子节点则不会划分而直接使用当前节点区域
      * @param texArea 填入的纹理区域
      * @param map 
      */
-    addTexArea(texArea: TexArea, map: Map<string, TexArea>): boolean {
+    addTexArea(texArea: TexArea): boolean {
 
         let srcW: number = texArea.rect.width;
         let srcH: number = texArea.rect.height;
-        if(this.rect.width <= texArea.minSize && this.rect.height <= texArea.minSize) {
+        if (this.rect.width <= texArea.minSize && this.rect.height <= texArea.minSize) {
             if (srcW <= this.rect.width && srcH <= this.rect.height && !this.isFull()) {
                 // 填入当前区域，不需要划分子区域。
                 // 检测是否已经填满, 如果填满了就不能填入了
-                return this.fillOne(texArea, map);
+                return this.fillOne(texArea);
             }
             else {
                 return false;
@@ -279,8 +298,8 @@ export class TexAreaNode {
             let pw: number = dstW * 0.5;
             let ph: number = dstH * 0.5;
             let fillType: TexAreaFillType = this.m_fillType;
-            if(this.m_fillType == TexAreaFillType.NONE) {
-                
+            if (this.m_fillType == TexAreaFillType.NONE) {
+
                 if (srcW <= pw && srcH <= ph) {
                     fillType = TexAreaFillType.FOUR;
                 }
@@ -293,7 +312,7 @@ export class TexAreaNode {
                 else {
                     fillType = TexAreaFillType.ONE;
                 }
-            } else if(fillType == TexAreaFillType.ONE){
+            } else if (fillType == TexAreaFillType.ONE) {
                 return false;
             }
             if (!this.isFull()) {
@@ -318,26 +337,26 @@ export class TexAreaNode {
                     //     // 更容易产生无效碎片，因为分配的区域增多了
                     //     return this.fillFour(texArea, map);
                     // }
-                    return this.fillThree(texArea, map);
+                    return this.fillThree(texArea);
                 }
                 else if (fillType == TexAreaFillType.TWO_H) {
-                    
+
                     // 横向非均匀划分
                     // 检测是否已经填满子空间, 如果填满了就不能填入了
-                    return this.fillTwoH(texArea, map);
+                    return this.fillTwoH(texArea);
                 }
                 else if (fillType == TexAreaFillType.TWO_V) {
                     //console.log("B");
                     // 纵向非均匀划分
                     // 检测是否已经填满子空间, 如果填满了就不能填入了
-                    return this.fillTwoV(texArea, map);
+                    return this.fillTwoV(texArea);
                 }
                 else {
                     //console.log("C");
                     // 填入当前区域，不需要划分子区域。
                     // 检测是否已经填满, 如果填满了就不能填入了
                     //fillType == TexAreaFillType.ONE
-                    return this.fillOne(texArea, map);
+                    return this.fillOne(texArea);
                 }
             }
             return false;

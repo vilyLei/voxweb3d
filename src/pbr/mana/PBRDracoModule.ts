@@ -98,7 +98,7 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader
             material.decorator.vtxFlatNormal = false;
             material.decorator.aoMapEnabled = false;
             material.decorator.shadowReceiveEnabled = false;
-            texList = this.entityUtils.createTexListFoMaterial(material, this.envMap, this.entityUtils.getImageTexByUrl("static/assets/noise.jpg"));
+            texList = this.entityUtils.createTexListForMaterial(material, this.envMap, this.entityUtils.getImageTexByUrl("static/assets/noise.jpg"));
         }
         else {
             
@@ -116,7 +116,7 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader
             if(material.decorator.aoMapEnabled) {
                 aoTex = this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
             }
-            texList = this.entityUtils.createTexListFoMaterial(
+            texList = this.entityUtils.createTexListForMaterial(
                 material,
                 this.envMap,
                 this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg"),

@@ -29,7 +29,7 @@ export default class Box3DMesh extends MeshBase {
     private m_cvs: Float32Array = null;
 
     flipVerticalUV: boolean = false;
-    uvPartsNumber:number = 0;
+    uvPartsNumber: number = 0;
     getVS() { return this.m_vs; }
     getUVS() { return this.m_uvs; }
     getNVS() { return this.m_nvs; }
@@ -263,21 +263,21 @@ export default class Box3DMesh extends MeshBase {
                 // uv
                 this.m_uvs = new Float32Array(48);
                 this.initUVData(this.vtxTotal * 2);
-                if(this.uvPartsNumber == 4) {
-                    this.scaleUVFaceAt(0, 0.5,0.5,0.5,0.5);
-                    this.scaleUVFaceAt(1, 0.0,0.0,0.5,0.5);
-                    this.scaleUVFaceAt(2, 0.5,0.0,0.5,0.5);
-                    this.scaleUVFaceAt(3, 0.0,0.5,0.5,0.5);
-                    this.scaleUVFaceAt(4, 0.5,0.0,0.5,0.5);
-                    this.scaleUVFaceAt(5, 0.0,0.5,0.5,0.5);
-                } else if(this.uvPartsNumber == 6){
+                if (this.uvPartsNumber == 4) {
+                    this.scaleUVFaceAt(0, 0.5, 0.5, 0.5, 0.5);
+                    this.scaleUVFaceAt(1, 0.0, 0.0, 0.5, 0.5);
+                    this.scaleUVFaceAt(2, 0.5, 0.0, 0.5, 0.5);
+                    this.scaleUVFaceAt(3, 0.0, 0.5, 0.5, 0.5);
+                    this.scaleUVFaceAt(4, 0.5, 0.0, 0.5, 0.5);
+                    this.scaleUVFaceAt(5, 0.0, 0.5, 0.5, 0.5);
+                } else if (this.uvPartsNumber == 6) {
 
-                    this.scaleUVFaceAt(0, 0.0,  0.0,    0.25,0.5);
-                    this.scaleUVFaceAt(1, 0.25, 0.0,    0.25,0.5);
-                    this.scaleUVFaceAt(2, 0.5,  0.0,    0.25,0.5);
-                    this.scaleUVFaceAt(3, 0.75, 0.0,    0.25,0.5);
-                    this.scaleUVFaceAt(4, 0.0,  0.5,    0.25,0.5);
-                    this.scaleUVFaceAt(5, 0.25, 0.5,    0.25,0.5);
+                    this.scaleUVFaceAt(0, 0.0, 0.0, 0.25, 0.5);
+                    this.scaleUVFaceAt(1, 0.25, 0.0, 0.25, 0.5);
+                    this.scaleUVFaceAt(2, 0.5, 0.0, 0.25, 0.5);
+                    this.scaleUVFaceAt(3, 0.75, 0.0, 0.25, 0.5);
+                    this.scaleUVFaceAt(4, 0.0, 0.5, 0.25, 0.5);
+                    this.scaleUVFaceAt(5, 0.25, 0.5, 0.25, 0.5);
                 }
                 /*
                 i = 0;
@@ -442,9 +442,21 @@ export default class Box3DMesh extends MeshBase {
             ROVertexBuffer.UpdateBufData(this.m_vbuf);
         }
     }
-    setFaceUVSAt(i: number, uvslen8: Float32Array): void {
+    setFaceUVSAt(i: number, uvsLen8: Float32Array, offset: number = 0): void {
         if (this.m_uvs != null) {
-            this.m_uvs.set(uvslen8, i * 8);
+            if(offset < 1) {
+                this.m_uvs.set(uvsLen8, i * 8);
+            }
+            else {
+                i *= 8;
+                if(offset < 0) offset = 0;
+                for(let k: number = 0; k < 4; ++k) {
+                    this.m_uvs[i++] = uvsLen8[offset * 2];
+                    this.m_uvs[i++] = uvsLen8[offset * 2 + 1];
+                    offset++;
+                    offset = offset%4;
+                }
+            }
         }
     }
     private initUVData(baseI: number): void {

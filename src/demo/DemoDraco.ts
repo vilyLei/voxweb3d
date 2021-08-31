@@ -31,8 +31,8 @@ export class DemoDraco extends DemoInstance {
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
-    //private moduleLoader: DracoModuleLoader = new DracoWholeModuleLoader();
-    private moduleLoader: DracoModuleLoader = new DracoMultiPartsModuleLoader();
+    private moduleLoader: DracoModuleLoader = new DracoWholeModuleLoader();
+    //private moduleLoader: DracoModuleLoader = new DracoMultiPartsModuleLoader();
     protected initializeSceneParam(param: RendererParam): void {
         this.m_processTotal = 4;
         param.maxWebGLVersion = 2;
@@ -86,8 +86,8 @@ export class DemoDraco extends DemoInstance {
         for(let i: number = 0; i < 30; ++i) {
             urls.push("static/assets/modules/skirt01/dracos_"+ i +".drc.zip");
         }
-        urlsTotal = urls.length;            
-        this.moduleLoader.setUrlList(urls);
+        urlsTotal = urls.length;    
+        //this.moduleLoader.setUrlList(urls);
 
         this.moduleLoader.setPartsTotal(30);
         this.moduleLoader.setScale( 1.0 );

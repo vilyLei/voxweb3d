@@ -75,6 +75,7 @@ export default class MaterialBase implements IRenderMaterial
         {
             if(this.m_shdData.haveTexture())
             {
+                console.log("this.texDataEnabled(): ",this.texDataEnabled());
                 if(this.texDataEnabled())
                 {
                     return true;
@@ -224,6 +225,11 @@ export default class MaterialBase implements IRenderMaterial
             }
             this.m_texDataEnabled = boo;
             return boo;
+        }
+        else {
+            if(this.m_shdData != null && this.m_shdData.getTexTotal() > 0) {
+                console.warn("this material texList is null, need "+this.m_shdData.getTexTotal()+" textures.");
+            }
         }
         return false;
     }
