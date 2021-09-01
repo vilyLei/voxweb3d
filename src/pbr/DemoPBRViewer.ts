@@ -69,17 +69,18 @@ export class ViewerDracoModule extends DracoWholeModuleLoader
         }
 
 
-        let uvscale: number = 1.0;//0.01;//Math.random() * 7.0 + 0.6;        
+        let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6;        
         let material: PBRMaterial = this.viewer.createMaterial(uvscale,uvscale);
         
-        //  texList[1] = this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg");
-        //  texList[2] = this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/normal.jpg");
-        //  texList[3] = this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
+        texList[1] = this.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg");
+        texList[2] = this.getImageTexByUrl("static/assets/modules/skirt/normal.jpg");
+        texList[3] = this.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
         material.setTextureList(texList);
         material.decorator.diffuseMapEnabled = true;
         material.decorator.normalMapEnabled = true;
         material.decorator.vtxFlatNormal = false;
         material.decorator.aoMapEnabled = this.aoMapEnabled;
+        material.setAlbedoColor(Math.random() * 3, Math.random() * 3, Math.random() * 3);
         material.initializeByCodeBuf(true);
         let scale: number = 3.0;
         let entity: DisplayEntity = new DisplayEntity();
@@ -315,7 +316,7 @@ export class DemoPBRViewer {
         let scale: number = 1.0;
         let uvscale: number;
         let total: number = posList.length;
-        
+        total = 2;
         console.log("total: ",total);
         let rad: number;
         for(let i: number = 0; i < total; ++i) {
@@ -326,6 +327,7 @@ export class DemoPBRViewer {
             material = this.createMaterial(uvscale,uvscale);
             material.decorator.aoMapEnabled = this.aoMapEnabled;
             material.setTextureList(texList);
+            material.setAlbedoColor(Math.random() * 3, Math.random() * 3, Math.random() * 3);
             
             scale = 0.8 + Math.random();
             let pr: number = scale * 100.0;

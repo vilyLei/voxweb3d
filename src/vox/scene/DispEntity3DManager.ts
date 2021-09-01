@@ -187,7 +187,7 @@ export default class DispEntity3DManager
         entity.update();
         entity.__$rseFlag = RSEntityFlag.AddRendererUid(entity.__$rseFlag, this.m_rendererUid);
         entity.__$rseFlag = RSEntityFlag.RemoveRendererLoad(entity.__$rseFlag);
-
+        entity.__$setRenderProxy(this.m_dataBuilder.getRenderProxy());
         this.m_existencetotal++;
 
         if(disp.__$$rsign == DisplayRenderSign.NOT_IN_WORLD)

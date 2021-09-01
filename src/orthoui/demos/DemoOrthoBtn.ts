@@ -36,6 +36,7 @@ import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import RGBColorPanel, { RGBColoSelectEvent } from "../panel/RGBColorPanel";
 import Color4 from "../../vox/material/Color4";
 import Vector3D from "../../vox/math/Vector3D";
+import SelectionAtlasBar from "./base/SelectionAtlasBar";
 
 export class DemoOrthoBtn {
     constructor() { }
@@ -94,12 +95,17 @@ export class DemoOrthoBtn {
             //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
             //  this.m_rscene.addEntity(plane);
             //this.m_plane = plane;
-
-            //  plane = new Plane3DEntity();
-            //  plane.initializeXOZ(-200.0, -200.0, 400.0, 400.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
-            //  plane.setXYZ(0.0, 50.0, 0.0);
-            //  this.m_rscene.addEntity(plane);
-            //  this.m_plane2 = plane;
+            let uvs: Float32Array = new Float32Array([
+                0.0, 1.0,
+                1.0, 1.0,
+                1.0, 0.0,
+                0.0, 0.0
+            ]);
+            plane = new Plane3DEntity();
+            plane.initializeXOZ(-200.0, -200.0, 400.0, 400.0, [this.getImageTexByUrl("static/assets/testFT4.jpg")]);
+            plane.setXYZ(0.0, 50.0, 0.0);
+            this.m_rscene.addEntity(plane);
+            this.m_plane2 = plane;
 
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
             this.m_statusDisp.initialize("rstatus", 300);
@@ -136,6 +142,7 @@ export class DemoOrthoBtn {
         this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
         this.m_ruisc.getCamera().update();
         CanvasTextureTool.GetInstance().initialize(this.m_rscene);
+        CanvasTextureTool.GetInstance().initializeAtlas(1024,1024, new Color4(1.0,1.0,1.0,0.0), true);
 
         this.initUI();
     }
@@ -147,6 +154,24 @@ export class DemoOrthoBtn {
 
     private m_btns: any[] = [];
     private m_menuBtn: SelectionBar = null;
+
+    private createSelectAtlasBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionAtlasBar {
+
+        let selectBar: SelectionAtlasBar = new SelectionAtlasBar();
+        selectBar.uuid = uuid;
+        selectBar.initialize(this.m_ruisc, ns, selectNS, deselectNS, this.m_btnSize);
+        //selectBar.addEventListener(SelectionEvent.SELECT, this, this.selectChange);
+        if (flag) {
+            selectBar.select(false);
+        }
+        else {
+            selectBar.deselect(false);
+        }
+        selectBar.setXY(this.m_btnPX, this.m_btnPY);
+        this.m_btnPY += this.m_btnSize + 1;
+        if (!visibleAlways) this.m_btns.push(selectBar);
+        return selectBar;
+    }
     private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionBar {
 
         let selectBar: SelectionBar = new SelectionBar();
@@ -204,8 +229,9 @@ export class DemoOrthoBtn {
         }
 
         
+        this.createSelectAtlasBtn("", "menuCtrl", "Menu Open", "Menu Close", false, true);
         this.m_menuBtn = this.createSelectBtn("", "menuCtrl", "Menu Open", "Menu Close", false, true);
-        ///*
+        /*
         this.metalBtn = this.createProgressBtn("metal", "metal", 0.5);
         this.roughBtn = this.createProgressBtn("rough", "rough", 0.5);
         this.noiseBtn = this.createProgressBtn("noise", "noise", 0.07);
@@ -245,7 +271,7 @@ export class DemoOrthoBtn {
         return;
         /*
         let size: number = 32;
-        let tex:TextureProxy = CanvasTextureTool.GetInstance().createCharTexture("AAXX", size, "rgba(180,180,180,1.0)");
+        let tex:TextureProxy = CanvasTextureTool.GetInstance().createCharsTexture("AAXX", size, "rgba(180,180,180,1.0)");
         let nameBtn: ColorRectImgButton = new ColorRectImgButton();
         nameBtn.premultiplyAlpha = true;
         nameBtn.flipVerticalUV = true;
@@ -298,12 +324,15 @@ export class DemoOrthoBtn {
     }
     private selectColor(evt: any): void {
         let currEvt: RGBColoSelectEvent = evt as RGBColoSelectEvent;
+
         this.m_color.copyFrom(currEvt.color);
-        //this.m_color.scaleBy();
-        (this.m_plane.getMaterial() as any).setRGB3f(
-            this.m_color.r * this.m_colorIntensity,
-            this.m_color.g * this.m_colorIntensity,
-            this.m_color.b * this.m_colorIntensity);
+
+        if(this.m_plane != null) {
+            (this.m_plane.getMaterial() as any).setRGB3f(
+                this.m_color.r * this.m_colorIntensity,
+                this.m_color.g * this.m_colorIntensity,
+                this.m_color.b * this.m_colorIntensity);
+        }
     }
     private progressChange(evt: any): void {
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
@@ -337,6 +366,22 @@ export class DemoOrthoBtn {
     private selectChange(evt: any): void {
         let progEvt: SelectionEvent = evt as SelectionEvent;
         console.log("selectChange, flag: ", progEvt.flag, this.m_plane2);
+        if(this.m_plane2 == null) {
+            return;
+        }
+        //*
+        let uvs: Float32Array = new Float32Array([
+            0.0, 0.5,
+            0.5, 0.5,
+            0.5, 0.0,
+            0.0, 0.0
+        ]);
+        this.m_plane2.setUVS(uvs);
+        this.m_plane2.reinitializeMesh();
+        //this.m_plane2.updateMeshToGpu(this.m_rscene.getRenderProxy());
+        this.m_plane2.updateMeshToGpu();
+        return;
+        //*/
         //this.m_axis.setVisible( progEvt.flag );
         ///*
         ///*

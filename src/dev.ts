@@ -344,7 +344,7 @@
 
 //  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
-import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
+//  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////
@@ -371,14 +371,14 @@ import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 ///////////////////////////////     UI     ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoOrthoBtn as Demo} from "./orthoui/demos/DemoOrthoBtn";
+import {DemoOrthoBtn as Demo} from "./orthoui/demos/DemoOrthoBtn";
 
 //  import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
 
 //  import {DemoUITexAtlas as Demo} from "./orthoui/demos/DemoUITexAtlas";
 
 ///////////////////////////////////////////////////////////////////////////////
-
+document.title = "Vox APP";
 let demoIns: Demo = new Demo();
 let ins: any = demoIns;
 if (ins.runBegin != undefined) {

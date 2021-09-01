@@ -217,6 +217,7 @@ export class RendererInstance implements IRenderer {
     removeEntity(entity: IRenderEntity): void {
         if (entity != null && entity.getRendererUid() == this.m_uid) {
             this.m_entity3DMana.removeEntity(entity);
+            entity.__$setRenderProxy( null );
         }
     }
     /**
@@ -228,6 +229,7 @@ export class RendererInstance implements IRenderer {
         if (process != null && process.getRCUid() == this.m_uid) {
             if (entity != null && entity.getRendererUid() == this.m_uid) {
                 process.removeDisp(entity.getDisplay());
+                entity.__$setRenderProxy( null );
             }
         }
     }
@@ -240,6 +242,7 @@ export class RendererInstance implements IRenderer {
         if (processIndex >= 0 && processIndex < this.m_processesLen) {
             if (entity != null && entity.getRendererUid() == this.m_uid) {
                 this.m_processes[processIndex].removeDisp(entity.getDisplay());
+                entity.__$setRenderProxy( null );
             }
         }
     }

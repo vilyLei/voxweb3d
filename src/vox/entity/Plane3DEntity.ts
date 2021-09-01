@@ -194,7 +194,8 @@ export default class Plane3DEntity extends DisplayEntity {
             mesh.color2.copyFrom(this.color2);
             mesh.color3.copyFrom(this.color3);
 
-            mesh.uvs = this.uvs;
+            mesh.setUVS( this.uvs );
+            this.uvs = null;
 
             mesh.uScale = this.uScale;
             mesh.vScale = this.vScale;
@@ -207,6 +208,18 @@ export default class Plane3DEntity extends DisplayEntity {
             mesh.setBufSortFormat(material.getBufSortFormat());
             mesh.initialize(this.m_startX, this.m_startZ, this.m_pwidth, this.m_plong);
             this.setMesh(mesh);
+        }
+    }
+    setUVS(uvsLen8: Float32Array): void {
+        let mesh: RectPlaneMesh = this.getMesh() as RectPlaneMesh;
+        if(mesh != null) {
+            mesh.setUVS(uvsLen8);
+        }
+    }
+    reinitializeMesh(): void {
+        let mesh: RectPlaneMesh = this.getMesh() as RectPlaneMesh;
+        if (mesh != null) {
+            mesh.reinitialize();
         }
     }
     toString(): string {

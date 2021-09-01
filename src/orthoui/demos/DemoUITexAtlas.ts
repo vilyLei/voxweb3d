@@ -87,6 +87,14 @@ class AltasSample {
     canvas1y: number = 10;
     rect0: AABB2D = null;
     rect1: AABB2D = null;
+    story: string =
+`
+Learning a language is hard. With Easy Stories in English, you can learn English the natural way, without studying lists of vocabulary or complicated grammar rules. Every week, Ariel Goodbody, author and language teacher, will present a story adapted to your level of English.
+The stories will be hilarious, dramatic, and entertaining, but never too difficult. If you’re learning English and are tired of boring textbooks, then this is the podcast for you Before long, Agnes came to a yard with many hens and many geese. What a noise they made!  Ca-ca, quawk, quawk!  In the middle of all these birds there was a young woman.  She was feeding them corn, and she waved to Agnes.  Agnes waved back.  Soon the two women were talking away
+The man and woman cut one flower here, and another there.  Soon the had more lovely flowers than their  arms could hold.  Oh, never was there a sweeter bunch of flowers!  And they handed it all to Agnes
+Soon Agnes came upon a young lord, dressed in very fine clothes and with a gold chain around his neck.  But such a frown on his face!  He looked as if he had no friend left in the whole wide world
+The man and woman cut one flower here, and another there.  Soon the had more lovely flowers than their  arms could hold.  Oh, never was there a sweeter bunch of flowers!  And they handed it all to Agnes
+`;
     private initTestAtlas(px: number, py: number, debug: boolean): void {
 
         let color: Color4 = new Color4();
@@ -125,12 +133,25 @@ class AltasSample {
             document.body.appendChild(canvas0);
             document.body.appendChild(canvas1);
         }
-
+        
+        let temp_words: string[] = this.story.split(" ");
+        let words: string[] = [];
+        //for(let i: number = 0; i < temp_words.length; i++) {
+        for(; temp_words.length > 0; ) {
+            let k: number = Math.round(Math.random() * (temp_words.length - 1));
+            if(temp_words[k] != "") {
+                // 去除字母以外的符号
+                words.push(temp_words[k].replace(/\W+/gi,''));
+            }
+            temp_words.splice(k,1);
+        }
+        this.m_total_all = words.length;
         for (let i: number = 0; i < this.m_total_all; i++) {
             color.randomRGB();
             fontColor.copyFrom(color);
             fontColor.inverseRGB();
             let image: any;
+            /*
             let factor: number = Math.random();
             if (factor > 0.8) {
                 image = this.createImage(30 + Math.round(20 * Math.random()), 30 + Math.round(20 * Math.random()), color.getCSSHeXRGBColor());
@@ -151,7 +172,9 @@ class AltasSample {
                 }
                 image = ImageTextureAtlas.CreateCharsTexture(colorNS, 40, fontColor.getCSSDecRGBAColor(), color.getCSSDecRGBAColor());
             }
-
+            //*/
+            let colorNS: string = words[i];
+            image = ImageTextureAtlas.CreateCharsTexture(colorNS, 20 + Math.round(Math.random() * 60), fontColor.getCSSDecRGBAColor(), color.getCSSDecRGBAColor());
             let area: TexArea = altas0.addSubImage("img" + i, image);
             if (area == null) {
                 area = altas1.addSubImage("img" + i, image);
@@ -379,23 +402,28 @@ export class DemoUITexAtlas {
         }
         //*/
         let rect: AABB2D = new AABB2D(px, py, texArea.texRect.width, texArea.texRect.height);
+
+        /*
         plane.uvs = texArea.uvs;
         plane.initializeXOY(0.0, 0.0, rect.width, rect.height, [tex]);
         plane.setXYZ(rect.x, rect.y, 0);
         plane.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
         this.m_ruisc.addEntity(plane);
+        //*/
 
         plane = new Plane3DEntity();
         plane.showDoubleFace();
         plane.uvs = texArea.uvs;
         plane.initializeXOY(0.0, 0.0, rect.width, rect.height, [tex]);
-        plane.setXYZ(rect.x - 250, rect.y - 150, 0);
+        //plane.setXYZ(rect.x - 250, rect.y - 150, 0);
+        plane.setXYZ(texArea.rect.x, 100 + texArea.rect.y,0.0);
         this.m_rscene.addEntity(plane);
 
         let box: Box3DEntity = new Box3DEntity();
         box.initialize(new Vector3D(0.0, 0.0, 0.0), new Vector3D(rect.width, 100.0, rect.height), [tex]);
         //box.initialize(new Vector3D(0.0, 0.0, 0.0), new Vector3D(rect.width, rect.width, rect.height), [tex]);
-        box.setXYZ(rect.x - 250, 0.0, rect.y - 200);
+        //box.setXYZ(rect.x - 250, 0.0, rect.y - 200);
+        box.setXYZ(texArea.rect.x, 0.0, 100 + texArea.rect.y);
         //box.setScaleXYZ(2.0,2.0,2.0);
         this.updateBoxUV(box, texArea.uvs);
         this.m_rscene.addEntity(box);

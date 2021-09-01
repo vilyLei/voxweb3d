@@ -107,7 +107,7 @@ export class ProgressBar {
         this.m_container = container;
 
         if(this.m_barName != null && this.m_barName.length > 0) {
-            let tex:TextureProxy = CanvasTextureTool.GetInstance().createCharTexture(this.m_barName, size, "rgba(180,180,180,1.0)");
+            let tex:TextureProxy = CanvasTextureTool.GetInstance().createCharsTexture(this.m_barName, size, "rgba(180,180,180,1.0)");
             let nameBtn: ColorRectImgButton = new ColorRectImgButton();
             nameBtn.premultiplyAlpha = true;
             nameBtn.flipVerticalUV = true;
@@ -129,7 +129,7 @@ export class ProgressBar {
         subBtn.outColor.setRGB3f(1.0, 1.0, 1.0);
         subBtn.overColor.setRGB3f(1.0, 1.0, 0.0);
         subBtn.downColor.setRGB3f(1.0, 0.0, 1.0);
-        subBtn.initialize(0.0, 0.0, size, size, [CanvasTextureTool.GetInstance().createCharTexture("-", size)]);
+        subBtn.initialize(0.0, 0.0, size, size, [CanvasTextureTool.GetInstance().createCharsTexture("-", size)]);
         subBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         container.addEntity(subBtn);
 
@@ -140,7 +140,7 @@ export class ProgressBar {
         addBtn.outColor.setRGB3f(1.0, 1.0, 1.0);
         addBtn.overColor.setRGB3f(1.0, 1.0, 0.0);
         addBtn.downColor.setRGB3f(1.0, 0.0, 1.0);
-        addBtn.initialize(0.0, 0.0, size, size, [CanvasTextureTool.GetInstance().createCharTexture("+", size)]);
+        addBtn.initialize(0.0, 0.0, size, size, [CanvasTextureTool.GetInstance().createCharsTexture("+", size)]);
         addBtn.setXYZ(this.m_barInitLength + size, 0, 0);
         addBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         container.addEntity(addBtn);

@@ -59,6 +59,9 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
             this.m_emptyTRO = new EmptyTexRenderObj(this.m_texRes);
         }
     }
+    getRenderProxy(): RenderProxy {
+        return this.m_rc;
+    }
     getRenderShader(): RenderShader {
         return this.m_shader;
     }

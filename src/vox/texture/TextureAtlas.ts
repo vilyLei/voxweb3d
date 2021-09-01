@@ -7,13 +7,13 @@ export default class TextureAtlas {
     private static s_uid: number = 0;
     private m_uid: number = 0;
     protected m_texAreaNode: TexAreaNode = null;
-    protected m_uvFlipY: boolean = false;
     private m_keyMap: Map<string, TexArea> = new Map();
     private m_area: TexArea = new TexArea();
-    private m_offset: number = 2;
-    private m_minSize: number = 32;
-    private m_width: number = 32;
-    private m_height: number = 32;
+    protected m_offset: number = 2;
+    protected m_minSize: number = 32;
+    protected m_width: number = 32;
+    protected m_height: number = 32;
+    protected m_uvFlipY: boolean = false;
     constructor(width: number, height: number) {
         if(width < 128) width = 128;
         if(height < 128) height = 128;
@@ -82,8 +82,8 @@ export default class TextureAtlas {
 
                 texRect.x += area.offset;
                 texRect.y += area.offset;                
-                texRect.width -= area.offset;
-                texRect.height -= area.offset;
+                texRect.width -= area.offset * 2;
+                texRect.height -= area.offset * 2;
                 texRect.flipY(this.m_height);
                                 
                 let uMin: number = texRect.x / this.m_width;

@@ -34,29 +34,42 @@ export default class RectPlaneMesh extends MeshBase
     vScale:number = 1.0;
     flipVerticalUV:boolean = false;
     axisFlag:number = 0;
-    uvs: Float32Array = null;
     //
     private m_polyhedralBoo:boolean = true;
     private m_vs:Float32Array = null
     private m_uvs:Float32Array = null;
     private m_nvs:Float32Array = null;
     private m_cvs:Float32Array = null;
+    
+    private m_tvs:Float32Array = null;
+    private m_btvs:Float32Array = null;
+
     // vertex
     getVS():Float32Array{return this.m_vs;}
     // base uv
     getUVS():Float32Array{return this.m_uvs;}
+    setUVS(uvsLen8: Float32Array): void {
+        if(uvsLen8 != null && uvsLen8.length == 8) {
+            if(this.m_uvs == null) {
+                this.m_uvs = uvsLen8.slice(0);
+            }
+            else {
+                this.m_uvs.set( uvsLen8 );
+            }
+        }
+    }
     // base nv
     getNVS():Float32Array{return this.m_nvs;}
     // base vtx color
     getCVS():Float32Array{return this.m_cvs;}
+
     initialize(startX:number,startY:number,pwidth:number,pheight:number):void
     {
         if(this.m_vs != null)
         {
             return;
         }
-        //trace("RectPlaneMesh::initialize(), "+startX+","+startY+","+pwidth+","+pheight);
-        //trace("RectPlaneMesh::initialize(), uvparam: "+this.uScale+","+this.vScale+",  "+pwidth+","+pheight);
+        
         let minX:number = startX;
         let minY:number = startY;
         let maxX:number = startX + pwidth;
@@ -101,33 +114,29 @@ export default class RectPlaneMesh extends MeshBase
 
         ROVertexBuffer.Reset();
         ROVertexBuffer.AddFloat32Data(this.m_vs,3);
-        if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX))
+        
+        if (this.m_uvs == null && this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX))
         {
-            if(this.uvs == null) {
-                if(this.flipVerticalUV)
-                {
-                    this.m_uvs = new Float32Array([
-                        this.offsetU + 0.0 * this.uScale,    this.offsetV + 1.0 * this.vScale,
-                        this.offsetU + 1.0 * this.uScale,    this.offsetV + 1.0 * this.vScale,
-                        this.offsetU + 1.0 * this.uScale,    this.offsetV + 0.0 * this.vScale,
-                        this.offsetU + 0.0 * this.uScale,    this.offsetV + 0.0 * this.vScale
-                    ]);
-                }
-                else
-                {
-                    this.m_uvs = new Float32Array([
-                        this.offsetU + 0.0 * this.uScale,    this.offsetV + 0.0 * this.vScale,
-                        this.offsetU + 1.0 * this.uScale,    this.offsetV + 0.0 * this.vScale,
-                        this.offsetU + 1.0 * this.uScale,    this.offsetV + 1.0 * this.vScale,
-                        this.offsetU + 0.0 * this.uScale,    this.offsetV + 1.0 * this.vScale
-                    ]);
-                }
+            if(this.flipVerticalUV)
+            {
+                this.m_uvs = new Float32Array([
+                    this.offsetU + 0.0 * this.uScale,    this.offsetV + 1.0 * this.vScale,
+                    this.offsetU + 1.0 * this.uScale,    this.offsetV + 1.0 * this.vScale,
+                    this.offsetU + 1.0 * this.uScale,    this.offsetV + 0.0 * this.vScale,
+                    this.offsetU + 0.0 * this.uScale,    this.offsetV + 0.0 * this.vScale
+                ]);
             }
-            else {
-                this.m_uvs = this.uvs;
+            else
+            {
+                this.m_uvs = new Float32Array([
+                    this.offsetU + 0.0 * this.uScale,    this.offsetV + 0.0 * this.vScale,
+                    this.offsetU + 1.0 * this.uScale,    this.offsetV + 0.0 * this.vScale,
+                    this.offsetU + 1.0 * this.uScale,    this.offsetV + 1.0 * this.vScale,
+                    this.offsetU + 0.0 * this.uScale,    this.offsetV + 1.0 * this.vScale
+                ]);
             }
-            ROVertexBuffer.AddFloat32Data(this.m_uvs,2);
         }
+
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX))
         {
             switch(this.axisFlag)
@@ -159,7 +168,6 @@ export default class RectPlaneMesh extends MeshBase
                 default:
                     break;
             }
-            ROVertexBuffer.AddFloat32Data(this.m_nvs,3);
         }
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX))
         {
@@ -169,28 +177,22 @@ export default class RectPlaneMesh extends MeshBase
                 this.color2.r, this.color2.g, this.color2.b,
                 this.color3.r, this.color3.g, this.color3.b
             ]);
-            ROVertexBuffer.AddFloat32Data(this.m_cvs,3);
-        }
-        //trace("this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX): "+this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX));
-        if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX))
-        {
-            let numTriangles = 2;
-            let tvs:Float32Array = new Float32Array(12);
-            let btvs:Float32Array = new Float32Array(12);
-            SurfaceNormalCalc.ClacTrisTangent(this.m_vs, this.m_vs.length, this.m_uvs, this.m_nvs, numTriangles, this.m_ivs, tvs, btvs);
-            ROVertexBuffer.AddFloat32Data(tvs,3);
-            ROVertexBuffer.AddFloat32Data(btvs,3);
         }
         
-        ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
-        //
-        // 如果用 VtxBufData 使用样例, 要注释掉下面四句代码
-        this.vtCount = this.m_ivs.length;
-        this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage(),this.getBufSortFormat());
+        if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX))
+        {
+            let numTriangles: number = 2;
+            this.m_tvs = new Float32Array(12);
+            this.m_btvs = new Float32Array(12);
+            SurfaceNormalCalc.ClacTrisTangent(this.m_vs, this.m_vs.length, this.m_uvs, this.m_nvs, numTriangles, this.m_ivs, this.m_tvs, this.m_btvs);
+        }
+        
+        this.buildVbuf();
 
-        this.m_vbuf.setUintIVSData(this.m_ivs);
         this.vtxTotal = 4;
         this.trisNumber = 2;
+        this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;
+
         /*
         // VtxBufData 使用样例, 要注释掉上面的构建调用
         let bufData:VtxBufData = new VtxBufData(2);
@@ -220,10 +222,40 @@ export default class RectPlaneMesh extends MeshBase
         //console.log("this.vtxTotal: "+this.vtxTotal);
         //console.log("this.trisNumber: "+this.trisNumber);
         //*/
-        this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;
-
 
         this.buildEnd();
+    }
+    reinitialize(): void {
+        this.buildVbuf();
+    }
+    private buildVbuf(): void {
+
+        ROVertexBuffer.Reset();
+        ROVertexBuffer.AddFloat32Data(this.m_vs,3);
+        if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
+
+            ROVertexBuffer.AddFloat32Data(this.m_uvs,2);
+        }
+        if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
+            ROVertexBuffer.AddFloat32Data(this.m_nvs,3);
+        }
+        if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX)) {
+            ROVertexBuffer.AddFloat32Data(this.m_cvs,3);
+        }
+        if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX)) {
+            ROVertexBuffer.AddFloat32Data(this.m_tvs,3);
+            ROVertexBuffer.AddFloat32Data(this.m_btvs,3);
+        }
+        ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
+
+        this.vtCount = this.m_ivs.length;
+        if(this.m_vbuf != null) {
+            ROVertexBuffer.UpdateBufData(this.m_vbuf);
+        }
+        else {
+            this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage(),this.getBufSortFormat());
+        }
+        this.m_vbuf.setUintIVSData(this.m_ivs);
     }
     vsFloat32:Float32Array = null;
     dataStepList:number[] = null;
@@ -278,8 +310,6 @@ export default class RectPlaneMesh extends MeshBase
             this.m_nvs = null;
             this.m_cvs = null;
 
-            this.uvs = null;
-            
             super.__$destroy();
         }
     }

@@ -158,7 +158,7 @@ export default class PBREntityManager
             sph.setMaterial( material );
             if(srcSph != null)sph.copyMeshFrom( srcSph );
             sph.initialize(100.0, 20, 20);
-            //sph.setRotationXYZ(Math.random() * 300.0, Math.random() * 300.0, Math.random() * 300.0);
+            sph.setRotationXYZ(Math.random() * 300.0, Math.random() * 300.0, Math.random() * 300.0);
             sph.setScaleXYZ(scale, scale, scale);
             posList[i].y += (this.m_reflectPlaneY + 10) + pr + 5;
             sph.setPosition(posList[i]);
