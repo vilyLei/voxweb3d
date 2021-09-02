@@ -23,7 +23,7 @@ export class CanvasTextureObject {
         return 0;
     }
     getHeight(): number {
-        if(this.rect != null) return this.rect.width;
+        if(this.rect != null) return this.rect.height;
         return 0;
     }
     destroy(): void {
@@ -60,12 +60,32 @@ export class CanvasTextureTool {
     initializeAtlas(canvasWidth: number, canvasHeight: number, fillColor: Color4, transparent: boolean = false): void {
         
         let atlas: ImageTextureAtlas = null;
+
         if(CanvasTextureTool.s_atlasList[0] == null) {
+
             atlas = new ImageTextureAtlas(this.m_sc, canvasWidth, canvasHeight, fillColor, transparent);
-            atlas.getTexture().minFilter = TextureConst.NEAREST;
-            atlas.getTexture().magFilter = TextureConst.NEAREST;
+            //  atlas.getTexture().minFilter = TextureConst.NEAREST;
+            //  atlas.getTexture().magFilter = TextureConst.NEAREST;
+            //  atlas.getTexture().mipmapEnabled = false;
             CanvasTextureTool.s_atlasList[0] = atlas;
+            /*
+            // for test
+            let canvas0 = atlas.getCanvas();
+            canvas0.width = 3000;
+            canvas0.height = 4000;
+            canvas0.style.width = 256 + 'px';
+            canvas0.style.height = 256 + 'px';
+            canvas0.style.left = 0 + 'px';
+            canvas0.style.top = 0 + 'px';
+            let debugEnabled: boolean = true;
+            if (debugEnabled) {
+                document.body.appendChild(canvas0);
+            }
+            //*/
         }
+    }
+    getAtlasAt(i: number): ImageTextureAtlas {
+        return CanvasTextureTool.s_atlasList[i];
     }
     addcharsToAtlas(chars: string, size: number, fontStyle: string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(255,255,255,0.3)"): CanvasTextureObject {
         
@@ -73,6 +93,22 @@ export class CanvasTextureTool {
             let atlas: ImageTextureAtlas = CanvasTextureTool.s_atlasList[0];
             let image: HTMLImageElement | HTMLCanvasElement = ImageTextureAtlas.CreateCharsTexture(chars, size, fontStyle, bgStyle);
             return this.addImageToAtlas(chars,image);
+        }
+        return null;
+    }
+    getTextureObject(uniqueName: string): CanvasTextureObject {
+
+        let atlas: ImageTextureAtlas = CanvasTextureTool.s_atlasList[0];
+        let texArea: TexArea = atlas.getAreaByName(uniqueName);
+        if(texArea != null) {
+
+            let texNode: CanvasTextureObject = new CanvasTextureObject();
+            texNode.texture = atlas.getTexture();
+            texNode.uvs = texArea.uvs;
+            texNode.rect = texArea.texRect;
+            texNode.uniqueName = texArea.uniqueNS;
+            
+            return texNode;
         }
         return null;
     }
@@ -110,9 +146,6 @@ export class CanvasTextureTool {
             return CanvasTextureTool.s_imgMap.get(keyStr);
         }
 
-        if (RendererDeviece.IsWebGL1()) {
-            size = MathConst.CalcCeilPowerOfTwo(size);
-        }
         let width: number = size;
         let height: number = size;
         if (chars.length > 1) {
@@ -138,10 +171,7 @@ export class CanvasTextureTool {
 
         if (chars.length > 1) {
             width = Math.round(texWidth + 8);
-            if (RendererDeviece.IsWebGL1()) {
-                width = MathConst.CalcCeilPowerOfTwo(width);
-            }
-            //preW = width;
+            
             canvas.width = width;
             ctx2D = canvas.getContext("2d");
             ctx2D.font = (size - 4) + "px Verdana";
@@ -154,20 +184,10 @@ export class CanvasTextureTool {
         ctx2D.fillStyle = fontStyle;
         //ctx2D.fillText(chars, (size - texWidth) * 0.5, size - (size - metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent * 2.0) * 0.5);
         if (RendererDeviece.IsMobileWeb()) {
-            if (RendererDeviece.IsWebGL1()) {
-                ctx2D.fillText(chars, (width - texWidth) - 4, -4);
-            }
-            else {
-                ctx2D.fillText(chars, (width - texWidth) * 0.5, -4);
-            }
+            ctx2D.fillText(chars, (width - texWidth) * 0.5, -4);
         }
         else {
-            if (RendererDeviece.IsWebGL1()) {
-                ctx2D.fillText(chars, (width - texWidth) - 4, 4);
-            }
-            else {
-                ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
-            }
+            ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
         }
         //ctx2D.fillText(chars, (size - texWidth) * 0.5, (size - metrics.fontBoundingBoxDescent) * 0.5);
 
@@ -182,87 +202,21 @@ export class CanvasTextureTool {
         
         return canvas;
     }
+    /*
     createCharsTexture(chars: string, size: number, fontStyle: string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(255,255,255,0.3)"): TextureProxy {
         if (chars == null || chars == "" || size < 8) {
             return null;
         }
         let canvas: HTMLCanvasElement | HTMLImageElement = this.createCharsImage(chars, size, fontStyle, bgStyle);
         let keyStr: string = chars + "_" + size + fontStyle + "_" + bgStyle;
-        /*
-        //size = Math.round(size * RendererDeviece.GetDevicePixelRatio());
-        let keyStr: string = chars + "_" + size + fontStyle + "_" + bgStyle;
-        if (CanvasTextureTool.s_texMap.has(keyStr)) {
-            return CanvasTextureTool.s_texMap.get(keyStr);
-        }
 
-        if (RendererDeviece.IsWebGL1()) {
-            size = MathConst.CalcCeilPowerOfTwo(size);
-        }
-        let width: number = size;
-        let height: number = size;
-        if (chars.length > 1) {
-            width = size * chars.length;
-        }
-
-        let canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        canvas.style.display = 'bolck';
-        canvas.style.left = '0px';
-        canvas.style.top = '0px';
-        canvas.style.position = 'absolute';
-        canvas.style.backgroundColor = 'transparent';
-        //canvas.style.pointerEvents = 'none';
-
-        let ctx2D = canvas.getContext("2d");
-        ctx2D.font = (size - 4) + "px Verdana";
-        //ctx2D.textBaseline = "top" || "hanging" || "middle" || "alphabetic" || "ideographic" || "bottom";
-        ctx2D.textBaseline = "top";
-        var metrics: any = ctx2D.measureText(chars);
-        let texWidth: number = metrics.width;
-
-        if (chars.length > 1) {
-            width = Math.round(texWidth + 8);
-            if (RendererDeviece.IsWebGL1()) {
-                width = MathConst.CalcCeilPowerOfTwo(width);
-            }
-            //preW = width;
-            canvas.width = width;
-            ctx2D = canvas.getContext("2d");
-            ctx2D.font = (size - 4) + "px Verdana";
-            ctx2D.textBaseline = "top";
-        }
-        //console.log("metrics: ",metrics);
-        ctx2D.fillStyle = bgStyle;
-        ctx2D.fillRect(0, 0, width, height);
-        ctx2D.textAlign = "left";
-        ctx2D.fillStyle = fontStyle;
-        //ctx2D.fillText(chars, (size - texWidth) * 0.5, size - (size - metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent * 2.0) * 0.5);
-        if (RendererDeviece.IsMobileWeb()) {
-            if (RendererDeviece.IsWebGL1()) {
-                ctx2D.fillText(chars, (width - texWidth) - 4, -4);
-            }
-            else {
-                ctx2D.fillText(chars, (width - texWidth) * 0.5, -4);
-            }
-        }
-        else {
-            if (RendererDeviece.IsWebGL1()) {
-                ctx2D.fillText(chars, (width - texWidth) - 4, 4);
-            }
-            else {
-                ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
-            }
-        }
-        //ctx2D.fillText(chars, (size - texWidth) * 0.5, (size - metrics.fontBoundingBoxDescent) * 0.5);
-
-        //*/
         let tex: ImageTextureProxy = this.m_sc.textureBlock.createImageTex2D(size, size);
         tex.premultiplyAlpha = true;
         tex.setDataFromImage(canvas);
         CanvasTextureTool.s_texMap.set(keyStr, tex);
         return tex;
     }
+    //*/
     private getPixelsBounds(data: Uint8ClampedArray, width: number, height: number, threshold: number = 100): any {
 
         let minX: number, minY: number;

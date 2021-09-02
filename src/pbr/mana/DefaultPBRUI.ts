@@ -29,6 +29,8 @@ import ColorRectImgButton from "../../orthoui/button/ColorRectImgButton";
 import RendererState from "../../vox/render/RendererState";
 import MathConst from "../../vox/math/MathConst";
 import MaterialBase from "../../vox/material/MaterialBase";
+import AABB2D from "../../vox/geom/AABB2D";
+import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 
 export class DefaultPBRUI implements IPBRUI {
     constructor() { }
@@ -67,6 +69,7 @@ export class DefaultPBRUI implements IPBRUI {
     initialize(rscene: RendererScene, texLoader: ImageTextureLoader, buildDisplay: boolean = true): void {
 
         if (this.m_rscene == null) {
+
             this.m_rscene = rscene;;
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDown);
@@ -74,6 +77,7 @@ export class DefaultPBRUI implements IPBRUI {
             this.m_texLoader = texLoader;
 
             CanvasTextureTool.GetInstance().initialize(this.m_rscene);
+            CanvasTextureTool.GetInstance().initializeAtlas(1024,1024, new Color4(1.0,1.0,1.0,0.0), true);
             this.initUIScene(buildDisplay);
         }
     }
@@ -81,6 +85,7 @@ export class DefaultPBRUI implements IPBRUI {
         if (this.m_menuBtn != null) {
             this.menuCtrl(false);
             this.m_menuBtn.select(false);
+            this.m_selectPlane.setVisible(false);
         }
     }
     open(): void {
@@ -133,6 +138,8 @@ export class DefaultPBRUI implements IPBRUI {
     private m_bgLength: number = 200.0;
     private m_btnPX: number = 102.0;
     private m_btnPY: number = 10.0;
+    private m_pos: Vector3D = new Vector3D();
+    private m_selectPlane:Plane3DEntity = null;
 
     private m_btns: any[] = [];
     private m_menuBtn: SelectionBar = null;
@@ -181,6 +188,16 @@ export class DefaultPBRUI implements IPBRUI {
         if (!visibleAlways) this.m_btns.push(proBar);
         return proBar;
     }
+    private moveSelectToBtn(btn: ProgressBar | SelectionBar): void {
+       
+        this.m_selectPlane.setVisible(true);
+        let rect: AABB2D = btn.getRect();
+        btn.getPosition(this.m_pos);
+        this.m_pos.x += rect.x;
+        this.m_selectPlane.setXYZ(this.m_pos.x, this.m_pos.y, -1.0);
+        this.m_selectPlane.setScaleXYZ(rect.width, rect.height, 1.0);
+        this.m_selectPlane.update();
+    }
     private initCtrlBars(): void {
 
         if (RendererDeviece.IsMobileWeb()) {
@@ -193,8 +210,20 @@ export class DefaultPBRUI implements IPBRUI {
             this.m_btnSize = MathConst.CalcCeilPowerOfTwo(this.m_btnSize);
         }
         this.m_menuBtn = this.createSelectBtn("", "menuCtrl", "Menu Open", "Menu Close", false, true);
+
+        
+        this.m_selectPlane = new Plane3DEntity();
+        this.m_selectPlane.vtxColorEnabled = true;
+        this.m_selectPlane.color0.setRGB3f(0.0,0.3,0.0);
+        this.m_selectPlane.color1.setRGB3f(0.0,0.3,0.0);
+        this.m_selectPlane.color2.setRGB3f(0.0,0.5,0.5);
+        this.m_selectPlane.color3.setRGB3f(0.0,0.5,0.5);
+        this.m_selectPlane.initializeXOY(0,0,1.0,1.0);
+        this.ruisc.addEntity(this.m_selectPlane);
+        this.m_selectPlane.setVisible( false );
+
         ///*
-        this.metalBtn = this.createProgressBtn("metal", "metal", 0.5);
+        this.metalBtn = this.createProgressBtn("metal", "metal", 0.5);     
         this.roughBtn = this.createProgressBtn("rough", "rough", 0.5);
         this.noiseBtn = this.createProgressBtn("noise", "noise", 0.07);
         this.reflectionBtn = this.createProgressBtn("reflection", "reflection", 0.5);
@@ -217,7 +246,7 @@ export class DefaultPBRUI implements IPBRUI {
         this.rgbPanel.initialize(flag ? 64 : 32, 4);
         this.rgbPanel.addEventListener(RGBColoSelectEvent.COLOR_SELECT, this, this.selectColor);
         this.rgbPanel.setXY(this.m_btnPX, this.m_btnPY);
-        this.ruisc.addContainer(this.rgbPanel);
+        this.ruisc.addContainer(this.rgbPanel, 1);
         this.rgbPanel.close();
         //*/
 
@@ -240,10 +269,11 @@ export class DefaultPBRUI implements IPBRUI {
             default:
                 break;
         }
+
     }
     private menuCtrl(flag: boolean): void {
 
-        if (flag) {
+        if (flag && !this.m_btns[0].isOpen()) {
             for (let i: number = 0; i < this.m_btns.length; ++i) {
                 this.m_btns[i].open();
             }
@@ -251,17 +281,18 @@ export class DefaultPBRUI implements IPBRUI {
             this.m_pos.x = this.m_btnPX;
             this.m_menuBtn.setPosition(this.m_pos);
         }
-        else {
+        else if(this.m_btns[0].isOpen()){
             for (let i: number = 0; i < this.m_btns.length; ++i) {
                 this.m_btns[i].close();
             }
             this.m_menuBtn.getPosition(this.m_pos);
             this.m_pos.x = 0;
             this.m_menuBtn.setPosition(this.m_pos);
+            this.m_selectPlane.setVisible(false);
         }
         if (this.rgbPanel != null) this.rgbPanel.close();
     }
-    private m_pos: Vector3D = new Vector3D();
+    
     private selectChange(evt: any): void {
 
         let selectEvt: SelectionEvent = evt as SelectionEvent;
@@ -271,14 +302,18 @@ export class DefaultPBRUI implements IPBRUI {
 
         switch (selectEvt.uuid) {
             case "absorb":
-                material = (this.m_paramEntity.getMaterial() as IPBRMaterial).clone();
-                material.decorator.absorbEnabled = flag;
-                this.m_paramEntity.absorbEnabled = flag;
+                if(this.m_paramEntity.absorbEnabled != flag) {
+                    material = (this.m_paramEntity.getMaterial() as IPBRMaterial).clone();
+                    material.decorator.absorbEnabled = flag;
+                    this.m_paramEntity.absorbEnabled = flag;
+                }
                 break;
             case "vtxNoise":
-                material = (this.m_paramEntity.getMaterial() as IPBRMaterial).clone();
-                material.decorator.normalNoiseEnabled = flag;
-                this.m_paramEntity.vtxNoiseEnabled = flag;
+                if(this.m_paramEntity.vtxNoiseEnabled != flag) {
+                    material = (this.m_paramEntity.getMaterial() as IPBRMaterial).clone();
+                    material.decorator.normalNoiseEnabled = flag;
+                    this.m_paramEntity.vtxNoiseEnabled = flag;
+                }
                 break;
             case "menuCtrl":
                 this.menuCtrl(!flag);
@@ -310,6 +345,7 @@ export class DefaultPBRUI implements IPBRUI {
         this.m_currUUID = progEvt.uuid;
         let colorParamUnit: ColorParamUnit;
         //  console.log("value: ",value);
+        this.moveSelectToBtn(progEvt.target);
         switch (progEvt.uuid) {
             case "metal":
                 material.setMetallic(value);
@@ -372,7 +408,7 @@ export class DefaultPBRUI implements IPBRUI {
                     this.rgbPanel.open();
                     colorParamUnit.selectColor();
                 } else {
-                    this.rgbPanel.close();
+                    //this.rgbPanel.close();
                 }
             }
             return;

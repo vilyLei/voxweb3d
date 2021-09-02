@@ -8,7 +8,7 @@ import CameraTrack from "../vox/view/CameraTrack";
 
 import RendererParam from "../vox/scene/RendererParam";
 import RendererScene from "../vox/scene/RendererScene";
-import ProfileInstance from "../voxprofile/entity/ProfileInstance";
+//import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
@@ -20,13 +20,14 @@ import StencilOutline from "../renderingtoy/mcase/outline/StencilOutline";
 
 export class DemoPBR {
     constructor() { }
+
     private m_rscene: RendererScene = null;
     private m_ruisc: RendererSubScene = null;
     private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
-    private m_profileInstance: ProfileInstance = new ProfileInstance();
+    //private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     private m_stencilOutline: StencilOutline = new StencilOutline();

@@ -66,6 +66,12 @@ export class DemoGLTF {
             this.m_statusDisp.initialize("rstatus", this.m_rscene.getStage3D().viewWidth - 200);
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+            let pwindow: any = window;
+            let testKeyNS:string = "testKey";
+            console.log("typeof(pwindow[testKeyNS]): ",typeof(pwindow[testKeyNS]));
+            console.log("typeof(typeof(pwindow[testKeyNS])): ",typeof(typeof(pwindow[testKeyNS])));
+            console.log("pwindow[testKeyNS] !== undefined: ",pwindow[testKeyNS] !== undefined);
+            console.log("typeof(pwindow[testKeyNS]) !== undefined: ",typeof(pwindow[testKeyNS]) !== undefined);
 
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.initialize(500.0);

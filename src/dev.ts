@@ -296,6 +296,8 @@
 
 //  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
 
+import {DemoOutline as Demo} from "./demo/DemoOutline";
+
 //  import {DemoDraco as Demo} from "./demo/DemoDraco";
 
 //  import {DemoMRT as Demo} from "./demo/DemoMRT";
@@ -371,7 +373,7 @@
 ///////////////////////////////     UI     ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-import {DemoOrthoBtn as Demo} from "./orthoui/demos/DemoOrthoBtn";
+//  import {DemoOrthoBtn as Demo} from "./orthoui/demos/DemoOrthoBtn";
 
 //  import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
 

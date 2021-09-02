@@ -20,6 +20,9 @@ import EventBaseDispatcher from "../../../vox/event/EventBaseDispatcher";
 import ProgressDataEvent from "../../../vox/event/ProgressDataEvent";
 import EventBase from "../../../vox/event/EventBase";
 import Vector3D from "../../../vox/math/Vector3D";
+import UIBarTool from "./UIBarTool";
+import Color4 from "../../../vox/material/Color4";
+import AABB2D from "../../../vox/geom/AABB2D";
 
 export class ProgressBar {
     private m_ruisc: RendererSubScene = null;
@@ -32,6 +35,7 @@ export class ProgressBar {
     private m_nameBtn: ColorRectImgButton = null;
     private m_barBoundsBtn: BoundsButton = null;
     private m_barPlane: Plane3DEntity = null;
+    private m_rect: AABB2D = new AABB2D();
 
     private m_btnSize: number = 64;
     private m_barInitLength: number = 1.0;
@@ -100,6 +104,10 @@ export class ProgressBar {
                 this.m_container.update();
         }
     }
+    getRect(): AABB2D 
+    {
+        return this.m_rect;
+    }
     private initBody(): void {
 
         let size: number = this.m_btnSize;
@@ -107,48 +115,36 @@ export class ProgressBar {
         this.m_container = container;
 
         if(this.m_barName != null && this.m_barName.length > 0) {
-            let tex:TextureProxy = CanvasTextureTool.GetInstance().createCharsTexture(this.m_barName, size, "rgba(180,180,180,1.0)");
-            let nameBtn: ColorRectImgButton = new ColorRectImgButton();
-            nameBtn.premultiplyAlpha = true;
-            nameBtn.flipVerticalUV = true;
-            nameBtn.outColor.setRGB3f(1.0, 1.0, 1.0);
-            nameBtn.overColor.setRGB3f(1.0, 1.0, 0.0);
-            nameBtn.downColor.setRGB3f(1.0, 0.0, 1.0);
-            nameBtn.initialize(0.0, 0.0, tex.getWidth(), size, [tex]);
-            nameBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+            let nameBtn: ColorRectImgButton = UIBarTool.CreateBtn( this.m_barName, size, new Color4(0.8,0.8,0.8,1.0) );
             nameBtn.setXYZ(-1.0 * nameBtn.getWidth() - 1.0,0.0,0.0);
             container.addEntity(nameBtn);
 
             this.m_nameBtn = nameBtn;
             this.m_nameBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.nameBtnMouseDown);
         }
-
-        let subBtn: ColorRectImgButton = new ColorRectImgButton();
-        subBtn.premultiplyAlpha = true;
-        subBtn.flipVerticalUV = true;
-        subBtn.outColor.setRGB3f(1.0, 1.0, 1.0);
-        subBtn.overColor.setRGB3f(1.0, 1.0, 0.0);
-        subBtn.downColor.setRGB3f(1.0, 0.0, 1.0);
-        subBtn.initialize(0.0, 0.0, size, size, [CanvasTextureTool.GetInstance().createCharsTexture("-", size)]);
-        subBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+        let subBtn: ColorRectImgButton = UIBarTool.CreateBtn("-", size );
         container.addEntity(subBtn);
-
-        let addBtn: ColorRectImgButton = new ColorRectImgButton();
-        addBtn.premultiplyAlpha = true;
-        addBtn.flipVerticalUV = true;
-        addBtn.copyMeshFrom(subBtn);
-        addBtn.outColor.setRGB3f(1.0, 1.0, 1.0);
-        addBtn.overColor.setRGB3f(1.0, 1.0, 0.0);
-        addBtn.downColor.setRGB3f(1.0, 0.0, 1.0);
-        addBtn.initialize(0.0, 0.0, size, size, [CanvasTextureTool.GetInstance().createCharsTexture("+", size)]);
-        addBtn.setXYZ(this.m_barInitLength + size, 0, 0);
-        addBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+        let addBtn: ColorRectImgButton = UIBarTool.CreateBtn("+", size );
+        addBtn.setXYZ(this.m_barInitLength + addBtn.getWidth(), 0, 0);
         container.addEntity(addBtn);
+
+        this.m_rect.y = 0;
+        if(this.m_nameBtn != null) {
+            this.m_rect.x = -1.0 * this.m_nameBtn.getWidth() - 1.0;
+        }
+        else {
+            this.m_rect.x = 0;
+        }
+        this.m_rect.height = subBtn.getHeight();
+        let pos: Vector3D = new Vector3D();
+        addBtn.getPosition(pos);
+        this.m_rect.width = (pos.x + addBtn.getWidth()) - this.m_rect.x;
+        this.m_rect.update();
 
         this.m_barBgX = size;
         this.initProBg(container, this.m_barBgX, 0.0, this.m_barInitLength, size);
 
-        this.m_ruisc.addContainer(container);
+        this.m_ruisc.addContainer(container ,1);
 
         this.m_subBtn = subBtn;
         this.m_addBtn = addBtn;

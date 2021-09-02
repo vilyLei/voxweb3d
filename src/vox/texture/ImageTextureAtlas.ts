@@ -48,6 +48,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
 
         this.m_uvFlipY = true;
         this.m_texture = this.m_rscene.textureBlock.createImageTex2D(32, 32);
+        this.m_texture.__$setRenderProxy( this.m_rscene.getRenderProxy() );
         this.m_texture.setDataFromImage(this.m_canvas);
         this.m_texture.premultiplyAlpha = true;
         this.m_texture.__$attachThis();
@@ -64,10 +65,16 @@ export default class ImageTextureAtlas extends TextureAtlas {
     }
     addSubImage(uniqueNS: string, image: HTMLCanvasElement | HTMLImageElement): TexArea {
 
-        let area: TexArea = this.addSubTexArea(uniqueNS, image.width, image.height);
+        let area: TexArea = this.getAreaByName(uniqueNS);
+        if (area != null) {
+            return area;
+        }
+        area = this.addSubTexArea(uniqueNS, image.width, image.height);
         if (area != null) {
             let rect: AABB2D = area.texRect;
             this.m_canvas2D.drawImage(image, rect.x, rect.y, rect.width, rect.height);
+            this.m_texture.setDataFromImage(this.m_canvas);
+            this.m_texture.updateDataToGpu();
         }
         return area;
     }

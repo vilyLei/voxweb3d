@@ -91,6 +91,7 @@ export class ViewerDracoModule extends DracoWholeModuleLoader
         entity.setMaterial( material );
         entity.setMesh( mesh );
         entity.setScaleXYZ(scale, scale, scale);
+        entity.setRotationXYZ(-90,0,0);
         //entity.setRotationXYZ(0, Math.random() * 300, 0);
         //entity.setPosition( this.m_pos );
         this.m_rscene.addEntity(entity);

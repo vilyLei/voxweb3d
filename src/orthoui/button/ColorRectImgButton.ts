@@ -34,6 +34,11 @@ export default class ColorRectImgButton extends Plane3DEntity
     {
         return this.m_height;
     }
+    setSize(pwidth: number, pheight: number): void {
+        
+        this.m_width = pwidth;
+        this.m_height = pheight;
+    }
     private initEvtBase():void
     {
         this.m_dispatcher = new MouseEvt3DDispatcher();

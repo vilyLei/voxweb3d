@@ -95,6 +95,10 @@ The man and woman cut one flower here, and another there.  Soon the had more lov
 Soon Agnes came upon a young lord, dressed in very fine clothes and with a gold chain around his neck.  But such a frown on his face!  He looked as if he had no friend left in the whole wide world
 The man and woman cut one flower here, and another there.  Soon the had more lovely flowers than their  arms could hold.  Oh, never was there a sweeter bunch of flowers!  And they handed it all to Agnes
 `;
+    story0: string =
+`
+Learning a language is hard
+`;
     private initTestAtlas(px: number, py: number, debug: boolean): void {
 
         let color: Color4 = new Color4();
@@ -191,7 +195,17 @@ The man and woman cut one flower here, and another there.  Soon the had more lov
         console.log("total_1: ", this.m_total_1);
         console.log(this.m_total_all + ",left total: ", (this.m_total_all - (this.m_total_0 + this.m_total_1)));
     }
-
+    addText(atlasIndex: number, text: string, fontSize: number, fontColor: Color4, bgColor: Color4): TexArea {
+        let area: TexArea = null;
+        let image = ImageTextureAtlas.CreateCharsTexture(text, fontSize, fontColor.getCSSDecRGBAColor(), bgColor.getCSSDecRGBAColor());
+        if(atlasIndex == 0) {
+            area = this.altas0.addSubImage(text, image);
+        }
+        else {
+            area = this.altas1.addSubImage(text, image);
+        }
+        return area;
+    }
     getTexAreaByXY(px: number, py: number): TexArea {
         
         py = this.m_rscene.getStage3D().stageHeight - py;
@@ -431,6 +445,37 @@ export class DemoUITexAtlas {
         return rect;
 
     }
+    private mouseBgDown(evt: any): void {
+    }
+    private m_textIndex: number = 0;
+    private mouseDown(evt: any): void {
+        console.log("mouse down... ...",evt);
+        DebugFlag.Flag_0 = 1;
+        /*
+        let texArea: TexArea = this.m_atlasSample0.addText(0,"vily"+this.m_textIndex, 40, new Color4(1.0,0.0,0.0), new Color4(0.0,1.0,0.0));
+        this.m_textIndex++;
+        //let texArea: TexArea = this.getTexAreaByNS("img0");
+        if(texArea != null) {
+            let rect: AABB2D = this.createRectAreaPlane(texArea, this.m_posX, this.m_posY);
+            this.m_posY += rect.height + 5;
+        }
+        //*/
+        ///*
+        let texArea: TexArea = this.m_atlasSample0.getTexAreaByXY(evt.mouseX, evt.mouseY);
+        console.log("texArea: ",texArea);
+        if(texArea != null) {
+            let rect: AABB2D = this.createRectAreaPlane(texArea, this.m_posX, this.m_posY);
+            this.m_posY += rect.height + 5;
+        }
+        //*/
+    }
+    private mouseMove(evt: any): void {
+        console.log("mouse move... ...");
+    }
+    private enterFrame(evt: any): void {
+        console.log("enter frame... ...");
+    }
+
     private initTestGeom(): void {
 
         let rect0: AABB2D = new AABB2D();
@@ -463,31 +508,6 @@ export class DemoUITexAtlas {
         let intersectFlag: boolean = rect0.intersect(rect1);
         console.log("intersectFlag: ", intersectFlag);
     }
-    private mouseBgDown(evt: any): void {
-    }
-    private mouseDown(evt: any): void {
-        console.log("mouse down... ...",evt);
-        DebugFlag.Flag_0 = 1;
-        //this.m_atlasSample0.addImageBySize(33,35);
-        //this.m_atlasSample0.addImageBySize(10 + Math.round(100 * Math.random()), 10 + Math.round(100 * Math.random()));
-        let texArea: TexArea = this.m_atlasSample0.getTexAreaByXY(evt.mouseX, evt.mouseY);
-        console.log("texArea: ",texArea);
-        if(texArea != null) {
-            let rect: AABB2D = this.createRectAreaPlane(texArea, this.m_posX, this.m_posY);
-            this.m_posY += rect.height + 5;
-        }
-            //    this.m_posY += rect.height + 5;
-            //}
-            ////  texArea = this.getTexAreaByXY( 10,10 );
-            ////  let rect: AABB2D = this.createRectAreaPlane(texArea, 400,py);
-    }
-    private mouseMove(evt: any): void {
-        console.log("mouse move... ...");
-    }
-    private enterFrame(evt: any): void {
-        console.log("enter frame... ...");
-    }
-
     private m_timeoutId: any = -1;
     private update(): void {
         if (this.m_timeoutId > -1) {

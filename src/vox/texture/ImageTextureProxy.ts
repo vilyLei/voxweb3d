@@ -61,6 +61,9 @@ class ImageTextureProxy extends TextureProxy
                         this.m_texDatas[miplevel] = td;
                     }
                 }
+                else if(this.isGpuEnabled()){
+                    td.status = 0;
+                }
             }
             else
             {

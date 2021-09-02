@@ -61,7 +61,7 @@ export class DemoOrthoBtn {
     initialize(): void {
         console.log("DemoOrthoBtn::initialize()......");
         if (this.m_rscene == null) {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+            RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
             RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
             let rparam: RendererParam = new RendererParam();
@@ -84,10 +84,10 @@ export class DemoOrthoBtn {
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-            let axis: Axis3DEntity = new Axis3DEntity();
-            axis.initialize(500.0);
-            this.m_rscene.addEntity(axis);
-            this.m_axis = axis;
+            //  let axis: Axis3DEntity = new Axis3DEntity();
+            //  axis.initialize(500.0);
+            //  this.m_rscene.addEntity(axis);
+            //  this.m_axis = axis;
 
             let plane: Plane3DEntity;
 
@@ -95,6 +95,7 @@ export class DemoOrthoBtn {
             //  plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
             //  this.m_rscene.addEntity(plane);
             //this.m_plane = plane;
+            /*
             let uvs: Float32Array = new Float32Array([
                 0.0, 1.0,
                 1.0, 1.0,
@@ -106,6 +107,7 @@ export class DemoOrthoBtn {
             plane.setXYZ(0.0, 50.0, 0.0);
             this.m_rscene.addEntity(plane);
             this.m_plane2 = plane;
+            //*/
 
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
             this.m_statusDisp.initialize("rstatus", 300);
@@ -144,6 +146,11 @@ export class DemoOrthoBtn {
         CanvasTextureTool.GetInstance().initialize(this.m_rscene);
         CanvasTextureTool.GetInstance().initializeAtlas(1024,1024, new Color4(1.0,1.0,1.0,0.0), true);
 
+        /*
+        let plane: Plane3DEntity = new Plane3DEntity();
+        plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [CanvasTextureTool.GetInstance().getAtlasAt(0).getTexture()]);
+        this.m_rscene.addEntity(plane);
+        //*/
         this.initUI();
     }
     
@@ -176,6 +183,7 @@ export class DemoOrthoBtn {
 
         let selectBar: SelectionBar = new SelectionBar();
         selectBar.uuid = uuid;
+        ///selectBar.testTex = this.getImageTexByUrl("static/assets/testEFT4.jpg");
         selectBar.initialize(this.m_ruisc, ns, selectNS, deselectNS, this.m_btnSize);
         selectBar.addEventListener(SelectionEvent.SELECT, this, this.selectChange);
         if (flag) {
@@ -222,16 +230,19 @@ export class DemoOrthoBtn {
         if (RendererDeviece.IsMobileWeb()) {
             this.m_btnSize = 64;
             this.m_btnPX = 280;
-            this.m_btnPY = 30;            
+            this.m_btnPY = 30;
         }
         if(RendererDeviece.IsWebGL1()) {
             this.m_btnPX += 32;
         }
 
-        
-        this.createSelectAtlasBtn("", "menuCtrl", "Menu Open", "Menu Close", false, true);
         this.m_menuBtn = this.createSelectBtn("", "menuCtrl", "Menu Open", "Menu Close", false, true);
-        /*
+
+        //  this.createSelectAtlasBtn("Atlas", "menuCtrl", "Menu Open", "Menu Close", false, true);
+        //  //this.createSelectBtn("XurrdB", "menuCtrl", "Menu Open", "Menu Close", false, true);
+        //  this.metalBtn = this.createProgressBtn("metal", "metal", 0.5);
+        //  this.sideBtn = this.createValueBtn("side", "side", 1.0, 0.1, 30.0);
+        //  /*
         this.metalBtn = this.createProgressBtn("metal", "metal", 0.5);
         this.roughBtn = this.createProgressBtn("rough", "rough", 0.5);
         this.noiseBtn = this.createProgressBtn("noise", "noise", 0.07);
@@ -469,6 +480,7 @@ export class DemoOrthoBtn {
 
         }
 
+        //console.log("RendererState.DrawCallTimes: ",RendererState.DrawCallTimes);
         //this.m_profileInstance.run();
 
         DebugFlag.Reset();

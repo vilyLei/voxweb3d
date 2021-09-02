@@ -103,7 +103,6 @@ export class SelectionAtlasBar {
         if(this.m_barName != null && this.m_barName.length > 0) {
             let image = CanvasTextureTool.GetInstance().createCharsImage(this.m_barName, size, "rgba(180,180,180,1.0)");
             let texObj: CanvasTextureObject = CanvasTextureTool.GetInstance().addImageToAtlas(this.m_barName,image);
-
             let tex:TextureProxy = texObj.texture;
             let nameBtn: ColorRectImgButton = new ColorRectImgButton();
             nameBtn.uvs = texObj.uvs;
@@ -123,12 +122,6 @@ export class SelectionAtlasBar {
         
         image = CanvasTextureTool.GetInstance().createCharsImage(this.m_deselectName, size);
         this.m_texObj1 = CanvasTextureTool.GetInstance().addImageToAtlas(this.m_deselectName,image);
-
-        
-        //this.m_texList[0] = CanvasTextureTool.GetInstance().createCharsTexture(this.m_selectName, size);
-        //this.m_texList[1] = CanvasTextureTool.GetInstance().createCharsTexture(this.m_deselectName, this.m_btnSize);
-        //this.m_texList[0].__$attachThis();
-        //this.m_texList[1].__$attachThis();
 
         let btn: ColorRectImgButton = new ColorRectImgButton();
         btn.uvs = this.m_texObj0.uvs;
@@ -193,7 +186,8 @@ export class SelectionAtlasBar {
         if(this.m_selectBtn != null) {
 
             this.m_selectBtn = null;
-
+            this.m_nameBtn = null;
+            
             this.m_texObj0.destroy();
             this.m_texObj1.destroy();
 
