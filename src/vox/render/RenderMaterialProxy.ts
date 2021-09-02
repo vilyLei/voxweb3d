@@ -35,6 +35,9 @@ export default class RenderMaterialProxy
         this.m_shader.lock();
         this.m_texRes.unlocked = false;
     }
+    isUnlockMatrial(): boolean {
+        return this.m_texRes.unlocked;
+    }
     
     unlockTexture():void
     {

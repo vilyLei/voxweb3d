@@ -206,7 +206,7 @@ export default class ShdUniformTool
             shdUniform.types.push( shdp.getUniformTypeByNS("u_objMat") );
             shdUniform.locations.push( shdp.getUniformLocationByNS("u_objMat") );
             shdUniform.dataList.push(transformData);
-            shdUniform.dataSizeList.push(1);                    
+            shdUniform.dataSizeList.push(1);
             return shdUniform;
         }
         return ShdUniformTool.s_emptyUniform;

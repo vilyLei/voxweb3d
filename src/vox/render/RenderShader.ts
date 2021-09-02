@@ -199,7 +199,7 @@ export default class RenderShader implements IRenderShader,IRenderResource
                 this.m_gpuProgram = shd.getGPUProgram();
                 this.m_rc.useProgram( this.m_gpuProgram );
                 shd.useTexLocation();
-                // console.log("use a new shader uid: ",shd.getUid(),",uns: ",shd.getUniqueShaderName(): string);
+                //console.log("use a new shader uid: ",shd.getUid(),",uns: ",shd.getUniqueShaderName());
                 // use global shared uniform
                 let uniform:IShaderUniform = this.m_sharedUniformList[shd.getUid()];
                 //  let boo: boolean = false;

@@ -444,8 +444,8 @@ export default class RendererScene implements IRenderer,IRendererScene {
      * 设定 global material 的情况下 单独渲染绘制指定 IRenderEntity 实例
      * 先锁定global aterial才能用这种绘制方式,而且要保证这个entity已经完全加入渲染器了渲染资源已经准备完毕.这种方式比较耗性能,只能用在特殊的地方
      * @param entity 需要指定绘制的 IRenderEntity 实例
-     * @param useGlobalUniform 是否使用当前 global material 所携带的 uniform
-     * @param forceUpdateUniform 是否强制更新当前 global material 所对应的 shader program 的 uniform
+     * @param useGlobalUniform 是否使用当前 global material 所携带的 uniform, default value: false
+     * @param forceUpdateUniform 是否强制更新当前 global material 所对应的 shader program 的 uniform, default value: true
      */
     drawEntityByLockMaterial(entity: IRenderEntity, useGlobalUniform: boolean = false,  forceUpdateUniform: boolean = true): void {
         if(entity.isRenderEnabled()) {

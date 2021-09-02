@@ -9,10 +9,6 @@ import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
 
-//import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
-//import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
-//import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
-
 export namespace renderingtoy
 {
     export namespace mcase

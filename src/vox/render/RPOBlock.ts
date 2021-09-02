@@ -278,7 +278,7 @@ export default class RPOBlock {
         }
     }
     // 在锁定material的时候,直接绘制单个unit
-    drawLockMaterialByUnit(rc: RenderProxy, unit: RPOUnit, disp: IRODisplay, useGlobalUniform: boolean = false, forceUpdateUniform: boolean): void {
+    drawLockMaterialByUnit(rc: RenderProxy, unit: RPOUnit, disp: IRODisplay, useGlobalUniform: boolean, forceUpdateUniform: boolean): void {
         if (unit.drawEnabled) {
             if (forceUpdateUniform) {
                 this.m_shader.resetUniform();

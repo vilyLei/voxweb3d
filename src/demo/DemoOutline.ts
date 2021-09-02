@@ -30,11 +30,13 @@ import MirrorToneMaterial from "./material/MirrorToneMaterial";
 
 import DebugFlag from "../vox/debug/DebugFlag";
 import StencilOutline from "../renderingtoy/mcase/outline/StencilOutline";
+import PostOutline from "../renderingtoy/mcase/outline/PostOutline";
 
 export class DemoOutline {
     constructor() { }
 
     private m_stencilOutline: StencilOutline = new StencilOutline();
+    private m_postOutline: PostOutline = new PostOutline();
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
@@ -78,6 +80,8 @@ export class DemoOutline {
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_stencilOutline.initialize( this.m_rscene );
+
+            this.m_postOutline.initialize(this.m_rscene, 1);
             //  let axis: Axis3DEntity = new Axis3DEntity();
             //  axis.initialize(300.0);
             //  this.m_rscene.addEntity(axis);
@@ -121,6 +125,7 @@ export class DemoOutline {
         this.m_rscene.addEntity(box);
         this.m_targetEntity = box;
 
+        this.m_postOutline.setTarget( box );
         ///*
         this.m_fboIns = this.m_rscene.createFBOInstance();
         this.m_fboIns.asynFBOSizeWithViewport();
@@ -132,11 +137,14 @@ export class DemoOutline {
         if(this.m_mirrorTexLodEnabled) {
             this.m_fboIns.getRTTAt(0).enableMipmap();
         }
-
+        ///*
         let scrPlane: ScreenAlignPlaneEntity =  new ScreenAlignPlaneEntity();
-        scrPlane.initialize(-0.9,-0.9,0.4,0.4, [this.m_fboIns.getRTTAt(0)]);
-        scrPlane.setOffsetRGB3f(0.1,0.1,0.1);
-        this.m_rscene.addEntity(scrPlane, 1);
+        //scrPlane.initialize(-0.9,-0.9,0.4,0.4, [this.m_fboIns.getRTTAt(0)]);
+        scrPlane.initialize(-0.9,-0.9,0.4,0.4, [this.m_postOutline.getpreColorRTT()]);
+        //scrPlane.initialize(-0.9,-0.9,0.4,0.4, [this.getImageTexByUrl("static/assets/sixParts.jpg")]);
+        //scrPlane.setOffsetRGB3f(0.1,0.1,0.1);
+        this.m_rscene.addEntity(scrPlane, 2);
+        //*/
 
         let camera: CameraBase = this.m_rscene.getCamera();
         let camPos: Vector3D = camera.getPosition();
@@ -153,12 +161,12 @@ export class DemoOutline {
         this.m_rttCamera.update();
         
         this.m_fboIns.getRTTAt(0).setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
+        ///*
         let texList: TextureProxy[] = [
             this.m_fboIns.getRTTAt(0),
             this.getImageTexByUrl("static/assets/brickwall_big.jpg"),
             this.getImageTexByUrl("static/assets/brickwall_normal.jpg")
         ];
-        ///*
         let toneMaterial: MirrorToneMaterial = new MirrorToneMaterial( this.m_mirrorTexLodEnabled );
         toneMaterial.setTextureLodLevel(6);
         this.m_toneMaterial = toneMaterial;
@@ -177,8 +185,8 @@ export class DemoOutline {
         //  frustrum.setScaleXYZ(0.5,0.5,0.5);
         //  this.m_rscene.addEntity( frustrum, 2);
 
-        this.m_stencilOutline.setTarget(this.m_targetEntity);
-        this.m_stencilOutline.setRGB3f(0.5,1.0,0.0);
+        //  this.m_stencilOutline.setTarget(this.m_targetEntity);
+        //  this.m_stencilOutline.setRGB3f(0.5,1.0,0.0);
     }
     private m_flag: boolean = true;
     private mouseDown(evt: any): void {
@@ -204,23 +212,22 @@ export class DemoOutline {
         //  else {
         //      return;
         //  }
-        //console.log("run begin...");
+        //  console.log("run begin...");
+
         this.m_statusDisp.update(false);
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
         
         if(this.m_projType == 1) {
-
             this.m_rscene.run(true);
         }
         else {
             
-            
             this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
             this.m_rscene.runBegin();
             this.m_rscene.update(false);
-            
             let nv: Vector3D = this.m_rscene.getCamera().getNV();
+            ///*
             // --------------------------------------------- fbo run begin
             this.m_refPlane.getPosition(this.m_pv);
             this.m_targetEntity.getPosition( this.m_tempPosV );
@@ -237,22 +244,33 @@ export class DemoOutline {
             if(this.m_mirrorTexLodEnabled) {
                 this.m_fboIns.generateMipmapTextureAt(0);
             }
+            this.m_targetEntity.showBackFace();
+            this.m_targetEntity.setScaleXYZ(this.m_tempScaleV.x, this.m_tempScaleV.y, this.m_tempScaleV.z);
+            this.m_targetEntity.setPosition( this.m_tempPosV );
+            this.m_targetEntity.update();
+
+            //*/
+
+            this.m_postOutline.drawBegin();
+            this.m_postOutline.draw();
+            this.m_postOutline.drawEnd();
             // --------------------------------------------- fbo run end
             nv.y *= -1.0;
             this.m_toneMaterial.setProjNV(nv);
             this.m_rscene.setRenderToBackBuffer();
             
-            this.m_targetEntity.showBackFace();
-            this.m_targetEntity.setScaleXYZ(this.m_tempScaleV.x, this.m_tempScaleV.y, this.m_tempScaleV.z);
-            this.m_targetEntity.setPosition( this.m_tempPosV );
-            this.m_targetEntity.update();
             
-            // draw outline
+            /*
+            // draw stencil outline
             this.m_stencilOutline.drawBegin();
             this.m_rscene.runAt(0);
             this.m_rscene.runAt(1);
             this.m_stencilOutline.draw();
             this.m_stencilOutline.drawEnd();
+            //*/
+            this.m_rscene.runAt(0);
+            this.m_rscene.runAt(1);
+            this.m_rscene.runAt(2);
 
             this.m_rscene.runEnd();
         }

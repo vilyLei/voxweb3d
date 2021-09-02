@@ -525,7 +525,12 @@ export default class FBOInstance {
     
     drawEntity(entity: IRenderEntity, force: boolean = true): void {
         if (!this.m_runFlag) {
-            this.m_render.drawEntity(entity, force);
+            if(this.m_rcontext.isUnlockMaterial()) {
+                this.m_render.drawEntityByLockMaterial(entity,false,true);
+            }
+            else {
+                this.m_render.drawEntity(entity, force);
+            }
         }
     }
     runBegin(): void {

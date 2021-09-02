@@ -322,11 +322,16 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
         if (disp != null) {
             let unit: RPOUnit = disp.__$$runit as RPOUnit;
             if (unit != null) {
-                this.m_fixBlock.drawUnit(this.m_rc, unit, disp);
+                if (this.m_shader.isUnLocked()) {
+                    this.m_fixBlock.drawUnit(this.m_rc, unit, disp);
+                }
+                else {
+                    this.m_fixBlock.drawLockMaterialByUnit(this.m_rc, unit, disp, false, true);
+                }
             }
         }
     }
-    drawLockMaterialByDisp(disp: IRODisplay, useGlobalUniform: boolean = false, forceUpdateUniform: boolean): void {
+    drawLockMaterialByDisp(disp: IRODisplay, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
         if (disp != null) {
             let unit: RPOUnit = disp.__$$runit as RPOUnit;
             if (unit != null) {
