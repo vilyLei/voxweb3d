@@ -294,7 +294,7 @@
 
 //  import {DemoProjectPlane as Demo} from "./demo/DemoProjectPlane";
 
-//  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
+import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
 
 //  import {DemoOutline as Demo} from "./demo/DemoOutline";
 
@@ -344,7 +344,7 @@
 
 //  import {DemoDefaultPBR3 as Demo} from "./pbr/DemoDefaultPBR3";
 
-import {DemoPBR as Demo} from "./pbr/DemoPBR";
+//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
@@ -378,6 +378,10 @@ import {DemoPBR as Demo} from "./pbr/DemoPBR";
 //  import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
 
 //  import {DemoUITexAtlas as Demo} from "./orthoui/demos/DemoUITexAtlas";
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////     distributed runtime     ////////////s///////////////
+///////////////////////////////////////////////////////////////////////////////
 
 ///////////////////////////////////////////////////////////////////////////////
 document.title = "Vox APP";

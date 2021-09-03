@@ -1,13 +1,13 @@
 {
   "name": "lyl",
   "version": "1.0.0",
-  "description": "a test",
+  "description": "vox app",
   "main": "index.js",
   "author": "vily",
   "license": "MIT",
   "scripts": {
-    "build": "vue-cli-service build --target lib --name Test --dest dist ./src/main.ts",
-    "buildvox": "vue-cli-service build --target lib --name Test --dest dist ./src/dev.ts",
+    "build": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main.ts",
+    "buildvox": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/dev.ts",
     "dev": "vue-cli-service serve --type=dev",
     "devvox": "vue-cli-service serve --voxtype=dev"
   },
