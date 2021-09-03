@@ -294,7 +294,7 @@
 
 //  import {DemoProjectPlane as Demo} from "./demo/DemoProjectPlane";
 
-import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
+//  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
 
 //  import {DemoOutline as Demo} from "./demo/DemoOutline";
 
@@ -382,6 +382,8 @@ import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////     distributed runtime     ////////////s///////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+import {DemoBase as Demo} from "./distribution/DemoBase";
 
 ///////////////////////////////////////////////////////////////////////////////
 document.title = "Vox APP";
