@@ -22,7 +22,6 @@ import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
-import ViewMirrorMaterial from "../vox/material/mcase/ViewMirrorMaterial";
 import FBOInstance from "../vox/scene/FBOInstance";
 import CameraBase from "../vox/view/CameraBase";
 import MathConst from "../vox/math/MathConst";
@@ -31,6 +30,11 @@ import MirrorToneMaterial from "./material/MirrorToneMaterial";
 import DebugFlag from "../vox/debug/DebugFlag";
 import StencilOutline from "../renderingtoy/mcase/outline/StencilOutline";
 import PostOutline from "../renderingtoy/mcase/outline/PostOutline";
+import RendererState from "../vox/render/RendererState";
+import DracoMeshBuilder from "../voxmesh/draco/DracoMeshBuilder";
+import ThreadSystem from "../thread/ThreadSystem";
+import DracoMesh from "../voxmesh/draco/DracoMesh";
+import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 
 export class DemoOutline {
     constructor() { }
@@ -44,6 +48,7 @@ export class DemoOutline {
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
+    private m_dracoMeshLoader: DracoMeshBuilder = new DracoMeshBuilder();
 
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -98,9 +103,71 @@ export class DemoOutline {
             this.initPlaneReflection();
 
             this.update();
+            
+            this.m_dracoMeshLoader.initialize(2);
+            this.m_dracoMeshLoader.setListener(this);
         }
     }
 
+    private m_posList: Vector3D[] = [
+        new Vector3D(0, 200, 0)
+        //new Vector3D(0,0,0)
+    ];
+    private m_modules: string[] = [
+        //"static/assets/modules/bunny.rawmd",
+        //"static/assets/modules/stainlessSteel.rawmd",
+        //"static/assets/modules/loveass.rawmd"
+        //"static/assets/modules/car01.rawmd"
+        "static/assets/modules/longxiaPincer.rawmd"
+    ];
+    private m_scale: number = 1.0;
+    private m_pos: Vector3D = null;
+    private m_scales: number[] = [
+        50,
+        //1.0,
+        //0.5,
+        //20.0
+    ];
+    private loadNext(): void {
+        if (this.m_modules.length > 0) {
+            this.m_pos = this.m_posList.pop();
+            this.m_scale = this.m_scales.pop();
+            this.m_dracoMeshLoader.load(this.m_modules.pop());
+        }
+    }
+    dracoParse(pmodule: any, index: number, total: number): void {
+        //console.log("parse progress: "+index+"/"+total);
+    }
+    dracoParseFinish(modules: any[], total: number): void {
+
+        console.log("dracoParseFinish, modules: ", modules);
+
+        let material: Default3DMaterial = new Default3DMaterial();
+        material.initializeByCodeBuf(true);
+        material.setTextureList([this.getImageTexByUrl("static/assets/wood_01.jpg")]);
+        let mesh: DracoMesh = new DracoMesh();
+        mesh.setBufSortFormat(material.getBufSortFormat());
+        mesh.initialize(modules);
+        let scale = this.m_scale;
+        let entity: DisplayEntity = new DisplayEntity();
+        entity.setMaterial(material);
+        entity.setMesh(mesh);
+        entity.setScaleXYZ(scale, scale, scale);
+        //entity.setRotationXYZ(0, 50, 0);
+        this.m_rscene.addEntity(entity);
+        let pos: Vector3D = new Vector3D();
+        entity.getPosition(pos);
+        let pv: Vector3D = entity.getGlobalBounds().min;
+        pos.y += (0 - pv.y) + 70.0;
+        entity.setPosition(pos);
+        entity.update();
+
+        this.m_postOutline.setTarget( entity );
+        //  this.m_postOutline.setFBOSizeScaleRatio(2.0);
+        //  this.m_postOutline.setOutlineThickness(4.0);
+        this.m_postOutline.setRGB3f(1.0,0.0,1.0);
+        //this.m_postOutline.setPostRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
+    }
     private m_projType: number = 0;
     private m_fboIns: FBOInstance = null;
     private m_rttCamera:CameraBase = null;    
@@ -119,13 +186,14 @@ export class DemoOutline {
         let box: Box3DEntity = new Box3DEntity();
 
         box.uvPartsNumber = 6;
-        box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixParts.jpg")]);
+        box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixparts.jpg")]);
         box.setScaleXYZ(2.0, 2.0, 2.0);
         box.setRotationXYZ(Math.random() * 300.0, Math.random() * 300.0, Math.random() * 300.0);
         this.m_rscene.addEntity(box);
         this.m_targetEntity = box;
+        this.loadNext();
+        //this.m_postOutline.setTarget( box );
 
-        this.m_postOutline.setTarget( box );
         ///*
         this.m_fboIns = this.m_rscene.createFBOInstance();
         this.m_fboIns.asynFBOSizeWithViewport();
@@ -137,13 +205,11 @@ export class DemoOutline {
         if(this.m_mirrorTexLodEnabled) {
             this.m_fboIns.getRTTAt(0).enableMipmap();
         }
-        ///*
+        /*
         let scrPlane: ScreenAlignPlaneEntity =  new ScreenAlignPlaneEntity();
-        //scrPlane.initialize(-0.9,-0.9,0.4,0.4, [this.m_fboIns.getRTTAt(0)]);
-        scrPlane.initialize(-0.9,-0.9,0.4,0.4, [this.m_postOutline.getpreColorRTT()]);
-        //scrPlane.initialize(-0.9,-0.9,0.4,0.4, [this.getImageTexByUrl("static/assets/sixParts.jpg")]);
-        //scrPlane.setOffsetRGB3f(0.1,0.1,0.1);
-        this.m_rscene.addEntity(scrPlane, 2);
+        scrPlane.setRenderState( RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+        scrPlane.initialize(-1,-1,2,2, [this.m_postOutline.getpreColorRTT()]);
+        //this.m_rscene.addEntity(scrPlane, 2);
         //*/
 
         let camera: CameraBase = this.m_rscene.getCamera();
@@ -167,6 +233,7 @@ export class DemoOutline {
             this.getImageTexByUrl("static/assets/brickwall_big.jpg"),
             this.getImageTexByUrl("static/assets/brickwall_normal.jpg")
         ];
+
         let toneMaterial: MirrorToneMaterial = new MirrorToneMaterial( this.m_mirrorTexLodEnabled );
         toneMaterial.setTextureLodLevel(6);
         this.m_toneMaterial = toneMaterial;
@@ -196,9 +263,11 @@ export class DemoOutline {
     }
     private m_timeoutId: any = -1;
     private update(): void {
+
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
+
         //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
         this.m_timeoutId = setTimeout(this.update.bind(this), 40);// 20 fps
 
@@ -206,6 +275,8 @@ export class DemoOutline {
 
     }
     run(): void {
+
+        ThreadSystem.Run();
         //  if(this.m_flag) {
         //      this.m_flag = false;
         //  }
@@ -226,6 +297,7 @@ export class DemoOutline {
             this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
             this.m_rscene.runBegin();
             this.m_rscene.update(false);
+
             let nv: Vector3D = this.m_rscene.getCamera().getNV();
             ///*
             // --------------------------------------------- fbo run begin
@@ -251,9 +323,6 @@ export class DemoOutline {
 
             //*/
 
-            this.m_postOutline.drawBegin();
-            this.m_postOutline.draw();
-            this.m_postOutline.drawEnd();
             // --------------------------------------------- fbo run end
             nv.y *= -1.0;
             this.m_toneMaterial.setProjNV(nv);
@@ -271,6 +340,11 @@ export class DemoOutline {
             this.m_rscene.runAt(0);
             this.m_rscene.runAt(1);
             this.m_rscene.runAt(2);
+
+            
+            this.m_postOutline.drawBegin();
+            this.m_postOutline.draw();
+            this.m_postOutline.drawEnd();
 
             this.m_rscene.runEnd();
         }

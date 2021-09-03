@@ -15,137 +15,131 @@ import AttributeLine from "../../vox/material/code/AttributeLine";
 import UniformLine from "../../vox/material/code/UniformLine";
 import ShaderCodeParser from "../../vox/material/code/ShaderCodeParser";
 import IShaderData from "../../vox/material/IShaderData";
+import ShaderCompileInfo from "../../vox/material/code/ShaderCompileInfo";
 
-export default class ShaderData implements IShaderData
-{
-    private static s_uid:number = 0;
+export default class ShaderData implements IShaderData {
+    private static s_uid: number = 0;
 
-    private static s_codeParser:ShaderCodeParser = new ShaderCodeParser();
-    private m_uid:number = -1;
+    private static s_codeParser: ShaderCodeParser = new ShaderCodeParser();
+    private m_uid: number = -1;
     adaptationShaderVersion: boolean = true;
-    constructor()
-    {
+    preCompileInfo: ShaderCompileInfo = null;
+    constructor() {
         this.m_uid = ShaderData.s_uid++;
     }
-    private m_vshdCode:string = "";
-    private m_fshdCode:string = "";
-    private m_shdUniqueName:string = "";
-    private m_texTotal:number = 0;
-    private m_uniforms:UniformLine[] = null;
+    private m_vshdCode: string = "";
+    private m_fshdCode: string = "";
+    private m_shdUniqueName: string = "";
+    private m_texTotal: number = 0;
+    private m_uniforms: UniformLine[] = null;
     // identify use texture
-    private m_useTex:boolean = false;
+    private m_useTex: boolean = false;
     // web gl 1.0, attribute namestring list
-    private m_attriNSList:string[] = null;
-    private m_attriSizeList:number[] = null;
-    private m_aLocationTypes:number[] = null;
-    private m_uniformDict:Map<string,UniformLine> = new Map();
-    
-    private m_haveCommonUniform:boolean = false;
-    private m_layoutBit:number = 0x0;
-    private m_mid:number = 0x0;
-    private m_fragOutputTotal:number = 1;
-    private m_texUniformNames:string[] = null;
+    private m_attriNSList: string[] = null;
+    private m_attriSizeList: number[] = null;
+    private m_aLocationTypes: number[] = null;
+    private m_uniformDict: Map<string, UniformLine> = new Map();
 
-    getVSCodeStr():string
-    {
+    private m_haveCommonUniform: boolean = false;
+    private m_layoutBit: number = 0x0;
+    private m_mid: number = 0x0;
+    private m_fragOutputTotal: number = 1;
+    private m_texUniformNames: string[] = null;
+
+    getVSCodeStr(): string {
         return this.m_vshdCode;
     }
-    getFSCodeStr():string
-    {
+    getFSCodeStr(): string {
         return this.m_fshdCode;
     }
-    getLayoutBit():number
-    {
+    getLayoutBit(): number {
         return this.m_layoutBit;
     }
-    getMid():number
-    {
+    getMid(): number {
         return this.m_mid;
     }
-    getFragOutputTotal():number
-    {
+    getFragOutputTotal(): number {
         return this.m_fragOutputTotal;
     }
-    private parseCode(vshdsrc:string,fshdSrc:string):void
-    {
+    private parseCode(vshdsrc: string, fshdSrc: string): void {
         ShaderData.s_codeParser.reset();
         ShaderData.s_codeParser.parseVShaderCode(vshdsrc);
         ShaderData.s_codeParser.parseFShaderCode(fshdSrc);
         this.m_fragOutputTotal = ShaderData.s_codeParser.fragOutputTotal;
         this.m_uniforms = ShaderData.s_codeParser.m_uniforms;
     }
-    initialize(unique_ns:string,vshdsrc:string,fshdSrc:string):void
-    {
+    initialize(unique_ns: string, vshdsrc: string, fshdSrc: string): void {
         this.m_shdUniqueName = unique_ns;
-        if(this.adaptationShaderVersion) {
-            if(RendererDeviece.IsWebGL1())
-            {
+        console.log("ShaderData,adaptationShaderVersion,preCompileInfo: ", this.adaptationShaderVersion, this.preCompileInfo == null);
+        if (this.adaptationShaderVersion && this.preCompileInfo == null) {
+            if (RendererDeviece.IsWebGL1()) {
                 vshdsrc = GLSLConverter.Es3VtxShaderToES2(vshdsrc);
                 fshdSrc = GLSLConverter.Es3FragShaderToES2(fshdSrc);
             }
         }
-        this.parseCode(vshdsrc,fshdSrc);
-        let pattributes:AttributeLine[] = ShaderData.s_codeParser.attributes;
+        // 直接使用 preCompileInfo 中的 uniform / attribute 等等关键信息
+        if(this.preCompileInfo != null) {
+            
+        }
+        this.parseCode(vshdsrc, fshdSrc);
+        let pattributes: AttributeLine[] = ShaderData.s_codeParser.attributes;
 
-        let i:number = 0;
-        let len:number = pattributes.length;
-        let attri:AttributeLine = null;
+        let i: number = 0;
+        let len: number = pattributes.length;
+        let attri: AttributeLine = null;
         this.m_attriNSList = [];
         this.m_attriSizeList = [];
 
         this.m_layoutBit = 0x0;
-        let mid:number = 31;
-        while(i < len)
-        {
+        let mid: number = 31;
+        while (i < len) {
             attri = pattributes[i];
-            if(attri != null)
-            {
+            if (attri != null) {
                 this.m_attriNSList.push(attri.name);
                 this.m_attriSizeList.push(attri.typeSize);
-            
-                switch(VtxBufConst.GetVBufTypeByNS(attri.name))
-                {
+
+                switch (VtxBufConst.GetVBufTypeByNS(attri.name)) {
                     case VtxBufConst.VBUF_VS:
                         mid += mid * 131 + 1;
                         this.m_layoutBit |= BitConst.BIT_ONE_0;
-                    break;
+                        break;
                     case VtxBufConst.VBUF_UVS:
                         mid += mid * 131 + 2;
                         this.m_layoutBit |= BitConst.BIT_ONE_1;
-                    break;
+                        break;
                     case VtxBufConst.VBUF_NVS:
                         mid += mid * 131 + 3;
                         this.m_layoutBit |= BitConst.BIT_ONE_2;
-                    break;
+                        break;
                     case VtxBufConst.VBUF_CVS:
                         mid += mid * 131 + 4;
                         this.m_layoutBit |= BitConst.BIT_ONE_3;
-                    break;
+                        break;
                     case VtxBufConst.VBUF_TVS:
                         mid += mid * 131 + 5;
                         this.m_layoutBit |= BitConst.BIT_ONE_4;
-                    break;
-                    
+                        break;
+
                     case VtxBufConst.VBUF_VS2:
                         mid += mid * 131 + 6;
                         this.m_layoutBit |= BitConst.BIT_ONE_5;
-                    break;
+                        break;
                     case VtxBufConst.VBUF_UVS2:
                         mid += mid * 131 + 7;
                         this.m_layoutBit |= BitConst.BIT_ONE_6;
-                    break;
+                        break;
                     case VtxBufConst.VBUF_NVS2:
                         mid += mid * 131 + 8;
                         this.m_layoutBit |= BitConst.BIT_ONE_7;
-                    break;
+                        break;
                     case VtxBufConst.VBUF_CVS2:
                         mid += mid * 131 + 9;
                         this.m_layoutBit |= BitConst.BIT_ONE_8;
-                    break;
+                        break;
                     case VtxBufConst.VBUF_TVS2:
                         mid += mid * 131 + 11;
                         this.m_layoutBit |= BitConst.BIT_ONE_9;
-                    break;
+                        break;
                     default:
                         break;
                 }
@@ -156,8 +150,7 @@ export default class ShaderData implements IShaderData
         this.m_mid = mid;
         this.m_texTotal = ShaderData.s_codeParser.texTotal;
         this.m_useTex = this.m_texTotal > 0;
-        if(this.m_useTex)
-        {
+        if (this.m_useTex) {
             this.m_texUniformNames = ShaderData.s_codeParser.texUniformNameListStr.split(",");
         }
         this.m_haveCommonUniform = this.m_texTotal < this.m_uniforms.length;
@@ -165,83 +158,65 @@ export default class ShaderData implements IShaderData
         this.m_fshdCode = fshdSrc;
         this.m_shdUniqueName = unique_ns;
     }
-    getAttriSizeList():number[]
-    {
+    getAttriSizeList(): number[] {
         return this.m_attriSizeList;
     }
-    getTexUniformNames():string[]
-    {
+    getTexUniformNames(): string[] {
         return this.m_texUniformNames;
     }
-    getUniforms():UniformLine[]
-    {
+    getUniforms(): UniformLine[] {
         return this.m_uniforms;
     }
 
-    haveCommonUniform():boolean
-    {
+    haveCommonUniform(): boolean {
         return this.m_haveCommonUniform;
     }
-    getAttriNSList():string[]
-    {
+    getAttriNSList(): string[] {
         return this.m_attriNSList;
     }
-    getUid():number
-    {
+    getUid(): number {
         return this.m_uid;
     }
-    getTexTotal():number
-    {
+    getTexTotal(): number {
         return this.m_texTotal;
     }
     // use texture true or false
-    haveTexture():boolean
-    {
+    haveTexture(): boolean {
         return this.m_useTex;
     }
     // recode shader uniform including status
-    dataUniformEnabled:boolean = false;
-    
-    getLocationsTotal():number
-    {
+    dataUniformEnabled: boolean = false;
+
+    getLocationsTotal(): number {
         return this.m_aLocationTypes.length;
     }
-    getUniformTypeNameByNS(ns:string):string
-    {
-        let uniform:UniformLine = this.m_uniformDict.get( ns );
-        if(uniform != null)
-        {
+    getUniformTypeNameByNS(ns: string): string {
+        let uniform: UniformLine = this.m_uniformDict.get(ns);
+        if (uniform != null) {
             return uniform.typeName;
         }
         return "";
     }
-    getUniformTypeByNS(ns:string):number
-    {
-        let uniform:UniformLine = this.m_uniformDict.get( ns );
-        if(uniform != null)
-        {
+    getUniformTypeByNS(ns: string): number {
+        let uniform: UniformLine = this.m_uniformDict.get(ns);
+        if (uniform != null) {
             return uniform.type;
         }
         return 0;
     }
-    hasUniformByName(ns:string):boolean
-    {
+    hasUniformByName(ns: string): boolean {
         return this.m_uniformDict.has(ns);
     }
-    getUniformLengthByNS(ns:string):number
-    {
-        if(this.m_uniformDict.has(ns))
-        {
+    getUniformLengthByNS(ns: string): number {
+        if (this.m_uniformDict.has(ns)) {
             this.m_uniformDict.get(ns).arrLength;
         }
         return 0;
     }
-    getUniqueShaderName(): string
-    {
+    getUniqueShaderName(): string {
         return this.m_shdUniqueName;
     }
-    destroy():void
-    {
+    destroy(): void {
         this.m_texTotal = 0;
     }
 }

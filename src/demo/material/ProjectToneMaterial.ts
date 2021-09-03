@@ -8,7 +8,6 @@
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
-import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
 import Matrix4 from "../../vox/math/Matrix4";
 import Vector3D from "../../vox/math/Vector3D";
 import RendererDeviece from "../../vox/render/RendererDeviece";
@@ -29,7 +28,7 @@ class ProjectToneShaderBuffer extends ShaderCodeBuffer
     }
     private buildThisCode():void
     {
-        let coder:ShaderCodeBuilder = ShaderCodeBuffer.s_coder;
+        let coder = ShaderCodeBuffer.s_coder;
         coder.reset();
         coder.addVertLayout("vec3","a_vs");
         if(this.isTexEanbled())
@@ -43,10 +42,6 @@ class ProjectToneShaderBuffer extends ShaderCodeBuffer
             coder.addVarying("vec3", "v_nv");
         }
         
-        if(RendererDeviece.IsWebGL1()) {
-            coder.addFragExtend("#extension GL_OES_standard_derivatives : enable");
-            //coder.addFragExtend("#extension GL_EXT_shader_texture_lod : enable");
-        }
         coder.addVarying("vec4", "v_wpos");
         coder.addFragOutput("vec4", "FragColor0");
         coder.addFragUniform("vec4","u_color");
@@ -94,55 +89,60 @@ vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 wpos, vec3 nv)
     {
         this.buildThisCode();
 
-        if(this.isTexEanbled())
-        {
-            ShaderCodeBuffer.s_coder.addFragMainCode(
+        ShaderCodeBuffer.s_coder.addFragMainCode(
 `
+void main() {
 
-vec3 nv = getNormalFromMap(u_sampler2, v_uv.xy, v_wpos.xyz, v_nv.xyz);
+    #ifdef VOX_USE_2D_MAP
+        vec3 nv = getNormalFromMap(u_sampler2, v_uv.xy, v_wpos.xyz, v_nv.xyz);
 
-//vec4 pv = u_toneMat * v_wpos;
-vec4 wpos = v_wpos;
-wpos.xyz += nv  * vec3(60.0);// use nomal map
-vec4 pv = u_toneMat * wpos;
-pv.xyz /= pv.www;
-//pv.xy += rand(pv.xy) * 0.01;// noise
-//pv.xy *= vec2(0.2);// 扩大
-pv.xy *= vec2(0.5);
-pv.xy += vec2(0.5);
-//  float factorX = (pv.x < 0.0 || pv.x > 1.0) ? 0.0 : 1.0;
-//  float factorY = (pv.y < 0.0 || pv.y > 1.0) ? 0.0 : 1.0;
-//  factorX *= factorY;
-float factorY = max(dot(nv.xyz, u_projNV.xyz), 0.01);
+        //vec4 pv = u_toneMat * v_wpos;
+        vec4 wpos = v_wpos;
+        wpos.xyz += nv  * vec3(60.0);// use nomal map
+        vec4 pv = u_toneMat * wpos;
+        pv.xyz /= pv.www;
+        //pv.xy += rand(pv.xy) * 0.01;// noise
+        //pv.xy *= vec2(0.2);// 扩大
+        pv.xy *= vec2(0.5);
+        pv.xy += vec2(0.5);
+        //  float factorX = (pv.x < 0.0 || pv.x > 1.0) ? 0.0 : 1.0;
+        //  float factorY = (pv.y < 0.0 || pv.y > 1.0) ? 0.0 : 1.0;
+        //  factorX *= factorY;
+        float factorY = max(dot(nv.xyz, u_projNV.xyz), 0.01);
 
-vec4 baseColor4 = texture(u_sampler1, v_uv.xy) * u_color;
-vec4 reflectColor4 = texture(u_sampler0, pv.xy);
-//baseColor4.xyz = mix(reflectColor4.xyz, baseColor4.xyz, factorY) * 0.5 + reflectColor4.xyz * 0.2 + baseColor4.xyz * 0.3;
-baseColor4.xyz = mix(reflectColor4.xyz, baseColor4.xyz, factorY) * 0.6 + reflectColor4.xyz * 0.2 + baseColor4.xyz * 0.2;
-FragColor0 = baseColor4;
+        vec4 baseColor4 = texture(u_sampler1, v_uv.xy) * u_color;
+        vec4 reflectColor4 = texture(u_sampler0, pv.xy);
+        //baseColor4.xyz = mix(reflectColor4.xyz, baseColor4.xyz, factorY) * 0.5 + reflectColor4.xyz * 0.2 + baseColor4.xyz * 0.3;
+        baseColor4.xyz = mix(reflectColor4.xyz, baseColor4.xyz, factorY) * 0.6 + reflectColor4.xyz * 0.2 + baseColor4.xyz * 0.2;
+        FragColor0 = baseColor4;
+    #else
+        FragColor0 = u_color;
+    #endif
+}
 `
-            );
-        }
-        else
-        {
-            ShaderCodeBuffer.s_coder.addFragMainCode("\tFragColor0 = u_color");
-        }
+        );
         
         return ShaderCodeBuffer.s_coder.buildFragCode();                    
     }
     getVtxShaderCode():string
     {
         
-        let coder:ShaderCodeBuilder = ShaderCodeBuffer.s_coder;
+        let coder = ShaderCodeBuffer.s_coder;
         coder.addVertMainCode(
 
 `
+void main() {
     vec4 wpos = u_objMat * vec4(a_vs, 1.0);
     vec4 viewPos = u_viewMat * wpos;
     gl_Position =  u_projMat * viewPos;
-    v_uv = a_uvs;
+
     v_nv = a_nvs;
     v_wpos = wpos;
+
+    #ifdef VOX_USE_2D_MAP
+        v_uv = a_uvs;
+    #endif
+}
 `
 
         );

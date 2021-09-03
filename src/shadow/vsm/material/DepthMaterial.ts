@@ -9,7 +9,6 @@ import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
-import ShaderCodeBuilder from "../../../vox/material/code/ShaderCodeBuilder";
 import Vector3D from "../../../vox/math/Vector3D";
 import RendererDeviece from "../../../vox/render/RendererDeviece";
 

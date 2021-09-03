@@ -36,7 +36,7 @@ export class DepZColorShaderBuffer extends ShaderCodeBuffer
 `
 precision mediump float;
 uniform sampler2D u_sampler0;
-uniform sampler2D u_sampler1;
+uniform highp sampler2D u_sampler1;
 varying vec2 v_texUV;
 uniform vec4 u_colors[2];
 uniform vec4 u_stSize;

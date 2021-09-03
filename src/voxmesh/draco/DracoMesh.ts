@@ -60,7 +60,15 @@ export default class DracoMesh extends MeshBase {
         if (!this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)){
             console.warn("DracoMesh uvs apply failure.");
         }
-        let bufData: VtxBufData = new VtxBufData(3);
+        let bufData: VtxBufData = null;
+        let arrtibuteTotal: number = 1;
+        if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)){
+            arrtibuteTotal++;
+        }
+        if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)){
+            arrtibuteTotal++;
+        }
+        bufData = new VtxBufData( arrtibuteTotal );
 
         let listLen: number = list.length;
         //listLen = 29;
@@ -101,7 +109,9 @@ export default class DracoMesh extends MeshBase {
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)){
                 bufData.addAttributeDataAt(1, puvs, 2);
             }
-            bufData.addAttributeDataAt(2, pnvs, 3);
+            if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)){
+                bufData.addAttributeDataAt(2, pnvs, 3);
+            }
             bufData.addIndexData(pivs);
         }
 

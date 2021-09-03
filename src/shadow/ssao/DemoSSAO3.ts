@@ -308,8 +308,6 @@ export class DemoSSAO3 implements DracoTaskListener {
 
         console.log("dracoParseFinish, modules total: ", total);
 
-        let mesh: DracoMesh = new DracoMesh();
-        mesh.initialize(modules);
         let aoTex: RTTTextureProxy = this.m_blurModule.getDstTexture();
         let material: AOEntityMaterial = new AOEntityMaterial()
         material.initializeByCodeBuf( true );
@@ -317,6 +315,9 @@ export class DemoSSAO3 implements DracoTaskListener {
         material.setTextureList( [this.getImageTexByUrl("static/assets/wood_01.jpg"), aoTex] );
         let scale = this.m_scale;
         
+        let mesh: DracoMesh = new DracoMesh();
+        mesh.setBufSortFormat( material.getBufSortFormat() );
+        mesh.initialize(modules);
         let entity: DisplayEntity = new DisplayEntity();
         entity.setMaterial( material );
         entity.setMesh( mesh );

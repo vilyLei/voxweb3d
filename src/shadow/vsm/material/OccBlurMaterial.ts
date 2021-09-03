@@ -38,6 +38,7 @@ class OccBlurShaderBuffer extends ShaderCodeBuffer
 
         let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
         coder.reset();
+
         if(this.horizonal) {
             coder.addDefine("HORIZONAL_PASS");
         }
@@ -47,14 +48,18 @@ class OccBlurShaderBuffer extends ShaderCodeBuffer
 
         //SAMPLE_RATE
         coder.addVertLayout("vec3","a_vs");
-        coder.addVertLayout("vec2","a_uvs");
         
-        coder.addVarying("vec2", "v_uv");
         coder.addTextureSample2D();
 
         coder.addFragOutput("vec4", "FragColor0");
         coder.addFragUniform("vec4","u_viewParam");
         coder.addFragUniform("vec4","u_param");
+    }
+    getFragShaderCode():string
+    {
+        this.buildThisCode();
+        
+        let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
         coder.addFragMainCode(
 `
 const float PackUpscale = 256. / 255.; // fraction -> 0..1 (including 1)
@@ -66,77 +71,73 @@ const vec4 UnpackFactors = UnpackDownscale / vec4( PackFactors, 1. );
 const float ShiftRight8 = 1. / 256.;
 
 vec4 packDepthToRGBA( const in float v ) {
-	vec4 r = vec4( fract( v * PackFactors ), v );
-	r.yzw -= r.xyz * ShiftRight8; // tidy overflow
-	return r * PackUpscale;
+    vec4 r = vec4( fract( v * PackFactors ), v );
+    r.yzw -= r.xyz * ShiftRight8; // tidy overflow
+    return r * PackUpscale;
 }
 
 float unpackRGBAToDepth( const in vec4 v ) {
-	return dot( v, UnpackFactors );
+    return dot( v, UnpackFactors );
 }
 
 vec4 pack2HalfToRGBA( vec2 v ) {
-	vec4 r = vec4( v.x, fract( v.x * 255.0 ), v.y, fract( v.y * 255.0 ));
-	return vec4( r.x - r.y / 255.0, r.y, r.z - r.w / 255.0, r.w);
+    vec4 r = vec4( v.x, fract( v.x * 255.0 ), v.y, fract( v.y * 255.0 ));
+    return vec4( r.x - r.y / 255.0, r.y, r.z - r.w / 255.0, r.w);
 }
 vec2 unpackRGBATo2Half( vec4 v ) {
-	return vec2( v.x + ( v.y / 255.0 ), v.z + ( v.w / 255.0 ) );
+    return vec2( v.x + ( v.y / 255.0 ), v.z + ( v.w / 255.0 ) );
 }
 void main() {
 
-	float mean = 0.0;
-	float squared_mean = 0.0;
+    float mean = 0.0;
+    float squared_mean = 0.0;
     
     vec2 resolution = u_viewParam.zw;
     
     float radius = u_param[3];
-	// This seems totally useless but it's a crazy work around for a Adreno compiler bug
-	float depth = unpackRGBAToDepth( texture( u_sampler0, ( gl_FragCoord.xy ) / resolution ) );
+    // This seems totally useless but it's a crazy work around for a Adreno compiler bug
+    float depth = unpackRGBAToDepth( VOX_Texture2D( u_sampler0, ( gl_FragCoord.xy ) / resolution ) );
 
-	for ( float i = -1.0; i < 1.0 ; i += SAMPLE_RATE) {
+    for ( float i = -1.0; i < 1.0 ; i += SAMPLE_RATE) {
 
-		#ifdef HORIZONAL_PASS
+        #ifdef HORIZONAL_PASS
 
-			vec2 distribution = unpackRGBATo2Half( texture( u_sampler0, ( gl_FragCoord.xy + vec2( i, 0.0 ) * radius ) / resolution ) );
-			mean += distribution.x;
-			squared_mean += distribution.y * distribution.y + distribution.x * distribution.x;
+            vec2 distribution = unpackRGBATo2Half( VOX_Texture2D( u_sampler0, ( gl_FragCoord.xy + vec2( i, 0.0 ) * radius ) / resolution ) );
+            mean += distribution.x;
+            squared_mean += distribution.y * distribution.y + distribution.x * distribution.x;
 
-		#else
+        #else
 
-			float depth = unpackRGBAToDepth( texture( u_sampler0, ( gl_FragCoord.xy + vec2( 0.0, i ) * radius ) / resolution ) );
-			mean += depth;
-			squared_mean += depth * depth;
+            float depth = unpackRGBAToDepth( VOX_Texture2D( u_sampler0, ( gl_FragCoord.xy + vec2( 0.0, i ) * radius ) / resolution ) );
+            mean += depth;
+            squared_mean += depth * depth;
 
-		#endif
+        #endif
 
-	}
-
-	mean = mean * HALF_SAMPLE_RATE;
-	squared_mean = squared_mean * HALF_SAMPLE_RATE;
-
-	float std_dev = sqrt( squared_mean - mean * mean );
-
-	FragColor0 = pack2HalfToRGBA( vec2( mean, std_dev ) );
-
-}
-`
-        );
-        coder.addVertMainCode(
-`
-void main() {
-    gl_Position =  vec4(a_vs,1.0);
-    //v_uv = a_uvs;
-}
-`
-        );
     }
-    getFragShaderCode():string
-    {
-        this.buildThisCode();
+
+    mean = mean * HALF_SAMPLE_RATE;
+    squared_mean = squared_mean * HALF_SAMPLE_RATE;
+
+    float std_dev = sqrt( squared_mean - mean * mean );
+
+    FragColor0 = pack2HalfToRGBA( vec2( mean, std_dev ) );
+
+}
+`
+            );
         return this.m_codeBuilder.buildFragCode();
     }
     getVtxShaderCode():string
     {
+        let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
+        coder.addVertMainCode(
+`
+void main() {
+    gl_Position =  vec4(a_vs,1.0);
+}
+`
+        );
         return this.m_codeBuilder.buildVertCode();
     }
     getUniqueShaderName(): string

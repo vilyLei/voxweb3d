@@ -92,7 +92,7 @@ export default class StencilOutline {
             //entity.setScaleXYZ(2.1, 2.1, 2.1);
             entity.update();
 
-            this.m_rscene.drawEntityByLockMaterial(entity, true, true);
+            this.m_rscene.drawEntity(entity, true, true);
 
             entity.setScaleXYZ(this.m_scaleV.x, this.m_scaleV.y, this.m_scaleV.z);
             entity.update();

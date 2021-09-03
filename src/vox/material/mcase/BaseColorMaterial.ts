@@ -8,8 +8,6 @@
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
-import ShaderCodeBuilder from "../../../vox/material/code/ShaderCodeBuilder";
-
 class BaseColorShaderBuffer extends ShaderCodeBuffer
 {
     constructor()
@@ -26,7 +24,7 @@ class BaseColorShaderBuffer extends ShaderCodeBuffer
     }
     private buildThisCode():void
     {
-        let coder:ShaderCodeBuilder = ShaderCodeBuffer.s_coder;
+        let coder = ShaderCodeBuffer.s_coder;
         coder.reset();
         coder.addVertLayout("vec3","a_vs");
         if(this.isTexEanbled())
@@ -41,36 +39,43 @@ class BaseColorShaderBuffer extends ShaderCodeBuffer
         coder.useVertSpaceMats(true,true,true);
 
     }
+    
     getFragShaderCode():string
     {
         this.buildThisCode();
 
-        if(this.isTexEanbled())
-        {
-            ShaderCodeBuffer.s_coder.addFragMainCode(
+        ShaderCodeBuffer.s_coder.addFragMainCode(
 `
-//vec4 colorFactor = gl_FrontFacing?vec4(0.0,1.0,0.0,1.0):vec4(1.0,0.0,0.0,1.0);
-vec4 colorFactor = vec4(1.0);
-FragColor0 = colorFactor * u_color * texture(u_sampler0, v_uv.xy);
+void main {
+    #ifdef VOX_USE_2D_MAP
+        //vec4 colorFactor = gl_FrontFacing?vec4(0.0,1.0,0.0,1.0):vec4(1.0,0.0,0.0,1.0);
+        vec4 colorFactor = vec4(1.0);
+        FragColor0 = colorFactor * u_color * texture(u_sampler0, v_uv.xy);
+    #else
+        FragColor0 = u_color;
+    #endif
+}
 `
-            );
-        }
-        else
-        {
-            ShaderCodeBuffer.s_coder.addFragMainCode("\tFragColor0 = u_color");
-        }                    
+        );                
         
         return ShaderCodeBuffer.s_coder.buildFragCode();                    
     }
     getVtxShaderCode():string
     {
         
-        let coder:ShaderCodeBuilder = ShaderCodeBuffer.s_coder;
+        let coder = ShaderCodeBuffer.s_coder;
         coder.addVertMainCode(
 `
-mat4 viewMat4 = u_viewMat * u_objMat;
-vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);
-gl_Position = u_projMat * viewPos;
+void main() {
+
+    mat4 viewMat4 = u_viewMat * u_objMat;
+    vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);
+    gl_Position = u_projMat * viewPos;
+
+    #ifdef VOX_USE_2D_MAP
+        v_uv = a_uvs.xy;
+    #endif
+}
 `
         );
         if(this.isTexEanbled())

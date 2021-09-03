@@ -408,7 +408,7 @@ export default class RayGpuSelector implements IRaySelector
                 
                 this.m_uintList[j] = i;
                 this.m_renderer.updateMaterialUniformToCurrentShd(this.m_indexMaterial);
-                this.m_renderer.drawEntityByLockMaterial(entity, false, true);
+                this.m_renderer.drawEntity(entity, false, true);
             }
         }
         if(j > -1)

@@ -151,12 +151,14 @@ export class DemoLockDrawEntity
         this.m_rcontext.unlockMaterial();
         this.m_rcontext.unlockRenderState();
         this.m_rcontext.useGlobalMaterial(this.m_entitys[0].getMaterial());
-        this.m_rscene.drawEntityByLockMaterial(this.m_entitys[0]);
+        //this.m_rscene.drawEntityByLockMaterial(this.m_entitys[0]);
+        this.m_rscene.drawEntity(this.m_entitys[0]);
         
         this.m_rcontext.useGlobalMaterial(this.m_lockMaterial);
         for(i = 1; i < len; ++i)
         {
-            this.m_rscene.drawEntityByLockMaterial(this.m_entitys[i]);
+            //this.m_rscene.drawEntityByLockMaterial(this.m_entitys[i]);
+            this.m_rscene.drawEntity(this.m_entitys[i]);
         }
 
         this.m_rcontext.runEnd();            

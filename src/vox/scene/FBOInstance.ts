@@ -522,15 +522,15 @@ export default class FBOInstance {
             this.m_render.runAt(this.m_rindexs[index]);
         }
     }
-    
-    drawEntity(entity: IRenderEntity, force: boolean = true): void {
+    /**
+     * 单独绘制可渲染对象, 可能是使用了 global material也可能没有。这种方式比较耗性能,只能用在特殊的地方。
+     * @param entity 需要指定绘制的 IRenderEntity 实例
+     * @param useGlobalUniform 是否使用当前 global material 所携带的 uniform, default value: false
+     * @param forceUpdateUniform 是否强制更新当前 global material 所对应的 shader program 的 uniform, default value: true
+     */
+    drawEntity(entity: IRenderEntity, useGlobalUniform: boolean = false,  forceUpdateUniform: boolean = true): void {
         if (!this.m_runFlag) {
-            if(this.m_rcontext.isUnlockMaterial()) {
-                this.m_render.drawEntityByLockMaterial(entity,false,true);
-            }
-            else {
-                this.m_render.drawEntity(entity, force);
-            }
+            this.m_render.drawEntity(entity, useGlobalUniform, forceUpdateUniform);
         }
     }
     runBegin(): void {

@@ -53,6 +53,7 @@ export default class MaterialBase implements IRenderMaterial
                     , shdCode_vshdCode
                     , shdCode_fshdCode
                     , adaptationShaderVersion
+                    , ShaderCodeBuffer.GetPreCompileInfo()
                 );
             }
             this.m_shduns = shdCode_uniqueName;
@@ -116,6 +117,7 @@ export default class MaterialBase implements IRenderMaterial
                         , shdCode_vshdCode
                         , shdCode_fshdCode
                         , buf.adaptationShaderVersion
+                        , ShaderCodeBuffer.GetPreCompileInfo()
                     );
                 }
                 ShaderCodeBuffer.UseShaderBuffer(null);

@@ -10,6 +10,7 @@ import RendererDeviece from "../../../vox/render/RendererDeviece";
 import IUniformParam from "../../../vox/material/IUniformParam";
 import IShaderCodeBuilder from "./IShaderCodeBuilder";
 import GLSLConverter from "./GLSLConverter";
+import ShaderCompileInfo from "./ShaderCompileInfo";
 
 export default class ShaderCodeBuilder2 implements IShaderCodeBuilder {
 
@@ -56,7 +57,9 @@ precision mediump float;
 
 
     private m_textureSampleTypes: string[] = [];
+    private m_texturePrecises: string[] = [];
     private m_textureMacroNames: string[] = [];
+    private m_texturePrecise: string = "";
 
     private m_vertObjMat: boolean = false;
     private m_vertViewMat: boolean = false;
@@ -71,12 +74,17 @@ precision mediump float;
     private m_fragHeadCode: string = "";
     private m_fragMainCode: string = "";
     private m_use2DMap: boolean = false;
+    /**
+     * 记录 shader 预编译信息
+     */
+    private m_preCompileInfo: ShaderCompileInfo = null;
 
     normalMapEanbled: boolean = false;
     mapLodEnabled: boolean = false;
     derivatives: boolean = false;
     vertMatrixInverseEnabled: boolean = false;
     fragMatrixInverseEnabled: boolean = false;
+
     constructor() { }
 
     reset() {
@@ -119,12 +127,25 @@ precision mediump float;
         this.m_defineValues = [];
 
         this.m_textureSampleTypes = [];
+        this.m_texturePrecises = [];
         this.m_textureMacroNames = [];
+        this.m_texturePrecise = "";
 
         this.normalMapEanbled = false;
         this.mapLodEnabled = false;
         this.vertMatrixInverseEnabled = false;
         this.fragMatrixInverseEnabled = false;
+
+        this.m_preCompileInfo = null;
+    }
+    /**
+     * 预编译信息
+     * @returns 返回预编译信息
+     */
+    getPreCompileInfo(): ShaderCompileInfo {
+        let info = this.m_preCompileInfo;
+        this.m_preCompileInfo = null;
+        return info;
     }
     useHighPrecious(): void {
         this.m_preciousCode = "precision highp float;";
@@ -187,9 +208,15 @@ precision mediump float;
     addVertFunction(codeBlock: string): void {
         this.m_vertFunctionBlocks.push(codeBlock);
     }
+    useTexturePreciseHighp(): void {
+        this.m_texturePrecise = "highp";
+    }
     addTextureSample2D(macroName:string = "",map2DEnabled: boolean = true): void {
         this.m_textureSampleTypes.push("sampler2D");
         this.m_textureMacroNames.push(macroName);
+        console.log("this.m_texturePrecise: ",this.m_texturePrecise);
+        this.m_texturePrecises.push(this.m_texturePrecise);
+        this.m_texturePrecise = "";
         if(map2DEnabled) {
             this.m_use2DMap = true;
         }
@@ -197,10 +224,14 @@ precision mediump float;
     addTextureSampleCube(macroName:string = ""): void {
         this.m_textureSampleTypes.push("samplerCube");
         this.m_textureMacroNames.push(macroName);
+        this.m_texturePrecises.push(this.m_texturePrecise);
+        this.m_texturePrecise = "";
     }
     addTextureSample3D(macroName:string = ""): void {
         this.m_textureSampleTypes.push("sampler3D");
         this.m_textureMacroNames.push(macroName);
+        this.m_texturePrecises.push(this.m_texturePrecise);
+        this.m_texturePrecise = "";
     }
     isHaveTexture(): boolean {
         return this.m_textureSampleTypes.length > 0;
@@ -250,6 +281,11 @@ precision mediump float;
         if (RendererDeviece.IsWebGL2()) {
             code += this.m_versionDeclare;
         }
+
+        this.m_preCompileInfo = new ShaderCompileInfo();
+        this.m_preCompileInfo.info = "\n//##COMPILE_INFO_BEGIN";
+        // complie info, for example: uniform info
+        this.m_preCompileInfo.info += "\n//##COMPILE_INFO_END";
 
         i = 0;
         len = this.m_fragExt.length;
@@ -319,7 +355,11 @@ precision mediump float;
         i = 0;
         len = this.m_textureSampleTypes.length;
         for (; i < len; i++) {
-            code += "\nuniform " + this.m_textureSampleTypes[i] + " u_sampler" + i + ";";
+            if(this.m_texturePrecises[i] == "") {
+                code += "\nuniform " + this.m_textureSampleTypes[i] + " u_sampler" + i + ";";
+            }else {
+                code += "\nuniform "  + this.m_texturePrecises[i] + " "+ this.m_textureSampleTypes[i] + " u_sampler" + i + ";";
+            }
         }
 
         i = 0;

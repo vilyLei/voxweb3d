@@ -26,9 +26,9 @@ getFragShaderCode():string
 {
     let fragCode:string = 
 `
-precision mediump float;
-uniform sampler2D u_sampler0;
-uniform sampler2D u_sampler1;
+precision highp float;
+uniform highp sampler2D u_sampler0;
+uniform highp sampler2D u_sampler1;
 uniform vec4 u_frustumParam;
 uniform vec4 u_colors[2];
 varying vec2 v_uvs;
@@ -59,22 +59,22 @@ return viewZToOrthographicDepth( viewZ, cameraNear, cameraFar );
 }
 void main()
 {
-vec4 color4 = texture2D(u_sampler0, v_uvs);
-color4 *= u_colors[0];
+    vec4 color4 = texture2D(u_sampler0, v_uvs);
+    color4 *= u_colors[0];
 
-vec4 param = u_colors[1];
-if(param.z > 0.5)
-{
-param.xy = vec2(gl_FragCoord.x/param.x,gl_FragCoord.y/param.y);
-float depth = texture2D(u_sampler1,param.xy).x + 0.00001;
+    vec4 param = u_colors[1];
+    if(param.z > 0.5)
+    {
+    param.xy = gl_FragCoord.xy/param.xy;
+    float depth = texture2D(u_sampler1,param.xy).x + 0.00001;
 
-float depthZ = gl_FragCoord.z;
-if((depthZ) <= depth)
-{
-discard;
-}
-}
-gl_FragColor = color4;
+    float depthZ = gl_FragCoord.z;
+    if((depthZ) <= depth)
+    {
+        discard;
+    }
+    }
+    gl_FragColor = color4;
 }
 `;
     return fragCode;
@@ -91,10 +91,10 @@ uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
 varying vec2 v_uvs;
 void main(){
-mat4 viewMat4 = u_viewMat * u_objMat;
-vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);
-gl_Position = u_projMat * viewPos;
-v_uvs = a_uvs;
+    mat4 viewMat4 = u_viewMat * u_objMat;
+    vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);
+    gl_Position = u_projMat * viewPos;
+    v_uvs = a_uvs;
 }
 `;
     return vtxCode;

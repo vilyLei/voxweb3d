@@ -9,7 +9,7 @@ import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
-
+import MathConst from "../../../vox/math/MathConst";
 class PostOutlineShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
@@ -32,6 +32,8 @@ class PostOutlineShaderBuffer extends ShaderCodeBuffer {
         coder.addVertLayout("vec3", "a_vs");
         coder.addVertLayout("vec2", "a_uvs");
         coder.addTextureSample2D();
+        coder.addFragUniform("vec4", "u_texParam");
+        coder.addFragUniform("vec4", "u_color");
 
         coder.addVarying("vec2", "v_uv");
         coder.addFragOutput("vec4", "FragColor0");
@@ -42,19 +44,30 @@ class PostOutlineShaderBuffer extends ShaderCodeBuffer {
     }
     getFragShaderCode(): string {
         this.buildThisCode();
-        this.m_codeBuilder.addFragHeadCode(
-`
-vec3 worldNormal;
-`
-        )
+
         this.m_codeBuilder.addFragMainCode(
 `
+const float factor = 1.0 / 9.0;
 void main() {
-    vec4 color = VOX_Texture2D( u_sampler0, v_uv );
+    
+    vec2 dv = u_texParam.ww / u_texParam.xy;
+    vec4 srcColor = VOX_Texture2D( u_sampler0, v_uv );
 
-    FragColor0 = vec4(color.xyz, 1.0);
-
-    #endif
+    vec3 color = srcColor.xyz;// * 0.2;
+    color.xyz += VOX_Texture2D( u_sampler0, v_uv + dv ).xyz;// * 0.05;
+    color.xyz += VOX_Texture2D( u_sampler0, v_uv - dv ).xyz;// * 0.05;
+    color.xyz += VOX_Texture2D( u_sampler0, v_uv + vec2(dv.x ,-dv.y) ).xyz;// * 0.05;
+    color.xyz += VOX_Texture2D( u_sampler0, v_uv + vec2(-dv.x ,dv.y) ).xyz;// * 0.05;
+    color.xyz += VOX_Texture2D( u_sampler0, v_uv + vec2(dv.x ,0) ).xyz;// * 0.15;
+    color.xyz += VOX_Texture2D( u_sampler0, v_uv + vec2(0 ,dv.y) ).xyz;// * 0.15;
+    color.xyz += VOX_Texture2D( u_sampler0, v_uv - vec2(dv.x ,0) ).xyz;// * 0.15;
+    color.xyz += VOX_Texture2D( u_sampler0, v_uv - vec2(0 ,dv.y) ).xyz;// * 0.15;
+    color.xyz *= factor;
+    
+    float dis = length(color - srcColor.xyz);
+    dis *= u_texParam.z;
+    
+    FragColor0 = vec4(u_color.xyz, dis - 0.01);
 }
 `
         );
@@ -65,24 +78,8 @@ void main() {
         this.m_codeBuilder.addVertMainCode(
 `
 void main() {
-    vec4 wpos = u_objMat * vec4(a_vs, 1.0);
-    vec4 viewPos = u_viewMat * wpos;
-    gl_Position =  u_projMat * viewPos;
+    gl_Position = vec4(a_vs, 1.0);
     v_uv = a_uvs.xy;
-    v_worldNormal = normalize(a_nvs * inverse(mat3(u_objMat)));
-    //wpos.xyz += a_nvs.xyz * 0.05;
-
-    #ifdef VOX_USE_SHADOW
-
-    calcShadowPos( wpos );
-
-    #endif
-
-    #ifdef VOX_USE_FOG
-
-    calcFogDepth(viewPos);
-
-    #endif
 }
 `
         );
@@ -109,17 +106,28 @@ export default class PostOutlineMaterial extends MaterialBase {
         let buf: PostOutlineShaderBuffer = PostOutlineShaderBuffer.GetInstance();
         return buf;
     }
-    private m_colorData: Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
-    
-    setRGB3f(r: number, g: number, b: number): void {
-        this.m_colorData[0] = r;
-        this.m_colorData[1] = g;
-        this.m_colorData[2] = b;
+    private m_texParam: Float32Array = new Float32Array([32.0,32.0,1.3,2.0]);
+    private m_color: Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
+
+    setThickness( thickness: number ): void {
+        this.m_texParam[3] = MathConst.Clamp(thickness, 0.1, 5.0);
+    }
+    setDensity( density: number ): void {
+        this.m_texParam[2] = MathConst.Clamp(density, 0.1, 5.0);
+    }
+    setRGB3f(pr: number, pg: number, pb: number): void {
+        this.m_color[0] = pr;
+        this.m_color[1] = pg;
+        this.m_color[2] = pb;
+    }
+    setTexSize(width: number, height: number): void {
+        this.m_texParam[0] = width;
+        this.m_texParam[1] = height;
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_color"];
-        oum.dataList = [this.m_colorData];
+        oum.uniformNameList = ["u_texParam", "u_color"];
+        oum.dataList = [this.m_texParam, this.m_color];
         return oum;
     }
 }

@@ -31,8 +31,8 @@ class PostOutlinePreShaderBuffer extends ShaderCodeBuffer {
         coder.addFragOutput("vec4", "FragColor0");
 
         coder.useVertSpaceMats(true, true, true);
-        coder.vertMatrixInverseEnabled = true;
-
+        //coder.vertMatrixInverseEnabled = true;
+        
     }
     getFragShaderCode(): string {
 

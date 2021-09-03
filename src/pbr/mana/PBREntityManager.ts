@@ -71,7 +71,7 @@ export default class PBREntityManager
             this.m_dracoModule.setPartsTotal(urlsTotal);
             this.m_dracoModule.setScale( 1.0 );
             this.m_dracoModule.setPosition(new Vector3D(0.0, -300.0, 0.0));
-            //this.m_dracoModule.loadNext();
+            this.m_dracoModule.loadNext();
 
             this.initPrimitive();
         }

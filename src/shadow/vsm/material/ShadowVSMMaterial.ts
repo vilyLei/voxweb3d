@@ -35,7 +35,6 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
         coder.reset();
 
         coder.addVertLayout("vec3", "a_vs");
-
         coder.addVertLayout("vec2", "a_uvs");
         coder.addVertLayout("vec3", "a_nvs");
         coder.addTextureSample2D();

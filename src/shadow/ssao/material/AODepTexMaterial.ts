@@ -51,6 +51,8 @@ class AODepTexShaderBuffer extends ShaderCodeBuffer
         // tex noise
         coder.addTextureSample2D();
         // tex depth tex
+        console.log("XXXXXXXXXXXXXXXXuseTexturePreciseHighpXXXXXXXXXXXXXXXXXX");
+        coder.useTexturePreciseHighp();
         coder.addTextureSample2D();
 
         coder.useVertSpaceMats(false,false,false);
@@ -68,7 +70,7 @@ class AODepTexShaderBuffer extends ShaderCodeBuffer
 
         this.m_codeBuilder.addFragMainCode(
 `
-uniform vec3 u_aoSamples[AO_SamplesTotal];
+uniform vec3 u_aoSamples[AO_SamplesTotal];//AO SamplesTotal
 
 const float radius = 100.0;
 const float bias = 1.0;

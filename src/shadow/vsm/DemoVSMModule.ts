@@ -28,7 +28,6 @@ import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 import EnvLightData from "../../light/base/EnvLightData";
 
 import DracoMesh from "../../voxmesh/draco/DracoMesh";
-import { DracoTaskListener } from "../../voxmesh/draco/DracoTask";
 import DracoMeshBuilder from "../../voxmesh/draco/DracoMeshBuilder";
 import ThreadSystem from "../../thread/ThreadSystem";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
@@ -154,14 +153,17 @@ export class DemoVSMModule {
         //let shadowTex: TextureProxy = this.m_depthRtt;
         let shadowTex: TextureProxy = this.m_vsmModule.getShadowMap();
 
-        let mesh: DracoMesh = new DracoMesh();
-        mesh.initialize(modules);
 
         let uvscale: number = Math.random() * 7.0 + 0.6;
         let shadowMaterial: ShadowVSMMaterial = new ShadowVSMMaterial();
         shadowMaterial.setVSMData(vsmData);
         shadowMaterial.setEnvData(envData);
+        shadowMaterial.initializeByCodeBuf(true);
         shadowMaterial.setTextureList([shadowTex, this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
+        
+        let mesh: DracoMesh = new DracoMesh();
+        mesh.setBufSortFormat(shadowMaterial.getBufSortFormat());
+        mesh.initialize(modules);
         let scale = this.m_scale;
         let entity: DisplayEntity = new DisplayEntity();
         entity.setMaterial(shadowMaterial);

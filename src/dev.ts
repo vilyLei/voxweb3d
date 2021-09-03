@@ -296,7 +296,7 @@
 
 //  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
 
-import {DemoOutline as Demo} from "./demo/DemoOutline";
+//  import {DemoOutline as Demo} from "./demo/DemoOutline";
 
 //  import {DemoDraco as Demo} from "./demo/DemoDraco";
 
@@ -344,7 +344,7 @@ import {DemoOutline as Demo} from "./demo/DemoOutline";
 
 //  import {DemoDefaultPBR3 as Demo} from "./pbr/DemoDefaultPBR3";
 
-//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
+import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 

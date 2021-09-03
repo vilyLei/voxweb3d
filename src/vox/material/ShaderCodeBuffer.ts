@@ -6,13 +6,12 @@
 /***************************************************************************/
 
 import IRenderTexture from '../../vox/render/IRenderTexture';
-import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
-import RendererDeviece from '../render/RendererDeviece';
-
+import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
+import ShaderCompileInfo from "../../vox/material/code/ShaderCompileInfo";
 class ShaderCodeBuffer
 {
     private static ___s_csBuf:ShaderCodeBuffer = null;
-    protected static s_coder:ShaderCodeBuilder = new ShaderCodeBuilder();
+    protected static s_coder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
 
     private m_texList:IRenderTexture[] = null;
     private m_texEnabled:boolean = true;
@@ -25,6 +24,10 @@ class ShaderCodeBuffer
     adaptationShaderVersion: boolean = true;
     constructor()
     {
+    }
+
+    static GetPreCompileInfo():ShaderCompileInfo {
+        return ShaderCodeBuffer.s_coder.getPreCompileInfo();
     }
     initialize(texEnabled:boolean):void
     {
@@ -56,100 +59,74 @@ class ShaderCodeBuffer
     {
         if(ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getFragShaderCode();
         
-        let codeStr:string = "#version 300 es\nprecision mediump float;";
-        if(this.premultiplyAlpha) codeStr += "\n#define VOX_PREMULTIPLY_ALPHA";
-        
-        if(RendererDeviece.IsWebGL2()) codeStr += "\n#define VOX_IN in";
-        else codeStr += "\n#define VOX_IN varying";
+        this.adaptationShaderVersion = false;        
+        let coder = ShaderCodeBuffer.s_coder;
+        coder.reset();
 
-        if(this.m_texEnabled)
-        {
-            codeStr += "\n#define VOX_USE_MAP";
-            codeStr +=
-`
-#ifdef VOX_USE_MAP
-    uniform sampler2D u_sampler0;
-    VOX_IN vec2 v_uvs;
-#endif
-`;
+        coder.addVertLayout("vec3", "a_vs");
+        coder.addFragOutput("vec4", "FragColor0");
+        coder.addFragUniform("vec4", "u_color");
+
+        coder.useVertSpaceMats(true, true, true);
+
+        if(this.premultiplyAlpha) coder.addDefine("VOX_PREMULTIPLY_ALPHA", "1");
+        if(this.m_texEnabled) {
+            coder.addTextureSample2D();
+            coder.addVertLayout("vec2", "a_uvs");
+            coder.addVarying("vec2", "v_uv");
         }
-        if(this.vtxColorEnabled) codeStr += "\n#define VOX_USE_VTX_COLOR";
-        codeStr += "\n";
-        codeStr += 
+        if(this.vtxColorEnabled) {
+            coder.addDefine("VOX_USE_VTX_COLOR", "1");
+            coder.addVertLayout("vec3", "a_cvs");
+            coder.addVarying("vec3", "v_cv");
+        }
+        
+        coder.addFragMainCode(
 `
-#ifdef VOX_USE_VTX_COLOR
-    VOX_IN vec3 v_cvs;
-#endif
-uniform vec4 u_color;
-layout(location = 0) out vec4 FragColor;
 void main(){
-    FragColor = vec4(1.0);
-    #ifdef VOX_USE_MAP
-        //  FragColor *= texture(u_sampler0, vec2(v_uvs[0],v_uvs[1]));
-        FragColor *= texture(u_sampler0, v_uvs.xy);
+
+    FragColor0 = vec4(1.0);
+    #ifdef VOX_USE_2D_MAP
+        //  FragColor0 *= VOX_Texture2D(u_sampler0, vec2(v_uv[0],v_uv[1]));
+        FragColor0 *= VOX_Texture2D(u_sampler0, v_uv.xy);
     #endif
     #ifdef VOX_USE_VTX_COLOR
-        FragColor *= vec4(v_cvs.xyz,1.0);
+        FragColor0 *= vec4(v_cv.xyz,1.0);
     #endif
     #ifdef VOX_PREMULTIPLY_ALPHA
-        FragColor.rgb *= u_color.xyz;
-        FragColor.a *= u_color.w;
-        FragColor.rgb *= u_color.aaa;
+        FragColor0.rgb *= u_color.xyz;
+        FragColor0.a *= u_color.w;
+        FragColor0.rgb *= u_color.aaa;
     #else
-        FragColor *= u_color;
+        FragColor0 *= u_color;
     #endif
 }
-`;
-        return codeStr;
+`
+                    );
+            
+        return coder.buildFragCode();
     }
     getVtxShaderCode():string
     {
         if(ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getVtxShaderCode();
-
-        let codeStr:string = "#version 300 es\nprecision mediump float;";
-        codeStr += "\nlayout(location = 0) in vec3 a_vs;";
-
-        let layoutIndex: number = 1;
-        if(this.m_texEnabled) {
-            codeStr += "\n#define VOX_USE_MAP";
-            codeStr +=
-`
-#ifdef VOX_USE_MAP
-    layout(location = `+(layoutIndex++)+`) in vec2 a_uvs;
-    out vec2 v_uvs;
-#endif
-`;
-        }
+        let coder: ShaderCodeBuilder2 = ShaderCodeBuffer.s_coder;
         
-        if(this.vtxColorEnabled)
-        {
-            codeStr += "\n#define VOX_USE_VTX_COLOR";
-            codeStr +=
+        coder.addVertMainCode(
 `
-#ifdef VOX_USE_VTX_COLOR
-    layout(location = `+(layoutIndex++)+`) in vec3 a_cvs;
-    out vec3 v_cvs;
-#endif
-`;
-        }
-        codeStr +=
-`
-uniform mat4 u_objMat;
-uniform mat4 u_viewMat;
-uniform mat4 u_projMat;
 void main(){
     
     gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs.xyz,1.0);
 
-    #ifdef VOX_USE_MAP
-        v_uvs = a_uvs.xy;
+    #ifdef VOX_USE_2D_MAP
+        v_uv = a_uvs.xy;
     #endif
     #ifdef VOX_USE_VTX_COLOR
-        v_cvs = a_cvs.xyz;
+        v_cv = a_cvs.xyz;
     #endif
 }
-`;
-        return codeStr;
+`
+        );
+        return coder.buildVertCode();
     }
     getUniqueShaderName(): string
     {

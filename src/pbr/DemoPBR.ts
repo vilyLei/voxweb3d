@@ -17,6 +17,7 @@ import DefaultPBRUI from "./mana/DefaultPBRUI";
 import DebugFlag from "../vox/debug/DebugFlag";
 import PBRScene from "./mana/PBRScene";
 import StencilOutline from "../renderingtoy/mcase/outline/StencilOutline";
+import PostOutline from "../renderingtoy/mcase/outline/PostOutline";
 
 export class DemoPBR {
     constructor() { }
@@ -31,13 +32,16 @@ export class DemoPBR {
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     private m_stencilOutline: StencilOutline = new StencilOutline();
+    private m_postOutline: PostOutline = new PostOutline();
     private m_uiModule: DefaultPBRUI = new DefaultPBRUI();
     
     private m_pbrScene: PBRScene;
 
     initialize(): void {
+        
         console.log("DemoPBR::initialize()......");
         if (this.m_rscene == null) {
+
             RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
             RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
@@ -55,8 +59,11 @@ export class DemoPBR {
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);
-            this.m_stencilOutline.initialize(this.m_rscene);
-            this.m_stencilOutline.setRGB3f(1.0, 0.0, 1.0);
+            //  this.m_stencilOutline.initialize(this.m_rscene);
+            //  this.m_stencilOutline.setRGB3f(1.0, 0.0, 1.0);
+            this.m_postOutline.initialize(this.m_rscene, 4);
+            this.m_postOutline.setOutlineThickness(1.0);
+            this.m_postOutline.setOutlineDensity(1.5);
 
             this.m_rscene.enableMouseEvent(true);
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
@@ -148,21 +155,27 @@ export class DemoPBR {
         // ------------------------------------- draw(render) scene effect data
         this.m_pbrScene.prerender();
 
-        // ------------------------------------- draw(render) outline begin
-        if (this.m_uiModule.isOpen() && this.m_uiModule.getParamEntity() != null) {
-            this.m_stencilOutline.setTarget(this.m_uiModule.getParamEntity().entity);
-            this.m_stencilOutline.startup();
-        }
-        else {
-            this.m_stencilOutline.quit();
-        }
-        this.m_stencilOutline.drawBegin();
+        //  // ------------------------------------- draw(render) outline begin
+        //  if (this.m_uiModule.isOpen() && this.m_uiModule.getParamEntity() != null) {
+        //      this.m_stencilOutline.setTarget(this.m_uiModule.getParamEntity().entity);
+        //      this.m_stencilOutline.startup();
+        //  }
+        //  else {
+        //      this.m_stencilOutline.quit();
+        //  }
+        //  this.m_stencilOutline.drawBegin();
         // ------------------------------------- draw(render) normal scene begin
         this.m_pbrScene.render();
-        // ------------------------------------- draw(render) normal scene end
-        this.m_stencilOutline.draw();
-        // ------------------------------------- draw(render) outline end
-
+        //  // ------------------------------------- draw(render) normal scene end
+        //  this.m_stencilOutline.draw();
+        //  // ------------------------------------- draw(render) outline end
+        if (this.m_uiModule.isOpen() && this.m_uiModule.getParamEntity() != null) {
+            this.m_postOutline.setTarget( this.m_uiModule.getParamEntity().entity );
+            
+            this.m_postOutline.drawBegin();
+            this.m_postOutline.draw();
+            this.m_postOutline.drawEnd();
+        }
         this.m_rscene.runEnd();
         // ------------------------------------- draw(render) scene end
 

@@ -8,7 +8,6 @@
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
-import ShaderCodeBuilder from "../../../vox/material/code/ShaderCodeBuilder";
 
 class ViewMirrorShaderBuffer extends ShaderCodeBuffer
 {
@@ -26,7 +25,7 @@ class ViewMirrorShaderBuffer extends ShaderCodeBuffer
     }
     private buildThisCode():void
     {
-        let coder:ShaderCodeBuilder = ShaderCodeBuffer.s_coder;
+        let coder = ShaderCodeBuffer.s_coder;
         coder.reset();
         coder.addVertLayout("vec3","a_vs");
         if(this.isTexEanbled())
@@ -46,42 +45,44 @@ class ViewMirrorShaderBuffer extends ShaderCodeBuffer
     {
         this.buildThisCode();
 
-        if(this.isTexEanbled())
-        {
-            ShaderCodeBuffer.s_coder.addFragMainCode(
+        ShaderCodeBuffer.s_coder.addFragMainCode(
 `
-//vec4 colorFactor = gl_FrontFacing?vec4(0.0,1.0,0.0,1.0):vec4(1.0,0.0,0.0,1.0);
-vec4 colorFactor = vec4(1.0);
-FragColor0 = colorFactor * u_color * texture(u_sampler0, v_uv.xy);
+void main() {
+    #ifdef VOX_USE_2D_MAP
+        //vec4 colorFactor = gl_FrontFacing?vec4(0.0,1.0,0.0,1.0):vec4(1.0,0.0,0.0,1.0);
+        vec4 colorFactor = vec4(1.0);
+        FragColor0 = colorFactor * u_color * texture(u_sampler0, v_uv.xy);
+    #else
+        FragColor0 = u_color;
+    #endif
+}
 `
-            );
-        }
-        else
-        {
-            ShaderCodeBuffer.s_coder.addFragMainCode("\tFragColor0 = u_color");
-        }
+        );
         
         return ShaderCodeBuffer.s_coder.buildFragCode();                    
     }
     getVtxShaderCode():string
     {
         
-        let coder:ShaderCodeBuilder = ShaderCodeBuffer.s_coder;
+        let coder = ShaderCodeBuffer.s_coder;
         coder.addVertMainCode(
 
-`vec4 wpos = u_objMat * vec4(a_vs, 1.0);
-wpos.xyz = reflect(wpos.xyz, u_mirrorNormal.xyz);
-vec3 nv = mat3(u_viewMat) * u_mirrorNormal.xyz;
+`
+void main() {
+    
+    vec4 wpos = u_objMat * vec4(a_vs, 1.0);
+    wpos.xyz = reflect(wpos.xyz, u_mirrorNormal.xyz);
+    vec3 nv = mat3(u_viewMat) * u_mirrorNormal.xyz;
 
-vec4 viewPos = u_viewMat * wpos;
-gl_Position = dot(nv, vec3(0.0,0.0,1.0)) > 0.01 ? u_projMat * viewPos : vec4(0.0,0.0,-2.0,1.0);
+    vec4 viewPos = u_viewMat * wpos;
+    gl_Position = dot(nv, vec3(0.0,0.0,1.0)) > 0.01 ? u_projMat * viewPos : vec4(0.0,0.0,-2.0,1.0);
+
+    #ifdef VOX_USE_2D_MAP
+        v_uv = a_uvs.xy;
+    #endif
 `
 
         );
-        if(this.isTexEanbled())
-        {
-            coder.addVertMainCode("\tv_uv = a_uvs.xy;");
-        }
         return coder.buildVertCode();
     }
     getUniqueShaderName(): string

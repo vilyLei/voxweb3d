@@ -39,6 +39,7 @@ export class DemoDeepTransparent2 extends DemoInstance
     {
         this.m_processTotal = 4;
         param.maxWebGLVersion = 1;
+        param.setAttriStencil(true);
         param.setCamProject(45,200,2000.0);
         param.setMatrix4AllocateSize(4096 * 2);
         param.setCamPosition(800.0,800.0,800.0);
@@ -110,6 +111,7 @@ export class DemoDeepTransparent2 extends DemoInstance
         sph = new Sphere3DEntity();
         sph.setMaterial(peelM);
         sph.copyMeshFrom(srcSph);
+        //scale = 0.3;
         //NONE_CULLFACE_NORMAL_STATE
         //sph.setRenderState(RendererState.FRONT_CULLFACE_NORMAL_STATE);
         sph.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
