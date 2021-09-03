@@ -16,7 +16,7 @@ import RendererSubScene from "../vox/scene/RendererSubScene";
 import DefaultPBRUI from "./mana/DefaultPBRUI";
 import DebugFlag from "../vox/debug/DebugFlag";
 import PBRScene from "./mana/PBRScene";
-import StencilOutline from "../renderingtoy/mcase/outline/StencilOutline";
+//  import StencilOutline from "../renderingtoy/mcase/outline/StencilOutline";
 import PostOutline from "../renderingtoy/mcase/outline/PostOutline";
 
 export class DemoPBR {
@@ -31,14 +31,14 @@ export class DemoPBR {
     //private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
-    private m_stencilOutline: StencilOutline = new StencilOutline();
+    //private m_stencilOutline: StencilOutline = new StencilOutline();
     private m_postOutline: PostOutline = new PostOutline();
     private m_uiModule: DefaultPBRUI = new DefaultPBRUI();
     
     private m_pbrScene: PBRScene;
 
     initialize(): void {
-        
+
         console.log("DemoPBR::initialize()......");
         if (this.m_rscene == null) {
 
