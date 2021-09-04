@@ -3,6 +3,10 @@ function ImageProxy() {
     let m_url = "";
     let m_img = null;
     let m_loaded = false;
+    let m_listener = null;
+    this.setListener = function(l) {
+        m_listener = l;
+    }
     this.initialize = function (url) {
         m_url = url;
     }
@@ -13,6 +17,9 @@ function ImageProxy() {
             m_img.onload = (evt) => {
                 m_loaded = true;
                 console.log("ImageProxy image("+m_url+") loaded.");
+                if(m_listener != null) {
+                    m_listener.imageLoaded();
+                }
             }
             console.log("ready load image("+m_url+").");
             m_img.src = m_url;
@@ -53,6 +60,21 @@ function UIManagementTexChange() {
     let m_texImg1 = new ImageProxy();
     let m_texImg2 = new ImageProxy();
     let m_currTexImg = null;
+
+    function useTexImage() {
+
+        if(m_currTexImg != null && m_currTexImg.isLoaded()) {
+            console.log("use texture image(" + m_currTexImg.getUrl() + ").");
+            let entitys = uiLayout.getEntities();
+            console.log("entitys: ",entitys);
+            if(entitys.length > 0) {
+                let texture = entitys[0].getMaterial().getTextureAt(0);
+                texture.setDataFromImage( m_currTexImg.getImage() );
+                texture.updateDataToGpu();
+            }
+            m_currTexImg = null;
+        }
+    }
     this.initialize = function () {
 
         console.log("UIManagementTexChange::initialize()...");
@@ -73,8 +95,10 @@ function UIManagementTexChange() {
         uiLayout.addModule(this);
 
         m_texImg1.initialize(urls[0]);
+        m_texImg1.setListener( this );
         m_texImg1.load();
         m_texImg2.initialize(urls[1]);
+        m_texImg2.setListener( this );
         
 
         tex1Btn = this.createSelectBtn("纹理1", "tex_1", "已使用", "使用", false);
@@ -111,9 +135,15 @@ function UIManagementTexChange() {
         if (!visibleAlways) m_btns.push(selectBar);
         return selectBar;
     }
+    this.imageLoaded = function() {
+        useTexImage();
+    }
     this.useTexImage = function() {
         if (m_currTexImg.getImage() == null) {
             m_currTexImg.load();
+        }
+        else {
+            useTexImage();
         }
     }
     this.changeTex = function () {
@@ -154,18 +184,8 @@ function UIManagementTexChange() {
                 break;
         }
     }
+    
     this.run = function () {
         
-        if(m_currTexImg != null && m_currTexImg.isLoaded()) {
-            console.log("use texture image(" + m_currTexImg.getUrl() + ").");
-            let entitys = uiLayout.getEntities();
-            console.log("entitys: ",entitys);
-            if(entitys.length > 0) {
-                let texture = entitys[0].getMaterial().getTextureAt(0);
-                texture.setDataFromImage( m_currTexImg.getImage() );
-                texture.updateDataToGpu();
-            }
-            m_currTexImg = null;
-        }
     }
 };

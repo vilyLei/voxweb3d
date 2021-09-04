@@ -1,7 +1,7 @@
 
 function UIManagementModule() {
 
-    let m_plane = null;
+    let m_currEntityy = null;
     let m_rotV3 = null;
     let m_container = null;
     let m_ruisc = null;
@@ -16,6 +16,20 @@ function UIManagementModule() {
     let m_btnPY = 70.0;
     let m_btns = [];
 
+    function updateBoxUV(box, uvs) {
+        let uvs0 = new Float32Array([
+            uvs[0], uvs[1], uvs[0], uvs[1],
+            uvs[0], uvs[1], uvs[0], uvs[1]
+        ]);
+        box.setFaceUVSAt(0, uvs0);
+        box.setFaceUVSAt(1, uvs, 1);
+        box.setFaceUVSAt(2, uvs0);
+        box.setFaceUVSAt(3, uvs0);
+        box.setFaceUVSAt(4, uvs0);
+        box.setFaceUVSAt(5, uvs0);
+
+        box.reinitializeMesh();
+    }
     function initLoadJS(module_ns) {
 
         let pwindwo = window;
@@ -85,15 +99,23 @@ function UIManagementModule() {
         //  axis.initialize(300.0);
         //  uiLayout.addToScene(axis);
 
-
+        /*
         let plane = new Plane3DEntity();
         plane.name = "plane";
         plane.showDoubleFace();
         plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [uiLayout.getImageTexByUrl("static/assets/decorativePattern_01.jpg")]);
         plane.setXYZ(100, 0.0, 100);
+        uiLayout.saveEntity(plane);
         m_container.addEntity(plane);
-        uiLayout.saveEntity( plane );
-        m_plane = plane;
+        m_currEntityy = plane;
+        //*/
+        let box = new Box3DEntity();
+        box.name = "box";
+        box.initializeSizeXYZ(800,800,30,[uiLayout.getImageTexByUrl("static/assets/decorativePattern_01.jpg")]);
+        box.setXYZ(100, 0.0, 100);
+        m_container.addEntity(box);
+        uiLayout.saveEntity(box);
+        m_currEntityy = box;
 
 
         uiLayout.showInfo();
@@ -205,9 +227,9 @@ function UIManagementModule() {
     }
     this.run = function () {
 
-        m_plane.getRotationXYZ(m_rotV3);
-        m_plane.setRotationXYZ(m_rotV3.x, m_rotV3.y + 1, m_rotV3.z);
-        //m_plane.update();
+        m_currEntityy.getRotationXYZ(m_rotV3);
+        m_currEntityy.setRotationXYZ(m_rotV3.x, m_rotV3.y + 1, m_rotV3.z);
+        //m_currEntityy.update();
 
         m_container.getRotationXYZ(m_rotV3);
         m_container.setRotationXYZ(m_rotV3.x + 0.5, m_rotV3.y, m_rotV3.z + 1);
