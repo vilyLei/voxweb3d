@@ -136,75 +136,11 @@ export class CanvasTextureTool {
     }
 
     createCharsImage(chars: string, size: number, fontStyle: string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(255,255,255,0.3)"): HTMLCanvasElement | HTMLImageElement {
+        
         if (chars == null || chars == "" || size < 8) {
             return null;
         }
-        
-        let keyStr: string = chars + "_" + size + fontStyle + "_" + bgStyle;
-        if (CanvasTextureTool.s_imgMap.has(keyStr)) {
-            return CanvasTextureTool.s_imgMap.get(keyStr);
-        }
-
-        let width: number = size;
-        let height: number = size;
-        if (chars.length > 1) {
-            width = size * chars.length;
-        }
-
-        let canvas = document.createElement('canvas');
-        canvas.width = width;
-        canvas.height = height;
-        canvas.style.display = 'bolck';
-        canvas.style.left = '0px';
-        canvas.style.top = '0px';
-        canvas.style.position = 'absolute';
-        canvas.style.backgroundColor = 'transparent';
-        //canvas.style.pointerEvents = 'none';
-
-        let ctx2D = canvas.getContext("2d");
-        ctx2D.font = (size - 4) + "px Verdana";
-        //ctx2D.textBaseline = "top" || "hanging" || "middle" || "alphabetic" || "ideographic" || "bottom";
-        ctx2D.textBaseline = "top";
-        var metrics: any = ctx2D.measureText(chars);
-        let texWidth: number = metrics.width;
-
-        if (chars.length > 1) {
-            width = Math.round(texWidth + 8);
-            
-            canvas.width = width;
-            ctx2D = canvas.getContext("2d");
-            ctx2D.font = (size - 4) + "px Verdana";
-            ctx2D.textBaseline = "top";
-        }
-        //console.log("metrics: ",metrics);
-        ctx2D.fillStyle = bgStyle;
-        ctx2D.fillRect(0, 0, width, height);
-        ctx2D.textAlign = "left";
-        ctx2D.fillStyle = fontStyle;
-        // if(RendererDeviece.IsIOS()) {
-        //     ctx2D.fillText(chars, (width - texWidth) * 0.5, -4);
-        // }
-        // else {
-        //     ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
-        // }
-        if (RendererDeviece.IsMobileWeb()) {
-            ctx2D.fillText(chars, (width - texWidth) * 0.5, -4);
-        }
-        else {
-            ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
-        }
-        //ctx2D.fillText(chars, (size - texWidth) * 0.5, (size - metrics.fontBoundingBoxDescent) * 0.5);
-
-        /*
-        actualBoundingBoxAscent: 22
-        actualBoundingBoxDescent: -17
-        actualBoundingBoxLeft: -4
-        actualBoundingBoxRight: 24
-        fontBoundingBoxAscent: 60
-        fontBoundingBoxDescent: 13
-        */
-        
-        return canvas;
+        return ImageTextureAtlas.CreateCharsTexture(chars,size,fontStyle,bgStyle);
     }
     /*
     createCharsTexture(chars: string, size: number, fontStyle: string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(255,255,255,0.3)"): TextureProxy {
