@@ -1,14 +1,13 @@
 
-import TextureProxy from "../../../vox/texture/TextureProxy";
-import ImageTextureProxy from "../../../vox/texture/ImageTextureProxy";
-import RendererScene from "../../../vox/scene/RendererScene";
-import RendererDeviece from "../../../vox/render/RendererDeviece";
-import MathConst from "../../../vox/math/MathConst";
-import ImageTextureAtlas from "../../../vox/texture/ImageTextureAtlas";
-import Color4 from "../../../vox/material/Color4";
-import AABB2D from "../../../vox/geom/AABB2D";
-import { TexArea } from "../../../vox/texture/TexAreaNode";
-import { TextureConst } from "../../../vox/texture/TextureConst";
+import TextureProxy from "../../vox/texture/TextureProxy";
+import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
+import RendererScene from "../../vox/scene/RendererScene";
+import RendererDeviece from "../../vox/render/RendererDeviece";
+import ImageTextureAtlas from "../../vox/texture/ImageTextureAtlas";
+import Color4 from "../../vox/material/Color4";
+import AABB2D from "../../vox/geom/AABB2D";
+import { TexArea } from "../../vox/texture/TexAreaNode";
+import { TextureConst } from "../../vox/texture/TextureConst";
 
 export class CanvasTextureObject {
 

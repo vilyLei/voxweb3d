@@ -17,7 +17,8 @@ class UILayoutBase {
     private m_ruisc: RendererSubScene;
     private m_texLoader: ImageTextureLoader = null;
     private m_modules: IUILayoutModule[] = [];
-
+    private m_entities: DisplayEntity[] = [];
+    private m_isRunning: boolean = true;
     constructor() {
 
         if (UILayoutBase.s_ins == null) {
@@ -61,10 +62,16 @@ class UILayoutBase {
         return ptex;
     }
 
+    getEntities(): DisplayEntity[] {
+
+        return this.m_entities;
+    }
+
     addToScene(entity: DisplayEntity, i: number = 0): void {
 
         let p: any = entity;
         if (p.__$rseFlag != null) {
+            this.m_entities.push(entity);
             this.m_rsc.addEntity(entity, i, true);
         }
         else {
@@ -96,9 +103,19 @@ class UILayoutBase {
             this.m_modules.push(pmodule);
         }
     }
+
+    play(): void {
+        this.m_isRunning = true;
+    }
+    pause(): void {
+
+        this.m_isRunning = false;
+    }
     run(): void {
-        for (let i: number = 0; i < this.m_modules.length; i++) {
-            this.m_modules[i].run();
+        if(this.m_isRunning) {
+            for (let i: number = 0; i < this.m_modules.length; i++) {
+                this.m_modules[i].run();
+            }
         }
     }
 }

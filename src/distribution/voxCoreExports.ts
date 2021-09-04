@@ -10,13 +10,14 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
 import {UILayoutBase} from "./uiManage/UILayoutBase";
 import Stage3D from "../vox/display/Stage3D";
+import CameraBase from "../vox/view/CameraBase";
 
 import SelectionEvent from "../vox/event/SelectionEvent";
-import CanvasTextureTool from "../orthoui/demos/base/CanvasTextureTool";
-import ProgressBar from "../orthoui/demos/base/ProgressBar";
+import CanvasTextureTool from "../orthoui/assets/CanvasTextureTool";
+import ProgressBar from "../orthoui/button/ProgressBar";
 import ProgressDataEvent from "../vox/event/ProgressDataEvent";
 import EventBase from "../vox/event/EventBase";
-import SelectionBar from "../orthoui/demos/base/SelectionBar";
+import SelectionBar from "../orthoui/button/SelectionBar";
 
 var VoxCore: any = {};
 
@@ -25,6 +26,7 @@ VoxCore["Vector3D"] = Vector3D;
 VoxCore["Matrix4"] = Matrix4;
 
 VoxCore["Stage3D"] = Stage3D;
+VoxCore["CameraBase"] = CameraBase;
 
 VoxCore["TextureProxy"] = TextureProxy;
 

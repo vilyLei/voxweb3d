@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import ProgressBar from "../../orthoui/demos/base/ProgressBar";
+import ProgressBar from "../../orthoui/button/ProgressBar";
 import RGBColorPanel from "../../orthoui/panel/RGBColorPanel";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import MouseEvent from "../../vox/event/MouseEvent";

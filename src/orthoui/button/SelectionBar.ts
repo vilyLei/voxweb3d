@@ -5,30 +5,28 @@
 /*                                                                         */
 /***************************************************************************/
 
-import MouseEvent from "../../../vox/event/MouseEvent";
-import RendererState from "../../../vox/render/RendererState";
-import RendererSubScene from "../../../vox/scene/RendererSubScene";
-import ColorRectImgButton from "../../../orthoui/button/ColorRectImgButton";
-import ImageTextureProxy from "../../../vox/texture/ImageTextureProxy";
-import DisplayEntityContainer from "../../../vox/entity/DisplayEntityContainer";
-import CanvasTextureTool, { CanvasTextureObject } from "./CanvasTextureTool";
-import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
-import BoundsButton from "../../button/BoundsButton";
-import MathConst from "../../../vox/math/MathConst";
-import TextureProxy from "../../../vox/texture/TextureProxy";
-import EventBaseDispatcher from "../../../vox/event/EventBaseDispatcher";
-import EventBase from "../../../vox/event/EventBase";
-import SelectionEvent from "../../../vox/event/SelectionEvent";
-import Vector3D from "../../../vox/math/Vector3D";
+import MouseEvent from "../../vox/event/MouseEvent";
+import RendererState from "../../vox/render/RendererState";
+import RendererSubScene from "../../vox/scene/RendererSubScene";
+import ColorRectImgButton from "../../orthoui/button/ColorRectImgButton";
+import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
+import CanvasTextureTool, { CanvasTextureObject } from "../assets/CanvasTextureTool";
+import EventBaseDispatcher from "../../vox/event/EventBaseDispatcher";
+import SelectionEvent from "../../vox/event/SelectionEvent";
+import Vector3D from "../../vox/math/Vector3D";
+import UIBarTool from "./UIBarTool";
+import Color4 from "../../vox/material/Color4";
+import AABB2D from "../../vox/geom/AABB2D";
 
-export class SelectionAtlasBar {
+export class SelectionBar {
     private m_ruisc: RendererSubScene = null;
     private m_dispatcher: EventBaseDispatcher = new EventBaseDispatcher();
     private m_currEvent: SelectionEvent = new SelectionEvent();
-    //private m_texList: TextureProxy[] = [null,null];
+    
     private m_container: DisplayEntityContainer = null;
-    private m_selectBtn: ColorRectImgButton = null;
-    private m_nameBtn: ColorRectImgButton = null;
+    readonly selectionButton: ColorRectImgButton = new ColorRectImgButton();
+    readonly nameButton: ColorRectImgButton = new ColorRectImgButton();
+    private m_rect: AABB2D = new AABB2D();
 
     private m_texObj0: CanvasTextureObject;
     private m_texObj1: CanvasTextureObject;
@@ -40,10 +38,18 @@ export class SelectionAtlasBar {
     private m_deselectName: string = "No";
 
     private m_posZ: number = 0.0;
-
+    private m_enabled: boolean = true;
+    
     uuid: string = "selectionBar";
 
     constructor() { }
+    
+    enable(): void {
+        this.m_enabled = true;
+    }
+    disabled(): void {
+        this.m_enabled = true;
+    }
     open(): void {
         this.m_container.setVisible(true);
     }
@@ -55,6 +61,10 @@ export class SelectionAtlasBar {
     }
     isClosed(): boolean {
         return !this.m_container.getVisible();
+    }
+    getRect(): AABB2D 
+    {
+        return this.m_rect;
     }
     initialize(ruisc: RendererSubScene, barName: string = "select", select_name:string = "Yes", deselect_name:string = "No", btnSize: number = 64.0): void {
        
@@ -94,6 +104,7 @@ export class SelectionAtlasBar {
             this.m_container.setPosition(pv);
         }
     }
+    
     private initBody(): void {
 
         let size: number = this.m_btnSize;
@@ -101,43 +112,40 @@ export class SelectionAtlasBar {
         this.m_container = container;
 
         if(this.m_barName != null && this.m_barName.length > 0) {
-            let image = CanvasTextureTool.GetInstance().createCharsImage(this.m_barName, size, "rgba(180,180,180,1.0)");
-            let texObj: CanvasTextureObject = CanvasTextureTool.GetInstance().addImageToAtlas(this.m_barName,image);
-            let tex:TextureProxy = texObj.texture;
-            let nameBtn: ColorRectImgButton = new ColorRectImgButton();
-            nameBtn.uvs = texObj.uvs;
-            nameBtn.outColor.setRGB3f(1.0, 1.0, 1.0);
-            nameBtn.overColor.setRGB3f(1.0, 1.0, 0.0);
-            nameBtn.downColor.setRGB3f(1.0, 0.0, 1.0);
-            nameBtn.initialize(0.0, 0.0, texObj.getWidth(), size, [tex]);
-            nameBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
-            nameBtn.setXYZ(-1.0 * texObj.getWidth() - 1.0,0.0,0.0);
-            container.addEntity(nameBtn);
 
-            this.m_nameBtn = nameBtn;
+            UIBarTool.InitializeBtn(this.nameButton, this.m_barName, size, new Color4(1.0,1.0,1.0,1.0) );
+            this.nameButton.setXYZ(-1.0 * this.nameButton.getWidth() - 1.0,0.0,0.0);
+            container.addEntity(this.nameButton);
+            
+            this.nameButton.addEventListener(MouseEvent.MOUSE_DOWN, this, this.nameBtnMouseDown);
         }
-
+        
         let image = CanvasTextureTool.GetInstance().createCharsImage(this.m_selectName, size);
         this.m_texObj0 = CanvasTextureTool.GetInstance().addImageToAtlas(this.m_selectName,image);
         
         image = CanvasTextureTool.GetInstance().createCharsImage(this.m_deselectName, size);
         this.m_texObj1 = CanvasTextureTool.GetInstance().addImageToAtlas(this.m_deselectName,image);
 
-        let btn: ColorRectImgButton = new ColorRectImgButton();
+        let btn: ColorRectImgButton = this.selectionButton;
         btn.uvs = this.m_texObj0.uvs;
-        btn.outColor.setRGB3f(1.0, 1.0, 1.0);
-        btn.overColor.setRGB3f(1.0, 1.0, 0.0);
-        btn.downColor.setRGB3f(1.0, 0.0, 1.0);
         btn.initialize(0.0, 0.0, 1, 1, [this.m_texObj0.texture]);
         btn.setScaleXYZ(this.m_texObj0.getWidth(),size,1.0);
         btn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         container.addEntity(btn);
-        this.m_selectBtn = btn;
 
+        this.m_rect.y = 0;
+        if(this.nameButton != null) {
+            this.m_rect.x = -1.0 * this.nameButton.getWidth() - 1.0;
+        }
+        else {
+            this.m_rect.x = 0;
+        }
+        this.m_rect.height = btn.getHeight();
+        this.m_rect.width = this.m_texObj0.getWidth() - this.m_rect.x;
+        this.m_rect.update();
 
-        this.m_ruisc.addContainer(container);
-        this.m_selectBtn.addEventListener(MouseEvent.MOUSE_UP, this, this.btnMouseUp);
-
+        this.m_ruisc.addContainer(container ,1);
+        this.selectionButton.addEventListener(MouseEvent.MOUSE_UP, this, this.btnMouseUp);
     }
     select(sendEvtEnabled: boolean = false):void {
         if(!this.m_flag) {
@@ -153,6 +161,12 @@ export class SelectionAtlasBar {
             if(sendEvtEnabled) this.sendEvt();
         }
     }
+
+    private nameBtnMouseDown(evt: any): void {
+        if(this.m_enabled) {
+            this.sendEvt();
+        }
+    }
     isSelected(): boolean {
         return this.m_flag;
     }
@@ -166,28 +180,32 @@ export class SelectionAtlasBar {
         this.m_dispatcher.dispatchEvt( this.m_currEvent );
     }
     private updateState(): void {
-        //let tex: TextureProxy = this.m_flag ? this.m_texList[0] : this.m_texList[1];
+        
         let texObj: CanvasTextureObject = this.m_flag ? this.m_texObj0 : this.m_texObj1;
-        this.m_selectBtn.setUVS(texObj.uvs);
-        this.m_selectBtn.reinitializeMesh();
-        this.m_selectBtn.updateMeshToGpu();
-        //this.m_selectBtn.setTextureAt(0,texObj.texture);
-        this.m_selectBtn.setScaleXYZ(texObj.getWidth(), this.m_btnSize, 1.0);
-        this.m_selectBtn.update();
-        //this.m_selectBtn.updateMaterialToGpu(this.m_ruisc.getRenderProxy());
+        if(texObj != null) {
+            this.selectionButton.setUVS(texObj.uvs);
+            this.selectionButton.reinitializeMesh();
+            this.selectionButton.updateMeshToGpu();
+            this.selectionButton.setScaleXYZ(texObj.getWidth(), this.m_btnSize, 1.0);
+            this.selectionButton.update();
+        }
     }
     private btnMouseUp(evt: any): void {
-        this.m_flag = !this.m_flag;
-        this.updateState();
-        this.sendEvt();
+        if(this.m_enabled) {
+            this.m_flag = !this.m_flag;
+            this.updateState();
+            this.sendEvt();
+
+        }
     }
 
     destroy(): void {
-        if(this.m_selectBtn != null) {
+        if(this.selectionButton != null) {
 
-            this.m_selectBtn = null;
-            this.m_nameBtn = null;
-            
+            let self: any = this;
+            self.selectionButton = null;
+            self.nameButton = null;
+
             this.m_texObj0.destroy();
             this.m_texObj1.destroy();
 
@@ -196,4 +214,4 @@ export class SelectionAtlasBar {
         }
     }
 }
-export default SelectionAtlasBar;
+export default SelectionBar;

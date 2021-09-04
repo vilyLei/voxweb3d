@@ -21,10 +21,10 @@ import DebugFlag from "../vox/debug/DebugFlag";
 import {UILayoutBase} from "./uiManage/UILayoutBase";
 import {VoxCoreExport} from "./voxCoreExports";
 import RendererSubScene from "../vox/scene/RendererSubScene";
-import CanvasTextureTool from "../orthoui/demos/base/CanvasTextureTool";
+import CanvasTextureTool from "../orthoui/assets/CanvasTextureTool";
 import Color4 from "../vox/material/Color4";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
-import SelectionBar from "../orthoui/demos/base/SelectionBar";
+import SelectionBar from "../orthoui/button/SelectionBar";
 import SelectionEvent from "../vox/event/SelectionEvent";
 
 

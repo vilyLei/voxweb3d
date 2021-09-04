@@ -5,24 +5,24 @@
 /*                                                                         */
 /***************************************************************************/
 
-import MouseEvent from "../../../vox/event/MouseEvent";
-import RendererState from "../../../vox/render/RendererState";
-import RendererSubScene from "../../../vox/scene/RendererSubScene";
-import ColorRectImgButton from "../../../orthoui/button/ColorRectImgButton";
-import ImageTextureProxy from "../../../vox/texture/ImageTextureProxy";
-import DisplayEntityContainer from "../../../vox/entity/DisplayEntityContainer";
-import CanvasTextureTool from "./CanvasTextureTool";
-import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
-import BoundsButton from "../../button/BoundsButton";
-import MathConst from "../../../vox/math/MathConst";
-import TextureProxy from "../../../vox/texture/TextureProxy";
-import EventBaseDispatcher from "../../../vox/event/EventBaseDispatcher";
-import ProgressDataEvent from "../../../vox/event/ProgressDataEvent";
-import EventBase from "../../../vox/event/EventBase";
-import Vector3D from "../../../vox/math/Vector3D";
+import MouseEvent from "../../vox/event/MouseEvent";
+import RendererState from "../../vox/render/RendererState";
+import RendererSubScene from "../../vox/scene/RendererSubScene";
+import ColorRectImgButton from "../../orthoui/button/ColorRectImgButton";
+import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
+import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
+import CanvasTextureTool from "../assets/CanvasTextureTool";
+import Plane3DEntity from "../../vox/entity/Plane3DEntity";
+import BoundsButton from "./BoundsButton";
+import MathConst from "../../vox/math/MathConst";
+import TextureProxy from "../../vox/texture/TextureProxy";
+import EventBaseDispatcher from "../../vox/event/EventBaseDispatcher";
+import ProgressDataEvent from "../../vox/event/ProgressDataEvent";
+import EventBase from "../../vox/event/EventBase";
+import Vector3D from "../../vox/math/Vector3D";
 import UIBarTool from "./UIBarTool";
-import Color4 from "../../../vox/material/Color4";
-import AABB2D from "../../../vox/geom/AABB2D";
+import Color4 from "../../vox/material/Color4";
+import AABB2D from "../../vox/geom/AABB2D";
 
 export class ProgressBar {
     private m_ruisc: RendererSubScene = null;

@@ -12,9 +12,9 @@ export default class ColorRectImgButton extends Plane3DEntity
         super();
     }
     index:number = 0;
-    overColor:Color4 = new Color4(1.0,0.5,1.1,1.0);
-    downColor:Color4 = new Color4(1.0,0.0,1.0,1.0);
-    outColor:Color4 = new Color4(1.0,1.0,1.0,1.0);
+    readonly overColor:Color4 = new Color4(1.0,0.5,1.1,1.0);
+    readonly downColor:Color4 = new Color4(1.0,0.0,1.0,1.0);
+    readonly outColor:Color4 = new Color4(1.0,1.0,1.0,1.0);
     private m_dispatcher:MouseEvt3DDispatcher = null;
     private m_width:number = 100.0;
     private m_height:number = 100.0;
@@ -38,6 +38,12 @@ export default class ColorRectImgButton extends Plane3DEntity
         
         this.m_width = pwidth;
         this.m_height = pheight;
+    }
+    updateColor(): void {
+        let material:any = this.getMaterial();
+        if(material != null) {
+            material.setRGBA4f(this.outColor.r,this.outColor.g,this.outColor.b,this.outColor.a);
+        }
     }
     private initEvtBase():void
     {

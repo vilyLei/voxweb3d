@@ -8,18 +8,18 @@ function UIManagementModule() {
 
     var VoxCore = null;
     let uiLayout = null;
-    
+
     let m_btnSize = 24;
     let m_bgLength = 200.0;
     let m_btnPX = 102.0;
     let m_btnPY = 10.0;
     let m_btns = [];
 
-    this.initialize = function() {
-        
+    this.initialize = function () {
+
         console.log("UIManagementModule::initialize()...");
-        
-        VoxCore = window.VoxCore;
+
+        VoxCore = window["VoxCore"];
 
         var UILayoutBase = VoxCore.UILayoutBase;
         var Vector3D = VoxCore.Vector3D;
@@ -31,17 +31,17 @@ function UIManagementModule() {
 
         uiLayout = UILayoutBase.GetInstance();
         m_ruisc = uiLayout.getUIScene();
-        
+
         if (uiLayout.isMobileWeb()) {
             m_btnSize = 64;
             m_btnPX = 280;
             m_btnPY = 30;
         }
-        if(uiLayout.isWebGL1()) {
+        if (uiLayout.isWebGL1()) {
             m_btnPX += 32;
         }
 
-        uiLayout.addModule( this );
+        uiLayout.addModule(this);
 
         m_rotV3 = new Vector3D();
 
@@ -51,33 +51,42 @@ function UIManagementModule() {
         let axis = new Axis3DEntity();
         axis.initialize(300.0);
         uiLayout.addToScene(axis);
-        
+
         let plane = new Plane3DEntity();
         plane.showDoubleFace();
         plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [uiLayout.getImageTexByUrl("static/assets/broken_iron.jpg")]);
-        plane.setXYZ(100,0.0,100);
+        plane.setXYZ(100, 0.0, 100);
         m_container.addEntity(plane);
         m_plane = plane;
-        
+
 
         uiLayout.showInfo();
         let vec3 = new Vector3D();
-        console.log("vec3: ",vec3);
+        console.log("vec3: ", vec3);
         let mat4 = new Matrix4();
-        console.log("mat4: ",mat4);
+        console.log("mat4: ", mat4);
 
-        let absort = this.createSelectBtn("absorb", "absorb", "ON", "OFF", false);
-        //uiLayout.addToScene(absort);
-
+        let playCtrBtn = this.createSelectBtn("播放控制", "playCtr", "已开启", "开启", false);
+        let btn = playCtrBtn.nameButton;
+        btn.outColor.setRGBA4f(1.0,1.0,0.0,0.8);
+        btn.updateColor();
+        
+        let colorSelectBtn = this.createSelectBtn("颜色控制", "colorSelect", "已开启", "开启", false);
+        btn = colorSelectBtn.nameButton;
+        btn.outColor.setRGBA4f(1.0,1.0,0.0,0.8);
+        btn.updateColor();
     }
-    
-    this.createSelectBtn = function(ns, uuid, selectNS, deselectNS, flag, visibleAlways) {
 
-        if(visibleAlways == undefined) {
+    this.createSelectBtn = function (ns, uuid, selectNS, deselectNS, flag, visibleAlways) {
+
+        if (visibleAlways == undefined) {
             visibleAlways = false;
         }
 
         let selectBar = new VoxCore.SelectionBar();
+        
+        //  selectBar.nameFontColor.setRGB3f(0.0, 0.9, 0.0);
+        //  selectBar.nameBgColor.setRGB3f(0.8, 1.0, 0.8);
         selectBar.uuid = uuid;
         ///selectBar.testTex = this.getImageTexByUrl("static/assets/testEFT4.jpg");
         selectBar.initialize(m_ruisc, ns, selectNS, deselectNS, m_btnSize);
@@ -93,9 +102,9 @@ function UIManagementModule() {
         if (!visibleAlways) m_btns.push(selectBar);
         return selectBar;
     }
-    this.createProgressBtn = function(ns, uuid, progress, visibleAlways) {
+    this.createProgressBtn = function (ns, uuid, progress, visibleAlways) {
 
-        if(visibleAlways == undefined) {
+        if (visibleAlways == undefined) {
             visibleAlways = false;
         }
         let proBar = new VoxCore.ProgressBar();
@@ -109,9 +118,9 @@ function UIManagementModule() {
         return proBar;
     }
 
-    this.createValueBtn = function(ns, uuid, value, minValue, maxValue, visibleAlways) {
+    this.createValueBtn = function (ns, uuid, value, minValue, maxValue, visibleAlways) {
 
-        if(visibleAlways == undefined) {
+        if (visibleAlways == undefined) {
             visibleAlways = false;
         }
         let proBar = new VoxCore.ProgressBar();
@@ -127,23 +136,22 @@ function UIManagementModule() {
         if (!visibleAlways) m_btns.push(proBar);
         return proBar;
     }
-    this.selectChange = function(evt) {
+    this.selectChange = function (evt) {
 
         console.log("UIManagementModule::selectChange()...");
     }
-    this.progressChange = function(evt) {
+    this.progressChange = function (evt) {
 
         console.log("UIManagementModule::progressChange()...");
     }
-    this.run = function() {
+    this.run = function () {
 
         m_plane.getRotationXYZ(m_rotV3);
         m_plane.setRotationXYZ(m_rotV3.x, m_rotV3.y + 1, m_rotV3.z);
         //m_plane.update();
-        
+
         m_container.getRotationXYZ(m_rotV3);
         m_container.setRotationXYZ(m_rotV3.x + 0.5, m_rotV3.y, m_rotV3.z + 1);
         m_container.update();
     }
 };
-    

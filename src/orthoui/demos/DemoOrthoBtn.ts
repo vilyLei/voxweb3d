@@ -26,17 +26,17 @@ import ColorRectImgButton from "../../orthoui/button/ColorRectImgButton";
 import DebugFlag from "../../vox/debug/DebugFlag";
 import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
-import CanvasTextureTool from "./base/CanvasTextureTool";
-import ProgressBar from "./base/ProgressBar";
+import CanvasTextureTool from "../assets/CanvasTextureTool";
+import ProgressBar from "../button/ProgressBar";
 import ProgressDataEvent from "../../vox/event/ProgressDataEvent";
 import EventBase from "../../vox/event/EventBase";
-import SelectionBar from "./base/SelectionBar";
+import SelectionBar from "../button/SelectionBar";
 import SelectionEvent from "../../vox/event/SelectionEvent";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import RGBColorPanel, { RGBColoSelectEvent } from "../panel/RGBColorPanel";
 import Color4 from "../../vox/material/Color4";
 import Vector3D from "../../vox/math/Vector3D";
-import SelectionAtlasBar from "./base/SelectionAtlasBar";
+import SelectionAtlasBar from "../button/SelectionAtlasBar";
 
 export class DemoOrthoBtn {
     constructor() { }

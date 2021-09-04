@@ -1,5 +1,5 @@
-import ProgressBar from "../../orthoui/demos/base/ProgressBar";
-import SelectionBar from "../../orthoui/demos/base/SelectionBar";
+import ProgressBar from "../../orthoui/button/ProgressBar";
+import SelectionBar from "../../orthoui/button/SelectionBar";
 import RGBColorPanel from "../../orthoui/panel/RGBColorPanel";
 import IPBRParamEntity from "./IPBRParamEntity";
 

@@ -12,11 +12,11 @@ import RendererScene from "../../vox/scene/RendererScene";
 import DefaultPBRCase from "../../pbr/mana/DefaultPBRCase";
 
 import RendererSubScene from "../../vox/scene/RendererSubScene";
-import ProgressBar from "../../orthoui/demos/base/ProgressBar";
+import ProgressBar from "../../orthoui/button/ProgressBar";
 import ProgressDataEvent from "../../vox/event/ProgressDataEvent";
-import CanvasTextureTool from "../../orthoui/demos/base/CanvasTextureTool";
+import CanvasTextureTool from "../../orthoui/assets/CanvasTextureTool";
 import SelectionEvent from "../../vox/event/SelectionEvent";
-import SelectionBar from "../../orthoui/demos/base/SelectionBar";
+import SelectionBar from "../../orthoui/button/SelectionBar";
 //import IPBRMaterial from "../material/IPBRMaterial";
 import IPBRMaterial from "../material/IPBRMaterial";
 import RGBColorPanel, { RGBColoSelectEvent } from "../../orthoui/panel/RGBColorPanel";
