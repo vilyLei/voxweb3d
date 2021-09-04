@@ -9,13 +9,15 @@ Feature:
 
     3.Independent Renderer rendering runtime, for runtime high performence.
 
-    4.Auto resource management: system memory resource and Gpu memory resource, and one system memory resource for Multiple Gpu context memory resource.
+    4.Distributed-Runtime strategy support.
 
-    5.Asynchronous and convenient resource data management strategy(system memory to gpu memory), for runtime high performence. Inclde: update, new, delete, share those system memory or gpu memory resource.
+    5.Auto resource management: system memory resource and Gpu memory resource, and one system memory resource for Multiple Gpu context memory resource.
 
-    6.Wasm(WebAssembly) support.
+    6.Asynchronous and convenient resource data management strategy(system memory to gpu memory), for runtime high performence. Inclde: update, new, delete, share those system memory or gpu memory resource.
 
-    7.Multiple methods to render a renderable entity, enhance rendering control flexibility.
+    7.Wasm(WebAssembly) support.
+
+    8.Multiple methods to render a renderable entity, enhance rendering control flexibility.
 
 
 Engine code in src\vox\
