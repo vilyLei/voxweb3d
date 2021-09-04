@@ -4,12 +4,7 @@ import RendererDeviece from "../vox/render/RendererDeviece";
 import RendererParam from "../vox/scene/RendererParam";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
-import DisplayEntity from "../vox/entity/DisplayEntity";
-import Plane3DEntity from "../vox/entity/Plane3DEntity";
-import Box3DEntity from "../vox/entity/Box3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
-import FrustrumFrame3DEntity from "../vox/entity/FrustrumFrame3DEntity";
-import ScreenAlignPlaneEntity from "../vox/entity/ScreenAlignPlaneEntity";
 import { TextureConst } from "../vox/texture/TextureConst";
 import TextureProxy from "../vox/texture/TextureProxy";
 
@@ -21,20 +16,24 @@ import RendererScene from "../vox/scene/RendererScene";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
-import ViewMirrorMaterial from "../vox/material/mcase/ViewMirrorMaterial";
-import FBOInstance from "../vox/scene/FBOInstance";
-import CameraBase from "../vox/view/CameraBase";
-import MathConst from "../vox/math/MathConst";
 
 import DebugFlag from "../vox/debug/DebugFlag";
-import StencilOutline from "../renderingtoy/mcase/outline/StencilOutline";
+import {UILayoutBase} from "./uiManage/UILayoutBase";
+import {VoxCoreExport} from "./voxCoreExports";
+import RendererSubScene from "../vox/scene/RendererSubScene";
+import CanvasTextureTool from "../orthoui/demos/base/CanvasTextureTool";
+import Color4 from "../vox/material/Color4";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
 
 
-export class DemoBase {
+let voxCoreExport = new VoxCoreExport();
+
+export class DemoUIManager {
+
     constructor() { }
-
-    private m_stencilOutline: StencilOutline = new StencilOutline();
+    
     private m_rscene: RendererScene = null;
+    private m_ruisc: RendererSubScene = null;
     private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
@@ -48,21 +47,22 @@ export class DemoBase {
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
-    private initLoadJS(): void {
+    private initLoadJS(module_ns:string): void {
 
         let pwindwo: any = window;
 
         let codeLoader: XMLHttpRequest = new XMLHttpRequest();
-        //codeLoader.open("GET", "static/demo/Lt3D.umd.js", true);
-        codeLoader.open("GET", "static/code/test/DemoUIManager.js", true);
+        codeLoader.open("GET", "static/code/test/"+module_ns+".js", true);
         //xhr.responseType = "arraybuffer";
         codeLoader.onerror = function (err) {
             console.error("load error: ", err);
         }
+
         codeLoader.onprogress = (e) => {
             console.log("progress, e: ", e);
             //document.body.innerText = Math.round(100.0 * e.loaded / e.total) + "%";
         };
+
         codeLoader.onload = function () {
 
             console.log("js code file load sccess.....");
@@ -71,18 +71,19 @@ export class DemoBase {
             scriptEle.onerror = (e) => {
                 console.log("script onerror, e: ", e);
             }
+
             scriptEle.innerHTML = codeLoader.response;
             document.head.appendChild(scriptEle);
 
-            if (pwindwo.DemoUIManager != null) {
-                let uiManagement = new pwindwo.DemoUIManager();
-                uiManagement.initialize();
+            if (pwindwo[module_ns] != null) {
+                let noduleIns = new pwindwo[module_ns]();
+                noduleIns.initialize();
             }
         }
         codeLoader.send(null);
     }
     initialize(): void {
-        console.log("DemoBase::initialize()......");
+        console.log("DemoUIManager::initialize()......");
         if (this.m_rscene == null) {
             RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
             RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -109,23 +110,42 @@ export class DemoBase {
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
-            let axis: Axis3DEntity = new Axis3DEntity();
-            axis.initialize(300.0);
-            this.m_rscene.addEntity(axis);
-
-            // add common 3d display entity
-            //      let plane:Plane3DEntity = new Plane3DEntity();
-            //      plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
-            //      this.m_rscene.addEntity(plane);
-            //      this.m_targets.push(plane);
-            //      //this.m_disp = plane
+            //  let axis: Axis3DEntity = new Axis3DEntity();
+            //  axis.initialize(300.0);
+            //  this.m_rscene.addEntity(axis);
             
-            this.initLoadJS();
+            // add common 3d display entity
+            // let plane:Plane3DEntity = new Plane3DEntity();
+            // plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
+            // this.m_rscene.addEntity(plane);
+            
+            this.initUIScene();
+            UILayoutBase.GetInstance().initialize(this.m_rscene, this.m_ruisc, this.m_texLoader);
+
+            this.initLoadJS("UIManagementModule");
 
             this.update();
         }
     }
+    private initUIScene(): void {
 
+        let rparam: RendererParam = new RendererParam();
+        rparam.cameraPerspectiveEnabled = false;
+        rparam.setCamProject(45.0, 0.1, 3000.0);
+        rparam.setCamPosition(0.0, 0.0, 1500.0);
+
+        let subScene: RendererSubScene = null;
+        subScene = this.m_rscene.createSubScene();
+        subScene.initialize(rparam);
+        subScene.enableMouseEvent(true);
+        this.m_ruisc = subScene;
+        let stage = this.m_rscene.getStage3D();
+        this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
+        this.m_ruisc.getCamera().update();
+        CanvasTextureTool.GetInstance().initialize(this.m_rscene);
+        CanvasTextureTool.GetInstance().initializeAtlas(1024,1024, new Color4(1.0,1.0,1.0,0.0), true);
+        
+    }
     private m_flag: boolean = true;
     private mouseDown(evt: any): void {
 
@@ -144,6 +164,7 @@ export class DemoBase {
 
     }
     run(): void {
+        
         //  if(this.m_flag) {
         //      this.m_flag = false;
         //  }
@@ -151,6 +172,9 @@ export class DemoBase {
         //      return;
         //  }
         //console.log("run begin...");
+        
+        UILayoutBase.GetInstance().run();
+
         this.m_statusDisp.update(false);
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
@@ -159,4 +183,4 @@ export class DemoBase {
 
     }
 }
-export default DemoBase;
+export default DemoUIManager;
