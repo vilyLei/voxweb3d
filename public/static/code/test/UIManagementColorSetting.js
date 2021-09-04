@@ -41,21 +41,21 @@ function UIManagementColorSetting() {
         useColorBtn.selectionButton.updateColor();
 
         useColorBtn = this.createSelectBtn("使用红色", "color_red", "Red", "Red", true);
-        useColorBtn.nameButton.outColor.setRGBA4f(1.0,0.0,0.0,1.0);
+        useColorBtn.nameButton.outColor.setRGBA4f(1.5,0.0,0.0,1.0);
         useColorBtn.nameButton.updateColor();
-        useColorBtn.selectionButton.outColor.setRGBA4f(1.0,0.0,0.0,1.0);
+        useColorBtn.selectionButton.outColor.setRGBA4f(1.5,0.0,0.0,1.0);
         useColorBtn.selectionButton.updateColor();
         
         useColorBtn = this.createSelectBtn("使用绿色", "color_green", "Green", "Green", true);
-        useColorBtn.nameButton.outColor.setRGBA4f(0.0,1.0,0.0,1.0);
+        useColorBtn.nameButton.outColor.setRGBA4f(0.0,1.5,0.0,1.0);
         useColorBtn.nameButton.updateColor();
-        useColorBtn.selectionButton.outColor.setRGBA4f(0.0,1.0,0.0,1.0);
+        useColorBtn.selectionButton.outColor.setRGBA4f(0.0,1.5,0.0,1.0);
         useColorBtn.selectionButton.updateColor();
         
         useColorBtn = this.createSelectBtn("使用绿色", "color_blue", "Blue", "Blue", true);
-        useColorBtn.nameButton.outColor.setRGBA4f(0.0,0.0,1.0,1.0);
+        useColorBtn.nameButton.outColor.setRGBA4f(0.0,0.0,1.5,1.0);
         useColorBtn.nameButton.updateColor();
-        useColorBtn.selectionButton.outColor.setRGBA4f(0.0,0.0,1.0,1.0);
+        useColorBtn.selectionButton.outColor.setRGBA4f(0.0,0.0,1.5,1.0);
         useColorBtn.selectionButton.updateColor();
     }
 
@@ -85,14 +85,7 @@ function UIManagementColorSetting() {
     this.selectChange = function (evt) {
 
         console.log("UIManagementColorSetting::selectChange()...");
-        //if(evt.flag) {
-        //    //uiLayout.play();
-        //}
-        //else {
-        //    //uiLayout.pause();
-        //}
         let entitys = uiLayout.getEntities();
-        console.log("entitys: ",entitys,evt.target.nameButton);
         if(entitys.length > 0) {
             let color = evt.target.nameButton.outColor;
             entitys[0].getMaterial().setRGB3f(color.r,color.g,color.b);

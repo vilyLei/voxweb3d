@@ -11,6 +11,7 @@ function UIManagementModule() {
 
     let m_btnSize = 24;
     let m_bgLength = 200.0;
+    let m_dY = 2.0;
     let m_btnPX = 162.0;
     let m_btnPY = 70.0;
     let m_btns = [];
@@ -88,7 +89,7 @@ function UIManagementModule() {
         let plane = new Plane3DEntity();
         plane.name = "plane";
         plane.showDoubleFace();
-        plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [uiLayout.getImageTexByUrl("static/assets/broken_iron.jpg")]);
+        plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [uiLayout.getImageTexByUrl("static/assets/decorativePattern_01.jpg")]);
         plane.setXYZ(100, 0.0, 100);
         m_container.addEntity(plane);
         uiLayout.saveEntity( plane );
@@ -110,6 +111,11 @@ function UIManagementModule() {
         btn = colorSelectBtn.nameButton;
         btn.outColor.setRGBA4f(1.0,1.0,0.0,0.8);
         btn.updateColor();
+        
+        let texChangeBtn = this.createSelectBtn("纹理替换代码块", "texChange", "已加载", "加载", false);
+        btn = texChangeBtn.nameButton;
+        btn.outColor.setRGBA4f(1.0,1.0,0.0,0.8);
+        btn.updateColor();
     }
 
     this.createSelectBtn = function (ns, uuid, selectNS, deselectNS, flag, visibleAlways) {
@@ -129,7 +135,7 @@ function UIManagementModule() {
             selectBar.deselect(false);
         }
         selectBar.setXY(m_btnPX, m_btnPY);
-        m_btnPY += m_btnSize + 1;
+        m_btnPY += m_btnSize + m_dY;
         if (!visibleAlways) m_btns.push(selectBar);
         return selectBar;
     }
@@ -144,7 +150,7 @@ function UIManagementModule() {
         proBar.setProgress(progress, false);
         proBar.addEventListener(VoxCore.ProgressDataEvent.PROGRESS, this, this.progressChange);
         proBar.setXY(m_btnPX, m_btnPY);
-        m_btnPY += m_btnSize + 1;
+        m_btnPY += m_btnSize + m_dY;
         if (!visibleAlways) m_btns.push(proBar);
         return proBar;
     }
@@ -163,7 +169,7 @@ function UIManagementModule() {
 
         proBar.addEventListener(VoxCore.ProgressDataEvent.PROGRESS, this, this.progressChange);
         proBar.setXY(m_btnPX, m_btnPY);
-        m_btnPY += m_btnSize + 1;
+        m_btnPY += m_btnSize + m_dY;
         if (!visibleAlways) m_btns.push(proBar);
         return proBar;
     }
@@ -174,12 +180,20 @@ function UIManagementModule() {
             case "playCtr":
 
                 evt.target.disable();
+                evt.target.select(false);
                 initLoadJS("UIManagementPlayCtrl");
                 break;
             case "colorSelect":
 
                 evt.target.disable();
+                evt.target.select(false);
                 initLoadJS("UIManagementColorSetting");
+                break;
+            case "texChange":
+
+                evt.target.disable();
+                evt.target.select(false);
+                initLoadJS("UIManagementTexChange");
                 break;
             default:
                 break;

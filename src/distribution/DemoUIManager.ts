@@ -86,7 +86,7 @@ export class DemoUIManager {
         console.log("DemoUIManager::initialize()......");
         if (this.m_rscene == null) {
 
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+            RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
             RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
@@ -187,6 +187,7 @@ export class DemoUIManager {
         let selectEvt: SelectionEvent = evt as SelectionEvent;
         if(evt.uuid == "loadDistributedRuntimeCode") {
             selectEvt.target.disable();
+            selectEvt.target.select(false);
             this.initLoadJS("UIManagementModule");
         }
     }

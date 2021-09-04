@@ -10,9 +10,10 @@ function UIManagementPlayCtrl() {
     let uiLayout = null;
 
     let m_btnSize = 24;
+    let m_dY = 2.0;
     let m_bgLength = 200.0;
     let m_btnPX = 162.0;
-    let m_btnPY = 150.0;
+    let m_btnPY = 180.0;
     let m_btns = [];
 
     this.initialize = function () {
@@ -59,7 +60,7 @@ function UIManagementPlayCtrl() {
             selectBar.deselect(false);
         }
         selectBar.setXY(m_btnPX, m_btnPY);
-        m_btnPY += m_btnSize + 1;
+        m_btnPY += m_btnSize + m_dY;
         if (!visibleAlways) m_btns.push(selectBar);
         return selectBar;
     }

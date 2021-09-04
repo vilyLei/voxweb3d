@@ -173,7 +173,6 @@ class RawDataTextureProxy extends TextureProxy
                         }
                     break;
                     case TextureFormat.RGBA:
-                        //trace("RawDataTextureProxy::getPixels(), >>>>>>>>>>>>>>>>>>>TextureFormat.RGBA...");
                         for(; i < i_max; ++i)
                         {
                             for(j = px; j < j_max; ++j)
@@ -188,7 +187,6 @@ class RawDataTextureProxy extends TextureProxy
                         }
                     break;
                     case TextureFormat.RGB:
-                        //trace("RawDataTextureProxy::getPixels(), >>>>>>>>>>>>>>>>>>>TextureFormat.RGB...");
                         for(; i < i_max; ++i)
                         {
                             for(j = px; j < j_max; ++j)
