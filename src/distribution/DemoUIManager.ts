@@ -67,7 +67,7 @@ export class DemoUIManager {
 
         codeLoader.onload = function () {
 
-            console.log("js code file load sccess.....");
+            console.log("js code file load success.....");
             let scriptEle: HTMLScriptElement = document.createElement("script");
 
             scriptEle.onerror = (e) => {
@@ -149,53 +149,8 @@ export class DemoUIManager {
         CanvasTextureTool.GetInstance().initialize(this.m_rscene);
         CanvasTextureTool.GetInstance().initializeAtlas(1024,1024, new Color4(1.0,1.0,1.0,0.0), true);
         
-        /*
-        if (RendererDeviece.IsMobileWeb()) {
-            this.m_btnSize = 64;
-            this.m_btnPX = 280;
-            this.m_btnPY = 30;
-        }
-        if(RendererDeviece.IsWebGL1()) {
-            this.m_btnPX += 32;
-        }
-
-        let plane:Plane3DEntity = new Plane3DEntity();
-        plane.initializeXOZ(10.0, 10.0, 100.0, 80.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
-        this.m_ruisc.addEntity(plane);
-
-        this.createSelectBtn("absorb", "absorb", "ON", "OFF", false);
-        //*/
     }
     
-    private m_btnSize: number = 24;
-    private m_bgLength: number = 200.0;
-    private m_btnPX: number = 102.0;
-    private m_btnPY: number = 10.0;
-
-    private m_btns: any[] = [];
-    private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionBar {
-
-        let selectBar: SelectionBar = new SelectionBar();
-        selectBar.uuid = uuid;
-        ///selectBar.testTex = this.getImageTexByUrl("static/assets/testEFT4.jpg");
-        selectBar.initialize(this.m_ruisc, ns, selectNS, deselectNS, this.m_btnSize);
-        selectBar.addEventListener(SelectionEvent.SELECT, this, this.selectChange);
-        if (flag) {
-            selectBar.select(false);
-        }
-        else {
-            selectBar.deselect(false);
-        }
-        selectBar.setXY(this.m_btnPX, this.m_btnPY);
-        this.m_btnPY += this.m_btnSize + 1;
-        if (!visibleAlways) this.m_btns.push(selectBar);
-        return selectBar;
-    }
-    
-    private selectChange(evt: any): void {
-        let progEvt: SelectionEvent = evt as SelectionEvent;
-        console.log("selectChange, flag: ", progEvt.flag);
-    }
     private m_flag: boolean = true;
     private mouseDown(evt: any): void {
 

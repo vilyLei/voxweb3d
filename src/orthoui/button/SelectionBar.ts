@@ -47,8 +47,8 @@ export class SelectionBar {
     enable(): void {
         this.m_enabled = true;
     }
-    disabled(): void {
-        this.m_enabled = true;
+    disable(): void {
+        this.m_enabled = false;
     }
     open(): void {
         this.m_container.setVisible(true);

@@ -11,10 +11,45 @@ function UIManagementModule() {
 
     let m_btnSize = 24;
     let m_bgLength = 200.0;
-    let m_btnPX = 102.0;
+    let m_btnPX = 162.0;
     let m_btnPY = 10.0;
     let m_btns = [];
 
+    function initLoadJS(module_ns) {
+
+        let pwindwo = window;
+
+        let codeLoader = new XMLHttpRequest();
+        codeLoader.open("GET", "static/code/test/"+module_ns+".js", true);
+        //xhr.responseType = "arraybuffer";
+        codeLoader.onerror = function (err) {
+            console.error("load error: ", err);
+        }
+
+        codeLoader.onprogress = (e) => {
+            console.log("progress, e: ", e);
+            //document.body.innerText = Math.round(100.0 * e.loaded / e.total) + "%";
+        };
+
+        codeLoader.onload = function () {
+
+            console.log("js code file load success.....");
+            let scriptEle = document.createElement("script");
+
+            scriptEle.onerror = (e) => {
+                console.log("script onerror, e: ", e);
+            }
+
+            scriptEle.innerHTML = codeLoader.response;
+            document.head.appendChild(scriptEle);
+
+            if (pwindwo[module_ns] != null) {
+                let noduleIns = new pwindwo[module_ns]();
+                noduleIns.initialize();
+            }
+        }
+        codeLoader.send(null);
+    }
     this.initialize = function () {
 
         console.log("UIManagementModule::initialize()...");
@@ -66,12 +101,12 @@ function UIManagementModule() {
         let mat4 = new Matrix4();
         console.log("mat4: ", mat4);
 
-        let playCtrBtn = this.createSelectBtn("播放控制", "playCtr", "已开启", "开启", false);
+        let playCtrBtn = this.createSelectBtn("播放控制代码块", "playCtr", "已加载", "加载", false);
         let btn = playCtrBtn.nameButton;
         btn.outColor.setRGBA4f(1.0,1.0,0.0,0.8);
         btn.updateColor();
         
-        let colorSelectBtn = this.createSelectBtn("颜色控制", "colorSelect", "已开启", "开启", false);
+        let colorSelectBtn = this.createSelectBtn("颜色控制代码块", "colorSelect", "已加载", "加载", false);
         btn = colorSelectBtn.nameButton;
         btn.outColor.setRGBA4f(1.0,1.0,0.0,0.8);
         btn.updateColor();
@@ -84,11 +119,7 @@ function UIManagementModule() {
         }
 
         let selectBar = new VoxCore.SelectionBar();
-        
-        //  selectBar.nameFontColor.setRGB3f(0.0, 0.9, 0.0);
-        //  selectBar.nameBgColor.setRGB3f(0.8, 1.0, 0.8);
         selectBar.uuid = uuid;
-        ///selectBar.testTex = this.getImageTexByUrl("static/assets/testEFT4.jpg");
         selectBar.initialize(m_ruisc, ns, selectNS, deselectNS, m_btnSize);
         selectBar.addEventListener(VoxCore.SelectionEvent.SELECT, this, this.selectChange);
         if (flag) {
@@ -138,7 +169,18 @@ function UIManagementModule() {
     }
     this.selectChange = function (evt) {
 
-        console.log("UIManagementModule::selectChange()...");
+        console.log("UIManagementModule::selectChange()..., evt.uuid: ",evt.uuid, evt.target);
+        switch(evt.uuid) {
+            case "playCtr":
+                    evt.target.disable();
+                    //
+                    initLoadJS("UIManagementPlayCtrl");
+                break;
+            case "colorSelect":
+                break;
+            default:
+                break;
+        }
     }
     this.progressChange = function (evt) {
 
