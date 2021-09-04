@@ -236,6 +236,8 @@ export class DemoOrthoBtn {
             this.m_btnPX += 32;
         }
 
+        this.createSelectBtn("absorb", "absorb", "ON", "OFF", false);
+        return;
         this.m_menuBtn = this.createSelectBtn("", "menuCtrl", "Menu Open", "Menu Close", false, true);
 
         //  this.createSelectAtlasBtn("Atlas", "menuCtrl", "Menu Open", "Menu Close", false, true);

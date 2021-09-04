@@ -1,10 +1,11 @@
 import RendererScene from "../../vox/scene/RendererScene";
 import RendererSubScene from "../../vox/scene/RendererSubScene";
-import {TextureConst} from "../../vox/texture/TextureConst";
+import { TextureConst } from "../../vox/texture/TextureConst";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
+import RendererDeviece from "../../vox/render/RendererDeviece";
 
 interface IUILayoutModule {
     run(): boolean;
@@ -17,9 +18,9 @@ class UILayoutBase {
     private m_texLoader: ImageTextureLoader = null;
     private m_modules: IUILayoutModule[] = [];
 
-    constructor(){
+    constructor() {
 
-        if(UILayoutBase.s_ins == null) {
+        if (UILayoutBase.s_ins == null) {
             UILayoutBase.s_ins = this;
         }
         else {
@@ -28,21 +29,32 @@ class UILayoutBase {
     }
     static GetInstance(): UILayoutBase {
 
-        if(UILayoutBase.s_ins != null) {
+        if (UILayoutBase.s_ins != null) {
             return UILayoutBase.s_ins;
         }
         return new UILayoutBase();
     }
     initialize(rsc: RendererScene, ruisc: RendererSubScene, texLoader: ImageTextureLoader): void {
-        if(this.m_rsc == null) {
+        if (this.m_rsc == null) {
             this.m_rsc = rsc;
             this.m_ruisc = ruisc;
             this.m_texLoader = texLoader;
             console.log("UILayoutBase::initialize()...");
         }
     }
-    
-   getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+    getUIScene(): RendererSubScene {
+        return this.m_ruisc;
+    }
+    isMobileWeb(): boolean {
+        return RendererDeviece.IsMobileWeb();
+    }
+    isWebGL1(): boolean {
+        return RendererDeviece.IsWebGL1();
+    }
+    isWebGL2(): boolean {
+        return RendererDeviece.IsWebGL2();
+    }
+    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
@@ -50,9 +62,9 @@ class UILayoutBase {
     }
 
     addToScene(entity: DisplayEntity, i: number = 0): void {
-        
+
         let p: any = entity;
-        if(p.__$rseFlag != null) {
+        if (p.__$rseFlag != null) {
             this.m_rsc.addEntity(entity, i, true);
         }
         else {
@@ -64,7 +76,7 @@ class UILayoutBase {
     addToUIScene(entity: DisplayEntity, i: number = 0): void {
 
         let p: any = entity;
-        if(p.__$rseFlag != null) {
+        if (p.__$rseFlag != null) {
             this.m_ruisc.addEntity(entity, i, true);
         }
         else {
@@ -75,19 +87,19 @@ class UILayoutBase {
     }
 
     showInfo(): void {
-        
+
         console.log("UILayoutBase::showInfo()...");
     }
 
     addModule(pmodule: IUILayoutModule): void {
-        if(pmodule != null) {
-            this.m_modules.push( pmodule );
+        if (pmodule != null) {
+            this.m_modules.push(pmodule);
         }
     }
     run(): void {
-        for(let i: number = 0; i < this.m_modules.length; i++) {
+        for (let i: number = 0; i < this.m_modules.length; i++) {
             this.m_modules[i].run();
         }
     }
 }
-export {UILayoutBase};
+export { UILayoutBase };

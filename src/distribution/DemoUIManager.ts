@@ -24,6 +24,8 @@ import RendererSubScene from "../vox/scene/RendererSubScene";
 import CanvasTextureTool from "../orthoui/demos/base/CanvasTextureTool";
 import Color4 from "../vox/material/Color4";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import SelectionBar from "../orthoui/demos/base/SelectionBar";
+import SelectionEvent from "../vox/event/SelectionEvent";
 
 
 let voxCoreExport = new VoxCoreExport();
@@ -83,8 +85,10 @@ export class DemoUIManager {
         codeLoader.send(null);
     }
     initialize(): void {
+
         console.log("DemoUIManager::initialize()......");
         if (this.m_rscene == null) {
+
             RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
             RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
@@ -145,6 +149,52 @@ export class DemoUIManager {
         CanvasTextureTool.GetInstance().initialize(this.m_rscene);
         CanvasTextureTool.GetInstance().initializeAtlas(1024,1024, new Color4(1.0,1.0,1.0,0.0), true);
         
+        /*
+        if (RendererDeviece.IsMobileWeb()) {
+            this.m_btnSize = 64;
+            this.m_btnPX = 280;
+            this.m_btnPY = 30;
+        }
+        if(RendererDeviece.IsWebGL1()) {
+            this.m_btnPX += 32;
+        }
+
+        let plane:Plane3DEntity = new Plane3DEntity();
+        plane.initializeXOZ(10.0, 10.0, 100.0, 80.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
+        this.m_ruisc.addEntity(plane);
+
+        this.createSelectBtn("absorb", "absorb", "ON", "OFF", false);
+        //*/
+    }
+    
+    private m_btnSize: number = 24;
+    private m_bgLength: number = 200.0;
+    private m_btnPX: number = 102.0;
+    private m_btnPY: number = 10.0;
+
+    private m_btns: any[] = [];
+    private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionBar {
+
+        let selectBar: SelectionBar = new SelectionBar();
+        selectBar.uuid = uuid;
+        ///selectBar.testTex = this.getImageTexByUrl("static/assets/testEFT4.jpg");
+        selectBar.initialize(this.m_ruisc, ns, selectNS, deselectNS, this.m_btnSize);
+        selectBar.addEventListener(SelectionEvent.SELECT, this, this.selectChange);
+        if (flag) {
+            selectBar.select(false);
+        }
+        else {
+            selectBar.deselect(false);
+        }
+        selectBar.setXY(this.m_btnPX, this.m_btnPY);
+        this.m_btnPY += this.m_btnSize + 1;
+        if (!visibleAlways) this.m_btns.push(selectBar);
+        return selectBar;
+    }
+    
+    private selectChange(evt: any): void {
+        let progEvt: SelectionEvent = evt as SelectionEvent;
+        console.log("selectChange, flag: ", progEvt.flag);
     }
     private m_flag: boolean = true;
     private mouseDown(evt: any): void {
@@ -179,8 +229,29 @@ export class DemoUIManager {
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
 
-        this.m_rscene.run(true);
+        //this.m_rscene.run(true);
 
+        let pickFlag: boolean = true;
+
+        this.m_ruisc.runBegin(true, true);
+        this.m_ruisc.update(false, true);
+        pickFlag = this.m_ruisc.isRayPickSelected();
+
+        this.m_rscene.runBegin(false);
+        this.m_rscene.update(false, !pickFlag);
+        pickFlag = pickFlag || this.m_rscene.isRayPickSelected();
+
+        /////////////////////////////////////////////////////// ---- mouseTest end.
+
+
+        /////////////////////////////////////////////////////// ---- rendering begin.
+        this.m_rscene.renderBegin();
+        this.m_rscene.run(false);
+        this.m_rscene.runEnd();
+
+        this.m_ruisc.renderBegin();
+        this.m_ruisc.run(false);
+        this.m_ruisc.runEnd();
     }
 }
 export default DemoUIManager;

@@ -11,6 +11,13 @@ import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
 import {UILayoutBase} from "./uiManage/UILayoutBase";
 import Stage3D from "../vox/display/Stage3D";
 
+import SelectionEvent from "../vox/event/SelectionEvent";
+import CanvasTextureTool from "../orthoui/demos/base/CanvasTextureTool";
+import ProgressBar from "../orthoui/demos/base/ProgressBar";
+import ProgressDataEvent from "../vox/event/ProgressDataEvent";
+import EventBase from "../vox/event/EventBase";
+import SelectionBar from "../orthoui/demos/base/SelectionBar";
+
 var VoxCore: any = {};
 
 VoxCore["UILayoutBase"] = UILayoutBase;
@@ -27,11 +34,12 @@ VoxCore["Plane3DEntity"] = Plane3DEntity;
 VoxCore["Box3DEntity"] = Box3DEntity;
 VoxCore["DisplayEntityContainer"] = DisplayEntityContainer;
 
-
-
-
-
-
+VoxCore["SelectionEvent"] = SelectionEvent;
+VoxCore["CanvasTextureTool"] = CanvasTextureTool;
+VoxCore["ProgressBar"] = ProgressBar;
+VoxCore["ProgressDataEvent"] = ProgressDataEvent;
+VoxCore["EventBase"] = EventBase;
+VoxCore["SelectionBar"] = SelectionBar;
 
 class VoxCoreExport {
     constructor() {
