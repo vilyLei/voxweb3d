@@ -12,7 +12,7 @@ function UIManagementModule() {
     let m_btnSize = 24;
     let m_bgLength = 200.0;
     let m_btnPX = 162.0;
-    let m_btnPY = 10.0;
+    let m_btnPY = 70.0;
     let m_btns = [];
 
     function initLoadJS(module_ns) {
@@ -68,12 +68,9 @@ function UIManagementModule() {
         m_ruisc = uiLayout.getUIScene();
 
         if (uiLayout.isMobileWeb()) {
-            m_btnSize = 64;
-            m_btnPX = 280;
-            m_btnPY = 30;
-        }
-        if (uiLayout.isWebGL1()) {
-            m_btnPX += 32;
+            m_btnSize *= 2;
+            m_btnPX *= 2;
+            m_btnPY *= 2;
         }
 
         uiLayout.addModule(this);
@@ -83,15 +80,18 @@ function UIManagementModule() {
         m_container = new DisplayEntityContainer();
         uiLayout.addToScene(m_container);
 
-        let axis = new Axis3DEntity();
-        axis.initialize(300.0);
-        uiLayout.addToScene(axis);
+        //  let axis = new Axis3DEntity();
+        //  axis.initialize(300.0);
+        //  uiLayout.addToScene(axis);
+
 
         let plane = new Plane3DEntity();
+        plane.name = "plane";
         plane.showDoubleFace();
         plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [uiLayout.getImageTexByUrl("static/assets/broken_iron.jpg")]);
         plane.setXYZ(100, 0.0, 100);
         m_container.addEntity(plane);
+        uiLayout.saveEntity( plane );
         m_plane = plane;
 
 
@@ -172,11 +172,14 @@ function UIManagementModule() {
         console.log("UIManagementModule::selectChange()..., evt.uuid: ",evt.uuid, evt.target);
         switch(evt.uuid) {
             case "playCtr":
-                    evt.target.disable();
-                    //
-                    initLoadJS("UIManagementPlayCtrl");
+
+                evt.target.disable();
+                initLoadJS("UIManagementPlayCtrl");
                 break;
             case "colorSelect":
+
+                evt.target.disable();
+                initLoadJS("UIManagementColorSetting");
                 break;
             default:
                 break;

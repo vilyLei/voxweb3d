@@ -27,12 +27,9 @@ function UIManagementPlayCtrl() {
         m_ruisc = uiLayout.getUIScene();
 
         if (uiLayout.isMobileWeb()) {
-            m_btnSize = 64;
-            m_btnPX = 280;
-            m_btnPY = 30;
-        }
-        if (uiLayout.isWebGL1()) {
-            m_btnPX += 32;
+            m_btnSize *= 2;
+            m_btnPX *= 2;
+            m_btnPY *= 2;
         }
 
         uiLayout.addModule(this);

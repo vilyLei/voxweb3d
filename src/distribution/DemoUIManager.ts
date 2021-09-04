@@ -23,12 +23,9 @@ import {VoxCoreExport} from "./voxCoreExports";
 import RendererSubScene from "../vox/scene/RendererSubScene";
 import CanvasTextureTool from "../orthoui/assets/CanvasTextureTool";
 import Color4 from "../vox/material/Color4";
-import Plane3DEntity from "../vox/entity/Plane3DEntity";
-import SelectionBar from "../orthoui/button/SelectionBar";
+
 import SelectionEvent from "../vox/event/SelectionEvent";
-
-
-let voxCoreExport = new VoxCoreExport();
+import SelectionBar from "../orthoui/button/SelectionBar";
 
 export class DemoUIManager {
 
@@ -114,19 +111,20 @@ export class DemoUIManager {
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
-            //  let axis: Axis3DEntity = new Axis3DEntity();
-            //  axis.initialize(300.0);
-            //  this.m_rscene.addEntity(axis);
+            let axis: Axis3DEntity = new Axis3DEntity();
+            axis.initialize(300.0);
+            this.m_rscene.addEntity(axis);
             
             // add common 3d display entity
             // let plane:Plane3DEntity = new Plane3DEntity();
             // plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
             // this.m_rscene.addEntity(plane);
             
+
+            let voxCoreExport = new VoxCoreExport();
+
             this.initUIScene();
             UILayoutBase.GetInstance().initialize(this.m_rscene, this.m_ruisc, this.m_texLoader);
-
-            this.initLoadJS("UIManagementModule");
 
             this.update();
         }
@@ -148,9 +146,50 @@ export class DemoUIManager {
         this.m_ruisc.getCamera().update();
         CanvasTextureTool.GetInstance().initialize(this.m_rscene);
         CanvasTextureTool.GetInstance().initializeAtlas(1024,1024, new Color4(1.0,1.0,1.0,0.0), true);
+
+        
+        if (RendererDeviece.IsMobileWeb()) {
+            this.m_btnSize *= 2;
+            this.m_btnPX *= 2;
+            this.m_btnPY *= 2;
+        }
+        this.createSelectBtn("加载分布式代码", "loadDistributedRuntimeCode", "已加载", "加载", false);
         
     }
     
+    private m_btnSize: number = 24;
+    private m_bgLength: number = 200.0;
+    private m_btnPX: number = 162.0;
+    private m_btnPY: number = 10.0;
+    private m_btns: any[] = [];
+    private m_menuBtn: SelectionBar = null;
+    
+    private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionBar {
+
+        let selectBar: SelectionBar = new SelectionBar();
+        selectBar.uuid = uuid;
+        ///selectBar.testTex = this.getImageTexByUrl("static/assets/testEFT4.jpg");
+        selectBar.initialize(this.m_ruisc, ns, selectNS, deselectNS, this.m_btnSize);
+        selectBar.addEventListener(SelectionEvent.SELECT, this, this.selectChange);
+        if (flag) {
+            selectBar.select(false);
+        }
+        else {
+            selectBar.deselect(false);
+        }
+        selectBar.setXY(this.m_btnPX, this.m_btnPY);
+        this.m_btnPY += this.m_btnSize + 1;
+        if (!visibleAlways) this.m_btns.push(selectBar);
+        return selectBar;
+    }
+
+    private selectChange(evt: any): void {
+        let selectEvt: SelectionEvent = evt as SelectionEvent;
+        if(evt.uuid == "loadDistributedRuntimeCode") {
+            selectEvt.target.disable();
+            this.initLoadJS("UIManagementModule");
+        }
+    }
     private m_flag: boolean = true;
     private mouseDown(evt: any): void {
 

@@ -14,10 +14,10 @@ import CameraBase from "../vox/view/CameraBase";
 
 import SelectionEvent from "../vox/event/SelectionEvent";
 import CanvasTextureTool from "../orthoui/assets/CanvasTextureTool";
-import ProgressBar from "../orthoui/button/ProgressBar";
 import ProgressDataEvent from "../vox/event/ProgressDataEvent";
 import EventBase from "../vox/event/EventBase";
 import SelectionBar from "../orthoui/button/SelectionBar";
+import ProgressBar from "../orthoui/button/ProgressBar";
 
 var VoxCore: any = {};
 

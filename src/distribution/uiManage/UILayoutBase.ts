@@ -67,11 +67,13 @@ class UILayoutBase {
         return this.m_entities;
     }
 
+    saveEntity(entity: DisplayEntity): void {
+        this.m_entities.push(entity);
+    }
     addToScene(entity: DisplayEntity, i: number = 0): void {
 
         let p: any = entity;
         if (p.__$rseFlag != null) {
-            this.m_entities.push(entity);
             this.m_rsc.addEntity(entity, i, true);
         }
         else {

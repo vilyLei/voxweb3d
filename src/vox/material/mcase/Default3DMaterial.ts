@@ -8,6 +8,7 @@
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import ShaderCodeBuffer from "../ShaderCodeBuffer";
+import Color4 from "../Color4";
 export default class Default3DMaterial extends MaterialBase
 {
     private m_colorArray:Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
@@ -34,12 +35,22 @@ export default class Default3DMaterial extends MaterialBase
         this.m_colorArray[1] = pg;
         this.m_colorArray[2] = pb;
     }
+    getRGB3f(color: Color4):void
+    {
+        let ds: Float32Array = this.m_colorArray;
+        color.setRGB3f(ds[0],ds[1], ds[2]);
+    }
     setRGBA4f(pr:number,pg:number,pb:number,pa:number):void
     {
         this.m_colorArray[0] = pr;
         this.m_colorArray[1] = pg;
         this.m_colorArray[2] = pb;
         this.m_colorArray[3] = pa;
+    }
+    getRGBA4f(color: Color4):void
+    {
+        let ds: Float32Array = this.m_colorArray;
+        color.setRGBA4f(ds[0],ds[1], ds[2], ds[3]);
     }
     setAlpha(pa:number):void
     {
