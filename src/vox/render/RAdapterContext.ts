@@ -207,6 +207,9 @@ class RAdapterContext {
             if (stage != null) this.m_mouseEvtDisplather.initialize(canvas, div, stage);
             //  console.log("viewPortIMS: ",viewPortIMS);
             console.log("MAX_TEXTURE_SIZE: ",RendererDeviece.MAX_TEXTURE_SIZE);
+            console.log("IsMobileWeb: ",RendererDeviece.IsMobileWeb());
+            console.log("IsAndroidOS: ",RendererDeviece.IsAndroidOS());
+            console.log("IsIOS: ",RendererDeviece.IsIOS());
             //  console.log("MAX_RENDERBUFFER_SIZE: ",RendererDeviece.MAX_RENDERBUFFER_SIZE);
             //  console.log("MAX_VIEWPORT_WIDTH: ",RendererDeviece.MAX_VIEWPORT_WIDTH);
             //  console.log("MAX_VIEWPORT_HEIGHT: ",RendererDeviece.MAX_VIEWPORT_HEIGHT);
