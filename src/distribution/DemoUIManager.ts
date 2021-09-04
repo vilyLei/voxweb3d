@@ -160,7 +160,7 @@ export class DemoUIManager {
     private m_btnSize: number = 24;
     private m_bgLength: number = 200.0;
     private m_btnPX: number = 162.0;
-    private m_btnPY: number = 10.0;
+    private m_btnPY: number = 20.0;
     private m_btns: any[] = [];
     private m_menuBtn: SelectionBar = null;
     

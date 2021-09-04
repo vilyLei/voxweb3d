@@ -181,7 +181,18 @@ export class CanvasTextureTool {
         ctx2D.fillRect(0, 0, width, height);
         ctx2D.textAlign = "left";
         ctx2D.fillStyle = fontStyle;
-        ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
+        // if(RendererDeviece.IsIOS()) {
+        //     ctx2D.fillText(chars, (width - texWidth) * 0.5, -4);
+        // }
+        // else {
+        //     ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
+        // }
+        if (RendererDeviece.IsMobileWeb()) {
+            ctx2D.fillText(chars, (width - texWidth) * 0.5, -4);
+        }
+        else {
+            ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
+        }
         //ctx2D.fillText(chars, (size - texWidth) * 0.5, (size - metrics.fontBoundingBoxDescent) * 0.5);
 
         /*

@@ -135,6 +135,13 @@ export default class ImageTextureAtlas extends TextureAtlas {
         else {
             ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
         }
+        
+        // if(RendererDeviece.IsIOS()) {
+        //     ctx2D.fillText(chars, (width - texWidth) * 0.5, -4);
+        // }
+        // else {
+        //     ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
+        // }
         //ctx2D.fillText(chars, (size - texWidth) * 0.5, (size - metrics.fontBoundingBoxDescent) * 0.5);
         return canvas;
         /*

@@ -400,9 +400,8 @@ export class DemoUITexAtlas {
     }
     private createRectAreaPlane(texArea: TexArea, px: number, py: number): AABB2D {
 
-
+        let plane: Plane3DEntity;
         let tex: ImageTextureProxy;
-        let plane: Plane3DEntity = new Plane3DEntity();
         //  let texArea: TexArea = this.m_atlasSample0.altas0.getAreaByName( texNS );
         //  if(texArea == null) {
         //      texArea = this.m_atlasSample0.altas1.getAreaByName( texNS );
@@ -417,7 +416,8 @@ export class DemoUITexAtlas {
         //*/
         let rect: AABB2D = new AABB2D(px, py, texArea.texRect.width, texArea.texRect.height);
 
-        /*
+        ///*
+        plane = new Plane3DEntity();
         plane.uvs = texArea.uvs;
         plane.initializeXOY(0.0, 0.0, rect.width, rect.height, [tex]);
         plane.setXYZ(rect.x, rect.y, 0);
