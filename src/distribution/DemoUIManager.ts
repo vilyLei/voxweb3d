@@ -26,6 +26,7 @@ import Color4 from "../vox/material/Color4";
 
 import SelectionEvent from "../vox/event/SelectionEvent";
 import SelectionBar from "../orthoui/button/SelectionBar";
+import EventBase from "../vox/event/EventBase";
 
 export class DemoUIManager {
 
@@ -110,6 +111,7 @@ export class DemoUIManager {
             this.m_statusDisp.initialize("rstatus", this.m_rscene.getStage3D().viewWidth - 200);
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+            this.m_rscene.addEventListener(EventBase.RESIZE, this, this.resize);
 
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.initialize(300.0);
@@ -196,6 +198,13 @@ export class DemoUIManager {
 
         this.m_flag = true;
         DebugFlag.Flag_0 = 1;
+    }
+    private resize(evt: any): void {
+
+        if (this.m_ruisc != null) {
+            let stage = this.m_ruisc.getStage3D();
+            this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
+        }
     }
     private m_timeoutId: any = -1;
     private update(): void {

@@ -1,5 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
+import EventBase from "../vox/event/EventBase";
 import MouseEvent from "../vox/event/MouseEvent";
 import RendererDeviece from "../vox/render/RendererDeviece";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -56,9 +57,10 @@ export class DemoPBR {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 5);
             this.m_rscene.updateCamera();
-
+            
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);
+            this.m_rscene.addEventListener(EventBase.RESIZE, this, this.resize);
             //  this.m_stencilOutline.initialize(this.m_rscene);
             //  this.m_stencilOutline.setRGB3f(1.0, 0.0, 1.0);
             this.m_postOutline.initialize(this.m_rscene, 4);
@@ -97,6 +99,13 @@ export class DemoPBR {
     }
     private mouseUp(evt: any): void {
     }
+    private resize(evt: any): void {
+
+        if (this.m_ruisc != null) {
+            let stage = this.m_ruisc.getStage3D();
+            this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
+        }
+    }
     private update(): void {
 
         this.m_statusDisp.update(true);
@@ -114,11 +123,10 @@ export class DemoPBR {
         //*/
 
         this.update();
-        if (this.m_ruisc != null) {
-
-            let stage = this.m_ruisc.getStage3D();
-            this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
-        }
+        //  if (this.m_ruisc != null) {
+        //      let stage = this.m_ruisc.getStage3D();
+        //      this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
+        //  }
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(this.m_lookV, 30.0);
 
