@@ -88,7 +88,7 @@ function UIManagementModule() {
             m_btnPY *= 2;
         }
 
-        uiLayout.addModule(this);
+        uiLayout.addModule(this, "UIManagementModule");
 
         m_rotV3 = new Vector3D();
 

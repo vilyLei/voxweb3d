@@ -1,9 +1,6 @@
 
 function UIManagementPlayCtrl() {
 
-    let m_plane = null;
-    let m_rotV3 = null;
-    let m_container = null;
     let m_ruisc = null;
 
     var VoxCore = null;
@@ -11,7 +8,6 @@ function UIManagementPlayCtrl() {
 
     let m_btnSize = 24;
     let m_dY = 2.0;
-    let m_bgLength = 200.0;
     let m_btnPX = 162.0;
     let m_btnPY = 180.0;
     let m_btns = [];
@@ -33,7 +29,7 @@ function UIManagementPlayCtrl() {
             m_btnPY *= 2;
         }
 
-        uiLayout.addModule(this);
+        uiLayout.addModule(this, "UIManagementPlayCtrl");
         
         let uuidList = ["playCtr"];
         let nsList = null;
@@ -54,8 +50,7 @@ function UIManagementPlayCtrl() {
             let btn = bar.nameButton;
             btn.outColor.setRGBA4f(1.0,1.0,0.0,0.8);
             btn.updateColor();
-        }
-        
+        }        
     }
 
     this.createSelectBtn = function (ns, uuid, selectNS, deselectNS, flag, visibleAlways) {

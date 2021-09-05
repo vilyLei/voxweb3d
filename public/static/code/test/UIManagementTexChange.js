@@ -92,7 +92,7 @@ function UIManagementTexChange() {
             m_btnPY *= 2;
         }
 
-        uiLayout.addModule(this);
+        uiLayout.addModule(this, "UIManagementTexChange");
 
         m_texImg1.initialize(urls[0]);
         m_texImg1.setListener(this);

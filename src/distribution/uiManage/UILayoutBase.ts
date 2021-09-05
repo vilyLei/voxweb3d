@@ -17,6 +17,7 @@ class UILayoutBase {
     private m_ruisc: RendererSubScene;
     private m_texLoader: ImageTextureLoader = null;
     private m_modules: IUILayoutModule[] = [];
+    private m_moduleNames: string[] = [];
     private m_entities: DisplayEntity[] = [];
     private m_isRunning: boolean = true;
     constructor() {
@@ -103,9 +104,10 @@ class UILayoutBase {
         console.log("UILayoutBase::showInfo()...");
     }
 
-    addModule(pmodule: IUILayoutModule): void {
+    addModule(pmodule: IUILayoutModule, idns: string): void {
         if (pmodule != null) {
             this.m_modules.push(pmodule);
+            this.m_moduleNames.push(idns);
         }
     }
 

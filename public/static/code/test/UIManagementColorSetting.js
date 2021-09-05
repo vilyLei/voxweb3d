@@ -34,7 +34,7 @@ function UIManagementColorSetting() {
 
         var Color4 = VoxCore.Color4;
 
-        uiLayout.addModule(this);
+        uiLayout.addModule(this, "UIManagementColorSetting");
 
         let colors = [
             new Color4(1.0, 1.0, 1.0, 1.0),
