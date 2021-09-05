@@ -22,11 +22,11 @@ function UIManagementModule() {
             uvs[0], uvs[1], uvs[0], uvs[1]
         ]);
         box.setFaceUVSAt(0, uvs0);
-        box.setFaceUVSAt(1, uvs, 1);
+        box.setFaceUVSAt(1, uvs0);
         box.setFaceUVSAt(2, uvs0);
-        box.setFaceUVSAt(3, uvs0);
+        box.setFaceUVSAt(3, uvs);
         box.setFaceUVSAt(4, uvs0);
-        box.setFaceUVSAt(5, uvs0);
+        box.setFaceUVSAt(5, uvs);
 
         box.reinitializeMesh();
     }
@@ -109,10 +109,17 @@ function UIManagementModule() {
         m_container.addEntity(plane);
         m_currEntityy = plane;
         //*/
+        let uvs = new Float32Array(
+            0.0,    0.0,
+            1.0,    0.0,
+            1.0,    1.0,
+            0.0,    1.0
+        );
         let box = new Box3DEntity();
         box.name = "box";
         box.initializeSizeXYZ(800,800,30,[uiLayout.getImageTexByUrl("static/assets/metal_02.jpg")]);
         box.setXYZ(100, 0.0, 100);
+        updateBoxUV(box, uvs);
         m_container.addEntity(box);
         uiLayout.saveEntity(box);
         m_currEntityy = box;
