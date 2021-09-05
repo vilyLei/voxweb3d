@@ -142,48 +142,7 @@ export class CanvasTextureTool {
         }
         return ImageTextureAtlas.CreateCharsTexture(chars,size,fontStyle,bgStyle);
     }
-    /*
-    createCharsTexture(chars: string, size: number, fontStyle: string = "rgba(255,255,255,1.0)", bgStyle: string = "rgba(255,255,255,0.3)"): TextureProxy {
-        if (chars == null || chars == "" || size < 8) {
-            return null;
-        }
-        let canvas: HTMLCanvasElement | HTMLImageElement = this.createCharsImage(chars, size, fontStyle, bgStyle);
-        let keyStr: string = chars + "_" + size + fontStyle + "_" + bgStyle;
-
-        let tex: ImageTextureProxy = this.m_sc.textureBlock.createImageTex2D(size, size);
-        tex.premultiplyAlpha = true;
-        tex.setDataFromImage(canvas);
-        CanvasTextureTool.s_texMap.set(keyStr, tex);
-        return tex;
-    }
-    //*/
-    private getPixelsBounds(data: Uint8ClampedArray, width: number, height: number, threshold: number = 100): any {
-
-        let minX: number, minY: number;
-        let maxX: number, maxY: number;
-
-        minX = minY = 99999;
-        maxX = maxY = -99999;
-        //console.log("data.length: ",data.length);
-        let k: number = 0;
-        for (let i: number = 0; i < height; ++i) {
-            for (let j: number = 0; j < width; ++j) {
-                k = i * width + j;
-                k *= 4;
-                if (data[k + 3] > threshold) {
-
-                    if (j < minX) minX = j;
-                    else if (j > maxX) maxX = j;
-
-                    if (i < minY) minY = i;
-                    else if (i > maxY) maxY = i;
-                }
-            }
-        }
-
-        let bounds = { x: minX, y: minY, width: (maxX - minX) + 1, height: (maxY - minY) + 1 };
-        return bounds;
-    }
+    
     private m_whiteTex: TextureProxy = null;
     createWhiteTex(): TextureProxy {
         if (this.m_whiteTex != null) {

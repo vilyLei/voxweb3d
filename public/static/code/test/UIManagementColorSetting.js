@@ -14,6 +14,8 @@ function UIManagementColorSetting() {
     let m_btnPX = 162.0;
     let m_btnPY = 250.0;
     let m_btns = [];
+    let m_time = 0.0;
+    let m_material = null;
 
     this.initialize = function () {
 
@@ -40,21 +42,22 @@ function UIManagementColorSetting() {
             new Color4(1.0, 1.0, 1.0, 1.0),
             new Color4(1.0, 0.0, 0.0, 1.0),
             new Color4(0.0, 1.0, 0.0, 1.0),
-            new Color4(0.0, 0.0, 1.0, 1.0)
+            new Color4(0.0, 0.0, 1.0, 1.0),
+            new Color4(1.0, 0.0, 1.0, 1.0)
         ];
-        let uuidList = ["color_white", "color_red", "color_green", "color_blue"];
+        let uuidList = ["color_white", "color_red", "color_green", "color_blue", "color_purple"];
         let nsList = null;
         let selectNSList = null;
         let deselectNSList = null;
         if (uiLayout.getLanguage() == "zh-CN") {
-            nsList = ["使用", "使用", "使用", "使用"];
-            selectNSList = ["白色", "红色", "绿色", "蓝色"];
-            deselectNSList = ["白色", "红色", "绿色", "蓝色"];
+            nsList = ["使用", "使用", "使用", "使用", "使用"];
+            selectNSList = ["白色", "红色", "绿色", "蓝色", "紫色"];
+            deselectNSList = ["白色", "红色", "绿色", "蓝色", "紫色"];
         }
         else {
-            nsList = ["USE", "USE", "USE"];
-            selectNSList = ["White", "Red", "Green", "Blue"];
-            deselectNSList = ["White", "Red", "Green", "Blue"];
+            nsList = ["USE", "USE", "USE", "USE", "USE"];
+            selectNSList = ["White", "Red", "Green", "Blue", "Purple"];
+            deselectNSList = ["White", "Red", "Green", "Blue", "Purple"];
         }
         for (let i = 0; i < uuidList.length; i++) {
             let bar = this.createSelectBtn(nsList[i], uuidList[i], selectNSList[i], deselectNSList[i], true);
@@ -64,31 +67,6 @@ function UIManagementColorSetting() {
             bar.selectionButton.outColor.copyFrom( color );
             bar.selectionButton.updateColor();
         }
-        /*
-        let useColorBtn = this.createSelectBtn("使用白色", "color_white", "White", "White", true);
-        useColorBtn.nameButton.outColor.setRGBA4f(1.0,1.0,1.0,1.0);
-        useColorBtn.nameButton.updateColor();
-        useColorBtn.selectionButton.outColor.setRGBA4f(1.0,1.0,1.0,1.0);
-        useColorBtn.selectionButton.updateColor();
-
-        useColorBtn = this.createSelectBtn("使用红色", "color_red", "Red", "Red", true);
-        useColorBtn.nameButton.outColor.setRGBA4f(1.5,0.0,0.0,1.0);
-        useColorBtn.nameButton.updateColor();
-        useColorBtn.selectionButton.outColor.setRGBA4f(1.5,0.0,0.0,1.0);
-        useColorBtn.selectionButton.updateColor();
-        
-        useColorBtn = this.createSelectBtn("使用绿色", "color_green", "Green", "Green", true);
-        useColorBtn.nameButton.outColor.setRGBA4f(0.0,1.5,0.0,1.0);
-        useColorBtn.nameButton.updateColor();
-        useColorBtn.selectionButton.outColor.setRGBA4f(0.0,1.5,0.0,1.0);
-        useColorBtn.selectionButton.updateColor();
-        
-        useColorBtn = this.createSelectBtn("使用蓝色", "color_blue", "Blue", "Blue", true);
-        useColorBtn.nameButton.outColor.setRGBA4f(0.0,0.0,1.5,1.0);
-        useColorBtn.nameButton.updateColor();
-        useColorBtn.selectionButton.outColor.setRGBA4f(0.0,0.0,1.5,1.0);
-        useColorBtn.selectionButton.updateColor();
-        //*/
     }
 
     this.createSelectBtn = function (ns, uuid, selectNS, deselectNS, flag, visibleAlways) {
@@ -120,10 +98,20 @@ function UIManagementColorSetting() {
         let entitys = uiLayout.getEntities();
         if (entitys.length > 0) {
             let color = evt.target.nameButton.outColor;
+            m_material = entitys[0].getMaterial();
             entitys[0].getMaterial().setRGB3f(color.r, color.g, color.b);
+            m_time = 0;
+            m_material.setTime(m_time);
+            m_material.setFactorXYZ(Math.random() * 1.5 + 0.1,Math.random() * 1.5 + 0.1,Math.random() * 1.5 + 0.1);
+            m_material.setUVOffset(Math.random() * 10, Math.random() * 10);
         }
     }
     this.run = function () {
-
+        if(m_material != null) {
+            if(m_time < 100000) {
+                m_time += 0.01;
+                m_material.setTime(m_time);
+            }
+        }
     }
 };

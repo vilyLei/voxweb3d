@@ -50,7 +50,7 @@ function UIManagementTexChange() {
     let m_btnSize = 24;
     let m_bgLength = 200.0;
     let m_btnPX = 162.0;
-    let m_btnPY = 370.0;
+    let m_btnPY = 430.0;
     let m_dY = 2.0;
     let m_btns = [];
     let urls = [
@@ -68,7 +68,9 @@ function UIManagementTexChange() {
             let entitys = uiLayout.getEntities();
             console.log("entitys: ", entitys);
             if (entitys.length > 0) {
-                let texture = entitys[0].getMaterial().getTextureAt(0);
+                let material = entitys[0].getMaterial();
+                //material.setTime(0.0);
+                let texture = material.getTextureAt(0);
                 texture.setDataFromImage(m_currTexImg.getImage());
                 texture.updateDataToGpu();
             }

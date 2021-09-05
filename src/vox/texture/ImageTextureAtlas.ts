@@ -114,9 +114,6 @@ export default class ImageTextureAtlas extends TextureAtlas {
 
         if (chars.length > 1) {
             width = Math.round(texWidth + 8);
-            if (RendererDevice.IsWebGL1()) {
-                width = MathConst.CalcCeilPowerOfTwo(width);
-            }
             //preW = width;
             canvas.width = width;
             ctx2D = canvas.getContext("2d");
@@ -141,13 +138,6 @@ export default class ImageTextureAtlas extends TextureAtlas {
             ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
         }
         
-        // if(RendererDevice.IsIOS()) {
-        //     ctx2D.fillText(chars, (width - texWidth) * 0.5, -4);
-        // }
-        // else {
-        //     ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
-        // }
-        //ctx2D.fillText(chars, (size - texWidth) * 0.5, (size - metrics.fontBoundingBoxDescent) * 0.5);
         return canvas;
         /*
         actualBoundingBoxAscent: 22

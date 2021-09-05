@@ -19,6 +19,7 @@ import EventBase from "../vox/event/EventBase";
 import SelectionBar from "../orthoui/button/SelectionBar";
 import ProgressBar from "../orthoui/button/ProgressBar";
 import Color4 from "../vox/material/Color4";
+import ChangeColorMaterial from "../renderingtoy/mcase/material/ChangeColorMaterial";
 
 var VoxCore: any = {};
 
@@ -44,6 +45,8 @@ VoxCore["ProgressBar"] = ProgressBar;
 VoxCore["ProgressDataEvent"] = ProgressDataEvent;
 VoxCore["EventBase"] = EventBase;
 VoxCore["SelectionBar"] = SelectionBar;
+
+VoxCore["ChangeColorMaterial"] = ChangeColorMaterial;
 
 class VoxCoreExport {
     constructor() {

@@ -78,6 +78,7 @@ function UIManagementModule() {
         var Plane3DEntity = VoxCore.Plane3DEntity;
         var Box3DEntity = VoxCore.Box3DEntity;
         var DisplayEntityContainer = VoxCore.DisplayEntityContainer;
+        var ChangeColorMaterial = VoxCore.ChangeColorMaterial;
 
         uiLayout = UILayoutBase.GetInstance();
         m_ruisc = uiLayout.getUIScene();
@@ -115,9 +116,17 @@ function UIManagementModule() {
             1.0,    1.0,
             0.0,    1.0
         );
+        
+        let material = new ChangeColorMaterial();
+
         let box = new Box3DEntity();
         box.name = "box";
-        box.initializeSizeXYZ(800,800,30,[uiLayout.getImageTexByUrl("static/assets/metal_02.jpg")]);
+        box.setMaterial(material);
+        //box.initializeSizeXYZ(800,800,30,[uiLayout.getImageTexByUrl("static/assets/metal_02.jpg")]);
+        box.initializeSizeXYZ(800,800,30,[
+            uiLayout.getImageTexByUrl("static/assets/metal_02.jpg"),
+            uiLayout.getImageTexByUrl("static/assets/color_05.jpg")
+        ]);
         box.setXYZ(100, 0.0, 100);
         updateBoxUV(box, uvs);
         m_container.addEntity(box);
