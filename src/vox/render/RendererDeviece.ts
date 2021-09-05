@@ -15,6 +15,10 @@ class RendererDeviece {
     private static s_Android_Flag: number = 0;
     private static s_IOS_Flag: number = 0;
     private static s_IPad_Flag: number = 0;
+    /**
+     * zh-CN, en-US, ect....
+     */
+    private static s_language: string = "zh-CN";
     private static s_debugEnabled: boolean = true;
     public static GPU_VENDOR: string = "unknown";
     public static GPU_RENDERER: string = "unknown";
@@ -31,6 +35,10 @@ class RendererDeviece {
     public static FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED: boolean = true;
     // worker multi threads enabled yes or no
     private static s_threadEnabled: boolean = true;
+    
+    static SetLanguage(language: string): void {
+        RendererDeviece.s_language = language;
+    }
     static SetThreadEnabled(boo: boolean): void {
         RendererDeviece.s_threadEnabled = boo;
     }

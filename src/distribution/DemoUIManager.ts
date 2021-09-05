@@ -27,6 +27,7 @@ import Color4 from "../vox/material/Color4";
 import SelectionEvent from "../vox/event/SelectionEvent";
 import SelectionBar from "../orthoui/button/SelectionBar";
 import EventBase from "../vox/event/EventBase";
+import TextButton from "../orthoui/button/TextButton";
 
 export class DemoUIManager {
 
@@ -155,10 +156,49 @@ export class DemoUIManager {
             this.m_btnPX *= 2;
             this.m_btnPY *= 2;
         }
-        this.createSelectBtn("加载分布式代码", "loadDistributedRuntimeCode", "已加载", "加载", false);
+        this.initLanguageSelect();
         
     }
-    
+    private m_zh_CN_btn: TextButton = null;
+    private m_en_US_btn: TextButton = null;
+
+    private initLanguageSelect(): void {
+
+        this.m_zh_CN_btn = new TextButton();
+        this.m_zh_CN_btn.uuid = "zh-CN";
+        this.m_zh_CN_btn.initialize(this.m_ruisc, " 中  文 ", this.m_btnSize);
+        this.m_zh_CN_btn.addEventListener(MouseEvent.MOUSE_UP, this, this.selectLanguage);
+
+        this.m_en_US_btn = new TextButton();
+        this.m_en_US_btn.uuid = "en-US";
+        this.m_en_US_btn.initialize(this.m_ruisc, "English", this.m_btnSize);
+        this.m_en_US_btn.addEventListener(MouseEvent.MOUSE_UP, this, this.selectLanguage);
+
+        this.alginLanguageBtn();
+
+    }
+    private selectLanguage(evt: any): void {
+
+        let mEvt: MouseEvent = evt as MouseEvent;
+        RendererDeviece.SetLanguage( mEvt.uuid );
+
+        this.m_zh_CN_btn.disable();
+        this.m_zh_CN_btn.close();
+
+        this.m_en_US_btn.disable();
+        this.m_en_US_btn.close();
+        
+        this.createSelectBtn("加载分布式代码", "loadDistributedRuntimeCode", "已加载", "加载", false);
+    }
+    private alginLanguageBtn(): void {
+        if (this.m_ruisc != null) {
+
+            let stage = this.m_ruisc.getStage3D();
+            this.m_zh_CN_btn.setPosition(new Vector3D(stage.stageHalfWidth - this.m_zh_CN_btn.getRect().width - 15, stage.stageHalfHeight, 0));
+            this.m_en_US_btn.setPosition(new Vector3D(stage.stageHalfWidth + 15, stage.stageHalfHeight, 0));
+
+        }
+    }
     private m_btnSize: number = 24;
     private m_bgLength: number = 200.0;
     private m_btnPX: number = 162.0;
@@ -205,6 +245,7 @@ export class DemoUIManager {
             let stage = this.m_ruisc.getStage3D();
             this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
         }
+        this.alginLanguageBtn();
     }
     private m_timeoutId: any = -1;
     private update(): void {
