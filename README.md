@@ -12,13 +12,14 @@ Feature:
 
     3. 共享内存情况下, 多GPU(上下文)支持。
        Shared CPU Memory, Multiple Gpu Context support.
-       http://www.artvily.com/renderCase?sample=multiGpu2
+       Demo: http://www.artvily.com/renderCase?sample=multiGpu2
 
     4. 面向高性能的渲染运行时(高频执行的渲染过程控制管理)， 支持大规模实时渲染和长时运行稳定性。
        Independent Renderer rendering runtime, for runtime high performence.
 
     5. 支持分布式运行时代码功能。
        Distributed-Runtime strategy support.
+       Demo: http://www.artvily.com/renderCase?sample=distributedRuntime
 
     6. 自动化的内存显存等资源管理。
        Auto resource management: system memory resource and Gpu memory resource, and one system memory resource for Multiple Gpu context memory resource.

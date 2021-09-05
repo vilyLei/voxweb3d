@@ -255,7 +255,7 @@ class RenderProxy {
                 this.createMainCamera();
             }
 
-            console.log("resizeCallback(), viewW,viewH: ", this.m_viewW+","+this.m_viewH);
+            //console.log("resizeCallback(), viewW,viewH: ", this.m_viewW+","+this.m_viewH);
             this.m_adapterContext.setViewport(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
             this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
             this.m_camera.setViewSize(this.m_viewW, this.m_viewH);

@@ -161,7 +161,6 @@ class ROVertexRes
             this.m_type = vtx.getType();
             this.m_attribsTotal = shdp.getLocationsTotal();
 
-            console.log("ROVertexRes::initialize()...,this.m_attribsTotal: ",this.m_attribsTotal);
             if(this.m_type < 1)
             {
                 // combined buf

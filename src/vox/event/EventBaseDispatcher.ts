@@ -81,7 +81,6 @@ export default class EventBaseDispatcher implements IEvtDispatcher {
                 else {
                     let node = new EvtNode();
                     node.type = 33;
-                    console.log("EventBaseDispatcher::addEventListener(), type: ",t);
                     node.addListener(target, func, phase);
                     this.m_evtNodeMap.set(t, node);
                 }

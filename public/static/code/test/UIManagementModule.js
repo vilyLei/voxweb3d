@@ -219,7 +219,6 @@ function UIManagementModule() {
     }
     this.selectChange = function (evt) {
 
-        console.log("UIManagementModule::selectChange()..., evt.uuid: ",evt.uuid, evt.target);
         switch(evt.uuid) {
             case "playCtr":
 

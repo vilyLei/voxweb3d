@@ -70,7 +70,6 @@ export default class ShaderData implements IShaderData {
     }
     initialize(unique_ns: string, vshdsrc: string, fshdSrc: string): void {
         this.m_shdUniqueName = unique_ns;
-        console.log("ShaderData,adaptationShaderVersion,preCompileInfo: ", this.adaptationShaderVersion, this.preCompileInfo == null);
         if (this.adaptationShaderVersion && this.preCompileInfo == null) {
             if (RendererDevice.IsWebGL1()) {
                 vshdsrc = GLSLConverter.Es3VtxShaderToES2(vshdsrc);

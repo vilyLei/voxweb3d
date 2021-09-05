@@ -61,7 +61,7 @@ export class DemoUIManager {
         }
 
         codeLoader.onprogress = (e) => {
-            console.log("progress, e: ", e);
+            //console.log("progress, e: ", e);
             //document.body.innerText = Math.round(100.0 * e.loaded / e.total) + "%";
         };
 
