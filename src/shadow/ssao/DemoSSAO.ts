@@ -1,5 +1,5 @@
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import RendererParam from "../../vox/scene/RendererParam";
 import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
@@ -76,9 +76,9 @@ export class DemoSSAO {
 
         console.log("DemoSSAO::initialize()......");
         if (this.m_rscene == null) {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-            RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-            //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
             rparam.setCamPosition(800.0, 800.0, 800.0);
@@ -149,7 +149,7 @@ export class DemoSSAO {
         this.m_aoPreFBO = this.m_rscene.createFBOInstance();
         this.m_aoPreFBO.setClearRGBAColor4f(0.0, 0.0, 0.0, 0.0);   // set rtt background clear rgb(r=0.0,g=0.0,b=0.0) color
         this.m_aoPreFBO.createFBOAt(0, 512, 512, true, false);
-        if (RendererDeviece.IsWebGL2()) {
+        if (RendererDevice.IsWebGL2()) {
             this.m_aoPreFBO.setRenderToRTTTextureAt(0, 0);      // framebuffer color attachment 0: color texture
         }
         else {

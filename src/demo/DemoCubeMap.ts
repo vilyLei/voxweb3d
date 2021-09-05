@@ -1,7 +1,7 @@
 
 import Vector3D from "../vox/math/Vector3D";
 import MouseEvent from "../vox/event/MouseEvent";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RendererInstance from "../vox/scene/RendererInstance";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -117,7 +117,7 @@ class SpecularTextureLoader extends TextureLoader {
         tex.toRGBFormat();
         //tex.toRGBFormatFloat32F();
         tex.mipmapEnabled = false;
-        if(RCExtension.OES_texture_float_linear != null || RendererDeviece.IsWebGL2()) {
+        if(RCExtension.OES_texture_float_linear != null || RendererDevice.IsWebGL2()) {
             tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
             tex.magFilter = TextureConst.LINEAR;
         }
@@ -170,8 +170,8 @@ export class DemoCubeMap {
     initialize(): void {
         console.log("DemoCubeMap::initialize()......");
         if (this.m_rscene == null) {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-            RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
@@ -242,7 +242,7 @@ export class DemoCubeMap {
         floatCubeTex.mipmapEnabled = false;
         
         floatCubeTex.toRGBAFormat();
-        if(RCExtension.OES_texture_float_linear != null || RendererDeviece.IsWebGL2()) {
+        if(RCExtension.OES_texture_float_linear != null || RendererDevice.IsWebGL2()) {
             floatCubeTex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
             floatCubeTex.magFilter = TextureConst.LINEAR;
         }

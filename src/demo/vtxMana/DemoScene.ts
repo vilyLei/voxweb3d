@@ -1,7 +1,7 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 import Matrix4 from "../../vox/math/Matrix4";
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../../vox/render/RenderConst";
 import RendererState from "../../vox/render/RendererState";
 import Color4 from "../../vox/material/Color4";

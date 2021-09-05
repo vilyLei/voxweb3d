@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import GLSLConverter from "../../vox/material/code/GLSLConverter";
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
@@ -152,7 +152,7 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
             coder.addFragUniform("vec4","u_mirrorParams",2);
         }
 
-        if (RendererDeviece.IsWebGL1()) {
+        if (RendererDevice.IsWebGL1()) {
             coder.addVertFunction(GLSLConverter.__glslInverseMat3);
             coder.addVertFunction(GLSLConverter.__glslInverseMat4);
         }

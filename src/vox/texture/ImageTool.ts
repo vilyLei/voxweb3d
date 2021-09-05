@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import MathConst from "../../vox/math/MathConst";
 /**
  * 在不支持npot的情况下，计算出清晰度损失尽可能小的pot纹理尺寸
@@ -20,16 +20,16 @@ export function calcTextueImagePowerSize(pw:number, ph: number): number[] {
     let power2W: number;            
     let power2H: number;
     if(k0 > 1.0) {
-        if(pw > RendererDeviece.MAX_TEXTURE_SIZE) {
-            pw = RendererDeviece.MAX_TEXTURE_SIZE;
+        if(pw > RendererDevice.MAX_TEXTURE_SIZE) {
+            pw = RendererDevice.MAX_TEXTURE_SIZE;
             ph = pw/k0;
         }
         power2W = MathConst.CalcCeilPowerOfTwo(pw);
         power2H = MathConst.CalcCeilPowerOfTwo(power2W/k0);
     }
     else {
-        if(ph > RendererDeviece.MAX_TEXTURE_SIZE) {
-            ph = RendererDeviece.MAX_TEXTURE_SIZE;
+        if(ph > RendererDevice.MAX_TEXTURE_SIZE) {
+            ph = RendererDevice.MAX_TEXTURE_SIZE;
             pw = ph * k0;
         }
         power2H = MathConst.CalcCeilPowerOfTwo(ph);
@@ -79,7 +79,7 @@ export default class ImageTool
     {
         let pwidth:number = MathConst.CalcNearestCeilPow2(srcImg.width);                            
         let pheight:number = MathConst.CalcNearestCeilPow2(srcImg.height);
-        if(RendererDeviece.IsMobileWeb())
+        if(RendererDevice.IsMobileWeb())
         {
             if(pwidth > 1024)pwidth = 1024;
             if(pheight > 1024)pwidth = 1024;
@@ -131,7 +131,7 @@ export default class ImageTool
     {
         let pwidth:number = MathConst.CalcNearestCeilPow2(srcImg.width);                            
         let pheight:number = MathConst.CalcNearestCeilPow2(srcImg.height);
-        if(RendererDeviece.IsMobileWeb())
+        if(RendererDevice.IsMobileWeb())
         {
             if(pwidth > 1024)pwidth = 1024;
             if(pheight > 1024)pwidth = 1024;

@@ -7,7 +7,7 @@
 
 import DivLog from "../../vox/utils/DivLog";
 import RCExtension from "../../vox/render/RCExtension";
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import RViewElement from "../../vox/render/RViewElement";
 import Color4 from "../../vox/material/Color4";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
@@ -195,7 +195,7 @@ class RAdapterContext {
             glFaceCull.FRONT = gl.FRONT;
             glFaceCull.FRONT_AND_BACK = gl.FRONT_AND_BACK;
             
-            let device: any = RendererDeviece;
+            let device: any = RendererDevice;
             //MAX_RENDERBUFFER_SIZE
             device.MAX_TEXTURE_SIZE = this.m_gl.getParameter(this.m_gl.MAX_TEXTURE_SIZE);
             device.MAX_RENDERBUFFER_SIZE = this.m_gl.getParameter(this.m_gl.MAX_RENDERBUFFER_SIZE);
@@ -203,20 +203,20 @@ class RAdapterContext {
             device.MAX_VIEWPORT_WIDTH = viewPortIMS[0];
             device.MAX_VIEWPORT_HEIGHT = viewPortIMS[1];
             RCExtension.Initialize(this.m_webGLVersion, this.m_gl);
-            RendererDeviece.Initialize([this.m_webGLVersion]);
+            RendererDevice.Initialize([this.m_webGLVersion]);
             if (stage != null) this.m_mouseEvtDisplather.initialize(canvas, div, stage);
             //  console.log("viewPortIMS: ",viewPortIMS);
-            console.log("MAX_TEXTURE_SIZE: ",RendererDeviece.MAX_TEXTURE_SIZE);
-            console.log("IsMobileWeb: ",RendererDeviece.IsMobileWeb());
-            console.log("IsAndroidOS: ",RendererDeviece.IsAndroidOS());
-            console.log("IsIOS: ",RendererDeviece.IsIOS());
-            //  console.log("MAX_RENDERBUFFER_SIZE: ",RendererDeviece.MAX_RENDERBUFFER_SIZE);
-            //  console.log("MAX_VIEWPORT_WIDTH: ",RendererDeviece.MAX_VIEWPORT_WIDTH);
-            //  console.log("MAX_VIEWPORT_HEIGHT: ",RendererDeviece.MAX_VIEWPORT_HEIGHT);
-            //  DivLog.ShowLogOnce("MAX_TEXTURE_SIZE: "+RendererDeviece.MAX_TEXTURE_SIZE);
-            //  DivLog.ShowLog("MAX_RENDERBUFFER_SIZE: "+RendererDeviece.MAX_RENDERBUFFER_SIZE);
-            //  DivLog.ShowLog("MAX_VIEWPORT_WIDTH: "+RendererDeviece.MAX_VIEWPORT_WIDTH);
-            //  DivLog.ShowLog("MAX_VIEWPORT_HEIGHT: "+RendererDeviece.MAX_VIEWPORT_HEIGHT);
+            console.log("MAX_TEXTURE_SIZE: ",RendererDevice.MAX_TEXTURE_SIZE);
+            console.log("IsMobileWeb: ",RendererDevice.IsMobileWeb());
+            console.log("IsAndroidOS: ",RendererDevice.IsAndroidOS());
+            console.log("IsIOS: ",RendererDevice.IsIOS());
+            //  console.log("MAX_RENDERBUFFER_SIZE: ",RendererDevice.MAX_RENDERBUFFER_SIZE);
+            //  console.log("MAX_VIEWPORT_WIDTH: ",RendererDevice.MAX_VIEWPORT_WIDTH);
+            //  console.log("MAX_VIEWPORT_HEIGHT: ",RendererDevice.MAX_VIEWPORT_HEIGHT);
+            //  DivLog.ShowLogOnce("MAX_TEXTURE_SIZE: "+RendererDevice.MAX_TEXTURE_SIZE);
+            //  DivLog.ShowLog("MAX_RENDERBUFFER_SIZE: "+RendererDevice.MAX_RENDERBUFFER_SIZE);
+            //  DivLog.ShowLog("MAX_VIEWPORT_WIDTH: "+RendererDevice.MAX_VIEWPORT_WIDTH);
+            //  DivLog.ShowLog("MAX_VIEWPORT_HEIGHT: "+RendererDevice.MAX_VIEWPORT_HEIGHT);
 
             //  let rc_vendor:any = this.m_gl.getParameter(this.m_gl.VENDOR);
             //  let rc_renderer:any = this.m_gl.getParameter(this.m_gl.RENDERER);
@@ -311,7 +311,7 @@ class RAdapterContext {
         let dprChanged: boolean = Math.abs(k - this.m_devicePixelRatio) > 0.02;
         this.m_devicePixelRatio = k;
         this.m_mouseEvtDisplather.dpr = k;
-        RendererDeviece.SetDevicePixelRatio(this.m_devicePixelRatio);
+        RendererDevice.SetDevicePixelRatio(this.m_devicePixelRatio);
         // console.log("this.m_devicePixelRatio: "+this.m_devicePixelRatio);
 
         if (this.m_displayWidth != pw || this.m_displayHeight != ph || dprChanged) {
@@ -400,10 +400,10 @@ class RAdapterContext {
     }
 
     getFBOWidth(): number {
-        return this.m_viewWidth < RendererDeviece.MAX_RENDERBUFFER_SIZE ? this.m_viewWidth : RendererDeviece.MAX_RENDERBUFFER_SIZE;
+        return this.m_viewWidth < RendererDevice.MAX_RENDERBUFFER_SIZE ? this.m_viewWidth : RendererDevice.MAX_RENDERBUFFER_SIZE;
     }
     getFBOHeight(): number {
-        return this.m_viewHeight < RendererDeviece.MAX_RENDERBUFFER_SIZE ? this.m_viewHeight : RendererDeviece.MAX_RENDERBUFFER_SIZE;
+        return this.m_viewHeight < RendererDevice.MAX_RENDERBUFFER_SIZE ? this.m_viewHeight : RendererDevice.MAX_RENDERBUFFER_SIZE;
     }
     getRCanvasWidth(): number {
         return this.m_rcanvasWidth;

@@ -10,7 +10,7 @@ import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
 import Matrix4 from "../../vox/math/Matrix4";
 import Vector3D from "../../vox/math/Vector3D";
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 
 class ProjectToneShaderBuffer extends ShaderCodeBuffer
 {

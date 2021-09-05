@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RendererInstance from "../vox/scene/RendererInstance";
@@ -30,7 +30,7 @@ export namespace demo
             console.log("DemoGpuVtxMana::initialize()......");
             if(this.m_rcontext == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = true;
                 //let tex0:TextureProxy = this.m_texMana.getImageTexByUrl("assets/fruit_01.jpg");
                 
                 this.m_statusDisp.initialize("rstatus");

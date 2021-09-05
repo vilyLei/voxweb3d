@@ -1,6 +1,6 @@
 
 import Vector3D from "../../vox/math/Vector3D";
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import Color4 from "../../vox/material/Color4";
 import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../../vox/render/RenderConst";
 import RendererState from "../../vox/render/RendererState";
@@ -20,7 +20,7 @@ import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
 import CameraTrack from "../../vox/view/CameraTrack";
 
 //import Vector3D = Vector3DT.vox.math.Vector3D;
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import RendererDevice = RendererDeviceT.vox.render.RendererDevice;
 //import Color4 = Color4T.vox.material.Color4;
 //import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 //import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
@@ -67,7 +67,7 @@ export namespace advancedDemo
                 if(this.m_rc == null)
                 {
                     H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
-                    RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
+                    RendererDevice.SHADERCODE_TRACE_ENABLED = false;
                     let tex0:TextureProxy = this.getImageTexByUrl("default.jpg");
                     let tex1:TextureProxy = this.getImageTexByUrl("broken_iron.jpg");
 

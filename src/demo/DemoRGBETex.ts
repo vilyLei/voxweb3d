@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -50,9 +50,9 @@ export class DemoRGBETex implements ILoaderListerner {
     initialize(): void {
         console.log("DemoRGBETex::initialize()......");
         if (this.m_rcontext == null) {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-            RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-            RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;

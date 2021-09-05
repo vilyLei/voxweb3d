@@ -1,5 +1,5 @@
 
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
@@ -29,7 +29,7 @@ export class DemoObjModel
         console.log("DemoObjModel::initialize()......");
         if(this.m_rscene == null)
         {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             let rparam:RendererParam = new RendererParam();
             rparam.setCamProject(45.0,0.1,3000.0);
             rparam.setCamPosition(1500.0,1500.0,1500.0);

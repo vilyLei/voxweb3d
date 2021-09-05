@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
@@ -31,7 +31,7 @@ class PBREnv0ShaderBuffer extends ShaderCodeBuffer {
         let fragCode: string =
 `#version 300 es
 `;
-        if(RendererDeviece.IsWebGL1()) {
+        if(RendererDevice.IsWebGL1()) {
 
             fragCode +=
 `

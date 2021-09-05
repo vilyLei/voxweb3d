@@ -6,7 +6,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../../vox/render/RendererDeviece";
+import RendererDevice from "../../../vox/render/RendererDevice";
 import AttributeLine from "../../../vox/material/code/AttributeLine";
 import UniformLine from "../../../vox/material/code/UniformLine";
             
@@ -200,7 +200,7 @@ export default class ShaderCodeParser
             ++i;
         }
         let outputKey:string = "layout";
-        if(RendererDeviece.IsWebGL1())
+        if(RendererDevice.IsWebGL1())
         {
             outputKey = "gl_FragData";
         }

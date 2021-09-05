@@ -6,12 +6,12 @@
 /***************************************************************************/
 
 import IThreadSendData from "../thread/base/IThreadSendData";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import ThreadCore from "../thread/control/Thrcode";
 import ThrDataPool from "../thread/control/ThrDataPool";
 import ThreadBase from "../thread/base/ThreadBase";
 
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import RendererDevice = RendererDeviceT.vox.render.RendererDevice;
 
 class ThreadSystem {
     // allow ThreadSystem initialize yes or no
@@ -106,10 +106,10 @@ class ThreadSystem {
     // 当前系统是否开启 worker multi threads
     static SetThreadEnabled(boo: boolean): void {
         if (ThreadSystem.s_thrSupportFlag > 0) ThreadSystem.s_thrSupportFlag = boo ? 2 : 1;
-        RendererDeviece.SetThreadEnabled(boo);
+        RendererDevice.SetThreadEnabled(boo);
     }
     static GetThreadEnabled(): boolean {
-        return RendererDeviece.GetThreadEnabled();
+        return RendererDevice.GetThreadEnabled();
     }
     // runtime support worker multi thrads yes or no
     static IsSupported(): boolean {
@@ -118,7 +118,7 @@ class ThreadSystem {
         }
         let boo: boolean = (typeof (Worker) !== "undefined") && (typeof (Blob) !== "undefined");
         ThreadSystem.s_thrSupportFlag = boo ? 2 : 1;
-        RendererDeviece.SetThreadEnabled(boo);
+        RendererDevice.SetThreadEnabled(boo);
         return boo;
     }
     private static CreateThread(): void {

@@ -111,7 +111,7 @@ function UIManagementModule() {
         //*/
         let box = new Box3DEntity();
         box.name = "box";
-        box.initializeSizeXYZ(800,800,30,[uiLayout.getImageTexByUrl("static/assets/decorativePattern_01.jpg")]);
+        box.initializeSizeXYZ(800,800,30,[uiLayout.getImageTexByUrl("static/assets/metal_02.jpg")]);
         box.setXYZ(100, 0.0, 100);
         m_container.addEntity(box);
         uiLayout.saveEntity(box);
@@ -124,20 +124,26 @@ function UIManagementModule() {
         let mat4 = new Matrix4();
         console.log("mat4: ", mat4);
 
-        let playCtrBtn = this.createSelectBtn("播放控制代码块", "playCtr", "已加载", "加载", false);
-        let btn = playCtrBtn.nameButton;
-        btn.outColor.setRGBA4f(1.0,1.0,0.0,0.8);
-        btn.updateColor();
-        
-        let colorSelectBtn = this.createSelectBtn("颜色控制代码块", "colorSelect", "已加载", "加载", false);
-        btn = colorSelectBtn.nameButton;
-        btn.outColor.setRGBA4f(1.0,1.0,0.0,0.8);
-        btn.updateColor();
-        
-        let texChangeBtn = this.createSelectBtn("纹理替换代码块", "texChange", "已加载", "加载", false);
-        btn = texChangeBtn.nameButton;
-        btn.outColor.setRGBA4f(1.0,1.0,0.0,0.8);
-        btn.updateColor();
+        let uuidList = ["playCtr", "colorSelect", "texChange"];
+        let nsList = null;
+        let selectNSList = null;
+        let deselectNSList = null;
+        if(uiLayout.getLanguage() == "zh-CN") {
+            nsList = ["播放控制代码块", "颜色控制代码块", "纹理替换代码块"];
+            selectNSList = ["已加载", "已加载", "已加载"];
+            deselectNSList = ["加载", "加载", "加载"];
+        }
+        else {
+            nsList = ["playModule", "colorModule", "textureModule"];
+            selectNSList = ["loaded", "loaded", "loaded"];
+            deselectNSList = ["load", "load", "load"];
+        }
+        for(let i = 0; i < uuidList.length; i++) {
+            let bar = this.createSelectBtn(nsList[i], uuidList[i], selectNSList[i], deselectNSList[i], false);
+            let btn = bar.nameButton;
+            btn.outColor.setRGBA4f(1.0,1.0,0.0,0.8);
+            btn.updateColor();
+        }
     }
 
     this.createSelectBtn = function (ns, uuid, selectNS, deselectNS, flag, visibleAlways) {

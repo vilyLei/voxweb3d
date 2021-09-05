@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import DivLog from "../../vox/utils/DivLog";
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 
 class ContextMouseEvtDispatcher
@@ -136,7 +136,7 @@ class ContextMouseEvtDispatcher
             },{passive: false},false);
             //},false);
             //*/
-            if(RendererDeviece.IsIpadOS()) {
+            if(RendererDevice.IsIpadOS()) {
                 let meta = document.createElement('meta');
                 meta.name = "viewport";
                 meta.content = "width=device-width,initial-scale=1.0,minimum-scale=1.0, maximum-scale=1.0, user-scalable=no";
@@ -146,7 +146,7 @@ class ContextMouseEvtDispatcher
     }
     initialize(canvas:any, div:any, stage:IRenderStage3D):void
     {
-        if(RendererDeviece.IsMobileWeb() || RendererDeviece.IsIpadOS())
+        if(RendererDevice.IsMobileWeb() || RendererDevice.IsIpadOS())
         {
             this.initMobile(canvas,div,stage);
         }

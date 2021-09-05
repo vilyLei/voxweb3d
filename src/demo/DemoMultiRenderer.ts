@@ -1,4 +1,4 @@
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import MouseEvent from "../vox/event/MouseEvent";
@@ -61,9 +61,9 @@ class DemoSRIns
     {
         if(this.m_rscene == null)
         {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
-            RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-            //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+            RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
             
             let div:HTMLDivElement = this.createDiv(px,py,pw,ph);
             let rparam:RendererParam = new RendererParam(div);

@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
@@ -23,7 +23,7 @@ import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
 import * as EntityDispT from "./base/EntityDisp";
 
 //import Vector3D = Vector3DT.vox.math.Vector3D;
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import RendererDevice = RendererDeviceT.vox.render.RendererDevice;
 //import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 //import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
 //import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
@@ -87,7 +87,7 @@ export namespace demo
             if(this.m_rcontext == null)
             {
                 this.initTex();
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = true;
                 
                 let scale:number = 1.0;
                 let i:number = 0;

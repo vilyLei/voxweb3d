@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -20,7 +20,7 @@ import RendererScene from "../vox/scene/RendererScene";
 import * as TwoPngTexMaterialT from "./material/base/TwoPngTexMaterial";
 
 //import Vector3D = Vector3DT.vox.math.Vector3D;
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import RendererDevice = RendererDeviceT.vox.render.RendererDevice;
 //import RendererParam = RendererParamT.vox.scene.RendererParam;
 //import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 //import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
@@ -87,7 +87,7 @@ export namespace example
             console.log("DemoPNG::initialize()......");
             if(this.m_rcontext == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
                 
                 let rparam:RendererParam = new RendererParam();

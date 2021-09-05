@@ -6,7 +6,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import UniformLine from "../../vox/material/code/UniformLine";
 import IVtxShdCtr from "../../vox/material/IVtxShdCtr";
@@ -90,7 +90,7 @@ export default class ShdProgram implements IVtxShdCtr {
                         this.m_attriSizeList.push(this.m_attribTypeSizeList[i]);
                     }
                 }
-                if (RendererDeviece.SHADERCODE_TRACE_ENABLED) {
+                if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
                     console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attri aLocationTypes: " + this.m_aLocationTypes);
                     console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attri m_aLocations: " + this.m_aLocations);
                     console.log("ShdProgram(" + this.m_uid + ")::createLocations(), attriNSList: " + attriNSList);
@@ -113,7 +113,7 @@ export default class ShdProgram implements IVtxShdCtr {
                         uns = uninforms[i].name;
                         ul = this.m_gl.getUniformLocation(this.m_program, uns);
 
-                        if (RendererDeviece.SHADERCODE_TRACE_ENABLED) {
+                        if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
                             console.log("ShdProgram::createLocations() uniform, ul " + ul + ", uninforms[" + i + "].name: " + uns);
                         }
                         if (ul != null) {
@@ -126,7 +126,7 @@ export default class ShdProgram implements IVtxShdCtr {
                             this.dataUniformEnabled = true;
                         }
                         else {
-                            if (RendererDeviece.SHADERCODE_TRACE_ENABLED) {
+                            if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
                                 console.warn("uniform ", uns, " was not used!");
                             }
                         }
@@ -277,7 +277,7 @@ export default class ShdProgram implements IVtxShdCtr {
         let fshd_str: string = this.m_shdData.getFSCodeStr();
         //console.log("ShdProgram::initShdProgram(), this: ",this);
         let pr: RegExp;
-        if (RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED) {
+        if (RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED) {
             if (vshd_str.indexOf(" mediump ") >= 0) {
                 pr = new RegExp(" mediump ", "g");
                 vshd_str = vshd_str.replace(pr, " highp ");
@@ -287,11 +287,11 @@ export default class ShdProgram implements IVtxShdCtr {
                 vshd_str = vshd_str.replace(pr, " highp ");
             }
         }
-        if (RendererDeviece.SHADERCODE_TRACE_ENABLED) {
+        if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
             console.log("vshd_str: \n" + vshd_str);
         }
         let vtxShd: any = this.loadShader(this.m_gl.VERTEX_SHADER, vshd_str);
-        if (RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED) {
+        if (RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED) {
             if (fshd_str.indexOf(" mediump ") >= 0) {
                 pr = new RegExp(" mediump ", "g");
                 fshd_str = fshd_str.replace(pr, " highp ");
@@ -301,7 +301,7 @@ export default class ShdProgram implements IVtxShdCtr {
                 fshd_str = fshd_str.replace(pr, " highp ");
             }
         }
-        if (RendererDeviece.SHADERCODE_TRACE_ENABLED) {
+        if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
             console.log("fshd_str: \n" + fshd_str);
         }
         let frgShd: any = this.loadShader(this.m_gl.FRAGMENT_SHADER, fshd_str);
@@ -312,7 +312,7 @@ export default class ShdProgram implements IVtxShdCtr {
         this.m_gl.linkProgram(shdProgram);
         // If creating the shader program failed, alert
         if (!this.m_gl.getProgramParameter(shdProgram, this.m_gl.LINK_STATUS)) {
-            if (RendererDeviece.SHADERCODE_TRACE_ENABLED) {
+            if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
                 console.log('Unable to initialize the shader program: ' + this.m_gl.getProgramInfoLog(shdProgram));
             }
             return null;
@@ -327,7 +327,7 @@ export default class ShdProgram implements IVtxShdCtr {
         this.m_gl.shaderSource(shader, source);
         this.m_gl.compileShader(shader);
         if (!this.m_gl.getShaderParameter(shader, this.m_gl.COMPILE_STATUS)) {
-            if (RendererDeviece.SHADERCODE_TRACE_ENABLED) {
+            if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
                 console.log('An error occurred compiling the shaders: ' + this.m_gl.getShaderInfoLog(shader));
             }
             this.m_gl.deleteShader(shader);

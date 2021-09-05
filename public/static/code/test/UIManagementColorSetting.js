@@ -32,8 +32,39 @@ function UIManagementColorSetting() {
             m_btnPY *= 2;
         }
 
+        var Color4 = VoxCore.Color4;
+
         uiLayout.addModule(this);
 
+        let colors = [
+            new Color4(1.0, 1.0, 1.0, 1.0),
+            new Color4(1.0, 0.0, 0.0, 1.0),
+            new Color4(0.0, 1.0, 0.0, 1.0),
+            new Color4(0.0, 0.0, 1.0, 1.0)
+        ];
+        let uuidList = ["color_white", "color_red", "color_green", "color_blue"];
+        let nsList = null;
+        let selectNSList = null;
+        let deselectNSList = null;
+        if (uiLayout.getLanguage() == "zh-CN") {
+            nsList = ["使用", "使用", "使用", "使用"];
+            selectNSList = ["白色", "红色", "绿色", "蓝色"];
+            deselectNSList = ["白色", "红色", "绿色", "蓝色"];
+        }
+        else {
+            nsList = ["USE", "USE", "USE"];
+            selectNSList = ["White", "Red", "Green", "Blue"];
+            deselectNSList = ["White", "Red", "Green", "Blue"];
+        }
+        for (let i = 0; i < uuidList.length; i++) {
+            let bar = this.createSelectBtn(nsList[i], uuidList[i], selectNSList[i], deselectNSList[i], true);
+            let color = colors[i];
+            bar.nameButton.outColor.copyFrom( color );
+            bar.nameButton.updateColor();
+            bar.selectionButton.outColor.copyFrom( color );
+            bar.selectionButton.updateColor();
+        }
+        /*
         let useColorBtn = this.createSelectBtn("使用白色", "color_white", "White", "White", true);
         useColorBtn.nameButton.outColor.setRGBA4f(1.0,1.0,1.0,1.0);
         useColorBtn.nameButton.updateColor();
@@ -52,11 +83,12 @@ function UIManagementColorSetting() {
         useColorBtn.selectionButton.outColor.setRGBA4f(0.0,1.5,0.0,1.0);
         useColorBtn.selectionButton.updateColor();
         
-        useColorBtn = this.createSelectBtn("使用绿色", "color_blue", "Blue", "Blue", true);
+        useColorBtn = this.createSelectBtn("使用蓝色", "color_blue", "Blue", "Blue", true);
         useColorBtn.nameButton.outColor.setRGBA4f(0.0,0.0,1.5,1.0);
         useColorBtn.nameButton.updateColor();
         useColorBtn.selectionButton.outColor.setRGBA4f(0.0,0.0,1.5,1.0);
         useColorBtn.selectionButton.updateColor();
+        //*/
     }
 
     this.createSelectBtn = function (ns, uuid, selectNS, deselectNS, flag, visibleAlways) {
@@ -81,14 +113,14 @@ function UIManagementColorSetting() {
         if (!visibleAlways) m_btns.push(selectBar);
         return selectBar;
     }
-    
+
     this.selectChange = function (evt) {
 
         console.log("UIManagementColorSetting::selectChange()...");
         let entitys = uiLayout.getEntities();
-        if(entitys.length > 0) {
+        if (entitys.length > 0) {
             let color = evt.target.nameButton.outColor;
-            entitys[0].getMaterial().setRGB3f(color.r,color.g,color.b);
+            entitys[0].getMaterial().setRGB3f(color.r, color.g, color.b);
         }
     }
     this.run = function () {

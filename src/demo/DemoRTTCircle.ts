@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -41,9 +41,9 @@ export namespace demo
             console.log("DemoRTTCircle::initialize()......");
             if(this.m_rcontext == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-                //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+                RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+                //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
                 let rparam:RendererParam = new RendererParam();
                 //rparam.maxWebGLVersion = 1;
@@ -88,7 +88,7 @@ export namespace demo
                 this.m_rttCirM = rttCirM;
                 rttCirM.setRaius(100.0);
                 rttCirM.setPosXY(500.0,300.0);
-                //let dpr:number = RendererDeviece.GetDevicePixelRatio();
+                //let dpr:number = RendererDevice.GetDevicePixelRatio();
                 //rttCirM.setStageSize(this.m_rscene.getStage3D().stageWidth * dpr, this.m_rscene.getStage3D().stageHeight * dpr);
                 rttCirM.setStageSize(this.m_rscene.getStage3D().stageWidth, this.m_rscene.getStage3D().stageHeight);
                 let scrPlane:Plane3DEntity = new Plane3DEntity();

@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -46,7 +46,7 @@ export namespace example
             console.log("TwoTexture::initialize()......");
             if(this.m_rcontext == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = true;
                 
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");

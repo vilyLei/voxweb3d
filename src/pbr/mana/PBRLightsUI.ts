@@ -1,5 +1,5 @@
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import MouseEvent from "../../vox/event/MouseEvent";
 
 import TextureProxy from "../../vox/texture/TextureProxy";
@@ -200,7 +200,7 @@ export class PBRLightsUI
     }
     private initCtrlBars(): void {
         
-        if(RendererDeviece.IsMobileWeb()) {
+        if(RendererDevice.IsMobileWeb()) {
             this.m_btnSize = 64;
             this.m_btnPX = 280;
             this.m_btnPY = 30;

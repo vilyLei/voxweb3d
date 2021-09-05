@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -237,7 +237,7 @@ export namespace demo {
 
             console.log("DemoFloatTex2::initialize()......" + Math.pow(1.9, 1.0 / 20.2));
             if (this.m_rcontext == null) {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
 
                 let rparam: RendererParam = new RendererParam();

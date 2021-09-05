@@ -1,5 +1,5 @@
 
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
@@ -53,7 +53,7 @@ export namespace demo
             if(this.m_rcontext == null)
             {
 
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = true;
                 
                 this.m_statusDisp.initialize("rstatus");
                 let rparam:RendererParam = new RendererParam();

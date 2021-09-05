@@ -1,5 +1,5 @@
 
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -46,9 +46,9 @@ export class DemoHdrCylindricalMap {
     initialize(): void {
         console.log("DemoHdrCylindricalMap::initialize()......");
         if (this.m_rscene == null) {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-            RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-            RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             let purl: string = 'https://ko.hou.aliyuncs.com/vr/hghyDeJ2XzH3FAY.pto?reawe=5.fg';
             let fileSuffix: any = URLTool.GetURLFileSuffix(purl);
             console.log("fileSuffix: ", fileSuffix);

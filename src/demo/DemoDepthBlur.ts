@@ -1,4 +1,4 @@
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstance from "../vox/scene/RendererInstance";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -20,7 +20,7 @@ export class DemoDepthBlur
         console.log("DemoDepthBlur::initialize()...");
         if(this.m_renderer == null)
         {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             
             this.m_renderer = new RendererInstance();
             let rparam:RendererParam = new RendererParam();

@@ -6,7 +6,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../../vox/render/RendererDeviece";
+import RendererDevice from "../../../vox/render/RendererDevice";
 import IUniformParam from "../../../vox/material/IUniformParam";
 import IShaderCodeBuilder from "./IShaderCodeBuilder";
 import GLSLConverter from "./GLSLConverter";
@@ -295,10 +295,10 @@ precision mediump float;
         let i: number = 0;
         let len: number = 0;
         let code: string = "";
-        if (RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED) {
+        if (RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED) {
             this.useHighPrecious();
         }
-        if (RendererDeviece.IsWebGL2()) {
+        if (RendererDevice.IsWebGL2()) {
             code += this.m_versionDeclare;
         }
 
@@ -313,7 +313,7 @@ precision mediump float;
             code += "\n" + this.m_fragExt[i];
         }
 
-        if (RendererDeviece.IsWebGL1()) {
+        if (RendererDevice.IsWebGL1()) {
             if (this.m_fragOutputNames.length > 1) {
                 code += "\n#extension GL_EXT_draw_buffers: require";
             }
@@ -325,7 +325,7 @@ precision mediump float;
             }
         }
 
-        if (RendererDeviece.IsWebGL2()) {
+        if (RendererDevice.IsWebGL2()) {
             code += "\n#define VOX_IN in";
             if (this.mapLodEnabled) {
                 code += "\n#define VOX_TextureCubeLod textureLod";
@@ -344,7 +344,7 @@ precision mediump float;
             code += "\n#define VOX_TextureCube textureCube";
             code += "\n#define VOX_Texture2D texture2D";
         }
-        if (RendererDeviece.IsMobileWeb()) {
+        if (RendererDevice.IsMobileWeb()) {
             code += "\nprecision highp float;";
         }
         else {
@@ -395,7 +395,7 @@ precision mediump float;
         if (this.m_fragProjMat) code += "\nuniform mat4 u_projMat;";
 
         len = this.m_varyingNames.length;
-        if (RendererDeviece.IsWebGL2()) {
+        if (RendererDevice.IsWebGL2()) {
             for (i = 0; i < len; i++) {
                 code += "\nin " + this.m_varyingTypes[i] + " " + this.m_varyingNames[i] + ";";
             }
@@ -406,7 +406,7 @@ precision mediump float;
             }
         }
 
-        if (this.fragMatrixInverseEnabled && RendererDeviece.IsWebGL1()) {
+        if (this.fragMatrixInverseEnabled && RendererDevice.IsWebGL1()) {
             this.addVertFunction(GLSLConverter.__glslInverseMat3);
             this.addVertFunction(GLSLConverter.__glslInverseMat4);
         }
@@ -421,7 +421,7 @@ precision mediump float;
 
         i = 0;
         len = this.m_fragOutputNames.length;
-        if (RendererDeviece.IsWebGL2()) {
+        if (RendererDevice.IsWebGL2()) {
             for (; i < len; i++) {
                 code += "\nlayout(location = " + i + ") out " + this.m_fragOutputTypes[i] + " " + this.m_fragOutputNames[i] + ";";
             }
@@ -436,7 +436,7 @@ precision mediump float;
         code += this.m_fragMainCode;
         //  code += this.m_mainEndCode;
         len = this.m_fragOutputNames.length;
-        if (RendererDeviece.IsWebGL1()) {
+        if (RendererDevice.IsWebGL1()) {
             if (len > 1) {
                 for (i = 0; i < len; i++) {
                     let tempReg = new RegExp(this.m_fragOutputNames[i], "g");
@@ -451,10 +451,10 @@ precision mediump float;
         let len: number = 0;
         let code: string = "";
 
-        if (RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED) {
+        if (RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED) {
             this.useHighPrecious();
         }
-        if (RendererDeviece.IsWebGL2()) {
+        if (RendererDevice.IsWebGL2()) {
             code += this.m_versionDeclare;
         }
 
@@ -464,7 +464,7 @@ precision mediump float;
             code += "\n" + this.m_vertExt[i];
         }
 
-        if (RendererDeviece.IsMobileWeb()) {
+        if (RendererDevice.IsMobileWeb()) {
             code += "\nprecision highp float;";
         }
         else {
@@ -472,7 +472,7 @@ precision mediump float;
         }
         //code += "\n"+this.m_preciousCode;
 
-        if (RendererDeviece.IsWebGL2()) {
+        if (RendererDevice.IsWebGL2()) {
             code += "\n#define VOX_OUT out";
         }
         else {
@@ -517,7 +517,7 @@ precision mediump float;
         }
 
         len = this.m_vertLayoutNames.length;
-        if (RendererDeviece.IsWebGL2()) {
+        if (RendererDevice.IsWebGL2()) {
             for (i = 0; i < len; i++) {
                 code += "\nlayout(location = " + i + ") in " + this.m_vertLayoutTypes[i] + " " + this.m_vertLayoutNames[i] + ";";
             }
@@ -539,7 +539,7 @@ precision mediump float;
 
 
         len = this.m_varyingNames.length;
-        if (RendererDeviece.IsWebGL2()) {
+        if (RendererDevice.IsWebGL2()) {
             for (i = 0; i < len; i++) {
                 code += "\nout " + this.m_varyingTypes[i] + " " + this.m_varyingNames[i] + ";";
             }
@@ -550,7 +550,7 @@ precision mediump float;
             }
         }
 
-        if (this.vertMatrixInverseEnabled && RendererDeviece.IsWebGL1()) {
+        if (this.vertMatrixInverseEnabled && RendererDevice.IsWebGL1()) {
             this.addVertFunction(GLSLConverter.__glslInverseMat3);
             this.addVertFunction(GLSLConverter.__glslInverseMat4);
         }

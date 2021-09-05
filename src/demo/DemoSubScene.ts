@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import { CubeRandomRange } from "../vox/utils/RandomRange";
 import Color4 from "../vox/material/Color4";
 import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
@@ -162,7 +162,7 @@ export namespace demo
             if(this.m_rscene == null)
             {
                 H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = false;
                 let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
                 let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/guangyun_H_0007.png");

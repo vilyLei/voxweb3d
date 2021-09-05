@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
@@ -77,7 +77,7 @@ export class DemoOrthoSubScene
         console.log("DemoOrthoSubScene::initialize()......");
         if(this.m_rscene == null)
         {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             
             this.m_statusDisp.initialize("rstatus",180);
             let rparam:RendererParam;

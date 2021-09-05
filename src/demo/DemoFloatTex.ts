@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -50,7 +50,7 @@ export class DemoFloatTex implements ILoaderListerner {
         let posTex: FloatTextureProxy = this.m_rscene.textureBlock.createFloatTex2D(size, size);
         posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
         posTex.mipmapEnabled = !mipmap;
-        if (RendererDeviece.IsWebGL2()) {
+        if (RendererDevice.IsWebGL2()) {
             posTex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
             posTex.magFilter = TextureConst.LINEAR;
         }
@@ -135,9 +135,9 @@ export class DemoFloatTex implements ILoaderListerner {
     initialize(): void {
         console.log("DemoFloatTex::initialize()......");
         if (this.m_rcontext == null) {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-            RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-            RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
             //  this.bytesToUfloat32(this.ufloat32To4Bytes(2.123456));
             //  console.log(">>>>>>>>>>>>>>>>>>>");
@@ -437,7 +437,7 @@ export class DemoFloatTex implements ILoaderListerner {
 
         DivLog.ShowLog("EXT_shader_texture_lod!=null: " + (RCExtension.EXT_shader_texture_lod != null));
         DivLog.ShowLog("OES_texture_float_linear!=null: " + (RCExtension.OES_texture_float_linear != null));
-        if (RendererDeviece.IsWebGL2()) {
+        if (RendererDevice.IsWebGL2()) {
             tex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
             tex.magFilter = TextureConst.LINEAR;
         }

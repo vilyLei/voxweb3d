@@ -1,7 +1,7 @@
 
 import MathConst from "../vox/math/MathConst";
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererState from "../vox/render/RendererState";
 import CameraViewRay from "../vox/view/CameraViewRay";
 import RendererParam from "../vox/scene/RendererParam";
@@ -44,7 +44,7 @@ export class DemoParticleClips
         console.log("DemoParticleClips::initialize()......");
         if(this.m_rscene == null)
         {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             
             let rparam:RendererParam = new RendererParam();
             rparam.setAttriAlpha(false);

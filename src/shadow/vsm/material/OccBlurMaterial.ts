@@ -10,7 +10,7 @@ import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import MaterialBase from "../../../vox/material/MaterialBase";
-import RendererDeviece from "../../../vox/render/RendererDeviece";
+import RendererDevice from "../../../vox/render/RendererDevice";
 
 class OccBlurShaderBuffer extends ShaderCodeBuffer
 {

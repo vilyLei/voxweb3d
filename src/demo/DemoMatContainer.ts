@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import Matrix4Container from "../vox/math/Matrix4Container";
 import RendererState from "../vox/render/RendererState";
@@ -57,9 +57,9 @@ export namespace demo
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
-            RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-            //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+            RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
             if(this.m_profileInstance != null)this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 

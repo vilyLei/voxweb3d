@@ -13,7 +13,7 @@ import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
 import ImageCubeTextureProxy from "../../vox/texture/ImageCubeTextureProxy";
 import BytesTextureProxy from "../../vox/texture/BytesTextureProxy";
 import TextureBlock from "../../vox/texture/TextureBlock";
-import RendererDeviece from "../render/RendererDeviece";
+import RendererDevice from "../render/RendererDevice";
 
 
 function generateCanvasMipmapsAt(src:any)
@@ -125,15 +125,15 @@ class ImgResUnit
             let imgData:any = null;
             let powBoo:boolean = MathConst.IsPowerOf2(img.width) && MathConst.IsPowerOf2(img.height);
             let powerOf2Fix: boolean = this.powerOf2Fix;
-            if(RendererDeviece.IsWebGL1()) {
+            if(RendererDevice.IsWebGL1()) {
                 powerOf2Fix = true;
             }
             if(!powBoo && powerOf2Fix)
             {
                 let pwidth:number = MathConst.CalcCeilPowerOfTwo(img.width);                            
                 let pheight:number = MathConst.CalcCeilPowerOfTwo(img.height);
-                if(pwidth > RendererDeviece.MAX_TEXTURE_SIZE)pwidth = RendererDeviece.MAX_TEXTURE_SIZE;
-                if(pheight > RendererDeviece.MAX_TEXTURE_SIZE)pwidth = RendererDeviece.MAX_TEXTURE_SIZE;
+                if(pwidth > RendererDevice.MAX_TEXTURE_SIZE)pwidth = RendererDevice.MAX_TEXTURE_SIZE;
+                if(pheight > RendererDevice.MAX_TEXTURE_SIZE)pwidth = RendererDevice.MAX_TEXTURE_SIZE;
                 console.log("image canvas size: "+pwidth+","+pheight);
                 let dobj:any = createImageCanvas(img, pwidth,pheight);
                 let mipLv:number = this.m_mipLv;

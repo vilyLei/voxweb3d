@@ -1,5 +1,5 @@
 
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
@@ -11,7 +11,7 @@ import Stage3D from "../vox/display/Stage3D";
 import CameraTrack from "../vox/view/CameraTrack";
 import * as MotionSceneT from "./fixProjMotion/MotionScene";
 
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import RendererDevice = RendererDeviceT.vox.render.RendererDevice;
 //import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 //import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
 //import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
@@ -43,7 +43,7 @@ export namespace motionDemo
             console.log("FixProjMotion::initialize()......");
             if(this.m_rcontext == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = true;
                 
                 this.m_statusDisp.initialize("rstatus");
                 let rparam:RendererParam = new RendererParam();

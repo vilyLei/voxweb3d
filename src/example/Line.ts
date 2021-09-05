@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -18,7 +18,7 @@ import RendererScene from "../vox/scene/RendererScene";
 import Line3DEntity from "../vox/entity/Line3DEntity";
 
 //import Vector3D = Vector3DT.vox.math.Vector3D;
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import RendererDevice = RendererDeviceT.vox.render.RendererDevice;
 //import RendererParam = RendererParamT.vox.scene.RendererParam;
 //import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 //import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
@@ -58,9 +58,9 @@ export namespace example
             console.log("Line::initialize()......");
             if(this.m_rcontext == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                //RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-                //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+                //RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+                //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");

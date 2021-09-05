@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import GLSLConverter from "../../vox/material/code/GLSLConverter";
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";

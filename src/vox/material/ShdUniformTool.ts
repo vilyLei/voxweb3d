@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import ShdProgram from "../../vox/material/ShdProgram";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import IShaderUniform from "../../vox/material/IShaderUniform";
@@ -247,7 +247,7 @@ export default class ShdUniformTool
         {
             // collect all uniform data,create a new runned uniform
             let shdUniform:ShaderUniform;
-            if(RendererDeviece.IsWebGL1())
+            if(RendererDevice.IsWebGL1())
             {
                 shdUniform = new ShaderUniformV1();
             }

@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import { CubeRandomRange } from "../vox/utils/RandomRange";
 import Color4 from "../vox/material/Color4";
 import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../vox/render/RenderConst";
@@ -107,8 +107,8 @@ export class DemoMouseEvent {
     initialize(): void {
         console.log("DemoMouseEvent::initialize()......");
         if (this.m_rscene == null) {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
-            RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+            RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
             let rparam: RendererParam = new RendererParam();
             rparam.setCamProject(45.0, 0.1, 3000.0);

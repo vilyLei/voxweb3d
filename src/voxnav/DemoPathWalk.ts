@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
@@ -24,7 +24,7 @@ import CameraTrack from "../vox/view/CameraTrack";
 import PathTrack from "../voxnav/path/PathTrack";
 
 //import Vector3D = Vector3DT.vox.math.Vector3D;
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import RendererDevice = RendererDeviceT.vox.render.RendererDevice;
 //import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
 //import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
 //import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
@@ -133,7 +133,7 @@ export namespace voxnav
             console.log("DemoPathWalk::initialize()......");
             if(this.m_rcontext == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = true;
                 let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
                 let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/guangyun_H_0007.png");

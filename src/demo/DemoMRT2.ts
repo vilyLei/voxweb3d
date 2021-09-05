@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import FrameBufferType from "../vox/render/FrameBufferType";
 import RenderAdapter from "../vox/render/RenderAdapter";
 import RendererParam from "../vox/scene/RendererParam";
@@ -42,7 +42,7 @@ export namespace demo
             console.log("DemoMRT2::initialize()......");
             if(this.m_rcontext == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
                 this.m_statusDisp.initialize("rstatus");
 

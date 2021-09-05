@@ -6,7 +6,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import MaterialConst from "../../vox/material/MaterialConst";
 import IShaderData from "../../vox/material/IShaderData";
 import ShdProgram from "../../vox/material/ShdProgram";
@@ -99,7 +99,7 @@ export default class RenderShader implements IRenderShader,IRenderResource
         ++this.m_shdListLen;
         this.m_shdDict.set(uns,p);
         
-        if(RendererDeviece.SHADERCODE_TRACE_ENABLED)
+        if(RendererDevice.SHADERCODE_TRACE_ENABLED)
         {
             console.log("this.Create() a new ShdProgram: ",p.toString());
         }
@@ -190,7 +190,7 @@ export default class RenderShader implements IRenderShader,IRenderResource
                 this.m_fragOutputTotal = shd.getFragOutputTotal();
                 if(this.m_fragOutputTotal != this.getActiveAttachmentTotal())
                 {
-                    //if(RendererDeviece.SHOWLOG_ENABLED) {
+                    //if(RendererDevice.SHOWLOG_ENABLED) {
                         console.log("shd.getUniqueShaderName(): string: "+shd.getUniqueShaderName());
                         console.log("this.m_fragOutputTotal: "+this.m_fragOutputTotal+", rc.getActiveAttachmentTotal(): "+this.getActiveAttachmentTotal());
                         console.error("Error: MRT output amount is not equal to current shader( "+shd.toString()+" ) frag shader output amount !!!");

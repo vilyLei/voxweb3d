@@ -1,5 +1,5 @@
 
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import Vector3D from "../vox/math/Vector3D";
 import CircleCalc from "../vox/geom/CircleCalc";
 import RendererParam from "../vox/scene/RendererParam";
@@ -23,8 +23,8 @@ export class DemoMixProgress
         console.log("DemoMixProgress::initialize()......");
         if(this.m_rscene == null)
         {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
-            RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+            RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             
             let rparam:RendererParam = new RendererParam();
             rparam.setCamPosition(800.0,800.0,800.0);

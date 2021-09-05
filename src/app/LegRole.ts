@@ -1,5 +1,5 @@
 
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import Vector3D from "../vox/math/Vector3D";
 import Color4 from "../vox/material/Color4";
@@ -53,9 +53,9 @@ export namespace app
             console.log("LegRole::initialize()......");
             if(this.m_rscene == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-                //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+                RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+                //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
                 
                 let rparam:RendererParam = new RendererParam();
                 //rparam.maxWebGLVersion = 1;

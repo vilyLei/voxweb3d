@@ -7,7 +7,7 @@
 // 用于对 RPOBlock 进行必要的组织, 例如 合批或者按照 shader不同来分类, 以及依据其他机制分类等等
 // 目前一个block内的所有node 所使用的shader program 是相同的
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import IRODisplay from "../../vox/display/IRODisplay";
 import IVertexRenderObj from "../../vox/render/IVertexRenderObj";
 import RPOUnit from "../../vox/render/RPOUnit";
@@ -283,7 +283,7 @@ export default class RPOBlock {
             if (forceUpdateUniform) {
                 this.m_shader.resetUniform();
             }
-            if (RendererDeviece.IsMobileWeb()) {
+            if (RendererDevice.IsMobileWeb()) {
                 // 如果不这么做，vro和shader attributes没有完全匹配的时候可能在某些设备上会有问题(例如ip6s上无法正常绘制)
                 // 注意临时产生的 vro 对象的回收问题
                 let vro: IVertexRenderObj = this.vtxResource.getVROByResUid(disp.vbuf.getUid(), this.m_shader.getCurrentShd(), true);

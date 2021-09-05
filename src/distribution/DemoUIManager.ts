@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
@@ -28,6 +28,7 @@ import SelectionEvent from "../vox/event/SelectionEvent";
 import SelectionBar from "../orthoui/button/SelectionBar";
 import EventBase from "../vox/event/EventBase";
 import TextButton from "../orthoui/button/TextButton";
+import { LanguageSystem } from "../language/LanguageSystem";
 
 export class DemoUIManager {
 
@@ -88,9 +89,9 @@ export class DemoUIManager {
         console.log("DemoUIManager::initialize()......");
         if (this.m_rscene == null) {
 
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
-            RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-            //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+            RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
@@ -151,7 +152,7 @@ export class DemoUIManager {
         CanvasTextureTool.GetInstance().initializeAtlas(1024,1024, new Color4(1.0,1.0,1.0,0.0), true);
 
         
-        if (RendererDeviece.IsMobileWeb()) {
+        if (RendererDevice.IsMobileWeb()) {
             this.m_btnSize *= 2;
             this.m_btnPX *= 2;
             this.m_btnPY *= 2;
@@ -180,23 +181,31 @@ export class DemoUIManager {
     private selectLanguage(evt: any): void {
 
         let mEvt: MouseEvent = evt as MouseEvent;
-        RendererDeviece.SetLanguage( mEvt.uuid );
-
+        RendererDevice.SetLanguage( mEvt.uuid );
+        
         this.m_zh_CN_btn.disable();
         this.m_zh_CN_btn.close();
 
         this.m_en_US_btn.disable();
         this.m_en_US_btn.close();
         
-        this.createSelectBtn("加载分布式代码", "loadDistributedRuntimeCode", "已加载", "加载", false);
+        if(RendererDevice.GetLanguage() == "zh-CN") {
+            LanguageSystem.ApplyChinese();
+            this.createSelectBtn("加载分布式代码", "loadDistributedRuntimeCode", "已加载", "加载", false);
+        }
+        else {
+            LanguageSystem.ApplyEnglish();
+            this.createSelectBtn("distributedCode", "loadDistributedRuntimeCode", "loaded", "load", false);
+        }
     }
     private alginLanguageBtn(): void {
+
         if (this.m_ruisc != null) {
 
             let stage = this.m_ruisc.getStage3D();
-            this.m_zh_CN_btn.setPosition(new Vector3D(stage.stageHalfWidth - this.m_zh_CN_btn.getRect().width - 15, stage.stageHalfHeight, 0));
-            this.m_en_US_btn.setPosition(new Vector3D(stage.stageHalfWidth + 15, stage.stageHalfHeight, 0));
-
+            let py: number = stage.stageHalfHeight * 0.6;
+            this.m_zh_CN_btn.setPosition(new Vector3D(stage.stageHalfWidth - this.m_zh_CN_btn.getRect().width - 15, py, 0));
+            this.m_en_US_btn.setPosition(new Vector3D(stage.stageHalfWidth + 15, py, 0));
         }
     }
     private m_btnSize: number = 24;

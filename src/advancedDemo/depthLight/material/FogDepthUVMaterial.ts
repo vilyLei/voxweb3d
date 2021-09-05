@@ -5,13 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../../vox/render/RendererDeviece";
+import RendererDevice from "../../../vox/render/RendererDevice";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import Color4 from "../../../vox/material/Color4";
 import MaterialBase from "../../../vox/material/MaterialBase";
 
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import RendererDevice = RendererDeviceT.vox.render.RendererDevice;
 //import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
 //import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
 //import Color4 = Color4T.vox.material.Color4;

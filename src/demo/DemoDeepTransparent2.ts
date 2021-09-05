@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererState from "../vox/render/RendererState";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -48,13 +48,13 @@ export class DemoDeepTransparent2 extends DemoInstance
     private m_peelM0:PeelColorMaterial = null;
     protected initializeSceneObj():void
     {
-        console.log("DemoDeepTransparent2::initialize()......,maxTexSize: ",RendererDeviece.MAX_TEXTURE_SIZE);
+        console.log("DemoDeepTransparent2::initialize()......,maxTexSize: ",RendererDevice.MAX_TEXTURE_SIZE);
         this.m_camTrack = new CameraTrack();
         this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
         
-        RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-        RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-        RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+        RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+        RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+        RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
         this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
         if(this.m_profileInstance != null)this.m_profileInstance.initialize(this.m_rscene.getRenderer());
         if(this.m_statusDisp != null)this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);

@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../../vox/render/RendererDeviece";
+import RendererDevice from "../../../vox/render/RendererDevice";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
@@ -27,7 +27,7 @@ class DefaultMRTShaderBuffer extends ShaderCodeBuffer
     getFragShaderCode():string
     {
         let fragCode:string = "";
-        if(RendererDeviece.IsWebGL2())
+        if(RendererDevice.IsWebGL2())
         {
         fragCode =
 `#version 300 es
@@ -65,7 +65,7 @@ gl_FragData[1] = vec4(1.0 - color.rgb * color.rgb * color.rgb,1.0);
     getVtxShaderCode():string
     {
         let vtxCode:string = "";
-        if(RendererDeviece.IsWebGL2())
+        if(RendererDevice.IsWebGL2())
         {
             vtxCode =
 `#version 300 es

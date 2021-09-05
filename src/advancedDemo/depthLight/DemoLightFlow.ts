@@ -4,7 +4,7 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import RendererParam from "../../vox/scene/RendererParam";
 import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
 import RendererScene from "../../vox/scene/RendererScene";
@@ -13,7 +13,7 @@ import H5FontSystem from "../../vox/text/H5FontSys";
 import CameraTrack from "../../vox/view/CameraTrack";
 import * as SceneFogFlow2T from "../../advancedDemo/depthLight/scene/SceneFogFlow";
 
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import RendererDevice = RendererDeviceT.vox.render.RendererDevice;
 //import RendererParam = RendererParamT.vox.scene.RendererParam;
 //import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
 //import RendererScene = RendererSceneT.vox.scene.RendererScene;
@@ -43,7 +43,7 @@ export namespace advancedDemo
                 if(this.m_rc == null)
                 {
                     H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
-                    RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                    RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
                     let rparam:RendererParam = new RendererParam();
                     rparam.setMatrix4AllocateSize(8192 * 4);

@@ -2,7 +2,7 @@
 import Vector3D from "../vox/math/Vector3D";
 import Matrix4 from "../vox/math/Matrix4";
 import Matrix4Pool from "../vox/math/Matrix4Pool";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
@@ -126,7 +126,7 @@ export namespace voxnav
             console.log("DemoTriNav::initialize()......");
             if(this.m_rscene == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = true;
                 let tex0:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/broken_iron.jpg");
                 let tex2:TextureProxy = this.m_texLoader.getImageTexByUrl("static/assets/warter_01.jpg");

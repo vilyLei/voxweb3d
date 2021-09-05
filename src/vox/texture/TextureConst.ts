@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import RCExtension from "../../vox/render/RCExtension";
 export class TextureFormat
 {
@@ -44,25 +44,25 @@ export class TextureFormat
                 return gl.ALPHA;
             break;
             case TextureFormat.RGB16F:
-                if(RendererDeviece.IsWebGL2())
+                if(RendererDevice.IsWebGL2())
                 {
                     return gl.RGB16F;
                 }
                 return gl.RGB;
             break;
             case TextureFormat.RGBA16F:
-                if(RendererDeviece.IsWebGL2())
+                if(RendererDevice.IsWebGL2())
                 {
                     return gl.RGBA16F;
                 }
                 return gl.RGBA;
             break;
             case TextureFormat.RGB32F:
-                if(RendererDeviece.IsWebGL2()) gl.RGB32F;
+                if(RendererDevice.IsWebGL2()) gl.RGB32F;
                 return gl.RGB;
                 break;
             case TextureFormat.RGBA32F:
-                if(RendererDeviece.IsWebGL2()) gl.RGBA32F;
+                if(RendererDevice.IsWebGL2()) gl.RGBA32F;
                 return gl.RGBA;
             break;
             case TextureFormat.RED:

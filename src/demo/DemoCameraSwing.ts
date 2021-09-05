@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -37,7 +37,7 @@ export class DemoCameraSwing {
     initialize(): void {
         console.log("DemoCameraSwing::initialize()......");
         if (this.m_rscene == null) {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             this.m_statusDisp.initialize("rstatus", 180);
 
             let rparam: RendererParam = new RendererParam();

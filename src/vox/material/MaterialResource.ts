@@ -6,7 +6,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import ShaderData from "../../vox/material/ShaderData";
 import ShaderCompileInfo from "../../vox/material/code/ShaderCompileInfo";
 
@@ -26,7 +26,7 @@ export default class MaterialResource {
 
         ++MaterialResource.s_shdDataListLen;
         MaterialResource.s_shdDataDict.set(unique_name_str, p);
-        if (RendererDeviece.SHADERCODE_TRACE_ENABLED) {
+        if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
             console.log("MaterialResource.Create() a new ShaderProgram: ", p.toString());
         }
         return p;

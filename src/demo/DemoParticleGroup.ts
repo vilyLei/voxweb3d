@@ -1,7 +1,7 @@
 
 import MathConst from "../vox/math/MathConst";
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
@@ -41,7 +41,7 @@ export class DemoParticleGroup {
     initialize(): void {
         console.log("DemoParticleGroup::initialize()......");
         if (this.m_rscene == null) {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
             let rparam: RendererParam = new RendererParam();
             rparam.setTickUpdateTime(20);

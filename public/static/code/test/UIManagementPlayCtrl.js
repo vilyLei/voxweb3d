@@ -34,11 +34,27 @@ function UIManagementPlayCtrl() {
         }
 
         uiLayout.addModule(this);
-
-        let playCtrBtn = this.createSelectBtn("播放控制", "playCtr", "停止", "播放", true);
-        let btn = playCtrBtn.nameButton;
-        btn.outColor.setRGBA4f(1.0,1.0,0.0,0.8);
-        btn.updateColor();
+        
+        let uuidList = ["playCtr"];
+        let nsList = null;
+        let selectNSList = null;
+        let deselectNSList = null;
+        if(uiLayout.getLanguage() == "zh-CN") {
+            nsList = ["播放控制"];
+            selectNSList = ["停止"];
+            deselectNSList = ["播放"];
+        }
+        else {
+            nsList = ["playCtrl"];
+            selectNSList = ["pause"];
+            deselectNSList = ["play"];
+        }
+        for(let i = 0; i < uuidList.length; i++) {
+            let bar = this.createSelectBtn(nsList[i], uuidList[i], selectNSList[i], deselectNSList[i], true);
+            let btn = bar.nameButton;
+            btn.outColor.setRGBA4f(1.0,1.0,0.0,0.8);
+            btn.updateColor();
+        }
         
     }
 

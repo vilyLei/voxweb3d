@@ -4,7 +4,7 @@ function ImageProxy() {
     let m_img = null;
     let m_loaded = false;
     let m_listener = null;
-    this.setListener = function(l) {
+    this.setListener = function (l) {
         m_listener = l;
     }
     this.initialize = function (url) {
@@ -16,12 +16,12 @@ function ImageProxy() {
             m_img = new Image();
             m_img.onload = (evt) => {
                 m_loaded = true;
-                console.log("ImageProxy image("+m_url+") loaded.");
-                if(m_listener != null) {
+                console.log("ImageProxy image(" + m_url + ") loaded.");
+                if (m_listener != null) {
                     m_listener.imageLoaded();
                 }
             }
-            console.log("ready load image("+m_url+").");
+            console.log("ready load image(" + m_url + ").");
             m_img.src = m_url;
         }
     }
@@ -54,7 +54,7 @@ function UIManagementTexChange() {
     let m_dY = 2.0;
     let m_btns = [];
     let urls = [
-        "static/assets/decorativePattern_01.jpg",
+        "static/assets/metal_02.jpg",
         "static/assets/color_01.jpg"
     ];
     let m_texImg1 = new ImageProxy();
@@ -63,13 +63,13 @@ function UIManagementTexChange() {
 
     function useTexImage() {
 
-        if(m_currTexImg != null && m_currTexImg.isLoaded()) {
+        if (m_currTexImg != null && m_currTexImg.isLoaded()) {
             console.log("use texture image(" + m_currTexImg.getUrl() + ").");
             let entitys = uiLayout.getEntities();
-            console.log("entitys: ",entitys);
-            if(entitys.length > 0) {
+            console.log("entitys: ", entitys);
+            if (entitys.length > 0) {
                 let texture = entitys[0].getMaterial().getTextureAt(0);
-                texture.setDataFromImage( m_currTexImg.getImage() );
+                texture.setDataFromImage(m_currTexImg.getImage());
                 texture.updateDataToGpu();
             }
             m_currTexImg = null;
@@ -95,22 +95,35 @@ function UIManagementTexChange() {
         uiLayout.addModule(this);
 
         m_texImg1.initialize(urls[0]);
-        m_texImg1.setListener( this );
+        m_texImg1.setListener(this);
         m_texImg1.load();
         m_texImg2.initialize(urls[1]);
-        m_texImg2.setListener( this );
-        
+        m_texImg2.setListener(this);
 
-        tex1Btn = this.createSelectBtn("纹理1", "tex_1", "已使用", "使用", false);
-        tex1Btn.nameButton.outColor.setRGBA4f(1.0, 1.0, 1.0, 1.0);
-        tex1Btn.nameButton.updateColor();
+        let uuidList = ["tex_1", "tex_2"];
+        let nsList = null;
+        let selectNSList = null;
+        let deselectNSList = null;
+        if (uiLayout.getLanguage() == "zh-CN") {
+            nsList = ["纹理1", "纹理2"];
+            selectNSList = ["已使用","已使用"];
+            deselectNSList = ["使用","使用"];
+        }
+        else {
+            nsList = ["texture1", "texture2"];
+            selectNSList = ["applied","applied"];
+            deselectNSList = ["apply","apply"];
+        }
+        for (let i = 0; i < uuidList.length; i++) {
+            let bar = this.createSelectBtn(nsList[i], uuidList[i], selectNSList[i], deselectNSList[i], true);
+            let btn = bar.nameButton;
+            btn.outColor.setRGBA4f(1.0, 1.0, 0.0, 0.8);
+            btn.updateColor();
+        }
+        tex1Btn = m_btns[0];
+        tex2Btn = m_btns[1];
         tex1Btn.select(false);
-
-        tex2Btn = this.createSelectBtn("纹理2", "tex_2", "已使用", "使用", true);
-        tex2Btn.nameButton.outColor.setRGBA4f(1.0, 1.0, 1.0, 1.0);
-        tex2Btn.nameButton.updateColor();
         tex2Btn.deselect(false);
-
     }
 
     this.createSelectBtn = function (ns, uuid, selectNS, deselectNS, flag, visibleAlways) {
@@ -135,10 +148,10 @@ function UIManagementTexChange() {
         if (!visibleAlways) m_btns.push(selectBar);
         return selectBar;
     }
-    this.imageLoaded = function() {
+    this.imageLoaded = function () {
         useTexImage();
     }
-    this.useTexImage = function() {
+    this.useTexImage = function () {
         if (m_currTexImg.getImage() == null) {
             m_currTexImg.load();
         }
@@ -184,8 +197,8 @@ function UIManagementTexChange() {
                 break;
         }
     }
-    
+
     this.run = function () {
-        
+
     }
 };

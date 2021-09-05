@@ -1,6 +1,6 @@
 
 import Vector3D from "../../vox/math/Vector3D";
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import {CubeRandomRange} from "../../vox/utils/RandomRange";
 import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../../vox/render/RenderConst";
 import RendererState from "../../vox/render/RendererState";
@@ -52,7 +52,7 @@ export namespace demo
             console.log("DemoBoxOcclusion::initialize()......");
             if(this.m_rscene == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = true;
                 
                 let rparam:RendererParam = new RendererParam();
                 rparam.setMatrix4AllocateSize(8192 * 4);

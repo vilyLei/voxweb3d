@@ -8,7 +8,7 @@
 
 import BitConst from "../../vox/utils/BitConst";
 import VtxBufConst from "../../vox/mesh/VtxBufConst";
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import GLSLConverter from "../../vox/material/code/GLSLConverter";
 
 import AttributeLine from "../../vox/material/code/AttributeLine";
@@ -72,7 +72,7 @@ export default class ShaderData implements IShaderData {
         this.m_shdUniqueName = unique_ns;
         console.log("ShaderData,adaptationShaderVersion,preCompileInfo: ", this.adaptationShaderVersion, this.preCompileInfo == null);
         if (this.adaptationShaderVersion && this.preCompileInfo == null) {
-            if (RendererDeviece.IsWebGL1()) {
+            if (RendererDevice.IsWebGL1()) {
                 vshdsrc = GLSLConverter.Es3VtxShaderToES2(vshdsrc);
                 fshdSrc = GLSLConverter.Es3FragShaderToES2(fshdSrc);
             }

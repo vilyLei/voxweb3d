@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import IVtxShdCtr from "../../vox/material/IVtxShdCtr";
 import IROVtxBuilder from "../../vox/render/IROVtxBuilder";
 import IVertexRenderObj from "../../vox/render/IVertexRenderObj";

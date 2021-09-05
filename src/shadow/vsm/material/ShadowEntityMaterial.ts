@@ -30,7 +30,7 @@ class ShadowEntityShaderBuffer extends ShaderCodeBuffer {
 
         let coder: ShaderCodeBuilder2 = this.m_codeBuilder;
         coder.reset();
-        //  if(RendererDeviece.IsWebGL1()) {
+        //  if(RendererDevice.IsWebGL1()) {
         //      coder.addFragExtend("#extension GL_OES_standard_derivatives : enable");
         //      //coder.addFragExtend("#extension GL_EXT_shader_texture_lod : enable");
         //  }

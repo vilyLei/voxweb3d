@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererState from "../vox/render/RendererState";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -107,9 +107,9 @@ let workerIns_ThreadAddNum = new ThreadAddNum();
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
-            RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-            //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+            RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
             this.m_profileInstance.initialize(this.m_rscene.getRenderer());
             this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);

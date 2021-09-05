@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import FrameBufferType from "../../vox/render/FrameBufferType";
 import {TextureFormat,TextureTarget} from "../../vox/texture/TextureConst";
 import IRenderResource from '../../vox/render/IRenderResource';
@@ -355,7 +355,7 @@ class FrameBufferObject
 	{
 		if (this.m_fbo != null)
 		{
-			if(RendererDeviece.IsWebGL2())
+			if(RendererDevice.IsWebGL2())
 			{
 				this.m_clearColorArr[0] = color.r;
 				this.m_clearColorArr[1] = color.g;
@@ -382,7 +382,7 @@ class FrameBufferObject
 	}
 	clearOnlyDepth(depth:number = 1.0):void
 	{
-		if(RendererDeviece.IsWebGL2())
+		if(RendererDevice.IsWebGL2())
 		{
 			this.m_clearDepthArr[0] = depth;
 			this.m_gl.clearBufferfv(this.m_gl.DEPTH, 0, this.m_clearDepthArr);
@@ -521,7 +521,7 @@ class FrameBufferObject
 		else
 		{
 			rgl.bindRenderbuffer(rgl.RENDERBUFFER, this.m_depthRBO);
-			if(RendererDeviece.IsWebGL2())
+			if(RendererDevice.IsWebGL2())
 			{
 				rgl.renderbufferStorage(rgl.RENDERBUFFER, rgl.DEPTH_COMPONENT24, pw, ph);
 			}

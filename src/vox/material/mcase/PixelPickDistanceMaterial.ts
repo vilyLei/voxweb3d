@@ -5,12 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../../vox/render/RendererDeviece";
+import RendererDevice from "../../../vox/render/RendererDevice";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 //import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
 
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import RendererDevice = RendererDeviceT.vox.render.RendererDevice;
 //import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
 ////import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
 //import MaterialBase = MaterialBaseT.vox.material.MaterialBase;
@@ -38,7 +38,7 @@ export namespace vox
                 getFragShaderCode():string
                 {
                     let fragCode:string = "";
-                    if(RendererDeviece.IsWebGL2())
+                    if(RendererDevice.IsWebGL2())
                     {
                     fragCode =
 "\
@@ -67,7 +67,7 @@ void main()\n\
                 getVtxShaderCode():string
                 {
                     let vtxCode:string = "";
-                    if(RendererDeviece.IsWebGL2())
+                    if(RendererDevice.IsWebGL2())
                     {
                         vtxCode =
 "\

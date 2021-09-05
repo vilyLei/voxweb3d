@@ -10,7 +10,7 @@ import IRenderProcess from "../../vox/render/IRenderProcess";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import H5FontSystem from "../../vox/text/H5FontSys";
 import Text2DEntity from "../../vox2d/text/Text2DEntity";
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 class FPSInfo {
     private m_fps: number = 60;
     private m_lastTime: number = 0;
@@ -80,7 +80,7 @@ export default class RendererStatus {
             let hDis: number = H5FontSystem.GetInstance().getFontSize() + 2;
             let py2: number = 2.0;
             let px2: number = 100.0;
-            if(RendererDeviece.IsMobileWeb()) {
+            if(RendererDevice.IsMobileWeb()) {
                 px2 *= H5FontSystem.GetInstance().getFontSize() / fontSize;
             }
             let px3: number = px2 - 10.0;

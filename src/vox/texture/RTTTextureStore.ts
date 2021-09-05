@@ -10,7 +10,7 @@ import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 import DepthTextureProxy from "../../vox/texture/DepthTextureProxy";
 import WrapperTextureProxy from "../../vox/texture/WrapperTextureProxy";
 import RenderProxy from "../../vox/render/RenderProxy";
-import RendererDeviece from "../render/RendererDeviece";
+import RendererDevice from "../render/RendererDevice";
 
 /**
  * 本类作为所有RTT纹理对象的管理类
@@ -157,7 +157,7 @@ export class RTTTextureStore
         tex.minFilter = TextureConst.NEAREST;
         tex.magFilter = TextureConst.NEAREST;
         
-        if(RendererDeviece.IsWebGL1()) {
+        if(RendererDevice.IsWebGL1()) {
             tex.dataType = TextureDataType.HALF_FLOAT_OES;
         }
 
@@ -182,7 +182,7 @@ export class RTTTextureStore
         tex.dataType = TextureDataType.FLOAT;
         tex.minFilter = TextureConst.NEAREST;
         tex.magFilter = TextureConst.NEAREST;
-        if(RendererDeviece.IsWebGL1()) {
+        if(RendererDevice.IsWebGL1()) {
             tex.dataType = TextureDataType.HALF_FLOAT_OES;
         }
         this.m_rttFloatTexs[i].__$setRenderProxy(this.m_renderProxy);

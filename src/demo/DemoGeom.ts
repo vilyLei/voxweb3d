@@ -4,7 +4,7 @@ import Sphere from "../vox/geom/Sphere";
 import Cone from "../vox/geom/Cone";
 import InfiniteCone from "../vox/geom/InfiniteCone";
 
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
@@ -45,7 +45,7 @@ export namespace demo
             console.log("DemoGeom::initialize()......");
             if(this.m_rcontext == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = false;
                 
                 this.m_statusDisp.initialize("rstatus");
                 let rparam:RendererParam = new RendererParam();

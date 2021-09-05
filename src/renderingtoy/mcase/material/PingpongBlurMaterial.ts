@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../../vox/render/RendererDeviece";
+import RendererDevice from "../../../vox/render/RendererDevice";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
@@ -27,7 +27,7 @@ class PingpongHBlurShaderBuffer extends ShaderCodeBuffer
     getFragShaderCode():string
     {
         let fragCode:string = "";
-        if(RendererDeviece.IsWebGL2())
+        if(RendererDevice.IsWebGL2())
         {
         fragCode =
 `#version 300 es
@@ -133,7 +133,7 @@ export class PingpongVBlurShaderBuffer extends ShaderCodeBuffer
     getFragShaderCode():string
     {
         let fragCode:string = "";
-        if(RendererDeviece.IsWebGL2())
+        if(RendererDevice.IsWebGL2())
         {
             fragCode =
 `#version 300 es

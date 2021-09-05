@@ -1,5 +1,5 @@
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import MouseEvent from "../../vox/event/MouseEvent";
 
 import TextureProxy from "../../vox/texture/TextureProxy";
@@ -200,12 +200,12 @@ export class DefaultPBRUI implements IPBRUI {
     }
     private initCtrlBars(): void {
 
-        if (RendererDeviece.IsMobileWeb()) {
+        if (RendererDevice.IsMobileWeb()) {
             this.m_btnSize = 64;
             this.m_btnPX = 280;
             this.m_btnPY = 30;
         }
-        if (RendererDeviece.IsWebGL1()) {
+        if (RendererDevice.IsWebGL1()) {
             this.m_btnPX += 32;
             this.m_btnSize = MathConst.CalcCeilPowerOfTwo(this.m_btnSize);
         }
@@ -241,7 +241,7 @@ export class DefaultPBRUI implements IPBRUI {
         this.ambientBtn = this.createValueBtn("ambient", "ambient", 0.1, 0.01, 1.0);
         this.specularBtn = this.createValueBtn("specular", "specular", 1.0, 0.01, 10.0);
 
-        let flag: boolean = RendererDeviece.IsMobileWeb();
+        let flag: boolean = RendererDevice.IsMobileWeb();
         this.rgbPanel = new RGBColorPanel();
         this.rgbPanel.initialize(flag ? 64 : 32, 4);
         this.rgbPanel.addEventListener(RGBColoSelectEvent.COLOR_SELECT, this, this.selectColor);

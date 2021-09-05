@@ -6,7 +6,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../../vox/render/RendererDeviece";
+import RendererDevice from "../../../vox/render/RendererDevice";
 
 export default class ShaderCodeBuilder {
 
@@ -170,7 +170,7 @@ precision mediump float;
         let len: number = 0;
         let code: string = "";
 
-        if (RendererDeviece.IsWebGL2()) {
+        if (RendererDevice.IsWebGL2()) {
             code += this.m_versionDeclare;
         }
 
@@ -232,7 +232,7 @@ precision mediump float;
         let len: number = 0;
         let code: string = "";
 
-        if (RendererDeviece.IsWebGL2()) {
+        if (RendererDevice.IsWebGL2()) {
             code += this.m_versionDeclare;
         }
 

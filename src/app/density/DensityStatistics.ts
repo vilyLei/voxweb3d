@@ -1,5 +1,5 @@
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import RendererParam from "../../vox/scene/RendererParam";
 import Vector3D from "../../vox/math/Vector3D";
 import Color4 from "../../vox/material/Color4";
@@ -207,9 +207,9 @@ export namespace app
                 console.log("DensityStatistics::initialize()......");
                 if(this.m_rscene == null)
                 {
-                    RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
-                    RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-                    //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
+                    RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+                    RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+                    //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
                     let rparam:RendererParam = new RendererParam();
                     rparam.setCamPosition(0.0,0.0,800.0);

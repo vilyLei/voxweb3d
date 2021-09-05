@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import UniformDataSlot from "../../vox/material/UniformDataSlot";
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
 import ShaderUniform from "../../vox/material/ShaderUniform";
 import IRenderShader from "../../vox/render/IRenderShader";
@@ -76,7 +76,7 @@ export default class ShaderGlobalUniform extends ShaderUniform
             //  }
             this.rst = slot.flagList[this.slotIndex];
             let i:number = 0;
-            if(RendererDeviece.IsWebGL1())
+            if(RendererDevice.IsWebGL1())
             {
                 for(; i < this.uniformsTotal; ++i)
                 {

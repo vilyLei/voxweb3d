@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import GLSLConverter from "../../vox/material/code/GLSLConverter";
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
@@ -51,10 +51,10 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
         //  console.log("DefaultPBR end.");
 
         let fragCode: string = "";
-        if (RendererDeviece.IsWebGL2()) {
+        if (RendererDevice.IsWebGL2()) {
             fragCode = "#version 300 es";
         }
-        if (RendererDeviece.IsWebGL1()) {
+        if (RendererDevice.IsWebGL1()) {
 
             fragCode +=
 `
@@ -111,7 +111,7 @@ precision highp float;
         else fragCode += "\n#define VOX_LIGHTS_TOTAL 0";
 
         let codeHead: string = "";
-        if (RendererDeviece.IsWebGL1()) {
+        if (RendererDevice.IsWebGL1()) {
             codeHead += "\n#define FragOutColor gl_FragColor";
         }
         else {
@@ -141,7 +141,7 @@ precision highp float;
     getVtxShaderCode(): string {
 
         let vtxCode: string = "";
-        if (RendererDeviece.IsWebGL2()) {
+        if (RendererDevice.IsWebGL2()) {
             vtxCode ="#version 300 es"
         }
         vtxCode +=
@@ -152,7 +152,7 @@ precision highp float;
         if (this.texturesTotal > 1) vtxCode += "\n#define VOX_USE_2D_MAP";
 
         vtxCode += "\n";
-        if (RendererDeviece.IsWebGL1()) {
+        if (RendererDevice.IsWebGL1()) {
             
             vtxCode +=
 `

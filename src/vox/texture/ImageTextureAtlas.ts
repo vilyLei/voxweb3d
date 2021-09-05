@@ -3,7 +3,7 @@ import { TextureConst } from "../../vox/texture/TextureConst";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import AABB2D from "../geom/AABB2D";
 import MathConst from "../math/MathConst";
-import RendererDeviece from "../render/RendererDeviece";
+import RendererDevice from "../render/RendererDevice";
 import { TexArea, TexAreaNode } from "./TexAreaNode";
 import TextureAtlas from "./TextureAtlas";
 import RendererScene from "../../vox/scene/RendererScene";
@@ -83,7 +83,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
         if (chars == null || chars == "" || size < 8) {
             return null;
         }
-        //size = Math.round(size * RendererDeviece.GetDevicePixelRatio());
+        //size = Math.round(size * RendererDevice.GetDevicePixelRatio());
         let keyStr: string = chars + "_" + size + fontStyle + "_" + bgStyle;
         if (ImageTextureAtlas.s_imgMap.has(keyStr)) {
             return ImageTextureAtlas.s_imgMap.get(keyStr);
@@ -114,7 +114,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
 
         if (chars.length > 1) {
             width = Math.round(texWidth + 8);
-            if (RendererDeviece.IsWebGL1()) {
+            if (RendererDevice.IsWebGL1()) {
                 width = MathConst.CalcCeilPowerOfTwo(width);
             }
             //preW = width;
@@ -129,8 +129,8 @@ export default class ImageTextureAtlas extends TextureAtlas {
         ctx2D.textAlign = "left";
         ctx2D.fillStyle = fontStyle;
         //ctx2D.fillText(chars, (size - texWidth) * 0.5, size - (size - metrics.fontBoundingBoxAscent + metrics.fontBoundingBoxDescent * 2.0) * 0.5);
-        if (RendererDeviece.IsMobileWeb()) {
-            if(RendererDeviece.IsIOS()) {
+        if (RendererDevice.IsMobileWeb()) {
+            if(RendererDevice.IsIOS()) {
                 ctx2D.fillText(chars, (width - texWidth) * 0.5, -4);
             }
             else {                
@@ -141,7 +141,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
             ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
         }
         
-        // if(RendererDeviece.IsIOS()) {
+        // if(RendererDevice.IsIOS()) {
         //     ctx2D.fillText(chars, (width - texWidth) * 0.5, -4);
         // }
         // else {

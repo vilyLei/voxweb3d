@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import RendererParam from "../../vox/scene/RendererParam";
 import MouseEvt3DController from "../../vox/scene/MouseEvt3DController";
 import Stage3D from "../../vox/display/Stage3D";
@@ -53,7 +53,7 @@ export namespace voxvat
                     }
                     H5FontSystem.GetInstance().initialize("fontTex",18, 512,512,false,false);
                     H5FontSystem.GetInstance().setStyleSize(128,128);
-                    RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
+                    RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 
                     let rparam:RendererParam = new RendererParam();
                     rparam.evtFlowEnabled = true;

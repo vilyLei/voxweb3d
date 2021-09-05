@@ -2,7 +2,7 @@
 import MathConst from "../vox/math/MathConst";
 import Matrix4 from "../vox/math/Matrix4";
 import Matrix4Pool from "../vox/math/Matrix4Pool";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -39,9 +39,9 @@ export namespace demo
             console.log("DemoDivControl::initialize()......");
             if(this.m_rcontext == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-                //RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+                RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+                //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
                 
                 //let div:any = document.getElementById("app");
                 let div:HTMLDivElement = null;

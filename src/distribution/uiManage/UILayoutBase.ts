@@ -5,7 +5,7 @@ import TextureProxy from "../../vox/texture/TextureProxy";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 
 interface IUILayoutModule {
     run(): boolean;
@@ -46,14 +46,17 @@ class UILayoutBase {
     getUIScene(): RendererSubScene {
         return this.m_ruisc;
     }
+    getLanguage(): string {
+        return RendererDevice.GetLanguage();
+    }
     isMobileWeb(): boolean {
-        return RendererDeviece.IsMobileWeb();
+        return RendererDevice.IsMobileWeb();
     }
     isWebGL1(): boolean {
-        return RendererDeviece.IsWebGL1();
+        return RendererDevice.IsWebGL1();
     }
     isWebGL2(): boolean {
-        return RendererDeviece.IsWebGL2();
+        return RendererDevice.IsWebGL2();
     }
     getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);

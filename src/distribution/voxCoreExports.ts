@@ -18,6 +18,7 @@ import ProgressDataEvent from "../vox/event/ProgressDataEvent";
 import EventBase from "../vox/event/EventBase";
 import SelectionBar from "../orthoui/button/SelectionBar";
 import ProgressBar from "../orthoui/button/ProgressBar";
+import Color4 from "../vox/material/Color4";
 
 var VoxCore: any = {};
 
@@ -28,6 +29,7 @@ VoxCore["Matrix4"] = Matrix4;
 VoxCore["Stage3D"] = Stage3D;
 VoxCore["CameraBase"] = CameraBase;
 
+VoxCore["Color4"] = Color4;
 VoxCore["TextureProxy"] = TextureProxy;
 
 VoxCore["DisplayEntity"] = DisplayEntity;

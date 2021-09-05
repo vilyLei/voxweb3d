@@ -1,6 +1,6 @@
 
 import Vector3D from "../../vox/math/Vector3D";
-import RendererDeviece from "../../vox/render/RendererDeviece";
+import RendererDevice from "../../vox/render/RendererDevice";
 import RendererParam from "../../vox/scene/RendererParam";
 import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 
@@ -58,7 +58,7 @@ export class DemoVSMModule {
     initialize(): void {
         console.log("DemoVSMModule::initialize()......");
         if (this.m_rscene == null) {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             //DivLog.SetDebugEnabled(true);
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;

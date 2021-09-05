@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDeviece from "../../../vox/render/RendererDeviece";
+import RendererDevice from "../../../vox/render/RendererDevice";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
@@ -13,7 +13,7 @@ import MaterialBase from "../../../vox/material/MaterialBase";
 import RenderProxy from '../../../vox/render/RenderProxy';
 import * as ParalLightDataT from "../light/ParalLightData";
 
-//import RendererDeviece = RendererDevieceT.vox.render.RendererDeviece;
+//import RendererDevice = RendererDeviceT.vox.render.RendererDevice;
 //import ShaderCodeBuffer = ShaderCodeBufferT.vox.material.ShaderCodeBuffer;
 //import ShaderUniformData = ShaderUniformDataT.vox.material.ShaderUniformData;
 //import ShaderGlobalUniform = ShaderGlobalUniformT.vox.material.ShaderGlobalUniform;

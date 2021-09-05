@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
@@ -319,7 +319,7 @@ export class DemoMultiRendererScene2 {
         console.log("DemoMultiRendererScene2::initialize()......, div: ", div);
 
         if (this.m_rendererScene == null) {
-            RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
 
             this.m_div = div;
 

@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
@@ -37,9 +37,9 @@ export namespace demo {
         initialize(): void {
             console.log("DemoPreDepth::initialize()......");
             if (this.m_rcontext == null) {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = true;
-                RendererDeviece.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-                RendererDeviece.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+                RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+                RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
                 RendererState.CreateRenderState("depthSt",CullFaceMode.BACK,RenderBlendMode.NORMAL,DepthTestMode.TRUE_GEQUAL);
                 //RendererState.CreateRenderState("depthSt", CullFaceMode.BACK, RenderBlendMode.NORMAL, DepthTestMode.TRUE_EQUAL);

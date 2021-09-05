@@ -1,6 +1,6 @@
 
 import Vector3D from "../vox/math/Vector3D";
-import RendererDeviece from "../vox/render/RendererDeviece";
+import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -136,7 +136,7 @@ export namespace demo
             console.log("DemoFloatTex::initialize()......");
             if(this.m_rcontext == null)
             {
-                RendererDeviece.SHADERCODE_TRACE_ENABLED = false;
+                RendererDevice.SHADERCODE_TRACE_ENABLED = false;
                 let urls = [
                     "./static/tex/grass.jpg",
                     "./static/tex/grass.jpg",
