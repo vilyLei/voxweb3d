@@ -144,6 +144,10 @@ export default class RendererStatus {
             this.m_pov = text2D;
         }
     }
+    
+    getFPS(): number {
+        return this.m_fpsInfo.getFPS();
+    }
     run(syncStageSize: boolean): void {
         this.m_fpsInfo.updateFPS();
         if (this.m_fps != this.m_fpsInfo.getFPS()) {

@@ -15,6 +15,7 @@ import RendererScene from "../vox/scene/RendererScene";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import AdsLightMaterial from "../vox/material/mcase/AdsLightMaterial";
+import LambertDirecLightMaterial from "../vox/material/mcase/LambertDirecLightMaterial";
 
 export class DemoAdsLight {
     constructor() { }
@@ -32,6 +33,7 @@ export class DemoAdsLight {
     initialize(): void {
         console.log("DemoAdsLight::initialize()......");
         if (this.m_rscene == null) {
+
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
@@ -61,16 +63,17 @@ export class DemoAdsLight {
             //  axis.initialize(500.0);
             //  this.m_rscene.addEntity(axis);
 
-            let adsMaterial: AdsLightMaterial = new AdsLightMaterial();
+            //let material: AdsLightMaterial = new AdsLightMaterial();
+            let material: LambertDirecLightMaterial = new LambertDirecLightMaterial();
             // add common 3d display entity
             let plane: Plane3DEntity = new Plane3DEntity();
-            plane.setMaterial(adsMaterial);
+            plane.setMaterial(material);
             plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
             this.m_rscene.addEntity(plane);
 
-            adsMaterial = new AdsLightMaterial();
+            //material = new AdsLightMaterial();
             let sph: Sphere3DEntity = new Sphere3DEntity();
-            sph.setMaterial(adsMaterial);
+            sph.setMaterial(material);
             sph.initialize(200.0, 20, 20, [this.getImageTexByUrl("static/assets/noise.jpg")]);
             sph.setXYZ(Math.random() * 600.0 - 300.0, Math.random() * 600.0 - 300.0, Math.random() * 600.0 - 300.0);
             this.m_rscene.addEntity(sph);

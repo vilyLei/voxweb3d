@@ -13,7 +13,6 @@ class ThreadCore
 let scriptDir = "";
 let ENV_IS_WORKER = typeof importScripts === 'function';
 if (ENV_IS_WORKER) {
-    // in worker
     scriptDir = self.location.href;
 }
 var baseUrl = scriptDir.slice(0, scriptDir.lastIndexOf("/") + 1);
@@ -29,6 +28,15 @@ self.TaskSTList = new Array(512);
 self.TaskSTList.fill(0);
 let taskSlot = self.__$TaskSlot;
 let taskSTList = self.TaskSTList;
+
+function initializeExternModule(ext_module) {
+    if(ext_module != null && ext_module.getTaskClass != undefined) {
+        self.__$TaskSlot[ext_module.getTaskClass()] = ext_module;
+        const INIT_TASK = 3701;
+        postMessage({cmd:INIT_TASK,taskclass:ext_module.getTaskClass()});
+    }
+}
+
 function ThreadCore() {
     let m_initBoo = true;
     let m_threadIndex = 0;
@@ -55,13 +63,21 @@ function ThreadCore() {
                 break;
             case INIT_TASK:
                 let param = data.param;
-                ///console.log("worker INIT_TASK param.type: ", param.type);
+                //console.log("worker INIT_TASK param.type: ", param.type);
                 switch (param.type) {
                     case 0:
                         if (taskSTList[param.taskclass] < 1) {
                             taskSTList[param.taskclass] = 1;
-                            let js_url = baseUrl + param.taskName + ".js";
-                            console.log("worker js_url: " + js_url);
+                            let js_url = param.taskName;
+                            let urlEnabled = param.moduleName != undefined && param.moduleName != "";
+                            if(!urlEnabled) {
+                                let si = param.taskName.lastIndexOf(".");
+                                if(si > 0) {
+                                    param.taskName = param.taskName.slice(0,si);
+                                }
+                                js_url = baseUrl + param.taskName + ".js";
+                            }
+                            //console.log("importScripts worker js_url: " + js_url);
                             importScripts(js_url);
                         }
                         break;
@@ -76,14 +92,10 @@ function ThreadCore() {
                             taskSTList[param.taskclass] = 1;
                             // 代码直接在字符串中, 并且是后续追加的
                             eval(param.srccode);
-                            console.log("param.moduleName: ", param.moduleName);
                             if (param.moduleName != undefined && param.moduleName != "") {
                                 var mins = "workerIns_" + param.moduleName;
                                 var tmcodeStr = "var " + mins + " = new " + param.moduleName + "();";
-                                tmcodeStr += "var miclass = " + mins + ".getTaskClass();";
-                                tmcodeStr += "self.__$TaskSlot[miclass] = " + mins + ";";
-                                tmcodeStr += "var INIT_TASK = 3701;";
-                                tmcodeStr += "postMessage({cmd: INIT_TASK, taskclass: miclass});";
+                                tmcodeStr += "\\ninitializeExternModule(" + mins + ");";
                                 eval(tmcodeStr);
                                 //  let blob = new Blob([tmcodeStr]);
                                 //  importScripts(URL.createObjectURL(blob));

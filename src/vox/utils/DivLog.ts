@@ -58,7 +58,9 @@ class DivLog
             }
             else
             {
-                var pdiv:any = document.createElement('div');
+                var div: HTMLDivElement = document.createElement('div');
+                div.style.color = ""
+                var pdiv: any = div;
                 pdiv.width = 128;
                 pdiv.height = 64;
                 pdiv.style.backgroundColor = "#aa0033";

@@ -86,7 +86,6 @@ export default class ShaderMaterial extends MaterialBase
             this.m_uniformData.uniformNameList.push(uniform_name);
             this.m_uniformData.dataList.push(data);
         }
-        
     }
     getCodeBuf():ShaderCodeBuffer
     {

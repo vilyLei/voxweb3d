@@ -6,7 +6,7 @@
 /***************************************************************************/
 // 真正位于高频运行的渲染管线中的被使用的渲染关键代理对象上下文
 
-import Matrix4Pool from "../../vox/math/Matrix4Pool";
+//import Matrix4Pool from "../../vox/math/Matrix4Pool";
 import UniformDataSlot from "../../vox/material/UniformDataSlot";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import CameraBase from "../../vox/view/CameraBase";
@@ -308,20 +308,6 @@ export default class RendererInstanceContext
     {
         this.m_adapter.setContextViewSize(pw,ph);
     }
-    // 引擎初始化的时候调用,构建单例的唯一实例
-    setMatrix4AllocateSize(total:number):void
-    {
-        if(this.m_Matrix4AllocateSize < 1)
-        {
-            if(total < 1024)
-            {
-                total = 1024;
-            }
-            //console.log("RendererInstanceContext::setMatrix4AllocateSize(), total: "+total);
-            this.m_Matrix4AllocateSize = total;
-            Matrix4Pool.Allocate(total);
-        }
-    }
     setCameraParam(fov:number, near:number, far:number):void
     {
         this.m_cameraFov = fov;
@@ -336,7 +322,7 @@ export default class RendererInstanceContext
     {
         if(this.m_Matrix4AllocateSize < 1024)
         {
-            this.setMatrix4AllocateSize(1024);
+            //this.setMatrix4AllocateSize(1024);
         }
         if(this.m_adapter == null)
         {

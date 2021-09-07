@@ -66,6 +66,7 @@ class RendererDevice {
 
             RendererDevice.s_WEBGL_VER = infoArr[0];
             RendererDevice.TestMobileWeb();
+            RendererDevice.s_language = navigator.language + "";
         }
     }
     static IsWebGL1(): boolean { return RendererDevice.s_WEBGL_VER == 1; }
@@ -84,7 +85,7 @@ class RendererDevice {
         if (/iPad|iPhone|iPod/.test(navigator.platform)) {
             boo = true;
         } else {
-            boo = navigator.maxTouchPoints &&
+            boo = navigator.maxTouchPoints != undefined &&
                 navigator.maxTouchPoints > 2 &&
                 /MacIntel/.test(navigator.platform);
         }

@@ -43,6 +43,7 @@ import IRODisplaySorter from "../../vox/render/IRODisplaySorter";
 import CameraDsistanceSorter from "../../vox/scene/CameraDsistanceSorter";
 import RendererSubScene from "../../vox/scene/RendererSubScene";
 import RenderShader from "../render/RenderShader";
+import Matrix4Pool from "../math/Matrix4Pool";
 
 export default class RendererScene implements IRenderer,IRendererScene {
     private static s_uid: number = 0;
@@ -259,6 +260,7 @@ export default class RendererScene implements IRenderer,IRendererScene {
     removeEventListener(type: number, target: any, func: (evt: any) => void): void {
         this.stage3D.removeEventListener(type, target, func);
     }
+    
     initialize(rparam: RendererParam = null, renderProcessTotal: number = 3): void {
 
         if (this.m_renderer == null) {
@@ -276,6 +278,7 @@ export default class RendererScene implements IRenderer,IRendererScene {
             this.m_renderer = new RendererInstance();
 
             this.m_renderer.__$setStage3D(this.stage3D);
+            Matrix4Pool.Allocate(rparam.getMatrix4AllocateSize());
             this.m_renderer.initialize(rparam);
             this.m_processids[0] = 0;
             this.m_processidsLen++;

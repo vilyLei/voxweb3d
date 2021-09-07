@@ -111,7 +111,7 @@ class ThreadBase implements IThreadBase {
             this.m_worker = worker;
             let selfT: ThreadBase = this;
             this.m_worker.onmessage = function (evt: any) {
-                //console.log("Main worker recieve data, event.data: ",evt.data);
+                //console.log("Main worker recieve data, event.data: ",evt.data,",uid: "+selfT.m_uid);
                 let data: any = evt.data;
                 //console.log("Main Worker received worker cmd: "+data.cmd);
                 switch (data.cmd) {
@@ -130,7 +130,7 @@ class ThreadBase implements IThreadBase {
                     case ThreadCMD.INIT_PARAM:
                         selfT.m_free = true;
                         selfT.m_enabled = true;
-                        //console.log("Main worker recieve INIT_PARAM.");
+                        //console.log("Main worker INIT_PARAM.");
                         selfT.updateInitTask();
                         break;
                     default:

@@ -256,6 +256,7 @@ export default class RectPlaneMesh extends MeshBase
             this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage(),this.getBufSortFormat());
         }
         this.m_vbuf.setUintIVSData(this.m_ivs);
+        this.buildEnd();
     }
     vsFloat32:Float32Array = null;
     dataStepList:number[] = null;

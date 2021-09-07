@@ -17,6 +17,7 @@ class ImageTextureProxy extends TextureProxy
     constructor(texWidth:number,texHeight:number,powerof2Boo:boolean = false)
     {
         super(texWidth,texHeight,powerof2Boo);
+        this.mipmapEnabled = true;
         this.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
         this.m_type = TextureProxyType.Image;
     }

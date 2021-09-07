@@ -16,25 +16,8 @@ import MouseEvent from "../vox/event/MouseEvent";
 import DemoInstance from "./DemoInstance";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import ThreadSystem from "../thread/ThreadSystem";
-import * as MatComputerTaskT from "../demo/thread/MatComputerTask";
+import {MatComputerTask} from "../demo/thread/MatComputerTask";
 
-//import Vector3D = Vector3DT.vox.math.Vector3D;
-//import RendererDevice = RendererDeviceT.vox.render.RendererDevice;
-//import RendererParam = RendererParamT.vox.scene.RendererParam;
-//import RendererState = RendererStateT.vox.render.RendererState;
-//import RenderStatusDisplay = RenderStatusDisplayT.vox.scene.RenderStatusDisplay;
-
-//import PureEntity = PureEntityT.vox.entity.PureEntity;
-//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-//import TextureStore = TextureStoreT.vox.texture.TextureStore;
-//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-//import MouseEvent = MouseEventT.vox.event.MouseEvent;
-////import DemoInstance = DemoInstanceT.demo.DemoInstance;
-//import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
-import MatComputerTask = MatComputerTaskT.demo.thread.MatComputerTask;
 
 
 export namespace demo

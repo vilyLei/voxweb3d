@@ -128,4 +128,4 @@ Module["moduleUrl"] = baseUrl;
 baseUrl += "matDemo.js"
 console.log("ThreadMatComputer::baseUrl: "+baseUrl);
 importScripts(baseUrl);
-self.TaskSlot[workerIns_ThreadMatComputer.getTaskClass()] = workerIns_ThreadMatComputer;
+self.__$TaskSlot[workerIns_ThreadMatComputer.getTaskClass()] = workerIns_ThreadMatComputer;

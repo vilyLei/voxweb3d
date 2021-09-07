@@ -194,4 +194,4 @@ Module["moduleUrl"] = baseUrl;
 baseUrl += "transformDemo.js"
 console.log("ThreadMatTrans::baseUrl: "+baseUrl);
 importScripts(baseUrl);
-self.TaskSlot[workerIns_ThreadMatTrans.getTaskClass()] = workerIns_ThreadMatTrans;
+self.__$TaskSlot[workerIns_ThreadMatTrans.getTaskClass()] = workerIns_ThreadMatTrans;

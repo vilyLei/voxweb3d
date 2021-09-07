@@ -31,6 +31,7 @@ class ThrDataPool
             {
                 data = this.m_waitList[0];
                 thread.sendDataTo(data);
+                
                 if(data.sendStatus == 1)
                 {
                     this.m_dataTotal--;

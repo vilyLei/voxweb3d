@@ -8,7 +8,7 @@
 import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
 import Matrix4 from "../../vox/math/Matrix4";
-import Matrix4Pool from "../../vox/math/Matrix4Pool";
+
 import Plane from "../../vox/geom/Plane";
 import AABB from "../../vox/geom/AABB";
 import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
@@ -30,11 +30,11 @@ class CameraBase {
     private m_initUP: Vector3D = new Vector3D();
     private m_lookRHEnabled: boolean = true;
     //
-    private m_matrix: Matrix4 = Matrix4Pool.GetMatrix();
-    private m_viewMat: Matrix4 = Matrix4Pool.GetMatrix();
-    private m_viewInvertMat: Matrix4 = Matrix4Pool.GetMatrix();
-    private m_tempMat: Matrix4 = Matrix4Pool.GetMatrix();
-    private m_projMat: Matrix4 = Matrix4Pool.GetMatrix();
+    private m_matrix: Matrix4 = new Matrix4();//Matrix4Pool.GetMatrix();
+    private m_viewMat: Matrix4 = new Matrix4();//Matrix4Pool.GetMatrix();
+    private m_viewInvertMat: Matrix4 = new Matrix4();//Matrix4Pool.GetMatrix();
+    private m_tempMat: Matrix4 = new Matrix4();//Matrix4Pool.GetMatrix();
+    private m_projMat: Matrix4 = new Matrix4();//Matrix4Pool.GetMatrix();
     private m_camPos: Vector3D = new Vector3D();
     private m_lookAtPos: Vector3D = new Vector3D();
     private m_up: Vector3D = new Vector3D();
@@ -645,7 +645,7 @@ class CameraBase {
         return this.m_fovy;
     }
     private __calcTestParam(): void {
-        if (this.m_invViewMat == null) this.m_invViewMat = Matrix4Pool.GetMatrix();
+        if (this.m_invViewMat == null) this.m_invViewMat = new Matrix4();//Matrix4Pool.GetMatrix();
         this.m_invViewMat.copyFrom(this.m_viewMat);
         this.m_invViewMat.invert();
         //
@@ -943,7 +943,7 @@ class CameraBase {
         }
         return false;
     }
-    private m_vpMat: Matrix4 = Matrix4Pool.GetMatrix();
+    private m_vpMat: Matrix4 = new Matrix4();//Matrix4Pool.GetMatrix();
     update(): void {
         if (this.m_changed) {
             this.version++;

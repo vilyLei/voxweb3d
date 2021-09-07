@@ -46,9 +46,9 @@ class Matrix4Pool
     }
 	static Allocate(total:number):void
 	{
-		if(total < 512)
+		if(total < 1024)
 		{
-			total = 512;
+			total = 1024;
 		}
 		if(Matrix4Pool.s_mtotal < 1)
 		{

@@ -132,11 +132,11 @@
 
 //  import {DemoThread as Demo} from "./demo/DemoThread";
 
-//  import * as DemoThreadSchedule from "./demo/DemoThreadSchedule";
-//  import Demo = DemoThreadSchedule.demo.DemoThreadSchedule;
+//  import {DemoThreadSchedule as Demo} from "./demo/DemoThreadSchedule";
 
-//  import * as DemoMatComputer from "./demo/DemoMatComputer";
-//  import Demo = DemoMatComputer.demo.DemoMatComputer;
+import {DemoMatComputer as Demo} from "./demo/DemoMatComputer";
+
+//  import {DemoMatTransThread as Demo} from "./demo/DemoMatTransThread";
 
 //  import * as DemoThreadConcurrent from "./demo/DemoThreadConcurrent";
 //  import Demo = DemoThreadConcurrent.demo.DemoThreadConcurrent;
@@ -144,8 +144,6 @@
 //  import * as DemoMatContainer from "./demo/DemoMatContainer";
 //  import Demo = DemoMatContainer.demo.DemoMatContainer;
 
-//  import * as DemoMatTransThread from "./demo/DemoMatTransThread";
-//  import Demo = DemoMatTransThread.demo.DemoMatTransThread;
 
 //  import * as DemoDrawGroup from "./demo/DemoDrawGroup";
 //  import Demo = DemoDrawGroup.demo.DemoDrawGroup;
@@ -207,6 +205,8 @@
 //  import {DemoAPlane as Demo} from "./demo/DemoAPlane";
 
 //  import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
+
+//  import {DemoBaseRenderer as Demo} from "./demo/DemoBaseRenderer";
 
 //  import {DemoFlexMesh as Demo} from "./demo/DemoFlexMesh";
 
@@ -305,6 +305,12 @@
 //  import {DemoDepthTex as Demo} from "./demo/DemoDepthTex";
 
 ///////////////////////////////////////////////////////////////////////////////
+////////////////////////////   transform    ///////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+//  import {DemoTransFromTex as Demo} from "./demo/DemoTransFromTex";
+
+///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     effect    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -389,9 +395,16 @@
 ///////////////////////     distributed runtime     ////////////s///////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+
 //  import {DemoBase as Demo} from "./distribution/DemoBase";
 
-import {DemoUIManager as Demo} from "./distribution/DemoUIManager";
+//  import {DemoUIManager as Demo} from "./distribution/DemoUIManager";
+
+//  import {BaseRenderer as Demo} from "./distribution/rendererIsolate/BaseRenderer";
+
+//  import {DemoRendererIsolate as Demo} from "./distribution/DemoRendererIsolate";
+//  import {ROFunctions as Demo} from "./distribution/rendererIsolate/ROFunctions";
+//  import {PlayerOne as Demo} from "./distribution/rendererIsolate/PlayerOne";
 
 ///////////////////////////////////////////////////////////////////////////////
 document.title = "Vox APP";

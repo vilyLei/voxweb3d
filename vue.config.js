@@ -26,7 +26,7 @@ module.exports = {
     //   extensions: ['.tsx', '.ts', '.js', '.glsl'],
     //   alias: {}
     // };
-    if (['pro'].includes(ENV)) {
+    if (true) {
       config.optimization.minimizer[0].options.terserOptions.compress.warnings = false;
       config.optimization.minimizer[0].options.terserOptions.compress.drop_console = true;
       config.optimization.minimizer[0].options.terserOptions.compress.drop_debugger = true;

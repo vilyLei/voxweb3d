@@ -463,7 +463,25 @@ precision mediump float;
         for (; i < len; i++) {
             code += "\n" + this.m_vertExt[i];
         }
+        if (RendererDevice.IsWebGL2()) {
+            code += "\n#define VOX_IN in";
+            if (this.mapLodEnabled) {
+                code += "\n#define VOX_TextureCubeLod textureLod";
+                code += "\n#define VOX_Texture2DLod textureLod";
+            }
+            code += "\n#define VOX_Texture2D texture";
+            code += "\n#define VOX_TextureCube texture";
 
+        }
+        else {
+            code += "\n#define VOX_IN varying";
+            if (this.mapLodEnabled) {
+                code += "\n#define VOX_TextureCubeLod textureCubeLodEXT";
+                code += "\n#define VOX_Texture2DLod texture2DLodEXT";
+            }
+            code += "\n#define VOX_TextureCube textureCube";
+            code += "\n#define VOX_Texture2D texture2D";
+        }
         if (RendererDevice.IsMobileWeb()) {
             code += "\nprecision highp float;";
         }

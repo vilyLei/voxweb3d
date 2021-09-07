@@ -41,9 +41,7 @@ function ThreadAddNum()
     {
         return 0;
     }
-
-    self.TaskSlot[this.getTaskClass()] = this;
-    let INIT_TASK = 3701;
-    postMessage({cmd:INIT_TASK,taskclass:this.getTaskClass()});
+    // 如果是在worker中运行，则执行如下代码
+    self.initializeExternModule(this);
 }
 let workerIns_ThreadAddNum = new ThreadAddNum();

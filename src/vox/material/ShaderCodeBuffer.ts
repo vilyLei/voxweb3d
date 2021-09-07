@@ -25,7 +25,9 @@ class ShaderCodeBuffer
     constructor()
     {
     }
-
+    getShaderCodeBuilder(): ShaderCodeBuilder2 {
+        return ShaderCodeBuffer.s_coder;
+    }
     static GetPreCompileInfo():ShaderCompileInfo {
         return ShaderCodeBuffer.s_coder.getPreCompileInfo();
     }

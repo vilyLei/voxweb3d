@@ -279,29 +279,6 @@ export default class Box3DMesh extends MeshBase {
                     this.scaleUVFaceAt(4, 0.0, 0.5, 0.25, 0.5);
                     this.scaleUVFaceAt(5, 0.25, 0.5, 0.25, 0.5);
                 }
-                /*
-                i = 0;
-                baseI = this.vtxTotal * 2;
-                this.m_uvs = new Float32Array(48);
-                if (this.flipVerticalUV) {
-                    while (i < baseI) {
-                        this.m_uvs[i] = 1.0; this.m_uvs[i + 1] = 1.0;
-                        this.m_uvs[i + 2] = 0.0; this.m_uvs[i + 3] = 1.0;
-                        this.m_uvs[i + 4] = 0.0; this.m_uvs[i + 5] = 0.0;
-                        this.m_uvs[i + 6] = 1.0; this.m_uvs[i + 7] = 0.0;
-                        i += 8;
-                    }
-                }
-                else {
-                    while (i < baseI) {
-                        this.m_uvs[i] = 0.0; this.m_uvs[i + 1] = 0.0;
-                        this.m_uvs[i + 2] = 1.0; this.m_uvs[i + 3] = 0.0;
-                        this.m_uvs[i + 4] = 1.0; this.m_uvs[i + 5] = 1.0;
-                        this.m_uvs[i + 6] = 0.0; this.m_uvs[i + 7] = 1.0;
-                        i += 8;
-                    }
-                }
-                //*/
                 if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX)) {
                     baseI = 0;
                     while (baseI < 6) {

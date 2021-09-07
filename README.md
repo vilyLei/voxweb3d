@@ -9,6 +9,7 @@ Feature:
 
     2. 多线程渲染器功能支持。
        Multi-Thread renderer core support.
+       Demo: http://www.artvily.com/renderCase?sample=wasmMultiThead
 
     3. 共享内存情况下, 多GPU(上下文)支持。
        Shared CPU Memory, Multiple Gpu Context support.
@@ -29,6 +30,7 @@ Feature:
 
     8. WebAssembly 支持。
        Wasm(WebAssembly) support.
+       Demo: http://www.artvily.com/renderCase?sample=wasmMultiThead
 
     9. 支持多重方式去渲染一个可渲染对象, 渲染过程可灵活控制，也可以使用既定流程。
        Multiple methods to render a renderable entity, enhance rendering control flexibility.

@@ -23,7 +23,9 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 
 import * as EntityDispT from "./base/EntityDisp";
+
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
+import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
 
 export class DemoPrimitive {
     constructor() { }
@@ -41,6 +43,7 @@ export class DemoPrimitive {
     private m_beginPos: Vector3D = new Vector3D(0.0, 0.0, 0.0);
     private m_endPos: Vector3D = new Vector3D(0.0, 500.0, -100.0);
     private m_uvPos: Vector3D = new Vector3D(0.3, 0.0);
+
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
@@ -59,6 +62,7 @@ export class DemoPrimitive {
             this.m_renderer.initialize(rparam);
             this.m_renderer.appendProcess();
             this.m_renderer.appendProcess();
+
             this.m_rcontext = this.m_renderer.getRendererContext();
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
@@ -76,7 +80,24 @@ export class DemoPrimitive {
 
             RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
             RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
-
+            /*
+            let tex = new ImageTextureProxy(64, 64);
+            //tex.mipmapEnabled = true;
+            //tex.setWrap(TextureConst.WRAP_REPEAT);
+            let pl = new Plane3DEntity();
+            //plane.initializeXOZSquare(400.0);
+            //this.m_renderer.addEntity(plane);
+            let img: HTMLImageElement = new Image();
+            img.onload = (evt: any): void => {
+                console.log("PlayerOne::initialize() image loaded",img.src);
+                //tex.__$setRenderProxy(this.m_renderer.getRenderProxy());
+                tex.setDataFromImage(img);                
+                pl.initializeXOZSquare(500.0, [tex]);
+                this.m_renderer.addEntity(pl);
+            }
+            img.src = "static/assets/yanj.jpg";
+            return;
+            //*/
             let i: number = 0;
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.initialize(110.0);

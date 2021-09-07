@@ -119,7 +119,7 @@ export class RendererInstance implements IRenderer {
             this.m_dataBuilder = new RODataBuilder();
             this.m_roVtxBuild = new ROVtxBuilder();
             this.m_renderInsContext.setCameraParam(param.camProjParam.x, param.camProjParam.y, param.camProjParam.z);
-            this.m_renderInsContext.setMatrix4AllocateSize(param.getMatrix4AllocateSize());
+            //this.m_renderInsContext.setMatrix4AllocateSize(param.getMatrix4AllocateSize());
             this.m_renderInsContext.initialize(param, this.m_stage3D, this.m_dataBuilder, this.m_roVtxBuild);
             this.m_adapter = this.m_renderProxy.getRenderAdapter();
             this.m_uid = this.m_renderProxy.getUid();
