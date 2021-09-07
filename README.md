@@ -21,7 +21,7 @@ Feature:
 
     5. 支持分布式运行时代码功能。
        Distributed-Runtime strategy support.
-       Demo: <http://www.artvily.com/renderCase?sample=distributedRuntime>
+       [Demo](http://www.artvily.com/renderCase?sample=distributedRuntime)
 
     6. 自动化的内存显存等资源管理。
        Auto resource management: system memory resource and Gpu memory resource, and one system memory resource for Multiple Gpu context memory resource.
@@ -31,7 +31,7 @@ Feature:
 
     8. WebAssembly 支持。
        Wasm(WebAssembly) support.
-       Demo: <http://www.artvily.com/renderCase?sample=wasmMultiThead>
+       [Demo](http://www.artvily.com/renderCase?sample=wasmMultiThead)
 
     9. 支持多重方式去渲染一个可渲染对象, 渲染过程可灵活控制，也可以使用既定流程。
        Multiple methods to render a renderable entity, enhance rendering control flexibility.
