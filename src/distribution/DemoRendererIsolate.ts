@@ -20,8 +20,8 @@ export class DemoRendererIsolate {
     ];
     private m_buttonInfoList: string[] = null;
 
-    //private m_button = document.createElement('button');
-    private m_button: any = null;
+    private m_button = document.createElement('button');
+    //private m_button: any = null;
     constructor() { }
     
     private initLoadJS(module_ns:string): void {
@@ -36,8 +36,6 @@ export class DemoRendererIsolate {
         }
 
         codeLoader.onprogress = (e) => {
-            //console.log("progress, e: ", e);
-            //document.body.innerText = Math.round(100.0 * e.loaded / e.total) + "%";
             this.showInfo(" " + Math.round(100.0 * e.loaded / e.total) + "% ");
         };
 

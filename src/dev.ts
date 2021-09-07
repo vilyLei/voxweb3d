@@ -134,7 +134,7 @@
 
 //  import {DemoThreadSchedule as Demo} from "./demo/DemoThreadSchedule";
 
-import {DemoMatComputer as Demo} from "./demo/DemoMatComputer";
+//  import {DemoMatComputer as Demo} from "./demo/DemoMatComputer";
 
 //  import {DemoMatTransThread as Demo} from "./demo/DemoMatTransThread";
 
@@ -402,7 +402,7 @@ import {DemoMatComputer as Demo} from "./demo/DemoMatComputer";
 
 //  import {BaseRenderer as Demo} from "./distribution/rendererIsolate/BaseRenderer";
 
-//  import {DemoRendererIsolate as Demo} from "./distribution/DemoRendererIsolate";
+import {DemoRendererIsolate as Demo} from "./distribution/DemoRendererIsolate";
 //  import {ROFunctions as Demo} from "./distribution/rendererIsolate/ROFunctions";
 //  import {PlayerOne as Demo} from "./distribution/rendererIsolate/PlayerOne";
 

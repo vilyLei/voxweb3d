@@ -42,7 +42,6 @@ class SphRole {
             }
             img.src = "static/assets/box_wood01.jpg";
         }
-        //console.log("new Vector3D(): ", new Vector3D());
     }
 }
 class PlayerOne {
