@@ -6,7 +6,7 @@ Feature:
 
     1. 精简的代码量, 例如渲染器核心代码Gzipped大小小于56KiB。
        The amount of code is very few, for example: the renderer core code Gzipped size: less 56KiB
-       [Demo](http://www.artvily.com/renderCase?sample=distributedRenderer)
+       [Demo](http://www.artvily.com/renderCase?sample=distributedRenderer2)
 
     2. 多线程渲染器功能支持。
        Multi-Thread renderer core support.
