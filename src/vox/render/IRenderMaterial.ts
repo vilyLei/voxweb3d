@@ -17,6 +17,7 @@ interface IRenderMaterial
     initializeByCodeBuf(textureEnabled:boolean):void;
     createSharedUniforms():IShaderUniform[];
     createSelfUniformData():ShaderUniformData;
+    createSharedUniformsData():ShaderUniformData[];
     hasShaderData():boolean;
     getShaderData():IShaderData;
     getTextureList():IRenderTexture[];

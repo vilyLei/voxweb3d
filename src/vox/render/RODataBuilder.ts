@@ -11,6 +11,7 @@ import IRODisplay from "../../vox/display/IRODisplay";
 import RenderProxy from "../../vox/render/RenderProxy";
 import ROVtxBuilder from "../../vox/render/ROVtxBuilder";
 import UniformConst from "../../vox/material/UniformConst";
+import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import ShaderUniform from "../../vox/material/ShaderUniform";
 import ShdProgram from "../../vox/material/ShdProgram";
 import IRenderTexture from '../../vox/render/IRenderTexture';
@@ -180,7 +181,8 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
                 }
                 if (this.m_shader.getSharedUniformByShd(shdp) == null) {
                     // create shared uniform
-                    let sharedMList: ShaderUniform[] = material.createSharedUniforms() as ShaderUniform[];
+                    //let sharedMList: ShaderUniform[] = material.createSharedUniforms() as ShaderUniform[];
+                    let sharedMList: ShaderUniform[] = this.createsharedMList(material, shdp);
                     if (sharedMList != null) {
                         for (let i: number = 0; i < sharedMList.length; ++i) {
                             sharedMList[i].program = shdp.getGPUProgram();
@@ -359,7 +361,26 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
             }
         }
     }
-
+    private createsharedMList(material: IRenderMaterial, shdp: ShdProgram): ShaderUniform[] {
+        let sharedMList: ShaderUniform[] = material.createSharedUniforms() as ShaderUniform[];
+        if (sharedMList == null) {
+            // 通过shader uniform data 创建 shared uniform
+            let dataList: ShaderUniformData[] = material.createSharedUniformsData();
+            if (dataList != null && dataList.length > 0) {
+                sharedMList = [];
+                for (let i: number = 0; i < dataList.length; ++i) {
+                    if (dataList[i] != null) {
+                        let uniform: ShaderUniform = ShdUniformTool.BuildLocalFromData(dataList[i], shdp) as ShaderUniform;
+                        sharedMList.push(uniform);
+                    }
+                }
+                if (sharedMList.length < 1) {
+                    sharedMList = null;
+                }
+            }
+        }
+        return sharedMList;
+    }
     updateGlobalMaterial(material: IRenderMaterial): void {
         if (material != null) {
             let rc: RenderProxy = this.m_rc;
@@ -381,9 +402,29 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
             if (texTotal > 0) {
                 tro = TextureRenderObj.Create(this.m_texRes, texList, texTotal);
             }
+            console.log("XXXXX RODB this.m_shader.getSharedUniformByShd(shdp) == null: ", (this.m_shader.getSharedUniformByShd(shdp) == null));
             if (this.m_shader.getSharedUniformByShd(shdp) == null) {
 
-                let sharedMList: ShaderUniform[] = material.createSharedUniforms() as ShaderUniform[];
+                //let sharedMList: ShaderUniform[] = material.createSharedUniforms() as ShaderUniform[];
+                let sharedMList: ShaderUniform[] = this.createsharedMList(material, shdp);
+                // console.log("XXXXX RODB sharedMList == null: ",sharedMList == null);
+                // if(sharedMList == null) {
+                //     // 通过shader uniform data 创建 shared uniform
+                //     let dataList: ShaderUniformData[] = material.createSharedUniformsData();
+                //     if(dataList != null && dataList.length > 0) {
+                //         sharedMList = [];
+                //         for(let i: number = 0; i < dataList.length; ++i) {
+                //             if(dataList[i] != null) {
+                //                 let uniform: ShaderUniform = ShdUniformTool.BuildLocalFromData(material.createSelfUniformData(), shdp) as ShaderUniform;
+                //                 console.log("XXXXX RODB uniform: ",uniform);
+                //                 sharedMList.push(uniform);
+                //             }
+                //         }
+                //         if(sharedMList.length < 1) {
+                //             sharedMList = null;
+                //         }
+                //     }
+                // }
                 if (sharedMList != null) {
                     for (let i: number = 0; i < sharedMList.length; ++i) {
                         sharedMList[i].program = shdp.getGPUProgram();

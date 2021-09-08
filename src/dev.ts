@@ -156,11 +156,11 @@
 //  import * as DemoGpuTexMana from "./demo/DemoGpuTexMana";
 //  import Demo = DemoGpuTexMana.demo.DemoGpuTexMana;
 
-//  import * as DemoMaterial from "./demo/DemoMaterial";
-//  import Demo = DemoMaterial.demo.DemoMaterial;
+//  import {DemoMaterial as Demo} from "./demo/DemoMaterial";
 
-//  import * as DemoVtx from "./demo/DemoVtx";
-//  import Demo = DemoVtx.demo.DemoVtx;
+//  import {DemoShaderCodeMaterial as Demo} from "./demo/DemoShaderCodeMaterial";
+
+//  import {DemoVtx as Demo} from "./demo/DemoVtx";
 
 //  import * as DemoSwapProcess from "./demo/DemoSwapProcess";
 //  import Demo = DemoSwapProcess.demo.DemoSwapProcess;

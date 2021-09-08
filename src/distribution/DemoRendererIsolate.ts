@@ -29,7 +29,7 @@ export class DemoRendererIsolate {
         let pwindwo: any = window;
 
         let codeLoader: XMLHttpRequest = new XMLHttpRequest();
-        codeLoader.open("GET", "static/code/rendererIsolate/"+module_ns+".js", true);
+        codeLoader.open("GET", "static/code/rendererIsolate2/"+module_ns+".js", true);
         //xhr.responseType = "arraybuffer";
         codeLoader.onerror = function (err) {
             console.error("load error: ", err);

@@ -12,6 +12,7 @@ export default class ShaderUniformData
     constructor()
     {
     }
+    uns: string = "";
     types:number[] = null;
     uniformSize:number = 0;
     uniformNameList:string[] = null;

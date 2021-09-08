@@ -88,7 +88,7 @@ precision mediump float;
 
     constructor() { }
 
-    reset(): void {
+    reset() {
         this.m_vertObjMat = false;
         this.m_vertViewMat = false;
         this.m_vertProjMat = false;

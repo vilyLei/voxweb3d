@@ -6,9 +6,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IUniformParam from "../../../vox/material/IUniformParam";
-
-export default interface IShaderCodeBuilder {
+export default interface IShdBuilder {
     
     normalMapEanbled: boolean;
     mapLodEnabled: boolean;
@@ -25,9 +23,7 @@ export default interface IShaderCodeBuilder {
     addFragOutput(type: string, name: string): void;
     addVarying(type: string, name: string): void;
     addVertUniform(type: string, name: string, arrayLength: number): void;
-    addVertUniformParam(unifromParam: IUniformParam): void;
     addFragUniform(type: string, name: string, arrayLength: number): void;
-    addFragUniformParam(unifromParam: IUniformParam): void;
     addFragFunction(codeBlock: string): void;
     addVertFunction(codeBlock: string): void;
     useTexturePreciseHighp(): void;

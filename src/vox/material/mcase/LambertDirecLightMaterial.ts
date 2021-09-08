@@ -26,15 +26,15 @@ class LambertDirecLightShaderBuffer extends ShaderCodeBuffer {
 precision mediump float;
 uniform sampler2D u_sampler0;
 
-in vec3 m_viewDir;
-in vec2 v_uvs;
-in vec3 v_nvs;
+in vec3 v_viewDir;
+in vec2 v_uv;
+in vec3 v_nv;
 in vec4 v_positions[1];
 
 vec3 calcLight(vec3 baseColor, vec3 pLightDir, vec3 lightColor, vec3 specColor) {
 
-    vec3 nvs = (v_nvs);
-	vec3 viewDir = m_viewDir;
+    vec3 nvs = (v_nv);
+	vec3 viewDir = v_viewDir;
     float nDotL = max(dot(nvs, pLightDir), 0.0);
 	baseColor = nDotL * baseColor * lightColor;
 	viewDir = normalize(pLightDir + viewDir);
@@ -48,7 +48,7 @@ const vec3 lightColor = vec3(1.0,1.0,1.0);
 const vec3 lightSpecColor = vec3(0.3,0.2,0.8);
 void main()
 {
-    vec4 color4 = texture(u_sampler0, v_uvs);
+    vec4 color4 = texture(u_sampler0, v_uv);
     //vec3 destColor = color4.xyz;
     vec3 destColor = calcLight(
         color4.xyz,
@@ -76,9 +76,9 @@ uniform mat4 u_objMat;
 uniform mat4 u_viewMat;
 uniform mat4 u_projMat;
 
-out vec3 m_viewDir;
-out vec2 v_uvs;
-out vec3 v_nvs;
+out vec3 v_viewDir;
+out vec2 v_uv;
+out vec3 v_nv;
 out vec4 v_positions[1];
 
 void main(){
@@ -87,9 +87,9 @@ void main(){
     vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);
     gl_Position = u_projMat * viewPos;
 
-    m_viewDir = -normalize(viewPos.xyz);
-    v_uvs = a_uvs;
-    v_nvs = normalize(a_nvs * inverse(mat3(viewMat4)));
+    v_viewDir = -normalize(viewPos.xyz);
+    v_uv = a_uvs;
+    v_nv = normalize(a_nvs * inverse(mat3(viewMat4)));
     v_positions[0] = viewMat4 * u_positions[0];
 }
 `;

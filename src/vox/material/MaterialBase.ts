@@ -9,7 +9,8 @@ import ShaderData from "../../vox/material/ShaderData";
 import MaterialResource from "../../vox/material/MaterialResource";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import IShaderUniform from "../../vox/material/IShaderUniform";
-import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
+import ShaderUniform from "../../vox/material/ShaderUniform";
+//import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
 import TextureProxy from '../../vox/texture/TextureProxy';
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
@@ -236,7 +237,11 @@ export default class MaterialBase implements IRenderMaterial
         return false;
     }
     
-    createSharedUniforms():ShaderGlobalUniform[]
+    createSharedUniforms():ShaderUniform[]
+    {
+        return null;
+    }
+    createSharedUniformsData():ShaderUniformData[]
     {
         return null;
     }

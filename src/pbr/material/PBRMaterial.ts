@@ -153,17 +153,6 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         dst.setTextureList(this.getTextureList().slice());
         return dst;
     }
-    /*
-    setVSMData( vsm: ShadowVSMData ): void {
-        this.m_vsmData = vsm;
-    }
-    setLightData(lightData: GlobalLightData): void {
-        this.m_lightData = lightData;        
-    }
-    setEnvData( envData: EnvLightData ): void {
-        this.m_envData = envData;
-    }
-    //*/
     seNormalMapIntensity(intensity: number): void {
         intensity = Math.min(Math.max(intensity, 0.0), 1.0);
         this.m_paramLocal[4] = intensity;

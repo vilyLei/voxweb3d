@@ -10,6 +10,9 @@ import RadialLine from "../../vox/geom/RadialLine";
 import LineSegment from "../../vox/geom/LineSegment";
 import StraightLine from "../../vox/geom/StraightLine";
 
+
+import Color4 from "../../vox/material/Color4";
+
 import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import CameraBase from "../../vox/view/CameraBase";
@@ -34,6 +37,8 @@ VoxCore["Plane"] = Plane;
 VoxCore["RadialLine"] = RadialLine;
 VoxCore["LineSegment"] = LineSegment;
 VoxCore["StraightLine"] = StraightLine;
+
+VoxCore["Color4"] = Color4;
 
 VoxCore["RendererDevice"] = RendererDevice;
 VoxCore["RendererState"] = RendererState;

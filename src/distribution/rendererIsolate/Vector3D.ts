@@ -7,6 +7,7 @@ interface Vector3D {
     subtractBy(v3: Vector3D): void;
     addBy(v3: Vector3D): void;
     setXYZ(px: number, py: number, pz: number): void;
+    normalize(): void;
 }
 
 export {Vector3D}

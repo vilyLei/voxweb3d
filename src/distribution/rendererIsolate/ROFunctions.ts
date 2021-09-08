@@ -4,6 +4,11 @@ import Matrix4Pool from "../../vox/math/Matrix4Pool";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
 
+import ShaderUniformData from "../../vox/material/ShaderUniformData";
+import MaterialBase from "../../vox/material/MaterialBase";
+import ShaderCodeMaterial from "../../vox/material/ShaderCodeMaterial";
+
+import ROTransform from "../../vox/display/ROTransform";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 import Billboard3DEntity from "../../vox/entity/Billboard3DEntity";
@@ -13,7 +18,6 @@ import Box3DEntity from "../../vox/entity/Box3DEntity";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
 import DataMesh from "../../vox/mesh/DataMesh";
-//import CameraBase from "../../vox/view/CameraBase";
 
 var pwindow: any = window;
 if(pwindow["VoxCore"] == undefined) {
@@ -24,17 +28,26 @@ var VoxCore = pwindow["VoxCore"];
 VoxCore["AABB2D"] = AABB2D;
 VoxCore["Matrix4Pool"] = Matrix4Pool;
 
+
+
 VoxCore["TextureProxy"] = TextureProxy;
 VoxCore["ImageTextureProxy"] = ImageTextureProxy;
 
+
+VoxCore["ShaderUniformData"] = ShaderUniformData;
+VoxCore["MaterialBase"] = MaterialBase;
+VoxCore["ShaderCodeMaterial"] = ShaderCodeMaterial;
+
 VoxCore["DataMesh"] = DataMesh;
 
+VoxCore["ROTransform"] = ROTransform;
 VoxCore["DisplayEntity"] = DisplayEntity;
 VoxCore["Plane3DEntity"] = Plane3DEntity;
 VoxCore["Billboard3DEntity"] = Billboard3DEntity;
 VoxCore["Box3DEntity"] = Box3DEntity;
 VoxCore["Sphere3DEntity"] = Sphere3DEntity;
 VoxCore["Axis3DEntity"] = Axis3DEntity;
+
 
 
 class ROFunctions {
@@ -52,6 +65,9 @@ class ROFunctions {
     private m_sph: Sphere3DEntity = new Sphere3DEntity();
     private m_axis: Axis3DEntity = new Axis3DEntity();
     
+    private m_uniformData: ShaderUniformData = new ShaderUniformData();
+    private m_shaderCodeMaterial: ShaderCodeMaterial = new ShaderCodeMaterial();
+
     constructor() { }
 
     initialize(pmodule: any): void {
@@ -65,9 +81,11 @@ class ROFunctions {
         this.m_box.initializeCube(300.0,[this.m_imgTexture]);
         this.m_sph.initialize(300.0,30,30,[this.m_imgTexture]);
         this.m_axis.initialize(300.0);
+
         console.log("ROFunctions::initialize()......");
     }
     run(): void {
+
     }
 }
 
