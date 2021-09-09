@@ -3,6 +3,7 @@ import Vector3D from "../../vox/math/Vector3D";
 import Matrix4 from "../../vox/math/Matrix4";
 import MathConst from "../../vox/math/MathConst";
 import AABB from "../../vox/geom/AABB";
+import AABB2D from "../../vox/geom/AABB2D";
 
 import Sphere from "../../vox/geom/Sphere";
 import Plane from "../../vox/geom/Plane";
@@ -28,6 +29,7 @@ var VoxCore = pwindow["VoxCore"];
 
 VoxCore["Vector3D"] = Vector3D;
 VoxCore["AABB"] = AABB;
+VoxCore["AABB2D"] = AABB2D;
 VoxCore["Vector3D"] = Vector3D;
 VoxCore["Matrix4"] = Matrix4;
 VoxCore["MathConst"] = MathConst;
@@ -108,13 +110,14 @@ export class BaseRenderer {
         //this.m_yAngle += 1.0;
         //this.m_axis.setRotationXYZ(0.0, this.m_yAngle, 0.0);
         //this.m_axis.update();
-
+        /*
         this.m_rcontext.renderBegin();
-
+        
         this.m_renderer.update();
         this.m_renderer.run();
 
         this.m_rcontext.runEnd();
+        //*/
     }
 }
 

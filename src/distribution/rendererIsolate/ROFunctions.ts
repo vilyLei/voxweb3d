@@ -8,6 +8,8 @@ import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
 import ShaderCodeMaterial from "../../vox/material/ShaderCodeMaterial";
 
+import DataMesh from "../../vox/mesh/DataMesh";
+
 import ROTransform from "../../vox/display/ROTransform";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
@@ -17,7 +19,7 @@ import AABB2D from "../../vox/geom/AABB2D";
 import Box3DEntity from "../../vox/entity/Box3DEntity";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
-import DataMesh from "../../vox/mesh/DataMesh";
+import Cylinder3DEntity from "../../vox/entity/Cylinder3DEntity";
 
 var pwindow: any = window;
 if(pwindow["VoxCore"] == undefined) {
@@ -47,6 +49,7 @@ VoxCore["Billboard3DEntity"] = Billboard3DEntity;
 VoxCore["Box3DEntity"] = Box3DEntity;
 VoxCore["Sphere3DEntity"] = Sphere3DEntity;
 VoxCore["Axis3DEntity"] = Axis3DEntity;
+VoxCore["Cylinder3DEntity"] = Cylinder3DEntity;
 
 
 
@@ -64,6 +67,7 @@ class ROFunctions {
     private m_box: Box3DEntity = new Box3DEntity();
     private m_sph: Sphere3DEntity = new Sphere3DEntity();
     private m_axis: Axis3DEntity = new Axis3DEntity();
+    private m_cyl: Cylinder3DEntity = new Cylinder3DEntity();
     
     private m_uniformData: ShaderUniformData = new ShaderUniformData();
     private m_shaderCodeMaterial: ShaderCodeMaterial = new ShaderCodeMaterial();
@@ -81,6 +85,7 @@ class ROFunctions {
         this.m_box.initializeCube(300.0,[this.m_imgTexture]);
         this.m_sph.initialize(300.0,30,30,[this.m_imgTexture]);
         this.m_axis.initialize(300.0);
+        this.m_cyl.initialize(300.0,100,10);
 
         console.log("ROFunctions::initialize()......");
     }
