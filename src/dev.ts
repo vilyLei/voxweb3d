@@ -389,7 +389,7 @@
 
 //  import {DemoOrthoPanel as Demo} from "./orthoui/demos/DemoOrthoPanel";
 
-//  import {DemoUITexAtlas as Demo} from "./orthoui/demos/DemoUITexAtlas";
+import {DemoUITexAtlas as Demo} from "./orthoui/demos/DemoUITexAtlas";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////     distributed runtime     ////////////s///////////////
@@ -402,7 +402,7 @@
 
 //  import {BaseRenderer as Demo} from "./distribution/rendererIsolate/BaseRenderer";
 
-import {DemoRendererIsolate as Demo} from "./distribution/DemoRendererIsolate";
+//  import {DemoRendererIsolate as Demo} from "./distribution/DemoRendererIsolate";
 //  import {ROFunctions as Demo} from "./distribution/rendererIsolate/ROFunctions";
 //  import {PlayerOne as Demo} from "./distribution/rendererIsolate/PlayerOne";
 
