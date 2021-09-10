@@ -56,13 +56,13 @@ export default class Box3DEntity extends DisplayEntity {
     showAllFace(): void {
         this.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
     }
-    scaleUVFaceAt(faceI: number, u: number, v: number, du: number, dv: number) {
+    scaleUVFaceAt(faceI: number, u: number, v: number, du: number, dv: number): void {
         let mesh: Box3DMesh = this.getMesh() as Box3DMesh;
         if (mesh != null) {
             mesh.scaleUVFaceAt(faceI, u, v, du, dv);
         }
     }
-    scaleUVSFaceAt(faceI: number, uvsLen8: Float32Array) {
+    scaleUVSFaceAt(faceI: number, uvsLen8: Float32Array): void {
         let mesh: Box3DMesh = this.getMesh() as Box3DMesh;
         if (mesh != null) {
             mesh.setFaceUVSAt(faceI, uvsLen8);

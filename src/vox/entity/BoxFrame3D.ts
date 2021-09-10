@@ -38,7 +38,7 @@ export default class BoxFrame3D extends DisplayEntity
         //}
     }
     
-    setRGB3f(pr:number,pg:number,pb:number)
+    setRGB3f(pr:number,pg:number,pb:number): void
     {
         if(this.m_dynColorBoo)
         {

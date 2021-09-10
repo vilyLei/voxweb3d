@@ -20,6 +20,10 @@ import Box3DEntity from "../../vox/entity/Box3DEntity";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
 import Cylinder3DEntity from "../../vox/entity/Cylinder3DEntity";
+import Line3DEntity from "../../vox/entity/Line3DEntity";
+import DashedLine3DEntity from "../../vox/entity/DashedLine3DEntity";
+import BoxFrame3D from "../../vox/entity/BoxFrame3D";
+import FrustrumFrame3DEntity from "../../vox/entity/FrustrumFrame3DEntity";
 
 var pwindow: any = window;
 if(pwindow["VoxCore"] == undefined) {
@@ -29,7 +33,6 @@ var VoxCore = pwindow["VoxCore"];
 
 VoxCore["AABB2D"] = AABB2D;
 VoxCore["Matrix4Pool"] = Matrix4Pool;
-
 
 
 VoxCore["TextureProxy"] = TextureProxy;
@@ -50,8 +53,10 @@ VoxCore["Box3DEntity"] = Box3DEntity;
 VoxCore["Sphere3DEntity"] = Sphere3DEntity;
 VoxCore["Axis3DEntity"] = Axis3DEntity;
 VoxCore["Cylinder3DEntity"] = Cylinder3DEntity;
-
-
+VoxCore["Line3DEntity"] = Line3DEntity;
+VoxCore["DashedLine3DEntity"] = DashedLine3DEntity;
+VoxCore["BoxFrame3D"] = BoxFrame3D;
+VoxCore["FrustrumFrame3DEntity"] = FrustrumFrame3DEntity;
 
 class ROFunctions {
 
@@ -68,6 +73,10 @@ class ROFunctions {
     private m_sph: Sphere3DEntity = new Sphere3DEntity();
     private m_axis: Axis3DEntity = new Axis3DEntity();
     private m_cyl: Cylinder3DEntity = new Cylinder3DEntity();
+    private m_line: Line3DEntity = new Line3DEntity();
+    private m_dashedLine: DashedLine3DEntity = new DashedLine3DEntity();
+    private m_boxFrame: BoxFrame3D = new BoxFrame3D();
+    private m_frustumFrame: FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
     
     private m_uniformData: ShaderUniformData = new ShaderUniformData();
     private m_shaderCodeMaterial: ShaderCodeMaterial = new ShaderCodeMaterial();
@@ -76,17 +85,21 @@ class ROFunctions {
 
     initialize(pmodule: any): void {
 
-        //this.m_camera.lookAtRH(new Vector3D(100.0,0.0,0.0), new Vector3D(), Vector3D.Y_AXIS);
-
-        this.m_dataMesh.initialize();
-
-        this.m_plane.initializeXOZSquare(100.0);
-        this.m_billboard.initialize(100.0,100.0, [this.m_imgTexture]);
-        this.m_box.initializeCube(300.0,[this.m_imgTexture]);
-        this.m_sph.initialize(300.0,30,30,[this.m_imgTexture]);
-        this.m_axis.initialize(300.0);
-        this.m_cyl.initialize(300.0,100,10);
-
+        let flag: boolean = false;
+        if( flag ) {
+            this.m_dataMesh.initialize();
+    
+            this.m_plane.initializeXOZSquare(100.0);
+            this.m_billboard.initialize(100.0,100.0, [this.m_imgTexture]);
+            this.m_box.initializeCube(300.0,[this.m_imgTexture]);
+            this.m_sph.initialize(300.0,30,30,[this.m_imgTexture]);
+            this.m_axis.initialize(300.0);
+            this.m_cyl.initialize(300.0,100,10);
+            this.m_line.initialize(null,null);
+            this.m_dashedLine.initializeLS(null,null);
+            this.m_boxFrame.initialize(null, null);
+            this.m_frustumFrame.initiazlize(null);
+        }
         console.log("ROFunctions::initialize()......");
     }
     run(): void {
