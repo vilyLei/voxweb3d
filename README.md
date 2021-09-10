@@ -36,7 +36,7 @@ Feature:
     9. 支持多重方式去渲染一个可渲染对象, 渲染过程可灵活控制，也可以使用既定流程。
        Multiple methods to render a renderable entity, enhance rendering control flexibility.
 
-    10. 2D UI 系统支持。
+    10.2D UI 系统支持。
        2D UI System support.
 
     11.PC鼠标和移动端(包括Pad)touch事件支持。
