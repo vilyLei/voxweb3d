@@ -17,12 +17,14 @@ import { VtxNormalType } from "../../vox/mesh/VtxBufConst";
 import Box3DMesh from "../../vox/mesh/Box3DMesh";
 
 export default class Box3DEntity extends DisplayEntity {
-    normalScale: number = 1.0;
+    
     private m_normalType: number = VtxNormalType.FLAT;
     private m_minV: Vector3D = null;
     private m_maxV: Vector3D = null;
     private m_transMatrix: Matrix4 = null;
     private m_currMesh: Box3DMesh = null;
+
+    normalScale: number = 1.0;
     // uvPartsNumber value is 4 or 6
     uvPartsNumber: number = 0;
     constructor(transform: ROTransform = null) {

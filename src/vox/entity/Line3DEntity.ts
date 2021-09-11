@@ -18,20 +18,24 @@ export default class Line3DEntity extends DisplayEntity
     {
         super();
     }
-    private m_posarr:number[] = null;//[100.0,0.0,0.0, 0.0,0,0];
-    private m_colorarr:number[] = null;//[100.0,0.0,0.0, 0.0,0,0];
+    private m_posarr:number[] = null;
+    private m_colorarr:number[] = null;
+    private m_material:Line3DMaterial = null;
     color:Color4 = new Color4(1.0,0.0,0.0,1.0);
     dynColorEnabled: boolean = false;
     setRGB3f(pr:number,pg:number,pb:number):void
     {
+        if(this.m_material != null) {
+            this.m_material.setRGB3f( pr, pg, pb );
+        }
         this.color.setRGB3f(pr,pg,pb);
     }
     createMaterial():void
     {
         if(this.getMaterial() == null)
         {
-            let cm:Line3DMaterial = new Line3DMaterial(this.dynColorEnabled);
-            this.setMaterial(cm);
+            this.m_material = new Line3DMaterial(this.dynColorEnabled);
+            this.setMaterial(this.m_material);
         }
     }
     protected __activeMesh(material:MaterialBase):void

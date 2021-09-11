@@ -16,6 +16,7 @@ import ROTransform from "../../vox/display/ROTransform";
 import Color4 from "../material/Color4";
 
 export default class Plane3DEntity extends DisplayEntity {
+    
     private m_startX: number = 0;
     private m_startZ: number = 0;
     private m_pwidth: number = 0;
@@ -47,7 +48,6 @@ export default class Plane3DEntity extends DisplayEntity {
     }
     createMaterial(texList: TextureProxy[]): void {
         if (this.getMaterial() == null) {
-            //ScreenPlaneMaterial
             if (this.m_screenAlignEnabled) {
                 let cm: ScreenPlaneMaterial = new ScreenPlaneMaterial();
                 cm.setTextureList(texList);
