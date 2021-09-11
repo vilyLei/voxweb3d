@@ -338,7 +338,7 @@
 /////////////////////////////     light    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoAdsLight as Demo} from "./demo/DemoAdsLight";
+import {DemoAdsLight as Demo} from "./demo/DemoAdsLight";
 
 //  import {DemoTextureCubeUV as Demo} from "./pbr/DemoTextureCubeUV";
 
@@ -402,7 +402,7 @@
 
 //  import {BaseRenderer as Demo} from "./distribution/rendererIsolate/BaseRenderer";
 
-import {DemoRendererIsolate as Demo} from "./distribution/DemoRendererIsolate";
+//  import {DemoRendererIsolate as Demo} from "./distribution/DemoRendererIsolate";
 //  import {ROFunctions as Demo} from "./distribution/rendererIsolate/ROFunctions";
 //  import {PlayerOne as Demo} from "./distribution/rendererIsolate/PlayerOne";
 

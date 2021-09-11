@@ -55,7 +55,7 @@ export class DemoAdsLight {
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-            this.m_statusDisp.initialize("rstatus", this.m_rscene.getStage3D().viewWidth - 200);
+            this.m_statusDisp.initialize("rstatus", this.m_rscene.getStage3D().viewWidth - 400);
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
