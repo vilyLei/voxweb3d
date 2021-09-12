@@ -338,7 +338,7 @@
 /////////////////////////////     light    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-import {DemoAdsLight as Demo} from "./demo/DemoAdsLight";
+//  import {DemoAdsLight as Demo} from "./demo/DemoAdsLight";
 
 //  import {DemoTextureCubeUV as Demo} from "./pbr/DemoTextureCubeUV";
 
@@ -356,7 +356,7 @@ import {DemoAdsLight as Demo} from "./demo/DemoAdsLight";
 
 //  import {DemoDefaultPBR3 as Demo} from "./pbr/DemoDefaultPBR3";
 
-//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
+import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
