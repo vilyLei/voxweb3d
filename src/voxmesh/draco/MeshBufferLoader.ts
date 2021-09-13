@@ -56,31 +56,24 @@ export default class MeshBufferLoader {
 
     private parseBufferZip(buffer: ArrayBuffer): Promise<any> {
         return new Promise((resolve, reject) => {
-            let objZip: JSZip = new JSZip();
-            objZip.loadAsync(buffer).then(file => {
-                let nsList: string[] = [];
-                file.forEach(fileName => {
-                    nsList.push(fileName);
-                }
-                );
-                let ns: string = nsList[0];
-                file.file(ns)
-                    .async("uint8array")
-                    .then(pdata => {
-                        resolve(pdata.buffer);
+                ///*
+                let objZip: JSZip = new JSZip();
+                objZip.loadAsync(buffer).then(file => {
+                    let nsList: string[] = [];
+                    file.forEach(fileName => {
+                        nsList.push(fileName);
                     }
-                    )
-                /*
-                console.log("parseBufferZip dst file: ",file);
-                let block0: any = file.file("42.drc");
-                console.log("parseBufferZip dst block0: ",block0);
-                //let jsZipObject: JSZipObject = file.file(objname[0]) as JSZipObject;
-                // console.warn("JSZipObject of obj file:", file.file(objname[0]));
-                let data = block0.internalStream("uint8array");
-                console.log("parseBufferZip dst data: ",data);
-                */
-            });
-        }
+                    );
+                    let ns: string = nsList[0];
+                    file.file(ns)
+                        .async("uint8array")
+                        .then(pdata => {
+                            resolve(pdata.buffer);
+                        }
+                        )
+                });
+                //*/
+            }
         );
     }
     private loadParam(purl: string, callback: (buf: ArrayBuffer, param: string) => void): void {

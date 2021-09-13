@@ -5,6 +5,5 @@ if(pwindow["VoxCore"] == undefined) {
     pwindow["VoxCore"] = {};
 }
 var VoxCore = pwindow["VoxCore"];
-import {BaseRenderer} from "./BaseRenderer";
-VoxCore["baseRenderer"] = BaseRenderer;
-pwindow["VoxCore"] = VoxCore;
+import {ROFunctions} from "./ROFunctions";
+VoxCore["roFunctions"] = ROFunctions;

@@ -159,7 +159,7 @@ export namespace demo
 
             // 注意: m_codeStr 代码中描述的 getTaskClass() 返回值 要和 TestNumberAddTask 中的 getTaskClass() 返回值 要相等
             ThreadSystem.InitTaskByURL("static/thread/ThreadMatComputer",0);
-            ThreadSystem.Initsialize(6);
+            ThreadSystem.Initialize(6);
             this.testTask();
         }
         

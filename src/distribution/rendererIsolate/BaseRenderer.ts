@@ -119,6 +119,15 @@ export class BaseRenderer {
         this.m_rcontext.runEnd();
         //*/
     }
+    getModuleName():string {
+        return "baseRenderer";
+    }
+    getModuleClassName():string {
+        return "baseRenderer";
+    }
+    getRuntimeType():string {
+        return "system_running";
+    }
 }
 
 export default BaseRenderer;

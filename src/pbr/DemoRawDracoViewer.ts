@@ -24,9 +24,9 @@ import { TextureConst } from "../vox/texture/TextureConst";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 
-import DracoMeshBuilder from "../voxmesh/draco/DracoMeshBuilder";
+import DracoMeshRawBuilder from "../voxmesh/draco/DracoMeshRawBuilder";
 import DracoMesh from "../voxmesh/draco/DracoMesh";
-import {DracoWholeModuleLoader} from "../voxmesh/draco/DracoModuleLoader";
+import {DracoWholeModuleLoader} from "../voxmesh/draco/DracoRawModuleLoader";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import ThreadSystem from "../thread/ThreadSystem";
 
@@ -37,7 +37,7 @@ export class ViewerDracoModule extends DracoWholeModuleLoader
     reflectPlaneY: number = -220.0;
     aoMapEnabled: boolean = false;
     envMap: TextureProxy;
-    viewer: DemoPBRViewer;
+    viewer: DemoRawDracoViewer;
     constructor() {
         super();
     }
@@ -99,7 +99,9 @@ export class ViewerDracoModule extends DracoWholeModuleLoader
         this.loadNext();
     }
 }
-export class DemoPBRViewer {
+
+export class DemoRawDracoViewer {
+
     constructor() { }
     private m_rscene: RendererScene = null;
     private m_ruisc: RendererSubScene = null;
@@ -111,8 +113,8 @@ export class DemoPBRViewer {
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     private m_lightData: GlobalLightData = new GlobalLightData();
-    private m_dracoMeshLoader: DracoMeshBuilder = new DracoMeshBuilder();
-    private m_dracoModule: ViewerDracoModule = null;//new GlobalLightData();
+    private m_dracoMeshLoader: DracoMeshRawBuilder = new DracoMeshRawBuilder();
+    private m_dracoModule: ViewerDracoModule = null;
     private m_reflectPlaneY: number = -220;
     private m_envData: EnvLightData = null;
     private m_envMap: TextureProxy = null;
@@ -129,8 +131,9 @@ export class DemoPBRViewer {
         return ptex;
     }
     initialize(): void {
-        console.log("DemoPBRViewer::initialize()......");
+        console.log("DemoRawDracoViewer::initialize()......");
         if (this.m_rscene == null) {
+
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
@@ -375,4 +378,4 @@ export class DemoPBRViewer {
         DebugFlag.Flag_0 = 0;
     }
 }
-export default DemoPBRViewer;
+export default DemoRawDracoViewer;

@@ -56,7 +56,7 @@ let workerIns_ThreadAddNum = new ThreadAddNum();
     {
         // 注意: m_mathAddWorkerCode 代码中描述的 getTaskClass() 返回值 要和 TestNumberAddTask 中的 getTaskClass() 返回值 要相等
         ThreadSystem.InitTaskByCodeStr(this.m_mathAddWorkerCode,0);
-        ThreadSystem.Initsialize(1);
+        ThreadSystem.Initialize(1);
         this.useTask();
         this.update();
     }

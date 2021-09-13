@@ -5,14 +5,16 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
+
 import ThreadSystem from "../../thread/ThreadSystem";
 import DracoTask from "../../voxmesh/draco/DracoTask";
 import {DracoTaskListener} from "../../voxmesh/draco/DracoTask";
-import MeshBufferLoader from "../../voxmesh/draco/MeshBufferLoader";
+import DracoBufferLoader from "../../voxmesh/draco/DracoBufferLoader";
 import DracoWasmLoader from "../../voxmesh/draco/DracoWasmLoader";
 import RendererDevice from "../../vox/render/RendererDevice";
 
-export class DracoMeshBuilder {
+export class DracoMeshRawBuilder {
+
     constructor() {
     }
     
@@ -22,7 +24,6 @@ export class DracoMeshBuilder {
     private m_threadsTotal: number = 1;
 
     multiBuffers: boolean = true;
-    zipParseEnabled: boolean = false;
     setListener(l: DracoTaskListener): void {
         this.m_listener = l;
         if(this.m_dracoTask != null) {
@@ -51,9 +52,9 @@ export class DracoMeshBuilder {
     private m_meshBuffer: ArrayBuffer = null;
     private m_segs: number[] = [];
     private loadMeshFile(furl: string): void {
-        let loader: MeshBufferLoader = new MeshBufferLoader();
+
+        let loader: DracoBufferLoader = new DracoBufferLoader();
         loader.multiBuffers = this.multiBuffers;
-        loader.zipParseEnabled = this.zipParseEnabled;
         loader.load(
             furl,
             (buffer: ArrayBuffer, param: string) => {
@@ -405,4 +406,4 @@ function ThreadDraco() {
 }
 `;
 }
-export default DracoMeshBuilder;
+export default DracoMeshRawBuilder;

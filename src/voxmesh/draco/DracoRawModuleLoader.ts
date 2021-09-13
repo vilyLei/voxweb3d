@@ -3,16 +3,16 @@ import Vector3D from "../../vox/math/Vector3D";
 import { DracoTaskListener } from "../../voxmesh/draco/DracoTask";
 import DracoMesh from "../../voxmesh/draco/DracoMesh";
 import DracoMeshMaterial from "../../voxmesh/draco/DracoMeshMaterial";
-import DracoMeshBuilder from "../../voxmesh/draco/DracoMeshBuilder";
+import DracoMeshRawBuilder from "../../voxmesh/draco/DracoMeshRawBuilder";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import RendererScene from "../../vox/scene/RendererScene";
 import DivLog from "../../vox/utils/DivLog";
 
 
-export class DracoModuleLoader {
+export class DracoRawModuleLoader {
 
     protected m_rscene: RendererScene = null;
-    protected m_dracoMeshLoader: DracoMeshBuilder;
+    protected m_dracoMeshLoader: DracoMeshRawBuilder;
     protected m_scale: number = 1.0;
     protected m_pos: Vector3D = new Vector3D(0.0, -400.0, 0.0);
     protected m_urls: string[] = null;
@@ -20,7 +20,7 @@ export class DracoModuleLoader {
     constructor() {
         
     }
-    initialize(rscene: RendererScene, dracoMeshLoader: DracoMeshBuilder): void {
+    initialize(rscene: RendererScene, dracoMeshLoader: DracoMeshRawBuilder): void {
         this.m_rscene = rscene;
         this.m_dracoMeshLoader = dracoMeshLoader;
     }
@@ -39,7 +39,7 @@ export class DracoModuleLoader {
     }
 }
 
-export class DracoWholeModuleLoader extends DracoModuleLoader implements DracoTaskListener {
+export class DracoWholeModuleLoader extends DracoRawModuleLoader implements DracoTaskListener {
 
     constructor() {
         super();
@@ -56,7 +56,7 @@ export class DracoWholeModuleLoader extends DracoModuleLoader implements DracoTa
         ];
     }
 
-    initialize(rscene: RendererScene, dracoMeshLoader: DracoMeshBuilder): void {
+    initialize(rscene: RendererScene, dracoMeshLoader: DracoMeshRawBuilder): void {
         super.initialize(rscene, dracoMeshLoader);
         dracoMeshLoader.setListener(this);
     }
@@ -80,9 +80,7 @@ export class DracoWholeModuleLoader extends DracoModuleLoader implements DracoTa
             this.m_url = this.m_urls.pop();
             this.m_pos = this.m_posList.pop();
             this.m_scale = this.m_scales.pop();
-
             this.m_dracoMeshLoader.multiBuffers = this.m_url.indexOf(".rawmd") > 0;
-            this.m_dracoMeshLoader.zipParseEnabled = this.m_url.indexOf(".zip") > 0;
             this.m_dracoMeshLoader.load(this.m_url);
         }
     }
@@ -123,7 +121,7 @@ export class DracoWholeModuleLoader extends DracoModuleLoader implements DracoTa
     }
 }
 
-export class DracoMultiPartsModuleLoader extends DracoModuleLoader implements DracoTaskListener {
+export class DracoMultiPartsModuleLoader extends DracoRawModuleLoader implements DracoTaskListener {
 
     protected m_partsTotal: number = 10;
     protected m_index: number = 0;
@@ -137,11 +135,11 @@ export class DracoMultiPartsModuleLoader extends DracoModuleLoader implements Dr
             this.m_url = this.m_urls[i];
         }
         else {
-            this.m_url = "static/assets/modules/skirt/dracos_"+ i +".drc.zip";
+            this.m_url = "static/assets/modules/skirt/dracos_"+ i +".drc";
         }
         return this.m_url;
     }
-    initialize(rscene: RendererScene, dracoMeshLoader: DracoMeshBuilder): void {
+    initialize(rscene: RendererScene, dracoMeshLoader: DracoMeshRawBuilder): void {
         super.initialize(rscene, dracoMeshLoader);
         dracoMeshLoader.setListener(this);
     }
@@ -154,7 +152,6 @@ export class DracoMultiPartsModuleLoader extends DracoModuleLoader implements Dr
             let url: string = this.getUrlAt(this.m_index);
             this.m_index++;
             this.m_dracoMeshLoader.multiBuffers = url.indexOf(".rawmd") > 0;
-            this.m_dracoMeshLoader.zipParseEnabled = url.indexOf(".zip") > 0;
             this.m_dracoMeshLoader.load(url);
         }
     }

@@ -9,6 +9,7 @@ import MaterialBase from "../../vox/material/MaterialBase";
 import ShaderCodeMaterial from "../../vox/material/ShaderCodeMaterial";
 
 import DataMesh from "../../vox/mesh/DataMesh";
+import DracoMesh from "../../voxmesh/draco/DracoMesh";
 
 import ROTransform from "../../vox/display/ROTransform";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
@@ -44,6 +45,7 @@ VoxCore["MaterialBase"] = MaterialBase;
 VoxCore["ShaderCodeMaterial"] = ShaderCodeMaterial;
 
 VoxCore["DataMesh"] = DataMesh;
+VoxCore["DracoMesh"] = DracoMesh;
 
 VoxCore["ROTransform"] = ROTransform;
 VoxCore["DisplayEntity"] = DisplayEntity;
@@ -65,6 +67,7 @@ class ROFunctions {
     private m_imgTexture: ImageTextureProxy = new ImageTextureProxy(32,32);
 
     private m_dataMesh: DataMesh = new DataMesh();
+    private m_dracoMesh: DracoMesh = new DracoMesh();
 
     private m_entity: DisplayEntity = new DisplayEntity();
     private m_plane: Plane3DEntity = new Plane3DEntity();
@@ -88,6 +91,7 @@ class ROFunctions {
         let flag: boolean = false;
         if( flag ) {
             this.m_dataMesh.initialize();
+            this.m_dracoMesh.initialize(null);
     
             this.m_plane.initializeXOZSquare(100.0);
             this.m_billboard.initialize(100.0,100.0, [this.m_imgTexture]);
@@ -104,6 +108,15 @@ class ROFunctions {
     }
     run(): void {
 
+    }
+    getModuleName():string {
+        return "roFunctions";
+    }
+    getModuleClassName():string {
+        return "roFunctions";
+    }
+    getRuntimeType():string {
+        return "system_running";
     }
 }
 

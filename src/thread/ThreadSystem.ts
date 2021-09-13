@@ -25,6 +25,7 @@ class ThreadSystem {
     private static s_pool: ThrDataPool = new ThrDataPool();
     private static s_specList: IThreadSendData[] = [];
     private static s_specIndices: number[] = [];
+    
     static SendDataToWorkerAt(i: number, sendData: IThreadSendData): void {
         if(i >= 0 && i < ThreadSystem.s_maxThreadsTotal) {
             if(i >= ThreadSystem.s_threadsTotal) {
@@ -42,7 +43,14 @@ class ThreadSystem {
             }
         }
     }
+    /**
+     * @returns 返回是否在队列中还有待处理的数据
+     */
+    static HasData(): boolean {
+        return ThreadSystem.s_pool.isEnabled();
+    }
     static Run(): void {
+        
         if (ThreadSystem.GetThreadEnabled()) {
             let specList: IThreadSendData[] = ThreadSystem.s_specList;
             let tot: number = specList.length;
@@ -181,7 +189,7 @@ class ThreadSystem {
     /**
      * @param maxThreadsTotal 最大子线程数量
      */
-    static Initsialize(maxThreadsTotal: number, codeStr: string = ""): void {
+    static Initialize(maxThreadsTotal: number, codeStr: string = ""): void {
         if (ThreadSystem.s_initBoo) {
             if (ThreadSystem.GetThreadEnabled() && ThreadSystem.IsSupported()) {
                 //console.log("ThreadCore.CodeStr: \n",ThreadCore.CodeStr);

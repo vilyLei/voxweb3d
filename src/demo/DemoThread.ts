@@ -115,7 +115,7 @@ function ThreadAddNum()
         //ThreadSystem.InitTaskByURL("static/thread/ThreadMultNum", 1);
         //ThreadSystem.InitTaskByURL("static/thread/ThreadMathNum", 2);
 
-        ThreadSystem.Initsialize(1);
+        ThreadSystem.Initialize(1);
         //this.useMathTask();
     }
     private m_numberAddTask: TestNumberAddTask = new TestNumberAddTask();

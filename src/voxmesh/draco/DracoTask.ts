@@ -34,6 +34,7 @@ class DracoSendData implements IThreadSendData {
     sendStatus: number = -1;
     // 按照实际需求构建自己的数据(sendData和transfers等)
     buildThis(transferEnabled: boolean): void {
+        
         if (this.sendData != null) {
             this.sendData.taskCmd = this.taskCmd;
             this.sendData.taskclass = this.taskclass;
@@ -170,6 +171,7 @@ class DracoTask extends ThreadTask {
             ThreadSystem.AddData(sd);
         }
     }
+    
     private m_srcBuf: ArrayBuffer = null;
     private m_segs: number[] = null;
     private m_segIndex: number = 0;

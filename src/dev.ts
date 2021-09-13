@@ -356,9 +356,11 @@
 
 //  import {DemoDefaultPBR3 as Demo} from "./pbr/DemoDefaultPBR3";
 
-import {DemoPBR as Demo} from "./pbr/DemoPBR";
+//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
+
+import {DemoRawDracoViewer as Demo} from "./pbr/DemoRawDracoViewer";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////
@@ -397,9 +399,7 @@ import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 
 //  import {DemoBase as Demo} from "./distribution/DemoBase";
-
 //  import {DemoUIManager as Demo} from "./distribution/DemoUIManager";
-
 //  import {BaseRenderer as Demo} from "./distribution/rendererIsolate/BaseRenderer";
 
 //  import {DemoRendererIsolate as Demo} from "./distribution/DemoRendererIsolate";
