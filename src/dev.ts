@@ -204,7 +204,7 @@
 
 //  import {DemoAPlane as Demo} from "./demo/DemoAPlane";
 
-//  import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
+import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
 
 //  import {DemoBaseRenderer as Demo} from "./demo/DemoBaseRenderer";
 
@@ -360,7 +360,7 @@
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
-import {DemoRawDracoViewer as Demo} from "./pbr/DemoRawDracoViewer";
+//  import {DemoRawDracoViewer as Demo} from "./pbr/DemoRawDracoViewer";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////

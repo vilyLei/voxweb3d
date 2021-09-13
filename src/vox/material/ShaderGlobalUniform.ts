@@ -7,7 +7,7 @@
 
 import UniformDataSlot from "../../vox/material/UniformDataSlot";
 import RendererDevice from "../../vox/render/RendererDevice";
-import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
+import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
 import ShaderUniform from "../../vox/material/ShaderUniform";
 import IRenderShader from "../../vox/render/IRenderShader";
 
@@ -39,7 +39,7 @@ export default class ShaderGlobalUniform extends ShaderUniform
         return guniform;
     }
     // for multi uniforms data src, for example: camera, lightGroup
-    copyDataFromProbe(probe:ShaderUniformProbe):void
+    copyDataFromProbe(probe:IShaderUniformProbe):void
     {
         this.types = probe.uniformTypes.slice(0);
         this.dataSizeList = probe.dataSizeList.slice(0);
@@ -47,7 +47,7 @@ export default class ShaderGlobalUniform extends ShaderUniform
         this.uniformsTotal = probe.uniformsTotal;
         this.slotId = probe.getSlotUid();
     }
-    copyDataFromProbeAt(i:number, probe:ShaderUniformProbe):void
+    copyDataFromProbeAt(i:number, probe:IShaderUniformProbe):void
     {
         if(this.types == null)
         {

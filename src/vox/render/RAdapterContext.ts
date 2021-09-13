@@ -204,6 +204,8 @@ class RAdapterContext {
             device.MAX_VIEWPORT_HEIGHT = viewPortIMS[1];
             RCExtension.Initialize(this.m_webGLVersion, this.m_gl);
             RendererDevice.Initialize([this.m_webGLVersion]);
+            
+            console.log("RadapterContext stage: ",stage);
             if (stage != null) this.m_mouseEvtDisplather.initialize(canvas, div, stage);
             //  console.log("viewPortIMS: ",viewPortIMS);
             console.log("MAX_TEXTURE_SIZE: ",RendererDevice.MAX_TEXTURE_SIZE);

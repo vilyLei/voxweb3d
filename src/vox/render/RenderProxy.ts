@@ -11,6 +11,7 @@ import RenderMaskBitfield from "../../vox/render/RenderMaskBitfield";
 import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
 import Color4 from "../../vox/material/Color4";
+import {IRenderCamera} from "./IRenderCamera";
 import CameraBase from "../../vox/view/CameraBase";
 import RendererParam from "../../vox/scene/RendererParam";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
@@ -70,7 +71,7 @@ class RenderProxy {
     private m_maxWebGLVersion: number = 2;
     private m_WEBGL_VER: number = 2;
     // main camera
-    private m_camera: CameraBase = null;
+    private m_camera: IRenderCamera = null;
     private m_camSwitched: boolean = false;
     // 是否舞台尺寸和view自动同步一致
     private m_autoSynViewAndStage: boolean = true;
@@ -118,7 +119,7 @@ class RenderProxy {
         this.m_camera.unlock();
     }
     getCamera(): CameraBase {
-        return this.m_camera;
+        return this.m_camera as CameraBase;
     }
     updateCamera(): void {
         return this.m_camera.update();
@@ -362,7 +363,7 @@ class RenderProxy {
         classRenderMaskBitfield.DEPTH_BUFFER_BIT = gl.DEPTH_BUFFER_BIT;
         classRenderMaskBitfield.STENCIL_BUFFER_BIT = gl.STENCIL_BUFFER_BIT;
         RenderFBOProxy.SetRenderer(this.m_adapterContext);
-        selfT.RState = RendererState.Rstate;//this.m_adapterContext.getRenderState();
+        selfT.RState = RendererState.Rstate;
         selfT.RContext = this.m_rc;
     }
     flush(): void {

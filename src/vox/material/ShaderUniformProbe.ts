@@ -7,15 +7,12 @@
 
 import MaterialConst from "../../vox/material/MaterialConst";
 import UniformDataSlot from "../../vox/material/UniformDataSlot";
+import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
 
-//import MaterialConst = MaterialConstT.vox.material.MaterialConst;
-//import UniformDataSlot = RenderDataSlotT.vox.material.UniformDataSlot;
 
-class ShaderUniformProbe
+class ShaderUniformProbe implements IShaderUniformProbe
 {
-    constructor()
-    {
-    }
+    constructor(){}
     private m_slot:UniformDataSlot = null;
     private m_fsList:Float32Array[] = null;
     // 当前probe中的数据在slot中的结束位置序号

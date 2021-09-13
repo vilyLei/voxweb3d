@@ -11,16 +11,20 @@ import Matrix4 from "../../vox/math/Matrix4";
 
 import Plane from "../../vox/geom/Plane";
 import AABB from "../../vox/geom/AABB";
+import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
 import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
+import {IRenderCamera} from "../../vox/render/IRenderCamera";
 
-class CameraBase {
+class CameraBase implements IRenderCamera{
+
     private m_uslotIndex: number = 0;
+
     constructor(uslotIndex: number) {
         this.m_uslotIndex = uslotIndex;
     }
     version: number = 0;
-    matUProbe: ShaderUniformProbe = null;
-    ufrustumProbe: ShaderUniformProbe = null;
+    matUProbe: IShaderUniformProbe = null;
+    ufrustumProbe: IShaderUniformProbe = null;
     uniformEnabled: boolean = false;
     name = "Camera";
     //
@@ -983,7 +987,7 @@ class CameraBase {
             this.updateUniformData();
         }
     }
-    updateCamMatToUProbe(uniformProbe: ShaderUniformProbe): void {
+    updateCamMatToUProbe(uniformProbe: IShaderUniformProbe): void {
         if (uniformProbe.isEnabled()) {
             uniformProbe.update();
             uniformProbe.getFS32At(0).set(this.m_viewMat.getLocalFS32(), 0);

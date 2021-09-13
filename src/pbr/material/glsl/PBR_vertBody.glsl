@@ -16,8 +16,9 @@ void main(){
     
         #endif
     #endif
-
-    v_camPos = (inverse(u_viewMat) * vec4(0.0,0.0,0.0, 1.0)).xyz;
+    
+    mat4 invViewMat = inverse(u_viewMat);
+    v_camPos = (invViewMat * zeroPos).xyz;
 
     #ifdef VOX_USE_2D_MAP
 
