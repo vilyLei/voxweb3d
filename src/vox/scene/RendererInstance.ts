@@ -88,12 +88,9 @@ export class RendererInstance implements IRenderer {
     getViewY(): number { return this.m_adapter.getViewportY(); }
     getViewWidth(): number { return this.m_adapter.getViewportWidth(); }
     getViewHeight(): number { return this.m_adapter.getViewportHeight(); }
-    
+
     getCamera(): CameraBase {
-        if (this.m_renderProxy == null) {
-            return this.m_renderInsContext.getCamera();
-        }
-        return null;
+        return this.m_renderInsContext.getCamera();
     }
     createCamera(): CameraBase {
         if (this.m_renderProxy == null) {

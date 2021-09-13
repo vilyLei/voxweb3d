@@ -4,7 +4,6 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// 整个渲染器的入口类接口规范
 
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import CameraBase from "../../vox/view/CameraBase";
@@ -13,7 +12,9 @@ import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import RPONodeBuilder from "../../vox/render/RPONodeBuilder";
 import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
-
+/**
+ * define the renderer instance behaviours;
+ */
 interface IRenderer {
     getUid(): number;
     getRPONodeBuilder(): RPONodeBuilder;
@@ -37,8 +38,5 @@ interface IRenderer {
     useCamera(camera: CameraBase, syncCamView: boolean): void;
     useMainCamera(): void;
     updateCamera(): void;
-    //  renderBegin(contextBeginEnabled: boolean): void
-    //  runBegin(autoCycle: boolean, contextBeginEnabled: boolean): void;
-    //  setRayTestEanbled(enabled: boolean): void;
 }
 export default IRenderer;
