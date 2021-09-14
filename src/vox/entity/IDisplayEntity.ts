@@ -8,7 +8,7 @@
 import AABB from "../../vox/geom/AABB";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import MeshBase from "../../vox/mesh/MeshBase";
-import SpaceCullingMask from "../../vox/space/SpaceCullingMask";
+import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
 import MaterialBase from "../../vox/material/MaterialBase";
 import IRODisplay from "../../vox/display/IRODisplay";
 

@@ -77,7 +77,7 @@ export class DemoFrustrum
             axis.setXYZ(100.0,0.0,100.0);
             this.m_rscene.addEntity(axis);
 
-            let camera0:CameraBase = new CameraBase(0);
+            let camera0:CameraBase = new CameraBase();
             camera0.lookAtRH(new Vector3D(-500.0,500.0,500.0), new Vector3D(0.0,0.0,0.0), new Vector3D(0.0,1.0,0.0));
             camera0.perspectiveRH(MathConst.DegreeToRadian(45.0),600.0/500.0,150.1,600.0);
             camera0.update();

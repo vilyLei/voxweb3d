@@ -204,7 +204,7 @@
 
 //  import {DemoAPlane as Demo} from "./demo/DemoAPlane";
 
-import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
+//  import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
 
 //  import {DemoBaseRenderer as Demo} from "./demo/DemoBaseRenderer";
 
@@ -330,7 +330,7 @@ import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
 
 //  import {DemoSSAO2 as Demo} from "./shadow/ssao/DemoSSAO2";
 
-//  import {DemoSSAO3 as Demo} from "./shadow/ssao/DemoSSAO3";
+import {DemoSSAO3 as Demo} from "./shadow/ssao/DemoSSAO3";
 
 //  import {DemoSSAO4 as Demo} from "./shadow/ssao/DemoSSAO4";
 
@@ -394,7 +394,7 @@ import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
 //  import {DemoUITexAtlas as Demo} from "./orthoui/demos/DemoUITexAtlas";
 
 ///////////////////////////////////////////////////////////////////////////////
-///////////////////////     distributed runtime     ////////////s///////////////
+///////////////////////     distributed runtime     ////////////s//////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 

@@ -22,7 +22,7 @@ export default class ViewParamUniformBuilder implements IUniformBuilder
             suo = new ShaderGlobalUniform();
             suo.uns = UniformConst.ViewParam.name;
             suo.uniformNameList = [UniformConst.ViewParam.name];
-            suo.copyDataFromProbe(rc.getRenderAdapter().uViewProbe);
+            suo.copyDataFromProbe((rc.getRenderAdapter() as any).uViewProbe);
         }
         return suo;                
     }

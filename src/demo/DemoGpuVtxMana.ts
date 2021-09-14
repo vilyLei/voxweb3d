@@ -12,6 +12,7 @@ import CameraTrack from "../vox/view/CameraTrack";
 import * as DemoSceneT from "./vtxMana/DemoScene";
 
 import DemoScene = DemoSceneT.demo.vtxMana.DemoScene;
+import CameraBase from "../vox/view/CameraBase";
 
 export namespace demo
 {
@@ -38,7 +39,7 @@ export namespace demo
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
                 this.m_renderer = new RendererInstance();
-                this.m_renderer.initialize(rparam);
+                this.m_renderer.initialize(rparam, new CameraBase());
                 this.m_rcontext = this.m_renderer.getRendererContext();
                 let stage3D:Stage3D = this.m_rcontext.getStage3D() as Stage3D;
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);

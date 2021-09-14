@@ -9,7 +9,7 @@ import RendererDevice from "../../vox/render/RendererDevice";
 import FrameBufferType from "../../vox/render/FrameBufferType";
 import {TextureFormat,TextureTarget} from "../../vox/texture/TextureConst";
 import IRenderResource from '../../vox/render/IRenderResource';
-import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import RenderFBOProxy from "../../vox/render/RenderFBOProxy";
 import Color4 from "../../vox/material/Color4";
 
@@ -120,12 +120,12 @@ class FrameBufferObject
 	getFramebufferType():number{return this.m_bufferLType;}
     /**
      * bind a texture to fbo attachment by attachment index
-     * @param texProxy  RTTTextureProxy instance
+     * @param texProxy  IRenderTexture instance
      * @param enableDepth  enable depth buffer yes or no
      * @param enableStencil  enable stencil buffer yes or no
      * @param attachmentIndex  fbo attachment index
      */
-	renderToTexAt(rgl:any, texProxy:RTTTextureProxy, attachmentIndex:number):void
+	renderToTexAt(rgl:any, texProxy:IRenderTexture, attachmentIndex:number):void
 	{
 		let inFormat:number = texProxy!=null?texProxy.internalFormat:-1;
 		this.m_gl = rgl;

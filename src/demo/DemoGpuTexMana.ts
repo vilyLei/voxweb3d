@@ -11,6 +11,7 @@ import CameraTrack from "../vox/view/CameraTrack";
 
 import * as DemoSceneT from "./texMana/DemoScene";
 import DemoScene = DemoSceneT.demo.texMama.DemoScene;
+import CameraBase from "../vox/view/CameraBase";
 
 export namespace demo
 {
@@ -38,7 +39,7 @@ export namespace demo
                 this.m_renderer = new RendererInstance();
                 let stage3D:Stage3D = new Stage3D(this.m_renderer.getRCUid(), document);
                 this.m_renderer.__$setStage3D(stage3D);
-                this.m_renderer.initialize(rparam);
+                this.m_renderer.initialize(rparam, new CameraBase());
                 this.m_rcontext = this.m_renderer.getRendererContext();
                 
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);

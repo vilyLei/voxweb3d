@@ -155,7 +155,7 @@ export class DemoVSM {
 
         let viewWidth: number = this.m_shadowViewW;
         let viewHeight: number = this.m_shadowViewH;
-        this.m_direcCamera = new CameraBase(0);
+        this.m_direcCamera = new CameraBase();
         this.m_direcCamera.lookAtRH(new Vector3D(600.0, 800.0, -600.0), new Vector3D(0.0, 0.0, 0.0), new Vector3D(0.0, 1.0, 0.0));
         this.m_direcCamera.orthoRH(0.1, 1900.0, -0.5 * viewHeight, 0.5 * viewHeight, -0.5 * viewWidth, 0.5 * viewWidth);
         this.m_direcCamera.setViewXY(0, 0);

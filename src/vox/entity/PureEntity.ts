@@ -15,7 +15,7 @@ import Vector3D from "../../vox/math/Vector3D";
 import Matrix4 from "../../vox/math/Matrix4";
 import Matrix4Pool from "../../vox/math/Matrix4Pool";
 import AABB from "../../vox/geom/AABB";
-import SpaceCullingMask from "../../vox/space/SpaceCullingMask";
+import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
 import MouseEvent from "../../vox/event/MouseEvent";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 import RendererState from "../../vox/render/RendererState";

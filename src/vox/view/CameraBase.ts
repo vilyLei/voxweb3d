@@ -12,15 +12,11 @@ import Matrix4 from "../../vox/math/Matrix4";
 import Plane from "../../vox/geom/Plane";
 import AABB from "../../vox/geom/AABB";
 import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
-import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
 import {IRenderCamera} from "../../vox/render/IRenderCamera";
 
 class CameraBase implements IRenderCamera{
 
-    private m_uslotIndex: number = 0;
-
-    constructor(uslotIndex: number) {
-        this.m_uslotIndex = uslotIndex;
+    constructor() {
     }
     version: number = 0;
     matUProbe: IShaderUniformProbe = null;
@@ -34,11 +30,11 @@ class CameraBase implements IRenderCamera{
     private m_initUP: Vector3D = new Vector3D();
     private m_lookRHEnabled: boolean = true;
     //
-    private m_matrix: Matrix4 = new Matrix4();//Matrix4Pool.GetMatrix();
-    private m_viewMat: Matrix4 = new Matrix4();//Matrix4Pool.GetMatrix();
-    private m_viewInvertMat: Matrix4 = new Matrix4();//Matrix4Pool.GetMatrix();
-    private m_tempMat: Matrix4 = new Matrix4();//Matrix4Pool.GetMatrix();
-    private m_projMat: Matrix4 = new Matrix4();//Matrix4Pool.GetMatrix();
+    private m_matrix: Matrix4 = new Matrix4();
+    private m_viewMat: Matrix4 = new Matrix4();
+    private m_viewInvertMat: Matrix4 = new Matrix4();
+    private m_tempMat: Matrix4 = new Matrix4();
+    private m_projMat: Matrix4 = new Matrix4();
     private m_camPos: Vector3D = new Vector3D();
     private m_lookAtPos: Vector3D = new Vector3D();
     private m_up: Vector3D = new Vector3D();
@@ -995,22 +991,10 @@ class CameraBase implements IRenderCamera{
         }
     }
     private updateUniformData(): void {
+
         if (this.uniformEnabled) {
-            if (this.matUProbe == null) {
-                this.matUProbe = new ShaderUniformProbe();
-                this.matUProbe.bindSlotAt(this.m_uslotIndex);
-                this.matUProbe.addMat4Data(new Float32Array(16), 1);
-                this.matUProbe.addMat4Data(new Float32Array(16), 1);
-            }
             this.updateCamMatToUProbe(this.matUProbe);
-            if (this.ufrustumProbe == null) {
-                this.ufrustumProbe = new ShaderUniformProbe();
-                this.ufrustumProbe.bindSlotAt(this.m_uslotIndex);
-                this.ufrustumProbe.addVec4Data(new Float32Array([this.m_zNear, this.m_zFar, this.m_nearPlaneHalfW, this.m_nearPlaneHalfH]), 1);
-            }
-            else {
-                this.ufrustumProbe.setVec4DataAt(0, this.m_zNear, this.m_zFar, this.m_nearPlaneHalfW, this.m_nearPlaneHalfH);
-            }
+            this.ufrustumProbe.setVec4DataAt(0, this.m_zNear, this.m_zFar, this.m_nearPlaneHalfW, this.m_nearPlaneHalfH);
             this.ufrustumProbe.update();
         }
     }

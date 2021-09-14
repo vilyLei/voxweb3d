@@ -1,4 +1,15 @@
 
+import Matrix4 from "../../vox/math/Matrix4";
+import MathConst from "../../vox/math/MathConst";
+import AABB from "../../vox/geom/AABB";
+import AABB2D from "../../vox/geom/AABB2D";
+import Sphere from "../../vox/geom/Sphere";
+import Plane from "../../vox/geom/Plane";
+import RadialLine from "../../vox/geom/RadialLine";
+import LineSegment from "../../vox/geom/LineSegment";
+import StraightLine from "../../vox/geom/StraightLine";
+import CameraBase from "../../vox/view/CameraBase";
+
 import Matrix4Pool from "../../vox/math/Matrix4Pool";
 
 import TextureProxy from "../../vox/texture/TextureProxy";
@@ -16,7 +27,6 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 import Billboard3DEntity from "../../vox/entity/Billboard3DEntity";
 
-import AABB2D from "../../vox/geom/AABB2D";
 import Box3DEntity from "../../vox/entity/Box3DEntity";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
@@ -32,9 +42,18 @@ if(pwindow["VoxCore"] == undefined) {
 }
 var VoxCore = pwindow["VoxCore"];
 
+VoxCore["AABB"] = AABB;
 VoxCore["AABB2D"] = AABB2D;
-VoxCore["Matrix4Pool"] = Matrix4Pool;
+VoxCore["Matrix4"] = Matrix4;
+VoxCore["MathConst"] = MathConst;
+VoxCore["Sphere"] = Sphere;
+VoxCore["Plane"] = Plane;
+VoxCore["RadialLine"] = RadialLine;
+VoxCore["LineSegment"] = LineSegment;
+VoxCore["StraightLine"] = StraightLine;
+VoxCore["CameraBase"] = CameraBase;
 
+VoxCore["Matrix4Pool"] = Matrix4Pool;
 
 VoxCore["TextureProxy"] = TextureProxy;
 VoxCore["ImageTextureProxy"] = ImageTextureProxy;
@@ -62,7 +81,7 @@ VoxCore["FrustrumFrame3DEntity"] = FrustrumFrame3DEntity;
 
 class ROFunctions {
 
-    //private m_camera: CameraBase = new CameraBase(0);
+    private m_camera: CameraBase = null;
 
     private m_imgTexture: ImageTextureProxy = new ImageTextureProxy(32,32);
 
@@ -90,6 +109,9 @@ class ROFunctions {
 
         let flag: boolean = false;
         if( flag ) {
+
+            this.m_camera = new CameraBase();
+
             this.m_dataMesh.initialize();
             this.m_dracoMesh.initialize(null);
     

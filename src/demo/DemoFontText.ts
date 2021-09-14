@@ -22,6 +22,7 @@ import CameraTrack from "../vox/view/CameraTrack";
 
 import * as EntityDispT from "./base/EntityDisp";
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
+import CameraBase from "../vox/view/CameraBase";
 
 export namespace demo
 {
@@ -62,7 +63,7 @@ export namespace demo
                 this.m_renderer = new RendererInstance();
                 let stage3D:Stage3D = new Stage3D(this.m_renderer.getRCUid(),document);
                 this.m_renderer.__$setStage3D(stage3D);
-                this.m_renderer.initialize(rparam);
+                this.m_renderer.initialize(rparam, new CameraBase());
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();

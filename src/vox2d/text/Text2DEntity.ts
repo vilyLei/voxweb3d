@@ -12,7 +12,7 @@ import Text2DMaterial from "../../vox2d/material/mcase/Text2DMaterial";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import TextRectMesh from "../../vox/text/TextRectMesh";
 import H5FontSystem from "../../vox/text/H5FontSys";
-import SpaceCullingMask from "../../vox/space/SpaceCullingMask";
+import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
 
 export default class Text2DEntity extends DisplayEntity
 {

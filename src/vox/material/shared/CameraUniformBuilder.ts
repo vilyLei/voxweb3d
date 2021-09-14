@@ -10,7 +10,7 @@ import ShdProgram from "../../../vox/material/ShdProgram";
 import ShaderUniform from "../../../vox/material/ShaderUniform";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import IUniformBuilder from "../../../vox/material/shared/IUniformBuilder";
-import CameraBase from "../../../vox/view/CameraBase";
+import {IRenderCamera} from "../../../vox/render/IRenderCamera";
 import RenderProxy from "../../../vox/render/RenderProxy";
 
 export default class CameraUniformBuilder implements IUniformBuilder
@@ -18,7 +18,7 @@ export default class CameraUniformBuilder implements IUniformBuilder
     create( rc:RenderProxy,shdp:ShdProgram):ShaderUniform
     {
         let suo:ShaderGlobalUniform = null;
-        let cam:CameraBase = rc.getCamera();
+        let cam:IRenderCamera = rc.getCamera();
         
         if(shdp.hasUniformByName(UniformConst.CameraViewMatUNS) && shdp.hasUniformByName(UniformConst.CameraProjectiveMatUNS))
         {

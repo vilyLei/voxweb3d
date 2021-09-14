@@ -9,6 +9,7 @@ import EventBase from "../../vox/event/EventBase";
 import MouseEvent from "../../vox/event/MouseEvent";
 import KeyboardEvent from "../../vox/event/KeyboardEvent";
 import Keyboard from "../../vox/ui/Keyboard";
+import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
 import UniformVec4Probe from "../../vox/material/UniformVec4Probe";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
@@ -17,6 +18,22 @@ class Stage3D implements IRenderStage3D
 {
     private m_rcuid:number = 0;
     private static s_document:any = null;
+
+    uProbe:UniformVec4Probe = null;
+
+    pixelRatio:number = 1.0;
+    stageWidth:number = 800;
+    stageHeight:number = 600;
+    // 实际宽高, 和gpu端对齐
+    stageHalfWidth:number = 400;
+    stageHalfHeight:number = 300;
+    mouseX:number = 0;
+    mouseY:number = 0;
+    // sdiv页面实际占据的像素宽高
+    viewWidth:number = 800;
+    viewHeight:number = 600;
+    mouseViewX:number = 0;
+    mouseViewY:number = 0;
     constructor(rcuid:number,pdocument:any)
     {
         this.m_rcuid = rcuid;
@@ -43,19 +60,6 @@ class Stage3D implements IRenderStage3D
     {
         return this.m_rcuid;
     }
-    pixelRatio:number = 1.0;
-    stageWidth:number = 800;
-    stageHeight:number = 600;
-    // 实际宽高, 和gpu端对齐
-    stageHalfWidth:number = 400;
-    stageHalfHeight:number = 300;
-    mouseX:number = 0;
-    mouseY:number = 0;
-    // sdiv页面实际占据的像素宽高
-    viewWidth:number = 800;
-    viewHeight:number = 600;
-    mouseViewX:number = 0;
-    mouseViewY:number = 0;
     private m_viewX:number = 0.0;
     private m_viewY:number = 0.0;
     private m_viewW:number = 1.0
@@ -72,7 +76,6 @@ class Stage3D implements IRenderStage3D
     private m_keyDown_ers:any[] = [];
     private m_keyUp_listener:((evt:any)=>void)[] = [];
     private m_keyUp_ers:any[] = [];
-    uProbe:UniformVec4Probe = null;
     private m_preStageWidth:number = 0;
     private m_preStageHeight:number = 0;
     private m_mouseEvt:MouseEvent = new MouseEvent();
@@ -118,12 +121,6 @@ class Stage3D implements IRenderStage3D
             this.uProbe = new UniformVec4Probe(1);
             this.uProbe.bindSlotAt( this.m_rcuid );
         }
-        //  this.uProbe.setVec4Data(
-        //      2.0/(this.m_viewW * this.pixelRatio)
-        //      ,2.0/(this.m_viewH * this.pixelRatio)
-        //      , this.m_viewW * this.pixelRatio
-        //      ,this.m_viewH * this.pixelRatio
-        //      );
         this.uProbe.setVec4Data( 2.0/this.stageWidth,2.0/this.stageHeight, this.stageWidth,this.stageHeight );
         this.uProbe.update();
         this.m_preStageWidth = this.m_viewW;

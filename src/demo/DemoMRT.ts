@@ -1,7 +1,6 @@
-
 import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
-import RenderAdapter from "../vox/render/RenderAdapter";
+import {IRenderAdapter} from "../vox/render/IRenderAdapter";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RendererInstance from "../vox/scene/RendererInstance";
@@ -16,6 +15,8 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import DefaultMRTMaterial from "../vox/material/mcase/DefaultMRTMaterial";
 import DivLog from "../vox/utils/DivLog";
+import CameraBase from "../vox/view/CameraBase";
+import FrameBufferType from "../vox/render/FrameBufferType";
 
 export class DemoMRT
 {
@@ -40,7 +41,7 @@ export class DemoMRT
             rparam.maxWebGLVersion = 1;
             rparam.setCamPosition(800.0,800.0,800.0);
             this.m_renderer = new RendererInstance();
-            this.m_renderer.initialize(rparam);
+            this.m_renderer.initialize(rparam, new CameraBase());
             this.m_renderer.appendProcess();
             this.m_rcontext = this.m_renderer.getRendererContext();
 
@@ -94,7 +95,7 @@ export class DemoMRT
 
         let pcontext:RendererInstanceContext = this.m_rcontext;
         let rinstance:RendererInstance = this.m_renderer;
-        let radapter:RenderAdapter = pcontext.getRenderAdapter();
+        let radapter:IRenderAdapter = pcontext.getRenderAdapter();
 
         this.m_statusDisp.update();
 
@@ -110,7 +111,7 @@ export class DemoMRT
         radapter.useFBO(true, true, false);
         rinstance.runAt(0);
         // --------------------------------------------- mrt end
-        radapter.setRenderToBackBuffer();
+        radapter.setRenderToBackBuffer(FrameBufferType.FRAMEBUFFER);
         rinstance.runAt(1);
 
         pcontext.runEnd();            

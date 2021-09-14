@@ -17,4 +17,4 @@ enum SpaceCullingMask
     // 摄像机和POV都要做遮挡剔除
     CAMERA_AND_POV
 }
-export default SpaceCullingMask;
+export {SpaceCullingMask};

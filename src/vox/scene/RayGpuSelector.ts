@@ -17,8 +17,8 @@ import RaySelectedNode from '../../vox/scene/RaySelectedNode';
 
 import {RenderBlendMode,DepthTestMode} from "../../vox/render/RenderConst";
 import RendererState from "../../vox/render/RendererState";
-import RenderProxy from "../../vox/render/RenderProxy";
-import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
+import {IRenderProxy} from "../../vox/render/IRenderProxy";
+import {IRendererInstanceContext} from "../../vox/scene/IRendererInstanceContext";
 import IRenderer from "../../vox/scene/IRenderer";
 import Color4 from "../../vox/material/Color4";
 import PixelPickIndexMaterial from "../../vox/material/mcase/PixelPickIndexMaterial";
@@ -373,8 +373,8 @@ export default class RayGpuSelector implements IRaySelector
     private m_uintList:Uint8Array = new Uint8Array(256);
     private gpuPick(total:number):void
     {
-        let rcontext:RendererInstanceContext = this.m_renderer.getRendererContext();
-        let proxy:RenderProxy = this.m_renderer.getRenderProxy();
+        let rcontext:IRendererInstanceContext = this.m_renderer.getRendererContext();
+        let proxy:IRenderProxy = this.m_renderer.getRenderProxy();
         let pmx:number = proxy.getStage3D().mouseX;
         //let pmy:number = proxy.getStage3D().stageHeight - proxy.getStage3D().mouseY;
         let pmy:number = proxy.getStage3D().mouseY;
@@ -390,8 +390,8 @@ export default class RayGpuSelector implements IRaySelector
         RendererState.LockDepthTestMode(DepthTestMode.OPAQUE);
         rcontext.unlockMaterial();
         rcontext.unlockRenderState();
-        rcontext.useGlobalMaterial(this.m_indexMaterial);
-        //rcontext.lockMaterial();
+        rcontext.useGlobalMaterial(this.m_indexMaterial, false);
+        
         let rayNode:RaySelectedNode = null;
         let entity:IRenderEntity = null;
         let j:number = -1;

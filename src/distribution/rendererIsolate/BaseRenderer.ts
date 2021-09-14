@@ -1,24 +1,15 @@
 
 import Vector3D from "../../vox/math/Vector3D";
-import Matrix4 from "../../vox/math/Matrix4";
-import MathConst from "../../vox/math/MathConst";
-import AABB from "../../vox/geom/AABB";
-import AABB2D from "../../vox/geom/AABB2D";
-
-import Sphere from "../../vox/geom/Sphere";
-import Plane from "../../vox/geom/Plane";
-import RadialLine from "../../vox/geom/RadialLine";
-import LineSegment from "../../vox/geom/LineSegment";
-import StraightLine from "../../vox/geom/StraightLine";
-
 
 import Color4 from "../../vox/material/Color4";
+import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
 
 import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
-import CameraBase from "../../vox/view/CameraBase";
 import RendererState from "../../vox/render/RendererState";
 import RendererDevice from "../../vox/render/RendererDevice";
+import {IRenderCamera} from "../../vox/render/IRenderCamera";
+//import FBOInstance from "../../vox/scene/FBOInstance";
 
 
 var pwindow: any = window;
@@ -28,27 +19,15 @@ if(pwindow["VoxCore"] == undefined) {
 var VoxCore = pwindow["VoxCore"];
 
 VoxCore["Vector3D"] = Vector3D;
-VoxCore["AABB"] = AABB;
-VoxCore["AABB2D"] = AABB2D;
-VoxCore["Vector3D"] = Vector3D;
-VoxCore["Matrix4"] = Matrix4;
-VoxCore["MathConst"] = MathConst;
-
-VoxCore["Sphere"] = Sphere;
-VoxCore["Plane"] = Plane;
-VoxCore["RadialLine"] = RadialLine;
-VoxCore["LineSegment"] = LineSegment;
-VoxCore["StraightLine"] = StraightLine;
 
 VoxCore["Color4"] = Color4;
+VoxCore["ShaderUniformProbe"] = ShaderUniformProbe;
 
 VoxCore["RendererDevice"] = RendererDevice;
 VoxCore["RendererState"] = RendererState;
-VoxCore["CameraBase"] = CameraBase;
-
+//VoxCore["FBOInstance"] = FBOInstance;
 VoxCore["renderer"] = null;
 VoxCore["rendererContext"] = null;
-
 /**
  * A empty Renderer instance example
  */
@@ -65,13 +44,13 @@ export class BaseRenderer {
     getRendererContext(): RendererInstanceContext {
         return this.m_rcontext;
     }
-    initialize(): void {
+    initialize(pmodule: any): void {
         if(this.m_renderer == null) {
-
+            
             console.log("BaseRenderer::initialize...");
-    
             this.m_renderer = new RendererInstance();
-            this.m_renderer.initialize();
+            let camera: IRenderCamera = new pmodule["CameraBase"](this.m_renderer.getRCUid()) as IRenderCamera;
+            this.m_renderer.initialize(null, camera);
             this.m_renderer.appendProcess();
             this.m_renderer.appendProcess();
             this.m_renderer.appendProcess();

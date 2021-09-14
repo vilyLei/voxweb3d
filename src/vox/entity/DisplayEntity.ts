@@ -16,7 +16,7 @@ import RendererState from "../../vox/render/RendererState";
 import MeshBase from "../../vox/mesh/MeshBase";
 import MaterialBase from "../../vox/material/MaterialBase";
 import ROTransform from "../../vox/display/ROTransform";
-import SpaceCullingMask from "../../vox/space/SpaceCullingMask";
+import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
 import IRODisplay from "../../vox/display/IRODisplay";
 import RODisplay from "../../vox/display/RODisplay";
 import IRenderEntity from "../../vox/render/IRenderEntity";

@@ -25,6 +25,7 @@ import * as MotionSceneT from "./fixProjMotion/MotionScene";
 
 //import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import MotionScene = MotionSceneT.motionDemo.fixProjMotion.MotionScene;
+import CameraBase from "../vox/view/CameraBase";
 
 export namespace motionDemo
 {
@@ -50,7 +51,7 @@ export namespace motionDemo
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
                 this.m_renderer = new RendererInstance();
-                this.m_renderer.initialize(rparam);
+                this.m_renderer.initialize(rparam, new CameraBase());
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();

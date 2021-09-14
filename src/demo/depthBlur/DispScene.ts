@@ -1,5 +1,5 @@
 
-import RenderAdapter from "../../vox/render/RenderAdapter";
+import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
 import {RenderBlendMode,CullFaceMode,DepthTestMode} from "../../vox/render/RenderConst";
 import RendererState from "../../vox/render/RendererState";
 import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
@@ -16,25 +16,9 @@ import CameraTrack from "../../vox/view/CameraTrack";
 import * as EntityManagerT from "./EntityManager";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 
-//import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-//import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-//import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-//import RendererState = RendererStateT.vox.render.RendererState;
-//import RendererInstanceContext = RendererInstanceContextT.vox.scene.RendererInstanceContext;
-//import RendererInstance = RendererInstanceT.vox.scene.RendererInstance;
-//import Plane3DEntity = Plane3DEntityT.vox.entity.Plane3DEntity;
-//import RTTTextureProxy = RTTTextureProxyT.vox.texture.RTTTextureProxy;
-//import TextureFormat = TextureConstT.vox.texture.TextureFormat;
-//import TextureDataType = TextureConstT.vox.texture.TextureDataType;
-//import TextureBlock = TextureBlockT.vox.texture.TextureBlock;
 import ScrDepBaseMaterial = ScrDepBaseMaterialT.demo.material.ScrDepBaseMaterial;
 import ScrDepBlurMaterial = ScrDepBlurMaterialT.demo.material.ScrDepBlurMaterial;
-//import ScreenPlaneMaterial = ScreenPlaneMaterialT.vox.material.mcase.ScreenPlaneMaterial;
-//import PingpongBlur = PingpongBlurT.renderingtoy.mcase.PingpongBlur;
-//import RenderAdapter = RenderAdapterT.vox.render.RenderAdapter;
-//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import EntityManager = EntityManagerT.demo.depthBlur.EntityManager;
-//import ImageTextureLoader = ImageTextureLoaderT.vox.texture.ImageTextureLoader;
 
 export namespace demo
 {
@@ -46,7 +30,7 @@ export namespace demo
             private m_scrDepMaterial:ScrDepBaseMaterial = new ScrDepBaseMaterial();
             private m_renderer:RendererInstance = null;
             private m_rcontext:RendererInstanceContext = null;
-            private m_renderAdapter:RenderAdapter = null;
+            private m_renderAdapter:IRenderAdapter = null;
             private m_camTrack:CameraTrack = null;
             private m_entityMana:EntityManager = new EntityManager();
             

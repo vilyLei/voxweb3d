@@ -6,22 +6,22 @@
 /***************************************************************************/
 
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
-import CameraBase from "../../vox/view/CameraBase";
-import RenderProxy from "../../vox/render/RenderProxy";
+import {IRenderCamera} from "../../vox/render/IRenderCamera";
+import {IRenderProxy} from "../../vox/render/IRenderProxy";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import RPONodeBuilder from "../../vox/render/RPONodeBuilder";
-import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
+import {IRendererInstanceContext} from "../../vox/scene/IRendererInstanceContext";
 /**
  * define the renderer instance behaviours;
  */
 interface IRenderer {
     getUid(): number;
     getRPONodeBuilder(): RPONodeBuilder;
-    getRenderProxy(): RenderProxy;
-    getRendererContext(): RendererInstanceContext;
+    getRenderProxy(): IRenderProxy;
+    getRendererContext(): IRendererInstanceContext;
     getStage3D(): IRenderStage3D;
-    getCamera(): CameraBase;
+    getCamera(): IRenderCamera;
     addEntity(entity: IRenderEntity, processid: number, deferred: boolean): void;
     removeEntity(entity: IRenderEntity): void;
     updateMaterialUniformToCurrentShd(material: IRenderMaterial): void;
@@ -35,7 +35,7 @@ interface IRenderer {
     drawEntity(entity: IRenderEntity, useGlobalUniform: boolean,  forceUpdateUniform: boolean): void;
     showInfoAt(index: number): void;
     runAt(index: number): void;
-    useCamera(camera: CameraBase, syncCamView: boolean): void;
+    useCamera(camera: IRenderCamera, syncCamView: boolean): void;
     useMainCamera(): void;
     updateCamera(): void;
 }

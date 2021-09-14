@@ -7,10 +7,10 @@
 
 import RSEntityFlag from '../../vox/scene/RSEntityFlag';
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
-import RenderAdapter from "../../vox/render/RenderAdapter";
+import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
+import { IRenderCamera } from '../render/IRenderCamera';
 import RenderProxy from "../../vox/render/RenderProxy";
 
-import CameraBase from "../../vox/view/CameraBase";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import RODataBuilder from "../../vox/render/RODataBuilder";
@@ -39,7 +39,7 @@ export class RendererInstance implements IRenderer {
     private m_sprocesses: RenderProcess[] = [];
     private m_sprocessesLen: number = 0;
     private m_renderProxy: RenderProxy = null;
-    private m_adapter: RenderAdapter = null;
+    private m_adapter: IRenderAdapter = null;
     private m_dataBuilder: RODataBuilder = null;
     private m_renderInsContext: RendererInstanceContext = null;
     private m_batchEnabled: boolean = true;
@@ -78,6 +78,10 @@ export class RendererInstance implements IRenderer {
         return this.m_renderInsContext;
     }
     getRenderProxy(): RenderProxy {
+        if(this.m_renderProxy != null) {
+            return this.m_renderProxy;
+        }
+        this.m_renderProxy = this.m_renderInsContext.getRenderProxy();
         return this.m_renderProxy;
     }
 
@@ -89,26 +93,28 @@ export class RendererInstance implements IRenderer {
     getViewWidth(): number { return this.m_adapter.getViewportWidth(); }
     getViewHeight(): number { return this.m_adapter.getViewportHeight(); }
 
-    getCamera(): CameraBase {
+    getCamera(): IRenderCamera {
         return this.m_renderInsContext.getCamera();
     }
-    createCamera(): CameraBase {
-        if (this.m_renderProxy == null) {
-            return this.m_renderProxy.createCamera();
-        }
+    createCamera(): IRenderCamera {
+        return null;
     }
-    useCamera(camera: CameraBase, syncCamView: boolean = false): void {
+    useCamera(camera: IRenderCamera, syncCamView: boolean = false): void {
     }
     useMainCamera(): void {
     }
+
     updateCamera(): void {
         if (this.m_renderProxy != null) {
             this.m_renderProxy.updateCamera();
         }
     }
-    initialize(param: RendererParam = null): void {
-        if (this.m_renderProxy == null) {
+    initialize(param: RendererParam = null, camera: IRenderCamera = null): void {
+
+        if (this.m_dataBuilder == null && camera != null) {
+
             if (param == null) param = new RendererParam();
+
             this.m_batchEnabled = param.batchEnabled;
             this.m_processFixedState = param.processFixedState;
 
@@ -117,8 +123,8 @@ export class RendererInstance implements IRenderer {
             this.m_dataBuilder = new RODataBuilder();
             this.m_roVtxBuild = new ROVtxBuilder();
             this.m_renderInsContext.setCameraParam(param.camProjParam.x, param.camProjParam.y, param.camProjParam.z);
-            //this.m_renderInsContext.setMatrix4AllocateSize(param.getMatrix4AllocateSize());
-            this.m_renderInsContext.initialize(param, this.m_stage3D, this.m_dataBuilder, this.m_roVtxBuild);
+            
+            this.m_renderInsContext.initialize(param, camera, this.m_stage3D, this.m_dataBuilder, this.m_roVtxBuild);
             this.m_adapter = this.m_renderProxy.getRenderAdapter();
             this.m_uid = this.m_renderProxy.getUid();
             this.m_dataBuilder.initialize(this.m_renderProxy, this.m_rpoUnitBuilder, this.m_processBuider, this.m_roVtxBuild);

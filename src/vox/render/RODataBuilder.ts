@@ -97,6 +97,17 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
             }
         }
     }
+    private createTRO(texList: IRenderTexture[], texTotal: number, ): TextureRenderObj {
+        if(texList != null) {
+            for(let i: number = 0; i < texList.length; ++i) {
+                if( texList[i] != null ) {
+                    texList[i].__$setRenderProxy(this.m_rc);
+                }
+            }
+            return TextureRenderObj.Create(this.m_texRes, texList, texTotal);
+        }
+        return null;
+    }
     private updateTextureTRO(disp: IRODisplay): void {
         if (disp.__$$runit != null) {
             let material: IRenderMaterial = disp.getMaterial();
@@ -109,7 +120,8 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
                     if (shdp != null) {
                         if (shdp.getTexTotal() > 0) {
                             if (tro == null) {
-                                tro = TextureRenderObj.Create(texRes, material.getTextureList(), shdp.getTexTotal());
+                                tro = this.createTRO( material.getTextureList(), shdp.getTexTotal());
+                                //tro = TextureRenderObj.Create(texRes, material.getTextureList(), shdp.getTexTotal());
                             }
                             if (runit.tro != tro) {
                                 if (runit.tro != null) {
@@ -156,7 +168,8 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
 
                 let tro: TextureRenderObj = null;
                 if (shdp.getTexTotal() > 0) {
-                    tro = TextureRenderObj.Create(this.m_texRes, material.getTextureList(), shdp.getTexTotal());
+                    tro = this.createTRO( material.getTextureList(), shdp.getTexTotal());
+                    //tro = TextureRenderObj.Create(this.m_texRes, material.getTextureList(), shdp.getTexTotal());
                     if (runit.tro != tro) {
                         if (runit.tro != null) {
                             runit.tro.__$detachThis();
@@ -400,9 +413,9 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
             shdp.upload(rc.RContext, rc.getUid());
             let texTotal: number = shdp.getTexTotal();
             if (texTotal > 0) {
-                tro = TextureRenderObj.Create(this.m_texRes, texList, texTotal);
+                tro = this.createTRO( texList, texTotal);
+                //tro = TextureRenderObj.Create(this.m_texRes, texList, texTotal);
             }
-            console.log("XXXXX RODB this.m_shader.getSharedUniformByShd(shdp) == null: ", (this.m_shader.getSharedUniformByShd(shdp) == null));
             if (this.m_shader.getSharedUniformByShd(shdp) == null) {
 
                 //let sharedMList: ShaderUniform[] = material.createSharedUniforms() as ShaderUniform[];

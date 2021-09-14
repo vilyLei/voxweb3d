@@ -12,11 +12,11 @@ import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
 import Color4 from "../../vox/material/Color4";
 import {IRenderCamera} from "./IRenderCamera";
-import CameraBase from "../../vox/view/CameraBase";
 import RendererParam from "../../vox/scene/RendererParam";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import { RODrawState, RenderStateObject, RenderColorMask } from "../../vox/render/RODrawState";
 import RAdapterContext from "../../vox/render/RAdapterContext";
+import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
 import RenderAdapter from "../../vox/render/RenderAdapter";
 import RenderFBOProxy from "../../vox/render/RenderFBOProxy";
 import RCExtension from "../../vox/render/RCExtension";
@@ -30,8 +30,11 @@ import IROVertexBufUpdater from '../../vox/render/IROVertexBufUpdater';
 import IROMaterialUpdater from '../../vox/render/IROMaterialUpdater';
 import DivLog from "../../vox/utils/DivLog";
 import RendererState from "./RendererState";
+import {IRenderProxy} from "./IRenderProxy";
+import ShaderUniformProbe from "../material/ShaderUniformProbe";
 
-class RenderProxy {
+class RenderProxy implements IRenderProxy{
+
     readonly RGBA: number = 0;
     readonly UNSIGNED_BYTE: number = 0;
     readonly TRIANGLE_STRIP: number = 0;
@@ -118,8 +121,8 @@ class RenderProxy {
     cameraUnlock(): void {
         this.m_camera.unlock();
     }
-    getCamera(): CameraBase {
-        return this.m_camera as CameraBase;
+    getCamera(): IRenderCamera {
+        return this.m_camera as IRenderCamera;
     }
     updateCamera(): void {
         return this.m_camera.update();
@@ -133,14 +136,16 @@ class RenderProxy {
         //      this.m_camUBO.run();
         //  }
     }
-    updateCameraDataFromCamera(camera: CameraBase): void {
+    updateCameraDataFromCamera(camera: IRenderCamera): void {
         if (camera != null) {
             if (this.m_camSwitched || camera != this.m_camera) {
                 this.m_camSwitched = camera != this.m_camera;
                 camera.updateCamMatToUProbe(this.m_camera.matUProbe);
                 if (this.m_camUBO != null) {
-                    this.m_camUBO.setSubDataArrAt(0, camera.getViewMatrix().getLocalFS32());
-                    this.m_camUBO.setSubDataArrAt(16, camera.getProjectMatrix().getLocalFS32());
+                    this.m_camUBO.setSubDataArrAt(0, camera.matUProbe.getFS32At(0));
+                    this.m_camUBO.setSubDataArrAt(16, camera.matUProbe.getFS32At(1));                    
+                    //this.m_camUBO.setSubDataArrAt(0, camera.getViewMatrix().getLocalFS32());
+                    //this.m_camUBO.setSubDataArrAt(16, camera.getProjectMatrix().getLocalFS32());
                 }
             }
         }
@@ -197,9 +202,13 @@ class RenderProxy {
     getStage3D(): IRenderStage3D {
         return this.m_adapterContext.getStage();
     }
-    getRenderAdapter(): RenderAdapter {
+    getRenderAdapter(): IRenderAdapter {
         return this.m_adapter;
     }
+    
+	getRenderContext(): RAdapterContext {
+		return this.m_adapter.getRenderContext();
+	}
     setCameraParam(fov: number, near: number, far: number): void {
         this.m_cameraFov = fov;
         this.m_cameraNear = near;
@@ -252,9 +261,7 @@ class RenderProxy {
             this.m_viewW = this.m_adapterContext.getRCanvasWidth();
             this.m_viewH = this.m_adapterContext.getRCanvasHeight();
 
-            if (this.m_camera == null) {
-                this.createMainCamera();
-            }
+            this.createMainCamera();
 
             //console.log("resizeCallback(), viewW,viewH: ", this.m_viewW+","+this.m_viewH);
             this.m_adapterContext.setViewport(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
@@ -262,18 +269,23 @@ class RenderProxy {
             this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
         }
     }
+    private m_initMainCamera: boolean = true;
     private createMainCamera(): void {
-        this.m_camera = new CameraBase(this.m_uid);
-        this.m_camera.uniformEnabled = true;
+        
+        if(this.m_initMainCamera) {
 
-        if (this.m_perspectiveEnabled) {
-            this.m_camera.perspectiveRH(MathConst.DegreeToRadian(this.m_cameraFov), this.m_viewW / this.m_viewH, this.m_cameraNear, this.m_cameraFar);
+            this.m_initMainCamera = false;
+            this.m_camera.uniformEnabled = true;
+            
+            if (this.m_perspectiveEnabled) {
+                this.m_camera.perspectiveRH(MathConst.DegreeToRadian(this.m_cameraFov), this.m_viewW / this.m_viewH, this.m_cameraNear, this.m_cameraFar);
+            }
+            else {
+                this.m_camera.orthoRH(this.m_cameraNear, this.m_cameraFar, -0.5 * this.m_viewH, 0.5 * this.m_viewH, -0.5 * this.m_viewW, 0.5 * this.m_viewW);
+            }
+            this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
+            this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
         }
-        else {
-            this.m_camera.orthoRH(this.m_cameraNear, this.m_cameraFar, -0.5 * this.m_viewH, 0.5 * this.m_viewH, -0.5 * this.m_viewW, 0.5 * this.m_viewW);
-        }
-        this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
-        this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
     }
     readPixels(px: number, py: number, width: number, height: number, format: number, dataType: number, pixels: Uint8Array): void {
         this.m_adapter.readPixels(px, py, width, height, format, dataType, pixels);
@@ -281,9 +293,28 @@ class RenderProxy {
     getGLVersion(): number {
         return this.m_WEBGL_VER;
     }
-    initialize(param: RendererParam, stage: IRenderStage3D, materialUpdater: IROMaterialUpdater, vtxBufUpdater: IROVertexBufUpdater, vtxBuilder: IROVtxBuilder): void {
+    initialize(param: RendererParam, camera: IRenderCamera, stage: IRenderStage3D, materialUpdater: IROMaterialUpdater, vtxBufUpdater: IROVertexBufUpdater, vtxBuilder: IROVtxBuilder): void {
         if (this.m_rc != null) {
             return;
+        }
+        this.m_camera = camera;
+        if (camera.matUProbe == null) {
+            camera.matUProbe = new ShaderUniformProbe();
+            camera.matUProbe.bindSlotAt(this.m_uid);
+            camera.matUProbe.addMat4Data(new Float32Array(16), 1);
+            camera.matUProbe.addMat4Data(new Float32Array(16), 1);
+        }
+        if (camera.ufrustumProbe == null) {
+            camera.ufrustumProbe = new ShaderUniformProbe();
+            camera.ufrustumProbe.bindSlotAt(this.m_uid);
+            camera.ufrustumProbe.addVec4Data(
+                new Float32Array([
+                camera.getZNear(),
+                camera.getZFar(),
+                camera.getNearPlaneWidth() * 0.5,
+                camera.getNearPlaneHeight() * 0.5
+                ]),
+            1);
         }
         let posV3: Vector3D = param.camPosition;
         let lookAtPosV3: Vector3D = param.camLookAtPos;
@@ -323,9 +354,9 @@ class RenderProxy {
                 this.m_viewH = stage.stageHeight;
             }
         }
-        if (this.m_camera == null) {
-            this.createMainCamera();
-        }
+        
+        this.createMainCamera();
+
         this.m_adapterContext.setViewport(this.m_viewX, this.m_viewY, this.m_viewW, this.m_viewH);
         this.m_camera.lookAtRH(posV3, lookAtPosV3, upV3);
         this.m_camera.update();
@@ -369,10 +400,10 @@ class RenderProxy {
     flush(): void {
         this.m_rc.flush();
     }
-    createCamera(): CameraBase {
-        return new CameraBase(this.m_uid);
-    }
-    setClearRGBColor3f(pr: number, pg: number, pb: number) {
+    //createCamera(): IRenderCamera {
+    //    return new IRenderCamera(this.m_uid);
+    //}
+    setClearRGBColor3f(pr: number, pg: number, pb: number): void {
         this.m_adapter.bgColor.setRGB3f(pr, pg, pb);
     }
     setClearColor(color: Color4): void {
@@ -400,7 +431,7 @@ class RenderProxy {
     clearBackBuffer(): void {
         this.m_adapter.clear();
     }
-    renderBegin() {
+    renderBegin():void {
         this.m_camera.update();
         this.m_adapter.renderBegin();
     }

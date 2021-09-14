@@ -10,8 +10,9 @@ import Vector3D from "../../vox/math/Vector3D";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import Stage3D from "../../vox/display/Stage3D";
 import Color4 from "../../vox/material/Color4";
+import {IRenderCamera} from "../../vox/render/IRenderCamera";
 import CameraBase from "../../vox/view/CameraBase";
-import RenderAdapter from "../../vox/render/RenderAdapter";
+import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
 import RenderProxy from "../../vox/render/RenderProxy";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
@@ -48,7 +49,7 @@ import Matrix4Pool from "../math/Matrix4Pool";
 export default class RendererScene implements IRenderer,IRendererScene {
     private static s_uid: number = 0;
     private m_uid: number = -1;
-    private m_adapter: RenderAdapter = null;
+    private m_adapter: IRenderAdapter = null;
     private m_renderProxy: RenderProxy = null;
     private m_shader: RenderShader = null;
     private m_rcontext: RendererInstanceContext = null;
@@ -138,7 +139,7 @@ export default class RendererScene implements IRenderer,IRendererScene {
     unlockViewport(): void {
         this.m_adapter.unlockViewport();
     }
-    getRendererAdapter(): RenderAdapter {
+    getRendererAdapter(): IRenderAdapter {
         return this.m_adapter;
     }
     getRenderer(): RendererInstance {
@@ -157,7 +158,7 @@ export default class RendererScene implements IRenderer,IRendererScene {
         return this.m_renderProxy.getStage3D().viewHeight;
     }
     getCamera(): CameraBase {
-        return this.m_renderProxy.getCamera();
+        return this.m_renderProxy.getCamera() as CameraBase;
     }
     asynFBOSizeWithViewport(): void {
         this.m_rcontext.asynFBOSizeWithViewport();
@@ -176,7 +177,7 @@ export default class RendererScene implements IRenderer,IRendererScene {
         this.m_renderProxy.getMouseXYWorldRay(rl_position, rl_tv);
     }
     createCamera(): CameraBase {
-        return this.m_renderProxy.createCamera();
+        return new CameraBase();
     }
     createFBOInstance(): FBOInstance {
         return new FBOInstance(this, this.textureBlock.getRTTStrore());
@@ -279,7 +280,9 @@ export default class RendererScene implements IRenderer,IRendererScene {
 
             this.m_renderer.__$setStage3D(this.stage3D);
             Matrix4Pool.Allocate(rparam.getMatrix4AllocateSize());
-            this.m_renderer.initialize(rparam);
+            let camera: CameraBase = new CameraBase();
+            
+            this.m_renderer.initialize(rparam, camera);
             this.m_processids[0] = 0;
             this.m_processidsLen++;
             let process: RenderProcess = null;
@@ -484,7 +487,7 @@ export default class RendererScene implements IRenderer,IRendererScene {
     }
     useMainCamera(): void {
         this.m_currCamera = null;
-        let camera: CameraBase = this.m_renderProxy.getCamera();
+        let camera: IRenderCamera = this.m_renderProxy.getCamera();
         this.m_renderProxy.setRCViewPort(camera.getViewX(), camera.getViewY(), camera.getViewWidth(), camera.getViewHeight(), true);
         this.m_renderProxy.reseizeRCViewPort();
         this.m_renderProxy.updateCamera();

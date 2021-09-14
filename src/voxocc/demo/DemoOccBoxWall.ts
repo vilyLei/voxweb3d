@@ -1,4 +1,3 @@
-
 import Vector3D from "../../vox/math/Vector3D";
 import { CubeRandomRange } from "../../vox/utils/RandomRange";
 import RendererDevice from "../../vox/render/RendererDevice";
@@ -18,37 +17,12 @@ import BillboardFrame from "../../vox/entity/BillboardFrame";
 import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
 import CameraTrack from "../../vox/view/CameraTrack";
 import BoxFrame3D from "../../vox/entity/BoxFrame3D";
-import QuadHolePOV from '../../voxocc/occlusion/QuadHolePOV';
+import {QuadHolePOV} from '../../voxocc/occlusion/QuadHolePOV';
 import BoxPOV from '../../voxocc/occlusion/BoxPOV';
-import * as BoxFarFacePOVT from '../../voxocc/occlusion/BoxFarFacePOV';
+import {BoxFarFacePOV} from '../../voxocc/occlusion/BoxFarFacePOV';
 import IRendererSpace from "../../vox/scene/IRendererSpace";
-import SpaceCullingMask from "../../vox/space/SpaceCullingMask";
+import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
 import SpaceCullingor from '../../vox/scene/SpaceCullingor';
-
-//import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-//import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-//import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-//import RendererState = RendererStateT.vox.render.RendererState;
-//import RendererParam = RendererParamT.vox.scene.RendererParam;
-//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-//import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-//import RendererScene = RendererSceneT.vox.scene.RendererScene;
-//import MouseEvent = MouseEventT.vox.event.MouseEvent;
-//import Stage3D = Stage3DT.vox.display.Stage3D;
-//import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
-
-//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-//import BillboardFrame = BillboardFrameT.vox.entity.BillboardFrame;
-//import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
-//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-//import BoxFrame3D = BoxFrame3DT.vox.entity.BoxFrame3D;
-//import QuadHolePOV = QuadHolePOVT.voxocc.occlusion.QuadHolePOV;
-//import BoxPOV = BoxPOVT.voxocc.occlusion.BoxPOV;
-import BoxFarFacePOV = BoxFarFacePOVT.voxocc.occlusion.BoxFarFacePOV;
-//import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
-//import SpaceCullingMask = SpaceCullingMasKT.vox.space.SpaceCullingMask;
-//import SpaceCullingor = SpaceCullingorT.vox.scene.SpaceCullingor;
 
 export namespace voxocc
 {

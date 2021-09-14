@@ -48,7 +48,7 @@ export default class ObjData3DEntity extends DisplayEntity
             request.open('GET', objDataUrl, true);
 
             request.onload = () => {
-                if (request.status <= 206 && status,request.responseText.indexOf(" OBJ ") > 0) {
+                if (request.status <= 206 && request.responseText.indexOf(" OBJ ") > 0) {
                     self.initialize(request.responseText, texList);
                 }
                 else {

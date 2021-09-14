@@ -48,6 +48,7 @@ import * as ScreenRectMaterialT from "./material/ScreenRectMaterial";
 //import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 import ScreenRectMaterial = ScreenRectMaterialT.demo.material.ScreenRectMaterial;
+import CameraBase from "../vox/view/CameraBase";
 
 export namespace demo
 {
@@ -88,7 +89,7 @@ export namespace demo
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
                 this.m_renderer = new RendererInstance();
-                this.m_renderer.initialize(rparam);
+                this.m_renderer.initialize(rparam, new CameraBase());
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();

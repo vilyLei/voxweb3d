@@ -19,9 +19,9 @@ import BillboardFrame from "../../vox/entity/BillboardFrame";
 import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
 import CameraTrack from "../../vox/view/CameraTrack";
 import BrokenLine3DEntity from "../../vox/entity/BrokenLine3DEntity";
-import QuadHolePOV from '../../voxocc/occlusion/QuadHolePOV';
+import {QuadHolePOV} from '../../voxocc/occlusion/QuadHolePOV';
 import IRendererSpace from "../../vox/scene/IRendererSpace";
-import SpaceCullingMask from "../../vox/space/SpaceCullingMask";
+import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
 import SpaceCullingor from '../../vox/scene/SpaceCullingor';
 
 

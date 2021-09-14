@@ -18,11 +18,8 @@ import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
 import CameraTrack from "../../vox/view/CameraTrack";
 import IRendererSpace from "../../vox/scene/IRendererSpace";
 import SpherePOV from '../../voxocc/occlusion/SpherePOV';
-import SpaceCullingMask from "../../vox/space/SpaceCullingMask";
+import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
 import SpaceCullingor from '../../vox/scene/SpaceCullingor';
-
-//import SpherePOV = SpherePOVT.voxocc.occlusion.SpherePOV;
-//import SpaceCullingor = SpaceCullingorT.vox.scene.SpaceCullingor;
 
 export namespace voxocc
 {

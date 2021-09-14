@@ -144,7 +144,9 @@ class TextureRenderObj implements ITextureRenderObj {
     toString(): string {
         return "TextureRenderObj(uid = " + this.m_uid + ", mid=" + this.m_mid + ")";
     }
+    
     static Create(texRes: ROTextureResource, texList: IRenderTexture[], shdTexTotal: number): TextureRenderObj {
+
         let texTotal: number = texList.length;
         if (texTotal > 0 && shdTexTotal > 0) {
             if (texTotal < shdTexTotal) {

@@ -41,6 +41,7 @@ export class TextureLoader {
     }
     
     protected parseTextureBuffer(buffer: ArrayBuffer): void {
+        
         let begin: number = 0;
         let width: number = 128;
         let height: number = 128;

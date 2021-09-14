@@ -2,7 +2,7 @@
 import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
 import FrameBufferType from "../vox/render/FrameBufferType";
-import RenderAdapter from "../vox/render/RenderAdapter";
+import {IRenderAdapter} from "../vox/render/IRenderAdapter";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RendererInstance from "../vox/scene/RendererInstance";
@@ -142,7 +142,7 @@ export namespace demo
         {
             let pcontext:RendererInstanceContext = this.m_rcontext;
             let rinstance:RendererInstance = this.m_renderer;
-            let radapter:RenderAdapter = pcontext.getRenderAdapter();
+            let radapter:IRenderAdapter = pcontext.getRenderAdapter();
 
             this.m_statusDisp.update();
 
@@ -180,7 +180,7 @@ export namespace demo
             // -------------------------------------------------------
             //*/
             pcontext.setClearRGBColor3f(0.0, 3.0, 2.0);
-            radapter.setRenderToBackBuffer();
+            radapter.setRenderToBackBuffer(FrameBufferType.FRAMEBUFFER);
             rinstance.runAt(2);
 
 

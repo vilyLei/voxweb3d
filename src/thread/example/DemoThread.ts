@@ -44,18 +44,13 @@ function ThreadAddNum()
     {
         return 0;
     }
-
-    self.TaskSlot[this.getTaskClass()] = this;
-    let INIT_TASK = 3701;
-    postMessage({cmd:INIT_TASK,taskclass:this.getTaskClass()});
 }
-let workerIns_ThreadAddNum = new ThreadAddNum();
 `;
 
     initialize():void
     {
         // 注意: m_mathAddWorkerCode 代码中描述的 getTaskClass() 返回值 要和 TestNumberAddTask 中的 getTaskClass() 返回值 要相等
-        ThreadSystem.InitTaskByCodeStr(this.m_mathAddWorkerCode,0);
+        ThreadSystem.InitTaskByCodeStr(this.m_mathAddWorkerCode,0, "ThreadAddNum");
         ThreadSystem.Initialize(1);
         this.useTask();
         this.update();

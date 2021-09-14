@@ -217,7 +217,7 @@ export class DemoOutline {
         camPos.y *= -1.0;
         let viewWidth: number = this.m_viewWidth;
         let viewHeight: number = this.m_viewHeight;
-        this.m_rttCamera = new CameraBase(0);
+        this.m_rttCamera = new CameraBase();
         this.m_rttCamera.name = "rttCamera";
         this.m_rttCamera.lookAtRH(camPos, new Vector3D(0.0,0.0,0.0), new Vector3D(0.0,1.0,0.0));
         this.m_rttCamera.perspectiveRH(MathConst.DegreeToRadian(45.0),viewWidth/viewHeight,50.1,10000.0);

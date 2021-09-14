@@ -9,12 +9,13 @@ import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 import PingpongBlurMaterial from "../../renderingtoy/mcase/material/PingpongBlurMaterial";
 import RendererState from "../../vox/render/RendererState";
-import RenderAdapter from "../../vox/render/RenderAdapter";
+import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
 import RenderProxy from "../../vox/render/RenderProxy";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderProcess from "../../vox/render/IRenderProcess";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import WrapperTextureProxy from "../../vox/texture/WrapperTextureProxy";
+import FrameBufferType from "../../vox/render/FrameBufferType";
 
 export default class PingpongBlur
 {
@@ -144,7 +145,7 @@ export default class PingpongBlur
         }
         return null;
     }
-    private updateState(adapter:RenderAdapter):void
+    private updateState(adapter:IRenderAdapter):void
     {
         if(this.m_plane0 == null)
         {
@@ -193,7 +194,7 @@ export default class PingpongBlur
     run(srcProcessId:number = -1):void
     {
         let rc:RenderProxy = this.m_renderer.getRenderProxy();
-        let adapter:RenderAdapter = rc.getRenderAdapter();
+        let adapter:IRenderAdapter = rc.getRenderAdapter();
         if(this.m_syncViewSizeEnabled)
         {
             adapter.synFBOSizeWithViewport();
@@ -231,7 +232,7 @@ export default class PingpongBlur
         }
         if(this.m_backbufferVisible)
         {
-            adapter.setRenderToBackBuffer();
+            adapter.setRenderToBackBuffer(FrameBufferType.FRAMEBUFFER);
             rc.unlockRenderState();
             if((i%2) == 0)
             {

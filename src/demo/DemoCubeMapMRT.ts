@@ -20,6 +20,7 @@ import * as EntityDispT from "./base/EntityDisp";
 
 import EntityDisp = EntityDispT.demo.base.EntityDisp;
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
+import CameraBase from "../vox/view/CameraBase";
 
 export class DemoCubeMapMRT
 {
@@ -45,7 +46,7 @@ export class DemoCubeMapMRT
             let rparam:RendererParam = new RendererParam();
             rparam.setCamPosition(800.0,800.0,800.0);
             this.m_renderer = new RendererInstance();
-            this.m_renderer.initialize(rparam);
+            this.m_renderer.initialize(rparam, new CameraBase());
             this.m_renderer.appendProcess();
             this.m_rcontext = this.m_renderer.getRendererContext();
             

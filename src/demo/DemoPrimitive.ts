@@ -26,6 +26,7 @@ import * as EntityDispT from "./base/EntityDisp";
 
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
+import CameraBase from "../vox/view/CameraBase";
 
 export class DemoPrimitive {
     constructor() { }
@@ -50,16 +51,19 @@ export class DemoPrimitive {
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
-    initialize(): void {
-        if (this.m_renderer == null) {
-            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
+    initialize(): void {
+
+        if (this.m_renderer == null) {
+
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            
             let rparam: RendererParam = new RendererParam();
             rparam.setTickUpdateTime(20);
             rparam.setCamProject(45.0, 1.0, 3000.0);
             rparam.setCamPosition(1500.0, 1500.0, 1500.0);
             this.m_renderer = new RendererInstance();
-            this.m_renderer.initialize(rparam);
+            this.m_renderer.initialize(rparam, new CameraBase());
             this.m_renderer.appendProcess();
             this.m_renderer.appendProcess();
 

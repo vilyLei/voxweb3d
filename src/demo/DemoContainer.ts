@@ -25,6 +25,7 @@ import * as EntityDispT from "./base/EntityDisp";
 import DecayBrnParticle from "../particle/base/DecayBrnParticle";
 
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
+import CameraBase from '../vox/view/CameraBase';
 
 export class DemoContainer {
     constructor() { }
@@ -56,7 +57,7 @@ export class DemoContainer {
             rparam.setCamProject(45.0, 0.1, 3000.0);
             rparam.setCamPosition(1500.0, 1500.0, 1500.0);
             this.m_renderer = new RendererInstance();
-            this.m_renderer.initialize(rparam);
+            this.m_renderer.initialize(rparam, new CameraBase());
             this.m_renderer.appendProcess();
             this.m_rcontext = this.m_renderer.getRendererContext();
             //DecayBrnParticle.renderer = this.m_renderer;

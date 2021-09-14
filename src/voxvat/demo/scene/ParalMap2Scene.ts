@@ -248,7 +248,7 @@ export namespace voxvat
                     /*
                     // for test begin
 
-                    let camera0:CameraBase = new CameraBase(0);
+                    let camera0:CameraBase = new CameraBase();
                     camera0.lookAtRH(new Vector3D(-900.0,900.0,900.0), new Vector3D(0.0,0.0,0.0), new Vector3D(0.0,1.0,0.0));
                     camera0.perspectiveRH(MathConst.DegreeToRadian(45.0),600.0/500.0,150.1,1500.0);
                     camera0.update();

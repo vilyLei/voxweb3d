@@ -22,6 +22,7 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 
 import CameraTrack from "../vox/view/CameraTrack";
 import PathTrack from "../voxnav/path/PathTrack";
+import CameraBase from "../vox/view/CameraBase";
 
 //import Vector3D = Vector3DT.vox.math.Vector3D;
 //import RendererDevice = RendererDeviceT.vox.render.RendererDevice;
@@ -151,7 +152,7 @@ export namespace voxnav
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
                 this.m_renderer = new RendererInstance();
-                this.m_renderer.initialize(rparam);
+                this.m_renderer.initialize(rparam, new CameraBase());
                 this.m_rcontext = this.m_renderer.getRendererContext();
                 let stage3D:Stage3D = this.m_rcontext.getStage3D() as Stage3D;
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);

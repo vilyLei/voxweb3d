@@ -11,7 +11,7 @@ import MaterialBase from '../../vox/material/MaterialBase';
 import ScreenFixedPlaneMaterial from "../../vox/material/mcase/ScreenFixedPlaneMaterial";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import RectPlaneMesh from "../../vox/mesh/RectPlaneMesh";
-import SpaceCullingMask from "../../vox/space/SpaceCullingMask";
+import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
 
 export default class ScreenFixedAlignPlaneEntity extends DisplayEntity {
     private m_startX: number = 0;

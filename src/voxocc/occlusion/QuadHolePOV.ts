@@ -2,15 +2,13 @@
 import Vector3D from "../../vox/math/Vector3D";
 import AABB from "../../vox/geom/AABB";
 import Plane from "../../vox/geom/Plane";
-import CameraBase from "../../vox/view/CameraBase";
+import {IRenderCamera} from "../../vox/render/IRenderCamera";
 import ISpacePOV from "../../vox/scene/occlusion/ISpacePOV";
-import * as SphHoleOccObjT from './SphereGapPOV';
-import * as QuadGapOccObjT from './QuadGapPOV';
+import {SphereGapPOV} from './SphereGapPOV';
+import {QuadGapPOV} from './QuadGapPOV';
 
-import SphereGapPOV = SphHoleOccObjT.voxocc.occlusion.SphereGapPOV;
-import QuadGapPOV = QuadGapOccObjT.voxocc.occlusion.QuadGapPOV;
 // 一般和别的 凸体pov等 结合使用, 一般用于产生 交集
-export default class QuadHolePOV implements ISpacePOV
+class QuadHolePOV implements ISpacePOV
 {
     constructor()
     {
@@ -206,7 +204,7 @@ export default class QuadHolePOV implements ISpacePOV
             ++this.m_subPovsTotal;
         }
     }
-    cameraTest(camera:CameraBase):void
+    cameraTest(camera:IRenderCamera):void
     {
         this.m_sphOcc.cameraTest(camera);
         this.status = this.m_sphOcc.status;
@@ -304,3 +302,5 @@ export default class QuadHolePOV implements ISpacePOV
         }
     }
 }
+
+export {QuadHolePOV};

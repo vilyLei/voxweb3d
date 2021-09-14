@@ -19,10 +19,10 @@ import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
 import CameraTrack from "../../vox/view/CameraTrack";
 import BoxFrame3D from "../../vox/entity/BoxFrame3D";
 import BrokenLine3DEntity from "../../vox/entity/BrokenLine3DEntity";
-import QuadHolePOV from '../../voxocc/occlusion/QuadHolePOV';
+import {QuadHolePOV} from '../../voxocc/occlusion/QuadHolePOV';
 import BoxPOV from '../../voxocc/occlusion/BoxPOV';
 import IRendererSpace from "../../vox/scene/IRendererSpace";
-import SpaceCullingMask from "../../vox/space/SpaceCullingMask";
+import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
 import SpaceCullingor from '../../vox/scene/SpaceCullingor';
 
 export namespace voxocc

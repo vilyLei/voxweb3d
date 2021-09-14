@@ -7,7 +7,7 @@
 // 射线拾取器接口规范
 
 import Vector3D from "../../vox/math/Vector3D";
-import CameraBase from "../../vox/view/CameraBase";
+import {IRenderCamera} from "../../vox/render/IRenderCamera";
 import Entity3DNode from "../../vox/scene/Entity3DNode";
 import RaySelectedNode from "../../vox/scene/RaySelectedNode";
 import IRenderer from "../../vox/scene/IRenderer";
@@ -22,7 +22,7 @@ export default interface IRaySelector
     setRayTestMode(testMode:number):void;
     setRay(rlpv:Vector3D, rltv:Vector3D):void;
     getRay(out_rlpv:Vector3D, out_rltv:Vector3D):void;
-    setCamera(cam:CameraBase):void;
+    setCamera(cam:IRenderCamera):void;
     setCullingNodeHead(headNode:Entity3DNode):void;
     //setSelectedNode(node:RaySelectedNode):void;
     getSelectedNode():RaySelectedNode;

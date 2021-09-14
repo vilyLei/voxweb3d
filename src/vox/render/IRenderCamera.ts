@@ -38,6 +38,8 @@ interface IRenderCamera {
     getViewY(): number;
     getViewWidth(): number;
     getViewHeight(): number;
+    getNearPlaneWidth(): number;
+    getNearPlaneHeight(): number;
     
     getPerspectiveEnabled(): boolean;
     setPerspectiveEnabled(boo: boolean): void;
@@ -78,6 +80,11 @@ interface IRenderCamera {
     updateCamMatToUProbe(uniformProbe: IShaderUniformProbe): void;
     lookRHEnabled(): boolean;
     lookLHEnabled(): boolean;
+
+    setPosition(pos: Vector3D): void;
+    getPosition(): Vector3D;
+    
+    getLookAtPosition(): Vector3D;
 }
 
 export {IRenderCamera};

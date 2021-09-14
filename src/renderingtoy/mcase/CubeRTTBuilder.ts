@@ -20,8 +20,8 @@ class RTTCameraList {
 
         if (this.m_initFlag) {
             this.m_cams = [
-                new CameraBase(0), new CameraBase(0), new CameraBase(0),
-                new CameraBase(0), new CameraBase(0), new CameraBase(0)
+                new CameraBase(), new CameraBase(), new CameraBase(),
+                new CameraBase(), new CameraBase(), new CameraBase()
             ];
 
             let fov: number = 90.0;

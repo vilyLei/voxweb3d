@@ -9,7 +9,7 @@ import { TextureConst, TextureFormat, TextureDataType, TextureTarget, TexturePro
 import MathConst from "../../vox/math/MathConst";
 
 import ITexData from "../../vox/texture/ITexData";
-import RenderProxy from "../../vox/render/RenderProxy";
+import {IRenderProxy} from "../../vox/render/IRenderProxy";
 import IRenderResource from "../../vox/render/IRenderResource";
 import IRenderTexture from "../../vox/render/IRenderTexture";
 import TextureResSlot from "../../vox/texture/TextureResSlot";
@@ -21,7 +21,7 @@ export class TextureProxy implements IRenderTexture {
     private m_uid: number = -1;
     // 自身的引用计数器
     private m_attachCount: number = 0;
-    protected m_renderProxy: RenderProxy = null;
+    protected m_renderProxy: IRenderProxy = null;
     protected m_slot: TextureResSlot = null;
     protected m_miplevel: number = -1;
     protected m_texWidth: number = 128;
@@ -78,7 +78,7 @@ export class TextureProxy implements IRenderTexture {
     __$$use(resTex: IRenderResource): void {
         resTex.bindToGpu(this.getResUid());
     }
-    __$setRenderProxy(rc: RenderProxy): void {
+    __$setRenderProxy(rc: IRenderProxy): void {
         if (this.m_slot != null) {
             this.m_renderProxy = rc;
         }
@@ -179,6 +179,9 @@ export class TextureProxy implements IRenderTexture {
      */
     isDataEnough(): boolean { return this.m_haveRData; }
 
+    uploadFromFbo(texResource: IRenderResource, fboWidth: number, fboHeight: number): void {
+        
+    }
     protected __$buildParam(gl: any): void {
         this.m_texBufW = this.m_texWidth;
         this.m_texBufH = this.m_texHeight;
@@ -221,7 +224,7 @@ export class TextureProxy implements IRenderTexture {
      * 这个函数由用户主动调用
      * 这个函数不能被子类覆盖
      */
-    updateDataToGpu(rc: RenderProxy = null, deferred: boolean = true): void {
+    updateDataToGpu(rc: IRenderProxy = null, deferred: boolean = true): void {
         if (rc != null) this.m_renderProxy = rc;
         if (this.m_renderProxy != null) {
             this.m_renderProxy.MaterialUpdater.updateTextureData(this, deferred);

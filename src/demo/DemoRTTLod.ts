@@ -159,7 +159,7 @@ export class DemoRTTLod {
 
         let viewWidth: number = 512.0;
         let viewHeight: number = 512.0;
-        this.m_rttCamera = new CameraBase(0);
+        this.m_rttCamera = new CameraBase();
         this.m_rttCamera.name = "rttCamera";
         this.m_rttCamera.lookAtRH(new Vector3D(-800.0,800.0,800.0), new Vector3D(0.0,0.0,0.0), new Vector3D(0.0,1.0,0.0));
         this.m_rttCamera.perspectiveRH(MathConst.DegreeToRadian(45.0),viewWidth/viewHeight,150.1,2000.0);

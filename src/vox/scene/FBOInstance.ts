@@ -6,31 +6,30 @@
 /***************************************************************************/
 // FBO Manager
 
-import IRenderStage3D from "../../vox/render/IRenderStage3D";
-import CameraBase from "../../vox/view/CameraBase";
-import FrameBufferType from "../../vox/render/FrameBufferType";
 import RenderFilter from "../../vox/render/RenderFilter";
 import RenderMaskBitfield from "../../vox/render/RenderMaskBitfield";
-import RendererState from "../../vox/render/RendererState";
-import RenderAdapter from "../../vox/render/RenderAdapter";
-import RenderProxy from "../../vox/render/RenderProxy";
 import { TextureConst, TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 import RTTTextureStore from "../../vox/texture/RTTTextureStore";
 import Color4 from "../../vox/material/Color4";
+
+import IRenderStage3D from "../../vox/render/IRenderStage3D";
+import {IRenderCamera} from "../../vox/render/IRenderCamera";
+import FrameBufferType from "../../vox/render/FrameBufferType";
+import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
+import {IRenderProxy} from "../../vox/render/IRenderProxy";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
-//import RenderMaterialProxy from "../../vox/render/RenderMaterialProxy";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderer from "../../vox/scene/IRenderer";
 import IRenderProcess from "../../vox/render/IRenderProcess";
-import RendererInstanceContext from "./RendererInstanceContext";
+import {IRendererInstanceContext} from "./IRendererInstanceContext";
 
 export default class FBOInstance {
     private m_backBufferColor: Color4 = new Color4();
-    private m_adapter: RenderAdapter = null;
-    private m_renderProxy: RenderProxy = null;
+    private m_adapter: IRenderAdapter = null;
+    private m_renderProxy: IRenderProxy = null;
     //private m_materialProxy: RenderMaterialProxy = null;
-    private m_rcontext: RendererInstanceContext = null;
+    private m_rcontext: IRendererInstanceContext = null;
     private m_bgColor: Color4 = new Color4();
     private m_render: IRenderer = null;
     private m_runFlag: boolean = true;
@@ -61,7 +60,6 @@ export default class FBOInstance {
         this.m_texStore = texStroe;
         this.m_renderProxy = render.getRenderProxy();
         this.m_adapter = this.m_renderProxy.getRenderAdapter();
-        //this.m_materialProxy = this.m_render.getRendererContext().getRenderMaterialProxy();
         this.m_rcontext = render.getRendererContext();
     }
     /**
@@ -97,7 +95,7 @@ export default class FBOInstance {
     getStage3D(): IRenderStage3D {
         return this.m_renderProxy.getStage3D();
     }
-    getCamera(): CameraBase {
+    getCamera(): IRenderCamera {
         if (this.m_renderProxy != null) {
             return this.m_renderProxy.getCamera();
         }
@@ -114,7 +112,7 @@ export default class FBOInstance {
             this.m_renderProxy.updateCamera();
         }
     }
-    updateCameraDataFromCamera(cam: CameraBase): void {
+    updateCameraDataFromCamera(cam: IRenderCamera): void {
         if (this.m_renderProxy != null) {
             this.m_renderProxy.updateCameraDataFromCamera(cam);
         }
@@ -130,7 +128,7 @@ export default class FBOInstance {
         this.m_gRState = state;
     }
     setGlobalRenderStateByName(stateNS: string): void {
-        this.m_gRState = RendererState.GetRenderStateByName(stateNS);
+        this.m_gRState = this.m_rcontext.getRenderStateByName(stateNS);
     }
     lockRenderState(): void {
         if (this.m_gRState >= 0) {
@@ -413,7 +411,7 @@ export default class FBOInstance {
         this.m_bgColor.setRGBA4f(pr, pb, pg, pa);
     }
     /**
-     * @param			clearType, it is RenderProxy.COLOR or RenderProxy.DEPTH or RenderProxy.STENCIL or RenderProxy.DEPTH_STENCIL
+     * @param			clearType, it is IRenderProxy.COLOR or IRenderProxy.DEPTH or IRenderProxy.STENCIL or IRenderProxy.DEPTH_STENCIL
      */
     blitFrom(fboIns: FBOInstance, mask_bitfiled: number = RenderMaskBitfield.COLOR_BUFFER_BIT, filter: number = RenderFilter.NEAREST, clearType: number = -1, clearIndex: number = 0, dataArr: number[] = null): void {
         if (this.m_fboIndex >= 0) {
@@ -547,7 +545,7 @@ export default class FBOInstance {
         }
     }
 
-    useCamera(camera: CameraBase, syncCamView: boolean = false): void {
+    useCamera(camera: IRenderCamera, syncCamView: boolean = false): void {
         this.m_render.useCamera(camera, syncCamView);
     }
     useMainCamera(): void {
@@ -569,6 +567,7 @@ export default class FBOInstance {
     }
 
     clone(): FBOInstance {
+        
         let ins: FBOInstance = new FBOInstance(this.m_render, this.m_texStore);
         ins.m_fboSizeFactor = this.m_fboSizeFactor;
         ins.m_bgColor.copyFrom(this.m_bgColor);

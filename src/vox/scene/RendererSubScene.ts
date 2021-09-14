@@ -11,8 +11,9 @@ import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import SubStage3D from "../../vox/display/SubStage3D";
+import {IRenderCamera} from "../../vox/render/IRenderCamera";
 import CameraBase from "../../vox/view/CameraBase";
-import RenderAdapter from "../../vox/render/RenderAdapter";
+import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
 import RenderProxy from "../../vox/render/RenderProxy";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
@@ -43,7 +44,7 @@ import FBOInstance from "./FBOInstance";
 export default class RendererSubScene implements IRenderer, IRendererScene {
     private static __s_uid: number = 0;
     private m_uid: number = -1;
-    private m_adapter: RenderAdapter = null;
+    private m_adapter: IRenderAdapter = null;
     private m_renderProxy: RenderProxy = null;
     private m_rcontext: RendererInstanceContext = null;
     private m_renderer: RendererInstance = null;
@@ -57,7 +58,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     private m_evtFlowEnabled: boolean = false;
     private m_evt3DCtr: IEvt3DController = null;
     private m_mouseEvtEnabled: boolean = true;
-    private m_camera: CameraBase = null;
+    private m_camera: IRenderCamera = null;
     private m_viewX: number = 0.0;
     private m_viewY: number = 0.0;
     private m_viewW: number = 800.0
@@ -106,7 +107,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     reseizeViewPort(): void {
         this.m_renderProxy.reseizeRCViewPort();
     }
-    getRendererAdapter(): RenderAdapter {
+    getRendererAdapter(): IRenderAdapter {
         return this.m_adapter;
     }
     getRenderer(): RendererInstance {
@@ -122,13 +123,13 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
         return this.m_currStage3D;
     }
     getCamera(): CameraBase {
-        return this.m_camera;
+        return this.m_camera as CameraBase;
     }
     getMouseXYWorldRay(rl_position: Vector3D, rl_tv: Vector3D): void {
         this.m_camera.getWorldPickingRayByScreenXY(this.m_stage3D.mouseX, this.m_stage3D.mouseY, rl_position, rl_tv);
     }
-    createCamera(): CameraBase {
-        return this.m_renderProxy.createCamera();
+    createCamera(): IRenderCamera {
+        return new CameraBase();
     }
     createFBOInstance(): FBOInstance {
         return new FBOInstance(this, this.textureBlock.getRTTStrore());
@@ -226,7 +227,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     }
 
     private createMainCamera(): void {
-        this.m_camera = this.m_renderProxy.createCamera();
+        this.m_camera = new CameraBase();
         this.m_camera.setViewXY(this.m_viewX, this.m_viewY);
         this.m_camera.setViewSize(this.m_viewW, this.m_viewH);
         let vec3: Vector3D = this.m_rparam.camProjParam;
@@ -373,7 +374,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
         this.m_renderer.showInfoAt(index);
     }
     
-    updateCameraData(camera: CameraBase): void {
+    updateCameraData(camera: IRenderCamera): void {
 
         this.m_rcontext.updateCameraDataFromCamera(this.m_renderProxy.getCamera());
     }
@@ -580,7 +581,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
             this.m_runFlag = -1;
         }
     }
-    useCamera(camera: CameraBase, syncCamView: boolean = false): void {
+    useCamera(camera: IRenderCamera, syncCamView: boolean = false): void {
         this.m_parent.useCamera(camera, syncCamView);
     }
     useMainCamera(): void {

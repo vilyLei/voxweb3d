@@ -10,7 +10,7 @@ import RendererDevice from "../../vox/render/RendererDevice";
 import MaterialConst from "../../vox/material/MaterialConst";
 import IShaderData from "../../vox/material/IShaderData";
 import ShdProgram from "../../vox/material/ShdProgram";
-import RenderAdapter from "../../vox/render/RenderAdapter";
+import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
 import IRenderShader from "../../vox/render/IRenderShader";
 import IRenderResource from "../../vox/render/IRenderResource";
 import IShaderUniform from "../../vox/material/IShaderUniform";
@@ -33,7 +33,7 @@ export default class RenderShader implements IRenderShader,IRenderResource
     private m_rcuid:number = -1;
     private m_rc:any = null;
     private m_gpuProgram: any = null;
-    private m_adapter:RenderAdapter = null;
+    private m_adapter:IRenderAdapter = null;
     private m_guniform:IShaderUniform = null;
     // material相关的uniform,默认不包括transform相关的信息
     private m_uniform:IShaderUniform = null;
@@ -41,7 +41,7 @@ export default class RenderShader implements IRenderShader,IRenderResource
     private m_transformUniform:IShaderUniform = null;
     // 用于记录 renderState(低10位)和ColorMask(高10位) 的状态组合
     drawFlag:number = -1;
-    constructor(rcuid:number,gl:any,adapter:RenderAdapter)
+    constructor(rcuid:number,gl:any,adapter:IRenderAdapter)
     {
         this.m_rcuid = rcuid;
         this.m_adapter = adapter;

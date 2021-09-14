@@ -8,7 +8,7 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
-import CameraBase from "../../vox/view/CameraBase";
+import {IRenderCamera} from "../../vox/render/IRenderCamera";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import Entity3DNode from "../../vox/scene/Entity3DNode";
 import ISpaceCullingor from "../../vox/scene/ISpaceCullingor";
@@ -19,8 +19,8 @@ export default interface IRendererSpace
 {
     // 可以添加真正被渲染的实体也可以添加只是为了做几何/空间检测的实体(不允许有material)
     getStage3D():IRenderStage3D;
-    setCamera(camera:CameraBase):void;
-    getCamera():CameraBase;
+    setCamera(camera:IRenderCamera):void;
+    getCamera():IRenderCamera;
     addEntity(entity:IRenderEntity):void;
     removeEntity(entity:IRenderEntity):void;
     updateEntity(entity:IRenderEntity):void;

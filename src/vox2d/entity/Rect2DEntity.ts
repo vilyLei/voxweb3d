@@ -11,7 +11,7 @@ import MaterialBase from '../../vox/material/MaterialBase';
 import Rect2DMaterial from "../../vox2d/material/mcase/Rect2DMaterial";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import RectPlaneMesh from "../../vox/mesh/RectPlaneMesh";
-import SpaceCullingMask from "../../vox/space/SpaceCullingMask";
+import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
 import Color4 from "../../vox/material/Color4";
 
 export default class Rect2DEntity extends DisplayEntity

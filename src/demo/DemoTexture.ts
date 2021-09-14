@@ -50,6 +50,7 @@ import CubeMapMaterial from "../vox/material/mcase/CubeMapMaterial";
 //import CameraTrack = CameraTrackT.vox.view.CameraTrack;
 //import EntityDisp = EntityDispT.demo.base.EntityDisp;
 import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
+import CameraBase from "../vox/view/CameraBase";
 //import CubeMapMaterial = CubeMapMaterialT.vox.material.mcase.CubeMapMaterial;
 
 export namespace demo
@@ -91,7 +92,7 @@ export namespace demo
                 rparam.setCamProject(45.0,50.0,5000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
                 this.m_renderer = new RendererInstance();
-                this.m_renderer.initialize(rparam);
+                this.m_renderer.initialize(rparam, new CameraBase());
                 this.m_rcontext = this.m_renderer.getRendererContext();
                 let stage3D:Stage3D = this.m_rcontext.getStage3D() as Stage3D;
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseUpListener);

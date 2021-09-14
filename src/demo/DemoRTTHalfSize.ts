@@ -2,7 +2,8 @@
 import DivLog from "../vox/utils/DivLog";
 import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
-import CameraBase from "../vox/view/CameraBase"
+import {IRenderCamera} from "../vox/render/IRenderCamera";
+import CameraBase from "../vox/view/CameraBase";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RendererInstance from "../vox/scene/RendererInstance";
@@ -36,7 +37,7 @@ export namespace demo
         private m_texLoader:ImageTextureLoader;
         private m_camTrack:CameraTrack = null;
         private m_statusDisp:RenderStatusDisplay = new RenderStatusDisplay();
-        private m_camera:CameraBase = null;
+        private m_camera:IRenderCamera = null;
         private m_viewSize:Vector3D = new Vector3D();
         initialize():void
         {
@@ -52,7 +53,7 @@ export namespace demo
                 rparam.maxWebGLVersion = 1;
                 rparam.setCamPosition(500.0,500.0,500.0);
                 this.m_renderer = new RendererInstance();
-                this.m_renderer.initialize(rparam);
+                this.m_renderer.initialize(rparam, new CameraBase());
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();
                 this.m_renderer.appendProcess();

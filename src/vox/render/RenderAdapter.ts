@@ -15,14 +15,15 @@ import ROTextureResource from '../../vox/render/ROTextureResource';
 import FrameBufferObject from "../../vox/render/FrameBufferObject";
 import { CullFaceMode, DepthTestMode } from "../../vox/render/RenderConst";
 import { TextureFormat, TextureDataType } from "../../vox/texture/TextureConst";
-import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
+import IRenderTexture from "../../vox/render/IRenderTexture";
 import RAdapterContext from "../../vox/render/RAdapterContext";
 import { RODrawState, RenderStateObject, RenderColorMask } from "../../vox/render/RODrawState";
 import RendererState from "../../vox/render/RendererState";
 import UniformVec4Probe from "../../vox/material/UniformVec4Probe";
 import RendererParam from "../../vox/scene/RendererParam";
+import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
 
-class RenderAdapter {
+class RenderAdapter implements IRenderAdapter{
 	private static s_uid: number = 0;
 	private m_uid: number = RenderAdapter.s_uid++;
 	// renderer context uid
@@ -443,12 +444,12 @@ class RenderAdapter {
 	}
 	/**
 	 * bind a texture to fbo attachment by attachment index
-	 * @param texProxy  RTTTextureProxy instance
+	 * @param texProxy  IRenderTexture instance
 	 * @param enableDepth  enable depth buffer yes or no
 	 * @param enableStencil  enable stencil buffer yes or no
 	 * @param attachmentIndex  fbo attachment index
 	 */
-	setRenderToTexture(texProxy: RTTTextureProxy, enableDepth: boolean = false, enableStencil: boolean = false, attachmentIndex: number = 0): void {
+	setRenderToTexture(texProxy: IRenderTexture, enableDepth: boolean = false, enableStencil: boolean = false, attachmentIndex: number = 0): void {
 		if (attachmentIndex < 0 || attachmentIndex >= 8) {
 			attachmentIndex = 0;
 		}

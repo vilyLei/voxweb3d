@@ -4,7 +4,7 @@ import Vector3D from "../../vox/math/Vector3D";
 import Matrix4 from "../../vox/math/Matrix4";
 import Plane from "../../vox/geom/Plane";
 import AABB from "../../vox/geom/AABB";
-import CameraBase from "../../vox/view/CameraBase";
+import {IRenderCamera} from "../../vox/render/IRenderCamera";
 import SpherePOV from './SpherePOV';
 import ISpacePOV from "../../vox/scene/occlusion/ISpacePOV";
 
@@ -368,7 +368,7 @@ export default class BoxPOV implements ISpacePOV
             ++this.m_subPovsTotal;
         }
     }
-    cameraTest(camera:CameraBase):void
+    cameraTest(camera:IRenderCamera):void
     {
         this.m_sphOcc.cameraTest(camera);
         this.status = this.m_sphOcc.status;

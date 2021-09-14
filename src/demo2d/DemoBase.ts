@@ -23,6 +23,7 @@ import TextureProxy from "../vox/texture/TextureProxy";
 import {TextureConst,TextureFormat,TextureDataType,TextureTarget} from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
+import CameraBase from "../vox/view/CameraBase";
 
 //import Vector3D = Vector3DT.vox.math.Vector3D;
 //import Matrix4 = Matrix4T.vox.math.Matrix4;
@@ -87,7 +88,7 @@ export namespace demo2d
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
                 this.m_renderer = new RendererInstance();
-                this.m_renderer.initialize(rparam);
+                this.m_renderer.initialize(rparam, new CameraBase());
                 this.m_rcontext = this.m_renderer.getRendererContext();
                 let stage3D:Stage3D = this.m_rcontext.getStage3D() as Stage3D;
                 stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseUpListener);

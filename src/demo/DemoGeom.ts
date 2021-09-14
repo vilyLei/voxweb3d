@@ -26,6 +26,7 @@ import {TextureConst} from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import TextureBlock from "../vox/texture/TextureBlock";
 import CameraTrack from "../vox/view/CameraTrack";
+import CameraBase from "../vox/view/CameraBase";
 
 export namespace demo
 {
@@ -52,7 +53,7 @@ export namespace demo
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);
                 this.m_renderer = new RendererInstance();
-                this.m_renderer.initialize(rparam);
+                this.m_renderer.initialize(rparam, new CameraBase());
                 this.m_rcontext = this.m_renderer.getRendererContext();
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());

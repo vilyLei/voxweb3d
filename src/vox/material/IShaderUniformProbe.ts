@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 interface IShaderUniformProbe {
-
+    
     rst: number;
     uniformsTotal: number;
     // array -> [SHADER_MAT4, SHADER_VEC3]

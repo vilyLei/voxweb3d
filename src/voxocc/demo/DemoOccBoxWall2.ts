@@ -20,31 +20,8 @@ import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
 import CameraTrack from "../../vox/view/CameraTrack";
 import IRendererSpace from "../../vox/scene/IRendererSpace";
 import SpaceCullingor from "../../vox/scene/SpaceCullingor";
-import SpaceCullingMask from "../../vox/space/SpaceCullingMask";
-import * as OccBoxWallT from "../../voxocc/demo/occwall/OccBoxWall";
-
-//import CullFaceMode = RenderConstT.vox.render.CullFaceMode;
-//import RenderBlendMode = RenderConstT.vox.render.RenderBlendMode;
-//import DepthTestMode = RenderConstT.vox.render.DepthTestMode;
-//import RendererState = RendererStateT.vox.render.RendererState;
-
-//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-//import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-//import RendererScene = RendererSceneT.vox.scene.RendererScene;
-//import MouseEvent = MouseEventT.vox.event.MouseEvent;
-//import Stage3D = Stage3DT.vox.display.Stage3D;
-//import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
-
-//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-//import BillboardFrame = BillboardFrameT.vox.entity.BillboardFrame;
-//import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
-//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-//import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
-//import SpaceCullingor = SpaceCullingorT.vox.scene.SpaceCullingor;
-//import SpaceCullingMask = SpaceCullingMasKT.vox.space.SpaceCullingMask;
-import OccBoxWall = OccBoxWallT.voxocc.demo.occwall.OccBoxWall;
+import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
+import {OccBoxWall} from "../../voxocc/demo/occwall/OccBoxWall";
 
 export namespace voxocc
 {

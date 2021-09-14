@@ -9,6 +9,7 @@ import Vector3D from "../../vox/math/Vector3D";
 import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import MeshBase from "../../vox/mesh/MeshBase";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
+import AABB from "../geom/AABB";
 
 export default class DataMesh extends MeshBase
 {
@@ -31,6 +32,9 @@ export default class DataMesh extends MeshBase
     initialize(): void {
         
         if(this.vs != null) {
+            if(this.bounds == null) this.bounds = new AABB();
+
+            this.bounds.addXYZFloat32Arr(this.vs);
             ROVertexBuffer.Reset();
             ROVertexBuffer.AddFloat32Data(this.vs,this.vsStride);
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {

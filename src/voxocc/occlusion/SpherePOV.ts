@@ -3,7 +3,7 @@ import Vector3D from "../../vox/math/Vector3D";
 import MathConst from "../../vox/math/MathConst";
 import StraightLine from "../../vox/geom/StraightLine";
 import AABB from "../../vox/geom/AABB";
-import CameraBase from "../../vox/view/CameraBase";
+import {IRenderCamera} from "../../vox/render/IRenderCamera";
 import ISpacePOV from "../../vox/scene/occlusion/ISpacePOV";
         
 export default class SpherePOV implements ISpacePOV
@@ -55,7 +55,7 @@ export default class SpherePOV implements ISpacePOV
             ++this.m_subPovsTotal;
         }
     }
-    cameraTest(camera:CameraBase):void
+    cameraTest(camera:IRenderCamera):void
     {
         this.status = 0;
         if(camera.visiTestSphere2(this.m_centerv, this.occRadius))

@@ -46,7 +46,7 @@ class BaseColorShaderBuffer extends ShaderCodeBuffer
 
         ShaderCodeBuffer.s_coder.addFragMainCode(
 `
-void main {
+void main() {
     #ifdef VOX_USE_2D_MAP
         //vec4 colorFactor = gl_FrontFacing?vec4(0.0,1.0,0.0,1.0):vec4(1.0,0.0,0.0,1.0);
         vec4 colorFactor = vec4(1.0);
@@ -78,10 +78,6 @@ void main() {
 }
 `
         );
-        if(this.isTexEanbled())
-        {
-            coder.addVertMainCode("\tv_uv = a_uvs.xy;");
-        }
         return coder.buildVertCode();
     }
     getUniqueShaderName(): string

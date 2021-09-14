@@ -17,31 +17,12 @@ import BillboardFrame from "../../vox/entity/BillboardFrame";
 import ProfileInstance from "../../voxprofile/entity/ProfileInstance";
 import CameraTrack from "../../vox/view/CameraTrack";
 import BrokenLine3DEntity from "../../vox/entity/BrokenLine3DEntity";
-import * as QuadPOVT from '../../voxocc/occlusion/QuadPOV';
-import * as QuadGapPOVT from '../../voxocc/occlusion/QuadGapPOV';
+import {QuadPOV} from '../../voxocc/occlusion/QuadPOV';
+import {QuadGapPOV} from '../../voxocc/occlusion/QuadGapPOV';
 import IRendererSpace from "../../vox/scene/IRendererSpace";
-import SpaceCullingMask from "../../vox/space/SpaceCullingMask";
+import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
 import SpaceCullingor from '../../vox/scene/SpaceCullingor';
 
-//import TextureProxy = TextureProxyT.vox.texture.TextureProxy;
-//import TexResLoader = TexResLoaderT.vox.texture.TexResLoader;
-//import RendererScene = RendererSceneT.vox.scene.RendererScene;
-//import MouseEvent = MouseEventT.vox.event.MouseEvent;
-//import Stage3D = Stage3DT.vox.display.Stage3D;
-//import H5FontSystem = H5FontSysT.vox.text.H5FontSystem;
-
-//import DisplayEntity = DisplayEntityT.vox.entity.DisplayEntity;
-//import Axis3DEntity = Axis3DEntityT.vox.entity.Axis3DEntity;
-//import Box3DEntity = Box3DEntityT.vox.entity.Box3DEntity;
-//import BillboardFrame = BillboardFrameT.vox.entity.BillboardFrame;
-//import ProfileInstance = ProfileInstanceT.voxprofile.entity.ProfileInstance;
-//import CameraTrack = CameraTrackT.vox.view.CameraTrack;
-//import BrokenLine3DEntity = BrokenLine3DEntityT.vox.entity.BrokenLine3DEntity;
-import QuadPOV = QuadPOVT.voxocc.occlusion.QuadPOV;
-import QuadGapPOV = QuadGapPOVT.voxocc.occlusion.QuadGapPOV;
-//import IRendererSpace = IRendererSpaceT.vox.scene.IRendererSpace;
-//import SpaceCullingMask = SpaceCullingMasKT.vox.space.SpaceCullingMask;
-//import SpaceCullingor = SpaceCullingorT.vox.scene.SpaceCullingor;
 
 export namespace voxocc
 {
@@ -49,9 +30,7 @@ export namespace demo
 {
     export class DemoQuadOcclusion
     {
-        constructor()
-        {
-        }
+        constructor(){}
         
         private m_rscene:RendererScene = null;
         private m_texLoader:ImageTextureLoader;

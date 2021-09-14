@@ -5,16 +5,13 @@
 /*                                                                         */
 /***************************************************************************/
 // 当前渲染场景空间管理的入口类, 鼠标拾取，摄像机裁剪，空间管理遮挡剔除等都是由这个系统来组织完成的
-/*
-This relative module was not found:
-* ../../vox/scene/SpaceCullingMask in ./src/vox/scene/RendererSpace.ts
-*/
+
 import RSEntityFlag from '../../vox/scene/RSEntityFlag';
 import Vector3D from "../../vox/math/Vector3D";
 import AABB from "../../vox/geom/AABB";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
-import CameraBase from "../../vox/view/CameraBase";
-import SpaceCullingMask from "../../vox/space/SpaceCullingMask";
+import {IRenderCamera} from "../../vox/render/IRenderCamera";
+import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRendererSpace from "../../vox/scene/IRendererSpace";
 import RPONode from "../../vox/render/RPONode";
@@ -31,7 +28,7 @@ export default class RendererSpace implements IRendererSpace
     private static s_uid:number = 0;
     private m_uid:number = -1;
     private m_renderer:IRenderer = null;
-    private m_camera:CameraBase = null;
+    private m_camera:IRenderCamera = null;
     private m_stage3d:IRenderStage3D = null;
     private m_emptyRPONode:RPONode = new RPONode();
 
@@ -52,7 +49,7 @@ export default class RendererSpace implements IRendererSpace
     {
         return this.m_uid;
     }
-    initialize(renderer:IRenderer,camera:CameraBase = null):void
+    initialize(renderer:IRenderer,camera:IRenderCamera = null):void
     {
         if(this.m_renderer == null)
         {
@@ -67,10 +64,10 @@ export default class RendererSpace implements IRendererSpace
     {
         return this.m_stage3d;
     }
-    setCamera(camera:CameraBase) :void {
+    setCamera(camera:IRenderCamera) :void {
         this.m_camera = camera;
     }
-    getCamera():CameraBase
+    getCamera():IRenderCamera
     {
         return this.m_camera;
     }
@@ -211,7 +208,7 @@ export default class RendererSpace implements IRendererSpace
             else
             {
                 let ab:AABB = null;
-                let cam:CameraBase = this.m_camera;
+                let cam:IRenderCamera = this.m_camera;
                 //let camPos:Vector3D = cam.getPosition();
                 while(nextNode != null)
                 {

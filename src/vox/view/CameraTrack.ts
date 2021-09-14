@@ -9,7 +9,7 @@ import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
 import Matrix4 from "../../vox/math/Matrix4";
 import Matrix4Pool from "../../vox/math/Matrix4Pool";
-import CameraBase from "../../vox/view/CameraBase";
+import {IRenderCamera} from "../../vox/render/IRenderCamera";
 
 export default class CameraTrack
 {
@@ -23,13 +23,13 @@ export default class CameraTrack
     //
     private m_angle:number = 0.0;
     private m_updateEnabled:boolean = false;
-    private m_camera:CameraBase = null;
+    private m_camera:IRenderCamera = null;
 
     destroy():void
     {
         this.m_camera = null;
     }
-    bindCamera(cam:CameraBase):void
+    bindCamera(cam:IRenderCamera):void
     {
         this.m_camera = cam;
         if (cam!= null)

@@ -5,6 +5,7 @@ import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 import * as DispSceneT from "./depthBlur/DispScene";
 import DispScene = DispSceneT.demo.depthBlur.DispScene;
+import CameraBase from "../vox/view/CameraBase";
 
 export class DemoDepthBlur
 {
@@ -26,7 +27,7 @@ export class DemoDepthBlur
             let rparam:RendererParam = new RendererParam();
             rparam.setCamProject(60.0,0.1,5000.0);
             rparam.setCamPosition(1700,1700,1700);
-            this.m_renderer.initialize(rparam);
+            this.m_renderer.initialize(rparam, new CameraBase());
             this.m_scene.initialize(this.m_renderer);
             this.m_statusDisp.initialize("rstatus",this.m_renderer.getViewWidth() - 128);                
         }
