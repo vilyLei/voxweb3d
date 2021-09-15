@@ -943,11 +943,12 @@ class CameraBase implements IRenderCamera{
         }
         return false;
     }
-    private m_vpMat: Matrix4 = new Matrix4();//Matrix4Pool.GetMatrix();
+    private m_vpMat: Matrix4 = new Matrix4();
     update(): void {
         if (this.m_changed) {
             this.version++;
             this.m_changed = false;
+
             if (this.m_axisRotEnabled) {
                 this.m_matrix.appendRotationPivot(this.m_rotDegree * MathConst.MATH_PI_OVER_180, this.m_rotAxis, this.m_rotPivotPoint);
             }
@@ -962,6 +963,7 @@ class CameraBase implements IRenderCamera{
             else {
                 this.m_viewMat.lookAtLH(this.m_camPos, this.m_lookAtPos, this.m_up);
             }
+
             if (this.m_project2Enabled) {
                 this.m_nearPlaneWidth = this.m_zNear * Math.tan(this.m_fovy * 0.5) * 2.0;
                 this.m_nearPlaneHeight = this.m_nearPlaneWidth / this.m_aspect;
