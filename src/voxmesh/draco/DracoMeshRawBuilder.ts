@@ -363,7 +363,6 @@ function ThreadDraco() {
             taskclass: selfT.getTaskClass(),
             srcuid: m_srcuid,
             dataIndex: m_dataIndex,
-            data: [101, 0],
             data: data.data
         };
         postMessage(sendData, transfers);

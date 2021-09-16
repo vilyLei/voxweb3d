@@ -19,7 +19,7 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import ColorRectImgButton from "../orthoui/button/ColorRectImgButton";
 import BoundsButton from "../orthoui/button/BoundsButton";
-import CameraDragSwinger from "../voxeditor/control/CameraDragSwinger";
+import {CameraDragSwinger} from "../voxeditor/control/CameraDragSwinger";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 
 

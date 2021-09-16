@@ -96,6 +96,23 @@ export default class Line3DEntity extends DisplayEntity
         this.createMaterial();
         this.activeDisplay();
     }
+    initializeRectXOZ(px:number,pz:number,pw:number,pl:number):void
+    {
+        pw += px;
+        pl += pz;
+        if(!this.dynColorEnabled) {
+            this.m_colorarr = [
+                this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b,
+                this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b,
+                this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b,
+                this.color.r,this.color.g,this.color.b, this.color.r,this.color.g,this.color.b
+            ];
+        }
+        this.m_posarr = [px,0.0,pz, pw,0.0,pz,  pw,0.0,pz, pw,0.0,pl,  pw,0.0,pl, px,0.0,pl, px,0.0,pl, px,0.0,pz];
+
+        this.createMaterial();
+        this.activeDisplay();
+    }
     toString():string
     {
         return "[Line3DEntity]";

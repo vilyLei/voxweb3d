@@ -92,8 +92,6 @@
 
 //  import {DemoCubeMapMRT as Demo} from "./demo/DemoCubeMapMRT";
 
-//  import {DemoFrustrum as Demo} from "./demo/DemoFrustrum";
-
 //  import * as DemoScreenPingpongBlur from "./demo/DemoScreenPingpongBlur";
 //  import Demo = DemoScreenPingpongBlur.demo.DemoScreenPingpongBlur;
 
@@ -304,6 +302,10 @@
 
 //  import {DemoDepthTex as Demo} from "./demo/DemoDepthTex";
 
+//  import {DemoFrustrum as Demo} from "./demo/DemoFrustrum";
+
+import {DemoCamera as Demo} from "./demo/DemoCamera";
+
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   transform    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -330,7 +332,7 @@
 
 //  import {DemoSSAO2 as Demo} from "./shadow/ssao/DemoSSAO2";
 
-import {DemoSSAO3 as Demo} from "./shadow/ssao/DemoSSAO3";
+//  import {DemoSSAO3 as Demo} from "./shadow/ssao/DemoSSAO3";
 
 //  import {DemoSSAO4 as Demo} from "./shadow/ssao/DemoSSAO4";
 

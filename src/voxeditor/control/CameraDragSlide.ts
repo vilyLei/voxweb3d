@@ -9,7 +9,7 @@ import Vector3D from "../../vox/math/Vector3D";
 import CameraBase from "../../vox/view/CameraBase";
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
 
-class CameraDragSwinger {
+class CameraDragSlide {
     constructor() { }
 
     private m_stage3D: IRenderStage3D = null;
@@ -33,37 +33,15 @@ class CameraDragSwinger {
     detach(): void {
         this.m_enabled = false;
     }
-    runWithYAxis(): void {
+    run(): void {
         if (this.m_enabled) {
             let dx: number = this.m_mouseX - this.m_stage3D.mouseX;
             let dy: number = this.m_mouseY - this.m_stage3D.mouseY;
-            let abs_dx: number = Math.abs(dx);
-            let abs_dy: number = Math.abs(dy);
-            if (abs_dx > abs_dy) {
-                if (abs_dx > 0.5) this.m_camera.swingHorizontalWithAxis(dx * 0.2, Vector3D.Y_AXIS);
-            }
-            else {
-                if (abs_dy > 0.5) this.m_camera.swingVertical(dy * -0.2);
-            }
-            this.m_mouseX = this.m_stage3D.mouseX;
-            this.m_mouseY = this.m_stage3D.mouseY;
-        }
-    }
-    runWithZAxis(): void {
-        if (this.m_enabled) {
-            let dx: number = this.m_mouseX - this.m_stage3D.mouseX;
-            let dy: number = this.m_mouseY - this.m_stage3D.mouseY;
-            let abs_dx: number = Math.abs(dx);
-            let abs_dy: number = Math.abs(dy);
-            if (abs_dx > abs_dy) {
-                if (abs_dx > 0.5) this.m_camera.swingHorizontalWithAxis(dx * 0.2, Vector3D.Y_AXIS);
-            }
-            else {
-                if (abs_dy > 0.5) this.m_camera.swingVertical(dy * -0.2);
-            }
+            this.m_camera.slideViewOffsetXY(dx, dy);
             this.m_mouseX = this.m_stage3D.mouseX;
             this.m_mouseY = this.m_stage3D.mouseY;
         }
     }
 }
-export {CameraDragSwinger};
+
+export {CameraDragSlide};

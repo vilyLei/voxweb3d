@@ -33,6 +33,7 @@ class CameraBase implements IRenderCamera{
     private m_matrix: Matrix4 = new Matrix4();
     private m_viewMat: Matrix4 = new Matrix4();
     private m_viewInvertMat: Matrix4 = new Matrix4();
+    private m_vpMat: Matrix4 = new Matrix4();
     private m_tempMat: Matrix4 = new Matrix4();
     private m_projMat: Matrix4 = new Matrix4();
     private m_camPos: Vector3D = new Vector3D();
@@ -50,7 +51,7 @@ class CameraBase implements IRenderCamera{
     private m_viewH: number = 600.0;
     private m_viewHalfW: number = 400.0
     private m_viewHalfH: number = 300.0;
-    private m_fovy: number = 0.0;
+    private m_fovRadian: number = 0.0;
     private m_aspect: number = 1.0;
     private m_zNear: number = 0.1;
     private m_zFar: number = 1000.0;
@@ -62,7 +63,6 @@ class CameraBase implements IRenderCamera{
     private m_project2Enabled: boolean = false;
     private m_rightHandEnabled: boolean = true;
     private m_rotV: Vector3D = new Vector3D(0.0,0.0,0.0);
-    private m_scaleV: Vector3D = new Vector3D(1.0,1.0,1.0);
     
     private m_viewFieldZoom: number = 1.0;
     private m_changed: boolean = true;
@@ -118,42 +118,56 @@ class CameraBase implements IRenderCamera{
     getLookAtRHToCamera(camera: CameraBase): void {
         camera.lookAtRH(this.m_camPos, this.m_lookAtPos, this.m_up);
     }
-    perspectiveLH(fovy: number, aspect: number, zNear: number, zFar: number): void {
+    /**
+     * left-hand axis perspective projection
+     * @param fovRadian radian value
+     * @param aspect the value is the view port width / height
+     * @param zNear the camera near plane distance
+     * @param zFar the camera far plane distance
+     */
+    perspectiveLH(fovRadian: number, aspect: number, zNear: number, zFar: number): void {
         if (this.m_unlock) {
             this.m_project2Enabled = false;
             this.m_aspect = aspect;
-            this.m_fovy = fovy;
+            this.m_fovRadian = fovRadian;
             this.m_zNear = zNear;
             this.m_zFar = zFar;
-            this.m_projMat.perspectiveLH(fovy, aspect, zNear, zFar);
-            this.m_viewFieldZoom = Math.tan(fovy * 0.5);
+            this.m_projMat.perspectiveLH(fovRadian, aspect, zNear, zFar);
+            this.m_viewFieldZoom = Math.tan(fovRadian * 0.5);
             this.m_perspectiveEnabled = true;
             this.m_rightHandEnabled = false;
             this.m_changed = true;
         }
     }
-    perspectiveRH(fovy: number, aspect: number, zNear: number, zFar: number): void {
+    /**
+     * right-hand axis perspective projection
+     * @param fovRadian radian value
+     * @param aspect the value is the view port width / height
+     * @param zNear the camera near plane distance
+     * @param zFar the camera far plane distance
+     */
+    perspectiveRH(fovRadian: number, aspect: number, zNear: number, zFar: number): void {
         if (this.m_unlock) {
             this.m_aspect = aspect;
-            this.m_fovy = fovy;
+            this.m_fovRadian = fovRadian;
             this.m_zNear = zNear;
             this.m_zFar = zFar;
-            this.m_projMat.perspectiveRH(fovy, aspect, zNear, zFar);
-            this.m_viewFieldZoom = Math.tan(fovy * 0.5);
+            this.m_projMat.perspectiveRH(fovRadian, aspect, zNear, zFar);
+            this.m_viewFieldZoom = Math.tan(fovRadian * 0.5);
             this.m_project2Enabled = false;
             this.m_perspectiveEnabled = true;
             this.m_rightHandEnabled = true;
             this.m_changed = true;
         }
     }
-    perspectiveRH2(fovy: number, pw: number, ph: number, zNear: number, zFar: number): void {
+    perspectiveRH2(fovRadian: number, pw: number, ph: number, zNear: number, zFar: number): void {
         if (this.m_unlock) {
             this.m_aspect = pw / ph;
-            this.m_fovy = fovy;
+            this.m_fovRadian = fovRadian;
             this.m_zNear = zNear;
             this.m_zFar = zFar;
-            this.m_projMat.perspectiveRH2(fovy, pw, ph, zNear, zFar);
-            this.m_viewFieldZoom = Math.tan(fovy * 0.5);
+            this.m_projMat.perspectiveRH2(fovRadian, pw, ph, zNear, zFar);
+            this.m_viewFieldZoom = Math.tan(fovRadian * 0.5);
             this.m_perspectiveEnabled = true;
             this.m_project2Enabled = true;
             this.m_rightHandEnabled = true;
@@ -207,11 +221,11 @@ class CameraBase implements IRenderCamera{
                 //console.log("setViewSize, pw:"+pw+",ph:"+ph);
                 if (this.m_perspectiveEnabled) {
                     if (this.m_project2Enabled) {
-                        if (this.m_rightHandEnabled) this.perspectiveRH2(this.m_fovy, pw, ph, this.m_zNear, this.m_zFar);
+                        if (this.m_rightHandEnabled) this.perspectiveRH2(this.m_fovRadian, pw, ph, this.m_zNear, this.m_zFar);
                     }
                     else {
-                        if (this.m_rightHandEnabled) this.perspectiveRH(this.m_fovy, pw / ph, this.m_zNear, this.m_zFar);
-                        else this.perspectiveLH(this.m_fovy, pw / ph, this.m_zNear, this.m_zFar);
+                        if (this.m_rightHandEnabled) this.perspectiveRH(this.m_fovRadian, pw / ph, this.m_zNear, this.m_zFar);
+                        else this.perspectiveLH(this.m_fovRadian, pw / ph, this.m_zNear, this.m_zFar);
                     }
                 }
                 else {
@@ -243,7 +257,7 @@ class CameraBase implements IRenderCamera{
     }
     translationXYZ(px: number, py: number, pz: number): void {
         this.m_tempV.setXYZ(px,py,pz);
-        if (this.m_unlock && Vector3D.DistanceSquared(this.m_camPos, this.m_tempV) > 0.01) {
+        if (this.m_unlock && Vector3D.DistanceSquared(this.m_camPos, this.m_tempV) > 0.00001) {
             
             this.m_camPos.setTo(px, py, pz);
             this.m_lookAtPos.x = px + this.m_lookAtDirec.x;
@@ -260,6 +274,32 @@ class CameraBase implements IRenderCamera{
             this.m_lookAtPos.x = this.m_camPos.x + this.m_lookAtDirec.x;
             this.m_lookAtPos.y = this.m_camPos.y + this.m_lookAtDirec.y;
             this.m_lookAtPos.z = this.m_camPos.z + this.m_lookAtDirec.z;
+            this.m_changed = true;
+        }
+    }
+    /**
+     * 在平行于远平面的平面上滑动， 垂直于此平面的方向上不变
+     * @param dx 摄像机 view 空间内 x方向偏移量
+     * @param dy 摄像机 view 空间内 y方向偏移量
+     */
+    slideViewOffsetXY(dx: number, dy: number): void {
+
+        if (this.m_unlock) {
+            this.m_tempV.setXYZ(dx,dy,0);
+
+            this.m_invViewMat.transformVectorSelf(this.m_tempV);
+
+            dx = this.m_tempV.x - this.m_camPos.x;
+            dy = this.m_tempV.y - this.m_camPos.y;
+            let dz = this.m_tempV.z - this.m_camPos.z;
+            this.m_camPos.x += dx;
+            this.m_camPos.y += dy;
+            this.m_camPos.z += dz;
+
+            this.m_lookAtPos.x += dx;
+            this.m_lookAtPos.y += dy;
+            this.m_lookAtPos.z += dz;
+            
             this.m_changed = true;
         }
     }
@@ -502,19 +542,6 @@ class CameraBase implements IRenderCamera{
             this.m_axisRotEnabled = false;
         }
     }
-    setScaleX(degree: number): void { this.m_scaleV.x = degree; this.m_changed = true; this.m_axisRotEnabled = false; }
-    getScaleX(): number { return this.m_scaleV.x; }
-    setScaleY(degree: number): void { this.m_scaleV.y = degree; this.m_changed = true; this.m_axisRotEnabled = false; }
-    getScaleY(): number { return this.m_scaleV.y; }
-    setScaleZ(degree: number): void { this.m_scaleV.z = degree; this.m_changed = true; this.m_axisRotEnabled = false; }
-    getScaleZ() { return this.m_scaleV.z; }
-    setScaleXYZ(rx: number, ry: number, rz: number): void {
-        if (this.m_unlock) {
-            this.m_scaleV.setXYZ(rx,ry,rz);
-            this.m_changed = true;
-            this.m_axisRotEnabled = false;
-        }
-    }
     screenXYToViewXYZ(px: number, py: number, outV: Vector3D): void {
         px -= this.m_viewX;
         py -= this.m_viewY;
@@ -642,7 +669,7 @@ class CameraBase implements IRenderCamera{
     getNearPlaneHeight(): number { return this.m_nearPlaneHeight; }
     setNearPlaneHeight(value: number): void { this.m_nearPlaneHeight = value; }
     getFov(): number {
-        return this.m_fovy;
+        return this.m_fovRadian;
     }
     private __calcTestParam(): void {
         if (this.m_invViewMat == null) this.m_invViewMat = new Matrix4();//Matrix4Pool.GetMatrix();
@@ -655,7 +682,7 @@ class CameraBase implements IRenderCamera{
         let halfMaxH: number = this.m_viewHalfH;
         let halfMaxW: number = this.m_viewHalfW;
         if(this.m_perspectiveEnabled) {
-            let tanv: number =  Math.tan(this.m_fovy * 0.5);
+            let tanv: number =  Math.tan(this.m_fovRadian * 0.5);
             halfMinH = this.m_zNear * tanv;
             halfMinW = halfMinH * this.m_aspect;
             halfMaxH = this.m_zFar * tanv;
@@ -943,36 +970,44 @@ class CameraBase implements IRenderCamera{
         }
         return false;
     }
-    private m_vpMat: Matrix4 = new Matrix4();
+    private m_viewMatrix: Matrix4 = null;
+    setViewMatrix(viewMatrix: Matrix4): void {
+        this.m_viewMatrix = viewMatrix;
+        this.m_changed = true;
+    }
     update(): void {
         if (this.m_changed) {
             this.version++;
             this.m_changed = false;
+            if(this.m_viewMatrix == null) {
 
-            if (this.m_axisRotEnabled) {
-                this.m_matrix.appendRotationPivot(this.m_rotDegree * MathConst.MATH_PI_OVER_180, this.m_rotAxis, this.m_rotPivotPoint);
+                if (this.m_axisRotEnabled) {
+                    this.m_matrix.appendRotationPivot(this.m_rotDegree * MathConst.MATH_PI_OVER_180, this.m_rotAxis, this.m_rotPivotPoint);
+                }
+                else {
+                    this.m_matrix.identity();
+                    this.m_matrix.appendRotationEulerAngle(this.m_rotV.x * MathConst.MATH_PI_OVER_180, this.m_rotV.y * MathConst.MATH_PI_OVER_180, this.m_rotV.z * MathConst.MATH_PI_OVER_180);
+                }
+                if (this.m_lookRHEnabled) {
+                    this.m_viewMat.lookAtRH(this.m_camPos, this.m_lookAtPos, this.m_up);
+                }
+                else {
+                    this.m_viewMat.lookAtLH(this.m_camPos, this.m_lookAtPos, this.m_up);
+                }                
+                this.m_viewMat.append(this.m_matrix);
             }
             else {
-                this.m_matrix.identity();
-                this.m_matrix.appendScaleXYZ(this.m_scaleV.x, this.m_scaleV.y, this.m_scaleV.z);
-                this.m_matrix.appendRotationEulerAngle(this.m_rotV.x * MathConst.MATH_PI_OVER_180, this.m_rotV.y * MathConst.MATH_PI_OVER_180, this.m_rotV.z * MathConst.MATH_PI_OVER_180);
+                this.m_viewMat.copyFrom(this.m_viewMatrix);
+                console.log("use outer this.m_viewMatrix.....");
             }
-            if (this.m_lookRHEnabled) {
-                this.m_viewMat.lookAtRH(this.m_camPos, this.m_lookAtPos, this.m_up);
-            }
-            else {
-                this.m_viewMat.lookAtLH(this.m_camPos, this.m_lookAtPos, this.m_up);
-            }
-
             if (this.m_project2Enabled) {
-                this.m_nearPlaneWidth = this.m_zNear * Math.tan(this.m_fovy * 0.5) * 2.0;
+                this.m_nearPlaneWidth = this.m_zNear * Math.tan(this.m_fovRadian * 0.5) * 2.0;
                 this.m_nearPlaneHeight = this.m_nearPlaneWidth / this.m_aspect;
             }
             else {
-                this.m_nearPlaneHeight = this.m_zNear * Math.tan(this.m_fovy * 0.5) * 2.0;
+                this.m_nearPlaneHeight = this.m_zNear * Math.tan(this.m_fovRadian * 0.5) * 2.0;
                 this.m_nearPlaneWidth = this.m_aspect * this.m_nearPlaneHeight;
             }
-            this.m_viewMat.append(this.m_matrix);
             this.m_viewInvertMat.copyFrom(this.m_viewMat);
             this.m_viewInvertMat.invert();
             //

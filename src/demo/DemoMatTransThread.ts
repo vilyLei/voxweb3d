@@ -16,8 +16,12 @@ import MouseEvent from "../vox/event/MouseEvent";
 import DemoInstance from "./DemoInstance";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import ThreadSystem from "../thread/ThreadSystem";
+import CameraDragController from "../voxeditor/control/CameraDragController";
+import CameraZoomController from "../voxeditor/control/CameraZoomController";
+
 import * as MatTransTaskT from "../demo/thread/MatTransTask";
 import * as MatCarTaskT from "../demo/thread/MatCarTask";
+import {ObsPathScene} from "../demo/scene/ObsPathScene";
 
 import MatTransTask = MatTransTaskT.demo.thread.MatTransTask;
 import MatCarTask = MatCarTaskT.demo.thread.MatCarTask;
@@ -32,6 +36,11 @@ export class DemoMatTransThread extends DemoInstance
     private m_camTrack:CameraTrack = null;
     private m_statusDisp:RenderStatusDisplay = null;
     private m_profileInstance:ProfileInstance = new ProfileInstance();
+    private m_stageDragCtrl: CameraDragController = new CameraDragController();
+    private m_cameraZoomController: CameraZoomController = new CameraZoomController();
+
+    private m_objScene: ObsPathScene = new ObsPathScene();
+
     protected initializeSceneParam(param:RendererParam):void
     {
         this.m_processTotal = 4;
@@ -53,6 +62,12 @@ export class DemoMatTransThread extends DemoInstance
         if(this.m_profileInstance != null)this.m_profileInstance.initialize(this.m_rscene.getRenderer());
         if(this.m_statusDisp != null)this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
 
+        this.m_rscene.enableMouseEvent(true);
+        this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
+        this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
+        this.m_stageDragCtrl.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
+        this.m_cameraZoomController.setLookAtCtrlEnabled(false);
+
         let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
         
         // add common 3d display entity
@@ -66,6 +81,8 @@ export class DemoMatTransThread extends DemoInstance
         console.log("------------------------------------------------------------------");
         console.log("------------------------------------------------------------------");
         this.thr_test();
+
+        this.m_objScene.initialize(this.m_rscene, this.m_texLoader);
     }
     private m_dispTotal:number = 0;
     private m_matTasks:MatCarTask[] = [];
@@ -129,6 +146,9 @@ export class DemoMatTransThread extends DemoInstance
     }
     runBegin():void
     {
+        this.m_stageDragCtrl.runWithYAxis();
+        this.m_cameraZoomController.run(null,30.0);
+
         if(this.m_statusDisp != null)this.m_statusDisp.update();
         this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
         //this.m_rscene.setClearUint24Color(0x003300,1.0);
@@ -136,7 +156,7 @@ export class DemoMatTransThread extends DemoInstance
         {
             this.testTask();
         }
-        super.runBegin();
+        //super.runBegin();
     }
     run():void
     {
@@ -149,7 +169,7 @@ export class DemoMatTransThread extends DemoInstance
     }
     runEnd():void
     {
-        super.runEnd();
+        //super.runEnd();
         //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
     }
 }

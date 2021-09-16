@@ -90,7 +90,6 @@ export default class FrustrumFrame3DEntity extends DisplayEntity
     updateFrame(camera:CameraBase): boolean {
 
         if(this.m_cameraVersion != camera.version) {
-
             this.m_cameraVersion = camera.version;
             let mesh:DashedLineMesh = this.getMesh() as DashedLineMesh;
             if(mesh != null) {
