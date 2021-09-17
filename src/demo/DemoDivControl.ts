@@ -61,7 +61,7 @@ export namespace demo
 
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
-                this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
+                this.m_statusDisp.initialize();
 
                 let transMat:Matrix4 = new Matrix4();
                 transMat.appendRotationEulerAngle(0.0,0.0,MathConst.DegreeToRadian(90.0));

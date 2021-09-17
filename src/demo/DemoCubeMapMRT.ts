@@ -41,7 +41,7 @@ export class DemoCubeMapMRT
         {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
-            this.m_statusDisp.initialize("rstatus");
+            this.m_statusDisp.initialize();
 
             let rparam:RendererParam = new RendererParam();
             rparam.setCamPosition(800.0,800.0,800.0);

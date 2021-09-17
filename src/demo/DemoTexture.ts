@@ -87,7 +87,7 @@ export namespace demo
                 this.m_testTex0 = tex0;
                 this.m_testTex1 = tex1;
                 
-                this.m_statusDisp.initialize("rstatus");
+                this.m_statusDisp.initialize();
                 let rparam:RendererParam = new RendererParam();
                 rparam.setCamProject(45.0,50.0,5000.0);
                 rparam.setCamPosition(1500.0,1500.0,1500.0);

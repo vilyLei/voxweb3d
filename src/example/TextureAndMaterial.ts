@@ -63,7 +63,7 @@ export namespace example
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
-                this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().stageWidth - 10);
+                this.m_statusDisp.initialize();
 
                 let planeMaterial:BaseTextureMaterial = new BaseTextureMaterial();
                 //planeMaterial.setRGB3f(Math.random(), Math.random(),Math.random());

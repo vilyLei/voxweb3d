@@ -56,7 +56,7 @@ export class DemoRTT
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
-            this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
+            this.m_statusDisp.initialize();
 
             // add common 3d display entity
             let plane:Plane3DEntity = new Plane3DEntity();

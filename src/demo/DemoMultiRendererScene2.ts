@@ -339,7 +339,7 @@ export class DemoMultiRendererScene2 {
 
             this.m_rendererScene.setClearRGBColor3f(Math.random() * 0.3, Math.random() * 0.3, Math.random() * 0.3);
 
-            this.m_statusDisp.initialize("rstatus", this.m_stage3D.viewWidth - 180);
+            this.m_statusDisp.initialize();
 
             this.m_rendererLeftTopScene = this.m_rendererScene;
 

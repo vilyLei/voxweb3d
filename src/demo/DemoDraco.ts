@@ -53,7 +53,7 @@ export class DemoDraco extends DemoInstance {
         //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
         this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
         //  this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-        this.m_statusDisp.initialize("rstatus", this.m_rscene.getStage3D().viewWidth - 180);
+        this.m_statusDisp.initialize();
 
         this.m_rscene.enableMouseEvent(true);
         this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());

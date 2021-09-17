@@ -47,7 +47,7 @@ export class DemoMultiGpuContext
             div = this.createDiv(660,370,600,300);
             this.m_scIns3.initialize(div);
 
-            this.m_statusDisp.initialize("rstatus",280);
+            this.m_statusDisp.initialize();
         }
     }
     run():void

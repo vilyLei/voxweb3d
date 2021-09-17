@@ -56,7 +56,7 @@ export namespace demo
 
                 RendererDevice.SHADERCODE_TRACE_ENABLED = true;
                 
-                this.m_statusDisp.initialize("rstatus");
+                this.m_statusDisp.initialize();
                 let rparam:RendererParam = new RendererParam();
                 rparam.setCamProject(45.0,0.1,3000.0);
                 rparam.setCamPosition(500.0,500.0,500.0);

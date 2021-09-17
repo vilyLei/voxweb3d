@@ -135,7 +135,7 @@ export class DemoMultiRenderer
             this.m_demoC.initialize(256,100,200,100);
             this.m_demoD.initialize(256,206,200,100);
 
-            this.m_statusDisp.initialize("rstatus",280);
+            this.m_statusDisp.initialize();
         }
     }
     run():void

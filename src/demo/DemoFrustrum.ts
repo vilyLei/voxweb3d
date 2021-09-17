@@ -61,7 +61,7 @@ export class DemoFrustrum
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
-            this.m_statusDisp.initialize("rstatus", this.m_rscene.getViewWidth() - 180);
+            this.m_statusDisp.initialize();
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 

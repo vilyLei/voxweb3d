@@ -41,7 +41,7 @@ export class DemoGLState
             
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
-            this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 200);
+            this.m_statusDisp.initialize();
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
             //this.m_rscene.getRenderProxy().setFrontFaceFlipped(true);
             ///*

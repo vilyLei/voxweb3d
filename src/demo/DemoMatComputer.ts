@@ -46,7 +46,7 @@ export class DemoMatComputer extends DemoInstance
         //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
         this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
         this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-        this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
+        this.m_statusDisp.initialize();
 
         let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
         

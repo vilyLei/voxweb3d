@@ -436,23 +436,27 @@ export default class Box3DMesh extends MeshBase {
             }
         }
     }
+    uScale: number = 1.0;
+    vScale: number = 1.0;
     private initUVData(baseI: number): void {
+        let uScale = this.uScale;
+        let vScale = this.vScale;
         let i: number = 0;
         if (this.flipVerticalUV) {
             while (i < baseI) {
-                this.m_uvs[i] = 1.0; this.m_uvs[i + 1] = 1.0;
-                this.m_uvs[i + 2] = 0.0; this.m_uvs[i + 3] = 1.0;
-                this.m_uvs[i + 4] = 0.0; this.m_uvs[i + 5] = 0.0;
-                this.m_uvs[i + 6] = 1.0; this.m_uvs[i + 7] = 0.0;
+                this.m_uvs[i] = 1.0 * uScale; this.m_uvs[i + 1] = 1.0 * vScale;
+                this.m_uvs[i + 2] = 0.0 * uScale; this.m_uvs[i + 3] = 1.0 * vScale;
+                this.m_uvs[i + 4] = 0.0 * uScale; this.m_uvs[i + 5] = 0.0 * vScale;
+                this.m_uvs[i + 6] = 1.0 * uScale; this.m_uvs[i + 7] = 0.0 * vScale;
                 i += 8;
             }
         }
         else {
             while (i < baseI) {
-                this.m_uvs[i] = 0.0; this.m_uvs[i + 1] = 0.0;
-                this.m_uvs[i + 2] = 1.0; this.m_uvs[i + 3] = 0.0;
-                this.m_uvs[i + 4] = 1.0; this.m_uvs[i + 5] = 1.0;
-                this.m_uvs[i + 6] = 0.0; this.m_uvs[i + 7] = 1.0;
+                this.m_uvs[i] = 0.0 * uScale; this.m_uvs[i + 1] = 0.0 * vScale;
+                this.m_uvs[i + 2] = 1.0 * uScale; this.m_uvs[i + 3] = 0.0 * vScale;
+                this.m_uvs[i + 4] = 1.0 * uScale; this.m_uvs[i + 5] = 1.0 * vScale;
+                this.m_uvs[i + 6] = 0.0 * uScale; this.m_uvs[i + 7] = 1.0 * vScale;
                 i += 8;
             }
         }

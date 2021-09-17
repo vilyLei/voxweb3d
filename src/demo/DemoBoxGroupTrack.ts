@@ -118,7 +118,7 @@ export namespace demo
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-                this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().stageWidth - 180);
+                this.m_statusDisp.initialize();
 
                 let tex0:TextureProxy = this.getImageTexByUrl("static/assets/metal_02.jpg");
                 let tex1:TextureProxy = this.getImageTexByUrl("static/assets/green.jpg");

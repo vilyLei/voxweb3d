@@ -245,13 +245,25 @@ class Vector3D
     	Vector3D.__vtor3Stv0.z = v0.z - v1.z;
     	return Vector3D.__vtor3Stv0.getLength();
     }
-    // calc Vector3D v0 and v1
+
+    /**
+     * get angle degree between two Vector3D objects
+     * @param v0 src Vector3D object
+     * @param v1 dst Vector3D object
+     * @returns angle degree
+     */
     static AngleBetween(v0:Vector3D,v1:Vector3D):number
     {
         v0.normalizeTo(Vector3D.__vtor3Stv0);
         v1.normalizeTo(Vector3D.__vtor3Stv1);
         return Math.acos(Vector3D.__vtor3Stv0.dot(Vector3D.__vtor3Stv1)) * MathConst.MATH_180_OVER_PI;
     }
+    /**
+     * get angle radian between two Vector3D objects
+     * @param v0 src Vector3D object
+     * @param v1 dst Vector3D object
+     * @returns angle radian
+     */
     static RadianBetween(v0:Vector3D,v1:Vector3D)
     {
         v0.normalizeTo(Vector3D.__vtor3Stv0);

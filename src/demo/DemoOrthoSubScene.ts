@@ -79,7 +79,7 @@ export class DemoOrthoSubScene
         {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             
-            this.m_statusDisp.initialize("rstatus",180);
+            this.m_statusDisp.initialize();
             let rparam:RendererParam;
             rparam = new RendererParam();
             //rparam.cameraPerspectiveEnabled = false;

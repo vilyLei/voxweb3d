@@ -59,7 +59,7 @@ export class DemoFloatRTT
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
-            this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
+            this.m_statusDisp.initialize();
 
             this.m_rttTex = this.m_rscene.textureBlock.createRTTTex2D(128,128);
             this.m_rttTex.to2DTexture();

@@ -67,7 +67,7 @@ export class DemoOrtho {
         if (this.m_rscene == null) {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
-            this.m_statusDisp.initialize("rstatus");
+            this.m_statusDisp.initialize();
 
             let rparam: RendererParam = new RendererParam();
             rparam.cameraPerspectiveEnabled = false;

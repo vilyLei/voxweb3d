@@ -110,7 +110,7 @@ export class DemoOrthoBtn {
             //*/
 
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-            this.m_statusDisp.initialize("rstatus", 300);
+            this.m_statusDisp.initialize();
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDown);

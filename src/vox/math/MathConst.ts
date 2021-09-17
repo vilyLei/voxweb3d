@@ -83,6 +83,12 @@ class MathConst {
         }
         return 0.0;
     }
+    /**
+     * get the directional angle offset degree value: dst_angle_degree = src_angle_degree + directional_angle_offset_degree_value
+     * @param a0 src angle degree
+     * @param a1 dst angle degree
+     * @returns directional angle offset degree value 
+     */
     static GetMinDegree(a0: number, a1: number): number {
         let angle: number = 0;
         if (a1 >= 270 && a0 < 90) {
@@ -112,7 +118,7 @@ class MathConst {
             if (dy >= 0) return 270;
             else return 90;
         }
-        let angle = Math.atan(dy / dx) * 180 / Math.PI;
+        let angle: number = Math.atan(dy / dx) * 180 / Math.PI;
         if (dy > 0 && dx > 0) {
             return angle
         } else if (dy < 0 && dx >= 0) {

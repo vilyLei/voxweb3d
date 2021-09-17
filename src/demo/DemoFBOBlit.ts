@@ -43,7 +43,7 @@ export namespace demo
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
-            this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
+            this.m_statusDisp.initialize();
 
             let tex0:TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
             let tex1:TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");

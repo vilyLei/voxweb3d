@@ -64,7 +64,7 @@ export class DemoParticle
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-            this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
+            this.m_statusDisp.initialize();
             RendererState.CreateRenderState("ADD01",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.BLEND);
             RendererState.CreateRenderState("ADD02",CullFaceMode.BACK,RenderBlendMode.ADD,DepthTestMode.ALWAYS);
             

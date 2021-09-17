@@ -110,7 +110,7 @@ export namespace demo
                 this.m_rcontext.createFBOAt(0,FrameBufferType.FRAMEBUFFER,this.m_viewSize.x,this.m_viewSize.y,true,false);
                 this.m_rcontext.createFBOAt(1,FrameBufferType.FRAMEBUFFER,this.m_viewSize.z,this.m_viewSize.w,true,false);
                 
-                this.m_statusDisp.initialize("rstatus",this.m_renderer.getStage3D().viewWidth - 64);
+                this.m_statusDisp.initialize();
 
             }
         }

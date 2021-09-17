@@ -998,7 +998,6 @@ class CameraBase implements IRenderCamera{
             }
             else {
                 this.m_viewMat.copyFrom(this.m_viewMatrix);
-                console.log("use outer this.m_viewMatrix.....");
             }
             if (this.m_project2Enabled) {
                 this.m_nearPlaneWidth = this.m_zNear * Math.tan(this.m_fovRadian * 0.5) * 2.0;

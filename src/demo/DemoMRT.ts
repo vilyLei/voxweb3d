@@ -35,7 +35,7 @@ export class DemoMRT
         {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
-            this.m_statusDisp.initialize("rstatus");
+            this.m_statusDisp.initialize();
             DivLog.SetDebugEnabled(true);
             let rparam:RendererParam = new RendererParam();
             rparam.maxWebGLVersion = 1;

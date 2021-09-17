@@ -64,7 +64,7 @@ export class DemoParticleClips
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-            this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
+            this.m_statusDisp.initialize();
             ///*
             let axis:Axis3DEntity = new Axis3DEntity();
             axis.name = "axis";

@@ -60,7 +60,7 @@ export class DemoMatTransThread extends DemoInstance
         //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
         this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
         if(this.m_profileInstance != null)this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-        if(this.m_statusDisp != null)this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 180);
+        if(this.m_statusDisp != null)this.m_statusDisp.initialize();
 
         this.m_rscene.enableMouseEvent(true);
         this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());

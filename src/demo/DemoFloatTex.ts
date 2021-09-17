@@ -163,7 +163,7 @@ export class DemoFloatTex implements ILoaderListerner {
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
-            this.m_statusDisp.initialize("rstatus", this.m_rscene.getStage3D().stageWidth - 10);
+            this.m_statusDisp.initialize();
 
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.initialize(500.0);

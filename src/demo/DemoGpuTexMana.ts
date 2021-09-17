@@ -46,7 +46,7 @@ export namespace demo
                 this.m_camTrack = new CameraTrack();
                 this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
                 
-                this.m_statusDisp.initialize("rstatus",stage3D.viewWidth - 180);
+                this.m_statusDisp.initialize();
                 this.m_scene.initialize(this.m_renderer);
                 
             }

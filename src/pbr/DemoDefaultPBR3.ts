@@ -85,7 +85,7 @@ export class DemoDefaultPBR3 {
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-            this.m_statusDisp.initialize("rstatus", 300);
+            this.m_statusDisp.initialize();
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 

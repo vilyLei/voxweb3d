@@ -30,6 +30,7 @@ class PathTrack
 {
 	constructor(){}
 	// 记录计算结果的状态
+	public static readonly TRACK_INIT:number = -100;
 	public static readonly TRACK_ERROR:number = -1;
 	// 在路径的端点
 	public static readonly TRACK_BEGIN:number = 0;

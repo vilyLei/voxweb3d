@@ -92,7 +92,7 @@ export namespace demo
                 let scale:number = 1.0;
                 let i:number = 0;
 
-                this.m_statusDisp.initialize("rstatus");
+                this.m_statusDisp.initialize();
 
                 let rparam:RendererParam = new RendererParam();
                 rparam.setMatrix4AllocateSize(8192);

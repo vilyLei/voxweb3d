@@ -233,7 +233,7 @@ export class DemoMultiRendererScene {
         if (this.m_rendererLeftScene == null) {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
-            this.m_statusDisp.initialize("rstatus", 180);
+            this.m_statusDisp.initialize();
 
             let rparam: RendererParam;
 

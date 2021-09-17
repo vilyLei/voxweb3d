@@ -13,11 +13,14 @@ class RenderStatusDisplay
     private m_canvas2D:any = null;
     private m_ctx2D:any = null;
     private m_delayTime:number = 10;
+    private m_preWidth: number = 128;
+    private m_width: number = 128;
+    private m_height: number = 70;
     delayTime:number = 40;
     statusInfo:string = "";
     statusEnbled:boolean = true;
 
-    initialize(canvas_id_name:string,width:number = 0):void
+    initialize():void
     {
         var pdocument:any = null;
         try
@@ -33,34 +36,33 @@ class RenderStatusDisplay
         }
         if(pdocument != null)
         {
-            let pwith: number = window.innerWidth - 20;
+            this.m_preWidth = window.innerWidth;
+            let pwith: number = this.m_preWidth - 20;
             this.createCanvas( pwith );
         }
     }
 
     private createCanvas(width: number): void {
 
-        if(this.m_canvas2D != null) {
-            document.body.removeChild( this.m_canvas2D );
-            this.m_canvas2D = null;
-        }
         if(this.m_canvas2D == null)
         {
             this.m_canvas2D = document.createElement('canvas');
             document.body.appendChild( this.m_canvas2D );
-            this.m_canvas2D.width = width < 10?300:width;
-            this.m_canvas2D.height = 70;
             this.m_canvas2D.style.display = 'bolck';
             this.m_canvas2D.style.left = '0px';
             this.m_canvas2D.style.top = '0px';
             this.m_canvas2D.style.position = 'absolute';
             this.m_canvas2D.style.backgroundColor = 'transparent';
             this.m_canvas2D.style.pointerEvents = 'none';
+            this.m_canvas2D.height = this.m_height;
         }
+        width = width < 10?10:width;
+        this.m_canvas2D.width = width;
         this.m_ctx2D = this.m_canvas2D.getContext("2d");
         this.m_ctx2D.font="50px Verdana";
         this.m_ctx2D.fillStyle = "red";
         this.m_ctx2D.textAlign = "left";
+        this.m_width = this.m_canvas2D.width;
     }
     getFPS():number{return this.m_fps;};
     getFPSStr():string
@@ -79,18 +81,20 @@ class RenderStatusDisplay
     
     render():void
     {
+        if(this.m_preWidth != window.innerWidth) {
+            this.m_preWidth = window.innerWidth;
+            let pwith: number = this.m_preWidth - 20;
+            this.createCanvas( pwith );
+        }
         if(this.statusEnbled)
         {
-            this.m_ctx2D.clearRect(0, 0, 600, 70);
+            this.m_ctx2D.clearRect(0, 0, this.m_width, this.m_height);
             this.m_ctx2D.fillText("FPS:"+this.m_fps+this.statusInfo, 5,50);
+            //this.m_ctx2D.fillRect(0, 0, this.m_width, this.m_height);
         }
     }
     update(immediaterender:boolean = true):void
     {
-        if(this.m_canvas2D.width > window.innerWidth) {
-            let pwith: number = window.innerWidth - 20;
-            this.createCanvas( pwith );
-        }
         if(this.m_delayTime > 0)
         {
             --this.m_delayTime;

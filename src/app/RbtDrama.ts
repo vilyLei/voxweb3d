@@ -84,7 +84,7 @@ export class RbtDrama
             this.m_CameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
-            this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 200);
+            this.m_statusDisp.initialize();
 
             this.m_texLoader = new ImageTextureLoader( this.m_rscene.textureBlock );
             let texLoader:ImageTextureLoader = this.m_texLoader;

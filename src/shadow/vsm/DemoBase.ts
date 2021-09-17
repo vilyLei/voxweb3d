@@ -78,7 +78,7 @@ export class DemoBase {
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-            this.m_statusDisp.initialize("rstatus", 300);
+            this.m_statusDisp.initialize();
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 

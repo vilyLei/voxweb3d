@@ -56,7 +56,7 @@ export class DemoCamera
             
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
-            this.m_statusDisp.initialize("rstatus",this.m_rscene.getStage3D().viewWidth - 200);
+            this.m_statusDisp.initialize();
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);
             this.m_rscene.addEventListener(KeyboardEvent.KEY_DOWN, this,this.keyDown);
             
@@ -81,7 +81,7 @@ export class DemoCamera
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragCtrl.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
             this.m_cameraZoomController.setLookAtCtrlEnabled(false);
-            
+
             this.update();
             
             this.initTest01();
@@ -181,6 +181,7 @@ export class DemoCamera
 
         this.m_cameraTarget = camera2;
         this.m_frustumFrame2 = frustumFrame2;
+        this.m_camView.setCamera( this.m_cameraTarget );
     }
     private createCamera(pos: Vector3D, look: Vector3D, up: Vector3D, buildFrame: boolean = true): CameraBase {
         //let pos: Vector3D = new Vector3D(-500,0,0);
@@ -198,32 +199,22 @@ export class DemoCamera
         }
         return camera;
     }
+    
     private m_slideFlag: boolean = false;
     
     private m_camView: RHCameraView = null;
     private m_cameraTarget: CameraBase = null;
     private m_frustumFrame2: FrustrumFrame3DEntity = null;
 
-    private m_pos: Vector3D = new Vector3D();
-    private m_rot: Vector3D = new Vector3D();
+    private m_offsetPos: Vector3D = new Vector3D(0.0, 0.0, 10.0);
+    private m_offsetRot: Vector3D = new Vector3D(0.0, 1.0,-1.0);
     private mouseDown(evt:any):void
     {
-        //this.m_slideFlag = !this.m_slideFlag;
-        this.m_camView.getPosition( this.m_pos );
-        this.m_pos.z += 10;
-        this.m_camView.setPosition(this.m_pos);
-        this.m_rot.y += 1.0;
-        this.m_rot.z -= 1.0;
-        this.m_camView.setRotation( this.m_rot );
-
+        this.m_camView.setPositionOffset( this.m_offsetPos );
+        this.m_camView.setRotationOffset( this.m_offsetRot );
         this.m_camView.update();
-        this.m_cameraTarget.setViewMatrix( this.m_camView.getViewMatrix() );
-        this.m_cameraTarget.update();
         this.m_frustumFrame2.updateFrame( this.m_cameraTarget );
         this.m_frustumFrame2.updateMeshToGpu();
-        //let frustumFrame: FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
-        //frustumFrame.initiazlize( this.m_cameraTarget );
-        //this.m_rscene.addEntity(frustumFrame);
     }
     private keyDown(evt:any):void
     {
@@ -257,9 +248,13 @@ export class DemoCamera
         if(this.m_slideFlag) {
             //this.m_rscene.getCamera().slideViewOffsetXY(0.0,1.0);
         }
+        this.m_statusDisp.update(false);
+
         this.m_stageDragCtrl.runWithYAxis();
         this.m_cameraZoomController.run(null,30.0);
+
         //this.m_rscene.useCamera(this.m_cameraTarget);
+
         this.m_rscene.run();
         //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
     }

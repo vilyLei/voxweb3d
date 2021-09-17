@@ -51,7 +51,7 @@ export namespace demo {
                 this.m_renderer.appendProcess();
                 this.m_rcontext = this.m_renderer.getRendererContext();
 
-                this.m_statusDisp.initialize("rstatus", this.m_rcontext.getViewportWidth() - 180);
+                this.m_statusDisp.initialize();
 
                 this.m_texBlock = new TextureBlock();
                 this.m_texBlock.setRenderer(this.m_renderer);

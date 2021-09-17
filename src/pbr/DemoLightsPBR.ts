@@ -86,7 +86,7 @@ export class DemoLightsPBR
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-            this.m_statusDisp.initialize("rstatus", this.m_rscene.getViewWidth() - 200);
+            this.m_statusDisp.initialize();
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 

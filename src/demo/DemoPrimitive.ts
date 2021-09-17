@@ -75,7 +75,7 @@ export class DemoPrimitive {
             this.m_texBlock.setRenderer(this.m_renderer);
             this.m_texLoader = new ImageTextureLoader(this.m_texBlock);
 
-            if (this.m_statusDisp != null) this.m_statusDisp.initialize("rstatus", this.m_renderer.getViewWidth() - 180);
+            if (this.m_statusDisp != null) this.m_statusDisp.initialize();
             let tex0: TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
             let tex1: TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
             let tex2: TextureProxy = this.getImageTexByUrl("static/assets/guangyun_H_0007.png");

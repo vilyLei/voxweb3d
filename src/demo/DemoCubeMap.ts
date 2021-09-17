@@ -184,7 +184,7 @@ export class DemoCubeMap {
 
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
-            this.m_statusDisp.initialize("rstatus", this.m_rscene.getViewWidth() - 180.0);
+            this.m_statusDisp.initialize();
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 

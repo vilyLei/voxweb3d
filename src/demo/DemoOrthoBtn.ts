@@ -104,7 +104,7 @@ export class DemoOrthoBtn
         {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             
-            this.m_statusDisp.initialize("rstatus");
+            this.m_statusDisp.initialize();
             let rparam:RendererParam;
             rparam = new RendererParam();
             rparam.setMatrix4AllocateSize(8192 * 4);

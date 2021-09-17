@@ -24,6 +24,8 @@ export default class Box3DEntity extends DisplayEntity {
     private m_transMatrix: Matrix4 = null;
     private m_currMesh: Box3DMesh = null;
 
+    uScale: number = 1.0;
+    vScale: number = 1.0;
     normalScale: number = 1.0;
     // uvPartsNumber value is 4 or 6
     uvPartsNumber: number = 0;
@@ -116,6 +118,8 @@ export default class Box3DEntity extends DisplayEntity {
             if (this.m_transMatrix != null) {
                 mesh.setTransformMatrix(this.m_transMatrix);
             }
+            mesh.uScale = this.uScale;
+            mesh.vScale = this.vScale;
             mesh.normalType = this.m_normalType;
             mesh.normalScale = this.normalScale;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;

@@ -269,7 +269,7 @@ export namespace demo {
 
                 //  cubeTex0 = this.CreateFloatCubeTex();
                 //  cubeTex0.mipmapEnabled = true;
-                this.m_statusDisp.initialize("rstatus", this.m_rscene.getStage3D().stageWidth - 180);
+                this.m_statusDisp.initialize();
 
                 let floatTex: TextureProxy = null;
                 let bytesTex: TextureProxy = null;
