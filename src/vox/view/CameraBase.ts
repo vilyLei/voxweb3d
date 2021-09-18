@@ -109,6 +109,7 @@ class CameraBase implements IRenderCamera{
             Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
             this.m_initRV.normalize();
             this.m_changed = true;
+            //this.m_viewMat.lookAtRH(this.m_camPos, this.m_lookAtPos, this.m_up);
         }
     }
     

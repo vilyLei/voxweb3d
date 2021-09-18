@@ -50,7 +50,7 @@ export default class FrustrumFrame3DEntity extends DisplayEntity
         4,5,5,6,6,7,7,4,    // near plane
         0,4,1,5,2,6,3,7,    // side plane
     ];
-    initiazlize(camera:CameraBase, farColor: Color4 = null, nearColor: Color4 = null, sideColor: Color4 = null): void {
+    initiazlize(camera:CameraBase, farColor: Color4 = null, nearColor: Color4 = null, sideDownColor: Color4 = null, sideUpColor: Color4 = null): void {
         
         let pvs:Vector3D[] = camera.getWordFrustumVtxArr();
         if(this.m_posarr == null)this.m_posarr = new Array(72);
@@ -59,11 +59,12 @@ export default class FrustrumFrame3DEntity extends DisplayEntity
         let ids:number[] = this.m_ids;
         if(farColor == null) farColor = new Color4(1.0,0.0,1.0,1.0);
         if(nearColor == null) nearColor = new Color4(0.0,0.5,1.0);
-        if(sideColor == null) sideColor = new Color4(0.0,0.9,0.0);
+        if(sideDownColor == null) sideDownColor = new Color4(0.0,0.9,0.0);
+        if(sideUpColor == null) sideUpColor = new Color4(0.0,0.9,0.9);
         let colors: Color4[] = [
             farColor,farColor,farColor,farColor,        farColor,farColor,farColor,farColor,
             nearColor,nearColor,nearColor,nearColor,    nearColor,nearColor,nearColor,nearColor,
-            sideColor,sideColor,sideColor,sideColor,    sideColor,sideColor,sideColor,sideColor,
+            sideDownColor,sideDownColor,sideDownColor,sideDownColor,    sideUpColor,sideUpColor,sideUpColor,sideUpColor,
         ];
         let pv: Vector3D;
         let color: Color4;
@@ -87,9 +88,13 @@ export default class FrustrumFrame3DEntity extends DisplayEntity
         this.activeDisplay();
     }
     private m_cameraVersion: number = -1;
+    private m_camera: CameraBase = null;
     updateFrame(camera:CameraBase): boolean {
-
-        if(this.m_cameraVersion != camera.version) {
+        if(this.m_camera != camera) {
+            this.m_camera = camera;
+            this.m_cameraVersion = -1;
+        }
+        if(camera != null && this.m_cameraVersion != camera.version) {
             this.m_cameraVersion = camera.version;
             let mesh:DashedLineMesh = this.getMesh() as DashedLineMesh;
             if(mesh != null) {
@@ -104,6 +109,9 @@ export default class FrustrumFrame3DEntity extends DisplayEntity
             }
         }
         return false;
+    }
+    destroy(): void {
+        this.m_camera = null;
     }
     toString():string
     {

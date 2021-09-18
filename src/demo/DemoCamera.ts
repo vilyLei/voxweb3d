@@ -210,8 +210,8 @@ export class DemoCamera
     private m_offsetRot: Vector3D = new Vector3D(0.0, 1.0,-1.0);
     private mouseDown(evt:any):void
     {
-        this.m_camView.setPositionOffset( this.m_offsetPos );
-        this.m_camView.setRotationOffset( this.m_offsetRot );
+        this.m_camView.move( this.m_offsetPos );
+        this.m_camView.rotate( this.m_offsetRot );
         this.m_camView.update();
         this.m_frustumFrame2.updateFrame( this.m_cameraTarget );
         this.m_frustumFrame2.updateMeshToGpu();

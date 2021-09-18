@@ -119,14 +119,19 @@ class MathConst {
             else return 90;
         }
         let angle: number = Math.atan(dy / dx) * 180 / Math.PI;
-        if (dy > 0 && dx > 0) {
-            return angle
-        } else if (dy < 0 && dx >= 0) {
-            return 360 + angle;
-        } else {
+        if (dx >= 0) {
+            return angle;
+        }
+        else {
             return 180 + angle;
         }
-        return angle;
+        //  if (dy > 0 && dx > 0) {
+        //      return angle
+        //  } else if (dy < 0 && dx >= 0) {
+        //      return 360 + angle;
+        //  } else {
+        //      return dx > 0 ? angle : 180 + angle;
+        //  }
     }
     static GetRadianByXY(dx: number, dy: number): number {
         if (Math.abs(dx) < MathConst.MATH_MIN_POSITIVE) {

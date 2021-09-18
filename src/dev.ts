@@ -306,9 +306,9 @@
 
 //  import {DemoCamera as Demo} from "./demo/DemoCamera";
 
-import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
+//  import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
 
-//  import {DemoCameraPath as Demo} from "./demo/DemoCameraPath";
+import {DemoCameraPath as Demo} from "./demo/DemoCameraPath";
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   transform    ///////////////////////////////////

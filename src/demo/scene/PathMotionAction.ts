@@ -95,7 +95,7 @@ class PathMotionAction {
         this.m_temV.addBy( this.m_preV );
         this.m_temV.y += this.cameraOffset.y;
 
-        this.cameraFollower.setViewParams(this.m_temV, this.m_degTween.getDegree(), -30.0);
+        this.cameraFollower.setViewParams(this.m_temV, this.m_degTween.getDegree(), 30.0);
 
         this.m_pathTrack.clear();
         let pv: Vector3D = null;
