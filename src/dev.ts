@@ -136,6 +136,8 @@
 
 //  import {DemoMatTransThread as Demo} from "./demo/DemoMatTransThread";
 
+import {DemoMatNavAstarThread as Demo} from "./demo/DemoMatNavAstarThread";
+
 //  import * as DemoThreadConcurrent from "./demo/DemoThreadConcurrent";
 //  import Demo = DemoThreadConcurrent.demo.DemoThreadConcurrent;
 
@@ -308,7 +310,7 @@
 
 //  import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
 
-import {DemoCameraPath as Demo} from "./demo/DemoCameraPath";
+//  import {DemoCameraPath as Demo} from "./demo/DemoCameraPath";
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   transform    ///////////////////////////////////
