@@ -9,8 +9,6 @@ import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import RendererParam from "../../vox/scene/RendererParam";
 import RendererScene from "../../vox/scene/RendererScene";
 
-import DefaultPBRCase from "../../pbr/mana/DefaultPBRCase";
-
 import RendererSubScene from "../../vox/scene/RendererSubScene";
 import ProgressBar from "../../orthoui/button/ProgressBar";
 import ProgressDataEvent from "../../vox/event/ProgressDataEvent";

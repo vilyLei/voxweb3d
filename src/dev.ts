@@ -136,8 +136,6 @@
 
 //  import {DemoMatTransThread as Demo} from "./demo/DemoMatTransThread";
 
-import {DemoMatNavAstarThread as Demo} from "./demo/DemoMatNavAstarThread";
-
 //  import * as DemoThreadConcurrent from "./demo/DemoThreadConcurrent";
 //  import Demo = DemoThreadConcurrent.demo.DemoThreadConcurrent;
 
@@ -312,6 +310,9 @@ import {DemoMatNavAstarThread as Demo} from "./demo/DemoMatNavAstarThread";
 
 //  import {DemoCameraPath as Demo} from "./demo/DemoCameraPath";
 
+//  import {DemoMatNavAstarThread as Demo} from "./demo/DemoMatNavAstarThread";
+
+
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   transform    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
@@ -354,17 +355,7 @@ import {DemoMatNavAstarThread as Demo} from "./demo/DemoMatNavAstarThread";
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
-//  import {DemoModulePBR as Demo} from "./pbr/DemoModulePBR";
-
-//  import {DemoLightsPBR as Demo} from "./pbr/DemoLightsPBR";
-
-//  import {DemoDefaultPBR as Demo} from "./pbr/DemoDefaultPBR";
-
-//  import {DemoDefaultPBR2 as Demo} from "./pbr/DemoDefaultPBR2";
-
-//  import {DemoDefaultPBR3 as Demo} from "./pbr/DemoDefaultPBR3";
-
-//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
+import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
