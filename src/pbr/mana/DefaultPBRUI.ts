@@ -220,7 +220,6 @@ export class DefaultPBRUI implements IPBRUI {
         this.ruisc.addEntity(this.m_selectPlane);
         this.m_selectPlane.setVisible( false );
 
-        ///*
         this.metalBtn = this.createProgressBtn("metal", "metal", 0.5);     
         this.roughBtn = this.createProgressBtn("rough", "rough", 0.5);
         this.noiseBtn = this.createProgressBtn("noise", "noise", 0.07);
@@ -246,8 +245,6 @@ export class DefaultPBRUI implements IPBRUI {
         this.rgbPanel.setXY(this.m_btnPX, this.m_btnPY);
         this.rgbPanel.close();
         this.ruisc.addContainer(this.rgbPanel, 1);
-        //*/
-
     }
     private selectColor(evt: any): void {
         let currEvt: RGBColoSelectEvent = evt as RGBColoSelectEvent;
