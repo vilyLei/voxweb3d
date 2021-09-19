@@ -11,21 +11,11 @@ import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import MouseEvent from "../vox/event/MouseEvent";
 import KeyboardEvent from "../vox/event/KeyboardEvent";
-import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
-import BaseColorMaterial from "../vox/material/mcase/BaseColorMaterial";
 
 import CameraDragController from "../voxeditor/control/CameraDragController";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import Vector3D from "../vox/math/Vector3D";
-import FrustrumFrame3DEntity from "../vox/entity/FrustrumFrame3DEntity";
-import CameraBase from "../vox/view/CameraBase";
-import { RHCameraView } from "../vox/view/RHCameraView";
-import MathConst from "../vox/math/MathConst";
-import DivLog from "../vox/utils/DivLog";
-import Line3DEntity from "../vox/entity/Line3DEntity";
-import { PathMotionAction } from "./scene/PathMotionAction";
-import Matrix4 from "../vox/math/Matrix4";
 import CameraViewRay from "../vox/view/CameraViewRay";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import { SpaceCullingMask } from "../vox/space/SpaceCullingMask";
@@ -35,9 +25,10 @@ import SelectionBar from "../orthoui/button/SelectionBar";
 import {CameraScene} from "./scene/CameraScene";
 
 export class DemoCameraPath {
+
     constructor() { }
+
     private m_rscene: RendererScene = null;
-    private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_texLoader: ImageTextureLoader = null;
     private m_runType: number = 0;
@@ -47,9 +38,12 @@ export class DemoCameraPath {
     private m_viewRay: CameraViewRay = new CameraViewRay();
     private m_uiScene: OrthoUIScene = new OrthoUIScene();
     private m_camScene: CameraScene = new CameraScene();
+
     initialize(): void {
+
         console.log("DemoCameraPath::initialize()......");
         if (this.m_rscene == null) {
+
             //DivLog.SetDebugEnabled( true );
             RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
@@ -64,8 +58,6 @@ export class DemoCameraPath {
 
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-            this.m_camTrack = new CameraTrack();
-            this.m_camTrack.bindCamera(this.m_rscene.getCamera());
             this.m_statusDisp.initialize();
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_rscene.addEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
@@ -100,7 +92,6 @@ export class DemoCameraPath {
             box.initialize(new Vector3D(-size, -size * 0.5, -size), new Vector3D(size, size * 0.7, size), [this.m_texLoader.getTexByUrl("static/assets/brickwall_big.jpg")]);
             box.setXYZ(0.0, 0.0, 0.0);
             this.m_rscene.addEntity(box);
-
             //*/
 
             this.m_rscene.enableMouseEvent(true);
@@ -111,7 +102,6 @@ export class DemoCameraPath {
 
             this.update();
 
-            //this.initTest();
             this.m_camScene = new CameraScene();
             this.m_camScene.initialize( this.m_rscene );
         }
@@ -138,9 +128,6 @@ export class DemoCameraPath {
         }
         //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
         this.m_timeoutId = setTimeout(this.update.bind(this), 25);// 20 fps
-
-        //  this.rotateZ(1);
-
         this.m_statusDisp.render();
     }
 
