@@ -139,7 +139,7 @@ export class DemoUIManager {
         rparam.cameraPerspectiveEnabled = false;
         rparam.setCamProject(45.0, 0.1, 3000.0);
         rparam.setCamPosition(0.0, 0.0, 1500.0);
-
+        
         let subScene: RendererSubScene = null;
         subScene = this.m_rscene.createSubScene();
         subScene.initialize(rparam);

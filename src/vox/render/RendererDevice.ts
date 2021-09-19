@@ -18,7 +18,7 @@ class RendererDevice {
     /**
      * zh-CN, en-US, ect....
      */
-    private static s_language: string = "zh-CN";
+    private static s_language: string = "";
     private static s_debugEnabled: boolean = true;
     public static GPU_VENDOR: string = "unknown";
     public static GPU_RENDERER: string = "unknown";
@@ -40,6 +40,10 @@ class RendererDevice {
         RendererDevice.s_language = language;
     }
     static GetLanguage(): string {
+        if(RendererDevice.s_language != "") {
+            return RendererDevice.s_language;
+        }
+        RendererDevice.s_language = navigator.language;
         return RendererDevice.s_language;
     }
     static SetThreadEnabled(boo: boolean): void {
