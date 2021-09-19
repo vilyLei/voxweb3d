@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import MouseEvent from "../../vox/event/MouseEvent";
-import RendererSubScene from "../../vox/scene/RendererSubScene";
+import IRendererScene from "../../vox/scene/IRendererScene";
 import ColorRectImgButton from "../../orthoui/button/ColorRectImgButton";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 import EventBaseDispatcher from "../../vox/event/EventBaseDispatcher";
@@ -17,7 +17,7 @@ import Color4 from "../../vox/material/Color4";
 import AABB2D from "../../vox/geom/AABB2D";
 
 export class TextButton {
-    private m_ruisc: RendererSubScene = null;
+    private m_ruisc: IRendererScene = null;
     private m_dispatcher: EventBaseDispatcher = new EventBaseDispatcher();
     private m_currEvent: SelectionEvent = new SelectionEvent();
 
@@ -57,7 +57,7 @@ export class TextButton {
     getRect(): AABB2D {
         return this.m_rect;
     }
-    initialize(ruisc: RendererSubScene, barName: string = "textButton", btnSize: number = 64.0): void {
+    initialize(ruisc: IRendererScene, barName: string = "textButton", btnSize: number = 64.0): void {
 
         if (this.m_ruisc == null) {
 

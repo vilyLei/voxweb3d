@@ -139,7 +139,7 @@ export class DemoUIManager {
         rparam.cameraPerspectiveEnabled = false;
         rparam.setCamProject(45.0, 0.1, 3000.0);
         rparam.setCamPosition(0.0, 0.0, 1500.0);
-        
+
         let subScene: RendererSubScene = null;
         subScene = this.m_rscene.createSubScene();
         subScene.initialize(rparam);
@@ -209,11 +209,9 @@ export class DemoUIManager {
         }
     }
     private m_btnSize: number = 24;
-    private m_bgLength: number = 200.0;
     private m_btnPX: number = 162.0;
     private m_btnPY: number = 20.0;
     private m_btns: any[] = [];
-    private m_menuBtn: SelectionBar = null;
     
     private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionBar {
 

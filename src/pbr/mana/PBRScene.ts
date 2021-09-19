@@ -109,7 +109,6 @@ export default class PBRScene
             this.m_vsmModule.setShadowIntensity(0.95);
             this.m_vsmModule.setColorIntensity(0.4);       
 
-
             this.m_envData = new EnvLightData();
             this.m_envData.initialize();
             this.m_envData.setFogNear(800.0);

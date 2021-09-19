@@ -7,7 +7,7 @@
 
 import MouseEvent from "../../vox/event/MouseEvent";
 import RendererState from "../../vox/render/RendererState";
-import RendererSubScene from "../../vox/scene/RendererSubScene";
+import IRendererScene from "../../vox/scene/IRendererScene";
 import ColorRectImgButton from "../../orthoui/button/ColorRectImgButton";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 import CanvasTextureTool, { CanvasTextureObject } from "../assets/CanvasTextureTool";
@@ -17,10 +17,12 @@ import SelectionEvent from "../../vox/event/SelectionEvent";
 import Vector3D from "../../vox/math/Vector3D";
 
 export class SelectionAtlasBar {
-    private m_ruisc: RendererSubScene = null;
+
+    private m_ruisc: IRendererScene = null;
+
     private m_dispatcher: EventBaseDispatcher = new EventBaseDispatcher();
     private m_currEvent: SelectionEvent = new SelectionEvent();
-    //private m_texList: TextureProxy[] = [null,null];
+    
     private m_container: DisplayEntityContainer = null;
     private m_selectBtn: ColorRectImgButton = null;
     private m_nameBtn: ColorRectImgButton = null;
@@ -51,7 +53,7 @@ export class SelectionAtlasBar {
     isClosed(): boolean {
         return !this.m_container.getVisible();
     }
-    initialize(ruisc: RendererSubScene, barName: string = "select", select_name:string = "Yes", deselect_name:string = "No", btnSize: number = 64.0): void {
+    initialize(ruisc: IRendererScene, barName: string = "select", select_name:string = "Yes", deselect_name:string = "No", btnSize: number = 64.0): void {
        
         if (this.m_ruisc == null) {
 
@@ -130,7 +132,7 @@ export class SelectionAtlasBar {
         this.m_selectBtn = btn;
 
 
-        this.m_ruisc.addContainer(container);
+        this.m_ruisc.addContainer(container, 0);
         this.m_selectBtn.addEventListener(MouseEvent.MOUSE_UP, this, this.btnMouseUp);
 
     }

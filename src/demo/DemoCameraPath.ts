@@ -29,6 +29,9 @@ import Matrix4 from "../vox/math/Matrix4";
 import CameraViewRay from "../vox/view/CameraViewRay";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import { SpaceCullingMask } from "../vox/space/SpaceCullingMask";
+import { OrthoUIScene } from "../vox/ui/OrthoUIScene";
+import SelectionEvent from "../vox/event/SelectionEvent";
+import SelectionBar from "../orthoui/button/SelectionBar";
 
 export class DemoCameraPath {
     constructor() { }
@@ -41,6 +44,7 @@ export class DemoCameraPath {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
     private m_viewRay: CameraViewRay = new CameraViewRay();
+    private m_uiScene: OrthoUIScene = new OrthoUIScene();
     initialize(): void {
         console.log("DemoCameraPath::initialize()......");
         if (this.m_rscene == null) {
@@ -63,6 +67,8 @@ export class DemoCameraPath {
             this.m_statusDisp.initialize();
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_rscene.addEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
+
+            this.m_uiScene.initialize( this.m_rscene );
 
             this.m_viewRay.bindCameraAndStage(this.m_rscene.getCamera(), this.m_rscene.getStage3D());
             this.m_viewRay.setPlaneParam(new Vector3D(0.0, 1.0, 0.0), 0.0);
@@ -277,8 +283,61 @@ export class DemoCameraPath {
                 this.m_camFrame.updateMeshToGpu();
             }
         }
-        this.m_rscene.run();
+
+
+        let pickFlag: boolean = true;
+
+        this.m_uiScene.runBegin(true, true);
+        this.m_uiScene.update(false, true);
+        pickFlag = this.m_uiScene.isRayPickSelected();
+
+        this.m_rscene.runBegin(false);
+        this.m_rscene.update(false, !pickFlag);
+        pickFlag = pickFlag || this.m_rscene.isRayPickSelected();
+
+        /////////////////////////////////////////////////////// ---- mouseTest end.
+
+
+        /////////////////////////////////////////////////////// ---- rendering begin.
+        this.m_rscene.renderBegin();
+        this.m_rscene.run(false);
+        this.m_rscene.runEnd();
+
+        this.m_uiScene.renderBegin();
+        this.m_uiScene.run(false);
+        this.m_uiScene.runEnd();
+
+        //this.m_rscene.run();
         //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+    }
+
+    
+    private m_btnSize: number = 24;
+    private m_btnPX: number = 162.0;
+    private m_btnPY: number = 20.0;
+    private m_btns: any[] = [];
+    
+    private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionBar {
+
+        let selectBar: SelectionBar = new SelectionBar();
+        selectBar.uuid = uuid;
+        ///selectBar.testTex = this.getImageTexByUrl("static/assets/testEFT4.jpg");
+        selectBar.initialize(this.m_uiScene, ns, selectNS, deselectNS, this.m_btnSize);
+        selectBar.addEventListener(SelectionEvent.SELECT, this, this.selectChange);
+        if (flag) {
+            selectBar.select(false);
+        }
+        else {
+            selectBar.deselect(false);
+        }
+        selectBar.setXY(this.m_btnPX, this.m_btnPY);
+        this.m_btnPY += this.m_btnSize + 1;
+        if (!visibleAlways) this.m_btns.push(selectBar);
+        return selectBar;
+    }
+    private selectChange(evt: any): void {
+        let selectEvt: SelectionEvent = evt as SelectionEvent;
+ 
     }
 }
 

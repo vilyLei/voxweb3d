@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import IRenderEntity from "../../vox/render/IRenderEntity";
+import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 interface IRendererScene {
     
     getUid(): number;
@@ -16,7 +17,7 @@ interface IRendererScene {
     run(autoCycle: boolean): void;
     runEnd(): void;
     runAt(index: number): void;
-
+    isRayPickSelected(): boolean;
     /**
      * add an entity to the renderer process of the renderer instance
      * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
@@ -25,5 +26,22 @@ interface IRendererScene {
      */
     addEntity(entity: IRenderEntity, processIndex: number, deferred: boolean): void;
     removeEntity(entity: IRenderEntity): void;
+    addContainer(child: DisplayEntityContainer, processIndex: number): void;
+    removeContainer(child: DisplayEntityContainer): void;
+
+    /**
+     * @param type event type
+     * @param target event listerner
+     * @param func event listerner callback function
+     * @param captureEnabled the default value is true
+     * @param bubbleEnabled the default value is false
+     */
+    addEventListener(type: number, target: any, func: (evt: any) => void, captureEnabled: boolean, bubbleEnabled: boolean): void;
+    /**
+     * @param type event type
+     * @param target event listerner
+     * @param func event listerner callback function
+     */
+    removeEventListener(type: number, target: any, func: (evt: any) => void): void;
 }
 export default IRendererScene;

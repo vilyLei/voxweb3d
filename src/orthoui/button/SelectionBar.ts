@@ -7,7 +7,7 @@
 
 import MouseEvent from "../../vox/event/MouseEvent";
 import RendererState from "../../vox/render/RendererState";
-import RendererSubScene from "../../vox/scene/RendererSubScene";
+import IRendererScene from "../../vox/scene/IRendererScene";
 import ColorRectImgButton from "../../orthoui/button/ColorRectImgButton";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 import CanvasTextureTool, { CanvasTextureObject } from "../assets/CanvasTextureTool";
@@ -19,7 +19,7 @@ import Color4 from "../../vox/material/Color4";
 import AABB2D from "../../vox/geom/AABB2D";
 
 export class SelectionBar {
-    private m_ruisc: RendererSubScene = null;
+    private m_ruisc: IRendererScene = null;
     private m_dispatcher: EventBaseDispatcher = new EventBaseDispatcher();
     private m_currEvent: SelectionEvent = new SelectionEvent();
 
@@ -65,7 +65,7 @@ export class SelectionBar {
     getRect(): AABB2D {
         return this.m_rect;
     }
-    initialize(ruisc: RendererSubScene, barName: string = "select", select_name: string = "Yes", deselect_name: string = "No", btnSize: number = 64.0): void {
+    initialize(ruisc: IRendererScene, barName: string = "select", select_name: string = "Yes", deselect_name: string = "No", btnSize: number = 64.0): void {
 
         if (this.m_ruisc == null) {
 

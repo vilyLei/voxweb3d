@@ -244,8 +244,8 @@ export class DefaultPBRUI implements IPBRUI {
         this.rgbPanel.initialize(flag ? 64 : 32, 4);
         this.rgbPanel.addEventListener(RGBColoSelectEvent.COLOR_SELECT, this, this.selectColor);
         this.rgbPanel.setXY(this.m_btnPX, this.m_btnPY);
-        this.ruisc.addContainer(this.rgbPanel, 1);
         this.rgbPanel.close();
+        this.ruisc.addContainer(this.rgbPanel, 1);
         //*/
 
     }

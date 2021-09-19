@@ -7,7 +7,7 @@
 
 import MouseEvent from "../../vox/event/MouseEvent";
 import RendererState from "../../vox/render/RendererState";
-import RendererSubScene from "../../vox/scene/RendererSubScene";
+import IRendererScene from "../../vox/scene/IRendererScene";
 import ColorRectImgButton from "../../orthoui/button/ColorRectImgButton";
 import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
@@ -25,7 +25,7 @@ import Color4 from "../../vox/material/Color4";
 import AABB2D from "../../vox/geom/AABB2D";
 
 export class ProgressBar {
-    private m_ruisc: RendererSubScene = null;
+    private m_ruisc: IRendererScene = null;
     private m_dispatcher: EventBaseDispatcher = new EventBaseDispatcher();
     private m_currEvent: ProgressDataEvent = new ProgressDataEvent();
 
@@ -67,7 +67,7 @@ export class ProgressBar {
     isClosed(): boolean {
         return !this.m_container.getVisible();
     }
-    initialize(ruisc: RendererSubScene,name:string = "prog", btnSize: number = 64.0, barBgLength: number = 200.0): void {
+    initialize(ruisc: IRendererScene,name:string = "prog", btnSize: number = 64.0, barBgLength: number = 200.0): void {
 
         if (this.m_ruisc == null) {
 
@@ -178,7 +178,7 @@ export class ProgressBar {
         this.m_barBoundsBtn.setXYZ(px,py,0.1);
         container.addEntity(this.m_barBoundsBtn);
         this.m_barBoundsBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.barMouseDown);
-        this.m_ruisc.addEventListener(MouseEvent.MOUSE_UP, this, this.barMouseUp);
+        this.m_ruisc.addEventListener(MouseEvent.MOUSE_UP, this, this.barMouseUp, true,false);
         this.m_barBoundsBtn.addEventListener(MouseEvent.MOUSE_OVER, this, this.barMouseOver);
         this.m_barBoundsBtn.addEventListener(MouseEvent.MOUSE_OUT, this, this.barMouseOut);
     }
@@ -238,7 +238,7 @@ export class ProgressBar {
         //console.log("barMouseDown");
         this.m_moveMin = evt.mouseX - this.m_progress * this.m_barInitLength;
         this.setProgress( this.m_progress );
-        this.m_ruisc.addEventListener(MouseEvent.MOUSE_MOVE, this, this.barMouseMove);
+        this.m_ruisc.addEventListener(MouseEvent.MOUSE_MOVE, this, this.barMouseMove, true, false);
     }
     private barMouseMove(evt: any): void {        
         this.setProgress( (evt.mouseX - this.m_moveMin) / this.m_barInitLength );
@@ -270,11 +270,11 @@ export class ProgressBar {
         if (evt.target == this.m_subBtn) {
             this.m_changeStep = -this.step;
             this.setProgressLength( this.m_barLength - this.step);
-            this.m_ruisc.addEventListener(EventBase.ENTER_FRAME, this, this.barEnterFrame);
+            this.m_ruisc.addEventListener(EventBase.ENTER_FRAME, this, this.barEnterFrame, true, false);
         } else if (evt.target == this.m_addBtn) {
             this.m_changeStep = this.step;
             this.setProgressLength( this.m_barLength + this.step);
-            this.m_ruisc.addEventListener(EventBase.ENTER_FRAME, this, this.barEnterFrame);
+            this.m_ruisc.addEventListener(EventBase.ENTER_FRAME, this, this.barEnterFrame, true, false);
         }
     }
 

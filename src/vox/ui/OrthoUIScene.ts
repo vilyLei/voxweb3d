@@ -13,6 +13,7 @@ import RendererParam from "../scene/RendererParam";
 import CanvasTextureTool from "../../orthoui/assets/CanvasTextureTool";
 import Color4 from "../material/Color4";
 import IRenderEntity from "../../vox/render/IRenderEntity";
+import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 import IRendererScene from "../../vox/scene/IRendererScene";
 
 class OrthoUIScene implements IRendererScene
@@ -47,7 +48,9 @@ class OrthoUIScene implements IRendererScene
         CanvasTextureTool.GetInstance().initializeAtlas(1024,1024, new Color4(1.0,1.0,1.0,0.0), true);
 
     }
-    
+    getRendererScene(): RendererSubScene {
+        return this.m_ruisc;
+    }
     getUid(): number {
         return this.m_ruisc.getUid();
     }
@@ -67,7 +70,7 @@ class OrthoUIScene implements IRendererScene
         this.m_ruisc.run(autoCycle);
     }
     runEnd(): void {
-        this.runEnd();
+        this.m_ruisc.runEnd();
     }
     runAt(index: number): void {
         this.m_ruisc.runAt(index);
@@ -83,6 +86,35 @@ class OrthoUIScene implements IRendererScene
     }
     removeEntity(entity: IRenderEntity): void {
         this.m_ruisc.removeEntity( entity );
+    }
+    
+    addContainer(child: DisplayEntityContainer, processIndex: number = 0): void {
+        this.m_ruisc.addContainer(child, processIndex);
+    }
+    removeContainer(child: DisplayEntityContainer): void {
+        this.m_ruisc.removeContainer(child);
+    }
+    isRayPickSelected(): boolean {
+        return this.m_ruisc.isRayPickSelected();
+    }
+
+    /**
+     * @param type event type
+     * @param target event listerner
+     * @param func event listerner callback function
+     * @param captureEnabled true
+     * @param bubbleEnabled false
+     */
+    addEventListener(type: number, target: any, func: (evt: any) => void, captureEnabled: boolean, bubbleEnabled: boolean = false): void {
+        this.m_ruisc.addEventListener(type, target, func, captureEnabled, bubbleEnabled);
+    }
+    /**
+     * @param type event type
+     * @param target event listerner
+     * @param func event listerner callback function
+     */
+    removeEventListener(type: number, target: any, func: (evt: any) => void): void {
+        this.m_ruisc.removeEventListener(type, target, func);
     }
     private resize(evt: any): void {
 
