@@ -32,6 +32,7 @@ import { SpaceCullingMask } from "../vox/space/SpaceCullingMask";
 import { OrthoUIScene } from "../vox/ui/OrthoUIScene";
 import SelectionEvent from "../vox/event/SelectionEvent";
 import SelectionBar from "../orthoui/button/SelectionBar";
+import {CameraScene} from "./scene/CameraScene";
 
 export class DemoCameraPath {
     constructor() { }
@@ -45,6 +46,7 @@ export class DemoCameraPath {
 
     private m_viewRay: CameraViewRay = new CameraViewRay();
     private m_uiScene: OrthoUIScene = new OrthoUIScene();
+    private m_camScene: CameraScene = new CameraScene();
     initialize(): void {
         console.log("DemoCameraPath::initialize()......");
         if (this.m_rscene == null) {
@@ -109,90 +111,12 @@ export class DemoCameraPath {
 
             this.update();
 
-            this.initTest();
+            //this.initTest();
+            this.m_camScene = new CameraScene();
+            this.m_camScene.initialize( this.m_rscene );
         }
     }
 
-    private m_ls: Line3DEntity = new Line3DEntity();
-    private m_lsList: Line3DEntity[] = [];
-    private m_lsEndPosList: Vector3D[] = [];
-    private m_slideFlag: boolean = false;
-    
-    private m_lookPos: Vector3D = new Vector3D(800.0, 0.0, 0.0);
-    private m_lookMat: Matrix4 = new Matrix4();
-
-    private m_camView: RHCameraView = null;
-    private m_camFrame: FrustrumFrame3DEntity = null;
-    private m_camera: CameraBase = null;
-    private m_moveAction: PathMotionAction = new PathMotionAction();
-
-    private initTest(): void {
-
-        this.m_viewRay.setPlaneParam(new Vector3D(0.0, 1.0, 0.0), 0.0);
-
-        for (let i: number = 0; i < 10; ++i) {
-
-            let pv: Vector3D = new Vector3D(Math.random() * 300 - 150, Math.random() * 300 - 150, Math.random() * 300 - 150);
-            pv.normalize();
-            pv.scaleBy(350 + Math.random() * 200);
-            this.m_lsEndPosList.push(pv);
-
-            let ls = new Line3DEntity();
-            ls.initialize(new Vector3D(), pv);
-            this.m_rscene.addEntity(ls);
-        }
-        this.m_ls = new Line3DEntity();
-        this.m_ls.initialize(new Vector3D(), new Vector3D(100.0, 0.0, 0.0));
-        this.m_rscene.addEntity(this.m_ls);
-
-        let axis: Axis3DEntity = new Axis3DEntity();
-        axis.initialize(300.0);
-        this.m_rscene.addEntity(axis);
-
-        let camera: CameraBase = new CameraBase();
-        camera.lookAtRH(new Vector3D(), new Vector3D(50, 0, 0.0), Vector3D.Y_AXIS);
-        camera.perspectiveRH(MathConst.DegreeToRadian(45), 800 / 600, 80, 500);
-        camera.update();
-        this.m_camera = camera;
-
-        let camView: RHCameraView = new RHCameraView();
-        camView.setCamera(camera);
-        camView.lookAtUpYAxis(new Vector3D(50, 0, 0.0));
-        //camView.rotateZ(30);
-        //camView.rotateX(60);
-        //camView.rotateY(30);
-        //camView.enableAxisMode();
-        camView.update();
-        this.m_camView = camView;
-
-        let camFrame: FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
-        camFrame.initiazlize(camera);
-        this.m_rscene.addEntity(camFrame);
-        this.m_camFrame = camFrame;
-    }
-
-    private m_rotV: Vector3D = new Vector3D();
-    private m_posV: Vector3D = new Vector3D();
-    private m_mat: Matrix4 = new Matrix4();
-
-    private lookAtTest(): void {
-
-        this.m_posV.setXYZ(500.0,0.0,0.0);
-        this.m_rotV.z += 0.002;
-        this.m_rotV.y += -0.003;
-        this.m_mat.identity();
-        this.m_mat.setRotationEulerAngle(this.m_rotV.x, this.m_rotV.y, this.m_rotV.z);
-        this.m_mat.transformVector3Self(this.m_posV);
-
-        if(this.m_ls != null) {
-            this.m_ls.setPosAt(1,this.m_posV);
-            this.m_ls.updateMeshToGpu();
-        }
-        if (this.m_camView != null) {
-            this.m_camView.lookAtUpYAxis(this.m_posV);
-            this.m_camView.update();
-        }
-    }
     private mouseDown(evt: any): void {
 
         this.m_viewRay.intersectPiane();
@@ -200,14 +124,9 @@ export class DemoCameraPath {
 
     }
     private keyDown(evt: any): void {
-        //return;
+        
         switch (evt.key) {
             default:
-                if (this.m_camView != null) {
-                    //this.m_camView.rotateX(-3.0);
-                    this.m_camView.lookAtUpYAxis(this.m_lsEndPosList[Math.round(Math.random() * (this.m_lsEndPosList.length - 1))]);
-                    this.m_camView.update();
-                }
                 break;
         }
     }
@@ -228,26 +147,14 @@ export class DemoCameraPath {
     private m_rot: Vector3D = new Vector3D();
 
     run(): void {
-        if (this.m_slideFlag) {
-            //this.m_rscene.getCamera().slideViewOffsetXY(0.0,1.0);
-        }
+        
         this.m_statusDisp.update(false);
 
         this.m_stageDragCtrl.runWithYAxis();
         this.m_cameraZoomController.run(null, 30.0);
 
-        this.lookAtTest();
-
-        if (this.m_camView != null) {
-            //this.m_moveAction.run();
-            if (this.m_camFrame != null) {
-                this.m_camFrame.updateFrame(this.m_camView.getCamera() != null ? this.m_camView.getCamera() : this.m_camera);
-                //this.m_camFrame.updateFrame(this.m_camera);
-                this.m_camFrame.updateMeshToGpu();
-            }
-        }
-
-
+        this.m_camScene.run();
+        
         let pickFlag: boolean = true;
 
         this.m_uiScene.runBegin(true, true);
@@ -269,9 +176,7 @@ export class DemoCameraPath {
         this.m_uiScene.renderBegin();
         this.m_uiScene.run(false);
         this.m_uiScene.runEnd();
-
-        //this.m_rscene.run();
-        //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
+        
     }
 
     private initBtns(): void {
@@ -304,17 +209,15 @@ export class DemoCameraPath {
     }
     private selectChange(evt: any): void {
         let selectEvt: SelectionEvent = evt as SelectionEvent;
-        console.log("selectEvt: ",selectEvt);
         switch( selectEvt.uuid ) {
             case "bindCamera":
-                    this.switchCamera( selectEvt.flag );
+                    this.m_camScene.switchCamera( selectEvt.flag );
                 break;
             case "slideCamera":
                     this.switchSlide( selectEvt.flag );
                 break;
             default:
                 break;
-
         }
     }
     private switchSlide(flag: boolean): void {
@@ -324,27 +227,6 @@ export class DemoCameraPath {
         }
         else {
             this.m_stageDragCtrl.enableSwing();
-        }
-    }
-    private switchCamera(flag: boolean): void {
-
-        if (flag) {
-            this.m_camView.setCamera(this.m_rscene.getCamera());
-        }
-        else {
-            this.m_camView.setCamera(this.m_camera);
-        }
-        this.m_camView.update();
-        this.m_camera.update();
-    }
-    private rotateZ(d: number): void {
-        if (this.m_camView != null) {
-            this.m_camView.rotateZ(d);
-            this.m_camView.update();
-            if (this.m_camFrame != null) {
-                this.m_camFrame.updateFrame(this.m_camView.getCamera());
-                this.m_camFrame.updateMeshToGpu();
-            }
         }
     }
 }
