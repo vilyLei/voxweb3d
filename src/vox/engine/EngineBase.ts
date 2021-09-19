@@ -3,6 +3,7 @@ import RendererDevice from "../../vox/render/RendererDevice";
 import RendererParam from "../../vox/scene/RendererParam";
 
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
+import IRendererScene from "../../vox/scene/IRendererScene";
 import RendererScene from "../../vox/scene/RendererScene";
 
 import CameraDragController from "../../voxeditor/control/CameraDragController";
@@ -15,9 +16,11 @@ export class EngineBase {
 
     constructor() { }
 
+    private m_sceneList: IRendererScene[] = [];
+    
     readonly texLoader: ImageTextureLoader = null;
-    readonly rscene: RendererScene = null;//new RendererScene();
-    readonly uiScene: OrthoUIScene = new OrthoUIScene();
+    readonly rscene: RendererScene = null;
+    readonly uiScene: OrthoUIScene = null;
 
     stageDragCtrl: CameraDragController = new CameraDragController();
     cameraZoomController: CameraZoomController = new CameraZoomController();
@@ -25,8 +28,6 @@ export class EngineBase {
     viewRay: CameraViewRay = new CameraViewRay();
 
     initialize(param: RendererParam = null): void {
-
-        console.log("EngineBase::initialize()......");
 
         if (this.rscene == null) {
 
@@ -49,6 +50,7 @@ export class EngineBase {
             this.viewRay.bindCameraAndStage(this.rscene.getCamera(), this.rscene.getStage3D());
             this.viewRay.setPlaneParam(new Vector3D(0.0, 1.0, 0.0), 0.0);
 
+            selfT.uiScene = new OrthoUIScene();
             this.uiScene.initialize( this.rscene );
 
             this.rscene.enableMouseEvent(true);
@@ -57,7 +59,13 @@ export class EngineBase {
             this.stageDragCtrl.initialize(this.rscene.getStage3D(), this.rscene.getCamera());
             this.cameraZoomController.setLookAtCtrlEnabled(false);
 
+            this.m_sceneList.push(this.rscene);
+            this.m_sceneList.push(this.uiScene);
+
         }
+    }
+    appendRendererScene(): void {
+
     }
 
     run(): void {
@@ -66,26 +74,30 @@ export class EngineBase {
         this.cameraZoomController.run(null, 30.0);
 
         let pickFlag: boolean = true;
-        
-        this.uiScene.runBegin(true, true);
-        this.uiScene.update(false, true);
-        pickFlag = this.uiScene.isRayPickSelected();
+        let list = this.m_sceneList;
+        let i: number = list.length - 2;
 
-        this.rscene.runBegin(false);
-        this.rscene.update(false, !pickFlag);
-        pickFlag = pickFlag || this.rscene.isRayPickSelected();
+        let scene: IRendererScene = list[i+1];
+        scene.runBegin(true, true);
+        scene.update(false, true);
+        pickFlag = scene.isRayPickSelected();
 
+        for(; i >= 0; --i) {
+            scene = list[i];
+            scene.runBegin(false, true);
+            scene.update(false, !pickFlag);
+            pickFlag = pickFlag || this.rscene.isRayPickSelected();
+        }
         /////////////////////////////////////////////////////// ---- mouseTest end.
 
 
         /////////////////////////////////////////////////////// ---- rendering begin.
-        this.rscene.renderBegin();
-        this.rscene.run(false);
-        this.rscene.runEnd();
-
-        this.uiScene.renderBegin();
-        this.uiScene.run(false);
-        this.uiScene.runEnd();        
+        for(i = 0; i < list.length; ++i) {
+            scene = list[i];
+            scene.renderBegin(true);
+            scene.run(false);
+            scene.runEnd();
+        }
     }
 
 

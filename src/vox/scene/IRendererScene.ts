@@ -10,7 +10,14 @@ import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 interface IRendererScene {
     
     getUid(): number;
+    /**
+     * @param contextBeginEnabled the default value is default
+     */
     renderBegin(contextBeginEnabled: boolean): void
+    /**
+     * @param autoCycle the default value is true
+     * @param contextBeginEnabled the default value is true
+     */
     runBegin(autoCycle: boolean, contextBeginEnabled: boolean): void;
     setRayTestEanbled(enabled: boolean): void;
     update(autoCycle: boolean, mouseEventEnabled: boolean): void;

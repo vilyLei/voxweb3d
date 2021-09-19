@@ -26,7 +26,6 @@ export class DemoCameraPath {
     private m_engine: EngineBase = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
-    private m_viewRay: CameraViewRay = new CameraViewRay();
     private m_camScene: CameraScene = new CameraScene();
 
     initialize(): void {
@@ -38,19 +37,16 @@ export class DemoCameraPath {
             RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
-            this.m_engine = new EngineBase();
-            this.m_engine.initialize();
-
             let rparam: RendererParam = new RendererParam();
             rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
             rparam.setCamPosition(1800.0, 1800.0, 1800.0);
             rparam.setCamProject(45, 20.0, 7000.0);
             
+            this.m_engine = new EngineBase();
+            this.m_engine.initialize(rparam);
+
             this.m_statusDisp.initialize();
             
-            this.m_viewRay.bindCameraAndStage(this.m_engine.rscene.getCamera(), this.m_engine.rscene.getStage3D());
-            this.m_viewRay.setPlaneParam(new Vector3D(0.0, 1.0, 0.0), 0.0);
-
             this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_engine.rscene.addEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
             
@@ -87,8 +83,8 @@ export class DemoCameraPath {
 
     private mouseDown(evt: any): void {
 
-        this.m_viewRay.intersectPiane();
-        let pv: Vector3D = this.m_viewRay.position;
+        this.m_engine.viewRay.intersectPiane();
+        let pv: Vector3D = this.m_engine.viewRay.position;
 
     }
     private keyDown(evt: any): void {
