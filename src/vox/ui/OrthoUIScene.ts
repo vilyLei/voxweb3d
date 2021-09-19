@@ -12,8 +12,10 @@ import EventBase from "../event/EventBase";
 import RendererParam from "../scene/RendererParam";
 import CanvasTextureTool from "../../orthoui/assets/CanvasTextureTool";
 import Color4 from "../material/Color4";
+import IRenderEntity from "../../vox/render/IRenderEntity";
+import IRendererScene from "../../vox/scene/IRendererScene";
 
-class OrthoUI
+class OrthoUIScene implements IRendererScene
 {
     private m_rscene: RendererScene = null;
     private m_ruisc: RendererSubScene = null;
@@ -45,6 +47,43 @@ class OrthoUI
         CanvasTextureTool.GetInstance().initializeAtlas(1024,1024, new Color4(1.0,1.0,1.0,0.0), true);
 
     }
+    
+    getUid(): number {
+        return this.m_ruisc.getUid();
+    }
+    renderBegin(contextBeginEnabled: boolean = false): void {
+        this.m_ruisc.renderBegin();
+    }
+    runBegin(autoCycle: boolean = true, contextBeginEnabled: boolean = false): void {
+        this.m_ruisc.runBegin(autoCycle, contextBeginEnabled);
+    }
+    setRayTestEanbled(enabled: boolean): void {
+        this.m_ruisc.setRayTestEanbled( enabled );
+    }
+    update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
+        this.m_ruisc.update( autoCycle, mouseEventEnabled );
+    }
+    run(autoCycle: boolean = false): void {
+        this.m_ruisc.run(autoCycle);
+    }
+    runEnd(): void {
+        this.runEnd();
+    }
+    runAt(index: number): void {
+        this.m_ruisc.runAt(index);
+    }
+    /**
+     * add an entity to the renderer process of the renderer instance
+     * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
+     * @param processid this destination renderer process id
+     * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
+     */
+    addEntity(entity: IRenderEntity, processIndex: number = 0, deferred: boolean = true): void {
+        this.m_ruisc.addEntity(entity, processIndex, deferred);
+    }
+    removeEntity(entity: IRenderEntity): void {
+        this.m_ruisc.removeEntity( entity );
+    }
     private resize(evt: any): void {
 
         if (this.m_ruisc != null) {
@@ -53,4 +92,4 @@ class OrthoUI
         }
     }
 }
-export {OrthoUI};
+export {OrthoUIScene};
