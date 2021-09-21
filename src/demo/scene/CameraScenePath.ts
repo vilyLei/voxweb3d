@@ -122,13 +122,22 @@ class CameraScenePath {
 
         }
         this.m_lsUpList.push(this.m_lsUpList[0]);
+        this.m_lsUpList.push(this.m_lsUpList[1]);
+        //this.m_lsUpList.push(this.m_lsUpList[1]);
 
-        
+        this.m_lsPosList.push(this.m_lsPosList[1]);
+       // this.m_lsPosList.push(this.m_lsPosList[1]);
+
         let axis: Axis3DEntity = new Axis3DEntity();
+        axis.initialize(300.0);
+        this.m_rscene.addEntity(axis);
+        
+        axis = new Axis3DEntity();
         axis.initialize(300.0);
         this.m_rscene.addEntity(axis);
 
         this.moveAction.upList = this.m_lsUpList;
+        this.moveAction.posList = this.m_lsPosList;
         this.moveAction.bindTarget( axis );
         this.moveAction.setPathPosList(this.m_lsPosList);
 

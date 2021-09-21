@@ -19,6 +19,7 @@ class PathMoveAction {
     cameraOffset: Vector3D = new Vector3D(0,130,-200);
 
     upList: Vector3D[] = null;
+    posList: Vector3D[] = null;
 
     private m_degTween: AngleDegreeTween = new AngleDegreeTween();
 
@@ -39,6 +40,30 @@ class PathMoveAction {
     private m_circle: boolean = false;
     private m_pathTrack: PathTrack = new PathTrack();
     private m_transMat: Matrix4 = new Matrix4();
+
+    calcMatrix(upV: Vector3D, moveDV: Vector3D): Matrix4 {
+
+        let xAxis: Vector3D = new Vector3D();
+        xAxis.copyFrom(moveDV);
+        let yAxis: Vector3D = upV.clone();
+        let zAxis: Vector3D = new Vector3D();
+        Vector3D.Cross(xAxis, yAxis, zAxis);
+        xAxis.normalize();
+        yAxis.normalize();
+        zAxis.normalize();
+
+        this.m_transMat.identity();
+        this.m_transMat.setThreeAxes(xAxis, yAxis, zAxis);
+        this.m_transMat.setTranslation(this.m_outV);
+
+        return this.m_transMat;
+    }
+    private m_upV: Vector3D = new Vector3D();
+    private m_moveDV: Vector3D = new Vector3D();
+    private m_moveDV0: Vector3D = new Vector3D();
+    private m_moveDV1: Vector3D = new Vector3D();
+    private m_up0: Vector3D = new Vector3D();
+    private m_up1: Vector3D = new Vector3D();
     run(): void {
 
         if (this.m_flag != PathTrack.TRACK_END) {
@@ -47,37 +72,57 @@ class PathMoveAction {
                 let dis: number = this.m_dis + this.motionSpeed;
                 this.m_flag = this.m_pathTrack.calcPosByDis(this.m_outV, this.m_dis, true);
                 
-                let xAxis: Vector3D = new Vector3D();
-                xAxis.subVecsTo(this.m_outV, this.m_preV);
-                //console.log("index: ", this.m_pathTrack.getCurrPosIndex());
-                this.m_pathTrack.getDisProgrssInSeg( dis );
-                this.m_temV.copyFrom(this.m_outV);
-                this.m_preV.y = this.m_temV.y;
-                this.m_temV.subtractBy(this.m_preV);
-                let currDegree: number = this.m_degTween.calcDegree( 360 - MathConst.GetDegreeByXY(this.m_temV.x,this.m_temV.z) );
-
                 let index: number = this.m_pathTrack.getCurrPosIndex();
-                let yAxis: Vector3D = this.upList[index];
-                let zAxis: Vector3D = new Vector3D();
-                Vector3D.Cross(xAxis, yAxis, zAxis);
-                xAxis.normalize();
-                yAxis.normalize();
-                zAxis.normalize();
 
-                this.m_transMat.identity();
-                this.m_transMat.setThreeAxes(xAxis, yAxis, zAxis);
+                let posList: Vector3D[] = this.posList;
 
-                this.m_temV.copyFrom( this.m_outV );
-                this.m_temV.y += this.cameraOffset.y;
 
-                if(this.cameraFollower != null) {
-                    this.cameraFollower.moveToOnXOZ(this.m_temV, 200, currDegree);
-                }
+                let k: number = this.m_pathTrack.getDisProgrssInSeg( dis );
 
-                this.m_target.setPosition(this.m_outV);
-                this.m_target.setRotationXYZ(0.0, currDegree ,0.0);
+                let moveDV0: Vector3D = this.m_moveDV0;
+                moveDV0.subVecsTo(posList[index+1], posList[index]);
+                moveDV0.normalize();
+                let moveDV1: Vector3D = this.m_moveDV1;
+                moveDV1.subVecsTo(posList[index+2], posList[index+1]);
+                moveDV1.normalize();
+
+                moveDV0.scaleBy(1.0 - k);
+                moveDV1.scaleBy(k);
+                let moveDV: Vector3D = this.m_moveDV;
+                moveDV.addVecsTo(moveDV0, moveDV1);
+                moveDV.normalize();
+
+                this.m_up0.copyFrom(this.upList[index]);
+                this.m_up1.copyFrom(this.upList[index+1]);
+                
+                this.m_up0.scaleBy(1.0 - k);
+                this.m_up1.scaleBy(k);
+
+                let upV: Vector3D = this.m_upV;
+                upV.addVecsTo(this.m_up0, this.m_up1);
+                //console.log("index: ", this.m_pathTrack.getCurrPosIndex());
+                //this.m_temV.copyFrom(this.m_outV);
+                //this.m_preV.y = this.m_temV.y;
+                //this.m_temV.subtractBy(this.m_preV);
+                //let currDegree: number = this.m_degTween.calcDegree( 360 - MathConst.GetDegreeByXY(this.m_temV.x,this.m_temV.z) );
+
+                
+                let transMat: Matrix4 = this.calcMatrix(upV, moveDV);
+
+                //this.m_temV.copyFrom( this.m_outV );
+                //this.m_temV.y += this.cameraOffset.y;
+
+                //if(this.cameraFollower != null) {
+                //    this.cameraFollower.moveToOnXOZ(this.m_temV, 200, currDegree);
+                //}
+
+                //  this.m_target.setPosition(this.m_outV);
+                //  this.m_target.setRotationXYZ(0.0, currDegree ,0.0);
+                this.m_target.getTransform().setParentMatrix(transMat);
                 this.m_target.update();
-                this.m_target.getPosition( this.m_preV );
+                //this.m_target.getPosition( this.m_preV );
+                //this.m_target.getPosition( this.m_preV );
+                this.m_preV.copyFrom(this.m_outV);
                 this.m_dis = dis;
             }
         } else {
@@ -103,8 +148,8 @@ class PathMoveAction {
         let i: number = 0;
         let len: number = posList.length;
         if(this.m_target != null) {
-            this.m_target.setPosition(posList[0]);
-            this.m_target.update();
+            //this.m_target.setPosition(posList[0]);
+            //this.m_target.update();
         }
         this.m_preV.copyFrom(posList[0]);
         this.m_temV.copyFrom(posList[1]);
