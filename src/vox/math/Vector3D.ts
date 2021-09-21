@@ -166,7 +166,9 @@ class Vector3D {
 
     private static __vtor3Stv0: Vector3D = new Vector3D();
     private static __vtor3Stv1: Vector3D = new Vector3D();
-    // 右手法则(为正)
+    /**
+     * 右手法则(为正)
+     */
     static Cross(a: Vector3D, b: Vector3D, result: Vector3D): void {
         result.x = a.y * b.z - a.z * b.y;
         result.y = a.z * b.x - a.x * b.z;

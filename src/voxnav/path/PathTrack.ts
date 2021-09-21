@@ -96,6 +96,16 @@ class PathTrack
 	{
 		return this._index;
 	}
+	//this._posDisList
+	getDisProgrssInSeg(pdis:number): number {
+		let k: number = pdis - this._posDisList[this._index];
+		if(k >= 0) {
+			return k / this._segs[this._index].length;
+			//return k;
+		}
+		//console.log("pdis, k: ", pdis, k);
+		return 0;
+	}
 	getPosTotal():number
 	{
 		return this._segs.length;
@@ -154,6 +164,7 @@ class PathTrack
 					this.binQueryCloseLess(pdis, this._index - 1, len, this._posDisList, 0, len - 1);
 				}
 				let seg = this._segs[this._index];
+				
 				pdis -= seg.disA;
 				outV.x = seg.pos.x + seg.tv.x * pdis;
 				outV.y = seg.pos.y + seg.tv.y * pdis;
