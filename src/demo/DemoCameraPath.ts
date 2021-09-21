@@ -17,6 +17,7 @@ import SelectionEvent from "../vox/event/SelectionEvent";
 import SelectionBar from "../orthoui/button/SelectionBar";
 
 import {CameraScene} from "./scene/CameraScene";
+import {CameraScenePath} from "./scene/CameraScenePath";
 import EngineBase from "../vox/engine/EngineBase";
 
 export class DemoCameraPath {
@@ -26,7 +27,7 @@ export class DemoCameraPath {
     private m_engine: EngineBase = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
-    private m_camScene: CameraScene = new CameraScene();
+    private m_camScene: CameraScenePath = new CameraScenePath();
 
     initialize(): void {
 
@@ -63,20 +64,19 @@ export class DemoCameraPath {
 
             let size: number = 2500.0;
             let disY: number = 0.5 * size;
-            let box: Box3DEntity = new Box3DEntity();
-            box.spaceCullMask = SpaceCullingMask.NONE;
-            box.uScale = 4.0;
-            box.vScale = 4.0;
+            let bg_box: Box3DEntity = new Box3DEntity();
+            bg_box.spaceCullMask = SpaceCullingMask.NONE;
+            bg_box.uScale = 4.0;
+            bg_box.vScale = 4.0;
             //metal_08
-            box.showFrontFace();
-            box.initialize(new Vector3D(-size, -size * 0.5, -size), new Vector3D(size, size * 0.7, size), [this.m_engine.texLoader.getTexByUrl("static/assets/brickwall_big.jpg")]);
-            box.setXYZ(0.0, 0.0, 0.0);
-            this.m_engine.rscene.addEntity(box);
+            bg_box.showFrontFace();
+            bg_box.initialize(new Vector3D(-size, -size * 0.5, -size), new Vector3D(size, size * 0.7, size), [this.m_engine.texLoader.getTexByUrl("static/assets/brickwall_big.jpg")]);
+            bg_box.setXYZ(0.0, 0.0, 0.0);
+            this.m_engine.rscene.addEntity(bg_box);
             //*/
 
             this.update();
 
-            this.m_camScene = new CameraScene();
             this.m_camScene.initialize( this.m_engine.rscene );
         }
     }

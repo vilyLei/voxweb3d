@@ -91,6 +91,7 @@ export default class Line3DEntity extends DisplayEntity {
         this.createMaterial();
         this.activeDisplay();
     }
+    
     initializeRectXOZ(px: number, pz: number, pw: number, pl: number): void {
         pw += px;
         pl += pz;
@@ -103,6 +104,35 @@ export default class Line3DEntity extends DisplayEntity {
             ];
         }
         this.m_posarr = [px, 0.0, pz, pw, 0.0, pz, pw, 0.0, pz, pw, 0.0, pl, pw, 0.0, pl, px, 0.0, pl, px, 0.0, pl, px, 0.0, pz];
+
+        this.createMaterial();
+        this.activeDisplay();
+    }
+    initializePolygon(posList: Vector3D[], colorList: Color4[] = null): void {
+
+        this.m_posarr = [];
+        if (!this.dynColorEnabled) {
+            this.m_colorarr = [];
+            if(colorList == null) {
+                for(let i: number = 0; i < posList.length; ++i) {
+                    this.m_colorarr.push(this.color.r, this.color.g, this.color.b,this.color.r, this.color.g, this.color.b);
+                }
+            }
+            else {
+                let color: Color4;
+                for(let i: number = 0; i < posList.length; ++i) {
+                    color = colorList[i];
+                    this.m_colorarr.push(color.r, color.g, color.b);
+                    this.m_colorarr.push(color.r, color.g, color.b);
+                }
+            }
+
+        }
+
+        for(let i: number = 1; i < posList.length; ++i) {
+            this.m_posarr.push(posList[i-1].x, posList[i-1].y, posList[i-1].z);
+            this.m_posarr.push(posList[i].x, posList[i].y, posList[i].z);
+        }
 
         this.createMaterial();
         this.activeDisplay();

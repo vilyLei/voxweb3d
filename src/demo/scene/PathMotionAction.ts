@@ -104,7 +104,7 @@ class PathMotionAction {
             this.m_pathTrack.addXYZ(pv.x, pv.y, pv.z);
         }
         if(circle) {
-            if(Vector3D.DistanceSquared(posList[0], posList[posList.length - 1])) {
+            if(Vector3D.DistanceSquared(posList[0], posList[posList.length - 1]) > 0.01) {
                 pv = posList[0];
                 this.m_pathTrack.addXYZ(pv.x, pv.y, pv.z);
             }
