@@ -5,8 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
+import Color4 from "../../vox/material/Color4";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
+import {IRenderCamera} from "../render/IRenderCamera";
 interface IRendererScene {
     
     getUid(): number;
@@ -50,5 +52,14 @@ interface IRendererScene {
      * @param func event listerner callback function
      */
     removeEventListener(type: number, target: any, func: (evt: any) => void): void;
+
+    
+    setClearUint24Color(colorUint24: number, alpha: number): void;
+    setClearRGBColor3f(pr: number, pg: number, pb: number): void;
+    setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void;
+    setClearColor(color: Color4): void;
+    setRenderToBackBuffer(): void;
+    updateCamera(): void;
+    getCamera(): IRenderCamera;
 }
 export default IRendererScene;

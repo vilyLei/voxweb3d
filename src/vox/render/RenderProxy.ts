@@ -122,7 +122,7 @@ class RenderProxy implements IRenderProxy{
         this.m_camera.unlock();
     }
     getCamera(): IRenderCamera {
-        return this.m_camera as IRenderCamera;
+        return this.m_camera;
     }
     updateCamera(): void {
         return this.m_camera.update();

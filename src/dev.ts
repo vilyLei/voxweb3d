@@ -200,6 +200,8 @@
 
 //  import {DemoEmptyRendererScene as Demo} from "./demo/DemoEmptyRendererScene";
 
+//  import {DemoEngine as Demo} from "./demo/DemoEngine";
+
 //  import {DemoAPlane as Demo} from "./demo/DemoAPlane";
 
 //  import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";

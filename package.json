@@ -10,7 +10,12 @@
     "buildvox": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/dev.ts",
     
     "build_baseRenderer": "vue-cli-service build --target lib --name VoxApp --dest dist/baseRenderer ./src/distribution/rendererIsolate/devBaseRenderer.ts",
+    "build_engine": "vue-cli-service build --target lib --name VoxApp --dest dist/engine ./src/distribution/rendererIsolate/devEngine.ts",
+    
     "build_roFunctions": "vue-cli-service build --target lib --name VoxApp --dest dist/roFunctions ./src/distribution/rendererIsolate/devROFunctions.ts",
+    
+    "build_minROFunctions": "vue-cli-service build --target lib --name VoxApp --dest dist/minROFunctions ./src/distribution/rendererIsolate/devMinROFunctions.ts",
+    
     "build_threadFuncs": "vue-cli-service build --target lib --name VoxApp --dest dist/threadFuncs ./src/distribution/rendererIsolate/devThreadFuncs.ts",
     "buildrplayer": "vue-cli-service build --target lib --name VoxApp --dest dist/player ./src/distribution/rendererIsolate/devPlayerOne.ts",
     "dev": "vue-cli-service serve --type=dev",

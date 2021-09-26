@@ -1,9 +1,8 @@
-
-
 var pwindow: any = window;
 if(pwindow["VoxCore"] == undefined) {
     pwindow["VoxCore"] = {};
 }
 var VoxCore = pwindow["VoxCore"];
-import {ROFunctions} from "./ROFunctions";
-VoxCore["roFunctions"] = ROFunctions;
+import {Vox3DEngine} from "./Vox3DEngine";
+VoxCore["vox3DEngine"] = Vox3DEngine;
+pwindow["VoxCore"] = VoxCore;

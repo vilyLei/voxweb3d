@@ -40,6 +40,7 @@ import MouseEvt3DController from "../../vox/scene/MouseEvt3DController";
 import IEvt3DController from "../../vox/scene/IEvt3DController";
 import TextureBlock from "../texture/TextureBlock";
 import FBOInstance from "./FBOInstance";
+import Color4 from "../material/Color4";
 
 export default class RendererSubScene implements IRenderer, IRendererScene {
     private static __s_uid: number = 0;
@@ -133,16 +134,6 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     }
     createFBOInstance(): FBOInstance {
         return new FBOInstance(this, this.textureBlock.getRTTStrore());
-    }
-    setClearRGBColor3f(pr: number, pg: number, pb: number) {
-        if (this.m_renderProxy != null) {
-            this.m_renderProxy.setClearRGBColor3f(pr, pg, pb);
-        }
-    }
-    setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void {
-        if (this.m_renderProxy != null) {
-            this.m_renderProxy.setClearRGBAColor4f(pr, pg, pb, pa);
-        }
     }
 
     setEvt3DController(evt3DCtr: IEvt3DController): void {
@@ -592,7 +583,23 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
             this.m_camera.update();
         }
     }
+    setClearUint24Color(colorUint24: number, alpha: number = 1.0): void {
+        this.m_renderProxy.setClearUint24Color(colorUint24, alpha);
+    }
+    setClearRGBColor3f(pr: number, pg: number, pb: number): void {
+        this.m_renderProxy.setClearRGBColor3f(pr, pg, pb);
+    }
+    setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void {
+        this.m_renderProxy.setClearRGBAColor4f(pr, pg, pb, pa);
+    }
+    setClearColor(color: Color4): void {
+        this.m_renderProxy.setClearRGBAColor4f(color.r, color.g, color.b, color.a);
+    }
+    setRenderToBackBuffer(): void {
+        this.m_renderProxy.setRenderToBackBuffer();
+    }
     toString(): string {
         return "[RendererSubScene(uid = " + this.m_uid + ")]";
     }
+    
 }

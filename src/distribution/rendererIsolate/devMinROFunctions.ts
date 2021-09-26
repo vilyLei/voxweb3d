@@ -5,5 +5,5 @@ if(pwindow["VoxCore"] == undefined) {
     pwindow["VoxCore"] = {};
 }
 var VoxCore = pwindow["VoxCore"];
-import {ROFunctions} from "./ROFunctions";
-VoxCore["roFunctions"] = ROFunctions;
+import {MinROFunctions} from "./MinROFunctions";
+VoxCore["minROFunctions"] = MinROFunctions;

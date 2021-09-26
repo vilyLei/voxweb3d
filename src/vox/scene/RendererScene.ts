@@ -185,7 +185,7 @@ export default class RendererScene implements IRenderer,IRendererScene {
     setClearUint24Color(colorUint24: number, alpha: number = 1.0): void {
         this.m_renderProxy.setClearUint24Color(colorUint24, alpha);
     }
-    setClearRGBColor3f(pr: number, pg: number, pb: number) {
+    setClearRGBColor3f(pr: number, pg: number, pb: number): void {
         this.m_renderProxy.setClearRGBColor3f(pr, pg, pb);
     }
     setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void {

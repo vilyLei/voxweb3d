@@ -15,6 +15,7 @@ import Color4 from "../material/Color4";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 import IRendererScene from "../../vox/scene/IRendererScene";
+import {IRenderCamera} from "../render/IRenderCamera";
 
 class OrthoUIScene implements IRendererScene
 {
@@ -122,6 +123,28 @@ class OrthoUIScene implements IRendererScene
             let stage = this.m_ruisc.getStage3D();
             this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
         }
+    }
+    
+    setClearUint24Color(colorUint24: number, alpha: number = 1.0): void {
+        this.m_rscene.setClearUint24Color(colorUint24, alpha);
+    }
+    setClearRGBColor3f(pr: number, pg: number, pb: number): void {
+        this.m_rscene.setClearRGBColor3f(pr, pg, pb);
+    }
+    setClearRGBAColor4f(pr: number, pg: number, pb: number, pa: number): void {
+        this.m_rscene.setClearRGBAColor4f(pr, pg, pb, pa);
+    }
+    setClearColor(color: Color4): void {
+        this.m_rscene.setClearRGBAColor4f(color.r, color.g, color.b, color.a);
+    }
+    setRenderToBackBuffer(): void {
+        this.m_rscene.setRenderToBackBuffer();
+    }
+    updateCamera(): void {
+        this.m_rscene.updateCamera();
+    }
+    getCamera(): IRenderCamera {
+        return this.m_rscene.getCamera();
     }
 }
 export {OrthoUIScene};
