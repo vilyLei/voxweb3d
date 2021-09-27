@@ -1,7 +1,64 @@
-﻿
+﻿import sys;
 import os;
 import re;
+import math;
 from xml.dom.minidom import Document;
+
+m_srcKeys = [];
+m_dstKeys = [];
+for k in range(65,91):
+	#print("chr: "+chr(k));
+	m_srcKeys.append(chr(k));
+	m_dstKeys.append(chr(k));
+	#
+for k in range(97,123):
+	#print("chr: "+chr(k));
+	m_srcKeys.append(chr(k));
+	m_dstKeys.append(chr(k));
+	#
+for k in range(0,9):
+	#print("chr: "+chr(k));
+	m_dstKeys.append(str(k));
+	#
+
+print("srcKeys: "+str(m_srcKeys));
+print("dstKeys: "+str(m_dstKeys));
+
+#m_srcKeys = ["a","b","c","d","e"];
+#m_dstKeys = ["a","b","0","1"];
+rn = len(m_srcKeys);
+cn = len(m_dstKeys);
+
+m_index = 0;
+i = 0;
+len2 = rn + rn * cn;
+
+def getMinStr():
+	global m_index;
+	t = m_index;
+	m_index += 1;
+	if t < rn:
+		i = t+1;
+		return m_srcKeys[ t ];
+	
+	elif t < len2:
+		i = t - rn;
+		r = math.floor(i/cn);
+		c = i%cn;
+		return m_srcKeys[r] + m_dstKeys[c];
+	#
+	return "$"+str(t);
+##########################################
+
+def testMinStr():
+	for k in range(0,100):
+		keyStr = getMinStr();
+		if keyStr.find("$") >= 0:
+			break;
+		print("keyStr: "+keyStr);
+
+#testMinStr();
+
 def isNumLeters(s):
     s = str(s)
     if s == '':
@@ -17,10 +74,17 @@ def isNumLeters(s):
         else:
             return False
 #############################################
+cmdParams = sys.argv;
+dirName = "";
+saveFileName = "";
+if len(cmdParams) > 1:
+	print("cmdParams: "+cmdParams[1]);
+	saveFileName = cmdParams[1];
+	dirName = cmdParams[1] + "/";
 
 currDir = os.path.abspath(os.path.join(os.path.dirname('packageJS.py'),os.path.pardir));
-filePath = currDir+"/dist/VoxApp.umd.min.js";
-fileSavePath = currDir+"/dist/VoxApp.umd.min_py.js";
+filePath = currDir+"/dist/"+dirName+"VoxApp.umd.min.js";
+fileSavePath = currDir+"/dist/"+dirName+saveFileName+".js";
 #filePath = currDir+"/dist/VoxApp.umd.js";
 print("filePath: "+filePath);
 targetFP = open(filePath,"r+");
@@ -52,7 +116,7 @@ for line in targetFP.readlines():
 				# re.match('^[0-9a-zA-Z]+$', s[0])
 				nameStr = lineStr[i:j];
 				if isNumLeters(nameStr):
-					ns = "$"+str(nameIndex);
+					ns = getMinStr();#"$"+str(nameIndex);
 					lineStr = lineStr.replace(nameStr,ns);
 					nameIndex += 1;
 					findTotal += 1;
@@ -70,54 +134,5 @@ SaveTargetFile = open(fileSavePath,"w");
 SaveTargetFile.write(fileStr);
 SaveTargetFile.close();
 
-# currDir = os.getcwd();
-# TargetFileContent = "";
-# TargetName = "voxword";
-# TargetName_html = TargetName + ".html";
-# currDir =  os.getcwd();
-
-# i = currDir.find("voxEngineV3");
-# print i;
-# JSRootPath = currDir[0:i] + "voxEngineV3/";
-# JSRootPath = JSRootPath.replace("\\","/");
-# print "JSRootPath: "+JSRootPath;
-# TargetFilePath = currDir + "/" + TargetName_html;
-# print "TargetFilePath: "+TargetFilePath;
-# def parseCodeFP(fpstr):
-# 	linesArr = fpstr.split("\n");
-# 	lineTotal = len(linesArr);
-# 	content = "";
-# 	print "linesArr.length: "+str(lineTotal);
-# 	for i in range(0,lineTotal):
-# 		lineStr = linesArr[i];
-# 		boo = lineStr.find("/*  ")>=0 or lineStr.find("/******************")>=0;
-# 		#boo2 = lineStr.find("///*")>=0 or lineStr.find("//*")>=0 or lineStr.find("//*/")>=0;
-# 		if (not boo) and len(lineStr) > 0:
-# 			content += linesArr[i]+"\n";
-# 	return content;
-# # load target file raw data
-# targetFP = open(TargetFilePath,"r+");
-# for line in targetFP.readlines():
-# 	if line.find("<script ") >= 0:
-# 		ia = line.find('"');
-# 		ib = line.find('"',ia + 1);
-# 		fpath = JSRootPath + line[ia+1:ib];
-# 		#print "js path: "+fpath;
-# 		# read this file all str
-# 		fp = open(fpath,"r");
-# 		fpContent = fp.read();
-# 		rstr = parseCodeFP(fpContent);
-# 		TargetFileContent += rstr;
-# 		fp.close();
-    			
-# targetFP.close();
-# currDir = currDir.replace("\\","/");
-# TargetJSFilePath = currDir + "/" + TargetName + ".js";
-# TargetFile = open(TargetJSFilePath,"w");
-# TargetFile.write(TargetFileContent);
-# TargetFile.close();
-
 print("currDir: "+currDir);
-#pdir = os.listdir(currDir+"/");
-#find_as(currDir+"/");
 print("run finish...");
