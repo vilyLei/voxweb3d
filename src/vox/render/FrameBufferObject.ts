@@ -470,21 +470,21 @@ class FrameBufferObject
 		this.m_fboTarget = 0;
 		this.m_fboSizeChanged = false;
 	}
-	toString = function()
-	{
-		switch (this.m_bufferLType)
-		{
-		case FrameBufferType.DRAW_FRAMEBUFFER:
-			return "[FrameBufferObject(DRAW_FRAMEBUFFER(uid="+this.m_uid+" width="+this.m_width+",height="+this.m_height+")]";
-			break;
-		case FrameBufferType.READ_FRAMEBUFFER:
-			return "[FrameBufferObject(READ_FRAMEBUFFER(uid="+this.m_uid+" width="+this.m_width+",height="+this.m_height+")]";
-			break;
-		default:
-			break;
-		}
-		return "[FrameBufferObject(FRAMEBUFFER(uid="+this.m_uid+" width="+this.m_width+",height="+this.m_height+")]";
-	}
+	// toString = function()
+	// {
+	// 	switch (this.m_bufferLType)
+	// 	{
+	// 	case FrameBufferType.DRAW_FRAMEBUFFER:
+	// 		return "[FrameBufferObject(DRAW_FRAMEBUFFER(uid="+this.m_uid+" width="+this.m_width+",height="+this.m_height+")]";
+	// 		break;
+	// 	case FrameBufferType.READ_FRAMEBUFFER:
+	// 		return "[FrameBufferObject(READ_FRAMEBUFFER(uid="+this.m_uid+" width="+this.m_width+",height="+this.m_height+")]";
+	// 		break;
+	// 	default:
+	// 		break;
+	// 	}
+	// 	return "[FrameBufferObject(FRAMEBUFFER(uid="+this.m_uid+" width="+this.m_width+",height="+this.m_height+")]";
+	// }
 	private buildDepthStencilRBO(rgl:any, pw:number, ph:number):void
 	{
 		if(this.m_depthStencilRBO == null)this.m_depthStencilRBO = rgl.createRenderbuffer();

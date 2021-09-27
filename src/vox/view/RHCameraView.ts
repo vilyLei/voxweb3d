@@ -286,8 +286,5 @@ class RHCameraView implements ICameraView{
             }
         }
     }
-    toString(): string {
-        return "[Object CameraBase()]";
-    }
 }
 export { RHCameraView };

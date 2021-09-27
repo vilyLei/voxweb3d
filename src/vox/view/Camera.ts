@@ -463,8 +463,5 @@ class Camera implements IRenderCamera{
     lookLHEnabled(): boolean {
         return !this.m_lookRHEnabled;
     }
-    toString(): string {
-        return "[Object CameraBase()]";
-    }
 }
 export{Camera};

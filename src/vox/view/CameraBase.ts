@@ -1054,8 +1054,5 @@ class CameraBase implements IRenderCamera{
     getProjectMatrix(): Matrix4 {
         return this.m_projMat;
     }
-    toString(): string {
-        return "[Object CameraBase()]";
-    }
 }
 export default CameraBase;
