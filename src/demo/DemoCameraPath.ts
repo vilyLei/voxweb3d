@@ -117,7 +117,9 @@ export class DemoCameraPath {
     }
 
     private initBtns(): void {
-
+        if(RendererDevice.IsMobileWeb()) {
+            this.m_btnSize = 64;
+        }
         let camBtn = this.createSelectBtn("bindCamera", "bindCamera", "ON", "OFF", true);
         camBtn = this.createSelectBtn("slideCamera", "slideCamera", "ON", "OFF", false);
     }
