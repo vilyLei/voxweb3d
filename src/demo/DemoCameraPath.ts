@@ -41,7 +41,7 @@ export class DemoCameraPath {
             let rparam: RendererParam = new RendererParam();
             rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
             rparam.setCamPosition(1800.0, 1800.0, 1800.0);
-            rparam.setCamProject(45, 20.0, 7000.0);
+            rparam.setCamProject(45, 20.0, 9000.0);
             
             this.m_engine = new EngineBase();
             this.m_engine.initialize(rparam);
@@ -62,7 +62,7 @@ export class DemoCameraPath {
             plane.setXYZ(0.0, -300.0, 0.0);
             //this.m_rscene.addEntity(plane);
 
-            let size: number = 2500.0;
+            let size: number = 3200.0;
             let disY: number = 0.5 * size;
             let bg_box: Box3DEntity = new Box3DEntity();
             bg_box.spaceCullMask = SpaceCullingMask.NONE;
@@ -118,7 +118,7 @@ export class DemoCameraPath {
 
     private initBtns(): void {
 
-        let camBtn = this.createSelectBtn("bindCamera", "bindCamera", "ON", "OFF", false);
+        let camBtn = this.createSelectBtn("bindCamera", "bindCamera", "ON", "OFF", true);
         camBtn = this.createSelectBtn("slideCamera", "slideCamera", "ON", "OFF", false);
     }
 

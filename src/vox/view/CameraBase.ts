@@ -97,19 +97,18 @@ class CameraBase implements IRenderCamera{
         if (this.m_unlock) {
             this.m_camPos.copyFrom(camPos);
             this.m_lookAtPos.copyFrom(lookAtPos);
-            this.m_up.copyFrom(up);
             this.m_lookAtDirec.x = this.m_lookAtPos.x - this.m_camPos.x;
             this.m_lookAtDirec.y = this.m_lookAtPos.y - this.m_camPos.y;
             this.m_lookAtDirec.z = this.m_lookAtPos.z - this.m_camPos.z;
             this.m_lookRHEnabled = true;
             this.m_lookDirectNV.copyFrom(this.m_lookAtDirec);
             this.m_lookDirectNV.normalize();
-            this.m_initUP.copyFrom(up);
+            Vector3D.Cross(this.m_lookAtDirec, up, this.m_initRV);
+            Vector3D.Cross(this.m_initRV, this.m_lookAtDirec, this.m_initUP);
             this.m_initUP.normalize();
-            Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_initRV);
             this.m_initRV.normalize();
+            this.m_up.copyFrom(this.m_initUP);
             this.m_changed = true;
-            //this.m_viewMat.lookAtRH(this.m_camPos, this.m_lookAtPos, this.m_up);
         }
     }
     

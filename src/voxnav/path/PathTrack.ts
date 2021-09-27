@@ -98,13 +98,15 @@ class PathTrack
 	}
 	//this._posDisList
 	getDisProgrssInSeg(pdis:number): number {
-		let k: number = pdis - this._posDisList[this._index];
-		if(k >= 0) {
-			return k / this._segs[this._index].length;
-			//return k;
+		if(this._index < this._posDisList.length) {
+			let k: number = pdis - this._posDisList[this._index];
+			if(k >= 0) {
+				let dis: number = this._segs[this._index].length;
+				return dis > 0.001 ? k / dis: 0.0;
+			}
 		}
 		//console.log("pdis, k: ", pdis, k);
-		return 0;
+		return 0.0;
 	}
 	getPosTotal():number
 	{

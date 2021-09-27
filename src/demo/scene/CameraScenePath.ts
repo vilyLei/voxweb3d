@@ -1,3 +1,4 @@
+import MouseEvent from "../../vox/event/MouseEvent";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
 import RendererScene from "../../vox/scene/RendererScene";
 
@@ -25,6 +26,7 @@ class CameraScenePath {
 
         if (this.m_rscene == null) {
             this.m_rscene = rscene;
+            rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.onMouseDown)
             this.initTest();
         }
     }
@@ -51,29 +53,26 @@ class CameraScenePath {
         let pos: Vector3D = new Vector3D();
 
         let distance: number = 300.0;
-        let yDis: number = 150.0;
+        let yDis: number = 280.0;
         let radius: number = 500.0;
         let rad: number = 0.0;
         let totalRad: number = Math.PI * 2.0;
-        let total: number = 10;
+        let total: number = 180;
 
         for (let i: number = 0; i < total; ++i) {
 
             rad = totalRad * i/total;
+            pos.y = -(yDis * 0.5 + Math.sin(0.5 + rad) * yDis) * 1.3 * (Math.sin((0.5 + rad) * 4.0));
             pos.x = Math.cos(rad) * radius;
             pos.z = Math.sin(rad) * radius;
-            //pos.y = 0;
 
             let pv0: Vector3D = pos.clone();
             let pv1: Vector3D = pos.clone();
             
             pv1.normalize();
             pv1.scaleBy( distance );
-            pv1.y = yDis * Math.sin(rad);
-            pv1.normalize();
-            pv1.scaleBy( distance );
-            //pv1.subtract( pv0 );
             pv1.addBy(pv0);
+            pv1.y += yDis * (Math.sin(rad));
 
             pos.addVecsTo(pv0, pv1);
             pos.scaleBy(0.5);
@@ -122,15 +121,17 @@ class CameraScenePath {
 
         }
         this.m_lsUpList.push(this.m_lsUpList[0]);
-        this.m_lsUpList.push(this.m_lsUpList[1]);
-        //this.m_lsUpList.push(this.m_lsUpList[1]);
+        //     this.m_lsUpList.push(this.m_lsUpList[1]);
+        //     this.m_lsUpList.push(this.m_lsUpList[2]);
+        //     //this.m_lsUpList.push(this.m_lsUpList[1]);
 
-        this.m_lsPosList.push(this.m_lsPosList[1]);
-       // this.m_lsPosList.push(this.m_lsPosList[1]);
+        //     this.m_lsPosList.push(this.m_lsPosList[1]);
+        //     this.m_lsPosList.push(this.m_lsPosList[2]);
+        //    // this.m_lsPosList.push(this.m_lsPosList[1]);
 
         let axis: Axis3DEntity = new Axis3DEntity();
         axis.initialize(300.0);
-        this.m_rscene.addEntity(axis);
+        //this.m_rscene.addEntity(axis);
         
         axis = new Axis3DEntity();
         axis.initialize(300.0);
@@ -139,7 +140,7 @@ class CameraScenePath {
         this.moveAction.upList = this.m_lsUpList;
         this.moveAction.posList = this.m_lsPosList;
         this.moveAction.bindTarget( axis );
-        this.moveAction.setPathPosList(this.m_lsPosList);
+        this.moveAction.setPathPosList(this.m_lsPosList, this.m_lsPosList.length, true);
 
         this.m_ls = new Line3DEntity();
         this.m_ls.initialize(new Vector3D(), new Vector3D(100.0, 0.0, 0.0));
@@ -215,32 +216,61 @@ class CameraScenePath {
             this.m_camView.update();
         }
     }
+    private m_flag: boolean = true;
+    private m_mainFlag: boolean = false;
+    private onMouseDown(evt: any): void {
+        //if(this.m_flag) {
+        //    //this.createCam();
+        //}
+        //this.m_flag = !this.m_flag;
+        //this.m_mainFlag = !this.m_mainFlag;
+    }
+    private createCam(): void {
+
+        let camera: CameraBase = new CameraBase();
+        camera.lookAtRH(this.moveAction.camPosV, this.moveAction.camLookV, this.moveAction.camUpV);
+        camera.perspectiveRH(MathConst.DegreeToRadian(45), 800 / 600, 80, 500);
+        camera.update();
+        this.m_camera = camera;
+
+        let camFrame: FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
+        camFrame.initiazlize(camera);
+        this.m_rscene.addEntity(camFrame);
+    }
+    private m_camPos: Vector3D = new Vector3D();
+    private m_camLookV: Vector3D = new Vector3D();
+    private updateCam(): void {
+
+        this.m_camPos.copyFrom( this.moveAction.camPosV );
+        this.m_camLookV.copyFrom( this.moveAction.camLookV );
+        this.m_camPos.y += 80.0;
+        this.m_camLookV.y += 70.0;
+        this.m_camera.lookAtRH(this.m_camPos, this.m_camLookV, this.moveAction.camUpV);
+        this.m_camera.update();
+        this.m_camFrame.updateFrame(this.m_camera);
+        this.m_camFrame.updateMeshToGpu();
+        
+        if(this.m_mainFlag) {
+            // use first-person perspective
+            this.m_rscene.getCamera().setViewMatrix( this.m_camera.getViewMatrix() );
+        }
+    }
     run(): void {
 
-        this.moveAction.run();
-
-        /*
-        this.lookAtTest();
-
-        if (this.m_camView != null) {
-            if (this.m_camFrame != null) {
-                this.m_camFrame.updateFrame(this.m_camView.getCamera() != null ? this.m_camView.getCamera() : this.m_camera);
-                this.m_camFrame.updateMeshToGpu();
-            }
+        if(this.m_flag) {
+            this.moveAction.run();
+            this.updateCam();
         }
-        */
     }
 
     switchCamera(flag: boolean): void {
-
-        if (flag) {
-            this.m_camView.setCamera(this.m_rscene.getCamera());
+        this.m_mainFlag = !flag;
+        if(this.m_mainFlag) {
+            // use first-person perspective
+        }else{
+            this.m_rscene.getCamera().setViewMatrix( null );
+            this.m_rscene.getCamera().update();
         }
-        else {
-            this.m_camView.setCamera(this.m_camera);
-        }
-        this.m_camView.update();
-        this.m_camera.update();
     }
     rotateZ(d: number): void {
         if (this.m_camView != null) {

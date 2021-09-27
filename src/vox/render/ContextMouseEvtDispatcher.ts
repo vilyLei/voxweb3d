@@ -153,6 +153,7 @@ class ContextMouseEvtDispatcher
         else
         {
             this.initPC(canvas,div,stage);
+            this.initMobile(canvas,div,stage);
         }
     }
     private initPC(canvas:any, div:any, stage:IRenderStage3D):void
@@ -185,7 +186,9 @@ class ContextMouseEvtDispatcher
                 canvas.addEventListener('DOMMouseScroll', func, false);  
             }
             canvas.onmousewheel = function(evt:any):void
-            {
+            {                
+                evt.preventDefault();
+                evt.stopPropagation();
                 stage.mouseWheel(evt);
             }
             canvas.onmousedown = function(evt:any):void
