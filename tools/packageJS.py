@@ -107,11 +107,18 @@ for line in targetFP.readlines():
 	lineStr = line;
 	if len(line) >= 3:
 		lineTotal += 1;
+		# ########### begin ############ del m_
 		i = 0;
 		for k in range(0,100000):
 			i = lineStr.find("m_",i+1);
 			if i > 0:
-				j = lineStr.find("=",i+1);
+				j = lineStr.find("=",i+2);
+				k = lineStr.find(".",i+2);
+				t = lineStr.find(";",i+2);
+				if j > k:
+					j = k;
+				if j > t:
+					j = t;
 				# 找到当前 m_ 对应的完整单词
 				# re.match('^[0-9a-zA-Z]+$', s[0])
 				nameStr = lineStr[i:j];
@@ -122,8 +129,36 @@ for line in targetFP.readlines():
 					findTotal += 1;
 			else:
 				break;
+		# ########### end ############ del m_
+		
+		# ########### begin ############ del s_
+		i = 0;
+		for k in range(0,100000):
+			i = lineStr.find(".s_",i+2);
+			if i > 0:
+				j = lineStr.find("=",i+2);
+				k = lineStr.find(".",i+2);
+				t = lineStr.find(";",i+2);
+				if j > k:
+					j = k;
+				if j > t:
+					j = t;
+				# 找到当前 m_ 对应的完整单词
+				# re.match('^[0-9a-zA-Z]+$', s[0])
+				nameStr = lineStr[i+1:j];
+				if isNumLeters(nameStr):
+					ns = getMinStr();
+					lineStr = lineStr.replace(nameStr,ns);
+					nameIndex += 1;
+					findTotal += 1;
+			else:
+				break;
+		# ####################### del s_
+		# default -> d$, 还有switch里面的 default: 会干扰这个替换
+		# lineStr = lineStr.replace("default","d$");
 	#
 	fileStr += lineStr;
+# ###############
 
 print("findTotal: "+str(findTotal));
 print("lineTotal: "+str(lineTotal));
