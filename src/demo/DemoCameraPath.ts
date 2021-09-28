@@ -19,6 +19,9 @@ import SelectionBar from "../orthoui/button/SelectionBar";
 import {CameraScene} from "./scene/CameraScene";
 import {CameraScenePath} from "./scene/CameraScenePath";
 import EngineBase from "../vox/engine/EngineBase";
+import { TextureConst } from "../vox/texture/TextureConst";
+import TextureProxy from "../vox/texture/TextureProxy";
+import CubeMapMaterial from "../vox/material/mcase/CubeMapMaterial";
 
 export class DemoCameraPath {
 
@@ -64,6 +67,7 @@ export class DemoCameraPath {
 
             let size: number = 3200.0;
             let disY: number = 0.5 * size;
+            /*
             let bg_box: Box3DEntity = new Box3DEntity();
             bg_box.spaceCullMask = SpaceCullingMask.NONE;
             bg_box.uScale = 4.0;
@@ -76,11 +80,42 @@ export class DemoCameraPath {
             //*/
 
             this.update();
-
+            this.useSixImageCubeTex();
             this.m_camScene.initialize( this.m_engine.rscene );
         }
     }
 
+    private useSixImageCubeTex(): void {
+        let urls = [
+            "static/assets/hw_morning/morning_ft.jpg",
+            "static/assets/hw_morning/morning_bk.jpg",
+            "static/assets/hw_morning/morning_up.jpg",
+            "static/assets/hw_morning/morning_dn.jpg",
+            "static/assets/hw_morning/morning_rt.jpg",
+            "static/assets/hw_morning/morning_lf.jpg"
+        ];
+
+        let cubeTex0: TextureProxy = this.m_engine.texLoader.getCubeTexAndLoadImg("static/assets/cubeMap", urls);
+
+        this.createCubeBox( cubeTex0 );
+        
+    }
+    private createCubeBox(cubeTex: TextureProxy): void {
+        
+        cubeTex.mipmapEnabled = true;
+        cubeTex.minFilter = TextureConst.LINEAR_MIPMAP_LINEAR;
+        cubeTex.magFilter = TextureConst.LINEAR;
+        let cubeMaterial: CubeMapMaterial = new CubeMapMaterial(true);
+        cubeMaterial.setTextureLodLevel( 2.0 );
+        //cubeMaterial.setTextureList
+        let size: number = 3200.0;
+        let box: Box3DEntity = new Box3DEntity();
+        box.useGourandNormal();
+        box.showFrontFace();
+        box.setMaterial(cubeMaterial);
+        box.initialize(new Vector3D(-size, -size, -size), new Vector3D(size,size,size), [cubeTex]);
+        this.m_engine.rscene.addEntity(box);
+    }
     private mouseDown(evt: any): void {
 
         this.m_engine.viewRay.intersectPiane();
@@ -122,12 +157,28 @@ export class DemoCameraPath {
         }
         let camBtn = this.createSelectBtn("bindCamera", "bindCamera", "ON", "OFF", true);
         camBtn = this.createSelectBtn("slideCamera", "slideCamera", "ON", "OFF", false);
+        let minX: number = 1000;
+        let pos: Vector3D = new Vector3D();
+        for(let i: number = 0; i < this.m_btns.length; ++i) {
+            this.m_btns[i].getPosition(pos);
+            let px: number = this.m_btns[i].getRect().x + pos.x;
+            if(px < minX) {
+                minX = px;
+            }
+        }
+        let dx: number = 30 - minX;
+        for(let i: number = 0; i < this.m_btns.length; ++i) {
+            this.m_btns[i].getPosition(pos);
+            pos.x += dx;
+            this.m_btns[i].setXY(pos.x, pos.y);
+        }
+
     }
 
     private m_btnSize: number = 24;
     private m_btnPX: number = 162.0;
     private m_btnPY: number = 20.0;
-    private m_btns: any[] = [];
+    private m_btns: SelectionBar[] = [];
     
     private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionBar {
 

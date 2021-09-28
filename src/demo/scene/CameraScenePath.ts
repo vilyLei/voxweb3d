@@ -194,28 +194,6 @@ class CameraScenePath {
         this.m_camFrame = camFrame;
     }
 
-    private m_rotV: Vector3D = new Vector3D();
-    private m_posV: Vector3D = new Vector3D();
-    private m_mat: Matrix4 = new Matrix4();
-
-    private lookAtTest(): void {
-
-        this.m_posV.setXYZ(500.0,0.0,0.0);
-        this.m_rotV.z += 0.002;
-        this.m_rotV.y += -0.003;
-        this.m_mat.identity();
-        this.m_mat.setRotationEulerAngle(this.m_rotV.x, this.m_rotV.y, this.m_rotV.z);
-        this.m_mat.transformVector3Self(this.m_posV);
-
-        if(this.m_ls != null) {
-            this.m_ls.setPosAt(1,this.m_posV);
-            this.m_ls.updateMeshToGpu();
-        }
-        if (this.m_camView != null) {
-            this.m_camView.lookAtUpYAxis(this.m_posV);
-            this.m_camView.update();
-        }
-    }
     private m_flag: boolean = true;
     private m_mainFlag: boolean = false;
     private onMouseDown(evt: any): void {
@@ -239,17 +217,54 @@ class CameraScenePath {
     }
     private m_camPos: Vector3D = new Vector3D();
     private m_camLookV: Vector3D = new Vector3D();
-    private updateCam(): void {
+    private m_camUpV: Vector3D = new Vector3D();
 
+    
+    private m_camPos0: Vector3D = new Vector3D();
+    private m_camLookV0: Vector3D = new Vector3D();
+    private m_camUpV0: Vector3D = new Vector3D();
+    private m_camTDV: Vector3D = new Vector3D();
+    private m_initParam: boolean = true;
+    private updateCam(): void {
+        
         this.m_camPos.copyFrom( this.moveAction.camPosV );
         this.m_camLookV.copyFrom( this.moveAction.camLookV );
+        this.m_camUpV.copyFrom( this.moveAction.camUpV );
         this.m_camPos.y += 80.0;
         this.m_camLookV.y += 70.0;
-        this.m_camera.lookAtRH(this.m_camPos, this.m_camLookV, this.moveAction.camUpV);
+        if(this.m_initParam) {
+            this.m_camPos0.copyFrom( this.m_camPos );
+            this.m_camLookV0.copyFrom( this.m_camLookV );
+            this.m_camUpV0.copyFrom( this.m_camUpV );
+            this.m_initParam = false;
+        }
+        else {
+            this.m_camTDV.subVecsTo(this.m_camPos, this.m_camPos0);
+            this.m_camTDV.scaleBy(0.1);
+            this.m_camPos0.addBy(this.m_camTDV);
+
+            this.m_camTDV.subVecsTo(this.m_camLookV, this.m_camLookV0);
+            this.m_camTDV.scaleBy(0.1);
+            this.m_camLookV0.addBy(this.m_camTDV);
+
+            this.m_camUpV0.normalize();
+            this.m_camUpV0.scaleBy(10.0);
+            this.m_camUpV.normalize();
+            this.m_camUpV.scaleBy(10.0);
+            
+            this.m_camTDV.subVecsTo(this.m_camUpV, this.m_camUpV0);
+            this.m_camTDV.scaleBy(0.2);
+            this.m_camUpV0.addBy(this.m_camTDV);
+            this.m_camUpV0.normalize();
+
+            //this.m_camUpV0.copyFrom( this.m_camUpV );
+            
+        }
+        this.m_camera.lookAtRH(this.m_camPos0, this.m_camLookV0, this.m_camUpV0);
         this.m_camera.update();
         this.m_camFrame.updateFrame(this.m_camera);
         this.m_camFrame.updateMeshToGpu();
-        
+
         if(this.m_mainFlag) {
             // use first-person perspective
             this.m_rscene.getCamera().setViewMatrix( this.m_camera.getViewMatrix() );

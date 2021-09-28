@@ -25,7 +25,6 @@ import MathConst from "../vox/math/MathConst";
 import DivLog from "../vox/utils/DivLog";
 import Line3DEntity from "../vox/entity/Line3DEntity";
 import {PathMotionAction} from "./scene/PathMotionAction";
-import Matrix4 from "../vox/math/Matrix4";
 import CameraViewRay from "../vox/view/CameraViewRay";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import { SpaceCullingMask } from "../vox/space/SpaceCullingMask";
@@ -285,9 +284,7 @@ export class DemoCameraMotion
         this.m_camFrame.updateFrame( this.m_camView.getCamera() );
         this.m_camFrame.updateMeshToGpu();
 
-        //this.m_rscene.useCamera(this.m_cameraTarget);
         this.m_rscene.run();
-        //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
     }
 }
 
