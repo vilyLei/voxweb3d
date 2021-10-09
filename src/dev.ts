@@ -28,8 +28,7 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-//  import * as DemoQuadLine from "./demo/DemoQuadLine";
-//  import Demo = DemoQuadLine.demo.DemoQuadLine;
+//  import {DemoQuadLine as Demo} from "./demo/DemoQuadLine";
 
 //  import {DemoObjModel as Demo} from "./demo/DemoObjModel";
 
@@ -308,7 +307,7 @@
 
 //  import {DemoCamera as Demo} from "./demo/DemoCamera";
 
-import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
+//  import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
 
 //  import {DemoCameraPath as Demo} from "./demo/DemoCameraPath";
 
@@ -375,8 +374,9 @@ import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
 
 //  import {RbtDrama as Demo} from "./app/RbtDrama";
 
-//  import * as DensityStatistics from "./app/density/DensityStatistics";
-//  import Demo = DensityStatistics.app.density.DensityStatistics;
+import {EasyRoad as Demo} from "./app/EasyRoad";
+
+//  import {DensityStatistics as Demo} from "./app/density/DensityStatistics";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     gltf    /////////////////////////////////////
