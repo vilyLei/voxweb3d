@@ -281,7 +281,7 @@ export namespace app
             private mouseDown(evt:any):void
             {
 
-                this.m_viewRay.intersectPiane();
+                this.m_viewRay.intersectPlane();
 
             }
 

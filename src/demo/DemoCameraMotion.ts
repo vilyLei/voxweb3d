@@ -240,7 +240,7 @@ export class DemoCameraMotion
     private mouseDown(evt:any):void
     {
         this.switchCamera();
-        this.m_viewRay.intersectPiane();
+        this.m_viewRay.intersectPlane();
         let pv:Vector3D = this.m_viewRay.position;
         //console.log(pv.x+",",pv.y+","+pv.z);
         

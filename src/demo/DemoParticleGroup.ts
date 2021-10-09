@@ -349,7 +349,7 @@ export class DemoParticleGroup {
             //this.m_rscene.updateCamera();
             //this.m_rscene.getMouseXYWorldRay(this.m_rlpv, this.m_rltv);
             //Plane.IntersectionSLV2(this.m_pnv, this.m_pdis, this.m_rlpv, this.m_rltv, this.m_pv);
-            this.m_viewRay.intersectPiane();
+            this.m_viewRay.intersectPlane();
             let pv: Vector3D = this.m_viewRay.position;
             this.m_axis.setPosition(pv);
             this.m_axis.update();

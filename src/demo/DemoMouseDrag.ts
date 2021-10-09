@@ -318,6 +318,7 @@ export class DemoMouseDrag {
         }
     }
     private mouseCtrUpdate(): void {
+        
         if (DispCtrObj.MeshDragAxis.isSelected()) {
             this.m_rscene.getMouseXYWorldRay(this.m_rpv, this.m_rtv);
             DispCtrObj.MeshDragAxis.updateDrag(this.m_rpv, this.m_rtv);

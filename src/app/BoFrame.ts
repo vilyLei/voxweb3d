@@ -172,7 +172,7 @@ export namespace app
         private mouseDown(evt:any):void
         {
                 
-            this.m_viewRay.intersectPiane();
+            this.m_viewRay.intersectPlane();
 
             let pv:Vector3D = this.m_viewRay.position;
             if(this.m_frameAxis != null)this.m_frameAxis.moveToXZ(pv.x, pv.z);

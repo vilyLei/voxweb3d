@@ -130,7 +130,7 @@ export class DemoParticleEruption
         
         if(this.m_eff0Pool != null)
         {
-            this.m_viewRay.intersectPiane();
+            this.m_viewRay.intersectPlane();
 
             this.m_axis.setPosition( this.m_viewRay.position );
             this.m_axis.update();

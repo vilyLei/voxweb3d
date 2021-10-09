@@ -168,7 +168,7 @@ export class DemoParticleClips
         //console.log("mouseDownListener call, this.m_rscene: "+this.m_rscene.toString());
         if(this.m_onceClip != null)
         {
-            this.m_viewRay.intersectPiane();
+            this.m_viewRay.intersectPlane();
             let pv:Vector3D = this.m_viewRay.position;
             this.m_axis.setPosition( pv );
             this.m_axis.update();

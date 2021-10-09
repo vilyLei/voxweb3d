@@ -9,17 +9,17 @@ import Vector3D from "../../vox/math/Vector3D";
 import StraightLine from "../../vox/geom/StraightLine";
 import Matrix4 from "../../vox/math/Matrix4";
 
-import DisplayEntity from "../../vox/entity/DisplayEntity";
+import IEntityTransform from "../../vox/entity/IEntityTransform";
 import AxisQuad3DEntity from "../../vox/entity/AxisQuad3DEntity";
 import MouseEvent from "../../vox/event/MouseEvent";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
 
 export default class DragAxisQuad3D extends AxisQuad3DEntity {
-    private m_targetEntity: DisplayEntity = null;
+    private m_targetEntity: IEntityTransform = null;
     constructor() {
         super();
     }
-    bindTarget(target: DisplayEntity): void {
+    bindTarget(target: IEntityTransform): void {
         this.m_targetEntity = target;
     }
     initialize(size: number = 100.0, thickness: number = 2.0): void {
@@ -96,9 +96,6 @@ export default class DragAxisQuad3D extends AxisQuad3DEntity {
     }
 
     mouseDownListener(evt: any): void {
-        //  console.log("DragAxisQuad3D::mouseDownListener().");
-        //  console.log("this.m_targetEntity != null: "+(this.m_targetEntity != null));
-        //  console.log("evt.lpos: "+evt.lpos.toString()+",evt.wpos: "+evt.wpos.toString());
         let px: number = Math.abs(evt.lpos.x);
         let py: number = Math.abs(evt.lpos.y);
         let pz: number = Math.abs(evt.lpos.z);

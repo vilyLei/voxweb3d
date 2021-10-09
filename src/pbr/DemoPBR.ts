@@ -81,7 +81,7 @@ export class DemoPBR {
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
             this.m_rscene.setClearRGBColor3f(0.2, 0.2, 0.2);
-
+            
             this.m_uiModule.initialize(this.m_rscene, this.m_texLoader, true);
             this.m_ruisc = this.m_uiModule.ruisc;
             this.m_uiModule.close();

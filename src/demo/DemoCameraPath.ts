@@ -118,7 +118,7 @@ export class DemoCameraPath {
     }
     private mouseDown(evt: any): void {
 
-        this.m_engine.viewRay.intersectPiane();
+        this.m_engine.viewRay.intersectPlane();
         let pv: Vector3D = this.m_engine.viewRay.position;
 
     }

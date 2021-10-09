@@ -243,7 +243,7 @@ export class RbtDrama
 
     private mouseDown(evt:any):void
     {
-        this.m_viewRay.intersectPiane();
+        this.m_viewRay.intersectPlane();
         let pv:Vector3D = this.m_viewRay.position;
     }
     
@@ -268,7 +268,7 @@ export class RbtDrama
 
         this.m_rscene.run(true);
 
-        this.m_viewRay.intersectPiane();
+        this.m_viewRay.intersectPlane();
         //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
     }
 }

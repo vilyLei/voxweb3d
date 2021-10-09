@@ -126,7 +126,7 @@ export namespace app
             if(this.m_srcModule != null)
             {
                 
-                this.m_viewRay.intersectPiane();
+                this.m_viewRay.intersectPlane();
 
                 let pv:Vector3D = this.m_viewRay.position;
                 this.m_srcModule.moveToXZ(pv.x, pv.z);
