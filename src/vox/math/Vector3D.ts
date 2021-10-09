@@ -157,6 +157,9 @@ class Vector3D {
         this.y = va.z * vb.x - va.x * vb.z;
         this.z = va.x * vb.y - va.y * vb.x;
     }
+    toString(): string {
+        return "Vector3D("+this.x+""+this.y+""+this.z+")"
+    }
     static X_AXIS = new Vector3D(1, 0, 0);
     static Y_AXIS = new Vector3D(0, 1, 0);
     static Z_AXIS = new Vector3D(0, 0, 1);

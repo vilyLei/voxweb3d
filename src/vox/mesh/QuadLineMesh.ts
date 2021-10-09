@@ -149,9 +149,10 @@ export default class QuadLineMesh extends MeshBase
             console.log("QuadLineMesh::initialize(), this.m_cvs2: "+this.m_cvs2);
             console.log("QuadLineMesh::initialize(), this.m_ivs: "+this.m_ivs);
             ROVertexBuffer.Reset();
+            
             ROVertexBuffer.AddFloat32Data(this.m_vs,4);
-            ROVertexBuffer.AddFloat32Data(this.m_vs2,4);
             ROVertexBuffer.AddFloat32Data(this.m_cvs,4);
+            ROVertexBuffer.AddFloat32Data(this.m_vs2,4);
             ROVertexBuffer.AddFloat32Data(this.m_cvs2,4);
             
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;

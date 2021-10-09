@@ -16,6 +16,7 @@ import IRenderEntity from "../../vox/render/IRenderEntity";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 import IRendererScene from "../../vox/scene/IRendererScene";
 import {IRenderCamera} from "../render/IRenderCamera";
+import Vector3D from "../math/Vector3D";
 
 class OrthoUIScene implements IRendererScene
 {
@@ -54,6 +55,9 @@ class OrthoUIScene implements IRendererScene
     }
     getUid(): number {
         return this.m_ruisc.getUid();
+    }
+    getMouseXYWorldRay(rl_position: Vector3D, rl_tv: Vector3D): void {
+        this.m_ruisc.getMouseXYWorldRay(rl_position,rl_tv);
     }
     renderBegin(contextBeginEnabled: boolean = false): void {
         this.m_ruisc.renderBegin();

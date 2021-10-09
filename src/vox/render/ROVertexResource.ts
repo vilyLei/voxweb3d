@@ -71,7 +71,7 @@ class ROVertexRes
         let fvs:Float32Array = vtx.getF32DataAt(0);
         this.m_gpuBufs.push(rc.createBuf());
         rc.bindArrBuf(this.m_gpuBufs[0]);
-        //  console.log("this.m_f32: "+this.m_f32);
+        // console.log("uploadCombined, this.m_gpuBufs: "+this.m_gpuBufs);
         rc.arrBufData(fvs, vtx.getBufDataUsage());
         this.m_gpuBufsTotal = 1;
         this.m_sizeList = [fvs.length];
@@ -97,6 +97,7 @@ class ROVertexRes
         let dataUsage:number = vtx.getBufDataUsage();
         this.m_gpuBufsTotal = this.m_vtx.getBuffersTotal();
         this.m_sizeList = new Array(this.m_attribsTotal);
+        // console.log("uploadSeparated, this.m_gpuBufs: "+this.m_gpuBufs);
         if(vtx.bufData == null)
         {
             for(; i < this.m_attribsTotal; ++i)

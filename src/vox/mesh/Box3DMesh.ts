@@ -17,7 +17,6 @@ import MeshBase from "../../vox/mesh/MeshBase";
 
 export default class Box3DMesh extends MeshBase {
     private m_posList: number[][] = [null, null, null, null, null, null, null, null];
-    private m_pos: Vector3D = new Vector3D();
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         super(bufDataUsage);
     }

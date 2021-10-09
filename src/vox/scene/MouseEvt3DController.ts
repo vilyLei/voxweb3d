@@ -37,6 +37,7 @@ export default class MouseEvt3DController implements IEvt3DController
             this.m_currStage = currStage;
             mainStage.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener,true,false);
             mainStage.addEventListener(MouseEvent.MOUSE_UP,this,this.mouseUpListener,true,false);
+            mainStage.addEventListener(MouseEvent.MOUSE_CLICK,this,this.mouseClickListener,true,false);
             mainStage.addEventListener(MouseEvent.MOUSE_MOVE,this,this.mouseMoveListener,true,false);
             mainStage.addEventListener(MouseEvent.MOUSE_WHEEL,this,this.mouseWheeelListener,true,false);
         }
@@ -102,6 +103,22 @@ export default class MouseEvt3DController implements IEvt3DController
         }
     }
     private mouseUpListener(evt:any):void
+    {
+        if(this.m_currStage != null) {
+            this.m_currStage.mouseX = this.m_mainStage.mouseX;
+            this.m_currStage.mouseY = this.m_mainStage.mouseY;
+        }
+        if(MouseEvt3DController.s_unlockMouseEvt)
+        {
+            this.m_evtTypes[this.m_evtTotal] = (evt.type);
+            this.m_evtXList[this.m_evtTotal] = (evt.mouseX);
+            this.m_evtYList[this.m_evtTotal] = (evt.mouseY);
+            this.m_evtWheelDeltaYs[this.m_evtTotal] = (0);
+            this.m_mouseEvt.type = evt.type;
+            this.m_evtTotal++;
+        }       
+    }
+    private mouseClickListener(evt:any):void
     {
         if(this.m_currStage != null) {
             this.m_currStage.mouseX = this.m_mainStage.mouseX;

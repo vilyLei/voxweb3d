@@ -82,6 +82,10 @@ export default class BoxFrame3D extends DisplayEntity
             this.setMesh(this.m_selfMesh);
         }
     }
+    initializeByAABB(aabb: AABB):void
+    {
+        this.initialize(aabb.min, aabb.max);
+    }
     initialize(minV:Vector3D,maxV:Vector3D):void
     {
         this.m_minV.copyFrom(minV);

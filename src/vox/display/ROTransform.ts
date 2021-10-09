@@ -37,6 +37,7 @@ export default class ROTransform {
     updatedStatus: number = ROTransform.UPDATE_POSITION;
     updateStatus: number = ROTransform.UPDATE_TRANSFORM;
     getUid(): number { return this.m_uid; }
+    getRotationFlag(): boolean { return this.m_rotFlag; }
     getX(): number { return this.m_fs32[12]; }
     getY(): number { return this.m_fs32[13]; }
     getZ(): number { return this.m_fs32[14]; }
@@ -161,8 +162,8 @@ export default class ROTransform {
         return this.m_localMat;
     }
     // get local to world matrix, maybe need call update function
-    getMatrix(): Matrix4 {
-        if (this.updateStatus > 0) {
+    getMatrix(flag: boolean = true): Matrix4 {
+        if (this.updateStatus > 0 && flag) {
             this.update();
         }
         return this.m_omat;

@@ -11,21 +11,27 @@ import MaterialBase from '../../vox/material/MaterialBase';
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import Cone3DMesh from "../../vox/mesh/Cone3DMesh";
+import Matrix4 from "../math/Matrix4";
 
 export default class Cone3DEntity extends DisplayEntity
 {
+    private m_radius:number = 50.0;
+    private m_height:number = 100.0;
+    private m_plongitudeNumSegments:number = 10.0;
+    private m_uvType:number = 1;
+    private m_alignYRatio:number = -0.5;
+    private m_transMatrix: Matrix4 = null;
+    uScale:number = 1.0;
+    vScale:number = 1.0;
+    
     constructor(transform:ROTransform = null)
     {
         super(transform);
     }
-    uScale:number = 1.0;
-    vScale:number = 1.0;
-    m_radius:number = 50.0;
-    m_height:number = 100.0;
-    private m_plongitudeNumSegments:number = 10.0;
-    private m_uvType:number = 1;
-    private m_alignYRatio:number = -0.5;
-    createMaterial(texList:TextureProxy[]):void
+    setVtxTransformMatrix(matrix: Matrix4): void {
+        this.m_transMatrix = matrix;
+    }
+    private createMaterial(texList:TextureProxy[]):void
     {
         if(this.getMaterial() == null)
         {
@@ -55,6 +61,9 @@ export default class Cone3DEntity extends DisplayEntity
         if(this.getMesh() == null)
         {
             let mesh:Cone3DMesh = new Cone3DMesh();
+            if (this.m_transMatrix != null) {
+                mesh.setTransformMatrix(this.m_transMatrix);
+            }
             mesh.uScale = this.uScale;
             mesh.vScale = this.vScale;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;

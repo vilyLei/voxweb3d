@@ -499,6 +499,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     private static s_boundsInVS: Float32Array = new Float32Array(24);
     private static s_boundsOutVS: Float32Array = new Float32Array(24);
     private static s_pos: Vector3D = new Vector3D();
+    private static s_prePos: Vector3D = new Vector3D();
     /**
      * @returns 是否已经加入渲染器中(但是可能还没有进入真正的渲染运行时)
      */
@@ -519,39 +520,57 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     }
 
     private m_transStatus: number = ROTransform.UPDATE_TRANSFORM;
+    protected updateGlobalBounds(): void {
+
+        // 这里的逻辑也有问题,需要再处理，为了支持摄像机等的拾取以及支持遮挡计算等空间管理计算
+        //if (this.m_transStatus > ROTransform.UPDATE_POSITION || this.m_transfrom.getRotationFlag()) {
+        if (this.m_transStatus > ROTransform.UPDATE_POSITION) {
+            this.m_transfrom.update();
+            let pminV: Vector3D = this.m_mesh.bounds.min;
+            let pmaxV: Vector3D = this.m_mesh.bounds.max;
+            let pvs: Float32Array = DisplayEntity.s_boundsInVS;
+            pvs[0] = pminV.x; pvs[1] = pminV.y; pvs[2] = pminV.z;
+            pvs[3] = pmaxV.x; pvs[4] = pminV.y; pvs[5] = pminV.z;
+            pvs[6] = pminV.x; pvs[7] = pminV.y; pvs[8] = pmaxV.z;
+            pvs[9] = pmaxV.x; pvs[10] = pminV.y; pvs[11] = pmaxV.z;
+            pvs[12] = pminV.x; pvs[13] = pmaxV.y; pvs[14] = pminV.z;
+            pvs[15] = pmaxV.x; pvs[16] = pmaxV.y; pvs[17] = pminV.z;
+            pvs[18] = pminV.x; pvs[19] = pmaxV.y; pvs[20] = pmaxV.z;
+            pvs[21] = pmaxV.x; pvs[22] = pmaxV.y; pvs[23] = pmaxV.z;
+            this.m_transfrom.getMatrix().transformVectors(pvs, 24, DisplayEntity.s_boundsOutVS);
+            this.m_globalBounds.reset();
+            this.m_globalBounds.addXYZFloat32Arr(DisplayEntity.s_boundsOutVS);
+            this.m_globalBounds.update();
+        }
+        else {
+            DisplayEntity.s_prePos.setXYZ(0,0,0);
+            DisplayEntity.s_pos.setXYZ(0,0,0);
+            let matrix = this.m_transfrom.getMatrix(false);
+            matrix.transformVector3Self(DisplayEntity.s_prePos);
+            this.m_transfrom.update();
+            matrix = this.m_transfrom.getMatrix(false);
+            matrix.transformVector3Self(DisplayEntity.s_pos);
+            DisplayEntity.s_pos.subtractBy( DisplayEntity.s_prePos );
+            let gbounds = this.m_globalBounds;
+            gbounds.min.addBy(DisplayEntity.s_pos);
+            gbounds.max.addBy(DisplayEntity.s_pos);
+            gbounds.center.addBy(DisplayEntity.s_pos);
+            
+            // let matrix = this.m_transfrom.getMatrix();
+            // let bounds = this.m_mesh.bounds;
+            // let gbounds = this.m_globalBounds;
+            // matrix.transformOutVector3(bounds.min, gbounds.min);
+            // matrix.transformOutVector3(bounds.max, gbounds.max);
+            // gbounds.center.addVecsTo(gbounds.min, gbounds.max);
+            // gbounds.center.scaleBy(0.5);
+            ++this.m_globalBounds.version;
+        }
+    }
     update(): void {
         if (this.m_transfrom.updatedStatus > this.m_transStatus) this.m_transStatus = this.m_transfrom.updatedStatus;
         if (this.m_transStatus != ROTransform.UPDATE_NONE) {
-            if (this.m_globalBounds != null && this.m_mesh != null) {
-                this.m_transfrom.update();
-                // 这里的逻辑也有问题,需要再处理，为了支持摄像机等的拾取以及支持遮挡计算等空间管理计算
-                if (this.m_transStatus > ROTransform.UPDATE_POSITION) {
-                    let pminV: Vector3D = this.m_mesh.bounds.min;
-                    let pmaxV: Vector3D = this.m_mesh.bounds.max;
-                    let pvs: Float32Array = DisplayEntity.s_boundsInVS;
-                    pvs[0] = pminV.x; pvs[1] = pminV.y; pvs[2] = pminV.z;
-                    pvs[3] = pmaxV.x; pvs[4] = pminV.y; pvs[5] = pminV.z;
-                    pvs[6] = pminV.x; pvs[7] = pminV.y; pvs[8] = pmaxV.z;
-                    pvs[9] = pmaxV.x; pvs[10] = pminV.y; pvs[11] = pmaxV.z;
-                    pvs[12] = pminV.x; pvs[13] = pmaxV.y; pvs[14] = pminV.z;
-                    pvs[15] = pmaxV.x; pvs[16] = pmaxV.y; pvs[17] = pminV.z;
-                    pvs[18] = pminV.x; pvs[19] = pmaxV.y; pvs[20] = pmaxV.z;
-                    pvs[21] = pmaxV.x; pvs[22] = pmaxV.y; pvs[23] = pmaxV.z;
-                    this.m_transfrom.getMatrix().transformVectors(pvs, 24, DisplayEntity.s_boundsOutVS);
-                    this.m_globalBounds.reset();
-                    this.m_globalBounds.addXYZFloat32Arr(DisplayEntity.s_boundsOutVS);
-                    this.m_globalBounds.update();
-                }
-                else {
-                    let matrix = this.m_transfrom.getMatrix();
-                    let bounds = this.m_mesh.bounds;
-                    let gbounds = this.m_globalBounds;
-                    matrix.transformOutVector3(bounds.min, gbounds.min);
-                    matrix.transformOutVector3(bounds.max, gbounds.max);
-                    gbounds.center.addVecsTo(gbounds.min, gbounds.max);
-                    gbounds.center.scaleBy(0.5);
-                    ++this.m_globalBounds.version;
-                }
+            if (this.m_mesh != null && this.m_globalBounds != null) {
+                this.updateGlobalBounds();
             }
             else {
                 this.m_transfrom.update();

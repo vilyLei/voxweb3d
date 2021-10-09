@@ -50,6 +50,12 @@ export default class Line3DEntity extends DisplayEntity {
             this.m_lineMesh.setVSXYZAt(i, pos.x, pos.y, pos.z);
         }
     }
+    reinitializeMesh(): void {
+        if (this.m_lineMesh != null) {
+            this.m_lineMesh.initialize(this.m_posarr, this.m_colorarr);
+            this.setIvsParam(0, this.m_lineMesh.vtCount);
+        }
+    }
     initialize(begin: Vector3D, end: Vector3D = null): void {
         if (this.m_posarr == null) {
             this.m_posarr = [100.0, 0.0, 0.0, 0.0, 0, 0];
@@ -108,8 +114,8 @@ export default class Line3DEntity extends DisplayEntity {
         this.createMaterial();
         this.activeDisplay();
     }
-    initializePolygon(posList: Vector3D[], colorList: Color4[] = null): void {
-
+    initializeByPosList(posList: Vector3D[], colorList: Color4[] = null): void {
+        
         this.m_posarr = [];
         if (!this.dynColorEnabled) {
             this.m_colorarr = [];
@@ -136,6 +142,13 @@ export default class Line3DEntity extends DisplayEntity {
 
         this.createMaterial();
         this.activeDisplay();
+    }
+    initializePolygon(posList: Vector3D[], colorList: Color4[] = null): void {
+        this.initializeByPosList(posList, colorList);
+    }
+    destroy(): void {
+        super.destroy();
+        this.m_lineMesh = null;
     }
     toString(): string {
         return "[Line3DEntity]";

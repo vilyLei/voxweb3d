@@ -39,7 +39,7 @@ export default class CameraViewRay
     /**
      * calculate the intersection point in world space
      */
-    intersectPiane():void
+    intersectPlane():void
     {
         if(this.m_camera != null && this.m_stage != null)
         {

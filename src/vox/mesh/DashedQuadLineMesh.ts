@@ -131,8 +131,8 @@ export default class DashedQuadLineMesh extends MeshBase
             }
             ROVertexBuffer.Reset();
             ROVertexBuffer.AddFloat32Data(this.m_vs,4);
-            ROVertexBuffer.AddFloat32Data(this.m_vs2,4);
             ROVertexBuffer.AddFloat32Data(this.m_cvs,4);
+            ROVertexBuffer.AddFloat32Data(this.m_vs2,4);
             
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
             this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());

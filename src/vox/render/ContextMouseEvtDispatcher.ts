@@ -225,7 +225,7 @@ class ContextMouseEvtDispatcher {
                 stage.mouseY = stage.stageHeight - py;
                 stage.mouseViewX = px;
                 stage.mouseViewY = py;
-                //  console.log("ContextMouseEvtDispatcher::onclick(),"+stage.mouseViewX+","+stage.mouseViewY+",evt.button: "+evt.button);
+                //console.log("ContextMouseEvtDispatcher::onclick(),"+stage.mouseViewX+","+stage.mouseViewY+",evt.button: "+evt.button);
                 if (evt.button == 0) {
                     stage.mouseClick();
                 } else if (evt.button == 2) {
