@@ -98,7 +98,7 @@ export default class PipeGeometry extends GeometryBase
         }                
         this.vtxTotal = (longitudeNumSegments + 1) * (latitudeNumSegments + 1);
         this.m_vs = new Float32Array(this.vtxTotal * 3);
-        this.m_uvs = new Float32Array(this.vtxTotal * 3);
+        this.m_uvs = new Float32Array(this.vtxTotal * 2);
         // calc cylinder wall vertexes
         let tot:number = latitudeNumSegments;
         let k:number = 0;

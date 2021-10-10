@@ -1,6 +1,6 @@
-import Vector3D from "../../vox/math/Vector3D";
-import {Bezier2Curve, Bezier3Curve} from "../../vox/geom/curve/BezierCurve";
-import StraightLine from "../../vox/geom/StraightLine";
+import Vector3D from "../../../vox/math/Vector3D";
+import {Bezier2Curve, Bezier3Curve} from "../../../vox/geom/curve/BezierCurve";
+import StraightLine from "../../../vox/geom/StraightLine";
 
 class TVTool {
     
@@ -20,94 +20,6 @@ class TVTool {
     }
 }
 
-class ExpandPathTool {
-    
-    expandXOZ(in_posList: Vector3D[], distance: number = 50.0, closed: boolean = false): Vector3D[] {
-        //
-        closed = closed && Vector3D.Distance(in_posList[in_posList.length - 1],in_posList[0]) < 0.001;
-
-        let out_posList: Vector3D[] = new Array(in_posList.length);
-        let tv: Vector3D = new Vector3D();
-        let tv1: Vector3D = new Vector3D();
-        let rv: Vector3D = new Vector3D();
-        let pv: Vector3D = new Vector3D();
-        let i: number = 0;
-        let len: number = in_posList.length;
-        if(closed) {
-            len -= 1;
-            let pa: Vector3D = null;
-            let pb: Vector3D = null;
-            let pc: Vector3D = null;
-            for(; i < len; ++i) {
-                
-                pb = in_posList[i];
-                if(i < 1) {
-                    pa = in_posList[len - 1];
-                    pc = in_posList[1];
-
-                } else if(i < (len - 1)) {
-                    pa = in_posList[i - 1];
-                    pc = in_posList[i + 1];
-                }
-                else {
-                    pa = in_posList[i - 1];
-                    pc = in_posList[0];
-                }
-                tv.subVecsTo(pb,pa);
-                //tv.normalize();
-                Vector3D.Cross(Vector3D.Y_AXIS, tv, rv);
-
-                tv.subVecsTo(pb, pa);
-                tv.y = 0;
-                tv.normalize();
-                tv1.subVecsTo(pb, pc);
-                tv1.y = 0;
-                tv1.normalize();
-                tv.addBy(tv1);
-                tv.normalize();
-                if(rv.dot(tv) < 0.0001) {
-                    tv.scaleBy(-1);
-                }
-                rv.copyFrom(tv);
-
-                pv.copyFrom( rv );
-                pv.scaleBy( distance );
-                pv.addBy(in_posList[i]);
-                out_posList[i] = pv.clone();                
-            }
-            out_posList[len] = out_posList[0].clone();
-        }else {
-            for(; i < len; ++i) {
-    
-                if(i < 1) {
-                    tv.subVecsTo(in_posList[i+1], in_posList[i]);
-                    tv.normalize();
-                    Vector3D.Cross(Vector3D.Y_AXIS, tv, rv);
-                } else if(i < (len - 1)) {
-                    tv.subVecsTo(in_posList[i], in_posList[i - 1]);
-                    tv.normalize();
-                    tv1.subVecsTo(in_posList[i], in_posList[i + 1]);
-                    tv1.normalize();
-                    tv.addBy(tv1);
-                    tv.normalize();
-                    rv.copyFrom(tv);
-                }
-                else {
-                    tv.subVecsTo(in_posList[i], in_posList[i - 1]);
-                    tv.normalize();
-                    Vector3D.Cross(Vector3D.Y_AXIS, tv, rv);
-                }
-                pv.copyFrom( rv );
-                pv.scaleBy( distance );
-                pv.addBy(in_posList[i]);
-                out_posList[i] = pv.clone();
-            }
-        }
-
-        return out_posList;
-    }
-}
-
 /**
  * only road path path data
  */
@@ -115,8 +27,10 @@ class RoadPath {
     private m_posList: Vector3D[] = null;
     private m_posTable: Vector3D[][] = [];
     private m_tvTool: TVTool = new TVTool();
+    private m_pathClosed: boolean = false;
     readonly bezier2Curve: Bezier2Curve = new Bezier2Curve();
     readonly bezier3Curve: Bezier3Curve = new Bezier3Curve();
+    stepDistance: number = 30;
     constructor() {
     }
     setBezierCurveSegTotal(segTotal: number): void {
@@ -146,7 +60,9 @@ class RoadPath {
         this.bezier3Curve.ctrAPos.copyFrom( ctrlA );
         this.bezier3Curve.ctrBPos.copyFrom( ctrlB );
         this.bezier3Curve.updateCalc();
+
         let posList: Vector3D[] = this.bezier3Curve.getPosList();
+
         if(this.m_posTable.length > 0) {
             let list: Vector3D[] = this.m_posTable[this.m_posTable.length - 1];
             if(Vector3D.Distance( list[list.length - 1], posList[0] ) < 0.0001 ) {
@@ -157,6 +73,7 @@ class RoadPath {
     }
     buildPathCurve(type: number = 3,closePathEnabled: boolean = false, minDis: number = 50): Vector3D[] {
 
+        this.m_pathClosed = false;
         let list: Vector3D[] = this.m_posList.slice(0);
         let curvePosList: Vector3D[] = null;
         if(type == 3) {
@@ -189,6 +106,7 @@ class RoadPath {
                 console.warn("the path can not be closed !");
                 closePath = false;
             }
+            this.m_pathClosed = closePath;
 
             let tvList: Vector3D[] = [];            
             let posTable: Vector3D[][] = [];
@@ -315,7 +233,8 @@ class RoadPath {
                 console.warn("the path can not be closed !");
                 closePath = false;
             }
-            
+            this.m_pathClosed = closePath;
+
             let tvList: Vector3D[] = [];            
             let posTable: Vector3D[][] = [];
             this.m_posTable = [];
@@ -404,6 +323,7 @@ class RoadPath {
     }
     clear(): void {
         this.m_posList = null;
+        this.m_pathClosed = false;
     }
     initializePosList(posList: Vector3D[]): void {
         this.m_posList = posList.slice(0);
@@ -453,23 +373,9 @@ class RoadPath {
     getPosListLength(): number {
         return this.m_posList != null ? this.m_posList.length : 0;
     }
-    testCloseSatus(minDis: number): boolean {
-        if (this.m_posList != null) {
-            let list: Vector3D[] = this.m_posList;
-            if (this.m_posList.length > 3) {
-                let dis: number = Vector3D.Distance( list[list.length - 1], list[0] );
-                return dis < minDis;
-            }
-        }
-        return false;
-    }
     isClosed(): boolean {
-        if (this.m_posList != null) {
-            let list: Vector3D[] = this.m_posList;
-            if (this.m_posList.length > 3) {
-                let dis: number = Vector3D.Distance( list[list.length - 1], list[0] );
-                return dis < 0.0001;
-            }
+        if (this.getPosListLength() > 3) {
+            return this.m_pathClosed;
         }
         return false;
     }
@@ -477,4 +383,4 @@ class RoadPath {
     }
 }
 
-export { TVTool, ExpandPathTool, RoadPath };
+export { TVTool, RoadPath };

@@ -155,7 +155,7 @@ export class DemoCameraPath {
         if(RendererDevice.IsMobileWeb()) {
             this.m_btnSize = 64;
         }
-        let camBtn = this.createSelectBtn("bindCamera", "bindCamera", "ON", "OFF", true);
+        let camBtn = this.createSelectBtn("changeView", "changeView", "First", "Third", true);
         camBtn = this.createSelectBtn("slideCamera", "slideCamera", "ON", "OFF", false);
         let minX: number = 1000;
         let pos: Vector3D = new Vector3D();
@@ -200,7 +200,7 @@ export class DemoCameraPath {
     private selectChange(evt: any): void {
         let selectEvt: SelectionEvent = evt as SelectionEvent;
         switch( selectEvt.uuid ) {
-            case "bindCamera":
+            case "changeView":
                     this.m_camScene.switchCamera( selectEvt.flag );
                 break;
             case "slideCamera":

@@ -33,7 +33,7 @@ export class EasyRoad {
             this.m_engine.initialize(rparam);
 
             this.m_statusDisp.initialize();
-
+            
             this.m_scene.initialize( this.m_engine );
             this.m_uiscene.scene = this.m_scene;
             this.m_uiscene.initialize( this.m_engine );

@@ -35,6 +35,9 @@ class UIScene {
         this.m_switchEditBtn = btn;
         btn = this.createSelectBtn("dragCamera", "dragCamera", "ON", "OFF", false);
         btn = this.createSelectBtn("closePath", "closePath", "ON", "OFF", false);
+
+        this.scene.closePathBtn = btn;
+        
         let minX: number = 1000;
         let pos: Vector3D = new Vector3D();
         for(let i: number = 0; i < this.m_btns.length; ++i) {
@@ -91,9 +94,9 @@ class UIScene {
                 }
                 break;
             case "switchEdit":
-                this.scene.setEditEnabled(selectEvt.flag);
+                this.scene.pathEditor.setEditEnabled(selectEvt.flag);
             case "closePath":
-                this.scene.setCloseEnabled(selectEvt.flag);
+                this.scene.pathEditor.setCloseEnabled(selectEvt.flag);
                 break;
             case "clearScene":
                 //this.switchEdit( selectEvt.flag );

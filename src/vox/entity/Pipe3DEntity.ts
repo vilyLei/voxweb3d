@@ -26,8 +26,8 @@ export default class Pipe3DEntity extends DisplayEntity
     
     uScale:number = 1.0;
     vScale:number = 1.0;
-    m_radius:number = 50.0;
-    m_height:number = 100.0;
+    private m_radius:number = 50.0;
+    private m_height:number = 100.0;
     constructor(transform:ROTransform = null)
     {
         super(transform);

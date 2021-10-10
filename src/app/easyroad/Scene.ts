@@ -1,8 +1,4 @@
 
-import RendererDevice from "../../vox/render/RendererDevice";
-import RendererParam from "../../vox/scene/RendererParam";
-import RendererState from "../../vox/render/RendererState";
-import RenderStatusDisplay from "../../vox/scene/RenderStatusDisplay";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 import Box3DEntity from "../../vox/entity/Box3DEntity";
@@ -24,32 +20,40 @@ import MouseEventEntity from "../../vox/entity/MouseEventEntity";
 import DragAxisQuad3D from "../../voxeditor/entity/DragAxisQuad3D";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import BoxFrame3D from "../../vox/entity/BoxFrame3D";
-import {RoadBuilder} from "./RoadBuilder";
-import {ExpandPathTool,RoadPath} from "./RoadPath";
+import { RoadBuilder } from "./road/RoadBuilder";
+import { PathTool } from "./road/PathTool";
+import { PathCurveEditor } from "./road/PathCurveEditor";
+import { RoadGeometryBuilder } from "./geometry/RoadGeometryBuilder";
 
-import {Bezier2Curve, Bezier3Curve} from "../../vox/geom/curve/BezierCurve";
 import Line3DEntity from "../../vox/entity/Line3DEntity";
+import DataMesh from "../../vox/mesh/DataMesh";
+import RendererState from "../../vox/render/RendererState";
 
 class Scene {
 
     constructor() { }
 
     private m_engine: EngineBase = null;
-    private m_roadBuilder: RoadBuilder = new RoadBuilder();
-
+    readonly pathEditor: PathCurveEditor = new PathCurveEditor();
     private m_target: DisplayEntity = null;
     private m_frame: BoxFrame3D = new BoxFrame3D();
     private m_line: Line3DEntity = null;
+
+    geometryBuilder: RoadGeometryBuilder = new RoadGeometryBuilder();
+
+    closePathBtn: SelectionBar = null;
     initialize(engine: EngineBase): void {
 
         console.log("Scene::initialize()......");
         if (this.m_engine == null) {
 
             this.m_engine = engine;
-            
+
             this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseDown);
             this.m_engine.rscene.addEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
-            
+
+            this.pathEditor.initialize();
+
             ///*
             let plane: Plane3DEntity = new Plane3DEntity();
             plane.showDoubleFace();
@@ -78,156 +82,43 @@ class Scene {
             this.m_frame.initializeByAABB(box.getGlobalBounds());
             this.m_engine.rscene.addEntity( this.m_frame );
             //*/
-            
+
             // let axis = new Axis3DEntity();
             // axis.initialize(700);
             // this.m_engine.rscene.addEntity(axis);
-
 
             // this.m_line = new Line3DEntity();
             // this.m_line.dynColorEnabled = true;
             // this.m_line.initializeByPosList([new Vector3D(), new Vector3D(100,0.0,0.0)]);
             // this.m_engine.rscene.addEntity(this.m_line);
 
+            
+            let posOuterList = [new Vector3D(0, 0, -100), new Vector3D(100, 0, -100), new Vector3D(150, 0, -50)];
+            let posInnerList = [new Vector3D(0, 0, 100), new Vector3D(100, 0, 100), new Vector3D(150, 0, 150)];
+
+            let posTable: Vector3D[][] = [
+                posInnerList,
+                posOuterList
+            ]
+
+            //this.buildRoadSurface(posTable, 2.0,1.0);
+            
             this.initEditor();
-
-            //this.initRoad2();
-            //this.initRoad3();
-
         }
     }
-
-    private initRoad3(): void {
-
-        let curvePosList: Vector3D[];
-        let pathPosList: Vector3D[] = [
-            new Vector3D(0.0,0.0,200.0)
-            ,new Vector3D(500.0,200.0,0.0)
-            ,new Vector3D(1000.0,0.0,800.0)
-            //,new Vector3D(600.0,200.0,1300.0)
-            //,new Vector3D(100.0,0.0,900.0)
-
-            // new Vector3D(0.0,0.0,200.0)
-            // ,new Vector3D(500.0,200.0,0.0)
-            // ,new Vector3D(1000.0,0.0,800.0)
-            // ,new Vector3D(600.0,200.0,1300.0)
-            // ,new Vector3D(100.0,0.0,900.0)
-        ];
-
-        let path: RoadPath = this.m_roadBuilder.appendPath();
-        path.setBezierCurveSegTotal(10);
-        path.initializePosList(pathPosList);
-        curvePosList = path.buildPathCurve(3,true);
-
-        let pls = new Line3DEntity();
-        pls.dynColorEnabled = true;
-        pls.initializeByPosList( curvePosList );
-        this.m_engine.rscene.addEntity( pls );
-
-
-
-        let expandTool: ExpandPathTool = new ExpandPathTool();
-        let posList2: Vector3D[] = expandTool.expandXOZ(curvePosList, 60,true);
-        pls = new Line3DEntity();
-        pls.dynColorEnabled = true;
-        pls.initializeByPosList( posList2 );
-        (pls.getMaterial() as any).setRGB3f(1.0,0.8,0.8);
-        this.m_engine.rscene.addEntity( pls );
-
-        // for(let i: number = 0; i < curvePosList.length; ++i) {
-        //     pls = new Line3DEntity();
-        //     pls.dynColorEnabled = true;
-        //     pls.initializeByPosList( [curvePosList[i], new Vector3D(curvePosList[i].x,-80.0,curvePosList[i].z)] );
-        //     (pls.getMaterial() as any).setRGB3f(0.3,0.7,0.7);
-        //     this.m_engine.rscene.addEntity( pls );
-        // }
-        // for(let i: number = 0; i < posList2.length; ++i) {
-        //     pls = new Line3DEntity();
-        //     pls.dynColorEnabled = true;
-        //     pls.initializeByPosList( [posList2[i], new Vector3D(posList2[i].x,-80.0,posList2[i].z)] );
-        //     (pls.getMaterial() as any).setRGB3f(0.3,0.7,0.7);
-        //     this.m_engine.rscene.addEntity( pls );
-        // }
-    }
-    private initRoad2(): void {
-
-        let curvePosList: Vector3D[];
-        let pathPosList: Vector3D[] = [
-            new Vector3D(0.0,0.0,200.0)
-            ,new Vector3D(500.0,0.0,0.0)
-            ,new Vector3D(1000.0,0.0,800.0)
-            ,new Vector3D(600.0,0.0,1300.0)
-            ,new Vector3D(100.0,0.0,900.0)
-
-            // new Vector3D(0.0,0.0,200.0)
-            // ,new Vector3D(500.0,200.0,0.0)
-            // ,new Vector3D(1000.0,0.0,800.0)
-            // ,new Vector3D(600.0,200.0,1300.0)
-            // ,new Vector3D(100.0,0.0,900.0)
-        ];
-
-        let path: RoadPath = this.m_roadBuilder.appendPath();
-        path.setBezierCurveSegTotal(10);
-        path.initializePosList(pathPosList);
-        curvePosList = path.buildPathCurve(2,true);
-
-        let pls = new Line3DEntity();
-        pls.dynColorEnabled = true;
-        pls.initializeByPosList( curvePosList );
-        this.m_engine.rscene.addEntity( pls );
-
-        return;
-
-        let bezCurve2A: Bezier2Curve = new Bezier2Curve();
-        bezCurve2A.setSegTot(10);
-        bezCurve2A.begin.setXYZ(0.0,0.0,200.0);
-        bezCurve2A.end.setXYZ(500.0,0.0,0.0);
-        bezCurve2A.ctrPos.setXYZ(100,0.0,0.0);
-        bezCurve2A.updateCalc();
-
-        curvePosList = bezCurve2A.getPosList();
-
-        let ls = new Line3DEntity();
-        ls.dynColorEnabled = true;
-        //  ls.initializeByPosList(bezCurve2A.getPosList());
-        //  this.m_engine.rscene.addEntity( ls );
-        
-        bezCurve2A.setSegTot(10);
-        bezCurve2A.begin.setXYZ(500.0,0.0,0.0);
-        bezCurve2A.end.setXYZ(1000.0,0.0,800.0);
-        bezCurve2A.ctrPos.setXYZ(900,0.0,0.0);
-        bezCurve2A.updateCalc();
-
-        curvePosList = curvePosList.concat(bezCurve2A.getPosList());
-        ls.initializeByPosList( curvePosList );
-        this.m_engine.rscene.addEntity( ls );
-    }
     private m_editEnabled: boolean = true;
-    private m_closeEnabled: boolean = false;
     setEditEnabled(enabled: boolean): void {
         this.m_editEnabled = enabled;
     }
     getEditEnabled(): boolean {
         return this.m_editEnabled;
     }
-    setCloseEnabled(enabled: boolean): void {
-        this.m_closeEnabled = enabled;
-    }
-    getCloseEnabled(): boolean {
-        return this.m_closeEnabled;
-    }
-
-    private m_path: RoadPath = null;
     private initEditor(): void {
-
-        let path: RoadPath = this.m_roadBuilder.appendPath();
-        this.m_path = path;
-        path.setBezierCurveSegTotal(10);
 
         let pls = new Line3DEntity();
         pls.dynColorEnabled = true;
-        pls.initializeByPosList( [new Vector3D(), new Vector3D(1.0,0.0,0.0)] );
-        this.m_engine.rscene.addEntity( pls );
+        pls.initializeByPosList([new Vector3D(), new Vector3D(1.0, 0.0, 0.0)]);
+        this.m_engine.rscene.addEntity(pls);
         this.m_line = pls;
         //let saxis: DragAxisQuad3D = new DragAxisQuad3D();
         //saxis.initialize(500.0, 5.0);
@@ -238,112 +129,111 @@ class Scene {
         console.log("entity mouseClick...");
 
     }
-    private m_buildEnd: boolean = false;
     private m_dispList: DisplayEntity[] = [];
     clear(): void {
-        this.m_buildEnd = false;
-        this.m_path.clear();
+        //this.m_buildEnd = false;
+        //this.m_path.clear();
+        this.pathEditor.clear();
         this.m_line.setVisible(false);
-        for(let i: number = 0; i < this.m_dispList.length; ++i) {
-            this.m_engine.rscene.removeEntity( this.m_dispList[i] );
+
+        for (let i: number = 0; i < this.m_dispList.length; ++i) {
+            this.m_engine.rscene.removeEntity(this.m_dispList[i]);
         }
         this.m_dispList = [];
-        this.m_curvePosList = null;
+        //this.m_curvePosList = null;
     }
-    private buildCurve(): Vector3D[] {
+    
+    private m_pathTool: PathTool = new PathTool();
 
-        let curvePosList: Vector3D[] = this.m_path.buildPathCurve(3, true, this.m_closeEnabled?10350:350);
-        
-        let pls = this.m_line;
-        this.m_line.setVisible(true);
-        pls.initializeByPosList( curvePosList );
-        pls.reinitializeMesh();
-        pls.updateMeshToGpu();
-        pls.updateBounds();
-        this.m_curvePosList = curvePosList;
-        return curvePosList;
+    private buildRoadSurface(posTable: Vector3D[][], tex: TextureProxy,uScale: number = 1.0, vScale: number = 1.0, uvType: number = 0): void {
+
+        let mesh: DataMesh = this.geometryBuilder.buildRoadSurface(posTable, uScale, vScale, uvType);
+
+        let mplane: Plane3DEntity = new Plane3DEntity();
+        //mplane.initializeXOYSquare(50, [this.m_engine.texLoader.getTexByUrl("static/assets/roadSurface01.jpg")]);
+        mplane.initializeXOYSquare(50, [tex]);
+
+        mesh.setBufSortFormat( mplane.getMaterial().getBufSortFormat() );
+        mesh.initialize();
+
+        let surfaceEntity: DisplayEntity = new DisplayEntity();
+        surfaceEntity.setMesh( mesh );
+        surfaceEntity.setMaterial( mplane.getMaterial() );
+        this.m_engine.rscene.addEntity(surfaceEntity);
+        this.m_dispList.push(surfaceEntity);
     }
-    private editCurve(pv: Vector3D): void {
+    private buildRoadShape(curvePosList: Vector3D[], dis: number = 60): void {
 
-        if(this.m_buildEnd) {
-            return;
-        }
+        let posListR: Vector3D[] = this.m_pathTool.expandXOZPath(curvePosList, dis, true);
+        let posListL: Vector3D[] = this.m_pathTool.expandXOZPath(curvePosList, -dis, true);
+        /*
+        let pls = new Line3DEntity();
+        pls.dynColorEnabled = true;
+        pls.initializeByPosList(posListR);
+        (pls.getMaterial() as any).setRGB3f(1.0, 0.8, 0.8);
+        this.m_engine.rscene.addEntity(pls);
+        this.m_dispList.push(pls);
 
-        if(this.m_editEnabled && this.m_path != null) {
 
-            if(this.m_curvePosList != null && Vector3D.Distance(this.m_curvePosList[0], this.m_curvePosList[this.m_curvePosList.length - 1]) < 0.001) {
-                console.log("curve is closed.");
-                this.m_buildEnd = true;
-                let list: Vector3D[] = this.m_path.getPosList();
-                
-                let expandTool: ExpandPathTool = new ExpandPathTool();
-                list = expandTool.expandXOZ(this.m_curvePosList, 60,true);
-                
-                let pls = new Line3DEntity();
-                pls.dynColorEnabled = true;
-                pls.initializeByPosList( list );
-                (pls.getMaterial() as any).setRGB3f(1.0,0.8,0.8);
-                this.m_engine.rscene.addEntity( pls );
-                this.m_dispList.push(pls);
+        pls = new Line3DEntity();
+        pls.dynColorEnabled = true;
+        pls.initializeByPosList(posListL);
+        (pls.getMaterial() as any).setRGB3f(0.3, 0.8, 1.0);
+        this.m_engine.rscene.addEntity(pls);
+        this.m_dispList.push(pls);
+        //*/
 
-                
-                list = expandTool.expandXOZ(this.m_curvePosList, -60,true);
-                pls = new Line3DEntity();
-                pls.dynColorEnabled = true;
-                pls.initializeByPosList( list );
-                (pls.getMaterial() as any).setRGB3f(0.3,0.8,1.0);
-                this.m_engine.rscene.addEntity( pls );
-                this.m_dispList.push(pls);
+        this.m_line.setVisible( false );
+        let tex: TextureProxy;
 
-                // list = this.m_path.getPosList();
-                // list = list.slice(0);
-                // list.push(list[0].clone());
-                // list = expandTool.expandXOZ(list, 200,true);
-                // let path: RoadPath = new RoadPath();
-                // path.initializePosList(list);
-                // path.setBezierCurveSegTotal(10);
-                // list = path.buildPathCurve(3, true, 250);
-                // pls = new Line3DEntity();
-                // pls.dynColorEnabled = true;
-                // pls.initializeByPosList( list );
-                // (pls.getMaterial() as any).setRGB3f(0.0,0.8,0.0);
-                // this.m_engine.rscene.addEntity( pls );
+        //  tex = this.m_engine.texLoader.getTexByUrl("static/assets/roadSurface03.jpg");
+        //  this.buildRoadSurface([posListL,posListR],tex, 1.0,1.0, 0);
 
-                // pls = new Line3DEntity();
-                // pls.dynColorEnabled = true;
-                // pls.initializeByPosList( this.m_path.getPosList() );
-                // (pls.getMaterial() as any).setRGB3f(0.3,1.0,0.8);
-                // this.m_engine.rscene.addEntity( pls );
+        tex = this.m_engine.texLoader.getTexByUrl("static/assets/roadSurface04.jpg");
+        this.buildRoadSurface([posListL,posListR], tex, 1.0,1.0, 1);
+    }
+    private buildPathLine(curvePosList: Vector3D[]): void {
 
-                //this.m_line.setVisible(false);
-                return;
-            }
-            let crossAxis: Axis3DEntity = new Axis3DEntity();
-            crossAxis.initializeCross(20.0);
-            crossAxis.setPosition(pv);
-            this.m_engine.rscene.addEntity( crossAxis );
-
-            this.m_dispList.push( crossAxis );
-
-            this.m_path.appendPos(pv);
-            if(this.m_path.getPosListLength() > 1) {
-                
-                this.m_curvePosList = this.buildCurve();
-            }
+        if (curvePosList != null && curvePosList.length > 1) {
+            let pls = this.m_line;
+            this.m_line.setVisible(true);
+            pls.initializeByPosList(curvePosList);
+            pls.reinitializeMesh();
+            pls.updateMeshToGpu();
+            pls.updateBounds();
         }
     }
-    private m_posList: Vector3D[] = [];
-    private m_curvePosList: Vector3D[] = null;
     private mouseDown(evt: any): void {
 
         console.log("scene mouse down");
         this.m_engine.viewRay.intersectPlane();
         let pv: Vector3D = this.m_engine.viewRay.position;
-        this.editCurve( pv );
+        
+        if (this.m_line != null && this.pathEditor.getEditEnabled() && !this.pathEditor.isPathClosed()) {
+
+            this.m_line.setVisible( true );
+            let crossAxis: Axis3DEntity = new Axis3DEntity();
+            crossAxis.initializeCross(20.0);
+            crossAxis.setPosition(pv);
+            this.m_engine.rscene.addEntity(crossAxis);
+            this.m_dispList.push(crossAxis);
+
+            this.pathEditor.appendPathPos(pv);
+            this.pathEditor.buildPath();
+
+            let posList: Vector3D[] = this.pathEditor.getPathPosList();
+            this.buildPathLine(posList);
+            if (this.pathEditor.isPathClosed()) {
+                if(this.closePathBtn != null) {
+                    this.closePathBtn.deselect(false);
+                }
+                this.buildRoadShape(posList);
+            }
+        }
 
     }
     private keyDown(evt: any): void {
-        
+
         switch (evt.key) {
             default:
                 break;
@@ -352,8 +242,8 @@ class Scene {
 
     update(): void {
     }
-    run(): void {        
+    run(): void {
     }
 }
 
-export {Scene};
+export { Scene };
