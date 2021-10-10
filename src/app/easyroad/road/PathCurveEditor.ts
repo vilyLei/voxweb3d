@@ -49,6 +49,9 @@ class PathCurveEditor {
         this.m_path.clear();
         this.m_curvePosList = null;
     }
+    saveData(): void {
+
+    }
     private buildCurve(): Vector3D[] {
 
         let curvePosList: Vector3D[] = this.m_path.buildPathCurve(3, true, this.m_closeEnabled?10350:350);

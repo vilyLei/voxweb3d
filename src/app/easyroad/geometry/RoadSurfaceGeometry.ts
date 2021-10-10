@@ -28,17 +28,17 @@ export default class RoadSurfaceGeometry extends GeometryBase {
         let px: number = 0;
         let py: number = 0;
 
-        this.bounds = new AABB();
+        //this.bounds = new AABB();
 
         this.vtxTotal = posTable[0].length * posTable.length;
         this.m_vs = new Float32Array(this.vtxTotal * 3);
         this.m_uvs = new Float32Array(this.vtxTotal * 2);
-        // calc cylinder wall vertexes
+        
         let k: number = 0;
         let l: number = 0;
         let len: number = posTable[0].length;
         let subLen: number = len - 1;
-        //let uvType: number = 1;
+        
         let rows: Vector3D[][] = posTable;
         let tot: number = rows.length;
         let disTotal: number = 0;
@@ -54,7 +54,7 @@ export default class RoadSurfaceGeometry extends GeometryBase {
         for (i = 1; i < len; ++i) {
             disList[i] = disList[i] / disTotal;
         }
-        //roadWidth
+        
         let uScale = this.uScale;
         let vScale = this.uScale;
         if (uvType < 1) {
@@ -80,9 +80,8 @@ export default class RoadSurfaceGeometry extends GeometryBase {
             }
         }
 
-        this.bounds.addXYZFloat32Arr(this.m_vs);
-
-        this.bounds.updateFast();
+        //this.bounds.addXYZFloat32Arr(this.m_vs);
+        //this.bounds.updateFast();
 
         let cn: number = len;
         let a: number = 0;

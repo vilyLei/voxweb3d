@@ -33,6 +33,8 @@ class RoadGeometryBuilder {
     private m_initFlag: boolean = true;
     constructor() { }
     roadWidth: number = 120;
+    
+    geometry: RoadSurfaceGeometry = null;
     initialize(): void {
 
         console.log("RoadGeometryBuilder::initialize()......");
@@ -44,7 +46,7 @@ class RoadGeometryBuilder {
 
     buildRoadSurface(posTable: Vector3D[][], uScale: number = 1.0, vScale: number = 1.0, uvType: number = 0): DataMesh {
 
-        let geom: RoadSurfaceGeometry = new RoadSurfaceGeometry();
+        let geom: RoadSurfaceGeometry = this.geometry = new RoadSurfaceGeometry();
         geom.uScale = uScale;
         geom.vScale = vScale;
         geom.roadWidth = this.roadWidth;

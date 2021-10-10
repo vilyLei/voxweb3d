@@ -27,7 +27,7 @@ import { RoadGeometryBuilder } from "./geometry/RoadGeometryBuilder";
 
 import Line3DEntity from "../../vox/entity/Line3DEntity";
 import DataMesh from "../../vox/mesh/DataMesh";
-import RendererState from "../../vox/render/RendererState";
+import { RoadFile } from "./io/RoadFile";
 
 class Scene {
 
@@ -83,9 +83,9 @@ class Scene {
             this.m_engine.rscene.addEntity( this.m_frame );
             //*/
 
-            // let axis = new Axis3DEntity();
-            // axis.initialize(700);
-            // this.m_engine.rscene.addEntity(axis);
+            let axis = new Axis3DEntity();
+            axis.initialize(700);
+            this.m_engine.rscene.addEntity(axis);
 
             // this.m_line = new Line3DEntity();
             // this.m_line.dynColorEnabled = true;
@@ -130,9 +130,10 @@ class Scene {
 
     }
     private m_dispList: DisplayEntity[] = [];
+
+    private m_roadFile: RoadFile = new RoadFile();
     clear(): void {
-        //this.m_buildEnd = false;
-        //this.m_path.clear();
+        
         this.pathEditor.clear();
         this.m_line.setVisible(false);
 
@@ -140,7 +141,14 @@ class Scene {
             this.m_engine.rscene.removeEntity(this.m_dispList[i]);
         }
         this.m_dispList = [];
-        //this.m_curvePosList = null;
+    }
+    saveData(): void {
+        //  this.pathEditor.saveData();
+
+        let posList: Vector3D[] = this.pathEditor.getPathPosList();
+        let fileBuf: Uint8Array = this.m_roadFile.savePathData(posList,this.geometryBuilder.geometry);
+        // for test
+        this.m_roadFile.parsePathDataFromFileBuffer(fileBuf);
     }
     
     private m_pathTool: PathTool = new PathTool();

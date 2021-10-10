@@ -27,15 +27,18 @@ class UIScene {
     }
     private m_switchEditBtn: SelectionBar = null;
     private initBtns(): void {
+        let dis: number = 24
         if(RendererDevice.IsMobileWeb()) {
             this.m_btnSize = 64;
+            dis = 40;
         }
         let btn = this.createSelectBtn("clearScene", "clearScene", "ON", "OFF", true);
+        btn = this.createSelectBtn("saveData", "saveData", "ON", "OFF", false);
+        this.m_btnPY += dis;
         btn = this.createSelectBtn("edit", "switchEdit", "ON", "OFF", true);
         this.m_switchEditBtn = btn;
         btn = this.createSelectBtn("dragCamera", "dragCamera", "ON", "OFF", false);
         btn = this.createSelectBtn("closePath", "closePath", "ON", "OFF", false);
-
         this.scene.closePathBtn = btn;
         
         let minX: number = 1000;
@@ -101,6 +104,9 @@ class UIScene {
             case "clearScene":
                 //this.switchEdit( selectEvt.flag );
                 this.scene.clear();
+                break;
+            case "saveData":
+                this.scene.saveData();
                 break;
             default:
                 break;
