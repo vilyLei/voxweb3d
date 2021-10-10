@@ -2,6 +2,7 @@
 import {FileIO} from "./FileIO";
 import Vector3D from "../../../vox/math/Vector3D";
 import RoadSurfaceGeometry from "../geometry/RoadSurfaceGeometry";
+
 class RoadPathData{
     pathPosList: Vector3D[] = null;
     vs: Float32Array = null;
@@ -15,12 +16,7 @@ class RoadFile {
 
     savePathData(pathPosList: Vector3D[], geom: RoadSurfaceGeometry = null): Uint8Array {
         let fileBuf: Uint8Array;// = this.buildPath(pathPosList);
-        if(geom == null) {
-            fileBuf = this.buildPath(pathPosList);
-        }
-        else {
-            fileBuf = this.buildPathAndGeometry(pathPosList, geom);
-        }
+        fileBuf = this.buildPathAndGeometry(pathPosList, geom);
         this.m_fileIO.downloadBinFile(fileBuf, "pathData");
 
         return fileBuf;
@@ -79,6 +75,7 @@ class RoadFile {
         console.log("parse data: ",data);
         return data;
     }
+    /*
     buildPath(pathPosList: Vector3D[]): Uint8Array {
 
         //console.log("src data: ",pathPosList);
@@ -122,8 +119,8 @@ class RoadFile {
         }
         return fileBuf;
     }
-    
-    buildPathAndGeometry(pathPosList: Vector3D[], geom: RoadSurfaceGeometry): Uint8Array {
+    //*/
+    buildPathAndGeometry(pathPosList: Vector3D[], geom: RoadSurfaceGeometry = null): Uint8Array {
 
         //console.log("src data: ",pathPosList);
 
@@ -131,22 +128,36 @@ class RoadFile {
         let dataLength: number = len * 3;
         let dataBytesLength: number = dataLength * 4;
 
-        let vs: Float32Array = geom.getVS();
-        let uvs: Float32Array = geom.getUVS();
-        let ivs: Uint16Array | Uint32Array = geom.getIVS();
-
+        let geomFlag: boolean = geom != null;
         // head 128 bytes
         let bytesLength: number = 128;
         bytesLength += dataBytesLength;
 
-        let vsPos: number = bytesLength;
-        bytesLength += vs.buffer.byteLength;
-        
-        let uvsPos: number = bytesLength;
-        bytesLength += uvs.buffer.byteLength;
 
-        let ivsPos: number = bytesLength;
-        bytesLength += ivs.buffer.byteLength;
+        let vs: Float32Array;
+        let uvs: Float32Array;
+        let ivs: Uint16Array | Uint32Array;
+        
+        let vsPos: number;
+        let uvsPos: number;
+        let ivsPos: number;
+
+        if(geomFlag) {
+
+            vs = geom.getVS();
+            uvs = geom.getUVS();
+            ivs = geom.getIVS();
+    
+            vsPos = bytesLength;
+            bytesLength += vs.buffer.byteLength;
+            
+            uvsPos = bytesLength;
+            bytesLength += uvs.buffer.byteLength;
+    
+            ivsPos = bytesLength;
+            bytesLength += ivs.buffer.byteLength;
+        }
+
         // 
         let fileIcon: string = "vrdgeom";
         let fileBuf: Uint8Array = new Uint8Array(bytesLength);
@@ -163,16 +174,19 @@ class RoadFile {
         infoBuf[5] = 2;// total number
         infoBuf[6] = uint32Pos;
         infoBuf[7] = dataLength;
-        // geom data info
-        infoBuf[8] = 7;// type
-        infoBuf[9] = 7;// total number
-        infoBuf[10] = vsPos;// pos in file buffer
-        infoBuf[11] = vs.buffer.byteLength;// byteLength
-        infoBuf[12] = uvsPos;// pos in file buffer
-        infoBuf[13] = uvs.buffer.byteLength;// byteLength
-        infoBuf[14] = ivsPos;// pos in file buffer
-        infoBuf[15] = ivs.buffer.byteLength;// byteLength
-        infoBuf[16] = ivs.length;// ivs length
+
+        if(geomFlag) {
+            // geom data info
+            infoBuf[8] = 7;// type
+            infoBuf[9] = 7;// total number
+            infoBuf[10] = vsPos;// pos in file buffer
+            infoBuf[11] = vs.buffer.byteLength;// byteLength
+            infoBuf[12] = uvsPos;// pos in file buffer
+            infoBuf[13] = uvs.buffer.byteLength;// byteLength
+            infoBuf[14] = ivsPos;// pos in file buffer
+            infoBuf[15] = ivs.buffer.byteLength;// byteLength
+            infoBuf[16] = ivs.length;// ivs length
+        }
 
         
         let dataBuf: Float32Array = new Float32Array(fileBuf.buffer);
@@ -190,20 +204,20 @@ class RoadFile {
             j += 3;
         }
 
-        let u8data: Uint8Array = new Uint8Array(vs.buffer);
-        fileBuf.set(u8data,vsPos);
-        
-        u8data = new Uint8Array(uvs.buffer);
-        fileBuf.set(u8data,uvsPos);
+        if(geomFlag) {
 
-        u8data = new Uint8Array(ivs.buffer);
-        fileBuf.set(u8data,ivsPos);
+            let u8data: Uint8Array = new Uint8Array(vs.buffer);
+            fileBuf.set(u8data,vsPos);
+            
+            u8data = new Uint8Array(uvs.buffer);
+            fileBuf.set(u8data,uvsPos);
 
-        console.log("vs: ",vs);
-        console.log("uvs: ",uvs);
-        console.log("ivs: ",ivs);
+            u8data = new Uint8Array(ivs.buffer);
+            fileBuf.set(u8data,ivsPos);
+        }
+
         return fileBuf;
     }
 }
 
-export {RoadFile};
+export {RoadPathData, RoadFile};

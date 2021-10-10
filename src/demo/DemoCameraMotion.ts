@@ -29,6 +29,11 @@ import CameraViewRay from "../vox/view/CameraViewRay";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import { SpaceCullingMask } from "../vox/space/SpaceCullingMask";
 
+import BinaryLoader from "../vox/assets/BinaryLoader";
+import { RoadPathData, RoadFile } from "../app/easyroad/io/RoadFile";
+import TextureProxy from "../vox/texture/TextureProxy";
+import DataMesh from "../vox/mesh/DataMesh";
+
 export class DemoCameraMotion
 {
     constructor(){}
@@ -53,7 +58,7 @@ export class DemoCameraMotion
             let rparam:RendererParam = new RendererParam();
             rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
             rparam.setCamPosition(1800.0,1800.0,1800.0);
-            rparam.setCamProject(45,20.0,7000.0);
+            rparam.setCamProject(45,20.0,9000.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam,3);
             this.m_rscene.updateCamera();
@@ -81,7 +86,7 @@ export class DemoCameraMotion
             plane.setXYZ(0.0,-300.0,0.0);
             this.m_rscene.addEntity(plane);
 
-            let size: number = 2000.0;
+            let size: number = 3700.0;
             let disY: number = 0.5 * size;
             let box:Box3DEntity = new Box3DEntity();
             box.spaceCullMask = SpaceCullingMask.NONE;
@@ -108,11 +113,55 @@ export class DemoCameraMotion
 
             this.update();
             
-            this.initTest01();
+            this.loadRoadData();
+            return;
+            this.initCamera();
             this.initPathAct();
         }
     }
-    private initTest01(): void {
+    private m_roadData: RoadPathData = null;
+    private loadRoadData(): void {
+
+        let loader: BinaryLoader = new BinaryLoader();
+        loader.uuid = "road_vrd";
+        loader.load("static/assets/scene/pathData_02.vrd", this);
+    }
+    
+    loaded(buffer: ArrayBuffer, uuid: string): void {
+        console.log("loaded the road data.");
+        let roadFile: RoadFile = new RoadFile();
+        this.m_roadData = roadFile.parsePathDataFromFileBuffer(new Uint8Array(buffer));
+        console.log("roadData: ",this.m_roadData);
+
+        this.buildRoadEntity();
+    }
+    loadError(status: number, uuid: string): void {
+
+    }
+    private buildRoadEntity(): void {
+        
+        let tex: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/roadSurface04.jpg");
+        let mplane: Plane3DEntity = new Plane3DEntity();
+        //mplane.initializeXOYSquare(50, [this.m_engine.texLoader.getTexByUrl("static/assets/roadSurface01.jpg")]);
+        mplane.initializeXOYSquare(50, [tex]);
+        let mesh: DataMesh = new DataMesh();
+        mesh.vs = this.m_roadData.vs;
+        mesh.uvs = this.m_roadData.uvs;
+        mesh.ivs = this.m_roadData.ivs;
+        mesh.setBufSortFormat( mplane.getMaterial().getBufSortFormat() );
+        mesh.initialize();
+
+        let surfaceEntity: DisplayEntity = new DisplayEntity();
+        surfaceEntity.setMesh( mesh );
+        surfaceEntity.setMaterial( mplane.getMaterial() );
+        this.m_rscene.addEntity(surfaceEntity);
+
+        
+        this.initCamera();
+        this.initPathAct(this.m_roadData.pathPosList);
+        
+    }
+    private initCamera(): void {
 
         let pos: Vector3D = new Vector3D(-500,300,0);
         
@@ -140,82 +189,83 @@ export class DemoCameraMotion
     private m_camFrame: FrustrumFrame3DEntity = null;
     private m_pathRole: DisplayEntity = null;
     private m_moveAction: PathMotionAction = new PathMotionAction();
-    private initPathAct(): void {
+    private initPathAct(posList: Vector3D[] = null): void {
 
         let axis: Axis3DEntity = new Axis3DEntity();
         axis.initializeCross(70.0);
         this.m_rscene.addEntity( axis );
         this.m_pathRole = axis;
-        //return;
-        let posList: Vector3D[] = [
-            //new Vector3D(351.30632762448636, -2.2737367544323206e-13, -438.8303070715208)
-            new Vector3D( 72.13681306524768,0, 27.767672487209893),
-            new Vector3D( 232.57540440645494, 0, 70.43368422643721),
-            new Vector3D( 349.5954994160545, 0, 249.1118245856153),
-            new Vector3D( 469.0805206640016, 0, 506.1222026231883),
-            new Vector3D( 726.1962941671513, 0,952.0773283474781),
-            new Vector3D( 797.282565704728, 0,957.4895012832981),
-            new Vector3D( 886.988563966599, 0,906.612424665302),
-            new Vector3D( 959.193382823809, 0,799.1431026228652),
-            new Vector3D( 1002.9603798633241, 0,635.8523626329904),
-            new Vector3D( 925.7715755056693, 0,522.56229219789),
-            new Vector3D( 751.6705041578543, 0,396.85277546175894),
-            new Vector3D( 485.7543244927572, 0,379.48625494810153),
-            new Vector3D( 175.64026123332633, 0,481.229817314442),
-            new Vector3D( 84.24498287944061, 0,566.1330588516862),
-            new Vector3D( -34.07380417008335, 0,704.0486518930372),
-            new Vector3D( -100.62421233657756, 0,829.0974507141026),
-            new Vector3D( -169.17457754402494, 0,902.3925779858835),
-            new Vector3D( -268.674786630811, 0,940.5287682590804),
-            new Vector3D( -338.2053026173978, 0,905.7625526827653),
-            new Vector3D( -391.53719551871154, 0,840.8612850793324),
-            new Vector3D( -391.66407835711743, 0,746.2275974006964),
-            new Vector3D( -432.8957923948808, 0,667.3725334709904),
-            new Vector3D( -405.75470117828195, 0,494.0844385137923),
-            new Vector3D( -415.09131983068073, 0,416.58967648035605),
-            new Vector3D( -399.0999233442824, 0,232.400979310288),
-            new Vector3D( -386.3711609536929, 0,71.00287704532411),
-            new Vector3D( -389.3674265096629, 0,-84.03999101794761),
-            new Vector3D( -305.5318818950261, 0,-264.3926193617656),
-            new Vector3D( -215.93783387524513, 0,-335.41016026158377),
-            new Vector3D( -27.871917976013947, 0,-364.9410411045287),
-            new Vector3D( 127.75878095653206, 0,-378.1144673662734),
-            new Vector3D( 267.35067660028494, 0,-380.2834737923422),
-            new Vector3D( 425.22150173395266, 0,-355.6636192834526),
-            new Vector3D( 502.7277634189411, 0,-350.6417982930757),
-            new Vector3D( 638.2887470397126, 0,-312.17181651928104),
-            new Vector3D( 735.3762145812532, 0,-245.52681228216397),
-            new Vector3D( 787.4757858296327, 0,-145.21537522179688),
-            new Vector3D( 799.1580428901602, 0,-39.610758195229664),
-            new Vector3D( 815.6961859265716, 0,43.95180160799532),
-            new Vector3D( 816.4167746077171, 0,89.29229223297352),
-            new Vector3D( 784.1597197739072, 0,147.72601461284648),
-            new Vector3D( 793.5147466678391, 0,207.2704045083476),
-            new Vector3D( 825.3509903063741, 0,254.2688982492782),
-            new Vector3D( 883.4564347189822, 0,276.1537675979389),
-            new Vector3D( 938.0518532676846, 0,294.61644742553995)
-        ];
-        let pv: Vector3D;
-        let degree: number;
-        for(let i: number = 0; i < posList.length; ++i) {
-            pv = posList[i];
-            let cross: Axis3DEntity = new Axis3DEntity();
-            cross.initializeCorssSizeXYZ(50,10,50);
-            cross.setXYZ( pv.x, pv.y, pv.z );
-            if(i == 0) {
-                this.m_temV.subVecsTo(posList[i+1], posList[i]);
+        
+        if(posList == null) {
+            posList = [
+                new Vector3D( 72.13681306524768,0, 27.767672487209893),
+                new Vector3D( 232.57540440645494, 0, 70.43368422643721),
+                new Vector3D( 349.5954994160545, 0, 249.1118245856153),
+                new Vector3D( 469.0805206640016, 0, 506.1222026231883),
+                new Vector3D( 726.1962941671513, 0,952.0773283474781),
+                new Vector3D( 797.282565704728, 0,957.4895012832981),
+                new Vector3D( 886.988563966599, 0,906.612424665302),
+                new Vector3D( 959.193382823809, 0,799.1431026228652),
+                new Vector3D( 1002.9603798633241, 0,635.8523626329904),
+                new Vector3D( 925.7715755056693, 0,522.56229219789),
+                new Vector3D( 751.6705041578543, 0,396.85277546175894),
+                new Vector3D( 485.7543244927572, 0,379.48625494810153),
+                new Vector3D( 175.64026123332633, 0,481.229817314442),
+                new Vector3D( 84.24498287944061, 0,566.1330588516862),
+                new Vector3D( -34.07380417008335, 0,704.0486518930372),
+                new Vector3D( -100.62421233657756, 0,829.0974507141026),
+                new Vector3D( -169.17457754402494, 0,902.3925779858835),
+                new Vector3D( -268.674786630811, 0,940.5287682590804),
+                new Vector3D( -338.2053026173978, 0,905.7625526827653),
+                new Vector3D( -391.53719551871154, 0,840.8612850793324),
+                new Vector3D( -391.66407835711743, 0,746.2275974006964),
+                new Vector3D( -432.8957923948808, 0,667.3725334709904),
+                new Vector3D( -405.75470117828195, 0,494.0844385137923),
+                new Vector3D( -415.09131983068073, 0,416.58967648035605),
+                new Vector3D( -399.0999233442824, 0,232.400979310288),
+                new Vector3D( -386.3711609536929, 0,71.00287704532411),
+                new Vector3D( -389.3674265096629, 0,-84.03999101794761),
+                new Vector3D( -305.5318818950261, 0,-264.3926193617656),
+                new Vector3D( -215.93783387524513, 0,-335.41016026158377),
+                new Vector3D( -27.871917976013947, 0,-364.9410411045287),
+                new Vector3D( 127.75878095653206, 0,-378.1144673662734),
+                new Vector3D( 267.35067660028494, 0,-380.2834737923422),
+                new Vector3D( 425.22150173395266, 0,-355.6636192834526),
+                new Vector3D( 502.7277634189411, 0,-350.6417982930757),
+                new Vector3D( 638.2887470397126, 0,-312.17181651928104),
+                new Vector3D( 735.3762145812532, 0,-245.52681228216397),
+                new Vector3D( 787.4757858296327, 0,-145.21537522179688),
+                new Vector3D( 799.1580428901602, 0,-39.610758195229664),
+                new Vector3D( 815.6961859265716, 0,43.95180160799532),
+                new Vector3D( 816.4167746077171, 0,89.29229223297352),
+                new Vector3D( 784.1597197739072, 0,147.72601461284648),
+                new Vector3D( 793.5147466678391, 0,207.2704045083476),
+                new Vector3D( 825.3509903063741, 0,254.2688982492782),
+                new Vector3D( 883.4564347189822, 0,276.1537675979389),
+                new Vector3D( 938.0518532676846, 0,294.61644742553995)
+            ];
+            let pv: Vector3D;
+            let degree: number;
+            for(let i: number = 0; i < posList.length; ++i) {
+                pv = posList[i];
+                let cross: Axis3DEntity = new Axis3DEntity();
+                cross.initializeCorssSizeXYZ(50,10,50);
+                cross.setXYZ( pv.x, pv.y, pv.z );
+                if(i == 0) {
+                    this.m_temV.subVecsTo(posList[i+1], posList[i]);
+                }
+                else if(i < (posList.length - 1)) {
+                    this.m_temV.subVecsTo(posList[i], posList[i-1]);
+                    this.m_tem2V.subVecsTo(posList[i+1], posList[i]);
+                    this.m_temV.addBy(this.m_tem2V);
+                }
+                else {
+                    this.m_temV.subVecsTo(posList[i-1], posList[i]);
+                }
+                degree =  360 - MathConst.GetDegreeByXY(this.m_temV.x,this.m_temV.z);
+                cross.setRotationXYZ(0, degree, 0);
+                this.m_rscene.addEntity( cross );
             }
-            else if(i < (posList.length - 1)) {
-                this.m_temV.subVecsTo(posList[i], posList[i-1]);
-                this.m_tem2V.subVecsTo(posList[i+1], posList[i]);
-                this.m_temV.addBy(this.m_tem2V);
-            }
-            else {
-                this.m_temV.subVecsTo(posList[i-1], posList[i]);
-            }
-            degree =  360 - MathConst.GetDegreeByXY(this.m_temV.x,this.m_temV.z);
-            cross.setRotationXYZ(0, degree, 0);
-            this.m_rscene.addEntity( cross );
         }
 
         //  this.m_camView.setCamera( this.m_rscene.getCamera() );
@@ -228,18 +278,20 @@ export class DemoCameraMotion
     private m_tem2V: Vector3D = new Vector3D();
     private m_camTypeFlag: boolean = true;
     private switchCamera(): void {
-        
-        if(this.m_camTypeFlag) {
-            this.m_camView.setCamera( this.m_rscene.getCamera() );
+        if(this.m_camView != null) {
+            if(this.m_camTypeFlag) {
+                this.m_camView.setCamera( this.m_rscene.getCamera() );
+            }
+            else {
+                this.m_camView.setCamera( this.m_cameraTarget );
+            }
+            this.m_camTypeFlag = !this.m_camTypeFlag;
         }
-        else {
-            this.m_camView.setCamera( this.m_cameraTarget );
-        }
-        this.m_camTypeFlag = !this.m_camTypeFlag;
     }
     private mouseDown(evt:any):void
     {
         this.switchCamera();
+        
         this.m_viewRay.intersectPlane();
         let pv:Vector3D = this.m_viewRay.position;
         //console.log(pv.x+",",pv.y+","+pv.z);
@@ -279,11 +331,11 @@ export class DemoCameraMotion
             //this.m_rscene.getCamera().slideViewOffsetXY(0.0,1.0);
         }
         this.m_statusDisp.update(false);
-
-        this.m_moveAction.run();
-        this.m_camFrame.updateFrame( this.m_camView.getCamera() );
-        this.m_camFrame.updateMeshToGpu();
-
+        if(this.m_camFrame != null) {
+            this.m_moveAction.run();
+            this.m_camFrame.updateFrame( this.m_camView.getCamera() );
+            this.m_camFrame.updateMeshToGpu();    
+        }
         this.m_rscene.run();
     }
 }
