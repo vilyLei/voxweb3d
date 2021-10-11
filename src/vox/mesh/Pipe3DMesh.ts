@@ -52,6 +52,10 @@ export default class Pipe3DMesh extends MeshBase
             this.m_vs = this.geometry.getVS();
             this.m_uvs = this.geometry.getUVS();
             this.m_ivs = this.geometry.getIVS();
+            
+            if(this.wireframe) {
+                this.updateWireframeIvs();
+            }
             this.bounds = this.geometry.bounds;
             
             this.vtCount = this.geometry.vtCount;

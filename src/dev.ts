@@ -203,7 +203,7 @@
 
 //  import {DemoAPlane as Demo} from "./demo/DemoAPlane";
 
-//  import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
+import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
 
 //  import {DemoBaseRenderer as Demo} from "./demo/DemoBaseRenderer";
 
@@ -307,7 +307,7 @@
 
 //  import {DemoCamera as Demo} from "./demo/DemoCamera";
 
-import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
+//  import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
 
 //  import {DemoCameraPath as Demo} from "./demo/DemoCameraPath";
 

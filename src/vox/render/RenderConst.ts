@@ -12,6 +12,7 @@ export class RenderDrawMode {
     static readonly ARRAYS_LINES: number = 5;
     static readonly ARRAYS_LINE_STRIP: number = 6;
     static readonly ARRAYS_POINTS: number = 7;
+    static readonly ELEMENTS_LINES: number = 8;
     static readonly DISABLE: number = 0;
 }
 // blend mode

@@ -225,6 +225,10 @@ export default class Sphere3DMesh extends MeshBase
                 ROVertexBuffer.AddFloat32Data(tvs,3);
                 ROVertexBuffer.AddFloat32Data(btvs,3);
             }
+            
+            if(this.wireframe) {
+                this.updateWireframeIvs();
+            }
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
             this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
             this.m_vbuf.setUint16IVSData(this.m_ivs);

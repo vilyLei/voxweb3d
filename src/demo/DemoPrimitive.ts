@@ -104,10 +104,11 @@ export class DemoPrimitive {
             //*/
             let i: number = 0;
             let axis: Axis3DEntity = new Axis3DEntity();
-            axis.initialize(110.0);
-            this.m_renderer.addEntity(axis);
+            //  axis.initialize(110.0);
+            //  this.m_renderer.addEntity(axis);
             ///*
             let plane: Plane3DEntity = new Plane3DEntity();
+            //plane.wireframe = true;
             plane.color0.setRGB3f(1.0, 0.0, 0.0);
             plane.color2.setRGB3f(0.0, 1.0, 0.0);
             plane.vtxColorEnabled = true;
@@ -116,7 +117,8 @@ export class DemoPrimitive {
             //plane.initializeXOZ(-200.0,-150.0,400.0,300.0);
             plane.setXYZ(0.0, -100.0, 0.0);
             this.m_renderer.addEntity(plane);
-            //return;
+
+            //  return;
             //*/
             ///*
             let billLine: BillboardLine3DEntity = new BillboardLine3DEntity();
@@ -150,6 +152,7 @@ export class DemoPrimitive {
             //let posV:Vector3D = new Vector3D();
             ///*
             let pipe: Pipe3DEntity = new Pipe3DEntity();
+            //pipe.wireframe = true;
             pipe.showDoubleFace();
             //pipe.toBrightnessBlend(false,true);
             pipe.initialize(50.0, 200.0, 8, 1, [tex3]);
@@ -186,6 +189,7 @@ export class DemoPrimitive {
             }
             //*/
             let srcBox: Box3DEntity = new Box3DEntity();
+            srcBox.wireframe = true;
             srcBox.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex1]);
 
             let box: Box3DEntity = null;
@@ -206,6 +210,7 @@ export class DemoPrimitive {
             }
             for (i = 0; i < 2; ++i) {
                 let cylinder: Cylinder3DEntity = new Cylinder3DEntity();
+                //cylinder.wireframe = true;
                 cylinder.initialize(30, 80, 15, [tex0]);
                 cylinder.setXYZ(Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0);
                 this.m_renderer.addEntity(cylinder);

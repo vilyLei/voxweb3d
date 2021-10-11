@@ -14,8 +14,6 @@ import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 
 import {RenderDrawMode} from "../../vox/render/RenderConst";
 
-//import ROVertexBuffer = ROVertexBufferT.vox.mesh.ROVertexBuffer;
-
 /**
  * mesh(Polygon face convex mesh or Parametric geometry Objecct:):
  *      1.基于面(例如三角面)描述的多面体实体(Polygon face geometry mesh,for example: triangle mesh)
@@ -38,6 +36,9 @@ export default class MeshBase
         this.m_bufDataUsage = bufDataUsage;
         //this.m_isDyn = bufDataUsage == VtxBufConst.VTX_DYNAMIC_DRAW;
     }
+    
+    wireframe: boolean = false;
+
     bounds:AABB = null;
     normalType:number = VtxNormalType.GOURAND;
     normalScale:number = 1.0;
@@ -52,6 +53,33 @@ export default class MeshBase
     drawInsBeginIndex:number = 0;
     drawInsStride:number = 0;
     drawInsTotal:number = 0;
+    
+	protected updateWireframeIvs(): void {
+
+		if ( this.m_ivs !== null ) {
+
+			const array = this.m_ivs;
+            let indices: number[] = [];
+			for ( let i = 0, l = array.length; i < l; i += 3 ) {
+
+				const a = array[ i + 0 ];
+				const b = array[ i + 1 ];
+				const c = array[ i + 2 ];
+
+				indices.push( a, b, b, c, c, a );
+
+			}
+            let wIvs: Uint16Array | Uint32Array;
+            if(indices.length < 65535) {
+                wIvs = new Uint16Array( indices );
+            }
+            else {
+                wIvs = new Uint32Array( indices );
+            }
+            this.m_ivs = wIvs;
+            this.drawMode = RenderDrawMode.ELEMENTS_LINES;
+		}
+	}
     protected buildEnd():void
     {
         this.m_bufDataList = ROVertexBuffer.BufDataList;

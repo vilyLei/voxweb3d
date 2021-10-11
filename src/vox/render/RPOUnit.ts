@@ -7,12 +7,12 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 import AABB from "../../vox/geom/AABB";
-import {RenderDrawMode} from "../../vox/render/RenderConst";
+import { RenderDrawMode } from "../../vox/render/RenderConst";
 import IVertexRenderObj from "../../vox/render/IVertexRenderObj";
 
 import RenderShader from "../../vox/render/RenderShader";
 import ITextureRenderObj from "../../vox/render/ITextureRenderObj";
-import {RenderStateObject, RenderColorMask} from "../../vox/render/RODrawState";
+import { RenderStateObject, RenderColorMask } from "../../vox/render/RODrawState";
 import RendererState from "../../vox/render/RendererState";
 import RenderProxy from "../../vox/render/RenderProxy";
 import ShaderUBO from "../../vox/material/ShaderUBO";
@@ -26,105 +26,99 @@ import DebugFlag from "../debug/DebugFlag";
  * 渲染器渲染运行时核心关键执行显示单元,一个unit代表着一个draw call所渲染的所有数据
  * renderer rendering runtime core executable display unit.
  */
-export default class RPOUnit implements IPoolNode,IRPODisplay
-{
-    uid:number = -1;
-    value:number = -1;
+export default class RPOUnit implements IPoolNode, IRPODisplay {
+    uid: number = -1;
+    value: number = -1;
     // 记录自身和RPONode的对应关系
-    __$rpuid:number = -1;
+    __$rpuid: number = -1;
     // renderProcess uid
-    __$rprouid:number = -1;
-    shader:RenderShader = null;
-    pos:Vector3D = new Vector3D();
-    bounds:AABB = null;
-    constructor()
-    {
+    __$rprouid: number = -1;
+    shader: RenderShader = null;
+    pos: Vector3D = new Vector3D();
+    bounds: AABB = null;
+    constructor() {
     }
     // 记录对应的RODisplay的渲染所需的状态数据
-    ibufType:number = 0;                // UNSIGNED_SHORT or UNSIGNED_INT
-    ibufStep:number = 2;                // 2 or 4
-    ivsIndex:number = 0;
-    ivsCount:number = 0;
-    insCount:number = 0;
-    drawOffset:number = 0;
-    
-    partTotal:number = 0;               // partTotal = partGroup.length
-    partGroup:Uint16Array = null;
-    trisNumber:number = 0;
-    visible:boolean = true;
-    drawEnabled:boolean = true;
-    drawMode:number = 0;
-    
-    renderState:number = 0;
-    rcolorMask:number = 0;
+    ibufType: number = 0;                // UNSIGNED_SHORT or UNSIGNED_INT
+    ibufStep: number = 2;                // 2 or 4
+    ivsIndex: number = 0;
+    ivsCount: number = 0;
+    insCount: number = 0;
+    drawOffset: number = 0;
+
+    partTotal: number = 0;               // partTotal = partGroup.length
+    partGroup: Uint16Array = null;
+    trisNumber: number = 0;
+    visible: boolean = true;
+    drawEnabled: boolean = true;
+    drawMode: number = 0;
+
+    renderState: number = 0;
+    rcolorMask: number = 0;
     // 用于记录 renderState(低10位)和ColorMask(高10位) 的状态组合
-    drawFlag:number = 0;
-    vro:IVertexRenderObj = null;
-    
+    drawFlag: number = 0;
+    vro: IVertexRenderObj = null;
+
     // transform uniform
-    transUniform:IShaderUniform = null;
+    transUniform: IShaderUniform = null;
     // materiall uniform
-    uniform:IShaderUniform = null;
+    uniform: IShaderUniform = null;
     // 记录 material 对应的 shader program uid
-    shdUid:number = -1;
-    vtxUid:number = -1;
+    shdUid: number = -1;
+    vtxUid: number = -1;
     // record tex group
-    tro:ITextureRenderObj = null;
-    texMid:number = -1;
-    ubo:ShaderUBO = null;
-    private testDrawFlag():void
-    {
-        if(this.shader.drawFlag != this.drawFlag)
-        {
+    tro: ITextureRenderObj = null;
+    texMid: number = -1;
+    ubo: ShaderUBO = null;
+    private testDrawFlag(): void {
+        if (this.shader.drawFlag != this.drawFlag) {
             this.shader.drawFlag = this.drawFlag;
             RenderStateObject.UseRenderState(this.renderState);
             RenderColorMask.UseRenderState(this.rcolorMask);
         }
     }
-    getUid():number
-    {
+    getUid(): number {
         return this.uid;
     }
-    getRPOUid():number
-    {
+    getRPOUid(): number {
         return this.__$rpuid;
     }
-    getRPROUid():number
-    {
+    getRPROUid(): number {
         return this.__$rprouid;
     }
-    getShaderUid():number
-    {
+    getShaderUid(): number {
         return this.shdUid;
     }
-    setIvsParam(ivsIndex:number, ivsCount:number):void
-    {
+    setIvsParam(ivsIndex: number, ivsCount: number): void {
         this.ivsIndex = ivsIndex;
         this.ivsCount = ivsCount;
         this.drawOffset = ivsIndex * this.ibufStep;
         this.drawEnabled = this.visible && this.ivsCount > 0;
     }
-    setVisible(boo:boolean):void
-    {
+    setVisible(boo: boolean): void {
         this.visible = boo;
         this.drawEnabled = boo && this.ivsCount > 0;
     }
-    setDrawFlag(renderState:number,rcolorMask:number):void
-    {
+    setDrawFlag(renderState: number, rcolorMask: number): void {
         this.renderState = renderState;
         this.rcolorMask = rcolorMask;
-        this.drawFlag = (rcolorMask<<10) + renderState;
+        this.drawFlag = (rcolorMask << 10) + renderState;
     }
-    drawThis(rc:RenderProxy):void
-    {
+    drawThis(rc: RenderProxy): void {
+
         ++RendererState.DrawCallTimes;
         RendererState.DrawTrisNumber += this.trisNumber;
-        switch(this.drawMode)
-        {
+        
+        switch (this.drawMode) {
             case RenderDrawMode.ELEMENTS_TRIANGLES:
                 //console.log("RPOUnit::run(), TRIANGLES drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+"),drawOffset: "+this.drawOffset);
                 //rc.RContext.drawElements(rc.TRIANGLES, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
                 rc.RContext.drawElements(rc.TRIANGLES, this.ivsCount, this.ibufType, this.drawOffset);
+                break;
+            case RenderDrawMode.ELEMENTS_LINES:
+                //console.log("RPOUnit::run(), ELEMENTS_LINES drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+"),drawOffset: "+this.drawOffset);
+                //rc.RContext.drawElements(rc.ELEMENTS_LINES, this.ivsCount, this.ibufType,this.ivsIndex * this.ibufStep);
+                rc.RContext.drawElements(rc.LINES, this.ivsCount, this.ibufType, this.drawOffset);
                 break;
             case RenderDrawMode.ELEMENTS_TRIANGLE_STRIP:
                 //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
@@ -134,7 +128,7 @@ export default class RPOUnit implements IPoolNode,IRPODisplay
             case RenderDrawMode.ELEMENTS_INSTANCED_TRIANGLES:
                 //console.log("RPOUnit::run(), drawElementsInstanced(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+", insCount: "+this.insCount+")");
                 //rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.ivsIndex * this.ibufStep, this.insCount);
-                rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.drawOffset, this.insCount);
+                rc.RContext.drawElementsInstanced(rc.TRIANGLES, this.ivsCount, this.ibufType, this.drawOffset, this.insCount);
                 break;
             case RenderDrawMode.ELEMENTS_TRIANGLE_FAN:
                 //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
@@ -153,24 +147,31 @@ export default class RPOUnit implements IPoolNode,IRPODisplay
                 break;
         }
     }
-    
-    drawPart(rc:RenderProxy):void
-    {
+
+    drawPart(rc: RenderProxy): void {
         ++RendererState.DrawCallTimes;
         RendererState.DrawTrisNumber += this.trisNumber;
-        let i:number = 0;
-        let gl:any = rc.RContext;
-        switch(this.drawMode)
-        {
+        let i: number = 0;
+        let gl: any = rc.RContext;
+        switch (this.drawMode) {
             case RenderDrawMode.ELEMENTS_TRIANGLES:
-                for(; i < this.partTotal;)
-                {
+                for (; i < this.partTotal;) {
                     // 这里面可以增加一个回调函数,这个回调函数可以对uniform(或者transformUniform)做一些数据改变，进而来控制相应的状态
                     // 因此可以通过改变uniform实现大量的显示绘制
                     //  let count:number = this.partGroup[i++];
                     //  let offset:number = this.partGroup[i++];
                     //  gl.drawElements(rc.TRIANGLES, count, this.ibufType, offset);
                     gl.drawElements(rc.TRIANGLES, this.partGroup[i++], this.ibufType, this.partGroup[i++]);
+                }
+                break;
+            case RenderDrawMode.ELEMENTS_LINES:
+                for (; i < this.partTotal;) {
+                    // 这里面可以增加一个回调函数,这个回调函数可以对uniform(或者transformUniform)做一些数据改变，进而来控制相应的状态
+                    // 因此可以通过改变uniform实现大量的显示绘制
+                    //  let count:number = this.partGroup[i++];
+                    //  let offset:number = this.partGroup[i++];
+                    //  gl.drawElements(rc.TRIANGLES, count, this.ibufType, offset);
+                    gl.drawElements(rc.LINES, this.partGroup[i++], this.ibufType, this.partGroup[i++]);
                 }
                 break;
             case RenderDrawMode.ELEMENTS_TRIANGLE_STRIP:
@@ -181,7 +182,7 @@ export default class RPOUnit implements IPoolNode,IRPODisplay
             case RenderDrawMode.ELEMENTS_INSTANCED_TRIANGLES:
                 //console.log("RPOUnit::run(), drawElementsInstanced(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+", insCount: "+this.insCount+")");
                 //rc.RContext.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.ivsIndex * this.ibufStep, this.insCount);
-                gl.drawElementsInstanced(rc.TRIANGLES,this.ivsCount, this.ibufType, this.drawOffset, this.insCount);
+                gl.drawElementsInstanced(rc.TRIANGLES, this.ivsCount, this.ibufType, this.drawOffset, this.insCount);
                 break;
             case RenderDrawMode.ELEMENTS_TRIANGLE_FAN:
                 //console.log("RPOUnit::run(), TRIANGLE_STRIP drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
@@ -200,11 +201,9 @@ export default class RPOUnit implements IPoolNode,IRPODisplay
                 break;
         }
     }
-    run2(rc:RenderProxy):void
-    {
+    run2(rc: RenderProxy): void {
         //console.log("RPOUnit::run2(), this.tro: "+this.tro+", this.drawMode: "+this.drawMode);
-        if(this.ubo != null)
-        {
+        if (this.ubo != null) {
             this.ubo.run(rc);
         }
         //  if(this.shader == null)
@@ -215,11 +214,9 @@ export default class RPOUnit implements IPoolNode,IRPODisplay
         this.shader.useUniform(this.uniform);
         this.testDrawFlag();
     }
-    run(rc:RenderProxy):void
-    {
+    run(rc: RenderProxy): void {
         //console.log("RPOUnit::run(), this.tro: "+this.tro+", this.drawMode: "+this.drawMode);
-        if(this.ubo != null)
-        {
+        if (this.ubo != null) {
             this.ubo.run(rc);
         }
         this.vro.run();
@@ -228,20 +225,17 @@ export default class RPOUnit implements IPoolNode,IRPODisplay
         this.shader.useUniform(this.uniform);
         this.testDrawFlag();
     }
-    
-    runLockMaterial2(puniform:IShaderUniform):void
-    {
-        this.testDrawFlag();                
-        this.shader.useUniform2ToCurrentShd(puniform==null?this.uniform:puniform,this.transUniform);
+
+    runLockMaterial2(puniform: IShaderUniform): void {
+        this.testDrawFlag();
+        this.shader.useUniform2ToCurrentShd(puniform == null ? this.uniform : puniform, this.transUniform);
     }
-    runLockMaterial():void
-    {
+    runLockMaterial(): void {
         this.vro.run();
         this.testDrawFlag();
-        this.shader.useUniform2ToCurrentShd(this.uniform,this.transUniform);
+        this.shader.useUniform2ToCurrentShd(this.uniform, this.transUniform);
     }
-    reset():void
-    {
+    reset(): void {
         //  console.log("RPOUnit::reset(), uid: ",this.getUid());
         this.vro.__$detachThis();
         this.vro = null;
@@ -267,12 +261,10 @@ export default class RPOUnit implements IPoolNode,IRPODisplay
         this.shader = null;
         this.bounds = null;
     }
-    destroy():void
-    {
+    destroy(): void {
         this.reset();
     }
-    toString():string
-    {
-        return "[RPOUnit(uid = "+this.uid+")]";
+    toString(): string {
+        return "[RPOUnit(uid = " + this.uid + ")]";
     }
 }

@@ -26,6 +26,7 @@ export default class Pipe3DEntity extends DisplayEntity
     
     uScale:number = 1.0;
     vScale:number = 1.0;
+    wireframe: boolean = false;
     private m_radius:number = 50.0;
     private m_height:number = 100.0;
     constructor(transform:ROTransform = null)
@@ -113,6 +114,7 @@ export default class Pipe3DEntity extends DisplayEntity
             this.m_currMesh.uScale = this.uScale;
             this.m_currMesh.vScale = this.vScale;
             this.m_currMesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
+            this.m_currMesh.wireframe = this.wireframe;
             this.m_currMesh.setBufSortFormat( material.getBufSortFormat() );
             this.m_currMesh.initialize(this.m_radius, this.m_height, this.m_longitudeNum, this.m_latitudeNum, this.m_uvType, this.m_alignYRatio);
             this.setMesh(this.m_currMesh);

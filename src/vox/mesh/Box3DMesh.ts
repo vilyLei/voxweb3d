@@ -407,6 +407,10 @@ export default class Box3DMesh extends MeshBase {
             ROVertexBuffer.AddFloat32Data(btvs, 3);
         }
         ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
+        
+        if(this.wireframe) {
+            this.updateWireframeIvs();
+        }
         if (newBuild) {
             this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
             this.m_vbuf.setUint16IVSData(this.m_ivs);

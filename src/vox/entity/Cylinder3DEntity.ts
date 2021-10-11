@@ -21,8 +21,9 @@ export default class Cylinder3DEntity extends DisplayEntity
     private m_transMatrix:Matrix4 = null;
     uScale:number = 1.0;
     vScale:number = 1.0;
-    m_radius:number = 50.0;
-    m_height:number = 100.0;
+    wireframe: boolean = false;
+    private m_radius:number = 50.0;
+    private m_height:number = 100.0;
     constructor(transform:ROTransform = null)
     {
         super(transform);
@@ -69,6 +70,7 @@ export default class Cylinder3DEntity extends DisplayEntity
             mesh.uScale = this.uScale;
             mesh.vScale = this.vScale;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
+            mesh.wireframe = this.wireframe;
             mesh.setBufSortFormat( material.getBufSortFormat() );
             mesh.initialize(this.m_radius, this.m_height, this.m_plongitudeNumSegments, 2, this.m_uvType, this.m_alignYRatio);
             this.setMesh(mesh);

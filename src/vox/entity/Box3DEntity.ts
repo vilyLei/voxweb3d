@@ -29,6 +29,7 @@ export default class Box3DEntity extends DisplayEntity {
     normalScale: number = 1.0;
     // uvPartsNumber value is 4 or 6
     uvPartsNumber: number = 0;
+    wireframe: boolean = false;
     constructor(transform: ROTransform = null) {
         super(transform);
     }
@@ -120,6 +121,7 @@ export default class Box3DEntity extends DisplayEntity {
             }
             mesh.uScale = this.uScale;
             mesh.vScale = this.vScale;
+            mesh.wireframe = this.wireframe;
             mesh.normalType = this.m_normalType;
             mesh.normalScale = this.normalScale;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;

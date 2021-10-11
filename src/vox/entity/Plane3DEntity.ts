@@ -34,6 +34,7 @@ export default class Plane3DEntity extends DisplayEntity {
     uScale: number = 1.0;
     vScale: number = 1.0;
 
+    wireframe: boolean = false;
     uvs: Float32Array = null;
     flipVerticalUV: boolean = false;
     vtxColorEnabled: boolean = false;
@@ -201,6 +202,7 @@ export default class Plane3DEntity extends DisplayEntity {
             mesh.vScale = this.vScale;
             mesh.offsetU = this.offsetU;
             mesh.offsetV = this.offsetV;
+            mesh.wireframe = this.wireframe;
 
             mesh.flipVerticalUV = this.flipVerticalUV;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
