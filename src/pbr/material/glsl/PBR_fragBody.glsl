@@ -8,11 +8,12 @@ void main()
     float metallic = u_params[0].x;
     float roughness = u_params[0].y;
     float ao = u_params[0].z;
+
     #ifdef VOX_AO_MAP
-    color = VOX_Texture2D(VOX_AO_MAP, v_uv.xy).xyz;
-    ao = mix(1.0, color.x, ao);
-    
+        color = VOX_Texture2D(VOX_AO_MAP, v_uv.xy).xyz;
+        ao = mix(1.0, color.x, ao);
     #endif
+
     float colorGlossiness = 1.0 - roughness;
     float reflectionIntensity = u_params[1].y;
     float glossinessSquare = colorGlossiness * colorGlossiness;
@@ -24,6 +25,7 @@ void main()
     #else
         worldNormal = v_worldNormal;
     #endif
+    
     vec3 N = worldNormal;
     #ifdef VOX_NORMAL_MAP
         N = getNormalFromMap(VOX_NORMAL_MAP, v_uv.xy, worldPos.xyz, worldNormal);

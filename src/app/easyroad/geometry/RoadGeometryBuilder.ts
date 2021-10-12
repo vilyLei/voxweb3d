@@ -54,7 +54,7 @@ class RoadGeometryBuilder {
         let mesh: DataMesh = new DataMesh();
         mesh.vs = geom.getVS();
         mesh.uvs = geom.getUVS();
-        mesh.ivs = geom.getIVS()
+        mesh.setIVS( geom.getIVS() );
         return mesh;
     }    
 }

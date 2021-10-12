@@ -203,7 +203,7 @@ export default class Plane3DEntity extends DisplayEntity {
             mesh.offsetU = this.offsetU;
             mesh.offsetV = this.offsetV;
             mesh.wireframe = this.wireframe;
-
+            
             mesh.flipVerticalUV = this.flipVerticalUV;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             mesh.axisFlag = this.m_flag;

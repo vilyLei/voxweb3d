@@ -18,9 +18,7 @@ export default class RoadSurfaceGeometry extends GeometryBase {
     constructor() {
         super();
     }
-    getVS(): Float32Array { return this.m_vs; }
-    getUVS(): Float32Array { return this.m_uvs; }
-    getIVS(): Uint16Array | Uint32Array { return this.m_ivs; }
+    
     initialize(posTable: Vector3D[][], uvType: number): void {
         let i: number = 0;
         let j: number = 0;
@@ -100,11 +98,5 @@ export default class RoadSurfaceGeometry extends GeometryBase {
         this.vtCount = this.m_ivs.length;
         this.trisNumber = this.vtCount / 3;
 
-        // console.log("subLen: ", subLen);
-        // console.log("this.vtxTotal: ", this.vtxTotal);
-        // console.log("this.m_ivs: ", this.m_ivs);
-    }
-    toString(): string {
-        return "RoadSurfaceGeometry()";
     }
 }

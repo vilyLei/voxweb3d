@@ -147,7 +147,7 @@ export class DemoCameraMotion
         let mesh: DataMesh = new DataMesh();
         mesh.vs = this.m_roadData.vs;
         mesh.uvs = this.m_roadData.uvs;
-        mesh.ivs = this.m_roadData.ivs;
+        mesh.setIVS(this.m_roadData.ivs);
         mesh.setBufSortFormat( mplane.getMaterial().getBufSortFormat() );
         mesh.initialize();
 

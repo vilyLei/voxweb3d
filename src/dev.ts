@@ -203,7 +203,7 @@
 
 //  import {DemoAPlane as Demo} from "./demo/DemoAPlane";
 
-import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
+//  import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
 
 //  import {DemoBaseRenderer as Demo} from "./demo/DemoBaseRenderer";
 
@@ -313,6 +313,14 @@ import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
 
 //  import {DemoMatNavAstarThread as Demo} from "./demo/DemoMatNavAstarThread";
 
+
+///////////////////////////////////////////////////////////////////////////////
+////////////////////////////   maps    ///////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+//  import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
+
+import {DemoDisplacementMap as Demo} from "./demo/DemoDisplacementMap";
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   transform    ///////////////////////////////////

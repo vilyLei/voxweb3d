@@ -14,6 +14,7 @@ export default class PipeGeometry extends GeometryBase
 {
     private m_longitudeNum:number = 0;
     private m_latitudeNum:number = 0;
+    
     uScale:number = 1.0;
     vScale:number = 1.0;
 
@@ -53,9 +54,7 @@ export default class PipeGeometry extends GeometryBase
             mat4.transformVectorsRangeSelf(pvs,i,end);
         }
     }
-    getVS():Float32Array{return this.m_vs;}
-    getUVS():Float32Array{return this.m_uvs;}
-    getIVS():Uint16Array|Uint32Array{return this.m_ivs;}
+    
     initialize(radius:number, height:number, longitudeNumSegments:number, latitudeNumSegments:number,uvType:number = 1, alignYRatio:number = -0.5):void
     {
         let i:number = 0;

@@ -10,6 +10,7 @@ import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import MeshBase from "../../vox/mesh/MeshBase";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 import AABB from "../geom/AABB";
+import GeometryBase from "../../vox/mesh/GeometryBase"
 
 export default class DataMesh extends MeshBase
 {
@@ -27,8 +28,20 @@ export default class DataMesh extends MeshBase
     tvs:Float32Array = null;
     btvs:Float32Array = null;
 
-    ivs:Uint16Array | Uint32Array = null
+    initializeFromGeometry(geom: GeometryBase): void {
+
+        this.vs = geom.getVS();
+        this.uvs = geom.getUVS();
+        this.nvs = geom.getNVS();
+        this.tvs = geom.getTVS();
+        this.btvs = geom.getBTVS();
+        this.m_ivs = geom.getIVS();
+        this.initialize();
+    }
     
+    setIVS(ivs: Uint16Array | Uint32Array): void{
+        this.m_ivs = ivs;
+    }
     initialize(): void {
         
         if(this.vs != null) {
@@ -38,7 +51,6 @@ export default class DataMesh extends MeshBase
             ROVertexBuffer.Reset();
             ROVertexBuffer.AddFloat32Data(this.vs,this.vsStride);
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
-    
                 ROVertexBuffer.AddFloat32Data(this.uvs,2);
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
@@ -52,15 +64,17 @@ export default class DataMesh extends MeshBase
                 ROVertexBuffer.AddFloat32Data(this.btvs,3);
             }
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
-    
-            this.vtCount = this.ivs.length;
+            if(this.wireframe) {
+                this.updateWireframeIvs();
+            }
+            this.vtCount = this.m_ivs.length;
             if(this.m_vbuf != null) {
                 ROVertexBuffer.UpdateBufData(this.m_vbuf);
             }
             else {
                 this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage(),this.getBufSortFormat());
             }
-            this.m_vbuf.setUintIVSData(this.ivs);
+            this.m_vbuf.setUintIVSData(this.m_ivs);
             this.buildEnd();
         }
     }

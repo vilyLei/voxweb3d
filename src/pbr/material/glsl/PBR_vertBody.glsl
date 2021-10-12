@@ -4,7 +4,7 @@ void main(){
     vec4 wpos = u_objMat * vec4(a_vs, 1.0);
     vec4 viewPos = u_viewMat * wpos;
     gl_Position = u_projMat * viewPos;
-
+    
     v_worldPos = wpos.xyz;
     
     #ifndef VOX_VTX_FLAT_NORMAL

@@ -30,9 +30,10 @@ export default class RectPlaneMesh extends MeshBase {
     offsetV: number = 0.0;
     uScale: number = 1.0;
     vScale: number = 1.0;
+
     flipVerticalUV: boolean = false;
     axisFlag: number = 0;
-    //
+    
     private m_polyhedralBoo: boolean = true;
     private m_vs: Float32Array = null
     private m_uvs: Float32Array = null;
@@ -42,9 +43,7 @@ export default class RectPlaneMesh extends MeshBase {
     private m_tvs: Float32Array = null;
     private m_btvs: Float32Array = null;
 
-    // vertex
     getVS(): Float32Array { return this.m_vs; }
-    // base uv
     getUVS(): Float32Array { return this.m_uvs; }
     setUVS(uvsLen8: Float32Array): void {
         if (uvsLen8 != null && uvsLen8.length == 8) {
@@ -56,9 +55,9 @@ export default class RectPlaneMesh extends MeshBase {
             }
         }
     }
-    // base nv
+    
     getNVS(): Float32Array { return this.m_nvs; }
-    // base vtx color
+    
     getCVS(): Float32Array { return this.m_cvs; }
 
     initialize(startX: number, startY: number, pwidth: number, pheight: number): void {
@@ -77,6 +76,7 @@ export default class RectPlaneMesh extends MeshBase {
         //this.m_ivs = new Uint32Array([0,1,2,0,2,3]);
         switch (this.axisFlag) {
             case 0:
+                // XOY plane
                 this.m_vs = new Float32Array([
                     minX, minY, pz,
                     maxX, minY, pz,
@@ -85,6 +85,7 @@ export default class RectPlaneMesh extends MeshBase {
                 ]);
                 break;
             case 1:
+                // XOZ plane
                 this.m_vs = new Float32Array([
                     maxX, pz, minY,
                     minX, pz, minY,
@@ -93,6 +94,7 @@ export default class RectPlaneMesh extends MeshBase {
                 ]);
                 break;
             case 2:
+                // YOZ plane
                 this.m_vs = new Float32Array([
                     pz, minX, minY,
                     pz, maxX, minY,
