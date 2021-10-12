@@ -58,7 +58,8 @@ void main() {
         //float factor = min(1.55 - v_param.x, 1.0);
         //color1.xyz *= vec3(factor * factor);
         //color.xyz = mix( color.xyz, color1.xyz, v_param.x * v_param.x + 0.1);
-        color.xyz = mix( color.xyz, color1.xyz, 0.1 + v_param.x * v_param.x);
+        float f = v_param.x / 0.70;
+        color.xyz = mix( color.xyz, color1.xyz, f * f);
         color.xyz *= (ao.xyz * 0.9 + vec3(0.1));
         color *= u_color;
         FragColor0 = color;
