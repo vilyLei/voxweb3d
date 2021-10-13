@@ -8,62 +8,63 @@
 import IRenderTexture from '../../vox/render/IRenderTexture';
 import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
 import ShaderCompileInfo from "../../vox/material/code/ShaderCompileInfo";
-class ShaderCodeBuffer
-{
-    private static ___s_csBuf:ShaderCodeBuffer = null;
-    protected static s_coder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
+import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
+class ShaderCodeBuffer {
+    private static ___s_csBuf: ShaderCodeBuffer = null;
+    protected static s_coder: ShaderCodeBuilder2 = new ShaderCodeBuilder2();
+    protected m_coder: ShaderCodeBuilder2 = null;
 
-    private m_texList:IRenderTexture[] = null;
-    private m_texEnabled:boolean = true;
+    private m_texList: IRenderTexture[] = null;
+    private m_texEnabled: boolean = true;
 
+    pipeLine: MaterialPipeline = null;
     vtxColorEnabled: boolean = false;
     premultiplyAlpha: boolean = false;
     /**
      * 是否自适应转换shader版本
      */
     adaptationShaderVersion: boolean = true;
-    constructor()
-    {
+    constructor() {
+        
+    }
+    reset(): void {
+        this.m_coder = ShaderCodeBuffer.s_coder;
+        this.m_coder.reset();
+    }
+    clear(): void {
+        this.m_coder = null;
     }
     getShaderCodeBuilder(): ShaderCodeBuilder2 {
         return ShaderCodeBuffer.s_coder;
     }
-    static GetPreCompileInfo():ShaderCompileInfo {
+    static GetPreCompileInfo(): ShaderCompileInfo {
         return ShaderCodeBuffer.s_coder.getPreCompileInfo();
     }
-    initialize(texEnabled:boolean):void
-    {
-        if(ShaderCodeBuffer.___s_csBuf != null)
-        {
-            if(ShaderCodeBuffer.___s_csBuf != this)
-            {
+    initialize(texEnabled: boolean): void {
+        if (ShaderCodeBuffer.___s_csBuf != null) {
+            if (ShaderCodeBuffer.___s_csBuf != this) {
                 ShaderCodeBuffer.___s_csBuf.initialize(texEnabled);
             }
         }
         this.m_texEnabled = texEnabled;
     }
-    isTexEanbled():boolean
-    {
+    isTexEanbled(): boolean {
         return this.m_texEnabled;
     }
-    setIRenderTextureList(texList:IRenderTexture[]):void
-    {
+    setIRenderTextureList(texList: IRenderTexture[]): void {
         this.m_texList = texList;
     }
-    getIRenderTextureList():IRenderTexture[]
-    {
+    getIRenderTextureList(): IRenderTexture[] {
         return this.m_texList;
     }
-    buildShader():void
-    {
+    buildShader(): void {
     }
-    getFragShaderCode():string
-    {
-        if(ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getFragShaderCode();
+    getFragShaderCode(): string {
+        if (ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getFragShaderCode();
+
+        this.adaptationShaderVersion = false;
+        let coder = this.m_coder;
         
-        this.adaptationShaderVersion = false;        
-        let coder = ShaderCodeBuffer.s_coder;
-        coder.reset();
 
         coder.addVertLayout("vec3", "a_vs");
         coder.addFragOutput("vec4", "FragColor0");
@@ -71,20 +72,20 @@ class ShaderCodeBuffer
 
         coder.useVertSpaceMats(true, true, true);
 
-        if(this.premultiplyAlpha) coder.addDefine("VOX_PREMULTIPLY_ALPHA", "1");
-        if(this.m_texEnabled) {
+        if (this.premultiplyAlpha) coder.addDefine("VOX_PREMULTIPLY_ALPHA", "1");
+        if (this.m_texEnabled) {
             coder.addTextureSample2D();
             coder.addVertLayout("vec2", "a_uvs");
             coder.addVarying("vec2", "v_uv");
         }
-        if(this.vtxColorEnabled) {
+        if (this.vtxColorEnabled) {
             coder.addDefine("VOX_USE_VTX_COLOR", "1");
             coder.addVertLayout("vec3", "a_cvs");
             coder.addVarying("vec3", "v_cv");
         }
-        
+
         coder.addFragMainCode(
-`
+            `
 void main(){
 
     FragColor0 = vec4(1.0);
@@ -104,17 +105,16 @@ void main(){
     #endif
 }
 `
-                    );
-            
+        );
+
         return coder.buildFragCode();
     }
-    getVtxShaderCode():string
-    {
-        if(ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getVtxShaderCode();
+    getVtxShaderCode(): string {
+        if (ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getVtxShaderCode();
         let coder: ShaderCodeBuilder2 = ShaderCodeBuffer.s_coder;
-        
+
         coder.addVertMainCode(
-`
+            `
 void main(){
     
     gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs.xyz,1.0);
@@ -130,22 +130,22 @@ void main(){
         );
         return coder.buildVertCode();
     }
-    getUniqueShaderName(): string
-    {
-        if(ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getUniqueShaderName();
+    getUniqueShaderName(): string {
+        if (ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getUniqueShaderName();
         let ns: string = "vox_default_shd";
 
-        if(this.m_texEnabled) ns += "_tex";
-        if(this.vtxColorEnabled) ns += "_vtxColor";
-        if(this.premultiplyAlpha) ns += "_preMulAlpha";
+        if (this.m_texEnabled) ns += "_tex";
+        if (this.vtxColorEnabled) ns += "_vtxColor";
+        if (this.premultiplyAlpha) ns += "_preMulAlpha";
         return ns;
     }
-    toString():string
-    {
+    toString(): string {
         return "[ShaderCodeBuffer()]";
     }
-    static UseShaderBuffer(buf:ShaderCodeBuffer):void
-    {
+    static UseShaderBuffer(buf: ShaderCodeBuffer): void {
+        if(ShaderCodeBuffer.___s_csBuf != null) {
+            ShaderCodeBuffer.___s_csBuf.clear();
+        }
         ShaderCodeBuffer.___s_csBuf = buf;
     }
 }

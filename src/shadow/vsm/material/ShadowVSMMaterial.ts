@@ -37,7 +37,7 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
         coder.addVertLayout("vec3", "a_vs");
         coder.addVertLayout("vec2", "a_uvs");
         coder.addVertLayout("vec3", "a_nvs");
-        coder.addTextureSample2D();
+        coder.addTextureSample2D("VOX_VSM_MAP");
         coder.addTextureSample2D();
 
         coder.addVarying("vec2", "v_uv");
@@ -49,9 +49,8 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
         if(this.envData != null) {
             this.envData.useUniformsForFog( coder );
         }
-        coder.addDefine("VOX_VSM_MAP", "u_sampler0");
         coder.addFragUniform("vec4", "u_color");
-
+        
         coder.useVertSpaceMats(true, true, true);
         coder.vertMatrixInverseEnabled = true;
 

@@ -34,6 +34,15 @@ import { RoadPathData, RoadFile } from "../app/easyroad/io/RoadFile";
 import TextureProxy from "../vox/texture/TextureProxy";
 import DataMesh from "../vox/mesh/DataMesh";
 
+
+import RoadMaterial from "../app/easyroad/material/RoadMaterial";
+import TerrainMaterial from "../terrain/heightMap/material/TerrainMaterial";
+import EnvLightData from "../light/base/EnvLightData";
+import {MaterialPipeline} from "../vox/material/pipeline/MaterialPipeline";
+import QuadGridMeshGeometry from "../vox/mesh/QuadGridMeshGeometry";
+
+import Pipe3DEntity from "../vox/entity/Pipe3DEntity";
+
 export class DemoCameraMotion
 {
     constructor(){}
@@ -79,24 +88,6 @@ export class DemoCameraMotion
             //  axis.initialize(300.0);
             //  this.m_rscene.addEntity(axis);
 
-            let plane:Plane3DEntity = new Plane3DEntity();
-            plane.uScale = 5.0;
-            plane.vScale = 5.0;
-            plane.initializeXOZSquare(1900.0,[this.m_texLoader.getTexByUrl("static/assets/wood_02.jpg")]);
-            plane.setXYZ(0.0,-300.0,0.0);
-            this.m_rscene.addEntity(plane);
-
-            let size: number = 3700.0;
-            let disY: number = 0.5 * size;
-            let box:Box3DEntity = new Box3DEntity();
-            box.spaceCullMask = SpaceCullingMask.NONE;
-            box.uScale = 4.0;
-            box.vScale = 4.0;
-            //metal_08
-            box.showFrontFace();
-            box.initialize(new Vector3D(-size,-size * 0.5,-size), new Vector3D(size,size * 1.5,size),[this.m_texLoader.getTexByUrl("static/assets/brickwall_big.jpg")]);
-            box.setXYZ(0.0,0.0,0.0);
-            this.m_rscene.addEntity(box);
             
             //*/
             /*
@@ -113,18 +104,107 @@ export class DemoCameraMotion
 
             this.update();
             
+            this.initTerrain2();
             this.loadRoadData();
             return;
             this.initCamera();
             this.initPathAct();
         }
     }
+    
+    private getImageTexByUrl(url: string): TextureProxy {
+        return this.m_texLoader.getTexByUrl(url);
+    }
+    private m_materialPipeline: MaterialPipeline = new MaterialPipeline();
+    private initTerrain2(): void {
+
+        let envData: EnvLightData = new EnvLightData();
+        envData.initialize();
+        envData.setFogDensity(0.003);
+        envData.setFogColorRGB3f(1.0, 1.0, 1.0);
+        envData.setFogAreaSize(2000.0,2000.0);
+        envData.setFogAreaOffset(-1000.0,-1000.0);
+
+        this.m_materialPipeline.addPipe( envData );
+
+        let material: TerrainMaterial = new TerrainMaterial();
+        material.fogEnabled = true;
+
+        material.setMaterialPipeline( this.m_materialPipeline );
+
+        material.setTextureList( [
+            this.getImageTexByUrl("static/assets/moss_04.jpg"),
+            this.getImageTexByUrl("static/assets/color_02.jpg"),
+            this.getImageTexByUrl("static/assets/heightMap05.jpg"),
+            this.getImageTexByUrl("static/assets/heightMap05.jpg")
+            //this.getImageTexByUrl("static/assets/circleWave_disp.png")
+        ] );
+        material.setRGB3f(1.2,1.2,1.2);
+        material.initializeByCodeBuf(true);
+        material.setDisplacementParams(60,0.1);
+
+        let size: number = 500.0;
+        let gridGeom: QuadGridMeshGeometry = new QuadGridMeshGeometry();
+        gridGeom.normalEnabled = true;
+        gridGeom.initializeXOZPlane(new Vector3D(-0.5 * size, 0, -0.5 * size), size,size, 256,256);
+        //console.log("gridGeom: ", gridGeom);
+
+        let dataMesh: DataMesh = new DataMesh();
+        //dataMesh.wireframe = true;
+        dataMesh.setBufSortFormat(material.getBufSortFormat());
+        dataMesh.initializeFromGeometry(gridGeom);
+
+        let entity: DisplayEntity = new DisplayEntity();
+        entity.setMaterial(material);
+        entity.setMesh(dataMesh);
+        entity.setScaleXYZ(4.0, 12.0, 4.0);
+        entity.setXYZ(0.0, -400.0, 0.0);
+        this.m_rscene.addEntity(entity);
+
+        let material2: RoadMaterial = new RoadMaterial();
+        material2.setMaterialPipeline( this.m_materialPipeline );
+        material2.setTextureList([
+            this.getImageTexByUrl("static/assets/color_02.jpg"),
+            this.getImageTexByUrl("static/assets/color_02.jpg")
+        ]);
+        material2.initializeByCodeBuf(true);
+
+        let pipe: Pipe3DEntity = new Pipe3DEntity();
+        //pipe.wireframe = true;
+        pipe.setMaterial( material2 );
+        pipe.setRotationXYZ(0,45,0);
+        pipe.showDoubleFace();
+        //pipe.toBrightnessBlend(false,true);
+        pipe.initialize(1400.0, 1200.0, 4, 1);
+        this.m_rscene.addEntity(pipe);
+    }
+    private initTerrain(): void {
+
+        let plane:Plane3DEntity = new Plane3DEntity();
+        plane.uScale = 5.0;
+        plane.vScale = 5.0;
+        plane.initializeXOZSquare(1900.0,[this.m_texLoader.getTexByUrl("static/assets/wood_02.jpg")]);
+        plane.setXYZ(0.0,-300.0,0.0);
+        this.m_rscene.addEntity(plane);
+
+        let size: number = 3700.0;
+        let disY: number = 0.5 * size;
+        let box:Box3DEntity = new Box3DEntity();
+        box.spaceCullMask = SpaceCullingMask.NONE;
+        box.uScale = 4.0;
+        box.vScale = 4.0;
+        //metal_08
+        box.showFrontFace();
+        box.initialize(new Vector3D(-size,-size * 0.5,-size), new Vector3D(size,size * 1.5,size),[this.m_texLoader.getTexByUrl("static/assets/brickwall_big.jpg")]);
+        box.setXYZ(0.0,0.0,0.0);
+        this.m_rscene.addEntity(box);
+    }
     private m_roadData: RoadPathData = null;
     private loadRoadData(): void {
 
         let loader: BinaryLoader = new BinaryLoader();
         loader.uuid = "road_vrd";
-        loader.load("static/assets/scene/pathData_02.vrd", this);
+        loader.load("static/assets/scene/pathData_03.vrd", this);
     }
     
     loaded(buffer: ArrayBuffer, uuid: string): void {
@@ -140,20 +220,24 @@ export class DemoCameraMotion
     }
     private buildRoadEntity(): void {
         
-        let tex: TextureProxy = this.m_texLoader.getTexByUrl("static/assets/roadSurface04.jpg");
-        let mplane: Plane3DEntity = new Plane3DEntity();
-        //mplane.initializeXOYSquare(50, [this.m_engine.texLoader.getTexByUrl("static/assets/roadSurface01.jpg")]);
-        mplane.initializeXOYSquare(50, [tex]);
+        let material: RoadMaterial = new RoadMaterial();
+        material.setMaterialPipeline( this.m_materialPipeline );
+        material.setTextureList([
+            this.getImageTexByUrl("static/assets/roadSurface04.jpg"),
+            this.getImageTexByUrl("static/assets/color_02.jpg")
+        ]);
+        material.initializeByCodeBuf(true);
+
         let mesh: DataMesh = new DataMesh();
         mesh.vs = this.m_roadData.vs;
         mesh.uvs = this.m_roadData.uvs;
         mesh.setIVS(this.m_roadData.ivs);
-        mesh.setBufSortFormat( mplane.getMaterial().getBufSortFormat() );
+        mesh.setBufSortFormat( material.getBufSortFormat() );
         mesh.initialize();
 
         let surfaceEntity: DisplayEntity = new DisplayEntity();
         surfaceEntity.setMesh( mesh );
-        surfaceEntity.setMaterial( mplane.getMaterial() );
+        surfaceEntity.setMaterial( material );
         this.m_rscene.addEntity(surfaceEntity);
 
         

@@ -38,7 +38,7 @@ void main()
         N = normalize(N);
     #endif
 
-    vec3 V = normalize(v_camPos.xyz - worldPos);
+    vec3 V = normalize(u_cameraPosition.xyz - worldPos);
     float dotNV = clamp(dot(N, V), 0.0, 1.0);
     #ifdef VOX_DIFFUSE_MAP
     vec3 albedo = u_albedo.xyz * VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv.xy).xyz;

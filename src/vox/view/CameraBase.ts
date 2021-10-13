@@ -21,6 +21,7 @@ class CameraBase implements IRenderCamera{
     version: number = 0;
     matUProbe: IShaderUniformProbe = null;
     ufrustumProbe: IShaderUniformProbe = null;
+    ucameraPosProbe: IShaderUniformProbe;
     uniformEnabled: boolean = false;
     name = "Camera";
     //
@@ -1032,6 +1033,8 @@ class CameraBase implements IRenderCamera{
             this.updateCamMatToUProbe(this.matUProbe);
             this.ufrustumProbe.setVec4DataAt(0, this.m_zNear, this.m_zFar, this.m_nearPlaneHalfW, this.m_nearPlaneHalfH);
             this.ufrustumProbe.update();
+            this.ucameraPosProbe.setVec4DataAt(0, this.m_camPos.x,this.m_camPos.y,this.m_camPos.z,1.0);
+            this.ucameraPosProbe.update();
         }
     }
     destroy(): void {

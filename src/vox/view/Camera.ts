@@ -60,6 +60,7 @@ class Camera implements IRenderCamera{
     version: number = 0;
     matUProbe: IShaderUniformProbe = null;
     ufrustumProbe: IShaderUniformProbe = null;
+    ucameraPosProbe: IShaderUniformProbe = null;
     uniformEnabled: boolean = false;
     name = "Camera";
     

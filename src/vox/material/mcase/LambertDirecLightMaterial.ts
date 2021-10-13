@@ -9,6 +9,7 @@ import RendererDevice from "../../../vox/render/RendererDevice";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/../material/MaterialBase";
+import UniformConst from "../UniformConst";
 
 class LambertDirecLightShaderBuffer extends ShaderCodeBuffer {
     constructor() {
@@ -49,12 +50,14 @@ class LambertDirecLightShaderBuffer extends ShaderCodeBuffer {
         }
         coder.addVertLayout("vec3", "a_nvs");
 
+        coder.addFragUniformParam(UniformConst.CameraPosParam);
+
         coder.addVarying("vec3", "v_nv");
         coder.addVarying("vec3", "v_worldPos");
-        coder.addVarying("vec3", "v_cameraPos");
         coder.addFragOutput("vec4", "FragColor0");
         coder.addFragUniform("vec4", "u_color");
         coder.useVertSpaceMats(true, true, true);
+
     }
 
     getFragShaderCode(): string {
@@ -101,7 +104,7 @@ void main() {
 
     NV = v_nv;
     WorldPos = v_worldPos;
-    CameraPos = v_cameraPos;
+    CameraPos = u_cameraPosition.xyz;
 
     vec4 color = u_color;
     #ifdef VOX_USE_2D_MAP
@@ -149,7 +152,6 @@ void main() {
     v_worldPos = wPos.xyz;
 
     mat4 invViewMat = inverse(u_viewMat);
-    v_cameraPos = (invViewMat * vec4(0.0,0.0,0.0, 1.0)).xyz;
 
     v_nv = normalize(a_nvs * inverse(mat3(u_objMat)));
 }

@@ -84,6 +84,9 @@ if len(cmdParams) > 1:
 
 currDir = os.path.abspath(os.path.join(os.path.dirname('packageJS.py'),os.path.pardir));
 filePath = currDir+"/dist/"+dirName+"VoxApp.umd.min.js";
+if len(dirName) < 1:
+	dirName = "package";
+	#
 fileSavePath = currDir+"/dist/"+dirName+saveFileName+".js";
 #filePath = currDir+"/dist/VoxApp.umd.js";
 print("filePath: "+filePath);

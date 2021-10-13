@@ -22,7 +22,7 @@ import LambertDirecLightMaterial from "../vox/material/mcase/LambertDirecLightMa
 export class DemoNormalMap {
 
     constructor() { }
-
+    
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();

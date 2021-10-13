@@ -25,6 +25,10 @@ import { PathTool } from "./road/PathTool";
 import { PathCurveEditor } from "./road/PathCurveEditor";
 import { RoadGeometryBuilder } from "./geometry/RoadGeometryBuilder";
 
+import { Terrain } from "./terrain/Terrain";
+
+
+
 import Line3DEntity from "../../vox/entity/Line3DEntity";
 import DataMesh from "../../vox/mesh/DataMesh";
 import { RoadFile } from "./io/RoadFile";
@@ -39,6 +43,7 @@ class Scene {
     private m_frame: BoxFrame3D = new BoxFrame3D();
     private m_line: Line3DEntity = null;
 
+    terrain: Terrain = new Terrain();
     geometryBuilder: RoadGeometryBuilder = new RoadGeometryBuilder();
 
     closePathBtn: SelectionBar = null;
@@ -53,35 +58,7 @@ class Scene {
             this.m_engine.rscene.addEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
 
             this.pathEditor.initialize();
-
-            ///*
-            let plane: Plane3DEntity = new Plane3DEntity();
-            plane.showDoubleFace();
-            plane.uScale = 5.0;
-            plane.vScale = 5.0;
-            plane.initializeXOZSquare(2600.0, [this.m_engine.texLoader.getTexByUrl("static/assets/wood_02.jpg")]);
-            plane.setXYZ(0.0, -200.0, 0.0);
-            this.m_engine.rscene.addEntity(plane);
-            /*
-            let evtEntity: MouseEventEntity = new MouseEventEntity();
-            evtEntity.copyMeshFrom(plane);
-            evtEntity.copyMaterialFrom(plane);
-            this.m_engine.rscene.addEntity(evtEntity);
-            //evtEntity.addEventListener(MouseEvent.MOUSE_CLICK,this, this.mouseClick);
-            //*/
-
-            /*
-            let size: number = 100.0;
-            let box: Box3DEntity = new Box3DEntity();
-            box.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
-            box.initialize(new Vector3D(-size, -size, -size), new Vector3D(size, size, size), [this.m_engine.texLoader.getTexByUrl("static/assets/brickwall_big.jpg")]);
-            box.setXYZ(0.0, 0.0, 0.0);
-            this.m_engine.rscene.addEntity(box);
-            this.m_target = box;
-
-            this.m_frame.initializeByAABB(box.getGlobalBounds());
-            this.m_engine.rscene.addEntity( this.m_frame );
-            //*/
+            this.terrain.initialize(engine);
 
             let axis = new Axis3DEntity();
             axis.initialize(700);

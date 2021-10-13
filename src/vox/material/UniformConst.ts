@@ -35,6 +35,9 @@ class EnvLightParam implements IUniformParam{
         0.3,0.0,0.9,                // fog color(r, g, b)
         0.0005,                     // fog density
 
+        0.0,0.0,                    // fog area offset x and z
+        800.0,800.0                 // fog area width and height
+
     ]);
     /**
      * uniform name string
@@ -43,7 +46,7 @@ class EnvLightParam implements IUniformParam{
     /**
      * uniform array length
      */
-    readonly arrayLength: number = 3;
+    readonly arrayLength: number = 4;
 }
 /**
  * shadow view matatrix4 float32array data
@@ -110,6 +113,23 @@ class FrustumUniformParam implements IUniformParam{
      */
     readonly arrayLength: number = 0;
 }
+
+/**
+ * camera world position param shader uniform name string,vec4: [x, y, z, w]
+ */
+ class CameraPosUniformParam implements IUniformParam{
+    constructor() { }
+    readonly type: string = "vec4";
+    readonly data: Float32Array = null;
+    /**
+     * uniform name string
+     */
+    readonly name: string = "u_cameraPosition";
+    /**
+     * uniform array length
+     */
+    readonly arrayLength: number = 0;
+}
 class GlobalLightUniform {
     constructor() { }
     readonly type: string = "vec4";
@@ -132,8 +152,11 @@ export default class UniformConst {
     /**
      * camera frustrum param shader uniform name string,vec4: [camera zNear,camera zFar, camera nearPlaneHalfW, camera nearPlaneHalfH]
      */
-    //static readonly FrustumParamUNS: string = "u_frustumParam";
     static readonly FrustumParam: FrustumUniformParam = new FrustumUniformParam();
+    /**
+     * camera world position param shader uniform name string,vec4: [x, y, z, w]
+     */
+    static readonly CameraPosParam: CameraPosUniformParam = new CameraPosUniformParam();
     /**
      * stage param shader uniform name string, vec4: [2.0/stageWidth,2.0/stageHeight, stageWidth,stageHeight]
      */

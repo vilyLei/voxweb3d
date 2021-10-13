@@ -20,7 +20,7 @@ class PathCurveEditor {
         }
     }
 
-    private m_editEnabled: boolean = true;
+    private m_editEnabled: boolean = false;
     private m_closeEnabled: boolean = false;
     setEditEnabled(enabled: boolean): void {
         this.m_editEnabled = enabled;
@@ -53,9 +53,10 @@ class PathCurveEditor {
 
     }
     private buildCurve(): Vector3D[] {
-
+        console.log("this.m_closeEnabled: ",this.m_closeEnabled);
         let curvePosList: Vector3D[] = this.m_path.buildPathCurve(3, true, this.m_closeEnabled?10350:350);
         this.m_curvePosList = curvePosList;
+        this.m_closeEnabled = false;
         return curvePosList;
     }
     isPathClosed(): boolean {

@@ -148,6 +148,7 @@ export default class ShaderData implements IShaderData {
 
         this.m_mid = mid;
         this.m_texTotal = ShaderData.s_codeParser.texTotal;
+        
         this.m_useTex = this.m_texTotal > 0;
         if (this.m_useTex) {
             this.m_texUniformNames = ShaderData.s_codeParser.texUniformNameListStr.split(",");

@@ -9,80 +9,68 @@ import RendererDevice from "../../vox/render/RendererDevice";
 import ShdProgram from "../../vox/material/ShdProgram";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import IShaderUniform from "../../vox/material/IShaderUniform";
-import {ShaderUniform, ShaderUniformV1, ShaderUniformV2,ShaderMat4Uniform} from "../../vox/material/ShaderUniform";
+import { ShaderUniform, ShaderUniformV1, ShaderUniformV2, ShaderMat4Uniform } from "../../vox/material/ShaderUniform";
 import IUniformBuilder from "../../vox/material/shared/IUniformBuilder";
 import CameraUniformBuilder from "../../vox/material/shared/CameraUniformBuilder";
 import StageParamUniformBuilder from "../../vox/material/shared/StageParamUniformBuilder";
 import FrustumUniformBuilder from "../../vox/material/shared/FrustumUniformBuilder";
+import CameraPosUniformBuilder from "../../vox/material/shared/CameraPosUniformBuilder";
 import ViewParamUniformBuilder from "../../vox/material/shared/ViewParamUniformBuilder";
 import IRenderShader from "../../vox/render/IRenderShader";
 import RenderProxy from "../../vox/render/RenderProxy";
 
-class EmptyShdUniform extends ShaderUniform implements IShaderUniform
-{
-    static EmptyUniform:EmptyShdUniform = new EmptyShdUniform();
-    use(rc:IRenderShader):void
-    {
+class EmptyShdUniform extends ShaderUniform implements IShaderUniform {
+    static EmptyUniform: EmptyShdUniform = new EmptyShdUniform();
+    use(rc: IRenderShader): void {
     }
-    useByLocation(rc:IRenderShader,type:number,location:any,i:number):void
-    {
+    useByLocation(rc: IRenderShader, type: number, location: any, i: number): void {
     }
-    useByShd(rc:IRenderShader,shd:ShdProgram):void
-    {
+    useByShd(rc: IRenderShader, shd: ShdProgram): void {
     }
-    updateData():void
-    {
+    updateData(): void {
     }
-    destroy():void
-    {
+    destroy(): void {
     }
 }
 
-export default class ShdUniformTool
-{
-    private static s_initBoo:boolean = true;
-    private static s_uniformDict:Map<string,IUniformBuilder> = new Map();
-    private static s_builders:IUniformBuilder[] = [];
-    private static s_buildersTot:number = 0;
-    static Initialize():void
-    {
-        if(ShdUniformTool.s_initBoo)
-        {
-            ShdUniformTool.s_initBoo = false;
-            
-            let builder:IUniformBuilder = new CameraUniformBuilder();
+export default class ShdUniformTool {
+    private static s_initBoo: boolean = true;
+    private static s_uniformDict: Map<string, IUniformBuilder> = new Map();
+    private static s_builders: IUniformBuilder[] = [];
+    private static s_buildersTot: number = 0;
+
+    private static appendUniformBuilder(builder: IUniformBuilder): void {
+
+        if(!ShdUniformTool.s_uniformDict.has(builder.getIDNS())) {
             ShdUniformTool.s_builders.push(builder);
-            ShdUniformTool.s_uniformDict.set(builder.getIDNS(),builder);
-            builder = new StageParamUniformBuilder();
-            ShdUniformTool.s_builders.push(builder);
-            ShdUniformTool.s_uniformDict.set(builder.getIDNS(),builder);
-            builder = new FrustumUniformBuilder();
-            ShdUniformTool.s_builders.push(builder);
-            ShdUniformTool.s_uniformDict.set(builder.getIDNS(),builder);
-            builder = new ViewParamUniformBuilder();
-            ShdUniformTool.s_builders.push(builder);
-            ShdUniformTool.s_uniformDict.set(builder.getIDNS(),builder);
+            ShdUniformTool.s_uniformDict.set(builder.getIDNS(), builder);
             ShdUniformTool.s_buildersTot = ShdUniformTool.s_builders.length;
         }
     }
-    static AddSharedUniformBuilder(builder:IUniformBuilder):void
-    {
-        if(builder != null && !ShdUniformTool.s_uniformDict.has(builder.getIDNS()))
-        {
+    static Initialize(): void {
+        if (ShdUniformTool.s_initBoo) {
+            ShdUniformTool.s_initBoo = false;
+            
+            ShdUniformTool.appendUniformBuilder( new CameraUniformBuilder() );
+            ShdUniformTool.appendUniformBuilder( new FrustumUniformBuilder() );
+            ShdUniformTool.appendUniformBuilder( new CameraPosUniformBuilder() );
+
+            ShdUniformTool.appendUniformBuilder( new StageParamUniformBuilder() );
+            ShdUniformTool.appendUniformBuilder( new ViewParamUniformBuilder() );            
+        }
+    }
+    static AddSharedUniformBuilder(builder: IUniformBuilder): void {
+        if (builder != null && !ShdUniformTool.s_uniformDict.has(builder.getIDNS())) {
             ShdUniformTool.s_builders.push(builder);
-            ShdUniformTool.s_uniformDict.set(builder.getIDNS(),builder);
+            ShdUniformTool.s_uniformDict.set(builder.getIDNS(), builder);
             ++ShdUniformTool.s_buildersTot;
         }
     }
-    static removeSharedUniformBuilder(builder:IUniformBuilder):void
-    {
-        if(builder != null && ShdUniformTool.s_uniformDict.has(builder.getIDNS()))
-        {
-            for(let i:number = 0;i<ShdUniformTool.s_buildersTot; ++i)
-            {
-                if(builder == ShdUniformTool.s_builders[i])
-                {
-                    ShdUniformTool.s_builders.splice(i,1);
+    static removeSharedUniformBuilder(builder: IUniformBuilder): void {
+        if (builder != null && ShdUniformTool.s_uniformDict.has(builder.getIDNS())) {
+            for (let i: number = 0; i < ShdUniformTool.s_buildersTot; ++i) {
+                if (builder == ShdUniformTool.s_builders[i]) {
+                    ShdUniformTool.s_builders.splice(i, 1);
                     --ShdUniformTool.s_buildersTot;
                     break;
                 }
@@ -90,16 +78,12 @@ export default class ShdUniformTool
             ShdUniformTool.s_uniformDict.delete(builder.getIDNS());
         }
     }
-    static removeSharedUniformBuilderByName(builderNS:string):void
-    {
-        if(ShdUniformTool.s_uniformDict.has(builderNS))
-        {
-            let builder:IUniformBuilder = ShdUniformTool.s_uniformDict.get(builderNS);
-            for(let i:number = 0;i<ShdUniformTool.s_buildersTot; ++i)
-            {
-                if(builder == ShdUniformTool.s_builders[i])
-                {
-                    ShdUniformTool.s_builders.splice(i,1);
+    static removeSharedUniformBuilderByName(builderNS: string): void {
+        if (ShdUniformTool.s_uniformDict.has(builderNS)) {
+            let builder: IUniformBuilder = ShdUniformTool.s_uniformDict.get(builderNS);
+            for (let i: number = 0; i < ShdUniformTool.s_buildersTot; ++i) {
+                if (builder == ShdUniformTool.s_builders[i]) {
+                    ShdUniformTool.s_builders.splice(i, 1);
                     --ShdUniformTool.s_buildersTot;
                     break;
                 }
@@ -107,78 +91,66 @@ export default class ShdUniformTool
             ShdUniformTool.s_uniformDict.delete(builderNS);
         }
     }
-    static BuildShared(guniforms:ShaderUniform[], rc:RenderProxy,shdp:ShdProgram):ShaderUniform
-    {
-        let guniform:ShaderUniform;
-        let headU:ShaderUniform = null;
-        let prevU:ShaderUniform = null;
-        let builders:IUniformBuilder[] = ShdUniformTool.s_builders;
-        let i:number = 0;
-        let len:number = ShdUniformTool.s_buildersTot;
-        let puo:ShaderUniform = null;
-        for(; i < len; ++i)
-        {
-            puo = builders[i].create(rc,shdp);
-            if(puo != null)
-            {
-                if(prevU != null)
-                {
+    static BuildShared(guniforms: ShaderUniform[], rc: RenderProxy, shdp: ShdProgram): ShaderUniform {
+        let guniform: ShaderUniform;
+        let headU: ShaderUniform = null;
+        let prevU: ShaderUniform = null;
+        let builders: IUniformBuilder[] = ShdUniformTool.s_builders;
+        let i: number = 0;
+        let len: number = ShdUniformTool.s_buildersTot;
+        let puo: ShaderUniform = null;
+        for (; i < len; ++i) {
+            puo = builders[i].create(rc, shdp);
+            if (puo != null) {
+                if (prevU != null) {
                     prevU.next = puo;
                 }
-                else if(headU == null)
-                {
+                else if (headU == null) {
                     headU = puo;
                 }
                 prevU = puo;
             }
         }
 
-        if(guniforms == null)
-        {
+        if (guniforms == null) {
             guniform = headU;
         }
-        else if(headU != null)
-        {
-            for(let i: number = 0; i < guniforms.length; ++i) {
+        else if (headU != null) {
+            for (let i: number = 0; i < guniforms.length; ++i) {
                 prevU.next = guniforms[i];
                 prevU = prevU.next;
             }
             guniform = headU;
         }
-        
-        if(guniform == null)
-        {
+
+        if (guniform == null) {
             guniform = EmptyShdUniform.EmptyUniform;
         }
-        else
-        {
+        else {
             // normalize uniform
-            let pdata:ShaderUniform = guniform;
+            let pdata: ShaderUniform = guniform;
             //  let boo: boolean = false;
             //  if(pdata.uns == "u_projMat") {
             //      boo = true;
             //      console.log("u_projMat global build begin pdata.uns: ",pdata.uns);
             //  }
-            let i:number = 0;
-            while(pdata != null)
-            {
+            let i: number = 0;
+            while (pdata != null) {
                 //  if(boo) {
                 //      console.log("### u_projMat global build...pdata.uns: ",pdata.uns);
                 //  }
-                if(pdata.uniformNameList != null && pdata.locations == null)
-                {
+                if (pdata.uniformNameList != null && pdata.locations == null) {
                     pdata.types = [];
                     pdata.locations = [];
                     pdata.uniformSize = pdata.uniformNameList.length;
-                    for(i = 0; i < pdata.uniformSize; ++i)
-                    {
-                        pdata.types.push( shdp.getUniformTypeByNS(pdata.uniformNameList[i]) );
-                        pdata.locations.push( shdp.getUniformLocationByNS(pdata.uniformNameList[i]) );
+                    for (i = 0; i < pdata.uniformSize; ++i) {
+                        pdata.types.push(shdp.getUniformTypeByNS(pdata.uniformNameList[i]));
+                        pdata.locations.push(shdp.getUniformLocationByNS(pdata.uniformNameList[i]));
                     }
                     //console.log("global uniform names: "+pdata.uniformNameList);
                     //console.log("global uniform types: "+pdata.types);
                     //console.log("global uniform locations: "+pdata.locations);
-                    
+
                 }
                 pdata = pdata.next;
             }
@@ -186,14 +158,12 @@ export default class ShdUniformTool
             //      console.log("u_projMat global build end pdata.uns: u_projMat.");
             //  }
         }
-        return guniform;                
+        return guniform;
     }
-    private static s_emptyUniform:ShaderUniform = new ShaderUniform();
-    static BuildLocalFromTransformV(transformData:Float32Array, shdp:ShdProgram):IShaderUniform
-    {
-        if(transformData != null)
-        {
-            let shdUniform:ShaderUniform;
+    private static s_emptyUniform: ShaderUniform = new ShaderUniform();
+    static BuildLocalFromTransformV(transformData: Float32Array, shdp: ShdProgram): IShaderUniform {
+        if (transformData != null) {
+            let shdUniform: ShaderUniform;
             shdUniform = new ShaderMat4Uniform();
             shdUniform.uniformSize = 0;
             shdUniform.uniformNameList = [];
@@ -202,22 +172,20 @@ export default class ShdUniformTool
             shdUniform.dataList = [];
             shdUniform.dataSizeList = [];
             shdUniform.uniformSize += 1;
-            shdUniform.uniformNameList.push( "u_objMat" );
-            shdUniform.types.push( shdp.getUniformTypeByNS("u_objMat") );
-            shdUniform.locations.push( shdp.getUniformLocationByNS("u_objMat") );
+            shdUniform.uniformNameList.push("u_objMat");
+            shdUniform.types.push(shdp.getUniformTypeByNS("u_objMat"));
+            shdUniform.locations.push(shdp.getUniformLocationByNS("u_objMat"));
             shdUniform.dataList.push(transformData);
             shdUniform.dataSizeList.push(1);
             return shdUniform;
         }
         return ShdUniformTool.s_emptyUniform;
     }
-    static UpdateLocalFromTransformV(dstUniform: IShaderUniform, transformData:Float32Array, shdp:ShdProgram):IShaderUniform
-    {
-        if(transformData != null)
-        {
-            let shdUniform:ShaderUniform;
-            let srcUniform:ShaderMat4Uniform = dstUniform as ShaderMat4Uniform;
-            if(srcUniform == null) {
+    static UpdateLocalFromTransformV(dstUniform: IShaderUniform, transformData: Float32Array, shdp: ShdProgram): IShaderUniform {
+        if (transformData != null) {
+            let shdUniform: ShaderUniform;
+            let srcUniform: ShaderMat4Uniform = dstUniform as ShaderMat4Uniform;
+            if (srcUniform == null) {
                 srcUniform = new ShaderMat4Uniform();
                 shdUniform = srcUniform;
                 shdUniform.uniformSize = 0;
@@ -227,32 +195,28 @@ export default class ShdUniformTool
                 shdUniform.dataList = [];
                 shdUniform.dataSizeList = [];
                 shdUniform.uniformSize += 1;
-                shdUniform.uniformNameList.push( "u_objMat" );
-                shdUniform.types.push( shdp.getUniformTypeByNS("u_objMat") );
-                shdUniform.locations.push( shdp.getUniformLocationByNS("u_objMat") );
+                shdUniform.uniformNameList.push("u_objMat");
+                shdUniform.types.push(shdp.getUniformTypeByNS("u_objMat"));
+                shdUniform.locations.push(shdp.getUniformLocationByNS("u_objMat"));
                 shdUniform.dataList.push(transformData);
                 shdUniform.dataSizeList.push(1);
             } else {
                 shdUniform = srcUniform;
                 shdUniform.locations = [];
-                shdUniform.locations.push( shdp.getUniformLocationByNS("u_objMat") );
+                shdUniform.locations.push(shdp.getUniformLocationByNS("u_objMat"));
             }
             return shdUniform;
         }
         return ShdUniformTool.s_emptyUniform;
     }
-    static BuildLocalFromData(uniformData:ShaderUniformData, shdp:ShdProgram):IShaderUniform
-    {
-        if(uniformData != null)
-        {
+    static BuildLocalFromData(uniformData: ShaderUniformData, shdp: ShdProgram): IShaderUniform {
+        if (uniformData != null) {
             // collect all uniform data,create a new runned uniform
-            let shdUniform:ShaderUniform;
-            if(RendererDevice.IsWebGL1())
-            {
+            let shdUniform: ShaderUniform;
+            if (RendererDevice.IsWebGL1()) {
                 shdUniform = new ShaderUniformV1();
             }
-            else
-            {
+            else {
                 shdUniform = new ShaderUniformV2();
             }
             shdUniform.uns = uniformData.uns;
@@ -262,18 +226,15 @@ export default class ShdUniformTool
             shdUniform.dataList = [];
             shdUniform.dataSizeList = [];
             shdUniform.uniformSize = 0;
-            let pdata:ShaderUniformData = uniformData;
-            let i:number = 0;
-            while(pdata != null)
-            {
-                if(pdata.uniformNameList != null && pdata.locations == null)
-                {
+            let pdata: ShaderUniformData = uniformData;
+            let i: number = 0;
+            while (pdata != null) {
+                if (pdata.uniformNameList != null && pdata.locations == null) {
                     shdUniform.uniformSize += pdata.uniformNameList.length;
-                    for(i = 0; i < shdUniform.uniformSize; ++i)
-                    {
-                        shdUniform.uniformNameList.push( pdata.uniformNameList[i] );
-                        shdUniform.types.push( shdp.getUniformTypeByNS(pdata.uniformNameList[i]) );
-                        shdUniform.locations.push( shdp.getUniformLocationByNS(pdata.uniformNameList[i]) );
+                    for (i = 0; i < shdUniform.uniformSize; ++i) {
+                        shdUniform.uniformNameList.push(pdata.uniformNameList[i]);
+                        shdUniform.types.push(shdp.getUniformTypeByNS(pdata.uniformNameList[i]));
+                        shdUniform.locations.push(shdp.getUniformLocationByNS(pdata.uniformNameList[i]));
                         shdUniform.dataList.push(pdata.dataList[i]);
                         shdUniform.dataSizeList.push(shdp.getUniformLengthByNS(pdata.uniformNameList[i]));
                     }
@@ -288,28 +249,24 @@ export default class ShdUniformTool
         }
         return EmptyShdUniform.EmptyUniform;
     }
-    static BuildLocal(sUniform:ShaderUniform, shdp:ShdProgram):ShaderUniform
-    {
+    static BuildLocal(sUniform: ShaderUniform, shdp: ShdProgram): ShaderUniform {
         // collect all uniform data,create a new runned uniform
-        let shdUniform:ShaderUniform = new ShaderUniform();
+        let shdUniform: ShaderUniform = new ShaderUniform();
         shdUniform.uniformNameList = [];
         shdUniform.types = [];
         shdUniform.locations = [];
         shdUniform.dataList = [];
         shdUniform.dataSizeList = [];
         shdUniform.uniformSize = 0;
-        let pdata:ShaderUniform = sUniform;
-        let i:number = 0;
-        while(pdata != null)
-        {
-            if(pdata.uniformNameList != null && pdata.locations == null)
-            {
+        let pdata: ShaderUniform = sUniform;
+        let i: number = 0;
+        while (pdata != null) {
+            if (pdata.uniformNameList != null && pdata.locations == null) {
                 shdUniform.uniformSize += pdata.uniformNameList.length;
-                for(i = 0; i < shdUniform.uniformSize; ++i)
-                {
-                    shdUniform.uniformNameList.push( pdata.uniformNameList[i] );
-                    shdUniform.types.push( shdp.getUniformTypeByNS(pdata.uniformNameList[i]) );
-                    shdUniform.locations.push( shdp.getUniformLocationByNS(pdata.uniformNameList[i]) );
+                for (i = 0; i < shdUniform.uniformSize; ++i) {
+                    shdUniform.uniformNameList.push(pdata.uniformNameList[i]);
+                    shdUniform.types.push(shdp.getUniformTypeByNS(pdata.uniformNameList[i]));
+                    shdUniform.locations.push(shdp.getUniformLocationByNS(pdata.uniformNameList[i]));
                     shdUniform.dataList.push(pdata.dataList[i]);
                     shdUniform.dataSizeList.push(shdp.getUniformLengthByNS(pdata.uniformNameList[i]));
                 }

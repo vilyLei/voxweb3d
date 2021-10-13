@@ -316,6 +316,13 @@ class RenderProxy implements IRenderProxy{
                 ]),
             1);
         }
+        if (camera.ucameraPosProbe == null) {
+            camera.ucameraPosProbe = new ShaderUniformProbe();
+            camera.ucameraPosProbe.bindSlotAt(this.m_uid);
+            camera.ucameraPosProbe.addVec4Data(
+                new Float32Array([500.0,500.0,500.0,1.0]),
+            1);
+        }
         let posV3: Vector3D = param.camPosition;
         let lookAtPosV3: Vector3D = param.camLookAtPos;
         let upV3: Vector3D = param.camUpDirect;

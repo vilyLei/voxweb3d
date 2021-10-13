@@ -15,6 +15,7 @@ interface IRenderCamera {
     version: number;
     matUProbe: IShaderUniformProbe;
     ufrustumProbe: IShaderUniformProbe;
+    ucameraPosProbe: IShaderUniformProbe;
     uniformEnabled: boolean;
     // 不允许外界修改camera数据
     lock(): void;

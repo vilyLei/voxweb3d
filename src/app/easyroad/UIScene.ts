@@ -12,6 +12,9 @@ class UIScene {
     constructor() { }
     scene: Scene = null;
     private m_engine: EngineBase = null;
+
+    private m_switchEditBtn: SelectionBar = null;
+
     initialize(engine: EngineBase): void {
 
         console.log("UIScene::initialize()......");
@@ -20,12 +23,12 @@ class UIScene {
             this.m_engine = engine;            
             this.initBtns();
             
+            this.scene.setEditEnabled(this.m_switchEditBtn.isSelected());
         }
     }
     run(): void {
 
     }
-    private m_switchEditBtn: SelectionBar = null;
     private initBtns(): void {
         let dis: number = 24
         if(RendererDevice.IsMobileWeb()) {
@@ -35,7 +38,7 @@ class UIScene {
         let btn = this.createSelectBtn("clearScene", "clearScene", "ON", "OFF", true);
         btn = this.createSelectBtn("saveData", "saveData", "ON", "OFF", false);
         this.m_btnPY += dis;
-        btn = this.createSelectBtn("edit", "switchEdit", "ON", "OFF", true);
+        btn = this.createSelectBtn("edit", "switchEdit", "ON", "OFF", false);
         this.m_switchEditBtn = btn;
         btn = this.createSelectBtn("dragCamera", "dragCamera", "ON", "OFF", false);
         btn = this.createSelectBtn("closePath", "closePath", "ON", "OFF", false);
@@ -98,11 +101,11 @@ class UIScene {
                 break;
             case "switchEdit":
                 this.scene.pathEditor.setEditEnabled(selectEvt.flag);
+                break;
             case "closePath":
                 this.scene.pathEditor.setCloseEnabled(selectEvt.flag);
                 break;
             case "clearScene":
-                //this.switchEdit( selectEvt.flag );
                 this.scene.clear();
                 break;
             case "saveData":

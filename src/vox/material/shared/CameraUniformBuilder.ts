@@ -10,41 +10,35 @@ import ShdProgram from "../../../vox/material/ShdProgram";
 import ShaderUniform from "../../../vox/material/ShaderUniform";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import IUniformBuilder from "../../../vox/material/shared/IUniformBuilder";
-import {IRenderCamera} from "../../../vox/render/IRenderCamera";
+import { IRenderCamera } from "../../../vox/render/IRenderCamera";
 import RenderProxy from "../../../vox/render/RenderProxy";
 
-export default class CameraUniformBuilder implements IUniformBuilder
-{
-    create( rc:RenderProxy,shdp:ShdProgram):ShaderUniform
-    {
-        let suo:ShaderGlobalUniform = null;
-        let cam:IRenderCamera = rc.getCamera();
-        
-        if(shdp.hasUniformByName(UniformConst.CameraViewMatUNS) && shdp.hasUniformByName(UniformConst.CameraProjectiveMatUNS))
-        {
+export default class CameraUniformBuilder implements IUniformBuilder {
+    create(rc: RenderProxy, shdp: ShdProgram): ShaderUniform {
+        let suo: ShaderGlobalUniform = null;
+        let cam: IRenderCamera = rc.getCamera();
+
+        if (shdp.hasUniformByName(UniformConst.CameraViewMatUNS) && shdp.hasUniformByName(UniformConst.CameraProjectiveMatUNS)) {
             suo = new ShaderGlobalUniform();
             suo.uns = "u_viewAndProjMat";
-            suo.uniformNameList = [UniformConst.CameraViewMatUNS,UniformConst.CameraProjectiveMatUNS];
+            suo.uniformNameList = [UniformConst.CameraViewMatUNS, UniformConst.CameraProjectiveMatUNS];
             suo.copyDataFromProbe(cam.matUProbe);
         }
-        else if(shdp.hasUniformByName(UniformConst.CameraViewMatUNS))
-        {
+        else if (shdp.hasUniformByName(UniformConst.CameraViewMatUNS)) {
             suo = new ShaderGlobalUniform();
             suo.uns = "u_viewMat";
             suo.uniformNameList = [UniformConst.CameraViewMatUNS];
-            suo.copyDataFromProbeAt(0,cam.matUProbe);
+            suo.copyDataFromProbeAt(0, cam.matUProbe);
         }
-        else if(shdp.hasUniformByName(UniformConst.CameraProjectiveMatUNS))
-        {
+        else if (shdp.hasUniformByName(UniformConst.CameraProjectiveMatUNS)) {
             suo = new ShaderGlobalUniform();
             suo.uns = "u_projMat";
             suo.uniformNameList = [UniformConst.CameraProjectiveMatUNS];
-            suo.copyDataFromProbeAt(1,cam.matUProbe);
+            suo.copyDataFromProbeAt(1, cam.matUProbe);
         }
-        return suo;                
+        return suo;
     }
-    getIDNS():string
-    {
+    getIDNS(): string {
         return "CameraUniformBuilder";
     }
 }

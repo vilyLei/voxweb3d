@@ -5,31 +5,24 @@
 /*                                                                         */
 /***************************************************************************/
 
-import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
-import ShaderUniformData from "../../vox/material/ShaderUniformData";
-import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
-import MaterialBase from "../../vox/material/MaterialBase";
+import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
+import ShaderUniformData from "../../../vox/material/ShaderUniformData";
+import MaterialBase from "../../../vox/material/MaterialBase";
 
-import EnvLightData from "../../light/base/EnvLightData";
-
-class DisplacementMapShaderBuffer extends ShaderCodeBuffer {
+class TerrainShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static s_instance: DisplacementMapShaderBuffer = new DisplacementMapShaderBuffer();
+    private static s_instance: TerrainShaderBuffer = new TerrainShaderBuffer();
     private m_uniqueName: string = "";
-
-    envData: EnvLightData = null;
-    fogEnabled: boolean = true;
     initialize(texEnabled: boolean): void {
         super.initialize(texEnabled);
-        //console.log("DisplacementMapShaderBuffer::initialize()...,texEnabled: "+texEnabled);
-        this.m_uniqueName = "DisplacementMapShd";
-        if(texEnabled) this.m_uniqueName += "Tex";
-        if(this.fogEnabled) this.m_uniqueName += "Fog";
+        //console.log("TerrainShaderBuffer::initialize()...,texEnabled: "+texEnabled);
+        this.m_uniqueName = "TerrainShd";
+        this.m_uniqueName += texEnabled ? "Tex": "";
     }
     private buildThisCode(): void {
-        let coder = ShaderCodeBuffer.s_coder;
+        let coder = this.m_coder;
         coder.reset();
         coder.addVertLayout("vec3", "a_vs");
         coder.addVertLayout("vec3", "a_nvs");
@@ -37,40 +30,34 @@ class DisplacementMapShaderBuffer extends ShaderCodeBuffer {
             coder.addVertLayout("vec2", "a_uvs");
             coder.addVarying("vec2", "v_uv");
             coder.addVarying("vec4", "v_param");
-            // diffuse color 0
+            // diffuse color
             coder.addTextureSample2D();
-            // diffuse color 1
             coder.addTextureSample2D();
-            
-            // displace and color ao
-            coder.addTextureSample2D("VOX_DISPLACEMENT_MAP", true, true, true);
+            // ao
+            coder.addTextureSample2D();
+            // displace
+            coder.addTextureSample2D("VOX_DISPLACEMENT_MAP",true,false,true);
         }
         coder.addFragOutput("vec4", "FragColor0");
         coder.addFragUniform("vec4", "u_color");
         coder.addVertUniform("vec4", "u_displacement");
         coder.useVertSpaceMats(true, true, true);
-        if(this.fogEnabled) {
-            if (this.envData != null) {
-                this.envData.useUniformsForFog(coder);
-            }
-        }
     }
 
     getFragShaderCode(): string {
         this.buildThisCode();
 
         ShaderCodeBuffer.s_coder.addFragMainCode(
-            `
-
-    vec4 envColor = vec4(1.0);
+`
+void main() {
     #ifdef VOX_USE_2D_MAP
         vec2 colorUV = v_uv.xy * 16.0;
         vec4 color = VOX_Texture2D(u_sampler0, v_uv.xy * 4.0);
         vec4 color1 = VOX_Texture2D(u_sampler1, v_uv);
-        vec4 ao = VOX_Texture2D(VOX_DISPLACEMENT_MAP, v_uv);
-
-        envColor = color1;
-        
+        vec4 ao = VOX_Texture2D(u_sampler2, v_uv);
+        //float factor = min(1.55 - v_param.x, 1.0);
+        //color1.xyz *= vec3(factor * factor);
+        //color.xyz = mix( color.xyz, color1.xyz, v_param.x * v_param.x + 0.1);
         float f = v_param.x / 0.70;
         color.xyz = mix( color.xyz, color1.xyz, f * f);
         color.xyz *= (ao.xyz * 0.9 + vec3(0.1));
@@ -79,19 +66,10 @@ class DisplacementMapShaderBuffer extends ShaderCodeBuffer {
     #else
         FragColor0 = u_color;
     #endif
+}
 `
         );
-        if(this.fogEnabled) {
-            ShaderCodeBuffer.s_coder.addFragMainCode(
-`
-        #ifdef VOX_USE_FOG
-        fogEnvColor = envColor.xyz;
-        useFog( FragColor0.rgb );
 
-        #endif               
-`
-            );
-        }
         return ShaderCodeBuffer.s_coder.buildFragCode();
     }
     getVtxShaderCode(): string {
@@ -99,6 +77,7 @@ class DisplacementMapShaderBuffer extends ShaderCodeBuffer {
         let coder = ShaderCodeBuffer.s_coder;
         coder.addVertMainCode(
             `
+void main() {
 
     vec3 objPos = a_vs;
     #ifdef VOX_USE_2D_MAP
@@ -115,20 +94,9 @@ class DisplacementMapShaderBuffer extends ShaderCodeBuffer {
     mat4 viewMat4 = u_viewMat * u_objMat;
     vec4 viewPos = viewMat4 * vec4(objPos, 1.0);
     gl_Position = u_projMat * viewPos;
+}
 `
         );
-
-        if(this.fogEnabled) {
-            coder.addVertMainCode(
-`
-    #ifdef VOX_USE_FOG
-
-    calcFogDepth(viewPos);
-
-    #endif                
-`
-            );
-        }
         return coder.buildVertCode();
     }
     getUniqueShaderName(): string {
@@ -136,30 +104,27 @@ class DisplacementMapShaderBuffer extends ShaderCodeBuffer {
         return this.m_uniqueName;
     }
     toString(): string {
-        return "[DisplacementMapShaderBuffer()]";
+        return "[TerrainShaderBuffer()]";
     }
-    static GetInstance(): DisplacementMapShaderBuffer {
-        return DisplacementMapShaderBuffer.s_instance;
+    static GetInstance(): TerrainShaderBuffer {
+        return TerrainShaderBuffer.s_instance;
     }
 }
 
-export default class DisplacementMapMaterial extends MaterialBase {
-
-    private m_envData: EnvLightData = null;
-
+export default class TerrainMaterial extends MaterialBase {
     constructor() {
         super();
+        
+        let oum: ShaderUniformData = new ShaderUniformData();
+        oum.uniformNameList = ["u_color", "u_displacement"];
+        oum.dataList = [this.m_colorArray, this.m_displacementArray];
+        this.m_shaderUniformData = oum;
     }
 
     getCodeBuf(): ShaderCodeBuffer {
-        let buf: DisplacementMapShaderBuffer = DisplacementMapShaderBuffer.GetInstance();
-        buf.envData = this.m_envData;
-        return buf;
+        return TerrainShaderBuffer.GetInstance();
     }
 
-    setEnvData(envData: EnvLightData): void {
-        this.m_envData = envData;
-    }
     private m_colorArray: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
     private m_displacementArray: Float32Array = new Float32Array([50.0, 1.0, 0.0, 0.0]);
     setRGB3f(pr: number, pg: number, pb: number): void {
@@ -180,19 +145,5 @@ export default class DisplacementMapMaterial extends MaterialBase {
         this.m_displacementArray[0] = scale;
         this.m_displacementArray[1] = bias;
     }
-
-
-    createSharedUniforms(): ShaderGlobalUniform[] {
-        if (this.m_envData != null) {
-            return [this.m_envData.getGlobalUinform()];
-        }
-        return null;
-    }
-    createSelfUniformData(): ShaderUniformData {
-
-        let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_color", "u_displacement"];
-        oum.dataList = [this.m_colorArray, this.m_displacementArray];
-        return oum;
-    }
+    
 }

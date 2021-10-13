@@ -9,25 +9,25 @@ import UniformConst from "../../../vox/material/UniformConst";
 import ShdProgram from "../../../vox/material/ShdProgram";
 import ShaderUniform from "../../../vox/material/ShaderUniform";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
+import IUniformParam from "../../../vox/material/IUniformParam";
 import IUniformBuilder from "../../../vox/material/shared/IUniformBuilder";
 import RenderProxy from "../../../vox/render/RenderProxy";
 
-export default class StageParamUniformBuilder implements IUniformBuilder
-{
-    create( rc:RenderProxy,shdp:ShdProgram):ShaderUniform
-    {
-        let suo:ShaderGlobalUniform = null;
-        if(shdp.hasUniformByName(UniformConst.StageParam.name))
-        {
+export default class StageParamUniformBuilder implements IUniformBuilder {
+    
+    create(rc: RenderProxy, shdp: ShdProgram): ShaderUniform {
+
+        let suo: ShaderGlobalUniform = null;
+        let param: IUniformParam = UniformConst.StageParam;
+        if (shdp.hasUniformByName(param.name)) {
             suo = new ShaderGlobalUniform();
-            suo.uns = UniformConst.StageParam.name;
-            suo.uniformNameList = [UniformConst.StageParam.name];
-            suo.copyDataFromProbe(rc.getStage3D().uProbe);                    
+            suo.uns = param.name;
+            suo.uniformNameList = [param.name];
+            suo.copyDataFromProbe(rc.getStage3D().uProbe);
         }
-        return suo;                
+        return suo;
     }
-    getIDNS():string
-    {
+    getIDNS(): string {
         return "StageParamUniformBuilder";
     }
 }

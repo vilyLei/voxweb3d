@@ -8,6 +8,8 @@
 
 import RendererDevice from "../../../vox/render/RendererDevice";
 import IUniformParam from "../../../vox/material/IUniformParam";
+import IAbstractShader from "../../../vox/material/IAbstractShader";
+
 import IShaderCodeBuilder from "./IShaderCodeBuilder";
 import GLSLConverter from "./GLSLConverter";
 import ShaderCompileInfo from "./ShaderCompileInfo";
@@ -39,6 +41,7 @@ precision mediump float;
     private m_vertLayoutNames: string[] = [];
     private m_vertLayoutTypes: string[] = [];
 
+    private m_fragOutputPrecises: string[] = [];
     private m_fragOutputNames: string[] = [];
     private m_fragOutputTypes: string[] = [];
 
@@ -72,8 +75,12 @@ precision mediump float;
 
     private m_vertHeadCode: string = "";
     private m_vertMainCode: string = "";
+    private m_vertMainCodeAppend: string = "";
+    private m_vertMainCodePrepend: string = "";
     private m_fragHeadCode: string = "";
     private m_fragMainCode: string = "";
+    private m_fragMainCodeAppend: string = "";
+    private m_fragMainCodePrepend: string = "";
     private m_use2DMap: boolean = false;
     /**
      * 记录 shader 预编译信息
@@ -89,9 +96,11 @@ precision mediump float;
     constructor() { }
 
     reset(): void {
-        this.m_vertObjMat = false;
-        this.m_vertViewMat = false;
-        this.m_vertProjMat = false;
+        
+        this.m_vertObjMat = true;
+        this.m_vertViewMat = true;
+        this.m_vertProjMat = true;
+
         this.m_fragObjMat = false;
         this.m_fragViewMat = false;
         this.m_fragProjMat = false;
@@ -100,8 +109,12 @@ precision mediump float;
 
         this.m_vertHeadCode = "";
         this.m_vertMainCode = "";
+        this.m_vertMainCodeAppend = "";
+        this.m_vertMainCodePrepend = "";
         this.m_fragHeadCode = "";
         this.m_fragMainCode = "";
+        this.m_fragMainCodeAppend = "";
+        this.m_fragMainCodePrepend = "";
 
         this.m_vertExt = [];
         this.m_fragExt = [];
@@ -109,6 +122,7 @@ precision mediump float;
         this.m_vertLayoutNames = [];
         this.m_vertLayoutTypes = [];
 
+        this.m_fragOutputPrecises = [];
         this.m_fragOutputNames = [];
         this.m_fragOutputTypes = [];
 
@@ -166,7 +180,13 @@ precision mediump float;
         this.m_vertLayoutNames.push(name);
         this.m_vertLayoutTypes.push(type);
     }
+    addFragOutputHighp(type: string, name: string): void {
+        this.m_fragOutputPrecises.push("highp");
+        this.m_fragOutputNames.push(name);
+        this.m_fragOutputTypes.push(type);
+    }
     addFragOutput(type: string, name: string): void {
+        this.m_fragOutputPrecises.push("");
         this.m_fragOutputNames.push(name);
         this.m_fragOutputTypes.push(type);
     }
@@ -176,7 +196,7 @@ precision mediump float;
     }
     addVertUniform(type: string, name: string, arrayLength: number = 0): void {
 
-        if (!this.m_fragUniformNames.includes(name)) {
+        if (!this.m_vertUniformNames.includes(name)) {
             if (arrayLength > 0) {
                 this.m_vertUniformNames.push(name + "[" + arrayLength + "]");
             }
@@ -278,18 +298,25 @@ precision mediump float;
     }
 
     addVertHeadCode(code: string): void {
-        this.m_vertHeadCode += code;
+        if(code != "") this.m_vertHeadCode += code;
     }
     addVertMainCode(code: string): void {
-        this.m_vertMainCode += code;
+        if(code != "") this.m_vertMainCode += code;
     }
     addFragHeadCode(code: string): void {
-        this.m_fragHeadCode += code;
+        if(code != "") this.m_fragHeadCode += code;
     }
     addFragMainCode(code: string): void {
-        this.m_fragMainCode += code;
+        if(code != "") this.m_fragMainCode += code;
     }
 
+    addShaderObject(shaderObj: IAbstractShader): void {
+        
+        this.addFragHeadCode( shaderObj.frag_head );
+        this.addFragMainCode( shaderObj.frag_body );
+        this.addVertHeadCode( shaderObj.vert_head );
+        this.addVertMainCode( shaderObj.vert_body );
+    }
     buildFragCode(): string {
 
         let i: number = 0;
@@ -423,7 +450,12 @@ precision mediump float;
         len = this.m_fragOutputNames.length;
         if (RendererDevice.IsWebGL2()) {
             for (; i < len; i++) {
-                code += "\nlayout(location = " + i + ") out " + this.m_fragOutputTypes[i] + " " + this.m_fragOutputNames[i] + ";";
+                if(this.m_fragOutputPrecises[i] != "") {
+                    code += "\nlayout(location = " + i + ") out " +this.m_fragOutputPrecises[i] + " "+ this.m_fragOutputTypes[i] + " " + this.m_fragOutputNames[i] + ";";
+                }
+                else {
+                    code += "\nlayout(location = " + i + ") out " + this.m_fragOutputTypes[i] + " " + this.m_fragOutputNames[i] + ";";
+                }
             }
         } else {
             if (len == 1) {
@@ -431,10 +463,25 @@ precision mediump float;
             }
         }
 
-
-        //  code += this.m_mainBeginCode;
-        code += this.m_fragMainCode;
-        //  code += this.m_mainEndCode;
+        // 检测是否有 main函数
+        let haveMainName: boolean = false;
+        let index: number = this.m_fragMainCode.indexOf("{");
+        if(index > 0) {
+            let subStr: string = this.m_fragMainCode.slice(0, index);
+            haveMainName = subStr.indexOf(" main") > 0;
+            if(!haveMainName) {
+                haveMainName = this.m_fragMainCode.indexOf(" main") > 0;
+            }
+        }
+        if(haveMainName) {
+            code += this.m_fragMainCode;
+        }
+        else {
+            code += "\nvoid main() {\n"
+            code += this.m_fragMainCode;
+            code += "\n}\n"
+        }
+        
         len = this.m_fragOutputNames.length;
         if (RendererDevice.IsWebGL1()) {
             if (len > 1) {
@@ -580,10 +627,26 @@ precision mediump float;
         for (; i < len; i++) {
             code += "\n" + this.m_vertFunctionBlocks[i];
         }
-
-        //  code += this.m_mainBeginCode;
-        code += this.m_vertMainCode;
-        //  code += this.m_mainEndCode;
+        // 检测是否有 main函数
+        let haveMainName: boolean = false;
+        let index: number = this.m_vertMainCode.indexOf("{");
+        
+        if(index > 0) {
+            let subStr: string = this.m_vertMainCode.slice(0, index);
+            haveMainName = subStr.indexOf(" main") > 0;
+            if(!haveMainName) {
+                haveMainName = this.m_vertMainCode.indexOf(" main") > 0;
+            }
+        }
+        
+        if(haveMainName) {
+            code += this.m_vertMainCode;
+        }
+        else {
+            code += "\nvoid main() {\n"
+            code += this.m_vertMainCode;
+            code += "\n}\n"
+        }
         return code;
     }
 }

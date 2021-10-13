@@ -17,13 +17,12 @@ import Vector3D from "../vox/math/Vector3D";
 
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
-import DisplacementMapMaterial from "./material/DisplacementMapMaterial";
 
+import TerrainMaterial from "./heightMap/material/TerrainMaterial";
 import EnvLightData from "../light/base/EnvLightData";
+import {MaterialPipeline} from "../vox/material/pipeline/MaterialPipeline";
 
-import LambertDirecLightMaterial from "../vox/material/mcase/LambertDirecLightMaterial";
-
-export class DemoDisplacementMap {
+export class HeightMapTerrain {
 
     constructor() { }
 
@@ -32,8 +31,7 @@ export class DemoDisplacementMap {
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
-    private m_envData: EnvLightData;
-
+    
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl, 0, false, false);
         ptex.mipmapEnabled = mipmapEnabled;
@@ -42,7 +40,7 @@ export class DemoDisplacementMap {
     }
     initialize(): void {
 
-        console.log("DemoDisplacementMap::initialize()......");
+        console.log("HeightMapTerrain::initialize()......");
 
         if (this.m_rscene == null) {
 
@@ -75,33 +73,18 @@ export class DemoDisplacementMap {
             let plane: Plane3DEntity = new Plane3DEntity();
             //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
             //this.m_rscene.addEntity(plane);
-            /*
-            let material: LambertDirecLightMaterial = new LambertDirecLightMaterial();
-            material.normalMapEnabled = true;
-            material.displacementMapEnabled = true;
-            material.setTextureList([
-                this.getImageTexByUrl("static/assets/moss_04.jpg"),
-                //  this.getImageTexByUrl("static/assets/circleWave_norm.png"),
-                //  this.getImageTexByUrl("static/assets/circleWave_disp.png")
-
-                this.getImageTexByUrl("static/assets/heightMap03_norm.jpg"),
-                this.getImageTexByUrl("static/assets/heightMap03.jpg")
-            ]);
-            //*/
-            /*
-            circleWave_norm.png
-            circleWave_disp.png
             
-            heightMap03.jpg
-            heightMap03_normal.jpg
-            //*/
-            
-            this.m_envData = new EnvLightData();
-            this.m_envData.initialize();
-            this.m_envData.setFogDensity(0.0008);
-            this.m_envData.setFogColorRGB3f(1.0, 1.0, 1.0);
+            let envData: EnvLightData = new EnvLightData();
+            envData.initialize();
+            envData.setFogDensity(0.0008);
+            envData.setFogColorRGB3f(1.0, 1.0, 1.0);
 
-            let material: DisplacementMapMaterial = new DisplacementMapMaterial();
+            let materialPipeline: MaterialPipeline = new MaterialPipeline();
+            materialPipeline.addPipe( envData );
+            
+            let material: TerrainMaterial = new TerrainMaterial();
+            material.setMaterialPipeline( materialPipeline );
+            
             material.setTextureList( [
                 this.getImageTexByUrl("static/assets/moss_04.jpg"),
                 this.getImageTexByUrl("static/assets/color_02.jpg"),
@@ -109,7 +92,7 @@ export class DemoDisplacementMap {
                 //this.getImageTexByUrl("static/assets/heightMap05.jpg")
                 //this.getImageTexByUrl("static/assets/circleWave_disp.png")
             ] );
-            material.setEnvData(this.m_envData);
+            
             material.setRGB3f(1.2,1.2,1.2);
             //material.setTextureList([this.getImageTexByUrl("static/assets/noise.jpg")]);
             material.initializeByCodeBuf(true);
@@ -159,4 +142,4 @@ export class DemoDisplacementMap {
 
     }
 }
-export default DemoDisplacementMap;
+export default HeightMapTerrain;

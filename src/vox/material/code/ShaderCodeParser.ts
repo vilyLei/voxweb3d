@@ -15,17 +15,18 @@ export default class ShaderCodeParser
     constructor(){}
     // identify use texture
     private m_useTex:boolean = false;
+    private m_texNSMap: Map<string,number> = new Map();
     // web gl 1.0, this.attributes
     m_attriNSList:string[] = null;
     m_attriSizeList:number[] = null;
-    // m_uniform name list
-    //uniformNameList:string[] = null;
+    
     uniformNameListStr:string = "";
     texUniformNameListStr:string = "";
     attributes:AttributeLine[] = [null,null,null,null, null,null,null,null, null,null,null,null];
     m_uniforms:UniformLine[] = null;
     texTotal:number = 0;
     fragOutputTotal:number = 0;
+
     reset()
     {
         this.m_useTex = false;
@@ -38,6 +39,7 @@ export default class ShaderCodeParser
             this.attributes[i] = null;
         }
         this.m_uniforms = null;
+        this.m_texNSMap.clear();
         this.texTotal = 0;
     }
     parseVShaderCode(vshdsrc:string):void
@@ -119,9 +121,10 @@ export default class ShaderCodeParser
                     this.m_uniforms.push(uniform);
                     //this.uniformNameList.push( uniform.name );
                     this.uniformNameListStr += uniform.name + ",";
-                    if(uniform.isTex)
+                    if(uniform.isTex && !this.m_texNSMap.has(uniform.name))
                     {
                         console.log("use vtx texture !!!");
+                        this.m_texNSMap.set(uniform.name,1);
                         this.texUniformNameListStr += uniform.name + ",";
                         this.texTotal ++;
                     }
@@ -187,8 +190,9 @@ export default class ShaderCodeParser
                 {
                     this.m_uniforms.push(uniform);
                     this.uniformNameListStr += uniform.name + ",";
-                    if(uniform.isTex)
+                    if(uniform.isTex && !this.m_texNSMap.has(uniform.name))
                     {
+                        this.m_texNSMap.set(uniform.name,1);
                         this.texUniformNameListStr += uniform.name + ",";
                         this.texTotal ++;
                     }else

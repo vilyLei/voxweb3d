@@ -307,7 +307,7 @@
 
 //  import {DemoCamera as Demo} from "./demo/DemoCamera";
 
-//  import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
+import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
 
 //  import {DemoCameraPath as Demo} from "./demo/DemoCameraPath";
 
@@ -320,7 +320,7 @@
 
 //  import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
 
-import {DemoDisplacementMap as Demo} from "./demo/DemoDisplacementMap";
+//  import {DemoDisplacementMap as Demo} from "./demo/DemoDisplacementMap";
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   transform    ///////////////////////////////////
@@ -369,6 +369,12 @@ import {DemoDisplacementMap as Demo} from "./demo/DemoDisplacementMap";
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
 //  import {DemoRawDracoViewer as Demo} from "./pbr/DemoRawDracoViewer";
+
+///////////////////////////////////////////////////////////////////////////////
+////////////////////////////   maps    ///////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+//  import {HeightMapTerrain as Demo} from "./terrain/HeightMapTerrain";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////
