@@ -199,6 +199,7 @@ export class DemoPBRViewer {
             this.m_envData.setFogColorRGB3f(0.0,0.8,0.1);
 
             this.m_pipeline.addPipe( this.m_envData );
+            this.m_pipeline.addPipe( this.m_lightData );
 
             this.createEntity();
 

@@ -11,8 +11,10 @@ import UniformConst from "../../vox/material/UniformConst";
 import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
 import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
+import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
+import { IMaterialPipe } from "../../vox/material/pipeline/IMaterialPipe";
 
-export default class GlobalLightData {
+export default class GlobalLightData implements IMaterialPipe{
 
     private m_uid: number = -1;
     static s_uid: number = 0;
@@ -123,6 +125,23 @@ export default class GlobalLightData {
             this.m_uProbe.update();
         }
     }
+
+    useShaderPipe(shaderBuilder: IShaderCodeBuilder, pipeType: MaterialPipeType): void {
+
+        if (this.m_uProbe != null) {
+            shaderBuilder.addFragUniform(UniformConst.GlobalLight.type, UniformConst.GlobalLight.positionName, this.m_lightTotal);
+            shaderBuilder.addFragUniform(UniformConst.GlobalLight.type, UniformConst.GlobalLight.colorName, this.m_lightTotal);
+        }
+    }
+    getPipeTypes(): MaterialPipeType[] {
+        return [MaterialPipeType.GLOBAL_LIGHT];
+    }
+    useUniforms(shaderBuilder: IShaderCodeBuilder): void {
+        if (this.m_uProbe != null) {
+            shaderBuilder.addFragUniform(UniformConst.GlobalLight.type, UniformConst.GlobalLight.positionName, this.m_lightTotal);
+            shaderBuilder.addFragUniform(UniformConst.GlobalLight.type, UniformConst.GlobalLight.colorName, this.m_lightTotal);
+        }
+    }
     getGlobalUinform(): ShaderGlobalUniform {
         return this.m_suo.clone();
     }
@@ -167,12 +186,6 @@ export default class GlobalLightData {
 
     }
 
-    useUniforms(builder: IShaderCodeBuilder): void {
-        if (this.m_uProbe != null) {
-            builder.addFragUniform(UniformConst.GlobalLight.type, UniformConst.GlobalLight.positionName, this.m_lightTotal);
-            builder.addFragUniform(UniformConst.GlobalLight.type, UniformConst.GlobalLight.colorName, this.m_lightTotal);
-        }
-    }
     initialize(pointLightsTotal: number = 4, parallelLightsTotal: number = 2): void {
         this.m_lightTotal = pointLightsTotal + parallelLightsTotal;
         this.createPointLightParam(pointLightsTotal, 5.0);

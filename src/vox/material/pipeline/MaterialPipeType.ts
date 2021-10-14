@@ -11,7 +11,8 @@ enum MaterialPipeType {
     ENV_LIGHT_PARAM,
     FOG,
     FOG_EXP2,
-    VSM_SHADOW
+    VSM_SHADOW,
+    GLOBAL_LIGHT
 }
 
 export {MaterialPipeType};

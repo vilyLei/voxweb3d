@@ -178,9 +178,9 @@ export default class PBRShaderDecorator {
             coder.addFragUniformParam(UniformConst.StageParam);
             coder.addFragUniform("vec4", "u_mirrorParams", 2);
         }
-        if (lightsTotal > 0) {
-            this.lightData.useUniforms(coder);
-        }
+        // if (lightsTotal > 0) {
+        //     this.lightData.useUniforms(coder);
+        // }
         // if (this.fogEnabled && this.envData != null) {
         //     this.envData.useUniformsForFog(coder);
         // }
@@ -194,17 +194,14 @@ export default class PBRShaderDecorator {
         //     this.vsmData.useUniforms(coder);
         //     coder.addTextureSample2D("VOX_VSM_MAP", false);
         // }
+        coder.addShaderObject( PBRShaderCode );
 
-        coder.addFragHeadCode(PBRShaderCode.frag_head);
-        coder.addFragMainCode(PBRShaderCode.frag_body);
-
-        coder.addVertHeadCode(PBRShaderCode.vert_head);
-        coder.addVertMainCode(PBRShaderCode.vert_body);
-
-        
         if(this.pipeline != null) {
 
             let types: MaterialPipeType[] = [];
+            if (lightsTotal > 0) {
+                types.push( MaterialPipeType.GLOBAL_LIGHT );
+            }
             if(this.shadowReceiveEnabled) {
                 types.push( MaterialPipeType.VSM_SHADOW );
             }
