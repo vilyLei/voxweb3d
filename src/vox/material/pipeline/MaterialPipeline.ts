@@ -46,18 +46,22 @@ class MaterialPipeline {
     build(shaderBuilder: IShaderCodeBuilder, pipetypes: MaterialPipeType[]):void {
 
         console.log("#### MaterialPipeline::build(), pipetypes: ",pipetypes);
-        this.m_sharedUniforms = [];
 
-        let pipe: IMaterialPipe;
-        let type: MaterialPipeType;
-        let types: MaterialPipeType[] = pipetypes;
-        for(let i: number = 0; i < types.length; ++i) {
-            type = types[i];
-            if(this.m_pipeMap.has(type)) {
-                pipe = this.m_pipeMap.get( type );
-                pipe.useShaderPipe(shaderBuilder, type);
-                this.m_sharedUniforms.push( pipe.getGlobalUinform() );
+        this.m_sharedUniforms = [];        
+        if(pipetypes != null) {
+
+            let pipe: IMaterialPipe;
+            let type: MaterialPipeType;
+            let types: MaterialPipeType[] = pipetypes;
+            for(let i: number = 0; i < types.length; ++i) {
+                type = types[i];
+                if(this.m_pipeMap.has(type)) {
+                    pipe = this.m_pipeMap.get( type );
+                    pipe.useShaderPipe(shaderBuilder, type);
+                    this.m_sharedUniforms.push( pipe.getGlobalUinform() );
+                }
             }
+
         }
     }
     

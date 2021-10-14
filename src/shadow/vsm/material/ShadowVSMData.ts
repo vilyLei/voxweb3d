@@ -13,9 +13,14 @@ import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import ShaderUniformProbe from "../../../vox/material/ShaderUniformProbe";
 import CameraBase from "../../../vox/view/CameraBase";
 import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
+
+import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
+import { IMaterialPipe } from "../../../vox/material/pipeline/IMaterialPipe";
+
 import { VSMShaderCode } from "./VSMShaderCode";
 
-export default class ShadowVSMData {
+
+export default class ShadowVSMData implements IMaterialPipe{
 
     private m_uProbe: ShaderUniformProbe = null;
     private m_suo: ShaderGlobalUniform = null;
@@ -29,14 +34,27 @@ export default class ShadowVSMData {
     constructor(slotIndex: number = 0) {
         this.m_uslotIndex = slotIndex;
     }
-    useUniforms(builder: IShaderCodeBuilder): void {
+    useShaderPipe(shaderBuilder: IShaderCodeBuilder, pipeType: MaterialPipeType): void {
         if (this.m_uProbe != null) {
-            builder.addDefine("VOX_USE_SHADOW", "1");
-            builder.addFragUniformParam(UniformConst.ShadowVSMParams);
-            builder.addVertUniformParam(UniformConst.ShadowMatrix);
-            builder.addFragFunction(VSMShaderCode.frag_head);           
-            builder.addVertFunction(VSMShaderCode.vert_head);           
-            builder.addVarying("vec4", "v_shadowPos");
+            shaderBuilder.addDefine("VOX_USE_SHADOW", "1");
+            shaderBuilder.addVarying("vec4", "v_shadowPos");
+            shaderBuilder.addFragUniformParam(UniformConst.ShadowVSMParams);
+            shaderBuilder.addVertUniformParam(UniformConst.ShadowMatrix);
+            shaderBuilder.addShaderObject(VSMShaderCode);
+        }
+    }
+    getPipeTypes(): MaterialPipeType[] {
+        return [MaterialPipeType.VSM_SHADOW];
+    }
+
+    useUniforms(shaderBuilder: IShaderCodeBuilder): void {
+        if (this.m_uProbe != null) {
+            shaderBuilder.addDefine("VOX_USE_SHADOW", "1");
+            shaderBuilder.addFragUniformParam(UniformConst.ShadowVSMParams);
+            shaderBuilder.addVertUniformParam(UniformConst.ShadowMatrix);
+            shaderBuilder.addFragFunction(VSMShaderCode.frag_head);           
+            shaderBuilder.addVertFunction(VSMShaderCode.vert_head);           
+            shaderBuilder.addVarying("vec4", "v_shadowPos");
         }
     }
     initialize(): void {

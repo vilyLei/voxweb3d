@@ -6,19 +6,17 @@
 /***************************************************************************/
 
 import env_frag_head from "./env_fragHead.glsl";
-let __$shader_env_vert_head =
-    `
-void calcFogDepth(in vec4 viewPos) {
-    v_fogDepth = -viewPos.z;
-}
-`;
+import env_vert_head from "./env_vertHead.glsl";
+import env_frag_body from "./env_fragBody.glsl";
+import env_vert_body from "./env_vertBody.glsl";
+
 const EnvShaderCode = {
     vert: "",
-    vert_head: __$shader_env_vert_head,
-    vert_body: "",
+    vert_head: env_vert_head,
+    vert_body: env_vert_body,
     frag: "",
     frag_head: env_frag_head,
-    frag_body: ""
+    frag_body: env_frag_body
 };
 
 export { EnvShaderCode };

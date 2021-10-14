@@ -32,8 +32,8 @@ export default class MaterialBase implements IRenderMaterial {
     __$troMid: number = -1;
     __$uniform: IShaderUniform = null;
 
-    setMaterialPipeline(pipeLine: MaterialPipeline): void {
-        this.m_pipeLine = pipeLine;
+    setMaterialPipeline(pipeline: MaterialPipeline): void {
+        this.m_pipeLine = pipeline;
     }
     getMaterialPipeline(): MaterialPipeline {
         return this.m_pipeLine;
@@ -93,7 +93,7 @@ export default class MaterialBase implements IRenderMaterial {
             let buf: ShaderCodeBuffer = this.getCodeBuf();
             if (buf != null) {
                 buf.reset();
-                buf.pipeLine = this.m_pipeLine;
+                buf.pipeline = this.m_pipeLine;
                 if (MaterialBase.s_codeBuffer == null) {
                     MaterialBase.s_codeBuffer = new ShaderCodeBuffer();
                 }

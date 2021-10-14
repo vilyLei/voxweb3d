@@ -104,11 +104,10 @@ export class DemoCameraMotion
 
             this.update();
             
+            //this.initTerrain();
             this.initTerrain2();
             this.loadRoadData();
-            return;
-            this.initCamera();
-            this.initPathAct();
+            
         }
     }
     
@@ -129,15 +128,12 @@ export class DemoCameraMotion
 
         let material: TerrainMaterial = new TerrainMaterial();
         material.fogEnabled = true;
-
         material.setMaterialPipeline( this.m_materialPipeline );
 
         material.setTextureList( [
             this.getImageTexByUrl("static/assets/moss_04.jpg"),
             this.getImageTexByUrl("static/assets/color_02.jpg"),
-            this.getImageTexByUrl("static/assets/heightMap05.jpg"),
             this.getImageTexByUrl("static/assets/heightMap05.jpg")
-            //this.getImageTexByUrl("static/assets/circleWave_disp.png")
         ] );
         material.setRGB3f(1.2,1.2,1.2);
         material.initializeByCodeBuf(true);
@@ -174,11 +170,19 @@ export class DemoCameraMotion
         pipe.setMaterial( material2 );
         pipe.setRotationXYZ(0,45,0);
         pipe.showDoubleFace();
-        //pipe.toBrightnessBlend(false,true);
         pipe.initialize(1400.0, 1200.0, 4, 1);
         this.m_rscene.addEntity(pipe);
     }
     private initTerrain(): void {
+
+        let envData: EnvLightData = new EnvLightData();
+        envData.initialize();
+        envData.setFogDensity(0.003);
+        envData.setFogColorRGB3f(1.0, 1.0, 1.0);
+        envData.setFogAreaSize(2000.0,2000.0);
+        envData.setFogAreaOffset(-1000.0,-1000.0);
+
+        this.m_materialPipeline.addPipe( envData );
 
         let plane:Plane3DEntity = new Plane3DEntity();
         plane.uScale = 5.0;

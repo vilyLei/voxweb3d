@@ -17,7 +17,7 @@ class ShaderCodeBuffer {
     private m_texList: IRenderTexture[] = null;
     private m_texEnabled: boolean = true;
 
-    pipeLine: MaterialPipeline = null;
+    pipeline: MaterialPipeline = null;
     vtxColorEnabled: boolean = false;
     premultiplyAlpha: boolean = false;
     /**
@@ -59,17 +59,11 @@ class ShaderCodeBuffer {
     }
     buildShader(): void {
     }
-    getFragShaderCode(): string {
-        if (ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getFragShaderCode();
+    private buildDefaultCode(): void {
 
-        this.adaptationShaderVersion = false;
-        let coder = this.m_coder;
-        
-
+        let coder = this.m_coder;        
         coder.addVertLayout("vec3", "a_vs");
-        coder.addFragOutput("vec4", "FragColor0");
         coder.addFragUniform("vec4", "u_color");
-
         coder.useVertSpaceMats(true, true, true);
 
         if (this.premultiplyAlpha) coder.addDefine("VOX_PREMULTIPLY_ALPHA", "1");
@@ -84,10 +78,10 @@ class ShaderCodeBuffer {
             coder.addVarying("vec3", "v_cv");
         }
 
+        coder.addFragOutput("vec4", "FragColor0");
+
         coder.addFragMainCode(
             `
-void main(){
-
     FragColor0 = vec4(1.0);
     #ifdef VOX_USE_2D_MAP
         //  FragColor0 *= VOX_Texture2D(u_sampler0, vec2(v_uv[0],v_uv[1]));
@@ -103,21 +97,14 @@ void main(){
     #else
         FragColor0 *= u_color;
     #endif
-}
 `
         );
-
-        return coder.buildFragCode();
-    }
-    getVtxShaderCode(): string {
-        if (ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getVtxShaderCode();
-        let coder: ShaderCodeBuilder2 = ShaderCodeBuffer.s_coder;
-
+        
         coder.addVertMainCode(
             `
-void main(){
-    
-    gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs.xyz,1.0);
+    vec4 localPosition = vec4(a_vs.xyz,1.0);
+    vec4 wpos = u_objMat * localPosition;
+    gl_Position = u_projMat * u_viewMat * wpos;
 
     #ifdef VOX_USE_2D_MAP
         v_uv = a_uvs.xy;
@@ -125,10 +112,29 @@ void main(){
     #ifdef VOX_USE_VTX_COLOR
         v_cv = a_cvs.xyz;
     #endif
-}
 `
         );
-        return coder.buildVertCode();
+
+        
+        if(this.pipeline != null) {
+            
+            // let types: MaterialPipeType[] = [];
+            // if(this.fogEnabled) {
+            //     types.push( MaterialPipeType.FOG_EXP2 );
+            // }
+            // this.pipeline.build(this.m_coder, types);
+        }
+    }
+    getFragShaderCode(): string {
+
+        if (ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getFragShaderCode();
+        this.buildDefaultCode();
+        return this.m_coder.buildFragCode();
+    }
+    getVtxShaderCode(): string {
+        
+        if (ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getVtxShaderCode();
+        return this.m_coder.buildVertCode();
     }
     getUniqueShaderName(): string {
         if (ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getUniqueShaderName();

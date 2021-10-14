@@ -9,7 +9,6 @@ import CameraTrack from "../vox/view/CameraTrack";
 
 import RendererParam from "../vox/scene/RendererParam";
 import RendererScene from "../vox/scene/RendererScene";
-//import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
@@ -17,7 +16,6 @@ import RendererSubScene from "../vox/scene/RendererSubScene";
 import DefaultPBRUI from "./mana/DefaultPBRUI";
 import DebugFlag from "../vox/debug/DebugFlag";
 import PBRScene from "./mana/PBRScene";
-//  import StencilOutline from "../renderingtoy/mcase/outline/StencilOutline";
 import PostOutline from "../renderingtoy/mcase/outline/PostOutline";
 
 export class DemoPBR {
@@ -88,7 +86,6 @@ export class DemoPBR {
 
             this.m_pbrScene = new PBRScene();
             this.m_pbrScene.initialize(this.m_rscene, this.m_texLoader, this.m_uiModule);
-
         }
     }
 

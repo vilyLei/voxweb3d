@@ -15,10 +15,20 @@ void calcShadowPos(in vec4 wpos) {
 const VSMShaderCode = {
     vert: "",
     vert_head: __$shader_vsm_vert_head,
-    vert_body: "",
+    vert_body:
+`
+#ifdef VOX_USE_SHADOW
+calcShadowPos( worldPosition );
+#endif
+`,
     frag: "",
     frag_head: vsm_frag_head,
-    frag_body: ""
+    frag_body:
+`
+#ifdef VOX_USE_SHADOW
+useVSMShadow( FragColor0 );
+#endif
+`
 };
 
 export { VSMShaderCode };

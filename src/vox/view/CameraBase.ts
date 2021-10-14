@@ -398,7 +398,7 @@ class CameraBase implements IRenderCamera{
     setPosition(v3: Vector3D): void {
         if (this.m_unlock) {
             Vector3D.Cross(this.m_lookAtDirec, this.m_up, this.m_tempV);
-            var dot = this.m_tempV.dot(this.m_initUP);
+            let dot: number = this.m_tempV.dot(this.m_initUP);
             this.m_tempV1.copyFrom(this.m_initUP);
             this.m_tempV1.scaleBy(dot);
             this.m_tempV.subtractBy(this.m_tempV1);

@@ -56,7 +56,8 @@ export default class CameraTrack
         this.m_position.copyFrom(this.m_direction);
         this.m_matrix.transformVectorSelf(this.m_position);
         this.m_position.addBy(this.m_camera.getLookAtPosition());
-        this.m_camera.setPosition(this.m_position);
+        
+        this.m_camera.lookAtRH(this.m_position, this.m_camera.getLookAtPosition(), Vector3D.Y_AXIS);
     }
     rotationOffsetAngleWordX(float_degrees:number):void
     {
@@ -69,7 +70,7 @@ export default class CameraTrack
         this.m_position.copyFrom(this.m_direction);
         this.m_matrix.transformVectorSelf(this.m_position);
         this.m_position.addBy(this.m_camera.getLookAtPosition());
-        this.m_camera.setPosition(this.m_position);
+        this.m_camera.lookAtRH(this.m_position, this.m_camera.getLookAtPosition(), Vector3D.X_AXIS);
     }
     rotationOffsetAngleWordZ(float_degrees:number):void
     {
@@ -82,6 +83,6 @@ export default class CameraTrack
         this.m_position.copyFrom(this.m_direction);
         this.m_matrix.transformVectorSelf(this.m_position);
         this.m_position.addBy(this.m_camera.getLookAtPosition());
-        this.m_camera.setPosition(this.m_position);
+        this.m_camera.lookAtRH(this.m_position, this.m_camera.getLookAtPosition(), Vector3D.Z_AXIS);
     }
 }

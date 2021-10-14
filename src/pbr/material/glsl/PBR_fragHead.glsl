@@ -1,12 +1,4 @@
 
-// default pbr glsl
-
-vec3 worldPos;
-vec3 worldNormal;
-//  // material parameters
-//  uniform vec4 u_albedo;
-//  uniform vec4 u_params[4];
-
 #define PI 3.141592653589793
 #define PI2 6.283185307179586
 #define PI_HALF 1.5707963267948966

@@ -1,8 +1,6 @@
 
 // ----------------------------------------------------------------------------
 
-void main()
-{
     vec3 color = vec3(0.0);
 
     float metallic = u_params[0].x;
@@ -19,16 +17,16 @@ void main()
     float glossinessSquare = colorGlossiness * colorGlossiness;
     float specularPower = exp2(8.0 * glossinessSquare + 1.0);
 
-    worldPos = v_worldPos;
+    worldPosition.xyz = v_worldPos.xyz;
     #ifdef VOX_VTX_FLAT_NORMAL
-        worldNormal = getVtxFlatNormal(worldPos);
+        worldNormal = getVtxFlatNormal(worldPosition.xyz);
     #else
         worldNormal = v_worldNormal;
     #endif
     
     vec3 N = worldNormal;
     #ifdef VOX_NORMAL_MAP
-        N = getNormalFromMap(VOX_NORMAL_MAP, v_uv.xy, worldPos.xyz, worldNormal);
+        N = getNormalFromMap(VOX_NORMAL_MAP, v_uv.xy, worldPosition.xyz, worldNormal);
         N = normalize(mix(worldNormal, N, u_paramLocal[0].w));
     #endif
 
@@ -38,7 +36,7 @@ void main()
         N = normalize(N);
     #endif
 
-    vec3 V = normalize(u_cameraPosition.xyz - worldPos);
+    vec3 V = normalize(u_cameraPosition.xyz - worldPosition.xyz);
     float dotNV = clamp(dot(N, V), 0.0, 1.0);
     #ifdef VOX_DIFFUSE_MAP
     vec3 albedo = u_albedo.xyz * VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv.xy).xyz;
@@ -106,7 +104,7 @@ void main()
         for(int i = 0; i < VOX_POINT_LIGHTS_TOTAL; ++i) 
         {
             // calculate per-light radiance
-            vec3 L = (u_lightPositions[i].xyz - worldPos);
+            vec3 L = (u_lightPositions[i].xyz - worldPosition.xyz);
             float distance = length(L);
             float attenuation = 1.0 / (1.0 + 0.001 * distance + 0.0001 * distance * distance);
             vec3 inColor = u_lightColors[i].xyz * attenuation;
@@ -126,7 +124,7 @@ void main()
     
     #ifdef VOX_INDIRECT_ENV_MAP
         rL.L = vec3(0.0, -1.0, 0.0);
-        float ifactor = clamp(abs(worldPos.y - -210.0) / 300.0, 0.0,1.0);
+        float ifactor = clamp(abs(worldPosition.y - -210.0) / 300.0, 0.0,1.0);
         float lv = 1.0 + 6.0 * ifactor;
         #ifdef VOX_ENV_MAP
             color = VOX_TextureCubeLod(VOX_INDIRECT_ENV_MAP, envDir, lv).xyz;
@@ -183,7 +181,7 @@ void main()
         color.xyz = mix(mirrorColor4.xyz, color.xyz, factorY);
     #endif
     
-
+/*
     #ifdef VOX_USE_SHADOW
 
     float factor = getVSMShadowFactor(v_shadowPos);
@@ -196,6 +194,5 @@ void main()
     useFog( color );
 
     #endif
-    
-    FragOutColor = vec4(color, 1.0);
-}
+//*/
+    FragColor0 = vec4(color, 1.0);

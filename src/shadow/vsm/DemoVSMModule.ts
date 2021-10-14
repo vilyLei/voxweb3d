@@ -33,6 +33,7 @@ import ThreadSystem from "../../thread/ThreadSystem";
 import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import DivLog from "../../vox/utils/DivLog";
+import {MaterialPipeline} from "../../vox/material/pipeline/MaterialPipeline";
 
 export class DemoVSMModule {
     constructor() { }
@@ -49,6 +50,7 @@ export class DemoVSMModule {
     private m_dracoMeshLoader: DracoMeshBuilder = new DracoMeshBuilder();
     private m_reflectPlaneY: number = 0.0;
 
+    private m_materialPipeline: MaterialPipeline = null;
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
@@ -106,6 +108,10 @@ export class DemoVSMModule {
             this.m_vsmModule.setShadowIntensity(0.8);
             this.m_vsmModule.setColorIntensity(0.3);
 
+            this.m_materialPipeline = new MaterialPipeline();
+            this.m_materialPipeline.addPipe(this.m_envData);
+            this.m_materialPipeline.addPipe( this.m_vsmModule.getVSMData() );
+
             this.m_dracoMeshLoader.initialize(2);
             this.m_dracoMeshLoader.setListener(this);
 
@@ -156,8 +162,8 @@ export class DemoVSMModule {
 
         let uvscale: number = Math.random() * 7.0 + 0.6;
         let shadowMaterial: ShadowVSMMaterial = new ShadowVSMMaterial();
-        shadowMaterial.setVSMData(vsmData);
-        shadowMaterial.setEnvData(envData);
+        shadowMaterial.setMaterialPipeline( this.m_materialPipeline );
+        //shadowMaterial.setVSMData(vsmData);
         shadowMaterial.initializeByCodeBuf(true);
         shadowMaterial.setTextureList([shadowTex, this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
         
@@ -189,7 +195,8 @@ export class DemoVSMModule {
 
         let vsmData = this.m_vsmModule.getVSMData();
         let envData = this.m_envData;
-        //let shadowTex: TextureProxy = this.m_depthRtt;
+
+
         let shadowTex: TextureProxy = this.m_vsmModule.getShadowMap();
         let shadowMaterial: ShadowVSMMaterial;
 
@@ -197,9 +204,9 @@ export class DemoVSMModule {
 
         let plane: Plane3DEntity = new Plane3DEntity();
         shadowMaterial = new ShadowVSMMaterial();
+        shadowMaterial.setMaterialPipeline( this.m_materialPipeline );
         //shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
-        shadowMaterial.setVSMData(vsmData);
-        shadowMaterial.setEnvData(envData);
+        //shadowMaterial.setVSMData(vsmData);
         plane.setMaterial(shadowMaterial);
         plane.initializeXOZ(-600.0, -600.0, 1200.0, 1200.0, [shadowTex, this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
         plane.setXYZ(0.0, -1.0, 0.0);
@@ -207,9 +214,9 @@ export class DemoVSMModule {
 
         let box: Box3DEntity = new Box3DEntity();
         shadowMaterial = new ShadowVSMMaterial();
+        shadowMaterial.setMaterialPipeline( this.m_materialPipeline );
         //shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
-        shadowMaterial.setVSMData(vsmData);
-        shadowMaterial.setEnvData(envData);
+        //shadowMaterial.setVSMData(vsmData);
         box.setMaterial(shadowMaterial);
         box.initializeCube(200.0, [shadowTex, this.getImageTexByUrl("static/assets/metal_02.jpg")]);
         this.m_rscene.addEntity(box);
@@ -220,9 +227,9 @@ export class DemoVSMModule {
 
         let cyl: Cylinder3DEntity = new Cylinder3DEntity();
         shadowMaterial = new ShadowVSMMaterial();
+        shadowMaterial.setMaterialPipeline( this.m_materialPipeline );
         //shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
-        shadowMaterial.setVSMData(vsmData);
-        shadowMaterial.setEnvData(envData);
+        //shadowMaterial.setVSMData(vsmData);
         cyl.setMaterial(shadowMaterial);
         cyl.initialize(80.0, 200.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/noise.jpg")]);
         this.m_rscene.addEntity(cyl);
@@ -231,9 +238,9 @@ export class DemoVSMModule {
 
         let sph: Sphere3DEntity = new Sphere3DEntity();
         shadowMaterial = new ShadowVSMMaterial();
+        shadowMaterial.setMaterialPipeline( this.m_materialPipeline );
         //shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
-        shadowMaterial.setVSMData(vsmData);
-        shadowMaterial.setEnvData(envData);
+        //shadowMaterial.setVSMData(vsmData);
         sph.setMaterial(shadowMaterial);
         sph.initialize(80.0, 20.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/metal_02.jpg")]);
         this.m_rscene.addEntity(sph);
@@ -242,8 +249,7 @@ export class DemoVSMModule {
         sph = new Sphere3DEntity();
         shadowMaterial = new ShadowVSMMaterial();
         //shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
-        shadowMaterial.setVSMData(vsmData);
-        shadowMaterial.setEnvData(envData);
+        //shadowMaterial.setVSMData(vsmData);
         sph.setMaterial(shadowMaterial);
         sph.initialize(80.0, 20.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/metal_08.jpg")]);
         sph.setScaleXYZ(1.2, 1.2, 1.2);

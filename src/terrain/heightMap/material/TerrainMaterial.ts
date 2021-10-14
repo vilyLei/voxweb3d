@@ -43,7 +43,7 @@ class TerrainpShaderBuffer extends ShaderCodeBuffer {
             this.m_coder.addVarying("vec4", "v_param");
             // diffuse color 0
             this.m_coder.addTextureSample2D();
-            // diffuse color 1
+            // diffuse color 1 and fog color
             this.m_coder.addTextureSample2D();
             
             // displace and color ao
@@ -56,14 +56,14 @@ class TerrainpShaderBuffer extends ShaderCodeBuffer {
         
         this.m_coder.addShaderObject( TerrainShaderCode );
 
-        if(this.pipeLine != null) {
+        if(this.pipeline != null) {
             
             let types: MaterialPipeType[] = [];
             if(this.fogEnabled) {                
 
                 types.push( MaterialPipeType.FOG_EXP2 );
             }       
-            this.pipeLine.build(this.m_coder, types);
+            this.pipeline.build(this.m_coder, types);
         }
     }
 
@@ -110,7 +110,12 @@ export default class TerrainpMaterial extends MaterialBase {
     }
 
     private m_colorArray: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
-    private m_displacementArray: Float32Array = new Float32Array([50.0, 1.0, 0.0, 0.0]);
+    private m_displacementArray: Float32Array = new Float32Array([
+        50.0,   // scale
+        1.0,    // bias
+        0.0,    // undefined
+        0.0     // undefined
+    ]);
     setRGB3f(pr: number, pg: number, pb: number): void {
         this.m_colorArray[0] = pr;
         this.m_colorArray[1] = pg;

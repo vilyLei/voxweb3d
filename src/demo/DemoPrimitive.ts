@@ -104,8 +104,9 @@ export class DemoPrimitive {
             //*/
             let i: number = 0;
             let axis: Axis3DEntity = new Axis3DEntity();
-            //  axis.initialize(110.0);
-            //  this.m_renderer.addEntity(axis);
+            // axis.initialize(110.0);
+            // this.m_renderer.addEntity(axis);
+            // return;
             ///*
             let plane: Plane3DEntity = new Plane3DEntity();
             //plane.wireframe = true;
@@ -117,7 +118,7 @@ export class DemoPrimitive {
             //plane.initializeXOZ(-200.0,-150.0,400.0,300.0);
             plane.setXYZ(0.0, -100.0, 0.0);
             this.m_renderer.addEntity(plane);
-
+            return;
             //  return;
             //*/
             ///*

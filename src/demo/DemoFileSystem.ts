@@ -62,8 +62,8 @@ export class DemoFileSystem {
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
-            this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-            this.m_statusDisp.initialize();
+            //  this.m_profileInstance.initialize(this.m_rscene.getRenderer());
+            //  this.m_statusDisp.initialize();
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
@@ -177,11 +177,14 @@ export class DemoFileSystem {
 
         this.m_statusDisp.update(false);
         
-        this.m_stageDragSwinger.runWithYAxis();
-        this.m_cameraZoomController.run(null, 30.0);
+        //  this.m_stageDragSwinger.runWithYAxis();
+        //  this.m_cameraZoomController.run(null, 30.0);
+
+        this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
 
         this.m_rscene.run( true );
-        this.m_profileInstance.run();
+        //this.m_profileInstance.run();
+
     }
 }
 export default DemoFileSystem;

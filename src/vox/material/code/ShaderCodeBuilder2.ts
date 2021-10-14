@@ -13,6 +13,7 @@ import IAbstractShader from "../../../vox/material/IAbstractShader";
 import IShaderCodeBuilder from "./IShaderCodeBuilder";
 import GLSLConverter from "./GLSLConverter";
 import ShaderCompileInfo from "./ShaderCompileInfo";
+import ShaderCode from "./ShaderCode";
 
 export default class ShaderCodeBuilder2 implements IShaderCodeBuilder {
 
@@ -298,31 +299,35 @@ precision mediump float;
     }
 
     addVertHeadCode(code: string): void {
-        if(code != "") this.m_vertHeadCode += code;
+        if(code != "") this.m_vertHeadCode += "\n" + code;
     }
     addVertMainCode(code: string): void {
-        if(code != "") this.m_vertMainCode += code;
+        if(code != "") this.m_vertMainCode += "\n" + code;
     }
     addFragHeadCode(code: string): void {
-        if(code != "") this.m_fragHeadCode += code;
+        if(code != "") this.m_fragHeadCode += "\n" + code;
     }
     addFragMainCode(code: string): void {
-        if(code != "") this.m_fragMainCode += code;
+        if(code != "") this.m_fragMainCode += "\n" + code;
     }
 
     addShaderObject(shaderObj: IAbstractShader): void {
-        
         this.addFragHeadCode( shaderObj.frag_head );
         this.addFragMainCode( shaderObj.frag_body );
         this.addVertHeadCode( shaderObj.vert_head );
         this.addVertMainCode( shaderObj.vert_body );
+    }
+    addShaderObjectHead(shaderObj: IAbstractShader): void {
+        
+        this.addFragHeadCode( shaderObj.frag_head );
+        this.addVertMainCode( shaderObj.vert_head );
     }
     buildFragCode(): string {
 
         let i: number = 0;
         let len: number = 0;
         let code: string = "";
-        if (RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED) {
+        if (RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED || RendererDevice.IsMobileWeb()) {
             this.useHighPrecious();
         }
         if (RendererDevice.IsWebGL2()) {
@@ -378,6 +383,8 @@ precision mediump float;
             code += "\n" + this.m_preciousCode;
         }
 
+        code += ShaderCode.FragPredefined;
+        
         len = this.m_defineNames.length;
         for (i = 0; i < len; i++) {
             if (this.m_defineValues[i] != "") {
@@ -433,6 +440,8 @@ precision mediump float;
             }
         }
 
+        code += ShaderCode.FragDefined;
+
         if (this.fragMatrixInverseEnabled && RendererDevice.IsWebGL1()) {
             this.addVertFunction(GLSLConverter.__glslInverseMat3);
             this.addVertFunction(GLSLConverter.__glslInverseMat4);
@@ -477,9 +486,9 @@ precision mediump float;
             code += this.m_fragMainCode;
         }
         else {
-            code += "\nvoid main() {\n"
+            code += "\nvoid main() {\n";
             code += this.m_fragMainCode;
-            code += "\n}\n"
+            code += "\n}\n";
         }
         
         len = this.m_fragOutputNames.length;
@@ -510,6 +519,7 @@ precision mediump float;
         for (; i < len; i++) {
             code += "\n" + this.m_vertExt[i];
         }
+        
         if (RendererDevice.IsWebGL2()) {
             code += "\n#define VOX_IN in";
             if (this.mapLodEnabled) {
@@ -543,6 +553,9 @@ precision mediump float;
         else {
             code += "\n#define VOX_OUT varying";
         }
+        
+        code += ShaderCode.VertPredefined;
+
         len = this.m_defineNames.length;
         for (i = 0; i < len; i++) {
             if (this.m_defineValues[i] != "") {
@@ -615,6 +628,7 @@ precision mediump float;
             }
         }
 
+        code += ShaderCode.VertDefined;
         if (this.vertMatrixInverseEnabled && RendererDevice.IsWebGL1()) {
             this.addVertFunction(GLSLConverter.__glslInverseMat3);
             this.addVertFunction(GLSLConverter.__glslInverseMat4);
@@ -643,9 +657,9 @@ precision mediump float;
             code += this.m_vertMainCode;
         }
         else {
-            code += "\nvoid main() {\n"
+            code += "\nvoid main() {\n";
             code += this.m_vertMainCode;
-            code += "\n}\n"
+            code += "\n}\n";
         }
         return code;
     }

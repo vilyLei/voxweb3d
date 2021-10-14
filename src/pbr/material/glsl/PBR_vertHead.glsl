@@ -1,4 +1,4 @@
-const vec4 zeroPos = vec4(0.0,0.0,0.0, 1.0);
+const vec4 zeroPosition = vec4(0.0,0.0,0.0, 1.0);
 
 const vec2 noise2 = vec2(12.9898,78.233);
 const vec3 noise3 = vec3(12.9898,78.233,158.5453);

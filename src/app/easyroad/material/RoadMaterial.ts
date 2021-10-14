@@ -15,6 +15,7 @@ class RoadShaderBuffer extends ShaderCodeBuffer {
     }
     private static s_instance: RoadShaderBuffer = new RoadShaderBuffer();
     private m_uniqueName: string = "";
+
     fogEnabled: boolean = true;
     initialize(texEnabled: boolean): void {
         super.initialize(texEnabled);
@@ -26,58 +27,57 @@ class RoadShaderBuffer extends ShaderCodeBuffer {
     private buildThisCode(): void {
 
         let coder = this.m_coder;
-        coder.reset();
+        
         coder.addVertLayout("vec3", "a_vs");
-        //coder.addVertLayout("vec3", "a_nvs");
+
         if (this.isTexEanbled()) {
+
             coder.addVertLayout("vec2", "a_uvs");
             coder.addVarying("vec2", "v_uv");
             coder.addVarying("vec4", "v_wpos");
+
             // diffuse color
             coder.addTextureSample2D();
-            // fog color
-            coder.addTextureSample2D();            
+            if(this.fogEnabled) {
+                // fog color
+                coder.addTextureSample2D("VOX_FOG_COLOR_MAP");  
+            }
         }
         coder.addFragOutput("vec4", "FragColor0");
         
         coder.addFragMainCode(
-            `
+        `
+worldPosition.xyz = v_wpos.xyz;
 #ifdef VOX_USE_2D_MAP
-    vec4 color = VOX_Texture2D(u_sampler0, v_uv.xy);
-    
-    #ifdef VOX_USE_FOG
-        vec4 color1 = VOX_Texture2D(u_sampler1, (u_envLightParams[3].xy + v_wpos.xz) / u_envLightParams[3].zw);
-        fogEnvColor = color1.xyz;
-    #else
-        vec4 color1 = VOX_Texture2D(u_sampler1, v_uv.xy);
-    #endif
-    
+    vec4 color = VOX_Texture2D(u_sampler0, v_uv.xy);    
     FragColor0 = color;
 #else
     FragColor0 = u_color;
 #endif
-            `
-                    );
+`
+        );
         coder.addVertMainCode(
             `
-vec3 localPosition = a_vs;
+localPosition.xyz = a_vs.xyz;
 
 #ifdef VOX_USE_2D_MAP
     v_uv = a_uvs.xy;
 #endif
 
-v_wpos = u_objMat * vec4(localPosition, 1.0);
-vec4 viewPos = u_viewMat * v_wpos;
-gl_Position = u_projMat * viewPos;
+worldPosition = u_objMat * localPosition;
+viewPosition = u_viewMat * worldPosition;
+gl_Position = u_projMat * viewPosition;
+
+v_wpos.xyz = worldPosition.xyz;
 `
         );
 
-        if(this.pipeLine != null) {
+        if(this.pipeline != null) {
             let types: MaterialPipeType[] = [];
             if(this.fogEnabled) {
                 types.push( MaterialPipeType.FOG_EXP2 ); 
             }      
-            this.pipeLine.build(this.m_coder, types);
+            this.pipeline.build(this.m_coder, types);
         }
     }
 

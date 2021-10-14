@@ -1,4 +1,3 @@
-
 vec4 pack2HalfToRGBA( vec2 v ) {
 	vec4 r = vec4( v.x, fract( v.x * 255.0 ), v.y, fract( v.y * 255.0 ));
 	return vec4( r.x - r.y / 255.0, r.y, r.z - r.w / 255.0, r.w);
@@ -12,6 +11,7 @@ vec2 texture2DDistribution( sampler2D shadow, vec2 uv ) {
     return unpackRGBATo2Half( VOX_Texture2D( shadow, uv ) );
 
 }
+#ifdef VOX_USE_SHADOW
 float VSMShadow (sampler2D shadow, vec2 uv, float compare ) {
 
     float occlusion = 1.0;
@@ -64,3 +64,8 @@ float getVSMShadowFactor(vec4 shadowPos) {
     f = u_vsmParams[1].z;
     return shadow * (1.0 - f) + f;
 }
+void useVSMShadow(inout vec4 color) {
+    float factor = getVSMShadowFactor(v_shadowPos);
+    color.xyz *= vec3(factor);
+}
+#endif

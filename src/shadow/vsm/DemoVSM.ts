@@ -38,6 +38,7 @@ import Cylinder3DEntity from "../../vox/entity/Cylinder3DEntity";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 
+import {MaterialPipeline} from "../../vox/material/pipeline/MaterialPipeline";
 export class DemoVSM {
     constructor() { }
 
@@ -48,6 +49,8 @@ export class DemoVSM {
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
+
+    private m_materialPipeline: MaterialPipeline = null;
 
     private m_vsmData: ShadowVSMData = null;
     private m_targetEntity: DisplayEntity = null;
@@ -168,6 +171,9 @@ export class DemoVSM {
         this.m_vsmData.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
         this.m_vsmData.upadate();
 
+        this.m_materialPipeline = new MaterialPipeline();
+        this.m_materialPipeline.addPipe( this.m_vsmData );
+
         this.initSceneObjs();
     }
     private initSceneObjs(): void {
@@ -183,8 +189,9 @@ export class DemoVSM {
 
         let plane: Plane3DEntity = new Plane3DEntity();
         shadowMaterial = new ShadowVSMMaterial();
+        shadowMaterial.setMaterialPipeline( this.m_materialPipeline );
         shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
-        shadowMaterial.setVSMData(this.m_vsmData);
+        //shadowMaterial.setVSMData(this.m_vsmData);
         plane.setMaterial(shadowMaterial);
         plane.initializeXOZ(-600.0, -600.0, 1200.0, 1200.0, [shadowTex, this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
         plane.setXYZ(0.0, -1.0, 0.0);
@@ -193,8 +200,9 @@ export class DemoVSM {
 
         let box: Box3DEntity = new Box3DEntity();
         shadowMaterial = new ShadowVSMMaterial();
+        shadowMaterial.setMaterialPipeline( this.m_materialPipeline );
         shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
-        shadowMaterial.setVSMData(this.m_vsmData);
+        //shadowMaterial.setVSMData(this.m_vsmData);
         box.setMaterial(shadowMaterial);
         box.initializeCube(200.0, [shadowTex, this.getImageTexByUrl("static/assets/metal_02.jpg")]);
         this.m_rscene.addEntity(box);
@@ -205,8 +213,9 @@ export class DemoVSM {
 
         let cyl: Cylinder3DEntity = new Cylinder3DEntity();
         shadowMaterial = new ShadowVSMMaterial();
+        shadowMaterial.setMaterialPipeline( this.m_materialPipeline );
         shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
-        shadowMaterial.setVSMData(this.m_vsmData);
+        //shadowMaterial.setVSMData(this.m_vsmData);
         cyl.setMaterial(shadowMaterial);
         cyl.initialize(80.0, 200.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/noise.jpg")]);
         this.m_rscene.addEntity(cyl);
@@ -215,8 +224,9 @@ export class DemoVSM {
 
         let sph: Sphere3DEntity = new Sphere3DEntity();
         shadowMaterial = new ShadowVSMMaterial();
+        shadowMaterial.setMaterialPipeline( this.m_materialPipeline );
         shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
-        shadowMaterial.setVSMData(this.m_vsmData);
+        //shadowMaterial.setVSMData(this.m_vsmData);
         sph.setMaterial(shadowMaterial);
         sph.initialize(80.0, 20.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/metal_02.jpg")]);
         this.m_rscene.addEntity(sph);
@@ -224,8 +234,9 @@ export class DemoVSM {
 
         sph = new Sphere3DEntity();
         shadowMaterial = new ShadowVSMMaterial();
+        shadowMaterial.setMaterialPipeline( this.m_materialPipeline );
         shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
-        shadowMaterial.setVSMData(this.m_vsmData);
+        //shadowMaterial.setVSMData(this.m_vsmData);
         sph.setMaterial(shadowMaterial);
         sph.initialize(80.0, 20.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/metal_08.jpg")]);
         sph.setScaleXYZ(1.2, 1.2, 1.2);

@@ -13,12 +13,15 @@ import ShadowVSMData from "../../shadow/vsm/material/ShadowVSMData";
 import EnvLightData from "../../light/base/EnvLightData";
 import UniformConst from "../../vox/material/UniformConst";
 import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
+import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
+import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 
 export default class PBRShaderDecorator {
     constructor() {
     }
-    
-    private static s_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
+
+    codeBuilder: ShaderCodeBuilder2 = null;
+    pipeline: MaterialPipeline = null;
 
     private m_uniqueName: string = "PBRShd";
     private m_has2DMap: boolean = false;
@@ -53,7 +56,7 @@ export default class PBRShaderDecorator {
     envData: EnvLightData = null;
 
     initialize(): void {
-        if(this.lightData != null) {
+        if (this.lightData != null) {
             this.pointLightsTotal = this.lightData.getPointLightTotal();
             this.parallelLightsTotal = this.lightData.getDirecLightTotal();
         }
@@ -63,7 +66,7 @@ export default class PBRShaderDecorator {
         }
     }
     copyFrom(src: PBRShaderDecorator): void {
-        
+
         this.woolEnabled = src.woolEnabled;
         this.toneMappingEnabled = src.toneMappingEnabled;
         this.envMapEnabled = src.envMapEnabled;
@@ -84,31 +87,30 @@ export default class PBRShaderDecorator {
         this.fogEnabled = src.fogEnabled;
         this.hdrBrnEnabled = src.hdrBrnEnabled;
         this.vtxFlatNormal = src.vtxFlatNormal;
-    
+
         this.pointLightsTotal = src.pointLightsTotal;
         this.parallelLightsTotal = src.parallelLightsTotal;
         this.texturesTotal = src.texturesTotal;
-    
+
         this.lightData = src.lightData;
         this.vsmData = src.vsmData;
         this.envData = src.envData;
-        
+
         this.m_uniqueName = src.m_uniqueName;
         this.m_has2DMap = src.m_has2DMap;
     }
-    private buildThisCode():void
-    {
-        let coder:ShaderCodeBuilder2 = PBRShaderDecorator.s_codeBuilder;
-        coder.reset();
+    private buildThisCode(): void {
+
+        let coder: ShaderCodeBuilder2 = this.codeBuilder;
+
         coder.normalMapEanbled = this.normalMapEnabled;
         coder.mapLodEnabled = true;
-        
+
         coder.useHighPrecious();
-        
+
         let mirrorProjEnabled: boolean = this.mirrorProjEnabled && this.texturesTotal > 0;
         if (this.normalNoiseEnabled) coder.addDefine("VOX_NORMAL_NOISE");
 
-        // 毛料表面效果
         if (this.woolEnabled) coder.addDefine("VOX_WOOL");
         if (this.toneMappingEnabled) coder.addDefine("VOX_TONE_MAPPING");
         if (this.scatterEnabled) coder.addDefine("VOX_SCATTER");
@@ -117,9 +119,9 @@ export default class PBRShaderDecorator {
         if (this.gammaCorrection) coder.addDefine("VOX_GAMMA_CORRECTION");
         if (this.absorbEnabled) coder.addDefine("VOX_ABSORB");
         if (this.pixelNormalNoiseEnabled) coder.addDefine("VOX_PIXEL_NORMAL_NOISE");
-        
+
         let texIndex: number = 0;
-        console.log("this.envMapEnabled,this.texturesTotal: ",this.envMapEnabled,this.texturesTotal);
+        console.log("this.envMapEnabled,this.texturesTotal: ", this.envMapEnabled, this.texturesTotal);
         if (this.envMapEnabled && this.texturesTotal > 0) {
             coder.addTextureSampleCube("VOX_ENV_MAP");
         }
@@ -132,102 +134,110 @@ export default class PBRShaderDecorator {
         if (this.aoMapEnabled) {
             coder.addTextureSample2D("VOX_AO_MAP");
         }
-        
-        
+
+
         if (mirrorProjEnabled) {
             coder.addTextureSample2D("VOX_MIRROR_PROJ_MAP");
         }
         if (this.indirectEnvMapEnabled) {
             coder.addTextureSampleCube("VOX_INDIRECT_ENV_MAP");
         }
-        console.log("this.texturesTotal: ", this.texturesTotal, ", texIndex: ",texIndex);
+        console.log("this.texturesTotal: ", this.texturesTotal, ", texIndex: ", texIndex);
         if (this.mirrorMapLodEnabled) coder.addDefine("VOX_MIRROR_MAP_LOD", "1");
         if (this.hdrBrnEnabled) coder.addDefine("VOX_HDR_BRN", "1");
         if (this.vtxFlatNormal) coder.addDefine("VOX_VTX_FLAT_NORMAL", "1");
-        
+
         let lightsTotal: number = this.pointLightsTotal + this.parallelLightsTotal;
-        if (this.pointLightsTotal > 0)  coder.addDefine("VOX_POINT_LIGHTS_TOTAL", ""+this.pointLightsTotal);
-        else coder.addDefine("VOX_POINT_LIGHTS_TOTAL","0");
-        if (this.parallelLightsTotal > 0) coder.addDefine("VOX_PARALLEL_LIGHTS_TOTAL", ""+this.parallelLightsTotal);
-        else coder.addDefine("VOX_PARALLEL_LIGHTS_TOTAL","0");
-        if (lightsTotal > 0) coder.addDefine("VOX_LIGHTS_TOTAL",""+lightsTotal);
+        if (this.pointLightsTotal > 0) coder.addDefine("VOX_POINT_LIGHTS_TOTAL", "" + this.pointLightsTotal);
+        else coder.addDefine("VOX_POINT_LIGHTS_TOTAL", "0");
+        if (this.parallelLightsTotal > 0) coder.addDefine("VOX_PARALLEL_LIGHTS_TOTAL", "" + this.parallelLightsTotal);
+        else coder.addDefine("VOX_PARALLEL_LIGHTS_TOTAL", "0");
+        if (lightsTotal > 0) coder.addDefine("VOX_LIGHTS_TOTAL", "" + lightsTotal);
         else coder.addDefine("VOX_LIGHTS_TOTAL", "0");
 
-        coder.addVertLayout("vec3","a_vs");
-        
+        coder.addVertLayout("vec3", "a_vs");
+
         this.m_has2DMap = coder.isHaveTexture2D();
         if (this.m_has2DMap) {
-            coder.addVertLayout("vec2","a_uvs");
-            coder.addVertUniform("vec4","u_paramLocal",2);
-            coder.addVarying("vec2","v_uv");
+            coder.addVertLayout("vec2", "a_uvs");
+            coder.addVertUniform("vec4", "u_paramLocal", 2);
+            coder.addVarying("vec2", "v_uv");
         }
-        coder.addVertLayout("vec3","a_nvs");
-        
-        coder.addFragUniform("vec4","u_paramLocal",2);
-        coder.addFragUniform("vec4","u_albedo");
-        coder.addFragUniform("vec4","u_params", 4);
-        
-        coder.addVarying("vec3","v_worldPos");
-        coder.addVarying("vec3","v_worldNormal");
-        
+        coder.addVertLayout("vec3", "a_nvs");
+
+        coder.addFragUniform("vec4", "u_paramLocal", 2);
+        coder.addFragUniform("vec4", "u_albedo");
+        coder.addFragUniform("vec4", "u_params", 4);
+
+        coder.addVarying("vec3", "v_worldPos");
+        coder.addVarying("vec3", "v_worldNormal");
+
         coder.addFragUniformParam(UniformConst.CameraPosParam);
 
         if (mirrorProjEnabled) {
             coder.addFragUniformParam(UniformConst.StageParam);
-            coder.addFragUniform("vec4","u_mirrorParams",2);
+            coder.addFragUniform("vec4", "u_mirrorParams", 2);
         }
-        if(lightsTotal > 0) {
-            this.lightData.useUniforms( coder );
+        if (lightsTotal > 0) {
+            this.lightData.useUniforms(coder);
         }
-        if(this.fogEnabled && this.envData != null) {
-            this.envData.useUniformsForFog( coder );
-        }
+        // if (this.fogEnabled && this.envData != null) {
+        //     this.envData.useUniformsForFog(coder);
+        // }
 
         coder.vertMatrixInverseEnabled = true;
-        
-        coder.useVertSpaceMats(true,true,true);
 
-        coder.addFragOutput("vec4","FragOutColor");
-        if(this.shadowReceiveEnabled && this.vsmData != null) {
-            this.vsmData.useUniforms( coder );
-            coder.addTextureSample2D("VOX_VSM_MAP",false);
-        }
+        coder.useVertSpaceMats(true, true, true);
 
-    }
-    getFragShaderCode(): string {
-        
-        this.buildThisCode();
-        let coder:ShaderCodeBuilder2 = PBRShaderDecorator.s_codeBuilder;
+        coder.addFragOutput("vec4", "FragColor0");
+        // if (this.shadowReceiveEnabled && this.vsmData != null) {
+        //     this.vsmData.useUniforms(coder);
+        //     coder.addTextureSample2D("VOX_VSM_MAP", false);
+        // }
 
         coder.addFragHeadCode(PBRShaderCode.frag_head);
         coder.addFragMainCode(PBRShaderCode.frag_body);
-        return coder.buildFragCode();
-    }
-    getVtxShaderCode(): string {
 
-        let coder:ShaderCodeBuilder2 = PBRShaderDecorator.s_codeBuilder;
         coder.addVertHeadCode(PBRShaderCode.vert_head);
         coder.addVertMainCode(PBRShaderCode.vert_body);
 
-        return coder.buildVertCode();
+        
+        if(this.pipeline != null) {
+
+            let types: MaterialPipeType[] = [];
+            if(this.shadowReceiveEnabled) {
+                types.push( MaterialPipeType.VSM_SHADOW );
+            }
+            if(this.fogEnabled) {
+                types.push( MaterialPipeType.FOG_EXP2 );
+            }
+
+            this.pipeline.build(coder, types);
+        }
     }
-    
-    createSharedUniforms():ShaderGlobalUniform[]
-    {
+    getFragShaderCode(): string {
+        this.buildThisCode();
+        return this.codeBuilder.buildFragCode();
+    }
+    getVtxShaderCode(): string {
+        return this.codeBuilder.buildVertCode();
+    }
+
+    createSharedUniforms(): ShaderGlobalUniform[] {
         let glu: ShaderGlobalUniform;
         let list: ShaderGlobalUniform[] = [];
-        
-        if(this.lightData != null) {
+
+        if (this.lightData != null) {
             glu = this.lightData.getGlobalUinform();
             glu.uns = this.getUniqueShaderName();
             list.push(glu);
         }
-        if(this.shadowReceiveEnabled && this.vsmData != null) {
+        if (this.shadowReceiveEnabled && this.vsmData != null) {
             glu = this.vsmData.getGlobalUinform();
             glu.uns = this.getUniqueShaderName();
             list.push(glu);
         }
-        if(this.fogEnabled && this.envData != null) {
+        if (this.fogEnabled && this.envData != null) {
             glu = this.envData.getGlobalUinform();
             glu.uns = this.getUniqueShaderName();
             list.push(glu);
@@ -262,7 +272,7 @@ export default class PBRShaderDecorator {
 
         ns += "_T" + this.texturesTotal;
         this.m_uniqueName = ns;
-        
+
         return ns;
     }
     toString(): string {

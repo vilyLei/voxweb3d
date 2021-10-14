@@ -307,7 +307,7 @@
 
 //  import {DemoCamera as Demo} from "./demo/DemoCamera";
 
-import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
+//  import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
 
 //  import {DemoCameraPath as Demo} from "./demo/DemoCameraPath";
 
@@ -366,7 +366,7 @@ import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
 
 //  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
-//  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
+import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
 //  import {DemoRawDracoViewer as Demo} from "./pbr/DemoRawDracoViewer";
 

@@ -9,8 +9,10 @@ import UniformConst from "../../vox/material/UniformConst";
 import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
 import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
+
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 import { IMaterialPipe } from "../../vox/material/pipeline/IMaterialPipe";
+
 import { EnvShaderCode } from "../material/EnvShaderCode";
 
 export default class EnvLightData implements IMaterialPipe {
@@ -76,25 +78,7 @@ export default class EnvLightData implements IMaterialPipe {
 
                     shaderBuilder.addFragUniformParam(UniformConst.EnvLightParams);
                     if (pipeType != MaterialPipeType.ENV_LIGHT_PARAM) {
-                        this.useFogData(shaderBuilder, pipeType == MaterialPipeType.FOG_EXP2);
-                        shaderBuilder.addFragMainCode(
-                            `
-        #ifdef VOX_USE_FOG
-        useFog( FragColor0.rgb );
-
-        #endif               
-`
-                        );
-                        shaderBuilder.addVertMainCode(
-                            `
-    #ifdef VOX_USE_FOG
-
-    calcFogDepth(viewPos);
-
-    #endif                
-`
-                        );
-
+                        this.useFogData(shaderBuilder, pipeType == MaterialPipeType.FOG_EXP2, true);
                     }
                     break;
                 default:
@@ -111,19 +95,23 @@ export default class EnvLightData implements IMaterialPipe {
         }
     }
 
-    private useFogData(shaderBuilder: IShaderCodeBuilder, fogExp2Enabled: boolean): void {
+    private useFogData(shaderBuilder: IShaderCodeBuilder, fogExp2Enabled: boolean, autoAppendShd: boolean): void {
         shaderBuilder.addDefine("VOX_USE_FOG", "1");
         if (fogExp2Enabled) {
             shaderBuilder.addDefine("VOX_FOG_EXP2", "1");
         }
         shaderBuilder.addVarying("float", "v_fogDepth");
-        shaderBuilder.addFragFunction(EnvShaderCode.frag_head);
-        shaderBuilder.addVertFunction(EnvShaderCode.vert_head);
+        if(autoAppendShd) {
+            shaderBuilder.addShaderObject( EnvShaderCode );
+        }
+        else {
+            shaderBuilder.addShaderObjectHead( EnvShaderCode );
+        }
     }
     useUniformsForFog(shaderBuilder: IShaderCodeBuilder, fogExp2Enabled: boolean = true): void {
         if (this.m_uProbe != null) {
             shaderBuilder.addFragUniformParam(UniformConst.EnvLightParams);
-            this.useFogData(shaderBuilder, fogExp2Enabled);
+            this.useFogData(shaderBuilder, fogExp2Enabled, false);
         }
     }
     initialize(): void {

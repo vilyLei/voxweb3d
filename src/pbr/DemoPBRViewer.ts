@@ -30,6 +30,8 @@ import {DracoWholeModuleLoader} from "../voxmesh/draco/DracoModuleLoader";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import ThreadSystem from "../thread/ThreadSystem";
 
+import { MaterialPipeline } from "../vox/material/pipeline/MaterialPipeline";
+
 export class ViewerDracoModule extends DracoWholeModuleLoader
 {
     
@@ -38,6 +40,7 @@ export class ViewerDracoModule extends DracoWholeModuleLoader
     aoMapEnabled: boolean = false;
     envMap: TextureProxy;
     viewer: DemoPBRViewer;
+    pipeline: MaterialPipeline;
     constructor() {
         super();
     }
@@ -71,7 +74,7 @@ export class ViewerDracoModule extends DracoWholeModuleLoader
 
         let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6;        
         let material: PBRMaterial = this.viewer.createMaterial(uvscale,uvscale);
-        
+        material.setMaterialPipeline( this.pipeline );
         texList[1] = this.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg");
         texList[2] = this.getImageTexByUrl("static/assets/modules/skirt/normal.jpg");
         texList[3] = this.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
@@ -117,6 +120,8 @@ export class DemoPBRViewer {
     private m_envData: EnvLightData = null;
     private m_envMap: TextureProxy = null;
     
+    private m_pipeline: MaterialPipeline = new MaterialPipeline();
+
     fogEnabled: boolean = true;
     hdrBrnEnabled: boolean = true;
     vtxFlatNormal: boolean = false;
@@ -193,11 +198,14 @@ export class DemoPBRViewer {
             this.m_envData.setFogDensity(0.0001);
             this.m_envData.setFogColorRGB3f(0.0,0.8,0.1);
 
+            this.m_pipeline.addPipe( this.m_envData );
+
             this.createEntity();
 
             
             this.m_dracoMeshLoader.initialize(2);
             this.m_dracoModule = new ViewerDracoModule();
+            this.m_dracoModule.pipeline = this.m_pipeline;
             this.m_dracoModule.texLoader = this.m_texLoader;
             this.m_dracoModule.viewer = this;
             this.m_dracoModule.envMap = this.m_envMap;
@@ -274,8 +282,8 @@ export class DemoPBRViewer {
     private createEntity(): void {
 
         let axis: Axis3DEntity = new Axis3DEntity();
-        axis.initialize(300.0);
-        this.m_rscene.addEntity(axis);
+        //  axis.initialize(300.0);
+        //  this.m_rscene.addEntity(axis);
 
         
         let texList: TextureProxy[] = [];
@@ -294,7 +302,7 @@ export class DemoPBRViewer {
         let dis: number = 500.0;
         let posList: Vector3D[] = [];
         let beginV:Vector3D = new Vector3D(-disSize, 0.0, -disSize);
-        
+        return;
         let rn: number = 4;
         let cn: number = 4;
         for(let i: number = 0; i < rn; ++i) {
@@ -308,6 +316,7 @@ export class DemoPBRViewer {
         let material: PBRMaterial;
         let sph: Sphere3DEntity;
         material = this.createMaterial(1,1);
+        material.setMaterialPipeline( this.m_pipeline );
         material.decorator.aoMapEnabled = this.aoMapEnabled;
         material.setTextureList(texList);
         let srcSph = new Sphere3DEntity();

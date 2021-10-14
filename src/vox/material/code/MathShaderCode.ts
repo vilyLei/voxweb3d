@@ -19,14 +19,12 @@ export default class MathShaderCode
 // 1.5707963267948966
 #define MATH_1PER2PI 1.57079633
 
-float getRadianByXY(float dx, float dy)
-{
-if(abs(dx) < 0.00001)
-{
-return (dy >= 0.0) ? MATH_1PER2PI : MATH_3PER2PI;
-}
-float rad = atan(dy/dx);
-return dx >= 0.0 ? rad:(MATH_PI+rad);
+float getRadianByXY(float dx, float dy) {
+    if(abs(dx) < 0.00001) {
+        return (dy >= 0.0) ? MATH_1PER2PI : MATH_3PER2PI;
+    }
+    float rad = atan(dy/dx);
+    return dx >= 0.0 ? rad:(MATH_PI+rad);
 }
 `;
         return shdCode;
