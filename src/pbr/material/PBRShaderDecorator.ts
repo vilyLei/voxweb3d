@@ -178,9 +178,9 @@ export default class PBRShaderDecorator {
             coder.addFragUniformParam(UniformConst.StageParam);
             coder.addFragUniform("vec4", "u_mirrorParams", 2);
         }
-        // if (lightsTotal > 0) {
-        //     this.lightData.useUniforms(coder);
-        // }
+        if (lightsTotal > 0) {
+            this.lightData.useUniforms(coder);
+        }
         // if (this.fogEnabled && this.envData != null) {
         //     this.envData.useUniformsForFog(coder);
         // }
@@ -194,6 +194,10 @@ export default class PBRShaderDecorator {
         //     this.vsmData.useUniforms(coder);
         //     coder.addTextureSample2D("VOX_VSM_MAP", false);
         // }
+        if (this.shadowReceiveEnabled) {
+            coder.addTextureSample2D("VOX_VSM_MAP", false);
+        }
+
         coder.addShaderObject( PBRShaderCode );
 
         if(this.pipeline != null) {

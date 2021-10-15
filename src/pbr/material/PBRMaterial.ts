@@ -142,6 +142,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     clone(): PBRMaterial {
 
         let dst: PBRMaterial = new PBRMaterial();
+        dst.setMaterialPipeline(this.m_pipeLine);
         if(dst.decorator == null)dst.decorator = new PBRShaderDecorator();
         dst.decorator.copyFrom( this.decorator );
         dst.decorator.initialize();

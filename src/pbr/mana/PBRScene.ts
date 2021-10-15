@@ -116,6 +116,9 @@ export default class PBRScene
             this.m_envData.setFogDensity(0.0001);
             this.m_envData.setFogColorRGB3f(0.0,0.8,0.1);
 
+            this.m_materialBuilder.pipeline.addPipe( this.m_envData );
+            this.m_materialBuilder.pipeline.addPipe( this.m_vsmModule.getVSMData() );
+
             this.m_mirrorRprIndex = 3;
             
             this.m_mirrorEffector = new PBRMirror(1);

@@ -12,12 +12,16 @@ import { TextureConst } from "../../vox/texture/TextureConst";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import GlobalLightData from "../../light/base/GlobalLightData";
 
+import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
+
 export default class PBRMaterialBuilder {
 
     texLoader: ImageTextureLoader = null;
     lightData: GlobalLightData = null;
     hdrBrnEnabled: boolean = false;
     vtxFlatNormal: boolean = false;
+
+    pipeline:MaterialPipeline = new MaterialPipeline();
     constructor() {
     }
 
@@ -28,9 +32,13 @@ export default class PBRMaterialBuilder {
         return ptex;
     }
     makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {
+
         let material: PBRMaterial = new PBRMaterial();
+        material.setMaterialPipeline( this.pipeline );
+
         material.decorator = new PBRShaderDecorator();
         material.decorator.lightData = this.lightData;
+
         let decorator: PBRShaderDecorator = material.decorator;
 
         decorator.woolEnabled = true;
@@ -44,7 +52,6 @@ export default class PBRMaterialBuilder {
         decorator.hdrBrnEnabled = this.hdrBrnEnabled;
         decorator.vtxFlatNormal = this.vtxFlatNormal;
         
-
         material.setMetallic(metallic);
         material.setRoughness(roughness);
         material.setAO(ao);
