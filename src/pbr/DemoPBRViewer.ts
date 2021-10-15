@@ -198,6 +198,7 @@ export class DemoPBRViewer {
             this.m_envData.setFogDensity(0.0001);
             this.m_envData.setFogColorRGB3f(0.0,0.8,0.1);
 
+            this.m_pipeline.addPipe( this.m_lightData );
             this.m_pipeline.addPipe( this.m_envData );
             this.m_pipeline.addPipe( this.m_lightData );
 
@@ -303,7 +304,7 @@ export class DemoPBRViewer {
         let dis: number = 500.0;
         let posList: Vector3D[] = [];
         let beginV:Vector3D = new Vector3D(-disSize, 0.0, -disSize);
-        return;
+
         let rn: number = 4;
         let cn: number = 4;
         for(let i: number = 0; i < rn; ++i) {

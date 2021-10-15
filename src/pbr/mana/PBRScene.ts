@@ -107,7 +107,7 @@ export default class PBRScene
             this.m_vsmModule.setShadowBias(-0.0005);
             this.m_vsmModule.initialize(this.m_rscene, [0,1], 3000);
             this.m_vsmModule.setShadowIntensity(0.95);
-            this.m_vsmModule.setColorIntensity(0.4);       
+            this.m_vsmModule.setColorIntensity(0.4);
 
             this.m_envData = new EnvLightData();
             this.m_envData.initialize();
@@ -116,6 +116,7 @@ export default class PBRScene
             this.m_envData.setFogDensity(0.0001);
             this.m_envData.setFogColorRGB3f(0.0,0.8,0.1);
 
+            this.m_materialBuilder.pipeline.addPipe( this.m_lightData );
             this.m_materialBuilder.pipeline.addPipe( this.m_envData );
             this.m_materialBuilder.pipeline.addPipe( this.m_vsmModule.getVSMData() );
 

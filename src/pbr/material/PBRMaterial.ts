@@ -14,7 +14,7 @@ import IPBRMaterial from "./IPBRMaterial";
 import PBRShaderDecorator from "./PBRShaderDecorator";
 import Color4 from "../../vox/material/Color4";
 
-import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
+import ShaderUniform from "../../vox/material/ShaderUniform";
 import GlobalLightData from "../../light/base/GlobalLightData";
 import ShadowVSMData from "../../shadow/vsm/material/ShadowVSMData";
 import EnvLightData from "../../light/base/EnvLightData";
@@ -319,7 +319,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         this.m_camPos[1] = pos.y;
         this.m_camPos[2] = pos.z;
     }
-    createSharedUniforms():ShaderGlobalUniform[]
+    createSharedUniforms():ShaderUniform[]
     {
         return this.decorator.createSharedUniforms();
     }

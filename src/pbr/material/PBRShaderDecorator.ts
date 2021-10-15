@@ -12,7 +12,7 @@ import GlobalLightData from "../../light/base/GlobalLightData";
 import ShadowVSMData from "../../shadow/vsm/material/ShadowVSMData";
 import EnvLightData from "../../light/base/EnvLightData";
 import UniformConst from "../../vox/material/UniformConst";
-import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
+import ShaderUniform from "../../vox/material/ShaderUniform";
 import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 
@@ -178,22 +178,12 @@ export default class PBRShaderDecorator {
             coder.addFragUniformParam(UniformConst.StageParam);
             coder.addFragUniform("vec4", "u_mirrorParams", 2);
         }
-        if (lightsTotal > 0) {
-            this.lightData.useUniforms(coder);
-        }
-        // if (this.fogEnabled && this.envData != null) {
-        //     this.envData.useUniformsForFog(coder);
-        // }
-
         coder.vertMatrixInverseEnabled = true;
 
         coder.useVertSpaceMats(true, true, true);
 
         coder.addFragOutput("vec4", "FragColor0");
-        // if (this.shadowReceiveEnabled && this.vsmData != null) {
-        //     this.vsmData.useUniforms(coder);
-        //     coder.addTextureSample2D("VOX_VSM_MAP", false);
-        // }
+
         if (this.shadowReceiveEnabled) {
             coder.addTextureSample2D("VOX_VSM_MAP", false);
         }
@@ -224,9 +214,9 @@ export default class PBRShaderDecorator {
         return this.codeBuilder.buildVertCode();
     }
 
-    createSharedUniforms(): ShaderGlobalUniform[] {
-        let glu: ShaderGlobalUniform;
-        let list: ShaderGlobalUniform[] = [];
+    createSharedUniforms(): ShaderUniform[] {
+        let glu: ShaderUniform;
+        let list: ShaderUniform[] = [];
 
         if (this.lightData != null) {
             glu = this.lightData.getGlobalUinform();
