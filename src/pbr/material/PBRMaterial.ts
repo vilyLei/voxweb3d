@@ -319,10 +319,6 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         this.m_camPos[1] = pos.y;
         this.m_camPos[2] = pos.z;
     }
-    createSharedUniforms():ShaderUniform[]
-    {
-        return this.decorator.createSharedUniforms();
-    }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
         oum.uniformNameList = ["u_albedo", "u_params", "u_camPos", "u_paramLocal", "u_mirrorParams"];
