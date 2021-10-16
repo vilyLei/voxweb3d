@@ -342,7 +342,7 @@
 
 //  import {DemoVSM as Demo} from "./shadow/vsm/DemoVSM";
 
-import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
+//  import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
 
 //  import {DemoSSAO as Demo} from "./shadow/ssao/DemoSSAO";
 
@@ -390,6 +390,12 @@ import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
 
 //  import {EasyRoad as Demo} from "./app/EasyRoad";
 
+import {DemoLoader as Demo} from "./app/DemoLoader";
+document.title = "Vox APP";
+let loader: Demo = new Demo();
+loader.initialize();
+
+
 //  import {DensityStatistics as Demo} from "./app/density/DensityStatistics";
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -422,6 +428,7 @@ import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
 //  import {PlayerOne as Demo} from "./distribution/rendererIsolate/PlayerOne";
 
 ///////////////////////////////////////////////////////////////////////////////
+/*
 document.title = "Vox APP";
 let demoIns: Demo = new Demo();
 let ins: any = demoIns;
@@ -455,3 +462,4 @@ else {
     //
     main2();
 }
+//*/

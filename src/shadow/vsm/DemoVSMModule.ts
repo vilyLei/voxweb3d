@@ -258,7 +258,7 @@ export class DemoVSMModule {
     run(): void {
 
         this.m_sphPos.x = 300.0 * Math.sin(this.m_sphPos.w);
-        this.m_sphPos.w += 0.1;
+        this.m_sphPos.w += 0.05;
         this.m_sphEntity.setPosition( this.m_sphPos );
         this.m_sphEntity.update();
 
