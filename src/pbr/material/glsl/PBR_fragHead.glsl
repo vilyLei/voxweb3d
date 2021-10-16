@@ -7,7 +7,6 @@
 #define EPSILON 1e-6
 
 const vec3 vec3One = vec3(1.0);
-//const vec3 vec3_Z = vec3(0.0,0.0,1.0);
 // ----------------------------------------------------------------------------
 
 // handy value clamping to 0 - 1 range
@@ -18,16 +17,14 @@ const vec3 vec3One = vec3(1.0);
 const vec3 vec3Gamma = vec3(VOX_GAMMA);
 const vec3 vec3ReciprocalGamma = vec3(1.0 / VOX_GAMMA);
 
-vec3 gammaToLinear(vec3 color) 
-{
+vec3 gammaToLinear(vec3 color) {
     #ifdef VOX_GAMMA_CORRECTION
 	    return pow(color, vec3Gamma);
     #else
         return color;
     #endif
 }
-vec3 linearToGamma(vec3 color) 
-{ 
+vec3 linearToGamma(vec3 color) { 
     #ifdef VOX_GAMMA_CORRECTION
 	    return pow(color, vec3ReciprocalGamma); 
     #else
@@ -74,22 +71,19 @@ vec3 accurateLinearToSRGB(vec3 linearColor) {
 
 // Trowbridge-Reitz(Generalized-Trowbridge-Reitz，GTR)
 
-float DistributionGTR1(float NdotH, float roughness)
-{
+float DistributionGTR1(float NdotH, float roughness) {
     if (roughness >= 1.0) return 1.0/PI;
     float a2 = roughness * roughness;
     float t = 1.0 + (a2 - 1.0)*NdotH*NdotH;
     return (a2 - 1.0) / (PI * log(a2) *t);
 }
-float distributionGTR2(float NdotH, float roughness)
-{
+float distributionGTR2(float NdotH, float roughness) {
     float a2 = roughness * roughness;
     float t = 1.0 + (a2 - 1.0) * NdotH * NdotH;
     return a2 / (PI * t * t);
 }
 
-float distributionGGX(vec3 N, vec3 H, float roughness)
-{
+float distributionGGX(vec3 N, vec3 H, float roughness) {
     float a = roughness*roughness;
     float a2 = a*a;
     float NdotH = max(dot(N, H), 0.0);
@@ -119,8 +113,7 @@ float geometrySchlickGGX(float NdotV, float roughness)
     return nom / denom;
 }
 // ----------------------------------------------------------------------------
-float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
-{
+float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness) {
     float NdotV = max(dot(N, V), 0.0);
     float dotNL = max(dot(N, L), 0.0); 
     float ggx2 = geometrySchlickGGX(NdotV, roughness);
@@ -130,24 +123,20 @@ float geometrySmith(vec3 N, vec3 V, vec3 L, float roughness)
 }
 // ----------------------------------------------------------------------------
 // @param cosTheta is clamp(dot(H, V), 0.0, 1.0)
-vec3 fresnelSchlick(float cosTheta, vec3 F0)
-{
+vec3 fresnelSchlick(float cosTheta, vec3 F0) {
     return F0 + (1.0 - F0) * pow(max(1.0 - cosTheta, 0.0), 5.0);
 }
-vec3 fresnelSchlick2(vec3 specularColor, vec3 L, vec3 H)
-{
+vec3 fresnelSchlick2(vec3 specularColor, vec3 L, vec3 H) {
    return specularColor + (1.0 - specularColor) * pow(1.0 - saturate(dot(L, H)), 5.0);
 }
 //fresnelSchlick2(specularColor, L, H) * ((SpecularPower + 2) / 8 ) * pow(saturate(dot(N, H)), SpecularPower) * dotNL;
 
 #define  OneOnLN2_x6 8.656171// == 1/ln(2) * 6 (6 is SpecularPower of 5 + 1)
 // dot: dot(N,V) or dot(H,V)
-vec3 fresnelSchlick3(vec3 specularColor, float dot, float glossiness)
-{
+vec3 fresnelSchlick3(vec3 specularColor, float dot, float glossiness) {
 	return specularColor + (max(vec3(glossiness), specularColor) - specularColor) * exp2(-OneOnLN2_x6 * dot); 
 }
-vec3 fresnelSchlickWithRoughness(vec3 specularColor, vec3 L, vec3 N, float gloss)
-{
+vec3 fresnelSchlickWithRoughness(vec3 specularColor, vec3 L, vec3 N, float gloss) {
    return specularColor + (max(vec3(gloss), specularColor) - specularColor) * pow(1.0 - saturate(dot(L, N)), 5.0);
 }
 
@@ -161,8 +150,7 @@ float computeSpecularOcclusion( const in float dotNV, const in float ambientOccl
 
 }
 
-vec3 acesToneMapping(vec3 color, float adapted_lum)
-{
+vec3 acesToneMapping(vec3 color, float adapted_lum) {
 	const float A = 2.51;
 	const float B = 0.03;
 	const float C = 2.43;
@@ -174,27 +162,22 @@ vec3 acesToneMapping(vec3 color, float adapted_lum)
 }
 
 //color = color / (color + vec3One);
-vec3 reinhard(vec3 v)
-{
+vec3 reinhard(vec3 v) {
     return v / (vec3One + v);
 }
-vec3 reinhard_extended(vec3 v, float max_white)
-{
+vec3 reinhard_extended(vec3 v, float max_white) {
     vec3 numerator = v * (1.0 + (v / vec3(max_white * max_white)));
     return numerator / (1.0 + v);
 }
-float luminance(vec3 v)
-{
+float luminance(vec3 v) {
     return dot(v, vec3(0.2126, 0.7152, 0.0722));
 }
 
-vec3 change_luminance(vec3 c_in, float l_out)
-{
+vec3 change_luminance(vec3 c_in, float l_out) {
     float l_in = luminance(c_in);
     return c_in * (l_out / l_in);
 }
-vec3 reinhard_extended_luminance(vec3 v, float max_white_l)
-{
+vec3 reinhard_extended_luminance(vec3 v, float max_white_l) {
     float l_old = luminance(v);
     float numerator = l_old * (1.0 + (l_old / (max_white_l * max_white_l)));
     float l_new = numerator / (1.0 + l_old);

@@ -21,16 +21,3 @@
         v_uv.xy = a_uvs.xy * u_paramLocal[1].xy;
 
     #endif
-    /*
-    #ifdef VOX_USE_SHADOW
-
-        calcShadowPos( viewPosition );
-
-    #endif
-    
-    #ifdef VOX_USE_FOG
-
-    calcFogDepth( viewPosition );
-
-    #endif
-    //*/

@@ -113,7 +113,7 @@
         }
     #endif
     // parallel light process
-    #if VOX_PARALLEL_LIGHTS_TOTAL > 0
+    #if VOX_DIRECTION_LIGHTS_TOTAL > 0
         for(int i = VOX_POINT_LIGHTS_TOTAL; i < VOX_LIGHTS_TOTAL; ++i) 
         {
             // calculate per-light radiance
@@ -180,19 +180,4 @@
         factorY = mix(1.0, factorY, glossinessSquare);
         color.xyz = mix(mirrorColor4.xyz, color.xyz, factorY);
     #endif
-    
-/*
-    #ifdef VOX_USE_SHADOW
-
-    float factor = getVSMShadowFactor(v_shadowPos);
-    color *= vec3(factor);
-    
-    #endif
-    
-    #ifdef VOX_USE_FOG
-
-    useFog( color );
-
-    #endif
-//*/
     FragColor0 = vec4(color, 1.0);

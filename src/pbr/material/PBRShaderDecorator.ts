@@ -16,13 +16,13 @@ export default class PBRShaderDecorator {
     constructor() {
     }
 
-    codeBuilder: ShaderCodeBuilder2 = null;
-    pipeline: MaterialPipeline = null;
-
     private m_uniqueName: string = "PBRShd";
     private m_has2DMap: boolean = false;
     private m_pipeTypes: MaterialPipeType[] = null;
     private m_keysString: string = "";
+
+    codeBuilder: ShaderCodeBuilder2 = null;
+    pipeline: MaterialPipeline = null;
 
     woolEnabled: boolean = true;
     toneMappingEnabled: boolean = true;

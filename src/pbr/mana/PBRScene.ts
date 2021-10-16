@@ -62,21 +62,21 @@ export default class PBRScene
             loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
             this.m_envMap = loader.texture;
 
-            let lightModule: DefaultPBRLight = new DefaultPBRLight();
-            lightModule.create(4, 2);
+            //  let lightModule: DefaultPBRLight = new DefaultPBRLight();
+            //  lightModule.create(4, 2);
 
             this.m_materialBuilder = new PBRMaterialBuilder();
             this.m_materialBuilder.hdrBrnEnabled = this.hdrBrnEnabled;
             this.m_materialBuilder.vtxFlatNormal = this.vtxFlatNormal;
 
-            this.m_lightData.initialize(4, 2);
+            this.m_lightData.initialize(0, 2);
             this.m_lightData.buildData();
 
             this.m_materialBuilder.lightData = this.m_lightData;
             this.m_materialBuilder.texLoader = this.m_texLoader;
 
             // for test
-            let posList: Vector3D[] = lightModule.getPointList();
+            let posList: Vector3D[] = this.m_lightData.getPointList();
             if (posList != null) {
                 let tot: number = posList.length;
                 tot = 0;

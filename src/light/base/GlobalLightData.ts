@@ -133,8 +133,8 @@ export default class GlobalLightData implements IMaterialPipe{
             let lightsTotal: number = this.getPointLightsTotal() + this.getDirecLightsTotal();
             if (this.getPointLightsTotal() > 0) shaderBuilder.addDefine("VOX_POINT_LIGHTS_TOTAL", "" + this.getPointLightsTotal());
             else shaderBuilder.addDefine("VOX_POINT_LIGHTS_TOTAL", "0");
-            if (this.getDirecLightsTotal() > 0) shaderBuilder.addDefine("VOX_PARALLEL_LIGHTS_TOTAL", "" + this.getDirecLightsTotal());
-            else shaderBuilder.addDefine("VOX_PARALLEL_LIGHTS_TOTAL", "0");
+            if (this.getDirecLightsTotal() > 0) shaderBuilder.addDefine("VOX_DIRECTION_LIGHTS_TOTAL", "" + this.getDirecLightsTotal());
+            else shaderBuilder.addDefine("VOX_DIRECTION_LIGHTS_TOTAL", "0");
             if (lightsTotal > 0) shaderBuilder.addDefine("VOX_LIGHTS_TOTAL", "" + lightsTotal);
             else shaderBuilder.addDefine("VOX_LIGHTS_TOTAL", "0");
 

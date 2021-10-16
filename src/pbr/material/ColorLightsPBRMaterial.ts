@@ -74,8 +74,8 @@ precision highp float;
         let lightsTotal: number = this.pointLightsTotal + this.parallelLightsTotal;
         if(this.pointLightsTotal > 0) fragCode += "\n#define VOX_POINT_LIGHTS_TOTAL " + this.pointLightsTotal;
         else fragCode += "\n#define VOX_POINT_LIGHTS_TOTAL 0";
-        if(this.parallelLightsTotal > 0) fragCode += "\n#define VOX_PARALLEL_LIGHTS_TOTAL " + this.parallelLightsTotal;
-        else fragCode += "\n#define VOX_PARALLEL_LIGHTS_TOTAL 0";
+        if(this.parallelLightsTotal > 0) fragCode += "\n#define VOX_DIRECTION_LIGHTS_TOTAL " + this.parallelLightsTotal;
+        else fragCode += "\n#define VOX_DIRECTION_LIGHTS_TOTAL 0";
         if(lightsTotal > 0) fragCode += "\n#define VOX_LIGHTS_TOTAL " + lightsTotal;
         else fragCode += "\n#define VOX_LIGHTS_TOTAL 0";
 

@@ -49,7 +49,7 @@ class MaterialPipeline {
     
     createKeys(pipetypes: MaterialPipeType[]):void {
 
-        console.log("#### MaterialPipeline::createKeys(), pipetypes: ",pipetypes);
+        //console.log("#### MaterialPipeline::createKeys(), pipetypes: ",pipetypes);
 
         this.m_sharedUniforms = [];
         this.m_keys = [];
@@ -69,7 +69,7 @@ class MaterialPipeline {
     }
     build(shaderBuilder: IShaderCodeBuilder, pipetypes: MaterialPipeType[]):void {
 
-        console.log("#### MaterialPipeline::build(), pipetypes: ",pipetypes);
+        //console.log("#### MaterialPipeline::build(), pipetypes: ",pipetypes);
 
         this.m_sharedUniforms = [];        
         //this.m_keys = [];
@@ -109,7 +109,6 @@ class MaterialPipeline {
         return str;
     }
     reset(): void {
-        
     }
     
 }

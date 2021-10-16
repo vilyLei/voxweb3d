@@ -98,7 +98,7 @@ void main()
         }
     #endif
     // parallel light process
-    #if VOX_PARALLEL_LIGHTS_TOTAL > 0
+    #if VOX_DIRECTION_LIGHTS_TOTAL > 0
         for(int i = VOX_POINT_LIGHTS_TOTAL; i < VOX_LIGHTS_TOTAL; ++i) 
         {
             // calculate per-light radiance
