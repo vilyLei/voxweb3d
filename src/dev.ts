@@ -94,7 +94,7 @@
 //  import * as DemoScreenPingpongBlur from "./demo/DemoScreenPingpongBlur";
 //  import Demo = DemoScreenPingpongBlur.demo.DemoScreenPingpongBlur;
 
-//  import {DemoDepthBlur as Demo} from "./demo/DemoDepthBlur";
+import {DemoDepthBlur as Demo} from "./demo/DemoDepthBlur";
 
 //  import * as DemoDepthBlur2 from "./demo/DemoDepthBlur2";
 //  import Demo = DemoDepthBlur2.demo.DemoDepthBlur2;
@@ -390,11 +390,15 @@
 
 //  import {EasyRoad as Demo} from "./app/EasyRoad";
 
-import {DemoLoader as Demo} from "./app/DemoLoader";
-document.title = "Vox APP";
-let loader: Demo = new Demo();
-loader.initialize();
+// import {Home as Demo} from "./app/Home";
+// document.title = "Vox APP";
+// let loader: Demo = new Demo();
+// loader.initialize();
 
+// import {Home as Demo} from "./app/Home";
+// document.title = "Vox APP";
+// let home: Demo = new Demo();
+// home.initialize();
 
 //  import {DensityStatistics as Demo} from "./app/density/DensityStatistics";
 
@@ -428,7 +432,7 @@ loader.initialize();
 //  import {PlayerOne as Demo} from "./distribution/rendererIsolate/PlayerOne";
 
 ///////////////////////////////////////////////////////////////////////////////
-/*
+///*
 document.title = "Vox APP";
 let demoIns: Demo = new Demo();
 let ins: any = demoIns;
