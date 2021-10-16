@@ -37,7 +37,6 @@ export default class PBRMaterialBuilder {
         material.setMaterialPipeline( this.pipeline );
 
         material.decorator = new PBRShaderDecorator();
-        material.decorator.lightData = this.lightData;
 
         let decorator: PBRShaderDecorator = material.decorator;
 

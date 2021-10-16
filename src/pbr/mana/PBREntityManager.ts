@@ -181,7 +181,7 @@ export default class PBREntityManager
         material.decorator.vtxFlatNormal = false;
         material.decorator.aoMapEnabled = false;
         material.decorator.shadowReceiveEnabled = false;
-        material.decorator.lightData = null;
+        
         material.setRoughness(0.4);
         let texList: TextureProxy[] = this.m_entityUtils.createTexListForMaterial(material, this.m_envMap, this.m_entityUtils.getImageTexByUrl("static/assets/noise.jpg"));
         material.setTextureList(texList);

@@ -8,11 +8,7 @@
 import { PBRShaderCode } from "./glsl/PBRShaderCode";
 
 import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
-import GlobalLightData from "../../light/base/GlobalLightData";
-import ShadowVSMData from "../../shadow/vsm/material/ShadowVSMData";
-import EnvLightData from "../../light/base/EnvLightData";
 import UniformConst from "../../vox/material/UniformConst";
-import ShaderUniform from "../../vox/material/ShaderUniform";
 import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 
@@ -25,6 +21,8 @@ export default class PBRShaderDecorator {
 
     private m_uniqueName: string = "PBRShd";
     private m_has2DMap: boolean = false;
+    private m_pipeTypes: MaterialPipeType[] = null;
+    private m_keysString: string = "";
 
     woolEnabled: boolean = true;
     toneMappingEnabled: boolean = true;
@@ -47,22 +45,26 @@ export default class PBRShaderDecorator {
     hdrBrnEnabled: boolean = false;
     vtxFlatNormal: boolean = false;
 
-    pointLightsTotal: number = 4;
-    parallelLightsTotal: number = 0;
+    lightEnabled: boolean = true;
+
     texturesTotal: number = 1;
 
-    lightData: GlobalLightData = null;
-    vsmData: ShadowVSMData = null;
-    envData: EnvLightData = null;
-
     initialize(): void {
-        if (this.lightData != null) {
-            this.pointLightsTotal = this.lightData.getPointLightTotal();
-            this.parallelLightsTotal = this.lightData.getDirecLightTotal();
-        }
-        else {
-            this.pointLightsTotal = 0;
-            this.parallelLightsTotal = 0;
+        
+        if(this.pipeline != null) {
+
+            this.m_pipeTypes = [];
+            if (this.lightEnabled) {
+                this.m_pipeTypes.push( MaterialPipeType.GLOBAL_LIGHT );
+            }
+            if(this.shadowReceiveEnabled) {
+                this.m_pipeTypes.push( MaterialPipeType.VSM_SHADOW );
+            }
+            if(this.fogEnabled) {
+                this.m_pipeTypes.push( MaterialPipeType.FOG_EXP2 );
+            }
+            this.pipeline.createKeys(this.m_pipeTypes);
+            this.m_keysString = this.pipeline.getKeysString();
         }
     }
     copyFrom(src: PBRShaderDecorator): void {
@@ -88,13 +90,9 @@ export default class PBRShaderDecorator {
         this.hdrBrnEnabled = src.hdrBrnEnabled;
         this.vtxFlatNormal = src.vtxFlatNormal;
 
-        this.pointLightsTotal = src.pointLightsTotal;
-        this.parallelLightsTotal = src.parallelLightsTotal;
-        this.texturesTotal = src.texturesTotal;
+        this.lightEnabled = src.lightEnabled;
 
-        this.lightData = src.lightData;
-        this.vsmData = src.vsmData;
-        this.envData = src.envData;
+        this.texturesTotal = src.texturesTotal;
 
         this.m_uniqueName = src.m_uniqueName;
         this.m_has2DMap = src.m_has2DMap;
@@ -135,7 +133,6 @@ export default class PBRShaderDecorator {
             coder.addTextureSample2D("VOX_AO_MAP");
         }
 
-
         if (mirrorProjEnabled) {
             coder.addTextureSample2D("VOX_MIRROR_PROJ_MAP");
         }
@@ -146,14 +143,6 @@ export default class PBRShaderDecorator {
         if (this.mirrorMapLodEnabled) coder.addDefine("VOX_MIRROR_MAP_LOD", "1");
         if (this.hdrBrnEnabled) coder.addDefine("VOX_HDR_BRN", "1");
         if (this.vtxFlatNormal) coder.addDefine("VOX_VTX_FLAT_NORMAL", "1");
-
-        let lightsTotal: number = this.pointLightsTotal + this.parallelLightsTotal;
-        if (this.pointLightsTotal > 0) coder.addDefine("VOX_POINT_LIGHTS_TOTAL", "" + this.pointLightsTotal);
-        else coder.addDefine("VOX_POINT_LIGHTS_TOTAL", "0");
-        if (this.parallelLightsTotal > 0) coder.addDefine("VOX_PARALLEL_LIGHTS_TOTAL", "" + this.parallelLightsTotal);
-        else coder.addDefine("VOX_PARALLEL_LIGHTS_TOTAL", "0");
-        if (lightsTotal > 0) coder.addDefine("VOX_LIGHTS_TOTAL", "" + lightsTotal);
-        else coder.addDefine("VOX_LIGHTS_TOTAL", "0");
 
         coder.addVertLayout("vec3", "a_vs");
 
@@ -191,19 +180,7 @@ export default class PBRShaderDecorator {
         coder.addShaderObject( PBRShaderCode );
 
         if(this.pipeline != null) {
-
-            let types: MaterialPipeType[] = [];
-            if (lightsTotal > 0) {
-                types.push( MaterialPipeType.GLOBAL_LIGHT );
-            }
-            if(this.shadowReceiveEnabled) {
-                types.push( MaterialPipeType.VSM_SHADOW );
-            }
-            if(this.fogEnabled) {
-                types.push( MaterialPipeType.FOG_EXP2 );
-            }
-
-            this.pipeline.build(coder, types);
+            this.pipeline.build(coder, this.m_pipeTypes);
         }
     }
     getFragShaderCode(): string {
@@ -212,28 +189,6 @@ export default class PBRShaderDecorator {
     }
     getVtxShaderCode(): string {
         return this.codeBuilder.buildVertCode();
-    }
-
-    createSharedUniforms(): ShaderUniform[] {
-        let glu: ShaderUniform;
-        let list: ShaderUniform[] = [];
-
-        if (this.lightData != null) {
-            glu = this.lightData.getGlobalUinform();
-            glu.uns = this.getUniqueShaderName();
-            list.push(glu);
-        }
-        if (this.shadowReceiveEnabled && this.vsmData != null) {
-            glu = this.vsmData.getGlobalUinform();
-            glu.uns = this.getUniqueShaderName();
-            list.push(glu);
-        }
-        if (this.fogEnabled && this.envData != null) {
-            glu = this.envData.getGlobalUinform();
-            glu.uns = this.getUniqueShaderName();
-            list.push(glu);
-        }
-        return list.length > 0 ? list : null;
     }
     getUniqueShaderName(): string {
 
@@ -257,9 +212,7 @@ export default class PBRShaderDecorator {
         if (this.fogEnabled) ns += "Fog";
         if (this.hdrBrnEnabled) ns += "HdrBrn";
         if (this.vtxFlatNormal) ns += "vtxFlagN";
-
-        if (this.pointLightsTotal > 0) ns += "LP" + this.pointLightsTotal;
-        if (this.parallelLightsTotal > 0) ns += "LD" + this.parallelLightsTotal;
+        ns += this.m_keysString;
 
         ns += "_T" + this.texturesTotal;
         this.m_uniqueName = ns;

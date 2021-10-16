@@ -25,6 +25,7 @@ import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 class MaterialPipeline {
 
     private m_pipeMap: Map<MaterialPipeType, IMaterialPipe> = new Map();
+    private m_keys: string[] = [];
     private m_sharedUniforms: ShaderGlobalUniform[] = null;
 
     constructor() { }
@@ -42,12 +43,36 @@ class MaterialPipeline {
     getPipeByType(type: MaterialPipeType): IMaterialPipe {
         return this.m_pipeMap.get(type);
     }
+    hasPipeByType(type: MaterialPipeType): boolean {
+        return this.m_pipeMap.has(type);
+    }
     
+    createKeys(pipetypes: MaterialPipeType[]):void {
+
+        console.log("#### MaterialPipeline::createKeys(), pipetypes: ",pipetypes);
+
+        this.m_sharedUniforms = [];
+        this.m_keys = [];
+        if(pipetypes != null) {
+
+            let pipe: IMaterialPipe;
+            let type: MaterialPipeType;
+            let types: MaterialPipeType[] = pipetypes;
+            for(let i: number = 0; i < types.length; ++i) {
+                type = types[i];
+                if(this.m_pipeMap.has(type)) {
+                    pipe = this.m_pipeMap.get( type );
+                    this.m_keys.push( pipe.getPipeKey( type ) );
+                }
+            }
+        }
+    }
     build(shaderBuilder: IShaderCodeBuilder, pipetypes: MaterialPipeType[]):void {
 
         console.log("#### MaterialPipeline::build(), pipetypes: ",pipetypes);
 
         this.m_sharedUniforms = [];        
+        //this.m_keys = [];
         if(pipetypes != null) {
 
             let pipe: IMaterialPipe;
@@ -58,6 +83,7 @@ class MaterialPipeline {
                 if(this.m_pipeMap.has(type)) {
                     pipe = this.m_pipeMap.get( type );
                     pipe.useShaderPipe(shaderBuilder, type);
+                    //this.m_keys.push( pipe.getPipeKey( type ) );
                     this.m_sharedUniforms.push( pipe.getGlobalUinform() );
                 }
             }
@@ -71,6 +97,16 @@ class MaterialPipeline {
     }
     getSelfUniformData(): ShaderUniformData {
         return null;
+    }
+    getKeys(): string[] {
+        return this.m_keys;
+    }
+    getKeysString(): string {
+        let str: string = "";
+        for(let i: number = 0; i < this.m_keys.length; ++i) {
+            str += this.m_keys[i];
+        }
+        return str;
     }
     reset(): void {
         

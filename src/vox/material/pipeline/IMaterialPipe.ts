@@ -19,5 +19,6 @@ interface IMaterialPipe {
     useShaderPipe(shaderBuilder: IShaderCodeBuilder, pipeType: MaterialPipeType): void;
     getPipeTypes(): MaterialPipeType[];
     getGlobalUinform(): ShaderGlobalUniform;
+    getPipeKey(pipeType: MaterialPipeType): string;
 }
 export {IMaterialPipe}

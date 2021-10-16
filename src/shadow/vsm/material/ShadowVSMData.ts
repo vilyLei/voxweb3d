@@ -46,7 +46,16 @@ export default class ShadowVSMData implements IMaterialPipe{
     getPipeTypes(): MaterialPipeType[] {
         return [MaterialPipeType.VSM_SHADOW];
     }
-
+    getPipeKey(pipeType: MaterialPipeType): string {
+        switch (pipeType) {
+            case MaterialPipeType.VSM_SHADOW:
+                    return "["+pipeType+"]";
+                break;
+            default:
+                break;
+        }
+        return "";
+    }
     useUniforms(shaderBuilder: IShaderCodeBuilder): void {
         if (this.m_uProbe != null) {
             shaderBuilder.addDefine("VOX_USE_SHADOW", "1");

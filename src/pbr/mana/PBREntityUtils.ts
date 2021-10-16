@@ -23,18 +23,16 @@ export default class PBREntityUtils {
     private m_materialBuilder: PBRMaterialBuilder;
     private m_cubeRTTBuilder: CubeRttBuilder;
     private m_vsmModule: ShadowVSMModule;
-    private m_envData: EnvLightData;
     private m_texList: TextureProxy[] = null;
     private m_mirrorRprIndex: number = 3;
 
     fogEnabled: boolean = true;
 
-    constructor(materialBuilder: PBRMaterialBuilder, cubeRTTBuilder: CubeRttBuilder, vsmModule: ShadowVSMModule, envData: EnvLightData) {
+    constructor(materialBuilder: PBRMaterialBuilder, cubeRTTBuilder: CubeRttBuilder, vsmModule: ShadowVSMModule) {
 
         this.m_materialBuilder = materialBuilder;
         this.m_cubeRTTBuilder = cubeRTTBuilder;
         this.m_vsmModule = vsmModule;
-        this.m_envData = envData;
     }
     initialize(rscene: RendererScene, texLoader: ImageTextureLoader, mirrorEffector: PBRMirror, mirrorRprIndex: number): void {
         if (this.m_rscene != rscene) {
@@ -63,13 +61,12 @@ export default class PBREntityUtils {
         }
         let decorator: PBRShaderDecorator = material.decorator;
         let shadowTex = this.m_vsmModule.getShadowMap();
-        let vsmData = this.m_vsmModule.getVSMData();
+        
         if (decorator.indirectEnvMapEnabled) {
             texList.push(this.m_cubeRTTBuilder.getCubeTexture());
         }
         if (decorator.shadowReceiveEnabled) {
             texList.push(shadowTex);
-            material.decorator.vsmData = vsmData;
         }
         return texList;
     }
@@ -87,7 +84,6 @@ export default class PBREntityUtils {
     createMaterial(uscale: number, vscale: number, ptexList: TextureProxy[] = null): PBRMaterial {
 
         if (ptexList == null) ptexList = this.m_texList;
-        let vsmData = this.m_vsmModule.getVSMData();
         let shadowTex = this.m_vsmModule.getShadowMap();
         let matBuilder: PBRMaterialBuilder = this.m_materialBuilder;
         let material: PBRMaterial;
@@ -109,12 +105,12 @@ export default class PBREntityUtils {
         if (decorator.shadowReceiveEnabled) {
             ptexList.push(shadowTex);
             //material.setVSMData( vsmData );
-            material.decorator.vsmData = vsmData;
+            // material.decorator.vsmData = vsmData;
         }
-        if (decorator.fogEnabled) {
-            //material.setEnvData( this.m_envData );
-            material.decorator.envData = this.m_envData;
-        }
+        // if (decorator.fogEnabled) {
+        //     //material.setEnvData( this.m_envData );
+        //     material.decorator.envData = this.m_envData;
+        // }
         material.setTextureList(ptexList);
         return material;
     }

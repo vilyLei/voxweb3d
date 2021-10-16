@@ -30,6 +30,8 @@ import {DracoWholeModuleLoader} from "../voxmesh/draco/DracoRawModuleLoader";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import ThreadSystem from "../thread/ThreadSystem";
 
+import { MaterialPipeline } from "../vox/material/pipeline/MaterialPipeline";
+
 export class ViewerDracoModule extends DracoWholeModuleLoader
 {
     
@@ -38,6 +40,8 @@ export class ViewerDracoModule extends DracoWholeModuleLoader
     aoMapEnabled: boolean = false;
     envMap: TextureProxy;
     viewer: DemoRawDracoViewer;
+    
+    pipeline: MaterialPipeline;
     constructor() {
         super();
     }
@@ -124,6 +128,8 @@ export class DemoRawDracoViewer {
     vtxFlatNormal: boolean = false;
     aoMapEnabled: boolean = false;
 
+    private m_pipeline: MaterialPipeline = new MaterialPipeline();
+
     getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
@@ -196,6 +202,9 @@ export class DemoRawDracoViewer {
             this.m_envData.setFogDensity(0.0001);
             this.m_envData.setFogColorRGB3f(0.0,0.8,0.1);
 
+            this.m_pipeline.addPipe( this.m_lightData );
+            this.m_pipeline.addPipe( this.m_envData );
+
             this.createEntity();
 
             
@@ -213,8 +222,8 @@ export class DemoRawDracoViewer {
     makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {
 
         let material: PBRMaterial = new PBRMaterial();
+        material.setMaterialPipeline( this.m_pipeline );
         material.decorator = new PBRShaderDecorator();
-        material.decorator.lightData = this.m_lightData;
 
         let decorator: PBRShaderDecorator = material.decorator;
 
@@ -251,9 +260,6 @@ export class DemoRawDracoViewer {
 
         material.setUVScale(uscale, vscale);
 
-        if (decorator.fogEnabled) {
-            material.decorator.envData = this.m_envData;
-        }
         material.setTextureList(ptexList);
         return material;
     }

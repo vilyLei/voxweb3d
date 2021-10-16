@@ -45,7 +45,7 @@ export default class MaterialBuilder {
         return material;
     }
     makeDefaultPBRMaterial2(metallic: number, roughness: number, ao: number): DefaultPBRMaterial2 {
-        let material: DefaultPBRMaterial2 = new DefaultPBRMaterial2(this.lightData.getPointLightTotal(), this.lightData.getDirecLightTotal());
+        let material: DefaultPBRMaterial2 = new DefaultPBRMaterial2(this.lightData.getPointLightsTotal(), this.lightData.getDirecLightsTotal());
         material.setMetallic(metallic);
         material.setRoughness(roughness);
         material.setAO(ao);

@@ -74,7 +74,6 @@ export class ViewerDracoModule extends DracoWholeModuleLoader
 
         let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6;        
         let material: PBRMaterial = this.viewer.createMaterial(uvscale,uvscale);
-        material.setMaterialPipeline( this.pipeline );
         texList[1] = this.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg");
         texList[2] = this.getImageTexByUrl("static/assets/modules/skirt/normal.jpg");
         texList[3] = this.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
@@ -198,7 +197,6 @@ export class DemoPBRViewer {
             this.m_envData.setFogDensity(0.0001);
             this.m_envData.setFogColorRGB3f(0.0,0.8,0.1);
 
-            this.m_pipeline.addPipe( this.m_lightData );
             this.m_pipeline.addPipe( this.m_envData );
             this.m_pipeline.addPipe( this.m_lightData );
 
@@ -220,8 +218,8 @@ export class DemoPBRViewer {
     makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {
 
         let material: PBRMaterial = new PBRMaterial();
+        material.setMaterialPipeline( this.m_pipeline );
         material.decorator = new PBRShaderDecorator();
-        material.decorator.lightData = this.m_lightData;
 
         let decorator: PBRShaderDecorator = material.decorator;
 
@@ -258,9 +256,9 @@ export class DemoPBRViewer {
 
         material.setUVScale(uscale, vscale);
 
-        if (decorator.fogEnabled) {
-            material.decorator.envData = this.m_envData;
-        }
+        // if (decorator.fogEnabled) {
+        //     material.decorator.envData = this.m_envData;
+        // }
         material.setTextureList(ptexList);
         return material;
     }

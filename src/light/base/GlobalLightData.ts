@@ -43,10 +43,10 @@ export default class GlobalLightData implements IMaterialPipe{
     getPointList(): Vector3D[] {
         return this.m_pointLightPosList;
     }
-    getPointLightTotal(): number {
+    getPointLightsTotal(): number {
         return this.m_pointLightPosList.length;
     }
-    getDirecLightTotal(): number {
+    getDirecLightsTotal(): number {
         return this.m_direcLightDirecList.length;
     }
     getPositionData(): Float32Array {
@@ -129,6 +129,15 @@ export default class GlobalLightData implements IMaterialPipe{
     useShaderPipe(shaderBuilder: IShaderCodeBuilder, pipeType: MaterialPipeType): void {
 
         if (this.m_uProbe != null) {
+
+            let lightsTotal: number = this.getPointLightsTotal() + this.getDirecLightsTotal();
+            if (this.getPointLightsTotal() > 0) shaderBuilder.addDefine("VOX_POINT_LIGHTS_TOTAL", "" + this.getPointLightsTotal());
+            else shaderBuilder.addDefine("VOX_POINT_LIGHTS_TOTAL", "0");
+            if (this.getDirecLightsTotal() > 0) shaderBuilder.addDefine("VOX_PARALLEL_LIGHTS_TOTAL", "" + this.getDirecLightsTotal());
+            else shaderBuilder.addDefine("VOX_PARALLEL_LIGHTS_TOTAL", "0");
+            if (lightsTotal > 0) shaderBuilder.addDefine("VOX_LIGHTS_TOTAL", "" + lightsTotal);
+            else shaderBuilder.addDefine("VOX_LIGHTS_TOTAL", "0");
+
             shaderBuilder.addFragUniform(UniformConst.GlobalLight.type, UniformConst.GlobalLight.positionName, this.m_lightTotal);
             shaderBuilder.addFragUniform(UniformConst.GlobalLight.type, UniformConst.GlobalLight.colorName, this.m_lightTotal);
         }
@@ -136,6 +145,23 @@ export default class GlobalLightData implements IMaterialPipe{
     getPipeTypes(): MaterialPipeType[] {
         return [MaterialPipeType.GLOBAL_LIGHT];
     }
+    
+    getPipeKey(pipeType: MaterialPipeType): string {
+        switch (pipeType) {
+            case MaterialPipeType.GLOBAL_LIGHT:
+                let key: string = "";
+                if (this.getPointLightsTotal() > 0) key = "" + this.getPointLightsTotal();
+                if (this.getDirecLightsTotal() > 0) key = "" + this.getDirecLightsTotal();
+                if(key != "") {
+                    return "["+pipeType+":"+key+"]";
+                }
+                break;
+            default:
+                break;
+        }
+        return "";
+    }
+
     useUniforms(shaderBuilder: IShaderCodeBuilder): void {
         if (this.m_uProbe != null) {
             shaderBuilder.addFragUniform(UniformConst.GlobalLight.type, UniformConst.GlobalLight.positionName, this.m_lightTotal);

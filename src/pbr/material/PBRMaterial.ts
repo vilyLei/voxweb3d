@@ -14,11 +14,6 @@ import IPBRMaterial from "./IPBRMaterial";
 import PBRShaderDecorator from "./PBRShaderDecorator";
 import Color4 from "../../vox/material/Color4";
 
-import ShaderUniform from "../../vox/material/ShaderUniform";
-import GlobalLightData from "../../light/base/GlobalLightData";
-import ShadowVSMData from "../../shadow/vsm/material/ShadowVSMData";
-import EnvLightData from "../../light/base/EnvLightData";
-
 class PBRShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
@@ -89,12 +84,12 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     }
     getCodeBuf(): ShaderCodeBuffer {
         
-        this.decorator.texturesTotal = this.getTextureTotal();
-        this.decorator.initialize();
         let buf: PBRShaderBuffer = PBRShaderBuffer.GetInstance();
         buf.decorator = this.decorator;
         buf.decorator.codeBuilder = buf.getShaderCodeBuilder();
         buf.decorator.pipeline = this.m_pipeLine;
+        this.decorator.texturesTotal = this.getTextureTotal();
+        this.decorator.initialize();
         return buf;
     }
     copyFrom(dst: PBRMaterial, texEnabled:boolean = true): void {

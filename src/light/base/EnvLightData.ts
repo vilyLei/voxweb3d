@@ -89,6 +89,18 @@ export default class EnvLightData implements IMaterialPipe {
     getPipeTypes(): MaterialPipeType[] {
         return [MaterialPipeType.ENV_LIGHT_PARAM, MaterialPipeType.FOG, MaterialPipeType.FOG_EXP2];
     }
+    getPipeKey(pipeType: MaterialPipeType): string {
+        switch (pipeType) {
+            case MaterialPipeType.ENV_LIGHT_PARAM:
+            case MaterialPipeType.FOG:
+            case MaterialPipeType.FOG_EXP2:
+                return "["+pipeType+"]";
+                break;
+            default:
+                break;
+        }
+        return "";
+    }
     useUniforms(shaderBuilder: IShaderCodeBuilder): void {
         if (this.m_uProbe != null) {
             shaderBuilder.addFragUniformParam(UniformConst.EnvLightParams);

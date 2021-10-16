@@ -27,7 +27,7 @@ export class PBRMirror {
     private m_uiModule: DefaultPBRUI = null;
     private m_rprocessIDList: number[] = [0];
     private m_fboIndex: number = 1;
-    envData: EnvLightData;
+    
     reflectPlaneY: number = -220.0;
     materialBuilder: PBRMaterialBuilder;
     envMap: TextureProxy = null;
@@ -90,8 +90,6 @@ export class PBRMirror {
 
         let plane: Plane3DEntity = null;
         let material: PBRMaterial;
-
-        let vsmData = this.vsmModule.getVSMData();
         let shadowTex = this.vsmModule.getShadowMap();
 
         this.m_mirrorMapLodEnabled = true;
@@ -131,17 +129,14 @@ export class PBRMirror {
         if (decorator.shadowReceiveEnabled) {
             ptexList.push(shadowTex);
             //material.setVSMData( vsmData );
-            material.decorator.vsmData = vsmData;
+            //material.decorator.vsmData = vsmData;
         }
         material.setTextureList(ptexList);
         if (this.m_mirrorMapLodEnabled) {
             this.m_fboIns.enableMipmapRTTAt(0);
             material.setMirrorMapLodLevel(1.0);
         }
-        if (decorator.fogEnabled) {
-            //material.setEnvData( this.envData );
-            material.decorator.envData = this.envData;
-        }
+        
         material.setUVScale(3.0, 3.0);
         material.setMirrorIntensity(0.9);
         material.setMirrorMixFactor(0.2);
