@@ -11,12 +11,12 @@ import CubeRttBuilder from "../../renderingtoy/mcase/CubeRTTBuilder";
 import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
 import GlobalLightData from "../../light/base/GlobalLightData";
 import EnvLightData from "../../light/base/EnvLightData";
-import DefaultPBRLight from "../../pbr/mana/DefaultPBRLight";
 import PBREntityUtils from "../../pbr/mana/PBREntityUtils";
 import PBREntityManager from "../../pbr/mana/PBREntityManager";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
 import { SpecularTextureLoader } from "../mana/TextureLoader";
 
+import { PBRShaderCode } from "../../pbr/material/glsl/PBRShaderCode";
 
 export default class PBRScene
 {
@@ -62,20 +62,19 @@ export default class PBRScene
             loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
             this.m_envMap = loader.texture;
 
-            //  let lightModule: DefaultPBRLight = new DefaultPBRLight();
-            //  lightModule.create(4, 2);
-
             this.m_materialBuilder = new PBRMaterialBuilder();
+            this.m_materialBuilder.pipeline.addShaderCode( PBRShaderCode );
             this.m_materialBuilder.hdrBrnEnabled = this.hdrBrnEnabled;
             this.m_materialBuilder.vtxFlatNormal = this.vtxFlatNormal;
 
             this.m_lightData.initialize(0, 2);
             this.m_lightData.buildData();
 
-            this.m_materialBuilder.lightData = this.m_lightData;
-            this.m_materialBuilder.texLoader = this.m_texLoader;
+            // this.m_materialBuilder.lightData = this.m_lightData;
+            // this.m_materialBuilder.texLoader = this.m_texLoader;
 
             // for test
+            /*
             let posList: Vector3D[] = this.m_lightData.getPointList();
             if (posList != null) {
                 let tot: number = posList.length;
@@ -87,6 +86,7 @@ export default class PBRScene
                     this.m_rscene.addEntity(crossAxis, 1);
                 }
             }
+            //*/
 
             let cubeRTTMipMapEnabled: boolean = true;
             let rttPos: Vector3D = new Vector3D(0.0, 0.0, 0.0);

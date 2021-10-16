@@ -84,13 +84,13 @@ function ThreadCore() {
                     case 1:
                         if (taskSTList[param.taskclass] < 1) {
                             taskSTList[param.taskclass] = 1;
-                            // 代码直接在worker构造的blob中了,直接需要构建相关算法实例
+                            // build code from block
                         }
                         break;
                     case 2:
                         if (taskSTList[param.taskclass] < 1) {
                             taskSTList[param.taskclass] = 1;
-                            // 代码直接在字符串中, 并且是后续追加的
+                            // build code from string
                             eval(param.srccode);
                             if (param.moduleName != undefined && param.moduleName != "") {
                                 var mins = "workerIns_" + param.moduleName;

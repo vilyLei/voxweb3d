@@ -16,11 +16,11 @@ for k in range(97,123):
 	m_srcKeys.append(chr(k));
 	m_dstKeys.append(chr(k));
 	#
-for k in range(0,9):
+for k in range(0,10):
 	#print("chr: "+chr(k));
 	m_dstKeys.append(str(k));
 	#
-
+m_dstKeys.append("_");
 print("srcKeys: "+str(m_srcKeys));
 print("dstKeys: "+str(m_dstKeys));
 

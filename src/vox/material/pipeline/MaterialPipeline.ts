@@ -15,6 +15,7 @@ import {MaterialPipeType} from "./MaterialPipeType";
 
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
+import IAbstractShader from "../../../vox/material/IAbstractShader";
 
 /**
  * 材质功能组装流水线, 组装符合一个流水线系统设定的材质, 最终形成完整的shader, 以及对应的数据输入
@@ -24,12 +25,18 @@ import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
  */
 class MaterialPipeline {
 
+    private m_shaderCode: IAbstractShader = null;
     private m_pipeMap: Map<MaterialPipeType, IMaterialPipe> = new Map();
     private m_keys: string[] = [];
     private m_sharedUniforms: ShaderGlobalUniform[] = null;
 
     constructor() { }
-
+    addShaderCode(shaderCode: IAbstractShader): void {
+        this.m_shaderCode = shaderCode;
+    }
+    hasShaderCode(): boolean {
+        return this.m_shaderCode != null;
+    }
     addPipe(pipe: IMaterialPipe): void {
         
         let types: MaterialPipeType[] = pipe.getPipeTypes();
@@ -70,9 +77,10 @@ class MaterialPipeline {
     build(shaderBuilder: IShaderCodeBuilder, pipetypes: MaterialPipeType[]):void {
 
         //console.log("#### MaterialPipeline::build(), pipetypes: ",pipetypes);
-
-        this.m_sharedUniforms = [];        
-        //this.m_keys = [];
+        if(this.m_shaderCode != null) {
+            shaderBuilder.addShaderObject( this.m_shaderCode );
+        }
+        this.m_sharedUniforms = [];
         if(pipetypes != null) {
 
             let pipe: IMaterialPipe;
@@ -108,7 +116,11 @@ class MaterialPipeline {
         }
         return str;
     }
-    reset(): void {
+    clear(): void {
+        this.m_pipeMap = new Map();
+        this.m_keys = [];
+        this.m_sharedUniforms = null;
+        this.m_shaderCode = null;
     }
     
 }

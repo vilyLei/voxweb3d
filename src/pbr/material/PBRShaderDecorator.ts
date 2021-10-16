@@ -5,7 +5,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { PBRShaderCode } from "./glsl/PBRShaderCode";
 
 import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
 import UniformConst from "../../vox/material/UniformConst";
@@ -46,7 +45,6 @@ export default class PBRShaderDecorator {
     vtxFlatNormal: boolean = false;
 
     lightEnabled: boolean = true;
-
     texturesTotal: number = 1;
 
     initialize(): void {
@@ -176,9 +174,7 @@ export default class PBRShaderDecorator {
         if (this.shadowReceiveEnabled) {
             coder.addTextureSample2D("VOX_VSM_MAP", false);
         }
-
-        coder.addShaderObject( PBRShaderCode );
-
+        
         if(this.pipeline != null) {
             this.pipeline.build(coder, this.m_pipeTypes);
         }

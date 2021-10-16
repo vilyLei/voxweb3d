@@ -30,6 +30,7 @@ import {DracoWholeModuleLoader} from "../voxmesh/draco/DracoModuleLoader";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import ThreadSystem from "../thread/ThreadSystem";
 
+import { PBRShaderCode } from "../pbr/material/glsl/PBRShaderCode";
 import { MaterialPipeline } from "../vox/material/pipeline/MaterialPipeline";
 
 export class ViewerDracoModule extends DracoWholeModuleLoader
@@ -40,7 +41,6 @@ export class ViewerDracoModule extends DracoWholeModuleLoader
     aoMapEnabled: boolean = false;
     envMap: TextureProxy;
     viewer: DemoPBRViewer;
-    pipeline: MaterialPipeline;
     constructor() {
         super();
     }
@@ -114,7 +114,7 @@ export class DemoPBRViewer {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     private m_lightData: GlobalLightData = new GlobalLightData();
     private m_dracoMeshLoader: DracoMeshBuilder = new DracoMeshBuilder();
-    private m_dracoModule: ViewerDracoModule = null;//new GlobalLightData();
+    private m_dracoModule: ViewerDracoModule = null;
     private m_reflectPlaneY: number = -220;
     private m_envData: EnvLightData = null;
     private m_envMap: TextureProxy = null;
@@ -188,7 +188,6 @@ export class DemoPBRViewer {
 
             this.m_lightData.initialize(4, 2);
             this.m_lightData.buildData();
-
             
             this.m_envData = new EnvLightData();
             this.m_envData.initialize();
@@ -197,6 +196,7 @@ export class DemoPBRViewer {
             this.m_envData.setFogDensity(0.0001);
             this.m_envData.setFogColorRGB3f(0.0,0.8,0.1);
 
+            this.m_pipeline.addShaderCode( PBRShaderCode );
             this.m_pipeline.addPipe( this.m_envData );
             this.m_pipeline.addPipe( this.m_lightData );
 
@@ -205,7 +205,6 @@ export class DemoPBRViewer {
             
             this.m_dracoMeshLoader.initialize(2);
             this.m_dracoModule = new ViewerDracoModule();
-            this.m_dracoModule.pipeline = this.m_pipeline;
             this.m_dracoModule.texLoader = this.m_texLoader;
             this.m_dracoModule.viewer = this;
             this.m_dracoModule.envMap = this.m_envMap;

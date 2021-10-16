@@ -7,38 +7,23 @@
 
 import PBRShaderDecorator from "../../pbr/material/PBRShaderDecorator";
 import PBRMaterial from "../../pbr/material/PBRMaterial";
-import TextureProxy from "../../vox/texture/TextureProxy";
-import { TextureConst } from "../../vox/texture/TextureConst";
-import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
-import GlobalLightData from "../../light/base/GlobalLightData";
-
 import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
 
 export default class PBRMaterialBuilder {
 
-    texLoader: ImageTextureLoader = null;
-    lightData: GlobalLightData = null;
     hdrBrnEnabled: boolean = false;
     vtxFlatNormal: boolean = false;
 
-    pipeline:MaterialPipeline = new MaterialPipeline();
+    readonly pipeline:MaterialPipeline = new MaterialPipeline();
     constructor() {
     }
 
-    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.texLoader.getImageTexByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
-    }
     makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {
 
         let material: PBRMaterial = new PBRMaterial();
         material.setMaterialPipeline( this.pipeline );
-
-        material.decorator = new PBRShaderDecorator();
-
-        let decorator: PBRShaderDecorator = material.decorator;
+        let decorator: PBRShaderDecorator = new PBRShaderDecorator();
+        material.decorator = decorator;
 
         decorator.woolEnabled = true;
         decorator.toneMappingEnabled = true;

@@ -13,4 +13,5 @@ export default interface IAbstractShader
     frag: string;
     frag_head: string;
     frag_body: string;
+    uuid: string;
 }

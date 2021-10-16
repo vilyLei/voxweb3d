@@ -30,6 +30,7 @@ import {DracoWholeModuleLoader} from "../voxmesh/draco/DracoRawModuleLoader";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import ThreadSystem from "../thread/ThreadSystem";
 
+import { PBRShaderCode } from "../pbr/material/glsl/PBRShaderCode";
 import { MaterialPipeline } from "../vox/material/pipeline/MaterialPipeline";
 
 export class ViewerDracoModule extends DracoWholeModuleLoader
@@ -41,7 +42,6 @@ export class ViewerDracoModule extends DracoWholeModuleLoader
     envMap: TextureProxy;
     viewer: DemoRawDracoViewer;
     
-    pipeline: MaterialPipeline;
     constructor() {
         super();
     }
@@ -202,6 +202,7 @@ export class DemoRawDracoViewer {
             this.m_envData.setFogDensity(0.0001);
             this.m_envData.setFogColorRGB3f(0.0,0.8,0.1);
 
+            this.m_pipeline.addShaderCode( PBRShaderCode );
             this.m_pipeline.addPipe( this.m_lightData );
             this.m_pipeline.addPipe( this.m_envData );
 
@@ -238,7 +239,6 @@ export class DemoRawDracoViewer {
         decorator.hdrBrnEnabled = this.hdrBrnEnabled;
         decorator.vtxFlatNormal = this.vtxFlatNormal;
         
-
         material.setMetallic(metallic);
         material.setRoughness(roughness);
         material.setAO(ao);

@@ -16,11 +16,12 @@ for k in range(97,123):
 	m_srcKeys.append(chr(k));
 	m_dstKeys.append(chr(k));
 	#
-for k in range(0,9):
+for k in range(0,10):
 	#print("chr: "+chr(k));
 	m_dstKeys.append(str(k));
 	#
 
+m_dstKeys.append("_");
 print("srcKeys: "+str(m_srcKeys));
 print("dstKeys: "+str(m_dstKeys));
 
@@ -123,6 +124,7 @@ for line in targetFP.readlines():
 				j = lineStr.find("=",q+1);
 				k = lineStr.find(".",q+1);
 				t = lineStr.find(";",q+1);
+				s = lineStr.find("(",q+1);
 
 				# print("XXX B0: "+str(q+1)+",j: "+str(j) +">"+ lineStr[q:j]);
 				# print("XXX B1: k: "+str(k)+",t: "+str(t) );
@@ -130,6 +132,8 @@ for line in targetFP.readlines():
 					k = 100000000000;
 				if t < 0:
 					t = 100000000000;
+				if s < 0:
+					s = 100000000000;
 
 				if j > k:
 					j = k;
@@ -137,6 +141,8 @@ for line in targetFP.readlines():
 				############
 				if j > t:
 					j = t;
+				if j > s:
+					j = s;
 					# print("AA 1");
 				# 找到当前 m_ 对应的完整单词
 				# re.match('^[0-9a-zA-Z]+$', s[0])
@@ -146,7 +152,7 @@ for line in targetFP.readlines():
 				i += 5;
 				if len(nameStr) > 3 and isNumLeters(nameStr):
 					ns = getMinStr();#"$"+str(nameIndex);
-					lineStr = lineStr.replace("."+nameStr,"."+ns);
+					lineStr = lineStr.replace("."+nameStr,".$"+ns);
 					nameIndex += 1;
 					findTotal += 1;
 					# print("XXX C: "+nameStr+", i:"+str(i));
@@ -182,7 +188,7 @@ for line in targetFP.readlines():
 				break;
 		# ####################### del s_
 		# default -> d$, 还有switch里面的 default: 会干扰这个替换
-		# lineStr = lineStr.replace("default","d$");
+		lineStr = lineStr.replace(".default.",".d$.");
 	#
 	fileStr += lineStr;
 # ###############
