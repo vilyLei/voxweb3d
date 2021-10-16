@@ -167,7 +167,7 @@ export class ShadowVSMModule {
     }
     private m_shadowCamVersion: number = -1;
     private m_buildShadowDelay: number = 120;
-
+    force: boolean = true;
     upateData(): void {
         this.m_buildShadowDelay = 32;
         this.m_shadowCamVersion = this.m_direcCamera.version;
@@ -181,13 +181,13 @@ export class ShadowVSMModule {
             this.m_vsmData.updateShadowCamera(this.m_direcCamera);
             this.m_vsmData.upadate();
         }
-        if (this.m_buildShadowDelay > 0) {
-            if (this.m_buildShadowDelay % 15 == 0) {
+        if (this.m_buildShadowDelay > 0 || this.force) {
+            if (this.m_buildShadowDelay % 15 == 0 || this.force) {
                 this.buildShadow();
             }
             this.m_buildShadowDelay--;
         }
-
+        this.force = false;
     }
     private buildShadow(): void {
 

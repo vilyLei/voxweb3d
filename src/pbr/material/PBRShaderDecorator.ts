@@ -21,7 +21,7 @@ export default class PBRShaderDecorator {
     private m_has2DMap: boolean = false;
     private m_pipeTypes: MaterialPipeType[] = null;
     private m_keysString: string = "";
-
+    
     codeBuilder: ShaderCodeBuilder2 = null;
     pipeline: MaterialPipeline = null;
     ///**

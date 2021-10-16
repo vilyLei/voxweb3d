@@ -30,7 +30,6 @@ import EnvLightData from "../../light/base/EnvLightData";
 import DracoMesh from "../../voxmesh/draco/DracoMesh";
 import DracoMeshBuilder from "../../voxmesh/draco/DracoMeshBuilder";
 import ThreadSystem from "../../thread/ThreadSystem";
-import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import DivLog from "../../vox/utils/DivLog";
 import {MaterialPipeline} from "../../vox/material/pipeline/MaterialPipeline";
@@ -65,6 +64,7 @@ export class DemoVSMModule {
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
             //rparam.setAttriAlpha(false);
+            rparam.setCamProject(45.0, 10.0,8000.0)
             rparam.setAttriStencil(true);
             rparam.setAttriAntialias(true);
             //rparam.setAttripreserveDrawingBuffer(true);
@@ -154,22 +154,18 @@ export class DemoVSMModule {
 
         console.log("dracoParseFinish, modules: ", modules);
 
-        let vsmData = this.m_vsmModule.getVSMData();
-        let envData = this.m_envData;
-        //let shadowTex: TextureProxy = this.m_depthRtt;
         let shadowTex: TextureProxy = this.m_vsmModule.getShadowMap();
-
 
         let uvscale: number = Math.random() * 7.0 + 0.6;
         let shadowMaterial: ShadowVSMMaterial = new ShadowVSMMaterial();
         shadowMaterial.setMaterialPipeline( this.m_materialPipeline );
-        //shadowMaterial.setVSMData(vsmData);
         shadowMaterial.initializeByCodeBuf(true);
         shadowMaterial.setTextureList([shadowTex, this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
         
         let mesh: DracoMesh = new DracoMesh();
         mesh.setBufSortFormat(shadowMaterial.getBufSortFormat());
         mesh.initialize(modules);
+
         let scale = this.m_scale;
         let entity: DisplayEntity = new DisplayEntity();
         entity.setMaterial(shadowMaterial);
@@ -185,6 +181,13 @@ export class DemoVSMModule {
         entity.update();
 
     }
+    private useMaterial(entity: DisplayEntity):void {
+        let shadowMaterial:ShadowVSMMaterial = new ShadowVSMMaterial();
+        shadowMaterial.setMaterialPipeline( this.m_materialPipeline );
+        entity.setMaterial(shadowMaterial);
+    }
+    private m_sphPos: Vector3D = new Vector3D();
+    private m_sphEntity: DisplayEntity;
     private initSceneObjs(): void {
 
         this.loadNext();
@@ -193,31 +196,22 @@ export class DemoVSMModule {
         frustrum.initiazlize(this.m_vsmModule.getCamera());
         this.m_rscene.addEntity(frustrum, 1);
 
-        let vsmData = this.m_vsmModule.getVSMData();
-        let envData = this.m_envData;
-
-
         let shadowTex: TextureProxy = this.m_vsmModule.getShadowMap();
-        let shadowMaterial: ShadowVSMMaterial;
-
-        // add common 3d display entity
-
+        
         let plane: Plane3DEntity = new Plane3DEntity();
-        shadowMaterial = new ShadowVSMMaterial();
-        shadowMaterial.setMaterialPipeline( this.m_materialPipeline );
-        //shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
-        //shadowMaterial.setVSMData(vsmData);
-        plane.setMaterial(shadowMaterial);
+        this.useMaterial(plane);
         plane.initializeXOZ(-600.0, -600.0, 1200.0, 1200.0, [shadowTex, this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
         plane.setXYZ(0.0, -1.0, 0.0);
         this.m_rscene.addEntity(plane);
 
+        let envBox: Box3DEntity = new Box3DEntity();
+        this.useMaterial(envBox);
+        envBox.showAllFace();
+        envBox.initializeCube(4000.0, [shadowTex, this.getImageTexByUrl("static/assets/metal_02.jpg")]);
+        this.m_rscene.addEntity(envBox);
+
         let box: Box3DEntity = new Box3DEntity();
-        shadowMaterial = new ShadowVSMMaterial();
-        shadowMaterial.setMaterialPipeline( this.m_materialPipeline );
-        //shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
-        //shadowMaterial.setVSMData(vsmData);
-        box.setMaterial(shadowMaterial);
+        this.useMaterial(box);
         box.initializeCube(200.0, [shadowTex, this.getImageTexByUrl("static/assets/metal_02.jpg")]);
         this.m_rscene.addEntity(box);
         //box.setRotationXYZ(Math.random() * 300.0,Math.random() * 300.0,Math.random() * 300.0);
@@ -226,31 +220,22 @@ export class DemoVSMModule {
         box.update();
 
         let cyl: Cylinder3DEntity = new Cylinder3DEntity();
-        shadowMaterial = new ShadowVSMMaterial();
-        shadowMaterial.setMaterialPipeline( this.m_materialPipeline );
-        //shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
-        //shadowMaterial.setVSMData(vsmData);
-        cyl.setMaterial(shadowMaterial);
+        this.useMaterial(cyl);
         cyl.initialize(80.0, 200.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/noise.jpg")]);
         this.m_rscene.addEntity(cyl);
         cyl.setXYZ(-230.0, 100.0, 0.0);
 
-
+        
         let sph: Sphere3DEntity = new Sphere3DEntity();
-        shadowMaterial = new ShadowVSMMaterial();
-        shadowMaterial.setMaterialPipeline( this.m_materialPipeline );
-        //shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
-        //shadowMaterial.setVSMData(vsmData);
-        sph.setMaterial(shadowMaterial);
+        this.useMaterial(sph);
         sph.initialize(80.0, 20.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/metal_02.jpg")]);
         this.m_rscene.addEntity(sph);
         sph.setXYZ(-230.0, 300.0, -200.0);
+        this.m_sphEntity = sph;
+        sph.getPosition( this.m_sphPos );
 
         sph = new Sphere3DEntity();
-        shadowMaterial = new ShadowVSMMaterial();
-        //shadowMaterial.setRGB3f(Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5, Math.random() * 0.7 + 0.5);
-        //shadowMaterial.setVSMData(vsmData);
-        sph.setMaterial(shadowMaterial);
+        this.useMaterial(sph);
         sph.initialize(80.0, 20.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/metal_08.jpg")]);
         sph.setScaleXYZ(1.2, 1.2, 1.2);
         sph.setXYZ(-40.0, 100.0, -180.0);
@@ -272,17 +257,20 @@ export class DemoVSMModule {
     }
     run(): void {
 
+        this.m_sphPos.x = 300.0 * Math.sin(this.m_sphPos.w);
+        this.m_sphPos.w += 0.1;
+        this.m_sphEntity.setPosition( this.m_sphPos );
+        this.m_sphEntity.update();
+
         this.m_statusDisp.update(false);
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
 
         this.m_rscene.update(true);
-
+        this.m_vsmModule.force = true;
         this.m_vsmModule.run();
-
-        this.m_rscene.run();
+        this.m_rscene.run(false);
         this.m_rscene.runEnd();
-
     }
 }
 export default DemoVSMModule;
