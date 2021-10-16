@@ -82,14 +82,18 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     constructor() {
         super();
     }
-    getCodeBuf(): ShaderCodeBuffer {
-        
+    
+    protected buildBuf(): void {
         let buf: PBRShaderBuffer = PBRShaderBuffer.GetInstance();
         buf.decorator = this.decorator;
         buf.decorator.codeBuilder = buf.getShaderCodeBuilder();
         buf.decorator.pipeline = this.m_pipeLine;
         this.decorator.texturesTotal = this.getTextureTotal();
         this.decorator.initialize();
+    }
+    getCodeBuf(): ShaderCodeBuffer {
+        
+        let buf: PBRShaderBuffer = PBRShaderBuffer.GetInstance();
         return buf;
     }
     copyFrom(dst: PBRMaterial, texEnabled:boolean = true): void {

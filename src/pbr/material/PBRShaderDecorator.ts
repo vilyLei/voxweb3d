@@ -8,6 +8,8 @@
 
 import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
 import UniformConst from "../../vox/material/UniformConst";
+import TextureProxy from '../../vox/texture/TextureProxy';
+
 import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 
@@ -22,7 +24,15 @@ export default class PBRShaderDecorator {
 
     codeBuilder: ShaderCodeBuilder2 = null;
     pipeline: MaterialPipeline = null;
-
+    ///**
+    envMap: TextureProxy = null;
+    diffuseMap: TextureProxy = null;
+    normalMap: TextureProxy = null;
+    aoMap: TextureProxy = null;
+    mirrorMap: TextureProxy = null;
+    indirectEnvMap: TextureProxy = null;
+    vsmShadowMap: TextureProxy = null;
+    //*/
     woolEnabled: boolean = true;
     toneMappingEnabled: boolean = true;
     envMapEnabled: boolean = true;
@@ -63,6 +73,34 @@ export default class PBRShaderDecorator {
             }
             this.pipeline.createKeys(this.m_pipeTypes);
             this.m_keysString = this.pipeline.getKeysString();
+
+            let texList: TextureProxy[] = [];
+            
+            if ( this.envMap != null ) {
+                texList.push( this.envMap );
+            }
+            if ( this.diffuseMap != null ) {
+                texList.push( this.diffuseMap );
+            }
+            if (this.normalMap != null) {
+                texList.push( this.normalMap );
+            }
+            if (this.aoMap != null) {
+                texList.push( this.aoMap );
+            }
+            if (this.mirrorMap != null) {
+                texList.push( this.mirrorMap );
+            }
+            if (this.indirectEnvMap != null) {
+                texList.push( this.indirectEnvMap );
+            }
+            if (this.shadowReceiveEnabled && this.vsmShadowMap != null) {
+                texList.push( this.vsmShadowMap );
+            }
+            if(texList.length > 0) {
+                this.pipeline.setTextureList( texList );
+                this.texturesTotal = this.pipeline.getTextureTotal();
+            }
         }
     }
     copyFrom(src: PBRShaderDecorator): void {
@@ -89,7 +127,6 @@ export default class PBRShaderDecorator {
         this.vtxFlatNormal = src.vtxFlatNormal;
 
         this.lightEnabled = src.lightEnabled;
-
         this.texturesTotal = src.texturesTotal;
 
         this.m_uniqueName = src.m_uniqueName;
@@ -116,8 +153,8 @@ export default class PBRShaderDecorator {
         if (this.absorbEnabled) coder.addDefine("VOX_ABSORB");
         if (this.pixelNormalNoiseEnabled) coder.addDefine("VOX_PIXEL_NORMAL_NOISE");
 
-        let texIndex: number = 0;
         console.log("this.envMapEnabled,this.texturesTotal: ", this.envMapEnabled, this.texturesTotal);
+
         if (this.envMapEnabled && this.texturesTotal > 0) {
             coder.addTextureSampleCube("VOX_ENV_MAP");
         }
@@ -130,14 +167,17 @@ export default class PBRShaderDecorator {
         if (this.aoMapEnabled) {
             coder.addTextureSample2D("VOX_AO_MAP");
         }
-
         if (mirrorProjEnabled) {
             coder.addTextureSample2D("VOX_MIRROR_PROJ_MAP");
         }
         if (this.indirectEnvMapEnabled) {
             coder.addTextureSampleCube("VOX_INDIRECT_ENV_MAP");
         }
-        console.log("this.texturesTotal: ", this.texturesTotal, ", texIndex: ", texIndex);
+        if (this.shadowReceiveEnabled) {
+            coder.addTextureSample2D("VOX_VSM_MAP", false);
+        }
+
+        console.log("this.texturesTotal: ", this.texturesTotal);
         if (this.mirrorMapLodEnabled) coder.addDefine("VOX_MIRROR_MAP_LOD", "1");
         if (this.hdrBrnEnabled) coder.addDefine("VOX_HDR_BRN", "1");
         if (this.vtxFlatNormal) coder.addDefine("VOX_VTX_FLAT_NORMAL", "1");
@@ -170,10 +210,6 @@ export default class PBRShaderDecorator {
         coder.useVertSpaceMats(true, true, true);
 
         coder.addFragOutput("vec4", "FragColor0");
-
-        if (this.shadowReceiveEnabled) {
-            coder.addTextureSample2D("VOX_VSM_MAP", false);
-        }
         
         if(this.pipeline != null) {
             this.pipeline.build(coder, this.m_pipeTypes);

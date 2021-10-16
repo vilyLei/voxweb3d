@@ -6,9 +6,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDevice from "../../../vox/render/RendererDevice";
-import IUniformParam from "../../../vox/material/IUniformParam";
-
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
 import {IMaterialPipe} from "./IMaterialPipe";
 import {MaterialPipeType} from "./MaterialPipeType";
@@ -17,6 +14,8 @@ import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import IAbstractShader from "../../../vox/material/IAbstractShader";
 
+import TextureProxy from '../../../vox/texture/TextureProxy';
+
 /**
  * 材质功能组装流水线, 组装符合一个流水线系统设定的材质, 最终形成完整的shader, 以及对应的数据输入
  * 每个流水线是由若干pipe组成的， 每一个 pipe 都有自己的组装能力
@@ -24,13 +23,24 @@ import IAbstractShader from "../../../vox/material/IAbstractShader";
  * material pipeline 输出 的控制码，也能控制渲染流程, 也就是 material pipelie 也能配合 render pipeline 一起协作完成渲染过程
  */
 class MaterialPipeline {
-
+    
     private m_shaderCode: IAbstractShader = null;
     private m_pipeMap: Map<MaterialPipeType, IMaterialPipe> = new Map();
     private m_keys: string[] = [];
     private m_sharedUniforms: ShaderGlobalUniform[] = null;
+    private m_texList: TextureProxy[] = null;
 
     constructor() { }
+    
+    setTextureList(texList: TextureProxy[]): void {
+        this.m_texList = texList;
+    }
+    getTextureList(): TextureProxy[] {
+        return this.m_texList;
+    }
+    
+    getTextureTotal(): number { return this.m_texList != null ? this.m_texList.length : 0; }
+
     addShaderCode(shaderCode: IAbstractShader): void {
         this.m_shaderCode = shaderCode;
     }
@@ -115,6 +125,9 @@ class MaterialPipeline {
             str += this.m_keys[i];
         }
         return str;
+    }
+    reset(): void {
+        this.m_texList = null;
     }
     clear(): void {
         this.m_pipeMap = new Map();

@@ -61,7 +61,6 @@ export class ViewerDracoModule extends DracoWholeModuleLoader
         let texList: TextureProxy[] = [];
         
         texList.push(this.envMap);
-        //texList.push( this.getImageTexByUrl("static/assets/noise.jpg"));
         // base color map
         texList.push( this.getImageTexByUrl("static/assets/disp/normal_4_256_COLOR.png"));
         // normal map
@@ -72,12 +71,14 @@ export class ViewerDracoModule extends DracoWholeModuleLoader
         }
 
 
-        let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6;        
+        let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6;
         let material: PBRMaterial = this.viewer.createMaterial(uvscale,uvscale);
-        texList[1] = this.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg");
-        texList[2] = this.getImageTexByUrl("static/assets/modules/skirt/normal.jpg");
-        texList[3] = this.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
-        material.setTextureList(texList);
+        
+        material.decorator.envMap = this.envMap;
+        material.decorator.diffuseMap = this.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg");
+        material.decorator.normalMap = this.getImageTexByUrl("static/assets/modules/skirt/normal.jpg");
+        material.decorator.diffuseMap = this.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
+
         material.decorator.diffuseMapEnabled = true;
         material.decorator.normalMapEnabled = true;
         material.decorator.vtxFlatNormal = false;
@@ -255,28 +256,8 @@ export class DemoPBRViewer {
 
         material.setUVScale(uscale, vscale);
 
-        // if (decorator.fogEnabled) {
-        //     material.decorator.envData = this.m_envData;
-        // }
-        material.setTextureList(ptexList);
+        //material.setTextureList(ptexList);
         return material;
-    }
-    createTexListForMaterial(material: PBRMaterial, env: TextureProxy, diffuse: TextureProxy = null, normal: TextureProxy = null, ao: TextureProxy = null): TextureProxy[] {
-        let texList: TextureProxy[] = [env];
-        if (diffuse != null) {
-            texList.push(diffuse)
-        }
-        if (normal != null) {
-            texList.push(normal)
-        }
-        if (ao != null) {
-            texList.push(ao)
-        }
-        let decorator: PBRShaderDecorator = material.decorator;
-        decorator.indirectEnvMapEnabled = false;
-        decorator.shadowReceiveEnabled = false;
-        
-        return texList;
     }
     private createEntity(): void {
 
@@ -285,18 +266,13 @@ export class DemoPBRViewer {
         //  this.m_rscene.addEntity(axis);
 
         
-        let texList: TextureProxy[] = [];
-        
-        texList.push(this.m_envMap);
-        //texList.push( this.getImageTexByUrl("static/assets/noise.jpg"));
-        // base color map
-        texList.push( this.getImageTexByUrl("static/assets/disp/normal_4_256_COLOR.png"));
-        // normal map
-        texList.push( this.getImageTexByUrl("static/assets/disp/normal_4_256_NRM.png"));
+        let diffuseMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/normal_4_256_COLOR.png");
+        let normalMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/normal_4_256_NRM.png");
+        let aoMap: TextureProxy = null;
         if(this.aoMapEnabled) {
-            // ao map
-            texList.push( this.getImageTexByUrl("static/assets/disp/normal_4_256_OCC.png"));
+            aoMap = this.getImageTexByUrl("static/assets/disp/normal_4_256_NRM.png");
         }
+        
         let disSize: number = 700.0;
         let dis: number = 500.0;
         let posList: Vector3D[] = [];
@@ -314,14 +290,22 @@ export class DemoPBRViewer {
         }
         let material: PBRMaterial;
         let sph: Sphere3DEntity;
-        material = this.createMaterial(1,1);
+        ///*
+        material = this.createMaterial(1, 1);
         material.setMaterialPipeline( this.m_pipeline );
         material.decorator.aoMapEnabled = this.aoMapEnabled;
-        material.setTextureList(texList);
+
+        material.decorator.envMap = this.m_envMap;
+        material.decorator.diffuseMap = diffuseMap;
+        material.decorator.normalMap = normalMap;
+        material.decorator.aoMap = aoMap;
+
+        //material.setTextureList(texList);
         let srcSph = new Sphere3DEntity();
         srcSph.setMaterial( material );
         srcSph.initialize(100.0, 20, 20);
         //this.m_rscene.addEntity(srcSph);
+        //*/
         let scale: number = 1.0;
         let uvscale: number;
         let total: number = posList.length;
@@ -335,7 +319,12 @@ export class DemoPBRViewer {
 
             material = this.createMaterial(uvscale,uvscale);
             material.decorator.aoMapEnabled = this.aoMapEnabled;
-            material.setTextureList(texList);
+            //  material.setTextureList(texList);
+            material.decorator.envMap = this.m_envMap;
+            material.decorator.diffuseMap = diffuseMap;
+            material.decorator.normalMap = normalMap;
+            material.decorator.aoMap = aoMap;
+
             material.setAlbedoColor(Math.random() * 3, Math.random() * 3, Math.random() * 3);
             
             scale = 0.8 + Math.random();

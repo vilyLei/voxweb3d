@@ -94,11 +94,19 @@ export default class MaterialBase implements IRenderMaterial {
             if (buf != null) {
                 buf.reset();
                 buf.pipeline = this.m_pipeLine;
+                if(buf.pipeline != null) {
+                    buf.pipeline.reset();
+                    this.buildBuf();
+                    if(buf.pipeline.getTextureTotal() > 0) {
+                        this.setTextureList( buf.pipeline.getTextureList() );
+                    }
+                }
+
                 if (MaterialBase.s_codeBuffer == null) {
                     MaterialBase.s_codeBuffer = new ShaderCodeBuffer();
                 }
                 ShaderCodeBuffer.UseShaderBuffer(buf);
-                //
+                
                 MaterialBase.s_codeBuffer.initialize(texEnabled);
                 let shdCode_uniqueName: string = MaterialBase.s_codeBuffer.getUniqueShaderName();
                 this.m_shduns = shdCode_uniqueName;
@@ -123,6 +131,9 @@ export default class MaterialBase implements IRenderMaterial {
             }
         }
     }
+    protected buildBuf(): void {
+
+    }
     protected __$initShd(pshduns: string): void {
     }
     getShaderData(): ShaderData { return this.m_shdData; }
@@ -131,6 +142,10 @@ export default class MaterialBase implements IRenderMaterial {
     private m_texListLen: number = 0;
     private m_texDataEnabled: boolean = false;
     // @param           texList     [tex0,tex1,...]
+    /**
+     * set TextuerProxy instances
+     * @param texList [tex0,tex1,...]
+     */
     setTextureList(texList: TextureProxy[]): void {
         if (this.m_texList != texList) {
             this.m_texDataEnabled = false;
