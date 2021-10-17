@@ -152,7 +152,9 @@ for line in targetFP.readlines():
 				i += 5;
 				if len(nameStr) > 3 and isNumLeters(nameStr):
 					ns = getMinStr();#"$"+str(nameIndex);
-					lineStr = lineStr.replace("."+nameStr,".$"+ns);
+					reg = re.compile(r"\b%s\b"%nameStr);
+					lineStr = re.sub(reg, "$"+ns, lineStr);
+					#lineStr = lineStr.replace("."+nameStr,".$"+ns);
 					nameIndex += 1;
 					findTotal += 1;
 					# print("XXX C: "+nameStr+", i:"+str(i));
@@ -166,29 +168,9 @@ for line in targetFP.readlines():
 		
 		# ########### begin ############ del s_
 		i = 0;
-		for k in range(0,100000):
-			i = lineStr.find(".s_",i+2);
-			if i > 0:
-				j = lineStr.find("=",i+2);
-				k = lineStr.find(".",i+2);
-				t = lineStr.find(";",i+2);
-				if j > k:
-					j = k;
-				if j > t:
-					j = t;
-				# 找到当前 m_ 对应的完整单词
-				# re.match('^[0-9a-zA-Z]+$', s[0])
-				nameStr = lineStr[i+1:j];
-				if isNumLeters(nameStr):
-					ns = getMinStr();
-					lineStr = lineStr.replace(nameStr,ns);
-					nameIndex += 1;
-					findTotal += 1;
-			else:
-				break;
 		# ####################### del s_
 		# default -> d$, 还有switch里面的 default: 会干扰这个替换
-		lineStr = lineStr.replace(".default.",".d$.");
+		#lineStr = lineStr.replace(".default.",".d$.");
 	#
 	fileStr += lineStr;
 # ###############

@@ -22,6 +22,10 @@ class RViewElement
     {
         if(this.m_div == null)
         {
+            this.m_div = document.getElementById("voxEngineDiv");
+        }
+        if(this.m_div == null)
+        {
             this.m_div = pdocument.createElement('div');
             this.m_div.style.width = '400px';
             this.m_div.style.height = '300px';

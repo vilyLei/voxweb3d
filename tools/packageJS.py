@@ -3,6 +3,14 @@ import os;
 import re;
 import math;
 from xml.dom.minidom import Document;
+import re;
+editor = "This is result of resultYY result_YY the match";
+print("old_editor: "+editor);
+rkey = "result";
+reg = re.compile(r"\b%s\b"%rkey);
+new_editor = re.sub(reg,"resultNew",editor);
+#new_editor = re.sub(r"\bresult\b","resultado",editor);
+print("new_editor: "+new_editor);
 
 m_srcKeys = [];
 m_dstKeys = [];
@@ -127,7 +135,9 @@ for line in targetFP.readlines():
 				nameStr = lineStr[i:j];
 				if isNumLeters(nameStr):
 					ns = getMinStr();#"$"+str(nameIndex);
-					lineStr = lineStr.replace(nameStr,ns);
+					reg = re.compile(r"\b%s\b"%nameStr);
+					lineStr = re.sub(reg,ns,lineStr);
+					#lineStr = lineStr.replace(nameStr,ns);
 					nameIndex += 1;
 					findTotal += 1;
 			else:
@@ -151,14 +161,20 @@ for line in targetFP.readlines():
 				nameStr = lineStr[i+1:j];
 				if isNumLeters(nameStr):
 					ns = getMinStr();
-					lineStr = lineStr.replace(nameStr,ns);
+					#lineStr = lineStr.replace(nameStr,ns);
+					reg = re.compile(r"\b%s\b"%nameStr);
+					lineStr = re.sub(reg,ns,lineStr);
 					nameIndex += 1;
 					findTotal += 1;
 			else:
 				break;
 		# ####################### del s_
 		# default -> d$, 还有switch里面的 default: 会干扰这个替换
-		# lineStr = lineStr.replace("default","d$");
+		# lineStr = lineStr.replace(".default",".d$");
+		#
+		# nameStr = ".default";
+		# reg = re.compile(r"\b%s\b"%nameStr);
+		# lineStr = re.sub(reg, "._$",lineStr);
 	#
 	fileStr += lineStr;
 # ###############

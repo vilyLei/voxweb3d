@@ -131,7 +131,7 @@
 
 //  import {DemoThreadSchedule as Demo} from "./demo/DemoThreadSchedule";
 
-import {DemoMatComputer as Demo} from "./demo/DemoMatComputer";
+//  import {DemoMatComputer as Demo} from "./demo/DemoMatComputer";
 
 //  import {DemoMatTransThread as Demo} from "./demo/DemoMatTransThread";
 
@@ -339,7 +339,7 @@ import {DemoMatComputer as Demo} from "./demo/DemoMatComputer";
 
 //  import {DemoVSM as Demo} from "./shadow/vsm/DemoVSM";
 
-//  import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
+import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
 
 //  import {DemoSSAO as Demo} from "./shadow/ssao/DemoSSAO";
 
