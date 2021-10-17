@@ -1,5 +1,14 @@
+interface DemoItem {
+    name: string;
+    info: string;
+}
+interface DemoData {
+    demos: DemoItem[];
+}
+
 export class Home {
 
+    private m_htmlText: string = "";
     constructor() { }
 
     initialize(): void {
@@ -7,32 +16,53 @@ export class Home {
         let url: string = location.href + "";
         url = this.parseUrl( url );
         console.log("url: ",url);
-        //this.load( url );
-        this.initDemoList();
-    }
-    private initDemoList(): void {
-        let div: HTMLDivElement = document.getElementById("demos") as HTMLDivElement;
-        if(div == null) {
+
+        this.m_bodyDiv = document.getElementById("demos") as HTMLDivElement;
+        if(this.m_bodyDiv == null) {
             this.initUI();
-            div = this.m_bodyDiv;
         }
-        this.buildLinkTable(div);
 
+        this.loadData("static/home/demos.json?ver="+Math.random() + Date.now());
     }
-    private buildLinkTable(div: HTMLDivElement): void {
-
+    private parseData(data: DemoData): void {
+        console.log("data: ",data);
         let htmlText: string = "";
         htmlText += "<hr/>";
         htmlText += "<center/>";
-        htmlText += "DEMOS";
-        htmlText += "<br/>";
-        htmlText += '<a id="link_demo" href="http://www.artvily.com/renderCase?sample=demoLoader&demo=cameraFollow2" target="_blank">摄像机跟随(camera follow)</a>';
-        htmlText += "<br/>";
-        htmlText += '<a id="link_demo" href="http://www.artvily.com/renderCase?sample=demoLoader&demo=cameraWalk" target="_blank">摄像机轨迹控制(camera path control)</a>';
-        htmlText += "<br/>";
-        htmlText += '<a id="link_demo" href="http://www.artvily.com/renderCase?sample=demoLoader&demo=multiGpu2" target="_blank">多GPU上下文和多scene(multi gpu context and multi scenes)</a>';
+        htmlText += "ENGINE DEMOS";
+        this.m_htmlText = htmlText;
 
-        div.innerHTML = htmlText;
+        let po: DemoItem;
+        let list: DemoItem[] = data.demos;
+        for(let i: number = 0; i < list.length; ++i) {
+            po = list[i];
+            this.addLinkHtmlLine(po.name,po.info);
+        }
+        
+        this.m_bodyDiv.innerHTML = this.m_htmlText;
+    }
+    private addLinkHtmlLine(demoName: string, info: string): void {
+        this.m_htmlText += "<br/>";
+        this.m_htmlText += '<a id="link_demo" href="http://www.artvily.com/renderCase?sample=demoLoader&demo='+demoName+'" target="_blank">'+info+'</a>';        
+    }
+    
+    private loadData(purl: string): void {
+        let codeLoader: XMLHttpRequest = new XMLHttpRequest();
+        codeLoader.open("GET", purl, true);
+        //xhr.responseType = "arraybuffer";
+        codeLoader.onerror = function (err) {
+            console.error("load error: ", err);
+        }
+
+        codeLoader.onprogress = (e) => {
+            
+        };
+        codeLoader.onload = () => {
+            let info: string = codeLoader.response as string;
+            let data: DemoData = JSON.parse(info) as DemoData;
+            this.parseData( data );
+        }
+        codeLoader.send(null);
     }
     private load(purl: string): void {
         let codeLoader: XMLHttpRequest = new XMLHttpRequest();
@@ -78,19 +108,6 @@ export class Home {
             return "";
         }
         return "static/voxweb3d/demos/"+params[1]+".js";
-        /*
-        let params: string[] = url.split("?");
-        if(params.length < 2 || params[0].indexOf("renderCase") < 1) {
-            return "";
-        }
-        //renderCase?sample=cameraFollow2
-        let moduleName: string = params[1];
-        params = moduleName.split("=");
-        if(params.length < 2 || params[0] != "sample") {
-            return "";
-        }
-        return "static/voxweb3d/demos/"+params[1]+".js";
-        //*/
     }
 
     private m_bodyDiv: HTMLDivElement = null;

@@ -136,7 +136,8 @@ export class DemoParticle
                 let par:DecayBrnParticle = null;
 
                 let i:number = 0;
-                let len:number = 80 + Math.round(Math.random() * 845);
+                //let len:number = 80 + Math.round(Math.random() * 845);
+                let len:number = 80 + Math.round(Math.random() * 145);
                 //let len:number = 10 + Math.round(Math.random() * 15);
 
                 for(; i < len; ++i)

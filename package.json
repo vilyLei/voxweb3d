@@ -8,6 +8,7 @@
   "scripts": {
     "build": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/main.ts",
     "buildvox": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/dev.ts",
+    "buildvoxweb": "vue-cli-service build --target lib --name VoxApp --dest dist ./src/devWeb.ts",
     
     "build_baseRenderer": "vue-cli-service build --target lib --name VoxApp --dest dist/baseRenderer ./src/distribution/rendererIsolate/devBaseRenderer.ts",
     "build_engine": "vue-cli-service build --target lib --name VoxApp --dest dist/engine ./src/distribution/rendererIsolate/devEngine.ts",
@@ -19,7 +20,8 @@
     "build_threadFuncs": "vue-cli-service build --target lib --name VoxApp --dest dist/threadFuncs ./src/distribution/rendererIsolate/devThreadFuncs.ts",
     "buildrplayer": "vue-cli-service build --target lib --name VoxApp --dest dist/player ./src/distribution/rendererIsolate/devPlayerOne.ts",
     "dev": "vue-cli-service serve --type=dev",
-    "devvox": "vue-cli-service serve --voxtype=dev"
+    "devvox": "vue-cli-service serve --voxtype=dev",
+    "devvoxweb": "vue-cli-service serve --voxtype=devWeb"
   },
   "dependencies": {
     "@tweenjs/tween.js": "^18.4.2",

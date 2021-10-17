@@ -32,8 +32,6 @@ class LambertDirecLightShaderBuffer extends ShaderCodeBuffer {
     private buildThisCode(): void {
         let coder = ShaderCodeBuffer.s_coder;
         coder.vertMatrixInverseEnabled = true;
-
-        coder.reset();
         coder.addVertLayout("vec3", "a_vs");
         if (this.isTexEanbled()) {
             coder.addVertLayout("vec2", "a_uvs");

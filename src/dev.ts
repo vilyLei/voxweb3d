@@ -94,7 +94,7 @@
 //  import * as DemoScreenPingpongBlur from "./demo/DemoScreenPingpongBlur";
 //  import Demo = DemoScreenPingpongBlur.demo.DemoScreenPingpongBlur;
 
-import {DemoDepthBlur as Demo} from "./demo/DemoDepthBlur";
+//  import {DemoDepthBlur as Demo} from "./demo/DemoDepthBlur";
 
 //  import * as DemoDepthBlur2 from "./demo/DemoDepthBlur2";
 //  import Demo = DemoDepthBlur2.demo.DemoDepthBlur2;
@@ -131,16 +131,14 @@ import {DemoDepthBlur as Demo} from "./demo/DemoDepthBlur";
 
 //  import {DemoThreadSchedule as Demo} from "./demo/DemoThreadSchedule";
 
-//  import {DemoMatComputer as Demo} from "./demo/DemoMatComputer";
+import {DemoMatComputer as Demo} from "./demo/DemoMatComputer";
 
 //  import {DemoMatTransThread as Demo} from "./demo/DemoMatTransThread";
 
 //  import * as DemoThreadConcurrent from "./demo/DemoThreadConcurrent";
 //  import Demo = DemoThreadConcurrent.demo.DemoThreadConcurrent;
 
-//  import * as DemoMatContainer from "./demo/DemoMatContainer";
-//  import Demo = DemoMatContainer.demo.DemoMatContainer;
-
+//  import {DemoMatContainer as Demo} from "./demo/DemoMatContainer";
 
 //  import * as DemoDrawGroup from "./demo/DemoDrawGroup";
 //  import Demo = DemoDrawGroup.demo.DemoDrawGroup;
@@ -150,8 +148,7 @@ import {DemoDepthBlur as Demo} from "./demo/DemoDepthBlur";
 //  import * as DemoGpuVtxMana from "./demo/DemoGpuVtxMana";
 //  import Demo = DemoGpuVtxMana.demo.DemoGpuVtxMana;
 
-//  import * as DemoGpuTexMana from "./demo/DemoGpuTexMana";
-//  import Demo = DemoGpuTexMana.demo.DemoGpuTexMana;
+//  import {DemoGpuTexMana as Demo} from "./demo/DemoGpuTexMana";
 
 //  import {DemoMaterial as Demo} from "./demo/DemoMaterial";
 
@@ -389,16 +386,6 @@ import {DemoDepthBlur as Demo} from "./demo/DemoDepthBlur";
 //  import {RbtDrama as Demo} from "./app/RbtDrama";
 
 //  import {EasyRoad as Demo} from "./app/EasyRoad";
-
-// import {Home as Demo} from "./app/Home";
-// document.title = "Vox APP";
-// let loader: Demo = new Demo();
-// loader.initialize();
-
-// import {Home as Demo} from "./app/Home";
-// document.title = "Vox APP";
-// let home: Demo = new Demo();
-// home.initialize();
 
 //  import {DensityStatistics as Demo} from "./app/density/DensityStatistics";
 

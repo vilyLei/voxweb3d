@@ -41,7 +41,7 @@ export class DemoMatComputer extends DemoInstance
         this.m_camTrack = new CameraTrack();
         this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
-        RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+        RendererDevice.SHADERCODE_TRACE_ENABLED = true;
         RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
         //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
         this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this,this.mouseDown);

@@ -1,0 +1,36 @@
+{
+    "demos": [
+        {
+            "name": "cameraFollow2",
+            "info": "摄像机跟随(camera follow)"
+        },
+        {
+            "name": "cameraWalk",
+            "info": "摄像机轨迹控制(camera path control)"
+        },
+        {
+            "name": "multiGpu2",
+            "info": "多GPU上下文和多scene(multi gpu context and multi scenes)"
+        },
+        {
+            "name": "particle",
+            "info": "粒子Demo1(particle demo1)"
+        },
+        {
+            "name": "particle2",
+            "info": "粒子Demo2(particle demo2)"
+        },
+        {
+            "name": "vsmShadow",
+            "info": "阴影和雾(shadow and fog)"
+        },
+        {
+            "name": "wasmMultiThead",
+            "info": "webassembly和多线程(webassembly and mmulti-threads)"
+        },
+        {
+            "name": "distributedRuntime",
+            "info": "分布式运行时(distributed-runtime)"
+        }        
+    ]
+}

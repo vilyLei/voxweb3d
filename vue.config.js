@@ -10,6 +10,10 @@ if(process.env.npm_lifecycle_script == "vue-cli-service serve --voxtype=dev")
   devDstStr = "./src/dev.ts";
   appDstStr = "./src/dev.ts";
 }
+else if(process.env.npm_lifecycle_script == "vue-cli-service serve --voxtype=devWeb"){
+  devDstStr = "./src/devWeb.ts";
+  appDstStr = "./src/devWeb.ts";
+}
 module.exports = {
   pages: {
     index: {
