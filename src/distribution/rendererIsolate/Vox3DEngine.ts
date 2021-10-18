@@ -106,15 +106,19 @@ VoxCore["RendererParam"] = RendererParam;
  * A empty engine instance example
  */
 export class Vox3DEngine {
+    private m_param: RendererParam = null;
     private m_engine: EngineBase = null;
     constructor() { }
 
+    setParam(param: RendererParam): void {
+        this.m_param = param;
+    }
     initialize(pmodule: any): void {
 
         if(this.m_engine == null) {
 
             this.m_engine = new EngineBase();
-            this.m_engine.initialize();
+            this.m_engine.initialize(this.m_param);
         }
     }
     

@@ -4,6 +4,7 @@ import Vector3D from "../../vox/math/Vector3D";
 import Color4 from "../../vox/material/Color4";
 import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
 
+import RendererParam from "../../vox/scene/RendererParam";
 import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import RendererState from "../../vox/render/RendererState";
@@ -28,16 +29,22 @@ VoxCore["RendererState"] = RendererState;
 //VoxCore["FBOInstance"] = FBOInstance;
 VoxCore["renderer"] = null;
 VoxCore["rendererContext"] = null;
+
+VoxCore["RendererParam"] = RendererParam;
 /**
  * A empty Renderer instance example
  */
 export class BaseRenderer {
     constructor() { }
 
+    private m_param: RendererParam = null;
     private m_renderer: RendererInstance = null;
     private m_rcontext: RendererInstanceContext = null;
     //private m_axis: Axis3DEntity = null;
 
+    setParam(param: RendererParam): void {
+        this.m_param = param;
+    }
     getRenderer(): RendererInstance {
         return this.m_renderer;
     }
@@ -50,7 +57,7 @@ export class BaseRenderer {
             console.log("BaseRenderer::initialize...");
             this.m_renderer = new RendererInstance();
             let camera: IRenderCamera = new pmodule["CameraBase"](this.m_renderer.getRCUid()) as IRenderCamera;
-            this.m_renderer.initialize(null, camera);
+            this.m_renderer.initialize(this.m_param, camera);
             this.m_renderer.appendProcess();
             this.m_renderer.appendProcess();
             this.m_renderer.appendProcess();

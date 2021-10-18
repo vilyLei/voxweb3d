@@ -27,8 +27,9 @@ export class Home {
     private parseData(data: DemoData): void {
         console.log("data: ",data);
         let htmlText: string = "";
-        htmlText += "<hr/>";
         htmlText += "<center/>";
+        htmlText += '<hr style="height:3px;border:1px solid #444444;"/>';
+        htmlText += "<br/>";
         htmlText += "ENGINE DEMOS";
         this.m_htmlText = htmlText;
 
@@ -55,7 +56,6 @@ export class Home {
         }
 
         codeLoader.onprogress = (e) => {
-            
         };
         codeLoader.onload = () => {
             let info: string = codeLoader.response as string;
