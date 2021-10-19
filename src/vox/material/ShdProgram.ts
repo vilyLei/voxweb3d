@@ -10,8 +10,9 @@ import RendererDevice from "../../vox/render/RendererDevice";
 import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import UniformLine from "../../vox/material/code/UniformLine";
 import IVtxShdCtr from "../../vox/material/IVtxShdCtr";
+import IShdProgram from "../../vox/material/IShdProgram";
 import IShaderData from "../../vox/material/IShaderData";
-export default class ShdProgram implements IVtxShdCtr {
+export default class ShdProgram implements IVtxShdCtr,IShdProgram {
     private m_shdData: IShaderData = null;
     private m_uid: number = -1;
     private m_program: any = null;

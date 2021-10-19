@@ -25,6 +25,9 @@ import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
 import ShaderCodeMaterial from "../../vox/material/ShaderCodeMaterial";
+import ShaderGlobalUniform from "../../vox/material/ShaderGlobalUniform";
+import UniformConst from "../../vox/material/UniformConst";
+import {MaterialPipeType} from "../../vox/material/pipeline/MaterialPipeType";
 
 import DataMesh from "../../vox/mesh/DataMesh";
 import DracoMesh from "../../voxmesh/draco/DracoMesh";
@@ -83,6 +86,9 @@ VoxCore["ShaderUniformData"] = ShaderUniformData;
 VoxCore["ShaderUniformProbe"] = ShaderUniformProbe;
 VoxCore["MaterialBase"] = MaterialBase;
 VoxCore["ShaderCodeMaterial"] = ShaderCodeMaterial;
+VoxCore["ShaderGlobalUniform"] = ShaderGlobalUniform;
+VoxCore["UniformConst"] = UniformConst;
+VoxCore["MaterialPipeType"] = MaterialPipeType;
 
 VoxCore["DataMesh"] = DataMesh;
 VoxCore["DracoMesh"] = DracoMesh;
@@ -130,6 +136,9 @@ export class Vox3DEngine {
     }
     getEngine(): EngineBase {
         return this.m_engine;
+    }
+    createEngine(): EngineBase {
+        return new EngineBase();
     }
     run(): void {
         //this.m_engine.run();

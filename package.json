@@ -18,6 +18,8 @@
     "build_minROFunctions": "vue-cli-service build --target lib --name VoxApp --dest dist/minROFunctions ./src/distribution/rendererIsolate/devMinROFunctions.ts",
     
     "build_threadFuncs": "vue-cli-service build --target lib --name VoxApp --dest dist/threadFuncs ./src/distribution/rendererIsolate/devThreadFuncs.ts",
+    "build_jszip": "vue-cli-service build --target lib --name VoxApp --dest dist/jsZipModule ./src/distribution/rendererIsolate/devJSZipModule.ts",
+    
     "buildrplayer": "vue-cli-service build --target lib --name VoxApp --dest dist/player ./src/distribution/rendererIsolate/devPlayerOne.ts",
     "dev": "vue-cli-service serve --type=dev",
     "devvox": "vue-cli-service serve --voxtype=dev",

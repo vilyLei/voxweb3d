@@ -17,11 +17,13 @@ import IShaderCodeBuilder from "../../../vox/material/code/IShaderCodeBuilder";
 import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
 import { IMaterialPipe } from "../../../vox/material/pipeline/IMaterialPipe";
 
+import { GlobalVSMShadowUniformParam } from "../../../vox/material/GlobalUniformParam";
 import { VSMShaderCode } from "./VSMShaderCode";
 
 
 export default class ShadowVSMData implements IMaterialPipe{
 
+    private m_uniformParam: GlobalVSMShadowUniformParam = new GlobalVSMShadowUniformParam();
     private m_uProbe: ShaderUniformProbe = null;
     private m_suo: ShaderGlobalUniform = null;
     private m_direcMatrix: Matrix4 = null;
@@ -38,8 +40,10 @@ export default class ShadowVSMData implements IMaterialPipe{
         if (this.m_uProbe != null) {
             shaderBuilder.addDefine("VOX_USE_SHADOW", "1");
             shaderBuilder.addVarying("vec4", "v_shadowPos");
-            shaderBuilder.addFragUniformParam(UniformConst.ShadowVSMParams);
-            shaderBuilder.addVertUniformParam(UniformConst.ShadowMatrix);
+
+            // shaderBuilder.addFragUniformParam(UniformConst.ShadowVSMParams);
+            // shaderBuilder.addVertUniformParam(UniformConst.ShadowMatrix);
+            this.m_uniformParam.use(shaderBuilder);
             shaderBuilder.addShaderObject(VSMShaderCode);
         }
     }
@@ -58,9 +62,12 @@ export default class ShadowVSMData implements IMaterialPipe{
     }
     useUniforms(shaderBuilder: IShaderCodeBuilder): void {
         if (this.m_uProbe != null) {
+            
             shaderBuilder.addDefine("VOX_USE_SHADOW", "1");
+
             shaderBuilder.addFragUniformParam(UniformConst.ShadowVSMParams);
             shaderBuilder.addVertUniformParam(UniformConst.ShadowMatrix);
+
             shaderBuilder.addFragFunction(VSMShaderCode.frag_head);           
             shaderBuilder.addVertFunction(VSMShaderCode.vert_head);           
             shaderBuilder.addVarying("vec4", "v_shadowPos");
@@ -98,11 +105,11 @@ export default class ShadowVSMData implements IMaterialPipe{
             this.m_uProbe.bindSlotAt(this.m_uslotIndex);
             this.m_uProbe.addMat4Data(this.m_direcMatrix.getLocalFS32(), 1);
             this.m_uProbe.addVec4Data(this.m_params, UniformConst.ShadowVSMParams.arrayLength);
-
-
-            this.m_suo = new ShaderGlobalUniform();
-            this.m_suo.uniformNameList = [UniformConst.ShadowMatrix.name, UniformConst.ShadowVSMParams.name];
-            this.m_suo.copyDataFromProbe(this.m_uProbe);
+            
+            this.m_suo = this.m_uniformParam.createGlobalUinform( this.m_uProbe );
+            // this.m_suo = new ShaderGlobalUniform();
+            // this.m_suo.uniformNameList = this.m_uniformParam.geNames();//[UniformConst.ShadowMatrix.name, UniformConst.ShadowVSMParams.name];
+            // this.m_suo.copyDataFromProbe(this.m_uProbe);
 
             this.m_uProbe.update();
         }

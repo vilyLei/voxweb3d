@@ -52,6 +52,7 @@ class LambertDirecLightShaderBuffer extends ShaderCodeBuffer {
 
         coder.addVarying("vec3", "v_nv");
         coder.addVarying("vec3", "v_worldPos");
+        
         coder.addFragOutput("vec4", "FragColor0");
         coder.addFragUniform("vec4", "u_color");
         coder.useVertSpaceMats(true, true, true);

@@ -134,7 +134,7 @@ class GlobalLightUniform {
     constructor() { }
     readonly type: string = "vec4";
     readonly positionName: string = "u_lightPositions";
-    readonly colorName: string = "u_lightColors";    
+    readonly colorName: string = "u_lightColors";
 }
 export default class UniformConst {
     /**

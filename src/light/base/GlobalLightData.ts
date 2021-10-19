@@ -13,11 +13,13 @@ import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
 import IShaderCodeBuilder from "../../vox/material/code/IShaderCodeBuilder";
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 import { IMaterialPipe } from "../../vox/material/pipeline/IMaterialPipe";
+import { GlobalLightUniformParam } from "../../vox/material/GlobalUniformParam";
 
 export default class GlobalLightData implements IMaterialPipe{
 
     private m_uid: number = -1;
     static s_uid: number = 0;
+    private m_uniformParam: GlobalLightUniformParam = new GlobalLightUniformParam();
     private m_pointLightPosList: Vector3D[] = null;
     private m_pointLightColorList: Color4[] = null;
     private m_direcLightDirecList: Vector3D[] = null;
@@ -112,9 +114,11 @@ export default class GlobalLightData implements IMaterialPipe{
             this.m_uProbe.addVec4Data(this.m_lightPositions, total);
             this.m_uProbe.addVec4Data(this.m_lightColors, total);
 
-            this.m_suo = new ShaderGlobalUniform();
-            this.m_suo.uniformNameList = [UniformConst.GlobalLight.positionName, UniformConst.GlobalLight.colorName];
-            this.m_suo.copyDataFromProbe(this.m_uProbe);
+            // this.m_suo = new ShaderGlobalUniform();
+            // this.m_suo.uniformNameList = this.m_uniformParam.geNames();
+            // this.m_suo.copyDataFromProbe(this.m_uProbe);
+            
+            this.m_suo = this.m_uniformParam.createGlobalUinform( this.m_uProbe );
 
             this.m_uProbe.update();
 
@@ -138,8 +142,7 @@ export default class GlobalLightData implements IMaterialPipe{
             if (lightsTotal > 0) shaderBuilder.addDefine("VOX_LIGHTS_TOTAL", "" + lightsTotal);
             else shaderBuilder.addDefine("VOX_LIGHTS_TOTAL", "0");
 
-            shaderBuilder.addFragUniform(UniformConst.GlobalLight.type, UniformConst.GlobalLight.positionName, this.m_lightTotal);
-            shaderBuilder.addFragUniform(UniformConst.GlobalLight.type, UniformConst.GlobalLight.colorName, this.m_lightTotal);
+            this.m_uniformParam.use(shaderBuilder, this.m_lightTotal);
         }
     }
     getPipeTypes(): MaterialPipeType[] {

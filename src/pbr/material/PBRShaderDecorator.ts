@@ -199,8 +199,6 @@ export default class PBRShaderDecorator {
         coder.addVarying("vec3", "v_worldPos");
         coder.addVarying("vec3", "v_worldNormal");
 
-        coder.addFragUniformParam(UniformConst.CameraPosParam);
-
         if (mirrorProjEnabled) {
             coder.addFragUniformParam(UniformConst.StageParam);
             coder.addFragUniform("vec4", "u_mirrorParams", 2);

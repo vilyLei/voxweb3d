@@ -14,11 +14,13 @@ import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 import { IMaterialPipe } from "../../vox/material/pipeline/IMaterialPipe";
 
 import { EnvShaderCode } from "../material/EnvShaderCode";
+import { GlobalEnvLightUniformParam } from "../../vox/material/GlobalUniformParam";
 
 export default class EnvLightData implements IMaterialPipe {
 
     private m_uid: number = -1;
     static s_uid: number = 0;
+    private m_uniformParam: GlobalEnvLightUniformParam = new GlobalEnvLightUniformParam();
     private m_uProbe: ShaderUniformProbe = null;
     private m_suo: ShaderGlobalUniform = null;
     private m_dirty: boolean = false;
@@ -75,8 +77,8 @@ export default class EnvLightData implements IMaterialPipe {
                 case MaterialPipeType.ENV_LIGHT_PARAM:
                 case MaterialPipeType.FOG:
                 case MaterialPipeType.FOG_EXP2:
-
-                    shaderBuilder.addFragUniformParam(UniformConst.EnvLightParams);
+                    this.m_uniformParam.use(shaderBuilder);
+                    //shaderBuilder.addFragUniformParam(UniformConst.EnvLightParams);
                     if (pipeType != MaterialPipeType.ENV_LIGHT_PARAM) {
                         this.useFogData(shaderBuilder, pipeType == MaterialPipeType.FOG_EXP2, true);
                     }
@@ -155,10 +157,10 @@ export default class EnvLightData implements IMaterialPipe {
             this.m_uProbe.addVec4Data(UniformConst.EnvLightParams.data, UniformConst.EnvLightParams.arrayLength);
             //this.m_uProbe.addVec4Data(this.m_data, 2);
 
-            this.m_suo = new ShaderGlobalUniform();
-            this.m_suo.uniformNameList = [UniformConst.EnvLightParams.name];
-            this.m_suo.copyDataFromProbe(this.m_uProbe);
-
+            // this.m_suo = new ShaderGlobalUniform();
+            // this.m_suo.uniformNameList = [UniformConst.EnvLightParams.name];
+            // this.m_suo.copyDataFromProbe(this.m_uProbe);
+            this.m_suo = this.m_uniformParam.createGlobalUinform( this.m_uProbe );
             this.m_uProbe.update();
 
         }

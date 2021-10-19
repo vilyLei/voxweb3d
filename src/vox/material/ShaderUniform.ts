@@ -7,7 +7,7 @@
 
 import IShaderUniform from "../../vox/material/IShaderUniform";
 import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
-import ShdProgram from "../../vox/material/ShdProgram";
+import IShdProgram from "../../vox/material/IShdProgram";
 import IRenderShader from "../../vox/render/IRenderShader";
 
 class ShaderUniform implements IShaderUniform
@@ -72,7 +72,7 @@ class ShaderUniform implements IShaderUniform
         this.uniformSize = probe.uniformsTotal;
     }
     useByLocation(rc:IRenderShader,type:number,location:any,i:number):void{}
-    useByShd(rc:IRenderShader,shd:ShdProgram):void{}
+    useByShd(rc:IRenderShader,shd:IShdProgram):void{}
     use(rc:IRenderShader):void{}
     updateData():void{}
     destroy():void{}
@@ -97,7 +97,7 @@ class ShaderUniformV1 extends ShaderUniform
     {
         rc.useUniformV1(location,type,this.dataList[i],this.dataSizeList[i]);
     }
-    useByShd(rc:IRenderShader,shd:ShdProgram):void
+    useByShd(rc:IRenderShader,shd:IShdProgram):void
     {
         let i:number = 0;
         for(; i < this.uniformSize; ++i)
@@ -165,7 +165,7 @@ class ShaderUniformV2 extends ShaderUniform
     {
         rc.useUniformV2(location,type,this.dataList[i],this.dataSizeList[i],0);
     }
-    useByShd(rc:IRenderShader,shd:ShdProgram):void
+    useByShd(rc:IRenderShader,shd:IShdProgram):void
     {
         let i:number = 0;
         for(; i < this.uniformSize; ++i)
@@ -232,7 +232,7 @@ class ShaderMat4Uniform extends ShaderUniform
     {
         rc.useUniformMat4(location, this.dataList[0]);
     }
-    useByShd(rc:IRenderShader,shd:ShdProgram):void
+    useByShd(rc:IRenderShader,shd:IShdProgram):void
     {
         rc.useUniformMat4(shd.getUniformLocationByNS(this.uniformNameList[0]), this.dataList[0]);
     }
