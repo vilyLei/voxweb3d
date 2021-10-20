@@ -48,7 +48,7 @@ export default class Box3DEntity extends DisplayEntity {
             cm.setTextureList(texList);
             this.setMaterial(cm);
         }
-        else {
+        else if (texList != null && this.getMaterial().getTextureTotal() < 1) {
             this.getMaterial().setTextureList(texList);
         }
     }

@@ -29,7 +29,7 @@ class DisplacementMapShaderBuffer extends ShaderCodeBuffer {
         if(this.fogEnabled) this.m_uniqueName += "Fog";
     }
     private buildThisCode(): void {
-        let coder = ShaderCodeBuffer.s_coder;
+        let coder = this.m_coder;
         coder.reset();
         coder.addVertLayout("vec3", "a_vs");
         coder.addVertLayout("vec3", "a_nvs");
@@ -49,6 +49,49 @@ class DisplacementMapShaderBuffer extends ShaderCodeBuffer {
         coder.addFragUniform("vec4", "u_color");
         coder.addVertUniform("vec4", "u_displacement");
         coder.useVertSpaceMats(true, true, true);
+
+
+        
+        this.m_coder.addFragMainCode(
+            `
+vec4 envColor = vec4(1.0);
+#ifdef VOX_USE_2D_MAP
+    vec2 colorUV = v_uv.xy * 16.0;
+    vec4 color = VOX_Texture2D(u_sampler0, v_uv.xy * 4.0);
+    vec4 color1 = VOX_Texture2D(u_sampler1, v_uv);
+    vec4 ao = VOX_Texture2D(VOX_DISPLACEMENT_MAP, v_uv);
+
+    envColor = color1;
+    
+    float f = v_param.x / 0.70;
+    color.xyz = mix( color.xyz, color1.xyz, f * f);
+    color.xyz *= (ao.xyz * 0.9 + vec3(0.1));
+    color *= u_color;
+    FragColor0 = color;
+#else
+    FragColor0 = u_color;
+#endif
+`
+        );
+        coder.addVertMainCode(
+            `
+vec3 objPos = a_vs;
+#ifdef VOX_USE_2D_MAP
+    v_uv = a_uvs.xy;
+#endif
+#ifdef VOX_DISPLACEMENT_MAP
+    float displacementScale = u_displacement.x;
+    float displacementBias = u_displacement.y;
+    v_param = VOX_Texture2D(VOX_DISPLACEMENT_MAP, v_uv.xy);
+    objPos += normalize( a_nvs ) * vec3( v_param.x * displacementScale + displacementBias );
+    //objPos += normalize( a_nvs ) * vec3( (1.0 - v_param.x) * displacementScale + displacementBias );
+#endif
+
+mat4 viewMat4 = u_viewMat * u_objMat;
+vec4 viewPos = viewMat4 * vec4(objPos, 1.0);
+gl_Position = u_projMat * viewPos;
+`
+        );
         if(this.fogEnabled) {
             if (this.envData != null) {
                 this.envData.useUniformsForFog(coder);
@@ -59,76 +102,35 @@ class DisplacementMapShaderBuffer extends ShaderCodeBuffer {
     getFragShaderCode(): string {
         this.buildThisCode();
 
-        ShaderCodeBuffer.s_coder.addFragMainCode(
-            `
+//         if(this.fogEnabled) {
+//             ShaderCodeBuffer.s_coder.addFragMainCode(
+// `
+//         #ifdef VOX_USE_FOG
+//         fogEnvColor = envColor.xyz;
+//         useFog( FragColor0.rgb );
 
-    vec4 envColor = vec4(1.0);
-    #ifdef VOX_USE_2D_MAP
-        vec2 colorUV = v_uv.xy * 16.0;
-        vec4 color = VOX_Texture2D(u_sampler0, v_uv.xy * 4.0);
-        vec4 color1 = VOX_Texture2D(u_sampler1, v_uv);
-        vec4 ao = VOX_Texture2D(VOX_DISPLACEMENT_MAP, v_uv);
-
-        envColor = color1;
-        
-        float f = v_param.x / 0.70;
-        color.xyz = mix( color.xyz, color1.xyz, f * f);
-        color.xyz *= (ao.xyz * 0.9 + vec3(0.1));
-        color *= u_color;
-        FragColor0 = color;
-    #else
-        FragColor0 = u_color;
-    #endif
-`
-        );
-        if(this.fogEnabled) {
-            ShaderCodeBuffer.s_coder.addFragMainCode(
-`
-        #ifdef VOX_USE_FOG
-        fogEnvColor = envColor.xyz;
-        useFog( FragColor0.rgb );
-
-        #endif               
-`
-            );
-        }
+//         #endif               
+// `
+//             );
+//         }
         return ShaderCodeBuffer.s_coder.buildFragCode();
     }
     getVtxShaderCode(): string {
 
         let coder = ShaderCodeBuffer.s_coder;
-        coder.addVertMainCode(
-            `
+        
 
-    vec3 objPos = a_vs;
-    #ifdef VOX_USE_2D_MAP
-        v_uv = a_uvs.xy;
-    #endif
-    #ifdef VOX_DISPLACEMENT_MAP
-        float displacementScale = u_displacement.x;
-        float displacementBias = u_displacement.y;
-        v_param = VOX_Texture2D(VOX_DISPLACEMENT_MAP, v_uv.xy);
-        objPos += normalize( a_nvs ) * vec3( v_param.x * displacementScale + displacementBias );
-        //objPos += normalize( a_nvs ) * vec3( (1.0 - v_param.x) * displacementScale + displacementBias );
-    #endif
-    
-    mat4 viewMat4 = u_viewMat * u_objMat;
-    vec4 viewPos = viewMat4 * vec4(objPos, 1.0);
-    gl_Position = u_projMat * viewPos;
-`
-        );
+//         if(this.fogEnabled) {
+//             coder.addVertMainCode(
+// `
+//     #ifdef VOX_USE_FOG
 
-        if(this.fogEnabled) {
-            coder.addVertMainCode(
-`
-    #ifdef VOX_USE_FOG
+//     calcFogDepth(viewPos);
 
-    calcFogDepth(viewPos);
-
-    #endif                
-`
-            );
-        }
+//     #endif                
+// `
+//             );
+//         }
         return coder.buildVertCode();
     }
     getUniqueShaderName(): string {

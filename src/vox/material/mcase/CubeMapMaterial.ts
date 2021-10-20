@@ -8,14 +8,12 @@
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
-import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
 
 class CubeMapShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
     private static s_instance: CubeMapShaderBuffer = null;
-    private m_codeBuilder: ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName: string = "";
     mapLodEnabled: boolean = false;
     gammaCorrectionEanbled: boolean = false;
@@ -28,7 +26,7 @@ class CubeMapShaderBuffer extends ShaderCodeBuffer {
     }
 
     private buildThisCode(): void {
-        let coder: ShaderCodeBuilder2 = this.m_codeBuilder;
+        let coder = this.m_coder;
         coder.reset();
         coder.mapLodEnabled = this.mapLodEnabled;
         coder.addTextureSampleCube();
@@ -49,7 +47,7 @@ class CubeMapShaderBuffer extends ShaderCodeBuffer {
     }
     getFragShaderCode(): string {
         this.buildThisCode();
-        this.m_codeBuilder.addFragMainCode(
+        this.m_coder.addFragMainCode(
             `
 #ifdef VOX_GAMMA
 vec3 gammaToLinear(vec3 color)
@@ -98,11 +96,11 @@ void main()
 }
 `
         );
-        return this.m_codeBuilder.buildFragCode();
+        return this.m_coder.buildFragCode();
     }
     getVtxShaderCode(): string {
 
-        this.m_codeBuilder.addVertMainCode(
+        this.m_coder.addVertMainCode(
             `
 void main()
 {
@@ -112,7 +110,7 @@ void main()
 }
 `
         );
-        return this.m_codeBuilder.buildVertCode();
+        return this.m_coder.buildVertCode();
     }
     getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);

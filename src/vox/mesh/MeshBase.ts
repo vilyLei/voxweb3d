@@ -172,6 +172,9 @@ export default class MeshBase
      */
     setBufSortFormat(layoutBit:number):void
     {
+        if(layoutBit < 1) {
+            console.error("vertex layoutBit is the error value(0x"+layoutBit.toString(16)+") in MeshBase::setBufSortFormat(), the material instance must initialize.");
+        }
         this.m_layoutBit = layoutBit;
     }
     getBufSortFormat():number

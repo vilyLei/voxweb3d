@@ -48,6 +48,7 @@ export default class MaterialBase implements IRenderMaterial {
         }
         return this.getShaderData() != null;
     }
+    /*
     initialize(shdCode_uniqueName: string, shdCode_vshdCode: string, shdCode_fshdCode: string, adaptationShaderVersion: boolean = true): void {
         if (this.getShaderData() == null) {
             ShaderCodeBuffer.UseShaderBuffer(null);
@@ -66,6 +67,7 @@ export default class MaterialBase implements IRenderMaterial {
             this.m_shdData = shdData;
         }
     }
+    //*/
     // get a shader code buf instance, for sub class override
     getCodeBuf(): ShaderCodeBuffer {
         if (MaterialBase.s_codeBuffer != null) {
@@ -108,6 +110,7 @@ export default class MaterialBase implements IRenderMaterial {
                 ShaderCodeBuffer.UseShaderBuffer(buf);
                 
                 MaterialBase.s_codeBuffer.initialize(texEnabled);
+                
                 let shdCode_uniqueName: string = MaterialBase.s_codeBuffer.getUniqueShaderName();
                 this.m_shduns = shdCode_uniqueName;
                 this.__$initShd(this.m_shduns);
@@ -124,7 +127,9 @@ export default class MaterialBase implements IRenderMaterial {
                         , ShaderCodeBuffer.GetPreCompileInfo()
                     );
                 }
-                if(this.m_pipeLine != null) this.m_sharedUniforms = this.m_pipeLine.getSharedUniforms();
+                if(this.m_pipeLine != null) {
+                    this.m_sharedUniforms = this.m_pipeLine.getSharedUniforms();
+                }
                 
                 ShaderCodeBuffer.UseShaderBuffer(null);
                 this.m_shdData = shdData;

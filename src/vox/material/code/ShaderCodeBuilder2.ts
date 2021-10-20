@@ -88,6 +88,7 @@ precision mediump float;
      */
     private m_preCompileInfo: ShaderCompileInfo = null;
 
+    normalEanbled: boolean = false;
     normalMapEanbled: boolean = false;
     mapLodEnabled: boolean = false;
     derivatives: boolean = false;
@@ -148,6 +149,7 @@ precision mediump float;
         this.m_textureFlags = [];
         this.m_texturePrecise = "";
 
+        this.normalEanbled = false;
         this.normalMapEanbled = false;
         this.mapLodEnabled = false;
         this.vertMatrixInverseEnabled = false;
@@ -174,26 +176,41 @@ precision mediump float;
         this.m_preciousCode = "precision lowp float;";
     }
     addDefine(name: string, value: string = "1"): void {
-        this.m_defineNames.push(name);
-        this.m_defineValues.push(value);
+
+        if (!this.m_defineNames.includes(name)) {
+            this.m_defineNames.push(name);
+            this.m_defineValues.push(value);
+        }
     }
     addVertLayout(type: string, name: string): void {
-        this.m_vertLayoutNames.push(name);
-        this.m_vertLayoutTypes.push(type);
+
+        if (!this.m_vertLayoutNames.includes(name)) {
+            this.m_vertLayoutNames.push(name);
+            this.m_vertLayoutTypes.push(type);
+        }
     }
     addFragOutputHighp(type: string, name: string): void {
-        this.m_fragOutputPrecises.push("highp");
-        this.m_fragOutputNames.push(name);
-        this.m_fragOutputTypes.push(type);
+
+        if (!this.m_fragOutputNames.includes(name)) {
+            this.m_fragOutputPrecises.push("highp");
+            this.m_fragOutputNames.push(name);
+            this.m_fragOutputTypes.push(type);
+        }
     }
     addFragOutput(type: string, name: string): void {
-        this.m_fragOutputPrecises.push("");
-        this.m_fragOutputNames.push(name);
-        this.m_fragOutputTypes.push(type);
+
+        if (!this.m_fragOutputNames.includes(name)) {
+            this.m_fragOutputPrecises.push("");
+            this.m_fragOutputNames.push(name);
+            this.m_fragOutputTypes.push(type);
+        }
     }
     addVarying(type: string, name: string): void {
-        this.m_varyingNames.push(name);
-        this.m_varyingTypes.push(type);
+
+        if (!this.m_varyingNames.includes(name)) {
+            this.m_varyingNames.push(name);
+            this.m_varyingTypes.push(type);
+        }
     }
     addVertUniform(type: string, name: string, arrayLength: number = 0): void {
 
@@ -224,6 +241,10 @@ precision mediump float;
     addFragUniformParam(unifromParam: IUniformParam): void {
         this.addFragUniform(unifromParam.type, unifromParam.name, unifromParam.arrayLength);
     }
+    addVertAndFragUniform(type: string, name: string, arrayLength: number = 0): void {
+        this.addVertUniform(type, name, arrayLength);
+        this.addFragUniform(type, name, arrayLength);
+    }
     //IUniformParam
     addFragFunction(codeBlock: string): void {
         this.m_fragFunctionBlocks.push(codeBlock);
@@ -235,44 +256,49 @@ precision mediump float;
         this.m_texturePrecise = "highp";
     }
     addTextureSample2D(macroName: string = "", map2DEnabled: boolean = true, fragEnabled: boolean = true, vertEnabled: boolean = false): void {
-        
-        this.m_textureSampleTypes.push("sampler2D");
-        this.m_textureMacroNames.push(macroName);
-        
-        this.m_texturePrecises.push(this.m_texturePrecise);
-
-        let flag: number = 0;
-        if(fragEnabled) flag |= 2;
-        if(vertEnabled) flag |= 4;
-        this.m_textureFlags.push(flag);
-
-        this.m_texturePrecise = "";
-        if (map2DEnabled) {
-            this.m_use2DMap = true;
+        if(macroName == "" || !this.m_textureMacroNames.includes(macroName)) {
+            this.m_textureSampleTypes.push("sampler2D");
+            this.m_textureMacroNames.push(macroName);
+            
+            this.m_texturePrecises.push(this.m_texturePrecise);
+    
+            let flag: number = 0;
+            if(fragEnabled) flag |= 2;
+            if(vertEnabled) flag |= 4;
+            this.m_textureFlags.push(flag);
+    
+            this.m_texturePrecise = "";
+            if (map2DEnabled) {
+                this.m_use2DMap = true;
+            }
         }
     }
     addTextureSampleCube(macroName: string = "", fragEnabled: boolean = true, vertEnabled: boolean = false): void {
 
-        this.m_textureSampleTypes.push("samplerCube");
-        this.m_textureMacroNames.push(macroName);
-        this.m_texturePrecises.push(this.m_texturePrecise);
-        
-        let flag: number = 0;
-        if(fragEnabled) flag |= 2;
-        if(vertEnabled) flag |= 4;
-        this.m_textureFlags.push(flag);
-        this.m_texturePrecise = "";
+        if(macroName == "" || !this.m_textureMacroNames.includes(macroName)) {
+            this.m_textureSampleTypes.push("samplerCube");
+            this.m_textureMacroNames.push(macroName);
+            this.m_texturePrecises.push(this.m_texturePrecise);
+            
+            let flag: number = 0;
+            if(fragEnabled) flag |= 2;
+            if(vertEnabled) flag |= 4;
+            this.m_textureFlags.push(flag);
+            this.m_texturePrecise = "";
+        }
     }
     addTextureSample3D(macroName: string = "", fragEnabled: boolean = true, vertEnabled: boolean = false): void {
 
-        this.m_textureSampleTypes.push("sampler3D");
-        this.m_textureMacroNames.push(macroName);
-        this.m_texturePrecises.push(this.m_texturePrecise);
-        let flag: number = 0;
-        if(fragEnabled) flag |= 2;
-        if(vertEnabled) flag |= 4;
-        this.m_textureFlags.push(flag);
-        this.m_texturePrecise = "";
+        if(macroName == "" || !this.m_textureMacroNames.includes(macroName)) {
+            this.m_textureSampleTypes.push("sampler3D");
+            this.m_textureMacroNames.push(macroName);
+            this.m_texturePrecises.push(this.m_texturePrecise);
+            let flag: number = 0;
+            if(fragEnabled) flag |= 2;
+            if(vertEnabled) flag |= 4;
+            this.m_textureFlags.push(flag);
+            this.m_texturePrecise = "";
+        }
     }
     isHaveTexture(): boolean {
         return this.m_textureSampleTypes.length > 0;
@@ -322,7 +348,26 @@ precision mediump float;
         this.addFragHeadCode( shaderObj.frag_head );
         this.addVertMainCode( shaderObj.vert_head );
     }
+
+    private autoBuildHeadCode(): void {
+
+        this.addVertLayout("vec3", "a_vs");
+        if(this.m_use2DMap) {
+            this.addVertLayout("vec2", "a_uvs");
+            this.addVarying("vec2", "v_uv");
+        }
+        if(this.normalEanbled || this.normalMapEanbled) {
+            this.addVertLayout("vec3", "a_nvs");
+            this.addVarying("vec3", "v_nv");
+            this.addVarying("vec3", "v_worldPosition");
+        }
+        if(this.m_fragOutputNames.length < 1) {
+            this.addFragOutput("vec4", "FragColor0");
+        }
+    }
     buildFragCode(): string {
+
+        this.autoBuildHeadCode();
 
         let i: number = 0;
         let len: number = 0;

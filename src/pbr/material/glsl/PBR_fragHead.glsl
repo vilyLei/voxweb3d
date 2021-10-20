@@ -1,11 +1,4 @@
 
-#define PI 3.141592653589793
-#define PI2 6.283185307179586
-#define PI_HALF 1.5707963267948966
-#define RECIPROCAL_PI 0.3183098861837907
-#define RECIPROCAL_PI2 0.15915494309189535
-#define EPSILON 1e-6
-
 const vec3 vec3One = vec3(1.0);
 // ----------------------------------------------------------------------------
 
@@ -294,6 +287,7 @@ vec3 fixSeams(vec3 vec, float cubeTexsize ) {
 		return lightScatter * viewScatter;
 	}
 #endif
+
 struct RadianceLight {
 	vec3 diffuse;
 	vec3 specular;
@@ -309,6 +303,7 @@ struct RadianceLight {
     float sideIntensity;
     float specularPower;
 };
+#if VOX_LIGHTS_TOTAL > 0
 void calcPBRLight(float roughness, vec3 rm, in vec3 inColor, inout RadianceLight rL) {
     // rm is remainder metallic: vec3(1.0 - metallic)
 
@@ -355,7 +350,7 @@ void calcPBRLight(float roughness, vec3 rm, in vec3 inColor, inout RadianceLight
     rL.specular += specular * inColor * specularScatter;
 
 }
-
+#endif
 const vec2 noise2 = vec2(12.9898,78.233);
 const vec3 noise3 = vec3(12.9898,78.233,158.5453);
 vec2 rand(vec2 seed) {

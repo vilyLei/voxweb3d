@@ -57,6 +57,46 @@ export default class GlobalLightData implements IMaterialPipe{
     getColorData(): Float32Array {
         return this.m_lightColors;
     }
+    setPointLightAt(index: number, position: Vector3D, color: Color4): void {
+        
+        let i: number = index * 4;
+        if(position != null && this.m_pointLightPosList != null && index < this.m_pointLightPosList.length) {
+            this.m_pointLightPosList[index].copyFrom( position );
+            if(this.m_lightPositions != null) {
+                this.m_lightPositions[i] = position.x;
+                this.m_lightPositions[i+1] = position.y;
+                this.m_lightPositions[i+2] = position.z;
+            }
+        }
+        if(color != null && this.m_pointLightColorList != null && index < this.m_pointLightColorList.length) {
+            this.m_pointLightColorList[index].copyFrom( color );
+            if(this.m_lightColors != null) {
+                this.m_lightColors[i] = color.r;
+                this.m_lightColors[i+1] = color.g;
+                this.m_lightColors[i+2] = color.b;
+            }
+        }
+    }
+    setDirecLightAt(index: number, direc: Vector3D, color: Color4): void {
+        
+        let i: number = (this.m_pointLightPosList.length + index) * 4;
+        if(direc != null) {
+            this.m_direcLightDirecList[index].copyFrom( direc );
+            if(this.m_lightPositions != null) {
+                this.m_lightPositions[i] = direc.x;
+                this.m_lightPositions[i+1] = direc.y;
+                this.m_lightPositions[i+2] = direc.z;
+            }
+        }
+        if(color != null) {
+            this.m_direcLightColorList[index].copyFrom( color );
+            if(this.m_lightColors != null) {
+                this.m_lightColors[i] = color.r;
+                this.m_lightColors[i+1] = color.g;
+                this.m_lightColors[i+2] = color.b;
+            }
+        }
+    }
     buildData(): void {
 
         let total: number = this.m_lightTotal;
@@ -108,19 +148,13 @@ export default class GlobalLightData implements IMaterialPipe{
         }
 
         if (this.m_uProbe == null) {
-
+            console.log("this.m_lightColors: ",this.m_lightColors);
             this.m_uProbe = new ShaderUniformProbe();
             this.m_uProbe.bindSlotAt(this.m_uslotIndex);
             this.m_uProbe.addVec4Data(this.m_lightPositions, total);
             this.m_uProbe.addVec4Data(this.m_lightColors, total);
 
-            // this.m_suo = new ShaderGlobalUniform();
-            // this.m_suo.uniformNameList = this.m_uniformParam.geNames();
-            // this.m_suo.copyDataFromProbe(this.m_uProbe);
-            
             this.m_suo = this.m_uniformParam.createGlobalUinform( this.m_uProbe );
-
-            this.m_uProbe.update();
 
         }
     }
@@ -134,6 +168,7 @@ export default class GlobalLightData implements IMaterialPipe{
 
         if (this.m_uProbe != null) {
 
+            shaderBuilder.normalEanbled = true;
             let lightsTotal: number = this.getPointLightsTotal() + this.getDirecLightsTotal();
             if (this.getPointLightsTotal() > 0) shaderBuilder.addDefine("VOX_POINT_LIGHTS_TOTAL", "" + this.getPointLightsTotal());
             else shaderBuilder.addDefine("VOX_POINT_LIGHTS_TOTAL", "0");
@@ -154,7 +189,7 @@ export default class GlobalLightData implements IMaterialPipe{
             case MaterialPipeType.GLOBAL_LIGHT:
                 let key: string = "";
                 if (this.getPointLightsTotal() > 0) key = "" + this.getPointLightsTotal();
-                if (this.getDirecLightsTotal() > 0) key = "" + this.getDirecLightsTotal();
+                if (this.getDirecLightsTotal() > 0) key += "" + this.getDirecLightsTotal();
                 if(key != "") {
                     return "["+pipeType+":"+key+"]";
                 }
@@ -180,7 +215,6 @@ export default class GlobalLightData implements IMaterialPipe{
         for (let i: number = 0; i < lightsTotal; ++i) {
             let pv: Vector3D = posList[i] = new Vector3D();
             pv.setXYZ(Math.random() - 0.5, 0.0, Math.random() - 0.5);
-            pv.normalize();
             pv.scaleBy(this.lightBaseDis + Math.random() * 100.0);
             pv.y = (Math.random() - 0.5) * (this.lightBaseDis * 2.0);
         }

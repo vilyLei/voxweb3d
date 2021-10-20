@@ -17,7 +17,7 @@ import DemoInstance from "./DemoInstance";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import ThreadSystem from "../thread/ThreadSystem";
 import {MatComputerTask} from "../demo/thread/MatComputerTask";
-import LambertDirecLightMaterial from "../vox/material/mcase/LambertDirecLightMaterial";
+import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
 export class DemoMatComputer extends DemoInstance
 {
     constructor()
@@ -74,7 +74,7 @@ export class DemoMatComputer extends DemoInstance
         ,"moss_05.jpg"
         ,"metal_02.jpg"
     ];
-    private m_material: LambertDirecLightMaterial = new LambertDirecLightMaterial();
+    private m_material: LambertLightMaterial = new LambertLightMaterial();
     private buildTask():void
     {
         let texnsI:number = this.m_matTasks.length;
@@ -93,7 +93,7 @@ export class DemoMatComputer extends DemoInstance
         if(this.m_srcBox == null)
         {
             this.m_srcBox = new Box3DEntity();
-            this.m_srcBox.setMaterial( new LambertDirecLightMaterial() );
+            this.m_srcBox.setMaterial( new LambertLightMaterial() );
             this.m_srcBox.initialize(new Vector3D(-100.0,-100.0,-100.0),new Vector3D(100.0,100.0,100.0),[tex1]);
         }
         let box:Box3DEntity;

@@ -21,7 +21,7 @@ import DisplacementMapMaterial from "./material/DisplacementMapMaterial";
 
 import EnvLightData from "../light/base/EnvLightData";
 
-import LambertDirecLightMaterial from "../vox/material/mcase/LambertDirecLightMaterial";
+import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
 
 export class DemoDisplacementMap {
 
@@ -76,7 +76,7 @@ export class DemoDisplacementMap {
             //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
             //this.m_rscene.addEntity(plane);
             /*
-            let material: LambertDirecLightMaterial = new LambertDirecLightMaterial();
+            let material: LambertLightMaterial = new LambertLightMaterial();
             material.normalMapEnabled = true;
             material.displacementMapEnabled = true;
             material.setTextureList([
@@ -134,7 +134,6 @@ export class DemoDisplacementMap {
             this.m_rscene.addEntity(entity);
 
             this.update();
-
         }
     }
     private mouseDown(evt: any): void {

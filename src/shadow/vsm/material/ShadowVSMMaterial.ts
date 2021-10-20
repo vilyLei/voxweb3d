@@ -14,6 +14,8 @@ import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeTyp
 class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
     private static s_instance: ShadowVSMShaderBuffer = new ShadowVSMShaderBuffer();
     private m_uniqueName: string = "";
+    private m_pipeTypes: MaterialPipeType[] = null;
+    private m_keysString: string = "";
     constructor() {
         super();
     }
@@ -23,21 +25,23 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
         //console.log("ShadowVSMShaderBuffer::initialize()...,texEnabled: "+texEnabled);
         this.m_uniqueName = "ShadowVSMShd";
         this.adaptationShaderVersion = false;
+        if(this.pipeline != null) {
+            this.m_pipeTypes = [MaterialPipeType.VSM_SHADOW, MaterialPipeType.FOG_EXP2];
+            this.pipeline.createKeys(this.m_pipeTypes);
+            this.m_keysString = this.pipeline.getKeysString();
+            this.pipeline.buildSharedUniforms(this.m_pipeTypes);
+        }
     }
     private buildThisCode(): void {
 
         let coder: ShaderCodeBuilder2 = this.m_coder;
-
-        coder.addVertLayout("vec3", "a_vs");
-        coder.addVertLayout("vec2", "a_uvs");
-        coder.addVertLayout("vec3", "a_nvs");
+        coder.normalEanbled = true;
+        
         coder.addTextureSample2D("VOX_VSM_MAP");
         coder.addTextureSample2D();
 
-        coder.addVarying("vec2", "v_uv");
         coder.addVarying("vec3", "v_worldNormal");
-        coder.addFragOutput("vec4", "FragColor0");
-
+        
         coder.addFragUniform("vec4", "u_color");
 
         coder.useVertSpaceMats(true, true, true);
@@ -67,13 +71,7 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
         );
         
         if(this.pipeline != null) {
-
-            let types: MaterialPipeType[] = [];
-
-            types.push( MaterialPipeType.VSM_SHADOW );
-            types.push( MaterialPipeType.FOG_EXP2 );
-
-            this.pipeline.build(this.m_coder, types);
+            this.pipeline.build(this.m_coder, this.m_pipeTypes);
         }
     }
     getFragShaderCode(): string {

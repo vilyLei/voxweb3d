@@ -6,7 +6,6 @@
 /***************************************************************************/
 
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
-import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import MathConst from "../../../vox/math/MathConst";
@@ -15,7 +14,6 @@ class PostOutlineShaderBuffer extends ShaderCodeBuffer {
         super();
     }
     private static s_instance: PostOutlineShaderBuffer = new PostOutlineShaderBuffer();
-    private m_codeBuilder: ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName: string = "";
     
     initialize(texEnabled: boolean): void {
@@ -26,7 +24,7 @@ class PostOutlineShaderBuffer extends ShaderCodeBuffer {
     }
     private buildThisCode(): void {
 
-        let coder: ShaderCodeBuilder2 = this.m_codeBuilder;
+        let coder = this.m_coder;
         coder.reset();
 
         coder.addVertLayout("vec3", "a_vs");
@@ -45,7 +43,7 @@ class PostOutlineShaderBuffer extends ShaderCodeBuffer {
     getFragShaderCode(): string {
         this.buildThisCode();
 
-        this.m_codeBuilder.addFragMainCode(
+        this.m_coder.addFragMainCode(
 `
 const float factor = 1.0 / 9.0;
 void main() {
@@ -72,10 +70,10 @@ void main() {
 `
         );
 
-        return this.m_codeBuilder.buildFragCode();
+        return this.m_coder.buildFragCode();
     }
     getVtxShaderCode(): string {
-        this.m_codeBuilder.addVertMainCode(
+        this.m_coder.addVertMainCode(
 `
 void main() {
     gl_Position = vec4(a_vs, 1.0);
@@ -83,7 +81,7 @@ void main() {
 }
 `
         );
-        return this.m_codeBuilder.buildVertCode();
+        return this.m_coder.buildVertCode();
 
     }
     getUniqueShaderName(): string {

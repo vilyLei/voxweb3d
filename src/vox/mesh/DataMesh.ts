@@ -20,6 +20,9 @@ export default class DataMesh extends MeshBase
     }
 
     vsStride: number = 3;
+    uvsStride: number = 2;
+    nvsStride: number = 3;
+    cvsStride: number = 3;
 
     vs:Float32Array = null
     uvs:Float32Array = null;
@@ -51,13 +54,13 @@ export default class DataMesh extends MeshBase
             ROVertexBuffer.Reset();
             ROVertexBuffer.AddFloat32Data(this.vs,this.vsStride);
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
-                ROVertexBuffer.AddFloat32Data(this.uvs,2);
+                ROVertexBuffer.AddFloat32Data(this.uvs,this.uvsStride);
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
-                ROVertexBuffer.AddFloat32Data(this.nvs,3);
+                ROVertexBuffer.AddFloat32Data(this.nvs, this.nvsStride);
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX)) {
-                ROVertexBuffer.AddFloat32Data(this.cvs,3);
+                ROVertexBuffer.AddFloat32Data(this.cvs,this.cvsStride);
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX)) {
                 ROVertexBuffer.AddFloat32Data(this.tvs,3);
@@ -74,6 +77,7 @@ export default class DataMesh extends MeshBase
             else {
                 this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage(),this.getBufSortFormat());
             }
+            console.log("this.m_ivs: ",this.m_ivs);
             this.m_vbuf.setUintIVSData(this.m_ivs);
             this.buildEnd();
         }

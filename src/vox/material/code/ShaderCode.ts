@@ -7,13 +7,29 @@
 export default class MathShaderCode
 {
     constructor(){}
-    static readonly FragPredefined: string = "";
+    static readonly FragPredefined: string =
+`
+#define PI 3.141592653589793
+#define PI2 6.283185307179586
+#define PI_HALF 1.5707963267948966
+#define RECIPROCAL_PI 0.3183098861837907
+#define RECIPROCAL_PI2 0.15915494309189535
+#define EPSILON 1e-6
+`;
     static readonly FragDefined: string =
 `
 vec4 worldPosition = vec4(0.0);
 vec3 worldNormal = vec3(0.0);
 `;
-    static readonly VertPredefined: string = "";
+    static readonly VertPredefined: string =
+`
+#define PI 3.141592653589793
+#define PI2 6.283185307179586
+#define PI_HALF 1.5707963267948966
+#define RECIPROCAL_PI 0.3183098861837907
+#define RECIPROCAL_PI2 0.15915494309189535
+#define EPSILON 1e-6
+`;
     static readonly VertDefined: string =
 `
 vec4 localPosition = vec4(0.0,0.0,0.0,1.0);

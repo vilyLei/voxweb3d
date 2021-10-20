@@ -60,19 +60,19 @@ export default class ShadowVSMData implements IMaterialPipe{
         }
         return "";
     }
-    useUniforms(shaderBuilder: IShaderCodeBuilder): void {
-        if (this.m_uProbe != null) {
+    // useUniforms(shaderBuilder: IShaderCodeBuilder): void {
+    //     if (this.m_uProbe != null) {
             
-            shaderBuilder.addDefine("VOX_USE_SHADOW", "1");
+    //         shaderBuilder.addDefine("VOX_USE_SHADOW", "1");
 
-            shaderBuilder.addFragUniformParam(UniformConst.ShadowVSMParams);
-            shaderBuilder.addVertUniformParam(UniformConst.ShadowMatrix);
+    //         shaderBuilder.addFragUniformParam(UniformConst.ShadowVSMParams);
+    //         shaderBuilder.addVertUniformParam(UniformConst.ShadowMatrix);
 
-            shaderBuilder.addFragFunction(VSMShaderCode.frag_head);           
-            shaderBuilder.addVertFunction(VSMShaderCode.vert_head);           
-            shaderBuilder.addVarying("vec4", "v_shadowPos");
-        }
-    }
+    //         shaderBuilder.addFragFunction(VSMShaderCode.frag_head);           
+    //         shaderBuilder.addVertFunction(VSMShaderCode.vert_head);           
+    //         shaderBuilder.addVarying("vec4", "v_shadowPos");
+    //     }
+    // }
     initialize(): void {
 
         if (this.m_uProbe == null) {

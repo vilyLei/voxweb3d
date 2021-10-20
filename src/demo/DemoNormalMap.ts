@@ -17,7 +17,15 @@ import Vector3D from "../vox/math/Vector3D";
 
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
-import LambertDirecLightMaterial from "../vox/material/mcase/LambertDirecLightMaterial";
+import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
+
+import {MaterialPipeline} from "../vox/material/pipeline/MaterialPipeline";
+import GlobalLightData from "../light/base/GlobalLightData";
+import Color4 from "../vox/material/Color4";
+import RendererState from "../vox/render/RendererState";
+import EnvLightData from "../light/base/EnvLightData";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 
 export class DemoNormalMap {
 
@@ -28,6 +36,10 @@ export class DemoNormalMap {
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
+
+    private m_lightData: GlobalLightData = new GlobalLightData();
+    private m_envData: EnvLightData = new EnvLightData();
+    private m_materialPipeline: MaterialPipeline = null;
 
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl, 0, false, false);
@@ -46,6 +58,7 @@ export class DemoNormalMap {
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
             let rparam: RendererParam = new RendererParam();
+            rparam.setCamProject(45,10.0,8000.0);
             rparam.setAttriAntialias(true);
             rparam.setCamPosition(800.0, 800.0, 800.0);
             this.m_rscene = new RendererScene();
@@ -57,31 +70,152 @@ export class DemoNormalMap {
             this.m_statusDisp.initialize();
 
             this.m_rscene.enableMouseEvent(true);
+
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
+            let areaSize: number = 500.0
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+            let color: Color4 = new Color4(1.0,1.0,0.0);
+            this.m_lightData.initialize(2, 2);
+            //color.randomRGB();
+            this.m_lightData.setPointLightAt(0, new Vector3D(Math.random() * areaSize - 0.5 * areaSize, 50 + Math.random() * 100,Math.random() * 600 - 300), color);
+            //color.randomRGB();
+            this.m_lightData.setPointLightAt(1, new Vector3D((Math.random() * areaSize - 0.5 * areaSize, 50 + Math.random() * 100,Math.random() * 600 - 300)), color);
+            
+            this.m_lightData.setDirecLightAt(0, new Vector3D(1.0,1.0,1.0), new Color4(0.0,0.0,1.0));
+            this.m_lightData.setDirecLightAt(1, new Vector3D(-1.0,1.0,1.0), new Color4(2.0,0.0,1.0));
+            this.m_lightData.buildData();
 
-            let axis: Axis3DEntity = new Axis3DEntity();
-            axis.initialize(300.0);
-            this.m_rscene.addEntity(axis);
+            this.m_envData = new EnvLightData();
+            this.m_envData.initialize();
+            this.m_envData.setFogColorRGB3f(0.0, 0.8, 0.1);
 
-            let material: LambertDirecLightMaterial = new LambertDirecLightMaterial();
-            material.normalMapEnabled = true;
-            material.setTextureList([
-                this.getImageTexByUrl("static/assets/noise.jpg"),
-                this.getImageTexByUrl("static/assets/circleWave_norm.png")
-            ]);
+            this.m_materialPipeline = new MaterialPipeline();
+            this.m_materialPipeline.addPipe( this.m_lightData );
+            this.m_materialPipeline.addPipe( this.m_envData );
+            // this.m_materialPipeline.addPipe( this.m_vsmModule.getVSMData() );
 
+            // let axis: Axis3DEntity = new Axis3DEntity();
+            // axis.initialize(300.0);
+            // this.m_rscene.addEntity(axis);
+
+            let material: LambertLightMaterial = new LambertLightMaterial();
+            this.useMaps(material, "metal_08");
+            material.setMaterialPipeline( this.m_materialPipeline );
+            material.fogEnabled = true;
+            material.initializeLocalData();
+            color.normalizeRandom(1.1);
+            //console.log("color: ",color);
+            material.setColor( color );
+            color.setRGB3f(0.1, 0.1, 0.1);
+            material.setSpecularColor( color );
+
+            // material.setTextureList([
+            //     this.getImageTexByUrl("static/assets/floor02.jpg"),
+            //     this.getImageTexByUrl("static/assets/circleWave_norm.png"),
+            //     this.getImageTexByUrl("static/assets/circleWave_disp.png")
+            // ]);
+            ///*
+            material.initializeLocalData();
+            material.setSpecularIntensity(32.0);
+            color.normalizeRandom(1.1);
+            material.setColor( color );
+            color.setRGB3f(0.01, 0.01, 0.01);
+            material.setSpecularColor( color );
+            let sph: Sphere3DEntity = new Sphere3DEntity();
+            sph.setMaterial(material);
+            sph.initialize(150.0,100,100);
+            this.m_rscene.addEntity(sph);
+            let srcEntity: DisplayEntity = sph;
+            ///*
+            material = new LambertLightMaterial();
+            this.useMaps(material, "lava_03");
+            material.setMaterialPipeline( this.m_materialPipeline );
+            material.initializeLocalData();
+            material.fogEnabled = true;
+            color.normalizeRandom(1.1);
+            material.setColor( color );
+            //material.setSpecularColor( color );
+            sph = new Sphere3DEntity();
+            sph.copyMeshFrom(srcEntity);
+            sph.setMaterial(material);
+            sph.initialize(150.0,100,100);
+            sph.setXYZ(300,0.0,300);
+            this.m_rscene.addEntity(sph);
+            //*/
+            /*
             // add common 3d display entity
             let plane: Plane3DEntity = new Plane3DEntity();
             plane.setMaterial(material);
             plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0);
             this.m_rscene.addEntity(plane);
-            this.update();
+            //*/
+            ///*
+            let size: number = 400.0;
+            let gridGeom: QuadGridMeshGeometry = new QuadGridMeshGeometry();
+            gridGeom.normalEnabled = true;
+            //gridGeom.normalScale = -1.0;
+            gridGeom.initializeXOZPlane(new Vector3D(-0.5 * size, 0, -0.5 * size), size,size, 120,120);
+            //console.log("gridGeom: ", gridGeom);
 
+            let dataMesh: DataMesh = new DataMesh();
+            //dataMesh.wireframe = true;
+            dataMesh.setBufSortFormat(material.getBufSortFormat());
+            dataMesh.initializeFromGeometry(gridGeom);
+            
+            let entity: DisplayEntity = new DisplayEntity();
+            entity.setMaterial(material);
+            entity.setMesh(dataMesh);
+            entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+            //entity.setScaleXYZ(4.0,12.0,4.0);
+            //entity.setXYZ(0,-400,0);
+            this.m_rscene.addEntity(entity);
+            //*/
+            this.m_material = material;
+            this.m_material.setDisplacementParams(this.m_dispHeight,0.0);
+            
+            this.initEnvBox();
+
+            
+            this.update();
         }
     }
+    private useMaps(material: LambertLightMaterial, ns: string): void {
+        material.diffuseMap =           this.getImageTexByUrl("static/assets/disp/"+ns+"_COLOR.png");
+        material.normalMap =            this.getImageTexByUrl("static/assets/disp/"+ns+"_NRM.png");
+        material.displacementMap =      this.getImageTexByUrl("static/assets/disp/"+ns+"_DISP.png");
+        material.aoMap =                this.getImageTexByUrl("static/assets/disp/"+ns+"_OCC.png");
+        material.specularMap =          this.getImageTexByUrl("static/assets/disp/"+ns+"_SPEC.png");
+
+    }
+    private usebaseMaps(material: LambertLightMaterial, ns: string): void {
+        material.diffuseMap =           this.getImageTexByUrl("static/assets/disp/"+ns+"_COLOR.png");
+        //material.normalMap =            this.getImageTexByUrl("static/assets/disp/"+ns+"_NRM.png");
+        //material.displacementMap =      this.getImageTexByUrl("static/assets/disp/"+ns+"_DISP.png");
+        material.aoMap =                this.getImageTexByUrl("static/assets/disp/"+ns+"_OCC.png");
+        material.specularMap =          this.getImageTexByUrl("static/assets/disp/"+ns+"_SPEC.png");
+
+    }
+    private initEnvBox(): void {
+        
+        let material: LambertLightMaterial = new LambertLightMaterial();
+        this.usebaseMaps(material, "box");
+        material.setMaterialPipeline( this.m_materialPipeline );
+        material.fogEnabled = true;
+
+        material.initializeLocalData();
+        material.initializeByCodeBuf( true );
+
+        let envBox: Box3DEntity = new Box3DEntity();
+        envBox.normalScale = -1.0;
+        envBox.setMaterial( material );
+        envBox.showFrontFace();
+        envBox.initializeCube(4000.0);
+        this.m_rscene.addEntity(envBox);
+    }
+    private m_dispHeight: number = 10;
+    private m_material: LambertLightMaterial = null;
     private mouseDown(evt: any): void {
 
     }
@@ -94,7 +228,11 @@ export class DemoNormalMap {
         this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
         this.m_statusDisp.render();
     }
+    private m_time: number = 0.0;
     run(): void {
+
+        this.m_time += 0.01;
+        //this.m_material.setDisplacementParams(this.m_dispHeight * (1.0 + Math.cos(this.m_time)), 0.0);
 
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);

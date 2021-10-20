@@ -73,6 +73,7 @@ export default class PBRShaderDecorator {
             }
             this.pipeline.createKeys(this.m_pipeTypes);
             this.m_keysString = this.pipeline.getKeysString();
+            this.pipeline.buildSharedUniforms(this.m_pipeTypes);
 
             let texList: TextureProxy[] = [];
             

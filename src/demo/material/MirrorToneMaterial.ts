@@ -8,7 +8,6 @@
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
-import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
 import Matrix4 from "../../vox/math/Matrix4";
 import Vector3D from "../../vox/math/Vector3D";
 import RendererDevice from "../../vox/render/RendererDevice";
@@ -18,7 +17,6 @@ class MirrorToneShaderBuffer extends ShaderCodeBuffer {
         super();
     }
     private static s_instance: MirrorToneShaderBuffer = new MirrorToneShaderBuffer();
-    private m_shdodeBuilder: ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName: string = "";
     mapLodEnabled: boolean = false;
     initialize(texEnabled: boolean): void {
@@ -28,7 +26,7 @@ class MirrorToneShaderBuffer extends ShaderCodeBuffer {
         if (this.mapLodEnabled) this.m_uniqueName += "Lod";
     }
     private buildThisCode(): void {
-        let coder: ShaderCodeBuilder2 = this.m_shdodeBuilder;
+        let coder = this.m_coder;
         coder.normalMapEanbled = true;
         coder.mapLodEnabled = this.mapLodEnabled;
         coder.reset();
@@ -89,7 +87,7 @@ vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 wpos, vec3 nv)
     getFragShaderCode(): string {
         this.buildThisCode();
 
-        this.m_shdodeBuilder.addFragMainCode(
+        this.m_coder.addFragMainCode(
             `
 void main() {
 
@@ -113,11 +111,11 @@ void main() {
 `
         );
 
-        return this.m_shdodeBuilder.buildFragCode();
+        return this.m_coder.buildFragCode();
     }
     getVtxShaderCode(): string {
 
-        let coder: ShaderCodeBuilder2 = this.m_shdodeBuilder;
+        let coder = this.m_coder;
         coder.addVertMainCode(
 
             `

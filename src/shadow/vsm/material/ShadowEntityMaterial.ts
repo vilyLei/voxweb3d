@@ -6,7 +6,6 @@
 /***************************************************************************/
 
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
-import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import MaterialBase from "../../../vox/material/MaterialBase";
@@ -18,7 +17,6 @@ class ShadowEntityShaderBuffer extends ShaderCodeBuffer {
         super();
     }
     private static s_instance: ShadowEntityShaderBuffer = new ShadowEntityShaderBuffer();
-    private m_codeBuilder: ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName: string = "";
     initialize(texEnabled: boolean): void {
         super.initialize(texEnabled);
@@ -28,7 +26,7 @@ class ShadowEntityShaderBuffer extends ShaderCodeBuffer {
     }
     private buildThisCode(): void {
 
-        let coder: ShaderCodeBuilder2 = this.m_codeBuilder;
+        let coder = this.m_coder;
         coder.reset();
         //  if(RendererDevice.IsWebGL1()) {
         //      coder.addFragExtend("#extension GL_OES_standard_derivatives : enable");
@@ -114,7 +112,7 @@ float getVSMShadow( sampler2D shadowMap, vec2 shadowMapSize, float shadowBias, f
     getFragShaderCode(): string {
         this.buildThisCode();
 
-        this.m_codeBuilder.addFragMainCode(
+        this.m_coder.addFragMainCode(
 `
 void main() {
     vec4 color = texture( u_sampler0, v_uv );
@@ -130,10 +128,10 @@ void main() {
 `
         );
 
-        return this.m_codeBuilder.buildFragCode();
+        return this.m_coder.buildFragCode();
     }
     getVtxShaderCode(): string {
-        this.m_codeBuilder.addVertMainCode(
+        this.m_coder.addVertMainCode(
             `
 void main() {
     vec4 wpos = u_objMat * vec4(a_vs, 1.0);
@@ -147,7 +145,7 @@ void main() {
 }
 `
         );
-        return this.m_codeBuilder.buildVertCode();
+        return this.m_coder.buildVertCode();
 
     }
     getUniqueShaderName(): string {

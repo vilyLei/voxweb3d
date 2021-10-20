@@ -109,7 +109,7 @@ export class DemoVSMModule {
             this.m_vsmModule.setColorIntensity(0.3);
 
             this.m_materialPipeline = new MaterialPipeline();
-            this.m_materialPipeline.addPipe(this.m_envData);
+            this.m_materialPipeline.addPipe( this.m_envData );
             this.m_materialPipeline.addPipe( this.m_vsmModule.getVSMData() );
 
             this.m_dracoMeshLoader.initialize(2);
@@ -203,7 +203,7 @@ export class DemoVSMModule {
         plane.initializeXOZ(-600.0, -600.0, 1200.0, 1200.0, [shadowTex, this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
         plane.setXYZ(0.0, -1.0, 0.0);
         this.m_rscene.addEntity(plane);
-
+        
         let envBox: Box3DEntity = new Box3DEntity();
         this.useMaterial(envBox);
         envBox.showAllFace();

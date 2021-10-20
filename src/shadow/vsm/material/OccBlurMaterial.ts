@@ -5,63 +5,48 @@
 /*                                                                         */
 /***************************************************************************/
 
-import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
-import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import MaterialBase from "../../../vox/material/MaterialBase";
-import RendererDevice from "../../../vox/render/RendererDevice";
+import UniformConst from "../../../vox/material/UniformConst";
 
-class OccBlurShaderBuffer extends ShaderCodeBuffer
-{
-    constructor()
-    {
+class OccBlurShaderBuffer extends ShaderCodeBuffer {
+    constructor() {
         super();
     }
-    private static s_instance:OccBlurShaderBuffer = null;
-    private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
-    private m_uniqueName:string = "";
-    private m_hasTex:boolean = false;
+    private static s_instance: OccBlurShaderBuffer = null;
+    private m_uniqueName: string = "";
+    private m_hasTex: boolean = false;
     horizonal: boolean = true;
-    initialize(texEnabled:boolean):void
-    {
-        console.log("OccBlurShaderBuffer::initialize()... texEnabled: "+texEnabled);
+    initialize(texEnabled: boolean): void {
+        console.log("OccBlurShaderBuffer::initialize()... texEnabled: " + texEnabled);
         this.m_uniqueName = "OccBlurShd";
         this.m_hasTex = texEnabled;
-        if(texEnabled)
-        {
+        if (texEnabled) {
             this.m_uniqueName += "_tex";
         }
     }
-    private buildThisCode():void
-    {
+    private buildThisCode(): void {
 
-        let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
-        coder.reset();
-
-        if(this.horizonal) {
+        let coder = this.m_coder;
+        
+        if (this.horizonal) {
             coder.addDefine("HORIZONAL_PASS");
         }
-        
+
         coder.addDefine("SAMPLE_RATE", "0.25");
         coder.addDefine("HALF_SAMPLE_RATE", "0.125");
 
-        //SAMPLE_RATE
-        coder.addVertLayout("vec3","a_vs");
-        
-        coder.addTextureSample2D();
-
-        coder.addFragOutput("vec4", "FragColor0");
-        coder.addFragUniform("vec4","u_viewParam");
-        coder.addFragUniform("vec4","u_param");
+        coder.addTextureSample2D("",false);
+        coder.addFragUniformParam(UniformConst.ViewParam);
+        coder.addFragUniform("vec4", "u_param");
     }
-    getFragShaderCode():string
-    {
+    getFragShaderCode(): string {
         this.buildThisCode();
-        
-        let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
+
+        let coder = this.m_coder;
         coder.addFragMainCode(
-`
+            `
 const float PackUpscale = 256. / 255.; // fraction -> 0..1 (including 1)
 const float UnpackDownscale = 255. / 256.; // 0..1 -> fraction (excluding 1)
 
@@ -125,35 +110,30 @@ void main() {
 
 }
 `
-            );
-        return this.m_codeBuilder.buildFragCode();
+        );
+        return this.m_coder.buildFragCode();
     }
-    getVtxShaderCode():string
-    {
-        let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
+    getVtxShaderCode(): string {
+        let coder = this.m_coder;
         coder.addVertMainCode(
-`
+            `
 void main() {
     gl_Position =  vec4(a_vs,1.0);
 }
 `
         );
-        return this.m_codeBuilder.buildVertCode();
+        return this.m_coder.buildVertCode();
     }
-    getUniqueShaderName(): string
-    {
+    getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
-        return this.m_uniqueName + (this.horizonal?"_h":"_v");
+        return this.m_uniqueName + (this.horizonal ? "_h" : "_v");
     }
-    toString():string
-    {
+    toString(): string {
         return "[OccBlurShaderBuffer()]";
     }
 
-    static GetInstance():OccBlurShaderBuffer
-    {
-        if(OccBlurShaderBuffer.s_instance != null)
-        {
+    static GetInstance(): OccBlurShaderBuffer {
+        if (OccBlurShaderBuffer.s_instance != null) {
             return OccBlurShaderBuffer.s_instance;
         }
         OccBlurShaderBuffer.s_instance = new OccBlurShaderBuffer();
@@ -161,29 +141,24 @@ void main() {
     }
 }
 
-export default class OccBlurMaterial extends MaterialBase
-{
+export default class OccBlurMaterial extends MaterialBase {
     private m_horizonal: boolean = true;
-    constructor(horizonal: boolean)
-    {
+    constructor(horizonal: boolean) {
         super();
         this.m_horizonal = horizonal;
     }
-    
-    getCodeBuf():ShaderCodeBuffer
-    {
+
+    getCodeBuf(): ShaderCodeBuffer {
         let buf: OccBlurShaderBuffer = OccBlurShaderBuffer.GetInstance();
         buf.horizonal = this.m_horizonal;
         return buf;
     }
-    private m_param:Float32Array = new Float32Array([1.0,1.0,1.0, 4.0]);
-    setShadowRadius(radius: number):void
-    {
+    private m_param: Float32Array = new Float32Array([1.0, 1.0, 1.0, 4.0]);
+    setShadowRadius(radius: number): void {
         this.m_param[3] = radius;
     }
-    createSelfUniformData():ShaderUniformData
-    {
-        let oum:ShaderUniformData = new ShaderUniformData();
+    createSelfUniformData(): ShaderUniformData {
+        let oum: ShaderUniformData = new ShaderUniformData();
         oum.uniformNameList = ["u_param"];
         oum.dataList = [this.m_param];
         return oum;

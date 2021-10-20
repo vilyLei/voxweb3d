@@ -9,14 +9,12 @@ import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import MaterialBase from "../../../vox/material/MaterialBase";
-import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
 
 class ScreenPlaneShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
     private static s_instance: ScreenPlaneShaderBuffer = null;
-    private m_codeBuilder: ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName: string = "";
     private m_hasTex: boolean = false;
     mapLodEnabled: boolean = false;
@@ -30,7 +28,7 @@ class ScreenPlaneShaderBuffer extends ShaderCodeBuffer {
     }
 
     private buildThisCode(): void {
-        let coder: ShaderCodeBuilder2 = this.m_codeBuilder;
+        let coder = this.m_coder;
         coder.reset();
         coder.addVertLayout("vec3", "a_vs");
         if (this.m_hasTex) {
@@ -51,7 +49,7 @@ class ScreenPlaneShaderBuffer extends ShaderCodeBuffer {
     getFragShaderCode(): string {
         this.buildThisCode();
         if (this.m_hasTex) {
-            this.m_codeBuilder.addFragMainCode(
+            this.m_coder.addFragMainCode(
                 `
 void main() {
     #ifdef VOX_Texture2DLod
@@ -68,7 +66,7 @@ void main() {
         }
         else {
 
-            this.m_codeBuilder.addFragMainCode(
+            this.m_coder.addFragMainCode(
                 `
 void main() {
     FragColor0 = u_param[0] + u_param[1];
@@ -76,11 +74,11 @@ void main() {
 `
             );
         }
-        return this.m_codeBuilder.buildFragCode();
+        return this.m_coder.buildFragCode();
     }
     getVtxShaderCode(): string {
         if (this.m_hasTex) {
-            this.m_codeBuilder.addVertMainCode(
+            this.m_coder.addVertMainCode(
                 `
 void main() {
     gl_Position = u_objMat * vec4(a_vs,1.0);
@@ -91,7 +89,7 @@ void main() {
         }
         else {
 
-            this.m_codeBuilder.addVertMainCode(
+            this.m_coder.addVertMainCode(
                 `
 void main() {
     gl_Position = u_objMat * vec4(a_vs,1.0);
@@ -99,7 +97,7 @@ void main() {
 `
             );
         }
-        return this.m_codeBuilder.buildVertCode();
+        return this.m_coder.buildVertCode();
     }
     getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);

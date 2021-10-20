@@ -67,8 +67,6 @@ class MaterialPipeline {
     createKeys(pipetypes: MaterialPipeType[]):void {
 
         //console.log("#### MaterialPipeline::createKeys(), pipetypes: ",pipetypes);
-
-        this.m_sharedUniforms = [];
         this.m_keys = [];
         if(pipetypes != null) {
 
@@ -84,13 +82,30 @@ class MaterialPipeline {
             }
         }
     }
+    
+    buildSharedUniforms(pipetypes: MaterialPipeType[]):void {
+
+        this.m_sharedUniforms = [];
+        if(pipetypes != null) {
+            let pipe: IMaterialPipe;
+            let type: MaterialPipeType;
+            let types: MaterialPipeType[] = pipetypes;
+            for(let i: number = 0; i < types.length; ++i) {
+                type = types[i];
+                if(this.m_pipeMap.has(type)) {
+                    pipe = this.m_pipeMap.get( type );
+                    this.m_sharedUniforms.push( pipe.getGlobalUinform() );
+                }
+            }
+
+        }
+    }
     build(shaderBuilder: IShaderCodeBuilder, pipetypes: MaterialPipeType[]):void {
 
         //console.log("#### MaterialPipeline::build(), pipetypes: ",pipetypes);
         if(this.m_shaderCode != null) {
             shaderBuilder.addShaderObject( this.m_shaderCode );
         }
-        this.m_sharedUniforms = [];
         if(pipetypes != null) {
 
             let pipe: IMaterialPipe;
@@ -101,8 +116,6 @@ class MaterialPipeline {
                 if(this.m_pipeMap.has(type)) {
                     pipe = this.m_pipeMap.get( type );
                     pipe.useShaderPipe(shaderBuilder, type);
-                    //this.m_keys.push( pipe.getPipeKey( type ) );
-                    this.m_sharedUniforms.push( pipe.getGlobalUinform() );
                 }
             }
 

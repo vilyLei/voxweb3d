@@ -15,6 +15,7 @@ export default class QuadGridMeshGeometry extends GeometryBase {
     uScale: number = 1.0;
     vScale: number = 1.0;
     uvType: number = 0;
+    normalScale: number = 1.0;
 
     normalEnabled: boolean = false;
     tangentEnabled: boolean = false;
@@ -23,18 +24,52 @@ export default class QuadGridMeshGeometry extends GeometryBase {
         super();
     }
 
-    initializeXOZPlane(beginPos: Vector3D, width: number = 300, long: number = 300, rn: number = 4,cn: number = 4): void {
+    initializeXOYPlane(beginPos: Vector3D, width: number = 300, height: number = 300, rn: number = 4, cn: number = 4): void {
 
         let posTable: Vector3D[][] = new Array(rn);
-        let dv: Vector3D = new Vector3D(width/cn,0,long/rn);
-        for(let r: number = 0; r < rn; ++r) {
+        let dv: Vector3D = new Vector3D(width / cn, height / rn, 0.0);
+        for (let r: number = 0; r < rn; ++r) {
             let row: Vector3D[] = new Array(cn);
-            for(let c: number = 0; c < cn; ++c) {
+            for (let c: number = 0; c < cn; ++c) {
+                row[cn - c - 1] = new Vector3D(
+                    beginPos.x + c * dv.x,
+                    beginPos.y + r * dv.y,
+                    beginPos.z
+                );
+            }
+            posTable[r] = row;
+        }
+        this.initialize(posTable);
+    }
+    initializeXOZPlane(beginPos: Vector3D, width: number = 300, long: number = 300, rn: number = 4, cn: number = 4): void {
+
+        let posTable: Vector3D[][] = new Array(rn);
+        let dv: Vector3D = new Vector3D(width / cn, 0.0, long / rn);
+        for (let r: number = 0; r < rn; ++r) {
+            let row: Vector3D[] = new Array(cn);
+            for (let c: number = 0; c < cn; ++c) {
                 row[cn - c - 1] = new Vector3D(
                     beginPos.x + c * dv.x,
                     beginPos.y,
                     beginPos.z + r * dv.z
-                    );
+                );
+            }
+            posTable[r] = row;
+        }
+        this.initialize(posTable);
+    }
+    initializeYOZPlane(beginPos: Vector3D, height: number = 300, long: number = 300, rn: number = 4, cn: number = 4): void {
+
+        let posTable: Vector3D[][] = new Array(rn);
+        let dv: Vector3D = new Vector3D(0.0, height / cn, long / rn);
+        for (let r: number = 0; r < rn; ++r) {
+            let row: Vector3D[] = new Array(cn);
+            for (let c: number = 0; c < cn; ++c) {
+                row[cn - c - 1] = new Vector3D(
+                    beginPos.x,
+                    beginPos.y + c * dv.y,
+                    beginPos.z + r * dv.z
+                );
             }
             posTable[r] = row;
         }
@@ -93,7 +128,7 @@ export default class QuadGridMeshGeometry extends GeometryBase {
         let b: number = 0;
         tot = tot - 1;
         let ivsLen: number = tot * subLen * 6;
-        if(ivsLen < 65535) {
+        if (ivsLen < 65535) {
             this.m_ivs = new Uint16Array(ivsLen);
         }
         else {
@@ -111,12 +146,19 @@ export default class QuadGridMeshGeometry extends GeometryBase {
 
         let numTriangles: number = this.m_ivs.length / 3;
         if (this.normalEnabled || this.tangentEnabled) {
-            this.m_nvs = new Float32Array( this.m_vs.length );
+            this.m_nvs = new Float32Array(this.m_vs.length);
             SurfaceNormalCalc.ClacTrisNormal(this.m_vs, this.m_vs.length, numTriangles, this.m_ivs, this.m_nvs);
+            if (this.normalScale != 1.0) {
+                tot = this.m_nvs.length;
+                for (i = 0; i < tot; i += 3) {
+                    this.m_nvs[i] *= this.normalScale;
+                    this.m_nvs[i + 1] *= this.normalScale;
+                    this.m_nvs[i + 2] *= this.normalScale;
+                }
+            }
         }
 
-        if (this.tangentEnabled)
-        {
+        if (this.tangentEnabled) {
             this.m_tvs = new Float32Array(this.m_vs.length);
             this.m_btvs = new Float32Array(this.m_vs.length);
             SurfaceNormalCalc.ClacTrisTangent(this.m_vs, this.m_vs.length, this.m_uvs, this.m_nvs, numTriangles, this.m_ivs, this.m_tvs, this.m_btvs);

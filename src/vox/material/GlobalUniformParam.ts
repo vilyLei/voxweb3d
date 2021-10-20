@@ -20,6 +20,7 @@ class GlobalUniformParamBase {
         let suo: ShaderGlobalUniform = new ShaderGlobalUniform();
         suo.uniformNameList = this.geNames();
         suo.copyDataFromProbe(uProbe);
+        uProbe.update();
         return suo;
     }
 }
@@ -60,8 +61,7 @@ class GlobalLightUniformParam extends GlobalUniformParamBase {
     geNames(): string[] {
         return [UniformConst.GlobalLight.positionName, UniformConst.GlobalLight.colorName];
     }
-    use(shaderBuilder: IShaderCodeBuilder, total: number = 1): void {   
-
+    use(shaderBuilder: IShaderCodeBuilder, total: number = 1): void {
         shaderBuilder.addFragUniformParam(UniformConst.CameraPosParam);
         shaderBuilder.addFragUniform(UniformConst.GlobalLight.type, UniformConst.GlobalLight.positionName, total);
         shaderBuilder.addFragUniform(UniformConst.GlobalLight.type, UniformConst.GlobalLight.colorName, total);

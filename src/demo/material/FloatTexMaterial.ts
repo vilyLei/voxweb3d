@@ -8,7 +8,6 @@
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
-import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
 
 class FloatTexRenderShaderBuffer extends ShaderCodeBuffer
 {
@@ -17,7 +16,6 @@ class FloatTexRenderShaderBuffer extends ShaderCodeBuffer
         super();
     }
     private static s_instance:FloatTexRenderShaderBuffer = null;
-    private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -28,7 +26,7 @@ class FloatTexRenderShaderBuffer extends ShaderCodeBuffer
     
     private buildThisCode():void
     {
-        let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
+        let coder = this.m_coder;
         coder.reset();
         //coder.vertMatrixInverseEnabled = true;
         coder.mapLodEnabled = true;
@@ -55,7 +53,7 @@ class FloatTexRenderShaderBuffer extends ShaderCodeBuffer
     {
         this.buildThisCode();
         
-        this.m_codeBuilder.addFragMainCode(
+        this.m_coder.addFragMainCode(
 `
 void main() {
     vec4 color4 = VOX_Texture2DLod( u_sampler0, v_uv, 6.0 ) * u_color;
@@ -65,12 +63,12 @@ void main() {
 `
                                     );
                     
-                    return this.m_codeBuilder.buildFragCode();
+                    return this.m_coder.buildFragCode();
     }
     getVtxShaderCode():string
     {
         
-        this.m_codeBuilder.addVertMainCode(
+        this.m_coder.addVertMainCode(
 `
 void main() {
 
@@ -82,7 +80,7 @@ void main() {
 }
 `
                                     );
-        return this.m_codeBuilder.buildVertCode();
+        return this.m_coder.buildVertCode();
     }
     getUniqueShaderName(): string
     {

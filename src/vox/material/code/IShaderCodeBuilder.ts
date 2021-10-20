@@ -11,6 +11,7 @@ import IAbstractShader from "../../../vox/material/IAbstractShader";
 
 export default interface IShaderCodeBuilder {
     
+    normalEanbled: boolean;
     normalMapEanbled: boolean;
     mapLodEnabled: boolean;
     derivatives: boolean;

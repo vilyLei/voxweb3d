@@ -17,6 +17,8 @@ class TerrainpShaderBuffer extends ShaderCodeBuffer {
 
     private static s_instance: TerrainpShaderBuffer = new TerrainpShaderBuffer();
     private m_uniqueName: string = "";
+    private m_pipeTypes: MaterialPipeType[] = null;
+    private m_keysString: string = "";
 
     fogEnabled: boolean = true;
 
@@ -31,6 +33,16 @@ class TerrainpShaderBuffer extends ShaderCodeBuffer {
         this.m_uniqueName = "TerrainpShd";
         if(texEnabled) this.m_uniqueName += "Tex";
         if(this.fogEnabled) this.m_uniqueName += "Fog";
+
+        if(this.pipeline != null) {
+            this.m_pipeTypes = [];
+            if(this.fogEnabled) {
+                this.m_pipeTypes.push( MaterialPipeType.FOG_EXP2 );
+            }
+            this.pipeline.createKeys(this.m_pipeTypes);
+            this.m_keysString = this.pipeline.getKeysString();
+            this.pipeline.buildSharedUniforms(this.m_pipeTypes);
+        }
     }
     private buildThisCode(): void {
 
@@ -56,14 +68,8 @@ class TerrainpShaderBuffer extends ShaderCodeBuffer {
         
         this.m_coder.addShaderObject( TerrainShaderCode );
 
-        if(this.pipeline != null) {
-            
-            let types: MaterialPipeType[] = [];
-            if(this.fogEnabled) {                
-
-                types.push( MaterialPipeType.FOG_EXP2 );
-            }       
-            this.pipeline.build(this.m_coder, types);
+        if(this.pipeline != null) {     
+            this.pipeline.build(this.m_coder, this.m_pipeTypes);
         }
     }
 

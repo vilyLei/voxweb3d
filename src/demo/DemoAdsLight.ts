@@ -15,7 +15,7 @@ import RendererScene from "../vox/scene/RendererScene";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import AdsLightMaterial from "../vox/material/mcase/AdsLightMaterial";
-import LambertDirecLightMaterial from "../vox/material/mcase/LambertDirecLightMaterial";
+import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
 
 export class DemoAdsLight {
     constructor() { }
@@ -64,7 +64,7 @@ export class DemoAdsLight {
             //  this.m_rscene.addEntity(axis);
 
             //let material: AdsLightMaterial = new AdsLightMaterial();
-            let material: LambertDirecLightMaterial = new LambertDirecLightMaterial();
+            let material: LambertLightMaterial = new LambertLightMaterial();
             // add common 3d display entity
             let plane: Plane3DEntity = new Plane3DEntity();
             plane.setMaterial(material);
