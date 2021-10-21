@@ -15,175 +15,14 @@ import { MaterialPipeType } from "../pipeline/MaterialPipeType";
 import IAbstractShader from "../../../vox/material/IAbstractShader";
 import Color4 from "../Color4";
 import TextureProxy from "../../texture/TextureProxy";
-class LambertLightShdCode implements IAbstractShader {
-    uuid: string = "lambertLightShdCode";
-    vert: string = "";
-    vert_head: string =
-`
-void displaceLocalVtx(in vec2 param) {
-    
-    #ifdef VOX_DISPLACEMENT_MAP
-        float dispFactor = VOX_Texture2D(VOX_DISPLACEMENT_MAP, v_uv.xy).x;
-        localPosition.xyz += normalize( a_nvs ) * vec3( dispFactor * param.x + param.y );
-    #endif
-}
-`;
-    vert_body: string =
-`
-    localPosition.xyz = a_vs;
+import {LambertLightShaderCode} from "./glsl/LambertLightShaderCode";
 
-    #ifdef VOX_USE_2D_MAP
-        v_uv = a_uvs.xy;
-    #endif
-
-    #ifdef VOX_DISPLACEMENT_MAP
-        displaceLocalVtx( u_localParams[2].xy );
-    #endif
-
-    worldPosition = u_objMat * localPosition;
-    viewPosition = u_viewMat * worldPosition;
-    gl_Position = u_projMat * viewPosition;
-    v_worldPosition = worldPosition.xyz;
-
-    v_worldNormal = normalize(a_nvs * inverse(mat3(u_objMat)));
-`;
-    frag: string = "";
-    frag_head: string =
-`
-
-#ifdef VOX_NORMAL_MAP
-vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 nv)
-{
-    vec3 tangentNormal = VOX_Texture2D(texSampler, texUV).xyz * 2.0 - 1.0;
-
-    vec3 Q1  = dFdx(worldPosition.xyz);
-    vec3 Q2  = dFdy(worldPosition.xyz);
-    vec2 st1 = dFdx(texUV);
-    vec2 st2 = dFdy(texUV);
-
-    vec3 N   = normalize(nv);
-    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);
-    vec3 B  = normalize(cross(T, N));
-
-    mat3 TBN = mat3(T, B, N);
-
-    return TBN * tangentNormal;
-}
-#endif
-#ifdef VOX_LIGHTS_TOTAL
-#if VOX_LIGHTS_TOTAL > 0
-
-struct LambertLight {
-	vec3 normal;
-    // diffuse color
-	vec3 diffuse;
-    // specular color
-	vec3 specular;
-    // view direction
-    vec3 viewDirec;
-    // light direction
-    vec3 direc;
-    // light color
-    vec3 color;
-    // light distance attenuation factor
-    vec4 param;
-    float specularPower;
-};
-
-vec3 calcLambertLight(in LambertLight light) {
-
-    float nDotL = max(dot(light.normal, light.direc), 0.0);
-	vec3 baseColor = nDotL * light.diffuse * light.color;
-	vec3 viewDir = normalize(light.direc + light.viewDirec);
-	vec3 lightColor = light.specular * nDotL * pow(max(dot(light.normal, light.viewDirec), 0.0), light.specularPower);
-    vec2 param = light.param.xy;
-	return (baseColor * param.x + param.y * lightColor);
-}
-
-#endif
-vec3 getLambertLightColor(in LambertLight light) {
-    #if VOX_LIGHTS_TOTAL > 0
-        vec3 destColor = vec3(0.0);
-        // point light process
-        #if VOX_POINT_LIGHTS_TOTAL > 0
-            vec2 param = light.param.zw;
-            for(int i = 0; i < VOX_POINT_LIGHTS_TOTAL; ++i)
-            {
-                // calculate per-light radiance
-                light.direc = normalize(u_lightPositions[i].xyz - worldPosition.xyz);
-                float distance = length(light.direc);
-                float attenuation = 1.0 / (1.0 + param.x * distance + param.y * distance * distance);
-                light.color = u_lightColors[i].xyz * attenuation;
-                destColor += calcLambertLight( light );
-            }
-        #endif
-        // parallel light process
-        #if VOX_DIRECTION_LIGHTS_TOTAL > 0
-            for(int i = VOX_POINT_LIGHTS_TOTAL; i < VOX_LIGHTS_TOTAL; ++i) 
-            {
-                light.direc = normalize(u_lightPositions[i].xyz);
-                light.color = u_lightColors[i].xyz;
-                destColor += calcLambertLight( light );
-            }
-        #endif
-        return destColor;
-    #else
-        return srcColor.xyz;
-    #endif
-}
-#endif
-`;
-    frag_body: string =
-`
-    worldNormal.xyz = v_worldNormal;
-    worldPosition.xyz = v_worldPosition;
-
-    vec4 color = u_localParams[0];
-    #ifdef VOX_DIFFUSE_MAP
-        color = color * VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv.xy);
-    #endif
-    color.xyz += u_localParams[1].xyz;
-    #ifdef VOX_NORMAL_MAP
-        worldNormal.xyz = (getNormalFromMap(VOX_NORMAL_MAP, v_uv, worldNormal.xyz));
-    #endif
-    
-    #ifdef LIGHT_LOCAL_PARAMS_INDEX
-
-        vec3 viewDir = normalize(u_cameraPosition.xyz - worldPosition.xyz);        
-        int lightParamIndex = LIGHT_LOCAL_PARAMS_INDEX;
-        vec4 param = u_localParams[ LIGHT_LOCAL_PARAMS_INDEX ];
-        
-        LambertLight light;
-        light.normal = worldNormal.xyz;
-        light.viewDirec = viewDir;
-        light.diffuse = color.xyz;
-        light.specular = param.xyz;
-        light.specularPower = param.w;
-        light.param = u_localParams[ LIGHT_LOCAL_PARAMS_INDEX + 1 ];
-
-        #ifdef VOX_SPECULAR_MAP
-            light.specularPower *= VOX_Texture2D(VOX_SPECULAR_MAP, v_uv.xy).z;
-            light.specularPower += 8.0;
-        #endif
-        vec3 destColor = getLambertLightColor(light);
-        param = u_localParams[ LIGHT_LOCAL_PARAMS_INDEX + 2 ];
-        color.xyz = color.xyz * param.x + param.y * destColor;
-    #endif
-    
-    #ifdef VOX_AO_MAP
-        color.xyz *= VOX_Texture2D(VOX_AO_MAP, v_uv.xy).yyy;
-    #endif
-
-    FragColor0 = color;
-`;
-}
 class LambertLightShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
 
     private static s_instance: LambertLightShaderBuffer = new LambertLightShaderBuffer();
-    private static s_shaderCode: LambertLightShdCode = null;
     private m_uniqueName: string = "";
     private m_pipeTypes: MaterialPipeType[] = null;
     private m_keysString: string = "";
@@ -277,12 +116,8 @@ class LambertLightShaderBuffer extends ShaderCodeBuffer {
             coder.addDefine("LIGHT_LOCAL_PARAMS_INDEX",""+lightParamIndex);
         }
 
-        if(LambertLightShaderBuffer.s_shaderCode == null) {
-            LambertLightShaderBuffer.s_shaderCode = new LambertLightShdCode();
-        }
-        
         if(this.pipeline != null) {
-            this.pipeline.addShaderCode(LambertLightShaderBuffer.s_shaderCode);
+            this.pipeline.addShaderCode(LambertLightShaderCode);
             this.pipeline.build(coder, this.m_pipeTypes);
         }
     }
