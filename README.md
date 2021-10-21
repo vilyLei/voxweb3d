@@ -39,7 +39,10 @@ Feature:
     10.2D UI 系统支持。
        2D UI System support.
 
-    11.PC鼠标和移动端(包括Pad)touch事件支持。
+    11.渲染场景空间管理系统支持。
+       Rendering scene space management system support.
+
+    12.PC鼠标和移动端(包括Pad)touch事件支持。
        pc web clinet mouse event and mobile(pad) touch event support.
 
 Engine code under the path: "src\vox\"
