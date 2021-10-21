@@ -358,7 +358,7 @@ precision mediump float;
         }
         if(this.normalEanbled || this.normalMapEanbled) {
             this.addVertLayout("vec3", "a_nvs");
-            this.addVarying("vec3", "v_nv");
+            this.addVarying("vec3", "v_worldNormal");
             this.addVarying("vec3", "v_worldPosition");
         }
         if(this.m_fragOutputNames.length < 1) {

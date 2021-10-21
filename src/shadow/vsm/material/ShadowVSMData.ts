@@ -60,19 +60,6 @@ export default class ShadowVSMData implements IMaterialPipe{
         }
         return "";
     }
-    // useUniforms(shaderBuilder: IShaderCodeBuilder): void {
-    //     if (this.m_uProbe != null) {
-            
-    //         shaderBuilder.addDefine("VOX_USE_SHADOW", "1");
-
-    //         shaderBuilder.addFragUniformParam(UniformConst.ShadowVSMParams);
-    //         shaderBuilder.addVertUniformParam(UniformConst.ShadowMatrix);
-
-    //         shaderBuilder.addFragFunction(VSMShaderCode.frag_head);           
-    //         shaderBuilder.addVertFunction(VSMShaderCode.vert_head);           
-    //         shaderBuilder.addVarying("vec4", "v_shadowPos");
-    //     }
-    // }
     initialize(): void {
 
         if (this.m_uProbe == null) {
@@ -105,12 +92,7 @@ export default class ShadowVSMData implements IMaterialPipe{
             this.m_uProbe.bindSlotAt(this.m_uslotIndex);
             this.m_uProbe.addMat4Data(this.m_direcMatrix.getLocalFS32(), 1);
             this.m_uProbe.addVec4Data(this.m_params, UniformConst.ShadowVSMParams.arrayLength);
-            
             this.m_suo = this.m_uniformParam.createGlobalUinform( this.m_uProbe );
-            // this.m_suo = new ShaderGlobalUniform();
-            // this.m_suo.uniformNameList = this.m_uniformParam.geNames();//[UniformConst.ShadowMatrix.name, UniformConst.ShadowVSMParams.name];
-            // this.m_suo.copyDataFromProbe(this.m_uProbe);
-
             this.m_uProbe.update();
         }
     }
@@ -129,7 +111,6 @@ export default class ShadowVSMData implements IMaterialPipe{
             this.m_camVersion = camera.version;
             this.m_direcMatrix.copyFrom(camera.getVPMatrix());
             this.m_direcMatrix.append(this.m_offetMatrix);
-
             this.setDirec(camera.getNV());
             this.m_dirty = true;
         }
@@ -176,7 +157,6 @@ export default class ShadowVSMData implements IMaterialPipe{
     upadate(): void {
 
         if (this.m_dirty && this.m_uProbe != null) {
-
             this.m_dirty = false;
             this.m_uProbe.update();
         }

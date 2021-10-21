@@ -18,7 +18,6 @@ export default class PBRShaderDecorator {
     }
 
     private m_uniqueName: string = "PBRShd";
-    private m_has2DMap: boolean = false;
     private m_pipeTypes: MaterialPipeType[] = null;
     private m_keysString: string = "";
     
@@ -127,11 +126,19 @@ export default class PBRShaderDecorator {
         this.hdrBrnEnabled = src.hdrBrnEnabled;
         this.vtxFlatNormal = src.vtxFlatNormal;
 
+        
+        this.envMap = src.envMap;
+        this.diffuseMap = src.diffuseMap;
+        this.normalMap = src.normalMap;
+        this.aoMap = src.aoMap;
+        this.mirrorMap = src.mirrorMap;
+        this.indirectEnvMap = src.indirectEnvMap;
+        this.vsmShadowMap = src.vsmShadowMap;
+
         this.lightEnabled = src.lightEnabled;
         this.texturesTotal = src.texturesTotal;
 
         this.m_uniqueName = src.m_uniqueName;
-        this.m_has2DMap = src.m_has2DMap;
     }
     private buildThisCode(): void {
 
@@ -175,7 +182,7 @@ export default class PBRShaderDecorator {
             coder.addTextureSampleCube("VOX_INDIRECT_ENV_MAP");
         }
         if (this.shadowReceiveEnabled) {
-            coder.addTextureSample2D("VOX_VSM_MAP", false);
+            coder.addTextureSample2D("VOX_VSM_SHADOW_MAP", false);
         }
 
         console.log("this.texturesTotal: ", this.texturesTotal);
@@ -183,22 +190,12 @@ export default class PBRShaderDecorator {
         if (this.hdrBrnEnabled) coder.addDefine("VOX_HDR_BRN", "1");
         if (this.vtxFlatNormal) coder.addDefine("VOX_VTX_FLAT_NORMAL", "1");
 
-        coder.addVertLayout("vec3", "a_vs");
-
-        this.m_has2DMap = coder.isHaveTexture2D();
-        if (this.m_has2DMap) {
-            coder.addVertLayout("vec2", "a_uvs");
+        if (coder.isHaveTexture2D()) {
             coder.addVertUniform("vec4", "u_paramLocal", 2);
-            coder.addVarying("vec2", "v_uv");
         }
-        coder.addVertLayout("vec3", "a_nvs");
-
         coder.addFragUniform("vec4", "u_paramLocal", 2);
         coder.addFragUniform("vec4", "u_albedo");
         coder.addFragUniform("vec4", "u_params", 4);
-
-        coder.addVarying("vec3", "v_worldPos");
-        coder.addVarying("vec3", "v_worldNormal");
 
         if (mirrorProjEnabled) {
             coder.addFragUniformParam(UniformConst.StageParam);
@@ -206,10 +203,6 @@ export default class PBRShaderDecorator {
         }
         coder.vertMatrixInverseEnabled = true;
 
-        coder.useVertSpaceMats(true, true, true);
-
-        coder.addFragOutput("vec4", "FragColor0");
-        
         if(this.pipeline != null) {
             this.pipeline.build(coder, this.m_pipeTypes);
         }

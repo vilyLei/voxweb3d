@@ -48,26 +48,6 @@ export default class MaterialBase implements IRenderMaterial {
         }
         return this.getShaderData() != null;
     }
-    /*
-    initialize(shdCode_uniqueName: string, shdCode_vshdCode: string, shdCode_fshdCode: string, adaptationShaderVersion: boolean = true): void {
-        if (this.getShaderData() == null) {
-            ShaderCodeBuffer.UseShaderBuffer(null);
-            //trace("MaterialBase::initialize(), shdCode_uniqueName: "+shdCode_uniqueName);
-            let shdData: ShaderData = MaterialResource.FindData(shdCode_uniqueName);
-            if (null == shdData) {
-                shdData = MaterialResource.CreateShdData(
-                    shdCode_uniqueName
-                    , shdCode_vshdCode
-                    , shdCode_fshdCode
-                    , adaptationShaderVersion
-                    , ShaderCodeBuffer.GetPreCompileInfo()
-                );
-            }
-            this.m_shduns = shdCode_uniqueName;
-            this.m_shdData = shdData;
-        }
-    }
-    //*/
     // get a shader code buf instance, for sub class override
     getCodeBuf(): ShaderCodeBuffer {
         if (MaterialBase.s_codeBuffer != null) {
@@ -234,6 +214,7 @@ export default class MaterialBase implements IRenderMaterial {
     }
 
     createSharedUniforms(): ShaderUniform[] {
+        console.log("createSharedUniforms(), this.m_sharedUniforms: ",this.m_sharedUniforms);
         return this.m_sharedUniforms;
     }
     createSharedUniformsData(): ShaderUniformData[] {

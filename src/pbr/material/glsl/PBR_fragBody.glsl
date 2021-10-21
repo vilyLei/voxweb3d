@@ -17,7 +17,7 @@
     float glossinessSquare = colorGlossiness * colorGlossiness;
     float specularPower = exp2(8.0 * glossinessSquare + 1.0);
 
-    worldPosition.xyz = v_worldPos.xyz;
+    worldPosition.xyz = v_worldPosition.xyz;
     #ifdef VOX_VTX_FLAT_NORMAL
         worldNormal = getVtxFlatNormal(worldPosition.xyz);
     #else

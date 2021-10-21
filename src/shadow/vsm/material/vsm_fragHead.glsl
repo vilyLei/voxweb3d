@@ -54,9 +54,9 @@ float getVSMShadow( sampler2D shadowMap, vec2 shadowMapSize, float shadowBias, f
     }
     return shadow;
 }
-float getVSMShadowFactor(vec4 shadowPos) {
+float getVSMShadowFactor(in vec4 shadowPos) {
     
-    float shadow = getVSMShadow( VOX_VSM_MAP, u_vsmParams[1].xy, u_vsmParams[0].x, u_vsmParams[0].z, shadowPos );
+    float shadow = getVSMShadow( VOX_VSM_SHADOW_MAP, u_vsmParams[1].xy, u_vsmParams[0].x, u_vsmParams[0].z, shadowPos );
     float shadowIntensity = 1.0 - u_vsmParams[0].w;
     shadow = clamp(shadow, 0.0, 1.0) * (1.0 - shadowIntensity) + shadowIntensity;
     float f = clamp(dot(worldNormal,u_vsmParams[2].xyz),0.0,1.0);
@@ -65,6 +65,7 @@ float getVSMShadowFactor(vec4 shadowPos) {
     return shadow * (1.0 - f) + f;
 }
 void useVSMShadow(inout vec4 color) {
+    
     float factor = getVSMShadowFactor(v_shadowPos);
     color.xyz *= vec3(factor);
 }

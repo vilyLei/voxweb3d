@@ -149,8 +149,7 @@ export class ShadowVSMModule {
 
         let viewWidth: number = this.m_viewWidth;
         let viewHeight: number = this.m_viewHeight;
-        console.log("shadowCam viewWidth: ",viewWidth);
-        console.log("shadowCam viewHeight: ",viewHeight);
+        
         this.m_direcCamera = new CameraBase();
         this.m_direcCamera.lookAtRH(this.m_camPos, new Vector3D(0.0, 0.0, 0.0), new Vector3D(0.0, 1.0, 0.0));
         this.m_direcCamera.orthoRH(this.m_near, this.m_far, -0.5 * viewHeight, 0.5 * viewHeight, -0.5 * viewWidth, 0.5 * viewWidth);

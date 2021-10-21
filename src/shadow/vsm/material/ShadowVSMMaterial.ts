@@ -37,7 +37,7 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
         let coder: ShaderCodeBuilder2 = this.m_coder;
         coder.normalEanbled = true;
         
-        coder.addTextureSample2D("VOX_VSM_MAP");
+        coder.addTextureSample2D("VOX_VSM_SHADOW_MAP");
         coder.addTextureSample2D();
 
         coder.addVarying("vec3", "v_worldNormal");

@@ -289,7 +289,7 @@ export default class ShdProgram implements IVtxShdCtr,IShdProgram {
             }
         }
         if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
-            console.log("vshd_str: \n" + vshd_str);
+            console.log("vert shader code: \n" + vshd_str);
         }
         let vtxShd: any = this.loadShader(this.m_gl.VERTEX_SHADER, vshd_str);
         if (RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED) {
@@ -303,7 +303,7 @@ export default class ShdProgram implements IVtxShdCtr,IShdProgram {
             }
         }
         if (RendererDevice.SHADERCODE_TRACE_ENABLED) {
-            console.log("fshd_str: \n" + fshd_str);
+            console.log("frag shader code: \n" + fshd_str);
         }
         let frgShd: any = this.loadShader(this.m_gl.FRAGMENT_SHADER, fshd_str);
         // Create the shader program      

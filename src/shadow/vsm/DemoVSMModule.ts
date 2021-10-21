@@ -33,6 +33,7 @@ import ThreadSystem from "../../thread/ThreadSystem";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import DivLog from "../../vox/utils/DivLog";
 import {MaterialPipeline} from "../../vox/material/pipeline/MaterialPipeline";
+import ScreenFixedAlignPlaneEntity from "../../vox/entity/ScreenFixedAlignPlaneEntity";
 
 export class DemoVSMModule {
     constructor() { }
@@ -64,7 +65,7 @@ export class DemoVSMModule {
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
             //rparam.setAttriAlpha(false);
-            rparam.setCamProject(45.0, 10.0,8000.0)
+            rparam.setCamProject(45.0, 10.0,8000.0);
             rparam.setAttriStencil(true);
             rparam.setAttriAntialias(true);
             //rparam.setAttripreserveDrawingBuffer(true);
@@ -87,9 +88,9 @@ export class DemoVSMModule {
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
-            let axis: Axis3DEntity = new Axis3DEntity();
-            axis.initialize(300.0);
-            this.m_rscene.addEntity(axis, 1);
+            // let axis: Axis3DEntity = new Axis3DEntity();
+            // axis.initialize(300.0);
+            // this.m_rscene.addEntity(axis, 1);
 
             this.m_rscene.setClearRGBColor3f(0.1, 0.2, 0.1);
             this.m_envData = new EnvLightData();
@@ -240,6 +241,10 @@ export class DemoVSMModule {
         sph.setScaleXYZ(1.2, 1.2, 1.2);
         sph.setXYZ(-40.0, 100.0, -180.0);
         this.m_rscene.addEntity(sph);
+
+        // let pl = new ScreenFixedAlignPlaneEntity();
+        // pl.initialize(-1.0,-1.0,1.0,1.0,[this.m_vsmModule.getShadowMap()]);
+        // this.m_rscene.addEntity(pl, 2);
     }
     private mouseDown(evt: any): void {
         DebugFlag.Flag_0 = 1;
@@ -250,27 +255,29 @@ export class DemoVSMModule {
             clearTimeout(this.m_timeoutId);
         }
         //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
-        this.m_timeoutId = setTimeout(this.update.bind(this), 40);// 20 fps
+        this.m_timeoutId = setTimeout(this.update.bind(this), 18);// 20 fps
 
         this.m_statusDisp.render();
         ThreadSystem.Run();
-    }
-    run(): void {
 
         this.m_sphPos.x = 300.0 * Math.sin(this.m_sphPos.w);
         this.m_sphPos.w += 0.05;
         this.m_sphEntity.setPosition( this.m_sphPos );
         this.m_sphEntity.update();
+        this.m_vsmModule.force = true;
+    }
+    run(): void {
 
         this.m_statusDisp.update(false);
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
 
-        this.m_rscene.update(true);
-        this.m_vsmModule.force = true;
         this.m_vsmModule.run();
-        this.m_rscene.run(false);
-        this.m_rscene.runEnd();
+        this.m_rscene.run(true);
+        // this.m_rscene.update(true);
+        // this.m_vsmModule.run();
+        // this.m_rscene.run(false);
+        // this.m_rscene.runEnd();
     }
 }
 export default DemoVSMModule;

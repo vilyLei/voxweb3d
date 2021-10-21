@@ -23,8 +23,8 @@ class LambertLightShdCode implements IAbstractShader {
 void displaceLocalVtx(in vec2 param) {
     
     #ifdef VOX_DISPLACEMENT_MAP
-        vec4 dispData = VOX_Texture2D(VOX_DISPLACEMENT_MAP, v_uv.xy);
-        localPosition.xyz += normalize( a_nvs ) * vec3( dispData.x * param.x + param.y );
+        float dispFactor = VOX_Texture2D(VOX_DISPLACEMENT_MAP, v_uv.xy).x;
+        localPosition.xyz += normalize( a_nvs ) * vec3( dispFactor * param.x + param.y );
     #endif
 }
 `;
@@ -37,7 +37,7 @@ void displaceLocalVtx(in vec2 param) {
     #endif
 
     #ifdef VOX_DISPLACEMENT_MAP
-        displaceLocalVtx( u_localParams[1].xy );
+        displaceLocalVtx( u_localParams[2].xy );
     #endif
 
     worldPosition = u_objMat * localPosition;
@@ -45,12 +45,11 @@ void displaceLocalVtx(in vec2 param) {
     gl_Position = u_projMat * viewPosition;
     v_worldPosition = worldPosition.xyz;
 
-    v_nv = normalize(a_nvs * inverse(mat3(u_objMat)));
+    v_worldNormal = normalize(a_nvs * inverse(mat3(u_objMat)));
 `;
     frag: string = "";
     frag_head: string =
 `
-vec3 NV = vec3(1.0);
 
 #ifdef VOX_NORMAL_MAP
 vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 nv)
@@ -71,7 +70,7 @@ vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 nv)
     return TBN * tangentNormal;
 }
 #endif
-
+#ifdef VOX_LIGHTS_TOTAL
 #if VOX_LIGHTS_TOTAL > 0
 
 struct LambertLight {
@@ -87,7 +86,7 @@ struct LambertLight {
     // light color
     vec3 color;
     // light distance attenuation factor
-    vec2 attenuation;
+    vec4 param;
     float specularPower;
 };
 
@@ -97,7 +96,8 @@ vec3 calcLambertLight(in LambertLight light) {
 	vec3 baseColor = nDotL * light.diffuse * light.color;
 	vec3 viewDir = normalize(light.direc + light.viewDirec);
 	vec3 lightColor = light.specular * nDotL * pow(max(dot(light.normal, light.viewDirec), 0.0), light.specularPower);
-	return (baseColor + lightColor);
+    vec2 param = light.param.xy;
+	return (baseColor * param.x + param.y * lightColor);
 }
 
 #endif
@@ -106,13 +106,13 @@ vec3 getLambertLightColor(in LambertLight light) {
         vec3 destColor = vec3(0.0);
         // point light process
         #if VOX_POINT_LIGHTS_TOTAL > 0
-            vec2 att2 = light.attenuation;
+            vec2 param = light.param.zw;
             for(int i = 0; i < VOX_POINT_LIGHTS_TOTAL; ++i)
             {
                 // calculate per-light radiance
                 light.direc = normalize(u_lightPositions[i].xyz - worldPosition.xyz);
                 float distance = length(light.direc);
-                float attenuation = 1.0 / (1.0 + att2.x * distance + att2.y * distance * distance);
+                float attenuation = 1.0 / (1.0 + param.x * distance + param.y * distance * distance);
                 light.color = u_lightColors[i].xyz * attenuation;
                 destColor += calcLambertLight( light );
             }
@@ -131,40 +131,42 @@ vec3 getLambertLightColor(in LambertLight light) {
         return srcColor.xyz;
     #endif
 }
+#endif
 `;
     frag_body: string =
 `
-    NV = v_nv;
+    worldNormal.xyz = v_worldNormal;
     worldPosition.xyz = v_worldPosition;
-    
+
     vec4 color = u_localParams[0];
     #ifdef VOX_DIFFUSE_MAP
         color = color * VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv.xy);
     #endif
+    color.xyz += u_localParams[1].xyz;
     #ifdef VOX_NORMAL_MAP
-        NV = (getNormalFromMap(VOX_NORMAL_MAP, v_uv, NV));
+        worldNormal.xyz = (getNormalFromMap(VOX_NORMAL_MAP, v_uv, worldNormal.xyz));
     #endif
-    vec3 viewDir = normalize(u_cameraPosition.xyz - worldPosition.xyz);
     
     #ifdef LIGHT_LOCAL_PARAMS_INDEX
-        
+
+        vec3 viewDir = normalize(u_cameraPosition.xyz - worldPosition.xyz);        
         int lightParamIndex = LIGHT_LOCAL_PARAMS_INDEX;
-        vec4 param = u_localParams[ lightParamIndex ];
+        vec4 param = u_localParams[ LIGHT_LOCAL_PARAMS_INDEX ];
         
         LambertLight light;
-        light.normal = NV;
+        light.normal = worldNormal.xyz;
         light.viewDirec = viewDir;
         light.diffuse = color.xyz;
         light.specular = param.xyz;
         light.specularPower = param.w;
-        light.attenuation = u_localParams[ lightParamIndex + 1 ].zw;
+        light.param = u_localParams[ LIGHT_LOCAL_PARAMS_INDEX + 1 ];
 
         #ifdef VOX_SPECULAR_MAP
             light.specularPower *= VOX_Texture2D(VOX_SPECULAR_MAP, v_uv.xy).z;
             light.specularPower += 8.0;
         #endif
         vec3 destColor = getLambertLightColor(light);
-        param = u_localParams[ lightParamIndex + 1 ];
+        param = u_localParams[ LIGHT_LOCAL_PARAMS_INDEX + 2 ];
         color.xyz = color.xyz * param.x + param.y * destColor;
     #endif
     
@@ -190,18 +192,20 @@ class LambertLightShaderBuffer extends ShaderCodeBuffer {
     diffuseMapEnabled: boolean = false;
     normalMapEnabled: boolean = false;
     displacementMapEnabled: boolean = false;
-    aoMapEnabled: boolean = false;
+    aoMapEnabled: boolean = false;    
     specularMapEnabled: boolean = false;
 
     shadowReceiveEnabled: boolean = true;
     lightEnabled: boolean = true;
     fogEnabled: boolean = true;
 
-    localParamsTotal: number = 1;
+    localParamsTotal: number = 2;
+    texturesTotal: number = 0;
 
     initialize(texEnabled: boolean): void {
-        console.log("LambertLightShaderBuffer::initialize()...");
-
+        console.log("LambertLightShaderBuffer::initialize()...this.lightEnabled: ",this.lightEnabled);
+        texEnabled = this.texturesTotal > 0;
+        super.initialize(texEnabled);
         this.m_uniqueName = "LambertShd";
         if(texEnabled) this.m_uniqueName += "Tex";
         if(this.normalMapEnabled) this.m_uniqueName += "Nor";
@@ -209,6 +213,7 @@ class LambertLightShaderBuffer extends ShaderCodeBuffer {
         if(this.aoMapEnabled) this.m_uniqueName += "AO";
         if(this.specularMapEnabled) this.m_uniqueName += "Spec";
         if(this.fogEnabled) this.m_uniqueName += "Fog";
+        if(this.shadowReceiveEnabled) this.m_uniqueName += "Shadow";
         this.m_uniqueName += "" + this.localParamsTotal;
         if(this.pipeline != null) {
 
@@ -216,12 +221,13 @@ class LambertLightShaderBuffer extends ShaderCodeBuffer {
             if (this.lightEnabled) {
                 this.m_pipeTypes.push( MaterialPipeType.GLOBAL_LIGHT );
             }
-            if (this.fogEnabled) {
-                this.m_pipeTypes.push( MaterialPipeType.FOG_EXP2 );
-            }
             if (this.shadowReceiveEnabled) {
                 this.m_pipeTypes.push( MaterialPipeType.VSM_SHADOW );
             }
+            if (this.fogEnabled) {
+                this.m_pipeTypes.push( MaterialPipeType.FOG_EXP2 );
+            }
+            
             this.pipeline.buildSharedUniforms(this.m_pipeTypes);
             this.pipeline.createKeys(this.m_pipeTypes);
             this.m_keysString = this.pipeline.getKeysString();
@@ -239,7 +245,7 @@ class LambertLightShaderBuffer extends ShaderCodeBuffer {
             if(this.diffuseMapEnabled) {
                 coder.addTextureSample2D("VOX_DIFFUSE_MAP");
             }
-            if(this.normalMapEnabled) {
+            if(this.normalMapEnabled && this.lightEnabled) {
                 coder.addTextureSample2D("VOX_NORMAL_MAP");
             }
             if(this.displacementMapEnabled) {
@@ -249,8 +255,11 @@ class LambertLightShaderBuffer extends ShaderCodeBuffer {
             if(this.aoMapEnabled) {
                 coder.addTextureSample2D("VOX_AO_MAP");
             }
-            if(this.specularMapEnabled) {
+            if(this.specularMapEnabled && this.lightEnabled) {
                 coder.addTextureSample2D("VOX_SPECULAR_MAP");
+            }
+            if(this.shadowReceiveEnabled) {
+                coder.addTextureSample2D("VOX_VSM_SHADOW_MAP");
             }
         }
         
@@ -260,11 +269,10 @@ class LambertLightShaderBuffer extends ShaderCodeBuffer {
         else {
             coder.addFragUniform("vec4", "u_localParams", this.localParamsTotal);
         }
-
         if (this.lightEnabled) {
             let lightParamIndex: number = 2;
-            if(!this.displacementMapEnabled) {
-                lightParamIndex = 1;
+            if(this.displacementMapEnabled) {
+                lightParamIndex = 3;
             }
             coder.addDefine("LIGHT_LOCAL_PARAMS_INDEX",""+lightParamIndex);
         }
@@ -312,8 +320,8 @@ export default class LambertLightMaterial extends MaterialBase {
     displacementMap: TextureProxy = null;
     aoMap: TextureProxy = null;
     specularMap: TextureProxy = null;
+    shadowMap: TextureProxy = null;
 
-    shadowReceiveEnabled: boolean = false;
     lightEnabled: boolean = true;
     fogEnabled: boolean = false;
 
@@ -325,29 +333,30 @@ export default class LambertLightMaterial extends MaterialBase {
 
         if(this.m_localParam == null) {
 
-            this.m_localParamsTotal = 1;
+            this.m_localParamsTotal = 2;
             if(this.displacementMap != null) {
                 this.m_localParamsTotal += 1;
             }
             if(this.lightEnabled) {
-                this.m_localParamsTotal += 2;
+                this.m_localParamsTotal += 3;
             }
             this.m_localParam = new Float32Array(this.m_localParamsTotal * 4);
-            this.m_localParam.set([1.0,1.0,1.0,1.0]);
-            let lightParamsIndex: number = 1;
+            this.m_localParam.set([1.0,1.0,1.0,1.0, 0.0,0.0,0.0,0.0]);
+            let lightParamsIndex: number = 2;
             if(this.displacementMap != null) {
-                this.m_displacementArray = this.m_localParam.subarray(4,8);
-                this.m_displacementArray.set([50.0, 0.0, 0.0, 0.0]);
-                lightParamsIndex = 2;
-                console.log("this.m_displacementArray.length: ",this.m_displacementArray.length);
+                this.m_displacementArray = this.m_localParam.subarray(8,12);
+                this.m_displacementArray.set([10.0, 0.0, 0.0, 0.0]);
+                lightParamsIndex += 1;
             }
             if(this.lightEnabled) {
                 this.m_lightParamsArray = this.m_localParam.subarray(lightParamsIndex * 4);
                 this.m_lightParamsArray.set(
                     [
                         0.5, 0.5, 0.5, 32.0,    // specular color rgb, pow value
-                        0.7,0.3,                // base color value factor, light value factor
-                        0.001, 0.0001           // attenuation factor 1, attenuation factor 2
+                        0.7,0.3,                // light color value factor, specular value factor
+                        0.001, 0.0001,          // attenuation factor 1, attenuation factor 2
+                        0.3,0.7,                // base color value factor, light value factor
+                        0.0, 0.0                // undefined, undefined
                     ]);
             }
         }
@@ -364,8 +373,8 @@ export default class LambertLightMaterial extends MaterialBase {
         buf.displacementMapEnabled = this.displacementMap != null;
         buf.aoMapEnabled = this.aoMap != null;
         buf.specularMapEnabled = this.specularMap != null;
+        buf.shadowReceiveEnabled = this.shadowMap != null;
 
-        buf.shadowReceiveEnabled = this.shadowReceiveEnabled;
         buf.lightEnabled = this.lightEnabled;
         buf.fogEnabled = this.fogEnabled;
 
@@ -373,11 +382,13 @@ export default class LambertLightMaterial extends MaterialBase {
 
         let texList: TextureProxy[] = [];
         if(this.diffuseMap != null) texList.push(this.diffuseMap);
-        if(this.normalMap != null) texList.push(this.normalMap);
+        if(this.normalMap != null && this.lightEnabled) texList.push(this.normalMap);
         if(this.displacementMap != null) texList.push(this.displacementMap);
         if(this.aoMap != null) texList.push(this.aoMap);
-        if(this.specularMap != null) texList.push(this.specularMap);
+        if(this.specularMap != null && this.lightEnabled) texList.push(this.specularMap);
+        if(this.shadowMap != null) texList.push(this.shadowMap);
         super.setTextureList(texList);
+        buf.texturesTotal = texList.length;
     }
     getCodeBuf(): ShaderCodeBuffer {
         return LambertLightShaderBuffer.GetInstance();
@@ -398,10 +409,10 @@ export default class LambertLightMaterial extends MaterialBase {
     }
     /**
      * 光照之前的颜色和光照之后颜色混合因子设置
-     * @param baseColorFactor 光照之前的颜色混合因子, default value is 0.3
-     * @param lightFactor 光照之后颜色混合因子, default value is 0.7
+     * @param lightFactor 光照之前的颜色混合因子, default value is 0.7
+     * @param specularFactor 光照之后颜色混合因子, default value is 0.3
      */
-    setBlendFactor(baseColorFactor: number, lightFactor: number): void {
+    setLightBlendFactor(baseColorFactor: number, lightFactor: number): void {
         if(this.m_lightParamsArray != null) {
             this.m_lightParamsArray[4] = baseColorFactor;
             this.m_lightParamsArray[5] = lightFactor;
@@ -419,6 +430,17 @@ export default class LambertLightMaterial extends MaterialBase {
         }
     }
     /**
+     * 光照之前的颜色和光照之后颜色混合因子设置
+     * @param baseColorFactor 光照之前的颜色混合因子, default value is 0.3
+     * @param lightFactor 光照之后颜色混合因子, default value is 0.7
+     */
+    setBlendFactor(baseColorFactor: number, lightFactor: number): void {
+        if(this.m_lightParamsArray != null) {
+            this.m_lightParamsArray[8] = baseColorFactor;
+            this.m_lightParamsArray[9] = lightFactor;
+        }
+    }
+    /**
      * 设置顶点置换贴图参数
      * @param scale 缩放值
      * @param bias 偏移量
@@ -429,11 +451,19 @@ export default class LambertLightMaterial extends MaterialBase {
             this.m_displacementArray[1] = bias;
         }
     }
-    setColor(Color: Color4): void {
-        this.m_localParam[0] = Color.r;
-        this.m_localParam[1] = Color.g;
-        this.m_localParam[2] = Color.b;
-        this.m_localParam[3] = Color.a;
+    setColor(factor: Color4, bias: Color4 = null): void {
+        if(factor != null) {
+            this.m_localParam[0] = factor.r;
+            this.m_localParam[1] = factor.g;
+            this.m_localParam[2] = factor.b;
+            this.m_localParam[3] = factor.a;
+        }
+        if(bias != null) {
+            this.m_localParam[4] = bias.r;
+            this.m_localParam[5] = bias.g;
+            this.m_localParam[6] = bias.b;
+            this.m_localParam[7] = bias.a;
+        }
     }
     setColorAlpha(a: number): void {
         this.m_localParam[3] = a;
