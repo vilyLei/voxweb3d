@@ -93,7 +93,7 @@ class DispCtrObj {
         DispCtrObj.Draging = false;
         if (DispCtrObj.SelectedCtrlObj == this) {
             DispCtrObj.MeshDragAxis.setVisible(true);
-            DispCtrObj.MeshDragAxis.bindTarget(this.dispEntity);
+            DispCtrObj.MeshDragAxis.setTarget(this.dispEntity);
             if (this.dispEntity != null) {
                 DispCtrObj.MeshDragAxis.copyPositionFrom(this.dispEntity);
                 DispCtrObj.MeshDragAxis.update();
@@ -321,7 +321,7 @@ export class DemoMouseDrag {
         
         if (DispCtrObj.MeshDragAxis.isSelected()) {
             this.m_rscene.getMouseXYWorldRay(this.m_rpv, this.m_rtv);
-            DispCtrObj.MeshDragAxis.updateDrag(this.m_rpv, this.m_rtv);
+            DispCtrObj.MeshDragAxis.moveByRay(this.m_rpv, this.m_rtv);
             DispCtrObj.Draging = true;
             if (DispCtrObj.SelectedCtrlObj != null) {
                 DispCtrObj.SelectedCtrlObj.updateFrameBox();

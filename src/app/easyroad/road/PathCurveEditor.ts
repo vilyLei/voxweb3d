@@ -1,21 +1,26 @@
 import Vector3D from "../../../vox/math/Vector3D";
+import EngineBase from "../../../vox/engine/EngineBase";
+
 import {RoadBuilder} from "./RoadBuilder";
 import {RoadPath} from "./RoadPath";
+import {PathCurveEditorUI} from "./PathCurveEditorUI";
 
 class PathCurveEditor {
 
     constructor() { }
 
     private m_initFlag: boolean = true;
+    private m_editorUI: PathCurveEditorUI = new PathCurveEditorUI();
     private m_roadBuilder: RoadBuilder = new RoadBuilder();
     
-    initialize(): void {
+    initialize(engine: EngineBase): void {
 
         console.log("PathCurveEditor::initialize()......");
         if (this.m_initFlag) {
 
             this.m_initFlag = false;
             this.initEditor();
+            this.m_editorUI.initialize(engine);
 
         }
     }
@@ -49,9 +54,6 @@ class PathCurveEditor {
         this.m_path.clear();
         this.m_curvePosList = null;
     }
-    saveData(): void {
-
-    }
     private buildCurve(): Vector3D[] {
         console.log("this.m_closeEnabled: ",this.m_closeEnabled);
         let curvePosList: Vector3D[] = this.m_path.buildPathCurve(3, true, this.m_closeEnabled?10350:350);
@@ -72,15 +74,17 @@ class PathCurveEditor {
     }
     buildPath(): void {
         
-        if(this.m_editEnabled && this.m_path != null) {                        
-            if(this.m_path.getPosListLength() > 1) {
-                
+        if(this.m_editEnabled && this.m_path != null) {
+            if(this.m_path.getPosListLength() > 1) {                
                 this.m_curvePosList = this.buildCurve();
             }
         }
     }
     getPathPosList(): Vector3D[] {
         return this.m_curvePosList;
+    }
+    run(): void {
+        this.m_editorUI.run();
     }
 }
 

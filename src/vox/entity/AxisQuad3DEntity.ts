@@ -20,6 +20,7 @@ export default class AxisQuad3DEntity extends DisplayEntity
     // 用于射线检测
     public pickTestRadius:number = 8.0;
     private m_thickness:number = 2.0;
+    wireframe: boolean = false;
     colorX:Color4 = new Color4(1.0,0.0,0.0,1.0);
     colorY:Color4 = new Color4(0.0,1.0,0.0,1.0);
     colorZ:Color4 = new Color4(0.0,0.0,1.0,1.0);
@@ -43,6 +44,7 @@ export default class AxisQuad3DEntity extends DisplayEntity
                 , this.colorZ.r,this.colorZ.g,this.colorZ.b,this.colorZ.a
             ];
             let mesh:DashedQuadLineMesh = new DashedQuadLineMesh();
+            mesh.wireframe = this.wireframe;
             mesh.rayTestRadius = this.pickTestRadius;
             mesh.vbWholeDataEnabled = true;
             mesh.setBufSortFormat( material.getBufSortFormat() );

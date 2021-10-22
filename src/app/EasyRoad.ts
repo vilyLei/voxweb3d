@@ -21,7 +21,7 @@ export class EasyRoad {
         if (this.m_engine == null) {
 
             //DivLog.SetDebugEnabled( true );
-            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
 
             let rparam: RendererParam = new RendererParam();
@@ -30,7 +30,7 @@ export class EasyRoad {
             rparam.setCamProject(45, 20.0, 9000.0);
             
             this.m_engine = new EngineBase();
-            this.m_engine.initialize(rparam);
+            this.m_engine.initialize(rparam, 6);
 
             this.m_statusDisp.initialize();
             

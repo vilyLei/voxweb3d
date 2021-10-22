@@ -43,6 +43,8 @@ class UIScene {
         btn = this.createSelectBtn("dragCamera", "dragCamera", "ON", "OFF", false);
         btn = this.createSelectBtn("closePath", "closePath", "ON", "OFF", false);
         this.scene.closePathBtn = btn;
+        this.m_btnPY += dis;
+        btn = this.createSelectBtn("cameraCtrl", "cameraCtrl", "ON", "OFF", true);
         
         let minX: number = 1000;
         let pos: Vector3D = new Vector3D();
@@ -88,6 +90,9 @@ class UIScene {
         let selectEvt: SelectionEvent = evt as SelectionEvent;
         console.log("selectEvt.uuid: ",selectEvt.uuid, selectEvt.flag);
         switch( selectEvt.uuid ) {
+            case "cameraCtrl":
+                this.m_engine.cameraCtrlEnabled = selectEvt.flag;
+                break;
             case "dragCamera":
                 if(this.m_switchEditBtn.isSelected()) {
                     this.scene.setEditEnabled(!selectEvt.flag);

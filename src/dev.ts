@@ -316,7 +316,7 @@
 ////////////////////////////   maps    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
+//  import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
 
 //  import {DemoDisplacementMap as Demo} from "./demo/DemoDisplacementMap";
 
@@ -386,7 +386,7 @@ import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
 
 //  import {RbtDrama as Demo} from "./app/RbtDrama";
 
-//  import {EasyRoad as Demo} from "./app/EasyRoad";
+import {EasyRoad as Demo} from "./app/EasyRoad";
 
 //  import {DensityStatistics as Demo} from "./app/density/DensityStatistics";
 

@@ -23,12 +23,13 @@ export class EngineBase {
     readonly rscene: RendererScene = null;
     readonly uiScene: OrthoUIScene = null;
 
-    stageDragCtrl: CameraDragController = new CameraDragController();
-    cameraZoomController: CameraZoomController = new CameraZoomController();
+    readonly stageDragCtrl: CameraDragController = new CameraDragController();
+    readonly cameraZoomController: CameraZoomController = new CameraZoomController();
+    cameraCtrlEnabled: boolean = true;
 
-    viewRay: CameraViewRay = new CameraViewRay();
+    readonly viewRay: CameraViewRay = new CameraViewRay();
 
-    initialize(param: RendererParam = null): void {
+    initialize(param: RendererParam = null, renderProcessTotal: number = 3): void {
 
         if (this.rscene == null) {
 
@@ -41,7 +42,7 @@ export class EngineBase {
 
             let rscene: RendererScene;
             rscene = new RendererScene();
-            rscene.initialize(param, 3);
+            rscene.initialize(param, renderProcessTotal);
             rscene.updateCamera();
 
             let selfT: any = this;
@@ -70,9 +71,11 @@ export class EngineBase {
     }
 
     run(): void {
-        
-        this.stageDragCtrl.runWithYAxis();
-        this.cameraZoomController.run(null, 30.0);
+
+        if(this.cameraCtrlEnabled) {
+            this.stageDragCtrl.runWithYAxis();
+            this.cameraZoomController.run(null, 30.0);
+        }
 
         let pickFlag: boolean = true;
         let list = this.m_sceneList;

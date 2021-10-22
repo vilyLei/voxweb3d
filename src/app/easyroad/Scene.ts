@@ -57,12 +57,12 @@ class Scene {
             this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseDown);
             this.m_engine.rscene.addEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
 
-            this.pathEditor.initialize();
-            this.terrain.initialize(engine);
+            this.pathEditor.initialize(engine);
+            //  this.terrain.initialize(engine);
 
-            let axis = new Axis3DEntity();
-            axis.initialize(700);
-            this.m_engine.rscene.addEntity(axis);
+            // let axis = new Axis3DEntity();
+            // axis.initialize(700);
+            // this.m_engine.rscene.addEntity(axis);
 
             // this.m_line = new Line3DEntity();
             // this.m_line.dynColorEnabled = true;
@@ -97,9 +97,7 @@ class Scene {
         pls.initializeByPosList([new Vector3D(), new Vector3D(1.0, 0.0, 0.0)]);
         this.m_engine.rscene.addEntity(pls);
         this.m_line = pls;
-        //let saxis: DragAxisQuad3D = new DragAxisQuad3D();
-        //saxis.initialize(500.0, 5.0);
-        //this.m_engine.rscene.addEntity(saxis);
+
     }
     private m_pos: Vector3D = new Vector3D();
     private mouseClick(evt: any): void {
@@ -118,6 +116,9 @@ class Scene {
             this.m_engine.rscene.removeEntity(this.m_dispList[i]);
         }
         this.m_dispList = [];
+        if(this.closePathBtn != null) {
+            this.closePathBtn.deselect(false);
+        }
     }
     saveData(): void {
         //  this.pathEditor.saveData();
@@ -224,10 +225,11 @@ class Scene {
                 break;
         }
     }
-
+    
     update(): void {
     }
     run(): void {
+        this.pathEditor.run();
     }
 }
 

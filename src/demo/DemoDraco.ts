@@ -5,6 +5,7 @@ import RendererParam from "../vox/scene/RendererParam";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import AxisQuad3DEntity from "../vox/entity/AxisQuad3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
 import CameraTrack from "../vox/view/CameraTrack";
 import MouseEvent from "../vox/event/MouseEvent";
@@ -67,7 +68,12 @@ export class DemoDraco extends DemoInstance {
         //  var plane: Plane3DEntity = new Plane3DEntity();
         //  plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [tex0]);
         //  this.m_rscene.addEntity(plane, 2);
-
+        
+        // let quadAxis:AxisQuad3DEntity = new AxisQuad3DEntity();
+        // quadAxis.wireframe = true;
+        // quadAxis.initialize(300.0,20.0);
+        // this.m_rscene.addEntity(quadAxis);
+        // return;
         let axis: Axis3DEntity = new Axis3DEntity();
         axis.initialize(300.0);
         this.m_rscene.addEntity(axis);

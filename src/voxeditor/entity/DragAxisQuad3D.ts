@@ -13,28 +13,40 @@ import IEntityTransform from "../../vox/entity/IEntityTransform";
 import AxisQuad3DEntity from "../../vox/entity/AxisQuad3DEntity";
 import MouseEvent from "../../vox/event/MouseEvent";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
+import EventBaseDispatcher from "../../vox/event/EventBaseDispatcher";
 
 export default class DragAxisQuad3D extends AxisQuad3DEntity {
     private m_targetEntity: IEntityTransform = null;
+    private m_dispatcher: EventBaseDispatcher = new EventBaseDispatcher();
     constructor() {
         super();
     }
-    bindTarget(target: IEntityTransform): void {
+    
+    addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
+        this.m_dispatcher.addEventListener(type, listener, func, captureEnabled, bubbleEnabled);
+    }
+    removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
+        this.m_dispatcher.removeEventListener(type, listener, func);
+    }
+    setTarget(target: IEntityTransform): void {
         this.m_targetEntity = target;
     }
     initialize(size: number = 100.0, thickness: number = 2.0): void {
         let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
         dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
-        dispatcher.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener);
-        //  dispatcher.addEventListener(MouseEvent.MOUSE_OVER,this,this.mouseOverListener);
-        //  dispatcher.addEventListener(MouseEvent.MOUSE_OUT,this,this.mouseOutListener);
+        //dispatcher.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener);
+        dispatcher.addEventListener(MouseEvent.MOUSE_OVER,this,this.mouseOverListener);
+        dispatcher.addEventListener(MouseEvent.MOUSE_OUT,this,this.mouseOutListener);
         //  dispatcher.addEventListener(MouseEvent.MOUSE_MOVE,this,this.mouseMoveListener);
         this.setEvtDispatcher(dispatcher);
         this.mouseEnabled = true;
         super.initialize(size, thickness);
     }
-    mouseUpListener(evt: any): void {
-        //this.deselect();
+    protected mouseOverListener(evt: any): void {
+        this.m_dispatcher.dispatchEvt(evt);
+    }
+    protected mouseOutListener(evt: any): void {
+        this.m_dispatcher.dispatchEvt(evt);
     }
     isSelected(): boolean {
         return this.m_flag > -1;
@@ -47,6 +59,10 @@ export default class DragAxisQuad3D extends AxisQuad3DEntity {
     destroy(): void {
         this.m_targetEntity = null;
         super.destroy();
+        if(this.m_dispatcher != null) {
+            this.m_dispatcher.destroy();
+            this.m_dispatcher = null;
+        }
     }
 
     private m_flag: number = -1;
@@ -74,7 +90,7 @@ export default class DragAxisQuad3D extends AxisQuad3DEntity {
     }
     private m_rpv: Vector3D = new Vector3D();
     private m_rtv: Vector3D = new Vector3D();
-    public updateDrag(rpv: Vector3D, rtv: Vector3D): void {
+    public moveByRay(rpv: Vector3D, rtv: Vector3D): void {
         if (this.m_flag > -1) {
             this.m_rpv.copyFrom(rpv);
             this.m_rtv.copyFrom(rtv);
