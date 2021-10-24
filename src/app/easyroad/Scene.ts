@@ -76,7 +76,7 @@ class Scene {
             let posTable: Vector3D[][] = [
                 posInnerList,
                 posOuterList
-            ]
+            ];
 
             //this.buildRoadSurface(posTable, 2.0,1.0);
             

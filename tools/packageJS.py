@@ -3,7 +3,7 @@ import os;
 import re;
 import math;
 from xml.dom.minidom import Document;
-import re;
+
 editor = "This is result of resultYY result_YY the match";
 print("old_editor: "+editor);
 rkey = "result";
