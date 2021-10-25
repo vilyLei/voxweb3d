@@ -10,12 +10,13 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Color4 from '../../vox/material/Color4';
 import MaterialBase from '../../vox/material/MaterialBase';
 import QuadLine3DMaterial from '../../vox/material/mcase/QuadLine3DMaterial';
+import ROTransform from "../../vox/display/ROTransform";
 
 export default class AxisQuad3DEntity extends DisplayEntity
 {
-    constructor()
+    constructor(transform: ROTransform = null)
     {
-        super();
+        super(transform);
     }
     // 用于射线检测
     public pickTestRadius:number = 8.0;

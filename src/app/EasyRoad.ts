@@ -5,6 +5,7 @@ import {Scene} from "./easyroad/Scene";
 import {UIScene} from "./easyroad/UIScene";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import EngineBase from "../vox/engine/EngineBase";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
 
 export class EasyRoad {
 
@@ -18,6 +19,7 @@ export class EasyRoad {
     initialize(): void {
         
         console.log("EasyRoad::initialize()......");
+        
         if (this.m_engine == null) {
 
             //DivLog.SetDebugEnabled( true );
@@ -34,14 +36,23 @@ export class EasyRoad {
 
             this.m_statusDisp.initialize();
             
+            this.m_engine.appendRendererScene(null, 3, false);
+            this.m_engine.swapSceneAt(1,2);
+            this.m_engine.getRendererSceneAt(1).getRScene().enableMouseEvent(false);
+            //this.m_engine.showInfo();
+            
             this.m_scene.initialize( this.m_engine );
             this.m_uiscene.scene = this.m_scene;
             this.m_uiscene.initialize( this.m_engine );
             
+            // // add common 3d display entity
+            // var plane: Plane3DEntity = new Plane3DEntity();
+            // plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [this.m_engine.texLoader.getTexByUrl("static/assets/default.jpg")]);
+            // this.m_engine.getRendererSceneAt(1).getRScene().addEntity(plane, 0, true);
+
             this.update();
         }
     }
-
     private m_timeoutId: any = -1;
     private update(): void {
         if (this.m_timeoutId > -1) {

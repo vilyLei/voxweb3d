@@ -22,8 +22,23 @@ interface IRenderer {
     getRendererContext(): IRendererInstanceContext;
     getStage3D(): IRenderStage3D;
     getCamera(): IRenderCamera;
-    addEntity(entity: IRenderEntity, processid: number, deferred: boolean): void;
-    removeEntity(entity: IRenderEntity): void;
+    /**
+     * add an entity to the renderer process of the renderer instance
+     * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
+     * @param processid this destination renderer process id
+     * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
+     */
+     addEntity(entity: IRenderEntity, processid: number, deferred: boolean): void;
+     /**
+      * remove an entity from the renderer instance
+      * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
+      */
+     removeEntity(entity: IRenderEntity): void;
+     /**
+      * add an entity container from the renderer process of the renderer instance
+      * @param container a DisplayEntityContainer instance
+      * @param processid this destination renderer process id
+      */
     updateMaterialUniformToCurrentShd(material: IRenderMaterial): void;
     
     /**

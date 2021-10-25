@@ -295,8 +295,6 @@
 
 //  import {DemoOutline as Demo} from "./demo/DemoOutline";
 
-//  import {DemoDraco as Demo} from "./demo/DemoDraco";
-
 //  import {DemoMRT as Demo} from "./demo/DemoMRT";
 
 //  import {DemoDepthTex as Demo} from "./demo/DemoDepthTex";
@@ -387,6 +385,8 @@
 //  import {RbtDrama as Demo} from "./app/RbtDrama";
 
 import {EasyRoad as Demo} from "./app/EasyRoad";
+
+//  import {DemoDraco as Demo} from "./demo/DemoDraco";
 
 //  import {DensityStatistics as Demo} from "./app/density/DensityStatistics";
 

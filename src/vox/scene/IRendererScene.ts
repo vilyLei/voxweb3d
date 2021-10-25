@@ -12,8 +12,17 @@ import {IRenderCamera} from "../render/IRenderCamera";
 import Vector3D from "../math/Vector3D";
 interface IRendererScene {
     
+    enable(): void;
+    disable(): void;
+    isEnabled(): boolean;
     getUid(): number;
+    /**
+     * 是否启用鼠标或者touch交互功能
+     * @param gpuTestEnabled the default value is true.
+     */
+    enableMouseEvent(gpuTestEnabled: boolean): void;
     getMouseXYWorldRay(rl_position: Vector3D, rl_tv: Vector3D): void;
+    isRayPickSelected(): boolean;
     /**
      * @param contextBeginEnabled the default value is default
      */
@@ -35,9 +44,22 @@ interface IRendererScene {
      * @param processid this destination renderer process id
      * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
      */
-    addEntity(entity: IRenderEntity, processIndex: number, deferred: boolean): void;
+    addEntity(entity: IRenderEntity, processid: number, deferred: boolean): void;
+    /**
+     * remove an entity from the renderer instance
+     * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
+     */
     removeEntity(entity: IRenderEntity): void;
-    addContainer(child: DisplayEntityContainer, processIndex: number): void;
+    /**
+     * add an entity container from the renderer process of the renderer instance
+     * @param container a DisplayEntityContainer instance
+     * @param processid this destination renderer process id
+     */
+    addContainer(container: DisplayEntityContainer, processid: number): void;
+    /**
+     * remove an entity container from the renderer instance
+     * @param entity IRenderEntity instance(for example: DisplayEntity class instance)
+     */
     removeContainer(child: DisplayEntityContainer): void;
 
     /**
@@ -54,7 +76,13 @@ interface IRendererScene {
      * @param func event listerner callback function
      */
     removeEventListener(type: number, target: any, func: (evt: any) => void): void;
-
+    /**
+     * 单独绘制可渲染对象, 可能是使用了 global material也可能没有。这种方式比较耗性能,只能用在特殊的地方。
+     * @param entity 需要指定绘制的 IRenderEntity 实例
+     * @param useGlobalUniform 是否使用当前 global material 所携带的 uniform, default value: false
+     * @param forceUpdateUniform 是否强制更新当前 global material 所对应的 shader program 的 uniform, default value: true
+     */
+    drawEntity(entity: IRenderEntity, useGlobalUniform: boolean,  forceUpdateUniform: boolean): void;
     
     setClearUint24Color(colorUint24: number, alpha: number): void;
     setClearRGBColor3f(pr: number, pg: number, pb: number): void;

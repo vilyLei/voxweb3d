@@ -23,7 +23,7 @@ class UIScene {
             this.m_engine = engine;            
             this.initBtns();
             
-            this.scene.setEditEnabled(this.m_switchEditBtn.isSelected());
+            this.scene.setEditEnabled(this.m_switchEditBtn != null ? this.m_switchEditBtn.isSelected() : false);
         }
     }
     run(): void {
@@ -91,17 +91,17 @@ class UIScene {
         console.log("selectEvt.uuid: ",selectEvt.uuid, selectEvt.flag);
         switch( selectEvt.uuid ) {
             case "cameraCtrl":
-                this.m_engine.cameraCtrlEnabled = selectEvt.flag;
+                this.m_engine.interaction.cameraCtrlEnabled = selectEvt.flag;
                 break;
             case "dragCamera":
                 if(this.m_switchEditBtn.isSelected()) {
                     this.scene.setEditEnabled(!selectEvt.flag);
                 }
                 if (selectEvt.flag) {
-                    this.m_engine.stageDragCtrl.enableSlide();
+                    this.m_engine.interaction.stageDragCtrl.enableSlide();
                 }
                 else {
-                    this.m_engine.stageDragCtrl.enableSwing();
+                    this.m_engine.interaction.stageDragCtrl.enableSwing();
                 }
                 break;
             case "switchEdit":

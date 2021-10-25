@@ -33,9 +33,6 @@ export default class CameraDragController {
     enableSlide(): void {
         this.m_swing = false;
     }
-    //setSlideSpeed(dx: number, dy: number): void {
-    //    
-    //}
     private mouseDownListener(evt: any): void {
         this.m_dragSwinger.attach();
         this.m_dragSlider.attach();

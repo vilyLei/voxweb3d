@@ -118,8 +118,8 @@ export class DemoCameraPath {
     }
     private mouseDown(evt: any): void {
 
-        this.m_engine.viewRay.intersectPlane();
-        let pv: Vector3D = this.m_engine.viewRay.position;
+        this.m_engine.interaction.viewRay.intersectPlane();
+        let pv: Vector3D = this.m_engine.interaction.viewRay.position;
 
     }
     private keyDown(evt: any): void {
@@ -213,10 +213,10 @@ export class DemoCameraPath {
     private switchSlide(flag: boolean): void {
         
         if (flag) {
-            this.m_engine.stageDragCtrl.enableSlide();
+            this.m_engine.interaction.stageDragCtrl.enableSlide();
         }
         else {
-            this.m_engine.stageDragCtrl.enableSwing();
+            this.m_engine.interaction.stageDragCtrl.enableSwing();
         }
     }
 }

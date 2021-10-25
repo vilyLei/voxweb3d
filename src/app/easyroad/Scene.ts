@@ -192,8 +192,8 @@ class Scene {
     private mouseDown(evt: any): void {
 
         console.log("scene mouse down");
-        this.m_engine.viewRay.intersectPlane();
-        let pv: Vector3D = this.m_engine.viewRay.position;
+        this.m_engine.interaction.viewRay.intersectPlane();
+        let pv: Vector3D = this.m_engine.interaction.viewRay.position;
         
         if (this.m_line != null && this.pathEditor.getEditEnabled() && !this.pathEditor.isPathClosed()) {
 

@@ -103,10 +103,10 @@ export default class MeshBase
     setPolyhedral(boo:boolean):void{}
     /**
      * 射线和自身的相交检测(多面体或几何函数(例如球体))
-     * @boundsHit       表示是否包围盒体已经和射线相交了
      * @rlpv            表示物体坐标空间的射线起点
      * @rltv            表示物体坐标空间的射线朝向
      * @outV            如果检测相交存放物体坐标空间的交点
+     * @boundsHit       表示是否包围盒体已经和射线相交了
      * @return          返回值 -1 表示不会进行检测,1表示相交,0表示不相交
      */
     testRay(rlpv:Vector3D,rltv:Vector3D,outV:Vector3D,boundsHit:boolean):number

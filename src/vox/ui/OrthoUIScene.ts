@@ -31,6 +31,15 @@ class OrthoUIScene implements IRendererScene
             this.initUIScene();
         }
     }
+    enable(): void {
+        this.m_ruisc.enable();
+    }
+    disable(): void {
+        this.m_ruisc.disable();
+    }
+    isEnabled(): boolean {
+        return this.m_ruisc.isEnabled();
+    }
     private initUIScene(): void {
 
         let rparam: RendererParam = new RendererParam();
@@ -55,6 +64,13 @@ class OrthoUIScene implements IRendererScene
     }
     getUid(): number {
         return this.m_ruisc.getUid();
+    }
+    /**
+     * 是否启用鼠标或者touch交互功能
+     * @param gpuTestEnabled the default value is true.
+     */
+    enableMouseEvent(gpuTestEnabled: boolean = true): void {
+        this.m_ruisc.enableMouseEvent(gpuTestEnabled);
     }
     getMouseXYWorldRay(rl_position: Vector3D, rl_tv: Vector3D): void {
         this.m_ruisc.getMouseXYWorldRay(rl_position,rl_tv);
@@ -98,6 +114,15 @@ class OrthoUIScene implements IRendererScene
     }
     removeContainer(child: DisplayEntityContainer): void {
         this.m_ruisc.removeContainer(child);
+    }
+    /**
+     * 单独绘制可渲染对象, 可能是使用了 global material也可能没有。这种方式比较耗性能,只能用在特殊的地方。
+     * @param entity 需要指定绘制的 IRenderEntity 实例
+     * @param useGlobalUniform 是否使用当前 global material 所携带的 uniform, default value: false
+     * @param forceUpdateUniform 是否强制更新当前 global material 所对应的 shader program 的 uniform, default value: true
+     */
+    drawEntity(entity: IRenderEntity, useGlobalUniform: boolean = false,  forceUpdateUniform: boolean = true): void {
+        this.m_ruisc.drawEntity(entity, useGlobalUniform, forceUpdateUniform);
     }
     isRayPickSelected(): boolean {
         return this.m_ruisc.isRayPickSelected();

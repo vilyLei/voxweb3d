@@ -34,9 +34,9 @@ export default class EventBaseDispatcher implements IEvtDispatcher {
             if (t > 1 && this.m_evtNodeMap.has(t)) {
                 return this.m_evtNodeMap.get(t).dispatch(evt);
             }
-            else {
-                console.log("EventBaseDispatcher::dispatchEvt(), Warn: undefined Event type.");
-            }
+            // else {
+            //     console.log("EventBaseDispatcher::dispatchEvt(), Warn: undefined Event type.");
+            // }
         }
         return 0;
     }

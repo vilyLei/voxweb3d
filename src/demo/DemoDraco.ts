@@ -19,6 +19,8 @@ import {DracoModuleLoader, DracoWholeModuleLoader, DracoMultiPartsModuleLoader} 
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import DivLog from "../vox/utils/DivLog";
+import RendererSubScene from "../vox/scene/RendererSubScene";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
 
 export class DemoDraco extends DemoInstance {
     constructor() {
@@ -33,7 +35,7 @@ export class DemoDraco extends DemoInstance {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
     private moduleLoader: DracoModuleLoader = new DracoWholeModuleLoader();
-    //private moduleLoader: DracoModuleLoader = new DracoMultiPartsModuleLoader();
+    private m_subScene: RendererSubScene = null;
     protected initializeSceneParam(param: RendererParam): void {
         this.m_processTotal = 4;
         param.maxWebGLVersion = 2;
@@ -64,11 +66,19 @@ export class DemoDraco extends DemoInstance {
         let tex0: TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
         let tex1: TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
 
+        let rparam: RendererParam = new RendererParam();
+        rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
+        rparam.setCamPosition(1800.0, 1800.0, 1800.0);
+        rparam.setCamProject(45, 20.0, 9000.0);
+        this.m_subScene = this.m_rscene.createSubScene();
+        this.m_subScene.initialize(rparam, 3, false);
         // add common 3d display entity
-        //  var plane: Plane3DEntity = new Plane3DEntity();
-        //  plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [tex0]);
-        //  this.m_rscene.addEntity(plane, 2);
+        var plane: Plane3DEntity = new Plane3DEntity();
+        plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [tex0]);
+        this.m_subScene.addEntity(plane, 0);
         
+        this.m_subScene.disable();
+        //this.m_rscene.disable();
         // let quadAxis:AxisQuad3DEntity = new AxisQuad3DEntity();
         // quadAxis.wireframe = true;
         // quadAxis.initialize(300.0,20.0);
@@ -80,7 +90,7 @@ export class DemoDraco extends DemoInstance {
         //  let box: Box3DEntity = new Box3DEntity();
         //  box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex1]);
         //  this.m_rscene.addEntity(box);
-
+        return;
         console.log("------------------------------------------------------------------");
         console.log("------------------------------------------------------------------");
 
@@ -109,7 +119,9 @@ export class DemoDraco extends DemoInstance {
         super.runBegin();
     }
     run(): void {
+
         this.m_rscene.run();
+        this.m_subScene.run(true);
         //  if (this.m_profileInstance != null) {
         //      this.m_profileInstance.run();
         //  }

@@ -200,7 +200,7 @@ class RenderAdapter implements IRenderAdapter{
 		}
 	}
 	clear(): void {
-
+		// console.log("clear back buffer.");
 		if (this.m_preDepth !== this.m_clearDepth) {
 			this.m_preDepth = this.m_clearDepth;
 			this.m_gl.clearDepth(this.m_clearDepth);

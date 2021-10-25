@@ -37,7 +37,7 @@ class Stage3D implements IRenderStage3D
     constructor(rcuid:number,pdocument:any)
     {
         this.m_rcuid = rcuid;
-        if(Stage3D.s_document ==null)
+        if(Stage3D.s_document == null)
         {
             Stage3D.s_document = pdocument;
             

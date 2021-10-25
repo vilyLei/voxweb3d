@@ -74,6 +74,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     private m_runFlag: number = -1;
     private m_autoRunning: boolean = true;
     private m_currStage3D: SubStage3D = null;
+    private m_enabled: boolean = true;
     
     readonly textureBlock: TextureBlock = null;
 
@@ -83,6 +84,15 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
         this.m_renderer = renderer;
         this.m_shader = renderer.getDataBuilder().getRenderShader();
         this.m_uid = 1024 + RendererSubScene.__s_uid++;
+    }
+    enable(): void {
+        this.m_enabled = true;
+    }
+    disable(): void {
+        this.m_enabled = false;
+    }
+    isEnabled(): boolean {
+        return this.m_enabled;
     }
     getUid(): number {
         return this.m_uid;
@@ -179,22 +189,22 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     removeEventListener(type: number, target: any, func: (evt: any) => void): void {
         this.m_currStage3D.removeEventListener(type, target, func);
     }
-    initialize(rparam: RendererParam, renderProcessTotal: number = 3, createNewCamera: boolean = true): void {
+    initialize(rparam: RendererParam, renderProcessesTotal: number = 3, createNewCamera: boolean = true): void {
         if (this.m_renderProxy == null) {
-            if (renderProcessTotal < 1) {
-                renderProcessTotal = 1;
+            if (renderProcessesTotal < 1) {
+                renderProcessesTotal = 1;
             }
-            if (renderProcessTotal > 8) {
-                renderProcessTotal = 8;
+            if (renderProcessesTotal > 8) {
+                renderProcessesTotal = 8;
             }
             this.m_rparam = rparam;
             this.m_perspectiveEnabled = rparam.cameraPerspectiveEnabled;
             let process: RenderProcess = null;
-            for (; renderProcessTotal >= 0;) {
+            for (; renderProcessesTotal >= 0;) {
                 process = this.m_renderer.appendProcess(rparam.batchEnabled, rparam.processFixedState) as RenderProcess;
                 this.m_processids[this.m_processidsLen] = process.getRPIndex();
                 this.m_processidsLen++;
-                --renderProcessTotal;
+                --renderProcessesTotal;
             }
             this.m_rcontext = this.m_renderer.getRendererContext();
             this.m_renderProxy = this.m_rcontext.getRenderProxy();
@@ -248,38 +258,38 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
         this.m_processids[this.m_processidsLen] = process.getRPIndex();
         this.m_processidsLen++;
     }
-    private m_children: DisplayEntityContainer[] = [];
-    private m_childrenTotal: number = 0;
-    addContainer(child: DisplayEntityContainer, processIndex: number = 0): void {
+    private m_containers: DisplayEntityContainer[] = [];
+    private m_containersTotal: number = 0;
+    addContainer(container: DisplayEntityContainer, processIndex: number = 0): void {
         if (processIndex < 0) {
             processIndex = 0;
         }
-        if (child != null && child.__$wuid < 0 && child.__$contId < 1) {
+        if (container != null && container.__$wuid < 0 && container.__$contId < 1) {
             let i: number = 0;
-            for (; i < this.m_childrenTotal; ++i) {
-                if (this.m_children[i] == child) {
+            for (; i < this.m_containersTotal; ++i) {
+                if (this.m_containers[i] == container) {
                     return;
                 }
             }
-            if (i >= this.m_childrenTotal) {
-                child.__$wuid = this.m_uid;
-                child.wprocuid = processIndex;//this.m_processids[processIndex];
-                child.__$setRenderer(this);
-                this.m_children.push(child);
-                this.m_childrenTotal++;
+            if (i >= this.m_containersTotal) {
+                container.__$wuid = this.m_uid;
+                container.wprocuid = processIndex;
+                container.__$setRenderer(this);
+                this.m_containers.push(container);
+                this.m_containersTotal++;
             }
         }
     }
-    removeContainer(child: DisplayEntityContainer): void {
-        if (child != null && child.__$wuid == this.m_uid && child.getRenderer() == this.m_renderer) {
+    removeContainer(container: DisplayEntityContainer): void {
+        if (container != null && container.__$wuid == this.m_uid && container.getRenderer() == this.m_renderer) {
             let i: number = 0;
-            for (; i < this.m_childrenTotal; ++i) {
-                if (this.m_children[i] == child) {
-                    child.__$wuid = -1;
-                    child.wprocuid = -1;
-                    child.__$setRenderer(null);
-                    this.m_children.splice(i, 1);
-                    --this.m_childrenTotal;
+            for (; i < this.m_containersTotal; ++i) {
+                if (this.m_containers[i] == container) {
+                    container.__$wuid = -1;
+                    container.wprocuid = -1;
+                    container.__$setRenderer(null);
+                    this.m_containers.splice(i, 1);
+                    --this.m_containersTotal;
                     break;
                 }
             }
@@ -296,11 +306,14 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     moveEntityTo(entity: IRenderEntity, processIndex: number): void {
         this.m_renderer.moveEntityToProcessAt(entity, this.m_processids[processIndex]);
     }
-    drawEntity(entity: IRenderEntity,force: boolean = true): void {
-        if(force) {
-            this.m_rcontext.resetUniform();
-        }
-        this.m_renderer.drawEntity(entity);
+    /**
+     * 单独绘制可渲染对象, 可能是使用了 global material也可能没有。这种方式比较耗性能,只能用在特殊的地方。
+     * @param entity 需要指定绘制的 IRenderEntity 实例
+     * @param useGlobalUniform 是否使用当前 global material 所携带的 uniform, default value: false
+     * @param forceUpdateUniform 是否强制更新当前 global material 所对应的 shader program 的 uniform, default value: true
+     */
+    drawEntity(entity: IRenderEntity, useGlobalUniform: boolean = false,  forceUpdateUniform: boolean = true): void {
+        this.m_renderer.drawEntity(entity, useGlobalUniform, forceUpdateUniform);
     }
     /**
      * add an entity to the renderer process of the renderer instance
@@ -468,7 +481,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
      */
     update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
 
-        this.m_currStage3D.enterFrame();
+        if(this.m_currStage3D != null) this.m_currStage3D.enterFrame();
         
         if (autoCycle && this.m_autoRunning) {
             if (this.m_runFlag != 0) this.runBegin();
@@ -506,8 +519,8 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
         //  this.m_renderer.update();          
 
         let i: number = 0;
-        for (; i < this.m_childrenTotal; ++i) {
-            this.m_children[i].update();
+        for (; i < this.m_containersTotal; ++i) {
+            this.m_containers[i].update();
         }
         // space update
         if (this.m_rspace != null) {
@@ -545,16 +558,20 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     // rendering running
     run(autoCycle: boolean = false): void {
 
-        if (autoCycle && this.m_autoRunning) {
-            if (this.m_runFlag != 1) this.update();
-            this.m_runFlag = 2;
-        }
+        if (this.m_enabled) {
+            
+            //console.log("rendererSubScene::run...");
+            if (autoCycle && this.m_autoRunning) {
+                if (this.m_runFlag != 1) this.update();
+                this.m_runFlag = 2;
+            }
 
-        for (let i: number = 0; i < this.m_processidsLen; ++i) {
-            this.m_renderer.runAt(this.m_processids[i]);
-        }
-        if (autoCycle) {
-            this.runEnd();
+            for (let i: number = 0; i < this.m_processidsLen; ++i) {
+                this.m_renderer.runAt(this.m_processids[i]);
+            }
+            if (autoCycle) {
+                this.runEnd();
+            }
         }
     }
     runAt(index: number): void {

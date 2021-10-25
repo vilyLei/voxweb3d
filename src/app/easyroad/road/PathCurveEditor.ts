@@ -75,7 +75,7 @@ class PathCurveEditor {
     buildPath(): void {
         
         if(this.m_editEnabled && this.m_path != null) {
-            if(this.m_path.getPosListLength() > 1) {                
+            if(this.m_path.getPosListLength() > 1) {
                 this.m_curvePosList = this.buildCurve();
             }
         }
