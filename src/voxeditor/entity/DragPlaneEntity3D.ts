@@ -94,11 +94,11 @@ export default class DragPlaneEntity3D extends DisplayEntity {
             this.m_rtv.copyFrom(rtv);
 
             this.calcClosePos(this.m_rpv, this.m_rtv);
+            this.m_dv.copyFrom(this.m_outV);
+            this.m_dv.subtractBy(this.m_initV);
+            this.m_pos.copyFrom(this.m_initPos);
+            this.m_pos.addBy(this.m_dv);
             if(this.moveSelfenabled) {
-                this.m_dv.copyFrom(this.m_outV);
-                this.m_dv.subtractBy(this.m_initV);
-                this.m_pos.copyFrom(this.m_initPos);
-                this.m_pos.addBy(this.m_dv);
                 this.setPosition(this.m_pos);
                 this.update();
             }
