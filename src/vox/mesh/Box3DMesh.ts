@@ -407,8 +407,8 @@ export default class Box3DMesh extends MeshBase {
             ROVertexBuffer.AddFloat32Data(btvs, 3);
         }
         ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
-        
-        if(this.wireframe) {
+
+        if (this.wireframe) {
             this.updateWireframeIvs();
         }
         if (newBuild) {
@@ -424,17 +424,17 @@ export default class Box3DMesh extends MeshBase {
     }
     setFaceUVSAt(i: number, uvsLen8: Float32Array, offset: number = 0): void {
         if (this.m_uvs != null) {
-            if(offset < 1) {
+            if (offset < 1) {
                 this.m_uvs.set(uvsLen8, i * 8);
             }
             else {
                 i *= 8;
-                if(offset < 0) offset = 0;
-                for(let k: number = 0; k < 4; ++k) {
+                if (offset < 0) offset = 0;
+                for (let k: number = 0; k < 4; ++k) {
                     this.m_uvs[i++] = uvsLen8[offset * 2];
                     this.m_uvs[i++] = uvsLen8[offset * 2 + 1];
                     offset++;
-                    offset = offset%4;
+                    offset = offset % 4;
                 }
             }
         }
@@ -463,6 +463,18 @@ export default class Box3DMesh extends MeshBase {
                 i += 8;
             }
         }
+    }
+    /**
+     * 射线和自身的相交检测(多面体或几何函数(例如球体))
+     * @rlpv            表示物体坐标空间的射线起点
+     * @rltv            表示物体坐标空间的射线朝向
+     * @outV            如果检测相交存放物体坐标空间的交点
+     * @boundsHit       表示是否包围盒体已经和射线相交了
+     * @return          返回值 -1 表示不会进行检测,1表示相交,0表示不相交
+     */
+    testRay(rlpv: Vector3D, rltv: Vector3D, outV: Vector3D, boundsHit: boolean): number {
+        let boo: boolean = AABB.IntersectionRL2(rltv, rlpv, this.bounds, outV);
+        return boo ? 1 : -1;
     }
     toString(): string {
         return "Box3DMesh()";

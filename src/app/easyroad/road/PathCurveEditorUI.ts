@@ -1,10 +1,12 @@
 import MouseEvent from "../../../vox/event/MouseEvent";
 import EngineBase from "../../../vox/engine/EngineBase";
-import {MoveController} from "../ui/MoveController";
+import {DragMoveController} from "../../../voxeditor/entity/DragMoveController";
+import Vector3D from "../../../vox/math/Vector3D";
 class PathCurveEditorUI {
 
     private m_engine: EngineBase = null;
-    private m_moveCtrl: MoveController = null;
+    readonly dragMoveController: DragMoveController = new DragMoveController();
+
     constructor() { }
 
     initialize(engine: EngineBase): void {
@@ -34,22 +36,28 @@ class PathCurveEditorUI {
     
     private initUI(): void {
         
+        //this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener, true, true);
         this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener, true, true);
         this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDownListener);
-
-        this.m_moveCtrl = new MoveController();
-        this.m_moveCtrl.initialize( this.m_engine.getRendererSceneAt(1).getRScene() );       
+        this.dragMoveController.initialize( this.m_engine.getRendererSceneAt(1).getRScene() );
     }
     run(): void {
-        this.m_moveCtrl.run();
+        this.dragMoveController.run();
     }
     clear(): void {
+        this.dragMoveController.setTarget( null );
+    }
+    private m_rpv: Vector3D = new Vector3D();
+    private m_rtv: Vector3D = new Vector3D();
+    
+    private mouseDownListener(evt: any): void {
         
+        this.m_engine.rscene.getMouseXYWorldRay(this.m_rpv, this.m_rtv);
     }
     private mouseBgDownListener(evt: any): void {
     }
     private mouseUpListener(evt: any): void {
-        this.m_moveCtrl.deselect();
+        this.dragMoveController.deselect();
     }
 }
 

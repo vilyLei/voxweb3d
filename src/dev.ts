@@ -254,8 +254,6 @@
 
 //  import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
 
-//  import {DemoMouseDrag as Demo} from "./demo/DemoMouseDrag";
-
 //  import {DemoCameraSwing as Demo} from "./demo/DemoCameraSwing";
 
 //  import {DemoCamVisibleTest as Demo} from "./demo/DemoCamVisibleTest";
@@ -309,6 +307,7 @@
 
 //  import {DemoMatNavAstarThread as Demo} from "./demo/DemoMatNavAstarThread";
 
+//  import {DemoMouseDrag as Demo} from "./demo/DemoMouseDrag";
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   maps    ///////////////////////////////////

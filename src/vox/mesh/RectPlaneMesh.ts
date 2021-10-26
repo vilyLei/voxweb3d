@@ -269,20 +269,8 @@ export default class RectPlaneMesh extends MeshBase {
     testRay(rlpv: Vector3D, rltv: Vector3D, outV: Vector3D, boundsHit: boolean): number {
         if (this.m_polyhedralBoo) return -1;
         if (boundsHit) {
-            switch (this.axisFlag) {
-                case 0:
-                    PlaneCalc.IntersectionSLV2(Vector3D.Z_AXIS, 0.0, rlpv, rltv, outV);
-                    break;
-                case 1:
-                    PlaneCalc.IntersectionSLV2(Vector3D.Y_AXIS, 0.0, rlpv, rltv, outV);
-                    break;
-                case 2:
-                    PlaneCalc.IntersectionSLV2(Vector3D.X_AXIS, 0.0, rlpv, rltv, outV);
-                    break;
-                default:
-                    break;
-            }
-            return 1;
+            let boo: boolean = AABB.IntersectionRL2(rltv, rlpv, this.bounds, outV);
+            return boo ? 1 : -1;
         }
         return -1;
     }

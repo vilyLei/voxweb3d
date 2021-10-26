@@ -56,9 +56,13 @@ export default class MouseEvent extends EventBase
     lpos:Vector3D = new Vector3D();
     // 世界坐标
     wpos:Vector3D = new Vector3D();
-    // 射线参数方向参数
+    /**
+     * the direction on a ray line in the world space
+     */
     raytv:Vector3D = new Vector3D(1.0,0.0,0.0);
-    // 射线发射起点参数
+    /**
+     * the point on a ray line in the world space
+     */
     raypv:Vector3D = new Vector3D(0.0,0.0,0.0);
     // 屏幕空间鼠标坐标,和gpu空间对齐
     mouseX:number = 0.0;

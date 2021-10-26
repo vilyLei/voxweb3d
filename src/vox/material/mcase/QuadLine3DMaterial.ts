@@ -34,9 +34,10 @@ class QuadLine3DShaderBuffer extends ShaderCodeBuffer
 "\
 precision mediump float;\n\
 varying vec4 v_vtxColor;\n\
+uniform vec4 u_color;\n\
 void main()\n\
 {\
-gl_FragColor = v_vtxColor;\n\
+gl_FragColor = v_vtxColor * u_color;\n\
 }\n\
 ";
         return fragCode;
@@ -53,7 +54,6 @@ attribute vec4 a_vs2;\n\
         {
             vtxCode +=
 "\
-uniform vec4 u_color;\n\
 ";
         }
         else
@@ -93,7 +93,7 @@ v_vtxColor = a_cvs;\n\
         {
             vtxCode +=
 "\
-v_vtxColor = u_color;\n\
+v_vtxColor = vec4(1.0);\n\
 ";
         }
         else
@@ -133,42 +133,41 @@ v_vtxColor = a_cvs;\n\
 export default class QuadLine3DMaterial extends MaterialBase
 {
     private m_dynColorEnabled:boolean = false;
-    private m_colorArray:Float32Array = null;
+    private m_colorArray:Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
     constructor(dynColorEnabled:boolean = false)
     {
         super();
-        if(dynColorEnabled)
-        {
-            this.m_colorArray = new Float32Array([1.0,1.0,1.0,1.0]);
-        }
         this.m_dynColorEnabled = dynColorEnabled;
     }
     
+    protected buildBuf(): void {
+        let buf: QuadLine3DShaderBuffer = QuadLine3DShaderBuffer.GetInstance();
+        buf.dynColorEnabled = this.m_dynColorEnabled;
+    }
     getCodeBuf():ShaderCodeBuffer
-    {
-        QuadLine3DShaderBuffer.GetInstance().dynColorEnabled = this.m_dynColorEnabled;
+    {        
         return QuadLine3DShaderBuffer.GetInstance();
     }
     
     
     setRGB3f(pr:number,pg:number,pb:number)
     {
-        if(this.m_colorArray != null)
-        {
-            this.m_colorArray[0] = pr;
-            this.m_colorArray[1] = pg;
-            this.m_colorArray[2] = pb;
-        }
+        this.m_colorArray[0] = pr;
+        this.m_colorArray[1] = pg;
+        this.m_colorArray[2] = pb;
+    }
+    setRGBA4f(pr:number,pg:number,pb:number,pa:number)
+    {
+        this.m_colorArray[0] = pr;
+        this.m_colorArray[1] = pg;
+        this.m_colorArray[2] = pb;
+        this.m_colorArray[3] = pa;
     }
     createSelfUniformData():ShaderUniformData
     {
-        if(this.m_dynColorEnabled)
-        {
-            let oum:ShaderUniformData = new ShaderUniformData();
-            oum.uniformNameList = ["u_color"];
-            oum.dataList = [this.m_colorArray];
-            return oum;
-        }
-        return null;
+        let oum:ShaderUniformData = new ShaderUniformData();
+        oum.uniformNameList = ["u_color"];
+        oum.dataList = [this.m_colorArray];
+        return oum;
     }
 }

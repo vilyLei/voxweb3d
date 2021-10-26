@@ -26,6 +26,8 @@ import CameraTrack from "../vox/view/CameraTrack";
 import MouseEvt3DDispatcher from "../vox/event/MouseEvt3DDispatcher";
 import ObjData3DEntity from "../vox/entity/ObjData3DEntity";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
+import Sphere3DMesh from "../vox/mesh/Sphere3DMesh"
+import Matrix4 from "../vox/math/Matrix4";
 
 class DispCtrObj {
     constructor() {
@@ -142,7 +144,7 @@ export class DemoMouseDrag {
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.setRendererProcessParam(1, true, true);
 
-            this.m_rscene.enableMouseEvent(true);
+            this.m_rscene.enableMouseEvent(false);
             this.m_evtCtr = this.m_rscene.getEvt3DController();
 
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
@@ -171,8 +173,13 @@ export class DemoMouseDrag {
             RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
             this.m_rscene.updateCamera();
 
+            let t_axis = new Axis3DEntity();
+            t_axis.initialize(500.0);
+            this.m_rscene.addEntity(t_axis);
+
             let saxis: DragAxisQuad3D = new DragAxisQuad3D();
             saxis.initialize(500.0, 10.0);
+            saxis.initializeEvent();
             this.m_rscene.addEntity(saxis);
             DispCtrObj.MeshDragAxis = saxis;
 
@@ -187,6 +194,8 @@ export class DemoMouseDrag {
                 axis.setXYZ(Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0);
                 axis.setScaleXYZ((Math.random() + 0.8) * scaleK, (Math.random() + 0.8) * scaleK, (Math.random() + 0.8) * scaleK);
                 axis.setRotationXYZ(Math.random() * 500.0, Math.random() * 500.0, Math.random() * 500.0);
+                // axis.initialize(400.0);
+                // axis.setXYZ(200,50,100);
                 this.m_rscene.addEntity(axis);
                 axis.name = "axis_" + i;
                 this.useEvt(axis);
@@ -202,12 +211,19 @@ export class DemoMouseDrag {
             let total: number = 3;
             this.m_profileInstance = new ProfileInstance();
             this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-
+            let dis: number = 50;
+            let axisPlaneSize: number = 130;
             let plane: Plane3DEntity = null;
             for (i = 0; i < 5; ++i) {
                 plane = new Plane3DEntity();
                 plane.showDoubleFace();
                 plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [tex0]);
+                plane.setPolyhedral(false);
+                // plane.initializeXOY(dis, dis, axisPlaneSize, axisPlaneSize, [tex0]);
+                // plane.initializeXOYSquare(300,[tex0]);
+                // plane.setXYZ(200,50,100);
+                // let scale: number = 1.3;
+                // plane.setScaleXYZ(scale,scale,scale);
                 plane.setXYZ(Math.random() * 3000.0 - 1500.0, Math.random() * 3000.0 - 1500.0, Math.random() * 2000.0 - 1000.0);
                 this.m_rscene.addEntity(plane);
 
@@ -239,11 +255,12 @@ export class DemoMouseDrag {
 
                 sph.initialize(100, 20, 20, [tex1]);
                 cubeRange.calc();
+                //cubeRange.value.setXYZ(200,50,100);
                 sph.setPosition(cubeRange.value);
                 this.m_rscene.addEntity(sph);
+                //this.m_sph = sph;
             }
-
-
+            ///*
             let objUrl: string = "static/assets/obj/box01.obj";
             objUrl = "static/assets/obj/building_001.obj";
             let objDisp: ObjData3DEntity = new ObjData3DEntity();
@@ -252,8 +269,10 @@ export class DemoMouseDrag {
             objDisp.initializeByObjDataUrl(objUrl, [tex6]);
             objDisp.setXYZ(Math.random() * 2000.0 - 1000.0, Math.random() * 2000.0 - 1000.0, Math.random() * 2000.0 - 1000.0);
             this.m_rscene.addEntity(objDisp);
+            //*/
         }
     }
+    private m_sph: Sphere3DEntity = null;
     private useEvt(objDisp: DisplayEntity): void {
         objDisp.mouseEnabled = true;
         let ctrObj: DispCtrObj = new DispCtrObj();
@@ -307,6 +326,7 @@ export class DemoMouseDrag {
     private m_rpv: Vector3D = new Vector3D();
     private m_rtv: Vector3D = new Vector3D();
     run(): void {
+
         this.m_rscene.setClearColor(this.m_bgColor);
         this.m_stageDragSwinger.runWithYAxis();
         this.m_rscene.run(true);

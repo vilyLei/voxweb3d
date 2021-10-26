@@ -28,6 +28,7 @@ export default class Plane3DEntity extends DisplayEntity {
     readonly color1: Color4 = new Color4();
     readonly color2: Color4 = new Color4();
     readonly color3: Color4 = new Color4();
+    private m_polyhedralBoo: boolean = true;
 
     offsetU: number = 0.0;
     offsetV: number = 0.0;
@@ -42,6 +43,13 @@ export default class Plane3DEntity extends DisplayEntity {
 
     constructor(transform: ROTransform = null) {
         super(transform);
+    }
+    setPolyhedral(boo: boolean): void {
+        this.m_polyhedralBoo = boo;
+        let pmesh: RectPlaneMesh = this.getMesh() as RectPlaneMesh;
+        if(pmesh != null) {
+            pmesh.setPolyhedral(boo);
+        }
     }
     // 是否是平铺在屏幕上
     setScreenAlignEnable(enable: boolean): void {
@@ -194,7 +202,7 @@ export default class Plane3DEntity extends DisplayEntity {
             mesh.color1.copyFrom(this.color1);
             mesh.color2.copyFrom(this.color2);
             mesh.color3.copyFrom(this.color3);
-
+            mesh.setPolyhedral( this.m_polyhedralBoo );
             mesh.setUVS( this.uvs );
             this.uvs = null;
 

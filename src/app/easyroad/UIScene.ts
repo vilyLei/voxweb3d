@@ -14,16 +14,18 @@ class UIScene {
     private m_engine: EngineBase = null;
 
     private m_switchEditBtn: SelectionBar = null;
+    private m_addPosBtn: SelectionBar = null;
+    private m_showPosBtn: SelectionBar = null;
 
     initialize(engine: EngineBase): void {
-
+        
         console.log("UIScene::initialize()......");
         if (this.m_engine == null) {
-
-            this.m_engine = engine;            
+            this.m_engine = engine;
+            this.m_engine.rscene.setClearUint24Color(0x656565);
             this.initBtns();
             
-            this.scene.setEditEnabled(this.m_switchEditBtn != null ? this.m_switchEditBtn.isSelected() : false);
+            this.scene.setEditEnabled(this.m_switchEditBtn != null ? this.m_switchEditBtn.isSelected() : false);            
         }
     }
     run(): void {
@@ -35,16 +37,20 @@ class UIScene {
             this.m_btnSize = 64;
             dis = 40;
         }
-        let btn = this.createSelectBtn("clearScene", "clearScene", "ON", "OFF", true);
-        btn = this.createSelectBtn("saveData", "saveData", "ON", "OFF", false);
+        let btn = this.createSelectBtn("清理场景", "clearScene", "ON", "OFF", true);
+        btn = this.createSelectBtn("保存数据", "saveData", "ON", "OFF", false);
         this.m_btnPY += dis;
-        btn = this.createSelectBtn("edit", "switchEdit", "ON", "OFF", false);
+        btn = this.createSelectBtn("编辑状态", "switchEdit", "ON", "OFF", false);
         this.m_switchEditBtn = btn;
-        btn = this.createSelectBtn("dragCamera", "dragCamera", "ON", "OFF", false);
-        btn = this.createSelectBtn("closePath", "closePath", "ON", "OFF", false);
+        btn = this.createSelectBtn("添加位置", "switchAddPathPos", "ON", "OFF", true);
+        this.m_addPosBtn = btn;
+        btn = this.createSelectBtn("控制点显示", "showPathCtrlPos", "ON", "OFF", true);
+        this.m_showPosBtn = btn;
+        btn = this.createSelectBtn("拖动摄像机", "dragCamera", "ON", "OFF", false);
+        btn = this.createSelectBtn("开启路径闭合", "closePath", "ON", "OFF", false);
         this.scene.closePathBtn = btn;
         this.m_btnPY += dis;
-        btn = this.createSelectBtn("cameraCtrl", "cameraCtrl", "ON", "OFF", true);
+        btn = this.createSelectBtn("摄像机控制", "cameraCtrl", "ON", "OFF", true);
         
         let minX: number = 1000;
         let pos: Vector3D = new Vector3D();
@@ -104,6 +110,12 @@ class UIScene {
                     this.m_engine.interaction.stageDragCtrl.enableSwing();
                 }
                 break;
+            case "showPathCtrlPos":
+                this.scene.pathEditor.pathCtrlEntityManager.setCtrlPosVisible(selectEvt.flag);
+                break;
+            case "switchAddPathPos":
+                this.scene.pathEditor.setAddPosEnabled(selectEvt.flag);
+                break;
             case "switchEdit":
                 this.scene.pathEditor.setEditEnabled(selectEvt.flag);
                 break;
@@ -111,6 +123,8 @@ class UIScene {
                 this.scene.pathEditor.setCloseEnabled(selectEvt.flag);
                 break;
             case "clearScene":
+                this.m_addPosBtn.select(false);
+                this.m_showPosBtn.select(false);
                 this.scene.clear();
                 break;
             case "saveData":

@@ -117,7 +117,6 @@ export default class MaterialBase implements IRenderMaterial {
         }
     }
     protected buildBuf(): void {
-
     }
     protected __$initShd(pshduns: string): void {
     }

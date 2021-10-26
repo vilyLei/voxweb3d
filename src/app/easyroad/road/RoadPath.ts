@@ -24,6 +24,7 @@ class TVTool {
  * only road path path data
  */
 class RoadPath {
+    version: number = -1;
     private m_posList: Vector3D[] = null;
     private m_posTable: Vector3D[][] = [];
     private m_tvTool: TVTool = new TVTool();
@@ -89,7 +90,7 @@ class RoadPath {
 
         let curvePosList: Vector3D[] = null;
         if(list.length > 2) {
-
+            
             let v0: Vector3D = null;
             let v1: Vector3D = null;
             let va: Vector3D = new Vector3D();
@@ -103,7 +104,7 @@ class RoadPath {
                 }
             }
             else if(closePath){
-                console.warn("the path can not be closed !");
+                //console.warn("the path can not be closed !");
                 closePath = false;
             }
             this.m_pathClosed = closePath;
@@ -230,7 +231,7 @@ class RoadPath {
                 }
             }
             else if(closePath){
-                console.warn("the path can not be closed !");
+                //console.warn("the path can not be closed !");
                 closePath = false;
             }
             this.m_pathClosed = closePath;

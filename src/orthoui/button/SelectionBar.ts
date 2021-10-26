@@ -162,6 +162,8 @@ export class SelectionBar {
 
     private nameBtnMouseDown(evt: any): void {
         if (this.m_enabled) {
+            this.m_flag = !this.m_flag;
+            this.updateState();
             this.sendEvt();
         }
     }

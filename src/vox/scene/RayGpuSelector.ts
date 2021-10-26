@@ -252,6 +252,7 @@ export default class RayGpuSelector implements IRaySelector
                                 mat4 = entity.getInvMatrix();
                                 mat4.transformOutVector3(rpv,invpv);
                                 mat4.deltaTransformOutVector(rtv,invtv);
+                                invtv.normalize();
                                 flag = entity.testRay(invpv,invtv,outv,true);
                             }
                             else
@@ -265,6 +266,7 @@ export default class RayGpuSelector implements IRaySelector
                             mat4 = entity.getInvMatrix();
                             mat4.transformOutVector3(rpv,invpv);
                             mat4.deltaTransformOutVector(rtv,invtv);
+                            invtv.normalize();
                             flag = entity.testRay(invpv,invtv,outv,true);
                         }
                         if(flag > 0)
@@ -306,6 +308,7 @@ export default class RayGpuSelector implements IRaySelector
                     mat4 = entity.getInvMatrix();
                     mat4.transformOutVector3(rpv,invpv);
                     mat4.deltaTransformOutVector(rtv,invtv);
+                    invtv.normalize();
                     if(entity.isPolyhedral())
                     {
                         if(polyTest)

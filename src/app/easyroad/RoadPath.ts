@@ -186,7 +186,7 @@ class RoadPath {
                 }
             }
             else if(closePath){
-                console.warn("the path can not be closed !");
+                //console.warn("the path can not be closed !");
                 closePath = false;
             }
 
@@ -312,7 +312,7 @@ class RoadPath {
                 }
             }
             else if(closePath){
-                console.warn("the path can not be closed !");
+                //console.warn("the path can not be closed !");
                 closePath = false;
             }
             

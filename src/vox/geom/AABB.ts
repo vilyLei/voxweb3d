@@ -452,7 +452,7 @@ class AABB
 		outV.z -= dis * ltv.z;
 		if (outV.getLengthSquared() > ab.radius2)
 		{
-			console.log("Hit shp failure.");
+			//console.log("Hit shp failure.");
 			return false;
 		}
 		// 包含起点，则一定相交

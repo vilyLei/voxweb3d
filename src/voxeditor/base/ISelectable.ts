@@ -4,18 +4,18 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// Ray pick selection obj
-import Vector3D from "../../vox/math/Vector3D";
-import IRenderEntity from "../../vox/render/IRenderEntity";
 
-export default class RaySelectedNode
-{
-    constructor(){}
-    entity:IRenderEntity = null;
-    // object space hit position
-    lpv:Vector3D = new Vector3D();
-    // world space hit position
-    wpv:Vector3D = new Vector3D();
-    dis:number = 0.0;
-    flag: number = 0;
+import IEntityTransform from "../../vox/entity/IEntityTransform";
+/**
+ * selectable entity behavior normalization
+ */
+interface ISelectable extends IEntityTransform {
+    uuid: string;
+    initializeEvent(): void;
+    isSelected(): boolean;
+    select(): void;
+    deselect(): void;
+    setVisible(visible: boolean): void;
+    getVisible(): boolean;
 }
+export { ISelectable };
