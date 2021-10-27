@@ -16,6 +16,7 @@ import IRenderEntity from "../../vox/render/IRenderEntity";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 import IRendererScene from "../../vox/scene/IRendererScene";
 import {IRenderCamera} from "../render/IRenderCamera";
+import IRenderStage3D from "../render/IRenderStage3D";
 import Vector3D from "../math/Vector3D";
 
 class OrthoUIScene implements IRendererScene
@@ -174,6 +175,9 @@ class OrthoUIScene implements IRendererScene
     }
     getCamera(): IRenderCamera {
         return this.m_rscene.getCamera();
+    }
+    getStage3D(): IRenderStage3D {
+        return this.m_ruisc.getStage3D();
     }
 }
 export {OrthoUIScene};

@@ -87,7 +87,7 @@ class PathCurveEditor {
     }
     private buildCurve(): Vector3D[] {
         //console.log("buildCurve this.m_closeEnabled: ", this.m_closeEnabled);
-        let curvePosList: Vector3D[] = this.m_path.buildPathCurve(3, true, this.m_closeEnabled ? 10350 : 350);
+        let curvePosList: Vector3D[] = this.m_path.buildPathCurve(3, this.m_closeEnabled, this.m_closeEnabled ? 10350 : 350);
         this.m_curvePosList = curvePosList;
         //this.m_closeEnabled = false;
         return curvePosList;
@@ -117,7 +117,7 @@ class PathCurveEditor {
             }
         }
     }
-    getPathPosList(): Vector3D[] {
+    getPathCurvePosList(): Vector3D[] {
         return this.m_curvePosList;
     }
     run(): void {
@@ -128,7 +128,7 @@ class PathCurveEditor {
             this.m_pathLineVersion = this.m_path.version;
             this.m_line.setVisible( true );
             this.buildPath();
-            let posList: Vector3D[] = this.getPathPosList();
+            let posList: Vector3D[] = this.getPathCurvePosList();
             this.buildPathLine(posList);
         }
     }

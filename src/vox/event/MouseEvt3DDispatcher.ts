@@ -13,7 +13,7 @@ class MouseEvt3DDispatcher implements IEvtDispatcher {
     private m_evtNodes: EvtNode[] = null;
     private m_evtNodesLen: number = 17;
     constructor() {
-        this.m_evtNodesLen = MouseEvent.GetMouseEvtTypeValueBase();
+        this.m_evtNodesLen = MouseEvent.GetMouseEvtTypeValuesTotal();
         this.m_evtNodes = new Array(this.m_evtNodesLen);
     }
     getClassType(): number {
@@ -21,7 +21,9 @@ class MouseEvt3DDispatcher implements IEvtDispatcher {
     }
     destroy(): void {
         for (let i: number = 0; i < this.m_evtNodesLen; ++i) {
-            this.m_evtNodes[i].destroy();
+            if(this.m_evtNodes[i] != null) {
+                this.m_evtNodes[i].destroy();
+            }
         }
     }
     // @return      1 is send evt yes,0 is send evt no

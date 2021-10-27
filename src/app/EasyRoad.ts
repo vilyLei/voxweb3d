@@ -45,11 +45,11 @@ export class EasyRoad {
             this.m_uiscene.scene = this.m_scene;
             this.m_uiscene.initialize( this.m_engine );
             
-            let plane: Plane3DEntity = new Plane3DEntity();
-            plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [this.m_engine.texLoader.getTexByUrl("static/assets/default.jpg")]);
-            plane.setXYZ(0,-100,0);
-            plane.setScaleXYZ(3.0,3.0,3.0);
-            this.m_engine.rscene.addEntity(plane, 0, true);
+            // let plane: Plane3DEntity = new Plane3DEntity();
+            // plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [this.m_engine.texLoader.getTexByUrl("static/assets/default.jpg")]);
+            // plane.setXYZ(0,-100,0);
+            // plane.setScaleXYZ(3.0,3.0,3.0);
+            // this.m_engine.rscene.addEntity(plane, 0, true);
 
             this.update();
         }

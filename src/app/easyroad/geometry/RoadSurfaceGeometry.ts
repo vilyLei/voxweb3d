@@ -14,6 +14,7 @@ export default class RoadSurfaceGeometry extends GeometryBase {
     uScale: number = 1.0;
     vScale: number = 1.0;
 
+    offsetXYZ: Vector3D = new Vector3D();
     roadWidth: number = 120;
     constructor() {
         super();
@@ -61,6 +62,9 @@ export default class RoadSurfaceGeometry extends GeometryBase {
         else {
             vScale *= Math.round(disTotal / this.roadWidth);
         }
+        let ox: number = this.offsetXYZ.x;
+        let oy: number = this.offsetXYZ.y;
+        let oz: number = this.offsetXYZ.z;
         for (i = 0; i < tot; ++i) {
             row = rows[i];
             px = i/(tot - 1);
@@ -74,7 +78,7 @@ export default class RoadSurfaceGeometry extends GeometryBase {
                     this.m_uvs[l++] = vScale  * disList[j];//(j / subLen);
                 }
                 let pv: Vector3D = row[j];
-                this.m_vs[k++] = pv.x; this.m_vs[k++] = pv.y; this.m_vs[k++] = pv.z;
+                this.m_vs[k++] = pv.x + ox; this.m_vs[k++] = pv.y + oy; this.m_vs[k++] = pv.z + oz;
             }
         }
 

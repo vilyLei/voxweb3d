@@ -9,7 +9,12 @@ import { PathCurveEditorUI } from "./PathCurveEditorUI";
 import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
 import {EditableEntity} from "../../../voxeditor/entity/EditableEntity";
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
+import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
+import SelectionBar from "../../../orthoui/button/SelectionBar";
+import ProgressBar from "../../../orthoui/button/ProgressBar";
 
+import { PathKeyNode } from "./PathKeyNode";
+import MathConst from "../../../vox/math/MathConst";
 class PathCtrlEntity extends EditableEntity {
 
     path: RoadPath = null;
@@ -46,6 +51,9 @@ class PathCtrlEntityManager {
     private m_srcEntity: Sphere3DEntity = null;
     private m_pathCtrlEntitys: EditableEntity[] = [];
 
+    currPosCurvationFreezeBtn: SelectionBar = null;
+    curvatureFactorHeadBtn: ProgressBar = null;
+    curvatureFactorTailBtn: ProgressBar = null;
     editorUI: PathCurveEditorUI = null;
     initialize(engine: EngineBase, path: RoadPath): void {
 
@@ -56,7 +64,59 @@ class PathCtrlEntityManager {
             this.m_initFlag = false;
             this.m_path = path;
             this.m_srcEntity = new Sphere3DEntity();
-            this.m_srcEntity.initialize(50, 10, 10);
+            this.m_srcEntity.initialize(25, 10, 10);
+        }
+    }
+    setAllPosCurvatureFreeze(frzeeze: boolean): void {
+
+        let list: PathKeyNode[] = this.m_path.getPosNodeList();
+        if(list != null) {
+            for(let i: number = 0; i < list.length; ++i) {
+                list[i].curvationFreeze = frzeeze;
+            }
+        }
+    }
+
+    setcurrPosCurvatureFactor(factor: number, type: number): void {
+
+        let target: IEntityTransform = this.editorUI.dragMoveController.getTarget();
+        if(target != null) {
+            factor = MathConst.Clamp(factor, 0.05,0.95);
+            let editEntity: PathCtrlEntity = null;
+            for(let i: number = 0; i < this.m_pathCtrlEntitys.length; ++i) {
+                if(target == this.m_pathCtrlEntitys[i]) {
+                    editEntity = this.m_pathCtrlEntitys[i] as PathCtrlEntity;
+                    break;
+                }
+            }
+            if(editEntity != null) {
+                let node: PathKeyNode = this.m_path.getPosNodeAt(editEntity.pathCtrlPosIndex);
+                if(type == 0) {
+                    node.positiveCtrlFactor = factor;
+                }
+                else {
+                    node.negativeCtrlFactor = factor;
+                }
+                this.m_path.version ++;
+            }
+        }
+    }
+    setcurrPosCurvatureFreeze(frzeeze: boolean): void {
+
+        
+        let target: IEntityTransform = this.editorUI.dragMoveController.getTarget();
+        if(target != null) {
+            let editEntity: PathCtrlEntity = null;
+            for(let i: number = 0; i < this.m_pathCtrlEntitys.length; ++i) {
+                if(target == this.m_pathCtrlEntitys[i]) {
+                    editEntity = this.m_pathCtrlEntitys[i] as PathCtrlEntity;
+                    break;
+                }
+            }
+            if(editEntity != null) {
+                let node: PathKeyNode = this.m_path.getPosNodeAt(editEntity.pathCtrlPosIndex);
+                node.curvationFreeze = frzeeze;
+            }
         }
     }
     setCtrlPosVisible(visible: boolean): void {
@@ -110,7 +170,14 @@ class PathCtrlEntityManager {
         editEntity.path = this.m_path;
         editEntity.pathCtrlPosIndex = this.m_pathCtrlPosIndex++;
         editEntity.copyMeshFrom( this.m_srcEntity );
-        editEntity.copyMaterialFrom( this.m_srcEntity );
+        if(editEntity.pathCtrlPosIndex != 0) {
+            editEntity.copyMaterialFrom( this.m_srcEntity );
+        }
+        else {
+            let material: Default3DMaterial = new Default3DMaterial();
+            material.setRGB3f(0.7,1.0,0.7);
+            editEntity.setMaterial( material );
+        }
         editEntity.setXYZ(100,100,300);
         editEntity.initializeEvent();
         editEntity.setPosition(pv);
@@ -121,6 +188,17 @@ class PathCtrlEntityManager {
     
     private mouseDownEditableEntity(evt: any): void {
         if(this.m_editEnabled) {
+            let editEntity: PathCtrlEntity = evt.target;
+            let node: PathKeyNode = this.m_path.getPosNodeAt(editEntity.pathCtrlPosIndex);
+            if(node.curvationFreeze) {
+                this.currPosCurvationFreezeBtn.select(false);
+            }
+            else {                
+                this.currPosCurvationFreezeBtn.deselect(false);
+            }
+            this.curvatureFactorHeadBtn.setProgress(node.positiveCtrlFactor,false);
+            this.curvatureFactorTailBtn.setProgress(node.negativeCtrlFactor,false);
+
             this.editorUI.dragMoveController.setVisible(true);
             this.editorUI.dragMoveController.setTarget(evt.target);
             this.editorUI.dragMoveController.selectByParam(evt.raypv, evt.raytv, evt.wpos);

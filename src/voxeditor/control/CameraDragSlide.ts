@@ -14,6 +14,7 @@ class CameraDragSlide {
 
     private m_stage3D: IRenderStage3D = null;
     private m_camera: CameraBase = null;
+    slideSpeed: number = 2.0;
     initialize(stage3D: IRenderStage3D, camera: CameraBase): void {
         if (this.m_stage3D == null) {
             this.m_stage3D = stage3D;
@@ -35,8 +36,8 @@ class CameraDragSlide {
     }
     run(): void {
         if (this.m_enabled) {
-            let dx: number = this.m_mouseX - this.m_stage3D.mouseX;
-            let dy: number = this.m_mouseY - this.m_stage3D.mouseY;
+            let dx: number = (this.m_mouseX - this.m_stage3D.mouseX) * this.slideSpeed;
+            let dy: number = (this.m_mouseY - this.m_stage3D.mouseY) * this.slideSpeed;
             this.m_camera.slideViewOffsetXY(dx, dy);
             this.m_mouseX = this.m_stage3D.mouseX;
             this.m_mouseY = this.m_stage3D.mouseY;

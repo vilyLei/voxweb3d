@@ -9,6 +9,7 @@ import Color4 from "../../vox/material/Color4";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 import {IRenderCamera} from "../render/IRenderCamera";
+import IRenderStage3D from "../render/IRenderStage3D";
 import Vector3D from "../math/Vector3D";
 interface IRendererScene {
     
@@ -91,5 +92,6 @@ interface IRendererScene {
     setRenderToBackBuffer(): void;
     updateCamera(): void;
     getCamera(): IRenderCamera;
+    getStage3D(): IRenderStage3D;
 }
 export default IRendererScene;

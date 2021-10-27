@@ -77,7 +77,7 @@ export default class DataMesh extends MeshBase
             else {
                 this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage(),this.getBufSortFormat());
             }
-            console.log("this.m_ivs: ",this.m_ivs);
+            
             this.m_vbuf.setUintIVSData(this.m_ivs);
             this.buildEnd();
         }

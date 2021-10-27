@@ -34,6 +34,7 @@ class RoadGeometryBuilder {
     constructor() { }
     roadWidth: number = 120;
     
+    offsetXYZ: Vector3D = new Vector3D();
     geometry: RoadSurfaceGeometry = null;
     initialize(): void {
 
@@ -47,6 +48,7 @@ class RoadGeometryBuilder {
     buildRoadSurface(posTable: Vector3D[][], uScale: number = 1.0, vScale: number = 1.0, uvType: number = 0): DataMesh {
 
         let geom: RoadSurfaceGeometry = this.geometry = new RoadSurfaceGeometry();
+        geom.offsetXYZ.copyFrom( this.offsetXYZ );
         geom.uScale = uScale;
         geom.vScale = vScale;
         geom.roadWidth = this.roadWidth;

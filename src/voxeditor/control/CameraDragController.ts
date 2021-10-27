@@ -27,6 +27,9 @@ export default class CameraDragController {
             stage3D.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener, false, true);
         }
     }
+    setSlideSpeed(slideSpeed: number): void {
+        this.m_dragSlider.slideSpeed = slideSpeed;
+    }
     enableSwing(): void {
         this.m_swing = true;
     }

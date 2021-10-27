@@ -246,7 +246,8 @@ class DragMoveController implements IRayControl {
     private m_pos0: Vector3D = new Vector3D();
     private m_pos1: Vector3D = new Vector3D(100.0, 0.0, 0.0);
     private m_posX: number = -1;
-
+    private m_mousePrePos: Vector3D = new Vector3D(-100000,-100000,0);
+    private m_mousePos: Vector3D = new Vector3D();
     run(): void {
 
         if (this.m_enabled) {
@@ -264,16 +265,19 @@ class DragMoveController implements IRayControl {
 
             if (Math.abs(this.m_posX - this.m_pos1.x) > 0.0001) {
                 this.m_posX = this.m_pos1.x;
-                let scale: number = 0.06 / this.m_pos1.x;
-                this.m_dragMoveTarget.setScaleXYZ(scale, scale, scale);
+                let scale: number = 0.03 / this.m_pos1.x;
+                this.m_dragMoveTarget.setCtrlScaleXYZ(scale, scale, scale);
                 this.m_dragMoveTarget.update();
             }
-
-            this.m_editRendererScene.getMouseXYWorldRay(this.m_rpv, this.m_rtv);
-
-            for (let i: number = 0; i < this.m_controllers.length; ++i) {
-                if (this.m_controllers[i].isSelected()) {
-                    this.m_controllers[i].moveByRay(this.m_rpv, this.m_rtv);
+            this.m_mousePos.setXYZ(this.m_editRendererScene.getStage3D().mouseX,this.m_editRendererScene.getStage3D().mouseY, 0);
+            if(Vector3D.DistanceSquared(this.m_mousePrePos, this.m_mousePos) > 0.001) {
+                this.m_mousePrePos.copyFrom( this.m_mousePos );
+                this.m_editRendererScene.getMouseXYWorldRay(this.m_rpv, this.m_rtv);
+    
+                for (let i: number = 0; i < this.m_controllers.length; ++i) {
+                    if (this.m_controllers[i].isSelected()) {
+                        this.m_controllers[i].moveByRay(this.m_rpv, this.m_rtv);
+                    }
                 }
             }
         }

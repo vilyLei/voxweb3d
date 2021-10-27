@@ -44,7 +44,7 @@ class Scene {
             this.m_engine.rscene.addEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
 
             this.pathEditor.initialize(engine);
-            //  this.terrain.initialize(engine);
+            this.terrain.initialize(engine);
 
             // let axis = new Axis3DEntity();
             // axis.initialize(700);
@@ -88,7 +88,14 @@ class Scene {
 
     private m_roadFile: RoadFile = new RoadFile();
     clear(): void {
-        
+
+        if(this.m_surfaceEntities != null) {
+            for(let i: number = 0; i < this.m_surfaceEntities.length; ++i) {
+                this.m_engine.rscene.removeEntity(this.m_surfaceEntities[i]);
+            }
+            this.m_surfaceEntities = [];
+        }
+
         this.pathEditor.clear();
         //this.m_line.setVisible(false);
 
@@ -103,18 +110,18 @@ class Scene {
     saveData(): void {
         //  this.pathEditor.saveData();
 
-        let posList: Vector3D[] = this.pathEditor.getPathPosList();
+        let posList: Vector3D[] = this.pathEditor.getPathCurvePosList();
         let fileBuf: Uint8Array = this.m_roadFile.savePathData(posList,this.geometryBuilder.geometry);
         // for test
         this.m_roadFile.parsePathDataFromFileBuffer(fileBuf);
     }
     
     private m_pathTool: PathTool = new PathTool();
-
+    private m_surfaceEntities: DisplayEntity[] = [];
     private buildRoadSurface(posTable: Vector3D[][], tex: TextureProxy,uScale: number = 1.0, vScale: number = 1.0, uvType: number = 0): void {
 
         let mesh: DataMesh = this.geometryBuilder.buildRoadSurface(posTable, uScale, vScale, uvType);
-
+        this.geometryBuilder.offsetXYZ.setXYZ(0,-5,0);
         let mplane: Plane3DEntity = new Plane3DEntity();
         //mplane.initializeXOYSquare(50, [this.m_engine.texLoader.getTexByUrl("static/assets/roadSurface01.jpg")]);
         mplane.initializeXOYSquare(50, [tex]);
@@ -126,14 +133,40 @@ class Scene {
         surfaceEntity.setMesh( mesh );
         surfaceEntity.setMaterial( mplane.getMaterial() );
         this.m_engine.rscene.addEntity(surfaceEntity);
-        this.m_dispList.push(surfaceEntity);
+        //this.m_dispList.push(surfaceEntity);
+        this.m_surfaceEntities.push( surfaceEntity );
     }
     private buildRoadShape(curvePosList: Vector3D[], dis: number = 60): void {
 
         if (this.pathEditor.isPathClosed()) {
             
+            if(this.m_surfaceEntities != null) {
+                for(let i: number = 0; i < this.m_surfaceEntities.length; ++i) {
+                    this.m_engine.rscene.removeEntity(this.m_surfaceEntities[i]);
+                }
+                this.m_surfaceEntities = [];
+            }
+
             let posListR: Vector3D[] = this.m_pathTool.expandXOZPath(curvePosList, dis, true);
             let posListL: Vector3D[] = this.m_pathTool.expandXOZPath(curvePosList, -dis, true);
+
+            let rbList: Vector3D[] = new Array( posListL.length );
+            for(let i: number = 0; i < rbList.length; ++i) {
+                rbList[i] = posListR[i].clone();
+                rbList[i].y -= 15;
+            }
+            let lbList: Vector3D[] = new Array( posListL.length );
+            for(let i: number = 0; i < lbList.length; ++i) {
+                lbList[i] = posListL[i].clone();
+                lbList[i].y -= 15;
+            }
+
+            let table: Vector3D[][] = [lbList,posListL,posListR, rbList];
+            let tex: TextureProxy;
+            //  tex = this.m_engine.texLoader.getTexByUrl("static/assets/roadSurface03.jpg");
+            //  this.buildRoadSurface([posListL,posListR],tex, 1.0,1.0, 0);
+            tex = this.m_engine.texLoader.getTexByUrl("static/assets/roadSurface04.jpg");
+            this.buildRoadSurface(table, tex, 4.0, 1.0, 1);
 
             /*
             let pls = new Line3DEntity();
@@ -152,13 +185,18 @@ class Scene {
             this.m_dispList.push(pls);
             //*/
 
+            /*
             let tex: TextureProxy;
-
             //  tex = this.m_engine.texLoader.getTexByUrl("static/assets/roadSurface03.jpg");
             //  this.buildRoadSurface([posListL,posListR],tex, 1.0,1.0, 0);
-
             tex = this.m_engine.texLoader.getTexByUrl("static/assets/roadSurface04.jpg");
-            this.buildRoadSurface([posListL,posListR], tex, 1.0,1.0, 1);
+            this.buildRoadSurface(table, tex, 1.0,1.0, 1);
+            //*/
+        }
+    }
+    buildGeomData(): void {
+        if (this.pathEditor.isPathClosed()) {
+            this.buildRoadShape(this.pathEditor.getPathCurvePosList());
         }
     }
     private mouseDown(evt: any): void {
