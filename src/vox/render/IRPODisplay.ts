@@ -12,6 +12,7 @@ import AABB from "../../vox/geom/AABB";
 interface IRPODisplay
 {
     value:number;
+    drawMode:number;
     pos:Vector3D;
     bounds:AABB;
     setDrawFlag(renderState:number,rcolorMask:number):void;

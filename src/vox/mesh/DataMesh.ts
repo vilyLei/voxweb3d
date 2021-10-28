@@ -11,6 +11,7 @@ import MeshBase from "../../vox/mesh/MeshBase";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 import AABB from "../geom/AABB";
 import GeometryBase from "../../vox/mesh/GeometryBase"
+import { RenderDrawMode } from "../render/RenderConst";
 
 export default class DataMesh extends MeshBase
 {
@@ -30,6 +31,7 @@ export default class DataMesh extends MeshBase
     cvs:Float32Array = null;
     tvs:Float32Array = null;
     btvs:Float32Array = null;
+    private m_initIVS: Uint16Array | Uint32Array = null;
 
     initializeFromGeometry(geom: GeometryBase): void {
 
@@ -43,6 +45,7 @@ export default class DataMesh extends MeshBase
     }
     
     setIVS(ivs: Uint16Array | Uint32Array): void{
+        this.m_initIVS = ivs;
         this.m_ivs = ivs;
     }
     initialize(): void {
@@ -67,9 +70,13 @@ export default class DataMesh extends MeshBase
                 ROVertexBuffer.AddFloat32Data(this.btvs,3);
             }
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
+            //console.log("A this.m_ivs: ",this.m_ivs.length, this.wireframe);
+            this.m_ivs = this.m_initIVS;
+            this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;
             if(this.wireframe) {
                 this.updateWireframeIvs();
             }
+            //console.log("B this.m_ivs: ",this.m_ivs.length);
             this.vtCount = this.m_ivs.length;
             if(this.m_vbuf != null) {
                 ROVertexBuffer.UpdateBufData(this.m_vbuf);
@@ -77,7 +84,6 @@ export default class DataMesh extends MeshBase
             else {
                 this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage(),this.getBufSortFormat());
             }
-            
             this.m_vbuf.setUintIVSData(this.m_ivs);
             this.buildEnd();
         }

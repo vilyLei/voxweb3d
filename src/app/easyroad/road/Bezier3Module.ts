@@ -2,13 +2,15 @@ import Vector3D from "../../../vox/math/Vector3D";
 import { Bezier2Curve, Bezier3Curve } from "../../../vox/geom/curve/BezierCurve";
 import {KeyNodeStatus, PathKeyNode} from "./PathKeyNode";
 import {TVTool} from "./TVTool";
+import { Pos3DPool } from "../base/Pos3DPool";
+import { Pos3D } from "../base/Pos3D";
 
 /**
  * bezier3 module
  */
 class Bezier3Module {
     
-    private m_posTable: Vector3D[][] = [];
+    private m_posTable: Pos3D[][] = [];
     private m_tvTool: TVTool = new TVTool();
     readonly bezier3Curve: Bezier3Curve = new Bezier3Curve();
 
@@ -28,12 +30,17 @@ class Bezier3Module {
         this.bezier3Curve.ctrBPos.copyFrom(ctrlB);
         this.bezier3Curve.updateCalc();
 
-        let posList: Vector3D[] = this.bezier3Curve.getPosList();
+        let posList: Pos3D[] = new Array(this.bezier3Curve.getPosTotal());
+        for(let i: number = 0; i < posList.length; ++i) {
+            posList[i] = Pos3DPool.Create();
+        }
+        this.bezier3Curve.getPosList( posList );
 
         if (this.m_posTable.length > 0) {
-            let list: Vector3D[] = this.m_posTable[this.m_posTable.length - 1];
+            let list: Pos3D[] = this.m_posTable[this.m_posTable.length - 1];
             if (Vector3D.Distance(list[list.length - 1], posList[0]) < 0.0001) {
-                list.pop();
+                let pv: Pos3D = list.pop();
+                Pos3DPool.Restore( pv );
             }
         }
         this.m_posTable.push(posList);
@@ -157,19 +164,20 @@ class Bezier3Module {
         // 计算曲线数据
         this.calcSegCurve3(v0, v1, this.m_tempV2, this.m_tempV1);
     }
-    buildPathCurveData(list: Vector3D[], closePath: boolean, nodeList: PathKeyNode[]): Vector3D[] {
+    private m_curvePosList: Pos3D[] = null;
+    buildPathCurveData(list: Pos3D[], closePath: boolean, nodeList: PathKeyNode[]): Pos3D[] {
 
-        closePath = closePath && list.length >= 4;
+        closePath = closePath && list.length >= 3;
 
         this.pathClosed = closePath;
-        let curvePosList: Vector3D[] = null;
         if (list.length > 2) {
+            let curvePosList: Pos3D[] = null;
             // 如果这个 closePath 值为 true, 则表示需要最后一个位置点要与第一个点建立曲线链接
             
-            let pathClosed: boolean = closePath && list.length > 4;
+            let pathClosed: boolean = closePath;
             
             //  console.log("XXXX pathClosed: ",pathClosed, list.length);
-            let posTable: Vector3D[][] = [];
+            let posTable: Pos3D[][] = [];
             this.m_posTable = [];
             posTable = this.m_posTable;
 
@@ -185,6 +193,11 @@ class Bezier3Module {
             for (let i: number = 0; i < posTable.length; ++i) {
                 total += posTable[i].length;
             }
+            if(this.m_curvePosList != null) {
+                for (let i: number = 0; i < this.m_curvePosList.length; ++i) {
+                    Pos3DPool.Restore( this.m_curvePosList[i] );
+                }
+            }
             curvePosList = new Array(total);
 
             // console.log("use bezierCurve3, total: ",total);
@@ -195,7 +208,9 @@ class Bezier3Module {
                     curvePosList[k] = list[j];
                     k++;
                 }
+                posTable[i] = [];
             }
+            this.m_curvePosList = curvePosList;
             return curvePosList;
         }
         else if (list.length == 2) {

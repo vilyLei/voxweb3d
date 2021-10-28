@@ -1,4 +1,6 @@
-import Vector3D from "../../../vox/math/Vector3D";
+
+import { Pos3D } from "../base/Pos3D";
+import { Pos3DPool } from "../base/Pos3DPool";
 
 enum KeyNodeStatus {
     None,
@@ -17,20 +19,20 @@ class PathKeyNode {
     /**
      * 当前位置的3d空间的坐标
      */
-    pos: Vector3D = new Vector3D();
+    pos: Pos3D = Pos3DPool.Create();
     /**
      * 朝向曲线大方向的切线，控制点在切线和位置构成的直线上
      */
-    tv: Vector3D = new Vector3D();
+    tv: Pos3D = Pos3DPool.Create();
     
     /**
      * 和曲线走向相反的控制点
      */
-    negativeCtrlPos: Vector3D = new Vector3D();
+    //negativeCtrlPos: Pos3D = Pos3DPool.Create();
     /**
      * 和曲线走向相同的控制点
      */
-    positiveCtrlPos: Vector3D = new Vector3D();
+    //positiveCtrlPos: Pos3D = Pos3DPool.Create();
     /**
      * 和曲线走向相反的控制长度因子
      */
@@ -40,5 +42,11 @@ class PathKeyNode {
      */
     positiveCtrlFactor: number = 0.3;
     constructor() { }
+    destroy(): void {
+        Pos3DPool.Restore( this.pos );
+        Pos3DPool.Restore( this.tv );
+        this.pos = null;
+        this.tv = null;
+    }
 }
 export { KeyNodeStatus, PathKeyNode };

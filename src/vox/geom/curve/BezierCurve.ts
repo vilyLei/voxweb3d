@@ -144,62 +144,24 @@ class CurveSrcCalc {
 		}
 	}
 }
-/**
- * ec3d.geom.curve.Bezier2Curve
- * 
- * 二次Bezier曲线的逻辑对象
- * 
- * @author Vily
- */
-class Bezier2Curve {
-	constructor() {
-	}
+class CurveBase {
+
+	// 表示曲线类型: 1->直线, 2->二次曲线, 3->三次曲线
+	protected m_curveType = 2;
+	// 分段总数
+	protected m_segTot: number = 5;
+	// 记录曲线现阶段实际的曲线上的所有点的坐标,每三个元素表示一个点
+	protected m_vs: number[] = [];
 	/**
 	 * 曲线的起点
 	 */
-	begin: Vector3D = new Vector3D();
-	/**
-	 * 曲线的终点
-	 */
-	end: Vector3D = new Vector3D(100.0, 0.0, 0.0);
-	/**
-	 * 控制点
-	 */
-	ctrPos: Vector3D = new Vector3D(100.0, 100.0, 0.0);
-	//
-	updateCalc() {
-		this.reset();
-		CurveSrcCalc.CalcBezier2(this.m_vs, this.m_segTot, this.begin, this.ctrPos, this.end);
-	}
-	calcByProgress(k: number): void {
-		CurveSrcCalc.CalcBezier2ByProgress(this.m_vs, k, this.begin, this.ctrPos, this.end);
-	}
-	reset(): void {
-		this.m_vs = [];
-	}
-
-	/////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////
-
-	// 表示曲线类型: 1->直线, 2->二次曲线, 3->三次曲线
-	private m_curveType = 2;
-	//
-	// 分段总数
-	private m_segTot: number = 5;
-	// 记录曲线现阶段实际的曲线上的所有点的坐标,每三个元素表示一个点
-	private m_vs: number[] = [];
-
-	getVS(): number[] {
-		return this.m_vs;
-	}
-	getPosList(): Vector3D[] {
-		let posList: Vector3D[] = new Array(this.m_vs.length / 3);
-		let k: number = 0;
-		for (let i: number = 0; i < this.m_vs.length; i += 3) {
-			posList[k++] = new Vector3D(this.m_vs[i], this.m_vs[i + 1], this.m_vs[i + 2]);
-		}
-		return posList;
-	}
+	 begin: Vector3D = new Vector3D();
+	 /**
+	  * 曲线的终点
+	  */
+	 end: Vector3D = new Vector3D(100, 0, 0);
+	constructor(){}
+	
 	/**
 	 * 设置曲线的分段总数
 	 * @param			tot		分段数量
@@ -213,18 +175,70 @@ class Bezier2Curve {
 	getCurveType(): number {
 		return this.m_curveType;
 	}
-}
-class Bezier3Curve {
-	constructor() {
+	getVS(): number[] {
+		return this.m_vs;
 	}
+	reset(): void {
+		this.m_vs = [];
+	}
+	getPosList(posList: Vector3D[] = null): Vector3D[] {
+		let k: number = 0;
+		if(posList == null)
+		{
+			posList = new Array(this.m_vs.length / 3);
+			for (let i: number = 0; i < this.m_vs.length; i += 3) {
+				posList[k++] = new Vector3D(this.m_vs[i], this.m_vs[i + 1], this.m_vs[i + 2]);
+			}
+		}
+		else {
+			let pv: Vector3D;
+			for (let i: number = 0; i < this.m_vs.length; i += 3) {
+				pv = posList[k++];
+				pv.setXYZ(this.m_vs[i], this.m_vs[i + 1], this.m_vs[i + 2]);
+			}
+		}
+		return posList;
+	}
+	updateCalc() {
+	}
+	calcByProgress(k: number): void {
+	}
+	getPosTotal(): number {
+		return this.m_vs.length / 3;
+	}
+}
+/**
+ * ec3d.geom.curve.Bezier2Curve
+ * 
+ * 二次Bezier曲线的逻辑对象
+ * 
+ * @author Vily
+ */
+class Bezier2Curve extends CurveBase {
+	
+	constructor() {
+		super();
+		this.m_curveType = 2;
+	}	
 	/**
-	 * 曲线的起点
+	 * 控制点
 	 */
-	begin: Vector3D = new Vector3D();
-	/**
-	 * 曲线的终点
-	 */
-	end: Vector3D = new Vector3D(100, 0, 0);
+	ctrPos: Vector3D = new Vector3D(100.0, 100.0, 0.0);
+	updateCalc() {
+		this.reset();
+		CurveSrcCalc.CalcBezier2(this.m_vs, this.m_segTot, this.begin, this.ctrPos, this.end);
+	}
+	calcByProgress(k: number): void {
+		this.reset();
+		CurveSrcCalc.CalcBezier2ByProgress(this.m_vs, k, this.begin, this.ctrPos, this.end);
+	}
+	
+}
+class Bezier3Curve extends CurveBase {
+	constructor() {
+		super();
+		this.m_curveType = 3;
+	}
 	/**
 	 * 控制点A
 	 */
@@ -240,51 +254,8 @@ class Bezier3Curve {
 		this.reset();
 		CurveSrcCalc.CalcBezier3(this.m_vs, this.m_segTot, this.begin, this.ctrAPos, this.ctrBPos, this.end);
 	}
-	reset(): void {
-		this.m_vs = [];
-	}	
 	calcByProgress(k: number): void {
 		CurveSrcCalc.CalcBezier3ByProgress(this.m_vs, k, this.begin, this.ctrAPos, this.ctrBPos, this.end);
-	}
-	/////////////////////////////////////////////////////
-	/////////////////////////////////////////////////////
-
-	// 表示曲线类型: 1->直线, 2->二次曲线, 3->三次曲线
-	private m_curveType: number = 3;
-	//
-	// 分段总数
-	private m_segTot: number = 5;
-	// 记录曲线现阶段实际的曲线上的所有点的坐标,每三个元素表示一个点
-	private m_vs: number[] = [];
-	/**
-	 * @param			t		表示曲线类型
-	 * */
-	initialize(t: number = 3) {
-		this.m_curveType = t;
-	}
-	getVS(): number[] {
-		return this.m_vs;
-	}
-	getPosList(): Vector3D[] {
-		let posList: Vector3D[] = new Array(this.m_vs.length / 3);
-		let k: number = 0;
-		for (let i: number = 0; i < this.m_vs.length; i += 3) {
-			posList[k++] = new Vector3D(this.m_vs[i], this.m_vs[i + 1], this.m_vs[i + 2]);
-		}
-		return posList;
-	}
-	/**
-	 * 设置曲线的分段总数
-	 * @param			tot		分段数量
-	 * */
-	setSegTot(tot: number): void {
-		this.m_segTot = tot;
-	}
-	getSegTot(): number {
-		return this.m_segTot;
-	}
-	getCurveType(): number {
-		return this.m_curveType;
 	}
 }
 

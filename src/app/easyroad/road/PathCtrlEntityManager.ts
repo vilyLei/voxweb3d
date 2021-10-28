@@ -19,17 +19,26 @@ class PathCtrlEntity extends EditableEntity {
 
     path: RoadPath = null;
     pathCtrlPosIndex: number = 0;
+    private m_currPos: Vector3D = new Vector3D();
+    private m_newPos: Vector3D = new Vector3D();
     constructor() {
         super();
     }
     update(): void {
+
+        this.m_currPos.setXYZ(0.0,0.0,0.0);
+        this.getMatrix(false).transformVector3Self(this.m_currPos);
         super.update();
-        if(this.path != null) {
-            let posList: Vector3D[] =  this.path.getPosList();
-            if(posList != null && this.pathCtrlPosIndex >= 0 && this.pathCtrlPosIndex < posList.length) {
-                this.getPosition(posList[this.pathCtrlPosIndex]);
-                this.path.version ++;
-                //console.log("posList["+this.pathCtrlPosIndex+"]: ",posList[this.pathCtrlPosIndex]);
+        this.getPosition(this.m_newPos);
+        let dis: number = Vector3D.DistanceSquared(this.m_currPos, this.m_newPos);
+        if(dis > 0.001) {
+            if(this.path != null) {
+                let posList: Vector3D[] =  this.path.getPosList();
+                if(posList != null && this.pathCtrlPosIndex >= 0 && this.pathCtrlPosIndex < posList.length) {
+                    this.getPosition(posList[this.pathCtrlPosIndex]);
+                    this.path.version ++;
+                    //console.log("posList["+this.pathCtrlPosIndex+"]: ",posList[this.pathCtrlPosIndex]);
+                }
             }
         }
     }

@@ -172,6 +172,12 @@ export class DemoRawDracoViewer {
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
             this.m_rscene.setClearRGBColor3f(0.2, 0.2, 0.2);
+
+            // let k = this.calcTotal(9);
+            // console.log("k: ",k);
+            // k = this.calcTotal2(55);
+            // console.log("k2: ",k);
+            // return;
             /*
             this.m_uiModule.initialize(this.m_rscene, this.m_texLoader, true);
             this.m_ruisc = this.m_uiModule.ruisc;
@@ -218,6 +224,22 @@ export class DemoRawDracoViewer {
             this.m_dracoModule.initialize(this.m_rscene, this.m_dracoMeshLoader);
             this.m_dracoModule.loadNext();
         }
+    }
+    private calcTotal(n: number): number {
+        let index: number = (n%2) == 0 ? ((n>>1) - 1) : ((n - 1)>>1);
+        n = index;
+        return n;
+    }
+    private calcTotal2(n: number): number {
+        
+
+        let base: number = 10;
+
+        base = 10;
+        for(let i: number = 1; i < 19; ++i) {
+
+        }
+        return n;
     }
     
     makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {

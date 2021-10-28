@@ -20,6 +20,8 @@ class UIScene {
     private m_addPosBtn: SelectionBar = null;
     private m_showPosBtn: SelectionBar = null;
     private m_currPosCurvationFreezeBtn: SelectionBar = null;
+    private m_closePathBtn: SelectionBar = null;
+
     private m_curvatureFactorHeadBtn: ProgressBar = null;
     private m_curvatureFactorTailBtn: ProgressBar = null;
 
@@ -30,6 +32,8 @@ class UIScene {
             this.m_engine = engine;
             this.m_engine.rscene.setClearUint24Color(0x656565);
             this.initBtns();
+            
+            this.scene.closePathBtn = this.m_closePathBtn;
             this.scene.pathEditor.pathCtrlEntityManager.currPosCurvationFreezeBtn = this.m_currPosCurvationFreezeBtn;
             this.scene.pathEditor.pathCtrlEntityManager.curvatureFactorHeadBtn = this.m_curvatureFactorHeadBtn;
             this.scene.pathEditor.pathCtrlEntityManager.curvatureFactorTailBtn = this.m_curvatureFactorTailBtn;
@@ -50,15 +54,16 @@ class UIScene {
         this.m_btnPY += dis;
         btn = this.createSelectBtn("构建几何数据", "buildGeomData", "ON", "OFF", false);
         this.m_btnPY += dis;
-        btn = this.createSelectBtn("编辑位置", "switchEdit", "ON", "OFF", false);
+        btn = this.createSelectBtn("编辑场景", "switchEdit", "ON", "OFF", false);
         this.m_switchEditBtn = btn;
         btn = this.createSelectBtn("添加位置", "switchAddPathPos", "ON", "OFF", true);
         this.m_addPosBtn = btn;
         this.m_btnPY += dis;
+        btn = this.createSelectBtn("网格显示", "switchWireframe", "ON", "OFF", false);
         btn = this.createSelectBtn("控制点显示", "showPathCtrlPos", "ON", "OFF", true);
         this.m_showPosBtn = btn;
         btn = this.createSelectBtn("开启路径闭合", "closePath", "ON", "OFF", false);
-        this.scene.closePathBtn = btn;
+        this.m_closePathBtn = btn;
         this.m_btnPY += dis;
         let proBtn = this.createProgressBtn("尾部曲率因子", "curvatureFactorTail", 0.3);
         this.m_curvatureFactorTailBtn = proBtn;
@@ -144,8 +149,12 @@ class UIScene {
     }
     private selectChange(evt: any): void {
 
-        let selectEvt: SelectionEvent = evt as SelectionEvent;        
+        let selectEvt: SelectionEvent = evt as SelectionEvent;
+        let flag: boolean = false;
         switch( selectEvt.uuid ) {
+            case "switchWireframe":
+                this.scene.roadEntityBuilder.setWireframeEnabled( selectEvt.flag );
+                break;
             case "currCurvatureFreeze":
                 this.scene.pathEditor.pathCtrlEntityManager.setcurrPosCurvatureFreeze( selectEvt.flag );
                 break;
@@ -183,7 +192,11 @@ class UIScene {
                 this.scene.pathEditor.setEditEnabled(selectEvt.flag);
                 break;
             case "closePath":
-                this.scene.pathEditor.setCloseEnabled(selectEvt.flag);
+                flag = this.scene.pathEditor.setCloseEnabled(selectEvt.flag);
+                if(selectEvt.flag !== flag) {
+                    if(flag) this.m_closePathBtn.select(false);
+                    else this.m_closePathBtn.deselect(false);
+                }
                 break;
             case "clearScene":
                 this.m_addPosBtn.select(false);

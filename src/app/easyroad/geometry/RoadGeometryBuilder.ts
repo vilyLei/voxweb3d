@@ -25,7 +25,7 @@ import { PathTool } from "../road/PathTool";
 import { PathCurveEditor } from "../road/PathCurveEditor";
 
 import Line3DEntity from "../../../vox/entity/Line3DEntity";
-import DataMesh from "../../../vox/mesh/DataMesh";
+import {RoadMesh} from "./RoadMesh";
 import RoadSurfaceGeometry from "./RoadSurfaceGeometry";
 
 class RoadGeometryBuilder {
@@ -45,15 +45,24 @@ class RoadGeometryBuilder {
         }
     }
 
-    buildRoadSurface(posTable: Vector3D[][], uScale: number = 1.0, vScale: number = 1.0, uvType: number = 0): DataMesh {
+    buildRoadSurface(mesh: RoadMesh, posTable: Vector3D[][], uScale: number = 1.0, vScale: number = 1.0, uvType: number = 0): RoadMesh {
+        if(this.geometry == null) {
+            this.geometry = new RoadSurfaceGeometry();
+        }
+        let geom: RoadSurfaceGeometry = this.geometry;
 
-        let geom: RoadSurfaceGeometry = this.geometry = new RoadSurfaceGeometry();
         geom.offsetXYZ.copyFrom( this.offsetXYZ );
         geom.uScale = uScale;
         geom.vScale = vScale;
         geom.roadWidth = this.roadWidth;
         geom.initialize(posTable, uvType);
-        let mesh: DataMesh = new DataMesh();
+        if(mesh == null) {
+            mesh = new RoadMesh();
+            mesh.changed = true;
+        }
+        else {
+            mesh.changed = true;
+        }
         mesh.vs = geom.getVS();
         mesh.uvs = geom.getUVS();
         mesh.setIVS( geom.getIVS() );

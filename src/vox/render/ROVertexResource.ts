@@ -14,48 +14,40 @@ import IROVtxBuf from "../../vox/render/IROVtxBuf";
 import IRenderResource from "../../vox/render/IRenderResource";
 import DivLog from "../utils/DivLog";
 
-class ROVertexRes
-{
-    version:number;
-    private m_vtx:IROVtxBuf = null;
-    private m_vtxUid:number = -1;
-    private m_gpuBufs:any[] = [];
-    private m_gpuBufsTotal:number = 0;
-    private m_type:number = 0;
-    private m_attribsTotal:number = 0;
-    private m_wholeStride:number = 0;
-    private m_typeList:number[] = null;
-    private m_offsetList:number[] = null;
-    private m_sizeList:number[] = null;
-    
-    private m_vroList:IVertexRenderObj[] = [];
-    private m_vroListLen:number = 0;
+class ROVertexRes {
+    version: number;
+    private m_vtx: IROVtxBuf = null;
+    private m_vtxUid: number = -1;
+    private m_gpuBufs: any[] = [];
+    private m_gpuBufsTotal: number = 0;
+    private m_type: number = 0;
+    private m_attribsTotal: number = 0;
+    private m_wholeStride: number = 0;
+    private m_typeList: number[] = null;
+    private m_offsetList: number[] = null;
+    private m_sizeList: number[] = null;
 
-    constructor()
-    {
+    private m_vroList: IVertexRenderObj[] = [];
+    private m_vroListLen: number = 0;
+
+    constructor() {
     }
-    
-    updateToGpu(rc:IROVtxBuilder):void
-    {
-        let len:number = this.m_gpuBufs.length;
-        if(len > 0)
-        {
-            let vtx:IROVtxBuf = this.m_vtx;
-            if(this.version != vtx.vertexVer)
-            {
-                let usage:number = vtx.getBufDataUsage();
-                let fvs:Float32Array;
-                let sizeList:number[] = this.m_sizeList;
-                for(let i:number = 0; i < len; ++i)
-                {
+
+    updateToGpu(rc: IROVtxBuilder): void {
+        let len: number = this.m_gpuBufs.length;
+        if (len > 0) {
+            let vtx: IROVtxBuf = this.m_vtx;
+            if (this.version != vtx.vertexVer) {
+                let usage: number = vtx.getBufDataUsage();
+                let fvs: Float32Array;
+                let sizeList: number[] = this.m_sizeList;
+                for (let i: number = 0; i < len; ++i) {
                     fvs = vtx.getF32DataAt(i);
-                    if(sizeList[i] >= fvs.length)
-                    {
+                    if (sizeList[i] >= fvs.length) {
                         rc.bindArrBuf(this.m_gpuBufs[i]);
                         rc.arrBufSubData(fvs, 0);
                     }
-                    else
-                    {
+                    else {
                         rc.bindArrBuf(this.m_gpuBufs[i]);
                         rc.arrBufData(fvs, usage);
                         sizeList[i] = fvs.length;
@@ -65,43 +57,37 @@ class ROVertexRes
             }
         }
     }
-    private uploadCombined(rc:IROVtxBuilder,shdp:IVtxShdCtr):void
-    {
-        let vtx:IROVtxBuf = this.m_vtx;
-        let fvs:Float32Array = vtx.getF32DataAt(0);
+    private uploadCombined(rc: IROVtxBuilder, shdp: IVtxShdCtr): void {
+        let vtx: IROVtxBuf = this.m_vtx;
+        let fvs: Float32Array = vtx.getF32DataAt(0);
         this.m_gpuBufs.push(rc.createBuf());
         rc.bindArrBuf(this.m_gpuBufs[0]);
         // console.log("uploadCombined, this.m_gpuBufs: "+this.m_gpuBufs);
         rc.arrBufData(fvs, vtx.getBufDataUsage());
         this.m_gpuBufsTotal = 1;
         this.m_sizeList = [fvs.length];
-        if(this.m_typeList == null)
-        {
+        if (this.m_typeList == null) {
             this.m_wholeStride = 0;
             this.m_typeList = new Array(this.m_attribsTotal);
             this.m_offsetList = new Array(this.m_attribsTotal);
-            
-            for(let i:number = 0; i < this.m_attribsTotal; ++i)
-            {
+
+            for (let i: number = 0; i < this.m_attribsTotal; ++i) {
                 this.m_offsetList[i] = this.m_wholeStride;
                 this.m_wholeStride += shdp.getLocationSizeByIndex(i) * 4;
-                this.m_typeList[i] = ( shdp.getLocationTypeByIndex(i) );
+                this.m_typeList[i] = (shdp.getLocationTypeByIndex(i));
             }
         }
     }
-    private uploadSeparated(rc:IROVtxBuilder,shdp:IVtxShdCtr):void
-    {
-        let vtx:IROVtxBuf = this.m_vtx;
-        let i:number = 0;
-        let buf:any = null;
-        let dataUsage:number = vtx.getBufDataUsage();
+    private uploadSeparated(rc: IROVtxBuilder, shdp: IVtxShdCtr): void {
+        let vtx: IROVtxBuf = this.m_vtx;
+        let i: number = 0;
+        let buf: any = null;
+        let dataUsage: number = vtx.getBufDataUsage();
         this.m_gpuBufsTotal = this.m_vtx.getBuffersTotal();
         this.m_sizeList = new Array(this.m_attribsTotal);
         // console.log("uploadSeparated, this.m_gpuBufs: "+this.m_gpuBufs);
-        if(vtx.bufData == null)
-        {
-            for(; i < this.m_attribsTotal; ++i)
-            {
+        if (vtx.bufData == null) {
+            for (; i < this.m_attribsTotal; ++i) {
                 buf = rc.createBuf();
                 this.m_gpuBufs.push(buf);
                 rc.bindArrBuf(buf);
@@ -109,66 +95,57 @@ class ROVertexRes
                 this.m_sizeList[i] = vtx.getF32DataAt(i).length;
             }
         }
-        else
-        {
+        else {
             //console.log(">>>>>>>>vtxSepbuf use (this.bufData == null) : "+(this.bufData == null));
-            let fs32:any = null;
-            let j:number = 0;
-            let tot:number = 0;
-            let offset:number = 0;
-            let dataSize:number = 0;
-            for(; i < this.m_attribsTotal; ++i)
-            {
+            let fs32: any = null;
+            let j: number = 0;
+            let tot: number = 0;
+            let offset: number = 0;
+            let dataSize: number = 0;
+            for (; i < this.m_attribsTotal; ++i) {
                 buf = rc.createBuf();
                 //console.log("this.bufData.getAttributeDataTotalBytesAt("+i+"): "+this.bufData.getAttributeDataTotalBytesAt(i));
                 this.m_gpuBufs.push(buf);
                 rc.bindArrBuf(buf);
                 rc.arrBufDataMem(vtx.bufData.getAttributeDataTotalBytesAt(i), dataUsage);
-                
+
                 offset = 0;
                 dataSize = 0;
                 tot = vtx.bufData.getAttributeDataTotalAt(i);
-                
-                for(j = 0; j < tot; ++j)
-                {
-                    fs32 = vtx.bufData.getAttributeDataAt(i,j);
+
+                for (j = 0; j < tot; ++j) {
+                    fs32 = vtx.bufData.getAttributeDataAt(i, j);
                     dataSize += fs32.length;
-                    rc.arrBufSubData(fs32,offset);
+                    rc.arrBufSubData(fs32, offset);
                     offset += fs32.byteLength;
                 }
                 this.m_sizeList[i] = dataSize;
             }
         }
-        if(this.m_typeList == null)
-        {
+        if (this.m_typeList == null) {
             this.m_typeList = new Array(this.m_attribsTotal);
             this.m_offsetList = new Array(this.m_attribsTotal);
-            for(let i:number = 0; i < this.m_attribsTotal; ++i)
-            {
+            for (let i: number = 0; i < this.m_attribsTotal; ++i) {
                 this.m_offsetList[i] = this.m_wholeStride;
                 this.m_wholeStride += shdp.getLocationSizeByIndex(i) * 4;
-                this.m_typeList[i] = ( shdp.getLocationTypeByIndex(i) );
+                this.m_typeList[i] = (shdp.getLocationTypeByIndex(i));
             }
             this.m_wholeStride = 0;
         }
     }
-    initialize(rc:IROVtxBuilder,shdp:IVtxShdCtr, vtx:IROVtxBuf):void
-    {
-        if(this.m_gpuBufs.length < 1 && vtx != null)
-        {
+    initialize(rc: IROVtxBuilder, shdp: IVtxShdCtr, vtx: IROVtxBuf): void {
+        if (this.m_gpuBufs.length < 1 && vtx != null) {
             this.version = vtx.vertexVer;
             this.m_vtx = vtx;
             this.m_vtxUid = vtx.getUid();
             this.m_type = vtx.getType();
             this.m_attribsTotal = shdp.getLocationsTotal();
 
-            if(this.m_type < 1)
-            {
+            if (this.m_type < 1) {
                 // combined buf
                 this.uploadCombined(rc, shdp);
             }
-            else
-            {
+            else {
                 // separated buf
                 this.uploadSeparated(rc, shdp);
             }
@@ -177,18 +154,15 @@ class ROVertexRes
     /**
      * get vro object attribute mix id
      */
-    private getVROMid(rc:IROVtxBuilder, shdp:IVtxShdCtr, vaoEnabled:boolean,ibufId: number):number
-    {
-        let mid:number = (131 + rc.getRCUid()) * this.m_vtxUid;
-        if(vaoEnabled)
-        {
+    private getVROMid(rc: IROVtxBuilder, shdp: IVtxShdCtr, vaoEnabled: boolean, ibufId: number): number {
+        let mid: number = (131 + rc.getRCUid()) * this.m_vtxUid;
+        if (vaoEnabled) {
             // 之所以 + 0xf0000 这样区分，是因为 shdp.getLayoutBit() 的取值范围不会超过short(double bytes)取值范围
             //  mid = mid * 131 + shdp.getLayoutBit() + 0xf0000;
             mid = mid * 131 + shdp.getMid();
             mid = mid * 131 + 3;
         }
-        else
-        {
+        else {
             //mid = mid * 131 + shdp.getLayoutBit();
             mid = mid * 131 + shdp.getMid();
         }
@@ -197,45 +171,37 @@ class ROVertexRes
 
         return mid;
     }
-    
+
     // 创建被 RPOUnit 使用的 vro 实例
-    createVRO(rc:IROVtxBuilder, shdp:IVtxShdCtr, vaoEnabled:boolean, ibuf: any, ibufId: number):IVertexRenderObj
-    {
+    createVRO(rc: IROVtxBuilder, shdp: IVtxShdCtr, vaoEnabled: boolean, ibuf: any, ibufId: number): IVertexRenderObj {
         let attribsTotal: number = shdp.getLocationsTotal();
-        if((this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal)
-        {
-            let mid:number = this.getVROMid(rc,shdp,vaoEnabled,ibufId);
-        
-            let i:number = 0;
-            let pvro:IVertexRenderObj = VaoVertexRenderObj.GetByMid(mid);
-            if(pvro != null)
-            {
+        if ((this.m_attribsTotal * attribsTotal) > 0 && attribsTotal <= this.m_attribsTotal) {
+            let mid: number = this.getVROMid(rc, shdp, vaoEnabled, ibufId);
+
+            let i: number = 0;
+            let pvro: IVertexRenderObj = VaoVertexRenderObj.GetByMid(mid);
+            if (pvro != null) {
                 return pvro;
             }
             //console.log("VtxCombinedBuf::createVROBegin(), this.m_type: ",this.m_type);
             let flag: boolean = shdp.testVertexAttribPointerOffset(this.m_offsetList);
             //DivLog.ShowLog("createVRO testVertexAttribPointerOffset flag: "+flag);
-            if(vaoEnabled)
-            {
+            if (vaoEnabled) {
                 // vao 的生成要记录标记,防止重复生成, 因为同一组数据在不同的shader使用中可能组合方式不同，导致了vao可能是多样的
                 //console.log("VtxCombinedBuf::createVROBegin(), "+this.m_typeList+" /// "+this.m_wholeStride+" /// "+this.m_offsetList);
                 //console.log("VtxCombinedBuf::createVROBegin(), "+this.m_type);
-                let vro:VaoVertexRenderObj = VaoVertexRenderObj.Create(rc, mid, this.m_vtx.getUid());
+                let vro: VaoVertexRenderObj = VaoVertexRenderObj.Create(rc, mid, this.m_vtx.getUid());
                 vro.vao = rc.createVertexArray();
                 rc.bindVertexArray(vro.vao);
-                if(this.m_type < 1)
-                {
+                if (this.m_type < 1) {
                     // combined buf vro
                     rc.bindArrBuf(this.m_gpuBufs[0]);
-                    for(i = 0; i < attribsTotal; ++i)
-                    {
+                    for (i = 0; i < attribsTotal; ++i) {
                         shdp.vertexAttribPointerTypeFloat(this.m_typeList[i], this.m_wholeStride, this.m_offsetList[i]);
                     }
                 }
-                else
-                {
-                    for(i = 0; i < attribsTotal; ++i)
-                    {
+                else {
+                    for (i = 0; i < attribsTotal; ++i) {
                         rc.bindArrBuf(this.m_gpuBufs[i]);
                         shdp.vertexAttribPointerTypeFloat(this.m_typeList[i], 0, 0);
                     }
@@ -245,29 +211,24 @@ class ROVertexRes
                 //rc.bindEleBuf(ibuf);
                 rc.bindVertexArray(null);
             }
-            else
-            {
-                let vro:VertexRenderObj = VertexRenderObj.Create(rc, mid, this.m_vtx.getUid());
+            else {
+                let vro: VertexRenderObj = VertexRenderObj.Create(rc, mid, this.m_vtx.getUid());
                 vro.shdp = shdp;
                 vro.attribTypes = [];
                 vro.wholeOffsetList = [];
                 vro.wholeStride = this.m_wholeStride;
 
-                if(this.m_type < 1)
-                {
+                if (this.m_type < 1) {
                     vro.vbuf = this.m_gpuBufs[0];
                 }
-                else
-                {
+                else {
                     vro.vbufs = this.m_gpuBufs;
                 }
-                for(i = 0; i < attribsTotal; ++i)
-                {
-                    if(shdp.testVertexAttribPointerType(this.m_typeList[i]))
-                    {
-                        vro.attribTypes.push( this.m_typeList[i] );
+                for (i = 0; i < attribsTotal; ++i) {
+                    if (shdp.testVertexAttribPointerType(this.m_typeList[i])) {
+                        vro.attribTypes.push(this.m_typeList[i]);
                         //vro.wholeOffsetList.push( this.m_offsetList[i] );
-                        vro.wholeOffsetList.push( 0 );
+                        vro.wholeOffsetList.push(0);
                     }
                 }
 
@@ -281,23 +242,19 @@ class ROVertexRes
         }
         return null;
     }
-    destroy(rc:IROVtxBuilder):void
-    {
-        if(this.m_gpuBufs.length > 0)
-        {
-            console.log("ROVertexRes::destroy(), type: "+this.m_type);
+    destroy(rc: IROVtxBuilder): void {
+        if (this.m_gpuBufs.length > 0) {
+            console.log("ROVertexRes::destroy(), type: " + this.m_type);
             this.m_type = -1;
-            let i:number = 0;
-            let vro:IVertexRenderObj = null;
-            for(; i < this.m_vroListLen; ++i)
-            {
+            let i: number = 0;
+            let vro: IVertexRenderObj = null;
+            for (; i < this.m_vroListLen; ++i) {
                 vro = this.m_vroList.pop();
                 vro.restoreThis();
                 this.m_vroList[i] = null;
             }
             this.m_vroListLen = 0;
-            for(i = 0; i < this.m_attribsTotal; ++i)
-            {
+            for (i = 0; i < this.m_attribsTotal; ++i) {
                 rc.deleteBuf(this.m_gpuBufs[i]);
                 this.m_gpuBufs[i] = null;
             }
@@ -306,47 +263,38 @@ class ROVertexRes
         }
     }
 }
-class ROIndicesRes
-{
+class ROIndicesRes {
     private m_uid: number = 0;
     private static s_uid: number = 0;
-    private m_vtx:IROVtxBuf = null;
-    private m_vtxUid:number = 0;
-    private m_gpuBuf:any = null;
-    private m_ivsSize:number = 0;
-    private m_ivs:Uint16Array|Uint32Array;
-    version:number;
-    ibufStep:number = 0;
-    constructor()
-    {
+    private m_vtx: IROVtxBuf = null;
+    private m_vtxUid: number = 0;
+    private m_gpuBuf: any = null;
+    private m_ivsSize: number = 0;
+    private m_ivs: Uint16Array | Uint32Array;
+    version: number;
+    ibufStep: number = 0;
+    constructor() {
         this.m_uid = (ROIndicesRes.s_uid + 1);
     }
     getUid(): number {
         return this.m_uid;
     }
-    getVtxUid():number
-    {
+    getVtxUid(): number {
         return this.m_vtxUid;
     }
-    getGpuBuf():any
-    {
+    getGpuBuf(): any {
         return this.m_gpuBuf;
     }
-    updateToGpu(rc:IROVtxBuilder):void
-    {
-        if(this.m_gpuBuf != null && this.m_ivsSize > 0)
-        {
-            let vtx:IROVtxBuf = this.m_vtx;
-            if(this.version != vtx.indicesVer)
-            {
+    updateToGpu(rc: IROVtxBuilder): void {
+        if (this.m_gpuBuf != null && this.m_ivsSize > 0) {
+            let vtx: IROVtxBuf = this.m_vtx;
+            if (this.version != vtx.indicesVer) {
                 this.m_ivs = vtx.getIvsData();
                 rc.bindEleBuf(this.m_gpuBuf);
-                if(this.m_ivsSize >= this.m_ivs.length)
-                {
+                if (this.m_ivsSize >= this.m_ivs.length) {
                     rc.eleBufSubData(this.m_ivs, vtx.getBufDataUsage());
                 }
-                else
-                {
+                else {
                     rc.eleBufData(this.m_ivs, vtx.getBufDataUsage());
                 }
                 this.m_ivsSize = this.m_ivs.length;
@@ -354,10 +302,8 @@ class ROIndicesRes
             }
         }
     }
-    initialize(rc:IROVtxBuilder,vtx:IROVtxBuf):void
-    {
-        if(this.m_gpuBuf == null && vtx.getIvsData() != null)
-        {
+    initialize(rc: IROVtxBuilder, vtx: IROVtxBuf): void {
+        if (this.m_gpuBuf == null && vtx.getIvsData() != null) {
             this.version = vtx.indicesVer;
             this.m_vtx = vtx;
             this.m_vtxUid = vtx.getUid();
@@ -365,20 +311,17 @@ class ROIndicesRes
 
             this.m_gpuBuf = rc.createBuf();
             rc.bindEleBuf(this.m_gpuBuf);
-            
-            if(vtx.bufData == null)
-            {
+
+            if (vtx.bufData == null) {
                 rc.eleBufData(this.m_ivs, vtx.getBufDataUsage());
                 this.m_ivsSize = this.m_ivs.length;
             }
-            else
-            {
-                rc.eleBufDataMem(vtx.bufData.getIndexDataTotalBytes(),vtx.getBufDataUsage());
-                let uintArr:any = null;
-                let offset:number = 0;
+            else {
+                rc.eleBufDataMem(vtx.bufData.getIndexDataTotalBytes(), vtx.getBufDataUsage());
+                let uintArr: any = null;
+                let offset: number = 0;
                 this.m_ivsSize = 0;
-                for(let i:number = 0, len:number = vtx.bufData.getIndexDataTotal(); i < len; ++i)
-                {
+                for (let i: number = 0, len: number = vtx.bufData.getIndexDataTotal(); i < len; ++i) {
                     uintArr = vtx.bufData.getIndexDataAt(i);
                     rc.eleBufSubData(uintArr, offset);
                     offset += uintArr.byteLength;
@@ -388,10 +331,8 @@ class ROIndicesRes
         }
     }
 
-    destroy(rc:IROVtxBuilder):void
-    {
-        if(this.m_gpuBuf != null)
-        {
+    destroy(rc: IROVtxBuilder): void {
+        if (this.m_gpuBuf != null) {
             this.m_vtx = null;
             rc.deleteBuf(this.m_gpuBuf);
             this.m_gpuBuf = null;
@@ -400,58 +341,48 @@ class ROIndicesRes
         }
     }
 }
-class GpuVtxObect
-{
-    version:number = -1;
+class GpuVtxObect {
+    version: number = -1;
     // wait del times
-    waitDelTimes:number = 0;
+    waitDelTimes: number = 0;
     // renderer context unique id
-    rcuid:number = 0;
+    rcuid: number = 0;
     // texture resource unique id
-    resUid:number = 0;
-    
-    vertex:ROVertexRes = new ROVertexRes();
-    indices:ROIndicesRes = new ROIndicesRes();
-    constructor()
-    {
+    resUid: number = 0;
+
+    vertex: ROVertexRes = new ROVertexRes();
+    indices: ROIndicesRes = new ROIndicesRes();
+    constructor() {
     }
-    private m_attachCount:number = 0;
-    __$attachThis():void
-    {
+    private m_attachCount: number = 0;
+    __$attachThis(): void {
         ++this.m_attachCount;
         //console.log("GpuVtxObect::__$attachThis() this.m_attachCount: "+this.m_attachCount);
     }
-    __$detachThis():void
-    {
+    __$detachThis(): void {
         --this.m_attachCount;
         //console.log("GpuVtxObect::__$detachThis() this.m_attachCount: "+this.m_attachCount);
-        if(this.m_attachCount < 1)
-        {
+        if (this.m_attachCount < 1) {
             this.m_attachCount = 0;
             console.log("GpuVtxObect::__$detachThis() this.m_attachCount value is 0.");
             // do something
         }
     }
-    getAttachCount():number
-    {
+    getAttachCount(): number {
         return this.m_attachCount;
     }
-    createVRO(rc:IROVtxBuilder, shdp:IVtxShdCtr, vaoEnabled:boolean):IVertexRenderObj
-    {
-        let vro:IVertexRenderObj = this.vertex.createVRO(rc, shdp,vaoEnabled,this.indices.getGpuBuf(), this.indices.getUid());
+    createVRO(rc: IROVtxBuilder, shdp: IVtxShdCtr, vaoEnabled: boolean): IVertexRenderObj {
+        let vro: IVertexRenderObj = this.vertex.createVRO(rc, shdp, vaoEnabled, this.indices.getGpuBuf(), this.indices.getUid());
         //vro.ibuf = this.indices.getGpuBuf();
         vro.ibufStep = this.indices.ibufStep;
         return vro;
     }
-    updateToGpu(rc:IROVtxBuilder):void
-    {
+    updateToGpu(rc: IROVtxBuilder): void {
         this.indices.updateToGpu(rc);
         this.vertex.updateToGpu(rc);
     }
-    destroy(rc:IROVtxBuilder):void
-    {
-        if(this.getAttachCount() < 1 && this.resUid >= 0)
-        {
+    destroy(rc: IROVtxBuilder): void {
+        if (this.getAttachCount() < 1 && this.resUid >= 0) {
             this.vertex.destroy(rc);
             this.indices.destroy(rc);
             this.resUid = -1;
@@ -459,45 +390,40 @@ class GpuVtxObect
     }
 }
 // gpu vertex buffer renderer resource
-class ROVertexResource implements IRenderResource
-{
-    private m_resMap:Map<number,GpuVtxObect> = new Map();
-    private m_freeMap:Map<number,GpuVtxObect> = new Map();
-    private m_updateIds:number[] = [];
+class ROVertexResource implements IRenderResource {
+    private m_resMap: Map<number, GpuVtxObect> = new Map();
+    private m_freeMap: Map<number, GpuVtxObect> = new Map();
+    private m_updateIds: number[] = [];
     // 显存的vtx buffer的总数
-    private m_vtxResTotal:number = 0;
-    private m_attachTotal:number = 0;
-    private m_delay:number = 128;
-    private m_haveDeferredUpdate:boolean = false;
+    private m_vtxResTotal: number = 0;
+    private m_attachTotal: number = 0;
+    private m_delay: number = 128;
+    private m_haveDeferredUpdate: boolean = false;
 
     // renderer context unique id
-    private m_rcuid:number = 0;
-    private m_gl:any = null;
-    private m_vtxBuilder:IROVtxBuilder = null;
+    private m_rcuid: number = 0;
+    private m_gl: any = null;
+    private m_vtxBuilder: IROVtxBuilder = null;
 
-    unlocked:boolean = true;
-    constructor(rcuid:number, gl:any,vtxBuilder:IROVtxBuilder)
-    {
+    unlocked: boolean = true;
+    constructor(rcuid: number, gl: any, vtxBuilder: IROVtxBuilder) {
         this.m_rcuid = rcuid;
         this.m_gl = gl;
         this.m_vtxBuilder = vtxBuilder;
     }
-    createResByParams3(resUid:number,param0:number,param1:number,param2:number):boolean
-    {
+    createResByParams3(resUid: number, param0: number, param1: number, param2: number): boolean {
         return false;
     }
     /**
      * @returns return renderer context unique id
      */
-    getRCUid():number
-    {
+    getRCUid(): number {
         return this.m_rcuid;
     }
     /**
      * @returns return system gpu context
      */
-    getRC():any
-    {
+    getRC(): any {
         return this.m_gl;
     }
     /**
@@ -505,81 +431,63 @@ class ROVertexResource implements IRenderResource
      * @param resUid renderer runtime resource unique id
      * @returns has or has not resource by unique id
      */
-    hasResUid(resUid:number):boolean
-    {
+    hasResUid(resUid: number): boolean {
         return this.m_resMap.has(resUid);
     }
     /**
      * bind the renderer runtime resource(by renderer runtime resource unique id) to the current renderer context
      * @param resUid renderer runtime resource unique id
      */
-    bindToGpu(resUid:number):void
-    {
+    bindToGpu(resUid: number): void {
     }
     /**
      * get system gpu context resource buf
      * @param resUid renderer runtime resource unique id
      * @returns system gpu context resource buf
      */
-    getGpuBuffer(resUid:number):any
-    {
+    getGpuBuffer(resUid: number): any {
         return null;
     }
-    renderBegin():void
-    {
+    renderBegin(): void {
         this.m_vtxBuilder.renderBegin();
     }
-    getVertexResTotal():number
-    {
+    getVertexResTotal(): number {
         return this.m_vtxResTotal;
     }
-    updateDataToGpu(resUid:number, deferred:boolean):void
-    {
-        if(deferred)
-        {
+    updateDataToGpu(resUid: number, deferred: boolean): void {
+        if (deferred) {
             this.m_updateIds.push(resUid);
             this.m_haveDeferredUpdate = true;
         }
-        else
-        {
-            if(this.m_resMap.has(resUid))
-            {
+        else {
+            if (this.m_resMap.has(resUid)) {
                 this.m_resMap.get(resUid).updateToGpu(this.m_vtxBuilder);
             }
         }
     }
-    addVertexRes(object:GpuVtxObect):void
-    {
-        if(!this.m_resMap.has(object.resUid))
-        {
+    addVertexRes(object: GpuVtxObect): void {
+        if (!this.m_resMap.has(object.resUid)) {
             object.waitDelTimes = 0;
-            
+
             //console.log("ROTextureResource add a texture buffer(resUid="+object.resUid+")");
             this.m_resMap.set(object.resUid, object);
             this.m_vtxResTotal++;
         }
     }
-    getVertexRes(resUid:number):GpuVtxObect
-    {
+    getVertexRes(resUid: number): GpuVtxObect {
         return this.m_resMap.get(resUid);
     }
-    destroyRes(resUid:number):void
-    {
-        if(this.m_resMap.has(resUid))
-        {
+    destroyRes(resUid: number): void {
+        if (this.m_resMap.has(resUid)) {
             this.m_resMap.get(resUid).destroy(this.m_vtxBuilder);
         }
     }
-    __$attachRes(resUid:number):void
-    {
-        if(this.m_resMap.has(resUid))
-        {
+    __$attachRes(resUid: number): void {
+        if (this.m_resMap.has(resUid)) {
             this.m_attachTotal++;
-            let object:GpuVtxObect = this.m_resMap.get(resUid);
-            if(object.getAttachCount() < 1)
-            {
-                if(this.m_freeMap.has(resUid))
-                {
+            let object: GpuVtxObect = this.m_resMap.get(resUid);
+            if (object.getAttachCount() < 1) {
+                if (this.m_freeMap.has(resUid)) {
                     this.m_freeMap.delete(resUid);
                 }
             }
@@ -587,19 +495,14 @@ class ROVertexResource implements IRenderResource
             object.__$attachThis();
         }
     }
-    __$detachRes(resUid:number):void
-    {
-        if(this.m_resMap.has(resUid))
-        {
-            if(this.m_resMap.has(resUid))
-            {
-                let object:GpuVtxObect = this.m_resMap.get(resUid);
-                if(object.getAttachCount() > 0)
-                {
+    __$detachRes(resUid: number): void {
+        if (this.m_resMap.has(resUid)) {
+            if (this.m_resMap.has(resUid)) {
+                let object: GpuVtxObect = this.m_resMap.get(resUid);
+                if (object.getAttachCount() > 0) {
                     this.m_attachTotal--;
                     object.__$detachThis();
-                    if(object.getAttachCount() < 1)
-                    {
+                    if (object.getAttachCount() < 1) {
                         // 将其加入待清理的map
                         this.m_freeMap.set(resUid, object);
                     }
@@ -607,55 +510,44 @@ class ROVertexResource implements IRenderResource
             }
         }
     }
-    getVROByResUid(resUid:number,shdp:IVtxShdCtr,vaoEnabled:boolean):IVertexRenderObj
-    {
-        let vtxObj:GpuVtxObect = this.m_resMap.get(resUid);
-        if(vtxObj != null)
-        {
-            return vtxObj.createVRO(this.m_vtxBuilder, shdp,vaoEnabled);
+    getVROByResUid(resUid: number, shdp: IVtxShdCtr, vaoEnabled: boolean): IVertexRenderObj {
+        let vtxObj: GpuVtxObect = this.m_resMap.get(resUid);
+        if (vtxObj != null) {
+            return vtxObj.createVRO(this.m_vtxBuilder, shdp, vaoEnabled);
         }
         return null;
     }
-    update():void
-    {
-        if(this.m_haveDeferredUpdate)
-        {
-            this.m_haveDeferredUpdate = false;   
-            let len:number = this.m_updateIds.length;
-            len = len > 16?16:len;
-            let resUid:number;
-            for(let i:number = 0; i < len;++i)
-            {
+    update(): void {
+        if (this.m_haveDeferredUpdate) {
+            this.m_haveDeferredUpdate = false;
+            let len: number = this.m_updateIds.length;
+            len = len > 16 ? 16 : len;
+            let resUid: number;
+            for (let i: number = 0; i < len; ++i) {
                 resUid = this.m_updateIds.shift();
-                if(this.m_resMap.has(resUid))
-                {
+                if (this.m_resMap.has(resUid)) {
                     //console.log("ROvtxRes("+resUid+") update vtx("+resUid+") data to gpu with deferred mode.");
                     this.m_resMap.get(resUid).updateToGpu(this.m_vtxBuilder);
                 }
             }
         }
-        this.m_delay --;
-        if(this.m_delay < 1)
-        {
+        this.m_delay--;
+        if (this.m_delay < 1) {
             this.m_delay = 128;
-            for(const [key,value] of this.m_freeMap)
-            {
+            for (const [key, value] of this.m_freeMap) {
                 value.waitDelTimes++;
-                if(value.getAttachCount() < 1)
-                {
-                    if(value.waitDelTimes > 5)
-                    {
-                        console.log("ROVertexResource remove a vertex buffer(resUid="+value.resUid+")");
+                if (value.getAttachCount() < 1) {
+                    if (value.waitDelTimes > 5) {
+                        console.log("ROVertexResource remove a vertex buffer(resUid=" + value.resUid + ")");
                         this.m_resMap.delete(value.resUid);
                         this.m_freeMap.delete(value.resUid);
-                        
+
                         value.destroy(this.m_vtxBuilder);
                         this.m_vtxResTotal--;
                     }
                 }
-                else
-                {
-                    console.log("ROVertexResource repeat use a vertex buffer(resUid="+value.resUid+") from freeMap.");
+                else {
+                    console.log("ROVertexResource repeat use a vertex buffer(resUid=" + value.resUid + ") from freeMap.");
                     this.m_freeMap.delete(value.resUid);
                 }
             }
@@ -664,4 +556,4 @@ class ROVertexResource implements IRenderResource
 
 }
 export default ROVertexResource;
-export {GpuVtxObect, ROVertexResource};
+export { GpuVtxObect, ROVertexResource };

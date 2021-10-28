@@ -309,6 +309,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
             this.m_display.ivsCount = ivsCount;
             if (this.m_display.__$ruid > -1) {
                 this.m_display.__$$runit.setIvsParam(ivsIndex, ivsCount);
+                this.m_display.__$$runit.drawMode = this.m_mesh.drawMode;
             }
         }
     }
@@ -366,8 +367,13 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     getInvMatrix(): Matrix4 {
         return this.m_transfrom.getInvMatrix();
     }
-    getMatrix(): Matrix4 {
-        return this.m_transfrom.getMatrix();
+    /**
+     * 获取当前 entity 的 local space to world space matrix
+     * @param flag 是否将当前matrix更新到最新, 默认值是true
+     * @returns local space to world space matrix
+     */
+    getMatrix(flag: boolean = true): Matrix4 {
+        return this.m_transfrom.getMatrix(flag);
     }
     getToParentMatrix(): Matrix4 {
         return this.m_transfrom.getToParentMatrix();
