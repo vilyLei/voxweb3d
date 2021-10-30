@@ -213,10 +213,6 @@ class UIScene {
                 break;
         }
     }
-    private switchEdit(flag: boolean): void {
-        
-        this.scene.setEditEnabled(flag);
-    }
 }
 
 export {UIScene};

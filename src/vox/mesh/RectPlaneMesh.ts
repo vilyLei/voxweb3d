@@ -238,9 +238,7 @@ export default class RectPlaneMesh extends MeshBase {
         }
         ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
 
-        if (this.wireframe) {
-            this.updateWireframeIvs();
-        }
+        this.updateWireframeIvs();
         this.vtCount = this.m_ivs.length;
         if (this.m_vbuf != null) {
             ROVertexBuffer.UpdateBufData(this.m_vbuf);

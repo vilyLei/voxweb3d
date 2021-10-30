@@ -210,6 +210,12 @@ class PathCtrlEntityManager {
 
             this.editorUI.dragMoveController.setVisible(true);
             this.editorUI.dragMoveController.setTarget(evt.target);
+            this.editorUI.dragMoveController.setPosition(evt.wpos);
+
+            let pos: Vector3D = new Vector3D();
+            evt.target.getPosition(pos);
+            console.log("pos: ",pos);
+            console.log("evt.wpos: ",evt.wpos);
             this.editorUI.dragMoveController.selectByParam(evt.raypv, evt.raytv, evt.wpos);
         }
     }

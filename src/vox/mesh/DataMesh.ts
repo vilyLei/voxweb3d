@@ -11,12 +11,9 @@ import MeshBase from "../../vox/mesh/MeshBase";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 import AABB from "../geom/AABB";
 import GeometryBase from "../../vox/mesh/GeometryBase"
-import { RenderDrawMode } from "../render/RenderConst";
 
-export default class DataMesh extends MeshBase
-{
-    constructor(bufDataUsage:number = VtxBufConst.VTX_STATIC_DRAW)
-    {
+export default class DataMesh extends MeshBase {
+    constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         super(bufDataUsage);
     }
 
@@ -25,12 +22,12 @@ export default class DataMesh extends MeshBase
     nvsStride: number = 3;
     cvsStride: number = 3;
 
-    vs:Float32Array = null
-    uvs:Float32Array = null;
-    nvs:Float32Array = null;
-    cvs:Float32Array = null;
-    tvs:Float32Array = null;
-    btvs:Float32Array = null;
+    vs: Float32Array = null
+    uvs: Float32Array = null;
+    nvs: Float32Array = null;
+    cvs: Float32Array = null;
+    tvs: Float32Array = null;
+    btvs: Float32Array = null;
     private m_initIVS: Uint16Array | Uint32Array = null;
 
     initializeFromGeometry(geom: GeometryBase): void {
@@ -43,52 +40,47 @@ export default class DataMesh extends MeshBase
         this.m_ivs = geom.getIVS();
         this.initialize();
     }
-    
-    setIVS(ivs: Uint16Array | Uint32Array): void{
+
+    setIVS(ivs: Uint16Array | Uint32Array): void {
         this.m_initIVS = ivs;
         this.m_ivs = ivs;
     }
     initialize(): void {
-        
-        if(this.vs != null) {
-            if(this.bounds == null) this.bounds = new AABB();
+
+        if (this.vs != null) {
+            if (this.bounds == null) this.bounds = new AABB();
 
             this.bounds.addXYZFloat32Arr(this.vs);
             ROVertexBuffer.Reset();
-            ROVertexBuffer.AddFloat32Data(this.vs,this.vsStride);
+            ROVertexBuffer.AddFloat32Data(this.vs, this.vsStride);
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
-                ROVertexBuffer.AddFloat32Data(this.uvs,this.uvsStride);
+                ROVertexBuffer.AddFloat32Data(this.uvs, this.uvsStride);
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
                 ROVertexBuffer.AddFloat32Data(this.nvs, this.nvsStride);
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX)) {
-                ROVertexBuffer.AddFloat32Data(this.cvs,this.cvsStride);
+                ROVertexBuffer.AddFloat32Data(this.cvs, this.cvsStride);
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX)) {
-                ROVertexBuffer.AddFloat32Data(this.tvs,3);
-                ROVertexBuffer.AddFloat32Data(this.btvs,3);
+                ROVertexBuffer.AddFloat32Data(this.tvs, 3);
+                ROVertexBuffer.AddFloat32Data(this.btvs, 3);
             }
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
-            //console.log("A this.m_ivs: ",this.m_ivs.length, this.wireframe);
             this.m_ivs = this.m_initIVS;
-            this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;
-            if(this.wireframe) {
-                this.updateWireframeIvs();
-            }
-            //console.log("B this.m_ivs: ",this.m_ivs.length);
+            this.updateWireframeIvs();
             this.vtCount = this.m_ivs.length;
-            if(this.m_vbuf != null) {
+            if (this.m_vbuf != null) {
                 ROVertexBuffer.UpdateBufData(this.m_vbuf);
             }
             else {
-                this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage(),this.getBufSortFormat());
+                this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage(), this.getBufSortFormat());
             }
             this.m_vbuf.setUintIVSData(this.m_ivs);
             this.buildEnd();
         }
     }
-    
+
     /**
      * 射线和自身的相交检测(多面体或几何函数(例如球体))
      * @boundsHit       表示是否包围盒体已经和射线相交了
@@ -97,18 +89,14 @@ export default class DataMesh extends MeshBase
      * @outV            如果检测相交存放物体坐标空间的交点
      * @return          返回值 -1 表示不会进行检测,1表示相交,0表示不相交
      */
-    testRay(rlpv:Vector3D,rltv:Vector3D,outV:Vector3D,boundsHit:boolean):number
-    {
+    testRay(rlpv: Vector3D, rltv: Vector3D, outV: Vector3D, boundsHit: boolean): number {
         return -1;
     }
-    toString():string
-    {
+    toString(): string {
         return "[DataMesh()]";
     }
-    __$destroy():void
-    {
-        if(this.isResFree())
-        {
+    __$destroy(): void {
+        if (this.isResFree()) {
             this.bounds = null;
 
             this.vs = null;
@@ -117,6 +105,7 @@ export default class DataMesh extends MeshBase
             this.cvs = null;
             this.tvs = null;
             this.btvs = null;
+            this.m_initIVS = null;
 
             super.__$destroy();
         }

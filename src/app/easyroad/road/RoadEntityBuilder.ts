@@ -23,6 +23,7 @@ class RoadEntityBuilder {
     private m_pathTool: PathTool = new PathTool();
     private m_surfaceEntities: DisplayEntity[] = [null, null, null, null];
     private m_wireframeEnabled: boolean = false;
+    private m_roadWidth: number = 120.0;
 
     readonly geometryBuilder: RoadGeometryBuilder = new RoadGeometryBuilder();
     initialize(engine: EngineBase, pathEditor: PathCurveEditor): void {
@@ -101,19 +102,25 @@ class RoadEntityBuilder {
             surfaceEntity.updateBounds();
         }
     }
-    build(dis: number = 60): void {
+    build(): void {
 
         if (this.m_pathEditor.getPathPosTotal() > 1 && this.m_pathDataVresion != this.m_pathEditor.getPathVersion()) {
 
+            let halfWidth: number = this.m_roadWidth * 0.5;
+            let dis: number = halfWidth;
             this.m_pathDataVresion = this.m_pathEditor.getPathVersion();
 
             let curvePosList: Pos3D[] = this.m_pathEditor.getPathCurvePosList();
+            //curvePosList = [new Pos3D(), new Pos3D(200,0.0,0),new Pos3D(600,0.0,0)];
             
             let offsetXYZ: Vector3D = new Vector3D(0, 0, 0);
             
             //let tvList: Pos3D[] = this.m_pathTool.calcTVList(posListL, posListR);
             let tvList: Pos3D[] = this.m_pathTool.calcExpandXOZTVList(curvePosList, null, this.m_pathEditor.isPathClosed());
+            //console.log("tvList: ", tvList);
+
             let posListL: Pos3D[] = this.m_pathTool.calcOnePosListByTVList(tvList, curvePosList, offsetXYZ, -dis);
+            //console.log("posListL: ", posListL);
             let posListL1: Pos3D[] = this.m_pathTool.calcOnePosListByTVList(tvList, curvePosList, offsetXYZ, 0);
             let posListR: Pos3D[] = this.m_pathTool.calcOnePosListByTVList(tvList, curvePosList, offsetXYZ, dis);
 

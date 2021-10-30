@@ -118,172 +118,50 @@ class PathTool {
 
         let i: number = 0;
         let len: number = in_posList.length;
+        let maxIndex: number = 0;
         let pa: Vector3D = null;
         let pb: Vector3D = null;
         let pc: Vector3D = null;
-        
         if (closed) {
             len -= 1;
-            for (; i < len; ++i) {
+            maxIndex = len - 1;
+        }
+        maxIndex = len - 1;
+        for (; i < len; ++i) {
+                
+            pb = in_posList[i];
+            if (i < 1) {
+                pv.subVecsTo(in_posList[i], in_posList[i + 1]);
+                pv.addBy(pb);
+                pa = pv;
+                pc = in_posList[1];
 
-                pb = in_posList[i];
-                if (i < 1) {
-                    pa = in_posList[len - 1];
-                    pc = in_posList[1];
-
-                } else if (i < (len - 1)) {
-                    pa = in_posList[i - 1];
-                    pc = in_posList[i + 1];
-                }
-                else {
-                    pa = in_posList[i - 1];
-                    pc = in_posList[0];
-                }
-                tv.subVecsTo(pb, pa);
-
-                Vector3D.Cross(Pos3D.Y_AXIS, tv, rv);
-
-                tv.subVecsTo(pb, pa);
-                tv.y = 0;
-                tv.normalize();
-                tv1.subVecsTo(pb, pc);
-                tv1.y = 0;
-                tv1.normalize();
-                tv.addBy(tv1);
-                tv.normalize();
-                if (rv.dot(tv) < 0.0001) {
-                    tv.scaleBy(-1);
-                }
-                out_tvList[i].copyFrom(tv);
+            } else if (i < maxIndex) {
+                pa = in_posList[i - 1];
+                pc = in_posList[i + 1];
             }
+            else {
+                pa = in_posList[i - 1];
+                pv.subVecsTo(in_posList[i], in_posList[i - 1]);
+                pv.addBy(pb);
+                pc = pv;
+            }
+            tv.subVecsTo(pb, pa);
+            Vector3D.Cross(Pos3D.Y_AXIS, tv, rv);
+            tv.y = 0;
+            tv.normalize();
+            tv1.subVecsTo(pc, pb);
+            tv1.y = 0;
+            tv1.normalize();
+            tv.addBy(tv1);
+            Vector3D.Cross(Pos3D.Y_AXIS, tv, rv);
+            rv.normalize();
+            out_tvList[i].copyFrom(rv);
+        }
+        if (closed) {
             out_tvList[len].copyFrom(out_tvList[0]);
-        } else {
-
-            for (; i < len; ++i) {
-                pb = in_posList[i];
-                if (i < 1) {
-                    pv.subVecsTo(in_posList[i], in_posList[i + 1]);
-                    pv.addBy(pb);
-                    pa = pv;
-                    pc = in_posList[1];
-
-                } else if (i < (len - 1)) {
-                    pa = in_posList[i - 1];
-                    pc = in_posList[i + 1];
-                }
-                else {
-                    pa = in_posList[i - 1];
-                    pv.subVecsTo(in_posList[i], in_posList[i - 1]);
-                    pv.addBy(pb);
-                    pc = pa;
-                }
-                tv.subVecsTo(pb, pa);
-
-                Vector3D.Cross(Pos3D.Y_AXIS, tv, rv);
-
-                tv.subVecsTo(pb, pa);
-                tv.y = 0;
-                tv.normalize();
-                tv1.subVecsTo(pb, pc);
-                tv1.y = 0;
-                tv1.normalize();
-                tv.addBy(tv1);
-                tv.normalize();
-                if (rv.dot(tv) < 0.0001) {
-                    tv.scaleBy(-1);
-                }
-                out_tvList[i].copyFrom(tv);
-            }
         }
-
         return out_tvList;
-    }
-    expandXOZPath(out_posList: Pos3D[], in_posList: Vector3D[], distance: number = 50.0, closed: boolean = false): Pos3D[] {
-
-        closed = closed && Pos3D.Distance(in_posList[in_posList.length - 1], in_posList[0]) < 0.001;
-
-        let tv: Vector3D = this.m_tv;
-        let tv1: Vector3D = this.m_tv1;
-        let rv: Vector3D = this.m_rv;
-        let pv: Vector3D = this.m_pv;
-
-        let i: number = 0;
-        let len: number = in_posList.length;
-        if (closed) {
-            len -= 1;
-            let pa: Vector3D = null;
-            let pb: Vector3D = null;
-            let pc: Vector3D = null;
-            for (; i < len; ++i) {
-
-                pb = in_posList[i];
-                if (i < 1) {
-                    pa = in_posList[len - 1];
-                    pc = in_posList[1];
-
-                } else if (i < (len - 1)) {
-                    pa = in_posList[i - 1];
-                    pc = in_posList[i + 1];
-                }
-                else {
-                    pa = in_posList[i - 1];
-                    pc = in_posList[0];
-                }
-                tv.subVecsTo(pb, pa);
-
-                Vector3D.Cross(Pos3D.Y_AXIS, tv, rv);
-
-                tv.subVecsTo(pb, pa);
-                tv.y = 0;
-                tv.normalize();
-                tv1.subVecsTo(pb, pc);
-                tv1.y = 0;
-                tv1.normalize();
-                tv.addBy(tv1);
-                tv.normalize();
-                if (rv.dot(tv) < 0.0001) {
-                    tv.scaleBy(-1);
-                }
-                rv.copyFrom(tv);
-
-                pv.copyFrom(rv);
-                pv.scaleBy(distance);
-                pv.addBy(in_posList[i]);
-                //out_posList[i] = pv.clone();
-                out_posList[i].copyFrom(pv);
-            }
-            //out_posList[len] = out_posList[0].clone();
-            out_posList[len].copyFrom(out_posList[0]);
-        } else {
-            for (; i < len; ++i) {
-
-                if (i < 1) {
-                    tv.subVecsTo(in_posList[i + 1], in_posList[i]);
-                    tv.normalize();
-                    Vector3D.Cross(Vector3D.Y_AXIS, tv, rv);
-                } else if (i < (len - 1)) {
-                    tv.subVecsTo(in_posList[i], in_posList[i - 1]);
-                    tv.normalize();
-                    tv1.subVecsTo(in_posList[i], in_posList[i + 1]);
-                    tv1.normalize();
-                    tv.addBy(tv1);
-                    tv.normalize();
-                    rv.copyFrom(tv);
-                }
-                else {
-                    tv.subVecsTo(in_posList[i], in_posList[i - 1]);
-                    tv.normalize();
-                    Vector3D.Cross(Vector3D.Y_AXIS, tv, rv);
-                }
-                pv.copyFrom(rv);
-                pv.scaleBy(distance);
-                pv.addBy(in_posList[i]);
-                //out_posList[i] = pv.clone();
-                out_posList[i].copyFrom(pv);
-            }
-        }
-
-        return out_posList;
     }
 }
 

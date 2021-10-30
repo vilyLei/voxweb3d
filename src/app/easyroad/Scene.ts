@@ -39,6 +39,7 @@ class Scene {
 
             this.m_engine = engine;
 
+            this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_CLICK, this, this.mouseClick);
             this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseDown);
             this.m_engine.rscene.addEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
 
@@ -80,10 +81,7 @@ class Scene {
     private initEditor(): void {
     }
     private m_pos: Vector3D = new Vector3D();
-    private mouseClick(evt: any): void {
-        console.log("entity mouseClick...");
-
-    }
+    
     private m_dispList: DisplayEntity[] = [];
 
     private m_roadFile: RoadFile = new RoadFile();
@@ -113,12 +111,14 @@ class Scene {
     }
     
     buildGeomData(): void {
-        this.roadEntityBuilder.build(60);
+        this.roadEntityBuilder.build();
     }
-    
+    private mouseClick(evt: any): void {
+        console.log("scene mouse click.");
+    }
     private mouseDown(evt: any): void {
 
-        console.log("scene mouse down");
+        console.log("scene mouse mouseDown.");
         this.m_engine.interaction.viewRay.intersectPlane();
         let pv: Vector3D = this.m_engine.interaction.viewRay.position;
         

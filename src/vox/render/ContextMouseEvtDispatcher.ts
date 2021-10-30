@@ -206,7 +206,7 @@ class ContextMouseEvtDispatcher {
             }
             //*/
             canvas.onmousemove = (evt: any): void => {
-                //console.log("ContextMouseEvtDispatcher::onmouseMove"+evt.pageX+","+evt.pageY);
+                // console.log("ContextMouseEvtDispatcher::onmouseMove"+evt.pageX+","+evt.pageY);
                 let rect: any = div.getBoundingClientRect();
                 let px = 0 | (this.dpr * (evt.clientX - rect.left));
                 let py = 0 | (this.dpr * (evt.clientY - rect.top));
@@ -225,7 +225,7 @@ class ContextMouseEvtDispatcher {
                 stage.mouseY = stage.stageHeight - py;
                 stage.mouseViewX = px;
                 stage.mouseViewY = py;
-                //console.log("ContextMouseEvtDispatcher::onclick(),"+stage.mouseViewX+","+stage.mouseViewY+",evt.button: "+evt.button);
+                // console.log("ContextMouseEvtDispatcher::onclick(),"+stage.mouseViewX+","+stage.mouseViewY+",evt.button: "+evt.button);
                 if (evt.button == 0) {
                     stage.mouseClick();
                 } else if (evt.button == 2) {

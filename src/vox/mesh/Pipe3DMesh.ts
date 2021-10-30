@@ -108,6 +108,7 @@ export default class Pipe3DMesh extends MeshBase
             ROVertexBuffer.AddFloat32Data(tvs,3);
             ROVertexBuffer.AddFloat32Data(btvs,3);
         }
+        this.updateWireframeIvs();
         if(newBuild)
         {
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;

@@ -128,11 +128,11 @@ class DragMoveController implements IRayControl {
     setTarget(target: IEntityTransform): void {
         
         this.m_dragMoveTarget.setTarget(target);
-        if(target != null) {
-            target.getPosition(this.m_tempPos);
-            this.m_dragMoveTarget.setPosition(this.m_tempPos);
-            this.m_dragMoveTarget.update();
-        }
+        // if(target != null) {
+        //     target.getPosition(this.m_tempPos);
+        //     this.m_dragMoveTarget.setPosition(this.m_tempPos);
+        //     this.m_dragMoveTarget.update();
+        // }
         this.setVisible(target != null);
     }
     getTarget(): IEntityTransform {

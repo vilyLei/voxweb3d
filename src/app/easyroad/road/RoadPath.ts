@@ -24,7 +24,7 @@ class RoadPath {
     buildPathCurve(type: number = 3, closePathEnabled: boolean = false, minDis: number = 50): Pos3D[] {
 
         this.m_pathClosed = false;
-        closePathEnabled = closePathEnabled && this.m_posList.length >= 3;
+        closePathEnabled = closePathEnabled && this.getCloseEnabled();
 
         let list: Pos3D[] = this.m_posList;
         let curvePosList: Pos3D[] = null;
@@ -117,6 +117,9 @@ class RoadPath {
     }
     getPosListLength(): number {
         return this.m_posList != null ? this.m_posList.length : 0;
+    }
+    getCloseEnabled(): boolean {
+        return this.getPosListLength() >= 3;
     }
     isClosed(): boolean {
         if (this.getPosListLength() >= 3) {

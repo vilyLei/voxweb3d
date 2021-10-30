@@ -253,6 +253,31 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
                 k += segLen;
             }
         }
+        
+        let vb: ROVertexBuffer = ROVertexBuffer.Create(bufDataUsage);
+        vb.layoutBit = layoutBit;
+        if (ROVertexBuffer.s_combinedBufs.length > 0) {
+            let vtx: VtxCombinedBuf = ROVertexBuffer.s_combinedBufs.pop() as VtxCombinedBuf;
+            vb.setVtxBuf(vtx);
+        }
+        else {
+            vb.setVtxBuf(new VtxCombinedBuf(vb.getBufDataUsage()));
+        }
+        vb.setF32DataAt(0, vtxfs32, stride, offsetList);
+        return vb;
+    }
+    static CreateVtxCombinedBuf(vtxfs32: Float32Array, bufDataStepList: number[], bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW, layoutBit: number = 0x0): ROVertexBuffer {
+        
+        let i: number = 0;
+        let stride: number = 0;
+        let bufTot: number = bufDataStepList.length;
+        let offsetList: number[] = [];
+
+        for (; i < bufTot; i++) {
+            offsetList.push(stride);
+            stride += bufDataStepList[i];
+        }
+
         let vb: ROVertexBuffer = ROVertexBuffer.Create(bufDataUsage);
         vb.layoutBit = layoutBit;
         if (ROVertexBuffer.s_combinedBufs.length > 0) {

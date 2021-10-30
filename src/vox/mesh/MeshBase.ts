@@ -54,27 +54,33 @@ export default class MeshBase {
 
     protected updateWireframeIvs(): void {
 
-        if (this.m_ivs !== null) {
+        this.drawMode = RenderDrawMode.ELEMENTS_TRIANGLES;
+        if (this.wireframe && this.m_ivs !== null) {
 
-            const array = this.m_ivs;
-            let indices: number[] = [];
-            for (let i = 0, l = array.length; i < l; i += 3) {
-
-                const a = array[i + 0];
-                const b = array[i + 1];
-                const c = array[i + 2];
-
-                indices.push(a, b, b, c, c, a);
-
-            }
+            let ivs: Uint16Array | Uint32Array = this.m_ivs;
+            let len: number = ivs.length * 2;
             let wIvs: Uint16Array | Uint32Array;
-            if (indices.length < 65535) {
-                wIvs = new Uint16Array(indices);
+            
+            if (len < 65535) wIvs = new Uint16Array(len);
+            else wIvs = new Uint32Array(len);
+
+            let a: number;
+            let b: number;
+            let c: number;
+            let k: number = 0;
+            for (let i: number = 0, l = ivs.length; i < l; i += 3) {
+
+                a = ivs[i + 0];
+                b = ivs[i + 1];
+                c = ivs[i + 2];
+                wIvs[k] = a;
+                wIvs[k+1] = b;
+                wIvs[k+2] = b;
+                wIvs[k+3] = c;
+                wIvs[k+4] = c;
+                wIvs[k+5] = a;
+                k += 6;
             }
-            else {
-                wIvs = new Uint32Array(indices);
-            }
-            this.m_ivs = wIvs;
             this.drawMode = RenderDrawMode.ELEMENTS_LINES;
         }
     }

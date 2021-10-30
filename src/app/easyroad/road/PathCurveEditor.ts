@@ -58,7 +58,7 @@ class PathCurveEditor {
         return this.m_editEnabled;
     }
     setCloseEnabled(enabled: boolean): boolean {
-        if(this.m_closeEnabled !== enabled && (enabled && this.m_path.getPosListLength() > 4)) {
+        if(this.m_closeEnabled !== enabled && (enabled && this.m_path.getCloseEnabled())) {
             this.m_path.version ++;
             this.m_closeEnabled = enabled;
             console.log("setCloseEnabled this.m_closeEnabled: ", this.m_closeEnabled);
@@ -141,7 +141,7 @@ class PathCurveEditor {
             this.m_pathLineVersion = this.m_path.version;
             
             this.buildPath();
-            if(this.getPathPosTotal() > 3 || this.isPathClosed()) {
+            if(this.getPathPosTotal() >= 3 || this.isPathClosed()) {
                 this.m_line.setVisible(false);
             }else{
                 let posList: Pos3D[] = this.getPathCurvePosList();
