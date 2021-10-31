@@ -138,14 +138,13 @@ class RoadEntityBuilder {
             let texTop = this.m_engine.texLoader.getTexByUrl("static/assets/roadSurface04.jpg");
             let texBottom = this.m_engine.texLoader.getTexByUrl("static/assets/brick_d.jpg");
 
-            //this.geometryBuilder.offsetXYZ.setXYZ(0, -5, 0);
             offsetXYZ.setXYZ(0, -5, 0);
             let entities: DisplayEntity[] = this.m_surfaceEntities;
             entities[0] = this.buildRoadSurface(entities[0], tableTop, texTop, 1.0, 0.0, 1);
             entities[1] = this.buildRoadSurface(entities[1], tableBottom, texBottom, 1.0, 0.05, 0);
             for(let i: number = 0; i < entities.length; ++i) {
                 if(entities[i] != null) {
-                    entities[i].setPosition(offsetXYZ);
+                    //entities[i].setPosition(offsetXYZ);
                     entities[i].update();
                 }
             }

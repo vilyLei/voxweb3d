@@ -38,6 +38,14 @@ class Pos3DPool {
     static IsEnabledByUid(uid: number): boolean {
         return Pos3DPool.m_unitFlagList[uid] == Pos3DPool.S_FLAG_BUSY;
     }
+    static CreateList(total: number): Pos3D[] {
+        
+        let posList: Pos3D[] = new Array( total );
+        for(let i: number = 0; i < total; ++i) {
+            posList[i] = Pos3DPool.Create();
+        }
+        return posList;
+    }
     static Create(): Pos3D {
         let unit: Pos3D = null;
         let index: number = Pos3DPool.GetFreeId();

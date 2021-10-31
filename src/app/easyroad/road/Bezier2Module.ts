@@ -19,7 +19,7 @@ class Bezier2Module {
     setBezierCurveSegTotal(segTotal: number): void {
         this.bezier2Curve.setSegTot(segTotal);
     }
-    calcSegCurve2(pv0: Vector3D, pv1: Vector3D, ctrlV: Vector3D): void {
+    calcSegCurve(pv0: Vector3D, pv1: Vector3D, ctrlV: Vector3D): void {
 
         this.bezier2Curve.begin.copyFrom(pv0);
         this.bezier2Curve.end.copyFrom(pv1);
@@ -76,7 +76,7 @@ class Bezier2Module {
                 ve.scaleBy(va.getLength() * 0.5);
                 ve.addBy(list[1]);
             }
-            this.calcSegCurve2(list[0], list[1], ve);
+            this.calcSegCurve(list[0], list[1], ve);
 
             // middle segs
             let k: number = 0;
@@ -100,7 +100,7 @@ class Bezier2Module {
                     console.log(i, "， 交点， ve: ", ve);
                 }
                 // 计算曲线数据
-                this.calcSegCurve2(v0, v1, ve);
+                this.calcSegCurve(v0, v1, ve);
                 k += 1;
             }
 
@@ -116,7 +116,7 @@ class Bezier2Module {
                 ve.scaleBy(va.getLength() * -0.5);
                 ve.addBy(list[list.length - 2]);
             }
-            this.calcSegCurve2(list[list.length - 2], list[list.length - 1], ve);
+            this.calcSegCurve(list[list.length - 2], list[list.length - 1], ve);
 
 
             let total: number = 0;

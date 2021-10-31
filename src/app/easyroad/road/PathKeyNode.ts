@@ -12,6 +12,7 @@ class PathKeyNode {
 
     status: KeyNodeStatus = KeyNodeStatus.None;
     index: number = -1;
+    stepDistance: number = 20.0;
     /**
      * 是否曲率冻结
      */

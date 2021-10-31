@@ -48,7 +48,7 @@ export class ProgressBar {
     private m_value: number = 0.0;
     
     uuid: string = "ProgressBar";
-
+    fontColor: Color4 = new Color4(0.8,0.8,0.8,1.0);
     minValue: number = 0.0;
     maxValue: number = 1.0;
     step: number = 0.1;
@@ -115,7 +115,7 @@ export class ProgressBar {
         this.m_container = container;
 
         if(this.m_barName != null && this.m_barName.length > 0) {
-            let nameBtn: ColorRectImgButton = UIBarTool.CreateBtn( this.m_barName, size, new Color4(0.8,0.8,0.8,1.0) );
+            let nameBtn: ColorRectImgButton = UIBarTool.CreateBtn( this.m_barName, size, this.fontColor );
             nameBtn.setXYZ(-1.0 * nameBtn.getWidth() - 1.0,0.0,0.0);
             container.addEntity(nameBtn);
 

@@ -114,22 +114,15 @@ class Scene {
         this.roadEntityBuilder.build();
     }
     private mouseClick(evt: any): void {
-        console.log("scene mouse click.");
+        //console.log("scene mouse click.");
     }
     private mouseDown(evt: any): void {
 
-        console.log("scene mouse mouseDown.");
+        //console.log("scene mouse mouseDown.");
         this.m_engine.interaction.viewRay.intersectPlane();
         let pv: Vector3D = this.m_engine.interaction.viewRay.position;
         
-        let flag: boolean = this.pathEditor.appendPathPos(pv);
-        // if(flag) {
-        //     if (this.pathEditor.isPathClosed()) {
-        //         if(this.closePathBtn != null) {
-        //             this.closePathBtn.deselect(false);
-        //         }
-        //     }
-        // }
+        this.pathEditor.appendPathPos(pv);
 
     }
     private keyDown(evt: any): void {

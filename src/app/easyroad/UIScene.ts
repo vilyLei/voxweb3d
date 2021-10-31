@@ -22,6 +22,7 @@ class UIScene {
     private m_currPosCurvationFreezeBtn: SelectionBar = null;
     private m_closePathBtn: SelectionBar = null;
 
+    private m_segTotalCtrlBtn: ProgressBar = null;
     private m_curvatureFactorHeadBtn: ProgressBar = null;
     private m_curvatureFactorTailBtn: ProgressBar = null;
 
@@ -35,6 +36,7 @@ class UIScene {
             
             this.scene.closePathBtn = this.m_closePathBtn;
             this.scene.pathEditor.pathCtrlEntityManager.currPosCurvationFreezeBtn = this.m_currPosCurvationFreezeBtn;
+            this.scene.pathEditor.pathCtrlEntityManager.segTotalCtrlBtn = this.m_segTotalCtrlBtn;
             this.scene.pathEditor.pathCtrlEntityManager.curvatureFactorHeadBtn = this.m_curvatureFactorHeadBtn;
             this.scene.pathEditor.pathCtrlEntityManager.curvatureFactorTailBtn = this.m_curvatureFactorTailBtn;
             this.scene.setEditEnabled(this.m_switchEditBtn != null ? this.m_switchEditBtn.isSelected() : false);            
@@ -62,10 +64,13 @@ class UIScene {
         btn = this.createSelectBtn("网格显示", "switchWireframe", "ON", "OFF", false);
         btn = this.createSelectBtn("控制点显示", "showPathCtrlPos", "ON", "OFF", true);
         this.m_showPosBtn = btn;
-        btn = this.createSelectBtn("开启路径闭合", "closePath", "ON", "OFF", false);
+        btn = this.createSelectBtn("路径闭合", "closePath", "ON", "OFF", false);
         this.m_closePathBtn = btn;
         this.m_btnPY += dis;
-        let proBtn = this.createProgressBtn("尾部曲率因子", "curvatureFactorTail", 0.3);
+        let proBtn: ProgressBar;
+        proBtn = this.createProgressBtn("分段密度", "segTotalCtrl", 0.2);
+        this.m_segTotalCtrlBtn = proBtn;
+        proBtn = this.createProgressBtn("尾部曲率因子", "curvatureFactorTail", 0.3);
         this.m_curvatureFactorTailBtn = proBtn;
         proBtn = this.createProgressBtn("头部曲率因子", "curvatureFactorHead", 0.3);
         this.m_curvatureFactorHeadBtn = proBtn;
@@ -123,6 +128,7 @@ class UIScene {
     private createProgressBtn(ns: string, uuid: string, progress: number, visibleAlways: boolean = false): ProgressBar {
 
         let proBar: ProgressBar = new ProgressBar();
+        proBar.fontColor.setRGB3f(1.0,1.0,1.0);
         proBar.uuid = uuid;
         proBar.initialize(this.m_engine.uiScene, ns, this.m_btnSize, this.m_bgLength);
         proBar.setProgress(progress, false);
@@ -137,6 +143,9 @@ class UIScene {
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
         let value: number = progEvt.value;
         switch( progEvt.uuid ) {
+            case "segTotalCtrl":
+                this.scene.pathEditor.pathCtrlEntityManager.setSegmentsTotalFactor(value);
+                break;
             case "curvatureFactorHead":
                 this.scene.pathEditor.pathCtrlEntityManager.setcurrPosCurvatureFactor(value, 0);
                 break;

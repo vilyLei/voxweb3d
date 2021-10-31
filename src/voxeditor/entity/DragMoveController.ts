@@ -18,8 +18,13 @@ class DragMoveTarget implements IEntityTransform {
 
     private m_engitys: IEntityTransform[] = [null];
     private m_changFlags: boolean[] = [true];
+    private m_targetPosOffset: Vector3D = new Vector3D();
     position: Vector3D = new Vector3D();
+
     constructor() {
+    }
+    setTargetPosOffset(offset: Vector3D): void {
+        this.m_targetPosOffset.copyFrom(offset);
     }
     addEntity(engity: IEntityTransform): void {
         if (engity != null) {
@@ -40,7 +45,8 @@ class DragMoveTarget implements IEntityTransform {
     setPosition(pv: Vector3D): void {
         let i: number = 0;
         if (this.m_engitys[i] != null) {
-            this.m_engitys[i].setPosition(pv);
+            this.position.addVecsTo(pv, this.m_targetPosOffset);
+            this.m_engitys[i].setPosition(this.position);
             this.m_changFlags[i] = true;
         }
         for (i = 1; i < this.m_engitys.length; ++i) {
@@ -118,20 +124,21 @@ class DragMoveController implements IRayControl {
     }
 
     initializeEvent(): void {
-        
+
     }
     selectByParam(raypv: Vector3D, raytv: Vector3D, wpos: Vector3D): void {
-        if(this.m_crossPlaneDrag != null) {
+        if (this.m_crossPlaneDrag != null) {
             this.m_crossPlaneDrag.selectByParam(raypv, raytv, wpos);
         }
     }
     setTargetPosOffset(offset: Vector3D): void {
-        for(let i: number = 0; i < this.m_controllers.length; ++i) {
+        for (let i: number = 0; i < this.m_controllers.length; ++i) {
             this.m_controllers[i].setTargetPosOffset(offset);
         }
+        this.m_dragMoveTarget.setTargetPosOffset( offset );
     }
     setTarget(target: IEntityTransform): void {
-        
+
         this.m_dragMoveTarget.setTarget(target);
         this.setVisible(target != null);
     }
@@ -246,7 +253,7 @@ class DragMoveController implements IRayControl {
     private m_pos0: Vector3D = new Vector3D();
     private m_pos1: Vector3D = new Vector3D(100.0, 0.0, 0.0);
     private m_posX: number = -1;
-    private m_mousePrePos: Vector3D = new Vector3D(-100000,-100000,0);
+    private m_mousePrePos: Vector3D = new Vector3D(-100000, -100000, 0);
     private m_mousePos: Vector3D = new Vector3D();
     run(): void {
 
@@ -269,11 +276,11 @@ class DragMoveController implements IRayControl {
                 this.m_dragMoveTarget.setCtrlScaleXYZ(scale, scale, scale);
                 this.m_dragMoveTarget.update();
             }
-            this.m_mousePos.setXYZ(this.m_editRendererScene.getStage3D().mouseX,this.m_editRendererScene.getStage3D().mouseY, 0);
-            if(Vector3D.DistanceSquared(this.m_mousePrePos, this.m_mousePos) > 0.001) {
-                this.m_mousePrePos.copyFrom( this.m_mousePos );
+            this.m_mousePos.setXYZ(this.m_editRendererScene.getStage3D().mouseX, this.m_editRendererScene.getStage3D().mouseY, 0);
+            if (Vector3D.DistanceSquared(this.m_mousePrePos, this.m_mousePos) > 0.001) {
+                this.m_mousePrePos.copyFrom(this.m_mousePos);
                 this.m_editRendererScene.getMouseXYWorldRay(this.m_rpv, this.m_rtv);
-    
+
                 for (let i: number = 0; i < this.m_controllers.length; ++i) {
                     if (this.m_controllers[i].isSelected()) {
                         this.m_controllers[i].moveByRay(this.m_rpv, this.m_rtv);

@@ -16,24 +16,33 @@ class Bezier3Module {
 
     pathClosed: boolean = false;
     version: number = -1;
-    stepDistance: number = 30;
+    stepDistance: number = 20;
     constructor() {
+        this.bezier3Curve.setSegTot(10);
     }
     setBezierCurveSegTotal(segTotal: number): void {
         this.bezier3Curve.setSegTot(segTotal);
     }
-    calcSegCurve3(pv0: Vector3D, pv1: Vector3D, ctrlA: Vector3D, ctrlB: Vector3D): void {
-
+    calcSegCurve(pv0: Vector3D, pv1: Vector3D, ctrlA: Vector3D, ctrlB: Vector3D): void {
+        let dis: number = Vector3D.Distance(this.bezier3Curve.begin,this.bezier3Curve.end);
+        let total: number = Math.floor(dis / this.stepDistance);
+        this.bezier3Curve.setSegTot( total );
         this.bezier3Curve.begin.copyFrom(pv0);
         this.bezier3Curve.end.copyFrom(pv1);
         this.bezier3Curve.ctrAPos.copyFrom(ctrlA);
         this.bezier3Curve.ctrBPos.copyFrom(ctrlB);
         this.bezier3Curve.updateCalc();
-
-        let posList: Pos3D[] = new Array(this.bezier3Curve.getPosTotal());
-        for(let i: number = 0; i < posList.length; ++i) {
-            posList[i] = Pos3DPool.Create();
+        dis = this.bezier3Curve.getCurveDistance();
+        let currTotal = Math.floor(dis / this.stepDistance);
+        if(currTotal < 3) {
+            currTotal = 3;
         }
+        if(total != currTotal) {
+            this.bezier3Curve.setSegTot( currTotal );
+            this.bezier3Curve.updateCalc();
+        }
+        
+        let posList: Pos3D[] = Pos3DPool.CreateList(this.bezier3Curve.getPosTotal());
         this.bezier3Curve.getPosList( posList );
 
         if (this.m_posTable.length > 0) {
@@ -162,7 +171,8 @@ class Bezier3Module {
         this.m_tempV1.scaleBy(dis * node1.positiveCtrlFactor);
         this.m_tempV1.addBy(v1);
         // 计算曲线数据
-        this.calcSegCurve3(v0, v1, this.m_tempV2, this.m_tempV1);
+        this.stepDistance = node0.stepDistance;
+        this.calcSegCurve(v0, v1, this.m_tempV2, this.m_tempV1);
     }
     private m_curvePosList: Pos3D[] = null;
     buildPathCurveData(list: Pos3D[], closePath: boolean, nodeList: PathKeyNode[]): Pos3D[] {

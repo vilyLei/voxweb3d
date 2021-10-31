@@ -117,6 +117,7 @@ export default class DragPlaneEntity3D extends DisplayEntity implements IRayCont
             }
 
             if (this.m_targetEntity != null) {
+                
                 this.m_pos.addBy(this.m_targetPosOffset);
                 this.m_targetEntity.setPosition(this.m_pos);
                 this.m_targetEntity.update();

@@ -178,6 +178,20 @@ class CurveBase {
 	getVS(): number[] {
 		return this.m_vs;
 	}
+	/**
+	 * 获取曲线大概的距离
+	 */
+	getCurveDistance(): number {
+		let dis: number = 0;
+		let total: number = this.m_segTot + 1;
+		
+		let k: number = 0;
+		for (let i: number = 3; i < total; i += 3) {
+			k = i - 3;
+			dis += Vector3D.DistanceXYZ(this.m_vs[k], this.m_vs[k + 1], this.m_vs[k + 2], this.m_vs[i], this.m_vs[i + 1], this.m_vs[i + 2]);
+		}
+		return dis;
+	}
 	reset(): void {
 		this.m_vs = [];
 	}
@@ -185,7 +199,7 @@ class CurveBase {
 		let k: number = 0;
 		if(posList == null)
 		{
-			posList = new Array(this.m_vs.length / 3);
+			posList = new Array( this.m_segTot + 1 );
 			for (let i: number = 0; i < this.m_vs.length; i += 3) {
 				posList[k++] = new Vector3D(this.m_vs[i], this.m_vs[i + 1], this.m_vs[i + 2]);
 			}
@@ -204,7 +218,7 @@ class CurveBase {
 	calcByProgress(k: number): void {
 	}
 	getPosTotal(): number {
-		return this.m_vs.length / 3;
+		return this.m_segTot + 1;
 	}
 }
 /**

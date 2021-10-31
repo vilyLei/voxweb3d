@@ -72,7 +72,6 @@ class PathCurveEditor {
 
         let path: RoadPath = this.m_roadBuilder.appendPath();
         this.m_path = path;
-        path.setBezierCurveSegTotal(10);
         
         this.pathCtrlEntityManager.editorUI = this.editorUI;
         this.pathCtrlEntityManager.initialize(this.m_engine, this.m_path)
