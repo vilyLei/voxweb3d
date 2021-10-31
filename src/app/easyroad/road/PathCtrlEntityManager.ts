@@ -194,7 +194,7 @@ class PathCtrlEntityManager {
         this.m_pathCtrlEntitys.push(editEntity);
         this.m_engine.rscene.addEntity( editEntity );
     }
-    
+    private m_pos: Vector3D = new Vector3D();
     private mouseDownEditableEntity(evt: any): void {
         if(this.m_editEnabled) {
             let editEntity: PathCtrlEntity = evt.target;
@@ -207,16 +207,11 @@ class PathCtrlEntityManager {
             }
             this.curvatureFactorHeadBtn.setProgress(node.positiveCtrlFactor,false);
             this.curvatureFactorTailBtn.setProgress(node.negativeCtrlFactor,false);
-
+            editEntity.getPosition( this.m_pos );
             this.editorUI.dragMoveController.setVisible(true);
             this.editorUI.dragMoveController.setTarget(evt.target);
-            this.editorUI.dragMoveController.setPosition(evt.wpos);
-
-            let pos: Vector3D = new Vector3D();
-            evt.target.getPosition(pos);
-            console.log("pos: ",pos);
-            console.log("evt.wpos: ",evt.wpos);
-            this.editorUI.dragMoveController.selectByParam(evt.raypv, evt.raytv, evt.wpos);
+            this.editorUI.dragMoveController.setPosition(this.m_pos);
+            this.editorUI.dragMoveController.selectByParam(evt.raypv, evt.raytv, this.m_pos);
         }
     }
 }

@@ -13,6 +13,7 @@ import IEntityTransform from "../../vox/entity/IEntityTransform";
  * the behavior normalization of an entity that controlled by ray
  */
 interface IRayControl extends ISelectable {
+    setTargetPosOffset(offset: Vector3D): void;
     setTarget(target: IEntityTransform): void;
     moveByRay(rpv: Vector3D, rtv: Vector3D): void
 }

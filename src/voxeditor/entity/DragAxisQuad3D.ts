@@ -24,6 +24,7 @@ export default class DragAxisQuad3D extends AxisQuad3DEntity implements IRayCont
     
     private m_targetEntity: IEntityTransform = null;
     private m_dispatcher: MouseEvt3DDispatcher;
+    private m_targetPosOffset: Vector3D = new Vector3D();
 
     uuid: string = "DragAxisQuad3D";
     moveSelfEnabled: boolean = true;
@@ -39,6 +40,9 @@ export default class DragAxisQuad3D extends AxisQuad3DEntity implements IRayCont
     }
     removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
         this.m_dispatcher.removeEventListener(type, listener, func);
+    }
+    setTargetPosOffset(offset: Vector3D): void {
+        this.m_targetPosOffset.copyFrom( offset );
     }
     setTarget(target: IEntityTransform): void {
         this.m_targetEntity = target;
@@ -127,6 +131,7 @@ export default class DragAxisQuad3D extends AxisQuad3DEntity implements IRayCont
             }
 
             if (this.m_targetEntity != null) {
+                this.m_pos.addBy(this.m_targetPosOffset);
                 this.m_targetEntity.setPosition(this.m_pos);
                 this.m_targetEntity.update();
             }
