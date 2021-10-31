@@ -10,6 +10,7 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import Color4 from '../../vox/material/Color4';
 import MaterialBase from '../../vox/material/MaterialBase';
 import Line3DMaterial from '../../vox/material/mcase/Line3DMaterial';
+import Vector3D from '../math/Vector3D';
 
 export default class Axis3DEntity extends DisplayEntity {
     constructor() {
@@ -98,17 +99,20 @@ export default class Axis3DEntity extends DisplayEntity {
      * initialize the cross axis entity mesh and geometry data
      * @param axisSize the X/Y/Z axis length
      */
-    initializeCross(axisSize: number = 100.0): void {
+    initializeCross(axisSize: number = 100.0, offset: Vector3D = null): void {
         if (axisSize < 2) {
             axisSize = 2;
         }
         axisSize *= 0.5;
-        this.m_posarr[0] = -axisSize;
-        this.m_posarr[7] = -axisSize;
-        this.m_posarr[14] = -axisSize;
-        this.m_posarr[3] = axisSize;
-        this.m_posarr[10] = axisSize;
-        this.m_posarr[17] = axisSize;
+        if(offset == null) {
+            offset = new Vector3D();
+        }
+        this.m_posarr[0] = -axisSize + offset.x;
+        this.m_posarr[7] = -axisSize + offset.y;
+        this.m_posarr[14] = -axisSize + offset.z;
+        this.m_posarr[3] = axisSize + offset.x;
+        this.m_posarr[10] = axisSize + offset.y;
+        this.m_posarr[17] = axisSize + offset.z;
         this.createMaterial();
         this.activeDisplay();
 

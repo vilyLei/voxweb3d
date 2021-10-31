@@ -38,10 +38,12 @@ export default class DataMesh extends MeshBase {
         this.tvs = geom.getTVS();
         this.btvs = geom.getBTVS();
         this.m_ivs = geom.getIVS();
+        this.m_initIVS = this.m_ivs;
         this.initialize();
     }
 
     setIVS(ivs: Uint16Array | Uint32Array): void {
+        
         this.m_initIVS = ivs;
         this.m_ivs = ivs;
     }

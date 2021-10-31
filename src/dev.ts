@@ -301,7 +301,7 @@
 
 //  import {DemoCamera as Demo} from "./demo/DemoCamera";
 
-//  import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
+import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
 
 //  import {DemoCameraPath as Demo} from "./demo/DemoCameraPath";
 
@@ -383,7 +383,7 @@
 
 //  import {RbtDrama as Demo} from "./app/RbtDrama";
 
-import {EasyRoad as Demo} from "./app/EasyRoad";
+//  import {EasyRoad as Demo} from "./app/EasyRoad";
 
 //  import {DemoDraco as Demo} from "./demo/DemoDraco";
 

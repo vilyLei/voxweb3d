@@ -3,6 +3,7 @@ import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
 import { ICameraView } from "../../vox/view/ICameraView";
 import { AngleDegreeTween } from "../../voxmotion/tween/AngleDegreeTween";
+import { PosInterpolation } from "../../voxmotion/tween/PosInterpolation";
 
 class CameraViewFollower {
 
@@ -17,15 +18,15 @@ class CameraViewFollower {
     readonly angleTweenY: AngleDegreeTween = new AngleDegreeTween();
     readonly angleTweenZ: AngleDegreeTween = new AngleDegreeTween();
 
-
-    positionMovefactor: number = 0.3;
-    speed: number = 0.01;
+    readonly posInterp: PosInterpolation = new PosInterpolation();
 
     constructor() {
         this.angleTweenY.factor = 0.02;
         //this.angleTweenY.factor = 0.01;
+        this.posInterp.minDis = 200.0;
     }
     private updateView(): void {
+
         if (this.m_camView != null) {
             this.m_camView.setPosition(this.m_position);
             this.m_camView.setRotationXYZ(this.m_degreeX, this.m_degreeY, 0.0);
@@ -34,6 +35,7 @@ class CameraViewFollower {
     }
 
     setCameraView(cameraView: ICameraView): void {
+
         this.m_camView = cameraView;
     }
 
@@ -51,18 +53,12 @@ class CameraViewFollower {
         this.updateView();
     }
 
-    moveToOnXOZ(pos: Vector3D, minDis: number, degreeY: number): void {
+    moveToOnXOZ(pos: Vector3D, degreeY: number): void {
         
+        this.posInterp.interpolate(pos, this.m_position);
         this.m_tempva.subVecsTo(pos, this.m_position);
-        if (this.m_tempva.getLengthSquared() > (minDis * minDis)) {
-            minDis = this.m_tempva.getLength() - minDis;
-            this.m_tempva.normalize();
-            this.m_tempva.scaleBy(minDis * this.positionMovefactor);
-            this.m_position.addBy(this.m_tempva);
-        }
-        this.m_tempva.subVecsTo(pos, this.m_position);
-        this.m_tempva.y = 0;
-        degreeY = this.angleTweenY.calcDegree( 360 - MathConst.GetDegreeByXY(this.m_tempva.x,this.m_tempva.z) );
+        this.m_tempva.y = 0.0;
+        degreeY = this.angleTweenY.calcDegree( 360.0 - MathConst.GetDegreeByXY(this.m_tempva.x,this.m_tempva.z) );
         this.m_degreeY = degreeY;
         
         this.updateView();

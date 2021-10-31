@@ -280,7 +280,7 @@ export class DemoCameraMotion
     private initPathAct(posList: Vector3D[] = null): void {
 
         let axis: Axis3DEntity = new Axis3DEntity();
-        axis.initializeCross(70.0);
+        axis.initializeCross(70.0, new Vector3D(30,0,0));
         this.m_rscene.addEntity( axis );
         this.m_pathRole = axis;
         
@@ -339,10 +339,13 @@ export class DemoCameraMotion
                 let cross: Axis3DEntity = new Axis3DEntity();
                 cross.initializeCorssSizeXYZ(50,10,50);
                 cross.setXYZ( pv.x, pv.y, pv.z );
+
                 if(i == 0) {
+                    
                     this.m_temV.subVecsTo(posList[i+1], posList[i]);
                 }
                 else if(i < (posList.length - 1)) {
+
                     this.m_temV.subVecsTo(posList[i], posList[i-1]);
                     this.m_tem2V.subVecsTo(posList[i+1], posList[i]);
                     this.m_temV.addBy(this.m_tem2V);

@@ -3,29 +3,32 @@ import Vector3D from "../../vox/math/Vector3D";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import PathTrack from "../../voxnav/path/PathTrack";
 import MathConst from "../../vox/math/MathConst";
-import {AngleDegreeTween} from "../../voxmotion/tween/AngleDegreeTween";
-import {CameraViewFollower} from "../../voxmotion/camera/CameraViewFollower";
+import { AngleDegreeTween } from "../../voxmotion/tween/AngleDegreeTween";
+import { PosInterpolation } from "../../voxmotion/tween/PosInterpolation";
+import { CameraViewFollower } from "../../voxmotion/camera/CameraViewFollower";
+import IEntityTransform from "../../vox/entity/IEntityTransform";
 
 
 class PathMotionAction {
 
-    constructor() { }
-
-    private m_target: DisplayEntity = null;
-    cameraFollower:CameraViewFollower = new CameraViewFollower();
+    private m_target: IEntityTransform = null;
+    private m_degTween: AngleDegreeTween = new AngleDegreeTween();
+    readonly cameraFollower: CameraViewFollower = new CameraViewFollower();
+    readonly posInterp: PosInterpolation = new PosInterpolation();
+    readonly cameraOffset: Vector3D = new Vector3D(0, 130, -200);
     motionSpeed: number = 1;
 
-    cameraOffset: Vector3D = new Vector3D(0,130,-200);
+    constructor() {
+        this.posInterp.minDis = 30.0;
+    }
 
-    private m_degTween: AngleDegreeTween = new AngleDegreeTween();
-
-    bindTarget(tar: DisplayEntity): void {
+    bindTarget(tar: IEntityTransform): void {
         this.m_target = tar;
     }
     destroy(): void {
         this.m_target = null;
     }
-    getTarget(): DisplayEntity {
+    getTarget(): IEntityTransform {
         return this.m_target;
     }
     private m_dis: number = 0.0;
@@ -37,7 +40,7 @@ class PathMotionAction {
     private m_pathTrack: PathTrack = new PathTrack();
     run(): void {
         if (this.m_flag != PathTrack.TRACK_END) {
-            if(this.m_target != null) {
+            if (this.m_target != null) {
 
                 let dis: number = this.m_dis + this.motionSpeed;
                 this.m_flag = this.m_pathTrack.calcPosByDis(this.m_outV, this.m_dis, true);
@@ -45,22 +48,29 @@ class PathMotionAction {
                 this.m_temV.copyFrom(this.m_outV);
                 this.m_preV.y = this.m_temV.y;
                 this.m_temV.subtractBy(this.m_preV);
-                let currDegree: number = this.m_degTween.calcDegree( 360 - MathConst.GetDegreeByXY(this.m_temV.x,this.m_temV.z) );
-                
-                this.m_temV.copyFrom( this.m_outV );
+                let currDegree: number = this.m_degTween.calcDegree(360 - MathConst.GetDegreeByXY(this.m_temV.x, this.m_temV.z));
+
+                this.m_temV.copyFrom(this.m_outV);
                 this.m_temV.y += this.cameraOffset.y;
 
-                this.cameraFollower.moveToOnXOZ(this.m_temV, 200, currDegree);
+                this.cameraFollower.moveToOnXOZ(this.m_temV, currDegree);
 
-                this.m_target.setPosition(this.m_outV);
-                this.m_target.setRotationXYZ(0.0, currDegree ,0.0);
+                this.m_target.getPosition(this.m_preV);
+                this.m_temV.copyFrom(this.m_preV);
+                this.posInterp.interpolate(this.m_outV, this.m_preV);
+                this.m_temV.subVecsTo(this.m_preV, this.m_temV);
+                currDegree = this.m_degTween.calcDegree(360 - MathConst.GetDegreeByXY(this.m_temV.x, this.m_temV.z));
+
+                //this.m_target.setPosition(this.m_outV);
+                this.m_target.setPosition(this.m_preV);
+                this.m_target.setRotationXYZ(0.0, currDegree, 0.0);
                 this.m_target.update();
-                this.m_target.getPosition( this.m_preV );
+                //this.m_target.getPosition( this.m_preV );
                 this.m_dis = dis;
             }
         } else {
             if (this.moveToEnd != null) this.moveToEnd();
-            if(this.m_circle) {
+            if (this.m_circle) {
                 this.m_dis = 0;
                 this.m_flag = PathTrack.TRACK_INIT;
                 this.m_pathTrack.toBegin();
@@ -71,7 +81,7 @@ class PathMotionAction {
     getTrackFlag(): number {
         return this.m_flag;
     }
-    moveToEnd: ()=>void = null;
+    moveToEnd: () => void = null;
     setPathPosList(posList: Vector3D[], circle: boolean = false): void {
 
         this.m_dis = 0;
@@ -80,7 +90,7 @@ class PathMotionAction {
 
         let i: number = 0;
         let len: number = posList.length;
-        if(this.m_target != null) {
+        if (this.m_target != null) {
             this.m_target.setPosition(posList[0]);
             this.m_target.update();
         }
@@ -89,10 +99,10 @@ class PathMotionAction {
         this.m_preV.y = this.m_temV.y;
         this.m_temV.subtractBy(this.m_preV);
 
-        this.m_degTween.setDegree( 360 - MathConst.GetDegreeByXY(this.m_temV.x,this.m_temV.z) );
+        this.m_degTween.setDegree(360 - MathConst.GetDegreeByXY(this.m_temV.x, this.m_temV.z));
         this.m_temV.normalize();
         this.m_temV.scaleBy(-210);
-        this.m_temV.addBy( this.m_preV );
+        this.m_temV.addBy(this.m_preV);
         this.m_temV.y += this.cameraOffset.y;
 
         this.cameraFollower.setViewParams(this.m_temV, this.m_degTween.getDegree(), 30.0);
@@ -103,8 +113,8 @@ class PathMotionAction {
             pv = posList[i];
             this.m_pathTrack.addXYZ(pv.x, pv.y, pv.z);
         }
-        if(circle) {
-            if(Vector3D.DistanceSquared(posList[0], posList[posList.length - 1]) > 0.01) {
+        if (circle) {
+            if (Vector3D.DistanceSquared(posList[0], posList[posList.length - 1]) > 0.01) {
                 pv = posList[0];
                 this.m_pathTrack.addXYZ(pv.x, pv.y, pv.z);
             }
@@ -112,4 +122,4 @@ class PathMotionAction {
     }
 }
 
-export {PathMotionAction};
+export { PathMotionAction };
