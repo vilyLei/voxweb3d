@@ -153,7 +153,11 @@ export default class MeshBase {
     }
     // vertex
     getVS(): Float32Array { return null; }
-    // index bufer
+    // uv
+    getUVS(): Float32Array { return null; }
+    // normal
+    getNVS(): Float32Array { return null; }
+    // indices bufer
     getIVS(): Uint16Array | Uint32Array { return this.m_ivs; }
     /**
      * @param layoutBit vertex shader vertex attributes layout bit status.

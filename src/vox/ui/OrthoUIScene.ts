@@ -15,18 +15,17 @@ import Color4 from "../material/Color4";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 import IRendererScene from "../../vox/scene/IRendererScene";
-import {IRenderCamera} from "../render/IRenderCamera";
+import { IRenderCamera } from "../render/IRenderCamera";
 import IRenderStage3D from "../render/IRenderStage3D";
 import Vector3D from "../math/Vector3D";
 
-class OrthoUIScene implements IRendererScene
-{
+class OrthoUIScene implements IRendererScene {
     private m_rscene: RendererScene = null;
     private m_ruisc: RendererSubScene = null;
-    constructor(){}
-    
+    constructor() { }
+
     initialize(rscene: RendererScene): void {
-        if(rscene != null) {
+        if (rscene != null) {
             this.m_rscene = rscene;
             this.m_rscene.addEventListener(EventBase.RESIZE, this, this.resize);
             this.initUIScene();
@@ -47,7 +46,7 @@ class OrthoUIScene implements IRendererScene
         rparam.cameraPerspectiveEnabled = false;
         rparam.setCamProject(45.0, 0.1, 3000.0);
         rparam.setCamPosition(0.0, 0.0, 1500.0);
-        
+
         let subScene: RendererSubScene = null;
         subScene = this.m_rscene.createSubScene();
         subScene.initialize(rparam);
@@ -57,7 +56,7 @@ class OrthoUIScene implements IRendererScene
         this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
         this.m_ruisc.getCamera().update();
         CanvasTextureTool.GetInstance().initialize(this.m_rscene);
-        CanvasTextureTool.GetInstance().initializeAtlas(1024,1024, new Color4(1.0,1.0,1.0,0.0), true);
+        CanvasTextureTool.GetInstance().initializeAtlas(1024, 1024, new Color4(1.0, 1.0, 1.0, 0.0), true);
 
     }
     getRendererScene(): RendererSubScene {
@@ -74,7 +73,7 @@ class OrthoUIScene implements IRendererScene
         this.m_ruisc.enableMouseEvent(gpuTestEnabled);
     }
     getMouseXYWorldRay(rl_position: Vector3D, rl_tv: Vector3D): void {
-        this.m_ruisc.getMouseXYWorldRay(rl_position,rl_tv);
+        this.m_ruisc.getMouseXYWorldRay(rl_position, rl_tv);
     }
     renderBegin(contextBeginEnabled: boolean = false): void {
         this.m_ruisc.renderBegin();
@@ -83,10 +82,10 @@ class OrthoUIScene implements IRendererScene
         this.m_ruisc.runBegin(autoCycle, contextBeginEnabled);
     }
     setRayTestEanbled(enabled: boolean): void {
-        this.m_ruisc.setRayTestEanbled( enabled );
+        this.m_ruisc.setRayTestEanbled(enabled);
     }
     update(autoCycle: boolean = true, mouseEventEnabled: boolean = true): void {
-        this.m_ruisc.update( autoCycle, mouseEventEnabled );
+        this.m_ruisc.update(autoCycle, mouseEventEnabled);
     }
     run(autoCycle: boolean = false): void {
         this.m_ruisc.run(autoCycle);
@@ -107,9 +106,9 @@ class OrthoUIScene implements IRendererScene
         this.m_ruisc.addEntity(entity, processIndex, deferred);
     }
     removeEntity(entity: IRenderEntity): void {
-        this.m_ruisc.removeEntity( entity );
+        this.m_ruisc.removeEntity(entity);
     }
-    
+
     addContainer(child: DisplayEntityContainer, processIndex: number = 0): void {
         this.m_ruisc.addContainer(child, processIndex);
     }
@@ -122,7 +121,7 @@ class OrthoUIScene implements IRendererScene
      * @param useGlobalUniform 是否使用当前 global material 所携带的 uniform, default value: false
      * @param forceUpdateUniform 是否强制更新当前 global material 所对应的 shader program 的 uniform, default value: true
      */
-    drawEntity(entity: IRenderEntity, useGlobalUniform: boolean = false,  forceUpdateUniform: boolean = true): void {
+    drawEntity(entity: IRenderEntity, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
         this.m_ruisc.drawEntity(entity, useGlobalUniform, forceUpdateUniform);
     }
     isRayPickSelected(): boolean {
@@ -154,7 +153,7 @@ class OrthoUIScene implements IRendererScene
             this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
         }
     }
-    
+
     setClearUint24Color(colorUint24: number, alpha: number = 1.0): void {
         this.m_rscene.setClearUint24Color(colorUint24, alpha);
     }
@@ -180,4 +179,4 @@ class OrthoUIScene implements IRendererScene
         return this.m_ruisc.getStage3D();
     }
 }
-export {OrthoUIScene};
+export { OrthoUIScene };

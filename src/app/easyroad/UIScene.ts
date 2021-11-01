@@ -1,6 +1,7 @@
 
 import RendererDevice from "../../vox/render/RendererDevice";
 import Vector3D from "../../vox/math/Vector3D";
+import MouseEvent from "../../vox/event/MouseEvent";
 import SelectionEvent from "../../vox/event/SelectionEvent";
 import SelectionBar from "../../orthoui/button/SelectionBar";
 import ProgressBar from "../../orthoui/button/ProgressBar";
@@ -9,6 +10,7 @@ import ProgressDataEvent from "../../vox/event/ProgressDataEvent";
 
 import EngineBase from "../../vox/engine/EngineBase";
 import {Scene} from "./Scene";
+import TextButton from "../../orthoui/button/TextButton";
 
 class UIScene {
 
@@ -35,6 +37,7 @@ class UIScene {
             this.initBtns();
             
             this.scene.closePathBtn = this.m_closePathBtn;
+            this.scene.pathEditor.pathCtrlEntityManager.addPosBtn = this.m_addPosBtn;
             this.scene.pathEditor.pathCtrlEntityManager.currPosCurvationFreezeBtn = this.m_currPosCurvationFreezeBtn;
             this.scene.pathEditor.pathCtrlEntityManager.segTotalCtrlBtn = this.m_segTotalCtrlBtn;
             this.scene.pathEditor.pathCtrlEntityManager.curvatureFactorHeadBtn = this.m_curvatureFactorHeadBtn;
@@ -46,27 +49,33 @@ class UIScene {
 
     }
     private initBtns(): void {
-        let dis: number = 24
+        let dis: number = 24;
+        this.m_btnSize = 20;
+        this.m_verticalSpace = 4;
         if(RendererDevice.IsMobileWeb()) {
             this.m_btnSize = 64;
             dis = 40;
         }
-        let btn = this.createSelectBtn("清理场景", "clearScene", "ON", "OFF", true);
-        btn = this.createSelectBtn("保存数据", "saveData", "ON", "OFF", false);
+        let texBtn: TextButton;
+        let selectBtn: SelectionBar;
+        selectBtn = this.createSelectBtn("清理场景", "clearScene", "ON", "OFF", true);
+        selectBtn = this.createSelectBtn("保存数据", "saveData", "ON", "OFF", false);
         this.m_btnPY += dis;
-        btn = this.createSelectBtn("构建几何数据", "buildGeomData", "ON", "OFF", false);
+        selectBtn = this.createSelectBtn("构建几何数据", "buildGeomData", "ON", "OFF", false);
         this.m_btnPY += dis;
-        btn = this.createSelectBtn("编辑场景", "switchEdit", "ON", "OFF", false);
-        this.m_switchEditBtn = btn;
-        btn = this.createSelectBtn("添加位置", "switchAddPathPos", "ON", "OFF", true);
-        this.m_addPosBtn = btn;
+        selectBtn = this.createSelectBtn("编辑场景", "switchEdit", "ON", "OFF", false);
+        this.m_switchEditBtn = selectBtn;
+        selectBtn = this.createSelectBtn("控制点编辑", "switchAddPathPos", "ON", "OFF", true);
+        this.m_addPosBtn = selectBtn;
         this.m_btnPY += dis;
-        btn = this.createSelectBtn("网格显示", "switchWireframe", "ON", "OFF", false);
-        btn = this.createSelectBtn("控制点显示", "showPathCtrlPos", "ON", "OFF", true);
-        this.m_showPosBtn = btn;
-        btn = this.createSelectBtn("路径闭合", "closePath", "ON", "OFF", false);
-        this.m_closePathBtn = btn;
+        selectBtn = this.createSelectBtn("网格显示", "switchWireframe", "ON", "OFF", false);
+        selectBtn = this.createSelectBtn("控制点显示", "showPathCtrlPos", "ON", "OFF", true);
+        this.m_showPosBtn = selectBtn;
+        selectBtn = this.createSelectBtn("路径闭合", "closePath", "ON", "OFF", false);
+        this.m_closePathBtn = selectBtn;
         this.m_btnPY += dis;
+        texBtn = this.createTextBtn("删除位置", "delCurrPos");
+        texBtn = this.createTextBtn("插入位置", "insertPos");
         let proBtn: ProgressBar;
         proBtn = this.createProgressBtn("分段密度", "segTotalCtrl", 0.2);
         this.m_segTotalCtrlBtn = proBtn;
@@ -74,27 +83,27 @@ class UIScene {
         this.m_curvatureFactorTailBtn = proBtn;
         proBtn = this.createProgressBtn("头部曲率因子", "curvatureFactorHead", 0.3);
         this.m_curvatureFactorHeadBtn = proBtn;
-        btn = this.createSelectBtn("当前位置曲率冻结", "currCurvatureFreeze", "ON", "OFF", false);
-        this.m_currPosCurvationFreezeBtn = btn;
-        btn = this.createSelectBtn("所有位置曲率冻结", "allCurvatureFreeze", "ON", "OFF", false);
+        selectBtn = this.createSelectBtn("当前位置曲率", "currCurvatureFreeze", "已冻结", "未冻结", false);
+        this.m_currPosCurvationFreezeBtn = selectBtn;
+        selectBtn = this.createSelectBtn("所有位置曲率", "allCurvatureFreeze", "已冻结", "未冻结", false);
         this.m_btnPY += dis;
-        btn = this.createSelectBtn("", "dragCamera", "拖动场景", "旋转场景", false);
-        btn = this.createSelectBtn("摄像机控制", "cameraCtrl", "ON", "OFF", true);
+        selectBtn = this.createSelectBtn("", "dragCamera", "拖动场景", "旋转场景", false);
+        selectBtn = this.createSelectBtn("摄像机控制", "cameraCtrl", "ON", "OFF", true);
         
         let minX: number = 1000;
         let pos: Vector3D = new Vector3D();
-        for(let i: number = 0; i < this.m_btns.length; ++i) {
-            this.m_btns[i].getPosition(pos);
-            let px: number = this.m_btns[i].getRect().x + pos.x;
+        for(let i: number = 0; i < this.m_selectBtns.length; ++i) {
+            this.m_selectBtns[i].getPosition(pos);
+            let px: number = this.m_selectBtns[i].getRect().x + pos.x;
             if(px < minX) {
                 minX = px;
             }
         }
         let dx: number = 30 - minX;
-        for(let i: number = 0; i < this.m_btns.length; ++i) {
-            this.m_btns[i].getPosition(pos);
+        for(let i: number = 0; i < this.m_selectBtns.length; ++i) {
+            this.m_selectBtns[i].getPosition(pos);
             pos.x += dx;
-            this.m_btns[i].setXY(pos.x, pos.y);
+            this.m_selectBtns[i].setXY(pos.x, pos.y);
         }
 
     }
@@ -103,10 +112,23 @@ class UIScene {
     private m_btnPX: number = 162.0;
     private m_btnPY: number = 20.0;
     private m_verticalSpace: number = 2;
-    private m_btns: SelectionBar[] = [];
+    private m_selectBtns: SelectionBar[] = [];
+    private m_btns: TextButton[] = [];
     private m_proBtns: ProgressBar[] = [];
     private m_bgLength: number = 100.0;
     
+    private createTextBtn(ns: string, uuid: string, visibleAlways: boolean = false): TextButton {
+
+        let selectBtn: TextButton = new TextButton();
+        selectBtn.uuid = uuid;
+        selectBtn.initialize(this.m_engine.uiScene, ns, this.m_btnSize);
+        selectBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.btnMouseDown);
+
+        selectBtn.setXY(this.m_btnPX, this.m_btnPY);
+        this.m_btnPY += this.m_btnSize + this.m_verticalSpace;
+        if (!visibleAlways) this.m_btns.push(selectBtn);
+        return selectBtn;
+    }
     private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionBar {
 
         let selectBar: SelectionBar = new SelectionBar();
@@ -121,7 +143,7 @@ class UIScene {
         }
         selectBar.setXY(this.m_btnPX, this.m_btnPY);
         this.m_btnPY += this.m_btnSize + this.m_verticalSpace;
-        if (!visibleAlways) this.m_btns.push(selectBar);
+        if (!visibleAlways) this.m_selectBtns.push(selectBar);
         return selectBar;
     }
     
@@ -151,6 +173,21 @@ class UIScene {
                 break;
             case "curvatureFactorTail":
                 this.scene.pathEditor.pathCtrlEntityManager.setcurrPosCurvatureFactor(value, 1);
+                break;
+            default:
+                break;
+        }
+    }
+    
+    private btnMouseDown(evt: any): void {
+
+        let mEvt: MouseEvent = evt as MouseEvent;
+        switch( mEvt.uuid ) {
+            case "insertPos":
+                this.scene.pathEditor.pathCtrlEntityManager.insertCtrlPosFromCurrPos();
+                break;
+            case "delCurrPos":
+                this.scene.pathEditor.pathCtrlEntityManager.delCurrCtrlPos();
                 break;
             default:
                 break;

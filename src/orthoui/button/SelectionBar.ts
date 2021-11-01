@@ -40,6 +40,7 @@ export class SelectionBar {
     private m_posZ: number = 0.0;
     private m_enabled: boolean = true;
 
+    fontColor: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
     uuid: string = "selectionBar";
 
     constructor() { }
@@ -113,7 +114,7 @@ export class SelectionBar {
         let haveNameBt: boolean = this.m_barName != null && this.m_barName.length > 0;
         if (haveNameBt) {
 
-            UIBarTool.InitializeBtn(this.nameButton, this.m_barName, size, new Color4(1.0, 1.0, 1.0, 1.0));
+            UIBarTool.InitializeBtn(this.nameButton, this.m_barName, size, this.fontColor);
             this.nameButton.setXYZ(-1.0 * this.nameButton.getWidth() - 1.0, 0.0, 0.0);
             container.addEntity(this.nameButton);
 
@@ -129,7 +130,7 @@ export class SelectionBar {
         let btn: ColorRectImgButton = this.selectionButton;
         btn.uvs = this.m_texObj0.uvs;
         btn.initialize(0.0, 0.0, 1, 1, [this.m_texObj0.texture]);
-        btn.setScaleXYZ(this.m_texObj0.getWidth(), size, 1.0);
+        btn.setScaleXYZ(this.m_texObj0.getWidth(), this.m_texObj0.getHeight(), 1.0);
         btn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         container.addEntity(btn);
 
@@ -145,6 +146,10 @@ export class SelectionBar {
         this.m_ruisc.addContainer(container, 1);
         this.selectionButton.addEventListener(MouseEvent.MOUSE_UP, this, this.btnMouseUp);
     }
+    /**
+     * 选中
+     * @param sendEvtEnabled 是否发送选中的事件。 如果不发送事件，则只会改变状态。
+     */
     select(sendEvtEnabled: boolean = false): void {
         if (!this.m_flag) {
             this.m_flag = true;
@@ -152,6 +157,10 @@ export class SelectionBar {
             if (sendEvtEnabled) this.sendEvt();
         }
     }
+    /**
+     * 取消选中
+     * @param sendEvtEnabled 是否发送取消选中的事件。 如果不发送事件，则只会改变状态。
+     */
     deselect(sendEvtEnabled: boolean = false): void {
         if (this.m_flag) {
             this.m_flag = false;
@@ -186,7 +195,7 @@ export class SelectionBar {
             this.selectionButton.setUVS(texObj.uvs);
             this.selectionButton.reinitializeMesh();
             this.selectionButton.updateMeshToGpu();
-            this.selectionButton.setScaleXYZ(texObj.getWidth(), this.m_btnSize, 1.0);
+            this.selectionButton.setScaleXYZ(texObj.getWidth(), texObj.getHeight(), 1.0);
             this.selectionButton.update();
         }
     }

@@ -85,8 +85,6 @@ export default class QuadGridMeshGeometry extends GeometryBase {
 
         let px: number = 0;
 
-        this.bounds = new AABB();
-
         this.vtxTotal = posTable[0].length * posTable.length;
         this.m_vs = new Float32Array(this.vtxTotal * 3);
         this.m_uvs = new Float32Array(this.vtxTotal * 2);

@@ -9,7 +9,8 @@ enum KeyNodeStatus {
 }
 
 class PathKeyNode {
-
+    private static s_uid: number = 0;
+    private m_uid: number = 0;
     status: KeyNodeStatus = KeyNodeStatus.None;
     index: number = -1;
     stepDistance: number = 20.0;
@@ -42,7 +43,9 @@ class PathKeyNode {
      * 和曲线走向相同的控制点
      */
     positiveCtrlFactor: number = 0.3;
-    constructor() { }
+    constructor() {
+        this.m_uid = PathKeyNode.s_uid ++;
+    }
     destroy(): void {
         Pos3DPool.Restore( this.pos );
         Pos3DPool.Restore( this.tv );

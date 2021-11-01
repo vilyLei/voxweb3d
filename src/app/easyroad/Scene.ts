@@ -45,7 +45,8 @@ class Scene {
 
             this.pathEditor.initialize(engine);
             this.roadEntityBuilder.initialize(engine, this.pathEditor);
-            //this.terrain.initialize(engine);
+            
+            this.terrain.initialize(engine);
 
             // let axis = new Axis3DEntity();
             // axis.initialize(700);
@@ -59,14 +60,17 @@ class Scene {
             
             let posOuterList = [new Vector3D(0, 0, -100), new Vector3D(100, 0, -100), new Vector3D(150, 0, -50)];
             let posInnerList = [new Vector3D(0, 0, 100), new Vector3D(100, 0, 100), new Vector3D(150, 0, 150)];
-
+            
             let posTable: Vector3D[][] = [
                 posInnerList,
                 posOuterList
             ];
 
             //this.buildRoadSurface(posTable, 2.0,1.0);
-            
+            // let plist: number[] = [0,1,2,3,4,5,6,7];
+            // //plist = plist.splice(2,0,9);
+            // // plist.splice(7,1);
+            // console.log("XXX plist: ",plist);
             this.initEditor();
 
         }

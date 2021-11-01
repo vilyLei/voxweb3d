@@ -136,6 +136,7 @@ export class DefaultPBRUI implements IPBRUI {
     private m_bgLength: number = 200.0;
     private m_btnPX: number = 102.0;
     private m_btnPY: number = 10.0;
+    private m_btnYSpace: number = 4.0;
     private m_pos: Vector3D = new Vector3D();
     private m_selectPlane:Plane3DEntity = null;
 
@@ -154,7 +155,7 @@ export class DefaultPBRUI implements IPBRUI {
             selectBar.deselect(false);
         }
         selectBar.setXY(this.m_btnPX, this.m_btnPY);
-        this.m_btnPY += this.m_btnSize + 1;
+        this.m_btnPY += this.m_btnSize + this.m_btnYSpace;
         if (!visibleAlways) this.m_btns.push(selectBar);
         return selectBar;
     }
@@ -166,7 +167,7 @@ export class DefaultPBRUI implements IPBRUI {
         proBar.setProgress(progress, false);
         proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.valueChange);
         proBar.setXY(this.m_btnPX, this.m_btnPY);
-        this.m_btnPY += this.m_btnSize + 1;
+        this.m_btnPY += this.m_btnSize + this.m_btnYSpace;
         if (!visibleAlways) this.m_btns.push(proBar);
         return proBar;
     }
@@ -182,7 +183,7 @@ export class DefaultPBRUI implements IPBRUI {
 
         proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.valueChange);
         proBar.setXY(this.m_btnPX, this.m_btnPY);
-        this.m_btnPY += this.m_btnSize + 1;
+        this.m_btnPY += this.m_btnSize + this.m_btnYSpace;
         if (!visibleAlways) this.m_btns.push(proBar);
         return proBar;
     }
@@ -209,7 +210,6 @@ export class DefaultPBRUI implements IPBRUI {
         }
         this.m_menuBtn = this.createSelectBtn("", "menuCtrl", "Menu Open", "Menu Close", false, true);
 
-        
         this.m_selectPlane = new Plane3DEntity();
         this.m_selectPlane.vtxColorEnabled = true;
         this.m_selectPlane.color0.setRGB3f(0.0,0.3,0.0);

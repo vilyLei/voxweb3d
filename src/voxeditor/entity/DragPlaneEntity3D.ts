@@ -104,10 +104,11 @@ export default class DragPlaneEntity3D extends DisplayEntity implements IRayCont
     private m_rpv: Vector3D = new Vector3D();
     private m_rtv: Vector3D = new Vector3D();
     public moveByRay(rpv: Vector3D, rtv: Vector3D): void {
+
         if (this.m_flag) {
             this.m_rpv.copyFrom(rpv);
             this.m_rtv.copyFrom(rtv);
-
+            
             this.calcClosePos(this.m_rpv, this.m_rtv);
             this.m_pos.copyFrom(this.m_outV);
             this.m_pos.addBy(this.m_dv);
@@ -142,9 +143,9 @@ export default class DragPlaneEntity3D extends DisplayEntity implements IRayCont
         if(this.planeCrossRayEnabled) {
             this.m_planeNV.copyFrom(this.m_rtv);
         }
-        this.m_planeDis = this.m_planePos.dot(this.m_planeNV);
+        this.m_planeNV.normalize();
         
-
+        this.m_planeDis = this.m_planePos.dot(this.m_planeNV);
         this.calcClosePos(this.m_rpv, this.m_rtv);
         this.getPosition(this.m_dv);
         this.m_dv.subtractBy(this.m_outV);

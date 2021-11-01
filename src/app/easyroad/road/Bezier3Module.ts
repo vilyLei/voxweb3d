@@ -23,7 +23,9 @@ class Bezier3Module {
     setBezierCurveSegTotal(segTotal: number): void {
         this.bezier3Curve.setSegTot(segTotal);
     }
+
     calcSegCurve(pv0: Vector3D, pv1: Vector3D, ctrlA: Vector3D, ctrlB: Vector3D): void {
+
         let dis: number = Vector3D.Distance(this.bezier3Curve.begin,this.bezier3Curve.end);
         let total: number = Math.floor(dis / this.stepDistance);
         this.bezier3Curve.setSegTot( total );
@@ -58,11 +60,11 @@ class Bezier3Module {
     private m_tempV1: Vector3D = new Vector3D();
     private m_tempV2: Vector3D = new Vector3D();
 
-    private clacPosTVAt(index: number, nodeList: PathKeyNode[], pathClosed: boolean, freeze: boolean = false): void {
+    private clacPosTVAt(index: number, nodeList: PathKeyNode[], pathClosed: boolean): void {
 
         let node: PathKeyNode = nodeList[index];
-        freeze = node.curvationFreeze || freeze;
-        //let total: number = nodeList.length;
+        let freeze: boolean = node.curvationFreeze;
+        
         let maxIndex: number = nodeList.length - 1;
         let prevPos: Vector3D;
         let nextPos: Vector3D;
@@ -166,14 +168,17 @@ class Bezier3Module {
         this.m_tempV2.copyFrom(tv0);
         this.m_tempV2.scaleBy(-dis * node0.negativeCtrlFactor);
         this.m_tempV2.addBy(v0);
-        //
+        
+        // console.log("tv0,tv1: ",tv0,tv1);
         this.m_tempV1.copyFrom(tv1);
         this.m_tempV1.scaleBy(dis * node1.positiveCtrlFactor);
         this.m_tempV1.addBy(v1);
+        
         // 计算曲线数据
         this.stepDistance = node0.stepDistance;
         this.calcSegCurve(v0, v1, this.m_tempV2, this.m_tempV1);
     }
+
     private m_curvePosList: Pos3D[] = null;
     buildPathCurveData(list: Pos3D[], closePath: boolean, nodeList: PathKeyNode[]): Pos3D[] {
 

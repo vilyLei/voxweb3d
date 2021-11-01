@@ -104,10 +104,7 @@ class PathTool {
     calcExpandXOZTVList(in_posList: Vector3D[], out_tvList: Pos3D[], closed: boolean = false): Pos3D[] {
 
         if(out_tvList == null) {
-            out_tvList = new Array(in_posList.length);
-            for(let k: number = 0; k < out_tvList.length; ++k) {
-                out_tvList[k] = Pos3DPool.Create();
-            }
+            out_tvList = Pos3DPool.CreateList(in_posList.length);
         }
         closed = closed && Pos3D.Distance(in_posList[in_posList.length - 1], in_posList[0]) < 0.001;
 
@@ -155,6 +152,7 @@ class PathTool {
             tv1.normalize();
             tv.addBy(tv1);
             Vector3D.Cross(Pos3D.Y_AXIS, tv, rv);
+            rv.y = 0;
             rv.normalize();
             out_tvList[i].copyFrom(rv);
         }

@@ -73,7 +73,6 @@ export default class PipeGeometry extends GeometryBase
         let py:number = 0;
         let minY:number = alignYRatio * ph;
     
-        this.bounds = new AABB();
         this.bounds.min.setXYZ(-radius,minY,-radius);
         this.bounds.max.setXYZ(radius,minY + ph,radius);
         this.bounds.updateFast();

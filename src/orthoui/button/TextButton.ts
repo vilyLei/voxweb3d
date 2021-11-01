@@ -32,6 +32,7 @@ export class TextButton {
     private m_posZ: number = 0.0;
     private m_enabled: boolean = true;
 
+    fontColor: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
     uuid: string = "textButton";
 
     constructor() { }
@@ -100,7 +101,7 @@ export class TextButton {
         let container: DisplayEntityContainer = new DisplayEntityContainer();
         this.m_container = container;
 
-        UIBarTool.InitializeBtn(this.nameButton, this.m_barName, size, new Color4(1.0, 1.0, 1.0, 1.0));
+        UIBarTool.InitializeBtn(this.nameButton, this.m_barName, size, this.fontColor);
         container.addEntity(this.nameButton);
 
         this.nameButton.addEventListener(MouseEvent.MOUSE_DOWN, this, this.nameBtnMouseDown);

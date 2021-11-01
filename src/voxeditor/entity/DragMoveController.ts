@@ -132,9 +132,6 @@ class DragMoveController implements IRayControl {
         }
     }
     setTargetPosOffset(offset: Vector3D): void {
-        for (let i: number = 0; i < this.m_controllers.length; ++i) {
-            this.m_controllers[i].setTargetPosOffset(offset);
-        }
         this.m_dragMoveTarget.setTargetPosOffset( offset );
     }
     setTarget(target: IEntityTransform): void {

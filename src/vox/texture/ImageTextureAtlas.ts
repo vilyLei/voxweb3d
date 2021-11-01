@@ -90,7 +90,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
         }
 
         let width: number = size;
-        let height: number = size;
+        let height: number = size + 2;
         if (chars.length > 1) {
             width = size * chars.length;
         }

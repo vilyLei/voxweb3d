@@ -20,7 +20,7 @@ class RoadPath {
     setBezierCurveSegTotal(segTotal: number): void {
         this.bezier3Module.setBezierCurveSegTotal(segTotal);
     }
-    
+
     buildPathCurve(type: number = 3, closePathEnabled: boolean = false, minDis: number = 50): Pos3D[] {
 
         this.m_pathClosed = false;
@@ -40,14 +40,14 @@ class RoadPath {
 
         return curvePosList;
     }
-    
+
     initialize(begin: Vector3D, end: Vector3D): void {
         this.m_posList = [Pos3DPool.Create(), Pos3DPool.Create()];
         this.m_posList[0].copyFrom(begin);
         this.m_posList[1].copyFrom(end);
     }
     setPosAt(i: number, pos: Vector3D): void {
-        
+
         if (this.m_posList != null) {
             if (this.m_posList.length > i) {
                 this.m_posList[i].copyFrom(pos);
@@ -68,15 +68,15 @@ class RoadPath {
             node.index = 0;
         }
     }
-    appendPosAt(i: number, pos: Vector3D): void {
+    insertPosAt(i: number, pos: Vector3D): void {
 
         let node: PathKeyNode = new PathKeyNode();
         node.pos.copyFrom(pos);
         if (this.m_posList != null) {
             if (i < this.m_posList.length) {
-                this.m_nodeList.splice(1, i, node);
-                this.m_posList.splice(1, i, node.pos);
-                for(; i < this.m_nodeList.length; ++i) {
+                this.m_nodeList.splice(i, 0, node);
+                this.m_posList.splice(i, 0, node.pos);
+                for (; i < this.m_nodeList.length; ++i) {
                     this.m_nodeList[i].index = i;
                 }
             }
@@ -89,6 +89,18 @@ class RoadPath {
             this.m_nodeList = [node];
             this.m_posList = [node.pos];
             node.index = 0;
+        }
+    }
+    deletePosAt(index: number): void {
+
+        if (this.m_posList != null && index >= 0 && index < this.m_posList.length) {
+            let node: PathKeyNode = this.m_nodeList[index];
+            node.destroy();
+            this.m_nodeList.splice(index, 1);
+            this.m_posList.splice(index, 1);
+            for (let i: number = index; i < this.m_nodeList.length; ++i) {
+                this.m_nodeList[i].index = i;
+            }
         }
     }
     appendPos(pos: Vector3D): void {
@@ -127,12 +139,12 @@ class RoadPath {
         }
         return false;
     }
-    
+
     clear(): void {
-        
-        if(this.m_posList != null) {
+
+        if (this.m_posList != null) {
             this.m_posList = null;
-            for(let i: number = 0; i < this.m_nodeList.length; ++i) {
+            for (let i: number = 0; i < this.m_nodeList.length; ++i) {
                 this.m_nodeList[i].destroy();
             }
             this.m_nodeList = null;

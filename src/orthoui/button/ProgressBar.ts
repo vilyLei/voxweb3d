@@ -142,7 +142,7 @@ export class ProgressBar {
         this.m_rect.update();
 
         this.m_barBgX = size;
-        this.initProBg(container, this.m_barBgX, 0.0, this.m_barInitLength, size);
+        this.initProBg(container, this.m_barBgX, 0.0, this.m_barInitLength, addBtn.getHeight());
 
         this.m_ruisc.addContainer(container ,1);
 

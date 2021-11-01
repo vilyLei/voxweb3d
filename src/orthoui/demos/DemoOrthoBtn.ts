@@ -152,16 +152,105 @@ export class DemoOrthoBtn {
         this.m_rscene.addEntity(plane);
         //*/
         this.initUI();
+
+        let pimg: HTMLCanvasElement = this.createCharsTexture2("锦",64);
+        pimg.style.left = '50px';
+        pimg.style.top = '128px';
+        document.body.appendChild( pimg );
     }
     
     private m_btnSize: number = 24;
     private m_bgLength: number = 200.0;
     private m_btnPX: number = 102.0;
     private m_btnPY: number = 10.0;
+    private m_ySpace: number = 4.0;
 
     private m_btns: any[] = [];
     private m_menuBtn: SelectionBar = null;
+    createCharsTexture2(chars: string, size: number, font: string = "宋体"): HTMLCanvasElement {
+        
+        let width: number = size;
+        let height: number = size + Math.round(size * 0.5);
+        if (chars.length > 1) {
+            width = size * chars.length;
+        }
 
+        let canvas = document.createElement('canvas');
+        canvas.width = width;
+        canvas.height = height;
+        canvas.style.display = 'bolck';
+        canvas.style.left = '0px';
+        canvas.style.top = '0px';
+        canvas.style.position = 'absolute';
+        canvas.style.backgroundColor = 'transparent';
+        //canvas.style.pointerEvents = 'none';
+
+        let ctx2D = canvas.getContext("2d");
+        ctx2D.font = (size - 4) + "px "+font;
+        //ctx2D.textBaseline = "top" || "hanging" || "middle" || "alphabetic" || "ideographic" || "bottom";
+        ctx2D.textBaseline = "top";
+        var metrics: any = ctx2D.measureText(chars);
+        let texWidth: number = metrics.width;
+        ctx2D.textAlign = "left";
+        ctx2D.fillStyle = "#ffffff";
+        ctx2D.fillText(chars, (width - texWidth) * 0.5, 0);
+        let imgData: ImageData = ctx2D.getImageData(0, 0, width, height);
+        let pixels = imgData.data;
+        
+        let minY: number = 0;
+        let maxY: number = 0;
+        // let minX: number = 0;
+        // let maxX: number = 0;
+        let k: number = 0;
+
+        // calc minY
+        for(let i: number = 0; i < height; ++i) {
+            for(let j: number = 0; j < width; ++j) {
+                k = ((i * width + j) << 2) + 3;
+                if(pixels[k] > 0) {
+                    minY = i;
+                    i = height;
+                    break;
+                }
+            }
+        }
+        // calc maxY
+        for(let i: number = height - 1; i >= 0; --i) {
+            for(let j: number = 0; j < width; ++j) {
+                k = ((i * width + j) << 2) + 3;
+                if(pixels[k] > 0) {
+                    maxY = i;
+                    i = -1;
+                    break;
+                }
+            }
+        }        
+        // // calc minX
+        // for(let j: number = 0; j < width; ++j) {
+        //     for(let i: number = 0; i < height; ++i) {
+        //         k = ((i * width + j) << 2) + 3;
+        //         if(pixels[k] > 0) {
+        //             minX = j;
+        //             j = width;
+        //             break;
+        //         }
+        //     }
+        // }
+        // // calc minX
+        // for(let j: number = width - 1; j >= 0; --j) {
+        //     for(let i: number = 0; i < height; ++i) {
+        //         k = ((i * width + j) << 2) + 3;
+        //         if(pixels[k] > 0) {
+        //             maxX = j;
+        //             j = -1;
+        //             break;
+        //         }
+        //     }
+        // }
+        // console.log("minX, maxX: ", minX, maxX);
+        console.log("minY, maxY: ", minY, maxY);
+        return canvas;
+    }
     private createSelectAtlasBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionAtlasBar {
 
         let selectBar: SelectionAtlasBar = new SelectionAtlasBar();
@@ -175,7 +264,7 @@ export class DemoOrthoBtn {
             selectBar.deselect(false);
         }
         selectBar.setXY(this.m_btnPX, this.m_btnPY);
-        this.m_btnPY += this.m_btnSize + 1;
+        this.m_btnPY += this.m_btnSize + this.m_ySpace;
         if (!visibleAlways) this.m_btns.push(selectBar);
         return selectBar;
     }
@@ -193,7 +282,7 @@ export class DemoOrthoBtn {
             selectBar.deselect(false);
         }
         selectBar.setXY(this.m_btnPX, this.m_btnPY);
-        this.m_btnPY += this.m_btnSize + 1;
+        this.m_btnPY += this.m_btnSize + this.m_ySpace;
         if (!visibleAlways) this.m_btns.push(selectBar);
         return selectBar;
     }
@@ -205,7 +294,7 @@ export class DemoOrthoBtn {
         proBar.setProgress(progress, false);
         proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.progressChange);
         proBar.setXY(this.m_btnPX, this.m_btnPY);
-        this.m_btnPY += this.m_btnSize + 1;
+        this.m_btnPY += this.m_btnSize + this.m_ySpace;
         if (!visibleAlways) this.m_btns.push(proBar);
         return proBar;
     }
@@ -221,7 +310,7 @@ export class DemoOrthoBtn {
 
         proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.progressChange);
         proBar.setXY(this.m_btnPX, this.m_btnPY);
-        this.m_btnPY += this.m_btnSize + 1;
+        this.m_btnPY += this.m_btnSize + this.m_ySpace;
         if (!visibleAlways) this.m_btns.push(proBar);
         return proBar;
     }
@@ -237,6 +326,7 @@ export class DemoOrthoBtn {
         }
 
         this.createSelectBtn("absorb", "absorb", "ON", "OFF", false);
+        this.metalBtn = this.createProgressBtn("metal", "metal", 0.5);
         return;
         this.m_menuBtn = this.createSelectBtn("", "menuCtrl", "Menu Open", "Menu Close", false, true);
 

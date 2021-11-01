@@ -16,7 +16,7 @@ export default class GeometryBase
     protected m_btvs:Float32Array = null;
     protected m_ivs:Uint16Array | Uint32Array = null;
 
-    bounds:AABB = new AABB();
+    readonly bounds:AABB = new AABB();
     vtxTotal:number = 0;
     trisNumber:number = 0;
     vtCount:number = 0;
@@ -50,6 +50,19 @@ export default class GeometryBase
      */
     getIVS(): Uint16Array | Uint32Array { return this.m_ivs; }
     
+    reset(): void {
+        
+        this.m_vs = null;
+        this.m_uvs = null;
+        this.m_nvs = null;
+        this.m_tvs = null;
+        this.m_btvs = null;
+        this.m_ivs = null;
+        
+        this.vtxTotal = 0;
+        this.trisNumber = 0;
+        this.vtCount = 0;
+    }
     toString():string
     {
         return "GeometryBase()";

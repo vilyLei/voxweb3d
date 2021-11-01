@@ -57,6 +57,7 @@ export class UIBarTool {
         currBtn.outColor.setRGB3f(1.0, 1.0, 1.0);
         currBtn.overColor.setRGB3f(1.0, 1.0, 0.0);
         currBtn.downColor.setRGB3f(1.0, 0.0, 1.0);
+        console.log("texObj.getWidth(), texObj.getHeight(): ",texObj.getWidth(), texObj.getHeight());
         currBtn.initialize(0.0, 0.0, texObj.getWidth(), texObj.getHeight(), [texObj.texture]);
         currBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         currBtn.setSize(texObj.getWidth(), texObj.getHeight());

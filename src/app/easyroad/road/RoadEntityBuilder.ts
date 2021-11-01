@@ -11,6 +11,8 @@ import TextureProxy from "../../../vox/texture/TextureProxy";
 import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
 import { Pos3DPool } from "../base/Pos3DPool";
 import { Pos3D } from "../base/Pos3D";
+import DataMesh from "../../../vox/mesh/DataMesh";
+import {GeometryMerger} from "../../../vox/mesh/GeometryMerger";
 
 class RoadEntityBuilder {
 
@@ -41,7 +43,45 @@ class RoadEntityBuilder {
             // ];
             // let tex = this.m_engine.texLoader.getTexByUrl("static/assets/roadSurface04.jpg");
             // this.buildRoadSurface(null,posTable,tex);
+            /*
+            let tex = this.m_engine.texLoader.getTexByUrl("static/assets/default.jpg");
+            let plane: Plane3DEntity = new  Plane3DEntity();
+            plane.initializeXOZSquare(300.0, [tex]);
+            plane.update();
+            let plane1: Plane3DEntity = new  Plane3DEntity();
+            plane1.initializeXOZSquare(300.0, [tex]);
+            plane1.setXYZ(310, 0, 160);
+            plane1.update();
+            // this.m_engine.rscene.addEntity( plane );
+            // this.m_engine.rscene.addEntity( plane1 );
 
+            let geomWelder: GeometryMerger = new GeometryMerger();
+            geomWelder.addEntity(plane);
+            geomWelder.addEntity(plane1);
+            geomWelder.weld();
+            // console.log("GGGG ivs: ", geomWelder.getIVS());
+            // console.log("GGGG vs: ", geomWelder.getVS());
+            ///*
+            let mesh: DataMesh = new DataMesh();
+            mesh.initializeFromGeometry( geomWelder );
+            // mesh.setIVS(plane.getMesh().getIVS());
+            // mesh.vs = (plane.getMesh().getVS());
+            // mesh.uvs = (plane.getMesh().getUVS());
+            // //mesh.nvs = (plane.getMesh().getNVS());
+
+            let material = new Default3DMaterial();
+            material.setTextureList([tex]);
+            material.initializeByCodeBuf(true);
+            mesh.setBufSortFormat(material.getBufSortFormat());
+            mesh.wireframe = this.m_wireframeEnabled;
+            mesh.initialize();
+
+            let entity = new DisplayEntity();
+            entity.setMesh(mesh);
+            entity.setMaterial(material);
+            entity.setXYZ(360,0.0,560.0);
+            this.m_engine.rscene.addEntity(entity);
+            //*/
         }
     }
     clear(): void {
@@ -106,6 +146,7 @@ class RoadEntityBuilder {
 
         if (this.m_pathEditor.getPathPosTotal() > 1 && this.m_pathDataVresion != this.m_pathEditor.getPathVersion()) {
 
+            // console.log("##### Build R disp Begin...");
             let halfWidth: number = this.m_roadWidth * 0.5;
             let dis: number = halfWidth;
             this.m_pathDataVresion = this.m_pathEditor.getPathVersion();
@@ -127,8 +168,8 @@ class RoadEntityBuilder {
             let lbList: Pos3D[];
             let rbList: Pos3D[];
 
-            offsetXYZ.setXYZ(0, -25, 0);
-            let table: Pos3D[][] = this.m_pathTool.calcTwoPosListByTVList(tvList, posListL, posListR, offsetXYZ, -30);
+            offsetXYZ.setXYZ(0, -30, 0);
+            let table: Pos3D[][] = this.m_pathTool.calcTwoPosListByTVList(tvList, posListL, posListR, offsetXYZ, 0);
             lbList = table[0];
             rbList = table[1];
 
@@ -151,6 +192,8 @@ class RoadEntityBuilder {
             Pos3DPool.RestoreTable(tableTop);
             Pos3DPool.RestoreTable(tableBottom);
             Pos3DPool.RestoreList(tvList);
+
+            // console.log("##### Build R disp End...");
             /*
             let pls = new Line3DEntity();
             pls.dynColorEnabled = true;
