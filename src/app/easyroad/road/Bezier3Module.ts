@@ -178,7 +178,9 @@ class Bezier3Module {
         this.stepDistance = node0.stepDistance;
         this.calcSegCurve(v0, v1, this.m_tempV2, this.m_tempV1);
     }
-
+    getPathPosTable(): Pos3D[][] {
+        return this.m_posTable;
+    }
     private m_curvePosList: Pos3D[] = null;
     buildPathCurveData(list: Pos3D[], closePath: boolean, nodeList: PathKeyNode[]): Pos3D[] {
 
@@ -189,12 +191,18 @@ class Bezier3Module {
             let curvePosList: Pos3D[] = null;
             // 如果这个 closePath 值为 true, 则表示需要最后一个位置点要与第一个点建立曲线链接
             
-            let pathClosed: boolean = closePath;
+            let posTable: Pos3D[][];
             
+            let pathClosed: boolean = closePath;
+
+            posTable = this.m_posTable;            
+            for (let i: number = 0; i < posTable.length; ++i) {                
+                posTable[i] = [];
+            }
+
             //  console.log("XXXX pathClosed: ",pathClosed, list.length);
-            let posTable: Pos3D[][] = [];
-            this.m_posTable = [];
-            posTable = this.m_posTable;
+            posTable = [];
+            this.m_posTable = posTable;
 
             for (let i: number = 0; i < nodeList.length; ++i) {
                 this.clacPosTVAt(i, nodeList, pathClosed);
@@ -223,7 +231,7 @@ class Bezier3Module {
                     curvePosList[k] = list[j];
                     k++;
                 }
-                posTable[i] = [];
+                //posTable[i] = [];
             }
             this.m_curvePosList = curvePosList;
             return curvePosList;
