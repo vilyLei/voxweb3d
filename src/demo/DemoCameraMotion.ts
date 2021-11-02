@@ -30,12 +30,12 @@ import DisplayEntity from "../vox/entity/DisplayEntity";
 import { SpaceCullingMask } from "../vox/space/SpaceCullingMask";
 
 import BinaryLoader from "../vox/assets/BinaryLoader";
-import { RoadPathData, RoadFile } from "../app/easyroad/io/RoadFile";
+import { RoadPathData, RoadFile } from "../app/slickRoad/io/RoadFile";
 import TextureProxy from "../vox/texture/TextureProxy";
 import DataMesh from "../vox/mesh/DataMesh";
 
 
-import RoadMaterial from "../app/easyroad/material/RoadMaterial";
+import RoadMaterial from "../app/slickRoad/material/RoadMaterial";
 import TerrainMaterial from "../terrain/heightMap/material/TerrainMaterial";
 import EnvLightData from "../light/base/EnvLightData";
 import {MaterialPipeline} from "../vox/material/pipeline/MaterialPipeline";
