@@ -1,8 +1,8 @@
 
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
-import {Scene} from "./easyroad/Scene";
-import {UIScene} from "./easyroad/UIScene";
+import {Scene} from "./slickRoad/Scene";
+import {UIScene} from "./slickRoad/UIScene";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import EngineBase from "../vox/engine/EngineBase";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
