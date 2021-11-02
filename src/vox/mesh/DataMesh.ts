@@ -29,7 +29,15 @@ export default class DataMesh extends MeshBase {
     tvs: Float32Array = null;
     btvs: Float32Array = null;
     private m_initIVS: Uint16Array | Uint32Array = null;
-
+    getVS(): Float32Array {
+        return this.vs;
+    }
+    getUVS(): Float32Array {
+        return this.uvs;
+    }
+    getNVS(): Float32Array {
+        return this.nvs;
+    }
     initializeFromGeometry(geom: GeometryBase): void {
 
         this.vs = geom.getVS();

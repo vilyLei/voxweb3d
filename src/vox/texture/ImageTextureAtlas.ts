@@ -130,7 +130,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
             if(RendererDevice.IsIOS()) {
                 ctx2D.fillText(chars, (width - texWidth) * 0.5, -4);
             }
-            else {                
+            else {
                 ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
             }
         }

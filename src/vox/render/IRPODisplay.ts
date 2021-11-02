@@ -13,6 +13,7 @@ interface IRPODisplay
 {
     value:number;
     drawMode:number;
+    trisNumber:number;
     pos:Vector3D;
     bounds:AABB;
     setDrawFlag(renderState:number,rcolorMask:number):void;

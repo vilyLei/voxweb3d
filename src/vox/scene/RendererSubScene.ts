@@ -322,7 +322,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
      * @param deferred if the value is true,the entity will not to be immediately add to the renderer process by its id
      */
     addEntity(entity: IRenderEntity, processIndex: number = 0, deferred: boolean = true): void {
-        if (entity.__$testSpaceEnabled()) {
+        if (entity != null && entity.__$testSpaceEnabled()) {
             if (entity.isPolyhedral()) {
                 if (entity.hasMesh()) {
                     this.m_renderer.addEntity(entity, this.m_processids[processIndex], deferred);
@@ -351,18 +351,20 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     }
     // 这是真正的完全将entity从world中清除
     removeEntity(entity: IRenderEntity): void {
-        let node: Entity3DNode = null;
-        if (this.m_nodeWaitLinker != null) {
-            let node: Entity3DNode = this.m_nodeWaitQueue.getNodeByEntity(entity);
-            if (node != null) {
-                this.m_nodeWaitLinker.removeNode(node);
-                this.m_nodeWaitQueue.removeEntity(entity);
+        if(entity != null) {
+            let node: Entity3DNode = null;
+            if (this.m_nodeWaitLinker != null) {
+                let node: Entity3DNode = this.m_nodeWaitQueue.getNodeByEntity(entity);
+                if (node != null) {
+                    this.m_nodeWaitLinker.removeNode(node);
+                    this.m_nodeWaitQueue.removeEntity(entity);
+                }
             }
-        }
-        if (node == null) {
-            this.m_renderer.removeEntity(entity);
-            if (this.m_rspace != null) {
-                this.m_rspace.removeEntity(entity);
+            if (node == null) {
+                this.m_renderer.removeEntity(entity);
+                if (this.m_rspace != null) {
+                    this.m_rspace.removeEntity(entity);
+                }
             }
         }
     }

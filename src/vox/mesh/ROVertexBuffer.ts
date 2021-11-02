@@ -253,7 +253,6 @@ export default class ROVertexBuffer implements IVtxBuf, IROVtxBuf {
                 k += segLen;
             }
         }
-        
         let vb: ROVertexBuffer = ROVertexBuffer.Create(bufDataUsage);
         vb.layoutBit = layoutBit;
         if (ROVertexBuffer.s_combinedBufs.length > 0) {

@@ -24,7 +24,8 @@ import RPOUnit from "../../vox/render/RPOUnit";
 import { RCRPObj, RPOUnitBuilder } from "../../vox/render/RPOUnitBuilder";
 import RenderProcessBuider from "../../vox/render/RenderProcessBuider";
 import ROTransPool from "../../vox/render/ROTransPool";
-import { GpuVtxObect, ROVertexResource } from "../../vox/render/ROVertexResource";
+import { GpuVtxObect } from "../../vox/render/vtx/GpuVtxObect";
+import { ROVertexResource } from "../../vox/render/ROVertexResource";
 import ROTextureResource from "../../vox/render/ROTextureResource";
 import IRenderBuffer from "../../vox/render/IRenderBuffer";
 import IROMaterialUpdater from "../../vox/render/IROMaterialUpdater";
@@ -305,6 +306,7 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
             }
             vtxRes.__$attachRes(resUid);
             runit.vro = vtx.createVRO(this.m_roVtxBuild, shdp, true);
+            runit.indicesRes = runit.vro.indicesRes;
             runit.vro.__$attachThis();
             runit.vtxUid = disp.vbuf.getUid();
 

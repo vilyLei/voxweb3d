@@ -308,6 +308,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
             this.m_display.ivsIndex = ivsIndex;
             this.m_display.ivsCount = ivsCount;
             if (this.m_display.__$ruid > -1) {
+                this.m_display.__$$runit.trisNumber = Math.floor((ivsCount - ivsIndex) / 3);
                 this.m_display.__$$runit.setIvsParam(ivsIndex, ivsCount);
                 this.m_display.__$$runit.drawMode = this.m_mesh.drawMode;
             }
