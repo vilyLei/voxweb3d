@@ -13,8 +13,9 @@ class RoadPath {
     private m_posList: Pos3D[] = null;
     private m_nodeList: PathKeyNode[] = null;
     private m_pathClosed: boolean = false;
+    private m_curvePosList: Pos3D[] = null;
     readonly bezier3Module: Bezier3Module = new Bezier3Module();
-    stepDistance: number = 30;
+    // stepDistance: number = 30;
     constructor() {
     }
     setBezierCurveSegTotal(segTotal: number): void {
@@ -29,7 +30,7 @@ class RoadPath {
         let list: Pos3D[] = this.m_posList;
         let curvePosList: Pos3D[] = null;
         if (type == 3) {
-            this.bezier3Module.stepDistance = this.stepDistance;
+            // this.bezier3Module.stepDistance = this.stepDistance;
             curvePosList = this.bezier3Module.buildPathCurveData(list, closePathEnabled, this.m_nodeList);
             this.m_pathClosed = this.bezier3Module.pathClosed;
         }
@@ -37,15 +38,28 @@ class RoadPath {
             //curvePosList = this.buildPathCurve2Data(list, closePathEnabled, minDis);
             throw Error("illegal operation");
         }
-
+        this.m_curvePosList = curvePosList;
         return curvePosList;
     }
-
-    initialize(begin: Vector3D, end: Vector3D): void {
-        this.m_posList = [Pos3DPool.Create(), Pos3DPool.Create()];
-        this.m_posList[0].copyFrom(begin);
-        this.m_posList[1].copyFrom(end);
+    /**
+     * 获取曲线路径上的所有位置点对象的分段数据
+     * @returns 曲线路径上的所有位置点对象的分段数据
+     */
+    getCurvePosTable(): Pos3D[][] {
+        return this.bezier3Module.getPathPosTable();
     }
+    /**
+     * 获取曲线路径上的所有位置点对象
+     * @returns 曲线路径上的所有位置点对象
+     */
+    getCurvePosList(): Pos3D[] {
+        return this.m_curvePosList;
+    }
+    // initialize(begin: Vector3D, end: Vector3D): void {
+    //     this.m_posList = [Pos3DPool.Create(), Pos3DPool.Create()];
+    //     this.m_posList[0].copyFrom(begin);
+    //     this.m_posList[1].copyFrom(end);
+    // }
     setPosAt(i: number, pos: Vector3D): void {
 
         if (this.m_posList != null) {

@@ -68,6 +68,7 @@ class UIScene {
         selectBtn = this.createSelectBtn("控制点编辑", "switchAddPathPos", "ON", "OFF", true);
         this.m_addPosBtn = selectBtn;
         this.m_btnPY += dis;
+        selectBtn = this.createSelectBtn("地形显示", "terrainShow", "ON", "OFF", false);
         selectBtn = this.createSelectBtn("网格显示", "switchWireframe", "ON", "OFF", false);
         selectBtn = this.createSelectBtn("控制点显示", "showPathCtrlPos", "ON", "OFF", true);
         this.m_showPosBtn = selectBtn;
@@ -79,9 +80,9 @@ class UIScene {
         let proBtn: ProgressBar;
         proBtn = this.createProgressBtn("分段密度", "segTotalCtrl", 0.2);
         this.m_segTotalCtrlBtn = proBtn;
-        proBtn = this.createProgressBtn("尾部曲率因子", "curvatureFactorTail", 0.3);
+        proBtn = this.createProgressBtn("尾部曲率", "curvatureFactorTail", 0.3);
         this.m_curvatureFactorTailBtn = proBtn;
-        proBtn = this.createProgressBtn("头部曲率因子", "curvatureFactorHead", 0.3);
+        proBtn = this.createProgressBtn("头部曲率", "curvatureFactorHead", 0.3);
         this.m_curvatureFactorHeadBtn = proBtn;
         selectBtn = this.createSelectBtn("当前位置曲率", "currCurvatureFreeze", "已冻结", "未冻结", false);
         this.m_currPosCurvationFreezeBtn = selectBtn;
@@ -107,9 +108,9 @@ class UIScene {
         }
 
     }
-
+    
     private m_btnSize: number = 24;
-    private m_btnPX: number = 162.0;
+    private m_btnPX: number = 80.0;
     private m_btnPY: number = 20.0;
     private m_verticalSpace: number = 2;
     private m_selectBtns: SelectionBar[] = [];
@@ -127,6 +128,7 @@ class UIScene {
         selectBtn.setXY(this.m_btnPX, this.m_btnPY);
         this.m_btnPY += this.m_btnSize + this.m_verticalSpace;
         if (!visibleAlways) this.m_btns.push(selectBtn);
+
         return selectBtn;
     }
     private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionBar {
@@ -158,10 +160,11 @@ class UIScene {
         proBar.setXY(this.m_btnPX, this.m_btnPY);
         this.m_btnPY += this.m_btnSize + this.m_verticalSpace;
         if (!visibleAlways) this.m_proBtns.push(proBar);
+
         return proBar;
     }
     private valueChange(evt: any): void {
-
+        
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
         let value: number = progEvt.value;
         switch( progEvt.uuid ) {
@@ -198,6 +201,9 @@ class UIScene {
         let selectEvt: SelectionEvent = evt as SelectionEvent;
         let flag: boolean = false;
         switch( selectEvt.uuid ) {
+            case "terrainShow":
+                this.scene.terrain.setVisible( selectEvt.flag );
+                break;
             case "switchWireframe":
                 this.scene.roadEntityBuilder.setWireframeEnabled( selectEvt.flag );
                 break;

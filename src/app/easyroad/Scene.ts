@@ -16,14 +16,15 @@ import { RoadGeometryBuilder } from "./geometry/RoadGeometryBuilder";
 
 import { Terrain } from "./terrain/Terrain";
 import { RoadFile } from "./io/RoadFile";
+import { RoadSceneFile } from "./io/RoadSceneFile";
+import { RoadSceneFileParser } from "./io/RoadSceneFileParser";
 
 class Scene {
 
     constructor() { }
 
+    private m_editEnabled: boolean = true;
     private m_engine: EngineBase = null;
-    private m_target: DisplayEntity = null;
-    private m_frame: BoxFrame3D = new BoxFrame3D();
     readonly roadEntityBuilder: RoadEntityBuilder = new RoadEntityBuilder();
     //private m_line: Line3DEntity = null;
 
@@ -47,7 +48,7 @@ class Scene {
             this.roadEntityBuilder.initialize(engine, this.pathEditor);
             
             this.terrain.initialize(engine);
-
+            this.terrain.setVisible( false );
             // let axis = new Axis3DEntity();
             // axis.initialize(700);
             // this.m_engine.rscene.addEntity(axis);
@@ -75,7 +76,7 @@ class Scene {
 
         }
     }
-    private m_editEnabled: boolean = true;
+    
     setEditEnabled(enabled: boolean): void {
         this.m_editEnabled = enabled;
     }
@@ -89,6 +90,7 @@ class Scene {
     private m_dispList: DisplayEntity[] = [];
 
     private m_roadFile: RoadFile = new RoadFile();
+    private m_roadFileParser: RoadSceneFileParser = new RoadSceneFileParser();
     clear(): void {
 
         this.roadEntityBuilder.clear();
@@ -104,13 +106,18 @@ class Scene {
             this.closePathBtn.deselect(false);
         }
     }
+    private m_scFile: RoadSceneFile = new RoadSceneFile();
     saveData(): void {
         
         if(this.pathEditor.isPathClosed()) {
-            let posList: Vector3D[] = this.pathEditor.getPathCurvePosList();
-            let fileBuf: Uint8Array = this.m_roadFile.savePathData(posList,this.geometryBuilder.geometry);
+            console.log("#### Save Data Begin...");
+            // let posList: Vector3D[] = this.pathEditor.getPathPosList();
+            // let fileBuf: Uint8Array = this.m_roadFile.savePathData(posList,this.geometryBuilder.geometry);
+
             // for test
-            this.m_roadFile.parsePathDataFromFileBuffer(fileBuf);
+            // this.m_roadFile.parsePathDataFromFileBuffer(fileBuf);
+            let fs: Uint8Array = this.m_scFile.save(this.pathEditor.getPathPosList(), this.roadEntityBuilder.getSegList());
+            this.m_roadFileParser.parse(fs);
         }
     }
     

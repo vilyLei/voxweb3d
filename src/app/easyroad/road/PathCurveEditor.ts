@@ -123,8 +123,19 @@ class PathCurveEditor {
             }
         }
     }
-    getPathCurvePosList(): Pos3D[] {
-        return this.m_curvePosList;
+    /**
+     * 获取路径曲线路径上的所有位置点对象的分段数据
+     * @returns 路径曲线路径上的所有位置点对象的分段数据
+     */
+     getPathPosTable(): Pos3D[][] {
+        return this.m_path.getCurvePosTable();
+    }
+    /**
+     * 获取路径曲线路径上的所有位置点对象
+     * @returns 路径曲线路径上的所有位置点对象
+     */
+    getPathPosList(): Pos3D[] {
+        return this.m_path.getCurvePosList();
     }
     getPathVersion(): number {
         return this.m_path.version;
@@ -143,7 +154,7 @@ class PathCurveEditor {
             if(this.getPathPosTotal() >= 3 || this.isPathClosed()) {
                 this.m_line.setVisible(false);
             }else{
-                let posList: Pos3D[] = this.getPathCurvePosList();
+                let posList: Pos3D[] = this.getPathPosList();
                 this.buildPathLine(posList);
             }
         }

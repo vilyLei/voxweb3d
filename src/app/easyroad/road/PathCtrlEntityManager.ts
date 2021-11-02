@@ -32,7 +32,7 @@ class PathCtrlEntityManager {
     /**
      * 细化分段的距离
      */
-    private m_segDistance: number = 70.0;
+    private m_segDistance: number = 100.0;
 
     addPosBtn: SelectionBar = null;
     currPosCurvationFreezeBtn: SelectionBar = null;
@@ -68,8 +68,8 @@ class PathCtrlEntityManager {
             let node: PathKeyNode = this.m_path.getPosNodeAt(editEntity.pathCtrlPosIndex);
             factor = 1.0 - MathConst.Clamp(factor, 0.0, 1.0);
             node.stepDistance = Math.round(this.m_segDistance * factor);
-            if (node.stepDistance < 1.0) {
-                node.stepDistance = 1.0;
+            if (node.stepDistance < 0.1) {
+                node.stepDistance = 0.1;
             }
             this.m_path.version++;
         }
@@ -78,6 +78,8 @@ class PathCtrlEntityManager {
         let editEntity: PathCtrlEntity = this.getTargetPathCtrlEntity();
         if (editEntity != null) {
             let node: PathKeyNode = this.m_path.getPosNodeAt(editEntity.pathCtrlPosIndex);
+            factor = MathConst.Clamp(factor, 0.0, 1.0);
+            factor = (factor - 0.5)/0.5;
             if (type == 0) node.positiveCtrlFactor = factor;
             else node.negativeCtrlFactor = factor;
             this.m_path.version++;
@@ -254,10 +256,13 @@ class PathCtrlEntityManager {
                 this.currPosCurvationFreezeBtn.deselect(false);
             }
             this.addPosBtn.deselect(true);
+            let value: number = (1.0 - node.stepDistance / this.m_segDistance);
+            this.segTotalCtrlBtn.setProgress(MathConst.Clamp(value, 0.0, 1.0), false);
 
-            this.segTotalCtrlBtn.setProgress(node.stepDistance / this.m_segDistance, false);
-            this.curvatureFactorHeadBtn.setProgress(node.positiveCtrlFactor, false);
-            this.curvatureFactorTailBtn.setProgress(node.negativeCtrlFactor, false);
+            value = node.positiveCtrlFactor * 0.5 + 0.5;
+            this.curvatureFactorHeadBtn.setProgress(MathConst.Clamp(value, 0.0, 1.0), false);
+            value = node.negativeCtrlFactor * 0.5 + 0.5;
+            this.curvatureFactorTailBtn.setProgress(MathConst.Clamp(value, 0.0, 1.0), false);
             //node.stepDistance = Math.round(this.m_segDistance * factor);
             editEntity.getPosition(this.m_tempPos);
             this.m_tempPos.subtractBy(evt.wpos);

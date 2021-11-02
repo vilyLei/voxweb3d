@@ -18,7 +18,7 @@ class Terrain {
     constructor() { }
 
     private m_engine: EngineBase = null;
-    
+    private m_terrainEntity: DisplayEntity = null;
     private getImageTexByUrl(url: string): TextureProxy {
         return this.m_engine.texLoader.getTexByUrl(url);
     }
@@ -85,6 +85,10 @@ class Terrain {
         entity.setScaleXYZ(4.0, 12.0, 4.0);
         entity.setXYZ(0.0, -400.0, 0.0);
         this.m_engine.rscene.addEntity(entity);
+        this.m_terrainEntity = entity;
+    }
+    setVisible(visible: boolean): void {
+        this.m_terrainEntity.setVisible( visible );
     }
     update(): void {
     }

@@ -147,7 +147,7 @@ class RoadFile {
             vs = geom.getVS();
             uvs = geom.getUVS();
             ivs = geom.getIVS();
-    
+            
             vsPos = bytesLength;
             bytesLength += vs.buffer.byteLength;
             

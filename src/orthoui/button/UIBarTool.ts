@@ -52,12 +52,11 @@ export class UIBarTool {
             let image = CanvasTextureTool.GetInstance().createCharsImage(btn_name, fontSize, fontColor.getCSSDecRGBAColor(), bgColor.getCSSDecRGBAColor());
             texObj = CanvasTextureTool.GetInstance().addImageToAtlas(btn_name, image);
         }
-        //let currBtn: ColorRectImgButton = new ColorRectImgButton();
+        
         currBtn.uvs = texObj.uvs;
         currBtn.outColor.setRGB3f(1.0, 1.0, 1.0);
         currBtn.overColor.setRGB3f(1.0, 1.0, 0.0);
         currBtn.downColor.setRGB3f(1.0, 0.0, 1.0);
-        console.log("texObj.getWidth(), texObj.getHeight(): ",texObj.getWidth(), texObj.getHeight());
         currBtn.initialize(0.0, 0.0, texObj.getWidth(), texObj.getHeight(), [texObj.texture]);
         currBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
         currBtn.setSize(texObj.getWidth(), texObj.getHeight());

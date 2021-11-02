@@ -191,11 +191,10 @@ class Bezier3Module {
             let curvePosList: Pos3D[] = null;
             // 如果这个 closePath 值为 true, 则表示需要最后一个位置点要与第一个点建立曲线链接
             
-            let posTable: Pos3D[][];
+            let posTable: Pos3D[][] = this.m_posTable;
             
             let pathClosed: boolean = closePath;
-
-            posTable = this.m_posTable;            
+          
             for (let i: number = 0; i < posTable.length; ++i) {                
                 posTable[i] = [];
             }
@@ -237,8 +236,10 @@ class Bezier3Module {
             return curvePosList;
         }
         else if (list.length == 2) {
+            this.m_posTable = [list];
             return list;
         }
+        this.m_posTable = [];
         return [];
     }
 }
