@@ -124,10 +124,17 @@ class PathCurveEditor {
         }
     }
     /**
+     * 获取路径上的关键点
+     * @returns 路径上的关键点
+     */
+    getPathKeyPosList(): Pos3D[] {
+        return this.m_path.getPosList();
+    }
+    /**
      * 获取路径曲线路径上的所有位置点对象的分段数据
      * @returns 路径曲线路径上的所有位置点对象的分段数据
      */
-     getPathPosTable(): Pos3D[][] {
+    getPathPosTable(): Pos3D[][] {
         return this.m_path.getCurvePosTable();
     }
     /**
@@ -140,7 +147,7 @@ class PathCurveEditor {
     getPathVersion(): number {
         return this.m_path.version;
     }
-    getPathPosTotal(): number {
+    getPathKeyPosTotal(): number {
         return this.m_path.getPosListLength();
     }
     run(): void {
@@ -151,7 +158,7 @@ class PathCurveEditor {
             this.m_pathLineVersion = this.m_path.version;
             
             this.buildPath();
-            if(this.getPathPosTotal() >= 3 || this.isPathClosed()) {
+            if(this.getPathKeyPosTotal() >= 3 || this.isPathClosed()) {
                 this.m_line.setVisible(false);
             }else{
                 let posList: Pos3D[] = this.getPathPosList();

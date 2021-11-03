@@ -11,6 +11,7 @@ import MeshBase from "../../vox/mesh/MeshBase";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 import AABB from "../geom/AABB";
 import GeometryBase from "../../vox/mesh/GeometryBase"
+import SurfaceNormalCalc from "../geom/SurfaceNormalCalc";
 
 export default class DataMesh extends MeshBase {
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
@@ -58,15 +59,27 @@ export default class DataMesh extends MeshBase {
     initialize(): void {
 
         if (this.vs != null) {
-            if (this.bounds == null) this.bounds = new AABB();
+            if (this.bounds == null) {
+                
+                this.bounds = new AABB();
+                this.bounds.addXYZFloat32Arr(this.vs);
+                this.bounds.update();
+            }
 
-            this.bounds.addXYZFloat32Arr(this.vs);
+            this.m_ivs = this.m_initIVS;            
+
             ROVertexBuffer.Reset();
             ROVertexBuffer.AddFloat32Data(this.vs, this.vsStride);
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
                 ROVertexBuffer.AddFloat32Data(this.uvs, this.uvsStride);
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
+                if(this.nvs == null) {
+                    this.vtCount = this.m_ivs.length;
+                    this.trisNumber = this.vtCount / 3;
+                    this.nvs = new Float32Array(this.vs.length);
+                    SurfaceNormalCalc.ClacTrisNormal(this.vs, this.vs.length, this.trisNumber, this.m_ivs, this.nvs);
+                }
                 ROVertexBuffer.AddFloat32Data(this.nvs, this.nvsStride);
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX)) {
@@ -77,7 +90,6 @@ export default class DataMesh extends MeshBase {
                 ROVertexBuffer.AddFloat32Data(this.btvs, 3);
             }
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
-            this.m_ivs = this.m_initIVS;
             this.updateWireframeIvs();
             this.vtCount = this.m_ivs.length;
             if (this.m_vbuf != null) {
@@ -87,6 +99,7 @@ export default class DataMesh extends MeshBase {
                 this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage(), this.getBufSortFormat());
             }
             this.m_vbuf.setUintIVSData(this.m_ivs);
+            this.trisNumber = this.vtCount / 3;
             this.buildEnd();
         }
     }

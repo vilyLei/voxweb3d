@@ -148,7 +148,6 @@ export default class GlobalLightData implements IMaterialPipe{
         }
 
         if (this.m_uProbe == null) {
-            console.log("this.m_lightColors: ",this.m_lightColors);
             this.m_uProbe = new ShaderUniformProbe();
             this.m_uProbe.bindSlotAt(this.m_uslotIndex);
             this.m_uProbe.addVec4Data(this.m_lightPositions, total);
@@ -249,9 +248,9 @@ export default class GlobalLightData implements IMaterialPipe{
 
     }
 
-    initialize(pointLightsTotal: number = 4, parallelLightsTotal: number = 2): void {
-        this.m_lightTotal = pointLightsTotal + parallelLightsTotal;
+    initialize(pointLightsTotal: number = 4, directionLightsTotal: number = 2): void {
+        this.m_lightTotal = pointLightsTotal + directionLightsTotal;
         this.createPointLightParam(pointLightsTotal, 5.0);
-        this.createDirecLightParam(parallelLightsTotal, 1.0);
+        this.createDirecLightParam(directionLightsTotal, 1.0);
     }
 }

@@ -50,17 +50,33 @@ export class ShadowVSMModule {
             this.initConfig(processIDList, false);
         }
     }
-
+    /**
+     * set shawow rtt texture size
+     * @param mapW shadow rtt texture width
+     * @param mapH shadow rtt texture height
+     */
     setMapSize(mapW: number, mapH: number): void {
         this.m_shadowMapW = mapW;
         this.m_shadowMapH = mapH;
     }
-    seetCameraPosition(pos: Vector3D): void {
+    /**
+     * set shadow camera world position 
+     * @param pos shadow camera position in world.
+     */
+    setCameraPosition(pos: Vector3D): void {
         this.m_camPos.copyFrom( pos );
     }
+    /**
+     * set shadow camera near plane distance 
+     * @param near shadow camera near plane distance 
+     */
     setCameraNear(near: number): void {
         this.m_near = near;
     }
+    /**
+     * set shadow camera far plane distance 
+     * @param far shadow camera far plane distance 
+     */
     setCameraFar(far: number): void {
         this.m_far = far;
     }

@@ -1,6 +1,6 @@
-import DisplayEntity from "../../../vox/entity/DisplayEntity";
+import MouseEventEntity from "../../../vox/entity/MouseEventEntity";
 
-class PathSegmentEntity extends DisplayEntity {
+class PathSegmentEntity extends MouseEventEntity {
 
     constructor() { super()}    
 }

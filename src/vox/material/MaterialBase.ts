@@ -88,7 +88,7 @@ export default class MaterialBase implements IRenderMaterial {
                     MaterialBase.s_codeBuffer = new ShaderCodeBuffer();
                 }
                 ShaderCodeBuffer.UseShaderBuffer(buf);
-                
+                texEnabled = texEnabled || this.getTextureTotal() > 0;
                 MaterialBase.s_codeBuffer.initialize(texEnabled);
                 
                 let shdCode_uniqueName: string = MaterialBase.s_codeBuffer.getUniqueShaderName();

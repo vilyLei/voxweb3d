@@ -44,9 +44,9 @@ export default class MeshBase {
     trisNumber: number = 0;
     //RenderDrawMode
     drawMode: number = RenderDrawMode.ELEMENTS_TRIANGLES;
-    //  // vtx postion in data stream used count
+    //  vtx postion in data stream used count
     vtCount: number = 0;
-
+    
     vbWholeDataEnabled: boolean = false;
     drawInsBeginIndex: number = 0;
     drawInsStride: number = 0;

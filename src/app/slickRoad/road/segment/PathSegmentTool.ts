@@ -75,7 +75,7 @@ class PathSegmentTool implements IPathSegmentTool {
     }
     build(roadWidth: number = 120.0): void {
 
-        let posTotal: number = this.m_pathEditor.getPathPosTotal();
+        let posTotal: number = this.m_pathEditor.getPathKeyPosTotal();
         if (posTotal > 1) {
 
             let srcPosList: Pos3D[] = this.m_pathEditor.getPathPosList();

@@ -16,7 +16,7 @@ import { RoadGeometryBuilder } from "./geometry/RoadGeometryBuilder";
 
 import { Terrain } from "./terrain/Terrain";
 import { RoadFile } from "./io/RoadFile";
-import { RoadSceneFile } from "./io/RoadSceneFile";
+import { ExportRoadNode, RoadSceneFile } from "./io/RoadSceneFile";
 import { RoadSceneFileParser } from "./io/RoadSceneFileParser";
 
 class Scene {
@@ -109,15 +109,16 @@ class Scene {
     private m_scFile: RoadSceneFile = new RoadSceneFile();
     saveData(): void {
         
-        if(this.pathEditor.isPathClosed()) {
+        if(this.pathEditor.getPathKeyPosTotal() > 1) {
             console.log("#### Save Data Begin...");
-            // let posList: Vector3D[] = this.pathEditor.getPathPosList();
-            // let fileBuf: Uint8Array = this.m_roadFile.savePathData(posList,this.geometryBuilder.geometry);
-
-            // for test
-            // this.m_roadFile.parsePathDataFromFileBuffer(fileBuf);
-            let fs: Uint8Array = this.m_scFile.save(this.pathEditor.getPathPosList(), this.roadEntityBuilder.getSegList());
-            this.m_roadFileParser.parse(fs);
+            let node: ExportRoadNode = new ExportRoadNode();
+            node.pathPosList = this.pathEditor.getPathKeyPosList();
+            node.curvePosList = this.pathEditor.getPathPosList();
+            node.pathSegList = this.roadEntityBuilder.getSegList();
+            let fs: Uint8Array = this.m_scFile.buildRoadFile( node );
+            this.m_scFile.saveFile(fs);
+            // // for test
+            // this.m_roadFileParser.parse(fs);
         }
     }
     

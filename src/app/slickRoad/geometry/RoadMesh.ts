@@ -5,6 +5,7 @@ class RoadMesh extends DataMesh {
 
     posTable: Vector3D[][] = null;
     changed: boolean = true;
+    distance: number = 0;
     constructor() { super();}
     testPosTable(posTable: Vector3D[][]): boolean {
         if(this.posTable == null) {

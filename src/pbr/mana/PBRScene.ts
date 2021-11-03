@@ -98,7 +98,7 @@ export default class PBRScene
             this.m_cubeRTTBuilder.setRProcessIDList([1]);
 
             this.m_vsmModule = new ShadowVSMModule(2);
-            this.m_vsmModule.seetCameraPosition(new Vector3D(10, 800, 10));
+            this.m_vsmModule.setCameraPosition(new Vector3D(10, 800, 10));
             this.m_vsmModule.setCameraNear( 10.0 );
             this.m_vsmModule.setCameraFar( 3000.0 );
             this.m_vsmModule.setMapSize(128.0, 128.0);

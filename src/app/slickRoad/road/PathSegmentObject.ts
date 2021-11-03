@@ -64,11 +64,13 @@ class PathSegmentObject {
             }
         }
     }
+    distance: number = 0;
     private buildPathEntity(dispEntity: PathSegmentEntity, posTable: Vector3D[][], tex: TextureProxy, uScale: number = 1.0, vScale: number = 1.0, uvType: number = 0): PathSegmentEntity {
 
         let mesh: RoadMesh = (dispEntity != null ? dispEntity.getMesh() : null) as RoadMesh;
 
         mesh = this.m_geomBuilder.buildRoadSurface(mesh, posTable, uScale, vScale, uvType);
+        this.distance = mesh.distance;
         if (dispEntity == null) {
             //console.log("create new road entity");
 
@@ -78,7 +80,6 @@ class PathSegmentObject {
             mesh.setBufSortFormat(material.getBufSortFormat());
             mesh.wireframe = this.m_wireframeEnabled;
             mesh.initialize();
-
             dispEntity = new PathSegmentEntity();
             dispEntity.setMesh(mesh);
             dispEntity.setMaterial(material);

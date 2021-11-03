@@ -17,18 +17,15 @@ import Vector3D from "../vox/math/Vector3D";
 
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
-import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
 
-import {MaterialPipeline} from "../vox/material/pipeline/MaterialPipeline";
-import GlobalLightData from "../light/base/GlobalLightData";
 import Color4 from "../vox/material/Color4";
-import RendererState from "../vox/render/RendererState";
-import EnvLightData from "../light/base/EnvLightData";
-import ShadowVSMModule from "../shadow/vsm/base/ShadowVSMModule";
 
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
+
+import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
+import { MaterialContext } from "../materialLab/base/MaterialContext";
 
 export class DemoNormalMap {
 
@@ -40,10 +37,7 @@ export class DemoNormalMap {
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
-    private m_lightData: GlobalLightData = new GlobalLightData();
-    private m_envData: EnvLightData = new EnvLightData();
-    private m_vsmModule: ShadowVSMModule;
-    private m_materialPipeline: MaterialPipeline = null;
+    private m_materialCtx: MaterialContext = new MaterialContext();
 
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl, 0, false, false);
@@ -78,49 +72,24 @@ export class DemoNormalMap {
 
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
-            let areaSize: number = 800.0;
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+
             let color: Color4 = new Color4(1.0,1.0,0.0);
             let colorBias: Color4 = new Color4(0.0,0.0,0.0);
-            this.m_lightData.initialize(2, 2);
-            color.normalizeRandom(3.1);
-            this.m_lightData.setPointLightAt(0, new Vector3D(Math.random() * areaSize - 0.5 * areaSize, 50 + Math.random() * 100,Math.random() * 600 - 300), color);
-            color.normalizeRandom(3.1);
-            this.m_lightData.setPointLightAt(1, new Vector3D((Math.random() * areaSize - 0.5 * areaSize, 50 + Math.random() * 100,Math.random() * 600 - 300)), color);
+
+            this.m_materialCtx.initialize( this.m_rscene );
+            //this.m_vsmModule = this.m_materialCtx.vsmModule;
+            //this.m_materialCtx.pipeline = this.m_materialCtx.pipeline;
+            /*
             
-            this.m_lightData.setDirecLightAt(0, new Vector3D(1.0,1.0,1.0), new Color4(0.0,0.0,1.0));
-            this.m_lightData.setDirecLightAt(1, new Vector3D(-1.0,1.0,-1.0), new Color4(2.0,0.0,1.0));
-            this.m_lightData.buildData();
-
-            this.m_envData = new EnvLightData();
-            this.m_envData.initialize();
-            this.m_envData.setFogColorRGB3f(0.0, 0.8, 0.1);
-
-            this.m_vsmModule = new ShadowVSMModule(0);
-            this.m_vsmModule.seetCameraPosition(new Vector3D(120, 800, 120));
-            this.m_vsmModule.setCameraNear(10.0);
-            this.m_vsmModule.setCameraFar(3000.0);
-            this.m_vsmModule.setMapSize(512.0, 512.0);
-            this.m_vsmModule.setCameraViewSize(4000, 4000);
-            this.m_vsmModule.setShadowRadius(2);
-            this.m_vsmModule.setShadowBias(-0.0005);
-            this.m_vsmModule.initialize(this.m_rscene, [0], 3000);
-            this.m_vsmModule.setShadowIntensity(0.8);
-            this.m_vsmModule.setColorIntensity(0.3);
-
-            this.m_materialPipeline = new MaterialPipeline();
-            this.m_materialPipeline.addPipe( this.m_lightData );
-            this.m_materialPipeline.addPipe( this.m_envData );
-            this.m_materialPipeline.addPipe( this.m_vsmModule.getVSMData() );
-
+            //*/
             // let axis: Axis3DEntity = new Axis3DEntity();
             // axis.initialize(300.0);
             // this.m_rscene.addEntity(axis);
 
             let material: LambertLightMaterial = new LambertLightMaterial();
             this.useMaps(material, "metal_08", true, true, true);
-            material.setMaterialPipeline( this.m_materialPipeline );
             material.fogEnabled = true;
             material.initializeLocalData();
             material.setDisplacementParams(10.0,0.0);
@@ -149,7 +118,6 @@ export class DemoNormalMap {
             ///*
             material = new LambertLightMaterial();
             this.useMaps(material, "lava_03", true, true, true);
-            material.setMaterialPipeline( this.m_materialPipeline );
             material.fogEnabled = true;
             material.initializeLocalData();
             color.normalizeRandom(1.1);
@@ -160,14 +128,13 @@ export class DemoNormalMap {
             sph = new Sphere3DEntity();
             sph.copyMeshFrom(srcEntity);
             sph.setMaterial(material);
-            sph.initialize(150.0,100,100);
+            //sph.initialize(150.0,100,100);
             sph.setXYZ(300,0.0,300);
             this.m_rscene.addEntity(sph);
             //*/
             ///*
             material = new LambertLightMaterial();
             this.useMaps(material, "box", true, true, true);
-            material.setMaterialPipeline( this.m_materialPipeline );
             material.fogEnabled = true;
             material.lightEnabled = true;
             material.initializeLocalData();
@@ -219,6 +186,8 @@ export class DemoNormalMap {
     }
     private useMaps(material: LambertLightMaterial, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
         
+        material.setMaterialPipeline( this.m_materialCtx.pipeline );
+
         material.diffuseMap =           this.getImageTexByUrl("static/assets/disp/"+ns+"_COLOR.png");
         material.specularMap =          this.getImageTexByUrl("static/assets/disp/"+ns+"_SPEC.png");
         if(normalMapEnabled) {
@@ -231,14 +200,13 @@ export class DemoNormalMap {
             material.displacementMap =  this.getImageTexByUrl("static/assets/disp/"+ns+"_DISP.png");
         }
         if(shadowReceiveEnabled) {
-            material.shadowMap =        this.m_vsmModule.getShadowMap();
+            material.shadowMap =        this.m_materialCtx.vsmModule.getShadowMap();
         }
     }
     private initEnvBox(): void {
         
         let material: LambertLightMaterial = new LambertLightMaterial();
         this.useMaps(material, "box", false, false);
-        material.setMaterialPipeline( this.m_materialPipeline );
         material.fogEnabled = true;
 
         material.initializeLocalData();
@@ -275,14 +243,14 @@ export class DemoNormalMap {
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
         this.m_statusDisp.update(false);
 
-        // this.m_vsmModule.run();
-        // this.m_rscene.run(true);
+        this.m_materialCtx.run();
+        this.m_rscene.run(true);
 
-        this.m_rscene.update(true);
-        //this.m_vsmModule.force = true;
-        this.m_vsmModule.run();
-        this.m_rscene.run(false);
-        this.m_rscene.runEnd();
+        // this.m_materialCtx.run();
+        // this.m_rscene.update(true);
+        // //this.m_vsmModule.force = true;
+        // this.m_rscene.run(false);
+        // this.m_rscene.runEnd();
     }
 }
 export default DemoNormalMap;

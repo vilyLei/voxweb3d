@@ -191,7 +191,7 @@ class RoadEntityBuilder {
         return this.m_segList;
     }
     build(): void {
-        let posTotal: number = this.m_pathEditor.getPathPosTotal();
+        let posTotal: number = this.m_pathEditor.getPathKeyPosTotal();
         if (posTotal > 1 && this.m_pathDataVresion != this.m_pathEditor.getPathVersion()) {
             this.m_pathDataVresion = this.m_pathEditor.getPathVersion();
             

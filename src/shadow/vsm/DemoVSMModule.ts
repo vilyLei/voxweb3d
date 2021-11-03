@@ -98,7 +98,7 @@ export class DemoVSMModule {
             this.m_envData.setFogColorRGB3f(0.0, 0.8, 0.1);
 
             this.m_vsmModule = new ShadowVSMModule(0);
-            this.m_vsmModule.seetCameraPosition(new Vector3D(120, 800, 120));
+            this.m_vsmModule.setCameraPosition(new Vector3D(120, 800, 120));
             this.m_vsmModule.setCameraNear(10.0);
             this.m_vsmModule.setCameraFar(3000.0);
             this.m_vsmModule.setMapSize(512.0, 512.0);

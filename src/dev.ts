@@ -383,7 +383,9 @@
 
 //  import {RbtDrama as Demo} from "./app/RbtDrama";
 
-import {EasyRoad as Demo} from "./app/EasyRoad";
+import {SlickRoad as Demo} from "./app/SlickRoad";
+
+//  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 
 //  import {DemoDraco as Demo} from "./demo/DemoDraco";
 

@@ -6,7 +6,6 @@
 /***************************************************************************/
 
 import Vector3D from "../../../vox/math/Vector3D";
-import AABB from "../../../vox/geom/AABB";
 import GeometryBase from "../../../vox/mesh/GeometryBase"
 
 export default class RoadSurfaceGeometry extends GeometryBase {
@@ -16,6 +15,7 @@ export default class RoadSurfaceGeometry extends GeometryBase {
 
     offsetXYZ: Vector3D = new Vector3D();
     roadWidth: number = 120;
+    distance: number = 0;
     constructor() {
         super();
     }
@@ -53,7 +53,7 @@ export default class RoadSurfaceGeometry extends GeometryBase {
         for (i = 1; i < len; ++i) {
             disList[i] = disList[i] / disTotal;
         }
-        
+        this.distance = disTotal;
         let uScale = this.uScale;
         let vScale = this.uScale;
         if (uvType < 1) {
