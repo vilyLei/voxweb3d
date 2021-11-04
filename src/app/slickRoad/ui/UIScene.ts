@@ -1,16 +1,16 @@
 
-import RendererDevice from "../../vox/render/RendererDevice";
-import Vector3D from "../../vox/math/Vector3D";
-import MouseEvent from "../../vox/event/MouseEvent";
-import SelectionEvent from "../../vox/event/SelectionEvent";
-import SelectionBar from "../../orthoui/button/SelectionBar";
-import ProgressBar from "../../orthoui/button/ProgressBar";
-import ProgressDataEvent from "../../vox/event/ProgressDataEvent";
+import RendererDevice from "../../../vox/render/RendererDevice";
+import Vector3D from "../../../vox/math/Vector3D";
+import MouseEvent from "../../../vox/event/MouseEvent";
+import SelectionEvent from "../../../vox/event/SelectionEvent";
+import SelectionBar from "../../../orthoui/button/SelectionBar";
+import ProgressBar from "../../../orthoui/button/ProgressBar";
+import ProgressDataEvent from "../../../vox/event/ProgressDataEvent";
 
-
-import EngineBase from "../../vox/engine/EngineBase";
-import {Scene} from "./Scene";
-import TextButton from "../../orthoui/button/TextButton";
+import EngineBase from "../../../vox/engine/EngineBase";
+import {Scene} from "../scene/Scene";
+import TextButton from "../../../orthoui/button/TextButton";
+import Color4 from "../../../vox/material/Color4";
 
 class UIScene {
 
@@ -35,48 +35,77 @@ class UIScene {
             this.m_engine = engine;
             this.m_engine.rscene.setClearUint24Color(0x656565);
             this.initBtns();
-            
-            this.scene.closePathBtn = this.m_closePathBtn;
+
             this.scene.pathEditor.pathCtrlEntityManager.addPosBtn = this.m_addPosBtn;
             this.scene.pathEditor.pathCtrlEntityManager.currPosCurvationFreezeBtn = this.m_currPosCurvationFreezeBtn;
             this.scene.pathEditor.pathCtrlEntityManager.segTotalCtrlBtn = this.m_segTotalCtrlBtn;
             this.scene.pathEditor.pathCtrlEntityManager.curvatureFactorHeadBtn = this.m_curvatureFactorHeadBtn;
             this.scene.pathEditor.pathCtrlEntityManager.curvatureFactorTailBtn = this.m_curvatureFactorTailBtn;
+
             this.scene.setEditEnabled(this.m_switchEditBtn != null ? this.m_switchEditBtn.isSelected() : false);            
         }
     }
     run(): void {
 
     }
+    
+    private m_btnSize: number = 24;
+    private m_btnPX: number = 80.0;
+    private m_btnPY: number = 110.0;
+    private m_verticalSpace: number = 2;
+    private m_selectBtns: SelectionBar[] = [];
+    private m_btns: TextButton[] = [];
+    private m_proBtns: ProgressBar[] = [];
+    private m_bgLength: number = 100.0;
+    private m_btnBgColor: Color4 = new Color4(1.0,1.0,1.0,0.3);
     private initBtns(): void {
-        let dis: number = 24;
+
+        let dis: number = 0;
         this.m_btnSize = 20;
-        this.m_verticalSpace = 4;
+        this.m_verticalSpace = 3;
         if(RendererDevice.IsMobileWeb()) {
             this.m_btnSize = 64;
             dis = 40;
         }
+        let fontColor0: Color4 = new Color4(0.1,1.0,1.0);
+        let fontColor1: Color4 = new Color4(0.3,1.0,1.0);
+        let fontColor2: Color4 = new Color4(1.0,0.0,1.0);
         let texBtn: TextButton;
         let selectBtn: SelectionBar;
-        selectBtn = this.createSelectBtn("清理场景", "clearScene", "ON", "OFF", true);
-        selectBtn = this.createSelectBtn("保存数据", "saveData", "ON", "OFF", false);
+        selectBtn = this.createSelectBtn("新建场景", "newScene", "开", "关", true);
+        selectBtn = this.createSelectBtn("清理场景", "clearScene", "开", "关", true);
         this.m_btnPY += dis;
-        selectBtn = this.createSelectBtn("构建几何数据", "buildGeomData", "ON", "OFF", false);
+        selectBtn = this.createSelectBtn("模型储存", "saveGeomData", "开", "关", true, false, fontColor0);
+        selectBtn = this.createSelectBtn("保存数据", "saveData", "开", "关", false, false, fontColor0);
+
         this.m_btnPY += dis;
-        selectBtn = this.createSelectBtn("编辑场景", "switchEdit", "ON", "OFF", false);
+        //  selectBtn = this.createSelectBtn("构建几何数据", "buildGeomData", "开", "关", false);
+        //  this.m_btnPY += dis;
+        selectBtn = this.createSelectBtn("场景编辑", "switchEdit", "开", "关", false);
         this.m_switchEditBtn = selectBtn;
-        selectBtn = this.createSelectBtn("控制点编辑", "switchAddPathPos", "ON", "OFF", true);
-        this.m_addPosBtn = selectBtn;
         this.m_btnPY += dis;
-        selectBtn = this.createSelectBtn("地形显示", "terrainShow", "ON", "OFF", false);
-        selectBtn = this.createSelectBtn("网格显示", "switchWireframe", "ON", "OFF", false);
-        selectBtn = this.createSelectBtn("控制点显示", "showPathCtrlPos", "ON", "OFF", true);
+        
+        this.m_btnBgColor.setRGBA4f(0.0,0.7,0.3,0.3);
+        fontColor2.setRGBA4f(2.6,0.6,0.8, 1.0);
+        selectBtn = this.createSelectBtn("地形显示", "terrainShow", "开", "关", false, false, fontColor2);
+        selectBtn.nameButton.overColor.setRGB3f(0.7,0.8,0.0);
+        selectBtn.nameButton.outColor.copyFrom(fontColor2);
+        selectBtn = this.createSelectBtn("网格显示", "switchWireframe", "开", "关", false, false, fontColor2);
+        selectBtn.nameButton.overColor.setRGB3f(0.7,0.8,0.0);
+        selectBtn.nameButton.outColor.copyFrom(fontColor2);
+        selectBtn = this.createSelectBtn("控点显示", "showPathCtrlPos", "开", "关", true, false, fontColor2);
+        selectBtn.nameButton.overColor.setRGB3f(0.7,0.8,0.0);
+        selectBtn.nameButton.outColor.copyFrom(fontColor2);
+        this.m_btnBgColor.setRGBA4f(1.0,1.0,1.0,0.3);
+        this.m_btnPY += dis;
         this.m_showPosBtn = selectBtn;
-        selectBtn = this.createSelectBtn("路径闭合", "closePath", "ON", "OFF", false);
+        selectBtn = this.createSelectBtn("路径闭合", "closePath", "开", "关", false, false, fontColor1);
         this.m_closePathBtn = selectBtn;
+        selectBtn = this.createSelectBtn("控制增加", "switchAddPathPos", "开", "关", true, false, fontColor1);
+        this.m_addPosBtn = selectBtn;
+        texBtn = this.createTextBtn("删除控点", "delCurrPos", false, fontColor1);
+        texBtn = this.createTextBtn("插入控点", "insertPos", false, fontColor1);
         this.m_btnPY += dis;
-        texBtn = this.createTextBtn("删除位置", "delCurrPos");
-        texBtn = this.createTextBtn("插入位置", "insertPos");
         let proBtn: ProgressBar;
         proBtn = this.createProgressBtn("分段密度", "segTotalCtrl", 0.2);
         this.m_segTotalCtrlBtn = proBtn;
@@ -84,12 +113,12 @@ class UIScene {
         this.m_curvatureFactorTailBtn = proBtn;
         proBtn = this.createProgressBtn("头部曲率", "curvatureFactorHead", 0.3);
         this.m_curvatureFactorHeadBtn = proBtn;
-        selectBtn = this.createSelectBtn("当前位置曲率", "currCurvatureFreeze", "已冻结", "未冻结", false);
+        selectBtn = this.createSelectBtn("当前曲率", "currCurvatureFreeze", "已冻结", "未冻结", false);
         this.m_currPosCurvationFreezeBtn = selectBtn;
-        selectBtn = this.createSelectBtn("所有位置曲率", "allCurvatureFreeze", "已冻结", "未冻结", false);
+        selectBtn = this.createSelectBtn("全局曲率", "allCurvatureFreeze", "已冻结", "未冻结", false);
         this.m_btnPY += dis;
         selectBtn = this.createSelectBtn("", "dragCamera", "拖动场景", "旋转场景", false);
-        selectBtn = this.createSelectBtn("摄像机控制", "cameraCtrl", "ON", "OFF", true);
+        selectBtn = this.createSelectBtn("像机控制", "cameraCtrl", "开", "关", true);
         
         let minX: number = 1000;
         let pos: Vector3D = new Vector3D();
@@ -100,28 +129,48 @@ class UIScene {
                 minX = px;
             }
         }
+        for(let i: number = 0; i < this.m_proBtns.length; ++i) {
+            this.m_proBtns[i].getPosition(pos);
+            let px: number = this.m_proBtns[i].getRect().x + pos.x;
+            if(px < minX) {
+                minX = px;
+            }
+        }
+        for(let i: number = 0; i < this.m_btns.length; ++i) {
+            this.m_btns[i].getPosition(pos);
+            let px: number = this.m_btns[i].getRect().x + pos.x;
+            if(px < minX) {
+                minX = px;
+            }
+        }
+
         let dx: number = 30 - minX;
         for(let i: number = 0; i < this.m_selectBtns.length; ++i) {
             this.m_selectBtns[i].getPosition(pos);
             pos.x += dx;
             this.m_selectBtns[i].setXY(pos.x, pos.y);
         }
+        for(let i: number = 0; i < this.m_proBtns.length; ++i) {
+            this.m_proBtns[i].getPosition(pos);
+            pos.x += dx;
+            this.m_proBtns[i].setXY(pos.x, pos.y);
+        }
+        for(let i: number = 0; i < this.m_btns.length; ++i) {
+            this.m_btns[i].getPosition(pos);
+            pos.x += dx;
+            pos.x -= this.m_btns[i].getRect().width;
+            this.m_btns[i].setXY(pos.x, pos.y);
+        }
 
     }
     
-    private m_btnSize: number = 24;
-    private m_btnPX: number = 80.0;
-    private m_btnPY: number = 20.0;
-    private m_verticalSpace: number = 2;
-    private m_selectBtns: SelectionBar[] = [];
-    private m_btns: TextButton[] = [];
-    private m_proBtns: ProgressBar[] = [];
-    private m_bgLength: number = 100.0;
     
-    private createTextBtn(ns: string, uuid: string, visibleAlways: boolean = false): TextButton {
+    private createTextBtn(ns: string, uuid: string, visibleAlways: boolean = false, fontColor: Color4 = null): TextButton {
 
         let selectBtn: TextButton = new TextButton();
+        selectBtn.fontBgColor.copyFrom(this.m_btnBgColor);
         selectBtn.uuid = uuid;
+        if(fontColor != null)selectBtn.fontColor.copyFrom(fontColor);
         selectBtn.initialize(this.m_engine.uiScene, ns, this.m_btnSize);
         selectBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.btnMouseDown);
 
@@ -131,10 +180,14 @@ class UIScene {
 
         return selectBtn;
     }
-    private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false): SelectionBar {
+    private createSelectBtn(ns: string, uuid: string, selectNS: string, deselectNS: string, flag: boolean, visibleAlways: boolean = false, fontColor: Color4 = null): SelectionBar {
 
         let selectBar: SelectionBar = new SelectionBar();
+        selectBar.fontBgColor.copyFrom(this.m_btnBgColor);
         selectBar.uuid = uuid;
+        if(fontColor != null) {
+            selectBar.fontColor.copyFrom(fontColor);
+        }
         selectBar.initialize(this.m_engine.uiScene, ns, selectNS, deselectNS, this.m_btnSize);
         selectBar.addEventListener(SelectionEvent.SELECT, this, this.selectChange);
         if (flag) {
@@ -149,14 +202,17 @@ class UIScene {
         return selectBar;
     }
     
-    private createProgressBtn(ns: string, uuid: string, progress: number, visibleAlways: boolean = false): ProgressBar {
+    private createProgressBtn(ns: string, uuid: string, progress: number, visibleAlways: boolean = false, fontColor: Color4 = null): ProgressBar {
 
         let proBar: ProgressBar = new ProgressBar();
-        proBar.fontColor.setRGB3f(1.0,1.0,1.0);
+        proBar.fontBgColor.copyFrom(this.m_btnBgColor);
+        if(fontColor != null) proBar.fontColor.copyFrom(fontColor);
+        else proBar.fontColor.setRGB3f(1.0, 1.0, 1.0);
         proBar.uuid = uuid;
         proBar.initialize(this.m_engine.uiScene, ns, this.m_btnSize, this.m_bgLength);
         proBar.setProgress(progress, false);
         proBar.addEventListener(ProgressDataEvent.PROGRESS, this, this.valueChange);
+
         proBar.setXY(this.m_btnPX, this.m_btnPY);
         this.m_btnPY += this.m_btnSize + this.m_verticalSpace;
         if (!visibleAlways) this.m_proBtns.push(proBar);
@@ -187,10 +243,10 @@ class UIScene {
         let mEvt: MouseEvent = evt as MouseEvent;
         switch( mEvt.uuid ) {
             case "insertPos":
-                this.scene.pathEditor.pathCtrlEntityManager.insertCtrlPosFromCurrPos();
+                this.scene.pathEditor.insertCtrlPosFromCurrPos();
                 break;
             case "delCurrPos":
-                this.scene.pathEditor.pathCtrlEntityManager.delCurrCtrlPos();
+                this.scene.pathEditor.delCurrCtrlPos();
                 break;
             default:
                 break;
@@ -250,13 +306,16 @@ class UIScene {
                     else this.m_closePathBtn.deselect(false);
                 }
                 break;
+            case "newScene":
+                break;
             case "clearScene":
-                this.m_addPosBtn.select(false);
-                this.m_showPosBtn.select(false);
-                this.scene.clear();
+                this.clearScene();
+                break;
+            case "saveGeomData":
+                this.scene.fileSystem.setSaveGeomEnabled(selectEvt.flag);
                 break;
             case "saveData":
-                this.scene.saveData();
+                this.scene.fileSystem.saveData();
                 break;
             case "buildGeomData":
                 this.scene.buildGeomData();
@@ -264,6 +323,15 @@ class UIScene {
             default:
                 break;
         }
+    }
+    private newScene(): void {
+        this.scene.newScene();
+    }
+    private clearScene(): void {
+        this.m_addPosBtn.select(false);
+        this.m_showPosBtn.select(false);
+        this.m_closePathBtn.select(false);
+        this.scene.clearScene();
     }
 }
 

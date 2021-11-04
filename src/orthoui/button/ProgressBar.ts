@@ -9,13 +9,11 @@ import MouseEvent from "../../vox/event/MouseEvent";
 import RendererState from "../../vox/render/RendererState";
 import IRendererScene from "../../vox/scene/IRendererScene";
 import ColorRectImgButton from "../../orthoui/button/ColorRectImgButton";
-import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 import CanvasTextureTool from "../assets/CanvasTextureTool";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 import BoundsButton from "./BoundsButton";
 import MathConst from "../../vox/math/MathConst";
-import TextureProxy from "../../vox/texture/TextureProxy";
 import EventBaseDispatcher from "../../vox/event/EventBaseDispatcher";
 import ProgressDataEvent from "../../vox/event/ProgressDataEvent";
 import EventBase from "../../vox/event/EventBase";
@@ -46,9 +44,10 @@ export class ProgressBar {
 
     private m_posZ: number = 0.0;
     private m_value: number = 0.0;
-    
+    readonly fontColor: Color4 = new Color4(0.8,0.8,0.8,1.0);
+    readonly fontBgColor: Color4 = new Color4(1.0,1.0,1.0,0.3);
+
     uuid: string = "ProgressBar";
-    fontColor: Color4 = new Color4(0.8,0.8,0.8,1.0);
     minValue: number = 0.0;
     maxValue: number = 1.0;
     step: number = 0.1;
@@ -115,16 +114,16 @@ export class ProgressBar {
         this.m_container = container;
 
         if(this.m_barName != null && this.m_barName.length > 0) {
-            let nameBtn: ColorRectImgButton = UIBarTool.CreateBtn( this.m_barName, size, this.fontColor );
+            let nameBtn: ColorRectImgButton = UIBarTool.CreateBtn( this.m_barName, size, this.fontColor, this.fontBgColor);
             nameBtn.setXYZ(-1.0 * nameBtn.getWidth() - 1.0,0.0,0.0);
             container.addEntity(nameBtn);
 
             this.m_nameBtn = nameBtn;
             this.m_nameBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.nameBtnMouseDown);
         }
-        let subBtn: ColorRectImgButton = UIBarTool.CreateBtn("-", size );
+        let subBtn: ColorRectImgButton = UIBarTool.CreateBtn("-", size, this.fontColor, this.fontBgColor );
         container.addEntity(subBtn);
-        let addBtn: ColorRectImgButton = UIBarTool.CreateBtn("+", size );
+        let addBtn: ColorRectImgButton = UIBarTool.CreateBtn("+", size, this.fontColor, this.fontBgColor );
         addBtn.setXYZ(this.m_barInitLength + addBtn.getWidth(), 0, 0);
         container.addEntity(addBtn);
 

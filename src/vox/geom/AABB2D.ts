@@ -9,18 +9,16 @@ import MathConst from "../../vox/math/MathConst";
 import Vector3D from "../../vox/math/Vector3D";
 
 
-export default class AABB2D
-{
-    private m_right: number = 100;
+export default class AABB2D {
+	private m_right: number = 100;
 	private m_top: number = 100;
-	
-    x: number = 0;
-    y: number = 0;
-    width: number = 100;
+
+	x: number = 0;
+	y: number = 0;
+	width: number = 100;
 	height: number = 100;
-	
-	constructor(px: number = 0.0, py: number = 0.0, pwidth: number = 100.0, pheight: number = 100.0)
-	{
+
+	constructor(px: number = 0.0, py: number = 0.0, pwidth: number = 100.0, pheight: number = 100.0) {
 		this.x = px;
 		this.y = py;
 		this.width = pwidth;
@@ -38,7 +36,7 @@ export default class AABB2D
 		this.height = dst.height;
 	}
 	clone(): AABB2D {
-		return new AABB2D(this.x,this.y,this.width, this.height);
+		return new AABB2D(this.x, this.y, this.width, this.height);
 	}
 	/**
 	 * 当前矩形是否包含某一点(同一坐标空间的点)
@@ -46,8 +44,7 @@ export default class AABB2D
 	 * @param y坐标
 	 * @returns 返回当前矩形是否包含这个坐标位置
 	 */
-	containsXY(vx:number,vy:number):boolean
-	{
+	containsXY(vx: number, vy: number): boolean {
 		if (vx < this.x || vx > this.m_right) return false;
 		if (vy < this.y || vy > this.m_top) return false;
 		return true;
@@ -57,10 +54,9 @@ export default class AABB2D
 	 * @param dst 目标矩形
 	 * @returns 返回当前矩形是否包含目标矩形
 	 */
-	contains(dst: AABB2D):boolean
-	{
-		if(dst.x >= this.x && dst.m_right <= this.m_right) {
-			if(dst.y >= this.y && dst.m_top <= this.m_top) {
+	contains(dst: AABB2D): boolean {
+		if (dst.x >= this.x && dst.m_right <= this.m_right) {
+			if (dst.y >= this.y && dst.m_top <= this.m_top) {
 				return true;
 			}
 		}
@@ -73,11 +69,28 @@ export default class AABB2D
 	 */
 	intersect(dst: AABB2D): boolean {
 
-		if(dst.x > this.m_right) return false;
-		if(dst.m_right < this.x) return false;
-		if(dst.y > this.m_top) return false;
-		if(dst.m_top < this.y) return false;
+		if (dst.x > this.m_right) return false;
+		if (dst.m_right < this.x) return false;
+		if (dst.y > this.m_top) return false;
+		if (dst.m_top < this.y) return false;
 		return true;
+	}
+	setTo(x: number, y: number, width: number, height: number): void {
+
+		this.x = x;
+		this.y = y;
+		this.width = width;
+		this.height = height;
+		this.m_right = this.width + this.x;
+		this.m_top = this.height + this.y;
+	}
+
+	setSize(width: number, height: number): void {
+
+		this.width = width;
+		this.height = height;
+		this.m_right = this.width + this.x;
+		this.m_top = this.height + this.y;
 	}
 	update(): void {
 		this.m_right = this.width + this.x;

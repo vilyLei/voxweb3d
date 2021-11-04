@@ -1,23 +1,15 @@
 
-import MouseEvent from "../../vox/event/MouseEvent";
-import Plane3DEntity from "../../vox/entity/Plane3DEntity";
+import Vector3D from "../../../vox/math/Vector3D";
+import MouseEvent from "../../../vox/event/MouseEvent";
+import KeyboardEvent from "../../../vox/event/KeyboardEvent";
 
-import KeyboardEvent from "../../vox/event/KeyboardEvent";
+import EngineBase from "../../../vox/engine/EngineBase";
+import { PathCurveEditor } from "../road/PathCurveEditor";
+import { RoadEntityBuilder } from "../road/RoadEntityBuilder";
+import { RoadGeometryBuilder } from "../geometry/RoadGeometryBuilder";
 
-import Vector3D from "../../vox/math/Vector3D";
-import SelectionBar from "../../orthoui/button/SelectionBar";
-
-import EngineBase from "../../vox/engine/EngineBase";
-import DisplayEntity from "../../vox/entity/DisplayEntity";
-import BoxFrame3D from "../../vox/entity/BoxFrame3D";
-import { PathCurveEditor } from "./road/PathCurveEditor";
-import { RoadEntityBuilder } from "./road/RoadEntityBuilder";
-import { RoadGeometryBuilder } from "./geometry/RoadGeometryBuilder";
-
-import { Terrain } from "./terrain/Terrain";
-import { RoadFile } from "./io/RoadFile";
-import { ExportRoadNode, RoadSceneFile } from "./io/RoadSceneFile";
-import { RoadSceneFileParser } from "./io/RoadSceneFileParser";
+import { Terrain } from "../terrain/Terrain";
+import { SceneFileSystem } from "../io/SceneFileSystem";
 
 class Scene {
 
@@ -25,14 +17,34 @@ class Scene {
 
     private m_editEnabled: boolean = true;
     private m_engine: EngineBase = null;
+    private m_awake: boolean = false;
+
     readonly roadEntityBuilder: RoadEntityBuilder = new RoadEntityBuilder();
-    //private m_line: Line3DEntity = null;
-
     readonly pathEditor: PathCurveEditor = new PathCurveEditor();
-    terrain: Terrain = new Terrain();
-    readonly geometryBuilder: RoadGeometryBuilder = new RoadGeometryBuilder();
 
-    closePathBtn: SelectionBar = null;
+    readonly terrain: Terrain = new Terrain();
+    readonly geometryBuilder: RoadGeometryBuilder = new RoadGeometryBuilder();
+    readonly fileSystem: SceneFileSystem = new SceneFileSystem();
+
+    isAwake(): boolean {
+        return this.m_awake;
+    }
+    wake(): void {
+        if(!this.m_awake) {
+            this.m_awake = true;
+            this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_CLICK, this, this.mouseClick);
+            this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseDown);
+            this.m_engine.rscene.addEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
+        }
+    }
+    sleep(): void {
+        if(this.m_awake) {
+            this.m_awake = false
+            this.m_engine.rscene.removeEventListener(MouseEvent.MOUSE_CLICK, this, this.mouseClick);
+            this.m_engine.rscene.removeEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseDown);
+            this.m_engine.rscene.removeEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
+        }
+    }
     initialize(engine: EngineBase): void {
 
         console.log("Scene::initialize()......");
@@ -40,15 +52,14 @@ class Scene {
 
             this.m_engine = engine;
 
-            this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_CLICK, this, this.mouseClick);
-            this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseDown);
-            this.m_engine.rscene.addEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
-
             this.pathEditor.initialize(engine);
             this.roadEntityBuilder.initialize(engine, this.pathEditor);
             
             this.terrain.initialize(engine);
             this.terrain.setVisible( false );
+            this.fileSystem.initialize(this.pathEditor, this.roadEntityBuilder);
+
+            this.wake();
             // let axis = new Axis3DEntity();
             // axis.initialize(700);
             // this.m_engine.rscene.addEntity(axis);
@@ -57,7 +68,6 @@ class Scene {
             // this.m_line.dynColorEnabled = true;
             // this.m_line.initializeByPosList([new Vector3D(), new Vector3D(100,0.0,0.0)]);
             // this.m_engine.rscene.addEntity(this.m_line);
-
             
             let posOuterList = [new Vector3D(0, 0, -100), new Vector3D(100, 0, -100), new Vector3D(150, 0, -50)];
             let posInnerList = [new Vector3D(0, 0, 100), new Vector3D(100, 0, 100), new Vector3D(150, 0, 150)];
@@ -72,7 +82,6 @@ class Scene {
             // //plist = plist.splice(2,0,9);
             // // plist.splice(7,1);
             // console.log("XXX plist: ",plist);
-            this.initEditor();
 
         }
     }
@@ -83,45 +92,18 @@ class Scene {
     getEditEnabled(): boolean {
         return this.m_editEnabled;
     }
-    private initEditor(): void {
+    /**
+     * 新建场景
+     */
+    newScene(): void {
     }
-    private m_pos: Vector3D = new Vector3D();
-    
-    private m_dispList: DisplayEntity[] = [];
-
-    private m_roadFile: RoadFile = new RoadFile();
-    private m_roadFileParser: RoadSceneFileParser = new RoadSceneFileParser();
-    clear(): void {
-
+    /**
+     * 删除清理场景
+     */
+    clearScene(): void {
         this.roadEntityBuilder.clear();
-
         this.pathEditor.clear();
-        //this.m_line.setVisible(false);
-
-        for (let i: number = 0; i < this.m_dispList.length; ++i) {
-            this.m_engine.rscene.removeEntity(this.m_dispList[i]);
-        }
-        this.m_dispList = [];
-        if(this.closePathBtn != null) {
-            this.closePathBtn.deselect(false);
-        }
     }
-    private m_scFile: RoadSceneFile = new RoadSceneFile();
-    saveData(): void {
-        
-        if(this.pathEditor.getPathKeyPosTotal() > 1) {
-            console.log("#### Save Data Begin...");
-            let node: ExportRoadNode = new ExportRoadNode();
-            node.pathPosList = this.pathEditor.getPathKeyPosList();
-            node.curvePosList = this.pathEditor.getPathPosList();
-            node.pathSegList = this.roadEntityBuilder.getSegList();
-            let fs: Uint8Array = this.m_scFile.buildRoadFile( node );
-            this.m_scFile.saveFile(fs);
-            // // for test
-            // this.m_roadFileParser.parse(fs);
-        }
-    }
-    
     buildGeomData(): void {
         this.roadEntityBuilder.build();
     }

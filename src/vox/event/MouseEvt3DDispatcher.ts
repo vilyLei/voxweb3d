@@ -12,6 +12,7 @@ import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 class MouseEvt3DDispatcher implements IEvtDispatcher {
     private m_evtNodes: EvtNode[] = null;
     private m_evtNodesLen: number = 17;
+    uuid: string = "";
     constructor() {
         this.m_evtNodesLen = MouseEvent.GetMouseEvtTypeValuesTotal();
         this.m_evtNodes = new Array(this.m_evtNodesLen);
@@ -29,6 +30,7 @@ class MouseEvt3DDispatcher implements IEvtDispatcher {
     // @return      1 is send evt yes,0 is send evt no
     dispatchEvt(evt: any): number {
         if (evt != null) {
+            if(this.uuid != "") evt.uuid = this.uuid;
             let t: number = evt.type - MouseEvent.GetMouseEvtTypeValueBase();
             if (t >= 0 && t < MouseEvent.GetMouseEvtTypeValuesTotal()) {
                 if (this.m_evtNodes[t] != null) return this.m_evtNodes[t].dispatch(evt);

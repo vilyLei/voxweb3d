@@ -44,6 +44,10 @@ export default class Plane3DEntity extends DisplayEntity {
     constructor(transform: ROTransform = null) {
         super(transform);
     }
+    /**
+     * 设置是否为多面体网格
+     * @param boo 是否为多面体网格
+     */
     setPolyhedral(boo: boolean): void {
         this.m_polyhedralBoo = boo;
         let pmesh: RectPlaneMesh = this.getMesh() as RectPlaneMesh;

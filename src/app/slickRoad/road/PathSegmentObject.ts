@@ -4,7 +4,7 @@ import EngineBase from "../../../vox/engine/EngineBase";
 import { PathTool } from "./PathTool";
 import { RoadMesh } from "../geometry/RoadMesh";
 import { RoadGeometryBuilder } from "../geometry/RoadGeometryBuilder";
-import { PathSegmentEntity } from "./PathSegmentEntity";
+import { PathSegmentEntity } from "../entity/PathSegmentEntity";
 import TextureProxy from "../../../vox/texture/TextureProxy";
 import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
 import { Pos3DPool } from "../base/Pos3DPool";

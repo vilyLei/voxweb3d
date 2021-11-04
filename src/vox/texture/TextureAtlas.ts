@@ -25,6 +25,12 @@ export default class TextureAtlas {
     getUid(): number {
         return this.m_uid;
     }
+    getWidth(): number {
+        return this.m_width;
+    }
+    getHeight(): number {
+        return this.m_height;
+    }
     setMinSize(minSize: number): void 
     {
         this.m_minSize = Math.max(minSize,4);

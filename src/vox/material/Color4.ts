@@ -83,7 +83,15 @@ class Color4 {
      * @returns for example: rgba(255,255,255,1.0)
      */
     getCSSDecRGBAColor(): string {
-        return "rgba(" + Math.floor(this.r * 255.0) + "," + Math.floor(this.g * 255.0) + "," + Math.floor(this.b * 255.0) + "," + this.a.toFixed(4) + ")";
+        let pr: number = Math.floor(this.r * 255.0);
+        let pg: number = Math.floor(this.g * 255.0);
+        let pb: number = Math.floor(this.b * 255.0);
+        let pa = this.a;
+        // pr = MathConst.Clamp(pr, 0, 255);
+        // pg = MathConst.Clamp(pg, 0, 255);
+        // pb = MathConst.Clamp(pb, 0, 255);
+        // let pa = MathConst.Clamp(this.a, 0.0, 1.0);
+        return "rgba(" + pr + "," + pg + "," + pb + "," + pa + ")";
     }
     /**
      * @returns for example: #350b7e

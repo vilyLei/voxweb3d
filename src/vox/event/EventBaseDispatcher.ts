@@ -12,6 +12,7 @@ import EventBase from "./EventBase";
 export default class EventBaseDispatcher implements IEvtDispatcher {
     
     private m_evtNodeMap: Map<number, EvtNode> = new Map();
+    uuid: string = "";
     constructor() {
     }
     //  setEventNodeByType(evtType: number): void {
@@ -30,6 +31,7 @@ export default class EventBaseDispatcher implements IEvtDispatcher {
     // @return      1 is send evt yes,0 is send evt no
     dispatchEvt(evt: any): number {
         if (evt != null) {
+            if(this.uuid != "") evt.uuid = this.uuid;
             let t: number = evt.type;
             if (t > 1 && this.m_evtNodeMap.has(t)) {
                 return this.m_evtNodeMap.get(t).dispatch(evt);

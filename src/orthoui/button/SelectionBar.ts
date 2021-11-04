@@ -25,7 +25,7 @@ export class SelectionBar {
 
     private m_container: DisplayEntityContainer = null;
     readonly selectionButton: ColorRectImgButton = new ColorRectImgButton();
-    readonly nameButton: ColorRectImgButton = new ColorRectImgButton();
+    readonly nameButton: ColorRectImgButton = null;
     private m_rect: AABB2D = new AABB2D();
 
     private m_texObj0: CanvasTextureObject;
@@ -40,7 +40,8 @@ export class SelectionBar {
     private m_posZ: number = 0.0;
     private m_enabled: boolean = true;
 
-    fontColor: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
+    readonly fontColor: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
+    readonly fontBgColor: Color4 = new Color4(1.0,1.0,1.0,0.3);
     uuid: string = "selectionBar";
 
     constructor() { }
@@ -69,7 +70,7 @@ export class SelectionBar {
     initialize(ruisc: IRendererScene, barName: string = "select", select_name: string = "Yes", deselect_name: string = "No", btnSize: number = 64.0): void {
 
         if (this.m_ruisc == null) {
-
+            
             this.m_ruisc = ruisc;
             this.m_barName = barName;
             if (select_name != "") this.m_selectName = select_name;
@@ -110,22 +111,23 @@ export class SelectionBar {
         let size: number = this.m_btnSize;
         let container: DisplayEntityContainer = new DisplayEntityContainer();
         this.m_container = container;
-
+        let keyStr: string;
         let haveNameBt: boolean = this.m_barName != null && this.m_barName.length > 0;
+        let selfT: any = this;
         if (haveNameBt) {
-
-            UIBarTool.InitializeBtn(this.nameButton, this.m_barName, size, this.fontColor);
+            selfT.nameButton = new ColorRectImgButton();
+            UIBarTool.InitializeBtn(this.nameButton, this.m_barName, size, this.fontColor,this.fontBgColor);
             this.nameButton.setXYZ(-1.0 * this.nameButton.getWidth() - 1.0, 0.0, 0.0);
             container.addEntity(this.nameButton);
-
+            
             this.nameButton.addEventListener(MouseEvent.MOUSE_DOWN, this, this.nameBtnMouseDown);
         }
-
-        let image = CanvasTextureTool.GetInstance().createCharsImage(this.m_selectName, size);
-        this.m_texObj0 = CanvasTextureTool.GetInstance().addImageToAtlas(this.m_selectName, image);
-
-        image = CanvasTextureTool.GetInstance().createCharsImage(this.m_deselectName, size);
-        this.m_texObj1 = CanvasTextureTool.GetInstance().addImageToAtlas(this.m_deselectName, image);
+        keyStr = this.m_selectName +"-"+size+"-"+this.fontColor.getCSSDecRGBAColor() +"-"+ this.fontBgColor.getCSSDecRGBAColor();
+        let image = CanvasTextureTool.GetInstance().createCharsImage(this.m_selectName, size, this.fontColor.getCSSDecRGBAColor(), this.fontBgColor.getCSSDecRGBAColor());
+        this.m_texObj0 = CanvasTextureTool.GetInstance().addImageToAtlas(keyStr, image);
+        keyStr = this.m_deselectName +"-"+size+"-"+this.fontColor.getCSSDecRGBAColor() +"-"+ this.fontBgColor.getCSSDecRGBAColor();
+        image = CanvasTextureTool.GetInstance().createCharsImage(this.m_deselectName, size, this.fontColor.getCSSDecRGBAColor(), this.fontBgColor.getCSSDecRGBAColor());
+        this.m_texObj1 = CanvasTextureTool.GetInstance().addImageToAtlas(keyStr, image);
 
         let btn: ColorRectImgButton = this.selectionButton;
         btn.uvs = this.m_texObj0.uvs;

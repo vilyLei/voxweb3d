@@ -72,25 +72,27 @@ export class DemoDraco extends DemoInstance {
         rparam.setCamProject(45, 20.0, 9000.0);
         this.m_subScene = this.m_rscene.createSubScene();
         this.m_subScene.initialize(rparam, 3, false);
+        
+        // let axis: Axis3DEntity = new Axis3DEntity();
+        // axis.initialize(300.0);
+        // this.m_rscene.addEntity(axis);
+        // return;
         // add common 3d display entity
         var plane: Plane3DEntity = new Plane3DEntity();
         plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [tex0]);
         this.m_subScene.addEntity(plane, 0);
         
-        this.m_subScene.disable();
+        //this.m_subScene.enable();
         //this.m_rscene.disable();
         // let quadAxis:AxisQuad3DEntity = new AxisQuad3DEntity();
         // quadAxis.wireframe = true;
         // quadAxis.initialize(300.0,20.0);
         // this.m_rscene.addEntity(quadAxis);
         // return;
-        let axis: Axis3DEntity = new Axis3DEntity();
-        axis.initialize(300.0);
-        this.m_rscene.addEntity(axis);
         //  let box: Box3DEntity = new Box3DEntity();
         //  box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex1]);
         //  this.m_rscene.addEntity(box);
-        return;
+        //return;
         console.log("------------------------------------------------------------------");
         console.log("------------------------------------------------------------------");
 

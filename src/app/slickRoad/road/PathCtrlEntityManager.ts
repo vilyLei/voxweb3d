@@ -6,14 +6,13 @@ import EngineBase from "../../../vox/engine/EngineBase";
 import { RoadPath } from "./RoadPath";
 import { PathCurveEditorUI } from "./PathCurveEditorUI";
 import Sphere3DEntity from "../../../vox/entity/Sphere3DEntity";
-import { EditableEntity } from "../../../voxeditor/entity/EditableEntity";
 import IEntityTransform from "../../../vox/entity/IEntityTransform";
 import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
 import SelectionBar from "../../../orthoui/button/SelectionBar";
 import ProgressBar from "../../../orthoui/button/ProgressBar";
 
 import { PathKeyNode } from "./PathKeyNode";
-import { PathCtrlEntity } from "./PathCtrlEntity";
+import { PathCtrlEntity } from "../entity/PathCtrlEntity";
 import MathConst from "../../../vox/math/MathConst";
 
 class PathCtrlEntityManager {
@@ -166,7 +165,7 @@ class PathCtrlEntityManager {
         }
         editEntity.setMaterial(material);
         editEntity.setXYZ(100, 100, 300);
-        editEntity.initializeEvent();
+        //editEntity.initializeEvent();
         editEntity.setPosition(pv);
         editEntity.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownEditableEntity);
         this.m_engine.rscene.addEntity(editEntity);
@@ -255,7 +254,9 @@ class PathCtrlEntityManager {
             else {
                 this.currPosCurvationFreezeBtn.deselect(false);
             }
-            this.addPosBtn.deselect(true);
+            // 下面这一句有逻辑冲突
+            // this.addPosBtn.deselect(true);
+
             let value: number = (1.0 - node.stepDistance / this.m_segDistance);
             this.segTotalCtrlBtn.setProgress(MathConst.Clamp(value, 0.0, 1.0), false);
 

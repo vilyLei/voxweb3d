@@ -113,7 +113,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         // TODO(Vily): 下面这个判断流程需要优化(由于几何数据更改之后上传gpu的动作是一帧上传16个这样的速度下实现的，所以需要下面这句代码来保证不出错: [.WebGL-000037DC02C2B800] GL_INVALID_OPERATION: Insufficient buffer size)
         let ivsCount = this.indicesRes.getVTCount();
         if(this.ivsCount <= ivsCount ) ivsCount = this.ivsCount;
-        // const ivsCount = this.ivsCount;
+
         switch (this.drawMode) {
             case RenderDrawMode.ELEMENTS_TRIANGLES:
                 //console.log("RPOUnit::run(), TRIANGLES drawElements(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+"),drawOffset: "+this.drawOffset);
@@ -142,11 +142,11 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
                 break;
             case RenderDrawMode.ARRAYS_LINES:
                 //console.log("RPOUnit::run(), ARRAYS_LINES drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
-                rc.RContext.drawArrays(rc.LINES, this.ivsIndex, ivsCount);
+                rc.RContext.drawArrays(rc.LINES, this.ivsIndex, this.ivsCount);
                 break;
             case RenderDrawMode.ARRAYS_LINE_STRIP:
                 //console.log("RPOUnit::run(), ARRAYS_LINE_STRIP drawArrays(ivsCount="+this.ivsCount+", ivsIndex="+this.ivsIndex+")");
-                rc.RContext.drawArrays(rc.LINE_STRIP, this.ivsIndex, ivsCount);
+                rc.RContext.drawArrays(rc.LINE_STRIP, this.ivsIndex, this.ivsCount);
                 break;
             default:
                 break;

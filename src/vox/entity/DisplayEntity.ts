@@ -16,7 +16,7 @@ import RendererState from "../../vox/render/RendererState";
 import MeshBase from "../../vox/mesh/MeshBase";
 import MaterialBase from "../../vox/material/MaterialBase";
 import ROTransform from "../../vox/display/ROTransform";
-import {SpaceCullingMask} from "../../vox/space/SpaceCullingMask";
+import { SpaceCullingMask } from "../../vox/space/SpaceCullingMask";
 import IRODisplay from "../../vox/display/IRODisplay";
 import RODisplay from "../../vox/display/RODisplay";
 import IRenderEntity from "../../vox/render/IRenderEntity";
@@ -26,8 +26,6 @@ import IDisplayEntity from "../../vox/entity/IDisplayEntity";
 import RenderProxy from "../../vox/render/RenderProxy";
 import TextureProxy from '../../vox/texture/TextureProxy';
 import DebugFlag from '../debug/DebugFlag';
-
-
 
 export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEntityTransform {
     private static s_uid: number = 0;
@@ -251,7 +249,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     private initDisplay(m: MeshBase): void {
         this.m_display.vbuf = m.__$attachVBuf();
         this.m_display.ivsIndex = 0;
-        this.m_display.ivsCount = m.vtCount;
+        this.m_display.ivsCount = m.vtCount;        
         this.m_display.drawMode = m.drawMode;
         this.m_display.trisNumber = m.trisNumber;
         this.m_display.visible = this.m_visible && this.m_drawEnabled;
@@ -420,11 +418,11 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
         this.m_display = RODisplay.Create();
     }
     activeDisplay(): void {
-        
+
         if (this.m_display != null) {
             let material: MaterialBase = this.m_display.getMaterial();
             if (material != null) {
-                
+
                 if (material.getShaderData() == null) {
                     if (material.getCodeBuf() != null) {
                         if (material.getShaderData() == null) {
@@ -434,14 +432,11 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
                         }
                     }
                 }
-                
+
                 if (this.getMesh() == null) {
                     this.__activeMesh(material);
                     //  // for debug
                     this.m_display.name = this.name;
-                    //  this.m_display.ivsIndex = 0;
-                    //  this.m_display.ivsCount = this.m_mesh.vtCount;
-                    //  this.m_display.drawMode = this.m_mesh.drawMode;
                 }
             }
         }
@@ -453,8 +448,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     setXYZ(px: number, py: number, pz: number): void {
         this.m_transfrom.setXYZ(px, py, pz);
     }
-    offsetPosition(pv:Vector3D):void
-    {
+    offsetPosition(pv: Vector3D): void {
         this.m_transfrom.offsetPosition(pv);
     }
     setPosition(pv: Vector3D): void {
@@ -550,19 +544,19 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
             this.m_globalBounds.update();
         }
         else {
-            DisplayEntity.s_prePos.setXYZ(0,0,0);
-            DisplayEntity.s_pos.setXYZ(0,0,0);
+            DisplayEntity.s_prePos.setXYZ(0, 0, 0);
+            DisplayEntity.s_pos.setXYZ(0, 0, 0);
             let matrix = this.m_transfrom.getMatrix(false);
             matrix.transformVector3Self(DisplayEntity.s_prePos);
             this.m_transfrom.update();
             matrix = this.m_transfrom.getMatrix(false);
             matrix.transformVector3Self(DisplayEntity.s_pos);
-            DisplayEntity.s_pos.subtractBy( DisplayEntity.s_prePos );
+            DisplayEntity.s_pos.subtractBy(DisplayEntity.s_prePos);
             let gbounds = this.m_globalBounds;
             gbounds.min.addBy(DisplayEntity.s_pos);
             gbounds.max.addBy(DisplayEntity.s_pos);
             gbounds.center.addBy(DisplayEntity.s_pos);
-            
+
             // let matrix = this.m_transfrom.getMatrix();
             // let bounds = this.m_mesh.bounds;
             // let gbounds = this.m_globalBounds;

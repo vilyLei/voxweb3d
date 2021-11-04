@@ -1,20 +1,19 @@
 
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
-import {Scene} from "./slickRoad/Scene";
-import {UIScene} from "./slickRoad/UIScene";
-import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
+import {Scene} from "./slickRoad/scene/Scene";
+import {UIScene} from "./slickRoad/ui/UIScene";
 import EngineBase from "../vox/engine/EngineBase";
-import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 
 export class SlickRoad {
 
     constructor() { }
 
     private m_engine: EngineBase = null;
-    private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_scene: Scene = new Scene();
     private m_uiscene: UIScene = new UIScene();
+    private m_profileInstance: ProfileInstance = null;
 
     initialize(): void {
         
@@ -33,9 +32,9 @@ export class SlickRoad {
             
             this.m_engine = new EngineBase();
             this.m_engine.initialize(rparam, 6);
+            this.m_profileInstance = new ProfileInstance();
+            this.m_profileInstance.initialize(this.m_engine.rscene.getRenderer());
 
-            this.m_statusDisp.initialize();
-            
             this.m_engine.appendRendererScene(null, 3, false);
             this.m_engine.swapSceneAt(1,2);
             this.m_engine.getRendererSceneAt(1).getRScene().enableMouseEvent(false);
@@ -51,25 +50,17 @@ export class SlickRoad {
             // plane.setScaleXYZ(3.0,3.0,3.0);
             // this.m_engine.rscene.addEntity(plane, 0, true);
 
-            this.update();
         }
-    }
-    private m_timeoutId: any = -1;
-    private update(): void {
-        if (this.m_timeoutId > -1) {
-            clearTimeout(this.m_timeoutId);
-        }
-        //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
-        this.m_timeoutId = setTimeout(this.update.bind(this), 25);// 20 fps
-        this.m_statusDisp.render();
     }
 
     run(): void {
         
-        this.m_statusDisp.update(false);
         this.m_uiscene.run();
         this.m_scene.run();
         this.m_engine.run();        
+        if (this.m_profileInstance != null) {
+            this.m_profileInstance.run();
+        }
     }
 }
 

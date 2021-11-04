@@ -18,10 +18,12 @@ class PathCurveEditor {
     private m_roadBuilder: RoadBuilder = new RoadBuilder();
     readonly pathCtrlEntityManager: PathCtrlEntityManager = new PathCtrlEntityManager();
 
+    private m_addPosEnabled: boolean = true;
+    private m_editEnabled: boolean = false;
+    private m_closeEnabled: boolean = false;
     private m_path: RoadPath = null;
     private m_pathLineVersion: number = -1;
     private m_buildPathVersion: number = -1;
-    private m_curvePosList: Pos3D[] = null;
     private m_line: Line3DEntity = null;
     readonly editorUI: PathCurveEditorUI = new PathCurveEditorUI();
 
@@ -40,10 +42,16 @@ class PathCurveEditor {
         }
     }
 
-    private m_addPosEnabled: boolean = true;
-    private m_editEnabled: boolean = false;
-    private m_closeEnabled: boolean = false;
-
+    insertCtrlPosFromCurrPos(): void {
+        if(this.m_addPosEnabled) {
+            this.pathCtrlEntityManager.insertCtrlPosFromCurrPos();
+        }
+    }
+    delCurrCtrlPos(): void {
+        if(this.m_addPosEnabled) {
+            this.pathCtrlEntityManager.delCurrCtrlPos();
+        }
+    }
     setAddPosEnabled(enabled: boolean): void {
         this.m_addPosEnabled = enabled;
     }
@@ -74,7 +82,7 @@ class PathCurveEditor {
         this.m_path = path;
         
         this.pathCtrlEntityManager.editorUI = this.editorUI;
-        this.pathCtrlEntityManager.initialize(this.m_engine, this.m_path)
+        this.pathCtrlEntityManager.initialize(this.m_engine, this.m_path);
 
         let pls = new Line3DEntity();
         pls.dynColorEnabled = true;
@@ -89,15 +97,9 @@ class PathCurveEditor {
         this.m_closeEnabled = false;
         this.m_line.setVisible(false);
         this.m_path.clear();
-        this.m_curvePosList = null;
         this.pathCtrlEntityManager.clear();
     }
-    private buildCurve(): Pos3D[] {
-        let curvePosList: Pos3D[] = this.m_path.buildPathCurve(3, this.m_closeEnabled, this.m_closeEnabled ? 10350 : 350);
-        this.m_curvePosList = curvePosList;
-        //this.m_closeEnabled = false;
-        return curvePosList;
-    }
+    
     isPathClosed(): boolean {
         return this.m_path.isClosed();
     }
@@ -119,7 +121,7 @@ class PathCurveEditor {
         if (this.m_editEnabled && this.m_path != null) {
             if ( this.m_path.getPosListLength() > 1 && this.m_buildPathVersion != this.m_path.version ) {
                 this.m_buildPathVersion = this.m_path.version;
-                this.m_curvePosList = this.buildCurve();
+                this.m_path.buildPathCurve(3, this.m_closeEnabled, this.m_closeEnabled ? 10350 : 350);
             }
         }
     }

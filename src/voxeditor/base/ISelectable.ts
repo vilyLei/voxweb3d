@@ -11,7 +11,6 @@ import IEntityTransform from "../../vox/entity/IEntityTransform";
  */
 interface ISelectable extends IEntityTransform {
     uuid: string;
-    initializeEvent(): void;
     isSelected(): boolean;
     select(): void;
     deselect(): void;

@@ -13,7 +13,7 @@ import IAbstractShader from "../../../vox/material/IAbstractShader";
 import IShaderCodeBuilder from "./IShaderCodeBuilder";
 import GLSLConverter from "./GLSLConverter";
 import ShaderCompileInfo from "./ShaderCompileInfo";
-import ShaderCode from "./ShaderCode";
+import {ShaderCode, MathShaderCode} from "./ShaderCode";
 
 export default class ShaderCodeBuilder2 implements IShaderCodeBuilder {
 
@@ -88,6 +88,7 @@ precision mediump float;
      */
     private m_preCompileInfo: ShaderCompileInfo = null;
 
+    mathDefineEanbled: boolean = true;
     normalEanbled: boolean = false;
     normalMapEanbled: boolean = false;
     mapLodEnabled: boolean = false;
@@ -149,6 +150,7 @@ precision mediump float;
         this.m_textureFlags = [];
         this.m_texturePrecise = "";
 
+        this.mathDefineEanbled = true;
         this.normalEanbled = false;
         this.normalMapEanbled = false;
         this.mapLodEnabled = false;
@@ -402,6 +404,13 @@ precision mediump float;
             }
         }
 
+        if (RendererDevice.IsMobileWeb()) {
+            code += "\nprecision highp float;";
+        }
+        else {
+            code += "\n" + this.m_preciousCode;
+        }
+        
         if (RendererDevice.IsWebGL2()) {
             code += "\n#define VOX_IN in";
             if (this.mapLodEnabled) {
@@ -421,14 +430,9 @@ precision mediump float;
             code += "\n#define VOX_TextureCube textureCube";
             code += "\n#define VOX_Texture2D texture2D";
         }
-        if (RendererDevice.IsMobileWeb()) {
-            code += "\nprecision highp float;";
+        if(this.mathDefineEanbled) {
+            code += MathShaderCode.BasePredefined;
         }
-        else {
-            code += "\n" + this.m_preciousCode;
-        }
-
-        code += ShaderCode.FragPredefined;
         
         len = this.m_defineNames.length;
         for (i = 0; i < len; i++) {
@@ -484,8 +488,7 @@ precision mediump float;
                 code += "\nvarying " + this.m_varyingTypes[i] + " " + this.m_varyingNames[i] + ";";
             }
         }
-
-        code += ShaderCode.FragDefined;
+        code += ShaderCode.BasePredefined;
 
         if (this.fragMatrixInverseEnabled && RendererDevice.IsWebGL1()) {
             this.addVertFunction(GLSLConverter.__glslInverseMat3);
@@ -565,6 +568,12 @@ precision mediump float;
             code += "\n" + this.m_vertExt[i];
         }
         
+        if (RendererDevice.IsMobileWeb()) {
+            code += "\nprecision highp float;";
+        }
+        else {
+            code += "\n" + this.m_preciousCode;
+        }
         if (RendererDevice.IsWebGL2()) {
             code += "\n#define VOX_IN in";
             if (this.mapLodEnabled) {
@@ -590,7 +599,6 @@ precision mediump float;
         else {
             code += "\n" + this.m_preciousCode;
         }
-        //code += "\n"+this.m_preciousCode;
 
         if (RendererDevice.IsWebGL2()) {
             code += "\n#define VOX_OUT out";
@@ -598,8 +606,9 @@ precision mediump float;
         else {
             code += "\n#define VOX_OUT varying";
         }
-        
-        code += ShaderCode.VertPredefined;
+        if(this.mathDefineEanbled) {
+            code += MathShaderCode.BasePredefined;
+        }
 
         len = this.m_defineNames.length;
         for (i = 0; i < len; i++) {
@@ -673,7 +682,7 @@ precision mediump float;
             }
         }
 
-        code += ShaderCode.VertDefined;
+        code += ShaderCode.BasePredefined;
         if (this.vertMatrixInverseEnabled && RendererDevice.IsWebGL1()) {
             this.addVertFunction(GLSLConverter.__glslInverseMat3);
             this.addVertFunction(GLSLConverter.__glslInverseMat4);

@@ -16,6 +16,7 @@ export class CanvasTextureObject {
     uvs: Float32Array = null;
     texture: ImageTextureProxy = null;
     rect:AABB2D = null;
+    clampUVRect:AABB2D = null;
     uniqueName: string = "";
     getWidth(): number {
         if(this.rect != null) return this.rect.width;
@@ -103,8 +104,13 @@ export class CanvasTextureTool {
 
             let texNode: CanvasTextureObject = new CanvasTextureObject();
             texNode.texture = atlas.getTexture();
-            texNode.uvs = texArea.uvs;
-            texNode.rect = texArea.texRect;
+            texNode.uvs = texArea.uvs.slice(0);
+            texNode.rect = texArea.texRect.clone();
+            texNode.clampUVRect = texArea.texRect.clone();
+            texNode.clampUVRect.x /= atlas.getWidth();
+            texNode.clampUVRect.y /= atlas.getHeight();
+            texNode.clampUVRect.width /= atlas.getWidth();
+            texNode.clampUVRect.height /= atlas.getHeight();
             texNode.uniqueName = texArea.uniqueNS;
             
             return texNode;
@@ -122,6 +128,11 @@ export class CanvasTextureTool {
             texNode.texture = atlas.getTexture();
             texNode.uvs = texArea.uvs;
             texNode.rect = texArea.texRect;
+            texNode.clampUVRect = texArea.texRect.clone();
+            texNode.clampUVRect.x /= atlas.getWidth();
+            texNode.clampUVRect.y /= atlas.getHeight();
+            texNode.clampUVRect.width /= atlas.getWidth();
+            texNode.clampUVRect.height /= atlas.getHeight();
             texNode.uniqueName = texArea.uniqueNS;
             
             return texNode;

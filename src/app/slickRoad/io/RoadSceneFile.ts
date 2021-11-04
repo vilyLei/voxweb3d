@@ -2,10 +2,11 @@
 import { FileIO } from "./FileIO";
 import Vector3D from "../../../vox/math/Vector3D";
 import { PathSegmentObject } from "../road/PathSegmentObject";
-import { PathSegmentEntity } from "../road/PathSegmentEntity";
+import { PathSegmentEntity } from "../entity/PathSegmentEntity";
 import MeshBase from "../../../vox/mesh/MeshBase";
 
 class RoadSegmentMesh {
+    
     ivs: Uint16Array | Uint32Array = null;
     vs: Float32Array = null;
     uvs: Float32Array = null;
@@ -157,7 +158,7 @@ class RoadModel {
     pathPosListBytesTotal: number = 0;
     pathPosTotal: number = 0;
     /**
-     * 路径模块的分类: 道路、隧道、河流沟渠、轨迹线、其他等等
+     * 路径模块的分类: 道路、隧道管道、河流沟渠、长城，大坝、轨迹线、其他等等
      */
     modeClass: number = 0;
     /**
@@ -181,23 +182,24 @@ class RoadModel {
         srcBytes.set(posUint8, bytesIndex);
     }
     copyDataTo(srcBytes: Uint8Array, bytesIndex: number): void {
+
         this.copyPosDataTo(this.pathPosList, srcBytes, bytesIndex);
         bytesIndex += this.pathPosListBytesTotal;
 
         this.copyPosDataTo(this.curvePosList, srcBytes, bytesIndex);
         bytesIndex += this.curvePosListBytesTotal;
 
-
-        let seg: RoadSegment = null;
-        for (let i: number = 0; i < this.segmentList.length; ++i) {
-            seg = this.segmentList[i];
-            seg.copyDataTo(srcBytes, bytesIndex);            
-            bytesIndex += seg.bytesTotal;
+        if(this.segmentList != null && this.segmentList.length > 0) {
+            let seg: RoadSegment = null;
+            for (let i: number = 0; i < this.segmentList.length; ++i) {
+                seg = this.segmentList[i];
+                seg.copyDataTo(srcBytes, bytesIndex);            
+                bytesIndex += seg.bytesTotal;
+            }
         }
     }
     setPathSegmentObject(pathSegObjs: PathSegmentObject[]): void {
 
-        this.segmentList = [];
         this.bytesTotal = 0;
         this.pathPosTotal = this.pathPosList.length;
         this.pathPosListBytesTotal = this.pathPosList.length * 3 * 4;
@@ -207,14 +209,16 @@ class RoadModel {
         this.curvePosListBytesTotal = this.curvePosList.length * 3 * 4;
         this.bytesTotal += this.curvePosListBytesTotal;
         
-
-        let seg: RoadSegment = null;
-        for (let i: number = 0; i < pathSegObjs.length; ++i) {
-
-            seg = new RoadSegment();
-            seg.setPathSegmentObject(pathSegObjs[i]);
-            this.segmentList.push(seg);
-            this.bytesTotal += seg.bytesTotal;
+        if(pathSegObjs != null) {
+            this.segmentList = [];
+            let seg: RoadSegment = null;
+            for (let i: number = 0; i < pathSegObjs.length; ++i) {
+    
+                seg = new RoadSegment();
+                seg.setPathSegmentObject(pathSegObjs[i]);
+                this.segmentList.push(seg);
+                this.bytesTotal += seg.bytesTotal;
+            }
         }
     }
     createJsonObject(bytesIndex: number): any {
@@ -236,13 +240,15 @@ class RoadModel {
         dataObj.curvePosListBytesIndex = bytesIndex;
         dataObj.curvePosListBytesTotal = this.curvePosListBytesTotal;
         bytesIndex += this.curvePosListBytesTotal;
-        let seg: RoadSegment = null;
-        let tempObj: any;
-        for (let i: number = 0; i < this.segmentList.length; ++i) {
-            seg = this.segmentList[i];
-            tempObj = seg.createJsonObject(bytesIndex);
-            dataObj.roadSegments.push(tempObj);
-            bytesIndex += seg.bytesTotal;
+        if(this.segmentList != null && this.segmentList.length > 0) {
+            let seg: RoadSegment = null;
+            let tempObj: any;
+            for (let i: number = 0; i < this.segmentList.length; ++i) {
+                seg = this.segmentList[i];
+                tempObj = seg.createJsonObject(bytesIndex);
+                dataObj.roadSegments.push(tempObj);
+                bytesIndex += seg.bytesTotal;
+            }
         }
         dataObj.bytesEnd = bytesIndex;
         return dataObj;
@@ -253,6 +259,7 @@ class RoadModel {
  * 布局方式: 文件头(默认128字节) -> 几何等场景数据 -> 场景数据json描述数据
  */
 class RoadSceneExportData {
+    private m_roadNodes: ExportRoadNode[] = null;
     // 记录road的相关信息
     roadList:RoadModel[] = [];
     // 记录其他模块的相关信息

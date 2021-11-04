@@ -84,11 +84,12 @@ export default class ImageTextureAtlas extends TextureAtlas {
             return null;
         }
         //size = Math.round(size * RendererDevice.GetDevicePixelRatio());
-        let keyStr: string = chars + "_" + size + fontStyle + "_" + bgStyle;
+        let keyStr: string = chars + "_" + size +"_"+ fontStyle + "_" + bgStyle;
+        
         if (ImageTextureAtlas.s_imgMap.has(keyStr)) {
             return ImageTextureAtlas.s_imgMap.get(keyStr);
         }
-
+        
         let width: number = size;
         let height: number = size + 2;
         if (chars.length > 1) {
@@ -120,7 +121,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
             ctx2D.font = (size - 4) + "px Verdana";
             ctx2D.textBaseline = "top";
         }
-        //console.log("metrics: ",metrics);
+        
         ctx2D.fillStyle = bgStyle;
         ctx2D.fillRect(0, 0, width, height);
         ctx2D.textAlign = "left";
@@ -137,7 +138,7 @@ export default class ImageTextureAtlas extends TextureAtlas {
         else {
             ctx2D.fillText(chars, (width - texWidth) * 0.5, 4);
         }
-        
+        ImageTextureAtlas.s_imgMap.set(keyStr, canvas);
         return canvas;
         /*
         actualBoundingBoxAscent: 22

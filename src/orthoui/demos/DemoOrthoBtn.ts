@@ -23,6 +23,7 @@ import RendererState from "../../vox/render/RendererState";
 import { GLBlendMode, CullFaceMode, DepthTestMode } from "../../vox/render/RenderConst";
 import RendererSubScene from "../../vox/scene/RendererSubScene";
 import ColorRectImgButton from "../../orthoui/button/ColorRectImgButton";
+import RectSelectionButton from "../../orthoui/button/RectSelectionButton";
 import DebugFlag from "../../vox/debug/DebugFlag";
 import ImageTextureProxy from "../../vox/texture/ImageTextureProxy";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
@@ -50,6 +51,7 @@ export class DemoOrthoBtn {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     private m_plane: Plane3DEntity = null;
     private m_plane2: Plane3DEntity = null;
+
     private m_axis: Axis3DEntity = null;
 
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
@@ -61,7 +63,7 @@ export class DemoOrthoBtn {
     initialize(): void {
         console.log("DemoOrthoBtn::initialize()......");
         if (this.m_rscene == null) {
-            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
             let rparam: RendererParam = new RendererParam();
@@ -132,6 +134,7 @@ export class DemoOrthoBtn {
 
         let rparam: RendererParam = new RendererParam();
         rparam.cameraPerspectiveEnabled = false;
+        rparam.setAttriAlpha(false);
         rparam.setCamProject(45.0, 0.1, 3000.0);
         rparam.setCamPosition(0.0, 0.0, 1500.0);
 
@@ -144,8 +147,24 @@ export class DemoOrthoBtn {
         this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
         this.m_ruisc.getCamera().update();
         CanvasTextureTool.GetInstance().initialize(this.m_rscene);
-        CanvasTextureTool.GetInstance().initializeAtlas(1024,1024, new Color4(1.0,1.0,1.0,0.0), true);
+        CanvasTextureTool.GetInstance().initializeAtlas(1024, 1024, new Color4(1.0, 1.0, 1.0, 0.0), true);
 
+        let tex: TextureProxy = this.getImageTexByUrl("static/assets/texFour01.png");
+        tex.flipY = true;
+        let rectTexBtn: RectSelectionButton = new RectSelectionButton();
+        rectTexBtn.bgSelectOverColor.setRGB3f(0.7,0.7,0.7);
+        rectTexBtn.bgSelectOutColor.setRGB3f(0.5,0.5,0.5);
+        rectTexBtn.uuid = "sbt_01";
+        rectTexBtn.bgUVClampRect.setTo(0.0, 0.5, 0.5, 0.5);
+        //rectTexBtn.bgUVClampRect.setTo(0.5, 0.5, 0.5, 0.5);
+        rectTexBtn.deselectUVClampRect.setTo(0.5, 0.0, 0.5, 0.5);
+        rectTexBtn.selectUVClampRect.setTo(0.5, 0.5, 0.5, 0.5);
+        rectTexBtn.initialize(0, 0, 100, 80, [tex]);
+        rectTexBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+        rectTexBtn.setXYZ(100, 200.0, 0);
+        this.m_ruisc.addEntity(rectTexBtn);
+        rectTexBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown2);
+        rectTexBtn.addEventListener(SelectionEvent.SELECT, this, this.selectChange2);
         /*
         let plane: Plane3DEntity = new Plane3DEntity();
         plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [CanvasTextureTool.GetInstance().getAtlasAt(0).getTexture()]);
@@ -153,12 +172,18 @@ export class DemoOrthoBtn {
         //*/
         this.initUI();
 
-        let pimg: HTMLCanvasElement = this.createCharsTexture2("锦",64);
-        pimg.style.left = '50px';
-        pimg.style.top = '128px';
-        document.body.appendChild( pimg );
+        // let pimg: HTMLCanvasElement = this.createCharsTexture2("锦",64);
+        // pimg.style.left = '50px';
+        // pimg.style.top = '128px';
+        // document.body.appendChild( pimg );
     }
-    
+    private mouseDown2(evt: any): void {
+        console.log("mouseDown2(), ", evt);
+    }
+    private selectChange2(evt: any): void {
+        let progEvt: SelectionEvent = evt as SelectionEvent;
+        console.log(progEvt, ", selectChange2(), progEvt.flag: ", progEvt.flag);
+    }
     private m_btnSize: number = 24;
     private m_bgLength: number = 200.0;
     private m_btnPX: number = 102.0;
@@ -168,7 +193,7 @@ export class DemoOrthoBtn {
     private m_btns: any[] = [];
     private m_menuBtn: SelectionBar = null;
     createCharsTexture2(chars: string, size: number, font: string = "宋体"): HTMLCanvasElement {
-        
+
         let width: number = size;
         let height: number = size + Math.round(size * 0.5);
         if (chars.length > 1) {
@@ -186,7 +211,7 @@ export class DemoOrthoBtn {
         //canvas.style.pointerEvents = 'none';
 
         let ctx2D = canvas.getContext("2d");
-        ctx2D.font = (size - 4) + "px "+font;
+        ctx2D.font = (size - 4) + "px " + font;
         //ctx2D.textBaseline = "top" || "hanging" || "middle" || "alphabetic" || "ideographic" || "bottom";
         ctx2D.textBaseline = "top";
         var metrics: any = ctx2D.measureText(chars);
@@ -196,7 +221,7 @@ export class DemoOrthoBtn {
         ctx2D.fillText(chars, (width - texWidth) * 0.5, 0);
         let imgData: ImageData = ctx2D.getImageData(0, 0, width, height);
         let pixels = imgData.data;
-        
+
         let minY: number = 0;
         let maxY: number = 0;
         // let minX: number = 0;
@@ -204,10 +229,10 @@ export class DemoOrthoBtn {
         let k: number = 0;
 
         // calc minY
-        for(let i: number = 0; i < height; ++i) {
-            for(let j: number = 0; j < width; ++j) {
+        for (let i: number = 0; i < height; ++i) {
+            for (let j: number = 0; j < width; ++j) {
                 k = ((i * width + j) << 2) + 3;
-                if(pixels[k] > 0) {
+                if (pixels[k] > 0) {
                     minY = i;
                     i = height;
                     break;
@@ -215,16 +240,16 @@ export class DemoOrthoBtn {
             }
         }
         // calc maxY
-        for(let i: number = height - 1; i >= 0; --i) {
-            for(let j: number = 0; j < width; ++j) {
+        for (let i: number = height - 1; i >= 0; --i) {
+            for (let j: number = 0; j < width; ++j) {
                 k = ((i * width + j) << 2) + 3;
-                if(pixels[k] > 0) {
+                if (pixels[k] > 0) {
                     maxY = i;
                     i = -1;
                     break;
                 }
             }
-        }        
+        }
         // // calc minX
         // for(let j: number = 0; j < width; ++j) {
         //     for(let i: number = 0; i < height; ++i) {
@@ -272,6 +297,7 @@ export class DemoOrthoBtn {
 
         let selectBar: SelectionBar = new SelectionBar();
         selectBar.uuid = uuid;
+        selectBar.fontBgColor.setRGBA4f(1.0, 0.0, 1.0, 0.0);
         ///selectBar.testTex = this.getImageTexByUrl("static/assets/testEFT4.jpg");
         selectBar.initialize(this.m_ruisc, ns, selectNS, deselectNS, this.m_btnSize);
         selectBar.addEventListener(SelectionEvent.SELECT, this, this.selectChange);
@@ -321,11 +347,12 @@ export class DemoOrthoBtn {
             this.m_btnPX = 280;
             this.m_btnPY = 30;
         }
-        if(RendererDevice.IsWebGL1()) {
+        if (RendererDevice.IsWebGL1()) {
             this.m_btnPX += 32;
         }
 
         this.createSelectBtn("absorb", "absorb", "ON", "OFF", false);
+        this.createSelectBtn("vtxNoise", "vtxNoise", "ON", "OFF", false);
         this.metalBtn = this.createProgressBtn("metal", "metal", 0.5);
         return;
         this.m_menuBtn = this.createSelectBtn("", "menuCtrl", "Menu Open", "Menu Close", false, true);
@@ -355,7 +382,7 @@ export class DemoOrthoBtn {
         this.specularBtn = this.createValueBtn("specular", "specular", 1.0, 0.01, 1.0);
         //*/
     }
-    
+
     metalBtn: ProgressBar;
     roughBtn: ProgressBar;
     noiseBtn: ProgressBar;
@@ -430,7 +457,7 @@ export class DemoOrthoBtn {
 
         this.m_color.copyFrom(currEvt.color);
 
-        if(this.m_plane != null) {
+        if (this.m_plane != null) {
             (this.m_plane.getMaterial() as any).setRGB3f(
                 this.m_color.r * this.m_colorIntensity,
                 this.m_color.g * this.m_colorIntensity,
@@ -440,14 +467,13 @@ export class DemoOrthoBtn {
     private progressChange(evt: any): void {
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
         console.log("progressChange, progress: ", progEvt.progress);
-        switch(evt.uuid)
-        {
+        switch (evt.uuid) {
             case "prog":
                 this.m_colorIntensity = progEvt.progress;
-                (this.m_plane.getMaterial() as any).setRGB3f(progEvt.progress, 1.0,1.0);
+                (this.m_plane.getMaterial() as any).setRGB3f(progEvt.progress, 1.0, 1.0);
                 break;
             case "color":
-                if(progEvt.status != 0) {
+                if (progEvt.status != 0) {
                     this.m_colorIntensity = progEvt.value;
                     (this.m_plane.getMaterial() as any).setRGB3f(
                         this.m_color.r * this.m_colorIntensity,
@@ -455,7 +481,7 @@ export class DemoOrthoBtn {
                         this.m_color.b * this.m_colorIntensity);
                 }
                 else {
-                    if(this.m_rgbPanel.isClosed())this.m_rgbPanel.open();
+                    if (this.m_rgbPanel.isClosed()) this.m_rgbPanel.open();
                     else this.m_rgbPanel.close();
                 }
                 return;
@@ -464,12 +490,12 @@ export class DemoOrthoBtn {
                 break;
         }
         //(this.m_plane.getMaterial() as any).setRGB3f(1.0, progEvt.progress, 1.0);
-        if(this.m_rgbPanel != null)this.m_rgbPanel.close();
+        if (this.m_rgbPanel != null) this.m_rgbPanel.close();
     }
     private selectChange(evt: any): void {
         let progEvt: SelectionEvent = evt as SelectionEvent;
         console.log("selectChange, flag: ", progEvt.flag, this.m_plane2);
-        if(this.m_plane2 == null) {
+        if (this.m_plane2 == null) {
             return;
         }
         //*
@@ -490,7 +516,7 @@ export class DemoOrthoBtn {
         ///*
         this.m_rscene.removeEntity(this.m_plane2);
         let material: Default3DMaterial = new Default3DMaterial();
-        if(progEvt.flag) {
+        if (progEvt.flag) {
             material.setTextureList([this.getImageTexByUrl("static/assets/default.jpg")]);
             material.initializeByCodeBuf(true);
         }
@@ -499,15 +525,15 @@ export class DemoOrthoBtn {
             material.initializeByCodeBuf(true);
         }
         this.m_plane2.setMaterial(material);
-        
+
         this.m_rscene.addEntity(this.m_plane2);
         //*/
         //this.m_plane2.updateMaterialToGpu( this.m_rscene.getRenderProxy() );
         //*/
-        if(this.m_rgbPanel != null)this.m_rgbPanel.close();
+        if (this.m_rgbPanel != null) this.m_rgbPanel.close();
     }
     private mouseBgDown(evt: any): void {
-        if(this.m_rgbPanel != null)this.m_rgbPanel.close();
+        if (this.m_rgbPanel != null) this.m_rgbPanel.close();
     }
     private mouseDown(evt: any): void {
         console.log("mouse down... ...");
@@ -539,10 +565,10 @@ export class DemoOrthoBtn {
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
         this.m_rscene.setClearRGBColor3f(0.0, 0.2, 0.0);
         let renderingType: number = 1;
-        if(renderingType < 1) {
+        if (renderingType < 1) {
             // current rendering strategy
-            this.m_rscene.run( true );
-            if(this.m_ruisc != null) this.m_ruisc.run( true );
+            this.m_rscene.run(true);
+            if (this.m_ruisc != null) this.m_ruisc.run(true);
         }
         else {
             /////////////////////////////////////////////////////// ---- mouseTest begin.
