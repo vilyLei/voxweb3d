@@ -16,12 +16,14 @@ class PathSegmentObject {
     constructor() { }
 
     private m_initFlag: boolean = true;
+    private m_selected: boolean = false;
     private m_engine: EngineBase = null;
     private m_offsetXYZ: Vector3D = new Vector3D(0, 0, 0);
     private m_pathTool: PathTool = new PathTool();
     private m_geomBuilder: RoadGeometryBuilder = new RoadGeometryBuilder();
     private m_dispEntities: PathSegmentEntity[] = [null, null, null, null, null, null];
     private m_wireframeEnabled: boolean = false;
+    private m_segIndex: number = 0;
     posTotal: number = 0;
     initialize(engine: EngineBase): void {
 
@@ -34,13 +36,80 @@ class PathSegmentObject {
             this.m_geomBuilder = new RoadGeometryBuilder();
         }
     }
-
+    setSegIndex(segIndex: number): void {
+        this.m_segIndex = segIndex;
+        for (let i: number = 0; i < this.m_dispEntities.length; ++i) {
+            if (this.m_dispEntities[i] != null) {
+                this.m_dispEntities[i].segIndex = this.m_segIndex;
+            }
+        }
+    }
+    getSegIndex(): number {
+        return this.m_segIndex;
+    }
+    addEventListener(type: number, listener: any, func: (evt: any) => void): void {
+        for (let i: number = 0; i < this.m_dispEntities.length; ++i) {
+            if (this.m_dispEntities[i] != null) {
+                this.m_dispEntities[i].addEventListener(type, listener, func);
+            }
+        }
+    }
+    removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
+        for (let i: number = 0; i < this.m_dispEntities.length; ++i) {
+            if (this.m_dispEntities[i] != null) {
+                this.m_dispEntities[i].removeEventListener(type, listener, func);
+            }
+        }
+    }
+    createEntities(total: number): void {
+        for (let i: number = 0; i < total; ++i) {
+            if (this.m_dispEntities[i] == null) {
+                this.m_dispEntities[i] = new PathSegmentEntity();
+                this.m_dispEntities[i].segIndex = this.getSegIndex();
+            }
+        }
+    }
+    isSelected(): boolean {
+        return this.m_selected;
+    }
+    /**
+     * 选中
+     * @param sendEvtEnabled 是否发送选中的事件。 如果不发送事件，则只会改变状态。
+     */
+    select(sendEvtEnabled: boolean = false): void {
+        this.m_selected = true;
+        for (let i: number = 0; i < this.m_dispEntities.length; ++i) {
+            if (this.m_dispEntities[i] != null) {
+                this.m_dispEntities[i].select(sendEvtEnabled);
+            }
+        }
+    }
+    /**
+     * 取消选中
+     * @param sendEvtEnabled 是否发送选中的事件。 如果不发送事件，则只会改变状态。
+     */
+    deselect(sendEvtEnabled: boolean = false): void {
+        this.m_selected = false;
+        for (let i: number = 0; i < this.m_dispEntities.length; ++i) {
+            if (this.m_dispEntities[i] != null) {
+                this.m_dispEntities[i].deselect(sendEvtEnabled);
+            }
+        }
+    }
     clear(): void {
-        
+
         for (let i: number = 0; i < this.m_dispEntities.length; ++i) {
             if (this.m_dispEntities[i] != null) {
                 this.m_engine.rscene.removeEntity(this.m_dispEntities[i]);
+                this.m_dispEntities[i].destroy();
                 this.m_dispEntities[i] = null;
+            }
+        }
+    }
+    setMouseEnabled(mouseEnabled: boolean): void {
+        for (let i: number = 0; i < this.m_dispEntities.length; ++i) {
+            if (this.m_dispEntities[i] != null) {
+                this.m_dispEntities[i].mouseEnabled = mouseEnabled;
             }
         }
     }
@@ -55,10 +124,10 @@ class PathSegmentObject {
 
     setWireframeEnabled(wireframeEnabled: boolean): void {
 
-        if(this.m_wireframeEnabled !== wireframeEnabled) {
+        if (this.m_wireframeEnabled !== wireframeEnabled) {
             this.m_wireframeEnabled = wireframeEnabled;
             for (let i: number = 0; i < this.m_dispEntities.length; ++i) {
-                if (this.m_dispEntities[i] != null) {                    
+                if (this.m_dispEntities[i] != null) {
                     this.reInitialize(this.m_dispEntities[i], true);
                 }
             }
@@ -71,7 +140,7 @@ class PathSegmentObject {
 
         mesh = this.m_geomBuilder.buildRoadSurface(mesh, posTable, uScale, vScale, uvType);
         this.distance = mesh.distance;
-        if (dispEntity == null) {
+        if (dispEntity == null || dispEntity.getMaterial() == null) {
             //console.log("create new road entity");
 
             let material = new Default3DMaterial();
@@ -80,7 +149,10 @@ class PathSegmentObject {
             mesh.setBufSortFormat(material.getBufSortFormat());
             mesh.wireframe = this.m_wireframeEnabled;
             mesh.initialize();
-            dispEntity = new PathSegmentEntity();
+            if (dispEntity == null) {
+                dispEntity = new PathSegmentEntity();
+                dispEntity.segIndex = this.getSegIndex();
+            }
             dispEntity.setMesh(mesh);
             dispEntity.setMaterial(material);
             this.m_engine.rscene.addEntity(dispEntity);
@@ -108,9 +180,9 @@ class PathSegmentObject {
             // console.log("##### Build R disp Begin...");
             let halfWidth: number = roadWidth * 0.5;
             let dis: number = halfWidth;
-            
+
             let offsetXYZ: Vector3D = this.m_offsetXYZ;
-            
+
             let tvList: Pos3D[] = this.m_pathTool.calcExpandXOZTVList(curvePosList, null, pathClosed);
             //console.log("tvList: ", tvList);
 
@@ -137,8 +209,8 @@ class PathSegmentObject {
             entities[0] = this.buildPathEntity(entities[0], tableTop, texTop, 1.0, 0.0, 1);
             entities[1] = this.buildPathEntity(entities[1], tableBottom, texBottom, 1.0, 0.05, 0);
 
-            for(let i: number = 0; i < entities.length; ++i) {
-                if(entities[i] != null) {
+            for (let i: number = 0; i < entities.length; ++i) {
+                if (entities[i] != null) {
                     //entities[i].setPosition(offsetXYZ);
                     entities[i].update();
                 }
@@ -155,10 +227,10 @@ class PathSegmentObject {
             // console.log("##### Build R disp Begin...");
             let halfWidth: number = roadWidth * 0.5;
             let dis: number = halfWidth;
-            
+
             let offsetXYZ: Vector3D = this.m_offsetXYZ;
             offsetXYZ.setXYZ(0.0, 0.0, 0.0);
-            
+
             let posListL: Pos3D[] = this.m_pathTool.calcOnePosListByTVList(tvList, curvePosList, offsetXYZ, -dis);
             let posListL1: Pos3D[] = this.m_pathTool.calcOnePosListByTVList(tvList, curvePosList, offsetXYZ, 0);
             let posListR: Pos3D[] = this.m_pathTool.calcOnePosListByTVList(tvList, curvePosList, offsetXYZ, dis);
@@ -170,18 +242,18 @@ class PathSegmentObject {
             let table: Pos3D[][] = this.m_pathTool.calcTwoPosListByTVList(tvList, posListL, posListR, offsetXYZ, 0);
             lbList = table[0];
             rbList = table[1];
-            
+
             let tableTop: Pos3D[][] = [posListL, posListL1, posListR];
             let tableBottom: Pos3D[][] = [posListR, rbList, lbList, posListL];
             let texTop = this.m_engine.texLoader.getTexByUrl("static/assets/roadSurface04.jpg");
             let texBottom = this.m_engine.texLoader.getTexByUrl("static/assets/brick_d.jpg");
-            
+
             let entities: PathSegmentEntity[] = this.m_dispEntities;
             entities[0] = this.buildPathEntity(entities[0], tableTop, texTop, 1.0, 0.0, 1);
             entities[1] = this.buildPathEntity(entities[1], tableBottom, texBottom, 1.0, 0.05, 0);
 
-            for(let i: number = 0; i < entities.length; ++i) {
-                if(entities[i] != null) {
+            for (let i: number = 0; i < entities.length; ++i) {
+                if (entities[i] != null) {
                     entities[i].update();
                 }
             }
@@ -189,14 +261,14 @@ class PathSegmentObject {
             Pos3DPool.RestoreTable(tableBottom);
         }
     }
-    
+
     getPathSegmentEntities(): PathSegmentEntity[] {
 
         let entities: PathSegmentEntity[] = this.m_dispEntities;
         let new_entities: PathSegmentEntity[] = [];
-        for(let i: number = 0; i < entities.length; ++i) {
-            if(entities[i] != null) {
-                new_entities.push( entities[i] );
+        for (let i: number = 0; i < entities.length; ++i) {
+            if (entities[i] != null) {
+                new_entities.push(entities[i]);
             }
         }
         return new_entities;
@@ -207,7 +279,7 @@ class PathSegmentObject {
 
             let entities: PathSegmentEntity[] = this.m_dispEntities;
             let data: SegmentData;
-            for(let i: number = 0; i < segments.length; ++i) {
+            for (let i: number = 0; i < segments.length; ++i) {
                 data = segments[i];
                 let tex: TextureProxy = this.m_engine.texLoader.getTexByUrl(data.texturePath);
                 entities[i] = this.buildPathEntity(entities[i], data.posTable, tex, data.uScale, data.vScale, data.uvType);
@@ -215,7 +287,7 @@ class PathSegmentObject {
         }
     }
     destroy(): void {
-        if(!this.m_initFlag) {
+        if (!this.m_initFlag) {
             this.clear();
             this.m_engine = null;
             this.m_pathTool = null;

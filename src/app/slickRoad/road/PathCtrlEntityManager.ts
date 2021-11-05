@@ -10,10 +10,13 @@ import IEntityTransform from "../../../vox/entity/IEntityTransform";
 import Default3DMaterial from "../../../vox/material/mcase/Default3DMaterial";
 import SelectionBar from "../../../orthoui/button/SelectionBar";
 import ProgressBar from "../../../orthoui/button/ProgressBar";
+import SelectionEvent from "../../../vox/event/SelectionEvent";
 
 import { PathKeyNode } from "./PathKeyNode";
+import { RoadSegObjectManager } from "./RoadSegObjectManager";
 import { PathCtrlEntity } from "../entity/PathCtrlEntity";
 import MathConst from "../../../vox/math/MathConst";
+import { PathSegmentEntity } from "../entity/PathSegmentEntity";
 
 class PathCtrlEntityManager {
 
@@ -23,8 +26,10 @@ class PathCtrlEntityManager {
     private m_initFlag: boolean = true;
     private m_trlPosVisible: boolean = true;
     private m_engine: EngineBase = null;
+    private m_roadSegObjManager: RoadSegObjectManager = null;
     private m_path: RoadPath = null;
     private m_srcEntity: Sphere3DEntity = null;
+    private m_srcEntityRadius: number = 25;
     private m_pathCtrlEntitys: PathCtrlEntity[] = [];
     private m_ctrlEntity: PathCtrlEntity = null;
     private m_tempPos: Vector3D = new Vector3D();
@@ -33,23 +38,26 @@ class PathCtrlEntityManager {
      */
     private m_segDistance: number = 100.0;
 
-    addPosBtn: SelectionBar = null;
+    //addPosBtn: SelectionBar = null;
     currPosCurvationFreezeBtn: SelectionBar = null;
     segTotalCtrlBtn: ProgressBar = null;
     curvatureFactorHeadBtn: ProgressBar = null;
     curvatureFactorTailBtn: ProgressBar = null;
     editorUI: PathCurveEditorUI = null;
 
-    initialize(engine: EngineBase, path: RoadPath): void {
+    initialize(engine: EngineBase, path: RoadPath, roadSegObjManager: RoadSegObjectManager): void {
 
         console.log("PathCtrlEntityManager::initialize()......");
         if (this.m_initFlag) {
 
-            this.m_engine = engine;
             this.m_initFlag = false;
+            this.m_engine = engine;
             this.m_path = path;
+            this.m_roadSegObjManager = roadSegObjManager;
+            this.m_roadSegObjManager.addEventListener(SelectionEvent.SELECT, this, this.selectRoadSegListener);
+
             this.m_srcEntity = new Sphere3DEntity();
-            this.m_srcEntity.initialize(25, 10, 10);
+            this.m_srcEntity.initialize(this.m_srcEntityRadius, 10, 10);
         }
     }
     setAllPosCurvatureFreeze(frzeeze: boolean): void {
@@ -61,14 +69,29 @@ class PathCtrlEntityManager {
             }
         }
     }
+    /**
+     * 设置当前宽度控制因子
+     * @param factor 宽度控制因子
+     */
+    setCurrWidthFactor(factor: number): void {
+
+        let editEntity: PathCtrlEntity = this.getTargetPathCtrlEntity();
+        if (editEntity != null) {
+            let node: PathKeyNode = this.m_path.getPosNodeAt(editEntity.pathCtrlPosIndex);
+            factor = MathConst.Clamp(factor, 0.0, 1.0);
+            node.pathRadius = 2 + Math.round(500.0 * factor);
+            this.m_path.version++;
+        }
+    }
     setSegmentsTotalFactor(factor: number): void {
+
         let editEntity: PathCtrlEntity = this.getTargetPathCtrlEntity();
         if (editEntity != null) {
             let node: PathKeyNode = this.m_path.getPosNodeAt(editEntity.pathCtrlPosIndex);
             factor = 1.0 - MathConst.Clamp(factor, 0.0, 1.0);
-            node.stepDistance = Math.round(this.m_segDistance * factor);
-            if (node.stepDistance < 0.1) {
-                node.stepDistance = 0.1;
+            node.stepDistance = (this.m_segDistance * factor);
+            if (node.stepDistance < 0.02) {
+                node.stepDistance = 0.02;
             }
             this.m_path.version++;
         }
@@ -246,34 +269,57 @@ class PathCtrlEntityManager {
     private mouseDownEditableEntity(evt: any): void {
         if (this.m_editEnabled) {
             let editEntity: PathCtrlEntity = evt.target;
-            this.m_ctrlEntity = editEntity;
-            let node: PathKeyNode = this.m_path.getPosNodeAt(editEntity.pathCtrlPosIndex);
-            if (node.curvationFreeze) {
-                this.currPosCurvationFreezeBtn.select(false);
-            }
-            else {
-                this.currPosCurvationFreezeBtn.deselect(false);
-            }
-            // 下面这一句有逻辑冲突
-            // this.addPosBtn.deselect(true);
-
-            let value: number = (1.0 - node.stepDistance / this.m_segDistance);
-            this.segTotalCtrlBtn.setProgress(MathConst.Clamp(value, 0.0, 1.0), false);
-
-            value = node.positiveCtrlFactor * 0.5 + 0.5;
-            this.curvatureFactorHeadBtn.setProgress(MathConst.Clamp(value, 0.0, 1.0), false);
-            value = node.negativeCtrlFactor * 0.5 + 0.5;
-            this.curvatureFactorTailBtn.setProgress(MathConst.Clamp(value, 0.0, 1.0), false);
-            //node.stepDistance = Math.round(this.m_segDistance * factor);
-            editEntity.getPosition(this.m_tempPos);
-            this.m_tempPos.subtractBy(evt.wpos);
-            let offsetPos: Vector3D = this.m_tempPos;
-            this.editorUI.dragMoveController.setVisible(true);
-            this.editorUI.dragMoveController.setTarget(evt.target);
-            this.editorUI.dragMoveController.setTargetPosOffset(offsetPos);
-            this.editorUI.dragMoveController.setPosition(evt.wpos);
-            this.editorUI.dragMoveController.selectByParam(evt.raypv, evt.raytv, evt.wpos);
+            this.selectRoadSeg(editEntity, evt.wpos);
+            this.editorUI.dragMoveController.selectByParam(evt.raypv, evt.raytv, evt.wpos);  
+            this.m_roadSegObjManager.selectAt(this.m_ctrlEntity.pathCtrlPosIndex, false);          
         }
+    }
+    
+    private selectRoadSegListener(evt: any): void {
+        console.log("selectRoadSegListener(), evt: ", evt);
+        if (this.m_editEnabled) {
+            let segEntity: PathSegmentEntity = evt.target as PathSegmentEntity;
+            let editEntity: PathCtrlEntity = this.m_pathCtrlEntitys[segEntity.segIndex];
+            
+            let pos: Vector3D = new Vector3D();
+            editEntity.getPosition(pos);
+            pos.y += this.m_srcEntityRadius;
+            this.selectRoadSeg(editEntity, pos);
+        }
+    }
+    private selectRoadSeg(editEntity: PathCtrlEntity, wpos: Vector3D): void {
+        if(this.m_ctrlEntity != editEntity) {
+            if(this.m_ctrlEntity != null) {
+                this.m_roadSegObjManager.deselectAt(this.m_ctrlEntity.pathCtrlPosIndex, false);
+            }
+        }
+        this.m_ctrlEntity = editEntity;
+        let node: PathKeyNode = this.m_path.getPosNodeAt(editEntity.pathCtrlPosIndex);
+        if (node.curvationFreeze) {
+            this.currPosCurvationFreezeBtn.select(false);
+        }
+        else {
+            this.currPosCurvationFreezeBtn.deselect(false);
+        }
+        // 下面这一句有逻辑冲突
+        // this.addPosBtn.deselect(true);
+
+        let value: number = (1.0 - node.stepDistance / this.m_segDistance);
+        this.segTotalCtrlBtn.setProgress(MathConst.Clamp(value, 0.0, 1.0), false);
+
+        value = node.positiveCtrlFactor * 0.5 + 0.5;
+        this.curvatureFactorHeadBtn.setProgress(MathConst.Clamp(value, 0.0, 1.0), false);
+        value = node.negativeCtrlFactor * 0.5 + 0.5;
+        this.curvatureFactorTailBtn.setProgress(MathConst.Clamp(value, 0.0, 1.0), false);
+        
+        editEntity.getPosition(this.m_tempPos);
+        this.m_tempPos.subtractBy(wpos);
+        let offsetPos: Vector3D = this.m_tempPos;
+        this.editorUI.dragMoveController.setVisible(true);
+        this.editorUI.dragMoveController.setTarget(editEntity);
+        this.editorUI.dragMoveController.setTargetPosOffset(offsetPos);
+        this.editorUI.dragMoveController.setPosition(wpos);
+        //this.editorUI.dragMoveController.selectByParam(evt.raypv, evt.raytv, evt.wpos);
     }
 }
 

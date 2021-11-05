@@ -4,29 +4,35 @@ import { RoadGeometryBuilder } from "../geometry/RoadGeometryBuilder";
 import { PathCurveEditor } from "./PathCurveEditor";
 import { Pos3D } from "../base/Pos3D";
 import DataMesh from "../../../vox/mesh/DataMesh";
-import {GeometryMerger} from "../../../vox/mesh/GeometryMerger";
-import {PathSegmentObject} from "./PathSegmentObject";
+import { GeometryMerger } from "../../../vox/mesh/GeometryMerger";
+import { PathSegmentObject } from "./PathSegmentObject";
 import { PathTool } from "./PathTool";
 import { PathSegmentTool } from "./segment/PathSegmentTool";
 import { Pos3DPool } from "../base/Pos3DPool";
 import { SegmentData } from "./segment/SegmentData";
+import { RoadSegObjectManager } from "./RoadSegObjectManager";
+import MathConst from "../../../vox/math/MathConst";
 
 class RoadEntityBuilder {
 
     constructor() { }
 
     private m_initFlag: boolean = true;
+    private m_editEnabled: boolean = true;
     private m_engine: EngineBase = null;
     private m_pathEditor: PathCurveEditor = null;
     private m_pathDataVresion: number = -1;
-    private m_roadWidth: number = 120.0;
-    
+    //private m_roadWidth: number = 120.0;
+
     private m_pathTool: PathTool = new PathTool();
     private m_pathTableTool: PathSegmentTool = new PathSegmentTool();
-    private m_segList: PathSegmentObject[] = [];
 
+    readonly segObjManager: RoadSegObjectManager = new RoadSegObjectManager();
     readonly geometryBuilder: RoadGeometryBuilder = new RoadGeometryBuilder();
 
+    getRoadWidth(): number {
+        return this.m_pathEditor.getPathWholeWidthFactor();
+    }
     initialize(engine: EngineBase, pathEditor: PathCurveEditor): void {
 
         console.log("RoadEntityBuilder::initialize()......");
@@ -36,7 +42,8 @@ class RoadEntityBuilder {
             this.m_initFlag = false;
             this.m_engine = engine;
             this.m_pathEditor = pathEditor;
-            this.m_pathTableTool.initialize( this.m_pathEditor );
+            this.m_pathTableTool.initialize(this.m_pathEditor);
+            this.segObjManager.initialize(this.m_engine);
 
 
             // let posTable: Vector3D[][] = [
@@ -86,55 +93,30 @@ class RoadEntityBuilder {
             //*/
         }
     }
-
+    
     clear(): void {
+        this.segObjManager.clear();
+    }
 
-        // this.m_pathSeg.clear();
-        for(let i: number = 0; i < this.m_segList.length; ++i) {
-            if(this.m_segList[i] != null) {
-                this.m_segList[i].clear();
-            }
+    setEditEnabled(enabled: boolean): void {
+        this.m_editEnabled = enabled;
+        this.segObjManager.setMouseEnabled(enabled);
+        if (!enabled) {
+            this.segObjManager.deselectAll();
         }
     }
-    setWireframeEnabled(wireframeEnabled: boolean): void {
-        //this.m_pathSeg.setWireframeEnabled( wireframeEnabled );
-        for(let i: number = 0; i < this.m_segList.length; ++i) {
-            if(this.m_segList[i] != null) {
-                this.m_segList[i].setWireframeEnabled( wireframeEnabled );
-            }
-        }
-    }
-    private fitSegList(srcLen: number, dstLen: number): void {
-        
-        let pathSeg: PathSegmentObject;
-        let i: number;
-        if(srcLen < dstLen) {
-            // append
-            for(i = srcLen; i < dstLen; ++i) {
-                pathSeg = new PathSegmentObject();
-                pathSeg.initialize(this.m_engine);
-                this.m_segList.push(pathSeg);
-            }
-        }
-        else {
-            // remove
-            for(i = dstLen; i < srcLen; ++i) {
-                pathSeg = this.m_segList.pop();
-                pathSeg.destroy();
-            }
-        }
+    getEditEnabled(): boolean {
+        return this.m_editEnabled;
     }
     private buildRoadSegmentAll(): void {
 
-        let srcPosList: Pos3D[] = this.m_pathEditor.getPathPosList();
-        let srcPosTable: Pos3D[][] = this.m_pathEditor.getPathPosTable();
-        //this.m_pathSeg.buildByPathPosList(curvePosList, this.m_roadWidth, this.m_pathEditor.isPathClosed());
-
+        let srcPosList: Pos3D[] = this.m_pathEditor.getPathCurvePosList();
+        let srcPosTable: Pos3D[][] = this.m_pathEditor.getPathCurvePosTable();
         let i: number = 0;
         let subLen: number = 0;
         let pathSeg: PathSegmentObject;
 
-        this.fitSegList(this.m_segList.length, srcPosTable.length);
+        this.segObjManager.fitSegList(srcPosTable.length, this.m_pathTableTool.getSegMeshesTotal());
 
         let posList: Pos3D[];
         let tvList: Pos3D[];
@@ -143,13 +125,14 @@ class RoadEntityBuilder {
         let srcPosLen: number = srcPosList.length;
         let endIndex: number;
         let usePosTable: boolean = true;
-        if(usePosTable) {
-            this.m_pathTableTool.build(this.m_roadWidth);
+        if (usePosTable) {
+            this.m_pathTableTool.build(this.m_pathEditor.getPathWholeWidthFactor());
+
             let segments: SegmentData[];
             //console.log("### A, listTotal: ",listTotal);
 
             let tempTot: number = 0;
-            for(i = 0; i < listTotal; ++i) {
+            for (i = 0; i < listTotal; ++i) {
 
                 subLen = srcPosTable[i].length;
                 tempTot += subLen;
@@ -157,10 +140,10 @@ class RoadEntityBuilder {
                 //console.log(i,", subLen: ",subLen, ", srcPosLen: ",srcPosLen, ", index, endIndex: ",index, endIndex);                
                 segments = this.m_pathTableTool.slice(index, endIndex);
                 index += subLen;
-                pathSeg = this.m_segList[i];
+                pathSeg = this.segObjManager.getSegEntityObjectAt(i);
                 pathSeg.posTotal = subLen;
                 pathSeg.buildByPathSegments(segments);
-                for(let j: number = 0; j < segments.length; ++j) {
+                for (let j: number = 0; j < segments.length; ++j) {
                     segments[j].reset();
                 }
             }
@@ -169,32 +152,32 @@ class RoadEntityBuilder {
         }
         else {
             let srcTVList: Pos3D[] = this.m_pathTool.calcExpandXOZTVList(srcPosList, null, this.m_pathEditor.isPathClosed());
-            for(i = 0; i < listTotal; ++i) {
+            for (i = 0; i < listTotal; ++i) {
 
                 subLen = srcPosTable[i].length;
                 endIndex = ((i + 1) < listTotal) ? (index + subLen + 1) : srcPosLen;
                 posList = srcPosList.slice(index, endIndex);
                 tvList = srcTVList.slice(index, endIndex);
                 index += subLen;
-                pathSeg = this.m_segList[i];
-                pathSeg.buildByPathPosAndTVList(posList, tvList, this.m_roadWidth);
+                pathSeg = this.segObjManager.getSegEntityObjectAt(i);
+                pathSeg.buildByPathPosAndTVList(posList, tvList, this.m_pathEditor.getPathWholeWidthFactor());
             }
             // let posList: Pos3D[] = srcPosList.slice(0, srcPosTable[0].length);
             // let tvList: Pos3D[] = srcTVList.slice(0, srcPosTable[0].length);
             // this.m_pathSeg.buildByPathPosAndTVList(posList, tvList);
-    
+
             // this.m_pathSeg.buildByPathPosAndTVList(srcPosList, srcTVList);
             Pos3DPool.RestoreList(srcTVList);
         }
     }
     getSegList(): PathSegmentObject[] {
-        return this.m_segList;
+        return this.segObjManager.getSegList();
     }
     build(): void {
         let posTotal: number = this.m_pathEditor.getPathKeyPosTotal();
         if (posTotal > 1 && this.m_pathDataVresion != this.m_pathEditor.getPathVersion()) {
             this.m_pathDataVresion = this.m_pathEditor.getPathVersion();
-            
+
             this.buildRoadSegmentAll();
         }
     }

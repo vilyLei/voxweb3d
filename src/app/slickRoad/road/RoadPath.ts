@@ -2,7 +2,6 @@ import Vector3D from "../../../vox/math/Vector3D";
 import { PathKeyNode } from "./PathKeyNode";
 import { TVTool } from "./TVTool";
 import { Bezier3Module } from "./Bezier3Module";
-import { Pos3DPool } from "../base/Pos3DPool";
 import { Pos3D } from "../base/Pos3D";
 
 /**
@@ -15,7 +14,7 @@ class RoadPath {
     private m_pathClosed: boolean = false;
     private m_curvePosList: Pos3D[] = null;
     readonly bezier3Module: Bezier3Module = new Bezier3Module();
-    // stepDistance: number = 30;
+    
     constructor() {
     }
     setBezierCurveSegTotal(segTotal: number): void {
@@ -46,7 +45,7 @@ class RoadPath {
      * @returns 曲线路径上的所有位置点对象的分段数据
      */
     getCurvePosTable(): Pos3D[][] {
-        return this.bezier3Module.getPathPosTable();
+        return this.bezier3Module.getPathCurvePosTable();
     }
     /**
      * 获取曲线路径上的所有位置点对象

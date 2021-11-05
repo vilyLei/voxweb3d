@@ -7,6 +7,8 @@ import { PathCurveEditorUI } from "./PathCurveEditorUI";
 import { PathCtrlEntityManager } from "./PathCtrlEntityManager";
 import Line3DEntity from "../../../vox/entity/Line3DEntity";
 import { Pos3D } from "../base/Pos3D";
+import { RoadSegObjectManager } from "./RoadSegObjectManager";
+import MathConst from "../../../vox/math/MathConst";
 
 class PathCurveEditor {
 
@@ -15,8 +17,8 @@ class PathCurveEditor {
     private m_initFlag: boolean = true;
     private m_engine: EngineBase = null;
 
+    private m_pathWholeWidthFactor: number = 120.0;
     private m_roadBuilder: RoadBuilder = new RoadBuilder();
-    readonly pathCtrlEntityManager: PathCtrlEntityManager = new PathCtrlEntityManager();
 
     private m_addPosEnabled: boolean = true;
     private m_editEnabled: boolean = false;
@@ -25,9 +27,11 @@ class PathCurveEditor {
     private m_pathLineVersion: number = -1;
     private m_buildPathVersion: number = -1;
     private m_line: Line3DEntity = null;
+
+    readonly pathCtrlEntityManager: PathCtrlEntityManager = new PathCtrlEntityManager();
     readonly editorUI: PathCurveEditorUI = new PathCurveEditorUI();
 
-    initialize(engine: EngineBase): void {
+    initialize(engine: EngineBase, roadSegObjManager: RoadSegObjectManager): void {
 
         console.log("PathCurveEditor::initialize()......");
         if (this.m_initFlag) {
@@ -35,7 +39,7 @@ class PathCurveEditor {
             this.m_initFlag = false;
             this.m_engine = engine;
 
-            this.initEditor();
+            this.initEditor( roadSegObjManager );
             this.editorUI.initialize(engine);
             this.editorUI.dragMoveController.setPosition(new Vector3D(0.0, 100.0, 0.0));
 
@@ -76,13 +80,13 @@ class PathCurveEditor {
     getCloseEnabled(): boolean {
         return this.m_closeEnabled;
     }
-    private initEditor(): void {
+    private initEditor(roadSegObjManager: RoadSegObjectManager): void {
 
         let path: RoadPath = this.m_roadBuilder.appendPath();
         this.m_path = path;
         
         this.pathCtrlEntityManager.editorUI = this.editorUI;
-        this.pathCtrlEntityManager.initialize(this.m_engine, this.m_path);
+        this.pathCtrlEntityManager.initialize(this.m_engine, this.m_path, roadSegObjManager);
 
         let pls = new Line3DEntity();
         pls.dynColorEnabled = true;
@@ -136,18 +140,31 @@ class PathCurveEditor {
      * 获取路径曲线路径上的所有位置点对象的分段数据
      * @returns 路径曲线路径上的所有位置点对象的分段数据
      */
-    getPathPosTable(): Pos3D[][] {
+    getPathCurvePosTable(): Pos3D[][] {
         return this.m_path.getCurvePosTable();
     }
     /**
      * 获取路径曲线路径上的所有位置点对象
      * @returns 路径曲线路径上的所有位置点对象
      */
-    getPathPosList(): Pos3D[] {
+    getPathCurvePosList(): Pos3D[] {
         return this.m_path.getCurvePosList();
     }
     getPathVersion(): number {
         return this.m_path.version;
+    }
+    setPathWholeWidthFactor(factor: number): void {
+
+        factor = MathConst.Clamp(factor, 0.0, 1.0);
+        factor = 4.0 * factor;
+        factor = MathConst.Clamp(factor, 0.1, 4.0);
+
+        let pw: number = 20 + Math.round(factor * 500.0);        
+        //this.m_pathWholeWidthFactor = pw;
+        //this.m_path.version++;
+    }
+    getPathWholeWidthFactor(): number {
+        return this.m_pathWholeWidthFactor;
     }
     getPathKeyPosTotal(): number {
         return this.m_path.getPosListLength();
@@ -163,7 +180,7 @@ class PathCurveEditor {
             if(this.getPathKeyPosTotal() >= 3 || this.isPathClosed()) {
                 this.m_line.setVisible(false);
             }else{
-                let posList: Pos3D[] = this.getPathPosList();
+                let posList: Pos3D[] = this.getPathCurvePosList();
                 this.buildPathLine(posList);
             }
         }

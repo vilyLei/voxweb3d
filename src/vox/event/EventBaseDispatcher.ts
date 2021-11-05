@@ -13,13 +13,9 @@ export default class EventBaseDispatcher implements IEvtDispatcher {
     
     private m_evtNodeMap: Map<number, EvtNode> = new Map();
     uuid: string = "";
+    data: any = null;
     constructor() {
     }
-    //  setEventNodeByType(evtType: number): void {
-    //      if(evtType > 1 && !this.m_evtNodeMap.has(evtType)) {
-    //          this.m_evtNodeMap.set(evtType, new EvtNode());
-    //      }
-    //  }
     getClassType(): number {
         return EventBase.EventClassType;
     }
@@ -32,6 +28,7 @@ export default class EventBaseDispatcher implements IEvtDispatcher {
     dispatchEvt(evt: any): number {
         if (evt != null) {
             if(this.uuid != "") evt.uuid = this.uuid;
+            if(this.data != null) evt.data = this.data;
             let t: number = evt.type;
             if (t > 1 && this.m_evtNodeMap.has(t)) {
                 return this.m_evtNodeMap.get(t).dispatch(evt);

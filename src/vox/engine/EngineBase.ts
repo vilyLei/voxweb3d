@@ -6,6 +6,7 @@ import IRendererScene from "../../vox/scene/IRendererScene";
 import RendererScene from "../../vox/scene/RendererScene";
 import RendererSubScene from "../../vox/scene/RendererSubScene";
 
+import Stage3D from "../../vox/display/Stage3D";
 import Vector3D from "../../vox/math/Vector3D";
 import CameraViewRay from "../../vox/view/CameraViewRay";
 import { OrthoUIScene } from "../../vox/ui/OrthoUIScene";
@@ -33,6 +34,7 @@ export class EngineBase {
     private m_sceneList: RendererSceneNode[] = [];
 
     readonly texLoader: ImageTextureLoader = null;
+    readonly stage3D: Stage3D = null;
     readonly rscene: RendererScene = null;
     readonly uiScene: OrthoUIScene = null;
     readonly interaction: UserInteraction = new UserInteraction();
@@ -57,6 +59,7 @@ export class EngineBase {
             // rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);
 
             let selfT: any = this;
+            selfT.stage3D = rscene.getStage3D();
             selfT.rscene = rscene;
             selfT.texLoader = new ImageTextureLoader(this.rscene.textureBlock);
 

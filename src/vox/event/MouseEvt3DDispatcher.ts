@@ -13,6 +13,7 @@ class MouseEvt3DDispatcher implements IEvtDispatcher {
     private m_evtNodes: EvtNode[] = null;
     private m_evtNodesLen: number = 17;
     uuid: string = "";
+    data: any = null;
     constructor() {
         this.m_evtNodesLen = MouseEvent.GetMouseEvtTypeValuesTotal();
         this.m_evtNodes = new Array(this.m_evtNodesLen);
@@ -31,6 +32,7 @@ class MouseEvt3DDispatcher implements IEvtDispatcher {
     dispatchEvt(evt: any): number {
         if (evt != null) {
             if(this.uuid != "") evt.uuid = this.uuid;
+            if(this.data != null) evt.data = this.data;
             let t: number = evt.type - MouseEvent.GetMouseEvtTypeValueBase();
             if (t >= 0 && t < MouseEvent.GetMouseEvtTypeValuesTotal()) {
                 if (this.m_evtNodes[t] != null) return this.m_evtNodes[t].dispatch(evt);

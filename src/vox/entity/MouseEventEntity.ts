@@ -12,7 +12,8 @@ import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
 
 export default class MouseEventEntity extends DisplayEntity {
 
-    private m_dispatcher: MouseEvt3DDispatcher = null;
+    protected m_dispatcher: MouseEvt3DDispatcher = null;
+    uuid: string = "";
     constructor(transform: ROTransform = null) {
         super(transform);
         this.initializeEvent();
@@ -24,21 +25,21 @@ export default class MouseEventEntity extends DisplayEntity {
     removeEventListener(type: number, listener: any, func: (evt: any) => void): void {
         this.m_dispatcher.removeEventListener(type, listener, func);
     }
-
+    setEvtDsipatchData(data: any): void {
+        this.m_dispatcher.data = data;
+    }
     protected initializeEvent(): void {
 
         this.mouseEnabled = true;
         if(this.m_dispatcher == null) {
             this.m_dispatcher = new MouseEvt3DDispatcher();
+            this.m_dispatcher.uuid = this.uuid;
             this.setEvtDispatcher(this.m_dispatcher);
         }
     }
     destroy(): void {
         super.destroy();
-        if(this.m_dispatcher != null) {
-            this.m_dispatcher.destroy();
-            this.m_dispatcher = null;
-        }
+        this.m_dispatcher = null;
     }
 
 }

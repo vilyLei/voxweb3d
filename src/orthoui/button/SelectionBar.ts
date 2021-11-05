@@ -45,7 +45,28 @@ export class SelectionBar {
     uuid: string = "selectionBar";
 
     constructor() { }
+    setOverColor(color: Color4): void {
 
+        if(this.nameButton != null) {
+            this.nameButton.overColor.copyFrom(color);
+            this.nameButton.setColor(color);
+        }
+        if(this.selectionButton != null) {
+            this.selectionButton.overColor.copyFrom(color);
+            this.selectionButton.setColor(color);
+        }
+    }
+    setOutColor(color: Color4): void {
+
+        if(this.nameButton != null) {
+            this.nameButton.outColor.copyFrom(color);
+            this.nameButton.setColor(color);
+        }
+        if(this.selectionButton != null) {
+            this.selectionButton.outColor.copyFrom(color);
+            this.selectionButton.setColor(color);
+        }
+    }
     enable(): void {
         this.m_enabled = true;
     }

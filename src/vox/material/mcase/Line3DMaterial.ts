@@ -106,6 +106,7 @@ export default class Line3DMaterial extends MaterialBase {
     private m_colorArray: Float32Array = null;
     constructor(dynColorEnabled: boolean = false) {
         super();
+        this.m_dynColorEnabled = dynColorEnabled;
         if (dynColorEnabled) {
             this.m_colorArray = new Float32Array([1.0, 1.0, 1.0, 1.0]);
             if (this.m_dynColorEnabled) {
@@ -115,7 +116,6 @@ export default class Line3DMaterial extends MaterialBase {
                 this.m_shaderUniformData = oum;
             }
         }
-        this.m_dynColorEnabled = dynColorEnabled;
     }
 
     getCodeBuf(): ShaderCodeBuffer {

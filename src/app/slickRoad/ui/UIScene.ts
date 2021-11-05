@@ -18,13 +18,14 @@ class UIScene {
     scene: Scene = null;
     private m_engine: EngineBase = null;
 
-    private m_switchEditBtn: SelectionBar = null;
-    private m_addPosBtn: SelectionBar = null;
+    private m_switchSceneEditBtn: SelectionBar = null;
+    private m_ctrlAddPosBtn: SelectionBar = null;
     private m_showPosBtn: SelectionBar = null;
     private m_currPosCurvationFreezeBtn: SelectionBar = null;
     private m_closePathBtn: SelectionBar = null;
 
     private m_segTotalCtrlBtn: ProgressBar = null;
+    private m_wholeWidthCtrlBtn: ProgressBar = null;
     private m_curvatureFactorHeadBtn: ProgressBar = null;
     private m_curvatureFactorTailBtn: ProgressBar = null;
 
@@ -36,13 +37,13 @@ class UIScene {
             this.m_engine.rscene.setClearUint24Color(0x656565);
             this.initBtns();
 
-            this.scene.pathEditor.pathCtrlEntityManager.addPosBtn = this.m_addPosBtn;
+            //this.scene.pathEditor.pathCtrlEntityManager.ctrlAddPosBtn = this.m_ctrlAddPosBtn;
             this.scene.pathEditor.pathCtrlEntityManager.currPosCurvationFreezeBtn = this.m_currPosCurvationFreezeBtn;
             this.scene.pathEditor.pathCtrlEntityManager.segTotalCtrlBtn = this.m_segTotalCtrlBtn;
             this.scene.pathEditor.pathCtrlEntityManager.curvatureFactorHeadBtn = this.m_curvatureFactorHeadBtn;
             this.scene.pathEditor.pathCtrlEntityManager.curvatureFactorTailBtn = this.m_curvatureFactorTailBtn;
-
-            this.scene.setEditEnabled(this.m_switchEditBtn != null ? this.m_switchEditBtn.isSelected() : false);            
+            this.m_wholeWidthCtrlBtn.setValue(0.25,true);
+            this.scene.setEditEnabled(this.m_switchSceneEditBtn != null ? this.m_switchSceneEditBtn.isSelected() : false);            
         }
     }
     run(): void {
@@ -51,7 +52,7 @@ class UIScene {
     
     private m_btnSize: number = 24;
     private m_btnPX: number = 80.0;
-    private m_btnPY: number = 110.0;
+    private m_btnPY: number = 95.0;
     private m_verticalSpace: number = 2;
     private m_selectBtns: SelectionBar[] = [];
     private m_btns: TextButton[] = [];
@@ -60,7 +61,7 @@ class UIScene {
     private m_btnBgColor: Color4 = new Color4(1.0,1.0,1.0,0.3);
     private initBtns(): void {
 
-        let dis: number = 0;
+        let dis: number = 6;
         this.m_btnSize = 20;
         this.m_verticalSpace = 3;
         if(RendererDevice.IsMobileWeb()) {
@@ -76,46 +77,59 @@ class UIScene {
         selectBtn = this.createSelectBtn("清理场景", "clearScene", "开", "关", true);
         this.m_btnPY += dis;
         selectBtn = this.createSelectBtn("模型储存", "saveGeomData", "开", "关", true, false, fontColor0);
+        selectBtn = this.createSelectBtn("切线储存", "saveTVData", "开", "关", true, false, fontColor0);
         selectBtn = this.createSelectBtn("保存数据", "saveData", "开", "关", false, false, fontColor0);
+        selectBtn = this.createSelectBtn("保存工程", "saveProject", "开", "关", false, false, fontColor0);
 
         this.m_btnPY += dis;
         //  selectBtn = this.createSelectBtn("构建几何数据", "buildGeomData", "开", "关", false);
         //  this.m_btnPY += dis;
-        selectBtn = this.createSelectBtn("场景编辑", "switchEdit", "开", "关", false);
-        this.m_switchEditBtn = selectBtn;
+        selectBtn = this.createSelectBtn("场景编辑", "switchSceneEdit", "开", "关", false);
+        this.m_switchSceneEditBtn = selectBtn;
         this.m_btnPY += dis;
         
         this.m_btnBgColor.setRGBA4f(0.0,0.7,0.3,0.3);
-        fontColor2.setRGBA4f(2.6,0.6,0.8, 1.0);
+        fontColor0.setRGB3f(1.3,1.0,0.0);
+        fontColor2.setRGBA4f(2.1,0.7,3.7, 1.0);
         selectBtn = this.createSelectBtn("地形显示", "terrainShow", "开", "关", false, false, fontColor2);
-        selectBtn.nameButton.overColor.setRGB3f(0.7,0.8,0.0);
-        selectBtn.nameButton.outColor.copyFrom(fontColor2);
+        selectBtn.setOverColor(fontColor0);
+        selectBtn.setOutColor(fontColor2);
+        selectBtn.nameButton.setColor(selectBtn.nameButton.outColor);
         selectBtn = this.createSelectBtn("网格显示", "switchWireframe", "开", "关", false, false, fontColor2);
-        selectBtn.nameButton.overColor.setRGB3f(0.7,0.8,0.0);
-        selectBtn.nameButton.outColor.copyFrom(fontColor2);
+        selectBtn.setOverColor(fontColor0);
+        selectBtn.setOutColor(fontColor2);
         selectBtn = this.createSelectBtn("控点显示", "showPathCtrlPos", "开", "关", true, false, fontColor2);
-        selectBtn.nameButton.overColor.setRGB3f(0.7,0.8,0.0);
-        selectBtn.nameButton.outColor.copyFrom(fontColor2);
+        selectBtn.setOverColor(fontColor0);
+        selectBtn.setOutColor(fontColor2);
         this.m_btnBgColor.setRGBA4f(1.0,1.0,1.0,0.3);
         this.m_btnPY += dis;
         this.m_showPosBtn = selectBtn;
         selectBtn = this.createSelectBtn("路径闭合", "closePath", "开", "关", false, false, fontColor1);
         this.m_closePathBtn = selectBtn;
-        selectBtn = this.createSelectBtn("控制增加", "switchAddPathPos", "开", "关", true, false, fontColor1);
-        this.m_addPosBtn = selectBtn;
-        texBtn = this.createTextBtn("删除控点", "delCurrPos", false, fontColor1);
-        texBtn = this.createTextBtn("插入控点", "insertPos", false, fontColor1);
+        selectBtn = this.createSelectBtn("增加控点", "ctrlAddPosBtn", "开", "关", true, false, fontColor1);
+        this.m_ctrlAddPosBtn = selectBtn;
+        this.m_btnPY += dis;
+        texBtn = this.createTextBtn("删除对象", "delCurrObject", false, fontColor1);
+        texBtn = this.createTextBtn("添加对象", "addCurrObject", false, fontColor1);
         this.m_btnPY += dis;
         let proBtn: ProgressBar;
+        proBtn = this.createProgressBtn("宽度变化", "pathWidthchange", 0.5);
+        proBtn = this.createProgressBtn("当前宽度", "currWidthCtrl", 0.2);
+        proBtn = this.createProgressBtn("总体宽度", "wholeWidthCtrl", 0.25);
+        this.m_wholeWidthCtrlBtn = proBtn;
         proBtn = this.createProgressBtn("分段密度", "segTotalCtrl", 0.2);
+        proBtn.step = 0.01;
         this.m_segTotalCtrlBtn = proBtn;
-        proBtn = this.createProgressBtn("尾部曲率", "curvatureFactorTail", 0.3);
+        this.m_btnPY += dis;
+        proBtn = this.createProgressBtn("尾部弯度", "curvatureFactorTail", 0.3);
         this.m_curvatureFactorTailBtn = proBtn;
-        proBtn = this.createProgressBtn("头部曲率", "curvatureFactorHead", 0.3);
+        proBtn = this.createProgressBtn("头部弯度", "curvatureFactorHead", 0.3);
         this.m_curvatureFactorHeadBtn = proBtn;
-        selectBtn = this.createSelectBtn("当前曲率", "currCurvatureFreeze", "已冻结", "未冻结", false);
+        proBtn = this.createProgressBtn("弯度夹角", "curvatureAngle", 0.0);
+        proBtn = this.createProgressBtn("弯度朝向", "curvatureDirec", 0.0);
+        selectBtn = this.createSelectBtn("当前弯度", "currCurvatureFreeze", "已冻结", "未冻结", false);
         this.m_currPosCurvationFreezeBtn = selectBtn;
-        selectBtn = this.createSelectBtn("全局曲率", "allCurvatureFreeze", "已冻结", "未冻结", false);
+        selectBtn = this.createSelectBtn("全局弯度", "allCurvatureFreeze", "已冻结", "未冻结", false);
         this.m_btnPY += dis;
         selectBtn = this.createSelectBtn("", "dragCamera", "拖动场景", "旋转场景", false);
         selectBtn = this.createSelectBtn("像机控制", "cameraCtrl", "开", "关", true);
@@ -224,6 +238,12 @@ class UIScene {
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
         let value: number = progEvt.value;
         switch( progEvt.uuid ) {
+            case "currWidthCtrl":
+                this.scene.pathEditor.pathCtrlEntityManager.setCurrWidthFactor(value);
+                break;
+            case "wholeWidthCtrl":
+                this.scene.pathEditor.setPathWholeWidthFactor(value);
+                break;
             case "segTotalCtrl":
                 this.scene.pathEditor.pathCtrlEntityManager.setSegmentsTotalFactor(value);
                 break;
@@ -242,10 +262,10 @@ class UIScene {
 
         let mEvt: MouseEvent = evt as MouseEvent;
         switch( mEvt.uuid ) {
-            case "insertPos":
+            case "addCurrObject":
                 this.scene.pathEditor.insertCtrlPosFromCurrPos();
                 break;
-            case "delCurrPos":
+            case "delCurrObject":
                 this.scene.pathEditor.delCurrCtrlPos();
                 break;
             default:
@@ -261,7 +281,7 @@ class UIScene {
                 this.scene.terrain.setVisible( selectEvt.flag );
                 break;
             case "switchWireframe":
-                this.scene.roadEntityBuilder.setWireframeEnabled( selectEvt.flag );
+                this.scene.roadEntityBuilder.segObjManager.setWireframeEnabled( selectEvt.flag );
                 break;
             case "currCurvatureFreeze":
                 this.scene.pathEditor.pathCtrlEntityManager.setcurrPosCurvatureFreeze( selectEvt.flag );
@@ -271,8 +291,7 @@ class UIScene {
                 if(selectEvt.flag) {
                     this.m_currPosCurvationFreezeBtn.select(false);
                 }
-                else {
-                    
+                else {                    
                     this.m_currPosCurvationFreezeBtn.deselect(false);
                 }
                 break
@@ -280,7 +299,7 @@ class UIScene {
                 this.m_engine.interaction.cameraCtrlEnabled = selectEvt.flag;
                 break;
             case "dragCamera":
-                if(this.m_switchEditBtn.isSelected()) {
+                if(this.m_switchSceneEditBtn.isSelected()) {
                     this.scene.setEditEnabled(!selectEvt.flag);
                 }
                 if (selectEvt.flag) {
@@ -293,11 +312,15 @@ class UIScene {
             case "showPathCtrlPos":
                 this.scene.pathEditor.pathCtrlEntityManager.setCtrlPosVisible(selectEvt.flag);
                 break;
-            case "switchAddPathPos":
+            case "ctrlAddPosBtn":
                 this.scene.pathEditor.setAddPosEnabled(selectEvt.flag);
                 break;
-            case "switchEdit":
-                this.scene.pathEditor.setEditEnabled(selectEvt.flag);
+            case "switchSceneEdit":
+                //this.scene.pathEditor.setEditEnabled(selectEvt.flag);
+                this.scene.setEditEnabled(selectEvt.flag);
+                if(!selectEvt.flag) {
+                    this.m_ctrlAddPosBtn.deselect(true);
+                }
                 break;
             case "closePath":
                 flag = this.scene.pathEditor.setCloseEnabled(selectEvt.flag);
@@ -328,7 +351,7 @@ class UIScene {
         this.scene.newScene();
     }
     private clearScene(): void {
-        this.m_addPosBtn.select(false);
+        this.m_ctrlAddPosBtn.select(false);
         this.m_showPosBtn.select(false);
         this.m_closePathBtn.select(false);
         this.scene.clearScene();

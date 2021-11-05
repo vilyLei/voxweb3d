@@ -46,7 +46,7 @@ class SceneViewer {
             let box: Box3DEntity = new Box3DEntity();
             box.setMaterial(material);
             box.initializeCube(100);
-            box.setXYZ(0,150,0);
+            box.setXYZ(-100,150,0);
             box.setRotationXYZ(this.m_rotV.x, this.m_rotV.y, this.m_rotV.z);
             //plane.setScaleXYZ(3.0,3.0,3.0);
             this.m_engine.rscene.addEntity(box);
@@ -83,7 +83,7 @@ class SceneViewer {
         envBox.setMaterial(material);
         envBox.showFrontFace();
         envBox.initializeCube(4000.0);
-        this.m_engine.rscene.addEntity(envBox);
+        this.m_engine.rscene.addEntity(envBox, 1);
     }
     private loadSceneDataBURL(url: string): void {
         this.m_scDataLoader.load(url, (roadData: RoadSceneData):void => {
@@ -91,7 +91,8 @@ class SceneViewer {
         })
     }
     private loadSceneData(): void {
-        this.loadSceneDataBURL("static/assets/scene/vrdScene.vrd");
+        //this.loadSceneDataBURL("static/assets/scene/vrdScene.vrd");
+        this.loadSceneDataBURL("static/assets/scene/vrdScene_01.vrd");
         //this.loadSceneDataBURL("static/assets/scene/vrdScene_no_mesh.vrd");
     }
     private createEntities(roadData: RoadSceneData): void {

@@ -38,6 +38,8 @@ import RGBColorPanel, { RGBColoSelectEvent } from "../panel/RGBColorPanel";
 import Color4 from "../../vox/material/Color4";
 import Vector3D from "../../vox/math/Vector3D";
 import SelectionAtlasBar from "../button/SelectionAtlasBar";
+import Line3DEntity from "../../vox/entity/Line3DEntity";
+import { Bezier2Curve } from "../../vox/geom/curve/BezierCurve";
 
 export class DemoOrthoBtn {
     constructor() { }
@@ -122,10 +124,78 @@ export class DemoOrthoBtn {
             this.update();
 
             this.initUIScene();
+            this.updateCurve(0.5, -1.0);
 
         }
     }
+    updateCurve(factor: number, radiusFactor: number): void {
+        let posList: Vector3D[] = this.getCurvePosList(factor, radiusFactor);
+        this.drawCurve(posList, factor, radiusFactor);
+    }
+    
+    private m_bezier2: Bezier2Curve = new Bezier2Curve();
+    private m_flag0: boolean = true;
+    private m_offsetFactor: number = 0.5;
+    private m_radiusFactor: number = 1.0;
+    getCurvePosList(factor: number, radiusFactor: number): Vector3D[] {
 
+        let total: number = 20;
+        let y0: number = 300;
+        let y1: number = 70;
+        let dy: number = Math.abs(y1 - y0);
+        this.m_bezier2.begin.setXYZ(0, y0, 0);
+        this.m_bezier2.end.setXYZ(dy + 1.0, y1, 0);
+        this.m_bezier2.setSegTot(total);
+
+        let dis: number = Vector3D.Distance(this.m_bezier2.begin, this.m_bezier2.end);
+
+        let direcTV: Vector3D = new Vector3D();
+        direcTV.subVecsTo(this.m_bezier2.end, this.m_bezier2.begin);
+        let direcNV: Vector3D = new Vector3D(-direcTV.y, direcTV.x);
+        direcNV.normalize();
+        direcNV.scaleBy(radiusFactor * dy);
+
+        direcTV.normalize();
+        direcTV.scaleBy(dis * factor);
+        this.m_bezier2.ctrPos.addVecsTo(direcTV, this.m_bezier2.begin);
+        this.m_bezier2.ctrPos.addBy(direcNV);
+
+        this.m_bezier2.updateCalc();
+        return this.m_bezier2.getPosList();
+
+    }
+
+    private m_curveLS: Line3DEntity = null;
+    private drawCurve(posList: Vector3D[], factor: number, radiusFactor: number): void {
+        if (this.m_curveLS != null) {
+            
+            radiusFactor = radiusFactor * 0.5 + 0.5;
+            let f = factor * radiusFactor;
+            this.m_curveLS.setRGB3f(factor, radiusFactor, f);
+            this.m_curveLS.initializeByPosList(posList);
+            this.m_curveLS.reinitializeMesh();
+            this.m_curveLS.updateMeshToGpu();
+            return;
+        }
+        let ls: Line3DEntity = new Line3DEntity();
+        ls.dynColorEnabled = true;
+        ls.initializeByPosList(posList);
+        radiusFactor = radiusFactor * 0.5 + 0.5;
+        let f = factor * radiusFactor;
+        ls.setRGB3f(factor, radiusFactor, f);
+        ls.setXYZ(50, 100, 1);
+        this.m_ruisc.addEntity(ls);
+        this.m_curveLS = ls;
+        if (this.m_flag0) {
+            this.m_flag0 = false;
+            ls = new Line3DEntity();
+            ls.dynColorEnabled = true;
+            //ls.setRGB3f(0.0,1.0,0.0);
+            ls.initializeByPosList([this.m_bezier2.begin, this.m_bezier2.end]);
+            ls.setXYZ(50, 100, 1);
+            this.m_ruisc.addEntity(ls);
+        }
+    }
     private m_ruisc: RendererSubScene = null;
     private m_rgbPanel: RGBColorPanel;
     private m_colorIntensity: number = 1.0;
@@ -148,23 +218,23 @@ export class DemoOrthoBtn {
         this.m_ruisc.getCamera().update();
         CanvasTextureTool.GetInstance().initialize(this.m_rscene);
         CanvasTextureTool.GetInstance().initializeAtlas(1024, 1024, new Color4(1.0, 1.0, 1.0, 0.0), true);
-
-        let tex: TextureProxy = this.getImageTexByUrl("static/assets/texFour01.png");
-        tex.flipY = true;
-        let rectTexBtn: RectSelectionButton = new RectSelectionButton();
-        rectTexBtn.bgSelectOverColor.setRGB3f(0.7,0.7,0.7);
-        rectTexBtn.bgSelectOutColor.setRGB3f(0.5,0.5,0.5);
-        rectTexBtn.uuid = "sbt_01";
-        rectTexBtn.bgUVClampRect.setTo(0.0, 0.5, 0.5, 0.5);
-        //rectTexBtn.bgUVClampRect.setTo(0.5, 0.5, 0.5, 0.5);
-        rectTexBtn.deselectUVClampRect.setTo(0.5, 0.0, 0.5, 0.5);
-        rectTexBtn.selectUVClampRect.setTo(0.5, 0.5, 0.5, 0.5);
-        rectTexBtn.initialize(0, 0, 100, 80, [tex]);
-        rectTexBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
-        rectTexBtn.setXYZ(100, 200.0, 0);
-        this.m_ruisc.addEntity(rectTexBtn);
-        rectTexBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown2);
-        rectTexBtn.addEventListener(SelectionEvent.SELECT, this, this.selectChange2);
+        //return;
+        // let tex: TextureProxy = this.getImageTexByUrl("static/assets/texFour01.png");
+        // tex.flipY = true;
+        // let rectTexBtn: RectSelectionButton = new RectSelectionButton();
+        // rectTexBtn.bgSelectOverColor.setRGB3f(0.7, 0.7, 0.7);
+        // rectTexBtn.bgSelectOutColor.setRGB3f(0.5, 0.5, 0.5);
+        // rectTexBtn.uuid = "sbt_01";
+        // rectTexBtn.bgUVClampRect.setTo(0.0, 0.5, 0.5, 0.5);
+        // //rectTexBtn.bgUVClampRect.setTo(0.5, 0.5, 0.5, 0.5);
+        // rectTexBtn.deselectUVClampRect.setTo(0.5, 0.0, 0.5, 0.5);
+        // rectTexBtn.selectUVClampRect.setTo(0.5, 0.5, 0.5, 0.5);
+        // rectTexBtn.initialize(0, 0, 100, 80, [tex]);
+        // rectTexBtn.setRenderState(RendererState.BACK_TRANSPARENT_STATE);
+        // rectTexBtn.setXYZ(100, 200.0, 0);
+        // this.m_ruisc.addEntity(rectTexBtn);
+        // rectTexBtn.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown2);
+        // rectTexBtn.addEventListener(SelectionEvent.SELECT, this, this.selectChange2);
         /*
         let plane: Plane3DEntity = new Plane3DEntity();
         plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [CanvasTextureTool.GetInstance().getAtlasAt(0).getTexture()]);
@@ -354,6 +424,7 @@ export class DemoOrthoBtn {
         this.createSelectBtn("absorb", "absorb", "ON", "OFF", false);
         this.createSelectBtn("vtxNoise", "vtxNoise", "ON", "OFF", false);
         this.metalBtn = this.createProgressBtn("metal", "metal", 0.5);
+        this.roughBtn = this.createProgressBtn("rough", "rough", 0.5);
         return;
         this.m_menuBtn = this.createSelectBtn("", "menuCtrl", "Menu Open", "Menu Close", false, true);
 
@@ -468,6 +539,14 @@ export class DemoOrthoBtn {
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
         console.log("progressChange, progress: ", progEvt.progress);
         switch (evt.uuid) {
+            case "rough":
+                this.m_radiusFactor = 2.0 * (progEvt.progress - 0.5);
+                this.updateCurve(this.m_offsetFactor, this.m_radiusFactor);
+                break;
+            case "metal":
+                this.m_offsetFactor = progEvt.progress;
+                this.updateCurve(this.m_offsetFactor, this.m_radiusFactor);
+                break;
             case "prog":
                 this.m_colorIntensity = progEvt.progress;
                 (this.m_plane.getMaterial() as any).setRGB3f(progEvt.progress, 1.0, 1.0);
@@ -490,7 +569,7 @@ export class DemoOrthoBtn {
                 break;
         }
         //(this.m_plane.getMaterial() as any).setRGB3f(1.0, progEvt.progress, 1.0);
-        if (this.m_rgbPanel != null) this.m_rgbPanel.close();
+        //if (this.m_rgbPanel != null) this.m_rgbPanel.close();
     }
     private selectChange(evt: any): void {
         let progEvt: SelectionEvent = evt as SelectionEvent;

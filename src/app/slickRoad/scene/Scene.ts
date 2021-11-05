@@ -1,4 +1,3 @@
-
 import Vector3D from "../../../vox/math/Vector3D";
 import MouseEvent from "../../../vox/event/MouseEvent";
 import KeyboardEvent from "../../../vox/event/KeyboardEvent";
@@ -6,7 +5,6 @@ import KeyboardEvent from "../../../vox/event/KeyboardEvent";
 import EngineBase from "../../../vox/engine/EngineBase";
 import { PathCurveEditor } from "../road/PathCurveEditor";
 import { RoadEntityBuilder } from "../road/RoadEntityBuilder";
-import { RoadGeometryBuilder } from "../geometry/RoadGeometryBuilder";
 
 import { Terrain } from "../terrain/Terrain";
 import { SceneFileSystem } from "../io/SceneFileSystem";
@@ -23,25 +21,31 @@ class Scene {
     readonly pathEditor: PathCurveEditor = new PathCurveEditor();
 
     readonly terrain: Terrain = new Terrain();
-    readonly geometryBuilder: RoadGeometryBuilder = new RoadGeometryBuilder();
+    //readonly geometryBuilder: RoadGeometryBuilder = new RoadGeometryBuilder();
     readonly fileSystem: SceneFileSystem = new SceneFileSystem();
 
     isAwake(): boolean {
         return this.m_awake;
     }
     wake(): void {
-        if(!this.m_awake) {
+
+        if (!this.m_awake) {
             this.m_awake = true;
+
             this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_CLICK, this, this.mouseClick);
             this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseDown);
+            this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_BG_UP, this, this.mouseUp);
             this.m_engine.rscene.addEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
         }
     }
     sleep(): void {
-        if(this.m_awake) {
-            this.m_awake = false
-            this.m_engine.rscene.removeEventListener(MouseEvent.MOUSE_CLICK, this, this.mouseClick);
+
+        if (this.m_awake) {
+            this.m_awake = false;
+
+            //this.m_engine.rscene.removeEventListener(MouseEvent.MOUSE_CLICK, this, this.mouseClick);
             this.m_engine.rscene.removeEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseDown);
+            this.m_engine.rscene.removeEventListener(MouseEvent.MOUSE_BG_UP, this, this.mouseUp);
             this.m_engine.rscene.removeEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
         }
     }
@@ -52,11 +56,11 @@ class Scene {
 
             this.m_engine = engine;
 
-            this.pathEditor.initialize(engine);
+            this.pathEditor.initialize(engine, this.roadEntityBuilder.segObjManager);
             this.roadEntityBuilder.initialize(engine, this.pathEditor);
-            
+
             this.terrain.initialize(engine);
-            this.terrain.setVisible( false );
+            this.terrain.setVisible(false);
             this.fileSystem.initialize(this.pathEditor, this.roadEntityBuilder);
 
             this.wake();
@@ -68,10 +72,10 @@ class Scene {
             // this.m_line.dynColorEnabled = true;
             // this.m_line.initializeByPosList([new Vector3D(), new Vector3D(100,0.0,0.0)]);
             // this.m_engine.rscene.addEntity(this.m_line);
-            
+
             let posOuterList = [new Vector3D(0, 0, -100), new Vector3D(100, 0, -100), new Vector3D(150, 0, -50)];
             let posInnerList = [new Vector3D(0, 0, 100), new Vector3D(100, 0, 100), new Vector3D(150, 0, 150)];
-            
+
             let posTable: Vector3D[][] = [
                 posInnerList,
                 posOuterList
@@ -85,9 +89,11 @@ class Scene {
 
         }
     }
-    
+
     setEditEnabled(enabled: boolean): void {
         this.m_editEnabled = enabled;
+        this.pathEditor.setEditEnabled(enabled);
+        this.roadEntityBuilder.setEditEnabled(enabled);
     }
     getEditEnabled(): boolean {
         return this.m_editEnabled;
@@ -110,14 +116,39 @@ class Scene {
     private mouseClick(evt: any): void {
         //console.log("scene mouse click.");
     }
+    private m_mouseSt0: Vector3D = new Vector3D();
+    private m_mouseSt1: Vector3D = new Vector3D();
     private mouseDown(evt: any): void {
 
+        this.m_mouseSt0.x = this.m_engine.stage3D.mouseX;
+        this.m_mouseSt0.y = this.m_engine.stage3D.mouseY;
+        this.m_mouseSt0.w = Date.now();
+
         //console.log("scene mouse mouseDown.");
+        // this.m_engine.interaction.viewRay.intersectPlane();
+        // let pv: Vector3D = this.m_engine.interaction.viewRay.position;
+
+    }
+    private mouseUp(evt: any): void {
+
+        this.m_mouseSt1.x = this.m_engine.stage3D.mouseX;
+        this.m_mouseSt1.y = this.m_engine.stage3D.mouseY;
+        this.m_mouseSt1.w = Date.now();
+
         this.m_engine.interaction.viewRay.intersectPlane();
         let pv: Vector3D = this.m_engine.interaction.viewRay.position;
-        
-        this.pathEditor.appendPathPos(pv);
 
+        if ((this.m_mouseSt1.w - this.m_mouseSt0.w) < 400) {
+            if (Vector3D.Distance(this.m_mouseSt1, this.m_mouseSt0) < 5) {
+                this.pathEditor.appendPathPos(pv);
+            }
+            // else {
+            //     console.log("单击位置偏差太大");
+            // }
+        }
+        // else {
+        //     console.log("单击时间间隔太长");
+        // }
     }
     private keyDown(evt: any): void {
 
@@ -126,7 +157,7 @@ class Scene {
                 break;
         }
     }
-    
+
     update(): void {
     }
     run(): void {

@@ -21,13 +21,12 @@ export default class RoadSurfaceGeometry extends GeometryBase {
     }
     
     initialize(posTable: Vector3D[][], uvType: number): void {
+
         let i: number = 0;
         let j: number = 0;
 
         let px: number = 0;
         let py: number = 0;
-
-        //this.bounds = new AABB();
 
         this.vtxTotal = posTable[0].length * posTable.length;
         this.m_vs = new Float32Array(this.vtxTotal * 3);
@@ -103,5 +102,7 @@ export default class RoadSurfaceGeometry extends GeometryBase {
         this.vtCount = this.m_ivs.length;
         this.trisNumber = this.vtCount / 3;
 
+        this.bounds.addXYZFloat32Arr(this.m_vs);
+        this.bounds.update();
     }
 }

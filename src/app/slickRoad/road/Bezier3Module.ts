@@ -11,11 +11,18 @@ import { Pos3D } from "../base/Pos3D";
 class Bezier3Module {
     
     private m_posTable: Pos3D[][] = [];
+    private m_radiusTable: number[][] = [];
     private m_tvTool: TVTool = new TVTool();
     readonly bezier3Curve: Bezier3Curve = new Bezier3Curve();
 
+    /**
+     * 路径是否为闭合状态
+     */
     pathClosed: boolean = false;
     version: number = -1;
+    /**
+     * 分段估算长度
+     */
     stepDistance: number = 20;
     constructor() {
         this.bezier3Curve.setSegTot(10);
@@ -24,7 +31,7 @@ class Bezier3Module {
         this.bezier3Curve.setSegTot(segTotal);
     }
 
-    calcSegCurve(pv0: Vector3D, pv1: Vector3D, ctrlA: Vector3D, ctrlB: Vector3D): void {
+    calcSegCurve(pv0: Vector3D, pv1: Vector3D, ctrlA: Vector3D, ctrlB: Vector3D): Pos3D[] {
 
         let dis: number = Vector3D.Distance(this.bezier3Curve.begin,this.bezier3Curve.end);
         let total: number = Math.floor(dis / this.stepDistance);
@@ -47,14 +54,15 @@ class Bezier3Module {
         let posList: Pos3D[] = Pos3DPool.CreateList(this.bezier3Curve.getPosTotal());
         this.bezier3Curve.getPosList( posList );
 
-        if (this.m_posTable.length > 0) {
-            let list: Pos3D[] = this.m_posTable[this.m_posTable.length - 1];
-            if (Vector3D.Distance(list[list.length - 1], posList[0]) < 0.0001) {
-                let pv: Pos3D = list.pop();
-                Pos3DPool.Restore( pv );
-            }
-        }
-        this.m_posTable.push(posList);
+        // if (this.m_posTable.length > 0) {
+        //     let list: Pos3D[] = this.m_posTable[this.m_posTable.length - 1];
+        //     if (Vector3D.Distance(list[list.length - 1], posList[0]) < 0.0001) {
+        //         let pv: Pos3D = list.pop();
+        //         Pos3DPool.Restore( pv );
+        //     }
+        // }
+        // this.m_posTable.push(posList);
+        return posList;
     }
     private m_tempV0: Vector3D = new Vector3D();
     private m_tempV1: Vector3D = new Vector3D();
@@ -175,10 +183,19 @@ class Bezier3Module {
         this.m_tempV1.addBy(v1);
         
         // 计算曲线数据
-        this.stepDistance = node0.stepDistance;
-        this.calcSegCurve(v0, v1, this.m_tempV2, this.m_tempV1);
+        this.stepDistance = node0.stepDistance;        
+        let posList: Pos3D[] = this.calcSegCurve(v0, v1, this.m_tempV2, this.m_tempV1);
+        // 整合数据
+        if (this.m_posTable.length > 0) {
+            let list: Pos3D[] = this.m_posTable[this.m_posTable.length - 1];
+            if (Vector3D.Distance(list[list.length - 1], posList[0]) < 0.0001) {
+                let pv: Pos3D = list.pop();
+                Pos3DPool.Restore( pv );
+            }
+        }
+        this.m_posTable.push(posList);
     }
-    getPathPosTable(): Pos3D[][] {
+    getPathCurvePosTable(): Pos3D[][] {
         return this.m_posTable;
     }
     private m_curvePosList: Pos3D[] = null;

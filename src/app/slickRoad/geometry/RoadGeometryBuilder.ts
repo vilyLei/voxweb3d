@@ -1,6 +1,7 @@
 import Vector3D from "../../../vox/math/Vector3D";
 import {RoadMesh} from "./RoadMesh";
 import RoadSurfaceGeometry from "./RoadSurfaceGeometry";
+import AABB from "../../../vox/geom/AABB";
 
 class RoadGeometryBuilder {
 
@@ -33,10 +34,12 @@ class RoadGeometryBuilder {
         if(mesh == null) {
             mesh = new RoadMesh();
             mesh.changed = true;
+            mesh.bounds = new AABB();
         }
         else {
             mesh.changed = true;
         }
+        mesh.bounds.copyFrom( geom.bounds );
         mesh.distance = geom.distance;
         mesh.vs = geom.getVS();
         mesh.uvs = geom.getUVS();

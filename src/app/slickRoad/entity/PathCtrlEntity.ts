@@ -7,6 +7,7 @@ class PathCtrlEntity extends EditableEntity {
 
     path: RoadPath = null;
     pathCtrlPosIndex: number = -1;
+    radius: number = 10;
     private m_currPos: Vector3D = new Vector3D();
     private m_newPos: Vector3D = new Vector3D();
     constructor() {

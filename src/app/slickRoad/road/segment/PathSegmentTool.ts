@@ -73,12 +73,15 @@ class PathSegmentTool implements IPathSegmentTool {
 
         return segments;
     }
+    getSegMeshesTotal(): number {
+        return 2;
+    }
     build(roadWidth: number = 120.0): void {
 
         let posTotal: number = this.m_pathEditor.getPathKeyPosTotal();
         if (posTotal > 1) {
 
-            let srcPosList: Pos3D[] = this.m_pathEditor.getPathPosList();
+            let srcPosList: Pos3D[] = this.m_pathEditor.getPathCurvePosList();
             let srcTVList: Pos3D[] = this.m_pathTool.calcExpandXOZTVList(srcPosList, null, this.m_pathEditor.isPathClosed());
 
             let curvePosList: Pos3D[] = srcPosList;
