@@ -27,6 +27,7 @@ export default interface IRenderProcess
     setSorter(sorter:IRODisplaySorter):void;
     setSortEnabled(sortEnabled:boolean):void;
     getSortEnabled():boolean;
+    getStatus(): number;
     /**
      * update rendering status
      */

@@ -29,6 +29,7 @@ import RPONodeBuilder from "../../vox/render/RPONodeBuilder";
 import RendererInstanceContext from "../../vox/scene/RendererInstanceContext";
 import RendererInstance from "../../vox/scene/RendererInstance";
 import IRenderer from "../../vox/scene/IRenderer";
+import IRenderProcess from "../../vox/render/IRenderProcess";
 import IRendererScene from "../../vox/scene/IRendererScene";
 import RaySelectedNode from "../../vox/scene/RaySelectedNode";
 import IRendererSpace from "../../vox/scene/IRendererSpace";
@@ -264,6 +265,13 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
         let process: RenderProcess = this.m_renderer.appendProcess(batchEnabled, processFixedState) as RenderProcess;
         this.m_processids[this.m_processidsLen] = process.getRPIndex();
         this.m_processidsLen++;
+    }
+    /**
+     * get the renderer process by process index
+     * @param processIndex IRenderProcess instance index in renderer scene instance
+     */
+    getRenderProcessAt(processIndex: number): IRenderProcess {
+        return this.m_renderer.getProcessAt(this.m_processids[processIndex]);
     }
     private m_containers: DisplayEntityContainer[] = [];
     private m_containersTotal: number = 0;

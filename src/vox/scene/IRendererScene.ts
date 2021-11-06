@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import Color4 from "../../vox/material/Color4";
+import IRenderProcess from "../../vox/render/IRenderProcess";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import DisplayEntityContainer from "../../vox/entity/DisplayEntityContainer";
 import {IRenderCamera} from "../render/IRenderCamera";
@@ -39,6 +40,11 @@ interface IRendererScene {
     runEnd(): void;
     runAt(index: number): void;
     isRayPickSelected(): boolean;
+    /**
+     * get the renderer process by process index
+     * @param processIndex IRenderProcess instance index in renderer scene instance
+     */
+    getRenderProcessAt(processIndex: number): IRenderProcess;
     /**
      * add an entity to the renderer process of the renderer instance
      * @param entity IRenderEntity instance(for example: DisplayEntity class instance)

@@ -48,7 +48,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
     private m_batchEnabled: boolean = true;
     private m_fixedState: boolean = true;
     private m_sortEnabled: boolean = false;
-
+    private m_version: number = 0;
     uid: number = -1;
     constructor(shader: RenderShader, rpoNodeBuilder: RPONodeBuilder, rpoUnitBuilder: RPOUnitBuilder, vtxResource: ROVertexResource, batchEnabled: boolean, processFixedState: boolean) {
         this.m_shader = shader;
@@ -172,6 +172,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
             node.vtxUid = runit.vtxUid;
             node.vro = runit.vro;
             this.m_blockList[node.index].rejoinNode(node);
+            this.m_version++;
         }
     }
     addDisp(disp: IRODisplay): void {
@@ -207,6 +208,7 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
                     else {
                         this.addNodeToBlock(node);
                     }
+                    this.m_version++;
                 }
                 else {
                     console.log("RenderProcess::addDisp(), Warn: add entity repeat in processid(" + this.m_rpIndex + ").");
@@ -255,12 +257,16 @@ export default class RenderProcess implements IRenderProcess, IPoolNode {
                     this.m_vtxResource.__$detachRes(disp.vbuf.getUid());
                     disp.__$$runit = null;
                     disp.__$ruid = -1;
+                    this.m_version++;
                 }
                 else {
                     console.error("There is no this display instance.");
                 }
             }
         }
+    }
+    getStatus(): number {        
+        return this.m_version;
     }
     /**
      * remoev display unit from this render process

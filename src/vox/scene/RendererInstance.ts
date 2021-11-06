@@ -269,6 +269,13 @@ export class RendererInstance implements IRenderer {
         }
     }
     /**
+     * get the renderer process by process index
+     * @param processIndex IRenderProcess instance index in renderer instance
+     */
+    getRenderProcessAt(processIndex: number): IRenderProcess {
+        return this.m_processes[processIndex];
+    }
+    /**
      * append a new renderer process instance
      * @param batchEnabled batch renderer runtime resource data
      * @param processFixedState the process is fix renderer state

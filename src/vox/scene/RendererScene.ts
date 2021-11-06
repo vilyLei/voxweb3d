@@ -334,6 +334,14 @@ export default class RendererScene implements IRenderer, IRendererScene {
         this.m_processids[this.m_processidsLen] = process.getRPIndex();
         this.m_processidsLen++;
     }
+    
+    /**
+     * get the renderer process by process index
+     * @param processIndex IRenderProcess instance index in renderer scene instance
+     */
+    getRenderProcessAt(processIndex: number): IRenderProcess {
+        return this.m_renderer.getProcessAt(this.m_processids[processIndex]);
+    }
     private m_containers: DisplayEntityContainer[] = [];
     private m_containersTotal: number = 0;
     addContainer(container: DisplayEntityContainer, processIndex: number = 0): void {
