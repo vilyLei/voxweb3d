@@ -49,6 +49,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     private m_display: RODisplay = null;
     protected m_mesh: MeshBase = null;
     // 如果一个entity如果包含了多个mesh,则这个bounds就是多个mesh aabb 合并的aabb
+    protected m_localBounds: AABB = null;
     protected m_globalBounds: AABB = null;
     protected m_parent: IDisplayEntityContainer = null;
     protected m_renderProxy: RenderProxy = null;
@@ -301,7 +302,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     getIvsCount(): number {
         return this.m_display.ivsCount;
     }
-    setIvsParam(ivsIndex: number, ivsCount: number): void {
+    setIvsParam(ivsIndex: number, ivsCount: number, updateBounds: boolean = false): void {
         if (this.m_display != null) {
             this.m_display.ivsIndex = ivsIndex;
             this.m_display.ivsCount = ivsCount;
@@ -309,6 +310,16 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
                 this.m_display.__$$runit.trisNumber = Math.floor((ivsCount - ivsIndex) / 3);
                 this.m_display.__$$runit.setIvsParam(ivsIndex, ivsCount);
                 this.m_display.__$$runit.drawMode = this.m_mesh.drawMode;
+                if(updateBounds && this.isPolyhedral()) {
+                    if(this.m_localBounds == null) {
+                        this.m_localBounds = new AABB();
+                        this.m_localBounds.copyFrom( this.m_mesh.bounds );
+                    }
+                    this.m_localBounds.reset();
+                    let ivs: Uint16Array | Uint32Array = this.m_mesh.getIVS();
+                    this.m_localBounds.addXYZFloat32AndIndicesArr(this.m_mesh.getVS(), ivs.subarray(ivsIndex, ivsIndex + ivsCount));
+                    this.m_localBounds.update();
+                }
             }
         }
     }
@@ -470,33 +481,6 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     getScaleXYZ(pv: Vector3D): void {
         this.m_transfrom.getScaleXYZ(pv);
     }
-    destroy(): void {
-        // 当自身被完全移出RenderWorld之后才能执行自身的destroy
-        //console.log("DisplayEntity::destroy(), renderer uid: "+this.getRendererUid()+", this.__$spaceId: "+this.__$spaceId);
-        if (this.m_mouseEvtDispatcher != null) {
-            this.m_mouseEvtDispatcher.destroy();
-            this.m_mouseEvtDispatcher = null;
-        }
-        if (this.m_transfrom != null && this.isFree()) {
-            // 这里要保证其在所有的process中都被移除
-            if (this.m_display != null) {
-                this.m_mesh.__$detachVBuf(this.m_display.vbuf);
-                RODisplay.Restore(this.m_display);
-                this.m_display = null;
-            }
-            ROTransform.Restore(this.m_transfrom);
-            this.m_transfrom = null;
-            if (this.m_mesh != null) {
-                this.m_mesh.__$detachThis();
-                this.m_mesh = null;
-            }
-            this.__$setParent(null);
-            this.m_visible = true;
-            this.m_drawEnabled = true;
-            this.m_renderProxy = null;
-            this.__$rseFlag = RSEntityFlag.DEFAULT;
-        }
-    }
     private static s_boundsInVS: Float32Array = new Float32Array(24);
     private static s_boundsOutVS: Float32Array = new Float32Array(24);
     private static s_pos: Vector3D = new Vector3D();
@@ -527,9 +511,14 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
         //if (this.m_transStatus > ROTransform.UPDATE_POSITION || this.m_transfrom.getRotationFlag()) {
         if (this.m_transStatus > ROTransform.UPDATE_POSITION) {
             this.m_transfrom.update();
-            let pminV: Vector3D = this.m_mesh.bounds.min;
-            let pmaxV: Vector3D = this.m_mesh.bounds.max;
+            let bounds: AABB = this.m_localBounds;
+            if(bounds == null) {
+                bounds = this.m_mesh.bounds;
+            }
+            let pminV: Vector3D = bounds.min;
+            let pmaxV: Vector3D = bounds.max;
             let pvs: Float32Array = DisplayEntity.s_boundsInVS;
+            let povs: Float32Array = DisplayEntity.s_boundsOutVS;
             pvs[0] = pminV.x; pvs[1] = pminV.y; pvs[2] = pminV.z;
             pvs[3] = pmaxV.x; pvs[4] = pminV.y; pvs[5] = pminV.z;
             pvs[6] = pminV.x; pvs[7] = pminV.y; pvs[8] = pmaxV.z;
@@ -538,9 +527,9 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
             pvs[15] = pmaxV.x; pvs[16] = pmaxV.y; pvs[17] = pminV.z;
             pvs[18] = pminV.x; pvs[19] = pmaxV.y; pvs[20] = pmaxV.z;
             pvs[21] = pmaxV.x; pvs[22] = pmaxV.y; pvs[23] = pmaxV.z;
-            this.m_transfrom.getMatrix().transformVectors(pvs, 24, DisplayEntity.s_boundsOutVS);
+            this.m_transfrom.getMatrix().transformVectors(pvs, 24, povs);
             this.m_globalBounds.reset();
-            this.m_globalBounds.addXYZFloat32Arr(DisplayEntity.s_boundsOutVS);
+            this.m_globalBounds.addXYZFloat32Arr(povs);
             this.m_globalBounds.update();
         }
         else {
@@ -556,14 +545,6 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
             gbounds.min.addBy(DisplayEntity.s_pos);
             gbounds.max.addBy(DisplayEntity.s_pos);
             gbounds.center.addBy(DisplayEntity.s_pos);
-
-            // let matrix = this.m_transfrom.getMatrix();
-            // let bounds = this.m_mesh.bounds;
-            // let gbounds = this.m_globalBounds;
-            // matrix.transformOutVector3(bounds.min, gbounds.min);
-            // matrix.transformOutVector3(bounds.max, gbounds.max);
-            // gbounds.center.addVecsTo(gbounds.min, gbounds.max);
-            // gbounds.center.scaleBy(0.5);
             ++this.m_globalBounds.version;
         }
     }
@@ -583,6 +564,35 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
             this.m_display.__$$runit.bounds = this.m_globalBounds;
             this.m_transfrom.getPosition(this.m_display.__$$runit.pos);
         }
+    }
+    destroy(): void {
+        // 当自身被完全移出RenderWorld之后才能执行自身的destroy
+        //console.log("DisplayEntity::destroy(), renderer uid: "+this.getRendererUid()+", this.__$spaceId: "+this.__$spaceId);
+        if (this.m_mouseEvtDispatcher != null) {
+            this.m_mouseEvtDispatcher.destroy();
+            this.m_mouseEvtDispatcher = null;
+        }
+        if (this.m_transfrom != null && this.isFree()) {
+            // 这里要保证其在所有的process中都被移除
+            if (this.m_display != null) {
+                this.m_mesh.__$detachVBuf(this.m_display.vbuf);
+                RODisplay.Restore(this.m_display);
+                this.m_display = null;
+            }
+            ROTransform.Restore(this.m_transfrom);
+            this.m_transfrom = null;
+            if (this.m_mesh != null) {
+                this.m_mesh.__$detachThis();
+                this.m_mesh = null;
+            }
+            this.__$setParent(null);
+            this.m_visible = true;
+            this.m_drawEnabled = true;
+            this.m_renderProxy = null;
+            this.__$rseFlag = RSEntityFlag.DEFAULT;
+        }
+        this.m_globalBounds = null;
+        this.m_localBounds = null;
     }
     toString(): string {
         return "DisplayEntity(name=" + this.name + ",uid = " + this.m_uid + ", rseFlag = " + this.__$rseFlag + ")";

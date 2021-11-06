@@ -34,16 +34,17 @@ class RoadGeometryBuilder {
         if(mesh == null) {
             mesh = new RoadMesh();
             mesh.changed = true;
-            mesh.bounds = new AABB();
+            //mesh.bounds = new AABB();
         }
         else {
             mesh.changed = true;
         }
-        mesh.bounds.copyFrom( geom.bounds );
+        //mesh.bounds.copyFrom( geom.bounds );
         mesh.distance = geom.distance;
-        mesh.setVS(geom.getVS());
-        mesh.setUVS(geom.getUVS());
-        mesh.setIVS( geom.getIVS() );
+        // mesh.setVS(geom.getVS());
+        // mesh.setUVS(geom.getUVS());
+        // mesh.setIVS( geom.getIVS() );
+        mesh.initializeFromGeometry( geom );
         return mesh;
     }    
 }

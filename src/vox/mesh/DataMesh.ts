@@ -15,6 +15,7 @@ import SurfaceNormalCalc from "../geom/SurfaceNormalCalc";
 
 export default class DataMesh extends MeshBase {
     private m_initIVS: Uint16Array | Uint32Array = null;
+    private m_boundsChanged: boolean = true;
     private m_vs: Float32Array = null;
     private m_uvs: Float32Array = null;
     private m_nvs: Float32Array = null;
@@ -38,6 +39,7 @@ export default class DataMesh extends MeshBase {
      */
     setVS(vs: Float32Array): void {
         this.m_vs = vs;
+        this.m_boundsChanged = true;
     }
     /**
      * @returns vertex position buffer Float32Array
@@ -103,6 +105,7 @@ export default class DataMesh extends MeshBase {
     setIVS(ivs: Uint16Array | Uint32Array): void {
         this.m_initIVS = ivs;
         this.m_ivs = ivs;
+        this.m_boundsChanged = true;
     }
 
     initializeFromGeometry(geom: GeometryBase): void {
@@ -114,6 +117,7 @@ export default class DataMesh extends MeshBase {
         this.m_btvs = geom.getBTVS();
         this.m_ivs = geom.getIVS();
         this.m_initIVS = this.m_ivs;
+        this.m_boundsChanged = true;
         this.initialize();
     }
 
@@ -127,13 +131,14 @@ export default class DataMesh extends MeshBase {
                 this.bounds.update();
                 this.m_boundsVersion = this.bounds.version;
             }
-            else if(this.m_boundsVersion == this.bounds.version){
-                console.log("说明bounds需要重新计算");
+            else if(this.m_boundsChanged || this.m_boundsVersion == this.bounds.version){
+                this.bounds.reset();
                 // 如果重新init, 但是版本号却没有改变，说明bounds需要重新计算
                 this.bounds.addXYZFloat32Arr(this.m_vs);
                 this.bounds.update();
                 this.m_boundsVersion = this.bounds.version;
             }
+            this.m_boundsChanged = false;
 
             this.m_ivs = this.m_initIVS;            
 

@@ -102,7 +102,7 @@ export default class RoadSurfaceGeometry extends GeometryBase {
         this.vtCount = this.m_ivs.length;
         this.trisNumber = this.vtCount / 3;
 
-        this.bounds.addXYZFloat32Arr(this.m_vs);
-        this.bounds.update();
+        // this.bounds.addXYZFloat32Arr(this.m_vs);
+        // this.bounds.update();
     }
 }
