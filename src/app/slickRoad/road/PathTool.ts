@@ -31,16 +31,16 @@ class PathTool {
     }
     
     /**
-     * 计算左边和右边的新位置数组, 相当于原左边和右边的缩放与平移
+     * 计算新位置数组, 相当于原边的缩放与平移
      * @param tvList 左边和右边两个对应位置的连线的切线
-     * @param posListL 左边位置数组 
-     * @param posListR 右边位置数组
+     * @param srcPosList 源位置数组
      * @param offsetXYZ 整体位置偏移量
-     * @param dis 沿 tvList 中的切线方向的位置偏移距离的数组
-     * @returns [左边新位置数组，右边新位置数组]
+     * @param disList 沿 tvList 中的切线方向的位置偏移距离的数组
+     * @param offsetDis 沿 tvList 中的切线方向的位置整体偏移距离
+     * @returns 新位置数组
      */
-    calcOnePosListByTVList2(tvList: Vector3D[], srcPosList: Vector3D[], offsetXYZ: Vector3D, disList: number[], scale: number): Pos3D[] {
-
+    calcOnePosListByTVAndDisList(tvList: Vector3D[], srcPosList: Vector3D[], offsetXYZ: Vector3D, disList: number[], scale: number, offsetDis: number) {
+        
         let tv: Pos3D = Pos3DPool.Create();
         let pv: Pos3D = Pos3DPool.Create();
         let list: Pos3D[] = new Array(srcPosList.length);
@@ -50,7 +50,7 @@ class PathTool {
         }
         for (let i: number = 0; i < srcPosList.length; ++i) {
             tv.copyFrom(tvList[i]);
-            tv.scaleBy(disList[i] * scale);
+            tv.scaleBy(disList[i] * scale + offsetDis);
             pv.copyFrom(tv);
             list[i].addBy(pv);
             list[i].addBy(offsetXYZ);
@@ -60,13 +60,12 @@ class PathTool {
         return list;
     }
     /**
-     * 计算左边和右边的新位置数组, 相当于原左边和右边的缩放与平移
+     * 计算新位置数组, 相当于原边的缩放与平移
      * @param tvList 左边和右边两个对应位置的连线的切线
-     * @param posListL 左边位置数组 
-     * @param posListR 右边位置数组
+     * @param srcPosList 源位置数组
      * @param offsetXYZ 整体位置偏移量
      * @param dis 沿 tvList 中的切线方向的位置偏移距离
-     * @returns [左边新位置数组，右边新位置数组]
+     * @returns 新位置数组
      */
     calcOnePosListByTVList(tvList: Vector3D[], srcPosList: Vector3D[], offsetXYZ: Vector3D, dis: number): Pos3D[] {
 
@@ -86,6 +85,21 @@ class PathTool {
         }
         Pos3DPool.Restore(tv);
         Pos3DPool.Restore(pv);
+        return list;
+    }
+    /**
+     * 计算整体偏移之后的新位置数组, 相当于原边平移
+     * @param srcPosList 原位置数组 
+     * @param offsetXYZ 整体位置偏移量
+     * @returns 新位置数组
+     */
+    calcOnePosListByOffset(srcPosList: Vector3D[], offsetXYZ: Vector3D): Pos3D[] {
+
+        let list: Pos3D[] = Pos3DPool.CreateList(srcPosList.length);
+        for (let i: number = 0; i < srcPosList.length; ++i) {
+            list[i].copyFrom( srcPosList[i] );
+            list[i].addBy(offsetXYZ);
+        }
         return list;
     }
     /**
