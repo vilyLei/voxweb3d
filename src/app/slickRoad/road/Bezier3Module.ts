@@ -15,9 +15,9 @@ class Bezier3Module {
     private m_tvTool: TVTool = new TVTool();
     private m_direcTV: Vector3D = new Vector3D();
     private m_direcNV: Vector3D = new Vector3D();
+    private m_currSegsTotal: number = 1;
     readonly bezier3Curve: Bezier3Curve = new Bezier3Curve();
     readonly bezier2Curve: Bezier2Curve = new Bezier2Curve();
-
     /**
      * 路径是否为闭合状态
      */
@@ -37,7 +37,8 @@ class Bezier3Module {
 	 * 计算二次Bezier曲线
 	 * */
 	static CalcBezier2Y(vs: number[], tot: number, v0: Vector3D, v1: Vector3D, v2: Vector3D): void {
-		//b(t) = (1-t)*(1-t)*p0 + 2*t*(1-t)*p1 + t * t * p2;
+        //b(t) = (1-t)*(1-t)*p0 + 2*t*(1-t)*p1 + t * t * p2;
+        
 		let py: number = 0;
         let k: number = 0;
         if(vs.length < (tot + 1)) {
@@ -57,10 +58,11 @@ class Bezier3Module {
             }
         }
 	}
-    getCurvePosList(node0: PathKeyNode, node1: PathKeyNode, total: number): number[] {
+    getCurveRadiusList(node0: PathKeyNode, node1: PathKeyNode, total: number): number[] {
+
         let factor: number = node0.pathRadiusChangeFactor;
         let amplitude: number = node0.pathRadiusChangeAmplitude;
-        //let total: number = 20;
+        
         let y0: number = node0.pathRadius;
         let y1: number = node1.pathRadius;
         let dy: number = Math.abs(y1 - y0);
@@ -81,7 +83,6 @@ class Bezier3Module {
         this.bezier2Curve.ctrPos.addVecsTo(direcTV, this.bezier2Curve.begin);
         this.bezier2Curve.ctrPos.addBy(direcNV);
 
-        //this.bezier2Curve.updateCalc();
         let vs: number[] = [];
         Bezier3Module.CalcBezier2Y(vs, total,  this.bezier2Curve.begin, this.bezier2Curve.ctrPos, this.bezier2Curve.end);
         return vs;
@@ -102,6 +103,7 @@ class Bezier3Module {
         if(currTotal < 3) {
             currTotal = 3;
         }
+        this.m_currSegsTotal = currTotal;
         if(total != currTotal) {
             this.bezier3Curve.setSegTot( currTotal );
             this.bezier3Curve.updateCalc();
@@ -238,20 +240,32 @@ class Bezier3Module {
         this.m_tempV1.scaleBy(dis * node1.positiveCtrlFactor);
         this.m_tempV1.addBy(v1);
         
+        let flag: boolean = false;
         // 计算曲线数据
         this.stepDistance = node0.stepDistance;        
         let posList: Pos3D[] = this.calcSegCurve(v0, v1, this.m_tempV2, this.m_tempV1);
-        // 整合数据
+        // 整合位置数据
         if (this.m_posTable.length > 0) {
             let list: Pos3D[] = this.m_posTable[this.m_posTable.length - 1];
             if (Vector3D.Distance(list[list.length - 1], posList[0]) < 0.0001) {
                 let pv: Pos3D = list.pop();
                 Pos3DPool.Restore( pv );
+                flag = true;
             }
         }
         this.m_posTable.push(posList);
+        // 计算并整合半径(半宽)数据
+        let radius_vs: number[] = this.getCurveRadiusList(node0, node1, this.m_currSegsTotal);
+        if (flag && this.m_radiusTable.length > 0) {
+            let list: number[] = this.m_radiusTable[this.m_radiusTable.length - 1];
+            list.pop();
+        }
+        this.m_radiusTable.push(radius_vs);
     }
 
+    getPathRadiusTable(): number[][] {
+        return this.m_radiusTable;
+    }
     getPathCurvePosTable(): Pos3D[][] {
         return this.m_posTable;
     }
@@ -264,18 +278,21 @@ class Bezier3Module {
         if (list.length > 2) {
             let curvePosList: Pos3D[] = null;
             // 如果这个 closePath 值为 true, 则表示需要最后一个位置点要与第一个点建立曲线链接
-            
-            let posTable: Pos3D[][] = this.m_posTable;
-            
-            let pathClosed: boolean = closePath;
-          
-            for (let i: number = 0; i < posTable.length; ++i) {                
-                posTable[i] = [];
-            }
+            let pathClosed: boolean = closePath;    
 
-            //  console.log("XXXX pathClosed: ",pathClosed, list.length);
-            posTable = [];
-            this.m_posTable = posTable;
+            // 清理半径数据
+            for (let i: number = 0; i < this.m_radiusTable.length; ++i) {                
+                this.m_radiusTable[i] = [];
+            }
+            this.m_radiusTable = [];
+
+            // 清理位置数据
+            for (let i: number = 0; i < this.m_posTable.length; ++i) {                
+                this.m_posTable[i] = [];
+            }
+            
+            this.m_posTable = [];
+            let posTable: Pos3D[][] = this.m_posTable;
 
             for (let i: number = 0; i < nodeList.length; ++i) {
                 this.clacPosTVAt(i, nodeList, pathClosed);
