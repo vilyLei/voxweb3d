@@ -198,16 +198,18 @@ export class DemoFlexMesh {
         this.m_mat4.setTranslation(this.m_transPos);
         this.m_box.transformFaceAt(i, this.m_mat4);
     }
-    private m_rotVA: Vector3D = new Vector3D(Math.random() * 200.0, Math.random() * 200.0, Math.random() * 200.0);
+    //private m_rotVA: Vector3D = new Vector3D(Math.random() * 200.0, Math.random() * 200.0, Math.random() * 200.0);
+    private m_rotVA: Vector3D = new Vector3D();
     private mouseDown(evt: any): void {
-        // this.m_box.setRotationXYZ(this.m_rotVA.x,this.m_rotVA.y,this.m_rotVA.z);
-        // this.m_rotVA.x += 1.0;
+        // this.m_box.setRotation3(this.m_rotVA);
+        // this.m_box.setPosition(this.m_rotVA);
+        // this.m_rotVA.x += 10.0;
         // this.m_rotVA.y += 1.0;
         // this.m_rotVA.z += 1.0;
         // this.m_box.update();
         // this.m_frameBox.updateFrameByAABB(this.m_box.getGlobalBounds());
         // this.m_frameBox.updateMeshToGpu();
-        // return;
+        return;
         let boo: boolean = this.updateBoxMesh();
         if (boo) return;
         let i: number = 1;
