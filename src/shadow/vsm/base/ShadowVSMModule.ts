@@ -38,7 +38,9 @@ export class ShadowVSMModule {
     private m_depthRtt: RTTTextureProxy = null;
     private m_occBlurRtt: RTTTextureProxy = null;
     private m_fboIndex: number = 0;
+    private m_processIDList: number[] = null;
     private m_rendererStatus: number = -1;
+    private m_rendererProcessStatus: number = -1;
     
     constructor(fboIndex: number) {
         this.m_fboIndex = fboIndex;
@@ -48,6 +50,7 @@ export class ShadowVSMModule {
         if (this.m_rscene == null) {
             this.m_rscene = rscene;
             this.m_buildShadowDelay = buildShadowDelay;
+            this.m_processIDList = processIDList.slice(0);
             this.initConfig(processIDList, false);
         }
     }
@@ -189,6 +192,13 @@ export class ShadowVSMModule {
         this.m_shadowCamVersion = this.m_direcCamera.version;
         this.m_vsmData.upadate();
     }
+    private getRendererProcessStatus(): number {
+        let status: number = 31;
+        for(let i:number = 0; i < this.m_processIDList.length; ++i) {
+            status += status * this.m_rscene.getRenderProcessAt(i).getStatus();
+        }
+        return status;
+    }
     run(): void {
 
         // update shadow direc matrix
@@ -197,10 +207,14 @@ export class ShadowVSMModule {
             this.m_vsmData.updateShadowCamera(this.m_direcCamera);
             this.m_vsmData.upadate();
         }
+        
         let flag: boolean = this.force;
         if(this.m_rendererStatus != this.m_rscene.getRendererStatus()) {
-            flag = flag || true;
-            
+            let status: number = this.getRendererProcessStatus();
+            if(this.m_rendererProcessStatus != status) {
+                this.m_rendererProcessStatus = status;
+                flag = true;
+            }
             this.m_rendererStatus = this.m_rscene.getRendererStatus();
         }
         //let flag: boolean = this.force || this.m_rendererStatus != this.m_rscene.getRendererStatus();
