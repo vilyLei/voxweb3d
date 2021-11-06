@@ -188,10 +188,11 @@ class AABB
 		this.m_width = this.max.x - this.min.x;
 		this.m_height = this.max.y - this.min.y;
 		this.m_long = this.max.z - this.min.z;
-		//
+		
 		this.m_halfLong = 0.5 * this.m_long;
 		this.m_halfWidth = 0.5 * this.m_width;
 		this.m_halfHeight = 0.5 * this.m_height;
+		++ this.version;
 	}
 	copyFrom(ab:AABB):void
 	{
