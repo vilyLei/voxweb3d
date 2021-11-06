@@ -119,7 +119,8 @@ export class DemoCameraWalkRoad {
     }
     private loadSceneData(): void {
         //this.loadSceneDataBURL("static/assets/scene/vrdScene_02.vrd");
-        this.loadSceneDataBURL("static/assets/scene/vrdScene_hightway.vrd");
+        //this.loadSceneDataBURL("static/assets/scene/vrdScene_hightway.vrd");
+        this.loadSceneDataBURL("static/assets/scene/vrdTerrainRoad_02.vrd");
     }
     private createRoadDisplay(roadData: RoadSceneData): void {
 
