@@ -68,7 +68,6 @@ class Bezier3Module {
         let dy: number = Math.abs(y1 - y0);
         this.bezier2Curve.begin.setXYZ(0, y0, 0);
         this.bezier2Curve.end.setXYZ(dy + 1.0, y1, 0);
-        //this.bezier2Curve.setSegTot(total);
 
         let dis: number = Vector3D.Distance(this.bezier2Curve.begin, this.bezier2Curve.end);
         let direcTV = this.m_direcTV;
@@ -76,7 +75,7 @@ class Bezier3Module {
         let direcNV = this.m_direcNV;
         direcNV.setXYZ(-direcTV.y, direcTV.x, 0.0);
         direcNV.normalize();
-        direcNV.scaleBy(amplitude * dy);
+        direcNV.scaleBy(amplitude * dy * 2.0);
 
         direcTV.normalize();
         direcTV.scaleBy(dis * factor);
@@ -112,14 +111,6 @@ class Bezier3Module {
         let posList: Pos3D[] = Pos3DPool.CreateList(this.bezier3Curve.getPosTotal());
         this.bezier3Curve.getPosList( posList );
 
-        // if (this.m_posTable.length > 0) {
-        //     let list: Pos3D[] = this.m_posTable[this.m_posTable.length - 1];
-        //     if (Vector3D.Distance(list[list.length - 1], posList[0]) < 0.0001) {
-        //         let pv: Pos3D = list.pop();
-        //         Pos3DPool.Restore( pv );
-        //     }
-        // }
-        // this.m_posTable.push(posList);
         return posList;
     }
     private m_tempV0: Vector3D = new Vector3D();
@@ -153,8 +144,7 @@ class Bezier3Module {
                     }
                     node.status = KeyNodeStatus.Normal;
                 }
-
-                //this.m_tempV0.subVecsTo( nodeList[index + 1].pos, nodeList[index].pos );
+                
                 this.m_tempV0.subVecsTo( nodeList[index].pos, nodeList[index + 1].pos );
                 this.m_tempV0.normalize();
                 node.tv.copyFrom( this.m_tempV0 );

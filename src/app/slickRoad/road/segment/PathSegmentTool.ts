@@ -6,7 +6,6 @@ import { PathCurveEditor } from "../PathCurveEditor";
 import { Pos3DPool } from "../../base/Pos3DPool";
 import { IPathSegmentTool } from "./IPathSegmentTool";
 import { SegmentData } from "../segment/SegmentData";
-import TextureProxy from "../../../../vox/texture/TextureProxy";
 
 class PathSegmentTool implements IPathSegmentTool {
 

@@ -118,57 +118,33 @@ class RoadEntityBuilder {
 
         this.segObjManager.fitSegList(srcPosTable.length, this.m_pathTableTool.getSegMeshesTotal());
 
-        let posList: Pos3D[];
-        let tvList: Pos3D[];
         let index: number = 0;
         let listTotal: number = srcPosTable.length;
         let srcPosLen: number = srcPosList.length;
         let endIndex: number;
-        let usePosTable: boolean = true;
-        if (usePosTable) {
-            this.m_pathTableTool.build(this.m_pathEditor.getPathWholeWidthScale());
 
-            let segments: SegmentData[];
-            //console.log("### A, listTotal: ",listTotal);
+        this.m_pathTableTool.build(this.m_pathEditor.getPathWholeWidthScale());
 
-            let tempTot: number = 0;
-            for (i = 0; i < listTotal; ++i) {
+        let segments: SegmentData[];
 
-                subLen = srcPosTable[i].length;
-                tempTot += subLen;
-                endIndex = ((i + 1) < listTotal) ? (index + subLen + 1) : srcPosLen;
-                //console.log(i,", subLen: ",subLen, ", srcPosLen: ",srcPosLen, ", index, endIndex: ",index, endIndex);                
-                segments = this.m_pathTableTool.slice(index, endIndex);
-                index += subLen;
-                pathSeg = this.segObjManager.getSegEntityObjectAt(i);
-                pathSeg.posTotal = subLen;
-                pathSeg.buildByPathSegments(segments);
-                for (let j: number = 0; j < segments.length; ++j) {
-                    segments[j].reset();
-                }
+        let tempTot: number = 0;
+        for (i = 0; i < listTotal; ++i) {
+
+            subLen = srcPosTable[i].length;
+            tempTot += subLen;
+            endIndex = ((i + 1) < listTotal) ? (index + subLen + 1) : srcPosLen;
+            //console.log(i,", subLen: ",subLen, ", srcPosLen: ",srcPosLen, ", index, endIndex: ",index, endIndex);                
+            segments = this.m_pathTableTool.slice(index, endIndex);
+            index += subLen;
+            pathSeg = this.segObjManager.getSegEntityObjectAt(i);
+            pathSeg.posTotal = subLen;
+            pathSeg.buildByPathSegments(segments);
+            for (let j: number = 0; j < segments.length; ++j) {
+                segments[j].reset();
             }
-            this.m_pathTableTool.reset();
-            //console.log("### B, tempTot: ",tempTot);
         }
-        else {
-            let srcTVList: Pos3D[] = this.m_pathTool.calcExpandXOZTVList(srcPosList, null, this.m_pathEditor.isPathClosed());
-            for (i = 0; i < listTotal; ++i) {
-
-                subLen = srcPosTable[i].length;
-                endIndex = ((i + 1) < listTotal) ? (index + subLen + 1) : srcPosLen;
-                posList = srcPosList.slice(index, endIndex);
-                tvList = srcTVList.slice(index, endIndex);
-                index += subLen;
-                pathSeg = this.segObjManager.getSegEntityObjectAt(i);
-                pathSeg.buildByPathPosAndTVList(posList, tvList, this.m_pathEditor.getPathWholeWidthScale());
-            }
-            // let posList: Pos3D[] = srcPosList.slice(0, srcPosTable[0].length);
-            // let tvList: Pos3D[] = srcTVList.slice(0, srcPosTable[0].length);
-            // this.m_pathSeg.buildByPathPosAndTVList(posList, tvList);
-
-            // this.m_pathSeg.buildByPathPosAndTVList(srcPosList, srcTVList);
-            Pos3DPool.RestoreList(srcTVList);
-        }
+        this.m_pathTableTool.reset();
+            
     }
     getSegList(): PathSegmentObject[] {
         return this.segObjManager.getSegList();
