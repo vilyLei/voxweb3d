@@ -17,45 +17,58 @@ import Vector3D from "../../../vox/math/Vector3D";
 class CurveSrcCalc {
 	/**
 	 * 计算二次Bezier曲线
-	 * */
-	static CalcBezier2(vs: number[], tot: number, v0: Vector3D, v1: Vector3D, v2: Vector3D): void {
+	 * @param vs 存放数据的number型数组
+	 * @param tot 分段总数
+	 * @param v0 起点
+	 * @param ctrlV 控制点
+	 * @param v2 终点
+	 */
+	static CalcBezier2(vs: number[], tot: number, v0: Vector3D, ctrlV: Vector3D, v1: Vector3D): void {
 		//b(t) = (1-t)*(1-t)*p0 + 2*t*(1-t)*p1 + t * t * p2;
+
 		let i: number = 0;
 		let px: number = 0;
 		let py: number = 0;
 		let pz: number = 0;
 		let k: number = 0;
 		for (; i <= tot; ++i) {
-			//
+			
 			k = i / tot;
-			px = (1.0 - k) * (1.0 - k) * v0.x + 2 * k * (1.0 - k) * v1.x + k * k * v2.x;
-			py = (1.0 - k) * (1.0 - k) * v0.y + 2 * k * (1.0 - k) * v1.y + k * k * v2.y;
-			pz = (1.0 - k) * (1.0 - k) * v0.z + 2 * k * (1.0 - k) * v1.z + k * k * v2.z;
-			//
+			px = (1.0 - k) * (1.0 - k) * v0.x + 2 * k * (1.0 - k) * ctrlV.x + k * k * v1.x;
+			py = (1.0 - k) * (1.0 - k) * v0.y + 2 * k * (1.0 - k) * ctrlV.y + k * k * v1.y;
+			pz = (1.0 - k) * (1.0 - k) * v0.z + 2 * k * (1.0 - k) * ctrlV.z + k * k * v1.z;
+			
 			vs.push(px, py, pz);
 		}
 	}
 	/**
 	 * 计算二次Bezier曲线
-	 * */
+	 */
 	static CalcBezier2ByProgress(vs: number[], k: number, v0: Vector3D, v1: Vector3D, v2: Vector3D): void {
 		//b(t) = (1-t)*(1-t)*p0 + 2*t*(1-t)*p1 + t * t * p2;
-		
+
 		let px: number = 0;
 		let py: number = 0;
 		let pz: number = 0;
-		
+
 		px = (1.0 - k) * (1.0 - k) * v0.x + 2 * k * (1.0 - k) * v1.x + k * k * v2.x;
 		py = (1.0 - k) * (1.0 - k) * v0.y + 2 * k * (1.0 - k) * v1.y + k * k * v2.y;
 		pz = (1.0 - k) * (1.0 - k) * v0.z + 2 * k * (1.0 - k) * v1.z + k * k * v2.z;
-		//
+		
 		vs.push(px, py, pz);
 	}
 	/**
 	 * 计算三次Bezier曲线
-	 * */
+	 * @param vs 存放数据的number型数组
+	 * @param tot 分段总数
+	 * @param v0 起点
+	 * @param v1 控制点1
+	 * @param v2 控制点2
+	 * @param v3 终点
+	 */
 	static CalcBezier3(vs: number[], tot: number, v0: Vector3D, v1: Vector3D, v2: Vector3D, v3: Vector3D): void {
 		//B(t) = p0*(1-t)^3 + 3*p1*t*(1-t)^2+3*p2*t^2*(1-t) + p3 * t^3
+
 		let i: number = 0;
 		let px: number = 0;
 		let py: number = 0;
@@ -67,48 +80,49 @@ class CurveSrcCalc {
 		let kb2: number = 0;
 		let kb3: number = 0;
 		for (; i <= tot; i++) {
-			//
+			
 			k = i / tot;
 			ka1 = (1 - k);//(1-k)
 			ka2 = ka1 * ka1;//(1-k)^2
 			ka3 = ka1 * ka2;//(1-k)^3
-			//
+			
 			kb2 = k * k;//k^2
 			kb3 = k * kb2;//k^3
-			//
+			
 			px = v0.x * ka3 + 3.0 * v1.x * k * ka2 + 3.0 * v2.x * kb2 * ka1 + v3.x * kb3;
 			py = v0.y * ka3 + 3.0 * v1.y * k * ka2 + 3.0 * v2.y * kb2 * ka1 + v3.y * kb3;
 			pz = v0.z * ka3 + 3.0 * v1.z * k * ka2 + 3.0 * v2.z * kb2 * ka1 + v3.z * kb3;
-			//
+			
 			vs.push(px, py, pz);
 		}
 	}
 	/**
 	 * 计算三次Bezier曲线
-	 * */
+	 */
 	static CalcBezier3ByProgress(vs: number[], k: number, v0: Vector3D, v1: Vector3D, v2: Vector3D, v3: Vector3D): void {
 		//B(t) = p0*(1-t)^3 + 3*p1*t*(1-t)^2+3*p2*t^2*(1-t) + p3 * t^3
+
 		let px: number = 0;
 		let py: number = 0;
 		let pz: number = 0;
-		//let k: number = 0;
+		
 		let ka1: number = 0;
 		let ka2: number = 0;
 		let ka3: number = 0;
 		let kb2: number = 0;
 		let kb3: number = 0;
-		
+
 		ka1 = (1 - k);//(1-k)
 		ka2 = ka1 * ka1;//(1-k)^2
 		ka3 = ka1 * ka2;//(1-k)^3
-		//
+		
 		kb2 = k * k;//k^2
 		kb3 = k * kb2;//k^3
-		//
+		
 		px = v0.x * ka3 + 3.0 * v1.x * k * ka2 + 3.0 * v2.x * kb2 * ka1 + v3.x * kb3;
 		py = v0.y * ka3 + 3.0 * v1.y * k * ka2 + 3.0 * v2.y * kb2 * ka1 + v3.y * kb3;
 		pz = v0.z * ka3 + 3.0 * v1.z * k * ka2 + 3.0 * v2.z * kb2 * ka1 + v3.z * kb3;
-		//
+		
 		vs.push(px, py, pz);
 	}
 	// 通过切向量来计算生成三次曲线的数据
@@ -121,7 +135,7 @@ class CurveSrcCalc {
 	 * @param tv0 曲线起点的曲线切向的单位矢量
 	 * @param v3 曲线的终点
 	 * @param tv3 曲线终点的曲线切向的单位矢量
-	 * */
+	 */
 	static CalcBezier3ByTV(vs: number[], tot: number, v0: Vector3D, tv0: Vector3D, v3: Vector3D, tv3: Vector3D): void {
 		let i: number = 0;
 		let px: number = 0;
@@ -155,13 +169,13 @@ class CurveBase {
 	/**
 	 * 曲线的起点
 	 */
-	 begin: Vector3D = new Vector3D();
-	 /**
-	  * 曲线的终点
-	  */
-	 end: Vector3D = new Vector3D(100, 0, 0);
-	constructor(){}
-	
+	begin: Vector3D = new Vector3D();
+	/**
+	 * 曲线的终点
+	 */
+	end: Vector3D = new Vector3D(100, 0, 0);
+	constructor() { }
+
 	/**
 	 * 设置曲线的分段总数
 	 * @param			tot		分段数量
@@ -184,7 +198,7 @@ class CurveBase {
 	getCurveDistance(): number {
 		let dis: number = 0;
 		let total: number = this.m_segTot + 1;
-		
+
 		let k: number = 0;
 		for (let i: number = 3; i < total; i += 3) {
 			k = i - 3;
@@ -197,9 +211,8 @@ class CurveBase {
 	}
 	getPosList(posList: Vector3D[] = null): Vector3D[] {
 		let k: number = 0;
-		if(posList == null)
-		{
-			posList = new Array( this.m_segTot + 1 );
+		if (posList == null) {
+			posList = new Array(this.m_segTot + 1);
 			for (let i: number = 0; i < this.m_vs.length; i += 3) {
 				posList[k++] = new Vector3D(this.m_vs[i], this.m_vs[i + 1], this.m_vs[i + 2]);
 			}
@@ -229,11 +242,11 @@ class CurveBase {
  * @author Vily
  */
 class Bezier2Curve extends CurveBase {
-	
+
 	constructor() {
 		super();
 		this.m_curveType = 2;
-	}	
+	}
 	/**
 	 * 控制点
 	 */
@@ -246,7 +259,7 @@ class Bezier2Curve extends CurveBase {
 		this.reset();
 		CurveSrcCalc.CalcBezier2ByProgress(this.m_vs, k, this.begin, this.ctrPos, this.end);
 	}
-	
+
 }
 class Bezier3Curve extends CurveBase {
 	constructor() {

@@ -13,7 +13,10 @@ class Bezier3Module {
     private m_posTable: Pos3D[][] = [];
     private m_radiusTable: number[][] = [];
     private m_tvTool: TVTool = new TVTool();
+    private m_direcTV: Vector3D = new Vector3D();
+    private m_direcNV: Vector3D = new Vector3D();
     readonly bezier3Curve: Bezier3Curve = new Bezier3Curve();
+    readonly bezier2Curve: Bezier2Curve = new Bezier2Curve();
 
     /**
      * 路径是否为闭合状态
@@ -30,7 +33,60 @@ class Bezier3Module {
     setBezierCurveSegTotal(segTotal: number): void {
         this.bezier3Curve.setSegTot(segTotal);
     }
+    /**
+	 * 计算二次Bezier曲线
+	 * */
+	static CalcBezier2Y(vs: number[], tot: number, v0: Vector3D, v1: Vector3D, v2: Vector3D): void {
+		//b(t) = (1-t)*(1-t)*p0 + 2*t*(1-t)*p1 + t * t * p2;
+		let py: number = 0;
+        let k: number = 0;
+        if(vs.length < (tot + 1)) {
+            for (let i: number = 0; i <= tot; ++i) {
+                
+                k = i / tot;
+                py = (1.0 - k) * (1.0 - k) * v0.y + 2 * k * (1.0 - k) * v1.y + k * k * v2.y;
+                vs.push(py);
+            }
+        }
+        else {            
+            for (let i: number = 0; i <= tot; ++i) {
+                
+                k = i / tot;
+                py = (1.0 - k) * (1.0 - k) * v0.y + 2 * k * (1.0 - k) * v1.y + k * k * v2.y;
+                vs[i] = py;
+            }
+        }
+	}
+    getCurvePosList(node0: PathKeyNode, node1: PathKeyNode, total: number): number[] {
+        let factor: number = node0.pathRadiusChangeFactor;
+        let amplitude: number = node0.pathRadiusChangeAmplitude;
+        //let total: number = 20;
+        let y0: number = node0.pathRadius;
+        let y1: number = node1.pathRadius;
+        let dy: number = Math.abs(y1 - y0);
+        this.bezier2Curve.begin.setXYZ(0, y0, 0);
+        this.bezier2Curve.end.setXYZ(dy + 1.0, y1, 0);
+        //this.bezier2Curve.setSegTot(total);
 
+        let dis: number = Vector3D.Distance(this.bezier2Curve.begin, this.bezier2Curve.end);
+        let direcTV = this.m_direcTV;
+        direcTV.subVecsTo(this.bezier2Curve.end, this.bezier2Curve.begin);
+        let direcNV = this.m_direcNV;
+        direcNV.setXYZ(-direcTV.y, direcTV.x, 0.0);
+        direcNV.normalize();
+        direcNV.scaleBy(amplitude * dy);
+
+        direcTV.normalize();
+        direcTV.scaleBy(dis * factor);
+        this.bezier2Curve.ctrPos.addVecsTo(direcTV, this.bezier2Curve.begin);
+        this.bezier2Curve.ctrPos.addBy(direcNV);
+
+        //this.bezier2Curve.updateCalc();
+        let vs: number[] = [];
+        Bezier3Module.CalcBezier2Y(vs, total,  this.bezier2Curve.begin, this.bezier2Curve.ctrPos, this.bezier2Curve.end);
+        return vs;
+
+    }
     calcSegCurve(pv0: Vector3D, pv1: Vector3D, ctrlA: Vector3D, ctrlB: Vector3D): Pos3D[] {
 
         let dis: number = Vector3D.Distance(this.bezier3Curve.begin,this.bezier3Curve.end);
@@ -195,6 +251,7 @@ class Bezier3Module {
         }
         this.m_posTable.push(posList);
     }
+
     getPathCurvePosTable(): Pos3D[][] {
         return this.m_posTable;
     }
