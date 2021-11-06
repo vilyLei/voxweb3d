@@ -150,7 +150,9 @@ export default class DispEntity3DManager {
         return false;
     }
     ensureAdd(entity: IRenderEntity, disp: IRODisplay, processUid: number): void {
+        
         entity.update();
+
         entity.__$rseFlag = RSEntityFlag.AddRendererUid(entity.__$rseFlag, this.m_rendererUid);
         entity.__$rseFlag = RSEntityFlag.RemoveRendererLoad(entity.__$rseFlag);
         entity.__$setRenderProxy(this.m_dataBuilder.getRenderProxy());
@@ -159,6 +161,7 @@ export default class DispEntity3DManager {
         if (disp.__$$rsign == DisplayRenderSign.NOT_IN_RENDERER) {
             disp.__$$rsign = DisplayRenderSign.GO_TO_RENDERER;
         }
+
         this.m_rprocess = this.m_processBuider.getNodeByUid(processUid) as RenderProcess;
         //console.log("DispEntity3DManager::addEntity(), add a ready ok entity to process.");
         if (disp.__$ruid > -1) {
@@ -169,11 +172,13 @@ export default class DispEntity3DManager {
                 this.m_rprocess.addDisp(disp);
             }
         }
-
         if (this.entityManaListener != null) {
             this.entityManaListener.addToRenderer(entity, this.m_rendererUid, processUid);
         }
-        entity.update();
+        if(entity.getGlobalBounds() != null) {
+            disp.__$$runit.bounds = entity.getGlobalBounds();
+            disp.__$$runit.pos = disp.__$$runit.bounds.center;
+        }
     }
     private updateWaitList(): void {
         let len: number = this.m_waitList.length;
@@ -181,7 +186,7 @@ export default class DispEntity3DManager {
         let disp: IRODisplay = null;
         for (let i: number = 0; i < len; ++i) {
             entity = this.m_waitList[i];
-            if ((RSEntityFlag.RENDERER_LOAD_FLAT & entity.__$rseFlag) == RSEntityFlag.RENDERER_LOAD_FLAT) {
+            if ((RSEntityFlag.RENDERER_LOAD_FLAG & entity.__$rseFlag) == RSEntityFlag.RENDERER_LOAD_FLAG) {
                 if (this.testValidData(entity)) {
                     disp = entity.getDisplay();
                     if (disp.__$$rsign == DisplayRenderSign.LIVE_IN_RENDERER) {

@@ -35,7 +35,8 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
     // renderProcess uid
     __$rprouid: number = -1;
     shader: RenderShader = null;
-    pos: Vector3D = new Vector3D();
+    // 这个posotion和bounds的center会是同一个实例
+    pos: Vector3D = null;
     bounds: AABB = null;
     constructor() {
     }
@@ -266,6 +267,7 @@ export default class RPOUnit implements IPoolNode, IRPODisplay {
         this.drawEnabled = true;
         this.shader = null;
         this.bounds = null;
+        this.pos = null;
     }
     destroy(): void {
         this.reset();

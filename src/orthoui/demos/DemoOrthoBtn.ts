@@ -178,6 +178,7 @@ export class DemoOrthoBtn {
             return;
         }
         let ls: Line3DEntity = new Line3DEntity();
+        this.m_curveLS = ls;
         ls.dynColorEnabled = true;
         ls.initializeByPosList(posList);
         radiusFactor = radiusFactor * 0.5 + 0.5;
@@ -185,7 +186,6 @@ export class DemoOrthoBtn {
         ls.setRGB3f(factor, radiusFactor, f);
         ls.setXYZ(50, 100, 1);
         this.m_ruisc.addEntity(ls);
-        this.m_curveLS = ls;
         if (this.m_flag0) {
             this.m_flag0 = false;
             ls = new Line3DEntity();

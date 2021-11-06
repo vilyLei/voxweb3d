@@ -204,7 +204,7 @@
 
 //  import {DemoBaseRenderer as Demo} from "./demo/DemoBaseRenderer";
 
-//  import {DemoFlexMesh as Demo} from "./demo/DemoFlexMesh";
+import {DemoFlexMesh as Demo} from "./demo/DemoFlexMesh";
 
 //  import * as DemoFlexPipe from "./demo/DemoFlexPipe";
 //  import Demo = DemoFlexPipe.demo.DemoFlexPipe;
@@ -383,7 +383,7 @@
 
 //  import {RbtDrama as Demo} from "./app/RbtDrama";
 
-import {SlickRoad as Demo} from "./app/SlickRoad";
+//  import {SlickRoad as Demo} from "./app/SlickRoad";
 
 //  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 

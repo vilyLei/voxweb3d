@@ -40,6 +40,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
         else {
             this.m_transfrom = transform;
         }
+        // this.__$rseFlag = RSEntityFlag.AddRendererUid(this.__$rseFlag, -1);
         this.createBounds();
     }
     private m_visible: boolean = true;
@@ -51,6 +52,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     // 如果一个entity如果包含了多个mesh,则这个bounds就是多个mesh aabb 合并的aabb
     protected m_localBounds: AABB = null;
     protected m_globalBounds: AABB = null;
+    protected m_localBuondsVer: number = -1;
     protected m_parent: IDisplayEntityContainer = null;
     protected m_renderProxy: RenderProxy = null;
 
@@ -274,8 +276,11 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
                         this.initDisplay(m);
                     }
                     //console.log("DisplayEntity::setMesh(), "+this.m_display.toString()+",m.drawMode: "+m.drawMode);
-                    if (this.m_globalBounds != null) {
-                        this.m_globalBounds.copyFrom(m.bounds);
+                    if(this.m_localBounds == null) {
+                        this.m_localBounds = m.bounds;
+                    }
+                    else {
+                        this.m_localBounds.copyFrom(m.bounds);
                     }
                     this.updateMesh();
                 }
@@ -315,7 +320,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
 
                 if(updateBounds && this.isPolyhedral()) {
 
-                    if(this.m_localBounds == null) {
+                    if(this.m_localBounds == this.m_mesh.bounds) {
                         this.m_localBounds = new AABB();
                         this.m_localBounds.copyFrom( this.m_mesh.bounds );
                     }
@@ -362,8 +367,8 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
 
                 this.m_display.visible = this.m_visible && this.m_drawEnabled;
             }
-            //if(this.m_display.getMaterial() != m && this.__$wuid == RSEntityFlag.RENDERER_UID_FLAT && this.m_display.__$ruid < 0)
-            if (this.m_display.getMaterial() != m && (RSEntityFlag.RENDERER_UID_FLAT & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAT && this.m_display.__$ruid < 0) {
+            //if(this.m_display.getMaterial() != m && this.__$wuid == RSEntityFlag.RENDERER_UID_FLAG && this.m_display.__$ruid < 0)
+            if (this.m_display.getMaterial() != m && (RSEntityFlag.RENDERER_UID_FLAG & this.__$rseFlag) == RSEntityFlag.RENDERER_UID_FLAG && this.m_display.__$ruid < 0) {
                 this.m_display.renderState = this.m_renderState;
                 this.m_display.rcolorMask = this.m_rcolorMask;
                 this.m_display.setMaterial(m);
@@ -473,8 +478,14 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     getPosition(pv: Vector3D): void {
         this.m_transfrom.getPosition(pv);
     }
+    setRotation3(rotV: Vector3D): void {
+        this.m_transfrom.setRotationXYZ(rotV.x, rotV.y, rotV.z);
+    }
     setRotationXYZ(rx: number, ry: number, rz: number): void {
         this.m_transfrom.setRotationXYZ(rx, ry, rz);
+    }
+    setScale3(scaleV: Vector3D): void {
+        this.m_transfrom.setScaleXYZ(scaleV.x, scaleV.y, scaleV.z);
     }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
         this.m_transfrom.setScaleXYZ(sx, sy, sz);
@@ -486,7 +497,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     getScaleXYZ(pv: Vector3D): void {
         this.m_transfrom.getScaleXYZ(pv);
     }
-    private static s_boundsInVS: Float32Array = new Float32Array(24);
+    //private static s_boundsInVS: Float32Array = new Float32Array(24);
     private static s_boundsOutVS: Float32Array = new Float32Array(24);
     private static s_pos: Vector3D = new Vector3D();
     private static s_prePos: Vector3D = new Vector3D();
@@ -494,7 +505,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
      * @returns 是否已经加入渲染器中(但是可能还没有进入真正的渲染运行时)
      */
     isInRenderer(): boolean {
-        return (this.__$rseFlag & RSEntityFlag.RENDERER_UID_FLAT) != RSEntityFlag.RENDERER_UID_FLAT;
+        return (this.__$rseFlag & RSEntityFlag.RENDERER_UID_FLAG) != RSEntityFlag.RENDERER_UID_FLAG;
     }
     /**
      * @returns 是否处在渲染运行时中
@@ -505,37 +516,91 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     updateBounds(): void {
         if (this.m_transfrom != null) {
             this.m_transStatus = ROTransform.UPDATE_TRANSFORM;
+
+            if(this.m_mesh != null && this.m_localBounds != this.m_mesh.bounds) {
+
+                this.m_localBounds.reset();
+                let ivs: Uint16Array | Uint32Array = this.m_mesh.getIVS();
+                this.m_localBounds.addXYZFloat32AndIndicesArr(this.m_mesh.getVS(), ivs.subarray(this.m_display.ivsIndex, this.m_display.ivsIndex + this.m_display.ivsCount));
+                this.m_localBounds.update();
+            }
             this.update();
         }
     }
-
+    private m_lBoundsVS: Float32Array = null;
     private m_transStatus: number = ROTransform.UPDATE_TRANSFORM;
+    private updateLocalBoundsVS(bounds: AABB): void {
+        let pminV: Vector3D = bounds.min;
+        let pmaxV: Vector3D = bounds.max;
+        if(this.m_lBoundsVS == null) {
+            this.m_lBoundsVS = new Float32Array(24);
+        }
+        let pvs: Float32Array = this.m_lBoundsVS;
+        pvs[0] = pminV.x; pvs[1] = pminV.y; pvs[2] = pminV.z;
+        pvs[3] = pmaxV.x; pvs[4] = pminV.y; pvs[5] = pminV.z;
+        pvs[6] = pminV.x; pvs[7] = pminV.y; pvs[8] = pmaxV.z;
+        pvs[9] = pmaxV.x; pvs[10] = pminV.y; pvs[11] = pmaxV.z;
+        pvs[12] = pminV.x; pvs[13] = pmaxV.y; pvs[14] = pminV.z;
+        pvs[15] = pmaxV.x; pvs[16] = pmaxV.y; pvs[17] = pminV.z;
+        pvs[18] = pminV.x; pvs[19] = pmaxV.y; pvs[20] = pmaxV.z;
+        pvs[21] = pmaxV.x; pvs[22] = pmaxV.y; pvs[23] = pmaxV.z;
+    }
     protected updateGlobalBounds(): void {
 
         // 这里的逻辑也有问题,需要再处理，为了支持摄像机等的拾取以及支持遮挡计算等空间管理计算
-        //if (this.m_transStatus > ROTransform.UPDATE_POSITION || this.m_transfrom.getRotationFlag()) {
-        if (this.m_transStatus > ROTransform.UPDATE_POSITION) {
+        
+        let bounds: AABB = this.m_localBounds;
+        if (this.m_transStatus > ROTransform.UPDATE_POSITION || this.m_localBuondsVer != bounds.version) {
+            let st: number = this.m_transfrom.updateStatus;
             this.m_transfrom.update();
-            let bounds: AABB = this.m_localBounds;
-            if(bounds == null) {
-                bounds = this.m_mesh.bounds;
+            console.log("st != this.m_transfrom.updatedStatus: ",st != this.m_transfrom.updateStatus);
+            if(this.m_localBuondsVer != bounds.version || st != this.m_transfrom.updateStatus) {
+                
+                console.log("update updateGlobalBounds do.");
+                this.m_localBuondsVer = bounds.version;
+                this.updateLocalBoundsVS(bounds);
+                
+            
+                let in_vs: Float32Array = this.m_lBoundsVS;
+                let out_vs: Float32Array = DisplayEntity.s_boundsOutVS;
+                /*
+                let pminV: Vector3D = bounds.min;
+                let pmaxV: Vector3D = bounds.max;
+                let pvs: Float32Array = DisplayEntity.s_boundsInVS;
+                pvs[0] = pminV.x; pvs[1] = pminV.y; pvs[2] = pminV.z;
+                pvs[3] = pmaxV.x; pvs[4] = pminV.y; pvs[5] = pminV.z;
+                pvs[6] = pminV.x; pvs[7] = pminV.y; pvs[8] = pmaxV.z;
+                pvs[9] = pmaxV.x; pvs[10] = pminV.y; pvs[11] = pmaxV.z;
+                pvs[12] = pminV.x; pvs[13] = pmaxV.y; pvs[14] = pminV.z;
+                pvs[15] = pmaxV.x; pvs[16] = pmaxV.y; pvs[17] = pminV.z;
+                pvs[18] = pminV.x; pvs[19] = pmaxV.y; pvs[20] = pmaxV.z;
+                pvs[21] = pmaxV.x; pvs[22] = pmaxV.y; pvs[23] = pmaxV.z;
+                //*/
+                this.m_transfrom.getMatrix().transformVectors(in_vs, 24, out_vs);
+                this.m_globalBounds.reset();
+                this.m_globalBounds.addXYZFloat32Arr(out_vs);
+                this.m_globalBounds.update();
             }
-            let pminV: Vector3D = bounds.min;
-            let pmaxV: Vector3D = bounds.max;
-            let pvs: Float32Array = DisplayEntity.s_boundsInVS;
-            let povs: Float32Array = DisplayEntity.s_boundsOutVS;
-            pvs[0] = pminV.x; pvs[1] = pminV.y; pvs[2] = pminV.z;
-            pvs[3] = pmaxV.x; pvs[4] = pminV.y; pvs[5] = pminV.z;
-            pvs[6] = pminV.x; pvs[7] = pminV.y; pvs[8] = pmaxV.z;
-            pvs[9] = pmaxV.x; pvs[10] = pminV.y; pvs[11] = pmaxV.z;
-            pvs[12] = pminV.x; pvs[13] = pmaxV.y; pvs[14] = pminV.z;
-            pvs[15] = pmaxV.x; pvs[16] = pmaxV.y; pvs[17] = pminV.z;
-            pvs[18] = pminV.x; pvs[19] = pmaxV.y; pvs[20] = pmaxV.z;
-            pvs[21] = pmaxV.x; pvs[22] = pmaxV.y; pvs[23] = pmaxV.z;
-            this.m_transfrom.getMatrix().transformVectors(pvs, 24, povs);
-            this.m_globalBounds.reset();
-            this.m_globalBounds.addXYZFloat32Arr(povs);
-            this.m_globalBounds.update();
+            
+            // let in_vs: Float32Array = this.m_lBoundsVS;
+            // let out_vs: Float32Array = DisplayEntity.s_boundsOutVS;
+            // /*
+            // let pminV: Vector3D = bounds.min;
+            // let pmaxV: Vector3D = bounds.max;
+            // let pvs: Float32Array = DisplayEntity.s_boundsInVS;
+            // pvs[0] = pminV.x; pvs[1] = pminV.y; pvs[2] = pminV.z;
+            // pvs[3] = pmaxV.x; pvs[4] = pminV.y; pvs[5] = pminV.z;
+            // pvs[6] = pminV.x; pvs[7] = pminV.y; pvs[8] = pmaxV.z;
+            // pvs[9] = pmaxV.x; pvs[10] = pminV.y; pvs[11] = pmaxV.z;
+            // pvs[12] = pminV.x; pvs[13] = pmaxV.y; pvs[14] = pminV.z;
+            // pvs[15] = pmaxV.x; pvs[16] = pmaxV.y; pvs[17] = pminV.z;
+            // pvs[18] = pminV.x; pvs[19] = pmaxV.y; pvs[20] = pmaxV.z;
+            // pvs[21] = pmaxV.x; pvs[22] = pmaxV.y; pvs[23] = pmaxV.z;
+            // //*/
+            // this.m_transfrom.getMatrix().transformVectors(in_vs, 24, out_vs);
+            // this.m_globalBounds.reset();
+            // this.m_globalBounds.addXYZFloat32Arr(out_vs);
+            // this.m_globalBounds.update();
         }
         else {
             DisplayEntity.s_prePos.setXYZ(0, 0, 0);
@@ -554,6 +619,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
         }
     }
     update(): void {
+
         if (this.m_transfrom.updatedStatus > this.m_transStatus) this.m_transStatus = this.m_transfrom.updatedStatus;
         if (this.m_transStatus != ROTransform.UPDATE_NONE) {
             if (this.m_mesh != null && this.m_globalBounds != null) {
@@ -564,10 +630,6 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
             }
             this.m_transStatus = ROTransform.UPDATE_NONE;
             this.m_transfrom.updatedStatus = this.m_transStatus;
-        }
-        if (this.isRenderEnabled()) {
-            this.m_display.__$$runit.bounds = this.m_globalBounds;
-            this.m_transfrom.getPosition(this.m_display.__$$runit.pos);
         }
     }
     destroy(): void {

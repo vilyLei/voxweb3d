@@ -46,6 +46,7 @@ export default interface IRenderEntity
     isFree():boolean;
     dispatchEvt(evt:any):void;
     getEvtDispatcher(evtClassType:number):IEvtDispatcher;
+    getPosition(resultPos: Vector3D):void;
     getGlobalBounds():AABB;
     getLocalBounds():AABB;
     

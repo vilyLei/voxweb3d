@@ -246,7 +246,7 @@ export default class ROTransform {
         this.m_rotFlag = src.m_rotFlag;
     }
     update(): void {
-        //console.log("ROTransform::update(), updateStatus: " + this.updateStatus);
+        
         if (this.updateStatus > 0) {
             this.m_invMatEnabled = true;
             this.updateStatus = this.updateStatus | this.updatedStatus;
