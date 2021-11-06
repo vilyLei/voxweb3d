@@ -1,6 +1,6 @@
 import EngineBase from "../../../vox/engine/EngineBase";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
-import { ViewerEntityManager } from "./ViewerEntityManager";
+import { VRDEntityBuilder } from "./VRDEntityBuilder";
 import { RoadSceneData, RoadSegment, RoadSegmentMesh, RoadModel } from "../io/RoadSceneFileParser";
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
 
@@ -18,7 +18,7 @@ class SceneViewer {
     constructor() { }
 
     private m_engine: EngineBase = null;
-    private m_entityManager: ViewerEntityManager = new ViewerEntityManager();
+    private m_entityManager: VRDEntityBuilder = new VRDEntityBuilder();
     private m_materialCtx: MaterialContext = new MaterialContext();
 
     private m_rotV: Vector3D = new Vector3D(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
@@ -37,7 +37,7 @@ class SceneViewer {
             this.m_engine = engine;
             this.m_materialCtx.initialize(this.m_engine.rscene);
             this.m_texSystem.initialize(this.m_engine, this.m_materialCtx);
-            this.m_entityManager.initialize(engine);
+            
             ///*
             let material: LambertLightMaterial;
             material = new LambertLightMaterial();

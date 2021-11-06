@@ -1,25 +1,13 @@
-import EngineBase from "../../../vox/engine/EngineBase";
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
 import AABB from "../../../vox/geom/AABB";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import DataMesh from "../../../vox/mesh/DataMesh";
-import TextureProxy from "../../../vox/texture/TextureProxy";
 import { RoadSegmentMesh } from "../io/RoadSceneFileParser";
 
-class ViewerEntityManager {
+class VRDEntityBuilder {
 
     constructor() { }
 
-    private m_engine: EngineBase = null;
-
-    initialize(engine: EngineBase): void {
-
-        console.log("ViewerEntityManager::initialize()......");
-
-        if (this.m_engine == null) {
-            this.m_engine = engine;
-        }
-    }
     createRoadSegEntityFromMeshData(segMesh: RoadSegmentMesh, material: MaterialBase): DisplayEntity {
 
         let mesh: DataMesh = new DataMesh();
@@ -56,4 +44,4 @@ class ViewerEntityManager {
     }
 }
 
-export { ViewerEntityManager };
+export { VRDEntityBuilder };
