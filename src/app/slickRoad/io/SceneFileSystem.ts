@@ -30,7 +30,7 @@ class SceneFileSystem {
             console.log("#### Save Data Begin...");
 
             let node: ExportRoadNode = new ExportRoadNode();
-            node.roadWidth = this.m_pathEditor.getPathWholeWidthScale();
+            
             node.pathPosList = this.m_pathEditor.getPathKeyPosList();
             node.curvePosList = this.m_pathEditor.getPathCurvePosList();
             

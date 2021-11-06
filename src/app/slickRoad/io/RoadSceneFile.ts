@@ -143,7 +143,6 @@ class RoadSegment {
  */
 class RoadModel {
 
-    roadWidth: number = 100.0;
     segmentList: RoadSegment[] = [];
     bytesTotal: number = 0;
     /**
@@ -226,7 +225,6 @@ class RoadModel {
 
         let dataObj: any = {};
         
-        dataObj.roadWidth = this.roadWidth;
         dataObj.bytesBegin = bytesIndex;
         dataObj.roadSegments = [];
         dataObj.modeClass = this.modeClass;
@@ -274,7 +272,6 @@ class RoadSceneExportData {
     addRoadModule(roadNode: ExportRoadNode): void {
 
         let road: RoadModel = new RoadModel();
-        road.roadWidth = roadNode.roadWidth;
 
         road.pathPosList = roadNode.pathPosList;
         road.curvePosList = roadNode.curvePosList;
@@ -311,7 +308,18 @@ class RoadSceneExportData {
     }
 }
 class ExportRoadNode {
-    roadWidth: number = 100.0;
+    /**
+     * 边缘数据(宽，高，等等)
+     */
+    edgeData: any = {height: 15, width: 15};
+    /**
+     * 路径横向宽度数据
+     */
+    pathWidthList: Vector3D[] = null;
+    /**
+     * 路径横向切线数据
+     */
+    pathWidthTVList: Vector3D[] = null;
     /**
      * 路径上的关键点
      */
