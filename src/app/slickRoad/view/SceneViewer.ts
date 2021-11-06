@@ -1,15 +1,17 @@
 import EngineBase from "../../../vox/engine/EngineBase";
 import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
-import { VRDEntityBuilder } from "./VRDEntityBuilder";
-import { RoadSceneData, RoadSegment, RoadSegmentMesh, RoadModel } from "../io/RoadSceneFileParser";
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
 
 import LambertLightMaterial from "../../../vox/material/mcase/LambertLightMaterial";
 import { MaterialContext } from "../../../materialLab/base/MaterialContext";
 import Box3DEntity from "../../../vox/entity/Box3DEntity";
 import Vector3D from "../../../vox/math/Vector3D";
+
 import { SceneDataLoader } from "./SceneDataLoader";
 import { ViewerTexSystem } from "./ViewerTexSystem";
+import { VRDEntityBuilder } from "./VRDEntityBuilder";
+import { RoadSceneData, RoadSegment, RoadSegmentMesh, RoadModel } from "../io/RoadSceneFileParser";
+
 import Line3DEntity from "../../../vox/entity/Line3DEntity";
 import Axis3DEntity from "../../../vox/entity/Axis3DEntity";
 import MaterialBase from "../../../vox/material/MaterialBase";
@@ -20,7 +22,6 @@ class SceneViewer {
     constructor() { }
 
     private m_engine: EngineBase = null;
-    private m_entityManager: VRDEntityBuilder = new VRDEntityBuilder();
     private m_materialCtx: MaterialContext = new MaterialContext();
 
     private m_rotV: Vector3D = new Vector3D(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
@@ -29,6 +30,7 @@ class SceneViewer {
 
     private m_line: Line3DEntity = null;
     private m_scDataLoader: SceneDataLoader = new SceneDataLoader();
+    private m_entityManager: VRDEntityBuilder = new VRDEntityBuilder();
     private m_texSystem: ViewerTexSystem = new ViewerTexSystem();
     initialize(engine: EngineBase): void {
 
@@ -89,14 +91,14 @@ class SceneViewer {
     }
     private loadSceneDataBURL(url: string): void {
         this.m_scDataLoader.load(url, (roadData: RoadSceneData): void => {
-            this.createEntities(roadData);
+            this.createRoadDisplay(roadData);
         })
     }
     private loadSceneData(): void {
         //this.loadSceneDataBURL("static/assets/scene/vrdScene_02.vrd");
         this.loadSceneDataBURL("static/assets/scene/vrdScene_hightway.vrd");
     }
-    private createEntities(roadData: RoadSceneData): void {
+    private createRoadDisplay(roadData: RoadSceneData): void {
 
         let roadList: RoadModel[] = roadData.roadList;
         if (roadList != null) {
@@ -121,6 +123,27 @@ class SceneViewer {
         this.m_engine.rscene.addEntity(pls);
     }
 
+    private createRoadEntities(road: RoadModel): void {
+
+        let entities: DisplayEntity[] = this.m_entityManager.createRoadEntities(
+            road,
+            (total: number): MaterialBase[] => {
+                //return this.getLambertMaterials(total);
+                return this.getDefaultMaterials(total);
+            });
+        for (let k: number = 0; k < entities.length; ++k) {
+            this.m_engine.rscene.addEntity(entities[k]);
+        }
+
+    }
+    run(): void {
+        // if (this.m_target != null) {
+        //     this.m_rotV.addBy(this.m_spdV);
+        //     this.m_target.setRotationXYZ(this.m_rotV.x, this.m_rotV.y, this.m_rotV.z);
+        //     this.m_target.update();
+        // }
+        this.m_materialCtx.run();
+    }
     getLambertMaterials(total: number): MaterialBase[] {
 
         let texNSList: string[] = ["fabric_01", "brick_n_256"];
@@ -144,27 +167,6 @@ class SceneViewer {
             materials[k].initializeByCodeBuf(true);
         }
         return materials;
-    }
-    private createRoadEntities(road: RoadModel): void {
-
-        let entities: DisplayEntity[] = this.m_entityManager.createRoadEntities(
-            road,
-            (total: number): MaterialBase[] => {
-                //return this.getLambertMaterials(total);
-                return this.getDefaultMaterials(total);
-            });
-        for (let k: number = 0; k < entities.length; ++k) {
-            this.m_engine.rscene.addEntity(entities[k]);
-        }
-
-    }
-    run(): void {
-        // if (this.m_target != null) {
-        //     this.m_rotV.addBy(this.m_spdV);
-        //     this.m_target.setRotationXYZ(this.m_rotV.x, this.m_rotV.y, this.m_rotV.z);
-        //     this.m_target.update();
-        // }
-        this.m_materialCtx.run();
     }
 }
 
