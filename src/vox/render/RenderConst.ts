@@ -137,12 +137,10 @@ export class RenderConst {
     static readonly SCENE_RO_ERASE: number = 0;
 }
 export enum DisplayRenderSign {
-    // 还没有加入 world
-    NOT_IN_WORLD = -1,
-    // 正在进入 world
-    GO_TO_WORLD = 1,
-    // 真正存在于 world, 也就是直接可以在 process 中使用了
-    LIVE_IN_WORLD = 2
+    // 还没有加入 renderer
+    NOT_IN_RENDERER = -1,
+    // 正在进入 renderer
+    GO_TO_RENDERER = 1,
+    // 真正存在于 renderer, 也就是直接可以在 process 中使用了
+    LIVE_IN_RENDERER = 2
 }
-
-//export {RenderBlendMode, DisplayRenderSign};

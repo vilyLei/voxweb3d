@@ -303,18 +303,23 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
         return this.m_display.ivsCount;
     }
     setIvsParam(ivsIndex: number, ivsCount: number, updateBounds: boolean = false): void {
+
         if (this.m_display != null) {
+
             this.m_display.ivsIndex = ivsIndex;
             this.m_display.ivsCount = ivsCount;
             if (this.m_display.__$ruid > -1) {
                 this.m_display.__$$runit.trisNumber = Math.floor((ivsCount - ivsIndex) / 3);
                 this.m_display.__$$runit.setIvsParam(ivsIndex, ivsCount);
                 this.m_display.__$$runit.drawMode = this.m_mesh.drawMode;
+
                 if(updateBounds && this.isPolyhedral()) {
+
                     if(this.m_localBounds == null) {
                         this.m_localBounds = new AABB();
                         this.m_localBounds.copyFrom( this.m_mesh.bounds );
                     }
+                    this.m_transStatus = ROTransform.UPDATE_TRANSFORM;
                     this.m_localBounds.reset();
                     let ivs: Uint16Array | Uint32Array = this.m_mesh.getIVS();
                     this.m_localBounds.addXYZFloat32AndIndicesArr(this.m_mesh.getVS(), ivs.subarray(ivsIndex, ivsIndex + ivsCount));
@@ -560,7 +565,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
             this.m_transStatus = ROTransform.UPDATE_NONE;
             this.m_transfrom.updatedStatus = this.m_transStatus;
         }
-        if (this.m_display != null && this.m_display.__$$runit != null) {
+        if (this.isRenderEnabled()) {
             this.m_display.__$$runit.bounds = this.m_globalBounds;
             this.m_transfrom.getPosition(this.m_display.__$$runit.pos);
         }

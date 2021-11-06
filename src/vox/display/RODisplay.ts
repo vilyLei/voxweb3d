@@ -121,7 +121,7 @@ export default class RODisplay implements IRODisplay {
         this.vbuf = null;
         this.__$ruid = -1;
         this.__$rpuid = -1;
-        this.__$$rsign = DisplayRenderSign.NOT_IN_WORLD;
+        this.__$$rsign = DisplayRenderSign.NOT_IN_RENDERER;
         this.ivsIndex = 0;
         this.ivsCount = 0;
         this.m_partGroup = null;
@@ -130,7 +130,7 @@ export default class RODisplay implements IRODisplay {
     // 只能由渲染系统内部调用
     __$ruid: number = -1;     // 用于关联IRPODisplay对象
     __$rpuid: number = -1;    // 用于关联RPONode对象
-    __$$rsign: DisplayRenderSign = DisplayRenderSign.NOT_IN_WORLD;
+    __$$rsign: DisplayRenderSign = DisplayRenderSign.NOT_IN_RENDERER;
     __$$runit: IRPODisplay = null;
 
     private static S_FLAG_BUSY: number = 1;

@@ -317,7 +317,7 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
     buildGpuDisp(disp: IRODisplay): boolean {
         if (disp.__$ruid < 0) {
             if (disp.getMaterial() != null) {
-                disp.__$$rsign = DisplayRenderSign.LIVE_IN_WORLD;
+                disp.__$$rsign = DisplayRenderSign.LIVE_IN_RENDERER;
 
                 let runit: RPOUnit = this.m_rpoUnitBuilder.create() as RPOUnit;
                 disp.__$ruid = runit.uid;

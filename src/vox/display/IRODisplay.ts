@@ -49,7 +49,7 @@ interface IRODisplay
     // 只能由渲染系统内部调用
     __$ruid:number;// = -1;     // 用于关联IRPODisplay对象
     __$rpuid:number;// = -1;     // 用于关联RPONode对象
-    __$$rsign:DisplayRenderSign;// = DisplayRenderSign.NOT_IN_WORLD;
+    __$$rsign:DisplayRenderSign;// = DisplayRenderSign.NOT_IN_RENDERER;
     __$$runit:IRPODisplay;// 用于关联IRPODisplay对象, 默认值为null
 }
 export default IRODisplay;
