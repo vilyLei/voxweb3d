@@ -55,9 +55,6 @@ export class EngineBase {
             rscene.initialize(param, renderProcessesTotal);
             rscene.updateCamera();
 
-            // rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
-            // rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);
-
             let selfT: any = this;
             selfT.stage3D = rscene.getStage3D();
             selfT.rscene = rscene;
@@ -143,6 +140,12 @@ export class EngineBase {
     }
     showInfo(): void {
         console.log("showInfo() this.m_sceneList: ", this.m_sceneList);
+    }
+    /**
+     * 获取渲染器可渲染对象管理器状态(版本号)
+     */
+    getRendererStatus(): number {
+        return this.rscene.getRendererStatus();
     }
     // private m_flag: boolean = true;
     // private mouseDown(evt: any): void {

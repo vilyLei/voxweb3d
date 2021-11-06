@@ -38,6 +38,7 @@ export class ShadowVSMModule {
     private m_depthRtt: RTTTextureProxy = null;
     private m_occBlurRtt: RTTTextureProxy = null;
     private m_fboIndex: number = 0;
+    private m_rendererStatus: number = -1;
     
     constructor(fboIndex: number) {
         this.m_fboIndex = fboIndex;
@@ -196,11 +197,17 @@ export class ShadowVSMModule {
             this.m_vsmData.updateShadowCamera(this.m_direcCamera);
             this.m_vsmData.upadate();
         }
-        if (this.m_buildShadowDelay > 0 || this.force) {
-            if (this.m_buildShadowDelay % 15 == 0 || this.force) {
-                this.buildShadow();
+        let flag: boolean = this.force || this.m_rendererStatus != this.m_rscene.getRendererStatus();
+        this.m_rendererStatus = this.m_rscene.getRendererStatus();
+        if (this.m_buildShadowDelay > 0) {
+            if (this.m_buildShadowDelay % 15 == 0) {
+                //this.buildShadow();
+                flag = true;
             }
             this.m_buildShadowDelay--;
+        }
+        if(flag) {
+            this.buildShadow();
         }
         this.force = false;
     }

@@ -93,5 +93,9 @@ interface IRendererScene {
     updateCamera(): void;
     getCamera(): IRenderCamera;
     getStage3D(): IRenderStage3D;
+    /**
+     * 获取渲染器可渲染对象管理器状态(版本号)
+     */
+    getRendererStatus(): number;
 }
 export default IRendererScene;

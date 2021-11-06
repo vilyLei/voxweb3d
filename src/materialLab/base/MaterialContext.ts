@@ -11,6 +11,7 @@ import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
  */
 class MaterialContext {
 
+    private m_rscene: RendererScene = null;
     private m_initFlag: boolean = true;
     /**
      * 全局的灯光数据
@@ -32,6 +33,8 @@ class MaterialContext {
 
     initialize(rscene: RendererScene, pointLightsTotal: number = 2, directionLightsTotal: number = 2, vsmFboIndex: number = 0): void {
         if (this.m_initFlag) {
+
+            this.m_rscene = rscene;
 
             let selfT: any = this;
             let areaSize: number = 800.0;
@@ -71,6 +74,9 @@ class MaterialContext {
     }
     run(): void {
         this.vsmModule.run();
+    }
+    destroy(): void {
+        this.m_rscene = null;
     }
 }
 export {MaterialContext};

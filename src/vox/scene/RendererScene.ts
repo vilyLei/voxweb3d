@@ -162,6 +162,12 @@ export default class RendererScene implements IRenderer, IRendererScene {
     getStage3D(): IRenderStage3D {
         return this.m_renderProxy.getStage3D();
     }
+    /**
+     * 获取渲染器可渲染对象管理器状态(版本号)
+     */
+    getRendererStatus(): number {
+        return this.m_renderer.getRendererStatus();
+    }
     getViewWidth(): number {
         return this.m_renderProxy.getStage3D().viewWidth;
     }

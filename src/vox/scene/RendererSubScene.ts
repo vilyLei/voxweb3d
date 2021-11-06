@@ -136,6 +136,13 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     getCamera(): CameraBase {
         return this.m_camera as CameraBase;
     }
+    
+    /**
+     * 获取渲染器可渲染对象管理器状态(版本号)
+     */
+    getRendererStatus(): number {
+        return this.m_renderer.getRendererStatus();
+    }
     getMouseXYWorldRay(rl_position: Vector3D, rl_tv: Vector3D): void {
         this.m_camera.getWorldPickingRayByScreenXY(this.m_stage3D.mouseX, this.m_stage3D.mouseY, rl_position, rl_tv);
     }

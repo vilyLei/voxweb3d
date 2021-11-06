@@ -136,6 +136,12 @@ export class RendererInstance implements IRenderer {
         }
     }
     /**
+     * 获取渲染器可渲染对象管理器状态(版本号)
+     */
+    getRendererStatus(): number {
+        return this.m_entity3DMana.version;
+    }
+    /**
      * update all data or status of the renderer runtime
      * should call this function per frame
      */
@@ -155,7 +161,7 @@ export class RendererInstance implements IRenderer {
         }
     }
     setEntityManaListener(listener: any): void {
-        this.m_entity3DMana.entityManaListener = listener;
+        this.m_entity3DMana.setListener( listener );
     }
     /**
      * add an entity to the renderer process of the renderer instance

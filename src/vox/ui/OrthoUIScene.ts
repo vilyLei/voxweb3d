@@ -62,6 +62,13 @@ class OrthoUIScene implements IRendererScene {
     getRendererScene(): RendererSubScene {
         return this.m_ruisc;
     }
+    
+    /**
+     * 获取渲染器可渲染对象管理器状态(版本号)
+     */
+    getRendererStatus(): number {
+        return this.m_ruisc.getRendererStatus();
+    }
     getUid(): number {
         return this.m_ruisc.getUid();
     }

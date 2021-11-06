@@ -17,6 +17,7 @@ import RenderProcessBuider from "../../vox/render/RenderProcessBuider";
 import {RendererEntityStatusListener} from "./RendererEntityStatusListener";
 
 export default class DispEntity3DManager {
+
     private m_rpoUnitBuilder: RPOUnitBuilder = null;
     private m_dataBuilder: RODataBuilder = null;
     private m_processBuider: RenderProcessBuider = null;
@@ -25,13 +26,18 @@ export default class DispEntity3DManager {
     private m_rendererUid: number = -1;
     private m_existencetotal: number = 0;
     private m_rprocess: RenderProcess = null;
-    entityManaListener: RendererEntityStatusListener = null;
+    private m_entityManaListener: RendererEntityStatusListener = null;
+    version: number = 0;
 
     constructor(rendererUid: number, RODataBuilder: RODataBuilder, rpoUnitBuilder: RPOUnitBuilder, processBuider: RenderProcessBuider) {
+        
         this.m_rendererUid = rendererUid;
         this.m_dataBuilder = RODataBuilder;
         this.m_rpoUnitBuilder = rpoUnitBuilder;
         this.m_processBuider = processBuider;
+    }
+    setListener(entityManaListener: RendererEntityStatusListener): void {
+        this.m_entityManaListener = entityManaListener;
     }
     isEmpty(): boolean {
         return this.m_existencetotal < 1;
@@ -84,12 +90,13 @@ export default class DispEntity3DManager {
             else {
                 console.warn("Error: DispEntity3DManager::removeEntity(), remove a entity from all processes failed.");
             }
+            this.version ++;
         }
         entity.__$rseFlag = RSEntityFlag.RemoveRendererUid(entity.__$rseFlag);
         entity.__$rseFlag = RSEntityFlag.RemoveRendererLoad(entity.__$rseFlag);
         entity.__$rseFlag = RSEntityFlag.RemoveSortEnabled(entity.__$rseFlag);
-        if (this.entityManaListener != null) {
-            this.entityManaListener.removeFromRenderer(entity, this.m_rendererUid, -1);
+        if (this.m_entityManaListener != null) {
+            this.m_entityManaListener.removeFromRenderer(entity, this.m_rendererUid, -1);
         }
     }
     addEntity(entity: IRenderEntity, processUid: number, deferred: boolean = false): boolean {
@@ -172,13 +179,14 @@ export default class DispEntity3DManager {
                 this.m_rprocess.addDisp(disp);
             }
         }
-        if (this.entityManaListener != null) {
-            this.entityManaListener.addToRenderer(entity, this.m_rendererUid, processUid);
+        if (this.m_entityManaListener != null) {
+            this.m_entityManaListener.addToRenderer(entity, this.m_rendererUid, processUid);
         }
         if(entity.getGlobalBounds() != null) {
             disp.__$$runit.bounds = entity.getGlobalBounds();
             disp.__$$runit.pos = disp.__$$runit.bounds.center;
         }
+        this.version ++;
     }
     private updateWaitList(): void {
         let len: number = this.m_waitList.length;
@@ -219,8 +227,8 @@ export default class DispEntity3DManager {
                 this.m_processUidList.splice(i, 1);
                 --len;
                 --i;
-                if (this.entityManaListener != null) {
-                    this.entityManaListener.removeFromRenderer(entity, this.m_rendererUid, -1);
+                if (this.m_entityManaListener != null) {
+                    this.m_entityManaListener.removeFromRenderer(entity, this.m_rendererUid, -1);
                 }
             }
         }
