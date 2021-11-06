@@ -23,10 +23,10 @@ class ViewerEntityManager {
     createRoadSegEntityFromMeshData(segMesh: RoadSegmentMesh, material: MaterialBase): DisplayEntity {
 
         let mesh: DataMesh = new DataMesh();
-        // mesh.bounds = new AABB();
-        // mesh.bounds.min.copyFrom(segMesh.bounds[0]);
-        // mesh.bounds.max.copyFrom(segMesh.bounds[1]);
-        // mesh.bounds.updateFast();
+        mesh.bounds = new AABB();
+        mesh.bounds.min.copyFrom(segMesh.bounds[0]);
+        mesh.bounds.max.copyFrom(segMesh.bounds[1]);
+        mesh.bounds.updateFast();
         
         mesh.setIVS(segMesh.ivs);
         mesh.setVS(segMesh.vs);
