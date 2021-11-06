@@ -70,10 +70,38 @@ class PathCtrlEntityManager {
         }
     }
     /**
-     * 设置当前宽度控制因子
-     * @param factor 宽度控制因子
+     * 设置当前宽度变化曲线控制因子
+     * @param factor 控制因子
+     */
+    setCurrWidthChangeFactor(factor: number): void {
+
+        let editEntity: PathCtrlEntity = this.getTargetPathCtrlEntity();
+        if (editEntity != null) {
+            let node: PathKeyNode = this.m_path.getPosNodeAt(editEntity.pathCtrlPosIndex);
+            factor = MathConst.Clamp(factor, 0.0, 1.0);
+            node.pathRadius = 2 + Math.round(500.0 * factor);
+            this.m_path.version++;
+        }
+    }
+    /**
+     * 设置当前宽度变化幅度控制因子
+     * @param factor 控制因子
      */
     setCurrWidthFactor(factor: number): void {
+
+        let editEntity: PathCtrlEntity = this.getTargetPathCtrlEntity();
+        if (editEntity != null) {
+            let node: PathKeyNode = this.m_path.getPosNodeAt(editEntity.pathCtrlPosIndex);
+            factor = MathConst.Clamp(factor, 0.0, 1.0);
+            node.pathRadius = 2 + Math.round(500.0 * factor);
+            this.m_path.version++;
+        }
+    }
+    /**
+     * 设置当前宽度
+     * @param factor 控制因子
+     */
+    setCurrWidth(factor: number): void {
 
         let editEntity: PathCtrlEntity = this.getTargetPathCtrlEntity();
         if (editEntity != null) {

@@ -113,9 +113,10 @@ class UIScene {
         texBtn = this.createTextBtn("添加对象", "addCurrObject", false, fontColor1);
         this.m_btnPY += dis;
         let proBtn: ProgressBar;
-        proBtn = this.createProgressBtn("宽度变化", "pathWidthchange", 0.5);
-        proBtn = this.createProgressBtn("当前宽度", "currWidthCtrl", 0.2);
-        proBtn = this.createProgressBtn("总体宽度", "wholeWidthCtrl", 0.25);
+        proBtn = this.createProgressBtn("路面宽度", "currRoadWidth", 0.5);
+        proBtn = this.createProgressBtn("路宽变化", "currRoadWidthChangeFactor", 0.2);
+        proBtn = this.createProgressBtn("路宽系数", "currRoadWidthFactor", 0.2);
+        proBtn = this.createProgressBtn("全局路宽", "wholeWidthCtrl", 0.25);
         this.m_wholeWidthCtrlBtn = proBtn;
         proBtn = this.createProgressBtn("分段密度", "segTotalCtrl", 0.2);
         proBtn.step = 0.01;
@@ -238,8 +239,14 @@ class UIScene {
         let progEvt: ProgressDataEvent = evt as ProgressDataEvent;
         let value: number = progEvt.value;
         switch( progEvt.uuid ) {
-            case "currWidthCtrl":
+            case "currRoadWidthChangeFactor":
+                this.scene.pathEditor.pathCtrlEntityManager.setCurrWidthChangeFactor(value);
+                break;
+            case "currRoadWidthFactor":
                 this.scene.pathEditor.pathCtrlEntityManager.setCurrWidthFactor(value);
+                break;
+            case "currRoadWidth":
+                this.scene.pathEditor.pathCtrlEntityManager.setCurrWidth(value);
                 break;
             case "wholeWidthCtrl":
                 this.scene.pathEditor.setPathWholeWidthFactor(value);

@@ -13,15 +13,19 @@ class PathKeyNode {
     private m_uid: number = 0;
 
     /**
-     * 当前半径的变换因此
+     * 当前半径平滑过渡变换因子(0.0 -> 1.0)
      */
     pathRadiusChangeFactor: number = 1.0;
+    /**
+     * 当前半径平滑过渡变换的幅度(-1.0 -> 1.0)
+     */
+    pathRadiusChangeAmplitude: number = 1.0;
     /**
      * 记录当前位置的半径(半宽度)值
      */
     pathRadius: number = 60.0;
     /**
-     * 记录自身状态
+     * 记录自身是否可以被当前编辑改变的状态
      */
     status: KeyNodeStatus = KeyNodeStatus.None;
     /**
