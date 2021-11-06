@@ -2,7 +2,7 @@ import DisplayEntity from "../../../vox/entity/DisplayEntity";
 import AABB from "../../../vox/geom/AABB";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import DataMesh from "../../../vox/mesh/DataMesh";
-import { RoadSegmentMesh } from "../io/RoadSceneFileParser";
+import { RoadSceneData, RoadSegment, RoadSegmentMesh, RoadModel } from "../io/RoadSceneFileParser";
 
 class VRDEntityBuilder {
 
@@ -41,6 +41,21 @@ class VRDEntityBuilder {
             entities.push(this.createRoadSegEntityFromMeshData(meshs[i], materials[i]));
         }
         return entities;
+    }
+    
+    createRoadEntities(road: RoadModel, getMaterials: (total: number)=>MaterialBase[]): DisplayEntity[] {
+        let entities: DisplayEntity[] = [];
+        let segs: RoadSegment[] = road.segmentList;
+        for (let j: number = 0; j < segs.length; ++j) {
+            let meshes: RoadSegmentMesh[] = segs[j].meshes;
+
+            let list: DisplayEntity[] = this.createRoadSegEntitiesFromMeshesData(meshes, getMaterials(meshes.length));
+            for (let k: number = 0; k < list.length; ++k) {
+                entities.push(list[k]);
+            }
+        }
+        return entities;
+
     }
 }
 
