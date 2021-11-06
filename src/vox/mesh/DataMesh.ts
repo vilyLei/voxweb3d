@@ -15,61 +15,122 @@ import SurfaceNormalCalc from "../geom/SurfaceNormalCalc";
 
 export default class DataMesh extends MeshBase {
     private m_initIVS: Uint16Array | Uint32Array = null;
+    private m_vs: Float32Array = null;
+    private m_uvs: Float32Array = null;
+    private m_nvs: Float32Array = null;
+    private m_cvs: Float32Array = null;
+    private m_tvs: Float32Array = null;
+    private m_btvs: Float32Array = null;
+
     private m_boundsVersion: number = -2;
     vsStride: number = 3;
     uvsStride: number = 2;
     nvsStride: number = 3;
     cvsStride: number = 3;
 
-    vs: Float32Array = null
-    uvs: Float32Array = null;
-    nvs: Float32Array = null;
-    cvs: Float32Array = null;
-    tvs: Float32Array = null;
-    btvs: Float32Array = null;
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         super(bufDataUsage);
     }
 
+    /**
+     * set vertex position data
+     * @param vs vertex position buffer Float32Array
+     */
+    setVS(vs: Float32Array): void {
+        this.m_vs = vs;
+    }
+    /**
+     * @returns vertex position buffer Float32Array
+     */
     getVS(): Float32Array {
-        return this.vs;
+        return this.m_vs;
     }
+    /**
+     * set vertex uv data
+     * @param vs vertex uv buffer Float32Array
+     */
+    setUVS(uvs: Float32Array): void {
+        this.m_uvs = uvs;
+    }
+    /**
+     * @returns vertex uv buffer Float32Array
+     */
     getUVS(): Float32Array {
-        return this.uvs;
+        return this.m_uvs;
     }
+    /**
+     * set vertex normal data
+     * @param vs vertex normal buffer Float32Array
+     */
+    setNVS(nvs: Float32Array): void {
+        this.m_nvs = nvs;
+    }
+    /**
+     * @returns vertex normal buffer Float32Array
+     */
     getNVS(): Float32Array {
-        return this.nvs;
+        return this.m_nvs;
     }
+    /**
+     * set vertex tangent data
+     * @param vs vertex tangent buffer Float32Array
+     */
+    setTVS(tvs: Float32Array): void {
+        this.m_tvs = tvs;
+    }
+    /**
+     * @returns vertex tangent buffer Float32Array
+     */
+    getTVS(): Float32Array {
+        return this.m_tvs;
+    }
+    
+    /**
+     * set vertex bitangent data
+     * @param vs vertex bitangent buffer Float32Array
+     */
+    setBTVS(btvs: Float32Array): void {
+        this.m_btvs = btvs;
+    }
+    /**
+     * @returns vertex bitangent buffer Float32Array
+     */
+    getBTVS(): Float32Array {
+        return this.m_btvs;
+    }
+    
+    
+    setIVS(ivs: Uint16Array | Uint32Array): void {
+        this.m_initIVS = ivs;
+        this.m_ivs = ivs;
+    }
+
     initializeFromGeometry(geom: GeometryBase): void {
 
-        this.vs = geom.getVS();
-        this.uvs = geom.getUVS();
-        this.nvs = geom.getNVS();
-        this.tvs = geom.getTVS();
-        this.btvs = geom.getBTVS();
+        this.m_vs = geom.getVS();
+        this.m_uvs = geom.getUVS();
+        this.m_nvs = geom.getNVS();
+        this.m_tvs = geom.getTVS();
+        this.m_btvs = geom.getBTVS();
         this.m_ivs = geom.getIVS();
         this.m_initIVS = this.m_ivs;
         this.initialize();
     }
 
-    setIVS(ivs: Uint16Array | Uint32Array): void {
-        this.m_initIVS = ivs;
-        this.m_ivs = ivs;
-    }
     initialize(): void {
 
-        if (this.vs != null) {
+        if (this.m_vs != null) {
             if (this.bounds == null) {
                 
                 this.bounds = new AABB();
-                this.bounds.addXYZFloat32Arr(this.vs);
+                this.bounds.addXYZFloat32Arr(this.m_vs);
                 this.bounds.update();
                 this.m_boundsVersion = this.bounds.version;
             }
             else if(this.m_boundsVersion == this.bounds.version){
                 console.log("说明bounds需要重新计算");
                 // 如果重新init, 但是版本号却没有改变，说明bounds需要重新计算
-                this.bounds.addXYZFloat32Arr(this.vs);
+                this.bounds.addXYZFloat32Arr(this.m_vs);
                 this.bounds.update();
                 this.m_boundsVersion = this.bounds.version;
             }
@@ -77,25 +138,25 @@ export default class DataMesh extends MeshBase {
             this.m_ivs = this.m_initIVS;            
 
             ROVertexBuffer.Reset();
-            ROVertexBuffer.AddFloat32Data(this.vs, this.vsStride);
+            ROVertexBuffer.AddFloat32Data(this.m_vs, this.vsStride);
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
-                ROVertexBuffer.AddFloat32Data(this.uvs, this.uvsStride);
+                ROVertexBuffer.AddFloat32Data(this.m_uvs, this.uvsStride);
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
-                if(this.nvs == null) {
+                if(this.m_nvs == null) {
                     this.vtCount = this.m_ivs.length;
                     this.trisNumber = this.vtCount / 3;
-                    this.nvs = new Float32Array(this.vs.length);
-                    SurfaceNormalCalc.ClacTrisNormal(this.vs, this.vs.length, this.trisNumber, this.m_ivs, this.nvs);
+                    this.m_nvs = new Float32Array(this.m_vs.length);
+                    SurfaceNormalCalc.ClacTrisNormal(this.m_vs, this.m_vs.length, this.trisNumber, this.m_ivs, this.m_nvs);
                 }
-                ROVertexBuffer.AddFloat32Data(this.nvs, this.nvsStride);
+                ROVertexBuffer.AddFloat32Data(this.m_nvs, this.nvsStride);
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX)) {
-                ROVertexBuffer.AddFloat32Data(this.cvs, this.cvsStride);
+                ROVertexBuffer.AddFloat32Data(this.m_cvs, this.cvsStride);
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX)) {
-                ROVertexBuffer.AddFloat32Data(this.tvs, 3);
-                ROVertexBuffer.AddFloat32Data(this.btvs, 3);
+                ROVertexBuffer.AddFloat32Data(this.m_tvs, 3);
+                ROVertexBuffer.AddFloat32Data(this.m_btvs, 3);
             }
             ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
             this.updateWireframeIvs();
@@ -130,12 +191,12 @@ export default class DataMesh extends MeshBase {
         if (this.isResFree()) {
             this.bounds = null;
 
-            this.vs = null;
-            this.uvs = null;
-            this.nvs = null;
-            this.cvs = null;
-            this.tvs = null;
-            this.btvs = null;
+            this.m_vs = null;
+            this.m_uvs = null;
+            this.m_nvs = null;
+            this.m_cvs = null;
+            this.m_tvs = null;
+            this.m_btvs = null;
             this.m_initIVS = null;
 
             super.__$destroy();

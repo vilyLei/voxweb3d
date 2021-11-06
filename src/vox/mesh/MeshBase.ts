@@ -151,13 +151,21 @@ export default class MeshBase {
     getBufDataUsage(): number {
         return this.m_bufDataUsage;
     }
-    // vertex
-    getVS(): Float32Array { return null; }
-    // uv
+    /**
+     * @returns vertex position buffer Float32Array
+     */
+    getVS(): Float32Array { return null; }    
+    /**
+     * @returns vertex uv buffer Float32Array
+     */
     getUVS(): Float32Array { return null; }
-    // normal
+    /**
+     * @returns vertex normal buffer Float32Array
+     */
     getNVS(): Float32Array { return null; }
-    // indices bufer
+    /**
+     * @returns vertex indices buffer Uint16Array or Uint32Array
+     */
     getIVS(): Uint16Array | Uint32Array { return this.m_ivs; }
     /**
      * @param layoutBit vertex shader vertex attributes layout bit status.

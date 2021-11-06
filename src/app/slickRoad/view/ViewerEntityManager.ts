@@ -29,10 +29,10 @@ class ViewerEntityManager {
         // mesh.bounds.updateFast();
         
         mesh.setIVS(segMesh.ivs);
-        mesh.vs = (segMesh.vs);
-        mesh.uvs = (segMesh.uvs);
+        mesh.setVS(segMesh.vs);
+        mesh.setUVS(segMesh.uvs);
         if (segMesh.nvs !== undefined && segMesh.nvs !== null) {
-            mesh.nvs = (segMesh.nvs);
+            mesh.setNVS(segMesh.nvs);
         }
 
         mesh.setBufSortFormat(material.getBufSortFormat());

@@ -233,8 +233,8 @@ export class DemoCameraMotion
         material.initializeByCodeBuf(true);
 
         let mesh: DataMesh = new DataMesh();
-        mesh.vs = this.m_roadData.vs;
-        mesh.uvs = this.m_roadData.uvs;
+        mesh.setVS(this.m_roadData.vs);
+        mesh.setUVS(this.m_roadData.uvs);
         mesh.setIVS(this.m_roadData.ivs);
         mesh.setBufSortFormat( material.getBufSortFormat() );
         mesh.initialize();

@@ -41,8 +41,8 @@ class RoadGeometryBuilder {
         }
         mesh.bounds.copyFrom( geom.bounds );
         mesh.distance = geom.distance;
-        mesh.vs = geom.getVS();
-        mesh.uvs = geom.getUVS();
+        mesh.setVS(geom.getVS());
+        mesh.setUVS(geom.getUVS());
         mesh.setIVS( geom.getIVS() );
         return mesh;
     }    
