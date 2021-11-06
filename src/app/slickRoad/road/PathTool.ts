@@ -29,13 +29,43 @@ class PathTool {
         }
         return list;
     }
+    
     /**
      * 计算左边和右边的新位置数组, 相当于原左边和右边的缩放与平移
      * @param tvList 左边和右边两个对应位置的连线的切线
      * @param posListL 左边位置数组 
      * @param posListR 右边位置数组
      * @param offsetXYZ 整体位置偏移量
-     * @param dis 延 tvList 中的切线方向的位置偏移距离
+     * @param dis 沿 tvList 中的切线方向的位置偏移距离的数组
+     * @returns [左边新位置数组，右边新位置数组]
+     */
+    calcOnePosListByTVList2(tvList: Vector3D[], srcPosList: Vector3D[], offsetXYZ: Vector3D, disList: number[], scale: number): Pos3D[] {
+
+        let tv: Pos3D = Pos3DPool.Create();
+        let pv: Pos3D = Pos3DPool.Create();
+        let list: Pos3D[] = new Array(srcPosList.length);
+        for (let i: number = 0; i < srcPosList.length; ++i) {
+            list[i] = Pos3DPool.Create();
+            list[i].copyFrom(srcPosList[i]);
+        }
+        for (let i: number = 0; i < srcPosList.length; ++i) {
+            tv.copyFrom(tvList[i]);
+            tv.scaleBy(disList[i] * scale);
+            pv.copyFrom(tv);
+            list[i].addBy(pv);
+            list[i].addBy(offsetXYZ);
+        }
+        Pos3DPool.Restore(tv);
+        Pos3DPool.Restore(pv);
+        return list;
+    }
+    /**
+     * 计算左边和右边的新位置数组, 相当于原左边和右边的缩放与平移
+     * @param tvList 左边和右边两个对应位置的连线的切线
+     * @param posListL 左边位置数组 
+     * @param posListR 右边位置数组
+     * @param offsetXYZ 整体位置偏移量
+     * @param dis 沿 tvList 中的切线方向的位置偏移距离
      * @returns [左边新位置数组，右边新位置数组]
      */
     calcOnePosListByTVList(tvList: Vector3D[], srcPosList: Vector3D[], offsetXYZ: Vector3D, dis: number): Pos3D[] {
@@ -64,7 +94,7 @@ class PathTool {
      * @param posListL 左边位置数组 
      * @param posListR 右边位置数组
      * @param offsetXYZ 整体位置偏移量
-     * @param dis 延 tvList 中的切线方向的位置偏移距离
+     * @param dis 沿 tvList 中的切线方向的位置偏移距离
      * @returns [左边新位置数组，右边新位置数组]
      */
     calcTwoPosListByTVList(tvList: Vector3D[], posListL: Vector3D[], posListR: Vector3D[], offsetXYZ: Vector3D, dis: number): Pos3D[][] {

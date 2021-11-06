@@ -54,6 +54,9 @@ class RoadPath {
     getCurvePosList(): Pos3D[] {
         return this.m_curvePosList;
     }
+    getCurveRadiusTable(): number[][] {
+        return this.bezier3Module.getCurveRadiusTable();
+    }
     // initialize(begin: Vector3D, end: Vector3D): void {
     //     this.m_posList = [Pos3DPool.Create(), Pos3DPool.Create()];
     //     this.m_posList[0].copyFrom(begin);

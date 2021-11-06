@@ -150,6 +150,9 @@ class PathCurveEditor {
     getPathCurvePosList(): Pos3D[] {
         return this.m_path.getCurvePosList();
     }
+    getPathCurveRadiusTable(): number[][] {
+        return this.m_path.getCurveRadiusTable();
+    }
     getPathVersion(): number {
         return this.m_path.version;
     }

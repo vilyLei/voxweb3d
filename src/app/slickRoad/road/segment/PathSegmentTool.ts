@@ -80,9 +80,22 @@ class PathSegmentTool implements IPathSegmentTool {
 
         let posTotal: number = this.m_pathEditor.getPathKeyPosTotal();
         if (posTotal > 1) {
-
+           
             let srcPosList: Pos3D[] = this.m_pathEditor.getPathCurvePosList();
             let srcTVList: Pos3D[] = this.m_pathTool.calcExpandXOZTVList(srcPosList, null, this.m_pathEditor.isPathClosed());
+
+            let radiusTable: number[][] = this.m_pathEditor.getPathCurveRadiusTable();
+            let radiusList:number[] = new Array(srcPosList.length);
+            let list: number[];
+            let k: number = 0;
+            for (let i: number = 0; i < radiusTable.length; ++i) {
+                list = radiusTable[i];
+                for (let j: number = 0; j < list.length; ++j) {
+                    radiusList[k] = list[j];
+                    k++;
+                }
+            }
+            //console.log("radiusList: ",radiusList);
 
             let curvePosList: Pos3D[] = srcPosList;
             let tvList: Pos3D[] = srcTVList;
@@ -93,9 +106,13 @@ class PathSegmentTool implements IPathSegmentTool {
             let offsetXYZ: Vector3D = this.m_offsetXYZ;
             offsetXYZ.setXYZ(0.0, 0.0, 0.0);
             
-            let posListL: Pos3D[] = this.m_pathTool.calcOnePosListByTVList(tvList, curvePosList, offsetXYZ, -dis);
+            // let posListL: Pos3D[] = this.m_pathTool.calcOnePosListByTVList(tvList, curvePosList, offsetXYZ, -dis);
+            // let posListL1: Pos3D[] = this.m_pathTool.calcOnePosListByTVList(tvList, curvePosList, offsetXYZ, 0);
+            // let posListR: Pos3D[] = this.m_pathTool.calcOnePosListByTVList(tvList, curvePosList, offsetXYZ, dis);
+
+            let posListL: Pos3D[] = this.m_pathTool.calcOnePosListByTVList2(tvList, curvePosList, offsetXYZ, radiusList, -1);
             let posListL1: Pos3D[] = this.m_pathTool.calcOnePosListByTVList(tvList, curvePosList, offsetXYZ, 0);
-            let posListR: Pos3D[] = this.m_pathTool.calcOnePosListByTVList(tvList, curvePosList, offsetXYZ, dis);
+            let posListR: Pos3D[] = this.m_pathTool.calcOnePosListByTVList2(tvList, curvePosList, offsetXYZ, radiusList, 1.0);
 
             let lbList: Pos3D[];
             let rbList: Pos3D[];

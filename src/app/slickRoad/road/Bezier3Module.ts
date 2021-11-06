@@ -263,7 +263,7 @@ class Bezier3Module {
         this.m_radiusTable.push(radius_vs);
     }
 
-    getPathRadiusTable(): number[][] {
+    getCurveRadiusTable(): number[][] {
         return this.m_radiusTable;
     }
     getPathCurvePosTable(): Pos3D[][] {
@@ -311,8 +311,8 @@ class Bezier3Module {
                     Pos3DPool.Restore( this.m_curvePosList[i] );
                 }
             }
-            curvePosList = new Array(total);
 
+            curvePosList = new Array(total);
             // console.log("use bezierCurve3, total: ",total);
             let k: number = 0;
             for (let i: number = 0; i < posTable.length; ++i) {
@@ -321,16 +321,17 @@ class Bezier3Module {
                     curvePosList[k] = list[j];
                     k++;
                 }
-                //posTable[i] = [];
             }
             this.m_curvePosList = curvePosList;
             return curvePosList;
         }
         else if (list.length == 2) {
             this.m_posTable = [list];
+            this.m_radiusTable = [[nodeList[0].pathRadius, nodeList[1].pathRadius]];
             return list;
         }
         this.m_posTable = [];
+        this.m_radiusTable = [];
         return [];
     }
 }
