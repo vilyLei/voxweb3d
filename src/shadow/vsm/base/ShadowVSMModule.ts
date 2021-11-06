@@ -200,7 +200,7 @@ export class ShadowVSMModule {
         return status;
     }
     run(): void {
-
+        
         // update shadow direc matrix
         if (this.m_direcCamera.version != this.m_shadowCamVersion) {
             this.m_shadowCamVersion = this.m_direcCamera.version;

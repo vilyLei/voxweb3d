@@ -7,15 +7,14 @@ import DataMesh from "../../../vox/mesh/DataMesh";
 import { GeometryMerger } from "../../../vox/mesh/GeometryMerger";
 import { PathSegmentObject } from "./PathSegmentObject";
 import { PathTool } from "./PathTool";
-import { PathSegmentTool } from "./segment/PathSegmentTool";
+import { IPathShapeCalcModel } from "./segment/IPathShapeCalcModel";
+import { PathShapeCalcModel } from "./segment/PathShapeCalcModel";
 import { Pos3DPool } from "../base/Pos3DPool";
 import { SegmentData } from "./segment/SegmentData";
 import { RoadSegObjectManager } from "./RoadSegObjectManager";
 import MathConst from "../../../vox/math/MathConst";
 
 class RoadEntityBuilder {
-
-    constructor() { }
 
     private m_initFlag: boolean = true;
     private m_editEnabled: boolean = true;
@@ -25,11 +24,15 @@ class RoadEntityBuilder {
     //private m_roadWidth: number = 120.0;
 
     private m_pathTool: PathTool = new PathTool();
-    private m_pathTableTool: PathSegmentTool = new PathSegmentTool();
+    private m_shapeCalcModel: IPathShapeCalcModel = null;
 
     readonly segObjManager: RoadSegObjectManager = new RoadSegObjectManager();
     readonly geometryBuilder: RoadGeometryBuilder = new RoadGeometryBuilder();
+    constructor() { }
 
+    setShapeCalcModel(model: IPathShapeCalcModel): void {
+        this.m_shapeCalcModel = model;
+    }
     getRoadWidth(): number {
         return this.m_pathEditor.getPathWholeWidthScale();
     }
@@ -42,8 +45,12 @@ class RoadEntityBuilder {
             this.m_initFlag = false;
             this.m_engine = engine;
             this.m_pathEditor = pathEditor;
-            this.m_pathTableTool.initialize(this.m_pathEditor);
             this.segObjManager.initialize(this.m_engine);
+            
+            if(this.m_shapeCalcModel == null) {
+                this.m_shapeCalcModel = new PathShapeCalcModel();
+            }
+            this.m_shapeCalcModel.initialize(this.m_pathEditor);
 
 
             // let posTable: Vector3D[][] = [
@@ -116,14 +123,14 @@ class RoadEntityBuilder {
         let subLen: number = 0;
         let pathSeg: PathSegmentObject;
 
-        this.segObjManager.fitSegList(srcPosTable.length, this.m_pathTableTool.getSegMeshesTotal());
+        this.segObjManager.fitSegList(srcPosTable.length, this.m_shapeCalcModel.getSegMeshesTotal());
 
         let index: number = 0;
         let listTotal: number = srcPosTable.length;
         let srcPosLen: number = srcPosList.length;
         let endIndex: number;
 
-        this.m_pathTableTool.build(this.m_pathEditor.getPathWholeWidthScale());
+        this.m_shapeCalcModel.build(this.m_pathEditor.getPathWholeWidthScale());
 
         let segments: SegmentData[];
 
@@ -134,7 +141,7 @@ class RoadEntityBuilder {
             tempTot += subLen;
             endIndex = ((i + 1) < listTotal) ? (index + subLen + 1) : srcPosLen;
             //console.log(i,", subLen: ",subLen, ", srcPosLen: ",srcPosLen, ", index, endIndex: ",index, endIndex);                
-            segments = this.m_pathTableTool.slice(index, endIndex);
+            segments = this.m_shapeCalcModel.slice(index, endIndex);
             index += subLen;
             pathSeg = this.segObjManager.getSegEntityObjectAt(i);
             pathSeg.posTotal = subLen;
@@ -143,7 +150,7 @@ class RoadEntityBuilder {
                 segments[j].reset();
             }
         }
-        this.m_pathTableTool.reset();
+        this.m_shapeCalcModel.reset();
             
     }
     getSegList(): PathSegmentObject[] {
