@@ -91,7 +91,8 @@ class SceneViewer {
         })
     }
     private loadSceneData(): void {
-        this.loadSceneDataBURL("static/assets/scene/vrdScene_02.vrd");
+        //this.loadSceneDataBURL("static/assets/scene/vrdScene_02.vrd");
+        this.loadSceneDataBURL("static/assets/scene/vrdScene_hightway.vrd");
     }
     private createEntities(roadData: RoadSceneData): void {
 

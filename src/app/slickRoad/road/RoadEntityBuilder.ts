@@ -8,7 +8,10 @@ import { GeometryMerger } from "../../../vox/mesh/GeometryMerger";
 import { PathSegmentObject } from "./PathSegmentObject";
 import { PathTool } from "./PathTool";
 import { IPathShapeCalcModel } from "./segment/IPathShapeCalcModel";
+
 import { PathShapeCalcModel } from "./segment/PathShapeCalcModel";
+import { HighwayShapeCalcModel } from "./segment/HighwayShapeCalcModel";
+
 import { Pos3DPool } from "../base/Pos3DPool";
 import { SegmentData } from "./segment/SegmentData";
 import { RoadSegObjectManager } from "./RoadSegObjectManager";
@@ -48,7 +51,8 @@ class RoadEntityBuilder {
             this.segObjManager.initialize(this.m_engine);
             
             if(this.m_shapeCalcModel == null) {
-                this.m_shapeCalcModel = new PathShapeCalcModel();
+                //this.m_shapeCalcModel = new PathShapeCalcModel();
+                this.m_shapeCalcModel = new HighwayShapeCalcModel();
             }
             this.m_shapeCalcModel.initialize(this.m_pathEditor);
 

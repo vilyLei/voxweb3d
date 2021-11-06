@@ -43,7 +43,7 @@ export default class RoadSurfaceGeometry extends GeometryBase {
         let dis: number = 0;
         let disList: number[] = new Array(len);
         let row = rows[0];
-        disList[0] = 0;
+        disList[0] = 0.0;
         for (i = 1; i < len; ++i) {
             dis = Vector3D.Distance(row[i],row[i-1]);
             disTotal += dis;
@@ -61,6 +61,18 @@ export default class RoadSurfaceGeometry extends GeometryBase {
         else {
             vScale *= Math.round(disTotal / this.roadWidth);
         }
+        let biDisList: number[] = new Array(tot);
+        let biDisTotal: number = 0;
+        let biDis: number = 0;
+        biDisList[0] = 0.0;
+        for(i = 1; i < tot; ++i) {
+            biDis = Vector3D.Distance(rows[i][0],rows[i-1][0]);
+            biDisTotal += biDis;
+            biDisList[i] = biDisTotal;
+        }
+        for (i = 1; i < tot; ++i) {
+            biDisList[i] = biDisList[i] / biDisTotal;
+        }
         // let ox: number = this.offsetXYZ.x;
         // let oy: number = this.offsetXYZ.y;
         // let oz: number = this.offsetXYZ.z;
@@ -70,10 +82,12 @@ export default class RoadSurfaceGeometry extends GeometryBase {
             for (j = 0; j < len; ++j) {
                 if (uvType < 1) {
                     this.m_uvs[l++] = uScale * disList[j];//(j / subLen);
-                    this.m_uvs[l++] = vScale * px;
+                    //this.m_uvs[l++] = vScale * px;
+                    this.m_uvs[l++] = vScale * biDisList[i];
                 }
                 else {
-                    this.m_uvs[l++] = uScale * px;
+                    //this.m_uvs[l++] = uScale * px;
+                    this.m_uvs[l++] = uScale * biDisList[i];
                     this.m_uvs[l++] = vScale  * disList[j];//(j / subLen);
                 }
                 let pv: Vector3D = row[j];
