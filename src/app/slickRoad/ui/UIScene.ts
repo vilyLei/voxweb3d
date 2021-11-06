@@ -25,7 +25,7 @@ class UIScene {
     private m_closePathBtn: SelectionBar = null;
 
     private m_segTotalCtrlBtn: ProgressBar = null;
-    private m_wholeWidthCtrlBtn: ProgressBar = null;
+    private m_wholeWidthScaleBtn: ProgressBar = null;
     private m_curvatureFactorHeadBtn: ProgressBar = null;
     private m_curvatureFactorTailBtn: ProgressBar = null;
 
@@ -42,7 +42,7 @@ class UIScene {
             this.scene.pathEditor.pathCtrlEntityManager.segTotalCtrlBtn = this.m_segTotalCtrlBtn;
             this.scene.pathEditor.pathCtrlEntityManager.curvatureFactorHeadBtn = this.m_curvatureFactorHeadBtn;
             this.scene.pathEditor.pathCtrlEntityManager.curvatureFactorTailBtn = this.m_curvatureFactorTailBtn;
-            this.m_wholeWidthCtrlBtn.setValue(0.25,true);
+            this.m_wholeWidthScaleBtn.setValue(0.25,true);
             this.scene.setEditEnabled(this.m_switchSceneEditBtn != null ? this.m_switchSceneEditBtn.isSelected() : false);            
         }
     }
@@ -113,11 +113,11 @@ class UIScene {
         texBtn = this.createTextBtn("添加对象", "addCurrObject", false, fontColor1);
         this.m_btnPY += dis;
         let proBtn: ProgressBar;
-        proBtn = this.createProgressBtn("路面宽度", "currRoadWidth", 0.5);
+        proBtn = this.createProgressBtn("路面宽度", "currRoadWidth", 0.15);
         proBtn = this.createProgressBtn("路宽变化", "currRoadWidthChangeFactor", 0.2);
         proBtn = this.createProgressBtn("路宽系数", "currRoadWidthFactor", 0.2);
-        proBtn = this.createProgressBtn("全局路宽", "wholeWidthCtrl", 0.25);
-        this.m_wholeWidthCtrlBtn = proBtn;
+        proBtn = this.createProgressBtn("全局路宽", "wholeWidthScale", 0.2);
+        this.m_wholeWidthScaleBtn = proBtn;
         proBtn = this.createProgressBtn("分段密度", "segTotalCtrl", 0.2);
         proBtn.step = 0.01;
         this.m_segTotalCtrlBtn = proBtn;
@@ -248,8 +248,8 @@ class UIScene {
             case "currRoadWidth":
                 this.scene.pathEditor.pathCtrlEntityManager.setCurrWidth(value);
                 break;
-            case "wholeWidthCtrl":
-                this.scene.pathEditor.setPathWholeWidthFactor(value);
+            case "wholeWidthScale":
+                this.scene.pathEditor.setPathWholeWidthScale(value);
                 break;
             case "segTotalCtrl":
                 this.scene.pathEditor.pathCtrlEntityManager.setSegmentsTotalFactor(value);

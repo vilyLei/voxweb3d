@@ -16,8 +16,10 @@ class PathCurveEditor {
 
     private m_initFlag: boolean = true;
     private m_engine: EngineBase = null;
-
-    private m_pathWholeWidthFactor: number = 120.0;
+    /**
+     * 路宽全局缩放因子
+     */
+    private m_pathWholeWidthScale: number = 1.0;
     private m_roadBuilder: RoadBuilder = new RoadBuilder();
 
     private m_addPosEnabled: boolean = true;
@@ -156,18 +158,17 @@ class PathCurveEditor {
     getPathVersion(): number {
         return this.m_path.version;
     }
-    setPathWholeWidthFactor(factor: number): void {
-
-        factor = MathConst.Clamp(factor, 0.0, 1.0);
-        factor = 4.0 * factor;
-        factor = MathConst.Clamp(factor, 0.1, 4.0);
-
-        let pw: number = 20 + Math.round(factor * 500.0);        
-        //this.m_pathWholeWidthFactor = pw;
-        //this.m_path.version++;
+    /**
+     * 设置全局路宽缩放系数
+     * @param scale 缩放值
+     */
+    setPathWholeWidthScale(scale: number): void {
+        scale *= 5.0;
+        this.m_pathWholeWidthScale = MathConst.Clamp(scale, 0.1, 5.0);
+        this.m_path.version++;
     }
-    getPathWholeWidthFactor(): number {
-        return this.m_pathWholeWidthFactor;
+    getPathWholeWidthScale(): number {
+        return this.m_pathWholeWidthScale;
     }
     getPathKeyPosTotal(): number {
         return this.m_path.getPosListLength();

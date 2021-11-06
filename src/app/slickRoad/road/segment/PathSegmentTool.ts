@@ -76,7 +76,7 @@ class PathSegmentTool implements IPathSegmentTool {
     getSegMeshesTotal(): number {
         return 2;
     }
-    build(roadWidth: number = 120.0): void {
+    build(roadWidthScale: number = 1.0): void {
 
         let posTotal: number = this.m_pathEditor.getPathKeyPosTotal();
         if (posTotal > 1) {
@@ -100,8 +100,8 @@ class PathSegmentTool implements IPathSegmentTool {
             let curvePosList: Pos3D[] = srcPosList;
             let tvList: Pos3D[] = srcTVList;
             // console.log("##### Build R disp Begin...");
-            let halfWidth: number = roadWidth * 0.5;
-            let dis: number = halfWidth;
+            // let halfWidth: number = roadWidth * 0.5;
+            // let dis: number = halfWidth;
             
             let offsetXYZ: Vector3D = this.m_offsetXYZ;
             offsetXYZ.setXYZ(0.0, 0.0, 0.0);
@@ -110,9 +110,9 @@ class PathSegmentTool implements IPathSegmentTool {
             // let posListL1: Pos3D[] = this.m_pathTool.calcOnePosListByTVList(tvList, curvePosList, offsetXYZ, 0);
             // let posListR: Pos3D[] = this.m_pathTool.calcOnePosListByTVList(tvList, curvePosList, offsetXYZ, dis);
 
-            let posListL: Pos3D[] = this.m_pathTool.calcOnePosListByTVList2(tvList, curvePosList, offsetXYZ, radiusList, -1);
+            let posListL: Pos3D[] = this.m_pathTool.calcOnePosListByTVList2(tvList, curvePosList, offsetXYZ, radiusList, -1.0 * roadWidthScale);
             let posListL1: Pos3D[] = this.m_pathTool.calcOnePosListByTVList(tvList, curvePosList, offsetXYZ, 0);
-            let posListR: Pos3D[] = this.m_pathTool.calcOnePosListByTVList2(tvList, curvePosList, offsetXYZ, radiusList, 1.0);
+            let posListR: Pos3D[] = this.m_pathTool.calcOnePosListByTVList2(tvList, curvePosList, offsetXYZ, radiusList, 1.0 * roadWidthScale);
 
             let lbList: Pos3D[];
             let rbList: Pos3D[];

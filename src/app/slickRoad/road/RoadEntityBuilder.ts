@@ -31,7 +31,7 @@ class RoadEntityBuilder {
     readonly geometryBuilder: RoadGeometryBuilder = new RoadGeometryBuilder();
 
     getRoadWidth(): number {
-        return this.m_pathEditor.getPathWholeWidthFactor();
+        return this.m_pathEditor.getPathWholeWidthScale();
     }
     initialize(engine: EngineBase, pathEditor: PathCurveEditor): void {
 
@@ -126,7 +126,7 @@ class RoadEntityBuilder {
         let endIndex: number;
         let usePosTable: boolean = true;
         if (usePosTable) {
-            this.m_pathTableTool.build(this.m_pathEditor.getPathWholeWidthFactor());
+            this.m_pathTableTool.build(this.m_pathEditor.getPathWholeWidthScale());
 
             let segments: SegmentData[];
             //console.log("### A, listTotal: ",listTotal);
@@ -160,7 +160,7 @@ class RoadEntityBuilder {
                 tvList = srcTVList.slice(index, endIndex);
                 index += subLen;
                 pathSeg = this.segObjManager.getSegEntityObjectAt(i);
-                pathSeg.buildByPathPosAndTVList(posList, tvList, this.m_pathEditor.getPathWholeWidthFactor());
+                pathSeg.buildByPathPosAndTVList(posList, tvList, this.m_pathEditor.getPathWholeWidthScale());
             }
             // let posList: Pos3D[] = srcPosList.slice(0, srcPosTable[0].length);
             // let tvList: Pos3D[] = srcTVList.slice(0, srcPosTable[0].length);

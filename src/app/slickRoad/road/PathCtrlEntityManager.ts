@@ -79,7 +79,7 @@ class PathCtrlEntityManager {
         if (editEntity != null) {
             let node: PathKeyNode = this.m_path.getPosNodeAt(editEntity.pathCtrlPosIndex);
             factor = MathConst.Clamp(factor, 0.0, 1.0);
-            node.pathRadius = 2 + Math.round(500.0 * factor);
+            node.pathRadiusChangeFactor = factor;
             this.m_path.version++;
         }
     }
@@ -93,7 +93,7 @@ class PathCtrlEntityManager {
         if (editEntity != null) {
             let node: PathKeyNode = this.m_path.getPosNodeAt(editEntity.pathCtrlPosIndex);
             factor = MathConst.Clamp(factor, 0.0, 1.0);
-            node.pathRadius = 2 + Math.round(500.0 * factor);
+            node.pathRadiusChangeAmplitude = 2.0 * (factor - 0.5);
             this.m_path.version++;
         }
     }
