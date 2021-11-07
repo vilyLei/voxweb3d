@@ -60,6 +60,7 @@ export default class RendererScene implements IRenderer, IRendererScene {
     private m_rspace: IRendererSpace = null;
     private m_mouse_rltv: Vector3D = new Vector3D();
     private m_mouse_rlpv: Vector3D = new Vector3D();
+    private m_accessor: IRendererSceneAccessor = null;
     // event flow control enable
     private m_evtFlowEnabled: boolean = false;
     private m_evt3DCtr: IEvt3DController = null;
@@ -279,7 +280,6 @@ export default class RendererScene implements IRenderer, IRendererScene {
     removeEventListener(type: number, target: any, func: (evt: any) => void): void {
         this.stage3D.removeEventListener(type, target, func);
     }
-    private m_accessor: IRendererSceneAccessor = null;
     setAccessor(accessor: IRendererSceneAccessor): void {
         this.m_accessor = accessor;
     }

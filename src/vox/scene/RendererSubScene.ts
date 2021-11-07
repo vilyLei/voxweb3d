@@ -57,6 +57,7 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     private m_rspace: RendererSpace = null;
     private m_mouse_rltv: Vector3D = new Vector3D();
     private m_mouse_rlpv: Vector3D = new Vector3D();
+    private m_accessor: IRendererSceneAccessor = null;
     // event flow control enable
     private m_evtFlowEnabled: boolean = false;
     private m_evt3DCtr: IEvt3DController = null;
@@ -199,7 +200,6 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
         this.m_currStage3D.removeEventListener(type, target, func);
     }
     
-    private m_accessor: IRendererSceneAccessor = null;
     setAccessor(accessor: IRendererSceneAccessor): void {
         this.m_accessor = accessor;
     }

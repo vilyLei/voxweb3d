@@ -2,6 +2,7 @@
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import {Scene} from "./slickRoad/scene/Scene";
+import {EditorSceneAccessor} from "./slickRoad/render/EditorSceneAccessor";
 import {UIScene} from "./slickRoad/ui/UIScene";
 import EngineBase from "../vox/engine/EngineBase";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
@@ -37,13 +38,14 @@ export class SlickRoad {
 
             this.m_engine.appendRendererScene(null, 3, false);
             this.m_engine.swapSceneAt(1,2);
-            this.m_engine.getRendererSceneAt(1).getRScene().enableMouseEvent(false);
+            this.m_engine.getRendererSceneAt(1).enableMouseEvent(false);
             //this.m_engine.showInfo();
             
             this.m_scene.initialize( this.m_engine );
             this.m_uiscene.scene = this.m_scene;
             this.m_uiscene.initialize( this.m_engine );
             
+            this.m_engine.setAccessorAt(1, new EditorSceneAccessor());
             // let plane: Plane3DEntity = new Plane3DEntity();
             // plane.initializeXOZ(-200.0, -150.0, 400.0, 300.0, [this.m_engine.texLoader.getTexByUrl("static/assets/default.jpg")]);
             // plane.setXYZ(0,-100,0);

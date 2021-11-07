@@ -12,7 +12,7 @@ import CameraViewRay from "../../vox/view/CameraViewRay";
 import { OrthoUIScene } from "../../vox/ui/OrthoUIScene";
 import { UserInteraction } from "./UserInteraction";
 
-import MouseEvent from "../event/MouseEvent";
+import {IRendererSceneAccessor} from "../../vox/scene/IRendererSceneAccessor";
 class RendererSceneNode {
     private m_rscene: IRendererScene = null;
     priority: number = 0;
@@ -22,6 +22,9 @@ class RendererSceneNode {
             throw Error("rscene is null !!!");
         }
         this.m_rscene = rscene;
+    }
+    enableMouseEvent(gpuTestEnabled: boolean = true): void {
+        this.m_rscene.enableMouseEvent(gpuTestEnabled);
     }
     getRScene(): IRendererScene {
         return this.m_rscene;
@@ -77,7 +80,22 @@ export class EngineBase {
 
         }
     }
-
+    
+    setAccessorAt(i: number, accessor: IRendererSceneAccessor): void {
+        
+        if (i >= 0 && i < this.m_sceneList.length) {
+            let node: RendererSceneNode = this.m_sceneList[i];
+            if(i != 0) {
+                let subScene: RendererSubScene = node.getRScene() as RendererSubScene;
+                subScene.setAccessor(accessor);
+            }
+            else {
+                
+                let rscene: RendererScene = node.getRScene() as RendererScene;
+                rscene.setAccessor(accessor);
+            }
+        }
+    }
     appendRendererScene(param: RendererParam, renderProcessesTotal: number = 3, createNewCamera: boolean = true, priority: number = -1): RendererSceneNode {
 
         if (param == null) {
