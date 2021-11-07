@@ -7,115 +7,96 @@
 
 import Vector3D from "../../vox/math/Vector3D";
 
-class RendererParam
-{
-    private m_matrix4AllocateSize:number = 8192;
-    private m_mainDiv:HTMLElement = null;
-    private m_renderContextAttri:any = {
-        depth:true
-        ,premultipliedAlpha: false
+class RendererParam {
+    private m_matrix4AllocateSize: number = 8192;
+    private m_mainDiv: HTMLElement = null;
+    private m_renderContextAttri: any = {
+        depth: true
+        , premultipliedAlpha: false
         , alpha: true
-        , antialias:false
-        ,stencil:false
-        ,preserveDrawingBuffer:true
-        ,powerPreference:"high-performance"//"default"
+        , antialias: false
+        , stencil: false
+        , preserveDrawingBuffer: true
+        , powerPreference: "high-performance"//"default"
     };
-    private m_tickUpdateTime:number = 20;// delay 50 ms
-    private m_polygonOffsetEnabled:boolean = true;
-    private m_ditherEnabled:boolean = false;
+    private m_tickUpdateTime: number = 20;// delay 50 ms
+    private m_polygonOffsetEnabled: boolean = true;
+    private m_ditherEnabled: boolean = false;
     // display 3d view buf size auto sync window size
-    autoSyncRenderBufferAndWindowSize:boolean = true;
-    maxWebGLVersion:number = 2;
-    cameraPerspectiveEnabled:boolean = true;
+    autoSyncRenderBufferAndWindowSize: boolean = true;
+    maxWebGLVersion: number = 2;
+    cameraPerspectiveEnabled: boolean = true;
     // event flow control enable
-    evtFlowEnabled:boolean = false;
+    evtFlowEnabled: boolean = false;
     // x: fov, y: near, z: far
-    readonly camProjParam:Vector3D = new Vector3D(45.0,10.0,5000.0);
-    
-    readonly camPosition:Vector3D = new Vector3D(2000.0,2000.0,2000.0);
-    readonly camLookAtPos:Vector3D = new Vector3D(0.0,0.0,0.0);
-    readonly camUpDirect:Vector3D = new Vector3D(0.0,1.0,0.0);
+    readonly camProjParam: Vector3D = new Vector3D(45.0, 10.0, 5000.0);
 
-    batchEnabled:boolean = true;
-    processFixedState:boolean = false;
-    constructor(div:HTMLDivElement = null)
-    {
+    readonly camPosition: Vector3D = new Vector3D(2000.0, 2000.0, 2000.0);
+    readonly camLookAtPos: Vector3D = new Vector3D(0.0, 0.0, 0.0);
+    readonly camUpDirect: Vector3D = new Vector3D(0.0, 1.0, 0.0);
+
+    batchEnabled: boolean = true;
+    processFixedState: boolean = false;
+    constructor(div: HTMLDivElement = null) {
         this.m_mainDiv = div;
+        this.autoSyncRenderBufferAndWindowSize = div == null;
     }
     /**
      * @param   tickUpdateTime default value 50 ms delay
      */
-    setTickUpdateTime(tickUpdateTime:number):void
-    {
+    setTickUpdateTime(tickUpdateTime: number): void {
         tickUpdateTime = Math.round(tickUpdateTime);
-        this.m_tickUpdateTime = tickUpdateTime > 5?tickUpdateTime:5;
+        this.m_tickUpdateTime = tickUpdateTime > 5 ? tickUpdateTime : 5;
     }
-    getTickUpdateTime():number
-    {
+    getTickUpdateTime(): number {
         return this.m_tickUpdateTime;
     }
-    setPolygonOffsetEanbled(polygonOffsetEnabled:boolean):void
-    {
+    setPolygonOffsetEanbled(polygonOffsetEnabled: boolean): void {
         this.m_polygonOffsetEnabled = polygonOffsetEnabled;
     }
-    getPolygonOffsetEanbled():boolean
-    {
+    getPolygonOffsetEanbled(): boolean {
         return this.m_polygonOffsetEnabled;
     }
-    setDitherEanbled(ditherEnabled:boolean):void
-    {
+    setDitherEanbled(ditherEnabled: boolean): void {
         this.m_ditherEnabled = ditherEnabled;
     }
-    getDitherEanbled():boolean
-    {
+    getDitherEanbled(): boolean {
         return this.m_ditherEnabled;
     }
-    getDiv():HTMLElement
-    {
+    getDiv(): HTMLElement {
         return this.m_mainDiv;
     }
-    getRenderContextAttri():any
-    {
+    getRenderContextAttri(): any {
         return this.m_renderContextAttri;
     }
-    setAttriDepth(boo:boolean):void
-    {
+    setAttriDepth(boo: boolean): void {
         this.m_renderContextAttri.depth = boo;
     }
-    setAttriStencil(boo:boolean):void
-    {
+    setAttriStencil(boo: boolean): void {
         this.m_renderContextAttri.stencil = boo;
     }
-    setAttriAlpha(boo:boolean):void
-    {
+    setAttriAlpha(boo: boolean): void {
         this.m_renderContextAttri.alpha = boo;
     }
-    setAttriPremultipliedAlpha(boo:boolean):void
-    {
+    setAttriPremultipliedAlpha(boo: boolean): void {
         this.m_renderContextAttri.premultipliedAlpha = boo;
     }
-    setAttriAntialias(boo:boolean):void
-    {
+    setAttriAntialias(boo: boolean): void {
         this.m_renderContextAttri.antialias = boo;
     }
-    setAttripreserveDrawingBuffer(boo:boolean):void
-    {
+    setAttripreserveDrawingBuffer(boo: boolean): void {
         this.m_renderContextAttri.preserveDrawingBuffer = boo;
     }
-    setAttriHightPowerPreference(boo:boolean):void
-    {
-        this.m_renderContextAttri.powerPreference = boo?"high-performance":"default";
+    setAttriHightPowerPreference(boo: boolean): void {
+        this.m_renderContextAttri.powerPreference = boo ? "high-performance" : "default";
     }
-    setMatrix4AllocateSize(total:number):void
-    {
-        if(total < 1024)
-        {
+    setMatrix4AllocateSize(total: number): void {
+        if (total < 1024) {
             total = 1024;
         }
         this.m_matrix4AllocateSize = total;
     }
-    getMatrix4AllocateSize():number
-    {
+    getMatrix4AllocateSize(): number {
         return this.m_matrix4AllocateSize;
     }
     /**
@@ -123,13 +104,11 @@ class RendererParam
      * @param near the default value is 10.0
      * @param far the default value is 5000.0
      */
-    setCamProject(fov_angle_degree:number, near:number, far:number):void
-    {
-        if(near >= far)
-        {
+    setCamProject(fov_angle_degree: number, near: number, far: number): void {
+        if (near >= far) {
             throw Error("Error Camera cear > far !!!");
         }
-        this.camProjParam.setTo(fov_angle_degree,near,far);
+        this.camProjParam.setTo(fov_angle_degree, near, far);
     }
     //  setCamOrthoProject(bottom:number, top:number, left:number, right:number, near:number, far:number):void
     //  {
@@ -143,17 +122,14 @@ class RendererParam
     //      this.camOrthoParam.z = left;
     //      this.camOrthoParam.w = right;
     //  }
-    setCamPosition(px:number, py:number, pz:number):void
-    {
-        this.camPosition.setTo(px,py,pz);
+    setCamPosition(px: number, py: number, pz: number): void {
+        this.camPosition.setTo(px, py, pz);
     }
-    setCamLookAtPos(px:number, py:number, pz:number):void
-    {
-        this.camLookAtPos.setTo(px,py,pz);
+    setCamLookAtPos(px: number, py: number, pz: number): void {
+        this.camLookAtPos.setTo(px, py, pz);
     }
-    setCamUpDirect(px:number, py:number, pz:number):void
-    {
-        this.camUpDirect.setTo(px,py,pz);
+    setCamUpDirect(px: number, py: number, pz: number): void {
+        this.camUpDirect.setTo(px, py, pz);
     }
 }
 
