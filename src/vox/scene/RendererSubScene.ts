@@ -42,6 +42,7 @@ import IEvt3DController from "../../vox/scene/IEvt3DController";
 import TextureBlock from "../texture/TextureBlock";
 import FBOInstance from "./FBOInstance";
 import Color4 from "../material/Color4";
+import { IRendererSceneAccessor } from "./IRendererSceneAccessor";
 
 export default class RendererSubScene implements IRenderer, IRendererScene {
     private static __s_uid: number = 0;
@@ -196,6 +197,11 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
     }
     removeEventListener(type: number, target: any, func: (evt: any) => void): void {
         this.m_currStage3D.removeEventListener(type, target, func);
+    }
+    
+    private m_accessor: IRendererSceneAccessor = null;
+    setAccessor(accessor: IRendererSceneAccessor): void {
+        this.m_accessor = accessor;
     }
     initialize(rparam: RendererParam, renderProcessesTotal: number = 3, createNewCamera: boolean = true): void {
         if (this.m_renderProxy == null) {
@@ -424,7 +430,9 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
         this.m_camera.update();
         this.m_rcontext.updateCameraDataFromCamera(this.m_camera);
         this.m_shader.renderBegin();
-
+        if(this.m_accessor != null) {
+            this.m_accessor.renderBegin( this );
+        }
     }
     /**
      * the function resets the renderer scene status.
@@ -604,6 +612,9 @@ export default class RendererSubScene implements IRenderer, IRendererScene {
 
         if (this.m_autoRunning) {
             this.m_runFlag = -1;
+        }
+        if(this.m_accessor != null) {
+            this.m_accessor.renderEnd( this );
         }
     }
     useCamera(camera: IRenderCamera, syncCamView: boolean = false): void {

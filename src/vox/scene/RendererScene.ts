@@ -45,6 +45,7 @@ import CameraDsistanceSorter from "../../vox/scene/CameraDsistanceSorter";
 import RendererSubScene from "../../vox/scene/RendererSubScene";
 import RenderShader from "../render/RenderShader";
 import Matrix4Pool from "../math/Matrix4Pool";
+import { IRendererSceneAccessor } from "./IRendererSceneAccessor";
 
 export default class RendererScene implements IRenderer, IRendererScene {
     private static s_uid: number = 0;
@@ -278,7 +279,10 @@ export default class RendererScene implements IRenderer, IRendererScene {
     removeEventListener(type: number, target: any, func: (evt: any) => void): void {
         this.stage3D.removeEventListener(type, target, func);
     }
-
+    private m_accessor: IRendererSceneAccessor = null;
+    setAccessor(accessor: IRendererSceneAccessor): void {
+        this.m_accessor = accessor;
+    }
     initialize(rparam: RendererParam = null, renderProcessesTotal: number = 3): void {
 
         if (this.m_renderer == null) {
@@ -556,6 +560,9 @@ export default class RendererScene implements IRenderer, IRendererScene {
             this.m_rcontext.renderBegin(this.m_currCamera == null);
         }
         this.m_currCamera = null;
+        if(this.m_accessor != null) {
+            this.m_accessor.renderBegin(this);
+        }
     }
     /**
      * the function resets the renderer scene status.
@@ -754,6 +761,9 @@ export default class RendererScene implements IRenderer, IRendererScene {
         }
         if (this.m_autoRunning) {
             this.m_runFlag = -1;
+        }
+        if(this.m_accessor != null) {
+            this.m_accessor.renderEnd(this);
         }
     }
     renderFlush(): void {
