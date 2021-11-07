@@ -24,8 +24,8 @@ import RendererParam from "../../vox/scene/RendererParam";
 import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
 
 class RenderAdapter implements IRenderAdapter{
-	private static s_uid: number = 0;
-	private m_uid: number = RenderAdapter.s_uid++;
+	// private static s_uid: number = 0;
+	// private m_uid: number = RenderAdapter.s_uid++;
 	// renderer context uid
 	private m_rcuid: number = 0;
 	private m_texResource: ROTextureResource = null;
@@ -198,6 +198,20 @@ class RenderAdapter implements IRenderAdapter{
 			this.m_scissorEnabled = false;
 			this.m_gl.disable(this.m_gl.SCISSOR_TEST);
 		}
+	}
+	clearDepth(depth: number = 1.0): void {
+		
+		this.m_clearDepth = depth;
+		if (this.m_preDepth !== this.m_clearDepth) {
+			this.m_preDepth = this.m_clearDepth;
+			this.m_gl.clearDepth(this.m_clearDepth);
+		}
+		this.m_clearMask = this.m_gl.DEPTH_BUFFER_BIT;
+		this.m_gl.clear(this.m_clearMask);
+		this.resetClearMask();
+	}
+	resetClearMask(): void {
+		this.m_clearMask = this.m_gl.COLOR_BUFFER_BIT | this.m_gl.DEPTH_BUFFER_BIT | this.m_gl.STENCIL_BUFFER_BIT;
 	}
 	clear(): void {
 		// console.log("clear back buffer.");

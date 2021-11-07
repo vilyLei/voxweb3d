@@ -58,6 +58,9 @@ class RenderProxy implements IRenderProxy{
     readonly Texture: IRenderTexResource = null;
     readonly VtxBufUpdater: IROVertexBufUpdater = null;
     readonly MaterialUpdater: IROMaterialUpdater = null;
+    
+    readonly adapter: IRenderAdapter = null;
+
     private m_uid: number = 0;
     private m_camUBO: any = null;
     private m_adapter: RenderAdapter = null;
@@ -353,7 +356,7 @@ class RenderProxy implements IRenderProxy{
 
         this.m_adapter = new RenderAdapter(this.m_uid, texRes);
         this.m_adapter.initialize(this.m_adapterContext, param, RendererState.Rstate);
-
+        selfT.adapter = this.m_adapter; 
         if (this.m_autoSynViewAndStage) {
             let stage: IRenderStage3D = this.m_adapterContext.getStage();
             if (stage != null) {

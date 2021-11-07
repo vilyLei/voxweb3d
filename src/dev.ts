@@ -303,7 +303,7 @@
 
 //  import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
 
-import {DemoCameraWalkRoad as Demo} from "./demo/DemoCameraWalkRoad";
+//  import {DemoCameraWalkRoad as Demo} from "./demo/DemoCameraWalkRoad";
 
 //  import {DemoCameraPath as Demo} from "./demo/DemoCameraPath";
 
@@ -385,7 +385,7 @@ import {DemoCameraWalkRoad as Demo} from "./demo/DemoCameraWalkRoad";
 
 //  import {RbtDrama as Demo} from "./app/RbtDrama";
 
-//  import {SlickRoad as Demo} from "./app/SlickRoad";
+import {SlickRoad as Demo} from "./app/SlickRoad";
 
 //  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 
