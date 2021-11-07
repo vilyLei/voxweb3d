@@ -19,6 +19,7 @@ import { IRenderCamera } from "../render/IRenderCamera";
 import IRenderProcess from "../render/IRenderProcess";
 import IRenderStage3D from "../render/IRenderStage3D";
 import Vector3D from "../math/Vector3D";
+import RenderProxy from "../render/RenderProxy";
 
 class OrthoUIScene implements IRendererScene {
     private m_rscene: RendererScene = null;
@@ -187,6 +188,9 @@ class OrthoUIScene implements IRendererScene {
         return this.m_ruisc.getStage3D();
     }
     
+    getRenderProxy(): RenderProxy {
+        return this.m_ruisc.getRenderProxy();
+    }
     /**
      * get the renderer process by process index
      * @param processIndex IRenderProcess instance index in renderer scene instance

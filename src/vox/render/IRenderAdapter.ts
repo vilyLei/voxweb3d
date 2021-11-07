@@ -45,8 +45,11 @@ interface IRenderAdapter {
 	setClearMaskClearOnlyDepthAndStencil(): void;
 	setScissorRect(px: number, py: number, pw: number, ph: number): void;
 	setScissorEnabled(enabled: boolean): void;
+	/**
+	 * only clear up depth value
+	 * @param depth depth buffer depth value
+	 */
 	clearDepth(depth: number): void;
-	resetClearMask(): void;
 	clear(): void;
 	reset(): void;
 	renderBegin(): void;
