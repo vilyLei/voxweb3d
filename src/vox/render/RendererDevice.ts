@@ -12,6 +12,7 @@ class RendererDevice {
     private static s_WEBGL_VER: number = 2;
     private static s_devicePixelRatio: number = 1.0;
     private static s_mobileFlag: number = 0;
+    private static s_safariFlag: number = 0;
     private static s_Android_Flag: number = 0;
     private static s_IOS_Flag: number = 0;
     private static s_IPad_Flag: number = 0;
@@ -73,6 +74,11 @@ class RendererDevice {
             RendererDevice.s_language = navigator.language + "";
         }
     }
+    
+    static TestSafariWeb(): boolean {
+        //return /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
+        return /Safari/.test(navigator.userAgent) && /Mac OS/.test(navigator.userAgent);
+    }
     static IsWebGL1(): boolean { return RendererDevice.s_WEBGL_VER == 1; }
     static IsWebGL2(): boolean { return RendererDevice.s_WEBGL_VER == 2; }
     static IsMobileWeb(): boolean {
@@ -80,6 +86,13 @@ class RendererDevice {
             return RendererDevice.s_mobileFlag == 2;
         }
         return RendererDevice.TestMobileWeb();
+    }
+    static IsSafariWeb(): boolean {
+        if(RendererDevice.s_safariFlag > 0) {
+            return RendererDevice.s_safariFlag == 2;
+        }
+        RendererDevice.s_safariFlag = RendererDevice.TestSafariWeb() ? 2 : 1;
+        return RendererDevice.s_safariFlag == 2;
     }
     static IsIOS(): boolean {
         if(RendererDevice.s_IOS_Flag > 0) {

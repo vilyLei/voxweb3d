@@ -12,6 +12,7 @@ import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import CameraBase from "../../vox/view/CameraBase";
 import DivLog from "../../vox/utils/DivLog";
 import MouseEvent from "../../vox/event/MouseEvent";
+import RendererDevice from "../../vox/render/RendererDevice";
 
 export default class CameraZoomController {
     private m_camera: CameraBase = null;
@@ -20,7 +21,7 @@ export default class CameraZoomController {
     private m_preDis: number = 0;
     private m_touchZoomSpd: number = 2.0;
     private m_slideSpd: number = 1.0;
-    private m_mouseWheelZoomSpd: number = 0.5;
+    private m_mouseWheelZoomSpd: number = 6.0;
     private m_tempa: Vector3D = new Vector3D();
     private m_tempb: Vector3D = new Vector3D();
     private m_preva: Vector3D = new Vector3D();
@@ -33,14 +34,25 @@ export default class CameraZoomController {
     private m_lookAtCtrlEnabled: boolean = true;
     private m_flagDrag: number = 0;
     private m_flagZoom: number = 0;
+    private m_windowsEnvFlag: boolean = true;
+    /**
+     * 取值为2, 表示相机的拉近拉远
+     * 取值为1, 表示相机的拖动 
+     */
     private m_flagType: number = 2;
-    constructor() { }
+    constructor() {
+        this.m_windowsEnvFlag = !(RendererDevice.IsMobileWeb() || RendererDevice.IsSafariWeb());
+    }
     setMobileZoomSpeed(spd: number) {
         this.m_touchZoomSpd = spd;
     }
     seSlideSpeed(spd: number) {
         this.m_slideSpd = spd;
     }
+    /**
+     * set mousewheel zoom camera forward speed
+     * @param spd default value is 6.0
+     */
     setMouseWheelZoomSpd(spd: number) {
         this.m_mouseWheelZoomSpd = spd;
     }
@@ -59,7 +71,13 @@ export default class CameraZoomController {
         this.m_lookAtCtrlEnabled = enabled;
     }
     private mouseWheelListener(evt: any): void {
-        this.m_fowardDis = (evt.wheelDeltaY * this.m_mouseWheelZoomSpd);
+        
+        if(evt.wheelDeltaY > 0) {
+            this.m_fowardDis += this.m_mouseWheelZoomSpd;
+        }
+        else {
+            this.m_fowardDis -= this.m_mouseWheelZoomSpd;
+        }
     }
     private mouseMultiMoveListener(evt: any): void {
         this.setTouchPosArray(evt.posArray);
@@ -130,17 +148,29 @@ export default class CameraZoomController {
 
         if (this.m_camera != null) {
             if (this.m_flagType == 2) {
-                if (this.m_fowardDis > 0) {
-                    if (Vector3D.Distance(this.m_camera.getPosition(), this.m_camera.getLookAtPosition()) > minDis) {
-                        this.m_camera.forward(this.m_fowardDis);
+                // camera foward update
+                if(Math.abs(this.m_fowardDis) > 0.001) {
+                    let dis: number = Vector3D.Distance(this.m_camera.getPosition(), this.m_camera.getLookAtPosition());
+                    let pd: number = this.m_fowardDis;
+                    if(this.m_fowardDis > 0) {
+                        if(dis > minDis) {
+                            pd = dis - minDis;
+                            if(pd > this.m_fowardDis) pd = this.m_fowardDis;
+                        }
+                        else {
+                            pd = 0;
+                        }
+                    }
+                    if( Math.abs(pd) > 0.1) {
+                        this.m_camera.forward(pd);
                         if (lookAtEnabled) this.m_camera.setLookPosXYZFixUp(lookAtPos.x, lookAtPos.y, lookAtPos.z);
                     }
-                    this.m_fowardDis = 0;
-                }
-                else if (this.m_fowardDis < -0.001) {
-                    this.m_camera.forward(this.m_fowardDis);
-                    if (lookAtEnabled) this.m_camera.setLookPosXYZFixUp(lookAtPos.x, lookAtPos.y, lookAtPos.z);
-                    this.m_fowardDis = 0;
+                    if(this.m_windowsEnvFlag) {
+                        this.m_fowardDis *= 0.95;
+                    }
+                    else {
+                        this.m_fowardDis = 0;
+                    }
                 }
             }
             else if (this.m_flagType == 1) {

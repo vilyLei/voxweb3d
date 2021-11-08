@@ -289,7 +289,7 @@
 //  import {DemoProjectPlane as Demo} from "./demo/DemoProjectPlane";
 
 //  The reflection in water
-//  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
+import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
 
 //  import {DemoOutline as Demo} from "./demo/DemoOutline";
 
@@ -301,7 +301,7 @@
 
 //  import {DemoCamera as Demo} from "./demo/DemoCamera";
 
-import {DemoCameraRoaming as Demo} from "./demo/DemoCameraRoaming";
+//  import {DemoCameraRoaming as Demo} from "./demo/DemoCameraRoaming";
 
 //  import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
 
