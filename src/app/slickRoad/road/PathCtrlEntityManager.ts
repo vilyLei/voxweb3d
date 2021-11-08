@@ -45,6 +45,11 @@ class PathCtrlEntityManager {
     curvatureFactorTailBtn: ProgressBar = null;
     editorUI: PathCurveEditorUI = null;
 
+    
+    currRoadWidthBtn: ProgressBar = null;
+    currRoadWidthChangeFactorBtn: ProgressBar = null;
+    currRoadWidthFactorBtn: ProgressBar = null;
+
     initialize(engine: EngineBase, path: RoadPath, roadSegObjManager: RoadSegObjectManager): void {
 
         console.log("PathCtrlEntityManager::initialize()......");
@@ -340,6 +345,14 @@ class PathCtrlEntityManager {
         value = node.negativeCtrlFactor * 0.5 + 0.5;
         this.curvatureFactorTailBtn.setProgress(MathConst.Clamp(value, 0.0, 1.0), false);
         
+        value = (node.pathRadius - 2.0)/500.0;
+        this.currRoadWidthBtn.setProgress(MathConst.Clamp(value, 0.0, 1.0), false);
+        value = node.pathRadiusChangeFactor;
+        this.currRoadWidthChangeFactorBtn.setProgress(MathConst.Clamp(value, 0.0, 1.0), false);
+        value = MathConst.Clamp(node.pathRadiusChangeAmplitude, -1.0, 1.0);
+        value = value * 0.5 + 0.5;
+        this.currRoadWidthFactorBtn.setProgress(value, false);
+
         editEntity.getPosition(this.m_tempPos);
         this.m_tempPos.subtractBy(wpos);
         let offsetPos: Vector3D = this.m_tempPos;

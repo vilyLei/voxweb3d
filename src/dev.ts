@@ -289,7 +289,7 @@
 //  import {DemoProjectPlane as Demo} from "./demo/DemoProjectPlane";
 
 //  The reflection in water
-import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
+//  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
 
 //  import {DemoOutline as Demo} from "./demo/DemoOutline";
 
@@ -387,7 +387,7 @@ import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
 
 //  import {RbtDrama as Demo} from "./app/RbtDrama";
 
-//  import {SlickRoad as Demo} from "./app/SlickRoad";
+import {SlickRoad as Demo} from "./app/SlickRoad";
 
 //  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 

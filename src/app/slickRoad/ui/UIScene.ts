@@ -25,6 +25,10 @@ class UIScene {
     private m_closePathBtn: SelectionBar = null;
 
     private m_segTotalCtrlBtn: ProgressBar = null;
+
+    private m_currRoadWidthBtn: ProgressBar = null;
+    private m_currRoadWidthChangeFactorBtn: ProgressBar = null;
+    private m_currRoadWidthFactorBtn: ProgressBar = null;
     private m_wholeWidthScaleBtn: ProgressBar = null;
     private m_curvatureFactorHeadBtn: ProgressBar = null;
     private m_curvatureFactorTailBtn: ProgressBar = null;
@@ -42,6 +46,11 @@ class UIScene {
             this.scene.pathEditor.pathCtrlEntityManager.segTotalCtrlBtn = this.m_segTotalCtrlBtn;
             this.scene.pathEditor.pathCtrlEntityManager.curvatureFactorHeadBtn = this.m_curvatureFactorHeadBtn;
             this.scene.pathEditor.pathCtrlEntityManager.curvatureFactorTailBtn = this.m_curvatureFactorTailBtn;
+
+            this.scene.pathEditor.pathCtrlEntityManager.currRoadWidthBtn = this.m_currRoadWidthBtn;
+            this.scene.pathEditor.pathCtrlEntityManager.currRoadWidthChangeFactorBtn = this.m_currRoadWidthChangeFactorBtn;
+            this.scene.pathEditor.pathCtrlEntityManager.currRoadWidthFactorBtn = this.m_currRoadWidthFactorBtn;
+
             this.m_wholeWidthScaleBtn.setValue(0.25,true);
             this.scene.setEditEnabled(this.m_switchSceneEditBtn != null ? this.m_switchSceneEditBtn.isSelected() : false);            
         }
@@ -114,8 +123,11 @@ class UIScene {
         this.m_btnPY += dis;
         let proBtn: ProgressBar;
         proBtn = this.createProgressBtn("路面宽度", "currRoadWidth", 0.15);
+        this.m_currRoadWidthBtn = proBtn;
         proBtn = this.createProgressBtn("路宽变化", "currRoadWidthChangeFactor", 0.2);
+        this.m_currRoadWidthChangeFactorBtn = proBtn;
         proBtn = this.createProgressBtn("路宽系数", "currRoadWidthFactor", 0.2);
+        this.m_currRoadWidthFactorBtn = proBtn;
         proBtn = this.createProgressBtn("全局路宽", "wholeWidthScale", 0.2);
         this.m_wholeWidthScaleBtn = proBtn;
         proBtn = this.createProgressBtn("分段密度", "segTotalCtrl", 0.2);
