@@ -317,7 +317,7 @@
 ////////////////////////////   maps    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
+import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
 
 //  import {DemoDisplacementMap as Demo} from "./demo/DemoDisplacementMap";
 
@@ -387,7 +387,7 @@
 
 //  import {RbtDrama as Demo} from "./app/RbtDrama";
 
-import {SlickRoad as Demo} from "./app/SlickRoad";
+//  import {SlickRoad as Demo} from "./app/SlickRoad";
 
 //  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 

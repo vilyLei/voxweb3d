@@ -17,6 +17,40 @@ vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 nv)
     return TBN * tangentNormal;
 }
 #endif
+#ifdef VOX_PARALLAX_MAP
+mat3 getBTNMat3(vec2 texUV, vec3 pos, vec3 nv)
+{
+    vec3 Q1  = dFdx(pos);
+    vec3 Q2  = dFdy(pos);
+    vec2 st1 = dFdx(texUV);
+    vec2 st2 = dFdy(texUV);
+
+    vec3 N  = normalize(nv);
+    vec3 T  = normalize(Q1*st2.t - Q2*st1.t);    
+    vec3 B  = -normalize(cross(N, T));
+    return mat3(T, B, N);
+}
+//const vec4 occParam = vec4(1.0,10.0,2.0,0.1);
+vec2 parallaxOccRayMarchDepth(sampler2D texSampler, vec2 puvs, vec3 viewDir,vec4 occParam)
+{
+    float depthValue = 1.0 - texture(texSampler, puvs).r;
+    float numLayers = mix(occParam.x, occParam.y, max(dot(vec3(0.0, 0.0, 1.0), viewDir),0.0));
+    float layerHeight = occParam.z / numLayers;
+    vec2 tuv = (viewDir.xy * occParam.w) / numLayers;  
+    float ph = 0.0;
+    while(ph < depthValue)
+    {
+        puvs -= tuv;
+        depthValue = 1.0 - texture(texSampler, puvs).r;
+        ph += layerHeight;
+    }
+    tuv += puvs;
+    depthValue -= ph;
+    ph = 1.0 - texture(texSampler, tuv).r - ph + layerHeight;
+    float weight = depthValue / (depthValue - ph);
+    return tuv * weight + puvs * (1.0 - weight);
+}
+#endif
 #ifdef VOX_LIGHTS_TOTAL
 #if VOX_LIGHTS_TOTAL > 0
 
