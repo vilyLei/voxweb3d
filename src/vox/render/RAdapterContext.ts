@@ -229,11 +229,14 @@ class RAdapterContext {
                 let webgl_vendor: any = this.m_gl.getParameter(debugInfo.UNMASKED_VENDOR_WEBGL);
                 let webgl_renderer: any = this.m_gl.getParameter(debugInfo.UNMASKED_RENDERER_WEBGL);
                 device.GPU_VENDOR = webgl_vendor;
-                device.GPU_RENDERER = webgl_vendor;
+                device.GPU_RENDERER = webgl_renderer;
                 console.log("webgl_vendor: ", webgl_vendor);
                 console.log("webgl_renderer: ", webgl_renderer);
-                DivLog.ShowLog("webgl_vendor: " + webgl_vendor);
-                DivLog.ShowLog("webgl_renderer: " + webgl_renderer);
+                if(!RendererDevice.IsWinExternalVideoCard()) {
+                    console.warn("当前浏览器没有使用独立显卡");
+                }
+                // DivLog.ShowLog("webgl_vendor: " + webgl_vendor);
+                // DivLog.ShowLog("webgl_renderer: " + webgl_renderer);
             }
             var selfT: RAdapterContext = this;
             pwindow.onresize = function (evt: any): void {

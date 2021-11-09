@@ -17,8 +17,11 @@ import { GlobalLightUniformParam } from "../../vox/material/GlobalUniformParam";
 
 export default class GlobalLightData implements IMaterialPipe{
 
-    private m_uid: number = -1;
     static s_uid: number = 0;
+    private m_uid: number = -1;
+    private m_changed: boolean = true;
+    private m_uProbeVer: number = -1;
+
     private m_uniformParam: GlobalLightUniformParam = new GlobalLightUniformParam();
     private m_pointLightPosList: Vector3D[] = null;
     private m_pointLightColorList: Color4[] = null;
@@ -30,7 +33,6 @@ export default class GlobalLightData implements IMaterialPipe{
 
     private m_uProbe: ShaderUniformProbe = null;
     private m_suo: ShaderGlobalUniform = null;
-    private m_dirty: boolean = false;
     private m_uslotIndex: number = 0;
 
     lightBaseDis: number = 700.0;
@@ -78,88 +80,94 @@ export default class GlobalLightData implements IMaterialPipe{
         }
     }
     setDirecLightAt(index: number, direc: Vector3D, color: Color4): void {
-        
-        let i: number = (this.m_pointLightPosList.length + index) * 4;
-        if(direc != null) {
-            this.m_direcLightDirecList[index].copyFrom( direc );
-            if(this.m_lightPositions != null) {
-                this.m_lightPositions[i] = direc.x;
-                this.m_lightPositions[i+1] = direc.y;
-                this.m_lightPositions[i+2] = direc.z;
+
+        if(this.m_direcLightDirecList != null && index >= 0 && index < this.m_direcLightDirecList.length) {
+
+            let i: number = (this.m_pointLightPosList.length + index) * 4;
+            if(direc != null) {
+                this.m_direcLightDirecList[index].copyFrom( direc );
+                if(this.m_lightPositions != null) {
+                    this.m_lightPositions[i] = direc.x;
+                    this.m_lightPositions[i+1] = direc.y;
+                    this.m_lightPositions[i+2] = direc.z;
+                }
             }
-        }
-        if(color != null) {
-            this.m_direcLightColorList[index].copyFrom( color );
-            if(this.m_lightColors != null) {
-                this.m_lightColors[i] = color.r;
-                this.m_lightColors[i+1] = color.g;
-                this.m_lightColors[i+2] = color.b;
+            if(color != null) {
+                this.m_direcLightColorList[index].copyFrom( color );
+                if(this.m_lightColors != null) {
+                    this.m_lightColors[i] = color.r;
+                    this.m_lightColors[i+1] = color.g;
+                    this.m_lightColors[i+2] = color.b;
+                }
             }
         }
     }
     buildData(): void {
-
-        let total: number = this.m_lightTotal;
-
-        if (this.m_lightPositions == null) this.m_lightPositions = new Float32Array(total * 4);
-        if (this.m_lightColors == null) this.m_lightColors = new Float32Array(total * 4);
-
-        // point light
-        let posList: Vector3D[] = this.m_pointLightPosList;
-        let colorList: Color4[] = this.m_pointLightColorList;
-        let lightsTotal: number = posList.length;
-
-        let j: number = 0;
-        for (let i: number = 0; i < lightsTotal; ++i) {
-
-            let pos: Vector3D = posList[i];
-            let k: number = j * 4;
-            this.m_lightPositions[k] = pos.x;
-            this.m_lightPositions[k + 1] = pos.x;
-            this.m_lightPositions[k + 2] = pos.y;
-            let color: Color4 = colorList[i];
-            this.m_lightColors[k] = color.r;
-            this.m_lightColors[k + 1] = color.g;
-            this.m_lightColors[k + 2] = color.b;
-            j++;
-        }
-
-        /////////////////////////////////////////////////////////////////////
-        /////////////////////////////////////////////////////////////////////
-        /////////////////////////////////////////////////////////////////////
-
-        posList = this.m_direcLightDirecList;
-        colorList = this.m_direcLightColorList;
-        lightsTotal = posList.length;
-        j = this.m_pointLightPosList.length;
-        for (let i: number = 0; i < lightsTotal; ++i) {
-
-            let pos: Vector3D = posList[i];
-            pos.normalize();
-            let k: number = j * 4;
-            this.m_lightPositions[k] = pos.x;
-            this.m_lightPositions[k + 1] = pos.x;
-            this.m_lightPositions[k + 2] = pos.y;
-            let color: Color4 = colorList[i];
-            this.m_lightColors[k] = color.r;
-            this.m_lightColors[k + 1] = color.g;
-            this.m_lightColors[k + 2] = color.b;
-            j++;
-        }
-
-        if (this.m_uProbe == null) {
-            this.m_uProbe = new ShaderUniformProbe();
-            this.m_uProbe.bindSlotAt(this.m_uslotIndex);
-            this.m_uProbe.addVec4Data(this.m_lightPositions, total);
-            this.m_uProbe.addVec4Data(this.m_lightColors, total);
-
-            this.m_suo = this.m_uniformParam.createGlobalUinform( this.m_uProbe );
-
+        if(this.m_changed) {
+            this.m_changed = false;
+            let total: number = this.m_lightTotal;
+    
+            if (this.m_lightPositions == null) this.m_lightPositions = new Float32Array(total * 4);
+            if (this.m_lightColors == null) this.m_lightColors = new Float32Array(total * 4);
+    
+            // point light
+            let posList: Vector3D[] = this.m_pointLightPosList;
+            let colorList: Color4[] = this.m_pointLightColorList;
+            let lightsTotal: number = posList.length;
+    
+            let j: number = 0;
+            for (let i: number = 0; i < lightsTotal; ++i) {
+    
+                let pos: Vector3D = posList[i];
+                let k: number = j * 4;
+                this.m_lightPositions[k] = pos.x;
+                this.m_lightPositions[k + 1] = pos.y;
+                this.m_lightPositions[k + 2] = pos.z;
+                let color: Color4 = colorList[i];
+                this.m_lightColors[k] = color.r;
+                this.m_lightColors[k + 1] = color.g;
+                this.m_lightColors[k + 2] = color.b;
+                j++;
+            }
+    
+            
+            // direction light
+    
+            posList = this.m_direcLightDirecList;
+            colorList = this.m_direcLightColorList;
+            lightsTotal = posList.length;
+            j = this.m_pointLightPosList.length;
+            for (let i: number = 0; i < lightsTotal; ++i) {
+    
+                let pos: Vector3D = posList[i];
+                pos.normalize();
+                let k: number = j * 4;
+                this.m_lightPositions[k] = pos.x;
+                this.m_lightPositions[k + 1] = pos.y;
+                this.m_lightPositions[k + 2] = pos.z;
+                let color: Color4 = colorList[i];
+                this.m_lightColors[k] = color.r;
+                this.m_lightColors[k + 1] = color.g;
+                this.m_lightColors[k + 2] = color.b;
+                j++;
+            }
+            
+            if (this.m_uProbe == null) {
+                this.m_uProbe = new ShaderUniformProbe();
+                this.m_uProbe.bindSlotAt(this.m_uslotIndex);
+                this.m_uProbe.addVec4Data(this.m_lightPositions, total);
+                this.m_uProbe.addVec4Data(this.m_lightColors, total);
+    
+                this.m_suo = this.m_uniformParam.createGlobalUinform( this.m_uProbe );
+                // console.log("this.m_uProbe.getUid(): ", this.m_uProbe.getUid());
+            }
         }
     }
     update(): void {
-        if (this.m_uProbe != null) {
+        this.buildData();
+        if (this.m_uProbe != null && this.m_uProbeVer != this.m_uProbe.rst) {
             this.m_uProbe.update();
+            this.m_uProbeVer = this.m_uProbe.rst;
         }
     }
 

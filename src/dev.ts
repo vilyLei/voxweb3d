@@ -317,7 +317,7 @@
 ////////////////////////////   maps    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
+//  import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
 
 //  import {DemoDisplacementMap as Demo} from "./demo/DemoDisplacementMap";
 
@@ -332,6 +332,12 @@ import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
 ///////////////////////////////////////////////////////////////////////////////
 
 //  import {DemoChangeColor as Demo} from "./demo/DemoChangeColor";
+
+///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////     motion    ///////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+//  import {DemoBase as Demo} from "./voxmotion/DemoBase";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////
@@ -355,6 +361,8 @@ import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
 /////////////////////////////     light    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+//  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
+
 //  import {DemoAdsLight as Demo} from "./demo/DemoAdsLight";
 
 //  import {DemoTextureCubeUV as Demo} from "./pbr/DemoTextureCubeUV";
@@ -363,7 +371,7 @@ import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
-//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
+import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 

@@ -45,9 +45,10 @@ class MaterialContext {
             this.lightData.setPointLightAt(0, new Vector3D(Math.random() * areaSize - 0.5 * areaSize, 50 + Math.random() * 100,Math.random() * 600 - 300), color);
             color.normalizeRandom(1.1);
             this.lightData.setPointLightAt(1, new Vector3D((Math.random() * areaSize - 0.5 * areaSize, 50 + Math.random() * 100,Math.random() * 600 - 300)), color);
-            
-            this.lightData.setDirecLightAt(0, new Vector3D(1.0,1.0,1.0), new Color4(0.0,0.0,1.0));
-            this.lightData.setDirecLightAt(1, new Vector3D(-1.0,1.0,-1.0), new Color4(2.0,0.0,1.0));
+            color.normalizeRandom(1.9);
+            this.lightData.setDirecLightAt(0, new Vector3D(1.0,1.0,1.0), color);
+            color.normalizeRandom(1.9);
+            this.lightData.setDirecLightAt(1, new Vector3D(-1.0,1.0,-1.0), color);
             this.lightData.buildData();
 
             selfT.envData = new EnvLightData();

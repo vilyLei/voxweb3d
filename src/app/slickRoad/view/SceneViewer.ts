@@ -128,8 +128,8 @@ class SceneViewer {
         let entities: DisplayEntity[] = this.m_entityManager.createRoadEntities(
             road,
             (total: number): MaterialBase[] => {
-                //return this.getLambertMaterials(total);
-                return this.getDefaultMaterials(total);
+                return this.getLambertMaterials(total);
+                //return this.getDefaultMaterials(total);
             });
         for (let k: number = 0; k < entities.length; ++k) {
             this.m_engine.rscene.addEntity(entities[k]);

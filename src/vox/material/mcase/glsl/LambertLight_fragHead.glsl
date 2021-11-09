@@ -16,9 +16,13 @@ vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 nv)
 
     return TBN * tangentNormal;
 }
+vec3 getNormalFromMap(in sampler2D texSampler, in vec2 texUV)
+{
+    return VOX_Texture2D(texSampler, texUV).xyz * 2.0 - 1.0;
+}
 #endif
 #ifdef VOX_PARALLAX_MAP
-mat3 getBTNMat3(vec2 texUV, vec3 pos, vec3 nv)
+mat3 getBTNMat3(in vec2 texUV, in vec3 pos, in vec3 nv)
 {
     vec3 Q1  = dFdx(pos);
     vec3 Q2  = dFdy(pos);
@@ -70,15 +74,14 @@ struct LambertLight {
     vec4 param;
     float specularPower;
 };
-
 vec3 calcLambertLight(in LambertLight light) {
 
     float nDotL = max(dot(light.normal, light.direc), 0.0);
 	vec3 baseColor = nDotL * light.diffuse * light.color;
 	vec3 viewDir = normalize(light.direc + light.viewDirec);
-	vec3 lightColor = light.specular * nDotL * pow(max(dot(light.normal, light.viewDirec), 0.0), light.specularPower);
+	vec3 specularColor = light.specular * nDotL * pow(max(dot(light.normal, light.viewDirec), 0.0), light.specularPower);
     vec2 param = light.param.xy;
-	return (baseColor * param.x + param.y * lightColor);
+	return (baseColor * param.x + param.y * specularColor);
 }
 
 #endif
@@ -94,8 +97,8 @@ vec3 getLambertLightColor(in LambertLight light) {
                 light.direc = normalize(u_lightPositions[i].xyz - worldPosition.xyz);
                 float distance = length(light.direc);
                 float attenuation = 1.0 / (1.0 + param.x * distance + param.y * distance * distance);
-                light.color = u_lightColors[i].xyz * attenuation;
-                destColor += calcLambertLight( light );
+                light.color = u_lightColors[i].xyz;
+                destColor += calcLambertLight( light ) * attenuation;
             }
         #endif
         // parallel light process

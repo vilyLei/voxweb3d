@@ -24,10 +24,11 @@ import Box3DEntity from "../vox/entity/Box3DEntity";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
 
-import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
+import {SpecularMode, LambertLightMaterial} from "../vox/material/mcase/LambertLightMaterial";
 import { MaterialContext } from "../materialLab/base/MaterialContext";
+import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 
-export class DemoNormalMap {
+export class DemoLambertLight {
 
     constructor() { }
     
@@ -37,6 +38,8 @@ export class DemoNormalMap {
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
+    private m_rotV: Vector3D = new Vector3D(Math.random() * 370, Math.random() * 370, Math.random() * 370);
+    private m_target: DisplayEntity;
     private m_materialCtx: MaterialContext = new MaterialContext();
 
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
@@ -47,7 +50,7 @@ export class DemoNormalMap {
     }
     initialize(): void {
 
-        console.log("DemoNormalMap::initialize()......");
+        console.log("DemoLambertLight::initialize()......");
 
         if (this.m_rscene == null) {
 
@@ -75,10 +78,28 @@ export class DemoNormalMap {
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
+            //console.log("isWinExternalVideoCard: ",isWinExternalVideoCard);
+            this.m_materialCtx.initialize( this.m_rscene );
+            //this.m_materialCtx.initialize( this.m_rscene, 1,0);
+            if(!RendererDevice.IsWinExternalVideoCard() && RendererDevice.IsWindowsPCOS()) {
+                alert("当前浏览器3D渲染没有使用独立显卡");
+            }
+            let posV: Vector3D = new Vector3D();
             let color: Color4 = new Color4(1.0,1.0,0.0);
             let colorBias: Color4 = new Color4(0.0,0.0,0.0);
+            let axis: Axis3DEntity;
+            let lightsTotal: number = this.m_materialCtx.lightData.getPointLightsTotal();
+            let pointList: Vector3D[] = this.m_materialCtx.lightData.getPointList();
+            // this.m_materialCtx.lightData.setPointLightAt(0, new Vector3D(0,56,0), new Color4(1.0,2.0,1.0,1.0));
+            // this.m_materialCtx.lightData.update();
 
-            this.m_materialCtx.initialize( this.m_rscene );
+            for(let i: number = 0; i < lightsTotal; ++i) {
+                axis = new Axis3DEntity();
+                axis.initializeCross(50.0);
+                posV.copyFrom( pointList[i] );
+                axis.setPosition( posV);
+                this.m_rscene.addEntity(axis);
+            }
             //this.m_vsmModule = this.m_materialCtx.vsmModule;
             //this.m_materialCtx.pipeline = this.m_materialCtx.pipeline;
             /*
@@ -87,101 +108,78 @@ export class DemoNormalMap {
             // axis.initialize(300.0);
             // this.m_rscene.addEntity(axis);
 
-            let material: LambertLightMaterial = new LambertLightMaterial();
-            this.useMaps(material, "metal_08", true, true, true);
-            material.fogEnabled = true;
-            material.initializeLocalData();
-            material.setDisplacementParams(10.0, -10.0);
-            color.normalizeRandom(0.5);
-            colorBias.randomRGB();
-            material.setColor( color, colorBias );
-           
-            material.setSpecularIntensity(128.0);
-            material.setBlendFactor(0.3,0.7);
-            color.setRGB3f(1.0,1.0,1.0)
-            material.setSpecularColor( color,  );
-            let sph: Sphere3DEntity = new Sphere3DEntity();
-            sph.setMaterial(material);
-            sph.initialize(150.0,100,100);
-            sph.setXYZ(0.0, 100.0, 0.0);
-            this.m_rscene.addEntity(sph);
-            let srcEntity: DisplayEntity = sph;
-            ///*
+            let material: LambertLightMaterial;
+
             material = new LambertLightMaterial();
-            this.useMaps(material, "lava_03", true, true, true);
-            material.fogEnabled = true;
-            material.initializeLocalData();
-            color.normalizeRandom(1.1);
-            colorBias.normalizeRandom(0.5);
-            material.setColor( color, colorBias );
-            material.setDisplacementParams(10.0, -10.0);
-            material.setSpecularColor(new Color4(1.0,1.0,1.0,1.0));
-            material.setSpecularIntensity(32);
-            //material.setSpecularColor( color );
-            sph = new Sphere3DEntity();
-            sph.copyMeshFrom(srcEntity);
-            sph.setMaterial(material);
-            //sph.initialize(150.0,100,100);
-            sph.setXYZ(300,0.0,300);
-            this.m_rscene.addEntity(sph);
+            /*
+            material.setMaterialPipeline( this.m_materialCtx.pipeline );            
+            material.diffuseMap =           this.getImageTexByUrl("static/assets/color_02.jpg");
+            material.normalMap =        this.getImageTexByUrl("static/assets/brickwall_normal.jpg");
+            //material.specularMap =          this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
+            material.specularMap =          this.getImageTexByUrl("static/assets/brickwall_big_spec.jpg");
+            material.aoMap =          this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
+            //material.aoMap =          this.getImageTexByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
+            //material.parallaxMap =          this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
+            //material.parallaxMap =          this.getImageTexByUrl("static/assets/moss_01.jpg");
+            material.parallaxMap =          this.getImageTexByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
             //*/
-            ///*
-            material = new LambertLightMaterial();
-            this.useMaps(material, "box", true, true, true);
-            material.fogEnabled = true;
+            //material.diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
+            this.useMaps(material,"lava_03",true,false,false,true,true);
+            //*/
+            material.fogEnabled = false;
             material.lightEnabled = true;
+            material.specularMode = SpecularMode.SpecularMapColor;
             material.initializeLocalData();
-            material.setDisplacementParams(3.0,0.0);
-            color.normalizeRandom(1.1);
-            material.initializeLocalData();
-            material.setSpecularIntensity(32.0);
-            color.normalizeRandom(1.1);
-            //material.setColor( color );
-            color.setRGB3f(0.01, 0.01, 0.01);
-            material.setSpecularColor( color );
+            material.setSpecularColor(new Color4(1.0,2.0,1.0,1.0));
+            material.setLightIntensityFactors(0.001,0.0005);
+            material.setSpecularIntensity(64.0);
+            material.setBlendFactor(0.2,0.7);
+            material.setParallaxParams(1, 5, 2.0, 0.01);
+            //material.setColor(new Color4(0.5,1.7,0.5,1.0))
+            /*
             let plane: Plane3DEntity = new Plane3DEntity();
+            plane.showDoubleFace();
             plane.setMaterial(material);
             plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0);
-            plane.setXYZ(0.0, -200.0, 0.0);
+            //plane.setXYZ(0.0, -200.0, 0.0);
             this.m_rscene.addEntity(plane);
             //*/
             /*
-            let size: number = 400.0;
-            let gridGeom: QuadGridMeshGeometry = new QuadGridMeshGeometry();
-            gridGeom.normalEnabled = true;
-            //gridGeom.normalScale = -1.0;
-            gridGeom.initializeXOZPlane(new Vector3D(-0.5 * size, 0, -0.5 * size), size,size, 120,120);
-            //console.log("gridGeom: ", gridGeom);
-
-            let dataMesh: DataMesh = new DataMesh();
-            //dataMesh.wireframe = true;
-            dataMesh.setBufSortFormat(material.getBufSortFormat());
-            dataMesh.initializeFromGeometry(gridGeom);
-            
-            let entity: DisplayEntity = new DisplayEntity();
-            entity.setMaterial(material);
-            entity.setMesh(dataMesh);
-            entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-            //entity.setScaleXYZ(4.0,12.0,4.0);
-            //entity.setXYZ(0,-400,0);
-            this.m_rscene.addEntity(entity);
+            let sph = new Sphere3DEntity();
+            sph.setMaterial(material);
+            sph.initialize(100,20,20)
+            sph.setXYZ(0, -100, 0);
+            this.m_rscene.addEntity(sph);
+            this.m_target = sph;
+            //*/
+            ///*
+            let box = new Box3DEntity();
+            box.setMaterial(material);
+            box.initializeCube(110)
+            box.setXYZ(0, -100, 0);
+            this.m_rscene.addEntity(box);            
+            this.m_target = box;
+            //*/
+            /*
+            material.setUVScale(1.0,2.0);
+            let cly: Cylinder3DEntity = new Cylinder3DEntity();
+            cly.setMaterial(material);
+            cly.initialize(100,200,20);
+            cly.setXYZ(0, -130, 0);
+            this.m_rscene.addEntity(cly);
+            this.m_target = cly;
             //*/
             this.m_material = material;
-            //this.m_material.setDisplacementParams(this.m_dispHeight,0.0);
             
-            this.initEnvBox();
+            //this.initEnvBox();
             this.update();
-            
-            // let pl = new ScreenFixedAlignPlaneEntity();
-            // pl.initialize(-1.0,-1.0,0.2,0.2,[this.m_vsmModule.getShadowMap()]);
-            // this.m_rscene.addEntity(pl, 2);
         }
     }
-    private useMaps(material: LambertLightMaterial, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
+    private useMaps(material: LambertLightMaterial, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false, parallaxMapEnabled: boolean = false): void {
         
         material.setMaterialPipeline( this.m_materialCtx.pipeline );
 
-        material.diffuseMap =           this.getImageTexByUrl("static/assets/disp/"+ns+"_COLOR.png");
+        if(material.diffuseMap == null)material.diffuseMap =           this.getImageTexByUrl("static/assets/disp/"+ns+"_COLOR.png");
         material.specularMap =          this.getImageTexByUrl("static/assets/disp/"+ns+"_SPEC.png");
         if(normalMapEnabled) {
             material.normalMap =        this.getImageTexByUrl("static/assets/disp/"+ns+"_NRM.png");
@@ -191,6 +189,9 @@ export class DemoNormalMap {
         }
         if(displacementMap) {
             material.displacementMap =  this.getImageTexByUrl("static/assets/disp/"+ns+"_DISP.png");
+        }
+        if(parallaxMapEnabled) {
+            material.parallaxMap =  this.getImageTexByUrl("static/assets/disp/"+ns+"_DISP.png");
         }
         if(shadowReceiveEnabled) {
             material.shadowMap =        this.m_materialCtx.vsmModule.getShadowMap();
@@ -229,6 +230,12 @@ export class DemoNormalMap {
     private m_time: number = 0.0;
     run(): void {
 
+        if(this.m_target != null) {
+            this.m_rotV.x += 0.2;
+            this.m_rotV.y += 0.1;
+            this.m_target.setRotation3(this.m_rotV);
+            this.m_target.update();
+        }
         this.m_time += 0.01;
         //this.m_material.setDisplacementParams(this.m_dispHeight * (1.0 + Math.cos(this.m_time)), 0.0);
 
@@ -246,4 +253,4 @@ export class DemoNormalMap {
         // this.m_rscene.runEnd();
     }
 }
-export default DemoNormalMap;
+export default DemoLambertLight;

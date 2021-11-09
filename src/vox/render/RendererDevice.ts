@@ -16,6 +16,7 @@ class RendererDevice {
     private static s_Android_Flag: number = 0;
     private static s_IOS_Flag: number = 0;
     private static s_IPad_Flag: number = 0;
+    private static s_winExternalVideoCardFlag: number = 0;
     /**
      * zh-CN, en-US, ect....
      */
@@ -74,7 +75,32 @@ class RendererDevice {
             RendererDevice.s_language = navigator.language + "";
         }
     }
-    
+    /**
+     * 返回当前是不是window操作系统 PC端
+     */
+    static IsWindowsPCOS(): boolean {
+        return !(RendererDevice.IsSafariWeb() || RendererDevice.IsMobileWeb());
+    }
+    /**
+     * 得到windows系统环境下当前浏览器是否使用独立显卡。集显 integrated video card, 独显 external video card
+     * get whether the gpu is external video card in window os
+     * @returns get whether the gpu is external video card in window os
+     */
+    static IsWinExternalVideoCard(): boolean {
+
+        if(RendererDevice.s_winExternalVideoCardFlag > 0) {
+            return RendererDevice.s_winExternalVideoCardFlag == 2;
+        }
+        let flag: boolean = RendererDevice.IsSafariWeb() || RendererDevice.IsMobileWeb();
+        if(!flag) {
+            flag = RendererDevice.GPU_RENDERER.indexOf("Intel(R)") < 0;
+        }
+        RendererDevice.s_winExternalVideoCardFlag = flag ? 2 : 1;
+        /**
+         * webgl_renderer:  ANGLE (Intel, Intel(R) UHD Graphics 630 Direct3D11 vs_5_0 ps_5_0, D3D11-25.20.100.6617)
+         */
+        return RendererDevice.s_winExternalVideoCardFlag == 2;
+    }
     static TestSafariWeb(): boolean {
         //return /Safari/.test(navigator.userAgent) && !/Chrome/.test(navigator.userAgent);
         return /Safari/.test(navigator.userAgent) && /Mac OS/.test(navigator.userAgent);
