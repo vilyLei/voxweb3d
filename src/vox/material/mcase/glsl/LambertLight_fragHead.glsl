@@ -37,7 +37,7 @@ mat3 getBTNMat3(in vec2 texUV, in vec3 pos, in vec3 nv)
 //const vec4 occParam = vec4(1.0,10.0,2.0,0.1);
 vec2 parallaxOccRayMarchDepth(sampler2D texSampler, vec2 puvs, vec3 viewDir,vec4 occParam)
 {
-    float depthValue = 1.0 - texture(texSampler, puvs).r;
+    float depthValue = 1.0 - VOX_Texture2D(texSampler, puvs).r;
     float numLayers = mix(occParam.x, occParam.y, max(dot(vec3(0.0, 0.0, 1.0), viewDir),0.0));
     float layerHeight = occParam.z / numLayers;
     vec2 tuv = (viewDir.xy * occParam.w) / numLayers;  
@@ -45,12 +45,12 @@ vec2 parallaxOccRayMarchDepth(sampler2D texSampler, vec2 puvs, vec3 viewDir,vec4
     while(ph < depthValue)
     {
         puvs -= tuv;
-        depthValue = 1.0 - texture(texSampler, puvs).r;
+        depthValue = 1.0 - VOX_Texture2D(texSampler, puvs).r;
         ph += layerHeight;
     }
     tuv += puvs;
     depthValue -= ph;
-    ph = 1.0 - texture(texSampler, tuv).r - ph + layerHeight;
+    ph = 1.0 - VOX_Texture2D(texSampler, tuv).r - ph + layerHeight;
     float weight = depthValue / (depthValue - ph);
     return tuv * weight + puvs * (1.0 - weight);
 }
