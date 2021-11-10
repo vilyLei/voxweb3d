@@ -86,8 +86,15 @@ export class DemoBase {
             this.update();
         }
     }
-    private mouseDown(evt: any): void {
+    private m_motionFlag: boolean = false;
+    private m_motionSpeed: number = 5;
 
+    private mouseDown(evt: any): void {
+        this.m_motionFlag = true;
+        this.m_ea.dTime = 0.5;
+        this.m_ea.maxVelocity = 2.0;
+        this.m_ea.attenuation = 0.95;
+        this.m_ea.setEnergy(0.1 + Math.random() * 0.5);
     }
 
     private m_timeoutId: any = -1;
@@ -95,17 +102,20 @@ export class DemoBase {
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
-        this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
+        this.m_timeoutId = setTimeout(this.update.bind(this), 17);// 20 fps
         this.m_statusDisp.render();
+
+        
+        if(this.m_motionFlag) {
+            if(this.m_ea.isMoving()) {
+                this.m_ea.run();
+                this.m_pos.x += this.m_ea.velocity * this.m_motionSpeed;
+                this.m_target.setPosition(this.m_pos);
+                this.m_target.update();
+            }
+        }
     }
     run(): void {
-        if(this.m_ea.isMoving()) {
-            this.m_ea.run();
-            console.log("bbb");
-            this.m_pos.x += this.m_ea.velocity* 100.0;
-            this.m_target.setPosition(this.m_pos);
-            this.m_target.update();
-        }
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
         this.m_statusDisp.update(false);

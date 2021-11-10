@@ -43,7 +43,7 @@ Feature:
        Rendering scene space management system support.
 
     12.PC鼠标和移动端(包括Pad)touch事件支持。
-       pc web clinet mouse event and mobile(pad) touch event support.
+       pc web client mouse event and mobile(pad) touch event support.
 
 Engine code under the path: "src\vox\"
 

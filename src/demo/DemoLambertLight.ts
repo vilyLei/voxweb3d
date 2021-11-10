@@ -79,7 +79,7 @@ export class DemoLambertLight {
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
             //console.log("isWinExternalVideoCard: ",isWinExternalVideoCard);
-            this.m_materialCtx.initialize( this.m_rscene );
+            this.m_materialCtx.initialize( this.m_rscene, 4, 2 );
             //this.m_materialCtx.initialize( this.m_rscene, 1,0);
             if(!RendererDevice.IsWinExternalVideoCard() && RendererDevice.IsWindowsPCOS()) {
                 alert("当前浏览器3D渲染没有使用独立显卡");
