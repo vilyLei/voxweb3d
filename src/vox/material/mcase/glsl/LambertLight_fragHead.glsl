@@ -42,12 +42,26 @@ vec2 parallaxOccRayMarchDepth(sampler2D texSampler, vec2 puvs, vec3 viewDir,vec4
     float layerHeight = occParam.z / numLayers;
     vec2 tuv = (viewDir.xy * occParam.w) / numLayers;  
     float ph = 0.0;
-    while(ph < depthValue)
-    {
-        puvs -= tuv;
-        depthValue = 1.0 - VOX_Texture2D(texSampler, puvs).r;
-        ph += layerHeight;
-    }
+    #ifndef VOX_GLSL2
+        while(ph < depthValue)
+        {
+            puvs -= tuv;
+            depthValue = 1.0 - VOX_Texture2D(texSampler, puvs).r;
+            ph += layerHeight;
+        }
+    #else
+        for(int i = 0; i < 10; i++) {
+            if(ph < depthValue)
+            {
+                puvs -= tuv;
+                depthValue = 1.0 - VOX_Texture2D(texSampler, puvs).r;
+                ph += layerHeight;
+            }
+            else {
+                break;
+            }
+        }
+    #endif
     tuv += puvs;
     depthValue -= ph;
     ph = 1.0 - VOX_Texture2D(texSampler, tuv).r - ph + layerHeight;

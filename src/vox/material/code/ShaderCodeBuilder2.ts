@@ -422,6 +422,7 @@ precision mediump float;
 
         }
         else {
+            code += "\n#define VOX_GLSL2 1";
             code += "\n#define VOX_IN varying";
             if (this.mapLodEnabled) {
                 code += "\n#define VOX_TextureCubeLod textureCubeLodEXT";
@@ -585,6 +586,7 @@ precision mediump float;
 
         }
         else {
+            code += "\n#define VOX_GLSL2 1";
             code += "\n#define VOX_IN varying";
             if (this.mapLodEnabled) {
                 code += "\n#define VOX_TextureCubeLod textureCubeLodEXT";
