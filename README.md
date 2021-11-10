@@ -1,6 +1,6 @@
 # voxweb3d
-TypeScript WebGL 3d engine system(High Performence for very many times drawcalls(10000+) and 10 millions+ trangles mesh rendering. Runtime environment support WebGL1 and WebGL2, WebAssembly and Multi-Threads Tasks System, env: pc/web/mobile) , and code style like c++/java.
-about the "VOX": I(Vily) love(O) my family(X: it is the first letter from their names).
+TypeScript WebGL 3D Engine Wystem(High Performence for very many times drawcalls(10000+) and 10 millions+ trangles mesh rendering. Runtime environment support WebGL1 and WebGL2, WebAssembly and Multi-Threads Tasks System, env: pc/web/mobile). The code style like c++/java.
+About the "VOX": I(Vily) love(O) my family(X: it is the first letter from their names).
 
 Feature:
 
