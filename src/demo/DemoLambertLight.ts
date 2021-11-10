@@ -59,7 +59,7 @@ export class DemoLambertLight {
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
             let rparam: RendererParam = new RendererParam();
-            rparam.maxWebGLVersion = 1;
+            //rparam.maxWebGLVersion = 1;
             rparam.setCamProject(45, 10.0, 8000.0);
             rparam.setAttriStencil(true);
             rparam.setAttriAntialias(true);
