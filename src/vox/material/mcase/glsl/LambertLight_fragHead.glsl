@@ -66,7 +66,8 @@ vec2 parallaxOccRayMarchDepth(sampler2D texSampler, vec2 puvs, vec3 viewDir,vec4
     depthValue -= ph;
     ph = 1.0 - VOX_Texture2D(texSampler, tuv).r - ph + layerHeight;
     float weight = depthValue / (depthValue - ph);
-    return tuv * weight + puvs * (1.0 - weight);
+    //return puvs * (1.0 - weight) + tuv * weight;
+    return mix(puvs, tuv, weight);
 }
 #endif
 #ifdef VOX_LIGHTS_TOTAL

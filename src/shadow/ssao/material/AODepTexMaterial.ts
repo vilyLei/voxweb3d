@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
-import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
+import ShaderCodeBuilder from "../../../vox/material/code/ShaderCodeBuilder";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import SSAONoiseData from "./SSAONoiseData";
@@ -19,7 +19,7 @@ class AODepTexShaderBuffer extends ShaderCodeBuffer
         super();
     }
     private static s_instance:AODepTexShaderBuffer = new AODepTexShaderBuffer();
-    private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
+    private m_codeBuilder:ShaderCodeBuilder = new ShaderCodeBuilder();
     private m_uniqueName:string = "";
     samplesTotal: number = 8;
     initialize(texEnabled:boolean):void
@@ -32,7 +32,7 @@ class AODepTexShaderBuffer extends ShaderCodeBuffer
     private buildThisCode():void
     {
 
-        let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
+        let coder:ShaderCodeBuilder = this.m_codeBuilder;
         coder.reset();
 
         coder.addVertLayout("vec3","a_vs");

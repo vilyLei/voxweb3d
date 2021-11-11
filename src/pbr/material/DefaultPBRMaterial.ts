@@ -16,7 +16,7 @@ import { DefaultPBRShaderCode } from "./DefaultPBRShaderCode";
 import IPBRMaterial from "./IPBRMaterial";
 import Color4 from "../../vox/material/Color4";
 
-import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
+import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
 import UniformConst from "../../vox/material/UniformConst";
 import PBRShaderDecorator from "./PBRShaderDecorator";
 class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
@@ -64,10 +64,10 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
         this.m_codeBuilder.addFragMainCode(DefaultPBRShaderCode.frag_body);
         return this.m_codeBuilder.buildFragCode();
     }
-    private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
+    private m_codeBuilder:ShaderCodeBuilder = new ShaderCodeBuilder();
     private buildThisCode():void
     {
-        let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
+        let coder:ShaderCodeBuilder = this.m_codeBuilder;
         coder.reset();
         coder.normalMapEanbled = this.normalMapEnabled;
         coder.mapLodEnabled = true;

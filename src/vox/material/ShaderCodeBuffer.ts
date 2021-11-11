@@ -6,13 +6,15 @@
 /***************************************************************************/
 
 import IRenderTexture from '../../vox/render/IRenderTexture';
-import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
+import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
 import ShaderCompileInfo from "../../vox/material/code/ShaderCompileInfo";
+import IAbstractShader from "./IAbstractShader";
 import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
+
 class ShaderCodeBuffer {
     private static ___s_csBuf: ShaderCodeBuffer = null;
-    protected static s_coder: ShaderCodeBuilder2 = new ShaderCodeBuilder2();
-    protected m_coder: ShaderCodeBuilder2 = null;
+    protected static s_coder: ShaderCodeBuilder = new ShaderCodeBuilder();
+    protected m_coder: ShaderCodeBuilder = null;
 
     private m_texList: IRenderTexture[] = null;
     private m_texEnabled: boolean = true;
@@ -34,7 +36,10 @@ class ShaderCodeBuffer {
     clear(): void {
         this.m_coder = null;
     }
-    getShaderCodeBuilder(): ShaderCodeBuilder2 {
+    getShaderCodeObject(): IAbstractShader {
+        return null;
+    }
+    getShaderCodeBuilder(): ShaderCodeBuilder {
         return ShaderCodeBuffer.s_coder;
     }
     static GetPreCompileInfo(): ShaderCompileInfo {

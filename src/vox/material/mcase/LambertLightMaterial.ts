@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import RendererDevice from "../../../vox/render/RendererDevice";
+import IAbstractShader from "../../../vox/material/IAbstractShader";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/../material/MaterialBase";
@@ -51,6 +51,7 @@ class LambertLightShaderBuffer extends ShaderCodeBuffer {
     lightEnabled: boolean = true;
     fogEnabled: boolean = true;
     specularMode: SpecularMode = SpecularMode.Default;
+
     localParamsTotal: number = 2;
     texturesTotal: number = 0;
     parallaxParamIndex: number = 1;
@@ -106,7 +107,6 @@ class LambertLightShaderBuffer extends ShaderCodeBuffer {
             if (this.parallaxMapEnabled && this.lightEnabled) {
                 coder.addTextureSample2D("VOX_PARALLAX_MAP");
                 coder.addDefine("VOX_PARALLAX_PARAMS_INDEX", "" + this.parallaxParamIndex);
-                console.log("this.parallaxParamIndex: ",this.parallaxParamIndex);
             }
 
             if (this.displacementMapEnabled) {
@@ -132,11 +132,14 @@ class LambertLightShaderBuffer extends ShaderCodeBuffer {
         }
 
         if (this.pipeline != null) {
-            this.pipeline.addShaderCode(LambertLightShaderCode);
+            this.pipeline.addShaderCode( this.getShaderCodeObject() );
             this.pipeline.build(coder, this.m_pipeTypes);
         }
     }
-
+    
+    getShaderCodeObject(): IAbstractShader {
+        return LambertLightShaderCode;
+    }
     getFragShaderCode(): string {
         this.buildThisCode();
         return this.m_coder.buildFragCode();
@@ -159,7 +162,6 @@ class LambertLightShaderBuffer extends ShaderCodeBuffer {
 
 export default class LambertLightMaterial extends MaterialBase {
 
-    //private m_displacementArray: Float32Array = null;
     private m_parallaxArray: Float32Array = null;
     private m_lightParamsArray: Float32Array = null;
     private m_vtxParams: Float32Array = null;

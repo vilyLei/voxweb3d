@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 
-import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
+import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
 import UniformConst from "../../vox/material/UniformConst";
 import TextureProxy from '../../vox/texture/TextureProxy';
 
@@ -21,7 +21,7 @@ export default class PBRShaderDecorator {
     private m_pipeTypes: MaterialPipeType[] = null;
     private m_keysString: string = "";
     
-    codeBuilder: ShaderCodeBuilder2 = null;
+    codeBuilder: ShaderCodeBuilder = null;
     pipeline: MaterialPipeline = null;
     ///**
     envMap: TextureProxy = null;
@@ -142,7 +142,7 @@ export default class PBRShaderDecorator {
     }
     private buildThisCode(): void {
 
-        let coder: ShaderCodeBuilder2 = this.codeBuilder;
+        let coder: ShaderCodeBuilder = this.codeBuilder;
 
         coder.normalMapEanbled = this.normalMapEnabled;
         coder.mapLodEnabled = true;

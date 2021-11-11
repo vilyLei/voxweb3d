@@ -15,7 +15,7 @@ import GLSLConverter from "./GLSLConverter";
 import ShaderCompileInfo from "./ShaderCompileInfo";
 import {ShaderCode, MathShaderCode} from "./ShaderCode";
 
-export default class ShaderCodeBuilder2 implements IShaderCodeBuilder {
+export default class ShaderCodeBuilder implements IShaderCodeBuilder {
 
     private m_versionDeclare: string =
         `#version 300 es
@@ -23,14 +23,6 @@ export default class ShaderCodeBuilder2 implements IShaderCodeBuilder {
     private m_preciousCode: string =
         `
 precision mediump float;
-`;
-    private m_mainBeginCode: string =
-        `
-\nvoid main(){
-`;
-    private m_mainEndCode: string =
-        `
-}
 `;
 
     private m_fragExt: string[] = [];
@@ -412,6 +404,7 @@ precision mediump float;
         }
         
         if (RendererDevice.IsWebGL2()) {
+            code += "\n#define VOX_GLSL3 1";
             code += "\n#define VOX_IN in";
             if (this.mapLodEnabled) {
                 code += "\n#define VOX_TextureCubeLod textureLod";
@@ -576,6 +569,7 @@ precision mediump float;
             code += "\n" + this.m_preciousCode;
         }
         if (RendererDevice.IsWebGL2()) {
+            code += "\n#define VOX_GLSL3 1";
             code += "\n#define VOX_IN in";
             if (this.mapLodEnabled) {
                 code += "\n#define VOX_TextureCubeLod textureLod";

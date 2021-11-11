@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
-import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
+import ShaderCodeBuilder from "../../../vox/material/code/ShaderCodeBuilder";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import Vector3D from "../../../vox/math/Vector3D";
@@ -19,7 +19,7 @@ class DepthShaderBuffer extends ShaderCodeBuffer
         super();
     }
     private static s_instance:DepthShaderBuffer = new DepthShaderBuffer();
-    private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
+    private m_codeBuilder:ShaderCodeBuilder = new ShaderCodeBuilder();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -31,7 +31,7 @@ class DepthShaderBuffer extends ShaderCodeBuffer
     private buildThisCode():void
     {
 
-        let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
+        let coder:ShaderCodeBuilder = this.m_codeBuilder;
         coder.reset();
         coder.addVertLayout("vec3","a_vs");
         

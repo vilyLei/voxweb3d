@@ -8,7 +8,7 @@
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
-import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
+import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
 
 class UfloatFromBytesRenderShaderBuffer extends ShaderCodeBuffer
 {
@@ -17,7 +17,7 @@ class UfloatFromBytesRenderShaderBuffer extends ShaderCodeBuffer
         super();
     }
     private static s_instance:UfloatFromBytesRenderShaderBuffer = null;
-    private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
+    private m_codeBuilder:ShaderCodeBuilder = new ShaderCodeBuilder();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -28,7 +28,7 @@ class UfloatFromBytesRenderShaderBuffer extends ShaderCodeBuffer
     
     private buildThisCode():void
     {
-        let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
+        let coder:ShaderCodeBuilder = this.m_codeBuilder;
         coder.reset();
         //coder.vertMatrixInverseEnabled = true;
         coder.mapLodEnabled = true;

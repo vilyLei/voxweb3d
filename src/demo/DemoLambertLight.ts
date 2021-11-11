@@ -145,15 +145,16 @@ export class DemoLambertLight {
             //plane.setXYZ(0.0, -200.0, 0.0);
             this.m_rscene.addEntity(plane);
             //*/
-            /*
+            ///*
             let sph = new Sphere3DEntity();
+            material.setUVScale(2.0, 2.0);
             sph.setMaterial(material);
             sph.initialize(100,20,20)
             sph.setXYZ(0, -100, 0);
             this.m_rscene.addEntity(sph);
             this.m_target = sph;
             //*/
-            ///*
+            /*
             let box = new Box3DEntity();
             box.setMaterial(material);
             box.initializeCube(110)
@@ -225,12 +226,9 @@ export class DemoLambertLight {
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
-        this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
+        this.m_timeoutId = setTimeout(this.update.bind(this), 17);// 20 fps
         this.m_statusDisp.render();
-    }
-    private m_time: number = 0.0;
-    run(): void {
-
+        
         if(this.m_target != null) {
             this.m_rotV.x += 0.2;
             this.m_rotV.y += 0.1;
@@ -239,6 +237,10 @@ export class DemoLambertLight {
         }
         this.m_time += 0.01;
         //this.m_material.setDisplacementParams(this.m_dispHeight * (1.0 + Math.cos(this.m_time)), 0.0);
+    }
+    private m_time: number = 0.0;
+    run(): void {
+
 
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);

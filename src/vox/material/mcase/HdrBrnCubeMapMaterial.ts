@@ -8,14 +8,14 @@
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
-import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
+import ShaderCodeBuilder from "../../../vox/material/code/ShaderCodeBuilder";
 
 class HdrBrnCubeMapMapShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
     private static s_instance: HdrBrnCubeMapMapShaderBuffer = null;
-    private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
+    private m_codeBuilder:ShaderCodeBuilder = new ShaderCodeBuilder();
     private m_uniqueName: string = "";
     initialize(texEnabled: boolean): void {
         //console.log("HdrBrnCubeMapMapShaderBuffer::initialize()...");
@@ -25,7 +25,7 @@ class HdrBrnCubeMapMapShaderBuffer extends ShaderCodeBuffer {
     
     private buildThisCode():void
     {
-        let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
+        let coder:ShaderCodeBuilder = this.m_codeBuilder;
         coder.reset();
         coder.vertMatrixInverseEnabled = true;
         coder.mapLodEnabled = true;

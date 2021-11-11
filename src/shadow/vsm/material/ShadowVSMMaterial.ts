@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
-import ShaderCodeBuilder2 from "../../../vox/material/code/ShaderCodeBuilder2";
+import ShaderCodeBuilder from "../../../vox/material/code/ShaderCodeBuilder";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeType";
@@ -34,7 +34,7 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
     }
     private buildThisCode(): void {
 
-        let coder: ShaderCodeBuilder2 = this.m_coder;
+        let coder: ShaderCodeBuilder = this.m_coder;
         coder.normalEanbled = true;
         
         coder.addTextureSample2D("VOX_VSM_SHADOW_MAP");

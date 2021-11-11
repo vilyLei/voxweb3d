@@ -8,7 +8,7 @@
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
-import ShaderCodeBuilder2 from "../../vox/material/code/ShaderCodeBuilder2";
+import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
 
 export class DracoMeshShaderBuffer extends ShaderCodeBuffer
 {
@@ -17,7 +17,7 @@ export class DracoMeshShaderBuffer extends ShaderCodeBuffer
         super();
     }
     private static s_instance:DracoMeshShaderBuffer = new DracoMeshShaderBuffer();
-    private m_codeBuilder:ShaderCodeBuilder2 = new ShaderCodeBuilder2();
+    private m_codeBuilder:ShaderCodeBuilder = new ShaderCodeBuilder();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -27,7 +27,7 @@ export class DracoMeshShaderBuffer extends ShaderCodeBuffer
     private buildThisCode():void
     {
 
-        let coder:ShaderCodeBuilder2 = this.m_codeBuilder;
+        let coder:ShaderCodeBuilder = this.m_codeBuilder;
         coder.reset();
         coder.derivatives = true;
         
