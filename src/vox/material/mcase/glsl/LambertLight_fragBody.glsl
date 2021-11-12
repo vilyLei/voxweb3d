@@ -8,7 +8,7 @@ vec4 color = u_localParams[0];
 color.xyz += u_localParams[1].xyz;
 
 vec2 texUV = v_uv;
-#ifdef LIGHT_LOCAL_PARAMS_INDEX
+#ifdef VOX_LIGHT_LOCAL_PARAMS_INDEX
     vec4 param;
     vec3 viewDir = normalize(u_cameraPosition.xyz - worldPosition.xyz);
     #ifdef VOX_PARALLAX_MAP        
@@ -28,8 +28,8 @@ vec2 texUV = v_uv;
         #endif
     #endif
 
-    int lightParamIndex = LIGHT_LOCAL_PARAMS_INDEX;
-    param = u_localParams[ LIGHT_LOCAL_PARAMS_INDEX ];
+    int lightParamIndex = VOX_LIGHT_LOCAL_PARAMS_INDEX;
+    param = u_localParams[ VOX_LIGHT_LOCAL_PARAMS_INDEX ];
     
     LambertLight light;
     light.normal = worldNormal.xyz;
@@ -38,7 +38,7 @@ vec2 texUV = v_uv;
     light.specular = param.xyz;
 
     light.specularPower = param.w;
-    light.param = u_localParams[ LIGHT_LOCAL_PARAMS_INDEX + 1 ];
+    light.param = u_localParams[ VOX_LIGHT_LOCAL_PARAMS_INDEX + 1 ];
     vec4 param4;
     #ifdef VOX_SPECULAR_MAP
         param4 = VOX_Texture2D(VOX_SPECULAR_MAP, texUV);
@@ -51,7 +51,7 @@ vec2 texUV = v_uv;
         light.specularPower = max(0.5,light.specularPower);
     #endif
     vec3 destColor = getLambertLightColor(light);
-    param = u_localParams[ LIGHT_LOCAL_PARAMS_INDEX + 2 ];
+    param = u_localParams[ VOX_LIGHT_LOCAL_PARAMS_INDEX + 2 ];
     color.xyz = color.xyz * param.x + param.y * destColor;
 #endif
 

@@ -52,7 +52,7 @@ class LambertLightShaderBuffer extends ShaderCodeBuffer {
     fogEnabled: boolean = true;
     specularMode: SpecularMode = SpecularMode.Default;
 
-    localParamsTotal: number = 2;
+    fragParamsTotal: number = 2;
     texturesTotal: number = 0;
     parallaxParamIndex: number = 1;
     lightParamsIndex: number = 2;
@@ -61,6 +61,7 @@ class LambertLightShaderBuffer extends ShaderCodeBuffer {
         console.log("LambertLightShaderBuffer::initialize()...this.lightEnabled: ", this.lightEnabled);
         texEnabled = this.texturesTotal > 0;
         super.initialize(texEnabled);
+
         this.m_uniqueName = "LambertShd";
         if (texEnabled) this.m_uniqueName += "Tex";
         if (this.normalMapEnabled) this.m_uniqueName += "Nor";
@@ -70,7 +71,7 @@ class LambertLightShaderBuffer extends ShaderCodeBuffer {
         if (this.specularMapEnabled) this.m_uniqueName += "Spec" + this.specularMode;
         if (this.fogEnabled) this.m_uniqueName += "Fog";
         if (this.shadowReceiveEnabled) this.m_uniqueName += "Shadow";
-        this.m_uniqueName += "" + this.localParamsTotal;
+        this.m_uniqueName += "" + this.fragParamsTotal;
 
         if (this.pipeline != null) {
             this.m_pipeTypes = [];
@@ -126,9 +127,9 @@ class LambertLightShaderBuffer extends ShaderCodeBuffer {
             }
         }
         coder.addVertUniform("vec4", "u_vtxParams", 2);
-        coder.addFragUniform("vec4", "u_localParams", this.localParamsTotal);
+        coder.addFragUniform("vec4", "u_localParams", this.fragParamsTotal);
         if (this.lightEnabled) {
-            coder.addDefine("LIGHT_LOCAL_PARAMS_INDEX", "" + this.lightParamsIndex);
+            coder.addDefine("VOX_LIGHT_LOCAL_PARAMS_INDEX", "" + this.lightParamsIndex);
         }
 
         if (this.pipeline != null) {
@@ -165,7 +166,7 @@ export default class LambertLightMaterial extends MaterialBase {
     private m_parallaxArray: Float32Array = null;
     private m_lightParamsArray: Float32Array = null;
     private m_vtxParams: Float32Array = null;
-    private m_fragParamssTotal: number = 1;
+    private m_fragParamsTotal: number = 1;
     private m_parallaxParamIndex: number = 1;
     private m_lightParamsIndex: number = 1;
 
@@ -191,7 +192,7 @@ export default class LambertLightMaterial extends MaterialBase {
 
         if (this.m_fragParams == null) {
 
-            this.m_fragParamssTotal = 2;
+            this.m_fragParamsTotal = 2;
             this.m_vtxParams = new Float32Array([
                 1.0     // u scale
                 ,1.0    // v scale
@@ -202,15 +203,15 @@ export default class LambertLightMaterial extends MaterialBase {
                 ,0.0,0.0    // undefined
             ]);
             if (this.displacementMap != null) {
-                this.m_fragParamssTotal += 1;
+                this.m_fragParamsTotal += 1;
             }
             if (this.parallaxMap != null) {
-                this.m_fragParamssTotal += 1;
+                this.m_fragParamsTotal += 1;
             }
             if (this.lightEnabled) {
-                this.m_fragParamssTotal += 3;
+                this.m_fragParamsTotal += 3;
             }
-            this.m_fragParams = new Float32Array(this.m_fragParamssTotal * 4);
+            this.m_fragParams = new Float32Array(this.m_fragParamsTotal * 4);
             this.m_fragParams.set([1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0]);
             let lightParamsIndex: number = 2;
             
@@ -256,7 +257,7 @@ export default class LambertLightMaterial extends MaterialBase {
         buf.lightEnabled = this.lightEnabled;
         buf.fogEnabled = this.fogEnabled;
 
-        buf.localParamsTotal = this.m_fragParamssTotal;
+        buf.fragParamsTotal = this.m_fragParamsTotal;
 
         let texList: TextureProxy[] = [];
         if (this.diffuseMap != null) texList.push(this.diffuseMap);
