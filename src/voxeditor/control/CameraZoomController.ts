@@ -141,6 +141,7 @@ export default class CameraZoomController {
         this.m_prevb.copyFrom(this.m_vb);
     }
     run(lookAtPos: Vector3D, minDis: number): void {
+
         let lookAtEnabled: boolean = this.m_lookAtCtrlEnabled;
         if (lookAtPos == null) {
             lookAtPos = this.m_lookAt;

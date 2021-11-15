@@ -11,8 +11,10 @@ class UserInteraction {
 
     readonly stageDragCtrl: CameraDragController = new CameraDragController();
     readonly cameraZoomController: CameraZoomController = new CameraZoomController();
+    zoomLookAtPosition: Vector3D = null;
+    zoomMinDistance: number = 30;
     readonly viewRay: CameraViewRay = new CameraViewRay();
-    
+
     constructor() { }
 
     /**
@@ -30,19 +32,20 @@ class UserInteraction {
             this.viewRay.setPlaneParam(new Vector3D(0.0, 1.0, 0.0), 0.0);
 
             rscene.enableMouseEvent(true);
+            this.stageDragCtrl.initialize(rscene.getStage3D(), rscene.getCamera());
             this.cameraZoomController.bindCamera(rscene.getCamera());
             this.cameraZoomController.initialize(rscene.getStage3D());
-            this.stageDragCtrl.initialize(rscene.getStage3D(), rscene.getCamera());
             this.cameraZoomController.setLookAtCtrlEnabled(false);
         }
     }
+
     run(): void {
 
-        if(this.cameraCtrlEnabled) {
+        if (this.cameraCtrlEnabled) {
             this.stageDragCtrl.runWithYAxis();
-            this.cameraZoomController.run(null, 30.0);
+            this.cameraZoomController.run( this.zoomLookAtPosition, this.zoomMinDistance );
         }
     }
 }
 
-export {UserInteraction};
+export { UserInteraction };

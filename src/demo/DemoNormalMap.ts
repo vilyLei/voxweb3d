@@ -10,13 +10,9 @@ import TextureProxy from "../vox/texture/TextureProxy";
 
 import MouseEvent from "../vox/event/MouseEvent";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
-import RendererScene from "../vox/scene/RendererScene";
 import DataMesh from "../vox/mesh/DataMesh";
 import QuadGridMeshGeometry from "../vox/mesh/QuadGridMeshGeometry";
 import Vector3D from "../vox/math/Vector3D";
-
-import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
-import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
 import Color4 from "../vox/material/Color4";
 
@@ -27,15 +23,18 @@ import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEnti
 import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
 import { MaterialContext } from "../materialLab/base/MaterialContext";
 
+import EngineBase from "../vox/engine/EngineBase";
+import ProfileInstance from "../voxprofile/entity/ProfileInstance";
+
 export class DemoNormalMap {
 
     constructor() { }
     
-    private m_rscene: RendererScene = null;
+    private m_engine: EngineBase = null;
+    private m_profileInstance: ProfileInstance = null;
+
     private m_texLoader: ImageTextureLoader = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
-    private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
-    private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
     private m_materialCtx: MaterialContext = new MaterialContext();
 
@@ -49,36 +48,30 @@ export class DemoNormalMap {
 
         console.log("DemoNormalMap::initialize()......");
 
-        if (this.m_rscene == null) {
+        if (this.m_engine == null) {
 
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
-            //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
             let rparam: RendererParam = new RendererParam();
             rparam.setCamProject(45, 10.0, 8000.0);
             rparam.setAttriStencil(true);
             rparam.setAttriAntialias(true);
+            rparam.setAttriAntialias(!RendererDevice.IsMobileWeb());
             rparam.setCamPosition(800.0, 800.0, 800.0);
-            this.m_rscene = new RendererScene();
-            this.m_rscene.initialize(rparam, 3);
-            this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
-
-            this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-
-            this.m_statusDisp.initialize();
-
-            this.m_rscene.enableMouseEvent(true);
-
-            this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
-            this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
-            this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
-            this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
+            //rparam.setCamProject(45, 20.0, 9000.0);
+            
+            this.m_engine = new EngineBase();
+            this.m_engine.initialize(rparam, 6);
+            this.m_profileInstance = new ProfileInstance();
+            this.m_profileInstance.initialize(this.m_engine.rscene.getRenderer());
+            this.m_texLoader = this.m_engine.texLoader;
+            this.m_engine.interaction.zoomLookAtPosition = new Vector3D();
 
             let color: Color4 = new Color4(1.0,1.0,0.0);
             let colorBias: Color4 = new Color4(0.0,0.0,0.0);
 
-            this.m_materialCtx.initialize( this.m_rscene );
+            this.m_materialCtx.initialize( this.m_engine.rscene );
             //this.m_vsmModule = this.m_materialCtx.vsmModule;
             //this.m_materialCtx.pipeline = this.m_materialCtx.pipeline;
             /*
@@ -105,7 +98,7 @@ export class DemoNormalMap {
             sph.setMaterial(material);
             sph.initialize(150.0,100,100);
             sph.setXYZ(0.0, 100.0, 0.0);
-            this.m_rscene.addEntity(sph);
+            this.m_engine.rscene.addEntity(sph);
             let srcEntity: DisplayEntity = sph;
             ///*
             material = new LambertLightMaterial();
@@ -125,7 +118,7 @@ export class DemoNormalMap {
             sph.setMaterial(material);
             //sph.initialize(150.0,100,100);
             sph.setXYZ(300,0.0,300);
-            this.m_rscene.addEntity(sph);
+            this.m_engine.rscene.addEntity(sph);
             //*/
             ///*
             material = new LambertLightMaterial();
@@ -145,7 +138,7 @@ export class DemoNormalMap {
             plane.setMaterial(material);
             plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0);
             plane.setXYZ(0.0, -200.0, 0.0);
-            this.m_rscene.addEntity(plane);
+            this.m_engine.rscene.addEntity(plane);
             //*/
             /*
             let size: number = 400.0;
@@ -212,7 +205,7 @@ export class DemoNormalMap {
         envBox.setMaterial( material );
         envBox.showFrontFace();
         envBox.initializeCube(4000.0);
-        this.m_rscene.addEntity(envBox);
+        this.m_engine.rscene.addEntity(envBox);
     }
     private m_dispHeight: number = 10;
     private m_material: LambertLightMaterial = null;
@@ -231,21 +224,12 @@ export class DemoNormalMap {
     private m_time: number = 0.0;
     run(): void {
 
+        this.m_statusDisp.update( false );
         this.m_time += 0.01;
         //this.m_material.setDisplacementParams(this.m_dispHeight * (1.0 + Math.cos(this.m_time)), 0.0);
-
-        this.m_stageDragSwinger.runWithYAxis();
-        this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
-        this.m_statusDisp.update(false);
-
+        
         this.m_materialCtx.run();
-        this.m_rscene.run(true);
-
-        // this.m_materialCtx.run();
-        // this.m_rscene.update(true);
-        // //this.m_vsmModule.force = true;
-        // this.m_rscene.run(false);
-        // this.m_rscene.runEnd();
+        this.m_engine.run();
     }
 }
 export default DemoNormalMap;
