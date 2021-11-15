@@ -25,7 +25,7 @@ import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
 
 import {SpecularMode, LambertLightMaterial} from "../vox/material/mcase/LambertLightMaterial";
-import { MaterialContext } from "../materialLab/base/MaterialContext";
+import { MaterialContextParam, MaterialContext } from "../materialLab/base/MaterialContext";
 import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 
 export class DemoLambertLight {
@@ -59,7 +59,7 @@ export class DemoLambertLight {
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
             let rparam: RendererParam = new RendererParam();
-            rparam.maxWebGLVersion = 1;
+            //  rparam.maxWebGLVersion = 1;
             rparam.setCamProject(45, 10.0, 8000.0);
             rparam.setAttriStencil(true);
             rparam.setAttriAntialias(true);
@@ -79,10 +79,14 @@ export class DemoLambertLight {
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
+            let mcParam: MaterialContextParam = new MaterialContextParam();
+            mcParam.pointLightsTotal = 0;
+            mcParam.directionLightsTotal = 0;
+            mcParam.spotLightsTotal = 1;
             //console.log("isWinExternalVideoCard: ",isWinExternalVideoCard);
             //this.m_materialCtx.initialize( this.m_rscene, 4, 2 );
             //this.m_materialCtx.initialize( this.m_rscene, 1,0);
-            this.m_materialCtx.initialize( this.m_rscene, 0,1);
+            this.m_materialCtx.initialize( this.m_rscene, mcParam);
             if(!RendererDevice.IsWinExternalVideoCard() && RendererDevice.IsWindowsPCOS()) {
                 alert("当前浏览器3D渲染没有使用独立显卡");
             }
@@ -93,7 +97,8 @@ export class DemoLambertLight {
             let lightsTotal: number = this.m_materialCtx.lightData.getPointLightsTotal();
             let pointList: Vector3D[] = this.m_materialCtx.lightData.getPointList();
             //this.m_materialCtx.lightData.setPointLightAt(0, new Vector3D(0.0, 56.0, 0.0), new Color4(0.0, 1.0, 0.0, 1.0));
-            this.m_materialCtx.lightData.setDirecLightAt(0, new Vector3D(0.0, -1.0, 0.0), new Color4(0.0, 1.0, 0.0, 1.0));
+            //this.m_materialCtx.lightData.setDirecLightAt(0, new Vector3D(0.0, -1.0, 0.0), new Color4(0.0, 1.0, 0.0, 1.0));
+            this.m_materialCtx.lightData.setSpotLightAt(0, new Vector3D(0.0, 56.0, 0.0), new Vector3D(0.0, -1.0, 0.0), 10, new Color4(0.0, 1.0, 0.0, 1.0));
             this.m_materialCtx.lightData.update();
 
             for(let i: number = 0; i < 0; ++i) {
@@ -103,8 +108,6 @@ export class DemoLambertLight {
                 axis.setPosition( posV);
                 this.m_rscene.addEntity(axis);
             }
-            //this.m_vsmModule = this.m_materialCtx.vsmModule;
-            //this.m_materialCtx.pipeline = this.m_materialCtx.pipeline;
             /*
             //*/
             // let axis: Axis3DEntity = new Axis3DEntity();

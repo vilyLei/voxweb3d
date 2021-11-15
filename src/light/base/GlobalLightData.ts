@@ -123,20 +123,37 @@ export default class GlobalLightData implements IMaterialPipe {
             }
         }
     }
-    setSpotLightAt(index: number, direc: Vector3D, color: Color4, angle_degree: number): void {
+    setSpotLightAt(index: number, position: Vector3D, direc: Vector3D, angle_degree: number, color: Color4): void {
 
         if (this.m_spotLightDirecList != null && index >= 0 && index < this.m_spotLightDirecList.length) {
 
-            let i: number = (this.m_direcLightDirecList.length + this.m_pointLightPosList.length + index) * 4;
-            if (direc != null) {
+            let i: number = 0;
+            if (this.m_pointLightPosList != null) i += this.m_pointLightPosList.length;
+            if (this.m_direcLightDirecList != null) i += this.m_direcLightDirecList.length;
+            i *= 4;
+
+            if (position != null && position != null) {
+                this.m_spotLightPosList[index].copyFrom(position);
+                // position
+                let posI: number = i + (index * 2) * 4;
+                if (this.m_lightParams != null) {
+                    this.m_lightParams[posI] = position.x;
+                    this.m_lightParams[posI + 1] = position.y;
+                    this.m_lightParams[posI + 2] = position.z;
+                    //this.m_lightParams[posI + 3] = value;
+                }
+                // direction and angle
+                angle_degree = 90 - MathConst.Clamp(angle_degree, 0.0, 90.0);                
                 let value: number = Math.cos(MathConst.DegreeToRadian(angle_degree));
                 this.m_spotLightDirecList[index].copyFrom(direc);
                 this.m_spotLightDirecList[index].w = value;
+                let direcI: number = i + (index * 2 + 1) * 4;
+                
                 if (this.m_lightParams != null) {
-                    this.m_lightParams[i] = direc.x;
-                    this.m_lightParams[i + 1] = direc.y;
-                    this.m_lightParams[i + 2] = direc.z;
-                    this.m_lightParams[i + 3] = value;
+                    this.m_lightParams[direcI] = direc.x;
+                    this.m_lightParams[direcI + 1] = direc.y;
+                    this.m_lightParams[direcI + 2] = direc.z;
+                    this.m_lightParams[direcI + 3] = value;
                 }
             }
             if (color != null) {
@@ -154,6 +171,7 @@ export default class GlobalLightData implements IMaterialPipe {
         if (this.m_changed) {
             this.m_changed = false;
             let total: number = this.m_lightsTotal;
+            let colorsTotal: number = this.m_lightsTotal;
             let lightParamsTotal: number = total * 4;
             this.m_lightParamsVec4Total = this.m_lightsTotal;
             if(this.m_spotLightDirecList == null) {
@@ -164,7 +182,8 @@ export default class GlobalLightData implements IMaterialPipe {
                 this.m_lightParamsVec4Total += this.m_spotLightDirecList.length;
                 if (this.m_lightParams == null) this.m_lightParams = new Float32Array(lightParamsTotal);
             }
-            if (this.m_lightColors == null) this.m_lightColors = new Float32Array(this.m_lightsTotal * 4);
+            if (this.m_lightColors == null) this.m_lightColors = new Float32Array(colorsTotal * 4);
+            console.log("this.m_lightParamsVec4Total: ",this.m_lightParamsVec4Total);
 
             // point light
             let params: Vector3D[] = this.m_pointLightPosList;
@@ -245,8 +264,8 @@ export default class GlobalLightData implements IMaterialPipe {
             if (this.m_uProbe == null) {
                 this.m_uProbe = new ShaderUniformProbe();
                 this.m_uProbe.bindSlotAt(this.m_uslotIndex);
-                this.m_uProbe.addVec4Data(this.m_lightParams, total);
-                this.m_uProbe.addVec4Data(this.m_lightColors, total);
+                this.m_uProbe.addVec4Data(this.m_lightParams, this.m_lightParamsVec4Total);
+                this.m_uProbe.addVec4Data(this.m_lightColors, colorsTotal);
 
                 this.m_suo = this.m_uniformParam.createGlobalUinform(this.m_uProbe);
                 // console.log("this.m_uProbe.getUid(): ", this.m_uProbe.getUid());
@@ -280,7 +299,7 @@ export default class GlobalLightData implements IMaterialPipe {
                 shaderBuilder.addDefine("VOX_LIGHTS_TOTAL", "0");
             }
 
-            this.m_uniformParam.use(shaderBuilder, this.m_lightsTotal);
+            this.m_uniformParam.use(shaderBuilder, this.m_lightParamsVec4Total, this.m_lightsTotal);
         }
     }
     getPipeTypes(): MaterialPipeType[] {

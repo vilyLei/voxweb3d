@@ -105,14 +105,14 @@ vec3 getLambertLightColor(in LambertLight light) {
     #if VOX_LIGHTS_TOTAL > 0
         vec3 destColor = vec3(0.0);
         // point light process
+        vec2 param2 = light.param.zw;
         #if VOX_POINT_LIGHTS_TOTAL > 0
-            vec2 param = light.param.zw;
             for(int i = 0; i < VOX_POINT_LIGHTS_TOTAL; ++i)
             {
                 // calculate per-light radiance
                 light.direc = (u_lightPositions[i].xyz - worldPosition.xyz);
                 float distance = length(light.direc);
-                float attenuation = 1.0 / (1.0 + param.x * distance + param.y * distance * distance);
+                float attenuation = 1.0 / (1.0 + param2.x * distance + param2.y * distance * distance);
                 light.color = u_lightColors[i].xyz;
                 light.direc = normalize(light.direc);
                 destColor += calcLambertLight( light ) * attenuation;
@@ -129,20 +129,20 @@ vec3 getLambertLightColor(in LambertLight light) {
         #endif
         // spot light process
         #if VOX_SPOT_LIGHTS_TOTAL > 0
-            // VOX_LIGHTS_TOTAL + VOX_SPOT_LIGHTS_TOTAL
-            int k = (VOX_POINT_LIGHTS_TOTAL + VOX_DIRECTION_LIGHTS_TOTAL);
-            for(int i = (VOX_POINT_LIGHTS_TOTAL + VOX_DIRECTION_LIGHTS_TOTAL); i < VOX_LIGHTS_TOTAL; ++i) 
+            int k = VOX_POINT_LIGHTS_TOTAL + VOX_DIRECTION_LIGHTS_TOTAL;
+            for(int i = k; i < VOX_LIGHTS_TOTAL; ++i) 
             {
+                light.color = u_lightColors[i].xyz;
+
                 light.direc = (u_lightPositions[k].xyz - worldPosition.xyz);
                 float distance = length( light.direc );
-                float attenuation = 1.0 / (1.0 + param.x * distance + param.y * distance * distance);
-                light.color = u_lightColors[i].xyz;
-                vec4 param4 = u_lightPositions[k+1];
+                float attenuation = 1.0 / (1.0 + param2.x * distance + param2.y * distance * distance);
+                vec4 param4 = u_lightPositions[1];
                 param4.xyz = normalize( param4.xyz );
                 light.direc = normalize( light.direc );
-                // calculate cone space attenuation
-                attenuation *= 1.0 - ((1.0 - max(dot(param4.xyz, -light.direc), 0.0)) / param4.w);
-                destColor += calcLambertLight( light ) * attenuation * (1.);
+                
+                attenuation *= 1.0 - (clamp((1.0 - max(dot(-param4.xyz, light.direc), 0.0)), 0.0, param4.w) / param4.w);
+                destColor += calcLambertLight( light ) * attenuation;
                 k += 2;
             }
         #endif
