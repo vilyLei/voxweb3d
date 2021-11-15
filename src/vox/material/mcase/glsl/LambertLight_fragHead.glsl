@@ -74,6 +74,7 @@ vec2 parallaxOccRayMarchDepth(sampler2D texSampler, vec2 puvs, vec3 viewDir,vec4
 #if VOX_LIGHTS_TOTAL > 0
 
 struct LambertLight {
+    // surface normal
 	vec3 normal;
     // diffuse color
 	vec3 diffuse;
@@ -81,7 +82,7 @@ struct LambertLight {
 	vec3 specular;
     // view direction
     vec3 viewDirec;
-    // light direction
+    // light direction per pixel
     vec3 direc;
     // light color
     vec3 color;
@@ -109,20 +110,40 @@ vec3 getLambertLightColor(in LambertLight light) {
             for(int i = 0; i < VOX_POINT_LIGHTS_TOTAL; ++i)
             {
                 // calculate per-light radiance
-                light.direc = normalize(u_lightPositions[i].xyz - worldPosition.xyz);
+                light.direc = (u_lightPositions[i].xyz - worldPosition.xyz);
                 float distance = length(light.direc);
                 float attenuation = 1.0 / (1.0 + param.x * distance + param.y * distance * distance);
                 light.color = u_lightColors[i].xyz;
+                light.direc = normalize(light.direc);
                 destColor += calcLambertLight( light ) * attenuation;
             }
         #endif
-        // parallel light process
+        // direction light process
         #if VOX_DIRECTION_LIGHTS_TOTAL > 0
-            for(int i = VOX_POINT_LIGHTS_TOTAL; i < VOX_LIGHTS_TOTAL; ++i) 
+            for(int i = VOX_POINT_LIGHTS_TOTAL; i < (VOX_POINT_LIGHTS_TOTAL + VOX_DIRECTION_LIGHTS_TOTAL); ++i) 
             {
                 light.direc = normalize(u_lightPositions[i].xyz);
                 light.color = u_lightColors[i].xyz;
                 destColor += calcLambertLight( light );
+            }
+        #endif
+        // spot light process
+        #if VOX_SPOT_LIGHTS_TOTAL > 0
+            // VOX_LIGHTS_TOTAL + VOX_SPOT_LIGHTS_TOTAL
+            int k = (VOX_POINT_LIGHTS_TOTAL + VOX_DIRECTION_LIGHTS_TOTAL);
+            for(int i = (VOX_POINT_LIGHTS_TOTAL + VOX_DIRECTION_LIGHTS_TOTAL); i < VOX_LIGHTS_TOTAL; ++i) 
+            {
+                light.direc = (u_lightPositions[k].xyz - worldPosition.xyz);
+                float distance = length( light.direc );
+                float attenuation = 1.0 / (1.0 + param.x * distance + param.y * distance * distance);
+                light.color = u_lightColors[i].xyz;
+                vec4 param4 = u_lightPositions[k+1];
+                param4.xyz = normalize( param4.xyz );
+                light.direc = normalize( light.direc );
+                // calculate cone space attenuation
+                attenuation *= 1.0 - ((1.0 - max(dot(param4.xyz, -light.direc), 0.0)) / param4.w);
+                destColor += calcLambertLight( light ) * attenuation * (1.);
+                k += 2;
             }
         #endif
         return destColor;

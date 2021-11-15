@@ -84,7 +84,7 @@ export default class LambertLightMaterial extends MaterialBase {
                 this.m_lightParamsArray.set(
                     [
                         0.5, 0.5, 0.5, 32.0,    // specular color rgb, pow value
-                        0.7, 0.3,                // light color value factor, specular value factor
+                        0.7, 0.3,                // diffuse light color value factor, specular value factor
                         0.001, 0.0001,          // attenuation factor 1, attenuation factor 2
                         0.3, 0.7,                // base color value factor, light value factor
                         0.0, 0.0                // undefined, undefined
@@ -147,8 +147,8 @@ export default class LambertLightMaterial extends MaterialBase {
     }
     /**
      * 光照之前的颜色和光照之后颜色混合因子设置
-     * @param lightFactor 光照之前的颜色混合因子, default value is 0.7
-     * @param specularFactor 光照之后颜色混合因子, default value is 0.3
+     * @param lightFactor diffuse light 颜色混合因子, default value is 0.7
+     * @param specularFactor specular light 颜色混合因子, default value is 0.3
      */
     setLightBlendFactor(baseColorFactor: number, lightFactor: number): void {
         if (this.m_lightParamsArray != null) {

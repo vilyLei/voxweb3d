@@ -59,7 +59,7 @@ export class DemoLambertLight {
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
             let rparam: RendererParam = new RendererParam();
-            //rparam.maxWebGLVersion = 1;
+            rparam.maxWebGLVersion = 1;
             rparam.setCamProject(45, 10.0, 8000.0);
             rparam.setAttriStencil(true);
             rparam.setAttriAntialias(true);
@@ -80,8 +80,8 @@ export class DemoLambertLight {
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
             //console.log("isWinExternalVideoCard: ",isWinExternalVideoCard);
-            this.m_materialCtx.initialize( this.m_rscene, 4, 2 );
-            //this.m_materialCtx.initialize( this.m_rscene, 1,0);
+            //this.m_materialCtx.initialize( this.m_rscene, 4, 2 );
+            this.m_materialCtx.initialize( this.m_rscene, 1,0);
             if(!RendererDevice.IsWinExternalVideoCard() && RendererDevice.IsWindowsPCOS()) {
                 alert("当前浏览器3D渲染没有使用独立显卡");
             }
@@ -91,10 +91,10 @@ export class DemoLambertLight {
             let axis: Axis3DEntity;
             let lightsTotal: number = this.m_materialCtx.lightData.getPointLightsTotal();
             let pointList: Vector3D[] = this.m_materialCtx.lightData.getPointList();
-            // this.m_materialCtx.lightData.setPointLightAt(0, new Vector3D(0,56,0), new Color4(1.0,2.0,1.0,1.0));
-            // this.m_materialCtx.lightData.update();
+            this.m_materialCtx.lightData.setPointLightAt(0, new Vector3D(0,56,0), new Color4(1.0,0.0,0.0,1.0));
+            this.m_materialCtx.lightData.update();
 
-            for(let i: number = 0; i < lightsTotal; ++i) {
+            for(let i: number = 0; i < 0; ++i) {
                 axis = new Axis3DEntity();
                 axis.initializeCross(50.0);
                 posV.copyFrom( pointList[i] );
@@ -112,32 +112,34 @@ export class DemoLambertLight {
             let material: LambertLightMaterial;
 
             material = new LambertLightMaterial();
-            /*
+            ///*
             material.setMaterialPipeline( this.m_materialCtx.pipeline );            
-            material.diffuseMap =           this.getImageTexByUrl("static/assets/color_02.jpg");
-            material.normalMap =        this.getImageTexByUrl("static/assets/brickwall_normal.jpg");
+            material.diffuseMap =           this.getImageTexByUrl("static/assets/noise.jpg");
+            //material.diffuseMap =           this.getImageTexByUrl("static/assets/color_02.jpg");
+            //material.normalMap =        this.getImageTexByUrl("static/assets/brickwall_normal.jpg");
             //material.specularMap =          this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
-            material.specularMap =          this.getImageTexByUrl("static/assets/brickwall_big_spec.jpg");
-            material.aoMap =          this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
+            //material.specularMap =          this.getImageTexByUrl("static/assets/brickwall_big_spec.jpg");
+            //material.aoMap =          this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
             //material.aoMap =          this.getImageTexByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
             //material.parallaxMap =          this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
             //material.parallaxMap =          this.getImageTexByUrl("static/assets/moss_01.jpg");
-            material.parallaxMap =          this.getImageTexByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
+            //material.parallaxMap =          this.getImageTexByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
             //*/
             //material.diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
-            this.useMaps(material,"lava_03",true,false,false,true,true);
+            //this.useMaps(material,"lava_03",true,false,false,true,true);
             //*/
             material.fogEnabled = false;
             material.lightEnabled = true;
             material.specularMode = SpecularMode.SpecularMapColor;
             material.initializeLocalData();
-            material.setSpecularColor(new Color4(1.0,2.0,1.0,1.0));
-            material.setLightIntensityFactors(0.001,0.0005);
+            //material.setSpecularColor(new Color4(0.5,0.5,0.5,1.0));
+            material.setLightIntensityFactors(0.001,0.0001);
             material.setSpecularIntensity(64.0);
-            material.setBlendFactor(0.2,0.7);
+            material.setLightBlendFactor(0.7,0.3);
+            material.setBlendFactor(0.1,0.8);
             material.setParallaxParams(1, 5, 2.0, 0.01);
             //material.setColor(new Color4(0.5,1.7,0.5,1.0))
-            /*
+            ///*
             let plane: Plane3DEntity = new Plane3DEntity();
             plane.showDoubleFace();
             plane.setMaterial(material);
@@ -145,7 +147,7 @@ export class DemoLambertLight {
             //plane.setXYZ(0.0, -200.0, 0.0);
             this.m_rscene.addEntity(plane);
             //*/
-            ///*
+            /*
             let sph = new Sphere3DEntity();
             material.setUVScale(2.0, 2.0);
             sph.setMaterial(material);
