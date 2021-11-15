@@ -62,7 +62,10 @@ export default class GlobalLightData implements IMaterialPipe {
     getUid(): number {
         return this.m_uid;
     }
-    getPointList(): Vector3D[] {
+    getSpotLightPosList(): Vector3D[] {
+        return this.m_spotLightPosList;
+    }
+    getPointLightPosList(): Vector3D[] {
         return this.m_pointLightPosList;
     }
     getPointLightsTotal(): number {
@@ -159,6 +162,7 @@ export default class GlobalLightData implements IMaterialPipe {
             if (color != null) {
                 this.m_spotLightColorList[index].copyFrom(color);
                 if (this.m_lightColors != null) {
+                    i += index * 4;
                     this.m_lightColors[i] = color.r;
                     this.m_lightColors[i + 1] = color.g;
                     this.m_lightColors[i + 2] = color.b;
@@ -266,7 +270,6 @@ export default class GlobalLightData implements IMaterialPipe {
                 this.m_uProbe.bindSlotAt(this.m_uslotIndex);
                 this.m_uProbe.addVec4Data(this.m_lightParams, this.m_lightParamsVec4Total);
                 this.m_uProbe.addVec4Data(this.m_lightColors, colorsTotal);
-
                 this.m_suo = this.m_uniformParam.createGlobalUinform(this.m_uProbe);
                 // console.log("this.m_uProbe.getUid(): ", this.m_uProbe.getUid());
             }
@@ -279,7 +282,11 @@ export default class GlobalLightData implements IMaterialPipe {
             this.m_uProbeVer = this.m_uProbe.rst;
         }
     }
-
+    showInfo(): void {
+        
+        console.log("showInfo(), this.m_lightParams: ",this.m_lightParams);
+        console.log("showInfo(), this.m_lightColors: ",this.m_lightColors);
+    }
     useShaderPipe(shaderBuilder: IShaderCodeBuilder, pipeType: MaterialPipeType): void {
 
         if (this.m_uProbe != null) {

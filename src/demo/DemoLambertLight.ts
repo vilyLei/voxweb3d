@@ -80,9 +80,10 @@ export class DemoLambertLight {
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
             let mcParam: MaterialContextParam = new MaterialContextParam();
-            mcParam.pointLightsTotal = 0;
-            mcParam.directionLightsTotal = 0;
-            mcParam.spotLightsTotal = 1;
+            mcParam.pointLightsTotal = 2;
+            mcParam.directionLightsTotal = 1;
+            mcParam.spotLightsTotal = 2;
+            mcParam.vsmEnabled = false;
             //console.log("isWinExternalVideoCard: ",isWinExternalVideoCard);
             //this.m_materialCtx.initialize( this.m_rscene, 4, 2 );
             //this.m_materialCtx.initialize( this.m_rscene, 1,0);
@@ -95,19 +96,22 @@ export class DemoLambertLight {
             let colorBias: Color4 = new Color4(0.0,0.0,0.0);
             let axis: Axis3DEntity;
             let lightsTotal: number = this.m_materialCtx.lightData.getPointLightsTotal();
-            let pointList: Vector3D[] = this.m_materialCtx.lightData.getPointList();
-            //this.m_materialCtx.lightData.setPointLightAt(0, new Vector3D(0.0, 56.0, 0.0), new Color4(0.0, 1.0, 0.0, 1.0));
-            //this.m_materialCtx.lightData.setDirecLightAt(0, new Vector3D(0.0, -1.0, 0.0), new Color4(0.0, 1.0, 0.0, 1.0));
-            this.m_materialCtx.lightData.setSpotLightAt(0, new Vector3D(0.0, 56.0, 0.0), new Vector3D(0.0, -1.0, 0.0), 10, new Color4(0.0, 1.0, 0.0, 1.0));
+            //let pointList: Vector3D[] = this.m_materialCtx.lightData.getPointLightPosList();
+            let pointList: Vector3D[] = this.m_materialCtx.lightData.getSpotLightPosList();
+            this.m_materialCtx.lightData.setPointLightAt(0, new Vector3D(-200.0, 56.0, 0.0), new Color4(0.0, 1.0, 0.0, 1.0));
+            this.m_materialCtx.lightData.setPointLightAt(1, new Vector3D(-200.0, 56.0, -200.0), new Color4(0.0, 1.0, 1.0, 1.0));
+            this.m_materialCtx.lightData.setDirecLightAt(0, new Vector3D(0.0, -1.0, 0.0), new Color4(1.0, 0.0, 0.0, 1.0));
+            this.m_materialCtx.lightData.setSpotLightAt(0, new Vector3D(0.0, 56.0, 0.0), new Vector3D(0.0, -1.0, 0.7), 10, new Color4(0.0, 1.0, 0.0, 1.0));
+            this.m_materialCtx.lightData.setSpotLightAt(1, new Vector3D(100.0, 56.0, 0.0), new Vector3D(0.0, -1.0, -0.7), 10, new Color4(1.0, 0.0, 1.0, 1.0));
             this.m_materialCtx.lightData.update();
-
-            for(let i: number = 0; i < 0; ++i) {
+            for(let i: number = 0; i < pointList.length; ++i) {
                 axis = new Axis3DEntity();
                 axis.initializeCross(50.0);
                 posV.copyFrom( pointList[i] );
                 axis.setPosition( posV);
                 this.m_rscene.addEntity(axis);
             }
+            //this.m_materialCtx.lightData.showInfo();
             /*
             //*/
             // let axis: Axis3DEntity = new Axis3DEntity();
@@ -133,6 +137,7 @@ export class DemoLambertLight {
             //material.diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
             //this.useMaps(material,"lava_03",true,false,false,true,true);
             //*/
+            material.shadowMap = null;
             material.fogEnabled = false;
             material.lightEnabled = true;
             material.specularMode = SpecularMode.SpecularMapColor;
@@ -253,7 +258,7 @@ export class DemoLambertLight {
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
         this.m_statusDisp.update(false);
 
-        this.m_materialCtx.run();
+        //this.m_materialCtx.run();
         this.m_rscene.run(true);
 
         // this.m_materialCtx.run();

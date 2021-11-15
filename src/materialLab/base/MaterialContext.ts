@@ -85,7 +85,9 @@ class MaterialContext {
             selfT.pipeline = new MaterialPipeline();
             this.pipeline.addPipe(this.lightData);
             this.pipeline.addPipe(this.envData);
-            this.pipeline.addPipe(this.vsmModule.getVSMData());
+            if(this.vsmModule != null) {
+                this.pipeline.addPipe(this.vsmModule.getVSMData());
+            }
         }
     }
     run(): void {
