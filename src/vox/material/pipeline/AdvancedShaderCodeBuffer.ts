@@ -100,7 +100,6 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
             }
 
             if (this.displacementMapEnabled) {
-                coder.addVertUniform("vec4", "u_displacement");
                 coder.addTextureSample2D("VOX_DISPLACEMENT_MAP", true, false, true);
             }
             if (this.aoMapEnabled) {

@@ -159,7 +159,7 @@ export class DemoLambertLight {
             box.setMaterial(material);
             box.initializeCube(110)
             box.setXYZ(0, -100, 0);
-            this.m_rscene.addEntity(box);            
+            this.m_rscene.addEntity(box);
             this.m_target = box;
             //*/
             /*
