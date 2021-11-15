@@ -83,7 +83,7 @@ export class DemoLambertLight {
             mcParam.pointLightsTotal = 2;
             mcParam.directionLightsTotal = 1;
             mcParam.spotLightsTotal = 2;
-            mcParam.vsmEnabled = false;
+            mcParam.vsmEnabled = true;
             //console.log("isWinExternalVideoCard: ",isWinExternalVideoCard);
             //this.m_materialCtx.initialize( this.m_rscene, 4, 2 );
             //this.m_materialCtx.initialize( this.m_rscene, 1,0);
@@ -122,8 +122,8 @@ export class DemoLambertLight {
 
             material = new LambertLightMaterial();
             ///*
-            material.setMaterialPipeline( this.m_materialCtx.pipeline );            
-            material.diffuseMap =           this.getImageTexByUrl("static/assets/noise.jpg");
+            //material.setMaterialPipeline( this.m_materialCtx.pipeline );            
+            //material.diffuseMap =           this.getImageTexByUrl("static/assets/noise.jpg");
             //material.diffuseMap =           this.getImageTexByUrl("static/assets/color_02.jpg");
             //material.normalMap =        this.getImageTexByUrl("static/assets/brickwall_normal.jpg");
             //material.specularMap =          this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
@@ -135,18 +135,18 @@ export class DemoLambertLight {
             //material.parallaxMap =          this.getImageTexByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
             //*/
             //material.diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
-            //this.useMaps(material,"lava_03",true,false,false,true,true);
+            this.useMaps(material,"lava_03",true,false,false,true,true);
             //*/
-            material.shadowMap = null;
+            //material.shadowMap = null;
             material.fogEnabled = false;
             material.lightEnabled = true;
-            material.specularMode = SpecularMode.SpecularMapColor;
+            material.specularMode = SpecularMode.FragColor;
             material.initializeLocalData();
             //material.setSpecularColor(new Color4(0.5,0.5,0.5,1.0));
-            material.setLightIntensityFactors(0.001,0.0001);
+            material.setLightIntensityFactors(0.0001,0.0005);
             material.setSpecularIntensity(64.0);
             material.setLightBlendFactor(0.7,0.3);
-            material.setBlendFactor(0.1,0.8);
+            material.setBlendFactor(0.01,0.8);
             material.setParallaxParams(1, 5, 2.0, 0.01);
             //material.setColor(new Color4(0.5,1.7,0.5,1.0))
             ///*

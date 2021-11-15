@@ -16,12 +16,14 @@ import TextureProxy from "../../texture/TextureProxy";
 
 export default class LambertLightMaterial extends MaterialBase {
 
-    private static s_shaderCodeBuffer: AdvancedShaderCodeBuffer = new AdvancedShaderCodeBuffer();
+    private static s_shaderCodeBuffer: AdvancedShaderCodeBuffer = null;
 
     private m_parallaxArray: Float32Array = null;
     private m_lightParamsArray: Float32Array = null;
-    private m_vtxParams: Float32Array = null;
-    private m_fragParamsTotal: number = 1;
+    private m_vertLocalParams: Float32Array = null;
+    private m_fragLocalParams: Float32Array = null;
+    private m_vertLocalParamsTotal: number = 2;
+    private m_fragLocalParamsTotal: number = 1;
     private m_parallaxParamIndex: number = 1;
     private m_lightParamsIndex: number = 1;
 
@@ -42,97 +44,94 @@ export default class LambertLightMaterial extends MaterialBase {
 
     constructor() {
         super();
+        if(LambertLightMaterial.s_shaderCodeBuffer == null) {
+            LambertLightMaterial.s_shaderCodeBuffer = new AdvancedShaderCodeBuffer();
+        }
     }
 
     initializeLocalData(): void {
 
-        if (this.m_fragParams == null) {
+        if (this.m_fragLocalParams == null) {
 
-            this.m_fragParamsTotal = 2;
-            this.m_vtxParams = new Float32Array([
-                1.0     // u scale
-                ,1.0    // v scale
-                ,0.0    // undefined
-                ,0.0    // undefined
+            this.m_fragLocalParamsTotal = 2;
+            this.m_vertLocalParams = new Float32Array([
+                1.0             // u scale
+                , 1.0           // v scale
+                , 0.0           // undefined
+                , 0.0           // undefined
 
-                ,10.0,0.0   // displacement scale, bias
-                ,0.0,0.0    // undefined
+                , 10.0, 0.0     // displacement scale, bias
+                , 0.0, 0.0      // undefined
             ]);
             if (this.displacementMap != null) {
-                this.m_fragParamsTotal += 1;
+                this.m_fragLocalParamsTotal += 1;
             }
             if (this.parallaxMap != null) {
-                this.m_fragParamsTotal += 1;
+                this.m_fragLocalParamsTotal += 1;
             }
             if (this.lightEnabled) {
-                this.m_fragParamsTotal += 3;
+                this.m_fragLocalParamsTotal += 3;
             }
-            this.m_fragParams = new Float32Array(this.m_fragParamsTotal * 4);
-            this.m_fragParams.set([1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0]);
+            this.m_fragLocalParams = new Float32Array(this.m_fragLocalParamsTotal * 4);
+            this.m_fragLocalParams.set([1.0, 1.0, 1.0, 1.0, 0.0, 0.0, 0.0, 0.0]);
             let lightParamsIndex: number = 2;
-            
+
             if (this.parallaxMap != null) {
-                
-                this.m_parallaxArray = this.m_fragParams.subarray(lightParamsIndex * 4, (lightParamsIndex + 1) * 4);
+
+                this.m_parallaxArray = this.m_fragLocalParams.subarray(lightParamsIndex * 4, (lightParamsIndex + 1) * 4);
                 this.m_parallaxArray.set([1.0, 10.0, 2.0, 0.1]);
                 this.m_parallaxParamIndex = lightParamsIndex;
                 lightParamsIndex += 1;
             }
             if (this.lightEnabled) {
+
                 this.m_lightParamsIndex = lightParamsIndex;
-                this.m_lightParamsArray = this.m_fragParams.subarray(lightParamsIndex * 4);
+                this.m_lightParamsArray = this.m_fragLocalParams.subarray(lightParamsIndex * 4);
                 this.m_lightParamsArray.set(
                     [
-                        0.5, 0.5, 0.5, 32.0,    // specular color rgb, pow value
-                        0.7, 0.3,                // diffuse light color value factor, specular value factor
-                        0.001, 0.0001,          // attenuation factor 1, attenuation factor 2
-                        0.3, 0.7,                // base color value factor, light value factor
-                        0.0, 0.0                // undefined, undefined
+                        0.5, 0.5, 0.5, 32.0,        // specular color rgb, pow value
+                        0.7, 0.3,                   // diffuse light color value factor, specular value factor
+                        0.001, 0.0001,              // attenuation factor 1, attenuation factor 2
+                        0.3, 0.7,                   // base color value factor, light value factor
+                        0.0, 0.0                    // undefined, undefined
                     ]);
             }
         }
     }
     protected buildBuf(): void {
-        if (this.m_fragParams == null) {
+        if (this.m_fragLocalParams == null) {
             this.initializeLocalData();
         }
-        //let buf: LambertLightShaderBuffer = LambertLightShaderBuffer.GetInstance();
+        
         let buf: AdvancedShaderCodeBuffer = LambertLightMaterial.s_shaderCodeBuffer;
 
         buf.colorEnabled = this.colorEnabled;
-        buf.diffuseMapEnabled = this.diffuseMap != null;
-        buf.normalMapEnabled = this.normalMap != null;
-        buf.parallaxMapEnabled = this.parallaxMap != null;
-        buf.displacementMapEnabled = this.displacementMap != null;
-        buf.aoMapEnabled = this.aoMap != null;
-        buf.specularMapEnabled = this.specularMap != null;
-        buf.shadowReceiveEnabled = this.shadowMap != null;
-        buf.specularMode = this.specularMode;
+        
         buf.parallaxParamIndex = this.m_parallaxParamIndex;
         buf.lightParamsIndex = this.m_lightParamsIndex;
 
         buf.lightEnabled = this.lightEnabled;
         buf.fogEnabled = this.fogEnabled;
+        buf.shadowReceiveEnabled = this.shadowMap != null;
 
-        buf.fragLocalParamsTotal = this.m_fragParamsTotal;
+        buf.fragLocalParamsTotal = this.m_fragLocalParamsTotal;
 
-        let texList: TextureProxy[] = [];
-        if (this.diffuseMap != null) texList.push(this.diffuseMap);
-        if (this.normalMap != null && this.lightEnabled) texList.push(this.normalMap);
-        if (this.parallaxMap != null && this.lightEnabled) texList.push(this.parallaxMap);
-        if (this.displacementMap != null) texList.push(this.displacementMap);
-        if (this.aoMap != null) texList.push(this.aoMap);
-        if (this.specularMap != null && this.lightEnabled) texList.push(this.specularMap);
-        if (this.shadowMap != null) texList.push(this.shadowMap);
+        
+        if (this.diffuseMap != null) buf.addDiffuseMap( this.diffuseMap );
+        if (this.normalMap != null) buf.addNormalMap( this.normalMap );
+        if (this.parallaxMap != null) buf.addParallaxMap( this.parallaxMap );
+        if (this.displacementMap != null) buf.addDisplacementMap( this.displacementMap );
+        if (this.aoMap != null) buf.addAOMap( this.aoMap );
+        if (this.specularMap != null) buf.addSpecularMap( this.specularMap );
+        if (this.shadowMap != null) buf.addShadowMap( this.shadowMap );
+        let texList: TextureProxy[] = buf.getIRenderTextureList() as TextureProxy[];
         super.setTextureList(texList);
-        buf.texturesTotal = texList.length;
     }
     getCodeBuf(): ShaderCodeBuffer {
         //  return LambertLightShaderBuffer.GetInstance();
         return LambertLightMaterial.s_shaderCodeBuffer;
     }
 
-    private m_fragParams: Float32Array = null;
     setSpecularColor(color: Color4): void {
         if (this.m_lightParamsArray != null) {
             this.m_lightParamsArray[0] = color.r;
@@ -179,9 +178,9 @@ export default class LambertLightMaterial extends MaterialBase {
         }
     }
     setUVScale(uScale: number, vScale: number): void {
-        if (this.m_vtxParams != null) {
-            this.m_vtxParams[0] = uScale;
-            this.m_vtxParams[1] = vScale;
+        if (this.m_vertLocalParams != null) {
+            this.m_vertLocalParams[0] = uScale;
+            this.m_vertLocalParams[1] = vScale;
         }
     }
     /**
@@ -190,9 +189,9 @@ export default class LambertLightMaterial extends MaterialBase {
      * @param bias 偏移量
      */
     setDisplacementParams(scale: number, bias: number): void {
-        if (this.m_vtxParams != null) {
-            this.m_vtxParams[4] = scale;
-            this.m_vtxParams[5] = bias;
+        if (this.m_vertLocalParams != null) {
+            this.m_vertLocalParams[4] = scale;
+            this.m_vertLocalParams[5] = bias;
         }
     }
     /**
@@ -212,33 +211,33 @@ export default class LambertLightMaterial extends MaterialBase {
     }
     setColor(factor: Color4, bias: Color4 = null): void {
         if (factor != null) {
-            this.m_fragParams[0] = factor.r;
-            this.m_fragParams[1] = factor.g;
-            this.m_fragParams[2] = factor.b;
-            this.m_fragParams[3] = factor.a;
+            this.m_fragLocalParams[0] = factor.r;
+            this.m_fragLocalParams[1] = factor.g;
+            this.m_fragLocalParams[2] = factor.b;
+            this.m_fragLocalParams[3] = factor.a;
         }
         if (bias != null) {
-            this.m_fragParams[4] = bias.r;
-            this.m_fragParams[5] = bias.g;
-            this.m_fragParams[6] = bias.b;
-            this.m_fragParams[7] = bias.a;
+            this.m_fragLocalParams[4] = bias.r;
+            this.m_fragLocalParams[5] = bias.g;
+            this.m_fragLocalParams[6] = bias.b;
+            this.m_fragLocalParams[7] = bias.a;
         }
     }
     setColorAlpha(a: number): void {
-        this.m_fragParams[3] = a;
+        this.m_fragLocalParams[3] = a;
     }
 
     createSelfUniformData(): ShaderUniformData {
 
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_fragLocalParams","u_vertLocalParams"];
-        oum.dataList = [this.m_fragParams, this.m_vtxParams];
-        
+        oum.uniformNameList = ["u_fragLocalParams", "u_vertLocalParams"];
+        oum.dataList = [this.m_fragLocalParams, this.m_vertLocalParams];
+
         return oum;
     }
     destroy(): void {
         super.destroy();
-        this.m_fragParams = null;
+        this.m_fragLocalParams = null;
     }
 
 }

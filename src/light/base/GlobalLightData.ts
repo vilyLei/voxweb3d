@@ -187,7 +187,6 @@ export default class GlobalLightData implements IMaterialPipe {
                 if (this.m_lightParams == null) this.m_lightParams = new Float32Array(lightParamsTotal);
             }
             if (this.m_lightColors == null) this.m_lightColors = new Float32Array(colorsTotal * 4);
-            console.log("this.m_lightParamsVec4Total: ",this.m_lightParamsVec4Total);
 
             // point light
             let params: Vector3D[] = this.m_pointLightPosList;

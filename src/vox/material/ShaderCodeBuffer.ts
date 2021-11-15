@@ -16,26 +16,32 @@ class ShaderCodeBuffer {
     protected static s_coder: ShaderCodeBuilder = new ShaderCodeBuilder();
     protected m_coder: ShaderCodeBuilder = null;
 
-    private m_texList: IRenderTexture[] = null;
-    private m_texEnabled: boolean = true;
+    protected m_texList: IRenderTexture[] = null;
+    protected m_texEnabled: boolean = true;
 
     pipeline: MaterialPipeline = null;
     vtxColorEnabled: boolean = false;
     premultiplyAlpha: boolean = false;
     
-    shadowReceiveEnabled: boolean = true;
-    lightEnabled: boolean = true;
-    fogEnabled: boolean = true;
+    shadowReceiveEnabled: boolean = false;
+    lightEnabled: boolean = false;
+    fogEnabled: boolean = false;
     /**
      * 是否自适应转换shader版本
      */
     adaptationShaderVersion: boolean = true;
     constructor() {
-        
     }
+
     reset(): void {
+
         this.m_coder = ShaderCodeBuffer.s_coder;
         this.m_coder.reset();
+        this.m_texList = null;
+        
+        this.shadowReceiveEnabled = false;
+        this.lightEnabled = false;
+        this.fogEnabled = false;
     }
     clear(): void {
         this.m_coder = null;

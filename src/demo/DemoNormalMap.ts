@@ -95,6 +95,7 @@ export class DemoNormalMap {
             color.normalizeRandom(0.5);
             colorBias.randomRGB();
             material.setColor( color, colorBias );
+            material.setUVScale(8.0,8.0);
            
             material.setSpecularIntensity(128.0);
             material.setBlendFactor(0.3,0.7);
@@ -114,6 +115,7 @@ export class DemoNormalMap {
             color.normalizeRandom(1.1);
             colorBias.normalizeRandom(0.5);
             material.setColor( color, colorBias );
+            material.setUVScale(4.0,4.0);
             material.setDisplacementParams(10.0, -10.0);
             material.setSpecularColor(new Color4(1.0,1.0,1.0,1.0));
             material.setSpecularIntensity(32);
@@ -173,7 +175,7 @@ export class DemoNormalMap {
             this.update();
             
             // let pl = new ScreenFixedAlignPlaneEntity();
-            // pl.initialize(-1.0,-1.0,0.2,0.2,[this.m_vsmModule.getShadowMap()]);
+            // pl.initialize(-1.0,-1.0,0.2,0.2,[this.m_materialCtx.vsmModule.getShadowMap()]);
             // this.m_rscene.addEntity(pl, 2);
         }
     }
