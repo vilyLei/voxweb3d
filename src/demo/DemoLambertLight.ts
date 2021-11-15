@@ -81,7 +81,8 @@ export class DemoLambertLight {
 
             //console.log("isWinExternalVideoCard: ",isWinExternalVideoCard);
             //this.m_materialCtx.initialize( this.m_rscene, 4, 2 );
-            this.m_materialCtx.initialize( this.m_rscene, 1,0);
+            //this.m_materialCtx.initialize( this.m_rscene, 1,0);
+            this.m_materialCtx.initialize( this.m_rscene, 0,1);
             if(!RendererDevice.IsWinExternalVideoCard() && RendererDevice.IsWindowsPCOS()) {
                 alert("当前浏览器3D渲染没有使用独立显卡");
             }
@@ -91,7 +92,8 @@ export class DemoLambertLight {
             let axis: Axis3DEntity;
             let lightsTotal: number = this.m_materialCtx.lightData.getPointLightsTotal();
             let pointList: Vector3D[] = this.m_materialCtx.lightData.getPointList();
-            this.m_materialCtx.lightData.setPointLightAt(0, new Vector3D(0,56,0), new Color4(1.0,0.0,0.0,1.0));
+            //this.m_materialCtx.lightData.setPointLightAt(0, new Vector3D(0.0, 56.0, 0.0), new Color4(0.0, 1.0, 0.0, 1.0));
+            this.m_materialCtx.lightData.setDirecLightAt(0, new Vector3D(0.0, -1.0, 0.0), new Color4(0.0, 1.0, 0.0, 1.0));
             this.m_materialCtx.lightData.update();
 
             for(let i: number = 0; i < 0; ++i) {

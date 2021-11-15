@@ -104,7 +104,7 @@ export default class GlobalLightData implements IMaterialPipe {
 
         if (this.m_direcLightDirecList != null && index >= 0 && index < this.m_direcLightDirecList.length) {
 
-            let i: number = (this.m_pointLightPosList.length + index) * 4;
+            let i: number = this.m_pointLightPosList != null ? (this.m_pointLightPosList.length + index) * 4 : index * 4;
             if (direc != null) {
                 this.m_direcLightDirecList[index].copyFrom(direc);
                 if (this.m_lightParams != null) {
@@ -150,6 +150,7 @@ export default class GlobalLightData implements IMaterialPipe {
         }
     }
     buildData(): void {
+
         if (this.m_changed) {
             this.m_changed = false;
             let total: number = this.m_lightsTotal;
@@ -168,9 +169,10 @@ export default class GlobalLightData implements IMaterialPipe {
             // point light
             let params: Vector3D[] = this.m_pointLightPosList;
             let colorList: Color4[] = this.m_pointLightColorList;
-            let lightsTotal: number = params.length;
+            let lightsTotal: number;
             let j: number = 0;
             if (params != null) {
+                lightsTotal = params.length;
                 for (let i: number = 0; i < lightsTotal; ++i) {
 
                     let pos: Vector3D = params[i];
@@ -191,7 +193,7 @@ export default class GlobalLightData implements IMaterialPipe {
             if (params != null) {
                 colorList = this.m_direcLightColorList;
                 lightsTotal = params.length;
-                j = this.m_pointLightPosList.length;
+                j = this.m_pointLightPosList != null ? this.m_pointLightPosList.length : 0;
                 for (let i: number = 0; i < lightsTotal; ++i) {
 
                     let param: Vector3D = params[i];
@@ -213,7 +215,10 @@ export default class GlobalLightData implements IMaterialPipe {
             if (params != null) {
                 colorList = this.m_spotLightColorList;
                 lightsTotal = params.length;
-                j = this.m_direcLightDirecList.length + this.m_pointLightPosList.length;
+                j = 0;
+                if(this.m_pointLightPosList != null) j += this.m_pointLightPosList.length;
+                if(this.m_direcLightDirecList != null) j += this.m_direcLightDirecList.length;
+
                 for (let i: number = 0; i < lightsTotal; ++i) {
 
                     let param: Vector3D = this.m_spotLightPosList[i];

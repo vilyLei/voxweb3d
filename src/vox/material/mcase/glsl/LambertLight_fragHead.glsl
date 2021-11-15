@@ -122,7 +122,7 @@ vec3 getLambertLightColor(in LambertLight light) {
         #if VOX_DIRECTION_LIGHTS_TOTAL > 0
             for(int i = VOX_POINT_LIGHTS_TOTAL; i < (VOX_POINT_LIGHTS_TOTAL + VOX_DIRECTION_LIGHTS_TOTAL); ++i) 
             {
-                light.direc = normalize(u_lightPositions[i].xyz);
+                light.direc = normalize(-u_lightPositions[i].xyz);
                 light.color = u_lightColors[i].xyz;
                 destColor += calcLambertLight( light );
             }
