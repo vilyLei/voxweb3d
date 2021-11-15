@@ -5,163 +5,18 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IAbstractShader from "../../../vox/material/IAbstractShader";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/../material/MaterialBase";
-import UniformConst from "../UniformConst";
 
-import { MaterialPipeType } from "../pipeline/MaterialPipeType";
+import { SpecularMode } from "../pipeline/SpecularMode";
+import { AdvancedShaderCodeBuffer } from "../pipeline/AdvancedShaderCodeBuffer";
 import Color4 from "../Color4";
 import TextureProxy from "../../texture/TextureProxy";
-import { LambertLightShaderCode } from "./glsl/LambertLightShaderCode";
-enum SpecularMode {
-    /**
-     * 使用设置的纯色 rgb 作为镜面光的颜色系数
-     */
-    Default = 1,
-    /**
-     * 使用 之前计算出来的 片段 color rgb 作为镜面光的颜色系数
-     */
-    FragColor = 2,
-    /**
-     * 使用 SpecularMap color rgb 作为镜面光的颜色系数
-     */
-    SpecularMapColor = 3
-}
-class LambertLightShaderBuffer extends ShaderCodeBuffer {
-    constructor() {
-        super();
-    }
-
-    private static s_instance: LambertLightShaderBuffer = new LambertLightShaderBuffer();
-    private m_uniqueName: string = "";
-    private m_pipeTypes: MaterialPipeType[] = null;
-    private m_keysString: string = "";
-
-    colorEnabled: boolean = true;
-    diffuseMapEnabled: boolean = false;
-    normalMapEnabled: boolean = false;
-    parallaxMapEnabled: boolean = false;
-    displacementMapEnabled: boolean = false;
-    aoMapEnabled: boolean = false;
-    specularMapEnabled: boolean = false;
-
-    shadowReceiveEnabled: boolean = true;
-    lightEnabled: boolean = true;
-    fogEnabled: boolean = true;
-    specularMode: SpecularMode = SpecularMode.Default;
-
-    fragParamsTotal: number = 2;
-    texturesTotal: number = 0;
-    parallaxParamIndex: number = 1;
-    lightParamsIndex: number = 2;
-
-    initialize(texEnabled: boolean): void {
-        console.log("LambertLightShaderBuffer::initialize()...this.lightEnabled: ", this.lightEnabled);
-        texEnabled = this.texturesTotal > 0;
-        super.initialize(texEnabled);
-
-        this.m_uniqueName = "LambertShd";
-        if (texEnabled) this.m_uniqueName += "Tex";
-        if (this.normalMapEnabled) this.m_uniqueName += "Nor";
-        if (this.parallaxMapEnabled) this.m_uniqueName += "Para";
-        if (this.displacementMapEnabled) this.m_uniqueName += "Disp";
-        if (this.aoMapEnabled) this.m_uniqueName += "AO";
-        if (this.specularMapEnabled) this.m_uniqueName += "Spec" + this.specularMode;
-        if (this.fogEnabled) this.m_uniqueName += "Fog";
-        if (this.shadowReceiveEnabled) this.m_uniqueName += "Shadow";
-        this.m_uniqueName += "" + this.fragParamsTotal;
-
-        if (this.pipeline != null) {
-            this.m_pipeTypes = [];
-            if (this.lightEnabled) {
-                this.m_pipeTypes.push(MaterialPipeType.GLOBAL_LIGHT);
-            }
-            if (this.shadowReceiveEnabled) {
-                this.m_pipeTypes.push(MaterialPipeType.VSM_SHADOW);
-            }
-            if (this.fogEnabled) {
-                this.m_pipeTypes.push(MaterialPipeType.FOG_EXP2);
-            }
-
-            this.pipeline.buildSharedUniforms(this.m_pipeTypes);
-            this.pipeline.createKeys(this.m_pipeTypes);
-            this.m_keysString = this.pipeline.getKeysString();
-        }
-    }
-
-    private buildThisCode(): void {
-
-        let coder = this.m_coder;
-        coder.normalEanbled = true;
-        coder.normalMapEanbled = true;
-        coder.vertMatrixInverseEnabled = true;
-
-        if (this.isTexEanbled()) {
-            if (this.diffuseMapEnabled) {
-                coder.addTextureSample2D("VOX_DIFFUSE_MAP");
-            }
-            if (this.normalMapEnabled && this.lightEnabled) {
-                coder.addTextureSample2D("VOX_NORMAL_MAP");
-            }
-            if (this.parallaxMapEnabled && this.lightEnabled) {
-                coder.addTextureSample2D("VOX_PARALLAX_MAP");
-                coder.addDefine("VOX_PARALLAX_PARAMS_INDEX", "" + this.parallaxParamIndex);
-            }
-
-            if (this.displacementMapEnabled) {
-                coder.addVertUniform("vec4", "u_displacement");
-                coder.addTextureSample2D("VOX_DISPLACEMENT_MAP", true, false, true);
-            }
-            if (this.aoMapEnabled) {
-                coder.addTextureSample2D("VOX_AO_MAP");
-            }
-            if (this.specularMapEnabled && this.lightEnabled) {
-
-                coder.addTextureSample2D("VOX_SPECULAR_MAP");
-                coder.addDefine("VOX_SPECULAR_MODE", "" + this.specularMode);
-            }
-            if (this.shadowReceiveEnabled) {
-                coder.addTextureSample2D("VOX_VSM_SHADOW_MAP");
-            }
-        }
-        coder.addVertUniform("vec4", "u_vtxParams", 2);
-        coder.addFragUniform("vec4", "u_localParams", this.fragParamsTotal);
-        if (this.lightEnabled) {
-            coder.addDefine("VOX_LIGHT_LOCAL_PARAMS_INDEX", "" + this.lightParamsIndex);
-        }
-
-        if (this.pipeline != null) {
-            this.pipeline.addShaderCode( this.getShaderCodeObject() );
-            this.pipeline.build(coder, this.m_pipeTypes);
-        }
-    }
-    
-    getShaderCodeObject(): IAbstractShader {
-        return LambertLightShaderCode;
-    }
-    getFragShaderCode(): string {
-        this.buildThisCode();
-        return this.m_coder.buildFragCode();
-    }
-    getVtxShaderCode(): string {
-        return this.m_coder.buildVertCode();
-    }
-    getUniqueShaderName(): string {
-        //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
-        return this.m_uniqueName + this.m_keysString;
-    }
-    toString(): string {
-        return "[LambertLightShaderBuffer()]";
-    }
-
-    static GetInstance(): LambertLightShaderBuffer {
-        return LambertLightShaderBuffer.s_instance;
-    }
-}
 
 export default class LambertLightMaterial extends MaterialBase {
+
+    private static s_shaderCodeBuffer: AdvancedShaderCodeBuffer = new AdvancedShaderCodeBuffer();
 
     private m_parallaxArray: Float32Array = null;
     private m_lightParamsArray: Float32Array = null;
@@ -179,6 +34,7 @@ export default class LambertLightMaterial extends MaterialBase {
     aoMap: TextureProxy = null;
     specularMap: TextureProxy = null;
     shadowMap: TextureProxy = null;
+
     specularMode: SpecularMode = SpecularMode.Default;
 
     lightEnabled: boolean = true;
@@ -240,7 +96,8 @@ export default class LambertLightMaterial extends MaterialBase {
         if (this.m_fragParams == null) {
             this.initializeLocalData();
         }
-        let buf: LambertLightShaderBuffer = LambertLightShaderBuffer.GetInstance();
+        //let buf: LambertLightShaderBuffer = LambertLightShaderBuffer.GetInstance();
+        let buf: AdvancedShaderCodeBuffer = LambertLightMaterial.s_shaderCodeBuffer;
 
         buf.colorEnabled = this.colorEnabled;
         buf.diffuseMapEnabled = this.diffuseMap != null;
@@ -257,7 +114,7 @@ export default class LambertLightMaterial extends MaterialBase {
         buf.lightEnabled = this.lightEnabled;
         buf.fogEnabled = this.fogEnabled;
 
-        buf.fragParamsTotal = this.m_fragParamsTotal;
+        buf.fragLocalParamsTotal = this.m_fragParamsTotal;
 
         let texList: TextureProxy[] = [];
         if (this.diffuseMap != null) texList.push(this.diffuseMap);
@@ -271,7 +128,8 @@ export default class LambertLightMaterial extends MaterialBase {
         buf.texturesTotal = texList.length;
     }
     getCodeBuf(): ShaderCodeBuffer {
-        return LambertLightShaderBuffer.GetInstance();
+        //  return LambertLightShaderBuffer.GetInstance();
+        return LambertLightMaterial.s_shaderCodeBuffer;
     }
 
     private m_fragParams: Float32Array = null;
@@ -373,7 +231,7 @@ export default class LambertLightMaterial extends MaterialBase {
     createSelfUniformData(): ShaderUniformData {
 
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_localParams","u_vtxParams"];
+        oum.uniformNameList = ["u_fragLocalParams","u_vertLocalParams"];
         oum.dataList = [this.m_fragParams, this.m_vtxParams];
         
         return oum;

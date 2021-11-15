@@ -35,11 +35,13 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     fogEnabled: boolean = true;
     specularMode: SpecularMode = SpecularMode.Default;
 
-    localParamsTotal: number = 2;
+    fragLocalParamsTotal: number = 2;
     texturesTotal: number = 0;
     parallaxParamIndex: number = 1;
     lightParamsIndex: number = 2;
-
+    addDiffuseMap(): void {
+        
+    }
     initialize(texEnabled: boolean): void {
 
         console.log("LambertLightShaderBuffer::initialize()...this.lightEnabled: ", this.lightEnabled);
@@ -57,7 +59,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
         if (this.fogEnabled) this.m_uniqueName += "Fog";
         if (this.shadowReceiveEnabled) this.m_uniqueName += "Shadow";
         
-        this.m_uniqueName += "" + this.localParamsTotal;
+        this.m_uniqueName += "" + this.fragLocalParamsTotal;
 
         if (this.pipeline != null) {
             this.pipeTypes = [];
@@ -85,7 +87,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
         coder.vertMatrixInverseEnabled = true;
 
         if (this.isTexEanbled()) {
-
+            // 可以将纹理数据、逻辑构造过程放在 material pipeline 中
             if (this.diffuseMapEnabled) {
                 coder.addTextureSample2D("VOX_DIFFUSE_MAP");
             }
@@ -113,8 +115,8 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
                 coder.addTextureSample2D("VOX_VSM_SHADOW_MAP");
             }
         }
-        coder.addVertUniform("vec4", "u_vtxParams", 2);
-        coder.addFragUniform("vec4", "u_localParams", this.localParamsTotal);
+        coder.addVertUniform("vec4", "u_vertLocalParams", 2);
+        coder.addFragUniform("vec4", "u_fragLocalParams", this.fragLocalParamsTotal);
         if (this.lightEnabled) {
             coder.addDefine("VOX_LIGHT_LOCAL_PARAMS_INDEX", "" + this.lightParamsIndex);
         }

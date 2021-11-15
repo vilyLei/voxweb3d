@@ -22,6 +22,10 @@ class ShaderCodeBuffer {
     pipeline: MaterialPipeline = null;
     vtxColorEnabled: boolean = false;
     premultiplyAlpha: boolean = false;
+    
+    shadowReceiveEnabled: boolean = true;
+    lightEnabled: boolean = true;
+    fogEnabled: boolean = true;
     /**
      * 是否自适应转换shader版本
      */

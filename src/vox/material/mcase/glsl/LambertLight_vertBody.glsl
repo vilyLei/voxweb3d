@@ -1,11 +1,11 @@
 localPosition.xyz = a_vs;
 
 #ifdef VOX_USE_2D_MAP
-    v_uv = a_uvs.xy * u_vtxParams[0].xy;
+    v_uv = a_uvs.xy * u_vertLocalParams[0].xy;
 #endif
 
 #ifdef VOX_DISPLACEMENT_MAP
-    displaceLocalVtx( u_vtxParams[1].xy );
+    displaceLocalVtx( u_vertLocalParams[1].xy );
 #endif
 
 worldPosition = u_objMat * localPosition;
