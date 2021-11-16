@@ -52,7 +52,7 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
 `
         );
         this.m_coder.addVertMainCode(
-            `            
+            `
     worldPosition = u_objMat * vec4(a_vs, 1.0);
     viewPosition = u_viewMat * worldPosition;
     gl_Position =  u_projMat * viewPosition;
@@ -82,6 +82,7 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
 }
 
 export default class ShadowVSMMaterial extends MaterialBase {
+    private m_colorData: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
     constructor() {
         super();
     }
@@ -90,16 +91,10 @@ export default class ShadowVSMMaterial extends MaterialBase {
         let buf: ShadowVSMShaderBuffer = ShadowVSMShaderBuffer.GetInstance();
         buf.shadowReceiveEnabled = true;
         buf.fogEnabled = true;
-        // buf.fogEnabled = this.fogEnabled;
     }
     getCodeBuf(): ShaderCodeBuffer {
-        return ShadowVSMShaderBuffer.GetInstance();;
+        return ShadowVSMShaderBuffer.GetInstance();
     }
-    // getCodeBuf(): ShaderCodeBuffer {
-    //     let buf: ShadowVSMShaderBuffer = ShadowVSMShaderBuffer.GetInstance();
-    //     return buf;
-    // }
-    private m_colorData: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
 
     setRGB3f(r: number, g: number, b: number): void {
         this.m_colorData[0] = r;

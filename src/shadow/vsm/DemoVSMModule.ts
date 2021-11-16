@@ -21,19 +21,15 @@ import CameraStageDragSwinger from "../../voxeditor/control/CameraStageDragSwing
 import CameraZoomController from "../../voxeditor/control/CameraZoomController";
 
 import ShadowVSMMaterial from "./material/ShadowVSMMaterial";
-import ShadowVSMModule from "./base/ShadowVSMModule";
 import DebugFlag from "../../vox/debug/DebugFlag";
 import Cylinder3DEntity from "../../vox/entity/Cylinder3DEntity";
 import Sphere3DEntity from "../../vox/entity/Sphere3DEntity";
-import EnvLightData from "../../light/base/EnvLightData";
 
 import DracoMesh from "../../voxmesh/draco/DracoMesh";
 import DracoMeshBuilder from "../../voxmesh/draco/DracoMeshBuilder";
 import ThreadSystem from "../../thread/ThreadSystem";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
-import DivLog from "../../vox/utils/DivLog";
-import {MaterialPipeline} from "../../vox/material/pipeline/MaterialPipeline";
-import ScreenFixedAlignPlaneEntity from "../../vox/entity/ScreenFixedAlignPlaneEntity";
+import { MaterialContextParam, MaterialContext } from "../../materialLab/base/MaterialContext";
 
 export class DemoVSMModule {
     constructor() { }
@@ -45,12 +41,11 @@ export class DemoVSMModule {
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
-    private m_vsmModule: ShadowVSMModule;
-    private m_envData: EnvLightData;
     private m_dracoMeshLoader: DracoMeshBuilder = new DracoMeshBuilder();
     private m_reflectPlaneY: number = 0.0;
 
-    private m_materialPipeline: MaterialPipeline = null;
+    private m_materialCtx: MaterialContext = new MaterialContext();
+
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
@@ -83,6 +78,13 @@ export class DemoVSMModule {
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
+            let mcParam: MaterialContextParam = new MaterialContextParam();
+            mcParam.pointLightsTotal = 2;
+            mcParam.directionLightsTotal = 1;
+            mcParam.spotLightsTotal = 2;
+            mcParam.vsmEnabled = true;
+            this.m_materialCtx.initialize( this.m_rscene, mcParam);
+
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
             this.m_statusDisp.initialize();
 
@@ -91,27 +93,6 @@ export class DemoVSMModule {
             // let axis: Axis3DEntity = new Axis3DEntity();
             // axis.initialize(300.0);
             // this.m_rscene.addEntity(axis, 1);
-
-            this.m_rscene.setClearRGBColor3f(0.1, 0.2, 0.1);
-            this.m_envData = new EnvLightData();
-            this.m_envData.initialize();
-            this.m_envData.setFogColorRGB3f(0.0, 0.8, 0.1);
-
-            this.m_vsmModule = new ShadowVSMModule(0);
-            this.m_vsmModule.setCameraPosition(new Vector3D(120, 800, 120));
-            this.m_vsmModule.setCameraNear(10.0);
-            this.m_vsmModule.setCameraFar(3000.0);
-            this.m_vsmModule.setMapSize(512.0, 512.0);
-            this.m_vsmModule.setCameraViewSize(4000, 4000);
-            this.m_vsmModule.setShadowRadius(2);
-            this.m_vsmModule.setShadowBias(-0.0005);
-            this.m_vsmModule.initialize(this.m_rscene, [0], 3000);
-            this.m_vsmModule.setShadowIntensity(0.8);
-            this.m_vsmModule.setColorIntensity(0.3);
-
-            this.m_materialPipeline = new MaterialPipeline();
-            this.m_materialPipeline.addPipe( this.m_envData );
-            this.m_materialPipeline.addPipe( this.m_vsmModule.getVSMData() );
 
             this.m_dracoMeshLoader.initialize(2);
             this.m_dracoMeshLoader.setListener(this);
@@ -155,11 +136,11 @@ export class DemoVSMModule {
 
         console.log("dracoParseFinish, modules: ", modules);
 
-        let shadowTex: TextureProxy = this.m_vsmModule.getShadowMap();
-
+        let shadowTex: TextureProxy = this.m_materialCtx.vsmModule.getShadowMap();
+        
         let uvscale: number = Math.random() * 7.0 + 0.6;
         let shadowMaterial: ShadowVSMMaterial = new ShadowVSMMaterial();
-        shadowMaterial.setMaterialPipeline( this.m_materialPipeline );
+        shadowMaterial.setMaterialPipeline( this.m_materialCtx.pipeline );
         shadowMaterial.initializeByCodeBuf(true);
         shadowMaterial.setTextureList([shadowTex, this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
         
@@ -184,7 +165,7 @@ export class DemoVSMModule {
     }
     private useMaterial(entity: DisplayEntity):void {
         let shadowMaterial:ShadowVSMMaterial = new ShadowVSMMaterial();
-        shadowMaterial.setMaterialPipeline( this.m_materialPipeline );
+        shadowMaterial.setMaterialPipeline( this.m_materialCtx.pipeline );
         entity.setMaterial(shadowMaterial);
     }
     private m_sphPos: Vector3D = new Vector3D();
@@ -194,10 +175,10 @@ export class DemoVSMModule {
         this.loadNext();
 
         let frustrum: FrustrumFrame3DEntity = new FrustrumFrame3DEntity();
-        frustrum.initiazlize(this.m_vsmModule.getCamera());
+        frustrum.initiazlize(this.m_materialCtx.vsmModule.getCamera());
         this.m_rscene.addEntity(frustrum, 1);
 
-        let shadowTex: TextureProxy = this.m_vsmModule.getShadowMap();
+        let shadowTex: TextureProxy = this.m_materialCtx.vsmModule.getShadowMap();
         
         let plane: Plane3DEntity = new Plane3DEntity();
         this.useMaterial(plane);
@@ -225,7 +206,6 @@ export class DemoVSMModule {
         cyl.initialize(80.0, 200.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/noise.jpg")]);
         this.m_rscene.addEntity(cyl);
         cyl.setXYZ(-230.0, 100.0, 0.0);
-
         
         let sph: Sphere3DEntity = new Sphere3DEntity();
         this.useMaterial(sph);
@@ -264,7 +244,7 @@ export class DemoVSMModule {
         this.m_sphPos.w += 0.05;
         this.m_sphEntity.setPosition( this.m_sphPos );
         this.m_sphEntity.update();
-        this.m_vsmModule.force = true;
+        this.m_materialCtx.vsmModule.force = true;
     }
     run(): void {
 
@@ -272,12 +252,8 @@ export class DemoVSMModule {
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
 
-        this.m_vsmModule.run();
+        this.m_materialCtx.run();
         this.m_rscene.run(true);
-        // this.m_rscene.update(true);
-        // this.m_vsmModule.run();
-        // this.m_rscene.run(false);
-        // this.m_rscene.runEnd();
     }
 }
 export default DemoVSMModule;
