@@ -310,7 +310,6 @@ export class DemoPBRViewer {
         let uvscale: number;
         let total: number = posList.length;
         total = 2;
-        console.log("total: ",total);
         let rad: number;
         for(let i: number = 0; i < total; ++i) {
 

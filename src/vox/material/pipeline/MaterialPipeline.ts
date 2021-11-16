@@ -41,8 +41,10 @@ class MaterialPipeline {
     }
     getTextureTotal(): number { return this.m_texList != null ? this.m_texList.length : 0; }
 
-    addShaderCode(shaderCode: IAbstractShader): void {
-        this.m_shaderCode = shaderCode;
+    addShaderCode(shaderCode: IAbstractShader, force: boolean = false): void {
+        if(this.m_shaderCode == null || (shaderCode != null && force)) {
+            this.m_shaderCode = shaderCode;
+        }
     }
     hasShaderCode(): boolean {
         return this.m_shaderCode != null;
@@ -103,7 +105,7 @@ class MaterialPipeline {
     }
     build(shaderBuilder: IShaderCodeBuilder, pipetypes: MaterialPipeType[]):void {
 
-        //console.log("#### MaterialPipeline::build(), pipetypes: ",pipetypes);
+        // console.log("#### MaterialPipeline::build(), pipetypes: ",pipetypes,", this.m_shaderCode != null: ",this.m_shaderCode != null);
         if(this.m_shaderCode != null) {
             shaderBuilder.addShaderObject( this.m_shaderCode );
         }

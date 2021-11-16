@@ -48,18 +48,18 @@ export default class PBRShaderDecorator {
     normalMapEnabled: boolean = false;
     aoMapEnabled: boolean = false;
     indirectEnvMapEnabled: boolean = false;
-    shadowReceiveEnabled: boolean = false;
-    fogEnabled: boolean = false;
     hdrBrnEnabled: boolean = false;
     vtxFlatNormal: boolean = false;
 
     lightEnabled: boolean = true;
+    shadowReceiveEnabled: boolean = false;
+    fogEnabled: boolean = false;
     texturesTotal: number = 1;
 
     initialize(): void {
         
         if(this.pipeline != null) {
-
+            /*
             this.m_pipeTypes = [];
             if (this.lightEnabled) {
                 this.m_pipeTypes.push( MaterialPipeType.GLOBAL_LIGHT );
@@ -73,7 +73,7 @@ export default class PBRShaderDecorator {
             this.pipeline.createKeys(this.m_pipeTypes);
             this.m_keysString = this.pipeline.getKeysString();
             this.pipeline.buildSharedUniforms(this.m_pipeTypes);
-
+            //*/
             let texList: TextureProxy[] = [];
             
             if ( this.envMap != null ) {
@@ -125,7 +125,6 @@ export default class PBRShaderDecorator {
         this.fogEnabled = src.fogEnabled;
         this.hdrBrnEnabled = src.hdrBrnEnabled;
         this.vtxFlatNormal = src.vtxFlatNormal;
-
         
         this.envMap = src.envMap;
         this.diffuseMap = src.diffuseMap;
@@ -140,7 +139,7 @@ export default class PBRShaderDecorator {
 
         this.m_uniqueName = src.m_uniqueName;
     }
-    private buildThisCode(): void {
+    buildShader(): void {
 
         let coder: ShaderCodeBuilder = this.codeBuilder;
 
@@ -203,17 +202,17 @@ export default class PBRShaderDecorator {
         }
         coder.vertMatrixInverseEnabled = true;
 
-        if(this.pipeline != null) {
-            this.pipeline.build(coder, this.m_pipeTypes);
-        }
+        // if(this.pipeline != null) {
+        //     this.pipeline.build(coder, this.m_pipeTypes);
+        // }
     }
-    getFragShaderCode(): string {
-        this.buildThisCode();
-        return this.codeBuilder.buildFragCode();
-    }
-    getVertShaderCode(): string {
-        return this.codeBuilder.buildVertCode();
-    }
+    // getFragShaderCode(): string {
+    //     this.buildThisCode();
+    //     return this.codeBuilder.buildFragCode();
+    // }
+    // getVertShaderCode(): string {
+    //     return this.codeBuilder.buildVertCode();
+    // }
     getUniqueShaderName(): string {
 
         let ns: string = this.m_uniqueName;

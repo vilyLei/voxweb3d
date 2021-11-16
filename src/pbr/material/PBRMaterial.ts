@@ -20,17 +20,21 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
     }
     private static s_instance: PBRShaderBuffer = new PBRShaderBuffer();
     decorator: PBRShaderDecorator = null;
-    
+    texturesTotal: number = 0;
     initialize(texEnabled: boolean): void {
+
+        texEnabled = this.texturesTotal > 0;
+        super.initialize( texEnabled );
         this.adaptationShaderVersion = false;
     }
-    
+    buildShader(): void {
+        this.decorator.buildShader();
+    }
     getFragShaderCode(): string {
-        
-        return this.decorator.getFragShaderCode();
+        return this.m_coder.buildFragCode();
     }
     getVertShaderCode(): string {
-        return this.decorator.getVertShaderCode();
+        return this.m_coder.buildVertCode();
     }
     getUniqueShaderName(): string {
         return this.decorator.getUniqueShaderName();
@@ -84,17 +88,23 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     }
     
     protected buildBuf(): void {
+
         let buf: PBRShaderBuffer = PBRShaderBuffer.GetInstance();
+
+        buf.lightEnabled = this.decorator.lightEnabled;
+        buf.shadowReceiveEnabled = this.decorator.shadowReceiveEnabled;
+        buf.fogEnabled = this.decorator.fogEnabled;
+
         buf.decorator = this.decorator;
         buf.decorator.codeBuilder = buf.getShaderCodeBuilder();
         buf.decorator.pipeline = this.m_pipeLine;
+        
         this.decorator.texturesTotal = this.getTextureTotal();
         this.decorator.initialize();
+        buf.texturesTotal = this.decorator.texturesTotal;
     }
     getCodeBuf(): ShaderCodeBuffer {
-        
-        let buf: PBRShaderBuffer = PBRShaderBuffer.GetInstance();
-        return buf;
+        return PBRShaderBuffer.GetInstance();
     }
     copyFrom(dst: PBRMaterial, texEnabled:boolean = true): void {
 

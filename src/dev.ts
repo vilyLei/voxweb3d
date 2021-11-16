@@ -347,7 +347,7 @@
 
 //  import {DemoVSM as Demo} from "./shadow/vsm/DemoVSM";
 
-import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
+//  import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
 
 //  import {DemoSSAO as Demo} from "./shadow/ssao/DemoSSAO";
 
@@ -373,7 +373,7 @@ import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
 
 //  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
-//  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
+import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
 //  import {DemoRawDracoViewer as Demo} from "./pbr/DemoRawDracoViewer";
 

@@ -59,7 +59,7 @@ export class DemoLambertLight {
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
             let rparam: RendererParam = new RendererParam();
-            //  rparam.maxWebGLVersion = 1;
+            //rparam.maxWebGLVersion = 2;
             rparam.setCamProject(45, 10.0, 8000.0);
             rparam.setAttriStencil(true);
             rparam.setAttriAntialias(true);
@@ -125,16 +125,16 @@ export class DemoLambertLight {
             material = new LambertLightMaterial();
             ///*
             //material.setMaterialPipeline( this.m_materialCtx.pipeline );            
-            //material.diffuseMap =           this.getImageTexByUrl("static/assets/noise.jpg");
-            //material.diffuseMap =           this.getImageTexByUrl("static/assets/color_02.jpg");
-            //material.normalMap =        this.getImageTexByUrl("static/assets/brickwall_normal.jpg");
-            //material.specularMap =          this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
-            //material.specularMap =          this.getImageTexByUrl("static/assets/brickwall_big_spec.jpg");
-            //material.aoMap =          this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
-            //material.aoMap =          this.getImageTexByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
-            //material.parallaxMap =          this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
-            //material.parallaxMap =          this.getImageTexByUrl("static/assets/moss_01.jpg");
-            //material.parallaxMap =          this.getImageTexByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
+            //material.diffuseMap =             this.getImageTexByUrl("static/assets/noise.jpg");
+            //material.diffuseMap =             this.getImageTexByUrl("static/assets/color_02.jpg");
+            //material.normalMap =              this.getImageTexByUrl("static/assets/brickwall_normal.jpg");
+            //material.specularMap =            this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
+            //material.specularMap =            this.getImageTexByUrl("static/assets/brickwall_big_spec.jpg");
+            //material.aoMap =                  this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
+            //material.aoMap =                  this.getImageTexByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
+            //material.parallaxMap =            this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
+            //material.parallaxMap =            this.getImageTexByUrl("static/assets/moss_01.jpg");
+            //material.parallaxMap =            this.getImageTexByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
             //*/
             material.diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
             this.useMaps(material,"lava_03",true,false,false,true,true);
