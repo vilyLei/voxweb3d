@@ -99,16 +99,15 @@ export default class LambertLightMaterial extends MaterialBase {
         }
     }
     protected buildBuf(): void {
+
         if (this.m_fragLocalParams == null) {
             this.initializeLocalData();
         }
         
         let buf: AdvancedShaderCodeBuffer = LambertLightMaterial.s_shaderCodeBuffer;
-
         buf.colorEnabled = this.colorEnabled;
         buf.parallaxParamIndex = this.m_parallaxParamIndex;
         buf.lightParamsIndex = this.m_lightParamsIndex;
-
         buf.lightEnabled = this.lightEnabled;
         buf.fogEnabled = this.fogEnabled;
         buf.shadowReceiveEnabled = this.shadowMap != null;
@@ -126,7 +125,6 @@ export default class LambertLightMaterial extends MaterialBase {
         super.setTextureList(texList);
     }
     getCodeBuf(): ShaderCodeBuffer {
-        //  return LambertLightShaderBuffer.GetInstance();
         return LambertLightMaterial.s_shaderCodeBuffer;
     }
 

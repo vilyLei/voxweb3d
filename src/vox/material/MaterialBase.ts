@@ -83,22 +83,27 @@ export default class MaterialBase implements IRenderMaterial {
                         this.setTextureList( buf.pipeline.getTextureList() );
                     }
                 }
-
                 if (MaterialBase.s_codeBuffer == null) {
                     MaterialBase.s_codeBuffer = new ShaderCodeBuffer();
                 }
                 ShaderCodeBuffer.UseShaderBuffer(buf);
                 texEnabled = texEnabled || this.getTextureTotal() > 0;
-                MaterialBase.s_codeBuffer.initialize(texEnabled);
                 
-                let shdCode_uniqueName: string = MaterialBase.s_codeBuffer.getUniqueShaderName();
+                buf.initialize(texEnabled);
+                
+                let shdCode_uniqueName: string = buf.getUniqueShaderName();
                 this.m_shduns = shdCode_uniqueName;
                 this.__$initShd(this.m_shduns);
                 let shdData: ShaderData = MaterialResource.FindData(shdCode_uniqueName);
                 if (null == shdData) {
-                    MaterialBase.s_codeBuffer.buildShader();
-                    let fshdCode = MaterialBase.s_codeBuffer.getFragShaderCode();
-                    let vshdCode = MaterialBase.s_codeBuffer.getVtxShaderCode();
+
+                    buf.buildShader();
+                    if (buf.pipeline != null) {
+                        buf.pipeline.addShaderCode( buf.getShaderCodeObject() );
+                        buf.pipeline.build( buf.getShaderCodeBuilder(), buf.pipeTypes );
+                    }
+                    let fshdCode: string = buf.getFragShaderCode();
+                    let vshdCode: string = buf.getVtxShaderCode();
                     shdData = MaterialResource.CreateShdData(
                         shdCode_uniqueName
                         , vshdCode
@@ -111,11 +116,12 @@ export default class MaterialBase implements IRenderMaterial {
                     this.m_sharedUniforms = this.m_pipeLine.getSharedUniforms();
                 }
                 
-                ShaderCodeBuffer.UseShaderBuffer(null);
+                ShaderCodeBuffer.UseShaderBuffer( null );
                 this.m_shdData = shdData;
             }
         }
     }
+
     protected buildBuf(): void {
     }
     protected __$initShd(pshduns: string): void {

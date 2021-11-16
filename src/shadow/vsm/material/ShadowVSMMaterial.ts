@@ -14,8 +14,6 @@ import { MaterialPipeType } from "../../../vox/material/pipeline/MaterialPipeTyp
 class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
     private static s_instance: ShadowVSMShaderBuffer = new ShadowVSMShaderBuffer();
     private m_uniqueName: string = "";
-    private m_pipeTypes: MaterialPipeType[] = null;
-    private m_keysString: string = "";
     constructor() {
         super();
     }
@@ -25,14 +23,8 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
         //console.log("ShadowVSMShaderBuffer::initialize()...,texEnabled: "+texEnabled);
         this.m_uniqueName = "ShadowVSMShd";
         this.adaptationShaderVersion = false;
-        if(this.pipeline != null) {
-            this.m_pipeTypes = [MaterialPipeType.VSM_SHADOW, MaterialPipeType.FOG_EXP2];
-            this.pipeline.createKeys(this.m_pipeTypes);
-            this.m_keysString = this.pipeline.getKeysString();
-            this.pipeline.buildSharedUniforms(this.m_pipeTypes);
-        }
     }
-    private buildThisCode(): void {
+    buildShader(): void {
 
         let coder: ShaderCodeBuilder = this.m_coder;
         coder.normalEanbled = true;
@@ -69,13 +61,9 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
     //worldPosition.xyz += a_nvs.xyz * 0.05;
 `
         );
-        
-        if(this.pipeline != null) {
-            this.pipeline.build(this.m_coder, this.m_pipeTypes);
-        }
     }
     getFragShaderCode(): string {
-        this.buildThisCode();
+        //this.buildThisCode();
 
         return this.m_coder.buildFragCode();
     }
@@ -100,10 +88,19 @@ export default class ShadowVSMMaterial extends MaterialBase {
         super();
     }
 
-    getCodeBuf(): ShaderCodeBuffer {
+    protected buildBuf(): void {
         let buf: ShadowVSMShaderBuffer = ShadowVSMShaderBuffer.GetInstance();
-        return buf;
+        buf.shadowReceiveEnabled = true;
+        buf.fogEnabled = true;
+        // buf.fogEnabled = this.fogEnabled;
     }
+    getCodeBuf(): ShaderCodeBuffer {
+        return ShadowVSMShaderBuffer.GetInstance();;
+    }
+    // getCodeBuf(): ShaderCodeBuffer {
+    //     let buf: ShadowVSMShaderBuffer = ShadowVSMShaderBuffer.GetInstance();
+    //     return buf;
+    // }
     private m_colorData: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
 
     setRGB3f(r: number, g: number, b: number): void {

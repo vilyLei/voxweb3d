@@ -83,7 +83,8 @@ export class DemoLambertLight {
             mcParam.pointLightsTotal = 2;
             mcParam.directionLightsTotal = 1;
             mcParam.spotLightsTotal = 2;
-            mcParam.vsmEnabled = true;
+            mcParam.vsmEnabled = false;
+            
             //console.log("isWinExternalVideoCard: ",isWinExternalVideoCard);
             //this.m_materialCtx.initialize( this.m_rscene, 4, 2 );
             //this.m_materialCtx.initialize( this.m_rscene, 1,0);
@@ -104,7 +105,8 @@ export class DemoLambertLight {
             this.m_materialCtx.lightData.setSpotLightAt(0, new Vector3D(0.0, 56.0, 0.0), new Vector3D(0.0, -1.0, 0.7), 10, new Color4(0.0, 1.0, 0.0, 1.0));
             this.m_materialCtx.lightData.setSpotLightAt(1, new Vector3D(100.0, 56.0, 0.0), new Vector3D(0.0, -1.0, -0.7), 10, new Color4(1.0, 0.0, 1.0, 1.0));
             this.m_materialCtx.lightData.update();
-            for(let i: number = 0; i < pointList.length; ++i) {
+
+            for(let i: number = 0; i < 0; ++i) {
                 axis = new Axis3DEntity();
                 axis.initializeCross(50.0);
                 posV.copyFrom( pointList[i] );

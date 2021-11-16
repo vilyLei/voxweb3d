@@ -307,7 +307,7 @@
 
 //  import {DemoCameraWalkRoad as Demo} from "./demo/DemoCameraWalkRoad";
 
-//  import {DemoCameraPath as Demo} from "./demo/DemoCameraPath";
+// import {DemoCameraPath as Demo} from "./demo/DemoCameraPath";
 
 //  import {DemoMatNavAstarThread as Demo} from "./demo/DemoMatNavAstarThread";
 
@@ -347,7 +347,7 @@
 
 //  import {DemoVSM as Demo} from "./shadow/vsm/DemoVSM";
 
-//  import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
+import {DemoVSMModule as Demo} from "./shadow/vsm/DemoVSMModule";
 
 //  import {DemoSSAO as Demo} from "./shadow/ssao/DemoSSAO";
 
@@ -361,7 +361,7 @@
 /////////////////////////////     light    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
+//  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
 
 //  import {DemoAdsLight as Demo} from "./demo/DemoAdsLight";
 

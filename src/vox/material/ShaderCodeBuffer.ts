@@ -10,6 +10,7 @@ import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
 import ShaderCompileInfo from "../../vox/material/code/ShaderCompileInfo";
 import IAbstractShader from "./IAbstractShader";
 import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
+import { MaterialPipeType } from "./pipeline/MaterialPipeType";
 
 class ShaderCodeBuffer {
     private static ___s_csBuf: ShaderCodeBuffer = null;
@@ -26,6 +27,10 @@ class ShaderCodeBuffer {
     shadowReceiveEnabled: boolean = false;
     lightEnabled: boolean = false;
     fogEnabled: boolean = false;
+    
+    pipeTypes: MaterialPipeType[] = null;
+    keysString: string = "";
+
     /**
      * 是否自适应转换shader版本
      */
@@ -55,13 +60,36 @@ class ShaderCodeBuffer {
     static GetPreCompileInfo(): ShaderCompileInfo {
         return ShaderCodeBuffer.s_coder.getPreCompileInfo();
     }
+
     initialize(texEnabled: boolean): void {
+
         if (ShaderCodeBuffer.___s_csBuf != null) {
             if (ShaderCodeBuffer.___s_csBuf != this) {
                 ShaderCodeBuffer.___s_csBuf.initialize(texEnabled);
             }
         }
         this.m_texEnabled = texEnabled;
+        this.bufInitWithPipeline();
+    }
+    
+    private bufInitWithPipeline(): void {
+
+        if (this.pipeline != null) {
+            
+            this.pipeTypes = [];
+            if (this.lightEnabled) {
+                this.pipeTypes.push( MaterialPipeType.GLOBAL_LIGHT );
+            }
+            if (this.shadowReceiveEnabled) {
+                this.pipeTypes.push( MaterialPipeType.VSM_SHADOW );
+            }
+            if (this.fogEnabled) {
+                this.pipeTypes.push( MaterialPipeType.FOG_EXP2 );
+            }
+            this.pipeline.buildSharedUniforms( this.pipeTypes );
+            this.pipeline.createKeys(this.pipeTypes);
+            this.keysString = this.pipeline.getKeysString();
+        }
     }
     isTexEanbled(): boolean {
         return this.m_texEnabled;

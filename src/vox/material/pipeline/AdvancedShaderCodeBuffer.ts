@@ -20,8 +20,6 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     
     private m_uniqueName: string = "";
 
-    pipeTypes: MaterialPipeType[] = null;
-    keysString: string = "";
 
     colorEnabled: boolean = true;
 
@@ -45,7 +43,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     addDiffuseMap(map: TextureProxy): void {
 
         if(map != null) {
-            
+
             this.m_texList.push(map);
             this.pipeline.appendKeyString("Tex");
             this.m_coder.addTextureSample2D("VOX_DIFFUSE_MAP");
@@ -108,7 +106,9 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
         }
     }
     addShadowMap(map: TextureProxy): void {
+
         if(map != null) {
+
             this.m_texList.push(map);
             this.pipeline.appendKeyString( "Shadow" );
             this.m_coder.addTextureSample2D("VOX_VSM_SHADOW_MAP");
@@ -144,19 +144,12 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
         }
     }
 
-    private buildThisCode(): void {
+    buildShader(): void {
 
-        let coder = this.m_coder;
-        
-        coder.addVertUniform("vec4", "u_vertLocalParams", 2);
-        coder.addFragUniform("vec4", "u_fragLocalParams", this.fragLocalParamsTotal);
+        this.m_coder.addVertUniform("vec4", "u_vertLocalParams", 2);
+        this.m_coder.addFragUniform("vec4", "u_fragLocalParams", this.fragLocalParamsTotal);
         if (this.lightEnabled) {
-            coder.addDefine("VOX_LIGHT_LOCAL_PARAMS_INDEX", "" + this.lightParamsIndex);
-        }
-
-        if (this.pipeline != null) {
-            this.pipeline.addShaderCode( this.getShaderCodeObject() );
-            this.pipeline.build(coder, this.pipeTypes);
+            this.m_coder.addDefine("VOX_LIGHT_LOCAL_PARAMS_INDEX", "" + this.lightParamsIndex);
         }
     }
     
@@ -164,7 +157,6 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
         return LambertLightShaderCode;
     }
     getFragShaderCode(): string {
-        this.buildThisCode();
         return this.m_coder.buildFragCode();
     }
     getVtxShaderCode(): string {

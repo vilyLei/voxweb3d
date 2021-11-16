@@ -17,8 +17,8 @@ class TerrainpShaderBuffer extends ShaderCodeBuffer {
 
     private static s_instance: TerrainpShaderBuffer = new TerrainpShaderBuffer();
     private m_uniqueName: string = "";
-    private m_pipeTypes: MaterialPipeType[] = null;
-    private m_keysString: string = "";
+    // private m_pipeTypes: MaterialPipeType[] = null;
+    // private m_keysString: string = "";
 
     fogEnabled: boolean = true;
 
@@ -34,17 +34,17 @@ class TerrainpShaderBuffer extends ShaderCodeBuffer {
         if(texEnabled) this.m_uniqueName += "Tex";
         if(this.fogEnabled) this.m_uniqueName += "Fog";
 
-        if(this.pipeline != null) {
-            this.m_pipeTypes = [];
-            if(this.fogEnabled) {
-                this.m_pipeTypes.push( MaterialPipeType.FOG_EXP2 );
-            }
-            this.pipeline.createKeys(this.m_pipeTypes);
-            this.m_keysString = this.pipeline.getKeysString();
-            this.pipeline.buildSharedUniforms(this.m_pipeTypes);
-        }
+        // if(this.pipeline != null) {
+        //     this.m_pipeTypes = [];
+        //     if(this.fogEnabled) {
+        //         this.m_pipeTypes.push( MaterialPipeType.FOG_EXP2 );
+        //     }
+        //     this.pipeline.createKeys(this.m_pipeTypes);
+        //     this.m_keysString = this.pipeline.getKeysString();
+        //     this.pipeline.buildSharedUniforms(this.m_pipeTypes);
+        // }
     }
-    private buildThisCode(): void {
+    buildShader(): void {
 
         this.m_coder.addVertLayout("vec3", "a_vs");
         this.m_coder.addVertLayout("vec3", "a_nvs");
@@ -68,14 +68,14 @@ class TerrainpShaderBuffer extends ShaderCodeBuffer {
         
         this.m_coder.addShaderObject( TerrainShaderCode );
 
-        if(this.pipeline != null) {     
-            this.pipeline.build(this.m_coder, this.m_pipeTypes);
-        }
+        // if(this.pipeline != null) {     
+        //     this.pipeline.build(this.m_coder, this.m_pipeTypes);
+        // }
     }
 
     getFragShaderCode(): string {
         
-        this.buildThisCode();
+        //this.buildThisCode();
         return ShaderCodeBuffer.s_coder.buildFragCode();
     }
     getVtxShaderCode(): string {
@@ -107,13 +107,19 @@ export default class TerrainpMaterial extends MaterialBase {
         this.m_shaderUniformData.dataList = [this.m_colorArray, this.m_displacementArray];
     }
 
-    getCodeBuf(): ShaderCodeBuffer {
-
+    protected buildBuf(): void {
         let buf: TerrainpShaderBuffer = TerrainpShaderBuffer.GetInstance();
         buf.fogEnabled = this.fogEnabled;
-
-        return buf;
     }
+    getCodeBuf(): ShaderCodeBuffer {
+        return TerrainpShaderBuffer.GetInstance();;
+    }
+
+    // getCodeBuf(): ShaderCodeBuffer {
+    //     let buf: TerrainpShaderBuffer = TerrainpShaderBuffer.GetInstance();
+    //     buf.fogEnabled = this.fogEnabled;
+    //     return buf;
+    // }
 
     private m_colorArray: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
     private m_displacementArray: Float32Array = new Float32Array([
