@@ -93,7 +93,8 @@ export class DemoNormalMap {
             material.setSpecularIntensity(128.0);
             material.setBlendFactor(0.3,0.7);
             color.setRGB3f(1.0,1.0,1.0)
-            material.setSpecularColor( color,  );
+            material.setSpecularColor( color );
+
             let sph: Sphere3DEntity = new Sphere3DEntity();
             sph.setMaterial(material);
             sph.initialize(150.0,100,100);
@@ -126,7 +127,7 @@ export class DemoNormalMap {
             material.fogEnabled = true;
             material.lightEnabled = true;
             material.initializeLocalData();
-            material.setDisplacementParams(3.0,0.0);
+            material.setDisplacementParams(3.0, 0.0);
             color.normalizeRandom(1.1);
             material.initializeLocalData();
             material.setSpecularIntensity(32.0);
@@ -227,7 +228,7 @@ export class DemoNormalMap {
         this.m_statusDisp.update( false );
         this.m_time += 0.01;
         //this.m_material.setDisplacementParams(this.m_dispHeight * (1.0 + Math.cos(this.m_time)), 0.0);
-        
+
         this.m_materialCtx.run();
         this.m_engine.run();
     }

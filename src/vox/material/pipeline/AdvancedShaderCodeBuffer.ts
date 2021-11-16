@@ -19,17 +19,11 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     }
     
     private m_uniqueName: string = "";
+
     pipeTypes: MaterialPipeType[] = null;
     keysString: string = "";
 
     colorEnabled: boolean = true;
-
-    // diffuseMapEnabled: boolean = false;
-    // normalMapEnabled: boolean = false;
-    // parallaxMapEnabled: boolean = false;
-    // displacementMapEnabled: boolean = false;
-    // aoMapEnabled: boolean = false;
-    // specularMapEnabled: boolean = false;
 
     specularMode: SpecularMode = SpecularMode.Default;
 
@@ -38,6 +32,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     lightParamsIndex: number = 2;
 
     reset(): void {
+        
         super.reset();
         
         this.m_coder.normalEanbled = true;
@@ -48,47 +43,76 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
         this.m_uniqueName = "LambertShd";
     }
     addDiffuseMap(map: TextureProxy): void {
-        this.m_texList.push(map);
-        this.m_uniqueName += "Tex";
-        this.m_coder.addTextureSample2D("VOX_DIFFUSE_MAP");
+
+        if(map != null) {
+            
+            this.m_texList.push(map);
+            this.pipeline.appendKeyString("Tex");
+            this.m_coder.addTextureSample2D("VOX_DIFFUSE_MAP");
+        }
     }
     addNormalMap(map: TextureProxy): void {
-        if(this.lightEnabled) {
-            this.m_texList.push(map);
-            this.m_uniqueName += "Nor";
-            this.m_coder.addTextureSample2D("VOX_NORMAL_MAP");
+
+        if(map != null) {
+            if(this.lightEnabled) {
+                
+                this.m_texList.push(map);
+                this.pipeline.appendKeyString("Nor");
+                this.m_coder.addTextureSample2D("VOX_NORMAL_MAP");
+            }
         }
     }
     addParallaxMap(map: TextureProxy): void {
-        if(this.lightEnabled) {
-            this.m_texList.push(map);
-            this.m_uniqueName += "Para";
-            this.m_coder.addTextureSample2D("VOX_PARALLAX_MAP");
-            this.m_coder.addDefine("VOX_PARALLAX_PARAMS_INDEX", "" + this.parallaxParamIndex);
+
+        if(map != null) {
+            if(this.lightEnabled) {
+
+                this.m_texList.push(map);
+                this.pipeline.appendKeyString("Para");
+                this.m_coder.addTextureSample2D("VOX_PARALLAX_MAP");
+                this.m_coder.addDefine("VOX_PARALLAX_PARAMS_INDEX", "" + this.parallaxParamIndex);
+            }
         }
     }
+
     addDisplacementMap(map: TextureProxy): void {
-        this.m_texList.push(map);
-        this.m_uniqueName += "Disp";
-        this.m_coder.addTextureSample2D("VOX_DISPLACEMENT_MAP", true, false, true);
-    }
-    addAOMap(map: TextureProxy): void {
-        this.m_texList.push(map);
-        this.m_uniqueName += "AO";
-        this.m_coder.addTextureSample2D("VOX_AO_MAP");
-    }
-    addSpecularMap(map: TextureProxy): void {
-        if(this.lightEnabled) {
+
+        if(map != null) {
+
             this.m_texList.push(map);
-            this.m_uniqueName += "Spec" + this.specularMode;
-            this.m_coder.addTextureSample2D("VOX_SPECULAR_MAP");
-            this.m_coder.addDefine("VOX_SPECULAR_MODE", "" + this.specularMode);
+            this.pipeline.appendKeyString("Disp");
+            this.m_coder.addTextureSample2D("VOX_DISPLACEMENT_MAP", true, false, true);
+        }
+    }
+
+    addAOMap(map: TextureProxy): void {
+
+        if(map != null) {
+
+            this.m_texList.push(map);
+            this.pipeline.appendKeyString("AO");
+            this.m_coder.addTextureSample2D("VOX_AO_MAP");
+        }
+    }
+
+    addSpecularMap(map: TextureProxy): void {
+
+        if(map != null) {
+            if(this.lightEnabled) {
+
+                this.m_texList.push(map);
+                this.pipeline.appendKeyString( "Spec" + this.specularMode );
+                this.m_coder.addTextureSample2D("VOX_SPECULAR_MAP");
+                this.m_coder.addDefine("VOX_SPECULAR_MODE", "" + this.specularMode);
+            }
         }
     }
     addShadowMap(map: TextureProxy): void {
-        this.m_texList.push(map);
-        this.m_uniqueName += "Shadow";
-        this.m_coder.addTextureSample2D("VOX_VSM_SHADOW_MAP");
+        if(map != null) {
+            this.m_texList.push(map);
+            this.pipeline.appendKeyString( "Shadow" );
+            this.m_coder.addTextureSample2D("VOX_VSM_SHADOW_MAP");
+        }
     }
 
     initialize(texEnabled: boolean): void {
@@ -106,7 +130,6 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
             if (this.lightEnabled) {
                 this.pipeTypes.push(MaterialPipeType.GLOBAL_LIGHT);
             }
-
             if (this.shadowReceiveEnabled) {
                 this.pipeTypes.push(MaterialPipeType.VSM_SHADOW);
             }

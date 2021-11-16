@@ -29,6 +29,7 @@ class MaterialPipeline {
     private m_keys: string[] = [];
     private m_sharedUniforms: ShaderGlobalUniform[] = null;
     private m_texList: TextureProxy[] = null;
+    private m_appendKeyStr: string = "";
 
     constructor() { }
     
@@ -38,7 +39,6 @@ class MaterialPipeline {
     getTextureList(): TextureProxy[] {
         return this.m_texList;
     }
-    
     getTextureTotal(): number { return this.m_texList != null ? this.m_texList.length : 0; }
 
     addShaderCode(shaderCode: IAbstractShader): void {
@@ -86,7 +86,9 @@ class MaterialPipeline {
     buildSharedUniforms(pipetypes: MaterialPipeType[]):void {
 
         this.m_sharedUniforms = [];
+
         if(pipetypes != null) {
+
             let pipe: IMaterialPipe;
             let type: MaterialPipeType;
             let types: MaterialPipeType[] = pipetypes;
@@ -97,7 +99,6 @@ class MaterialPipeline {
                     this.m_sharedUniforms.push( pipe.getGlobalUinform() );
                 }
             }
-
         }
     }
     build(shaderBuilder: IShaderCodeBuilder, pipetypes: MaterialPipeType[]):void {
@@ -129,6 +130,9 @@ class MaterialPipeline {
     getSelfUniformData(): ShaderUniformData {
         return null;
     }
+    appendKeyString(key: string): void {
+        this.m_appendKeyStr += key;
+    }
     getKeys(): string[] {
         return this.m_keys;
     }
@@ -137,10 +141,11 @@ class MaterialPipeline {
         for(let i: number = 0; i < this.m_keys.length; ++i) {
             str += this.m_keys[i];
         }
-        return str;
+        return str + this.m_appendKeyStr;
     }
     reset(): void {
         this.m_texList = null;
+        this.m_appendKeyStr = "";
     }
     clear(): void {
         this.m_pipeMap = new Map();

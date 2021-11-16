@@ -134,7 +134,7 @@ export class DemoLambertLight {
             //material.parallaxMap =          this.getImageTexByUrl("static/assets/moss_01.jpg");
             //material.parallaxMap =          this.getImageTexByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
             //*/
-            //material.diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
+            material.diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
             this.useMaps(material,"lava_03",true,false,false,true,true);
             //*/
             //material.shadowMap = null;

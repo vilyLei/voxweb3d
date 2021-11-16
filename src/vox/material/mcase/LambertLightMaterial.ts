@@ -106,24 +106,22 @@ export default class LambertLightMaterial extends MaterialBase {
         let buf: AdvancedShaderCodeBuffer = LambertLightMaterial.s_shaderCodeBuffer;
 
         buf.colorEnabled = this.colorEnabled;
-        
         buf.parallaxParamIndex = this.m_parallaxParamIndex;
         buf.lightParamsIndex = this.m_lightParamsIndex;
 
         buf.lightEnabled = this.lightEnabled;
         buf.fogEnabled = this.fogEnabled;
         buf.shadowReceiveEnabled = this.shadowMap != null;
-
         buf.fragLocalParamsTotal = this.m_fragLocalParamsTotal;
 
-        
-        if (this.diffuseMap != null) buf.addDiffuseMap( this.diffuseMap );
-        if (this.normalMap != null) buf.addNormalMap( this.normalMap );
-        if (this.parallaxMap != null) buf.addParallaxMap( this.parallaxMap );
-        if (this.displacementMap != null) buf.addDisplacementMap( this.displacementMap );
-        if (this.aoMap != null) buf.addAOMap( this.aoMap );
-        if (this.specularMap != null) buf.addSpecularMap( this.specularMap );
-        if (this.shadowMap != null) buf.addShadowMap( this.shadowMap );
+        buf.addDiffuseMap( this.diffuseMap );
+        buf.addNormalMap( this.normalMap );
+        buf.addParallaxMap( this.parallaxMap );
+        buf.addDisplacementMap( this.displacementMap );
+        buf.addAOMap( this.aoMap );
+        buf.addSpecularMap( this.specularMap );
+        buf.addShadowMap( this.shadowMap );
+
         let texList: TextureProxy[] = buf.getIRenderTextureList() as TextureProxy[];
         super.setTextureList(texList);
     }

@@ -317,7 +317,7 @@
 ////////////////////////////   maps    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
+//  import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
 
 //  import {DemoDisplacementMap as Demo} from "./demo/DemoDisplacementMap";
 
@@ -361,7 +361,7 @@ import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
 /////////////////////////////     light    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
+import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
 
 //  import {DemoAdsLight as Demo} from "./demo/DemoAdsLight";
 
