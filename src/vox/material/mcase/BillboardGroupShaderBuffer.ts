@@ -154,7 +154,7 @@ FragColor = color;
 `;
         return fragCodeHead + fragCode0 + fragCode1 + fragCode2 + fadeCode + endCode;
     }
-    getVtxShaderCode():string
+    getVertShaderCode():string
     {
         return ""
     }

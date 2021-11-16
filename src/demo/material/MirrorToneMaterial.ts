@@ -113,7 +113,7 @@ void main() {
 
         return this.m_coder.buildFragCode();
     }
-    getVtxShaderCode(): string {
+    getVertShaderCode(): string {
 
         let coder = this.m_coder;
         coder.addVertMainCode(

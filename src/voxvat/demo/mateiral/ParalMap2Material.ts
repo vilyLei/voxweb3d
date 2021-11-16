@@ -129,7 +129,7 @@ fragOutput0 = result4_1;
 `;
                     return fragCode;
                 }
-                getVtxShaderCode():string
+                getVertShaderCode():string
                 {
                     let vtxCode:string = "";
                     vtxCode =

@@ -15,7 +15,7 @@ interface IShaderCodeWrapper {
     initialize(): void;
     buildThisCode(codeBuilder:IShaderCodeBuilder): void;
     getFragShaderCode(codeBuilder:IShaderCodeBuilder): string;
-    getVtxShaderCode(codeBuilder:IShaderCodeBuilder): string;
+    getVertShaderCode(codeBuilder:IShaderCodeBuilder): string;
     
     createSharedUniforms():ShaderUniform[];
     getUniqueShaderName(): string;

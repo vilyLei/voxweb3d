@@ -83,7 +83,7 @@ void main()
         );
         return codeBuilder.buildFragCode();
     }
-    getVtxShaderCode(codeBuilder: IShaderCodeBuilder): string {
+    getVertShaderCode(codeBuilder: IShaderCodeBuilder): string {
         codeBuilder.addVertMainCode(
 `
 void main(){

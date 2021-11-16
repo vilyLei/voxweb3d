@@ -29,8 +29,8 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
         
         return this.decorator.getFragShaderCode();
     }
-    getVtxShaderCode(): string {
-        return this.decorator.getVtxShaderCode();
+    getVertShaderCode(): string {
+        return this.decorator.getVertShaderCode();
     }
     getUniqueShaderName(): string {
         return this.decorator.getUniqueShaderName();

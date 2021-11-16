@@ -50,7 +50,7 @@ OutputColor5 = vec4(1.0,1.0,0.0,1.0);
 
         return fragCode;
     }
-    getVtxShaderCode():string
+    getVertShaderCode():string
     {
         let vtxCode:string = 
 `#version 300 es

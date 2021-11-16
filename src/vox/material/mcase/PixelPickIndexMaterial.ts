@@ -44,7 +44,7 @@ FragColor0 = vec4(p.xyz,u_param.w);
 `;
         return fragCode;
     }
-    getVtxShaderCode():string
+    getVertShaderCode():string
     {
         let vtxCode:string = 
 `#version 300 es

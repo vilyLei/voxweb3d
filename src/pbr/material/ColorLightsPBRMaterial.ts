@@ -83,7 +83,7 @@ precision highp float;
 
         return fragCode + ColorLightsPBR.frag;
     }
-    getVtxShaderCode(): string {
+    getVertShaderCode(): string {
         let vtxCode: string =
 `#version 300 es
 precision highp float;

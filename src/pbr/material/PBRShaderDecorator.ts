@@ -211,7 +211,7 @@ export default class PBRShaderDecorator {
         this.buildThisCode();
         return this.codeBuilder.buildFragCode();
     }
-    getVtxShaderCode(): string {
+    getVertShaderCode(): string {
         return this.codeBuilder.buildVertCode();
     }
     getUniqueShaderName(): string {

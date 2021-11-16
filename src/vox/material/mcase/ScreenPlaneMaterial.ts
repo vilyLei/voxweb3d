@@ -76,7 +76,7 @@ void main() {
         }
         return this.m_coder.buildFragCode();
     }
-    getVtxShaderCode(): string {
+    getVertShaderCode(): string {
         if (this.m_hasTex) {
             this.m_coder.addVertMainCode(
                 `

@@ -115,7 +115,7 @@ gl_Position = u_projMat * viewPos;
 //         }
         return ShaderCodeBuffer.s_coder.buildFragCode();
     }
-    getVtxShaderCode(): string {
+    getVertShaderCode(): string {
 
         let coder = ShaderCodeBuffer.s_coder;
         

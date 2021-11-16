@@ -174,9 +174,9 @@ class ShaderCodeBuffer {
         this.buildDefaultCode();
         return this.m_coder.buildFragCode();
     }
-    getVtxShaderCode(): string {
+    getVertShaderCode(): string {
         
-        if (ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getVtxShaderCode();
+        if (ShaderCodeBuffer.___s_csBuf != this) return ShaderCodeBuffer.___s_csBuf.getVertShaderCode();
         return this.m_coder.buildVertCode();
     }
     getUniqueShaderName(): string {

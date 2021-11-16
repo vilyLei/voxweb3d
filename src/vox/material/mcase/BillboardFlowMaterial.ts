@@ -41,7 +41,7 @@ class BillboardFlowShaderBuffer extends BillboardGroupShaderBuffer
         if(this.clipMixEnabled)this.m_uniqueName += "Mix";
         if(this.premultiplyAlpha)this.m_uniqueName += "PreMAlpha";
     }
-    getVtxShaderCode():string
+    getVertShaderCode():string
     {
         let paramTotal:number = this.m_clipEnabled?5:4;
         let vtxCode0:string = 

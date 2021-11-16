@@ -63,11 +63,9 @@ class ShadowVSMShaderBuffer extends ShaderCodeBuffer {
         );
     }
     getFragShaderCode(): string {
-        //this.buildThisCode();
-
         return this.m_coder.buildFragCode();
     }
-    getVtxShaderCode(): string {
+    getVertShaderCode(): string {
 
         return this.m_coder.buildVertCode();
 

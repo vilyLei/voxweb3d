@@ -80,7 +80,7 @@ void main()
         this.buildThisCode();
         return this.m_coder.buildFragCode();        
     }
-    getVtxShaderCode(): string {
+    getVertShaderCode(): string {
 
         return this.m_coder.buildVertCode();
     }

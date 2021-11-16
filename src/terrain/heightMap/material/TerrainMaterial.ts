@@ -78,7 +78,7 @@ class TerrainpShaderBuffer extends ShaderCodeBuffer {
         //this.buildThisCode();
         return ShaderCodeBuffer.s_coder.buildFragCode();
     }
-    getVtxShaderCode(): string {
+    getVertShaderCode(): string {
 
         return ShaderCodeBuffer.s_coder.buildVertCode();
     }

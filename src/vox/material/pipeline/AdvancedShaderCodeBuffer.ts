@@ -159,7 +159,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     getFragShaderCode(): string {
         return this.m_coder.buildFragCode();
     }
-    getVtxShaderCode(): string {
+    getVertShaderCode(): string {
         return this.m_coder.buildVertCode();
     }
     getUniqueShaderName(): string {

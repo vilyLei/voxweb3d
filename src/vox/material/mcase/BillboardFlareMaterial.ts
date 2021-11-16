@@ -22,7 +22,7 @@ class BillboardFlareShaderBuffer extends BillboardGroupShaderBuffer
         this.m_uniqueName = "BillboardFlareShader"+(this.clipMixEnabled?"Mix":"");
     }
     
-    getVtxShaderCode():string
+    getVertShaderCode():string
     {
         let paramTotal:number = this.m_clipEnabled?4:3;
         let vtxCode:string = 

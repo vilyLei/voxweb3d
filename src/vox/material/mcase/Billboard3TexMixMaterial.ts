@@ -88,7 +88,7 @@ let fragCode2a2:string =
         return fragCode0 + fragCode01 + fragCode2a0 + fragCode2a1 + fragCode2a2 + fadeCode + fragCode3;
 //*/
     }
-    getVtxShaderCode():string
+    getVertShaderCode():string
     {
         let paramTotal:number = this.clipEnabled?5:3;
         let vtxCode:string = 

@@ -61,7 +61,7 @@ void main() {
         
         return ShaderCodeBuffer.s_coder.buildFragCode();                    
     }
-    getVtxShaderCode():string
+    getVertShaderCode():string
     {
         
         let coder = ShaderCodeBuffer.s_coder;

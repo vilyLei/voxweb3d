@@ -37,7 +37,7 @@ class RawCodeShaderBuffer extends ShaderCodeBuffer
     {
         this.m_vtxCode = codeStr;
     }
-    getVtxShaderCode():string
+    getVertShaderCode():string
     {
         return this.m_vtxCode;
     }

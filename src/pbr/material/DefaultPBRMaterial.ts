@@ -160,7 +160,7 @@ class DefaultPBRShaderBuffer extends ShaderCodeBuffer {
         coder.addFragOutput("vec4","FragOutColor");
 
     }
-    getVtxShaderCode(): string {
+    getVertShaderCode(): string {
 
         //  let vtxCode: string = this.m_codeBuilder.buildVertCode();
         //  vtxCode += DefaultPBRShaderCode.vert_head;

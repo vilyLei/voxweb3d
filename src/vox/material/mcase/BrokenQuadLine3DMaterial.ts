@@ -39,7 +39,7 @@ gl_FragColor = v_vtxColor;
 `;
         return fragCode;
     }
-    getVtxShaderCode():string
+    getVertShaderCode():string
     {
         let vtxCode:string = 
 `

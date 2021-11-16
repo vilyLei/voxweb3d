@@ -117,7 +117,7 @@ void main()\n\
 ";
                     return fragCode;
                 }
-                getVtxShaderCode():string
+                getVertShaderCode():string
                 {
                     let vtxCode:string = 
 "\

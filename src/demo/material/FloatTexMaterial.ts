@@ -65,7 +65,7 @@ void main() {
                     
                     return this.m_coder.buildFragCode();
     }
-    getVtxShaderCode():string
+    getVertShaderCode():string
     {
         
         this.m_coder.addVertMainCode(

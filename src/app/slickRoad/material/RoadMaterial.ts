@@ -98,7 +98,7 @@ v_wpos.xyz = worldPosition.xyz;
         //this.buildThisCode();
         return this.m_coder.buildFragCode();
     }
-    getVtxShaderCode(): string {
+    getVertShaderCode(): string {
         return this.m_coder.buildVertCode();
     }
     getUniqueShaderName(): string {

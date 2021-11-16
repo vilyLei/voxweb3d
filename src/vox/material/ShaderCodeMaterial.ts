@@ -30,8 +30,8 @@ class ShaderCodeShaderBuffer extends ShaderCodeBuffer {
         
         return this.codeWrapper.getFragShaderCode( this.getShaderCodeBuilder() );
     }
-    getVtxShaderCode(): string {
-        return this.codeWrapper.getVtxShaderCode( this.getShaderCodeBuilder() );
+    getVertShaderCode(): string {
+        return this.codeWrapper.getVertShaderCode( this.getShaderCodeBuilder() );
     }
     getUniqueShaderName(): string {
         return this.codeWrapper.getUniqueShaderName();

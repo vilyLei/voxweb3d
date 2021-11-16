@@ -62,7 +62,7 @@ gl_FragData[1] = vec4(1.0 - color.rgb * color.rgb * color.rgb,1.0);
         }
         return fragCode;
     }
-    getVtxShaderCode():string
+    getVertShaderCode():string
     {
         let vtxCode:string = "";
         if(RendererDevice.IsWebGL2())
