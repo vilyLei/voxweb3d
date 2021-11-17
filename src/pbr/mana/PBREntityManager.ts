@@ -76,6 +76,28 @@ export default class PBREntityManager
             this.initPrimitive();
         }
     }
+    private useMaterial(material: PBRMaterial): void {
+
+        material.decorator.envMap = this.m_envMap;
+        //this.m_entityUtils.addTextureByUrl("static/assets/noise.jpg");
+        // base color map
+        material.decorator.diffuseMap = this.m_entityUtils.getImageTexByUrl( "static/assets/disp/normal_4_256_COLOR.png" );
+        // normal map
+        material.decorator.normalMap = this.m_entityUtils.getImageTexByUrl( "static/assets/disp/normal_4_256_NRM.png" );
+        if(this.aoMapEnabled) {
+            // ao map
+            material.decorator.aoMap = this.m_entityUtils.getImageTexByUrl( "static/assets/disp/normal_4_256_OCC.png" );
+        }
+        
+        if (material.decorator.indirectEnvMapEnabled) {
+            //ptexList.push(this.m_cubeRTTBuilder.getCubeTexture());
+            material.decorator.indirectEnvMap = this.m_entityUtils.getCubeRttBuilder().getCubeTexture();
+        }
+        if (material.decorator.shadowReceiveEnabled) {
+            material.decorator.shadowMap = this.m_entityUtils.getVSMModule().getShadowMap();
+            //  ptexList.push(shadowTex);
+        }
+    }
     private initPrimitive(): void {
 
         let material: PBRMaterial;
@@ -126,7 +148,8 @@ export default class PBREntityManager
         }
         material = this.m_entityUtils.createMaterial(1,1);
         material.decorator.aoMapEnabled = this.aoMapEnabled;
-        
+
+        this.useMaterial( material );
         let srcSph = new Sphere3DEntity();
         srcSph.setMaterial( material );
         srcSph.initialize(100.0, 20, 20);
@@ -142,6 +165,7 @@ export default class PBREntityManager
 
             material = this.m_entityUtils.createMaterial(uvscale,uvscale);
             material.decorator.aoMapEnabled = this.aoMapEnabled;
+            this.useMaterial( material );
             /*
             srcSph = null;
             material.decorator.diffuseMapEnabled = false;
@@ -184,12 +208,11 @@ export default class PBREntityManager
         material.decorator.shadowReceiveEnabled = false;
         
         material.setRoughness(0.4);
-        let texList: TextureProxy[] = this.m_entityUtils.createTexListForMaterial(material, this.m_envMap, this.m_entityUtils.getImageTexByUrl("static/assets/noise.jpg"));
-        material.setTextureList(texList);
+        this.m_entityUtils.useTexForMaterial(material, this.m_envMap, this.m_entityUtils.getImageTexByUrl("static/assets/noise.jpg"));
         let envSph: Sphere3DEntity = new Sphere3DEntity();
         envSph.setMaterial(material);
         envSph.showFrontFace();
-        envSph.initialize(3000.0,30,30, texList);
+        envSph.initialize(3000.0,30,30);
         this.m_rscene.addEntity(envSph, 4);
         //*/
         /*

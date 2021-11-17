@@ -34,6 +34,12 @@ export default class PBREntityUtils {
         this.m_cubeRTTBuilder = cubeRTTBuilder;
         this.m_vsmModule = vsmModule;
     }
+    getCubeRttBuilder(): CubeRttBuilder {
+        return this.m_cubeRTTBuilder;
+    }
+    getVSMModule(): ShadowVSMModule {
+        return this.m_vsmModule;
+    }
     initialize(rscene: RendererScene, texLoader: ImageTextureLoader, mirrorEffector: PBRMirror, mirrorRprIndex: number): void {
         if (this.m_rscene != rscene) {
             this.m_rscene = rscene;
@@ -70,6 +76,22 @@ export default class PBREntityUtils {
         }
         return texList;
     }
+    
+    useTexForMaterial(material: PBRMaterial, envMap: TextureProxy, diffuseMap: TextureProxy = null, normalMap: TextureProxy = null, aoMap: TextureProxy = null): void {
+        
+        let decorator: PBRShaderDecorator = material.decorator;
+        decorator.envMap = envMap;
+        decorator.diffuseMap = diffuseMap;
+        decorator.normalMap = normalMap;
+        decorator.aoMap = aoMap;
+        
+        if (decorator.indirectEnvMapEnabled) {
+            decorator.indirectEnvMap = this.m_cubeRTTBuilder.getCubeTexture();
+        }
+        if (decorator.shadowReceiveEnabled) {
+            decorator.shadowMap = this.m_vsmModule.getShadowMap();
+        }
+    }
 
     createTexList(): TextureProxy[] {
         this.m_texList = [];
@@ -84,7 +106,7 @@ export default class PBREntityUtils {
     createMaterial(uscale: number, vscale: number, ptexList: TextureProxy[] = null): PBRMaterial {
 
         if (ptexList == null) ptexList = this.m_texList;
-        let shadowTex = this.m_vsmModule.getShadowMap();
+        //let shadowTex = this.m_vsmModule.getShadowMap();
         let matBuilder: PBRMaterialBuilder = this.m_materialBuilder;
         let material: PBRMaterial;
         material = matBuilder.makePBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
@@ -99,19 +121,13 @@ export default class PBREntityUtils {
 
         material.setUVScale(uscale, vscale);
 
-        if (decorator.indirectEnvMapEnabled) {
-            ptexList.push(this.m_cubeRTTBuilder.getCubeTexture());
-        }
-        if (decorator.shadowReceiveEnabled) {
-            ptexList.push(shadowTex);
-            //material.setVSMData( vsmData );
-            // material.decorator.vsmData = vsmData;
-        }
-        // if (decorator.fogEnabled) {
-        //     //material.setEnvData( this.m_envData );
-        //     material.decorator.envData = this.m_envData;
+        // if (decorator.indirectEnvMapEnabled) {
+        //     ptexList.push(this.m_cubeRTTBuilder.getCubeTexture());
         // }
-        material.setTextureList(ptexList);
+        // if (decorator.shadowReceiveEnabled) {
+        //     ptexList.push(shadowTex);
+        // }
+        // material.setTextureList(ptexList);
         return material;
     }
     createMirrorEntity(param: PBRParamEntity, material: PBRMaterial, mirrorType: number): void {

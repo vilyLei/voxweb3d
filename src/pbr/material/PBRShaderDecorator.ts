@@ -30,7 +30,7 @@ export default class PBRShaderDecorator {
     aoMap: TextureProxy = null;
     mirrorMap: TextureProxy = null;
     indirectEnvMap: TextureProxy = null;
-    vsmShadowMap: TextureProxy = null;
+    shadowMap: TextureProxy = null;
     
     woolEnabled: boolean = true;
     toneMappingEnabled: boolean = true;
@@ -86,9 +86,9 @@ export default class PBRShaderDecorator {
                 texList.push( this.indirectEnvMap );
                 // coder.addTextureSampleCube("VOX_INDIRECT_ENV_MAP");
             }
-            //  console.log("this.shadowReceiveEnabled, this.vsmShadowMap != null: ",this.shadowReceiveEnabled,this.vsmShadowMap != null);
-            if (this.shadowReceiveEnabled && this.vsmShadowMap != null) {
-                texList.push( this.vsmShadowMap );
+            //  console.log("this.shadowReceiveEnabled, this.shadowMap != null: ",this.shadowReceiveEnabled,this.shadowMap != null);
+            if (this.shadowReceiveEnabled && this.shadowMap != null) {
+                texList.push( this.shadowMap );
                 // coder.addTextureSample2D("VOX_VSM_SHADOW_MAP", false);
             }
 
@@ -127,7 +127,7 @@ export default class PBRShaderDecorator {
         this.aoMap = src.aoMap;
         this.mirrorMap = src.mirrorMap;
         this.indirectEnvMap = src.indirectEnvMap;
-        this.vsmShadowMap = src.vsmShadowMap;
+        this.shadowMap = src.shadowMap;
 
         this.lightEnabled = src.lightEnabled;
         this.texturesTotal = src.texturesTotal;
