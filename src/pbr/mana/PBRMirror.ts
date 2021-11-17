@@ -61,6 +61,10 @@ export class PBRMirror {
     private m_mirrorEntities: MirrorProjEntity[] = [];
     private m_mirrorMapLodEnabled: boolean = true;
     private m_material: PBRMaterial;
+    
+    getMirrorMap(): TextureProxy {
+        return this.m_fboIns.getRTTAt(0);
+    }
     private initMirrorEffect(): void {
 
         let texProxy: RTTTextureProxy = new RTTTextureProxy(128, 128);
@@ -118,6 +122,7 @@ export class PBRMirror {
         // material.aoMapEnabled = true;
 
         this.m_material = material;
+        /*
         let ptexList: TextureProxy[] = [
             this.envMap
             , this.getImageTexByUrl("static/assets/brickwall_big.jpg")
@@ -132,6 +137,14 @@ export class PBRMirror {
             //material.decorator.vsmData = vsmData;
         }
         material.setTextureList(ptexList);
+        //*/
+        decorator.envMap = this.envMap;
+        decorator.diffuseMap = this.getImageTexByUrl("static/assets/brickwall_big.jpg");
+        decorator.normalMap = this.getImageTexByUrl("static/assets/brickwall_normal.jpg");
+        decorator.aoMap = this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
+        decorator.mirrorMap = this.getMirrorMap();
+        decorator.vsmShadowMap = shadowTex;
+
         if (this.m_mirrorMapLodEnabled) {
             this.m_fboIns.enableMipmapRTTAt(0);
             material.setMirrorMapLodLevel(1.0);

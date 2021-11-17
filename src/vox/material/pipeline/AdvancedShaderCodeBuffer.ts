@@ -14,21 +14,19 @@ import { SpecularMode } from "./SpecularMode";
 import { LambertLightShaderCode } from "../mcase/glsl/LambertLightShaderCode";
 
 class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
-    constructor() {
-        super();
-    }
-    
     private m_uniqueName: string = "";
-
-
+    
     colorEnabled: boolean = true;
-
     specularMode: SpecularMode = SpecularMode.Default;
 
     fragLocalParamsTotal: number = 2;
     parallaxParamIndex: number = 1;
     lightParamsIndex: number = 2;
 
+    constructor() {
+        super();
+    }
+    
     reset(): void {
         
         super.reset();

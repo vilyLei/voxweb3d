@@ -23,7 +23,7 @@ export default class PBRShaderDecorator {
     
     codeBuilder: ShaderCodeBuilder = null;
     pipeline: MaterialPipeline = null;
-    ///**
+    
     envMap: TextureProxy = null;
     diffuseMap: TextureProxy = null;
     normalMap: TextureProxy = null;
@@ -31,7 +31,7 @@ export default class PBRShaderDecorator {
     mirrorMap: TextureProxy = null;
     indirectEnvMap: TextureProxy = null;
     vsmShadowMap: TextureProxy = null;
-    //*/
+    
     woolEnabled: boolean = true;
     toneMappingEnabled: boolean = true;
     envMapEnabled: boolean = true;
@@ -59,44 +59,39 @@ export default class PBRShaderDecorator {
     initialize(): void {
         
         if(this.pipeline != null) {
-            /*
-            this.m_pipeTypes = [];
-            if (this.lightEnabled) {
-                this.m_pipeTypes.push( MaterialPipeType.GLOBAL_LIGHT );
-            }
-            if(this.shadowReceiveEnabled) {
-                this.m_pipeTypes.push( MaterialPipeType.VSM_SHADOW );
-            }
-            if(this.fogEnabled) {
-                this.m_pipeTypes.push( MaterialPipeType.FOG_EXP2 );
-            }
-            this.pipeline.createKeys(this.m_pipeTypes);
-            this.m_keysString = this.pipeline.getKeysString();
-            this.pipeline.buildSharedUniforms(this.m_pipeTypes);
-            //*/
-            let texList: TextureProxy[] = [];
             
+            let texList: TextureProxy[] = [];
+            let coder: ShaderCodeBuilder = this.codeBuilder;
             if ( this.envMap != null ) {
                 texList.push( this.envMap );
+                // coder.addTextureSampleCube("VOX_ENV_MAP");
             }
             if ( this.diffuseMap != null ) {
                 texList.push( this.diffuseMap );
+                // coder.addTextureSample2D("VOX_DIFFUSE_MAP");
             }
             if (this.normalMap != null) {
                 texList.push( this.normalMap );
+                // coder.addTextureSample2D("VOX_NORMAL_MAP");
             }
             if (this.aoMap != null) {
                 texList.push( this.aoMap );
+                // coder.addTextureSample2D("VOX_AO_MAP");
             }
             if (this.mirrorMap != null) {
                 texList.push( this.mirrorMap );
+                // coder.addTextureSample2D("VOX_MIRROR_PROJ_MAP");
             }
             if (this.indirectEnvMap != null) {
                 texList.push( this.indirectEnvMap );
+                // coder.addTextureSampleCube("VOX_INDIRECT_ENV_MAP");
             }
+            //  console.log("this.shadowReceiveEnabled, this.vsmShadowMap != null: ",this.shadowReceiveEnabled,this.vsmShadowMap != null);
             if (this.shadowReceiveEnabled && this.vsmShadowMap != null) {
                 texList.push( this.vsmShadowMap );
+                // coder.addTextureSample2D("VOX_VSM_SHADOW_MAP", false);
             }
+
             if(texList.length > 0) {
                 this.pipeline.setTextureList( texList );
                 this.texturesTotal = this.pipeline.getTextureTotal();
@@ -159,9 +154,7 @@ export default class PBRShaderDecorator {
         if (this.gammaCorrection) coder.addDefine("VOX_GAMMA_CORRECTION");
         if (this.absorbEnabled) coder.addDefine("VOX_ABSORB");
         if (this.pixelNormalNoiseEnabled) coder.addDefine("VOX_PIXEL_NORMAL_NOISE");
-
-        console.log("this.envMapEnabled,this.texturesTotal: ", this.envMapEnabled, this.texturesTotal);
-
+        ///*
         if (this.envMapEnabled && this.texturesTotal > 0) {
             coder.addTextureSampleCube("VOX_ENV_MAP");
         }
@@ -183,8 +176,8 @@ export default class PBRShaderDecorator {
         if (this.shadowReceiveEnabled) {
             coder.addTextureSample2D("VOX_VSM_SHADOW_MAP", false);
         }
+        //*/
 
-        console.log("this.texturesTotal: ", this.texturesTotal);
         if (this.mirrorMapLodEnabled) coder.addDefine("VOX_MIRROR_MAP_LOD", "1");
         if (this.hdrBrnEnabled) coder.addDefine("VOX_HDR_BRN", "1");
         if (this.vtxFlatNormal) coder.addDefine("VOX_VTX_FLAT_NORMAL", "1");
@@ -197,22 +190,13 @@ export default class PBRShaderDecorator {
         coder.addFragUniform("vec4", "u_params", 4);
 
         if (mirrorProjEnabled) {
-            coder.addFragUniformParam(UniformConst.StageParam);
+            coder.addFragUniformParam( UniformConst.StageParam );
             coder.addFragUniform("vec4", "u_mirrorParams", 2);
         }
         coder.vertMatrixInverseEnabled = true;
 
-        // if(this.pipeline != null) {
-        //     this.pipeline.build(coder, this.m_pipeTypes);
-        // }
     }
-    // getFragShaderCode(): string {
-    //     this.buildThisCode();
-    //     return this.codeBuilder.buildFragCode();
-    // }
-    // getVertShaderCode(): string {
-    //     return this.codeBuilder.buildVertCode();
-    // }
+    
     getUniqueShaderName(): string {
 
         let ns: string = this.m_uniqueName;

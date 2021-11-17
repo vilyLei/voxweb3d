@@ -126,6 +126,7 @@ export default class PBREntityManager
         }
         material = this.m_entityUtils.createMaterial(1,1);
         material.decorator.aoMapEnabled = this.aoMapEnabled;
+        
         let srcSph = new Sphere3DEntity();
         srcSph.setMaterial( material );
         srcSph.initialize(100.0, 20, 20);

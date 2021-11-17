@@ -211,7 +211,7 @@ export class DemoPBRViewer {
             this.m_dracoModule.envMap = this.m_envMap;
             this.m_dracoModule.aoMapEnabled = this.aoMapEnabled;
             this.m_dracoModule.initialize(this.m_rscene, this.m_dracoMeshLoader);
-            this.m_dracoModule.loadNext();
+            //this.m_dracoModule.loadNext();
         }
     }
     
@@ -309,7 +309,7 @@ export class DemoPBRViewer {
         let scale: number = 1.0;
         let uvscale: number;
         let total: number = posList.length;
-        total = 2;
+        total = 1;
         let rad: number;
         for(let i: number = 0; i < total; ++i) {
 

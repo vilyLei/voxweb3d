@@ -42,7 +42,7 @@ vec2 parallaxOccRayMarchDepth(sampler2D texSampler, vec2 puvs, vec3 viewDir,vec4
     float layerHeight = occParam.z / numLayers;
     vec2 tuv = (viewDir.xy * occParam.w) / numLayers;  
     float ph = 0.0;
-    #ifndef VOX_GLSL2
+    #ifndef VOX_GLSL_ES2
         while(ph < depthValue)
         {
             puvs -= tuv;

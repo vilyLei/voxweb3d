@@ -404,7 +404,7 @@ precision mediump float;
         }
         
         if (RendererDevice.IsWebGL2()) {
-            code += "\n#define VOX_GLSL3 1";
+            code += "\n#define VOX_GLSL_ES3 1";
             code += "\n#define VOX_IN in";
             if (this.mapLodEnabled) {
                 code += "\n#define VOX_TextureCubeLod textureLod";
@@ -415,7 +415,7 @@ precision mediump float;
 
         }
         else {
-            code += "\n#define VOX_GLSL2 1";
+            code += "\n#define VOX_GLSL_ES2 1";
             code += "\n#define VOX_IN varying";
             if (this.mapLodEnabled) {
                 code += "\n#define VOX_TextureCubeLod textureCubeLodEXT";
@@ -569,7 +569,7 @@ precision mediump float;
             code += "\n" + this.m_preciousCode;
         }
         if (RendererDevice.IsWebGL2()) {
-            code += "\n#define VOX_GLSL3 1";
+            code += "\n#define VOX_GLSL_ES3 1";
             code += "\n#define VOX_IN in";
             if (this.mapLodEnabled) {
                 code += "\n#define VOX_TextureCubeLod textureLod";
@@ -580,7 +580,7 @@ precision mediump float;
 
         }
         else {
-            code += "\n#define VOX_GLSL2 1";
+            code += "\n#define VOX_GLSL_ES2 1";
             code += "\n#define VOX_IN varying";
             if (this.mapLodEnabled) {
                 code += "\n#define VOX_TextureCubeLod textureCubeLodEXT";
