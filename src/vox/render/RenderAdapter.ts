@@ -199,7 +199,7 @@ class RenderAdapter implements IRenderAdapter{
 		}
 	}
 	/**
-	 * only clear up depth value
+	 * only clear up depth buffer
 	 * @param depth depth buffer depth value
 	 */
 	clearDepth(depth: number = 1.0): void {
@@ -210,6 +210,14 @@ class RenderAdapter implements IRenderAdapter{
 			this.m_gl.clearDepth(this.m_clearDepth);
 		}
 		this.m_gl.clear(this.m_gl.DEPTH_BUFFER_BIT);
+	}
+	/**
+	 * only clear up color buffer
+	 * @param color color data
+	 */
+	clearColor(color: Color4): void {
+		this.m_gl.clearColor(color.r, color.g, color.b, color.a);
+		this.m_gl.clear(this.m_gl.COLOR_BUFFER_BIT);
 	}
 	clear(): void {
 		// console.log("clear back buffer.");

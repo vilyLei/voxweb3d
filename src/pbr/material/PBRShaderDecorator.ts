@@ -55,49 +55,42 @@ export default class PBRShaderDecorator {
     fogEnabled: boolean = false;
     texturesTotal: number = 1;
 
-    initialize(): TextureProxy[] {
+    createTextureList(): TextureProxy[] {
         
-        if(this.pipeline != null) {
-            
-            let texList: TextureProxy[] = [];
-            let coder: ShaderCodeBuilder = this.codeBuilder;
-            if ( this.envMap != null ) {
-                texList.push( this.envMap );
-                // coder.addTextureSampleCube("VOX_ENV_MAP");
-            }
-            if ( this.diffuseMap != null ) {
-                texList.push( this.diffuseMap );
-                // coder.addTextureSample2D("VOX_DIFFUSE_MAP");
-            }
-            if (this.normalMap != null) {
-                texList.push( this.normalMap );
-                // coder.addTextureSample2D("VOX_NORMAL_MAP");
-            }
-            if (this.aoMap != null) {
-                texList.push( this.aoMap );
-                // coder.addTextureSample2D("VOX_AO_MAP");
-            }
-            if (this.mirrorMap != null) {
-                texList.push( this.mirrorMap );
-                // coder.addTextureSample2D("VOX_MIRROR_PROJ_MAP");
-            }
-            if (this.indirectEnvMap != null) {
-                texList.push( this.indirectEnvMap );
-                // coder.addTextureSampleCube("VOX_INDIRECT_ENV_MAP");
-            }
-            //  console.log("this.shadowReceiveEnabled, this.shadowMap != null: ",this.shadowReceiveEnabled,this.shadowMap != null);
-            if (this.shadowReceiveEnabled && this.shadowMap != null) {
-                texList.push( this.shadowMap );
-                // coder.addTextureSample2D("VOX_VSM_SHADOW_MAP", false);
-            }
-
-            if(texList.length > 0) {
-                this.pipeline.setTextureList( texList );
-            }
-            this.texturesTotal = texList.length;
-            return texList;
+        let texList: TextureProxy[] = [];
+        // let coder: ShaderCodeBuilder = this.codeBuilder;
+        if ( this.envMap != null ) {
+            texList.push( this.envMap );
+            // coder.addTextureSampleCube("VOX_ENV_MAP");
         }
-        return null;
+        if ( this.diffuseMap != null ) {
+            texList.push( this.diffuseMap );
+            // coder.addTextureSample2D("VOX_DIFFUSE_MAP");
+        }
+        if (this.normalMap != null) {
+            texList.push( this.normalMap );
+            // coder.addTextureSample2D("VOX_NORMAL_MAP");
+        }
+        if (this.aoMap != null) {
+            texList.push( this.aoMap );
+            // coder.addTextureSample2D("VOX_AO_MAP");
+        }
+        if (this.mirrorMap != null) {
+            texList.push( this.mirrorMap );
+            // coder.addTextureSample2D("VOX_MIRROR_PROJ_MAP");
+        }
+        if (this.indirectEnvMap != null) {
+            texList.push( this.indirectEnvMap );
+            // coder.addTextureSampleCube("VOX_INDIRECT_ENV_MAP");
+        }
+        //  console.log("this.shadowReceiveEnabled, this.shadowMap != null: ",this.shadowReceiveEnabled,this.shadowMap != null);
+        if (this.shadowReceiveEnabled && this.shadowMap != null) {
+            texList.push( this.shadowMap );
+            // coder.addTextureSample2D("VOX_VSM_SHADOW_MAP", false);
+        }
+
+        this.texturesTotal = texList.length;
+        return texList;
     }
     copyFrom(src: PBRShaderDecorator): void {
 

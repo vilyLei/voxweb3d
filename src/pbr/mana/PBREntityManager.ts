@@ -202,7 +202,7 @@ export default class PBREntityManager
         envSph.setMaterial(material);
         envSph.showFrontFace();
         envSph.initialize(3000.0,30,30);
-        material.setAmbientFactor(1.0,0.0,1.0);
+        //material.setAmbientFactor(1.0,0.0,1.0);
         this.m_rscene.addEntity(envSph, 4);
         //*/
         /*

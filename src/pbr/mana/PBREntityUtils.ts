@@ -23,7 +23,6 @@ export default class PBREntityUtils {
     private m_materialBuilder: PBRMaterialBuilder;
     private m_cubeRTTBuilder: CubeRttBuilder;
     private m_vsmModule: ShadowVSMModule;
-    private m_texList: TextureProxy[] = null;
     private m_mirrorRprIndex: number = 3;
 
     fogEnabled: boolean = true;

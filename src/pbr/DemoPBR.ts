@@ -62,8 +62,9 @@ export class DemoPBR {
             //  this.m_stencilOutline.initialize(this.m_rscene);
             //  this.m_stencilOutline.setRGB3f(1.0, 0.0, 1.0);
             this.m_postOutline.initialize(this.m_rscene, 4);
+            this.m_postOutline.setFBOSizeScaleRatio(0.5);
             this.m_postOutline.setOutlineThickness(1.0);
-            this.m_postOutline.setOutlineDensity(1.5);
+            this.m_postOutline.setOutlineDensity(1.3);
 
             this.m_rscene.enableMouseEvent(true);
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());

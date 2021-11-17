@@ -64,8 +64,8 @@ void main() {
     
     float dis = length(color - srcColor.xyz);
     dis *= u_texParam.z;
-    
-    FragColor0 = vec4(u_color.xyz, dis - 0.01);
+    dis = clamp(dis, 0.0, 1.0) + 0.3;
+    FragColor0 = vec4(u_color.xyz, dis * dis * dis);
 }
 `
         );

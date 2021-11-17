@@ -100,7 +100,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         buf.decorator.codeBuilder = buf.getShaderCodeBuilder();
         buf.decorator.pipeline = this.m_pipeLine;
         
-        let texList: TextureProxy[] = decorator.initialize();
+        let texList: TextureProxy[] = decorator.createTextureList();
         super.setTextureList(texList);
         buf.texturesTotal = this.decorator.texturesTotal;
     }
@@ -111,7 +111,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
 
         if(this.decorator == null)this.decorator = new PBRShaderDecorator();
         this.decorator.copyFrom( dst.decorator );
-        this.decorator.initialize();
+        this.decorator.createTextureList();
         
         if(this.m_albedo == null || this.m_albedo.length != dst.m_albedo.length) {
             this.m_albedo = dst.m_albedo.slice();
@@ -146,6 +146,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         }
     }
     setTextureList(texList: TextureProxy[]): void {
+        //throw Error("illegal operator.");
     }
     
     clone(): PBRMaterial {
@@ -154,7 +155,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         dst.setMaterialPipeline(this.m_pipeLine);
         if(dst.decorator == null)dst.decorator = new PBRShaderDecorator();
         dst.decorator.copyFrom( this.decorator );
-        dst.decorator.initialize();
+        //dst.decorator.initialize();
 
         dst.m_albedo.set(this.m_albedo);
         dst.m_params.set(this.m_params);
@@ -162,7 +163,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         dst.m_camPos.set(this.m_camPos);
         dst.m_mirrorParam.set(this.m_mirrorParam);
         
-        dst.setTextureList(this.getTextureList().slice());
+        //dst.setTextureList(this.getTextureList().slice());
         return dst;
     }
     seNormalMapIntensity(intensity: number): void {
