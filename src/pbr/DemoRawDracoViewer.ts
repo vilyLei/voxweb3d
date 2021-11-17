@@ -58,28 +58,15 @@ export class ViewerDracoModule extends DracoWholeModuleLoader
     dracoParseFinish(modules: any[], total: number): void {
 
         console.log("ViewerDracoModule dracoParseFinish, modules: ", modules,this.m_pos);
-
-        let texList: TextureProxy[] = [];
-        
-        texList.push(this.envMap);
-        //texList.push( this.getImageTexByUrl("static/assets/noise.jpg"));
-        // base color map
-        texList.push( this.getImageTexByUrl("static/assets/disp/normal_4_256_COLOR.png"));
-        // normal map
-        texList.push( this.getImageTexByUrl("static/assets/disp/normal_4_256_NRM.png"));
-        if(this.aoMapEnabled) {
-            // ao map
-            texList.push( this.getImageTexByUrl("static/assets/disp/normal_4_256_OCC.png"));
-        }
-
-
         let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6;        
         let material: PBRMaterial = this.viewer.createMaterial(uvscale,uvscale);
         
-        texList[1] = this.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg");
-        texList[2] = this.getImageTexByUrl("static/assets/modules/skirt/normal.jpg");
-        texList[3] = this.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
-        material.setTextureList(texList);
+        let decorator = material.decorator;
+        decorator.envMap = this.envMap;
+        decorator.diffuseMap = this.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg");
+        decorator.normalMap = this.getImageTexByUrl("static/assets/modules/skirt/normal.jpg");
+        decorator.aoMap = this.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
+
         material.decorator.diffuseMapEnabled = true;
         material.decorator.normalMapEnabled = true;
         material.decorator.vtxFlatNormal = false;
@@ -96,8 +83,6 @@ export class ViewerDracoModule extends DracoWholeModuleLoader
         entity.setMesh( mesh );
         entity.setScaleXYZ(scale, scale, scale);
         entity.setRotationXYZ(-90,0,0);
-        //entity.setRotationXYZ(0, Math.random() * 300, 0);
-        //entity.setPosition( this.m_pos );
         this.m_rscene.addEntity(entity);
 
         this.loadNext();
@@ -267,7 +252,7 @@ export class DemoRawDracoViewer {
 
         return material;
     }
-    createMaterial(uscale: number, vscale: number, ptexList: TextureProxy[] = null): PBRMaterial {
+    createMaterial(uscale: number, vscale: number): PBRMaterial {
 
         let material: PBRMaterial;
         material = this.makePBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
@@ -282,7 +267,7 @@ export class DemoRawDracoViewer {
 
         material.setUVScale(uscale, vscale);
 
-        material.setTextureList(ptexList);
+        //material.setTextureList(ptexList);
         return material;
     }
     createTexListForMaterial(material: PBRMaterial, env: TextureProxy, diffuse: TextureProxy = null, normal: TextureProxy = null, ao: TextureProxy = null): TextureProxy[] {
@@ -302,6 +287,15 @@ export class DemoRawDracoViewer {
         
         return texList;
     }
+    private useMaterialTex(material: PBRMaterial): void {
+        let decorator = material.decorator;
+        decorator.envMap = this.m_envMap;
+        decorator.diffuseMap = this.getImageTexByUrl("static/assets/disp/normal_4_256_COLOR.png");
+        decorator.normalMap = this.getImageTexByUrl("static/assets/disp/normal_4_256_NRM.png");
+        if(this.aoMapEnabled) {
+            decorator.aoMap = this.getImageTexByUrl("static/assets/disp/normal_4_256_OCC.png");
+        }
+    }
     private createEntity(): void {
 
         let axis: Axis3DEntity = new Axis3DEntity();
@@ -309,18 +303,6 @@ export class DemoRawDracoViewer {
         this.m_rscene.addEntity(axis);
 
         
-        let texList: TextureProxy[] = [];
-        
-        texList.push(this.m_envMap);
-        //texList.push( this.getImageTexByUrl("static/assets/noise.jpg"));
-        // base color map
-        texList.push( this.getImageTexByUrl("static/assets/disp/normal_4_256_COLOR.png"));
-        // normal map
-        texList.push( this.getImageTexByUrl("static/assets/disp/normal_4_256_NRM.png"));
-        if(this.aoMapEnabled) {
-            // ao map
-            texList.push( this.getImageTexByUrl("static/assets/disp/normal_4_256_OCC.png"));
-        }
         let disSize: number = 700.0;
         let dis: number = 500.0;
         let posList: Vector3D[] = [];
@@ -340,7 +322,8 @@ export class DemoRawDracoViewer {
         let sph: Sphere3DEntity;
         material = this.createMaterial(1,1);
         material.decorator.aoMapEnabled = this.aoMapEnabled;
-        material.setTextureList(texList);
+        //material.setTextureList(texList);
+        this.useMaterialTex( material );
         let srcSph = new Sphere3DEntity();
         srcSph.setMaterial( material );
         srcSph.initialize(100.0, 20, 20);
@@ -358,7 +341,8 @@ export class DemoRawDracoViewer {
 
             material = this.createMaterial(uvscale,uvscale);
             material.decorator.aoMapEnabled = this.aoMapEnabled;
-            material.setTextureList(texList);
+            this.useMaterialTex( material );
+            //material.setTextureList(texList);
             material.setAlbedoColor(Math.random() * 3, Math.random() * 3, Math.random() * 3);
             
             scale = 0.8 + Math.random();
@@ -387,14 +371,7 @@ export class DemoRawDracoViewer {
     }
     private m_lookV: Vector3D = new Vector3D(0.0,300.0,0.0);
     run(): void {
-        /*
-        if(this.m_runFlag) {
-            this.m_runFlag = false;
-        }
-        else {
-            return;
-        }
-        //*/
+
         ThreadSystem.Run();
         this.update();
         

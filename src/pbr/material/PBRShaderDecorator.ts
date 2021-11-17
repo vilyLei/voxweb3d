@@ -18,7 +18,6 @@ export default class PBRShaderDecorator {
     }
 
     private m_uniqueName: string = "PBRShd";
-    private m_pipeTypes: MaterialPipeType[] = null;
     private m_keysString: string = "";
     
     codeBuilder: ShaderCodeBuilder = null;
@@ -56,7 +55,7 @@ export default class PBRShaderDecorator {
     fogEnabled: boolean = false;
     texturesTotal: number = 1;
 
-    initialize(): void {
+    initialize(): TextureProxy[] {
         
         if(this.pipeline != null) {
             
@@ -94,9 +93,11 @@ export default class PBRShaderDecorator {
 
             if(texList.length > 0) {
                 this.pipeline.setTextureList( texList );
-                this.texturesTotal = this.pipeline.getTextureTotal();
             }
+            this.texturesTotal = texList.length;
+            return texList;
         }
+        return null;
     }
     copyFrom(src: PBRShaderDecorator): void {
 

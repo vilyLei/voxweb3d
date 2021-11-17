@@ -53,30 +53,7 @@ export default class PBREntityUtils {
         ptex.mipmapEnabled = mipmapEnabled;
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
-    }
-    createTexListForMaterial(material: PBRMaterial, env: TextureProxy, diffuse: TextureProxy = null, normal: TextureProxy = null, ao: TextureProxy = null): TextureProxy[] {
-        let texList: TextureProxy[] = [env];
-        if (diffuse != null) {
-            texList.push(diffuse)
-        }
-        if (normal != null) {
-            texList.push(normal)
-        }
-        if (ao != null) {
-            texList.push(ao)
-        }
-        let decorator: PBRShaderDecorator = material.decorator;
-        let shadowTex = this.m_vsmModule.getShadowMap();
-        
-        if (decorator.indirectEnvMapEnabled) {
-            texList.push(this.m_cubeRTTBuilder.getCubeTexture());
-        }
-        if (decorator.shadowReceiveEnabled) {
-            texList.push(shadowTex);
-        }
-        return texList;
-    }
-    
+    }    
     useTexForMaterial(material: PBRMaterial, envMap: TextureProxy, diffuseMap: TextureProxy = null, normalMap: TextureProxy = null, aoMap: TextureProxy = null): void {
         
         let decorator: PBRShaderDecorator = material.decorator;
@@ -93,20 +70,8 @@ export default class PBREntityUtils {
         }
     }
 
-    createTexList(): TextureProxy[] {
-        this.m_texList = [];
-        return this.m_texList;
-    }
-    addTexture(tex: TextureProxy): void {
-        this.m_texList.push(tex);
-    }
-    addTextureByUrl(url: string): void {
-        this.m_texList.push(this.getImageTexByUrl(url));
-    }
-    createMaterial(uscale: number, vscale: number, ptexList: TextureProxy[] = null): PBRMaterial {
+    createMaterial(uscale: number, vscale: number): PBRMaterial {
 
-        if (ptexList == null) ptexList = this.m_texList;
-        //let shadowTex = this.m_vsmModule.getShadowMap();
         let matBuilder: PBRMaterialBuilder = this.m_materialBuilder;
         let material: PBRMaterial;
         material = matBuilder.makePBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
@@ -120,14 +85,6 @@ export default class PBREntityUtils {
         decorator.normalMapEnabled = true;
 
         material.setUVScale(uscale, vscale);
-
-        // if (decorator.indirectEnvMapEnabled) {
-        //     ptexList.push(this.m_cubeRTTBuilder.getCubeTexture());
-        // }
-        // if (decorator.shadowReceiveEnabled) {
-        //     ptexList.push(shadowTex);
-        // }
-        // material.setTextureList(ptexList);
         return material;
     }
     createMirrorEntity(param: PBRParamEntity, material: PBRMaterial, mirrorType: number): void {
@@ -135,16 +92,9 @@ export default class PBREntityUtils {
         let matBuilder: PBRMaterialBuilder = this.m_materialBuilder;
 
         let mirMaterial: PBRMaterial = matBuilder.makePBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
-        mirMaterial.copyFrom(material, false);
+        mirMaterial.copyFrom(material);
         let decorator: PBRShaderDecorator = material.decorator;
 
-        let texList: TextureProxy[] = material.getTextureList();
-        if (decorator.envMapEnabled) {
-            mirMaterial.setTextureList(texList.slice(1));
-        }
-        else {
-            mirMaterial.setTextureList(texList.slice(0));
-        }
         let mirDecorator: PBRShaderDecorator = mirMaterial.decorator;
         mirDecorator.hdrBrnEnabled = false;
         mirDecorator.envMapEnabled = false;

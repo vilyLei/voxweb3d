@@ -83,40 +83,34 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader
     
     dracoParseFinish(modules: any[], total: number): void {
 
-        console.log("pbrDracoParseFinish, modules: ", modules,this.m_pos);
+        console.log("pbrDracoParseFinish, modules: ", modules, this.m_pos);
 
-        let texList: TextureProxy[];
         let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6;        
         let material: PBRMaterial = this.entityUtils.createMaterial(uvscale,uvscale);
-        
-        material.decorator.indirectEnvMapEnabled = true;
+        let decorator = material.decorator;
+        decorator.indirectEnvMapEnabled = true;
         const keyNS: string = "/dracos_42";
         if(this.m_url.indexOf(keyNS) > 0) {
 
-            material.decorator.diffuseMapEnabled = true;
-            material.decorator.normalMapEnabled = false;
-            material.decorator.vtxFlatNormal = false;
-            material.decorator.aoMapEnabled = false;
-            material.decorator.shadowReceiveEnabled = false;
-            texList = this.entityUtils.createTexListForMaterial(material, this.envMap, this.entityUtils.getImageTexByUrl("static/assets/noise.jpg"));
+            decorator.diffuseMapEnabled = true;
+            decorator.normalMapEnabled = false;
+            decorator.vtxFlatNormal = false;
+            decorator.aoMapEnabled = false;
+            decorator.shadowReceiveEnabled = false;
+            this.entityUtils.useTexForMaterial(material, this.envMap, this.entityUtils.getImageTexByUrl("static/assets/noise.jpg"));
         }
         else {
             
-
-            //  texList = material.getTextureList().slice(0);
-            //  texList[1] = this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg");
-            //  texList[2] = this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/normal.jpg");
-            //  texList[3] = this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
-            material.decorator.diffuseMapEnabled = true;
-            material.decorator.normalMapEnabled = true;
-            material.decorator.aoMapEnabled = true;
-            material.decorator.vtxFlatNormal = false;
-            material.decorator.aoMapEnabled = this.aoMapEnabled;
+            decorator.diffuseMapEnabled = true;
+            decorator.normalMapEnabled = true;
+            decorator.aoMapEnabled = true;
+            decorator.vtxFlatNormal = false;
+            decorator.aoMapEnabled = this.aoMapEnabled;
             let aoTex: TextureProxy = null;
             if(material.decorator.aoMapEnabled) {
                 aoTex = this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
             }
-            texList = this.entityUtils.createTexListForMaterial(
+            this.entityUtils.useTexForMaterial(
                 material,
                 this.envMap,
                 this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg"),
@@ -124,8 +118,6 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader
                 aoTex
             );
         }
-
-        material.setTextureList(texList);
         material.initializeByCodeBuf(true);
         
         let mesh: DracoMesh = new DracoMesh();

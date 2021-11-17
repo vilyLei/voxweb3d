@@ -58,19 +58,6 @@ export class ViewerDracoModule extends DracoWholeModuleLoader
 
         console.log("ViewerDracoModule dracoParseFinish, modules: ", modules,this.m_pos);
 
-        let texList: TextureProxy[] = [];
-        
-        texList.push(this.envMap);
-        // base color map
-        texList.push( this.getImageTexByUrl("static/assets/disp/normal_4_256_COLOR.png"));
-        // normal map
-        texList.push( this.getImageTexByUrl("static/assets/disp/normal_4_256_NRM.png"));
-        if(this.aoMapEnabled) {
-            // ao map
-            texList.push( this.getImageTexByUrl("static/assets/disp/normal_4_256_OCC.png"));
-        }
-
-
         let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6;
         let material: PBRMaterial = this.viewer.createMaterial(uvscale,uvscale);
         
@@ -211,7 +198,7 @@ export class DemoPBRViewer {
             this.m_dracoModule.envMap = this.m_envMap;
             this.m_dracoModule.aoMapEnabled = this.aoMapEnabled;
             this.m_dracoModule.initialize(this.m_rscene, this.m_dracoMeshLoader);
-            //this.m_dracoModule.loadNext();
+            this.m_dracoModule.loadNext();
         }
     }
     

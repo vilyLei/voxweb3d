@@ -131,7 +131,7 @@ export default class MaterialBase implements IRenderMaterial {
     private m_texList: TextureProxy[] = null;
     private m_texListLen: number = 0;
     private m_texDataEnabled: boolean = false;
-    // @param           texList     [tex0,tex1,...]
+    
     /**
      * set TextuerProxy instances
      * @param texList [tex0,tex1,...]

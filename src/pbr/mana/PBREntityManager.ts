@@ -101,7 +101,7 @@ export default class PBREntityManager
     private initPrimitive(): void {
 
         let material: PBRMaterial;
-
+        
         this.m_paramEntities.push( this.m_mirrorEffector.getPlaneParamEntity() );
         /*
         let urls = [
@@ -120,17 +120,6 @@ export default class PBREntityManager
         let radius: number;
         let total: number = 4;
         
-        this.m_entityUtils.createTexList();
-        this.m_entityUtils.addTexture(this.m_envMap);
-        //this.m_entityUtils.addTextureByUrl("static/assets/noise.jpg");
-        // base color map
-        this.m_entityUtils.addTextureByUrl("static/assets/disp/normal_4_256_COLOR.png");
-        // normal map
-        this.m_entityUtils.addTextureByUrl("static/assets/disp/normal_4_256_NRM.png");
-        if(this.aoMapEnabled) {
-            // ao map
-            this.m_entityUtils.addTextureByUrl("static/assets/disp/normal_4_256_OCC.png");
-        }
         let disSize: number = 700.0;
         let dis: number = 500.0;
         let posList: Vector3D[] = [];
@@ -213,6 +202,7 @@ export default class PBREntityManager
         envSph.setMaterial(material);
         envSph.showFrontFace();
         envSph.initialize(3000.0,30,30);
+        material.setAmbientFactor(1.0,0.0,1.0);
         this.m_rscene.addEntity(envSph, 4);
         //*/
         /*

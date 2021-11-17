@@ -13,6 +13,7 @@ import MathConst from "../../vox/math/MathConst";
 import IPBRMaterial from "./IPBRMaterial";
 import PBRShaderDecorator from "./PBRShaderDecorator";
 import Color4 from "../../vox/material/Color4";
+import TextureProxy from "../../vox/texture/TextureProxy";
 
 class PBRShaderBuffer extends ShaderCodeBuffer {
     constructor() {
@@ -90,23 +91,23 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     protected buildBuf(): void {
 
         let buf: PBRShaderBuffer = PBRShaderBuffer.GetInstance();
+        let decorator = this.decorator;
+        buf.lightEnabled = decorator.lightEnabled;
+        buf.shadowReceiveEnabled = decorator.shadowReceiveEnabled;
+        buf.fogEnabled = decorator.fogEnabled;
 
-        buf.lightEnabled = this.decorator.lightEnabled;
-        buf.shadowReceiveEnabled = this.decorator.shadowReceiveEnabled;
-        buf.fogEnabled = this.decorator.fogEnabled;
-
-        buf.decorator = this.decorator;
+        buf.decorator = decorator;
         buf.decorator.codeBuilder = buf.getShaderCodeBuilder();
         buf.decorator.pipeline = this.m_pipeLine;
         
-        this.decorator.texturesTotal = this.getTextureTotal();
-        this.decorator.initialize();
+        let texList: TextureProxy[] = decorator.initialize();
+        super.setTextureList(texList);
         buf.texturesTotal = this.decorator.texturesTotal;
     }
     getCodeBuf(): ShaderCodeBuffer {
         return PBRShaderBuffer.GetInstance();
     }
-    copyFrom(dst: PBRMaterial, texEnabled:boolean = true): void {
+    copyFrom(dst: PBRMaterial): void {
 
         if(this.decorator == null)this.decorator = new PBRShaderDecorator();
         this.decorator.copyFrom( dst.decorator );
@@ -143,9 +144,8 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         else {
             this.m_mirrorParam.set(dst.m_mirrorParam);
         }
-        if(texEnabled) {
-            this.setTextureList(dst.getTextureList().slice());
-        }
+    }
+    setTextureList(texList: TextureProxy[]): void {
     }
     
     clone(): PBRMaterial {
