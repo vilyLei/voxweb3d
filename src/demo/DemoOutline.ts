@@ -68,7 +68,7 @@ export class DemoOutline {
             rparam.setAttriStencil(true);
             rparam.setCamPosition(800.0, 800.0, 800.0);
             this.m_rscene = new RendererScene();
-            this.m_rscene.initialize(rparam, 3);
+            this.m_rscene.initialize(rparam, 5);
             this.m_rscene.updateCamera();
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
@@ -86,7 +86,10 @@ export class DemoOutline {
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_stencilOutline.initialize( this.m_rscene );
 
-            this.m_postOutline.initialize(this.m_rscene, 1);
+            this.m_postOutline.initialize(this.m_rscene, 1, [0,1]);
+            this.m_postOutline.setFBOSizeScaleRatio(0.5);
+            this.m_postOutline.setRGB3f(2.0,2.0,2.0);
+            this.m_postOutline.setOutlineDensity(2.5);
             //  let axis: Axis3DEntity = new Axis3DEntity();
             //  axis.initialize(300.0);
             //  this.m_rscene.addEntity(axis);
@@ -154,7 +157,7 @@ export class DemoOutline {
         entity.setMesh(mesh);
         entity.setScaleXYZ(scale, scale, scale);
         //entity.setRotationXYZ(0, 50, 0);
-        this.m_rscene.addEntity(entity);
+        this.m_rscene.addEntity(entity, 1);
         let pos: Vector3D = new Vector3D();
         entity.getPosition(pos);
         let pv: Vector3D = entity.getGlobalBounds().min;
@@ -165,8 +168,8 @@ export class DemoOutline {
         this.m_postOutline.setTarget( entity );
         //  this.m_postOutline.setFBOSizeScaleRatio(2.0);
         //  this.m_postOutline.setOutlineThickness(4.0);
-        this.m_postOutline.setRGB3f(1.0,0.0,1.0);
-        //this.m_postOutline.setPostRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
+        this.m_postOutline.setRGB3f(2.0,0.0,2.0);
+        this.m_postOutline.setPostRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
     }
     private m_projType: number = 0;
     private m_fboIns: FBOInstance = null;
@@ -205,11 +208,11 @@ export class DemoOutline {
         if(this.m_mirrorTexLodEnabled) {
             this.m_fboIns.getRTTAt(0).enableMipmap();
         }
-        /*
+        ///*
         let scrPlane: ScreenAlignPlaneEntity =  new ScreenAlignPlaneEntity();
         scrPlane.setRenderState( RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
         scrPlane.initialize(-1,-1,2,2, [this.m_postOutline.getpreColorRTT()]);
-        //this.m_rscene.addEntity(scrPlane, 2);
+        this.m_rscene.addEntity(scrPlane, 3);
         //*/
 
         let camera: CameraBase = this.m_rscene.getCamera();
@@ -344,7 +347,10 @@ export class DemoOutline {
             
             this.m_postOutline.drawBegin();
             this.m_postOutline.draw();
+            //this.m_postOutline.drawTest();
             this.m_postOutline.drawEnd();
+
+            //this.m_rscene.runAt(3);
 
             this.m_rscene.runEnd();
         }

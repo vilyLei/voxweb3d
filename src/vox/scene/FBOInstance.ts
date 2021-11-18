@@ -71,11 +71,14 @@ export default class FBOInstance {
     /**
      * 设置当前 FBO控制的渲染过程中所需要的 renderer process 序号(id)列表
      */
-    setRProcessIDList(list: number[]): void {
-        if (list.length < 1) {
-            throw Error("list.length < 1, but must: list.length >= 1");
+    setRProcessIDList(processIDlist: number[]): void {
+        
+        if(processIDlist != null) {
+            if (processIDlist.length < 1) {
+                throw Error("processIDlist.length < 1, but it must: processIDlist.length >= 1");
+            }
+            this.m_rindexs = processIDlist;
         }
-        this.m_rindexs = list;
     }
     /**
      * 设置当前 FBO控制的渲染过程中所需要的 renderer process 序号(id)列表

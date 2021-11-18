@@ -46,26 +46,27 @@ class PostOutlineShaderBuffer extends ShaderCodeBuffer {
         this.m_coder.addFragMainCode(
 `
 const float factor = 1.0 / 9.0;
+const float floatReciprocalGamma = (1.0 / 2.2);
 void main() {
     
     vec2 dv = u_texParam.ww / u_texParam.xy;
     vec4 srcColor = VOX_Texture2D( u_sampler0, v_uv );
 
-    vec3 color = srcColor.xyz;// * 0.2;
-    color.xyz += VOX_Texture2D( u_sampler0, v_uv + dv ).xyz;// * 0.05;
-    color.xyz += VOX_Texture2D( u_sampler0, v_uv - dv ).xyz;// * 0.05;
-    color.xyz += VOX_Texture2D( u_sampler0, v_uv + vec2(dv.x ,-dv.y) ).xyz;// * 0.05;
-    color.xyz += VOX_Texture2D( u_sampler0, v_uv + vec2(-dv.x ,dv.y) ).xyz;// * 0.05;
-    color.xyz += VOX_Texture2D( u_sampler0, v_uv + vec2(dv.x ,0) ).xyz;// * 0.15;
-    color.xyz += VOX_Texture2D( u_sampler0, v_uv + vec2(0 ,dv.y) ).xyz;// * 0.15;
-    color.xyz += VOX_Texture2D( u_sampler0, v_uv - vec2(dv.x ,0) ).xyz;// * 0.15;
-    color.xyz += VOX_Texture2D( u_sampler0, v_uv - vec2(0 ,dv.y) ).xyz;// * 0.15;
+    vec3 color = srcColor.xyz;
+    color.xyz += VOX_Texture2D( u_sampler0, v_uv + dv ).xyz;
+    color.xyz += VOX_Texture2D( u_sampler0, v_uv - dv ).xyz;
+    color.xyz += VOX_Texture2D( u_sampler0, v_uv + vec2(dv.x ,-dv.y) ).xyz;
+    color.xyz += VOX_Texture2D( u_sampler0, v_uv + vec2(-dv.x ,dv.y) ).xyz;
+    color.xyz += VOX_Texture2D( u_sampler0, v_uv + vec2(dv.x ,0) ).xyz;
+    color.xyz += VOX_Texture2D( u_sampler0, v_uv + vec2(0 ,dv.y) ).xyz;
+    color.xyz += VOX_Texture2D( u_sampler0, v_uv - vec2(dv.x ,0) ).xyz;
+    color.xyz += VOX_Texture2D( u_sampler0, v_uv - vec2(0 ,dv.y) ).xyz;
     color.xyz *= factor;
     
-    float dis = length(color - srcColor.xyz);
+    float dis = abs(color.x - srcColor.x);
     dis *= u_texParam.z;
-    dis = clamp(dis, 0.0, 1.0) + 0.3;
-    FragColor0 = vec4(u_color.xyz, dis * dis * dis);
+    dis = pow(dis * dis * dis, floatReciprocalGamma);
+    FragColor0 = vec4(u_color.xyz, dis);
 }
 `
         );

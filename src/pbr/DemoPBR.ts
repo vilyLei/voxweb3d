@@ -17,6 +17,7 @@ import DefaultPBRUI from "./mana/DefaultPBRUI";
 import DebugFlag from "../vox/debug/DebugFlag";
 import PBRScene from "./mana/PBRScene";
 import PostOutline from "../renderingtoy/mcase/outline/PostOutline";
+import RendererState from "../vox/render/RendererState";
 
 export class DemoPBR {
     constructor() { }
@@ -64,7 +65,8 @@ export class DemoPBR {
             this.m_postOutline.initialize(this.m_rscene, 4);
             this.m_postOutline.setFBOSizeScaleRatio(0.5);
             this.m_postOutline.setOutlineThickness(1.0);
-            this.m_postOutline.setOutlineDensity(1.3);
+            this.m_postOutline.setOutlineDensity(2.0);
+            this.m_postOutline.setPostRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
 
             this.m_rscene.enableMouseEvent(true);
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
@@ -79,7 +81,7 @@ export class DemoPBR {
 
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
-            this.m_rscene.setClearRGBColor3f(0.2, 0.2, 0.2);
+            this.m_rscene.setClearRGBColor3f(0.2, 0.8, 0.2);
             
             this.m_uiModule.initialize(this.m_rscene, this.m_texLoader, true);
             this.m_ruisc = this.m_uiModule.ruisc;

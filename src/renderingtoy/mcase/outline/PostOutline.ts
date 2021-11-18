@@ -30,7 +30,7 @@ export default class PostOutline {
     private m_preColorRTT: RTTTextureProxy = null;
     private m_fboIns: FBOInstance = null;
 
-    initialize(rscene: RendererScene, fboIndex: number = 0): void {
+    initialize(rscene: RendererScene, fboIndex: number = 0, processIDlist: number[] = null): void {
 
         if (this.m_rscene == null) {
 
@@ -39,14 +39,14 @@ export default class PostOutline {
             this.m_preMaterial.initializeByCodeBuf(false);
 
             this.m_preColorRTT = this.m_rscene.textureBlock.createRTTTex2D(32, 32);
-            
+
             this.m_fboIns = this.m_rscene.createFBOInstance();
             this.m_fboIns.asynFBOSizeWithViewport();
-            this.m_fboIns.setFBOSizeFactorWithViewPort(this.m_sizeScaleRatio);
-            this.m_fboIns.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);              // set rtt background clear rgba(r=0.3,g=0.0,b=0.0,a=0.0) color
-            this.m_fboIns.createFBOAt(fboIndex, 512, 512, true, false);
-            this.m_fboIns.setRenderToTexture(this.m_preColorRTT, 0);            // framebuffer color attachment 0
-
+            this.m_fboIns.setFBOSizeFactorWithViewPort( this.m_sizeScaleRatio );
+            this.m_fboIns.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);                  // set rtt background clear rgba(r=0.3,g=0.0,b=0.0,a=0.0) color
+            this.m_fboIns.createFBOAt( fboIndex, 512, 512, true, false );
+            this.m_fboIns.setRenderToTexture( this.m_preColorRTT, 0 );              // framebuffer color attachment 0
+            this.m_fboIns.setRProcessIDList( processIDlist );
             this.m_rscene.setRenderToBackBuffer();
 
             this.m_postMaterial = new PostOutlineMaterial();
@@ -57,7 +57,7 @@ export default class PostOutline {
             this.m_postPlane =  new ScreenAlignPlaneEntity();
             this.m_postMaterial.setTexSize(this.m_rscene.getViewWidth() * 0.5, this.m_rscene.getViewHeight() * 0.5);
             this.m_postPlane.setMaterial( this.m_postMaterial );
-            this.m_postPlane.setRenderState( RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+            this.m_postPlane.setRenderState( RendererState.BACK_TRANSPARENT_ALWAYS_STATE );
             this.m_postPlane.initialize(-1,-1,2,2, [this.m_preColorRTT]);
             //this.m_rscene.addEntity(scrPlane, 2);
         }
@@ -72,8 +72,7 @@ export default class PostOutline {
     }
     setOutlineThickness(thickness: number): void {
         this.m_postMaterial.setThickness(thickness);
-    }
-    
+    }    
     setOutlineDensity( density: number ): void {
         this.m_postMaterial.setDensity(density);
     }
@@ -99,6 +98,7 @@ export default class PostOutline {
      * draw outline line begin
      */
     drawBegin(): void {
+
         if (this.m_running && this.m_target != null && this.m_target.isRenderEnabled()) {
 
             this.m_fboIns.setGlobalMaterial( this.m_preMaterial );
@@ -114,15 +114,22 @@ export default class PostOutline {
 
         let entity: DisplayEntity = this.m_target;
         if (this.m_running && entity != null && entity.isRenderEnabled()) {
-
             this.m_fboIns.runEnd();
             this.m_fboIns.unlockMaterial();
             this.m_rscene.setRenderToBackBuffer();
-
             this.m_postMaterial.setTexSize(this.m_rscene.getViewWidth() * this.m_sizeScaleRatio, this.m_rscene.getViewHeight() * this.m_sizeScaleRatio);
             this.m_rscene.drawEntity( this.m_postPlane );
         }
+    }
 
+    drawTest(): void {
+
+        let entity: DisplayEntity = this.m_target;
+        if (this.m_running && entity != null && entity.isRenderEnabled()) {
+            this.m_fboIns.runEnd();
+            this.m_fboIns.unlockMaterial();
+            this.m_rscene.setRenderToBackBuffer();
+        }
     }
     /**
      * draw outline line end
