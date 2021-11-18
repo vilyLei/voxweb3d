@@ -83,6 +83,9 @@ export default class MaterialBase implements IRenderMaterial {
                         this.setTextureList( buf.pipeline.getTextureList() );
                     }
                 }
+                else {
+                    this.buildBuf();
+                }
                 if (MaterialBase.s_codeBuffer == null) {
                     MaterialBase.s_codeBuffer = new ShaderCodeBuffer();
                 }

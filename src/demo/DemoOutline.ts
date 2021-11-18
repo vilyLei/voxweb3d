@@ -88,7 +88,7 @@ export class DemoOutline {
 
             this.m_postOutline.initialize(this.m_rscene, 1, [0,1]);
             this.m_postOutline.setFBOSizeScaleRatio(0.5);
-            this.m_postOutline.setRGB3f(2.0,2.0,2.0);
+            this.m_postOutline.setRGB3f(0.0,2.0,0.0);
             this.m_postOutline.setOutlineDensity(2.5);
             //  let axis: Axis3DEntity = new Axis3DEntity();
             //  axis.initialize(300.0);
@@ -102,7 +102,6 @@ export class DemoOutline {
             //      //this.m_disp = plane
             //testTex
             
-
             this.initPlaneReflection();
 
             this.update();
@@ -168,8 +167,8 @@ export class DemoOutline {
         this.m_postOutline.setTarget( entity );
         //  this.m_postOutline.setFBOSizeScaleRatio(2.0);
         //  this.m_postOutline.setOutlineThickness(4.0);
-        this.m_postOutline.setRGB3f(2.0,0.0,2.0);
-        this.m_postOutline.setPostRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
+        //this.m_postOutline.setRGB3f(2.0,0.0,2.0);
+        //this.m_postOutline.setPostRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
     }
     private m_projType: number = 0;
     private m_fboIns: FBOInstance = null;

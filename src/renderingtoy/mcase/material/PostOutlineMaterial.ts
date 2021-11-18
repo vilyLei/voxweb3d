@@ -9,6 +9,7 @@ import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import MathConst from "../../../vox/math/MathConst";
+
 class PostOutlineShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
@@ -25,8 +26,7 @@ class PostOutlineShaderBuffer extends ShaderCodeBuffer {
     private buildThisCode(): void {
 
         let coder = this.m_coder;
-        coder.reset();
-
+        
         coder.addVertLayout("vec3", "a_vs");
         coder.addVertLayout("vec2", "a_uvs");
         coder.addTextureSample2D();

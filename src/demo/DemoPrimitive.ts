@@ -118,7 +118,7 @@ export class DemoPrimitive {
             //plane.initializeXOZ(-200.0,-150.0,400.0,300.0);
             plane.setXYZ(0.0, -100.0, 0.0);
             this.m_renderer.addEntity(plane);
-            return;
+            //return;
             //  return;
             //*/
             ///*

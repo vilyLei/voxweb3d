@@ -16,6 +16,7 @@ import { MaterialContext } from "../materialLab/base/MaterialContext";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import {EnergyAttenuation} from "./base/EnergyAttenuation";
 import DisplayEntity from "../vox/entity/DisplayEntity";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
 
 
 export class DemoBase {
@@ -44,7 +45,7 @@ export class DemoBase {
 
         if (this.m_rscene == null) {
 
-            RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+            RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
@@ -69,8 +70,8 @@ export class DemoBase {
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
             //console.log("isWinExternalVideoCard: ",isWinExternalVideoCard);
-            this.m_materialCtx.initialize( this.m_rscene );
-            
+            //this.m_materialCtx.initialize( this.m_rscene );
+
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.initialize(300.0);
             this.m_rscene.addEntity(axis);

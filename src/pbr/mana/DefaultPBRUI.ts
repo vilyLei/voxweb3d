@@ -189,13 +189,13 @@ export class DefaultPBRUI implements IPBRUI {
     }
     private moveSelectToBtn(btn: ProgressBar | SelectionBar): void {
        
-        this.m_selectPlane.setVisible(true);
         let rect: AABB2D = btn.getRect();
         btn.getPosition(this.m_pos);
         this.m_pos.x += rect.x;
         this.m_selectPlane.setXYZ(this.m_pos.x, this.m_pos.y, -1.0);
         this.m_selectPlane.setScaleXYZ(rect.width, rect.height, 1.0);
         this.m_selectPlane.update();
+        this.m_selectPlane.setVisible(true);
     }
     private initCtrlBars(): void {
 
