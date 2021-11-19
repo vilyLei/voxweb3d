@@ -82,6 +82,8 @@ precision mediump float;
      */
     private m_preCompileInfo: ShaderCompileInfo = null;
 
+    // vertColorEnabled: boolean = false;
+    // premultiplyAlpha: boolean = false;
     mathDefineEanbled: boolean = true;
     normalEanbled: boolean = false;
     normalMapEanbled: boolean = false;
@@ -144,6 +146,8 @@ precision mediump float;
         this.m_textureFlags = [];
         this.m_texturePrecise = "";
 
+        // this.vertColorEnabled = false;
+        // this.premultiplyAlpha = false;
         this.mathDefineEanbled = true;
         this.normalEanbled = false;
         this.normalMapEanbled = false;

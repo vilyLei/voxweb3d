@@ -22,9 +22,9 @@ class ShaderCodeBuffer {
     protected m_texEnabled: boolean = true;
 
     pipeline: MaterialPipeline = null;
-    vtxColorEnabled: boolean = false;
+
+    vertColorEnabled: boolean = false;
     premultiplyAlpha: boolean = false;
-    
     shadowReceiveEnabled: boolean = false;
     lightEnabled: boolean = false;
     fogEnabled: boolean = false;
@@ -45,6 +45,8 @@ class ShaderCodeBuffer {
         this.m_coder.reset();
         this.m_texList = null;
         
+        this.vertColorEnabled = false;
+        this.premultiplyAlpha = false;
         this.shadowReceiveEnabled = false;
         this.lightEnabled = false;
         this.fogEnabled = false;
@@ -70,6 +72,12 @@ class ShaderCodeBuffer {
             }
         }
         this.m_texEnabled = texEnabled;
+        
+        // this.m_coder.vertColorEnabled = this.vertColorEnabled;
+        // this.m_coder.premultiplyAlpha = this.premultiplyAlpha;
+        if (this.premultiplyAlpha) this.m_coder.addDefine("VOX_PREMULTIPLY_ALPHA", "1");
+        if (this.vertColorEnabled) this.m_coder.addDefine("VOX_USE_VTX_COLOR", "1");
+
         this.bufInitWithPipeline();
     }
     

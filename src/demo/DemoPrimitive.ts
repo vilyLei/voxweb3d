@@ -112,7 +112,7 @@ export class DemoPrimitive {
             //plane.wireframe = true;
             plane.color0.setRGB3f(1.0, 0.0, 0.0);
             plane.color2.setRGB3f(0.0, 1.0, 0.0);
-            plane.vtxColorEnabled = true;
+            plane.vertColorEnabled = true;
             //plane.showDoubleFace();
             plane.initializeXOZ(-500.0, -500.0, 1000.0, 1000.0, [tex0]);
             //plane.initializeXOZ(-200.0,-150.0,400.0,300.0);

@@ -104,7 +104,7 @@ export class DemoCamVisibleTest
             //  this.m_rscene.addEntity(alignFixedPlane);
             //  //Rect2DEntity
             let rect2DDisp:Rect2DEntity = new Rect2DEntity();
-            rect2DDisp.vtxColorEnabled = true;
+            rect2DDisp.vertColorEnabled = true;
             rect2DDisp.color0.setRGB3f(1.0,1.0,1.0);
             rect2DDisp.color1.setRGB3f(1.0,0.0,0.0);
             rect2DDisp.color2.setRGB3f(0.0,0.0,0.0);

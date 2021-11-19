@@ -26,7 +26,7 @@ export default class TextRectMesh extends MeshBase
     //texCharTable:FontTexCharTable = null;
     flipVerticalUV:boolean = false;
     vtxUVEnabled:boolean = true;
-    vtxColorEnabled:boolean = false;
+    vertColorEnabled:boolean = false;
     alignFactorX:number = 0.5;
     alignFactorY:number = 0.5;
     getWidth():number

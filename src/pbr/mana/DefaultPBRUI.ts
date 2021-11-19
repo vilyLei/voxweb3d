@@ -211,7 +211,7 @@ export class DefaultPBRUI implements IPBRUI {
         this.m_menuBtn = this.createSelectBtn("", "menuCtrl", "Menu Open", "Menu Close", false, true);
 
         this.m_selectPlane = new Plane3DEntity();
-        this.m_selectPlane.vtxColorEnabled = true;
+        this.m_selectPlane.vertColorEnabled = true;
         this.m_selectPlane.color0.setRGB3f(0.0,0.3,0.0);
         this.m_selectPlane.color1.setRGB3f(0.0,0.3,0.0);
         this.m_selectPlane.color2.setRGB3f(0.0,0.5,0.5);

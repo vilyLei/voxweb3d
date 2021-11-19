@@ -21,7 +21,7 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
         super.initialize(texEnabled);
         this.m_uniqueName = "VOX_Default3DShd";
         if (this.m_texEnabled) this.m_uniqueName += "_tex";
-        if (this.vtxColorEnabled) this.m_uniqueName += "_vtxColor";
+        if (this.vertColorEnabled) this.m_uniqueName += "_vtxColor";
         if (this.premultiplyAlpha) this.m_uniqueName += "_preMulAlpha";
         this.adaptationShaderVersion = false;
     }
@@ -33,14 +33,14 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
         coder.addFragUniform("vec4", "u_color");
         coder.useVertSpaceMats(true, true, true);
 
-        if (this.premultiplyAlpha) coder.addDefine("VOX_PREMULTIPLY_ALPHA", "1");
+        //if (this.premultiplyAlpha) coder.addDefine("VOX_PREMULTIPLY_ALPHA", "1");
         if (this.m_texEnabled) {
             coder.addDiffuseMap();
             coder.addVertLayout("vec2", "a_uvs");
             coder.addVarying("vec2", "v_uv");
         }
-        if (this.vtxColorEnabled) {
-            coder.addDefine("VOX_USE_VTX_COLOR", "1");
+        if (this.vertColorEnabled) {
+            //coder.addDefine("VOX_USE_VTX_COLOR", "1");
             coder.addVertLayout("vec3", "a_cvs");
             coder.addVarying("vec3", "v_cv");
         }
@@ -92,7 +92,7 @@ export default class Default3DMaterial extends MaterialBase {
 
     private static s_shdCodeBuffer: Default3DShaderCodeBuffer = null;
     private m_colorArray: Float32Array = new Float32Array([1.0, 1.0, 1.0, 1.0]);
-    vtxColorEnabled: boolean = false;
+    vertColorEnabled: boolean = false;
     premultiplyAlpha: boolean = false;
     constructor() {
         super();
@@ -102,7 +102,7 @@ export default class Default3DMaterial extends MaterialBase {
     }
     protected buildBuf(): void {
         let buf: Default3DShaderCodeBuffer = Default3DMaterial.s_shdCodeBuffer;
-        buf.vtxColorEnabled = this.vtxColorEnabled;
+        buf.vertColorEnabled = this.vertColorEnabled;
         buf.premultiplyAlpha = this.premultiplyAlpha;
     }
     /**

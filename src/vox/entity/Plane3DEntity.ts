@@ -38,7 +38,7 @@ export default class Plane3DEntity extends DisplayEntity {
     wireframe: boolean = false;
     uvs: Float32Array = null;
     flipVerticalUV: boolean = false;
-    vtxColorEnabled: boolean = false;
+    vertColorEnabled: boolean = false;
     premultiplyAlpha: boolean = false;
 
     constructor(transform: ROTransform = null) {
@@ -68,7 +68,7 @@ export default class Plane3DEntity extends DisplayEntity {
             }
             else {
                 let cm: Default3DMaterial = new Default3DMaterial();
-                cm.vtxColorEnabled = this.vtxColorEnabled;
+                cm.vertColorEnabled = this.vertColorEnabled;
                 cm.premultiplyAlpha = this.premultiplyAlpha;
                 cm.setTextureList(texList);
                 this.setMaterial(cm);

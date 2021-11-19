@@ -29,7 +29,7 @@ export default class Rect2DEntity extends DisplayEntity
     readonly color3:Color4 = new Color4();
     
     flipVerticalUV:boolean = false;
-    vtxColorEnabled:boolean = false;
+    vertColorEnabled:boolean = false;
     centerAlignEnabled:boolean = false;
     constructor()
     {
@@ -39,7 +39,7 @@ export default class Rect2DEntity extends DisplayEntity
     {
         if(this.getMaterial() == null)
         {
-            this.m_currMaterial = new Rect2DMaterial(this.centerAlignEnabled,this.vtxColorEnabled);
+            this.m_currMaterial = new Rect2DMaterial(this.centerAlignEnabled,this.vertColorEnabled);
             this.m_currMaterial.setTextureList(texList);
             this.setMaterial(this.m_currMaterial);
         }

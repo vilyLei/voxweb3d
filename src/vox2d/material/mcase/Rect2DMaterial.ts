@@ -8,7 +8,6 @@
 import MathConst from "../../../vox/math/MathConst";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
-import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import MaterialBase from "../../../vox/material/MaterialBase";
 
 class Rect2DShaderBuffer extends ShaderCodeBuffer
@@ -21,7 +20,7 @@ class Rect2DShaderBuffer extends ShaderCodeBuffer
     private m_uniqueName:string = "";
     private m_hasTex:boolean = false;
     centerAlignEnabled:boolean = false;
-    vtxColorEnabled:boolean = false;
+    vertColorEnabled:boolean = false;
     initialize(texEnabled:boolean):void
     {
         console.log("Rect2DShaderBuffer::initialize()... texEnabled: "+texEnabled);
@@ -29,7 +28,7 @@ class Rect2DShaderBuffer extends ShaderCodeBuffer
         this.m_hasTex = texEnabled;
         if(texEnabled) this.m_uniqueName += "_tex";
         if(this.centerAlignEnabled) this.m_uniqueName += "_center";
-        if(this.vtxColorEnabled) this.m_uniqueName += "_vtxColor";
+        if(this.vertColorEnabled) this.m_uniqueName += "_vtxColor";
     }
     getFragShaderCode():string
     {
@@ -90,7 +89,7 @@ attribute vec2 a_uvs;
 varying vec2 v_texUV;
 `;
         }
-        if(this.vtxColorEnabled)
+        if(this.vertColorEnabled)
         {
             vtxCode +=
 `
@@ -132,7 +131,7 @@ vtxCode +=
 `
     v_color = u_params[2];
 `;
-        if(this.vtxColorEnabled)
+        if(this.vertColorEnabled)
         {
             vtxCode +=
 `
@@ -169,19 +168,19 @@ vtxCode +=
 export default class Rect2DMaterial extends MaterialBase
 {
     private m_centerAlignEnabled:boolean = false;
-    private m_vtxColorEnabled:boolean = false;
-    constructor(centerAlignEnabled:boolean = false,vtxColorEnabled:boolean = false)
+    private m_vertColorEnabled:boolean = false;
+    constructor(centerAlignEnabled:boolean = false,vertColorEnabled:boolean = false)
     {
         super();
         this.m_centerAlignEnabled = centerAlignEnabled;
-        this.m_vtxColorEnabled = vtxColorEnabled;
+        this.m_vertColorEnabled = vertColorEnabled;
     }
     private m_r:number = 0.0
     getCodeBuf():ShaderCodeBuffer
     {
         let buf: Rect2DShaderBuffer = Rect2DShaderBuffer.GetInstance();
         buf.centerAlignEnabled = this.m_centerAlignEnabled;
-        buf.vtxColorEnabled = this.m_vtxColorEnabled;
+        buf.vertColorEnabled = this.m_vertColorEnabled;
         return buf;
     }
     private m_paramArray:Float32Array = new Float32Array([0.0,0.0,0.0,0.0, 1.0,1.0,0.0,0.0, 1.0,1.0,1.0,1.0]);
