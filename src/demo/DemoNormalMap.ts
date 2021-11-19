@@ -21,10 +21,11 @@ import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
 
 import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
-import { MaterialContext } from "../materialLab/base/MaterialContext";
+import { MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
 
 import EngineBase from "../vox/engine/EngineBase";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
+import { PointLight } from "../light/base/PointLight";
 
 export class DemoNormalMap {
 
@@ -70,15 +71,23 @@ export class DemoNormalMap {
 
             let color: Color4 = new Color4(1.0,1.0,0.0);
             let colorBias: Color4 = new Color4(0.0,0.0,0.0);
-
-            this.m_materialCtx.initialize( this.m_engine.rscene );
-            //this.m_vsmModule = this.m_materialCtx.vsmModule;
-            //this.m_materialCtx.pipeline = this.m_materialCtx.pipeline;
-            /*
-            //*/
-            // let axis: Axis3DEntity = new Axis3DEntity();
-            // axis.initialize(300.0);
-            // this.m_rscene.addEntity(axis);
+            
+            let mcParam: MaterialContextParam = new MaterialContextParam();
+            mcParam.pointLightsTotal = 1;
+            mcParam.directionLightsTotal = 0;
+            mcParam.spotLightsTotal = 0;
+            this.m_materialCtx.initialize( this.m_engine.rscene, mcParam );
+            let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
+            pointLight.position.setXYZ(200.0, 150.0, 200.0);
+            pointLight.color.setRGB3f(2.0, 0.3, 2.0);
+            pointLight.attenuationFactor1 = 0.00001;
+            pointLight.attenuationFactor2 = 0.000001;
+            this.m_materialCtx.lightModule.update();
+            
+            let crossAxis: Axis3DEntity = new Axis3DEntity();
+            crossAxis.initialize(50.0);
+            crossAxis.setPosition(pointLight.position);
+            this.m_engine.rscene.addEntity(crossAxis);
 
             let material: LambertLightMaterial = new LambertLightMaterial();
             this.useMaps(material, "metal_08", true, true, true);

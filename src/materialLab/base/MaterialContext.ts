@@ -10,8 +10,8 @@ import MathConst from "../../vox/math/MathConst";
 
 class MaterialContextParam {
 
-    pointLightsTotal: number = 2;
-    directionLightsTotal: number = 2;
+    pointLightsTotal: number = 1;
+    directionLightsTotal: number = 1;
     spotLightsTotal: number = 0;
     vsmFboIndex: number = 0;
     vsmEnabled: boolean = true;
@@ -49,8 +49,6 @@ class MaterialContext {
             this.m_rscene = rscene;
 
             let selfT: any = this;
-            let areaSize: number = 800.0;
-            let color: Color4 = new Color4(1.0, 1.0, 0.0);
             if (param == null) {
                 param = new MaterialContextParam();
             }
@@ -68,6 +66,7 @@ class MaterialContext {
             for(let i: number = 0; i < param.spotLightsTotal; ++i) {
                 this.lightModule.appendSpotLight();
             }
+            this.lightModule.update();
 
             selfT.envData = new EnvLightData();
             this.envData.initialize();
@@ -85,9 +84,8 @@ class MaterialContext {
                 this.vsmModule.setShadowIntensity(0.8);
                 this.vsmModule.setColorIntensity(0.3);
             }
-
+            
             selfT.pipeline = new MaterialPipeline();
-            //this.pipeline.addPipe(this.lightData);
             this.pipeline.addPipe(this.lightModule);
             this.pipeline.addPipe(this.envData);
             if(this.vsmModule != null) {
