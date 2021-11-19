@@ -149,7 +149,7 @@ export default class LambertLightMaterial extends MaterialBase {
                     [
                         0.5, 0.5, 0.5, 32.0,        // specular color rgb, pow value
                         0.7, 0.3,                   // diffuse light color value factor, specular value factor
-                        0.001, 0.0001,              // attenuation factor 1, attenuation factor 2
+                        0.0, 0.0,                   // undefined, undefined
                         0.3, 0.7,                   // base color value factor, light value factor
                         0.0, 0.0                    // undefined, undefined
                     ]);
@@ -201,17 +201,6 @@ export default class LambertLightMaterial extends MaterialBase {
         if (this.m_lightParamsArray != null) {
             this.m_lightParamsArray[4] = baseColorFactor;
             this.m_lightParamsArray[5] = lightFactor;
-        }
-    }
-    /**
-     * ads 光照模型中顶点与点光源之间距离的二次方和三次方因子
-     * @param factor2 顶点与点光源之间距离的二次方因子, default value is 0.001
-     * @param factor3 顶点与点光源之间距离的三次方因子, default value is 0.0001
-     */
-    setLightIntensityFactors(factor2: number, factor3: number): void {
-        if (this.m_lightParamsArray != null) {
-            this.m_lightParamsArray[6] = factor2;
-            this.m_lightParamsArray[7] = factor3;
         }
     }
     /**

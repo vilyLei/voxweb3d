@@ -43,6 +43,11 @@ class Color4 {
         this.b = c.b;
         this.a = c.a;
     }
+    copyFromRGB(c: Color4): void {
+        this.r = c.r;
+        this.g = c.g;
+        this.b = c.b;
+    }
     scaleBy(s: number): void {
         this.r *= s;
         this.g *= s;

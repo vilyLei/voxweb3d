@@ -83,6 +83,20 @@ export default class GlobalLightData implements IMaterialPipe {
     getColorData(): Float32Array {
         return this.m_lightColors;
     }
+    /**
+     * point light ads 光照模型中顶点与点光源之间距离的一次方和二次方因子
+     * @param factor1 顶点与点光源之间距离的一次方因子, default value is 0.0001
+     * @param factor2 顶点与点光源之间距离的二次方因子, default value is 0.0005
+     */
+    setPointLightAttenuationFactorAt(index: number, factor1: number, factor2: number): void {
+        if (this.m_pointLightPosList != null && index >= 0 && index < this.m_pointLightPosList.length) {
+            this.m_pointLightPosList[index].w = factor1;
+            this.m_pointLightColorList[index].a = factor2;
+            let i: number = index * 4;
+            this.m_lightPosData[i + 3] = factor1;
+            this.m_lightColors[i + 3] = factor2;
+        }
+    }
     setPointLightAt(index: number, position: Vector3D, color: Color4): void {
 
         let i: number = index * 4;
@@ -95,7 +109,7 @@ export default class GlobalLightData implements IMaterialPipe {
             }
         }
         if (color != null && this.m_pointLightColorList != null && index < this.m_pointLightColorList.length) {
-            this.m_pointLightColorList[index].copyFrom(color);
+            this.m_pointLightColorList[index].copyFromRGB(color);
             if (this.m_lightColors != null) {
                 this.m_lightColors[i] = color.r;
                 this.m_lightColors[i + 1] = color.g;
@@ -124,6 +138,24 @@ export default class GlobalLightData implements IMaterialPipe {
                     this.m_lightColors[i + 2] = color.b;
                 }
             }
+        }
+    }
+    /**
+     * spot light ads 光照模型中顶点与点光源之间距离的一次方和二次方因子
+     * @param factor1 顶点与点光源之间距离的一次方因子, default value is 0.0001
+     * @param factor2 顶点与点光源之间距离的二次方因子, default value is 0.0005
+     */
+    setSpotLightAttenuationFactorAt(index: number, factor1: number, factor2: number): void {
+        if (this.m_spotLightPosList != null && index >= 0 && index < this.m_spotLightPosList.length) {
+            this.m_spotLightPosList[index].w = factor1;
+            this.m_spotLightColorList[index].a = factor2;
+            let i: number = 0;
+            if (this.m_pointLightPosList != null) i += this.m_pointLightPosList.length;
+            if (this.m_direcLightDirecList != null) i += this.m_direcLightDirecList.length;
+            i *= 4;
+            i += index * 4;
+            this.m_lightPosData[i + 3] = factor1;
+            this.m_lightColors[i + 3] = factor2;
         }
     }
     setSpotLightAt(index: number, position: Vector3D, direc: Vector3D, angle_degree: number, color: Color4): void {
@@ -164,7 +196,7 @@ export default class GlobalLightData implements IMaterialPipe {
                 }
             }
             if (color != null) {
-                this.m_spotLightColorList[index].copyFrom(color);
+                this.m_spotLightColorList[index].copyFromRGB(color);
                 if (this.m_lightColors != null) {
                     i += index * 4;
                     this.m_lightColors[i] = color.r;
@@ -206,10 +238,12 @@ export default class GlobalLightData implements IMaterialPipe {
                     this.m_lightPosData[k] = pos.x;
                     this.m_lightPosData[k + 1] = pos.y;
                     this.m_lightPosData[k + 2] = pos.z;
+                    this.m_lightPosData[k + 3] = pos.w;
                     let color: Color4 = colorList[i];
                     this.m_lightColors[k] = color.r;
                     this.m_lightColors[k + 1] = color.g;
                     this.m_lightColors[k + 2] = color.b;
+                    this.m_lightColors[k + 3] = color.a;
                     j++;
                 }
             }
@@ -244,29 +278,7 @@ export default class GlobalLightData implements IMaterialPipe {
                 j = 0;
                 if(this.m_pointLightPosList != null) j += this.m_pointLightPosList.length;
                 if(this.m_direcLightDirecList != null) j += this.m_direcLightDirecList.length;
-                /*
-                for (let i: number = 0; i < lightsTotal; ++i) {
-
-                    let param: Vector3D = this.m_spotLightPosList[i];
-                    let k: number = j * 4;
-                    this.m_lightPosData[k] = param.x;
-                    this.m_lightPosData[k + 1] = param.y;
-                    this.m_lightPosData[k + 2] = param.z;
-                    //this.m_lightPosData[k + 3] = param.w;
-                    param = params[i];
-                    param.normalize();
-                    this.m_lightPosData[k + 4] = param.x;
-                    this.m_lightPosData[k + 5] = param.y;
-                    this.m_lightPosData[k + 6] = param.z;
-                    this.m_lightPosData[k + 7] = param.w;
-
-                    let color: Color4 = colorList[i];
-                    this.m_lightColors[k] = color.r;
-                    this.m_lightColors[k + 1] = color.g;
-                    this.m_lightColors[k + 2] = color.b;
-                    j += 2;
-                }
-                //*/
+                
                 let offset: number = lightsTotal * 4;
                 for (let i: number = 0; i < lightsTotal; ++i) {
 
@@ -275,7 +287,7 @@ export default class GlobalLightData implements IMaterialPipe {
                     this.m_lightPosData[k] = param.x;
                     this.m_lightPosData[k + 1] = param.y;
                     this.m_lightPosData[k + 2] = param.z;
-                    //this.m_lightPosData[k + 3] = param.w;
+                    this.m_lightPosData[k + 3] = param.w;
                     param = params[i];
                     param.normalize();
                     this.m_lightPosData[offset + k] = param.x;
@@ -287,13 +299,12 @@ export default class GlobalLightData implements IMaterialPipe {
                     this.m_lightColors[k] = color.r;
                     this.m_lightColors[k + 1] = color.g;
                     this.m_lightColors[k + 2] = color.b;
+                    this.m_lightColors[k + 3] = color.a;
                     j += 1;
                 }
             }
 
             if (this.m_uProbe == null) {
-                console.log("this.m_lightPosData: ",this.m_lightPosData);
-                console.log("this.m_lightPosDataVec4Total: ",this.m_lightPosDataVec4Total);
                 this.m_uProbe = new ShaderUniformProbe();
                 this.m_uProbe.bindSlotAt(this.m_uslotIndex);
                 this.m_uProbe.addVec4Data(this.m_lightPosData, this.m_lightPosDataVec4Total);
@@ -375,6 +386,7 @@ export default class GlobalLightData implements IMaterialPipe {
             pv.setXYZ(Math.random() - 0.5, 0.0, Math.random() - 0.5);
             pv.scaleBy(this.lightBaseDis + Math.random() * 100.0);
             pv.y = (Math.random() - 0.5) * (this.lightBaseDis * 2.0);
+            pv.w = 0.0001;
         }
         this.m_pointLightPosList = params;
 
@@ -382,6 +394,7 @@ export default class GlobalLightData implements IMaterialPipe {
         for (let i: number = 0; i < lightsTotal; ++i) {
             colorList[i] = new Color4();
             colorList[i].normalizeRandom(colorSize);
+            colorList[i].a = 0.0005;
         }
         this.m_pointLightColorList = colorList;
 
@@ -400,6 +413,7 @@ export default class GlobalLightData implements IMaterialPipe {
         for (let i: number = 0; i < lightsTotal; ++i) {
             colorList[i] = new Color4();
             colorList[i].normalizeRandom(colorSize);
+            colorList[i].a = 0.0005;
         }
         this.m_direcLightColorList = colorList;
 
@@ -417,6 +431,7 @@ export default class GlobalLightData implements IMaterialPipe {
             pv.setXYZ(Math.random() - 0.5, 0.0, Math.random() - 0.5);
             pv.scaleBy(this.lightBaseDis + Math.random() * 100.0);
             pv.y = 50 + (this.lightBaseDis * 2.0);
+            pv.w = 0.0001;
 
             pv = paramsList[i] = new Vector3D();
             pv.setXYZ(0.0, -1.0, 0.0);
@@ -430,6 +445,7 @@ export default class GlobalLightData implements IMaterialPipe {
         for (let i: number = 0; i < lightsTotal; ++i) {
             colorList[i] = new Color4();
             colorList[i].normalizeRandom(colorSize);
+            colorList[i].a = 0.0005;
         }
         this.m_spotLightColorList = colorList;
 

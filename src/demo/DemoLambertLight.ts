@@ -98,14 +98,16 @@ export class DemoLambertLight {
             let colorBias: Color4 = new Color4(0.0,0.0,0.0);
             let axis: Axis3DEntity;
             let lightsTotal: number = this.m_materialCtx.lightData.getPointLightsTotal();
-            //let pointList: Vector3D[] = this.m_materialCtx.lightData.getPointLightPosList();
             let pointList: Vector3D[] = this.m_materialCtx.lightData.getSpotLightPosList();
-            this.m_materialCtx.lightData.setPointLightAt(0, new Vector3D(-200.0, 56.0, 0.0), new Color4(0.0, 2.0, 0.0, 1.0));
-            this.m_materialCtx.lightData.setPointLightAt(1, new Vector3D(-200.0, 56.0, -200.0), new Color4(0.0, 2.0, 2.0, 1.0));
+            this.m_materialCtx.lightData.setPointLightAt(0, new Vector3D(-200.0, 56.0, 0.0), new Color4(0.0, 4.0, 0.0, 1.0));
+            this.m_materialCtx.lightData.setPointLightAt(1, new Vector3D(-200.0, 56.0, -200.0), new Color4(0.0, 4.0, 2.0, 1.0));
             this.m_materialCtx.lightData.setDirecLightAt(0, new Vector3D(0.0, -1.0, 1.0), new Color4(0.9, 0.9, 0.9, 1.0));
             this.m_materialCtx.lightData.setSpotLightAt(0, new Vector3D(0.0, 56.0, 0.0), new Vector3D(0.0, -1.0, 0.0), 10, new Color4(0.0, 3.0, 0.0, 1.0));
             this.m_materialCtx.lightData.setSpotLightAt(1, new Vector3D(100.0, 56.0, 0.7), new Vector3D(0.0, -1.0, -0.7), 10, new Color4(2.0, 0.0, 1.0, 1.0));
             this.m_materialCtx.lightData.update();
+
+            this.m_materialCtx.lightData.setPointLightAttenuationFactorAt(0, 0.0001, 0.0005);
+            this.m_materialCtx.lightData.setSpotLightAttenuationFactorAt(0, 0.0001, 0.0001);
 
             for(let i: number = 0; i < 0; ++i) {
                 axis = new Axis3DEntity();
@@ -137,7 +139,7 @@ export class DemoLambertLight {
             //material.parallaxMap =            this.getImageTexByUrl("static/assets/moss_01.jpg");
             //material.parallaxMap =            this.getImageTexByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
             //*/
-            material.diffuseMap = this.getImageTexByUrl("static/assets/wood_02.jpg");
+            material.diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
             this.useMaps(material,"lava_03",true,false,false,true,true);
             //*/
             //material.shadowMap = null;
@@ -146,7 +148,6 @@ export class DemoLambertLight {
             material.specularMode = SpecularMode.FragColor;
             material.initializeLocalData();
             //material.setSpecularColor(new Color4(0.5,0.5,0.5,1.0));
-            material.setLightIntensityFactors(0.0001,0.0005);
             material.setSpecularIntensity(64.0);
             material.setLightBlendFactor(0.7,0.3);
             material.setBlendFactor(0.01,0.8);
@@ -161,7 +162,7 @@ export class DemoLambertLight {
             //plane.setXYZ(0.0, -200.0, 0.0);
             this.m_rscene.addEntity(plane);
             //*/
-            ///*
+            /*
             let sphMaterial: LambertLightMaterial = new LambertLightMaterial();
             sphMaterial.diffuseMap = this.getImageTexByUrl("static/assets/default.jpg");
             sphMaterial.copyFrom(material);
