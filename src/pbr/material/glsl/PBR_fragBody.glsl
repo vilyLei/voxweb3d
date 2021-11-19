@@ -98,16 +98,19 @@
     rL.specularPower = specularPower;
     rL.frontIntensity = frontIntensity;
     rL.sideIntensity = sideIntensity;
-
+    vec4 param4;
+    vec4 color4;
     // point light process
     #if VOX_POINT_LIGHTS_TOTAL > 0
         for(int i = 0; i < VOX_POINT_LIGHTS_TOTAL; ++i) 
         {
             // calculate per-light radiance
-            vec3 L = (u_lightPositions[i].xyz - worldPosition.xyz);
+            param4 = u_lightPositions[i];
+            color4 = u_lightColors[i];
+            vec3 L = (param4.xyz - worldPosition.xyz);
             float distance = length(L);
-            float attenuation = 1.0 / (1.0 + 0.001 * distance + 0.0001 * distance * distance);
-            vec3 inColor = u_lightColors[i].xyz * attenuation;
+            float attenuation = 1.0 / (1.0 + param4.w * distance + color4.w * distance * distance);
+            vec3 inColor = color4.xyz * attenuation;
             rL.L = normalize(L);
             calcPBRLight(roughness, rm, inColor, rL);
         }
@@ -117,7 +120,7 @@
         for(int i = VOX_POINT_LIGHTS_TOTAL; i < VOX_LIGHTS_TOTAL; ++i) 
         {
             // calculate per-light radiance
-            rL.L = normalize(u_lightPositions[i].xyz);
+            rL.L = normalize(-u_lightPositions[i].xyz);
             calcPBRLight(roughness, rm, u_lightColors[i].xyz, rL);
         }
     #endif

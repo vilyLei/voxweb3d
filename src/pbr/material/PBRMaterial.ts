@@ -6,6 +6,7 @@
 /***************************************************************************/
 
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
+import IAbstractShader from "../../vox/material/IAbstractShader";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
 import Vector3D from "../../vox/math/Vector3D";
@@ -14,6 +15,8 @@ import IPBRMaterial from "./IPBRMaterial";
 import PBRShaderDecorator from "./PBRShaderDecorator";
 import Color4 from "../../vox/material/Color4";
 import TextureProxy from "../../vox/texture/TextureProxy";
+
+import { PBRShaderCode } from "./glsl/PBRShaderCode";
 
 class PBRShaderBuffer extends ShaderCodeBuffer {
     constructor() {
@@ -30,6 +33,9 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
     }
     buildShader(): void {
         this.decorator.buildShader();
+    }
+    getShaderCodeObject(): IAbstractShader {
+        return PBRShaderCode;
     }
     getFragShaderCode(): string {
         return this.m_coder.buildFragCode();

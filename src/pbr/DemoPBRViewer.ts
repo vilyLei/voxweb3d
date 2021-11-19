@@ -26,69 +26,19 @@ import Axis3DEntity from "../vox/entity/Axis3DEntity";
 
 import DracoMeshBuilder from "../voxmesh/draco/DracoMeshBuilder";
 import DracoMesh from "../voxmesh/draco/DracoMesh";
-import {DracoWholeModuleLoader} from "../voxmesh/draco/DracoModuleLoader";
+import { DracoWholeModuleLoader } from "../voxmesh/draco/DracoModuleLoader";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import ThreadSystem from "../thread/ThreadSystem";
 
 import { PBRShaderCode } from "../pbr/material/glsl/PBRShaderCode";
 import { MaterialPipeline } from "../vox/material/pipeline/MaterialPipeline";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
 
-export class ViewerDracoModule extends DracoWholeModuleLoader
-{
-    
-    texLoader: ImageTextureLoader = null;
-    reflectPlaneY: number = -220.0;
-    aoMapEnabled: boolean = false;
-    envMap: TextureProxy;
-    viewer: DemoPBRViewer;
-    constructor() {
-        super();
-    }
-    
-    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.texLoader.getImageTexByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
-    }
-    dracoParse(pmodule: any, index: number, total: number): void {
-        console.log("ViewerDracoModule dracoParse, total: ", total);
-    }
-    dracoParseFinish(modules: any[], total: number): void {
+import { PointLight } from "../light/base/PointLight";
+import { DirectionLight } from "../light/base/DirectionLight";
+import { SpotLight } from "../light/base/SpotLight";
+import { MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
 
-        console.log("ViewerDracoModule dracoParseFinish, modules: ", modules,this.m_pos);
-
-        let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6;
-        let material: PBRMaterial = this.viewer.createMaterial(uvscale,uvscale);
-        
-        material.decorator.envMap = this.envMap;
-        material.decorator.diffuseMap = this.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg");
-        material.decorator.normalMap = this.getImageTexByUrl("static/assets/modules/skirt/normal.jpg");
-        material.decorator.diffuseMap = this.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
-
-        material.decorator.diffuseMapEnabled = true;
-        material.decorator.normalMapEnabled = true;
-        material.decorator.vtxFlatNormal = false;
-        material.decorator.aoMapEnabled = this.aoMapEnabled;
-        material.setAlbedoColor(Math.random() * 3, Math.random() * 3, Math.random() * 3);
-        material.initializeByCodeBuf(true);
-        let scale: number = 3.0;
-        let entity: DisplayEntity = new DisplayEntity();
-        
-        let mesh: DracoMesh = new DracoMesh();
-        mesh.setBufSortFormat(material.getBufSortFormat());
-        mesh.initialize(modules);
-        entity.setMaterial( material );
-        entity.setMesh( mesh );
-        entity.setScaleXYZ(scale, scale, scale);
-        entity.setRotationXYZ(-90,0,0);
-        //entity.setRotationXYZ(0, Math.random() * 300, 0);
-        //entity.setPosition( this.m_pos );
-        this.m_rscene.addEntity(entity);
-
-        this.loadNext();
-    }
-}
 export class DemoPBRViewer {
     constructor() { }
     private m_rscene: RendererScene = null;
@@ -104,12 +54,15 @@ export class DemoPBRViewer {
     private m_dracoMeshLoader: DracoMeshBuilder = new DracoMeshBuilder();
     private m_dracoModule: ViewerDracoModule = null;
     private m_reflectPlaneY: number = -220;
-    private m_envData: EnvLightData = null;
+    //  private m_envData: EnvLightData = null;
     private m_envMap: TextureProxy = null;
-    
-    private m_pipeline: MaterialPipeline = new MaterialPipeline();
 
-    fogEnabled: boolean = true;
+    //private m_pipeline: MaterialPipeline = new MaterialPipeline();
+
+
+    private m_materialCtx: MaterialContext = new MaterialContext();
+
+    fogEnabled: boolean = false;
     hdrBrnEnabled: boolean = true;
     vtxFlatNormal: boolean = false;
     aoMapEnabled: boolean = false;
@@ -129,18 +82,19 @@ export class DemoPBRViewer {
 
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
-            rparam.setCamProject(45,50.0,10000.0);
+            rparam.setCamProject(45, 50.0, 10000.0);
             rparam.setAttriStencil(true);
             rparam.setAttriAntialias(true);
-            rparam.setCamPosition(2000.0, 2000.0, 2000.0);
-            rparam.setCamLookAtPos( this.m_lookV.x, this.m_lookV.y, this.m_lookV.z );
+            //rparam.setCamPosition(2000.0, 2000.0, 2000.0);
+            rparam.setCamPosition(800.0, 800.0, 800.0);
+            //rparam.setCamLookAtPos( this.m_lookV.x, this.m_lookV.y, this.m_lookV.z );
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 5);
             this.m_rscene.updateCamera();
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);
-            
+
             this.m_rscene.enableMouseEvent(true);
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
@@ -155,18 +109,9 @@ export class DemoPBRViewer {
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
             this.m_rscene.setClearRGBColor3f(0.2, 0.2, 0.2);
-            /*
-            this.m_uiModule.initialize(this.m_rscene, this.m_texLoader, true);
-            this.m_ruisc = this.m_uiModule.ruisc;
-            this.m_uiModule.close();
 
-            this.m_pbrScene = new PBRScene();
-            this.m_pbrScene.initialize(this.m_rscene, this.m_texLoader, this.m_uiModule);
-            //*/
-
-            
             let envMapUrl: string = "static/bytes/spe.mdf";
-            if(this.hdrBrnEnabled) {
+            if (this.hdrBrnEnabled) {
                 envMapUrl = "static/bytes/spe.hdrBrn";
             }
             let loader: SpecularTextureLoader = new SpecularTextureLoader();
@@ -174,23 +119,28 @@ export class DemoPBRViewer {
             loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
             this.m_envMap = loader.texture;
 
-            this.m_lightData.initialize(4, 2);
-            this.m_lightData.buildData();
-            
-            this.m_envData = new EnvLightData();
-            this.m_envData.initialize();
-            this.m_envData.setFogNear(800.0);
-            this.m_envData.setFogFar(4000.0);
-            this.m_envData.setFogDensity(0.0001);
-            this.m_envData.setFogColorRGB3f(0.0,0.8,0.1);
-
-            this.m_pipeline.addShaderCode( PBRShaderCode );
-            this.m_pipeline.addPipe( this.m_envData );
-            this.m_pipeline.addPipe( this.m_lightData );
+            let mcParam: MaterialContextParam = new MaterialContextParam();
+            mcParam.pointLightsTotal = 1;
+            mcParam.directionLightsTotal = 0;
+            mcParam.spotLightsTotal = 0;
+            this.m_materialCtx.initialize(this.m_rscene, mcParam);
+            let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
+            if (pointLight != null) {
+                // pointLight.position.setXYZ(200.0, 150.0, 200.0);
+                pointLight.position.setXYZ(0.0, 50.0, 0.0);
+                pointLight.color.setRGB3f(0.0, 0.3, 0.0);
+                pointLight.attenuationFactor1 = 0.0001;
+                pointLight.attenuationFactor2 = 0.0001;
+            }
+            let directLight: DirectionLight = this.m_materialCtx.lightModule.getDirectionLightAt(0);
+            if (directLight != null) {
+                directLight.color.setRGB3f(2.0,0.0,0.0);
+            }
+            this.m_materialCtx.lightModule.update();
+            this.m_materialCtx.lightModule.showInfo();
 
             this.createEntity();
-
-            
+            /*
             this.m_dracoMeshLoader.initialize(2);
             this.m_dracoModule = new ViewerDracoModule();
             this.m_dracoModule.texLoader = this.m_texLoader;
@@ -198,18 +148,20 @@ export class DemoPBRViewer {
             this.m_dracoModule.envMap = this.m_envMap;
             this.m_dracoModule.aoMapEnabled = this.aoMapEnabled;
             this.m_dracoModule.initialize(this.m_rscene, this.m_dracoMeshLoader);
-            this.m_dracoModule.loadNext();
+            // this.m_dracoModule.loadNext();
+            //*/
         }
     }
-    
+
     makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {
 
         let material: PBRMaterial = new PBRMaterial();
-        material.setMaterialPipeline( this.m_pipeline );
+        //material.setMaterialPipeline( this.m_pipeline );
+        material.setMaterialPipeline(this.m_materialCtx.pipeline);
         material.decorator = new PBRShaderDecorator();
 
         let decorator: PBRShaderDecorator = material.decorator;
-
+        decorator.scatterEnabled = false;
         decorator.woolEnabled = true;
         decorator.toneMappingEnabled = true;
         decorator.envMapEnabled = true;
@@ -220,7 +172,7 @@ export class DemoPBRViewer {
         decorator.pixelNormalNoiseEnabled = true;
         decorator.hdrBrnEnabled = this.hdrBrnEnabled;
         decorator.vtxFlatNormal = this.vtxFlatNormal;
-        
+
 
         material.setMetallic(metallic);
         material.setRoughness(roughness);
@@ -252,24 +204,24 @@ export class DemoPBRViewer {
         //  axis.initialize(300.0);
         //  this.m_rscene.addEntity(axis);
 
-        
-        let diffuseMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/normal_4_256_COLOR.png");
-        let normalMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/normal_4_256_NRM.png");
+
+        let diffuseMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/box_COLOR.png");
+        let normalMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/box_NRM.png");
         let aoMap: TextureProxy = null;
-        if(this.aoMapEnabled) {
-            aoMap = this.getImageTexByUrl("static/assets/disp/normal_4_256_NRM.png");
+        if (this.aoMapEnabled) {
+            aoMap = this.getImageTexByUrl("static/assets/disp/box_OCC.png");
         }
-        
+
         let disSize: number = 700.0;
         let dis: number = 500.0;
         let posList: Vector3D[] = [];
-        let beginV:Vector3D = new Vector3D(-disSize, 0.0, -disSize);
+        let beginV: Vector3D = new Vector3D(-disSize, 0.0, -disSize);
 
         let rn: number = 4;
         let cn: number = 4;
-        for(let i: number = 0; i < rn; ++i) {
-            for(let j: number = 0; j < cn; ++j) {
-                if((i < 1 || i > (rn - 2)) || (j < 1 || j > (cn - 2))) {
+        for (let i: number = 0; i < rn; ++i) {
+            for (let j: number = 0; j < cn; ++j) {
+                if ((i < 1 || i > (rn - 2)) || (j < 1 || j > (cn - 2))) {
                     let pos: Vector3D = new Vector3D(beginV.x + dis * j, beginV.y, beginV.z + dis * i);
                     posList.push(pos);
                 }
@@ -279,17 +231,25 @@ export class DemoPBRViewer {
         let sph: Sphere3DEntity;
         ///*
         material = this.createMaterial(1, 1);
-        material.setMaterialPipeline( this.m_pipeline );
+        material.decorator.scatterEnabled = true;
         material.decorator.aoMapEnabled = this.aoMapEnabled;
 
         material.decorator.envMap = this.m_envMap;
         material.decorator.diffuseMap = diffuseMap;
         material.decorator.normalMap = normalMap;
         material.decorator.aoMap = aoMap;
+        material.setAlbedoColor(1.0,1.0,1.0);
+        material.setRoughness(0.6);
+        material.setScatterIntensity(64.0);
 
+        let plane: Plane3DEntity = new Plane3DEntity();
+        plane.setMaterial(material);
+        plane.initializeXOZSquare(300.0);
+        this.m_rscene.addEntity(plane);
+        return;
         //material.setTextureList(texList);
         let srcSph = new Sphere3DEntity();
-        srcSph.setMaterial( material );
+        srcSph.setMaterial(material);
         srcSph.initialize(100.0, 20, 20);
         //this.m_rscene.addEntity(srcSph);
         //*/
@@ -298,12 +258,12 @@ export class DemoPBRViewer {
         let total: number = posList.length;
         total = 1;
         let rad: number;
-        for(let i: number = 0; i < total; ++i) {
+        for (let i: number = 0; i < total; ++i) {
 
             rad = Math.random() * 100.0;
             uvscale = Math.random() * 7.0 + 0.6;
 
-            material = this.createMaterial(uvscale,uvscale);
+            material = this.createMaterial(uvscale, uvscale);
             material.decorator.aoMapEnabled = this.aoMapEnabled;
             //  material.setTextureList(texList);
             material.decorator.envMap = this.m_envMap;
@@ -312,12 +272,12 @@ export class DemoPBRViewer {
             material.decorator.aoMap = aoMap;
 
             material.setAlbedoColor(Math.random() * 3, Math.random() * 3, Math.random() * 3);
-            
+
             scale = 0.8 + Math.random();
             let pr: number = scale * 100.0;
             sph = new Sphere3DEntity();
-            sph.setMaterial( material );
-            if(srcSph != null)sph.copyMeshFrom( srcSph );
+            sph.setMaterial(material);
+            if (srcSph != null) sph.copyMeshFrom(srcSph);
             sph.initialize(100.0, 20, 20);
             //sph.setRotationXYZ(Math.random() * 300.0, Math.random() * 300.0, Math.random() * 300.0);
             sph.setScaleXYZ(scale, scale, scale);
@@ -337,7 +297,7 @@ export class DemoPBRViewer {
 
         this.m_statusDisp.update(true);
     }
-    private m_lookV: Vector3D = new Vector3D(0.0,300.0,0.0);
+    private m_lookV: Vector3D = new Vector3D(0.0, 300.0, 0.0);
     run(): void {
         /*
         if(this.m_runFlag) {
@@ -349,13 +309,70 @@ export class DemoPBRViewer {
         //*/
         ThreadSystem.Run();
         this.update();
-        
-        this.m_stageDragSwinger.runWithYAxis();
-        this.m_cameraZoomController.run(this.m_lookV, 30.0);
 
-        this.m_rscene.run( true );
+        this.m_stageDragSwinger.runWithYAxis();
+        //this.m_cameraZoomController.run(this.m_lookV, 30.0);
+        this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
+
+        this.m_rscene.run(true);
 
         DebugFlag.Flag_0 = 0;
+    }
+}
+
+export class ViewerDracoModule extends DracoWholeModuleLoader {
+
+    texLoader: ImageTextureLoader = null;
+    reflectPlaneY: number = -220.0;
+    aoMapEnabled: boolean = false;
+    envMap: TextureProxy;
+    viewer: DemoPBRViewer;
+    constructor() {
+        super();
+    }
+
+    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+        let ptex: TextureProxy = this.texLoader.getImageTexByUrl(purl);
+        ptex.mipmapEnabled = mipmapEnabled;
+        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
+        return ptex;
+    }
+    dracoParse(pmodule: any, index: number, total: number): void {
+        console.log("ViewerDracoModule dracoParse, total: ", total);
+    }
+    dracoParseFinish(modules: any[], total: number): void {
+
+        console.log("ViewerDracoModule dracoParseFinish, modules: ", modules, this.m_pos);
+
+        let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6;
+        let material: PBRMaterial = this.viewer.createMaterial(uvscale, uvscale);
+
+        material.decorator.envMap = this.envMap;
+        material.decorator.diffuseMap = this.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg");
+        material.decorator.normalMap = this.getImageTexByUrl("static/assets/modules/skirt/normal.jpg");
+        material.decorator.diffuseMap = this.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
+
+        material.decorator.diffuseMapEnabled = true;
+        material.decorator.normalMapEnabled = true;
+        material.decorator.vtxFlatNormal = false;
+        material.decorator.aoMapEnabled = this.aoMapEnabled;
+        material.setAlbedoColor(Math.random() * 3, Math.random() * 3, Math.random() * 3);
+        material.initializeByCodeBuf(true);
+        let scale: number = 3.0;
+        let entity: DisplayEntity = new DisplayEntity();
+
+        let mesh: DracoMesh = new DracoMesh();
+        mesh.setBufSortFormat(material.getBufSortFormat());
+        mesh.initialize(modules);
+        entity.setMaterial(material);
+        entity.setMesh(mesh);
+        entity.setScaleXYZ(scale, scale, scale);
+        entity.setRotationXYZ(-90, 0, 0);
+        //entity.setRotationXYZ(0, Math.random() * 300, 0);
+        //entity.setPosition( this.m_pos );
+        this.m_rscene.addEntity(entity);
+
+        this.loadNext();
     }
 }
 export default DemoPBRViewer;

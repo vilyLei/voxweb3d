@@ -342,11 +342,9 @@ void calcPBRLight(float roughness, vec3 rm, in vec3 inColor, inout RadianceLight
     inColor *= dotNL;
 
     #ifdef VOX_SPECULAR_BLEED
-        rL.diffuse += fdBurley * inColor * kD * specularScatter;
-    #else
-        rL.diffuse += fdBurley * inColor * kD;
+        kD *= specularScatter;
     #endif
-
+    rL.diffuse += fdBurley * inColor * kD;
     rL.specular += specular * inColor * specularScatter;
 
 }
