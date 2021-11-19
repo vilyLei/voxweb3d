@@ -70,12 +70,15 @@ precision mediump float;
 
     private m_vertHeadCode: string = "";
     private m_vertMainCode: string = "";
-    private m_vertMainCodeAppend: string = "";
-    private m_vertMainCodePrepend: string = "";
+    // private m_vertMainCodeAppend: string = "";
+    // private m_vertMainCodePrepend: string = "";
     private m_fragHeadCode: string = "";
     private m_fragMainCode: string = "";
-    private m_fragMainCodeAppend: string = "";
-    private m_fragMainCodePrepend: string = "";
+    //private m_fragMainCodeAppend: string = "";
+    //private m_fragMainCodePrepend: string = "";
+    private m_uniqueNSKeyString: string = "";
+    private m_uniqueNSKeys: Uint16Array = new Uint16Array(128);
+    private m_uniqueNSKeysTotal: number = 8;
     private m_use2DMap: boolean = false;
     /**
      * 记录 shader 预编译信息
@@ -93,7 +96,23 @@ precision mediump float;
     fragMatrixInverseEnabled: boolean = false;
 
     constructor() { }
-
+    
+    getUniqueNSKeyID(): number {
+        
+        let id: number = 31;
+        for(let i: number = 0; i < this.m_uniqueNSKeysTotal; ++i) {
+            id = id * 131 + this.m_uniqueNSKeys[i];
+        }
+        return id;
+    }
+    getUniqueNSKeyString(): string {
+        this.m_uniqueNSKeyString = "[" + this.m_uniqueNSKeys[0];
+        for(let i: number = 1; i < this.m_uniqueNSKeysTotal; ++i) {
+            this.m_uniqueNSKeyString += "-"+this.m_uniqueNSKeys[i];
+        }
+        this.m_uniqueNSKeyString += "]";
+        return this.m_uniqueNSKeyString;
+    }
     reset(): void {
         
         this.m_vertObjMat = true;
@@ -108,12 +127,14 @@ precision mediump float;
 
         this.m_vertHeadCode = "";
         this.m_vertMainCode = "";
-        this.m_vertMainCodeAppend = "";
-        this.m_vertMainCodePrepend = "";
+        // this.m_vertMainCodeAppend = "";
+        // this.m_vertMainCodePrepend = "";
         this.m_fragHeadCode = "";
         this.m_fragMainCode = "";
-        this.m_fragMainCodeAppend = "";
-        this.m_fragMainCodePrepend = "";
+        //this.m_fragMainCodeAppend = "";
+        //this.m_fragMainCodePrepend = "";
+
+        this.m_uniqueNSKeyString = "";
 
         this.m_vertExt = [];
         this.m_fragExt = [];
@@ -156,6 +177,9 @@ precision mediump float;
         this.fragMatrixInverseEnabled = false;
 
         this.m_preCompileInfo = null;
+        for(let i: number = 0; i < this.m_uniqueNSKeysTotal; ++i) {
+            this.m_uniqueNSKeys[i] = 0;
+        }
     }
     /**
      * 预编译信息
@@ -260,12 +284,14 @@ precision mediump float;
      */
     addDiffuseMap(): void {
         this.addTextureSample2D("VOX_DIFFUSE_MAP");
+        this.m_uniqueNSKeys[0] = 1;
     }
     /**
      * add normal map
      */
     addNormalMap(): void {
         this.addTextureSample2D("VOX_NORMAL_MAP");
+        this.m_uniqueNSKeys[1] = 1;
     }
     /**
      * add parallax map
@@ -273,12 +299,14 @@ precision mediump float;
     addParallaxMap(parallaxParamIndex: number): void {        
         this.addTextureSample2D("VOX_PARALLAX_MAP");
         this.addDefine("VOX_PARALLAX_PARAMS_INDEX", "" + parallaxParamIndex);
+        this.m_uniqueNSKeys[2] = 1 + (parallaxParamIndex << 1);
     }
     /**
      * add displacement map
      */
     addDisplacementMap(): void {        
         this.addTextureSample2D("VOX_DISPLACEMENT_MAP", true, false, true);
+        this.m_uniqueNSKeys[3] = 1;
     }
     
     /**
@@ -286,6 +314,7 @@ precision mediump float;
      */
     addAOMap(): void {
         this.addTextureSample2D("VOX_AO_MAP");
+        this.m_uniqueNSKeys[4] = 1;
     }
     /**
      * add specular map
@@ -293,14 +322,12 @@ precision mediump float;
     addSpecularMap(specularMode: SpecularMode): void {
         this.addTextureSample2D("VOX_SPECULAR_MAP");
         this.addDefine("VOX_SPECULAR_MODE", "" + specularMode);
+        this.m_uniqueNSKeys[5] = 1 + (specularMode << 1);
     }
     addShadowMap(shadowMode: ShadowMode = ShadowMode.VSM): void {
 
-        //if(map != null) {
-
-            //this.pipeline.appendKeyString( "Shadow" );
-            this.addTextureSample2D("VOX_VSM_SHADOW_MAP");
-        //}
+        this.addTextureSample2D("VOX_VSM_SHADOW_MAP");
+        this.m_uniqueNSKeys[6] = 1 + (shadowMode << 1);
     }
     addTextureSample2D(macroName: string = "", map2DEnabled: boolean = true, fragEnabled: boolean = true, vertEnabled: boolean = false): void {
         if(macroName == "" || !this.m_textureMacroNames.includes(macroName)) {

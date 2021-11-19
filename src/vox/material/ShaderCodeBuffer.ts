@@ -84,7 +84,6 @@ class ShaderCodeBuffer {
     private bufInitWithPipeline(): void {
 
         if (this.pipeline != null) {
-            
             this.pipeTypes = [];
             if (this.lightEnabled) {
                 this.pipeTypes.push( MaterialPipeType.GLOBAL_LIGHT );

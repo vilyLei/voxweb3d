@@ -27,6 +27,7 @@ import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEnti
 import {SpecularMode, LambertLightMaterial} from "../vox/material/mcase/LambertLightMaterial";
 import { MaterialContextParam, MaterialContext } from "../materialLab/base/MaterialContext";
 import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
+import RendererState from "../vox/render/RendererState";
 
 export class DemoLambertLight {
 
@@ -101,7 +102,7 @@ export class DemoLambertLight {
             let pointList: Vector3D[] = this.m_materialCtx.lightData.getSpotLightPosList();
             this.m_materialCtx.lightData.setPointLightAt(0, new Vector3D(-200.0, 56.0, 0.0), new Color4(0.0, 1.0, 0.0, 1.0));
             this.m_materialCtx.lightData.setPointLightAt(1, new Vector3D(-200.0, 56.0, -200.0), new Color4(0.0, 1.0, 1.0, 1.0));
-            this.m_materialCtx.lightData.setDirecLightAt(0, new Vector3D(0.0, -1.0, 0.0), new Color4(1.0, 0.0, 0.0, 1.0));
+            this.m_materialCtx.lightData.setDirecLightAt(0, new Vector3D(0.0, -1.0, 1.0), new Color4(0.5, 0.5, 0.5, 1.0));
             this.m_materialCtx.lightData.setSpotLightAt(0, new Vector3D(0.0, 56.0, 0.0), new Vector3D(0.0, -1.0, 0.7), 10, new Color4(0.0, 1.0, 0.0, 1.0));
             this.m_materialCtx.lightData.setSpotLightAt(1, new Vector3D(100.0, 56.0, 0.0), new Vector3D(0.0, -1.0, -0.7), 10, new Color4(1.0, 0.0, 1.0, 1.0));
             this.m_materialCtx.lightData.update();
@@ -136,7 +137,7 @@ export class DemoLambertLight {
             //material.parallaxMap =            this.getImageTexByUrl("static/assets/moss_01.jpg");
             //material.parallaxMap =            this.getImageTexByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
             //*/
-            material.diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
+            material.diffuseMap = this.getImageTexByUrl("static/assets/wood_01.jpg");
             this.useMaps(material,"lava_03",true,false,false,true,true);
             //*/
             //material.shadowMap = null;
@@ -150,6 +151,7 @@ export class DemoLambertLight {
             material.setLightBlendFactor(0.7,0.3);
             material.setBlendFactor(0.01,0.8);
             material.setParallaxParams(1, 5, 2.0, 0.01);
+            material.setUVScale(2.0, 2.0);
             //material.setColor(new Color4(0.5,1.7,0.5,1.0))
             ///*
             let plane: Plane3DEntity = new Plane3DEntity();
@@ -159,12 +161,17 @@ export class DemoLambertLight {
             //plane.setXYZ(0.0, -200.0, 0.0);
             this.m_rscene.addEntity(plane);
             //*/
-            /*
+            ///*
+            let sphMaterial: LambertLightMaterial = new LambertLightMaterial();
+            sphMaterial.diffuseMap = this.getImageTexByUrl("static/assets/default.jpg");
+            sphMaterial.copyFrom(material);
+            //sphMaterial.initializeByCodeBuf(true);
+            ///*
             let sph = new Sphere3DEntity();
-            material.setUVScale(2.0, 2.0);
-            sph.setMaterial(material);
+            sphMaterial.setUVScale(2.0, 2.0);
+            sph.setMaterial(sphMaterial);
             sph.initialize(100,20,20)
-            sph.setXYZ(0, -100, 0);
+            sph.setXYZ(0, 100, 0);
             this.m_rscene.addEntity(sph);
             this.m_target = sph;
             //*/
@@ -241,6 +248,7 @@ export class DemoLambertLight {
             clearTimeout(this.m_timeoutId);
         }
         this.m_timeoutId = setTimeout(this.update.bind(this), 17);// 20 fps
+        this.m_statusDisp.statusInfo = "/" + RendererState.DrawCallTimes;
         this.m_statusDisp.render();
         
         if(this.m_target != null) {

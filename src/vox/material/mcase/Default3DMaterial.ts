@@ -33,14 +33,12 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
         coder.addFragUniform("vec4", "u_color");
         coder.useVertSpaceMats(true, true, true);
 
-        //if (this.premultiplyAlpha) coder.addDefine("VOX_PREMULTIPLY_ALPHA", "1");
         if (this.m_texEnabled) {
             coder.addDiffuseMap();
             coder.addVertLayout("vec2", "a_uvs");
             coder.addVarying("vec2", "v_uv");
         }
         if (this.vertColorEnabled) {
-            //coder.addDefine("VOX_USE_VTX_COLOR", "1");
             coder.addVertLayout("vec3", "a_cvs");
             coder.addVarying("vec3", "v_cv");
         }

@@ -361,7 +361,7 @@
 /////////////////////////////     light    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
+import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
 
 //  import {DemoAdsLight as Demo} from "./demo/DemoAdsLight";
 
@@ -371,7 +371,7 @@
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
-import {DemoPBR as Demo} from "./pbr/DemoPBR";
+//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 

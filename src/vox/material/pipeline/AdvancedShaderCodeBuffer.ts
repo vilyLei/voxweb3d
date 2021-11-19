@@ -24,6 +24,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     parallaxParamIndex: number = 1;
     lightParamsIndex: number = 2;
 
+    buildFlag: boolean = true;
     constructor() {
         super();
     }
@@ -42,73 +43,53 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     addDiffuseMap(map: TextureProxy): void {
 
         if(map != null) {
-
             this.m_texList.push(map);
-            this.pipeline.appendKeyString("Tex");
-            this.m_coder.addDiffuseMap();
+            if(this.buildFlag) this.m_coder.addDiffuseMap();
         }
     }
     addNormalMap(map: TextureProxy): void {
 
-        if(map != null) {
-            if(this.lightEnabled) {
-                
-                this.m_texList.push(map);
-                this.pipeline.appendKeyString("Nor");
-                this.m_coder.addNormalMap();
-            }
+        if(map != null && this.lightEnabled) {             
+            this.m_texList.push(map);
+            if(this.buildFlag) this.m_coder.addNormalMap();
         }
     }
     addParallaxMap(map: TextureProxy): void {
 
-        if(map != null) {
-            if(this.lightEnabled) {
-
-                this.m_texList.push(map);
-                this.pipeline.appendKeyString("Para");
-                this.m_coder.addParallaxMap( this.parallaxParamIndex );
-            }
+        if(map != null && this.lightEnabled) {
+            this.m_texList.push(map);
+            if(this.buildFlag) this.m_coder.addParallaxMap( this.parallaxParamIndex );
         }
     }
 
     addDisplacementMap(map: TextureProxy): void {
 
         if(map != null) {
-
             this.m_texList.push(map);
-            this.pipeline.appendKeyString("Disp");
-            this.m_coder.addDisplacementMap();
+            if(this.buildFlag) this.m_coder.addDisplacementMap();
         }
     }
 
     addAOMap(map: TextureProxy): void {
 
         if(map != null) {
-
             this.m_texList.push(map);
-            this.pipeline.appendKeyString("AO");
-            this.m_coder.addAOMap();
+            if(this.buildFlag) this.m_coder.addAOMap();
         }
     }
 
     addSpecularMap(map: TextureProxy): void {
 
-        if(map != null) {
-            if(this.lightEnabled) {
-
-                this.m_texList.push(map);
-                this.pipeline.appendKeyString( "Spec" + this.specularMode );
-                this.m_coder.addSpecularMap(this.specularMode);
-            }
+        if(map != null && this.lightEnabled) {
+            this.m_texList.push(map);
+            if(this.buildFlag) this.m_coder.addSpecularMap(this.specularMode);
         }
     }
     addShadowMap(map: TextureProxy): void {
 
         if(map != null) {
-
             this.m_texList.push(map);
-            this.pipeline.appendKeyString( "Shadow" );
-            this.m_coder.addShadowMap();
+            if(this.buildFlag) this.m_coder.addShadowMap();
         }
     }
 
@@ -120,25 +101,6 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
             this.m_uniqueName += "Col";
         }
         this.m_uniqueName += this.fragLocalParamsTotal;
-
-        if (this.pipeline != null) {
-            
-            this.pipeTypes = [];
-            if (this.lightEnabled) {
-                this.pipeTypes.push(MaterialPipeType.GLOBAL_LIGHT);
-            }
-            if (this.shadowReceiveEnabled) {
-                this.pipeTypes.push(MaterialPipeType.VSM_SHADOW);
-            }
-
-            if (this.fogEnabled) {
-                this.pipeTypes.push(MaterialPipeType.FOG_EXP2);
-            }
-
-            this.pipeline.buildSharedUniforms(this.pipeTypes);
-            this.pipeline.createKeys(this.pipeTypes);
-            this.keysString = this.pipeline.getKeysString();
-        }
     }
 
     buildShader(): void {

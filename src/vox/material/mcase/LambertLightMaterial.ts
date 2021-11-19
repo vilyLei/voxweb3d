@@ -49,6 +49,64 @@ export default class LambertLightMaterial extends MaterialBase {
         }
     }
 
+    clone(): LambertLightMaterial {
+
+        let material: LambertLightMaterial = new LambertLightMaterial();
+        material.initializeByCodeBuf(false);
+        material.copyFrom( this );
+        return material;
+    }
+    copyFrom(src: LambertLightMaterial): void {
+
+        this.m_pipeLine = src.m_pipeLine;
+
+        this.colorEnabled = src.colorEnabled;
+        this.lightEnabled = src.lightEnabled;
+        this.fogEnabled = src.fogEnabled;
+
+        if(this.diffuseMap == null) this.diffuseMap = src.diffuseMap;
+        if(this.normalMap == null) this.normalMap = src.normalMap;
+        if(this.parallaxMap == null) this.parallaxMap = src.parallaxMap;
+        if(this.displacementMap == null) this.displacementMap = src.displacementMap;
+        if(this.aoMap == null) this.aoMap = src.aoMap;
+        if(this.specularMap == null) this.specularMap = src.specularMap;
+        if(this.shadowMap == null) this.shadowMap = src.shadowMap;
+
+        this.specularMode = src.specularMode;
+        this.lightEnabled = src.lightEnabled;
+        this.fogEnabled = src.fogEnabled;
+
+        this.m_vertLocalParams = src.m_vertLocalParams.slice();
+        this.m_fragLocalParams = src.m_fragLocalParams.slice();
+
+        let lightParamsIndex: number = 2;
+        if (this.parallaxMap != null) {
+            this.m_parallaxArray = this.m_fragLocalParams.subarray(lightParamsIndex * 4, (lightParamsIndex + 1) * 4);
+            lightParamsIndex += 1;
+        }
+        if (this.lightEnabled) {
+            this.m_lightParamsArray = this.m_fragLocalParams.subarray(lightParamsIndex * 4);
+        }
+
+        this.m_lightParamsIndex = src.m_lightParamsIndex;
+        this.m_parallaxParamIndex = src.m_parallaxParamIndex;
+        this.m_fragLocalParamsTotal = src.m_fragLocalParamsTotal;
+        this.m_uniqueShaderName = src.m_uniqueShaderName;
+        
+    }
+    private buildTextureList(): TextureProxy[] {
+
+        let buf: AdvancedShaderCodeBuffer = LambertLightMaterial.s_shaderCodeBuffer;
+        buf.setIRenderTextureList([]);
+        buf.addDiffuseMap( this.diffuseMap );
+        buf.addNormalMap( this.normalMap );
+        buf.addParallaxMap( this.parallaxMap );
+        buf.addDisplacementMap( this.displacementMap );
+        buf.addAOMap( this.aoMap );
+        buf.addSpecularMap( this.specularMap );
+        buf.addShadowMap( this.shadowMap );
+        return buf.getIRenderTextureList() as TextureProxy[];
+    }
     initializeLocalData(): void {
 
         if (this.m_fragLocalParams == null) {
@@ -103,7 +161,6 @@ export default class LambertLightMaterial extends MaterialBase {
         if (this.m_fragLocalParams == null) {
             this.initializeLocalData();
         }
-        
         let buf: AdvancedShaderCodeBuffer = LambertLightMaterial.s_shaderCodeBuffer;
         buf.colorEnabled = this.colorEnabled;
         buf.parallaxParamIndex = this.m_parallaxParamIndex;
@@ -113,16 +170,11 @@ export default class LambertLightMaterial extends MaterialBase {
         buf.shadowReceiveEnabled = this.shadowMap != null;
         buf.fragLocalParamsTotal = this.m_fragLocalParamsTotal;
 
-        buf.addDiffuseMap( this.diffuseMap );
-        buf.addNormalMap( this.normalMap );
-        buf.addParallaxMap( this.parallaxMap );
-        buf.addDisplacementMap( this.displacementMap );
-        buf.addAOMap( this.aoMap );
-        buf.addSpecularMap( this.specularMap );
-        buf.addShadowMap( this.shadowMap );
-
-        let texList: TextureProxy[] = buf.getIRenderTextureList() as TextureProxy[];
-        super.setTextureList(texList);
+        buf.buildFlag = this.m_uniqueShaderName == "";
+        let texList = this.buildTextureList();
+        
+        super.setTextureList( texList );
+        buf.buildFlag = false;
     }
     getCodeBuf(): ShaderCodeBuffer {
         return LambertLightMaterial.s_shaderCodeBuffer;

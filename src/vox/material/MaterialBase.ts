@@ -22,7 +22,7 @@ export default class MaterialBase implements IRenderMaterial {
     protected m_sharedUniforms: ShaderUniform[] = null;
     protected m_shaderUniformData: ShaderUniformData = null;
     protected m_pipeLine: MaterialPipeline = null;
-
+    protected m_uniqueShaderName: string = "";
     constructor() { }
 
     // use rgb normalize bias enabled
@@ -60,9 +60,7 @@ export default class MaterialBase implements IRenderMaterial {
         if (this.m_shdData != null) {
             if (this.m_shdData.haveTexture()) {
                 // console.log("this.texDataEnabled(): ",this.texDataEnabled());
-                if (this.texDataEnabled()) {
-                    return true;
-                }
+                return this.texDataEnabled();
             }
             else {
                 return true;
@@ -75,35 +73,49 @@ export default class MaterialBase implements IRenderMaterial {
             let buf: ShaderCodeBuffer = this.getCodeBuf();
             if (buf != null) {
                 buf.reset();
-                buf.pipeline = this.m_pipeLine;
-                if(buf.pipeline != null) {
+                buf.pipeline = this.m_pipeLine;                
+                if (buf.pipeline != null) {
                     buf.pipeline.reset();
                     this.buildBuf();
-                    if(buf.pipeline.getTextureTotal() > 0) {
-                        this.setTextureList( buf.pipeline.getTextureList() );
+                    if (buf.pipeline.getTextureTotal() > 0) {
+                        this.setTextureList(buf.pipeline.getTextureList());
                     }
                 }
                 else {
                     this.buildBuf();
                 }
-                if (MaterialBase.s_codeBuffer == null) {
-                    MaterialBase.s_codeBuffer = new ShaderCodeBuffer();
+                let shdData: ShaderData;
+                let shdCode_uniqueName: string = this.m_uniqueShaderName;
+                if(shdCode_uniqueName != "") {
+                    shdData = MaterialResource.FindData(shdCode_uniqueName);
+                    this.m_shduns = shdCode_uniqueName;
                 }
-                ShaderCodeBuffer.UseShaderBuffer(buf);
-                texEnabled = texEnabled || this.getTextureTotal() > 0;
-                
-                buf.initialize(texEnabled);
-                
-                let shdCode_uniqueName: string = buf.getUniqueShaderName();
-                this.m_shduns = shdCode_uniqueName;
-                this.__$initShd(this.m_shduns);
-                let shdData: ShaderData = MaterialResource.FindData(shdCode_uniqueName);
-                if (null == shdData) {
+                if(shdData == null) {
+
+                    if (MaterialBase.s_codeBuffer == null) {
+                        MaterialBase.s_codeBuffer = new ShaderCodeBuffer();
+                    }
+                    ShaderCodeBuffer.UseShaderBuffer(buf);
+                    texEnabled = texEnabled || this.getTextureTotal() > 0;
+                    buf.initialize(texEnabled);
+
+                    shdCode_uniqueName = buf.getUniqueShaderName() + buf.getShaderCodeBuilder().getUniqueNSKeyString();
+                    this.m_shduns = shdCode_uniqueName;
+                    this.__$initShd(this.m_shduns);
+                    shdData = MaterialResource.FindData(shdCode_uniqueName);
+                    this.m_uniqueShaderName = this.m_shduns;
+                }
+                else {
+                    ShaderCodeBuffer.UseShaderBuffer(buf);
+                    texEnabled = texEnabled || this.getTextureTotal() > 0;
+                    buf.initialize(texEnabled);
+                }
+                if (shdData == null) {
 
                     buf.buildShader();
                     if (buf.pipeline != null) {
-                        buf.pipeline.addShaderCode( buf.getShaderCodeObject() );
-                        buf.pipeline.build( buf.getShaderCodeBuilder(), buf.pipeTypes );
+                        buf.pipeline.addShaderCode(buf.getShaderCodeObject());
+                        buf.pipeline.build(buf.getShaderCodeBuilder(), buf.pipeTypes);
                     }
                     let fshdCode: string = buf.getFragShaderCode();
                     let vshdCode: string = buf.getVertShaderCode();
@@ -115,11 +127,11 @@ export default class MaterialBase implements IRenderMaterial {
                         , ShaderCodeBuffer.GetPreCompileInfo()
                     );
                 }
-                if(this.m_pipeLine != null) {
+                if (this.m_pipeLine != null) {
                     this.m_sharedUniforms = this.m_pipeLine.getSharedUniforms();
                 }
-                
-                ShaderCodeBuffer.UseShaderBuffer( null );
+
+                ShaderCodeBuffer.UseShaderBuffer(null);
                 this.m_shdData = shdData;
             }
         }
@@ -134,7 +146,7 @@ export default class MaterialBase implements IRenderMaterial {
     private m_texList: TextureProxy[] = null;
     private m_texListLen: number = 0;
     private m_texDataEnabled: boolean = false;
-    
+
     /**
      * set TextuerProxy instances
      * @param texList [tex0,tex1,...]
@@ -222,7 +234,6 @@ export default class MaterialBase implements IRenderMaterial {
     }
 
     createSharedUniforms(): ShaderUniform[] {
-        console.log("createSharedUniforms(), this.m_sharedUniforms: ",this.m_sharedUniforms);
         return this.m_sharedUniforms;
     }
     createSharedUniformsData(): ShaderUniformData[] {
@@ -260,7 +271,7 @@ export default class MaterialBase implements IRenderMaterial {
         return this.m_attachCount;
     }
     destroy(): void {
-        
+
         this.m_sharedUniforms = null;
         this.m_shaderUniformData = null;
 
