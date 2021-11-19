@@ -9,7 +9,7 @@ import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import MaterialBase from "../../../vox/material/MaterialBase";
 
 class PostOutlinePreShaderBuffer extends ShaderCodeBuffer {
-    
+
     private m_uniqueName: string = "";    
     constructor() {
         super();
@@ -22,18 +22,14 @@ class PostOutlinePreShaderBuffer extends ShaderCodeBuffer {
     buildShader(): void {
         this.m_coder.addFragMainCode(
 `
-void main() {
     FragColor0 = vec4(1.0);
-}
 `
                     );
             
         this.m_coder.addVertMainCode(
 `
-void main() {
     vec4 wpos = u_objMat * vec4(a_vs, 1.0);
     gl_Position = u_projMat * u_viewMat * wpos;
-}
 `
                     );
         

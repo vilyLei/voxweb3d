@@ -23,25 +23,17 @@ class PostOutlineShaderBuffer extends ShaderCodeBuffer {
         this.m_uniqueName = "PostOutlineShd";
         this.adaptationShaderVersion = false;
     }
-    private buildThisCode(): void {
+    buildShader(): void {
 
         let coder = this.m_coder;
         
-        coder.addVertLayout("vec3", "a_vs");
-        coder.addVertLayout("vec2", "a_uvs");
-        coder.addTextureSample2D();
+        coder.addDiffuseMap();
         coder.addFragUniform("vec4", "u_texParam");
         coder.addFragUniform("vec4", "u_color");
 
         coder.addVarying("vec2", "v_uv");
-        coder.addFragOutput("vec4", "FragColor0");
 
-        coder.useVertSpaceMats(true, true, true);
-        coder.vertMatrixInverseEnabled = true;
-
-    }
-    getFragShaderCode(): string {
-        this.buildThisCode();
+        coder.useVertSpaceMats(false, false, false);
 
         this.m_coder.addFragMainCode(
 `
@@ -50,30 +42,27 @@ const float floatReciprocalGamma = (1.0 / 2.2);
 void main() {
     
     vec2 dv = u_texParam.ww / u_texParam.xy;
-    vec4 srcColor = VOX_Texture2D( u_sampler0, v_uv );
+    vec4 srcColor = VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv );
 
     vec3 color = srcColor.xyz;
-    color.xyz += VOX_Texture2D( u_sampler0, v_uv + dv ).xyz;
-    color.xyz += VOX_Texture2D( u_sampler0, v_uv - dv ).xyz;
-    color.xyz += VOX_Texture2D( u_sampler0, v_uv + vec2(dv.x ,-dv.y) ).xyz;
-    color.xyz += VOX_Texture2D( u_sampler0, v_uv + vec2(-dv.x ,dv.y) ).xyz;
-    color.xyz += VOX_Texture2D( u_sampler0, v_uv + vec2(dv.x ,0) ).xyz;
-    color.xyz += VOX_Texture2D( u_sampler0, v_uv + vec2(0 ,dv.y) ).xyz;
-    color.xyz += VOX_Texture2D( u_sampler0, v_uv - vec2(dv.x ,0) ).xyz;
-    color.xyz += VOX_Texture2D( u_sampler0, v_uv - vec2(0 ,dv.y) ).xyz;
+    color.xyz += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + dv ).xyz;
+    color.xyz += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - dv ).xyz;
+    color.xyz += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(dv.x ,-dv.y) ).xyz;
+    color.xyz += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(-dv.x ,dv.y) ).xyz;
+    color.xyz += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(dv.x ,0) ).xyz;
+    color.xyz += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(0 ,dv.y) ).xyz;
+    color.xyz += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - vec2(dv.x ,0) ).xyz;
+    color.xyz += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - vec2(0 ,dv.y) ).xyz;
     color.xyz *= factor;
     
     float dis = abs(color.x - srcColor.x);
     dis *= u_texParam.z;
     dis = pow(dis * dis * dis, floatReciprocalGamma);
-    FragColor0 = vec4(u_color.xyz, dis);
+    FragColor0 = vec4(u_color.xyz, dis * u_color.w);
 }
 `
-        );
+                    );
 
-        return this.m_coder.buildFragCode();
-    }
-    getVertShaderCode(): string {
         this.m_coder.addVertMainCode(
 `
 void main() {
@@ -81,9 +70,7 @@ void main() {
     v_uv = a_uvs.xy;
 }
 `
-        );
-        return this.m_coder.buildVertCode();
-
+                    );
     }
     getUniqueShaderName(): string {
         return this.m_uniqueName;

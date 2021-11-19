@@ -35,7 +35,7 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
 
         if (this.premultiplyAlpha) coder.addDefine("VOX_PREMULTIPLY_ALPHA", "1");
         if (this.m_texEnabled) {
-            coder.addTextureSample2D();
+            coder.addDiffuseMap();
             coder.addVertLayout("vec2", "a_uvs");
             coder.addVarying("vec2", "v_uv");
         }
@@ -51,8 +51,8 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
             `
 FragColor0 = vec4(1.0);
 #ifdef VOX_USE_2D_MAP
-    //  FragColor0 *= VOX_Texture2D(u_sampler0, vec2(v_uv[0],v_uv[1]));
-    FragColor0 *= VOX_Texture2D(u_sampler0, v_uv.xy);
+    //  FragColor0 *= VOX_Texture2D(VOX_DIFFUSE_MAP, vec2(v_uv[0],v_uv[1]));
+    FragColor0 *= VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv.xy);
 #endif
 #ifdef VOX_USE_VTX_COLOR
     FragColor0 *= vec4(v_cv.xyz,1.0);
@@ -104,8 +104,6 @@ export default class Default3DMaterial extends MaterialBase {
         let buf: Default3DShaderCodeBuffer = Default3DMaterial.s_shdCodeBuffer;
         buf.vtxColorEnabled = this.vtxColorEnabled;
         buf.premultiplyAlpha = this.premultiplyAlpha;
-        console.log("buf.vtxColorEnabled: ",buf.vtxColorEnabled);
-        console.log("buf.premultiplyAlpha: ",buf.premultiplyAlpha);
     }
     /**
      * get a shader code buf instance, for sub class override

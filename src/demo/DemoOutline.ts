@@ -184,14 +184,17 @@ export class DemoOutline {
     private m_mirrorTexLodEnabled: boolean = true;
     private initPlaneReflection(): void {
         this.m_projType = 0;
-        
+
+        let scale: number = 2.5;
         let box: Box3DEntity = new Box3DEntity();
 
         box.uvPartsNumber = 6;
         box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/sixparts.jpg")]);
-        box.setScaleXYZ(2.0, 2.0, 2.0);
+        box.setScaleXYZ(scale,scale,scale);
         box.setRotationXYZ(Math.random() * 300.0, Math.random() * 300.0, Math.random() * 300.0);
+        box.setXYZ(0.0, 60.0, 0.0);
         this.m_rscene.addEntity(box);
+        (box.getMaterial() as any).setRGB3f(2.0,0.0,0.0);
         this.m_targetEntity = box;
         this.loadNext();
         //this.m_postOutline.setTarget( box );

@@ -14,6 +14,8 @@ import IShaderCodeBuilder from "./IShaderCodeBuilder";
 import GLSLConverter from "./GLSLConverter";
 import ShaderCompileInfo from "./ShaderCompileInfo";
 import {ShaderCode, MathShaderCode} from "./ShaderCode";
+import { SpecularMode } from "../pipeline/SpecularMode";
+import { ShadowMode } from "../pipeline/ShadowMode";
 
 export default class ShaderCodeBuilder implements IShaderCodeBuilder {
 
@@ -249,6 +251,53 @@ precision mediump float;
     useTexturePreciseHighp(): void {
         this.m_texturePrecise = "highp";
     }
+    /**
+     * add diffuse map
+     */
+    addDiffuseMap(): void {
+        this.addTextureSample2D("VOX_DIFFUSE_MAP");
+    }
+    /**
+     * add normal map
+     */
+    addNormalMap(): void {
+        this.addTextureSample2D("VOX_NORMAL_MAP");
+    }
+    /**
+     * add parallax map
+     */
+    addParallaxMap(parallaxParamIndex: number): void {        
+        this.addTextureSample2D("VOX_PARALLAX_MAP");
+        this.addDefine("VOX_PARALLAX_PARAMS_INDEX", "" + parallaxParamIndex);
+    }
+    /**
+     * add displacement map
+     */
+    addDisplacementMap(): void {        
+        this.addTextureSample2D("VOX_DISPLACEMENT_MAP", true, false, true);
+    }
+    
+    /**
+     * add ambient occlusion map
+     */
+    addAOMap(): void {
+        this.addTextureSample2D("VOX_AO_MAP");
+    }
+    /**
+     * add specular map
+     */
+    addSpecularMap(specularMode: SpecularMode): void {
+        this.addTextureSample2D("VOX_SPECULAR_MAP");
+        this.addDefine("VOX_SPECULAR_MODE", "" + specularMode);
+    }
+    addShadowMap(shadowMode: ShadowMode = ShadowMode.VSM): void {
+
+        //if(map != null) {
+
+            //this.pipeline.appendKeyString( "Shadow" );
+            this.addTextureSample2D("VOX_VSM_SHADOW_MAP");
+        //}
+    }
     addTextureSample2D(macroName: string = "", map2DEnabled: boolean = true, fragEnabled: boolean = true, vertEnabled: boolean = false): void {
         if(macroName == "" || !this.m_textureMacroNames.includes(macroName)) {
             this.m_textureSampleTypes.push("sampler2D");
@@ -300,11 +349,23 @@ precision mediump float;
     isHaveTexture2D(): boolean {
         return this.m_use2DMap;
     }
+    /**
+     * vertex shader 使用 空间变换矩阵
+     * @param objMatEnabled object space(local space) to wrold space matrix4
+     * @param viewMatEnabled world space to view space matrix4
+     * @param projMatEnabled view space to projective space matrix4
+     */
     useVertSpaceMats(objMatEnabled: boolean = true, viewMatEnabled: boolean = true, projMatEnabled: boolean = true): void {
         this.m_vertObjMat = objMatEnabled;
         this.m_vertViewMat = viewMatEnabled;
         this.m_vertProjMat = projMatEnabled;
     }
+    /**
+     * fragment shader 使用 空间变换矩阵
+     * @param objMatEnabled object space(local space) to wrold space matrix4
+     * @param viewMatEnabled world space to view space matrix4
+     * @param projMatEnabled view space to projective space matrix4
+     */
     useFragSpaceMats(objMatEnabled: boolean = true, viewMatEnabled: boolean = true, projMatEnabled: boolean = true): void {
         this.m_fragObjMat = objMatEnabled;
         this.m_fragViewMat = viewMatEnabled;

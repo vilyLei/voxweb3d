@@ -12,6 +12,7 @@ import Color4 from "../Color4";
 import TextureProxy from "../../texture/TextureProxy";
 import { SpecularMode } from "./SpecularMode";
 import { LambertLightShaderCode } from "../mcase/glsl/LambertLightShaderCode";
+import { ShadowMode } from "./ShadowMode";
 
 class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     private m_uniqueName: string = "";
@@ -44,7 +45,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
 
             this.m_texList.push(map);
             this.pipeline.appendKeyString("Tex");
-            this.m_coder.addTextureSample2D("VOX_DIFFUSE_MAP");
+            this.m_coder.addDiffuseMap();
         }
     }
     addNormalMap(map: TextureProxy): void {
@@ -54,7 +55,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
                 
                 this.m_texList.push(map);
                 this.pipeline.appendKeyString("Nor");
-                this.m_coder.addTextureSample2D("VOX_NORMAL_MAP");
+                this.m_coder.addNormalMap();
             }
         }
     }
@@ -65,8 +66,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
 
                 this.m_texList.push(map);
                 this.pipeline.appendKeyString("Para");
-                this.m_coder.addTextureSample2D("VOX_PARALLAX_MAP");
-                this.m_coder.addDefine("VOX_PARALLAX_PARAMS_INDEX", "" + this.parallaxParamIndex);
+                this.m_coder.addParallaxMap( this.parallaxParamIndex );
             }
         }
     }
@@ -77,7 +77,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
 
             this.m_texList.push(map);
             this.pipeline.appendKeyString("Disp");
-            this.m_coder.addTextureSample2D("VOX_DISPLACEMENT_MAP", true, false, true);
+            this.m_coder.addDisplacementMap();
         }
     }
 
@@ -87,7 +87,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
 
             this.m_texList.push(map);
             this.pipeline.appendKeyString("AO");
-            this.m_coder.addTextureSample2D("VOX_AO_MAP");
+            this.m_coder.addAOMap();
         }
     }
 
@@ -98,8 +98,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
 
                 this.m_texList.push(map);
                 this.pipeline.appendKeyString( "Spec" + this.specularMode );
-                this.m_coder.addTextureSample2D("VOX_SPECULAR_MAP");
-                this.m_coder.addDefine("VOX_SPECULAR_MODE", "" + this.specularMode);
+                this.m_coder.addSpecularMap(this.specularMode);
             }
         }
     }
@@ -109,7 +108,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
 
             this.m_texList.push(map);
             this.pipeline.appendKeyString( "Shadow" );
-            this.m_coder.addTextureSample2D("VOX_VSM_SHADOW_MAP");
+            this.m_coder.addShadowMap();
         }
     }
 

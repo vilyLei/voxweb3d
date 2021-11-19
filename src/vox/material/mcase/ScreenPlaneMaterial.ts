@@ -7,7 +7,6 @@
 
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
-import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import MaterialBase from "../../../vox/material/MaterialBase";
 
 class ScreenPlaneShaderBuffer extends ShaderCodeBuffer {
@@ -29,12 +28,10 @@ class ScreenPlaneShaderBuffer extends ShaderCodeBuffer {
 
     private buildThisCode(): void {
         let coder = this.m_coder;
-        coder.reset();
-        coder.addVertLayout("vec3", "a_vs");
         if (this.m_hasTex) {
             coder.mapLodEnabled = this.mapLodEnabled;
             coder.addVertLayout("vec2", "a_uvs");
-            coder.addTextureSample2D();
+            coder.addDiffuseMap();
             coder.addVarying("vec2", "v_uv");
         }
         else {
@@ -53,9 +50,9 @@ class ScreenPlaneShaderBuffer extends ShaderCodeBuffer {
                 `
 void main() {
     #ifdef VOX_Texture2DLod
-    vec4 color4 = VOX_Texture2DLod(u_sampler0, v_uv, u_param[2].w);
+    vec4 color4 = VOX_Texture2DLod(VOX_DIFFUSE_MAP, v_uv, u_param[2].w);
     #else
-    vec4 color4 = VOX_Texture2D(u_sampler0, v_uv);
+    vec4 color4 = VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv);
     #endif
     color4 *= u_param[0];
     color4 += u_param[1];
@@ -122,10 +119,12 @@ export default class ScreenPlaneMaterial extends MaterialBase {
         super();
     }
 
-    getCodeBuf(): ShaderCodeBuffer {
+    protected buildBuf(): void {
         let buf: ScreenPlaneShaderBuffer = ScreenPlaneShaderBuffer.GetInstance();
         buf.mapLodEnabled = this.mapLodEnabled;
-        return buf;
+    }
+    getCodeBuf(): ShaderCodeBuffer {
+        return  ScreenPlaneShaderBuffer.GetInstance();
     }
     private m_param: Float32Array = new Float32Array(
         [
