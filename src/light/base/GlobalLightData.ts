@@ -305,6 +305,7 @@ export default class GlobalLightData implements IMaterialPipe {
             }
 
             if (this.m_uProbe == null) {
+                
                 this.m_uProbe = new ShaderUniformProbe();
                 this.m_uProbe.bindSlotAt(this.m_uslotIndex);
                 this.m_uProbe.addVec4Data(this.m_lightPosData, this.m_lightPosDataVec4Total);
@@ -321,6 +322,7 @@ export default class GlobalLightData implements IMaterialPipe {
             this.m_uProbeVer = this.m_uProbe.rst;
         }
     }
+
     showInfo(): void {
         
         console.log("showInfo(), this.m_lightPosData: ",this.m_lightPosData);
