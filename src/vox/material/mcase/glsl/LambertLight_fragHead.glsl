@@ -130,23 +130,22 @@ vec3 getLambertLightColor(in LambertLight light) {
         // spot light process
         #if VOX_SPOT_LIGHTS_TOTAL > 0
             
-            int k = VOX_POINT_LIGHTS_TOTAL + VOX_DIRECTION_LIGHTS_TOTAL;
+            //int k = VOX_POINT_LIGHTS_TOTAL + VOX_DIRECTION_LIGHTS_TOTAL;
             for(int i = (VOX_POINT_LIGHTS_TOTAL + VOX_DIRECTION_LIGHTS_TOTAL); i < VOX_LIGHTS_TOTAL; ++i) 
             {
                 light.color = u_lightColors[i].xyz;
 
-                light.direc = u_lightPositions[k].xyz - worldPosition.xyz;
+                light.direc = u_lightPositions[i].xyz - worldPosition.xyz;
 
                 float distance = length( light.direc );
                 float attenuation = 1.0 / (1.0 + param2.x * distance + param2.y * distance * distance);
-                vec4 param4 = u_lightPositions[k + 1];
-                
+                vec4 param4 = u_lightPositions[i + VOX_SPOT_LIGHTS_TOTAL];
                 param4.xyz = normalize( param4.xyz );
                 light.direc = normalize( light.direc );
                 
                 attenuation *= max(1.0 - (clamp((1.0 - max(dot(-param4.xyz, light.direc), 0.0)), 0.0, param4.w) / param4.w), 0.0001);
                 destColor += calcLambertLight( light ) * attenuation;
-                k += 2;
+                //k += 2;
             }
         #endif
         return destColor;

@@ -60,7 +60,7 @@ export class DemoLambertLight {
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
             let rparam: RendererParam = new RendererParam();
-            //rparam.maxWebGLVersion = 2;
+            rparam.maxWebGLVersion = 1;
             rparam.setCamProject(45, 10.0, 8000.0);
             rparam.setAttriStencil(true);
             rparam.setAttriAntialias(true);
@@ -100,11 +100,11 @@ export class DemoLambertLight {
             let lightsTotal: number = this.m_materialCtx.lightData.getPointLightsTotal();
             //let pointList: Vector3D[] = this.m_materialCtx.lightData.getPointLightPosList();
             let pointList: Vector3D[] = this.m_materialCtx.lightData.getSpotLightPosList();
-            this.m_materialCtx.lightData.setPointLightAt(0, new Vector3D(-200.0, 56.0, 0.0), new Color4(0.0, 1.0, 0.0, 1.0));
-            this.m_materialCtx.lightData.setPointLightAt(1, new Vector3D(-200.0, 56.0, -200.0), new Color4(0.0, 1.0, 1.0, 1.0));
-            this.m_materialCtx.lightData.setDirecLightAt(0, new Vector3D(0.0, -1.0, 1.0), new Color4(0.5, 0.5, 0.5, 1.0));
-            this.m_materialCtx.lightData.setSpotLightAt(0, new Vector3D(0.0, 56.0, 0.0), new Vector3D(0.0, -1.0, 0.7), 10, new Color4(0.0, 1.0, 0.0, 1.0));
-            this.m_materialCtx.lightData.setSpotLightAt(1, new Vector3D(100.0, 56.0, 0.0), new Vector3D(0.0, -1.0, -0.7), 10, new Color4(1.0, 0.0, 1.0, 1.0));
+            this.m_materialCtx.lightData.setPointLightAt(0, new Vector3D(-200.0, 56.0, 0.0), new Color4(0.0, 2.0, 0.0, 1.0));
+            this.m_materialCtx.lightData.setPointLightAt(1, new Vector3D(-200.0, 56.0, -200.0), new Color4(0.0, 2.0, 2.0, 1.0));
+            this.m_materialCtx.lightData.setDirecLightAt(0, new Vector3D(0.0, -1.0, 1.0), new Color4(0.9, 0.9, 0.9, 1.0));
+            this.m_materialCtx.lightData.setSpotLightAt(0, new Vector3D(0.0, 56.0, 0.0), new Vector3D(0.0, -1.0, 0.0), 10, new Color4(0.0, 3.0, 0.0, 1.0));
+            this.m_materialCtx.lightData.setSpotLightAt(1, new Vector3D(100.0, 56.0, 0.7), new Vector3D(0.0, -1.0, -0.7), 10, new Color4(2.0, 0.0, 1.0, 1.0));
             this.m_materialCtx.lightData.update();
 
             for(let i: number = 0; i < 0; ++i) {
@@ -114,7 +114,7 @@ export class DemoLambertLight {
                 axis.setPosition( posV);
                 this.m_rscene.addEntity(axis);
             }
-            //this.m_materialCtx.lightData.showInfo();
+            this.m_materialCtx.lightData.showInfo();
             /*
             //*/
             // let axis: Axis3DEntity = new Axis3DEntity();
@@ -137,7 +137,7 @@ export class DemoLambertLight {
             //material.parallaxMap =            this.getImageTexByUrl("static/assets/moss_01.jpg");
             //material.parallaxMap =            this.getImageTexByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
             //*/
-            material.diffuseMap = this.getImageTexByUrl("static/assets/wood_01.jpg");
+            material.diffuseMap = this.getImageTexByUrl("static/assets/wood_02.jpg");
             this.useMaps(material,"lava_03",true,false,false,true,true);
             //*/
             //material.shadowMap = null;

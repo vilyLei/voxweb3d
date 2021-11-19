@@ -115,12 +115,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     getShaderCodeObject(): IAbstractShader {
         return LambertLightShaderCode;
     }
-    getFragShaderCode(): string {
-        return this.m_coder.buildFragCode();
-    }
-    getVertShaderCode(): string {
-        return this.m_coder.buildVertCode();
-    }
+
     getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName + this.keysString;
