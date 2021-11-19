@@ -10,7 +10,7 @@ import Color4 from "../../vox/material/Color4";
 
 export class PointLight {
 
-    readonly position: Vector3D = new Vector3D();
+    readonly position: Vector3D = new Vector3D(0.0, 100.0, 0.0);
     readonly color: Color4 = new Color4(1.0, 1.0, 1.0, 1.0);
 
     /**

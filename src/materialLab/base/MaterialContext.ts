@@ -2,10 +2,11 @@ import RendererScene from "../../vox/scene/RendererScene";
 import Vector3D from "../../vox/math/Vector3D";
 
 import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
-import GlobalLightData from "../../light/base/GlobalLightData";
+import {LightModule} from "../../light/base/LightModule";
 import Color4 from "../../vox/material/Color4";
 import EnvLightData from "../../light/base/EnvLightData";
 import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
+import MathConst from "../../vox/math/MathConst";
 
 class MaterialContextParam {
 
@@ -25,9 +26,9 @@ class MaterialContext {
     private m_rscene: RendererScene = null;
     private m_initFlag: boolean = true;
     /**
-     * 全局的灯光数据
+     * 全局的灯光模块
      */
-    readonly lightData: GlobalLightData = new GlobalLightData();
+    readonly lightModule: LightModule = new LightModule();
     /**
      * 全局的环境参数
      */
@@ -53,17 +54,20 @@ class MaterialContext {
             if (param == null) {
                 param = new MaterialContextParam();
             }
+            
+            param.pointLightsTotal = MathConst.Clamp(param.pointLightsTotal, 0, 256);
+            param.directionLightsTotal = MathConst.Clamp(param.directionLightsTotal, 0, 256);
+            param.spotLightsTotal = MathConst.Clamp(param.spotLightsTotal, 0, 256);
 
-            this.lightData.initialize(param.pointLightsTotal, param.directionLightsTotal, param.spotLightsTotal);
-            color.normalizeRandom(1.1);
-            this.lightData.setPointLightAt(0, new Vector3D(Math.random() * areaSize - 0.5 * areaSize, 50 + Math.random() * 100, Math.random() * 600 - 300), color);
-            color.normalizeRandom(1.1);
-            this.lightData.setPointLightAt(1, new Vector3D((Math.random() * areaSize - 0.5 * areaSize, 50 + Math.random() * 100, Math.random() * 600 - 300)), color);
-            color.normalizeRandom(1.9);
-            this.lightData.setDirecLightAt(0, new Vector3D(1.0, 1.0, 1.0), color);
-            color.normalizeRandom(1.9);
-            this.lightData.setDirecLightAt(1, new Vector3D(-1.0, 1.0, -1.0), color);
-            this.lightData.buildData();
+            for(let i: number = 0; i < param.pointLightsTotal; ++i) {
+                this.lightModule.appendPointLight();
+            }
+            for(let i: number = 0; i < param.directionLightsTotal; ++i) {
+                this.lightModule.appendDirectionLight();
+            }
+            for(let i: number = 0; i < param.spotLightsTotal; ++i) {
+                this.lightModule.appendSpotLight();
+            }
 
             selfT.envData = new EnvLightData();
             this.envData.initialize();
@@ -83,7 +87,8 @@ class MaterialContext {
             }
 
             selfT.pipeline = new MaterialPipeline();
-            this.pipeline.addPipe(this.lightData);
+            //this.pipeline.addPipe(this.lightData);
+            this.pipeline.addPipe(this.lightModule);
             this.pipeline.addPipe(this.envData);
             if(this.vsmModule != null) {
                 this.pipeline.addPipe(this.vsmModule.getVSMData());

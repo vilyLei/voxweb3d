@@ -141,13 +141,14 @@ vec3 getLambertLightColor(in LambertLight light) {
                 light.color = color4.xyz;
                 light.direc = param4.xyz - worldPosition.xyz;
 
-                float distance = length( light.direc );
-                float attenuation = 1.0 / (1.0 + param4.w * distance + color4.w * distance * distance);
+                float factor = length( light.direc );
+                float attenuation = 1.0 / (1.0 + param4.w * factor + color4.w * factor * factor);
                 param4 = u_lightPositions[i + VOX_SPOT_LIGHTS_TOTAL];
                 param4.xyz = normalize( param4.xyz );
                 light.direc = normalize( light.direc );
-                
-                attenuation *= max(1.0 - (clamp((1.0 - max(dot(-param4.xyz, light.direc), 0.0)), 0.0, param4.w) / param4.w), 0.0001);
+                factor = max(1.0 - (clamp((1.0 - max(dot(-param4.xyz, light.direc), 0.0)), 0.0, param4.w) / param4.w), 0.0001);
+                //attenuation *= pow(factor, 1.0);
+                attenuation *= factor;
                 destColor += calcLambertLight( light ) * attenuation;
             }
         #endif

@@ -28,6 +28,9 @@ import {SpecularMode, LambertLightMaterial} from "../vox/material/mcase/LambertL
 import { MaterialContextParam, MaterialContext } from "../materialLab/base/MaterialContext";
 import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 import RendererState from "../vox/render/RendererState";
+import { PointLight } from "../light/base/PointLight";
+import { DirectionLight } from "../light/base/DirectionLight";
+import { SpotLight } from "../light/base/SpotLight";
 
 export class DemoLambertLight {
 
@@ -86,39 +89,49 @@ export class DemoLambertLight {
             mcParam.spotLightsTotal = 2;
             mcParam.vsmEnabled = false;
             
-            //console.log("isWinExternalVideoCard: ",isWinExternalVideoCard);
-            //this.m_materialCtx.initialize( this.m_rscene, 4, 2 );
-            //this.m_materialCtx.initialize( this.m_rscene, 1,0);
             this.m_materialCtx.initialize( this.m_rscene, mcParam);
             if(!RendererDevice.IsWinExternalVideoCard() && RendererDevice.IsWindowsPCOS()) {
                 alert("当前浏览器3D渲染没有使用独立显卡");
             }
             let posV: Vector3D = new Vector3D();
-            let color: Color4 = new Color4(1.0,1.0,0.0);
-            let colorBias: Color4 = new Color4(0.0,0.0,0.0);
             let axis: Axis3DEntity;
-            let lightsTotal: number = this.m_materialCtx.lightData.getPointLightsTotal();
-            let pointList: Vector3D[] = this.m_materialCtx.lightData.getSpotLightPosList();
-            this.m_materialCtx.lightData.setPointLightAt(0, new Vector3D(-200.0, 56.0, 0.0), new Color4(0.0, 4.0, 0.0, 1.0));
-            this.m_materialCtx.lightData.setPointLightAt(1, new Vector3D(-200.0, 56.0, -200.0), new Color4(0.0, 4.0, 2.0, 1.0));
-            this.m_materialCtx.lightData.setDirecLightAt(0, new Vector3D(0.0, -1.0, 1.0), new Color4(0.9, 0.9, 0.9, 1.0));
-            this.m_materialCtx.lightData.setSpotLightAt(0, new Vector3D(0.0, 56.0, 0.0), new Vector3D(0.0, -1.0, 0.0), 10, new Color4(0.0, 3.0, 0.0, 1.0));
-            this.m_materialCtx.lightData.setSpotLightAt(1, new Vector3D(100.0, 56.0, 0.7), new Vector3D(0.0, -1.0, -0.7), 10, new Color4(2.0, 0.0, 1.0, 1.0));
-            this.m_materialCtx.lightData.update();
 
-            this.m_materialCtx.lightData.setPointLightAttenuationFactorAt(0, 0.0001, 0.0005);
-            this.m_materialCtx.lightData.setSpotLightAttenuationFactorAt(0, 0.0001, 0.0001);
-
-            for(let i: number = 0; i < 0; ++i) {
-                axis = new Axis3DEntity();
-                axis.initializeCross(50.0);
-                posV.copyFrom( pointList[i] );
-                axis.setPosition( posV);
-                this.m_rscene.addEntity(axis);
+            let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
+            if(pointLight != null) {
+                pointLight.position.setXYZ(-200.0, 56.0, 0.0);
+                pointLight.color.setRGB3f(0.0, 4.0, 0.0);
+                pointLight = this.m_materialCtx.lightModule.getPointLightAt(1);
+                pointLight.position.setXYZ(-200.0, 56.0, -200.0);
+                pointLight.color.setRGB3f(0.0, 0.0, 4.0);
             }
-            this.m_materialCtx.lightData.showInfo();
-            /*
-            //*/
+
+            let direcLight: DirectionLight = this.m_materialCtx.lightModule.getDirectionLightAt(0);
+            if(direcLight != null) {
+                direcLight.direction.setXYZ(0.0, -1.0, 1.0);
+                direcLight.color.setRGB3f(0.9, 0.9, 0.9);
+            }
+            let spotLight: SpotLight = this.m_materialCtx.lightModule.getSpotLightAt(0);
+            if(spotLight != null) {
+                spotLight.position.setXYZ(0, 56, 0);
+                spotLight.direction.setXYZ(0.0, -1.0, 0.7);
+                spotLight.color.setRGB3f(0.0, 3.0, 0.0);
+                spotLight = this.m_materialCtx.lightModule.getSpotLightAt(1);
+                spotLight.position.setXYZ(100, 56, 0);
+                spotLight.direction.setXYZ(0.0, -1.0, -0.7);
+                spotLight.color.setRGB3f(3.0, 0.0, 0.0);
+            }
+
+            this.m_materialCtx.lightModule.update();
+            this.m_materialCtx.lightModule.showInfo();
+
+            // for(let i: number = 0; i < 0; ++i) {
+            //     axis = new Axis3DEntity();
+            //     axis.initializeCross(50.0);
+            //     posV.copyFrom( pointList[i] );
+            //     axis.setPosition( posV);
+            //     this.m_rscene.addEntity(axis);
+            // }
+
             // let axis: Axis3DEntity = new Axis3DEntity();
             // axis.initialize(300.0);
             // this.m_rscene.addEntity(axis);
