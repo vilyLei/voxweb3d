@@ -107,12 +107,11 @@
             // calculate per-light radiance
             param4 = u_lightPositions[i];
             color4 = u_lightColors[i];
-            vec3 L = (param4.xyz - worldPosition.xyz);
-            float distance = length(L);
-            float attenuation = 1.0 / (1.0 + param4.w * distance + color4.w * distance * distance);
-            vec3 inColor = color4.xyz * attenuation;
-            rL.L = normalize(L);
-            calcPBRLight(roughness, rm, inColor, rL);
+            rL.L = (param4.xyz - worldPosition.xyz);
+            float factor = length(rL.L);
+            factor = 1.0 / (1.0 + param4.w * factor + color4.w * factor * factor);
+            rL.L = normalize(rL.L);
+            calcPBRLight(roughness, rm, color4.xyz * factor, rL);
         }
     #endif
     // parallel light process
@@ -122,6 +121,41 @@
             // calculate per-light radiance
             rL.L = normalize(-u_lightPositions[i].xyz);
             calcPBRLight(roughness, rm, u_lightColors[i].xyz, rL);
+        }
+    #endif
+    // spot light process
+    #if VOX_SPOT_LIGHTS_TOTAL > 0
+        
+        for(int i = (VOX_POINT_LIGHTS_TOTAL + VOX_DIRECTION_LIGHTS_TOTAL); i < VOX_LIGHTS_TOTAL; ++i) 
+        {
+            // param4 = u_lightPositions[i];
+            // color4 = u_lightColors[i];
+            // light.color = color4.xyz;
+            // light.direc = param4.xyz - worldPosition.xyz;
+
+            // float factor = length( light.direc );
+            // float attenuation = 1.0 / (1.0 + param4.w * factor + color4.w * factor * factor);
+            // param4 = u_lightPositions[i + VOX_SPOT_LIGHTS_TOTAL];
+            // param4.xyz = normalize( param4.xyz );
+            // light.direc = normalize( light.direc );
+            // factor = max(1.0 - (clamp((1.0 - max(dot(-param4.xyz, light.direc), 0.0)), 0.0, param4.w) / param4.w), 0.0001);
+            // //attenuation *= pow(factor, 1.0);
+            // attenuation *= factor;
+            // destColor += calcLambertLight( light ) * attenuation;
+
+            param4 = u_lightPositions[i];
+            color4 = u_lightColors[i];
+            rL.L = (param4.xyz - worldPosition.xyz);
+            float factor = length(rL.L);
+            float attenuation = 1.0 / (1.0 + param4.w * factor + color4.w * factor * factor);
+
+            rL.L = normalize(rL.L);
+
+            param4 = u_lightPositions[i + VOX_SPOT_LIGHTS_TOTAL];
+            param4.xyz = normalize( param4.xyz );
+            factor = max(1.0 - (clamp((1.0 - max(dot(-param4.xyz, rL.L), 0.0)), 0.0, param4.w) / param4.w), 0.0001);
+            
+            calcPBRLight(roughness, rm, color4.xyz * attenuation * factor, rL);
         }
     #endif
     

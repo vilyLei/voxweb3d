@@ -38,6 +38,7 @@ import { PointLight } from "../light/base/PointLight";
 import { DirectionLight } from "../light/base/DirectionLight";
 import { SpotLight } from "../light/base/SpotLight";
 import { MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
+import Box3DEntity from "../vox/entity/Box3DEntity";
 
 export class DemoPBRViewer {
     constructor() { }
@@ -120,17 +121,26 @@ export class DemoPBRViewer {
             this.m_envMap = loader.texture;
 
             let mcParam: MaterialContextParam = new MaterialContextParam();
-            mcParam.pointLightsTotal = 1;
+            mcParam.pointLightsTotal = 0;
             mcParam.directionLightsTotal = 0;
-            mcParam.spotLightsTotal = 0;
+            mcParam.spotLightsTotal = 1;
             this.m_materialCtx.initialize(this.m_rscene, mcParam);
             let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
             if (pointLight != null) {
-                // pointLight.position.setXYZ(200.0, 150.0, 200.0);
-                pointLight.position.setXYZ(0.0, 50.0, 0.0);
-                pointLight.color.setRGB3f(0.0, 0.3, 0.0);
-                pointLight.attenuationFactor1 = 0.0001;
-                pointLight.attenuationFactor2 = 0.0001;
+                // pointLight.position.setXYZ(200.0, 180.0, 200.0);
+                pointLight.position.setXYZ(0.0, 30.0, 0.0);
+                pointLight.color.setRGB3f(0.0, 4.2, 0.0);
+                pointLight.attenuationFactor1 = 0.001;
+                pointLight.attenuationFactor2 = 0.005;
+            }
+            let spotLight: SpotLight = this.m_materialCtx.lightModule.getSpotLightAt(0);
+            if(spotLight != null) {
+                spotLight.position.setXYZ(0.0, 30.0, 0.0);
+                spotLight.direction.setXYZ(0.0, -1.0, 0.0);
+                spotLight.color.setRGB3f(0.0, 40.2, 0.0);
+                spotLight.attenuationFactor1 = 0.000001;
+                spotLight.attenuationFactor2 = 0.000001;
+                spotLight.angleDegree = 30.0;
             }
             let directLight: DirectionLight = this.m_materialCtx.lightModule.getDirectionLightAt(0);
             if (directLight != null) {
@@ -139,6 +149,12 @@ export class DemoPBRViewer {
             this.m_materialCtx.lightModule.update();
             this.m_materialCtx.lightModule.showInfo();
 
+            for(let i: number = 0; i < this.m_materialCtx.lightModule.getPointLightsTotal(); ++i) {
+                let crossAxis: Axis3DEntity = new Axis3DEntity();
+                crossAxis.initializeCross(30);
+                crossAxis.setPosition(this.m_materialCtx.lightModule.getPointLightAt(i).position);
+                this.m_rscene.addEntity(crossAxis);
+            }
             this.createEntity();
             /*
             this.m_dracoMeshLoader.initialize(2);
@@ -153,63 +169,21 @@ export class DemoPBRViewer {
         }
     }
 
-    makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {
-
-        let material: PBRMaterial = new PBRMaterial();
-        //material.setMaterialPipeline( this.m_pipeline );
-        material.setMaterialPipeline(this.m_materialCtx.pipeline);
-        material.decorator = new PBRShaderDecorator();
-
-        let decorator: PBRShaderDecorator = material.decorator;
-        decorator.scatterEnabled = false;
-        decorator.woolEnabled = true;
-        decorator.toneMappingEnabled = true;
-        decorator.envMapEnabled = true;
-        decorator.specularBleedEnabled = true;
-        decorator.metallicCorrection = true;
-        decorator.absorbEnabled = false;
-        decorator.normalNoiseEnabled = false;
-        decorator.pixelNormalNoiseEnabled = true;
-        decorator.hdrBrnEnabled = this.hdrBrnEnabled;
-        decorator.vtxFlatNormal = this.vtxFlatNormal;
-
-
-        material.setMetallic(metallic);
-        material.setRoughness(roughness);
-        material.setAO(ao);
-
-        return material;
-    }
-    createMaterial(uscale: number, vscale: number, ptexList: TextureProxy[] = null): PBRMaterial {
-
-        let material: PBRMaterial;
-        material = this.makePBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
-
-        let decorator: PBRShaderDecorator = material.decorator;
-        decorator.shadowReceiveEnabled = false;
-        decorator.fogEnabled = this.fogEnabled;
-        decorator.indirectEnvMapEnabled = false;
-        decorator.envMapEnabled = true;
-        decorator.diffuseMapEnabled = true;
-        decorator.normalMapEnabled = true;
-
-        material.setUVScale(uscale, vscale);
-
-        //material.setTextureList(ptexList);
-        return material;
-    }
+    private m_target: DisplayEntity = null;
+    private m_rotV: Vector3D = new Vector3D(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
     private createEntity(): void {
 
         let axis: Axis3DEntity = new Axis3DEntity();
         //  axis.initialize(300.0);
         //  this.m_rscene.addEntity(axis);
 
-
-        let diffuseMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/box_COLOR.png");
-        let normalMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/box_NRM.png");
+        let ns: string = "brick_n_256";
+        let diffuseMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/"+ns+"_COLOR.png");
+        diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
+        let normalMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/"+ns+"_NRM.png");
         let aoMap: TextureProxy = null;
         if (this.aoMapEnabled) {
-            aoMap = this.getImageTexByUrl("static/assets/disp/box_OCC.png");
+            aoMap = this.getImageTexByUrl("static/assets/disp/b"+ns+"_OCC.png");
         }
 
         let disSize: number = 700.0;
@@ -231,21 +205,31 @@ export class DemoPBRViewer {
         let sph: Sphere3DEntity;
         ///*
         material = this.createMaterial(1, 1);
-        material.decorator.scatterEnabled = true;
+        material.decorator.normalMapEnabled = false;
         material.decorator.aoMapEnabled = this.aoMapEnabled;
+        material.decorator.aoMapEnabled = false;
+        material.decorator.scatterEnabled = false;
 
         material.decorator.envMap = this.m_envMap;
         material.decorator.diffuseMap = diffuseMap;
         material.decorator.normalMap = normalMap;
         material.decorator.aoMap = aoMap;
         material.setAlbedoColor(1.0,1.0,1.0);
-        material.setRoughness(0.6);
+        material.setRoughness(0.5);
         material.setScatterIntensity(64.0);
 
         let plane: Plane3DEntity = new Plane3DEntity();
         plane.setMaterial(material);
         plane.initializeXOZSquare(300.0);
         this.m_rscene.addEntity(plane);
+
+        // let box: Box3DEntity = new Box3DEntity();
+        // box.setMaterial( material );
+        // box.initializeCube(300.0);
+        // this.m_target = box;
+        // this.m_target.setRotation3( this.m_rotV );
+        // this.m_rscene.addEntity(box);
+
         return;
         //material.setTextureList(texList);
         let srcSph = new Sphere3DEntity();
@@ -307,6 +291,12 @@ export class DemoPBRViewer {
             return;
         }
         //*/
+        if(this.m_target != null) {
+            this.m_target.setRotation3( this.m_rotV );
+            this.m_target.update();
+            this.m_rotV.x += 0.2;
+            this.m_rotV.z += 0.3;
+        }
         ThreadSystem.Run();
         this.update();
 
@@ -317,6 +307,52 @@ export class DemoPBRViewer {
         this.m_rscene.run(true);
 
         DebugFlag.Flag_0 = 0;
+    }
+    
+    makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {
+
+        let material: PBRMaterial = new PBRMaterial();
+        //material.setMaterialPipeline( this.m_pipeline );
+        material.setMaterialPipeline(this.m_materialCtx.pipeline);
+        material.decorator = new PBRShaderDecorator();
+
+        let decorator: PBRShaderDecorator = material.decorator;
+        decorator.scatterEnabled = false;
+        decorator.woolEnabled = true;
+        decorator.toneMappingEnabled = true;
+        decorator.envMapEnabled = true;
+        decorator.specularBleedEnabled = true;
+        decorator.metallicCorrection = true;
+        decorator.absorbEnabled = false;
+        decorator.normalNoiseEnabled = false;
+        decorator.pixelNormalNoiseEnabled = true;
+        decorator.hdrBrnEnabled = this.hdrBrnEnabled;
+        decorator.vtxFlatNormal = this.vtxFlatNormal;
+
+
+        material.setMetallic(metallic);
+        material.setRoughness(roughness);
+        material.setAO(ao);
+
+        return material;
+    }
+    createMaterial(uscale: number, vscale: number, ptexList: TextureProxy[] = null): PBRMaterial {
+
+        let material: PBRMaterial;
+        material = this.makePBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
+
+        let decorator: PBRShaderDecorator = material.decorator;
+        decorator.shadowReceiveEnabled = false;
+        decorator.fogEnabled = this.fogEnabled;
+        decorator.indirectEnvMapEnabled = false;
+        decorator.envMapEnabled = true;
+        decorator.diffuseMapEnabled = true;
+        decorator.normalMapEnabled = true;
+
+        material.setUVScale(uscale, vscale);
+
+        //material.setTextureList(ptexList);
+        return material;
     }
 }
 
