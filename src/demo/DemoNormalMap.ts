@@ -93,7 +93,7 @@ export class DemoNormalMap {
             billboard.initialize(60.0, 60.0, [this.getImageTexByUrl("static/assets/flare_core_03.jpg")]);
             billboard.setPosition(pointLight.position);
             billboard.setRGB3f(pointLight.color.r, pointLight.color.g, pointLight.color.b);
-            this.m_engine.rscene.addEntity(billboard);
+            this.m_engine.rscene.addEntity(billboard, 2);
             this.m_pointLight = pointLight;
             this.m_target = billboard;
             /*
