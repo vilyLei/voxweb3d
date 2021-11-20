@@ -474,6 +474,12 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
                         if (material.getShaderData() == null) {
                             let texList: TextureProxy[] = material.getTextureList();
                             let texEnabled: boolean = (texList != null && texList.length > 0);
+                            if(material.getMaterialPipeline() == null && this.getMaterialPipeline() != null) {
+                                material.setMaterialPipeline( this.getMaterialPipeline() );
+                            }
+                            if(material.pipeTypes == null) {
+                                material.pipeTypes = this.pipeTypes;
+                            }
                             material.initializeByCodeBuf(texEnabled);
                         }
                     }
