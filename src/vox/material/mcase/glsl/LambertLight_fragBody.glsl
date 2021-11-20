@@ -49,7 +49,7 @@ vec2 texUV = v_uv;
             light.specular *= param4.xyz;
         #endif
         light.specularPower *= param4.z;
-        light.specularPower = max(0.5,light.specularPower);
+        light.specularPower = max(1.0,light.specularPower);
     #endif
     vec3 destColor = getLambertLightColor(light);
     //param = u_fragLocalParams[ VOX_LIGHT_LOCAL_PARAMS_INDEX + 2 ];

@@ -31,7 +31,8 @@ export default class PBRShaderDecorator {
     indirectEnvMap: TextureProxy = null;
     shadowMap: TextureProxy = null;
     parallaxMap: TextureProxy = null;
-    specularMap: TextureProxy = null;
+    roughnessMap: TextureProxy = null;
+    //specularMap: TextureProxy = null;
     
     woolEnabled: boolean = true;
     toneMappingEnabled: boolean = true;
@@ -124,6 +125,9 @@ export default class PBRShaderDecorator {
         this.mirrorMap = src.mirrorMap;
         this.indirectEnvMap = src.indirectEnvMap;
         this.shadowMap = src.shadowMap;
+        this.parallaxMap = src.parallaxMap;
+        this.roughnessMap = src.roughnessMap;
+        //this.specularMap = src.specularMap;
 
         this.lightEnabled = src.lightEnabled;
         this.texturesTotal = src.texturesTotal;

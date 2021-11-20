@@ -117,7 +117,7 @@ export class DemoLambertLight {
             if(spotLight != null) {
                 spotLight.position.setXYZ(0, 56, 0);
                 spotLight.direction.setXYZ(0.0, -1.0, 0.7);
-                spotLight.color.setRGB3f(0.0, 2.0, 0.0);
+                spotLight.color.setRGB3f(1.0, 0.0, 1.0);
                 spotLight = this.m_materialCtx.lightModule.getSpotLightAt(1);
                 if(spotLight != null) {
                     spotLight.position.setXYZ(100, 56, 0);
@@ -176,7 +176,7 @@ export class DemoLambertLight {
             material.setSpecularColor(new Color4(2.0, 2.0, 2.0));
             material.setColor(new Color4(1.0,1.0,1.0,1.0), new Color4(0.4,0.4,0.4))
             //material.setColor(new Color4(0.5,1.7,0.5,1.0))
-            ///*
+            /*
             let plane: Plane3DEntity = new Plane3DEntity();
             plane.showDoubleFace();
             plane.setMaterial(material);
@@ -184,17 +184,17 @@ export class DemoLambertLight {
             //plane.setXYZ(0.0, -200.0, 0.0);
             this.m_rscene.addEntity(plane);
             //*/
-            /*
+            ///*
             let sphMaterial: LambertLightMaterial = new LambertLightMaterial();
-            sphMaterial.diffuseMap = this.getImageTexByUrl("static/assets/default.jpg");
+            //sphMaterial.diffuseMap = this.getImageTexByUrl("static/assets/default.jpg");
             sphMaterial.copyFrom(material);
             //sphMaterial.initializeByCodeBuf(true);
             ///*
             let sph = new Sphere3DEntity();
-            sphMaterial.setUVScale(2.0, 2.0);
+            sphMaterial.setUVScale(4.0, 4.0);
             sph.setMaterial(sphMaterial);
             sph.initialize(100,20,20)
-            sph.setXYZ(0, 100, 0);
+            sph.setXYZ(0, -110, 0);
             this.m_rscene.addEntity(sph);
             this.m_target = sph;
             //*/
