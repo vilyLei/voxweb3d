@@ -182,10 +182,10 @@ export default class PBRShaderDecorator {
         if (this.hdrBrnEnabled) coder.addDefine("VOX_HDR_BRN", "1");
         if (this.vtxFlatNormal) coder.addDefine("VOX_VTX_FLAT_NORMAL", "1");
 
-        if (coder.isHaveTexture2D()) {
-            coder.addVertUniform("vec4", "u_paramLocal", 2);
-        }
-        coder.addFragUniform("vec4", "u_paramLocal", 2);
+        // if (coder.isHaveTexture2D()) {
+        //     coder.addVertUniform("vec4", "u_fragLocalParams", 2);
+        // }
+        coder.addFragUniform("vec4", "u_fragLocalParams", 2);
         coder.addFragUniform("vec4", "u_albedo");
         coder.addFragUniform("vec4", "u_params", 4);
 

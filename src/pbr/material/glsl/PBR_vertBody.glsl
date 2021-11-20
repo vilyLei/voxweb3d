@@ -1,5 +1,3 @@
-
-    
     worldPosition = u_objMat * vec4(a_vs, 1.0);
     viewPosition = u_viewMat * worldPosition;
     gl_Position = u_projMat * viewPosition;
@@ -18,6 +16,6 @@
     
     #ifdef VOX_USE_2D_MAP
 
-        v_uv.xy = a_uvs.xy * u_paramLocal[1].xy;
+        v_uv.xy = a_uvs.xy;
 
     #endif

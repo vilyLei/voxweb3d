@@ -72,12 +72,11 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         1.0, 1.0, 1.0,              // env map specular color factor x,y,z
         0.07                        // envMap lod mipMapLv parameter((100.0 * fract(0.07)) - (100.0 * fract(0.07)) * k + floor(0.07))
     ]);
-    private m_paramLocal: Float32Array = new Float32Array(
+    private m_fragLocalParams: Float32Array = new Float32Array(
         [
             0.0, 0.0, 0.0, 1.0      // f0.r,f0.g,f0.b, mormalMapIntentity(0.0,1.0)
             ,1.0, 1.0, 1.0, 0.3     // uv scaleX, uv scaleY, undefine, undefine
         ]);
-    private m_camPos: Float32Array = new Float32Array([500.0, 500.0, 500.0, 1.0]);
     private m_mirrorParam: Float32Array = new Float32Array(
         [
             0.0, 0.0, -1.0           // mirror view nv(x,y,z)
@@ -132,18 +131,13 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         else {
             this.m_params.set(dst.m_params);
         }
-        if(this.m_paramLocal == null || this.m_paramLocal.length != dst.m_paramLocal.length) {
-            this.m_paramLocal = dst.m_paramLocal.slice();
+        if(this.m_fragLocalParams == null || this.m_fragLocalParams.length != dst.m_fragLocalParams.length) {
+            this.m_fragLocalParams = dst.m_fragLocalParams.slice();
         }
         else {
-            this.m_paramLocal.set(dst.m_paramLocal);
+            this.m_fragLocalParams.set(dst.m_fragLocalParams);
         }
-        if(this.m_camPos == null || this.m_camPos.length != dst.m_camPos.length) {
-            this.m_camPos = dst.m_camPos.slice();
-        }
-        else {
-            this.m_camPos.set(dst.m_camPos);
-        }
+        
         if(this.m_mirrorParam == null || this.m_mirrorParam.length != dst.m_mirrorParam.length) {
             this.m_mirrorParam = dst.m_mirrorParam.slice();
         }
@@ -165,8 +159,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
 
         dst.m_albedo.set(this.m_albedo);
         dst.m_params.set(this.m_params);
-        dst.m_paramLocal.set(this.m_paramLocal);
-        dst.m_camPos.set(this.m_camPos);
+        dst.m_fragLocalParams.set(this.m_fragLocalParams);
         dst.m_mirrorParam.set(this.m_mirrorParam);
         
         //dst.setTextureList(this.getTextureList().slice());
@@ -174,7 +167,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     }
     seNormalMapIntensity(intensity: number): void {
         intensity = Math.min(Math.max(intensity, 0.0), 1.0);
-        this.m_paramLocal[4] = intensity;
+        this.m_fragLocalParams[4] = intensity;
     }
     setPixelNormalNoiseIntensity(intensity: number): void {
         intensity = Math.min(Math.max(intensity, 0.0), 2.0);
@@ -298,25 +291,25 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     }
     setF0(f0x: number, f0y: number, f0z: number): void {
 
-        this.m_paramLocal[0] = f0x;
-        this.m_paramLocal[1] = f0y;
-        this.m_paramLocal[2] = f0z;
+        this.m_fragLocalParams[0] = f0x;
+        this.m_fragLocalParams[1] = f0y;
+        this.m_fragLocalParams[2] = f0z;
     }
     getF0(colorFactor: Color4): void {
         
-        colorFactor.r = this.m_paramLocal[0];
-        colorFactor.g = this.m_paramLocal[1];
-        colorFactor.b = this.m_paramLocal[2];
+        colorFactor.r = this.m_fragLocalParams[0];
+        colorFactor.g = this.m_fragLocalParams[1];
+        colorFactor.b = this.m_fragLocalParams[2];
     }
     setUVScale(sx: number, sy: number): void {
 
-        this.m_paramLocal[4] = sx;
-        this.m_paramLocal[5] = sy;
+        this.m_fragLocalParams[4] = sx;
+        this.m_fragLocalParams[5] = sy;
     }
     getUVScale(scaleV:Vector3D): void {
 
-        scaleV.x = this.m_paramLocal[4];
-        scaleV.y = this.m_paramLocal[5];
+        scaleV.x = this.m_fragLocalParams[4];
+        scaleV.y = this.m_fragLocalParams[5];
     }
     setAlbedoColor(pr: number, pg: number, pb: number): void {
         this.m_albedo[0] = pr;
@@ -329,16 +322,10 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         colorFactor.g = this.m_albedo[1];
         colorFactor.b = this.m_albedo[2];
     }
-    setCamPos(pos: Vector3D): void {
-
-        this.m_camPos[0] = pos.x;
-        this.m_camPos[1] = pos.y;
-        this.m_camPos[2] = pos.z;
-    }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_albedo", "u_params", "u_camPos", "u_paramLocal", "u_mirrorParams"];
-        oum.dataList = [this.m_albedo, this.m_params, this.m_camPos, this.m_paramLocal, this.m_mirrorParam];
+        oum.uniformNameList = ["u_albedo", "u_params", "u_fragLocalParams", "u_mirrorParams"];
+        oum.dataList = [this.m_albedo, this.m_params, this.m_fragLocalParams, this.m_mirrorParam];
         return oum;
     }
 }

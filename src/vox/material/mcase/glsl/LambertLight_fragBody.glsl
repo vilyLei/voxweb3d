@@ -7,7 +7,7 @@ vec4 color = u_fragLocalParams[0];
 #endif
 color.xyz += u_fragLocalParams[1].xyz;
 
-vec2 texUV = v_uv;
+vec2 texUV = v_uv.xy;
 #ifdef VOX_LIGHT_LOCAL_PARAMS_INDEX
     vec4 param;
     vec3 viewDir = normalize(u_cameraPosition.xyz - worldPosition.xyz);
