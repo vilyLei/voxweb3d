@@ -14,6 +14,7 @@ import ShaderUniform from "../../vox/material/ShaderUniform";
 import TextureProxy from '../../vox/texture/TextureProxy';
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
+
 import { MaterialPipeType } from "./pipeline/MaterialPipeType";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 

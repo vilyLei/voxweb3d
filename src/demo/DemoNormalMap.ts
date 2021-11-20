@@ -157,11 +157,8 @@ export class DemoNormalMap {
             material.lightEnabled = true;
             material.initializeLocalData();
             material.setDisplacementParams(3.0, 0.0);
+            material.setSpecularIntensity(64.0);
             color.normalizeRandom(1.1);
-            material.setSpecularIntensity(32.0);
-            color.normalizeRandom(1.1);
-            //material.setColor( color );
-            color.setRGB3f(0.01, 0.01, 0.01);
             material.setSpecularColor( color );
             let plane: Plane3DEntity = new Plane3DEntity();
             plane.setMaterial(material);

@@ -27,6 +27,9 @@ import RenderProxy from "../../vox/render/RenderProxy";
 import TextureProxy from '../../vox/texture/TextureProxy';
 import DebugFlag from '../debug/DebugFlag';
 
+import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
+import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
+
 export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEntityTransform {
     private static s_uid: number = 0;
     private m_uid: number = 0;
@@ -55,6 +58,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     protected m_localBuondsVer: number = -1;
     protected m_parent: IDisplayEntityContainer = null;
     protected m_renderProxy: RenderProxy = null;
+    protected m_pipeLine: IMaterialPipeline = null;
 
     /**
      * renderer scene entity flag, be used by the renderer system
@@ -66,14 +70,27 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
      */
     __$rseFlag: number = RSEntityFlag.DEFAULT;
     name: string = "DisplayEntity";
-    // 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMask, 默认只会有摄像机裁剪
+    /**
+     * 可见性裁剪是否开启, 如果不开启，则摄像机和遮挡剔除都不会裁剪, 取值于 SpaceCullingMask, 默认只会有摄像机裁剪
+     */
     spaceCullMask: SpaceCullingMask = SpaceCullingMask.CAMERA;
-    // recorde a draw status
+    /**
+     * recorde a draw status
+     */
     drawEnabled: boolean = false;
-    // mouse interaction enabled
+    /**
+     * mouse interaction enabled
+     */
     mouseEnabled: boolean = false;
-    //
+    /**
+     * whether merge vertex geometry data for shader vertex buffer attribute data
+     */
     vbWholeDataEnabled: boolean = true;
+    /**
+     * pipes type list for material pipeline
+     */
+    pipeTypes: MaterialPipeType[] = null;
+
     protected createBounds(): void {
         this.m_globalBounds = new AABB();
     }
@@ -103,6 +120,14 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     getRendererUid(): number {
         return RSEntityFlag.GetRendererUid(this.__$rseFlag);
     }
+    
+    setMaterialPipeline(pipeline: IMaterialPipeline): void {
+        this.m_pipeLine = pipeline;
+    }
+    getMaterialPipeline(): IMaterialPipeline {
+        return this.m_pipeLine;
+    }
+
     /**
      * @returns 自身是否未必任何渲染器相关的系统使用
      */
