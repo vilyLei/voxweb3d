@@ -86,7 +86,6 @@ struct LambertLight {
     vec3 direc;
     // light color
     vec3 color;
-    // light distance attenuation factor
     vec4 param;
     float specularPower;
 };
@@ -95,7 +94,7 @@ vec3 calcLambertLight(in LambertLight light) {
     float nDotL = max(dot(light.normal, light.direc), 0.0);
 	vec3 baseColor = nDotL * light.diffuse * light.color;
 	vec3 viewDir = normalize(light.direc + light.viewDirec);
-	vec3 specularColor = light.specular * nDotL * pow(max(dot(light.normal, light.viewDirec), 0.0), light.specularPower);
+	vec3 specularColor = light.color * light.specular * nDotL * pow(max(dot(light.normal, viewDir), 0.0), light.specularPower);
     vec2 param = light.param.xy;
 	return (baseColor * param.x + param.y * specularColor);
 }
@@ -107,7 +106,6 @@ vec3 getLambertLightColor(in LambertLight light) {
         vec4 param4;
         vec3 destColor = vec3(0.0);
         // point light process
-        vec2 param2 = light.param.zw;
         #if VOX_POINT_LIGHTS_TOTAL > 0
             for(int i = 0; i < VOX_POINT_LIGHTS_TOTAL; ++i)
             {
@@ -119,7 +117,8 @@ vec3 getLambertLightColor(in LambertLight light) {
                 float distance = length(light.direc);
                 float attenuation = 1.0 / (1.0 + param4.w * distance + color4.w * distance * distance);
                 light.direc = normalize(light.direc);
-                destColor += calcLambertLight( light ) * attenuation;
+                light.color *= attenuation;
+                destColor += calcLambertLight( light );// * attenuation;
             }
         #endif
         // direction light process
@@ -138,18 +137,22 @@ vec3 getLambertLightColor(in LambertLight light) {
             {
                 param4 = u_lightPositions[i];
                 color4 = u_lightColors[i];
-                light.color = color4.xyz;
+                //light.color = color4.xyz;
                 light.direc = param4.xyz - worldPosition.xyz;
 
                 float factor = length( light.direc );
                 float attenuation = 1.0 / (1.0 + param4.w * factor + color4.w * factor * factor);
+                light.color = color4.xyz * attenuation;
+                
                 param4 = u_lightPositions[i + VOX_SPOT_LIGHTS_TOTAL];
                 param4.xyz = normalize( param4.xyz );
                 light.direc = normalize( light.direc );
-                factor = max(1.0 - (clamp((1.0 - max(dot(-param4.xyz, light.direc), 0.0)), 0.0, param4.w) / param4.w), 0.0001);
-                //attenuation *= pow(factor, 1.0);
-                attenuation *= factor;
-                destColor += calcLambertLight( light ) * attenuation;
+                float ft = abs(param4.w) + 0.001;
+                factor = (1.0 - max(dot(-param4.xyz, light.direc), 0.0));
+                factor = min(1.0 - (factor / ft), 1.0);
+                //factor = max(factor, 0.0001);
+                
+                destColor += calcLambertLight( light ) * factor;
             }
         #endif
         return destColor;

@@ -129,7 +129,7 @@ export class DemoPBRViewer {
             if (pointLight != null) {
                 // pointLight.position.setXYZ(200.0, 180.0, 200.0);
                 pointLight.position.setXYZ(0.0, 30.0, 0.0);
-                pointLight.color.setRGB3f(0.0, 4.2, 0.0);
+                pointLight.color.setRGB3f(0.0, 2.2, 0.0);
                 pointLight.attenuationFactor1 = 0.001;
                 pointLight.attenuationFactor2 = 0.005;
             }
@@ -205,9 +205,9 @@ export class DemoPBRViewer {
         let sph: Sphere3DEntity;
         ///*
         material = this.createMaterial(1, 1);
-        material.decorator.normalMapEnabled = false;
+        //material.decorator.normalMapEnabled = false;
         material.decorator.aoMapEnabled = this.aoMapEnabled;
-        material.decorator.aoMapEnabled = false;
+        //material.decorator.aoMapEnabled = false;
         material.decorator.scatterEnabled = false;
 
         material.decorator.envMap = this.m_envMap;

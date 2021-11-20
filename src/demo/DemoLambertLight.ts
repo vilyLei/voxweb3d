@@ -99,26 +99,31 @@ export class DemoLambertLight {
             let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
             if(pointLight != null) {
                 pointLight.position.setXYZ(-200.0, 56.0, 0.0);
-                pointLight.color.setRGB3f(0.0, 4.0, 0.0);
+                //pointLight.position.setXYZ(0.0, 56.0, 0.0);
+                pointLight.color.setRGB3f(0.0, 1.0, 0.0);
                 pointLight = this.m_materialCtx.lightModule.getPointLightAt(1);
-                pointLight.position.setXYZ(-200.0, 56.0, -200.0);
-                pointLight.color.setRGB3f(0.0, 0.0, 4.0);
+                if(pointLight != null) {
+                    pointLight.position.setXYZ(-200.0, 56.0, -200.0);
+                    pointLight.color.setRGB3f(0.0, 0.0, 1.0);
+                }
             }
 
             let direcLight: DirectionLight = this.m_materialCtx.lightModule.getDirectionLightAt(0);
             if(direcLight != null) {
                 direcLight.direction.setXYZ(0.0, -1.0, 1.0);
-                direcLight.color.setRGB3f(0.9, 0.9, 0.9);
+                direcLight.color.setRGB3f(0.7, 0.7, 0.7);
             }
             let spotLight: SpotLight = this.m_materialCtx.lightModule.getSpotLightAt(0);
             if(spotLight != null) {
                 spotLight.position.setXYZ(0, 56, 0);
                 spotLight.direction.setXYZ(0.0, -1.0, 0.7);
-                spotLight.color.setRGB3f(0.0, 3.0, 0.0);
+                spotLight.color.setRGB3f(0.0, 2.0, 0.0);
                 spotLight = this.m_materialCtx.lightModule.getSpotLightAt(1);
-                spotLight.position.setXYZ(100, 56, 0);
-                spotLight.direction.setXYZ(0.0, -1.0, -0.7);
-                spotLight.color.setRGB3f(3.0, 0.0, 0.0);
+                if(spotLight != null) {
+                    spotLight.position.setXYZ(100, 56, 0);
+                    spotLight.direction.setXYZ(0.0, -1.0, -0.7);
+                    spotLight.color.setRGB3f(1.0, 0.0, 0.0);
+                }
             }
 
             this.m_materialCtx.lightModule.update();
@@ -152,20 +157,24 @@ export class DemoLambertLight {
             //material.parallaxMap =            this.getImageTexByUrl("static/assets/moss_01.jpg");
             //material.parallaxMap =            this.getImageTexByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
             //*/
-            material.diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
+            //material.diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
             this.useMaps(material,"lava_03",true,false,false,true,true);
             //*/
-            //material.shadowMap = null;
+            material.shadowMap = null;
+            //material.specularMap = null;
             material.fogEnabled = false;
             material.lightEnabled = true;
             material.specularMode = SpecularMode.FragColor;
+            
             material.initializeLocalData();
             //material.setSpecularColor(new Color4(0.5,0.5,0.5,1.0));
             material.setSpecularIntensity(64.0);
             material.setLightBlendFactor(0.7,0.3);
-            material.setBlendFactor(0.01,0.8);
+            material.setBlendFactor(0.2,0.8);
             material.setParallaxParams(1, 5, 2.0, 0.01);
             material.setUVScale(2.0, 2.0);
+            material.setSpecularColor(new Color4(2.0, 2.0, 2.0));
+            material.setColor(new Color4(1.0,1.0,1.0,1.0), new Color4(0.4,0.4,0.4))
             //material.setColor(new Color4(0.5,1.7,0.5,1.0))
             ///*
             let plane: Plane3DEntity = new Plane3DEntity();

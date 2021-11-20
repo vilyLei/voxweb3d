@@ -128,21 +128,6 @@
         
         for(int i = (VOX_POINT_LIGHTS_TOTAL + VOX_DIRECTION_LIGHTS_TOTAL); i < VOX_LIGHTS_TOTAL; ++i) 
         {
-            // param4 = u_lightPositions[i];
-            // color4 = u_lightColors[i];
-            // light.color = color4.xyz;
-            // light.direc = param4.xyz - worldPosition.xyz;
-
-            // float factor = length( light.direc );
-            // float attenuation = 1.0 / (1.0 + param4.w * factor + color4.w * factor * factor);
-            // param4 = u_lightPositions[i + VOX_SPOT_LIGHTS_TOTAL];
-            // param4.xyz = normalize( param4.xyz );
-            // light.direc = normalize( light.direc );
-            // factor = max(1.0 - (clamp((1.0 - max(dot(-param4.xyz, light.direc), 0.0)), 0.0, param4.w) / param4.w), 0.0001);
-            // //attenuation *= pow(factor, 1.0);
-            // attenuation *= factor;
-            // destColor += calcLambertLight( light ) * attenuation;
-
             param4 = u_lightPositions[i];
             color4 = u_lightColors[i];
             rL.L = (param4.xyz - worldPosition.xyz);
@@ -154,7 +139,7 @@
             param4 = u_lightPositions[i + VOX_SPOT_LIGHTS_TOTAL];
             param4.xyz = normalize( param4.xyz );
             factor = max(1.0 - (clamp((1.0 - max(dot(-param4.xyz, rL.L), 0.0)), 0.0, param4.w) / param4.w), 0.0001);
-            
+
             calcPBRLight(roughness, rm, color4.xyz * attenuation * factor, rL);
         }
     #endif
@@ -184,10 +169,10 @@
     #endif
     vec3 Lo = rL.diffuse * diffuse + specularColor;
     
-    // ambient lighting (note that the next IBL tutorial will replace 
+    // ambient lighting (note that the next IBL tutorial will replace
     // this ambient lighting with environment lighting).
     vec3 ambient = ((color + u_params[2].xyz) * albedo.xyz) * ao;
-
+    
 	#ifdef VOX_WOOL
 		sideIntensity = getColorFactorIntensity(dotNV, frontIntensity, sideIntensity);
 		ambient *= sideIntensity;

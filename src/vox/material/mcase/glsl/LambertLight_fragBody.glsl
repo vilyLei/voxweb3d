@@ -38,7 +38,8 @@ vec2 texUV = v_uv;
     light.specular = param.xyz;
 
     light.specularPower = param.w;
-    light.param = u_fragLocalParams[ VOX_LIGHT_LOCAL_PARAMS_INDEX + 1 ];
+    param = u_fragLocalParams[ VOX_LIGHT_LOCAL_PARAMS_INDEX + 1 ];
+    light.param = param;
     vec4 param4;
     #ifdef VOX_SPECULAR_MAP
         param4 = VOX_Texture2D(VOX_SPECULAR_MAP, texUV);
@@ -51,13 +52,17 @@ vec2 texUV = v_uv;
         light.specularPower = max(0.5,light.specularPower);
     #endif
     vec3 destColor = getLambertLightColor(light);
-    param = u_fragLocalParams[ VOX_LIGHT_LOCAL_PARAMS_INDEX + 2 ];
-    color.xyz = color.xyz * param.x + param.y * destColor;
+    //param = u_fragLocalParams[ VOX_LIGHT_LOCAL_PARAMS_INDEX + 2 ];
+    color.xyz = color.xyz * param.z + param.w * destColor;
 #endif
 
+vec3 ao = vec3(1.0);
 #ifdef VOX_AO_MAP
-    color.xyz *= VOX_Texture2D(VOX_AO_MAP, texUV).yyy;
+    ao = VOX_Texture2D(VOX_AO_MAP, texUV).yyy;
 #endif
+color.xyz *= ao;
+vec3 ambient = ((u_fragLocalParams[ VOX_LIGHT_LOCAL_PARAMS_INDEX + 2 ].xyz)) * ao;
+color.xyz += ambient;
 
 FragColor0 = color;
 //[x: displacement, y: ao, z: specular, w: occ]

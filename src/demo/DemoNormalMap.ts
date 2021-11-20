@@ -38,6 +38,8 @@ export class DemoNormalMap {
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
     private m_materialCtx: MaterialContext = new MaterialContext();
+    private m_target: DisplayEntity = null;
+    private m_pointLight: PointLight = null;
 
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl, 0, false, false);
@@ -78,7 +80,7 @@ export class DemoNormalMap {
             mcParam.spotLightsTotal = 0;
             this.m_materialCtx.initialize( this.m_engine.rscene, mcParam );
             let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
-            pointLight.position.setXYZ(200.0, 150.0, 200.0);
+            pointLight.position.setXYZ(150.0, 150.0, 150.0);
             pointLight.color.setRGB3f(2.0, 0.3, 2.0);
             pointLight.attenuationFactor1 = 0.00001;
             pointLight.attenuationFactor2 = 0.000001;
@@ -88,6 +90,8 @@ export class DemoNormalMap {
             crossAxis.initialize(50.0);
             crossAxis.setPosition(pointLight.position);
             this.m_engine.rscene.addEntity(crossAxis);
+            this.m_pointLight = pointLight;
+            this.m_target = crossAxis;
 
             let material: LambertLightMaterial = new LambertLightMaterial();
             this.useMaps(material, "metal_08", true, true, true);
@@ -103,11 +107,13 @@ export class DemoNormalMap {
             material.setBlendFactor(0.3,0.7);
             color.setRGB3f(1.0,1.0,1.0)
             material.setSpecularColor( color );
+            //material.setAmbientFactor(0.1,0.1,0.1);
 
             let sph: Sphere3DEntity = new Sphere3DEntity();
             sph.setMaterial(material);
             sph.initialize(150.0,100,100);
             sph.setXYZ(0.0, 100.0, 0.0);
+            sph.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
             this.m_engine.rscene.addEntity(sph);
             let srcEntity: DisplayEntity = sph;
             ///*
@@ -121,13 +127,15 @@ export class DemoNormalMap {
             material.setUVScale(4.0,4.0);
             material.setDisplacementParams(10.0, -10.0);
             material.setSpecularColor(new Color4(1.0,1.0,1.0,1.0));
-            material.setSpecularIntensity(32);
+            material.setSpecularIntensity(64);
+            //material.setAmbientFactor(0.1,0.1,0.1);
             //material.setSpecularColor( color );
             sph = new Sphere3DEntity();
             sph.copyMeshFrom(srcEntity);
             sph.setMaterial(material);
             //sph.initialize(150.0,100,100);
             sph.setXYZ(300,0.0,300);
+            sph.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
             this.m_engine.rscene.addEntity(sph);
             //*/
             ///*
@@ -233,7 +241,13 @@ export class DemoNormalMap {
     }
     private m_time: number = 0.0;
     run(): void {
+        if(this.m_target != null) {
 
+            this.m_pointLight.position.y = 60 + 220 * Math.cos(this.m_time);
+            this.m_target.setPosition( this.m_pointLight.position );
+            this.m_target.update();
+            this.m_materialCtx.lightModule.update();
+        }
         this.m_statusDisp.update( false );
         this.m_time += 0.01;
         //this.m_material.setDisplacementParams(this.m_dispHeight * (1.0 + Math.cos(this.m_time)), 0.0);

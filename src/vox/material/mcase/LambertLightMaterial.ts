@@ -149,9 +149,9 @@ export default class LambertLightMaterial extends MaterialBase {
                     [
                         0.5, 0.5, 0.5, 32.0,        // specular color rgb, pow value
                         0.7, 0.3,                   // diffuse light color value factor, specular value factor
-                        0.0, 0.0,                   // undefined, undefined
                         0.3, 0.7,                   // base color value factor, light value factor
-                        0.0, 0.0                    // undefined, undefined
+                        0.01, 0.01, 0.01,           // ambient color
+                        0.0                         // undefined
                     ]);
             }
         }
@@ -210,14 +210,27 @@ export default class LambertLightMaterial extends MaterialBase {
      */
     setBlendFactor(baseColorFactor: number, lightFactor: number): void {
         if (this.m_lightParamsArray != null) {
-            this.m_lightParamsArray[8] = baseColorFactor;
-            this.m_lightParamsArray[9] = lightFactor;
+            this.m_lightParamsArray[6] = baseColorFactor;
+            this.m_lightParamsArray[7] = lightFactor;
         }
     }
     setUVScale(uScale: number, vScale: number): void {
         if (this.m_vertLocalParams != null) {
             this.m_vertLocalParams[0] = uScale;
             this.m_vertLocalParams[1] = vScale;
+        }
+    }
+    /**
+     * 设置环境光因子
+     * @param fx ambient red factor
+     * @param fy 
+     * @param fz 
+     */
+    setAmbientFactor(fr: number, fg: number, fb: number): void {
+        if (this.m_lightParamsArray != null) {
+            this.m_lightParamsArray[8] = fr;
+            this.m_lightParamsArray[9] = fg;
+            this.m_lightParamsArray[10] = fb;
         }
     }
     /**

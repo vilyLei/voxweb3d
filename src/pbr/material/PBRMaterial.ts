@@ -266,10 +266,10 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         colorFactor.b = this.m_params[14];
     }
     //ambient factor x,y,z
-    setAmbientFactor(fx: number, fy: number, fz: number): void {
-        this.m_params[8] = fx;
-        this.m_params[9] = fy;
-        this.m_params[10] = fz;
+    setAmbientFactor(fr: number, fg: number, fb: number): void {
+        this.m_params[8] = fr;
+        this.m_params[9] = fg;
+        this.m_params[10] = fb;
     }
     getAmbientFactor(colorFactor: Color4): void {
         colorFactor.r = this.m_params[8];
