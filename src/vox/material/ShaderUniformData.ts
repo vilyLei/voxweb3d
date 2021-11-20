@@ -5,33 +5,27 @@
 /*                                                                         */
 /***************************************************************************/
 
-import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
+import { IShaderUniformProbe } from "../../vox/material/IShaderUniformProbe";
 
-export default class ShaderUniformData
-{
-    constructor()
-    {
+export default class ShaderUniformData {
+    constructor() {
     }
     uns: string = "";
-    types:number[] = null;
-    uniformSize:number = 0;
-    uniformNameList:string[] = null;
-    locations:any[] = null;
-    dataList:Float32Array[] = null;
-    calcModels:any[] = null;
-    always:boolean = true;
-    next:ShaderUniformData = null;
+    types: number[] = null;
+    uniformSize: number = 0;
+    uniformNameList: string[] = null;
+    locations: any[] = null;
+    dataList: Float32Array[] = null;
+    calcModels: any[] = null;
+    always: boolean = true;
+    next: ShaderUniformData = null;
     // for fast data's operation
-    getDataRefFromUniformName(ns:string):Float32Array
-    {
-        if(this.uniformNameList != null)
-        {
+    getDataRefFromUniformName(ns: string): Float32Array {
+        if (this.uniformNameList != null) {
             let list = this.uniformNameList;
             let len = list.length;
-            for(let i = 0; i < len; ++i)
-            {
-                if(ns == list[i])
-                {
+            for (let i = 0; i < len; ++i) {
+                if (ns == list[i]) {
                     return this.dataList[i];
                 }
             }
@@ -39,16 +33,12 @@ export default class ShaderUniformData
         return null;
     }
     // for fast data's operation
-    setDataRefFromUniformName(ns:string,dataRef:Float32Array):void
-    {
-        if(this.uniformNameList != null)
-        {
+    setDataRefFromUniformName(ns: string, dataRef: Float32Array): void {
+        if (this.uniformNameList != null) {
             let list = this.uniformNameList;
             let len = list.length;
-            for(let i = 0; i < len; ++i)
-            {
-                if(ns == list[i])
-                {
+            for (let i = 0; i < len; ++i) {
+                if (ns == list[i]) {
                     this.dataList[i] = dataRef;
                     break;
                 }
@@ -56,28 +46,22 @@ export default class ShaderUniformData
         }
     }
     //
-    copyDataFromProbe(probe:IShaderUniformProbe):void
-    {
+    copyDataFromProbe(probe: IShaderUniformProbe): void {
         this.types = [];
-        for(let i = 0; i < probe.uniformsTotal; ++i)
-        {
-            this.types.push( probe.uniformTypes[i] );
+        for (let i = 0; i < probe.uniformsTotal; ++i) {
+            this.types.push(probe.uniformTypes[i]);
         }
         this.uniformSize = probe.uniformsTotal;
     }
-    destroy():void
-    {
-        let i:number = 0;
-        let len:number = this.dataList.length;
-        for(; i < len; ++i)
-        {
+    destroy(): void {
+        let i: number = 0;
+        let len: number = this.dataList.length;
+        for (; i < len; ++i) {
             this.dataList[i] = null;
         }
-        if(this.calcModels != null)
-        {
+        if (this.calcModels != null) {
             len = this.calcModels.length;
-            for(i = 0; i < len; ++i)
-            {
+            for (i = 0; i < len; ++i) {
                 this.calcModels[i].destroy();
                 this.calcModels[i] = null;
             }

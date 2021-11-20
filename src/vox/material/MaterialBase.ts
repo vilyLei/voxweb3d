@@ -14,6 +14,7 @@ import ShaderUniform from "../../vox/material/ShaderUniform";
 import TextureProxy from '../../vox/texture/TextureProxy';
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
+import { MaterialPipeType } from "./pipeline/MaterialPipeType";
 import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
 
 export default class MaterialBase implements IRenderMaterial {
@@ -31,6 +32,10 @@ export default class MaterialBase implements IRenderMaterial {
     // tex list unique hash value
     __$troMid: number = -1;
     __$uniform: IShaderUniform = null;
+    /**
+     * pipes type list for material pipeline
+     */
+    pipeTypes: MaterialPipeType[] = null;
 
     setMaterialPipeline(pipeline: MaterialPipeline): void {
         this.m_pipeLine = pipeline;
@@ -73,7 +78,8 @@ export default class MaterialBase implements IRenderMaterial {
             let buf: ShaderCodeBuffer = this.getCodeBuf();
             if (buf != null) {
                 buf.reset();
-                buf.pipeline = this.m_pipeLine;                
+                buf.pipeline = this.m_pipeLine;
+                buf.pipeTypes = this.pipeTypes;
                 if (buf.pipeline != null) {
                     buf.pipeline.reset();
                     this.buildBuf();
@@ -274,7 +280,7 @@ export default class MaterialBase implements IRenderMaterial {
 
         this.m_sharedUniforms = null;
         this.m_shaderUniformData = null;
-
+        this.pipeTypes = null;
         if (this.getAttachCount() < 1) {
             if (this.m_texList != null) {
                 for (let i: number = 0; i < this.m_texList.length; ++i) {

@@ -28,7 +28,7 @@ class ShaderCodeBuffer {
     shadowReceiveEnabled: boolean = false;
     lightEnabled: boolean = false;
     fogEnabled: boolean = false;
-    
+
     pipeTypes: MaterialPipeType[] = null;
     keysString: string = "";
 
@@ -44,7 +44,8 @@ class ShaderCodeBuffer {
         this.m_coder = ShaderCodeBuffer.s_coder;
         this.m_coder.reset();
         this.m_texList = null;
-        
+        this.pipeTypes = null;
+
         this.vertColorEnabled = false;
         this.premultiplyAlpha = false;
         this.shadowReceiveEnabled = false;
@@ -72,27 +73,29 @@ class ShaderCodeBuffer {
             }
         }
         this.m_texEnabled = texEnabled;
-        
+
         if (this.premultiplyAlpha) this.m_coder.addDefine("VOX_PREMULTIPLY_ALPHA", "1");
         if (this.vertColorEnabled) this.m_coder.addDefine("VOX_USE_VTX_COLOR", "1");
 
         this.bufInitWithPipeline();
     }
-    
+
     private bufInitWithPipeline(): void {
 
         if (this.pipeline != null) {
-            this.pipeTypes = [];
-            if (this.lightEnabled) {
-                this.pipeTypes.push( MaterialPipeType.GLOBAL_LIGHT );
+            if(this.pipeTypes == null) {
+                this.pipeTypes = [];
+                if (this.lightEnabled) {
+                    this.pipeTypes.push(MaterialPipeType.GLOBAL_LIGHT);
+                }
+                if (this.shadowReceiveEnabled) {
+                    this.pipeTypes.push(MaterialPipeType.VSM_SHADOW);
+                }
+                if (this.fogEnabled) {
+                    this.pipeTypes.push(MaterialPipeType.FOG_EXP2);
+                }
             }
-            if (this.shadowReceiveEnabled) {
-                this.pipeTypes.push( MaterialPipeType.VSM_SHADOW );
-            }
-            if (this.fogEnabled) {
-                this.pipeTypes.push( MaterialPipeType.FOG_EXP2 );
-            }
-            this.pipeline.buildSharedUniforms( this.pipeTypes );
+            this.pipeline.buildSharedUniforms(this.pipeTypes);
             this.pipeline.createKeys(this.pipeTypes);
             this.keysString = this.pipeline.getKeysString();
         }
@@ -114,7 +117,7 @@ class ShaderCodeBuffer {
         return this.m_coder.buildFragCode();
     }
     getVertShaderCode(): string {
-        
+
         if (ShaderCodeBuffer.__$s_csBuf != this) return ShaderCodeBuffer.__$s_csBuf.getVertShaderCode();
         return this.m_coder.buildVertCode();
     }
@@ -125,7 +128,7 @@ class ShaderCodeBuffer {
         return "[ShaderCodeBuffer()]";
     }
     static UseShaderBuffer(buf: ShaderCodeBuffer): void {
-        if(ShaderCodeBuffer.__$s_csBuf != null) {
+        if (ShaderCodeBuffer.__$s_csBuf != null) {
             ShaderCodeBuffer.__$s_csBuf.clear();
         }
         ShaderCodeBuffer.__$s_csBuf = buf;
