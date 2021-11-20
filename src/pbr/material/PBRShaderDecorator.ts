@@ -30,6 +30,8 @@ export default class PBRShaderDecorator {
     mirrorMap: TextureProxy = null;
     indirectEnvMap: TextureProxy = null;
     shadowMap: TextureProxy = null;
+    parallaxMap: TextureProxy = null;
+    specularMap: TextureProxy = null;
     
     woolEnabled: boolean = true;
     toneMappingEnabled: boolean = true;
