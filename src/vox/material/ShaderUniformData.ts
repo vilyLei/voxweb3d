@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import ShaderUniformProbe from "../../vox/material/ShaderUniformProbe";
+import {IShaderUniformProbe} from "../../vox/material/IShaderUniformProbe";
 
 export default class ShaderUniformData
 {
@@ -56,7 +56,7 @@ export default class ShaderUniformData
         }
     }
     //
-    copyDataFromProbe(probe:ShaderUniformProbe):void
+    copyDataFromProbe(probe:IShaderUniformProbe):void
     {
         this.types = [];
         for(let i = 0; i < probe.uniformsTotal; ++i)

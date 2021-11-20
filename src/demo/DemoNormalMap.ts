@@ -82,7 +82,7 @@ export class DemoNormalMap {
             mcParam.spotLightsTotal = 0;
             this.m_materialCtx.initialize( this.m_engine.rscene, mcParam );
             let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
-            pointLight.position.setXYZ(150.0, 150.0, 150.0);
+            pointLight.position.setXYZ(0.0, 150.0, -50.0);
             pointLight.color.setRGB3f(2.0, 0.3, 2.0);
             pointLight.attenuationFactor1 = 0.00001;
             pointLight.attenuationFactor2 = 0.000001;
@@ -124,7 +124,7 @@ export class DemoNormalMap {
             let sph: Sphere3DEntity = new Sphere3DEntity();
             sph.setMaterial(material);
             sph.initialize(150.0,100,100);
-            sph.setXYZ(0.0, 100.0, 0.0);
+            sph.setXYZ(-150.0, 100.0, -170.0);
             sph.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
             this.m_engine.rscene.addEntity(sph);
             let srcEntity: DisplayEntity = sph;
@@ -146,7 +146,7 @@ export class DemoNormalMap {
             sph.copyMeshFrom(srcEntity);
             sph.setMaterial(material);
             //sph.initialize(150.0,100,100);
-            sph.setXYZ(300,0.0,300);
+            sph.setXYZ(150,0.0,150);
             sph.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
             this.m_engine.rscene.addEntity(sph);
             //*/

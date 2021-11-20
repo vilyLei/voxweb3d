@@ -9,12 +9,13 @@
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
 import {IMaterialPipe} from "./IMaterialPipe";
 import {MaterialPipeType} from "./MaterialPipeType";
+import {IMaterialPipeline} from "./IMaterialPipeline";
 
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import IAbstractShader from "../../../vox/material/IAbstractShader";
 
-import TextureProxy from '../../../vox/texture/TextureProxy';
+//  import TextureProxy from '../../../vox/texture/TextureProxy';
 
 /**
  * 材质功能组装流水线, 组装符合一个流水线系统设定的材质, 最终形成完整的shader, 以及对应的数据输入
@@ -22,24 +23,24 @@ import TextureProxy from '../../../vox/texture/TextureProxy';
  * 组装功能举例: 全局的光照环境shader及数据, 灯光组shader及数据， 雾shader及数据, 等等
  * material pipeline 输出 的控制码，也能控制渲染流程, 也就是 material pipelie 也能配合 render pipeline 一起协作完成渲染过程
  */
-class MaterialPipeline {
+class MaterialPipeline implements IMaterialPipeline{
     
     private m_shaderCode: IAbstractShader = null;
     private m_pipeMap: Map<MaterialPipeType, IMaterialPipe> = new Map();
     private m_keys: string[] = [];
     private m_sharedUniforms: ShaderGlobalUniform[] = null;
-    private m_texList: TextureProxy[] = null;
+    //private m_texList: TextureProxy[] = null;
     private m_appendKeyStr: string = "";
 
     constructor() { }
     
-    setTextureList(texList: TextureProxy[]): void {
-        this.m_texList = texList;
-    }
-    getTextureList(): TextureProxy[] {
-        return this.m_texList;
-    }
-    getTextureTotal(): number { return this.m_texList != null ? this.m_texList.length : 0; }
+    // setTextureList(texList: TextureProxy[]): void {
+    //     this.m_texList = texList;
+    // }
+    // getTextureList(): TextureProxy[] {
+    //     return this.m_texList;
+    // }
+    // getTextureTotal(): number { return this.m_texList != null ? this.m_texList.length : 0; }
 
     addShaderCode(shaderCode: IAbstractShader, force: boolean = false): void {
         if(this.m_shaderCode == null || (shaderCode != null && force)) {
@@ -146,7 +147,7 @@ class MaterialPipeline {
         return str + this.m_appendKeyStr;
     }
     reset(): void {
-        this.m_texList = null;
+        //this.m_texList = null;
         this.m_appendKeyStr = "";
     }
     clear(): void {

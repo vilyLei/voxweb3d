@@ -77,9 +77,9 @@ export default class MaterialBase implements IRenderMaterial {
                 if (buf.pipeline != null) {
                     buf.pipeline.reset();
                     this.buildBuf();
-                    if (buf.pipeline.getTextureTotal() > 0) {
-                        this.setTextureList(buf.pipeline.getTextureList());
-                    }
+                    // if (buf.pipeline.getTextureTotal() > 0) {
+                    //     this.setTextureList(buf.pipeline.getTextureList());
+                    // }
                 }
                 else {
                     this.buildBuf();
