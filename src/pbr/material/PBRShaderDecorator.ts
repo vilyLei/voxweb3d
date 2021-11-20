@@ -10,7 +10,7 @@ import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
 import UniformConst from "../../vox/material/UniformConst";
 import TextureProxy from '../../vox/texture/TextureProxy';
 
-import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
+import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 
 export default class PBRShaderDecorator {
@@ -21,7 +21,7 @@ export default class PBRShaderDecorator {
     private m_keysString: string = "";
     
     codeBuilder: ShaderCodeBuilder = null;
-    pipeline: MaterialPipeline = null;
+    pipeline: IMaterialPipeline = null;
     
     envMap: TextureProxy = null;
     diffuseMap: TextureProxy = null;

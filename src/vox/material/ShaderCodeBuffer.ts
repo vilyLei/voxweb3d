@@ -9,7 +9,7 @@ import IRenderTexture from '../../vox/render/IRenderTexture';
 import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
 import ShaderCompileInfo from "../../vox/material/code/ShaderCompileInfo";
 import IAbstractShader from "./IAbstractShader";
-import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
+import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 import { MaterialPipeType } from "./pipeline/MaterialPipeType";
 
 class ShaderCodeBuffer {
@@ -21,7 +21,7 @@ class ShaderCodeBuffer {
     protected m_texList: IRenderTexture[] = null;
     protected m_texEnabled: boolean = true;
 
-    pipeline: MaterialPipeline = null;
+    pipeline: IMaterialPipeline = null;
 
     vertColorEnabled: boolean = false;
     premultiplyAlpha: boolean = false;

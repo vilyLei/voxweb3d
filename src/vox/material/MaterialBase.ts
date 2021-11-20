@@ -15,14 +15,14 @@ import TextureProxy from '../../vox/texture/TextureProxy';
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import { MaterialPipeType } from "./pipeline/MaterialPipeType";
-import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
+import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 
 export default class MaterialBase implements IRenderMaterial {
 
     private static s_codeBuffer: ShaderCodeBuffer = null;
     protected m_sharedUniforms: ShaderUniform[] = null;
     protected m_shaderUniformData: ShaderUniformData = null;
-    protected m_pipeLine: MaterialPipeline = null;
+    protected m_pipeLine: IMaterialPipeline = null;
     protected m_uniqueShaderName: string = "";
     constructor() { }
 
@@ -37,10 +37,10 @@ export default class MaterialBase implements IRenderMaterial {
      */
     pipeTypes: MaterialPipeType[] = null;
 
-    setMaterialPipeline(pipeline: MaterialPipeline): void {
+    setMaterialPipeline(pipeline: IMaterialPipeline): void {
         this.m_pipeLine = pipeline;
     }
-    getMaterialPipeline(): MaterialPipeline {
+    getMaterialPipeline(): IMaterialPipeline {
         return this.m_pipeLine;
     }
     getShdUniqueName(): string {
@@ -80,16 +80,9 @@ export default class MaterialBase implements IRenderMaterial {
                 buf.reset();
                 buf.pipeline = this.m_pipeLine;
                 buf.pipeTypes = this.pipeTypes;
-                if (buf.pipeline != null) {
-                    buf.pipeline.reset();
-                    this.buildBuf();
-                    // if (buf.pipeline.getTextureTotal() > 0) {
-                    //     this.setTextureList(buf.pipeline.getTextureList());
-                    // }
-                }
-                else {
-                    this.buildBuf();
-                }
+                if (buf.pipeline != null) buf.pipeline.reset();
+                this.buildBuf();
+
                 let shdData: ShaderData;
                 let shdCode_uniqueName: string = this.m_uniqueShaderName;
                 if(shdCode_uniqueName != "") {
@@ -120,7 +113,7 @@ export default class MaterialBase implements IRenderMaterial {
 
                     buf.buildShader();
                     if (buf.pipeline != null) {
-                        buf.pipeline.addShaderCode(buf.getShaderCodeObject());
+                        buf.pipeline.addShaderCode(buf.getShaderCodeObject(), false);
                         buf.pipeline.build(buf.getShaderCodeBuilder(), buf.pipeTypes);
                     }
                     let fshdCode: string = buf.getFragShaderCode();

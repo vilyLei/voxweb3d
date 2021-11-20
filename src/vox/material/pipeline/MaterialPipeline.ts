@@ -34,14 +34,6 @@ class MaterialPipeline implements IMaterialPipeline{
 
     constructor() { }
     
-    // setTextureList(texList: TextureProxy[]): void {
-    //     this.m_texList = texList;
-    // }
-    // getTextureList(): TextureProxy[] {
-    //     return this.m_texList;
-    // }
-    // getTextureTotal(): number { return this.m_texList != null ? this.m_texList.length : 0; }
-
     addShaderCode(shaderCode: IAbstractShader, force: boolean = false): void {
         if(this.m_shaderCode == null || (shaderCode != null && force)) {
             this.m_shaderCode = shaderCode;
