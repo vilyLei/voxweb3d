@@ -18,7 +18,8 @@ const VSMShaderCode = {
     vert_body:
 `
 #ifdef VOX_USE_SHADOW
-calcShadowPos( worldPosition );
+// calcShadowPos( worldPosition );// if use worldPosition , it make shadow calculation error.
+calcShadowPos( u_objMat * vec4(a_vs.xyz, 1.0) );
 #endif
 `,
     frag: "",

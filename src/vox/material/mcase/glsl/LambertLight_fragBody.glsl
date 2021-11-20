@@ -1,6 +1,6 @@
 worldNormal.xyz = v_worldNormal;
 worldPosition.xyz = v_worldPosition;
-
+vec3 N = worldNormal.xyz;
 vec4 color = u_fragLocalParams[0];
 #ifdef VOX_DIFFUSE_MAP
     color = color * VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv.xy);
@@ -20,11 +20,11 @@ vec2 texUV = v_uv;
             param = u_fragLocalParams[ VOX_PARALLAX_PARAMS_INDEX ];
             texUV = parallaxOccRayMarchDepth(VOX_PARALLAX_MAP, v_uv, -tbnViewDir, param);
             vec3 pnv = normalize(getNormalFromMap(VOX_NORMAL_MAP, texUV));
-            worldNormal.xyz = btnMat3 * pnv;
+            N = btnMat3 * pnv;
         #endif
     #else
         #ifdef VOX_NORMAL_MAP
-            worldNormal.xyz = normalize(getNormalFromMap(VOX_NORMAL_MAP, texUV, worldNormal.xyz));
+            N = normalize(getNormalFromMap(VOX_NORMAL_MAP, texUV, worldNormal.xyz));
         #endif
     #endif
 
@@ -32,7 +32,7 @@ vec2 texUV = v_uv;
     param = u_fragLocalParams[ VOX_LIGHT_LOCAL_PARAMS_INDEX ];
     
     LambertLight light;
-    light.normal = worldNormal.xyz;
+    light.normal = N;
     light.viewDirec = viewDir;
     light.diffuse = color.xyz;
     light.specular = param.xyz;

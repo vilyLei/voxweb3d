@@ -59,7 +59,7 @@ float getVSMShadowFactor(in vec4 shadowPos) {
     float shadow = getVSMShadow( VOX_VSM_SHADOW_MAP, u_vsmParams[1].xy, u_vsmParams[0].x, u_vsmParams[0].z, shadowPos );
     float shadowIntensity = 1.0 - u_vsmParams[0].w;
     shadow = clamp(shadow, 0.0, 1.0) * (1.0 - shadowIntensity) + shadowIntensity;
-    float f = clamp(dot(worldNormal,u_vsmParams[2].xyz),0.0,1.0);
+    float f = clamp(dot(worldNormal,u_vsmParams[2].xyz),0.001,1.0);
     shadow = f > 0.0001 ? min(shadow,clamp(f, shadowIntensity,1.0)) : shadowIntensity;
     f = u_vsmParams[1].z;
     return shadow * (1.0 - f) + f;
