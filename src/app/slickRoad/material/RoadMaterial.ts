@@ -53,7 +53,7 @@ class RoadShaderBuffer extends ShaderCodeBuffer {
             coder.addDiffuseMap();
             if(this.fogEnabled) {
                 // fog color
-                coder.addTextureSample2D("VOX_FOG_COLOR_MAP");
+                coder.addFogColorMap();
             }
         }
         coder.addFragOutput("vec4", "FragColor0");

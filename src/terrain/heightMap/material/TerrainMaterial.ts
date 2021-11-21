@@ -46,7 +46,7 @@ class TerrainpShaderBuffer extends ShaderCodeBuffer {
             // diffuse color 1 and fog color
             if(this.fogEnabled) {
                 // diffuse color 1 and fog color
-                this.m_coder.addTextureSample2D("VOX_FOG_COLOR_MAP");
+                this.m_coder.addFogColorMap();
             }
             
             // displace and color ao

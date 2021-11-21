@@ -332,6 +332,14 @@ precision mediump float;
         this.addTextureSample2D("VOX_VSM_SHADOW_MAP");
         this.m_uniqueNSKeys[6] = 1 + (shadowMode << 1);
     }
+    /**
+     * add fog color map
+     */
+    addFogColorMap(): void {
+
+        this.addTextureSample2D("VOX_FOG_COLOR_MAP");
+        this.m_uniqueNSKeys[7] = 1;
+    }
     addTextureSample2D(macroName: string = "", map2DEnabled: boolean = true, fragEnabled: boolean = true, vertEnabled: boolean = false): void {
         if(macroName == "" || !this.m_textureMacroNames.includes(macroName)) {
             this.m_textureSampleTypes.push("sampler2D");
