@@ -176,9 +176,5 @@ export default class EnvLightData implements IMaterialPipe {
     }
     getGlobalUinform(): ShaderGlobalUniform {
         return this.m_suo.clone();
-        // let suo = this.m_suo.clone();
-        // suo.uns = "EnvLightData";
-        // //console.log("EnvLightData::getGlobalUinform(), suo: ",suo);
-        // return suo;
     }
 }

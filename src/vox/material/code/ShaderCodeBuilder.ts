@@ -79,6 +79,7 @@ precision mediump float;
     private m_uniqueNSKeyString: string = "";
     private m_uniqueNSKeys: Uint16Array = new Uint16Array(128);
     private m_uniqueNSKeysTotal: number = 8;
+    private m_uniqueNSKeyFlag: boolean = false;
     private m_use2DMap: boolean = false;
     /**
      * 记录 shader 预编译信息
@@ -98,20 +99,27 @@ precision mediump float;
     constructor() { }
     
     getUniqueNSKeyID(): number {
-        
-        let id: number = 31;
-        for(let i: number = 0; i < this.m_uniqueNSKeysTotal; ++i) {
-            id = id * 131 + this.m_uniqueNSKeys[i];
+
+        if(this.m_uniqueNSKeyFlag) {
+            let id: number = 31;
+            for(let i: number = 0; i < this.m_uniqueNSKeysTotal; ++i) {
+                id = id * 131 + this.m_uniqueNSKeys[i];
+            }
+            return id;
         }
-        return id;
+        return 0;
     }
     getUniqueNSKeyString(): string {
-        this.m_uniqueNSKeyString = "[" + this.m_uniqueNSKeys[0];
-        for(let i: number = 1; i < this.m_uniqueNSKeysTotal; ++i) {
-            this.m_uniqueNSKeyString += "-"+this.m_uniqueNSKeys[i];
+
+        if(this.m_uniqueNSKeyFlag) {
+            this.m_uniqueNSKeyString = "[" + this.m_uniqueNSKeys[0];
+            for(let i: number = 1; i < this.m_uniqueNSKeysTotal; ++i) {
+                this.m_uniqueNSKeyString += "-"+this.m_uniqueNSKeys[i];
+            }
+            this.m_uniqueNSKeyString += "]";
+            return this.m_uniqueNSKeyString;
         }
-        this.m_uniqueNSKeyString += "]";
-        return this.m_uniqueNSKeyString;
+        return "";
     }
     reset(): void {
         
@@ -177,8 +185,12 @@ precision mediump float;
         this.fragMatrixInverseEnabled = false;
 
         this.m_preCompileInfo = null;
-        for(let i: number = 0; i < this.m_uniqueNSKeysTotal; ++i) {
-            this.m_uniqueNSKeys[i] = 0;
+
+        if(this.m_uniqueNSKeyFlag) {
+            for(let i: number = 0; i < this.m_uniqueNSKeysTotal; ++i) {
+                this.m_uniqueNSKeys[i] = 0;
+            }
+            this.m_uniqueNSKeyFlag = false;
         }
     }
     /**
@@ -285,6 +297,7 @@ precision mediump float;
     addDiffuseMap(): void {
         this.addTextureSample2D("VOX_DIFFUSE_MAP");
         this.m_uniqueNSKeys[0] = 1;
+        this.m_uniqueNSKeyFlag = true;
     }
     /**
      * add normal map
@@ -292,6 +305,7 @@ precision mediump float;
     addNormalMap(): void {
         this.addTextureSample2D("VOX_NORMAL_MAP");
         this.m_uniqueNSKeys[1] = 1;
+        this.m_uniqueNSKeyFlag = true;
     }
     /**
      * add parallax map
@@ -300,6 +314,7 @@ precision mediump float;
         this.addTextureSample2D("VOX_PARALLAX_MAP");
         this.addDefine("VOX_PARALLAX_PARAMS_INDEX", "" + parallaxParamIndex);
         this.m_uniqueNSKeys[2] = 1 + (parallaxParamIndex << 1);
+        this.m_uniqueNSKeyFlag = true;
     }
     /**
      * add displacement map
@@ -307,6 +322,7 @@ precision mediump float;
     addDisplacementMap(): void {        
         this.addTextureSample2D("VOX_DISPLACEMENT_MAP", true, false, true);
         this.m_uniqueNSKeys[3] = 1;
+        this.m_uniqueNSKeyFlag = true;
     }
     
     /**
@@ -315,6 +331,7 @@ precision mediump float;
     addAOMap(): void {
         this.addTextureSample2D("VOX_AO_MAP");
         this.m_uniqueNSKeys[4] = 1;
+        this.m_uniqueNSKeyFlag = true;
     }
     /**
      * add specular map
@@ -323,6 +340,7 @@ precision mediump float;
         this.addTextureSample2D("VOX_SPECULAR_MAP");
         this.addDefine("VOX_SPECULAR_MODE", "" + specularMode);
         this.m_uniqueNSKeys[5] = 1 + (specularMode << 1);
+        this.m_uniqueNSKeyFlag = true;
     }
     /**
      * add shadow map
@@ -331,6 +349,7 @@ precision mediump float;
 
         this.addTextureSample2D("VOX_VSM_SHADOW_MAP");
         this.m_uniqueNSKeys[6] = 1 + (shadowMode << 1);
+        this.m_uniqueNSKeyFlag = true;
     }
     /**
      * add fog color map
@@ -339,6 +358,7 @@ precision mediump float;
 
         this.addTextureSample2D("VOX_FOG_COLOR_MAP");
         this.m_uniqueNSKeys[7] = 1;
+        this.m_uniqueNSKeyFlag = true;
     }
     addTextureSample2D(macroName: string = "", map2DEnabled: boolean = true, fragEnabled: boolean = true, vertEnabled: boolean = false): void {
         if(macroName == "" || !this.m_textureMacroNames.includes(macroName)) {

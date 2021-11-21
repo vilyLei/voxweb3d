@@ -17,13 +17,13 @@ class Line3DShaderBuffer extends ShaderCodeBuffer {
     private m_uniqueName: string = "";
     dynColorEnabled: boolean = false;
     initialize(texEnabled: boolean): void {
-        
+        super.initialize(texEnabled);
         this.m_uniqueName = "Line3DShd";
         if (this.dynColorEnabled) this.m_uniqueName += "_dynColor";
-        
+
     }
-    
-    private buildThisCode(): void {
+
+    buildShader(): void {
 
         this.m_coder.addVertLayout("vec3", "a_vs");
 
@@ -35,55 +35,32 @@ class Line3DShaderBuffer extends ShaderCodeBuffer {
             this.m_coder.addVertLayout("vec3", "a_cvs");
             this.m_coder.addVarying("vec3", "v_color");
         }
-        
+
         this.m_coder.addFragOutputHighp("vec4", "FragColor0");
 
         this.m_coder.addFragMainCode(
             `
-void main(){
     #ifndef DYNAMIC_COLOR
         FragColor0 = vec4(v_color, 1.0);
     #else
         FragColor0 = u_color;
     #endif
-
-}
-            `
+`
         );
         this.m_coder.addVertMainCode(
             `
-void main()
-{
-    vec4 pv = u_projMat * u_viewMat * u_objMat * vec4(a_vs,1.0);
+    viewPosition = u_viewMat * u_objMat * vec4(a_vs,1.0);
+    vec4 pv = u_projMat * viewPosition;
     // pixels move offset, and no perspective error.
     //  pv.xy = (pv.xy/pv.w - vec2(0.5)) * pv.w;
     #ifndef DYNAMIC_COLOR
         v_color = a_cvs;
     #endif
     gl_Position = pv;
-}
             `
         );
-        if(this.pipeline != null) {
-            
-            // let types: MaterialPipeType[] = [];
-            // if(this.fogEnabled) {                
-
-            //     types.push( MaterialPipeType.FOG_EXP2 );
-            // }       
-            // this.pipeline.build(this.m_coder, types);
-        }
     }
 
-    getFragShaderCode(): string {
-
-        this.buildThisCode();
-        return this.m_coder.buildFragCode();        
-    }
-    getVertShaderCode(): string {
-
-        return this.m_coder.buildVertCode();
-    }
     getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;

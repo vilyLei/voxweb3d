@@ -90,25 +90,24 @@ export class DemoNormalMap {
             pointLight.attenuationFactor2 = 0.000001;
             this.m_materialCtx.lightModule.update();
 
-            let billboard: Billboard3DEntity = new Billboard3DEntity();
-            billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
-            billboard.setMaterialPipeline( this.m_materialCtx.pipeline );
-            billboard.toBrightnessBlend();
-            //billboard.toTransparentBlend();
-            billboard.initialize(60.0, 60.0, [this.getImageTexByUrl("static/assets/flare_core_03.jpg")]);
-            billboard.setPosition(pointLight.position);
-            billboard.setRGB3f(pointLight.color.r, pointLight.color.g, pointLight.color.b);
-            this.m_engine.rscene.addEntity(billboard, 3);
-            this.m_pointLight = pointLight;
-            this.m_target = billboard;
-            /*
+            // let billboard: Billboard3DEntity = new Billboard3DEntity();
+            // billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
+            // billboard.setMaterialPipeline( this.m_materialCtx.pipeline );
+            // billboard.toBrightnessBlend();
+            // billboard.initialize(60.0, 60.0, [this.getImageTexByUrl("static/assets/flare_core_03.jpg")]);
+            // billboard.setPosition(pointLight.position);
+            // billboard.setRGB3f(pointLight.color.r, pointLight.color.g, pointLight.color.b);
+            // this.m_engine.rscene.addEntity(billboard, 3);
+            // this.m_pointLight = pointLight;
+            // this.m_target = billboard;
+
             let crossAxis: Axis3DEntity = new Axis3DEntity();
             crossAxis.initialize(50.0);
             crossAxis.setPosition(pointLight.position);
-            this.m_engine.rscene.addEntity(crossAxis);
+            this.m_engine.rscene.addEntity(crossAxis, 2);
             this.m_pointLight = pointLight;
             this.m_target = crossAxis;
-            //*/
+
             ///*
             let material: LambertLightMaterial = new LambertLightMaterial();
             this.useMaps(material, "metal_08", true, true, true);
