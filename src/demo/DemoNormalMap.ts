@@ -28,6 +28,7 @@ import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import EngineBase from "../vox/engine/EngineBase";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import { PointLight } from "../light/base/PointLight";
+import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
 
 export class DemoNormalMap {
 
@@ -80,20 +81,24 @@ export class DemoNormalMap {
             mcParam.pointLightsTotal = 1;
             mcParam.directionLightsTotal = 0;
             mcParam.spotLightsTotal = 0;
+            mcParam.vsmEnabled = false;
             this.m_materialCtx.initialize( this.m_engine.rscene, mcParam );
             let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
             pointLight.position.setXYZ(0.0, 150.0, -50.0);
-            pointLight.color.setRGB3f(2.0, 0.3, 2.0);
+            pointLight.color.setRGB3f(2.0, 2.0, 2.0);
             pointLight.attenuationFactor1 = 0.00001;
             pointLight.attenuationFactor2 = 0.000001;
             this.m_materialCtx.lightModule.update();
 
             let billboard: Billboard3DEntity = new Billboard3DEntity();
-            billboard.toBrightnessBlend();
+            billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
+            billboard.setMaterialPipeline( this.m_materialCtx.pipeline );
+            // billboard.toBrightnessBlend();
+            billboard.toTransparentBlend();
             billboard.initialize(60.0, 60.0, [this.getImageTexByUrl("static/assets/flare_core_03.jpg")]);
             billboard.setPosition(pointLight.position);
             billboard.setRGB3f(pointLight.color.r, pointLight.color.g, pointLight.color.b);
-            this.m_engine.rscene.addEntity(billboard, 2);
+            this.m_engine.rscene.addEntity(billboard, 3);
             this.m_pointLight = pointLight;
             this.m_target = billboard;
             /*
@@ -104,7 +109,7 @@ export class DemoNormalMap {
             this.m_pointLight = pointLight;
             this.m_target = crossAxis;
             //*/
-
+            /*
             let material: LambertLightMaterial = new LambertLightMaterial();
             this.useMaps(material, "metal_08", true, true, true);
             material.fogEnabled = true;
@@ -150,7 +155,7 @@ export class DemoNormalMap {
             sph.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
             this.m_engine.rscene.addEntity(sph);
             //*/
-            ///*
+            /*
             material = new LambertLightMaterial();
             this.useMaps(material, "box", true, false, true);
             material.setMaterialPipeline(null);
@@ -189,7 +194,7 @@ export class DemoNormalMap {
             //entity.setXYZ(0,-400,0);
             this.m_rscene.addEntity(entity);
             //*/
-            this.m_material = material;
+            //this.m_material = material;
             //this.m_material.setDisplacementParams(this.m_dispHeight,0.0);
             
             this.initEnvBox();
@@ -233,7 +238,7 @@ export class DemoNormalMap {
         envBox.setMaterial( material );
         envBox.showFrontFace();
         envBox.initializeCube(4000.0);
-        this.m_engine.rscene.addEntity(envBox);
+        this.m_engine.rscene.addEntity(envBox, 2);
     }
     private m_dispHeight: number = 10;
     private m_material: LambertLightMaterial = null;

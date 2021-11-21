@@ -5,9 +5,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-
-
-
 import MathConst from "../../../vox/math/MathConst";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
@@ -24,20 +21,62 @@ class BillboardShaderBuffer extends ShaderCodeBuffer {
     rotationEnabled: boolean = false;
     initialize(texEnabled: boolean): void {
         this.m_uniqueName = "BillboardShader";
+        if(this.rotationEnabled) this.m_uniqueName += "Rot";        
     }
+    buildShader(): void {
+        let coder = this.m_coder;
+        if(this.rotationEnabled) coder.addDefine("VOX_ROTATION","1");
+        coder.addDiffuseMap();
+        coder.addVertLayout("vec2","a_vs");
+        coder.addVarying("vec4","v_colorMult");
+        coder.addVarying("vec4","v_colorOffset");
+        coder.addVarying("vec2","v_uv");
+        coder.addVertUniform("vec4","u_billParam",3);
+
+        let fragCode0: string =
+`
+    vec4 color = texture(VOX_DIFFUSE_MAP, v_uv);
+    vec3 offsetColor = v_colorOffset.rgb;
+    vec4 fv4 = v_colorMult.wwww;
+`;
+        let fadeCode: string = this.billFS.getBrnAndAlphaCode("fv4");
+        let fragCode2: string =
+            `
+    FragColor0 = color;
+`;
+        coder.addFragMainCode(fragCode0 + fadeCode + fragCode2);
+        
+        coder.addVertMainCode(
+            `
+    vec4 temp = u_billParam[0];
+    float cosv = cos(temp.z);
+    float sinv = sin(temp.z);
+    vec2 vtx = a_vs.xy * temp.xy;
+    vec2 vtx_pos = vec2(vtx.x * cosv - vtx.y * sinv, vtx.x * sinv + vtx.y * cosv);
+    viewPosition = u_viewMat * u_objMat * vec4(0.0,0.0,0.0,1.0);
+    viewPosition.xy += vtx_pos.xy;
+    gl_Position =  u_projMat * viewPosition;
+    v_uv = a_uvs;
+    v_colorMult = u_billParam[1];
+    v_colorOffset = u_billParam[2];
+`
+        );
+
+    }
+    /*
     getFragShaderCode(): string {
-        ///*
+
         let fragCode0: string =
             `#version 300 es
 precision mediump float;
 uniform sampler2D u_sampler0;
 in vec4 v_colorMult;
 in vec4 v_colorOffset;
-in vec2 v_texUV;
+in vec2 v_uv;
 layout(location = 0) out vec4 FragColor0;
 void main()
 {
-    vec4 color = texture(u_sampler0, v_texUV);
+    vec4 color = texture(u_sampler0, v_uv);
     vec3 offsetColor = v_colorOffset.rgb;
     vec4 fv4 = v_colorMult.wwww;
 `;
@@ -48,7 +87,7 @@ void main()
 }
 `;
         return fragCode0 + fadeCode + fragCode2;
-        //*/
+        
     }
     getVertShaderCode(): string {
         let vtxCode: string =
@@ -62,7 +101,7 @@ uniform mat4 u_projMat;
 uniform vec4 u_billParam[3];
 out vec4 v_colorMult;
 out vec4 v_colorOffset;
-out vec2 v_texUV;
+out vec2 v_uv;
 void main()
 {
     vec4 temp = u_billParam[0];
@@ -73,13 +112,14 @@ void main()
     vec4 pos = u_viewMat * u_objMat * vec4(0.0,0.0,0.0,1.0);
     pos.xy += vtx_pos.xy;
     gl_Position =  u_projMat * pos;
-    v_texUV = a_uvs;
+    v_uv = a_uvs;
     v_colorMult = u_billParam[1];
     v_colorOffset = u_billParam[2];
 }
 `;
         return vtxCode;
     }
+    //*/
     getUniqueShaderName(): string {
         return this.m_uniqueName + "_" + this.billFS.getBrnAlphaStatus();
     }

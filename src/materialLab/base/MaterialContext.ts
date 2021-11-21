@@ -94,7 +94,10 @@ class MaterialContext {
         }
     }
     run(): void {
-        this.vsmModule.run();
+
+        if(this.vsmModule != null) {
+            this.vsmModule.run();
+        }
     }
     destroy(): void {
         this.m_rscene = null;

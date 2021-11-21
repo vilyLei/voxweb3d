@@ -269,7 +269,7 @@ precision mediump float;
         this.addVertUniform(type, name, arrayLength);
         this.addFragUniform(type, name, arrayLength);
     }
-    //IUniformParam
+
     addFragFunction(codeBlock: string): void {
         this.m_fragFunctionBlocks.push(codeBlock);
     }
@@ -680,12 +680,6 @@ precision mediump float;
             }
             code += "\n#define VOX_TextureCube textureCube";
             code += "\n#define VOX_Texture2D texture2D";
-        }
-        if (RendererDevice.IsMobileWeb()) {
-            code += "\nprecision highp float;";
-        }
-        else {
-            code += "\n" + this.m_preciousCode;
         }
 
         if (RendererDevice.IsWebGL2()) {
