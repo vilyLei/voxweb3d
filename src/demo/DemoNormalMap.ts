@@ -85,7 +85,7 @@ export class DemoNormalMap {
             this.m_materialCtx.initialize( this.m_engine.rscene, mcParam );
             let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
             pointLight.position.setXYZ(0.0, 150.0, -50.0);
-            pointLight.color.setRGB3f(2.0, 2.0, 2.0);
+            pointLight.color.setRGB3f(1.0, 1.0, 1.0);
             pointLight.attenuationFactor1 = 0.00001;
             pointLight.attenuationFactor2 = 0.000001;
             this.m_materialCtx.lightModule.update();

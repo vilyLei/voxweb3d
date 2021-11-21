@@ -50,10 +50,10 @@ class RoadShaderBuffer extends ShaderCodeBuffer {
             coder.addVarying("vec4", "v_wpos");
 
             // diffuse color
-            coder.addTextureSample2D();
+            coder.addDiffuseMap();
             if(this.fogEnabled) {
                 // fog color
-                coder.addTextureSample2D("VOX_FOG_COLOR_MAP");  
+                coder.addTextureSample2D("VOX_FOG_COLOR_MAP");
             }
         }
         coder.addFragOutput("vec4", "FragColor0");
@@ -84,22 +84,6 @@ gl_Position = u_projMat * viewPosition;
 v_wpos.xyz = worldPosition.xyz;
 `
         );
-
-        // if(this.pipeline != null) {
-        //     // let types: MaterialPipeType[] = [];
-        //     // if(this.fogEnabled) {
-        //     //     types.push( MaterialPipeType.FOG_EXP2 ); 
-        //     // }      
-        //     this.pipeline.build(this.m_coder, this.m_pipeTypes);
-        // }
-    }
-
-    getFragShaderCode(): string {
-        //this.buildThisCode();
-        return this.m_coder.buildFragCode();
-    }
-    getVertShaderCode(): string {
-        return this.m_coder.buildVertCode();
     }
     getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);

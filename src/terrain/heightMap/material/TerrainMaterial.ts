@@ -17,8 +17,6 @@ class TerrainpShaderBuffer extends ShaderCodeBuffer {
 
     private static s_instance: TerrainpShaderBuffer = new TerrainpShaderBuffer();
     private m_uniqueName: string = "";
-    // private m_pipeTypes: MaterialPipeType[] = null;
-    // private m_keysString: string = "";
 
     fogEnabled: boolean = true;
 
@@ -30,19 +28,9 @@ class TerrainpShaderBuffer extends ShaderCodeBuffer {
         
         super.initialize( texEnabled );
         
-        this.m_uniqueName = "TerrainpShd";
+        this.m_uniqueName = "TerrainShd";
         if(texEnabled) this.m_uniqueName += "Tex";
         if(this.fogEnabled) this.m_uniqueName += "Fog";
-
-        // if(this.pipeline != null) {
-        //     this.m_pipeTypes = [];
-        //     if(this.fogEnabled) {
-        //         this.m_pipeTypes.push( MaterialPipeType.FOG_EXP2 );
-        //     }
-        //     this.pipeline.createKeys(this.m_pipeTypes);
-        //     this.m_keysString = this.pipeline.getKeysString();
-        //     this.pipeline.buildSharedUniforms(this.m_pipeTypes);
-        // }
     }
     buildShader(): void {
 
@@ -54,9 +42,12 @@ class TerrainpShaderBuffer extends ShaderCodeBuffer {
             this.m_coder.addVarying("vec2", "v_uv");
             this.m_coder.addVarying("vec4", "v_param");
             // diffuse color 0
-            this.m_coder.addTextureSample2D();
+            this.m_coder.addDiffuseMap();
             // diffuse color 1 and fog color
-            this.m_coder.addTextureSample2D();
+            if(this.fogEnabled) {
+                // diffuse color 1 and fog color
+                this.m_coder.addTextureSample2D("VOX_FOG_COLOR_MAP");
+            }
             
             // displace and color ao
             this.m_coder.addTextureSample2D("VOX_DISPLACEMENT_MAP", true, true, true);
@@ -67,21 +58,8 @@ class TerrainpShaderBuffer extends ShaderCodeBuffer {
         this.m_coder.addVertUniform("vec4", "u_displacement");
         
         this.m_coder.addShaderObject( TerrainShaderCode );
-
-        // if(this.pipeline != null) {     
-        //     this.pipeline.build(this.m_coder, this.m_pipeTypes);
-        // }
     }
 
-    getFragShaderCode(): string {
-        
-        //this.buildThisCode();
-        return ShaderCodeBuffer.s_coder.buildFragCode();
-    }
-    getVertShaderCode(): string {
-
-        return ShaderCodeBuffer.s_coder.buildVertCode();
-    }
     getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;

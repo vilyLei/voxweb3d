@@ -324,6 +324,9 @@ precision mediump float;
         this.addDefine("VOX_SPECULAR_MODE", "" + specularMode);
         this.m_uniqueNSKeys[5] = 1 + (specularMode << 1);
     }
+    /**
+     * add shadow map
+     */
     addShadowMap(shadowMode: ShadowMode = ShadowMode.VSM): void {
 
         this.addTextureSample2D("VOX_VSM_SHADOW_MAP");
@@ -333,7 +336,6 @@ precision mediump float;
         if(macroName == "" || !this.m_textureMacroNames.includes(macroName)) {
             this.m_textureSampleTypes.push("sampler2D");
             this.m_textureMacroNames.push(macroName);
-            
             this.m_texturePrecises.push(this.m_texturePrecise);
     
             let flag: number = 0;

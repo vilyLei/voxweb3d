@@ -305,7 +305,7 @@
 
 //  import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
 
-//  import {DemoCameraWalkRoad as Demo} from "./demo/DemoCameraWalkRoad";
+import {DemoCameraWalkRoad as Demo} from "./demo/DemoCameraWalkRoad";
 
 // import {DemoCameraPath as Demo} from "./demo/DemoCameraPath";
 
@@ -317,7 +317,7 @@
 ////////////////////////////   maps    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
+//  import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
 
 //  import {DemoDisplacementMap as Demo} from "./demo/DemoDisplacementMap";
 
