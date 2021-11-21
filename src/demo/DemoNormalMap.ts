@@ -102,6 +102,8 @@ export class DemoNormalMap {
             // this.m_target = billboard;
 
             let crossAxis: Axis3DEntity = new Axis3DEntity();
+            crossAxis.pipeTypes = [MaterialPipeType.FOG_EXP2];
+            crossAxis.setMaterialPipeline( this.m_materialCtx.pipeline );
             crossAxis.initialize(50.0);
             crossAxis.setPosition(pointLight.position);
             this.m_engine.rscene.addEntity(crossAxis, 2);
