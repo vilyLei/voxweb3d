@@ -74,9 +74,11 @@ export default class EnvLightData implements IMaterialPipe {
 
         if (this.m_uProbe != null) {
             switch (pipeType) {
+
                 case MaterialPipeType.ENV_LIGHT_PARAM:
                 case MaterialPipeType.FOG:
                 case MaterialPipeType.FOG_EXP2:
+
                     this.m_uniformParam.use(shaderBuilder);
                     //shaderBuilder.addFragUniformParam(UniformConst.EnvLightParams);
                     if (pipeType != MaterialPipeType.ENV_LIGHT_PARAM) {
@@ -161,6 +163,7 @@ export default class EnvLightData implements IMaterialPipe {
             // this.m_suo.uniformNameList = [UniformConst.EnvLightParams.name];
             // this.m_suo.copyDataFromProbe(this.m_uProbe);
             this.m_suo = this.m_uniformParam.createGlobalUinform( this.m_uProbe );
+            console.log("EnvLightData::this.m_uProbe.getUid(): ",this.m_uProbe.getUid());
             this.m_uProbe.update();
 
         }
@@ -173,5 +176,9 @@ export default class EnvLightData implements IMaterialPipe {
     }
     getGlobalUinform(): ShaderGlobalUniform {
         return this.m_suo.clone();
+        // let suo = this.m_suo.clone();
+        // suo.uns = "EnvLightData";
+        // //console.log("EnvLightData::getGlobalUinform(), suo: ",suo);
+        // return suo;
     }
 }

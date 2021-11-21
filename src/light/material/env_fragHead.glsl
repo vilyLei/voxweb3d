@@ -15,6 +15,10 @@
             float fogFar = u_envLightParams[1].w;
             float fogFactor = smoothstep( fogNear, fogFar, v_fogDepth );
         #endif
-        color = mix( color.rgb, fogColor, fogFactor );
+        #ifndef VOX_USE_BRIGHtNESS_FOG_COLOR
+            color = mix( color.rgb, fogColor, fogFactor );
+        #else
+            color = mix( color.rgb, fogColor, fogFactor ) * length(color.rgb) * (1.0 - fogFactor);
+        #endif
     }
 #endif

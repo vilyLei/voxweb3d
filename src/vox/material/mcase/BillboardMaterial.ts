@@ -11,6 +11,7 @@ import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import Color4 from "../../../vox/material/Color4";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import BillboardFSBase from "../../../vox/material/mcase/BillboardFSBase";
+import { MaterialPipeType } from "../pipeline/MaterialPipeType";
 
 class BillboardShaderBuffer extends ShaderCodeBuffer {
     billFS: BillboardFSBase = new BillboardFSBase();
@@ -19,14 +20,25 @@ class BillboardShaderBuffer extends ShaderCodeBuffer {
     }
     private m_uniqueName: string = "";
     rotationEnabled: boolean = false;
+    brightnessEnabled: boolean = false;
     initialize(texEnabled: boolean): void {
+        super.initialize(texEnabled);
         this.m_uniqueName = "BillboardShader";
         if(this.rotationEnabled) this.m_uniqueName += "Rot";        
+        this.m_coder.addDiffuseMap();
     }
     buildShader(): void {
         let coder = this.m_coder;
         if(this.rotationEnabled) coder.addDefine("VOX_ROTATION","1");
-        coder.addDiffuseMap();
+        if(this.brightnessEnabled) {
+            let fogEnabled: boolean = this.fogEnabled;
+            if(this.pipeline != null) {
+                fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG_EXP2);
+                fogEnabled = fogEnabled || this.pipeline.hasPipeByType(MaterialPipeType.FOG);
+            }
+            if(fogEnabled) coder.addDefine("VOX_USE_BRIGHtNESS_FOG_COLOR","1");
+        }
+
         coder.addVertLayout("vec2","a_vs");
         coder.addVarying("vec4","v_colorMult");
         coder.addVarying("vec4","v_colorOffset");
@@ -63,63 +75,6 @@ class BillboardShaderBuffer extends ShaderCodeBuffer {
         );
 
     }
-    /*
-    getFragShaderCode(): string {
-
-        let fragCode0: string =
-            `#version 300 es
-precision mediump float;
-uniform sampler2D u_sampler0;
-in vec4 v_colorMult;
-in vec4 v_colorOffset;
-in vec2 v_uv;
-layout(location = 0) out vec4 FragColor0;
-void main()
-{
-    vec4 color = texture(u_sampler0, v_uv);
-    vec3 offsetColor = v_colorOffset.rgb;
-    vec4 fv4 = v_colorMult.wwww;
-`;
-        let fadeCode: string = this.billFS.getBrnAndAlphaCode("fv4");
-        let fragCode2: string =
-            `
-    FragColor0 = color;
-}
-`;
-        return fragCode0 + fadeCode + fragCode2;
-        
-    }
-    getVertShaderCode(): string {
-        let vtxCode: string =
-            `#version 300 es
-precision mediump float;
-layout(location = 0) in vec2 a_vs;
-layout(location = 1) in vec2 a_uvs;
-uniform mat4 u_objMat;
-uniform mat4 u_viewMat;
-uniform mat4 u_projMat;
-uniform vec4 u_billParam[3];
-out vec4 v_colorMult;
-out vec4 v_colorOffset;
-out vec2 v_uv;
-void main()
-{
-    vec4 temp = u_billParam[0];
-    float cosv = cos(temp.z);
-    float sinv = sin(temp.z);
-    vec2 vtx = a_vs.xy * temp.xy;
-    vec2 vtx_pos = vec2(vtx.x * cosv - vtx.y * sinv, vtx.x * sinv + vtx.y * cosv);
-    vec4 pos = u_viewMat * u_objMat * vec4(0.0,0.0,0.0,1.0);
-    pos.xy += vtx_pos.xy;
-    gl_Position =  u_projMat * pos;
-    v_uv = a_uvs;
-    v_colorMult = u_billParam[1];
-    v_colorOffset = u_billParam[2];
-}
-`;
-        return vtxCode;
-    }
-    //*/
     getUniqueShaderName(): string {
         return this.m_uniqueName + "_" + this.billFS.getBrnAlphaStatus();
     }
@@ -154,6 +109,7 @@ export default class BillboardMaterial extends MaterialBase {
         
         let buf: BillboardShaderBuffer = BillboardShaderBuffer.GetInstance();
         buf.rotationEnabled = this.m_rotationEnabled;
+        buf.brightnessEnabled = this.m_brightnessEnabled;
         buf.billFS.setBrightnessAndAlpha(this.m_brightnessEnabled, this.m_alphaEnabled);
     }
     getCodeBuf(): ShaderCodeBuffer {
