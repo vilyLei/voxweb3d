@@ -47,36 +47,37 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
 
         coder.addFragMainCode(
             `
-FragColor0 = vec4(1.0);
-#ifdef VOX_USE_2D_MAP
-    //  FragColor0 *= VOX_Texture2D(VOX_DIFFUSE_MAP, vec2(v_uv[0],v_uv[1]));
-    FragColor0 *= VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv.xy);
-#endif
-#ifdef VOX_USE_VTX_COLOR
-    FragColor0 *= vec4(v_cv.xyz,1.0);
-#endif
-#ifdef VOX_PREMULTIPLY_ALPHA
-    FragColor0.rgb *= u_color.xyz;
-    FragColor0.a *= u_color.w;
-    FragColor0.rgb *= u_color.aaa;
-#else
-    FragColor0 *= u_color;
-#endif
+    FragColor0 = vec4(1.0);
+    #ifdef VOX_USE_2D_MAP
+        //  FragColor0 *= VOX_Texture2D(VOX_DIFFUSE_MAP, vec2(v_uv[0],v_uv[1]));
+        FragColor0 *= VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv.xy);
+    #endif
+    #ifdef VOX_USE_VTX_COLOR
+        FragColor0 *= vec4(v_cv.xyz,1.0);
+    #endif
+    #ifdef VOX_PREMULTIPLY_ALPHA
+        FragColor0.rgb *= u_color.xyz;
+        FragColor0.a *= u_color.w;
+        FragColor0.rgb *= u_color.aaa;
+    #else
+        FragColor0 *= u_color;
+    #endif
 `
         );
         
         coder.addVertMainCode(
             `
-vec4 localPosition = vec4(a_vs.xyz,1.0);
-vec4 wpos = u_objMat * localPosition;
-gl_Position = u_projMat * u_viewMat * wpos;
+    localPosition = vec4(a_vs.xyz,1.0);
+    worldPosition = u_objMat * localPosition;
+    viewPosition = u_viewMat * worldPosition;
+    gl_Position = u_projMat * viewPosition;
 
-#ifdef VOX_USE_2D_MAP
-    v_uv = a_uvs.xy;
-#endif
-#ifdef VOX_USE_VTX_COLOR
-    v_cv = a_cvs.xyz;
-#endif
+    #ifdef VOX_USE_2D_MAP
+        v_uv = a_uvs.xy;
+    #endif
+    #ifdef VOX_USE_VTX_COLOR
+        v_cv = a_cvs.xyz;
+    #endif
 `
         );
 

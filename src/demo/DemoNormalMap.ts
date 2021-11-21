@@ -90,25 +90,32 @@ export class DemoNormalMap {
             pointLight.attenuationFactor2 = 0.000001;
             this.m_materialCtx.lightModule.update();
 
-            // let billboard: Billboard3DEntity = new Billboard3DEntity();
-            // billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
-            // billboard.setMaterialPipeline( this.m_materialCtx.pipeline );
-            // billboard.toBrightnessBlend();
-            // billboard.initialize(60.0, 60.0, [this.getImageTexByUrl("static/assets/flare_core_03.jpg")]);
-            // billboard.setPosition(pointLight.position);
-            // billboard.setRGB3f(pointLight.color.r, pointLight.color.g, pointLight.color.b);
-            // this.m_engine.rscene.addEntity(billboard, 3);
-            // this.m_pointLight = pointLight;
-            // this.m_target = billboard;
+            let billboard: Billboard3DEntity = new Billboard3DEntity();
+            billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
+            billboard.setMaterialPipeline( this.m_materialCtx.pipeline );
+            billboard.toBrightnessBlend();
+            billboard.initialize(60.0, 60.0, [this.getImageTexByUrl("static/assets/flare_core_03.jpg")]);
+            billboard.setPosition(pointLight.position);
+            billboard.setRGB3f(pointLight.color.r, pointLight.color.g, pointLight.color.b);
+            this.m_engine.rscene.addEntity(billboard, 3);
+            this.m_pointLight = pointLight;
+            this.m_target = billboard;
+
+            let box: Box3DEntity = new Box3DEntity();
+            box.pipeTypes = [MaterialPipeType.FOG_EXP2];
+            box.setMaterialPipeline( this.m_materialCtx.pipeline );
+            box.initializeCube(80, [this.getImageTexByUrl("static/assets/color_02.jpg")]);
+            box.setXYZ(-200,50,200);
+            this.m_engine.rscene.addEntity(box);
 
             let crossAxis: Axis3DEntity = new Axis3DEntity();
             crossAxis.pipeTypes = [MaterialPipeType.FOG_EXP2];
             crossAxis.setMaterialPipeline( this.m_materialCtx.pipeline );
-            crossAxis.initialize(50.0);
-            crossAxis.setPosition(pointLight.position);
+            crossAxis.initialize(150.0);
+            // crossAxis.setPosition(pointLight.position);
             this.m_engine.rscene.addEntity(crossAxis, 2);
-            this.m_pointLight = pointLight;
-            this.m_target = crossAxis;
+            // this.m_pointLight = pointLight;
+            // this.m_target = crossAxis;
 
             ///*
             let material: LambertLightMaterial = new LambertLightMaterial();
