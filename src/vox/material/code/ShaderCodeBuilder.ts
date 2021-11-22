@@ -312,8 +312,13 @@ precision mediump float;
      */
     addParallaxMap(parallaxParamIndex: number): void {        
         this.addTextureSample2D("VOX_PARALLAX_MAP");
-        this.addDefine("VOX_PARALLAX_PARAMS_INDEX", "" + parallaxParamIndex);
-        this.m_uniqueNSKeys[2] = 1 + (parallaxParamIndex << 1);
+        if(parallaxParamIndex >= 0) {
+            this.addDefine("VOX_PARALLAX_PARAMS_INDEX", "" + parallaxParamIndex);
+            this.m_uniqueNSKeys[2] = 1 + (parallaxParamIndex << 1);
+        }
+        else {
+            this.m_uniqueNSKeys[2] = 1;
+        }
         this.m_uniqueNSKeyFlag = true;
     }
     /**

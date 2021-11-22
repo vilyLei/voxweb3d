@@ -18,7 +18,7 @@ export default class LambertLightMaterial extends MaterialBase {
 
     private static s_shaderCodeBuffer: AdvancedShaderCodeBuffer = null;
 
-    private m_parallaxArray: Float32Array = null;
+    private m_parallaxParams: Float32Array = null;
     private m_lightParamsArray: Float32Array = null;
     private m_vertLocalParams: Float32Array = null;
     private m_fragLocalParams: Float32Array = null;
@@ -81,7 +81,7 @@ export default class LambertLightMaterial extends MaterialBase {
 
         let lightParamsIndex: number = 2;
         if (this.parallaxMap != null) {
-            this.m_parallaxArray = this.m_fragLocalParams.subarray(lightParamsIndex * 4, (lightParamsIndex + 1) * 4);
+            this.m_parallaxParams = this.m_fragLocalParams.subarray(lightParamsIndex * 4, (lightParamsIndex + 1) * 4);
             lightParamsIndex += 1;
         }
         if (this.lightEnabled) {
@@ -128,8 +128,8 @@ export default class LambertLightMaterial extends MaterialBase {
 
             if (this.parallaxMap != null) {
 
-                this.m_parallaxArray = this.m_fragLocalParams.subarray(lightParamsIndex * 4, (lightParamsIndex + 1) * 4);
-                this.m_parallaxArray.set([1.0, 10.0, 2.0, 0.1]);
+                this.m_parallaxParams = this.m_fragLocalParams.subarray(lightParamsIndex * 4, (lightParamsIndex + 1) * 4);
+                this.m_parallaxParams.set([1.0, 10.0, 2.0, 0.1]);
                 this.m_parallaxParamIndex = lightParamsIndex;
                 lightParamsIndex += 1;
             }
@@ -244,11 +244,11 @@ export default class LambertLightMaterial extends MaterialBase {
      * @param stepFactor ray march 单步增量大小, default value is 0.1
      */
     setParallaxParams(numLayersMin: number = 1.0, numLayersMax: number = 10.0, height: number = 2.0, stepFactor: number = 0.1): void {
-        if (this.m_parallaxArray != null) {
-            this.m_parallaxArray[0] = numLayersMin;
-            this.m_parallaxArray[1] = numLayersMax;
-            this.m_parallaxArray[2] = height;
-            this.m_parallaxArray[3] = stepFactor;
+        if (this.m_parallaxParams != null) {
+            this.m_parallaxParams[0] = numLayersMin;
+            this.m_parallaxParams[1] = numLayersMax;
+            this.m_parallaxParams[2] = height;
+            this.m_parallaxParams[3] = stepFactor;
         }
     }
     setColor(factor: Color4, bias: Color4 = null): void {

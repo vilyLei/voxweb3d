@@ -18,7 +18,6 @@ export default class PBRShaderDecorator {
     }
 
     private m_uniqueName: string = "PBRShd";
-    private m_keysString: string = "";
     
     codeBuilder: ShaderCodeBuilder = null;
     pipeline: IMaterialPipeline = null;
@@ -60,6 +59,7 @@ export default class PBRShaderDecorator {
     texturesTotal: number = 1;
     vertLocalParamsTotal: number = 2;
     fragLocalParamsTotal: number = 2;
+    parallaxParamIndex: number = 2;
 
     createTextureList(): TextureProxy[] {
         
@@ -96,6 +96,9 @@ export default class PBRShaderDecorator {
         }
         if(this.displacementMap != null) {
             texList.push( this.displacementMap );
+        }
+        if(this.parallaxMap != null) {
+            texList.push( this.parallaxMap );
         }
 
         this.texturesTotal = texList.length;
@@ -186,6 +189,9 @@ export default class PBRShaderDecorator {
         if(this.displacementMap != null) {
             coder.addDisplacementMap();
         }
+        if(this.parallaxMap != null) {
+            coder.addParallaxMap( this.parallaxParamIndex );
+        }
         //*/
 
         if (this.mirrorMapLodEnabled) coder.addDefine("VOX_MIRROR_MAP_LOD", "1");
@@ -226,7 +232,6 @@ export default class PBRShaderDecorator {
         if (this.fogEnabled) ns += "Fog";
         if (this.hdrBrnEnabled) ns += "HdrBrn";
         if (this.vtxFlatNormal) ns += "vtxFlagN";
-        ns += this.m_keysString;
 
         ns += "_T" + this.texturesTotal;
         this.m_uniqueName = ns;

@@ -76,11 +76,14 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
             1.0,1.0, 0.0,0.0,      // u scale, v scale, undefined, undefined
             10.0, 0.0, 0.0,0.0     // displacement scale, bias, undefined, undefined
         ]);
-    private m_fragLocalParams: Float32Array = new Float32Array([
-            0.0, 0.0, 0.0, 1.0,      // f0.r,f0.g,f0.b, mormalMapIntentity(0.0,1.0)
-            0.2, 0.2, 0.2, 0.0       // albedo(r,g,b), undefined
-            //1.0, 1.0, 0.0, 0.0       // uv scaleX, uv scaleY, undefine, undefine
-        ]);
+    private m_fragLocalParams: Float32Array = null;//new Float32Array([
+        //     0.0, 0.0, 0.0, 1.0,      // f0.r,f0.g,f0.b, mormalMapIntentity(0.0,1.0)
+        //     0.2, 0.2, 0.2, 0.0       // albedo(r,g,b), undefined
+        //     //1.0, 1.0, 0.0, 0.0       // uv scaleX, uv scaleY, undefine, undefine
+        // ]);
+    // private m_fragLocalParamsTotal: number = 2;
+    // private m_parallaxParamIndex: number = 0;
+    private m_parallaxParams: Float32Array = null;
     private m_mirrorParam: Float32Array = new Float32Array([
             0.0, 0.0, -1.0           // mirror view nv(x,y,z)
             , 1.0                   // mirror map lod level
@@ -108,6 +111,26 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         buf.decorator.codeBuilder = buf.getShaderCodeBuilder();
         buf.decorator.pipeline = this.m_pipeLine;
         
+        let fragLocalParamsTotal: number = 2;
+        decorator.parallaxParamIndex = 2;
+        if(decorator.parallaxMap != null) {
+            fragLocalParamsTotal += 1;
+        }
+        this.m_fragLocalParams = new Float32Array(fragLocalParamsTotal * 4);
+        this.m_fragLocalParams.set(
+            [
+                0.0, 0.0, 0.0, 1.0,      // f0.r,f0.g,f0.b, mormalMapIntentity(0.0,1.0)
+                0.2, 0.2, 0.2, 0.0       // albedo(r,g,b), undefined
+                //1.0, 1.0, 0.0, 0.0       // uv scaleX, uv scaleY, undefine, undefine
+            ],
+            0
+        );
+        if(decorator.parallaxMap != null) {
+            this.m_parallaxParams = this.m_fragLocalParams.subarray(decorator.parallaxParamIndex * 4, (decorator.parallaxParamIndex + 1) * 4);
+            this.m_parallaxParams.set([1.0, 10.0, 2.0, 0.1]);
+        }
+        //this.m_fragLocalParamsTotal = fragLocalParamsTotal;
+        decorator.fragLocalParamsTotal = fragLocalParamsTotal;
         let texList: TextureProxy[] = decorator.createTextureList();
         super.setTextureList(texList);
         buf.texturesTotal = this.decorator.texturesTotal;
@@ -334,6 +357,22 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         colorFactor.r = this.m_fragLocalParams[4];
         colorFactor.g = this.m_fragLocalParams[5];
         colorFactor.b = this.m_fragLocalParams[6];
+    }
+    
+    /**
+     * 设置顶点置换贴图参数
+     * @param numLayersMin ray march 最小层数, default value is 1.0
+     * @param numLayersMax ray march 最大层数, default value is 10.0
+     * @param height ray march 总高度, default value is 2.0
+     * @param stepFactor ray march 单步增量大小, default value is 0.1
+     */
+    setParallaxParams(numLayersMin: number = 1.0, numLayersMax: number = 10.0, height: number = 2.0, stepFactor: number = 0.1): void {
+        if (this.m_parallaxParams != null) {
+            this.m_parallaxParams[0] = numLayersMin;
+            this.m_parallaxParams[1] = numLayersMax;
+            this.m_parallaxParams[2] = height;
+            this.m_parallaxParams[3] = stepFactor;
+        }
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
