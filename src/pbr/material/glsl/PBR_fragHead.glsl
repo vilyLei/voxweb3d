@@ -431,6 +431,10 @@ vec3 getNormalFromMap(sampler2D texSampler, vec2 texUV, vec3 wpos, vec3 nv)
 
     return TBN * tangentNormal;
 }
+vec3 getNormalFromMap(in sampler2D texSampler, in vec2 texUV)
+{
+    return VOX_Texture2D(texSampler, texUV).xyz * 2.0 - 1.0;
+}
 #endif
 #ifdef VOX_HDR_BRN
 

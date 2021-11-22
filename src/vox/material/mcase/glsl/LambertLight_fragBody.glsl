@@ -11,7 +11,7 @@ vec2 texUV = v_uv.xy;
 #ifdef VOX_LIGHT_LOCAL_PARAMS_INDEX
     vec4 param;
     vec3 viewDir = normalize(u_cameraPosition.xyz - worldPosition.xyz);
-    #ifdef VOX_PARALLAX_MAP        
+    #ifdef VOX_PARALLAX_MAP
         #ifdef VOX_NORMAL_MAP
             mat3 btnMat3 = getBTNMat3(v_uv, worldPosition.xyz, worldNormal.xyz);
             vec3 tbnViewDir = btnMat3 * viewDir;

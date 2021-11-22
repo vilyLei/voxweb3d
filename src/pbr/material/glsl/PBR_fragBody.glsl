@@ -21,6 +21,8 @@
     float specularPower = exp2(8.0 * glossinessSquare + 1.0);
 
     worldPosition.xyz = v_worldPosition.xyz;
+    vec3 V = normalize(u_cameraPosition.xyz - worldPosition.xyz);
+
     #ifdef VOX_VTX_FLAT_NORMAL
         worldNormal = getVtxFlatNormal(worldPosition.xyz);
     #else
@@ -28,10 +30,29 @@
     #endif
     
     vec3 N = worldNormal;
-    #ifdef VOX_NORMAL_MAP
-        N = getNormalFromMap(VOX_NORMAL_MAP, texUV, worldPosition.xyz, worldNormal);
-        N = normalize(mix(worldNormal, N, u_fragLocalParams[0].w));
+    #ifdef VOX_PARALLAX_MAP
+        #ifdef VOX_NORMAL_MAP
+            mat3 btnMat3 = getBTNMat3(v_uv, worldPosition.xyz, worldNormal.xyz);
+            vec3 tbnViewDir = btnMat3 * viewDir;
+            
+            //default value: vec4(1.0,10.0,2.0,0.1)
+            param = u_fragLocalParams[ VOX_PARALLAX_PARAMS_INDEX ];
+            texUV = parallaxOccRayMarchDepth(VOX_PARALLAX_MAP, v_uv, -tbnViewDir, param);
+            vec3 pnv = normalize(getNormalFromMap(VOX_NORMAL_MAP, texUV));
+            N = btnMat3 * pnv;
+            N = normalize(mix(worldNormal, N, u_fragLocalParams[0].w));
+        #endif
+    #else
+        #ifdef VOX_NORMAL_MAP
+            //  N = normalize(getNormalFromMap(VOX_NORMAL_MAP, texUV, worldNormal.xyz));
+            N = getNormalFromMap(VOX_NORMAL_MAP, texUV, worldPosition.xyz, worldNormal);
+            N = normalize(mix(worldNormal, N, u_fragLocalParams[0].w));
+        #endif
     #endif
+    // #ifdef VOX_NORMAL_MAP
+    //     N = getNormalFromMap(VOX_NORMAL_MAP, texUV, worldPosition.xyz, worldNormal);
+    //     N = normalize(mix(worldNormal, N, u_fragLocalParams[0].w));
+    // #endif
 
     #ifdef VOX_PIXEL_NORMAL_NOISE
         N = normalize(N + rand(N) * u_pbrParams[0].w);
@@ -39,7 +60,6 @@
         N = normalize(N);
     #endif
 
-    vec3 V = normalize(u_cameraPosition.xyz - worldPosition.xyz);
     float dotNV = clamp(dot(N, V), 0.0, 1.0);
     #ifdef VOX_DIFFUSE_MAP
     vec3 albedo = u_fragLocalParams[1].xyz * VOX_Texture2D(VOX_DIFFUSE_MAP, texUV).xyz;
