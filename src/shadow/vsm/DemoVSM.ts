@@ -169,7 +169,7 @@ export class DemoVSM {
         this.m_vsmData.setShadowRadius(this.m_setShadowRadius);
         this.m_vsmData.setShadowBias(this.m_shadowBias);
         this.m_vsmData.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
-        this.m_vsmData.upadate();
+        this.m_vsmData.update();
 
         this.m_materialPipeline = new MaterialPipeline();
         this.m_materialPipeline.addPipe( this.m_vsmData );
@@ -273,7 +273,7 @@ export class DemoVSM {
         if (this.m_direcCamera.version != this.m_shadowCamVersion) {
             this.m_shadowCamVersion = this.m_direcCamera.version;
             this.m_vsmData.updateShadowCamera(this.m_direcCamera);
-            this.m_vsmData.upadate();
+            this.m_vsmData.update();
         }
         this.m_statusDisp.update(false);
         this.m_stageDragSwinger.runWithYAxis();

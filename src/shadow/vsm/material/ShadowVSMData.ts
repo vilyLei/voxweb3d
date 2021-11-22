@@ -154,7 +154,7 @@ export default class ShadowVSMData implements IMaterialPipe{
         this.m_params[10] = -v3.z;
         this.m_dirty = true;
     }
-    upadate(): void {
+    update(): void {
 
         if (this.m_dirty && this.m_uProbe != null) {
             this.m_dirty = false;

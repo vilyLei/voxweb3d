@@ -31,7 +31,7 @@ export default class FBOInstance {
     //private m_materialProxy: RenderMaterialProxy = null;
     private m_rcontext: IRendererInstanceContext = null;
     private m_bgColor: Color4 = new Color4();
-    private m_render: IRenderer = null;
+    private m_renderer: IRenderer = null;
     private m_runFlag: boolean = true;
     private m_fboIndex: number = -1;
     private m_fboType: number = -1;
@@ -54,13 +54,18 @@ export default class FBOInstance {
     private m_clearStencilBoo: boolean = false;
     private m_viewportLock: boolean = false;
     private m_texUnlock: boolean = false;
+    /**
+     * unique name string
+     */
+    uns: string = "FBOInstance";
 
-    constructor(render: IRenderer, texStroe: RTTTextureStore) {
-        this.m_render = render;
+    constructor(renderer: IRenderer, texStroe: RTTTextureStore) {
+
+        this.m_renderer = renderer;
         this.m_texStore = texStroe;
-        this.m_renderProxy = render.getRenderProxy();
+        this.m_renderProxy = renderer.getRenderProxy();
         this.m_adapter = this.m_renderProxy.getRenderAdapter();
-        this.m_rcontext = render.getRendererContext();
+        this.m_rcontext = renderer.getRendererContext();
     }
     /**
      * @returns 获取当前FBOInstance所持有的 FBO 对象的 unique id (也就是序号)
@@ -234,6 +239,7 @@ export default class FBOInstance {
             this.createFBO(enableDepth, enableStencil, multisampleLevel);
         }
     }
+    
     /**
      * 创建一个指定序号的 read FBO(FrameBufferObject) 渲染运行时管理对象,
      * renderer中一个序号只会对应一个唯一的 FBO 对象实例
@@ -271,13 +277,13 @@ export default class FBOInstance {
         }
     }
 
-    resizeFBOAt(fboIndex: number, width: number, height: number): void {
-        if (fboIndex >= 0 && this.m_fboIndex < 0) {
-            this.m_adapter.resizeFBOAt(fboIndex, width, height);
+    resizeFBO(fboBufferWidth: number, fboBufferHeight: number): void {
+
+        if(this.m_initW != fboBufferWidth || this.m_initH != fboBufferHeight) {
+            this.m_initW = fboBufferWidth;
+            this.m_initH = fboBufferHeight;
+            this.m_adapter.resizeFBOAt(this.m_fboIndex, fboBufferWidth, fboBufferHeight);
         }
-    }
-    resizeFBO(width: number, height: number): void {
-        this.m_adapter.resizeFBOAt(this.m_fboIndex, width, height);
     }
     /**
      * @returns get framebuffer output attachment texture by attachment index
@@ -499,8 +505,9 @@ export default class FBOInstance {
         if (this.m_fboIndex >= 0 && this.m_rindexs != null) {
             if (autoRunBegin)
                 this.runBeginDo();
+            // rendering running
             for (let i: number = 0, len: number = this.m_rindexs.length; i < len; ++i) {
-                this.m_render.runAt(this.m_rindexs[i]);
+                this.m_renderer.runAt(this.m_rindexs[i]);
             }
         }
         this.m_runFlag = true;
@@ -520,7 +527,7 @@ export default class FBOInstance {
             else {
                 this.m_runFlag = true;
             }
-            this.m_render.runAt(this.m_rindexs[index]);
+            this.m_renderer.runAt(this.m_rindexs[index]);
         }
     }
     /**
@@ -531,7 +538,7 @@ export default class FBOInstance {
      */
     drawEntity(entity: IRenderEntity, useGlobalUniform: boolean = false,  forceUpdateUniform: boolean = true): void {
         if (!this.m_runFlag) {
-            this.m_render.drawEntity(entity, useGlobalUniform, forceUpdateUniform);
+            this.m_renderer.drawEntity(entity, useGlobalUniform, forceUpdateUniform);
         }
     }
     runBegin(): void {
@@ -549,10 +556,10 @@ export default class FBOInstance {
     }
 
     useCamera(camera: IRenderCamera, syncCamView: boolean = false): void {
-        this.m_render.useCamera(camera, syncCamView);
+        this.m_renderer.useCamera(camera, syncCamView);
     }
     useMainCamera(): void {
-        this.m_render.useMainCamera();
+        this.m_renderer.useMainCamera();
     }
     reset(): void {
         let i: number = 0;
@@ -571,7 +578,7 @@ export default class FBOInstance {
 
     clone(): FBOInstance {
         
-        let ins: FBOInstance = new FBOInstance(this.m_render, this.m_texStore);
+        let ins: FBOInstance = new FBOInstance(this.m_renderer, this.m_texStore);
         ins.m_fboSizeFactor = this.m_fboSizeFactor;
         ins.m_bgColor.copyFrom(this.m_bgColor);
         ins.m_fboIndex = this.m_fboIndex;

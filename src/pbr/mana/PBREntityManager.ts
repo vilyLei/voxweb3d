@@ -71,7 +71,7 @@ export default class PBREntityManager
             this.m_dracoModule.setPartsTotal(urlsTotal);
             this.m_dracoModule.setScale( 1.0 );
             this.m_dracoModule.setPosition(new Vector3D(0.0, -300.0, 0.0));
-            this.m_dracoModule.loadNext();
+            //this.m_dracoModule.loadNext();
 
             this.initPrimitive();
         }
@@ -95,6 +95,7 @@ export default class PBREntityManager
         }
         if (material.decorator.shadowReceiveEnabled) {
             material.decorator.shadowMap = this.m_entityUtils.getVSMModule().getShadowMap();
+            console.log("material.decorator.shadowMap: ",material.decorator.shadowMap);
             //  ptexList.push(shadowTex);
         }
     }
@@ -145,7 +146,9 @@ export default class PBREntityManager
         let scale: number = 1.0;
         let uvscale: number;
         total = posList.length;
-        
+
+        total = 1;
+
         for(let i: number = 0; i < total; ++i) {
 
             rad = Math.random() * 100.0;

@@ -21,6 +21,7 @@ import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
 
 import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
+import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
 import { MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
 
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
@@ -28,7 +29,6 @@ import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import EngineBase from "../vox/engine/EngineBase";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import { PointLight } from "../light/base/PointLight";
-import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
 
 export class DemoNormalMap {
 

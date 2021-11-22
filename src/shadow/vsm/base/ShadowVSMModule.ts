@@ -22,7 +22,7 @@ export class ShadowVSMModule {
     private m_fboOccBlur: FBOInstance = null;
     private m_verOccBlurPlane: Plane3DEntity = null;
     private m_horOccBlurPlane: Plane3DEntity = null;
-    private m_blurModule:PingpongBlur = null;
+    private m_blurModule: PingpongBlur = null;
 
     private m_camPos: Vector3D = new Vector3D(600.0, 800.0, -600.0);
     private m_shadowBias: number = -0.0005;
@@ -41,7 +41,7 @@ export class ShadowVSMModule {
     private m_processIDList: number[] = null;
     private m_rendererStatus: number = -1;
     private m_rendererProcessStatus: number = -1;
-    
+    private m_blurEnabled: boolean = false;
     constructor(fboIndex: number) {
         this.m_fboIndex = fboIndex;
     }
@@ -68,7 +68,7 @@ export class ShadowVSMModule {
      * @param pos shadow camera position in world.
      */
     setCameraPosition(pos: Vector3D): void {
-        this.m_camPos.copyFrom( pos );
+        this.m_camPos.copyFrom(pos);
     }
     /**
      * set shadow camera near plane distance 
@@ -108,7 +108,7 @@ export class ShadowVSMModule {
     }
 
     getShadowMap(): RTTTextureProxy {
-        if(this.m_blurModule != null) {
+        if (this.m_blurModule != null) {
             return this.m_blurModule.getDstTexture();
         }
         return this.m_depthRtt;
@@ -118,6 +118,12 @@ export class ShadowVSMModule {
     }
     getCamera(): CameraBase {
         return this.m_direcCamera;
+    }
+    setRendererProcessIDList(processIDList: number[]): void {
+        if (this.m_fboDepth != null) {            
+            this.m_processIDList = processIDList.slice(0);
+            this.m_fboDepth.setRProcessIDList(processIDList);
+        }
     }
     private initConfig(processIDList: number[], blurEnabled: boolean = false): void {
 
@@ -156,7 +162,8 @@ export class ShadowVSMModule {
         horOccBlurPlane.initializeXOY(-1, -1, 2, 2, [this.m_occBlurRtt]);
         this.m_horOccBlurPlane = horOccBlurPlane;
 
-        if(blurEnabled) {
+        this.m_blurEnabled = blurEnabled;
+        if (blurEnabled) {
             this.m_blurModule = new PingpongBlur(this.m_rscene.getRenderer());
             this.m_blurModule.setBlurCount(2);
             this.m_blurModule.setSyncViewSizeEnabled(false);
@@ -167,51 +174,83 @@ export class ShadowVSMModule {
             this.m_blurModule.setBackbufferVisible(false);
         }
 
-        let viewWidth: number = this.m_viewWidth;
-        let viewHeight: number = this.m_viewHeight;
-        
         this.m_direcCamera = new CameraBase();
-        this.m_direcCamera.lookAtRH(this.m_camPos, new Vector3D(0.0, 0.0, 0.0), new Vector3D(0.0, 1.0, 0.0));
-        this.m_direcCamera.orthoRH(this.m_near, this.m_far, -0.5 * viewHeight, 0.5 * viewHeight, -0.5 * viewWidth, 0.5 * viewWidth);
-        this.m_direcCamera.setViewXY(0, 0);
-        this.m_direcCamera.setViewSize(viewWidth, viewHeight);
-        this.m_direcCamera.update();
 
-        this.m_vsmData.updateShadowCamera(this.m_direcCamera);
-        this.m_vsmData.setShadowRadius(this.m_shadowRadius);
-        this.m_vsmData.setShadowBias(this.m_shadowBias);
-        this.m_vsmData.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
-        this.m_vsmData.upadate();
+        // let viewWidth: number = this.m_viewWidth;
+        // let viewHeight: number = this.m_viewHeight;
 
+        // this.m_direcCamera.lookAtRH(this.m_camPos, new Vector3D(0.0, 0.0, 0.0), new Vector3D(0.0, 1.0, 0.0));
+        // this.m_direcCamera.orthoRH(this.m_near, this.m_far, -0.5 * viewHeight, 0.5 * viewHeight, -0.5 * viewWidth, 0.5 * viewWidth);
+        // this.m_direcCamera.setViewXY(0, 0);
+        // this.m_direcCamera.setViewSize(viewWidth, viewHeight);
+        // this.m_direcCamera.update();
+
+        // this.m_vsmData.updateShadowCamera(this.m_direcCamera);
+        // this.m_vsmData.setShadowRadius(this.m_shadowRadius);
+        // this.m_vsmData.setShadowBias(this.m_shadowBias);
+        // this.m_vsmData.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
+        // this.m_vsmData.update();
+        this.updateData();
+
+    }
+    private updateData(): void {
+        
+        if (this.m_direcCamera != null) {
+
+            let viewWidth: number = this.m_viewWidth;
+            let viewHeight: number = this.m_viewHeight;
+            this.m_direcCamera.lookAtRH(this.m_camPos, Vector3D.ZERO, Vector3D.Y_AXIS);
+            this.m_direcCamera.orthoRH(this.m_near, this.m_far, -0.5 * viewHeight, 0.5 * viewHeight, -0.5 * viewWidth, 0.5 * viewWidth);
+            this.m_direcCamera.setViewXY(0, 0);
+            this.m_direcCamera.setViewSize(viewWidth, viewHeight);
+            this.m_direcCamera.update();
+        }
+        if (this.m_vsmData != null) {
+
+            this.m_fboDepth.resizeFBO(this.m_shadowMapW, this.m_shadowMapH);
+            this.m_fboOccBlur.resizeFBO(this.m_shadowMapW, this.m_shadowMapH);
+            if (this.m_blurEnabled) {
+                this.m_blurModule.setFBOSize(this.m_shadowMapW, this.m_shadowMapH);
+            }
+
+            this.m_vsmData.updateShadowCamera(this.m_direcCamera);
+            this.m_vsmData.setShadowRadius(this.m_shadowRadius);
+            this.m_vsmData.setShadowBias(this.m_shadowBias);
+            this.m_vsmData.setShadowSize(this.m_shadowMapW, this.m_shadowMapH);
+            this.m_vsmData.update();
+        }
     }
     private m_shadowCamVersion: number = -1;
     private m_buildShadowDelay: number = 120;
     force: boolean = true;
-    upateData(): void {
+
+    upate(): void {
+
         this.m_buildShadowDelay = 32;
         this.m_shadowCamVersion = this.m_direcCamera.version;
-        this.m_vsmData.upadate();
+
+        this.updateData();
     }
     private getRendererProcessStatus(): number {
         let status: number = 31;
-        for(let i:number = 0; i < this.m_processIDList.length; ++i) {
+        for (let i: number = 0; i < this.m_processIDList.length; ++i) {
             status += status * this.m_rscene.getRenderProcessAt(i).getStatus();
         }
         return status;
     }
     run(): void {
-        
+
         // update shadow direc matrix
         if (this.m_direcCamera.version != this.m_shadowCamVersion) {
             this.m_shadowCamVersion = this.m_direcCamera.version;
             this.m_vsmData.updateShadowCamera(this.m_direcCamera);
-            this.m_vsmData.upadate();
+            this.m_vsmData.update();
         }
-        
+
         let flag: boolean = this.force;
-        if(this.m_rendererStatus != this.m_rscene.getRendererStatus()) {
+        if (this.m_rendererStatus != this.m_rscene.getRendererStatus()) {
             let status: number = this.getRendererProcessStatus();
-            if(this.m_rendererProcessStatus != status) {
+            if (this.m_rendererProcessStatus != status) {
                 this.m_rendererProcessStatus = status;
                 flag = true;
             }
@@ -224,13 +263,13 @@ export class ShadowVSMModule {
             }
             this.m_buildShadowDelay--;
         }
-        if(flag) {
+        if (flag) {
             this.buildShadow();
         }
         this.force = false;
     }
     private buildShadow(): void {
-
+        
         this.m_fboDepth.useCamera(this.m_direcCamera);
         this.m_fboDepth.run(true, true);
         this.m_fboDepth.useMainCamera();
@@ -245,7 +284,7 @@ export class ShadowVSMModule {
         this.m_fboOccBlur.drawEntity(this.m_horOccBlurPlane);
         this.m_fboOccBlur.runEnd();
         // pingpong blur
-        if(this.m_blurModule != null) {
+        if (this.m_blurModule != null) {
             this.m_blurModule.run();
         }
         this.m_fboOccBlur.setRenderToBackBuffer();

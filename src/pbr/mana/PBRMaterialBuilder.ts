@@ -14,7 +14,7 @@ export default class PBRMaterialBuilder {
     hdrBrnEnabled: boolean = false;
     vtxFlatNormal: boolean = false;
 
-    readonly pipeline:MaterialPipeline = new MaterialPipeline();
+    pipeline:MaterialPipeline = null;
     constructor() {
     }
 
