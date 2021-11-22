@@ -118,7 +118,7 @@ export default class PBRScene {
             vsmModule.setCameraViewSize(3000, 3000);
             vsmModule.setShadowRadius(4.0);
             vsmModule.setShadowBias(-0.0005);
-            vsmModule.setShadowIntensity(0.95);
+            vsmModule.setShadowIntensity(0.85);
             vsmModule.setColorIntensity(0.4);
             vsmModule.upate();
 
