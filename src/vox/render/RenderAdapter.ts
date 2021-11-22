@@ -398,7 +398,6 @@ class RenderAdapter implements IRenderAdapter{
 		console.log("XXXXXXXXXXx this.m_fboBufList[this.m_fboIndex] != null: ",this.m_fboBufList[this.m_fboIndex] != null, this.m_fboIndex);
 		if (this.m_fboBufList[index] != null) {
 			this.m_fboBufList[index].resize(pw, ph);
-			//this.m_fboBufList[this.m_fboIndex].initialize(this.m_gl, pw, ph);
 		}
 	}
 	getFBOWidthAt(index: number): number {

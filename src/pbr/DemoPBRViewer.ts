@@ -16,8 +16,7 @@ import RendererSubScene from "../vox/scene/RendererSubScene";
 import DebugFlag from "../vox/debug/DebugFlag";
 import TextureProxy from "../vox/texture/TextureProxy";
 import { SpecularTextureLoader } from "./mana/TextureLoader";
-import GlobalLightData from "../light/base/GlobalLightData";
-import EnvLightData from "../light/base/EnvLightData";
+
 import PBRMaterial from "./material/PBRMaterial";
 import PBRShaderDecorator from "./material/PBRShaderDecorator";
 import { TextureConst } from "../vox/texture/TextureConst";
@@ -30,8 +29,6 @@ import { DracoWholeModuleLoader } from "../voxmesh/draco/DracoModuleLoader";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import ThreadSystem from "../thread/ThreadSystem";
 
-import { PBRShaderCode } from "../pbr/material/glsl/PBRShaderCode";
-import { MaterialPipeline } from "../vox/material/pipeline/MaterialPipeline";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 
 import { PointLight } from "../light/base/PointLight";
@@ -51,14 +48,10 @@ export class DemoPBRViewer {
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
-    private m_lightData: GlobalLightData = new GlobalLightData();
-    private m_dracoMeshLoader: DracoMeshBuilder = new DracoMeshBuilder();
-    private m_dracoModule: ViewerDracoModule = null;
+    
     private m_reflectPlaneY: number = -220;
     //  private m_envData: EnvLightData = null;
     private m_envMap: TextureProxy = null;
-
-    //private m_pipeline: MaterialPipeline = new MaterialPipeline();
 
 
     private m_materialCtx: MaterialContext = new MaterialContext();
