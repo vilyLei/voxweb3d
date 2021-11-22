@@ -78,7 +78,7 @@ precision mediump float;
     //private m_fragMainCodePrepend: string = "";
     private m_uniqueNSKeyString: string = "";
     private m_uniqueNSKeys: Uint16Array = new Uint16Array(128);
-    private m_uniqueNSKeysTotal: number = 8;
+    private m_uniqueNSKeysTotal: number = 10;
     private m_uniqueNSKeyFlag: boolean = false;
     private m_use2DMap: boolean = false;
     /**
@@ -347,7 +347,7 @@ precision mediump float;
      */
     addShadowMap(shadowMode: ShadowMode = ShadowMode.VSM): void {
 
-        this.addTextureSample2D("VOX_VSM_SHADOW_MAP");
+        this.addTextureSample2D("VOX_VSM_SHADOW_MAP", false);
         this.m_uniqueNSKeys[6] = 1 + (shadowMode << 1);
         this.m_uniqueNSKeyFlag = true;
     }
@@ -360,6 +360,20 @@ precision mediump float;
         this.m_uniqueNSKeys[7] = 1;
         this.m_uniqueNSKeyFlag = true;
     }
+    /**
+     * add env cube map
+     */
+    addEnvMap(cubeMap: boolean = true): void {
+        if(cubeMap) {
+            this.addTextureSampleCube("VOX_ENV_MAP");
+        }
+        else {
+            this.addTextureSample2D("VOX_ENV_MAP");
+        }
+        this.m_uniqueNSKeys[8] = 1;
+        this.m_uniqueNSKeyFlag = true;
+    }
+    
     addTextureSample2D(macroName: string = "", map2DEnabled: boolean = true, fragEnabled: boolean = true, vertEnabled: boolean = false): void {
         if(macroName == "" || !this.m_textureMacroNames.includes(macroName)) {
             this.m_textureSampleTypes.push("sampler2D");

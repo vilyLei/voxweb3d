@@ -94,6 +94,9 @@ export default class PBRShaderDecorator {
             texList.push( this.shadowMap );
             // coder.addTextureSample2D("VOX_VSM_SHADOW_MAP", false);
         }
+        if(this.displacementMap != null) {
+            texList.push( this.displacementMap );
+        }
 
         this.texturesTotal = texList.length;
         return texList;
@@ -160,16 +163,16 @@ export default class PBRShaderDecorator {
         if (this.pixelNormalNoiseEnabled) coder.addDefine("VOX_PIXEL_NORMAL_NOISE");
         ///*
         if (this.envMapEnabled && this.texturesTotal > 0) {
-            coder.addTextureSampleCube("VOX_ENV_MAP");
+            coder.addEnvMap();
         }
         if (this.diffuseMapEnabled) {
-            coder.addTextureSample2D("VOX_DIFFUSE_MAP");
+            coder.addDiffuseMap();
         }
         if (this.normalMapEnabled) {
-            coder.addTextureSample2D("VOX_NORMAL_MAP");
+            coder.addNormalMap();
         }
         if (this.aoMapEnabled) {
-            coder.addTextureSample2D("VOX_AO_MAP");
+            coder.addAOMap();
         }
         if (mirrorProjEnabled) {
             coder.addTextureSample2D("VOX_MIRROR_PROJ_MAP");
@@ -178,7 +181,10 @@ export default class PBRShaderDecorator {
             coder.addTextureSampleCube("VOX_INDIRECT_ENV_MAP");
         }
         if (this.shadowReceiveEnabled) {
-            coder.addTextureSample2D("VOX_VSM_SHADOW_MAP", false);
+            coder.addShadowMap();
+        }
+        if(this.displacementMap != null) {
+            coder.addDisplacementMap();
         }
         //*/
 

@@ -116,9 +116,6 @@ export default class LambertLightMaterial extends MaterialBase {
                 1.0,1.0, 0.0,0.0,      // u scale, v scale, undefined, undefined
                 10.0, 0.0, 0.0,0.0     // displacement scale, bias, undefined, undefined
             ]);
-            if (this.displacementMap != null) {
-                this.m_fragLocalParamsTotal += 1;
-            }
             if (this.parallaxMap != null) {
                 this.m_fragLocalParamsTotal += 1;
             }
