@@ -1,5 +1,12 @@
 const vec4 zeroPosition = vec4(0.0,0.0,0.0, 1.0);
 
+#ifdef VOX_DISPLACEMENT_MAP
+void displaceLocalVtx(in vec2 param) {    
+    float dispFactor = VOX_Texture2D(VOX_DISPLACEMENT_MAP, v_uv.xy).x;
+    localPosition.xyz += normalize( a_nvs ) * vec3( dispFactor * param.x + param.y );
+}
+#endif
+
 const vec2 noise2 = vec2(12.9898,78.233);
 const vec3 noise3 = vec3(12.9898,78.233,158.5453);
 vec2 rand(vec2 seed) {

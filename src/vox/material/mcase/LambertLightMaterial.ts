@@ -113,13 +113,8 @@ export default class LambertLightMaterial extends MaterialBase {
 
             this.m_fragLocalParamsTotal = 2;
             this.m_vertLocalParams = new Float32Array([
-                1.0             // u scale
-                , 1.0           // v scale
-                , 0.0           // undefined
-                , 0.0           // undefined
-
-                , 10.0, 0.0     // displacement scale, bias
-                , 0.0, 0.0      // undefined
+                1.0,1.0, 0.0,0.0,      // u scale, v scale, undefined, undefined
+                10.0, 0.0, 0.0,0.0     // displacement scale, bias, undefined, undefined
             ]);
             if (this.displacementMap != null) {
                 this.m_fragLocalParamsTotal += 1;

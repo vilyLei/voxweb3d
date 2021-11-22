@@ -9,7 +9,7 @@
     float roughness = param4.y;
     float ao = param4.z;
 
-    vec2 texUV = v_uv.xy * u_fragLocalParams[2].xy;
+    vec2 texUV = v_uv.xy;// * u_fragLocalParams[2].xy;
     #ifdef VOX_AO_MAP
         color = VOX_Texture2D(VOX_AO_MAP, texUV).xyz;
         ao = mix(1.0, color.x, ao);

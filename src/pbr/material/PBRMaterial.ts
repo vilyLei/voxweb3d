@@ -61,25 +61,27 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     private m_envMapHeight: number = 128;
     
     private m_pbrParams: Float32Array = new Float32Array([
-        0.0, 0.0, 1.0, 0.02,        // [metallic,roughness,ao, pixel noise intensity]
-        1.0,                        // tone map exposure
-        0.1,                        // reflectionIntensity
-        1.0,                        // frontColorScale
-        1.0,                        // sideColorScale
+            0.0, 0.0, 1.0, 0.02,        // [metallic,roughness,ao, pixel noise intensity]
+            1.0,                        // tone map exposure
+            0.1,                        // reflectionIntensity
+            1.0,                        // frontColorScale
+            1.0,                        // sideColorScale
 
-        0.1, 0.1, 0.1,              // ambient factor x,y,z
-        1.0,                        // scatterIntensity
-        1.0, 1.0, 1.0,              // env map specular color factor x,y,z
-        0.07                        // envMap lod mipMapLv parameter((100.0 * fract(0.07)) - (100.0 * fract(0.07)) * k + floor(0.07))
-    ]);
-    private m_fragLocalParams: Float32Array = new Float32Array(
-        [
-            0.0, 0.0, 0.0, 1.0,      // f0.r,f0.g,f0.b, mormalMapIntentity(0.0,1.0)
-            0.2, 0.2, 0.2, 0.0,      // falbedo(r,g,b), undefined
-            1.0, 1.0, 1.0, 0.3       // uv scaleX, uv scaleY, undefine, undefine
+            0.1, 0.1, 0.1,              // ambient factor x,y,z
+            1.0,                        // scatterIntensity
+            1.0, 1.0, 1.0,              // env map specular color factor x,y,z
+            0.07                        // envMap lod mipMapLv parameter((100.0 * fract(0.07)) - (100.0 * fract(0.07)) * k + floor(0.07))
         ]);
-    private m_mirrorParam: Float32Array = new Float32Array(
-        [
+    private m_vertLocalParams: Float32Array = new Float32Array([
+            1.0,1.0, 0.0,0.0,      // u scale, v scale, undefined, undefined
+            10.0, 0.0, 0.0,0.0     // displacement scale, bias, undefined, undefined
+        ]);
+    private m_fragLocalParams: Float32Array = new Float32Array([
+            0.0, 0.0, 0.0, 1.0,      // f0.r,f0.g,f0.b, mormalMapIntentity(0.0,1.0)
+            0.2, 0.2, 0.2, 0.0       // albedo(r,g,b), undefined
+            //1.0, 1.0, 0.0, 0.0       // uv scaleX, uv scaleY, undefine, undefine
+        ]);
+    private m_mirrorParam: Float32Array = new Float32Array([
             0.0, 0.0, -1.0           // mirror view nv(x,y,z)
             , 1.0                   // mirror map lod level
 
@@ -130,6 +132,12 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         }
         else {
             this.m_fragLocalParams.set(dst.m_fragLocalParams);
+        }
+        if(this.m_vertLocalParams == null || this.m_vertLocalParams.length != dst.m_vertLocalParams.length) {
+            this.m_vertLocalParams = dst.m_vertLocalParams.slice();
+        }
+        else {
+            this.m_vertLocalParams.set(dst.m_fragLocalParams);
         }
         
         if(this.m_mirrorParam == null || this.m_mirrorParam.length != dst.m_mirrorParam.length) {
@@ -297,13 +305,24 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     }
     setUVScale(sx: number, sy: number): void {
 
-        this.m_fragLocalParams[4] = sx;
-        this.m_fragLocalParams[5] = sy;
+        this.m_vertLocalParams[0] = sx;
+        this.m_vertLocalParams[1] = sy;
     }
     getUVScale(scaleV:Vector3D): void {
 
-        scaleV.x = this.m_fragLocalParams[4];
-        scaleV.y = this.m_fragLocalParams[5];
+        scaleV.x = this.m_vertLocalParams[0];
+        scaleV.y = this.m_vertLocalParams[1];
+    }
+    /**
+     * 设置顶点置换贴图参数
+     * @param scale 缩放值
+     * @param bias 偏移量
+     */
+    setDisplacementParams(scale: number, bias: number): void {
+        if (this.m_vertLocalParams != null) {
+            this.m_vertLocalParams[4] = scale;
+            this.m_vertLocalParams[5] = bias;
+        }
     }
     setAlbedoColor(pr: number, pg: number, pb: number): void {
         this.m_fragLocalParams[4] = pr;
@@ -318,8 +337,8 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_pbrParams", "u_fragLocalParams", "u_mirrorParams"];
-        oum.dataList = [this.m_pbrParams, this.m_fragLocalParams, this.m_mirrorParam];
+        oum.uniformNameList = ["u_pbrParams", "u_vertLocalParams", "u_fragLocalParams", "u_mirrorParams"];
+        oum.dataList = [this.m_pbrParams, this.m_vertLocalParams, this.m_fragLocalParams, this.m_mirrorParam];
         return oum;
     }
 }
