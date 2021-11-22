@@ -371,9 +371,9 @@
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
-//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
+import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
-import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
+//  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
 //  import {DemoRawDracoViewer as Demo} from "./pbr/DemoRawDracoViewer";
 

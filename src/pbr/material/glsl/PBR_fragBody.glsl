@@ -3,18 +3,20 @@
 
     vec3 color = vec3(0.0);
 
-    float metallic = u_params[0].x;
-    float roughness = u_params[0].y;
-    float ao = u_params[0].z;
+    vec4 param4 = u_pbrParams[0];
+    vec4 color4;
+    float metallic = param4.x;
+    float roughness = param4.y;
+    float ao = param4.z;
 
-    vec2 texUV = v_uv.xy * u_fragLocalParams[1].xy;
+    vec2 texUV = v_uv.xy * u_fragLocalParams[2].xy;
     #ifdef VOX_AO_MAP
         color = VOX_Texture2D(VOX_AO_MAP, texUV).xyz;
         ao = mix(1.0, color.x, ao);
     #endif
 
     float colorGlossiness = 1.0 - roughness;
-    float reflectionIntensity = u_params[1].y;
+    float reflectionIntensity = u_pbrParams[1].y;
     float glossinessSquare = colorGlossiness * colorGlossiness;
     float specularPower = exp2(8.0 * glossinessSquare + 1.0);
 
@@ -32,7 +34,7 @@
     #endif
 
     #ifdef VOX_PIXEL_NORMAL_NOISE
-        N = normalize(N + rand(N) * u_params[0].w);
+        N = normalize(N + rand(N) * u_pbrParams[0].w);
     #else
         N = normalize(N);
     #endif
@@ -40,9 +42,9 @@
     vec3 V = normalize(u_cameraPosition.xyz - worldPosition.xyz);
     float dotNV = clamp(dot(N, V), 0.0, 1.0);
     #ifdef VOX_DIFFUSE_MAP
-    vec3 albedo = u_albedo.xyz * VOX_Texture2D(VOX_DIFFUSE_MAP, texUV).xyz;
+    vec3 albedo = u_fragLocalParams[1].xyz * VOX_Texture2D(VOX_DIFFUSE_MAP, texUV).xyz;
     #else
-    vec3 albedo = u_albedo.xyz;
+    vec3 albedo = u_fragLocalParams[1].xyz;
     #endif
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
@@ -62,13 +64,13 @@
     #endif
     albedo = mix(albedo, F0, metallic);
     
-    specularColor *= u_params[3].xyz;
+    specularColor *= u_pbrParams[3].xyz;
 
     
     #ifdef VOX_ENV_MAP
-        float mipLv = floor(100.0 * fract(u_params[3].w));
+        float mipLv = floor(100.0 * fract(u_pbrParams[3].w));
         mipLv -= glossinessSquare * mipLv;
-        mipLv = max(mipLv + floor(u_params[3].w), 0.0);
+        mipLv = max(mipLv + floor(u_pbrParams[3].w), 0.0);
 	    vec3 envDir = -getWorldEnvDir(N, -V);
 	    envDir.x = -envDir.x;
         #ifdef VOX_HDR_BRN
@@ -81,8 +83,8 @@
         specularColor = fresnelSchlick3(specularColor, dotNV, 0.25 * reflectionIntensity) * specularEnvColor3;
     #endif
 
-    float frontIntensity = u_params[1].z;
-    float sideIntensity = u_params[1].w;
+    float frontIntensity = u_pbrParams[1].z;
+    float sideIntensity = u_pbrParams[1].w;
 
     // reflectance equation    
     RadianceLight rL;
@@ -90,7 +92,7 @@
     vec3 diffuse = albedo.xyz * RECIPROCAL_PI;
     vec3 rm = vec3(1.0 - metallic); // remainder metallic
 
-    rL.scatterIntensity = u_params[2].www;
+    rL.scatterIntensity = u_pbrParams[2].www;
     rL.F0 = F0;
     rL.specularColor = specularColor;
     rL.dotNV = dotNV;
@@ -99,8 +101,6 @@
     rL.specularPower = specularPower;
     rL.frontIntensity = frontIntensity;
     rL.sideIntensity = sideIntensity;
-    vec4 param4;
-    vec4 color4;
     // point light process
     #if VOX_POINT_LIGHTS_TOTAL > 0
         for(int i = 0; i < VOX_POINT_LIGHTS_TOTAL; ++i) 
@@ -172,7 +172,7 @@
     
     // ambient lighting (note that the next IBL tutorial will replace
     // this ambient lighting with environment lighting).
-    vec3 ambient = ((color + u_params[2].xyz) * albedo.xyz) * ao;
+    vec3 ambient = ((color + u_pbrParams[2].xyz) * albedo.xyz) * ao;
     
 	#ifdef VOX_WOOL
 		sideIntensity = getColorFactorIntensity(dotNV, frontIntensity, sideIntensity);
@@ -184,7 +184,7 @@
 
     // HDR tonemapping
     #ifdef VOX_TONE_MAPPING
-        color = tonemapReinhard( color, u_params[1].x );
+        color = tonemapReinhard( color, u_pbrParams[1].x );
     #endif
     
 

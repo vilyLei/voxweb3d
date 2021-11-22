@@ -57,6 +57,7 @@ export default class PBRShaderDecorator {
     shadowReceiveEnabled: boolean = false;
     fogEnabled: boolean = false;
     texturesTotal: number = 1;
+    fragLocalParamsTotal: number = 3;
 
     createTextureList(): TextureProxy[] {
         
@@ -182,12 +183,8 @@ export default class PBRShaderDecorator {
         if (this.hdrBrnEnabled) coder.addDefine("VOX_HDR_BRN", "1");
         if (this.vtxFlatNormal) coder.addDefine("VOX_VTX_FLAT_NORMAL", "1");
 
-        // if (coder.isHaveTexture2D()) {
-        //     coder.addVertUniform("vec4", "u_fragLocalParams", 2);
-        // }
-        coder.addFragUniform("vec4", "u_fragLocalParams", 2);
-        coder.addFragUniform("vec4", "u_albedo");
-        coder.addFragUniform("vec4", "u_params", 4);
+        coder.addFragUniform("vec4", "u_fragLocalParams", this.fragLocalParamsTotal);
+        coder.addFragUniform("vec4", "u_pbrParams", 4);
 
         if (mirrorProjEnabled) {
             coder.addFragUniformParam( UniformConst.StageParam );

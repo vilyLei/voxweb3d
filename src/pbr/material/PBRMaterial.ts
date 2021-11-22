@@ -59,8 +59,8 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
 
     private m_envMapWidth: number = 128;
     private m_envMapHeight: number = 128;
-    private m_albedo: Float32Array = new Float32Array([0.2, 0.2, 0.2, 0.0]);
-    private m_params: Float32Array = new Float32Array([
+    
+    private m_pbrParams: Float32Array = new Float32Array([
         0.0, 0.0, 1.0, 0.02,        // [metallic,roughness,ao, pixel noise intensity]
         1.0,                        // tone map exposure
         0.1,                        // reflectionIntensity
@@ -74,8 +74,9 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     ]);
     private m_fragLocalParams: Float32Array = new Float32Array(
         [
-            0.0, 0.0, 0.0, 1.0      // f0.r,f0.g,f0.b, mormalMapIntentity(0.0,1.0)
-            ,1.0, 1.0, 1.0, 0.3     // uv scaleX, uv scaleY, undefine, undefine
+            0.0, 0.0, 0.0, 1.0,      // f0.r,f0.g,f0.b, mormalMapIntentity(0.0,1.0)
+            0.2, 0.2, 0.2, 0.0,      // falbedo(r,g,b), undefined
+            1.0, 1.0, 1.0, 0.3       // uv scaleX, uv scaleY, undefine, undefine
         ]);
     private m_mirrorParam: Float32Array = new Float32Array(
         [
@@ -118,18 +119,11 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         this.decorator.copyFrom( dst.decorator );
         this.decorator.createTextureList();
         
-        if(this.m_albedo == null || this.m_albedo.length != dst.m_albedo.length) {
-            this.m_albedo = dst.m_albedo.slice();
+        if(this.m_pbrParams == null || this.m_pbrParams.length != dst.m_pbrParams.length) {
+            this.m_pbrParams = dst.m_pbrParams.slice();
         }
         else {
-            this.m_albedo.set(dst.m_albedo);
-        }
-        
-        if(this.m_params == null || this.m_params.length != dst.m_params.length) {
-            this.m_params = dst.m_params.slice();
-        }
-        else {
-            this.m_params.set(dst.m_params);
+            this.m_pbrParams.set(dst.m_pbrParams);
         }
         if(this.m_fragLocalParams == null || this.m_fragLocalParams.length != dst.m_fragLocalParams.length) {
             this.m_fragLocalParams = dst.m_fragLocalParams.slice();
@@ -157,8 +151,8 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         dst.decorator.copyFrom( this.decorator );
         //dst.decorator.initialize();
 
-        dst.m_albedo.set(this.m_albedo);
-        dst.m_params.set(this.m_params);
+        //dst.m_albedo.set(this.m_albedo);
+        dst.m_pbrParams.set(this.m_pbrParams);
         dst.m_fragLocalParams.set(this.m_fragLocalParams);
         dst.m_mirrorParam.set(this.m_mirrorParam);
         
@@ -171,10 +165,10 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     }
     setPixelNormalNoiseIntensity(intensity: number): void {
         intensity = Math.min(Math.max(intensity, 0.0), 2.0);
-        this.m_params[3] = intensity;
+        this.m_pbrParams[3] = intensity;
     }
     getPixelNormalNoiseIntensity(): number {
-        return this.m_params[3];
+        return this.m_pbrParams[3];
     }
     setMirrorViewNV(nv: Vector3D): void {
         this.m_mirrorParam[0] = nv.x;
@@ -204,90 +198,90 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     setEnvMapLodMipMapLevel(maxMipLevel: number, base: number = 0.0): void {
         maxMipLevel = Math.min(Math.max(maxMipLevel, 0.0), 14.0);
         base = Math.min(Math.max(base, -7.0), 12.0);
-        this.m_params[15] = Math.round(maxMipLevel) * 0.01 + base;
+        this.m_pbrParams[15] = Math.round(maxMipLevel) * 0.01 + base;
     }
     setEnvMapLodMipMapLevelWithSize(envMapWidth: number, envMapHeight: number, base: number = 0.0): void {
         this.m_envMapWidth = envMapWidth;
         this.m_envMapHeight = envMapHeight;
         base = Math.min(Math.max(base, -7.0), 12.0);
-        this.m_params[15] = MathConst.GetMaxMipMapLevel(envMapWidth, envMapHeight) * 0.01 + base;
+        this.m_pbrParams[15] = MathConst.GetMaxMipMapLevel(envMapWidth, envMapHeight) * 0.01 + base;
     }
     setScatterIntensity(value: number): void {
 
-        this.m_params[11] = Math.min(Math.max(value, 0.01), 512.0);
+        this.m_pbrParams[11] = Math.min(Math.max(value, 0.01), 512.0);
     }
     getScatterIntensity(): number {
 
-        return this.m_params[11];
+        return this.m_pbrParams[11];
     }
     setToneMapingExposure(value: number): void {
 
-        this.m_params[4] = Math.min(Math.max(value, 0.1), 128.0);
+        this.m_pbrParams[4] = Math.min(Math.max(value, 0.1), 128.0);
     }
     getToneMapingExposure(): number {
-        return this.m_params[4];
+        return this.m_pbrParams[4];
     }
     setReflectionIntensity(value: number): void {
-        this.m_params[5] = Math.min(Math.max(value, 0.001), 1.0);
+        this.m_pbrParams[5] = Math.min(Math.max(value, 0.001), 1.0);
     }
     getReflectionIntensity(): number {
-        return this.m_params[5];
+        return this.m_pbrParams[5];
     }
 
     setSurfaceIntensity(surfaceIntensity: number): void {
 
-        this.m_params[6] = Math.min(Math.max(surfaceIntensity, 0.001), 32.0);
+        this.m_pbrParams[6] = Math.min(Math.max(surfaceIntensity, 0.001), 32.0);
     }
     getSurfaceIntensity(): number {
 
-        return this.m_params[6];
+        return this.m_pbrParams[6];
     }
     setSideIntensity(sideIntensity: number): void {
-        this.m_params[7] = Math.min(Math.max(sideIntensity, 0.001), 32.0);
+        this.m_pbrParams[7] = Math.min(Math.max(sideIntensity, 0.001), 32.0);
     }
     getSideIntensity(): number {
-        return this.m_params[7];
+        return this.m_pbrParams[7];
     }
     setEnvSpecularColorFactor(fx: number, fy: number, fz: number): void {
-        this.m_params[12] = fx;
-        this.m_params[13] = fy;
-        this.m_params[14] = fz;
+        this.m_pbrParams[12] = fx;
+        this.m_pbrParams[13] = fy;
+        this.m_pbrParams[14] = fz;
     }
     getEnvSpecularColorFactor(colorFactor: Color4): void {
-        colorFactor.r = this.m_params[12];
-        colorFactor.g = this.m_params[13];
-        colorFactor.b = this.m_params[14];
+        colorFactor.r = this.m_pbrParams[12];
+        colorFactor.g = this.m_pbrParams[13];
+        colorFactor.b = this.m_pbrParams[14];
     }
     //ambient factor x,y,z
     setAmbientFactor(fr: number, fg: number, fb: number): void {
-        this.m_params[8] = fr;
-        this.m_params[9] = fg;
-        this.m_params[10] = fb;
+        this.m_pbrParams[8] = fr;
+        this.m_pbrParams[9] = fg;
+        this.m_pbrParams[10] = fb;
     }
     getAmbientFactor(colorFactor: Color4): void {
-        colorFactor.r = this.m_params[8];
-        colorFactor.g = this.m_params[9];
-        colorFactor.b = this.m_params[10];
+        colorFactor.r = this.m_pbrParams[8];
+        colorFactor.g = this.m_pbrParams[9];
+        colorFactor.b = this.m_pbrParams[10];
     }
 
     setMetallic(metallic: number): void {
-        this.m_params[0] = Math.min(Math.max(metallic, 0.05), 1.0);
+        this.m_pbrParams[0] = Math.min(Math.max(metallic, 0.05), 1.0);
     }
     getMetallic(): number {
-        return this.m_params[0];
+        return this.m_pbrParams[0];
     }
     setRoughness(roughness: number): void {
-        this.m_params[1] = Math.min(Math.max(roughness, 0.05), 1.0);
+        this.m_pbrParams[1] = Math.min(Math.max(roughness, 0.05), 1.0);
     }
     getRoughness(): number {
-        return this.m_params[1];
+        return this.m_pbrParams[1];
     }
 
     setAO(ao: number): void {
-        this.m_params[2] = ao;
+        this.m_pbrParams[2] = ao;
     }
     getAO(): number {
-        return this.m_params[2];
+        return this.m_pbrParams[2];
     }
     setF0(f0x: number, f0y: number, f0z: number): void {
 
@@ -312,20 +306,20 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         scaleV.y = this.m_fragLocalParams[5];
     }
     setAlbedoColor(pr: number, pg: number, pb: number): void {
-        this.m_albedo[0] = pr;
-        this.m_albedo[1] = pg;
-        this.m_albedo[2] = pb;
+        this.m_fragLocalParams[4] = pr;
+        this.m_fragLocalParams[5] = pg;
+        this.m_fragLocalParams[6] = pb;
     }
     getAlbedoColor(colorFactor: Color4): void {
         
-        colorFactor.r = this.m_albedo[0];
-        colorFactor.g = this.m_albedo[1];
-        colorFactor.b = this.m_albedo[2];
+        colorFactor.r = this.m_fragLocalParams[4];
+        colorFactor.g = this.m_fragLocalParams[5];
+        colorFactor.b = this.m_fragLocalParams[6];
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_albedo", "u_params", "u_fragLocalParams", "u_mirrorParams"];
-        oum.dataList = [this.m_albedo, this.m_params, this.m_fragLocalParams, this.m_mirrorParam];
+        oum.uniformNameList = ["u_pbrParams", "u_fragLocalParams", "u_mirrorParams"];
+        oum.dataList = [this.m_pbrParams, this.m_fragLocalParams, this.m_mirrorParam];
         return oum;
     }
 }
