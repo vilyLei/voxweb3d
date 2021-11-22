@@ -32,6 +32,7 @@ export default class PBRShaderDecorator {
     shadowMap: TextureProxy = null;
     parallaxMap: TextureProxy = null;
     roughnessMap: TextureProxy = null;
+    displacementMap: TextureProxy = null;
     //specularMap: TextureProxy = null;
     
     woolEnabled: boolean = true;
@@ -120,16 +121,17 @@ export default class PBRShaderDecorator {
         this.hdrBrnEnabled = src.hdrBrnEnabled;
         this.vtxFlatNormal = src.vtxFlatNormal;
         
-        this.envMap = src.envMap;
-        this.diffuseMap = src.diffuseMap;
-        this.normalMap = src.normalMap;
-        this.aoMap = src.aoMap;
-        this.mirrorMap = src.mirrorMap;
-        this.indirectEnvMap = src.indirectEnvMap;
-        this.shadowMap = src.shadowMap;
-        this.parallaxMap = src.parallaxMap;
-        this.roughnessMap = src.roughnessMap;
-        //this.specularMap = src.specularMap;
+        if(this.envMap == null) this.envMap = src.envMap;
+        if(this.diffuseMap == null) this.diffuseMap = src.diffuseMap;
+        if(this.normalMap == null) this.normalMap = src.normalMap;
+        if(this.aoMap == null) this.aoMap = src.aoMap;
+        if(this.mirrorMap == null) this.mirrorMap = src.mirrorMap;
+        if(this.indirectEnvMap != null) this.indirectEnvMap = src.indirectEnvMap;
+        if(this.shadowMap == null) this.shadowMap = src.shadowMap;
+        if(this.parallaxMap == null) this.parallaxMap = src.parallaxMap;
+        if(this.roughnessMap == null) this.roughnessMap = src.roughnessMap;
+        if(this.displacementMap == null) this.displacementMap = src.displacementMap;
+        // if(this.specularMap == null) this.specularMap = src.specularMap;
 
         this.lightEnabled = src.lightEnabled;
         this.texturesTotal = src.texturesTotal;
