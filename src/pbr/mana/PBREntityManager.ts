@@ -71,7 +71,7 @@ export default class PBREntityManager
             this.m_dracoModule.setPartsTotal(urlsTotal);
             this.m_dracoModule.setScale( 1.0 );
             this.m_dracoModule.setPosition(new Vector3D(0.0, -300.0, 0.0));
-            //this.m_dracoModule.loadNext();
+            this.m_dracoModule.loadNext();
 
             this.initPrimitive();
         }
@@ -79,7 +79,6 @@ export default class PBREntityManager
     private useMaterial(material: PBRMaterial): void {
 
         material.decorator.envMap = this.m_envMap;
-        //this.m_entityUtils.addTextureByUrl("static/assets/noise.jpg");
         // base color map
         material.decorator.diffuseMap = this.m_entityUtils.getImageTexByUrl( "static/assets/disp/normal_4_256_COLOR.png" );
         // normal map
@@ -90,13 +89,11 @@ export default class PBREntityManager
         }
         
         if (material.decorator.indirectEnvMapEnabled) {
-            //ptexList.push(this.m_cubeRTTBuilder.getCubeTexture());
             material.decorator.indirectEnvMap = this.m_entityUtils.getCubeRttBuilder().getCubeTexture();
         }
         if (material.decorator.shadowReceiveEnabled) {
             material.decorator.shadowMap = this.m_entityUtils.getVSMModule().getShadowMap();
             console.log("material.decorator.shadowMap: ",material.decorator.shadowMap);
-            //  ptexList.push(shadowTex);
         }
     }
     private initPrimitive(): void {
@@ -147,8 +144,6 @@ export default class PBREntityManager
         let uvscale: number;
         total = posList.length;
 
-        total = 1;
-
         for(let i: number = 0; i < total; ++i) {
 
             rad = Math.random() * 100.0;
@@ -158,17 +153,7 @@ export default class PBREntityManager
             material = this.m_entityUtils.createMaterial(uvscale,uvscale);
             material.decorator.aoMapEnabled = this.aoMapEnabled;
             this.useMaterial( material );
-            /*
-            srcSph = null;
-            material.decorator.diffuseMapEnabled = false;
-            material.decorator.normalMapEnabled = false;
-            material.decorator.vtxFlatNormal = false;
-            material.decorator.aoMapEnabled = false;
-            material.decorator.shadowReceiveEnabled = false;
-            let ts = this.m_entityUtils.createTexListForMaterial(material, this.m_envMap);
-            material.setTextureList(ts);
-            */
-            
+
             scale = 0.8 + Math.random();
             let pr: number = scale * 100.0;
             sph = new Sphere3DEntity();
