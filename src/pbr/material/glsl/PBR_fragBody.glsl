@@ -9,12 +9,8 @@
     float roughness = param4.y;
     float ao = param4.z;
 
-    vec2 texUV = v_uv.xy;// * u_fragLocalParams[2].xy;
-    #ifdef VOX_AO_MAP
-        color = VOX_Texture2D(VOX_AO_MAP, texUV).xyz;
-        ao = mix(1.0, color.x, ao);
-    #endif
-
+    vec2 texUV = v_uv.xy;
+    
     float colorGlossiness = 1.0 - roughness;
     float reflectionIntensity = u_pbrParams[1].y;
     float glossinessSquare = colorGlossiness * colorGlossiness;
@@ -33,11 +29,11 @@
     #ifdef VOX_PARALLAX_MAP
         #ifdef VOX_NORMAL_MAP
             mat3 btnMat3 = getBTNMat3(v_uv, worldPosition.xyz, worldNormal.xyz);
-            vec3 tbnViewDir = btnMat3 * viewDir;
+            vec3 tbnViewDir = btnMat3 * V;
             
             //default value: vec4(1.0,10.0,2.0,0.1)
-            param = u_fragLocalParams[ VOX_PARALLAX_PARAMS_INDEX ];
-            texUV = parallaxOccRayMarchDepth(VOX_PARALLAX_MAP, v_uv, -tbnViewDir, param);
+            param4 = u_fragLocalParams[ VOX_PARALLAX_PARAMS_INDEX ];
+            texUV = parallaxOccRayMarchDepth(VOX_PARALLAX_MAP, v_uv, -tbnViewDir, param4);
             vec3 pnv = normalize(getNormalFromMap(VOX_NORMAL_MAP, texUV));
             N = btnMat3 * pnv;
             N = normalize(mix(worldNormal, N, u_fragLocalParams[0].w));
@@ -49,6 +45,11 @@
             N = normalize(mix(worldNormal, N, u_fragLocalParams[0].w));
         #endif
     #endif
+    
+    #ifdef VOX_AO_MAP
+        ao = mix(1.0, VOX_Texture2D(VOX_AO_MAP, texUV).y, ao);
+    #endif
+
     // #ifdef VOX_NORMAL_MAP
     //     N = getNormalFromMap(VOX_NORMAL_MAP, texUV, worldPosition.xyz, worldNormal);
     //     N = normalize(mix(worldNormal, N, u_fragLocalParams[0].w));
@@ -224,3 +225,4 @@
         color.xyz = mix(mirrorColor4.xyz, color.xyz, factorY);
     #endif
     FragColor0 = vec4(color, 1.0);
+//[x: displacement, y: ao, z: specular, w: occ]

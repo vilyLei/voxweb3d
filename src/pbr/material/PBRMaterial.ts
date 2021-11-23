@@ -76,13 +76,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
             1.0,1.0, 0.0,0.0,      // u scale, v scale, undefined, undefined
             10.0, 0.0, 0.0,0.0     // displacement scale, bias, undefined, undefined
         ]);
-    private m_fragLocalParams: Float32Array = null;//new Float32Array([
-        //     0.0, 0.0, 0.0, 1.0,      // f0.r,f0.g,f0.b, mormalMapIntentity(0.0,1.0)
-        //     0.2, 0.2, 0.2, 0.0       // albedo(r,g,b), undefined
-        //     //1.0, 1.0, 0.0, 0.0       // uv scaleX, uv scaleY, undefine, undefine
-        // ]);
-    // private m_fragLocalParamsTotal: number = 2;
-    // private m_parallaxParamIndex: number = 0;
+    private m_fragLocalParams: Float32Array = null;
     private m_parallaxParams: Float32Array = null;
     private m_mirrorParam: Float32Array = new Float32Array([
             0.0, 0.0, -1.0           // mirror view nv(x,y,z)
@@ -111,12 +105,26 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         buf.decorator.codeBuilder = buf.getShaderCodeBuilder();
         buf.decorator.pipeline = this.m_pipeLine;
         
-        let fragLocalParamsTotal: number = 2;
+        if(this.m_fragLocalParams == null) {
+            this.initializeLocalData();
+        }
+        
+        let texList: TextureProxy[] = decorator.createTextureList();
+        super.setTextureList(texList);
+        buf.texturesTotal = this.decorator.texturesTotal;
+    }
+    getCodeBuf(): ShaderCodeBuffer {
+        return PBRShaderBuffer.GetInstance();
+    }
+    initializeLocalData(): void {
+        let decorator = this.decorator;
+
+        decorator.fragLocalParamsTotal = 2;
         decorator.parallaxParamIndex = 2;
         if(decorator.parallaxMap != null) {
-            fragLocalParamsTotal += 1;
+            decorator.fragLocalParamsTotal += 1;
         }
-        this.m_fragLocalParams = new Float32Array(fragLocalParamsTotal * 4);
+        this.m_fragLocalParams = new Float32Array(decorator.fragLocalParamsTotal * 4);
         this.m_fragLocalParams.set(
             [
                 0.0, 0.0, 0.0, 1.0,      // f0.r,f0.g,f0.b, mormalMapIntentity(0.0,1.0)
@@ -129,14 +137,6 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
             this.m_parallaxParams = this.m_fragLocalParams.subarray(decorator.parallaxParamIndex * 4, (decorator.parallaxParamIndex + 1) * 4);
             this.m_parallaxParams.set([1.0, 10.0, 2.0, 0.1]);
         }
-        //this.m_fragLocalParamsTotal = fragLocalParamsTotal;
-        decorator.fragLocalParamsTotal = fragLocalParamsTotal;
-        let texList: TextureProxy[] = decorator.createTextureList();
-        super.setTextureList(texList);
-        buf.texturesTotal = this.decorator.texturesTotal;
-    }
-    getCodeBuf(): ShaderCodeBuffer {
-        return PBRShaderBuffer.GetInstance();
     }
     copyFrom(dst: PBRMaterial): void {
 

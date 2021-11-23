@@ -114,17 +114,17 @@ export class DemoPBRViewer {
             this.m_envMap = loader.texture;
 
             let mcParam: MaterialContextParam = new MaterialContextParam();
-            mcParam.pointLightsTotal = 0;
-            mcParam.directionLightsTotal = 0;
-            mcParam.spotLightsTotal = 1;
+            mcParam.pointLightsTotal = 1;
+            mcParam.directionLightsTotal = 2;
+            mcParam.spotLightsTotal = 0;
             this.m_materialCtx.initialize(this.m_rscene, mcParam);
             let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
             if (pointLight != null) {
                 // pointLight.position.setXYZ(200.0, 180.0, 200.0);
-                pointLight.position.setXYZ(0.0, 30.0, 0.0);
+                pointLight.position.setXYZ(0.0, 190.0, 0.0);
                 pointLight.color.setRGB3f(0.0, 2.2, 0.0);
-                pointLight.attenuationFactor1 = 0.001;
-                pointLight.attenuationFactor2 = 0.005;
+                pointLight.attenuationFactor1 = 0.00001;
+                pointLight.attenuationFactor2 = 0.00005;
             }
             let spotLight: SpotLight = this.m_materialCtx.lightModule.getSpotLightAt(0);
             if(spotLight != null) {
@@ -138,6 +138,12 @@ export class DemoPBRViewer {
             let directLight: DirectionLight = this.m_materialCtx.lightModule.getDirectionLightAt(0);
             if (directLight != null) {
                 directLight.color.setRGB3f(2.0,0.0,0.0);
+                directLight.direction.setXYZ(-1.0, -1.0, 0.0);
+                directLight = this.m_materialCtx.lightModule.getDirectionLightAt(1);
+                if(directLight != null) {
+                    directLight.color.setRGB3f(0.0,0.0,2.0);
+                    directLight.direction.setXYZ(1.0, 1.0, 0.0);
+                }
             }
             this.m_materialCtx.lightModule.update();
             this.m_materialCtx.lightModule.showInfo();
@@ -169,15 +175,19 @@ export class DemoPBRViewer {
         let axis: Axis3DEntity = new Axis3DEntity();
         //  axis.initialize(300.0);
         //  this.m_rscene.addEntity(axis);
-
-        let ns: string = "brick_n_256";
+        this.aoMapEnabled = true;
+        let ns: string = "lava_03";
         let diffuseMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/"+ns+"_COLOR.png");
-        diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
+        //diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
         let normalMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/"+ns+"_NRM.png");
         let aoMap: TextureProxy = null;
         if (this.aoMapEnabled) {
-            aoMap = this.getImageTexByUrl("static/assets/disp/b"+ns+"_OCC.png");
+            aoMap = this.getImageTexByUrl("static/assets/disp/"+ns+"_OCC.png");
         }
+        let displacementMap: TextureProxy = null;
+        displacementMap = this.getImageTexByUrl("static/assets/disp/"+ns+"_DISP.png");
+        let parallaxMap: TextureProxy = null;
+        parallaxMap = this.getImageTexByUrl("static/assets/disp/"+ns+"_DISP.png");
 
         let disSize: number = 700.0;
         let dis: number = 500.0;
@@ -197,7 +207,7 @@ export class DemoPBRViewer {
         let material: PBRMaterial;
         let sph: Sphere3DEntity;
         ///*
-        material = this.createMaterial(1, 1);
+        material = this.createMaterial(4, 4);
         //material.decorator.normalMapEnabled = false;
         material.decorator.aoMapEnabled = this.aoMapEnabled;
         //material.decorator.aoMapEnabled = false;
@@ -207,10 +217,16 @@ export class DemoPBRViewer {
         material.decorator.diffuseMap = diffuseMap;
         material.decorator.normalMap = normalMap;
         material.decorator.aoMap = aoMap;
+        //material.decorator.displacementMap = displacementMap;
+        material.decorator.parallaxMap = parallaxMap;
+        material.initializeLocalData();
+        //material.setRoughness(0.1);
         material.setAlbedoColor(1.0,1.0,1.0);
         material.setRoughness(0.5);
         material.setScatterIntensity(64.0);
-
+        material.setDisplacementParams(5,-5);
+        material.setParallaxParams(1, 5, 2.0, 0.01);
+        /*
         let plane: Plane3DEntity = new Plane3DEntity();
         plane.setMaterial(material);
         plane.initializeXOZSquare(300.0);
@@ -224,11 +240,15 @@ export class DemoPBRViewer {
         // this.m_rscene.addEntity(box);
 
         return;
+        //*/
         //material.setTextureList(texList);
         let srcSph = new Sphere3DEntity();
         srcSph.setMaterial(material);
-        srcSph.initialize(100.0, 20, 20);
-        //this.m_rscene.addEntity(srcSph);
+        srcSph.initialize(100.0, 100, 100);
+        srcSph.setRotation3(this.m_rotV);
+        this.m_rscene.addEntity(srcSph);
+        this.m_target = srcSph;
+        return;
         //*/
         let scale: number = 1.0;
         let uvscale: number;
@@ -329,10 +349,10 @@ export class DemoPBRViewer {
 
         return material;
     }
-    createMaterial(uscale: number, vscale: number, ptexList: TextureProxy[] = null): PBRMaterial {
+    createMaterial(uscale: number, vscale: number): PBRMaterial {
 
         let material: PBRMaterial;
-        material = this.makePBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
+        material = this.makePBRMaterial(0.9, 0.0, 1.0);
 
         let decorator: PBRShaderDecorator = material.decorator;
         decorator.shadowReceiveEnabled = false;

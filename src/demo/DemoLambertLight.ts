@@ -174,7 +174,8 @@ export class DemoLambertLight {
             material.setParallaxParams(1, 5, 2.0, 0.01);
             material.setUVScale(2.0, 2.0);
             material.setSpecularColor(new Color4(2.0, 2.0, 2.0));
-            material.setColor(new Color4(1.0,1.0,1.0,1.0), new Color4(0.4,0.4,0.4))
+            material.setColor(new Color4(1.0,1.0,1.0,1.0), new Color4(0.4,0.4,0.4));
+            //material
             //material.setColor(new Color4(0.5,1.7,0.5,1.0))
             /*
             let plane: Plane3DEntity = new Plane3DEntity();
