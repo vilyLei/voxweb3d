@@ -129,7 +129,6 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
             [
                 0.0, 0.0, 0.0, 1.0,      // f0.r,f0.g,f0.b, mormalMapIntentity(0.0,1.0)
                 0.2, 0.2, 0.2, 0.0       // albedo(r,g,b), undefined
-                //1.0, 1.0, 0.0, 0.0       // uv scaleX, uv scaleY, undefine, undefine
             ],
             0
         );

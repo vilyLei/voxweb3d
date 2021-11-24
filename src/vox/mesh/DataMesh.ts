@@ -110,6 +110,7 @@ export default class DataMesh extends MeshBase {
 
     initializeFromGeometry(geom: GeometryBase): void {
 
+        console.log("XXX geom: ",geom);
         this.m_vs = geom.getVS();
         this.m_uvs = geom.getUVS();
         this.m_nvs = geom.getNVS();

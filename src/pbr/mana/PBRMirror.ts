@@ -122,22 +122,7 @@ export class PBRMirror {
         // material.aoMapEnabled = true;
 
         this.m_material = material;
-        /*
-        let ptexList: TextureProxy[] = [
-            this.envMap
-            , this.getImageTexByUrl("static/assets/brickwall_big.jpg")
-            , this.getImageTexByUrl("static/assets/brickwall_normal.jpg")
-            , this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg")
-            , this.m_fboIns.getRTTAt(0)
-        ]
-
-        if (decorator.shadowReceiveEnabled) {
-            ptexList.push(shadowTex);
-            //material.setVSMData( vsmData );
-            //material.decorator.vsmData = vsmData;
-        }
-        material.setTextureList(ptexList);
-        //*/
+        
         decorator.envMap = this.envMap;
         decorator.diffuseMap = this.getImageTexByUrl("static/assets/brickwall_big.jpg");
         decorator.normalMap = this.getImageTexByUrl("static/assets/brickwall_normal.jpg");
@@ -156,7 +141,7 @@ export class PBRMirror {
         plane = new Plane3DEntity();
         plane.flipVerticalUV = true;
         plane.setMaterial(material);
-        plane.initializeXOZ(-1100.0, -1100.0, 2200.0, 2200.0, texList);
+        plane.initializeXOZ(-1100.0, -1100.0, 2200.0, 2200.0);
         plane.setXYZ(0, this.reflectPlaneY, 0);
         this.m_rscene.addEntity(plane, 1);
         this.m_plane = plane;

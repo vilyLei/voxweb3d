@@ -36,6 +36,8 @@ import { DirectionLight } from "../light/base/DirectionLight";
 import { SpotLight } from "../light/base/SpotLight";
 import { MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
 import Box3DEntity from "../vox/entity/Box3DEntity";
+import DataMesh from "../vox/mesh/DataMesh";
+import QuadGridMeshGeometry from "../vox/mesh/QuadGridMeshGeometry";
 
 export class DemoPBRViewer {
     constructor() { }
@@ -167,7 +169,31 @@ export class DemoPBRViewer {
             //*/
         }
     }
+    private createMeshPlane(material: PBRMaterial): void {
 
+        let size: number = 400.0;
+        
+        let gridGeom: QuadGridMeshGeometry = new QuadGridMeshGeometry();
+        gridGeom.normalEnabled = true;
+        //gridGeom.normalScale = -1.0;
+        gridGeom.initializeXOZPlane(new Vector3D(-0.5 * size, 0, -0.5 * size), size,size, 200,200);
+        //console.log("gridGeom: ", gridGeom);
+
+        let dataMesh: DataMesh = new DataMesh();
+        //dataMesh.wireframe = true;
+        dataMesh.setBufSortFormat(material.getBufSortFormat());
+        dataMesh.initializeFromGeometry(gridGeom);
+        
+        let entity: DisplayEntity = new DisplayEntity();
+        entity.setMaterial(material);
+        entity.setMesh(dataMesh);
+        //entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
+        //entity.setScaleXYZ(4.0,12.0,4.0);
+        //entity.setXYZ(0,-400,0);
+        this.m_rscene.addEntity(entity);
+        this.m_rotV = new Vector3D();
+        this.m_target = entity;
+    }
     private m_target: DisplayEntity = null;
     private m_rotV: Vector3D = new Vector3D(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
     private createEntity(): void {
@@ -177,17 +203,22 @@ export class DemoPBRViewer {
         //  this.m_rscene.addEntity(axis);
         this.aoMapEnabled = true;
         let ns: string = "lava_03";
-        let diffuseMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/"+ns+"_COLOR.png");
+        //let diffuseMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/"+ns+"_COLOR.png");
+        let diffuseMap: TextureProxy = this.getImageTexByUrl("static/assets/color_01.jpg");
         //diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
-        let normalMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/"+ns+"_NRM.png");
+        //let normalMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/"+ns+"_NRM.png");
+        let normalMap: TextureProxy = this.getImageTexByUrl("static/assets/circleWave_norm.png");
         let aoMap: TextureProxy = null;
         if (this.aoMapEnabled) {
-            aoMap = this.getImageTexByUrl("static/assets/disp/"+ns+"_OCC.png");
+            //aoMap = this.getImageTexByUrl("static/assets/disp/"+ns+"_OCC.png");
+            aoMap = this.getImageTexByUrl("static/assets/circleWave_disp.png");
         }
         let displacementMap: TextureProxy = null;
-        displacementMap = this.getImageTexByUrl("static/assets/disp/"+ns+"_DISP.png");
+        //displacementMap = this.getImageTexByUrl("static/assets/disp/"+ns+"_DISP.png");
+        displacementMap = this.getImageTexByUrl("static/assets/circleWave_disp.png");
         let parallaxMap: TextureProxy = null;
-        parallaxMap = this.getImageTexByUrl("static/assets/disp/"+ns+"_DISP.png");
+        //parallaxMap = this.getImageTexByUrl("static/assets/disp/"+ns+"_DISP.png");
+        parallaxMap = this.getImageTexByUrl("static/assets/circleWave_disp.png");
 
         let disSize: number = 700.0;
         let dis: number = 500.0;
@@ -207,7 +238,7 @@ export class DemoPBRViewer {
         let material: PBRMaterial;
         let sph: Sphere3DEntity;
         ///*
-        material = this.createMaterial(4, 4);
+        material = this.createMaterial(1, 1);
         //material.decorator.normalMapEnabled = false;
         material.decorator.aoMapEnabled = this.aoMapEnabled;
         //material.decorator.aoMapEnabled = false;
@@ -217,20 +248,25 @@ export class DemoPBRViewer {
         material.decorator.diffuseMap = diffuseMap;
         material.decorator.normalMap = normalMap;
         material.decorator.aoMap = aoMap;
-        //material.decorator.displacementMap = displacementMap;
+        material.decorator.displacementMap = displacementMap;
         material.decorator.parallaxMap = parallaxMap;
         material.initializeLocalData();
-        //material.setRoughness(0.1);
         material.setAlbedoColor(1.0,1.0,1.0);
         material.setRoughness(0.5);
         material.setScatterIntensity(64.0);
-        material.setDisplacementParams(5,-5);
+        material.setDisplacementParams(50,0);
         material.setParallaxParams(1, 5, 2.0, 0.01);
-        /*
+        material.initializeByCodeBuf(true);
+
+        this.createMeshPlane( material );
+        return;
+        ///*
         let plane: Plane3DEntity = new Plane3DEntity();
         plane.setMaterial(material);
         plane.initializeXOZSquare(300.0);
         this.m_rscene.addEntity(plane);
+        this.m_rotV = new Vector3D();
+        this.m_target = plane;
 
         // let box: Box3DEntity = new Box3DEntity();
         // box.setMaterial( material );
@@ -307,8 +343,9 @@ export class DemoPBRViewer {
         if(this.m_target != null) {
             this.m_target.setRotation3( this.m_rotV );
             this.m_target.update();
-            this.m_rotV.x += 0.2;
-            this.m_rotV.z += 0.3;
+            // this.m_rotV.x += 0.2;
+            // this.m_rotV.z += 0.3;
+            this.m_rotV.y += 0.2;
         }
         ThreadSystem.Run();
         this.update();
