@@ -361,7 +361,9 @@
 /////////////////////////////     light    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
+// import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
+
+//  import {DemoCookTorrance as Demo} from "./demo/DemoCookTorrance";
 
 //  import {DemoAdsLight as Demo} from "./demo/DemoAdsLight";
 
@@ -373,7 +375,9 @@
 
 //  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
-import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
+//  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
+
+import {DemoPBRDisplacement as Demo} from "./pbr/DemoPBRDisplacement";
 
 //  import {DemoRawDracoViewer as Demo} from "./pbr/DemoRawDracoViewer";
 

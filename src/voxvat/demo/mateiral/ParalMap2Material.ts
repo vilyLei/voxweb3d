@@ -76,7 +76,7 @@ vec2 paralOccRayMarchDep2(vec2 puvs, vec3 viewDir,vec4 occParam)
 vec3 getFragAdsCookTorLight(vec3 viewDir,vec3 lightPos,vec3 srcColor,vec3 lightColor, vec3 paramVec3, vec3 specVec3,vec3 pnvs)
 {
     vec3 lightDirVec3 = lightPos - v_viewVS;
-    float disFloat = length(lightDirVec3);
+    float factor = length(lightDirVec3);
     lightDirVec3 = v_VTBNM3 * normalize(lightDirVec3);
     float NdotL = max(dot(pnvs, lightDirVec3), 0.0);
     lightPos = NdotL * srcColor * lightColor;
@@ -84,17 +84,20 @@ vec3 getFragAdsCookTorLight(vec3 viewDir,vec3 lightPos,vec3 srcColor,vec3 lightC
     float fv = dot(viewDir,H);
     float NDotH = dot(pnvs, H);
     float NDotH2 = NDotH * NDotH;
+    // Fresnel
     float m = fV4U_0[4].x;
     float fValue = m + (1.0 - m) * pow(1.0 - fv,5.0);
-    m = pow(fV4U_0[4].y,2.0);
+    // roughness
+    m = fV4U_0[4].y;
+    m *= m
     float dValue = exp((NDotH2 - 1.0)/(m * NDotH2)) / (m * NDotH2 * NDotH2);
     m = 2.0 * NDotH / fv;
     fv = dot(viewDir,pnvs);
     m = (fValue * dValue * min(1.0, min(m * NdotL, m * fv))) / fv;
     lightColor = specVec3 * NdotL * lightColor * m;
     lightColor = lightColor * pow(max(NDotH, 0.0), fV4U_0[4].z);
-    disFloat = 1.0 / (1.0 + paramVec3.x * disFloat + paramVec3.y * disFloat * disFloat);
-    return (lightPos * fV4U_0[5].x + lightColor * fV4U_0[5].y) * disFloat * paramVec3.z;
+    factor = 1.0 / (1.0 + paramVec3.x * factor + paramVec3.y * factor * factor);
+    return (lightPos * fV4U_0[5].x + lightColor * fV4U_0[5].y) * factor * paramVec3.z;
 }
 void main()
 {

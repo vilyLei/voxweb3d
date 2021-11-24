@@ -112,15 +112,6 @@ export class PBRMirror {
         decorator.normalMapEnabled = true;
         decorator.aoMapEnabled = true;
 
-        // material.fogEnabled = this.fogEnabled;
-        // material.shadowReceiveEnabled = true;
-        // material.pixelNormalNoiseEnabled = true;
-        // material.mirrorProjEnabled = true;
-        // material.mirrorMapLodEnabled = this.m_mirrorMapLodEnabled;
-        // material.diffuseMapEnabled = true;
-        // material.normalMapEnabled = true;
-        // material.aoMapEnabled = true;
-
         this.m_material = material;
         
         decorator.envMap = this.envMap;

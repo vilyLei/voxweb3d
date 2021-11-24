@@ -19,8 +19,9 @@ vec2 texUV = v_uv.xy;
             //default value: vec4(1.0,10.0,2.0,0.1)
             param = u_fragLocalParams[ VOX_PARALLAX_PARAMS_INDEX ];
             texUV = parallaxOccRayMarchDepth(VOX_PARALLAX_MAP, v_uv, -tbnViewDir, param);
-            vec3 pnv = normalize(getNormalFromMap(VOX_NORMAL_MAP, texUV));
-            N = btnMat3 * pnv;
+            #ifdef VOX_NORMAL_MAP
+                N = btnMat3 * normalize(getNormalFromMap(VOX_NORMAL_MAP, texUV));
+            #endif
         #endif
     #else
         #ifdef VOX_NORMAL_MAP

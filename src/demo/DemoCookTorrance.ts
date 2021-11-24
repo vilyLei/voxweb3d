@@ -31,7 +31,7 @@ import { PointLight } from "../light/base/PointLight";
 import { DirectionLight } from "../light/base/DirectionLight";
 import { SpotLight } from "../light/base/SpotLight";
 
-export class DemoLambertLight {
+export class DemoCookTorrance {
 
     constructor() { }
     
@@ -53,7 +53,7 @@ export class DemoLambertLight {
     }
     initialize(): void {
 
-        console.log("DemoLambertLight::initialize()......");
+        console.log("DemoCookTorrance::initialize()......");
 
         if (this.m_rscene == null) {
 
@@ -156,8 +156,8 @@ export class DemoLambertLight {
             //material.parallaxMap =            this.getImageTexByUrl("static/assets/moss_01.jpg");
             //material.parallaxMap =            this.getImageTexByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
             //*/
-            //material.diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
-            this.useMaps(material,"lava_03",true,false,false,true,true);
+            material.diffuseMap = this.getImageTexByUrl("static/assets/color_01.jpg");
+            this.useMaps(material,"brick_n_256",true,false,false,true,true);
             //*/
             material.shadowMap = null;
             //material.specularMap = null;
@@ -171,7 +171,7 @@ export class DemoLambertLight {
             material.setLightBlendFactor(0.7,0.3);
             material.setBlendFactor(0.2,0.8);
             material.setParallaxParams(1, 5, 2.0, 0.01);
-            material.setUVScale(2.0, 2.0);
+            material.setUVScale(4.0, 4.0);
             material.setSpecularColor(new Color4(2.0, 2.0, 2.0));
             material.setColor(new Color4(1.0,1.0,1.0,1.0), new Color4(0.4,0.4,0.4));
             //material
@@ -274,18 +274,18 @@ export class DemoLambertLight {
         this.m_statusDisp.statusInfo = "/" + RendererState.DrawCallTimes;
         this.m_statusDisp.render();
         
-        if(this.m_target != null) {
-            this.m_rotV.x += 0.2;
-            this.m_rotV.y += 0.1;
-            this.m_target.setRotation3(this.m_rotV);
-            this.m_target.update();
-        }
         this.m_time += 0.01;
         //this.m_material.setDisplacementParams(this.m_dispHeight * (1.0 + Math.cos(this.m_time)), 0.0);
     }
     private m_time: number = 0.0;
     run(): void {
 
+        if(this.m_target != null) {
+            this.m_rotV.x += 0.2;
+            this.m_rotV.y += 0.1;
+            this.m_target.setRotation3(this.m_rotV);
+            this.m_target.update();
+        }
 
         this.m_stageDragSwinger.runWithYAxis();
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
@@ -301,4 +301,4 @@ export class DemoLambertLight {
         // this.m_rscene.runEnd();
     }
 }
-export default DemoLambertLight;
+export default DemoCookTorrance;

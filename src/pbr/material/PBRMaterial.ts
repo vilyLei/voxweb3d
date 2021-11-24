@@ -266,6 +266,9 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
 
         return this.m_pbrParams[6];
     }
+    /**
+     * @param sideIntensity value: 0.1 -> 32.0
+     */
     setSideIntensity(sideIntensity: number): void {
         this.m_pbrParams[7] = Math.min(Math.max(sideIntensity, 0.001), 32.0);
     }
