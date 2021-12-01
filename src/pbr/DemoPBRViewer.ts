@@ -110,6 +110,7 @@ export class DemoPBRViewer implements IShaderLibListener {
             mcParam.directionLightsTotal = 2;
             mcParam.spotLightsTotal = 0;
             mcParam.loadAllShaderCode = true;
+            mcParam.shaderCodeBinary = true;
             this.m_materialCtx.initialize(this.m_rscene, mcParam);
 
             MaterialContext.ShaderLib.setListener( this );
@@ -155,7 +156,6 @@ export class DemoPBRViewer implements IShaderLibListener {
     private initScene(): void {
         
         this.createEntity();
-
         /*
         this.m_dracoMeshLoader.initialize(2);
         this.m_dracoModule = new ViewerDracoModule();

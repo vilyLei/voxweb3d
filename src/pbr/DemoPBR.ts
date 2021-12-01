@@ -85,7 +85,7 @@ export class DemoPBR {
             mcParam.directionLightsTotal = 2;
             mcParam.spotLightsTotal = 0;
             mcParam.vsmFboIndex = 2;
-            mcParam.loadAllShaderCode = true;
+            mcParam.loadAllShaderCode = true
             this.m_materialCtx.initialize(this.m_rscene, mcParam);
 
             this.m_rscene.setClearRGBColor3f(0.2, 0.8, 0.2);

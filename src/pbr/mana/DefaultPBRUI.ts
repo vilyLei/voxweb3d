@@ -128,7 +128,7 @@ export class DefaultPBRUI implements IPBRUI {
     }
     private m_btnSize: number = 24;
     private m_bgLength: number = 200.0;
-    private m_btnPX: number = 102.0;
+    private m_btnPX: number = 122.0;
     private m_btnPY: number = 10.0;
     private m_btnYSpace: number = 4.0;
     private m_pos: Vector3D = new Vector3D();
@@ -195,7 +195,7 @@ export class DefaultPBRUI implements IPBRUI {
 
         if (RendererDevice.IsMobileWeb()) {
             this.m_btnSize = 64;
-            this.m_btnPX = 280;
+            this.m_btnPX = 300;
             this.m_btnPY = 30;
         }
         if (RendererDevice.IsWebGL1()) {
@@ -215,7 +215,7 @@ export class DefaultPBRUI implements IPBRUI {
         this.m_selectPlane.setVisible( false );
 
         this.metalBtn = this.createProgressBtn("metal", "metal", 0.5);     
-        this.roughBtn = this.createProgressBtn("rough", "rough", 0.5);
+        this.roughBtn = this.createProgressBtn("roughness", "rough", 0.5);
         this.noiseBtn = this.createProgressBtn("noise", "noise", 0.07);
         this.reflectionBtn = this.createProgressBtn("reflection", "reflection", 0.5);
 

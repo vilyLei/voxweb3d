@@ -20,6 +20,7 @@ class MaterialContextParam {
     vsmFboIndex: number = 0;
     vsmEnabled: boolean = true;
     loadAllShaderCode: boolean = false;
+    shaderCodeBinary: boolean = false;
     constructor() { }
 }
 /**
@@ -87,8 +88,8 @@ class MaterialContext {
             }
             this.m_param = param;
 
-            MaterialContext.ShaderLib.initialize(shaderLibConfigure);
-            if(this.m_param.loadAllShaderCode) {
+            MaterialContext.ShaderLib.initialize(shaderLibConfigure, param.shaderCodeBinary);
+            if(param.loadAllShaderCode) {
                 MaterialContext.ShaderLib.addAllShaderCodeObject();
             }
 

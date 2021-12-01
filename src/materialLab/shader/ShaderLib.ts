@@ -2,6 +2,7 @@
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import { IShaderLib } from "../../vox/material/IShaderLib";
 import { ShaderCodeObject } from "./ShaderCodeObject";
+import { FileIO } from "../../app/slickRoad/io/FileIO";
 
 enum ShaderCodeType {
     VertHead = "vertHead",
@@ -34,6 +35,8 @@ class ShaderCodeConfigureLib {
 }
 class ShaderCodeObjectLoader {
 
+    private static s_fileIO: FileIO = new FileIO();
+
     private m_loadingTotal: number = 0;
     private m_shaderCodeObject: ShaderCodeObject = new ShaderCodeObject();
     private m_configure: ShaderCodeConfigure = null;
@@ -41,7 +44,84 @@ class ShaderCodeObjectLoader {
         this.m_configure = configure;
     }
 
-    private loadCode(url: string, type: ShaderCodeType, loadedCallback: (uuid: ShaderCodeUUID, shaderCodeobject: ShaderCodeObject) => void): void {
+    private decodeUint8Arr(u8array: Uint8Array): string{
+        return new TextDecoder("utf-8").decode(u8array);
+    }
+    private encodeUint8Arr(code: string): Uint8Array{
+        return new TextEncoder().encode(code);
+    }
+    private loadedShdCode(code: string, type: ShaderCodeType, loadedCallback: (uuid: ShaderCodeUUID, shaderCodeobject: ShaderCodeObject) => void): void {
+
+        this.m_loadingTotal++;
+        //let code: string;
+        // if(this.m_configure.binary) {
+
+        //     code = request.responseText;
+        //     //code = this.decodeUint8Arr(u8arr);
+        // }
+        // else {
+        //     code = request.responseText;
+        //     // let u8arr: Uint8Array = this.encodeUint8Arr(code);
+        //     // for(let i: number = 0; i < u8arr.length; ++i) {
+        //     //     u8arr[i] = 222 - u8arr[i];
+        //     // }
+        //     // ShaderCodeObjectLoader.s_fileIO.downloadBinFile(u8arr,type+"","bin");
+        // }
+        switch (type) {
+            case ShaderCodeType.VertHead:
+                this.m_shaderCodeObject.vert_head = code;
+                break;
+            case ShaderCodeType.VertBody:
+                this.m_shaderCodeObject.vert_body = code;
+                break;
+            case ShaderCodeType.FragHead:
+                this.m_shaderCodeObject.frag_head = code;
+                break;
+            case ShaderCodeType.FragBody:
+                this.m_shaderCodeObject.frag_body = code;
+                break;
+            default:
+                console.error("loaded error shader code data.");
+                break;
+        }
+        if (this.m_loadingTotal == this.m_configure.types.length) {
+
+            loadedCallback(this.m_configure.uuid, this.m_shaderCodeObject);
+
+            this.m_shaderCodeObject = null;
+            this.m_configure = null;
+        }
+    }
+    
+    async loadBinCode(url: string, type: ShaderCodeType, loadedCallback: (uuid: ShaderCodeUUID, shaderCodeobject: ShaderCodeObject) => void) {
+        const reader = new FileReader();
+        reader.onload = e => {
+            //target.loaded(<ArrayBuffer>reader.result, this.uuid);
+            let u8arr: Uint8Array = new Uint8Array( <ArrayBuffer>reader.result );
+            for(let i: number = 0; i < u8arr.length; ++i) {
+                u8arr[i] = 222 - u8arr[i];
+            }
+            this.loadedShdCode(this.decodeUint8Arr(u8arr), type, loadedCallback);
+        };
+        console.log("loading binary shader code url: ", url);
+        const request = new XMLHttpRequest();
+        request.open("GET", url, true);
+        request.responseType = "blob";
+        request.onload = (e) => {
+            if (request.status <= 206) {
+                reader.readAsArrayBuffer(request.response);
+            }
+            else {
+                console.error("loading binary shader code url error: ", url);
+            }
+        };
+        request.onerror = e => {
+            console.error("loading binary shader code url error: ", url);
+        };
+        request.send();
+    }
+    
+    private loadTextCode(url: string, type: ShaderCodeType, loadedCallback: (uuid: ShaderCodeUUID, shaderCodeobject: ShaderCodeObject) => void): void {
 
         let request: XMLHttpRequest = new XMLHttpRequest();
         request.open('GET', url, true);
@@ -49,32 +129,7 @@ class ShaderCodeObjectLoader {
         request.onload = () => {
 
             if (request.status <= 206) {
-                this.m_loadingTotal++;
-
-                switch (type) {
-                    case ShaderCodeType.VertHead:
-                        this.m_shaderCodeObject.vert_head = request.responseText;
-                        break;
-                    case ShaderCodeType.VertBody:
-                        this.m_shaderCodeObject.vert_body = request.responseText;
-                        break;
-                    case ShaderCodeType.FragHead:
-                        this.m_shaderCodeObject.frag_head = request.responseText;
-                        break;
-                    case ShaderCodeType.FragBody:
-                        this.m_shaderCodeObject.frag_body = request.responseText;
-                        break;
-                    default:
-                        console.error("loaded error shader code data.");
-                        break;
-                }
-                if (this.m_loadingTotal == this.m_configure.types.length) {
-
-                    loadedCallback(this.m_configure.uuid, this.m_shaderCodeObject);
-
-                    this.m_shaderCodeObject = null;
-                    this.m_configure = null;
-                }
+                this.loadedShdCode(request.responseText, type, loadedCallback);
             }
             else {
                 console.error("loading shader code url error: ", url);
@@ -85,6 +140,15 @@ class ShaderCodeObjectLoader {
         };
 
         request.send();
+    }
+    private loadCode(url: string, type: ShaderCodeType, loadedCallback: (uuid: ShaderCodeUUID, shaderCodeobject: ShaderCodeObject) => void): void {
+        
+        if(this.m_configure.binary) {
+            this.loadBinCode(url, type, loadedCallback);
+        }
+        else {
+            this.loadTextCode(url, type, loadedCallback);
+        }
     }
 
     load(loadedCallback: (uuid: string, shaderCodeobject: ShaderCodeObject) => void): void {
@@ -123,7 +187,7 @@ class ShaderLib implements IShaderLib{
     setListener(listener: IShaderLibListener): void {
         this.m_listener = listener;
     }
-    initialize(configureData: any = null): void {
+    initialize(configureData: any = null, binary: boolean = false): void {
 
         if (this.m_configLib == null) {
 
@@ -135,7 +199,7 @@ class ShaderLib implements IShaderLib{
                 configure = new ShaderCodeConfigure();
                 configure.uuid = ShaderCodeUUID.PBR;
                 configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
-
+                configure.binary = binary;
                 this.m_configLib.addConfigureWithUUID(configure.uuid, configure);
             }
         }
