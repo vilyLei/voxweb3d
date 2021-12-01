@@ -181,18 +181,22 @@ export default class FBOInstance {
         this.m_texUnlock = texUnlock;
         this.m_rcontext.useGlobalMaterial(m, this.m_texUnlock);
     }
-
-    setGlobalMaterial(m: IRenderMaterial, texUnlock: boolean = false): void {
+    /**
+     * 
+     * @param material MaterialBase 子类的实例
+     * @param texUnlock 是否锁定并使用 material 自身所带的纹理数据
+     */
+    setGlobalMaterial(material: IRenderMaterial, texUnlock: boolean = false): void {
         this.m_texUnlock = texUnlock;
-        if (this.m_gMateiral != m) {
+        if (this.m_gMateiral != material) {
             if (this.m_gMateiral != null) {
                 this.m_gMateiral.__$detachThis();
             }
-            if (m != null) {
-                m.__$attachThis();
+            if (material != null) {
+                material.__$attachThis();
             }
         }
-        this.m_gMateiral = m;
+        this.m_gMateiral = material;
     }
     lockMaterial(): void {
         if (this.m_gMateiral != null) {

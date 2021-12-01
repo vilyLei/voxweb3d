@@ -101,6 +101,7 @@ export default class PostOutline {
 
         if (this.m_running && this.m_target != null && this.m_target.isRenderEnabled()) {
 
+            this.m_preMaterial.setRGB3f(1.0,0.0,0.0);
             this.m_fboIns.setGlobalMaterial( this.m_preMaterial );
             this.m_fboIns.runBegin();
             this.m_fboIns.drawEntity( this.m_target );

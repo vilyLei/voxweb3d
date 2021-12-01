@@ -194,8 +194,7 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
                     }
                 }
                 if (this.m_shader.getSharedUniformByShd(shdp) == null) {
-                    // create shared uniform
-                    //let sharedMList: ShaderUniform[] = material.createSharedUniforms() as ShaderUniform[];
+                    
                     let sharedMList: ShaderUniform[] = this.createsharedMList(material, shdp);
                     if (sharedMList != null) {
                         for (let i: number = 0; i < sharedMList.length; ++i) {
@@ -420,26 +419,8 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
             }
             if (this.m_shader.getSharedUniformByShd(shdp) == null) {
 
-                //let sharedMList: ShaderUniform[] = material.createSharedUniforms() as ShaderUniform[];
                 let sharedMList: ShaderUniform[] = this.createsharedMList(material, shdp);
-                // console.log("XXXXX RODB sharedMList == null: ",sharedMList == null);
-                // if(sharedMList == null) {
-                //     // 通过shader uniform data 创建 shared uniform
-                //     let dataList: ShaderUniformData[] = material.createSharedUniformsData();
-                //     if(dataList != null && dataList.length > 0) {
-                //         sharedMList = [];
-                //         for(let i: number = 0; i < dataList.length; ++i) {
-                //             if(dataList[i] != null) {
-                //                 let uniform: ShaderUniform = ShdUniformTool.BuildLocalFromData(material.createSelfUniformData(), shdp) as ShaderUniform;
-                //                 console.log("XXXXX RODB uniform: ",uniform);
-                //                 sharedMList.push(uniform);
-                //             }
-                //         }
-                //         if(sharedMList.length < 1) {
-                //             sharedMList = null;
-                //         }
-                //     }
-                // }
+                
                 if (sharedMList != null) {
                     for (let i: number = 0; i < sharedMList.length; ++i) {
                         sharedMList[i].program = shdp.getGPUProgram();
@@ -453,6 +434,9 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
             }
             this.m_shader.__$globalUniform = material.__$uniform;
             this.m_shader.bindToGpu(shdp.getUid());
+            if(material.__$uniform != null) {
+                this.m_shader.useUniform(material.__$uniform);
+            }
             if (tro != null) {
                 tro.run();
             }

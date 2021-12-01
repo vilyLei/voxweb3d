@@ -59,6 +59,7 @@ void main() {
     dis *= u_texParam.z;
     dis = pow(dis * dis * dis, floatReciprocalGamma);
     FragColor0 = vec4(u_color.xyz, dis * u_color.w);
+    //FragColor0 = vec4(srcColor.xyz, 1.0);
 }
 `
                     );
