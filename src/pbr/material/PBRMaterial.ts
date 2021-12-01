@@ -37,12 +37,6 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
     getShaderCodeObject(): IAbstractShader {
         return PBRShaderCode;
     }
-    getFragShaderCode(): string {
-        return this.m_coder.buildFragCode();
-    }
-    getVertShaderCode(): string {
-        return this.m_coder.buildVertCode();
-    }
     getUniqueShaderName(): string {
         return this.decorator.getUniqueShaderName();
     }
@@ -103,7 +97,6 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
 
         buf.decorator = decorator;
         buf.decorator.codeBuilder = buf.getShaderCodeBuilder();
-        buf.decorator.pipeline = this.m_pipeLine;
         
         if(this.m_fragLocalParams == null) {
             this.initializeLocalData();

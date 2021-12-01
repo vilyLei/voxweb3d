@@ -1,4 +1,3 @@
-
 import Vector3D from "../vox/math/Vector3D";
 import MouseEvent from "../vox/event/MouseEvent";
 import RendererDevice from "../vox/render/RendererDevice";
@@ -11,7 +10,7 @@ import RendererScene from "../vox/scene/RendererScene";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
-
+    
 import RendererSubScene from "../vox/scene/RendererSubScene";
 import DebugFlag from "../vox/debug/DebugFlag";
 import TextureProxy from "../vox/texture/TextureProxy";

@@ -4,7 +4,6 @@ import EventBase from "../vox/event/EventBase";
 import MouseEvent from "../vox/event/MouseEvent";
 import RendererDevice from "../vox/render/RendererDevice";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
-import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 
 import RendererParam from "../vox/scene/RendererParam";
@@ -25,7 +24,6 @@ export class DemoPBR {
 
     private m_rscene: RendererScene = null;
     private m_ruisc: RendererSubScene = null;
-    //private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
@@ -79,8 +77,6 @@ export class DemoPBR {
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
             this.m_statusDisp.initialize();
-
-            //this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 

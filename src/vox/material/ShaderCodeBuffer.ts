@@ -58,6 +58,9 @@ class ShaderCodeBuffer {
     getShaderCodeObject(): IAbstractShader {
         return null;
     }
+    getShaderCodeObjectUUID(): string {
+        return "";
+    }
     getShaderCodeBuilder(): ShaderCodeBuilder {
         return ShaderCodeBuffer.s_coder;
     }

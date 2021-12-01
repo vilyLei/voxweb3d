@@ -28,6 +28,7 @@ class MaterialContext {
 
     private m_rscene: RendererScene = null;
     private m_initFlag: boolean = true;
+    private m_param: MaterialContextParam;
     /**
      * 全局的灯光模块
      */
@@ -79,7 +80,7 @@ class MaterialContext {
             if (param == null) {
                 param = new MaterialContextParam();
             }
-            
+            this.m_param = param;
             param.pointLightsTotal = MathConst.Clamp(param.pointLightsTotal, 0, 256);
             param.directionLightsTotal = MathConst.Clamp(param.directionLightsTotal, 0, 256);
             param.spotLightsTotal = MathConst.Clamp(param.spotLightsTotal, 0, 256);
@@ -122,7 +123,7 @@ class MaterialContext {
     }
     run(): void {
 
-        if(this.vsmModule != null) {
+        if(this.vsmModule != null && this.m_param.vsmEnabled) {
             this.vsmModule.run();
         }
     }
