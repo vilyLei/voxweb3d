@@ -8,7 +8,6 @@ import { TextureConst } from "../vox/texture/TextureConst";
 import TextureProxy from "../vox/texture/TextureProxy";
 
 import MouseEvent from "../vox/event/MouseEvent";
-import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import RendererScene from "../vox/scene/RendererScene";
 import DataMesh from "../vox/mesh/DataMesh";
 import QuadGridMeshGeometry from "../vox/mesh/QuadGridMeshGeometry";
@@ -36,7 +35,6 @@ export class DemoLambertLight {
     constructor() { }
     
     private m_rscene: RendererScene = null;
-    private m_texLoader: ImageTextureLoader = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
@@ -45,12 +43,6 @@ export class DemoLambertLight {
     private m_target: DisplayEntity;
     private m_materialCtx: MaterialContext = new MaterialContext();
 
-    private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl, 0, false, false);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
-    }
     initialize(): void {
 
         console.log("DemoLambertLight::initialize()......");
@@ -70,8 +62,6 @@ export class DemoLambertLight {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.setClearRGBColor3f(0.0, 0.0, 0.0);
-
-            this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             this.m_statusDisp.initialize();
 
@@ -145,18 +135,18 @@ export class DemoLambertLight {
             material = new LambertLightMaterial();
             ///*
             //material.setMaterialPipeline( this.m_materialCtx.pipeline );            
-            //material.diffuseMap =             this.getImageTexByUrl("static/assets/noise.jpg");
-            //material.diffuseMap =             this.getImageTexByUrl("static/assets/color_02.jpg");
-            //material.normalMap =              this.getImageTexByUrl("static/assets/brickwall_normal.jpg");
-            //material.specularMap =            this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
-            //material.specularMap =            this.getImageTexByUrl("static/assets/brickwall_big_spec.jpg");
-            //material.aoMap =                  this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
-            //material.aoMap =                  this.getImageTexByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
-            //material.parallaxMap =            this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
-            //material.parallaxMap =            this.getImageTexByUrl("static/assets/moss_01.jpg");
-            //material.parallaxMap =            this.getImageTexByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
+            //material.diffuseMap =             this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
+            //material.diffuseMap =             this.m_materialCtx.getTextureByUrl("static/assets/color_02.jpg");
+            //material.normalMap =              this.m_materialCtx.getTextureByUrl("static/assets/brickwall_normal.jpg");
+            //material.specularMap =            this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big_occ.jpg");
+            //material.specularMap =            this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big_spec.jpg");
+            //material.aoMap =                  this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big_occ.jpg");
+            //material.aoMap =                  this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
+            //material.parallaxMap =            this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big_occ.jpg");
+            //material.parallaxMap =            this.m_materialCtx.getTextureByUrl("static/assets/moss_01.jpg");
+            //material.parallaxMap =            this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big_surfaceOcc.jpg");
             //*/
-            //material.diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
+            //material.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
             this.useMaps(material,"lava_03",true,false,false,true,true);
             //*/
             material.shadowMap = null;
@@ -186,7 +176,7 @@ export class DemoLambertLight {
             //*/
             ///*
             let sphMaterial: LambertLightMaterial = new LambertLightMaterial();
-            //sphMaterial.diffuseMap = this.getImageTexByUrl("static/assets/default.jpg");
+            //sphMaterial.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/default.jpg");
             sphMaterial.copyFrom(material);
             //sphMaterial.initializeByCodeBuf(true);
             ///*
@@ -225,19 +215,19 @@ export class DemoLambertLight {
         
         material.setMaterialPipeline( this.m_materialCtx.pipeline );
 
-        if(material.diffuseMap == null)material.diffuseMap =           this.getImageTexByUrl("static/assets/disp/"+ns+"_COLOR.png");
-        material.specularMap =          this.getImageTexByUrl("static/assets/disp/"+ns+"_SPEC.png");
+        if(material.diffuseMap == null)material.diffuseMap =           this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_COLOR.png");
+        material.specularMap =          this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_SPEC.png");
         if(normalMapEnabled) {
-            material.normalMap =        this.getImageTexByUrl("static/assets/disp/"+ns+"_NRM.png");
+            material.normalMap =        this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_NRM.png");
         }
         if(aoMapEnabled) {
-            material.aoMap =            this.getImageTexByUrl("static/assets/disp/"+ns+"_OCC.png");
+            material.aoMap =            this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_OCC.png");
         }
         if(displacementMap) {
-            material.displacementMap =  this.getImageTexByUrl("static/assets/disp/"+ns+"_DISP.png");
+            material.displacementMap =  this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
         }
         if(parallaxMapEnabled) {
-            material.parallaxMap =  this.getImageTexByUrl("static/assets/disp/"+ns+"_DISP.png");
+            material.parallaxMap =  this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
         }
         if(shadowReceiveEnabled) {
             material.shadowMap =        this.m_materialCtx.vsmModule.getShadowMap();

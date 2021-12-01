@@ -19,7 +19,6 @@ import { SpecularTextureLoader } from "./mana/TextureLoader";
 
 import PBRMaterial from "./material/PBRMaterial";
 import PBRShaderDecorator from "./material/PBRShaderDecorator";
-import { TextureConst } from "../vox/texture/TextureConst";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 
@@ -39,7 +38,6 @@ export class DemoPBRDisplacement {
     constructor() { }
     private m_rscene: RendererScene = null;
     private m_ruisc: RendererSubScene = null;
-    private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
@@ -48,9 +46,7 @@ export class DemoPBRDisplacement {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     
     private m_reflectPlaneY: number = -220;
-    //  private m_envData: EnvLightData = null;
     private m_envMap: TextureProxy = null;
-
 
     private m_materialCtx: MaterialContext = new MaterialContext();
 
@@ -59,15 +55,12 @@ export class DemoPBRDisplacement {
     vtxFlatNormal: boolean = false;
     aoMapEnabled: boolean = false;
 
-    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
-    }
     initialize(): void {
+
         console.log("DemoPBRDisplacement::initialize()......");
+
         if (this.m_rscene == null) {
+
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
@@ -96,8 +89,10 @@ export class DemoPBRDisplacement {
 
             this.m_statusDisp.initialize();
 
-            this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-
+            //this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+            // let str0: string = '123';
+            // let str1: string = `mmm${str0}`;
+            // console.log("str1: ", str1);
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
             this.m_rscene.setClearRGBColor3f(0.2, 0.2, 0.2);
@@ -189,23 +184,23 @@ export class DemoPBRDisplacement {
         //  this.m_rscene.addEntity(axis);
         this.aoMapEnabled = true;
         let ns: string = "lava_03";
-        //let diffuseMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/"+ns+"_COLOR.png");
-        let diffuseMap: TextureProxy = this.getImageTexByUrl("static/assets/color_01.jpg");
-        //diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
-        //let normalMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/"+ns+"_NRM.png");
-        let normalMap: TextureProxy = this.getImageTexByUrl("static/assets/circleWave_norm.png");
+        //let diffuseMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_COLOR.png");
+        let diffuseMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/color_01.jpg");
+        //diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
+        //let normalMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_NRM.png");
+        let normalMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_norm.png");
         let aoMap: TextureProxy = null;
         if (this.aoMapEnabled) {
-            //aoMap = this.getImageTexByUrl("static/assets/disp/"+ns+"_OCC.png");
-            aoMap = this.getImageTexByUrl("static/assets/circleWave_disp.png");
+            //aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_OCC.png");
+            aoMap = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_disp.png");
         }
         let displacementMap: TextureProxy = null;
-        //displacementMap = this.getImageTexByUrl("static/assets/disp/"+ns+"_DISP.png");
-        displacementMap = this.getImageTexByUrl("static/assets/circleWave_disp.png");
+        //displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
+        displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_disp.png");
         let parallaxMap: TextureProxy = null;
-        //parallaxMap = this.getImageTexByUrl("static/assets/disp/"+ns+"_DISP.png");
-        //parallaxMap = this.getImageTexByUrl("static/assets/circleWave_disp.png");
-        parallaxMap = this.getImageTexByUrl("static/assets/brick_bumpy01.jpg");
+        //parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
+        //parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_disp.png");
+        parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/brick_bumpy01.jpg");
 
         let disSize: number = 700.0;
         let dis: number = 500.0;
@@ -245,9 +240,10 @@ export class DemoPBRDisplacement {
         material.setParallaxParams(1, 10, 5.0, 0.02);
         material.initializeByCodeBuf(true);
         material.setSideIntensity(8);
+        //material.setEnvSpecularColorFactor(8);
         material.setMetallic(0.1);
         material.setPixelNormalNoiseIntensity(0.1);
-        material.setScatterIntensity(32.0);
+        material.setScatterIntensity(16.0);
 
         // this.createMeshPlane( material );
         // return;
@@ -271,7 +267,7 @@ export class DemoPBRDisplacement {
         //material.setTextureList(texList);
         let srcSph = new Sphere3DEntity();
         srcSph.setMaterial(material);
-        srcSph.initialize(100.0, 150, 150);
+        srcSph.initialize(100.0, 200, 200);
         srcSph.setRotation3(this.m_rotV);
         this.m_rscene.addEntity(srcSph);
         this.m_target = srcSph;

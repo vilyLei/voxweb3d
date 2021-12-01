@@ -43,7 +43,6 @@ export class DemoPBRViewer {
     constructor() { }
     private m_rscene: RendererScene = null;
     private m_ruisc: RendererSubScene = null;
-    private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
@@ -63,12 +62,6 @@ export class DemoPBRViewer {
     vtxFlatNormal: boolean = false;
     aoMapEnabled: boolean = false;
 
-    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
-    }
     initialize(): void {
         console.log("DemoPBRViewer::initialize()......");
         if (this.m_rscene == null) {
@@ -99,8 +92,6 @@ export class DemoPBRViewer {
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
             this.m_statusDisp.initialize();
-
-            this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
@@ -160,7 +151,7 @@ export class DemoPBRViewer {
             /*
             this.m_dracoMeshLoader.initialize(2);
             this.m_dracoModule = new ViewerDracoModule();
-            this.m_dracoModule.texLoader = this.m_texLoader;
+            this.m_dracoModule.materialCtx = this.m_materialCtx;
             this.m_dracoModule.viewer = this;
             this.m_dracoModule.envMap = this.m_envMap;
             this.m_dracoModule.aoMapEnabled = this.aoMapEnabled;
@@ -203,23 +194,23 @@ export class DemoPBRViewer {
         //  this.m_rscene.addEntity(axis);
         this.aoMapEnabled = true;
         let ns: string = "lava_03";
-        //let diffuseMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/"+ns+"_COLOR.png");
-        let diffuseMap: TextureProxy = this.getImageTexByUrl("static/assets/color_01.jpg");
-        //diffuseMap = this.getImageTexByUrl("static/assets/noise.jpg");
-        //let normalMap: TextureProxy = this.getImageTexByUrl("static/assets/disp/"+ns+"_NRM.png");
-        let normalMap: TextureProxy = this.getImageTexByUrl("static/assets/circleWave_norm.png");
+        //let diffuseMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_COLOR.png");
+        let diffuseMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/color_01.jpg");
+        //diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg");
+        //let normalMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_NRM.png");
+        let normalMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_norm.png");
         let aoMap: TextureProxy = null;
         if (this.aoMapEnabled) {
-            //aoMap = this.getImageTexByUrl("static/assets/disp/"+ns+"_OCC.png");
-            aoMap = this.getImageTexByUrl("static/assets/circleWave_disp.png");
+            //aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_OCC.png");
+            aoMap = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_disp.png");
         }
         let displacementMap: TextureProxy = null;
-        //displacementMap = this.getImageTexByUrl("static/assets/disp/"+ns+"_DISP.png");
-        displacementMap = this.getImageTexByUrl("static/assets/circleWave_disp.png");
+        //displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
+        displacementMap = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_disp.png");
         let parallaxMap: TextureProxy = null;
-        //parallaxMap = this.getImageTexByUrl("static/assets/disp/"+ns+"_DISP.png");
-        //parallaxMap = this.getImageTexByUrl("static/assets/circleWave_disp.png");
-        parallaxMap = this.getImageTexByUrl("static/assets/brick_bumpy01.jpg");
+        //parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
+        //parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/circleWave_disp.png");
+        parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/brick_bumpy01.jpg");
 
         let disSize: number = 700.0;
         let dis: number = 500.0;
@@ -416,16 +407,11 @@ export class ViewerDracoModule extends DracoWholeModuleLoader {
     aoMapEnabled: boolean = false;
     envMap: TextureProxy;
     viewer: DemoPBRViewer;
+    materialCtx: MaterialContext;
     constructor() {
         super();
     }
 
-    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.texLoader.getImageTexByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
-    }
     dracoParse(pmodule: any, index: number, total: number): void {
         console.log("ViewerDracoModule dracoParse, total: ", total);
     }
@@ -437,9 +423,9 @@ export class ViewerDracoModule extends DracoWholeModuleLoader {
         let material: PBRMaterial = this.viewer.createMaterial(uvscale, uvscale);
 
         material.decorator.envMap = this.envMap;
-        material.decorator.diffuseMap = this.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg");
-        material.decorator.normalMap = this.getImageTexByUrl("static/assets/modules/skirt/normal.jpg");
-        material.decorator.diffuseMap = this.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
+        material.decorator.diffuseMap = this.materialCtx.getTextureByUrl("static/assets/modules/skirt/baseColor.jpg");
+        material.decorator.normalMap = this.materialCtx.getTextureByUrl("static/assets/modules/skirt/normal.jpg");
+        material.decorator.diffuseMap = this.materialCtx.getTextureByUrl("static/assets/modules/skirt/ao.jpg");
 
         material.decorator.diffuseMapEnabled = true;
         material.decorator.normalMapEnabled = true;

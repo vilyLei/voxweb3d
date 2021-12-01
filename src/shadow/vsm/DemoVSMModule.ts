@@ -35,7 +35,6 @@ export class DemoVSMModule {
     constructor() { }
 
     private m_rscene: RendererScene = null;
-    private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_profileInstance: ProfileInstance = new ProfileInstance();
@@ -46,12 +45,6 @@ export class DemoVSMModule {
 
     private m_materialCtx: MaterialContext = new MaterialContext();
 
-    private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
-    }
     initialize(): void {
         console.log("DemoVSMModule::initialize()......");
         if (this.m_rscene == null) {
@@ -68,8 +61,7 @@ export class DemoVSMModule {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
-            this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-
+            
             this.m_rscene.enableMouseEvent(true);
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
@@ -142,7 +134,7 @@ export class DemoVSMModule {
         let shadowMaterial: ShadowVSMMaterial = new ShadowVSMMaterial();
         shadowMaterial.setMaterialPipeline( this.m_materialCtx.pipeline );
         shadowMaterial.initializeByCodeBuf(true);
-        shadowMaterial.setTextureList([shadowTex, this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
+        shadowMaterial.setTextureList([shadowTex, this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big.jpg")]);
         
         let mesh: DracoMesh = new DracoMesh();
         mesh.setBufSortFormat(shadowMaterial.getBufSortFormat());
@@ -182,19 +174,19 @@ export class DemoVSMModule {
         
         let plane: Plane3DEntity = new Plane3DEntity();
         this.useMaterial(plane);
-        plane.initializeXOZ(-600.0, -600.0, 1200.0, 1200.0, [shadowTex, this.getImageTexByUrl("static/assets/brickwall_big.jpg")]);
+        plane.initializeXOZ(-600.0, -600.0, 1200.0, 1200.0, [shadowTex, this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big.jpg")]);
         plane.setXYZ(0.0, -1.0, 0.0);
         this.m_rscene.addEntity(plane);
         
         let envBox: Box3DEntity = new Box3DEntity();
         this.useMaterial(envBox);
         envBox.showAllFace();
-        envBox.initializeCube(4000.0, [shadowTex, this.getImageTexByUrl("static/assets/metal_02.jpg")]);
+        envBox.initializeCube(4000.0, [shadowTex, this.m_materialCtx.getTextureByUrl("static/assets/metal_02.jpg")]);
         this.m_rscene.addEntity(envBox);
 
         let box: Box3DEntity = new Box3DEntity();
         this.useMaterial(box);
-        box.initializeCube(200.0, [shadowTex, this.getImageTexByUrl("static/assets/metal_02.jpg")]);
+        box.initializeCube(200.0, [shadowTex, this.m_materialCtx.getTextureByUrl("static/assets/metal_02.jpg")]);
         this.m_rscene.addEntity(box);
         //box.setRotationXYZ(Math.random() * 300.0,Math.random() * 300.0,Math.random() * 300.0);
         box.setRotationXYZ(100.0, -60.0, 0.0);
@@ -203,13 +195,13 @@ export class DemoVSMModule {
 
         let cyl: Cylinder3DEntity = new Cylinder3DEntity();
         this.useMaterial(cyl);
-        cyl.initialize(80.0, 200.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/noise.jpg")]);
+        cyl.initialize(80.0, 200.0, 20, [shadowTex, this.m_materialCtx.getTextureByUrl("static/assets/noise.jpg")]);
         this.m_rscene.addEntity(cyl);
         cyl.setXYZ(-230.0, 100.0, 0.0);
         
         let sph: Sphere3DEntity = new Sphere3DEntity();
         this.useMaterial(sph);
-        sph.initialize(80.0, 20.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/metal_02.jpg")]);
+        sph.initialize(80.0, 20.0, 20, [shadowTex, this.m_materialCtx.getTextureByUrl("static/assets/metal_02.jpg")]);
         this.m_rscene.addEntity(sph);
         sph.setXYZ(-230.0, 300.0, -200.0);
         this.m_sphEntity = sph;
@@ -217,7 +209,7 @@ export class DemoVSMModule {
 
         sph = new Sphere3DEntity();
         this.useMaterial(sph);
-        sph.initialize(80.0, 20.0, 20, [shadowTex, this.getImageTexByUrl("static/assets/metal_08.jpg")]);
+        sph.initialize(80.0, 20.0, 20, [shadowTex, this.m_materialCtx.getTextureByUrl("static/assets/metal_08.jpg")]);
         sph.setScaleXYZ(1.2, 1.2, 1.2);
         sph.setXYZ(-40.0, 100.0, -180.0);
         this.m_rscene.addEntity(sph);
@@ -235,7 +227,7 @@ export class DemoVSMModule {
             clearTimeout(this.m_timeoutId);
         }
         //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
-        this.m_timeoutId = setTimeout(this.update.bind(this), 18);// 20 fps
+        this.m_timeoutId = setTimeout(this.update.bind(this), 17);// 60 fps
 
         this.m_statusDisp.render();
         ThreadSystem.Run();

@@ -7,6 +7,9 @@ import Color4 from "../../vox/material/Color4";
 import EnvLightData from "../../light/base/EnvLightData";
 import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
 import MathConst from "../../vox/math/MathConst";
+import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
+import TextureProxy from "../../vox/texture/TextureProxy";
+import { TextureConst } from "../../vox/texture/TextureConst";
 
 class MaterialContextParam {
 
@@ -41,12 +44,36 @@ class MaterialContext {
      * material 构造流水线
      */
     readonly pipeline: MaterialPipeline = null;
+
+    private m_texLoader: ImageTextureLoader = null;
     constructor() { }
 
+    getTextureByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+        let ptex: TextureProxy = null;
+        let suffix: string = purl.slice(purl.lastIndexOf(".")+1);
+        suffix = suffix.toLocaleLowerCase();
+        switch(suffix) {
+            case "jpeg":
+            case "jpg":
+            case "png":
+            case "gif":
+                    ptex = this.m_texLoader.getImageTexByUrl(purl);
+                    ptex.mipmapEnabled = mipmapEnabled;
+                    if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
+                break;
+            default:
+                    console.warn("texture resource data type is undefined.");
+                break;
+        }
+        return ptex;
+    }
+    
     initialize(rscene: RendererScene, param: MaterialContextParam = null): void {
+
         if (this.m_initFlag) {
 
             this.m_rscene = rscene;
+            this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             let selfT: any = this;
             if (param == null) {

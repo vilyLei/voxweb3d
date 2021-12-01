@@ -3,7 +3,6 @@ import Vector3D from "../vox/math/Vector3D";
 import MouseEvent from "../vox/event/MouseEvent";
 import RendererDevice from "../vox/render/RendererDevice";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
-import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 
 import RendererParam from "../vox/scene/RendererParam";
@@ -38,7 +37,6 @@ export class DemoRawDracoViewer {
 
     constructor() { }
     private m_rscene: RendererScene = null;
-    private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
@@ -58,12 +56,6 @@ export class DemoRawDracoViewer {
     vtxFlatNormal: boolean = false;
     aoMapEnabled: boolean = false;
 
-    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
-    }
     initialize(): void {
         console.log("DemoRawDracoViewer::initialize()......");
         if (this.m_rscene == null) {
@@ -94,9 +86,6 @@ export class DemoRawDracoViewer {
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
             this.m_statusDisp.initialize();
-
-            this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
-
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
             this.m_rscene.setClearRGBColor3f(0.2, 0.2, 0.2);
@@ -151,7 +140,7 @@ export class DemoRawDracoViewer {
 
             this.m_dracoMeshLoader.initialize(2);
             this.m_dracoModule = new ViewerDracoModule();
-            this.m_dracoModule.texLoader = this.m_texLoader;
+            this.m_dracoModule.materialCtx = this.m_materialCtx;
             this.m_dracoModule.viewer = this;
             this.m_dracoModule.envMap = this.m_envMap;
             this.m_dracoModule.aoMapEnabled = this.aoMapEnabled;
@@ -238,10 +227,10 @@ export class DemoRawDracoViewer {
     private useMaterialTex(material: PBRMaterial): void {
         let decorator = material.decorator;
         decorator.envMap = this.m_envMap;
-        decorator.diffuseMap = this.getImageTexByUrl("static/assets/color_01.jpg");
-        decorator.normalMap = this.getImageTexByUrl("static/assets/rock_a_n.jpg");
+        decorator.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/color_01.jpg");
+        decorator.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
         if (this.aoMapEnabled) {
-            decorator.aoMap = this.getImageTexByUrl("static/assets/disp/rock_a.jpg");
+            decorator.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/rock_a.jpg");
         }
     }
     private createEntity(): void {
@@ -290,6 +279,7 @@ export class DemoRawDracoViewer {
             material = this.createMaterial(uvscale, uvscale);
             material.decorator.aoMapEnabled = this.aoMapEnabled;
             this.useMaterialTex(material);
+            material.initializeLocalData();
             //material.setTextureList(texList);
             material.setAlbedoColor(Math.random() * 3, Math.random() * 3, Math.random() * 3);
 
@@ -334,7 +324,7 @@ export class DemoRawDracoViewer {
 
 export class ViewerDracoModule extends DracoWholeModuleLoader {
 
-    texLoader: ImageTextureLoader = null;
+    materialCtx: MaterialContext;
     reflectPlaneY: number = -220.0;
     aoMapEnabled: boolean = false;
     envMap: TextureProxy;
@@ -344,12 +334,6 @@ export class ViewerDracoModule extends DracoWholeModuleLoader {
         super();
     }
 
-    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.texLoader.getImageTexByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
-    }
     dracoParse(pmodule: any, index: number, total: number): void {
         console.log("ViewerDracoModule dracoParse, total: ", total);
     }
@@ -361,16 +345,16 @@ export class ViewerDracoModule extends DracoWholeModuleLoader {
 
         let decorator = material.decorator;
         decorator.envMap = this.envMap;
-        decorator.diffuseMap = this.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg");
-        decorator.normalMap = this.getImageTexByUrl("static/assets/modules/skirt/normal.jpg");
-        decorator.aoMap = this.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
+        decorator.diffuseMap = this.materialCtx.getTextureByUrl("static/assets/modules/skirt/baseColor.jpg");
+        decorator.normalMap = this.materialCtx.getTextureByUrl("static/assets/modules/skirt/normal.jpg");
+        decorator.aoMap = this.materialCtx.getTextureByUrl("static/assets/modules/skirt/ao.jpg");
 
         material.decorator.diffuseMapEnabled = true;
         material.decorator.normalMapEnabled = true;
         material.decorator.vtxFlatNormal = false;
         material.decorator.aoMapEnabled = this.aoMapEnabled;
-        material.setAlbedoColor(Math.random() * 3, Math.random() * 3, Math.random() * 3);
         material.initializeByCodeBuf(true);
+        material.setAlbedoColor(Math.random() * 3, Math.random() * 3, Math.random() * 3);
         let scale: number = 3.0;
         let entity: DisplayEntity = new DisplayEntity();
 

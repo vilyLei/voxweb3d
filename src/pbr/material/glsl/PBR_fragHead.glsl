@@ -316,7 +316,7 @@ mat3 getBTNMat3(in vec2 texUV, in vec3 pos, in vec3 nv)
     vec3 B  = -normalize(cross(N, T));
     return mat3(T, B, N);
 }
-//const vec4 occParam = vec4(1.0,10.0,2.0,0.1);
+//example: const vec4 occParam = vec4(1.0,10.0,2.0,0.1);
 vec2 parallaxOccRayMarchDepth(sampler2D texSampler, vec2 puvs, vec3 viewDir,vec4 occParam)
 {
     float depthValue = 1.0 - VOX_Texture2D(texSampler, puvs).r;
@@ -436,17 +436,20 @@ vec3 getNormalFromMap(in sampler2D texSampler, in vec2 texUV)
     return VOX_Texture2D(texSampler, texUV).xyz * 2.0 - 1.0;
 }
 #endif
+
 #ifdef VOX_HDR_BRN
 
 const vec4 hdrBrnDecodeVec4 = vec4(255.0, 2.55, 0.0255, 0.000255);
-float rgbaToHdrBrn(in vec4 color) {
+float rgbaToHdrBrn(in vec4 color)
+{
     return dot(hdrBrnDecodeVec4, color);
 }
 #endif
 
 #ifdef VOX_VTX_FLAT_NORMAL
 
-vec3 getVtxFlatNormal(const in vec3 pos) {
+vec3 getVtxFlatNormal(const in vec3 pos)
+{
     return normalize(cross(dFdx(pos), dFdy(pos)));
 }
 #endif

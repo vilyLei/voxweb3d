@@ -317,7 +317,7 @@
 ////////////////////////////   maps    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
+import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
 
 //  import {DemoDisplacementMap as Demo} from "./demo/DemoDisplacementMap";
 
@@ -361,7 +361,7 @@
 /////////////////////////////     light    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-// import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
+//  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
 
 //  import {DemoCookTorrance as Demo} from "./demo/DemoCookTorrance";
 
@@ -377,7 +377,7 @@
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
-import {DemoPBRDisplacement as Demo} from "./pbr/DemoPBRDisplacement";
+//  import {DemoPBRDisplacement as Demo} from "./pbr/DemoPBRDisplacement";
 
 //  import {DemoRawDracoViewer as Demo} from "./pbr/DemoRawDracoViewer";
 

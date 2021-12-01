@@ -37,19 +37,12 @@ export class DemoNormalMap {
     private m_engine: EngineBase = null;
     private m_profileInstance: ProfileInstance = null;
 
-    private m_texLoader: ImageTextureLoader = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
     private m_materialCtx: MaterialContext = new MaterialContext();
     private m_target: DisplayEntity = null;
     private m_pointLight: PointLight = null;
 
-    private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl, 0, false, false);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
-    }
     initialize(): void {
 
         console.log("DemoNormalMap::initialize()......");
@@ -69,9 +62,6 @@ export class DemoNormalMap {
             
             this.m_engine = new EngineBase();
             this.m_engine.initialize(rparam, 6);
-            // this.m_profileInstance = new ProfileInstance();
-            // this.m_profileInstance.initialize(this.m_engine.rscene.getRenderer());
-            this.m_texLoader = this.m_engine.texLoader;
             this.m_engine.interaction.zoomLookAtPosition = new Vector3D();
 
             let color: Color4 = new Color4(1.0,1.0,0.0);
@@ -94,7 +84,7 @@ export class DemoNormalMap {
             billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
             billboard.setMaterialPipeline( this.m_materialCtx.pipeline );
             billboard.toBrightnessBlend();
-            billboard.initialize(60.0, 60.0, [this.getImageTexByUrl("static/assets/flare_core_03.jpg")]);
+            billboard.initialize(60.0, 60.0, [this.m_materialCtx.getTextureByUrl("static/assets/flare_core_03.jpg")]);
             billboard.setPosition(pointLight.position);
             billboard.setRGB3f(pointLight.color.r, pointLight.color.g, pointLight.color.b);
             this.m_engine.rscene.addEntity(billboard, 3);
@@ -104,7 +94,7 @@ export class DemoNormalMap {
             let box: Box3DEntity = new Box3DEntity();
             box.pipeTypes = [MaterialPipeType.FOG_EXP2];
             box.setMaterialPipeline( this.m_materialCtx.pipeline );
-            box.initializeCube(80, [this.getImageTexByUrl("static/assets/color_02.jpg")]);
+            box.initializeCube(80, [this.m_materialCtx.getTextureByUrl("static/assets/color_02.jpg")]);
             box.setXYZ(-200,50,200);
             this.m_engine.rscene.addEntity(box);
 
@@ -218,16 +208,16 @@ export class DemoNormalMap {
         
         material.setMaterialPipeline( this.m_materialCtx.pipeline );
 
-        material.diffuseMap =           this.getImageTexByUrl("static/assets/disp/"+ns+"_COLOR.png");
-        material.specularMap =          this.getImageTexByUrl("static/assets/disp/"+ns+"_SPEC.png");
+        material.diffuseMap =           this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_COLOR.png");
+        material.specularMap =          this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_SPEC.png");
         if(normalMapEnabled) {
-            material.normalMap =        this.getImageTexByUrl("static/assets/disp/"+ns+"_NRM.png");
+            material.normalMap =        this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_NRM.png");
         }
         if(aoMapEnabled) {
-            material.aoMap =            this.getImageTexByUrl("static/assets/disp/"+ns+"_OCC.png");
+            material.aoMap =            this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_OCC.png");
         }
         if(displacementMap) {
-            material.displacementMap =  this.getImageTexByUrl("static/assets/disp/"+ns+"_DISP.png");
+            material.displacementMap =  this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
         }
         if(shadowReceiveEnabled && this.m_materialCtx.vsmModule != null) {
             material.shadowMap =        this.m_materialCtx.vsmModule.getShadowMap();
