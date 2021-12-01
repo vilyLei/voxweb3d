@@ -44,18 +44,18 @@ void main() {
     vec2 dv = u_texParam.ww / u_texParam.xy;
     vec4 srcColor = VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv );
 
-    vec3 color = srcColor.xyz;
-    color.xyz += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + dv ).xyz;
-    color.xyz += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - dv ).xyz;
-    color.xyz += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(dv.x ,-dv.y) ).xyz;
-    color.xyz += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(-dv.x ,dv.y) ).xyz;
-    color.xyz += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(dv.x ,0) ).xyz;
-    color.xyz += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(0 ,dv.y) ).xyz;
-    color.xyz += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - vec2(dv.x ,0) ).xyz;
-    color.xyz += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - vec2(0 ,dv.y) ).xyz;
-    color.xyz *= factor;
+    float fc = srcColor.x;
+    fc += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + dv ).x;
+    fc += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - dv ).x;
+    fc += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(dv.x ,-dv.y) ).x;
+    fc += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(-dv.x ,dv.y) ).x;
+    fc += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(dv.x ,0) ).x;
+    fc += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(0 ,dv.y) ).x;
+    fc += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - vec2(dv.x ,0) ).x;
+    fc += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - vec2(0 ,dv.y) ).x;
+    fc *= factor;
     
-    float dis = abs(color.x - srcColor.x);
+    float dis = abs(fc - srcColor.x);
     dis *= u_texParam.z;
     dis = pow(dis * dis * dis, floatReciprocalGamma);
     FragColor0 = vec4(u_color.xyz, dis * u_color.w);

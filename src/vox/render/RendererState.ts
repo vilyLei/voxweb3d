@@ -15,6 +15,14 @@ class RendererState {
     static POVNumber: number = 0;
     static readonly COLOR_MASK_ALL_TRUE: number = 0;
     static readonly COLOR_MASK_ALL_FALSE: number = 1;
+    static readonly COLOR_MASK_RED_TRUE: number = 2;
+    static readonly COLOR_MASK_GREEN_TRUE: number = 3;
+    static readonly COLOR_MASK_BLUE_TRUE: number = 4;
+    static readonly COLOR_MASK_ALPHA_TRUE: number = 5;
+    static readonly COLOR_MASK_RED_FALSE: number = 6;
+    static readonly COLOR_MASK_GREEN_FALSE: number = 7;
+    static readonly COLOR_MASK_BLUE_FALSE: number = 8;
+    static readonly COLOR_MASK_ALPHA_FALSE: number = 9;
 
     static readonly NORMAL_STATE: number = 0;
     static readonly BACK_CULLFACE_NORMAL_STATE: number = 0;
@@ -38,6 +46,7 @@ class RendererState {
     static readonly FRONT_TRANSPARENT_ALWAYS_STATE: number = 18;
     static readonly NONE_CULLFACE_NORMAL_ALWAYS_STATE: number = 19;
     static readonly BACK_ALPHA_ADD_BLENDSORT_STATE: number = 20;
+
     static Initialize(): void {
         if (RendererState.s_initBoo) {
             RendererState.s_initBoo = false;
@@ -47,6 +56,14 @@ class RendererState {
             RenderStateObject.Rstate = RendererState.Rstate;
             state.COLOR_MASK_ALL_TRUE = RenderColorMask.Create("all_true", true, true, true, true);
             state.COLOR_MASK_ALL_FALSE = RenderColorMask.Create("all_false", false, false, false, false);
+            state.COLOR_MASK_RED_TRUE = RenderColorMask.Create("red_true", true, false, false, false);
+            state.COLOR_MASK_GREEN_TRUE = RenderColorMask.Create("green_true", false, true, false, false);
+            state.COLOR_MASK_BLUE_TRUE = RenderColorMask.Create("blue_true", false, false, true, false);
+            state.COLOR_MASK_ALPHA_TRUE = RenderColorMask.Create("alpha_true", false, false, false, true);
+            state.COLOR_MASK_RED_FALSE = RenderColorMask.Create("red_false", false, true, true, true);
+            state.COLOR_MASK_GREEN_FALSE = RenderColorMask.Create("green_false", true, false, true, true);
+            state.COLOR_MASK_BLUE_FALSE = RenderColorMask.Create("blue_false", true, true, false, true);
+            state.COLOR_MASK_ALPHA_FALSE = RenderColorMask.Create("alpha_false", true, true, true, false);
 
             let rso = RenderStateObject;
 

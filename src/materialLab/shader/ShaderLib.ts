@@ -103,7 +103,7 @@ class ShaderCodeObjectLoader {
             }
             this.loadedShdCode(this.decodeUint8Arr(u8arr), type, loadedCallback);
         };
-        console.log("loading binary shader code url: ", url);
+        
         const request = new XMLHttpRequest();
         request.open("GET", url, true);
         request.responseType = "blob";
