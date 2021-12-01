@@ -18,8 +18,6 @@ import { IMaterialPipeline } from "./IMaterialPipeline";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 
-//  import TextureProxy from '../../../vox/texture/TextureProxy';
-
 /**
  * 材质功能组装流水线, 组装符合一个流水线系统设定的材质, 最终形成完整的shader, 以及对应的数据输入
  * 每个流水线是由若干pipe组成的， 每一个 pipe 都有自己的组装能力
@@ -33,7 +31,6 @@ class MaterialPipeline implements IMaterialPipeline {
     private m_keys: string[] = [];
     private m_sharedUniforms: ShaderGlobalUniform[] = null;
     private m_shaderLib: IShaderLib = null;
-    //private m_texList: TextureProxy[] = null;
     private m_appendKeyStr: string = "";
 
     constructor(shaderLib: IShaderLib = null) {
@@ -161,6 +158,7 @@ class MaterialPipeline implements IMaterialPipeline {
         this.m_keys = [];
         this.m_sharedUniforms = null;
         this.m_shaderCode = null;
+        this.m_shaderLib = null;
     }
 
 }

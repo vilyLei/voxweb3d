@@ -144,12 +144,12 @@ export class DemoPBRViewer implements IShaderLibListener {
             this.m_materialCtx.lightModule.update();
             this.m_materialCtx.lightModule.showInfo();
 
-            for(let i: number = 0; i < this.m_materialCtx.lightModule.getPointLightsTotal(); ++i) {
-                let crossAxis: Axis3DEntity = new Axis3DEntity();
-                crossAxis.initializeCross(30);
-                crossAxis.setPosition(this.m_materialCtx.lightModule.getPointLightAt(i).position);
-                this.m_rscene.addEntity(crossAxis);
-            }
+            // for(let i: number = 0; i < this.m_materialCtx.lightModule.getPointLightsTotal(); ++i) {
+            //     let crossAxis: Axis3DEntity = new Axis3DEntity();
+            //     crossAxis.initializeCross(30);
+            //     crossAxis.setPosition(this.m_materialCtx.lightModule.getPointLightAt(i).position);
+            //     this.m_rscene.addEntity(crossAxis);
+            // }
         }
     }
     private initScene(): void {

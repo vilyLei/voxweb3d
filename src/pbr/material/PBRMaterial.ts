@@ -16,7 +16,8 @@ import PBRShaderDecorator from "./PBRShaderDecorator";
 import Color4 from "../../vox/material/Color4";
 import TextureProxy from "../../vox/texture/TextureProxy";
 
-import { PBRShaderCode } from "./glsl/PBRShaderCode";
+// import { PBRShaderCode } from "./glsl/PBRShaderCode";
+import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 
 class PBRShaderBuffer extends ShaderCodeBuffer {
     constructor() {
@@ -34,8 +35,11 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
     buildShader(): void {
         this.decorator.buildShader();
     }
-    getShaderCodeObject(): IShaderCodeObject {
-        return PBRShaderCode;
+    // getShaderCodeObject(): IShaderCodeObject {
+    //     return PBRShaderCode;
+    // }
+    getShaderCodeObjectUUID(): ShaderCodeUUID {
+        return ShaderCodeUUID.PBR;
     }
     getUniqueShaderName(): string {
         return this.decorator.getUniqueShaderName();

@@ -160,7 +160,7 @@ class ShaderLib implements IShaderLib{
     getShaderCodeObjectWithUUID(uuid: ShaderCodeUUID): ShaderCodeObject {
 
         let obj: ShaderCodeObject = null;
-        if (!this.m_shaderCodeMap.has(uuid)) {
+        if (this.m_shaderCodeMap.has(uuid)) {
             obj = this.m_shaderCodeMap.get(uuid);
         }
         return obj;

@@ -124,7 +124,7 @@ class MaterialContext {
                 this.vsmModule.setColorIntensity(0.3);
             }
 
-            selfT.pipeline = new MaterialPipeline();
+            selfT.pipeline = new MaterialPipeline( MaterialContext.ShaderLib );
             this.pipeline.addPipe(this.lightModule);
             this.pipeline.addPipe(this.envData);
             if (this.vsmModule != null) {
