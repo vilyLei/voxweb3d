@@ -16,7 +16,7 @@ import PBRShaderDecorator from "./PBRShaderDecorator";
 import Color4 from "../../vox/material/Color4";
 import TextureProxy from "../../vox/texture/TextureProxy";
 
-// import { PBRShaderCode } from "./glsl/PBRShaderCode";
+//  import { PBRShaderCode } from "./glsl/PBRShaderCode";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 
 class PBRShaderBuffer extends ShaderCodeBuffer {
