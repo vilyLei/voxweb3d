@@ -317,7 +317,7 @@
 ////////////////////////////   maps    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
+//  import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
 
 //  import {DemoDisplacementMap as Demo} from "./demo/DemoDisplacementMap";
 
@@ -373,7 +373,7 @@ import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
-//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
+import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 

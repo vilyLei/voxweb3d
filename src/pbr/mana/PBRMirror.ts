@@ -20,10 +20,11 @@ import DisplayEntity from "../../vox/entity/DisplayEntity";
 import EnvLightData from "../../light/base/EnvLightData";
 import PBRShaderDecorator from "../material/PBRShaderDecorator";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
+import { MaterialContext } from "../../materialLab/base/MaterialContext";
 
 export class PBRMirror {
     private m_rscene: RendererScene = null;
-    private m_texLoader: ImageTextureLoader = null;
+    private m_materialCtx: MaterialContext = null;
     private m_uiModule: DefaultPBRUI = null;
     private m_rprocessIDList: number[] = [0];
     private m_fboIndex: number = 1;
@@ -36,18 +37,13 @@ export class PBRMirror {
     constructor(fboIndex: number) {
         this.m_fboIndex = fboIndex;
     }
-    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
-    }
+    initialize(rscene: RendererScene, materialCtx: MaterialContext, uiModule: DefaultPBRUI, rprocessIDList: number[]): void {
 
-    initialize(rscene: RendererScene, texLoader: ImageTextureLoader, uiModule: DefaultPBRUI, rprocessIDList: number[]): void {
         console.log("PBRMirror::initialize()......");
         if (this.m_rscene == null) {
+
             this.m_rscene = rscene;
-            this.m_texLoader = texLoader;
+            this.m_materialCtx = materialCtx;
             this.m_uiModule = uiModule;
             this.m_rprocessIDList = rprocessIDList;
 
@@ -85,11 +81,10 @@ export class PBRMirror {
         let camPos: Vector3D = camera.getPosition();
         camPos.y *= -1.0;
 
-
         let texList: TextureProxy[] = [
             this.m_fboIns.getRTTAt(0),
-            this.getImageTexByUrl("static/assets/brickwall_big.jpg"),
-            this.getImageTexByUrl("static/assets/brickwall_normal.jpg")
+            this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big.jpg"),
+            this.m_materialCtx.getTextureByUrl("static/assets/brickwall_normal.jpg")
         ];
 
         let plane: Plane3DEntity = null;
@@ -115,9 +110,9 @@ export class PBRMirror {
         this.m_material = material;
         
         decorator.envMap = this.envMap;
-        decorator.diffuseMap = this.getImageTexByUrl("static/assets/brickwall_big.jpg");
-        decorator.normalMap = this.getImageTexByUrl("static/assets/brickwall_normal.jpg");
-        decorator.aoMap = this.getImageTexByUrl("static/assets/brickwall_big_occ.jpg");
+        decorator.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big.jpg");
+        decorator.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/brickwall_normal.jpg");
+        decorator.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big_occ.jpg");
         decorator.mirrorMap = this.getMirrorMap();
         decorator.shadowMap = shadowTex;
 

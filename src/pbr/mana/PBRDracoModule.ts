@@ -92,7 +92,7 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader {
             decorator.vtxFlatNormal = false;
             decorator.aoMapEnabled = false;
             decorator.shadowReceiveEnabled = false;
-            this.entityUtils.useTexForMaterial(material, this.envMap, this.entityUtils.getImageTexByUrl("static/assets/noise.jpg"));
+            this.entityUtils.useTexForMaterial(material, this.envMap, this.entityUtils.getTextureByUrl("static/assets/noise.jpg"));
         }
         else {
 
@@ -103,13 +103,13 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader {
             decorator.aoMapEnabled = this.aoMapEnabled;
             let aoTex: TextureProxy = null;
             if (material.decorator.aoMapEnabled) {
-                aoTex = this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/ao.jpg");
+                aoTex = this.entityUtils.getTextureByUrl("static/assets/modules/skirt/ao.jpg");
             }
             this.entityUtils.useTexForMaterial(
                 material,
                 this.envMap,
-                this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/baseColor.jpg"),
-                this.entityUtils.getImageTexByUrl("static/assets/modules/skirt/normal.jpg"),
+                this.entityUtils.getTextureByUrl("static/assets/modules/skirt/baseColor.jpg"),
+                this.entityUtils.getTextureByUrl("static/assets/modules/skirt/normal.jpg"),
                 aoTex
             );
         }

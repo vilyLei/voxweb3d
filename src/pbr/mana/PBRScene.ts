@@ -16,12 +16,11 @@ import { SpecularTextureLoader } from "../mana/TextureLoader";
 
 import { PBRShaderCode } from "../../pbr/material/glsl/PBRShaderCode";
 import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
-import { MaterialContext, MaterialContextParam } from "../../materialLab/base/MaterialContext";
+import { MaterialContext } from "../../materialLab/base/MaterialContext";
 import { DirectionLight } from "../../light/base/DirectionLight";
 
 export default class PBRScene {
     private m_rscene: RendererScene = null;
-    private m_texLoader: ImageTextureLoader = null;
     private m_uiModule: DefaultPBRUI;
     private m_envMap: TextureProxy = null;
     private m_mirrorEffector: PBRMirror = null;
@@ -35,8 +34,7 @@ export default class PBRScene {
 
     private m_reflectPlaneY: number = -220.0;
 
-
-    readonly materialCtx: MaterialContext = new MaterialContext();
+    private m_materialCtx: MaterialContext;
 
     fogEnabled: boolean = true;
     hdrBrnEnabled: boolean = true;
@@ -45,11 +43,11 @@ export default class PBRScene {
 
     }
 
-    initialize(rscene: RendererScene, texLoader: ImageTextureLoader, uiModule: DefaultPBRUI): void {
+    initialize(rscene: RendererScene, materialCtx: MaterialContext, uiModule: DefaultPBRUI): void {
 
         if (this.m_rscene == null) {
             this.m_rscene = rscene;
-            this.m_texLoader = texLoader;
+            this.m_materialCtx = materialCtx;
             this.m_uiModule = uiModule;
 
             let envMapUrl: string = "static/bytes/spe.mdf";
@@ -61,26 +59,20 @@ export default class PBRScene {
             loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
             this.m_envMap = loader.texture;
 
-            let mcParam: MaterialContextParam = new MaterialContextParam();
-            mcParam.pointLightsTotal = 0;
-            mcParam.directionLightsTotal = 2;
-            mcParam.spotLightsTotal = 0;
-            mcParam.vsmFboIndex = 2;
-            this.materialCtx.initialize(this.m_rscene, mcParam);
-            let direcLight: DirectionLight = this.materialCtx.lightModule.getDirectionLightAt(0);
+            let direcLight: DirectionLight = materialCtx.lightModule.getDirectionLightAt(0);
             if (direcLight != null) {
                 direcLight.direction.setXYZ(1.0, -1.0, 0.0);
                 direcLight.color.setRGB3f(1.0, 0.0, 1.0);
-                direcLight = this.materialCtx.lightModule.getDirectionLightAt(1);
+                direcLight = materialCtx.lightModule.getDirectionLightAt(1);
                 if (direcLight != null) {
                     direcLight.direction.setXYZ(-1.0, -1.0, 0.0);
                     direcLight.color.setRGB3f(0.0, 1.0, 0.0);
                 }
             }
-            this.materialCtx.lightModule.update();
+            materialCtx.lightModule.update();
 
             this.m_materialBuilder = new PBRMaterialBuilder();
-            this.m_materialBuilder.pipeline = this.materialCtx.pipeline;
+            this.m_materialBuilder.pipeline = materialCtx.pipeline;
             this.m_materialBuilder.pipeline.addShaderCode(PBRShaderCode);
             this.m_materialBuilder.hdrBrnEnabled = this.hdrBrnEnabled;
             this.m_materialBuilder.vtxFlatNormal = this.vtxFlatNormal;
@@ -109,7 +101,7 @@ export default class PBRScene {
             //this.m_cubeRTTBuilder.setClearRGBAColor4f(0.0,0.0,0.0,1.0);
             this.m_cubeRTTBuilder.setRProcessIDList([1]);
 
-            let vsmModule = this.materialCtx.vsmModule;
+            let vsmModule = materialCtx.vsmModule;
             vsmModule.setRendererProcessIDList([0,1]);
             vsmModule.setCameraPosition(new Vector3D(10, 800, 10));
             vsmModule.setCameraNear( 10.0 );
@@ -123,7 +115,7 @@ export default class PBRScene {
             vsmModule.upate();
 
 
-            let envData = this.materialCtx.envData;
+            let envData = materialCtx.envData;
             envData.setFogNear(800.0);
             envData.setFogFar(4000.0);
             envData.setFogDensity(0.0001);
@@ -138,10 +130,10 @@ export default class PBRScene {
             this.m_mirrorEffector.envMap = this.m_envMap;
             this.m_mirrorEffector.vsmModule = vsmModule;
             this.m_mirrorEffector.materialBuilder = this.m_materialBuilder;
-            this.m_mirrorEffector.initialize(this.m_rscene, this.m_texLoader, this.m_uiModule, [this.m_mirrorRprIndex]);
+            this.m_mirrorEffector.initialize(this.m_rscene, materialCtx, this.m_uiModule, [this.m_mirrorRprIndex]);
 
             this.m_entityUtils = new PBREntityUtils(this.m_materialBuilder, this.m_cubeRTTBuilder, vsmModule);
-            this.m_entityUtils.initialize(this.m_rscene, texLoader, this.m_mirrorEffector, this.m_mirrorRprIndex);
+            this.m_entityUtils.initialize(this.m_rscene, materialCtx, this.m_mirrorEffector, this.m_mirrorRprIndex);
             this.m_entityManager = new PBREntityManager();
             this.m_entityManager.initialize(this.m_rscene, this.m_entityUtils, this.m_mirrorEffector, uiModule, this.m_envMap);
 
@@ -155,7 +147,7 @@ export default class PBRScene {
     prerender(): void {
 
         // --------------------------------------------- material context running begin
-        this.materialCtx.run();
+        this.m_materialCtx.run();
         // --------------------------------------------- material context running end
 
         // --------------------------------------------- cube rtt runbegin

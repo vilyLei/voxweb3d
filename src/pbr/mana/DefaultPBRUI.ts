@@ -29,12 +29,13 @@ import MathConst from "../../vox/math/MathConst";
 import MaterialBase from "../../vox/material/MaterialBase";
 import AABB2D from "../../vox/geom/AABB2D";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
+import { MaterialContext } from "../../materialLab/base/MaterialContext";
 
 export class DefaultPBRUI implements IPBRUI {
     constructor() { }
 
     private m_rscene: RendererScene = null;
-    private m_texLoader: ImageTextureLoader = null;
+    private m_materialCtx: MaterialContext = null;
 
     ruisc: RendererSubScene = null;
 
@@ -57,14 +58,7 @@ export class DefaultPBRUI implements IPBRUI {
     absorbBtn: SelectionBar;
     vtxNoiseBtn: SelectionBar;
 
-    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
-    }
-
-    initialize(rscene: RendererScene, texLoader: ImageTextureLoader, buildDisplay: boolean = true): void {
+    initialize(rscene: RendererScene, materialCtx: MaterialContext, buildDisplay: boolean = true): void {
 
         if (this.m_rscene == null) {
 
@@ -72,7 +66,7 @@ export class DefaultPBRUI implements IPBRUI {
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseBgDown);
 
-            this.m_texLoader = texLoader;
+            this.m_materialCtx = materialCtx;
 
             CanvasTextureTool.GetInstance().initialize(this.m_rscene);
             CanvasTextureTool.GetInstance().initializeAtlas(1024,1024, new Color4(1.0,1.0,1.0,0.0), true);

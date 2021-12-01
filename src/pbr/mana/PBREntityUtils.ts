@@ -14,11 +14,12 @@ import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
 import EnvLightData from "../../light/base/EnvLightData";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import PBRShaderDecorator from "../material/PBRShaderDecorator";
+import { MaterialContext } from "../../materialLab/base/MaterialContext";
 
 
 export default class PBREntityUtils {
     private m_rscene: RendererScene = null;
-    private m_texLoader: ImageTextureLoader = null;
+    materialCtx: MaterialContext = null;
     private m_mirrorEffector: PBRMirror = null;
     private m_materialBuilder: PBRMaterialBuilder;
     private m_cubeRTTBuilder: CubeRttBuilder;
@@ -33,26 +34,23 @@ export default class PBREntityUtils {
         this.m_cubeRTTBuilder = cubeRTTBuilder;
         this.m_vsmModule = vsmModule;
     }
+    getTextureByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
+        return this.materialCtx.getTextureByUrl(purl, wrapRepeat, mipmapEnabled);
+    }
     getCubeRttBuilder(): CubeRttBuilder {
         return this.m_cubeRTTBuilder;
     }
     getVSMModule(): ShadowVSMModule {
         return this.m_vsmModule;
     }
-    initialize(rscene: RendererScene, texLoader: ImageTextureLoader, mirrorEffector: PBRMirror, mirrorRprIndex: number): void {
+    initialize(rscene: RendererScene, materialCtx: MaterialContext, mirrorEffector: PBRMirror, mirrorRprIndex: number): void {
         if (this.m_rscene != rscene) {
             this.m_rscene = rscene;
-            this.m_texLoader = texLoader;
+            this.materialCtx = materialCtx;
             this.m_mirrorEffector = mirrorEffector;
             this.m_mirrorRprIndex = mirrorRprIndex;
         }
     }
-    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
-    }    
     useTexForMaterial(material: PBRMaterial, envMap: TextureProxy, diffuseMap: TextureProxy = null, normalMap: TextureProxy = null, aoMap: TextureProxy = null): void {
         
         let decorator: PBRShaderDecorator = material.decorator;

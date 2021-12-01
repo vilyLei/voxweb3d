@@ -18,13 +18,14 @@ import DebugFlag from "../vox/debug/DebugFlag";
 import PBRScene from "./mana/PBRScene";
 import PostOutline from "../renderingtoy/mcase/outline/PostOutline";
 import RendererState from "../vox/render/RendererState";
+import { MaterialContextParam, MaterialContext } from "../materialLab/base/MaterialContext";
 
 export class DemoPBR {
     constructor() { }
 
     private m_rscene: RendererScene = null;
     private m_ruisc: RendererSubScene = null;
-    private m_texLoader: ImageTextureLoader = null;
+    //private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
@@ -32,9 +33,11 @@ export class DemoPBR {
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     //private m_stencilOutline: StencilOutline = new StencilOutline();
+
+    private m_materialCtx: MaterialContext = new MaterialContext();
+
     private m_postOutline: PostOutline = new PostOutline();
     private m_uiModule: DefaultPBRUI = new DefaultPBRUI();
-    
     private m_pbrScene: PBRScene;
 
     initialize(): void {
@@ -77,18 +80,25 @@ export class DemoPBR {
 
             this.m_statusDisp.initialize();
 
-            this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
+            //this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
+            let mcParam: MaterialContextParam = new MaterialContextParam();
+            mcParam.pointLightsTotal = 0;
+            mcParam.directionLightsTotal = 2;
+            mcParam.spotLightsTotal = 0;
+            mcParam.vsmFboIndex = 2;
+            this.m_materialCtx.initialize(this.m_rscene, mcParam);
+
             this.m_rscene.setClearRGBColor3f(0.2, 0.8, 0.2);
             
-            this.m_uiModule.initialize(this.m_rscene, this.m_texLoader, true);
+            this.m_uiModule.initialize(this.m_rscene, this.m_materialCtx, true);
             this.m_ruisc = this.m_uiModule.ruisc;
             this.m_uiModule.close();
 
             this.m_pbrScene = new PBRScene();
-            this.m_pbrScene.initialize(this.m_rscene, this.m_texLoader, this.m_uiModule);
+            this.m_pbrScene.initialize(this.m_rscene, this.m_materialCtx, this.m_uiModule);
         }
     }
 

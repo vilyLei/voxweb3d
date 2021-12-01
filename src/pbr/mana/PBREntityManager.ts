@@ -80,12 +80,12 @@ export default class PBREntityManager
 
         material.decorator.envMap = this.m_envMap;
         // base color map
-        material.decorator.diffuseMap = this.m_entityUtils.getImageTexByUrl( "static/assets/disp/normal_4_256_COLOR.png" );
+        material.decorator.diffuseMap = this.m_entityUtils.getTextureByUrl( "static/assets/disp/normal_4_256_COLOR.png" );
         // normal map
-        material.decorator.normalMap = this.m_entityUtils.getImageTexByUrl( "static/assets/disp/normal_4_256_NRM.png" );
+        material.decorator.normalMap = this.m_entityUtils.getTextureByUrl( "static/assets/disp/normal_4_256_NRM.png" );
         if(this.aoMapEnabled) {
             // ao map
-            material.decorator.aoMap = this.m_entityUtils.getImageTexByUrl( "static/assets/disp/normal_4_256_OCC.png" );
+            material.decorator.aoMap = this.m_entityUtils.getTextureByUrl( "static/assets/disp/normal_4_256_OCC.png" );
         }
         
         if (material.decorator.indirectEnvMapEnabled) {
@@ -185,7 +185,7 @@ export default class PBREntityManager
         material.decorator.shadowReceiveEnabled = false;
         
         material.setRoughness(0.4);
-        this.m_entityUtils.useTexForMaterial(material, this.m_envMap, this.m_entityUtils.getImageTexByUrl("static/assets/noise.jpg"));
+        this.m_entityUtils.useTexForMaterial(material, this.m_envMap, this.m_entityUtils.getTextureByUrl("static/assets/noise.jpg"));
         let envSph: Sphere3DEntity = new Sphere3DEntity();
         envSph.setMaterial(material);
         envSph.showFrontFace();
