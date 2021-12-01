@@ -7,7 +7,7 @@
 /***************************************************************************/
 
 import IUniformParam from "../../../vox/material/IUniformParam";
-import IAbstractShader from "../../../vox/material/IAbstractShader";
+import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 
 export default interface IShaderCodeBuilder {
     
@@ -48,8 +48,8 @@ export default interface IShaderCodeBuilder {
     addVertMainCode(code: string): void;
     addFragHeadCode(code: string): void;
     addFragMainCode(code: string): void;
-    addShaderObject(shaderObj: IAbstractShader): void;
-    addShaderObjectHead(shaderObj: IAbstractShader): void;
+    addShaderObject(shaderObj: IShaderCodeObject): void;
+    addShaderObjectHead(shaderObj: IShaderCodeObject): void;
 
     buildFragCode(): string;
     buildVertCode(): string

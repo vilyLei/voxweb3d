@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IAbstractShader from "../../../vox/material/IAbstractShader";
+import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import { MaterialPipeType } from "../pipeline/MaterialPipeType";
 import Color4 from "../Color4";
@@ -112,7 +112,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
         }
     }
     
-    getShaderCodeObject(): IAbstractShader {
+    getShaderCodeObject(): IShaderCodeObject {
         return LambertLightShaderCode;
     }
 

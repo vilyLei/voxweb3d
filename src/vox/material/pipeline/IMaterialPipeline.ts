@@ -7,7 +7,7 @@
 /***************************************************************************/
 
 import {MaterialPipeType} from "./MaterialPipeType";
-import IAbstractShader from "../../../vox/material/IAbstractShader";
+import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 import {IMaterialPipe} from "./IMaterialPipe";
 
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
@@ -19,10 +19,10 @@ import ShaderUniformData from "../../../vox/material/ShaderUniformData";
  */
 interface IMaterialPipeline {
     /**
-     * @param shaderCode IAbstractShader instance
+     * @param shaderCode IShaderCodeObject instance
      * @param force default value is false
      */
-    addShaderCode(shaderCode: IAbstractShader, force: boolean): void;
+    addShaderCode(shaderCode: IShaderCodeObject, force: boolean): void;
     hasShaderCode(): boolean;
     addPipe(pipe: IMaterialPipe): void;
     getPipeByType(type: MaterialPipeType): IMaterialPipe;

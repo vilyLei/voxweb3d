@@ -8,7 +8,7 @@
 import IRenderTexture from '../../vox/render/IRenderTexture';
 import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
 import ShaderCompileInfo from "../../vox/material/code/ShaderCompileInfo";
-import IAbstractShader from "./IAbstractShader";
+import IShaderCodeObject from "./IShaderCodeObject";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 import { MaterialPipeType } from "./pipeline/MaterialPipeType";
 
@@ -55,7 +55,7 @@ class ShaderCodeBuffer {
     clear(): void {
         this.m_coder = null;
     }
-    getShaderCodeObject(): IAbstractShader {
+    getShaderCodeObject(): IShaderCodeObject {
         return null;
     }
     getShaderCodeObjectUUID(): string {

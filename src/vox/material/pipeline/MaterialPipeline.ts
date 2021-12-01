@@ -13,7 +13,7 @@ import {IMaterialPipeline} from "./IMaterialPipeline";
 
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
-import IAbstractShader from "../../../vox/material/IAbstractShader";
+import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 
 //  import TextureProxy from '../../../vox/texture/TextureProxy';
 
@@ -25,7 +25,7 @@ import IAbstractShader from "../../../vox/material/IAbstractShader";
  */
 class MaterialPipeline implements IMaterialPipeline{
     
-    private m_shaderCode: IAbstractShader = null;
+    private m_shaderCode: IShaderCodeObject = null;
     private m_pipeMap: Map<MaterialPipeType, IMaterialPipe> = new Map();
     private m_keys: string[] = [];
     private m_sharedUniforms: ShaderGlobalUniform[] = null;
@@ -34,7 +34,7 @@ class MaterialPipeline implements IMaterialPipeline{
 
     constructor() { }
     
-    addShaderCode(shaderCode: IAbstractShader, force: boolean = false): void {
+    addShaderCode(shaderCode: IShaderCodeObject, force: boolean = false): void {
         if(this.m_shaderCode == null || (shaderCode != null && force)) {
             this.m_shaderCode = shaderCode;
         }

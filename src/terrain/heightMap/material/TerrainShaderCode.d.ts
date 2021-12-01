@@ -5,6 +5,6 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IAbstractShader from "../../../vox/material/IAbstractShader";
+import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 
-export const TerrainShaderCode:IAbstractShader;
+export const TerrainShaderCode:IShaderCodeObject;

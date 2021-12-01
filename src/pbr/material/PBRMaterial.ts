@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import ShaderCodeBuffer from "../../vox/material/ShaderCodeBuffer";
-import IAbstractShader from "../../vox/material/IAbstractShader";
+import IShaderCodeObject from "../../vox/material/IShaderCodeObject";
 import ShaderUniformData from "../../vox/material/ShaderUniformData";
 import MaterialBase from "../../vox/material/MaterialBase";
 import Vector3D from "../../vox/math/Vector3D";
@@ -34,7 +34,7 @@ class PBRShaderBuffer extends ShaderCodeBuffer {
     buildShader(): void {
         this.decorator.buildShader();
     }
-    getShaderCodeObject(): IAbstractShader {
+    getShaderCodeObject(): IShaderCodeObject {
         return PBRShaderCode;
     }
     getUniqueShaderName(): string {

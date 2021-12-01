@@ -5,8 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-export default interface IAbstractShader
-{
+export default interface IShaderCodeObject {
     vert: string;
     vert_head: string;
     vert_body: string;

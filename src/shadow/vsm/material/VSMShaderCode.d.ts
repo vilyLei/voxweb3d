@@ -4,6 +4,6 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import IAbstractShader from "../../../vox/material/IAbstractShader";
+import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 
-export const VSMShaderCode:IAbstractShader;
+export const VSMShaderCode:IShaderCodeObject;

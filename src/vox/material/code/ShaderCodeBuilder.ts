@@ -8,7 +8,7 @@
 
 import RendererDevice from "../../../vox/render/RendererDevice";
 import IUniformParam from "../../../vox/material/IUniformParam";
-import IAbstractShader from "../../../vox/material/IAbstractShader";
+import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 
 import IShaderCodeBuilder from "./IShaderCodeBuilder";
 import GLSLConverter from "./GLSLConverter";
@@ -472,13 +472,13 @@ precision mediump float;
         if(code != "") this.m_fragMainCode += "\n" + code;
     }
 
-    addShaderObject(shaderObj: IAbstractShader): void {
+    addShaderObject(shaderObj: IShaderCodeObject): void {
         this.addFragHeadCode( shaderObj.frag_head );
         this.addFragMainCode( shaderObj.frag_body );
         this.addVertHeadCode( shaderObj.vert_head );
         this.addVertMainCode( shaderObj.vert_body );
     }
-    addShaderObjectHead(shaderObj: IAbstractShader): void {
+    addShaderObjectHead(shaderObj: IShaderCodeObject): void {
         
         this.addFragHeadCode( shaderObj.frag_head );
         this.addVertMainCode( shaderObj.vert_head );

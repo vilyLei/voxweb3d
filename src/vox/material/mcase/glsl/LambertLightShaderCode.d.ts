@@ -4,6 +4,6 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import IAbstractShader from "../../IAbstractShader";
+import IShaderCodeObject from "../../IShaderCodeObject";
 
-export const LambertLightShaderCode:IAbstractShader;
+export const LambertLightShaderCode:IShaderCodeObject;
