@@ -13,6 +13,7 @@ class ShaderCodeConfigure {
     types: ShaderCodeType[] = null;
     urls: string[] = null;
     uuid: ShaderCodeUUID = ShaderCodeUUID.Default;
+    binary: boolean = false;
     constructor() {
     }
 }
@@ -88,8 +89,9 @@ class ShaderCodeObjectLoader {
 
         this.m_loadingTotal = 0;
         if (this.m_configure.urls == null) {
+            let suffix: string = this.m_configure.binary ? ".bin" : ".glsl";
             for (let i: number = 0; i < this.m_configure.types.length; ++i) {
-                let url: string = "static/shader/glsl" + this.m_configure.uuid + "/" + this.m_configure.types[i] + ".glsl";
+                let url: string = "static/shader/glsl/" + this.m_configure.uuid + "/" + this.m_configure.types[i] + suffix;
                 this.loadCode(url, this.m_configure.types[i], loadedCallback);
             }
         } else {
@@ -100,15 +102,24 @@ class ShaderCodeObjectLoader {
         }
     }
 }
-
+interface IShaderLibListener {
+    loadedShaderCode(loadingTotal: number, loadedTotal: number): void;
+}
 class ShaderLib {
+
+    private m_loadingTotal: number = 0;
+    private m_loadedTotal: number = 0;
 
     private m_loadStatusMap: Map<ShaderCodeUUID, ShaderCodeObjectLoader> = new Map();
     private m_shaderCodeMap: Map<ShaderCodeUUID, ShaderCodeObject> = new Map();
     private m_configLib: ShaderCodeConfigureLib = null;
+    private m_listener: IShaderLibListener = null;
 
     constructor() { }
 
+    setListener(listener: IShaderLibListener): void {
+        this.m_listener = listener;
+    }
     initialize(configureData: any = null): void {
 
         if (this.m_configLib == null) {
@@ -126,15 +137,25 @@ class ShaderLib {
             }
         }
     }
+    addAllShaderCodeObject(): void {
+        this.addShaderCodeObjectWithUUID(ShaderCodeUUID.PBR);
+    }
     addShaderCodeObjectWithUUID(uuid: ShaderCodeUUID): void {
+
         if (!this.m_shaderCodeMap.has(uuid) && !this.m_loadStatusMap.has(uuid)) {
+            this.m_loadingTotal ++;
             let loader: ShaderCodeObjectLoader = new ShaderCodeObjectLoader(this.m_configLib.getConfigureWithUUID(uuid));
-            loader.load((uuid: ShaderCodeUUID, shaderCodeobject: ShaderCodeObject):void=> {
-                this.m_shaderCodeMap.set(uuid, shaderCodeobject);
+            loader.load((uuid: ShaderCodeUUID, shaderCodeobject: ShaderCodeObject): void => {
+
+                this.m_shaderCodeMap.set(uuid, shaderCodeobject);                
+                this.m_loadedTotal ++;
+
+                if(this.m_listener != null) this.m_listener.loadedShaderCode(this.m_loadingTotal, this.m_loadedTotal);
             });
         }
     }
     getShaderCodeObjectWithUUID(uuid: ShaderCodeUUID): ShaderCodeObject {
+        
         let obj: ShaderCodeObject = null;
         if (!this.m_shaderCodeMap.has(uuid)) {
             obj = this.m_shaderCodeMap.get(uuid);
@@ -142,4 +163,4 @@ class ShaderLib {
         return obj;
     }
 }
-export { ShaderCodeType, ShaderLib };
+export { ShaderCodeType, IShaderLibListener, ShaderLib };

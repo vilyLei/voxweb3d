@@ -10,7 +10,7 @@ import MathConst from "../../vox/math/MathConst";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import { TextureConst } from "../../vox/texture/TextureConst";
-import { ShaderLib } from "../shader/ShaderLib";
+import { IShaderLibListener,ShaderLib } from "../shader/ShaderLib";
 
 class MaterialContextParam {
 
@@ -88,6 +88,7 @@ class MaterialContext {
             this.m_param = param;
 
             MaterialContext.ShaderLib.initialize(shaderLibConfigure);
+            MaterialContext.ShaderLib.addAllShaderCodeObject();
 
             param.pointLightsTotal = MathConst.Clamp(param.pointLightsTotal, 0, 256);
             param.directionLightsTotal = MathConst.Clamp(param.directionLightsTotal, 0, 256);
@@ -139,4 +140,4 @@ class MaterialContext {
         this.m_rscene = null;
     }
 }
-export { MaterialContextParam, MaterialContext };
+export { IShaderLibListener, MaterialContextParam, MaterialContext };

@@ -33,12 +33,12 @@ import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import { PointLight } from "../light/base/PointLight";
 import { DirectionLight } from "../light/base/DirectionLight";
 import { SpotLight } from "../light/base/SpotLight";
-import { MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
+import { IShaderLibListener, MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import DataMesh from "../vox/mesh/DataMesh";
 import QuadGridMeshGeometry from "../vox/mesh/QuadGridMeshGeometry";
 
-export class DemoPBRViewer {
+export class DemoPBRViewer implements IShaderLibListener {
     constructor() { }
     private m_rscene: RendererScene = null;
     private m_ruisc: RendererSubScene = null;
@@ -110,6 +110,9 @@ export class DemoPBRViewer {
             mcParam.directionLightsTotal = 2;
             mcParam.spotLightsTotal = 0;
             this.m_materialCtx.initialize(this.m_rscene, mcParam);
+
+            MaterialContext.ShaderLib.setListener( this );
+
             let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
             if (pointLight != null) {
                 // pointLight.position.setXYZ(200.0, 180.0, 200.0);
@@ -146,18 +149,26 @@ export class DemoPBRViewer {
                 crossAxis.setPosition(this.m_materialCtx.lightModule.getPointLightAt(i).position);
                 this.m_rscene.addEntity(crossAxis);
             }
-            this.createEntity();
-            /*
-            this.m_dracoMeshLoader.initialize(2);
-            this.m_dracoModule = new ViewerDracoModule();
-            this.m_dracoModule.materialCtx = this.m_materialCtx;
-            this.m_dracoModule.viewer = this;
-            this.m_dracoModule.envMap = this.m_envMap;
-            this.m_dracoModule.aoMapEnabled = this.aoMapEnabled;
-            this.m_dracoModule.initialize(this.m_rscene, this.m_dracoMeshLoader);
-            // this.m_dracoModule.loadNext();
-            //*/
         }
+    }
+    private initScene(): void {
+        
+        this.createEntity();
+        
+        /*
+        this.m_dracoMeshLoader.initialize(2);
+        this.m_dracoModule = new ViewerDracoModule();
+        this.m_dracoModule.materialCtx = this.m_materialCtx;
+        this.m_dracoModule.viewer = this;
+        this.m_dracoModule.envMap = this.m_envMap;
+        this.m_dracoModule.aoMapEnabled = this.aoMapEnabled;
+        this.m_dracoModule.initialize(this.m_rscene, this.m_dracoMeshLoader);
+        // this.m_dracoModule.loadNext();
+        //*/
+    }
+    loadedShaderCode(loadingTotal: number, loadedTotal: number): void {
+        console.log("loadedShaderCode(), loadingTotal, loadedTotal: ",loadingTotal, loadedTotal);
+        this.initScene();
     }
     private createMeshPlane(material: PBRMaterial): void {
 
