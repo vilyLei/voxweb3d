@@ -2,7 +2,7 @@ import RendererScene from "../../vox/scene/RendererScene";
 import Vector3D from "../../vox/math/Vector3D";
 
 import { MaterialPipeline } from "../../vox/material/pipeline/MaterialPipeline";
-import {LightModule} from "../../light/base/LightModule";
+import { LightModule } from "../../light/base/LightModule";
 import Color4 from "../../vox/material/Color4";
 import EnvLightData from "../../light/base/EnvLightData";
 import ShadowVSMModule from "../../shadow/vsm/base/ShadowVSMModule";
@@ -10,6 +10,7 @@ import MathConst from "../../vox/math/MathConst";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import { TextureConst } from "../../vox/texture/TextureConst";
+import { ShaderLib } from "../shader/ShaderLib";
 
 class MaterialContextParam {
 
@@ -45,31 +46,32 @@ class MaterialContext {
      * material 构造流水线
      */
     readonly pipeline: MaterialPipeline = null;
+    readonly shaderLib: ShaderLib = new ShaderLib();
 
     private m_texLoader: ImageTextureLoader = null;
     constructor() { }
 
     getTextureByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = null;
-        let suffix: string = purl.slice(purl.lastIndexOf(".")+1);
+        let tex: TextureProxy = null;
+        let suffix: string = purl.slice(purl.lastIndexOf(".") + 1);
         suffix = suffix.toLocaleLowerCase();
-        switch(suffix) {
+        switch (suffix) {
             case "jpeg":
             case "jpg":
             case "png":
             case "gif":
-                    ptex = this.m_texLoader.getImageTexByUrl(purl);
-                    ptex.mipmapEnabled = mipmapEnabled;
-                    if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
+                tex = this.m_texLoader.getImageTexByUrl(purl);
+                tex.mipmapEnabled = mipmapEnabled;
+                if (wrapRepeat) tex.setWrap(TextureConst.WRAP_REPEAT);
                 break;
             default:
-                    console.warn("texture resource data type is undefined.");
+                console.warn("texture resource data type is undefined.");
                 break;
         }
-        return ptex;
+        return tex;
     }
-    
-    initialize(rscene: RendererScene, param: MaterialContextParam = null): void {
+
+    initialize(rscene: RendererScene, param: MaterialContextParam = null, shaderLibConfigure: any = null): void {
 
         if (this.m_initFlag) {
 
@@ -81,17 +83,20 @@ class MaterialContext {
                 param = new MaterialContextParam();
             }
             this.m_param = param;
+
+            this.shaderLib.initialize(shaderLibConfigure);
+
             param.pointLightsTotal = MathConst.Clamp(param.pointLightsTotal, 0, 256);
             param.directionLightsTotal = MathConst.Clamp(param.directionLightsTotal, 0, 256);
             param.spotLightsTotal = MathConst.Clamp(param.spotLightsTotal, 0, 256);
 
-            for(let i: number = 0; i < param.pointLightsTotal; ++i) {
+            for (let i: number = 0; i < param.pointLightsTotal; ++i) {
                 this.lightModule.appendPointLight();
             }
-            for(let i: number = 0; i < param.directionLightsTotal; ++i) {
+            for (let i: number = 0; i < param.directionLightsTotal; ++i) {
                 this.lightModule.appendDirectionLight();
             }
-            for(let i: number = 0; i < param.spotLightsTotal; ++i) {
+            for (let i: number = 0; i < param.spotLightsTotal; ++i) {
                 this.lightModule.appendSpotLight();
             }
             this.lightModule.update();
@@ -112,18 +117,18 @@ class MaterialContext {
                 this.vsmModule.setShadowIntensity(0.8);
                 this.vsmModule.setColorIntensity(0.3);
             }
-            
+
             selfT.pipeline = new MaterialPipeline();
             this.pipeline.addPipe(this.lightModule);
             this.pipeline.addPipe(this.envData);
-            if(this.vsmModule != null) {
+            if (this.vsmModule != null) {
                 this.pipeline.addPipe(this.vsmModule.getVSMData());
             }
         }
     }
     run(): void {
 
-        if(this.vsmModule != null && this.m_param.vsmEnabled) {
+        if (this.vsmModule != null && this.m_param.vsmEnabled) {
             this.vsmModule.run();
         }
     }

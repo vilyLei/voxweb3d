@@ -8,8 +8,9 @@ class ShaderCodeObject implements IShaderCodeObject{
     frag: string = "";
     frag_head: string = "";
     frag_body: string = "";
-    uuid: string = "";
     
+    uuid: string = "";
+
     constructor() { }
 }
 export { ShaderCodeObject };
