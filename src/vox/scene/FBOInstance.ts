@@ -83,7 +83,7 @@ export default class FBOInstance {
             if (processIDlist.length < 1) {
                 throw Error("processIDlist.length < 1, but it must: processIDlist.length >= 1");
             }
-            this.m_rindexs = processIDlist;
+            this.m_rindexs = processIDlist.slice(0);
         }
     }
     /**
@@ -208,6 +208,10 @@ export default class FBOInstance {
     }
     unlockMaterial(): void {
         this.m_rcontext.unlockMaterial();
+    }
+    
+    updateGlobalMaterialUniform(): void {
+        this.m_rcontext.updateMaterialUniform( this.m_gMateiral );
     }
 
     synFBOSizeWithViewport(): void {

@@ -12,7 +12,7 @@ import IRenderStage3D from "../../vox/render/IRenderStage3D";
 import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import RendererState from "../../vox/render/RendererState";
 import RAdapterContext from "../../vox/render/RAdapterContext";
-import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
+import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
 import RenderProxy from "../../vox/render/RenderProxy";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
@@ -21,11 +21,11 @@ import RODataBuilder from "../../vox/render/RODataBuilder";
 import RendererParam from "../../vox/scene/RendererParam";
 import RenderMaterialProxy from "../../vox/render/RenderMaterialProxy";
 import ROVtxBuilder from "../../vox/render/ROVtxBuilder";
-import {IRendererInstanceContext} from "../../vox/scene/IRendererInstanceContext";
+import { IRendererInstanceContext } from "../../vox/scene/IRendererInstanceContext";
 import Color4 from "../material/Color4";
 
-export default class RendererInstanceContext implements IRendererInstanceContext{
-    
+export default class RendererInstanceContext implements IRendererInstanceContext {
+
     private m_adapter: IRenderAdapter = null;
     private m_renderProxy: RenderProxy = null;
     private m_materialProxy: RenderMaterialProxy = null;
@@ -125,7 +125,7 @@ export default class RendererInstanceContext implements IRendererInstanceContext
             this.m_renderProxy.useRenderColorMask(RendererState.GetRenderColorMaskByName(colorMaskNS));
             this.m_renderProxy.lockRenderColorMask();
         }
-    }    
+    }
     getRenderColorMaskByName(scolorMaskNS: string): number {
         return RendererState.GetRenderColorMaskByName(scolorMaskNS);
     }
@@ -170,7 +170,7 @@ export default class RendererInstanceContext implements IRendererInstanceContext
     isUnlockMaterial(): boolean {
         return this.m_materialProxy.isUnlockMatrial();
     }
-    useGlobalMaterial(m: IRenderMaterial, texUnlock: boolean = false): void {
+    useGlobalMaterial(material: IRenderMaterial, texUnlock: boolean = false): void {
         if (this.m_materialProxy != null) {
             this.m_materialProxy.unlockMaterial();
             if (texUnlock) {
@@ -178,9 +178,13 @@ export default class RendererInstanceContext implements IRendererInstanceContext
             } else {
                 this.m_materialProxy.lockTexture();
             }
-            this.m_materialProxy.useGlobalMaterial(m);
+            this.m_materialProxy.useGlobalMaterial(material);
             this.m_materialProxy.lockMaterial();
         }
+    }
+    
+    updateMaterialUniform(material: IRenderMaterial): void {
+        this.m_materialProxy.updateMaterialUniform( material );
     }
     clearBackBuffer(): void {
         this.m_renderProxy.clearBackBuffer();
@@ -305,7 +309,7 @@ export default class RendererInstanceContext implements IRendererInstanceContext
     updateRenderBufferSize(): void {
         this.m_adapter.updateRenderBufferSize();
     }
-    vertexRenderBegin():void {
+    vertexRenderBegin(): void {
         this.m_renderProxy.Vertex.renderBegin();
     }
     /**

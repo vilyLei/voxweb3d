@@ -28,9 +28,10 @@ export default class PostOutline {
     private m_running: boolean = true;
     private m_sizeScaleRatio: number = 0.5;
     private m_preColorRTT: RTTTextureProxy = null;
+    //private m_rindexs: number[] = [];
     private m_fboIns: FBOInstance = null;
 
-    initialize(rscene: RendererScene, fboIndex: number = 0, processIDlist: number[] = null): void {
+    initialize(rscene: RendererScene, fboIndex: number = 0, occlusionRProcessIDList: number[] = null): void {
 
         if (this.m_rscene == null) {
 
@@ -46,7 +47,7 @@ export default class PostOutline {
             this.m_fboIns.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);                  // set rtt background clear rgba(r=0.3,g=0.0,b=0.0,a=0.0) color
             this.m_fboIns.createFBOAt( fboIndex, 512, 512, true, false );
             this.m_fboIns.setRenderToTexture( this.m_preColorRTT, 0 );              // framebuffer color attachment 0
-            this.m_fboIns.setRProcessIDList( processIDlist );
+            this.m_fboIns.setRProcessIDList( occlusionRProcessIDList );
             this.m_rscene.setRenderToBackBuffer();
 
             this.m_postMaterial = new PostOutlineMaterial();
@@ -85,6 +86,13 @@ export default class PostOutline {
     setTarget(target: DisplayEntity): void {
         this.m_target = target;
     }
+    
+    // /**
+    //  * 设置当前 target 有遮挡关系的 renderer process 序号(id)列表
+    //  */
+    // setOcclusionRProcessIDList(processIDlist: number[]): void {
+
+    // }
     startup(): void {
         this.m_running = true;
     }
@@ -106,6 +114,9 @@ export default class PostOutline {
             this.m_fboIns.runBegin();
             this.m_fboIns.drawEntity( this.m_target );
 
+            this.m_preMaterial.setRGB3f(0.0,1.0,0.0);
+            this.m_fboIns.updateGlobalMaterialUniform();
+            this.m_fboIns.run();
         }
     }
     /**

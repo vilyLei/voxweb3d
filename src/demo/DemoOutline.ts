@@ -86,7 +86,7 @@ export class DemoOutline {
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_stencilOutline.initialize( this.m_rscene );
 
-            this.m_postOutline.initialize(this.m_rscene, 1, [0,1]);
+            this.m_postOutline.initialize(this.m_rscene, 1, [0]);
             this.m_postOutline.setFBOSizeScaleRatio(0.5);
             this.m_postOutline.setRGB3f(0.0,2.0,0.0);
             this.m_postOutline.setOutlineDensity(2.5);
@@ -210,7 +210,7 @@ export class DemoOutline {
         if(this.m_mirrorTexLodEnabled) {
             this.m_fboIns.getRTTAt(0).enableMipmap();
         }
-        ///*
+        /*
         let scrPlane: ScreenAlignPlaneEntity =  new ScreenAlignPlaneEntity();
         scrPlane.setRenderState( RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
         scrPlane.initialize(-1,-1,2,2, [this.m_postOutline.getpreColorRTT()]);

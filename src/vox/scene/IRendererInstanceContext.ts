@@ -56,6 +56,7 @@ interface IRendererInstanceContext {
      * @param texUnlock the default value is false
      */
     useGlobalMaterial(material: IRenderMaterial, texUnlock: boolean): void;
+    updateMaterialUniform(material: IRenderMaterial): void;
     clearBackBuffer(): void;
     setScissorRect(px: number, py: number, pw: number, ph: number): void;
     setScissorEnabled(enabled: boolean): void;
