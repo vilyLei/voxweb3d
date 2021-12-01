@@ -393,7 +393,7 @@ export default class RayGpuSelector implements IRaySelector
         RendererState.LockDepthTestMode(DepthTestMode.OPAQUE);
         rcontext.unlockMaterial();
         rcontext.unlockRenderState();
-        rcontext.useGlobalMaterial(this.m_indexMaterial, false);
+        rcontext.useGlobalMaterial(this.m_indexMaterial, false, false);
         
         let rayNode:RaySelectedNode = null;
         let entity:IRenderEntity = null;

@@ -77,6 +77,10 @@ export default class PostOutline {
     setOutlineDensity( density: number ): void {
         this.m_postMaterial.setDensity(density);
     }
+    
+    setOcclusionDensity(density: number): void {
+        this.m_postMaterial.setOcclusionDensity(density);
+    }
     setRGB3f(pr: number, pg: number, pb: number): void {
         this.m_postMaterial.setRGB3f(pr, pg, pb);
     }
@@ -110,10 +114,10 @@ export default class PostOutline {
         if (this.m_running && this.m_target != null && this.m_target.isRenderEnabled()) {
 
             this.m_preMaterial.setRGB3f(1.0,0.0,0.0);
-            this.m_fboIns.setGlobalMaterial( this.m_preMaterial );
+            this.m_fboIns.setGlobalMaterial( this.m_preMaterial, false, true );
             this.m_fboIns.runBegin();
             this.m_fboIns.drawEntity( this.m_target );
-
+            this.m_fboIns.lockColorMask(RendererState.COLOR_MASK_GREEN_TRUE);
             this.m_preMaterial.setRGB3f(0.0,1.0,0.0);
             this.m_fboIns.updateGlobalMaterialUniform();
             this.m_fboIns.run();
@@ -127,6 +131,7 @@ export default class PostOutline {
         let entity: DisplayEntity = this.m_target;
         if (this.m_running && entity != null && entity.isRenderEnabled()) {
             this.m_fboIns.runEnd();
+            this.m_fboIns.unlockRenderColorMask();
             this.m_fboIns.unlockMaterial();
             this.m_rscene.setRenderToBackBuffer();
             this.m_postMaterial.setTexSize(this.m_rscene.getViewWidth() * this.m_sizeScaleRatio, this.m_rscene.getViewHeight() * this.m_sizeScaleRatio);

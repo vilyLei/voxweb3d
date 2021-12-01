@@ -170,7 +170,7 @@ export default class RendererInstanceContext implements IRendererInstanceContext
     isUnlockMaterial(): boolean {
         return this.m_materialProxy.isUnlockMatrial();
     }
-    useGlobalMaterial(material: IRenderMaterial, texUnlock: boolean = false): void {
+    useGlobalMaterial(material: IRenderMaterial, texUnlock: boolean = false, materialUniformUpdate: boolean = false): void {
         if (this.m_materialProxy != null) {
             this.m_materialProxy.unlockMaterial();
             if (texUnlock) {
@@ -178,7 +178,7 @@ export default class RendererInstanceContext implements IRendererInstanceContext
             } else {
                 this.m_materialProxy.lockTexture();
             }
-            this.m_materialProxy.useGlobalMaterial(material);
+            this.m_materialProxy.useGlobalMaterial(material, materialUniformUpdate);
             this.m_materialProxy.lockMaterial();
         }
     }

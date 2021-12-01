@@ -395,7 +395,7 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
         }
         return sharedMList;
     }
-    updateGlobalMaterial(material: IRenderMaterial): void {
+    updateGlobalMaterial(material: IRenderMaterial, materialUniformUpdate: boolean = false): void {
         if (material != null) {
             let rc: RenderProxy = this.m_rc;
             let tro: TextureRenderObj = null;
@@ -434,7 +434,7 @@ export default class RODataBuilder implements IROMaterialUpdater, IROVertexBufUp
             }
             this.m_shader.__$globalUniform = material.__$uniform;
             this.m_shader.bindToGpu(shdp.getUid());
-            if(material.__$uniform != null) {
+            if(materialUniformUpdate && material.__$uniform != null) {
                 this.m_shader.useUniform(material.__$uniform);
             }
             if (tro != null) {

@@ -47,9 +47,9 @@ export default class RenderMaterialProxy {
     resetUniform(): void {
         this.m_shader.resetUniform();
     }
-    useGlobalMaterial(material: IRenderMaterial): void {
+    useGlobalMaterial(material: IRenderMaterial, materialUniformUpdate: boolean = false): void {
         if(material != null) {
-            this.m_dispBuilder.updateGlobalMaterial(material);
+            this.m_dispBuilder.updateGlobalMaterial(material, materialUniformUpdate);
         }
     }
     updateMaterialUniform(material: IRenderMaterial): void {

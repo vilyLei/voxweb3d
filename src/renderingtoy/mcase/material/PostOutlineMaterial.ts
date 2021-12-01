@@ -29,7 +29,7 @@ class PostOutlineShaderBuffer extends ShaderCodeBuffer {
         
         coder.addDiffuseMap();
         coder.addFragUniform("vec4", "u_texParam");
-        coder.addFragUniform("vec4", "u_color");
+        coder.addFragUniform("vec4", "u_params", 3);
 
         coder.addVarying("vec2", "v_uv");
 
@@ -41,9 +41,11 @@ const float factor = 1.0 / 9.0;
 const float floatReciprocalGamma = (1.0 / 2.2);
 void main() {
     
-    vec2 dv = u_texParam.ww / u_texParam.xy;
+    vec4 param = u_params[0];
+    vec2 dv = param.ww / param.xy;
     vec4 srcColor = VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv );
-
+    float fa = u_params[2].x;
+    fa = (1.0 - srcColor.y) * (1.0 - fa) + fa;
     float fc = srcColor.x;
     fc += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + dv ).x;
     fc += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - dv ).x;
@@ -56,10 +58,13 @@ void main() {
     fc *= factor;
     
     float dis = abs(fc - srcColor.x);
-    dis *= u_texParam.z;
+    dis *= param.z;
     dis = pow(dis * dis * dis, floatReciprocalGamma);
-    FragColor0 = vec4(u_color.xyz, dis * u_color.w);
-    // FragColor0 = vec4(srcColor.xyz, 1.0);
+
+    param = u_params[1];
+    param.w *= dis * fa;
+    FragColor0 = param;
+    //FragColor0 = vec4(srcColor.xyz, 1.0);
 }
 `
                     );
@@ -93,28 +98,38 @@ export default class PostOutlineMaterial extends MaterialBase {
         let buf: PostOutlineShaderBuffer = PostOutlineShaderBuffer.GetInstance();
         return buf;
     }
-    private m_texParam: Float32Array = new Float32Array([32.0,32.0,1.3,2.0]);
-    private m_color: Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
+    private m_params: Float32Array = new Float32Array([
+        32.0,32.0,1.3,2.0,
+        1.0,1.0,1.0,1.0,     // color rgba
+        0.2,0.0,0.0,0.0      // occlusion density, undefined,undefined,undefined
+    ]);
+    //private m_color: Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
 
     setThickness( thickness: number ): void {
-        this.m_texParam[3] = MathConst.Clamp(thickness, 0.1, 5.0);
+        this.m_params[3] = MathConst.Clamp(thickness, 0.1, 5.0);
     }
     setDensity( density: number ): void {
-        this.m_texParam[2] = MathConst.Clamp(density, 0.1, 5.0);
+        this.m_params[2] = MathConst.Clamp(density, 0.1, 5.0);
+    }
+    setOcclusionDensity(density: number): void {
+        this.m_params[8] = MathConst.Clamp(density, 0.0, 1.0);
     }
     setRGB3f(pr: number, pg: number, pb: number): void {
-        this.m_color[0] = pr;
-        this.m_color[1] = pg;
-        this.m_color[2] = pb;
+        this.m_params[4] = pr;
+        this.m_params[5] = pg;
+        this.m_params[6] = pb;
+    }
+    setAlpha(pa: number): void {
+        this.m_params[7] = pa;
     }
     setTexSize(width: number, height: number): void {
-        this.m_texParam[0] = width;
-        this.m_texParam[1] = height;
+        this.m_params[0] = width;
+        this.m_params[1] = height;
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_texParam", "u_color"];
-        oum.dataList = [this.m_texParam, this.m_color];
+        oum.uniformNameList = ["u_params"];
+        oum.dataList = [this.m_params];
         return oum;
     }
 }

@@ -63,10 +63,12 @@ export class DemoPBR {
             this.m_rscene.addEventListener(EventBase.RESIZE, this, this.resize);
             //  this.m_stencilOutline.initialize(this.m_rscene);
             //  this.m_stencilOutline.setRGB3f(1.0, 0.0, 1.0);
-            this.m_postOutline.initialize(this.m_rscene, 4);
+            //this.m_postOutline.initialize(this.m_rscene, 4, [0,1]);
+            this.m_postOutline.initialize(this.m_rscene, 4, [0]);
             this.m_postOutline.setFBOSizeScaleRatio(0.5);
             this.m_postOutline.setOutlineThickness(1.0);
-            this.m_postOutline.setOutlineDensity(2.0);
+            this.m_postOutline.setOutlineDensity(2.3);
+            this.m_postOutline.setOcclusionDensity(0.1);
             //this.m_postOutline.setPostRenderState(RendererState.BACK_ADD_BLENDSORT_STATE);
 
             this.m_rscene.enableMouseEvent(true);

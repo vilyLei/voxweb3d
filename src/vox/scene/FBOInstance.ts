@@ -55,6 +55,7 @@ export default class FBOInstance {
     private m_clearStencilBoo: boolean = false;
     private m_viewportLock: boolean = false;
     private m_texUnlock: boolean = false;
+    private m_tmaterialUniformUpdate: boolean = false;
     /**
      * unique name string
      */
@@ -177,17 +178,19 @@ export default class FBOInstance {
     }
 
     ////////////////////////////////////////////////////// material conctrl
-    useGlobalMaterial(m: IRenderMaterial, texUnlock: boolean = false): void {
+    useGlobalMaterial(m: IRenderMaterial, texUnlock: boolean = false, materialUniformUpdate: boolean = false): void {
         this.m_texUnlock = texUnlock;
-        this.m_rcontext.useGlobalMaterial(m, this.m_texUnlock);
+        this.m_tmaterialUniformUpdate = materialUniformUpdate;
+        this.m_rcontext.useGlobalMaterial(m, this.m_texUnlock, materialUniformUpdate);
     }
     /**
      * 
      * @param material MaterialBase 子类的实例
      * @param texUnlock 是否锁定并使用 material 自身所带的纹理数据
      */
-    setGlobalMaterial(material: IRenderMaterial, texUnlock: boolean = false): void {
+    setGlobalMaterial(material: IRenderMaterial, texUnlock: boolean = false, materialUniformUpdate: boolean = false): void {
         this.m_texUnlock = texUnlock;
+        this.m_tmaterialUniformUpdate = materialUniformUpdate;
         if (this.m_gMateiral != material) {
             if (this.m_gMateiral != null) {
                 this.m_gMateiral.__$detachThis();
@@ -200,7 +203,7 @@ export default class FBOInstance {
     }
     lockMaterial(): void {
         if (this.m_gMateiral != null) {
-            this.m_rcontext.useGlobalMaterial(this.m_gMateiral, this.m_texUnlock);
+            this.m_rcontext.useGlobalMaterial(this.m_gMateiral, this.m_texUnlock, this.m_tmaterialUniformUpdate);
         }
         else {
             this.m_rcontext.lockMaterial();
@@ -526,7 +529,7 @@ export default class FBOInstance {
             }
             this.m_adapter.useFBO(this.m_clearColorBoo, this.m_clearDepthBoo, this.m_clearStencilBoo);
             if (this.m_gMateiral != null) {
-                this.m_rcontext.useGlobalMaterial(this.m_gMateiral, this.m_texUnlock);
+                this.m_rcontext.useGlobalMaterial(this.m_gMateiral, this.m_texUnlock, this.m_tmaterialUniformUpdate);
             }
             else {
                 this.m_rcontext.unlockMaterial();

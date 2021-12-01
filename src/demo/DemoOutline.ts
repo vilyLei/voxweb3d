@@ -90,6 +90,7 @@ export class DemoOutline {
             this.m_postOutline.setFBOSizeScaleRatio(0.5);
             this.m_postOutline.setRGB3f(0.0,2.0,0.0);
             this.m_postOutline.setOutlineDensity(2.5);
+            this.m_postOutline.setOcclusionDensity(0.2);
             //  let axis: Axis3DEntity = new Axis3DEntity();
             //  axis.initialize(300.0);
             //  this.m_rscene.addEntity(axis);

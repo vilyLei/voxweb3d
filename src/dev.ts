@@ -291,7 +291,7 @@
 //  The reflection in water
 //  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
 
-import {DemoOutline as Demo} from "./demo/DemoOutline";
+//  import {DemoOutline as Demo} from "./demo/DemoOutline";
 
 //  import {DemoMRT as Demo} from "./demo/DemoMRT";
 
@@ -373,7 +373,7 @@ import {DemoOutline as Demo} from "./demo/DemoOutline";
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
-//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
+import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 
