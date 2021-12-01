@@ -103,8 +103,6 @@ export default class PostOutline {
 
             this.m_fboIns.setGlobalMaterial( this.m_preMaterial );
             this.m_fboIns.runBegin();
-            // RendererState.LockDepthTestMode
-            // this.m_fboIns.useGlobalRenderState
             this.m_fboIns.drawEntity( this.m_target );
 
         }

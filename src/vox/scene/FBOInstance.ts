@@ -14,15 +14,15 @@ import RTTTextureStore from "../../vox/texture/RTTTextureStore";
 import Color4 from "../../vox/material/Color4";
 
 import IRenderStage3D from "../../vox/render/IRenderStage3D";
-import {IRenderCamera} from "../../vox/render/IRenderCamera";
+import { IRenderCamera } from "../../vox/render/IRenderCamera";
 import FrameBufferType from "../../vox/render/FrameBufferType";
-import {IRenderAdapter} from "../../vox/render/IRenderAdapter";
-import {IRenderProxy} from "../../vox/render/IRenderProxy";
+import { IRenderAdapter } from "../../vox/render/IRenderAdapter";
+import { IRenderProxy } from "../../vox/render/IRenderProxy";
 import IRenderMaterial from "../../vox/render/IRenderMaterial";
 import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderer from "../../vox/scene/IRenderer";
 import IRenderProcess from "../../vox/render/IRenderProcess";
-import {IRendererInstanceContext} from "./IRendererInstanceContext";
+import { IRendererInstanceContext } from "./IRendererInstanceContext";
 
 export default class FBOInstance {
     private m_backBufferColor: Color4 = new Color4();
@@ -78,8 +78,8 @@ export default class FBOInstance {
      * 设置当前 FBO控制的渲染过程中所需要的 renderer process 序号(id)列表
      */
     setRProcessIDList(processIDlist: number[]): void {
-        
-        if(processIDlist != null) {
+
+        if (processIDlist != null) {
             if (processIDlist.length < 1) {
                 throw Error("processIDlist.length < 1, but it must: processIDlist.length >= 1");
             }
@@ -139,9 +139,9 @@ export default class FBOInstance {
     setGlobalRenderStateByName(stateNS: string): void {
         this.m_gRState = this.m_rcontext.getRenderStateByName(stateNS);
     }
-    lockRenderState(): void {
-        if (this.m_gRState >= 0) {
-            this.m_rcontext.useGlobalRenderState(this.m_gRState);
+    lockRenderState(state: number = -1): void {
+        if (this.m_gRState >= 0 || state >= 0) {
+            this.m_rcontext.useGlobalRenderState(state < 0 ? this.m_gRState : state);
         }
         else {
             this.m_renderProxy.lockRenderState();
@@ -150,7 +150,7 @@ export default class FBOInstance {
     unlockRenderState(): void {
         this.m_renderProxy.unlockRenderState();
     }
-    
+
     ////////////////////////////////////////////////////// render color mask conctrl
     useGlobalRenderColorMask(colorMask: number): void {
         this.m_rcontext.useGlobalRenderColorMask(colorMask);
@@ -164,9 +164,9 @@ export default class FBOInstance {
     setGlobalRenderColorMaskByName(colorMaskNS: string): void {
         this.m_gRColorMask = this.m_rcontext.getRenderColorMaskByName(colorMaskNS);
     }
-    lockColorMask(): void {
-        if (this.m_gRColorMask >= 0) {
-            this.m_rcontext.useGlobalRenderColorMask(this.m_gRColorMask);
+    lockColorMask(colorMask: number = -1): void {
+        if (this.m_gRColorMask >= 0 || colorMask >= 0) {
+            this.m_rcontext.useGlobalRenderColorMask(colorMask < 0 ? this.m_gRColorMask : colorMask);
         }
         else {
             this.m_renderProxy.lockRenderColorMask();
@@ -267,7 +267,7 @@ export default class FBOInstance {
             this.createFBO(enableDepth, enableStencil, multisampleLevel);
         }
     }
-    
+
     /**
      * 创建一个指定序号的 read FBO(FrameBufferObject) 渲染运行时管理对象,
      * renderer中一个序号只会对应一个唯一的 FBO 对象实例
@@ -307,7 +307,7 @@ export default class FBOInstance {
 
     resizeFBO(fboBufferWidth: number, fboBufferHeight: number): void {
 
-        if(this.m_initW != fboBufferWidth || this.m_initH != fboBufferHeight) {
+        if (this.m_initW != fboBufferWidth || this.m_initH != fboBufferHeight) {
             this.m_initW = fboBufferWidth;
             this.m_initH = fboBufferHeight;
             this.m_adapter.resizeFBOAt(this.m_fboIndex, fboBufferWidth, fboBufferHeight);
@@ -540,7 +540,7 @@ export default class FBOInstance {
         }
         this.m_runFlag = true;
         if (lockRenderState) this.unlockRenderState();
-        if (lockMaterial){
+        if (lockMaterial) {
             this.unlockMaterial();
         }
         if (autoEnd) {
@@ -564,7 +564,7 @@ export default class FBOInstance {
      * @param useGlobalUniform 是否使用当前 global material 所携带的 uniform, default value: false
      * @param forceUpdateUniform 是否强制更新当前 global material 所对应的 shader program 的 uniform, default value: true
      */
-    drawEntity(entity: IRenderEntity, useGlobalUniform: boolean = false,  forceUpdateUniform: boolean = true): void {
+    drawEntity(entity: IRenderEntity, useGlobalUniform: boolean = false, forceUpdateUniform: boolean = true): void {
         if (!this.m_runFlag) {
             this.m_renderer.drawEntity(entity, useGlobalUniform, forceUpdateUniform);
         }
@@ -605,7 +605,7 @@ export default class FBOInstance {
     }
 
     clone(): FBOInstance {
-        
+
         let ins: FBOInstance = new FBOInstance(this.m_renderer, this.m_texStore);
         ins.m_fboSizeFactor = this.m_fboSizeFactor;
         ins.m_bgColor.copyFrom(this.m_bgColor);
