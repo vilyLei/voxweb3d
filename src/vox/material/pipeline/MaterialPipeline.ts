@@ -6,14 +6,17 @@
 /*                                                                         */
 /***************************************************************************/
 
+import { ShaderCodeUUID } from "../ShaderCodeUUID";
+import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
+import { IShaderLib } from "../../../vox/material/IShaderLib";
+
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
-import {IMaterialPipe} from "./IMaterialPipe";
-import {MaterialPipeType} from "./MaterialPipeType";
-import {IMaterialPipeline} from "./IMaterialPipeline";
+import { IMaterialPipe } from "./IMaterialPipe";
+import { MaterialPipeType } from "./MaterialPipeType";
+import { IMaterialPipeline } from "./IMaterialPipeline";
 
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
-import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 
 //  import TextureProxy from '../../../vox/texture/TextureProxy';
 
@@ -23,19 +26,30 @@ import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
  * 组装功能举例: 全局的光照环境shader及数据, 灯光组shader及数据， 雾shader及数据, 等等
  * material pipeline 输出 的控制码，也能控制渲染流程, 也就是 material pipelie 也能配合 render pipeline 一起协作完成渲染过程
  */
-class MaterialPipeline implements IMaterialPipeline{
-    
+class MaterialPipeline implements IMaterialPipeline {
+
     private m_shaderCode: IShaderCodeObject = null;
     private m_pipeMap: Map<MaterialPipeType, IMaterialPipe> = new Map();
     private m_keys: string[] = [];
     private m_sharedUniforms: ShaderGlobalUniform[] = null;
+    private m_shaderLib: IShaderLib = null;
     //private m_texList: TextureProxy[] = null;
     private m_appendKeyStr: string = "";
 
-    constructor() { }
-    
+    constructor(shaderLib: IShaderLib = null) {
+        this.m_shaderLib = shaderLib;
+    }
+    /**
+     * @param shaderCodeUUID IShaderCodeObject instance uuid
+     * @param force default value is false
+     */
+    addShaderCodeWithUUID(shaderCodeUUID: ShaderCodeUUID, force: boolean): void {
+        if (this.m_shaderLib != null) {
+            this.addShaderCode(this.m_shaderLib.getShaderCodeObjectWithUUID(shaderCodeUUID), force);
+        }
+    }
     addShaderCode(shaderCode: IShaderCodeObject, force: boolean = false): void {
-        if(this.m_shaderCode == null || (shaderCode != null && force)) {
+        if (this.m_shaderCode == null || (shaderCode != null && force)) {
             this.m_shaderCode = shaderCode;
         }
     }
@@ -43,11 +57,11 @@ class MaterialPipeline implements IMaterialPipeline{
         return this.m_shaderCode != null;
     }
     addPipe(pipe: IMaterialPipe): void {
-        
+
         let types: MaterialPipeType[] = pipe.getPipeTypes();
         //console.log("#### MaterialPipeline, types: ",types);
-        for(let i: number = 0; i < types.length; ++i) {
-            if(!this.m_pipeMap.has(types[i])) {
+        for (let i: number = 0; i < types.length; ++i) {
+            if (!this.m_pipeMap.has(types[i])) {
                 this.m_pipeMap.set(types[i], pipe);
             }
         }
@@ -58,68 +72,68 @@ class MaterialPipeline implements IMaterialPipeline{
     hasPipeByType(type: MaterialPipeType): boolean {
         return this.m_pipeMap.has(type);
     }
-    
-    createKeys(pipetypes: MaterialPipeType[]):void {
+
+    createKeys(pipetypes: MaterialPipeType[]): void {
 
         //console.log("#### MaterialPipeline::createKeys(), pipetypes: ",pipetypes);
         this.m_keys = [];
-        if(pipetypes != null) {
+        if (pipetypes != null) {
 
             let pipe: IMaterialPipe;
             let type: MaterialPipeType;
             let types: MaterialPipeType[] = pipetypes;
-            for(let i: number = 0; i < types.length; ++i) {
+            for (let i: number = 0; i < types.length; ++i) {
                 type = types[i];
-                if(this.m_pipeMap.has(type)) {
-                    pipe = this.m_pipeMap.get( type );
-                    this.m_keys.push( pipe.getPipeKey( type ) );
+                if (this.m_pipeMap.has(type)) {
+                    pipe = this.m_pipeMap.get(type);
+                    this.m_keys.push(pipe.getPipeKey(type));
                 }
             }
         }
     }
-    
-    buildSharedUniforms(pipetypes: MaterialPipeType[]):void {
+
+    buildSharedUniforms(pipetypes: MaterialPipeType[]): void {
 
         this.m_sharedUniforms = [];
 
-        if(pipetypes != null) {
+        if (pipetypes != null) {
 
             let pipe: IMaterialPipe;
             let type: MaterialPipeType;
             let types: MaterialPipeType[] = pipetypes;
-            for(let i: number = 0; i < types.length; ++i) {
+            for (let i: number = 0; i < types.length; ++i) {
                 type = types[i];
-                if(this.m_pipeMap.has(type)) {
-                    pipe = this.m_pipeMap.get( type );
-                    this.m_sharedUniforms.push( pipe.getGlobalUinform() );
+                if (this.m_pipeMap.has(type)) {
+                    pipe = this.m_pipeMap.get(type);
+                    this.m_sharedUniforms.push(pipe.getGlobalUinform());
                 }
             }
         }
     }
-    build(shaderBuilder: IShaderCodeBuilder, pipetypes: MaterialPipeType[]):void {
+    build(shaderBuilder: IShaderCodeBuilder, pipetypes: MaterialPipeType[]): void {
 
         // console.log("#### MaterialPipeline::build(), pipetypes: ",pipetypes,", this.m_shaderCode != null: ",this.m_shaderCode != null);
-        if(this.m_shaderCode != null) {
-            shaderBuilder.addShaderObject( this.m_shaderCode );
+        if (this.m_shaderCode != null) {
+            shaderBuilder.addShaderObject(this.m_shaderCode);
         }
-        if(pipetypes != null) {
+        if (pipetypes != null) {
 
             let pipe: IMaterialPipe;
             let type: MaterialPipeType;
             let types: MaterialPipeType[] = pipetypes;
-            for(let i: number = 0; i < types.length; ++i) {
+            for (let i: number = 0; i < types.length; ++i) {
                 type = types[i];
-                if(this.m_pipeMap.has(type)) {
-                    pipe = this.m_pipeMap.get( type );
+                if (this.m_pipeMap.has(type)) {
+                    pipe = this.m_pipeMap.get(type);
                     pipe.useShaderPipe(shaderBuilder, type);
                 }
             }
 
         }
     }
-    
+
     getSharedUniforms(): ShaderGlobalUniform[] {
-        
+
         return this.m_sharedUniforms;
     }
     getSelfUniformData(): ShaderUniformData {
@@ -133,7 +147,7 @@ class MaterialPipeline implements IMaterialPipeline{
     }
     getKeysString(): string {
         let str: string = "";
-        for(let i: number = 0; i < this.m_keys.length; ++i) {
+        for (let i: number = 0; i < this.m_keys.length; ++i) {
             str += this.m_keys[i];
         }
         return str + this.m_appendKeyStr;
@@ -148,7 +162,7 @@ class MaterialPipeline implements IMaterialPipeline{
         this.m_sharedUniforms = null;
         this.m_shaderCode = null;
     }
-    
+
 }
 
-export {MaterialPipeline}
+export { MaterialPipeline }

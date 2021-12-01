@@ -6,18 +6,24 @@
 /*                                                                         */
 /***************************************************************************/
 
-import {MaterialPipeType} from "./MaterialPipeType";
+import { MaterialPipeType } from "./MaterialPipeType";
 import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
-import {IMaterialPipe} from "./IMaterialPipe";
+import { IMaterialPipe } from "./IMaterialPipe";
 
 import IShaderCodeBuilder from "../code/IShaderCodeBuilder";
 import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
+import { ShaderCodeUUID } from "../../../vox/material/ShaderCodeUUID";
 
 /**
  * 材质功能组装流水线行为规范
  */
 interface IMaterialPipeline {
+    /**
+     * @param shaderCodeUUID IShaderCodeObject instance uuid
+     * @param force default value is false
+     */
+    addShaderCodeWithUUID(shaderCodeUUID: ShaderCodeUUID, force: boolean): void;
     /**
      * @param shaderCode IShaderCodeObject instance
      * @param force default value is false
@@ -27,9 +33,9 @@ interface IMaterialPipeline {
     addPipe(pipe: IMaterialPipe): void;
     getPipeByType(type: MaterialPipeType): IMaterialPipe;
     hasPipeByType(type: MaterialPipeType): boolean;
-    createKeys(pipetypes: MaterialPipeType[]):void;    
-    buildSharedUniforms(pipetypes: MaterialPipeType[]):void;
-    build(shaderBuilder: IShaderCodeBuilder, pipetypes: MaterialPipeType[]):void;
+    createKeys(pipetypes: MaterialPipeType[]): void;
+    buildSharedUniforms(pipetypes: MaterialPipeType[]): void;
+    build(shaderBuilder: IShaderCodeBuilder, pipetypes: MaterialPipeType[]): void;
     getSharedUniforms(): ShaderGlobalUniform[];
     getSelfUniformData(): ShaderUniformData;
     appendKeyString(key: string): void;
@@ -38,4 +44,4 @@ interface IMaterialPipeline {
     reset(): void;
     clear(): void;
 }
-export {IMaterialPipeline}
+export { IMaterialPipeline }

@@ -114,7 +114,12 @@ export default class MaterialBase implements IRenderMaterial {
 
                     buf.buildShader();
                     if (buf.pipeline != null) {
-                        buf.pipeline.addShaderCode(buf.getShaderCodeObject(), false);
+                        if(buf.getShaderCodeObject() != null) {
+                            buf.pipeline.addShaderCode(buf.getShaderCodeObject(), false);
+                        }
+                        else {
+                            buf.pipeline.addShaderCodeWithUUID(buf.getShaderCodeObjectUUID(), false);
+                        }
                         buf.pipeline.build(buf.getShaderCodeBuilder(), buf.pipeTypes);
                     }
                     let fshdCode: string = buf.getFragShaderCode();

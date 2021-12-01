@@ -1,4 +1,6 @@
-import { ShaderCodeUUID } from "./ShaderCodeUUID";
+
+import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
+import { IShaderLib } from "../../vox/material/IShaderLib";
 import { ShaderCodeObject } from "./ShaderCodeObject";
 
 enum ShaderCodeType {
@@ -105,7 +107,8 @@ class ShaderCodeObjectLoader {
 interface IShaderLibListener {
     loadedShaderCode(loadingTotal: number, loadedTotal: number): void;
 }
-class ShaderLib {
+
+class ShaderLib implements IShaderLib{
 
     private m_loadingTotal: number = 0;
     private m_loadedTotal: number = 0;
@@ -155,7 +158,7 @@ class ShaderLib {
         }
     }
     getShaderCodeObjectWithUUID(uuid: ShaderCodeUUID): ShaderCodeObject {
-        
+
         let obj: ShaderCodeObject = null;
         if (!this.m_shaderCodeMap.has(uuid)) {
             obj = this.m_shaderCodeMap.get(uuid);

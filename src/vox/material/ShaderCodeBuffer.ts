@@ -5,6 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
+import {ShaderCodeUUID} from './ShaderCodeUUID';
 import IRenderTexture from '../../vox/render/IRenderTexture';
 import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
 import ShaderCompileInfo from "../../vox/material/code/ShaderCompileInfo";
@@ -58,8 +59,8 @@ class ShaderCodeBuffer {
     getShaderCodeObject(): IShaderCodeObject {
         return null;
     }
-    getShaderCodeObjectUUID(): string {
-        return "";
+    getShaderCodeObjectUUID(): ShaderCodeUUID {
+        return ShaderCodeUUID.None;
     }
     getShaderCodeBuilder(): ShaderCodeBuilder {
         return ShaderCodeBuffer.s_coder;

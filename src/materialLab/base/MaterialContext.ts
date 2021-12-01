@@ -19,7 +19,7 @@ class MaterialContextParam {
     spotLightsTotal: number = 0;
     vsmFboIndex: number = 0;
     vsmEnabled: boolean = true;
-
+    loadAllShaderCode: boolean = false;
     constructor() { }
 }
 /**
@@ -88,7 +88,9 @@ class MaterialContext {
             this.m_param = param;
 
             MaterialContext.ShaderLib.initialize(shaderLibConfigure);
-            MaterialContext.ShaderLib.addAllShaderCodeObject();
+            if(this.m_param.loadAllShaderCode) {
+                MaterialContext.ShaderLib.addAllShaderCodeObject();
+            }
 
             param.pointLightsTotal = MathConst.Clamp(param.pointLightsTotal, 0, 256);
             param.directionLightsTotal = MathConst.Clamp(param.directionLightsTotal, 0, 256);
