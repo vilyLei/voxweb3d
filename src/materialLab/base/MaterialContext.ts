@@ -46,7 +46,10 @@ class MaterialContext {
      * material 构造流水线
      */
     readonly pipeline: MaterialPipeline = null;
-    readonly shaderLib: ShaderLib = new ShaderLib();
+    /**
+     * shader code management module
+     */
+    static readonly ShaderLib: ShaderLib = new ShaderLib();
 
     private m_texLoader: ImageTextureLoader = null;
     constructor() { }
@@ -84,7 +87,7 @@ class MaterialContext {
             }
             this.m_param = param;
 
-            this.shaderLib.initialize(shaderLibConfigure);
+            MaterialContext.ShaderLib.initialize(shaderLibConfigure);
 
             param.pointLightsTotal = MathConst.Clamp(param.pointLightsTotal, 0, 256);
             param.directionLightsTotal = MathConst.Clamp(param.directionLightsTotal, 0, 256);
