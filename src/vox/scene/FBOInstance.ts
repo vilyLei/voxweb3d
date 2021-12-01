@@ -42,6 +42,7 @@ export default class FBOInstance {
     private m_multisampleLevel: number = 0;
     private m_gMateiral: IRenderMaterial = null;
     private m_gRState: number = -1;
+    private m_gRColorMask: number = -1;
     private m_rindexs: number[] = [];
     private m_texs: RTTTextureProxy[] = [null, null, null, null, null, null, null, null];
     private m_texStore: RTTTextureStore = null;
@@ -125,13 +126,13 @@ export default class FBOInstance {
             this.m_renderProxy.updateCameraDataFromCamera(cam);
         }
     }
+    ////////////////////////////////////////////////////// render state conctrl
     useGlobalRenderState(state: number): void {
         this.m_rcontext.useGlobalRenderState(state);
     }
     useGlobalRenderStateByName(stateNS: string): void {
         this.m_rcontext.useGlobalRenderStateByName(stateNS);
     }
-
     setGlobalRenderState(state: number): void {
         this.m_gRState = state;
     }
@@ -149,6 +150,33 @@ export default class FBOInstance {
     unlockRenderState(): void {
         this.m_renderProxy.unlockRenderState();
     }
+    
+    ////////////////////////////////////////////////////// render color mask conctrl
+    useGlobalRenderColorMask(colorMask: number): void {
+        this.m_rcontext.useGlobalRenderColorMask(colorMask);
+    }
+    useGlobalRenderColorMaskByName(colorMaskNS: string): void {
+        this.m_rcontext.useGlobalRenderColorMaskByName(colorMaskNS);
+    }
+    setGlobalRenderColorMask(colorMask: number): void {
+        this.m_gRColorMask = colorMask;
+    }
+    setGlobalRenderColorMaskByName(colorMaskNS: string): void {
+        this.m_gRColorMask = this.m_rcontext.getRenderColorMaskByName(colorMaskNS);
+    }
+    lockColorMask(): void {
+        if (this.m_gRColorMask >= 0) {
+            this.m_rcontext.useGlobalRenderColorMask(this.m_gRColorMask);
+        }
+        else {
+            this.m_renderProxy.lockRenderColorMask();
+        }
+    }
+    unlockRenderColorMask(): void {
+        this.m_renderProxy.unlockRenderColorMask();
+    }
+
+    ////////////////////////////////////////////////////// material conctrl
     useGlobalMaterial(m: IRenderMaterial, texUnlock: boolean = false): void {
         this.m_texUnlock = texUnlock;
         this.m_rcontext.useGlobalMaterial(m, this.m_texUnlock);

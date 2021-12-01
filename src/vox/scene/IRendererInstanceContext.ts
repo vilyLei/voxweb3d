@@ -37,9 +37,10 @@ interface IRendererInstanceContext {
     updateCameraDataFromCamera(cam: IRenderCamera): void;
 
     lockRenderColorMask(): void;
-    unlockColorMask(): void;
-    useGlobalColorMask(colorMask: number): void;
+    unlockRendererColorMask(): void;
+    useGlobalRenderColorMask(colorMask: number): void;
     useGlobalRenderColorMaskByName(stateNS: string): void;
+    getRenderColorMaskByName(colorMaskNS: string): number;
 
     lockRenderState(): void;
     unlockRenderState(): void;
