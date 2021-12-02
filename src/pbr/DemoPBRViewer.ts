@@ -289,6 +289,14 @@ export class DemoPBRViewer implements IShaderLibListener {
         srcSph.setRotation3(this.m_rotV);
         this.m_rscene.addEntity(srcSph);
         this.m_target = srcSph;
+        console.log("material clone doing...");
+        let new_sph = new Sphere3DEntity();
+        let new_material = material.clone();
+        new_sph.setMaterial(new_material);
+        new_sph.initialize(100.0, 150, 150);
+        new_sph.setXYZ(200,0.0,200);
+        this.m_rscene.addEntity(new_sph);
+
         return;
         //*/
         let scale: number = 1.0;

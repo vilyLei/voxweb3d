@@ -139,7 +139,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         this.setMaterialPipeline(src.m_pipeLine);
         if(this.decorator == null)this.decorator = new PBRShaderDecorator();
         this.decorator.copyFrom( src.decorator );
-        this.decorator.createTextureList();
+        //this.decorator.createTextureList();
         
         if(this.m_pbrParams == null || this.m_pbrParams.length != src.m_pbrParams.length) {
             this.m_pbrParams = src.m_pbrParams.slice();
@@ -157,7 +157,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
             this.m_vertLocalParams = src.m_vertLocalParams.slice();
         }
         else {
-            this.m_vertLocalParams.set(src.m_fragLocalParams);
+            this.m_vertLocalParams.set(src.m_vertLocalParams);
         }
         
         if(this.m_mirrorParam == null || this.m_mirrorParam.length != src.m_mirrorParam.length) {

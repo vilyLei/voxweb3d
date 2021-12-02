@@ -135,15 +135,16 @@ export default class PBRShaderDecorator {
         if(this.indirectEnvMap == null && this.indirectEnvMapEnabled) this.indirectEnvMap = src.indirectEnvMap;
 
         if(this.shadowMap == null && this.shadowReceiveEnabled) this.shadowMap = src.shadowMap;
-        if(this.displacementMap == null) this.parallaxMap = src.displacementMap;
+        if(this.displacementMap == null) this.displacementMap = src.displacementMap;
         if(this.parallaxMap == null) this.parallaxMap = src.parallaxMap;
         if(this.roughnessMap == null) this.roughnessMap = src.roughnessMap;
         // if(this.specularMap == null) this.specularMap = src.specularMap;
+        console.log("this.parallaxMap,src.parallaxMap: ",this.parallaxMap,src.parallaxMap);
 
         this.lightEnabled = src.lightEnabled;
         this.texturesTotal = src.texturesTotal;
 
-        this.m_uniqueName = src.m_uniqueName;
+        //this.m_uniqueName = src.m_uniqueName;
     }
     buildShader(): void {
 
