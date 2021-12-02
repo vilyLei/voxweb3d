@@ -378,6 +378,14 @@ precision mediump float;
         this.m_uniqueNSKeys[8] = 1;
         this.m_uniqueNSKeyFlag = true;
     }
+    /**
+     * add roughness map
+     */
+    addRoughnessMap(): void {
+        this.addTextureSample2D("VOX_ROUGHNESS_MAP");
+        this.m_uniqueNSKeys[9] = 1;
+        this.m_uniqueNSKeyFlag = true;
+    }
     
     addTextureSample2D(macroName: string = "", map2DEnabled: boolean = true, fragEnabled: boolean = true, vertEnabled: boolean = false): void {
         if(macroName == "" || !this.m_textureMacroNames.includes(macroName)) {

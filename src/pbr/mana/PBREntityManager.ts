@@ -35,7 +35,6 @@ export default class PBREntityManager
     private m_dracoModule: PBRMultiPartsDracoModule = new PBRMultiPartsDracoModule();
     aoMapEnabled: boolean = false;
     constructor() {
-
     }
     initialize(rscene:RendererScene, entityUtils: PBREntityUtils, mirrorEffector: PBRMirror,uiModule: DefaultPBRUI, envMap: TextureProxy): void {
 
@@ -71,7 +70,7 @@ export default class PBREntityManager
             this.m_dracoModule.setPartsTotal(urlsTotal);
             this.m_dracoModule.setScale( 1.0 );
             this.m_dracoModule.setPosition(new Vector3D(0.0, -300.0, 0.0));
-            this.m_dracoModule.loadNext();
+            //this.m_dracoModule.loadNext();
 
             this.initPrimitive();
         }
@@ -83,6 +82,7 @@ export default class PBREntityManager
         material.decorator.diffuseMap = this.m_entityUtils.getTextureByUrl( "static/assets/disp/normal_4_256_COLOR.png" );
         // normal map
         material.decorator.normalMap = this.m_entityUtils.getTextureByUrl( "static/assets/disp/normal_4_256_NRM.png" );
+        console.log("this.aoMapEnabled: ",this.aoMapEnabled);
         if(this.aoMapEnabled) {
             // ao map
             material.decorator.aoMap = this.m_entityUtils.getTextureByUrl( "static/assets/disp/normal_4_256_OCC.png" );
@@ -143,7 +143,7 @@ export default class PBREntityManager
         let scale: number = 1.0;
         let uvscale: number;
         total = posList.length;
-
+        total = 1;
         for(let i: number = 0; i < total; ++i) {
 
             rad = Math.random() * 100.0;

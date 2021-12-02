@@ -59,35 +59,35 @@ export default class PBRShaderDecorator {
     createTextureList(): TextureProxy[] {
         
         let texList: TextureProxy[] = [];
-        // let coder: ShaderCodeBuilder = this.codeBuilder;
+        
         if ( this.envMap != null ) {
             texList.push( this.envMap );
-            // coder.addTextureSampleCube("VOX_ENV_MAP");
+            // console.log("VOX_ENV_MAP");
         }
         if ( this.diffuseMap != null ) {
             texList.push( this.diffuseMap );
-            // coder.addTextureSample2D("VOX_DIFFUSE_MAP");
+            // console.log("VOX_DIFFUSE_MAP");
         }
         if (this.normalMap != null) {
             texList.push( this.normalMap );
-            // coder.addTextureSample2D("VOX_NORMAL_MAP");
+            // console.log("VOX_NORMAL_MAP");
         }
         if (this.aoMap != null) {
             texList.push( this.aoMap );
-            // coder.addTextureSample2D("VOX_AO_MAP");
+            // console.log("VOX_AO_MAP");
         }
         if (this.mirrorMap != null) {
             texList.push( this.mirrorMap );
-            // coder.addTextureSample2D("VOX_MIRROR_PROJ_MAP");
+            // console.log("VOX_MIRROR_PROJ_MAP");
         }
-        if (this.indirectEnvMap != null) {
+        if ( this.indirectEnvMapEnabled && this.indirectEnvMap != null) {
             texList.push( this.indirectEnvMap );
-            // coder.addTextureSampleCube("VOX_INDIRECT_ENV_MAP");
+            // console.log("VOX_INDIRECT_ENV_MAP");
         }
-        //  console.log("this.shadowReceiveEnabled, this.shadowMap != null: ",this.shadowReceiveEnabled,this.shadowMap != null);
+
         if (this.shadowReceiveEnabled && this.shadowMap != null) {
             texList.push( this.shadowMap );
-            // coder.addTextureSample2D("VOX_VSM_SHADOW_MAP", false);
+            // console.log("VOX_VSM_SHADOW_MAP");
         }
         if(this.displacementMap != null) {
             texList.push( this.displacementMap );
@@ -95,12 +95,17 @@ export default class PBRShaderDecorator {
         if(this.parallaxMap != null) {
             texList.push( this.parallaxMap );
         }
+        if(this.roughnessMap != null) {
+            texList.push( this.roughnessMap );
+        }
 
         this.texturesTotal = texList.length;
+        console.log("this.texturesTotal: ",this.texturesTotal);
         return texList;
     }
     copyFrom(src: PBRShaderDecorator): void {
 
+        console.log("copyFrom(), decor src: ",src);
         this.woolEnabled = src.woolEnabled;
         this.toneMappingEnabled = src.toneMappingEnabled;
         this.envMapEnabled = src.envMapEnabled;
@@ -127,11 +132,12 @@ export default class PBRShaderDecorator {
         if(this.normalMap == null) this.normalMap = src.normalMap;
         if(this.aoMap == null) this.aoMap = src.aoMap;
         if(this.mirrorMap == null) this.mirrorMap = src.mirrorMap;
-        if(this.indirectEnvMap != null) this.indirectEnvMap = src.indirectEnvMap;
-        if(this.shadowMap == null) this.shadowMap = src.shadowMap;
+        if(this.indirectEnvMap == null && this.indirectEnvMapEnabled) this.indirectEnvMap = src.indirectEnvMap;
+
+        if(this.shadowMap == null && this.shadowReceiveEnabled) this.shadowMap = src.shadowMap;
+        if(this.displacementMap == null) this.parallaxMap = src.displacementMap;
         if(this.parallaxMap == null) this.parallaxMap = src.parallaxMap;
         if(this.roughnessMap == null) this.roughnessMap = src.roughnessMap;
-        if(this.displacementMap == null) this.displacementMap = src.displacementMap;
         // if(this.specularMap == null) this.specularMap = src.specularMap;
 
         this.lightEnabled = src.lightEnabled;
@@ -179,6 +185,7 @@ export default class PBRShaderDecorator {
         if (this.indirectEnvMapEnabled) {
             coder.addTextureSampleCube("VOX_INDIRECT_ENV_MAP");
         }
+
         if (this.shadowReceiveEnabled) {
             coder.addShadowMap();
         }
@@ -187,6 +194,12 @@ export default class PBRShaderDecorator {
         }
         if(this.parallaxMap != null) {
             coder.addParallaxMap( this.parallaxParamIndex );
+        }
+        if(this.parallaxMap != null) {
+            coder.addParallaxMap( this.parallaxParamIndex );
+        }
+        if(this.roughnessMap != null) {
+            coder.addRoughnessMap();
         }
         //*/
 

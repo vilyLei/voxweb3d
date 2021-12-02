@@ -292,6 +292,7 @@ export class DefaultPBRUI implements IPBRUI {
         switch (selectEvt.uuid) {
             case "absorb":
                 if(this.m_paramEntity.absorbEnabled != flag) {
+                    console.log("this.m_paramEntity.getMaterial(): ",this.m_paramEntity.getMaterial());
                     material = (this.m_paramEntity.getMaterial() as IPBRMaterial).clone();
                     material.decorator.absorbEnabled = flag;
                     this.m_paramEntity.absorbEnabled = flag;

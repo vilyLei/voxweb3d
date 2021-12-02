@@ -93,6 +93,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     
     protected buildBuf(): void {
 
+        console.log("PBRMaterial::buildBuf()...");
         let buf: PBRShaderBuffer = PBRShaderBuffer.GetInstance();
         let decorator = this.decorator;
         buf.lightEnabled = decorator.lightEnabled;
@@ -134,36 +135,39 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
             this.m_parallaxParams.set([1.0, 10.0, 2.0, 0.1]);
         }
     }
-    copyFrom(dst: PBRMaterial): void {
-
+    copyFrom(src: PBRMaterial): void {
+        // console.log("material copyFrom(), src.getTextureList(): ", src.getTextureList());
+        // console.log("material copyFrom(), src: ", src);
+        // console.log("material copyFrom(), this.m_pipeLine: ", this.m_pipeLine);
+        src.setMaterialPipeline(this.m_pipeLine);
         if(this.decorator == null)this.decorator = new PBRShaderDecorator();
-        this.decorator.copyFrom( dst.decorator );
+        this.decorator.copyFrom( src.decorator );
         this.decorator.createTextureList();
         
-        if(this.m_pbrParams == null || this.m_pbrParams.length != dst.m_pbrParams.length) {
-            this.m_pbrParams = dst.m_pbrParams.slice();
+        if(this.m_pbrParams == null || this.m_pbrParams.length != src.m_pbrParams.length) {
+            this.m_pbrParams = src.m_pbrParams.slice();
         }
         else {
-            this.m_pbrParams.set(dst.m_pbrParams);
+            this.m_pbrParams.set(src.m_pbrParams);
         }
-        if(this.m_fragLocalParams == null || this.m_fragLocalParams.length != dst.m_fragLocalParams.length) {
-            this.m_fragLocalParams = dst.m_fragLocalParams.slice();
-        }
-        else {
-            this.m_fragLocalParams.set(dst.m_fragLocalParams);
-        }
-        if(this.m_vertLocalParams == null || this.m_vertLocalParams.length != dst.m_vertLocalParams.length) {
-            this.m_vertLocalParams = dst.m_vertLocalParams.slice();
+        if(this.m_fragLocalParams == null || this.m_fragLocalParams.length != src.m_fragLocalParams.length) {
+            this.m_fragLocalParams = src.m_fragLocalParams.slice();
         }
         else {
-            this.m_vertLocalParams.set(dst.m_fragLocalParams);
+            this.m_fragLocalParams.set(src.m_fragLocalParams);
+        }
+        if(this.m_vertLocalParams == null || this.m_vertLocalParams.length != src.m_vertLocalParams.length) {
+            this.m_vertLocalParams = src.m_vertLocalParams.slice();
+        }
+        else {
+            this.m_vertLocalParams.set(src.m_fragLocalParams);
         }
         
-        if(this.m_mirrorParam == null || this.m_mirrorParam.length != dst.m_mirrorParam.length) {
-            this.m_mirrorParam = dst.m_mirrorParam.slice();
+        if(this.m_mirrorParam == null || this.m_mirrorParam.length != src.m_mirrorParam.length) {
+            this.m_mirrorParam = src.m_mirrorParam.slice();
         }
         else {
-            this.m_mirrorParam.set(dst.m_mirrorParam);
+            this.m_mirrorParam.set(src.m_mirrorParam);
         }
     }
     setTextureList(texList: TextureProxy[]): void {
@@ -172,19 +176,9 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
     
     clone(): PBRMaterial {
 
-        let dst: PBRMaterial = new PBRMaterial();
-        dst.setMaterialPipeline(this.m_pipeLine);
-        if(dst.decorator == null)dst.decorator = new PBRShaderDecorator();
-        dst.decorator.copyFrom( this.decorator );
-        //dst.decorator.initialize();
-
-        //dst.m_albedo.set(this.m_albedo);
-        dst.m_pbrParams.set(this.m_pbrParams);
-        dst.m_fragLocalParams.set(this.m_fragLocalParams);
-        dst.m_mirrorParam.set(this.m_mirrorParam);
-        
-        //dst.setTextureList(this.getTextureList().slice());
-        return dst;
+        let m: PBRMaterial = new PBRMaterial();
+        m.copyFrom( this );
+        return m;
     }
     seNormalMapIntensity(intensity: number): void {
         intensity = Math.min(Math.max(intensity, 0.0), 1.0);

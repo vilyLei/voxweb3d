@@ -86,9 +86,10 @@ export default class PBREntityUtils {
     }
     createMirrorEntity(param: PBRParamEntity, material: PBRMaterial, mirrorType: number): void {
 
+        console.log("create mirror entity");
         let matBuilder: PBRMaterialBuilder = this.m_materialBuilder;
 
-        let mirMaterial: PBRMaterial = matBuilder.makePBRMaterial(Math.random(), Math.random(), 0.7 + Math.random() * 0.3);
+        let mirMaterial: PBRMaterial = matBuilder.makePBRMaterial(1,1,1);
         mirMaterial.copyFrom(material);
         let decorator: PBRShaderDecorator = material.decorator;
 
@@ -100,6 +101,8 @@ export default class PBREntityUtils {
         mirDecorator.indirectEnvMapEnabled = false;
         mirDecorator.pixelNormalNoiseEnabled = false;
         mirDecorator.aoMapEnabled = false;
+        mirDecorator.shadowReceiveEnabled = false;
+        mirDecorator.fogEnabled = false;
 
         let mirEntity: DisplayEntity = new DisplayEntity();
         mirEntity.copyMeshFrom(param.entity);
