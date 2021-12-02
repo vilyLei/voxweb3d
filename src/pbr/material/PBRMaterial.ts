@@ -136,10 +136,7 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         }
     }
     copyFrom(src: PBRMaterial): void {
-        // console.log("material copyFrom(), src.getTextureList(): ", src.getTextureList());
-        // console.log("material copyFrom(), src: ", src);
-        // console.log("material copyFrom(), this.m_pipeLine: ", this.m_pipeLine);
-        src.setMaterialPipeline(this.m_pipeLine);
+        this.setMaterialPipeline(src.m_pipeLine);
         if(this.decorator == null)this.decorator = new PBRShaderDecorator();
         this.decorator.copyFrom( src.decorator );
         this.decorator.createTextureList();
