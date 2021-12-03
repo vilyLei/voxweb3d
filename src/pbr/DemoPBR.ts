@@ -87,10 +87,9 @@ export class DemoPBR {
             mcParam.directionLightsTotal = 2;
             mcParam.spotLightsTotal = 0;
             mcParam.vsmFboIndex = 2;
-            mcParam.loadAllShaderCode = true
+            mcParam.loadAllShaderCode = true;
+            mcParam.vsmEnabled = true;
             this.m_materialCtx.initialize(this.m_rscene, mcParam);
-
-            this.m_rscene.setClearRGBColor3f(0.2, 0.8, 0.2);
             
             this.m_uiModule.initialize(this.m_rscene, this.m_materialCtx, true);
             this.m_ruisc = this.m_uiModule.ruisc;
@@ -112,7 +111,7 @@ export class DemoPBR {
         this.m_uiModule.deselectParamEntity();
     }
     private resize(evt: any): void {
-        
+
         if (this.m_ruisc != null) {
             let stage = this.m_ruisc.getStage3D();
             this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);

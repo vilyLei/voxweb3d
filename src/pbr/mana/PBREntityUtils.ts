@@ -62,7 +62,7 @@ export default class PBREntityUtils {
         if (decorator.indirectEnvMapEnabled) {
             decorator.indirectEnvMap = this.m_cubeRTTBuilder.getCubeTexture();
         }
-        if (decorator.shadowReceiveEnabled) {
+        if (decorator.shadowReceiveEnabled && this.m_vsmModule != null) {
             decorator.shadowMap = this.m_vsmModule.getShadowMap();
         }
     }
@@ -86,7 +86,6 @@ export default class PBREntityUtils {
     }
     createMirrorEntity(param: PBRParamEntity, material: PBRMaterial, mirrorType: number): void {
 
-        console.log("create mirror entity");
         let matBuilder: PBRMaterialBuilder = this.m_materialBuilder;
 
         let mirMaterial: PBRMaterial = matBuilder.makePBRMaterial(1,1,1);
@@ -95,7 +94,7 @@ export default class PBREntityUtils {
 
         let mirDecorator: PBRShaderDecorator = mirMaterial.decorator;
         mirDecorator.hdrBrnEnabled = false;
-        mirDecorator.envMapEnabled = false;
+        mirDecorator.envMapEnabled = true;
         mirDecorator.diffuseMapEnabled = decorator.diffuseMapEnabled;
         mirDecorator.normalMapEnabled = decorator.normalMapEnabled;
         mirDecorator.indirectEnvMapEnabled = false;

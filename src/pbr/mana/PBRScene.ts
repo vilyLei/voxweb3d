@@ -102,17 +102,19 @@ export default class PBRScene {
             this.m_cubeRTTBuilder.setRProcessIDList([1]);
 
             let vsmModule = materialCtx.vsmModule;
-            vsmModule.setRendererProcessIDList([0,1]);
-            vsmModule.setCameraPosition(new Vector3D(10, 800, 10));
-            vsmModule.setCameraNear( 10.0 );
-            vsmModule.setCameraFar( 3000.0 );
-            vsmModule.setMapSize(128.0, 128.0);
-            vsmModule.setCameraViewSize(3000, 3000);
-            vsmModule.setShadowRadius(4.0);
-            vsmModule.setShadowBias(-0.0005);
-            vsmModule.setShadowIntensity(0.85);
-            vsmModule.setColorIntensity(0.4);
-            vsmModule.upate();
+            if(vsmModule != null) {
+                vsmModule.setRendererProcessIDList([0,1]);
+                vsmModule.setCameraPosition(new Vector3D(10, 800, 10));
+                vsmModule.setCameraNear( 10.0 );
+                vsmModule.setCameraFar( 3000.0 );
+                vsmModule.setMapSize(128.0, 128.0);
+                vsmModule.setCameraViewSize(3000, 3000);
+                vsmModule.setShadowRadius(4.0);
+                vsmModule.setShadowBias(-0.0005);
+                vsmModule.setShadowIntensity(0.85);
+                vsmModule.setColorIntensity(0.4);
+                vsmModule.upate();
+            }
 
 
             let envData = materialCtx.envData;

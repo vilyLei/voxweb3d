@@ -68,6 +68,12 @@
     #else
     vec3 albedo = u_fragLocalParams[1].xyz;
     #endif
+    
+    // // for test
+    // vec4 tc4 = VOX_Texture2D(VOX_DIFFUSE_MAP, texUV);
+    // tc4.xyz *= u_fragLocalParams[1].xyz;
+    // FragColor0 = tc4;
+    // return;
     // calculate reflectance at normal incidence; if dia-electric (like plastic) use F0 
     // of 0.04 and if it's a metal, use the albedo color as F0 (metallic workflow)    
     vec3 F0 = u_fragLocalParams[0].xyz + vec3(0.04);
@@ -222,6 +228,11 @@
         #else
         vec4 mirrorColor4 = ao * VOX_Texture2D(VOX_MIRROR_PROJ_MAP, (gl_FragCoord.xy/u_stageParam.zw) + (N  * vec3(0.02)).xy);
         #endif
+        // // for test
+        // mirrorColor4 = VOX_Texture2D(VOX_MIRROR_PROJ_MAP, gl_FragCoord.xy/u_stageParam.zw);
+        // FragColor0 = mirrorColor4;
+        // return;
+
         factorY = mix(1.0, factorY, glossinessSquare);
         color.xyz = mix(mirrorColor4.xyz, color.xyz, factorY);
     #endif

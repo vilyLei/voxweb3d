@@ -58,45 +58,56 @@ export default class PBRShaderDecorator {
 
     createTextureList(): TextureProxy[] {
         
+        let coder: ShaderCodeBuilder = this.codeBuilder;
         let texList: TextureProxy[] = [];
         
-        if ( this.envMap != null ) {
+        if (this.envMapEnabled && this.envMap != null ) {
             texList.push( this.envMap );
+            coder.addEnvMap();
             // console.log("VOX_ENV_MAP");
         }
-        if ( this.diffuseMap != null ) {
+        if ( this.diffuseMapEnabled && this.diffuseMap != null ) {
             texList.push( this.diffuseMap );
+            coder.addDiffuseMap();
             // console.log("VOX_DIFFUSE_MAP");
         }
-        if (this.normalMap != null) {
+        if (this.normalMapEnabled && this.normalMap != null) {
             texList.push( this.normalMap );
+            coder.addNormalMap();
             // console.log("VOX_NORMAL_MAP");
         }
-        if (this.aoMap != null) {
+        if (this.aoMapEnabled && this.aoMap != null) {
             texList.push( this.aoMap );
+            coder.addAOMap();
             // console.log("VOX_AO_MAP");
         }
-        if (this.mirrorMap != null) {
+        if (this.mirrorProjEnabled && this.mirrorMap != null) {
             texList.push( this.mirrorMap );
+            coder.addTextureSample2D("VOX_MIRROR_PROJ_MAP");
             // console.log("VOX_MIRROR_PROJ_MAP");
         }
         if ( this.indirectEnvMapEnabled && this.indirectEnvMap != null) {
             texList.push( this.indirectEnvMap );
+            coder.addTextureSampleCube("VOX_INDIRECT_ENV_MAP");
             // console.log("VOX_INDIRECT_ENV_MAP");
         }
 
         if (this.shadowReceiveEnabled && this.shadowMap != null) {
             texList.push( this.shadowMap );
+            coder.addShadowMap();
             // console.log("VOX_VSM_SHADOW_MAP");
         }
         if(this.displacementMap != null) {
             texList.push( this.displacementMap );
+            coder.addDisplacementMap();
         }
         if(this.parallaxMap != null) {
             texList.push( this.parallaxMap );
+            coder.addParallaxMap( this.parallaxParamIndex );
         }
         if(this.roughnessMap != null) {
             texList.push( this.roughnessMap );
+            coder.addRoughnessMap();
         }
 
         this.texturesTotal = texList.length;
@@ -138,7 +149,7 @@ export default class PBRShaderDecorator {
         if(this.parallaxMap == null) this.parallaxMap = src.parallaxMap;
         if(this.roughnessMap == null) this.roughnessMap = src.roughnessMap;
         // if(this.specularMap == null) this.specularMap = src.specularMap;
-
+        
         this.lightEnabled = src.lightEnabled;
         this.texturesTotal = src.texturesTotal;
 
@@ -164,43 +175,6 @@ export default class PBRShaderDecorator {
         if (this.gammaCorrection) coder.addDefine("VOX_GAMMA_CORRECTION");
         if (this.absorbEnabled) coder.addDefine("VOX_ABSORB");
         if (this.pixelNormalNoiseEnabled) coder.addDefine("VOX_PIXEL_NORMAL_NOISE");
-
-        ///*
-        if (this.envMapEnabled && this.texturesTotal > 0) {
-            coder.addEnvMap();
-        }
-        if (this.diffuseMapEnabled) {
-            coder.addDiffuseMap();
-        }
-        if (this.normalMapEnabled) {
-            coder.addNormalMap();
-        }
-        if (this.aoMapEnabled) {
-            coder.addAOMap();
-        }
-        if (mirrorProjEnabled) {
-            coder.addTextureSample2D("VOX_MIRROR_PROJ_MAP");
-        }
-        if (this.indirectEnvMapEnabled) {
-            coder.addTextureSampleCube("VOX_INDIRECT_ENV_MAP");
-        }
-
-        if (this.shadowReceiveEnabled) {
-            coder.addShadowMap();
-        }
-        if(this.displacementMap != null) {
-            coder.addDisplacementMap();
-        }
-        if(this.parallaxMap != null) {
-            coder.addParallaxMap( this.parallaxParamIndex );
-        }
-        if(this.parallaxMap != null) {
-            coder.addParallaxMap( this.parallaxParamIndex );
-        }
-        if(this.roughnessMap != null) {
-            coder.addRoughnessMap();
-        }
-        //*/
 
         if (this.mirrorMapLodEnabled) coder.addDefine("VOX_MIRROR_MAP_LOD", "1");
         if (this.hdrBrnEnabled) coder.addDefine("VOX_HDR_BRN", "1");
@@ -240,7 +214,7 @@ export default class PBRShaderDecorator {
         if (this.fogEnabled) ns += "Fog";
         if (this.hdrBrnEnabled) ns += "HdrBrn";
         if (this.vtxFlatNormal) ns += "vtxFlagN";
-
+        console.log("getUNS(), this.texturesTotal: ",this.texturesTotal);
         ns += "_T" + this.texturesTotal;
         this.m_uniqueName = ns;
 

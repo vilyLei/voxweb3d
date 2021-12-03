@@ -82,7 +82,6 @@ export default class PBREntityManager
         material.decorator.diffuseMap = this.m_entityUtils.getTextureByUrl( "static/assets/disp/normal_4_256_COLOR.png" );
         // normal map
         material.decorator.normalMap = this.m_entityUtils.getTextureByUrl( "static/assets/disp/normal_4_256_NRM.png" );
-        console.log("this.aoMapEnabled: ",this.aoMapEnabled);
         if(this.aoMapEnabled) {
             // ao map
             material.decorator.aoMap = this.m_entityUtils.getTextureByUrl( "static/assets/disp/normal_4_256_OCC.png" );
@@ -92,8 +91,7 @@ export default class PBREntityManager
             material.decorator.indirectEnvMap = this.m_entityUtils.getCubeRttBuilder().getCubeTexture();
         }
         if (material.decorator.shadowReceiveEnabled) {
-            material.decorator.shadowMap = this.m_entityUtils.getVSMModule().getShadowMap();
-            console.log("material.decorator.shadowMap: ",material.decorator.shadowMap);
+            material.decorator.shadowMap = this.m_entityUtils.getVSMModule() != null ? this.m_entityUtils.getVSMModule().getShadowMap() : null;
         }
     }
     private initPrimitive(): void {
@@ -165,7 +163,7 @@ export default class PBREntityManager
             posList[i].y += (this.m_reflectPlaneY + 10) + pr + 5;
             sph.setPosition(posList[i]);
             this.m_rscene.addEntity(sph);
-
+            
             this.addParamEntity(sph, material, 0);
         }
 

@@ -17,6 +17,7 @@ import PBRMaterial from "../../pbr/material/PBRMaterial";
 import PBRMaterialBuilder from "../../pbr/mana/PBRMaterialBuilder";
 import MirrorProjEntity from "./MirrorProjEntity";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
+import ScreenAlignPlaneEntity from "../../vox/entity/ScreenAlignPlaneEntity";
 import EnvLightData from "../../light/base/EnvLightData";
 import PBRShaderDecorator from "../material/PBRShaderDecorator";
 import RTTTextureProxy from "../../vox/texture/RTTTextureProxy";
@@ -71,11 +72,13 @@ export class PBRMirror {
         this.m_fboIns.createFBOAt(this.m_fboIndex, 512, 512, true, false);
         this.m_fboIns.setRenderToTexture(texProxy, 0);          // framebuffer color attachment 0
         this.m_fboIns.setRProcessIDList(this.m_rprocessIDList);
-
-        //  let scrPlane: ScreenAlignPlaneEntity =  new ScreenAlignPlaneEntity();
-        //  scrPlane.initialize(-0.9,-0.9,0.4,0.4, [this.m_fboIns.getRTTAt(0)]);
-        //  scrPlane.setOffsetRGB3f(0.1,0.1,0.1);
-        //  this.m_rscene.addEntity(scrPlane, 1);
+        /*
+        let scrPlane: ScreenAlignPlaneEntity =  new ScreenAlignPlaneEntity();
+        //scrPlane.initialize(-0.9,-0.9,0.4,0.4, [this.m_fboIns.getRTTAt(0)]);
+        scrPlane.initialize(-1,-1,2,2, [this.m_fboIns.getRTTAt(0)]);
+        //scrPlane.setOffsetRGB3f(0.1,0.1,0.1);
+        this.m_rscene.addEntity(scrPlane, 4);
+        //*/
 
         let camera: CameraBase = this.m_rscene.getCamera();
         let camPos: Vector3D = camera.getPosition();
@@ -89,7 +92,7 @@ export class PBRMirror {
 
         let plane: Plane3DEntity = null;
         let material: PBRMaterial;
-        let shadowTex = this.vsmModule.getShadowMap();
+        let shadowTex = this.vsmModule!= null ? this.vsmModule.getShadowMap() : null;
 
         this.m_mirrorMapLodEnabled = true;
         ///*
@@ -124,6 +127,7 @@ export class PBRMirror {
         material.setUVScale(3.0, 3.0);
         material.setMirrorIntensity(0.9);
         material.setMirrorMixFactor(0.2);
+        ///*
         plane = new Plane3DEntity();
         plane.flipVerticalUV = true;
         plane.setMaterial(material);
@@ -131,7 +135,7 @@ export class PBRMirror {
         plane.setXYZ(0, this.reflectPlaneY, 0);
         this.m_rscene.addEntity(plane, 1);
         this.m_plane = plane;
-
+        ///*
         let param: PBRParamEntity = new PBRParamEntity();
         param.entity = plane;
         param.setMaterial(material);

@@ -16,7 +16,7 @@ import PBRShaderDecorator from "./PBRShaderDecorator";
 import Color4 from "../../vox/material/Color4";
 import TextureProxy from "../../vox/texture/TextureProxy";
 
-//  import { PBRShaderCode } from "./glsl/PBRShaderCode";
+import { PBRShaderCode } from "./glsl/PBRShaderCode";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 
 class PBRShaderBuffer extends ShaderCodeBuffer {
@@ -136,10 +136,12 @@ export default class PBRMaterial extends MaterialBase implements IPBRMaterial {
         }
     }
     copyFrom(src: PBRMaterial): void {
+
         this.setMaterialPipeline(src.m_pipeLine);
         if(this.decorator == null)this.decorator = new PBRShaderDecorator();
         this.decorator.copyFrom( src.decorator );
-        //this.decorator.createTextureList();
+        // console.log("copyFrom src: ",src);
+        // console.log("copyFrom this: ",this);
         
         if(this.m_pbrParams == null || this.m_pbrParams.length != src.m_pbrParams.length) {
             this.m_pbrParams = src.m_pbrParams.slice();

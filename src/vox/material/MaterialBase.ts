@@ -98,7 +98,6 @@ export default class MaterialBase implements IRenderMaterial {
                     ShaderCodeBuffer.UseShaderBuffer(buf);
                     texEnabled = texEnabled || this.getTextureTotal() > 0;
                     buf.initialize(texEnabled);
-
                     shdCode_uniqueName = buf.getUniqueShaderName() + buf.getShaderCodeBuilder().getUniqueNSKeyString();
                     this.m_shduns = shdCode_uniqueName;
                     this.__$initShd(this.m_shduns);
