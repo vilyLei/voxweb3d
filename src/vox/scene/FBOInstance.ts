@@ -216,6 +216,9 @@ export default class FBOInstance {
     updateGlobalMaterialUniform(): void {
         this.m_rcontext.updateMaterialUniform( this.m_gMateiral );
     }
+    clearDepth(clearDepth: number = 1.0): void {
+        this.m_adapter.clearFBODepthAt(this.m_fboIndex, clearDepth);
+    }
 
     synFBOSizeWithViewport(): void {
         this.m_synFBOSizeWithViewport = true;
@@ -549,7 +552,7 @@ export default class FBOInstance {
                 this.m_renderer.runAt(this.m_rindexs[i]);
             }
         }
-        this.m_runFlag = true;
+        // this.m_runFlag = true;
         if (lockRenderState) this.unlockRenderState();
         if (lockMaterial) {
             this.unlockMaterial();

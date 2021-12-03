@@ -445,6 +445,12 @@ class RenderAdapter implements IRenderAdapter{
 			throw Error("Fatal Error!!! this.m_fboBuf == null.");
 		}
 	}
+	clearFBODepthAt(index: number, clearDepth: number = 1.0): void {
+		let fboBuf = this.m_fboBufList[index];
+		if(fboBuf != null) {
+			fboBuf.clearOnlyDepth(clearDepth);
+		}
+	}
 	resetFBOAttachmentMask(boo: boolean): void {
 		if (this.m_fboBuf != null) {
 			this.m_fboBuf.resetAttachmentMask(boo);

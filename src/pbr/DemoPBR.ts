@@ -16,6 +16,7 @@ import DefaultPBRUI from "./mana/DefaultPBRUI";
 import DebugFlag from "../vox/debug/DebugFlag";
 import PBRScene from "./mana/PBRScene";
 import PostOutline from "../renderingtoy/mcase/outline/PostOutline";
+import OcclusionPostOutline from "../renderingtoy/mcase/outline/OcclusionPostOutline";
 import RendererState from "../vox/render/RendererState";
 import { MaterialContextParam, MaterialContext } from "../materialLab/base/MaterialContext";
 
@@ -34,7 +35,8 @@ export class DemoPBR {
 
     private m_materialCtx: MaterialContext = new MaterialContext();
 
-    private m_postOutline: PostOutline = new PostOutline();
+    // private m_postOutline: PostOutline = new PostOutline();
+    private m_postOutline: OcclusionPostOutline = new OcclusionPostOutline();
     private m_uiModule: DefaultPBRUI = new DefaultPBRUI();
     private m_pbrScene: PBRScene;
 
@@ -63,8 +65,7 @@ export class DemoPBR {
             this.m_rscene.addEventListener(EventBase.RESIZE, this, this.resize);
             //  this.m_stencilOutline.initialize(this.m_rscene);
             //  this.m_stencilOutline.setRGB3f(1.0, 0.0, 1.0);
-            //this.m_postOutline.initialize(this.m_rscene, 4, [0,1]);
-            this.m_postOutline.initialize(this.m_rscene, 4, [0]);
+            this.m_postOutline.initialize(this.m_rscene, 4, [0,1]);
             this.m_postOutline.setFBOSizeScaleRatio(0.5);
             this.m_postOutline.setOutlineThickness(1.0);
             this.m_postOutline.setOutlineDensity(2.3);

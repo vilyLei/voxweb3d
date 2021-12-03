@@ -7,9 +7,6 @@ import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Box3DEntity from "../vox/entity/Box3DEntity";
-import Axis3DEntity from "../vox/entity/Axis3DEntity";
-import FrustrumFrame3DEntity from "../vox/entity/FrustrumFrame3DEntity";
-import ScreenAlignPlaneEntity from "../vox/entity/ScreenAlignPlaneEntity";
 import { TextureConst } from "../vox/texture/TextureConst";
 import TextureProxy from "../vox/texture/TextureProxy";
 
@@ -30,6 +27,7 @@ import MirrorToneMaterial from "./material/MirrorToneMaterial";
 import DebugFlag from "../vox/debug/DebugFlag";
 import StencilOutline from "../renderingtoy/mcase/outline/StencilOutline";
 import PostOutline from "../renderingtoy/mcase/outline/PostOutline";
+import OcclusionPostOutline from "../renderingtoy/mcase/outline/OcclusionPostOutline";
 import RendererState from "../vox/render/RendererState";
 import DracoMeshBuilder from "../voxmesh/draco/DracoMeshBuilder";
 import ThreadSystem from "../thread/ThreadSystem";
@@ -40,7 +38,8 @@ export class DemoOutline {
     constructor() { }
 
     private m_stencilOutline: StencilOutline = new StencilOutline();
-    private m_postOutline: PostOutline = new PostOutline();
+    //private m_postOutline: PostOutline = new PostOutline();
+    private m_postOutline: OcclusionPostOutline = new OcclusionPostOutline();
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
@@ -86,22 +85,12 @@ export class DemoOutline {
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_stencilOutline.initialize( this.m_rscene );
 
-            this.m_postOutline.initialize(this.m_rscene, 1, [0]);
+            this.m_postOutline.initialize(this.m_rscene, 1, [0, 1]);
             this.m_postOutline.setFBOSizeScaleRatio(0.5);
             this.m_postOutline.setRGB3f(0.0,2.0,0.0);
             this.m_postOutline.setOutlineDensity(2.5);
             this.m_postOutline.setOcclusionDensity(0.2);
-            //  let axis: Axis3DEntity = new Axis3DEntity();
-            //  axis.initialize(300.0);
-            //  this.m_rscene.addEntity(axis);
-
-            // add common 3d display entity
-            //      let plane:Plane3DEntity = new Plane3DEntity();
-            //      plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
-            //      this.m_rscene.addEntity(plane);
-            //      this.m_targets.push(plane);
-            //      //this.m_disp = plane
-            //testTex
+            
             
             this.initPlaneReflection();
 
@@ -249,7 +238,7 @@ export class DemoOutline {
         plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, texList);
         plane.setXYZ(0,-170, 0);
         //plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
-        this.m_rscene.addEntity(plane, 1);
+        this.m_rscene.addEntity(plane, 2);
         this.m_refPlane = plane;
         //*/
 

@@ -10,17 +10,17 @@ import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import MathConst from "../../../vox/math/MathConst";
 
-class PostOutlineShaderBuffer extends ShaderCodeBuffer {
+class OcclusionPostOutlineShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
-    private static s_instance: PostOutlineShaderBuffer = new PostOutlineShaderBuffer();
+    private static s_instance: OcclusionPostOutlineShaderBuffer = new OcclusionPostOutlineShaderBuffer();
     private m_uniqueName: string = "";
     
     initialize(texEnabled: boolean): void {
         super.initialize(texEnabled);
-        //console.log("PostOutlineShaderBuffer::initialize()...,texEnabled: "+texEnabled);
-        this.m_uniqueName = "PostOutlineShd";
+        //console.log("OcclusionPostOutlineShaderBuffer::initialize()...,texEnabled: "+texEnabled);
+        this.m_uniqueName = "OcclusionPostOutlineShd";
         this.adaptationShaderVersion = false;
     }
     buildShader(): void {
@@ -44,25 +44,22 @@ void main() {
     vec4 param = u_params[0];
     vec2 dv = param.ww / param.xy;
     vec4 srcColor = VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv );
-    float fc = srcColor.x;
-    fc += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + dv ).x;
-    fc += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - dv ).x;
-    fc += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(dv.x ,-dv.y) ).x;
-    fc += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(-dv.x ,dv.y) ).x;
-    fc += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(dv.x ,0) ).x;
-    fc += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(0 ,dv.y) ).x;
-    fc += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - vec2(dv.x ,0) ).x;
-    fc += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - vec2(0 ,dv.y) ).x;
-    fc *= factor;
+    vec2 fc = srcColor.xy;
+    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + dv ).xy;
+    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - dv ).xy;
+    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(dv.x ,-dv.y) ).xy;
+    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(-dv.x ,dv.y) ).xy;
+    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(dv.x ,0) ).xy;
+    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(0 ,dv.y) ).xy;
+    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - vec2(dv.x ,0) ).xy;
+    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - vec2(0 ,dv.y) ).xy;
+    fc.xy *= factor;
     
+    float dis = abs(fc.x - srcColor.x);
 
-    float dis = abs(fc - srcColor.x);
-
-    // float fk = 1.0 - step(dis, 0.0001);
-    // FragColor0 = vec4(vec3(fk), fk);
-    // return;
+    float fk = step(max(fc.y, srcColor.y), 0.0001);
     float fa = u_params[2].x;
-    fa = (1.0 - srcColor.y) * (1.0 - fa) + fa;
+    fa = (1.0 - fk) * (1.0 - fa) + fa;
 
     dis *= param.z;
     dis = pow(dis * dis * dis, floatReciprocalGamma);
@@ -88,20 +85,20 @@ void main() {
         return this.m_uniqueName;
     }
     toString(): string {
-        return "[PostOutlineShaderBuffer()]";
+        return "[OcclusionPostOutlineShaderBuffer()]";
     }
-    static GetInstance(): PostOutlineShaderBuffer {
-        return PostOutlineShaderBuffer.s_instance;
+    static GetInstance(): OcclusionPostOutlineShaderBuffer {
+        return OcclusionPostOutlineShaderBuffer.s_instance;
     }
 }
 
-export default class PostOutlineMaterial extends MaterialBase {
+export default class OcclusionPostOutlineMaterial extends MaterialBase {
     constructor() {
         super();
     }
 
     getCodeBuf(): ShaderCodeBuffer {
-        let buf: PostOutlineShaderBuffer = PostOutlineShaderBuffer.GetInstance();
+        let buf: OcclusionPostOutlineShaderBuffer = OcclusionPostOutlineShaderBuffer.GetInstance();
         return buf;
     }
     private m_params: Float32Array = new Float32Array([

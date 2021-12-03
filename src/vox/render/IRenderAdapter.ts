@@ -71,7 +71,7 @@ interface IRenderAdapter {
 	// read data format include float or unsigned byte ,etc.
 	readPixels(px: number, py: number, width: number, height: number, format: number, dataType: number, pixels: Uint8Array): void;
 	createFBOAt(index: number, fboType: number, pw: number, ph: number, enableDepth: boolean, enableStencil: boolean, multisampleLevel: number): void;
-
+	clearFBODepthAt(index: number, clearDepth: number): void;
 	resizeFBOAt(index: number, pw: number, ph: number): void;
 	getFBOWidthAt(index: number): number;
 	getFBOHeightAt(index: number): number;
