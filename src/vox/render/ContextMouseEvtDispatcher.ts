@@ -247,7 +247,7 @@ class ContextMouseEvtDispatcher {
                 stage.mouseY = stage.stageHeight - py;
                 stage.mouseViewX = px;
                 stage.mouseViewY = py;
-                console.log("ContextMouseEvtDispatcher::ondoubleclick()," + stage.mouseViewX + "," + stage.mouseViewY + ",evt.button: " + evt.button);
+                // console.log("ContextMouseEvtDispatcher::ondoubleclick()," + stage.mouseViewX + "," + stage.mouseViewY + ",evt.button: " + evt.button);
                 if (evt.button == 0) {
                     stage.mouseDoubleClick();
                 } else if (evt.button == 2) {

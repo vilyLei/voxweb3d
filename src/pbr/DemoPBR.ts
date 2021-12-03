@@ -74,7 +74,7 @@ export class DemoPBR {
             this.m_rscene.enableMouseEvent(true);
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
-            this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
+            this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera(), false);
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rscene.getCamera());
 
@@ -152,15 +152,17 @@ export class DemoPBR {
         DebugFlag.Flag_0 = 0;
     }
     private renderBegin(): void {
-        let pickFlag: boolean = true;
+        let pickFlag: boolean = false;
         if (this.m_ruisc != null) {
             this.m_ruisc.runBegin(true, true);
             this.m_ruisc.update(false, true);
             pickFlag = this.m_ruisc.isRayPickSelected();
+            
         }
+        this.m_stageDragSwinger.setEnabled(!pickFlag);
         let uiFlag: boolean = this.m_uiModule.isOpen();
         this.m_rscene.runBegin(false);
-        // 如果ui panel 打开, 则 this.m_rscene 鼠标事件不会检测到3d物体
+        // 如果ui panel 打开, 才会允许 this.m_rscene 鼠标事件检测到3d物体
         this.m_rscene.setRayTestEanbled(uiFlag);
         this.m_rscene.update(false, !pickFlag);
     }

@@ -141,17 +141,7 @@ export default class PBRParamEntity implements IPBRParamEntity{
 
     }
 
-    
-    mouseOverListener(evt: any): void {
-        //console.log("PBRParamEntity mouseOverListener");
-    }
-    mouseOutListener(evt: any): void {
-        //console.log("PBRParamEntity mouseOutListener");
-    }
-    mouseDownListener(evt: any): void {
-        //console.log("PBRParamEntity mouseDownListener");
-    }
-    mouseUpListener(evt: any): void {
+    mouseClickListener(evt: any): void {
         //console.log("PBRParamEntity mouseUpListener");
         this.pbrUI.setParamEntity( this );
         this.select();
@@ -162,10 +152,7 @@ export default class PBRParamEntity implements IPBRParamEntity{
         this.entity.mouseEnabled = true;
 
         let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
-        dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
-        dispatcher.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener);
-        dispatcher.addEventListener(MouseEvent.MOUSE_OVER, this, this.mouseOverListener);
-        dispatcher.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutListener);
+        dispatcher.addEventListener(MouseEvent.MOUSE_CLICK, this, this.mouseClickListener);
         this.entity.setEvtDispatcher(dispatcher);
     }
 

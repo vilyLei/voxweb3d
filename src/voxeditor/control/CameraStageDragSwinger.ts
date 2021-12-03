@@ -15,20 +15,31 @@ export default class CameraStageDragSwinger {
 
     private m_stage3D: IRenderStage3D = null;
     private m_dragSwinger: CameraDragSwinger = new CameraDragSwinger();
-    initialize(stage3D: IRenderStage3D, camera: CameraBase): void {
+    private m_enabled: boolean = true;
+    initialize(stage3D: IRenderStage3D, camera: CameraBase, bgMouseDown: boolean = true): void {
         if (this.m_stage3D == null) {
             this.m_stage3D = stage3D;
             this.m_dragSwinger.initialize(stage3D, camera);
-            stage3D.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseDownListener, true, false);
-            stage3D.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener, false, true);
+            if(bgMouseDown) {
+                stage3D.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseDownListener, true, false);
+            }
+            else {
+                stage3D.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener, true, false);
+            }
+            stage3D.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener, true, true);
         }
     }
 
     private mouseDownListener(evt: any): void {
-        this.m_dragSwinger.attach();
+        if(this.m_enabled) {
+            this.m_dragSwinger.attach();
+        }
     }
     private mouseUpListener(evt: any): void {
         this.m_dragSwinger.detach();
+    }
+    setEnabled(enabled: boolean): void {
+        this.m_enabled = enabled;
     }
     detach(): void {
         this.m_dragSwinger.detach();
