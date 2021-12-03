@@ -94,6 +94,7 @@ export class DemoPBR {
             this.m_uiModule.initialize(this.m_rscene, this.m_materialCtx, true);
             this.m_ruisc = this.m_uiModule.ruisc;
             this.m_uiModule.close();
+            this.m_uiModule.postOutline = this.m_postOutline;
 
             this.m_pbrScene = new PBRScene();
             this.m_pbrScene.initialize(this.m_rscene, this.m_materialCtx, this.m_uiModule);

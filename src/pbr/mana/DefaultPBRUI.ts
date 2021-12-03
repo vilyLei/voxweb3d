@@ -30,13 +30,15 @@ import MaterialBase from "../../vox/material/MaterialBase";
 import AABB2D from "../../vox/geom/AABB2D";
 import Plane3DEntity from "../../vox/entity/Plane3DEntity";
 import { MaterialContext } from "../../materialLab/base/MaterialContext";
+import OcclusionPostOutline from "../../renderingtoy/mcase/outline/OcclusionPostOutline";
 
 export class DefaultPBRUI implements IPBRUI {
     constructor() { }
 
     private m_rscene: RendererScene = null;
     private m_materialCtx: MaterialContext = null;
-
+    
+    postOutline: OcclusionPostOutline;
     ruisc: RendererSubScene = null;
 
     rgbPanel: RGBColorPanel;
@@ -53,6 +55,7 @@ export class DefaultPBRUI implements IPBRUI {
     albedoBtn: ProgressBar;
     ambientBtn: ProgressBar;
     specularBtn: ProgressBar;
+    outlineBtn: ProgressBar;
 
 
     absorbBtn: SelectionBar;
@@ -236,6 +239,7 @@ export class DefaultPBRUI implements IPBRUI {
         this.albedoBtn = this.createValueBtn("albedo", "albedo", 0.2, 0.01, 5.0);
         this.ambientBtn = this.createValueBtn("ambient", "ambient", 0.1, 0.01, 1.0);
         this.specularBtn = this.createValueBtn("specular", "specular", 1.0, 0.01, 10.0);
+        this.outlineBtn = this.createValueBtn("outline", "outline", 0.1, 0.01, 1.0);
 
         let flag: boolean = RendererDevice.IsMobileWeb();
         this.rgbPanel = new RGBColorPanel();
@@ -384,6 +388,9 @@ export class DefaultPBRUI implements IPBRUI {
                 break;
             case "specular":
                 colorParamUnit = this.m_paramEntity.specular;
+                break;
+            case "outline":
+                this.postOutline.setOcclusionDensity(progEvt.value);
                 break;
             default:
                 break;
