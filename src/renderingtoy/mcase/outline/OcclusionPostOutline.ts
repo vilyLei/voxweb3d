@@ -42,23 +42,23 @@ export default class OcclusionPostOutline {
 
             this.m_fboIns = this.m_rscene.createFBOInstance();
             this.m_fboIns.asynFBOSizeWithViewport();
-            this.m_fboIns.setFBOSizeFactorWithViewPort( this.m_sizeScaleRatio );
+            this.m_fboIns.setFBOSizeFactorWithViewPort(this.m_sizeScaleRatio);
             this.m_fboIns.setClearRGBAColor4f(0.0, 0.0, 0.0, 1.0);                  // set rtt background clear rgba(r=0.3,g=0.0,b=0.0,a=0.0) color
-            this.m_fboIns.createFBOAt( fboIndex, 512, 512, true, false );
-            this.m_fboIns.setRenderToTexture( this.m_preColorRTT, 0 );              // framebuffer color attachment 0
-            this.m_fboIns.setRProcessIDList( occlusionRProcessIDList );
+            this.m_fboIns.createFBOAt(fboIndex, 512, 512, true, false);
+            this.m_fboIns.setRenderToTexture(this.m_preColorRTT, 0);              // framebuffer color attachment 0
+            this.m_fboIns.setRProcessIDList(occlusionRProcessIDList);
             this.m_rscene.setRenderToBackBuffer();
 
             this.m_postMaterial = new OcclusionPostOutlineMaterial();
-            this.m_postMaterial.setRGB3f(1.0,0.0,0.0);
+            this.m_postMaterial.setRGB3f(1.0, 0.0, 0.0);
             this.m_postMaterial.setThickness(1.0);
             this.m_postMaterial.setDensity(1.5);
-            
-            this.m_postPlane =  new ScreenAlignPlaneEntity();
+
+            this.m_postPlane = new ScreenAlignPlaneEntity();
             this.m_postMaterial.setTexSize(this.m_rscene.getViewWidth() * 0.5, this.m_rscene.getViewHeight() * 0.5);
-            this.m_postPlane.setMaterial( this.m_postMaterial );
-            this.m_postPlane.setRenderState( RendererState.BACK_TRANSPARENT_ALWAYS_STATE );
-            this.m_postPlane.initialize(-1,-1,2,2, [this.m_preColorRTT]);
+            this.m_postPlane.setMaterial(this.m_postMaterial);
+            this.m_postPlane.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
+            this.m_postPlane.initialize(-1, -1, 2, 2, [this.m_preColorRTT]);
             //this.m_rscene.addEntity(scrPlane, 2);
         }
     }
@@ -72,11 +72,11 @@ export default class OcclusionPostOutline {
     }
     setOutlineThickness(thickness: number): void {
         this.m_postMaterial.setThickness(thickness);
-    }    
-    setOutlineDensity( density: number ): void {
+    }
+    setOutlineDensity(density: number): void {
         this.m_postMaterial.setDensity(density);
     }
-    
+
     setOcclusionDensity(density: number): void {
         this.m_postMaterial.setOcclusionDensity(density);
     }
@@ -89,7 +89,7 @@ export default class OcclusionPostOutline {
     setTarget(target: DisplayEntity): void {
         this.m_target = target;
     }
-    
+
     startup(): void {
         this.m_running = true;
     }
@@ -106,21 +106,23 @@ export default class OcclusionPostOutline {
 
         if (this.m_running && this.m_target != null && this.m_target.isRenderEnabled()) {
 
-            this.m_preMaterial.setRGB3f(1.0,0.0,0.0);
-            this.m_fboIns.setGlobalMaterial( this.m_preMaterial, false, true );
+            this.m_preMaterial.setRGB3f(1.0, 0.0, 0.0);
+            this.m_fboIns.setGlobalMaterial(this.m_preMaterial, false, true);
             this.m_fboIns.runBegin();
-            this.m_fboIns.drawEntity( this.m_target );
-            
+            this.m_fboIns.drawEntity(this.m_target);
+
             this.m_fboIns.lockColorMask(RendererState.COLOR_MASK_ALL_FALSE);
             this.m_fboIns.clearDepth(1.0);
             this.m_target.setVisible(false);
-            this.m_fboIns.run(false,false,false);
-            this.m_fboIns.unlockRenderColorMask();
+            this.m_fboIns.run(false, false, false);
             this.m_fboIns.lockColorMask(RendererState.COLOR_MASK_GREEN_TRUE);
             this.m_target.setVisible(true);
-            this.m_preMaterial.setRGB3f(0.0,1.0,0.0);
+            this.m_preMaterial.setRGB3f(0.0, 1.0, 0.0);
             this.m_fboIns.updateGlobalMaterialUniform();
-            this.m_fboIns.drawEntity( this.m_target );
+            this.m_fboIns.drawEntity(this.m_target);
+            this.m_fboIns.runEnd();
+            this.m_fboIns.unlockRenderColorMask();
+            this.m_fboIns.unlockMaterial();
         }
     }
     /**
@@ -130,12 +132,9 @@ export default class OcclusionPostOutline {
 
         let entity: DisplayEntity = this.m_target;
         if (this.m_running && entity != null && entity.isRenderEnabled()) {
-            this.m_fboIns.runEnd();
-            this.m_fboIns.unlockRenderColorMask();
-            this.m_fboIns.unlockMaterial();
             this.m_rscene.setRenderToBackBuffer();
             this.m_postMaterial.setTexSize(this.m_rscene.getViewWidth() * this.m_sizeScaleRatio, this.m_rscene.getViewHeight() * this.m_sizeScaleRatio);
-            this.m_rscene.drawEntity( this.m_postPlane );
+            this.m_rscene.drawEntity(this.m_postPlane);
         }
     }
 

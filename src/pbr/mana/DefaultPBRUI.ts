@@ -118,10 +118,15 @@ export class DefaultPBRUI implements IPBRUI {
 
     }
     private m_paramEntity: IPBRParamEntity;
+    deselectParamEntity(): void {
+        this.m_paramEntity = null;
+    }
     setParamEntity(param: IPBRParamEntity): void {
         this.m_paramEntity = param;
-        this.m_paramEntity.pbrUI = this;
-        this.m_paramEntity.colorPanel = this.rgbPanel;
+        if(param != null) {
+            this.m_paramEntity.pbrUI = this;
+            this.m_paramEntity.colorPanel = this.rgbPanel;
+        }
     }
     getParamEntity(): IPBRParamEntity {
         return this.m_paramEntity;

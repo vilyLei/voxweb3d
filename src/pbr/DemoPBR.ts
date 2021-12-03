@@ -15,7 +15,6 @@ import RendererSubScene from "../vox/scene/RendererSubScene";
 import DefaultPBRUI from "./mana/DefaultPBRUI";
 import DebugFlag from "../vox/debug/DebugFlag";
 import PBRScene from "./mana/PBRScene";
-import PostOutline from "../renderingtoy/mcase/outline/PostOutline";
 import OcclusionPostOutline from "../renderingtoy/mcase/outline/OcclusionPostOutline";
 import RendererState from "../vox/render/RendererState";
 import { MaterialContextParam, MaterialContext } from "../materialLab/base/MaterialContext";
@@ -35,7 +34,6 @@ export class DemoPBR {
 
     private m_materialCtx: MaterialContext = new MaterialContext();
 
-    // private m_postOutline: PostOutline = new PostOutline();
     private m_postOutline: OcclusionPostOutline = new OcclusionPostOutline();
     private m_uiModule: DefaultPBRUI = new DefaultPBRUI();
     private m_pbrScene: PBRScene;
@@ -62,6 +60,7 @@ export class DemoPBR {
             
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUp);
+            this.m_rscene.addEventListener(MouseEvent.MOUSE_BG_CLICK, this, this.mouseBgClick);
             this.m_rscene.addEventListener(EventBase.RESIZE, this, this.resize);
             //  this.m_stencilOutline.initialize(this.m_rscene);
             //  this.m_stencilOutline.setRGB3f(1.0, 0.0, 1.0);
@@ -109,8 +108,11 @@ export class DemoPBR {
     }
     private mouseUp(evt: any): void {
     }
+    private mouseBgClick(evt: any): void {
+        this.m_uiModule.deselectParamEntity();
+    }
     private resize(evt: any): void {
-
+        
         if (this.m_ruisc != null) {
             let stage = this.m_ruisc.getStage3D();
             this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);

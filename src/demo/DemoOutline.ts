@@ -26,7 +26,6 @@ import MirrorToneMaterial from "./material/MirrorToneMaterial";
 
 import DebugFlag from "../vox/debug/DebugFlag";
 import StencilOutline from "../renderingtoy/mcase/outline/StencilOutline";
-import PostOutline from "../renderingtoy/mcase/outline/PostOutline";
 import OcclusionPostOutline from "../renderingtoy/mcase/outline/OcclusionPostOutline";
 import RendererState from "../vox/render/RendererState";
 import DracoMeshBuilder from "../voxmesh/draco/DracoMeshBuilder";
@@ -38,7 +37,6 @@ export class DemoOutline {
     constructor() { }
 
     private m_stencilOutline: StencilOutline = new StencilOutline();
-    //private m_postOutline: PostOutline = new PostOutline();
     private m_postOutline: OcclusionPostOutline = new OcclusionPostOutline();
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader = null;
