@@ -249,6 +249,7 @@ export class DefaultPBRUI implements IPBRUI {
         this.rgbPanel.close();
         this.ruisc.addContainer(this.rgbPanel, 1);
     }
+    materialStatusVersion: number = 0;
     private selectColor(evt: any): void {
         let currEvt: RGBColoSelectEvent = evt as RGBColoSelectEvent;
         switch (this.m_currUUID) {
@@ -267,7 +268,7 @@ export class DefaultPBRUI implements IPBRUI {
             default:
                 break;
         }
-
+        this.materialStatusVersion ++;
     }
     private menuCtrl(flag: boolean): void {
 
@@ -342,8 +343,8 @@ export class DefaultPBRUI implements IPBRUI {
         let mirrorMaterial: IPBRMaterial = this.m_paramEntity.getMirrorMaterial();
         this.m_currUUID = progEvt.uuid;
         let colorParamUnit: ColorParamUnit;
-        //  console.log("value: ",value);
         this.moveSelectToBtn(progEvt.target);
+        
         switch (progEvt.uuid) {
             case "metal":
                 material.setMetallic(value);
@@ -391,10 +392,12 @@ export class DefaultPBRUI implements IPBRUI {
                 break;
             case "outline":
                 this.postOutline.setOcclusionDensity(progEvt.value);
+                return;
                 break;
             default:
                 break;
         }
+        this.materialStatusVersion ++;
         if (colorParamUnit != null) {
             if (progEvt.status != 0) {
                 if (this.m_colorParamUnit != colorParamUnit) {

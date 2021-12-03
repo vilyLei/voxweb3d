@@ -167,19 +167,34 @@ export class PBRMirror {
 
         this.m_mirrorEntities.push(mEntity);
     }
-    private m_mirrorRTTTimes: number = 1001;
+    
+    private m_rendererStatus: number = -1;
     private m_cameraVersion: number = -1;
+    private m_preMaterialStatusVersion: number = -1;
+    materialStatusVersion: number = 0;
     render(): void {
 
 
         // --------------------------------------------- mirror inverted reflection fbo run begin
         
-        let nv: Vector3D = this.m_rscene.getCamera().getNV();
-        nv.y *= -1.0;
-        this.m_material.setMirrorViewNV(nv);
-        if (this.m_mirrorRTTTimes > 0 || this.m_cameraVersion != this.m_rscene.getCamera().version) {
+        let flag = false;
+        if (this.m_rendererStatus != this.m_rscene.getRendererStatus()) {
+            this.m_rendererStatus = this.m_rscene.getRendererStatus();
+            flag = true;
+        }
+        if(this.m_cameraVersion != this.m_rscene.getCamera().version) {
             this.m_cameraVersion = this.m_rscene.getCamera().version;
-            this.m_mirrorRTTTimes--;
+            flag = true;
+        }
+        if(this.m_preMaterialStatusVersion != this.materialStatusVersion) {
+            this.m_preMaterialStatusVersion = this.materialStatusVersion;
+            flag = true;
+        }
+        if ( flag ) {
+
+            let nv: Vector3D = this.m_rscene.getCamera().getNV();
+            nv.y *= -1.0;
+            this.m_material.setMirrorViewNV(nv);            
             this.m_fboIns.run();
             if (this.m_mirrorMapLodEnabled) {
                 this.m_fboIns.generateMipmapTextureAt(0);

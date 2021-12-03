@@ -162,6 +162,7 @@ export default class PBRScene {
         // --------------------------------------------- cube rtt run end
         this.m_rscene.setClearRGBAColor4f(0.1, 0.5, 0.1, 1.0);
 
+        this.m_mirrorEffector.materialStatusVersion = this.m_uiModule.materialStatusVersion;
         this.m_mirrorEffector.render();
 
         this.m_rscene.setRenderToBackBuffer();
