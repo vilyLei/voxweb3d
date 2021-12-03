@@ -21,7 +21,7 @@ export default class MouseEvent extends EventBase
     }
     static GetMouseEvtTypeValuesTotal():number
     {
-        return 17;
+        return 18;
     }
     static readonly MOUSE_DOWN:number = 5001;
     static readonly MOUSE_UP:number = 5002;
@@ -39,9 +39,10 @@ export default class MouseEvent extends EventBase
     static readonly MOUSE_MULTI_UP:number = 5014;
     static readonly MOUSE_MULTI_MOVE:number = 5015;
 
-    static readonly MOUSE_BG_DOWN:number = 5016;        //  mouse down do not hit any 3d object, only in stage
-    static readonly MOUSE_BG_UP:number = 5017;          //  mouse up do not hit any 3d object, only in stage
-    //classType:number = 1001;
+    static readonly MOUSE_BG_DOWN:number = 5016;            //  mouse down do not hit any 3d object, only in stage
+    static readonly MOUSE_BG_UP:number = 5017;              //  mouse up do not hit any 3d object, only in stage
+    static readonly MOUSE_BG_CLICK:number = 5018;          //  mouse up do not hit any 3d object, only in stage
+    
     getClassType():number
     {
         return MouseEvent.EventClassType;

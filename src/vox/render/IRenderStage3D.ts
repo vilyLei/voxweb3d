@@ -45,6 +45,7 @@ interface IRenderStage3D
     mouseBgDown():void;
     mouseBgUp():void;
     mouseClick():void;
+    mouseBgClick():void;
     mouseDoubleClick():void;
     mouseRightDown(phase:number):void;
     mouseRightUp(phase:number):void;

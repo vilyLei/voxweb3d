@@ -32,9 +32,11 @@ class Scene {
         if (!this.m_awake) {
             this.m_awake = true;
 
-            this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_CLICK, this, this.mouseClick);
-            this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseDown);
-            this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_BG_UP, this, this.mouseUp);
+            this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_BG_CLICK, this, this.mouseClick);
+
+            // this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseDown);
+            // this.m_engine.rscene.addEventListener(MouseEvent.MOUSE_BG_UP, this, this.mouseUp);
+
             this.m_engine.rscene.addEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
         }
     }
@@ -43,9 +45,11 @@ class Scene {
         if (this.m_awake) {
             this.m_awake = false;
 
-            //this.m_engine.rscene.removeEventListener(MouseEvent.MOUSE_CLICK, this, this.mouseClick);
-            this.m_engine.rscene.removeEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseDown);
-            this.m_engine.rscene.removeEventListener(MouseEvent.MOUSE_BG_UP, this, this.mouseUp);
+            this.m_engine.rscene.removeEventListener(MouseEvent.MOUSE_CLICK, this, this.mouseClick);
+
+            // this.m_engine.rscene.removeEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.mouseDown);
+            // this.m_engine.rscene.removeEventListener(MouseEvent.MOUSE_BG_UP, this, this.mouseUp);
+
             this.m_engine.rscene.removeEventListener(KeyboardEvent.KEY_DOWN, this, this.keyDown);
         }
     }
@@ -115,7 +119,11 @@ class Scene {
     }
     private mouseClick(evt: any): void {
         //console.log("scene mouse click.");
+        this.m_engine.interaction.viewRay.intersectPlane();
+        let pv: Vector3D = this.m_engine.interaction.viewRay.position;
+        this.pathEditor.appendPathPos(pv);
     }
+    /*
     private m_mouseSt0: Vector3D = new Vector3D();
     private m_mouseSt1: Vector3D = new Vector3D();
     private mouseDown(evt: any): void {
@@ -150,6 +158,7 @@ class Scene {
         //     console.log("单击时间间隔太长");
         // }
     }
+    //*/
     private keyDown(evt: any): void {
 
         switch (evt.key) {

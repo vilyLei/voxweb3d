@@ -11,7 +11,7 @@ import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 
 class MouseEvt3DDispatcher implements IEvtDispatcher {
     private m_evtNodes: EvtNode[] = null;
-    private m_evtNodesLen: number = 17;
+    private m_evtNodesLen: number = 18;
     uuid: string = "";
     data: any = null;
     constructor() {

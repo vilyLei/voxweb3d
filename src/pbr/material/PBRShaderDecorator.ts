@@ -100,12 +100,11 @@ export default class PBRShaderDecorator {
         }
 
         this.texturesTotal = texList.length;
-        console.log("this.texturesTotal: ",this.texturesTotal);
+        //  console.log("this.texturesTotal: ",this.texturesTotal);
         return texList;
     }
     copyFrom(src: PBRShaderDecorator): void {
 
-        console.log("copyFrom(), decor src: ",src);
         this.woolEnabled = src.woolEnabled;
         this.toneMappingEnabled = src.toneMappingEnabled;
         this.envMapEnabled = src.envMapEnabled;
@@ -139,7 +138,6 @@ export default class PBRShaderDecorator {
         if(this.parallaxMap == null) this.parallaxMap = src.parallaxMap;
         if(this.roughnessMap == null) this.roughnessMap = src.roughnessMap;
         // if(this.specularMap == null) this.specularMap = src.specularMap;
-        console.log("this.parallaxMap,src.parallaxMap: ",this.parallaxMap,src.parallaxMap);
 
         this.lightEnabled = src.lightEnabled;
         this.texturesTotal = src.texturesTotal;
