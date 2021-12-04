@@ -51,10 +51,15 @@ class MaterialContext {
      * shader code management module
      */
     static readonly ShaderLib: ShaderLib = new ShaderLib();
-
+    
     private m_texLoader: ImageTextureLoader = null;
     constructor() { }
-
+    
+    addShaderLibListener(listener: IShaderLibListener): void {
+        if(MaterialContext.ShaderLib != null) {
+            MaterialContext.ShaderLib.setListener(listener);
+        }
+    }
     getTextureByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let tex: TextureProxy = null;
         let suffix: string = purl.slice(purl.lastIndexOf(".") + 1);

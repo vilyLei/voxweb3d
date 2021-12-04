@@ -113,7 +113,7 @@ export class DemoPBRViewer implements IShaderLibListener {
             mcParam.shaderCodeBinary = true;
             this.m_materialCtx.initialize(this.m_rscene, mcParam);
 
-            MaterialContext.ShaderLib.setListener( this );
+            this.m_materialCtx.addShaderLibListener( this );
 
             let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
             if (pointLight != null) {

@@ -17,9 +17,9 @@ import DebugFlag from "../vox/debug/DebugFlag";
 import PBRScene from "./mana/PBRScene";
 import OcclusionPostOutline from "../renderingtoy/mcase/outline/OcclusionPostOutline";
 import RendererState from "../vox/render/RendererState";
-import { MaterialContextParam, MaterialContext } from "../materialLab/base/MaterialContext";
+import { IShaderLibListener, MaterialContextParam, MaterialContext } from "../materialLab/base/MaterialContext";
 
-export class DemoPBR {
+export class DemoPBR implements IShaderLibListener {
     constructor() { }
 
     private m_rscene: RendererScene = null;
@@ -36,7 +36,8 @@ export class DemoPBR {
 
     private m_postOutline: OcclusionPostOutline = new OcclusionPostOutline();
     private m_uiModule: DefaultPBRUI = new DefaultPBRUI();
-    private m_pbrScene: PBRScene;
+    private m_pbrScene: PBRScene = null;
+    private m_lookV: Vector3D = new Vector3D(0.0,300.0,0.0);
 
     initialize(): void {
 
@@ -90,15 +91,19 @@ export class DemoPBR {
             mcParam.loadAllShaderCode = true;
             mcParam.vsmEnabled = true;
             this.m_materialCtx.initialize(this.m_rscene, mcParam);
+            this.m_materialCtx.addShaderLibListener( this );
             
-            this.m_uiModule.initialize(this.m_rscene, this.m_materialCtx, true);
-            this.m_ruisc = this.m_uiModule.ruisc;
-            this.m_uiModule.close();
-            this.m_uiModule.postOutline = this.m_postOutline;
-
-            this.m_pbrScene = new PBRScene();
-            this.m_pbrScene.initialize(this.m_rscene, this.m_materialCtx, this.m_uiModule);
         }
+    }
+    loadedShaderCode(loadingTotal: number, loadedTotal: number): void {
+
+        this.m_uiModule.initialize(this.m_rscene, this.m_materialCtx, true);
+        this.m_ruisc = this.m_uiModule.ruisc;
+        this.m_uiModule.close();
+        this.m_uiModule.postOutline = this.m_postOutline;
+
+        this.m_pbrScene = new PBRScene();
+        this.m_pbrScene.initialize(this.m_rscene, this.m_materialCtx, this.m_uiModule);
     }
 
     private m_runFlag: boolean = true;
@@ -121,38 +126,43 @@ export class DemoPBR {
     private update(): void {
 
         this.m_statusDisp.update(true);
-        this.m_pbrScene.update();
+        if(this.m_pbrScene != null) {
+            this.m_pbrScene.update();
+        }
     }
-    private m_lookV: Vector3D = new Vector3D(0.0,300.0,0.0);
+
     run(): void {
-        /*
-        if(this.m_runFlag) {
-            this.m_runFlag = false;
+
+        if(this.m_pbrScene != null) {
+            /*
+            if(this.m_runFlag) {
+                this.m_runFlag = false;
+            }
+            else {
+                return;
+            }
+            //*/
+
+            this.update();
+            //  if (this.m_ruisc != null) {
+            //      let stage = this.m_ruisc.getStage3D();
+            //      this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
+            //  }
+            this.m_stageDragSwinger.runWithYAxis();
+            this.m_cameraZoomController.run(this.m_lookV, 30.0);
+
+            //  // current rendering strategy
+            //  this.m_rscene.run(true);
+            //  if(this.m_ruisc != null) this.m_ruisc.run( true );
+            //  DebugFlag.Flag_0 = 0;
+            //  return;
+
+            this.renderBegin();
+
+            this.render();
+
+            DebugFlag.Flag_0 = 0;
         }
-        else {
-            return;
-        }
-        //*/
-
-        this.update();
-        //  if (this.m_ruisc != null) {
-        //      let stage = this.m_ruisc.getStage3D();
-        //      this.m_ruisc.getCamera().translationXYZ(stage.stageHalfWidth, stage.stageHalfHeight, 1500.0);
-        //  }
-        this.m_stageDragSwinger.runWithYAxis();
-        this.m_cameraZoomController.run(this.m_lookV, 30.0);
-
-        //  // current rendering strategy
-        //  this.m_rscene.run(true);
-        //  if(this.m_ruisc != null) this.m_ruisc.run( true );
-        //  DebugFlag.Flag_0 = 0;
-        //  return;
-
-        this.renderBegin();
-
-        this.render();
-
-        DebugFlag.Flag_0 = 0;
     }
     private renderBegin(): void {
         let pickFlag: boolean = false;
