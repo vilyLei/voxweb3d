@@ -1,25 +1,10 @@
-
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import { IShaderLib } from "../../vox/material/IShaderLib";
 import { ShaderCodeObject } from "./ShaderCodeObject";
+import { ShaderCodeType } from "./ShaderCodeType";
+import { ShaderCodeConfigure } from "./ShaderCodeConfigure";
+import { IShaderLibConfigure } from "./IShaderLibConfigure";
 import { FileIO } from "../../app/slickRoad/io/FileIO";
-
-enum ShaderCodeType {
-    VertHead = "vertHead",
-    VertBody = "vertBody",
-    FragHead = "fragHead",
-    FragBody = "fragBody"
-}
-
-class ShaderCodeConfigure {
-
-    types: ShaderCodeType[] = null;
-    urls: string[] = null;
-    uuid: ShaderCodeUUID = ShaderCodeUUID.Default;
-    binary: boolean = false;
-    constructor() {
-    }
-}
 
 class ShaderCodeConfigureLib {
 
@@ -187,15 +172,26 @@ class ShaderLib implements IShaderLib{
     setListener(listener: IShaderLibListener): void {
         this.m_listener = listener;
     }
-    initialize(configureData: any = null, binary: boolean = false): void {
+    initialize(shaderLibConfigure: IShaderLibConfigure = null, binary: boolean = false): void {
 
         if (this.m_configLib == null) {
 
             this.m_configLib = new ShaderCodeConfigureLib();
             let configure: ShaderCodeConfigure;
-
-            if (configureData == null) {
-
+            let list: ShaderCodeConfigure[] = null;
+            if (shaderLibConfigure != null) {
+                list = shaderLibConfigure.shaderCodeConfigures;
+            }
+            
+            if(list != null) {
+                for(let i: number = 0; i < list.length; ++i) {
+                    configure = list[i];
+                    if(configure != null) {
+                        this.m_configLib.addConfigureWithUUID(configure.uuid, configure);
+                    }
+                }
+            }
+            else {
                 configure = new ShaderCodeConfigure();
                 configure.uuid = ShaderCodeUUID.PBR;
                 configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
@@ -230,4 +226,4 @@ class ShaderLib implements IShaderLib{
         return obj;
     }
 }
-export { ShaderCodeType, IShaderLibListener, ShaderLib };
+export { ShaderCodeConfigure, IShaderLibConfigure, ShaderCodeType, IShaderLibListener, ShaderLib };

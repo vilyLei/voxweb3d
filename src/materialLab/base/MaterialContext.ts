@@ -10,7 +10,8 @@ import MathConst from "../../vox/math/MathConst";
 import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import { TextureConst } from "../../vox/texture/TextureConst";
-import { IShaderLibListener,ShaderLib } from "../shader/ShaderLib";
+import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
+import { ShaderCodeConfigure, ShaderCodeType, IShaderLibConfigure, IShaderLibListener,ShaderLib } from "../shader/ShaderLib";
 
 class MaterialContextParam {
 
@@ -54,7 +55,7 @@ class MaterialContext {
     
     private m_texLoader: ImageTextureLoader = null;
     constructor() { }
-    
+
     addShaderLibListener(listener: IShaderLibListener): void {
         if(MaterialContext.ShaderLib != null) {
             MaterialContext.ShaderLib.setListener(listener);
@@ -80,7 +81,7 @@ class MaterialContext {
         return tex;
     }
 
-    initialize(rscene: RendererScene, param: MaterialContextParam = null, shaderLibConfigure: any = null): void {
+    initialize(rscene: RendererScene, param: MaterialContextParam = null, shaderLibConfigure: IShaderLibConfigure = null): void {
 
         if (this.m_initFlag) {
 
@@ -148,4 +149,4 @@ class MaterialContext {
         this.m_rscene = null;
     }
 }
-export { IShaderLibListener, MaterialContextParam, MaterialContext };
+export { ShaderCodeUUID, IShaderLibConfigure, IShaderLibListener, ShaderCodeConfigure, ShaderCodeType, MaterialContextParam, MaterialContext };

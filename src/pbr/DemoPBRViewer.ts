@@ -33,7 +33,7 @@ import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import { PointLight } from "../light/base/PointLight";
 import { DirectionLight } from "../light/base/DirectionLight";
 import { SpotLight } from "../light/base/SpotLight";
-import { IShaderLibListener, MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
+import { IShaderLibConfigure, ShaderCodeType, ShaderCodeUUID, ShaderCodeConfigure, IShaderLibListener, MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import DataMesh from "../vox/mesh/DataMesh";
 import QuadGridMeshGeometry from "../vox/mesh/QuadGridMeshGeometry";
@@ -105,13 +105,20 @@ export class DemoPBRViewer implements IShaderLibListener {
             loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
             this.m_envMap = loader.texture;
 
+            let libConfig: IShaderLibConfigure = {shaderCodeConfigures:[]};
+            let configure = new ShaderCodeConfigure();
+            configure.uuid = ShaderCodeUUID.PBR;
+            configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
+            configure.binary = true;
+            libConfig.shaderCodeConfigures.push( configure );
+
             let mcParam: MaterialContextParam = new MaterialContextParam();
             mcParam.pointLightsTotal = 1;
             mcParam.directionLightsTotal = 2;
             mcParam.spotLightsTotal = 0;
             mcParam.loadAllShaderCode = true;
             mcParam.shaderCodeBinary = true;
-            this.m_materialCtx.initialize(this.m_rscene, mcParam);
+            this.m_materialCtx.initialize(this.m_rscene, mcParam, libConfig);
 
             this.m_materialCtx.addShaderLibListener( this );
 
