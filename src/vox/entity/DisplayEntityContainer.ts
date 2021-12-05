@@ -16,11 +16,13 @@ import IEntityTransform from "../../vox/entity/IEntityTransform";
 import IDisplayEntityContainer from "../../vox/entity/IDisplayEntityContainer";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
 import IRenderer from "../../vox/scene/IRenderer";
+import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 
 
 export default class DisplayEntityContainer implements IDisplayEntityContainer, IEntityTransform {
     private static s_uid: number = 0;
     private m_uid: number = 0;
+    protected m_eventDispatcher: IEvtDispatcher = null;
     constructor(boundsEnabled: boolean = true) {
         if (boundsEnabled) {
             this.createBounds();
@@ -60,6 +62,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
     private m_entitysTotal: number = 0;
     private m_children: DisplayEntityContainer[] = [];
     private m_childrenTotal: number = 0;
+
     __$setRenderer(renderer: IRenderer): void {
         let i: number = 0;
         if (this.__$renderer != null) {
@@ -109,6 +112,21 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
     }
     getParent(): DisplayEntityContainer {
         return this.__$parent;
+    }
+    
+    dispatchEvt(evt: any): void {
+        
+        // if (evt.getClassType() == MouseEvent.EventClassType) {
+        if (this.m_eventDispatcher != null) {
+            this.m_eventDispatcher.dispatchEvt(evt);
+        }
+        // }
+    }
+    getEvtDispatcher(evtClassType: number): IEvtDispatcher {
+        return this.m_eventDispatcher;
+    }
+    setEvtDispatcher(evtDisptacher: IEvtDispatcher): void {
+        this.m_eventDispatcher = evtDisptacher;
     }
     protected createBounds(): void {
         if (this.m_globalBounds == null) {
@@ -620,6 +638,10 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
     destroy(): void {
         // 当自身被完全移出RenderWorld之后才能执行自身的destroy
         if (this.__$wuid < 0) {
+            if (this.m_eventDispatcher != null) {
+                this.m_eventDispatcher.destroy();
+                this.m_eventDispatcher = null;
+            }
             if (this.m_omat != null && this.m_omat != this.m_localMat) Matrix4Pool.RetrieveMatrix(this.m_omat);
             if (this.m_invOmat != null) Matrix4Pool.RetrieveMatrix(this.m_invOmat);
             if (this.m_localMat != null) Matrix4Pool.RetrieveMatrix(this.m_localMat);

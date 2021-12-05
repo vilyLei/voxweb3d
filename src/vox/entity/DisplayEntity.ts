@@ -34,7 +34,7 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     private static s_uid: number = 0;
     private m_uid: number = 0;
     protected m_transfrom: ROTransform = null;
-    protected m_mouseEvtDispatcher: IEvtDispatcher = null;
+    protected m_eventDispatcher: IEvtDispatcher = null;
     constructor(transform: ROTransform = null) {
         this.m_uid = DisplayEntity.s_uid++;
         if (transform == null) {
@@ -135,17 +135,18 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
         return this.__$rseFlag == RSEntityFlag.DEFAULT;
     }
     dispatchEvt(evt: any): void {
-        if (evt.getClassType() == MouseEvent.EventClassType) {
-            if (this.m_mouseEvtDispatcher != null) {
-                this.m_mouseEvtDispatcher.dispatchEvt(evt);
-            }
+        
+        // if (evt.getClassType() == MouseEvent.EventClassType) {
+        if (this.m_eventDispatcher != null) {
+            this.m_eventDispatcher.dispatchEvt(evt);
         }
+        // }
     }
     getEvtDispatcher(evtClassType: number): IEvtDispatcher {
-        return this.m_mouseEvtDispatcher;
+        return this.m_eventDispatcher;
     }
     setEvtDispatcher(evtDisptacher: IEvtDispatcher): void {
-        this.m_mouseEvtDispatcher = evtDisptacher;
+        this.m_eventDispatcher = evtDisptacher;
     }
     getGlobalBounds(): AABB {
         return this.m_globalBounds;
@@ -633,9 +634,9 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     destroy(): void {
         // 当自身被完全移出RenderWorld之后才能执行自身的destroy
         //console.log("DisplayEntity::destroy(), renderer uid: "+this.getRendererUid()+", this.__$spaceId: "+this.__$spaceId);
-        if (this.m_mouseEvtDispatcher != null) {
-            this.m_mouseEvtDispatcher.destroy();
-            this.m_mouseEvtDispatcher = null;
+        if (this.m_eventDispatcher != null) {
+            this.m_eventDispatcher.destroy();
+            this.m_eventDispatcher = null;
         }
         if (this.m_transfrom != null && this.isFree()) {
             // 这里要保证其在所有的process中都被移除

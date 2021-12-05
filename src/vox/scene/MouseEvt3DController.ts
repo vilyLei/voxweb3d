@@ -17,6 +17,7 @@ import IEvt3DController from '../../vox/scene/IEvt3DController';
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 
 export default class MouseEvt3DController implements IEvt3DController {
+
     private m_mainStage: IRenderStage3D = null;
     private m_currStage: IRenderStage3D = null;
     private m_raySelector: IRaySelector = null;
@@ -185,7 +186,7 @@ export default class MouseEvt3DController implements IEvt3DController {
                     wpv = node.wpv;
                     let entity: IRenderEntity = node.entity;
                     dispatcher = entity.getEvtDispatcher(MouseEvent.EventClassType);
-
+                    
                     for (let i: number = 0; i < this.m_evtTotal; i++) {
                         this.m_mouseEvt.type = this.m_evtTypes[i];
                         this.m_mouseEvt.mouseX = this.m_evtXList[i];
@@ -238,21 +239,6 @@ export default class MouseEvt3DController implements IEvt3DController {
                     }
                 }
                 else {
-                    //  if(this.m_evtTarget != null)
-                    //  {
-                    //      dispatcher = this.m_evtTarget.getEvtDispatcher(MouseEvent.EventClassType);
-                    //      if(dispatcher != null)
-                    //      {
-                    //          this.m_mouseOutEvt.phase = evtFlowPhase;
-                    //          this.m_mouseOutEvt.type = MouseEvent.MOUSE_OUT;
-                    //          this.m_mouseOutEvt.mouseX = this.m_mouseEvt.mouseX;
-                    //          this.m_mouseOutEvt.mouseY = this.m_mouseEvt.mouseY;
-                    //          this.m_mouseOutEvt.target = this.m_evtTarget;
-                    //          this.m_raySelector.getRay(this.m_mouseOutEvt.raypv,this.m_mouseOutEvt.raytv);
-                    //          flag += dispatcher.dispatchEvt(this.m_mouseOutEvt);
-                    //      }
-                    //      this.m_evtTarget = null;
-                    //  }
                     flag += this.mouseOutEventTarget();
                     if (this.m_currStage != null) {
                         for (i = 0; i < this.m_evtTotal; i++) {
@@ -282,9 +268,6 @@ export default class MouseEvt3DController implements IEvt3DController {
                             case MouseEvent.MOUSE_UP:
                                 this.m_currStage.mouseUp(2);
                                 break;
-                            //  case MouseEvent.MOUSE_MOVE:
-                            //      this.m_currStage.mouseMove();
-                            //      break;
                             default:
                                 break;
                         }
