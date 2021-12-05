@@ -17,7 +17,7 @@ import DebugFlag from "../vox/debug/DebugFlag";
 import PBRScene from "./mana/PBRScene";
 import OcclusionPostOutline from "../renderingtoy/mcase/outline/OcclusionPostOutline";
 import RendererState from "../vox/render/RendererState";
-import { IShaderLibListener, MaterialContextParam, MaterialContext } from "../materialLab/base/MaterialContext";
+import { IShaderLibConfigure, ShaderCodeType, ShaderCodeUUID, ShaderCodeConfigure, IShaderLibListener, MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
 
 export class DemoPBR implements IShaderLibListener {
     constructor() { }
@@ -83,6 +83,19 @@ export class DemoPBR implements IShaderLibListener {
 
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
+            let libConfig: IShaderLibConfigure = {shaderCodeConfigures:[]};
+            let configure = new ShaderCodeConfigure();
+            configure.uuid = ShaderCodeUUID.PBR;
+            configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
+            configure.urls = [
+                "static/shader/glsl/pbr/glsl01.bin",
+                "static/shader/glsl/pbr/glsl02.bin",
+                "static/shader/glsl/pbr/glsl03.bin",
+                "static/shader/glsl/pbr/glsl04.bin"
+            ]
+            configure.binary = true;
+            libConfig.shaderCodeConfigures.push( configure );
+
             let mcParam: MaterialContextParam = new MaterialContextParam();
             mcParam.pointLightsTotal = 0;
             mcParam.directionLightsTotal = 2;
@@ -90,7 +103,7 @@ export class DemoPBR implements IShaderLibListener {
             mcParam.vsmFboIndex = 2;
             mcParam.loadAllShaderCode = true;
             mcParam.vsmEnabled = true;
-            this.m_materialCtx.initialize(this.m_rscene, mcParam);
+            this.m_materialCtx.initialize(this.m_rscene, mcParam, libConfig);
             this.m_materialCtx.addShaderLibListener( this );
             
         }

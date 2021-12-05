@@ -1,7 +1,5 @@
-
 import Vector3D from "../../vox/math/Vector3D";
 import TextureProxy from "../../vox/texture/TextureProxy";
-import ImageTextureLoader from "../../vox/texture/ImageTextureLoader";
 
 import RendererScene from "../../vox/scene/RendererScene";
 import DefaultPBRUI from "./DefaultPBRUI";
@@ -14,8 +12,6 @@ import PBREntityManager from "../../pbr/mana/PBREntityManager";
 import Axis3DEntity from "../../vox/entity/Axis3DEntity";
 import { SpecularTextureLoader } from "../mana/TextureLoader";
 
-import { PBRShaderCode } from "../../pbr/material/glsl/PBRShaderCode";
-import { MaterialPipeType } from "../../vox/material/pipeline/MaterialPipeType";
 import { MaterialContext } from "../../materialLab/base/MaterialContext";
 import { DirectionLight } from "../../light/base/DirectionLight";
 
@@ -73,7 +69,6 @@ export default class PBRScene {
 
             this.m_materialBuilder = new PBRMaterialBuilder();
             this.m_materialBuilder.pipeline = materialCtx.pipeline;
-            this.m_materialBuilder.pipeline.addShaderCode(PBRShaderCode);
             this.m_materialBuilder.hdrBrnEnabled = this.hdrBrnEnabled;
             this.m_materialBuilder.vtxFlatNormal = this.vtxFlatNormal;
 

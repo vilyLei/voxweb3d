@@ -66,7 +66,7 @@ export default class ShaderData implements IShaderData {
         ShaderData.s_codeParser.parseVShaderCode(vshdsrc);
         ShaderData.s_codeParser.parseFShaderCode(fshdSrc);
         this.m_fragOutputTotal = ShaderData.s_codeParser.fragOutputTotal;
-        this.m_uniforms = ShaderData.s_codeParser.m_uniforms;
+        this.m_uniforms = ShaderData.s_codeParser.uniforms;
     }
     initialize(unique_ns: string, vshdsrc: string, fshdSrc: string): void {
         this.m_shdUniqueName = unique_ns;

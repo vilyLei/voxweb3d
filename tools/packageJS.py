@@ -28,6 +28,18 @@ for k in range(0,10):
 	#print("chr: "+chr(k));
 	m_dstKeys.append(str(k));
 	#
+for k in range(0,len(m_srcKeys)):
+	m_dstKeys.append("_"+m_srcKeys[k]);
+	#
+for k in range(0,10):
+	#print("chr: "+chr(k));
+	m_dstKeys.append("_"+str(k));
+	#
+srcLen = len(m_srcKeys);
+for k in range(0,srcLen):
+	#print("chr: "+chr(k));
+	m_srcKeys.append(m_srcKeys[k]+"_");
+	#
 m_dstKeys.append("_");
 print("srcKeys: "+str(m_srcKeys));
 print("dstKeys: "+str(m_dstKeys));
@@ -37,9 +49,13 @@ print("dstKeys: "+str(m_dstKeys));
 rn = len(m_srcKeys);
 cn = len(m_dstKeys);
 
+print("srcKeys length: "+str(rn));
+print("dstKeys length: "+str(cn));
 m_index = 0;
 i = 0;
 len2 = rn + rn * cn;
+
+print("len2: "+str(len2));
 
 def getMinStr():
 	global m_index;

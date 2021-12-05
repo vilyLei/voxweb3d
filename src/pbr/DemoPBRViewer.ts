@@ -109,6 +109,12 @@ export class DemoPBRViewer implements IShaderLibListener {
             let configure = new ShaderCodeConfigure();
             configure.uuid = ShaderCodeUUID.PBR;
             configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
+            configure.urls = [
+                "static/shader/glsl/pbr/glsl01.bin",
+                "static/shader/glsl/pbr/glsl02.bin",
+                "static/shader/glsl/pbr/glsl03.bin",
+                "static/shader/glsl/pbr/glsl04.bin"
+            ]
             configure.binary = true;
             libConfig.shaderCodeConfigures.push( configure );
 
