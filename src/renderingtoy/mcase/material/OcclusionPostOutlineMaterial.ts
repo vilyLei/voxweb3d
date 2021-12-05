@@ -106,8 +106,6 @@ export default class OcclusionPostOutlineMaterial extends MaterialBase {
         1.0,1.0,1.0,1.0,     // color rgba
         0.2,0.0,0.0,0.0      // occlusion density, undefined,undefined,undefined
     ]);
-    //private m_color: Float32Array = new Float32Array([1.0,1.0,1.0,1.0]);
-
     setThickness( thickness: number ): void {
         this.m_params[3] = MathConst.Clamp(thickness, 0.1, 5.0);
     }

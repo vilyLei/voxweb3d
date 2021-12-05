@@ -153,12 +153,13 @@ export default class PBRParamEntity implements IPBRParamEntity{
         this.entity.mouseEnabled = true;
 
         let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
-        if(RendererDevice.IsMobileWeb()) {
-            dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, this, this.selectListener);
-        }
-        else {
-            dispatcher.addEventListener(MouseEvent.MOUSE_CLICK, this, this.selectListener);
-        }
+        // if(RendererDevice.IsMobileWeb()) {
+        //     dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, this, this.selectListener);
+        // }
+        // else {
+        //     dispatcher.addEventListener(MouseEvent.MOUSE_CLICK, this, this.selectListener);
+        // }
+        dispatcher.addEventListener(MouseEvent.MOUSE_CLICK, this, this.selectListener);
         this.entity.setEvtDispatcher(dispatcher);
     }
 

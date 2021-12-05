@@ -11,6 +11,9 @@ import IRenderStage3D from "../../vox/render/IRenderStage3D";
 
 class ContextMouseEvtDispatcher {
     private m_singleDown: boolean = false;
+    private m_mouseX: number = 0;
+    private m_mouseY: number = 0;
+    private m_mouseClickTime: number = 0;
     dpr: number = 1.0;
     constructor() {
     }
@@ -46,6 +49,9 @@ class ContextMouseEvtDispatcher {
                     stage.mouseViewX = px;
                     stage.mouseViewY = py;
                     this.m_singleDown = true;
+                    this.m_mouseX = stage.mouseX;
+                    this.m_mouseY = stage.mouseY;
+                    this.m_mouseClickTime = Date.now();
                     stage.mouseDown(1);
                 }
                 else {
@@ -69,7 +75,13 @@ class ContextMouseEvtDispatcher {
                 let px = 0;
                 let py = 0;
                 if (list.length < 1) {
-                    stage.mouseUp(1);
+                    stage.mouseUp(1);                    
+                    this.m_mouseClickTime = Date.now() - this.m_mouseClickTime;
+                    if(Math.abs(this.m_mouseX - stage.mouseX) < 3 && Math.abs(this.m_mouseY - stage.mouseY) < 3 && this.m_mouseClickTime < 900) {
+                        this.m_mouseX = stage.mouseX;
+                        this.m_mouseY = stage.mouseY;
+                        stage.mouseClick();
+                    }
                 }
                 else {
                     let posArray: any[] = [];
@@ -135,9 +147,6 @@ class ContextMouseEvtDispatcher {
             this.initMobile(canvas, div, stage);
         }
     }
-    private m_mouseX: number = 0;
-    private m_mouseY: number = 0;
-    private m_mouseClickTime: number = 0;
     private initPC(canvas: any, div: any, stage: IRenderStage3D): void {
         var pdocument: any = null;
         try {
@@ -236,7 +245,7 @@ class ContextMouseEvtDispatcher {
                         stage.mouseClick();
                     } else if (evt.button == 2) {
                         stage.mouseRightClick();
-                    }                    
+                    }
                 }
             }
             canvas.ondblclick = (evt: any): void => {
