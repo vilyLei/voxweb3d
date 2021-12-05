@@ -228,7 +228,7 @@ class ContextMouseEvtDispatcher {
                 stage.mouseViewY = py;
 
                 this.m_mouseClickTime = Date.now() - this.m_mouseClickTime;
-                if(Math.abs(this.m_mouseX - stage.mouseX) < 2 && Math.abs(this.m_mouseY - stage.mouseY) < 2 && this.m_mouseClickTime < 900) {
+                if(Math.abs(this.m_mouseX - stage.mouseX) < 3 && Math.abs(this.m_mouseY - stage.mouseY) < 3 && this.m_mouseClickTime < 900) {
                     this.m_mouseX = stage.mouseX;
                     this.m_mouseY = stage.mouseY;
                     //console.log("ContextMouseEvtDispatcher::onclick()," + stage.mouseViewX + "," + stage.mouseViewY + ",evt.button: " + evt.button);

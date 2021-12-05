@@ -13,6 +13,7 @@ import IPBRMaterial from "../material/IPBRMaterial";
 import IPBRUI from "./IPBRUI";
 import {ColorParamUnit,AlbedoParamUnit,F0ColorParamUnit,AmbientParamUnit,SpecularParamUnit} from "./PBRParamUnit";
 import IPBRParamEntity from "./IPBRParamEntity";
+import RendererDevice from "../../vox/render/RendererDevice";
 
 export default class PBRParamEntity implements IPBRParamEntity{
 
@@ -141,7 +142,7 @@ export default class PBRParamEntity implements IPBRParamEntity{
 
     }
 
-    mouseClickListener(evt: any): void {
+    private selectListener(evt: any): void {
         //console.log("PBRParamEntity mouseUpListener");
         this.pbrUI.setParamEntity( this );
         this.select();
@@ -152,7 +153,12 @@ export default class PBRParamEntity implements IPBRParamEntity{
         this.entity.mouseEnabled = true;
 
         let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
-        dispatcher.addEventListener(MouseEvent.MOUSE_CLICK, this, this.mouseClickListener);
+        if(RendererDevice.IsMobileWeb()) {
+            dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, this, this.selectListener);
+        }
+        else {
+            dispatcher.addEventListener(MouseEvent.MOUSE_CLICK, this, this.selectListener);
+        }
         this.entity.setEvtDispatcher(dispatcher);
     }
 

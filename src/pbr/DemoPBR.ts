@@ -117,6 +117,9 @@ export class DemoPBR implements IShaderLibListener {
 
         this.m_pbrScene = new PBRScene();
         this.m_pbrScene.initialize(this.m_rscene, this.m_materialCtx, this.m_uiModule);
+
+        const body = document.body;
+        body.style.background = "white";
     }
 
     private m_runFlag: boolean = true;
