@@ -62,7 +62,7 @@ class GlobalLightUniformParam extends GlobalUniformParamBase {
         return [UniformConst.GlobalLight.positionName, UniformConst.GlobalLight.colorName];
     }
     use(shaderBuilder: IShaderCodeBuilder, paramsTotal: number = 1, colorsTotal: number = 1): void {
-        shaderBuilder.addFragUniformParam(UniformConst.CameraPosParam);
+        shaderBuilder.uniform.useCameraPosition(false, true);
         shaderBuilder.addFragUniform(UniformConst.GlobalLight.type, UniformConst.GlobalLight.positionName, paramsTotal);
         shaderBuilder.addFragUniform(UniformConst.GlobalLight.type, UniformConst.GlobalLight.colorName, colorsTotal);
     }

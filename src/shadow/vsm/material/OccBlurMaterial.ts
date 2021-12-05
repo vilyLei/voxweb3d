@@ -38,7 +38,7 @@ class OccBlurShaderBuffer extends ShaderCodeBuffer {
         coder.addDefine("HALF_SAMPLE_RATE", "0.125");
 
         coder.addTextureSample2D("",false);
-        coder.addFragUniformParam(UniformConst.ViewParam);
+        coder.uniform.useViewPort(false,true);
         coder.addFragUniform("vec4", "u_param");
     }
     getFragShaderCode(): string {

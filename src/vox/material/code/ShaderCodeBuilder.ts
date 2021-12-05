@@ -10,6 +10,8 @@ import RendererDevice from "../../../vox/render/RendererDevice";
 import IUniformParam from "../../../vox/material/IUniformParam";
 import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 
+import { IShaderCodeUniform } from "../../../vox/material/code/IShaderCodeUniform";
+import { ShaderCodeUniform } from "../../../vox/material/code/ShaderCodeUniform";
 import IShaderCodeBuilder from "./IShaderCodeBuilder";
 import GLSLConverter from "./GLSLConverter";
 import ShaderCompileInfo from "./ShaderCompileInfo";
@@ -23,8 +25,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         `#version 300 es
 `;
     private m_preciousCode: string =
-        `
-precision mediump float;
+        `precision mediump float;
 `;
 
     private m_fragExt: string[] = [];
@@ -86,6 +87,8 @@ precision mediump float;
      */
     private m_preCompileInfo: ShaderCompileInfo = null;
 
+    
+    readonly uniform: IShaderCodeUniform;
     // vertColorEnabled: boolean = false;
     // premultiplyAlpha: boolean = false;
     mathDefineEanbled: boolean = true;
@@ -96,7 +99,10 @@ precision mediump float;
     vertMatrixInverseEnabled: boolean = false;
     fragMatrixInverseEnabled: boolean = false;
 
-    constructor() { }
+    constructor() {
+        let self: any = this;
+        self.uniform = new ShaderCodeUniform( this );
+    }
     
     getUniqueNSKeyID(): number {
 

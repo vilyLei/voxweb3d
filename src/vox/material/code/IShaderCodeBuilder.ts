@@ -7,17 +7,18 @@
 /***************************************************************************/
 
 import IUniformParam from "../../../vox/material/IUniformParam";
+import { IShaderCodeUniform } from "../../../vox/material/code/IShaderCodeUniform";
 import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 
 export default interface IShaderCodeBuilder {
-    
+
     normalEanbled: boolean;
     normalMapEanbled: boolean;
     mapLodEnabled: boolean;
     derivatives: boolean;
     vertMatrixInverseEnabled: boolean;
     fragMatrixInverseEnabled: boolean;
-    
+    uniform: IShaderCodeUniform;
     reset(): void;
     useHighPrecious(): void;
     useMediumPrecious(): void;
