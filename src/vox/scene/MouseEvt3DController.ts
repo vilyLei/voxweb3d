@@ -15,15 +15,29 @@ import RaySelectedNode from '../../vox/scene/RaySelectedNode';
 import IRaySelector from '../../vox/scene/IRaySelector';
 import IEvt3DController from '../../vox/scene/IEvt3DController';
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
+import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 
 export default class MouseEvt3DController implements IEvt3DController {
 
+    private static s_unlockMouseEvt: boolean = true;
+    private static s_uid: number = 0;
+    private m_uid: number = 0;
     private m_mainStage: IRenderStage3D = null;
     private m_currStage: IRenderStage3D = null;
     private m_raySelector: IRaySelector = null;
     private m_unlockBoo: boolean = true;
-    private static s_uid: number = 0;
-    private m_uid: number = 0;
+    private m_mouseEvt: MouseEvent = new MouseEvent();
+    private m_mouseOverEvt: MouseEvent = new MouseEvent();
+    private m_mouseOutEvt: MouseEvent = new MouseEvent();
+    private m_evtTypes: Float32Array = new Float32Array(64);
+    private m_evtXList: Float32Array = new Float32Array(64);
+    private m_evtYList: Float32Array = new Float32Array(64);
+    private m_evtWheelDeltaYs: Float32Array = new Float32Array(64);
+    private m_evtTotal: number = 0;
+    
+    private m_evtEntity: IRenderEntity = null;
+    private m_evtContainer: IRenderEntityContainer = null;
+    private m_evtFlowPhase: number = -1;
     constructor() {
         this.m_uid = MouseEvt3DController.s_uid++;
     }
@@ -43,18 +57,6 @@ export default class MouseEvt3DController implements IEvt3DController {
     setRaySelector(raySelector: IRaySelector): void {
         this.m_raySelector = raySelector;
     }
-    private m_mouseEvt: MouseEvent = new MouseEvent();
-    private m_mouseOverEvt: MouseEvent = new MouseEvent();
-    private m_mouseOutEvt: MouseEvent = new MouseEvent();
-    private m_evtTarget: IRenderEntity = null;
-    private m_evtTypes: Float32Array = new Float32Array(64);
-    private m_evtXList: Float32Array = new Float32Array(64);
-    private m_evtYList: Float32Array = new Float32Array(64);
-    private m_evtWheelDeltaYs: Float32Array = new Float32Array(64);
-    private m_evtTotal: number = 0;
-    //private m_node:RaySelectedNode = null;
-    private m_evtFlowPhase: number = -1;
-    private static s_unlockMouseEvt: boolean = true;
     private mouseWheeelListener(evt: any): void {
         if (this.m_currStage != null) {
             this.m_currStage.mouseX = this.m_mainStage.mouseX;
@@ -128,19 +130,19 @@ export default class MouseEvt3DController implements IEvt3DController {
             this.m_currStage.mouseX = this.m_mainStage.mouseX;
             this.m_currStage.mouseY = this.m_mainStage.mouseY;
         }
-        if (this.m_evtTarget != null) {
-            let dispatcher: IEvtDispatcher = this.m_evtTarget.getEvtDispatcher(MouseEvent.EventClassType);
+        if (this.m_evtEntity != null) {
+            let dispatcher: IEvtDispatcher = this.m_evtEntity.getEvtDispatcher(MouseEvent.EventClassType);
             if (dispatcher != null) {
                 this.m_mouseOutEvt.phase = this.m_evtFlowPhase;
                 this.m_mouseOutEvt.type = MouseEvent.MOUSE_OUT;
                 this.m_mouseOutEvt.mouseX = this.m_mouseEvt.mouseX;
                 this.m_mouseOutEvt.mouseY = this.m_mouseEvt.mouseY;
-                this.m_mouseOutEvt.target = this.m_evtTarget;
+                this.m_mouseOutEvt.target = this.m_evtEntity;
                 this.m_raySelector.getRay(this.m_mouseOutEvt.raypv, this.m_mouseOutEvt.raytv);
-                this.m_evtTarget = null;
+                this.m_evtEntity = null;
                 return dispatcher.dispatchEvt(this.m_mouseOutEvt);
             }
-            this.m_evtTarget = null;
+            this.m_evtEntity = null;
         }
         return 0;
     }
@@ -186,6 +188,7 @@ export default class MouseEvt3DController implements IEvt3DController {
                     wpv = node.wpv;
                     let entity: IRenderEntity = node.entity;
                     dispatcher = entity.getEvtDispatcher(MouseEvent.EventClassType);
+                    // m_evtContainer
                     
                     for (let i: number = 0; i < this.m_evtTotal; i++) {
                         this.m_mouseEvt.type = this.m_evtTypes[i];
@@ -205,7 +208,7 @@ export default class MouseEvt3DController implements IEvt3DController {
                                     this.m_mouseEvt.lpos.copyFrom(lpv);
                                     this.m_mouseEvt.wpos.copyFrom(wpv);
                                     this.m_raySelector.getRay(this.m_mouseEvt.raypv, this.m_mouseEvt.raytv);
-                                    if (this.m_evtTarget != entity) {
+                                    if (this.m_evtEntity != entity) {
                                         this.m_mouseOverEvt.phase = evtFlowPhase;
                                         this.m_mouseOverEvt.type = MouseEvent.MOUSE_OVER;
                                         this.m_mouseOverEvt.mouseX = this.m_mouseEvt.mouseX;
@@ -217,26 +220,27 @@ export default class MouseEvt3DController implements IEvt3DController {
                                         flag += dispatcher.dispatchEvt(this.m_mouseOverEvt);
                                     }
                                     flag += dispatcher.dispatchEvt(this.m_mouseEvt);
-                                    if (this.m_evtTarget != null && this.m_evtTarget != entity) {
-                                        dispatcher = this.m_evtTarget.getEvtDispatcher(MouseEvent.EventClassType);
+                                    if (this.m_evtEntity != null && this.m_evtEntity != entity) {
+                                        dispatcher = this.m_evtEntity.getEvtDispatcher(MouseEvent.EventClassType);
                                         if (dispatcher != null) {
                                             this.m_mouseOutEvt.phase = evtFlowPhase;
                                             this.m_mouseOutEvt.type = MouseEvent.MOUSE_OUT;
                                             this.m_mouseOutEvt.mouseX = this.m_mouseEvt.mouseX;
                                             this.m_mouseOutEvt.mouseY = this.m_mouseEvt.mouseY;
-                                            this.m_mouseOutEvt.target = this.m_evtTarget;
+                                            this.m_mouseOutEvt.target = this.m_evtEntity;
                                             this.m_mouseOutEvt.lpos.copyFrom(lpv);
                                             this.m_mouseOutEvt.wpos.copyFrom(wpv);
                                             this.m_raySelector.getRay(this.m_mouseOutEvt.raypv, this.m_mouseOutEvt.raytv);
-                                            //console.log("mouse out 01."+this.m_evtTarget.name);
+                                            //console.log("mouse out 01."+this.m_evtEntity.name);
                                             flag += dispatcher.dispatchEvt(this.m_mouseOutEvt);
                                         }
                                     }
-                                    this.m_evtTarget = entity;
+                                    this.m_evtEntity = entity;
                                 }
                             }
                         }
                     }
+                    let container: IRenderEntityContainer = entity.__$getParent();
                 }
                 else {
                     flag += this.mouseOutEventTarget();

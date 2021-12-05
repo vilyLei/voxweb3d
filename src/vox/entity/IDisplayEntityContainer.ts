@@ -5,26 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-import Vector3D from "../../vox/math/Vector3D";
-import AABB from "../../vox/geom/AABB";
+import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 
-
-export default interface IDisplayEntityContainer
-{
-    //getParent():DisplayEntityContainer
-    
-    getGlobalBounds():AABB;         
-    getChildrenTotal():number;
-    getEntitysTotal():number;
-    getVisible():boolean;
-    getUid():number;
-    setXYZ(px:number,py:number,pz:number):void;
-    setPosition(pv:Vector3D):void;
-    getPosition(pv:Vector3D):void;
-    setRotationXYZ(rx:number,ry:number,rz:number):void;
-    setScaleXYZ(sx:number,sy:number,sz:number):void;
-    
-    localToGlobal(pv:Vector3D):void;
-    globalToLocal(pv:Vector3D):void;
-    sphereIntersect(centerV:Vector3D,radius:number):boolean;
+export default interface IDisplayEntityContainer extends IRenderEntityContainer {
+    addChild(child: IDisplayEntityContainer): void;
+    removeChild(child: IDisplayEntityContainer): void;
 }

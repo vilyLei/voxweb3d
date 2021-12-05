@@ -29,6 +29,7 @@ import IDisplayEntity from "../../vox/entity/IDisplayEntity";
 import RenderProxy from "../../vox/render/RenderProxy";
 import TextureProxy from '../../vox/texture/TextureProxy';
 import ROTransPool from '../../vox/render/ROTransPool';
+import IRenderEntityContainer from "../../vox/render/IRenderEntityContainer";
 
 
 // for multi threads
@@ -88,6 +89,9 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
     }
     __$testRendererEnabled(): boolean {
         return RSEntityFlag.TestRendererEnabled(this.__$rseFlag);
+    }
+    __$getParent(): IRenderEntityContainer {
+        return null;
     }
     getRendererUid(): number {
         return RSEntityFlag.GetRendererUid(this.__$rseFlag);
