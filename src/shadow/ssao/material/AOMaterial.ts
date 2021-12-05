@@ -44,7 +44,7 @@ class AOShaderBuffer extends ShaderCodeBuffer
 
         coder.addDefine("AO_SamplesTotal", ""+this.samplesTotal);
         coder.addFragUniformParam(UniformConst.FrustumParam);
-        coder.addFragUniformParam(UniformConst.ViewParam);
+        coder.addFragUniformParam(UniformConst.ViewportParam);
         // tex normal
         coder.addTextureSample2D();
         // tex noise

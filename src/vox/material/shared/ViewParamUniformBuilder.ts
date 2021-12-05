@@ -16,7 +16,7 @@ import RenderProxy from "../../../vox/render/RenderProxy";
 export default class ViewParamUniformBuilder implements IUniformBuilder {
     create(rc: RenderProxy, shdp: ShdProgram): ShaderUniform {
         let suo: ShaderGlobalUniform = null;
-        let param: IUniformParam = UniformConst.ViewParam;
+        let param: IUniformParam = UniformConst.ViewportParam;
         if (shdp.hasUniformByName(param.name)) {
             suo = new ShaderGlobalUniform();
             suo.uns = param.name;

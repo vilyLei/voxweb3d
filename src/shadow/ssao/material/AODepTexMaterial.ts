@@ -43,8 +43,10 @@ class AODepTexShaderBuffer extends ShaderCodeBuffer
         coder.addFragOutput("vec4", "FragColor0");
 
         coder.addDefine("AO_SamplesTotal", ""+this.samplesTotal);
-        coder.addFragUniformParam(UniformConst.FrustumParam);
-        coder.addFragUniformParam(UniformConst.ViewParam);
+        // coder.addFragUniformParam(UniformConst.FrustumParam);
+        // coder.addFragUniformParam(UniformConst.ViewportParam);
+        coder.uniform.useFrustum(false, true);
+        coder.uniform.useViewPort(false, true);
 
         // tex normal
         coder.addTextureSample2D();

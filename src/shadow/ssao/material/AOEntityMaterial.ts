@@ -42,7 +42,7 @@ class AOEntityShaderBuffer extends ShaderCodeBuffer
         coder.addVarying("vec3", "v_nv");
 
         coder.addFragOutput("vec4", "FragColor0");
-        coder.addFragUniformParam( UniformConst.ViewParam );
+        coder.addFragUniformParam( UniformConst.ViewportParam );
         // color texture
         coder.addTextureSample2D();
         // ao texture

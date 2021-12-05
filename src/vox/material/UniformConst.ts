@@ -164,7 +164,7 @@ export default class UniformConst {
     /**
      * view port param shader uniform name string, vec4: [viewPortX, viewPortY, viewPortWidth, viewPortHeight]
      */
-    static readonly ViewParam: ViewUniformParam = new ViewUniformParam();
+    static readonly ViewportParam: ViewUniformParam = new ViewUniformParam();
 
     static readonly ShadowMatrix: ShadowMat4UniformParam = new ShadowMat4UniformParam();
     static readonly ShadowVSMParams: ShadowVSMParams = new ShadowVSMParams();

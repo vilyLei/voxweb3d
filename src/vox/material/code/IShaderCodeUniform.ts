@@ -28,5 +28,11 @@ interface IShaderCodeUniform {
      * @param fragEnabled whether apply frustum parameters uniform in the fragment shader, the default value is true
      */
     useFrustum(vertEnabled: boolean, fragEnabled: boolean): void;
+    /**
+     * apply stage parameters uniform in the shader,the uniform vec4 data: [2.0/stageWidth,2.0/stageHeight, stageWidth,stageHeight]
+     * @param vertEnabled whether apply stage parameters uniform in the vertex shader, the default value is false
+     * @param fragEnabled whether apply stage parameters uniform in the fragment shader, the default value is true
+     */
+    useStage(vertEnabled: boolean, fragEnabled: boolean): void;
 }
 export {IShaderCodeUniform};
