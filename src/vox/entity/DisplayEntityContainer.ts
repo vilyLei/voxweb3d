@@ -303,10 +303,18 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
         return null;
     }
     getEntities(): DisplayEntity[] {
+        
+        let entities: DisplayEntity[] = null;
         if (this.m_entities != null) {
-            return this.m_entities.slice(0);
+            entities = this.m_entities.slice(0);
         }
-        return null;
+        for(let i: number = 0; i < this.m_children.length; ++i) {
+            let list = this.m_children[i].getEntities();
+            if(list != null) {
+                entities = entities.concat( list );
+            }
+        }
+        return entities;
     }
     getEntityByUid(uid: number): DisplayEntity {
         if (uid > -1) {

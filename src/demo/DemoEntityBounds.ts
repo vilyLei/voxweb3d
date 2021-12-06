@@ -61,6 +61,7 @@ export class DemoEntityBounds {
             let i: number = 0;
 
             let rparam: RendererParam = new RendererParam();
+            rparam.setAttriAntialias(true);
             rparam.setCamProject(45.0, 0.1, 6000.0);
             rparam.setCamPosition(1500.0, 1500.0, 1500.0);
             this.m_rscene = new RendererScene();
@@ -102,15 +103,24 @@ export class DemoEntityBounds {
     private mouseOverTargetListener(evt: any): void {
         if(evt.target != null) {
             let targets: DisplayEntity[];
+            let container: DisplayEntityContainer;
             if(evt.target != evt.currentTarget) {
-                let container: DisplayEntityContainer = evt.target as DisplayEntityContainer;
-                if(evt.target.getEntities == undefined) {
-                    console.log("evt.target.getEntities == undefined...");
-                }
+                container = evt.target as DisplayEntityContainer;
                 targets = container.getEntities();
+                this.m_postOutline.setRGB3f(0.0, 1.0, 0.0);
             }
             else {
-                targets = [ evt.target ];
+                let entity: DisplayEntity = evt.target as DisplayEntity;
+                
+                if(entity.__$getParent() != null) {
+                    container = entity.__$getParent() as DisplayEntityContainer;
+                    targets = container.getEntities();
+                    this.m_postOutline.setRGB3f(1.5, 0.0, 0.0);
+                }
+                else {
+                    targets = [ entity ];
+                    this.m_postOutline.setRGB3f(1.0, 1.0, 0.0);
+                }
             }
             this.m_postOutline.setTargetList( targets );
         }
@@ -272,6 +282,7 @@ export class DemoEntityBounds {
         box2.mouseEnabled = true;
         box2.setMesh(srcBox.getMesh());
         box2.initialize(null, null, [this.m_texList[2]]);
+        this.useEntityEvtDispatcher( box2 );
 
         //
         box0.setXYZ(Math.random() * 1000.0 - 500.0, Math.random() * 100.0 - 500.0, Math.random() * 100.0 - 500.0);
