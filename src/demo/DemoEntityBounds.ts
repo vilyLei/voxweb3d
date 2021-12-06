@@ -61,8 +61,6 @@ export class DemoEntityBounds {
             let scale: number = 1.0;
             let i: number = 0;
 
-            this.m_statusDisp.initialize();
-
             let rparam: RendererParam = new RendererParam();
             rparam.setCamProject(45.0, 0.1, 6000.0);
             rparam.setCamPosition(1500.0, 1500.0, 1500.0);
@@ -75,6 +73,8 @@ export class DemoEntityBounds {
             stage3D.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener);
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
+            
+            this.m_statusDisp.initialize();
 
             this.m_rscene.enableMouseEvent(true);
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());

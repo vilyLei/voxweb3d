@@ -218,7 +218,7 @@ export class DemoPBR implements IShaderLibListener {
         //  this.m_stencilOutline.draw();
         //  // ------------------------------------- draw(render) outline end
         if (this.m_uiModule.isOpen() && this.m_uiModule.getParamEntity() != null) {
-            this.m_postOutline.setTarget( this.m_uiModule.getParamEntity().entity );
+            this.m_postOutline.setTargetList( [this.m_uiModule.getParamEntity().entity] );
             
             this.m_postOutline.drawBegin();
             this.m_postOutline.draw();

@@ -21,7 +21,7 @@ export default class OcclusionPostOutline {
 
     private m_rscene: RendererScene = null;
 
-    private m_target: DisplayEntity = null;
+    private m_targets: DisplayEntity[] = null;
     private m_preMaterial: PostOutlinePreMaterial = null;
     private m_postMaterial: OcclusionPostOutlineMaterial = null;
     private m_postPlane: ScreenAlignPlaneEntity = null;
@@ -86,8 +86,8 @@ export default class OcclusionPostOutline {
     setPostRenderState(state: number): void {
         this.m_postPlane.setRenderState(state);
     }
-    setTarget(target: DisplayEntity): void {
-        this.m_target = target;
+    setTargetList(targets: DisplayEntity[]): void {
+        this.m_targets = targets;
     }
 
     startup(): void {
@@ -103,26 +103,36 @@ export default class OcclusionPostOutline {
      * draw outline line begin
      */
     drawBegin(): void {
+        
+        if(this.m_running && this.m_targets != null && this.m_targets.length > 0) {
+            if (this.m_targets[0].isRenderEnabled()) {
 
-        if (this.m_running && this.m_target != null && this.m_target.isRenderEnabled()) {
+                this.m_preMaterial.setRGB3f(1.0, 0.0, 0.0);
+                this.m_fboIns.setGlobalMaterial(this.m_preMaterial, false, true);
+                this.m_fboIns.runBegin();
+                for(let i: number = 0; i < this.m_targets.length; ++i)
+                    this.m_fboIns.drawEntity(this.m_targets[i]);
+                
+    
+                this.m_fboIns.lockColorMask(RendererState.COLOR_MASK_ALL_FALSE);
+                this.m_fboIns.clearDepth(1.0);
+                for(let i: number = 0; i < this.m_targets.length; ++i)
+                    this.m_targets[i].setVisible(false);
 
-            this.m_preMaterial.setRGB3f(1.0, 0.0, 0.0);
-            this.m_fboIns.setGlobalMaterial(this.m_preMaterial, false, true);
-            this.m_fboIns.runBegin();
-            this.m_fboIns.drawEntity(this.m_target);
+                this.m_fboIns.run(false, false, false);
+                this.m_fboIns.lockColorMask(RendererState.COLOR_MASK_GREEN_TRUE);
+                for(let i: number = 0; i < this.m_targets.length; ++i)
+                    this.m_targets[i].setVisible(true);
 
-            this.m_fboIns.lockColorMask(RendererState.COLOR_MASK_ALL_FALSE);
-            this.m_fboIns.clearDepth(1.0);
-            this.m_target.setVisible(false);
-            this.m_fboIns.run(false, false, false);
-            this.m_fboIns.lockColorMask(RendererState.COLOR_MASK_GREEN_TRUE);
-            this.m_target.setVisible(true);
-            this.m_preMaterial.setRGB3f(0.0, 1.0, 0.0);
-            this.m_fboIns.updateGlobalMaterialUniform();
-            this.m_fboIns.drawEntity(this.m_target);
-            this.m_fboIns.runEnd();
-            this.m_fboIns.unlockRenderColorMask();
-            this.m_fboIns.unlockMaterial();
+                this.m_preMaterial.setRGB3f(0.0, 1.0, 0.0);
+                this.m_fboIns.updateGlobalMaterialUniform();
+                for(let i: number = 0; i < this.m_targets.length; ++i)
+                    this.m_fboIns.drawEntity(this.m_targets[i]);
+
+                this.m_fboIns.runEnd();
+                this.m_fboIns.unlockRenderColorMask();
+                this.m_fboIns.unlockMaterial();
+            }
         }
     }
     /**
@@ -130,21 +140,23 @@ export default class OcclusionPostOutline {
      */
     draw(): void {
 
-        let entity: DisplayEntity = this.m_target;
-        if (this.m_running && entity != null && entity.isRenderEnabled()) {
-            this.m_rscene.setRenderToBackBuffer();
-            this.m_postMaterial.setTexSize(this.m_rscene.getViewWidth() * this.m_sizeScaleRatio, this.m_rscene.getViewHeight() * this.m_sizeScaleRatio);
-            this.m_rscene.drawEntity(this.m_postPlane);
+        if(this.m_running && this.m_targets != null && this.m_targets.length > 0) {
+            if (this.m_targets[0].isRenderEnabled()) {
+                this.m_rscene.setRenderToBackBuffer();
+                this.m_postMaterial.setTexSize(this.m_rscene.getViewWidth() * this.m_sizeScaleRatio, this.m_rscene.getViewHeight() * this.m_sizeScaleRatio);
+                this.m_rscene.drawEntity(this.m_postPlane);
+            }
         }
     }
 
     drawTest(): void {
 
-        let entity: DisplayEntity = this.m_target;
-        if (this.m_running && entity != null && entity.isRenderEnabled()) {
-            this.m_fboIns.runEnd();
-            this.m_fboIns.unlockMaterial();
-            this.m_rscene.setRenderToBackBuffer();
+        if(this.m_running && this.m_targets != null && this.m_targets.length > 0) {
+            if (this.m_targets[0].isRenderEnabled()) {
+                this.m_fboIns.runEnd();
+                this.m_fboIns.unlockMaterial();
+                this.m_rscene.setRenderToBackBuffer();
+            }
         }
     }
     /**

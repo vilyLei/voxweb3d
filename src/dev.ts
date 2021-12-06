@@ -314,7 +314,7 @@
 ////////////////////////////   transform    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
+//  import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   maps    ///////////////////////////////////
@@ -376,7 +376,7 @@ import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
-//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
+import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 

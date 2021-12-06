@@ -152,7 +152,7 @@ export class DemoOutline {
         entity.setPosition(pos);
         entity.update();
 
-        this.m_postOutline.setTarget( entity );
+        this.m_postOutline.setTargetList( [entity] );
         //  this.m_postOutline.setFBOSizeScaleRatio(2.0);
         //  this.m_postOutline.setOutlineThickness(4.0);
         //this.m_postOutline.setRGB3f(2.0,0.0,2.0);
