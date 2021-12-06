@@ -226,6 +226,7 @@ export class DemoMobileEvt {
                 this.useEntityEvtDispatcher(sph);
                 this.m_rscene.addEntity(sph);
             }
+            //*/
             ///*
             // container mouse event test
             for (i = 0; i < 2; ++i) {
@@ -250,10 +251,13 @@ export class DemoMobileEvt {
                 box.update();
                 container.addEntity(box);
                 this.m_rscene.addContainer(container);
-                container.update();
+                console.log("test...............>>>...........");
+                // container.update();
+                // container.update();
+                // container.update();
                 this.useContainerEvtDispatcher(container);
             }
-
+            /*
             let objUrl: string = "static/assets/obj/box01.obj";
             objUrl = "static/assets/obj/building_001.obj";
             let objDisp: ObjData3DEntity = new ObjData3DEntity();

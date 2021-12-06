@@ -6,39 +6,35 @@
 /***************************************************************************/
 // 基本事件类
 
-class EventBase
-{
-    static EventClassType:number = 1001;
+class EventBase {
+    static EventClassType: number = 1001;
     uuid: string = "";
-    constructor()
-    {
+    constructor() {
     }
-    static RESIZE:number = 3001;
-    static ENTER_FRAME:number = 3002;
+    static RESIZE: number = 3001;
+    static ENTER_FRAME: number = 3002;
     //classType:number = 1001;
-    getClassType():number
-    {
+    getClassType(): number {
         return EventBase.EventClassType;
     }
-    
+
     // phase is event flow phase: 0(none phase),1(capture phase),2(bubble phase)
-    phase:number = 0;
+    phase: number = 0;
     // 事件类型
-    type:number = EventBase.RESIZE;
+    type: number = EventBase.RESIZE;
     // 事件发送者
-    target:any = null;
+    target: any = null;
+    // 事件产生者, 例如容器发送了一个mouse down事件, 则容器是target而ray pick到的这个 entity就是currentTarget
+    currentTarget: any = null;
     data: any = null;
-    __$preventBoo:boolean = false;
-    preventDefault():void
-    {
+    __$preventBoo: boolean = false;
+    preventDefault(): void {
         this.__$preventBoo = true;
     }
-    reset():void
-    {
+    reset(): void {
         this.__$preventBoo = false;
     }
-    toString():string
-    {
+    toString(): string {
         return "[EventBase]";
     }
 }

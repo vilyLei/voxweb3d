@@ -41,7 +41,13 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
 
     protected m_globalBounds: AABB = null;
     protected m_gboundsStatus: number = -1;
+    /**
+     * entity global bounds version list
+     */
     protected m_ebvers: number[] = null;
+    /**
+     * child container global bounds version list
+     */
     protected m_cbvers: number[] = null;
     private m_$updateBounds: boolean = true;
     // 自身所在的world的唯一id, 通过这个id可以找到对应的world
@@ -529,7 +535,9 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
         this.m_$updateBounds = true;
     }
     protected updateBounds(): void {
+        
         if (this.m_globalBounds != null && this.m_gboundsStatus > 0) {
+            
             let i: number = 0;
             if (this.m_gboundsStatus < 2) {
                 // 表示父级和子集的global bounds都要发生变化
@@ -545,14 +553,14 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
                 if (bounds != null) {
                     this.m_globalBounds.union(bounds);
                 }
-                this.m_ebvers[i] != this.m_entitys[i].getGlobalBoundsVer();
+                this.m_ebvers[i] = this.m_entitys[i].getGlobalBoundsVer();
             }
             for (i = 0; i < this.m_childrenTotal; ++i) {
                 bounds = this.m_children[i].getGlobalBounds();
                 if (bounds != null) {
                     this.m_globalBounds.union(bounds);
                 }
-                this.m_cbvers[i] != this.m_children[i].getGlobalBoundsVer();
+                this.m_cbvers[i] = this.m_children[i].getGlobalBoundsVer();
             }
             this.m_globalBounds.update();
             if (this.__$parent != null) {

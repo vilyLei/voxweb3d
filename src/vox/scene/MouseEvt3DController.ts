@@ -198,6 +198,7 @@ export default class MouseEvt3DController implements IEvt3DController {
                             if (node != null) {
                                 if (dispatcher != null) {
                                     this.m_mouseEvt.target = entity;
+                                    this.m_mouseEvt.currentTarget = entity;
                                     this.m_mouseEvt.phase = evtFlowPhase;
                                     this.m_mouseEvt.lpos.copyFrom(lpv);
                                     this.m_mouseEvt.wpos.copyFrom(wpv);
@@ -208,6 +209,7 @@ export default class MouseEvt3DController implements IEvt3DController {
                                         this.m_mouseOverEvt.mouseX = this.m_mouseEvt.mouseX;
                                         this.m_mouseOverEvt.mouseY = this.m_mouseEvt.mouseY;
                                         this.m_mouseOverEvt.target = entity;
+                                        this.m_mouseOverEvt.currentTarget = entity;
                                         this.m_mouseOverEvt.lpos.copyFrom(lpv);
                                         this.m_mouseOverEvt.wpos.copyFrom(wpv);
                                         this.m_raySelector.getRay(this.m_mouseOverEvt.raypv, this.m_mouseOverEvt.raytv);
@@ -222,6 +224,7 @@ export default class MouseEvt3DController implements IEvt3DController {
                                             this.m_mouseOutEvt.mouseX = this.m_mouseEvt.mouseX;
                                             this.m_mouseOutEvt.mouseY = this.m_mouseEvt.mouseY;
                                             this.m_mouseOutEvt.target = this.m_evtEntity;
+                                            this.m_mouseOverEvt.currentTarget = this.m_evtEntity;
                                             this.m_mouseOutEvt.lpos.copyFrom(lpv);
                                             this.m_mouseOutEvt.wpos.copyFrom(wpv);
                                             this.m_raySelector.getRay(this.m_mouseOutEvt.raypv, this.m_mouseOutEvt.raytv);
@@ -243,7 +246,8 @@ export default class MouseEvt3DController implements IEvt3DController {
                             this.m_mouseEvt.wheelDeltaY = this.m_evtWheelDeltaYs[i];
                             if (this.m_mouseEvt.type > 0) {
                                 if (node != null) {
-                                    this.m_mouseEvt.target = entity;
+                                    this.m_mouseEvt.target = container;
+                                    this.m_mouseEvt.currentTarget = entity;
                                     this.m_mouseEvt.phase = evtFlowPhase;
                                     this.m_mouseEvt.lpos.copyFrom(lpv);
                                     this.m_mouseEvt.wpos.copyFrom(wpv);
@@ -253,19 +257,21 @@ export default class MouseEvt3DController implements IEvt3DController {
                                         this.m_mouseOverEvt.type = MouseEvent.MOUSE_OVER;
                                         this.m_mouseOverEvt.mouseX = this.m_mouseEvt.mouseX;
                                         this.m_mouseOverEvt.mouseY = this.m_mouseEvt.mouseY;
-                                        this.m_mouseOverEvt.target = entity;
+                                        this.m_mouseOverEvt.target = container;
+                                        this.m_mouseOverEvt.currentTarget = entity;
                                         this.m_mouseOverEvt.lpos.copyFrom(lpv);
                                         this.m_mouseOverEvt.wpos.copyFrom(wpv);
                                         this.m_raySelector.getRay(this.m_mouseOverEvt.raypv, this.m_mouseOverEvt.raytv);
                                         flag += container.dispatchEvt(this.m_mouseOverEvt);
                                     }
                                     flag += container.dispatchEvt(this.m_mouseEvt);
-                                    if (this.m_evtEntity != null && this.m_evtEntity != entity) {
+                                    if (this.m_evtContainer != null && this.m_evtContainer != container) {
                                         this.m_mouseOutEvt.phase = evtFlowPhase;
                                         this.m_mouseOutEvt.type = MouseEvent.MOUSE_OUT;
                                         this.m_mouseOutEvt.mouseX = this.m_mouseEvt.mouseX;
                                         this.m_mouseOutEvt.mouseY = this.m_mouseEvt.mouseY;
-                                        this.m_mouseOutEvt.target = this.m_evtEntity;
+                                        this.m_mouseOutEvt.target = this.m_evtContainer;
+                                        this.m_mouseOutEvt.currentTarget = this.m_evtEntity;
                                         this.m_mouseOutEvt.lpos.copyFrom(lpv);
                                         this.m_mouseOutEvt.wpos.copyFrom(wpv);
                                         this.m_raySelector.getRay(this.m_mouseOutEvt.raypv, this.m_mouseOutEvt.raytv);
