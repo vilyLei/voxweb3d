@@ -16,9 +16,12 @@ import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
 
 import MouseEvent from "../vox/event/MouseEvent";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
-import CameraTrack from "../vox/view/CameraTrack";
+
 import RendererScene from "../vox/scene/RendererScene";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
+
+import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
+import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
 export class DemoFlexPipe {
     constructor() { }
@@ -26,9 +29,11 @@ export class DemoFlexPipe {
     private m_rscene: RendererScene = null;
     private m_rcontext: RendererInstanceContext = null;
     private m_texLoader: ImageTextureLoader = null;
-    private m_camTrack: CameraTrack = null;
+    
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
-    private m_profileInstance: ProfileInstance = new ProfileInstance();
+    // private m_profileInstance: ProfileInstance = new ProfileInstance();
+    private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
+    private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     private m_pipe: Pipe3DEntity = null;
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -51,11 +56,14 @@ export class DemoFlexPipe {
             this.m_rcontext = this.m_rscene.getRendererContext();
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
-            this.m_camTrack = new CameraTrack();
-            this.m_camTrack.bindCamera(this.m_rscene.getCamera());
-
-            this.m_profileInstance.initialize(this.m_rscene.getRenderer());
+            // this.m_profileInstance.initialize(this.m_rscene.getRenderer());
             this.m_statusDisp.initialize();
+
+            this.m_rscene.enableMouseEvent(true);
+            this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
+            this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
+            this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
+            this.m_stageDragSwinger.setAutoRotationEnabled( true );
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
@@ -148,9 +156,11 @@ export class DemoFlexPipe {
     }
     run(): void {
 
+        this.m_stageDragSwinger.runWithYAxis();
+        this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
+
         this.m_statusDisp.update(false);
         this.m_rscene.run();
-        this.m_camTrack.rotationOffsetAngleWorldY(-0.5);
         //this.m_profileInstance.run();
     }
 }

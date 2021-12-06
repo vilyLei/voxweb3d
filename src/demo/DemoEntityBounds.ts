@@ -13,7 +13,6 @@ import BoxFrame3D from "../vox/entity/BoxFrame3D";
 import TextureProxy from "../vox/texture/TextureProxy";
 import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../vox/texture/TextureConst";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
-import CameraTrack from "../vox/view/CameraTrack";
 import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
 
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
@@ -27,7 +26,6 @@ export class DemoEntityBounds {
 
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader;
-    private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
@@ -75,9 +73,7 @@ export class DemoEntityBounds {
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener);
-            this.m_camTrack = new CameraTrack();
-            this.m_camTrack.bindCamera(this.m_rscene.getCamera());
-            
+
             this.m_statusDisp.initialize();
 
             this.m_rscene.enableMouseEvent(true);
@@ -85,6 +81,7 @@ export class DemoEntityBounds {
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
             this.m_stageDragSwinger.setAutoRotationEnabled( true );
+            
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
             this.initTex();
             

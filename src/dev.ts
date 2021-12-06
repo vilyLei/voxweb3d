@@ -302,13 +302,13 @@
 
 //  import {DemoFlexMesh as Demo} from "./demo/DemoFlexMesh";
 
-//  import {DemoFlexPipe as Demo} from "./demo/DemoFlexPipe";
+import {DemoFlexPipe as Demo} from "./demo/DemoFlexPipe";
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   transform    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
+//  import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
 
 //  import {DemoTransFromTex as Demo} from "./demo/DemoTransFromTex";
 
