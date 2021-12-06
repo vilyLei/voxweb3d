@@ -10,6 +10,7 @@ import AABB from "../../vox/geom/AABB";
 import IEvtDispatcher from "../../vox/event/IEvtDispatcher";
 
 export default interface IRenderEntityContainer {
+    mouseEnabled: boolean;
     dispatchEvt(evt: any): number;
     getEvtDispatcher(evtClassType: number): IEvtDispatcher;
     getGlobalBounds(): AABB;

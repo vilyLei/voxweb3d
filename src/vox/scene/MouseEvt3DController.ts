@@ -235,7 +235,7 @@ export default class MouseEvt3DController implements IEvt3DController {
                         }
                     }
                     let container: IRenderEntityContainer = entity.__$getParent();
-                    if(container != null) {
+                    if(container != null && container.mouseEnabled) {
                         for (let i: number = 0; i < this.m_evtTotal; i++) {
                             this.m_mouseEvt.type = this.m_evtTypes[i];
                             this.m_mouseEvt.mouseX = this.m_evtXList[i];

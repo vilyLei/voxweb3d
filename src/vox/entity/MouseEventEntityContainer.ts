@@ -4,19 +4,15 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-
-import ROTransform from "../../vox/display/ROTransform";
-import DisplayEntity from "../../vox/entity/DisplayEntity";
-import MouseEvent from "../../vox/event/MouseEvent";
+import DisplayEntityContainer from "./DisplayEntityContainer";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
 
-export default class MouseEventEntity extends DisplayEntity {
 
+export default class MouseEventEntityContainer extends DisplayEntityContainer {
     protected m_dispatcher: MouseEvt3DDispatcher = null;
     uuid: string = "";
-    constructor(transform: ROTransform = null) {
-        super(transform);
-        this.initializeEvent();
+    constructor(boundsEnabled: boolean = true) {
+        super( boundsEnabled );
     }
 
     addEventListener(type: number, listener: any, func: (evt: any) => void, captureEnabled: boolean = true, bubbleEnabled: boolean = false): void {
@@ -38,7 +34,7 @@ export default class MouseEventEntity extends DisplayEntity {
         }
     }
     destroy(): void {
-        super.destroy();
         this.m_dispatcher = null;
+        super.destroy();
     }
 }
