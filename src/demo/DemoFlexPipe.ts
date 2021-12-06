@@ -65,6 +65,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         if (this.m_rscene == null) {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
+            RendererDevice.SetWebBodyColor();
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
 
             let rparam: RendererParam = new RendererParam();
@@ -87,9 +88,9 @@ export class DemoFlexPipe implements IShaderLibListener {
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
-            // let axis: Axis3DEntity = new Axis3DEntity();
-            // axis.initialize(300.0);
-            // this.m_rscene.addEntity(axis);
+            let axis: Axis3DEntity = new Axis3DEntity();
+            axis.initialize(300.0);
+            this.m_rscene.addEntity(axis);
             
             //  this.initScene();
             this.initMaterialCtx();
@@ -132,7 +133,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         mcParam.loadAllShaderCode = true;
         mcParam.shaderCodeBinary = true;
         this.m_materialCtx.initialize(this.m_rscene, mcParam, libConfig);
-
+        this.m_materialCtx.envData.setFogDensity(0.0002);
         this.m_materialCtx.addShaderLibListener( this );
 
         let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
@@ -166,10 +167,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         //  this.m_materialCtx.lightModule.showInfo();
     }
     private useMaps(material: PBRMaterial, ns: string = "lava_03"): void {
-
-        this.aoMapEnabled = true;
         
-        //let ns: string = "lava_03";
         let diffuseMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_COLOR.png");
         let normalMap: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_NRM.png");
         let aoMap: TextureProxy = null;
@@ -232,7 +230,10 @@ export class DemoFlexPipe implements IShaderLibListener {
         return material;
     }
     private initScene(): void {
-        
+
+        this.fogEnabled = true;
+        this.aoMapEnabled = true;
+
         let material: PBRMaterial;
         ///*
         material = this.createMaterial(1, 1);
