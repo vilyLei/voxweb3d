@@ -47,6 +47,7 @@ export class DemoPBR implements IShaderLibListener {
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
+            RendererDevice.SetWebBodyColor();
 
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
@@ -118,8 +119,6 @@ export class DemoPBR implements IShaderLibListener {
         this.m_pbrScene = new PBRScene();
         this.m_pbrScene.initialize(this.m_rscene, this.m_materialCtx, this.m_uiModule);
 
-        const body = document.body;
-        body.style.background = "white";
     }
 
     private m_runFlag: boolean = true;

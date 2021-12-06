@@ -56,6 +56,7 @@ export class DemoEntityBounds {
         if (this.m_rscene == null) {
 
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
+            RendererDevice.SetWebBodyColor();
 
             let scale: number = 1.0;
             let i: number = 0;

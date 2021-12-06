@@ -37,7 +37,15 @@ class RendererDevice {
     public static FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED: boolean = true;
     // worker multi threads enabled yes or no
     private static s_threadEnabled: boolean = true;
-    
+    /**
+     * set web html body background color
+     * @param color a color string, the default value is "white"
+     */
+    static SetWebBodyColor(color: string = "white"): void {
+
+        const body = document.body;
+        body.style.background = color;
+    }
     static SetLanguage(language: string): void {
         RendererDevice.s_language = language;
     }
