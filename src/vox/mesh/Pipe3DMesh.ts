@@ -55,6 +55,7 @@ export default class Pipe3DMesh extends MeshBase {
 
             this.vtCount = this.geometry.vtCount;
             this.trisNumber = this.geometry.trisNumber;
+            this.vtxTotal = this.m_vs.length / 3;
         }
         this.initializeBuf(true);
     }
@@ -83,7 +84,6 @@ export default class Pipe3DMesh extends MeshBase {
         }
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
             if (this.m_nvs == null) this.m_nvs = new Float32Array(this.vtxTotal * 3);
-
             SurfaceNormalCalc.ClacTrisNormal(this.m_vs, this.m_vs.length, this.trisNumber, this.m_ivs, this.m_nvs);
             ROVertexBuffer.AddFloat32Data(this.m_nvs, 3);
         }

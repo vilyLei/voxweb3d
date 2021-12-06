@@ -7,6 +7,7 @@ import TextureProxy from "../../vox/texture/TextureProxy";
 
 import PipeGeometry from "../../voxmesh/geometry/primitive/PipeGeometry";
 import Pipe3DMesh from "../../vox/mesh/Pipe3DMesh";
+import MaterialBase from "../../vox/material/MaterialBase";
 
 class MorphPipeObject {
 
@@ -15,13 +16,16 @@ class MorphPipeObject {
     private m_pipeGeometry: PipeGeometry = null;
     private m_latitudeNum: number = 2;
 
-    constructor(radius: number, height: number, longitudeNum: number, latitudeNum: number, texList: TextureProxy[] = null) {
-        this.initialize(radius, height, longitudeNum, latitudeNum, texList);
+    constructor(radius: number, height: number, longitudeNum: number, latitudeNum: number, texList: TextureProxy[] = null, material: MaterialBase = null) {
+        this.initialize(radius, height, longitudeNum, latitudeNum, texList, material);
     }
-    private initialize(radius: number, height: number, longitudeNum: number, latitudeNum: number, texList: TextureProxy[]): void {
+    private initialize(radius: number, height: number, longitudeNum: number, latitudeNum: number, texList: TextureProxy[], material: MaterialBase): void {
 
         this.m_latitudeNum = latitudeNum;
         this.m_pipeEntity = new Pipe3DEntity();
+        if(material != null) {
+            this.m_pipeEntity.setMaterial( material );
+        }
         this.m_pipeEntity.showDoubleFace();
         this.m_pipeEntity.initialize(radius, height, longitudeNum, latitudeNum, texList, 1, 0.0);
         this.m_pipeMesh = this.m_pipeEntity.getMesh() as Pipe3DMesh;

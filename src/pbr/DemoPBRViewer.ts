@@ -96,68 +96,7 @@ export class DemoPBRViewer implements IShaderLibListener {
 
             this.m_rscene.setClearRGBColor3f(0.2, 0.2, 0.2);
 
-            let envMapUrl: string = "static/bytes/spe.mdf";
-            if (this.hdrBrnEnabled) {
-                envMapUrl = "static/bytes/spe.hdrBrn";
-            }
-            let loader: SpecularTextureLoader = new SpecularTextureLoader();
-            loader.hdrBrnEnabled = this.hdrBrnEnabled;
-            loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
-            this.m_envMap = loader.texture;
-
-            let libConfig: IShaderLibConfigure = {shaderCodeConfigures:[]};
-            let configure = new ShaderCodeConfigure();
-            configure.uuid = ShaderCodeUUID.PBR;
-            configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
-            configure.urls = [
-                "static/shader/glsl/pbr/glsl01.bin",
-                "static/shader/glsl/pbr/glsl02.bin",
-                "static/shader/glsl/pbr/glsl03.bin",
-                "static/shader/glsl/pbr/glsl04.bin"
-            ]
-            configure.binary = true;
-            libConfig.shaderCodeConfigures.push( configure );
-
-            let mcParam: MaterialContextParam = new MaterialContextParam();
-            mcParam.pointLightsTotal = 1;
-            mcParam.directionLightsTotal = 2;
-            mcParam.spotLightsTotal = 0;
-            mcParam.loadAllShaderCode = true;
-            mcParam.shaderCodeBinary = true;
-            this.m_materialCtx.initialize(this.m_rscene, mcParam, libConfig);
-
-            this.m_materialCtx.addShaderLibListener( this );
-
-            let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
-            if (pointLight != null) {
-                // pointLight.position.setXYZ(200.0, 180.0, 200.0);
-                pointLight.position.setXYZ(0.0, 190.0, 0.0);
-                pointLight.color.setRGB3f(0.0, 2.2, 0.0);
-                pointLight.attenuationFactor1 = 0.00001;
-                pointLight.attenuationFactor2 = 0.00005;
-            }
-            let spotLight: SpotLight = this.m_materialCtx.lightModule.getSpotLightAt(0);
-            if(spotLight != null) {
-                spotLight.position.setXYZ(0.0, 30.0, 0.0);
-                spotLight.direction.setXYZ(0.0, -1.0, 0.0);
-                spotLight.color.setRGB3f(0.0, 40.2, 0.0);
-                spotLight.attenuationFactor1 = 0.000001;
-                spotLight.attenuationFactor2 = 0.000001;
-                spotLight.angleDegree = 30.0;
-            }
-            let directLight: DirectionLight = this.m_materialCtx.lightModule.getDirectionLightAt(0);
-            if (directLight != null) {
-                directLight.color.setRGB3f(2.0,0.0,0.0);
-                directLight.direction.setXYZ(-1.0, -1.0, 0.0);
-                directLight = this.m_materialCtx.lightModule.getDirectionLightAt(1);
-                if(directLight != null) {
-                    directLight.color.setRGB3f(0.0,0.0,2.0);
-                    directLight.direction.setXYZ(1.0, 1.0, 0.0);
-                }
-            }
-            this.m_materialCtx.lightModule.update();
-            this.m_materialCtx.lightModule.showInfo();
-
+            this.initMaterialCtx();
             // for(let i: number = 0; i < this.m_materialCtx.lightModule.getPointLightsTotal(); ++i) {
             //     let crossAxis: Axis3DEntity = new Axis3DEntity();
             //     crossAxis.initializeCross(30);
@@ -165,6 +104,70 @@ export class DemoPBRViewer implements IShaderLibListener {
             //     this.m_rscene.addEntity(crossAxis);
             // }
         }
+    }
+    private initMaterialCtx(): void {
+
+        let envMapUrl: string = "static/bytes/spe.mdf";
+        if (this.hdrBrnEnabled) {
+            envMapUrl = "static/bytes/spe.hdrBrn";
+        }
+        let loader: SpecularTextureLoader = new SpecularTextureLoader();
+        loader.hdrBrnEnabled = this.hdrBrnEnabled;
+        loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
+        this.m_envMap = loader.texture;
+
+        let libConfig: IShaderLibConfigure = {shaderCodeConfigures:[]};
+        let configure = new ShaderCodeConfigure();
+        configure.uuid = ShaderCodeUUID.PBR;
+        configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
+        configure.urls = [
+            "static/shader/glsl/pbr/glsl01.bin",
+            "static/shader/glsl/pbr/glsl02.bin",
+            "static/shader/glsl/pbr/glsl03.bin",
+            "static/shader/glsl/pbr/glsl04.bin"
+        ]
+        configure.binary = true;
+        libConfig.shaderCodeConfigures.push( configure );
+
+        let mcParam: MaterialContextParam = new MaterialContextParam();
+        mcParam.pointLightsTotal = 1;
+        mcParam.directionLightsTotal = 2;
+        mcParam.spotLightsTotal = 0;
+        mcParam.loadAllShaderCode = true;
+        mcParam.shaderCodeBinary = true;
+        this.m_materialCtx.initialize(this.m_rscene, mcParam, libConfig);
+
+        this.m_materialCtx.addShaderLibListener( this );
+
+        let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
+        if (pointLight != null) {
+            // pointLight.position.setXYZ(200.0, 180.0, 200.0);
+            pointLight.position.setXYZ(0.0, 190.0, 0.0);
+            pointLight.color.setRGB3f(0.0, 2.2, 0.0);
+            pointLight.attenuationFactor1 = 0.00001;
+            pointLight.attenuationFactor2 = 0.00005;
+        }
+        let spotLight: SpotLight = this.m_materialCtx.lightModule.getSpotLightAt(0);
+        if(spotLight != null) {
+            spotLight.position.setXYZ(0.0, 30.0, 0.0);
+            spotLight.direction.setXYZ(0.0, -1.0, 0.0);
+            spotLight.color.setRGB3f(0.0, 40.2, 0.0);
+            spotLight.attenuationFactor1 = 0.000001;
+            spotLight.attenuationFactor2 = 0.000001;
+            spotLight.angleDegree = 30.0;
+        }
+        let directLight: DirectionLight = this.m_materialCtx.lightModule.getDirectionLightAt(0);
+        if (directLight != null) {
+            directLight.color.setRGB3f(2.0,0.0,0.0);
+            directLight.direction.setXYZ(-1.0, -1.0, 0.0);
+            directLight = this.m_materialCtx.lightModule.getDirectionLightAt(1);
+            if(directLight != null) {
+                directLight.color.setRGB3f(0.0,0.0,2.0);
+                directLight.direction.setXYZ(1.0, 1.0, 0.0);
+            }
+        }
+        this.m_materialCtx.lightModule.update();
+        //  this.m_materialCtx.lightModule.showInfo();
     }
     private initScene(): void {
         
