@@ -114,13 +114,14 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
         return this.__$parent;
     }
     
-    dispatchEvt(evt: any): void {
+    dispatchEvt(evt: any): number {
         
         // if (evt.getClassType() == MouseEvent.EventClassType) {
         if (this.m_eventDispatcher != null) {
-            this.m_eventDispatcher.dispatchEvt(evt);
+            return this.m_eventDispatcher.dispatchEvt(evt);
         }
         // }
+        return 0;
     }
     getEvtDispatcher(evtClassType: number): IEvtDispatcher {
         return this.m_eventDispatcher;

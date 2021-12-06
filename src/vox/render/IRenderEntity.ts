@@ -45,7 +45,7 @@ export default interface IRenderEntity {
      * @returns 自身是否未被任何渲染器相关的系统使用
      */
     isFree(): boolean;
-    dispatchEvt(evt: any): void;
+    dispatchEvt(evt: any): number;
     getEvtDispatcher(evtClassType: number): IEvtDispatcher;
     getPosition(resultPos: Vector3D): void;
     getGlobalBounds(): AABB;

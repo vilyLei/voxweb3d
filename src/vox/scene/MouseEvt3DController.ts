@@ -188,20 +188,14 @@ export default class MouseEvt3DController implements IEvt3DController {
                     wpv = node.wpv;
                     let entity: IRenderEntity = node.entity;
                     dispatcher = entity.getEvtDispatcher(MouseEvent.EventClassType);
-                    // m_evtContainer
                     
                     for (let i: number = 0; i < this.m_evtTotal; i++) {
                         this.m_mouseEvt.type = this.m_evtTypes[i];
                         this.m_mouseEvt.mouseX = this.m_evtXList[i];
                         this.m_mouseEvt.mouseY = this.m_evtYList[i];
                         this.m_mouseEvt.wheelDeltaY = this.m_evtWheelDeltaYs[i];
-                        //console.log("this.m_mouseEvt.type: "+this.m_mouseEvt.type);
                         if (this.m_mouseEvt.type > 0) {
-                            //console.log("this.m_raySelector.getSelectedNodesTotal(): "+this.m_raySelector.getSelectedNodesTotal()); 
-                            //node = this.m_raySelector.getSelectedNode();
                             if (node != null) {
-                                //entity = node.entity;
-                                //dispatcher = entity.getEvtDispatcher(MouseEvent.EventClassType);
                                 if (dispatcher != null) {
                                     this.m_mouseEvt.target = entity;
                                     this.m_mouseEvt.phase = evtFlowPhase;
@@ -241,6 +235,48 @@ export default class MouseEvt3DController implements IEvt3DController {
                         }
                     }
                     let container: IRenderEntityContainer = entity.__$getParent();
+                    if(container != null) {
+                        for (let i: number = 0; i < this.m_evtTotal; i++) {
+                            this.m_mouseEvt.type = this.m_evtTypes[i];
+                            this.m_mouseEvt.mouseX = this.m_evtXList[i];
+                            this.m_mouseEvt.mouseY = this.m_evtYList[i];
+                            this.m_mouseEvt.wheelDeltaY = this.m_evtWheelDeltaYs[i];
+                            if (this.m_mouseEvt.type > 0) {
+                                if (node != null) {
+                                    this.m_mouseEvt.target = entity;
+                                    this.m_mouseEvt.phase = evtFlowPhase;
+                                    this.m_mouseEvt.lpos.copyFrom(lpv);
+                                    this.m_mouseEvt.wpos.copyFrom(wpv);
+                                    this.m_raySelector.getRay(this.m_mouseEvt.raypv, this.m_mouseEvt.raytv);
+                                    if (this.m_evtContainer != container) {
+                                        this.m_mouseOverEvt.phase = evtFlowPhase;
+                                        this.m_mouseOverEvt.type = MouseEvent.MOUSE_OVER;
+                                        this.m_mouseOverEvt.mouseX = this.m_mouseEvt.mouseX;
+                                        this.m_mouseOverEvt.mouseY = this.m_mouseEvt.mouseY;
+                                        this.m_mouseOverEvt.target = entity;
+                                        this.m_mouseOverEvt.lpos.copyFrom(lpv);
+                                        this.m_mouseOverEvt.wpos.copyFrom(wpv);
+                                        this.m_raySelector.getRay(this.m_mouseOverEvt.raypv, this.m_mouseOverEvt.raytv);
+                                        flag += container.dispatchEvt(this.m_mouseOverEvt);
+                                    }
+                                    flag += container.dispatchEvt(this.m_mouseEvt);
+                                    if (this.m_evtEntity != null && this.m_evtEntity != entity) {
+                                        this.m_mouseOutEvt.phase = evtFlowPhase;
+                                        this.m_mouseOutEvt.type = MouseEvent.MOUSE_OUT;
+                                        this.m_mouseOutEvt.mouseX = this.m_mouseEvt.mouseX;
+                                        this.m_mouseOutEvt.mouseY = this.m_mouseEvt.mouseY;
+                                        this.m_mouseOutEvt.target = this.m_evtEntity;
+                                        this.m_mouseOutEvt.lpos.copyFrom(lpv);
+                                        this.m_mouseOutEvt.wpos.copyFrom(wpv);
+                                        this.m_raySelector.getRay(this.m_mouseOutEvt.raypv, this.m_mouseOutEvt.raytv);
+                                        //console.log("mouse out 01."+this.m_evtEntity.name);
+                                        flag += container.dispatchEvt(this.m_mouseOutEvt);
+                                    }
+                                    this.m_evtContainer = container;
+                                }
+                            }
+                        }
+                    }
                 }
                 else {
                     flag += this.mouseOutEventTarget();

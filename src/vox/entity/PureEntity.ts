@@ -102,17 +102,11 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
     isFree(): boolean {
         return this.__$rseFlag == RSEntityFlag.DEFAULT;
     }
-    dispatchEvt(evt: any): void {
-        if (evt.getClassType() == MouseEvent.EventClassType) {
-            if (this.m_mouseEvtDispatcher != null) {
-                this.m_mouseEvtDispatcher.dispatchEvt(evt);
-            }
-            //else
-            //{
-            //    this.m_mouseEvtDispatcher = new MouseEvt3DDispatcher();
-            //    this.m_mouseEvtDispatcher.dispatchEvt(evt);
-            //}
+    dispatchEvt(evt: any): number {
+        if (this.m_mouseEvtDispatcher != null) {
+            return this.m_mouseEvtDispatcher.dispatchEvt(evt);
         }
+        return 0;
     }
     getEvtDispatcher(evtClassType: number): IEvtDispatcher {
         return this.m_mouseEvtDispatcher;

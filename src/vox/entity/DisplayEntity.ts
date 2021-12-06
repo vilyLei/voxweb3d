@@ -134,13 +134,14 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     isFree(): boolean {
         return this.__$rseFlag == RSEntityFlag.DEFAULT;
     }
-    dispatchEvt(evt: any): void {
+    dispatchEvt(evt: any): number {
         
         // if (evt.getClassType() == MouseEvent.EventClassType) {
         if (this.m_eventDispatcher != null) {
-            this.m_eventDispatcher.dispatchEvt(evt);
+            return this.m_eventDispatcher.dispatchEvt(evt);
         }
         // }
+        return 0;
     }
     getEvtDispatcher(evtClassType: number): IEvtDispatcher {
         return this.m_eventDispatcher;
