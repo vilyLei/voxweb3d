@@ -20,6 +20,9 @@ import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import RendererScene from "../vox/scene/RendererScene";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 
+import PipeGeometry from "../voxmesh/geometry/primitive/PipeGeometry";
+import Pipe3DMesh from "../vox/mesh/Pipe3DMesh";
+
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
@@ -35,6 +38,9 @@ export class DemoFlexPipe {
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     private m_pipe: Pipe3DEntity = null;
+    
+    private m_pipeMesh: Pipe3DMesh = null;
+    private m_pipeGeometry: PipeGeometry = null;
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
         ptex.mipmapEnabled = mipmapEnabled;
@@ -86,15 +92,19 @@ export class DemoFlexPipe {
             //pipe.setXYZ(Math.random() * 500.0 - 250.0,Math.random() * 50.0 + 10.0,Math.random() * 500.0 - 250.0);
             this.m_rscene.addEntity(pipe, 1);
             this.m_pipe = pipe;
+            this.m_pipeMesh = pipe.getMesh() as Pipe3DMesh;
+            this.m_pipeGeometry = this.m_pipeMesh.geometry.clone() as PipeGeometry;
             //  pipe.getCircleCenterAt(1,posV);
             //  console.log("XXX posV: ",posV);
 
             //this.transformPipe(7);
             //this.transformPipeDo(21, 0.06, -0.05);
-            this.transformPipeDo(21, 0.06, -0.05);
-            this.m_pipe.reinitialize();
-            this.m_pipe.updateMeshToGpu();
 
+            this.transformPipeDo(21, 0.06, -0.05);
+            // this.m_pipe.reinitialize();
+            // this.m_pipe.updateMeshToGpu();
+
+            this.update();
         }
     }
 
@@ -102,13 +112,18 @@ export class DemoFlexPipe {
     private m_pos0: Vector3D = new Vector3D();
     private m_rotV: Vector3D = new Vector3D();
     private m_scaleV: Vector3D = new Vector3D(1.0, 1.0, 1.0);
+    
+    private m_mat4: Matrix4 = new Matrix4();
 
     private transformPipeDo(total: number, dradius: number, dscale: number): void {
+
+        this.m_pipeMesh.geometry.copyFrom( this.m_pipeGeometry );
+
         this.m_rotV.setXYZ(0.0, 0.0, 0.0);
         this.m_rotV.z += dradius;
-
-
-        let mat4: Matrix4 = new Matrix4();
+        this.m_scaleV.setXYZ(1.0, 1.0, 1.0);
+        let mat4: Matrix4 = this.m_mat4;
+        
         for (let i: number = 1; i < total; ++i) {
             mat4.identity();
             mat4.setScaleXYZ(this.m_scaleV.x, this.m_scaleV.y, this.m_scaleV.z);
@@ -130,15 +145,16 @@ export class DemoFlexPipe {
         this.m_pipe.transformCircleAt(i, mat4);
     }
     private mouseDown(evt: any): void {
-        let i: number = 0;
-        let type: number = 0;
-        switch (type) {
-            case 0:
-                //this.transformPipe(i);
-                break;
-            default:
-                break;
-        }
+        // let i: number = 0;
+        // let type: number = 0;
+        // switch (type) {
+        //     case 0:
+        //         //this.transformPipe(i);
+        //         break;
+        //     default:
+        //         break;
+        // }
+        // this.morphGeometryAnimate();
     }
     private m_timeoutId: any = -1;
     private update(): void {
@@ -146,13 +162,25 @@ export class DemoFlexPipe {
             clearTimeout(this.m_timeoutId);
         }
         //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
-        this.m_timeoutId = setTimeout(this.update.bind(this), 40);// 20 fps
+        this.m_timeoutId = setTimeout(this.update.bind(this), 30);// 20 fps
         let pcontext: RendererInstanceContext = this.m_rcontext;
         this.m_statusDisp.statusInfo = "/" + pcontext.getTextureResTotal() + "/" + pcontext.getTextureAttachTotal();
 
-        this.m_rscene.update();
         this.m_statusDisp.render();
+        this.morphGeometryAnimate();
 
+    }
+    private m_morphTime: number = 0.0;
+
+    morphGeometryAnimate(): void {
+
+        let factor: number = Math.sin(this.m_morphTime);
+        this.transformPipeDo(21, 0.06 * factor, -0.05);
+        
+        this.m_pipe.reinitialize();
+        this.m_pipe.updateMeshToGpu();
+        
+        this.m_morphTime += 0.02;
     }
     run(): void {
 
