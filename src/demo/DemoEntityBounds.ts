@@ -205,10 +205,10 @@ export class DemoEntityBounds {
     private m_followBCEntitys: DisplayEntity[] = [];
     runContainerBoundsTest(): void {
         if (this.m_targetContFrame != null) {
-            this.m_targetEntity0.getTransform().setRotationY(this.m_targetEntity0.getTransform().getRotationY() + 0.2);
-            this.m_targetEntity0.getTransform().setRotationZ(this.m_targetEntity0.getTransform().getRotationZ() - 0.2);
-            this.m_targetEntity2.getTransform().setRotationZ(this.m_targetEntity2.getTransform().getRotationZ() - 0.2);
-            this.m_targetEntity2.getTransform().setRotationX(this.m_targetEntity2.getTransform().getRotationX() - 0.2);
+            this.m_targetEntity0.getTransform().setRotationY(this.m_targetEntity0.getTransform().getRotationY() + 0.3);
+            this.m_targetEntity0.getTransform().setRotationZ(this.m_targetEntity0.getTransform().getRotationZ() - 0.3);
+            this.m_targetEntity2.getTransform().setRotationZ(this.m_targetEntity2.getTransform().getRotationZ() - 0.3);
+            this.m_targetEntity2.getTransform().setRotationX(this.m_targetEntity2.getTransform().getRotationX() - 0.3);
             //this.m_targetEntity2.update();
             //  this.m_targetEntity1.getTransform().setRotationX(this.m_targetEntity1.getTransform().getRotationX() + 1.0);
             //  this.m_targetEntity1.getTransform().setRotationZ(this.m_targetEntity1.getTransform().getRotationZ() - 1.0);
@@ -253,7 +253,7 @@ export class DemoEntityBounds {
             }
 
             this.pv.setXYZ(100.0, 100.0, 100.0);
-            this.m_targetEntity0.getTransform().localToGlobal(this.pv);
+            this.m_targetEntity0.localToGlobal(this.pv);
             this.m_followEntity.setPosition(this.pv);
             this.m_followEntity.update();
         }

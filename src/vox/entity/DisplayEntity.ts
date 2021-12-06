@@ -530,6 +530,16 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
     getScaleXYZ(pv: Vector3D): void {
         this.m_transfrom.getScaleXYZ(pv);
     }
+    localToGlobal(pv: Vector3D): void {
+        if(this.m_transfrom != null) {
+            this.m_transfrom.localToGlobal(pv);
+        }
+    }
+    globalToLocal(pv: Vector3D): void {
+        if(this.m_transfrom != null) {
+            this.m_transfrom.globalToLocal(pv);
+        }
+    }
     //private static s_boundsInVS: Float32Array = new Float32Array(24);
     private static s_boundsOutVS: Float32Array = new Float32Array(24);
     private static s_pos: Vector3D = new Vector3D();

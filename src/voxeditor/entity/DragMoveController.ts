@@ -76,6 +76,11 @@ class DragMoveTarget implements IEntityTransform {
     }
     getScaleXYZ(pv: Vector3D): void {
     }
+    
+    localToGlobal(pv: Vector3D): void {
+    }
+    globalToLocal(pv: Vector3D): void {
+    }
     update(): void {
         let i: number = 0;
         if (this.m_engitys[i] != null && this.m_changFlags[i]) {
@@ -333,6 +338,11 @@ class DragMoveController implements IRayControl {
     getRotationXYZ(pv: Vector3D): void {
     }
     getScaleXYZ(pv: Vector3D): void {
+    }
+    
+    localToGlobal(pv: Vector3D): void {
+    }
+    globalToLocal(pv: Vector3D): void {
     }
     update(): void {
     }

@@ -16,6 +16,8 @@ interface IEntityTransform
     setScaleXYZ(sx:number,sy:number,sz:number):void;
     getRotationXYZ(pv:Vector3D):void;
     getScaleXYZ(pv:Vector3D):void;
+    localToGlobal(pv: Vector3D): void;
+    globalToLocal(pv: Vector3D): void;
     update():void;
 }
 
