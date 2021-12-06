@@ -7,7 +7,6 @@
 import DisplayEntityContainer from "./DisplayEntityContainer";
 import MouseEvt3DDispatcher from "../../vox/event/MouseEvt3DDispatcher";
 
-
 export default class MouseEventEntityContainer extends DisplayEntityContainer {
     protected m_dispatcher: MouseEvt3DDispatcher = null;
     uuid: string = "";

@@ -252,7 +252,7 @@
 
 //  import {DemoOrthoBtn as Demo} from "./demo/DemoOrthoBtn";
 
-//  import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
+import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
 
 //  import {DemoCameraSwing as Demo} from "./demo/DemoCameraSwing";
 
@@ -373,7 +373,7 @@
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
-import {DemoPBR as Demo} from "./pbr/DemoPBR";
+//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 

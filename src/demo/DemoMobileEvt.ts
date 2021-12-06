@@ -21,9 +21,11 @@ import DivLog from "../vox/utils/DivLog";
 import MouseEvent from "../vox/event/MouseEvent";
 import MouseEvt3DDispatcher from "../vox/event/MouseEvt3DDispatcher";
 import BoxFrame3D from "../vox/entity/BoxFrame3D";
+import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import Color4 from "../vox/material/Color4";
+import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
 
 class DispCtrObj {
     constructor() { }
@@ -74,6 +76,7 @@ class DispCtrObj {
     }
     mouseDownListener(evt: any): void {
         //DivLog.ShowLog("mouseDown "+evt.target.name+",name: "+this.name);
+        console.log("mouseDown " + evt.target.name + ",name: " + this.name);
         this.createDisp(evt);
         //console.log("DispCtrObj::mouseDownListener call.");
         let list: BoxFrame3D[] = DispCtrObj.FrameDispList;
@@ -121,6 +124,7 @@ export class DemoMobileEvt {
     private m_rcontext: RendererInstanceContext = null;
     private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
+    private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     private m_profileInstance: ProfileInstance;
     getImageTexByUrl(purl: string): TextureProxy {
@@ -159,7 +163,7 @@ export class DemoMobileEvt {
     private test_bgmouseMoveListener(evt: any): void {
         console.log("test_bgmouseMoveListener");
     }
-    private m_clearColor: Color4 = new Color4();
+    private m_clearColor: Color4 = new Color4(0.1, 0.2, 0.1, 1.0);
 
     initialize(): void {
         console.log("DemoMobileEvt::initialize()......");
@@ -184,11 +188,12 @@ export class DemoMobileEvt {
 
             let tex0: TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
             let tex1: TextureProxy = this.getImageTexByUrl("static/assets/broken_iron.jpg");
+            let tex2: TextureProxy = this.getImageTexByUrl("static/assets/color_01.jpg");
 
             this.m_rscene.enableMouseEvent(true);
-
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
-            this.m_cameraZoomController.initialize(this.m_rscene.getStage3D() as Stage3D);
+            this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
+            this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
 
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
@@ -209,7 +214,8 @@ export class DemoMobileEvt {
                 box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex1]);
                 //box.setXYZ(800 * Math.random() - 400.0,800 * Math.random() - 400.0,800 * Math.random() - 400.0);
                 box.setXYZ(400.0 * (i - 1), 0, 0);
-                this.useEvtDispatcher(box);
+                box.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
+                this.useEntityEvtDispatcher(box);
                 this.m_rscene.addEntity(box);
             }
             for (i = 0; i < 2; ++i) {
@@ -217,10 +223,37 @@ export class DemoMobileEvt {
                 sph.name = "sph_" + i;
                 sph.initialize(150, 20, 20, [tex1]);
                 sph.setXYZ(800 * Math.random() - 400.0, 800 * Math.random() - 400.0, 800 * Math.random() - 400.0);
-                this.useEvtDispatcher(sph);
+                this.useEntityEvtDispatcher(sph);
                 this.m_rscene.addEntity(sph);
             }
             ///*
+            // container mouse event test
+            for (i = 0; i < 2; ++i) {
+                let box: Box3DEntity = new Box3DEntity();
+                box.name = "box_" + i * 10;
+                box.setMesh(srcBox.getMesh());
+                box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex0]);
+                box.setXYZ(400.0 * (i - 1), 0, 300);
+                box.setRotationXYZ(Math.random() * 360.0,  Math.random() * 360.0, Math.random() * 360.0);
+                box.mouseEnabled = true;
+                box.update();
+                let container: DisplayEntityContainer = new DisplayEntityContainer();
+                container.addEntity(box);
+                box = new Box3DEntity();
+                box.name = "box_" + i*10+1;
+                box.setMesh(srcBox.getMesh());
+                box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex2]);
+                box.setXYZ(400.0 * (i - 1), 0, 450);
+                box.setScaleXYZ(0.5,0.5,0.5);
+                box.setRotationXYZ(Math.random() * 360.0,  Math.random() * 360.0, Math.random() * 360.0);
+                box.mouseEnabled = true;
+                box.update();
+                container.addEntity(box);
+                this.m_rscene.addContainer(container);
+                container.update();
+                this.useContainerEvtDispatcher(container);
+            }
+
             let objUrl: string = "static/assets/obj/box01.obj";
             objUrl = "static/assets/obj/building_001.obj";
             let objDisp: ObjData3DEntity = new ObjData3DEntity();
@@ -229,16 +262,33 @@ export class DemoMobileEvt {
             objDisp.initializeByObjDataUrl(objUrl, [tex1]);
 
             objDisp.setXYZ(800 * Math.random() - 400.0, 800 * Math.random() - 400.0, 800 * Math.random() - 400.0);
-            this.useEvtDispatcher(objDisp);
+            this.useEntityEvtDispatcher(objDisp);
             this.m_rscene.addEntity(objDisp);
             //*/
             this.initMobileEvt();
-
+            this.m_rscene.setClearColor(this.m_clearColor);
         }
     }
-    private useEvtDispatcher(entity: DisplayEntity, frameBoo: boolean = false): void {
+    private useEntityEvtDispatcher(entity: DisplayEntity, frameBoo: boolean = false): void {
         let ctrObj: DispCtrObj = new DispCtrObj();
-        ctrObj.name = entity.name;
+        ctrObj.name = entity.name + "_entity";
+        ctrObj.rscene = this.m_rscene;
+        let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
+        dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, ctrObj, ctrObj.mouseDownListener);
+        dispatcher.addEventListener(MouseEvent.MOUSE_UP, ctrObj, ctrObj.mouseUpListener);
+        dispatcher.addEventListener(MouseEvent.MOUSE_OVER, ctrObj, ctrObj.mouseOverListener);
+        dispatcher.addEventListener(MouseEvent.MOUSE_OUT, ctrObj, ctrObj.mouseOutListener);
+        dispatcher.addEventListener(MouseEvent.MOUSE_MOVE, ctrObj, ctrObj.mouseMoveListener);
+        entity.setEvtDispatcher(dispatcher);
+        entity.mouseEnabled = true;
+        if (frameBoo) {
+            ctrObj.createDisp({ target: entity });
+        }
+    }
+    private m_containerIndex: number = 0;
+    private useContainerEvtDispatcher(entity: DisplayEntityContainer, frameBoo: boolean = false): void {
+        let ctrObj: DispCtrObj = new DispCtrObj();
+        ctrObj.name = entity.name + "_container_" + this.m_containerIndex++;
         ctrObj.rscene = this.m_rscene;
         let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
         dispatcher.addEventListener(MouseEvent.MOUSE_DOWN, ctrObj, ctrObj.mouseDownListener);
@@ -253,10 +303,12 @@ export class DemoMobileEvt {
         }
     }
     run(): void {
-        this.m_rscene.setClearColor(this.m_clearColor);
-        this.m_rscene.run(true);
         //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-        this.m_cameraZoomController.run(null, 50.0);
+        this.m_stageDragSwinger.runWithYAxis();
+        this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
+
+        this.m_rscene.run(true);
+
         if (this.m_profileInstance != null) this.m_profileInstance.run();
     }
 }
