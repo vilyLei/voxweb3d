@@ -249,8 +249,6 @@
 
 //  import {DemoOrthoBtn as Demo} from "./demo/DemoOrthoBtn";
 
-//  import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
-
 //  import {DemoCameraSwing as Demo} from "./demo/DemoCameraSwing";
 
 //  import {DemoCamVisibleTest as Demo} from "./demo/DemoCamVisibleTest";
@@ -285,11 +283,6 @@
 
 //  import {DemoProjectPlane as Demo} from "./demo/DemoProjectPlane";
 
-//  The reflection in water
-//  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
-
-//  import {DemoOutline as Demo} from "./demo/DemoOutline";
-
 //  import {DemoMRT as Demo} from "./demo/DemoMRT";
 
 //  import {DemoDepthTex as Demo} from "./demo/DemoDepthTex";
@@ -314,7 +307,9 @@
 ////////////////////////////   transform    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
+import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
+
+//  import {DemoTransFromTex as Demo} from "./demo/DemoTransFromTex";
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   maps    ///////////////////////////////////
@@ -325,16 +320,21 @@
 //  import {DemoDisplacementMap as Demo} from "./demo/DemoDisplacementMap";
 
 ///////////////////////////////////////////////////////////////////////////////
-////////////////////////////   transform    ///////////////////////////////////
+/////////////////////////////     event    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoTransFromTex as Demo} from "./demo/DemoTransFromTex";
+//  import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     effect    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 //  import {DemoChangeColor as Demo} from "./demo/DemoChangeColor";
+
+//  The reflection in water
+//  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
+
+//  import {DemoOutline as Demo} from "./demo/DemoOutline";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     motion    ///////////////////////////////////
@@ -376,7 +376,7 @@
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
-import {DemoPBR as Demo} from "./pbr/DemoPBR";
+//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 

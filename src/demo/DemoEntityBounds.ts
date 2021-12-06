@@ -1,14 +1,11 @@
-
 import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
 import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../vox/render/RenderConst";
 import RendererState from "../vox/render/RendererState";
-import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererScene from "../vox/scene/RendererScene";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 import MouseEvent from "../vox/event/MouseEvent";
-import Stage3D from "../vox/display/Stage3D";
 
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
@@ -23,18 +20,20 @@ import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
 
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
+import MouseEvt3DDispatcher from "../vox/event/MouseEvt3DDispatcher";
+import OcclusionPostOutline from "../renderingtoy/mcase/outline/OcclusionPostOutline";
 
 export class DemoEntityBounds {
     constructor() {
     }
 
     private m_rscene: RendererScene = null;
-    private m_rcontext: RendererInstanceContext = null;
     private m_texLoader: ImageTextureLoader;
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
+    private m_postOutline: OcclusionPostOutline = new OcclusionPostOutline();
 
     private m_followEntity: DisplayEntity = null;
     private m_texList: TextureProxy[] = [];
@@ -54,7 +53,7 @@ export class DemoEntityBounds {
     }
     initialize(): void {
         console.log("DemoEntityBounds::initialize()......");
-        if (this.m_rcontext == null) {
+        if (this.m_rscene == null) {
 
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
 
@@ -67,12 +66,17 @@ export class DemoEntityBounds {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam);
 
-            this.m_rcontext = this.m_rscene.getRendererContext();
-            let stage3D: Stage3D = this.m_rscene.getStage3D() as Stage3D;
-            stage3D.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
-            stage3D.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener);
+            
+            this.m_postOutline.initialize(this.m_rscene, 1, [0]);
+            this.m_postOutline.setFBOSizeScaleRatio(0.5);
+            this.m_postOutline.setRGB3f(0.0,2.0,0.0);
+            this.m_postOutline.setOutlineDensity(2.5);
+            this.m_postOutline.setOcclusionDensity(0.2);
+
+            this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
+            this.m_rscene.addEventListener(MouseEvent.MOUSE_UP, this, this.mouseUpListener);
             this.m_camTrack = new CameraTrack();
-            this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
+            this.m_camTrack.bindCamera(this.m_rscene.getCamera());
             
             this.m_statusDisp.initialize();
 
@@ -80,10 +84,10 @@ export class DemoEntityBounds {
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
+
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
             this.initTex();
-            RendererState.CreateRenderState("ADD01", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.BLEND);
-            RendererState.CreateRenderState("ADD02", CullFaceMode.BACK, RenderBlendMode.ADD, DepthTestMode.ALWAYS);
+            
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.name = "followAxis";
             axis.initialize(50.0);
@@ -92,7 +96,46 @@ export class DemoEntityBounds {
             this.m_followEntity = axis;
             this.initEntityBoundsTest();
             this.initContainerBoundsTest();
+            this.m_rscene.setClearRGBColor3f(0.0, 0.5, 0.0);
         }
+    }
+    private mouseOverTargetListener(evt: any): void {
+        if(evt.target != null) {
+            let targets: DisplayEntity[];
+            if(evt.target != evt.currentTarget) {
+                let container: DisplayEntityContainer = evt.target as DisplayEntityContainer;
+                if(evt.target.getEntities == undefined) {
+                    console.log("evt.target.getEntities == undefined...");
+                }
+                targets = container.getEntities();
+            }
+            else {
+                targets = [ evt.target ];
+            }
+            this.m_postOutline.setTargetList( targets );
+        }
+    }
+    private mouseOutTargetListener(evt: any): void {
+        //console.log("mouseOutTargetListener mouse out...");
+        this.m_postOutline.setTargetList( null );
+    }
+    private useEntityEvtDispatcher(entity: DisplayEntity, frameBoo: boolean = false): void {
+
+        let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
+        dispatcher.addEventListener(MouseEvent.MOUSE_OVER, this, this.mouseOverTargetListener);
+        dispatcher.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutTargetListener);
+        entity.setEvtDispatcher(dispatcher);
+        entity.mouseEnabled = true;
+
+    }
+    private useContainerEvtDispatcher(entity: DisplayEntityContainer, frameBoo: boolean = false): void {
+
+        let dispatcher: MouseEvt3DDispatcher = new MouseEvt3DDispatcher();
+        dispatcher.addEventListener(MouseEvent.MOUSE_OVER, this, this.mouseOverTargetListener);
+        dispatcher.addEventListener(MouseEvent.MOUSE_OUT, this, this.mouseOutTargetListener);
+        entity.setEvtDispatcher(dispatcher);
+        entity.mouseEnabled = true;
+
     }
     private m_stageMouseDown: boolean = false;
     private m_autoRotation: number = 100;
@@ -103,10 +146,7 @@ export class DemoEntityBounds {
     mouseUpListener(evt: any): void {
         this.m_stageMouseDown = false;
     }
-    pv: Vector3D = new Vector3D();
-    delayTime: number = 10;
-    run(): void {
-        this.m_statusDisp.update();
+    private updateCameraCtrl(): void {        
         if (!this.m_stageMouseDown) {
             this.m_autoRotation--;
         }
@@ -117,16 +157,25 @@ export class DemoEntityBounds {
             this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
         }
         this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
+    }
+    pv: Vector3D = new Vector3D();
+    delayTime: number = 10;
+
+    run(): void {
+
+        this.m_statusDisp.update();
+        
+        this.updateCameraCtrl();
 
         this.runEntityBoundsTest();
         this.runContainerBoundsTest();
-
-        this.m_rscene.setClearRGBColor3f(0.0, 0.5, 0.0);
+        
+        //this.m_rscene.run();
         this.m_rscene.runBegin();
-
-        this.m_rscene.update();
-        this.m_rscene.run();
-
+        this.m_rscene.run(true);
+        this.m_postOutline.drawBegin();
+        this.m_postOutline.draw();
+        this.m_postOutline.drawEnd();
         this.m_rscene.runEnd();
     }
     private m_targetContFrame: BoxFrame3D = null;
@@ -145,10 +194,10 @@ export class DemoEntityBounds {
     private m_followBCEntitys: DisplayEntity[] = [];
     runContainerBoundsTest(): void {
         if (this.m_targetContFrame != null) {
-            this.m_targetEntity0.getTransform().setRotationY(this.m_targetEntity0.getTransform().getRotationY() + 0.5);
-            this.m_targetEntity0.getTransform().setRotationZ(this.m_targetEntity0.getTransform().getRotationZ() - 0.5);
-            this.m_targetEntity2.getTransform().setRotationZ(this.m_targetEntity2.getTransform().getRotationZ() - 0.5);
-            this.m_targetEntity2.getTransform().setRotationX(this.m_targetEntity2.getTransform().getRotationX() - 0.5);
+            this.m_targetEntity0.getTransform().setRotationY(this.m_targetEntity0.getTransform().getRotationY() + 0.2);
+            this.m_targetEntity0.getTransform().setRotationZ(this.m_targetEntity0.getTransform().getRotationZ() - 0.2);
+            this.m_targetEntity2.getTransform().setRotationZ(this.m_targetEntity2.getTransform().getRotationZ() - 0.2);
+            this.m_targetEntity2.getTransform().setRotationX(this.m_targetEntity2.getTransform().getRotationX() - 0.2);
             //this.m_targetEntity2.update();
             //  this.m_targetEntity1.getTransform().setRotationX(this.m_targetEntity1.getTransform().getRotationX() + 1.0);
             //  this.m_targetEntity1.getTransform().setRotationZ(this.m_targetEntity1.getTransform().getRotationZ() - 1.0);
@@ -156,8 +205,8 @@ export class DemoEntityBounds {
             this.m_scaleTime += 0.02;
             this.m_scale = (Math.cos(this.m_scaleTime)) * 0.5 + 1.0;
             //this.m_container.setScaleY(this.m_scale);
-            this.m_container.setRotationZ(this.m_container.getRotationZ() + 1.0);
-            this.m_container.setRotationZ(this.m_container.getRotationZ() + 1.0);
+            this.m_container.setRotationZ(this.m_container.getRotationZ() + 0.2);
+            this.m_container.setRotationZ(this.m_container.getRotationZ() + 0.2);
             //this.m_container.update();
             //this.m_topContainer.update();
             //this.m_mainContainer.update();
@@ -249,6 +298,7 @@ export class DemoEntityBounds {
         this.m_mainContainer.addChild(this.m_topContainer);
         //this.m_container.setScaleY(this.m_scale);
         this.m_container.update();
+        this.useContainerEvtDispatcher( this.m_container );
 
         let cubeFrame: BoxFrame3D = new BoxFrame3D();
         cubeFrame.initialize(this.m_topContainer.getGlobalBounds().min, this.m_topContainer.getGlobalBounds().max);
@@ -341,6 +391,7 @@ export class DemoEntityBounds {
         srcBox.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
         srcBox.setScaleXYZ(Math.random() + 0.5, Math.random() + 0.5, Math.random() + 0.5);
         this.m_rscene.addEntity(srcBox);
+        this.useEntityEvtDispatcher(srcBox);
 
         this.m_targetEntity = srcBox;
         let cubeFrame: BoxFrame3D = new BoxFrame3D();

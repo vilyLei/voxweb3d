@@ -64,8 +64,8 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
     name: string = "DisplayEntityContainer";
     // mouse interaction enabled
     mouseEnabled: boolean = false;
-    private m_entitys: DisplayEntity[] = [];
-    private m_entitysTotal: number = 0;
+    private m_entities: DisplayEntity[] = [];
+    private m_entitiesTotal: number = 0;
     private m_children: DisplayEntityContainer[] = [];
     private m_childrenTotal: number = 0;
 
@@ -74,9 +74,9 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
         if (this.__$renderer != null) {
             if (renderer == null) {
                 // remove all entities from container
-                //console.log("remove all entities from container, this.m_entitysTotal: "+this.m_entitysTotal);
-                for (; i < this.m_entitysTotal; ++i) {
-                    this.__$renderer.removeEntity(this.m_entitys[i]);
+                //console.log("remove all entities from container, this.m_entitiesTotal: "+this.m_entitiesTotal);
+                for (; i < this.m_entitiesTotal; ++i) {
+                    this.__$renderer.removeEntity(this.m_entities[i]);
                 }
             }
             this.__$renderer = renderer;
@@ -85,11 +85,11 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
             this.__$renderer = renderer;
             if (renderer != null) {
                 // add all entities
-                // console.log("add all entities from container, this.m_entitysTotal: "+this.m_entitysTotal+", this.wprocuid: "+this.wprocuid);
-                for (; i < this.m_entitysTotal; ++i) {
-                    this.m_entitys[i].__$rseFlag = RSEntityFlag.RemoveContainerFlag(this.m_entitys[i].__$rseFlag);
-                    this.__$renderer.addEntity(this.m_entitys[i], this.wprocuid, false);
-                    this.m_entitys[i].__$rseFlag = RSEntityFlag.AddContainerFlag(this.m_entitys[i].__$rseFlag);
+                // console.log("add all entities from container, this.m_entitiesTotal: "+this.m_entitiesTotal+", this.wprocuid: "+this.wprocuid);
+                for (; i < this.m_entitiesTotal; ++i) {
+                    this.m_entities[i].__$rseFlag = RSEntityFlag.RemoveContainerFlag(this.m_entities[i].__$rseFlag);
+                    this.__$renderer.addEntity(this.m_entities[i], this.wprocuid, false);
+                    this.m_entities[i].__$rseFlag = RSEntityFlag.AddContainerFlag(this.m_entities[i].__$rseFlag);
                 }
             }
         }
@@ -214,9 +214,9 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
     getChildByUid(uid: number): DisplayEntity {
         if (uid > -1) {
             let i: number = 0;
-            for (; i < this.m_entitysTotal; ++i) {
-                if (this.m_entitys[i].getUid() == uid) {
-                    return this.m_entitys[i];
+            for (; i < this.m_entitiesTotal; ++i) {
+                if (this.m_entities[i].getUid() == uid) {
+                    return this.m_entities[i];
                 }
             }
         }
@@ -233,14 +233,14 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
         //if(entity.__$wuid < 0 && entity.__$contId < 1)
         if (entity.__$testContainerEnabled()) {
             let i: number = 0;
-            for (; i < this.m_entitysTotal; ++i) {
-                if (this.m_entitys[i] == entity) {
+            for (; i < this.m_entitiesTotal; ++i) {
+                if (this.m_entities[i] == entity) {
                     return;
                 }
             }
-            if (i >= this.m_entitysTotal) {
-                this.m_entitys.push(entity);
-                this.m_entitysTotal++;
+            if (i >= this.m_entitiesTotal) {
+                this.m_entities.push(entity);
+                this.m_entitiesTotal++;
                 if (this.m_ebvers != null) {
                     this.m_ebvers.push(-1);
                 }
@@ -248,7 +248,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
                 if (this.__$renderer != null) {
                     //entity.__$contId = 0;
                     entity.__$rseFlag = RSEntityFlag.RemoveContainerFlag(entity.__$rseFlag);
-                    this.__$renderer.addEntity(this.m_entitys[i], this.wprocuid, false);
+                    this.__$renderer.addEntity(this.m_entities[i], this.wprocuid, false);
                 }
                 entity.__$rseFlag = RSEntityFlag.AddContainerFlag(entity.__$rseFlag);
                 entity.__$setParent(this);
@@ -259,15 +259,15 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
     removeEntity(entity: DisplayEntity): void {
         if (entity != null && entity.__$getParent() == this) {
             let i: number = 0;
-            for (; i < this.m_entitysTotal; ++i) {
-                if (this.m_entitys[i] == entity) {
+            for (; i < this.m_entitiesTotal; ++i) {
+                if (this.m_entities[i] == entity) {
                     entity.__$rseFlag = RSEntityFlag.RemoveContainerFlag(entity.__$rseFlag);
-                    this.m_entitys[i].__$setParent(null);
-                    this.m_entitys.splice(i, 1);
+                    this.m_entities[i].__$setParent(null);
+                    this.m_entities.splice(i, 1);
                     if (this.m_ebvers != null) {
                         this.m_ebvers.slice(i, 1);
                     }
-                    --this.m_entitysTotal;
+                    --this.m_entitiesTotal;
                     if (this.__$renderer != null) {
                         this.__$renderer.removeEntity(entity);
                     }
@@ -279,42 +279,48 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
     removeEntityByUid(uid: number): void {
         if (uid > -1) {
             let i: number = 0;
-            for (; i < this.m_entitysTotal; ++i) {
-                if (this.m_entitys[i].getUid() == uid) {
-                    this.m_entitys[i].__$rseFlag = RSEntityFlag.RemoveContainerFlag(this.m_entitys[i].__$rseFlag);
-                    this.m_entitys[i].__$setParent(null);
+            for (; i < this.m_entitiesTotal; ++i) {
+                if (this.m_entities[i].getUid() == uid) {
+                    this.m_entities[i].__$rseFlag = RSEntityFlag.RemoveContainerFlag(this.m_entities[i].__$rseFlag);
+                    this.m_entities[i].__$setParent(null);
                     if (this.__$renderer != null) {
-                        this.__$renderer.removeEntity(this.m_entitys[i]);
+                        this.__$renderer.removeEntity(this.m_entities[i]);
                     }
-                    this.m_entitys.splice(i, 1);
+                    this.m_entities.splice(i, 1);
                     if (this.m_ebvers != null) {
                         this.m_ebvers.slice(i, 1);
                     }
-                    --this.m_entitysTotal;
+                    --this.m_entitiesTotal;
                     break;
                 }
             }
         }
     }
     getEntityAt(i: number): DisplayEntity {
-        if (i >= 0 && i < this.m_entitysTotal) {
-            return this.m_entitys[i];
+        if (i >= 0 && i < this.m_entitiesTotal) {
+            return this.m_entities[i];
+        }
+        return null;
+    }
+    getEntities(): DisplayEntity[] {
+        if (this.m_entities != null) {
+            return this.m_entities.slice(0);
         }
         return null;
     }
     getEntityByUid(uid: number): DisplayEntity {
         if (uid > -1) {
             let i: number = 0;
-            for (; i < this.m_entitysTotal; ++i) {
-                if (this.m_entitys[i].getUid() == uid) {
-                    return this.m_entitys[i];
+            for (; i < this.m_entitiesTotal; ++i) {
+                if (this.m_entities[i].getUid() == uid) {
+                    return this.m_entities[i];
                 }
             }
         }
         return null;
     }
     getEntitysTotal(): number {
-        return this.m_entitysTotal;
+        return this.m_entitiesTotal;
     }
     sphereIntersect(centerV: Vector3D, radius: number): boolean {
         return false;
@@ -329,8 +335,8 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
         let i: number = 0;
         //console.log("this.m_visible: "+this.m_visible+", this.m_parentVisible: "+this.m_parentVisible);
         let boo: boolean = this.m_visible && this.m_parentVisible;
-        for (; i < this.m_entitysTotal; ++i) {
-            this.m_entitys[i].__$setDrawEnabled(boo);
+        for (; i < this.m_entitiesTotal; ++i) {
+            this.m_entities[i].__$setDrawEnabled(boo);
         }
         for (i = 0; i < this.m_childrenTotal; ++i) {
             this.m_children[i].__$updateVisible();
@@ -507,12 +513,12 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
             if (this.m_globalBounds != null) {
                 this.m_globalBounds.reset();
                 let bounds: AABB = null;
-                for (; i < this.m_entitysTotal; ++i) {
-                    bounds = this.m_entitys[i].getGlobalBounds();
+                for (; i < this.m_entitiesTotal; ++i) {
+                    bounds = this.m_entities[i].getGlobalBounds();
                     if (bounds != null) {
                         this.m_globalBounds.union(bounds);
                     }
-                    this.m_ebvers[i] != this.m_entitys[i].getGlobalBoundsVer();
+                    this.m_ebvers[i] != this.m_entities[i].getGlobalBoundsVer();
                 }
                 for (i = 0; i < this.m_childrenTotal; ++i) {
                     this.m_children[i].__$updateBoundsDo();
@@ -535,7 +541,7 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
         this.m_$updateBounds = true;
     }
     protected updateBounds(): void {
-        
+
         if (this.m_globalBounds != null && this.m_gboundsStatus > 0) {
             
             let i: number = 0;
@@ -548,12 +554,12 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
             this.m_globalBounds.reset();
             i = 0;
             let bounds: AABB = null;
-            for (; i < this.m_entitysTotal; ++i) {
-                bounds = this.m_entitys[i].getGlobalBounds();
+            for (; i < this.m_entitiesTotal; ++i) {
+                bounds = this.m_entities[i].getGlobalBounds();
                 if (bounds != null) {
                     this.m_globalBounds.union(bounds);
                 }
-                this.m_ebvers[i] = this.m_entitys[i].getGlobalBoundsVer();
+                this.m_ebvers[i] = this.m_entities[i].getGlobalBoundsVer();
             }
             for (i = 0; i < this.m_childrenTotal; ++i) {
                 bounds = this.m_children[i].getGlobalBounds();
@@ -594,13 +600,13 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
                 this.m_transformStatus = 0;
                 //console.log("DisplayEntityContainer::update(), this: "+this);
                 //console.log("DisplayEntityContainer::update(), this.getMatrix(): "+this.getMatrix().toString());
-                //console.log("this.m_entitysTotal: "+this.m_entitysTotal+", this: "+this);
+                //console.log("this.m_entitiesTotal: "+this.m_entitiesTotal+", this: "+this);
                 let i: number = 0;
-                for (; i < this.m_entitysTotal; ++i) {
-                    //console.log("this.m_entitys["+i+"].getTransform().");
-                    this.m_entitys[i].getTransform().setParentMatrix(this.getMatrix());
-                    //if(this.m_entitys[i].__$wuid > -1)this.m_entitys[i].update();
-                    this.m_entitys[i].update();
+                for (; i < this.m_entitiesTotal; ++i) {
+                    //console.log("this.m_entities["+i+"].getTransform().");
+                    this.m_entities[i].getTransform().setParentMatrix(this.getMatrix());
+                    //if(this.m_entities[i].__$wuid > -1)this.m_entities[i].update();
+                    this.m_entities[i].update();
                 }
                 // 重构自己的AABB
                 // 通知子集自己的 transform信息变了
@@ -619,10 +625,10 @@ export default class DisplayEntityContainer implements IDisplayEntityContainer, 
                 // 这样的话会导致这里每帧都会被执行
                 this.m_gboundsStatus = -1;
                 let i: number = 0;
-                if (this.m_entitysTotal > 0) {
-                    for (; i < this.m_entitysTotal; ++i) {
-                        this.m_entitys[i].update();
-                        if (this.m_ebvers[i] != this.m_entitys[i].getGlobalBoundsVer()) {
+                if (this.m_entitiesTotal > 0) {
+                    for (; i < this.m_entitiesTotal; ++i) {
+                        this.m_entities[i].update();
+                        if (this.m_ebvers[i] != this.m_entities[i].getGlobalBoundsVer()) {
                             this.m_gboundsStatus = 2;
                         }
                     }

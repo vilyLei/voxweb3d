@@ -60,8 +60,10 @@ class DispCtrObj {
         }
     }
     mouseOverListener(evt: any): void {
+        console.log(this.name,"mouse over");
     }
     mouseOutListener(evt: any): void {
+        console.log(this.name,"mouse out");
     }
     mouseDownListener(evt: any): void {
         //DivLog.ShowLog("mouseDown "+evt.target.name+",name: "+this.name);
@@ -113,7 +115,7 @@ export class DemoMobileEvt {
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     private m_profileInstance: ProfileInstance;
-    
+
     getImageTexByUrl(purl: string): TextureProxy {
         return this.m_texLoader.getImageTexByUrl(purl);
     }
