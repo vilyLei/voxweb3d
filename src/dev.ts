@@ -62,9 +62,6 @@
 //  import * as DemoSubScene from "./demo/DemoSubScene";
 //  import Demo = DemoSubScene.demo.DemoSubScene;
 
-//  import * as DemoEntityBounds from "./demo/DemoEntityBounds";
-//  import Demo = DemoEntityBounds.demo.DemoEntityBounds;
-
 //  import * as DemoScene from "./demo/DemoScene";
 //  import Demo = DemoScene.demo.DemoScene;
 
@@ -252,7 +249,7 @@
 
 //  import {DemoOrthoBtn as Demo} from "./demo/DemoOrthoBtn";
 
-import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
+//  import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
 
 //  import {DemoCameraSwing as Demo} from "./demo/DemoCameraSwing";
 
@@ -312,6 +309,12 @@ import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
 //  import {DemoMatNavAstarThread as Demo} from "./demo/DemoMatNavAstarThread";
 
 //  import {DemoMouseDrag as Demo} from "./demo/DemoMouseDrag";
+
+///////////////////////////////////////////////////////////////////////////////
+////////////////////////////   transform    ///////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   maps    ///////////////////////////////////

@@ -60,19 +60,8 @@ class DispCtrObj {
         }
     }
     mouseOverListener(evt: any): void {
-        //  this.createDisp(evt);
-        //  //console.log(this.name+", mouse over. this.m_frameDisp != null: "+(this.m_frameDisp != null));
-        //  if(this.m_frameDisp != null)
-        //  {
-        //      //this.m_frameDisp.setVisible(true);
-        //  }
     }
     mouseOutListener(evt: any): void {
-        //  //console.log(this.name+", mouse out. this.m_frameDisp != null: "+(this.m_frameDisp != null));
-        //  if(this.m_frameDisp != null)
-        //  {
-        //      this.m_frameDisp.setVisible(false);
-        //  }
     }
     mouseDownListener(evt: any): void {
         //DivLog.ShowLog("mouseDown "+evt.target.name+",name: "+this.name);
@@ -90,10 +79,7 @@ class DispCtrObj {
                 //DivLog.ShowLog("list "+i);
             }
         }
-        //DispCtrObj.CurrDisp = this;
-        //this.m_frameDisp.setRGB3f(Math.random() * 1.1,Math.random() * 1.1,Math.random() * 1.1);
-        //console.log("evt.wpos: "+evt.wpos.toString());
-
+        
         let axis: Axis3DEntity = new Axis3DEntity();
         if (DispCtrObj.s_axis != null) {
             axis.setMesh(DispCtrObj.s_axis.getMesh());
@@ -127,9 +113,11 @@ export class DemoMobileEvt {
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     private m_profileInstance: ProfileInstance;
+    
     getImageTexByUrl(purl: string): TextureProxy {
         return this.m_texLoader.getImageTexByUrl(purl);
     }
+
     private initMobileEvt(): void {
         let stage3D: Stage3D = this.m_rscene.getStage3D() as Stage3D;
         stage3D.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDownListener);
@@ -138,7 +126,6 @@ export class DemoMobileEvt {
 
         stage3D.addEventListener(MouseEvent.MOUSE_BG_DOWN, this, this.test_bgmouseDownListener);
         stage3D.addEventListener(MouseEvent.MOUSE_BG_UP, this, this.test_bgmouseUpListener);
-
     }
     mouseDownListener(evt: any): void {
         console.log("mouseDown...");
