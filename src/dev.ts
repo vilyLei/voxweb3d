@@ -201,11 +201,6 @@
 
 //  import {DemoBaseRenderer as Demo} from "./demo/DemoBaseRenderer";
 
-//  import {DemoFlexMesh as Demo} from "./demo/DemoFlexMesh";
-
-//  import * as DemoFlexPipe from "./demo/DemoFlexPipe";
-//  import Demo = DemoFlexPipe.demo.DemoFlexPipe;
-
 //  import * as DemoVSTexture from "./demo/DemoVSTexture";
 //  import Demo = DemoVSTexture.demo.DemoVSTexture;
 
@@ -301,7 +296,13 @@
 
 //  import {DemoMatNavAstarThread as Demo} from "./demo/DemoMatNavAstarThread";
 
-//  import {DemoMouseDrag as Demo} from "./demo/DemoMouseDrag";
+///////////////////////////////////////////////////////////////////////////////
+////////////////////////////   transform    ///////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+//  import {DemoFlexMesh as Demo} from "./demo/DemoFlexMesh";
+
+//  import {DemoFlexPipe as Demo} from "./demo/DemoFlexPipe";
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   transform    ///////////////////////////////////
@@ -310,6 +311,7 @@
 import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
 
 //  import {DemoTransFromTex as Demo} from "./demo/DemoTransFromTex";
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   maps    ///////////////////////////////////
@@ -324,6 +326,8 @@ import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
 ///////////////////////////////////////////////////////////////////////////////
 
 //  import {DemoMobileEvt as Demo} from "./demo/DemoMobileEvt";
+
+//  import {DemoMouseDrag as Demo} from "./demo/DemoMouseDrag";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     effect    ///////////////////////////////////

@@ -16,6 +16,10 @@ export default class CameraStageDragSwinger {
     private m_stage3D: IRenderStage3D = null;
     private m_dragSwinger: CameraDragSwinger = new CameraDragSwinger();
     private m_enabled: boolean = true;
+    
+    setAutoRotationEnabled(enabled: boolean): void {
+        this.m_dragSwinger.autoRotationEnabled = enabled;
+    }
     initialize(stage3D: IRenderStage3D, camera: CameraBase, bgMouseDown: boolean = true): void {
         if (this.m_stage3D == null) {
             this.m_stage3D = stage3D;

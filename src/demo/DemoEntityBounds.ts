@@ -1,7 +1,5 @@
 import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
-import { RenderBlendMode, CullFaceMode, DepthTestMode } from "../vox/render/RenderConst";
-import RendererState from "../vox/render/RendererState";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererScene from "../vox/scene/RendererScene";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -86,7 +84,7 @@ export class DemoEntityBounds {
             this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
             this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
             this.m_stageDragSwinger.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
-
+            this.m_stageDragSwinger.setAutoRotationEnabled( true );
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
             this.initTex();
             
@@ -148,26 +146,9 @@ export class DemoEntityBounds {
         entity.mouseEnabled = true;
 
     }
-    private m_stageMouseDown: boolean = false;
-    private m_autoRotation: number = 100;
     mouseDownListener(evt: any): void {
-        this.m_autoRotation = 100;
-        this.m_stageMouseDown = true;
     }
     mouseUpListener(evt: any): void {
-        this.m_stageMouseDown = false;
-    }
-    private updateCameraCtrl(): void {        
-        if (!this.m_stageMouseDown) {
-            this.m_autoRotation--;
-        }
-        if (this.m_autoRotation > 0) {
-            this.m_stageDragSwinger.runWithYAxis();
-        }
-        else {
-            this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
-        }
-        this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
     }
     pv: Vector3D = new Vector3D();
     delayTime: number = 10;
@@ -176,7 +157,8 @@ export class DemoEntityBounds {
 
         this.m_statusDisp.update();
         
-        this.updateCameraCtrl();
+        this.m_stageDragSwinger.runWithYAxis();
+        this.m_cameraZoomController.run(Vector3D.ZERO, 30.0);
 
         this.runEntityBoundsTest();
         this.runContainerBoundsTest();
