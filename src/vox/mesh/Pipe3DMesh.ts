@@ -103,6 +103,9 @@ export default class Pipe3DMesh extends MeshBase {
             this.buildEnd();
         }
         else {
+            if(this.forceUpdateIVS) {
+                this.m_vbuf.setUint16IVSData(this.m_ivs);
+            }
             ROVertexBuffer.UpdateBufData(this.m_vbuf);
         }
     }

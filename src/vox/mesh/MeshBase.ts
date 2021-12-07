@@ -34,7 +34,13 @@ export default class MeshBase {
         this.m_bufDataUsage = bufDataUsage;
         //this.m_isDyn = bufDataUsage == VtxBufConst.VTX_DYNAMIC_DRAW;
     }
-
+    /**
+     * 强制更新 vertex indices buffer 数据, 默认值为false
+     */
+    forceUpdateIVS: boolean = false;
+    /**
+     * 是否启用线框模式数据, 默认值为false
+     */
     wireframe: boolean = false;
 
     bounds: AABB = null;

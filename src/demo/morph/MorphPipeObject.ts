@@ -62,7 +62,7 @@ class MorphPipeObject {
         let factor: number = 1.0 - MathConst.Clamp( this.m_bendIndex / total, 0.0, 1.0);
         if(factor < 0.1) factor = 0.1;
         factor *= factor;
-        
+
         for (let i: number = 0; i <= total; ++i) {
 
             mat4A.identity();
@@ -81,8 +81,8 @@ class MorphPipeObject {
     }
 
     morph(): void {
-
-        if (this.m_pipeEntity.isInRenderer()) {
+        
+        if (this.m_pipeEntity.isInRenderer() && Math.abs(this.disRotV.z) > 0.002) {
             let factor: number = Math.sin(this.morphTime);
             // if(Math.abs(factor) < 0.001) {
             //     //this.disRotV.y = Math.random() * 6.28;
