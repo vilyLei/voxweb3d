@@ -294,7 +294,7 @@ class Bezier2Curve extends CurveBase {
 	 * @param factor 当前半径平滑过渡变换因子(0.0 -> 1.0)
 	 * @param amplitude 当前半径平滑过渡变换的幅度(-1.0 -> 1.0)
      */
-    calcCurveChangeYData(total: number, y0: number, y1: number, factor: number, amplitude: number): number[] {
+    calcCurveChangeYData(total: number, y0: number, y1: number, factor: number, amplitude: number, vs: number[] = null): number[] {
 
         let dy: number = Math.abs(y1 - y0);
         this.begin.setXYZ(0, y0, 0);
@@ -311,9 +311,11 @@ class Bezier2Curve extends CurveBase {
         direcTV.normalize();
         direcTV.scaleBy(dis * factor);
         this.ctrPos.addVecsTo(direcTV, this.begin);
-        this.ctrPos.addBy(direcNV);
-
-        let vs: number[] = [];
+		this.ctrPos.addBy(direcNV);
+		
+		if(vs == null) {
+			vs = [];
+		}
         this.calcBezier2Y(vs, total,  this.begin, this.ctrPos, this.end);
         
         return vs;

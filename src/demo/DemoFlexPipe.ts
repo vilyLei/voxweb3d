@@ -33,6 +33,7 @@ import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import DisplayEntity from "../vox/entity/DisplayEntity";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
+import { Bezier2Curve } from "../vox/geom/curve/BezierCurve";
 
 export class DemoFlexPipe implements IShaderLibListener {
     constructor() { }
@@ -59,6 +60,11 @@ export class DemoFlexPipe implements IShaderLibListener {
         console.log("DemoFlexPipe::initialize()......");
         if (this.m_rscene == null) {
             
+            // let bez2 = new Bezier2Curve();
+            // let bez2VS: number[] = new Array(11);
+            // bez2.calcCurveChangeYData(bez2VS.length - 1,1.0,0.02,0.5,1.0, bez2VS);
+            // console.log("### bez2VS: ",bez2VS);
+
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             RendererDevice.SetWebBodyColor();
@@ -266,7 +272,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         // pipe.setMaterial(material);
         // pipe.initialize(100,200,10,20);
         // this.m_rscene.addEntity(pipe);
-        let useTeam: boolean = false;
+        let useTeam: boolean = true;
 
         let rn: number = 5;
         let cn: number = 5;

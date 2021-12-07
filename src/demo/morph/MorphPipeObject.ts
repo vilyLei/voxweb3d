@@ -9,6 +9,7 @@ import PipeGeometry from "../../voxmesh/geometry/primitive/PipeGeometry";
 import Pipe3DMesh from "../../vox/mesh/Pipe3DMesh";
 import MaterialBase from "../../vox/material/MaterialBase";
 import MathConst from "../../vox/math/MathConst";
+import { Bezier2Curve } from "../../vox/geom/curve/BezierCurve";
 
 class MorphPipeObject {
 
@@ -23,6 +24,10 @@ class MorphPipeObject {
     private m_disRotV: Vector3D = new Vector3D(0.0, 0.0, 0.0);
     private m_bendIndex: number = 0;
     private m_rotAxis: Vector3D = new Vector3D();
+    private m_bez2 = new Bezier2Curve();
+    private m_bez2VS: number[];
+    private m_scaleChangeFactor: number = 0.5;
+    private m_scaleChangeAmplitude: number = 1.0;
     disRotV: Vector3D = new Vector3D(0.0, 0.0, 0.06);
     disScale: number = -0.05;
     morphTime: number = 0.0;
@@ -33,6 +38,7 @@ class MorphPipeObject {
     private initialize(radius: number, height: number, longitudeNum: number, latitudeNum: number, texList: TextureProxy[], material: MaterialBase): void {
 
         this.m_latitudeNum = latitudeNum;
+        this.m_bez2VS = new Array(latitudeNum + 1);
         this.m_pipeEntity = new Pipe3DEntity();
         if (material != null) {
             this.m_pipeEntity.setMaterial(material);
@@ -42,7 +48,8 @@ class MorphPipeObject {
         this.m_pipeEntity.initialize(radius, height, longitudeNum, latitudeNum, texList, 1, 0.0);
         this.m_pipeMesh = this.m_pipeEntity.getMesh() as Pipe3DMesh;
         this.m_pipeGeometry = this.m_pipeMesh.geometry.clone() as PipeGeometry;
-
+        this.m_scaleChangeFactor = Math.random();
+        this.m_scaleChangeAmplitude = Math.random() * 2.0 - 1.0;
         this.morphCalc(this.m_disRotV);
         this.m_pipeEntity.reinitialize();
         this.m_pipeEntity.updateMeshToGpu();
@@ -50,11 +57,10 @@ class MorphPipeObject {
     getEntity(): Pipe3DEntity {
         return this.m_pipeEntity;
     }
-
     private morphCalc(rotV: Vector3D): void {
 
         this.m_pipeMesh.geometry.copyFrom(this.m_pipeGeometry);
-
+        
         this.m_rotV.copyFrom(rotV);
         this.m_rotV.z = 0.0;
         this.m_scaleV.setXYZ(1.0, 1.0, 1.0);
@@ -64,11 +70,18 @@ class MorphPipeObject {
         if (factor < 0.1) factor = 0.1;
         factor *= factor;
         let dScale: number = 0.0;
+        
+        let bez2 = this.m_bez2;
+        //let bez2VS: number[] = new Array(11);
+        bez2.calcCurveChangeYData(total, 1.0, 0.02, this.m_scaleChangeFactor, this.m_scaleChangeAmplitude, this.m_bez2VS);
+        //console.log("### bez2VS: ",bez2VS);
+
         this.m_rotAxis.setXYZ(Math.cos( this.m_rotV.y ), 0.0, Math.sin( this.m_rotV.y ));
         this.m_rotAxis.normalize();
         for (let i: number = 0; i <= total; ++i) {
 
-            dScale = 1.0 - (i / total) * 0.98;
+            //dScale = 1.0 - (i / total) * 0.98;
+            dScale = this.m_bez2VS[i];
             this.m_scaleV.x = dScale;
             this.m_scaleV.z = dScale;
 
