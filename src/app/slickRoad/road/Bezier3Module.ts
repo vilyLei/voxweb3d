@@ -33,31 +33,6 @@ class Bezier3Module {
     setBezierCurveSegTotal(segTotal: number): void {
         this.bezier3Curve.setSegTot(segTotal);
     }
-    /**
-	 * 计算二次Bezier曲线
-	 * */
-	static CalcBezier2Y(vs: number[], tot: number, v0: Vector3D, v1: Vector3D, v2: Vector3D): void {
-        //b(t) = (1-t)*(1-t)*p0 + 2*t*(1-t)*p1 + t * t * p2;
-        
-		let py: number = 0;
-        let k: number = 0;
-        if(vs.length < (tot + 1)) {
-            for (let i: number = 0; i <= tot; ++i) {
-                
-                k = i / tot;
-                py = (1.0 - k) * (1.0 - k) * v0.y + 2 * k * (1.0 - k) * v1.y + k * k * v2.y;
-                vs.push(py);
-            }
-        }
-        else {            
-            for (let i: number = 0; i <= tot; ++i) {
-                
-                k = i / tot;
-                py = (1.0 - k) * (1.0 - k) * v0.y + 2 * k * (1.0 - k) * v1.y + k * k * v2.y;
-                vs[i] = py;
-            }
-        }
-	}
     getCurveRadiusList(node0: PathKeyNode, node1: PathKeyNode, total: number): number[] {
 
         let factor: number = node0.pathRadiusChangeFactor;
@@ -83,7 +58,8 @@ class Bezier3Module {
         this.bezier2Curve.ctrPos.addBy(direcNV);
 
         let vs: number[] = [];
-        Bezier3Module.CalcBezier2Y(vs, total,  this.bezier2Curve.begin, this.bezier2Curve.ctrPos, this.bezier2Curve.end);
+        this.bezier2Curve.calcBezier2Y(vs, total,  this.bezier2Curve.begin, this.bezier2Curve.ctrPos, this.bezier2Curve.end);
+        
         return vs;
 
     }

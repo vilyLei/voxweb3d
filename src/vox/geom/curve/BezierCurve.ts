@@ -260,6 +260,31 @@ class Bezier2Curve extends CurveBase {
 		CurveSrcCalc.CalcBezier2ByProgress(this.m_vs, k, this.begin, this.ctrPos, this.end);
 	}
 
+    /**
+	 * 计算二次Bezier曲线的y值
+	 * */
+	calcBezier2Y(vs: number[], tot: number, v0: Vector3D, v1: Vector3D, v2: Vector3D): void {
+        //b(t) = (1-t)*(1-t)*p0 + 2*t*(1-t)*p1 + t * t * p2;
+        
+		let py: number = 0;
+        let k: number = 0;
+        if(vs.length < (tot + 1)) {
+            for (let i: number = 0; i <= tot; ++i) {
+                
+                k = i / tot;
+                py = (1.0 - k) * (1.0 - k) * v0.y + 2 * k * (1.0 - k) * v1.y + k * k * v2.y;
+                vs.push(py);
+            }
+        }
+        else {            
+            for (let i: number = 0; i <= tot; ++i) {
+                
+                k = i / tot;
+                py = (1.0 - k) * (1.0 - k) * v0.y + 2 * k * (1.0 - k) * v1.y + k * k * v2.y;
+                vs[i] = py;
+            }
+        }
+	}
 }
 class Bezier3Curve extends CurveBase {
 	constructor() {
