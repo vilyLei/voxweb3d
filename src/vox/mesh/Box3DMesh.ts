@@ -178,7 +178,7 @@ export default class Box3DMesh extends MeshBase {
         this.m_posList[6] = [minV.x, maxY, minV.z];
         this.m_posList[7] = [minV.x, maxY, maxV.z];
 
-        this.initData(this.m_posList);
+        this.initData();
     }
     initialize(minV: Vector3D, maxV: Vector3D): void {
         this.m_posList[0] = [maxV.x, minV.y, maxV.z];
@@ -191,7 +191,7 @@ export default class Box3DMesh extends MeshBase {
         this.m_posList[6] = [minV.x, maxV.y, minV.z];
         this.m_posList[7] = [minV.x, maxV.y, maxV.z];
 
-        this.initData(this.m_posList);
+        this.initData();
     }
 
     scaleUVFaceAt(faceI: number, u: number, v: number, du: number, dv: number) {
@@ -206,9 +206,9 @@ export default class Box3DMesh extends MeshBase {
         }
     }
     reinitialize(): void {
-        this.initData(this.m_posList);
+        this.initData();
     }
-    private initData(posList: number[][]): void {
+    private initData(): void {
         this.vtxTotal = 24;
         let i: number = 0;
         let k: number = 0;
@@ -242,8 +242,12 @@ export default class Box3DMesh extends MeshBase {
             pvs.set(arr, k);
             k += 3;
         }
-
-        this.bounds = new AABB();
+        if(this.bounds == null){
+            this.bounds = new AABB();
+        }
+        else {
+            this.bounds.reset();
+        }
         if (this.m_transMatrix != null) {
             this.m_transMatrix.transformVectorsSelf(this.m_vs, this.m_vs.length);
             this.bounds.addXYZFloat32Arr(this.m_vs);
@@ -409,7 +413,8 @@ export default class Box3DMesh extends MeshBase {
         ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
 
         this.updateWireframeIvs();
-        if (newBuild) {
+        
+        if (this.m_vbuf == null) {
             this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
             this.m_vbuf.setUint16IVSData(this.m_ivs);
             this.vtCount = this.m_ivs.length;

@@ -40,6 +40,7 @@ export class DemoFlexMesh {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     private m_frameBox: BoxFrame3D = null;
     private m_targets: DisplayEntity[] = [];
+    private m_currBox: Box3DEntity;
     private m_srcBox: Box3DEntity = null;
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -95,6 +96,7 @@ export class DemoFlexMesh {
             let box: Box3DEntity = new Box3DEntity();
             box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/skin_01.jpg")]);
             box.setScaleXYZ(2.0, 2.0, 2.0);
+            
             //box.setRotationXYZ(-80,0,0);
             //this.m_rscene.addEntity(box);
             //this.updateBoxUV(box);
@@ -106,7 +108,6 @@ export class DemoFlexMesh {
             this.update();
         }
     }
-
     private updateBoxUV(box: Box3DEntity): void {
         box.scaleUVFaceAt(0, 0.5, 0.5, 0.5, 0.5);
         box.scaleUVFaceAt(1, 0.0, 0.0, 0.5, 0.5);
@@ -124,6 +125,12 @@ export class DemoFlexMesh {
     }
     private m_box: Box3DEntity = null;
     private m_boxMesh: Box3DMesh = null;
+    
+    private reshapeMeshByAABBPos(minV: Vector3D, maxV: Vector3D): void {
+        let mesh: Box3DMesh = this.m_currBox.getMesh() as Box3DMesh;
+        console.log("reshapeMeshByAABBPos....");
+        mesh.initialize(minV, maxV);
+    }
     private createAMeshDisp(entity: Box3DEntity): void {
         let mesh: Box3DMesh = new Box3DMesh();
         this.m_boxMesh = mesh;
@@ -142,6 +149,7 @@ export class DemoFlexMesh {
         (box.getMaterial() as any).setRGB3f(this.m_pos0.x, this.m_pos0.y, this.m_pos0.z);
         this.updateBoxUV(box);
         this.m_rscene.addEntity(box);
+        this.m_currBox = box;
         //  box.reinitializeMesh();
         //  box.updateMeshToGpu(this.m_rscene.getRenderProxy());
         if(this.m_frameBox == null) {
@@ -209,6 +217,13 @@ export class DemoFlexMesh {
         // this.m_box.update();
         // this.m_frameBox.updateFrameByAABB(this.m_box.getGlobalBounds());
         // this.m_frameBox.updateMeshToGpu();
+        // reshape pos
+        console.log("MMMMMMMMMMMMMMM");
+        this.reshapeMeshByAABBPos(new Vector3D(130,130,130), new Vector3D(230.0,230.0,230.0));
+        this.m_currBox.updateMeshToGpu();
+        this.m_currBox.updateBounds();
+        this.m_frameBox.updateFrameByAABB(this.m_currBox.getGlobalBounds());
+        this.m_frameBox.updateMeshToGpu();
         return;
         let boo: boolean = this.updateBoxMesh();
         if (boo) return;
@@ -238,7 +253,7 @@ export class DemoFlexMesh {
                 break;
         }
         this.m_boxMesh.reinitialize();
-        this.m_box.updateMeshToGpu(this.m_rscene.getRenderProxy());
+        this.m_box.updateMeshToGpu();
         this.m_testFlag = !this.m_testFlag;
         this.m_box.updateBounds();
         this.m_frameBox.updateFrameByAABB(this.m_box.getGlobalBounds());
