@@ -19,8 +19,8 @@ import Box3DMesh from "../../vox/mesh/Box3DMesh";
 export default class Box3DEntity extends DisplayEntity {
     
     private m_normalType: number = VtxNormalType.FLAT;
-    private m_minV: Vector3D = null;
-    private m_maxV: Vector3D = null;
+    private m_minV: Vector3D = new Vector3D();
+    private m_maxV: Vector3D = new Vector3D();
     private m_transMatrix: Matrix4 = null;
     private m_currMesh: Box3DMesh = null;
 
@@ -50,6 +50,20 @@ export default class Box3DEntity extends DisplayEntity {
         }
         else if (texList != null && this.getMaterial().getTextureTotal() < 1) {
             this.getMaterial().setTextureList(texList);
+        }
+    }
+    
+    private initializeThis(texList: TextureProxy[]): void {
+
+        if(this.getMesh() == null || this.getMaterial() == null) {
+            this.createMaterial(texList);
+            this.activeDisplay();
+        }
+        else {
+            let mesh: Box3DMesh = this.getMesh() as Box3DMesh;
+            if(mesh != null) {
+                mesh.initialize(this.m_minV, this.m_maxV);
+            }
         }
     }
     showBackFace(): void {
@@ -85,10 +99,10 @@ export default class Box3DEntity extends DisplayEntity {
      * @param texList  TextureProxy instance list
      */
     initialize(minV: Vector3D, maxV: Vector3D, texList: TextureProxy[] = null): void {
-        this.m_minV = minV;
-        this.m_maxV = maxV;
-        this.createMaterial(texList);
-        this.activeDisplay();
+        this.m_minV.copyFrom(minV);
+        this.m_maxV.copyFrom(maxV);
+
+        this.initializeThis(texList);
     }
     /**
      * initialize a box(geometry data and texture data) to a cube with the cube size value
@@ -96,17 +110,19 @@ export default class Box3DEntity extends DisplayEntity {
      * @param texList  TextureProxy instance list
      */
     initializeCube(cubeSize: number, texList: TextureProxy[] = null): void {
+
         cubeSize *= 0.5;
-        this.m_minV = new Vector3D(-cubeSize, -cubeSize, -cubeSize);
-        this.m_maxV = new Vector3D(cubeSize, cubeSize, cubeSize);
-        this.createMaterial(texList);
-        this.activeDisplay();
+        this.m_minV.setXYZ(-cubeSize, -cubeSize, -cubeSize);
+        this.m_maxV.setXYZ(cubeSize, cubeSize, cubeSize);
+        
+        this.initializeThis(texList);
     }
     initializeSizeXYZ(widthSize: number, heightSize: number, longSize: number, texList: TextureProxy[] = null): void {
-        this.m_minV = new Vector3D(-widthSize * 0.5, -heightSize * 0.5, -longSize * 0.5);
-        this.m_maxV = new Vector3D(widthSize * 0.5, heightSize * 0.5, longSize * 0.5);
-        this.createMaterial(texList);
-        this.activeDisplay();
+
+        this.m_minV.setXYZ(-widthSize * 0.5, -heightSize * 0.5, -longSize * 0.5);
+        this.m_maxV.setXYZ(widthSize * 0.5, heightSize * 0.5, longSize * 0.5);
+        
+        this.initializeThis(texList);
     }
 
     protected __activeMesh(material: MaterialBase): void {

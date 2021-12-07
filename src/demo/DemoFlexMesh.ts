@@ -96,7 +96,8 @@ export class DemoFlexMesh {
             let box: Box3DEntity = new Box3DEntity();
             box.initializeCube(100.0, [this.getImageTexByUrl("static/assets/skin_01.jpg")]);
             box.setScaleXYZ(2.0, 2.0, 2.0);
-            
+            //this.m_rscene.addEntity(box);
+            //return;
             //box.setRotationXYZ(-80,0,0);
             //this.m_rscene.addEntity(box);
             //this.updateBoxUV(box);
@@ -128,7 +129,6 @@ export class DemoFlexMesh {
     
     private reshapeMeshByAABBPos(minV: Vector3D, maxV: Vector3D): void {
         let mesh: Box3DMesh = this.m_currBox.getMesh() as Box3DMesh;
-        console.log("reshapeMeshByAABBPos....");
         mesh.initialize(minV, maxV);
     }
     private createAMeshDisp(entity: Box3DEntity): void {
