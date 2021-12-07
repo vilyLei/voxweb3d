@@ -22,7 +22,10 @@ class ROVertexResource implements IRenderResource {
     private m_attachTotal: number = 0;
     private m_delay: number = 128;
     private m_haveDeferredUpdate: boolean = false;
-
+    /**
+     * updating times total, the min value is 4, the default value is 16
+     */
+    private m_vtxUpdateTotal: number = 16;
     // renderer context unique id
     private m_rcuid: number = 0;
     private m_gl: any = null;
@@ -33,6 +36,13 @@ class ROVertexResource implements IRenderResource {
         this.m_rcuid = rcuid;
         this.m_gl = gl;
         this.m_vtxBuilder = vtxBuilder;
+    }
+    /**
+     * set the updating times total that update vertex data to gpu in one frame time
+     * @param total updating times total, the min value is 4, the default value is 16
+     */
+    setVtxUpdateTimesTotal(total: number): void {
+        this.m_vtxUpdateTotal = total > 4 ? total : 4;
     }
     createResByParams3(resUid: number, param0: number, param1: number, param2: number): boolean {
         return false;
@@ -143,8 +153,8 @@ class ROVertexResource implements IRenderResource {
     update(): void {
         if(this.m_haveDeferredUpdate) {
             let len: number = this.m_updateIds.length;
-            if (len > 0) {    
-                if(len > 16) len = 16;    
+            if (len > 0) {
+                if(len > this.m_vtxUpdateTotal) len = this.m_vtxUpdateTotal;
                 let resUid: number;
                 for (let i: number = 0; i < len; ++i) {
                     resUid = this.m_updateIds.shift();

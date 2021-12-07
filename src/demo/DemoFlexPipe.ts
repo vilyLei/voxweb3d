@@ -87,7 +87,7 @@ export class DemoFlexPipe implements IShaderLibListener {
             this.m_stageDragSwinger.setAutoRotationEnabled( true );
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
-
+            this.m_rscene.getRenderProxy().setVtxUpdateTimesTotal(32);
             let axis: Axis3DEntity = new Axis3DEntity();
             axis.initialize(300.0);
             this.m_rscene.addEntity(axis);

@@ -65,6 +65,7 @@ class RenderProxy implements IRenderProxy{
     private m_camUBO: any = null;
     private m_adapter: RenderAdapter = null;
     private m_adapterContext: RAdapterContext = new RAdapterContext();
+    private m_vtxRes: ROVertexResource;
     private m_rc: any = null;
     private m_perspectiveEnabled = true;
     private m_viewX: number = 0;
@@ -347,6 +348,7 @@ class RenderProxy implements IRenderProxy{
         let gl: any = this.m_rc;
         let vtxRes: ROVertexResource = new ROVertexResource(this.m_uid, gl, vtxBuilder);
         let texRes: ROTextureResource = new ROTextureResource(this.m_uid, gl);
+        this.m_vtxRes = vtxRes;
         selfT.Vertex = vtxRes;
         selfT.Texture = texRes;
         selfT.MaterialUpdater = materialUpdater;
@@ -475,6 +477,14 @@ class RenderProxy implements IRenderProxy{
     lockRenderState(): void {
         RenderStateObject.Lock();
     }
+    /**
+     * set the updating times total that update vertex data to gpu in one frame time
+     * @param total updating times total, the min value is 4, the default value is 16
+     */
+    setVtxUpdateTimesTotal(total: number): void {
+        this.m_vtxRes.setVtxUpdateTimesTotal(total);
+    }
+
     /**
      * @param faceFlipped the value is true, frontFace is CW. the value is false, frontFace is CCW. 
      */
