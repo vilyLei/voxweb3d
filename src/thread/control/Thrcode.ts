@@ -123,7 +123,7 @@ function ThreadCore() {
                 if (m_initBoo) {
                     m_threadIndex = data.threadIndex;
 
-                    console.log("thread init data.threadIndex: " + m_threadIndex);
+                    //  console.log("thread init data.threadIndex: " + m_threadIndex);
                     m_initBoo = false;
                     postMessage({ cmd: INIT_PARAM, threadIndex: m_threadIndex });
                 }
@@ -133,7 +133,6 @@ function ThreadCore() {
         }
     }
     this.initialize = function () {
-        console.log("###worker ThreadCore::initialize()...");
         //console.log("self.__$TaskSlot: ",self.__$TaskSlot);
         if (typeof (postMessage) !== "undefined") {
             self.addEventListener(

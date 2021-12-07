@@ -8,13 +8,23 @@ import TextureProxy from "../../vox/texture/TextureProxy";
 import PipeGeometry from "../../voxmesh/geometry/primitive/PipeGeometry";
 import Pipe3DMesh from "../../vox/mesh/Pipe3DMesh";
 import MaterialBase from "../../vox/material/MaterialBase";
+import MathConst from "../../vox/math/MathConst";
 
 class MorphPipeObject {
 
-    private m_pipeEntity: Pipe3DEntity = null;    
+    private m_pipeEntity: Pipe3DEntity = null;
     private m_pipeMesh: Pipe3DMesh = null;
     private m_pipeGeometry: PipeGeometry = null;
     private m_latitudeNum: number = 2;
+
+    private m_rotV: Vector3D = new Vector3D();
+    private m_scaleV: Vector3D = new Vector3D(1.0, 1.0, 1.0);
+    private m_mat4A: Matrix4 = new Matrix4();
+    private m_disRotV: Vector3D = new Vector3D(0.0, 0.0, 0.0);
+    private m_bendIndex: number = 0;
+    disRotV: Vector3D = new Vector3D(0.0, 0.0, 0.06);
+    disScale: number = -0.05;
+    morphTime: number = 0.0;
 
     constructor(radius: number, height: number, longitudeNum: number, latitudeNum: number, texList: TextureProxy[] = null, material: MaterialBase = null) {
         this.initialize(radius, height, longitudeNum, latitudeNum, texList, material);
@@ -23,60 +33,69 @@ class MorphPipeObject {
 
         this.m_latitudeNum = latitudeNum;
         this.m_pipeEntity = new Pipe3DEntity();
-        if(material != null) {
-            this.m_pipeEntity.setMaterial( material );
+        if (material != null) {
+            this.m_pipeEntity.setMaterial(material);
         }
+        this.m_bendIndex = Math.floor(this.m_latitudeNum * 0.5 * Math.random()) - 2;
         this.m_pipeEntity.showDoubleFace();
         this.m_pipeEntity.initialize(radius, height, longitudeNum, latitudeNum, texList, 1, 0.0);
         this.m_pipeMesh = this.m_pipeEntity.getMesh() as Pipe3DMesh;
         this.m_pipeGeometry = this.m_pipeMesh.geometry.clone() as PipeGeometry;
-        
-        this.morphCalc(0.0, this.disScale);
+
+        this.morphCalc(this.m_disRotV, this.disScale);
         this.m_pipeEntity.reinitialize();
         this.m_pipeEntity.updateMeshToGpu();
     }
     getEntity(): Pipe3DEntity {
         return this.m_pipeEntity;
     }
-    
-    private m_rotV: Vector3D = new Vector3D();
-    private m_scaleV: Vector3D = new Vector3D(1.0, 1.0, 1.0);
-    private m_mat4: Matrix4 = new Matrix4();
 
-    disRadius: number = 0.06;
-    disScale: number = -0.05;
-    morphTime: number = 0.0;
+    private morphCalc(rotV: Vector3D, dScale: number): void {
 
-    private morphCalc(dRadius: number, dScale: number): void {
+        this.m_pipeMesh.geometry.copyFrom(this.m_pipeGeometry);
 
-        this.m_pipeMesh.geometry.copyFrom( this.m_pipeGeometry );
-
-        this.m_rotV.setXYZ(0.0, 0.0, 0.0);
-        this.m_rotV.z += dRadius;
+        this.m_rotV.copyFrom(rotV);
+        this.m_rotV.z = 0.0;
         this.m_scaleV.setXYZ(1.0, 1.0, 1.0);
-        let mat4: Matrix4 = this.m_mat4;
-        let total: number = this.m_latitudeNum + 1;
-        for (let i: number = 1; i < total; ++i) {
-            mat4.identity();
-            mat4.setScaleXYZ(this.m_scaleV.x, this.m_scaleV.y, this.m_scaleV.z);
-            mat4.setRotationEulerAngle(this.m_rotV.x, this.m_rotV.y, this.m_rotV.z);
+        let mat4A: Matrix4 = this.m_mat4A;
+        let total: number = this.m_latitudeNum;
+        let factor: number = 1.0 - MathConst.Clamp( this.m_bendIndex / total, 0.0, 1.0);
+        if(factor < 0.1) factor = 0.1;
+        factor *= factor;
+        
+        for (let i: number = 0; i <= total; ++i) {
+
+            mat4A.identity();
+            mat4A.setScaleXYZ(this.m_scaleV.x, this.m_scaleV.y, this.m_scaleV.z);
             this.m_scaleV.x += dScale;
             this.m_scaleV.z += dScale;
-            this.m_rotV.z += dRadius;
-            this.m_pipeEntity.transformCircleAt(i, mat4);
+
+            if(i > this.m_bendIndex) {
+                mat4A.appendRotationZ(this.m_rotV.z);
+                this.m_rotV.z += rotV.z * factor;
+            }
+            mat4A.appendRotationY(this.m_rotV.y);
+
+            this.m_pipeEntity.transformCircleAt(i, mat4A);
         }
     }
 
     morph(): void {
-        
-        if(this.m_pipeEntity.isInRenderer()) {
+
+        if (this.m_pipeEntity.isInRenderer()) {
             let factor: number = Math.sin(this.morphTime);
-            this.morphCalc(this.disRadius * factor, this.disScale);
+            // if(Math.abs(factor) < 0.001) {
+            //     //this.disRotV.y = Math.random() * 6.28;
+            //     this.disRotV.z = 0.20 * Math.random() - 0.10;
+            // }
+            this.m_disRotV.copyFrom(this.disRotV);
+            this.m_disRotV.z *= factor;
+            this.morphCalc(this.m_disRotV, this.disScale);
             this.m_pipeEntity.reinitialize();
-            this.m_pipeEntity.updateMeshToGpu();            
+            this.m_pipeEntity.updateMeshToGpu();
         }
         this.morphTime += 0.02;
     }
 
 }
-export {MorphPipeObject};
+export { MorphPipeObject };

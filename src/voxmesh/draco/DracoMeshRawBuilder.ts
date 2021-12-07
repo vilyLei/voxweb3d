@@ -344,7 +344,6 @@ function DracoParser() {
     private m_dracoThreadStr: string =
 `
 function ThreadDraco() {
-    console.log("ThreadDraco instance init run ... from code str");
 
     let m_dataIndex = 0;
     let m_srcuid = 0;
@@ -372,7 +371,6 @@ function ThreadDraco() {
         selfT.decoder["onModuleLoaded"] = function (module) {
             selfT.parser = module;
             dracoParser.parser = module;
-            console.log("draco init finish...");
             postDataMessage(data, [data.data]);
         };
         DracoDecoderModule(selfT.decoder);
@@ -380,14 +378,9 @@ function ThreadDraco() {
     this.receiveData = function (data) {
         m_srcuid = data.srcuid;
         m_dataIndex = data.dataIndex;
-        //console.log("ThreadDraco::receiveData(), data: ", data);
-
-        //console.log("data.taskCmd: ", data.taskCmd);
         switch (data.taskCmd) {
             case "DRACO_PARSE":
                 let parseData = dracoParser.receiveCall(data);
-                //console.log("XXXXXXXXXXXXXXXX parseData: ", parseData);
-                //return { data: bufData, transfers: tarr, errorFlag: errorFlag };
                 data.data = {module: parseData.data, errorFlag: parseData.errorFlag};
                 postDataMessage(data, parseData.transfers);
                 break;

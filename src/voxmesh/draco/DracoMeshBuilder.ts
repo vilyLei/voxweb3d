@@ -343,7 +343,6 @@ function DracoParser() {
     private m_dracoThreadStr: string =
 `
 function ThreadDraco() {
-    console.log("ThreadDraco instance init run ... from code str");
 
     let m_dataIndex = 0;
     let m_srcuid = 0;

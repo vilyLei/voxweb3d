@@ -265,22 +265,30 @@ export class DemoFlexPipe implements IShaderLibListener {
         // pipe.initialize(100,200,10,20);
         // this.m_rscene.addEntity(pipe);
         ///*
-        let rn: number = 4;
-        let cn: number = 4;
+        let rn: number = 5;
+        let cn: number = 5;
         let pos: Vector3D = new Vector3D();
-        let disV: Vector3D = new Vector3D(300, 0.0, 300.0);
+        let disV: Vector3D = new Vector3D(150, 0.0, 150.0);
         let beginV: Vector3D = new Vector3D(disV.x * (cn - 1) * -0.5, 0.0, disV.z * (rn - 1) * -0.5);
         let morphPipe: MorphPipeObject;
+        let scale: number = 0.5;
+        let scaleXZ: number = 0.5;
+        let height: number;
+        let latitudeNum: number;
         for(let i: number = 0; i < rn; ++i) {
             for(let j: number = 0; j < cn; ++j) {
-                
-                //morphPipe = new MorphPipeObject( 170.0, 400.0, 7, 20, [this.getImageTexByUrl("static/assets/metal_02.jpg")], material );
-                morphPipe = new MorphPipeObject( 170.0, 400.0, 7, 20, null, material );
+                height = 300.0 + 300 * Math.random();
+                latitudeNum = Math.round(height/30.0);
+                morphPipe = new MorphPipeObject( 170.0, height, 7, latitudeNum, null, material );
                 let entity = morphPipe.getEntity();
                 pos.x = beginV.x + j * disV.x;
                 pos.z = beginV.z + i * disV.z;
                 entity.setPosition( pos );
-                entity.setScaleXYZ(0.5,0.5,0.5);
+                scale = 0.3 + Math.random() * 0.2;
+                scaleXZ = scale - Math.random() * 0.2;
+                entity.setScaleXYZ(scaleXZ, scale, scaleXZ);
+                morphPipe.disRotV.setXYZ(0.0, Math.random() * 6.28, 0.20 * Math.random() - 0.10);
+                morphPipe.disScale = -0.98/latitudeNum;
                 morphPipe.morphTime = Math.random() * 10.0;
                 this.m_morphPipes.push( morphPipe );
                 this.m_rscene.addEntity(morphPipe.getEntity(), 1);
