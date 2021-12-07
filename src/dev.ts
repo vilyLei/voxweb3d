@@ -302,7 +302,7 @@
 
 //  import {DemoFlexMesh as Demo} from "./demo/DemoFlexMesh";
 
-//  import {DemoFlexPipe as Demo} from "./demo/DemoFlexPipe";
+import {DemoFlexPipe as Demo} from "./demo/DemoFlexPipe";
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   transform    ///////////////////////////////////
@@ -406,7 +406,7 @@
 
 //  import {RbtDrama as Demo} from "./app/RbtDrama";
 
-import {SlickRoad as Demo} from "./app/SlickRoad";
+//  import {SlickRoad as Demo} from "./app/SlickRoad";
 
 //  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 

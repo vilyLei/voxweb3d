@@ -22,6 +22,7 @@ class MorphPipeObject {
     private m_mat4A: Matrix4 = new Matrix4();
     private m_disRotV: Vector3D = new Vector3D(0.0, 0.0, 0.0);
     private m_bendIndex: number = 0;
+    private m_rotAxis: Vector3D = new Vector3D();
     disRotV: Vector3D = new Vector3D(0.0, 0.0, 0.06);
     disScale: number = -0.05;
     morphTime: number = 0.0;
@@ -42,7 +43,7 @@ class MorphPipeObject {
         this.m_pipeMesh = this.m_pipeEntity.getMesh() as Pipe3DMesh;
         this.m_pipeGeometry = this.m_pipeMesh.geometry.clone() as PipeGeometry;
 
-        this.morphCalc(this.m_disRotV, this.disScale);
+        this.morphCalc(this.m_disRotV);
         this.m_pipeEntity.reinitialize();
         this.m_pipeEntity.updateMeshToGpu();
     }
@@ -50,7 +51,7 @@ class MorphPipeObject {
         return this.m_pipeEntity;
     }
 
-    private morphCalc(rotV: Vector3D, dScale: number): void {
+    private morphCalc(rotV: Vector3D): void {
 
         this.m_pipeMesh.geometry.copyFrom(this.m_pipeGeometry);
 
@@ -59,22 +60,22 @@ class MorphPipeObject {
         this.m_scaleV.setXYZ(1.0, 1.0, 1.0);
         let mat4A: Matrix4 = this.m_mat4A;
         let total: number = this.m_latitudeNum;
-        let factor: number = 1.0 - MathConst.Clamp( this.m_bendIndex / total, 0.0, 1.0);
-        if(factor < 0.1) factor = 0.1;
+        let factor: number = 1.0 - MathConst.Clamp(this.m_bendIndex / total, 0.0, 1.0);
+        if (factor < 0.1) factor = 0.1;
         factor *= factor;
-
+        let dScale: number = 0.0;
+        this.m_rotAxis.setXYZ(Math.cos( this.m_rotV.y ), 0.0, Math.sin( this.m_rotV.y ));
+        this.m_rotAxis.normalize();
         for (let i: number = 0; i <= total; ++i) {
 
-            mat4A.identity();
-            mat4A.setScaleXYZ(this.m_scaleV.x, this.m_scaleV.y, this.m_scaleV.z);
-            this.m_scaleV.x += dScale;
-            this.m_scaleV.z += dScale;
+            dScale = 1.0 - (i / total) * 0.98;
+            this.m_scaleV.x = dScale;
+            this.m_scaleV.z = dScale;
 
-            if(i > this.m_bendIndex) {
-                mat4A.appendRotationZ(this.m_rotV.z);
-                this.m_rotV.z += rotV.z * factor;
-            }
-            mat4A.appendRotationY(this.m_rotV.y);
+            mat4A.identity();
+            mat4A.setScaleXYZ(this.m_scaleV.x, this.m_scaleV.y, this.m_scaleV.z);            
+            mat4A.appendRotationPivot(this.m_rotV.z, this.m_rotAxis, null);
+            this.m_rotV.z += rotV.z * factor;
 
             this.m_pipeEntity.transformCircleAt(i, mat4A);
         }
@@ -91,7 +92,7 @@ class MorphPipeObject {
             // }
             this.m_disRotV.copyFrom(this.disRotV);
             this.m_disRotV.z *= factor;
-            this.morphCalc(this.m_disRotV, this.disScale);
+            this.morphCalc(this.m_disRotV);
             this.m_pipeEntity.reinitialize();
             this.m_pipeEntity.updateMeshToGpu();
         }

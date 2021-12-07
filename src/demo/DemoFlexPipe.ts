@@ -1,14 +1,12 @@
 
 import Vector3D from "../vox/math/Vector3D";
 import Matrix4 from "../vox/math/Matrix4";
-import Matrix4Pool from "../vox/math/Matrix4Pool";
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 import Box3DEntity from "../vox/entity/Box3DEntity";
-import Pipe3DEntity from "../vox/entity/Pipe3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import { TextureConst, TextureFormat, TextureDataType, TextureTarget } from "../vox/texture/TextureConst";
 import TextureProxy from "../vox/texture/TextureProxy";
@@ -60,6 +58,7 @@ export class DemoFlexPipe implements IShaderLibListener {
     initialize(): void {
         console.log("DemoFlexPipe::initialize()......");
         if (this.m_rscene == null) {
+            
             RendererDevice.SHADERCODE_TRACE_ENABLED = true;
             RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
             RendererDevice.SetWebBodyColor();
@@ -188,7 +187,6 @@ export class DemoFlexPipe implements IShaderLibListener {
     makePBRMaterial(metallic: number, roughness: number, ao: number): PBRMaterial {
 
         let material: PBRMaterial = new PBRMaterial();
-        //material.setMaterialPipeline( this.m_pipeline );
         material.setMaterialPipeline(this.m_materialCtx.pipeline);
         material.decorator = new PBRShaderDecorator();
 
@@ -204,7 +202,6 @@ export class DemoFlexPipe implements IShaderLibListener {
         decorator.pixelNormalNoiseEnabled = true;
         decorator.hdrBrnEnabled = this.hdrBrnEnabled;
         decorator.vtxFlatNormal = this.vtxFlatNormal;
-
 
         material.setMetallic(metallic);
         material.setRoughness(roughness);
@@ -269,7 +266,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         // pipe.setMaterial(material);
         // pipe.initialize(100,200,10,20);
         // this.m_rscene.addEntity(pipe);
-        let useTeam: boolean = true;
+        let useTeam: boolean = false;
 
         let rn: number = 5;
         let cn: number = 5;
@@ -320,7 +317,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         this.m_rscene.addEntity(plane, 1);
 
         if(useTeam) {
-            this.createSquareTeam(rn, cn, disV);
+            this.createSquareTeam(rn, cn, disV, 1.0);
         }
         //*/
         this.initEnvBox();
@@ -337,7 +334,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         (envBox.getMaterial() as any).setRGB3f(0.1,0.1,0.1);
         this.m_rscene.addEntity(envBox, 2);
     }
-    private createSquareTeam(rn: number, cn: number, disV: Vector3D): void {
+    private createSquareTeam(rn: number, cn: number, disV: Vector3D, scaleFactor: number): void {
         
         let material0: PBRMaterial = this.createPipeMaterial(1, 1, "metal_01");
         let material1: PBRMaterial = this.createPipeMaterial(1, 1, "lava_03");
@@ -363,8 +360,8 @@ export class DemoFlexPipe implements IShaderLibListener {
                 pos.z = beginV.z + i * disV.z;
                 entity.setPosition( pos );
                 scale = 0.25 + Math.random() * 0.2;
-                scaleXZ = scale - Math.random() * 0.2;
-                entity.setScaleXYZ(scaleXZ, scale, scaleXZ);
+                scaleXZ = (scale - Math.random() * 0.2);
+                entity.setScaleXYZ(scaleXZ * scaleFactor, scale * scaleFactor, scaleXZ * scaleFactor);
                 entity.setRotationXYZ(0.0, Math.random() * 360.0,0.0);
                 this.m_rscene.addEntity(entity);
             }

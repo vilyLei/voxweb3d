@@ -296,12 +296,6 @@ class Bezier2Curve extends CurveBase {
      */
     calcCurveChangeYData(total: number, y0: number, y1: number, factor: number, amplitude: number): number[] {
 
-        // let factor: number = node0.pathRadiusChangeFactor;
-        // let amplitude: number = node0.pathRadiusChangeAmplitude;
-        
-        // let y0: number = node0.pathRadius;
-		// let y1: number = node1.pathRadius;
-		
         let dy: number = Math.abs(y1 - y0);
         this.begin.setXYZ(0, y0, 0);
         this.end.setXYZ(dy + 1.0, y1, 0);
