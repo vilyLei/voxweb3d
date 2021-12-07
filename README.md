@@ -14,7 +14,7 @@ Feature:
 
     3. 共享内存情况下, 多GPU(上下文)支持。
        Shared CPU Memory, Multiple Gpu Context support.
-       [Demo](http://www.artvily.com/renderCase?sample=multiGpu2>)
+       [Demo](http://www.artvily.com/renderCase?sample=multiGpu2)
 
     4. 面向高性能的渲染运行时(高频执行的渲染过程控制管理)， 支持大规模实时渲染和长时运行稳定性。
        Independent Renderer rendering runtime, for runtime high performence.
@@ -46,6 +46,8 @@ Feature:
        pc web client mouse event and mobile(pad) touch event support.
 
 Engine code under the path: "src\vox\"
+
+[More Demos](http://www.artvily.com)
 
 installation:
 

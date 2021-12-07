@@ -34,32 +34,12 @@ class Bezier3Module {
         this.bezier3Curve.setSegTot(segTotal);
     }
     getCurveRadiusList(node0: PathKeyNode, node1: PathKeyNode, total: number): number[] {
-
+        
         let factor: number = node0.pathRadiusChangeFactor;
         let amplitude: number = node0.pathRadiusChangeAmplitude;
-        
         let y0: number = node0.pathRadius;
         let y1: number = node1.pathRadius;
-        let dy: number = Math.abs(y1 - y0);
-        this.bezier2Curve.begin.setXYZ(0, y0, 0);
-        this.bezier2Curve.end.setXYZ(dy + 1.0, y1, 0);
-
-        let dis: number = Vector3D.Distance(this.bezier2Curve.begin, this.bezier2Curve.end);
-        let direcTV = this.m_direcTV;
-        direcTV.subVecsTo(this.bezier2Curve.end, this.bezier2Curve.begin);
-        let direcNV = this.m_direcNV;
-        direcNV.setXYZ(-direcTV.y, direcTV.x, 0.0);
-        direcNV.normalize();
-        direcNV.scaleBy(amplitude * dy * 2.0);
-
-        direcTV.normalize();
-        direcTV.scaleBy(dis * factor);
-        this.bezier2Curve.ctrPos.addVecsTo(direcTV, this.bezier2Curve.begin);
-        this.bezier2Curve.ctrPos.addBy(direcNV);
-
-        let vs: number[] = [];
-        this.bezier2Curve.calcBezier2Y(vs, total,  this.bezier2Curve.begin, this.bezier2Curve.ctrPos, this.bezier2Curve.end);
-        
+        let vs: number[] = this.bezier2Curve.calcCurveChangeYData(total, y0, y1, factor, amplitude);
         return vs;
 
     }
