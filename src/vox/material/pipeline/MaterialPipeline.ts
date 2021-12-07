@@ -27,6 +27,7 @@ import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
 class MaterialPipeline implements IMaterialPipeline {
 
     private m_shaderCode: IShaderCodeObject = null;
+    private m_shaderCodeFlag: boolean = false;
     private m_pipeMap: Map<MaterialPipeType, IMaterialPipe> = new Map();
     private m_keys: string[] = [];
     private m_sharedUniforms: ShaderGlobalUniform[] = null;
@@ -46,6 +47,9 @@ class MaterialPipeline implements IMaterialPipeline {
         }
     }
     addShaderCode(shaderCode: IShaderCodeObject, force: boolean = false): void {
+
+        this.m_shaderCodeFlag = shaderCode != null;
+
         if (this.m_shaderCode == null || (shaderCode != null && force)) {
             this.m_shaderCode = shaderCode;
         }
@@ -110,7 +114,7 @@ class MaterialPipeline implements IMaterialPipeline {
     build(shaderBuilder: IShaderCodeBuilder, pipetypes: MaterialPipeType[]): void {
 
         // console.log("#### MaterialPipeline::build(), pipetypes: ",pipetypes,", this.m_shaderCode != null: ",this.m_shaderCode != null);
-        if (this.m_shaderCode != null) {
+        if (this.m_shaderCodeFlag && this.m_shaderCode != null) {
             shaderBuilder.addShaderObject(this.m_shaderCode);
         }
         if (pipetypes != null) {
@@ -152,6 +156,7 @@ class MaterialPipeline implements IMaterialPipeline {
     reset(): void {
         //this.m_texList = null;
         this.m_appendKeyStr = "";
+        this.m_shaderCodeFlag = false;
     }
     clear(): void {
         this.m_pipeMap = new Map();

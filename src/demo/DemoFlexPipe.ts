@@ -32,6 +32,9 @@ import { PointLight } from "../light/base/PointLight";
 import { SpotLight } from "../light/base/SpotLight";
 import { DirectionLight } from "../light/base/DirectionLight";
 import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
+import DisplayEntity from "../vox/entity/DisplayEntity";
+import Plane3DEntity from "../vox/entity/Plane3DEntity";
+import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
 
 export class DemoFlexPipe implements IShaderLibListener {
     constructor() { }
@@ -52,14 +55,8 @@ export class DemoFlexPipe implements IShaderLibListener {
     vtxFlatNormal: boolean = false;
     aoMapEnabled: boolean = false;
 
-
     private m_morphPipes: MorphPipeObject[] = [];
-    private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
-    }
+
     initialize(): void {
         console.log("DemoFlexPipe::initialize()......");
         if (this.m_rscene == null) {
@@ -70,7 +67,8 @@ export class DemoFlexPipe implements IShaderLibListener {
 
             let rparam: RendererParam = new RendererParam();
             rparam.setAttriAntialias( true );
-            rparam.setCamPosition(300.0, 1300.0, 1300.0);
+            rparam.setCamProject(50,10,9000);
+            rparam.setCamPosition(1300.0, 1300.0, 1300.0);
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
@@ -88,9 +86,10 @@ export class DemoFlexPipe implements IShaderLibListener {
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
             this.m_rscene.getRenderProxy().setVtxUpdateTimesTotal(32);
-            let axis: Axis3DEntity = new Axis3DEntity();
-            axis.initialize(300.0);
-            this.m_rscene.addEntity(axis);
+
+            // let axis: Axis3DEntity = new Axis3DEntity();
+            // axis.initialize(300.0);
+            // this.m_rscene.addEntity(axis);
             
             //  this.initScene();
             this.initMaterialCtx();
@@ -229,20 +228,17 @@ export class DemoFlexPipe implements IShaderLibListener {
         material.setUVScale(uscale, vscale);
         return material;
     }
-    private initScene(): void {
-
-        this.fogEnabled = true;
-        this.aoMapEnabled = true;
-
+    private createPipeMaterial(scaleU: number, scaleV: number, mapNS: string = "lava_03"): PBRMaterial {
+        
         let material: PBRMaterial;
         ///*
-        material = this.createMaterial(1, 1);
+        material = this.createMaterial(scaleU, scaleV);
         //material.decorator.normalMapEnabled = false;
         material.decorator.aoMapEnabled = this.aoMapEnabled;
         //material.decorator.aoMapEnabled = false;
         material.decorator.scatterEnabled = false;
 
-        this.useMaps( material, "metal_01" );
+        this.useMaps( material, mapNS );
 
         material.initializeLocalData();
         material.setAlbedoColor(1.0,1.0,1.0);
@@ -253,7 +249,16 @@ export class DemoFlexPipe implements IShaderLibListener {
         material.initializeByCodeBuf(true);
         material.setSideIntensity(8);
         material.setMetallic(0.1);
+        return material;
+    }
+    private initScene(): void {
+
+        this.fogEnabled = true;
+        this.aoMapEnabled = true;
+        let material: PBRMaterial;
         
+        material = this.createPipeMaterial(1, 1, "metal_01");
+        ///*
         // let srcSph = new Sphere3DEntity();
         // srcSph.setMaterial(material);
         // srcSph.initialize(100.0, 150, 150);
@@ -264,7 +269,8 @@ export class DemoFlexPipe implements IShaderLibListener {
         // pipe.setMaterial(material);
         // pipe.initialize(100,200,10,20);
         // this.m_rscene.addEntity(pipe);
-        ///*
+        let useTeam: boolean = true;
+
         let rn: number = 5;
         let cn: number = 5;
         let pos: Vector3D = new Vector3D();
@@ -291,13 +297,79 @@ export class DemoFlexPipe implements IShaderLibListener {
                 morphPipe.disScale = -0.98/latitudeNum;
                 morphPipe.morphTime = Math.random() * 10.0;
                 this.m_morphPipes.push( morphPipe );
-                this.m_rscene.addEntity(morphPipe.getEntity(), 1);
+                this.m_rscene.addEntity(morphPipe.getEntity());
+                entity.setVisible(!useTeam);
             }
         }
+        if(useTeam) {
+            rn = 40;
+            cn = 40;
+            disV.setXYZ(100, 0.0, 100.0);
+        }
+        let planeSize: number = cn * disV.x;
+        if(useTeam) {
+            material = this.createPipeMaterial(8, 8, "lava_03");
+        }
+        else {
+            material = this.createPipeMaterial(2, 2, "lava_03");
+        }
+        let plane: Plane3DEntity = new Plane3DEntity();
+        plane.setMaterial(material);
+        plane.initializeXOZ(-0.5 * planeSize, -0.5 * planeSize, planeSize, planeSize);
+        plane.setXYZ(0.0, 0.5, 0.0);
+        this.m_rscene.addEntity(plane, 1);
+
+        if(useTeam) {
+            this.createSquareTeam(rn, cn, disV);
+        }
         //*/
+        this.initEnvBox();
         this.update();
     }
+    
+    private initEnvBox(): void {
+        
+        let envBox: Box3DEntity = new Box3DEntity();
+        envBox.pipeTypes = [MaterialPipeType.FOG_EXP2];
+        envBox.setMaterialPipeline( this.m_materialCtx.pipeline );
+        envBox.showFrontFace();
+        envBox.initializeCube(5000.0, [this.m_materialCtx.getTextureByUrl("static/assets/displacement_01.jpg")]);
+        (envBox.getMaterial() as any).setRGB3f(0.1,0.1,0.1);
+        this.m_rscene.addEntity(envBox, 2);
+    }
+    private createSquareTeam(rn: number, cn: number, disV: Vector3D): void {
+        
+        let material0: PBRMaterial = this.createPipeMaterial(1, 1, "metal_01");
+        let material1: PBRMaterial = this.createPipeMaterial(1, 1, "lava_03");
+        // let rn: number = 40;
+        // let cn: number = 40;
+        let pos: Vector3D = new Vector3D();
+        //let disV: Vector3D = new Vector3D(100, 0.0, 100.0);
+        let beginV: Vector3D = new Vector3D(disV.x * (cn - 1) * -0.5, 0.0, disV.z * (rn - 1) * -0.5);
+        let morphPipe: MorphPipeObject;
+        let srcEntity: DisplayEntity;
+        let entity: DisplayEntity;
 
+        let scale: number = 0.5;
+        let scaleXZ: number = 0.5;
+        for(let i: number = 0; i < rn; ++i) {
+            for(let j: number = 0; j < cn; ++j) {
+                morphPipe = this.m_morphPipes[Math.round(Math.random() * 10000)%this.m_morphPipes.length];
+                srcEntity = morphPipe.getEntity();
+                entity = new DisplayEntity();
+                entity.copyMeshFrom(srcEntity);
+                entity.setMaterial(Math.random() > 0.5 ? material0 : material1);
+                pos.x = beginV.x + j * disV.x;
+                pos.z = beginV.z + i * disV.z;
+                entity.setPosition( pos );
+                scale = 0.25 + Math.random() * 0.2;
+                scaleXZ = scale - Math.random() * 0.2;
+                entity.setScaleXYZ(scaleXZ, scale, scaleXZ);
+                entity.setRotationXYZ(0.0, Math.random() * 360.0,0.0);
+                this.m_rscene.addEntity(entity);
+            }
+        }
+    }
     private m_testFlag: boolean = true;
     private m_pos0: Vector3D = new Vector3D();
 

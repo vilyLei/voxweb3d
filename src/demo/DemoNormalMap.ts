@@ -1,4 +1,3 @@
-
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
@@ -91,12 +90,20 @@ export class DemoNormalMap {
             this.m_pointLight = pointLight;
             this.m_target = billboard;
 
-            let box: Box3DEntity = new Box3DEntity();
-            box.pipeTypes = [MaterialPipeType.FOG_EXP2];
-            box.setMaterialPipeline( this.m_materialCtx.pipeline );
-            box.initializeCube(80, [this.m_materialCtx.getTextureByUrl("static/assets/color_02.jpg")]);
-            box.setXYZ(-200,50,200);
-            this.m_engine.rscene.addEntity(box);
+            // let box: Box3DEntity = new Box3DEntity();
+            // box.pipeTypes = [MaterialPipeType.FOG_EXP2];
+            // box.setMaterialPipeline( this.m_materialCtx.pipeline );
+            // box.initializeCube(80, [this.m_materialCtx.getTextureByUrl("static/assets/color_02.jpg")]);
+            // box.setXYZ(-200,50,200);
+            // this.m_engine.rscene.addEntity(box);
+
+            let sph02: Sphere3DEntity = new Sphere3DEntity();            
+            sph02.pipeTypes = [MaterialPipeType.FOG_EXP2];
+            sph02.setMaterialPipeline( this.m_materialCtx.pipeline );
+            sph02.initialize(50, 20, 20, [this.m_materialCtx.getTextureByUrl("static/assets/color_02.jpg")]);
+            sph02.setXYZ(-200,50,200);
+            this.m_engine.rscene.addEntity(sph02);
+
 
             let crossAxis: Axis3DEntity = new Axis3DEntity();
             crossAxis.pipeTypes = [MaterialPipeType.FOG_EXP2];
@@ -231,7 +238,7 @@ export class DemoNormalMap {
 
         material.initializeLocalData();
         material.initializeByCodeBuf( true );
-
+        
         let envBox: Box3DEntity = new Box3DEntity();
         envBox.normalScale = -1.0;
         envBox.setMaterial( material );

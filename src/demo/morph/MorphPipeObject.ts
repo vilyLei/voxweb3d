@@ -81,8 +81,9 @@ class MorphPipeObject {
     }
 
     morph(): void {
-        
-        if (this.m_pipeEntity.isInRenderer() && Math.abs(this.disRotV.z) > 0.002) {
+
+        //if (this.m_pipeEntity.isInRenderer() && Math.abs(this.disRotV.z) > 0.002) {
+        if (this.m_pipeEntity.isInRenderer()) {
             let factor: number = Math.sin(this.morphTime);
             // if(Math.abs(factor) < 0.001) {
             //     //this.disRotV.y = Math.random() * 6.28;
