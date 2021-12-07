@@ -201,11 +201,9 @@
 
 //  import {DemoBaseRenderer as Demo} from "./demo/DemoBaseRenderer";
 
-//  import * as DemoVSTexture from "./demo/DemoVSTexture";
-//  import Demo = DemoVSTexture.demo.DemoVSTexture;
+//  import {DemoVSTexture as Demo} from "./demo/DemoVSTexture";
 
-//  import * as DemoVSTexturePos from "./demo/DemoVSTexturePos";
-//  import Demo = DemoVSTexturePos.demo.DemoVSTexturePos;
+import {DemoVSTexturePos as Demo} from "./demo/DemoVSTexturePos";
 
 //  import {DemoFloatTex as Demo} from "./demo/DemoFloatTex";
 
@@ -300,7 +298,7 @@
 ////////////////////////////   transform    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-import {DemoFlexMesh as Demo} from "./demo/DemoFlexMesh";
+//  import {DemoFlexMesh as Demo} from "./demo/DemoFlexMesh";
 
 //  import {DemoFlexPipe as Demo} from "./demo/DemoFlexPipe";
 
