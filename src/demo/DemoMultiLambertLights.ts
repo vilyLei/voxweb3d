@@ -69,18 +69,18 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         }
     }
     private initMaterialCtx(): void {
-
+        
         let libConfig = this.m_materialCtx.createShaderLibConfig();
         let configure = new ShaderCodeConfigure();
         configure.uuid = ShaderCodeUUID.Lambert;
         //  configure.buildBinaryFile = false;
-        // configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
-        // configure.urls = [
-        //     "static/shader/glsl/lambert/glsl01.bin",
-        //     "static/shader/glsl/lambert/glsl02.bin",
-        //     "static/shader/glsl/lambert/glsl03.bin",
-        //     "static/shader/glsl/lambert/glsl04.bin"
-        // ]
+        configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
+        configure.urls = [
+            "static/shader/glsl/lambert/glsl01.bin",
+            "static/shader/glsl/lambert/glsl02.bin",
+            "static/shader/glsl/lambert/glsl03.bin",
+            "static/shader/glsl/lambert/glsl04.bin"
+        ]
         configure.binary = true;
         libConfig.shaderCodeConfigures.push( configure );
 
