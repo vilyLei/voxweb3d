@@ -46,19 +46,13 @@ class ShaderCodeObjectLoader {
 
         this.m_loadingTotal++;
         //let code: string;
-        // if(this.m_configure.binary) {
-
-        //     code = request.responseText;
-        //     //code = this.decodeUint8Arr(u8arr);
-        // }
-        // else {
-        //     code = request.responseText;
-        //     // let u8arr: Uint8Array = this.encodeUint8Arr(code);
-        //     // for(let i: number = 0; i < u8arr.length; ++i) {
-        //     //     u8arr[i] = 222 - u8arr[i];
-        //     // }
-        //     // ShaderCodeObjectLoader.s_fileIO.downloadBinFile(u8arr,type+"","bin");
-        // }
+        if(this.m_configure.buildBinaryFile && !this.m_configure.binary) {
+            let u8arr: Uint8Array = this.encodeUint8Arr(code);
+            for(let i: number = 0; i < u8arr.length; ++i) {
+                u8arr[i] = 222 - u8arr[i];
+            }
+            ShaderCodeObjectLoader.s_fileIO.downloadBinFile(u8arr,type+"","bin");
+        }
         switch (type) {
             case ShaderCodeType.VertHead:
                 this.m_shaderCodeObject.vert_head = code;

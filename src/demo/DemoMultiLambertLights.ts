@@ -73,6 +73,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         let libConfig = this.m_materialCtx.createShaderLibConfig();
         let configure = new ShaderCodeConfigure();
         configure.uuid = ShaderCodeUUID.Lambert;
+        //  configure.buildBinaryFile = false;
         // configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
         // configure.urls = [
         //     "static/shader/glsl/lambert/glsl01.bin",
@@ -80,7 +81,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         //     "static/shader/glsl/lambert/glsl03.bin",
         //     "static/shader/glsl/lambert/glsl04.bin"
         // ]
-        configure.binary = false;
+        configure.binary = true;
         libConfig.shaderCodeConfigures.push( configure );
 
         let mcParam: MaterialContextParam = new MaterialContextParam();
@@ -89,7 +90,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         mcParam.spotLightsTotal = 0;
         //mcParam.vsmEnabled = false;
         mcParam.loadAllShaderCode = true;
-        mcParam.shaderCodeBinary = false;
+        mcParam.shaderCodeBinary = true;
 
         this.m_materialCtx.initialize( this.m_engine.rscene, mcParam, libConfig );
         

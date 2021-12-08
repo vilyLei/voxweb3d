@@ -8,6 +8,7 @@ class ShaderCodeConfigure {
     urls: string[] = null;
     uuid: ShaderCodeUUID = ShaderCodeUUID.Default;
     binary: boolean = false;
+    buildBinaryFile: boolean = false;
     constructor() {
     }
 }

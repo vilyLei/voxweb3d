@@ -5,6 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
+import {ShaderCodeUUID} from "../../../vox/material/ShaderCodeUUID";
 import IShaderCodeObject from "../../../vox/material/IShaderCodeObject";
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import { MaterialPipeType } from "../pipeline/MaterialPipeType";
@@ -12,7 +13,6 @@ import Color4 from "../Color4";
 import TextureProxy from "../../texture/TextureProxy";
 import { SpecularMode } from "./SpecularMode";
 import { LambertLightShaderCode } from "../mcase/glsl/LambertLightShaderCode";
-import { ShadowMode } from "./ShadowMode";
 
 class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     private m_uniqueName: string = "";
@@ -94,7 +94,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     }
 
     initialize(texEnabled: boolean): void {
-
+        
         texEnabled = this.m_texList != null && this.m_texList.length > 0;
         super.initialize(texEnabled);
         if(this.colorEnabled) {
@@ -112,10 +112,13 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
         }
     }
     
-    getShaderCodeObject(): IShaderCodeObject {
-        return LambertLightShaderCode;
-    }
+    // getShaderCodeObject(): IShaderCodeObject {
+    //     return LambertLightShaderCode;
+    // }
 
+    getShaderCodeObjectUUID(): ShaderCodeUUID {
+        return ShaderCodeUUID.Lambert;
+    }
     getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName + this.keysString;
