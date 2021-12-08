@@ -4,7 +4,7 @@ import { ShaderCodeType } from "./ShaderCodeType";
 
 class ShaderCodeConfigure {
 
-    types: ShaderCodeType[] = null;
+    types: ShaderCodeType[] = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
     urls: string[] = null;
     uuid: ShaderCodeUUID = ShaderCodeUUID.Default;
     binary: boolean = false;

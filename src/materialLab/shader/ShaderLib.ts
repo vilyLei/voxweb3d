@@ -208,7 +208,7 @@ class ShaderLib implements IShaderLib{
         }
     }
     addAllShaderCodeObject(): void {
-        // this.addShaderCodeObjectWithUUID(ShaderCodeUUID.PBR);
+        
         let uuidList: ShaderCodeUUID[] = this.m_configLib.getUUIDList();
         for(let i: number = 0; i < uuidList.length; ++i) {
             this.addShaderCodeObjectWithUUID(uuidList[i]);
