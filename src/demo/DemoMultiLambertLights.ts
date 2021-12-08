@@ -28,6 +28,9 @@ import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 import EngineBase from "../vox/engine/EngineBase";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import { PointLight } from "../light/base/PointLight";
+import Matrix4 from "../vox/math/Matrix4";
+import { ILightEntity } from "./light/ILightEntity";
+import { FloatYPointLightEntity, PointLightEntity } from "./light/PointLightEntity";
 
 export class DemoMultiLambertLights implements IShaderLibListener {
 
@@ -35,13 +38,10 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     
     private m_engine: EngineBase = null;
     private m_profileInstance: ProfileInstance = null;
-
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
-
     private m_materialCtx: MaterialContext = new MaterialContext();
-    private m_target: DisplayEntity = null;
-    private m_pointLight: PointLight = null;
 
+    private m_lightEntities: ILightEntity[] = [];
     initialize(): void {
 
         console.log("DemoMultiLambertLights::initialize()......");
@@ -69,7 +69,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         }
     }
     private initMaterialCtx(): void {
-        
+
         let libConfig = this.m_materialCtx.createShaderLibConfig();
         let configure = new ShaderCodeConfigure();
         configure.uuid = ShaderCodeUUID.Lambert;
@@ -103,13 +103,6 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         pointLight.attenuationFactor2 = 0.000001;
         this.m_materialCtx.lightModule.update();
 
-    }
-    private initScene(): void {
-
-        let color: Color4 = new Color4(1.0,1.0,0.0);
-        let colorBias: Color4 = new Color4(0.0,0.0,0.0);
-        
-        let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
         let billboard: Billboard3DEntity = new Billboard3DEntity();
         billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
         billboard.setMaterialPipeline( this.m_materialCtx.pipeline );
@@ -118,8 +111,23 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         billboard.setPosition(pointLight.position);
         billboard.setRGB3f(pointLight.color.r, pointLight.color.g, pointLight.color.b);
         this.m_engine.rscene.addEntity(billboard, 3);
-        this.m_pointLight = pointLight;
-        this.m_target = billboard;
+        
+        let floatPointLight: FloatYPointLightEntity = new FloatYPointLightEntity();
+        floatPointLight.center.copyFrom(pointLight.position);
+        floatPointLight.center.y = 60.0;
+        floatPointLight.position.copyFrom(pointLight.position);
+        floatPointLight.light = pointLight;
+        floatPointLight.displayEntity = billboard;
+        this.m_lightEntities.push(floatPointLight);
+    }
+    private m_mat4: Matrix4 = new Matrix4();
+    private m_center0: Vector3D = new Vector3D();
+    private m_center1: Vector3D = new Vector3D();
+    private initScene(): void {
+
+        let color: Color4 = new Color4(1.0,1.0,0.0);
+        let colorBias: Color4 = new Color4(0.0,0.0,0.0);
+        
 
         // let box: Box3DEntity = new Box3DEntity();
         // box.pipeTypes = [MaterialPipeType.FOG_EXP2];
@@ -165,7 +173,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         let sph: Sphere3DEntity = new Sphere3DEntity();
         sph.setMaterial(material);
         sph.initialize(150.0,100,100);
-        sph.setXYZ(-150.0, 100.0, -170.0);
+        this.m_center0.setXYZ(-150.0, 100.0, -170.0);
+        sph.setPosition( this.m_center0 );
         sph.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
         this.m_engine.rscene.addEntity(sph);
         let srcEntity: DisplayEntity = sph;
@@ -187,8 +196,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         sph = new Sphere3DEntity();
         sph.copyMeshFrom(srcEntity);
         sph.setMaterial(material);
-        //sph.initialize(150.0,100,100);
-        sph.setXYZ(150,0.0,150);
+        this.m_center1.setXYZ(150,0.0,150);
+        sph.setPosition( this.m_center1 );
         sph.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
         this.m_engine.rscene.addEntity(sph);
         //*/
@@ -210,29 +219,6 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         plane.setXYZ(0.0, -200.0, 0.0);
         this.m_engine.rscene.addEntity(plane);
         //*/
-        /*
-        let size: number = 400.0;
-        let gridGeom: QuadGridMeshGeometry = new QuadGridMeshGeometry();
-        gridGeom.normalEnabled = true;
-        //gridGeom.normalScale = -1.0;
-        gridGeom.initializeXOZPlane(new Vector3D(-0.5 * size, 0, -0.5 * size), size,size, 120,120);
-        //console.log("gridGeom: ", gridGeom);
-
-        let dataMesh: DataMesh = new DataMesh();
-        //dataMesh.wireframe = true;
-        dataMesh.setBufSortFormat(material.getBufSortFormat());
-        dataMesh.initializeFromGeometry(gridGeom);
-        
-        let entity: DisplayEntity = new DisplayEntity();
-        entity.setMaterial(material);
-        entity.setMesh(dataMesh);
-        entity.setRenderState(RendererState.NONE_CULLFACE_NORMAL_STATE);
-        //entity.setScaleXYZ(4.0,12.0,4.0);
-        //entity.setXYZ(0,-400,0);
-        this.m_rscene.addEntity(entity);
-        //*/
-        //this.m_material = material;
-        //this.m_material.setDisplacementParams(this.m_dispHeight,0.0);
         
         this.initEnvBox();
         this.update();
@@ -294,17 +280,15 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
         this.m_statusDisp.render();
     }
-    private m_time: number = 0.0;
     run(): void {
-        if(this.m_target != null) {
-
-            this.m_pointLight.position.y = 60 + 220 * Math.cos(this.m_time);
-            this.m_target.setPosition( this.m_pointLight.position );
-            this.m_target.update();
+        for(let i: number = 0; i < this.m_lightEntities.length; ++i) {
+            this.m_lightEntities[i].run();
+        }
+        if(this.m_lightEntities.length > 0) {
             this.m_materialCtx.lightModule.update();
         }
+
         this.m_statusDisp.update( false );
-        this.m_time += 0.01;
         //this.m_material.setDisplacementParams(this.m_dispHeight * (1.0 + Math.cos(this.m_time)), 0.0);
         this.m_engine.rscene.setClearRGBColor3f(0.2,0.2,0.2);
         this.m_materialCtx.run();
