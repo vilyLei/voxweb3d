@@ -34,7 +34,7 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
         coder.useVertSpaceMats(true, true, true);
 
         if (this.m_texEnabled) {
-            coder.addDiffuseMap();
+            this.m_uniform.addDiffuseMap();
             coder.addVertLayout("vec2", "a_uvs");
             coder.addVarying("vec2", "v_uv");
         }

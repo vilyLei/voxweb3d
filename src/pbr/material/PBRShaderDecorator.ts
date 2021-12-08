@@ -9,6 +9,7 @@
 import ShaderCodeBuilder from "../../vox/material/code/ShaderCodeBuilder";
 import UniformConst from "../../vox/material/UniformConst";
 import TextureProxy from '../../vox/texture/TextureProxy';
+import { ShadowMode } from "../../vox/material/pipeline/ShadowMode";
 
 export default class PBRShaderDecorator {
     constructor() {
@@ -27,7 +28,6 @@ export default class PBRShaderDecorator {
     parallaxMap: TextureProxy = null;
     roughnessMap: TextureProxy = null;
     displacementMap: TextureProxy = null;
-    //specularMap: TextureProxy = null;
     
     woolEnabled: boolean = true;
     toneMappingEnabled: boolean = true;
@@ -59,55 +59,56 @@ export default class PBRShaderDecorator {
     createTextureList(): TextureProxy[] {
         
         let coder: ShaderCodeBuilder = this.codeBuilder;
+        let uniform = coder.uniform;
         let texList: TextureProxy[] = [];
         
         if (this.envMapEnabled && this.envMap != null ) {
             texList.push( this.envMap );
-            coder.addEnvMap();
+            uniform.addEnvMap(true);
             // console.log("VOX_ENV_MAP");
         }
         if ( this.diffuseMapEnabled && this.diffuseMap != null ) {
             texList.push( this.diffuseMap );
-            coder.addDiffuseMap();
+            uniform.addDiffuseMap();
             // console.log("VOX_DIFFUSE_MAP");
         }
         if (this.normalMapEnabled && this.normalMap != null) {
             texList.push( this.normalMap );
-            coder.addNormalMap();
+            uniform.addNormalMap();
             // console.log("VOX_NORMAL_MAP");
         }
         if (this.aoMapEnabled && this.aoMap != null) {
             texList.push( this.aoMap );
-            coder.addAOMap();
+            uniform.addAOMap();
             // console.log("VOX_AO_MAP");
         }
         if (this.mirrorProjEnabled && this.mirrorMap != null) {
             texList.push( this.mirrorMap );
-            coder.addTextureSample2D("VOX_MIRROR_PROJ_MAP");
+            uniform.add2DMap("VOX_MIRROR_PROJ_MAP",true, true ,false);
             // console.log("VOX_MIRROR_PROJ_MAP");
         }
         if ( this.indirectEnvMapEnabled && this.indirectEnvMap != null) {
             texList.push( this.indirectEnvMap );
-            coder.addTextureSampleCube("VOX_INDIRECT_ENV_MAP");
+            uniform.addCubeMap("VOX_INDIRECT_ENV_MAP",true ,false);
             // console.log("VOX_INDIRECT_ENV_MAP");
         }
 
         if (this.shadowReceiveEnabled && this.shadowMap != null) {
             texList.push( this.shadowMap );
-            coder.addShadowMap();
+            uniform.addShadowMap(ShadowMode.VSM);
             // console.log("VOX_VSM_SHADOW_MAP");
         }
         if(this.displacementMap != null) {
             texList.push( this.displacementMap );
-            coder.addDisplacementMap();
+            uniform.addDisplacementMap();
         }
         if(this.parallaxMap != null) {
             texList.push( this.parallaxMap );
-            coder.addParallaxMap( this.parallaxParamIndex );
+            uniform.addParallaxMap( this.parallaxParamIndex );
         }
         if(this.roughnessMap != null) {
             texList.push( this.roughnessMap );
-            coder.addRoughnessMap();
+            uniform.addRoughnessMap();
         }
 
         this.texturesTotal = texList.length;

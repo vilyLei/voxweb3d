@@ -112,8 +112,7 @@ export default class OcclusionPostOutline {
                 this.m_fboIns.runBegin();
                 for(let i: number = 0; i < this.m_targets.length; ++i)
                     this.m_fboIns.drawEntity(this.m_targets[i]);
-                
-    
+                    
                 this.m_fboIns.lockColorMask(RendererState.COLOR_MASK_ALL_FALSE);
                 this.m_fboIns.clearDepth(1.0);
                 for(let i: number = 0; i < this.m_targets.length; ++i)

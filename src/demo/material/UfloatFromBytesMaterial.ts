@@ -17,7 +17,6 @@ class UfloatFromBytesRenderShaderBuffer extends ShaderCodeBuffer
         super();
     }
     private static s_instance:UfloatFromBytesRenderShaderBuffer = null;
-    private m_codeBuilder:ShaderCodeBuilder = new ShaderCodeBuilder();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -28,7 +27,7 @@ class UfloatFromBytesRenderShaderBuffer extends ShaderCodeBuffer
     
     private buildThisCode():void
     {
-        let coder:ShaderCodeBuilder = this.m_codeBuilder;
+        let coder:ShaderCodeBuilder = this.m_coder;
         coder.reset();
         //coder.vertMatrixInverseEnabled = true;
         coder.mapLodEnabled = true;
@@ -55,7 +54,7 @@ class UfloatFromBytesRenderShaderBuffer extends ShaderCodeBuffer
     {
         this.buildThisCode();
         
-        this.m_codeBuilder.addFragMainCode(
+        this.m_coder.addFragMainCode(
 `
 /*
 // Encoding/decoding [0..1) floats into 8 bit/channel RGBA. Note that 1.0 will not be encoded properly.
@@ -104,12 +103,12 @@ void main() {
 `
                                     );
                     
-                    return this.m_codeBuilder.buildFragCode();
+                    return this.m_coder.buildFragCode();
     }
     getVertShaderCode():string
     {
         
-        this.m_codeBuilder.addVertMainCode(
+        this.m_coder.addVertMainCode(
 `
 void main() {
 
@@ -121,7 +120,7 @@ void main() {
 }
 `
                                     );
-        return this.m_codeBuilder.buildVertCode();
+        return this.m_coder.buildVertCode();
     }
     getUniqueShaderName(): string
     {

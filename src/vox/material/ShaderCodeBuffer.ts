@@ -12,12 +12,15 @@ import ShaderCompileInfo from "../../vox/material/code/ShaderCompileInfo";
 import IShaderCodeObject from "./IShaderCodeObject";
 import { IMaterialPipeline } from "../../vox/material/pipeline/IMaterialPipeline";
 import { MaterialPipeType } from "./pipeline/MaterialPipeType";
+import { ShaderCodeUniform } from "../../vox/material/code/ShaderCodeUniform";
 
 class ShaderCodeBuffer {
 
     private static __$s_csBuf: ShaderCodeBuffer = null;
-    protected static s_coder: ShaderCodeBuilder = new ShaderCodeBuilder();
+    protected static s_coder: ShaderCodeBuilder;
+    protected static s_uniform: ShaderCodeUniform;
     protected m_coder: ShaderCodeBuilder = null;
+    protected m_uniform: ShaderCodeUniform;
     protected m_shaderCodeObj: IShaderCodeObject = null;
 
     protected m_texList: IRenderTexture[] = null;
@@ -39,11 +42,17 @@ class ShaderCodeBuffer {
      */
     adaptationShaderVersion: boolean = true;
     constructor() {
+        if(ShaderCodeBuffer.s_coder == null) {
+            ShaderCodeBuffer.s_uniform = new ShaderCodeUniform();
+            ShaderCodeBuffer.s_coder = new ShaderCodeBuilder( ShaderCodeBuffer.s_uniform );
+            ShaderCodeBuffer.s_uniform.__$setCodeBuilder( ShaderCodeBuffer.s_coder );
+        }
     }
 
     reset(): void {
 
         this.m_coder = ShaderCodeBuffer.s_coder;
+        this.m_uniform = ShaderCodeBuffer.s_uniform;
         this.m_coder.reset();
         this.m_texList = null;
         this.pipeTypes = null;

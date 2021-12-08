@@ -19,8 +19,8 @@ import Box3DMesh from "../../vox/mesh/Box3DMesh";
 export default class Box3DEntity extends DisplayEntity {
     
     private m_normalType: number = VtxNormalType.FLAT;
-    private m_minV: Vector3D = new Vector3D();
-    private m_maxV: Vector3D = new Vector3D();
+    private m_minV: Vector3D = new Vector3D(-50.0, -50.0, -50.0);
+    private m_maxV: Vector3D = new Vector3D(50.0, 50.0, 50.0);
     private m_transMatrix: Matrix4 = null;
     private m_currMesh: Box3DMesh = null;
 
@@ -99,8 +99,8 @@ export default class Box3DEntity extends DisplayEntity {
      * @param texList  TextureProxy instance list
      */
     initialize(minV: Vector3D, maxV: Vector3D, texList: TextureProxy[] = null): void {
-        this.m_minV.copyFrom(minV);
-        this.m_maxV.copyFrom(maxV);
+        if(minV != null) this.m_minV.copyFrom(minV);
+        if(maxV != null) this.m_maxV.copyFrom(maxV);
 
         this.initializeThis(texList);
     }

@@ -17,7 +17,6 @@ class AOPreShaderBuffer extends ShaderCodeBuffer
         super();
     }
     private static s_instance:AOPreShaderBuffer = new AOPreShaderBuffer();
-    private m_codeBuilder:ShaderCodeBuilder = new ShaderCodeBuilder();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -29,7 +28,7 @@ class AOPreShaderBuffer extends ShaderCodeBuffer
     private buildThisCode():void
     {
 
-        let coder:ShaderCodeBuilder = this.m_codeBuilder;
+        let coder:ShaderCodeBuilder = this.m_coder;
         coder.reset();
         coder.vertMatrixInverseEnabled = true;
 
@@ -58,7 +57,7 @@ class AOPreShaderBuffer extends ShaderCodeBuffer
     {
         this.buildThisCode();
 
-        this.m_codeBuilder.addFragMainCode(
+        this.m_coder.addFragMainCode(
 `
 void main() {
     vec4 color = VOX_Texture2D( u_sampler0, v_uv );
@@ -68,11 +67,11 @@ void main() {
 `
                         );
         
-        return this.m_codeBuilder.buildFragCode();                    
+        return this.m_coder.buildFragCode();                    
     }
     getVertShaderCode():string
     {
-        this.m_codeBuilder.addVertMainCode(
+        this.m_coder.addVertMainCode(
 `
 void main() {
     mat4 viewMat4 =u_viewMat * u_objMat;
@@ -87,7 +86,7 @@ void main() {
 }
 `
                         );
-        return this.m_codeBuilder.buildVertCode();
+        return this.m_coder.buildVertCode();
 
     }
     getUniqueShaderName(): string

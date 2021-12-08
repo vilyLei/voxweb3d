@@ -17,7 +17,6 @@ class AONVAndZShaderBuffer extends ShaderCodeBuffer
         super();
     }
     private static s_instance:AONVAndZShaderBuffer = new AONVAndZShaderBuffer();
-    private m_codeBuilder:ShaderCodeBuilder = new ShaderCodeBuilder();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -29,7 +28,7 @@ class AONVAndZShaderBuffer extends ShaderCodeBuffer
     private buildThisCode():void
     {
 
-        let coder:ShaderCodeBuilder = this.m_codeBuilder;
+        let coder:ShaderCodeBuilder = this.m_coder;
         coder.reset();
         coder.vertMatrixInverseEnabled = true;
 
@@ -55,7 +54,7 @@ class AONVAndZShaderBuffer extends ShaderCodeBuffer
     {
         this.buildThisCode();
 
-        this.m_codeBuilder.addFragMainCode(
+        this.m_coder.addFragMainCode(
 `
 void main() {
     FragColor0 = vec4(normalize(v_nv), v_posZ);
@@ -63,11 +62,11 @@ void main() {
 `
                         );
         
-        return this.m_codeBuilder.buildFragCode();                    
+        return this.m_coder.buildFragCode();                    
     }
     getVertShaderCode():string
     {
-        this.m_codeBuilder.addVertMainCode(
+        this.m_coder.addVertMainCode(
 `
 void main() {
 
@@ -83,7 +82,7 @@ void main() {
 }
 `
                         );
-        return this.m_codeBuilder.buildVertCode();
+        return this.m_coder.buildVertCode();
 
     }
     getUniqueShaderName(): string

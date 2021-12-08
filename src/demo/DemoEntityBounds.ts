@@ -253,15 +253,15 @@ export class DemoEntityBounds {
         let box0: Box3DEntity = new Box3DEntity();
         box0.mouseEnabled = true;
         box0.setMesh(srcBox.getMesh());
-        box0.initialize(null, null, [this.m_texList[0]]);
+        box0.initializeCube(100.0, [this.m_texList[0]]);
         let box1: Box3DEntity = new Box3DEntity();
         box1.mouseEnabled = true;
         box1.setMesh(srcBox.getMesh());
-        box1.initialize(null, null, [this.m_texList[1]]);
+        box1.initializeCube(100.0, [this.m_texList[1]]);
         let box2: Box3DEntity = new Box3DEntity();
         box2.mouseEnabled = true;
         box2.setMesh(srcBox.getMesh());
-        box2.initialize(null, null, [this.m_texList[2]]);
+        box2.initializeCube(100.0, [this.m_texList[2]]);
         this.useEntityEvtDispatcher( box2 );
 
         //

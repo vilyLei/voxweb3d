@@ -27,7 +27,7 @@ class OcclusionPostOutlineShaderBuffer extends ShaderCodeBuffer {
 
         let coder = this.m_coder;
         
-        coder.addDiffuseMap();
+        this.m_uniform.addDiffuseMap();
         coder.addFragUniform("vec4", "u_texParam");
         coder.addFragUniform("vec4", "u_params", 3);
 

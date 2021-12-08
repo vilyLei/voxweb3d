@@ -19,7 +19,6 @@ class DepthShaderBuffer extends ShaderCodeBuffer
         super();
     }
     private static s_instance:DepthShaderBuffer = new DepthShaderBuffer();
-    private m_codeBuilder:ShaderCodeBuilder = new ShaderCodeBuilder();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -31,7 +30,7 @@ class DepthShaderBuffer extends ShaderCodeBuffer
     private buildThisCode():void
     {
 
-        let coder:ShaderCodeBuilder = this.m_codeBuilder;
+        let coder:ShaderCodeBuilder = this.m_coder;
         coder.reset();
         coder.addVertLayout("vec3","a_vs");
         
@@ -62,7 +61,7 @@ vec4 packDepthToRGBA( const in float v ) {
     {
         this.buildThisCode();
 
-        this.m_codeBuilder.addFragMainCode(
+        this.m_coder.addFragMainCode(
 `
 void main() {
     // Higher precision equivalent of gl_FragCoord.z. This assumes depthRange has been left to its default values.
@@ -72,11 +71,11 @@ void main() {
 `
                         );
         
-        return this.m_codeBuilder.buildFragCode();                    
+        return this.m_coder.buildFragCode();                    
     }
     getVertShaderCode():string
     {
-        this.m_codeBuilder.addVertMainCode(
+        this.m_coder.addVertMainCode(
 `
 void main() {
     vec4 wpos = u_objMat * vec4(a_vs, 1.0);
@@ -86,7 +85,7 @@ void main() {
 }
 `
                         );
-        return this.m_codeBuilder.buildVertCode();
+        return this.m_coder.buildVertCode();
 
     }
     getUniqueShaderName(): string

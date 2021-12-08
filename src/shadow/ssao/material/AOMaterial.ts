@@ -19,7 +19,6 @@ class AOShaderBuffer extends ShaderCodeBuffer
         super();
     }
     private static s_instance:AOShaderBuffer = new AOShaderBuffer();
-    private m_codeBuilder:ShaderCodeBuilder = new ShaderCodeBuilder();
     private m_uniqueName:string = "";
     samplesTotal: number = 8;
     initialize(texEnabled:boolean):void
@@ -32,7 +31,7 @@ class AOShaderBuffer extends ShaderCodeBuffer
     private buildThisCode():void
     {
 
-        let coder:ShaderCodeBuilder = this.m_codeBuilder;
+        let coder:ShaderCodeBuilder = this.m_coder;
         coder.reset();
 
         coder.addVertLayout("vec3","a_vs");
@@ -63,7 +62,7 @@ class AOShaderBuffer extends ShaderCodeBuffer
     {
         this.buildThisCode();
 
-        this.m_codeBuilder.addFragMainCode(
+        this.m_coder.addFragMainCode(
 `
 uniform vec3 u_aoSamples[AO_SamplesTotal];
 
@@ -148,11 +147,11 @@ void main()
 `
                         );
         
-        return this.m_codeBuilder.buildFragCode();                    
+        return this.m_coder.buildFragCode();                    
     }
     getVertShaderCode():string
     {
-        this.m_codeBuilder.addVertMainCode(
+        this.m_coder.addVertMainCode(
 `
 void main()
 {
@@ -161,7 +160,7 @@ void main()
 }
 `
                         );
-        return this.m_codeBuilder.buildVertCode();
+        return this.m_coder.buildVertCode();
 
     }
     getUniqueShaderName(): string

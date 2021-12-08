@@ -31,7 +31,7 @@ class ScreenPlaneShaderBuffer extends ShaderCodeBuffer {
         if (this.m_hasTex) {
             coder.mapLodEnabled = this.mapLodEnabled;
             coder.addVertLayout("vec2", "a_uvs");
-            coder.addDiffuseMap();
+            this.m_uniform.addDiffuseMap();
             coder.addVarying("vec2", "v_uv");
         }
         else {

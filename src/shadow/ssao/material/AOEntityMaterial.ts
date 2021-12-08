@@ -18,7 +18,6 @@ class AOEntityShaderBuffer extends ShaderCodeBuffer
         super();
     }
     private static s_instance:AOEntityShaderBuffer = new AOEntityShaderBuffer();
-    private m_codeBuilder:ShaderCodeBuilder = new ShaderCodeBuilder();
     private m_uniqueName:string = "";
     initialize(texEnabled:boolean):void
     {
@@ -30,7 +29,7 @@ class AOEntityShaderBuffer extends ShaderCodeBuffer
     private buildThisCode():void
     {
 
-        let coder:ShaderCodeBuilder = this.m_codeBuilder;
+        let coder:ShaderCodeBuilder = this.m_coder;
         coder.reset();
         //coder.vertMatrixInverseEnabled = true;
 
@@ -60,7 +59,7 @@ class AOEntityShaderBuffer extends ShaderCodeBuffer
     {
         this.buildThisCode();
 
-        this.m_codeBuilder.addFragMainCode(
+        this.m_coder.addFragMainCode(
 `
 void main() {
 
@@ -76,11 +75,11 @@ void main() {
 `
                         );
         
-        return this.m_codeBuilder.buildFragCode();                    
+        return this.m_coder.buildFragCode();                    
     }
     getVertShaderCode():string
     {
-        this.m_codeBuilder.addVertMainCode(
+        this.m_coder.addVertMainCode(
 `
 void main() {
 
@@ -94,7 +93,7 @@ void main() {
 }
 `
                         );
-        return this.m_codeBuilder.buildVertCode();
+        return this.m_coder.buildVertCode();
 
     }
     getUniqueShaderName(): string

@@ -42,11 +42,11 @@ class TerrainpShaderBuffer extends ShaderCodeBuffer {
             this.m_coder.addVarying("vec2", "v_uv");
             this.m_coder.addVarying("vec4", "v_param");
             // diffuse color 0
-            this.m_coder.addDiffuseMap();
+            this.m_uniform.addDiffuseMap();
             // diffuse color 1 and fog color
             if(this.fogEnabled) {
                 // diffuse color 1 and fog color
-                this.m_coder.addFogColorMap();
+                this.m_uniform.addFogColorMap();
             }
             
             // displace and color ao

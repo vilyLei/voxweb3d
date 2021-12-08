@@ -16,8 +16,6 @@ import IShaderCodeBuilder from "./IShaderCodeBuilder";
 import GLSLConverter from "./GLSLConverter";
 import ShaderCompileInfo from "./ShaderCompileInfo";
 import {ShaderCode, MathShaderCode} from "./ShaderCode";
-import { SpecularMode } from "../pipeline/SpecularMode";
-import { ShadowMode } from "../pipeline/ShadowMode";
 
 export default class ShaderCodeBuilder implements IShaderCodeBuilder {
 
@@ -71,16 +69,14 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
 
     private m_vertHeadCode: string = "";
     private m_vertMainCode: string = "";
-    // private m_vertMainCodeAppend: string = "";
-    // private m_vertMainCodePrepend: string = "";
     private m_fragHeadCode: string = "";
     private m_fragMainCode: string = "";
-    //private m_fragMainCodeAppend: string = "";
-    //private m_fragMainCodePrepend: string = "";
-    private m_uniqueNSKeyString: string = "";
-    private m_uniqueNSKeys: Uint16Array = new Uint16Array(128);
-    private m_uniqueNSKeysTotal: number = 10;
-    private m_uniqueNSKeyFlag: boolean = false;
+
+    // private m_uniqueNSKeyString: string = "";
+    // private m_uniqueNSKeys: Uint16Array = new Uint16Array(128);
+    // private m_uniqueNSKeysTotal: number = 10;
+    // private m_uniqueNSKeyFlag: boolean = false;
+
     private m_use2DMap: boolean = false;
     /**
      * 记录 shader 预编译信息
@@ -89,8 +85,6 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
 
     
     readonly uniform: IShaderCodeUniform;
-    // vertColorEnabled: boolean = false;
-    // premultiplyAlpha: boolean = false;
     mathDefineEanbled: boolean = true;
     normalEanbled: boolean = false;
     normalMapEanbled: boolean = false;
@@ -99,13 +93,13 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
     vertMatrixInverseEnabled: boolean = false;
     fragMatrixInverseEnabled: boolean = false;
 
-    constructor() {
+    constructor(uniform: IShaderCodeUniform) {
         let self: any = this;
-        self.uniform = new ShaderCodeUniform( this );
+        self.uniform = uniform;
     }
     
     getUniqueNSKeyID(): number {
-
+        /*
         if(this.m_uniqueNSKeyFlag) {
             let id: number = 31;
             for(let i: number = 0; i < this.m_uniqueNSKeysTotal; ++i) {
@@ -114,9 +108,11 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
             return id;
         }
         return 0;
+        //*/
+        return this.uniform.getUniqueNSKeyID();
     }
     getUniqueNSKeyString(): string {
-
+        /*
         if(this.m_uniqueNSKeyFlag) {
             this.m_uniqueNSKeyString = "[" + this.m_uniqueNSKeys[0];
             for(let i: number = 1; i < this.m_uniqueNSKeysTotal; ++i) {
@@ -126,6 +122,8 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
             return this.m_uniqueNSKeyString;
         }
         return "";
+        //*/
+        return this.uniform.getUniqueNSKeyString();
     }
     reset(): void {
         
@@ -147,8 +145,6 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         this.m_fragMainCode = "";
         //this.m_fragMainCodeAppend = "";
         //this.m_fragMainCodePrepend = "";
-
-        this.m_uniqueNSKeyString = "";
 
         this.m_vertExt = [];
         this.m_fragExt = [];
@@ -192,12 +188,14 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
 
         this.m_preCompileInfo = null;
 
-        if(this.m_uniqueNSKeyFlag) {
-            for(let i: number = 0; i < this.m_uniqueNSKeysTotal; ++i) {
-                this.m_uniqueNSKeys[i] = 0;
-            }
-            this.m_uniqueNSKeyFlag = false;
-        }
+        this.uniform.reset();
+        // this.m_uniqueNSKeyString = "";
+        // if(this.m_uniqueNSKeyFlag) {
+        //     for(let i: number = 0; i < this.m_uniqueNSKeysTotal; ++i) {
+        //         this.m_uniqueNSKeys[i] = 0;
+        //     }
+        //     this.m_uniqueNSKeyFlag = false;
+        // }
     }
     /**
      * 预编译信息
@@ -296,101 +294,6 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
     }
     useTexturePreciseHighp(): void {
         this.m_texturePrecise = "highp";
-    }
-    /**
-     * add diffuse map
-     */
-    addDiffuseMap(): void {
-        this.addTextureSample2D("VOX_DIFFUSE_MAP");
-        this.m_uniqueNSKeys[0] = 1;
-        this.m_uniqueNSKeyFlag = true;
-    }
-    /**
-     * add normal map
-     */
-    addNormalMap(): void {
-        this.addTextureSample2D("VOX_NORMAL_MAP");
-        this.m_uniqueNSKeys[1] = 1;
-        this.m_uniqueNSKeyFlag = true;
-    }
-    /**
-     * add parallax map
-     */
-    addParallaxMap(parallaxParamIndex: number): void {        
-        this.addTextureSample2D("VOX_PARALLAX_MAP");
-        if(parallaxParamIndex >= 0) {
-            this.addDefine("VOX_PARALLAX_PARAMS_INDEX", "" + parallaxParamIndex);
-            this.m_uniqueNSKeys[2] = 1 + (parallaxParamIndex << 1);
-        }
-        else {
-            this.m_uniqueNSKeys[2] = 1;
-        }
-        this.m_uniqueNSKeyFlag = true;
-    }
-    /**
-     * add displacement map
-     */
-    addDisplacementMap(): void {        
-        this.addTextureSample2D("VOX_DISPLACEMENT_MAP", true, false, true);
-        this.m_uniqueNSKeys[3] = 1;
-        this.m_uniqueNSKeyFlag = true;
-    }
-    
-    /**
-     * add ambient occlusion map
-     */
-    addAOMap(): void {
-        this.addTextureSample2D("VOX_AO_MAP");
-        this.m_uniqueNSKeys[4] = 1;
-        this.m_uniqueNSKeyFlag = true;
-    }
-    /**
-     * add specular map
-     */
-    addSpecularMap(specularMode: SpecularMode): void {
-        this.addTextureSample2D("VOX_SPECULAR_MAP");
-        this.addDefine("VOX_SPECULAR_MODE", "" + specularMode);
-        this.m_uniqueNSKeys[5] = 1 + (specularMode << 1);
-        this.m_uniqueNSKeyFlag = true;
-    }
-    /**
-     * add shadow map
-     */
-    addShadowMap(shadowMode: ShadowMode = ShadowMode.VSM): void {
-
-        this.addTextureSample2D("VOX_VSM_SHADOW_MAP", false);
-        this.m_uniqueNSKeys[6] = 1 + (shadowMode << 1);
-        this.m_uniqueNSKeyFlag = true;
-    }
-    /**
-     * add fog color map
-     */
-    addFogColorMap(): void {
-
-        this.addTextureSample2D("VOX_FOG_COLOR_MAP");
-        this.m_uniqueNSKeys[7] = 1;
-        this.m_uniqueNSKeyFlag = true;
-    }
-    /**
-     * add env cube map
-     */
-    addEnvMap(cubeMap: boolean = true): void {
-        if(cubeMap) {
-            this.addTextureSampleCube("VOX_ENV_MAP");
-        }
-        else {
-            this.addTextureSample2D("VOX_ENV_MAP");
-        }
-        this.m_uniqueNSKeys[8] = 1;
-        this.m_uniqueNSKeyFlag = true;
-    }
-    /**
-     * add roughness map
-     */
-    addRoughnessMap(): void {
-        this.addTextureSample2D("VOX_ROUGHNESS_MAP");
-        this.m_uniqueNSKeys[9] = 1;
-        this.m_uniqueNSKeyFlag = true;
     }
     
     addTextureSample2D(macroName: string = "", map2DEnabled: boolean = true, fragEnabled: boolean = true, vertEnabled: boolean = false): void {

@@ -13,6 +13,7 @@ import Color4 from "../Color4";
 import TextureProxy from "../../texture/TextureProxy";
 import { SpecularMode } from "./SpecularMode";
 import { LambertLightShaderCode } from "../mcase/glsl/LambertLightShaderCode";
+import { ShadowMode } from "./ShadowMode";
 
 class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
     private m_uniqueName: string = "";
@@ -44,21 +45,21 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
 
         if(map != null) {
             this.m_texList.push(map);
-            if(this.buildFlag) this.m_coder.addDiffuseMap();
+            if(this.buildFlag) this.m_uniform.addDiffuseMap();
         }
     }
     addNormalMap(map: TextureProxy): void {
 
         if(map != null && this.lightEnabled) {             
             this.m_texList.push(map);
-            if(this.buildFlag) this.m_coder.addNormalMap();
+            if(this.buildFlag) this.m_uniform.addNormalMap();
         }
     }
     addParallaxMap(map: TextureProxy): void {
 
         if(map != null && this.lightEnabled) {
             this.m_texList.push(map);
-            if(this.buildFlag) this.m_coder.addParallaxMap( this.parallaxParamIndex );
+            if(this.buildFlag) this.m_uniform.addParallaxMap( this.parallaxParamIndex );
         }
     }
 
@@ -66,7 +67,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
 
         if(map != null) {
             this.m_texList.push(map);
-            if(this.buildFlag) this.m_coder.addDisplacementMap();
+            if(this.buildFlag) this.m_uniform.addDisplacementMap();
         }
     }
 
@@ -74,7 +75,7 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
 
         if(map != null) {
             this.m_texList.push(map);
-            if(this.buildFlag) this.m_coder.addAOMap();
+            if(this.buildFlag) this.m_uniform.addAOMap();
         }
     }
 
@@ -82,14 +83,14 @@ class AdvancedShaderCodeBuffer extends ShaderCodeBuffer {
 
         if(map != null && this.lightEnabled) {
             this.m_texList.push(map);
-            if(this.buildFlag) this.m_coder.addSpecularMap(this.specularMode);
+            if(this.buildFlag) this.m_uniform.addSpecularMap(this.specularMode);
         }
     }
     addShadowMap(map: TextureProxy): void {
 
         if(map != null) {
             this.m_texList.push(map);
-            if(this.buildFlag) this.m_coder.addShadowMap();
+            if(this.buildFlag) this.m_uniform.addShadowMap(ShadowMode.VSM);
         }
     }
 

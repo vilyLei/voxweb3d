@@ -50,10 +50,10 @@ class RoadShaderBuffer extends ShaderCodeBuffer {
             coder.addVarying("vec4", "v_wpos");
 
             // diffuse color
-            coder.addDiffuseMap();
+            this.m_uniform.addDiffuseMap();
             if(this.fogEnabled) {
                 // fog color
-                coder.addFogColorMap();
+                this.m_uniform.addFogColorMap();
             }
         }
         coder.addFragOutput("vec4", "FragColor0");

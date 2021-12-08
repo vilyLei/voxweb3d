@@ -231,7 +231,7 @@ export default class MaterialBase implements IRenderMaterial {
         }
         else {
             if (this.m_shdData != null && this.m_shdData.getTexTotal() > 0) {
-                console.warn("this material texList is null, need " + this.m_shdData.getTexTotal() + " textures.");
+                console.warn("this material("+this.m_shdData.getUniqueShaderName()+") texList is null, need " + this.m_shdData.getTexTotal() + " textures.");
             }
         }
         return false;

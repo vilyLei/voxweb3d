@@ -8,14 +8,12 @@
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
-import ShaderCodeBuilder from "../../../vox/material/code/ShaderCodeBuilder";
 
 class HdrBrnCubeMapMapShaderBuffer extends ShaderCodeBuffer {
     constructor() {
         super();
     }
     private static s_instance: HdrBrnCubeMapMapShaderBuffer = null;
-    private m_codeBuilder:ShaderCodeBuilder = new ShaderCodeBuilder();
     private m_uniqueName: string = "";
     initialize(texEnabled: boolean): void {
         //console.log("HdrBrnCubeMapMapShaderBuffer::initialize()...");
@@ -25,7 +23,7 @@ class HdrBrnCubeMapMapShaderBuffer extends ShaderCodeBuffer {
     
     private buildThisCode():void
     {
-        let coder:ShaderCodeBuilder = this.m_codeBuilder;
+        let coder = this.m_coder;
         coder.reset();
         coder.vertMatrixInverseEnabled = true;
         coder.mapLodEnabled = true;
@@ -57,7 +55,7 @@ class HdrBrnCubeMapMapShaderBuffer extends ShaderCodeBuffer {
     getFragShaderCode(): string {
         this.buildThisCode();
         
-        this.m_codeBuilder.addFragMainCode(
+        this.m_coder.addFragMainCode(
 `
 
 // handy value clamping to 0 - 1 range
@@ -121,12 +119,12 @@ void main()
 }
 `
         );
-        return this.m_codeBuilder.buildFragCode();
+        return this.m_coder.buildFragCode();
     }
     getVertShaderCode(): string {
 
         
-        this.m_codeBuilder.addVertMainCode(
+        this.m_coder.addVertMainCode(
 `
 void main()
 {
@@ -138,7 +136,7 @@ void main()
 }
 `
         );
-        return this.m_codeBuilder.buildVertCode();
+        return this.m_coder.buildVertCode();
     }
     getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);

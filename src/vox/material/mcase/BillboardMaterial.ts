@@ -25,7 +25,7 @@ class BillboardShaderBuffer extends ShaderCodeBuffer {
         super.initialize(texEnabled);
         this.m_uniqueName = "BillboardShader";
         if(this.rotationEnabled) this.m_uniqueName += "Rot";        
-        this.m_coder.addDiffuseMap();
+        this.m_uniform.addDiffuseMap();
     }
     buildShader(): void {
         let coder = this.m_coder;

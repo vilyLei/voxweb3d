@@ -253,7 +253,7 @@
 
 //  import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
 
-//  import {DemoCameraWalkRoad as Demo} from "./demo/DemoCameraWalkRoad";
+import {DemoCameraWalkRoad as Demo} from "./demo/DemoCameraWalkRoad";
 
 // import {DemoCameraPath as Demo} from "./demo/DemoCameraPath";
 
@@ -357,7 +357,7 @@
 
 //  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
 
-import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
+//  import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
 
 //  import {DemoCookTorrance as Demo} from "./demo/DemoCookTorrance";
 

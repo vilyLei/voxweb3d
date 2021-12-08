@@ -151,7 +151,14 @@ export class DemoOutline {
         entity.setPosition(pos);
         entity.update();
 
-        this.m_postOutline.setTargetList( [entity] );
+        let box: Box3DEntity = new Box3DEntity();
+        box.initializeCube(100,[this.getImageTexByUrl("static/assets/default.jpg")]);
+        box.setXYZ(Math.random() * 360 - 180, 100, Math.random() * 360 - 180);
+        box.setRotationXYZ(Math.random() * 360, Math.random() * 360, Math.random() * 360);
+        box.setScaleXYZ(Math.random() + 0.5, Math.random() + 0.5, Math.random() + 0.5);
+        this.m_rscene.addEntity(box, 1);
+
+        this.m_postOutline.setTargetList( [entity, box] );
         //  this.m_postOutline.setFBOSizeScaleRatio(2.0);
         //  this.m_postOutline.setOutlineThickness(4.0);
         //this.m_postOutline.setRGB3f(2.0,0.0,2.0);
