@@ -14,8 +14,8 @@ import CameraTrack from "../vox/view/CameraTrack";
 import RendererScene from "../vox/scene/RendererScene";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
-import AdsLightMaterial from "../vox/material/mcase/AdsLightMaterial";
 import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
+import { MaterialContextParam, MaterialContextDebug } from "../materialLab/base/MaterialContextDebug";
 
 export class DemoAdsLight {
     constructor() { }
@@ -26,6 +26,7 @@ export class DemoAdsLight {
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
+    private m_materialCtx: MaterialContextDebug = new MaterialContextDebug();
 
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         return this.m_texLoader.getTexByUrl(purl,wrapRepeat,mipmapEnabled);
@@ -59,27 +60,57 @@ export class DemoAdsLight {
 
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
+            let mcParam: MaterialContextParam = new MaterialContextParam();
+            mcParam.pointLightsTotal = 2;
+            mcParam.directionLightsTotal = 1;
+            mcParam.spotLightsTotal = 2;
+            mcParam.vsmEnabled = false;
+            
+            this.m_materialCtx.initialize( this.m_rscene, mcParam);
+            
+            this.m_materialCtx.lightModule.update();
             //  let axis: Axis3DEntity = new Axis3DEntity();
             //  axis.initialize(500.0);
             //  this.m_rscene.addEntity(axis);
 
-            //let material: AdsLightMaterial = new AdsLightMaterial();
             let material: LambertLightMaterial = new LambertLightMaterial();
+            this.useMaps(material, "lava_03");
             // add common 3d display entity
             let plane: Plane3DEntity = new Plane3DEntity();
             plane.setMaterial(material);
-            plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0, [this.getImageTexByUrl("static/assets/broken_iron.jpg")]);
+            plane.initializeXOZ(-400.0, -400.0, 800.0, 800.0);
             this.m_rscene.addEntity(plane);
 
-            //material = new AdsLightMaterial();
             let sph: Sphere3DEntity = new Sphere3DEntity();
             sph.setMaterial(material);
-            sph.initialize(200.0, 20, 20, [this.getImageTexByUrl("static/assets/noise.jpg")]);
+            sph.initialize(200.0, 20, 20);
             sph.setXYZ(Math.random() * 600.0 - 300.0, Math.random() * 600.0 - 300.0, Math.random() * 600.0 - 300.0);
             this.m_rscene.addEntity(sph);
-
             this.update();
 
+        }
+    }
+    
+    private useMaps(material: LambertLightMaterial, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = false, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false, parallaxMapEnabled: boolean = false): void {
+        
+        material.setMaterialPipeline( this.m_materialCtx.pipeline );
+
+        if(material.diffuseMap == null)material.diffuseMap =           this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_COLOR.png");
+        material.specularMap =          this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_SPEC.png");
+        if(normalMapEnabled) {
+            material.normalMap =        this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_NRM.png");
+        }
+        if(aoMapEnabled) {
+            material.aoMap =            this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_OCC.png");
+        }
+        if(displacementMap) {
+            material.displacementMap =  this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
+        }
+        if(parallaxMapEnabled) {
+            material.parallaxMap =  this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
+        }
+        if(shadowReceiveEnabled) {
+            material.shadowMap =        this.m_materialCtx.vsmModule.getShadowMap();
         }
     }
     private mouseDown(evt: any): void {

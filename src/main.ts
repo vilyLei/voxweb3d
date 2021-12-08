@@ -146,13 +146,19 @@
 
 //  import {DemoSSAO2 as Demo} from "./shadow/ssao/DemoSSAO2";
 
-import {DemoSSAO3 as Demo} from "./shadow/ssao/DemoSSAO3";
+// import {DemoSSAO3 as Demo} from "./shadow/ssao/DemoSSAO3";
 
 //  import {DemoSSAO4 as Demo} from "./shadow/ssao/DemoSSAO4";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     light    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
+
+//  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
+
+import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
+
+//  import {DemoCookTorrance as Demo} from "./demo/DemoCookTorrance";
 
 //  import {DemoAdsLight as Demo} from "./demo/DemoAdsLight";
 
@@ -162,19 +168,13 @@ import {DemoSSAO3 as Demo} from "./shadow/ssao/DemoSSAO3";
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
-//  import {DemoModulePBR as Demo} from "./pbr/DemoModulePBR";
-
-//  import {DemoLightsPBR as Demo} from "./pbr/DemoLightsPBR";
-
-//  import {DemoDefaultPBR as Demo} from "./pbr/DemoDefaultPBR";
-
-//  import {DemoDefaultPBR2 as Demo} from "./pbr/DemoDefaultPBR2";
-
-//  import {DemoDefaultPBR3 as Demo} from "./pbr/DemoDefaultPBR3";
-
 //  import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
+
+//  import {DemoPBRDisplacement as Demo} from "./pbr/DemoPBRDisplacement";
+
+//  import {DemoRawDracoViewer as Demo} from "./pbr/DemoRawDracoViewer";
 
 ///////////////////////////////////////////////////////////////////////////////
 ///////////////////////////////     APP    ////////////////////////////////////
