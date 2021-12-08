@@ -8,9 +8,7 @@ import MouseEvent from "../vox/event/MouseEvent";
 import Stage3D from "../vox/display/Stage3D";
 import TextureResSlot from "../vox/texture/TextureResSlot";
 import CameraTrack from "../vox/view/CameraTrack";
-
-import * as DemoSceneT from "./texMana/DemoScene";
-import DemoScene = DemoSceneT.demo.texMama.DemoScene;
+import {DemoScene} from "./texMana/DemoScene";
 import CameraBase from "../vox/view/CameraBase";
 
 export class DemoGpuTexMana {

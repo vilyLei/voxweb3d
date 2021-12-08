@@ -21,12 +21,10 @@ import TextureBlock from "../vox/texture/TextureBlock";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 import DisplayEntityContainer from "../vox/entity/DisplayEntityContainer";
-import * as EntityDispT from "./base/EntityDisp";
 import DecayBrnParticle from "../particle/base/DecayBrnParticle";
-
-import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 import CameraBase from '../vox/view/CameraBase';
 
+import {EntityDispQueue} from "./base/EntityDispQueue";
 export class DemoContainer {
     constructor() { }
     private m_renderer: RendererInstance = null;
@@ -60,9 +58,7 @@ export class DemoContainer {
             this.m_renderer.initialize(rparam, new CameraBase());
             this.m_renderer.appendProcess();
             this.m_rcontext = this.m_renderer.getRendererContext();
-            //DecayBrnParticle.renderer = this.m_renderer;
-            //  let stage3D:Stage3D = this.m_rcontext.getStage3D() as Stage3D;
-            //  stage3D.addEventListener(MouseEvent.MOUSE_DOWN,this,this.mouseDownListener);
+            
             this.m_camTrack = new CameraTrack();
             this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 

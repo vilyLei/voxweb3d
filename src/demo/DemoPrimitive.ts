@@ -22,11 +22,9 @@ import TextureBlock from "../vox/texture/TextureBlock";
 import ImageTextureLoader from "../vox/texture/ImageTextureLoader";
 import CameraTrack from "../vox/view/CameraTrack";
 
-import * as EntityDispT from "./base/EntityDisp";
-
-import EntityDispQueue = EntityDispT.demo.base.EntityDispQueue;
 import ImageTextureProxy from "../vox/texture/ImageTextureProxy";
 import CameraBase from "../vox/view/CameraBase";
+import {EntityDispQueue} from "./base/EntityDispQueue";
 
 export class DemoPrimitive {
     constructor() { }

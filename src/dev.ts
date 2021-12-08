@@ -21,19 +21,11 @@
 ////////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-//  import * as FixProjMotion from "./motionDemo/FixProjMotion";
-//  import Demo = FixProjMotion.motionDemo.FixProjMotion;
-
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-////////////////////////////////////////////////////////////////////////////////
-
 //  import {DemoQuadLine as Demo} from "./demo/DemoQuadLine";
 
 //  import {DemoObjModel as Demo} from "./demo/DemoObjModel";
 
-//  import * as DemoTexture from "./demo/DemoTexture";
-//  import Demo = DemoTexture.demo.DemoTexture;
+//  import {DemoTexture as Demo} from "./demo/DemoTexture";
 
 //  import * as DemoCamVisibleTest from "./demo/DemoCamVisibleTest";
 //  import Demo = DemoCamVisibleTest.demo.DemoCamVisibleTest;
@@ -59,14 +51,7 @@
 //  import * as DemoRayTest from "./demo/DemoRayTest";
 //  import Demo = DemoRayTest.demo.DemoRayTest;
 
-//  import * as DemoSubScene from "./demo/DemoSubScene";
-//  import Demo = DemoSubScene.demo.DemoSubScene;
-
-//  import * as DemoScene from "./demo/DemoScene";
-//  import Demo = DemoScene.demo.DemoScene;
-
-//  import * as DemoSphScreenRect from "./demo/DemoSphScreenRect";
-//  import Demo = DemoSphScreenRect.demo.DemoSphScreenRect;
+//  import {DemoSphScreenRect as Demo} from "./demo/DemoSphScreenRect";
 
 //  import * as DemoGeom from "./demo/DemoGeom";
 //  import Demo = DemoGeom.demo.DemoGeom;
@@ -93,8 +78,7 @@
 
 //  import {DemoDepthBlur as Demo} from "./demo/DemoDepthBlur";
 
-//  import * as DemoDepthBlur2 from "./demo/DemoDepthBlur2";
-//  import Demo = DemoDepthBlur2.demo.DemoDepthBlur2;
+//  import {DemoDepthBlur2 as Demo} from "./demo/DemoDepthBlur2";
 
 //  import {DemoDepthTex as Demo} from "./demo/DemoDepthTex";
 
@@ -142,8 +126,7 @@
 
 //  import {DemoDeepTransparent as Demo} from "./demo/DemoDeepTransparent";
 
-//  import * as DemoGpuVtxMana from "./demo/DemoGpuVtxMana";
-//  import Demo = DemoGpuVtxMana.demo.DemoGpuVtxMana;
+//  import {DemoGpuVtxMana as Demo} from "./demo/DemoGpuVtxMana";
 
 //  import {DemoGpuTexMana as Demo} from "./demo/DemoGpuTexMana";
 
@@ -176,26 +159,9 @@
 
 //  import {DemoParticleClips as Demo} from "./demo/DemoParticleClips";
 
-//  import {DemoContainer as Demo} from "./demo/DemoContainer";
-
-//  import * as DemoContainerTransform from "./demo/DemoContainerTransform";
-//  import Demo = DemoContainerTransform.demo.DemoContainerTransform;
-
-//  import * as DemoFontText from "./demo/DemoFontText";
-//  import Demo = DemoFontText.demo.DemoFontText;
-
-//  import * as DemoDivControl from "./demo/DemoDivControl";
-//  import Demo = DemoDivControl.demo.DemoDivControl;
+//  import {DemoFontText as Demo} from "./demo/DemoFontText";
 
 //  import {DemoLockDrawEntity as Demo} from "./demo/DemoLockDrawEntity";
-
-//  import {DemoEmptyRenderer as Demo} from "./demo/DemoEmptyRenderer";
-
-//  import {DemoEmptyRendererScene as Demo} from "./demo/DemoEmptyRendererScene";
-
-//  import {DemoEngine as Demo} from "./demo/DemoEngine";
-
-//  import {DemoAPlane as Demo} from "./demo/DemoAPlane";
 
 //  import {DemoPrimitive as Demo} from "./demo/DemoPrimitive";
 
@@ -203,7 +169,7 @@
 
 //  import {DemoVSTexture as Demo} from "./demo/DemoVSTexture";
 
-import {DemoVSTexturePos as Demo} from "./demo/DemoVSTexturePos";
+//  import {DemoVSTexturePos as Demo} from "./demo/DemoVSTexturePos";
 
 //  import {DemoFloatTex as Demo} from "./demo/DemoFloatTex";
 
@@ -215,11 +181,6 @@ import {DemoVSTexturePos as Demo} from "./demo/DemoVSTexturePos";
 //  import * as DemoBoxGroupTrack from "./demo/DemoBoxGroupTrack";
 //  import Demo = DemoBoxGroupTrack.demo.DemoBoxGroupTrack;
 
-//  import * as DemoFaceDirec from "./demo/DemoFaceDirec";
-//  import Demo = DemoFaceDirec.demo.DemoFaceDirec;
-
-//  import {DemoMotion as Demo} from "./demo/DemoMotion";
-
 //  import {DemoMixProgress as Demo} from "./demo/DemoMixProgress";
 
 //  import {DemoRenderSort as Demo} from "./demo/DemoRenderSort";
@@ -229,14 +190,6 @@ import {DemoVSTexturePos as Demo} from "./demo/DemoVSTexturePos";
 //  import {DemoOrtho as Demo} from "./demo/DemoOrtho";
 
 //  import {DemoMouseEvent as Demo} from "./demo/DemoMouseEvent";
-
-//  import {DemoMultiRendererScene as Demo} from "./demo/DemoMultiRendererScene";
-
-//  import {DemoMultiRendererScene2 as Demo} from "./demo/DemoMultiRendererScene2";
-
-//  import {DemoMultiGpuContext as Demo} from "./demo/DemoMultiGpuContext";
-
-//  import {DemoMultiRenderer as Demo} from "./demo/DemoMultiRenderer";
 
 //  import {DemoOrthoSubScene as Demo} from "./demo/DemoOrthoSubScene";
 
@@ -284,6 +237,19 @@ import {DemoVSTexturePos as Demo} from "./demo/DemoVSTexturePos";
 
 //  import {DemoCamera as Demo} from "./demo/DemoCamera";
 
+//  import {DemoMatNavAstarThread as Demo} from "./demo/DemoMatNavAstarThread";
+
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////
+
+//  import {FixProjMotion as Demo} from "./motionDemo/FixProjMotion";
+
+//  import {DemoMotion as Demo} from "./demo/DemoMotion";
+
+// physic force simulation
+//  import {DemoBase as Demo} from "./voxmotion/DemoBase";
+
 //  import {DemoCameraRoaming as Demo} from "./demo/DemoCameraRoaming";
 
 //  import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
@@ -292,23 +258,53 @@ import {DemoVSTexturePos as Demo} from "./demo/DemoVSTexturePos";
 
 // import {DemoCameraPath as Demo} from "./demo/DemoCameraPath";
 
-//  import {DemoMatNavAstarThread as Demo} from "./demo/DemoMatNavAstarThread";
-
 ///////////////////////////////////////////////////////////////////////////////
-////////////////////////////   transform    ///////////////////////////////////
+////////////////////////////   morph    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 //  import {DemoFlexMesh as Demo} from "./demo/DemoFlexMesh";
 
 //  import {DemoFlexPipe as Demo} from "./demo/DemoFlexPipe";
 
+//  import {DemoFaceDirec as Demo} from "./demo/DemoFaceDirec";
+
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   transform    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+//  import {DemoContainer as Demo} from "./demo/DemoContainer";
+
+//  import {DemoContainerTransform as Demo}  from "./demo/DemoContainerTransform";
+
 //  import {DemoEntityBounds as Demo} from "./demo/DemoEntityBounds";
 
 //  import {DemoTransFromTex as Demo} from "./demo/DemoTransFromTex";
+
+///////////////////////////////////////////////////////////////////////////////
+////////////////////////////   renderer    ///////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+//  import {DemoEmptyRenderer as Demo} from "./demo/DemoEmptyRenderer";
+
+//  import {DemoEmptyRendererScene as Demo} from "./demo/DemoEmptyRendererScene";
+
+//  import {DemoEngine as Demo} from "./demo/DemoEngine";
+
+import {DemoAPlane as Demo} from "./demo/DemoAPlane";
+
+//  import {DemoScene as Demo} from "./demo/DemoScene";
+
+//  import {DemoSubScene as Demo} from "./demo/DemoSubScene";
+
+//  import {DemoDivControl as Demo} from "./demo/DemoDivControl";
+
+//  import {DemoMultiRendererScene as Demo} from "./demo/DemoMultiRendererScene";
+
+//  import {DemoMultiRendererScene2 as Demo} from "./demo/DemoMultiRendererScene2";
+
+//  import {DemoMultiGpuContext as Demo} from "./demo/DemoMultiGpuContext";
+
+//  import {DemoMultiRenderer as Demo} from "./demo/DemoMultiRenderer";
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -337,12 +333,6 @@ import {DemoVSTexturePos as Demo} from "./demo/DemoVSTexturePos";
 //  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
 
 //  import {DemoOutline as Demo} from "./demo/DemoOutline";
-
-///////////////////////////////////////////////////////////////////////////////
-/////////////////////////////     motion    ///////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
-//  import {DemoBase as Demo} from "./voxmotion/DemoBase";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////

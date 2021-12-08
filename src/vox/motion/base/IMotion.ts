@@ -7,28 +7,18 @@
 
 import Vector3D from "../../../vox/math/Vector3D";
 
-//import Vector3D = Vector3DT.vox.math.Vector3D;
+/**
+ * 运动轨迹控制的接口
+ * 
+ * @author Vily
+ */
+interface IMotion {
 
-export namespace vox
-{
-    export namespace motion
-    {
-        export namespace base
-        {
-			/**
-			 * 运动轨迹控制的接口
-			 * 
-			 * @author Vily
-			 */
-			export interface IMotion
-			{
-				
-				isMoving():boolean;
-				
-				isArrived():boolean;
-				run():void
-				getSpdV(outV:Vector3D):void;
-			}
-		}
-	}
+	isMoving(): boolean;
+
+	isArrived(): boolean;
+	run(): void
+	getSpdV(outV: Vector3D): void;
 }
+
+export { IMotion }
