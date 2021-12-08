@@ -18,6 +18,7 @@ class ShaderCodeBuffer {
     private static __$s_csBuf: ShaderCodeBuffer = null;
     protected static s_coder: ShaderCodeBuilder = new ShaderCodeBuilder();
     protected m_coder: ShaderCodeBuilder = null;
+    protected m_shaderCodeObj: IShaderCodeObject = null;
 
     protected m_texList: IRenderTexture[] = null;
     protected m_texEnabled: boolean = true;
@@ -56,8 +57,11 @@ class ShaderCodeBuffer {
     clear(): void {
         this.m_coder = null;
     }
+    setShaderCodeObject(obj: IShaderCodeObject): void {
+        this.m_shaderCodeObj = obj;
+    }
     getShaderCodeObject(): IShaderCodeObject {
-        return null;
+        return this.m_shaderCodeObj;
     }
     getShaderCodeObjectUUID(): ShaderCodeUUID {
         return ShaderCodeUUID.None;

@@ -21,7 +21,8 @@ import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEnti
 
 import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
 import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
-import { MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
+//  import { MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
+import { MaterialContext, MaterialContextDebug, MaterialContextParam } from "../materialLab/base/MaterialContextDebug";
 
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 
@@ -38,7 +39,7 @@ export class DemoNormalMap {
 
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
-    private m_materialCtx: MaterialContext = new MaterialContext();
+    private m_materialCtx: MaterialContextDebug = new MaterialContextDebug();
     private m_target: DisplayEntity = null;
     private m_pointLight: PointLight = null;
 
