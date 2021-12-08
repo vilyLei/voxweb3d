@@ -100,8 +100,8 @@ export class DemoNormalMap {
             let sph02: Sphere3DEntity = new Sphere3DEntity();            
             sph02.pipeTypes = [MaterialPipeType.FOG_EXP2];
             sph02.setMaterialPipeline( this.m_materialCtx.pipeline );
-            sph02.initialize(50, 20, 20, [this.m_materialCtx.getTextureByUrl("static/assets/color_02.jpg")]);
-            sph02.setXYZ(-200,50,200);
+            sph02.initialize(30, 20, 20, [this.m_materialCtx.getTextureByUrl("static/assets/color_02.jpg")]);
+            sph02.setXYZ(-350,-170,350);
             this.m_engine.rscene.addEntity(sph02);
 
 

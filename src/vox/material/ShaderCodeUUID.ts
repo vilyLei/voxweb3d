@@ -3,7 +3,8 @@
  */
 enum ShaderCodeUUID {
     None = "",
-    Default = "lambert",
+    Default = "pbr",
+    Lambert = "lambert",
     PBR = "pbr"
 }
 

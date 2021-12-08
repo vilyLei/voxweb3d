@@ -116,7 +116,7 @@ export class DemoPBRViewer implements IShaderLibListener {
         loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
         this.m_envMap = loader.texture;
 
-        let libConfig: IShaderLibConfigure = {shaderCodeConfigures:[]};
+        let libConfig = this.m_materialCtx.createShaderLibConfig();
         let configure = new ShaderCodeConfigure();
         configure.uuid = ShaderCodeUUID.PBR;
         configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];

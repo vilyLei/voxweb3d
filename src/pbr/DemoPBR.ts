@@ -16,7 +16,7 @@ import DefaultPBRUI from "./mana/DefaultPBRUI";
 import DebugFlag from "../vox/debug/DebugFlag";
 import PBRScene from "./mana/PBRScene";
 import OcclusionPostOutline from "../renderingtoy/mcase/outline/OcclusionPostOutline";
-import RendererState from "../vox/render/RendererState";
+
 import { IShaderLibConfigure, ShaderCodeType, ShaderCodeUUID, ShaderCodeConfigure, IShaderLibListener, MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
 
 export class DemoPBR implements IShaderLibListener {
@@ -84,7 +84,7 @@ export class DemoPBR implements IShaderLibListener {
 
             //this.m_profileInstance.initialize(this.m_rscene.getRenderer());
 
-            let libConfig: IShaderLibConfigure = {shaderCodeConfigures:[]};
+            let libConfig: IShaderLibConfigure = this.m_materialCtx.createShaderLibConfig();
             let configure = new ShaderCodeConfigure();
             configure.uuid = ShaderCodeUUID.PBR;
             configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];

@@ -80,7 +80,9 @@ class MaterialContext {
         }
         return tex;
     }
-
+    createShaderLibConfig(): IShaderLibConfigure {
+        return {shaderCodeConfigures:[]};
+    }
     initialize(rscene: RendererScene, param: MaterialContextParam = null, shaderLibConfigure: IShaderLibConfigure = null): void {
 
         if (this.m_initFlag) {

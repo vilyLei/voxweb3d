@@ -9,13 +9,20 @@ import { FileIO } from "../../app/slickRoad/io/FileIO";
 class ShaderCodeConfigureLib {
 
     private m_map: Map<ShaderCodeUUID, ShaderCodeConfigure> = new Map();
+    private m_uuidList: ShaderCodeUUID[] = [];
     constructor() {
     }
     addConfigureWithUUID(uuid: ShaderCodeUUID, configure: ShaderCodeConfigure): void {
-        this.m_map.set(uuid, configure);
+        if(uuid != "" && !this.m_map.has(uuid)) {
+            this.m_map.set(uuid, configure);
+            this.m_uuidList.push( uuid );
+        }
     }
     getConfigureWithUUID(uuid: ShaderCodeUUID): ShaderCodeConfigure {
         return this.m_map.get(uuid);
+    }
+    getUUIDList(): ShaderCodeUUID[] {
+        return this.m_uuidList;
     }
 }
 class ShaderCodeObjectLoader {
@@ -201,7 +208,11 @@ class ShaderLib implements IShaderLib{
         }
     }
     addAllShaderCodeObject(): void {
-        this.addShaderCodeObjectWithUUID(ShaderCodeUUID.PBR);
+        // this.addShaderCodeObjectWithUUID(ShaderCodeUUID.PBR);
+        let uuidList: ShaderCodeUUID[] = this.m_configLib.getUUIDList();
+        for(let i: number = 0; i < uuidList.length; ++i) {
+            this.addShaderCodeObjectWithUUID(uuidList[i]);
+        }
     }
     addShaderCodeObjectWithUUID(uuid: ShaderCodeUUID): void {
 
