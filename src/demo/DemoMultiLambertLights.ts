@@ -30,7 +30,7 @@ import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import { PointLight } from "../light/base/PointLight";
 import Matrix4 from "../vox/math/Matrix4";
 import { ILightEntity } from "./light/ILightEntity";
-import { FloatYPointLightEntity, PointLightEntity } from "./light/PointLightEntity";
+import { RotateYPointLightEntity, FloatYPointLightEntity, PointLightEntity } from "./light/PointLightEntity";
 
 export class DemoMultiLambertLights implements IShaderLibListener {
 
@@ -85,7 +85,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         libConfig.shaderCodeConfigures.push( configure );
 
         let mcParam: MaterialContextParam = new MaterialContextParam();
-        mcParam.pointLightsTotal = 1;
+        mcParam.pointLightsTotal = 3;
         mcParam.directionLightsTotal = 0;
         mcParam.spotLightsTotal = 0;
         //mcParam.vsmEnabled = false;
@@ -101,8 +101,46 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         pointLight.color.setRGB3f(1.0, 1.0, 1.0);
         pointLight.attenuationFactor1 = 0.00001;
         pointLight.attenuationFactor2 = 0.000001;
-        this.m_materialCtx.lightModule.update();
+        
+        let floatPointLight: FloatYPointLightEntity = new FloatYPointLightEntity();
+        floatPointLight.center.copyFrom(pointLight.position);
+        floatPointLight.center.y = 60.0;
+        floatPointLight.position.copyFrom(pointLight.position);
+        floatPointLight.light = pointLight;
+        floatPointLight.displayEntity = this.createPointLightDisp(pointLight);
+        this.m_lightEntities.push(floatPointLight);
 
+        let rotLightEntity: RotateYPointLightEntity;
+        pointLight = this.m_materialCtx.lightModule.getPointLightAt(1);
+        pointLight.color.setRGB3f(1.0,0.0,0.0);
+        pointLight.attenuationFactor1 = 0.00001;
+        pointLight.attenuationFactor2 = 0.000001;
+        rotLightEntity = new RotateYPointLightEntity(Math.random() * 10.0);
+        rotLightEntity.rotationSpd = 0.01;
+        rotLightEntity.radius = 230.0;
+        rotLightEntity.center.copyFrom(this.m_pos01);
+        rotLightEntity.center.y += 20.0;
+        rotLightEntity.light = pointLight;
+        rotLightEntity.displayEntity = this.createPointLightDisp(pointLight);
+        this.m_lightEntities.push(rotLightEntity);
+
+        
+        pointLight = this.m_materialCtx.lightModule.getPointLightAt(2);
+        pointLight.color.setRGB3f(0.0,1.0,1.0);
+        pointLight.attenuationFactor1 = 0.00001;
+        pointLight.attenuationFactor2 = 0.000001;
+        rotLightEntity = new RotateYPointLightEntity(Math.random() * 10.0);
+        rotLightEntity.rotationSpd = 0.01;
+        rotLightEntity.radius = 230.0;
+        rotLightEntity.center.copyFrom(this.m_pos02);
+        rotLightEntity.center.y += 20.0;
+        rotLightEntity.light = pointLight;
+        rotLightEntity.displayEntity = this.createPointLightDisp(pointLight);
+        this.m_lightEntities.push(rotLightEntity);
+        
+        this.m_materialCtx.lightModule.update();
+    }
+    private createPointLightDisp(pointLight: PointLight): Billboard3DEntity {
         let billboard: Billboard3DEntity = new Billboard3DEntity();
         billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
         billboard.setMaterialPipeline( this.m_materialCtx.pipeline );
@@ -111,18 +149,10 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         billboard.setPosition(pointLight.position);
         billboard.setRGB3f(pointLight.color.r, pointLight.color.g, pointLight.color.b);
         this.m_engine.rscene.addEntity(billboard, 3);
-        
-        let floatPointLight: FloatYPointLightEntity = new FloatYPointLightEntity();
-        floatPointLight.center.copyFrom(pointLight.position);
-        floatPointLight.center.y = 60.0;
-        floatPointLight.position.copyFrom(pointLight.position);
-        floatPointLight.light = pointLight;
-        floatPointLight.displayEntity = billboard;
-        this.m_lightEntities.push(floatPointLight);
+        return billboard;
     }
-    private m_mat4: Matrix4 = new Matrix4();
-    private m_center0: Vector3D = new Vector3D();
-    private m_center1: Vector3D = new Vector3D();
+    private m_pos01: Vector3D = new Vector3D(-150.0, 100.0, -170.0);
+    private m_pos02: Vector3D = new Vector3D(150,0.0,150);
     private initScene(): void {
 
         let color: Color4 = new Color4(1.0,1.0,0.0);
@@ -173,8 +203,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         let sph: Sphere3DEntity = new Sphere3DEntity();
         sph.setMaterial(material);
         sph.initialize(150.0,100,100);
-        this.m_center0.setXYZ(-150.0, 100.0, -170.0);
-        sph.setPosition( this.m_center0 );
+        //this.m_pos01.setXYZ(-150.0, 100.0, -170.0);
+        sph.setPosition( this.m_pos01 );
         sph.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
         this.m_engine.rscene.addEntity(sph);
         let srcEntity: DisplayEntity = sph;
@@ -196,8 +226,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         sph = new Sphere3DEntity();
         sph.copyMeshFrom(srcEntity);
         sph.setMaterial(material);
-        this.m_center1.setXYZ(150,0.0,150);
-        sph.setPosition( this.m_center1 );
+        //this.m_pos02.setXYZ(150,0.0,150);
+        sph.setPosition( this.m_pos02 );
         sph.setRotationXYZ(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
         this.m_engine.rscene.addEntity(sph);
         //*/

@@ -3,6 +3,7 @@ import {ILightEntity} from "./ILightEntity";
 import { PointLight } from "../../light/base/PointLight";
 import Vector3D from "../../vox/math/Vector3D";
 import DisplayEntity from "../../vox/entity/DisplayEntity";
+import Matrix4 from "../../vox/math/Matrix4";
 
 class PointLightEntity implements ILightEntity {
     light: PointLight;
@@ -33,4 +34,32 @@ class FloatYPointLightEntity extends PointLightEntity {
         }        
     }
 }
-export {FloatYPointLightEntity, PointLightEntity}
+
+class RotateYPointLightEntity extends PointLightEntity {
+
+    private m_rad: number = 0.0;
+    radius: number = 200.0;
+    rotationSpd: number = 0.05;
+    constructor(rad: number) {
+        super();
+        this.m_rad = rad;
+    }
+    run(): void {
+
+        this.m_rad += this.rotationSpd;
+        this.position.y = 0.0;
+        this.position.x = this.radius * Math.cos(this.m_rad);
+        this.position.z = this.radius * Math.sin(this.m_rad);
+        this.position.addBy( this.center );
+        if(this.displayEntity != null) {
+            this.displayEntity.setPosition( this.position );
+            this.displayEntity.update();
+        }
+        if(this.light != null) {
+            this.light.position.copyFrom(this.position);
+        }        
+    }
+    
+}
+
+export {RotateYPointLightEntity, FloatYPointLightEntity, PointLightEntity}
