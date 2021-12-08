@@ -23,6 +23,7 @@ export default class Box3DEntity extends DisplayEntity {
     private m_maxV: Vector3D = new Vector3D(50.0, 50.0, 50.0);
     private m_transMatrix: Matrix4 = null;
     private m_currMesh: Box3DMesh = null;
+    private m_initFlag: boolean = true;
 
     uScale: number = 1.0;
     vScale: number = 1.0;
@@ -55,7 +56,7 @@ export default class Box3DEntity extends DisplayEntity {
     
     private initializeThis(texList: TextureProxy[]): void {
 
-        if(this.getMesh() == null || this.getMaterial() == null) {
+        if(this.getMesh() == null || this.getMaterial() == null || this.m_initFlag) {
             this.createMaterial(texList);
             this.activeDisplay();
         }
@@ -65,6 +66,7 @@ export default class Box3DEntity extends DisplayEntity {
                 mesh.initialize(this.m_minV, this.m_maxV);
             }
         }
+        this.m_initFlag = false;
     }
     showBackFace(): void {
         this.setRenderState(RendererState.BACK_CULLFACE_NORMAL_STATE);
@@ -169,6 +171,11 @@ export default class Box3DEntity extends DisplayEntity {
         if (this.m_currMesh != null) {
             this.m_currMesh.getFaceCenterAt(i, outV);
         }
+    }
+    destroy(): void {
+        super.destroy();
+        this.m_currMesh = null;
+        this.m_initFlag = true;
     }
     toString(): string {
         return "[Box3DEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")";

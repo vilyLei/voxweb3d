@@ -116,14 +116,12 @@ export class DemoSSAO3 implements DracoTaskListener {
     private initSceneObjs(): void {
 
         let aoTex: RTTTextureProxy = this.m_blurModule.getDstTexture();
-        //let aoTex: RTTTextureProxy = this.m_aoFBO.getRTTAt(0);
-
+        
         let plane: Plane3DEntity = new Plane3DEntity();
         plane.setMaterial( new AOEntityMaterial() );
         plane.initializeXOZSquare(1600.0, [this.getImageTexByUrl("static/assets/wood_01.jpg"), aoTex]);
         this.m_rscene.addEntity(plane);
-        //return;
-        ///*
+        
         let box: Box3DEntity = new Box3DEntity();
         box.setMaterial( new AOEntityMaterial() );
         box.initializeCube(300.0, [this.getImageTexByUrl("static/assets/box_wood01.jpg"), aoTex]);
@@ -142,8 +140,7 @@ export class DemoSSAO3 implements DracoTaskListener {
             this.m_rscene.addEntity(box);
 
         }
-        //*/
-
+        
         let textures:TextureProxy[] = [];
         textures.push( this.getImageTexByUrl("static/assets/guangyun_H_0007.png") );
         textures.push(this.getImageTexByUrl("static/assets/flare_core_01.jpg"));

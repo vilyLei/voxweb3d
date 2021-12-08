@@ -253,7 +253,7 @@
 
 //  import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
 
-import {DemoCameraWalkRoad as Demo} from "./demo/DemoCameraWalkRoad";
+//  import {DemoCameraWalkRoad as Demo} from "./demo/DemoCameraWalkRoad";
 
 // import {DemoCameraPath as Demo} from "./demo/DemoCameraPath";
 
@@ -347,7 +347,7 @@ import {DemoCameraWalkRoad as Demo} from "./demo/DemoCameraWalkRoad";
 
 //  import {DemoSSAO2 as Demo} from "./shadow/ssao/DemoSSAO2";
 
-//  import {DemoSSAO3 as Demo} from "./shadow/ssao/DemoSSAO3";
+import {DemoSSAO3 as Demo} from "./shadow/ssao/DemoSSAO3";
 
 //  import {DemoSSAO4 as Demo} from "./shadow/ssao/DemoSSAO4";
 
