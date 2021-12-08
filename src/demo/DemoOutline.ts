@@ -88,7 +88,6 @@ export class DemoOutline {
             this.m_postOutline.setOutlineDensity(2.5);
             this.m_postOutline.setOcclusionDensity(0.2);
             
-            
             this.initPlaneReflection();
 
             this.update();
@@ -340,13 +339,13 @@ export class DemoOutline {
             this.m_rscene.runAt(1);
             this.m_rscene.runAt(2);
 
-            
             this.m_postOutline.drawBegin();
             this.m_postOutline.draw();
             //this.m_postOutline.drawTest();
             this.m_postOutline.drawEnd();
 
-            //this.m_rscene.runAt(3);
+            // this.m_rscene.runAt(3);
+            // this.m_rscene.runAt(4);
 
             this.m_rscene.runEnd();
         }

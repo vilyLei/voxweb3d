@@ -146,8 +146,6 @@ export default class Box3DEntity extends DisplayEntity {
             mesh.uvPartsNumber = this.uvPartsNumber;
             mesh.setBufSortFormat(material.getBufSortFormat());
             mesh.initialize(this.m_minV, this.m_maxV);
-            this.m_minV = null;
-            this.m_maxV = null;
             this.setMesh(mesh);
             mesh.setTransformMatrix(null);
         }

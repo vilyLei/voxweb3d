@@ -331,7 +331,7 @@
 //  The reflection in water
 //  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
 
-//  import {DemoOutline as Demo} from "./demo/DemoOutline";
+import {DemoOutline as Demo} from "./demo/DemoOutline";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////
@@ -347,7 +347,7 @@
 
 //  import {DemoSSAO2 as Demo} from "./shadow/ssao/DemoSSAO2";
 
-import {DemoSSAO3 as Demo} from "./shadow/ssao/DemoSSAO3";
+//  import {DemoSSAO3 as Demo} from "./shadow/ssao/DemoSSAO3";
 
 //  import {DemoSSAO4 as Demo} from "./shadow/ssao/DemoSSAO4";
 
