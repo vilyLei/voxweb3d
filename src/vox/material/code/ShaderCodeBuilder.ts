@@ -404,11 +404,12 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
     private autoBuildHeadCode(): void {
 
         this.addVertLayout("vec3", "a_vs");
-        if(this.m_use2DMap) {
+        if(this.m_use2DMap || this.m_vertLayoutNames.includes("a_uvs")) {
             this.addVertLayout("vec2", "a_uvs");
             this.addVarying("vec2", "v_uv");
         }
-        if(this.normalEanbled || this.normalMapEanbled) {
+        
+        if(this.normalEanbled || this.normalMapEanbled || this.m_vertLayoutNames.includes("a_nvs")) {
             this.addVertLayout("vec3", "a_nvs");
             this.addVarying("vec3", "v_worldNormal");
             this.addVarying("vec3", "v_worldPosition");

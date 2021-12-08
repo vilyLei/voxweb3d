@@ -21,6 +21,7 @@ class ShaderCodeBuffer {
     protected static s_uniform: ShaderCodeUniform;
     protected m_coder: ShaderCodeBuilder = null;
     protected m_uniform: ShaderCodeUniform;
+    protected m_texture: ShaderCodeUniform;
     protected m_shaderCodeObj: IShaderCodeObject = null;
 
     protected m_texList: IRenderTexture[] = null;
@@ -53,6 +54,8 @@ class ShaderCodeBuffer {
 
         this.m_coder = ShaderCodeBuffer.s_coder;
         this.m_uniform = ShaderCodeBuffer.s_uniform;
+        this.m_texture = this.m_uniform;
+        
         this.m_coder.reset();
         this.m_texList = null;
         this.pipeTypes = null;

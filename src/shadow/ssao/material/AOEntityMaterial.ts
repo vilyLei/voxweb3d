@@ -11,56 +11,35 @@ import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import UniformConst from "../../../vox/material/UniformConst";
 import MaterialBase from "../../../vox/material/MaterialBase";
 
-class AOEntityShaderBuffer extends ShaderCodeBuffer
-{
-    constructor()
-    {
+class AOEntityShaderBuffer extends ShaderCodeBuffer {
+    constructor() {
         super();
     }
-    private static s_instance:AOEntityShaderBuffer = new AOEntityShaderBuffer();
-    private m_uniqueName:string = "";
-    initialize(texEnabled:boolean):void
-    {
+    private static s_instance: AOEntityShaderBuffer = new AOEntityShaderBuffer();
+    private m_uniqueName: string = "";
+    initialize(texEnabled: boolean): void {
         super.initialize(texEnabled);
         //console.log("AOEntityShaderBuffer::initialize()...,texEnabled: "+texEnabled);
         this.m_uniqueName = "AOEntityShd";
         this.adaptationShaderVersion = false;
     }
-    private buildThisCode():void
-    {
+    buildShader(): void {
 
-        let coder:ShaderCodeBuilder = this.m_coder;
-        coder.reset();
+        let coder: ShaderCodeBuilder = this.m_coder;
         //coder.vertMatrixInverseEnabled = true;
 
-        coder.addVertLayout("vec3","a_vs");
-        coder.addVertLayout("vec2","a_uvs");
-        coder.addVertLayout("vec3","a_nvs");
-        
-        coder.addVarying("vec2", "v_uv");
-        coder.addVarying("vec3", "v_nv");
+        coder.addVertLayout("vec3", "a_vs");
+        coder.addVertLayout("vec2", "a_uvs");
+        coder.addVertLayout("vec3", "a_nvs");
 
-        coder.addFragOutput("vec4", "FragColor0");
-        coder.addFragUniformParam( UniformConst.ViewportParam );
+        this.m_texture.useViewPort();
         // color texture
-        coder.addTextureSample2D();
+        this.m_texture.addDiffuseMap();
         // ao texture
-        coder.addTextureSample2D();
-
-        coder.useVertSpaceMats(true,true,true);
-
-        coder.addFragFunction(
-`
-
-`
-        );
-    }
-    getFragShaderCode():string
-    {
-        this.buildThisCode();
+        this.m_texture.addAOMap();
 
         this.m_coder.addFragMainCode(
-`
+            `
 void main() {
 
     vec4 color = VOX_Texture2D( u_sampler0, v_uv );
@@ -73,58 +52,45 @@ void main() {
     //FragColor0 = vec4(color.xyz, 1.0);
 }
 `
-                        );
-        
-        return this.m_coder.buildFragCode();                    
-    }
-    getVertShaderCode():string
-    {
+        );
+
         this.m_coder.addVertMainCode(
-`
+            `
 void main() {
 
     mat4 viewMat4 = u_viewMat * u_objMat;
-    vec4 viewPos = viewMat4 * vec4(a_vs, 1.0);
+    viewPosition = viewMat4 * vec4(a_vs, 1.0);
 
-    gl_Position = u_projMat * viewPos;
+    gl_Position = u_projMat * viewPosition;
 
-    v_nv = a_nvs;
+    v_worldNormal.xyz = a_nvs;
     v_uv = a_uvs.xy;
 }
 `
-                        );
-        return this.m_coder.buildVertCode();
-
+        );
     }
-    getUniqueShaderName(): string
-    {
+    getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
-    toString():string
-    {
+    toString(): string {
         return "[AOEntityShaderBuffer()]";
     }
-    static GetInstance():AOEntityShaderBuffer
-    {
+    static GetInstance(): AOEntityShaderBuffer {
         return AOEntityShaderBuffer.s_instance;
     }
 }
 
-export default class AOEntityMaterial extends MaterialBase
-{
-    constructor()
-    {
+export default class AOEntityMaterial extends MaterialBase {
+    constructor() {
         super();
     }
-    
-    getCodeBuf():ShaderCodeBuffer
-    {        
+
+    getCodeBuf(): ShaderCodeBuffer {
         return AOEntityShaderBuffer.GetInstance();
     }
 
-    createSelfUniformData():ShaderUniformData
-    {
+    createSelfUniformData(): ShaderUniformData {
         return null;
     }
 }

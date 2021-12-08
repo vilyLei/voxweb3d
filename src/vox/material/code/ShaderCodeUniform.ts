@@ -78,7 +78,7 @@ class ShaderCodeUniform implements IShaderCodeUniform {
      * @param vertEnabled whether apply view parameters uniform in the vertex shader, the default value is false
      * @param fragEnabled whether apply view parameters uniform in the fragment shader, the default value is true
      */
-    useViewPort(vertEnabled: boolean, fragEnabled: boolean): void {
+    useViewPort(vertEnabled: boolean = false, fragEnabled: boolean = true): void {
         
         if (vertEnabled) {
             this.m_codeBuilder.addVertUniformParam(UniformConst.ViewportParam);
@@ -92,7 +92,7 @@ class ShaderCodeUniform implements IShaderCodeUniform {
      * @param vertEnabled whether apply frustum parameters uniform in the vertex shader, the default value is false
      * @param fragEnabled whether apply frustum parameters uniform in the fragment shader, the default value is true
      */
-    useFrustum(vertEnabled: boolean, fragEnabled: boolean): void {
+    useFrustum(vertEnabled: boolean = false, fragEnabled: boolean = true): void {
         
         if (vertEnabled) {
             this.m_codeBuilder.addVertUniformParam(UniformConst.FrustumParam);

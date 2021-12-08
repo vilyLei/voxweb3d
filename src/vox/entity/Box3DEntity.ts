@@ -56,7 +56,7 @@ export default class Box3DEntity extends DisplayEntity {
     
     private initializeThis(texList: TextureProxy[]): void {
 
-        if(this.getMesh() == null || this.getMaterial() == null || this.m_initFlag) {
+        if(this.m_initFlag) {
             this.createMaterial(texList);
             this.activeDisplay();
         }

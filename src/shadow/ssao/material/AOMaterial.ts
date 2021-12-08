@@ -6,64 +6,43 @@
 /***************************************************************************/
 
 import ShaderCodeBuffer from "../../../vox/material/ShaderCodeBuffer";
-import ShaderCodeBuilder from "../../../vox/material/code/ShaderCodeBuilder";
 import ShaderUniformData from "../../../vox/material/ShaderUniformData";
 import MaterialBase from "../../../vox/material/MaterialBase";
 import SSAONoiseData from "./SSAONoiseData";
-import UniformConst from "../../../vox/material/UniformConst";
 
-class AOShaderBuffer extends ShaderCodeBuffer
-{
-    constructor()
-    {
+class AOShaderBuffer extends ShaderCodeBuffer {
+    constructor() {
         super();
     }
-    private static s_instance:AOShaderBuffer = new AOShaderBuffer();
-    private m_uniqueName:string = "";
+    private static s_instance: AOShaderBuffer = new AOShaderBuffer();
+    private m_uniqueName: string = "";
     samplesTotal: number = 8;
-    initialize(texEnabled:boolean):void
-    {
+    initialize(texEnabled: boolean): void {
         super.initialize(texEnabled);
-        console.log("AOShaderBuffer::initialize()...,texEnabled: "+texEnabled);
-        this.m_uniqueName = "AOShd_"+this.samplesTotal;
+        console.log("AOShaderBuffer::initialize()...,texEnabled: " + texEnabled);
+        this.m_uniqueName = "AOShd_" + this.samplesTotal;
         this.adaptationShaderVersion = false;
     }
-    private buildThisCode():void
-    {
+    buildShader(): void {
 
-        let coder:ShaderCodeBuilder = this.m_coder;
-        coder.reset();
+        let coder = this.m_coder;
 
-        coder.addVertLayout("vec3","a_vs");
-        coder.addVertLayout("vec2","a_uvs");
-        
-        coder.addVarying("vec2", "v_uv");
+        coder.addVertLayout("vec3", "a_vs");
+        coder.addVertLayout("vec2", "a_uvs");
 
-        coder.addFragOutput("vec4", "FragColor0");
-
-        coder.addDefine("AO_SamplesTotal", ""+this.samplesTotal);
-        coder.addFragUniformParam(UniformConst.FrustumParam);
-        coder.addFragUniformParam(UniformConst.ViewportParam);
+        coder.addDefine("AO_SamplesTotal", "" + this.samplesTotal);
+        this.m_uniform.useFrustum();
+        this.m_uniform.useViewPort();
         // tex normal
         coder.addTextureSample2D();
         // tex noise
         coder.addTextureSample2D();
 
-        coder.useVertSpaceMats(false,false,false);
-        coder.useFragSpaceMats(false,false,true);
-
-        coder.addFragFunction(
-`
-
-`
-        );
-    }
-    getFragShaderCode():string
-    {
-        this.buildThisCode();
+        coder.useVertSpaceMats(false, false, false);
+        coder.useFragSpaceMats(false, false, true);
 
         this.m_coder.addFragMainCode(
-`
+            `
 uniform vec3 u_aoSamples[AO_SamplesTotal];
 
 const float radius = 80.0;
@@ -145,63 +124,52 @@ void main()
     FragColor0 = vec4(vec3(min(1.0 - ( occlusion / total), 1.0)), 1.0);
 }
 `
-                        );
-        
-        return this.m_coder.buildFragCode();                    
-    }
-    getVertShaderCode():string
-    {
+        );
+
         this.m_coder.addVertMainCode(
-`
+            `
 void main()
 {
     gl_Position = vec4(a_vs,1.0);
     v_uv = a_uvs.xy;
 }
 `
-                        );
-        return this.m_coder.buildVertCode();
-
+        );
     }
-    getUniqueShaderName(): string
-    {
+
+    getUniqueShaderName(): string {
         //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
-    toString():string
-    {
+    toString(): string {
         return "[AOShaderBuffer()]";
     }
-    static GetInstance():AOShaderBuffer
-    {
+    static GetInstance(): AOShaderBuffer {
         return AOShaderBuffer.s_instance;
     }
 }
 
-export default class AOMaterial extends MaterialBase
-{
+export default class AOMaterial extends MaterialBase {
     private m_samplesTotal: number = 8;
     private m_ssaoData: SSAONoiseData = null;
-    constructor(ssaoData: SSAONoiseData, samplesTotal: number = 8)
-    {
+    constructor(ssaoData: SSAONoiseData, samplesTotal: number = 8) {
         super();
 
         this.m_ssaoData = ssaoData;
         this.m_samplesTotal = samplesTotal;
     }
-    
-    getCodeBuf():ShaderCodeBuffer
-    {
+
+    getCodeBuf(): ShaderCodeBuffer {
         let buf: AOShaderBuffer = AOShaderBuffer.GetInstance();
         buf.samplesTotal = this.m_samplesTotal;
         return buf;
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = [ "u_aoSamples" ];
-        let fs: Float32Array = this.m_ssaoData.calcSampleKernel( this.m_samplesTotal, 1 );
-        fs = fs.subarray(0,this.m_samplesTotal * 3);
-        oum.dataList = [ fs ];
+        oum.uniformNameList = ["u_aoSamples"];
+        let fs: Float32Array = this.m_ssaoData.calcSampleKernel(this.m_samplesTotal, 1);
+        fs = fs.subarray(0, this.m_samplesTotal * 3);
+        oum.dataList = [fs];
         return oum;
     }
     destroy(): void {

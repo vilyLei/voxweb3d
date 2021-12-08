@@ -47,7 +47,7 @@ class BillboardShaderBuffer extends ShaderCodeBuffer {
 
         let fragCode0: string =
 `
-    vec4 color = texture(VOX_DIFFUSE_MAP, v_uv);
+    vec4 color = VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv);
     vec3 offsetColor = v_colorOffset.rgb;
     vec4 fv4 = v_colorMult.wwww;
 `;
