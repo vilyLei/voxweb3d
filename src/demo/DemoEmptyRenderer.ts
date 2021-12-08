@@ -1,4 +1,4 @@
-//import {Camera} from "../vox/view/Camera";
+import {Camera} from "../vox/view/Camera";
 import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RendererInstance from "../vox/scene/RendererInstance";
 
@@ -13,15 +13,17 @@ export class DemoEmptyRenderer {
 
     initialize(): void {
         this.m_renderer = new RendererInstance();
-        //this.m_renderer.initialize(null, new Camera(this.m_renderer.getRCUid()));
-        this.m_renderer.initialize();
+        this.m_renderer.initialize(null, new Camera(this.m_renderer.getRCUid()));
         this.m_rcontext = this.m_renderer.getRendererContext();
     }
+    private m_time: number = 0.0;
     run(): void {
-        //  this.m_rcontext.renderBegin();
-        //  this.m_renderer.run();
-        //  this.m_rcontext.runEnd();
+        let t: number = Math.abs( Math.cos( this.m_time += 0.01 ) );
+        this.m_rcontext.setClearRGBColor3f(0.0, t, 1.0 - t);
+
+        this.m_rcontext.renderBegin();
+        this.m_renderer.run();
+        this.m_rcontext.runEnd();
     }
 }
-
 export default DemoEmptyRenderer;

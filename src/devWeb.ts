@@ -5,6 +5,6 @@
 // loader.initialize();
 
 import {Home as Demo} from "./app/Home";
-document.title = "Vox APP";
+document.title = "Rendering & Art";
 let home: Demo = new Demo();
 home.initialize();

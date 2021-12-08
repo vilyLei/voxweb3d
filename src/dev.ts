@@ -27,8 +27,7 @@
 
 //  import {DemoTexture as Demo} from "./demo/DemoTexture";
 
-//  import * as DemoCamVisibleTest from "./demo/DemoCamVisibleTest";
-//  import Demo = DemoCamVisibleTest.demo.DemoCamVisibleTest;
+//  import {DemoCamVisibleTest as Demo} from "./demo/DemoCamVisibleTest";
 
 //  import * as DemoSphereOcclusion from "./voxocc/demo/DemoSphereOcclusion";
 //  import Demo = DemoSphereOcclusion.voxocc.demo.DemoSphereOcclusion;
@@ -288,9 +287,7 @@
 
 //  import {DemoEmptyRendererScene as Demo} from "./demo/DemoEmptyRendererScene";
 
-//  import {DemoEngine as Demo} from "./demo/DemoEngine";
-
-import {DemoAPlane as Demo} from "./demo/DemoAPlane";
+//  import {DemoAPlane as Demo} from "./demo/DemoAPlane";
 
 //  import {DemoScene as Demo} from "./demo/DemoScene";
 
@@ -306,12 +303,14 @@ import {DemoAPlane as Demo} from "./demo/DemoAPlane";
 
 //  import {DemoMultiRenderer as Demo} from "./demo/DemoMultiRenderer";
 
+//  import {DemoEngine as Demo} from "./demo/DemoEngine";
+
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////   maps    ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
-//  import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
+import {DemoNormalMap as Demo} from "./demo/DemoNormalMap";
 
 //  import {DemoDisplacementMap as Demo} from "./demo/DemoDisplacementMap";
 
@@ -434,6 +433,7 @@ import {DemoAPlane as Demo} from "./demo/DemoAPlane";
 ///////////////////////////////////////////////////////////////////////////////
 ///*
 document.title = "Vox APP";
+//document.title = "Rendering & Art";
 let demoIns: Demo = new Demo();
 let ins: any = demoIns;
 if (ins.runBegin != undefined) {
