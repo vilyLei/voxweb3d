@@ -27,7 +27,7 @@ export default class PBRMaterialBuilder {
 
         decorator.woolEnabled = true;
         decorator.toneMappingEnabled = true;
-        decorator.envMapEnabled = true;
+        decorator.specularEnvMapEnabled = true;
         decorator.specularBleedEnabled = true;
         decorator.metallicCorrection = true;
         decorator.absorbEnabled = false;

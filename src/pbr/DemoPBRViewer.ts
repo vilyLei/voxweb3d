@@ -177,7 +177,7 @@ export class DemoPBRViewer implements IShaderLibListener {
         this.m_dracoModule = new ViewerDracoModule();
         this.m_dracoModule.materialCtx = this.m_materialCtx;
         this.m_dracoModule.viewer = this;
-        this.m_dracoModule.envMap = this.m_envMap;
+        this.m_dracoModule.specularEnvMap = this.m_envMap;
         this.m_dracoModule.aoMapEnabled = this.aoMapEnabled;
         this.m_dracoModule.initialize(this.m_rscene, this.m_dracoMeshLoader);
         // this.m_dracoModule.loadNext();
@@ -263,7 +263,7 @@ export class DemoPBRViewer implements IShaderLibListener {
         //material.decorator.aoMapEnabled = false;
         material.decorator.scatterEnabled = false;
 
-        material.decorator.envMap = this.m_envMap;
+        material.decorator.specularEnvMap = this.m_envMap;
         material.decorator.diffuseMap = diffuseMap;
         material.decorator.normalMap = normalMap;
         material.decorator.aoMap = aoMap;
@@ -328,7 +328,7 @@ export class DemoPBRViewer implements IShaderLibListener {
             material = this.createMaterial(uvscale, uvscale);
             material.decorator.aoMapEnabled = this.aoMapEnabled;
             //  material.setTextureList(texList);
-            material.decorator.envMap = this.m_envMap;
+            material.decorator.specularEnvMap = this.m_envMap;
             material.decorator.diffuseMap = diffuseMap;
             material.decorator.normalMap = normalMap;
             material.decorator.aoMap = aoMap;
@@ -399,7 +399,7 @@ export class DemoPBRViewer implements IShaderLibListener {
         decorator.scatterEnabled = false;
         decorator.woolEnabled = true;
         decorator.toneMappingEnabled = true;
-        decorator.envMapEnabled = true;
+        decorator.specularEnvMapEnabled = true;
         decorator.specularBleedEnabled = true;
         decorator.metallicCorrection = true;
         decorator.absorbEnabled = false;
@@ -424,7 +424,7 @@ export class DemoPBRViewer implements IShaderLibListener {
         decorator.shadowReceiveEnabled = false;
         decorator.fogEnabled = this.fogEnabled;
         decorator.indirectEnvMapEnabled = false;
-        decorator.envMapEnabled = true;
+        decorator.specularEnvMapEnabled = true;
         decorator.diffuseMapEnabled = true;
         decorator.normalMapEnabled = true;
 
@@ -440,7 +440,7 @@ export class ViewerDracoModule extends DracoWholeModuleLoader {
     texLoader: ImageTextureLoader = null;
     reflectPlaneY: number = -220.0;
     aoMapEnabled: boolean = false;
-    envMap: TextureProxy;
+    specularEnvMap: TextureProxy;
     viewer: DemoPBRViewer;
     materialCtx: MaterialContext;
     constructor() {
@@ -457,7 +457,7 @@ export class ViewerDracoModule extends DracoWholeModuleLoader {
         let uvscale: number = 0.01;//Math.random() * 7.0 + 0.6;
         let material: PBRMaterial = this.viewer.createMaterial(uvscale, uvscale);
 
-        material.decorator.envMap = this.envMap;
+        material.decorator.specularEnvMap = this.specularEnvMap;
         material.decorator.diffuseMap = this.materialCtx.getTextureByUrl("static/assets/modules/skirt/baseColor.jpg");
         material.decorator.normalMap = this.materialCtx.getTextureByUrl("static/assets/modules/skirt/normal.jpg");
         material.decorator.diffuseMap = this.materialCtx.getTextureByUrl("static/assets/modules/skirt/ao.jpg");

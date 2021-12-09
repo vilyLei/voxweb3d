@@ -20,9 +20,7 @@ class ShaderCodeUniform implements IShaderCodeUniform {
     private m_uniqueNSKeysTotal: number = 10;
     private m_uniqueNSKeyFlag: boolean = false;
     constructor(){}
-    // constructor(codeBuilder: IShaderCodeBuilder) {
-    //     this.m_codeBuilder = codeBuilder;
-    // }
+    
     __$setCodeBuilder(codeBuilder: IShaderCodeBuilder): void {
         this.m_codeBuilder = codeBuilder;
     }
@@ -198,7 +196,7 @@ class ShaderCodeUniform implements IShaderCodeUniform {
      * add env specular cube map uniform code
      * @param cubeMap yes or no, the default is true
      */
-    addEnvMap(cubeMap: boolean = true): void {
+    addspecularEnvMap(cubeMap: boolean = true): void {
         if(cubeMap) {
             this.m_codeBuilder.addTextureSampleCube("VOX_ENV_MAP", true, false);
         }

@@ -46,7 +46,7 @@ export class DemoPBRDisplacement {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     
     private m_reflectPlaneY: number = -220;
-    private m_envMap: TextureProxy = null;
+    private m_specularEnvMap: TextureProxy = null;
 
     private m_materialCtx: MaterialContext = new MaterialContext();
 
@@ -104,7 +104,7 @@ export class DemoPBRDisplacement {
             let loader: SpecularTextureLoader = new SpecularTextureLoader();
             loader.hdrBrnEnabled = this.hdrBrnEnabled;
             loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
-            this.m_envMap = loader.texture;
+            this.m_specularEnvMap = loader.texture;
 
             let mcParam: MaterialContextParam = new MaterialContextParam();
             mcParam.pointLightsTotal = 1;
@@ -226,7 +226,7 @@ export class DemoPBRDisplacement {
         //material.decorator.aoMapEnabled = false;
         material.decorator.scatterEnabled = false;
 
-        material.decorator.envMap = this.m_envMap;
+        material.decorator.specularEnvMap = this.m_specularEnvMap;
         material.decorator.diffuseMap = diffuseMap;
         material.decorator.normalMap = normalMap;
         material.decorator.aoMap = aoMap;
@@ -286,7 +286,7 @@ export class DemoPBRDisplacement {
             material = this.createMaterial(uvscale, uvscale);
             material.decorator.aoMapEnabled = this.aoMapEnabled;
             //  material.setTextureList(texList);
-            material.decorator.envMap = this.m_envMap;
+            material.decorator.specularEnvMap = this.m_specularEnvMap;
             material.decorator.diffuseMap = diffuseMap;
             material.decorator.normalMap = normalMap;
             material.decorator.aoMap = aoMap;
@@ -357,7 +357,7 @@ export class DemoPBRDisplacement {
         decorator.scatterEnabled = false;
         decorator.woolEnabled = true;
         decorator.toneMappingEnabled = true;
-        decorator.envMapEnabled = true;
+        decorator.specularEnvMapEnabled = true;
         decorator.specularBleedEnabled = true;
         decorator.metallicCorrection = true;
         decorator.absorbEnabled = false;
@@ -382,7 +382,7 @@ export class DemoPBRDisplacement {
         decorator.shadowReceiveEnabled = false;
         decorator.fogEnabled = this.fogEnabled;
         decorator.indirectEnvMapEnabled = false;
-        decorator.envMapEnabled = true;
+        decorator.specularEnvMapEnabled = true;
         decorator.diffuseMapEnabled = true;
         decorator.normalMapEnabled = true;
 

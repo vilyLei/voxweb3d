@@ -262,7 +262,7 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 //  import {DemoFlexMesh as Demo} from "./demo/DemoFlexMesh";
-
+// free-shaped morph animation
 //  import {DemoFlexPipe as Demo} from "./demo/DemoFlexPipe";
 
 //  import {DemoFaceDirec as Demo} from "./demo/DemoFaceDirec";
@@ -331,7 +331,7 @@
 //  The reflection in water
 //  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
 
-import {DemoOutline as Demo} from "./demo/DemoOutline";
+//  import {DemoOutline as Demo} from "./demo/DemoOutline";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////
@@ -357,7 +357,7 @@ import {DemoOutline as Demo} from "./demo/DemoOutline";
 
 //  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
 
-//  import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
+import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
 
 //  import {DemoCookTorrance as Demo} from "./demo/DemoCookTorrance";
 

@@ -48,7 +48,7 @@ export class DemoFlexPipe implements IShaderLibListener {
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
     
     private m_materialCtx: MaterialContext = new MaterialContext();
-    private m_envMap: TextureProxy;
+    private m_specularEnvMap: TextureProxy;
     fogEnabled: boolean = false;
     hdrBrnEnabled: boolean = true;
     vtxFlatNormal: boolean = false;
@@ -115,7 +115,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         let loader: SpecularTextureLoader = new SpecularTextureLoader();
         loader.hdrBrnEnabled = this.hdrBrnEnabled;
         loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
-        this.m_envMap = loader.texture;
+        this.m_specularEnvMap = loader.texture;
 
         let libConfig: IShaderLibConfigure = {shaderCodeConfigures:[]};
         let configure = new ShaderCodeConfigure();
@@ -184,7 +184,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         let parallaxMap: TextureProxy = null;
         parallaxMap = this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
 
-        material.decorator.envMap = this.m_envMap;
+        material.decorator.specularEnvMap = this.m_specularEnvMap;
         material.decorator.diffuseMap = diffuseMap;
         material.decorator.normalMap = normalMap;
         material.decorator.aoMap = aoMap;
@@ -200,7 +200,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         decorator.scatterEnabled = false;
         decorator.woolEnabled = true;
         decorator.toneMappingEnabled = true;
-        decorator.envMapEnabled = true;
+        decorator.specularEnvMapEnabled = true;
         decorator.specularBleedEnabled = true;
         decorator.metallicCorrection = true;
         decorator.absorbEnabled = false;
@@ -224,7 +224,7 @@ export class DemoFlexPipe implements IShaderLibListener {
         decorator.shadowReceiveEnabled = false;
         decorator.fogEnabled = this.fogEnabled;
         decorator.indirectEnvMapEnabled = false;
-        decorator.envMapEnabled = true;
+        decorator.specularEnvMapEnabled = true;
         decorator.diffuseMapEnabled = true;
         decorator.normalMapEnabled = true;
 

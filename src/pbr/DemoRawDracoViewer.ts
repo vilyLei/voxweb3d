@@ -142,7 +142,7 @@ export class DemoRawDracoViewer {
             this.m_dracoModule = new ViewerDracoModule();
             this.m_dracoModule.materialCtx = this.m_materialCtx;
             this.m_dracoModule.viewer = this;
-            this.m_dracoModule.envMap = this.m_envMap;
+            this.m_dracoModule.specularEnvMap = this.m_envMap;
             this.m_dracoModule.aoMapEnabled = this.aoMapEnabled;
             this.m_dracoModule.initialize(this.m_rscene, this.m_dracoMeshLoader);
             this.m_dracoModule.loadNext();
@@ -176,7 +176,7 @@ export class DemoRawDracoViewer {
 
         decorator.woolEnabled = true;
         decorator.toneMappingEnabled = true;
-        decorator.envMapEnabled = true;
+        decorator.specularEnvMapEnabled = true;
         decorator.specularBleedEnabled = true;
         decorator.metallicCorrection = true;
         decorator.absorbEnabled = false;
@@ -200,7 +200,7 @@ export class DemoRawDracoViewer {
         decorator.shadowReceiveEnabled = false;
         decorator.fogEnabled = this.fogEnabled;
         decorator.indirectEnvMapEnabled = false;
-        decorator.envMapEnabled = true;
+        decorator.specularEnvMapEnabled = true;
         decorator.diffuseMapEnabled = true;
         decorator.normalMapEnabled = true;
 
@@ -226,7 +226,7 @@ export class DemoRawDracoViewer {
     }
     private useMaterialTex(material: PBRMaterial): void {
         let decorator = material.decorator;
-        decorator.envMap = this.m_envMap;
+        decorator.specularEnvMap = this.m_envMap;
         decorator.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/color_01.jpg");
         decorator.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/rock_a_n.jpg");
         if (this.aoMapEnabled) {
@@ -327,7 +327,7 @@ export class ViewerDracoModule extends DracoWholeModuleLoader {
     materialCtx: MaterialContext;
     reflectPlaneY: number = -220.0;
     aoMapEnabled: boolean = false;
-    envMap: TextureProxy;
+    specularEnvMap: TextureProxy;
     viewer: DemoRawDracoViewer;
 
     constructor() {
@@ -344,7 +344,7 @@ export class ViewerDracoModule extends DracoWholeModuleLoader {
         let material: PBRMaterial = this.viewer.createMaterial(uvscale, uvscale);
 
         let decorator = material.decorator;
-        decorator.envMap = this.envMap;
+        decorator.specularEnvMap = this.specularEnvMap;
         decorator.diffuseMap = this.materialCtx.getTextureByUrl("static/assets/modules/skirt/baseColor.jpg");
         decorator.normalMap = this.materialCtx.getTextureByUrl("static/assets/modules/skirt/normal.jpg");
         decorator.aoMap = this.materialCtx.getTextureByUrl("static/assets/modules/skirt/ao.jpg");

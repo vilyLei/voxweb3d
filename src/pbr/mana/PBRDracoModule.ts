@@ -18,7 +18,7 @@ export class PBRWholeDracoModule extends DracoWholeModuleLoader {
     paramEntities: PBRParamEntity[] = [];
     reflectPlaneY: number = -220.0;
     aoMapEnabled: boolean = false;
-    envMap: TextureProxy;
+    specularEnvMap: TextureProxy;
     constructor() {
         super();
     }
@@ -71,7 +71,7 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader {
     paramEntities: PBRParamEntity[] = [];
     reflectPlaneY: number = -220.0;
     aoMapEnabled: boolean = false;
-    envMap: TextureProxy;
+    specularEnvMap: TextureProxy;
     constructor() {
         super();
     }
@@ -92,7 +92,7 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader {
             decorator.vtxFlatNormal = false;
             decorator.aoMapEnabled = false;
             decorator.shadowReceiveEnabled = false;
-            this.entityUtils.useTexForMaterial(material, this.envMap, this.entityUtils.getTextureByUrl("static/assets/noise.jpg"));
+            this.entityUtils.useTexForMaterial(material, this.specularEnvMap, this.entityUtils.getTextureByUrl("static/assets/noise.jpg"));
         }
         else {
 
@@ -107,7 +107,7 @@ export class PBRMultiPartsDracoModule extends DracoMultiPartsModuleLoader {
             }
             this.entityUtils.useTexForMaterial(
                 material,
-                this.envMap,
+                this.specularEnvMap,
                 this.entityUtils.getTextureByUrl("static/assets/modules/skirt/baseColor.jpg"),
                 this.entityUtils.getTextureByUrl("static/assets/modules/skirt/normal.jpg"),
                 aoTex

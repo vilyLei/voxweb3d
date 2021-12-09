@@ -51,10 +51,10 @@ export default class PBREntityUtils {
             this.m_mirrorRprIndex = mirrorRprIndex;
         }
     }
-    useTexForMaterial(material: PBRMaterial, envMap: TextureProxy, diffuseMap: TextureProxy = null, normalMap: TextureProxy = null, aoMap: TextureProxy = null): void {
+    useTexForMaterial(material: PBRMaterial, specularEnvMap: TextureProxy, diffuseMap: TextureProxy = null, normalMap: TextureProxy = null, aoMap: TextureProxy = null): void {
         
         let decorator: PBRShaderDecorator = material.decorator;
-        decorator.envMap = envMap;
+        decorator.specularEnvMap = specularEnvMap;
         decorator.diffuseMap = diffuseMap;
         decorator.normalMap = normalMap;
         decorator.aoMap = aoMap;
@@ -77,7 +77,7 @@ export default class PBREntityUtils {
         decorator.shadowReceiveEnabled = true;
         decorator.fogEnabled = this.fogEnabled;
         decorator.indirectEnvMapEnabled = true;
-        decorator.envMapEnabled = true;
+        decorator.specularEnvMapEnabled = true;
         decorator.diffuseMapEnabled = true;
         decorator.normalMapEnabled = true;
 
@@ -94,7 +94,7 @@ export default class PBREntityUtils {
 
         let mirDecorator: PBRShaderDecorator = mirMaterial.decorator;
         mirDecorator.hdrBrnEnabled = false;
-        mirDecorator.envMapEnabled = true;
+        mirDecorator.specularEnvMapEnabled = true;
         mirDecorator.diffuseMapEnabled = decorator.diffuseMapEnabled;
         mirDecorator.normalMapEnabled = decorator.normalMapEnabled;
         mirDecorator.indirectEnvMapEnabled = false;

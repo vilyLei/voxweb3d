@@ -28,7 +28,7 @@ export default class PBREntityManager
     private m_entityUtils: PBREntityUtils = null;
     private m_mirrorEffector: PBRMirror = null;
     private m_uiModule: DefaultPBRUI;
-    private m_envMap: TextureProxy = null;
+    private m_specularEnvMap: TextureProxy = null;
     private m_paramEntities:PBRParamEntity[] = [];
     private m_dracoMeshLoader: DracoMeshBuilder = new DracoMeshBuilder();
     private m_reflectPlaneY: number = -220.0;
@@ -36,7 +36,7 @@ export default class PBREntityManager
     aoMapEnabled: boolean = false;
     constructor() {
     }
-    initialize(rscene:RendererScene, entityUtils: PBREntityUtils, mirrorEffector: PBRMirror,uiModule: DefaultPBRUI, envMap: TextureProxy): void {
+    initialize(rscene:RendererScene, entityUtils: PBREntityUtils, mirrorEffector: PBRMirror,uiModule: DefaultPBRUI, specularEnvMap: TextureProxy): void {
 
         if(this.m_rscene != rscene) {
 
@@ -44,7 +44,7 @@ export default class PBREntityManager
             this.m_entityUtils = entityUtils;
             this.m_mirrorEffector = mirrorEffector;
             this.m_uiModule = uiModule;
-            this.m_envMap = envMap;
+            this.m_specularEnvMap = specularEnvMap;
             
             this.m_dracoMeshLoader.initialize(2);
                         
@@ -53,7 +53,7 @@ export default class PBREntityManager
             this.m_dracoModule.paramEntities = this.m_paramEntities;
             this.m_dracoModule.reflectPlaneY = this.m_reflectPlaneY;
             this.m_dracoModule.aoMapEnabled = this.aoMapEnabled;
-            this.m_dracoModule.envMap = this.m_envMap;
+            this.m_dracoModule.specularEnvMap = this.m_specularEnvMap;
             //"static/assets/modules/skirt/dracos_"+ i +".drc.zip"
             let urlsTotal: number = 30;
             let urls: string[] = [];
@@ -77,7 +77,7 @@ export default class PBREntityManager
     }
     private useMaterial(material: PBRMaterial): void {
 
-        material.decorator.envMap = this.m_envMap;
+        material.decorator.specularEnvMap = this.m_specularEnvMap;
         // base color map
         material.decorator.diffuseMap = this.m_entityUtils.getTextureByUrl( "static/assets/disp/normal_4_256_COLOR.png" );
         // normal map
@@ -173,7 +173,7 @@ export default class PBREntityManager
         //  box.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex]);
         //  this.m_rscene.addEntity(box);
 
-        //  console.log("this.m_envMap>>>>>>>>>>>>>>: ",this.m_envMap);
+        //  console.log("this.m_specularEnvMap>>>>>>>>>>>>>>: ",this.m_specularEnvMap);
         ///*
         material = this.m_entityUtils.createMaterial(1,1);
         material.decorator.diffuseMapEnabled = true;
@@ -183,7 +183,7 @@ export default class PBREntityManager
         material.decorator.shadowReceiveEnabled = false;
         
         material.setRoughness(0.4);
-        this.m_entityUtils.useTexForMaterial(material, this.m_envMap, this.m_entityUtils.getTextureByUrl("static/assets/noise.jpg"));
+        this.m_entityUtils.useTexForMaterial(material, this.m_specularEnvMap, this.m_entityUtils.getTextureByUrl("static/assets/noise.jpg"));
         let envSph: Sphere3DEntity = new Sphere3DEntity();
         envSph.setMaterial(material);
         envSph.showFrontFace();
@@ -197,7 +197,7 @@ export default class PBREntityManager
         let ufsph: Sphere3DEntity = new Sphere3DEntity();
         ufsph.setMaterial(ufmaterial);
         ufsph.showFrontFace();
-        ufsph.initialize(3000.0,30,30, [this.m_envMap]);
+        ufsph.initialize(3000.0,30,30, [this.m_specularEnvMap]);
         this.m_rscene.addEntity(ufsph, 4);
         //*/
     }

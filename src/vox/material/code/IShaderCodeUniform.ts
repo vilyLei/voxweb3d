@@ -79,7 +79,7 @@ interface IShaderCodeUniform {
      * add env specular cube map uniform code
      * @param cubeMap yes or no, the default is true
      */
-    addEnvMap(cubeMap: boolean): void;
+    addspecularEnvMap(cubeMap: boolean): void;
     /**
      * add roughness map uniform code
      */

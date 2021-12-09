@@ -32,7 +32,7 @@ export class PBRMirror {
     
     reflectPlaneY: number = -220.0;
     materialBuilder: PBRMaterialBuilder;
-    envMap: TextureProxy = null;
+    specularEnvMap: TextureProxy = null;
     vsmModule: ShadowVSMModule = null;
     fogEnabled: boolean = false;
     constructor(fboIndex: number) {
@@ -112,7 +112,7 @@ export class PBRMirror {
 
         this.m_material = material;
         
-        decorator.envMap = this.envMap;
+        decorator.specularEnvMap = this.specularEnvMap;
         decorator.diffuseMap = this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big.jpg");
         decorator.normalMap = this.m_materialCtx.getTextureByUrl("static/assets/brickwall_normal.jpg");
         decorator.aoMap = this.m_materialCtx.getTextureByUrl("static/assets/brickwall_big_occ.jpg");

@@ -18,7 +18,7 @@ export default class PBRShaderDecorator {
     private m_uniqueName: string = "PBRShd";
     
     codeBuilder: ShaderCodeBuilder = null;
-    envMap: TextureProxy = null;
+    specularEnvMap: TextureProxy = null;
     diffuseMap: TextureProxy = null;
     normalMap: TextureProxy = null;
     aoMap: TextureProxy = null;
@@ -31,7 +31,7 @@ export default class PBRShaderDecorator {
     
     woolEnabled: boolean = true;
     toneMappingEnabled: boolean = true;
-    envMapEnabled: boolean = true;
+    specularEnvMapEnabled: boolean = true;
     scatterEnabled: boolean = true;
     specularBleedEnabled: boolean = true;
     metallicCorrection: boolean = true;
@@ -62,9 +62,9 @@ export default class PBRShaderDecorator {
         let uniform = coder.uniform;
         let texList: TextureProxy[] = [];
         
-        if (this.envMapEnabled && this.envMap != null ) {
-            texList.push( this.envMap );
-            uniform.addEnvMap(true);
+        if (this.specularEnvMapEnabled && this.specularEnvMap != null ) {
+            texList.push( this.specularEnvMap );
+            uniform.addspecularEnvMap(true);
             // console.log("VOX_ENV_MAP");
         }
         if ( this.diffuseMapEnabled && this.diffuseMap != null ) {
@@ -119,7 +119,7 @@ export default class PBRShaderDecorator {
 
         this.woolEnabled = src.woolEnabled;
         this.toneMappingEnabled = src.toneMappingEnabled;
-        this.envMapEnabled = src.envMapEnabled;
+        this.specularEnvMapEnabled = src.specularEnvMapEnabled;
         this.scatterEnabled = src.scatterEnabled;
         this.specularBleedEnabled = src.specularBleedEnabled;
         this.metallicCorrection = src.metallicCorrection;
@@ -138,7 +138,7 @@ export default class PBRShaderDecorator {
         this.hdrBrnEnabled = src.hdrBrnEnabled;
         this.vtxFlatNormal = src.vtxFlatNormal;
         
-        if(this.envMap == null) this.envMap = src.envMap;
+        if(this.specularEnvMap == null) this.specularEnvMap = src.specularEnvMap;
         if(this.diffuseMap == null) this.diffuseMap = src.diffuseMap;
         if(this.normalMap == null) this.normalMap = src.normalMap;
         if(this.aoMap == null) this.aoMap = src.aoMap;
@@ -199,7 +199,7 @@ export default class PBRShaderDecorator {
 
         if (this.woolEnabled) ns += "_wl";
         if (this.toneMappingEnabled) ns += "TM";
-        if (this.envMapEnabled) ns += "EnvM";
+        if (this.specularEnvMapEnabled) ns += "EnvM";
         if (this.scatterEnabled) ns += "Sct";
         if (this.specularBleedEnabled) ns += "SpecBl";
         if (this.metallicCorrection) ns += "MetCorr";

@@ -18,7 +18,7 @@ import { DirectionLight } from "../../light/base/DirectionLight";
 export default class PBRScene {
     private m_rscene: RendererScene = null;
     private m_uiModule: DefaultPBRUI;
-    private m_envMap: TextureProxy = null;
+    private m_specularEnvMap: TextureProxy = null;
     private m_mirrorEffector: PBRMirror = null;
 
     private m_materialBuilder: PBRMaterialBuilder;
@@ -53,7 +53,7 @@ export default class PBRScene {
             let loader: SpecularTextureLoader = new SpecularTextureLoader();
             loader.hdrBrnEnabled = this.hdrBrnEnabled;
             loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
-            this.m_envMap = loader.texture;
+            this.m_specularEnvMap = loader.texture;
 
             let direcLight: DirectionLight = materialCtx.lightModule.getDirectionLightAt(0);
             if (direcLight != null) {
@@ -124,7 +124,7 @@ export default class PBRScene {
             this.m_mirrorEffector.reflectPlaneY = this.m_reflectPlaneY;
 
             this.m_mirrorEffector.fogEnabled = this.fogEnabled;
-            this.m_mirrorEffector.envMap = this.m_envMap;
+            this.m_mirrorEffector.specularEnvMap = this.m_specularEnvMap;
             this.m_mirrorEffector.vsmModule = vsmModule;
             this.m_mirrorEffector.materialBuilder = this.m_materialBuilder;
             this.m_mirrorEffector.initialize(this.m_rscene, materialCtx, this.m_uiModule, [this.m_mirrorRprIndex]);
@@ -132,7 +132,7 @@ export default class PBRScene {
             this.m_entityUtils = new PBREntityUtils(this.m_materialBuilder, this.m_cubeRTTBuilder, vsmModule);
             this.m_entityUtils.initialize(this.m_rscene, materialCtx, this.m_mirrorEffector, this.m_mirrorRprIndex);
             this.m_entityManager = new PBREntityManager();
-            this.m_entityManager.initialize(this.m_rscene, this.m_entityUtils, this.m_mirrorEffector, uiModule, this.m_envMap);
+            this.m_entityManager.initialize(this.m_rscene, this.m_entityUtils, this.m_mirrorEffector, uiModule, this.m_specularEnvMap);
 
         }
     }
