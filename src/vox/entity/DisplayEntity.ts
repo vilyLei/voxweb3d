@@ -551,10 +551,16 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
         return (this.__$rseFlag & RSEntityFlag.RENDERER_UID_FLAG) != RSEntityFlag.RENDERER_UID_FLAG;
     }
     /**
-     * @returns 是否处在渲染运行时中
+     * @returns 是否在渲染器渲染过程中
+     */
+    isInRendererProcess(): boolean {
+        return this.m_display != null && this.m_display.__$ruid > -1;
+    }
+    /**
+     * @returns 是否能被渲染
      */
     isRenderEnabled(): boolean {
-        return this.m_display != null && this.m_display.__$ruid > -1;
+        return this.drawEnabled && this.m_visible && this.m_display != null && this.m_display.__$ruid > -1;
     }
     updateBounds(): void {
         if (this.m_transfrom != null) {

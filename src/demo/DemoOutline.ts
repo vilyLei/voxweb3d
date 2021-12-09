@@ -56,6 +56,7 @@ export class DemoOutline {
 
             let rparam: RendererParam = new RendererParam();
             //rparam.maxWebGLVersion = 1;
+            rparam.setCamProject(45,10,4000.0);
             rparam.setAttriStencil(true);
             rparam.setCamPosition(800.0, 800.0, 800.0);
             this.m_rscene = new RendererScene();
@@ -147,7 +148,7 @@ export class DemoOutline {
 
         let box: Box3DEntity = new Box3DEntity();
         box.initializeCube(100,[this.getImageTexByUrl("static/assets/default.jpg")]);
-        box.setXYZ(Math.random() * 360 - 180, 100, Math.random() * 360 - 180);
+        box.setXYZ(Math.random() * 1060 - 530, 100, Math.random() * 1060 - 530);
         box.setRotationXYZ(Math.random() * 360, Math.random() * 360, Math.random() * 360);
         box.setScaleXYZ(Math.random() + 0.5, Math.random() + 0.5, Math.random() + 0.5);
         this.m_rscene.addEntity(box, 1);

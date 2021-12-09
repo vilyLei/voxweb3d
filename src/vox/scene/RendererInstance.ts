@@ -193,7 +193,7 @@ export class RendererInstance implements IRenderer {
      */
     moveEntityToProcessAt(entity: IRenderEntity, dstProcessIndex: number): void {
         if (entity != null && entity.getRendererUid() == this.m_uid) {
-            if (entity.isRenderEnabled()) {
+            if (entity.isInRendererProcess()) {
                 if (dstProcessIndex > -1 && dstProcessIndex < this.m_processesLen) {
                     let srcUid: number = entity.getDisplay().__$$runit.getRPROUid();
                     let src: RenderProcess = this.m_processBuider.getNodeByUid(srcUid) as RenderProcess;
@@ -209,7 +209,7 @@ export class RendererInstance implements IRenderer {
     }
     moveEntityToProcess(entity: IRenderEntity, dstProcess: IRenderProcess): void {
         if (dstProcess != null && entity != null && entity.getRendererUid() == this.m_uid) {
-            if (entity.isRenderEnabled()) {
+            if (entity.isInRendererProcess()) {
                 let srcUid: number = entity.getDisplay().__$$runit.getRPROUid();
                 let src: RenderProcess = this.m_processBuider.getNodeByUid(srcUid) as RenderProcess;
                 if (src != dstProcess) {

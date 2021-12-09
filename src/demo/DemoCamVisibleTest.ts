@@ -1,4 +1,3 @@
-
 import Color4 from '../vox/material/Color4';
 import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
@@ -46,6 +45,7 @@ export class DemoCamVisibleTest {
 
     private m_textFPSNS: Text2DEntity = null;
     private m_textFPS: Text2DEntity = null;
+    private m_boxList: Box3DEntity[] = [];
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     initialize(): void {
         console.log("DemoCamVisibleTest::initialize()......");
@@ -97,6 +97,7 @@ export class DemoCamVisibleTest {
             //  alignFixedPlane.initialize(-0.5,-0.5,1.0,1.0,[tex1]);
             //  this.m_rscene.addEntity(alignFixedPlane);
             //  //Rect2DEntity
+            ///*
             let rect2DDisp: Rect2DEntity = new Rect2DEntity();
             rect2DDisp.vertColorEnabled = true;
             rect2DDisp.color0.setRGB3f(1.0, 1.0, 1.0);
@@ -108,6 +109,7 @@ export class DemoCamVisibleTest {
             rect2DDisp.setRotation(30.0);
             rect2DDisp.setXY(100.0, 180.0);
             this.m_rscene.addEntity(rect2DDisp);
+            //*/
             //              this.m_rect2DDisp = rect2DDisp;
 
             //      rect2DDisp = new Rect2DEntity();
@@ -117,7 +119,7 @@ export class DemoCamVisibleTest {
             //      this.m_rscene.addEntity(rect2DDisp);
             this.m_profileInstance = new ProfileInstance();
             this.m_profileInstance.initialize(this.m_rscene.getRenderer());
-
+            ///*
             let text2D: Text2DEntity = null;
             text2D = new Text2DEntity();
             text2D.initialize("我心永恒,ABCefg.H:");
@@ -126,11 +128,13 @@ export class DemoCamVisibleTest {
             text2D.setAlpha(0.5);
             //text2D.setScale(2.0);
             this.m_rscene.addEntity(text2D, 1);
+            //*/
 
             let srcBox: Box3DEntity = new Box3DEntity();
             srcBox.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex1]);
             //srcBox = null;
             let box: Box3DEntity = null;
+            total = 5;
             for (i = 0; i < total; ++i) {
                 box = new Box3DEntity();
                 if (srcBox != null) box.setMesh(srcBox.getMesh());
@@ -138,6 +142,7 @@ export class DemoCamVisibleTest {
                 if (total > 1) box.setXYZ(Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0, Math.random() * 1000.0 - 500.0);
                 //if(total > 1)box.setXYZ(Math.random() * 8000.0 - 4000.0,Math.random() * 8000.0 - 4000.0,Math.random() * 8000.0 - 4000.0);
                 this.m_rscene.addEntity(box);
+                this.m_boxList.push( box );
             }
         }
     }
@@ -161,6 +166,11 @@ export class DemoCamVisibleTest {
     delayTime: number = 10;
     run(): void {
         //console.log("##-- begin");
+        // for(let i: number = 0; i < this.m_boxList.length; ++i) {
+        //     if(!this.m_boxList[i].isRenderEnabled()) {
+        //         console.log("miss a entity "+i+".");
+        //     }
+        // }
         this.m_rscene.setClearRGBColor3f(0.1, 0.6, 0.1);
         //this.m_rcontext.setClearRGBAColor4f(0.0, 0.5, 0.0,0.0);
         this.m_rscene.renderBegin();

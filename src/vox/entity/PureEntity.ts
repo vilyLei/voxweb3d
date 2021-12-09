@@ -450,11 +450,23 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
             this.__$rseFlag = RSEntityFlag.DEFAULT;
         }
     }
+    /**
+     * @returns 是否已经加入渲染器中(但是可能还没有进入真正的渲染运行时)
+     */
     isInRenderer(): boolean {
         return (this.__$rseFlag & RSEntityFlag.RENDERER_UID_FLAG) != RSEntityFlag.RENDERER_UID_FLAG;
     }
+    /**
+     * @returns 是否在渲染器渲染过程中
+     */
+    isInRendererProcess(): boolean {
+        return this.m_display != null && this.m_display.__$ruid > -1;
+    }
+    /**
+     * @returns 是否能被渲染
+     */
     isRenderEnabled(): boolean {
-        return this.m_display != null && this.m_display.__$rpuid > -1;
+        return this.drawEnabled && this.m_visible && this.m_display != null && this.m_display.__$ruid > -1;
     }
     updateBounds(): void {
     }

@@ -88,7 +88,11 @@ export default interface IRenderEntity {
      */
     isInRenderer(): boolean;
     /**
-     * @returns 是否处在渲染运行时中
+     * @returns 是否在渲染器渲染过程中
+     */
+    isInRendererProcess(): boolean;
+    /**
+     * @returns 是否能被渲染
      */
     isRenderEnabled(): boolean;
 

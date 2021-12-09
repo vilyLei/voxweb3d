@@ -75,7 +75,7 @@ void main() {
     param = u_params[1];
     param.w *= dis * fa;
     FragColor0 = param;
-    //  FragColor0 += vec4(0.0,0.2,0.0,0.5);
+    //FragColor0 += vec4(0.0,0.2,0.0,0.3);
     // for test
     //FragColor0 = vec4(vec3(1.0,1.0,0.0), 1.0);
 }
