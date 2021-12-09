@@ -414,6 +414,23 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
             this.addVarying("vec3", "v_worldNormal");
             this.addVarying("vec3", "v_worldPosition");
         }
+        // 保证 顶点shader 中 vtx数据的顺序 a_vs -> a_uvs -> a_nvs
+        let words: string[] = ["a_vs", "a_uvs", "a_nvs"];
+        let nameList: string[] = [];
+        let typeList: string[] = [];
+        for(;words.length > 0;) {
+            let i: number = this.m_vertLayoutNames.indexOf(words[0]);
+            if(i >= 0) {
+                nameList.push(this.m_vertLayoutNames[i]);
+                typeList.push(this.m_vertLayoutTypes[i]);
+                this.m_vertLayoutNames.splice(i,1);
+                this.m_vertLayoutTypes.splice(i,1);
+            }
+            words.shift();
+        }
+        this.m_vertLayoutNames = nameList.concat(this.m_vertLayoutNames);
+        this.m_vertLayoutTypes = typeList.concat(this.m_vertLayoutTypes);
+
         if(this.m_fragOutputNames.length < 1) {
             this.addFragOutput("vec4", "FragColor0");
         }

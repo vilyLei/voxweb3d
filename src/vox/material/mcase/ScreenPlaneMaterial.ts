@@ -28,21 +28,17 @@ class ScreenPlaneShaderBuffer extends ShaderCodeBuffer {
 
     private buildThisCode(): void {
         let coder = this.m_coder;
-        coder.addVertLayout("vec3", "a_vs");
         if (this.m_hasTex) {
             coder.mapLodEnabled = this.mapLodEnabled;
-            coder.addVertLayout("vec2", "a_uvs");
             this.m_uniform.addDiffuseMap();
-            coder.addVarying("vec2", "v_uv");
         }
         else {
             coder.mapLodEnabled = false;
         }
-        coder.addFragOutput("vec4", "FragColor0");
+        
         coder.addFragUniform("vec4", "u_param", 3);
-
         coder.useVertSpaceMats(true, false, false);
-        coder.addFragFunction("");
+        
     }
     getFragShaderCode(): string {
         this.buildThisCode();
