@@ -37,7 +37,7 @@ export default class OcclusionPostOutline {
     private m_outLineRTT: RTTTextureProxy = null;
     private m_preColorFboIns: FBOInstance = null;
     private m_outlineFboIns: FBOInstance = null;
-
+    private m_boundsOffset: number = 10.0;
     private m_bounds: AABB = new AABB();
     private m_boundsEntity: Box3DEntity = new Box3DEntity();
 
@@ -131,7 +131,9 @@ export default class OcclusionPostOutline {
     setTargetList(targets: DisplayEntity[]): void {
         this.m_targets = targets;
     }
-
+    setBoundsOffset(offset: number): void {
+        this.m_boundsOffset = offset >= 1.0 ? offset : 1.0;
+    }
     startup(): void {
         this.m_running = true;
     }
@@ -173,13 +175,13 @@ export default class OcclusionPostOutline {
                     }
                     this.m_bounds.update();
                     let v3 = this.m_bounds.min;
-                    v3.x -= 10.0;
-                    v3.y -= 10.0;
-                    v3.z -= 10.0;
+                    v3.x -= this.m_boundsOffset;
+                    v3.y -= this.m_boundsOffset;
+                    v3.z -= this.m_boundsOffset;
                     v3 = this.m_bounds.max;
-                    v3.x += 10.0;
-                    v3.y += 10.0;
-                    v3.z += 10.0;
+                    v3.x += this.m_boundsOffset;
+                    v3.y += this.m_boundsOffset;
+                    v3.z += this.m_boundsOffset;
                     this.m_boundsEntity.initialize(this.m_bounds.min, this.m_bounds.max);
                     this.m_boundsEntity.updateMeshToGpu();
     

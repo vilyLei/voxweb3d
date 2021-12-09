@@ -370,7 +370,6 @@ function ThreadDraco() {
         selfT.decoder["onModuleLoaded"] = function (module) {
             selfT.parser = module;
             dracoParser.parser = module;
-            console.log("draco init finish...");
             postDataMessage(data, [data.data]);
         };
         DracoDecoderModule(selfT.decoder);
