@@ -31,6 +31,7 @@ export default class OcclusionPostOutline {
     private m_outlinePlane: ScreenAlignPlaneEntity = null;
     private m_displayPlane: ScreenAlignPlaneEntity = null;
     private m_running: boolean = true;
+    private m_runningFlag: boolean = true;
     private m_sizeScaleRatio: number = 0.5;
     private m_preColorRTT: RTTTextureProxy = null;
     private m_outLineRTT: RTTTextureProxy = null;
@@ -144,49 +145,63 @@ export default class OcclusionPostOutline {
      * draw outline line begin
      */
     drawBegin(): void {
-        
+        this.m_runningFlag = this.m_running;
         if(this.m_running && this.m_targets != null && this.m_targets.length > 0) {
-            if (this.m_targets[0].isRenderEnabled()) {
+            if (this.m_targets[0].isInRendererProcess()) {
 
-                this.m_preMaterial.setRGB3f(1.0, 0.0, 0.0);
-                this.m_preColorFboIns.setGlobalMaterial(this.m_preMaterial, false, true);
-                this.m_preColorFboIns.runBegin();
+                this.m_runningFlag = false;
 
-                this.m_bounds.reset();
                 for(let i: number = 0; i < this.m_targets.length; ++i) {
-                    this.m_preColorFboIns.drawEntity(this.m_targets[i]);
-                    this.m_bounds.union(this.m_targets[i].getGlobalBounds());
+                    if(this.m_targets[i].isRenderEnabled()) {
+                        this.m_runningFlag = true;
+                        break;
+                    }
                 }
-                this.m_bounds.update();
-                let v3 = this.m_bounds.min;
-                v3.x -= 10.0;
-                v3.y -= 10.0;
-                v3.z -= 10.0;
-                v3 = this.m_bounds.max;
-                v3.x += 10.0;
-                v3.y += 10.0;
-                v3.z += 10.0;
-                this.m_boundsEntity.initialize(this.m_bounds.min, this.m_bounds.max);
-                this.m_boundsEntity.updateMeshToGpu();
 
-                this.m_preColorFboIns.lockColorMask(RendererState.COLOR_MASK_ALL_FALSE);
-                this.m_preColorFboIns.clearDepth(1.0);
-                for(let i: number = 0; i < this.m_targets.length; ++i)
-                    this.m_targets[i].setVisible(false);
+                if(this.m_runningFlag) {
 
-                this.m_preColorFboIns.run(false, false, false);
-                this.m_preColorFboIns.lockColorMask(RendererState.COLOR_MASK_GREEN_TRUE);
-                for(let i: number = 0; i < this.m_targets.length; ++i)
-                    this.m_targets[i].setVisible(true);
-
-                this.m_preMaterial.setRGB3f(0.0, 1.0, 0.0);
-                this.m_preColorFboIns.updateGlobalMaterialUniform();
-                for(let i: number = 0; i < this.m_targets.length; ++i)
-                    this.m_preColorFboIns.drawEntity(this.m_targets[i]);
-
-                this.m_preColorFboIns.runEnd();                
-                this.m_preColorFboIns.unlockRenderColorMask();
-                this.m_preColorFboIns.unlockMaterial();
+                    this.m_preMaterial.setRGB3f(1.0, 0.0, 0.0);
+                    this.m_preColorFboIns.setGlobalMaterial(this.m_preMaterial, false, true);
+                    this.m_preColorFboIns.runBegin();
+    
+                    this.m_bounds.reset();
+                    for(let i: number = 0; i < this.m_targets.length; ++i) {
+                        if(this.m_targets[i].isRenderEnabled()) {
+                            this.m_preColorFboIns.drawEntity(this.m_targets[i]);
+                            this.m_bounds.union(this.m_targets[i].getGlobalBounds());
+                        }
+                    }
+                    this.m_bounds.update();
+                    let v3 = this.m_bounds.min;
+                    v3.x -= 10.0;
+                    v3.y -= 10.0;
+                    v3.z -= 10.0;
+                    v3 = this.m_bounds.max;
+                    v3.x += 10.0;
+                    v3.y += 10.0;
+                    v3.z += 10.0;
+                    this.m_boundsEntity.initialize(this.m_bounds.min, this.m_bounds.max);
+                    this.m_boundsEntity.updateMeshToGpu();
+    
+                    this.m_preColorFboIns.lockColorMask(RendererState.COLOR_MASK_ALL_FALSE);
+                    this.m_preColorFboIns.clearDepth(1.0);
+                    for(let i: number = 0; i < this.m_targets.length; ++i)
+                        this.m_targets[i].setVisible(false);
+    
+                    this.m_preColorFboIns.run(false, false, false);
+                    this.m_preColorFboIns.lockColorMask(RendererState.COLOR_MASK_GREEN_TRUE);
+                    for(let i: number = 0; i < this.m_targets.length; ++i)
+                        this.m_targets[i].setVisible(true);
+    
+                    this.m_preMaterial.setRGB3f(0.0, 1.0, 0.0);
+                    this.m_preColorFboIns.updateGlobalMaterialUniform();
+                    for(let i: number = 0; i < this.m_targets.length; ++i)
+                        this.m_preColorFboIns.drawEntity(this.m_targets[i]);
+    
+                    this.m_preColorFboIns.runEnd();                
+                    this.m_preColorFboIns.unlockRenderColorMask();
+                    this.m_preColorFboIns.unlockMaterial();
+                }
             }
         }
     }
@@ -196,7 +211,7 @@ export default class OcclusionPostOutline {
      */
     draw(): void {
 
-        if(this.m_running && this.m_targets != null && this.m_targets.length > 0) {
+        if(this.m_runningFlag && this.m_targets != null && this.m_targets.length > 0) {
             if (this.m_targets[0].isRenderEnabled()) {
 
                 // 计算场景摄像机近平面世界坐标空间位置
