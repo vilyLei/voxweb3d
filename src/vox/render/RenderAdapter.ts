@@ -395,7 +395,6 @@ class RenderAdapter implements IRenderAdapter{
 		else if (index < 0) {
 			index = 0;
 		}
-		console.log("XXXXXXXXXXx this.m_fboBufList[this.m_fboIndex] != null: ",this.m_fboBufList[this.m_fboIndex] != null, this.m_fboIndex);
 		if (this.m_fboBufList[index] != null) {
 			this.m_fboBufList[index].resize(pw, ph);
 		}

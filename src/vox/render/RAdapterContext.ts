@@ -30,10 +30,10 @@ class RAdapterContext {
     private m_gl: WebGLRenderingContext = null;
     private m_stage: IRenderStage3D = null;
 
-    private m_viewX: number = 0;
-    private m_viewY: number = 0;
-    private m_viewWidth: number = 800;
-    private m_viewHeight: number = 600;
+    private m_viewPortX: number = 0;
+    private m_viewPortY: number = 0;
+    private m_viewPortWidth: number = 800;
+    private m_viewPortHeight: number = 600;
     private m_maxWebGLVersion: number = 2;
     private m_webGLVersion: number = 2;
     private m_devicePixelRatio: number = 1.0;
@@ -341,6 +341,8 @@ class RAdapterContext {
                 this.m_stage.viewHeight = this.m_displayHeight;
                 this.m_stage.pixelRatio = k;
 
+                console.log("size to stage size: ", this.m_stage.stageWidth, this.m_stage.stageHeight);
+                console.log("size to view size: ", this.m_stage.viewWidth, this.m_stage.viewHeight);
                 //  DivLog.ShowLogOnce("stageSize: "+this.m_stage.stageWidth+","+this.m_stage.stageHeight);
                 //  DivLog.ShowLog("canvasSize: "+this.m_canvas.width+","+this.m_canvas.height);
                 //  DivLog.ShowLog("dispSize: "+this.m_displayWidth+","+this.m_displayHeight);
@@ -373,42 +375,43 @@ class RAdapterContext {
         return this.m_displayHeight;
     }
     setViewport(px: number, py: number, pw: number, ph: number): void {
-        let boo: boolean = this.m_viewX != px || this.m_viewY != py;
-        if (this.m_viewWidth != pw || this.m_viewHeight != ph || boo) {
-            this.m_viewX = px;
-            this.m_viewY = py;
-            this.m_viewWidth = pw;
-            this.m_viewHeight = ph;
+        let boo: boolean = this.m_viewPortX != px || this.m_viewPortY != py;
+        if (this.m_viewPortWidth != pw || this.m_viewPortHeight != ph || boo) {
+            this.m_viewPortX = px;
+            this.m_viewPortY = py;
+            this.m_viewPortWidth = pw;
+            this.m_viewPortHeight = ph;
+            console.log("size to view port: ", pw, ph);
         }
     }
     setViewportSize(pw: number, ph: number): void {
-        if (this.m_viewWidth != pw || this.m_viewHeight != ph) {
-            this.m_viewWidth = pw;
-            this.m_viewHeight = ph;
+        if (this.m_viewPortWidth != pw || this.m_viewPortHeight != ph) {
+            this.m_viewPortWidth = pw;
+            this.m_viewPortHeight = ph;
         }
     }
     testViewPortChanged(px: number, py: number, pw: number, ph: number): boolean {
         
-        return this.m_viewX != px || this.m_viewY != py || this.m_viewWidth != pw || this.m_viewHeight != ph;
+        return this.m_viewPortX != px || this.m_viewPortY != py || this.m_viewPortWidth != pw || this.m_viewPortHeight != ph;
     }
     getViewportX(): number {
-        return this.m_viewX;
+        return this.m_viewPortX;
     }
     getViewportY(): number {
-        return this.m_viewY;
+        return this.m_viewPortY;
     }
     getViewportWidth(): number {
-        return this.m_viewWidth;
+        return this.m_viewPortWidth;
     }
     getViewportHeight(): number {
-        return this.m_viewHeight;
+        return this.m_viewPortHeight;
     }
 
     getFBOWidth(): number {
-        return this.m_viewWidth < RendererDevice.MAX_RENDERBUFFER_SIZE ? this.m_viewWidth : RendererDevice.MAX_RENDERBUFFER_SIZE;
+        return this.m_viewPortWidth < RendererDevice.MAX_RENDERBUFFER_SIZE ? this.m_viewPortWidth : RendererDevice.MAX_RENDERBUFFER_SIZE;
     }
     getFBOHeight(): number {
-        return this.m_viewHeight < RendererDevice.MAX_RENDERBUFFER_SIZE ? this.m_viewHeight : RendererDevice.MAX_RENDERBUFFER_SIZE;
+        return this.m_viewPortHeight < RendererDevice.MAX_RENDERBUFFER_SIZE ? this.m_viewPortHeight : RendererDevice.MAX_RENDERBUFFER_SIZE;
     }
     getRCanvasWidth(): number {
         return this.m_rcanvasWidth;

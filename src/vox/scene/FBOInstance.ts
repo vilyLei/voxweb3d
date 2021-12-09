@@ -23,6 +23,7 @@ import IRenderEntity from "../../vox/render/IRenderEntity";
 import IRenderer from "../../vox/scene/IRenderer";
 import IRenderProcess from "../../vox/render/IRenderProcess";
 import { IRendererInstanceContext } from "./IRendererInstanceContext";
+import RendererState from "../render/RendererState";
 
 export default class FBOInstance {
     private m_backBufferColor: Color4 = new Color4();
@@ -174,6 +175,7 @@ export default class FBOInstance {
         }
     }
     unlockRenderColorMask(): void {
+        this.m_rcontext.useGlobalRenderColorMask(RendererState.COLOR_MASK_ALL_TRUE);
         this.m_renderProxy.unlockRenderColorMask();
     }
 
@@ -426,10 +428,10 @@ export default class FBOInstance {
     }
     setClearDepth(depth: number): void { this.m_clearDepth = depth; }
     getClearDepth(): number { return this.m_adapter.getClearDepth(); }
-    getViewX(): number { return this.m_adapter.getViewportX(); }
-    getViewY(): number { return this.m_adapter.getViewportY(); }
-    getViewWidth(): number { return this.m_adapter.getViewportWidth(); }
-    getViewHeight(): number { return this.m_adapter.getViewportHeight(); }
+    getViewportX(): number { return this.m_adapter.getViewportX(); }
+    getViewportY(): number { return this.m_adapter.getViewportY(); }
+    getViewportWidth(): number { return this.m_adapter.getViewportWidth(); }
+    getViewportHeight(): number { return this.m_adapter.getViewportHeight(); }
     getFBOWidth(): number { return this.m_adapter.getFBOWidthAt(this.m_fboIndex); }
     getFBOHeight(): number { return this.m_adapter.getFBOHeightAt(this.m_fboIndex); }
 
