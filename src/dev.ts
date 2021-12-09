@@ -331,7 +331,7 @@
 //  The reflection in water
 //  import {DemoMirrorPlane as Demo} from "./demo/DemoMirrorPlane";
 
-import {DemoOutline as Demo} from "./demo/DemoOutline";
+//  import {DemoOutline as Demo} from "./demo/DemoOutline";
 
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////     shadow    ///////////////////////////////////
@@ -395,7 +395,7 @@ import {DemoOutline as Demo} from "./demo/DemoOutline";
 
 //  import {RbtDrama as Demo} from "./app/RbtDrama";
 
-//  import {SlickRoad as Demo} from "./app/SlickRoad";
+import {SlickRoad as Demo} from "./app/SlickRoad";
 
 //  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 

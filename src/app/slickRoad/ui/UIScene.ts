@@ -93,7 +93,7 @@ class UIScene {
         this.m_btnPY += dis;
         //  selectBtn = this.createSelectBtn("构建几何数据", "buildGeomData", "开", "关", false);
         //  this.m_btnPY += dis;
-        selectBtn = this.createSelectBtn("场景编辑", "switchSceneEdit", "开", "关", false);
+        selectBtn = this.createSelectBtn("场景编辑", "switchSceneEdit", "开", "关", true);
         this.m_switchSceneEditBtn = selectBtn;
         this.m_btnPY += dis;
         
