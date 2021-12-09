@@ -26,26 +26,20 @@ class ScreenPlaneShaderBuffer extends ShaderCodeBuffer {
         }
     }
 
-    private buildThisCode(): void {
+    buildShader(): void {
         let coder = this.m_coder;
+        coder.mapLodEnabled = false;
         if (this.m_hasTex) {
             coder.mapLodEnabled = this.mapLodEnabled;
             this.m_uniform.addDiffuseMap();
-        }
-        else {
-            coder.mapLodEnabled = false;
-        }
-        
+        }        
         coder.addFragUniform("vec4", "u_param", 3);
         coder.useVertSpaceMats(true, false, false);
         
-    }
-    getFragShaderCode(): string {
-        this.buildThisCode();
-        if (this.m_hasTex) {
-            this.m_coder.addFragMainCode(
-                `
+        this.m_coder.addFragMainCode(
+            `
 void main() {
+#ifdef VOX_USE_2D_MAP
     #ifdef VOX_Texture2DLod
     vec4 color4 = VOX_Texture2DLod(VOX_DIFFUSE_MAP, v_uv, u_param[2].w);
     #else
@@ -54,47 +48,25 @@ void main() {
     color4 *= u_param[0];
     color4 += u_param[1];
     FragColor0 = color4;
-}
-`
-            );
-        }
-        else {
-
-            this.m_coder.addFragMainCode(
-                `
-void main() {
+#else
     FragColor0 = u_param[0] + u_param[1];
+#endif
 }
 `
-            );
-        }
-        return this.m_coder.buildFragCode();
-    }
-    getVertShaderCode(): string {
-        if (this.m_hasTex) {
-            this.m_coder.addVertMainCode(
-                `
+        );
+        this.m_coder.addVertMainCode(
+            `
 void main() {
     gl_Position = u_objMat * vec4(a_vs,1.0);
+#ifdef VOX_USE_2D_MAP
     v_uv = a_uvs.xy;
+#endif
 }
 `
-            );
-        }
-        else {
-
-            this.m_coder.addVertMainCode(
-                `
-void main() {
-    gl_Position = u_objMat * vec4(a_vs,1.0);
-}
-`
-            );
-        }
-        return this.m_coder.buildVertCode();
+        );
     }
+    
     getUniqueShaderName(): string {
-        //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
     toString(): string {
