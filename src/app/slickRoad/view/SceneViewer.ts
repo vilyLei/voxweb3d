@@ -3,7 +3,7 @@ import Plane3DEntity from "../../../vox/entity/Plane3DEntity";
 import DisplayEntity from "../../../vox/entity/DisplayEntity";
 
 import LambertLightMaterial from "../../../vox/material/mcase/LambertLightMaterial";
-import { MaterialContext } from "../../../materialLab/base/MaterialContext";
+import { MaterialContextDebug } from "../../../materialLab/base/MaterialContextDebug";
 import Box3DEntity from "../../../vox/entity/Box3DEntity";
 import Vector3D from "../../../vox/math/Vector3D";
 
@@ -22,7 +22,7 @@ class SceneViewer {
     constructor() { }
 
     private m_engine: EngineBase = null;
-    private m_materialCtx: MaterialContext = new MaterialContext();
+    private m_materialCtx: MaterialContextDebug = new MaterialContextDebug();
 
     private m_rotV: Vector3D = new Vector3D(Math.random() * 360.0, Math.random() * 360.0, Math.random() * 360.0);
     private m_spdV: Vector3D = new Vector3D(Math.random() * 0.6 - 0.3, Math.random() * 0.6 - 0.3, Math.random() * 0.6 - 0.3);
