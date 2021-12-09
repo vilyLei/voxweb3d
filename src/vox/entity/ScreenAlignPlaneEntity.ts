@@ -50,7 +50,7 @@ export default class ScreenAlignPlaneEntity extends DisplayEntity {
             this.m_currMaterial.setTextureList(texList);
             this.setMaterial(this.m_currMaterial);
         }
-        else {
+        else if (texList != null && this.getMaterial().getTextureTotal() < 1) {
             this.getMaterial().setTextureList(texList);
         }
     }

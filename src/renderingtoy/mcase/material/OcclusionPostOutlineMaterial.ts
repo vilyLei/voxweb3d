@@ -16,11 +16,12 @@ class OcclusionPostOutlineShaderBuffer extends ShaderCodeBuffer {
     }
     private static s_instance: OcclusionPostOutlineShaderBuffer = new OcclusionPostOutlineShaderBuffer();
     private m_uniqueName: string = "";
-    
+    screenPlaneEnabled: boolean = true;
     initialize(texEnabled: boolean): void {
         super.initialize(texEnabled);
         //console.log("OcclusionPostOutlineShaderBuffer::initialize()...,texEnabled: "+texEnabled);
         this.m_uniqueName = "OcclusionPostOutlineShd";
+        this.m_uniqueName += this.screenPlaneEnabled ? "Plane" : "Polyhedral";
         this.adaptationShaderVersion = false;
     }
     buildShader(): void {
@@ -28,38 +29,45 @@ class OcclusionPostOutlineShaderBuffer extends ShaderCodeBuffer {
         let coder = this.m_coder;
         
         this.m_uniform.addDiffuseMap();
-        coder.addFragUniform("vec4", "u_texParam");
         coder.addFragUniform("vec4", "u_params", 3);
 
-        coder.addVarying("vec2", "v_uv");
-
-        coder.useVertSpaceMats(false, false, false);
+        if(this.screenPlaneEnabled) {
+            coder.addDefine("VOX_SCREEN_PLANE", "1");
+            coder.useVertSpaceMats(false, false, false);
+        }
 
         this.m_coder.addFragMainCode(
 `
 const float factor = 1.0 / 9.0;
 const float floatReciprocalGamma = (1.0 / 2.2);
 void main() {
-    
+
     vec4 param = u_params[0];
+
+    #ifdef VOX_SCREEN_PLANE
+        vec2 puv = v_uv.xy;
+    #else
+        vec2 puv = gl_FragCoord.xy/param.xy;
+    #endif
+    
     vec2 dv = param.ww / param.xy;
-    vec4 srcColor = VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv );
+    vec4 srcColor = VOX_Texture2D( VOX_DIFFUSE_MAP, puv );
     vec2 fc = srcColor.xy;
-    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + dv ).xy;
-    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - dv ).xy;
-    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(dv.x ,-dv.y) ).xy;
-    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(-dv.x ,dv.y) ).xy;
-    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(dv.x ,0) ).xy;
-    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv + vec2(0 ,dv.y) ).xy;
-    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - vec2(dv.x ,0) ).xy;
-    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, v_uv - vec2(0 ,dv.y) ).xy;
+    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, puv + dv ).xy;
+    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, puv - dv ).xy;
+    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, puv + vec2(dv.x ,-dv.y) ).xy;
+    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, puv + vec2(-dv.x ,dv.y) ).xy;
+    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, puv + vec2(dv.x ,0) ).xy;
+    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, puv + vec2(0 ,dv.y) ).xy;
+    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, puv - vec2(dv.x ,0) ).xy;
+    fc.xy += VOX_Texture2D( VOX_DIFFUSE_MAP, puv - vec2(0 ,dv.y) ).xy;
     fc.xy *= factor;
     
     float dis = abs(fc.x - srcColor.x);
 
     float fk = step(max(fc.y, srcColor.y), 0.0001);
     float fa = u_params[2].x;
-    fa = (1.0 - fk) * (1.0 - fa) + fa;
+    fa += (1.0 - fk) * (1.0 - fa);
 
     dis *= param.z;
     dis = pow(dis * dis * dis, floatReciprocalGamma);
@@ -67,7 +75,9 @@ void main() {
     param = u_params[1];
     param.w *= dis * fa;
     FragColor0 = param;
-    //FragColor0 = vec4(srcColor.xyz, 1.0);
+    //  FragColor0 += vec4(0.0,0.2,0.0,0.5);
+    // for test
+    //FragColor0 = vec4(vec3(1.0,1.0,0.0), 1.0);
 }
 `
                     );
@@ -75,8 +85,12 @@ void main() {
         this.m_coder.addVertMainCode(
 `
 void main() {
-    gl_Position = vec4(a_vs, 1.0);
-    v_uv = a_uvs.xy;
+    #ifdef VOX_SCREEN_PLANE
+        gl_Position = vec4(a_vs, 1.0);
+        v_uv = a_uvs.xy;
+    #else
+        gl_Position = u_projMat * u_viewMat * u_objMat * vec4(a_vs, 1.0);
+    #endif
 }
 `
                     );
@@ -93,10 +107,16 @@ void main() {
 }
 
 export default class OcclusionPostOutlineMaterial extends MaterialBase {
-    constructor() {
-        super();
-    }
 
+    private m_screenPlaneEnabled: boolean = true;
+    constructor(screenPlaneEnabled: boolean = true) {
+        super();
+        this.m_screenPlaneEnabled = screenPlaneEnabled;
+    }
+    protected buildBuf(): void {
+        let buf: OcclusionPostOutlineShaderBuffer = OcclusionPostOutlineShaderBuffer.GetInstance();
+        buf.screenPlaneEnabled = this.m_screenPlaneEnabled;
+    }
     getCodeBuf(): ShaderCodeBuffer {
         let buf: OcclusionPostOutlineShaderBuffer = OcclusionPostOutlineShaderBuffer.GetInstance();
         return buf;
