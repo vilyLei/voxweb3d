@@ -92,7 +92,7 @@ export default class OcclusionPostOutline {
             //  (this.m_boundsEntity.getMaterial() as any).setRGBA4f(1.0,1.0,1.0,0.5);
             
             this.m_displayPlane = new ScreenAlignPlaneEntity();
-            //this.m_displayPlane.copyMeshFrom( this.m_outlinePlane );
+            this.m_displayPlane.copyMeshFrom( this.m_outlinePlane );
             this.m_displayPlane.setRenderState(RendererState.BACK_TRANSPARENT_ALWAYS_STATE);
             this.m_displayPlane.initialize(-1, -1, 2, 2, [this.m_outLineRTT]);
 
@@ -126,7 +126,6 @@ export default class OcclusionPostOutline {
     }
     setPostRenderState(state: number): void {
         this.m_displayPlane.setRenderState(state);
-        this.m_boundsEntity.setRenderState(state);
     }
     setTargetList(targets: DisplayEntity[]): void {
         this.m_targets = targets;
@@ -224,15 +223,15 @@ export default class OcclusionPostOutline {
                 this.m_testPlane.distance = this.m_testPlane.nv.dot(pv);
                 this.m_testPlane.nv.copyFrom( camera.getNV() );
 
-                this.m_outlineMaterial0.setTexSize(this.m_preColorFboIns.getFBOWidth(), this.m_preColorFboIns.getFBOHeight());
-                this.m_outlineMaterial1.setTexSize(this.m_preColorFboIns.getFBOWidth(), this.m_preColorFboIns.getFBOHeight());
                 this.m_outlineFboIns.runBegin();
 
                 let flag = this.m_testPlane.intersectAABB(this.m_bounds.min, this.m_bounds.max);
                 if(flag <= 0) {
+                    this.m_outlineMaterial0.setTexSize(this.m_preColorFboIns.getFBOWidth(), this.m_preColorFboIns.getFBOHeight());
                     this.m_outlineFboIns.drawEntity(this.m_outlinePlane);
                 }
                 else {
+                    this.m_outlineMaterial1.setTexSize(this.m_preColorFboIns.getFBOWidth(), this.m_preColorFboIns.getFBOHeight());
                     this.m_outlineFboIns.drawEntity(this.m_boundsEntity);
                 }
                 this.m_outlineFboIns.runEnd();

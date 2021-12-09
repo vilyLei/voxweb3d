@@ -28,6 +28,7 @@ class ScreenPlaneShaderBuffer extends ShaderCodeBuffer {
 
     private buildThisCode(): void {
         let coder = this.m_coder;
+        coder.addVertLayout("vec3", "a_vs");
         if (this.m_hasTex) {
             coder.mapLodEnabled = this.mapLodEnabled;
             coder.addVertLayout("vec2", "a_uvs");
