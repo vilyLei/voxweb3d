@@ -25,62 +25,38 @@ import { CarEntity } from "../base/CarEntity";
 
 class ToyCarTask extends ThreadTask {
     
-    private m_tarTotal: number = 0;
+    private m_total: number = 0;
     private m_currMatTotal: number = 1;
     private m_fs32Data: Float32Array = null;
     private m_enabled: boolean = true;
+    private m_entityIndex: number = 0;
     private m_entities: IToyEntity[] = [];
     private m_flag: number = 0;
     constructor() {
         super();
     }
-    private m_texnsList: string[] = [
-        "fruit_01.jpg"
-        , "moss_05.jpg"
-        , "metal_02.jpg"
-        , "fruit_01.jpg"
-        , "moss_05.jpg"
-        , "metal_02.jpg"
-    ];
-    getImageTexByUrlFunc: Function = null;
-    getImageTexByUrlHost: any = null;
-
-    getFS32Data(): Float32Array {
-        return this.m_fs32Data;
-    }
     
-    buildTask(total: number, sc: RendererScene): void {
-
-        let texnsI = Math.floor(this.m_texnsList.length * 10 * Math.random() - 0.1) % this.m_texnsList.length;
-
-        let tex0: TextureProxy = this.getImageTexByUrlFunc.call(this.getImageTexByUrlHost, "static/assets/" + this.m_texnsList[texnsI]);
-        let matTask: ToyCarTask = this;
-        matTask.initialize(total);
-
-        let asset: AssetPackage = new AssetPackage();
-        asset.textures = [
-            this.getImageTexByUrlFunc.call(this.getImageTexByUrlHost, "static/assets/" + this.m_texnsList[0]),
-            this.getImageTexByUrlFunc.call(this.getImageTexByUrlHost, "static/assets/" + this.m_texnsList[1]),
-            this.getImageTexByUrlFunc.call(this.getImageTexByUrlHost, "static/assets/" + this.m_texnsList[2])
-        ];
-        let entity: CarEntity = new CarEntity();
-        entity.asset = asset;
-        entity.setFS32Data(this.getFS32Data(), 0);
-        entity.build( sc );
-        this.m_entities.push(entity);
-
-        total = this.setCurrTotal(total);
-        
-    }
     initialize(entitiesTotal: number): void {
-        if (this.m_tarTotal < 1 && this.m_fs32Data == null && entitiesTotal > 0) {
+        if (this.m_total < 1 && this.m_fs32Data == null) {
             
-            this.m_tarTotal = entitiesTotal;
+            this.m_total = entitiesTotal;
             this.m_fs32Data = new Float32Array(entitiesTotal * 16 * 5);
         }
     }
+    getFS32Data(): Float32Array {
+        return this.m_fs32Data;
+    }
+
+    addEntity(entity: IToyEntity): void {
+        if(this.m_entityIndex < this.m_total) {
+
+            entity.setFS32Data(this.getFS32Data(), this.m_entityIndex);
+            this.m_entities.push(entity);
+            this.m_entityIndex ++;
+        }
+    }
     getTotal(): number {
-        return this.m_tarTotal;
+        return this.m_total;
     }
     updateAndSendParam(): void {
         if (this.isSendEnabled()) {
@@ -95,19 +71,13 @@ class ToyCarTask extends ThreadTask {
     isDataEnabled(): boolean {
         return this.m_enabled;
     }
-    setCurrTotal(currMatTotal: number): number {
-        currMatTotal = currMatTotal < 1 ? 1 : currMatTotal;
-        currMatTotal = currMatTotal > this.m_tarTotal ? this.m_tarTotal : currMatTotal;
-        this.m_currMatTotal = currMatTotal;
-        console.log("setCurrTotal(), currMatTotal: ",currMatTotal);
-        return currMatTotal;
-    }
+    
     private sendData(): void {
         if (this.m_enabled) {
             let sd: ToyCarSendData = ToyCarSendData.Create();
             sd.taskCmd = "car_trans";
             sd.paramData = this.m_fs32Data;
-            sd.allTot = this.m_tarTotal;
+            sd.allTot = this.m_total;
             sd.matTotal = this.m_currMatTotal;
             sd.flag = this.m_flag;
             sd.calcType = 1;

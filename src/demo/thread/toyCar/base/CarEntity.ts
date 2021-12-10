@@ -77,7 +77,7 @@ class CarEntity implements IToyEntity{
             this.m_transMat4List.push( box.getMatrix() );
         }
         // for test
-        this.setPosXYZ( -200, 50, 200 );
+        this.setPosXYZ( 200, 50, 200 );
         this.setRotationXYZ(0.0, Math.random() * 360.0, 0.0);
         // whole body scale, param 1, param 2
         this.setParam(0.2, 0.5, 0.5);

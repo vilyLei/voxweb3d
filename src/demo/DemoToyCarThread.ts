@@ -70,51 +70,14 @@ export class DemoToyCarThread extends DemoInstance {
 
         console.log("------------------------------------------------------------------");
         console.log("------------------------------------------------------------------");
-        this.thr_test();
 
         this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
         this.m_objScene.initialize(this.m_rscene, this.m_texLoader);
+        
         this.update();
     }
-    private m_dispTotal: number = 0;
-    private m_matTasks: ToyCarTask[] = [];
-    private m_unitAmount: number = 1;
-    private buildTask(): void {
-        // /*
-        let total: number = this.m_unitAmount;
-        let matTask: ToyCarTask = new ToyCarTask();
-        matTask.getImageTexByUrlFunc = this.getImageTexByUrl;
-        matTask.getImageTexByUrlHost = this;
-        matTask.buildTask(total, this.m_rscene);
-        this.m_dispTotal += total;
-        this.m_matTasks.push(matTask);
-        //*/
-
-    }
-    private updateTask(): void {
-        if (this.m_dispTotal > 0) {
-            let list = this.m_matTasks;
-            let len: number = list.length;
-            for (let i: number = 0; i < len; ++i) {
-                list[i].updateAndSendParam();
-            }
-        }
-    }
-    private m_flag: number = 0;
+    
     private m_downFlag: number = 0;
-    private testTask(): void {
-        this.m_flag++;
-        this.updateTask();
-    }
-    private thr_test(): void {
-        this.buildTask();
-
-        // 注意: m_codeStr 代码中描述的 getTaskClass() 返回值 要和 threadToyCar 中的 getTaskClass() 返回值 要相等
-        ThreadSystem.InitTaskByURL("static/thread/threadToyCar.js", 0);
-        ThreadSystem.Initialize(1);
-        this.testTask();
-    }
-
     private mouseDown(evt: any): void {
         this.m_downFlag++;
     }
@@ -126,21 +89,22 @@ export class DemoToyCarThread extends DemoInstance {
         }
         //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
         this.m_timeoutId = setTimeout(this.update.bind(this), 30);// 20 fps
-        if (this.m_flag > 0) {
-            this.m_flag++;
-            this.updateTask();
-        }
+        
+        this.m_objScene.updateThread();
     }
     runBegin(): void {
         this.m_stageDragCtrl.runWithYAxis();
         this.m_cameraZoomController.run(null, 30.0);
-
+        
         if (this.m_statusDisp != null) this.m_statusDisp.update();
         
     }
     run(): void {
+
         ThreadSystem.Run();
+
         this.m_rscene.run();
+
         if (this.m_profileInstance != null) {
             this.m_profileInstance.run();
         }
