@@ -107,17 +107,6 @@
 //  import * as MipmapTexture from "./example/MipmapTexture";
 //  import Demo = MipmapTexture.example.MipmapTexture;
 
-//  import {DemoThread as Demo} from "./demo/DemoThread";
-
-//  import {DemoThreadSchedule as Demo} from "./demo/DemoThreadSchedule";
-
-//  import {DemoMatComputer as Demo} from "./demo/DemoMatComputer";
-
-//  import {DemoMatTransThread as Demo} from "./demo/DemoMatTransThread";
-
-//  import * as DemoThreadConcurrent from "./demo/DemoThreadConcurrent";
-//  import Demo = DemoThreadConcurrent.demo.DemoThreadConcurrent;
-
 //  import {DemoMatContainer as Demo} from "./demo/DemoMatContainer";
 
 //  import * as DemoDrawGroup from "./demo/DemoDrawGroup";
@@ -236,10 +225,27 @@
 
 //  import {DemoCamera as Demo} from "./demo/DemoCamera";
 
-//  import {DemoMatNavAstarThread as Demo} from "./demo/DemoMatNavAstarThread";
 
 ////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////   thread    /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
+
+
+//  import {DemoThread as Demo} from "./demo/DemoThread";
+
+//  import {DemoThreadSchedule as Demo} from "./demo/DemoThreadSchedule";
+
+//  import {DemoMatComputer as Demo} from "./demo/DemoMatComputer";
+
+//  import {DemoMatTransThread as Demo} from "./demo/DemoMatTransThread";
+
+//  import {DemoThreadConcurrent as Demo} from "./demo/DemoThreadConcurrent";
+
+import {DemoMatNavAstarThread as Demo} from "./demo/DemoMatNavAstarThread";
+
+
+////////////////////////////////////////////////////////////////////////////////
+//////////////////////////////   motion    /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
 //  import {FixProjMotion as Demo} from "./motionDemo/FixProjMotion";
@@ -280,7 +286,7 @@
 //  import {DemoTransFromTex as Demo} from "./demo/DemoTransFromTex";
 
 ///////////////////////////////////////////////////////////////////////////////
-////////////////////////////   renderer    ///////////////////////////////////
+////////////////////////////   renderer    ////////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
 //  import {DemoEmptyRenderer as Demo} from "./demo/DemoEmptyRenderer";
@@ -397,7 +403,7 @@
 
 //  import {SlickRoad as Demo} from "./app/SlickRoad";
 
-import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
+//  import {SlickRoadViewer as Demo} from "./app/SlickRoadViewer";
 
 //  import {DemoDraco as Demo} from "./demo/DemoDraco";
 
