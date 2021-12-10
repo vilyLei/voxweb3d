@@ -109,8 +109,8 @@ export class DemoToyCarThread extends DemoInstance {
     private thr_test(): void {
         this.buildTask();
 
-        // 注意: m_codeStr 代码中描述的 getTaskClass() 返回值 要和 TestNumberAddTask 中的 getTaskClass() 返回值 要相等
-        ThreadSystem.InitTaskByURL("static/thread/ThreadNav.js", 0);
+        // 注意: m_codeStr 代码中描述的 getTaskClass() 返回值 要和 threadToyCar 中的 getTaskClass() 返回值 要相等
+        ThreadSystem.InitTaskByURL("static/thread/threadToyCar.js", 0);
         ThreadSystem.Initialize(1);
         this.testTask();
     }

@@ -13,8 +13,9 @@ import TextureProxy from "../../../../vox/texture/TextureProxy";
 import Box3DEntity from "../../../../vox/entity/Box3DEntity";
 import { AssetPackage } from "./AssetPackage";
 import RendererScene from "../../../../vox/scene/RendererScene";
+import {IToyEntity} from "./IToyEntity";
 
-class CarEntity {
+class CarEntity implements IToyEntity{
 
     private m_index: number = 0;
     private m_fs32Length: number = 15;
@@ -76,7 +77,7 @@ class CarEntity {
             this.m_transMat4List.push( box.getMatrix() );
         }
         // for test
-        this.setPosXYZ( 200, 50, 200 );
+        this.setPosXYZ( -200, 50, 200 );
         this.setRotationXYZ(0.0, Math.random() * 360.0, 0.0);
         // whole body scale, param 1, param 2
         this.setParam(0.2, 0.5, 0.5);
