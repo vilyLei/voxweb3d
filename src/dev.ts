@@ -241,7 +241,7 @@
 
 //  import {DemoThreadConcurrent as Demo} from "./demo/DemoThreadConcurrent";
 
-import {DemoMatNavAstarThread as Demo} from "./demo/DemoMatNavAstarThread";
+import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
 
 
 ////////////////////////////////////////////////////////////////////////////////

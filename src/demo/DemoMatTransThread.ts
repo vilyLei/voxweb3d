@@ -23,7 +23,7 @@ import { MatTransTask } from "../demo/thread/MatTransTask";
 import { MatCarTask } from "../demo/thread/MatCarTask";
 import { ObsPathScene } from "../demo/scene/ObsPathScene";
 
-export class DemoMatTransThread extends DemoInstance {
+export class DemoToyCarThread extends DemoInstance {
     constructor() {
         super();
     }
@@ -43,7 +43,7 @@ export class DemoMatTransThread extends DemoInstance {
     }
 
     protected initializeSceneObj(): void {
-        console.log("DemoMatTransThread::initialize()......");
+        console.log("DemoToyCarThread::initialize()......");
         this.m_camTrack = new CameraTrack();
         this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
@@ -153,4 +153,4 @@ export class DemoMatTransThread extends DemoInstance {
         //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
     }
 }
-export default DemoMatTransThread;
+export default DemoToyCarThread;

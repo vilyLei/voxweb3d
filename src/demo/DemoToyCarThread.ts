@@ -1,4 +1,3 @@
-
 import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
@@ -10,7 +9,7 @@ import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import TextureProxy from "../vox/texture/TextureProxy";
-////import * as TextureStoreT from "../vox/texture/TextureStore";
+
 import CameraTrack from "../vox/view/CameraTrack";
 import MouseEvent from "../vox/event/MouseEvent";
 import DemoInstance from "./DemoInstance";
@@ -19,10 +18,10 @@ import ThreadSystem from "../thread/ThreadSystem";
 import CameraDragController from "../voxeditor/control/CameraDragController";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
-import { MatCarTask } from "../demo/thread/MatCarTask";
-import { ObsPathScene } from "../demo/scene/ObsPathScene";
+import { ToyCarTask } from "./thread/toyCar/task/ToyCarTask";
+import { ToyCarScene } from "./thread/toyCar/scene/ToyCarScene";
 
-export class DemoMatNavAstarThread extends DemoInstance {
+export class DemoToyCarThread extends DemoInstance {
     constructor() {
         super();
     }
@@ -32,7 +31,7 @@ export class DemoMatNavAstarThread extends DemoInstance {
     private m_stageDragCtrl: CameraDragController = new CameraDragController();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
-    private m_objScene: ObsPathScene = new ObsPathScene();
+    private m_objScene: ToyCarScene = new ToyCarScene();
 
     protected initializeSceneParam(param: RendererParam): void {
         this.m_processTotal = 4;
@@ -42,7 +41,7 @@ export class DemoMatNavAstarThread extends DemoInstance {
     }
 
     protected initializeSceneObj(): void {
-        console.log("DemoMatNavAstarThread::initialize()......");
+        console.log("DemoToyCarThread::initialize()......");
         this.m_camTrack = new CameraTrack();
         this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
@@ -73,15 +72,17 @@ export class DemoMatNavAstarThread extends DemoInstance {
         console.log("------------------------------------------------------------------");
         this.thr_test();
 
+        this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
         this.m_objScene.initialize(this.m_rscene, this.m_texLoader);
+        this.update();
     }
     private m_dispTotal: number = 0;
-    private m_matTasks: MatCarTask[] = [];
+    private m_matTasks: ToyCarTask[] = [];
     private m_unitAmount: number = 1;
     private buildTask(): void {
         // /*
         let total: number = this.m_unitAmount;
-        let matTask: MatCarTask = new MatCarTask();
+        let matTask: ToyCarTask = new ToyCarTask();
         matTask.getImageTexByUrlFunc = this.getImageTexByUrl;
         matTask.getImageTexByUrlHost = this;
         matTask.buildTask(total, this.m_rscene);
@@ -115,41 +116,36 @@ export class DemoMatNavAstarThread extends DemoInstance {
     }
 
     private mouseDown(evt: any): void {
-        //  //if(this.m_downFlag < 20 && this.m_matTasks.length < 3)
-        //  if(this.m_downFlag < 20)
-        //  {
-        //      if(this.m_dispTotal < 22000)
-        //      {
-        //          this.buildTask();
-        //      }
-        //  }
         this.m_downFlag++;
-        //  //console.log("mouse down evt: ",evt);
-        //  this.testTask();
-        //this.updateTask();
+    }
+    private m_timeoutId: any = -1;
+    private update(): void {
+        
+        if (this.m_timeoutId > -1) {
+            clearTimeout(this.m_timeoutId);
+        }
+        //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
+        this.m_timeoutId = setTimeout(this.update.bind(this), 30);// 20 fps
+        if (this.m_flag > 0) {
+            this.m_flag++;
+            this.updateTask();
+        }
     }
     runBegin(): void {
         this.m_stageDragCtrl.runWithYAxis();
         this.m_cameraZoomController.run(null, 30.0);
 
         if (this.m_statusDisp != null) this.m_statusDisp.update();
-        this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
-        //this.m_rscene.setClearUint24Color(0x003300,1.0);
-        if (this.m_flag > 0) {
-            this.testTask();
-        }
-        //super.runBegin();
+        
     }
     run(): void {
+        ThreadSystem.Run();
         this.m_rscene.run();
         if (this.m_profileInstance != null) {
             this.m_profileInstance.run();
         }
-        ThreadSystem.Run();
     }
     runEnd(): void {
-        //super.runEnd();
-        //this.m_camTrack.rotationOffsetAngleWorldY(-0.2);
     }
 }
-export default DemoMatNavAstarThread;
+export default DemoToyCarThread;
