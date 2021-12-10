@@ -23,7 +23,7 @@ class ToyCarTask extends ThreadTask {
     private m_matIndex: number = 0;
     private m_tarTotal: number = 0;
     private m_currMatTotal: number = 1;
-    private m_fs32Arr: Float32Array = null;
+    private m_fs32Data: Float32Array = null;
     private m_dstMFSList: Matrix4[] = null;
     private m_dstMFSTotal: number = 0;
     private m_enabled: boolean = true;
@@ -48,6 +48,10 @@ class ToyCarTask extends ThreadTask {
     ];
     getImageTexByUrlFunc: Function = null;
     getImageTexByUrlHost: any = null;
+
+    getFS32Data(): Float32Array {
+        return this.m_fs32Data;
+    }
     buildTask(total: number, sc: IRenderer): void {
         let texnsI = Math.floor(this.m_texnsList.length * 10 * Math.random() - 0.1) % this.m_texnsList.length;
 
@@ -124,10 +128,10 @@ class ToyCarTask extends ThreadTask {
         //*/
     }
     initialize(dispTotal: number): void {
-        if (this.m_tarTotal < 1 && this.m_fs32Arr == null && dispTotal > 0) {
+        if (this.m_tarTotal < 1 && this.m_fs32Data == null && dispTotal > 0) {
             console.log("### ToyCarTask::initialize()...");
             this.m_tarTotal = dispTotal;
-            this.m_fs32Arr = new Float32Array(dispTotal * 16 * 5);
+            this.m_fs32Data = new Float32Array(dispTotal * 16 * 5);
             //  this.m_dstMFSList = new Array(matTotal);
             //  this.m_dataList = new Array(matTotal);
             ///////////////////////////////////////////////////////////////////
@@ -181,37 +185,37 @@ class ToyCarTask extends ThreadTask {
     }
 
     setEntityPosXYZ(px: number, py: number, pz: number): void {
-        this.m_fs32Arr[this.m_matIndex++] = px;
-        this.m_fs32Arr[this.m_matIndex++] = py;
-        this.m_fs32Arr[this.m_matIndex++] = pz;
+        this.m_fs32Data[this.m_matIndex++] = px;
+        this.m_fs32Data[this.m_matIndex++] = py;
+        this.m_fs32Data[this.m_matIndex++] = pz;
     }
     setEntityRotationXYZ(prx: number, pry: number, prz: number): void {
-        this.m_fs32Arr[this.m_matIndex++] = prx;
-        this.m_fs32Arr[this.m_matIndex++] = pry;
-        this.m_fs32Arr[this.m_matIndex++] = prz;
+        this.m_fs32Data[this.m_matIndex++] = prx;
+        this.m_fs32Data[this.m_matIndex++] = pry;
+        this.m_fs32Data[this.m_matIndex++] = prz;
     }
     setParam(bodyScale: number, pry: number, prz: number): void {
-        this.m_fs32Arr[this.m_matIndex++] = bodyScale;
-        this.m_fs32Arr[this.m_matIndex++] = pry;
-        this.m_fs32Arr[this.m_matIndex++] = prz;
+        this.m_fs32Data[this.m_matIndex++] = bodyScale;
+        this.m_fs32Data[this.m_matIndex++] = pry;
+        this.m_fs32Data[this.m_matIndex++] = prz;
     }
     setWheelOffsetXYZ(psx: number, psy: number, psz: number): void {
-        this.m_fs32Arr[this.m_matIndex++] = psx;
-        this.m_fs32Arr[this.m_matIndex++] = psy;
-        this.m_fs32Arr[this.m_matIndex++] = psz;
+        this.m_fs32Data[this.m_matIndex++] = psx;
+        this.m_fs32Data[this.m_matIndex++] = psy;
+        this.m_fs32Data[this.m_matIndex++] = psz;
     }
     // wheel init rotation, spd, wheel body scale;
     setWheelRotSpeed(prx: number, pry: number, prz: number): void {
-        this.m_fs32Arr[this.m_matIndex++] = prx;
-        this.m_fs32Arr[this.m_matIndex++] = pry;
-        this.m_fs32Arr[this.m_matIndex++] = prz;
+        this.m_fs32Data[this.m_matIndex++] = prx;
+        this.m_fs32Data[this.m_matIndex++] = pry;
+        this.m_fs32Data[this.m_matIndex++] = prz;
     }
     //
     sendData(): void {
         if (this.m_enabled) {
             let sd: ToyCarSendData = ToyCarSendData.Create();
             sd.taskCmd = "car_trans";
-            sd.paramData = this.m_fs32Arr;
+            sd.paramData = this.m_fs32Data;
             sd.allTot = this.m_tarTotal;
             sd.matTotal = this.m_currMatTotal;
             sd.flag = this.m_flag;
@@ -226,8 +230,8 @@ class ToyCarTask extends ThreadTask {
             console.log("sendData failure...");
         }
     }
-    private updateTrans(fs32: Float32Array, ): void {
-
+    private updateTrans(fs32: Float32Array): void {
+        
         for (let i: number = 0; i < this.m_dispListLen; ++i) {
             this.m_dispList[i].getMatrix().copyFromF32Arr(fs32, i * 16);
         }
@@ -235,12 +239,12 @@ class ToyCarTask extends ThreadTask {
     // return true, task finish; return false, task continue...
     parseDone(data: any, flag: number): boolean {
         
-        this.m_fs32Arr = (data.paramData);
+        this.m_fs32Data = (data.paramData);
         ToyCarSendData.RestoreByUid(data.dataIndex);
 
         switch(data.taskCmd) {
             case "car_trans":
-                this.updateTrans( this.m_fs32Arr );
+                this.updateTrans( this.m_fs32Data );
                 break;
             case "aStar_nav":
                 break;
