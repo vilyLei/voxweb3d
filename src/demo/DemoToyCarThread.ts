@@ -18,7 +18,6 @@ import ThreadSystem from "../thread/ThreadSystem";
 import CameraDragController from "../voxeditor/control/CameraDragController";
 import CameraZoomController from "../voxeditor/control/CameraZoomController";
 
-import { ToyCarTask } from "./thread/toyCar/task/ToyCarTask";
 import { ToyCarScene } from "./thread/toyCar/scene/ToyCarScene";
 
 export class DemoToyCarThread extends DemoInstance {

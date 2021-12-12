@@ -4,24 +4,11 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-// ThreadTask example
-
-import Vector3D from "../../../../vox/math/Vector3D";
 import IThreadSendData from "../../../../thread/base/IThreadSendData";
 import ThreadTask from "../../../../thread/control/ThreadTask";
-import Matrix4 from "../../../../vox/math/Matrix4";
-import PureEntity from "../../../../vox/entity/PureEntity";
-import RendererScene from "../../../../vox/scene/RendererScene";
-
-import TextureProxy from "../../../../vox/texture/TextureProxy";
-import Box3DEntity from "../../../../vox/entity/Box3DEntity";
 import ThreadSystem from "../../../../thread/ThreadSystem";
 import {ToyCarSendData} from "./ToyCarSendData";
-import {TransData} from "./TransData";
-
-import { AssetPackage } from "../base/AssetPackage";
 import { IToyEntity } from "../base/IToyEntity";
-import { CarEntity } from "../base/CarEntity";
 
 class ToyCarTask extends ThreadTask {
     

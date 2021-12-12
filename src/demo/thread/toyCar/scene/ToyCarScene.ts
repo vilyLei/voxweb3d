@@ -1,20 +1,13 @@
-import Plane3DEntity from "../../../../vox/entity/Plane3DEntity";
 import Box3DEntity from "../../../../vox/entity/Box3DEntity";
-import ImageTextureProxy from "../../../../vox/texture/ImageTextureProxy";
 import RendererScene from "../../../../vox/scene/RendererScene";
 import TextureProxy from "../../../../vox/texture/TextureProxy";
 import { TextureConst } from "../../../../vox/texture/TextureConst";
 import ImageTextureLoader from "../../../../vox/texture/ImageTextureLoader";
 import Vector3D from "../../../../vox/math/Vector3D";
 import Line3DEntity from "../../../../vox/entity/Line3DEntity";
-import Axis3DEntity from "../../../../vox/entity/Axis3DEntity";
-
-import { AssetPackage } from "../base/AssetPackage";
-import { IToyEntity } from "../base/IToyEntity";
-import { CarEntity } from "../base/CarEntity";
-
 import ThreadSystem from "../../../../thread/ThreadSystem";
 import { ToyCarTask } from "../task/ToyCarTask";
+import { ToyCarBuilder } from "./ToyCarBuilder";
 
 /**
  * a 3d rectangle plane display example
@@ -25,6 +18,7 @@ class ToyCarScene {
 
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader;
+    private m_toyCarBuilder: ToyCarBuilder = new ToyCarBuilder();
     private m_entitiesTotal: number = 0;
     private m_toyCarTasks: ToyCarTask[] = [];
     private m_threadFlag: number = 0;
@@ -40,6 +34,8 @@ class ToyCarScene {
             this.m_rscene = scene;
             this.m_texLoader = texLoader;
             
+            this.m_toyCarBuilder.initialize(scene, texLoader);
+
             this.initThread();
             this.buildEntities();
 
@@ -57,40 +53,19 @@ class ToyCarScene {
         
     }
     private buildEntities(): void {
+
+        for(let i: number = 0; i < this.m_toyCarTasks.length; ++i) {
+            let task: ToyCarTask = this.m_toyCarTasks[i];
+            this.m_toyCarBuilder.buildEntities(task);
+
+        }
         
-        let texNameList: string[] = [
-            "fruit_01.jpg"
-            , "moss_05.jpg"
-            , "metal_02.jpg"
-            , "fruit_01.jpg"
-            , "moss_05.jpg"
-            , "metal_02.jpg"
-        ];
-
-        let asset: AssetPackage = new AssetPackage();
-        asset.textures = [
-            this.getImageTexByUrl("static/assets/" + texNameList[0]),
-            this.getImageTexByUrl("static/assets/" + texNameList[1]),
-            this.getImageTexByUrl("static/assets/" + texNameList[2])
-        ];
-
-        let matTask: ToyCarTask = this.m_toyCarTasks[0];
-
-        let entity: CarEntity = new CarEntity();
-        entity.asset = asset;
-        matTask.addEntity( entity );
-        entity.build( this.m_rscene );
-        
-        this.m_threadFlag++;
-        this.updateThreadTask();
     }
     private updateThreadTask(): void {
-        if (this.m_entitiesTotal > 0) {
-            let list = this.m_toyCarTasks;
-            let len: number = list.length;
-            for (let i: number = 0; i < len; ++i) {
-                list[i].updateAndSendParam();
-            }
+        let list = this.m_toyCarTasks;
+        let len: number = list.length;
+        for (let i: number = 0; i < len; ++i) {
+            list[i].updateAndSendParam();
         }
     }
     private initThread(): void {
@@ -174,9 +149,7 @@ class ToyCarScene {
         }
     }
     updateThread(): void {
-        if (this.m_threadFlag > 0) {
-            this.updateThreadTask();
-        }
+        this.updateThreadTask();
     }
 
     run(): void {
