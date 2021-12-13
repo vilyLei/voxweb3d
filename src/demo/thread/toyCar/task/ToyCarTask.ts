@@ -77,17 +77,23 @@ class ToyCarTask extends ThreadTask {
             index += this.m_dataStepLength;
         }
     }
-    
+    /**
+     * @param descriptor like: {rn: 6, cn: 6, stvs: null};
+     * @param obsData like: new Uint16Array([0,1,1,0...1,1,0,0...])
+     */
     aStarInitialize(descriptor: any, obsData: Uint16Array): void {
         if(ToyCarTask.s_aStarFlag == 0 && obsData != null) {
             this.addDataWithParam("aStar_init", [obsData], descriptor);
             ToyCarTask.s_aStarFlag = 1;
-            this.m_pathU16Data = new  Uint16Array(256);
+            this.m_pathU16Data = new  Uint16Array(1024);
         }
     }
-    aStarSearch(descriptor: any, pathData: Uint16Array): void {
-        if(ToyCarTask.s_aStarFlag == 2 && pathData != null) {
-            this.addDataWithParam("aStar_exec", [pathData], descriptor);
+    /**
+     * @param descriptor like: {r0: 1, c0: 1, r1: 4, c1: 3}
+     */
+    aStarSearch(descriptor: any): void {
+        if(ToyCarTask.s_aStarFlag == 2) {
+            this.addDataWithParam("aStar_exec", [this.m_pathU16Data], descriptor);
             
         }
     }

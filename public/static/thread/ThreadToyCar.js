@@ -154,7 +154,25 @@ function AStarNavModule(pmodule, taskClass) {
     }
     this.run = function(data) {
         if(m_running) {
-
+            let descriptor = data.descriptor;
+            m_module.searchPathDataByRC(descriptor.r0, descriptor.c0, descriptor.r1, descriptor.c1);
+            let dataLen = m_module.getPathDataTotal();
+            let vs = m_module.getPathData();
+            console.log("path dataLen: " + dataLen);
+            console.log("path vs: ", vs);
+            
+            let sendData =
+            {
+                cmd: data.cmd,
+                taskCmd: data.taskCmd,
+                threadIndex: data.threadIndex,
+                taskclass: m_taskClass,
+                srcuid: data.srcuid,
+                dataIndex: m_dataIndex,
+                //  matsTotal: m_matsTotal,
+                streams: data.streams
+            };
+            postMessage(sendData, [data.streams[0].buffer]);
         }
     }
 }

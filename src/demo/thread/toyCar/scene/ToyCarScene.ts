@@ -83,7 +83,12 @@ class ToyCarScene {
         ThreadSystem.InitTaskByURL("static/thread/threadToyCar.js", 0);
         ThreadSystem.Initialize(1);
     }
-
+    testDose(): void {
+        let task = this.m_toyCarTasks[0];
+        if(task.isAStarEnabled()) {
+            task.aStarSearch( {r0: 1, c0: 1, r1: 4, c1: 3} );
+        }
+    }
     private initTerrain(): void {
 
         this.m_toyTerrain = new ToyCarTerrain();

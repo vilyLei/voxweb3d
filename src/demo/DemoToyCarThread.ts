@@ -30,7 +30,7 @@ export class DemoToyCarThread extends DemoInstance {
     private m_stageDragCtrl: CameraDragController = new CameraDragController();
     private m_cameraZoomController: CameraZoomController = new CameraZoomController();
 
-    private m_objScene: ToyCarScene = new ToyCarScene();
+    private m_toyCarScene: ToyCarScene = new ToyCarScene();
 
     protected initializeSceneParam(param: RendererParam): void {
         this.m_processTotal = 4;
@@ -71,7 +71,7 @@ export class DemoToyCarThread extends DemoInstance {
         console.log("------------------------------------------------------------------");
 
         this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
-        this.m_objScene.initialize(this.m_rscene, this.m_texLoader);
+        this.m_toyCarScene.initialize(this.m_rscene, this.m_texLoader);
         
         this.update();
     }
@@ -79,6 +79,7 @@ export class DemoToyCarThread extends DemoInstance {
     private m_downFlag: number = 0;
     private mouseDown(evt: any): void {
         this.m_downFlag++;
+        this.m_toyCarScene.testDose();
     }
     private m_timeoutId: any = -1;
     private update(): void {
@@ -89,7 +90,7 @@ export class DemoToyCarThread extends DemoInstance {
         //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
         this.m_timeoutId = setTimeout(this.update.bind(this), 30);// 20 fps
         
-        this.m_objScene.updateThread();
+        this.m_toyCarScene.updateThread();
     }
     runBegin(): void {
         this.m_stageDragCtrl.runWithYAxis();
