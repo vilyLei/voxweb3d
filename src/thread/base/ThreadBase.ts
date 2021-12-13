@@ -7,10 +7,10 @@
 
 import ThreadCMD from "../../thread/base/ThreadCMD";
 import {IThreadSendData} from "../../thread/base/IThreadSendData";
+import {ThreadSendData} from "../../thread/base/ThreadSendData";
 import IThreadBase from "../../thread/base/IThreadBase";
 import ThrDataPool from "../../thread/control/ThrDataPool";
 import ThreadTask from "../../thread/control/ThreadTask";
-import {ThreadSendData} from "../../thread/base/ThreadSendData";
 
 class ThreadBase implements IThreadBase {
     private static s_uid: number = 0;

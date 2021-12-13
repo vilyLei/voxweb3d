@@ -13,34 +13,22 @@ class TestNumberMathTask extends ThreadTask {
     }
     addNumberList(typeData: Float32Array): void {
         if (typeData != null) {
-            let sd = this.createSendData();
-            sd.taskCmd = "MATH_ADD";
-            sd.streams = [typeData];
-            this.addData(sd);
+            this.addDataWithParam("MATH_ADD", [typeData]);
         }
     }
     subNumberList(typeData: Float32Array): void {
         if (typeData != null) {
-            let sd = this.createSendData();
-            sd.taskCmd = "MATH_SUB";
-            sd.streams = [typeData];
-            this.addData(sd);
+            this.addDataWithParam("MATH_SUB", [typeData]);
         }
     }
     divNumberList(typeData: Float32Array): void {
         if (typeData != null) {
-            let sd = this.createSendData();
-            sd.taskCmd = "MATH_DIV";
-            sd.streams = [typeData];
-            this.addData(sd);
+            this.addDataWithParam("MATH_DIV", [typeData]);
         }
     }
     mulNumberList(typeData: Float32Array): void {
         if (typeData != null) {
-            let sd = this.createSendData();
-            sd.taskCmd = "MATH_MUL";
-            sd.streams = [typeData];
-            this.addData(sd);
+            this.addDataWithParam("MATH_MUL", [typeData]);
         }
     }
 

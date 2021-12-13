@@ -12,10 +12,7 @@ class TestNumberAddTask extends ThreadTask {
     }
     clacNumberList(typeData: Float32Array): void {
         if (typeData != null) {
-            let sd = this.createSendData();
-            sd.taskCmd = "ADD_NUMBER";
-            sd.streams = [typeData];
-            this.addData(sd);
+            this.addDataWithParam("ADD_NUMBER", [typeData]);
         }
     }
     // return true, task finish; return false, task continue...
