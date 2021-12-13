@@ -5,7 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-import {IThreadSendData} from "../thread/base/IThreadSendData";
+import {StreamType, IThreadSendData} from "../thread/base/IThreadSendData";
+import {ThreadSendData} from "../thread/base/ThreadSendData";
 import RendererDevice from "../vox/render/RendererDevice";
 import ThreadCore from "../thread/control/Thrcode";
 import ThrDataPool from "../thread/control/ThrDataPool";
@@ -91,6 +92,20 @@ class ThreadSystem {
                 }
             }
         }
+    }
+    
+    /**
+     * 通过参数, 添加发送给子线程的数据
+     * @param taskCmd 处理当前数据的任务命令名字符串
+     * @param streams 用于内存所有权转换的数据流数组, 例如 Float32Array 数组, 默认值是null
+     * @param descriptor 会发送到子线程的用于当前数据处理的数据描述对象, for example: {flag : 0, type: 12, name: "First"}, 默认值是 null
+     */
+    protected addDataWithParam(taskCmd: string, streams: StreamType[] = null, descriptor: any = null): void {
+        let sd = ThreadSendData.Create();
+        sd.taskCmd = taskCmd;
+        sd.streams = streams;
+        sd.descriptor = descriptor;
+        ThreadSystem.AddData(sd);
     }
     static AddData(thrData: IThreadSendData): void {
         if (thrData != null && thrData.srcuid >= 0) {

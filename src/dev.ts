@@ -230,7 +230,7 @@
 //////////////////////////////   thread    /////////////////////////////////////
 ////////////////////////////////////////////////////////////////////////////////
 
-import {DemoThread as Demo} from "./demo/DemoThread";
+//  import {DemoThread as Demo} from "./demo/DemoThread";
 
 //  import {DemoThreadSchedule as Demo} from "./demo/DemoThreadSchedule";
 
@@ -240,7 +240,7 @@ import {DemoThread as Demo} from "./demo/DemoThread";
 
 //  import {DemoThreadConcurrent as Demo} from "./demo/DemoThreadConcurrent";
 
-//  import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
+import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
 
 
 ////////////////////////////////////////////////////////////////////////////////

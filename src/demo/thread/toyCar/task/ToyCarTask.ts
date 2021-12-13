@@ -8,7 +8,7 @@ import ThreadTask from "../../../../thread/control/ThreadTask";
 import { IToyEntity } from "../base/IToyEntity";
 
 class ToyCarTask extends ThreadTask {
-    
+    private m_dataStepLength: number = 16 * 5;
     private m_total: number = 0;
     private m_matsTotal: number = 1;
     private m_fs32Data: Float32Array = null;
@@ -24,7 +24,7 @@ class ToyCarTask extends ThreadTask {
         if (this.m_total < 1 && this.m_fs32Data == null) {
             
             this.m_total = entitiesTotal;
-            this.m_fs32Data = new Float32Array(entitiesTotal * 16 * 5);
+            this.m_fs32Data = new Float32Array(entitiesTotal * this.m_dataStepLength);
         }
     }
     getFS32Data(): Float32Array {
@@ -58,18 +58,10 @@ class ToyCarTask extends ThreadTask {
     
     private sendTransData(): void {
         if (this.m_enabled) {
-            let sd = this.createSendData();
-            sd.taskCmd = "car_trans";
-            sd.streams = [this.m_fs32Data];
-            if(sd.descriptor == null) {
-                sd.descriptor = {};
-            }
-            sd.descriptor.flag = this.m_flag;
-            sd.descriptor.calcType = 1;
-            sd.descriptor.allTotal = this.m_total;
-            sd.descriptor.matsTotal = this.m_matsTotal;
+
+            let descriptor: any = {flag: this.m_flag, calcType: 1, allTotal: this.m_total, matsTotal: this.m_matsTotal};            
             
-            this.addData(sd);
+            this.addDataWithParam("car_trans", [this.m_fs32Data], descriptor);
             this.m_enabled = false;
             this.m_flag = 1;
             //console.log("sendTransData success...uid: "+this.getUid());
@@ -84,7 +76,7 @@ class ToyCarTask extends ThreadTask {
         let index: number = 0;
         for (let i: number = 0; i < this.m_entities.length; ++i) {
             this.m_entities[i].updateTrans(fs32, index);
-            index += step;
+            index += this.m_dataStepLength;
         }
     }
     // return true, task finish; return false, task continue...
