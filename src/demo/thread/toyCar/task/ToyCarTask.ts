@@ -11,30 +11,32 @@ class ToyCarTask extends ThreadTask {
     private m_dataStepLength: number = 16 * 5;
     private m_total: number = 0;
     private m_matsTotal: number = 1;
-    private m_fs32Data: Float32Array = null;
-    private m_enabled: boolean = true;
+    private m_transFS32Data: Float32Array = null;
+    private m_pathU16Data: Uint16Array = null;
+    private m_transEnabled: boolean = true;
     private m_entityIndex: number = 0;
     private m_entities: IToyEntity[] = [];
-    private m_flag: number = 0;
+    private m_transFlag: number = 0;
+    private static s_aStarFlag: number = 0;
     constructor() {
         super();
     }
     
     initialize(entitiesTotal: number): void {
-        if (this.m_total < 1 && this.m_fs32Data == null) {
+        if (this.m_total < 1 && this.m_transFS32Data == null) {
             
             this.m_total = entitiesTotal;
-            this.m_fs32Data = new Float32Array(entitiesTotal * this.m_dataStepLength);
+            this.m_transFS32Data = new Float32Array(entitiesTotal * this.m_dataStepLength);
         }
     }
-    getFS32Data(): Float32Array {
-        return this.m_fs32Data;
+    getTransFS32Data(): Float32Array {
+        return this.m_transFS32Data;
     }
 
     addEntity(entity: IToyEntity): void {
         if(this.m_entityIndex < this.m_total) {
 
-            entity.setFS32Data(this.getFS32Data(), this.m_entityIndex);
+            entity.setFS32Data(this.getTransFS32Data(), this.m_entityIndex);
             this.m_entities.push(entity);
             this.m_entityIndex ++;
         }
@@ -43,27 +45,23 @@ class ToyCarTask extends ThreadTask {
         return this.m_total;
     }
     updateEntitiesTrans(): void {
-        if (this.isSendEnabled()) {
+        if (this.isSendTransEnabled()) {
             if (this.m_entities.length > 0) {
                 this.sendTransData();
             }
         }
     }
-    isSendEnabled(): boolean {
-        return this.m_enabled;
+    isSendTransEnabled(): boolean {
+        return this.m_transEnabled;
     }
-    isDataEnabled(): boolean {
-        return this.m_enabled;
-    }
-    
-    private sendTransData(): void {
-        if (this.m_enabled) {
 
-            let descriptor: any = {flag: this.m_flag, calcType: 1, allTotal: this.m_total, matsTotal: this.m_matsTotal};            
-            
-            this.addDataWithParam("car_trans", [this.m_fs32Data], descriptor);
-            this.m_enabled = false;
-            this.m_flag = 1;
+    private sendTransData(): void {
+        if (this.m_transEnabled) {
+
+            let descriptor: any = {flag: this.m_transFlag, calcType: 1, allTotal: this.m_total, matsTotal: this.m_matsTotal};            
+            this.addDataWithParam("car_trans", [this.m_transFS32Data], descriptor);
+            this.m_transEnabled = false;
+            this.m_transFlag = 1;
             //console.log("sendTransData success...uid: "+this.getUid());
         }
         else {
@@ -79,25 +77,47 @@ class ToyCarTask extends ThreadTask {
             index += this.m_dataStepLength;
         }
     }
+    
+    aStarInitialize(descriptor: any, obsData: Uint16Array): void {
+        if(ToyCarTask.s_aStarFlag == 0 && obsData != null) {
+            this.addDataWithParam("aStar_init", [obsData], descriptor);
+            ToyCarTask.s_aStarFlag = 1;
+            this.m_pathU16Data = new  Uint16Array(256);
+        }
+    }
+    aStarSearch(descriptor: any, pathData: Uint16Array): void {
+        if(ToyCarTask.s_aStarFlag == 2 && pathData != null) {
+            this.addDataWithParam("aStar_exec", [pathData], descriptor);
+            
+        }
+    }
+    isAStarEnabled(): boolean {
+        return ToyCarTask.s_aStarFlag == 2;
+    }
     // return true, task finish; return false, task continue...
     parseDone(data: any, flag: number): boolean {
         
-        this.m_fs32Data = (data.streams[0]);
 
         switch(data.taskCmd) {
             case "car_trans":
-                //this.updateTrans( this.m_fs32Data );
-                this.updateEntityTrans( this.m_fs32Data );
+
+                this.m_transFS32Data = (data.streams[0]);
+                this.updateEntityTrans( this.m_transFS32Data );
+                this.m_transEnabled = true;
                 break;
             case "aStar_exec":
+
+                console.log("XXXX aStar_exec...");
                 break;
             case "aStar_init":
+
+                console.log("XXXX aStar_init...");
+                ToyCarTask.s_aStarFlag = 2;
                 break;
             default:
 
                 break;
         }
-        this.m_enabled = true;
         return true;
     }
     destroy(): void {

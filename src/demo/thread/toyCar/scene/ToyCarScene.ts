@@ -42,6 +42,20 @@ class ToyCarScene {
         let matTask: ToyCarTask = new ToyCarTask();
         matTask.initialize(total);
         matTask.setThrDataPool(ThreadSystem.GetThrDataPool());
+
+        let descriptor: any = {rn: 6, cn: 6, stvs: null};
+        descriptor.stvs = new Uint16Array(
+            [
+                0, 0, 0, 0, 0, 0,
+                0, 0, 1, 1, 0, 0,
+                0, 0, 0, 0, 0, 0,
+                0, 0, 0, 1, 0, 0,
+                0, 0, 0, 1, 0, 0,
+                0, 0, 0, 0, 0, 0
+            ]
+        );
+        matTask.aStarInitialize(descriptor, descriptor.stvs);
+
         this.m_entitiesTotal += total;
         this.m_toyCarTasks.push(matTask);
         

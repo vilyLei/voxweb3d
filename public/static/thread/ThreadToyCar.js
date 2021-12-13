@@ -109,10 +109,15 @@ function AStarNavModule(pmodule, taskClass) {
     let m_taskClass = taskClass;
     let m_module = pmodule;
     let m_running = true;
+    let m_dataIndex = 0;
     
-    this.initialize = function(param) {
-        let rn = param.rn;//6;
-        let cn = param.cn;//6;
+    this.initialize = function(data) {
+
+        m_dataIndex = data.dataIndex;
+        let descriptor = data.descriptor;
+        let rn = descriptor.rn;//6;
+        let cn = descriptor.cn;//6;
+        let stvs = descriptor.stvs;//6;
         m_module.allocate(rn * cn + 32);
         m_module.initialize(rn, cn, 100);
         let r = 0;
@@ -127,12 +132,25 @@ function AStarNavModule(pmodule, taskClass) {
                 r++;
             }
         }
+        /*
         m_module.searchPathDataByRC(0, 0, 4, 4);
         let dataLen = m_module.getPathDataTotal();
-
         let vs = m_module.getPathData();
         console.log("dataLen: " + dataLen);
         console.log("vs: ", vs);
+        //*/
+        let sendData =
+        {
+            cmd: data.cmd,
+            taskCmd: data.taskCmd,
+            threadIndex: data.threadIndex,
+            taskclass: m_taskClass,
+            srcuid: data.srcuid,
+            dataIndex: m_dataIndex,
+            //  matsTotal: m_matsTotal,
+            streams: null
+        };
+        postMessage(sendData);
     }
     this.run = function(data) {
         if(m_running) {
@@ -170,8 +188,8 @@ function ThreadAStarNav() {
                 }
                 else {
                     m_aStarNav = new AStarNavModule( new Module.StarA(), this.getTaskClass() );
-                    let param = {rn: 6, cn: 6, stvs: null};
-                    param.stvs = new Uint16Array(
+                    let descriptor = {rn: 6, cn: 6, stvs: null};
+                    descriptor.stvs = new Uint16Array(
                         [
                             0, 0, 0, 0, 0, 0,
                             0, 0, 1, 1, 0, 0,
@@ -181,13 +199,19 @@ function ThreadAStarNav() {
                             0, 0, 0, 0, 0, 0
                         ]
                     );
+                    data.descriptor = descriptor;
                     m_aStarNav.initialize( data );
-                    m_aStarNav( data );
                 }
                 break;
             case "aStar_init":
+                console.log("worker XXXX aStar_init...");
+                if(m_aStarNav == null) {
+                    m_aStarNav = new AStarNavModule( new Module.StarA(), this.getTaskClass() );
+                }
+                m_aStarNav.initialize( data );
                 break;
             default:
+                console.log("worker XXXX receiveData default...");
                 break;
         }
     }
