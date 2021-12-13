@@ -60,7 +60,7 @@ function ThreadAddNum()
     {
         let param:Float32Array = new Float32Array([10,11,12,13]);
         console.log("math add input :",param);
-        ThreadSystem.AddData(this.m_numberAddTask.clacNumberList(param));   
+        this.m_numberAddTask.clacNumberList(param);   
     }
     private m_timeoutId:any = -1;
     /**

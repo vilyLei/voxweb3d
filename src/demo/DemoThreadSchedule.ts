@@ -105,9 +105,12 @@ let workerIns_ThreadAddNum = new ThreadAddNum();
         this.m_rscene.addEntity(box);
         console.log("------------------------------------------------------------------");
         console.log("------------------------------------------------------------------");
-        this.thr_test();
+        this.initThread();
     }
-    private thr_test(): void {
+    private m_numberAddTask: TestNumberAddTask = new TestNumberAddTask();
+    private m_numberMultTask: TestNumberMultTask = new TestNumberMultTask();
+    private m_numberMathTask: TestNumberMathTask = new TestNumberMathTask();
+    private initThread(): void {
         // 注意: m_codeStr 代码中描述的 getTaskClass() 返回值 要和 TestNumberAddTask 中的 getTaskClass() 返回值 要相等
 
         //  ThreadSystem.InitTaskByURL("static/thread/ThreadAddNum",0);
@@ -117,11 +120,11 @@ let workerIns_ThreadAddNum = new ThreadAddNum();
         this.m_thrSchedule.initTaskByURL("static/thread/ThreadMultNum", 1);
         this.m_thrSchedule.initTaskByURL("static/thread/ThreadMathNum", 2);
         this.m_thrSchedule.initsialize(1);
+        this.m_numberAddTask.setThrDataPool(this.m_thrSchedule.getThrDataPool());
+        this.m_numberMultTask.setThrDataPool(this.m_thrSchedule.getThrDataPool());
+        this.m_numberMathTask.setThrDataPool(this.m_thrSchedule.getThrDataPool());
         //this.useMathTask();
     }
-    private m_numberAddTask: TestNumberAddTask = new TestNumberAddTask();
-    private m_numberMultTask: TestNumberMultTask = new TestNumberMultTask();
-    private m_numberMathTask: TestNumberMathTask = new TestNumberMathTask();
     private m_flag: number = 0;
     private useMathTask(): void {
         let total: number = 5;
@@ -132,16 +135,16 @@ let workerIns_ThreadAddNum = new ThreadAddNum();
             let f: number = Math.round(Math.random() * 1000) % 4;
             switch (f) {
                 case 0:
-                    this.m_thrSchedule.addData(this.m_numberMathTask.addNumberList(new Float32Array([10, 12, 21, 22])));
+                    this.m_numberMathTask.addNumberList(new Float32Array([10, 12, 21, 22]));
                     break;
                 case 1:
-                    this.m_thrSchedule.addData(this.m_numberMathTask.subNumberList(new Float32Array([10, 12, 21, 22])));
+                    this.m_numberMathTask.subNumberList(new Float32Array([10, 12, 21, 22]));
                     break;
                 case 2:
-                    this.m_thrSchedule.addData(this.m_numberMathTask.divNumberList(new Float32Array([10, 12, 21, 22])));
+                    this.m_numberMathTask.divNumberList(new Float32Array([10, 12, 21, 22]));
                     break;
                 case 3:
-                    this.m_thrSchedule.addData(this.m_numberMathTask.mulNumberList(new Float32Array([10, 12, 21, 22])));
+                    this.m_numberMathTask.mulNumberList(new Float32Array([10, 12, 21, 22]));
                     break;
                 default:
                     break;
@@ -151,15 +154,15 @@ let workerIns_ThreadAddNum = new ThreadAddNum();
     }
     private testTask(): void {
         let t: number = this.m_flag % 3;
-        this.m_thrSchedule.addData(this.m_numberAddTask.clacNumberList(new Float32Array([10, 12, 21, 22])));
-        //this.m_thrSchedule.addData(this.m_numberAddTask.clacNumberList(new Float32Array([-10,-12,-21,-22])));
+        this.m_numberAddTask.clacNumberList(new Float32Array([10, 12, 21, 22]));
+        //this.m_numberAddTask.clacNumberList(new Float32Array([-10,-12,-21,-22])));
 
         switch (t) {
             case 0:
-                this.m_thrSchedule.addData(this.m_numberAddTask.clacNumberList(new Float32Array([110, 112, 121, 122])));
+                this.m_numberAddTask.clacNumberList(new Float32Array([110, 112, 121, 122]));
                 break;
             case 1:
-                this.m_thrSchedule.addData(this.m_numberMultTask.clacNumberList(new Float32Array([210, 212, 221, 222])));
+                this.m_numberMultTask.clacNumberList(new Float32Array([210, 212, 221, 222]));
                 break;
             case 2:
                 break;

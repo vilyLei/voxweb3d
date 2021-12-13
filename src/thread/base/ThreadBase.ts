@@ -10,6 +10,7 @@ import {IThreadSendData} from "../../thread/base/IThreadSendData";
 import IThreadBase from "../../thread/base/IThreadBase";
 import ThrDataPool from "../../thread/control/ThrDataPool";
 import ThreadTask from "../../thread/control/ThreadTask";
+import {ThreadSendData} from "../../thread/base/ThreadSendData";
 
 class ThreadBase implements IThreadBase {
     private static s_uid: number = 0;
@@ -76,6 +77,9 @@ class ThreadBase implements IThreadBase {
             this.m_thrData = thrData;
             this.m_free = false;
         }
+        else if(this.m_taskfs[thrData.taskclass] < 1) {
+            console.error("task class("+thrData.taskclass+") module is undeifned");
+        }
     }
 
     initTaskByURL(ns: string, taskclass: number, moduleName: string): void {
@@ -129,11 +133,11 @@ class ThreadBase implements IThreadBase {
             this.m_initBoo = false;
             let worker: Worker = new Worker(URL.createObjectURL(blob));
             this.m_worker = worker;
-            //let selfT: ThreadBase = this;
 
             this.m_worker.onmessage = (evt: any): void => {
                 
-                if(this.m_thrData != null) {                
+                if(this.m_thrData != null) {
+                    ThreadSendData.Restore( this.m_thrData );
                     this.m_thrData.sendStatus = -1;
                     this.m_thrData = null;
                 }

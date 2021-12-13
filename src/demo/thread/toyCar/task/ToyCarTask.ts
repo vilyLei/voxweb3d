@@ -4,8 +4,6 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import {IThreadSendData} from "../../../../thread/base/IThreadSendData";
-import {ThreadSendData} from "../../../../thread/base/ThreadSendData";
 import ThreadTask from "../../../../thread/control/ThreadTask";
 import { IToyEntity } from "../base/IToyEntity";
 
@@ -60,7 +58,7 @@ class ToyCarTask extends ThreadTask {
     
     private sendTransData(): void {
         if (this.m_enabled) {
-            let sd: ThreadSendData = ThreadSendData.Create();
+            let sd = this.createSendData();
             sd.taskCmd = "car_trans";
             sd.streams = [this.m_fs32Data];
             if(sd.descriptor == null) {
@@ -70,7 +68,7 @@ class ToyCarTask extends ThreadTask {
             sd.descriptor.calcType = 1;
             sd.descriptor.allTotal = this.m_total;
             sd.descriptor.matsTotal = this.m_matsTotal;
-
+            
             this.addData(sd);
             this.m_enabled = false;
             this.m_flag = 1;
@@ -93,7 +91,6 @@ class ToyCarTask extends ThreadTask {
     parseDone(data: any, flag: number): boolean {
         
         this.m_fs32Data = (data.streams[0]);
-        ThreadSendData.RestoreByUid(data.dataIndex);
 
         switch(data.taskCmd) {
             case "car_trans":
@@ -111,9 +108,6 @@ class ToyCarTask extends ThreadTask {
         this.m_enabled = true;
         return true;
     }
-    getWorkerSendDataAt(i: number): IThreadSendData {
-        return null;
-    }
     destroy(): void {
         if (this.getUid() > 0) {
             super.destroy();
@@ -124,4 +118,4 @@ class ToyCarTask extends ThreadTask {
         return 0;
     }
 }
-export { ThreadSendData, ToyCarTask };
+export { ToyCarTask };

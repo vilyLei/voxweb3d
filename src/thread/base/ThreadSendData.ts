@@ -20,7 +20,7 @@ class ThreadSendData implements IThreadSendData {
     taskclass: number = -1;
     // 多线程任务实例id
     srcuid: number = -1;
-    // IThreadSendData 数据对象在自身队列中的序号
+    // IThreadSendData 数据对象的唯一标识, 不能随便更改
     dataIndex: number = -1;
     
     // thread task 任务命令名
@@ -74,13 +74,26 @@ class ThreadSendData implements IThreadSendData {
         }
         return sd;
     }
+    static Contains(psd: IThreadSendData): boolean {
 
-    static Restore(psd: ThreadSendData): void {
-        if (psd != null && ThreadSendData.m_unitFlagList[psd.dataIndex] == ThreadSendData.S_FLAG_BUSY) {
+        if(psd != null) {
             let uid: number = psd.dataIndex;
-            ThreadSendData.m_freeIdList.push(uid);
-            ThreadSendData.m_unitFlagList[uid] = ThreadSendData.S_FLAG_FREE;
-            psd.reset();
+            if(uid >=0 && uid < ThreadSendData.m_unitListLen) {
+                return ThreadSendData.m_unitList[uid] == psd;
+            }
+        }
+        return false;
+    }
+    static Restore(psd: ThreadSendData): void {
+
+        if(ThreadSendData.Contains(psd)) {
+            let uid: number = psd.dataIndex;
+            if (ThreadSendData.m_unitFlagList[uid] == ThreadSendData.S_FLAG_BUSY) {
+                ThreadSendData.m_freeIdList.push(uid);
+                ThreadSendData.m_unitFlagList[uid] = ThreadSendData.S_FLAG_FREE;
+                psd.sendStatus = -1;
+                psd.reset();
+            }
         }
     }
     static RestoreByUid(uid: number): void {

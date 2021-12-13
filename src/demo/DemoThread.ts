@@ -102,25 +102,27 @@ function ThreadAddNum()
         this.m_rscene.addEntity(box);
         console.log("------------------------------------------------------------------");
         console.log("------------------------------------------------------------------");
-        this.thr_test();
+        this.initThread();
     }
-    private thr_test(): void {
+    private m_numberAddTask: TestNumberAddTask = new TestNumberAddTask();
+    private m_numberMultTask: TestNumberMultTask = new TestNumberMultTask();
+    private m_numberMathTask: TestNumberMathTask = new TestNumberMathTask();
+    private initThread(): void {
         // 注意: m_codeStr 代码中描述的 getTaskClass() 返回值 要和 TestNumberAddTask 中的 getTaskClass() 返回值 要相等
 
         ThreadSystem.InitTaskByURL("static/thread/ThreadAddNum.js",0);
-        //  ThreadSystem.InitTaskByURL("static/thread/ThreadMultNum",1);
-        //  ThreadSystem.InitTaskByURL("static/thread/ThreadMathNum",2);
+        ThreadSystem.InitTaskByURL("static/thread/ThreadMultNum",1);
+        ThreadSystem.InitTaskByURL("static/thread/ThreadMathNum",2);
         
         //  ThreadSystem.InitTaskByCodeStr(this.m_codeStr, 0, "ThreadAddNum");
         //ThreadSystem.InitTaskByURL("static/thread/ThreadMultNum", 1);
         //ThreadSystem.InitTaskByURL("static/thread/ThreadMathNum", 2);
 
         ThreadSystem.Initialize(1);
-        //this.useMathTask();
+        this.m_numberAddTask.setThrDataPool(ThreadSystem.GetThrDataPool());
+        this.m_numberMultTask.setThrDataPool(ThreadSystem.GetThrDataPool());
+        this.m_numberMathTask.setThrDataPool(ThreadSystem.GetThrDataPool());
     }
-    private m_numberAddTask: TestNumberAddTask = new TestNumberAddTask();
-    private m_numberMultTask: TestNumberMultTask = new TestNumberMultTask();
-    private m_numberMathTask: TestNumberMathTask = new TestNumberMathTask();
     private m_flag: number = 0;
     private useMathTask(): void {
         let total: number = 5;
@@ -131,16 +133,16 @@ function ThreadAddNum()
             let f: number = Math.round(Math.random() * 1000) % 4;
             switch (f) {
                 case 0:
-                    ThreadSystem.AddData(this.m_numberMathTask.addNumberList(new Float32Array([10, 12, 21, 22])));
+                    this.m_numberMathTask.addNumberList(new Float32Array([10, 12, 21, 22]));
                     break;
                 case 1:
-                    ThreadSystem.AddData(this.m_numberMathTask.subNumberList(new Float32Array([10, 12, 21, 22])));
+                    this.m_numberMathTask.subNumberList(new Float32Array([10, 12, 21, 22]));
                     break;
                 case 2:
-                    ThreadSystem.AddData(this.m_numberMathTask.divNumberList(new Float32Array([10, 12, 21, 22])));
+                    this.m_numberMathTask.divNumberList(new Float32Array([10, 12, 21, 22]));
                     break;
                 case 3:
-                    ThreadSystem.AddData(this.m_numberMathTask.mulNumberList(new Float32Array([10, 12, 21, 22])));
+                    this.m_numberMathTask.mulNumberList(new Float32Array([10, 12, 21, 22]));
                     break;
                 default:
                     break;
@@ -150,17 +152,17 @@ function ThreadAddNum()
     }
     private testTask2(): void {
         let t: number = this.m_flag % 3;
-        ThreadSystem.AddData(this.m_numberAddTask.clacNumberList(new Float32Array([10, 12, 21, 22])));
-        ThreadSystem.AddData(this.m_numberAddTask.clacNumberList(new Float32Array([-10, -12, -21, -22])));
+        this.m_numberAddTask.clacNumberList(new Float32Array([10, 12, 21, 22]));
+        this.m_numberAddTask.clacNumberList(new Float32Array([-10, -12, -21, -22]));
         //t = 0;
         switch (t) {
             case 0:
                 console.log("testTask::NumberAddTask");
-                ThreadSystem.AddData(this.m_numberAddTask.clacNumberList(new Float32Array([10, 12, 21, 22])));
+                this.m_numberAddTask.clacNumberList(new Float32Array([10, 12, 21, 22]));
                 break;
             case 1:
                 console.log("testTask::NumberMultTask");
-                ThreadSystem.AddData(this.m_numberMultTask.clacNumberList(new Float32Array([10, 12, 21, 22])));
+                this.m_numberMultTask.clacNumberList(new Float32Array([10, 12, 21, 22]));
                 break;
             case 2:
                 break;
@@ -171,18 +173,19 @@ function ThreadAddNum()
         this.m_flag++;
     }
     private testTask(): void {
+        this.m_flag = Math.round(Math.random() * 100);
         let t: number = this.m_flag % 3;
-        ThreadSystem.AddData(this.m_numberAddTask.clacNumberList(new Float32Array([10, 12, 21, 22])));
-        ThreadSystem.AddData(this.m_numberAddTask.clacNumberList(new Float32Array([-10, -12, -21, -22])));
-        t = 0;
+        this.m_numberAddTask.clacNumberList(new Float32Array([10, 12, 21, 22]));
+        this.m_numberAddTask.clacNumberList(new Float32Array([-10, -12, -21, -22]));
+        //t = 11;
         switch (t) {
             case 0:
                 console.log("testTask::NumberAddTask");
-                ThreadSystem.AddData(this.m_numberAddTask.clacNumberList(new Float32Array([10, 12, 21, 22])));
+                this.m_numberAddTask.clacNumberList(new Float32Array([10, 12, 21, 22]));
                 break;
             case 1:
                 console.log("testTask::NumberMultTask");
-                ThreadSystem.AddData(this.m_numberMultTask.clacNumberList(new Float32Array([10, 12, 21, 22])));
+                this.m_numberMultTask.clacNumberList(new Float32Array([10, 12, 21, 22]));
                 break;
             case 2:
                 this.useMathTask();
