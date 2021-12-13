@@ -240,7 +240,7 @@
 
 //  import {DemoThreadConcurrent as Demo} from "./demo/DemoThreadConcurrent";
 
-import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
+//  import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -374,7 +374,7 @@ import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
 
 //  import {DemoEnvLighting as Demo} from "./pbr/DemoEnvLighting";
 
-//  import {DemoPBR as Demo} from "./pbr/DemoPBR";
+import {DemoPBR as Demo} from "./pbr/DemoPBR";
 
 //  import {DemoPBRViewer as Demo} from "./pbr/DemoPBRViewer";
 

@@ -9,7 +9,7 @@
 一个task可以只有一个数据处理发送给worker,也可以是多个任务处理发送给worker
 本类作为任何thread task 的基类
 */
-import {IThreadSendData} from "../base/IThreadSendData";
+import {StreamType, IThreadSendData} from "../base/IThreadSendData";
 import {ThreadSendData} from "../base/ThreadSendData";
 import {IThrDataPool} from "../control/IThrDataPool";
 
@@ -104,6 +104,13 @@ class ThreadTask {
     }
     protected createSendData(): ThreadSendData{
         return ThreadSendData.Create();
+    }
+    protected addDataWithParam(taskCmd: string, streams: StreamType[], descriptor: any = null): void {
+        let sd = this.createSendData();
+        sd.taskCmd = taskCmd;
+        sd.streams = streams;
+        sd.descriptor = descriptor;
+        this.addData(sd);
     }
     protected addData(data: IThreadSendData): void {
         if (this.m_uid >= 0) {

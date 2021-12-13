@@ -31,7 +31,7 @@ import ThreadSystem from "../thread/ThreadSystem";
 import { PointLight } from "../light/base/PointLight";
 import { DirectionLight } from "../light/base/DirectionLight";
 import { SpotLight } from "../light/base/SpotLight";
-import { MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
+import { MaterialContextDebug, MaterialContextParam } from "../materialLab/base/MaterialContextDebug";
 
 export class DemoRawDracoViewer {
 
@@ -49,7 +49,7 @@ export class DemoRawDracoViewer {
     private m_reflectPlaneY: number = -220;
     private m_envMap: TextureProxy = null;
 
-    private m_materialCtx: MaterialContext = new MaterialContext();
+    private m_materialCtx: MaterialContextDebug = new MaterialContextDebug();
 
     fogEnabled: boolean = false;
     hdrBrnEnabled: boolean = true;
@@ -324,7 +324,7 @@ export class DemoRawDracoViewer {
 
 export class ViewerDracoModule extends DracoWholeModuleLoader {
 
-    materialCtx: MaterialContext;
+    materialCtx: MaterialContextDebug;
     reflectPlaneY: number = -220.0;
     aoMapEnabled: boolean = false;
     specularEnvMap: TextureProxy;
