@@ -5,11 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
-import {StreamType, IThreadSendData} from "../../../../thread/base/IThreadSendData";
+import {StreamType, IThreadSendData} from "./IThreadSendData";
 
-class ToyCarSendData implements IThreadSendData {
+class ThreadSendData implements IThreadSendData {
     constructor() {
-        console.log("ToyCarSendData::constructor().");
     }
     
     /**
@@ -48,49 +47,49 @@ class ToyCarSendData implements IThreadSendData {
     private static S_FLAG_FREE: number = 0;
     private static m_unitFlagList: number[] = [];
     private static m_unitListLen: number = 0;
-    private static m_unitList: ToyCarSendData[] = [];
+    private static m_unitList: ThreadSendData[] = [];
     private static m_freeIdList: number[] = [];
     private static GetFreeId(): number {
-        if (ToyCarSendData.m_freeIdList.length > 0) {
-            return ToyCarSendData.m_freeIdList.pop();
+        if (ThreadSendData.m_freeIdList.length > 0) {
+            return ThreadSendData.m_freeIdList.pop();
         }
         return -1;
     }
-    static Create(): ToyCarSendData {
-        let sd: ToyCarSendData = null;
-        let index: number = ToyCarSendData.GetFreeId();
+    static Create(): ThreadSendData {
+        let sd: ThreadSendData = null;
+        let index: number = ThreadSendData.GetFreeId();
         //console.log("index: "+index);
-        //console.log("ToyCarSendData::Create(), ToyCarSendData.m_unitList.length: "+ToyCarSendData.m_unitList.length);
+        //console.log("ThreadSendData::Create(), ThreadSendData.m_unitList.length: "+ThreadSendData.m_unitList.length);
         if (index >= 0) {
-            sd = ToyCarSendData.m_unitList[index];
+            sd = ThreadSendData.m_unitList[index];
             sd.dataIndex = index;
-            ToyCarSendData.m_unitFlagList[index] = ToyCarSendData.S_FLAG_BUSY;
+            ThreadSendData.m_unitFlagList[index] = ThreadSendData.S_FLAG_BUSY;
         }
         else {
-            sd = new ToyCarSendData();
-            ToyCarSendData.m_unitList.push(sd);
-            ToyCarSendData.m_unitFlagList.push(ToyCarSendData.S_FLAG_BUSY);
-            sd.dataIndex = ToyCarSendData.m_unitListLen;
-            ToyCarSendData.m_unitListLen++;
+            sd = new ThreadSendData();
+            ThreadSendData.m_unitList.push(sd);
+            ThreadSendData.m_unitFlagList.push(ThreadSendData.S_FLAG_BUSY);
+            sd.dataIndex = ThreadSendData.m_unitListLen;
+            ThreadSendData.m_unitListLen++;
         }
         return sd;
     }
 
-    static Restore(psd: ToyCarSendData): void {
-        if (psd != null && ToyCarSendData.m_unitFlagList[psd.dataIndex] == ToyCarSendData.S_FLAG_BUSY) {
+    static Restore(psd: ThreadSendData): void {
+        if (psd != null && ThreadSendData.m_unitFlagList[psd.dataIndex] == ThreadSendData.S_FLAG_BUSY) {
             let uid: number = psd.dataIndex;
-            ToyCarSendData.m_freeIdList.push(uid);
-            ToyCarSendData.m_unitFlagList[uid] = ToyCarSendData.S_FLAG_FREE;
+            ThreadSendData.m_freeIdList.push(uid);
+            ThreadSendData.m_unitFlagList[uid] = ThreadSendData.S_FLAG_FREE;
             psd.reset();
         }
     }
     static RestoreByUid(uid: number): void {
-        if (uid >= 0 && ToyCarSendData.m_unitFlagList[uid] == ToyCarSendData.S_FLAG_BUSY) {
-            ToyCarSendData.m_freeIdList.push(uid);
-            ToyCarSendData.m_unitFlagList[uid] = ToyCarSendData.S_FLAG_FREE;
-            ToyCarSendData.m_unitList[uid].reset();
+        if (uid >= 0 && ThreadSendData.m_unitFlagList[uid] == ThreadSendData.S_FLAG_BUSY) {
+            ThreadSendData.m_freeIdList.push(uid);
+            ThreadSendData.m_unitFlagList[uid] = ThreadSendData.S_FLAG_FREE;
+            ThreadSendData.m_unitList[uid].reset();
         }
     }
 }
 
-export { ToyCarSendData };
+export { ThreadSendData };

@@ -33,6 +33,8 @@ interface IThreadSendData {
      *              值为 1 表示已经发送给worker
      */
     sendStatus: number;
+
+    
     /**
      * 按照实际需求构建自己的数据(sendData和transfers等)
      * @param transferEnabled 是否需要内存句柄所有权转移

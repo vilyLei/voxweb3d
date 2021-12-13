@@ -5,8 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 import {IThreadSendData} from "../../../../thread/base/IThreadSendData";
+import {ThreadSendData} from "../../../../thread/base/ThreadSendData";
 import ThreadTask from "../../../../thread/control/ThreadTask";
-import {ToyCarSendData} from "./ToyCarSendData";
 import { IToyEntity } from "../base/IToyEntity";
 
 class ToyCarTask extends ThreadTask {
@@ -60,7 +60,7 @@ class ToyCarTask extends ThreadTask {
     
     private sendTransData(): void {
         if (this.m_enabled) {
-            let sd: ToyCarSendData = ToyCarSendData.Create();
+            let sd: ThreadSendData = ThreadSendData.Create();
             sd.taskCmd = "car_trans";
             sd.streams = [this.m_fs32Data];
             if(sd.descriptor == null) {
@@ -93,7 +93,7 @@ class ToyCarTask extends ThreadTask {
     parseDone(data: any, flag: number): boolean {
         
         this.m_fs32Data = (data.streams[0]);
-        ToyCarSendData.RestoreByUid(data.dataIndex);
+        ThreadSendData.RestoreByUid(data.dataIndex);
 
         switch(data.taskCmd) {
             case "car_trans":
@@ -124,4 +124,4 @@ class ToyCarTask extends ThreadTask {
         return 0;
     }
 }
-export { ToyCarSendData, ToyCarTask };
+export { ThreadSendData, ToyCarTask };
