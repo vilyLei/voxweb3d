@@ -10,6 +10,7 @@
 本类作为任何thread task 的基类
 */
 import {IThreadSendData} from "../../thread/base/IThreadSendData";
+import {IThrDataPool} from "../control/IThrDataPool";
 
 class ThreadTask {
     // 同时处在运行时状态的最大任务数量: 512个
@@ -17,6 +18,7 @@ class ThreadTask {
     private static s_taskList: ThreadTask[] = null;
     private static s_freeList: number[] = null;
     private m_uid: number = -1;
+    private m_thrDataPool: IThrDataPool = null;
     protected m_parseIndex: number = 0;
     protected m_parseTotal: number = 0;
     constructor() {
@@ -59,6 +61,9 @@ class ThreadTask {
             ThreadTask.s_freeList.push(task.m_uid);
             task.m_uid = -1;
         }
+    }
+    setThrDataPool(thrDataPool: IThrDataPool): void {
+        this.m_thrDataPool = thrDataPool;
     }
     // 被子类覆盖后便能实现更细节的相关功能
     reset(): void {
@@ -115,6 +120,7 @@ class ThreadTask {
         return -1;
     }
     destroy(): void {
+        this.m_thrDataPool = null;
         ThreadTask.DetachTask(this);
     }
 }

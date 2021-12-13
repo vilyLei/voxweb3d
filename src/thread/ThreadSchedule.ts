@@ -20,6 +20,10 @@ class ThreadSchedule {
     private m_threadsTotal: number = 0;
     private m_threadEnabled: boolean = true;
     private m_pool: ThrDataPool = new ThrDataPool();
+    
+    getThrDataPool(): ThrDataPool {
+        return this.m_pool;
+    }
     run(): void {
         if (this.getThreadEnabled()) {
             if (this.m_pool.isEnabled()) {

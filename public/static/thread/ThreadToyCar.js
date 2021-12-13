@@ -21,9 +21,9 @@ function CarTransModule(pmodule, taskClass) {
     let m_allTotal = 0;
 
     this.initialize = function(data) {
-        let param = data.descriptor;
-        m_calcType = param.calcType;
-        m_allTotal = param.allTotal;
+        let descriptor = data.descriptor;
+        m_calcType = descriptor.calcType;
+        m_allTotal = descriptor.allTotal;
         console.log("Init MatTransform ins....m_calcType: ",m_calcType, m_allTotal);
         switch (m_calcType) {
             case 0:
@@ -39,14 +39,14 @@ function CarTransModule(pmodule, taskClass) {
         m_paramFS32 = m_module.getParamData();
     }
     this.run = function(data) {
-        let param = data.descriptor;
-        let matsTotal = param.matsTotal;
+        let descriptor = data.descriptor;
+        let matsTotal = descriptor.matsTotal;
         m_dataIndex = data.dataIndex;
         let fs32 = data.streams[0];
         ///*
         let i = 0;
         let len = 0;
-        if (param.flag < 1) {
+        if (descriptor.flag < 1) {
             switch (m_calcType) {
                 case 0:
                     len = matsTotal * 9;

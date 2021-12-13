@@ -26,6 +26,9 @@ class ThreadSystem {
     private static s_specList: IThreadSendData[] = [];
     private static s_specIndices: number[] = [];
     
+    static GetThrDataPool(): ThrDataPool {
+        return ThreadSystem.s_pool;
+    }
     static SendDataToWorkerAt(i: number, sendData: IThreadSendData): void {
         if(i >= 0 && i < ThreadSystem.s_maxThreadsTotal) {
             if(i >= ThreadSystem.s_threadsTotal) {
