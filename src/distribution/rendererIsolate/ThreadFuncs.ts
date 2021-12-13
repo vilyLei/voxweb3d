@@ -1,6 +1,6 @@
 
 import ThreadSystem from "../../thread/ThreadSystem";
-import IThreadSendData from "../../thread/base/IThreadSendData";
+import {StreamType, IThreadSendData} from "../../thread/base/IThreadSendData";
 import {ThreadSystemTask} from "../../thread/control/ThreadSystemTask";
 
 

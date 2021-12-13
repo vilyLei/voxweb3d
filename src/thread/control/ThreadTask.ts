@@ -9,7 +9,7 @@
 一个task可以只有一个数据处理发送给worker,也可以是多个任务处理发送给worker
 本类作为任何thread task 的基类
 */
-import IThreadSendData from "../../thread/base/IThreadSendData";
+import {IThreadSendData} from "../../thread/base/IThreadSendData";
 
 class ThreadTask {
     // 同时处在运行时状态的最大任务数量: 512个

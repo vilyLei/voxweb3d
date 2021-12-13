@@ -5,7 +5,7 @@ import RendererParam from "../vox/scene/RendererParam";
 import RendererState from "../vox/render/RendererState";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
-import IThreadSendData from "../thread/base/IThreadSendData";
+import {IThreadSendData} from "../thread/base/IThreadSendData";
 import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
 import Plane3DEntity from "../vox/entity/Plane3DEntity";
 import Axis3DEntity from "../vox/entity/Axis3DEntity";

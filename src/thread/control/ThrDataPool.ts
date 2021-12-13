@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IThreadSendData from "../../thread/base/IThreadSendData";
+import {IThreadSendData} from "../../thread/base/IThreadSendData";
 import IThreadBase from "../../thread/base/IThreadBase";
 
 //import IThreadBase = IThreadBaseT.thread.base.IThreadBase;

@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IThreadSendData from "../../../../thread/base/IThreadSendData";
+import {StreamType, IThreadSendData} from "../../../../thread/base/IThreadSendData";
 
 class ToyCarSendData implements IThreadSendData {
     constructor() {
@@ -13,8 +13,6 @@ class ToyCarSendData implements IThreadSendData {
     }
 
     param: any = null;//{flag: 0, calcType: 1, allTotal: 16, matsTotal: 0};
-
-    paramData: Float32Array | Uint16Array = null;
 
     // 多线程任务分类id
     taskclass: number = -1;
@@ -26,8 +24,10 @@ class ToyCarSendData implements IThreadSendData {
     sendData: any = null;
     // thread task 任务命令名
     taskCmd: string;
-    //
-    transfers: any[] = null;
+    /**
+     * 直接传递内存句柄所有权的数据流对象数组
+     */
+    streams: StreamType[] = null;
     /**
      * sendStatus   值为 -1 表示没有加入数据池等待处理
      *              值为 0 表示已经加入数据池正等待处理
@@ -37,31 +37,17 @@ class ToyCarSendData implements IThreadSendData {
     // 按照实际需求构建自己的数据(sendData和transfers等)
     buildThis(transferEnabled: boolean): void {
         if (this.sendData != null) {
-            this.sendData.taskclass = this.taskclass;
-            this.sendData.srcuid = this.srcuid;
-            this.sendData.dataIndex = this.dataIndex;
             this.sendData.param = this.param;
-            this.sendData.paramData = this.paramData;
         }
         else {
             this.sendData = {
-                taskCmd: this.taskCmd
-                , taskclass: this.taskclass
-                , srcuid: this.srcuid
-                , dataIndex: this.dataIndex
-                , param: this.param
-                , paramData: this.paramData
+                param: this.param
             }
-        }
-        //console.log("transferEnabled: "+transferEnabled);
-        if (transferEnabled && this.paramData != null) {
-            this.transfers = [this.paramData.buffer];
         }
     }
 
     reset(): void {
-        this.transfers = null;
-        this.sendData.paramData = null;
+        this.streams = null;
         this.sendStatus = -1;
     }
 

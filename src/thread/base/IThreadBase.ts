@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IThreadSendData from "../../thread/base/IThreadSendData";
+import {IThreadSendData} from "../../thread/base/IThreadSendData";
 interface IThreadBase
 {
     sendDataTo(sendData:IThreadSendData):void;

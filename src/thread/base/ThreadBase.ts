@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import ThreadCMD from "../../thread/base/ThreadCMD";
-import IThreadSendData from "../../thread/base/IThreadSendData";
+import {IThreadSendData} from "../../thread/base/IThreadSendData";
 import IThreadBase from "../../thread/base/IThreadBase";
 import ThrDataPool from "../../thread/control/ThrDataPool";
 import ThreadTask from "../../thread/control/ThreadTask";
@@ -45,14 +45,31 @@ class ThreadBase implements IThreadBase {
         if (this.m_free && this.m_taskfs[thrData.taskclass] > 0) {
             //console.log("sendDataTo...,this.m_free: "+this.m_free,thrData+",uid: "+this.getUid());
             thrData.buildThis(true);
-            thrData.sendData.cmd = ThreadCMD.DATA_PARSE;
-            if (thrData.transfers != null) {
-                this.m_worker.postMessage(thrData.sendData, thrData.transfers);
+            if(thrData.sendData == null) {
+                thrData.sendData = {};
+            }
+
+            let sendData: any = thrData.sendData;
+            
+            sendData.taskCmd = thrData.taskCmd;
+            sendData.taskclass = thrData.taskclass;
+            sendData.srcuid = thrData.srcuid;
+            sendData.dataIndex = thrData.dataIndex;
+            sendData.streams = thrData.streams;
+
+            sendData.cmd = ThreadCMD.DATA_PARSE;
+            if (sendData.transfers != null) {
+                let transfers = new Array(sendData.streams.length);
+                for(let i: number = 0; i < sendData.streams.length; ++i) {
+                    transfers[i] = sendData.streams[i].buffer;
+                }
+                this.m_worker.postMessage(sendData, transfers);
             }
             else {
-                this.m_worker.postMessage(thrData.sendData);
+                this.m_worker.postMessage( sendData );
             }
             thrData.sendStatus = 1;
+            thrData.streams = null;
             this.m_free = false;
         }
     }

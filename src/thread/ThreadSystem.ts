@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IThreadSendData from "../thread/base/IThreadSendData";
+import {IThreadSendData} from "../thread/base/IThreadSendData";
 import RendererDevice from "../vox/render/RendererDevice";
 import ThreadCore from "../thread/control/Thrcode";
 import ThrDataPool from "../thread/control/ThrDataPool";

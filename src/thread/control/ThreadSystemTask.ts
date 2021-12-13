@@ -6,7 +6,7 @@
 /***************************************************************************/
 // ThreadTask example
 
-import IThreadSendData from "../../thread/base/IThreadSendData";
+import {IThreadSendData} from "../../thread/base/IThreadSendData";
 import ThreadTask from "../../thread/control/ThreadTask";
 
 interface IThreadSystemTaskListener {

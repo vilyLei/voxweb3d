@@ -4,33 +4,34 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-
-interface IThreadSendData
-{
+type StreamType = ArrayBuffer | Float32Array | Int32Array | Uint16Array | Uint8Array | Int16Array | Int8Array;
+interface IThreadSendData {
     // 多线程任务分类id
-    taskclass:number;
+    taskclass: number;
     // 多线程任务实例id
-    srcuid:number;
+    srcuid: number;
     // IThreadSendData数据对象在自身队列中的序号
-    dataIndex:number;
+    dataIndex: number;
     // 发送给thread处理的数据对象
-    sendData:any;
+    sendData: any;
     // thread task 任务命令名
-    taskCmd:string;
-    // 记录所有权的引用
-    transfers:any[];
+    taskCmd: string;
+    /**
+     * 直接传递内存句柄所有权的数据流对象数组
+     */
+    streams: StreamType[];
     /**
      * sendStatus   值为 -1 表示没有加入数据池等待处理
      *              值为 0 表示已经加入数据池正等待处理
      *              值为 1 表示已经发送给worker
      */
-    sendStatus:number;
+    sendStatus: number;
     /**
      * 按照实际需求构建自己的数据(sendData和transfers等)
      * @param transferEnabled 是否需要内存句柄所有权转移
      */
-    buildThis(transferEnabled:boolean):void;
-    reset():void;
+    buildThis(transferEnabled: boolean): void;
+    reset(): void;
 }
 
-export default IThreadSendData;
+export {StreamType, IThreadSendData};

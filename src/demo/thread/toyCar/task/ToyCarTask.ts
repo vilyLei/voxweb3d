@@ -4,7 +4,7 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-import IThreadSendData from "../../../../thread/base/IThreadSendData";
+import {IThreadSendData} from "../../../../thread/base/IThreadSendData";
 import ThreadTask from "../../../../thread/control/ThreadTask";
 import ThreadSystem from "../../../../thread/ThreadSystem";
 import {ToyCarSendData} from "./ToyCarSendData";
@@ -63,7 +63,7 @@ class ToyCarTask extends ThreadTask {
         if (this.m_enabled) {
             let sd: ToyCarSendData = ToyCarSendData.Create();
             sd.taskCmd = "car_trans";
-            sd.paramData = this.m_fs32Data;
+            sd.streams = [this.m_fs32Data];
             sd.param = {flag: this.m_flag, calcType: 1, allTotal: this.m_total, matsTotal: this.m_matsTotal};
             this.addData(sd);
             ThreadSystem.AddData(sd);
@@ -87,7 +87,7 @@ class ToyCarTask extends ThreadTask {
     // return true, task finish; return false, task continue...
     parseDone(data: any, flag: number): boolean {
         
-        this.m_fs32Data = (data.paramData);
+        this.m_fs32Data = (data.streams[0]);
         ToyCarSendData.RestoreByUid(data.dataIndex);
 
         switch(data.taskCmd) {

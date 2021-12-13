@@ -7,7 +7,7 @@
 // ThreadTask example
 
 import Vector3D from "../../vox/math/Vector3D";
-import IThreadSendData from "../../thread/base/IThreadSendData";
+import {StreamType, IThreadSendData} from "../../thread/base/IThreadSendData";
 import ThreadTask from "../../thread/control/ThreadTask";
 import Matrix4 from "../../vox/math/Matrix4";
 import PureEntity from "../../vox/entity/PureEntity";
@@ -37,11 +37,15 @@ class MatTransSendData implements IThreadSendData {
     sendData: any = null;
     // thread task 任务命令名
     taskCmd: string;
-    //
-    transfers: any[] = null;
-    // sendStatus 值为 -1 表示没有加入数据池等待处理
-    //            值为 0 表示已经加入数据池正等待处理
-    //            值为 1 表示已经发送给worker
+    /**
+     * 直接传递内存句柄所有权的数据流对象数组
+     */
+    streams: StreamType[];
+    /**
+     * sendStatus   值为 -1 表示没有加入数据池等待处理
+     *              值为 0 表示已经加入数据池正等待处理
+     *              值为 1 表示已经发送给worker
+     */
     sendStatus: number = -1;
     // 按照实际需求构建自己的数据(sendData和transfers等)
     buildThis(transferEnabled: boolean): void {
@@ -70,13 +74,13 @@ class MatTransSendData implements IThreadSendData {
         }
         //console.log("transferEnabled: "+transferEnabled);
         if (transferEnabled && this.paramData != null) {
-            this.transfers = [this.paramData.buffer];
+            this.streams = [this.paramData.buffer];
         }
         //this.paramData = null;
     }
 
     reset(): void {
-        this.transfers = null;
+        this.streams = null;
         if (this.sendData != null) {
             this.sendData.paramData = null
         }

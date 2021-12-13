@@ -7,7 +7,7 @@
 
 import ThreadCore from "../thread/control/Thrcode";
 import ThrDataPool from "../thread/control/ThrDataPool";
-import IThreadSendData from "../thread/base/IThreadSendData";
+import {IThreadSendData} from "../thread/base/IThreadSendData";
 import ThreadBase from "../thread/base/ThreadBase";
 class ThreadSchedule {
     // allow ThreadSchedule initialize yes or no

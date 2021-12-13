@@ -42,7 +42,7 @@ function CarTransModule(pmodule, taskClass) {
         let param = data.param;
         let matsTotal = param.matsTotal;
         m_dataIndex = data.dataIndex;
-        let fs32 = data.paramData;
+        let fs32 = data.streams[0];
         ///*
         let i = 0;
         let len = 0;
@@ -93,7 +93,7 @@ function CarTransModule(pmodule, taskClass) {
             srcuid: data.srcuid,
             dataIndex: m_dataIndex,
             //  matsTotal: m_matsTotal,
-            paramData: fs32
+            streams: [fs32]
         };
         if (fs32 != null) {
             postMessage(sendData, [fs32.buffer]);
