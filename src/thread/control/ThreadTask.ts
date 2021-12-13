@@ -100,7 +100,6 @@ class ThreadTask {
         if (this.m_uid >= 0) {
             data.srcuid = this.m_uid;
             data.taskclass = this.getTaskClass();
-            //ThrDataPool.AddData(data);
         }
         else {
             throw Error("Need attach this task !");

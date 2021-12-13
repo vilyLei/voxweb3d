@@ -18,18 +18,19 @@ function CarTransModule(pmodule, taskClass) {
 
     let m_dataIndex = 0;
     let m_calcType = -1;
-    let m_allTot = 0;
+    let m_allTotal = 0;
 
-    this.initialize = function(param) {
+    this.initialize = function(data) {
+        let param = data.param;
         m_calcType = param.calcType;
-        console.log("Init MatTransform ins....m_calcType: " + m_calcType);
-        m_allTot = param.allTot;
+        m_allTotal = param.allTotal;
+        console.log("Init MatTransform ins....m_calcType: ",m_calcType, m_allTotal);
         switch (m_calcType) {
             case 0:
-                m_module.allocate(m_allTot);
+                m_module.allocate(m_allTotal);
                 break;
             case 1:
-                m_module.allocate2(m_allTot);
+                m_module.allocate2(m_allTotal);
                 break;
             default:
                 break;
@@ -38,26 +39,26 @@ function CarTransModule(pmodule, taskClass) {
         m_paramFS32 = m_module.getParamData();
     }
     this.run = function(data) {
-        
-        let matTotal = data.matTotal;
+        let param = data.param;
+        let matsTotal = param.matsTotal;
         m_dataIndex = data.dataIndex;
         let fs32 = data.paramData;
         ///*
         let i = 0;
         let len = 0;
-        if (data.flag < 1) {
+        if (param.flag < 1) {
             switch (m_calcType) {
                 case 0:
-                    len = matTotal * 9;
+                    len = matsTotal * 9;
                     for (i = 0; i < len; i++) m_paramFS32[i] = fs32[i];
                     m_module.updateParam();
-                    len = matTotal * 16 * 2;
+                    len = m_matsTotal * 16 * 2;
                     break;
                 case 1:
-                    len = matTotal * 15;
+                    len = matsTotal * 15;
                     for (i = 0; i < len; i++) m_paramFS32[i] = fs32[i];
                     m_module.updateParam2();
-                    len = matTotal * 16 * 5;
+                    len = matsTotal * 16 * 5;
                     break;
                 default:
                     break;
@@ -67,10 +68,10 @@ function CarTransModule(pmodule, taskClass) {
         else {
             switch (m_calcType) {
                 case 0:
-                    len = matTotal * 16 * 2;
+                    len = matsTotal * 16 * 2;
                     break;
                 case 1:
-                    len = matTotal * 16 * 5;
+                    len = matsTotal * 16 * 5;
                     break;
                 default:
                     break;
@@ -91,7 +92,7 @@ function CarTransModule(pmodule, taskClass) {
             taskclass: m_taskClass,
             srcuid: data.srcuid,
             dataIndex: m_dataIndex,
-            matTotal: matTotal,
+            //  matsTotal: m_matsTotal,
             paramData: fs32
         };
         if (fs32 != null) {
@@ -107,23 +108,13 @@ function AStarNavModule(pmodule, taskClass) {
 
     let m_taskClass = taskClass;
     let m_module = pmodule;
+    let m_running = true;
     
     this.initialize = function(param) {
-        let rn = 6;
-        let cn = 6;
-        m_module.allocate(128);
+        let rn = param.rn;//6;
+        let cn = param.cn;//6;
+        m_module.allocate(rn * cn + 32);
         m_module.initialize(rn, cn, 100);
-
-        let stvs = new Float32Array(
-            [
-                0, 0, 0, 0, 0, 0,
-                0, 0, 1, 1, 0, 0,
-                0, 0, 0, 0, 0, 0,
-                0, 0, 0, 1, 0, 0,
-                0, 0, 0, 1, 0, 0,
-                0, 0, 0, 0, 0, 0
-            ]
-        );
         let r = 0;
         let c = 0;
         let tot = rn * cn;
@@ -144,7 +135,9 @@ function AStarNavModule(pmodule, taskClass) {
         console.log("vs: ", vs);
     }
     this.run = function(data) {
+        if(m_running) {
 
+        }
     }
 }
 function ThreadAStarNav() {
@@ -170,16 +163,29 @@ function ThreadAStarNav() {
                     m_carTrans.run( data );
                 }
                 break;
-            case "aStar_nav":
+            case "aStar_exec":
 
                 if(m_aStarNav != null) {
                     m_aStarNav.run( data );
                 }
                 else {
                     m_aStarNav = new AStarNavModule( new Module.StarA(), this.getTaskClass() );
+                    let param = {rn: 6, cn: 6, stvs: null};
+                    param.stvs = new Uint16Array(
+                        [
+                            0, 0, 0, 0, 0, 0,
+                            0, 0, 1, 1, 0, 0,
+                            0, 0, 0, 0, 0, 0,
+                            0, 0, 0, 1, 0, 0,
+                            0, 0, 0, 1, 0, 0,
+                            0, 0, 0, 0, 0, 0
+                        ]
+                    );
                     m_aStarNav.initialize( data );
                     m_aStarNav( data );
                 }
+                break;
+            case "aStar_init":
                 break;
             default:
                 break;

@@ -58,7 +58,7 @@ class ToyCarScene {
         let list = this.m_toyCarTasks;
         let len: number = list.length;
         for (let i: number = 0; i < len; ++i) {
-            list[i].updateAndSendParam();
+            list[i].updateEntitiesTrans();
         }
     }
     private initThread(): void {

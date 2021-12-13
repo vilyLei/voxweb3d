@@ -12,11 +12,9 @@ class ToyCarSendData implements IThreadSendData {
         console.log("ToyCarSendData::constructor().");
     }
 
-    flag: number = 0;
-    calcType: number = 1;
-    allTot: number = 16;
-    matTotal: number = 0;
-    paramData: Float32Array = null;
+    param: any = null;//{flag: 0, calcType: 1, allTotal: 16, matsTotal: 0};
+
+    paramData: Float32Array | Uint16Array = null;
 
     // 多线程任务分类id
     taskclass: number = -1;
@@ -30,9 +28,11 @@ class ToyCarSendData implements IThreadSendData {
     taskCmd: string;
     //
     transfers: any[] = null;
-    // sendStatus 值为 -1 表示没有加入数据池等待处理
-    //            值为 0 表示已经加入数据池正等待处理
-    //            值为 1 表示已经发送给worker
+    /**
+     * sendStatus   值为 -1 表示没有加入数据池等待处理
+     *              值为 0 表示已经加入数据池正等待处理
+     *              值为 1 表示已经发送给worker
+     */
     sendStatus: number = -1;
     // 按照实际需求构建自己的数据(sendData和transfers等)
     buildThis(transferEnabled: boolean): void {
@@ -40,10 +40,7 @@ class ToyCarSendData implements IThreadSendData {
             this.sendData.taskclass = this.taskclass;
             this.sendData.srcuid = this.srcuid;
             this.sendData.dataIndex = this.dataIndex;
-            this.sendData.flag = this.flag;
-            this.sendData.calcType = this.calcType;
-            this.sendData.allTot = this.allTot;
-            this.sendData.matTotal = this.matTotal;
+            this.sendData.param = this.param;
             this.sendData.paramData = this.paramData;
         }
         else {
@@ -52,10 +49,7 @@ class ToyCarSendData implements IThreadSendData {
                 , taskclass: this.taskclass
                 , srcuid: this.srcuid
                 , dataIndex: this.dataIndex
-                , flag: this.flag
-                , calcType: this.calcType
-                , allTot: this.allTot
-                , matTotal: this.matTotal
+                , param: this.param
                 , paramData: this.paramData
             }
         }
@@ -63,15 +57,11 @@ class ToyCarSendData implements IThreadSendData {
         if (transferEnabled && this.paramData != null) {
             this.transfers = [this.paramData.buffer];
         }
-        //this.paramData = null;
     }
 
     reset(): void {
         this.transfers = null;
-        if (this.sendData != null) {
-            this.sendData.paramData = null
-        }
-        this.matTotal = 0;
+        this.sendData.paramData = null;
         this.sendStatus = -1;
     }
 

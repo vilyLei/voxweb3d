@@ -13,7 +13,7 @@ import { IToyEntity } from "../base/IToyEntity";
 class ToyCarTask extends ThreadTask {
     
     private m_total: number = 0;
-    private m_currMatTotal: number = 1;
+    private m_matsTotal: number = 1;
     private m_fs32Data: Float32Array = null;
     private m_enabled: boolean = true;
     private m_entityIndex: number = 0;
@@ -45,10 +45,10 @@ class ToyCarTask extends ThreadTask {
     getTotal(): number {
         return this.m_total;
     }
-    updateAndSendParam(): void {
+    updateEntitiesTrans(): void {
         if (this.isSendEnabled()) {
             if (this.m_entities.length > 0) {
-                this.sendData();
+                this.sendTransData();
             }
         }
     }
@@ -59,23 +59,20 @@ class ToyCarTask extends ThreadTask {
         return this.m_enabled;
     }
     
-    private sendData(): void {
+    private sendTransData(): void {
         if (this.m_enabled) {
             let sd: ToyCarSendData = ToyCarSendData.Create();
             sd.taskCmd = "car_trans";
             sd.paramData = this.m_fs32Data;
-            sd.allTot = this.m_total;
-            sd.matTotal = this.m_currMatTotal;
-            sd.flag = this.m_flag;
-            sd.calcType = 1;
+            sd.param = {flag: this.m_flag, calcType: 1, allTotal: this.m_total, matsTotal: this.m_matsTotal};
             this.addData(sd);
             ThreadSystem.AddData(sd);
             this.m_enabled = false;
             this.m_flag = 1;
-            //console.log("sendData success...uid: "+this.getUid());
+            //console.log("sendTransData success...uid: "+this.getUid());
         }
         else {
-            console.log("sendData failure...");
+            console.log("sendTransData failure...");
         }
     }
     private updateEntityTrans(fs32: Float32Array): void {
@@ -98,7 +95,9 @@ class ToyCarTask extends ThreadTask {
                 //this.updateTrans( this.m_fs32Data );
                 this.updateEntityTrans( this.m_fs32Data );
                 break;
-            case "aStar_nav":
+            case "aStar_exec":
+                break;
+            case "aStar_init":
                 break;
             default:
 
