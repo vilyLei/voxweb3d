@@ -322,10 +322,11 @@ function DracoParser() {
         let errorFlag = 0;
         let dataObj = null;
         if (pdata != null) {
-            if (data.endI > data.beginI) {
+            let descriptor = pdata.descriptor;
+            if (descriptor.endI > descriptor.beginI) {
                 let u8arr = new Uint8Array(pdata);
                 try {
-                    dataObj = selfT.parseData(u8arr, data.beginI, data.endI, data.status);
+                    dataObj = selfT.parseData(u8arr, descriptor.beginI, descriptor.endI, descriptor.status);
                 } catch (err) {
                     errorFlag = -1;
                     dataObj = null;
@@ -362,16 +363,18 @@ function ThreadDraco() {
             taskclass: selfT.getTaskClass(),
             srcuid: m_srcuid,
             dataIndex: m_dataIndex,
+            streams: data.streams,
             data: data.data
         };
         postMessage(sendData, transfers);
     }
     function initDecoder(data) {
-        selfT.decoder["wasmBinary"] = data.data;
+        let bin = data.streams[0].buffer;
+        selfT.decoder["wasmBinary"] = bin;
         selfT.decoder["onModuleLoaded"] = function (module) {
             selfT.parser = module;
             dracoParser.parser = module;
-            postDataMessage(data, [data.data]);
+            postDataMessage(data, [bin]);
         };
         DracoDecoderModule(selfT.decoder);
     }

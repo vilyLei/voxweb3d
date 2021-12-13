@@ -20,6 +20,7 @@ class ThreadBase implements IThreadBase {
     private m_free: boolean = false;
     private m_enabled: boolean = false;
     private m_initBoo: boolean = true;
+    private m_thrData: IThreadSendData = null;
     
     autoSendData: boolean = false;
     pool: ThrDataPool = null;
@@ -45,20 +46,18 @@ class ThreadBase implements IThreadBase {
         if (this.m_free && this.m_taskfs[thrData.taskclass] > 0) {
             //console.log("sendDataTo...,this.m_free: "+this.m_free,thrData+",uid: "+this.getUid());
             thrData.buildThis(true);
-            if(thrData.sendData == null) {
-                thrData.sendData = {};
-            }
 
-            let sendData: any = thrData.sendData;
+            let sendData: any = {streams: null};
             
+            sendData.descriptor = thrData.descriptor;
             sendData.taskCmd = thrData.taskCmd;
             sendData.taskclass = thrData.taskclass;
             sendData.srcuid = thrData.srcuid;
             sendData.dataIndex = thrData.dataIndex;
             sendData.streams = thrData.streams;
-
             sendData.cmd = ThreadCMD.DATA_PARSE;
-            if (sendData.transfers != null) {
+            
+            if (sendData.streams != null) {
                 let transfers = new Array(sendData.streams.length);
                 for(let i: number = 0; i < sendData.streams.length; ++i) {
                     transfers[i] = sendData.streams[i].buffer;
@@ -68,8 +67,13 @@ class ThreadBase implements IThreadBase {
             else {
                 this.m_worker.postMessage( sendData );
             }
+
             thrData.sendStatus = 1;
             thrData.streams = null;
+
+            sendData.descriptor = null;
+            sendData.streams = null;
+            this.m_thrData = thrData;
             this.m_free = false;
         }
     }
@@ -104,6 +108,7 @@ class ThreadBase implements IThreadBase {
         }
     }
     private receiveData(data: any): void {
+        
         //let receiveBoo:boolean = true;
         this.m_free = true;
         let task: ThreadTask = ThreadTask.GetTaskByUid(data.srcuid);
@@ -112,9 +117,7 @@ class ThreadBase implements IThreadBase {
         if (task != null) {
             finished = task.parseDone(data, -1);
         }
-        //  if(finished)
-        //  {
-        //  }
+        
         this.updateInitTask();
         // 下面这个逻辑要慎用，用了可能会对时间同步(例如帧同步)造成影响
         if (this.autoSendData) {
@@ -126,29 +129,35 @@ class ThreadBase implements IThreadBase {
             this.m_initBoo = false;
             let worker: Worker = new Worker(URL.createObjectURL(blob));
             this.m_worker = worker;
-            let selfT: ThreadBase = this;
-            this.m_worker.onmessage = function (evt: any) {
-                //console.log("Main worker recieve data, event.data: ",evt.data,",uid: "+selfT.m_uid);
+            //let selfT: ThreadBase = this;
+
+            this.m_worker.onmessage = (evt: any): void => {
+                
+                if(this.m_thrData != null) {                
+                    this.m_thrData.sendStatus = -1;
+                    this.m_thrData = null;
+                }
+                //console.log("Main worker recieve data, event.data: ",evt.data,",uid: "+this.m_uid);
                 let data: any = evt.data;
                 //console.log("Main Worker received worker cmd: "+data.cmd);
                 switch (data.cmd) {
                     case ThreadCMD.DATA_PARSE:
-                        selfT.receiveData(data);
+                        this.receiveData(data);
                         break;
                     case ThreadCMD.THREAD_INIT:
-                        worker.postMessage({ cmd: ThreadCMD.INIT_PARAM, threadIndex: selfT.getUid() });
+                        worker.postMessage({ cmd: ThreadCMD.INIT_PARAM, threadIndex: this.getUid() });
                         break;
                     case ThreadCMD.INIT_TASK:
-                        selfT.m_taskfs[data.taskclass] = 1;
-                        selfT.m_free = true;
+                        this.m_taskfs[data.taskclass] = 1;
+                        this.m_free = true;
                         //console.log("Main Worker INIT_TASK selfT.m_taskfs: ",selfT.m_taskfs);
-                        selfT.updateInitTask();
+                        this.updateInitTask();
                         break;
                     case ThreadCMD.INIT_PARAM:
-                        selfT.m_free = true;
-                        selfT.m_enabled = true;
+                        this.m_free = true;
+                        this.m_enabled = true;
                         //console.log("Main worker INIT_PARAM.");
-                        selfT.updateInitTask();
+                        this.updateInitTask();
                         break;
                     default:
                         break;

@@ -312,19 +312,21 @@ function DracoParser() {
     }
     this.receiveCall = function (data) {
         
-        let pdata = data.data;
+        let streams = data.streams;
         selfT.drawMode = 0;
         selfT.vsScale = 1.0;
-
+        console.log("XXX data: ",data);
         selfT.attMap = {};
         selfT.attOpts = { position: {} };
         let errorFlag = 0;
         let dataObj = null;
-        if (pdata != null) {
-            if (data.endI > data.beginI) {
-                let u8arr = new Uint8Array(pdata);
+        if (streams != null) {
+            let descriptor = data.descriptor;
+            console.log("descriptor: ", descriptor);
+            if (descriptor.endI > descriptor.beginI) {
+                let u8arr = streams[0];
                 try {
-                    dataObj = selfT.parseData(u8arr, data.beginI, data.endI, data.status);
+                    dataObj = selfT.parseData(u8arr, descriptor.beginI, descriptor.endI, descriptor.status);
                 } catch (err) {
                     errorFlag = -1;
                     dataObj = null;
@@ -361,29 +363,30 @@ function ThreadDraco() {
             taskclass: selfT.getTaskClass(),
             srcuid: m_srcuid,
             dataIndex: m_dataIndex,
+            streams: data.streams,
             data: data.data
         };
         postMessage(sendData, transfers);
     }
     function initDecoder(data) {
-        selfT.decoder["wasmBinary"] = data.data;
+        let bin = data.streams[0].buffer;
+        selfT.decoder["wasmBinary"] = bin;
         selfT.decoder["onModuleLoaded"] = function (module) {
             selfT.parser = module;
             dracoParser.parser = module;
-            postDataMessage(data, [data.data]);
+            postDataMessage(data, [bin]);
         };
         DracoDecoderModule(selfT.decoder);
     }
     this.receiveData = function (data) {
         m_srcuid = data.srcuid;
         m_dataIndex = data.dataIndex;
-        //console.log("ThreadDraco::receiveData(), data: ", data);
+        console.log("ThreadDraco::receiveData(), data: ", data);
 
         //console.log("data.taskCmd: ", data.taskCmd);
         switch (data.taskCmd) {
             case "DRACO_PARSE":
                 let parseData = dracoParser.receiveCall(data);
-                //console.log("XXXXXXXXXXXXXXXX parseData: ", parseData);
                 //return { data: bufData, transfers: tarr, errorFlag: errorFlag };
                 data.data = {module: parseData.data, errorFlag: parseData.errorFlag};
                 postDataMessage(data, parseData.transfers);

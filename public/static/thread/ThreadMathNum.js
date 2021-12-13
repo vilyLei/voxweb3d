@@ -18,7 +18,7 @@ function ThreadMathNum() {
         m_srcuid = data.srcuid;
         m_dataIndex = data.dataIndex;
         console.log("ThreadMathNum::receiveData(),data.taskCmd: ", data.taskCmd);
-        let fs32 = data.numberData;
+        let fs32 = data.streams[0];
         let vdata = this.mathCalc(fs32, data.taskCmd);
         let sendData =
         {

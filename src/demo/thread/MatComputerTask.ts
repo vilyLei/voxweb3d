@@ -15,9 +15,7 @@ class MatCalcSendData implements IThreadSendData {
     constructor() {
         console.log("MatCalcSendData::constructor().");
     }
-
-    allTot: number = 16;
-    matTotal: number = 0;
+    
     paramData: Float32Array = null;
 
     // 多线程任务分类id
@@ -26,8 +24,10 @@ class MatCalcSendData implements IThreadSendData {
     srcuid: number = -1;
     // IThreadSendData数据对象在自身队列中的序号
     dataIndex: number = -1;
-    // 发送给thread处理的数据对象
-    sendData: any = null;
+    /**
+     * 会发送到子线程的数据描述对象, for example: {flag : 0, type: 12, name: "First"}
+     */
+    descriptor: any;
     // thread task 任务命令名
     taskCmd: string;
     /**
@@ -42,38 +42,34 @@ class MatCalcSendData implements IThreadSendData {
     sendStatus: number = -1;
     // 按照实际需求构建自己的数据(sendData和transfers等)
     buildThis(transferEnabled: boolean): void {
-        if (this.sendData != null) {
-            this.sendData.taskclass = this.taskclass;
-            this.sendData.srcuid = this.srcuid;
-            this.sendData.dataIndex = this.dataIndex;
-            this.sendData.allTot = this.allTot;
-            this.sendData.matTotal = this.matTotal;
-            this.sendData.paramData = this.paramData;
-        }
-        else {
-            this.sendData = {
-                taskCmd: this.taskCmd
-                , taskclass: this.taskclass
-                , srcuid: this.srcuid
-                , dataIndex: this.dataIndex
-                , allTot: this.allTot
-                , matTotal: this.matTotal
-                , paramData: this.paramData
-            }
-        }
+        // if (this.sendData != null) {
+        //     this.sendData.taskclass = this.taskclass;
+        //     this.sendData.srcuid = this.srcuid;
+        //     this.sendData.dataIndex = this.dataIndex;
+
+        //     this.sendData.allTot = this.allTot;
+        //     this.sendData.matTotal = this.matTotal;
+        //     this.sendData.paramData = this.paramData;
+        // }
+        // else {
+        //     this.sendData = {
+        //         taskCmd: this.taskCmd
+        //         , taskclass: this.taskclass
+        //         , srcuid: this.srcuid
+        //         , dataIndex: this.dataIndex
+        //         , allTot: this.allTot
+        //         , matTotal: this.matTotal
+        //         , paramData: this.paramData
+        //     }
+        // }
         //console.log("transferEnabled: "+transferEnabled);
         if (transferEnabled) {
-            this.streams = [this.paramData.buffer];
+            this.streams = [this.paramData];
         }
         //this.paramData = null;
     }
 
     reset(): void {
-        this.streams[0] = null;
-        if (this.sendData != null) {
-            this.sendData.paramData = null
-        }
-        this.matTotal = 0;
         this.sendStatus = -1;
     }
 
@@ -254,8 +250,7 @@ class MatComputerTask extends ThreadTask {
             let sd: MatCalcSendData = MatCalcSendData.Create();
             sd.taskCmd = "MAT_COMPUTE";
             sd.paramData = this.m_fs32Arr;
-            sd.allTot = this.m_matTotal;
-            sd.matTotal = this.m_currMatTotal;
+            sd.descriptor = {allTot: this.m_matTotal, matTotal: this.m_currMatTotal, flag: 0, calcType: 1};
             this.addData(sd);
             ThreadSystem.AddData(sd);
             //this.m_fs32Arr = null;
@@ -271,7 +266,7 @@ class MatComputerTask extends ThreadTask {
     parseDone(data: any, flag: number): boolean {
         //console.log("MatComputerTask::parseDone(), data: ",data);
         //console.log("parseDone(), srcuid: "+data.srcuid+","+this.getUid());
-        this.m_fs32Arr = (data.paramData);
+        this.m_fs32Arr = (data.streams[0]);
         //this.m_dstMFSList[0].copyFromF32Arr(this.m_fs32Arr,0);
         let list: Matrix4[] = this.m_dstMFSList;
         //console.log("data.matTotal: "+data.matTotal);

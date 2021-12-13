@@ -64,7 +64,7 @@ class ToyCarTask extends ThreadTask {
             let sd: ToyCarSendData = ToyCarSendData.Create();
             sd.taskCmd = "car_trans";
             sd.streams = [this.m_fs32Data];
-            sd.param = {flag: this.m_flag, calcType: 1, allTotal: this.m_total, matsTotal: this.m_matsTotal};
+            sd.descriptor = {flag: this.m_flag, calcType: 1, allTotal: this.m_total, matsTotal: this.m_matsTotal};
             this.addData(sd);
             ThreadSystem.AddData(sd);
             this.m_enabled = false;

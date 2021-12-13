@@ -4,17 +4,24 @@
 /*  Vily(vily313@126.com)                                                  */
 /*                                                                         */
 /***************************************************************************/
-type StreamType = ArrayBuffer | Float32Array | Int32Array | Uint16Array | Uint8Array | Int16Array | Int8Array;
+type StreamType = Float32Array | Int32Array | Uint16Array | Uint8Array | Int16Array | Int8Array;
 interface IThreadSendData {
     // 多线程任务分类id
     taskclass: number;
     // 多线程任务实例id
     srcuid: number;
+
+    /**
+     * 会发送到子线程的数据描述对象, for example: {flag : 0, type: 12, name: "First"}
+     */
+    descriptor: any;
+
     // IThreadSendData数据对象在自身队列中的序号
     dataIndex: number;
-    // 发送给thread处理的数据对象
-    sendData: any;
-    // thread task 任务命令名
+    
+    /**
+     * 当前任务命令名
+     */
     taskCmd: string;
     /**
      * 直接传递内存句柄所有权的数据流对象数组

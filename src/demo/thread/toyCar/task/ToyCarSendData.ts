@@ -11,19 +11,21 @@ class ToyCarSendData implements IThreadSendData {
     constructor() {
         console.log("ToyCarSendData::constructor().");
     }
-
-    param: any = null;//{flag: 0, calcType: 1, allTotal: 16, matsTotal: 0};
+    /**
+     * 数据描述对象, for example: {flag : 0, type: 12, name: "First"}
+     */
+    descriptor: any = null;//{flag: 0, calcType: 1, allTotal: 16, matsTotal: 0};
 
     // 多线程任务分类id
     taskclass: number = -1;
     // 多线程任务实例id
     srcuid: number = -1;
-    // IThreadSendData数据对象在自身队列中的序号
+    // IThreadSendData 数据对象在自身队列中的序号
     dataIndex: number = -1;
-    // 发送给thread处理的数据对象
-    sendData: any = null;
+    
     // thread task 任务命令名
     taskCmd: string;
+
     /**
      * 直接传递内存句柄所有权的数据流对象数组
      */
@@ -36,19 +38,9 @@ class ToyCarSendData implements IThreadSendData {
     sendStatus: number = -1;
     // 按照实际需求构建自己的数据(sendData和transfers等)
     buildThis(transferEnabled: boolean): void {
-        if (this.sendData != null) {
-            this.sendData.param = this.param;
-        }
-        else {
-            this.sendData = {
-                param: this.param
-            }
-        }
     }
 
     reset(): void {
-        this.streams = null;
-        this.sendStatus = -1;
     }
 
     private static S_FLAG_BUSY: number = 1;

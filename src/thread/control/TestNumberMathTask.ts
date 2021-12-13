@@ -18,8 +18,10 @@ class NumberMathSendData implements IThreadSendData {
     srcuid: number = -1;
     // IThreadSendData数据对象在自身队列中的序号
     dataIndex: number = -1;
-    // 发送给thread处理的数据对象
-    sendData: any = null;
+    /**
+     * 会发送到子线程的数据描述对象, for example: {flag : 0, type: 12, name: "First"}
+     */
+    descriptor: any;
     // thread task 任务命令名
     taskCmd: string;
     /**
@@ -34,36 +36,17 @@ class NumberMathSendData implements IThreadSendData {
     sendStatus: number = -1;
     // 按照实际需求构建自己的数据(sendData和transfers等)
     buildThis(transferEnabled: boolean): void {
-        if (this.sendData != null) {
-            this.sendData.taskclass = this.taskclass;
-            this.sendData.srcuid = this.srcuid;
-            this.sendData.dataIndex = this.dataIndex;
-            this.sendData.numberData = this.numberData;
-        }
-        else {
-            this.sendData = {
-                taskCmd: this.taskCmd
-                , taskclass: this.taskclass
-                , srcuid: this.srcuid
-                , dataIndex: this.dataIndex
-                , numberData: this.numberData
-            }
-        }
+        
         //console.log("transferEnabled: "+transferEnabled);
         if (transferEnabled) {
             if (this.numberData != null) {
                 //console.log("NumberMathSendData::buildSendData(), this.numberData.byteLength: "+this.numberData.byteLength);
-                this.streams = [this.numberData.buffer];
+                this.streams = [this.numberData];
             }
         }
     }
 
     reset(): void {
-        this.streams = null;
-        if (this.sendData != null) {
-            this.sendData.numberData = null
-        }
-        this.sendStatus = -1;
     }
 
     private static S_FLAG_BUSY: number = 1;

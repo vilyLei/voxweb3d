@@ -13,17 +13,24 @@ import ThreadSystem from "../../thread/ThreadSystem";
 class DracoSendData implements IThreadSendData {
     constructor() {
     }
-    data: ArrayBuffer = null;
-    beginI: number = 0;
-    endI: number = 0;
+
+
+    //data: ArrayBuffer = null;
+    // beginI: number = 0;
+    // endI: number = 0;
+
+    /**
+     * 数据描述对象, for example: {flag : 0, type: 12, name: "First"}
+     */
+    descriptor: any;
     // 多线程任务分类id
     taskclass: number = -1;
     // 多线程任务实例id
     srcuid: number = -1;
     // IThreadSendData数据对象在自身队列中的序号
     dataIndex: number = -1;
-    // 发送给thread处理的数据对象
-    sendData: any = null;
+    // // 发送给thread处理的数据对象
+    // sendData: any = null;
     // thread task 任务命令名
     taskCmd: string;
     /**
@@ -38,13 +45,14 @@ class DracoSendData implements IThreadSendData {
     sendStatus: number = -1;
     // 按照实际需求构建自己的数据(sendData和transfers等)
     buildThis(transferEnabled: boolean): void {
-        
+        /*
         if (this.sendData != null) {
             this.sendData.taskCmd = this.taskCmd;
             this.sendData.taskclass = this.taskclass;
             this.sendData.srcuid = this.srcuid;
             this.sendData.dataIndex = this.dataIndex;
             this.sendData.data = this.data;
+
             this.sendData.beginI = this.beginI;
             this.sendData.endI = this.endI;
         }
@@ -66,14 +74,15 @@ class DracoSendData implements IThreadSendData {
             }
             //console.log("DracoSendData::buildSendData(), this.sendData: ", this.sendData);
         }
+        //*/
     }
     reset(): void {
-        this.streams = null;
-        if (this.sendData != null) {
-            this.sendData.data = null;
-        }
-        this.data = null;
-        this.sendStatus = -1;
+        // this.streams = null;
+        // if (this.sendData != null) {
+        //     this.sendData.data = null;
+        // }
+        // this.data = null;
+        // this.sendStatus = -1;
     }
     //
     private static S_FLAG_BUSY: number = 1;
@@ -152,7 +161,10 @@ class DracoTask extends ThreadTask {
 
         let sd: DracoSendData = DracoSendData.Create();
         sd.taskCmd = "DRACO_INIT";
-        sd.data = wasmBin;
+        //sd.data = wasmBin;
+        sd.streams = [new Uint8Array(wasmBin)];
+        sd.descriptor = null;
+        console.log("XXXX initCurrTask sd.streams: ",sd.streams);
         this.nomalizeData(sd);
         this.m_enabled = false;
         ThreadSystem.SendDataToWorkerAt(index, sd);
@@ -167,9 +179,12 @@ class DracoTask extends ThreadTask {
         if (bufData != null && DracoTask.s_inited) {
             let sd: DracoSendData = DracoSendData.Create();
             sd.taskCmd = "DRACO_PARSE";
-            sd.data = bufData;
-            sd.beginI = beginI;
-            sd.endI = endI;
+            //sd.data = bufData;
+            sd.streams = [new Uint8Array(bufData)];
+            // sd.beginI = beginI;
+            // sd.endI = endI;
+            sd.descriptor = {beginI: beginI, endI: endI, status: 0};
+            console.log("XXXX parseData sd.streams: ",sd.streams);
             this.addData(sd);
 
             ThreadSystem.AddData(sd);
@@ -207,16 +222,16 @@ class DracoTask extends ThreadTask {
     // return true, task finish; return false, task continue...
     parseDone(data: any, flag: number): boolean {
 
-        //  console.log("DracoTask::parseDone(), data.taskCmd: ", data.taskCmd);
-        //  console.log("DracoTask::parseDone(), data: ", data);
+        // console.log("DracoTask::parseDone(), data.taskCmd: ", data.taskCmd);
 
         DracoSendData.RestoreByUid(data.dataIndex);
         switch (data.taskCmd) {
             case "DRACO_INIT":
                 this.m_enabled = true;
                 DracoTask.s_inited = true;
+                this.m_wasmBin = data.streams[0].buffer;
+                DracoTask.s_initedTaskTotal++;
                 if (DracoTask.s_initedTaskTotal >= DracoTask.s_taskTotal) {
-                    this.m_wasmBin = data.data;                    
                     if (this.m_segIndex == 0 && this.m_segs != null && this.m_segs.length > 0) {
                         this.parseNextSeg();
                     }
@@ -224,7 +239,6 @@ class DracoTask extends ThreadTask {
                 else {
                     this.initCurrTask(data.data, DracoTask.s_initedTaskTotal);
                 }
-                DracoTask.s_initedTaskTotal++;
                 break;
             case "DRACO_PARSE":
                 this.m_enabled = true;
