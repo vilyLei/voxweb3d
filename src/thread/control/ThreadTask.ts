@@ -105,6 +105,9 @@ class ThreadTask {
         if (this.m_uid >= 0) {
             data.srcuid = this.m_uid;
             data.taskclass = this.getTaskClass();
+            if(this.m_thrDataPool != null) {
+                this.m_thrDataPool.addData(data);
+            }
         }
         else {
             throw Error("Need attach this task !");

@@ -41,6 +41,7 @@ class ToyCarScene {
         let total: number = 1;
         let matTask: ToyCarTask = new ToyCarTask();
         matTask.initialize(total);
+        matTask.setThrDataPool(ThreadSystem.GetThrDataPool());
         this.m_entitiesTotal += total;
         this.m_toyCarTasks.push(matTask);
         

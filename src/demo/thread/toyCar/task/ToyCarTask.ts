@@ -6,7 +6,6 @@
 /***************************************************************************/
 import {IThreadSendData} from "../../../../thread/base/IThreadSendData";
 import ThreadTask from "../../../../thread/control/ThreadTask";
-import ThreadSystem from "../../../../thread/ThreadSystem";
 import {ToyCarSendData} from "./ToyCarSendData";
 import { IToyEntity } from "../base/IToyEntity";
 
@@ -71,9 +70,8 @@ class ToyCarTask extends ThreadTask {
             sd.descriptor.calcType = 1;
             sd.descriptor.allTotal = this.m_total;
             sd.descriptor.matsTotal = this.m_matsTotal;
-            
+
             this.addData(sd);
-            ThreadSystem.AddData(sd);
             this.m_enabled = false;
             this.m_flag = 1;
             //console.log("sendTransData success...uid: "+this.getUid());
