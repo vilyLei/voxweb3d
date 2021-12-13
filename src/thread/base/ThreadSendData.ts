@@ -12,7 +12,7 @@ class ThreadSendData implements IThreadSendData {
     }
     
     /**
-     * 会发送到子线程的数据描述对象, for example: {flag : 0, type: 12, name: "First"}
+     * 会发送到子线程的用于当前数据处理的数据描述对象, for example: {flag : 0, type: 12, name: "First"}
      */
     descriptor: any;
 

@@ -9,9 +9,9 @@
 一个task可以只有一个数据处理发送给worker,也可以是多个任务处理发送给worker
 本类作为任何thread task 的基类
 */
-import {StreamType, IThreadSendData} from "../base/IThreadSendData";
-import {ThreadSendData} from "../base/ThreadSendData";
-import {IThrDataPool} from "../control/IThrDataPool";
+import { StreamType, IThreadSendData } from "../base/IThreadSendData";
+import { ThreadSendData } from "../base/ThreadSendData";
+import { IThrDataPool } from "../control/IThrDataPool";
 
 class ThreadTask {
     // 同时处在运行时状态的最大任务数量: 512个
@@ -93,30 +93,35 @@ class ThreadTask {
         throw Error("function parseDone(), Need Override !");
         return true;
     }
-    nomalizeData(data: IThreadSendData): void {
-        if (this.m_uid >= 0) {
-            data.srcuid = this.m_uid;
-            data.taskclass = this.getTaskClass();
-        }
-        else {
-            throw Error("Need attach this task !");
-        }
-    }
-    protected createSendData(): ThreadSendData{
+    /**
+     * 创建发所给子线程的数据对象
+     * @returns 默认返回 ThreadSendData 实例, 这个实例由系统自行管理
+     */
+    protected createSendData(): ThreadSendData {
         return ThreadSendData.Create();
     }
-    protected addDataWithParam(taskCmd: string, streams: StreamType[], descriptor: any = null): void {
+    /**
+     * 通过参数, 添加发送给子线程的数据
+     * @param taskCmd 处理当前数据的任务命令名字符串
+     * @param streams 用于内存所有权转换的数据流数组, 例如 Float32Array 数组, 默认值是null
+     * @param descriptor 会发送到子线程的用于当前数据处理的数据描述对象, for example: {flag : 0, type: 12, name: "First"}, 默认值是 null
+     */
+    protected addDataWithParam(taskCmd: string, streams: StreamType[] = null, descriptor: any = null): void {
         let sd = this.createSendData();
         sd.taskCmd = taskCmd;
         sd.streams = streams;
         sd.descriptor = descriptor;
         this.addData(sd);
     }
+    /**
+     * 通过参数, 添加发送给子线程的数据
+     * @param data 符合IThreadSendData行为规范的数据对象
+     */
     protected addData(data: IThreadSendData): void {
         if (this.m_uid >= 0) {
             data.srcuid = this.m_uid;
             data.taskclass = this.getTaskClass();
-            if(this.m_thrDataPool != null) {
+            if (this.m_thrDataPool != null) {
                 this.m_thrDataPool.addData(data);
             }
         }
