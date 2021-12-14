@@ -155,6 +155,7 @@ function AStarNavModule(pmodule, taskClass) {
     this.run = function(data) {
         if(m_running) {
             let descriptor = data.descriptor;
+            console.log("path descriptor: ",descriptor);
             m_module.searchPathDataByRC(descriptor.r0, descriptor.c0, descriptor.r1, descriptor.c1);
             let dataLen = m_module.getPathDataTotal();
             let vs = m_module.getPathData();
@@ -200,7 +201,7 @@ function ThreadAStarNav() {
                 }
                 break;
             case "aStar_exec":
-
+                
                 if(m_aStarNav != null) {
                     m_aStarNav.run( data );
                 }

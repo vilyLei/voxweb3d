@@ -6,11 +6,9 @@ import ImageTextureLoader from "../../../../vox/texture/ImageTextureLoader";
 import ThreadSystem from "../../../../thread/ThreadSystem";
 import { ToyCarTask } from "../task/ToyCarTask";
 import { ToyCarBuilder } from "./ToyCarBuilder";
+import { TerrainData } from "../terrain/TerrainData";
 import { ToyCarTerrain } from "../terrain/ToyCarTerrain";
 
-/**
- * a 3d rectangle plane display example
- */
 class ToyCarScene {
 
     constructor() { }
@@ -29,32 +27,38 @@ class ToyCarScene {
             
             this.m_toyCarBuilder.initialize(scene, texLoader);
 
-            this.initThread();
+
+            let terrainObsVS = new Uint16Array(
+                [
+                    0, 0, 0, 0, 0, 0,
+                    0, 0, 1, 1, 0, 0,
+                    0, 0, 0, 0, 0, 0,
+                    0, 0, 0, 1, 0, 0,
+                    0, 0, 0, 1, 0, 0,
+                    0, 0, 0, 0, 0, 0
+                ]
+            );
+            let terrData: TerrainData = new TerrainData();
+            terrData.rn = 6;
+            terrData.cn = 6;
+            terrData.stvs = terrainObsVS;
+            terrData.initialize();
+
+            this.initThread(terrData);
             this.buildEntities();
 
-            this.initTerrain();
+            this.initTerrain(terrData);
         }
     }
     
-    private buildThreadTask(): void {
+    private buildThreadTask(terrData: TerrainData): void {
         
         let total: number = 1;
         let matTask: ToyCarTask = new ToyCarTask();
         matTask.initialize(total);
         matTask.setThrDataPool(ThreadSystem.GetThrDataPool());
 
-        let descriptor: any = {rn: 6, cn: 6, stvs: null};
-        descriptor.stvs = new Uint16Array(
-            [
-                0, 0, 0, 0, 0, 0,
-                0, 0, 1, 1, 0, 0,
-                0, 0, 0, 0, 0, 0,
-                0, 0, 0, 1, 0, 0,
-                0, 0, 0, 1, 0, 0,
-                0, 0, 0, 0, 0, 0
-            ]
-        );
-        matTask.aStarInitialize(descriptor, descriptor.stvs);
+        matTask.aStarInitialize(terrData);
 
         this.m_entitiesTotal += total;
         this.m_toyCarTasks.push(matTask);
@@ -76,8 +80,8 @@ class ToyCarScene {
             list[i].updateEntitiesTrans();
         }
     }
-    private initThread(): void {
-        this.buildThreadTask();
+    private initThread(terrData: TerrainData): void {
+        this.buildThreadTask(terrData);
 
         // 注意: m_codeStr 代码中描述的 getTaskClass() 返回值 要和 threadToyCar 中的 getTaskClass() 返回值 要相等
         ThreadSystem.InitTaskByURL("static/thread/threadToyCar.js", 0);
@@ -86,13 +90,13 @@ class ToyCarScene {
     testDose(): void {
         let task = this.m_toyCarTasks[0];
         if(task.isAStarEnabled()) {
-            task.aStarSearch( {r0: 1, c0: 1, r1: 4, c1: 3} );
+            task.aStarSearch( {r0: 1, c0: 1, r1: 4, c1: 5} );
         }
     }
-    private initTerrain(): void {
+    private initTerrain(terrData: TerrainData): void {
 
         this.m_toyTerrain = new ToyCarTerrain();
-        this.m_toyTerrain.initialize(this.m_rscene, this.m_texLoader);
+        this.m_toyTerrain.initialize(this.m_rscene, this.m_texLoader, terrData);
         
     }
     updateThread(): void {

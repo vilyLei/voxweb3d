@@ -6,6 +6,7 @@
 /***************************************************************************/
 import ThreadTask from "../../../../thread/control/ThreadTask";
 import { IToyEntity } from "../base/IToyEntity";
+import { TerrainData } from "../terrain/TerrainData";
 
 class ToyCarTask extends ThreadTask {
     private m_dataStepLength: number = 16 * 5;
@@ -14,9 +15,11 @@ class ToyCarTask extends ThreadTask {
     private m_transFS32Data: Float32Array = null;
     private m_pathU16Data: Uint16Array = null;
     private m_transEnabled: boolean = true;
+    private m_pathSerachEnabled: boolean = true;
     private m_entityIndex: number = 0;
     private m_entities: IToyEntity[] = [];
     private m_transFlag: number = 0;
+    private m_terrainData: TerrainData = null;
     private static s_aStarFlag: number = 0;
     constructor() {
         super();
@@ -77,13 +80,12 @@ class ToyCarTask extends ThreadTask {
             index += this.m_dataStepLength;
         }
     }
-    /**
-     * @param descriptor like: {rn: 6, cn: 6, stvs: null};
-     * @param obsData like: new Uint16Array([0,1,1,0...1,1,0,0...])
-     */
-    aStarInitialize(descriptor: any, obsData: Uint16Array): void {
-        if(ToyCarTask.s_aStarFlag == 0 && obsData != null) {
-            this.addDataWithParam("aStar_init", [obsData], descriptor);
+    
+    aStarInitialize(terrData: TerrainData): void {
+        if(ToyCarTask.s_aStarFlag == 0 && terrData != null) {
+            this.m_terrainData = terrData;
+            let descriptor: any = terrData.clone();
+            this.addDataWithParam("aStar_init", [descriptor.stvs], descriptor);
             ToyCarTask.s_aStarFlag = 1;
             this.m_pathU16Data = new  Uint16Array(1024);
         }
@@ -92,7 +94,8 @@ class ToyCarTask extends ThreadTask {
      * @param descriptor like: {r0: 1, c0: 1, r1: 4, c1: 3}
      */
     aStarSearch(descriptor: any): void {
-        if(ToyCarTask.s_aStarFlag == 2) {
+        if(this.m_pathSerachEnabled) {
+            this.m_pathSerachEnabled = false;
             this.addDataWithParam("aStar_exec", [this.m_pathU16Data], descriptor);
             
         }
@@ -107,18 +110,20 @@ class ToyCarTask extends ThreadTask {
         switch(data.taskCmd) {
             case "car_trans":
 
-                this.m_transFS32Data = (data.streams[0]);
+                this.m_transFS32Data = data.streams[0];
                 this.updateEntityTrans( this.m_transFS32Data );
                 this.m_transEnabled = true;
                 break;
             case "aStar_exec":
-
+                this.m_pathU16Data = data.streams[0];
+                this.m_pathSerachEnabled = true;
                 console.log("XXXX aStar_exec...");
                 break;
             case "aStar_init":
 
                 console.log("XXXX aStar_init...");
                 ToyCarTask.s_aStarFlag = 2;
+                this.m_pathSerachEnabled = true;
                 break;
             default:
 
