@@ -46,7 +46,7 @@ class CurveMotionAction {
     run(): void {
         if (this.m_flag != PathTrack.TRACK_END) {
             if (this.m_target != null) {
-                //console.log("cvcvcvcv");
+                
                 let dis: number = this.m_dis + this.motionSpeed;
                 this.m_flag = this.m_pathTrack.calcPosByDis(this.m_outV, this.m_dis, true);
 

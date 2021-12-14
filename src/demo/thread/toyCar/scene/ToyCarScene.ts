@@ -58,7 +58,7 @@ class ToyCarScene {
     
     private buildThreadTask(terrData: TerrainData): void {
         
-        let total: number = 1;
+        let total: number = 2;
         let matTask: ToyCarTask = new ToyCarTask();
         matTask.initialize(total);
         matTask.setThrDataPool(ThreadSystem.GetThrDataPool());
@@ -84,15 +84,17 @@ class ToyCarScene {
             pv.y += 20.0;
             //  //entity.setXYZ(200, 25, 200);
             entity.setPosition( pv );
-            // entity = this.m_toyCarBuilder.buildEntity( task );
-            // entity.terrainData = this.m_terrainData;
-            // entity.path.setSearchPathParam(4,0, 0,4);
-            // pv = this.m_terrainData.getGridPositionByRC(0,0);
-            // //pv.y += 20.0;
-            // //entity.setXYZ(200, 25, 200);
-            // entity.setPosition( pv );
-            // //entity.setXYZ(200, 25, -200);
-            // entity.setWheelRotSpeed(5.0);
+            ///*
+            entity = this.m_toyCarBuilder.buildEntity( task );
+            entity.terrainData = this.m_terrainData;
+            entity.path.setSearchPathParam(4,0, 0,4);
+            pv = this.m_terrainData.getGridPositionByRC(4,0);
+            pv.y += 20.0;
+            //entity.setXYZ(200, 25, 200);
+            entity.setPosition( pv );
+            //entity.setXYZ(200, 25, -200);
+            entity.setWheelRotSpeed(-3.0);
+            //*/
             this.m_entity0 = entity;
         }
         

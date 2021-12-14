@@ -56,12 +56,14 @@ function CarTransModule(pmodule, taskClass) {
             if (descriptor.flag < 1) {
                 switch (m_calcType) {
                     case 0:
-                        len = matsTotal/5 * 15;
+                        //len = matsTotal/5 * 15;
+                        len = matsTotal * 3;
                         for (i = 0; i < len; i++) m_paramFS32[i] = inputFS32[i];
                         m_module.updateParam2MIn();
                         break;
                     case 1:
-                        len = matsTotal/5 * 15;
+                        //len = matsTotal/5 * 15;
+                        len = matsTotal * 3;
                         for (i = 0; i < len; i++) m_paramFS32[i] = inputFS32[i];
                         m_module.updateParam2();
                         break;

@@ -41,7 +41,6 @@ import { RoadSceneData, RoadSegment, RoadSegmentMesh, RoadModel } from "../app/s
 import Line3DEntity from "../vox/entity/Line3DEntity";
 import MaterialBase from "../vox/material/MaterialBase";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
-import { CurveMotionAction } from "../voxmotion/curve/CurveMotionAction";
 
 export class DemoCameraWalkRoad {
     constructor() { }
@@ -283,8 +282,7 @@ export class DemoCameraWalkRoad {
     private m_cameraTarget: CameraBase = null;
     private m_camFrame: FrustrumFrame3DEntity = null;
     private m_pathRole: DisplayEntity = null;
-    //private m_moveAction: PathMotionAction = new PathMotionAction();
-    private m_moveAction: CurveMotionAction = new CurveMotionAction();
+    private m_moveAction: PathMotionAction = new PathMotionAction();
     private initPathAct(posList: Vector3D[] = null): void {
 
         let axis: Axis3DEntity = new Axis3DEntity();
@@ -293,7 +291,7 @@ export class DemoCameraWalkRoad {
         this.m_pathRole = axis;
         //  this.m_camView.setCamera( this.m_rscene.getCamera() );
         console.log("XXX posList.length: ",posList.length);
-        this.m_moveAction.useCameraFollower();
+        //this.m_moveAction.useCameraFollower();
         this.m_moveAction.cameraFollower.setCameraView(this.m_camView);
         this.m_moveAction.bindTarget(this.m_pathRole);
         this.m_moveAction.setPathPosList(posList, true);
