@@ -32,7 +32,13 @@ class TerrainPath {
 
     status: TerrainPathStatus = TerrainPathStatus.Search;
     constructor() { }
-
+    
+    setSearchPathParam(r0: number, c0: number, r1: number, c1: number): void {
+        this.r0 = r0;
+        this.c0 = c0;
+        this.r1 = r1;
+        this.c1 = c1;
+    }
     searchPath(): void {
         this.status = TerrainPathStatus.Search;
     }

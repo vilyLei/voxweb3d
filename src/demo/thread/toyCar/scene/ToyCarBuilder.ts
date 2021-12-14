@@ -59,6 +59,7 @@ class ToyCarBuilder {
         entity.setPosXYZ(200, 50, -200);
 
         entity = new CarEntity();
+        entity.path.setSearchPathParam(4,0, 0,4);
         entity.asset = asset;
         task.addEntity( entity );
         entity.build( this.m_rscene );
