@@ -14,7 +14,9 @@ class ToyCarTask extends ThreadTask {
     private m_dataStepLength: number = 16 * 5;
     private m_total: number = 0;
     private m_matsTotal: number = 1;
-    private m_transFS32Data: Float32Array = null;
+    private m_transInputData: Float32Array = null;
+    private m_transParamData: Float32Array = null;
+    private m_transOutputData: Float32Array = null;
     // 存放请求寻路的信息数据
     private m_pathSearchData: Uint16Array = null;
     // 存放寻路结果
@@ -26,6 +28,7 @@ class ToyCarTask extends ThreadTask {
     private m_entityIndex: number = 0;
     private m_entities: IToyEntity[] = [];
     private m_transFlag: number = 0;
+    private m_calcType: number = 1;
     private m_terrainData: TerrainData = null;
 
     private static s_aStarFlag: number = 0;
@@ -34,14 +37,16 @@ class ToyCarTask extends ThreadTask {
     }
     
     initialize(entitiesTotal: number): void {
-        if (this.m_total < 1 && this.m_transFS32Data == null) {
+        if (this.m_total < 1 && this.m_transInputData == null) {
             
             this.m_total = entitiesTotal;
-            this.m_transFS32Data = new Float32Array(entitiesTotal * this.m_dataStepLength);
+            this.m_transInputData = new Float32Array(entitiesTotal * this.m_dataStepLength);
+            this.m_transParamData = new Float32Array(entitiesTotal * this.m_dataStepLength);
+            this.m_transOutputData = new Float32Array(entitiesTotal * this.m_dataStepLength);
         }
     }
     getTransFS32Data(): Float32Array {
-        return this.m_transFS32Data;
+        return this.m_transInputData;
     }
 
     addEntity(entity: IToyEntity): void {
@@ -69,11 +74,12 @@ class ToyCarTask extends ThreadTask {
 
     private sendTransData(): void {
         if (this.m_transEnabled) {
-
-            let descriptor: any = {flag: this.m_transFlag, calcType: 1, allTotal: this.m_total, matsTotal: this.m_matsTotal};            
-            this.addDataWithParam("car_trans", [this.m_transFS32Data], descriptor);
+            this.m_transParamData.set(this.m_transInputData);
+            let descriptor: any = {flag: this.m_transFlag, calcType: this.m_calcType, allTotal: this.m_total, matsTotal: this.m_matsTotal};            
+            this.addDataWithParam("car_trans", [this.m_transParamData, this.m_transOutputData], descriptor);
             this.m_transEnabled = false;
-            this.m_transFlag = 1;
+            this.m_transFlag = 0;
+            this.m_calcType = 0;
             //console.log("sendTransData success...uid: "+this.getUid(), this.m_matsTotal);
         }
         else {
@@ -167,8 +173,9 @@ class ToyCarTask extends ThreadTask {
         switch(data.taskCmd) {
             case "car_trans":
 
-                this.m_transFS32Data = data.streams[0];
-                this.updateEntityTrans( this.m_transFS32Data );
+                this.m_transParamData = data.streams[0];
+                this.m_transOutputData = data.streams[1];
+                this.updateEntityTrans( this.m_transOutputData );
                 this.m_transEnabled = true;
                 break;
             case "aStar_search":

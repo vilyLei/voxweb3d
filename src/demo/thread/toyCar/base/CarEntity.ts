@@ -113,7 +113,7 @@ class CarEntity implements IToyEntity, IEntityTransform {
             // 轮子的位置偏移值
             this.setWheelOffsetXYZ(80.0, -30.0, 100.0);
             // wheel init rotation, wheel rotation spd, wheel body scale;
-            this.setWheelRotParam(30.0, Math.random() * 1.0 + 1.0, 0.3);
+            this.setWheelRotParam(30.0, -2.0, 0.3);
         }
     }
     getPosition(): Vector3D {
@@ -195,6 +195,7 @@ class CarEntity implements IToyEntity, IEntityTransform {
         this.m_pathCurve.updateMeshToGpu();
         this.m_pathCurve.updateBounds();
 
+        this.m_moveAction.targetPosOffset.setXYZ(0.0, 20.0, 0.0);
         this.m_moveAction.bindTarget(this);
         this.m_moveAction.setPathPosList(posList, false);
         this.path.searchedPath();
@@ -210,7 +211,7 @@ class CarEntity implements IToyEntity, IEntityTransform {
     }
     run(): void {
         if(this.path.status == TerrainPathStatus.Moving) {
-            //this.m_moveAction.run();
+            this.m_moveAction.run();
         }
     }
 

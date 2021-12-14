@@ -9,6 +9,7 @@ import { ToyCarBuilder } from "./ToyCarBuilder";
 import { TerrainData } from "../terrain/TerrainData";
 import { ToyCarTerrain } from "../terrain/ToyCarTerrain";
 import { CarEntity } from "../base/CarEntity";
+import Vector3D from "../../../../vox/math/Vector3D";
 
 class ToyCarScene {
 
@@ -57,7 +58,7 @@ class ToyCarScene {
     
     private buildThreadTask(terrData: TerrainData): void {
         
-        let total: number = 2;
+        let total: number = 1;
         let matTask: ToyCarTask = new ToyCarTask();
         matTask.initialize(total);
         matTask.setThrDataPool(ThreadSystem.GetThrDataPool());
@@ -72,18 +73,26 @@ class ToyCarScene {
     private buildEntities(): void {
 
         let entity: CarEntity;
+        let pv: Vector3D;
         for(let i: number = 0; i < this.m_toyCarTasks.length; ++i) {
 
             let task: ToyCarTask = this.m_toyCarTasks[i];
             entity = this.m_toyCarBuilder.buildEntity( task );
             entity.terrainData = this.m_terrainData;
             entity.path.setSearchPathParam(0,0, 4,4);
-            entity.setXYZ(200, 25, 200);
-            entity = this.m_toyCarBuilder.buildEntity( task );
-            entity.terrainData = this.m_terrainData;
-            entity.path.setSearchPathParam(4,0, 0,4);
-            entity.setXYZ(200, 30, -200);
-            entity.setWheelRotSpeed(5.0);
+            pv = this.m_terrainData.getGridPositionByRC(0,0);
+            pv.y += 20.0;
+            //  //entity.setXYZ(200, 25, 200);
+            entity.setPosition( pv );
+            // entity = this.m_toyCarBuilder.buildEntity( task );
+            // entity.terrainData = this.m_terrainData;
+            // entity.path.setSearchPathParam(4,0, 0,4);
+            // pv = this.m_terrainData.getGridPositionByRC(0,0);
+            // //pv.y += 20.0;
+            // //entity.setXYZ(200, 25, 200);
+            // entity.setPosition( pv );
+            // //entity.setXYZ(200, 25, -200);
+            // entity.setWheelRotSpeed(5.0);
             this.m_entity0 = entity;
         }
         
@@ -102,13 +111,17 @@ class ToyCarScene {
         ThreadSystem.InitTaskByURL("static/thread/threadToyCar.js", 0);
         ThreadSystem.Initialize(1);
     }
+    private m_dis: number = 0;
     testDose(): void {
         let task = this.m_toyCarTasks[0];
         if(task.isAStarEnabled()) {
             //task.aStarSearch( {r0: 1, c0: 1, r1: 4, c1: 5} );
-            //task.searchPath();
-            this.m_entity0.setWheelRotSpeed(20.0);
+            task.searchPath();
+            // this.m_entity0.setWheelRotSpeed(20.0);
+            //this.m_entity0.setXYZ(200, 25, -100 + this.m_dis);
+            this.m_dis += 10.0;
         }
+        //this.updateThreadTask();
     }
     private initTerrain(terrData: TerrainData): void {
 

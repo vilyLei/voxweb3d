@@ -16,7 +16,7 @@ class CurveMotionAction {
     cameraFollower: CameraViewFollower = null;// = new CameraViewFollower();
     readonly posInterp: PosInterpolation = new PosInterpolation();
     readonly cameraOffset: Vector3D = new Vector3D(0, 130, -200);
-    readonly targetOffset: Vector3D = new Vector3D();
+    readonly targetPosOffset: Vector3D = new Vector3D();
     motionSpeed: number = 1;
 
     constructor() {
@@ -67,7 +67,7 @@ class CurveMotionAction {
                 this.m_temV.subVecsTo(this.m_preV, this.m_temV);
                 currDegree = this.m_degTween.calcDegree(360 - MathConst.GetDegreeByXY(this.m_temV.x, this.m_temV.z));
 
-                this.m_preV.addBy( this.targetOffset );
+                this.m_preV.addBy( this.targetPosOffset );
                 this.m_target.setPosition( this.m_preV );
                 this.m_target.setRotationXYZ(0.0, currDegree, 0.0);
                 this.m_target.update();
@@ -98,7 +98,7 @@ class CurveMotionAction {
         let len: number = posList.length;
         this.m_preV.copyFrom(posList[0]);
         if (this.m_target != null) {
-            this.m_preV.addBy(this.targetOffset);
+            this.m_preV.addBy(this.targetPosOffset);
             this.m_target.setPosition(this.m_preV);
             this.m_target.update();
         }

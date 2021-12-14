@@ -40,7 +40,7 @@ function CarTransModule(pmodule, taskClass) {
     }
 
     this.run = function(data) {
-        if(m_matFS32) {
+        if(m_matFS32 != null) {
 
             let descriptor = data.descriptor;
             let matsTotal = descriptor.matsTotal;
@@ -48,49 +48,35 @@ function CarTransModule(pmodule, taskClass) {
             m_calcType = descriptor.calcType;
             //console.log("matsTotal: ", matsTotal);
             m_dataIndex = data.dataIndex;
-            let fs32 = data.streams[0];
+            let inputFS32 = data.streams[0];
+            let outputFS32 = data.streams[1];
             ///*
             let i = 0;
             let len = 0;
             if (descriptor.flag < 1) {
-                //console.log("XXXXXXXXXXXX m_calcType: ",m_calcType);
                 switch (m_calcType) {
                     case 0:
-                        len = matsTotal * 9;
-                        for (i = 0; i < len; i++) m_paramFS32[i] = fs32[i];
-                        m_module.updateParam();
-                        len = matsTotal * 16;
+                        len = matsTotal/5 * 15;
+                        for (i = 0; i < len; i++) m_paramFS32[i] = inputFS32[i];
+                        m_module.updateParam2MIn();
                         break;
                     case 1:
-                        len = matsTotal * 15;
-                        for (i = 0; i < len; i++) m_paramFS32[i] = fs32[i];
+                        len = matsTotal/5 * 15;
+                        for (i = 0; i < len; i++) m_paramFS32[i] = inputFS32[i];
                         m_module.updateParam2();
-                        len = matsTotal * 16;
                         break;
                     default:
                         break;
                 }
-                //console.log("fs32: ",fs32);
+                //console.log("inputFS32: ",inputFS32);
             }
-            else {
-                switch (m_calcType) {
-                    case 0:
-                        len = matsTotal * 16;
-                        break;
-                    case 1:
-                        len = matsTotal * 16;
-                        //console.log("len: ",len);
-                        break;
-                    default:
-                        break;
-                }
-            }
+            len = matsTotal * 16;
             m_module.calc();
     
             //  console.log("paramFS32: ",m_matFS32);
             //console.log("len: ",len);
             for (i = 0; i < len; i++) {
-                fs32[i] = m_matFS32[i];
+                outputFS32[i] = m_matFS32[i];
             }
             
             let sendData =
@@ -101,11 +87,10 @@ function CarTransModule(pmodule, taskClass) {
                 taskclass: m_taskClass,
                 srcuid: data.srcuid,
                 dataIndex: m_dataIndex,
-                //  matsTotal: m_matsTotal,
-                streams: [fs32]
+                streams: [inputFS32, outputFS32]
             };
-            if (fs32 != null) {
-                postMessage(sendData, [fs32.buffer]);
+            if (inputFS32 != null) {
+                postMessage(sendData, [inputFS32.buffer, outputFS32.buffer]);
             }
             else {
                 postMessage(sendData);
