@@ -18,6 +18,7 @@ class ToyCarBuilder {
     private m_rscene: RendererScene = null;
     private m_texLoader: ImageTextureLoader;
     private m_entitiesTotal: number = 0;
+    private m_entities: CarEntity[] = [];
 
     getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -57,6 +58,7 @@ class ToyCarBuilder {
         task.addEntity( entity );
         entity.build( this.m_rscene );
         entity.setPosXYZ(200, 50, -200);
+        this.m_entities.push(entity);
 
         entity = new CarEntity();
         entity.path.setSearchPathParam(4,0, 0,4);
@@ -64,8 +66,17 @@ class ToyCarBuilder {
         task.addEntity( entity );
         entity.build( this.m_rscene );
         entity.setPosXYZ(200, 50, 200);
+        this.m_entities.push(entity);
         
         this.m_entitiesTotal++;
+    }
+    getEntities(): CarEntity[] {
+        return this.m_entities;
+    }
+    run(): void {
+        for(let i: number = 0; i < this.m_entities.length; ++i) {
+            this.m_entities[i].run();
+        }
     }
 }
 export { ToyCarBuilder }

@@ -105,7 +105,7 @@ class ToyCarScene {
     }
 
     run(): void {
-
+        this.m_toyCarBuilder.run();
     }
 }
 export { ToyCarScene }

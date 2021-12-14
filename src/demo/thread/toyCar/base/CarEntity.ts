@@ -140,5 +140,8 @@ class CarEntity implements IToyEntity{
             ++index;
         }
     }
+    run(): void {
+        
+    }
 }
 export { CarEntity };
