@@ -65,6 +65,7 @@ export class DemoToyCarThread extends DemoInstance {
         //  this.m_rscene.addEntity(plane,2);
         let axis: Axis3DEntity = new Axis3DEntity();
         axis.initialize(300.0);
+        axis.setXYZ(0, 30, 0);
         this.m_rscene.addEntity(axis);
         let list = [0,1,2,3,4];
         list.splice(2);

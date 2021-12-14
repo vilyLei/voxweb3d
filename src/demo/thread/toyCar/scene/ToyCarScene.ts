@@ -8,6 +8,7 @@ import { ToyCarTask } from "../task/ToyCarTask";
 import { ToyCarBuilder } from "./ToyCarBuilder";
 import { TerrainData } from "../terrain/TerrainData";
 import { ToyCarTerrain } from "../terrain/ToyCarTerrain";
+import { CarEntity } from "../base/CarEntity";
 
 class ToyCarScene {
 
@@ -19,6 +20,7 @@ class ToyCarScene {
     private m_toyTerrain: ToyCarTerrain = new ToyCarTerrain();
     private m_entitiesTotal: number = 0;
     private m_toyCarTasks: ToyCarTask[] = [];
+    private m_terrainData: TerrainData = null;
     
     initialize(scene: RendererScene, texLoader: ImageTextureLoader): void {
         if (this.m_rscene == null) {
@@ -44,9 +46,11 @@ class ToyCarScene {
             terrData.stvs = terrainObsVS;
             terrData.initialize();
 
+            this.m_terrainData = terrData;
+
             this.initThread(terrData);
             this.buildEntities();
-
+            
             this.initTerrain(terrData);
         }
     }
@@ -66,10 +70,19 @@ class ToyCarScene {
     }
     private buildEntities(): void {
 
+        let entity: CarEntity;
         for(let i: number = 0; i < this.m_toyCarTasks.length; ++i) {
-            let task: ToyCarTask = this.m_toyCarTasks[i];
-            this.m_toyCarBuilder.buildEntities(task);
 
+            let task: ToyCarTask = this.m_toyCarTasks[i];
+            entity = this.m_toyCarBuilder.buildEntity( task );
+            entity.terrainData = this.m_terrainData;
+            entity.path.setSearchPathParam(0,0, 4,4);
+            entity.setPosXYZ(200, 25, 200);
+            entity = this.m_toyCarBuilder.buildEntity( task );
+            entity.terrainData = this.m_terrainData;
+            entity.path.setSearchPathParam(4,0, 0,4);
+            entity.setPosXYZ(200, 30, -200);
+            entity.setWheelRotSpeed(5.0);
         }
         
     }

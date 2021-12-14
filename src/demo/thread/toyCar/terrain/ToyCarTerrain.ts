@@ -38,7 +38,7 @@ class ToyCarTerrain {
         let size: number = this.m_terrainData.gridSize;
         let srcBox: Box3DEntity = new Box3DEntity();
         srcBox.initialize(new Vector3D(-size * 0.5, 0, -size * 0.5), new Vector3D(size * 0.5, size * 2.0 * 0.5, size * 0.5), [this.getImageTexByUrl("static/assets/default.jpg")]);
-
+        //return;
         let rn: number = this.m_terrainData.rn;
         let cn: number = this.m_terrainData.cn;
         let startPos: Vector3D = new Vector3D(cn * size * -0.5 + 0.5 * size, 0.0, rn * size * -0.5 + 0.5 * size);
@@ -90,12 +90,15 @@ class ToyCarTerrain {
 
             let r: number = pathList[k];
             let c: number = pathList[k + 1];
-            pos.x = startPos.x + c * size;
-            pos.y = startPos.y;
-            pos.z = startPos.z + r * size;
+            // pos.x = startPos.x + c * size;
+            // pos.y = startPos.y;
+            // pos.z = startPos.z + r * size;
+            pv = this.m_terrainData.getGridPositionByRC(pathList[k], pathList[k+1]);
             let ls: Line3DEntity = new Line3DEntity();
             ls.initializeRectXOZ(-15, -15, 30, 30);
-            ls.setXYZ(pos.x, pos.y + 21, pos.z);
+            //ls.setXYZ(pos.x, pos.y + 21, pos.z);
+            pv.y += 21;
+            ls.setPosition( pv );
             this.m_rscene.addEntity(ls);
             k += 2;
         }
