@@ -50,10 +50,19 @@ class ToyCarBuilder {
             this.getImageTexByUrl("static/assets/" + texNameList[2])
         ];
 
-        let entity: CarEntity = new CarEntity();
+        let entity: CarEntity;
+
+        entity = new CarEntity();
         entity.asset = asset;
         task.addEntity( entity );
         entity.build( this.m_rscene );
+        entity.setPosXYZ(200, 50, -200);
+
+        entity = new CarEntity();
+        entity.asset = asset;
+        task.addEntity( entity );
+        entity.build( this.m_rscene );
+        entity.setPosXYZ(200, 50, 200);
         
         this.m_entitiesTotal++;
     }

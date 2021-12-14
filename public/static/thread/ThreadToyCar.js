@@ -41,6 +41,7 @@ function CarTransModule(pmodule, taskClass) {
     this.run = function(data) {
         let descriptor = data.descriptor;
         let matsTotal = descriptor.matsTotal;
+        //console.log("matsTotal: ", matsTotal);
         m_dataIndex = data.dataIndex;
         let fs32 = data.streams[0];
         ///*
@@ -52,13 +53,13 @@ function CarTransModule(pmodule, taskClass) {
                     len = matsTotal * 9;
                     for (i = 0; i < len; i++) m_paramFS32[i] = fs32[i];
                     m_module.updateParam();
-                    len = m_matsTotal * 16 * 2;
+                    len = m_matsTotal * 16;
                     break;
                 case 1:
                     len = matsTotal * 15;
                     for (i = 0; i < len; i++) m_paramFS32[i] = fs32[i];
                     m_module.updateParam2();
-                    len = matsTotal * 16 * 5;
+                    len = matsTotal * 16;
                     break;
                 default:
                     break;
@@ -68,10 +69,11 @@ function CarTransModule(pmodule, taskClass) {
         else {
             switch (m_calcType) {
                 case 0:
-                    len = matsTotal * 16 * 2;
+                    len = matsTotal * 16;
                     break;
                 case 1:
-                    len = matsTotal * 16 * 5;
+                    len = matsTotal * 16;
+                    //console.log("len: ",len);
                     break;
                 default:
                     break;
@@ -80,6 +82,7 @@ function CarTransModule(pmodule, taskClass) {
         m_module.calc();
 
         //  console.log("paramFS32: ",m_matFS32);
+        //console.log("len: ",len);
         for (i = 0; i < len; i++) {
             fs32[i] = m_matFS32[i];
         }
@@ -115,9 +118,9 @@ function AStarNavModule(pmodule, taskClass) {
 
         m_dataIndex = data.dataIndex;
         let descriptor = data.descriptor;
-        let rn = descriptor.rn;//6;
-        let cn = descriptor.cn;//6;
-        let stvs = descriptor.stvs;//6;
+        let rn = descriptor.rn;
+        let cn = descriptor.cn;
+        let stvs = descriptor.stvs;
         m_module.allocate(rn * cn + 32);
         m_module.initialize(rn, cn, 100);
         let r = 0;
@@ -132,13 +135,7 @@ function AStarNavModule(pmodule, taskClass) {
                 r++;
             }
         }
-        /*
-        m_module.searchPathDataByRC(0, 0, 4, 4);
-        let dataLen = m_module.getPathDataTotal();
-        let vs = m_module.getPathData();
-        console.log("dataLen: " + dataLen);
-        console.log("vs: ", vs);
-        //*/
+        
         let sendData =
         {
             cmd: data.cmd,
@@ -201,15 +198,15 @@ function AStarNavModule(pmodule, taskClass) {
                 dataLen = m_module.getPathDataTotal();
                 vs = m_module.getPathData();
 
-                let subVS = vs.subarray(total * 2, (total + dataLen) * 2);
+                let subVS = vs.subarray(0, dataLen * 2);
                 pathDataVS.set(subVS, total * 2);
-                //let subVS = pathDataVS.subar
+                
                 paramVS[index] = dataLen;
                 total += dataLen;
                 console.log("work search path dataLen: " + dataLen);
                 console.log("work search path vs: ", vs);
             }
-            //paramVS.buffer, pathDataVS
+            
             console.log("paramVS: ",paramVS);
             console.log("pathDataVS: ",pathDataVS);
             let sendData =

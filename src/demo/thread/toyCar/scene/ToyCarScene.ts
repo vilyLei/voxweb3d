@@ -53,7 +53,7 @@ class ToyCarScene {
     
     private buildThreadTask(terrData: TerrainData): void {
         
-        let total: number = 1;
+        let total: number = 2;
         let matTask: ToyCarTask = new ToyCarTask();
         matTask.initialize(total);
         matTask.setThrDataPool(ThreadSystem.GetThrDataPool());

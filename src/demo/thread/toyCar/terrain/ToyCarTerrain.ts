@@ -35,6 +35,7 @@ class ToyCarTerrain {
 
     private initTerrain(): void {
 
+        return;
         let size: number = this.m_terrainData.gridSize;
         let srcBox: Box3DEntity = new Box3DEntity();
         srcBox.initialize(new Vector3D(-size * 0.5, 0, -size * 0.5), new Vector3D(size * 0.5, size * 2.0 * 0.5, size * 0.5), [this.getImageTexByUrl("static/assets/default.jpg")]);
@@ -69,7 +70,7 @@ class ToyCarTerrain {
                 }
                 box.setScaleXYZ(1.0, scale, 1.0);
                 (box.getMaterial() as any).setRGB3f(0.0 + 1.5 * c/cn, 1.0, 0.0 + 1.5 * r/rn);
-                this.m_rscene.addEntity(box);
+                //this.m_rscene.addEntity(box);
             }
         }
 

@@ -23,7 +23,7 @@ class CarEntity implements IToyEntity{
     private m_fs32Data: Float32Array = null;
     private m_entityList: PureEntity[] = [];
     private m_transMat4List: Matrix4[] = [];
-    // private m_isWaitingSearchPath: boolean = false;
+    private m_position: Vector3D = new Vector3D();
     
     private static s_srcBox0: Box3DEntity = null;
     private static s_srcBox1: Box3DEntity = null;
@@ -32,13 +32,18 @@ class CarEntity implements IToyEntity{
     readonly path: TerrainPath = new TerrainPath();
     constructor() {
     }
-    
+
+    // setPositionXYZ(px: number, py: number, pz: number): void {
+    //     this.m_position.setXYZ(px, py, pz);
+    // }
+    // setPosition(pos: Vector3D): void {
+    //     this.m_position.copyFrom(pos);
+    // }
     getEneityIndex(): number {
         return this.m_entityIndex;
     }
     setFS32Data(srcFS32: Float32Array, index: number): void {
         this.m_entityIndex = index;
-        index *= this.m_fs32Length;
         this.m_fs32Data = srcFS32.subarray(index * this.m_fs32Length, (index + 1) * this.m_fs32Length);
     }
     build(sc: RendererScene): void {
@@ -84,6 +89,7 @@ class CarEntity implements IToyEntity{
             this.m_transMat4List.push( box.getMatrix() );
         }
         // for test
+        //this.setPosXYZ( 200, 50, 200 );
         this.setPosXYZ( 200, 50, 200 );
         this.setRotationXYZ(0.0, Math.random() * 360.0, 0.0);
         // whole body scale, param 1, param 2

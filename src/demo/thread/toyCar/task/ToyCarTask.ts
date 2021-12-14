@@ -50,6 +50,7 @@ class ToyCarTask extends ThreadTask {
             entity.setFS32Data(this.getTransFS32Data(), this.m_entityIndex);
             this.m_entities.push(entity);
             this.m_entityIndex ++;
+            this.m_matsTotal = this.m_entityIndex * 5;
         }
     }
     getTotal(): number {
@@ -73,7 +74,7 @@ class ToyCarTask extends ThreadTask {
             this.addDataWithParam("car_trans", [this.m_transFS32Data], descriptor);
             this.m_transEnabled = false;
             this.m_transFlag = 1;
-            //console.log("sendTransData success...uid: "+this.getUid());
+            //console.log("sendTransData success...uid: "+this.getUid(), this.m_matsTotal);
         }
         else {
             console.log("sendTransData failure...");
@@ -103,7 +104,7 @@ class ToyCarTask extends ThreadTask {
     }
     searchPath(): void {
         if(this.m_pathSerachEnabled) {
-            
+            // 第一个 uint 16 数值存放个数
             let k: number = 1;
             let total: number = 0;
             for (let i: number = 0; i < this.m_entities.length; ++i) {
