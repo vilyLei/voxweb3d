@@ -18,6 +18,9 @@ class TerrainData {
         let gridSize = this.gridSize;
         this.beginPosition.setXYZ(cn * gridSize * -0.5 + 0.5 * gridSize, 0.0, rn * gridSize * -0.5 + 0.5 * gridSize);
     }
+    isObstacleByRC(r: number, c: number): boolean {
+        return this.stvs[r * this.rn + c] == 1;
+    }
     getGridStatusByRC(r: number, c: number): number {
         return this.stvs[r * this.rn + c];
     }

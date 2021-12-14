@@ -90,7 +90,8 @@ class ToyCarScene {
     testDose(): void {
         let task = this.m_toyCarTasks[0];
         if(task.isAStarEnabled()) {
-            task.aStarSearch( {r0: 1, c0: 1, r1: 4, c1: 5} );
+            //task.aStarSearch( {r0: 1, c0: 1, r1: 4, c1: 5} );
+            task.searchPath();
         }
     }
     private initTerrain(terrData: TerrainData): void {

@@ -6,9 +6,13 @@
 /***************************************************************************/
 
 import RendererScene from "../../../../vox/scene/RendererScene";
+import {TerrainPath} from "../terrain/TerrainPath";
 
 interface IToyEntity {
 
+    path: TerrainPath;
+
+    getEneityIndex(): number;
     setFS32Data(srcFS32: Float32Array, index: number): void;
     build(sc: RendererScene): void;
     
@@ -20,6 +24,7 @@ interface IToyEntity {
     setWheelRotSpeed(pr: number, wheelRotSpd: number, bodyScale: number): void;
     destroy(): void;
     
-    updateTrans(fs32: Float32Array, index: number): void;
+    updateTrans(fs32: Float32Array): void;
+    searchedPath(vs: Uint16Array): void;
 }
 export { IToyEntity };

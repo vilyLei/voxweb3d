@@ -7,19 +7,27 @@
 import ThreadTask from "../../../../thread/control/ThreadTask";
 import { IToyEntity } from "../base/IToyEntity";
 import { TerrainData } from "../terrain/TerrainData";
+import { TerrainPathStatus } from "../terrain/TerrainPath";
 
 class ToyCarTask extends ThreadTask {
+
     private m_dataStepLength: number = 16 * 5;
     private m_total: number = 0;
     private m_matsTotal: number = 1;
     private m_transFS32Data: Float32Array = null;
-    private m_pathU16Data: Uint16Array = null;
+    // 存放请求寻路的信息数据
+    private m_pathSearchData: Uint16Array = null;
+    // 存放寻路结果
+    private m_pathRCData: Uint16Array = null;
+    private m_serachPathIndex: number = 0;
+
     private m_transEnabled: boolean = true;
     private m_pathSerachEnabled: boolean = true;
     private m_entityIndex: number = 0;
     private m_entities: IToyEntity[] = [];
     private m_transFlag: number = 0;
     private m_terrainData: TerrainData = null;
+
     private static s_aStarFlag: number = 0;
     constructor() {
         super();
@@ -71,23 +79,16 @@ class ToyCarTask extends ThreadTask {
             console.log("sendTransData failure...");
         }
     }
-    private updateEntityTrans(fs32: Float32Array): void {
-
-        let step: number = 5 * 16;
-        let index: number = 0;
-        for (let i: number = 0; i < this.m_entities.length; ++i) {
-            this.m_entities[i].updateTrans(fs32, index);
-            index += this.m_dataStepLength;
-        }
-    }
     
     aStarInitialize(terrData: TerrainData): void {
+
         if(ToyCarTask.s_aStarFlag == 0 && terrData != null) {
             this.m_terrainData = terrData;
             let descriptor: any = terrData.clone();
             this.addDataWithParam("aStar_init", [descriptor.stvs], descriptor);
             ToyCarTask.s_aStarFlag = 1;
-            this.m_pathU16Data = new  Uint16Array(1024);
+            this.m_pathSearchData = new Uint16Array(512);
+            this.m_pathRCData = new Uint16Array(2048);
         }
     }
     /**
@@ -96,12 +97,67 @@ class ToyCarTask extends ThreadTask {
     aStarSearch(descriptor: any): void {
         if(this.m_pathSerachEnabled) {
             this.m_pathSerachEnabled = false;
-            this.addDataWithParam("aStar_exec", [this.m_pathU16Data], descriptor);
+            this.addDataWithParam("aStar_exec", [this.m_pathRCData], descriptor);
             
+        }
+    }
+    searchPath(): void {
+        if(this.m_pathSerachEnabled) {
+            
+            let k: number = 1;
+            let total: number = 0;
+            for (let i: number = 0; i < this.m_entities.length; ++i) {
+                if(this.m_entities[i].path.status == TerrainPathStatus.Search) {
+                    this.m_entities[i].path.searchingPath();
+                    let path = this.m_entities[i].path;
+                    this.m_pathSearchData[k++] = i;
+                    this.m_pathSearchData[k++] = path.r0;
+                    this.m_pathSearchData[k++] = path.c0;
+                    this.m_pathSearchData[k++] = path.r1;
+                    this.m_pathSearchData[k++] = path.c1;
+                }
+            }
+            if(k > 1) {
+                this.m_pathSearchData[0] = k / 5;
+                this.m_pathSerachEnabled = false;
+                console.log("AA have searching path, k: ",k, ", this.m_pathSearchData: ",this.m_pathSearchData);
+                this.addDataWithParam("aStar_search", [this.m_pathSearchData, this.m_pathRCData]);
+            }
+            else {
+                console.log("BB no searching path, k: ",k);
+            }
         }
     }
     isAStarEnabled(): boolean {
         return ToyCarTask.s_aStarFlag == 2;
+    }
+    
+    private updateEntityTrans(fs32: Float32Array): void {
+        for (let i: number = 0; i < this.m_entities.length; ++i) {
+            this.m_entities[i].updateTrans(fs32);
+        }
+    }
+    
+    private updateEntityPath(): void {
+        
+        let params = this.m_pathSearchData;
+        let pathVS = this.m_pathRCData;
+        let total: number = params[0];
+        let index: number = 0;
+        let k: number = 1;
+        let pathDataLen: number = 0;
+        let dataLen: number = 0;
+        for(let i: number = 0; i < total; ++i) {
+            index = params[k];
+            pathDataLen = params[k+1] * 2;
+            let vs = pathVS.subarray(dataLen, dataLen + pathDataLen);
+            this.m_entities[index].searchedPath(vs);
+            dataLen += pathDataLen;
+            k += 5;
+        }
+        // for (let i: number = 0; i < this.m_entities.length; ++i) {
+        //     this.m_entities[i].updateTrans(fs32);
+        // }
     }
     // return true, task finish; return false, task continue...
     parseDone(data: any, flag: number): boolean {
@@ -114,10 +170,18 @@ class ToyCarTask extends ThreadTask {
                 this.updateEntityTrans( this.m_transFS32Data );
                 this.m_transEnabled = true;
                 break;
+            case "aStar_search":
+                console.log("XXXX aStar_search...");
+                this.m_pathSearchData = data.streams[0];
+                this.m_pathRCData = data.streams[1];
+                this.updateEntityPath();
+                this.m_pathSerachEnabled = true;
+                break;
             case "aStar_exec":
-                this.m_pathU16Data = data.streams[0];
+                this.m_pathRCData = data.streams[0];
                 this.m_pathSerachEnabled = true;
                 console.log("XXXX aStar_exec...");
+                this.m_serachPathIndex = 0;
                 break;
             case "aStar_init":
 

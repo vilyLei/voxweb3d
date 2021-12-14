@@ -14,24 +14,31 @@ import Box3DEntity from "../../../../vox/entity/Box3DEntity";
 import { AssetPackage } from "./AssetPackage";
 import RendererScene from "../../../../vox/scene/RendererScene";
 import {IToyEntity} from "./IToyEntity";
+import {TerrainPathStatus, TerrainPath} from "../terrain/TerrainPath";
 
 class CarEntity implements IToyEntity{
 
-    private m_index: number = 0;
+    private m_entityIndex: number = 0;
     private m_fs32Length: number = 15;
     private m_fs32Data: Float32Array = null;
     private m_entityList: PureEntity[] = [];
     private m_transMat4List: Matrix4[] = [];
+    // private m_isWaitingSearchPath: boolean = false;
     
     private static s_srcBox0: Box3DEntity = null;
     private static s_srcBox1: Box3DEntity = null;
 
     asset: AssetPackage = null;
-    
+    readonly path: TerrainPath = new TerrainPath();
     constructor() {
     }
+    
+    getEneityIndex(): number {
+        return this.m_entityIndex;
+    }
     setFS32Data(srcFS32: Float32Array, index: number): void {
-        this.m_index = index;
+        this.m_entityIndex = index;
+        index *= this.m_fs32Length;
         this.m_fs32Data = srcFS32.subarray(index * this.m_fs32Length, (index + 1) * this.m_fs32Length);
     }
     build(sc: RendererScene): void {
@@ -115,9 +122,13 @@ class CarEntity implements IToyEntity{
     }
     destroy(): void {
     }
-    
-    updateTrans(fs32: Float32Array, index: number): void {
+    searchedPath(vs: Uint16Array): void {
+        console.log("searchedPath,vs: ", vs);
+        this.path.searchedPath();
+    }
+    updateTrans(fs32: Float32Array): void {
         
+        let index = this.m_entityIndex * 5;
         for (let i: number = 0; i < 5; ++i) {
             this.m_transMat4List[i].copyFromF32Arr(fs32, index * 16);
             ++index;

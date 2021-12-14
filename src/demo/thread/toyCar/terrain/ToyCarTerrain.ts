@@ -73,7 +73,7 @@ class ToyCarTerrain {
             }
         }
 
-        pv = this.m_terrainData.getGridPositionByRC(4,5);
+        pv = this.m_terrainData.getGridPositionByRC(0,2);
         pv.y += 30.0;
         let beginAxis: Axis3DEntity = new Axis3DEntity();
         beginAxis.initializeCross(50);
@@ -81,7 +81,7 @@ class ToyCarTerrain {
         this.m_rscene.addEntity( beginAxis );
 
         //let pathList: number[] = [4, 4, 2, 4, 2, 1, 1, 1];
-        let pathList: number[] = [1, 1, 4, 5, 3, 5, 2, 4, 2, 1];
+        let pathList: number[] = [4, 4, 2, 4, 2, 1, 1, 1, 0, 0];
         let total: number = pathList.length / 2;
         //total = 0;
         let k: number = 0;

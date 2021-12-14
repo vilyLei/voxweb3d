@@ -176,6 +176,55 @@ function AStarNavModule(pmodule, taskClass) {
             postMessage(sendData, [data.streams[0].buffer]);
         }
     }
+    this.search = function(data) {
+        if(m_running) {
+            let descriptor = data.descriptor;
+            console.log("path descriptor: ",descriptor);
+            //m_module.searchPathDataByRC(descriptor.r0, descriptor.c0, descriptor.r1, descriptor.c1);
+            let dataLen = 0;
+            let vs = null;
+            let paramVS = data.streams[0];
+            let pathDataVS = data.streams[1];
+            let paramLen = paramVS[0];
+            let index = 1;
+            paramLen = paramLen * 5 + index;
+            let total = 0;
+            for(let i = index; i < paramLen; ) {
+                i++;
+                index = i;
+                let r0 = paramVS[i++];
+                let c0 = paramVS[i++];
+                let r1 = paramVS[i++];
+                let c1 = paramVS[i++];
+                console.log("r0,c0, r1,c1: ",r0,c0, r1,c1,", index: ",index);
+                m_module.searchPathDataByRC(r0,c0, r1,c1);
+                dataLen = m_module.getPathDataTotal();
+                vs = m_module.getPathData();
+
+                let subVS = vs.subarray(total * 2, (total + dataLen) * 2);
+                pathDataVS.set(subVS, total * 2);
+                //let subVS = pathDataVS.subar
+                paramVS[index] = dataLen;
+                total += dataLen;
+                console.log("work search path dataLen: " + dataLen);
+                console.log("work search path vs: ", vs);
+            }
+            //paramVS.buffer, pathDataVS
+            console.log("paramVS: ",paramVS);
+            console.log("pathDataVS: ",pathDataVS);
+            let sendData =
+            {
+                cmd: data.cmd,
+                taskCmd: data.taskCmd,
+                threadIndex: data.threadIndex,
+                taskclass: m_taskClass,
+                srcuid: data.srcuid,
+                dataIndex: m_dataIndex,
+                streams: data.streams
+            };
+            postMessage(sendData, [paramVS.buffer, pathDataVS.buffer]);
+        }
+    }
 }
 function ThreadAStarNav() {
     console.log("ThreadAStarNav instance init run ...");
@@ -200,8 +249,14 @@ function ThreadAStarNav() {
                     m_carTrans.run( data );
                 }
                 break;
-            case "aStar_exec":
+            case "aStar_search":
                 
+                if(m_aStarNav != null) {
+                    m_aStarNav.search( data );
+                }
+                break;
+            case "aStar_exec":
+
                 if(m_aStarNav != null) {
                     m_aStarNav.run( data );
                 }
