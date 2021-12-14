@@ -68,6 +68,7 @@ class ToyCarScene {
         this.m_toyCarTasks.push(matTask);
         
     }
+    private m_entity0: CarEntity;
     private buildEntities(): void {
 
         let entity: CarEntity;
@@ -77,12 +78,13 @@ class ToyCarScene {
             entity = this.m_toyCarBuilder.buildEntity( task );
             entity.terrainData = this.m_terrainData;
             entity.path.setSearchPathParam(0,0, 4,4);
-            entity.setPosXYZ(200, 25, 200);
+            entity.setXYZ(200, 25, 200);
             entity = this.m_toyCarBuilder.buildEntity( task );
             entity.terrainData = this.m_terrainData;
             entity.path.setSearchPathParam(4,0, 0,4);
-            entity.setPosXYZ(200, 30, -200);
+            entity.setXYZ(200, 30, -200);
             entity.setWheelRotSpeed(5.0);
+            this.m_entity0 = entity;
         }
         
     }
@@ -104,7 +106,8 @@ class ToyCarScene {
         let task = this.m_toyCarTasks[0];
         if(task.isAStarEnabled()) {
             //task.aStarSearch( {r0: 1, c0: 1, r1: 4, c1: 5} );
-            task.searchPath();
+            //task.searchPath();
+            this.m_entity0.setWheelRotSpeed(20.0);
         }
     }
     private initTerrain(terrData: TerrainData): void {

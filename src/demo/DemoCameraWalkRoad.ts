@@ -41,6 +41,7 @@ import { RoadSceneData, RoadSegment, RoadSegmentMesh, RoadModel } from "../app/s
 import Line3DEntity from "../vox/entity/Line3DEntity";
 import MaterialBase from "../vox/material/MaterialBase";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
+import { CurveMotionAction } from "../voxmotion/curve/CurveMotionAction";
 
 export class DemoCameraWalkRoad {
     constructor() { }
@@ -195,6 +196,7 @@ export class DemoCameraWalkRoad {
     }
     private m_materialPipeline: MaterialPipeline = new MaterialPipeline();
     private initMaterialSystem(): void {
+
         let envData: EnvLightData = new EnvLightData();
         envData.initialize();
         envData.setFogDensity(0.003);
@@ -205,8 +207,6 @@ export class DemoCameraWalkRoad {
         this.m_materialPipeline.addPipe(envData);
     }
     private initTerrain(): void {
-
-        
 
         let material: TerrainMaterial = new TerrainMaterial();
         material.fogEnabled = true;
@@ -283,7 +283,8 @@ export class DemoCameraWalkRoad {
     private m_cameraTarget: CameraBase = null;
     private m_camFrame: FrustrumFrame3DEntity = null;
     private m_pathRole: DisplayEntity = null;
-    private m_moveAction: PathMotionAction = new PathMotionAction();
+    //private m_moveAction: PathMotionAction = new PathMotionAction();
+    private m_moveAction: CurveMotionAction = new CurveMotionAction();
     private initPathAct(posList: Vector3D[] = null): void {
 
         let axis: Axis3DEntity = new Axis3DEntity();
@@ -292,6 +293,7 @@ export class DemoCameraWalkRoad {
         this.m_pathRole = axis;
         //  this.m_camView.setCamera( this.m_rscene.getCamera() );
         console.log("XXX posList.length: ",posList.length);
+        this.m_moveAction.useCameraFollower();
         this.m_moveAction.cameraFollower.setCameraView(this.m_camView);
         this.m_moveAction.bindTarget(this.m_pathRole);
         this.m_moveAction.setPathPosList(posList, true);
@@ -315,7 +317,6 @@ export class DemoCameraWalkRoad {
 
         this.m_viewRay.intersectPlane();
         let pv: Vector3D = this.m_viewRay.position;
-        //console.log(pv.x+",",pv.y+","+pv.z);
 
     }
     private keyDown(evt: any): void {
@@ -329,7 +330,9 @@ export class DemoCameraWalkRoad {
     }
 
     private m_timeoutId: any = -1;
+
     private update(): void {
+
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }

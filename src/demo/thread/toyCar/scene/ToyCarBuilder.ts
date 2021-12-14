@@ -59,7 +59,7 @@ class ToyCarBuilder {
         entity.asset = this.m_asset;
         task.addEntity( entity );
         entity.build( this.m_rscene );
-        entity.setPosXYZ(200, 50, -200);
+        entity.setXYZ(200, 50, -200);
         this.m_entities.push(entity);
 
         // entity = new CarEntity();

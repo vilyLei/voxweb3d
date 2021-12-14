@@ -93,6 +93,7 @@ export class DemoToyCarThread extends DemoInstance {
         //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
         this.m_timeoutId = setTimeout(this.update.bind(this), 30);// 20 fps
         
+        this.m_toyCarScene.run();
         this.m_toyCarScene.updateThread();
     }
     runBegin(): void {

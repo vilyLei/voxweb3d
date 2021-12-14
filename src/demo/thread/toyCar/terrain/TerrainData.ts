@@ -6,7 +6,8 @@ class TerrainData {
     rn: number = 8;
     cn: number = 8;
     gridSize: number = 80.0;
-    stvs: Uint16Array;
+    stvs: Uint16Array = null;
+    freeSTVS: Uint16Array = null;
     
     readonly beginPosition: Vector3D = new Vector3D();
 
@@ -17,6 +18,14 @@ class TerrainData {
         let cn: number = this.cn;
         let gridSize = this.gridSize;
         this.beginPosition.setXYZ(cn * gridSize * -0.5 + 0.5 * gridSize, 0.0, rn * gridSize * -0.5 + 0.5 * gridSize);
+        let list: number[] = [];
+        for(let i: number = 0; i < this.stvs.length; ++i) {
+            if(this.stvs[i] == 0) {
+                list.push(Math.floor(i/rn), i%cn);
+            }
+        }
+        this.freeSTVS = new Uint16Array(list);
+        console.log("this.freeSTVS: ",this.freeSTVS);
     }
     isObstacleByRC(r: number, c: number): boolean {
         return this.stvs[r * this.rn + c] == 1;

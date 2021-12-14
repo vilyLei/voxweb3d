@@ -18,11 +18,15 @@ import { TerrainPathStatus, TerrainPath } from "../terrain/TerrainPath";
 import { TerrainData } from "../terrain/TerrainData";
 import Line3DEntity from "../../../../vox/entity/Line3DEntity";
 
-class CarEntity implements IToyEntity {
+import IEntityTransform from "../../../../vox/entity/IEntityTransform";
+import { CurveMotionAction } from "../../../../voxmotion/curve/CurveMotionAction";
+
+class CarEntity implements IToyEntity, IEntityTransform {
 
     private static s_srcBox0: Box3DEntity = null;
     private static s_srcBox1: Box3DEntity = null;
-
+    
+    private m_moveAction: CurveMotionAction = new CurveMotionAction();
     private m_pathCurve: Line3DEntity = null;
 
     private m_entityIndex: number = -1;
@@ -33,7 +37,7 @@ class CarEntity implements IToyEntity {
     private m_position: Vector3D = new Vector3D();
     private m_outPos: Vector3D = new Vector3D();
     private m_scene: RendererScene = null;
-
+    private m_pathPosList: Vector3D[] = [];
 
     asset: AssetPackage = null;
     terrainData: TerrainData = null;
@@ -92,6 +96,7 @@ class CarEntity implements IToyEntity {
             sc.addEntity(box);
             this.m_entityList.push(box);
             this.m_transMat4List.push(box.getMatrix());
+
             for (let j: number = 1; j < 5; j++) {
                 box = new PureEntity();
                 box.copyMeshFrom(srcBox1);
@@ -101,7 +106,7 @@ class CarEntity implements IToyEntity {
             }
             // for test
             //this.setPosXYZ( 200, 50, 200 );
-            this.setPosXYZ(200, 50, 200);
+            this.setXYZ(200, 50, 200);
             this.setRotationXYZ(0.0, Math.random() * 360.0, 0.0);
             // whole body scale, param 1, param 2
             this.setParam(0.2, 0.5, 0.5);
@@ -115,15 +120,16 @@ class CarEntity implements IToyEntity {
         this.m_outPos.copyFrom(this.m_position);
         return this.m_outPos;
     }
-    setPoition(pos: Vector3D): void {
+    setPosition(pos: Vector3D): void {
         this.m_position.copyFrom(pos);
+        //console.log("this.m_entityIndex >= 0: ",this.m_entityIndex >= 0, pos);
         if (this.m_entityIndex >= 0) {
             this.m_fs32Data[0] = pos.x;
             this.m_fs32Data[1] = pos.y;
             this.m_fs32Data[2] = pos.z;
         }
     }
-    setPosXYZ(px: number, py: number, pz: number): void {
+    setXYZ(px: number, py: number, pz: number): void {
         this.m_position.setXYZ(px, py, pz);
         if (this.m_entityIndex >= 0) {
             this.m_fs32Data[0] = px;
@@ -163,6 +169,7 @@ class CarEntity implements IToyEntity {
     setWheelRotSpeed(wheelRotSpd: number): void {
         if (this.m_entityIndex >= 0) {
             this.m_fs32Data[13] = wheelRotSpd;
+            console.log("wheelRotSpd: ",wheelRotSpd);
         }
     }
     destroy(): void {
@@ -188,7 +195,10 @@ class CarEntity implements IToyEntity {
         this.m_pathCurve.updateMeshToGpu();
         this.m_pathCurve.updateBounds();
 
+        this.m_moveAction.bindTarget(this);
+        this.m_moveAction.setPathPosList(posList, false);
         this.path.searchedPath();
+        this.path.movingPath();
     }
     updateTrans(fs32: Float32Array): void {
 
@@ -200,8 +210,27 @@ class CarEntity implements IToyEntity {
     }
     run(): void {
         if(this.path.status == TerrainPathStatus.Moving) {
-
+            //this.m_moveAction.run();
         }
+    }
+
+    setScaleXYZ(sx: number, sy: number, sz: number): void {
+        
+    }
+    getRotationXYZ(pv: Vector3D): void {
+        
+    }
+    getScaleXYZ(pv: Vector3D): void {
+        
+    }
+    localToGlobal(pv: Vector3D): void {
+        
+    }
+    globalToLocal(pv: Vector3D): void {
+        
+    }
+    update(): void {
+        
     }
 }
 export { CarEntity };

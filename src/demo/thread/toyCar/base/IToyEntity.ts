@@ -16,7 +16,7 @@ interface IToyEntity {
     setFS32Data(srcFS32: Float32Array, index: number): void;
     build(sc: RendererScene): void;
     
-    setPosXYZ(px: number, py: number, pz: number): void;
+    setXYZ(px: number, py: number, pz: number): void;
     setRotationXYZ(prx: number, pry: number, prz: number): void;
     setParam(bodyScale: number, param1: number, param2: number): void;
     setWheelOffsetXYZ(px: number, py: number, pz: number): void;

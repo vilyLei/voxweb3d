@@ -38,71 +38,78 @@ function CarTransModule(pmodule, taskClass) {
         m_matFS32 = m_module.getMatData();
         m_paramFS32 = m_module.getParamData();
     }
-    this.run = function(data) {
-        let descriptor = data.descriptor;
-        let matsTotal = descriptor.matsTotal;
-        //console.log("matsTotal: ", matsTotal);
-        m_dataIndex = data.dataIndex;
-        let fs32 = data.streams[0];
-        ///*
-        let i = 0;
-        let len = 0;
-        if (descriptor.flag < 1) {
-            switch (m_calcType) {
-                case 0:
-                    len = matsTotal * 9;
-                    for (i = 0; i < len; i++) m_paramFS32[i] = fs32[i];
-                    m_module.updateParam();
-                    len = m_matsTotal * 16;
-                    break;
-                case 1:
-                    len = matsTotal * 15;
-                    for (i = 0; i < len; i++) m_paramFS32[i] = fs32[i];
-                    m_module.updateParam2();
-                    len = matsTotal * 16;
-                    break;
-                default:
-                    break;
-            }
-            //console.log("fs32: ",fs32);
-        }
-        else {
-            switch (m_calcType) {
-                case 0:
-                    len = matsTotal * 16;
-                    break;
-                case 1:
-                    len = matsTotal * 16;
-                    //console.log("len: ",len);
-                    break;
-                default:
-                    break;
-            }
-        }
-        m_module.calc();
 
-        //  console.log("paramFS32: ",m_matFS32);
-        //console.log("len: ",len);
-        for (i = 0; i < len; i++) {
-            fs32[i] = m_matFS32[i];
-        }
-        
-        let sendData =
-        {
-            cmd: data.cmd,
-            taskCmd: data.taskCmd,
-            threadIndex: data.threadIndex,
-            taskclass: m_taskClass,
-            srcuid: data.srcuid,
-            dataIndex: m_dataIndex,
-            //  matsTotal: m_matsTotal,
-            streams: [fs32]
-        };
-        if (fs32 != null) {
-            postMessage(sendData, [fs32.buffer]);
-        }
-        else {
-            postMessage(sendData);
+    this.run = function(data) {
+        if(m_matFS32) {
+
+            let descriptor = data.descriptor;
+            let matsTotal = descriptor.matsTotal;
+            //console.log("descriptor.calcType: ",descriptor.calcType);
+            m_calcType = descriptor.calcType;
+            //console.log("matsTotal: ", matsTotal);
+            m_dataIndex = data.dataIndex;
+            let fs32 = data.streams[0];
+            ///*
+            let i = 0;
+            let len = 0;
+            if (descriptor.flag < 1) {
+                //console.log("XXXXXXXXXXXX m_calcType: ",m_calcType);
+                switch (m_calcType) {
+                    case 0:
+                        len = matsTotal * 9;
+                        for (i = 0; i < len; i++) m_paramFS32[i] = fs32[i];
+                        m_module.updateParam();
+                        len = matsTotal * 16;
+                        break;
+                    case 1:
+                        len = matsTotal * 15;
+                        for (i = 0; i < len; i++) m_paramFS32[i] = fs32[i];
+                        m_module.updateParam2();
+                        len = matsTotal * 16;
+                        break;
+                    default:
+                        break;
+                }
+                //console.log("fs32: ",fs32);
+            }
+            else {
+                switch (m_calcType) {
+                    case 0:
+                        len = matsTotal * 16;
+                        break;
+                    case 1:
+                        len = matsTotal * 16;
+                        //console.log("len: ",len);
+                        break;
+                    default:
+                        break;
+                }
+            }
+            m_module.calc();
+    
+            //  console.log("paramFS32: ",m_matFS32);
+            //console.log("len: ",len);
+            for (i = 0; i < len; i++) {
+                fs32[i] = m_matFS32[i];
+            }
+            
+            let sendData =
+            {
+                cmd: data.cmd,
+                taskCmd: data.taskCmd,
+                threadIndex: data.threadIndex,
+                taskclass: m_taskClass,
+                srcuid: data.srcuid,
+                dataIndex: m_dataIndex,
+                //  matsTotal: m_matsTotal,
+                streams: [fs32]
+            };
+            if (fs32 != null) {
+                postMessage(sendData, [fs32.buffer]);
+            }
+            else {
+                postMessage(sendData);
+            }
         }
     }
 }

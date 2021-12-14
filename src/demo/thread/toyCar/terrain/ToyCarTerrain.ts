@@ -32,7 +32,6 @@ class ToyCarTerrain {
         }
     }
     
-
     private initTerrain(): void {
 
         let size: number = this.m_terrainData.gridSize;

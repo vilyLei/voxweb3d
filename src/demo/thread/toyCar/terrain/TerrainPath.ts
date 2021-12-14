@@ -48,5 +48,8 @@ class TerrainPath {
     searchedPath(): void {
         this.status = TerrainPathStatus.Searched;
     }
+    movingPath(): void {
+        this.status = TerrainPathStatus.Moving;
+    }
 }
 export { TerrainPathStatus, TerrainPath }
