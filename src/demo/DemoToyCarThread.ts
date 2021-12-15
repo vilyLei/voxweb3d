@@ -35,6 +35,7 @@ export class DemoToyCarThread extends DemoInstance {
     protected initializeSceneParam(param: RendererParam): void {
         this.m_processTotal = 4;
         param.maxWebGLVersion = 1;
+        param.setCamProject(45.0, 80.0, 3500.0);
         param.setMatrix4AllocateSize(4096 * 4);
         param.setCamPosition(500.0, 500.0, 500.0);
     }

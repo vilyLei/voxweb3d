@@ -32,7 +32,9 @@ class TerrainPath {
 
     status: TerrainPathStatus = TerrainPathStatus.Search;
     constructor() { }
-    
+    isMoving(): boolean {
+        return this.status == TerrainPathStatus.Moving;
+    }
     setSearchPathParam(r0: number, c0: number, r1: number, c1: number): void {
         this.r0 = r0;
         this.c0 = c0;
@@ -50,6 +52,9 @@ class TerrainPath {
     }
     movingPath(): void {
         this.status = TerrainPathStatus.Moving;
+    }
+    stopPath(): void {
+        this.status = TerrainPathStatus.Stop;
     }
 }
 export { TerrainPathStatus, TerrainPath }

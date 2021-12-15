@@ -76,11 +76,14 @@ class ToyCarTask extends ThreadTask {
     isSendTransEnabled(): boolean {
         return this.m_transEnabled;
     }
-
+    private m_entityStatusList: number[] = [0,0,0,1];
     private sendTransData(): void {
         if (this.m_transEnabled) {
             this.m_transParamData.set(this.m_transInputData);
-            this.m_transSTData.set(this.m_transInputSTData);
+            //this.m_transSTData.set(this.m_transInputSTData);
+            for (let i: number = 0; i < this.m_entities.length; ++i) {
+                this.m_transSTData[i] = this.m_entityStatusList[this.m_entities[i].status];
+            }
             let descriptor: any = {flag: this.m_transFlag, calcType: this.m_calcType, allTotal: this.m_total, matsTotal: this.m_matsTotal};
             this.addDataWithParam("car_trans", [this.m_transParamData, this.m_transOutputData, this.m_transSTData], descriptor);
             this.m_transEnabled = false;
@@ -134,7 +137,7 @@ class ToyCarTask extends ThreadTask {
             if(k > 1) {
                 this.m_pathSearchData[0] = k / 5;
                 this.m_pathSerachEnabled = false;
-                console.log("AA have searching path, k: ",k, ", this.m_pathSearchData: ",this.m_pathSearchData);
+                //console.log("AA have searching path, k: ",k, ", this.m_pathSearchData: ",this.m_pathSearchData);
                 this.addDataWithParam("aStar_search", [this.m_pathSearchData, this.m_pathRCData]);
             }
             else {

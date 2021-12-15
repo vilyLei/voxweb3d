@@ -20,6 +20,7 @@ import Line3DEntity from "../../../../vox/entity/Line3DEntity";
 
 import IEntityTransform from "../../../../vox/entity/IEntityTransform";
 import { CurveMotionAction } from "../../../../voxmotion/curve/CurveMotionAction";
+import { EntityStatus } from "./EntityStatus";
 
 class CarEntity implements IToyEntity, IEntityTransform {
 
@@ -39,6 +40,7 @@ class CarEntity implements IToyEntity, IEntityTransform {
     private m_scene: RendererScene = null;
     private m_pathPosList: Vector3D[] = [];
 
+    status: EntityStatus = EntityStatus.Init;
     asset: AssetPackage = null;
     terrainData: TerrainData = null;
     readonly path: TerrainPath = new TerrainPath();
@@ -204,9 +206,17 @@ class CarEntity implements IToyEntity, IEntityTransform {
         this.m_moveAction.setPathPosList(posList, false);
         this.path.searchedPath();
         this.path.movingPath();
+
+        this.status = EntityStatus.Moving;
     }
     updateTrans(fs32: Float32Array): void {
-
+        switch(this.status) {
+            case EntityStatus.Init:
+                this.status = EntityStatus.Stop;
+                break;
+            default:
+                break;
+        }
         let index = this.m_entityIndex * 5;
         for (let i: number = 0; i < 5; ++i) {
             this.m_transMat4List[i].copyFromF32Arr(fs32, index * 16);
@@ -214,7 +224,11 @@ class CarEntity implements IToyEntity, IEntityTransform {
         }
     }
     run(): void {
-        if(this.path.status == TerrainPathStatus.Moving) {
+        if(this.path.isMoving()) {
+            if(this.m_moveAction.isStopped()) {
+                this.path.stopPath();
+                this.status = EntityStatus.Stop;
+            }
             this.m_moveAction.run();
         }
     }

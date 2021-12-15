@@ -119,6 +119,26 @@ class AABB {
 			if (this.max.z < pvz) this.max.z = pvz;
 		}
 	}
+	getClosePosition(in_pos: Vector3D, out_pos: Vector3D): void {
+		if(in_pos.x < this.min.x) {
+			out_pos.x =this.min.x;
+		}
+		else if(in_pos.x > this.max.x) {
+			out_pos.x =this.max.x;
+		}
+		if(in_pos.y < this.min.y) {
+			out_pos.y =this.min.y;
+		}
+		else if(in_pos.y > this.max.y) {
+			out_pos.y =this.max.y;
+		}
+		if(in_pos.z < this.min.z) {
+			out_pos.z =this.min.z;
+		}
+		else if(in_pos.z > this.max.z) {
+			out_pos.z =this.max.z;
+		}
+	}
 	// @param	v	Vector3D instance
 	containsV(v: Vector3D): boolean {
 		if (v.x < this.max.x || v.x > this.max.x) return false;

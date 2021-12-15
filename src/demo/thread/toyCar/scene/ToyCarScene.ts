@@ -74,6 +74,7 @@ class ToyCarScene {
 
         let entity: CarEntity;
         let pv: Vector3D;
+        let wheelRotSpeed: number = -8.0;
         for(let i: number = 0; i < this.m_toyCarTasks.length; ++i) {
 
             let task: ToyCarTask = this.m_toyCarTasks[i];
@@ -84,7 +85,7 @@ class ToyCarScene {
             pv.y += 20.0;
             //  //entity.setXYZ(200, 25, 200);
             entity.setPosition( pv );
-            entity.setWheelRotSpeed(-6.0);
+            entity.setWheelRotSpeed( wheelRotSpeed );
             ///*
             entity = this.m_toyCarBuilder.buildEntity( task );
             entity.terrainData = this.m_terrainData;
@@ -94,7 +95,7 @@ class ToyCarScene {
             //entity.setXYZ(200, 25, 200);
             entity.setPosition( pv );
             //entity.setXYZ(200, 25, -200);
-            entity.setWheelRotSpeed(-6.0);
+            entity.setWheelRotSpeed( wheelRotSpeed );
             //*/
             this.m_entity0 = entity;
         }

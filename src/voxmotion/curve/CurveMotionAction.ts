@@ -87,6 +87,9 @@ class CurveMotionAction {
     getTrackFlag(): number {
         return this.m_flag;
     }
+    isStopped(): boolean {
+        return this.m_flag == PathTrack.TRACK_END;
+    }
     moveToEnd: () => void = null;
     setPathPosList(posList: Vector3D[], circle: boolean = false): void {
 

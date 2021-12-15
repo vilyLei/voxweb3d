@@ -7,9 +7,11 @@
 
 import RendererScene from "../../../../vox/scene/RendererScene";
 import {TerrainPath} from "../terrain/TerrainPath";
+import { EntityStatus } from "./EntityStatus";
 
 interface IToyEntity {
 
+    status: EntityStatus;
     path: TerrainPath;
 
     getEneityIndex(): number;
