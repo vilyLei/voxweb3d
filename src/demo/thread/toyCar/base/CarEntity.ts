@@ -194,7 +194,11 @@ class CarEntity implements IToyEntity, IEntityTransform {
         this.m_pathCurve.reinitializeMesh();
         this.m_pathCurve.updateMeshToGpu();
         this.m_pathCurve.updateBounds();
-
+        
+        this.m_moveAction.posInterp.minDis = 5.0;
+        this.m_moveAction.degreeTween.factor = 0.1;
+        this.m_moveAction.degreeTween.speed = 0.1;
+        this.m_moveAction.motionSpeed = 2.0;
         this.m_moveAction.targetPosOffset.setXYZ(0.0, 20.0, 0.0);
         this.m_moveAction.bindTarget(this);
         this.m_moveAction.setPathPosList(posList, false);

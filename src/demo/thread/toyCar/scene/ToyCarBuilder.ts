@@ -34,7 +34,7 @@ class ToyCarBuilder {
 
             
             let texNameList: string[] = [
-                "image_003.jpg"
+                "default.jpg"
                 , "moss_05.jpg"
                 , "metal_02.jpg"
                 , "fruit_01.jpg"
@@ -59,7 +59,6 @@ class ToyCarBuilder {
         entity.asset = this.m_asset;
         task.addEntity( entity );
         entity.build( this.m_rscene );
-        entity.setXYZ(200, 50, -200);
         this.m_entities.push(entity);
 
         // entity = new CarEntity();

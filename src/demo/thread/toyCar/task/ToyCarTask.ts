@@ -86,6 +86,7 @@ class ToyCarTask extends ThreadTask {
             this.m_transEnabled = false;
             this.m_transFlag = 0;
             this.m_calcType = 0;
+            //this.m_transInputSTData.fill(1);
             //console.log("sendTransData success...uid: "+this.getUid(), this.m_matsTotal);
         }
         else {
@@ -147,7 +148,9 @@ class ToyCarTask extends ThreadTask {
     
     private updateEntityTrans(fs32: Float32Array): void {
         for (let i: number = 0; i < this.m_entities.length; ++i) {
-            this.m_entities[i].updateTrans(fs32);
+            if(this.m_transSTData[i] < 1) {
+                this.m_entities[i].updateTrans(fs32);
+            }
         }
     }
     

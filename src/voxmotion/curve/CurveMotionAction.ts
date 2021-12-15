@@ -11,9 +11,9 @@ import IEntityTransform from "../../vox/entity/IEntityTransform";
 class CurveMotionAction {
 
     private m_target: IEntityTransform = null;
-    private m_degTween: AngleDegreeTween = new AngleDegreeTween();
 
-    cameraFollower: CameraViewFollower = null;// = new CameraViewFollower();
+    cameraFollower: CameraViewFollower = null;
+    readonly degreeTween: AngleDegreeTween = new AngleDegreeTween();
     readonly posInterp: PosInterpolation = new PosInterpolation();
     readonly cameraOffset: Vector3D = new Vector3D(0, 130, -200);
     readonly targetPosOffset: Vector3D = new Vector3D();
@@ -53,7 +53,7 @@ class CurveMotionAction {
                 this.m_temV.copyFrom(this.m_outV);
                 this.m_preV.y = this.m_temV.y;
                 this.m_temV.subtractBy(this.m_preV);
-                let currDegree: number = this.m_degTween.calcDegree(360 - MathConst.GetDegreeByXY(this.m_temV.x, this.m_temV.z));
+                let currDegree: number = this.degreeTween.calcDegree(360 - MathConst.GetDegreeByXY(this.m_temV.x, this.m_temV.z));
 
                 this.m_temV.copyFrom(this.m_outV);
                 this.m_temV.y += this.cameraOffset.y;
@@ -65,7 +65,7 @@ class CurveMotionAction {
                 this.m_temV.copyFrom( this.m_preV );
                 this.posInterp.interpolate(this.m_outV, this.m_preV);
                 this.m_temV.subVecsTo(this.m_preV, this.m_temV);
-                currDegree = this.m_degTween.calcDegree(360 - MathConst.GetDegreeByXY(this.m_temV.x, this.m_temV.z));
+                currDegree = this.degreeTween.calcDegree(360 - MathConst.GetDegreeByXY(this.m_temV.x, this.m_temV.z));
 
                 this.m_preV.addBy( this.targetPosOffset );
                 this.m_target.setPosition( this.m_preV );
@@ -107,14 +107,14 @@ class CurveMotionAction {
         this.m_preV.y = this.m_temV.y;
         this.m_temV.subtractBy(this.m_preV);
 
-        this.m_degTween.setDegree(360 - MathConst.GetDegreeByXY(this.m_temV.x, this.m_temV.z));
+        this.degreeTween.setDegree(360 - MathConst.GetDegreeByXY(this.m_temV.x, this.m_temV.z));
         this.m_temV.normalize();
-        this.m_temV.scaleBy(-210);
+        this.m_temV.scaleBy(15);
         this.m_temV.addBy(this.m_preV);
         this.m_temV.y += this.cameraOffset.y;
 
         if(this.cameraFollower != null) {
-            this.cameraFollower.setViewParams(this.m_temV, this.m_degTween.getDegree(), 30.0);
+            this.cameraFollower.setViewParams(this.m_temV, this.degreeTween.getDegree(), 30.0);
         }
 
         this.m_pathTrack.clear();
