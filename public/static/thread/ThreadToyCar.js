@@ -15,6 +15,7 @@ function CarTransModule(pmodule, taskClass) {
     let m_module = pmodule;
     let m_matFS32 = null;
     let m_paramFS32 = null;
+    let m_stU16Array = null;
 
     let m_dataIndex = 0;
     let m_calcType = -1;
@@ -37,6 +38,7 @@ function CarTransModule(pmodule, taskClass) {
         }
         m_matFS32 = m_module.getMatData();
         m_paramFS32 = m_module.getParamData();
+        m_stU16Array = m_module.getStatusData();
     }
 
     this.run = function(data) {
@@ -44,14 +46,17 @@ function CarTransModule(pmodule, taskClass) {
 
             let descriptor = data.descriptor;
             let matsTotal = descriptor.matsTotal;
+            let allTotal = descriptor.allTotal;
             //console.log("descriptor.calcType: ",descriptor.calcType);
             m_calcType = descriptor.calcType;
             //console.log("matsTotal: ", matsTotal);
             m_dataIndex = data.dataIndex;
             let inputFS32 = data.streams[0];
             let outputFS32 = data.streams[1];
+            let stUint16Arr = data.streams[2];
             ///*
             let i = 0;
+            for (i = 0; i < allTotal; i++) m_stU16Array[i] = stUint16Arr[i];
             let len = 0;
             if (descriptor.flag < 1) {
                 switch (m_calcType) {
@@ -81,22 +86,11 @@ function CarTransModule(pmodule, taskClass) {
                 outputFS32[i] = m_matFS32[i];
             }
             
-            let sendData =
-            {
-                cmd: data.cmd,
-                taskCmd: data.taskCmd,
-                threadIndex: data.threadIndex,
-                taskclass: m_taskClass,
-                srcuid: data.srcuid,
-                dataIndex: m_dataIndex,
-                streams: [inputFS32, outputFS32]
-            };
-            if (inputFS32 != null) {
-                postMessage(sendData, [inputFS32.buffer, outputFS32.buffer]);
+            for (i = 0; i < allTotal; i++) {
+                stUint16Arr[i] = m_stU16Array[i];
             }
-            else {
-                postMessage(sendData);
-            }
+            
+            postMessage(data, [inputFS32.buffer, outputFS32.buffer, stUint16Arr.buffer]);
         }
     }
 }
@@ -170,7 +164,6 @@ function AStarNavModule(pmodule, taskClass) {
     this.search = function(data) {
         if(m_running) {
             let descriptor = data.descriptor;
-            console.log("path descriptor: ",descriptor);
             //m_module.searchPathDataByRC(descriptor.r0, descriptor.c0, descriptor.r1, descriptor.c1);
             let dataLen = 0;
             let vs = null;
@@ -187,7 +180,6 @@ function AStarNavModule(pmodule, taskClass) {
                 let c0 = paramVS[i++];
                 let r1 = paramVS[i++];
                 let c1 = paramVS[i++];
-                console.log("r0,c0, r1,c1: ",r0,c0, r1,c1,", index: ",index);
                 m_module.searchPathDataByRC(r0,c0, r1,c1);
                 dataLen = m_module.getPathDataTotal();
                 vs = m_module.getPathData();
@@ -197,23 +189,9 @@ function AStarNavModule(pmodule, taskClass) {
                 
                 paramVS[index] = dataLen;
                 total += dataLen;
-                console.log("work search path dataLen: " + dataLen);
-                console.log("work search path vs: ", vs);
             }
             
-            console.log("paramVS: ",paramVS);
-            console.log("pathDataVS: ",pathDataVS);
-            let sendData =
-            {
-                cmd: data.cmd,
-                taskCmd: data.taskCmd,
-                threadIndex: data.threadIndex,
-                taskclass: m_taskClass,
-                srcuid: data.srcuid,
-                dataIndex: m_dataIndex,
-                streams: data.streams
-            };
-            postMessage(sendData, [paramVS.buffer, pathDataVS.buffer]);
+            postMessage(data, [paramVS.buffer, pathDataVS.buffer]);
         }
     }
 }

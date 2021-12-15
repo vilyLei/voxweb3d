@@ -16,6 +16,8 @@ class ToyCarTask extends ThreadTask {
     private m_matsTotal: number = 1;
     private m_transInputData: Float32Array = null;
     private m_transParamData: Float32Array = null;
+    private m_transSTData: Uint16Array = null;
+    private m_transInputSTData: Uint16Array = null;
     private m_transOutputData: Float32Array = null;
     // 存放请求寻路的信息数据
     private m_pathSearchData: Uint16Array = null;
@@ -43,6 +45,9 @@ class ToyCarTask extends ThreadTask {
             this.m_transInputData = new Float32Array(entitiesTotal * this.m_dataStepLength);
             this.m_transParamData = new Float32Array(entitiesTotal * this.m_dataStepLength);
             this.m_transOutputData = new Float32Array(entitiesTotal * this.m_dataStepLength);
+
+            this.m_transSTData = new Uint16Array(entitiesTotal);
+            this.m_transInputSTData = new Uint16Array(entitiesTotal);
         }
     }
     getTransFS32Data(): Float32Array {
@@ -75,8 +80,9 @@ class ToyCarTask extends ThreadTask {
     private sendTransData(): void {
         if (this.m_transEnabled) {
             this.m_transParamData.set(this.m_transInputData);
-            let descriptor: any = {flag: this.m_transFlag, calcType: this.m_calcType, allTotal: this.m_total, matsTotal: this.m_matsTotal};            
-            this.addDataWithParam("car_trans", [this.m_transParamData, this.m_transOutputData], descriptor);
+            this.m_transSTData.set(this.m_transInputSTData);
+            let descriptor: any = {flag: this.m_transFlag, calcType: this.m_calcType, allTotal: this.m_total, matsTotal: this.m_matsTotal};
+            this.addDataWithParam("car_trans", [this.m_transParamData, this.m_transOutputData, this.m_transSTData], descriptor);
             this.m_transEnabled = false;
             this.m_transFlag = 0;
             this.m_calcType = 0;
@@ -175,6 +181,7 @@ class ToyCarTask extends ThreadTask {
 
                 this.m_transParamData = data.streams[0];
                 this.m_transOutputData = data.streams[1];
+                this.m_transSTData = data.streams[2];
                 this.updateEntityTrans( this.m_transOutputData );
                 this.m_transEnabled = true;
                 break;

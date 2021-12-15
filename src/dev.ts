@@ -239,7 +239,7 @@
 
 //  import {DemoThreadConcurrent as Demo} from "./demo/DemoThreadConcurrent";
 
-// import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
+import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
 
 
 ////////////////////////////////////////////////////////////////////////////////
@@ -257,7 +257,7 @@
 
 //  import {DemoCameraMotion as Demo} from "./demo/DemoCameraMotion";
 
-import {DemoCameraWalkRoad as Demo} from "./demo/DemoCameraWalkRoad";
+//  import {DemoCameraWalkRoad as Demo} from "./demo/DemoCameraWalkRoad";
 
 // import {DemoCameraPath as Demo} from "./demo/DemoCameraPath";
 
