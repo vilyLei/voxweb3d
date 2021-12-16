@@ -22,7 +22,7 @@ class ToyCarTask extends ThreadTask {
     // 存放请求寻路的信息数据
     private m_pathSearchData: Uint16Array = null;
     // 存放寻路结果
-    private m_pathRCData: Uint16Array = null;
+    private m_pathData: Uint16Array = null;
     private m_serachPathIndex: number = 0;
 
     private m_transEnabled: boolean = true;
@@ -104,8 +104,8 @@ class ToyCarTask extends ThreadTask {
             let descriptor: any = terrData.clone();
             this.addDataWithParam("aStar_init", [descriptor.stvs], descriptor);
             ToyCarTask.s_aStarFlag = 1;
-            this.m_pathSearchData = new Uint16Array(512);
-            this.m_pathRCData = new Uint16Array(2048);
+            this.m_pathSearchData = new Uint16Array(1024 * 4);
+            this.m_pathData = new Uint16Array(1024 * 8);
         }
     }
     /**
@@ -114,7 +114,7 @@ class ToyCarTask extends ThreadTask {
     aStarSearch(descriptor: any): void {
         if(this.m_pathSerachEnabled) {
             this.m_pathSerachEnabled = false;
-            this.addDataWithParam("aStar_exec", [this.m_pathRCData], descriptor);
+            this.addDataWithParam("aStar_exec", [this.m_pathData], descriptor);
             
         }
     }
@@ -137,8 +137,8 @@ class ToyCarTask extends ThreadTask {
             if(k > 1) {
                 this.m_pathSearchData[0] = k / 5;
                 this.m_pathSerachEnabled = false;
-                console.log("AA have searching path, k: ",k, ", total: ",this.m_pathSearchData[0]);
-                this.addDataWithParam("aStar_search", [this.m_pathSearchData, this.m_pathRCData]);
+                //console.log("AA have searching path, k: ",k, ", total: ",this.m_pathSearchData[0]);
+                this.addDataWithParam("aStar_search", [this.m_pathSearchData, this.m_pathData]);
             }
             // else {
             //     console.log("BB no searching path, k: ",k);
@@ -160,7 +160,7 @@ class ToyCarTask extends ThreadTask {
     private updateEntityPath(): void {
         
         let params = this.m_pathSearchData;
-        let pathVS = this.m_pathRCData;
+        let pathVS = this.m_pathData;
         let total: number = params[0];
         let index: number = 0;
         let k: number = 1;
@@ -192,14 +192,14 @@ class ToyCarTask extends ThreadTask {
                 this.m_transEnabled = true;
                 break;
             case "aStar_search":
-                console.log("parseDone XXXX aStar_search...");
+                //console.log("parseDone XXXX aStar_search...");
                 this.m_pathSearchData = data.streams[0];
-                this.m_pathRCData = data.streams[1];
+                this.m_pathData = data.streams[1];
                 this.updateEntityPath();
                 this.m_pathSerachEnabled = true;
                 break;
             case "aStar_exec":
-                this.m_pathRCData = data.streams[0];
+                this.m_pathData = data.streams[0];
                 this.m_pathSerachEnabled = true;
                 console.log("parseDone XXXX aStar_exec...");
                 this.m_serachPathIndex = 0;

@@ -36,8 +36,8 @@ class ToyCarTerrain {
 
         let size: number = this.m_terrainData.gridSize;
         let srcBox: Box3DEntity = new Box3DEntity();
-        srcBox.initialize(new Vector3D(-size * 0.5, 0, -size * 0.5), new Vector3D(size * 0.5, size * 2.0 * 0.5, size * 0.5), [this.getImageTexByUrl("static/assets/default.jpg")]);
-        //return;
+        srcBox.initialize(new Vector3D(-size * 0.5, 0, -size * 0.5), new Vector3D(size * 0.5, size, size * 0.5), [this.getImageTexByUrl("static/assets/default.jpg")]);
+
         let rn: number = this.m_terrainData.rn;
         let cn: number = this.m_terrainData.cn;
         let pos: Vector3D = new Vector3D();
@@ -51,11 +51,11 @@ class ToyCarTerrain {
                 box.copyMeshFrom(srcBox);
                 if (flag > 0) {
                     box.initializeCube(50, [this.getImageTexByUrl("static/assets/box_wood01.jpg")]);
-                    box.setXYZ(pv.x, pv.y + 16, pv.z);
+                    box.setXYZ(pv.x, pv.y + 0.5 * size * 0.2, pv.z);
                 }
                 else {
                     if (Math.random() > 0.5) {
-                        box.initializeCube(50, [this.getImageTexByUrl("static/assets/moss_04.jpg")]);
+                        box.initializeCube(50, [this.getImageTexByUrl("static/assets/moss_01.jpg")]);
                     }
                     else {
                         box.initializeCube(50, [this.getImageTexByUrl("static/assets/moss_03.jpg")]);

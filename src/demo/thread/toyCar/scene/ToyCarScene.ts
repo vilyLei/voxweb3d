@@ -22,7 +22,8 @@ class ToyCarScene {
     private m_entitiesTotal: number = 0;
     private m_toyCarTasks: ToyCarTask[] = [];
     private m_terrainData: TerrainData = null;
-
+    private m_bodyScale: number = 1.0;
+    private m_buildEntitiesTotal: number = 500;
     initialize(scene: RendererScene, texLoader: ImageTextureLoader): void {
         if (this.m_rscene == null) {
             this.m_rscene = scene;
@@ -45,7 +46,20 @@ class ToyCarScene {
             terrData.rn = 6;
             terrData.cn = 6;
             terrData.stvs = terrainObsVS;
+
+            terrData.rn = 30;
+            terrData.cn = 30;
+
+            terrData.gridSize = 40.0;
+            let stvs: Uint16Array = new Uint16Array(terrData.rn * terrData.cn);
+            for(let i: number = 0; i < stvs.length; ++i) {
+                stvs[i] = Math.random() > 0.9 ? 1 : 0;
+            }
+            terrData.stvs = stvs;
+
             terrData.initialize();
+
+            this.m_bodyScale = 0.5;
 
             this.m_terrainData = terrData;
 
@@ -55,7 +69,6 @@ class ToyCarScene {
             this.initTerrain(terrData);
         }
     }
-    private m_buildEntitiesTotal: number = 10;
     private buildThreadTask(terrData: TerrainData): void {
 
         let total: number = this.m_buildEntitiesTotal;
@@ -92,7 +105,7 @@ class ToyCarScene {
                 //  //entity.setXYZ(200, 25, 200);
                 entity.setPosition(pv);
                 entity.setWheelRotSpeed(wheelRotSpeed);
-                entity.setScale(0.1 + Math.random() * 0.1);
+                entity.setScale(this.m_bodyScale * (0.1 + Math.random() * 0.1));
                 if (!entity.isReadySearchPath()) {
                     entity.stopAndWait();
                 }
@@ -137,16 +150,16 @@ class ToyCarScene {
     private m_dis: number = 0;
     testDose(pv: Vector3D): void {
         let task = this.m_toyCarTasks[0];
-        if (task.isAStarEnabled()) {
-            //task.aStarSearch( {r0: 1, c0: 1, r1: 4, c1: 5} );
-            task.searchPath();
-            // this.m_entity0.setWheelRotSpeed(20.0);
-            //this.m_entity0.setXYZ(200, 25, -100 + this.m_dis);
-            this.m_dis += 10.0;
-        }
-        //this.updateThreadTask();
-        let rc: number[] = this.m_terrainData.getRCByPosition(pv);
-        console.log("rc: ", rc);
+        // if (task.isAStarEnabled()) {
+        //     //task.aStarSearch( {r0: 1, c0: 1, r1: 4, c1: 5} );
+        //     task.searchPath();
+        //     // this.m_entity0.setWheelRotSpeed(20.0);
+        //     //this.m_entity0.setXYZ(200, 25, -100 + this.m_dis);
+        //     this.m_dis += 10.0;
+        // }
+        // //this.updateThreadTask();
+        // let rc: number[] = this.m_terrainData.getRCByPosition(pv);
+        // console.log("rc: ", rc);
     }
     private initTerrain(terrData: TerrainData): void {
 

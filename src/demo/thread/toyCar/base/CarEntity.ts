@@ -55,10 +55,11 @@ class CarEntity implements IToyEntity, IEntityTransform {
         this.m_entityIndex = index;
         this.m_fs32Data = srcFS32.subarray(index * this.m_fs32Length, (index + 1) * this.m_fs32Length);
     }
-    build(sc: RendererScene): void {
+    build(sc: RendererScene, size: number = 200): void {
+
         if (this.m_entityIndex >= 0) {
             this.m_scene = sc;
-
+            let halfSize: number = size * 0.5;
             if (this.m_pathCurve == null) {
                 this.m_pathCurve = new Line3DEntity();
                 this.m_pathCurve.initialize(new Vector3D(), new Vector3D(100.0));
@@ -70,11 +71,11 @@ class CarEntity implements IToyEntity, IEntityTransform {
 
             if (CarEntity.s_srcBox0 == null) {
                 CarEntity.s_srcBox0 = new Box3DEntity();
-                CarEntity.s_srcBox0.initialize(new Vector3D(-100.0, -50.0, -100.0), new Vector3D(100.0, 50.0, 100.0), [tex0]);
+                CarEntity.s_srcBox0.initialize(new Vector3D(-halfSize, -halfSize * 0.5, -halfSize), new Vector3D(halfSize, halfSize * 0.5, halfSize), [tex0]);
             }
             if (CarEntity.s_srcBox1 == null) {
                 CarEntity.s_srcBox1 = new Box3DEntity();
-                CarEntity.s_srcBox1.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex0]);
+                CarEntity.s_srcBox1.initialize(new Vector3D(-halfSize, -halfSize, -halfSize), new Vector3D(halfSize, halfSize, halfSize), [tex0]);
             }
             let srcBox0 = CarEntity.s_srcBox0;
             let srcBox1 = CarEntity.s_srcBox1;
@@ -183,7 +184,6 @@ class CarEntity implements IToyEntity, IEntityTransform {
     setWheelRotSpeed(wheelRotSpd: number): void {
         if (this.m_entityIndex >= 0) {
             this.m_fs32Data[13] = wheelRotSpd;
-            console.log("wheelRotSpd: ",wheelRotSpd);
         }
     }
     destroy(): void {
@@ -262,10 +262,10 @@ class CarEntity implements IToyEntity, IEntityTransform {
                     if(beginRC[0] != endRC[0] || beginRC[1] != endRC[1]) {
                         this.path.searchPath();
                         //this.path.setSearchPathParam(beginRC[0], beginRC[1], endRC[0], endRC[1]);
-                        console.log("search new path, beginRC: ",beginRC, ", endRC: ",endRC);
+                        //console.log("search new path, beginRC: ",beginRC, ", endRC: ",endRC);
                     }
                     else {
-                        console.log("始末位置相同 re-waiting, beginRC: ",beginRC, ", endRC: ",endRC);
+                        //console.log("始末位置相同 re-waiting, beginRC: ",beginRC, ", endRC: ",endRC);
                         this.stopAndWait()
                     }
                 }
