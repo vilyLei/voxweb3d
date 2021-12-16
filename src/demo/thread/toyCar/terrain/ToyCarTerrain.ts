@@ -51,7 +51,7 @@ class ToyCarTerrain {
                 box.copyMeshFrom(srcBox);
                 if (flag > 0) {
                     box.initializeCube(50, [this.getImageTexByUrl("static/assets/box_wood01.jpg")]);
-                    box.setXYZ(pv.x, pv.y + 0.5 * size * 0.2, pv.z);
+                    box.setXYZ(pv.x, pv.y + 0.8 * size * 0.2, pv.z);
                 }
                 else {
                     if (Math.random() > 0.5) {

@@ -321,8 +321,8 @@ export default class DisplayEntity implements IRenderEntity, IDisplayEntity, IEn
                 m.__$attachThis();
                 this.m_mesh = m;
                 this.initDisplay(m);
-                this.m_meshChanged = true;
                 this.updateMesh();
+                this.m_meshChanged = true;
             }
         }
     }

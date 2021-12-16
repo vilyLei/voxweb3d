@@ -60,12 +60,12 @@ class CarEntity implements IToyEntity, IEntityTransform {
         if (this.m_entityIndex >= 0) {
             this.m_scene = sc;
             let halfSize: number = size * 0.5;
-            if (this.m_pathCurve == null) {
-                this.m_pathCurve = new Line3DEntity();
-                this.m_pathCurve.initialize(new Vector3D(), new Vector3D(100.0));
-                this.m_pathCurve.setXYZ(0.0, 20.0, 0.0);
-                this.m_scene.addEntity(this.m_pathCurve);
-            }
+            // if (this.m_pathCurve == null) {
+            //     this.m_pathCurve = new Line3DEntity();
+            //     this.m_pathCurve.initialize(new Vector3D(), new Vector3D(100.0));
+            //     this.m_pathCurve.setXYZ(0.0, 20.0, 0.0);
+            //     this.m_scene.addEntity(this.m_pathCurve);
+            // }
 
             let tex0: TextureProxy = this.asset.textures[0];
 
@@ -106,6 +106,7 @@ class CarEntity implements IToyEntity, IEntityTransform {
                 box.copyMeshFrom(srcBox1);
                 box.copyMaterialFrom(materialBox1);
                 sc.addEntity(box);
+                this.m_entityList.push(box);
                 this.m_transMat4List.push(box.getMatrix());
             }
             // for test
@@ -209,10 +210,12 @@ class CarEntity implements IToyEntity, IEntityTransform {
             i -= 2;
         }
         // console.log("posList: ", posList);
-        this.m_pathCurve.initializePolygon(posList);
-        this.m_pathCurve.reinitializeMesh();
-        this.m_pathCurve.updateMeshToGpu();
-        this.m_pathCurve.updateBounds();
+        if(this.m_pathCurve != null) {
+            this.m_pathCurve.initializePolygon(posList);
+            this.m_pathCurve.reinitializeMesh();
+            this.m_pathCurve.updateMeshToGpu();
+            this.m_pathCurve.updateBounds();
+        }
         
         this.m_moveAction.posInterp.minDis = 5.0;
         this.m_moveAction.degreeTween.factor = 0.1;

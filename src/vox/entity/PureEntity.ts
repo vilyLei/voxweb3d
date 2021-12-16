@@ -44,6 +44,7 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
     private m_invOmat: Matrix4 = null;
     constructor() {
         this.m_uid = PureEntity.s_uid++;
+        this.createBounds();
     }
     private m_visible: boolean = true;
     private m_drawEnabled: boolean = true;
@@ -53,8 +54,10 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
     protected m_mesh: MeshBase = null;
     protected m_renderProxy: RenderProxy = null;
     // 如果一个entity如果包含了多个mesh,则这个bounds就是多个mesh aabb 合并的aabb
+    // 如果一个entity如果包含了多个mesh,则这个bounds就是多个mesh aabb 合并的aabb
+    protected m_localBounds: AABB = null;
     protected m_globalBounds: AABB = null;
-
+    protected m_localBuondsVer: number = -1;
     /**
      * renderer scene entity flag, be used by the renderer system
      * 第0位到第19位总共20位存放自身在space中的 index id(最小值为1, 最大值为1048575,默认值是0, 也就是最多只能展示1048575个entitys),
@@ -258,15 +261,18 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
                         this.initDisplay(m);
                     }
                     //console.log("DisplayEntity::setMesh(), "+this.m_display.toString()+",m.drawMode: "+m.drawMode);
-                    if (this.m_globalBounds != null) {
-                        this.m_globalBounds.copyFrom(m.bounds);
+                    if(this.m_localBounds == null) {
+                        this.m_localBounds = m.bounds;
                     }
+                    else {
+                        this.m_localBounds.copyFrom(m.bounds);
+                    }
+                    this.updateMesh();
                 }
             }
         }
         else if (this.m_display != null && this.m_display.__$ruid > -1) {
             if (this.m_mesh != m && m != null) {
-                //this.m_transfrom.updatedStatus |= 2;
                 this.m_mesh.__$detachVBuf(this.m_display.vbuf);
                 this.m_mesh.__$detachThis();
                 m.__$attachThis();
@@ -274,16 +280,46 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
 
                 this.initDisplay(m);
 
+                this.updateMesh();
                 this.m_meshChanged = true;
             }
         }
     }
-    setIvsParam(ivsIndex: number, ivsCount: number): void {
+    protected updateMesh(): void {
+
+    }
+    // setIvsParam(ivsIndex: number, ivsCount: number): void {
+    //     if (this.m_display != null) {
+    //         this.m_display.ivsIndex = ivsIndex;
+    //         this.m_display.ivsCount = ivsCount;
+    //         if (this.m_display.__$ruid > -1) {
+    //             this.m_display.__$$runit.setIvsParam(ivsIndex, ivsCount);
+    //         }
+    //     }
+    // }
+    
+    setIvsParam(ivsIndex: number, ivsCount: number, updateBounds: boolean = false): void {
+
         if (this.m_display != null) {
+
             this.m_display.ivsIndex = ivsIndex;
             this.m_display.ivsCount = ivsCount;
             if (this.m_display.__$ruid > -1) {
+                this.m_display.__$$runit.trisNumber = Math.floor((ivsCount - ivsIndex) / 3);
                 this.m_display.__$$runit.setIvsParam(ivsIndex, ivsCount);
+                this.m_display.__$$runit.drawMode = this.m_mesh.drawMode;
+
+                if(updateBounds && this.isPolyhedral()) {
+
+                    if(this.m_localBounds == this.m_mesh.bounds) {
+                        this.m_localBounds = new AABB();
+                        this.m_localBounds.copyFrom( this.m_mesh.bounds );
+                    }
+                    this.m_localBounds.reset();
+                    let ivs: Uint16Array | Uint32Array = this.m_mesh.getIVS();
+                    this.m_localBounds.addXYZFloat32AndIndicesArr(this.m_mesh.getVS(), ivs.subarray(ivsIndex, ivsIndex + ivsCount));
+                    this.m_localBounds.update();
+                }
             }
         }
     }
@@ -468,17 +504,62 @@ export default class PureEntity implements IRenderEntity, IDisplayEntity {
     isRenderEnabled(): boolean {
         return this.drawEnabled && this.m_visible && this.m_display != null && this.m_display.__$ruid > -1;
     }
-    updateBounds(): void {
+    
+    private static s_pos: Vector3D = new Vector3D();
+    private static s_prePos: Vector3D = new Vector3D();
+    private static s_boundsOutVS: Float32Array = new Float32Array(24);
+    private m_lBoundsVS: Float32Array = null;
+    
+    private updateLocalBoundsVS(bounds: AABB): void {
+        let pminV: Vector3D = bounds.min;
+        let pmaxV: Vector3D = bounds.max;
+        if(this.m_lBoundsVS == null) {
+            this.m_lBoundsVS = new Float32Array(24);
+        }
+        let pvs: Float32Array = this.m_lBoundsVS;
+        pvs[0] = pminV.x; pvs[1] = pminV.y; pvs[2] = pminV.z;
+        pvs[3] = pmaxV.x; pvs[4] = pminV.y; pvs[5] = pminV.z;
+        pvs[6] = pminV.x; pvs[7] = pminV.y; pvs[8] = pmaxV.z;
+        pvs[9] = pmaxV.x; pvs[10] = pminV.y; pvs[11] = pmaxV.z;
+        pvs[12] = pminV.x; pvs[13] = pmaxV.y; pvs[14] = pminV.z;
+        pvs[15] = pmaxV.x; pvs[16] = pmaxV.y; pvs[17] = pminV.z;
+        pvs[18] = pminV.x; pvs[19] = pmaxV.y; pvs[20] = pmaxV.z;
+        pvs[21] = pmaxV.x; pvs[22] = pmaxV.y; pvs[23] = pmaxV.z;
     }
-    updateMatrix(): void {
+    protected updateGlobalBounds(): void {
+
+        // 这里的逻辑也有问题,需要再处理，为了支持摄像机等的拾取以及支持遮挡计算等空间管理计算
+        
+        let bounds: AABB = this.m_localBounds;
+        if (this.m_matChanged || this.m_localBuondsVer != bounds.version) {
+            
+            this.m_localBuondsVer = bounds.version;
+            this.updateLocalBoundsVS(bounds);                
+            
+            let in_vs: Float32Array = this.m_lBoundsVS;
+            let out_vs: Float32Array = PureEntity.s_boundsOutVS;
+            this.m_omat.transformVectors(in_vs, 24, out_vs);
+            this.m_globalBounds.reset();
+            this.m_globalBounds.addXYZFloat32Arr(out_vs);
+            this.m_globalBounds.update();
+        }
+    }
+    updateBounds(): void {
+        if(this.m_mesh != null && this.m_localBounds != this.m_mesh.bounds) {
+
+            this.m_localBounds.reset();
+            let ivs: Uint16Array | Uint32Array = this.m_mesh.getIVS();
+            this.m_localBounds.addXYZFloat32AndIndicesArr(this.m_mesh.getVS(), ivs.subarray(this.m_display.ivsIndex, this.m_display.ivsIndex + this.m_display.ivsCount));
+            this.m_localBounds.update();
+        }
+        this.update();
+    }
+    updateTransform(): void {
         this.m_matChanged = true;
     }
     update(): void {
-        //  if(this.m_display != null && this.m_display.__$$runit != null)
-        //  {
-        //      this.m_display.__$$runit.bounds = this.m_globalBounds;
-        //      //this.m_transfrom.getPosition(this.m_display.__$$runit.pos);
-        //  }
+        this.updateGlobalBounds();
+        this.m_matChanged = false;
     }
     toString(): string {
         return "PureEntity(name=" + this.name + ",uid = " + this.m_uid + ", rseFlag = " + this.__$rseFlag + ")";
