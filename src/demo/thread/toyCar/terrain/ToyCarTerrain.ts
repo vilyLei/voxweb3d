@@ -40,14 +40,10 @@ class ToyCarTerrain {
         //return;
         let rn: number = this.m_terrainData.rn;
         let cn: number = this.m_terrainData.cn;
-        let startPos: Vector3D = new Vector3D(cn * size * -0.5 + 0.5 * size, 0.0, rn * size * -0.5 + 0.5 * size);
         let pos: Vector3D = new Vector3D();
         let pv: Vector3D;
         for (let r: number = 0; r < rn; r++) {
             for (let c: number = 0; c < cn; c++) {
-                // pos.x = startPos.x + c * size;
-                // pos.y = startPos.y;
-                // pos.z = startPos.z + r * size;
                 pv = this.m_terrainData.getGridPositionByRC(r,c);
                 let flag: number = this.m_terrainData.getGridStatusByRC(r, c);
                 let scale: number = flag > 0 ? 1.0 : 0.2;

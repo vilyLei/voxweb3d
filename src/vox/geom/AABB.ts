@@ -72,7 +72,7 @@ class AABB {
 		if (this.max.z < pv.z) this.max.z = pv.z;
 	}
 	addXYZ(pvx: number, pvy: number, pvz: number): void {
-		
+
 		if (this.min.x > pvx) this.min.x = pvx;
 		if (this.min.y > pvy) this.min.y = pvy;
 		if (this.min.z > pvz) this.min.z = pvz;
@@ -119,24 +119,25 @@ class AABB {
 			if (this.max.z < pvz) this.max.z = pvz;
 		}
 	}
-	getClosePosition(in_pos: Vector3D, out_pos: Vector3D): void {
-		if(in_pos.x < this.min.x) {
-			out_pos.x =this.min.x;
+	getClosePosition(in_pos: Vector3D, out_pos: Vector3D, bias: number = 0.0): void {
+		out_pos.copyFrom(in_pos);
+		if (out_pos.x < this.min.x) {
+			out_pos.x = this.min.x + bias;
 		}
-		else if(in_pos.x > this.max.x) {
-			out_pos.x =this.max.x;
+		else if (out_pos.x > this.max.x) {
+			out_pos.x = this.max.x - bias;
 		}
-		if(in_pos.y < this.min.y) {
-			out_pos.y =this.min.y;
+		if (out_pos.y < this.min.y) {
+			out_pos.y = this.min.y + bias;
 		}
-		else if(in_pos.y > this.max.y) {
-			out_pos.y =this.max.y;
+		else if (out_pos.y > this.max.y) {
+			out_pos.y = this.max.y - bias;
 		}
-		if(in_pos.z < this.min.z) {
-			out_pos.z =this.min.z;
+		if (out_pos.z < this.min.z) {
+			out_pos.z = this.min.z + bias;
 		}
-		else if(in_pos.z > this.max.z) {
-			out_pos.z =this.max.z;
+		else if (out_pos.z > this.max.z) {
+			out_pos.z = this.max.z - bias;
 		}
 	}
 	// @param	v	Vector3D instance

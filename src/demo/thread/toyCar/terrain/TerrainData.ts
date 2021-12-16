@@ -20,7 +20,7 @@ class TerrainData {
         let cn: number = this.cn;
         let gridSize = this.gridSize;
 
-        this.minPosition.setXYZ(cn * gridSize * -0.5 + 0.5 * gridSize, 0.0, rn * gridSize * -0.5 + 0.5 * gridSize);
+        this.minPosition.setXYZ(cn * gridSize * -0.5, 0.0, rn * gridSize * -0.5);
         this.maxPosition.setXYZ(this.minPosition.x + cn * gridSize, 0.0, this.minPosition.z + rn * gridSize);
         this.m_bounds.min.copyFrom(this.minPosition);
         this.m_bounds.max.copyFrom(this.maxPosition);
@@ -36,7 +36,7 @@ class TerrainData {
         //console.log("this.freeSTVS: ",this.freeSTVS);
     }
     getRCByPosition(pos: Vector3D): number[] {
-        this.m_bounds.getClosePosition(pos, this.m_outPos);
+        this.m_bounds.getClosePosition(pos, this.m_outPos, 1.0);
         this.m_outPos.subtractBy(this.m_bounds.min);
         let r: number = Math.floor(this.m_outPos.z / this.gridSize);
         let c: number = Math.floor(this.m_outPos.x / this.gridSize);
@@ -50,9 +50,9 @@ class TerrainData {
     }
     getGridPositionByRC(r: number, c: number): Vector3D {
         let pos = this.m_outPos;
-        pos.x = this.minPosition.x + c * this.gridSize;
+        pos.x = this.minPosition.x + c * this.gridSize + 0.5 * this.gridSize;
         pos.y = this.minPosition.y;
-        pos.z = this.minPosition.z + r * this.gridSize;
+        pos.z = this.minPosition.z + r * this.gridSize + 0.5 * this.gridSize;
         return pos;
     }
     clone(): TerrainData {

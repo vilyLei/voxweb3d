@@ -116,7 +116,7 @@ class ToyCarScene {
         ThreadSystem.Initialize(1);
     }
     private m_dis: number = 0;
-    testDose(): void {
+    testDose(pv: Vector3D): void {
         let task = this.m_toyCarTasks[0];
         if(task.isAStarEnabled()) {
             //task.aStarSearch( {r0: 1, c0: 1, r1: 4, c1: 5} );
@@ -126,6 +126,8 @@ class ToyCarScene {
             this.m_dis += 10.0;
         }
         //this.updateThreadTask();
+        let rc: number[] = this.m_terrainData.getRCByPosition(pv);
+        console.log("rc: ",rc);
     }
     private initTerrain(terrData: TerrainData): void {
 

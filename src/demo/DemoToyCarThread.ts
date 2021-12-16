@@ -15,8 +15,7 @@ import MouseEvent from "../vox/event/MouseEvent";
 import DemoInstance from "./DemoInstance";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import ThreadSystem from "../thread/ThreadSystem";
-import CameraDragController from "../voxeditor/control/CameraDragController";
-import CameraZoomController from "../voxeditor/control/CameraZoomController";
+import {UserInteraction} from "../vox/engine/UserInteraction";
 
 import { ToyCarScene } from "./thread/toyCar/scene/ToyCarScene";
 
@@ -27,8 +26,7 @@ export class DemoToyCarThread extends DemoInstance {
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = null;
     private m_profileInstance: ProfileInstance = new ProfileInstance();
-    private m_stageDragCtrl: CameraDragController = new CameraDragController();
-    private m_cameraZoomController: CameraZoomController = new CameraZoomController();
+    private m_userInteraction: UserInteraction = new UserInteraction();
 
     private m_toyCarScene: ToyCarScene = new ToyCarScene();
 
@@ -51,12 +49,8 @@ export class DemoToyCarThread extends DemoInstance {
         this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
         if (this.m_profileInstance != null) this.m_profileInstance.initialize(this.m_rscene.getRenderer());
         if (this.m_statusDisp != null) this.m_statusDisp.initialize();
-
-        this.m_rscene.enableMouseEvent(true);
-        this.m_cameraZoomController.bindCamera(this.m_rscene.getCamera());
-        this.m_cameraZoomController.initialize(this.m_rscene.getStage3D());
-        this.m_stageDragCtrl.initialize(this.m_rscene.getStage3D(), this.m_rscene.getCamera());
-        this.m_cameraZoomController.setLookAtCtrlEnabled(false);
+        
+        this.m_userInteraction.initialize( this.m_rscene );
 
         let tex0: TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
 
@@ -83,7 +77,9 @@ export class DemoToyCarThread extends DemoInstance {
     private m_downFlag: number = 0;
     private mouseDown(evt: any): void {
         this.m_downFlag++;
-        this.m_toyCarScene.testDose();
+        this.m_userInteraction.viewRay.intersectPlane();
+        let pv: Vector3D = this.m_userInteraction.viewRay.position;
+        this.m_toyCarScene.testDose( pv );
     }
     private m_timeoutId: any = -1;
     private update(): void {
@@ -98,8 +94,8 @@ export class DemoToyCarThread extends DemoInstance {
         this.m_toyCarScene.updateThread();
     }
     runBegin(): void {
-        this.m_stageDragCtrl.runWithYAxis();
-        this.m_cameraZoomController.run(null, 30.0);
+        
+        this.m_userInteraction.run();
         
         if (this.m_statusDisp != null) this.m_statusDisp.update();
         
