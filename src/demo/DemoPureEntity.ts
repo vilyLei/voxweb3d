@@ -116,8 +116,11 @@ export class DemoPureEntity {
             this.update();
         }
     }
-    
+    private m_time: number = 0.0;
     private mouseDown(evt: any): void {
+        this.updateEntity();
+    }
+    private updateEntity(): void {
         
         let entity = this.m_targetEntity;
         let mat = entity.getMatrix();
@@ -126,11 +129,12 @@ export class DemoPureEntity {
         mat.setRotationEulerAngle(this.m_rotV.x * MathConst.MATH_PI_OVER_180, this.m_rotV.y * MathConst.MATH_PI_OVER_180, this.m_rotV.z * MathConst.MATH_PI_OVER_180);
         mat.appendTranslation(this.m_posV);
         //this.m_posV.x += 2.0;
-        this.m_posV.y += 2.0;
+        this.m_posV.y = Math.cos(this.m_time) * 200.0;
         this.m_rotV.y += 2.0;
         this.m_rotV.z += 2.0;
         entity.updateTransform();
         entity.update();
+        this.m_time += 0.02;
 
         
         this.m_boundsFrame.updateFrameByAABB(entity.getGlobalBounds());
@@ -142,9 +146,9 @@ export class DemoPureEntity {
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
-        this.m_timeoutId = setTimeout(this.update.bind(this), 17);// 20 fps
+        this.m_timeoutId = setTimeout(this.update.bind(this), 30);// 20 fps
         this.m_statusDisp.render();
-        
+        this.updateEntity();
     }
     run(): void {
         
