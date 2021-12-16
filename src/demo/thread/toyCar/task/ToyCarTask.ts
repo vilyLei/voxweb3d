@@ -124,7 +124,7 @@ class ToyCarTask extends ThreadTask {
             let k: number = 1;
             let total: number = 0;
             for (let i: number = 0; i < this.m_entities.length; ++i) {
-                if(this.m_entities[i].path.status == TerrainPathStatus.Search) {
+                if(this.m_entities[i].isReadySearchPath()) {
                     this.m_entities[i].path.searchingPath();
                     let path = this.m_entities[i].path;
                     this.m_pathSearchData[k++] = i;
@@ -137,12 +137,12 @@ class ToyCarTask extends ThreadTask {
             if(k > 1) {
                 this.m_pathSearchData[0] = k / 5;
                 this.m_pathSerachEnabled = false;
-                //console.log("AA have searching path, k: ",k, ", this.m_pathSearchData: ",this.m_pathSearchData);
+                console.log("AA have searching path, k: ",k, ", total: ",this.m_pathSearchData[0]);
                 this.addDataWithParam("aStar_search", [this.m_pathSearchData, this.m_pathRCData]);
             }
-            else {
-                console.log("BB no searching path, k: ",k);
-            }
+            // else {
+            //     console.log("BB no searching path, k: ",k);
+            // }
         }
     }
     isAStarEnabled(): boolean {
@@ -192,7 +192,7 @@ class ToyCarTask extends ThreadTask {
                 this.m_transEnabled = true;
                 break;
             case "aStar_search":
-                console.log("XXXX aStar_search...");
+                console.log("parseDone XXXX aStar_search...");
                 this.m_pathSearchData = data.streams[0];
                 this.m_pathRCData = data.streams[1];
                 this.updateEntityPath();
@@ -201,12 +201,12 @@ class ToyCarTask extends ThreadTask {
             case "aStar_exec":
                 this.m_pathRCData = data.streams[0];
                 this.m_pathSerachEnabled = true;
-                console.log("XXXX aStar_exec...");
+                console.log("parseDone XXXX aStar_exec...");
                 this.m_serachPathIndex = 0;
                 break;
             case "aStar_init":
 
-                console.log("XXXX aStar_init...");
+                console.log("parseDone XXXX aStar_init...");
                 ToyCarTask.s_aStarFlag = 2;
                 this.m_pathSerachEnabled = true;
                 break;

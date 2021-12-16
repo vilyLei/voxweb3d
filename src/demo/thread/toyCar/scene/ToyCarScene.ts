@@ -22,12 +22,12 @@ class ToyCarScene {
     private m_entitiesTotal: number = 0;
     private m_toyCarTasks: ToyCarTask[] = [];
     private m_terrainData: TerrainData = null;
-    
+
     initialize(scene: RendererScene, texLoader: ImageTextureLoader): void {
         if (this.m_rscene == null) {
             this.m_rscene = scene;
             this.m_texLoader = texLoader;
-            
+
             this.m_toyCarBuilder.initialize(scene, texLoader);
 
 
@@ -51,14 +51,14 @@ class ToyCarScene {
 
             this.initThread(terrData);
             this.buildEntities();
-            
+
             this.initTerrain(terrData);
         }
     }
-    
+    private m_buildEntitiesTotal: number = 10;
     private buildThreadTask(terrData: TerrainData): void {
-        
-        let total: number = 2;
+
+        let total: number = this.m_buildEntitiesTotal;
         let matTask: ToyCarTask = new ToyCarTask();
         matTask.initialize(total);
         matTask.setThrDataPool(ThreadSystem.GetThrDataPool());
@@ -67,7 +67,7 @@ class ToyCarScene {
 
         this.m_entitiesTotal += total;
         this.m_toyCarTasks.push(matTask);
-        
+
     }
     private m_entity0: CarEntity;
     private buildEntities(): void {
@@ -75,37 +75,56 @@ class ToyCarScene {
         let entity: CarEntity;
         let pv: Vector3D;
         let wheelRotSpeed: number = -8.0;
-        for(let i: number = 0; i < this.m_toyCarTasks.length; ++i) {
+        for (let i: number = 0; i < this.m_toyCarTasks.length; ++i) {
 
             let task: ToyCarTask = this.m_toyCarTasks[i];
-            entity = this.m_toyCarBuilder.buildEntity( task );
-            entity.terrainData = this.m_terrainData;
-            entity.path.setSearchPathParam(0,0, 4,4);
-            pv = this.m_terrainData.getGridPositionByRC(0,0);
-            pv.y += 20.0;
-            //  //entity.setXYZ(200, 25, 200);
-            entity.setPosition( pv );
-            entity.setWheelRotSpeed( wheelRotSpeed );
-            ///*
-            entity = this.m_toyCarBuilder.buildEntity( task );
-            entity.terrainData = this.m_terrainData;
-            entity.path.setSearchPathParam(4,0, 0,4);
-            pv = this.m_terrainData.getGridPositionByRC(4,0);
-            pv.y += 20.0;
-            //entity.setXYZ(200, 25, 200);
-            entity.setPosition( pv );
-            //entity.setXYZ(200, 25, -200);
-            entity.setWheelRotSpeed( wheelRotSpeed );
-            //*/
-            this.m_entity0 = entity;
+            for (let j: number = 0; j < this.m_buildEntitiesTotal; ++j) {
+
+                entity = this.m_toyCarBuilder.buildEntity(task);
+                entity.terrainData = this.m_terrainData;
+                let beginRC = this.m_terrainData.getRandomFreeRC();
+                let endRC = this.m_terrainData.getRandomFreeRC();
+                // beginRC[0] = beginRC[1] = 0;
+                // endRC[0] = endRC[1] = 0;
+                entity.path.setSearchPathParam(beginRC[0], beginRC[1], endRC[0], endRC[1]);
+                pv = this.m_terrainData.getGridPositionByRC(beginRC[0], beginRC[1]);
+                pv.y += 20.0;
+                //  //entity.setXYZ(200, 25, 200);
+                entity.setPosition(pv);
+                entity.setWheelRotSpeed(wheelRotSpeed);
+                entity.setScale(0.1 + Math.random() * 0.1);
+                if (!entity.isReadySearchPath()) {
+                    entity.stopAndWait();
+                }
+                /*
+                entity = this.m_toyCarBuilder.buildEntity( task );
+                entity.terrainData = this.m_terrainData;
+                beginRC = this.m_terrainData.getRandomFreeRC();
+                endRC = this.m_terrainData.getRandomFreeRC();
+                entity.path.setSearchPathParam(beginRC[0],beginRC[1], endRC[0],endRC[1]);
+                pv = this.m_terrainData.getGridPositionByRC(beginRC[0], beginRC[1]);
+                pv.y += 20.0;
+                //entity.setXYZ(200, 25, 200);
+                entity.setPosition( pv );
+                //entity.setXYZ(200, 25, -200);
+                entity.setWheelRotSpeed( wheelRotSpeed );
+                if(!entity.isReadySearchPath()) {
+                    entity.stopAndWait();
+                }
+                //*/
+                this.m_entity0 = entity;
+            }
         }
-        
+
     }
     private updateThreadTask(): void {
         let list = this.m_toyCarTasks;
         let len: number = list.length;
         for (let i: number = 0; i < len; ++i) {
             list[i].updateEntitiesTrans();
+            if (list[i].isAStarEnabled()) {
+                list[i].searchPath();
+            }
         }
     }
     private initThread(terrData: TerrainData): void {
@@ -118,7 +137,7 @@ class ToyCarScene {
     private m_dis: number = 0;
     testDose(pv: Vector3D): void {
         let task = this.m_toyCarTasks[0];
-        if(task.isAStarEnabled()) {
+        if (task.isAStarEnabled()) {
             //task.aStarSearch( {r0: 1, c0: 1, r1: 4, c1: 5} );
             task.searchPath();
             // this.m_entity0.setWheelRotSpeed(20.0);
@@ -127,13 +146,13 @@ class ToyCarScene {
         }
         //this.updateThreadTask();
         let rc: number[] = this.m_terrainData.getRCByPosition(pv);
-        console.log("rc: ",rc);
+        console.log("rc: ", rc);
     }
     private initTerrain(terrData: TerrainData): void {
 
         this.m_toyTerrain = new ToyCarTerrain();
         this.m_toyTerrain.initialize(this.m_rscene, this.m_texLoader, terrData);
-        
+
     }
     updateThread(): void {
         this.updateThreadTask();

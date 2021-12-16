@@ -39,6 +39,7 @@ class CarEntity implements IToyEntity, IEntityTransform {
     private m_outPos: Vector3D = new Vector3D();
     private m_scene: RendererScene = null;
     private m_pathPosList: Vector3D[] = [];
+    private m_delayTime: number = 10;
 
     status: EntityStatus = EntityStatus.Init;
     asset: AssetPackage = null;
@@ -146,6 +147,17 @@ class CarEntity implements IToyEntity, IEntityTransform {
             this.m_fs32Data[5] = prz;
         }
     }
+    setScale(bodyScale: number): void {
+        if (this.m_entityIndex >= 0) {
+            this.m_fs32Data[6] = bodyScale;
+        }
+    }
+    /**
+     * 
+     * @param bodyScale whole body scale
+     * @param param1 
+     * @param param2 
+     */
     setParam(bodyScale: number, param1: number, param2: number): void {
         if (this.m_entityIndex >= 0) {
             this.m_fs32Data[6] = bodyScale;
@@ -176,9 +188,14 @@ class CarEntity implements IToyEntity, IEntityTransform {
     }
     destroy(): void {
     }
+
+    isReadySearchPath(): boolean {
+        return this.path.isReadySearchPath();
+    }
     searchedPath(vs: Uint16Array): void {
-        console.log("searchedPath,vs: ", vs);
-        // this.m_pathCurve
+
+        //console.log("searchedPath,vs: ", vs);
+        
         let path = this.path;
         let terrData = this.terrainData;
         
@@ -191,7 +208,7 @@ class CarEntity implements IToyEntity, IEntityTransform {
             posList[k++] = pv.clone();
             i -= 2;
         }
-        console.log("posList: ", posList);
+        // console.log("posList: ", posList);
         this.m_pathCurve.initializePolygon(posList);
         this.m_pathCurve.reinitializeMesh();
         this.m_pathCurve.updateMeshToGpu();
@@ -207,6 +224,7 @@ class CarEntity implements IToyEntity, IEntityTransform {
         this.path.searchedPath();
         this.path.movingPath();
 
+        this.m_delayTime = Math.round(Math.random() * 100) + 30;
         this.status = EntityStatus.Moving;
     }
     updateTrans(fs32: Float32Array): void {
@@ -231,6 +249,32 @@ class CarEntity implements IToyEntity, IEntityTransform {
             }
             this.m_moveAction.run();
         }
+        else {
+            if(this.m_delayTime > 0) {
+                this.m_delayTime --;
+                if(this.m_delayTime == 0) {
+                    let beginRC: number[] = this.terrainData.getRCByPosition(this.m_position);
+                    let endRC: number[] = this.terrainData.getRandomFreeRC();
+                    
+                    // endRC[0] = beginRC[0];// = endRC[0] = 0;
+                    // endRC[1] = beginRC[1];// = endRC[1] = 0;
+                    this.path.setSearchPathParam(beginRC[0], beginRC[1], endRC[0], endRC[1]);
+                    if(beginRC[0] != endRC[0] || beginRC[1] != endRC[1]) {
+                        this.path.searchPath();
+                        //this.path.setSearchPathParam(beginRC[0], beginRC[1], endRC[0], endRC[1]);
+                        console.log("search new path, beginRC: ",beginRC, ", endRC: ",endRC);
+                    }
+                    else {
+                        console.log("始末位置相同 re-waiting, beginRC: ",beginRC, ", endRC: ",endRC);
+                        this.stopAndWait()
+                    }
+                }
+            }
+        }
+    }
+    stopAndWait(): void {
+        this.m_delayTime = Math.round(Math.random() * 30) + 10;
+        this.path.stopPath();
     }
 
     setScaleXYZ(sx: number, sy: number, sz: number): void {

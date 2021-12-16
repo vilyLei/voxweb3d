@@ -25,8 +25,9 @@ interface IToyEntity {
     // wheel init rotation, spd, wheel body scale;
     setWheelRotSpeed(pr: number, wheelRotSpd: number, bodyScale: number): void;
     destroy(): void;
-    
+    isReadySearchPath(): boolean;
     updateTrans(fs32: Float32Array): void;
     searchedPath(vs: Uint16Array): void;
+    stopAndWait(): void;
 }
 export { IToyEntity };

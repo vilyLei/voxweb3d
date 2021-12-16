@@ -41,6 +41,12 @@ class TerrainPath {
         this.r1 = r1;
         this.c1 = c1;
     }
+    isReadySearchPath(): boolean {
+        if(this.r0 != this.r1 || this.c0 != this.c1) {
+            return this.status == TerrainPathStatus.Search;
+        }
+        return false;
+    }
     searchPath(): void {
         this.status = TerrainPathStatus.Search;
     }

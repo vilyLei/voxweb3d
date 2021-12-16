@@ -35,6 +35,16 @@ class TerrainData {
         this.freeSTVS = new Uint16Array(list);
         //console.log("this.freeSTVS: ",this.freeSTVS);
     }
+    getRandomFreeRC(): number[] {
+        let len: number = this.freeSTVS.length >> 1;
+        let index: number = Math.round(Math.random() * 1024) % len;
+        index = index << 1;
+        return [this.freeSTVS[index], this.freeSTVS[index + 1]];
+    }
+    getRandomFreeGridPosition(): Vector3D {
+        let rc: number[] = this.getRandomFreeRC();
+        return this.getGridPositionByRC(rc[0], rc[1]);
+    }
     getRCByPosition(pos: Vector3D): number[] {
         this.m_bounds.getClosePosition(pos, this.m_outPos, 1.0);
         this.m_outPos.subtractBy(this.m_bounds.min);
