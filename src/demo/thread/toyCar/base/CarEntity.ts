@@ -42,6 +42,7 @@ class CarEntity implements IToyEntity, IEntityTransform {
     private m_pathPosList: Vector3D[] = [];
     private m_speed: number = 1.0;
     private m_delayTime: number = 10;
+    private m_visible: boolean = true;
 
     status: EntityStatus = EntityStatus.Init;
     asset: AssetPackage = null;
@@ -122,7 +123,20 @@ class CarEntity implements IToyEntity, IEntityTransform {
             this.setWheelOffsetXYZ(80.0, -30.0, 100.0);
             // wheel init rotation, wheel rotation spd, wheel body scale;
             this.setWheelRotParam(30.0, -2.0, 0.3);
+
+            this.setVisible(false);
         }
+    }
+    setVisible(visible: boolean): void {
+        if (this.m_visible !== visible) {
+            this.m_visible = visible;
+            for (let i: number = 0; i < this.m_entityList.length; ++i) {
+                this.m_entityList[i].setVisible(visible);
+            }
+        }
+    }
+    getVisible(): boolean {
+        return this.m_visible;
     }
     setSpeed(spd: number): void {
         this.curveMotion.setSpeed(spd);
@@ -207,7 +221,7 @@ class CarEntity implements IToyEntity, IEntityTransform {
         return this.path.isReadySearchPath();
     }
     private getPosList(vs: Uint16Array): Vector3D[] {
-        
+
         let path = this.path;
         let terrData = this.terrainData;
 
@@ -223,24 +237,24 @@ class CarEntity implements IToyEntity, IEntityTransform {
             c = vs[i];
             let pv = null;//terrData.getTerrainPositionByRC(r, c);
             // posList[k++] = pv.clone();
-            if(preR != r && preC != c) {
+            if (preR != r && preC != c) {
                 // 前面新增
-                if(preR == r) {
-                    if(preC > c) {
+                if (preR == r) {
+                    if (preC > c) {
                         pv = terrData.getTerrainPositionByRC(r, c + 1);
                         posList.push(pv.clone());
                     }
-                    else if(preC < c) {
+                    else if (preC < c) {
                         pv = terrData.getTerrainPositionByRC(r, c - 1);
                         posList.push(pv.clone());
                     }
                 }
-                else if(preC == c){
-                    if(preR > r) {
+                else if (preC == c) {
+                    if (preR > r) {
                         pv = terrData.getTerrainPositionByRC(r + 1, c);
                         posList.push(pv.clone());
                     }
-                    else if(preR < r) {
+                    else if (preR < r) {
                         pv = terrData.getTerrainPositionByRC(r - 1, c);
                         posList.push(pv.clone());
                     }
@@ -248,24 +262,24 @@ class CarEntity implements IToyEntity, IEntityTransform {
             }
             pv = terrData.getTerrainPositionByRC(r, c);
             posList.push(pv.clone());
-            if(preR != r && preC != c) {
+            if (preR != r && preC != c) {
                 // 后面新增
-                if(preR == r) {
-                    if(preC > c) {
+                if (preR == r) {
+                    if (preC > c) {
                         pv = terrData.getTerrainPositionByRC(r, c + 1);
                         posList.push(pv.clone());
                     }
-                    else if(preC < c) {
+                    else if (preC < c) {
                         pv = terrData.getTerrainPositionByRC(r, c - 1);
                         posList.push(pv.clone());
                     }
                 }
-                else if(preC == c){
-                    if(preR > r) {
+                else if (preC == c) {
+                    if (preR > r) {
                         pv = terrData.getTerrainPositionByRC(r + 1, c);
                         posList.push(pv.clone());
                     }
-                    else if(preR < r) {
+                    else if (preR < r) {
                         pv = terrData.getTerrainPositionByRC(r - 1, c);
                         posList.push(pv.clone());
                     }
@@ -282,8 +296,8 @@ class CarEntity implements IToyEntity, IEntityTransform {
 
         //console.log("searchedPath,vs: ", vs);
 
-        let posList: Vector3D[] = this.getPosList( vs );
-        
+        let posList: Vector3D[] = this.getPosList(vs);
+
         // console.log("posList: ", posList);
         if (this.m_pathCurve != null) {
             this.m_pathCurve.initializePolygon(posList);
@@ -306,9 +320,11 @@ class CarEntity implements IToyEntity, IEntityTransform {
     }
     updateTrans(fs32: Float32Array): void {
 
+        this.setVisible( true );
+        
         switch (this.status) {
             case EntityStatus.Init:
-                if(this.status == EntityStatus.Init) {
+                if (this.status == EntityStatus.Init) {
                     this.status = EntityStatus.Stop;
                 }
                 break;
@@ -340,10 +356,10 @@ class CarEntity implements IToyEntity, IEntityTransform {
             if (this.m_delayTime > 0) {
                 this.m_delayTime--;
                 if (this.m_delayTime == 0) {
-                    if(this.autoSerachPath) {
+                    if (this.autoSerachPath) {
                         let beginRC: number[] = this.terrainData.getRCByPosition(this.m_position);
                         let endRC: number[] = this.terrainData.getRandomFreeRC();
-    
+
                         this.path.setSearchPathParam(beginRC[0], beginRC[1], endRC[0], endRC[1]);
                         if (beginRC[0] != endRC[0] || beginRC[1] != endRC[1]) {
                             this.path.searchPath();

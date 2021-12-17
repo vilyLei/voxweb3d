@@ -167,7 +167,7 @@ class ToyCarScene {
                 if(this.m_testFlag == 0) {
                     this.m_entity0.path.setBeginRC(rc[0], rc[1]);
                     this.m_entity0.setPosition( this.m_terrainData.getTerrainPositionByRC(rc[0], rc[1]) );
-                    this.m_entity0.status = EntityStatus.Init;
+                    //this.m_entity0.status = EntityStatus.Init;
                 }
                 else if(this.m_testFlag == 1) {
                     this.m_entity0.path.setEndRC(rc[0], rc[1]);
