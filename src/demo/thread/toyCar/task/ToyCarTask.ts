@@ -6,6 +6,7 @@
 /***************************************************************************/
 import ThreadTask from "../../../../thread/control/ThreadTask";
 import { IToyEntity } from "../base/IToyEntity";
+import { EntityStatusManager } from "../base/EntityStatusManager";
 import { TerrainData } from "../terrain/TerrainData";
 import { TerrainPathStatus } from "../terrain/TerrainPath";
 
@@ -16,14 +17,11 @@ class ToyCarTask extends ThreadTask {
     private m_matsTotal: number = 1;
     private m_transInputData: Float32Array = null;
     private m_transParamData: Float32Array = null;
-    private m_transSTData: Uint16Array = null;
-    private m_transInputSTData: Uint16Array = null;
     private m_transOutputData: Float32Array = null;
     // 存放请求寻路的信息数据
     private m_pathSearchData: Uint16Array = null;
     // 存放寻路结果
     private m_pathData: Uint16Array = null;
-    private m_serachPathIndex: number = 0;
 
     private m_transEnabled: boolean = true;
     private m_pathSerachEnabled: boolean = true;
@@ -31,7 +29,8 @@ class ToyCarTask extends ThreadTask {
     private m_entities: IToyEntity[] = [];
     private m_transFlag: number = 0;
     private m_calcType: number = 1;
-    private m_terrainData: TerrainData = null;
+    //private m_terrainData: TerrainData = null;
+    private m_statusManager: EntityStatusManager = new EntityStatusManager();
 
     private static s_aStarFlag: number = 0;
     constructor() {
@@ -46,8 +45,7 @@ class ToyCarTask extends ThreadTask {
             this.m_transParamData = new Float32Array(entitiesTotal * this.m_dataStepLength);
             this.m_transOutputData = new Float32Array(entitiesTotal * this.m_dataStepLength);
 
-            this.m_transSTData = new Uint16Array(entitiesTotal);
-            this.m_transInputSTData = new Uint16Array(entitiesTotal);
+            this.m_statusManager.initialize( entitiesTotal );
         }
     }
     getTransFS32Data(): Float32Array {
@@ -76,21 +74,16 @@ class ToyCarTask extends ThreadTask {
     isSendTransEnabled(): boolean {
         return this.m_transEnabled;
     }
-    private m_entityStatusList: number[] = [0,0,0,1];
+    private m_entityStatusList: number[] = [0,2,2,0];
     private sendTransData(): void {
         if (this.m_transEnabled) {
             this.m_transParamData.set(this.m_transInputData);
-            //this.m_transSTData.set(this.m_transInputSTData);
-            for (let i: number = 0; i < this.m_entities.length; ++i) {
-                this.m_transSTData[i] = this.m_entityStatusList[this.m_entities[i].status];
-            }
+            this.m_statusManager.updateEntityStatus(this.m_entities);
             let descriptor: any = {flag: this.m_transFlag, calcType: this.m_calcType, allTotal: this.m_total, matsTotal: this.m_matsTotal};
-            this.addDataWithParam("car_trans", [this.m_transParamData, this.m_transOutputData, this.m_transSTData], descriptor);
+            this.addDataWithParam("car_trans", [this.m_transParamData, this.m_transOutputData, this.m_statusManager.getStatusData()], descriptor);
             this.m_transEnabled = false;
             this.m_transFlag = 0;
             this.m_calcType = 0;
-            //this.m_transInputSTData.fill(1);
-            //console.log("sendTransData success...uid: "+this.getUid(), this.m_matsTotal);
         }
         else {
             console.log("sendTransData failure...");
@@ -100,7 +93,7 @@ class ToyCarTask extends ThreadTask {
     aStarInitialize(terrData: TerrainData): void {
 
         if(ToyCarTask.s_aStarFlag == 0 && terrData != null) {
-            this.m_terrainData = terrData;
+            //this.m_terrainData = terrData;
             let descriptor: any = terrData.clone();
             this.addDataWithParam("aStar_init", [descriptor.stvs], descriptor);
             ToyCarTask.s_aStarFlag = 1;
@@ -151,7 +144,8 @@ class ToyCarTask extends ThreadTask {
     
     private updateEntityTrans(fs32: Float32Array): void {
         for (let i: number = 0; i < this.m_entities.length; ++i) {
-            if(this.m_transSTData[i] < 1) {
+            
+            if(this.m_statusManager.isEnabledAt(i)){
                 this.m_entities[i].updateTrans(fs32);
             }
         }
@@ -183,8 +177,8 @@ class ToyCarTask extends ThreadTask {
             case "car_trans":
 
                 this.m_transParamData = data.streams[0];
-                this.m_transOutputData = data.streams[1];
-                this.m_transSTData = data.streams[2];
+                this.m_transOutputData = data.streams[1];                
+                this.m_statusManager.setStatusData(data.streams[2]);
                 this.updateEntityTrans( this.m_transOutputData );
                 this.m_transEnabled = true;
                 break;
@@ -199,7 +193,6 @@ class ToyCarTask extends ThreadTask {
                 this.m_pathData = data.streams[0];
                 this.m_pathSerachEnabled = true;
                 console.log("parseDone XXXX aStar_exec...");
-                this.m_serachPathIndex = 0;
                 break;
             case "aStar_init":
 

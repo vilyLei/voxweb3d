@@ -64,7 +64,7 @@ class ToyCarTerrain {
                 }
                 box.setScaleXYZ(1.0, scale, 1.0);
                 (box.getMaterial() as any).setRGB3f(0.0 + 1.5 * c/cn, 1.0, 0.0 + 1.5 * r/rn);
-                this.m_rscene.addEntity(box);
+                this.m_rscene.addEntity(box, 1);
             }
         }
 

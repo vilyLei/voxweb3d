@@ -24,7 +24,7 @@ class ToyCarScene {
     private m_toyCarTasks: ToyCarTask[] = [];
     private m_terrainData: TerrainData = null;
     private m_bodyScale: number = 1.0;
-    private m_buildEntitiesTotal: number = 100;
+    private m_buildEntitiesTotal: number = 200;
     initialize(scene: RendererScene, texLoader: ImageTextureLoader): void {
         if (this.m_rscene == null) {
             this.m_rscene = scene;
@@ -105,8 +105,8 @@ class ToyCarScene {
                 
                 //  //entity.setXYZ(200, 25, 200);
                 entity.setPosition(pv);
-                entity.setWheelRotSpeed(wheelRotSpeed);
-                entity.setScale(this.m_bodyScale * (0.1 + Math.random() * 0.1));
+                entity.transform.setWheelRotSpeed(wheelRotSpeed);
+                entity.transform.setScale(this.m_bodyScale * (0.1 + Math.random() * 0.1));
                 if (!entity.isReadySearchPath()) {
                     entity.stopAndWait();
                 }

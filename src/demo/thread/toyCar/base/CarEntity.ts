@@ -19,12 +19,12 @@ import { TerrainData } from "../terrain/TerrainData";
 import Line3DEntity from "../../../../vox/entity/Line3DEntity";
 
 import IEntityTransform from "../../../../vox/entity/IEntityTransform";
-import { CurveMotionAction } from "../../../../voxmotion/curve/CurveMotionAction";
 import { CurveMotionXZModule } from "../../../../voxmotion/primitive/CurveMotionXZModule";
 import { EntityStatus } from "./EntityStatus";
+import { CarEntityTransform } from "./CarEntityTransform";
 import { PathCalculator } from "./PathCalculator";
 
-class CarEntity implements IToyEntity, IEntityTransform {
+class CarEntity implements IToyEntity {
 
     private static s_srcBox0: Box3DEntity = null;
     private static s_srcBox1: Box3DEntity = null;
@@ -37,14 +37,15 @@ class CarEntity implements IToyEntity, IEntityTransform {
     private m_fs32Data: Float32Array = null;
     private m_entityList: PureEntity[] = [];
     private m_transMat4List: Matrix4[] = [];
-    private m_position: Vector3D = new Vector3D();
-    private m_outPos: Vector3D = new Vector3D();
+    //private m_position: Vector3D = new Vector3D();
+    //private m_outPos: Vector3D = new Vector3D();
     private m_scene: RendererScene = null;
     private m_pathPosList: Vector3D[] = [];
     private m_speed: number = 1.0;
     private m_delayTime: number = 10;
     private m_visible: boolean = true;
 
+    readonly transform: CarEntityTransform = new CarEntityTransform();
     status: EntityStatus = EntityStatus.Init;
     asset: AssetPackage = null;
     terrainData: TerrainData = null;
@@ -52,13 +53,16 @@ class CarEntity implements IToyEntity, IEntityTransform {
     readonly path: TerrainPath = new TerrainPath();
     constructor() {
     }
-
+    getStatus(): EntityStatus {
+        return this.status > this.transform.status ? this.status : this.transform.status;
+    }
     getEneityIndex(): number {
         return this.m_entityIndex;
     }
     setFS32Data(srcFS32: Float32Array, index: number): void {
         this.m_entityIndex = index;
-        this.m_fs32Data = srcFS32.subarray(index * this.m_fs32Length, (index + 1) * this.m_fs32Length);
+        // this.m_fs32Data = srcFS32.subarray(index * this.m_fs32Length, (index + 1) * this.m_fs32Length);
+        this.transform.setFS32Data(srcFS32, index);
     }
     build(sc: RendererScene, size: number = 200): void {
 
@@ -114,18 +118,10 @@ class CarEntity implements IToyEntity, IEntityTransform {
                 this.m_entityList.push(box);
                 this.m_transMat4List.push(box.getMatrix());
             }
-            // for test
-            //this.setPosXYZ( 200, 50, 200 );
-            this.setXYZ(200, 50, 200);
-            this.setRotationXYZ(0.0, Math.random() * 360.0, 0.0);
-            // whole body scale, param 1, param 2
-            this.setParam(0.2, 0.5, 0.5);
-            // 轮子的位置偏移值
-            this.setWheelOffsetXYZ(80.0, -30.0, 100.0);
-            // wheel init rotation, wheel rotation spd, wheel body scale;
-            this.setWheelRotParam(30.0, -2.0, 0.3);
+            this.transform.initParam();
 
             this.setVisible(false);
+            this.m_delayTime = Math.round(Math.random() * 100) + 30;
         }
     }
     setVisible(visible: boolean): void {
@@ -146,75 +142,18 @@ class CarEntity implements IToyEntity, IEntityTransform {
         return this.curveMotion.getSpeed();
     }
     getPosition(): Vector3D {
-        this.m_outPos.copyFrom(this.m_position);
-        return this.m_outPos;
+        return this.transform.getPosition();
     }
     setPosition(pos: Vector3D): void {
-        this.m_position.copyFrom(pos);
-        //console.log("setPosition(), pos: ",pos);
-        //console.log("this.m_entityIndex >= 0: ",this.m_entityIndex >= 0, pos);
-        if (this.m_entityIndex >= 0) {
-            this.m_fs32Data[0] = pos.x;
-            this.m_fs32Data[1] = pos.y;
-            this.m_fs32Data[2] = pos.z;
-        }
+        this.transform.setPosition(pos);
         this.status = EntityStatus.Init;
     }
     setXYZ(px: number, py: number, pz: number): void {
-        //console.log("setXYZ(), px,py,pz: ",px,py,pz);
-        this.m_position.setXYZ(px, py, pz);
-        if (this.m_entityIndex >= 0) {
-            this.m_fs32Data[0] = px;
-            this.m_fs32Data[1] = py;
-            this.m_fs32Data[2] = pz;
-        }
+
+        this.transform.setXYZ(px, py, pz);
         this.status = EntityStatus.Init;
     }
-    setRotationXYZ(prx: number, pry: number, prz: number): void {
-        if (this.m_entityIndex >= 0) {
-            this.m_fs32Data[3] = prx;
-            this.m_fs32Data[4] = pry;
-            this.m_fs32Data[5] = prz;
-        }
-    }
-    setScale(bodyScale: number): void {
-        if (this.m_entityIndex >= 0) {
-            this.m_fs32Data[6] = bodyScale;
-        }
-    }
-    /**
-     * 
-     * @param bodyScale whole body scale
-     * @param param1 
-     * @param param2 
-     */
-    setParam(bodyScale: number, param1: number, param2: number): void {
-        if (this.m_entityIndex >= 0) {
-            this.m_fs32Data[6] = bodyScale;
-            this.m_fs32Data[7] = param1;
-            this.m_fs32Data[8] = param2;
-        }
-    }
-    setWheelOffsetXYZ(px: number, py: number, pz: number): void {
-        if (this.m_entityIndex >= 0) {
-            this.m_fs32Data[9] = px;
-            this.m_fs32Data[10] = py;
-            this.m_fs32Data[11] = pz;
-        }
-    }
-    // wheel init rotation, spd, wheel body scale;
-    setWheelRotParam(pr: number, wheelRotSpd: number, bodyScale: number): void {
-        if (this.m_entityIndex >= 0) {
-            this.m_fs32Data[12] = pr;
-            this.m_fs32Data[13] = wheelRotSpd;
-            this.m_fs32Data[14] = bodyScale;
-        }
-    }
-    setWheelRotSpeed(wheelRotSpd: number): void {
-        if (this.m_entityIndex >= 0) {
-            this.m_fs32Data[13] = wheelRotSpd;
-        }
-    }
+
     destroy(): void {
     }
 
@@ -229,17 +168,17 @@ class CarEntity implements IToyEntity, IEntityTransform {
         let posList: Vector3D[] = PathCalculator.GetPathPosList(vs, this.path, this.terrainData);
 
         // console.log("posList: ", posList);
-        if (this.m_pathCurve != null) {
-            this.m_pathCurve.initializePolygon(posList);
-            this.m_pathCurve.reinitializeMesh();
-            this.m_pathCurve.updateMeshToGpu();
-            this.m_pathCurve.updateBounds();
-        }
+        // if (this.m_pathCurve != null) {
+        //     this.m_pathCurve.initializePolygon(posList);
+        //     this.m_pathCurve.reinitializeMesh();
+        //     this.m_pathCurve.updateMeshToGpu();
+        //     this.m_pathCurve.updateBounds();
+        // }
 
         let motion = this.curveMotion.motion;
-        motion.setTarget(this);
+        motion.setTarget(this.transform);
         motion.setVelocityFactor(0.04, 0.04);
-        motion.setCurrentPosition(this.m_position);
+        motion.setCurrentPosition(this.getPosition());
         this.curveMotion.setPathPosList(posList);
 
         this.path.searchedPath();
@@ -261,6 +200,7 @@ class CarEntity implements IToyEntity, IEntityTransform {
             default:
                 break;
         }
+        this.transform.updateTrans();
 
         let index = this.m_entityIndex * 5;
         for (let i: number = 0; i < 5; ++i) {
@@ -286,44 +226,29 @@ class CarEntity implements IToyEntity, IEntityTransform {
             if (this.m_delayTime > 0) {
                 this.m_delayTime--;
                 if (this.m_delayTime == 0) {
-                    if (this.autoSerachPath) {
-                        let beginRC: number[] = this.terrainData.getRCByPosition(this.m_position);
-                        let endRC: number[] = this.terrainData.getRandomFreeRC();
-
-                        this.path.setSearchPathParam(beginRC[0], beginRC[1], endRC[0], endRC[1]);
-                        if (beginRC[0] != endRC[0] || beginRC[1] != endRC[1]) {
-                            this.path.searchPath();
-                        }
-                        else {
-                            this.stopAndWait()
-                        }
-                    }
+                    this.testRandomSerachPath();
                 }
             }
         }
     }
+    private testRandomSerachPath(): void {
+
+        if (this.autoSerachPath) {
+            let beginRC: number[] = this.terrainData.getRCByPosition(this.getPosition());
+            let endRC: number[] = this.terrainData.getRandomFreeRC();
+
+            this.path.setSearchPathParam(beginRC[0], beginRC[1], endRC[0], endRC[1]);
+            if (beginRC[0] != endRC[0] || beginRC[1] != endRC[1]) {
+                this.path.searchPath();
+            }
+            else {
+                this.stopAndWait();
+            }
+        }
+    }
     stopAndWait(): void {
-        this.m_delayTime = Math.round(Math.random() * 30) + 10;
+        this.m_delayTime = Math.round(Math.random() * 100) + 30;
         this.path.stopPath();
-    }
-
-    setScaleXYZ(sx: number, sy: number, sz: number): void {
-
-    }
-    getRotationXYZ(pv: Vector3D): void {
-
-    }
-    getScaleXYZ(pv: Vector3D): void {
-
-    }
-    localToGlobal(pv: Vector3D): void {
-
-    }
-    globalToLocal(pv: Vector3D): void {
-
-    }
-    update(): void {
-
     }
 }
 export { CarEntity };
