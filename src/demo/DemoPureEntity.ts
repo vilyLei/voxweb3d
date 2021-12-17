@@ -108,10 +108,9 @@ export class DemoPureEntity {
             box.copyMaterialFrom(materialBox0);
             this.m_rscene.addEntity(box);
             this.m_targetEntity = box;
-            // box.update();
+            
             this.m_boundsFrame.initializeByAABB(box.getGlobalBounds());
             this.m_rscene.addEntity(this.m_boundsFrame);
-            console.log(">>>>>>>>>>>>>>> test ea....");
             
             this.update();
         }

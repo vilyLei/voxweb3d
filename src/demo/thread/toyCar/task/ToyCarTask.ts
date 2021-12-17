@@ -174,9 +174,6 @@ class ToyCarTask extends ThreadTask {
             dataLen += pathDataLen;
             k += 5;
         }
-        // for (let i: number = 0; i < this.m_entities.length; ++i) {
-        //     this.m_entities[i].updateTrans(fs32);
-        // }
     }
     // return true, task finish; return false, task continue...
     parseDone(data: any, flag: number): boolean {

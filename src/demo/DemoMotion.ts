@@ -3,7 +3,6 @@ import MathConst from "../vox/math/MathConst";
 import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
-import RendererInstanceContext from "../vox/scene/RendererInstanceContext";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
 
 import VtxBufConst from "../vox/mesh/VtxBufConst";
@@ -29,7 +28,6 @@ export class DemoMotion {
     constructor() { }
 
     private m_rscene: RendererScene = null;
-    private m_rcontext: RendererInstanceContext = null;
     private m_texLoader: ImageTextureLoader = null;
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
@@ -43,7 +41,7 @@ export class DemoMotion {
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
-    private m_tickModule: DirectXZModule = new DirectXZModule();
+    private m_directModule: DirectXZModule = new DirectXZModule();
     initialize(): void {
         console.log("DemoMotion::initialize()......");
         if (this.m_rscene == null) {
@@ -56,7 +54,6 @@ export class DemoMotion {
             this.m_rscene = new RendererScene();
             this.m_rscene.initialize(rparam, 3);
             this.m_rscene.updateCamera();
-            this.m_rcontext = this.m_rscene.getRendererContext();
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
             this.m_camTrack = new CameraTrack();
@@ -95,10 +92,11 @@ export class DemoMotion {
             cross.initializeCross(60.0);
             this.m_rscene.addEntity(cross);
 
-            this.m_tickModule.bindTarget(box);
-            this.m_tickModule.setVelocityFactor(0.02, 0.03);
+            this.m_directModule.bindTarget(box);
+            this.m_directModule.setSpeed(2.0);
+            this.m_directModule.setVelocityFactor(0.02, 0.03);
             this.m_crossTarget = cross;
-            this.m_tickModule.toXZ(100, 0);
+            this.m_directModule.toXZ(50, 0);
 
             this.m_rscene.setAutoRunningEnabled(false);
             this.update();
@@ -109,7 +107,7 @@ export class DemoMotion {
     private m_updateId: number = 0;
     private m_currentDelta: number = 0;
     private m_previousDelta: number = 0;
-    private m_fpsLimit: number = 70;
+    private m_fpsLimit: number = 60;
 
     private m_timeoutId: any = -1;
 
@@ -122,28 +120,30 @@ export class DemoMotion {
     private mouseDown(evt: any): void {
         this.m_rscene.getMouseXYWorldRay(this.m_rlpv, this.m_rltv);
         Plane.IntersectionSLV2(this.m_pnv, this.m_pdis, this.m_rlpv, this.m_rltv, this.m_pv);
-        this.m_tickModule.toXZ(this.m_pv.x, this.m_pv.z);
+        this.m_directModule.toXZ(this.m_pv.x, this.m_pv.z);
+    }
+    private updateMotion(): void {
+
+        this.m_directModule.run();
+
     }
     private update(): void {
-        //  if(this.m_running)
-        //  {
+        
         if (this.m_timeoutId > -1) {
             clearTimeout(this.m_timeoutId);
         }
         //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
         this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
-        let pcontext: RendererInstanceContext = this.m_rcontext;
-        this.m_statusDisp.statusInfo = "/" + pcontext.getTextureResTotal() + "/" + pcontext.getTextureAttachTotal();
+
+        this.updateMotion();
 
         this.m_rscene.update();
         this.m_statusDisp.render();
-        //  }
     }
     run(): void {
-        this.m_tickModule.run();
         this.m_currentDelta = Date.now();
         let delta: number = this.m_currentDelta - this.m_previousDelta;
-        if (this.m_fpsLimit && delta < (1000 / this.m_fpsLimit)) {
+        if (delta < (1000 / this.m_fpsLimit)) {
             return;
         }
         this.m_previousDelta = this.m_currentDelta;

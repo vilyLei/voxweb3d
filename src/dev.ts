@@ -225,7 +225,7 @@
 
 //  import {DemoCamera as Demo} from "./demo/DemoCamera";
 
-import {DemoPureEntity as Demo} from "./demo/DemoPureEntity";
+//  import {DemoPureEntity as Demo} from "./demo/DemoPureEntity";
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////   thread    /////////////////////////////////////
@@ -249,7 +249,7 @@ import {DemoPureEntity as Demo} from "./demo/DemoPureEntity";
 
 //  import {FixProjMotion as Demo} from "./motionDemo/FixProjMotion";
 
-//  import {DemoMotion as Demo} from "./demo/DemoMotion";
+import {DemoMotion as Demo} from "./demo/DemoMotion";
 
 // physic force simulation
 //  import {DemoBase as Demo} from "./voxmotion/DemoBase";
