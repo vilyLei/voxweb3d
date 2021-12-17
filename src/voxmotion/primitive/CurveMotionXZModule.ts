@@ -19,6 +19,13 @@ class CurveMotionXZModule {
     directMinDis: number = 1600.0;
     constructor() {
     }
+    
+    setSpeed(spd: number): void {
+        this.motion.setSpeed(spd);
+    }
+    getSpeed(): number {
+        return this.motion.getSpeed();
+    }
     setPathPosList(posList: Vector3D[]): void {
         this.m_posList = posList != null ? posList.slice(0) : null;
         this.m_posListLen = this.m_posList != null ? this.m_posList.length : 0;
@@ -39,7 +46,7 @@ class CurveMotionXZModule {
             let movingFlag: boolean = (this.m_posIndex + 1) < this.m_posListLen;
             let flag: boolean = this.motion.isMoving();
             if(flag && movingFlag) {
-                if(movingFlag && this.motion.getSquredDis() < 1600.0) {
+                if(movingFlag && this.motion.getSquredDis() < this.directMinDis) {
                     this.m_posIndex ++;
                     this.motion.setDstPosition(this.m_posList[this.m_posIndex]);
                 }

@@ -25,6 +25,9 @@ export default class VelocityXZModule {
     setSpeed(spd: number): void {
         this.m_speed = spd;
     }
+    getSpeed(): number {
+        return this.m_speed;
+    }
     setFactor(prevFactor: number, currFactor: number): void {
         if (prevFactor > 0.9) {
             prevFactor = 0.9;

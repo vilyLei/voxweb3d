@@ -54,6 +54,9 @@ class TerrainData {
         let c: number = Math.floor(this.m_outPos.x / this.gridSize);
         return [r, c];
     }
+    containsPosition(pos: Vector3D): boolean {
+        return this.m_bounds.containsXZ( pos.x, pos.z );
+    }
     isObstacleByRC(r: number, c: number): boolean {
         return this.stvs[r * this.rn + c] == 1;
     }

@@ -32,8 +32,19 @@ class TerrainPath {
 
     status: TerrainPathStatus = TerrainPathStatus.Search;
     constructor() { }
+    isStopped(): boolean {
+        return this.status == TerrainPathStatus.Stop;
+    }
     isMoving(): boolean {
         return this.status == TerrainPathStatus.Moving;
+    }
+    setBeginRC(r: number, c: number): void {
+        this.r0 = r;
+        this.c0 = c;
+    }
+    setEndRC(r: number, c: number): void {
+        this.r1 = r;
+        this.c1 = c;
     }
     setSearchPathParam(r0: number, c0: number, r1: number, c1: number): void {
         this.r0 = r0;

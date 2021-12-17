@@ -27,6 +27,9 @@ export default class DirectXZModule {
     setSpeed(spd: number): void {
         this.m_velModule.setSpeed(spd);
     }
+    getSpeed(): number {
+        return this.m_velModule.getSpeed();
+    }
     setVelocityFactor(oldVelocityFactor: number, newVelocityFactor: number): void {
         this.m_velModule.setFactor(oldVelocityFactor, newVelocityFactor);
     }
