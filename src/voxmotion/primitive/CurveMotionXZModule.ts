@@ -16,6 +16,7 @@ class CurveMotionXZModule {
     private m_posIndex: number = -1;
     private m_moving: boolean = false;
     readonly motion: DirectXZModule = new DirectXZModule();
+    directMinDis: number = 1600.0;
     constructor() {
     }
     setPathPosList(posList: Vector3D[]): void {

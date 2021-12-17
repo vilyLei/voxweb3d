@@ -23,7 +23,7 @@ class ToyCarScene {
     private m_toyCarTasks: ToyCarTask[] = [];
     private m_terrainData: TerrainData = null;
     private m_bodyScale: number = 1.0;
-    private m_buildEntitiesTotal: number = 10;
+    private m_buildEntitiesTotal: number = 1;
     initialize(scene: RendererScene, texLoader: ImageTextureLoader): void {
         if (this.m_rscene == null) {
             this.m_rscene = scene;
@@ -47,19 +47,18 @@ class ToyCarScene {
             terrData.cn = 6;
             terrData.stvs = terrainObsVS;
 
-            terrData.rn = 6;
-            terrData.cn = 6;
-
-            terrData.gridSize = 80.0;
+            // terrData.rn = 30;
+            // terrData.cn = 30;
+            // terrData.gridSize = 40.0;
             let stvs: Uint16Array = new Uint16Array(terrData.rn * terrData.cn);
             for(let i: number = 0; i < stvs.length; ++i) {
                 stvs[i] = Math.random() > 0.9 ? 1 : 0;
             }
-            terrData.stvs = stvs;
+            //terrData.stvs = stvs;
 
             terrData.initialize();
 
-            this.m_bodyScale = terrData.gridSize / 80.0;
+            //this.m_bodyScale = terrData.gridSize / 80.0;
 
             this.m_terrainData = terrData;
 
@@ -87,7 +86,7 @@ class ToyCarScene {
 
         let entity: CarEntity;
         let pv: Vector3D;
-        let wheelRotSpeed: number = -8.0;
+        let wheelRotSpeed: number = -15.0;
         for (let i: number = 0; i < this.m_toyCarTasks.length; ++i) {
 
             let task: ToyCarTask = this.m_toyCarTasks[i];

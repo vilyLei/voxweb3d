@@ -46,7 +46,7 @@ class ToyCarTerrain {
             for (let c: number = 0; c < cn; c++) {
                 pv = this.m_terrainData.getGridPositionByRC(r,c);
                 let flag: number = this.m_terrainData.getGridStatusByRC(r, c);
-                let scale: number = flag > 0 ? 0.2 : 0.2;
+                let scale: number = flag > 0 ? 0.3 : 0.2;
                 let box: Box3DEntity = new Box3DEntity();
                 box.copyMeshFrom(srcBox);
                 if (flag > 0) {
@@ -68,6 +68,7 @@ class ToyCarTerrain {
             }
         }
 
+        return;
         pv = this.m_terrainData.getGridPositionByRC(0,2);
         pv.y += 30.0;
         let beginAxis: Axis3DEntity = new Axis3DEntity();

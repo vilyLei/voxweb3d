@@ -197,22 +197,84 @@ class CarEntity implements IToyEntity, IEntityTransform {
     isReadySearchPath(): boolean {
         return this.path.isReadySearchPath();
     }
+    private getPosList(vs: Uint16Array): Vector3D[] {
+        
+        let path = this.path;
+        let terrData = this.terrainData;
+
+        let posList: Vector3D[] = [];//new Array(vs.length >> 1);
+        let k: number = 0;
+        let r: number = path.r0;
+        let c: number = path.c0;
+        let preR: number = r;
+        let preC: number = c;
+        posList[k++] = terrData.getTerrainPositionByRC(r, c).clone();
+        for (let i: number = vs.length - 1; i > 0;) {
+            r = vs[i - 1];
+            c = vs[i];
+            let pv = null;//terrData.getTerrainPositionByRC(r, c);
+            // posList[k++] = pv.clone();
+            if(preR != r && preC != c) {
+                // 前面新增
+                if(preR == r) {
+                    if(preC > c) {
+                        pv = terrData.getTerrainPositionByRC(r, c + 1);
+                        posList.push(pv.clone());
+                    }
+                    else if(preC < c) {
+                        pv = terrData.getTerrainPositionByRC(r, c - 1);
+                        posList.push(pv.clone());
+                    }
+                }
+                else if(preC == c){
+                    if(preR > r) {
+                        pv = terrData.getTerrainPositionByRC(r + 1, c);
+                        posList.push(pv.clone());
+                    }
+                    else if(preR < r) {
+                        pv = terrData.getTerrainPositionByRC(r - 1, c);
+                        posList.push(pv.clone());
+                    }
+                }
+            }
+            pv = terrData.getTerrainPositionByRC(r, c);
+            posList.push(pv.clone());
+            if(preR != r && preC != c) {
+                // 后面新增
+                if(preR == r) {
+                    if(preC > c) {
+                        pv = terrData.getTerrainPositionByRC(r, c + 1);
+                        posList.push(pv.clone());
+                    }
+                    else if(preC < c) {
+                        pv = terrData.getTerrainPositionByRC(r, c - 1);
+                        posList.push(pv.clone());
+                    }
+                }
+                else if(preC == c){
+                    if(preR > r) {
+                        pv = terrData.getTerrainPositionByRC(r + 1, c);
+                        posList.push(pv.clone());
+                    }
+                    else if(preR < r) {
+                        pv = terrData.getTerrainPositionByRC(r - 1, c);
+                        posList.push(pv.clone());
+                    }
+                }
+            }
+
+            preR = vs[i - 1];
+            preC = vs[i];
+            i -= 2;
+        }
+        return posList;
+    }
     searchedPath(vs: Uint16Array): void {
 
         //console.log("searchedPath,vs: ", vs);
 
-        let path = this.path;
-        let terrData = this.terrainData;
-
-        let posList: Vector3D[] = new Array(vs.length >> 1);
-        let k: number = 0;
-        posList[k++] = terrData.getTerrainPositionByRC(path.r0, path.c0).clone();
-        for (let i: number = vs.length - 1; i > 0;) {
-            // vs[i-2]: r, vs[i-1]: c
-            let pv = terrData.getTerrainPositionByRC(vs[i - 1], vs[i]);
-            posList[k++] = pv.clone();
-            i -= 2;
-        }
+        let posList: Vector3D[] = this.getPosList( vs );
+        
         // console.log("posList: ", posList);
         if (this.m_pathCurve != null) {
             this.m_pathCurve.initializePolygon(posList);
@@ -234,6 +296,7 @@ class CarEntity implements IToyEntity, IEntityTransform {
         motion.setSpeed(2.0);
         motion.setVelocityFactor(0.04, 0.04);
         motion.setCurrentPosition(this.m_position);
+        this.m_curveMotion.directMinDis = 1000.0;
         this.m_curveMotion.setPathPosList(posList);
 
         this.path.searchedPath();
