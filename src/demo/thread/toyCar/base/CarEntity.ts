@@ -22,6 +22,7 @@ import IEntityTransform from "../../../../vox/entity/IEntityTransform";
 import { CurveMotionAction } from "../../../../voxmotion/curve/CurveMotionAction";
 import { CurveMotionXZModule } from "../../../../voxmotion/primitive/CurveMotionXZModule";
 import { EntityStatus } from "./EntityStatus";
+import { PathCalculator } from "./PathCalculator";
 
 class CarEntity implements IToyEntity, IEntityTransform {
 
@@ -220,83 +221,12 @@ class CarEntity implements IToyEntity, IEntityTransform {
     isReadySearchPath(): boolean {
         return this.path.isReadySearchPath();
     }
-    private getPosList(vs: Uint16Array): Vector3D[] {
 
-        let path = this.path;
-        let terrData = this.terrainData;
-
-        let posList: Vector3D[] = [];//new Array(vs.length >> 1);
-        let k: number = 0;
-        let r: number = path.r0;
-        let c: number = path.c0;
-        let preR: number = r;
-        let preC: number = c;
-        posList[k++] = terrData.getTerrainPositionByRC(r, c).clone();
-        for (let i: number = vs.length - 1; i > 0;) {
-            r = vs[i - 1];
-            c = vs[i];
-            let pv = null;//terrData.getTerrainPositionByRC(r, c);
-            // posList[k++] = pv.clone();
-            if (preR != r && preC != c) {
-                // 前面新增
-                if (preR == r) {
-                    if (preC > c) {
-                        pv = terrData.getTerrainPositionByRC(r, c + 1);
-                        posList.push(pv.clone());
-                    }
-                    else if (preC < c) {
-                        pv = terrData.getTerrainPositionByRC(r, c - 1);
-                        posList.push(pv.clone());
-                    }
-                }
-                else if (preC == c) {
-                    if (preR > r) {
-                        pv = terrData.getTerrainPositionByRC(r + 1, c);
-                        posList.push(pv.clone());
-                    }
-                    else if (preR < r) {
-                        pv = terrData.getTerrainPositionByRC(r - 1, c);
-                        posList.push(pv.clone());
-                    }
-                }
-            }
-            pv = terrData.getTerrainPositionByRC(r, c);
-            posList.push(pv.clone());
-            if (preR != r && preC != c) {
-                // 后面新增
-                if (preR == r) {
-                    if (preC > c) {
-                        pv = terrData.getTerrainPositionByRC(r, c + 1);
-                        posList.push(pv.clone());
-                    }
-                    else if (preC < c) {
-                        pv = terrData.getTerrainPositionByRC(r, c - 1);
-                        posList.push(pv.clone());
-                    }
-                }
-                else if (preC == c) {
-                    if (preR > r) {
-                        pv = terrData.getTerrainPositionByRC(r + 1, c);
-                        posList.push(pv.clone());
-                    }
-                    else if (preR < r) {
-                        pv = terrData.getTerrainPositionByRC(r - 1, c);
-                        posList.push(pv.clone());
-                    }
-                }
-            }
-
-            preR = vs[i - 1];
-            preC = vs[i];
-            i -= 2;
-        }
-        return posList;
-    }
     searchedPath(vs: Uint16Array): void {
 
         //console.log("searchedPath,vs: ", vs);
 
-        let posList: Vector3D[] = this.getPosList(vs);
+        let posList: Vector3D[] = PathCalculator.GetPathPosList(vs, this.path, this.terrainData);
 
         // console.log("posList: ", posList);
         if (this.m_pathCurve != null) {
@@ -320,8 +250,8 @@ class CarEntity implements IToyEntity, IEntityTransform {
     }
     updateTrans(fs32: Float32Array): void {
 
-        this.setVisible( true );
-        
+        this.setVisible(true);
+
         switch (this.status) {
             case EntityStatus.Init:
                 if (this.status == EntityStatus.Init) {
