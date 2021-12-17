@@ -22,6 +22,8 @@ import RendererScene from "../vox/scene/RendererScene";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import Plane from "../vox/geom/Plane";
 import DirectXZModule from "../voxmotion/primitive/DirectXZModule";
+import {CurveMotionXZModule} from "../voxmotion/primitive/CurveMotionXZModule";
+import Line3DEntity from "../vox/entity/Line3DEntity";
 
 
 export class DemoMotion {
@@ -33,7 +35,10 @@ export class DemoMotion {
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_targets: DisplayEntity[] = [];
+    private m_target: DisplayEntity = null;
     private m_crossTarget: DisplayEntity = null;
+    private m_directModule: DirectXZModule = new DirectXZModule();
+    private m_curveMotion: CurveMotionXZModule = new CurveMotionXZModule();
 
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
@@ -41,7 +46,6 @@ export class DemoMotion {
         if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
         return ptex;
     }
-    private m_directModule: DirectXZModule = new DirectXZModule();
     initialize(): void {
         console.log("DemoMotion::initialize()......");
         if (this.m_rscene == null) {
@@ -85,20 +89,35 @@ export class DemoMotion {
 
 
             let box: Box3DEntity = new Box3DEntity();
-            box.initializeCube(40.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
+            box.initializeCube(8.0, [this.getImageTexByUrl("static/assets/default.jpg")]);
             this.m_rscene.addEntity(box);
 
             let cross: Axis3DEntity = new Axis3DEntity();
-            cross.initializeCross(60.0);
+            cross.initializeCross(80.0, new Vector3D(30, 0, 0));
             this.m_rscene.addEntity(cross);
+            this.m_crossTarget = cross;
 
-            this.m_directModule.bindTarget(box);
+            this.m_target = box;
+            this.m_directModule.setTarget(box);
             this.m_directModule.setSpeed(2.0);
             this.m_directModule.setVelocityFactor(0.02, 0.03);
-            this.m_crossTarget = cross;
             this.m_directModule.toXZ(50, 0);
 
             this.m_rscene.setAutoRunningEnabled(false);
+
+            let motion = this.m_curveMotion.motion;
+            motion.setTarget(box);
+            motion.setSpeed(2.0);
+            motion.setVelocityFactor(0.04, 0.04);
+            motion.toXZ(50, 0);
+
+            let posList: Vector3D[] = [new Vector3D(0.0,0.0,0.0), new Vector3D(150.0,0.0,0.0), new Vector3D(150.0,0.0,150.0), new Vector3D(200.0,0.0,150.0)];
+            let line3D: Line3DEntity = new Line3DEntity();
+            line3D.initializeByPosList(posList);
+            this.m_rscene.addEntity(line3D);
+
+            //let posList: Vector3D[] = [new Vector3D(50.0,0.0,0.0), new Vector3D(50.0,0.0,50.0), new Vector3D(100.0,0.0,50.0)];
+            this.m_curveMotion.setPathPosList(posList);
             this.update();
 
 
@@ -116,16 +135,21 @@ export class DemoMotion {
     private m_rltv: Vector3D = new Vector3D();
     private m_pnv: Vector3D = new Vector3D(0.0, 1.0, 0.0);
     private m_pdis: number = 0.0;
-
+    private m_flag: boolean = true;;
     private mouseDown(evt: any): void {
-        this.m_rscene.getMouseXYWorldRay(this.m_rlpv, this.m_rltv);
-        Plane.IntersectionSLV2(this.m_pnv, this.m_pdis, this.m_rlpv, this.m_rltv, this.m_pv);
-        this.m_directModule.toXZ(this.m_pv.x, this.m_pv.z);
+        // this.m_rscene.getMouseXYWorldRay(this.m_rlpv, this.m_rltv);
+        // Plane.IntersectionSLV2(this.m_pnv, this.m_pdis, this.m_rlpv, this.m_rltv, this.m_pv);
+        // this.m_directModule.toXZ(this.m_pv.x, this.m_pv.z);
+        this.m_flag = !this.m_flag;
     }
     private updateMotion(): void {
 
-        this.m_directModule.run();
+        // this.m_directModule.run();
 
+        this.m_curveMotion.run();
+
+        this.m_crossTarget.copyTransformFrom(this.m_target);
+        this.m_crossTarget.update();
     }
     private update(): void {
         
@@ -134,8 +158,9 @@ export class DemoMotion {
         }
         //this.m_timeoutId = setTimeout(this.update.bind(this),16);// 60 fps
         this.m_timeoutId = setTimeout(this.update.bind(this), 50);// 20 fps
-
-        this.updateMotion();
+        if(this.m_flag) {
+            this.updateMotion();
+        }
 
         this.m_rscene.update();
         this.m_statusDisp.render();

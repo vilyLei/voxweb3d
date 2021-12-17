@@ -18,6 +18,7 @@ export default class DirectXZModule {
     private m_target: IEntityTransform = null;
     private m_moving: boolean = true;
     private m_direcDegree: number = 0.0;
+    private m_squaredDis: number = 0.0;
     syncTargetUpdate: boolean = true;
     syncDirecUpdate: boolean = true;
     constructor() { }
@@ -28,20 +29,34 @@ export default class DirectXZModule {
     setVelocityFactor(oldVelocityFactor: number, newVelocityFactor: number): void {
         this.m_velModule.setFactor(oldVelocityFactor, newVelocityFactor);
     }
-    bindTarget(target: IEntityTransform): void {
+    setTarget(target: IEntityTransform): void {
         this.m_target = target;
     }
     setCurrentXYZ(px: number, py: number, pz: number): void {
         this.m_currPos.setXYZ(px, py, pz);
+        this.calcSquaredDis();
     }
     setCurrentPosition(pv: Vector3D): void {
         this.m_currPos.copyFrom(pv);
+        this.calcSquaredDis();
     }
     toXZ(px: number, pz: number): void {
+
         this.m_dstPos.x = px;
         this.m_dstPos.z = pz;
         this.m_velModule.setDirecXZ(px - this.m_currPos.x, pz - this.m_currPos.z);
         this.m_moving = true;
+        
+        this.calcSquaredDis();
+    }
+    setDstPosition(pv: Vector3D): void {
+
+        this.m_dstPos.x = pv.x;
+        this.m_dstPos.z = pv.z;
+        this.m_velModule.setDirecXZ(pv.x - this.m_currPos.x, pv.z - this.m_currPos.z);
+        this.m_moving = true;
+        
+        this.calcSquaredDis();
     }
     stop(): void {
         this.m_moving = false;
@@ -69,6 +84,14 @@ export default class DirectXZModule {
     getDirecDegree(): number {
         return this.m_direcDegree;
     }
+    getSquredDis(): number {
+        return this.m_squaredDis;
+    }
+    private calcSquaredDis(): void {        
+        this.m_pos.subVecsTo(this.m_currPos, this.m_dstPos);
+        this.m_pos.y = 0;
+        this.m_squaredDis = this.m_pos.getLengthSquared();
+    }
     private updatePos(): void {
         if (this.m_velocityFlag) {
             this.calcVelocity();
@@ -77,18 +100,22 @@ export default class DirectXZModule {
         let spdv: Vector3D = this.m_velModule.spdv;
 
         this.m_pos.subVecsTo(this.m_currPos, this.m_dstPos);
-        let squaredDis: number = this.m_pos.getLengthSquared();
+        //let squaredDis: number = this.m_pos.getLengthSquared();
         let preDegree: number = this.m_direcDegree;
         let degree = MathConst.GetDegreeByXY(-spdv.x, spdv.z);
         this.m_direcDegree = degree + 180;
         // console.log("spdv.getLengthSquared(): ",spdv.getLengthSquared());
         // console.log("direcDegree: ",this.m_direcDegree,degree,", preDegree: ",preDegree);
-        if (spdv.getLengthSquared() < squaredDis) {
+        if (spdv.getLengthSquared() < this.m_squaredDis) {
             this.m_pos.addVecsTo(this.m_currPos, spdv);
             this.m_pos.subtractBy(this.m_dstPos);
             this.m_currPos.addVecsTo(this.m_currPos, spdv);
+            
+            this.m_pos.subVecsTo(this.m_currPos, this.m_dstPos);
+            this.m_squaredDis = this.m_pos.getLengthSquared();
         }
         else {
+            this.m_squaredDis = 0;
             this.m_currPos.copyFrom(this.m_dstPos);
             this.m_moving = false;
             //spdv.setXYZ(0.0, 0.0, 0.0);

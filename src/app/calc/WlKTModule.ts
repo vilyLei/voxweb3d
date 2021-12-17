@@ -75,7 +75,7 @@ export default class WlKTModule
         this.m_container.addEntity(this.m_gL);
         this.m_container.addEntity(this.m_gR);
         this.m_rsc.addContainer(this.m_container);
-        this.m_tickModule.bindTarget(this.m_container);
+        this.m_tickModule.setTarget(this.m_container);
         this.m_tickModule.setVelocityFactor(0.02,0.03);
         this.m_lgSwingSpeed = this.m_swingSpeed * this.m_spdScale;
     }

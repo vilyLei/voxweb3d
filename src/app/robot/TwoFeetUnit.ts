@@ -55,7 +55,7 @@ export default class TwoFeetUnit
             this.m_rbtModule.initialize(sc,renderProcessIndex,partStore,offsetPos);
             this.m_tickModule.setSpeed(this.m_speed);
             this.m_tickModule.syncTargetUpdate = false;
-            this.m_tickModule.bindTarget(this.m_rbtModule.getContainer());
+            this.m_tickModule.setTarget(this.m_rbtModule.getContainer());
             this.m_tickModule.setVelocityFactor(0.02,0.03);
         }
     }

@@ -78,7 +78,7 @@ export namespace app
                     this.m_tickModule.setSpeed(this.m_speed);
                     this.m_tickModule.syncTargetUpdate = false;
                     this.m_tickModule.syncDirecUpdate = false;
-                    this.m_tickModule.bindTarget(this.m_legModule.getContainer());
+                    this.m_tickModule.setTarget(this.m_legModule.getContainer());
                     this.m_tickModule.setVelocityFactor(0.02,0.03);
 
                     this.m_findRadar.dstCamp = this.roleCamp;

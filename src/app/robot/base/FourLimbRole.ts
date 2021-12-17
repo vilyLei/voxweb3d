@@ -45,7 +45,7 @@ export default class FourLimbRole extends RbtRole implements IAttackDst
             this.m_moveModule.setSpeed(this.m_speed);
             this.m_moveModule.syncTargetUpdate = false;
             this.m_moveModule.syncDirecUpdate = false;
-            this.m_moveModule.bindTarget(this.m_legModule.getContainer());
+            this.m_moveModule.setTarget(this.m_legModule.getContainer());
             this.m_moveModule.setVelocityFactor(0.02,0.03);
 
             let findRadar:FireCtrlRadar = new FireCtrlRadar();
