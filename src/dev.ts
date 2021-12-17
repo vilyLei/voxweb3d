@@ -241,7 +241,7 @@
 
 //  import {DemoThreadConcurrent as Demo} from "./demo/DemoThreadConcurrent";
 
-//  import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
+import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////   motion    /////////////////////////////////////
@@ -249,7 +249,7 @@
 
 //  import {FixProjMotion as Demo} from "./motionDemo/FixProjMotion";
 
-import {DemoMotion as Demo} from "./demo/DemoMotion";
+//  import {DemoMotion as Demo} from "./demo/DemoMotion";
 
 // physic force simulation
 //  import {DemoBase as Demo} from "./voxmotion/DemoBase";

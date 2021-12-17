@@ -109,7 +109,6 @@ export class DemoMotion {
             motion.setTarget(box);
             motion.setSpeed(2.0);
             motion.setVelocityFactor(0.04, 0.04);
-            motion.toXZ(50, 0);
 
             let posList: Vector3D[] = [new Vector3D(0.0,0.0,0.0), new Vector3D(150.0,0.0,0.0), new Vector3D(150.0,0.0,150.0), new Vector3D(200.0,0.0,150.0)];
             let line3D: Line3DEntity = new Line3DEntity();

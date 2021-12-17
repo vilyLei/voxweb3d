@@ -20,14 +20,16 @@ import Line3DEntity from "../../../../vox/entity/Line3DEntity";
 
 import IEntityTransform from "../../../../vox/entity/IEntityTransform";
 import { CurveMotionAction } from "../../../../voxmotion/curve/CurveMotionAction";
+import { CurveMotionXZModule } from "../../../../voxmotion/primitive/CurveMotionXZModule";
 import { EntityStatus } from "./EntityStatus";
 
 class CarEntity implements IToyEntity, IEntityTransform {
 
     private static s_srcBox0: Box3DEntity = null;
     private static s_srcBox1: Box3DEntity = null;
-    
-    private m_moveAction: CurveMotionAction = new CurveMotionAction();
+
+    // private m_moveAction: CurveMotionAction = new CurveMotionAction();
+    private m_curveMotion: CurveMotionXZModule = new CurveMotionXZModule();
     private m_pathCurve: Line3DEntity = null;
 
     private m_entityIndex: number = -1;
@@ -127,6 +129,7 @@ class CarEntity implements IToyEntity, IEntityTransform {
     }
     setPosition(pos: Vector3D): void {
         this.m_position.copyFrom(pos);
+        //console.log("setPosition(), pos: ",pos);
         //console.log("this.m_entityIndex >= 0: ",this.m_entityIndex >= 0, pos);
         if (this.m_entityIndex >= 0) {
             this.m_fs32Data[0] = pos.x;
@@ -135,6 +138,7 @@ class CarEntity implements IToyEntity, IEntityTransform {
         }
     }
     setXYZ(px: number, py: number, pz: number): void {
+        //console.log("setXYZ(), px,py,pz: ",px,py,pz);
         this.m_position.setXYZ(px, py, pz);
         if (this.m_entityIndex >= 0) {
             this.m_fs32Data[0] = px;
@@ -196,34 +200,42 @@ class CarEntity implements IToyEntity, IEntityTransform {
     searchedPath(vs: Uint16Array): void {
 
         //console.log("searchedPath,vs: ", vs);
-        
+
         let path = this.path;
         let terrData = this.terrainData;
-        
+
         let posList: Vector3D[] = new Array(vs.length >> 1);
         let k: number = 0;
-        posList[k++] = terrData.getGridPositionByRC(path.r0, path.c0).clone();
+        posList[k++] = terrData.getTerrainPositionByRC(path.r0, path.c0).clone();
         for (let i: number = vs.length - 1; i > 0;) {
             // vs[i-2]: r, vs[i-1]: c
-            let pv = terrData.getGridPositionByRC(vs[i - 1], vs[i]);
+            let pv = terrData.getTerrainPositionByRC(vs[i - 1], vs[i]);
             posList[k++] = pv.clone();
             i -= 2;
         }
         // console.log("posList: ", posList);
-        if(this.m_pathCurve != null) {
+        if (this.m_pathCurve != null) {
             this.m_pathCurve.initializePolygon(posList);
             this.m_pathCurve.reinitializeMesh();
             this.m_pathCurve.updateMeshToGpu();
             this.m_pathCurve.updateBounds();
         }
-        
-        this.m_moveAction.posInterp.minDis = 5.0;
-        this.m_moveAction.degreeTween.factor = 0.1;
-        this.m_moveAction.degreeTween.speed = 0.1;
-        this.m_moveAction.motionSpeed = 2.0;
-        this.m_moveAction.targetPosOffset.setXYZ(0.0, 20.0, 0.0);
-        this.m_moveAction.bindTarget(this);
-        this.m_moveAction.setPathPosList(posList, false);
+
+        // this.m_moveAction.posInterp.minDis = 5.0;
+        // this.m_moveAction.degreeTween.factor = 0.1;
+        // this.m_moveAction.degreeTween.speed = 0.1;
+        // this.m_moveAction.motionSpeed = 2.0;
+        // this.m_moveAction.targetPosOffset.setXYZ(0.0, 20.0, 0.0);
+        // this.m_moveAction.bindTarget(this);
+        // this.m_moveAction.setPathPosList(posList, false);
+
+        let motion = this.m_curveMotion.motion;
+        motion.setTarget(this);
+        motion.setSpeed(2.0);
+        motion.setVelocityFactor(0.04, 0.04);
+        motion.setCurrentPosition(this.m_position);
+        this.m_curveMotion.setPathPosList(posList);
+
         this.path.searchedPath();
         this.path.movingPath();
 
@@ -232,7 +244,7 @@ class CarEntity implements IToyEntity, IEntityTransform {
     }
     updateTrans(fs32: Float32Array): void {
 
-        switch(this.status) {
+        switch (this.status) {
             case EntityStatus.Init:
                 this.status = EntityStatus.Stop;
                 break;
@@ -245,29 +257,39 @@ class CarEntity implements IToyEntity, IEntityTransform {
             this.m_transMat4List[i].copyFromF32Arr(fs32, index * 16);
             this.m_entityList[i].updateTransform();
             this.m_entityList[i].update();
-            
+
             ++index;
         }
     }
     run(): void {
-        if(this.path.isMoving()) {
-            if(this.m_moveAction.isStopped()) {
+        if (this.path.isMoving()) {
+            if (this.m_curveMotion.isStopped()) {
                 this.path.stopPath();
                 this.status = EntityStatus.Stop;
             }
-            this.m_moveAction.run();
+            else {
+                //console.log("vvvvv");
+                this.m_curveMotion.run();
+            }
+            // if (this.m_moveAction.isStopped()) {
+            //     this.path.stopPath();
+            //     this.status = EntityStatus.Stop;
+            // }
+            // else {
+            //     this.m_moveAction.run();
+            // }
         }
         else {
-            if(this.m_delayTime > 0) {
-                this.m_delayTime --;
-                if(this.m_delayTime == 0) {
+            if (this.m_delayTime > 0) {
+                this.m_delayTime--;
+                if (this.m_delayTime == 0) {
                     let beginRC: number[] = this.terrainData.getRCByPosition(this.m_position);
                     let endRC: number[] = this.terrainData.getRandomFreeRC();
-                    
+
                     // endRC[0] = beginRC[0];// = endRC[0] = 0;
                     // endRC[1] = beginRC[1];// = endRC[1] = 0;
                     this.path.setSearchPathParam(beginRC[0], beginRC[1], endRC[0], endRC[1]);
-                    if(beginRC[0] != endRC[0] || beginRC[1] != endRC[1]) {
+                    if (beginRC[0] != endRC[0] || beginRC[1] != endRC[1]) {
                         this.path.searchPath();
                         //this.path.setSearchPathParam(beginRC[0], beginRC[1], endRC[0], endRC[1]);
                         //console.log("search new path, beginRC: ",beginRC, ", endRC: ",endRC);
@@ -286,22 +308,22 @@ class CarEntity implements IToyEntity, IEntityTransform {
     }
 
     setScaleXYZ(sx: number, sy: number, sz: number): void {
-        
+
     }
     getRotationXYZ(pv: Vector3D): void {
-        
+
     }
     getScaleXYZ(pv: Vector3D): void {
-        
+
     }
     localToGlobal(pv: Vector3D): void {
-        
+
     }
     globalToLocal(pv: Vector3D): void {
-        
+
     }
     update(): void {
-        
+
     }
 }
 export { CarEntity };

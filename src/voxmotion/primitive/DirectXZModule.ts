@@ -21,6 +21,7 @@ export default class DirectXZModule {
     private m_squaredDis: number = 0.0;
     syncTargetUpdate: boolean = true;
     syncDirecUpdate: boolean = true;
+    // readonly targetPosOffset: Vector3D = new Vector3D();
     constructor() { }
 
     setSpeed(spd: number): void {
@@ -51,8 +52,7 @@ export default class DirectXZModule {
     }
     setDstPosition(pv: Vector3D): void {
 
-        this.m_dstPos.x = pv.x;
-        this.m_dstPos.z = pv.z;
+        this.m_dstPos.copyFrom(pv);
         this.m_velModule.setDirecXZ(pv.x - this.m_currPos.x, pv.z - this.m_currPos.z);
         this.m_moving = true;
         
@@ -91,6 +91,7 @@ export default class DirectXZModule {
         this.m_pos.subVecsTo(this.m_currPos, this.m_dstPos);
         this.m_pos.y = 0;
         this.m_squaredDis = this.m_pos.getLengthSquared();
+        //console.log("this.m_squaredDis: ",this.m_squaredDis);
     }
     private updatePos(): void {
         if (this.m_velocityFlag) {
@@ -99,8 +100,6 @@ export default class DirectXZModule {
         this.m_velocityFlag = true;
         let spdv: Vector3D = this.m_velModule.spdv;
 
-        this.m_pos.subVecsTo(this.m_currPos, this.m_dstPos);
-        //let squaredDis: number = this.m_pos.getLengthSquared();
         let preDegree: number = this.m_direcDegree;
         let degree = MathConst.GetDegreeByXY(-spdv.x, spdv.z);
         this.m_direcDegree = degree + 180;
@@ -111,17 +110,14 @@ export default class DirectXZModule {
             this.m_pos.subtractBy(this.m_dstPos);
             this.m_currPos.addVecsTo(this.m_currPos, spdv);
             
-            this.m_pos.subVecsTo(this.m_currPos, this.m_dstPos);
-            this.m_squaredDis = this.m_pos.getLengthSquared();
+            this.calcSquaredDis();
         }
         else {
             this.m_squaredDis = 0;
             this.m_currPos.copyFrom(this.m_dstPos);
             this.m_moving = false;
-            //spdv.setXYZ(0.0, 0.0, 0.0);
             this.m_velModule.stop();
         }
-
         this.m_target.setPosition(this.m_currPos);
         if (this.syncDirecUpdate) {
             this.m_target.setRotationXYZ(0.0, this.m_direcDegree, 0.0);

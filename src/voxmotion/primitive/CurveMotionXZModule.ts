@@ -38,11 +38,6 @@ class CurveMotionXZModule {
             let movingFlag: boolean = (this.m_posIndex + 1) < this.m_posListLen;
             let flag: boolean = this.motion.isMoving();
             if(flag && movingFlag) {
-                // flag = this.motion.getSquredDis() > 100.0;
-                // if(!flag) {
-                //     console.log(">>>");
-                // }
-                //console.log("this.motion.getSquredDis(): ",this.motion.getSquredDis());
                 if(movingFlag && this.motion.getSquredDis() < 1600.0) {
                     this.m_posIndex ++;
                     this.motion.setDstPosition(this.m_posList[this.m_posIndex]);

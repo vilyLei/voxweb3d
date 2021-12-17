@@ -10,6 +10,8 @@ class TerrainData {
     stvs: Uint16Array = null;
     freeSTVS: Uint16Array = null;
 
+    terrainHeight: number = 20.0;
+
     readonly minPosition: Vector3D = new Vector3D();
     readonly maxPosition: Vector3D = new Vector3D();
     private m_bounds: AABB = new AABB();
@@ -62,6 +64,13 @@ class TerrainData {
         let pos = this.m_outPos;
         pos.x = this.minPosition.x + c * this.gridSize + 0.5 * this.gridSize;
         pos.y = this.minPosition.y;
+        pos.z = this.minPosition.z + r * this.gridSize + 0.5 * this.gridSize;
+        return pos;
+    }
+    getTerrainPositionByRC(r: number, c: number): Vector3D {
+        let pos = this.m_outPos;
+        pos.x = this.minPosition.x + c * this.gridSize + 0.5 * this.gridSize;
+        pos.y = this.minPosition.y + this.terrainHeight;
         pos.z = this.minPosition.z + r * this.gridSize + 0.5 * this.gridSize;
         return pos;
     }
