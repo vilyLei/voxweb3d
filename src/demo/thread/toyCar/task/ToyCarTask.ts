@@ -74,7 +74,7 @@ class ToyCarTask extends ThreadTask {
     isSendTransEnabled(): boolean {
         return this.m_transEnabled;
     }
-    private m_entityStatusList: number[] = [0,2,2,0];
+    private m_time: number = 0;
     private sendTransData(): void {
         if (this.m_transEnabled) {
             this.m_transParamData.set(this.m_transInputData);
@@ -113,6 +113,7 @@ class ToyCarTask extends ThreadTask {
     }
     searchPath(): void {
         if(this.m_pathSerachEnabled) {
+            
             // 第一个 uint 16 数值存放个数
             let k: number = 1;
             let total: number = 0;
@@ -176,6 +177,7 @@ class ToyCarTask extends ThreadTask {
         switch(data.taskCmd) {
             case "car_trans":
 
+                this.m_time = Date.now() - this.m_time;
                 this.m_transParamData = data.streams[0];
                 this.m_transOutputData = data.streams[1];                
                 this.m_statusManager.setStatusData(data.streams[2]);

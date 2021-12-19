@@ -227,7 +227,7 @@ class CarEntity implements IToyEntity {
         this.transform.updateTrans();
 
         let index = this.m_entityIndex * 5;
-        for (let i: number = 0; i < 5; ++i) {
+        for (let i: number = 0; i < this.m_transMat4List.length; ++i) {
             this.m_transMat4List[i].copyFromF32Arr(fs32, index * 16);
             this.m_entityList[i].updateTransform();
             this.m_entityList[i].update();

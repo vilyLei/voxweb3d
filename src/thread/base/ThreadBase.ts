@@ -45,7 +45,7 @@ class ThreadBase implements IThreadBase {
     // send parse data to thread
     sendDataTo(thrData: IThreadSendData): void {
         if (this.m_free && this.m_taskfs[thrData.taskclass] > 0) {
-            //console.log("sendDataTo...,this.m_free: "+this.m_free,thrData+",uid: "+this.getUid());
+            // console.log("sendDataTo...,this.m_free: "+this.m_free,thrData+",uid: "+this.getUid());
             thrData.buildThis(true);
 
             let sendData: any = {streams: null};

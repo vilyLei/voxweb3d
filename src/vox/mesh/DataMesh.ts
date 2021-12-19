@@ -148,6 +148,9 @@ export default class DataMesh extends MeshBase {
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
                 ROVertexBuffer.AddFloat32Data(this.m_uvs, this.uvsStride);
             }
+            else {
+                console.warn("DataMesh hasn't uv data.");
+            }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
                 if(this.m_nvs == null) {
                     this.vtCount = this.m_ivs.length;
@@ -157,8 +160,14 @@ export default class DataMesh extends MeshBase {
                 }
                 ROVertexBuffer.AddFloat32Data(this.m_nvs, this.nvsStride);
             }
+            else {
+                console.warn("DataMesh hasn't normal(nvs) data.");
+            }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX)) {
                 ROVertexBuffer.AddFloat32Data(this.m_cvs, this.cvsStride);
+            }
+            else {
+                console.warn("DataMesh hasn't normal(cvs) data.");
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_TVS_INDEX)) {
                 ROVertexBuffer.AddFloat32Data(this.m_tvs, 3);
@@ -176,6 +185,7 @@ export default class DataMesh extends MeshBase {
             this.m_vbuf.setUintIVSData(this.m_ivs);
             this.trisNumber = this.vtCount / 3;
             this.buildEnd();
+            console.log("dataMesh: ",this);
         }
     }
 

@@ -31,7 +31,7 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
     }
     private m_camTrack: CameraTrack = null;
     private m_statusDisp: RenderStatusDisplay = null;
-    private m_profileInstance: ProfileInstance = new ProfileInstance();
+    private m_profileInstance: ProfileInstance = null;//new ProfileInstance();
     private m_userInteraction: UserInteraction = new UserInteraction();
     
     private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
@@ -40,7 +40,7 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
 
     protected initializeSceneParam(param: RendererParam): void {
         this.m_processTotal = 4;
-        param.maxWebGLVersion = 1;
+        // param.maxWebGLVersion = 1;
         param.setCamProject(45.0, 80.0, 3500.0);
         param.setMatrix4AllocateSize(4096 * 4);
         param.setCamPosition(500.0, 500.0, 500.0);
@@ -51,7 +51,7 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
         this.m_camTrack = new CameraTrack();
         this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
-        RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+        RendererDevice.SHADERCODE_TRACE_ENABLED = true;
         RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
         //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
         this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
@@ -124,10 +124,12 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
         //  var plane:Plane3DEntity = new Plane3DEntity();
         //  plane.initializeXOZ(-200.0,-150.0,400.0,300.0,[tex0]);
         //  this.m_rscene.addEntity(plane,2);
-        let axis: Axis3DEntity = new Axis3DEntity();
-        axis.initialize(300.0);
-        axis.setXYZ(0, 30, 0);
-        this.m_rscene.addEntity(axis);
+
+        // let axis: Axis3DEntity = new Axis3DEntity();
+        // axis.initialize(300.0);
+        // axis.setXYZ(0, 30, 0);
+        // this.m_rscene.addEntity(axis);
+
         let list = [0,1,2,3,4];
         list.splice(2);
         console.log(">>>>>>>>>>>>>> list: ",list);
