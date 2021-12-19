@@ -26,6 +26,8 @@ import ShaderGlobalUniform from "../../../vox/material/ShaderGlobalUniform";
  */
 class MaterialPipeline implements IMaterialPipeline {
 
+    private static s_uid: number = 0;
+    private m_uid: number = MaterialPipeline.s_uid ++;
     private m_shaderCode: IShaderCodeObject = null;
     private m_shaderCodeFlag: boolean = false;
     private m_pipeMap: Map<MaterialPipeType, IMaterialPipe> = new Map();
@@ -36,6 +38,9 @@ class MaterialPipeline implements IMaterialPipeline {
 
     constructor(shaderLib: IShaderLib = null) {
         this.m_shaderLib = shaderLib;
+    }
+    getUid(): number {
+        return this.m_uid;
     }
     /**
      * @param shaderCodeUUID IShaderCodeObject instance uuid

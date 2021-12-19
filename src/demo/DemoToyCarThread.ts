@@ -19,7 +19,13 @@ import {UserInteraction} from "../vox/engine/UserInteraction";
 
 import { ToyCarScene } from "./thread/toyCar/scene/ToyCarScene";
 
-export class DemoToyCarThread extends DemoInstance {
+import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
+import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
+import { IShaderLibConfigure, ShaderCodeType, ShaderCodeUUID, ShaderCodeConfigure, IShaderLibListener, MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
+import { PointLight } from "../light/base/PointLight";
+import { DirectionLight } from "../light/base/DirectionLight";
+
+export class DemoToyCarThread extends DemoInstance implements IShaderLibListener{
     constructor() {
         super();
     }
@@ -27,6 +33,7 @@ export class DemoToyCarThread extends DemoInstance {
     private m_statusDisp: RenderStatusDisplay = null;
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_userInteraction: UserInteraction = new UserInteraction();
+    private m_materialCtx: MaterialContext = new MaterialContext();
 
     private m_toyCarScene: ToyCarScene = new ToyCarScene();
 
@@ -52,6 +59,77 @@ export class DemoToyCarThread extends DemoInstance {
         
         this.m_userInteraction.initialize( this.m_rscene );
 
+        
+        this.update();
+        //this.initScene();
+        this.initMaterialCtx();
+    }
+    
+    private initMaterialCtx(): void {
+
+        let libConfig = this.m_materialCtx.createShaderLibConfig();
+        let configure = new ShaderCodeConfigure();
+        configure.uuid = ShaderCodeUUID.Lambert;
+        //  configure.buildBinaryFile = false;
+        configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
+        configure.urls = [
+            "static/shader/glsl/lambert/glsl01.bin",
+            "static/shader/glsl/lambert/glsl02.bin",
+            "static/shader/glsl/lambert/glsl03.bin",
+            "static/shader/glsl/lambert/glsl04.bin"
+        ]
+        configure.binary = true;
+        libConfig.shaderCodeConfigures.push( configure );
+
+        let mcParam: MaterialContextParam = new MaterialContextParam();
+        mcParam.pointLightsTotal = 0;
+        mcParam.directionLightsTotal = 1;
+        mcParam.spotLightsTotal = 0;
+        //mcParam.vsmEnabled = false;
+        mcParam.loadAllShaderCode = true;
+        mcParam.shaderCodeBinary = true;
+
+        this.m_materialCtx.initialize( this.m_rscene, mcParam, libConfig );
+        let lightModule = this.m_materialCtx.lightModule;
+        let direcLight: DirectionLight = lightModule.getDirectionLightAt(0);
+        direcLight.direction.setXYZ(-0.5,-0.5,0.5);
+        
+        this.m_materialCtx.addShaderLibListener( this );
+        
+        // let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
+        // pointLight.position.setXYZ(0.0, 150.0, -50.0);
+        // pointLight.color.setRGB3f(1.0, 1.0, 1.0);
+        // pointLight.attenuationFactor1 = 0.00001;
+        // pointLight.attenuationFactor2 = 0.000001;
+                
+        this.m_materialCtx.lightModule.update();
+    }
+    
+    private applyMaterial(material: LambertLightMaterial, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = false, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
+        
+        material.setMaterialPipeline( this.m_materialCtx.pipeline );
+
+        material.diffuseMap =           this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_COLOR.png");
+        material.specularMap =          this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_SPEC.png");
+        if(normalMapEnabled) {
+            material.normalMap =        this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_NRM.png");
+        }
+        if(aoMapEnabled) {
+            material.aoMap =            this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_OCC.png");
+        }
+        if(displacementMap) {
+            material.displacementMap =  this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_DISP.png");
+        }
+        if(shadowReceiveEnabled && this.m_materialCtx.vsmModule != null) {
+            material.shadowMap =        this.m_materialCtx.vsmModule.getShadowMap();
+        }
+    }
+    loadedShaderCode(loadingTotal: number, loadedTotal: number): void {
+        console.log("loadedShaderCode(), loadingTotal, loadedTotal: ",loadingTotal, loadedTotal);
+        this.initScene();
+    }
+    private initScene(): void {
+
         let tex0: TextureProxy = this.getImageTexByUrl("static/assets/default.jpg");
 
         // add common 3d display entity
@@ -69,11 +147,17 @@ export class DemoToyCarThread extends DemoInstance {
         console.log("------------------------------------------------------------------");
 
         this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
-        this.m_toyCarScene.initialize(this.m_rscene, this.m_texLoader);
-        
-        this.update();
+        // this.m_toyCarScene.initialize(this.m_rscene, this.m_texLoader);
+
+        let material: LambertLightMaterial = new LambertLightMaterial();
+        material.setMaterialPipeline( this.m_materialCtx.pipeline );
+        material.fogEnabled = false;
+        material.diffuseMap = tex0;
+        let box: Box3DEntity = new Box3DEntity();
+        box.setMaterial( material );
+        box.initializeCube(100, [tex0]);
+        this.m_rscene.addEntity( box );
     }
-    
     private m_downFlag: number = 0;
     private mouseDown(evt: any): void {
         this.m_downFlag++;

@@ -22,6 +22,10 @@ class MaterialContextParam {
     vsmEnabled: boolean = true;
     loadAllShaderCode: boolean = false;
     shaderCodeBinary: boolean = false;
+
+    lambertMaterialEnabled: boolean = false;
+    pbrMaterialEnabled: boolean = true;
+
     constructor() { }
 }
 /**
@@ -45,7 +49,7 @@ class MaterialContext {
      */
     readonly vsmModule: ShadowVSMModule = null;
     /**
-     * material 构造流水线
+     * material 构造material流水线, 这是一个默认的material pipeline
      */
     readonly pipeline: MaterialPipeline = null;
     /**
@@ -133,13 +137,31 @@ class MaterialContext {
                 this.vsmModule.setColorIntensity(0.3);
             }
 
-            selfT.pipeline = new MaterialPipeline( MaterialContext.ShaderLib );
+            selfT.pipeline = this.createPipeline();
             this.pipeline.addPipe(this.lightModule);
             this.pipeline.addPipe(this.envData);
             if (this.vsmModule != null) {
                 this.pipeline.addPipe(this.vsmModule.getVSMData());
             }
         }
+    }
+    addPipeline(pipeline: MaterialPipeline): void {
+        if(pipeline != null && pipeline != this.pipeline) {
+            pipeline.addPipe(this.lightModule);
+            pipeline.addPipe(this.envData);
+            if (this.vsmModule != null) {
+                pipeline.addPipe(this.vsmModule.getVSMData());
+            }
+        }
+    }
+    createPipeline(): MaterialPipeline {
+        let pipeline = new MaterialPipeline( MaterialContext.ShaderLib );
+        pipeline.addPipe(this.lightModule);
+        pipeline.addPipe(this.envData);
+        if (this.vsmModule != null) {
+            pipeline.addPipe(this.vsmModule.getVSMData());
+        }
+        return pipeline;
     }
     run(): void {
 

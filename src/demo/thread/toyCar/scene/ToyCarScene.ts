@@ -157,26 +157,29 @@ class ToyCarScene {
     private m_rc0: number[];
     private m_rc1: number[];
     testDose(pv: Vector3D): void {
-        let task = this.m_toyCarTasks[0];
-        let containsFlag: boolean = this.m_terrainData.containsPosition( pv );
-        console.log("containsFlag: ",containsFlag);
-        if(containsFlag) {
-            if(this.m_testFlag < 2 && this.m_entity0.path.isStopped()) {
-                let i: number = this.m_testFlag * 2;
-                let rc: number[] = this.m_terrainData.getRCByPosition(pv);
-                if(this.m_testFlag == 0) {
-                    this.m_entity0.path.setBeginRC(rc[0], rc[1]);
-                    this.m_entity0.setPosition( this.m_terrainData.getTerrainPositionByRC(rc[0], rc[1]) );
-                    //this.m_entity0.status = EntityStatus.Init;
+        if(this.m_terrainData != null) {
+            
+            let task = this.m_toyCarTasks[0];
+            let containsFlag: boolean = this.m_terrainData.containsPosition( pv );
+            console.log("containsFlag: ",containsFlag);
+            if(containsFlag) {
+                if(this.m_testFlag < 2 && this.m_entity0.path.isStopped()) {
+                    let i: number = this.m_testFlag * 2;
+                    let rc: number[] = this.m_terrainData.getRCByPosition(pv);
+                    if(this.m_testFlag == 0) {
+                        this.m_entity0.path.setBeginRC(rc[0], rc[1]);
+                        this.m_entity0.setPosition( this.m_terrainData.getTerrainPositionByRC(rc[0], rc[1]) );
+                        //this.m_entity0.status = EntityStatus.Init;
+                    }
+                    else if(this.m_testFlag == 1) {
+                        this.m_entity0.path.setEndRC(rc[0], rc[1]);
+                        this.m_entity0.path.searchPath();
+                    }
+                    this.m_testFlag ++;
                 }
-                else if(this.m_testFlag == 1) {
-                    this.m_entity0.path.setEndRC(rc[0], rc[1]);
-                    this.m_entity0.path.searchPath();
+                else {
+                    this.m_testFlag = 0;
                 }
-                this.m_testFlag ++;
-            }
-            else {
-                this.m_testFlag = 0;
             }
         }
         // if (task.isAStarEnabled()) {
