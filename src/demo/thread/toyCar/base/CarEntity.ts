@@ -13,6 +13,7 @@ import TextureProxy from "../../../../vox/texture/TextureProxy";
 import Box3DEntity from "../../../../vox/entity/Box3DEntity";
 import { AssetPackage } from "./AssetPackage";
 import RendererScene from "../../../../vox/scene/RendererScene";
+import { CommonMaterialContext } from "../../../../materialLab/base/CommonMaterialContext";
 import { IToyEntity } from "./IToyEntity";
 import { TerrainPathStatus, TerrainPath } from "../terrain/TerrainPath";
 import { TerrainData } from "../terrain/TerrainData";
@@ -23,6 +24,8 @@ import { CurveMotionXZModule } from "../../../../voxmotion/primitive/CurveMotion
 import { EntityStatus } from "./EntityStatus";
 import { CarEntityTransform } from "./CarEntityTransform";
 import { PathCalculator } from "./PathCalculator";
+import LambertLightMaterial from "../../../../vox/material/mcase/LambertLightMaterial";
+import Color4 from "../../../../vox/material/Color4";
 
 class CarEntity implements IToyEntity {
 
@@ -64,7 +67,7 @@ class CarEntity implements IToyEntity {
         // this.m_fs32Data = srcFS32.subarray(index * this.m_fs32Length, (index + 1) * this.m_fs32Length);
         this.transform.setFS32Data(srcFS32, index);
     }
-    build(sc: RendererScene, size: number = 200): void {
+    build(sc: RendererScene, materialCtx: CommonMaterialContext, size: number = 200): void {
 
         if (this.m_entityIndex >= 0) {
             this.m_scene = sc;
@@ -77,30 +80,51 @@ class CarEntity implements IToyEntity {
             // }
 
             let tex0: TextureProxy = this.asset.textures[0];
-
+            let material: LambertLightMaterial;// = materialCtx.createLambertLightMaterial();
             if (CarEntity.s_srcBox0 == null) {
                 CarEntity.s_srcBox0 = new Box3DEntity();
+
+                material = materialCtx.createLambertLightMaterial();
+                material.diffuseMap = tex0;
+                material.fogEnabled = false;
+                CarEntity.s_srcBox0.setMaterial(material);
+
                 CarEntity.s_srcBox0.initialize(new Vector3D(-halfSize, -halfSize * 0.5, -halfSize), new Vector3D(halfSize, halfSize * 0.5, halfSize), [tex0]);
             }
             if (CarEntity.s_srcBox1 == null) {
                 CarEntity.s_srcBox1 = new Box3DEntity();
+
+                material = materialCtx.createLambertLightMaterial();
+                material.diffuseMap = tex0;
+                material.fogEnabled = false;
+                CarEntity.s_srcBox1.setMaterial(material);
+
                 CarEntity.s_srcBox1.initialize(new Vector3D(-halfSize, -halfSize, -halfSize), new Vector3D(halfSize, halfSize, halfSize), [tex0]);
             }
             let srcBox0 = CarEntity.s_srcBox0;
             let srcBox1 = CarEntity.s_srcBox1;
 
+            let color = new Color4(Math.random() + 0.4, Math.random() + 0.4, Math.random() + 0.4, 1.0);
             let materialBox0: Box3DEntity = new Box3DEntity();
+            
+            material = materialCtx.createLambertLightMaterial();
+            material.diffuseMap = tex0;
+            material.fogEnabled = false;
+            materialBox0.setMaterial(material);
             materialBox0.copyMeshFrom(srcBox0);
             materialBox0.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex0]);
-            let material0: any = materialBox0.getMaterial();
-            material0.setRGB3f(Math.random() + 0.4, Math.random() + 0.4, Math.random() + 0.4);
-
+            material.setColor( color );
+            
             let tex1: TextureProxy = this.asset.textures[1];
             let materialBox1: Box3DEntity = new Box3DEntity();
+            color.setRGBA4f(Math.random() + 0.4, Math.random() + 0.4, Math.random() + 0.4, 1.0);
+            material = materialCtx.createLambertLightMaterial();
+            material.diffuseMap = tex1;
+            material.fogEnabled = false;
+            materialBox1.setMaterial(material);
             materialBox1.copyMeshFrom(srcBox0);
             materialBox1.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex1]);
-            let material1: any = materialBox1.getMaterial();
-            material1.setRGB3f(Math.random() + 0.4, Math.random() + 0.4, Math.random() + 0.4);
+            material.setColor(color);
 
             let box: PureEntity;
             box = new PureEntity();

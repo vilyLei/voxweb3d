@@ -21,7 +21,7 @@ import { ToyCarScene } from "./thread/toyCar/scene/ToyCarScene";
 
 import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
 import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
-import { IShaderLibConfigure, ShaderCodeType, ShaderCodeUUID, ShaderCodeConfigure, IShaderLibListener, MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
+import { IShaderLibListener, CommonMaterialContext, MaterialContextParam } from "../materialLab/base/CommonMaterialContext";
 import { PointLight } from "../light/base/PointLight";
 import { DirectionLight } from "../light/base/DirectionLight";
 
@@ -33,7 +33,8 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
     private m_statusDisp: RenderStatusDisplay = null;
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_userInteraction: UserInteraction = new UserInteraction();
-    private m_materialCtx: MaterialContext = new MaterialContext();
+    
+    private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
 
     private m_toyCarScene: ToyCarScene = new ToyCarScene();
 
@@ -67,30 +68,16 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
     
     private initMaterialCtx(): void {
 
-        let libConfig = this.m_materialCtx.createShaderLibConfig();
-        let configure = new ShaderCodeConfigure();
-        configure.uuid = ShaderCodeUUID.Lambert;
-        //  configure.buildBinaryFile = false;
-        configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
-        configure.urls = [
-            "static/shader/glsl/lambert/glsl01.bin",
-            "static/shader/glsl/lambert/glsl02.bin",
-            "static/shader/glsl/lambert/glsl03.bin",
-            "static/shader/glsl/lambert/glsl04.bin"
-        ]
-        configure.binary = true;
-        
-        libConfig.shaderCodeConfigures.push( configure );
-
         let mcParam: MaterialContextParam = new MaterialContextParam();
         mcParam.pointLightsTotal = 0;
         mcParam.directionLightsTotal = 1;
         mcParam.spotLightsTotal = 0;
+        mcParam.pbrMaterialEnabled = false;
         //mcParam.vsmEnabled = false;
         mcParam.loadAllShaderCode = true;
         mcParam.shaderCodeBinary = true;
+        this.m_materialCtx.initialize( this.m_rscene, mcParam );
 
-        this.m_materialCtx.initialize( this.m_rscene, mcParam, libConfig );
         let lightModule = this.m_materialCtx.lightModule;
         let direcLight: DirectionLight = lightModule.getDirectionLightAt(0);
         direcLight.direction.setXYZ(-0.5,-0.5,0.5);
@@ -148,16 +135,15 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
         console.log("------------------------------------------------------------------");
 
         this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
-        // this.m_toyCarScene.initialize(this.m_rscene, this.m_texLoader);
+        this.m_toyCarScene.initialize(this.m_rscene, this.m_materialCtx);
 
-        let material: LambertLightMaterial = new LambertLightMaterial();
-        material.setMaterialPipeline( this.m_materialCtx.pipeline );
-        material.fogEnabled = false;
-        material.diffuseMap = tex0;
-        let box: Box3DEntity = new Box3DEntity();
-        box.setMaterial( material );
-        box.initializeCube(100, [tex0]);
-        this.m_rscene.addEntity( box );
+        // let material: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
+        // material.fogEnabled = false;
+        // material.diffuseMap = tex0;
+        // let box: Box3DEntity = new Box3DEntity();
+        // box.setMaterial( material );
+        // box.initializeCube(100, [tex0]);
+        // this.m_rscene.addEntity( box );
     }
     private m_downFlag: number = 0;
     private mouseDown(evt: any): void {

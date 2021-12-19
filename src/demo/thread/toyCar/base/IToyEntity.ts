@@ -8,6 +8,7 @@
 import RendererScene from "../../../../vox/scene/RendererScene";
 import {TerrainPath} from "../terrain/TerrainPath";
 import { EntityStatus } from "./EntityStatus";
+import { CommonMaterialContext } from "../../../../materialLab/base/CommonMaterialContext";
 
 interface IToyEntity {
 
@@ -17,7 +18,7 @@ interface IToyEntity {
 
     getEneityIndex(): number;
     setFS32Data(srcFS32: Float32Array, index: number): void;
-    build(sc: RendererScene): void;
+    build(sc: RendererScene, materialContext: CommonMaterialContext, size: number): void;
     
     destroy(): void;
     isReadySearchPath(): boolean;

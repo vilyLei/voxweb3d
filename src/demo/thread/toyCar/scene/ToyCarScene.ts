@@ -1,7 +1,4 @@
 import RendererScene from "../../../../vox/scene/RendererScene";
-import TextureProxy from "../../../../vox/texture/TextureProxy";
-import { TextureConst } from "../../../../vox/texture/TextureConst";
-import ImageTextureLoader from "../../../../vox/texture/ImageTextureLoader";
 
 import ThreadSystem from "../../../../thread/ThreadSystem";
 import { ToyCarTask } from "../task/ToyCarTask";
@@ -11,13 +8,14 @@ import { ToyCarTerrain } from "../terrain/ToyCarTerrain";
 import { CarEntity } from "../base/CarEntity";
 import Vector3D from "../../../../vox/math/Vector3D";
 import { EntityStatus } from "../base/EntityStatus";
+import { CommonMaterialContext } from "../../../../materialLab/base/CommonMaterialContext";
 
 class ToyCarScene {
 
     constructor() { }
 
     private m_rscene: RendererScene = null;
-    private m_texLoader: ImageTextureLoader;
+    private m_materialCtx: CommonMaterialContext;
     private m_toyCarBuilder: ToyCarBuilder = new ToyCarBuilder();
     private m_toyTerrain: ToyCarTerrain = new ToyCarTerrain();
     private m_entitiesTotal: number = 0;
@@ -25,12 +23,13 @@ class ToyCarScene {
     private m_terrainData: TerrainData = null;
     private m_bodyScale: number = 1.0;
     private m_buildEntitiesTotal: number = 200;
-    initialize(scene: RendererScene, texLoader: ImageTextureLoader): void {
+    
+    initialize(scene: RendererScene, materialCtx: CommonMaterialContext): void {
         if (this.m_rscene == null) {
             this.m_rscene = scene;
-            this.m_texLoader = texLoader;
+            this.m_materialCtx = materialCtx;
 
-            this.m_toyCarBuilder.initialize(scene, texLoader);
+            this.m_toyCarBuilder.initialize(scene, materialCtx);
 
 
             let terrainObsVS = new Uint16Array(
@@ -158,7 +157,7 @@ class ToyCarScene {
     private m_rc1: number[];
     testDose(pv: Vector3D): void {
         if(this.m_terrainData != null) {
-            
+
             let task = this.m_toyCarTasks[0];
             let containsFlag: boolean = this.m_terrainData.containsPosition( pv );
             console.log("containsFlag: ",containsFlag);
@@ -196,7 +195,7 @@ class ToyCarScene {
     private initTerrain(terrData: TerrainData): void {
 
         this.m_toyTerrain = new ToyCarTerrain();
-        this.m_toyTerrain.initialize(this.m_rscene, this.m_texLoader, terrData);
+        this.m_toyTerrain.initialize(this.m_rscene, this.m_materialCtx, terrData);
 
     }
     updateThread(): void {

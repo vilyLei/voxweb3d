@@ -1,31 +1,23 @@
 import Box3DEntity from "../../../../vox/entity/Box3DEntity";
 import RendererScene from "../../../../vox/scene/RendererScene";
-import TextureProxy from "../../../../vox/texture/TextureProxy";
-import { TextureConst } from "../../../../vox/texture/TextureConst";
-import ImageTextureLoader from "../../../../vox/texture/ImageTextureLoader";
 import Vector3D from "../../../../vox/math/Vector3D";
 import Line3DEntity from "../../../../vox/entity/Line3DEntity";
 import {TerrainData} from "./TerrainData";
 import Axis3DEntity from "../../../../vox/entity/Axis3DEntity";
+import { CommonMaterialContext } from "../../../../materialLab/base/CommonMaterialContext";
 
 class ToyCarTerrain {
 
     constructor() { }
 
     private m_rscene: RendererScene = null;
-    private m_texLoader: ImageTextureLoader;
+    private m_materialCtx: CommonMaterialContext = null;
     private m_terrainData: TerrainData;
     
-    getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
-        let ptex: TextureProxy = this.m_texLoader.getImageTexByUrl(purl);
-        ptex.mipmapEnabled = mipmapEnabled;
-        if (wrapRepeat) ptex.setWrap(TextureConst.WRAP_REPEAT);
-        return ptex;
-    }
-    initialize(scene: RendererScene, texLoader: ImageTextureLoader, terrainData: TerrainData): void {
+    initialize(scene: RendererScene, materialCtx: CommonMaterialContext, terrainData: TerrainData): void {
         if (this.m_rscene == null) {
             this.m_rscene = scene;
-            this.m_texLoader = texLoader;
+            this.m_materialCtx = materialCtx;
             this.m_terrainData = terrainData;
             
             this.initTerrain();
@@ -36,7 +28,7 @@ class ToyCarTerrain {
 
         let size: number = this.m_terrainData.gridSize;
         let srcBox: Box3DEntity = new Box3DEntity();
-        srcBox.initialize(new Vector3D(-size * 0.5, 0, -size * 0.5), new Vector3D(size * 0.5, size, size * 0.5), [this.getImageTexByUrl("static/assets/default.jpg")]);
+        srcBox.initialize(new Vector3D(-size * 0.5, 0, -size * 0.5), new Vector3D(size * 0.5, size, size * 0.5), [this.m_materialCtx.getTextureByUrl("static/assets/default.jpg")]);
 
         let rn: number = this.m_terrainData.rn;
         let cn: number = this.m_terrainData.cn;
@@ -50,15 +42,15 @@ class ToyCarTerrain {
                 let box: Box3DEntity = new Box3DEntity();
                 box.copyMeshFrom(srcBox);
                 if (flag > 0) {
-                    box.initializeCube(50, [this.getImageTexByUrl("static/assets/box_wood01.jpg")]);
+                    box.initializeCube(50, [this.m_materialCtx.getTextureByUrl("static/assets/box_wood01.jpg")]);
                     box.setXYZ(pv.x, pv.y + 0.8 * size * 0.2, pv.z);
                 }
                 else {
                     if (Math.random() > 0.5) {
-                        box.initializeCube(50, [this.getImageTexByUrl("static/assets/moss_01.jpg")]);
+                        box.initializeCube(50, [this.m_materialCtx.getTextureByUrl("static/assets/moss_01.jpg")]);
                     }
                     else {
-                        box.initializeCube(50, [this.getImageTexByUrl("static/assets/moss_03.jpg")]);
+                        box.initializeCube(50, [this.m_materialCtx.getTextureByUrl("static/assets/moss_03.jpg")]);
                     }
                     box.setPosition(pv);
                 }

@@ -7,9 +7,9 @@ import PBRMaterial from "../../pbr/material/PBRMaterial";
 import PBRShaderDecorator from "../../pbr/material/PBRShaderDecorator";
 
 /**
- * 实现 material 构造 pipeline 的上下文, 用于debug测试(会打包shader代码到程序中)
+ * 实现 material 构造 pipeline 的上下文
  */
-class CommonMaterialContex extends MaterialContext {
+class CommonMaterialContext extends MaterialContext {
     
     /**
      * material 构造material流水线, 这是一个默认的material pipeline
@@ -19,12 +19,12 @@ class CommonMaterialContex extends MaterialContext {
     constructor() {
         super();
     }
-    createLambertMaterial(): LambertLightMaterial {
+    createLambertLightMaterial(): LambertLightMaterial {
         let material: LambertLightMaterial = new LambertLightMaterial();
         material.setMaterialPipeline(this.lambertPipeline);
         return material;
     }
-    createPBRMaterial(): PBRMaterial {
+    createPBRLightMaterial(): PBRMaterial {
         let material: PBRMaterial = new PBRMaterial();
         material.setMaterialPipeline(this.pbrPipeline);
         material.decorator = new PBRShaderDecorator();
@@ -37,6 +37,12 @@ class CommonMaterialContex extends MaterialContext {
                 let libConfig = this.createShaderLibConfig();
 
                 let configure: ShaderCodeConfigure = null;
+                if(param == null) {
+                    param = new MaterialContextParam();
+                }
+                param.loadAllShaderCode = true;
+                param.shaderCodeBinary = true;
+
                 if (param.lambertMaterialEnabled) {
                     configure = new ShaderCodeConfigure();
                     configure.uuid = ShaderCodeUUID.Lambert;
@@ -74,4 +80,4 @@ class CommonMaterialContex extends MaterialContext {
         }
     }
 }
-export { ShaderCodeUUID, IShaderLibConfigure, IShaderLibListener, ShaderCodeConfigure, ShaderCodeType, MaterialContextParam, MaterialContext, CommonMaterialContex };
+export { ShaderCodeUUID, IShaderLibConfigure, IShaderLibListener, ShaderCodeConfigure, ShaderCodeType, MaterialContextParam, MaterialContext, CommonMaterialContext };
