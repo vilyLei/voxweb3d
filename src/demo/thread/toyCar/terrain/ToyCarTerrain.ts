@@ -85,38 +85,6 @@ class ToyCarTerrain {
         entity.setMaterial(objMaterial);
         entity.setMesh(dataMesh);
         this.m_rscene.addEntity(entity, 1);
-        /*
-        return;
-        pv = this.m_terrainData.getGridPositionByRC(0,2);
-        pv.y += 30.0;
-        let beginAxis: Axis3DEntity = new Axis3DEntity();
-        beginAxis.initializeCross(50);
-        beginAxis.setPosition(pv);
-        this.m_rscene.addEntity( beginAxis );
-
-        //let pathList: number[] = [4, 4, 2, 4, 2, 1, 1, 1];
-        //let pathList: number[] = [4, 4, 2, 4, 2, 1, 1, 1, 0, 0];
-        let pathList: number[] = [0, 4, 2, 4, 2, 2, 3, 1];
-        let total: number = pathList.length / 2;
-        //total = 0;
-        let k: number = 0;
-        for (let i: number = 0; i < total; ++i) {
-
-            let r: number = pathList[k];
-            let c: number = pathList[k + 1];
-            // pos.x = startPos.x + c * size;
-            // pos.y = startPos.y;
-            // pos.z = startPos.z + r * size;
-            pv = this.m_terrainData.getGridPositionByRC(pathList[k], pathList[k+1]);
-            let ls: Line3DEntity = new Line3DEntity();
-            ls.initializeRectXOZ(-15, -15, 30, 30);
-            //ls.setXYZ(pos.x, pos.y + 21, pos.z);
-            pv.y += 21;
-            ls.setPosition( pv );
-            this.m_rscene.addEntity(ls);
-            k += 2;
-        }
-        //*/
     }
     run(): void {
 

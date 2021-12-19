@@ -22,7 +22,7 @@ class ToyCarScene {
     private m_toyCarTasks: ToyCarTask[] = [];
     private m_terrainData: TerrainData = null;
     private m_bodyScale: number = 1.0;
-    private m_buildEntitiesTotal: number = 2;
+    private m_buildEntitiesTotal: number = 6;
     
     initialize(scene: RendererScene, materialCtx: CommonMaterialContext): void {
         if (this.m_rscene == null) {

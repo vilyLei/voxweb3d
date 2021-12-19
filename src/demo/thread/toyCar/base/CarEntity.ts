@@ -80,7 +80,7 @@ class CarEntity implements IToyEntity {
             // }
 
             let tex0: TextureProxy = this.asset.textures[0];
-            let material: LambertLightMaterial;// = materialCtx.createLambertLightMaterial();
+            let material: LambertLightMaterial;
             if (CarEntity.s_srcBox0 == null) {
                 CarEntity.s_srcBox0 = new Box3DEntity();
 
@@ -242,7 +242,6 @@ class CarEntity implements IToyEntity {
                 this.status = EntityStatus.Stop;
             }
             else {
-                //console.log("vvvvv");
                 this.curveMotion.run();
             }
         }

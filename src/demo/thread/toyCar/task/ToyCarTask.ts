@@ -93,7 +93,7 @@ class ToyCarTask extends ThreadTask {
     aStarInitialize(terrData: TerrainData): void {
 
         if(ToyCarTask.s_aStarFlag == 0 && terrData != null) {
-            //this.m_terrainData = terrData;
+            
             let descriptor: any = terrData.clone();
             this.addDataWithParam("aStar_init", [descriptor.stvs], descriptor);
             ToyCarTask.s_aStarFlag = 1;
@@ -131,7 +131,6 @@ class ToyCarTask extends ThreadTask {
             if(k > 1) {
                 this.m_pathSearchData[0] = k / 5;
                 this.m_pathSerachEnabled = false;
-                //console.log("AA have searching path, k: ",k, ", total: ",this.m_pathSearchData[0]);
                 this.addDataWithParam("aStar_search", [this.m_pathSearchData, this.m_pathData]);
             }
             // else {
