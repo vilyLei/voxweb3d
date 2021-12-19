@@ -23,7 +23,7 @@ class MaterialContextParam {
     loadAllShaderCode: boolean = false;
     shaderCodeBinary: boolean = false;
 
-    lambertMaterialEnabled: boolean = false;
+    lambertMaterialEnabled: boolean = true;
     pbrMaterialEnabled: boolean = true;
 
     constructor() { }
@@ -33,9 +33,9 @@ class MaterialContextParam {
  */
 class MaterialContext {
 
-    private m_rscene: RendererScene = null;
     private m_initFlag: boolean = true;
     private m_param: MaterialContextParam;
+    protected m_rscene: RendererScene = null;
     /**
      * 全局的灯光模块
      */
@@ -91,6 +91,7 @@ class MaterialContext {
 
         if (this.m_initFlag) {
 
+            this.m_initFlag = false;
             this.m_rscene = rscene;
             this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
 
@@ -138,11 +139,11 @@ class MaterialContext {
             }
 
             selfT.pipeline = this.createPipeline();
-            this.pipeline.addPipe(this.lightModule);
-            this.pipeline.addPipe(this.envData);
-            if (this.vsmModule != null) {
-                this.pipeline.addPipe(this.vsmModule.getVSMData());
-            }
+            // this.pipeline.addPipe(this.lightModule);
+            // this.pipeline.addPipe(this.envData);
+            // if (this.vsmModule != null) {
+            //     this.pipeline.addPipe(this.vsmModule.getVSMData());
+            // }
         }
     }
     addPipeline(pipeline: MaterialPipeline): void {

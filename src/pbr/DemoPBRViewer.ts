@@ -51,7 +51,7 @@ export class DemoPBRViewer implements IShaderLibListener {
     
     private m_reflectPlaneY: number = -220;
     //  private m_envData: EnvLightData = null;
-    private m_envMap: TextureProxy = null;
+    private m_specularEnvMap: TextureProxy = null;
 
 
     private m_materialCtx: MaterialContext = new MaterialContext();
@@ -114,7 +114,7 @@ export class DemoPBRViewer implements IShaderLibListener {
         let loader: SpecularTextureLoader = new SpecularTextureLoader();
         loader.hdrBrnEnabled = this.hdrBrnEnabled;
         loader.loadTextureWithUrl(envMapUrl, this.m_rscene);
-        this.m_envMap = loader.texture;
+        this.m_specularEnvMap = loader.texture;
 
         let libConfig = this.m_materialCtx.createShaderLibConfig();
         let configure = new ShaderCodeConfigure();
@@ -177,7 +177,7 @@ export class DemoPBRViewer implements IShaderLibListener {
         this.m_dracoModule = new ViewerDracoModule();
         this.m_dracoModule.materialCtx = this.m_materialCtx;
         this.m_dracoModule.viewer = this;
-        this.m_dracoModule.specularEnvMap = this.m_envMap;
+        this.m_dracoModule.specularEnvMap = this.m_specularEnvMap;
         this.m_dracoModule.aoMapEnabled = this.aoMapEnabled;
         this.m_dracoModule.initialize(this.m_rscene, this.m_dracoMeshLoader);
         // this.m_dracoModule.loadNext();
@@ -263,7 +263,7 @@ export class DemoPBRViewer implements IShaderLibListener {
         //material.decorator.aoMapEnabled = false;
         material.decorator.scatterEnabled = false;
 
-        material.decorator.specularEnvMap = this.m_envMap;
+        material.decorator.specularEnvMap = this.m_specularEnvMap;
         material.decorator.diffuseMap = diffuseMap;
         material.decorator.normalMap = normalMap;
         material.decorator.aoMap = aoMap;
@@ -328,7 +328,7 @@ export class DemoPBRViewer implements IShaderLibListener {
             material = this.createMaterial(uvscale, uvscale);
             material.decorator.aoMapEnabled = this.aoMapEnabled;
             //  material.setTextureList(texList);
-            material.decorator.specularEnvMap = this.m_envMap;
+            material.decorator.specularEnvMap = this.m_specularEnvMap;
             material.decorator.diffuseMap = diffuseMap;
             material.decorator.normalMap = normalMap;
             material.decorator.aoMap = aoMap;

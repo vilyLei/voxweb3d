@@ -4,15 +4,18 @@ import { IShaderLibConfigure, ShaderCodeType, ShaderCodeUUID, ShaderCodeConfigur
 
 import LambertLightMaterial from "../../vox/material/mcase/LambertLightMaterial";
 import PBRMaterial from "../../pbr/material/PBRMaterial";
+import PBRShaderDecorator from "../../pbr/material/PBRShaderDecorator";
 
 /**
  * 实现 material 构造 pipeline 的上下文, 用于debug测试(会打包shader代码到程序中)
  */
 class CommonMaterialContex extends MaterialContext {
+    
     /**
      * material 构造material流水线, 这是一个默认的material pipeline
      */
     readonly lambertPipeline: MaterialPipeline = null;
+    readonly pbrPipeline: MaterialPipeline = null;
     constructor() {
         super();
     }
@@ -21,26 +24,54 @@ class CommonMaterialContex extends MaterialContext {
         material.setMaterialPipeline(this.lambertPipeline);
         return material;
     }
+    createPBRMaterial(): PBRMaterial {
+        let material: PBRMaterial = new PBRMaterial();
+        material.setMaterialPipeline(this.pbrPipeline);
+        material.decorator = new PBRShaderDecorator();
+        return material;
+    }
     initialize(rscene: RendererScene, param: MaterialContextParam = null, shaderLibConfigure: IShaderLibConfigure = null): void {
+        if (this.m_rscene == null) {
+            
+            if (shaderLibConfigure == null) {
+                let libConfig = this.createShaderLibConfig();
 
-        if(shaderLibConfigure == null) {
-            let libConfig = this.createShaderLibConfig();
-            let configure = new ShaderCodeConfigure();
-            configure.uuid = ShaderCodeUUID.Lambert;
-            //  configure.buildBinaryFile = false;
-            configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
-            configure.urls = [
-                "static/shader/glsl/lambert/glsl01.bin",
-                "static/shader/glsl/lambert/glsl02.bin",
-                "static/shader/glsl/lambert/glsl03.bin",
-                "static/shader/glsl/lambert/glsl04.bin"
-            ]
-            configure.binary = true;
-            libConfig.shaderCodeConfigures.push( configure );
-            shaderLibConfigure = libConfig;
+                let configure: ShaderCodeConfigure = null;
+                if (param.lambertMaterialEnabled) {
+                    configure = new ShaderCodeConfigure();
+                    configure.uuid = ShaderCodeUUID.Lambert;
+                    configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
+                    configure.urls = [
+                        "static/shader/glsl/lambert/glsl01.bin",
+                        "static/shader/glsl/lambert/glsl02.bin",
+                        "static/shader/glsl/lambert/glsl03.bin",
+                        "static/shader/glsl/lambert/glsl04.bin"
+                    ]
+                    configure.binary = true;
+                    libConfig.shaderCodeConfigures.push(configure);
+                }
+                if (param.pbrMaterialEnabled) {
+                    configure = new ShaderCodeConfigure();
+                    configure.uuid = ShaderCodeUUID.PBR;
+                    configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
+                    configure.urls = [
+                        "static/shader/glsl/pbr/glsl01.bin",
+                        "static/shader/glsl/pbr/glsl02.bin",
+                        "static/shader/glsl/pbr/glsl03.bin",
+                        "static/shader/glsl/pbr/glsl04.bin"
+                    ]
+                    configure.binary = true;
+                    libConfig.shaderCodeConfigures.push(configure);
+                }
+
+                shaderLibConfigure = libConfig;
+            }
+
+            super.initialize(rscene, param, shaderLibConfigure);
+            let selfT: any = this;
+            selfT.pbrPipeline = this.createPipeline();
+            selfT.lambertPipeline = this.createPipeline();
         }
-
-        super.initialize(rscene, param, shaderLibConfigure);
     }
 }
 export { ShaderCodeUUID, IShaderLibConfigure, IShaderLibListener, ShaderCodeConfigure, ShaderCodeType, MaterialContextParam, MaterialContext, CommonMaterialContex };

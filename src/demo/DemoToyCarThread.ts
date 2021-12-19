@@ -79,6 +79,7 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
             "static/shader/glsl/lambert/glsl04.bin"
         ]
         configure.binary = true;
+        
         libConfig.shaderCodeConfigures.push( configure );
 
         let mcParam: MaterialContextParam = new MaterialContextParam();
