@@ -4,6 +4,7 @@ import AABB from "../../../../vox/geom/AABB";
 class TerrainData {
 
     private m_outPos: Vector3D = new Vector3D();
+    
     rn: number = 8;
     cn: number = 8;
     gridSize: number = 80.0;

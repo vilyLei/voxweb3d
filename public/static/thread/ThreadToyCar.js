@@ -124,18 +124,7 @@ function AStarNavModule(pmodule, taskClass) {
             }
         }
         
-        let sendData =
-        {
-            cmd: data.cmd,
-            taskCmd: data.taskCmd,
-            threadIndex: data.threadIndex,
-            taskclass: m_taskClass,
-            srcuid: data.srcuid,
-            dataIndex: m_dataIndex,
-            //  matsTotal: m_matsTotal,
-            streams: null
-        };
-        postMessage(sendData);
+        postMessage(data);
     }
     this.run = function(data) {
         if(m_running) {
@@ -146,19 +135,8 @@ function AStarNavModule(pmodule, taskClass) {
             let vs = m_module.getPathData();
             console.log("path dataLen: " + dataLen);
             console.log("path vs: ", vs);
-            
-            let sendData =
-            {
-                cmd: data.cmd,
-                taskCmd: data.taskCmd,
-                threadIndex: data.threadIndex,
-                taskclass: m_taskClass,
-                srcuid: data.srcuid,
-                dataIndex: m_dataIndex,
-                //  matsTotal: m_matsTotal,
-                streams: data.streams
-            };
-            postMessage(sendData, [data.streams[0].buffer]);
+
+            postMessage(data, [data.streams[0].buffer]);
         }
     }
     this.search = function(data) {
