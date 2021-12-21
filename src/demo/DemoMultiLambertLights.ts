@@ -40,8 +40,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     private m_engine: EngineBase = null;
     private m_profileInstance: ProfileInstance = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
-    private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
-    // private m_materialCtx: MaterialContextDebug = new MaterialContextDebug();
+    // private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
+    private m_materialCtx: MaterialContextDebug = new MaterialContextDebug();
 
     private m_lightEntities: ILightEntity[] = [];
     initialize(): void {
