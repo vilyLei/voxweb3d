@@ -153,6 +153,7 @@ class ThreadTask {
     }
     destroy(): void {
         this.m_globalDataPool = null;
+        this.m_localDataPool = null;
         ThreadTask.DetachTask(this);
     }
 }

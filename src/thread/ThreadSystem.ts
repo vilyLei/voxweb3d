@@ -23,8 +23,6 @@ class ThreadSystem {
     private static s_threads: ThreadBase[] = [null, null, null, null, null, null, null, null];
     private static s_threadsTotal: number = 0;
     private static s_pool: ThrDataPool = new ThrDataPool();
-    private static s_specList: IThreadSendData[] = [];
-    private static s_specIndices: number[] = [];
     
     static GetThrDataPool(): ThrDataPool {
         return ThreadSystem.s_pool;
@@ -62,8 +60,7 @@ class ThreadSystem {
                     ThreadSystem.s_threads[i].sendDataTo( sendData );
                 }
                 else {
-                    ThreadSystem.s_specList.push(sendData);
-                    ThreadSystem.s_specIndices.push(i);
+                    ThreadSystem.s_threads[i].localDataPool.addData(sendData);
                 }
             }
         }
@@ -77,27 +74,10 @@ class ThreadSystem {
     static Run(): void {
         
         if (ThreadSystem.GetThreadEnabled()) {
-            let specList: IThreadSendData[] = ThreadSystem.s_specList;
-            let tot: number = specList.length;
-            let thrTot: number = ThreadSystem.s_threadsTotal;
-            let i: number = 0;
-            for (; i < tot; ++i) {
-                let j: number = ThreadSystem.s_specIndices[i];
-                if (ThreadSystem.s_threads[j].isFree()) {
-                    ThreadSystem.s_threads[j].sendDataTo( specList[i] );
-                    specList.splice(i, 1);
-                    ThreadSystem.s_specIndices.splice(i, 1);
-                    i --;
-                    tot --;
-                    thrTot --;
-                }
-                if(thrTot < 1) {
-                    break;
-                }                    
-            }
 
+            let i: number = 0;
             if (ThreadSystem.s_pool.isEnabled()) {
-                tot = 0;
+                let tot: number = 0;
                 for (i = 0; i < ThreadSystem.s_threadsTotal; ++i) {
                     if (ThreadSystem.s_pool.isEnabled()) {
                         if (ThreadSystem.s_threads[i].isFree()) {
