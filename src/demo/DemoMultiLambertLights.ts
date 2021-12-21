@@ -21,7 +21,8 @@ import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEnti
 
 import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
 import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
-import { IShaderLibConfigure, ShaderCodeType, ShaderCodeUUID, ShaderCodeConfigure, IShaderLibListener, MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
+import { IShaderLibListener, CommonMaterialContext, MaterialContextParam } from "../materialLab/base/CommonMaterialContext";
+import { MaterialContextDebug } from "../materialLab/base/MaterialContextDebug";
 
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 
@@ -39,7 +40,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     private m_engine: EngineBase = null;
     private m_profileInstance: ProfileInstance = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
-    private m_materialCtx: MaterialContext = new MaterialContext();
+    private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
+    // private m_materialCtx: MaterialContextDebug = new MaterialContextDebug();
 
     private m_lightEntities: ILightEntity[] = [];
     initialize(): void {
@@ -70,20 +72,6 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     }
     private initMaterialCtx(): void {
 
-        let libConfig = this.m_materialCtx.createShaderLibConfig();
-        let configure = new ShaderCodeConfigure();
-        configure.uuid = ShaderCodeUUID.Lambert;
-        //  configure.buildBinaryFile = false;
-        configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
-        configure.urls = [
-            "static/shader/glsl/lambert/glsl01.bin",
-            "static/shader/glsl/lambert/glsl02.bin",
-            "static/shader/glsl/lambert/glsl03.bin",
-            "static/shader/glsl/lambert/glsl04.bin"
-        ]
-        configure.binary = true;
-        libConfig.shaderCodeConfigures.push( configure );
-
         let mcParam: MaterialContextParam = new MaterialContextParam();
         mcParam.pointLightsTotal = 3;
         mcParam.directionLightsTotal = 0;
@@ -91,10 +79,11 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         //mcParam.vsmEnabled = false;
         mcParam.loadAllShaderCode = true;
         mcParam.shaderCodeBinary = true;
+        mcParam.pbrMaterialEnabled = false;
+        mcParam.vsmEnabled = false;
 
-        this.m_materialCtx.initialize( this.m_engine.rscene, mcParam, libConfig );
-        
         this.m_materialCtx.addShaderLibListener( this );
+        this.m_materialCtx.initialize( this.m_engine.rscene, mcParam, null );        
 
         let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
         pointLight.position.setXYZ(0.0, 150.0, -50.0);
@@ -141,6 +130,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         this.m_materialCtx.lightModule.update();
     }
     private createPointLightDisp(pointLight: PointLight): Billboard3DEntity {
+
         let billboard: Billboard3DEntity = new Billboard3DEntity();
         billboard.pipeTypes = [MaterialPipeType.FOG_EXP2];
         billboard.setMaterialPipeline( this.m_materialCtx.pipeline );
@@ -157,8 +147,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
 
         let color: Color4 = new Color4(1.0,1.0,0.0);
         let colorBias: Color4 = new Color4(0.0,0.0,0.0);
-        
-
+        ///*
         // let box: Box3DEntity = new Box3DEntity();
         // box.pipeTypes = [MaterialPipeType.FOG_EXP2];
         // box.setMaterialPipeline( this.m_materialCtx.pipeline );
@@ -173,7 +162,6 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         sph02.setXYZ(-350,-170,350);
         this.m_engine.rscene.addEntity(sph02);
 
-
         let crossAxis: Axis3DEntity = new Axis3DEntity();
         crossAxis.pipeTypes = [MaterialPipeType.FOG_EXP2];
         crossAxis.setMaterialPipeline( this.m_materialCtx.pipeline );
@@ -182,9 +170,10 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         this.m_engine.rscene.addEntity(crossAxis, 2);
         // this.m_pointLight = pointLight;
         // this.m_target = crossAxis;
+        //*/
 
         ///*
-        let material: LambertLightMaterial = new LambertLightMaterial();
+        let material: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
         this.useMaps(material, "metal_08", true, true, true);
         material.fogEnabled = true;
         material.initializeLocalData();
@@ -210,7 +199,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         let srcEntity: DisplayEntity = sph;
         //*/
         ///*
-        material = new LambertLightMaterial();
+        material = this.m_materialCtx.createLambertLightMaterial();
         this.useMaps(material, "lava_03", true, true, true);
         material.fogEnabled = true;
         material.initializeLocalData();
@@ -232,7 +221,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         this.m_engine.rscene.addEntity(sph);
         //*/
         ///*
-        material = new LambertLightMaterial();
+        material = this.m_materialCtx.createLambertLightMaterial();
         this.useMaps(material, "box", true, false, true);
         material.setMaterialPipeline(null);
         material.fogEnabled = true;
@@ -263,8 +252,6 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     }
     private useMaps(material: LambertLightMaterial, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {
         
-        material.setMaterialPipeline( this.m_materialCtx.pipeline );
-
         material.diffuseMap =           this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_COLOR.png");
         material.specularMap =          this.m_materialCtx.getTextureByUrl("static/assets/disp/"+ns+"_SPEC.png");
         if(normalMapEnabled) {
@@ -282,7 +269,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     }
     private initEnvBox(): void {
         
-        let material: LambertLightMaterial = new LambertLightMaterial();
+        let material: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
         this.useMaps(material, "box", false, false);
         material.fogEnabled = true;
 
@@ -312,9 +299,11 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     }
     run(): void {
         for(let i: number = 0; i < this.m_lightEntities.length; ++i) {
-            this.m_lightEntities[i].run();
+            if(this.m_lightEntities[i] != null) {
+                this.m_lightEntities[i].run();
+            }
         }
-        if(this.m_lightEntities.length > 0) {
+        if(this.m_lightEntities.length > 0 && this.m_lightEntities[0] != null) {
             this.m_materialCtx.lightModule.update();
         }
 

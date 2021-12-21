@@ -12,9 +12,12 @@ import PBRShaderDecorator from "../../pbr/material/PBRShaderDecorator";
 class CommonMaterialContext extends MaterialContext {
     
     /**
-     * material 构造material流水线, 这是一个默认的material pipeline
+     * 构造 lambert light material流水线
      */
     readonly lambertPipeline: MaterialPipeline = null;
+    /**
+     * 构造 pbr light material流水线
+     */
     readonly pbrPipeline: MaterialPipeline = null;
     constructor() {
         super();

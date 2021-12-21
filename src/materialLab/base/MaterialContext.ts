@@ -12,6 +12,7 @@ import TextureProxy from "../../vox/texture/TextureProxy";
 import { TextureConst } from "../../vox/texture/TextureConst";
 import { ShaderCodeUUID } from "../../vox/material/ShaderCodeUUID";
 import { ShaderCodeConfigure, ShaderCodeType, IShaderLibConfigure, IShaderLibListener,ShaderLib } from "../shader/ShaderLib";
+import { ShaderCodeObject } from "../shader/ShaderCodeObject";
 
 class MaterialContextParam {
 
@@ -106,6 +107,7 @@ class MaterialContext {
                 MaterialContext.ShaderLib.addAllShaderCodeObject();
             }
 
+
             param.pointLightsTotal = MathConst.Clamp(param.pointLightsTotal, 0, 256);
             param.directionLightsTotal = MathConst.Clamp(param.directionLightsTotal, 0, 256);
             param.spotLightsTotal = MathConst.Clamp(param.spotLightsTotal, 0, 256);
@@ -139,12 +141,22 @@ class MaterialContext {
             }
 
             selfT.pipeline = this.createPipeline();
-            // this.pipeline.addPipe(this.lightModule);
-            // this.pipeline.addPipe(this.envData);
-            // if (this.vsmModule != null) {
-            //     this.pipeline.addPipe(this.vsmModule.getVSMData());
-            // }
+            
+            this.initEnd( param );
         }
+    }
+    protected initEnd(param: MaterialContextParam): void {
+
+        if(!param.loadAllShaderCode) {
+            let listener = MaterialContext.ShaderLib.getListener();
+            if(listener != null) {
+                listener.loadedShaderCode(0, 0);
+            }
+        }
+    }
+    
+    addShaderCodeObject(uuid: ShaderCodeUUID, shaderCodeObject: ShaderCodeObject): void {
+        MaterialContext.ShaderLib.addShaderCodeObject(uuid, shaderCodeObject);
     }
     addPipeline(pipeline: MaterialPipeline): void {
         if(pipeline != null && pipeline != this.pipeline) {

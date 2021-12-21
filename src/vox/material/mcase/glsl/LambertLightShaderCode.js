@@ -16,7 +16,8 @@ const LambertLightShaderCode = {
     vert_body: shader_vert_body,
     frag: "",
     frag_head: shader_frag_head,
-    frag_body: shader_frag_body
+    frag_body: shader_frag_body,
+    uuid: "lambert"
 };
 
 export { LambertLightShaderCode };

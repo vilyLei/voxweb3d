@@ -53,7 +53,7 @@ class ToyCarTerrain {
         obsMaterial.vertColorEnabled = true;
         obsMaterial.setTextureList([tex0]);
         obsMaterial.initializeByCodeBuf();
-        
+
         let material1: Default3DMaterial = new Default3DMaterial();
         material1.vertColorEnabled = true;
         material1.setTextureList([tex1]);
@@ -69,7 +69,7 @@ class ToyCarTerrain {
         let pv: Vector3D;
         for (let r: number = 0; r < rn; r++) {
             for (let c: number = 0; c < cn; c++) {
-                color.setRGB3f( 0.0 + 1.5 * c / cn, 1.0, 0.0 + 1.5 * r / rn );
+                color.setRGB3f(0.0 + 1.5 * c / cn, 1.0, 0.0 + 1.5 * r / rn);
                 pv = this.m_terrainData.getGridPositionByRC(r, c);
                 let flag: number = this.m_terrainData.getGridStatusByRC(r, c);
                 let scale: number = flag > 0 ? 0.3 : 0.2;
@@ -87,13 +87,13 @@ class ToyCarTerrain {
                 }
                 else {
                     box.setPosition(pv);
-                    if(flag == -1) {
+                    if (flag == -1) {
                         box.setMaterial(material1);
                         box.initialize(minV, maxV, [tex1]);
                         box.setScaleXYZ(1.0, scale, 1.0);
                         meshMerger1.addEntity(box);
                     }
-                    else if(flag == -2) {
+                    else if (flag == -2) {
                         box.setMaterial(material2);
                         box.initialize(minV, maxV, [tex2]);
                         box.setScaleXYZ(1.0, scale, 1.0);

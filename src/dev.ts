@@ -241,7 +241,7 @@
 
 //  import {DemoThreadConcurrent as Demo} from "./demo/DemoThreadConcurrent";
 
-import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
+//  import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////   motion    /////////////////////////////////////
@@ -362,7 +362,7 @@ import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
 
 //  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
 
-//  import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
+import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
 
 //  import {DemoCookTorrance as Demo} from "./demo/DemoCookTorrance";
 

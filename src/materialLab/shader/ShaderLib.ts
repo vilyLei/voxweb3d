@@ -24,6 +24,9 @@ class ShaderCodeConfigureLib {
     getUUIDList(): ShaderCodeUUID[] {
         return this.m_uuidList;
     }
+    getUUIDListLength(): number {
+        return this.m_uuidList.length;
+    }
 }
 class ShaderCodeObjectLoader {
 
@@ -173,6 +176,9 @@ class ShaderLib implements IShaderLib{
     setListener(listener: IShaderLibListener): void {
         this.m_listener = listener;
     }
+    getListener(): IShaderLibListener {
+        return this.m_listener;
+    }
     initialize(shaderLibConfigure: IShaderLibConfigure = null, binary: boolean = false): void {
 
         if (this.m_configLib == null) {
@@ -202,12 +208,17 @@ class ShaderLib implements IShaderLib{
         }
     }
     addAllShaderCodeObject(): void {
-        
-        let uuidList: ShaderCodeUUID[] = this.m_configLib.getUUIDList();
-        for(let i: number = 0; i < uuidList.length; ++i) {
-            this.addShaderCodeObjectWithUUID(uuidList[i]);
+        if(this.m_configLib.getUUIDListLength() > 0) {
+            let uuidList: ShaderCodeUUID[] = this.m_configLib.getUUIDList();
+            for(let i: number = 0; i < uuidList.length; ++i) {
+                this.addShaderCodeObjectWithUUID(uuidList[i]);
+            }
+        }
+        else {
+            if(this.m_listener != null) this.m_listener.loadedShaderCode(0, 0);
         }
     }
+    
     addShaderCodeObjectWithUUID(uuid: ShaderCodeUUID): void {
 
         if (!this.m_shaderCodeMap.has(uuid) && !this.m_loadStatusMap.has(uuid)) {
@@ -222,12 +233,19 @@ class ShaderLib implements IShaderLib{
             });
         }
     }
+    addShaderCodeObject(uuid: ShaderCodeUUID, shaderCodeObject: ShaderCodeObject): void {
+
+        if (shaderCodeObject != null && shaderCodeObject.uuid == (""+uuid) && !this.m_shaderCodeMap.has(uuid)) {
+            this.m_shaderCodeMap.set(uuid, shaderCodeObject);
+        }
+    }
     getShaderCodeObjectWithUUID(uuid: ShaderCodeUUID): ShaderCodeObject {
 
         let obj: ShaderCodeObject = null;
         if (this.m_shaderCodeMap.has(uuid)) {
             obj = this.m_shaderCodeMap.get(uuid);
         }
+        console.log("getShaderCodeObjectWithUUID(), obj: ",obj);
         return obj;
     }
 }
