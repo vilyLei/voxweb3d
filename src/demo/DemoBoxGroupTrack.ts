@@ -112,7 +112,7 @@ export class DemoBoxGroupTrack {
 
             this.m_role0.boxTrack = this.m_boxTrack;
             this.m_role0.initialize();
-            ///*
+            /*
             let boxTrack: BoxGroupTrack = new BoxGroupTrack();
             boxTrack.initializeFrom(this.m_boxTrack, [tex0]);
             this.m_rscene.addEntity(boxTrack.animator);

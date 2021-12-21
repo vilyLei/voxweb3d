@@ -5,6 +5,8 @@ import { IShaderLibConfigure, ShaderCodeType, ShaderCodeUUID, ShaderCodeConfigur
 import LambertLightMaterial from "../../vox/material/mcase/LambertLightMaterial";
 import PBRMaterial from "../../pbr/material/PBRMaterial";
 import PBRShaderDecorator from "../../pbr/material/PBRShaderDecorator";
+import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
+import TextureProxy from "../../vox/texture/TextureProxy";
 
 /**
  * 实现 material 构造 pipeline 的上下文
@@ -21,6 +23,16 @@ class CommonMaterialContext extends MaterialContext {
     readonly pbrPipeline: MaterialPipeline = null;
     constructor() {
         super();
+    }
+    createDefaultMaterial(textures: TextureProxy[], initialization: boolean = true): Default3DMaterial {
+        let material: Default3DMaterial = new Default3DMaterial();
+        material.setMaterialPipeline(this.lambertPipeline);
+        material.setTextureList(textures);
+        if(initialization) {
+            let hasTex: boolean = textures != null && textures.length > 0 && textures[0] != null;
+            material.initializeByCodeBuf( hasTex );
+        }
+        return material;
     }
     createLambertLightMaterial(): LambertLightMaterial {
         let material: LambertLightMaterial = new LambertLightMaterial();
