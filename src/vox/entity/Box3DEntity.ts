@@ -15,6 +15,7 @@ import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import { VtxNormalType } from "../../vox/mesh/VtxBufConst";
 import Box3DMesh from "../../vox/mesh/Box3DMesh";
+import Color4 from "../material/Color4";
 
 export default class Box3DEntity extends DisplayEntity {
     
@@ -24,7 +25,7 @@ export default class Box3DEntity extends DisplayEntity {
     private m_transMatrix: Matrix4 = null;
     private m_currMesh: Box3DMesh = null;
     private m_initFlag: boolean = true;
-
+    vtxColor: Color4 = null;
     uScale: number = 1.0;
     vScale: number = 1.0;
     normalScale: number = 1.0;
@@ -46,6 +47,7 @@ export default class Box3DEntity extends DisplayEntity {
     private createMaterial(texList: TextureProxy[]): void {
         if (this.getMaterial() == null) {
             let cm: Default3DMaterial = new Default3DMaterial();
+            cm.vertColorEnabled = this.vtxColor != null;
             cm.setTextureList(texList);
             this.setMaterial(cm);
         }
@@ -137,6 +139,7 @@ export default class Box3DEntity extends DisplayEntity {
             if (this.m_transMatrix != null) {
                 mesh.setTransformMatrix(this.m_transMatrix);
             }
+            mesh.vtxColor = this.vtxColor;
             mesh.uScale = this.uScale;
             mesh.vScale = this.vScale;
             mesh.wireframe = this.wireframe;
@@ -172,8 +175,10 @@ export default class Box3DEntity extends DisplayEntity {
     }
     destroy(): void {
         super.destroy();
+        this.vtxColor = null;
         this.m_currMesh = null;
         this.m_initFlag = true;
+            this.vtxColor = null;
     }
     toString(): string {
         return "[Box3DEntity(uid = " + this.getUid() + ", rseFlag = " + this.__$rseFlag + ")";

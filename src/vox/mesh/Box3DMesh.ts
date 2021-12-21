@@ -14,6 +14,7 @@ import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 import { VtxNormalType } from "../../vox/mesh/VtxBufConst";
 import AABB from "../../vox/geom/AABB";
 import MeshBase from "../../vox/mesh/MeshBase";
+import Color4 from "../material/Color4";
 
 export default class Box3DMesh extends MeshBase {
     private m_posList: number[][] = [null, null, null, null, null, null, null, null];
@@ -26,6 +27,8 @@ export default class Box3DMesh extends MeshBase {
     private m_uvs: Float32Array = null;
     private m_nvs: Float32Array = null;
     private m_cvs: Float32Array = null;
+
+    vtxColor: Color4 = null;
 
     flipVerticalUV: boolean = false;
     uvPartsNumber: number = 0;
@@ -390,6 +393,11 @@ export default class Box3DMesh extends MeshBase {
             let pr = 1.0;
             let pg = 1.0;
             let pb = 1.0;
+            if(this.vtxColor != null) {
+                pr = this.vtxColor.r;
+                pg = this.vtxColor.g;
+                pb = this.vtxColor.b;
+            }
             while (baseI < faceTotal) {
                 i = baseI * 12;
                 this.m_cvs[i] = pr; this.m_cvs[i + 1] = pg; this.m_cvs[i + 2] = pb;
@@ -493,6 +501,7 @@ export default class Box3DMesh extends MeshBase {
             this.m_uvs = null;
             this.m_nvs = null;
             this.m_cvs = null;
+            this.vtxColor = null;
             super.__$destroy();
         }
     }

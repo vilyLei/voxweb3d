@@ -16,6 +16,7 @@ class GeomDataNode {
     vs: Float32Array = null
     uvs: Float32Array = null;
     nvs: Float32Array = null;
+    cvs: Float32Array = null;
     constructor() { }
     destroy(): void {
         this.ivs = null;
@@ -44,6 +45,7 @@ class GeometryMerger extends GeometryBase {
             node.vs = mesh.getVS();
             node.uvs = mesh.getUVS();
             node.nvs = mesh.getNVS();
+            node.cvs = mesh.getCVS();
             if (toWorld) {
                 node.vs = node.vs.slice(0);
                 let mat4: Matrix4 = entity.getMatrix();
@@ -59,6 +61,7 @@ class GeometryMerger extends GeometryBase {
             node.vs = geom.getVS();
             node.uvs = geom.getUVS();
             node.nvs = geom.getNVS();
+            node.cvs = geom.getCVS();
             this.m_nodes.push(node);
         }
     }
@@ -71,6 +74,7 @@ class GeometryMerger extends GeometryBase {
             node.vs = mesh.getVS();
             node.uvs = mesh.getUVS();
             node.nvs = mesh.getNVS();
+            node.cvs = mesh.getCVS();
             this.m_nodes.push(node);
         }
     }
@@ -81,6 +85,7 @@ class GeometryMerger extends GeometryBase {
         let vs: Float32Array = null;
         let uvs: Float32Array = null;
         let nvs: Float32Array = null;
+        let cvs: Float32Array = null;
         let i: number = 0;
         let node: GeomDataNode = null;
         let tot: number = this.m_nodes.length;
@@ -91,11 +96,13 @@ class GeometryMerger extends GeometryBase {
             let vsLen: number = 0;
             let uvsLen: number = 0;
             let nvsLen: number = 0;
+            let cvsLen: number = 0;
 
             let ivsI: number = 0;
             let vsI: number = 0;
             let uvsI: number = 0;
             let nvsI: number = 0;
+            let cvsI: number = 0;
 
             for (i = 0; i < tot; ++i) {
                 node = this.m_nodes[i];
@@ -103,6 +110,7 @@ class GeometryMerger extends GeometryBase {
                 vsLen += node.vs.length;
                 if (node.uvs != null) uvsLen += node.uvs.length;
                 if (node.nvs != null) nvsLen += node.nvs.length;
+                if (node.cvs != null) cvsLen += node.cvs.length;
             }
             let vtxTotal: number = vsLen / 3;
             if (vtxTotal > 65535) {
@@ -118,12 +126,16 @@ class GeometryMerger extends GeometryBase {
             if (nvsLen > 0) {
                 nvs = new Float32Array(nvsLen);
             }
+            if (cvsLen > 0) {
+                cvs = new Float32Array(cvsLen);
+            }
             let subIVSLen: number;
             let maxIndex: number = 0;
             let subIVS: Uint16Array | Uint32Array = null;
             let subVS: Float32Array = null;
             let subUVS: Float32Array = null;
             let subNVS: Float32Array = null;
+            let subCVS: Float32Array = null;
 
             for (i = 0; i < tot; ++i) {
                 node = this.m_nodes[i];
@@ -148,12 +160,18 @@ class GeometryMerger extends GeometryBase {
                     nvs.set(subNVS, nvsI);
                     nvsI += subNVS.length;
                 }
+                if (cvsLen > 0) {
+                    subCVS = node.cvs;
+                    cvs.set(subCVS, cvsI);
+                    cvsI += subCVS.length;
+                }
             }
 
             this.m_ivs = ivs;
             this.m_vs = vs;
             this.m_uvs = uvs;
             this.m_nvs = nvs;
+            this.m_cvs = cvs;
         }
         else {
             throw Error("meshs total less than 2.");

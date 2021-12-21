@@ -41,6 +41,7 @@ class Default3DShaderCodeBuffer extends ShaderCodeBuffer {
         if (this.vertColorEnabled) {
             coder.addVertLayout("vec3", "a_cvs");
             coder.addVarying("vec3", "v_cv");
+            coder.addDefine("VOX_USE_VTX_COLOR", "1");
         }
 
         coder.addFragOutput("vec4", "FragColor0");

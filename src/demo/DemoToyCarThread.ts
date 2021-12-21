@@ -16,6 +16,9 @@ import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
 import { IShaderLibListener, CommonMaterialContext, MaterialContextParam } from "../materialLab/base/CommonMaterialContext";
 import { PointLight } from "../light/base/PointLight";
 import { DirectionLight } from "../light/base/DirectionLight";
+import Box3DEntity from "../vox/entity/Box3DEntity";
+import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
+import Color4 from "../vox/material/Color4";
 
 export class DemoToyCarThread extends DemoInstance implements IShaderLibListener{
     constructor() {
@@ -43,7 +46,7 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
         this.m_camTrack = new CameraTrack();
         this.m_camTrack.bindCamera(this.m_rcontext.getCamera());
 
-        RendererDevice.SHADERCODE_TRACE_ENABLED = false;
+        RendererDevice.SHADERCODE_TRACE_ENABLED = true;
         RendererDevice.VERT_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = true;
         //RendererDevice.FRAG_SHADER_PRECISION_GLOBAL_HIGHP_ENABLED = false;
         this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
@@ -118,11 +121,14 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
         this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
         this.m_toyCarScene.initialize(this.m_rscene, this.m_materialCtx);
 
-        // let material: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
-        // material.fogEnabled = false;
-        // material.diffuseMap = tex0;
+        // let tex0 = this.m_materialCtx.getTextureByUrl("static/assets/default.jpg");
+        // // let material: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
+        // // material.fogEnabled = false;
+        // // material.diffuseMap = tex0;
+        // //  let material: Default3DMaterial = new Default3DMaterial();
+        // //  material.vertColorEnabled = true;
         // let box: Box3DEntity = new Box3DEntity();
-        // box.setMaterial( material );
+        // box.vtxColor = new Color4(1.0,0.2,0.2,1.0);
         // box.initializeCube(100, [tex0]);
         // this.m_rscene.addEntity( box );
     }

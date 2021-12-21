@@ -13,6 +13,7 @@ export default class GeometryBase {
     protected m_nvs: Float32Array = null;
     protected m_tvs: Float32Array = null;
     protected m_btvs: Float32Array = null;
+    protected m_cvs: Float32Array = null;
     protected m_ivs: Uint16Array | Uint32Array = null;
 
     readonly bounds: AABB = new AABB();
@@ -62,6 +63,12 @@ export default class GeometryBase {
             else
                 this.m_btvs = src.m_btvs.slice(0);
         }
+        if(src.m_cvs != null) {
+            if(this.m_cvs != null)
+                this.m_cvs.set(src.m_cvs);
+            else
+                this.m_cvs = src.m_cvs.slice(0);
+        }
         if(src.m_ivs != null) {
             if(this.m_ivs != null)
                 this.m_ivs.set(src.m_ivs);
@@ -96,6 +103,10 @@ export default class GeometryBase {
      * @returns vertex bitangent buffer Float32Array
      */
     getBTVS(): Float32Array { return this.m_btvs; }
+    /**
+     * @returns vertex color(r,g,b) buffer Float32Array
+     */
+    getCVS(): Float32Array { return this.m_cvs; }
     /**
      * @returns vertex indices buffer Uint16Array or Uint32Array
      */

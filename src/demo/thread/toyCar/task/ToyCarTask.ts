@@ -31,6 +31,7 @@ class ToyCarTask extends ThreadTask {
     private m_transFlag: number = 0;
     private m_calcType: number = 1;
     private m_statusManager: EntityStatusManager = new EntityStatusManager();
+    private m_time: number = 0;
 
     taskIndex: number = 0;
 
@@ -66,6 +67,7 @@ class ToyCarTask extends ThreadTask {
         return this.m_total;
     }
     updateEntitiesTrans(): void {
+        
         if (this.isSendTransEnabled()) {
             if (this.m_entities.length > 0) {
                 this.sendTransData();
@@ -75,7 +77,6 @@ class ToyCarTask extends ThreadTask {
     isSendTransEnabled(): boolean {
         return this.m_transEnabled;
     }
-    private m_time: number = 0;
     private sendTransData(): void {
         if (this.m_transEnabled) {
             this.m_transParamData.set(this.m_transInputData);

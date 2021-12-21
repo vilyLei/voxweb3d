@@ -93,9 +93,9 @@ export class DemoTransFromTex {
         let srcBox: Box3DEntity = new Box3DEntity(trans);
         srcBox.setMaterial( new TransFromTexMaterial() );
         srcBox.initializeCube(80.0, texList);
-        //mat4 = null;
+        
         trans = mat4 != null? trans : null;
-        for(let i: number = 0; i < 2000; ++i) {
+        for(let i: number = 0; i < 20000; ++i) {
             let box: Box3DEntity = new Box3DEntity(trans);
             if(mat4 != null) {
                 let material: TransFromTexMaterial = new TransFromTexMaterial();

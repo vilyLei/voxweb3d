@@ -95,6 +95,13 @@ export default class DataMesh extends MeshBase {
         this.m_btvs = btvs;
     }
     /**
+     * set vertex color(r,g,b) data
+     * @param vs vertex color(r,g,b) buffer Float32Array
+     */
+    setCVS(cvs: Float32Array): void {
+        this.m_cvs = cvs;
+    }
+    /**
      * @returns vertex bitangent buffer Float32Array
      */
     getBTVS(): Float32Array {
@@ -116,6 +123,7 @@ export default class DataMesh extends MeshBase {
         this.m_nvs = geom.getNVS();
         this.m_tvs = geom.getTVS();
         this.m_btvs = geom.getBTVS();
+        this.m_cvs = geom.getCVS();
         this.m_ivs = geom.getIVS();
         this.m_initIVS = this.m_ivs;
         this.m_boundsChanged = true;

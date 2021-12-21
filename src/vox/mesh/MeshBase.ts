@@ -170,6 +170,10 @@ export default class MeshBase {
      */
     getNVS(): Float32Array { return null; }
     /**
+     * @returns vertex vtx color(r,g,b) buffer Float32Array
+     */
+    getCVS(): Float32Array { return null; }
+    /**
      * @returns vertex indices buffer Uint16Array or Uint32Array
      */
     getIVS(): Uint16Array | Uint32Array { return this.m_ivs; }

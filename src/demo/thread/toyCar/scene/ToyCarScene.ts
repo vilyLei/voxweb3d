@@ -114,7 +114,7 @@ class ToyCarScene {
                 if (!entity.isReadySearchPath()) {
                     entity.stopAndWait();
                 }
-                entity.setSpeed(1.0);
+                entity.setSpeed(0.8 + Math.random() * 0.8);
                 entity.path.stopPath();
                 entity.curveMotion.directMinDis = 800.0;
                 entity.autoSerachPath = true;
