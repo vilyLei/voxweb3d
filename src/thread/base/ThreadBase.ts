@@ -22,6 +22,7 @@ class ThreadBase implements IThreadBase {
     private m_enabled: boolean = false;
     private m_initBoo: boolean = true;
     private m_thrData: IThreadSendData = null;
+    private m_time: number = 0;
     
     autoSendData: boolean = false;
     localDataPool: ThrDataPool = new ThrDataPool();
@@ -66,7 +67,8 @@ class ThreadBase implements IThreadBase {
             sendData.dataIndex = thrData.dataIndex;
             sendData.streams = thrData.streams;
             sendData.cmd = ThreadCMD.DATA_PARSE;
-            
+
+            // this.m_time = Date.now();
             if (sendData.streams != null) {
                 let transfers = new Array(sendData.streams.length);
                 for(let i: number = 0; i < sendData.streams.length; ++i) {
@@ -122,10 +124,11 @@ class ThreadBase implements IThreadBase {
     }
     private receiveData(data: any): void {
         
-        //let receiveBoo:boolean = true;
+        // this.m_time = Date.now() - this.m_time;
+        // console.log("lost time: ",this.m_time,data.taskCmd);
         this.m_free = true;
         let task: ThreadTask = ThreadTask.GetTaskByUid(data.srcuid);
-        //console.log("task != null: "+(task != null)+", data.srcuid: "+data.srcuid,", thread uid: "+this.m_uid);
+        // console.log("task != null: "+(task != null)+", data.srcuid: "+data.srcuid,", thread uid: "+this.m_uid);
         let finished: boolean = true;
         if (task != null) {
             finished = task.parseDone(data, -1);

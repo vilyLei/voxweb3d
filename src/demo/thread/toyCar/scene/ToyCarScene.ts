@@ -22,7 +22,8 @@ class ToyCarScene {
     private m_toyCarTasks: ToyCarTask[] = [];
     private m_terrainData: TerrainData = null;
     private m_bodyScale: number = 1.0;
-    private m_buildEntitiesTotal: number = 1;
+    private m_buildEntitiesTotal: number = 100;
+    private m_tasksTotal: number = 1;
     
     initialize(scene: RendererScene, materialCtx: CommonMaterialContext): void {
         if (this.m_rscene == null) {
@@ -69,15 +70,15 @@ class ToyCarScene {
             this.initTerrain(terrData);
         }
     }
-    private buildThreadTask(terrData: TerrainData): void {
+    private buildThreadTask(terrData: TerrainData, threadIndex: number = 0): void {
 
-        let tasksTotal: number = 2;
+        let tasksTotal: number = this.m_tasksTotal;
         for(let i: number = 0; i < tasksTotal; ++i) {
 
             let total: number = this.m_buildEntitiesTotal;
             let matTask: ToyCarTask = new ToyCarTask();
             matTask.taskIndex = i;
-            ThreadSystem.BindTask(matTask, 0);
+            ThreadSystem.BindTask(matTask, threadIndex);
             matTask.initialize(total);
             matTask.aStarInitialize(terrData);
     
@@ -152,9 +153,10 @@ class ToyCarScene {
     private initThread(terrData: TerrainData): void {
         // 注意: m_codeStr 代码中描述的 getTaskClass() 返回值 要和 threadToyCar 中的 getTaskClass() 返回值 要相等
         ThreadSystem.InitTaskByURL("static/thread/threadToyCar.js", 0);
-        ThreadSystem.Initialize(1);
+        ThreadSystem.Initialize(2);
 
-        this.buildThreadTask(terrData);
+        this.buildThreadTask(terrData, 0);
+        this.buildThreadTask(terrData, 1);
 
     }
     private m_dis: number = 0;
@@ -196,7 +198,7 @@ class ToyCarScene {
         //     //this.m_entity0.setXYZ(200, 25, -100 + this.m_dis);
         //     this.m_dis += 10.0;
         // }
-        // //this.updateThreadTask();
+        // this.updateThreadTask();
         // let rc: number[] = this.m_terrainData.getRCByPosition(pv);
         // console.log("rc: ", rc);
     }
