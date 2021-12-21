@@ -91,7 +91,7 @@ function TransformInstance(pmodule) {
 }
 function CarTransformModule() {
 
-    let m_insList = [null, null];// = new TransformInstance( new Module.MatTransform() );
+    let m_insList = [null, null, null, null, null, null, null, null];
     this.receiveData = function (data) {
 
         let descriptor = data.descriptor;
@@ -106,14 +106,6 @@ function CarTransformModule() {
                     m_insList[descriptor.taskIndex].initialize( data );
                     m_insList[descriptor.taskIndex].run( data );
                 }
-                // if(m_carTrans != null) {
-                //     m_carTrans.run( data );
-                // }
-                // else {
-                //     m_carTrans = new CarTransformModule( new Module.MatTransform() );
-                //     m_carTrans.initialize( data );
-                //     m_carTrans.run( data );
-                // }
                 break;
             default:
                 console.log("worker CarTransformModule receiveData default...");
@@ -149,7 +141,8 @@ function AStarNavInstance(pmodule) {
                 r++;
             }
         }
-        
+        data.streams = null;
+        descriptor.stvs = null;
         postMessage(data);
     }
     this.run = function(data) {

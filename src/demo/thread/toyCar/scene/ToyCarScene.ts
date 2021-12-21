@@ -22,7 +22,7 @@ class ToyCarScene {
     private m_toyCarTasks: ToyCarTask[] = [];
     private m_terrainData: TerrainData = null;
     private m_bodyScale: number = 1.0;
-    private m_buildEntitiesTotal: number = 6;
+    private m_buildEntitiesTotal: number = 1;
     
     initialize(scene: RendererScene, materialCtx: CommonMaterialContext): void {
         if (this.m_rscene == null) {
@@ -71,17 +71,20 @@ class ToyCarScene {
     }
     private buildThreadTask(terrData: TerrainData): void {
 
-        let total: number = this.m_buildEntitiesTotal;
-        let matTask: ToyCarTask = new ToyCarTask();
-        ThreadSystem.BindTask(matTask, 0);
-        matTask.initialize(total);
-        //matTask.setDataPool(ThreadSystem.GetThrDataPool());
+        let tasksTotal: number = 2;
+        for(let i: number = 0; i < tasksTotal; ++i) {
 
-        matTask.aStarInitialize(terrData);
-
-        this.m_entitiesTotal += total;
-        this.m_toyCarTasks.push(matTask);
-
+            let total: number = this.m_buildEntitiesTotal;
+            let matTask: ToyCarTask = new ToyCarTask();
+            matTask.taskIndex = i;
+            ThreadSystem.BindTask(matTask, 0);
+            matTask.initialize(total);
+            matTask.aStarInitialize(terrData);
+    
+            this.m_entitiesTotal += total;
+            this.m_toyCarTasks.push(matTask);
+    
+        }
     }
     private m_entity0: CarEntity;
     private buildEntities(): void {
@@ -113,7 +116,8 @@ class ToyCarScene {
                 entity.setSpeed(1.0);
                 entity.path.stopPath();
                 entity.curveMotion.directMinDis = 800.0;
-                entity.autoSerachPath = this.m_buildEntitiesTotal > 1;
+                entity.autoSerachPath = true;
+                // entity.autoSerachPath = this.m_buildEntitiesTotal > 1;
                 /*
                 entity = this.m_toyCarBuilder.buildEntity( task );
                 entity.terrainData = this.m_terrainData;
@@ -133,15 +137,15 @@ class ToyCarScene {
                 this.m_entity0 = entity;
             }
         }
-
     }
     private updateThreadTask(): void {
-        let list = this.m_toyCarTasks;
-        let len: number = list.length;
+
+        let tasks = this.m_toyCarTasks;
+        let len: number = tasks.length;
         for (let i: number = 0; i < len; ++i) {
-            list[i].updateEntitiesTrans();
-            if (list[i].isAStarEnabled()) {
-                list[i].searchPath();
+            tasks[i].updateEntitiesTrans();
+            if (tasks[i].isAStarEnabled()) {
+                tasks[i].searchPath();
             }
         }
     }
@@ -149,7 +153,7 @@ class ToyCarScene {
         // 注意: m_codeStr 代码中描述的 getTaskClass() 返回值 要和 threadToyCar 中的 getTaskClass() 返回值 要相等
         ThreadSystem.InitTaskByURL("static/thread/threadToyCar.js", 0);
         ThreadSystem.Initialize(1);
-        
+
         this.buildThreadTask(terrData);
 
     }
@@ -158,6 +162,7 @@ class ToyCarScene {
     private m_rc0: number[];
     private m_rc1: number[];
     testDose(pv: Vector3D): void {
+        /*
         if(this.m_terrainData != null) {
 
             let task = this.m_toyCarTasks[0];
@@ -183,6 +188,7 @@ class ToyCarScene {
                 }
             }
         }
+        //*/
         // if (task.isAStarEnabled()) {
         //     //task.aStarSearch( {r0: 1, c0: 1, r1: 4, c1: 5} );
         //     task.searchPath();

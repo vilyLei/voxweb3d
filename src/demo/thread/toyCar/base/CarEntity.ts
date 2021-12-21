@@ -255,7 +255,6 @@ class CarEntity implements IToyEntity {
         }
     }
     private testRandomSerachPath(): void {
-
         if (this.autoSerachPath) {
             let beginRC: number[] = this.terrainData.getRCByPosition(this.getPosition());
             let endRC: number[] = this.terrainData.getRandomFreeRC();
