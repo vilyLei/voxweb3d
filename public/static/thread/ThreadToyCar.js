@@ -8,16 +8,13 @@
 "use strict";
 
 var Module = {};
+function TransformInstance(pmodule) {
 
-function CarTransModule(pmodule, taskClass) {
-
-    let m_taskClass = taskClass;
     let m_module = pmodule;
     let m_matFS32 = null;
     let m_paramFS32 = null;
     let m_stU16Array = null;
 
-    let m_dataIndex = 0;
     let m_calcType = -1;
     let m_allTotal = 0;
 
@@ -49,8 +46,6 @@ function CarTransModule(pmodule, taskClass) {
             let allTotal = descriptor.allTotal;
             //console.log("descriptor.calcType: ",descriptor.calcType);
             m_calcType = descriptor.calcType;
-            //console.log("matsTotal: ", matsTotal);
-            m_dataIndex = data.dataIndex;
             let inputFS32 = data.streams[0];
             let outputFS32 = data.streams[1];
             let stUint16Arr = data.streams[2];
@@ -94,17 +89,47 @@ function CarTransModule(pmodule, taskClass) {
         }
     }
 }
+function CarTransformModule() {
 
-function AStarNavModule(pmodule, taskClass) {
+    let m_insList = [null, null];// = new TransformInstance( new Module.MatTransform() );
+    this.receiveData = function (data) {
 
-    let m_taskClass = taskClass;
+        //  console.log("data.taskCmd: ",data.taskCmd);
+        switch(data.taskCmd) {
+            case "car_trans":
+                if(m_insList[data.taskUid] != null) {
+                    m_insList[data.taskUid].run( data );
+                }
+                else {
+                    m_insList[data.taskUid] = new TransformInstance( new Module.MatTransform() );
+                    m_insList[data.taskUid].initialize( data );
+                    m_insList[data.taskUid].run( data );
+                }
+                // if(m_carTrans != null) {
+                //     m_carTrans.run( data );
+                // }
+                // else {
+                //     m_carTrans = new CarTransformModule( new Module.MatTransform() );
+                //     m_carTrans.initialize( data );
+                //     m_carTrans.run( data );
+                // }
+                break;
+            default:
+                console.log("worker CarTransformModule receiveData default...");
+                break;
+        }
+    }
+}
+
+// ############################################################
+
+function AStarNavInstance(pmodule) {
+
     let m_module = pmodule;
     let m_running = true;
-    let m_dataIndex = 0;
     
     this.initialize = function(data) {
 
-        m_dataIndex = data.dataIndex;
         let descriptor = data.descriptor;
         let rn = descriptor.rn;
         let cn = descriptor.cn;
@@ -135,14 +160,11 @@ function AStarNavModule(pmodule, taskClass) {
             let vs = m_module.getPathData();
             console.log("path dataLen: " + dataLen);
             console.log("path vs: ", vs);
-
             postMessage(data, [data.streams[0].buffer]);
         }
     }
     this.search = function(data) {
         if(m_running) {
-            let descriptor = data.descriptor;
-            //m_module.searchPathDataByRC(descriptor.r0, descriptor.c0, descriptor.r1, descriptor.c1);
             let dataLen = 0;
             let vs = null;
             let paramVS = data.streams[0];
@@ -173,42 +195,24 @@ function AStarNavModule(pmodule, taskClass) {
         }
     }
 }
-function ThreadAStarNav() {
-    console.log("ThreadAStarNav instance init run ...");
+function AStarNavModule() {
 
-    this.threadIndex = 0;
-    let m_aStarNav = null;
-    let m_carTrans = null;
-    this.initialize = function () {
-    }
+    let m_insList = [null, null];
     this.receiveData = function (data) {
 
-        //  console.log("data.taskCmd: ",data.taskCmd);
         switch(data.taskCmd) {
-            case "car_trans":
-
-                if(m_carTrans != null) {
-                    m_carTrans.run( data );
-                }
-                else {
-                    m_carTrans = new CarTransModule( new Module.MatTransform(), this.getTaskClass() );
-                    m_carTrans.initialize( data );
-                    m_carTrans.run( data );
-                }
-                break;
             case "aStar_search":
-                
-                if(m_aStarNav != null) {
-                    m_aStarNav.search( data );
+                if(m_insList[data.taskUid] != null) {
+                    m_insList[data.taskUid].search( data );
                 }
                 break;
             case "aStar_exec":
 
-                if(m_aStarNav != null) {
-                    m_aStarNav.run( data );
+                if(m_insList[data.taskUid] != null) {
+                    m_insList[data.taskUid].run( data );
                 }
                 else {
-                    m_aStarNav = new AStarNavModule( new Module.StarA(), this.getTaskClass() );
+                    m_insList[data.taskUid] = new AStarNavInstance( new Module.StarA() );
                     let descriptor = {rn: 6, cn: 6, stvs: null};
                     descriptor.stvs = new Uint16Array(
                         [
@@ -221,15 +225,42 @@ function ThreadAStarNav() {
                         ]
                     );
                     data.descriptor = descriptor;
-                    m_aStarNav.initialize( data );
+                    m_insList[data.taskUid].initialize( data );
                 }
                 break;
             case "aStar_init":
                 console.log("worker XXXX aStar_init...");
-                if(m_aStarNav == null) {
-                    m_aStarNav = new AStarNavModule( new Module.StarA(), this.getTaskClass() );
+                if(m_insList[data.taskUid] == null) {
+                    m_insList[data.taskUid] = new AStarNavInstance( new Module.StarA() );
                 }
-                m_aStarNav.initialize( data );
+                m_insList[data.taskUid].initialize( data );
+                break;
+            default:
+                console.log("worker AStarNavModule receiveData default...");
+                break;
+        }
+    }
+}
+function ToyCarTask() {
+    console.log("ToyCarTask instance init run ...");
+
+    this.threadIndex = 0;
+    let m_navModule = new AStarNavModule();
+    let m_transModule = new CarTransformModule();
+
+    this.initialize = function () {
+    }
+    this.receiveData = function (data) {
+
+        //  console.log("data.taskCmd: ",data.taskCmd);
+        switch(data.taskCmd) {
+            case "car_trans":
+                m_transModule.receiveData( data );
+                break;
+            case "aStar_search":
+            case "aStar_exec":
+            case "aStar_init":
+                m_navModule.receiveData( data );
                 break;
             default:
                 console.log("worker XXXX receiveData default...");
@@ -243,14 +274,14 @@ function ThreadAStarNav() {
     function constructor(ins) {
 
         Module["onModuleLoaded"] = function () {
-            console.log("ThreadAStarNav onModuleLoaded ...");
+            console.log("ToyCarTask onModuleLoaded ...");
             ins.initialize();
             // 如果是在worker中运行，则执行如下代码
             self.initializeExternModule(ins);
         }
 
-        var baseUrl = self.location.href.slice(0, scriptDir.lastIndexOf("/") + 1);
-        var k = baseUrl.indexOf("http://");
+        let baseUrl = self.location.href.slice(0, scriptDir.lastIndexOf("/") + 1);
+        let k = baseUrl.indexOf("http://");
         if (k < 0) {
             k = baseUrl.indexOf("https://");
             if (k < 0) k = 0;
@@ -262,4 +293,4 @@ function ThreadAStarNav() {
     }
     constructor( this );
 }
-let workerIns_ThreadAStarNav = new ThreadAStarNav();
+let workerIns_ThreadAStarNav = new ToyCarTask();
