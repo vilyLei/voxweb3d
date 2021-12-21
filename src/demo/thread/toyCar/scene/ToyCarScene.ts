@@ -73,8 +73,9 @@ class ToyCarScene {
 
         let total: number = this.m_buildEntitiesTotal;
         let matTask: ToyCarTask = new ToyCarTask();
+        ThreadSystem.BindTask(matTask, 0);
         matTask.initialize(total);
-        matTask.setThrDataPool(ThreadSystem.GetThrDataPool());
+        //matTask.setDataPool(ThreadSystem.GetThrDataPool());
 
         matTask.aStarInitialize(terrData);
 
@@ -145,11 +146,12 @@ class ToyCarScene {
         }
     }
     private initThread(terrData: TerrainData): void {
-        this.buildThreadTask(terrData);
-
         // 注意: m_codeStr 代码中描述的 getTaskClass() 返回值 要和 threadToyCar 中的 getTaskClass() 返回值 要相等
         ThreadSystem.InitTaskByURL("static/thread/threadToyCar.js", 0);
         ThreadSystem.Initialize(1);
+        
+        this.buildThreadTask(terrData);
+
     }
     private m_dis: number = 0;
     private m_testFlag: number = 0;

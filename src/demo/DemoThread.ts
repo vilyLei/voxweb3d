@@ -119,9 +119,9 @@ function ThreadAddNum()
         //ThreadSystem.InitTaskByURL("static/thread/ThreadMathNum", 2);
 
         ThreadSystem.Initialize(1);
-        this.m_numberAddTask.setThrDataPool(ThreadSystem.GetThrDataPool());
-        this.m_numberMultTask.setThrDataPool(ThreadSystem.GetThrDataPool());
-        this.m_numberMathTask.setThrDataPool(ThreadSystem.GetThrDataPool());
+        this.m_numberAddTask.setDataPool(ThreadSystem.GetThrDataPool());
+        this.m_numberMultTask.setDataPool(ThreadSystem.GetThrDataPool());
+        this.m_numberMathTask.setDataPool(ThreadSystem.GetThrDataPool());
     }
     private m_flag: number = 0;
     private useMathTask(): void {

@@ -120,9 +120,9 @@ let workerIns_ThreadAddNum = new ThreadAddNum();
         this.m_thrSchedule.initTaskByURL("static/thread/ThreadMultNum", 1);
         this.m_thrSchedule.initTaskByURL("static/thread/ThreadMathNum", 2);
         this.m_thrSchedule.initsialize(1);
-        this.m_numberAddTask.setThrDataPool(this.m_thrSchedule.getThrDataPool());
-        this.m_numberMultTask.setThrDataPool(this.m_thrSchedule.getThrDataPool());
-        this.m_numberMathTask.setThrDataPool(this.m_thrSchedule.getThrDataPool());
+        this.m_numberAddTask.setDataPool(this.m_thrSchedule.getThrDataPool());
+        this.m_numberMultTask.setDataPool(this.m_thrSchedule.getThrDataPool());
+        this.m_numberMathTask.setDataPool(this.m_thrSchedule.getThrDataPool());
         //this.useMathTask();
     }
     private m_flag: number = 0;

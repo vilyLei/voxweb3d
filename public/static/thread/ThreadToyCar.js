@@ -94,16 +94,17 @@ function CarTransformModule() {
     let m_insList = [null, null];// = new TransformInstance( new Module.MatTransform() );
     this.receiveData = function (data) {
 
+        let descriptor = data.descriptor;
         //  console.log("data.taskCmd: ",data.taskCmd);
         switch(data.taskCmd) {
             case "car_trans":
-                if(m_insList[data.taskUid] != null) {
-                    m_insList[data.taskUid].run( data );
+                if(m_insList[descriptor.taskIndex] != null) {
+                    m_insList[descriptor.taskIndex].run( data );
                 }
                 else {
-                    m_insList[data.taskUid] = new TransformInstance( new Module.MatTransform() );
-                    m_insList[data.taskUid].initialize( data );
-                    m_insList[data.taskUid].run( data );
+                    m_insList[descriptor.taskIndex] = new TransformInstance( new Module.MatTransform() );
+                    m_insList[descriptor.taskIndex].initialize( data );
+                    m_insList[descriptor.taskIndex].run( data );
                 }
                 // if(m_carTrans != null) {
                 //     m_carTrans.run( data );
@@ -199,20 +200,21 @@ function AStarNavModule() {
 
     let m_insList = [null, null];
     this.receiveData = function (data) {
-
+        let descriptor = data.descriptor;
         switch(data.taskCmd) {
             case "aStar_search":
-                if(m_insList[data.taskUid] != null) {
-                    m_insList[data.taskUid].search( data );
+
+                if(m_insList[descriptor.taskIndex] != null) {
+                    m_insList[descriptor.taskIndex].search( data );
                 }
                 break;
             case "aStar_exec":
 
-                if(m_insList[data.taskUid] != null) {
-                    m_insList[data.taskUid].run( data );
+                if(m_insList[descriptor.taskIndex] != null) {
+                    m_insList[descriptor.taskIndex].run( data );
                 }
                 else {
-                    m_insList[data.taskUid] = new AStarNavInstance( new Module.StarA() );
+                    m_insList[descriptor.taskIndex] = new AStarNavInstance( new Module.StarA() );
                     let descriptor = {rn: 6, cn: 6, stvs: null};
                     descriptor.stvs = new Uint16Array(
                         [
@@ -225,15 +227,15 @@ function AStarNavModule() {
                         ]
                     );
                     data.descriptor = descriptor;
-                    m_insList[data.taskUid].initialize( data );
+                    m_insList[descriptor.taskIndex].initialize( data );
                 }
                 break;
             case "aStar_init":
                 console.log("worker XXXX aStar_init...");
-                if(m_insList[data.taskUid] == null) {
-                    m_insList[data.taskUid] = new AStarNavInstance( new Module.StarA() );
+                if(m_insList[descriptor.taskIndex] == null) {
+                    m_insList[descriptor.taskIndex] = new AStarNavInstance( new Module.StarA() );
                 }
-                m_insList[data.taskUid].initialize( data );
+                m_insList[descriptor.taskIndex].initialize( data );
                 break;
             default:
                 console.log("worker AStarNavModule receiveData default...");

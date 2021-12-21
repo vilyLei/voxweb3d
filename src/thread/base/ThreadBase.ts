@@ -24,7 +24,8 @@ class ThreadBase implements IThreadBase {
     private m_thrData: IThreadSendData = null;
     
     autoSendData: boolean = false;
-    pool: ThrDataPool = null;
+    localDataPool: ThrDataPool = new ThrDataPool();
+    globalDataPool: ThrDataPool = null;
     unlock: boolean = true;
 
     constructor() {
@@ -39,8 +40,16 @@ class ThreadBase implements IThreadBase {
     isFree(): boolean {
         return this.m_free && this.unlock;
     }
-    private thisSendDataTo(): void {
-        this.pool.sendDataTo(this);
+    sendPoolDataToThread(): void {
+        if(this.m_free) {
+            let boo = this.localDataPool.isEnabled();
+            if(boo) {
+                boo = this.localDataPool.sendDataTo(this);
+            }
+            if(!boo) {
+                this.globalDataPool.sendDataTo(this);
+            }
+        }
     }
     // send parse data to thread
     sendDataTo(thrData: IThreadSendData): void {
@@ -125,7 +134,7 @@ class ThreadBase implements IThreadBase {
         this.updateInitTask();
         // 下面这个逻辑要慎用，用了可能会对时间同步(例如帧同步)造成影响
         if (this.autoSendData) {
-            this.thisSendDataTo();
+            this.sendPoolDataToThread();
         }
     }
     initialize(blob: Blob): void {

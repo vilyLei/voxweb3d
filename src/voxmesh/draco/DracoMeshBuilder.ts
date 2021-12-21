@@ -83,7 +83,7 @@ export class DracoMeshBuilder {
         //  ThreadSystem.Initialize(taskTotal);
         //  ThreadSystem.InitTaskByCodeStr(data.wapper + this.m_dracoParserStr + this.m_dracoThreadStr, 0, "ThreadDraco");
         this.m_dracoTask.setListener( this.m_listener );
-        this.m_dracoTask.setThrDataPool(ThreadSystem.GetThrDataPool());
+        this.m_dracoTask.setDataPool(ThreadSystem.GetThrDataPool());
         this.m_dracoTask.initTask(this.m_wasmLoader.wasmBin);
 
     }

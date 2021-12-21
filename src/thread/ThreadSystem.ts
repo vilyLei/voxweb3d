@@ -11,8 +11,7 @@ import RendererDevice from "../vox/render/RendererDevice";
 import ThreadCore from "../thread/control/Thrcode";
 import ThrDataPool from "../thread/control/ThrDataPool";
 import ThreadBase from "../thread/base/ThreadBase";
-
-//import RendererDevice = RendererDeviceT.vox.render.RendererDevice;
+import ThreadTask from "./control/ThreadTask";
 
 class ThreadSystem {
     // allow ThreadSystem initialize yes or no
@@ -30,10 +29,32 @@ class ThreadSystem {
     static GetThrDataPool(): ThrDataPool {
         return ThreadSystem.s_pool;
     }
+    static BindTask(task: ThreadTask, threadIndex: number = -1): void {
+        if(task != null) {
+            let localPool: ThrDataPool = null;
+            if(threadIndex >= 0 && threadIndex < ThreadSystem.s_maxThreadsTotal) {
+                for(;;) {
+                    if(threadIndex >= ThreadSystem.s_threadsTotal) {
+                        ThreadSystem.CreateThread();
+                    }
+                    else {
+                        break;
+                    }
+                }
+                localPool = ThreadSystem.s_threads[threadIndex].localDataPool;
+            }
+            task.setDataPool(ThreadSystem.s_pool, localPool);
+        }
+    }
     static SendDataToWorkerAt(i: number, sendData: IThreadSendData): void {
         if(i >= 0 && i < ThreadSystem.s_maxThreadsTotal) {
-            if(i >= ThreadSystem.s_threadsTotal) {
-                ThreadSystem.CreateThread();
+            for(;;) {
+                if(i >= ThreadSystem.s_threadsTotal) {
+                    ThreadSystem.CreateThread();
+                }
+                else {
+                    break;
+                }
             }
             if (sendData != null && sendData.sendStatus < 0) {
                 sendData.sendStatus = 0;
@@ -74,10 +95,10 @@ class ThreadSystem {
                     break;
                 }                    
             }
+
             if (ThreadSystem.s_pool.isEnabled()) {
                 tot = 0;
                 for (i = 0; i < ThreadSystem.s_threadsTotal; ++i) {
-                    //console.log("ThreadSystem.s_threads["+i+"].isFree(): ",ThreadSystem.s_threads[i].isFree(),ThreadSystem.s_pool.isEnabled());
                     if (ThreadSystem.s_pool.isEnabled()) {
                         if (ThreadSystem.s_threads[i].isFree()) {
                             ThreadSystem.s_pool.sendDataTo(ThreadSystem.s_threads[i]);
@@ -91,6 +112,13 @@ class ThreadSystem {
                     ThreadSystem.CreateThread();
                 }
             }
+            else {
+                for (i = 0; i < ThreadSystem.s_threadsTotal; ++i) {
+                    if (ThreadSystem.s_threads[i].isFree()) {
+                        ThreadSystem.s_threads[i].sendPoolDataToThread();
+                    }
+                }
+            }
         }
     }
     
@@ -100,7 +128,7 @@ class ThreadSystem {
      * @param streams 用于内存所有权转换的数据流数组, 例如 Float32Array 数组, 默认值是null
      * @param descriptor 会发送到子线程的用于当前数据处理的数据描述对象, for example: {flag : 0, type: 12, name: "First"}, 默认值是 null
      */
-    protected addDataWithParam(taskCmd: string, streams: StreamType[] = null, descriptor: any = null): void {
+    static AddDataWithParam(taskCmd: string, streams: StreamType[] = null, descriptor: any = null): void {
         let sd = ThreadSendData.Create();
         sd.taskCmd = taskCmd;
         sd.streams = streams;
@@ -150,7 +178,7 @@ class ThreadSystem {
     private static CreateThread(): void {
         if (ThreadSystem.s_threadsTotal < ThreadSystem.s_maxThreadsTotal) {
             let thread: ThreadBase = new ThreadBase();
-            thread.pool = ThreadSystem.s_pool;
+            thread.globalDataPool = ThreadSystem.s_pool;
             thread.initialize(ThreadSystem.s_codeBlob);
             ThreadSystem.s_threads[ThreadSystem.s_threadsTotal] = thread;
 

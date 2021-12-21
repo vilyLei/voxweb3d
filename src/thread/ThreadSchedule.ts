@@ -10,6 +10,7 @@ import ThrDataPool from "../thread/control/ThrDataPool";
 import { StreamType, IThreadSendData } from "../thread/base/IThreadSendData";
 import { ThreadSendData } from "../thread/base/ThreadSendData";
 import ThreadBase from "../thread/base/ThreadBase";
+import ThreadTask from "./control/ThreadTask";
 class ThreadSchedule {
     // allow ThreadSchedule initialize yes or no
     private m_initBoo: boolean = true;
@@ -21,7 +22,24 @@ class ThreadSchedule {
     private m_threadsTotal: number = 0;
     private m_threadEnabled: boolean = true;
     private m_pool: ThrDataPool = new ThrDataPool();
-
+    
+    bindTask(task: ThreadTask, threadIndex: number = -1): void {
+        if(task != null) {
+            let localPool: ThrDataPool = null;
+            if(threadIndex >= 0 && threadIndex < this.m_maxThreadsTotal) {
+                for(;;) {
+                    if(threadIndex >= this.m_threadsTotal) {
+                        this.createThread();
+                    }
+                    else {
+                        break;
+                    }
+                }
+                localPool = this.m_threads[threadIndex].localDataPool;
+            }
+            task.setDataPool(this.m_pool, localPool);
+        }
+    }
     getThrDataPool(): ThrDataPool {
         return this.m_pool;
     }
@@ -41,6 +59,13 @@ class ThreadSchedule {
                 }
                 if (tot < 1 && this.m_pool.isEnabled()) {
                     this.createThread();
+                }
+            }
+            else {
+                for (let i: number = 0; i < this.m_threadsTotal; ++i) {
+                    if (this.m_threads[i].isFree()) {
+                        this.m_threads[i].sendPoolDataToThread();
+                    }
                 }
             }
         }
@@ -96,6 +121,7 @@ class ThreadSchedule {
     private createThread(): void {
         if (this.m_threadsTotal < this.m_maxThreadsTotal) {
             let thread: ThreadBase = new ThreadBase();
+            thread.globalDataPool = this.m_pool;
             thread.initialize(this.m_codeBlob);
             this.m_threads.push(thread);
             this.m_threadsTotal++;

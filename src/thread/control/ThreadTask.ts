@@ -18,8 +18,11 @@ class ThreadTask {
     private static s_maxTasksTotal: number = 512;
     private static s_taskList: ThreadTask[] = null;
     private static s_freeList: number[] = null;
+
     private m_uid: number = -1;
-    private m_thrDataPool: IThrDataPool = null;
+    private m_globalDataPool: IThrDataPool = null;
+    private m_localDataPool: IThrDataPool = null;
+
     protected m_parseIndex: number = 0;
     protected m_parseTotal: number = 0;
     constructor() {
@@ -63,8 +66,9 @@ class ThreadTask {
             task.m_uid = -1;
         }
     }
-    setThrDataPool(thrDataPool: IThrDataPool): void {
-        this.m_thrDataPool = thrDataPool;
+    setDataPool(globalDataPool: IThrDataPool, localDataPool: IThrDataPool = null): void {
+        this.m_globalDataPool = globalDataPool;
+        this.m_localDataPool = localDataPool;
     }
     // 被子类覆盖后便能实现更细节的相关功能
     reset(): void {
@@ -105,24 +109,33 @@ class ThreadTask {
      * @param taskCmd 处理当前数据的任务命令名字符串
      * @param streams 用于内存所有权转换的数据流数组, 例如 Float32Array 数组, 默认值是null
      * @param descriptor 会发送到子线程的用于当前数据处理的数据描述对象, for example: {flag : 0, type: 12, name: "First"}, 默认值是 null
+     * @param threadBindingData 是否是线程直接绑定的数据，默认是false
      */
-    protected addDataWithParam(taskCmd: string, streams: StreamType[] = null, descriptor: any = null): void {
+    protected addDataWithParam(taskCmd: string, streams: StreamType[] = null, descriptor: any = null, threadBindingData: boolean = false): void {
         let sd = this.createSendData();
         sd.taskCmd = taskCmd;
         sd.streams = streams;
         sd.descriptor = descriptor;
-        this.addData(sd);
+        this.addData(sd, threadBindingData);
     }
     /**
      * 通过参数, 添加发送给子线程的数据
      * @param data 符合IThreadSendData行为规范的数据对象
+     * @param threadBindingData 是否是线程直接绑定的数据，默认是false
      */
-    protected addData(data: IThreadSendData): void {
+    protected addData(data: IThreadSendData, threadBindingData: boolean = false): void {
         if (this.m_uid >= 0) {
             data.srcuid = this.m_uid;
             data.taskclass = this.getTaskClass();
-            if (this.m_thrDataPool != null) {
-                this.m_thrDataPool.addData(data);
+            if(threadBindingData) {
+                if (this.m_localDataPool != null) {
+                    this.m_localDataPool.addData(data);
+                }
+            }
+            else {
+                if (this.m_globalDataPool != null) {
+                    this.m_globalDataPool.addData(data);
+                }
             }
         }
         else {
@@ -139,7 +152,7 @@ class ThreadTask {
         return -1;
     }
     destroy(): void {
-        this.m_thrDataPool = null;
+        this.m_globalDataPool = null;
         ThreadTask.DetachTask(this);
     }
 }

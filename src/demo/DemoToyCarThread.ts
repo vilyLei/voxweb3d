@@ -1,14 +1,7 @@
 import Vector3D from "../vox/math/Vector3D";
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
-import RendererState from "../vox/render/RendererState";
 import RenderStatusDisplay from "../vox/scene/RenderStatusDisplay";
-
-import PureEntity from "../vox/entity/PureEntity";
-import Plane3DEntity from "../vox/entity/Plane3DEntity";
-import Axis3DEntity from "../vox/entity/Axis3DEntity";
-import Box3DEntity from "../vox/entity/Box3DEntity";
-import TextureProxy from "../vox/texture/TextureProxy";
 
 import CameraTrack from "../vox/view/CameraTrack";
 import MouseEvent from "../vox/event/MouseEvent";
@@ -20,7 +13,6 @@ import {UserInteraction} from "../vox/engine/UserInteraction";
 import { ToyCarScene } from "./thread/toyCar/scene/ToyCarScene";
 
 import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
-import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
 import { IShaderLibListener, CommonMaterialContext, MaterialContextParam } from "../materialLab/base/CommonMaterialContext";
 import { PointLight } from "../light/base/PointLight";
 import { DirectionLight } from "../light/base/DirectionLight";
