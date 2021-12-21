@@ -15,7 +15,7 @@ import RendererScene from "../vox/scene/RendererScene";
 import ProfileInstance from "../voxprofile/entity/ProfileInstance";
 import CameraStageDragSwinger from "../voxeditor/control/CameraStageDragSwinger";
 import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
-import { MaterialContextParam, MaterialContextDebug } from "../materialLab/base/MaterialContextDebug";
+import { MaterialContextParam, DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
 
 export class DemoAdsLight {
     constructor() { }
@@ -26,7 +26,7 @@ export class DemoAdsLight {
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_stageDragSwinger: CameraStageDragSwinger = new CameraStageDragSwinger();
-    private m_materialCtx: MaterialContextDebug = new MaterialContextDebug();
+    private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
 
     private getImageTexByUrl(purl: string, wrapRepeat: boolean = true, mipmapEnabled = true): TextureProxy {
         return this.m_texLoader.getTexByUrl(purl,wrapRepeat,mipmapEnabled);

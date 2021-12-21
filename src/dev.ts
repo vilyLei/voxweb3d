@@ -166,7 +166,7 @@
 //  import * as DemoFloatTex2 from "./example/DemoFloatTex2";
 //  import Demo = DemoFloatTex2.demo.DemoFloatTex2;
 
-import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
+//  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
 //  import {DemoMixProgress as Demo} from "./demo/DemoMixProgress";
 
@@ -361,7 +361,7 @@ import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
 //  import {DemoLambertLight as Demo} from "./demo/DemoLambertLight";
 
-//  import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
+import {DemoMultiLambertLights as Demo} from "./demo/DemoMultiLambertLights";
 
 //  import {DemoCookTorrance as Demo} from "./demo/DemoCookTorrance";
 

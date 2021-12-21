@@ -23,7 +23,7 @@ import Sphere3DEntity from "../vox/entity/Sphere3DEntity";
 import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEntity";
 
 import {SpecularMode, LambertLightMaterial} from "../vox/material/mcase/LambertLightMaterial";
-import { MaterialContextParam, MaterialContextDebug } from "../materialLab/base/MaterialContextDebug";
+import { MaterialContextParam, DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
 import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
 import RendererState from "../vox/render/RendererState";
 import { PointLight } from "../light/base/PointLight";
@@ -41,7 +41,7 @@ export class DemoLambertLight {
 
     private m_rotV: Vector3D = new Vector3D(Math.random() * 370, Math.random() * 370, Math.random() * 370);
     private m_target: DisplayEntity;
-    private m_materialCtx: MaterialContextDebug = new MaterialContextDebug();
+    private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
 
     initialize(): void {
 
