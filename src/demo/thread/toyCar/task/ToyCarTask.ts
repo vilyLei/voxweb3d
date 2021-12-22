@@ -8,7 +8,7 @@ import ThreadTask from "../../../../thread/control/ThreadTask";
 import { IToyEntity } from "../base/IToyEntity";
 import { EntityStatusManager } from "../base/EntityStatusManager";
 import { TerrainData } from "../../../..//terrain/tile/TerrainData";
-import { PathSerachListener } from "../../../../voxnav/tileTerrain/PathSerachListener";
+import { PathSearchListener } from "../../../../voxnav/tileTerrain/PathSearchListener";
 import { TerrainNavigation } from "../../../../voxnav/tileTerrain/TerrainNavigation";
 import { StatusDetector } from "../base/StatusDetector";
 
@@ -22,7 +22,7 @@ class ToyCarTask extends ThreadTask {
     private m_transParamData: Float32Array = null;
     private m_transOutputData: Float32Array = null;
     
-    private m_searchPathListener: PathSerachListener = null;
+    private m_searchPathListener: PathSearchListener = null;
 
     private m_transEnabled: boolean = true;
     private m_pathSerachEnabled: boolean = true;
@@ -129,15 +129,18 @@ class ToyCarTask extends ThreadTask {
         }
     }
 
-    setSearchPathListener(listener: PathSerachListener): void {
+    setSearchPathListener(listener: PathSearchListener): void {
         this.m_searchPathListener = listener;
     }
     private searchPath(): void {
         if(this.m_pathSerachEnabled) {
             
             this.m_terrNav.buildSearchData();
-
-            let otherStreams: Uint16Array[] = this.m_searchPathListener != null ? this.m_searchPathListener.getSearchPathData() : null;
+            let otherStreams: Uint16Array[] = null;
+            if(this.m_searchPathListener != null) {
+                this.m_searchPathListener.buildSearchData();
+                otherStreams = this.m_searchPathListener.getSearchPathData();
+            }
             let streams: Uint16Array[] = this.m_terrNav.getSearchPathData();
             if(otherStreams != null) {
                 streams = streams != null ? streams.concat(otherStreams) : otherStreams;

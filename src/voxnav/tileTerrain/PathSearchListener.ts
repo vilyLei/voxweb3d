@@ -5,8 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
-interface PathSerachListener {
+interface PathSearchListener {
+    
+    buildSearchData(): void;
     getSearchPathData(): Uint16Array[];
     receiveSearchedPathData(streams: Uint16Array[]): void;
 }
-export { PathSerachListener };
+export { PathSearchListener };

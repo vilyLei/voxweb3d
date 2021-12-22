@@ -5,10 +5,10 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { PathSerachListener } from "./PathSerachListener";
+import { PathSearchListener } from "./PathSearchListener";
 import { PathNavigator } from "../../voxnav/tileTerrain/PathNavigator";
 
-class TerrainNavigation implements PathSerachListener{
+class TerrainNavigation implements PathSearchListener{
 
     private m_navigators: PathNavigator[] = [];
     // 存放请求寻路的信息数据
