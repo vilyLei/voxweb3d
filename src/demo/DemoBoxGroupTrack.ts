@@ -136,8 +136,8 @@ export class DemoBoxGroupTrack {
         this.m_timeoutId = setTimeout(this.update.bind(this), 30);// 33 fps
         this.m_statusDisp.render();
 
-        this.m_role0.run();
-        this.m_role1.run();
+        // this.m_role0.run();
+        // this.m_role1.run();
     }
     run(): void {
         this.m_interaction.run();

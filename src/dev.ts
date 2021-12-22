@@ -124,8 +124,7 @@
 
 //  import {DemoVtx as Demo} from "./demo/DemoVtx";
 
-//  import * as DemoSwapProcess from "./demo/DemoSwapProcess";
-//  import Demo = DemoSwapProcess.demo.DemoSwapProcess;
+//  import {DemoSwapProcess as Demo} from "./demo/DemoSwapProcess";
 
 //  import {DemoDelEntity as Demo} from "./demo/DemoDelEntity";
 
@@ -134,8 +133,7 @@
 
 //  import {DemoTexUpdate as Demo} from "./demo/DemoTexUpdate";
 
-//  import * as DemoKeyboardEvt from "./demo/DemoKeyboardEvt";
-//  import Demo = DemoKeyboardEvt.demo.DemoKeyboardEvt;
+//  import {DemoKeyboardEvt as Demo} from "./demo/DemoKeyboardEvt";
 
 //  import {DemoParticle as Demo} from "./demo/DemoParticle";
 
@@ -166,7 +164,7 @@
 //  import * as DemoFloatTex2 from "./example/DemoFloatTex2";
 //  import Demo = DemoFloatTex2.demo.DemoFloatTex2;
 
-//  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
+import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
 //  import {DemoMixProgress as Demo} from "./demo/DemoMixProgress";
 
@@ -240,7 +238,7 @@
 
 //  import {DemoThreadConcurrent as Demo} from "./demo/DemoThreadConcurrent";
 
-import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
+//  import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////   motion    /////////////////////////////////////
