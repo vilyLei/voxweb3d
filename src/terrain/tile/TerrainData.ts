@@ -1,5 +1,5 @@
-import Vector3D from "../../../../vox/math/Vector3D";
-import AABB from "../../../../vox/geom/AABB";
+import Vector3D from "../../vox/math/Vector3D";
+import AABB from "../../vox/geom/AABB";
 
 class TerrainData {
 

@@ -164,7 +164,7 @@
 //  import * as DemoFloatTex2 from "./example/DemoFloatTex2";
 //  import Demo = DemoFloatTex2.demo.DemoFloatTex2;
 
-import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
+//  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
 //  import {DemoMixProgress as Demo} from "./demo/DemoMixProgress";
 
@@ -238,7 +238,7 @@ import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
 //  import {DemoThreadConcurrent as Demo} from "./demo/DemoThreadConcurrent";
 
-//  import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
+import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////   motion    /////////////////////////////////////

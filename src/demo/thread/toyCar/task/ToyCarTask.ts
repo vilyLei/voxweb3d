@@ -7,8 +7,7 @@
 import ThreadTask from "../../../../thread/control/ThreadTask";
 import { IToyEntity } from "../base/IToyEntity";
 import { EntityStatusManager } from "../base/EntityStatusManager";
-import { TerrainData } from "../terrain/TerrainData";
-import { TerrainPathStatus } from "../terrain/TerrainPath";
+import { TerrainData } from "../../../..//terrain/tile/TerrainData";
 
 class ToyCarTask extends ThreadTask {
     

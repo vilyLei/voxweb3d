@@ -27,7 +27,6 @@ class VSTexturePosIdRenderShaderBuffer extends ShaderCodeBuffer {
         let coder = this.m_coder;
         coder.addVertLayout("vec4", "a_vs");
         coder.addFragUniform("vec4", "u_color");
-        //coder.addVarying("vec4","v_color");
         coder.addVertUniform("vec4", "u_vtxParams");
         this.m_uniform.add2DMap("VOX_POSITION_MAP", false, false, true);
         this.m_uniform.add2DMap("VOX_COLOR_MAP");
@@ -43,10 +42,9 @@ class VSTexturePosIdRenderShaderBuffer extends ShaderCodeBuffer {
     index *= u_vtxParams[0];
     float pv = floor(index) * u_vtxParams[0];
     float pu = fract(index);
-    vec4 pos4 = VOX_Texture2D(VOX_POSITION_MAP, vec2(pu,pv));
-    vec4 objPos = vec4(a_vs.xyz,1.0);
-    objPos.xyz += pos4.xyz;
-    gl_Position = u_projMat * u_viewMat * u_objMat * objPos;
+    localPosition = vec4(a_vs.xyz,1.0);
+    localPosition.xyz += VOX_Texture2D(VOX_POSITION_MAP, vec2(pu,pv)).xyz;
+    gl_Position = u_projMat * u_viewMat * u_objMat * localPosition;
     v_uv = a_uvs;
 `
         )

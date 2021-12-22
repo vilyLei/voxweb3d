@@ -16,7 +16,7 @@ import RendererScene from "../../../../vox/scene/RendererScene";
 import { CommonMaterialContext } from "../../../../materialLab/base/CommonMaterialContext";
 import { IToyEntity } from "./IToyEntity";
 import { TerrainPathStatus, TerrainPath } from "../terrain/TerrainPath";
-import { TerrainData } from "../terrain/TerrainData";
+import { TerrainData } from "../../../../terrain/tile/TerrainData";
 import Line3DEntity from "../../../../vox/entity/Line3DEntity";
 
 import IEntityTransform from "../../../../vox/entity/IEntityTransform";

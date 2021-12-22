@@ -3,8 +3,8 @@ import RendererScene from "../../../../vox/scene/RendererScene";
 import ThreadSystem from "../../../../thread/ThreadSystem";
 import { ToyCarTask } from "../task/ToyCarTask";
 import { ToyCarBuilder } from "./ToyCarBuilder";
-import { TerrainData } from "../terrain/TerrainData";
-import { ToyCarTerrain } from "../terrain/ToyCarTerrain";
+import { TerrainData } from "../../../../terrain/tile/TerrainData";
+import { SimpleTerrain } from "../../../../terrain/tile/SimpleTerrain";
 import { CarEntity } from "../base/CarEntity";
 import Vector3D from "../../../../vox/math/Vector3D";
 import { EntityStatus } from "../base/EntityStatus";
@@ -17,7 +17,7 @@ class ToyCarScene {
     private m_rscene: RendererScene = null;
     private m_materialCtx: CommonMaterialContext;
     private m_toyCarBuilder: ToyCarBuilder = new ToyCarBuilder();
-    private m_toyTerrain: ToyCarTerrain = new ToyCarTerrain();
+    private m_toyTerrain: SimpleTerrain = new SimpleTerrain();
     private m_entitiesTotal: number = 0;
     private m_toyCarTasks: ToyCarTask[] = [];
     private m_terrainData: TerrainData = null;
@@ -205,7 +205,7 @@ class ToyCarScene {
     }
     private initTerrain(terrData: TerrainData): void {
 
-        this.m_toyTerrain = new ToyCarTerrain();
+        this.m_toyTerrain = new SimpleTerrain();
         this.m_toyTerrain.initialize(this.m_rscene, this.m_materialCtx, terrData);
 
     }

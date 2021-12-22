@@ -1,18 +1,18 @@
-import Box3DEntity from "../../../../vox/entity/Box3DEntity";
-import RendererScene from "../../../../vox/scene/RendererScene";
-import Vector3D from "../../../../vox/math/Vector3D";
-import Line3DEntity from "../../../../vox/entity/Line3DEntity";
+import Box3DEntity from "../../vox/entity/Box3DEntity";
+import RendererScene from "../../vox/scene/RendererScene";
+import Vector3D from "../../vox/math/Vector3D";
+import Line3DEntity from "../../vox/entity/Line3DEntity";
 import { TerrainData } from "./TerrainData";
-import Axis3DEntity from "../../../../vox/entity/Axis3DEntity";
-import { GeometryMerger } from "../../../../vox/mesh/GeometryMerger";
-import { CommonMaterialContext } from "../../../../materialLab/base/CommonMaterialContext";
-import DataMesh from "../../../../vox/mesh/DataMesh";
-import DisplayEntity from "../../../../vox/entity/DisplayEntity";
-import MaterialBase from "../../../../vox/material/MaterialBase";
-import Color4 from "../../../../vox/material/Color4";
-import Default3DMaterial from "../../../../vox/material/mcase/Default3DMaterial";
+import Axis3DEntity from "../../vox/entity/Axis3DEntity";
+import { GeometryMerger } from "../../vox/mesh/GeometryMerger";
+import { CommonMaterialContext } from "../../materialLab/base/CommonMaterialContext";
+import DataMesh from "../../vox/mesh/DataMesh";
+import DisplayEntity from "../../vox/entity/DisplayEntity";
+import MaterialBase from "../../vox/material/MaterialBase";
+import Color4 from "../../vox/material/Color4";
+import Default3DMaterial from "../../vox/material/mcase/Default3DMaterial";
 
-class ToyCarTerrain {
+class SimpleTerrain {
 
     constructor() { }
 
@@ -21,6 +21,7 @@ class ToyCarTerrain {
     private m_terrainData: TerrainData;
 
     initialize(scene: RendererScene, materialCtx: CommonMaterialContext, terrainData: TerrainData): void {
+        
         if (this.m_rscene == null) {
             this.m_rscene = scene;
             this.m_materialCtx = materialCtx;
@@ -123,4 +124,4 @@ class ToyCarTerrain {
 
     }
 }
-export { ToyCarTerrain }
+export { SimpleTerrain }

@@ -7,7 +7,7 @@
 
 import Vector3D from "../../../../vox/math/Vector3D";
 import { TerrainPathStatus, TerrainPath } from "../terrain/TerrainPath";
-import { TerrainData } from "../terrain/TerrainData";;
+import { TerrainData } from "../../../../terrain/tile/TerrainData";
 
 class PathCalculator {
     private static s_posList: Vector3D[] = new Array(256);
