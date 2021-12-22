@@ -263,6 +263,7 @@ class CarEntity implements IToyEntity {
         let index = this.m_entityIndex * 5;
         for (let i: number = 0; i < this.m_transMat4List.length; ++i) {
             this.m_transMat4List[i].copyFromF32Arr(fs32, index * 16);
+            // 在这里 update bounds的好处是及时的让摄像机剔除掉不需要绘制的可渲染对象
             this.m_entityList[i].updateTransform();
             this.m_entityList[i].update();
 

@@ -8,6 +8,7 @@ import ThreadTask from "../../../../thread/control/ThreadTask";
 import { IToyEntity } from "../base/IToyEntity";
 import { EntityStatusManager } from "../base/EntityStatusManager";
 import { TerrainData } from "../../../..//terrain/tile/TerrainData";
+import { PathSerachListener } from "./PathSerachListener";
 
 class ToyCarTask extends ThreadTask {
     
@@ -22,6 +23,7 @@ class ToyCarTask extends ThreadTask {
     private m_pathSearchData: Uint16Array = null;
     // 存放寻路结果
     private m_pathData: Uint16Array = null;
+    private m_searchPathListener: PathSerachListener = null;
 
     private m_transEnabled: boolean = true;
     private m_pathSerachEnabled: boolean = true;
@@ -65,7 +67,7 @@ class ToyCarTask extends ThreadTask {
     getTotal(): number {
         return this.m_total;
     }
-    updateEntitiesTrans(): void {
+    run(): void {
         
         if (this.isSendTransEnabled()) {
             if (this.m_entities.length > 0) {
@@ -73,7 +75,11 @@ class ToyCarTask extends ThreadTask {
                 this.sendTransData();
             }
         }
+        if (this.isAStarEnabled()) {
+            this.searchEntityPath();
+        }
     }
+
     isSendTransEnabled(): boolean {
         return this.m_transEnabled;
     }
@@ -112,15 +118,19 @@ class ToyCarTask extends ThreadTask {
      * @param descriptor like: {r0: 1, c0: 1, r1: 4, c1: 3}
      */
     aStarSearch(descriptor: any): void {
-        if(this.m_pathSerachEnabled) {
+        if(this.m_pathSerachEnabled && this.isAStarEnabled()) {
             this.m_pathSerachEnabled = false;
             this.addDataWithParam("aStar_exec", [this.m_pathData], descriptor, true);
         }
     }
-    searchPath(): void {
+
+    setSearchPathListener(listener: PathSerachListener): void {
+        this.m_searchPathListener = listener;
+    }
+    private searchEntityPath(): void {
         if(this.m_pathSerachEnabled) {
             
-            // 第一个 uint 16 数值存放个数
+            // this.m_pathSearchData中的 第一个 uint16 数值存放需要寻路的请求个数
             let k: number = 1;
             for (let i: number = 0; i < this.m_entities.length; ++i) {
                 if(this.m_entities[i].isReadySearchPath()) {
@@ -133,19 +143,22 @@ class ToyCarTask extends ThreadTask {
                     this.m_pathSearchData[k++] = path.c1;
                 }
             }
-            
-            if(k > 1) {
-                this.m_pathSearchData[0] = k / 5;
+            this.m_pathSearchData[0] = k / 5;
+            let otherStreams: Uint16Array[] = this.m_searchPathListener != null ? this.m_searchPathListener.getSearchPathData() : null;
+            let streams: Uint16Array[] = null;
+            if(this.m_pathSearchData[0] > 0) {
+                streams = [this.m_pathSearchData, this.m_pathData];
+            }
+            if(otherStreams != null) {
+                streams = streams != null ? streams.concat(otherStreams) : otherStreams.slice(0);
+            }
+            if(streams != null) {
                 this.m_pathSerachEnabled = false;
-                
                 let descriptor: any = {
                     taskIndex: this.taskIndex
                 };
-                this.addDataWithParam("aStar_search", [this.m_pathSearchData, this.m_pathData], descriptor, true);
+                this.addDataWithParam("aStar_search", streams, descriptor, true);
             }
-            // else {
-            //     console.log("BB no searching path, k: ",k);
-            // }
         }
     }
     isAStarEnabled(): boolean {
@@ -195,15 +208,16 @@ class ToyCarTask extends ThreadTask {
 
                 this.m_time = Date.now() - this.m_time;
                 this.m_transParamData = data.streams[0];
-                this.m_transOutputData = data.streams[1];                
+                this.m_transOutputData = data.streams[1];
                 this.m_statusManager.setStatusData(data.streams[2]);
                 this.updateEntityTrans( this.m_transOutputData );
                 this.m_transEnabled = true;
                 break;
             case "aStar_search":
                 // console.log("parseDone XXXX aStar_search...", this.getUid());
-                this.m_pathSearchData = data.streams[0];
-                this.m_pathData = data.streams[1];
+                let streams = data.streams;
+                this.m_pathSearchData = streams[0];
+                this.m_pathData = streams[1];
                 this.updateEntityPath();
                 this.m_pathSerachEnabled = true;
                 break;

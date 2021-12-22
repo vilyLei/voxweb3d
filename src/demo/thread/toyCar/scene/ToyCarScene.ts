@@ -22,7 +22,7 @@ class ToyCarScene {
     private m_toyCarTasks: ToyCarTask[] = [];
     private m_terrainData: TerrainData = null;
     private m_bodyScale: number = 1.0;
-    private m_buildEntitiesTotal: number = 100;
+    private m_buildEntitiesTotal: number = 5;
     private m_tasksTotal: number = 1;
     private m_threadsTotal: number = 2;
     
@@ -145,10 +145,7 @@ class ToyCarScene {
         let tasks = this.m_toyCarTasks;
         let len: number = tasks.length;
         for (let i: number = 0; i < len; ++i) {
-            tasks[i].updateEntitiesTrans();
-            if (tasks[i].isAStarEnabled()) {
-                tasks[i].searchPath();
-            }
+            tasks[i].run();
         }
     }
     private initThread(terrData: TerrainData): void {

@@ -5,18 +5,8 @@
 /*                                                                         */
 /***************************************************************************/
 
-class ThreadCMD {
-    /**
-     * 单个数据处理任务
-     */
-    static readonly DATA_PARSE: number = 3501;
-    /**
-     * 多个数据处理任务组成的队列
-     */
-    static readonly DATA_QUEUE_PARSE: number = 3502;
-    static readonly THREAD_INIT: number = 3601;
-    static readonly INIT_TASK: number = 3701;
-    static readonly INIT_PARAM: number = 3801;
+interface PathSerachListener {
+    getSearchPathData(): Uint16Array[];
+    setSearchedPathData(streams: Uint16Array[]): void;
 }
-
-export default ThreadCMD;
+export { PathSerachListener };

@@ -157,35 +157,47 @@ function AStarNavInstance(pmodule) {
             postMessage(data, [data.streams[0].buffer]);
         }
     }
+    this.searchPath = function(paramVS, pathDataVS) {
+
+        let dataLen = 0;
+        let vs = null;
+
+        let paramLen = paramVS[0];
+        let index = 1;
+        paramLen = paramLen * 5 + index;
+        let total = 0;
+        for(let i = index; i < paramLen; ) {
+            i++;
+            index = i;
+            let r0 = paramVS[i++];
+            let c0 = paramVS[i++];
+            let r1 = paramVS[i++];
+            let c1 = paramVS[i++];
+            m_module.searchPathDataByRC(r0,c0, r1,c1);
+            dataLen = m_module.getPathDataTotal();
+            vs = m_module.getPathData();
+
+            let subVS = vs.subarray(0, dataLen * 2);
+            pathDataVS.set(subVS, total * 2);
+            
+            paramVS[index] = dataLen;
+            total += dataLen;
+        }
+    }
     this.search = function(data) {
         if(m_running) {
-            let dataLen = 0;
-            let vs = null;
-            let paramVS = data.streams[0];
-            let pathDataVS = data.streams[1];
-            let paramLen = paramVS[0];
-            let index = 1;
-            paramLen = paramLen * 5 + index;
-            let total = 0;
-            for(let i = index; i < paramLen; ) {
-                i++;
-                index = i;
-                let r0 = paramVS[i++];
-                let c0 = paramVS[i++];
-                let r1 = paramVS[i++];
-                let c1 = paramVS[i++];
-                m_module.searchPathDataByRC(r0,c0, r1,c1);
-                dataLen = m_module.getPathDataTotal();
-                vs = m_module.getPathData();
 
-                let subVS = vs.subarray(0, dataLen * 2);
-                pathDataVS.set(subVS, total * 2);
-                
-                paramVS[index] = dataLen;
-                total += dataLen;
+            let streams = data.streams;
+            let total = streams.length;
+            let buffers = [];
+            for(let i = 0; i < total; ) {
+                let paramVS = streams[i++];
+                let pathDataVS = streams[i++];
+                buffers.push(paramVS.buffer, pathDataVS.buffer);
+                this.searchPath(paramVS, pathDataVS);
             }
             
-            postMessage(data, [paramVS.buffer, pathDataVS.buffer]);
+            postMessage(data, buffers);
         }
     }
 }
