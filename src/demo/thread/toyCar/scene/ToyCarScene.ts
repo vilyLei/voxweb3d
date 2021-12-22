@@ -152,7 +152,7 @@ class ToyCarScene {
                         this.m_rc1 = rc;
                         // this.m_entity0.navigator.setEndRC(rc[0], rc[1]);
                         // this.m_entity0.navigator.searchPath();
-                        this.m_terrNav.reset();
+                        this.m_terrNav.resetSearchPath();
                         this.m_terrNav.setSearchPathParamAt(
                             0,
                             this.m_rc0[0], this.m_rc0[1],

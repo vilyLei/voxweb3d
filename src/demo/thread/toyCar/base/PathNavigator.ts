@@ -13,14 +13,14 @@ import Vector3D from "../../../../vox/math/Vector3D";
 import { EntityStatus } from "./EntityStatus";
 import { PathCalculator } from "./PathCalculator";
 
-class PathNavigator{
+class PathNavigator {
 
     private m_delayTime: number = 10;
     private m_stopped: boolean = true;
     private m_terrainData: TerrainData = null;
     private m_target: IEntityTransform = null;
     private m_outPos: Vector3D = new Vector3D();
-    
+
     status: EntityStatus = EntityStatus.Init;
     autoSerachPath: boolean = false;
     readonly curveMotion: CurveMotionXZModule = new CurveMotionXZModule();
@@ -48,11 +48,11 @@ class PathNavigator{
         //     this.m_pathCurve.updateMeshToGpu();
         //     this.m_pathCurve.updateBounds();
         // }
-        this.m_target.getPosition( this.m_outPos );
+        this.m_target.getPosition(this.m_outPos);
         let motion = this.curveMotion.motion;
         //motion.setTarget(this.transform);
         motion.setVelocityFactor(0.04, 0.04);
-        motion.setCurrentPosition( this.m_outPos );
+        motion.setCurrentPosition(this.m_outPos);
         this.curveMotion.setPathPosList(posList);
 
         this.path.searchedPath();
@@ -90,8 +90,8 @@ class PathNavigator{
     }
     findRandomPath(): void {
         if (this.autoSerachPath) {
-            this.m_target.getPosition( this.m_outPos );
-            let beginRC: number[] = this.m_terrainData.getRCByPosition( this.m_outPos );
+            this.m_target.getPosition(this.m_outPos);
+            let beginRC: number[] = this.m_terrainData.getRCByPosition(this.m_outPos);
             let endRC: number[] = this.m_terrainData.getRandomFreeRC();
 
             this.path.setSearchPathParam(beginRC[0], beginRC[1], endRC[0], endRC[1]);
@@ -103,7 +103,7 @@ class PathNavigator{
             }
         }
     }
-    
+
     stopAndWait(): void {
         this.m_delayTime = Math.round(Math.random() * 100) + 30;
         this.path.stopPath();
@@ -126,7 +126,7 @@ class PathNavigator{
     setSearchPathParam(r0: number, c0: number, r1: number, c1: number): void {
         this.path.setSearchPathParam(r0, c0, r1, c1);
     }
-    isReadySearchPath(): boolean {        
+    isReadySearchPath(): boolean {
         return this.path.isReadySearchPath();
     }
 }

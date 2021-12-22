@@ -6,9 +6,11 @@
 /***************************************************************************/
 
 import { PathSerachListener } from "./PathSerachListener";
+import { PathNavigator } from "../base/PathNavigator";
 
 class TerrainNavigation implements PathSerachListener{
 
+    private m_navigators: PathNavigator[] = [];
     // 存放请求寻路的信息数据
     private m_pathSearchData: Uint16Array = null;
     // 存放寻路结果
@@ -16,11 +18,33 @@ class TerrainNavigation implements PathSerachListener{
     private m_index: number = 0;
     private m_total: number = 0;
 
-    initialize(): void {
-        this.m_pathSearchData = new Uint16Array(1024 * 2);
-        this.m_pathData = new Uint16Array(1024 * 4);
+    initialize(chunksTotal: number = 2): void {
+        this.m_pathSearchData = new Uint16Array(1024 * chunksTotal);
+        this.m_pathData = new Uint16Array(1024 * chunksTotal * 2);
     }
-    reset(): void {
+    addPathNavigator(nav: PathNavigator): void {
+        if(nav != null) {
+            this.m_navigators.push( nav );
+        }
+    }
+    buildSearchData(): void {
+        let k: number = 1;
+        this.m_total = 0;
+        for (let i: number = 0; i < this.m_navigators.length; ++i) {
+            const nav = this.m_navigators[i];
+            if(nav.isReadySearchPath()) {
+                nav.searchingPath();
+                const path = nav.path;
+                this.m_pathSearchData[k++] = i;
+                this.m_pathSearchData[k++] = path.r0;
+                this.m_pathSearchData[k++] = path.c0;
+                this.m_pathSearchData[k++] = path.r1;
+                this.m_pathSearchData[k++] = path.c1;
+                this.m_total ++;
+            }
+        }
+    }
+    resetSearchPath(): void {
         this.m_index = 0;
         this.m_total = 0;
         this.m_pathSearchData[0] = this.m_total;
@@ -66,9 +90,8 @@ class TerrainNavigation implements PathSerachListener{
         for(let i: number = 0; i < total; ++i) {
             index = params[k];
             pathDataLen = params[k+1] * 2;
-            let vs = pathVS.subarray(dataLen, dataLen + pathDataLen);
-            console.log("TerrainNavigation::updateEntityPath(), vs: ",vs);
-            //this.m_entities[index].searchedPath(vs);
+            const vs = pathVS.subarray(dataLen, dataLen + pathDataLen);
+            this.m_navigators[index].searchedPath(vs);
             dataLen += pathDataLen;
             k += 5;
         }

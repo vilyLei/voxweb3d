@@ -10,6 +10,7 @@ import { EntityStatusManager } from "../base/EntityStatusManager";
 import { TerrainData } from "../../../..//terrain/tile/TerrainData";
 import { PathSerachListener } from "../terrain/PathSerachListener";
 import { PathNavigator } from "../base/PathNavigator";
+import { TerrainNavigation } from "../terrain/TerrainNavigation";
 
 class ToyCarTask extends ThreadTask {
     
@@ -20,10 +21,10 @@ class ToyCarTask extends ThreadTask {
     private m_transInputData: Float32Array = null;
     private m_transParamData: Float32Array = null;
     private m_transOutputData: Float32Array = null;
-    // 存放请求寻路的信息数据
-    private m_pathSearchData: Uint16Array = null;
-    // 存放寻路结果
-    private m_pathData: Uint16Array = null;
+    // // 存放请求寻路的信息数据
+    // private m_pathSearchData: Uint16Array = null;
+    // // 存放寻路结果
+    // private m_pathData: Uint16Array = null;
 
     private m_searchPathListener: PathSerachListener = null;
 
@@ -35,6 +36,7 @@ class ToyCarTask extends ThreadTask {
     private m_transFlag: number = 0;
     private m_calcType: number = 1;
     private m_statusManager: EntityStatusManager = new EntityStatusManager();
+    private m_terrNav: TerrainNavigation = new TerrainNavigation();
     private m_time: number = 0;
     taskIndex: number = 0;
 
@@ -66,6 +68,8 @@ class ToyCarTask extends ThreadTask {
 
             this.m_entities.push( entity );
             this.m_navigators.push( entity.navigator );
+
+            this.m_terrNav.addPathNavigator( entity.navigator );
 
             this.m_entityIndex ++;
             this.m_matsTotal = this.m_entityIndex * 5;
@@ -116,19 +120,21 @@ class ToyCarTask extends ThreadTask {
             };
             this.addDataWithParam("aStar_init", [descriptor.stvs], descriptor, true);
             this.m_aStarFlag = 1;
-            this.m_pathSearchData = new Uint16Array(1024 * 4);
-            this.m_pathData = new Uint16Array(1024 * 8);
+            // this.m_pathSearchData = new Uint16Array(1024 * 4);
+            // this.m_pathData = new Uint16Array(1024 * 8);
+
+            this.m_terrNav.initialize(4);
         }
     }
     /**
      * @param descriptor like: {r0: 1, c0: 1, r1: 4, c1: 3}
      */
-    aStarSearch(descriptor: any): void {
-        if(this.m_pathSerachEnabled && this.isAStarEnabled()) {
-            this.m_pathSerachEnabled = false;
-            this.addDataWithParam("aStar_exec", [this.m_pathData], descriptor, true);
-        }
-    }
+    // aStarSearch(descriptor: any): void {
+    //     if(this.m_pathSerachEnabled && this.isAStarEnabled()) {
+    //         this.m_pathSerachEnabled = false;
+    //         this.addDataWithParam("aStar_exec", [this.m_pathData], descriptor, true);
+    //     }
+    // }
 
     setSearchPathListener(listener: PathSerachListener): void {
         this.m_searchPathListener = listener;
@@ -137,26 +143,28 @@ class ToyCarTask extends ThreadTask {
         if(this.m_pathSerachEnabled) {
             
             // this.m_pathSearchData中的 第一个 uint16 数值存放需要寻路的请求个数
-            let k: number = 1;
-            for (let i: number = 0; i < this.m_navigators.length; ++i) {
-                const nav = this.m_navigators[i];
-                if(nav.isReadySearchPath()) {
-                    nav.searchingPath();
-                    const path = nav.path;
-                    this.m_pathSearchData[k++] = i;
-                    this.m_pathSearchData[k++] = path.r0;
-                    this.m_pathSearchData[k++] = path.c0;
-                    this.m_pathSearchData[k++] = path.r1;
-                    this.m_pathSearchData[k++] = path.c1;
-                }
-            }
+            // let k: number = 1;
+            // for (let i: number = 0; i < this.m_navigators.length; ++i) {
+            //     const nav = this.m_navigators[i];
+            //     if(nav.isReadySearchPath()) {
+            //         nav.searchingPath();
+            //         const path = nav.path;
+            //         this.m_pathSearchData[k++] = i;
+            //         this.m_pathSearchData[k++] = path.r0;
+            //         this.m_pathSearchData[k++] = path.c0;
+            //         this.m_pathSearchData[k++] = path.r1;
+            //         this.m_pathSearchData[k++] = path.c1;
+            //     }
+            // }
+            // this.m_pathSearchData[0] = k / 5;
 
-            this.m_pathSearchData[0] = k / 5;
+            this.m_terrNav.buildSearchData();
+
             let otherStreams: Uint16Array[] = this.m_searchPathListener != null ? this.m_searchPathListener.getSearchPathData() : null;
-            let streams: Uint16Array[] = null;
-            if(this.m_pathSearchData[0] > 0) {
-                streams = [this.m_pathSearchData, this.m_pathData];
-            }
+            let streams: Uint16Array[] = this.m_terrNav.getSearchPathData();
+            // if(this.m_pathSearchData[0] > 0) {
+            //     streams = [this.m_pathSearchData, this.m_pathData];
+            // }
             if(otherStreams != null) {
                 streams = streams != null ? streams.concat(otherStreams) : otherStreams;
                 //console.log("searchPath(), streams: ",streams);
@@ -192,24 +200,23 @@ class ToyCarTask extends ThreadTask {
         // }
     }
     
-    private updateEntityPath(): void {
-        
-        let params = this.m_pathSearchData;
-        let pathVS = this.m_pathData;
-        let total: number = params[0];
-        let index: number = 0;
-        let k: number = 1;
-        let pathDataLen: number = 0;
-        let dataLen: number = 0;
-        for(let i: number = 0; i < total; ++i) {
-            index = params[k];
-            pathDataLen = params[k+1] * 2;
-            let vs = pathVS.subarray(dataLen, dataLen + pathDataLen);
-            this.m_navigators[index].searchedPath(vs);
-            dataLen += pathDataLen;
-            k += 5;
-        }
-    }
+    // private updateEntityPath(): void {        
+    //     let params = this.m_pathSearchData;
+    //     let pathVS = this.m_pathData;
+    //     let total: number = params[0];
+    //     let index: number = 0;
+    //     let k: number = 1;
+    //     let pathDataLen: number = 0;
+    //     let dataLen: number = 0;
+    //     for(let i: number = 0; i < total; ++i) {
+    //         index = params[k];
+    //         pathDataLen = params[k+1] * 2;
+    //         let vs = pathVS.subarray(dataLen, dataLen + pathDataLen);
+    //         this.m_navigators[index].searchedPath(vs);
+    //         dataLen += pathDataLen;
+    //         k += 5;
+    //     }
+    // }
     // return true, task finish; return false, task continue...
     parseDone(data: any, flag: number): boolean {
         
@@ -231,9 +238,10 @@ class ToyCarTask extends ThreadTask {
                 if(descriptor.otherStreams) {
 
                     if(streams.length > 2) {
-                        this.m_pathSearchData = streams[0];
-                        this.m_pathData = streams[1];
-                        this.updateEntityPath();
+                        // this.m_pathSearchData = streams[0];
+                        // this.m_pathData = streams[1];
+                        // this.updateEntityPath();
+                        this.m_terrNav.receiveSearchedPathData([streams[0], streams[1]]);
                         streams = streams.slice(2);
                     }
                     if(streams.length > 0 && this.m_searchPathListener != null) {
@@ -241,9 +249,10 @@ class ToyCarTask extends ThreadTask {
                     }
                 }
                 else {
-                    this.m_pathSearchData = streams[0];
-                    this.m_pathData = streams[1];
-                    this.updateEntityPath();
+                    // this.m_pathSearchData = streams[0];
+                    // this.m_pathData = streams[1];
+                    // this.updateEntityPath();                    
+                    this.m_terrNav.receiveSearchedPathData([streams[0], streams[1]]);
                 }
                 this.m_pathSerachEnabled = true;
                 break;
