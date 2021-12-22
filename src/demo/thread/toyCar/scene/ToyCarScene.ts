@@ -23,7 +23,7 @@ class ToyCarScene {
     private m_toyCarTasks: ToyCarTask[] = [];
     private m_terrainData: TerrainData = null;
     private m_bodyScale: number = 1.0;
-    private m_buildEntitiesTotal: number = 10;
+    private m_buildEntitiesTotal: number = 1;
     private m_tasksTotal: number = 1;
     private m_threadsTotal: number = 2;
     
@@ -90,6 +90,8 @@ class ToyCarScene {
         }
     }
     private m_entity0: CarEntity;
+    
+    private m_terrNav0: TerrainNavigation = null;//new TerrainNavigation();
     private buildEntities(): void {
 
         let entity: CarEntity;        
@@ -98,9 +100,18 @@ class ToyCarScene {
             let task: ToyCarTask = this.m_toyCarTasks[i];
             for (let j: number = 0; j < this.m_buildEntitiesTotal; ++j) {
 
-                entity = this.m_toyCarBuilder.buildCarEntity(task, this.m_bodyScale);                
+                entity = this.m_toyCarBuilder.buildCarEntity(task, this.m_bodyScale);
                 this.m_entity0 = entity;
             }
+        }
+
+        if(this.m_terrNav0 == null) {
+            let task = this.m_toyCarTasks[0];
+            this.m_terrNav0 = new TerrainNavigation();
+            this.m_terrNav0.initialize();
+            task.setSearchPathListener( this.m_terrNav0 );
+            let entity = this.m_toyCarBuilder.buildBallEntity(0.7);
+            this.m_terrNav0.addPathNavigator(entity.navigator);
         }
     }
     private updateThreadTask(): void {
@@ -124,17 +135,11 @@ class ToyCarScene {
     private m_testFlag: number = 0;
     private m_rc0: number[];
     private m_rc1: number[];
-    private m_terrNav: TerrainNavigation = null;//new TerrainNavigation();
     testDose(pv: Vector3D): void {
         ///*
         if(this.m_terrainData != null) {
             let task = this.m_toyCarTasks[0];
-            if(this.m_terrNav == null) {
-                this.m_terrNav = new TerrainNavigation();
-                this.m_terrNav.initialize();
-                task.setSearchPathListener( this.m_terrNav );
-            }
-
+            /*
             let containsFlag: boolean = this.m_terrainData.containsPosition( pv );
             console.log("containsFlag: ",containsFlag);
             if(containsFlag) {
@@ -152,8 +157,8 @@ class ToyCarScene {
                         this.m_rc1 = rc;
                         // this.m_entity0.navigator.setEndRC(rc[0], rc[1]);
                         // this.m_entity0.navigator.searchPath();
-                        this.m_terrNav.resetSearchPath();
-                        this.m_terrNav.setSearchPathParamAt(
+                        this.m_terrNav0.resetSearchPath();
+                        this.m_terrNav0.setSearchPathParamAt(
                             0,
                             this.m_rc0[0], this.m_rc0[1],
                             this.m_rc1[0], this.m_rc1[1]
@@ -165,6 +170,7 @@ class ToyCarScene {
                     this.m_testFlag = 0;
                 }
             }
+            //*/
         }
         //*/
         // if (task.isAStarEnabled()) {
@@ -194,6 +200,9 @@ class ToyCarScene {
         let len: number = tasks.length;
         for (let i: number = 0; i < len; ++i) {
             tasks[i].navigationRun();
+        }
+        if(this.m_terrNav0 != null) {
+            this.m_terrNav0.run();
         }
     }
 }

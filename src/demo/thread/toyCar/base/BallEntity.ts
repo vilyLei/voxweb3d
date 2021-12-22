@@ -34,7 +34,7 @@ class BallEntity {
     private m_outPos: Vector3D = new Vector3D();
 
     private m_scene: RendererScene = null;
-    private m_entity: DisplayEntity = new DisplayEntity();
+    private m_entity: DisplayEntity = null;
     private m_visible: boolean = true;
 
     readonly navigator: PathNavigator = new PathNavigator();
@@ -82,8 +82,9 @@ class BallEntity {
         entity = new DisplayEntity();
         entity.copyMeshFrom(srcEntity);
         entity.setMaterial(material0);
+        this.m_entity = entity;
         sc.addEntity(entity);
-
+        
     }
     getDisplayEntity(): DisplayEntity {
         return this.m_entity;
@@ -96,6 +97,7 @@ class BallEntity {
     }
     setScale(scale: number): void {
         this.m_entity.setScaleXYZ(scale, scale, scale);
+        this.m_entity.update();
     }
     setSpeed(spd: number): void {
         this.navigator.curveMotion.setSpeed(spd);

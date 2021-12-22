@@ -43,7 +43,7 @@ class ToyCarBuilder {
         }
     }
     
-    buildBallEntity(task: ToyCarTask, bodyScale: number): BallEntity {
+    buildBallEntity(bodyScale: number): BallEntity {
         
         let entity: BallEntity;
         
