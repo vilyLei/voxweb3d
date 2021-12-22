@@ -36,6 +36,7 @@ class BallEntity {
     private m_scene: RendererScene = null;
     private m_entity: DisplayEntity = null;
     private m_visible: boolean = true;
+    private m_radius: number = 0.0;
 
     readonly navigator: PathNavigator = new PathNavigator();
 
@@ -47,7 +48,7 @@ class BallEntity {
     build(sc: RendererScene, materialCtx: CommonMaterialContext, size: number = 200): void {
 
         this.m_scene = sc;
-        let halfSize: number = size * 0.5;
+        this.m_radius = size * 0.5;
         // if (this.m_pathCurve == null) {
         //     this.m_pathCurve = new Line3DEntity();
         //     this.m_pathCurve.initialize(new Vector3D(), new Vector3D(100.0));
@@ -65,7 +66,7 @@ class BallEntity {
             material.fogEnabled = false;
             BallEntity.s_srcSphere.setMaterial(material);
 
-            BallEntity.s_srcSphere.initialize(halfSize, 15, 15, [tex0]);
+            BallEntity.s_srcSphere.initialize(this.m_radius, 15, 15, [tex0]);
         }
         let srcEntity = BallEntity.s_srcSphere;
 
@@ -77,7 +78,7 @@ class BallEntity {
         material0.initializeByCodeBuf(true);
         material0.setColor(color);
 
-
+        this.navigator.positionOffset = new Vector3D(0.0, this.m_radius ,0.0);
         let entity: DisplayEntity;
         entity = new DisplayEntity();
         entity.copyMeshFrom(srcEntity);
@@ -96,8 +97,10 @@ class BallEntity {
         return this.m_visible;
     }
     setScale(scale: number): void {
+        //this.navigator.positionOffset.y = this.m_radius * scale + 10.0;
         this.m_entity.setScaleXYZ(scale, scale, scale);
         this.m_entity.update();
+        this.navigator.positionOffset.y = this.m_entity.getGlobalBounds().getHeight() * 0.5;
     }
     setSpeed(spd: number): void {
         this.navigator.curveMotion.setSpeed(spd);

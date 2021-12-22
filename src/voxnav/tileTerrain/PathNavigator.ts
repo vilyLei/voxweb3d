@@ -21,6 +21,7 @@ class PathNavigator {
     private m_target: IEntityTransform = null;
     private m_outPos: Vector3D = new Vector3D();
 
+    positionOffset: Vector3D = null;//new Vector3D();
     status: NavigationStatus = NavigationStatus.Init;
     autoSerachPath: boolean = false;
     readonly curveMotion: CurveMotionXZModule = new CurveMotionXZModule();
@@ -42,10 +43,12 @@ class PathNavigator {
     }
     searchedPath(vs: Uint16Array): void {
 
-        //console.log("searchedPath,vs: ", vs);
-
         let posList: Vector3D[] = PathCalculator.GetPathPosList(vs, this.path, this.m_terrainData);
-
+        if(this.positionOffset != null) {
+            for(let i: number = 0; i < posList.length; ++i) {
+                posList[i].addBy( this.positionOffset );
+            }
+        }
         // console.log("posList: ", posList);
         // if (this.m_pathCurve != null) {
         //     this.m_pathCurve.initializePolygon(posList);
