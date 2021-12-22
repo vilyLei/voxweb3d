@@ -23,7 +23,7 @@ class ToyCarScene {
     private m_toyCarTasks: ToyCarTask[] = [];
     private m_terrainData: TerrainData = null;
     private m_bodyScale: number = 1.0;
-    private m_buildEntitiesTotal: number = 1;
+    private m_buildEntitiesTotal: number = 10;
     private m_tasksTotal: number = 1;
     private m_threadsTotal: number = 2;
     
@@ -98,7 +98,7 @@ class ToyCarScene {
             let task: ToyCarTask = this.m_toyCarTasks[i];
             for (let j: number = 0; j < this.m_buildEntitiesTotal; ++j) {
 
-                entity = this.m_toyCarBuilder.buildEntity(task, this.m_bodyScale);                
+                entity = this.m_toyCarBuilder.buildCarEntity(task, this.m_bodyScale);                
                 this.m_entity0 = entity;
             }
         }
