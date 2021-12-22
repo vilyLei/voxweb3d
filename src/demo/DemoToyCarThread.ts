@@ -14,6 +14,7 @@ import { ToyCarScene } from "./thread/toyCar/scene/ToyCarScene";
 
 import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
 import { IShaderLibListener, CommonMaterialContext, MaterialContextParam } from "../materialLab/base/CommonMaterialContext";
+import { DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
 import { PointLight } from "../light/base/PointLight";
 import { DirectionLight } from "../light/base/DirectionLight";
 import Box3DEntity from "../vox/entity/Box3DEntity";
@@ -33,7 +34,8 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
     private m_profileInstance: ProfileInstance = new ProfileInstance();
     private m_userInteraction: UserInteraction = new UserInteraction();
     
-    private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
+    // private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
+    private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
 
     private m_toyCarScene: ToyCarScene = new ToyCarScene();
 
@@ -75,13 +77,13 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
         //mcParam.vsmEnabled = false;
         mcParam.loadAllShaderCode = true;
         mcParam.shaderCodeBinary = true;
+        this.m_materialCtx.addShaderLibListener( this );
         this.m_materialCtx.initialize( this.m_rscene, mcParam );
 
         let lightModule = this.m_materialCtx.lightModule;
         let direcLight: DirectionLight = lightModule.getDirectionLightAt(0);
         direcLight.direction.setXYZ(-0.5,-0.5,0.5);
         
-        this.m_materialCtx.addShaderLibListener( this );
         
         // let pointLight: PointLight = this.m_materialCtx.lightModule.getPointLightAt(0);
         // pointLight.position.setXYZ(0.0, 150.0, -50.0);
@@ -115,29 +117,32 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
         console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ",loadingTotal, loadedTotal);
         this.initScene();
     }
+    private m_material: LambertLightMaterial;
     private initScene(): void {
 
 
         this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
-        //  this.m_toyCarScene.initialize(this.m_rscene, this.m_materialCtx);
+        this.m_toyCarScene.initialize(this.m_rscene, this.m_materialCtx);
 
         // let axis: Axis3DEntity = new Axis3DEntity();
         // axis.initialize(300.0);
         // // axis.setXYZ(0, 30, 0);
         // this.m_rscene.addEntity(axis);
 
-        let tex0 = this.m_materialCtx.getTextureByUrl("static/assets/metal_02.jpg");
-        let material: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
-        material.fogEnabled = false;
-        material.diffuseMap = tex0;
-        let transMat4: Matrix4 = new Matrix4();
-        transMat4.appendRotationEulerAngle(0.0,0.0, MathConst.DegreeToRadian(90.0));
-        let cyl: Cylinder3DEntity = new Cylinder3DEntity();
-        cyl.uScale = 12.0;
-        cyl.setMaterial( material );
-        cyl.setVtxTransformMatrix(transMat4);
-        cyl.initialize(100,100, 30, [tex0], 0);
-        this.m_rscene.addEntity( cyl );
+        // let tex0 = this.m_materialCtx.getTextureByUrl("static/assets/metal_02.jpg");
+        // let material: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
+        // material.fogEnabled = false;
+        // material.vtxUVTransformEnabled = true;
+        // material.diffuseMap = tex0;
+        // this.m_material = material;
+        // let transMat4: Matrix4 = new Matrix4();
+        // transMat4.appendRotationEulerAngle(0.0,0.0, MathConst.DegreeToRadian(90.0));
+        // let cyl: Cylinder3DEntity = new Cylinder3DEntity();
+        // cyl.uScale = 12.0;
+        // cyl.setMaterial( material );
+        // cyl.setVtxTransformMatrix(transMat4);
+        // cyl.initialize(100,100, 30, [tex0], 0);
+        // this.m_rscene.addEntity( cyl );
 
         // // let material: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
         // // material.fogEnabled = false;
@@ -175,8 +180,12 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
         if (this.m_statusDisp != null) this.m_statusDisp.update();
         
     }
+    private m_dv: Vector3D = new Vector3D();
     run(): void {
-
+        if(this.m_material != null) {
+            this.m_material.setUVTranslation(this.m_dv.x, this.m_dv.y);
+            this.m_dv.x += 0.05;
+        }
         ThreadSystem.Run();
 
         this.m_rscene.run();

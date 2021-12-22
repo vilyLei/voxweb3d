@@ -41,6 +41,7 @@ export default class LambertLightMaterial extends MaterialBase {
 
     lightEnabled: boolean = true;
     fogEnabled: boolean = false;
+    vtxUVTransformEnabled: boolean = false;
 
     constructor() {
         super();
@@ -159,6 +160,8 @@ export default class LambertLightMaterial extends MaterialBase {
         buf.lightParamsIndex = this.m_lightParamsIndex;
         buf.lightEnabled = this.lightEnabled;
         buf.fogEnabled = this.fogEnabled;
+        buf.getShaderCodeBuilder().vtxUVTransfromEnabled = this.vtxUVTransformEnabled;
+
         buf.shadowReceiveEnabled = this.shadowMap != null;
         buf.fragLocalParamsTotal = this.m_fragLocalParamsTotal;
 

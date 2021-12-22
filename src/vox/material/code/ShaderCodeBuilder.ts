@@ -15,7 +15,7 @@ import { ShaderCodeUniform } from "../../../vox/material/code/ShaderCodeUniform"
 import IShaderCodeBuilder from "./IShaderCodeBuilder";
 import GLSLConverter from "./GLSLConverter";
 import ShaderCompileInfo from "./ShaderCompileInfo";
-import {ShaderCode, MathShaderCode} from "./ShaderCode";
+import { ShaderCode, MathShaderCode } from "./ShaderCode";
 
 export default class ShaderCodeBuilder implements IShaderCodeBuilder {
 
@@ -72,10 +72,8 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
     private m_fragHeadCode: string = "";
     private m_fragMainCode: string = "";
 
-    // private m_uniqueNSKeyString: string = "";
-    // private m_uniqueNSKeys: Uint16Array = new Uint16Array(128);
-    // private m_uniqueNSKeysTotal: number = 10;
-    // private m_uniqueNSKeyFlag: boolean = false;
+    private m_uniqueNSKeyString: string = "";
+    private m_uniqueNSKeysTotal: number = 10;
 
     private m_use2DMap: boolean = false;
     /**
@@ -83,7 +81,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
      */
     private m_preCompileInfo: ShaderCompileInfo = null;
 
-    
+
     readonly uniform: IShaderCodeUniform;
     mathDefineEanbled: boolean = true;
     normalEanbled: boolean = false;
@@ -91,42 +89,24 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
     mapLodEnabled: boolean = false;
     derivatives: boolean = false;
     vertMatrixInverseEnabled: boolean = false;
+    vtxUVTransfromEnabled: boolean = false;
     fragMatrixInverseEnabled: boolean = false;
 
     constructor(uniform: IShaderCodeUniform) {
         let self: any = this;
         self.uniform = uniform;
     }
-    
+
     getUniqueNSKeyID(): number {
-        /*
-        if(this.m_uniqueNSKeyFlag) {
-            let id: number = 31;
-            for(let i: number = 0; i < this.m_uniqueNSKeysTotal; ++i) {
-                id = id * 131 + this.m_uniqueNSKeys[i];
-            }
-            return id;
-        }
-        return 0;
-        //*/
         return this.uniform.getUniqueNSKeyID();
     }
     getUniqueNSKeyString(): string {
-        /*
-        if(this.m_uniqueNSKeyFlag) {
-            this.m_uniqueNSKeyString = "[" + this.m_uniqueNSKeys[0];
-            for(let i: number = 1; i < this.m_uniqueNSKeysTotal; ++i) {
-                this.m_uniqueNSKeyString += "-"+this.m_uniqueNSKeys[i];
-            }
-            this.m_uniqueNSKeyString += "]";
-            return this.m_uniqueNSKeyString;
-        }
-        return "";
-        //*/
-        return this.uniform.getUniqueNSKeyString();
+        let ns: string = this.m_uniqueNSKeyString;
+        if(this.vtxUVTransfromEnabled) ns += "VtxUVT";
+        return this.uniform.getUniqueNSKeyString() + ns;
     }
     reset(): void {
-        
+
         this.m_vertObjMat = true;
         this.m_vertViewMat = true;
         this.m_vertProjMat = true;
@@ -139,12 +119,10 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
 
         this.m_vertHeadCode = "";
         this.m_vertMainCode = "";
-        // this.m_vertMainCodeAppend = "";
-        // this.m_vertMainCodePrepend = "";
         this.m_fragHeadCode = "";
         this.m_fragMainCode = "";
-        //this.m_fragMainCodeAppend = "";
-        //this.m_fragMainCodePrepend = "";
+
+        this.m_uniqueNSKeyString = "";
 
         this.m_vertExt = [];
         this.m_fragExt = [];
@@ -177,25 +155,17 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         this.m_textureFlags = [];
         this.m_texturePrecise = "";
 
-        // this.vertColorEnabled = false;
-        // this.premultiplyAlpha = false;
         this.mathDefineEanbled = true;
         this.normalEanbled = false;
         this.normalMapEanbled = false;
         this.mapLodEnabled = false;
         this.vertMatrixInverseEnabled = false;
         this.fragMatrixInverseEnabled = false;
+        this.vtxUVTransfromEnabled = false;
 
         this.m_preCompileInfo = null;
 
         this.uniform.reset();
-        // this.m_uniqueNSKeyString = "";
-        // if(this.m_uniqueNSKeyFlag) {
-        //     for(let i: number = 0; i < this.m_uniqueNSKeysTotal; ++i) {
-        //         this.m_uniqueNSKeys[i] = 0;
-        //     }
-        //     this.m_uniqueNSKeyFlag = false;
-        // }
     }
     /**
      * 预编译信息
@@ -215,12 +185,14 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
     useLowPrecious(): void {
         this.m_preciousCode = "precision lowp float;";
     }
-    addDefine(name: string, value: string = "1"): void {
+    addDefine(name: string, value: string = "1"): boolean {
 
         if (!this.m_defineNames.includes(name)) {
             this.m_defineNames.push(name);
             this.m_defineValues.push(value);
+            return true;
         }
+        return false;
     }
     addVertLayout(type: string, name: string): void {
 
@@ -295,18 +267,18 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
     useTexturePreciseHighp(): void {
         this.m_texturePrecise = "highp";
     }
-    
+
     addTextureSample2D(macroName: string = "", map2DEnabled: boolean = true, fragEnabled: boolean = true, vertEnabled: boolean = false): void {
-        if(macroName == "" || !this.m_textureMacroNames.includes(macroName)) {
+        if (macroName == "" || !this.m_textureMacroNames.includes(macroName)) {
             this.m_textureSampleTypes.push("sampler2D");
             this.m_textureMacroNames.push(macroName);
             this.m_texturePrecises.push(this.m_texturePrecise);
-    
+
             let flag: number = 0;
-            if(fragEnabled) flag |= 2;
-            if(vertEnabled) flag |= 4;
+            if (fragEnabled) flag |= 2;
+            if (vertEnabled) flag |= 4;
             this.m_textureFlags.push(flag);
-    
+
             this.m_texturePrecise = "";
             if (map2DEnabled) {
                 this.m_use2DMap = true;
@@ -315,27 +287,27 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
     }
     addTextureSampleCube(macroName: string = "", fragEnabled: boolean = true, vertEnabled: boolean = false): void {
 
-        if(macroName == "" || !this.m_textureMacroNames.includes(macroName)) {
+        if (macroName == "" || !this.m_textureMacroNames.includes(macroName)) {
             this.m_textureSampleTypes.push("samplerCube");
             this.m_textureMacroNames.push(macroName);
             this.m_texturePrecises.push(this.m_texturePrecise);
-            
+
             let flag: number = 0;
-            if(fragEnabled) flag |= 2;
-            if(vertEnabled) flag |= 4;
+            if (fragEnabled) flag |= 2;
+            if (vertEnabled) flag |= 4;
             this.m_textureFlags.push(flag);
             this.m_texturePrecise = "";
         }
     }
     addTextureSample3D(macroName: string = "", fragEnabled: boolean = true, vertEnabled: boolean = false): void {
 
-        if(macroName == "" || !this.m_textureMacroNames.includes(macroName)) {
+        if (macroName == "" || !this.m_textureMacroNames.includes(macroName)) {
             this.m_textureSampleTypes.push("sampler3D");
             this.m_textureMacroNames.push(macroName);
             this.m_texturePrecises.push(this.m_texturePrecise);
             let flag: number = 0;
-            if(fragEnabled) flag |= 2;
-            if(vertEnabled) flag |= 4;
+            if (fragEnabled) flag |= 2;
+            if (vertEnabled) flag |= 4;
             this.m_textureFlags.push(flag);
             this.m_texturePrecise = "";
         }
@@ -377,39 +349,39 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
     }
 
     addVertHeadCode(code: string): void {
-        if(code != "") this.m_vertHeadCode += "\n" + code;
+        if (code != "") this.m_vertHeadCode += "\n" + code;
     }
     addVertMainCode(code: string): void {
-        if(code != "") this.m_vertMainCode += "\n" + code;
+        if (code != "") this.m_vertMainCode += "\n" + code;
     }
     addFragHeadCode(code: string): void {
-        if(code != "") this.m_fragHeadCode += "\n" + code;
+        if (code != "") this.m_fragHeadCode += "\n" + code;
     }
     addFragMainCode(code: string): void {
-        if(code != "") this.m_fragMainCode += "\n" + code;
+        if (code != "") this.m_fragMainCode += "\n" + code;
     }
 
     addShaderObject(shaderObj: IShaderCodeObject): void {
-        this.addFragHeadCode( shaderObj.frag_head );
-        this.addFragMainCode( shaderObj.frag_body );
-        this.addVertHeadCode( shaderObj.vert_head );
-        this.addVertMainCode( shaderObj.vert_body );
+        this.addFragHeadCode(shaderObj.frag_head);
+        this.addFragMainCode(shaderObj.frag_body);
+        this.addVertHeadCode(shaderObj.vert_head);
+        this.addVertMainCode(shaderObj.vert_body);
     }
     addShaderObjectHead(shaderObj: IShaderCodeObject): void {
-        
-        this.addFragHeadCode( shaderObj.frag_head );
-        this.addVertMainCode( shaderObj.vert_head );
+
+        this.addFragHeadCode(shaderObj.frag_head);
+        this.addVertMainCode(shaderObj.vert_head);
     }
 
     private autoBuildHeadCode(): void {
 
         this.addVertLayout("vec3", "a_vs");
-        if(this.m_use2DMap || this.m_vertLayoutNames.includes("a_uvs")) {
+        if (this.m_use2DMap || this.m_vertLayoutNames.includes("a_uvs")) {
             this.addVertLayout("vec2", "a_uvs");
             this.addVarying("vec2", "v_uv");
         }
-        
-        if(this.normalEanbled || this.normalMapEanbled || this.m_vertLayoutNames.includes("a_nvs")) {
+
+        if (this.normalEanbled || this.normalMapEanbled || this.m_vertLayoutNames.includes("a_nvs")) {
             this.addVertLayout("vec3", "a_nvs");
             this.addVarying("vec3", "v_worldNormal");
             this.addVarying("vec3", "v_worldPosition");
@@ -418,21 +390,24 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         let words: string[] = ["a_vs", "a_uvs", "a_nvs"];
         let nameList: string[] = [];
         let typeList: string[] = [];
-        for(;words.length > 0;) {
+        for (; words.length > 0;) {
             let i: number = this.m_vertLayoutNames.indexOf(words[0]);
-            if(i >= 0) {
+            if (i >= 0) {
                 nameList.push(this.m_vertLayoutNames[i]);
                 typeList.push(this.m_vertLayoutTypes[i]);
-                this.m_vertLayoutNames.splice(i,1);
-                this.m_vertLayoutTypes.splice(i,1);
+                this.m_vertLayoutNames.splice(i, 1);
+                this.m_vertLayoutTypes.splice(i, 1);
             }
             words.shift();
         }
         this.m_vertLayoutNames = nameList.concat(this.m_vertLayoutNames);
         this.m_vertLayoutTypes = typeList.concat(this.m_vertLayoutTypes);
 
-        if(this.m_fragOutputNames.length < 1) {
+        if (this.m_fragOutputNames.length < 1) {
             this.addFragOutput("vec4", "FragColor0");
+        }
+        if(this.vtxUVTransfromEnabled) {
+            this.addDefine("VOX_USE_UV_VTX_TRANSFORM", "1");
         }
     }
     buildFragCode(): string {
@@ -478,7 +453,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         else {
             code += "\n" + this.m_preciousCode;
         }
-        
+
         if (RendererDevice.IsWebGL2()) {
             code += "\n#define VOX_GLSL_ES3 1";
             code += "\n#define VOX_IN in";
@@ -500,10 +475,10 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
             code += "\n#define VOX_TextureCube textureCube";
             code += "\n#define VOX_Texture2D texture2D";
         }
-        if(this.mathDefineEanbled) {
+        if (this.mathDefineEanbled) {
             code += MathShaderCode.BasePredefined;
         }
-        
+
         len = this.m_defineNames.length;
         for (i = 0; i < len; i++) {
             if (this.m_defineValues[i] != "") {
@@ -518,7 +493,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         len = this.m_textureMacroNames.length;
         for (; i < len; i++) {
 
-            if (this.m_textureMacroNames[i] != "" && (this.m_textureFlags[i]&2) != 0) {
+            if (this.m_textureMacroNames[i] != "" && (this.m_textureFlags[i] & 2) != 0) {
                 code += "\n#define " + this.m_textureMacroNames[i] + " u_sampler" + i + "";
             }
         }
@@ -529,7 +504,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         i = 0;
         len = this.m_textureSampleTypes.length;
         for (; i < len; i++) {
-            if((this.m_textureFlags[i]&2) != 0) {
+            if ((this.m_textureFlags[i] & 2) != 0) {
                 if (this.m_texturePrecises[i] == "") {
                     code += "\nuniform " + this.m_textureSampleTypes[i] + " u_sampler" + i + ";";
                 } else {
@@ -577,8 +552,8 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         len = this.m_fragOutputNames.length;
         if (RendererDevice.IsWebGL2()) {
             for (; i < len; i++) {
-                if(this.m_fragOutputPrecises[i] != "") {
-                    code += "\nlayout(location = " + i + ") out " +this.m_fragOutputPrecises[i] + " "+ this.m_fragOutputTypes[i] + " " + this.m_fragOutputNames[i] + ";";
+                if (this.m_fragOutputPrecises[i] != "") {
+                    code += "\nlayout(location = " + i + ") out " + this.m_fragOutputPrecises[i] + " " + this.m_fragOutputTypes[i] + " " + this.m_fragOutputNames[i] + ";";
                 }
                 else {
                     code += "\nlayout(location = " + i + ") out " + this.m_fragOutputTypes[i] + " " + this.m_fragOutputNames[i] + ";";
@@ -593,14 +568,14 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         // 检测是否有 main函数
         let haveMainName: boolean = false;
         let index: number = this.m_fragMainCode.indexOf("{");
-        if(index > 0) {
+        if (index > 0) {
             let subStr: string = this.m_fragMainCode.slice(0, index);
             haveMainName = subStr.indexOf(" main") > 0;
-            if(!haveMainName) {
+            if (!haveMainName) {
                 haveMainName = this.m_fragMainCode.indexOf(" main") > 0;
             }
         }
-        if(haveMainName) {
+        if (haveMainName) {
             code += this.m_fragMainCode;
         }
         else {
@@ -608,7 +583,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
             code += this.m_fragMainCode;
             code += "\n}\n";
         }
-        
+
         len = this.m_fragOutputNames.length;
         if (RendererDevice.IsWebGL1()) {
             if (len > 1) {
@@ -637,7 +612,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         for (; i < len; i++) {
             code += "\n" + this.m_vertExt[i];
         }
-        
+
         if (RendererDevice.IsMobileWeb()) {
             code += "\nprecision highp float;";
         }
@@ -672,7 +647,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         else {
             code += "\n#define VOX_OUT varying";
         }
-        if(this.mathDefineEanbled) {
+        if (this.mathDefineEanbled) {
             code += MathShaderCode.BasePredefined;
         }
 
@@ -689,12 +664,12 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         //if (this.m_use2DMap) {
         //    code += "\n#define VOX_USE_2D_MAP 1";
         //}
-        
+
         i = 0;
         len = this.m_textureMacroNames.length;
         for (; i < len; i++) {
 
-            if (this.m_textureMacroNames[i] != "" && (this.m_textureFlags[i]&4) != 0) {
+            if (this.m_textureMacroNames[i] != "" && (this.m_textureFlags[i] & 4) != 0) {
                 code += "\n#define " + this.m_textureMacroNames[i] + " u_sampler" + i + "";
             }
         }
@@ -705,7 +680,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         i = 0;
         len = this.m_textureSampleTypes.length;
         for (; i < len; i++) {
-            if((this.m_textureFlags[i]&4) != 0) {
+            if ((this.m_textureFlags[i] & 4) != 0) {
                 if (this.m_texturePrecises[i] == "") {
                     code += "\nuniform " + this.m_textureSampleTypes[i] + " u_sampler" + i + ";";
                 } else {
@@ -764,16 +739,16 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         // 检测是否有 main函数
         let haveMainName: boolean = false;
         let index: number = this.m_vertMainCode.indexOf("{");
-        
-        if(index > 0) {
+
+        if (index > 0) {
             let subStr: string = this.m_vertMainCode.slice(0, index);
             haveMainName = subStr.indexOf(" main") > 0;
-            if(!haveMainName) {
+            if (!haveMainName) {
                 haveMainName = this.m_vertMainCode.indexOf(" main") > 0;
             }
         }
-        
-        if(haveMainName) {
+
+        if (haveMainName) {
             code += this.m_vertMainCode;
         }
         else {

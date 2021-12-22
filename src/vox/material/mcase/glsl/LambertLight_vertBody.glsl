@@ -1,7 +1,13 @@
 localPosition.xyz = a_vs;
 
-#ifdef VOX_USE_2D_MAP
-    v_uv = a_uvs.xy * u_vertLocalParams[0].xy;
+// #ifdef VOX_USE_2D_MAP
+//     v_uv = a_uvs.xy * u_vertLocalParams[0].xy + u_vertLocalParams[0].zw;
+// #endif
+
+#ifdef VOX_USE_UV_VTX_TRANSFORM
+    v_uv = a_uvs.xy * u_vertLocalParams[0].xy + u_vertLocalParams[0].zw;
+#elif VOX_USE_2D_MAP
+    v_uv = a_uvs.xy;
 #endif
 
 #ifdef VOX_DISPLACEMENT_MAP

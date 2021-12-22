@@ -245,7 +245,6 @@ class ShaderLib implements IShaderLib{
         if (this.m_shaderCodeMap.has(uuid)) {
             obj = this.m_shaderCodeMap.get(uuid);
         }
-        console.log("getShaderCodeObjectWithUUID(), obj: ",obj);
         return obj;
     }
 }
