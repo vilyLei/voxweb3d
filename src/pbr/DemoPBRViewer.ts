@@ -183,8 +183,8 @@ export class DemoPBRViewer implements IShaderLibListener {
         // this.m_dracoModule.loadNext();
         //*/
     }
-    loadedShaderCode(loadingTotal: number, loadedTotal: number): void {
-        console.log("loadedShaderCode(), loadingTotal, loadedTotal: ",loadingTotal, loadedTotal);
+    shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
+        console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ",loadingTotal, loadedTotal);
         this.initScene();
     }
     private createMeshPlane(material: PBRMaterial): void {

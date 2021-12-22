@@ -158,7 +158,7 @@ class ShaderCodeObjectLoader {
     }
 }
 interface IShaderLibListener {
-    loadedShaderCode(loadingTotal: number, loadedTotal: number): void;
+    shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void;
 }
 
 class ShaderLib implements IShaderLib{
@@ -215,7 +215,7 @@ class ShaderLib implements IShaderLib{
             }
         }
         else {
-            if(this.m_listener != null) this.m_listener.loadedShaderCode(0, 0);
+            if(this.m_listener != null) this.m_listener.shaderLibLoadComplete(0, 0);
         }
     }
     
@@ -229,7 +229,7 @@ class ShaderLib implements IShaderLib{
                 this.m_shaderCodeMap.set(uuid, shaderCodeobject);                
                 this.m_loadedTotal ++;
 
-                if(this.m_listener != null) this.m_listener.loadedShaderCode(this.m_loadingTotal, this.m_loadedTotal);
+                if(this.m_listener != null) this.m_listener.shaderLibLoadComplete(this.m_loadingTotal, this.m_loadedTotal);
             });
         }
     }

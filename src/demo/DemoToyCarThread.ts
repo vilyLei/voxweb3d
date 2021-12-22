@@ -107,8 +107,8 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
             material.shadowMap =        this.m_materialCtx.vsmModule.getShadowMap();
         }
     }
-    loadedShaderCode(loadingTotal: number, loadedTotal: number): void {
-        console.log("loadedShaderCode(), loadingTotal, loadedTotal: ",loadingTotal, loadedTotal);
+    shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
+        console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ",loadingTotal, loadedTotal);
         this.initScene();
     }
     private initScene(): void {

@@ -246,8 +246,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         // pl.initialize(-1.0,-1.0,0.2,0.2,[this.m_materialCtx.vsmModule.getShadowMap()]);
         // this.m_rscene.addEntity(pl, 2);
     }
-    loadedShaderCode(loadingTotal: number, loadedTotal: number): void {
-        console.log("loadedShaderCode(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
+    shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
+        console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ", loadingTotal, loadedTotal);
         this.initScene();
     }
     private useMaps(material: LambertLightMaterial, ns: string, normalMapEnabled: boolean = true, displacementMap: boolean = true, shadowReceiveEnabled: boolean = false, aoMapEnabled: boolean = false): void {

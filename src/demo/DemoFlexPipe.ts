@@ -101,8 +101,8 @@ export class DemoFlexPipe implements IShaderLibListener {
         }
     }
     
-    loadedShaderCode(loadingTotal: number, loadedTotal: number): void {
-        console.log("loadedShaderCode(), loadingTotal, loadedTotal: ",loadingTotal, loadedTotal);
+    shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
+        console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ",loadingTotal, loadedTotal);
         this.initScene();
     }
     private initMaterialCtx(): void {

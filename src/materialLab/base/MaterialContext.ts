@@ -150,7 +150,7 @@ class MaterialContext {
         if(!param.loadAllShaderCode) {
             let listener = MaterialContext.ShaderLib.getListener();
             if(listener != null) {
-                listener.loadedShaderCode(0, 0);
+                listener.shaderLibLoadComplete(0, 0);
             }
         }
     }

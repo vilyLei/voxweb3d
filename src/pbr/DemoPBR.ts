@@ -109,7 +109,7 @@ export class DemoPBR implements IShaderLibListener {
             
         }
     }
-    loadedShaderCode(loadingTotal: number, loadedTotal: number): void {
+    shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
 
         this.m_uiModule.initialize(this.m_rscene, this.m_materialCtx, true);
         this.m_ruisc = this.m_uiModule.ruisc;
