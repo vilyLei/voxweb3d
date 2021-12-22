@@ -31,9 +31,6 @@ class ToyCarScene {
             this.m_rscene = scene;
             this.m_materialCtx = materialCtx;
 
-            this.m_toyCarBuilder.initialize(scene, materialCtx);
-
-
             let terrainObsVS = new Uint16Array(
                 [
                     0, 0, 0, 0, 0, 0,
@@ -65,6 +62,9 @@ class ToyCarScene {
 
             this.m_terrainData = terrData;
 
+            this.m_toyCarBuilder.initialize(scene, materialCtx, this.m_terrainData);
+
+
             this.initThread(terrData);
             this.buildEntities();
 
@@ -91,54 +91,13 @@ class ToyCarScene {
     private m_entity0: CarEntity;
     private buildEntities(): void {
 
-        let entity: CarEntity;
-        let pv: Vector3D;
-        let wheelRotSpeed: number = -15.0;
+        let entity: CarEntity;        
         for (let i: number = 0; i < this.m_toyCarTasks.length; ++i) {
 
             let task: ToyCarTask = this.m_toyCarTasks[i];
             for (let j: number = 0; j < this.m_buildEntitiesTotal; ++j) {
 
-                entity = this.m_toyCarBuilder.buildEntity(task);
-                entity.navigator.initialize( this.m_terrainData );
-                entity.navigator.setTarget( entity.transform );
-                entity.navigator.autoSerachPath = true;
-
-                let beginRC = this.m_terrainData.getRandomFreeRC();
-                let endRC = this.m_terrainData.getRandomFreeRC();
-                // beginRC[0] = beginRC[1] = 0;
-                // endRC[0] = endRC[1] = 0;
-                entity.navigator.setSearchPathParam(beginRC[0], beginRC[1], endRC[0], endRC[1]);
-                pv = this.m_terrainData.getTerrainPositionByRC(beginRC[0], beginRC[1]);
-                
-                //  //entity.setXYZ(200, 25, 200);
-                entity.setPosition(pv);
-                entity.transform.setWheelRotSpeed(wheelRotSpeed);
-                entity.transform.setScale(this.m_bodyScale * (0.1 + Math.random() * 0.1));
-                if (!entity.isReadySearchPath()) {
-                    entity.navigator.stopAndWait();
-                }
-                entity.setSpeed(0.8 + Math.random() * 0.8);
-                entity.navigator.stopPath();
-                entity.curveMotion.directMinDis = 800.0;
-                entity.autoSerachPath = true;
-                // entity.autoSerachPath = this.m_buildEntitiesTotal > 1;
-                /*
-                entity = this.m_toyCarBuilder.buildEntity( task );
-                entity.terrainData = this.m_terrainData;
-                beginRC = this.m_terrainData.getRandomFreeRC();
-                endRC = this.m_terrainData.getRandomFreeRC();
-                entity.path.setSearchPathParam(beginRC[0],beginRC[1], endRC[0],endRC[1]);
-                pv = this.m_terrainData.getGridPositionByRC(beginRC[0], beginRC[1]);
-                pv.y += 20.0;
-                //entity.setXYZ(200, 25, 200);
-                entity.setPosition( pv );
-                //entity.setXYZ(200, 25, -200);
-                entity.setWheelRotSpeed( wheelRotSpeed );
-                if(!entity.isReadySearchPath()) {
-                    entity.stopAndWait();
-                }
-                //*/
+                entity = this.m_toyCarBuilder.buildEntity(task, this.m_bodyScale);                
                 this.m_entity0 = entity;
             }
         }
