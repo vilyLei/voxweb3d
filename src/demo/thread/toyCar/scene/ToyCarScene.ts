@@ -101,6 +101,11 @@ class ToyCarScene {
 
                 entity = this.m_toyCarBuilder.buildEntity(task);
                 entity.terrainData = this.m_terrainData;
+                entity.navigator.initialize( this.m_terrainData );
+                entity.navigator.setTarget( entity.transform );
+                entity.navigator.autoSerachPath = true;
+                entity.path = entity.navigator.path;
+
                 let beginRC = this.m_terrainData.getRandomFreeRC();
                 let endRC = this.m_terrainData.getRandomFreeRC();
                 // beginRC[0] = beginRC[1] = 0;

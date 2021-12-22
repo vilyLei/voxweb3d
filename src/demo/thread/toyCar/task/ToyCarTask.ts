@@ -154,6 +154,7 @@ class ToyCarTask extends ThreadTask {
                 streams = streams != null ? streams.concat(otherStreams) : otherStreams.slice(0);
             }
             if(streams != null) {
+                console.log("send search task cmd...");
                 this.m_pathSerachEnabled = false;
                 let descriptor: any = {
                     taskIndex: this.taskIndex

@@ -27,6 +27,7 @@ import LambertLightMaterial from "../../../../vox/material/mcase/LambertLightMat
 import Color4 from "../../../../vox/material/Color4";
 import MathConst from "../../../../vox/math/MathConst";
 import Cylinder3DEntity from "../../../../vox/entity/Cylinder3DEntity";
+import { PathNavigator } from "./PathNavigator";
 
 class CarEntity implements IToyEntity {
 
@@ -47,19 +48,23 @@ class CarEntity implements IToyEntity {
 
     private m_visible: boolean = true;
 
+    navigator: PathNavigator = new PathNavigator();
+
+    terrainData: TerrainData = null;
+
     readonly transform: CarEntityTransform = new CarEntityTransform();
 
     readonly curveMotion: CurveMotionXZModule = new CurveMotionXZModule();
 
     status: EntityStatus = EntityStatus.Init;
     asset: AssetPackage = null;
-    terrainData: TerrainData = null;
     autoSerachPath: boolean = false;
     boundsChanged: boolean = false;
-    readonly path: TerrainPath = new TerrainPath();
+    path: TerrainPath = null;
 
     constructor() {
     }
+    
     getStatus(): EntityStatus {
         return this.status > this.transform.status ? this.status : this.transform.status;
     }
@@ -208,36 +213,6 @@ class CarEntity implements IToyEntity {
     destroy(): void {
     }
 
-    isReadySearchPath(): boolean {
-        return this.path.isReadySearchPath();
-    }
-
-    searchedPath(vs: Uint16Array): void {
-
-        //console.log("searchedPath,vs: ", vs);
-
-        let posList: Vector3D[] = PathCalculator.GetPathPosList(vs, this.path, this.terrainData);
-
-        // console.log("posList: ", posList);
-        // if (this.m_pathCurve != null) {
-        //     this.m_pathCurve.initializePolygon(posList);
-        //     this.m_pathCurve.reinitializeMesh();
-        //     this.m_pathCurve.updateMeshToGpu();
-        //     this.m_pathCurve.updateBounds();
-        // }
-
-        let motion = this.curveMotion.motion;
-        motion.setTarget(this.transform);
-        motion.setVelocityFactor(0.04, 0.04);
-        motion.setCurrentPosition(this.getPosition());
-        this.curveMotion.setPathPosList(posList);
-
-        this.path.searchedPath();
-        this.path.movingPath();
-
-        this.m_delayTime = Math.round(Math.random() * 100) + 30;
-        this.status = EntityStatus.Moving;
-    }
     updateBounds(): void {
         // if(this.boundsChanged) {
         //     //for (let i: number = 0; i < this.m_transMat4List.length; ++i) {
@@ -273,7 +248,17 @@ class CarEntity implements IToyEntity {
             ++index;
         }
     }
+    
     run(): void {
+        ///*
+        //if(this.navigator.isMoving()) {
+        this.navigator.run();
+        if(this.status != EntityStatus.Init && this.navigator.isStopped()) {
+            this.status = EntityStatus.Stop;
+        }
+        //}
+        //*/
+        /*
         if (this.path.isMoving()) {
             if (this.curveMotion.isStopped()) {
                 this.path.stopPath();
@@ -291,6 +276,42 @@ class CarEntity implements IToyEntity {
                 }
             }
         }
+        //*/
+    }
+    
+    isReadySearchPath(): boolean {
+        return this.navigator.path.isReadySearchPath();
+        return this.path.isReadySearchPath();
+    }
+
+    searchedPath(vs: Uint16Array): void {
+
+        //console.log("searchedPath,vs: ", vs);
+        this.navigator.searchedPath( vs );
+        this.status = EntityStatus.Moving;
+        return;
+
+        let posList: Vector3D[] = PathCalculator.GetPathPosList(vs, this.path, this.terrainData);
+
+        // console.log("posList: ", posList);
+        // if (this.m_pathCurve != null) {
+        //     this.m_pathCurve.initializePolygon(posList);
+        //     this.m_pathCurve.reinitializeMesh();
+        //     this.m_pathCurve.updateMeshToGpu();
+        //     this.m_pathCurve.updateBounds();
+        // }
+
+        let motion = this.curveMotion.motion;
+        motion.setTarget(this.transform);
+        motion.setVelocityFactor(0.04, 0.04);
+        motion.setCurrentPosition(this.getPosition());
+        this.curveMotion.setPathPosList(posList);
+
+        this.path.searchedPath();
+        this.path.movingPath();
+
+        this.m_delayTime = Math.round(Math.random() * 100) + 30;
+        this.status = EntityStatus.Moving;
     }
     findRandomPath(): void {
         if (this.autoSerachPath) {

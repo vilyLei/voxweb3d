@@ -26,6 +26,7 @@ class PathNavigator{
     constructor() {
     }
     setTarget(target: IEntityTransform): void {
+        this.m_target = target;
         this.curveMotion.setTarget(target);
     }
     initialize(terrainData: TerrainData): void {
@@ -56,6 +57,9 @@ class PathNavigator{
 
         this.m_delayTime = Math.round(Math.random() * 100) + 30;
     }
+    isMoving(): boolean {
+        return !this.m_stopped;
+    }
     isStopped(): boolean {
         return this.m_stopped;
     }
@@ -74,7 +78,6 @@ class PathNavigator{
             if (this.m_delayTime > 0) {
                 this.m_delayTime--;
                 if (this.m_delayTime == 0) {
-                    this.m_target.getPosition( this.m_outPos );
                     this.findRandomPath();
                 }
             }
