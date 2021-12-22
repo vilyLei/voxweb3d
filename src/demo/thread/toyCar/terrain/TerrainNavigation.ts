@@ -33,10 +33,10 @@ class TerrainNavigation implements PathSerachListener{
         i = 1 + i * 5;
         let vs = this.m_pathSearchData;
         vs[i] = i;
-        vs[i++] = r0;
-        vs[i++] = c0;
-        vs[i++] = r1;
-        vs[i++] = c1;
+        vs[i+1] = r0;
+        vs[i+2] = c0;
+        vs[i+3] = r1;
+        vs[i+4] = c1;
         
     }
     getSearchPathData(): Uint16Array[] {
