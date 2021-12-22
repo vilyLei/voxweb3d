@@ -16,53 +16,42 @@ class VSTexturePosIdRenderShaderBuffer extends ShaderCodeBuffer {
     private static s_instance: VSTexturePosIdRenderShaderBuffer = null;
     private m_uniqueName: string = "";
     initialize(texEnabled: boolean): void {
+        super.initialize(texEnabled);
         //console.log("VSTexturePosIdRenderShaderBuffer::initialize()...");
         this.m_uniqueName = "VSTexturePosIdMaterialShd";
+        this.adaptationShaderVersion = false;
     }
-    getFragShaderCode(): string {
-        let fragCode: string =
-            `#version 300 es
-precision mediump float;
-uniform sampler2D u_sampler1;
-uniform vec4 u_color;
-in vec2 v_uvs;
-in vec4 v_color;
-layout(location = 0) out vec4 FragColor;
-void main(){
-    vec4 color4 = texture(u_sampler1, v_uvs) * u_color;
-    FragColor = color4;
-}
-`;
-        return fragCode;
-    }
-    getVertShaderCode(): string {
-        let vtxCode: string =
-            `#version 300 es
-precision highp float;
-layout(location = 0) in vec4 a_vs;
-layout(location = 1) in vec2 a_uvs;
-uniform sampler2D u_sampler0;
-uniform mat4 u_objMat;
-uniform mat4 u_viewMat;
-uniform mat4 u_projMat;
-uniform vec4 u_param;
-out vec2 v_uvs;
-void main(){
-    float index = abs(mod((a_vs.w + u_param[1]),u_param[2]));
-    index *= u_param[0];
-    float pv = floor(index) * u_param[0];
+
+    buildShader(): void {
+
+        let coder = this.m_coder;
+        coder.addVertLayout("vec4", "a_vs");
+        coder.addFragUniform("vec4", "u_color");
+        //coder.addVarying("vec4","v_color");
+        coder.addVertUniform("vec4", "u_vtxParams");
+        this.m_uniform.add2DMap("VOX_POSITION_MAP", false, false, true);
+        this.m_uniform.add2DMap("VOX_COLOR_MAP");
+
+        coder.addFragMainCode(
+            `
+    FragColor0 = VOX_Texture2D(VOX_COLOR_MAP, v_uv) * u_color;
+`
+        );
+        coder.addVertMainCode(
+            `
+    float index = abs(mod((a_vs.w + u_vtxParams[1]),u_vtxParams[2]));
+    index *= u_vtxParams[0];
+    float pv = floor(index) * u_vtxParams[0];
     float pu = fract(index);
-    vec4 pos4 = texture(u_sampler0, vec2(pu,pv));
+    vec4 pos4 = VOX_Texture2D(VOX_POSITION_MAP, vec2(pu,pv));
     vec4 objPos = vec4(a_vs.xyz,1.0);
     objPos.xyz += pos4.xyz;
     gl_Position = u_projMat * u_viewMat * u_objMat * objPos;
-    v_uvs = a_uvs;
-}
-`;
-        return vtxCode;
+    v_uv = a_uvs;
+`
+        )
     }
     getUniqueShaderName(): string {
-        //console.log("H ########################### this.m_uniqueName: "+this.m_uniqueName);
         return this.m_uniqueName;
     }
     toString(): string {
@@ -109,7 +98,7 @@ export class VSTexturePosIdMaterial extends MaterialBase {
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_param", "u_color"];
+        oum.uniformNameList = ["u_vtxParams", "u_color"];
         oum.dataList = [this.m_posParam, this.m_colorArray];
         return oum;
     }
