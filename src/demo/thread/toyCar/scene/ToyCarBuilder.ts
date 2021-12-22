@@ -74,7 +74,7 @@ class ToyCarBuilder {
         entity.setPosition(pv);
         entity.transform.setWheelRotSpeed(wheelRotSpeed);
         entity.transform.setScale(bodyScale * (0.1 + Math.random() * 0.1));
-        if (!entity.isReadySearchPath()) {
+        if (!entity.navigator.isReadySearchPath()) {
             entity.navigator.stopAndWait();
         }
         entity.setSpeed(0.8 + Math.random() * 0.8);

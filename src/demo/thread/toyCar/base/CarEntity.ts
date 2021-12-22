@@ -63,9 +63,6 @@ class CarEntity implements IToyEntity {
     getEntityIndex(): number {
         return this.m_entityIndex;
     }
-    setFS32Data(srcFS32: Float32Array): void {        
-        this.transform.setFS32Data(srcFS32, this.m_entityIndex);
-    }
     build(sc: RendererScene, materialCtx: CommonMaterialContext, size: number = 200): void {
 
         if (this.m_entityIndex >= 0) {
@@ -241,8 +238,5 @@ class CarEntity implements IToyEntity {
         this.navigator.run();
     }
     
-    isReadySearchPath(): boolean {
-        return this.navigator.path.isReadySearchPath();
-    }
 }
 export { CarEntity };

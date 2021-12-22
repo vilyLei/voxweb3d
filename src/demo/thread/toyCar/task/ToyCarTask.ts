@@ -9,6 +9,7 @@ import { IToyEntity } from "../base/IToyEntity";
 import { EntityStatusManager } from "../base/EntityStatusManager";
 import { TerrainData } from "../../../..//terrain/tile/TerrainData";
 import { PathSerachListener } from "../terrain/PathSerachListener";
+import { PathNavigator } from "../base/PathNavigator";
 
 class ToyCarTask extends ThreadTask {
     
@@ -30,11 +31,11 @@ class ToyCarTask extends ThreadTask {
     private m_pathSerachEnabled: boolean = true;
     private m_entityIndex: number = 0;
     private m_entities: IToyEntity[] = [];
+    private m_navigators: PathNavigator[] = [];
     private m_transFlag: number = 0;
     private m_calcType: number = 1;
     private m_statusManager: EntityStatusManager = new EntityStatusManager();
     private m_time: number = 0;
-
     taskIndex: number = 0;
 
     constructor() {
@@ -58,9 +59,14 @@ class ToyCarTask extends ThreadTask {
 
     addEntity(entity: IToyEntity): void {
         if(this.m_entityIndex < this.m_total) {
+
             entity.setEntityIndex(this.m_entityIndex);
-            entity.setFS32Data(this.getTransFS32Data());
-            this.m_entities.push(entity);
+
+            entity.transform.setFS32Data(this.getTransFS32Data(), this.m_entityIndex);
+
+            this.m_entities.push( entity );
+            this.m_navigators.push( entity.navigator );
+
             this.m_entityIndex ++;
             this.m_matsTotal = this.m_entityIndex * 5;
         }
@@ -71,8 +77,7 @@ class ToyCarTask extends ThreadTask {
     run(): void {
         
         if (this.isSendTransEnabled()) {
-            if (this.m_entities.length > 0) {
-                //this.updateEntityBounds();
+            if (this.m_matsTotal > 0) {
                 this.sendTransData();
             }
         }
@@ -133,10 +138,11 @@ class ToyCarTask extends ThreadTask {
             
             // this.m_pathSearchData中的 第一个 uint16 数值存放需要寻路的请求个数
             let k: number = 1;
-            for (let i: number = 0; i < this.m_entities.length; ++i) {
-                if(this.m_entities[i].isReadySearchPath()) {
-                    this.m_entities[i].navigator.searchingPath();
-                    let path = this.m_entities[i].navigator.path;
+            for (let i: number = 0; i < this.m_navigators.length; ++i) {
+                const nav = this.m_navigators[i];
+                if(nav.isReadySearchPath()) {
+                    nav.searchingPath();
+                    const path = nav.path;
                     this.m_pathSearchData[k++] = i;
                     this.m_pathSearchData[k++] = path.r0;
                     this.m_pathSearchData[k++] = path.c0;
@@ -199,7 +205,7 @@ class ToyCarTask extends ThreadTask {
             index = params[k];
             pathDataLen = params[k+1] * 2;
             let vs = pathVS.subarray(dataLen, dataLen + pathDataLen);
-            this.m_entities[index].navigator.searchedPath(vs);
+            this.m_navigators[index].searchedPath(vs);
             dataLen += pathDataLen;
             k += 5;
         }
@@ -259,6 +265,17 @@ class ToyCarTask extends ThreadTask {
         return true;
     }
     destroy(): void {
+
+        this.m_total = 0;
+        this.m_matsTotal = 0;
+        this.m_transInputData = null;
+        this.m_transParamData = null;
+        this.m_transOutputData = null;
+
+        this.m_entityIndex = 0;
+        this.m_entities = [];
+        this.m_navigators = [];
+
         if (this.getUid() > 0) {
             super.destroy();
         }

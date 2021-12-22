@@ -16,7 +16,7 @@ class TerrainNavigation implements PathSerachListener{
     private m_index: number = 0;
     private m_total: number = 0;
 
-    initialize(): void {        
+    initialize(): void {
         this.m_pathSearchData = new Uint16Array(1024 * 2);
         this.m_pathData = new Uint16Array(1024 * 4);
     }
