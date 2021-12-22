@@ -60,7 +60,7 @@ class ToyCarScene {
             terrData.stvs = stvs;
 
             terrData.initialize();
-
+            
             this.m_bodyScale = terrData.gridSize / 80.0;
 
             this.m_terrainData = terrData;

@@ -15,9 +15,10 @@ interface IToyEntity {
     path: TerrainPath;
     boundsChanged: boolean;
     getStatus(): EntityStatus;
-
-    getEneityIndex(): number;
-    setFS32Data(srcFS32: Float32Array, index: number): void;
+    setEntityIndex(index: number): void
+    getEntityIndex(): number;
+    
+    setFS32Data(srcFS32: Float32Array): void;
     build(sc: RendererScene, materialContext: CommonMaterialContext, size: number): void;
     
     destroy(): void;

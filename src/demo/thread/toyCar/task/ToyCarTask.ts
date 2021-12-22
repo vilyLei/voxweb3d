@@ -8,7 +8,7 @@ import ThreadTask from "../../../../thread/control/ThreadTask";
 import { IToyEntity } from "../base/IToyEntity";
 import { EntityStatusManager } from "../base/EntityStatusManager";
 import { TerrainData } from "../../../..//terrain/tile/TerrainData";
-import { PathSerachListener } from "./PathSerachListener";
+import { PathSerachListener } from "../terrain/PathSerachListener";
 
 class ToyCarTask extends ThreadTask {
     
@@ -23,6 +23,7 @@ class ToyCarTask extends ThreadTask {
     private m_pathSearchData: Uint16Array = null;
     // 存放寻路结果
     private m_pathData: Uint16Array = null;
+
     private m_searchPathListener: PathSerachListener = null;
 
     private m_transEnabled: boolean = true;
@@ -57,8 +58,8 @@ class ToyCarTask extends ThreadTask {
 
     addEntity(entity: IToyEntity): void {
         if(this.m_entityIndex < this.m_total) {
-
-            entity.setFS32Data(this.getTransFS32Data(), this.m_entityIndex);
+            entity.setEntityIndex(this.m_entityIndex);
+            entity.setFS32Data(this.getTransFS32Data());
             this.m_entities.push(entity);
             this.m_entityIndex ++;
             this.m_matsTotal = this.m_entityIndex * 5;
@@ -206,7 +207,7 @@ class ToyCarTask extends ThreadTask {
         switch(data.taskCmd) {
             case "car_trans":
 
-                this.m_time = Date.now() - this.m_time;
+                //this.m_time = Date.now() - this.m_time;
                 this.m_transParamData = data.streams[0];
                 this.m_transOutputData = data.streams[1];
                 this.m_statusManager.setStatusData(data.streams[2]);
@@ -219,6 +220,9 @@ class ToyCarTask extends ThreadTask {
                 this.m_pathSearchData = streams[0];
                 this.m_pathData = streams[1];
                 this.updateEntityPath();
+                if(this.m_searchPathListener != null) {
+                    this.m_searchPathListener.setSearchedPathData(streams.slice(2));
+                }
                 this.m_pathSerachEnabled = true;
                 break;
             case "aStar_exec":

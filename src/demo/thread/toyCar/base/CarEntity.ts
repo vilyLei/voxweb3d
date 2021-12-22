@@ -43,8 +43,6 @@ class CarEntity implements IToyEntity {
     private m_fs32Data: Float32Array = null;
     private m_entityList: PureEntity[] = [];
     private m_transMat4List: Matrix4[] = [];
-    //private m_position: Vector3D = new Vector3D();
-    //private m_outPos: Vector3D = new Vector3D();
     private m_scene: RendererScene = null;
     private m_pathPosList: Vector3D[] = [];
     private m_speed: number = 1.0;
@@ -63,13 +61,14 @@ class CarEntity implements IToyEntity {
     getStatus(): EntityStatus {
         return this.status > this.transform.status ? this.status : this.transform.status;
     }
-    getEneityIndex(): number {
+    setEntityIndex(index: number): void {
+        this.m_entityIndex = index;
+    }
+    getEntityIndex(): number {
         return this.m_entityIndex;
     }
-    setFS32Data(srcFS32: Float32Array, index: number): void {
-        this.m_entityIndex = index;
-        // this.m_fs32Data = srcFS32.subarray(index * this.m_fs32Length, (index + 1) * this.m_fs32Length);
-        this.transform.setFS32Data(srcFS32, index);
+    setFS32Data(srcFS32: Float32Array): void {        
+        this.transform.setFS32Data(srcFS32, this.m_entityIndex);
     }
     build(sc: RendererScene, materialCtx: CommonMaterialContext, size: number = 200): void {
 
@@ -289,7 +288,7 @@ class CarEntity implements IToyEntity {
             }
         }
     }
-    private testRandomSerachPath(): void {
+    protected testRandomSerachPath(): void {
         if (this.autoSerachPath) {
             let beginRC: number[] = this.terrainData.getRCByPosition(this.getPosition());
             let endRC: number[] = this.terrainData.getRandomFreeRC();
