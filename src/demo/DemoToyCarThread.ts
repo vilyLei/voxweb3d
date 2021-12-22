@@ -19,6 +19,10 @@ import { DirectionLight } from "../light/base/DirectionLight";
 import Box3DEntity from "../vox/entity/Box3DEntity";
 import Default3DMaterial from "../vox/material/mcase/Default3DMaterial";
 import Color4 from "../vox/material/Color4";
+import Cylinder3DEntity from "../vox/entity/Cylinder3DEntity";
+import Axis3DEntity from "../vox/entity/Axis3DEntity";
+import Matrix4 from "../vox/math/Matrix4";
+import MathConst from "../vox/math/MathConst";
 
 export class DemoToyCarThread extends DemoInstance implements IShaderLibListener{
     constructor() {
@@ -113,15 +117,28 @@ export class DemoToyCarThread extends DemoInstance implements IShaderLibListener
     }
     private initScene(): void {
 
-        // let axis: Axis3DEntity = new Axis3DEntity();
-        // axis.initialize(300.0);
-        // axis.setXYZ(0, 30, 0);
-        // this.m_rscene.addEntity(axis);
 
         this.m_rscene.setClearRGBColor3f(0.0, 0.3, 0.0);
-        this.m_toyCarScene.initialize(this.m_rscene, this.m_materialCtx);
+        //  this.m_toyCarScene.initialize(this.m_rscene, this.m_materialCtx);
 
-        // let tex0 = this.m_materialCtx.getTextureByUrl("static/assets/default.jpg");
+        // let axis: Axis3DEntity = new Axis3DEntity();
+        // axis.initialize(300.0);
+        // // axis.setXYZ(0, 30, 0);
+        // this.m_rscene.addEntity(axis);
+
+        let tex0 = this.m_materialCtx.getTextureByUrl("static/assets/metal_02.jpg");
+        let material: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
+        material.fogEnabled = false;
+        material.diffuseMap = tex0;
+        let transMat4: Matrix4 = new Matrix4();
+        transMat4.appendRotationEulerAngle(0.0,0.0, MathConst.DegreeToRadian(90.0));
+        let cyl: Cylinder3DEntity = new Cylinder3DEntity();
+        cyl.uScale = 12.0;
+        cyl.setMaterial( material );
+        cyl.setVtxTransformMatrix(transMat4);
+        cyl.initialize(100,100, 30, [tex0], 0);
+        this.m_rscene.addEntity( cyl );
+
         // // let material: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
         // // material.fogEnabled = false;
         // // material.diffuseMap = tex0;

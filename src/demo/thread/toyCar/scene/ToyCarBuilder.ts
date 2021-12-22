@@ -27,7 +27,7 @@ class ToyCarBuilder {
             let texNameList: string[] = [
                 "default.jpg"
                 , "moss_05.jpg"
-                , "metal_02.jpg"
+                , "image_003.jpg"
                 , "fruit_01.jpg"
                 , "moss_05.jpg"
             ];

@@ -26,11 +26,14 @@ import { CarEntityTransform } from "./CarEntityTransform";
 import { PathCalculator } from "./PathCalculator";
 import LambertLightMaterial from "../../../../vox/material/mcase/LambertLightMaterial";
 import Color4 from "../../../../vox/material/Color4";
+import MathConst from "../../../../vox/math/MathConst";
+import Cylinder3DEntity from "../../../../vox/entity/Cylinder3DEntity";
 
 class CarEntity implements IToyEntity {
 
     private static s_srcBox0: Box3DEntity = null;
     private static s_srcBox1: Box3DEntity = null;
+    private static s_srcCyl1: Cylinder3DEntity = null;
 
     readonly curveMotion: CurveMotionXZModule = new CurveMotionXZModule();
     private m_pathCurve: Line3DEntity = null;
@@ -92,56 +95,77 @@ class CarEntity implements IToyEntity {
 
                 CarEntity.s_srcBox0.initialize(new Vector3D(-halfSize, -halfSize * 0.5, -halfSize), new Vector3D(halfSize, halfSize * 0.5, halfSize), [tex0]);
             }
-            if (CarEntity.s_srcBox1 == null) {
-                CarEntity.s_srcBox1 = new Box3DEntity();
+            // if (CarEntity.s_srcBox1 == null) {
+            //     CarEntity.s_srcBox1 = new Box3DEntity();
 
+            //     material = materialCtx.createLambertLightMaterial();
+            //     material.diffuseMap = tex0;
+            //     material.fogEnabled = false;
+            //     CarEntity.s_srcBox1.setMaterial(material);
+
+            //     CarEntity.s_srcBox1.initialize(new Vector3D(-halfSize, -halfSize, -halfSize), new Vector3D(halfSize, halfSize, halfSize), [tex0]);
+            // }
+            let srcBox0 = CarEntity.s_srcBox0;
+            // let srcBox1 = CarEntity.s_srcBox1;
+
+            let color = new Color4(Math.random() + 0.4, Math.random() + 0.4, Math.random() + 0.4, 1.0);
+
+            let material0 = materialCtx.createLambertLightMaterial();
+            material0.diffuseMap = tex0;
+            material0.fogEnabled = false;
+            material0.initializeByCodeBuf(true);
+            material0.setColor(color);
+
+            let tex1: TextureProxy = this.asset.textures[1];
+            color.setRGBA4f(Math.random() + 0.4, Math.random() + 0.4, Math.random() + 0.4, 1.0);
+            let material1 = materialCtx.createLambertLightMaterial();
+            material1.diffuseMap = tex1;
+            material1.fogEnabled = false;
+            material1.initializeByCodeBuf(true);
+            material1.setColor(color);
+
+
+            if (CarEntity.s_srcCyl1 == null) {
+                let cyl: Cylinder3DEntity = new Cylinder3DEntity();
+                CarEntity.s_srcCyl1 = cyl;
                 material = materialCtx.createLambertLightMaterial();
                 material.diffuseMap = tex0;
                 material.fogEnabled = false;
-                CarEntity.s_srcBox1.setMaterial(material);
+                cyl.setMaterial(material);
 
-                CarEntity.s_srcBox1.initialize(new Vector3D(-halfSize, -halfSize, -halfSize), new Vector3D(halfSize, halfSize, halfSize), [tex0]);
+                let transMat4: Matrix4 = new Matrix4();
+                transMat4.appendRotationEulerAngle(MathConst.DegreeToRadian(90.0), 0.0, 0.0);
+                cyl.uScale = 12.0;
+                cyl.setVtxTransformMatrix(transMat4);
+                cyl.initialize(150, 100, 15, [tex0], 0);
             }
-            let srcBox0 = CarEntity.s_srcBox0;
-            let srcBox1 = CarEntity.s_srcBox1;
-
-            let color = new Color4(Math.random() + 0.4, Math.random() + 0.4, Math.random() + 0.4, 1.0);
-            let materialBox0: Box3DEntity = new Box3DEntity();
-            
-            material = materialCtx.createLambertLightMaterial();
-            material.diffuseMap = tex0;
-            material.fogEnabled = false;
-            materialBox0.setMaterial(material);
-            materialBox0.copyMeshFrom(srcBox0);
-            materialBox0.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex0]);
-            material.setColor( color );
-            
-            let tex1: TextureProxy = this.asset.textures[1];
-            let materialBox1: Box3DEntity = new Box3DEntity();
-            color.setRGBA4f(Math.random() + 0.4, Math.random() + 0.4, Math.random() + 0.4, 1.0);
-            material = materialCtx.createLambertLightMaterial();
-            material.diffuseMap = tex1;
-            material.fogEnabled = false;
-            materialBox1.setMaterial(material);
-            materialBox1.copyMeshFrom(srcBox0);
-            materialBox1.initialize(new Vector3D(-100.0, -100.0, -100.0), new Vector3D(100.0, 100.0, 100.0), [tex1]);
-            material.setColor(color);
 
             let box: PureEntity;
             box = new PureEntity();
             box.copyMeshFrom(srcBox0);
-            box.copyMaterialFrom(materialBox0);
+            box.setMaterial(material0);
             sc.addEntity(box);
             this.m_entityList.push(box);
             this.m_transMat4List.push(box.getMatrix());
-
+            // 优化轮子的转动渲染: 
+            // 1. 四个轮子的旋转，可以合并为多段组成的一个大mesh, 渲染的时候每次只渲染一段来实现动画效果。这样操作之后，绘制次数会减少一半左右
+            // 2. 用uv动画的方式来实现旋转效果
             for (let j: number = 1; j < 5; j++) {
-                box = new PureEntity();
-                box.copyMeshFrom(srcBox1);
-                box.copyMaterialFrom(materialBox1);
-                sc.addEntity(box);
-                this.m_entityList.push(box);
-                this.m_transMat4List.push(box.getMatrix());
+
+                // box = new PureEntity();
+                // box.copyMeshFrom(srcBox1);
+                // box.setMaterial(material1);
+                // //box.copyMaterialFrom(materialBox1);
+                // sc.addEntity(box);
+                // this.m_entityList.push(box);
+                // this.m_transMat4List.push(box.getMatrix());
+
+                let cyl = new PureEntity();
+                cyl.setMaterial(material1);
+                cyl.copyMeshFrom(CarEntity.s_srcCyl1);
+                sc.addEntity(cyl);
+                this.m_entityList.push(cyl);
+                this.m_transMat4List.push(cyl.getMatrix());
             }
             this.transform.initParam();
 

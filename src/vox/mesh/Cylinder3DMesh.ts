@@ -201,6 +201,10 @@ export default class Cylinder3DMesh extends MeshBase {
             ROVertexBuffer.Reset();
             ROVertexBuffer.AddFloat32Data(this.m_vs, 3);
             this.m_ivs = new Uint16Array(pivs);
+            
+            this.vtCount = this.m_ivs.length;
+            this.trisNumber = this.vtCount / 3;
+            
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
                 // uv
                 this.m_uvs = new Float32Array(this.vtxTotal * 2);
@@ -215,13 +219,18 @@ export default class Cylinder3DMesh extends MeshBase {
             }
             if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
                 this.m_nvs = new Float32Array(this.vtxTotal * 3);
-
-                i = 0;
-                for (j = 0; j < this.vtxTotal; ++j) {
-                    pvtx = vtxVec[j];
-                    this.m_nvs[i] = pvtx.nx; this.m_nvs[i + 1] = pvtx.ny; this.m_nvs[i + 2] = pvtx.nz;
-                    i += 3;
+                if (this.m_transMatrix != null) {
+                    SurfaceNormalCalc.ClacTrisNormal(this.m_vs, this.m_vs.length, this.trisNumber, this.m_ivs, this.m_nvs);
                 }
+                else {
+                    i = 0;
+                    for (j = 0; j < this.vtxTotal; ++j) {
+                        pvtx = vtxVec[j];
+                        this.m_nvs[i] = pvtx.nx; this.m_nvs[i + 1] = pvtx.ny; this.m_nvs[i + 2] = pvtx.nz;
+                        i += 3;
+                    }
+                }
+
                 ROVertexBuffer.AddFloat32Data(this.m_nvs, 3);
             }
 

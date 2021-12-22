@@ -113,7 +113,7 @@ export default class LambertLightMaterial extends MaterialBase {
 
             this.m_fragLocalParamsTotal = 2;
             this.m_vertLocalParams = new Float32Array([
-                1.0,1.0, 0.0,0.0,      // u scale, v scale, undefined, undefined
+                1.0,1.0, 0.0,0.0,      // u scale, v scale, translation u, translation v
                 10.0, 0.0, 0.0,0.0     // displacement scale, bias, undefined, undefined
             ]);
             if (this.parallaxMap != null) {
@@ -210,6 +210,12 @@ export default class LambertLightMaterial extends MaterialBase {
         if (this.m_vertLocalParams != null) {
             this.m_vertLocalParams[0] = uScale;
             this.m_vertLocalParams[1] = vScale;
+        }
+    }
+    setUVTranslation(tu: number, tv: number): void {
+        if (this.m_vertLocalParams != null) {
+            this.m_vertLocalParams[2] = tu;
+            this.m_vertLocalParams[3] = tv;
         }
     }
     /**

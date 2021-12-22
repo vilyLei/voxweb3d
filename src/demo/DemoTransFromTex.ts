@@ -95,7 +95,7 @@ export class DemoTransFromTex {
         srcBox.initializeCube(80.0, texList);
         
         trans = mat4 != null? trans : null;
-        for(let i: number = 0; i < 20000; ++i) {
+        for(let i: number = 0; i < 5000; ++i) {
             let box: Box3DEntity = new Box3DEntity(trans);
             if(mat4 != null) {
                 let material: TransFromTexMaterial = new TransFromTexMaterial();
