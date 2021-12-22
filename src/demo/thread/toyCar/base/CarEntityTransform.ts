@@ -8,15 +8,16 @@
 import Vector3D from "../../../../vox/math/Vector3D";
 import IEntityTransform from "../../../../vox/entity/IEntityTransform";
 import { NavigationStatus } from "../../../../voxnav/tileTerrain/NavigationStatus";
+import { StatusDetector } from "./StatusDetector";
 
 class CarEntityTransform implements IEntityTransform {
 
     private m_entityIndex: number = -1;
     private m_fs32Length: number = 15;
-    private m_fs32Data: Float32Array = null;
-    //private m_changed: boolean = true;
-    
+    private m_fs32Data: Float32Array = null;    
     private m_position: Vector3D = new Vector3D();
+
+    detector: StatusDetector = null;
     status: NavigationStatus = NavigationStatus.Init;
     constructor() {
     }
@@ -52,6 +53,7 @@ class CarEntityTransform implements IEntityTransform {
             this.m_fs32Data[1] = pos.y;
             this.m_fs32Data[2] = pos.z;
             this.status = NavigationStatus.Init;
+            this.detector.version++;
         }
     }
     setXYZ(px: number, py: number, pz: number): void {
@@ -62,6 +64,7 @@ class CarEntityTransform implements IEntityTransform {
             this.m_fs32Data[1] = py;
             this.m_fs32Data[2] = pz;
             this.status = NavigationStatus.Init;
+            this.detector.version++;
         }
     }
     setRotationXYZ(prx: number, pry: number, prz: number): void {
@@ -69,11 +72,15 @@ class CarEntityTransform implements IEntityTransform {
             this.m_fs32Data[3] = prx;
             this.m_fs32Data[4] = pry;
             this.m_fs32Data[5] = prz;
+            this.status = NavigationStatus.Init;
+            this.detector.version++;
         }
     }
     setScale(bodyScale: number): void {
         if (this.m_entityIndex >= 0) {
             this.m_fs32Data[6] = bodyScale;
+            this.status = NavigationStatus.Init;
+            this.detector.version++;
         }
     }
     /**
@@ -88,6 +95,7 @@ class CarEntityTransform implements IEntityTransform {
             this.m_fs32Data[7] = param1;
             this.m_fs32Data[8] = param2;
             this.status = NavigationStatus.Init;
+            this.detector.version++;
         }
     }
     setWheelOffsetXYZ(px: number, py: number, pz: number): void {
@@ -96,6 +104,7 @@ class CarEntityTransform implements IEntityTransform {
             this.m_fs32Data[10] = py;
             this.m_fs32Data[11] = pz;
             this.status = NavigationStatus.Init;
+            this.detector.version++;
         }
     }
     // wheel init rotation, spd, wheel body scale;
@@ -105,12 +114,14 @@ class CarEntityTransform implements IEntityTransform {
             this.m_fs32Data[13] = wheelRotSpd;
             this.m_fs32Data[14] = bodyScale;
             this.status = NavigationStatus.Init;
+            this.detector.version++;
         }
     }
     setWheelRotSpeed(wheelRotSpd: number): void {
         if (this.m_entityIndex >= 0) {
             this.m_fs32Data[13] = wheelRotSpd;
             this.status = NavigationStatus.Init;
+            this.detector.version++;
         }
     }
 
@@ -144,6 +155,13 @@ class CarEntityTransform implements IEntityTransform {
             default:
                 break;
         }
+    }
+
+    destroy(): void {
+
+        this.m_entityIndex = -1;
+        this.m_fs32Data = null;
+        this.detector = null;
     }
 }
 export { CarEntityTransform };

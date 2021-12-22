@@ -10,6 +10,7 @@ import { EntityStatusManager } from "../base/EntityStatusManager";
 import { TerrainData } from "../../../..//terrain/tile/TerrainData";
 import { PathSerachListener } from "../../../../voxnav/tileTerrain/PathSerachListener";
 import { TerrainNavigation } from "../../../../voxnav/tileTerrain/TerrainNavigation";
+import { StatusDetector } from "../base/StatusDetector";
 
 class ToyCarTask extends ThreadTask {
     
@@ -32,7 +33,9 @@ class ToyCarTask extends ThreadTask {
     private m_calcType: number = 1;
     private m_statusManager: EntityStatusManager = new EntityStatusManager();
     private m_terrNav: TerrainNavigation = new TerrainNavigation();
+    private m_detector: StatusDetector = new StatusDetector();
     private m_time: number = 0;
+
     taskIndex: number = 0;
 
     constructor() {
@@ -58,7 +61,7 @@ class ToyCarTask extends ThreadTask {
         if(this.m_entityIndex < this.m_total) {
 
             entity.setEntityIndex(this.m_entityIndex);
-
+            entity.transform.detector = this.m_detector;
             entity.transform.setFS32Data(this.getTransFS32Data(), this.m_entityIndex);
 
             this.m_entities.push( entity );
@@ -90,14 +93,8 @@ class ToyCarTask extends ThreadTask {
     private sendTransData(): void {
 
         if (this.m_transEnabled) {
-            let flag: boolean = false;
-            for(let i: number = 0; i < this.m_entityIndex; ++i) {
-                if(this.m_entities[i].transform.isChanged()) {
-                    flag = true;
-                    break;
-                }
-            }
-            if(flag) {
+            if(this.m_detector.version > 0) {
+                this.m_detector.version = 0;
                 this.m_transParamData.set(this.m_transInputData);
                 this.m_statusManager.updateEntityStatus(this.m_entities);
                 let descriptor: any = {taskIndex: this.taskIndex, flag: this.m_transFlag, calcType: this.m_calcType, allTotal: this.m_total, matsTotal: this.m_matsTotal};
