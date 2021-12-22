@@ -14,6 +14,7 @@ class CarEntityTransform implements IEntityTransform {
     private m_entityIndex: number = -1;
     private m_fs32Length: number = 15;
     private m_fs32Data: Float32Array = null;
+    //private m_changed: boolean = true;
     
     private m_position: Vector3D = new Vector3D();
     status: NavigationStatus = NavigationStatus.Init;
@@ -36,6 +37,9 @@ class CarEntityTransform implements IEntityTransform {
         // wheel init rotation, wheel rotation spd, wheel body scale;
         this.setWheelRotParam(30.0, -2.0, 0.3);
     }
+    isChanged(): boolean {
+        return this.status != NavigationStatus.Stop;
+    }
     getPosition(outV: Vector3D): void {
         outV.copyFrom(this.m_position);
     }
@@ -47,8 +51,8 @@ class CarEntityTransform implements IEntityTransform {
             this.m_fs32Data[0] = pos.x;
             this.m_fs32Data[1] = pos.y;
             this.m_fs32Data[2] = pos.z;
+            this.status = NavigationStatus.Init;
         }
-        this.status = NavigationStatus.Init;
     }
     setXYZ(px: number, py: number, pz: number): void {
         //console.log("setXYZ(), px,py,pz: ",px,py,pz);
@@ -57,8 +61,8 @@ class CarEntityTransform implements IEntityTransform {
             this.m_fs32Data[0] = px;
             this.m_fs32Data[1] = py;
             this.m_fs32Data[2] = pz;
+            this.status = NavigationStatus.Init;
         }
-        this.status = NavigationStatus.Init;
     }
     setRotationXYZ(prx: number, pry: number, prz: number): void {
         if (this.m_entityIndex >= 0) {
@@ -83,6 +87,7 @@ class CarEntityTransform implements IEntityTransform {
             this.m_fs32Data[6] = bodyScale;
             this.m_fs32Data[7] = param1;
             this.m_fs32Data[8] = param2;
+            this.status = NavigationStatus.Init;
         }
     }
     setWheelOffsetXYZ(px: number, py: number, pz: number): void {
@@ -90,6 +95,7 @@ class CarEntityTransform implements IEntityTransform {
             this.m_fs32Data[9] = px;
             this.m_fs32Data[10] = py;
             this.m_fs32Data[11] = pz;
+            this.status = NavigationStatus.Init;
         }
     }
     // wheel init rotation, spd, wheel body scale;
@@ -98,11 +104,13 @@ class CarEntityTransform implements IEntityTransform {
             this.m_fs32Data[12] = pr;
             this.m_fs32Data[13] = wheelRotSpd;
             this.m_fs32Data[14] = bodyScale;
+            this.status = NavigationStatus.Init;
         }
     }
     setWheelRotSpeed(wheelRotSpd: number): void {
         if (this.m_entityIndex >= 0) {
             this.m_fs32Data[13] = wheelRotSpd;
+            this.status = NavigationStatus.Init;
         }
     }
 

@@ -88,14 +88,24 @@ class ToyCarTask extends ThreadTask {
         return this.m_transEnabled;
     }
     private sendTransData(): void {
+
         if (this.m_transEnabled) {
-            this.m_transParamData.set(this.m_transInputData);
-            this.m_statusManager.updateEntityStatus(this.m_entities);
-            let descriptor: any = {taskIndex: this.taskIndex, flag: this.m_transFlag, calcType: this.m_calcType, allTotal: this.m_total, matsTotal: this.m_matsTotal};
-            this.addDataWithParam("car_trans", [this.m_transParamData, this.m_transOutputData, this.m_statusManager.getStatusData()], descriptor, true);
-            this.m_transEnabled = false;
-            this.m_transFlag = 0;
-            this.m_calcType = 0;
+            let flag: boolean = false;
+            for(let i: number = 0; i < this.m_entityIndex; ++i) {
+                if(this.m_entities[i].transform.isChanged()) {
+                    flag = true;
+                    break;
+                }
+            }
+            if(flag) {
+                this.m_transParamData.set(this.m_transInputData);
+                this.m_statusManager.updateEntityStatus(this.m_entities);
+                let descriptor: any = {taskIndex: this.taskIndex, flag: this.m_transFlag, calcType: this.m_calcType, allTotal: this.m_total, matsTotal: this.m_matsTotal};
+                this.addDataWithParam("car_trans", [this.m_transParamData, this.m_transOutputData, this.m_statusManager.getStatusData()], descriptor, true);
+                this.m_transEnabled = false;
+                this.m_transFlag = 0;
+                this.m_calcType = 0;
+            }
         }
         else {
             console.log("sendTransData failure...");

@@ -23,7 +23,7 @@ class ToyCarScene {
     private m_toyCarTasks: ToyCarTask[] = [];
     private m_terrainData: TerrainData = null;
     private m_bodyScale: number = 1.0;
-    private m_buildEntitiesTotal: number = 100;
+    private m_buildEntitiesTotal: number = 1;
     private m_tasksTotal: number = 1;
     private m_threadsTotal: number = 2;
     

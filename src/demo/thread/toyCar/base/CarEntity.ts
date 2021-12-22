@@ -29,7 +29,6 @@ import { PathNavigator } from "../../../../voxnav/tileTerrain/PathNavigator";
 class CarEntity implements IToyEntity {
 
     private static s_srcBox0: Box3DEntity = null;
-    private static s_srcBox1: Box3DEntity = null;
     private static s_srcCyl1: Cylinder3DEntity = null;
 
     private m_outPos: Vector3D = new Vector3D();
