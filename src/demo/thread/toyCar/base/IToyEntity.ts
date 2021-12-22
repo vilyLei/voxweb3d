@@ -6,8 +6,8 @@
 /***************************************************************************/
 
 import RendererScene from "../../../../vox/scene/RendererScene";
-import {PathNavigator} from "./PathNavigator";
-import { EntityStatus } from "./EntityStatus";
+import {PathNavigator} from "../../../../voxnav/tileTerrain/PathNavigator";
+import { NavigationStatus } from "../../../../voxnav/tileTerrain/NavigationStatus";
 import { CarEntityTransform } from "./CarEntityTransform";
 import { CommonMaterialContext } from "../../../../materialLab/base/CommonMaterialContext";
 
@@ -16,7 +16,7 @@ interface IToyEntity {
     transform: CarEntityTransform;
     navigator: PathNavigator;
     boundsChanged: boolean;
-    getStatus(): EntityStatus;
+    getStatus(): NavigationStatus;
     setEntityIndex(index: number): void
     getEntityIndex(): number;
     

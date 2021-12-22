@@ -5,7 +5,7 @@
 /*                                                                         */
 /***************************************************************************/
 
-import { EntityStatus } from "./EntityStatus";
+import { NavigationStatus } from "../../../../voxnav/tileTerrain/NavigationStatus";
 import { IToyEntity } from "./IToyEntity";
 class EntityStatusManager {
     private m_statusList: number[] = [0,2,2,0];

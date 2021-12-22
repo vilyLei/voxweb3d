@@ -18,13 +18,13 @@ import { IToyEntity } from "./IToyEntity";
 import Line3DEntity from "../../../../vox/entity/Line3DEntity";
 
 import { CurveMotionXZModule } from "../../../../voxmotion/primitive/CurveMotionXZModule";
-import { EntityStatus } from "./EntityStatus";
+import { NavigationStatus } from "../../../../voxnav/tileTerrain/NavigationStatus";
 import { CarEntityTransform } from "./CarEntityTransform";
 import LambertLightMaterial from "../../../../vox/material/mcase/LambertLightMaterial";
 import Color4 from "../../../../vox/material/Color4";
 import MathConst from "../../../../vox/math/MathConst";
 import Cylinder3DEntity from "../../../../vox/entity/Cylinder3DEntity";
-import { PathNavigator } from "./PathNavigator";
+import { PathNavigator } from "../../../../voxnav/tileTerrain/PathNavigator";
 
 class CarEntity implements IToyEntity {
 
@@ -54,7 +54,7 @@ class CarEntity implements IToyEntity {
     constructor() {
     }
     
-    getStatus(): EntityStatus {
+    getStatus(): NavigationStatus {
         return this.navigator.status > this.transform.status ? this.navigator.status : this.transform.status;
     }
     setEntityIndex(index: number): void {
@@ -187,12 +187,12 @@ class CarEntity implements IToyEntity {
     }
     setPosition(pos: Vector3D): void {
         this.transform.setPosition(pos);
-        this.navigator.status = EntityStatus.Init;
+        this.navigator.status = NavigationStatus.Init;
     }
     setXYZ(px: number, py: number, pz: number): void {
 
         this.transform.setXYZ(px, py, pz);
-        this.navigator.status = EntityStatus.Init;
+        this.navigator.status = NavigationStatus.Init;
     }
 
     destroy(): void {
@@ -212,9 +212,9 @@ class CarEntity implements IToyEntity {
         this.setVisible(true);
 
         switch (this.navigator.status) {
-            case EntityStatus.Init:
-                if (this.navigator.status == EntityStatus.Init) {
-                    this.navigator.status = EntityStatus.Stop;
+            case NavigationStatus.Init:
+                if (this.navigator.status == NavigationStatus.Init) {
+                    this.navigator.status = NavigationStatus.Stop;
                 }
                 break;
             default:

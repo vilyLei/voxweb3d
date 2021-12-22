@@ -5,9 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-import Vector3D from "../../../../vox/math/Vector3D";
-import { TerrainPathStatus, TerrainPath } from "../terrain/TerrainPath";
-import { TerrainData } from "../../../../terrain/tile/TerrainData";
+import Vector3D from "../../vox/math/Vector3D";
+import { TerrainPathStatus, TerrainPath } from "../../voxnav/tileTerrain/TerrainPath";
+import { TerrainData } from "../../terrain/tile/TerrainData";
 
 class PathCalculator {
     private static s_posList: Vector3D[] = new Array(256);
@@ -15,7 +15,7 @@ class PathCalculator {
     }
     static GetPathPosList(vs: Uint16Array, path: TerrainPath, terrData: TerrainData): Vector3D[] {
 
-        let posList: Vector3D[] = PathCalculator.s_posList;//[];//new Array(vs.length >> 1);
+        let posList: Vector3D[] = PathCalculator.s_posList;
         let k: number = 0;
         let r: number = path.r0;
         let c: number = path.c0;
@@ -25,8 +25,7 @@ class PathCalculator {
         for (let i: number = vs.length - 1; i > 0;) {
             r = vs[i - 1];
             c = vs[i];
-            let pv = null;//terrData.getTerrainPositionByRC(r, c);
-            // posList[k++] = pv.clone();
+            let pv = null;
             if (preR != r && preC != c) {
                 // 前面新增
                 if (preR == r) {

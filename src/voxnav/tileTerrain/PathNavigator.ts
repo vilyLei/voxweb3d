@@ -5,12 +5,12 @@
 /*                                                                         */
 /***************************************************************************/
 
-import IEntityTransform from "../../../../vox/entity/IEntityTransform";
-import { CurveMotionXZModule } from "../../../../voxmotion/primitive/CurveMotionXZModule";
-import { TerrainData } from "../../../../terrain/tile/TerrainData";
-import { TerrainPathStatus, TerrainPath } from "../terrain/TerrainPath";
-import Vector3D from "../../../../vox/math/Vector3D";
-import { EntityStatus } from "./EntityStatus";
+import IEntityTransform from "../../vox/entity/IEntityTransform";
+import { CurveMotionXZModule } from "../../voxmotion/primitive/CurveMotionXZModule";
+import { TerrainData } from "../../terrain/tile/TerrainData";
+import { TerrainPathStatus, TerrainPath } from "../../voxnav/tileTerrain/TerrainPath";
+import Vector3D from "../../vox/math/Vector3D";
+import { NavigationStatus } from "../../voxnav/tileTerrain/NavigationStatus";
 import { PathCalculator } from "./PathCalculator";
 
 class PathNavigator {
@@ -21,7 +21,7 @@ class PathNavigator {
     private m_target: IEntityTransform = null;
     private m_outPos: Vector3D = new Vector3D();
 
-    status: EntityStatus = EntityStatus.Init;
+    status: NavigationStatus = NavigationStatus.Init;
     autoSerachPath: boolean = false;
     readonly curveMotion: CurveMotionXZModule = new CurveMotionXZModule();
     readonly path: TerrainPath = new TerrainPath();
@@ -59,7 +59,7 @@ class PathNavigator {
         this.path.movingPath();
 
         this.m_delayTime = Math.round(Math.random() * 100) + 30;
-        this.status = EntityStatus.Moving;
+        this.status = NavigationStatus.Moving;
     }
     isMoving(): boolean {
         return !this.m_stopped;
@@ -72,7 +72,7 @@ class PathNavigator {
             this.m_stopped = this.curveMotion.isStopped();
             if (this.m_stopped) {
                 this.path.stopPath();
-                this.status = EntityStatus.Stop;
+                this.status = NavigationStatus.Stop;
             }
             else {
                 this.curveMotion.run();

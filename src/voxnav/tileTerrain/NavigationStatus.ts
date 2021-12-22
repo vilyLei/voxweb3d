@@ -5,9 +5,9 @@
 /*                                                                         */
 /***************************************************************************/
 
-enum EntityStatus {
+enum NavigationStatus {
     Init = 1,
     Moving = 2,
     Stop = 3
 }
-export { EntityStatus };
+export { NavigationStatus };

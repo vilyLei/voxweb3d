@@ -6,9 +6,9 @@ import { ToyCarBuilder } from "./ToyCarBuilder";
 import { TerrainData } from "../../../../terrain/tile/TerrainData";
 import { SimpleTerrain } from "../../../../terrain/tile/SimpleTerrain";
 import { CarEntity } from "../base/CarEntity";
-import { TerrainNavigation } from "../terrain/TerrainNavigation";
+import { TerrainNavigation } from "../../../../voxnav/tileTerrain/TerrainNavigation";
 import Vector3D from "../../../../vox/math/Vector3D";
-import { EntityStatus } from "../base/EntityStatus";
+import { NavigationStatus } from "../../../../voxnav/tileTerrain/NavigationStatus";
 import { CommonMaterialContext } from "../../../../materialLab/base/CommonMaterialContext";
 
 class ToyCarScene {

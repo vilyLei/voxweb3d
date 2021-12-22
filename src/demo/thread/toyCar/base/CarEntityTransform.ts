@@ -7,7 +7,7 @@
 
 import Vector3D from "../../../../vox/math/Vector3D";
 import IEntityTransform from "../../../../vox/entity/IEntityTransform";
-import { EntityStatus } from "./EntityStatus";
+import { NavigationStatus } from "../../../../voxnav/tileTerrain/NavigationStatus";
 
 class CarEntityTransform implements IEntityTransform {
 
@@ -16,7 +16,7 @@ class CarEntityTransform implements IEntityTransform {
     private m_fs32Data: Float32Array = null;
     
     private m_position: Vector3D = new Vector3D();
-    status: EntityStatus = EntityStatus.Init;
+    status: NavigationStatus = NavigationStatus.Init;
     constructor() {
     }
 
@@ -48,7 +48,7 @@ class CarEntityTransform implements IEntityTransform {
             this.m_fs32Data[1] = pos.y;
             this.m_fs32Data[2] = pos.z;
         }
-        this.status = EntityStatus.Init;
+        this.status = NavigationStatus.Init;
     }
     setXYZ(px: number, py: number, pz: number): void {
         //console.log("setXYZ(), px,py,pz: ",px,py,pz);
@@ -58,7 +58,7 @@ class CarEntityTransform implements IEntityTransform {
             this.m_fs32Data[1] = py;
             this.m_fs32Data[2] = pz;
         }
-        this.status = EntityStatus.Init;
+        this.status = NavigationStatus.Init;
     }
     setRotationXYZ(prx: number, pry: number, prz: number): void {
         if (this.m_entityIndex >= 0) {
@@ -128,9 +128,9 @@ class CarEntityTransform implements IEntityTransform {
     updateTrans(): void {
         
         switch (this.status) {
-            case EntityStatus.Init:
-                if (this.status == EntityStatus.Init) {
-                    this.status = EntityStatus.Stop;
+            case NavigationStatus.Init:
+                if (this.status == NavigationStatus.Init) {
+                    this.status = NavigationStatus.Stop;
                 }
                 break;
             default:

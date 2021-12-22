@@ -6,7 +6,7 @@
 /***************************************************************************/
 
 import { PathSerachListener } from "./PathSerachListener";
-import { PathNavigator } from "../base/PathNavigator";
+import { PathNavigator } from "../../voxnav/tileTerrain/PathNavigator";
 
 class TerrainNavigation implements PathSerachListener{
 
@@ -95,6 +95,13 @@ class TerrainNavigation implements PathSerachListener{
             dataLen += pathDataLen;
             k += 5;
         }
+    }
+    
+    destroy(): void {
+        this.m_pathSearchData = null;
+        this.m_pathData = null;
+        this.m_navigators = [];
+        this.m_total = 0;
     }
 }
 export { TerrainNavigation };
