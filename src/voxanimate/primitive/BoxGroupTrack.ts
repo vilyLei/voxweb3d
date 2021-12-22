@@ -94,7 +94,7 @@ export default class BoxGroupTrack {
             this.animator.initialize(unitMinV, unitMaxV, srcTrack.m_unitsTotal, srcTrack.m_stepFactor, texList);
         }
     }
-    initialize(textureBlock: TextureBlock, stepDis: number = 0.5, texList: TextureProxy[] = null): void {
+    initialize(textureBlock: TextureBlock, stepDis: number = 0.5, texList: TextureProxy[] = null, distanceFactor: number = 1.0): void {
         this.createTrackData();
 
         let pos: Vector3D;
@@ -104,7 +104,7 @@ export default class BoxGroupTrack {
             pos.scaleVector(this.m_trackScale);
             this.m_track.addXYZ(pos.x, pos.y, pos.z);
         }
-        this.animator.createDataTexture(textureBlock, this.m_track.getStepsTotal(stepDis));
+        this.animator.createDataTexture(textureBlock, this.m_track.getStepsTotal(stepDis)/distanceFactor);
 
         pos = new Vector3D(100.0, 0.0, 0.0);
         let pdis: number = 0.0;
@@ -113,7 +113,7 @@ export default class BoxGroupTrack {
         let i: number = 0;
         for (; i < total; ++i) {
             flag = this.m_track.calcPosByDis(pos, pdis, false);
-            pdis += stepDis;
+            pdis += stepDis * distanceFactor;
 
             this.animator.setPosAt(i, pos);
 

@@ -1,4 +1,3 @@
-
 import RendererDevice from "../vox/render/RendererDevice";
 import RendererParam from "../vox/scene/RendererParam";
 import Vector3D from "../vox/math/Vector3D";
@@ -145,7 +144,7 @@ export class RbtDrama {
             let limbRole: FourLimbRole;
             let campType: CampType;
             let bodySize: number = 40.0;
-            for (i = 0; i < 20; ++i) {
+            for (i = 0; i < 10; ++i) {
                 bodySize = Math.round(Math.random() * 60.0) + 30.0;
                 switch (i % 3) {
                     case 1:
@@ -168,7 +167,7 @@ export class RbtDrama {
             }
             //this.m_limbRole = limbRole;
 
-            for (i = 0; i < 10; ++i) {
+            for (i = 0; i < 20; ++i) {
                 switch (i % 3) {
                     case 1:
                         campType = CampType.Red;
@@ -195,7 +194,7 @@ export class RbtDrama {
             let upperBox: Box3DEntity = new Box3DEntity();
             upperBox.initializeSizeXYZ(30.0, 20, 30, [tex5]);
             upperBox.setXYZ(0.0, 50.0, 0.0);
-            for (i = 0; i < 100; ++i) {
+            for (i = 0; i < 10; ++i) {
 
                 let sillyRole: SillyRole = new SillyRole();
                 if (srcSillyRole != null) {

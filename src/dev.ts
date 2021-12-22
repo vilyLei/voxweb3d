@@ -164,7 +164,7 @@
 //  import * as DemoFloatTex2 from "./example/DemoFloatTex2";
 //  import Demo = DemoFloatTex2.demo.DemoFloatTex2;
 
-import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
+//  import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 
 //  import {DemoMixProgress as Demo} from "./demo/DemoMixProgress";
 
@@ -395,7 +395,7 @@ import {DemoBoxGroupTrack as Demo} from "./demo/DemoBoxGroupTrack";
 //  import * as BoFrame from "./app/BoFrame";
 //  import Demo = BoFrame.app.BoFrame;
 
-//  import {RbtDrama as Demo} from "./app/RbtDrama";
+import {RbtDrama as Demo} from "./app/RbtDrama";
 
 //  import {SlickRoad as Demo} from "./app/SlickRoad";
 

@@ -101,18 +101,18 @@ export class DemoBoxGroupTrack {
 
             //  this.m_boxTrack.setTrackScaleXYZ(0.2,0.2,0.2);
             //  this.m_boxTrack.initialize(this.m_rscene.textureBlock,0.5,[tex0]);
-
+            let distanceFactor: number = 0.98;
             this.m_boxTrack.setTrackScaleXYZ(0.4, 0.4, 1.0);
             //this.m_boxTrack.setFactor(2,5,2);
-            //this.m_boxTrack.initialize(this.m_rscene.textureBlock,0.5,[tex0]);
+            //this.m_boxTrack.initialize(this.m_rscene.textureBlock,0.5,[tex0], distanceFactor);
             this.m_boxTrack.setFactor(5, 5, 5);
-            this.m_boxTrack.initialize(this.m_rscene.textureBlock, 5.0, [tex0]);
+            this.m_boxTrack.initialize(this.m_rscene.textureBlock, 5.0, [tex0], distanceFactor);
             //this.m_boxTrack.setScale(2.2);
             this.m_rscene.addEntity(this.m_boxTrack.animator);
 
             this.m_role0.boxTrack = this.m_boxTrack;
             this.m_role0.initialize();
-            /*
+            ///*
             let boxTrack: BoxGroupTrack = new BoxGroupTrack();
             boxTrack.initializeFrom(this.m_boxTrack, [tex0]);
             this.m_rscene.addEntity(boxTrack.animator);
@@ -136,8 +136,8 @@ export class DemoBoxGroupTrack {
         this.m_timeoutId = setTimeout(this.update.bind(this), 30);// 33 fps
         this.m_statusDisp.render();
 
-        // this.m_role0.run();
-        // this.m_role1.run();
+        this.m_role0.run();
+        this.m_role1.run();
     }
     run(): void {
         this.m_interaction.run();
