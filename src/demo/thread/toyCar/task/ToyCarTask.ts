@@ -70,6 +70,7 @@ class ToyCarTask extends ThreadTask {
         
         if (this.isSendTransEnabled()) {
             if (this.m_entities.length > 0) {
+                //this.updateEntityBounds();
                 this.sendTransData();
             }
         }
@@ -159,6 +160,13 @@ class ToyCarTask extends ThreadTask {
                 this.m_entities[i].updateTrans(fs32);
             }
         }
+    }
+    updateEntityBounds(): void {
+        // for (let i: number = 0; i < this.m_entities.length; ++i) {
+        //     if(this.m_entities[i].boundsChanged){
+        //         this.m_entities[i].updateBounds();
+        //     }
+        // }
     }
     
     private updateEntityPath(): void {

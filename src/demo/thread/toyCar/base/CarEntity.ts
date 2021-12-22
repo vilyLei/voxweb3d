@@ -53,6 +53,7 @@ class CarEntity implements IToyEntity {
     asset: AssetPackage = null;
     terrainData: TerrainData = null;
     autoSerachPath: boolean = false;
+    boundsChanged: boolean = false;
     readonly path: TerrainPath = new TerrainPath();
     constructor() {
     }
@@ -211,6 +212,15 @@ class CarEntity implements IToyEntity {
         this.m_delayTime = Math.round(Math.random() * 100) + 30;
         this.status = EntityStatus.Moving;
     }
+    updateBounds(): void {
+        // if(this.boundsChanged) {
+        //     //for (let i: number = 0; i < this.m_transMat4List.length; ++i) {
+        //     for (let i: number = 0; i < 5; ++i) {
+        //         this.m_entityList[i].update();
+        //     }
+        //     this.boundsChanged = false;
+        // }
+    }
     updateTrans(fs32: Float32Array): void {
 
         this.setVisible(true);
@@ -225,7 +235,7 @@ class CarEntity implements IToyEntity {
                 break;
         }
         this.transform.updateTrans();
-
+        this.boundsChanged = true;
         let index = this.m_entityIndex * 5;
         for (let i: number = 0; i < this.m_transMat4List.length; ++i) {
             this.m_transMat4List[i].copyFromF32Arr(fs32, index * 16);

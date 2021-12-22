@@ -12,9 +12,9 @@ import { CommonMaterialContext } from "../../../../materialLab/base/CommonMateri
 
 interface IToyEntity {
 
-    getStatus(): EntityStatus;
-    // status: EntityStatus;
     path: TerrainPath;
+    boundsChanged: boolean;
+    getStatus(): EntityStatus;
 
     getEneityIndex(): number;
     setFS32Data(srcFS32: Float32Array, index: number): void;
@@ -23,6 +23,7 @@ interface IToyEntity {
     destroy(): void;
     isReadySearchPath(): boolean;
     updateTrans(fs32: Float32Array): void;
+    updateBounds(): void;
     searchedPath(vs: Uint16Array): void;
     stopAndWait(): void;
 }
