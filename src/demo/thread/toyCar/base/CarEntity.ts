@@ -244,11 +244,5 @@ class CarEntity implements IToyEntity {
     isReadySearchPath(): boolean {
         return this.navigator.path.isReadySearchPath();
     }
-
-    searchedPath(vs: Uint16Array): void {
-
-        this.navigator.searchedPath( vs );
-        this.navigator.status = EntityStatus.Moving;
-    }
 }
 export { CarEntity };

@@ -6,6 +6,7 @@ import { ToyCarBuilder } from "./ToyCarBuilder";
 import { TerrainData } from "../../../../terrain/tile/TerrainData";
 import { SimpleTerrain } from "../../../../terrain/tile/SimpleTerrain";
 import { CarEntity } from "../base/CarEntity";
+import { TerrainNavigation } from "../terrain/TerrainNavigation";
 import Vector3D from "../../../../vox/math/Vector3D";
 import { EntityStatus } from "../base/EntityStatus";
 import { CommonMaterialContext } from "../../../../materialLab/base/CommonMaterialContext";
@@ -123,25 +124,40 @@ class ToyCarScene {
     private m_testFlag: number = 0;
     private m_rc0: number[];
     private m_rc1: number[];
+    private m_terrNav: TerrainNavigation = null;//new TerrainNavigation();
     testDose(pv: Vector3D): void {
-        /*
+        ///*
         if(this.m_terrainData != null) {
-
             let task = this.m_toyCarTasks[0];
+            if(this.m_terrNav == null) {
+                this.m_terrNav = new TerrainNavigation();
+                this.m_terrNav.initialize();
+                task.setSearchPathListener( this.m_terrNav );
+            }
+
             let containsFlag: boolean = this.m_terrainData.containsPosition( pv );
             console.log("containsFlag: ",containsFlag);
             if(containsFlag) {
-                if(this.m_testFlag < 2 && this.m_entity0.path.isStopped()) {
+                //if(this.m_testFlag < 2 && this.m_entity0.navigator.isStopped()) {
+                if(this.m_testFlag < 2) {
                     let i: number = this.m_testFlag * 2;
                     let rc: number[] = this.m_terrainData.getRCByPosition(pv);
                     if(this.m_testFlag == 0) {
-                        this.m_entity0.path.setBeginRC(rc[0], rc[1]);
-                        this.m_entity0.setPosition( this.m_terrainData.getTerrainPositionByRC(rc[0], rc[1]) );
-                        //this.m_entity0.status = EntityStatus.Init;
+                        this.m_rc0 = rc;
+                        // this.m_entity0.navigator.setBeginRC(rc[0], rc[1]);
+                        // this.m_entity0.setPosition( this.m_terrainData.getTerrainPositionByRC(rc[0], rc[1]) );
+
                     }
                     else if(this.m_testFlag == 1) {
-                        this.m_entity0.path.setEndRC(rc[0], rc[1]);
-                        this.m_entity0.path.searchPath();
+                        this.m_rc1 = rc;
+                        // this.m_entity0.navigator.setEndRC(rc[0], rc[1]);
+                        // this.m_entity0.navigator.searchPath();
+                        this.m_terrNav.reset();
+                        this.m_terrNav.setSearchPathParamAt(
+                            0,
+                            this.m_rc0[0], this.m_rc0[1],
+                            this.m_rc1[0], this.m_rc1[1]
+                            );
                     }
                     this.m_testFlag ++;
                 }

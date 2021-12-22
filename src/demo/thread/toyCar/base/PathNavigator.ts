@@ -108,7 +108,9 @@ class PathNavigator{
         this.m_delayTime = Math.round(Math.random() * 100) + 30;
         this.path.stopPath();
     }
-    
+    searchPath(): void {
+        this.path.searchPath();
+    }
     searchingPath(): void {
         this.path.searchingPath();
     }

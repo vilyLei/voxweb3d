@@ -77,7 +77,7 @@ class ToyCarTask extends ThreadTask {
             }
         }
         if (this.isAStarEnabled()) {
-            this.searchEntityPath();
+            this.searchPath();
         }
     }
 
@@ -128,7 +128,7 @@ class ToyCarTask extends ThreadTask {
     setSearchPathListener(listener: PathSerachListener): void {
         this.m_searchPathListener = listener;
     }
-    private searchEntityPath(): void {
+    private searchPath(): void {
         if(this.m_pathSerachEnabled) {
             
             // this.m_pathSearchData中的 第一个 uint16 数值存放需要寻路的请求个数
@@ -152,13 +152,15 @@ class ToyCarTask extends ThreadTask {
                 streams = [this.m_pathSearchData, this.m_pathData];
             }
             if(otherStreams != null) {
-                streams = streams != null ? streams.concat(otherStreams) : otherStreams.slice(0);
+                streams = streams != null ? streams.concat(otherStreams) : otherStreams;
+                //console.log("searchPath(), streams: ",streams);
             }
             if(streams != null) {
                 
                 this.m_pathSerachEnabled = false;
                 let descriptor: any = {
-                    taskIndex: this.taskIndex
+                    taskIndex: this.taskIndex,
+                    otherStreams: otherStreams != null
                 };
                 this.addDataWithParam("aStar_search", streams, descriptor, true);
             }
@@ -197,7 +199,7 @@ class ToyCarTask extends ThreadTask {
             index = params[k];
             pathDataLen = params[k+1] * 2;
             let vs = pathVS.subarray(dataLen, dataLen + pathDataLen);
-            this.m_entities[index].searchedPath(vs);
+            this.m_entities[index].navigator.searchedPath(vs);
             dataLen += pathDataLen;
             k += 5;
         }
@@ -218,12 +220,24 @@ class ToyCarTask extends ThreadTask {
                 break;
             case "aStar_search":
                 // console.log("parseDone XXXX aStar_search...", this.getUid());
+                let descriptor = data.descriptor;
                 let streams = data.streams;
-                this.m_pathSearchData = streams[0];
-                this.m_pathData = streams[1];
-                this.updateEntityPath();
-                if(this.m_searchPathListener != null) {
-                    this.m_searchPathListener.setSearchedPathData(streams.slice(2));
+                if(descriptor.otherStreams) {
+
+                    if(streams.length > 2) {
+                        this.m_pathSearchData = streams[0];
+                        this.m_pathData = streams[1];
+                        this.updateEntityPath();
+                        streams = streams.slice(2);
+                    }
+                    if(streams.length > 0 && this.m_searchPathListener != null) {
+                        this.m_searchPathListener.receiveSearchedPathData(streams);
+                    }
+                }
+                else {
+                    this.m_pathSearchData = streams[0];
+                    this.m_pathData = streams[1];
+                    this.updateEntityPath();
                 }
                 this.m_pathSerachEnabled = true;
                 break;

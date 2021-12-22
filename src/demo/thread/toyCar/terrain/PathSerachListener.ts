@@ -7,6 +7,6 @@
 
 interface PathSerachListener {
     getSearchPathData(): Uint16Array[];
-    setSearchedPathData(streams: Uint16Array[]): void;
+    receiveSearchedPathData(streams: Uint16Array[]): void;
 }
 export { PathSerachListener };

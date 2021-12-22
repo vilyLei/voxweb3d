@@ -196,7 +196,11 @@ function AStarNavInstance(pmodule) {
                 buffers.push(paramVS.buffer, pathDataVS.buffer);
                 this.searchPath(paramVS, pathDataVS);
             }
-            
+            if(total > 3) {
+                console.log("XXXX total: ",total);
+                console.log("XXXX data: ",data);
+                console.log("XXXX buffers: ",buffers);
+            }
             postMessage(data, buffers);
         }
     }

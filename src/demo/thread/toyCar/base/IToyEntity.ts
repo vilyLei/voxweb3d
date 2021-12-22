@@ -25,6 +25,5 @@ interface IToyEntity {
     isReadySearchPath(): boolean;
     updateTrans(fs32: Float32Array): void;
     updateBounds(): void;
-    searchedPath(vs: Uint16Array): void;
 }
 export { IToyEntity };
