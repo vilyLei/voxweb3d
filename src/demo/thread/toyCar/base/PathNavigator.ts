@@ -10,6 +10,7 @@ import { CurveMotionXZModule } from "../../../../voxmotion/primitive/CurveMotion
 import { TerrainData } from "../../../../terrain/tile/TerrainData";
 import { TerrainPathStatus, TerrainPath } from "../terrain/TerrainPath";
 import Vector3D from "../../../../vox/math/Vector3D";
+import { EntityStatus } from "./EntityStatus";
 import { PathCalculator } from "./PathCalculator";
 
 class PathNavigator{
@@ -20,6 +21,7 @@ class PathNavigator{
     private m_target: IEntityTransform = null;
     private m_outPos: Vector3D = new Vector3D();
     
+    status: EntityStatus = EntityStatus.Init;
     autoSerachPath: boolean = false;
     readonly curveMotion: CurveMotionXZModule = new CurveMotionXZModule();
     readonly path: TerrainPath = new TerrainPath();
@@ -31,6 +33,7 @@ class PathNavigator{
     }
     initialize(terrainData: TerrainData): void {
         this.m_terrainData = terrainData;
+        this.m_delayTime = Math.round(Math.random() * 100) + 30;
     }
     searchedPath(vs: Uint16Array): void {
 
@@ -56,6 +59,7 @@ class PathNavigator{
         this.path.movingPath();
 
         this.m_delayTime = Math.round(Math.random() * 100) + 30;
+        this.status = EntityStatus.Moving;
     }
     isMoving(): boolean {
         return !this.m_stopped;
@@ -68,6 +72,7 @@ class PathNavigator{
             this.m_stopped = this.curveMotion.isStopped();
             if (this.m_stopped) {
                 this.path.stopPath();
+                this.status = EntityStatus.Stop;
             }
             else {
                 this.curveMotion.run();
@@ -98,10 +103,29 @@ class PathNavigator{
             }
         }
     }
+    
     stopAndWait(): void {
         this.m_delayTime = Math.round(Math.random() * 100) + 30;
         this.path.stopPath();
     }
     
+    searchingPath(): void {
+        this.path.searchingPath();
+    }
+    stopPath(): void {
+        this.path.stopPath();
+    }
+    setBeginRC(r: number, c: number): void {
+        this.path.setBeginRC(r, c);
+    }
+    setEndRC(r: number, c: number): void {
+        this.path.setEndRC(r, c);
+    }
+    setSearchPathParam(r0: number, c0: number, r1: number, c1: number): void {
+        this.path.setSearchPathParam(r0, c0, r1, c1);
+    }
+    isReadySearchPath(): boolean {        
+        return this.path.isReadySearchPath();
+    }
 }
 export { PathNavigator };

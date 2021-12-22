@@ -15,14 +15,11 @@ import { AssetPackage } from "./AssetPackage";
 import RendererScene from "../../../../vox/scene/RendererScene";
 import { CommonMaterialContext } from "../../../../materialLab/base/CommonMaterialContext";
 import { IToyEntity } from "./IToyEntity";
-import { TerrainPathStatus, TerrainPath } from "../terrain/TerrainPath";
-import { TerrainData } from "../../../../terrain/tile/TerrainData";
 import Line3DEntity from "../../../../vox/entity/Line3DEntity";
 
 import { CurveMotionXZModule } from "../../../../voxmotion/primitive/CurveMotionXZModule";
 import { EntityStatus } from "./EntityStatus";
 import { CarEntityTransform } from "./CarEntityTransform";
-import { PathCalculator } from "./PathCalculator";
 import LambertLightMaterial from "../../../../vox/material/mcase/LambertLightMaterial";
 import Color4 from "../../../../vox/material/Color4";
 import MathConst from "../../../../vox/math/MathConst";
@@ -44,29 +41,21 @@ class CarEntity implements IToyEntity {
     private m_transMat4List: Matrix4[] = [];
     private m_scene: RendererScene = null;
     
-    private m_delayTime: number = 10;
-
     private m_visible: boolean = true;
 
-    navigator: PathNavigator = new PathNavigator();
-
-    terrainData: TerrainData = null;
-
+    readonly navigator: PathNavigator = new PathNavigator();
     readonly transform: CarEntityTransform = new CarEntityTransform();
-
     readonly curveMotion: CurveMotionXZModule = new CurveMotionXZModule();
 
-    status: EntityStatus = EntityStatus.Init;
     asset: AssetPackage = null;
     autoSerachPath: boolean = false;
     boundsChanged: boolean = false;
-    path: TerrainPath = null;
 
     constructor() {
     }
     
     getStatus(): EntityStatus {
-        return this.status > this.transform.status ? this.status : this.transform.status;
+        return this.navigator.status > this.transform.status ? this.navigator.status : this.transform.status;
     }
     setEntityIndex(index: number): void {
         this.m_entityIndex = index;
@@ -176,7 +165,6 @@ class CarEntity implements IToyEntity {
             this.transform.initParam();
 
             this.setVisible(false);
-            this.m_delayTime = Math.round(Math.random() * 100) + 30;
         }
     }
     setVisible(visible: boolean): void {
@@ -202,12 +190,12 @@ class CarEntity implements IToyEntity {
     }
     setPosition(pos: Vector3D): void {
         this.transform.setPosition(pos);
-        this.status = EntityStatus.Init;
+        this.navigator.status = EntityStatus.Init;
     }
     setXYZ(px: number, py: number, pz: number): void {
 
         this.transform.setXYZ(px, py, pz);
-        this.status = EntityStatus.Init;
+        this.navigator.status = EntityStatus.Init;
     }
 
     destroy(): void {
@@ -226,10 +214,10 @@ class CarEntity implements IToyEntity {
 
         this.setVisible(true);
 
-        switch (this.status) {
+        switch (this.navigator.status) {
             case EntityStatus.Init:
-                if (this.status == EntityStatus.Init) {
-                    this.status = EntityStatus.Stop;
+                if (this.navigator.status == EntityStatus.Init) {
+                    this.navigator.status = EntityStatus.Stop;
                 }
                 break;
             default:
@@ -250,86 +238,17 @@ class CarEntity implements IToyEntity {
     }
     
     run(): void {
-        ///*
-        //if(this.navigator.isMoving()) {
         this.navigator.run();
-        if(this.status != EntityStatus.Init && this.navigator.isStopped()) {
-            this.status = EntityStatus.Stop;
-        }
-        //}
-        //*/
-        /*
-        if (this.path.isMoving()) {
-            if (this.curveMotion.isStopped()) {
-                this.path.stopPath();
-                this.status = EntityStatus.Stop;
-            }
-            else {
-                this.curveMotion.run();
-            }
-        }
-        else {
-            if (this.m_delayTime > 0) {
-                this.m_delayTime--;
-                if (this.m_delayTime == 0) {
-                    this.findRandomPath();
-                }
-            }
-        }
-        //*/
     }
     
     isReadySearchPath(): boolean {
         return this.navigator.path.isReadySearchPath();
-        return this.path.isReadySearchPath();
     }
 
     searchedPath(vs: Uint16Array): void {
 
-        //console.log("searchedPath,vs: ", vs);
         this.navigator.searchedPath( vs );
-        this.status = EntityStatus.Moving;
-        return;
-
-        let posList: Vector3D[] = PathCalculator.GetPathPosList(vs, this.path, this.terrainData);
-
-        // console.log("posList: ", posList);
-        // if (this.m_pathCurve != null) {
-        //     this.m_pathCurve.initializePolygon(posList);
-        //     this.m_pathCurve.reinitializeMesh();
-        //     this.m_pathCurve.updateMeshToGpu();
-        //     this.m_pathCurve.updateBounds();
-        // }
-
-        let motion = this.curveMotion.motion;
-        motion.setTarget(this.transform);
-        motion.setVelocityFactor(0.04, 0.04);
-        motion.setCurrentPosition(this.getPosition());
-        this.curveMotion.setPathPosList(posList);
-
-        this.path.searchedPath();
-        this.path.movingPath();
-
-        this.m_delayTime = Math.round(Math.random() * 100) + 30;
-        this.status = EntityStatus.Moving;
-    }
-    findRandomPath(): void {
-        if (this.autoSerachPath) {
-            let beginRC: number[] = this.terrainData.getRCByPosition(this.getPosition());
-            let endRC: number[] = this.terrainData.getRandomFreeRC();
-
-            this.path.setSearchPathParam(beginRC[0], beginRC[1], endRC[0], endRC[1]);
-            if (beginRC[0] != endRC[0] || beginRC[1] != endRC[1]) {
-                this.path.searchPath();
-            }
-            else {
-                this.stopAndWait();
-            }
-        }
-    }
-    stopAndWait(): void {
-        this.m_delayTime = Math.round(Math.random() * 100) + 30;
-        this.path.stopPath();
+        this.navigator.status = EntityStatus.Moving;
     }
 }
 export { CarEntity };

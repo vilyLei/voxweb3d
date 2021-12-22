@@ -22,7 +22,7 @@ class ToyCarScene {
     private m_toyCarTasks: ToyCarTask[] = [];
     private m_terrainData: TerrainData = null;
     private m_bodyScale: number = 1.0;
-    private m_buildEntitiesTotal: number = 5;
+    private m_buildEntitiesTotal: number = 100;
     private m_tasksTotal: number = 1;
     private m_threadsTotal: number = 2;
     
@@ -100,17 +100,15 @@ class ToyCarScene {
             for (let j: number = 0; j < this.m_buildEntitiesTotal; ++j) {
 
                 entity = this.m_toyCarBuilder.buildEntity(task);
-                entity.terrainData = this.m_terrainData;
                 entity.navigator.initialize( this.m_terrainData );
                 entity.navigator.setTarget( entity.transform );
                 entity.navigator.autoSerachPath = true;
-                entity.path = entity.navigator.path;
 
                 let beginRC = this.m_terrainData.getRandomFreeRC();
                 let endRC = this.m_terrainData.getRandomFreeRC();
                 // beginRC[0] = beginRC[1] = 0;
                 // endRC[0] = endRC[1] = 0;
-                entity.path.setSearchPathParam(beginRC[0], beginRC[1], endRC[0], endRC[1]);
+                entity.navigator.setSearchPathParam(beginRC[0], beginRC[1], endRC[0], endRC[1]);
                 pv = this.m_terrainData.getTerrainPositionByRC(beginRC[0], beginRC[1]);
                 
                 //  //entity.setXYZ(200, 25, 200);
@@ -118,10 +116,10 @@ class ToyCarScene {
                 entity.transform.setWheelRotSpeed(wheelRotSpeed);
                 entity.transform.setScale(this.m_bodyScale * (0.1 + Math.random() * 0.1));
                 if (!entity.isReadySearchPath()) {
-                    entity.stopAndWait();
+                    entity.navigator.stopAndWait();
                 }
                 entity.setSpeed(0.8 + Math.random() * 0.8);
-                entity.path.stopPath();
+                entity.navigator.stopPath();
                 entity.curveMotion.directMinDis = 800.0;
                 entity.autoSerachPath = true;
                 // entity.autoSerachPath = this.m_buildEntitiesTotal > 1;

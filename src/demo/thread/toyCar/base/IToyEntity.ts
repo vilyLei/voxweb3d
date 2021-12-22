@@ -6,13 +6,13 @@
 /***************************************************************************/
 
 import RendererScene from "../../../../vox/scene/RendererScene";
-import {TerrainPath} from "../terrain/TerrainPath";
+import {PathNavigator} from "./PathNavigator";
 import { EntityStatus } from "./EntityStatus";
 import { CommonMaterialContext } from "../../../../materialLab/base/CommonMaterialContext";
 
 interface IToyEntity {
 
-    path: TerrainPath;
+    navigator: PathNavigator;
     boundsChanged: boolean;
     getStatus(): EntityStatus;
     setEntityIndex(index: number): void
@@ -26,6 +26,5 @@ interface IToyEntity {
     updateTrans(fs32: Float32Array): void;
     updateBounds(): void;
     searchedPath(vs: Uint16Array): void;
-    stopAndWait(): void;
 }
 export { IToyEntity };

@@ -135,8 +135,8 @@ class ToyCarTask extends ThreadTask {
             let k: number = 1;
             for (let i: number = 0; i < this.m_entities.length; ++i) {
                 if(this.m_entities[i].isReadySearchPath()) {
-                    this.m_entities[i].path.searchingPath();
-                    let path = this.m_entities[i].path;
+                    this.m_entities[i].navigator.searchingPath();
+                    let path = this.m_entities[i].navigator.path;
                     this.m_pathSearchData[k++] = i;
                     this.m_pathSearchData[k++] = path.r0;
                     this.m_pathSearchData[k++] = path.c0;
@@ -144,6 +144,7 @@ class ToyCarTask extends ThreadTask {
                     this.m_pathSearchData[k++] = path.c1;
                 }
             }
+
             this.m_pathSearchData[0] = k / 5;
             let otherStreams: Uint16Array[] = this.m_searchPathListener != null ? this.m_searchPathListener.getSearchPathData() : null;
             let streams: Uint16Array[] = null;
@@ -154,7 +155,7 @@ class ToyCarTask extends ThreadTask {
                 streams = streams != null ? streams.concat(otherStreams) : otherStreams.slice(0);
             }
             if(streams != null) {
-                console.log("send search task cmd...");
+                
                 this.m_pathSerachEnabled = false;
                 let descriptor: any = {
                     taskIndex: this.taskIndex
