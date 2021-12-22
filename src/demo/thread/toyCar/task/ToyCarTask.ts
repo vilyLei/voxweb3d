@@ -95,6 +95,7 @@ class ToyCarTask extends ThreadTask {
         if (this.m_transEnabled) {
             if(this.m_detector.version > 0) {
                 this.m_detector.version = 0;
+
                 this.m_transParamData.set(this.m_transInputData);
                 this.m_statusManager.updateEntityStatus(this.m_entities);
                 let descriptor: any = {taskIndex: this.taskIndex, flag: this.m_transFlag, calcType: this.m_calcType, allTotal: this.m_total, matsTotal: this.m_matsTotal};
@@ -215,15 +216,22 @@ class ToyCarTask extends ThreadTask {
         return true;
     }
     destroy(): void {
+        
+        if(this.m_entityIndex > 0) {
 
-        this.m_total = 0;
-        this.m_matsTotal = 0;
-        this.m_transInputData = null;
-        this.m_transParamData = null;
-        this.m_transOutputData = null;
+            this.m_total = 0;
+            this.m_matsTotal = 0;
+            this.m_transInputData = null;
+            this.m_transParamData = null;
+            this.m_transOutputData = null;
 
-        this.m_entityIndex = 0;
-        this.m_entities = [];
+            for(let i: number = 0; i < this.m_entityIndex; ++i) {
+                this.m_entities[i].destroy();
+                this.m_entities[i] = null;
+            }
+            this.m_entityIndex = 0;
+            this.m_entities = [];
+        }
 
         if (this.getUid() > 0) {
             super.destroy();

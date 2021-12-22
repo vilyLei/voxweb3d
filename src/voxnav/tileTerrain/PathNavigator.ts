@@ -35,6 +35,11 @@ class PathNavigator {
         this.m_terrainData = terrainData;
         this.m_delayTime = Math.round(Math.random() * 100) + 30;
     }
+    destroy(): void {
+        this.m_target = null;
+        this.curveMotion.setTarget(null);
+        this.m_terrainData = null;
+    }
     searchedPath(vs: Uint16Array): void {
 
         //console.log("searchedPath,vs: ", vs);

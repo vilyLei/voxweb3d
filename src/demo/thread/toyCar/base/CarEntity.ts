@@ -17,7 +17,6 @@ import { CommonMaterialContext } from "../../../../materialLab/base/CommonMateri
 import { IToyEntity } from "./IToyEntity";
 import Line3DEntity from "../../../../vox/entity/Line3DEntity";
 
-import { CurveMotionXZModule } from "../../../../voxmotion/primitive/CurveMotionXZModule";
 import { NavigationStatus } from "../../../../voxnav/tileTerrain/NavigationStatus";
 import { CarEntityTransform } from "./CarEntityTransform";
 import LambertLightMaterial from "../../../../vox/material/mcase/LambertLightMaterial";
@@ -44,7 +43,6 @@ class CarEntity implements IToyEntity {
 
     readonly navigator: PathNavigator = new PathNavigator();
     readonly transform: CarEntityTransform = new CarEntityTransform();
-    readonly curveMotion: CurveMotionXZModule = new CurveMotionXZModule();
 
     asset: AssetPackage = null;
     autoSerachPath: boolean = false;
@@ -175,10 +173,10 @@ class CarEntity implements IToyEntity {
         return this.m_visible;
     }
     setSpeed(spd: number): void {
-        this.curveMotion.setSpeed(spd);
+        this.navigator.curveMotion.setSpeed(spd);
     }
     getSpeed(): number {
-        return this.curveMotion.getSpeed();
+        return this.navigator.curveMotion.getSpeed();
     }
     getPosition(): Vector3D {
         this.transform.getPosition( this.m_outPos );
@@ -195,6 +193,8 @@ class CarEntity implements IToyEntity {
     }
 
     destroy(): void {
+        this.transform.destroy();
+        this.navigator.destroy();
     }
 
     updateBounds(): void {

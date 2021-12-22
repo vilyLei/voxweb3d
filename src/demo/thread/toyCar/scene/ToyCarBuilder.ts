@@ -79,7 +79,7 @@ class ToyCarBuilder {
         }
         entity.setSpeed(0.8 + Math.random() * 0.8);
         entity.navigator.stopPath();
-        entity.curveMotion.directMinDis = 800.0;
+        entity.navigator.curveMotion.directMinDis = 800.0;
         entity.autoSerachPath = true;
 
         this.m_entitiesTotal++;
