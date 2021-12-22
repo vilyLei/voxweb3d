@@ -189,7 +189,12 @@ class ToyCarScene {
     }
 
     run(): void {
-        this.m_toyCarBuilder.run();
+        
+        let tasks = this.m_toyCarTasks;
+        let len: number = tasks.length;
+        for (let i: number = 0; i < len; ++i) {
+            tasks[i].navigationRun();
+        }
     }
 }
 export { ToyCarScene }

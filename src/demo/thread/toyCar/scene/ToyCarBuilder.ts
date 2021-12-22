@@ -16,8 +16,8 @@ class ToyCarBuilder {
     constructor() { }
     private m_materialCtx: CommonMaterialContext = null;
     private m_rscene: RendererScene = null;
-    private m_entitiesTotal: number = 0;
-    private m_entities: CarEntity[] = [];
+    // private m_entitiesTotal: number = 0;
+    // private m_entities: CarEntity[] = [];
     private m_asset: AssetPackage = null;
     private m_terrainData: TerrainData = null;
 
@@ -47,14 +47,13 @@ class ToyCarBuilder {
     
     buildEntity(task: ToyCarTask, bodyScale: number): CarEntity {
         
-
         let entity: CarEntity;
 
         entity = new CarEntity();
         entity.asset = this.m_asset;
         task.addEntity( entity );
         entity.build( this.m_rscene, this.m_materialCtx );
-        this.m_entities.push(entity);
+        //this.m_entities.push(entity);
 
         let wheelRotSpeed: number = -15.0;
         let pv: Vector3D;
@@ -80,18 +79,13 @@ class ToyCarBuilder {
         entity.setSpeed(0.8 + Math.random() * 0.8);
         entity.navigator.stopPath();
         entity.navigator.curveMotion.directMinDis = 800.0;
-        entity.autoSerachPath = true;
+        entity.navigator.autoSerachPath = true;
 
-        this.m_entitiesTotal++;
+        //this.m_entitiesTotal++;
         return entity;
     }
-    getEntities(): CarEntity[] {
-        return this.m_entities;
-    }
-    run(): void {
-        for(let i: number = 0; i < this.m_entities.length; ++i) {
-            this.m_entities[i].run();
-        }
-    }
+    // getEntities(): CarEntity[] {
+    //     return this.m_entities;
+    // }
 }
 export { ToyCarBuilder }

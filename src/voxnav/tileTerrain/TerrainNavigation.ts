@@ -96,7 +96,13 @@ class TerrainNavigation implements PathSerachListener{
             k += 5;
         }
     }
-    
+    run(): void {
+        for (let i: number = 0; i < this.m_navigators.length; ++i) {
+            this.m_navigators[i].run();
+            // const nav = this.m_navigators[i];
+            // nav.run();
+        }
+    }
     destroy(): void {
         this.m_pathSearchData = null;
         this.m_pathData = null;

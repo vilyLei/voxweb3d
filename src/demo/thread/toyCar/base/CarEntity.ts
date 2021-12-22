@@ -45,7 +45,6 @@ class CarEntity implements IToyEntity {
     readonly transform: CarEntityTransform = new CarEntityTransform();
 
     asset: AssetPackage = null;
-    autoSerachPath: boolean = false;
     boundsChanged: boolean = false;
 
     constructor() {
@@ -233,9 +232,9 @@ class CarEntity implements IToyEntity {
         }
     }
     
-    run(): void {
-        this.navigator.run();
-    }
+    // run(): void {
+    //     this.navigator.run();
+    // }
     
 }
 export { CarEntity };

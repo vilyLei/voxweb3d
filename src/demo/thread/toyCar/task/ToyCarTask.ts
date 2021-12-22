@@ -75,6 +75,9 @@ class ToyCarTask extends ThreadTask {
     getTotal(): number {
         return this.m_total;
     }
+    navigationRun(): void {
+        this.m_terrNav.run();
+    }
     run(): void {
         
         if (this.isSendTransEnabled()) {
@@ -216,7 +219,7 @@ class ToyCarTask extends ThreadTask {
         return true;
     }
     destroy(): void {
-        
+
         if(this.m_entityIndex > 0) {
 
             this.m_total = 0;
