@@ -7,7 +7,7 @@
 
 import { PathSerachListener } from "./PathSerachListener";
 
-class PathNavigator implements PathSerachListener{
+class TerrainNavigation implements PathSerachListener{
 
     // 存放请求寻路的信息数据
     private m_pathSearchData: Uint16Array = null;
@@ -25,4 +25,4 @@ class PathNavigator implements PathSerachListener{
 
     }
 }
-export { PathNavigator };
+export { TerrainNavigation };

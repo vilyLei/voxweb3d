@@ -19,7 +19,6 @@ import { TerrainPathStatus, TerrainPath } from "../terrain/TerrainPath";
 import { TerrainData } from "../../../../terrain/tile/TerrainData";
 import Line3DEntity from "../../../../vox/entity/Line3DEntity";
 
-import IEntityTransform from "../../../../vox/entity/IEntityTransform";
 import { CurveMotionXZModule } from "../../../../voxmotion/primitive/CurveMotionXZModule";
 import { EntityStatus } from "./EntityStatus";
 import { CarEntityTransform } from "./CarEntityTransform";
@@ -35,27 +34,30 @@ class CarEntity implements IToyEntity {
     private static s_srcBox1: Box3DEntity = null;
     private static s_srcCyl1: Cylinder3DEntity = null;
 
-    readonly curveMotion: CurveMotionXZModule = new CurveMotionXZModule();
-    private m_pathCurve: Line3DEntity = null;
+    private m_outPos: Vector3D = new Vector3D();
+    // private m_pathCurve: Line3DEntity = null;
 
     private m_entityIndex: number = -1;
-    private m_fs32Length: number = 15;
-    private m_fs32Data: Float32Array = null;
+    
     private m_entityList: PureEntity[] = [];
     private m_transMat4List: Matrix4[] = [];
     private m_scene: RendererScene = null;
-    private m_pathPosList: Vector3D[] = [];
-    private m_speed: number = 1.0;
+    
     private m_delayTime: number = 10;
+
     private m_visible: boolean = true;
 
     readonly transform: CarEntityTransform = new CarEntityTransform();
+
+    readonly curveMotion: CurveMotionXZModule = new CurveMotionXZModule();
+
     status: EntityStatus = EntityStatus.Init;
     asset: AssetPackage = null;
     terrainData: TerrainData = null;
     autoSerachPath: boolean = false;
     boundsChanged: boolean = false;
     readonly path: TerrainPath = new TerrainPath();
+
     constructor() {
     }
     getStatus(): EntityStatus {
@@ -190,7 +192,8 @@ class CarEntity implements IToyEntity {
         return this.curveMotion.getSpeed();
     }
     getPosition(): Vector3D {
-        return this.transform.getPosition();
+        this.transform.getPosition( this.m_outPos );
+        return this.m_outPos;
     }
     setPosition(pos: Vector3D): void {
         this.transform.setPosition(pos);
@@ -257,6 +260,7 @@ class CarEntity implements IToyEntity {
             default:
                 break;
         }
+
         this.transform.updateTrans();
         this.boundsChanged = true;
         let index = this.m_entityIndex * 5;
@@ -283,12 +287,12 @@ class CarEntity implements IToyEntity {
             if (this.m_delayTime > 0) {
                 this.m_delayTime--;
                 if (this.m_delayTime == 0) {
-                    this.testRandomSerachPath();
+                    this.findRandomPath();
                 }
             }
         }
     }
-    protected testRandomSerachPath(): void {
+    findRandomPath(): void {
         if (this.autoSerachPath) {
             let beginRC: number[] = this.terrainData.getRCByPosition(this.getPosition());
             let endRC: number[] = this.terrainData.getRandomFreeRC();

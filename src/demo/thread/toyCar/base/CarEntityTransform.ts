@@ -16,7 +16,6 @@ class CarEntityTransform implements IEntityTransform {
     private m_fs32Data: Float32Array = null;
     
     private m_position: Vector3D = new Vector3D();
-    private m_outPos: Vector3D = new Vector3D();
     status: EntityStatus = EntityStatus.Init;
     constructor() {
     }
@@ -37,9 +36,8 @@ class CarEntityTransform implements IEntityTransform {
         // wheel init rotation, wheel rotation spd, wheel body scale;
         this.setWheelRotParam(30.0, -2.0, 0.3);
     }
-    getPosition(): Vector3D {
-        this.m_outPos.copyFrom(this.m_position);
-        return this.m_outPos;
+    getPosition(outV: Vector3D): void {
+        outV.copyFrom(this.m_position);
     }
     setPosition(pos: Vector3D): void {
         this.m_position.copyFrom(pos);

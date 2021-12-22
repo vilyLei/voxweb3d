@@ -20,6 +20,9 @@ class CurveMotionXZModule {
     constructor() {
     }
     
+    setTarget(target: IEntityTransform): void {
+        this.motion.setTarget(target);
+    }
     setSpeed(spd: number): void {
         this.motion.setSpeed(spd);
     }
