@@ -23,7 +23,7 @@ class ToyCarScene {
     private m_toyCarTasks: ToyCarTask[] = [];
     private m_terrainData: TerrainData = null;
     private m_bodyScale: number = 1.0;
-    private m_buildEntitiesTotal: number = 1;
+    private m_buildEntitiesTotal: number = 10;
     private m_tasksTotal: number = 1;
     private m_threadsTotal: number = 2;
     
@@ -91,13 +91,26 @@ class ToyCarScene {
     }
     private m_entity0: CarEntity;
     
-    private m_terrNav0: TerrainNavigation = null;//new TerrainNavigation();
+    private m_terrNavList: TerrainNavigation[] = null;
     private buildEntities(): void {
 
-        let entity: CarEntity;        
+        this.m_terrNavList = new Array(this.m_tasksTotal);
+        let entity: CarEntity;
         for (let i: number = 0; i < this.m_toyCarTasks.length; ++i) {
 
             let task: ToyCarTask = this.m_toyCarTasks[i];
+            
+            if(this.m_terrNavList[i] == null) {
+                let task = this.m_toyCarTasks[0];
+                this.m_terrNavList[i] = new TerrainNavigation();
+                this.m_terrNavList[i].initialize();
+                task.setSearchPathListener( this.m_terrNavList[i] );
+                for(let k: number = 0; k < 10; k++) {
+                    let ballEntity = this.m_toyCarBuilder.buildBallEntity(0.7);
+                    this.m_terrNavList[i].addPathNavigator(ballEntity.navigator);
+                }
+            }
+
             for (let j: number = 0; j < this.m_buildEntitiesTotal; ++j) {
 
                 entity = this.m_toyCarBuilder.buildCarEntity(task, this.m_bodyScale);
@@ -105,14 +118,6 @@ class ToyCarScene {
             }
         }
 
-        if(this.m_terrNav0 == null) {
-            let task = this.m_toyCarTasks[0];
-            this.m_terrNav0 = new TerrainNavigation();
-            this.m_terrNav0.initialize();
-            task.setSearchPathListener( this.m_terrNav0 );
-            let entity = this.m_toyCarBuilder.buildBallEntity(0.7);
-            this.m_terrNav0.addPathNavigator(entity.navigator);
-        }
     }
     private updateThreadTask(): void {
 
@@ -157,8 +162,8 @@ class ToyCarScene {
                         this.m_rc1 = rc;
                         // this.m_entity0.navigator.setEndRC(rc[0], rc[1]);
                         // this.m_entity0.navigator.searchPath();
-                        this.m_terrNav0.resetSearchPath();
-                        this.m_terrNav0.setSearchPathParamAt(
+                        this.m_terrNavList.resetSearchPath();
+                        this.m_terrNavList.setSearchPathParamAt(
                             0,
                             this.m_rc0[0], this.m_rc0[1],
                             this.m_rc1[0], this.m_rc1[1]
@@ -201,8 +206,10 @@ class ToyCarScene {
         for (let i: number = 0; i < len; ++i) {
             tasks[i].navigationRun();
         }
-        if(this.m_terrNav0 != null) {
-            this.m_terrNav0.run();
+        if(this.m_terrNavList != null) {
+            for(let i: number = 0; i < this.m_terrNavList.length; ++i) {
+                this.m_terrNavList[i].run();
+            }
         }
     }
 }
