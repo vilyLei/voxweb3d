@@ -25,7 +25,7 @@ import Axis3DEntity from "../vox/entity/Axis3DEntity";
 import Matrix4 from "../vox/math/Matrix4";
 import MathConst from "../vox/math/MathConst";
 
-export class DemoToyCarThread extends DemoInstance implements IShaderLibListener{
+export class DemoToyCarThread extends DemoInstance implements IShaderLibListener {
     constructor() {
         super();
     }

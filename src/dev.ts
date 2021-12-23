@@ -238,7 +238,7 @@
 
 //  import {DemoThreadConcurrent as Demo} from "./demo/DemoThreadConcurrent";
 
-import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
+//  import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
 
 ////////////////////////////////////////////////////////////////////////////////
 //////////////////////////////   motion    /////////////////////////////////////
@@ -395,7 +395,7 @@ import {DemoToyCarThread as Demo} from "./demo/DemoToyCarThread";
 //  import * as BoFrame from "./app/BoFrame";
 //  import Demo = BoFrame.app.BoFrame;
 
-//  import {RbtDrama as Demo} from "./app/RbtDrama";
+import {RbtDrama as Demo} from "./app/RbtDrama";
 
 //  import {SlickRoad as Demo} from "./app/SlickRoad";
 

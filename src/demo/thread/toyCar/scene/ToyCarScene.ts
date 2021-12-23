@@ -19,10 +19,12 @@ class ToyCarScene {
     private m_rscene: RendererScene = null;
     private m_materialCtx: CommonMaterialContext;
     private m_toyCarBuilder: ToyCarBuilder = new ToyCarBuilder();
+    
+    private m_terrainData: TerrainData = null;
     private m_toyTerrain: SimpleTerrain = new SimpleTerrain();
+
     private m_entitiesTotal: number = 0;
     private m_toyCarTasks: ToyCarTask[] = [];
-    private m_terrainData: TerrainData = null;
     private m_bodyScale: number = 1.0;
     private m_buildEntitiesTotal: number = 30;
     private m_tasksTotal: number = 1;
