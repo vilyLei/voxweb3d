@@ -52,6 +52,8 @@ class ToyCarScene {
             terrData.rn = 20;
             terrData.cn = 20;
             terrData.terrainHeight = 15;
+            terrData.obstacleHeight = terrData.terrainHeight;
+            terrData.obstacleY = terrData.terrainHeight;
             terrData.gridSize = 40.0;
             let stvs: Uint16Array = new Uint16Array(terrData.rn * terrData.cn);
             for(let i: number = 0; i < stvs.length; ++i) {
@@ -216,7 +218,6 @@ class ToyCarScene {
             for(let i: number = 0; i < this.m_ballsList.length; ++i) {
                 this.m_ballsList[i].run();
             }
-            //this.m_ballsList
         }
     }
 }

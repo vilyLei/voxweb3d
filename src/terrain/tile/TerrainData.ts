@@ -12,6 +12,8 @@ class TerrainData {
     freeSTVS: Uint16Array = null;
 
     terrainHeight: number = 20.0;
+    obstacleHeight: number = 30.0;
+    obstacleY: number = 20.0;
 
     readonly minPosition: Vector3D = new Vector3D();
     readonly maxPosition: Vector3D = new Vector3D();

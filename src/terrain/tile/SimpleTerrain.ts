@@ -37,6 +37,8 @@ class SimpleTerrain {
         let terrainHeight: number = this.m_terrainData.terrainHeight;
         let minV = new Vector3D(-size * 0.5, 0, -size * 0.5);
         let maxV = new Vector3D(size * 0.5, terrainHeight, size * 0.5);
+        let obstacleMinV = new Vector3D(-size * 0.5, 0, -size * 0.5);
+        let obstacleMaxV = new Vector3D(size * 0.5, this.m_terrainData.obstacleHeight, size * 0.5);
         let color: Color4 = new Color4();
         let srcBox: Box3DEntity = new Box3DEntity();
         srcBox.vtxColor = color;
@@ -55,6 +57,8 @@ class SimpleTerrain {
         obsMaterial.vertColorEnabled = true;
         obsMaterial.setTextureList([tex0]);
         obsMaterial.initializeByCodeBuf();
+        // let obsMaterial = this.m_materialCtx.createLambertLightMaterial();
+        // obsMaterial.fogEnabled = false;
 
         let material1: Default3DMaterial = new Default3DMaterial();
         material1.vertColorEnabled = true;
@@ -74,7 +78,7 @@ class SimpleTerrain {
                 color.setRGB3f(0.0 + 1.5 * c / cn, 1.0, 0.0 + 1.5 * r / rn);
                 pv = this.m_terrainData.getGridPositionByRC(r, c);
                 let flag: number = this.m_terrainData.getGridStatusByRC(r, c);
-                let scale: number = 1.0;//flag > 0 ? 2.0 : 1.0;
+                //let scale: number = 1.0;//flag > 0 ? 2.0 : 1.0;
                 let box: Box3DEntity = new Box3DEntity();
                 box.vtxColor = color;
                 if (flag < 1) {
@@ -84,8 +88,7 @@ class SimpleTerrain {
                     pv.y += terrainHeight;
                     box.setPosition(pv);
                     box.setMaterial(obsMaterial);
-                    box.initialize(minV, maxV, [tex0]);
-                    box.setScaleXYZ(1.0, scale, 1.0);
+                    box.initialize(obstacleMinV, obstacleMaxV, [tex0]);
                     obsMeshMerger.addEntity(box);
                 }
                 else {
@@ -93,13 +96,11 @@ class SimpleTerrain {
                     if (flag == -1) {
                         box.setMaterial(material1);
                         box.initialize(minV, maxV, [tex1]);
-                        box.setScaleXYZ(1.0, scale, 1.0);
                         meshMerger1.addEntity(box);
                     }
                     else if (flag == -2) {
                         box.setMaterial(material2);
                         box.initialize(minV, maxV, [tex2]);
-                        box.setScaleXYZ(1.0, scale, 1.0);
                         meshMerger2.addEntity(box);
                     }
                 }
