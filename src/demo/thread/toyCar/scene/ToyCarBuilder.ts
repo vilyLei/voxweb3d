@@ -27,17 +27,15 @@ class ToyCarBuilder {
             
             let texNameList: string[] = [
                 "default.jpg"
-                , "moss_05.jpg"
                 , "image_003.jpg"
-                , "fruit_01.jpg"
-                , "moss_05.jpg"
+                , "wood_02.jpg"
             ];
 
             this.m_asset = new AssetPackage();
             this.m_asset.textures = [
                 this.m_materialCtx.getTextureByUrl("static/assets/" + texNameList[0]),
-                this.m_materialCtx.getTextureByUrl("static/assets/" + texNameList[2]),
-                this.m_materialCtx.getTextureByUrl("static/assets/" + texNameList[1])
+                this.m_materialCtx.getTextureByUrl("static/assets/" + texNameList[1]),
+                this.m_materialCtx.getTextureByUrl("static/assets/" + texNameList[2])
             ];
             this.m_terrainData = terrainData;
         }
@@ -56,7 +54,7 @@ class ToyCarBuilder {
         let pv: Vector3D;
 
         entity.navigator.initialize( this.m_terrainData );
-        entity.navigator.setTarget( entity.getDisplayEntity() );
+        entity.navigator.setTarget( entity.getTransformEntity() );
         entity.navigator.autoSerachPath = true;
 
         let beginRC = this.m_terrainData.getRandomFreeRC();

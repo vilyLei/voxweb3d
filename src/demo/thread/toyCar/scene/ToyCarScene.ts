@@ -10,6 +10,7 @@ import { TerrainNavigation } from "../../../../voxnav/tileTerrain/TerrainNavigat
 import Vector3D from "../../../../vox/math/Vector3D";
 import { NavigationStatus } from "../../../../voxnav/tileTerrain/NavigationStatus";
 import { CommonMaterialContext } from "../../../../materialLab/base/CommonMaterialContext";
+import { BallEntity } from "../base/BallEntity";
 
 class ToyCarScene {
 
@@ -26,6 +27,7 @@ class ToyCarScene {
     private m_buildEntitiesTotal: number = 30;
     private m_tasksTotal: number = 1;
     private m_threadsTotal: number = 2;
+    private m_ballsList: BallEntity[] = [];
     
     initialize(scene: RendererScene, materialCtx: CommonMaterialContext): void {
         if (this.m_rscene == null) {
@@ -107,6 +109,7 @@ class ToyCarScene {
                 task.setSearchPathListener( this.m_terrNavList[i] );
                 for(let k: number = 0; k < 8; k++) {
                     let ballEntity = this.m_toyCarBuilder.buildBallEntity(0.7);
+                    this.m_ballsList.push( ballEntity );
                     this.m_terrNavList[i].addPathNavigator(ballEntity.navigator);
                 }
             }
@@ -210,6 +213,10 @@ class ToyCarScene {
             for(let i: number = 0; i < this.m_terrNavList.length; ++i) {
                 this.m_terrNavList[i].run();
             }
+            for(let i: number = 0; i < this.m_ballsList.length; ++i) {
+                this.m_ballsList[i].run();
+            }
+            //this.m_ballsList
         }
     }
 }

@@ -92,6 +92,7 @@ class CarEntity implements IToyEntity {
             material0.fogEnabled = false;
             material0.initializeByCodeBuf(true);
             material0.setColor(color);
+            material0.setBlendFactor(0.8,0.8);
 
             let tex1: TextureProxy = this.asset.textures[1];
             color.setRGBA4f(Math.random() + 0.4, Math.random() + 0.4, Math.random() + 0.4, 1.0);
@@ -100,6 +101,7 @@ class CarEntity implements IToyEntity {
             material1.fogEnabled = false;
             material1.initializeByCodeBuf(true);
             material1.setColor(color);
+            material1.setBlendFactor(0.8,0.8);
 
 
             let wheelRadius: number = 150.0;
