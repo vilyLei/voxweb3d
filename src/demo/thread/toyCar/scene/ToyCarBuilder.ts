@@ -67,9 +67,9 @@ class ToyCarBuilder {
         pv = this.m_terrainData.getTerrainPositionByRC(beginRC[0], beginRC[1]);
         
         //  //entity.setXYZ(200, 25, 200);
-        entity.setPosition(pv);
         //entity.transform.setWheelRotSpeed(wheelRotSpeed);
         entity.setScale(bodyScale * (0.1 + Math.random() * 0.1));
+        entity.setPosition(pv);
         if (!entity.navigator.isReadySearchPath()) {
             entity.navigator.stopAndWait();
         }
@@ -105,9 +105,9 @@ class ToyCarBuilder {
         pv = this.m_terrainData.getTerrainPositionByRC(beginRC[0], beginRC[1]);
         
         //  //entity.setXYZ(200, 25, 200);
-        entity.setPosition(pv);
         entity.transform.setWheelRotSpeed(wheelRotSpeed);
-        entity.transform.setScale(bodyScale * (0.1 + Math.random() * 0.1));
+        entity.setScale(bodyScale * (0.1 + Math.random() * 0.1));
+        entity.setPosition(pv);
         if (!entity.navigator.isReadySearchPath()) {
             entity.navigator.stopAndWait();
         }

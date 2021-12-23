@@ -31,7 +31,7 @@ class CarEntity implements IToyEntity {
     private static s_srcCyl1: Cylinder3DEntity = null;
 
     private m_outPos: Vector3D = new Vector3D();
-    // private m_pathCurve: Line3DEntity = null;
+    private m_height: number = 0.0;
 
     private m_entityIndex: number = -1;
     
@@ -40,6 +40,7 @@ class CarEntity implements IToyEntity {
     private m_scene: RendererScene = null;
     
     private m_visible: boolean = true;
+    private m_positionOffset: Vector3D = new Vector3D();
 
     readonly navigator: PathNavigator = new PathNavigator();
     readonly transform: CarEntityTransform = new CarEntityTransform();
@@ -64,13 +65,13 @@ class CarEntity implements IToyEntity {
         if (this.m_entityIndex >= 0) {
             this.m_scene = sc;
             let halfSize: number = size * 0.5;
+            let bodyHeight: number = halfSize;
             // if (this.m_pathCurve == null) {
             //     this.m_pathCurve = new Line3DEntity();
             //     this.m_pathCurve.initialize(new Vector3D(), new Vector3D(100.0));
             //     this.m_pathCurve.setXYZ(0.0, 20.0, 0.0);
             //     this.m_scene.addEntity(this.m_pathCurve);
             // }
-
             let tex0: TextureProxy = this.asset.textures[0];
             let material: LambertLightMaterial;
             if (CarEntity.s_srcBox0 == null) {
@@ -81,23 +82,11 @@ class CarEntity implements IToyEntity {
                 material.fogEnabled = false;
                 CarEntity.s_srcBox0.setMaterial(material);
 
-                CarEntity.s_srcBox0.initialize(new Vector3D(-halfSize, -halfSize * 0.5, -halfSize), new Vector3D(halfSize, halfSize * 0.5, halfSize), [tex0]);
+                CarEntity.s_srcBox0.initialize(new Vector3D(-halfSize, -bodyHeight * 0.5, -halfSize), new Vector3D(halfSize, bodyHeight * 0.5, halfSize), [tex0]);
             }
-            // if (CarEntity.s_srcBox1 == null) {
-            //     CarEntity.s_srcBox1 = new Box3DEntity();
 
-            //     material = materialCtx.createLambertLightMaterial();
-            //     material.diffuseMap = tex0;
-            //     material.fogEnabled = false;
-            //     CarEntity.s_srcBox1.setMaterial(material);
-
-            //     CarEntity.s_srcBox1.initialize(new Vector3D(-halfSize, -halfSize, -halfSize), new Vector3D(halfSize, halfSize, halfSize), [tex0]);
-            // }
             let srcBox0 = CarEntity.s_srcBox0;
-            // let srcBox1 = CarEntity.s_srcBox1;
-
             let color = new Color4(Math.random() + 0.4, Math.random() + 0.4, Math.random() + 0.4, 1.0);
-
             let material0 = materialCtx.createLambertLightMaterial();
             material0.diffuseMap = tex0;
             material0.fogEnabled = false;
@@ -113,6 +102,7 @@ class CarEntity implements IToyEntity {
             material1.setColor(color);
 
 
+            let wheelRadius: number = 150.0;
             if (CarEntity.s_srcCyl1 == null) {
                 let cyl: Cylinder3DEntity = new Cylinder3DEntity();
                 CarEntity.s_srcCyl1 = cyl;
@@ -125,8 +115,13 @@ class CarEntity implements IToyEntity {
                 transMat4.appendRotationEulerAngle(MathConst.DegreeToRadian(90.0), 0.0, 0.0);
                 cyl.uScale = 12.0;
                 cyl.setVtxTransformMatrix(transMat4);
-                cyl.initialize(150, 100, 15, [tex0], 0);
+                cyl.initialize(wheelRadius, 100, 15, [tex0], 0);
             }
+
+            let wheelRelatedY: number = -30.0;
+            let wheelBodyScale: number = 0.3;
+            this.m_height = wheelRadius * wheelBodyScale - wheelRelatedY;
+            //this.m_height = bodyHeight * 0.5;
 
             let box: PureEntity;
             box = new PureEntity();
@@ -140,14 +135,6 @@ class CarEntity implements IToyEntity {
             // 2. 用uv动画的方式来实现旋转效果
             for (let j: number = 1; j < 5; j++) {
 
-                // box = new PureEntity();
-                // box.copyMeshFrom(srcBox1);
-                // box.setMaterial(material1);
-                // //box.copyMaterialFrom(materialBox1);
-                // sc.addEntity(box);
-                // this.m_entityList.push(box);
-                // this.m_transMat4List.push(box.getMatrix());
-
                 let cyl = new PureEntity();
                 cyl.setMaterial(material1);
                 cyl.copyMeshFrom(CarEntity.s_srcCyl1);
@@ -155,8 +142,10 @@ class CarEntity implements IToyEntity {
                 this.m_entityList.push(cyl);
                 this.m_transMat4List.push(cyl.getMatrix());
             }
-            this.transform.initParam();
+            this.transform.initParam( wheelRelatedY, wheelBodyScale );
 
+            this.m_positionOffset.setXYZ(0.0, this.m_height *  this.transform.getScale(), 0.0);
+            this.navigator.positionOffset = this.m_positionOffset;
             this.setVisible(false);
         }
     }
@@ -182,13 +171,22 @@ class CarEntity implements IToyEntity {
         return this.m_outPos;
     }
     setPosition(pos: Vector3D): void {
-        this.transform.setPosition(pos);
+
+        this.m_outPos.copyFrom(pos);
+        this.m_outPos.y += this.m_positionOffset.y;
+        this.transform.setPosition(this.m_outPos);
         this.navigator.status = NavigationStatus.Init;
     }
     setXYZ(px: number, py: number, pz: number): void {
 
-        this.transform.setXYZ(px, py, pz);
+        this.transform.setXYZ(px, py + this.m_positionOffset.y, pz);
         this.navigator.status = NavigationStatus.Init;
+    }
+
+    setScale(scale: number): void {
+        
+        this.transform.setScale(scale);
+        this.m_positionOffset.y = scale * this.m_height;
     }
 
     destroy(): void {

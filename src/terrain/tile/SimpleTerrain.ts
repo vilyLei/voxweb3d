@@ -34,8 +34,9 @@ class SimpleTerrain {
     private initTerrain(): void {
 
         let size: number = this.m_terrainData.gridSize;
+        let terrainHeight: number = this.m_terrainData.terrainHeight;
         let minV = new Vector3D(-size * 0.5, 0, -size * 0.5);
-        let maxV = new Vector3D(size * 0.5, size, size * 0.5);
+        let maxV = new Vector3D(size * 0.5, terrainHeight, size * 0.5);
         let color: Color4 = new Color4();
         let srcBox: Box3DEntity = new Box3DEntity();
         srcBox.vtxColor = color;
@@ -73,14 +74,15 @@ class SimpleTerrain {
                 color.setRGB3f(0.0 + 1.5 * c / cn, 1.0, 0.0 + 1.5 * r / rn);
                 pv = this.m_terrainData.getGridPositionByRC(r, c);
                 let flag: number = this.m_terrainData.getGridStatusByRC(r, c);
-                let scale: number = flag > 0 ? 0.3 : 0.2;
+                let scale: number = 1.0;//flag > 0 ? 2.0 : 1.0;
                 let box: Box3DEntity = new Box3DEntity();
                 box.vtxColor = color;
                 if (flag < 1) {
                     flag = Math.random() > 0.5 ? -1 : -2;
                 }
                 if (flag > 0) {
-                    box.setXYZ(pv.x, pv.y + 0.8 * size * 0.2, pv.z);
+                    pv.y += terrainHeight;
+                    box.setPosition(pv);
                     box.setMaterial(obsMaterial);
                     box.initialize(minV, maxV, [tex0]);
                     box.setScaleXYZ(1.0, scale, 1.0);

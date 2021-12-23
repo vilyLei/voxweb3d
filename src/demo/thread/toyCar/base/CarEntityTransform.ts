@@ -27,14 +27,14 @@ class CarEntityTransform implements IEntityTransform {
         this.m_fs32Data = srcFS32.subarray(index * this.m_fs32Length, (index + 1) * this.m_fs32Length);
     }
     
-    initParam(): void {
+    initParam(wheelY: number = -30.0, wheelBodyScale: number = 0.3): void {
         
         this.setXYZ(200, 50, 200);
         this.setRotationXYZ(0.0, Math.random() * 360.0, 0.0);
         // whole body scale, param 1, param 2
         this.setBodyParam(0.2, 0.5, 0.5);
         // 轮子的位置偏移值
-        this.setWheelOffsetXYZ(80.0, -30.0, 100.0);
+        this.setWheelOffsetXYZ(80.0, wheelY, 100.0);
         // wheel init rotation, wheel rotation spd, wheel body scale;
         this.setWheelRotParam(30.0, -2.0, 0.3);
     }
@@ -108,11 +108,11 @@ class CarEntityTransform implements IEntityTransform {
         }
     }
     // wheel init rotation, spd, wheel body scale;
-    setWheelRotParam(pr: number, wheelRotSpd: number, bodyScale: number): void {
+    setWheelRotParam(pr: number, wheelRotSpd: number, WheelBodyScale: number): void {
         if (this.m_entityIndex >= 0) {
             this.m_fs32Data[12] = pr;
             this.m_fs32Data[13] = wheelRotSpd;
-            this.m_fs32Data[14] = bodyScale;
+            this.m_fs32Data[14] = WheelBodyScale;
             this.status = NavigationStatus.Init;
             this.detector.version++;
         }
@@ -125,6 +125,12 @@ class CarEntityTransform implements IEntityTransform {
         }
     }
 
+    getScale(): number {
+        if (this.m_entityIndex >= 0) {
+            return this.m_fs32Data[6];
+        }
+        return 1.0;
+    }
     setScaleXYZ(sx: number, sy: number, sz: number): void {
 
     }

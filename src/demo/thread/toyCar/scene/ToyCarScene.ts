@@ -23,7 +23,7 @@ class ToyCarScene {
     private m_toyCarTasks: ToyCarTask[] = [];
     private m_terrainData: TerrainData = null;
     private m_bodyScale: number = 1.0;
-    private m_buildEntitiesTotal: number = 10;
+    private m_buildEntitiesTotal: number = 30;
     private m_tasksTotal: number = 1;
     private m_threadsTotal: number = 2;
     
@@ -105,7 +105,7 @@ class ToyCarScene {
                 this.m_terrNavList[i] = new TerrainNavigation();
                 this.m_terrNavList[i].initialize();
                 task.setSearchPathListener( this.m_terrNavList[i] );
-                for(let k: number = 0; k < 10; k++) {
+                for(let k: number = 0; k < 8; k++) {
                     let ballEntity = this.m_toyCarBuilder.buildBallEntity(0.7);
                     this.m_terrNavList[i].addPathNavigator(ballEntity.navigator);
                 }

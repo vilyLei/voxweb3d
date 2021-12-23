@@ -49,12 +49,6 @@ class BallEntity {
 
         this.m_scene = sc;
         this.m_radius = size * 0.5;
-        // if (this.m_pathCurve == null) {
-        //     this.m_pathCurve = new Line3DEntity();
-        //     this.m_pathCurve.initialize(new Vector3D(), new Vector3D(100.0));
-        //     this.m_pathCurve.setXYZ(0.0, 20.0, 0.0);
-        //     this.m_scene.addEntity(this.m_pathCurve);
-        // }
 
         let tex0: TextureProxy = this.asset.textures[0];
         let material: LambertLightMaterial;
@@ -97,10 +91,9 @@ class BallEntity {
         return this.m_visible;
     }
     setScale(scale: number): void {
-        //this.navigator.positionOffset.y = this.m_radius * scale + 10.0;
+        
         this.m_entity.setScaleXYZ(scale, scale, scale);
-        this.m_entity.update();
-        this.navigator.positionOffset.y = this.m_entity.getGlobalBounds().getHeight() * 0.5;
+        this.navigator.positionOffset.y = scale * this.m_radius;
     }
     setSpeed(spd: number): void {
         this.navigator.curveMotion.setSpeed(spd);
@@ -113,12 +106,14 @@ class BallEntity {
         return this.m_outPos;
     }
     setPosition(pos: Vector3D): void {
-        this.m_entity.setPosition(pos);
+        this.m_outPos.copyFrom(pos);
+        this.m_outPos.addBy(this.navigator.positionOffset);
+        this.m_entity.setPosition(this.m_outPos);
         this.navigator.status = NavigationStatus.Init;
     }
     setXYZ(px: number, py: number, pz: number): void {
 
-        this.m_entity.setXYZ(px, py, pz);
+        this.m_entity.setXYZ(px, py + this.navigator.positionOffset.y, pz);
         this.navigator.status = NavigationStatus.Init;
     }
 
@@ -136,6 +131,9 @@ class BallEntity {
         this.m_entity.updateBounds();
     }
     run(): void {
+        if(this.navigator.isMoving()) {
+            this.m_entity.update();
+        }
         this.navigator.run();
     }
 
