@@ -15,6 +15,9 @@ class TerrainModule {
     // private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
     private m_materialCtx: DebugMaterialContext;// = new DebugMaterialContext();
 
+    getTerrainData(): TerrainData {
+        return this.m_terrainData;
+    }
     private initTerrain(): void {
 
         let terrainObsVS = new Uint16Array(

@@ -19,24 +19,20 @@ import { CampType } from "../app/robot/camp/Camp";
 import AssetsModule from "../app/robot/assets/AssetsModule";
 import RedRole from "../app/robot/RedRole";
 import RunnableModule from "../app/robot/scene/RunnableModule";
-import Terrain from "../app/robot/scene/Terrain";
+
 import SillyRole from "../app/robot/base/SillyRole";
 import TrackWheelRole from "../app/robot/base/TrackWheelRole";
 import {TerrainModule} from "../app/robot/terrain/TerrainModule";
 
-import CameraViewRay from "../vox/view/CameraViewRay";
 import { UserInteraction } from "../vox/engine/UserInteraction";
 
 import { IShaderLibListener, CommonMaterialContext, MaterialContextParam } from "../materialLab/base/CommonMaterialContext";
 import { DebugMaterialContext } from "../materialLab/base/DebugMaterialContext";
-import { TerrainData } from "../terrain/tile/TerrainData";
-import { SimpleTerrain } from "../terrain/tile/SimpleTerrain";
 import { DirectionLight } from "../light/base/DirectionLight";
 export class RbtDrama implements IShaderLibListener{
     constructor() { }
 
     private m_rscene: RendererScene = null;
-    private m_texLoader: ImageTextureLoader = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
     private m_limbRole: FourLimbRole = null;
@@ -46,8 +42,6 @@ export class RbtDrama implements IShaderLibListener{
     private m_campModule: CampMoudle = new CampMoudle();
     private m_interaction: UserInteraction = new UserInteraction();
 
-    private m_terrainData: TerrainData = null;
-    private m_toyTerrain: SimpleTerrain = new SimpleTerrain();
     private m_terrain: TerrainModule = new TerrainModule();
     
     // private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
@@ -111,7 +105,6 @@ export class RbtDrama implements IShaderLibListener{
 
             this.m_statusDisp.initialize();
 
-            this.m_texLoader = new ImageTextureLoader(this.m_rscene.textureBlock);
             this.m_rscene.addEventListener(MouseEvent.MOUSE_DOWN, this, this.mouseDown);
 
             //this.initScene();
@@ -124,30 +117,19 @@ export class RbtDrama implements IShaderLibListener{
         //this.initTerrain();
         this.m_terrain.initialize(this.m_rscene, this.m_materialCtx);
 
-        let texLoader: ImageTextureLoader = this.m_texLoader;
-        AssetsModule.GetInstance().initialize(this.m_texLoader);
+        AssetsModule.GetInstance().initialize(this.m_materialCtx);
 
         this.m_campModule.initialize(this.m_rscene);
-
-        let tex0: TextureProxy = texLoader.getTexByUrl("static/assets/wood_01.jpg");
-        let tex1: TextureProxy = texLoader.getTexByUrl("static/assets/yanj.jpg");
-        let tex2: TextureProxy = texLoader.getTexByUrl("static/assets/skin_01.jpg");
-        let tex3: TextureProxy = texLoader.getTexByUrl("static/assets/default.jpg");
-        let tex4: TextureProxy = texLoader.getTexByUrl("static/assets/warter_01.jpg");
-        let tex5: TextureProxy = texLoader.getTexByUrl("static/assets/metal_02.jpg");
-        let tex6: TextureProxy = texLoader.getTexByUrl("static/assets/image_003.jpg");
-        let tex7: TextureProxy = texLoader.getTexByUrl("static/assets/metal_08.jpg");
-        //let tex4:TextureProxy = this.m_rscene.textureBlock.createRGBATex2D(16,16,new Color4(1.0,0.0,1.0));
-
-
-        // let plane: Plane3DEntity = new Plane3DEntity();
-        // plane.initializeXOZ(-500.0, -500.0, 1000.0, 1000.0, [texLoader.getTexByUrl("static/assets/wood_01.jpg")]);
-        // //plane.toTransparentBlend(false);
-        // plane.setScaleXYZ(2.0, 2.0, 2.0);
-        // plane.setXYZ(0.0, -10.0, 0.0);
-        // (plane.getMaterial() as any).setRGB3f(0.5, 0.5, 0.5);
-        // this.m_rscene.addEntity(plane);
-
+        
+        let tex0: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/wood_01.jpg");
+        let tex1: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/yanj.jpg");
+        let tex2: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/skin_01.jpg");
+        let tex3: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/default.jpg");
+        let tex4: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/warter_01.jpg");
+        let tex5: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/metal_02.jpg");
+        let tex6: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/image_003.jpg");
+        let tex7: TextureProxy = this.m_materialCtx.getTextureByUrl("static/assets/metal_08.jpg");
+        
         let axis: Axis3DEntity = new Axis3DEntity();
         //axis.initializeCross(600.0);
         axis.initialize(300.0);
@@ -175,10 +157,9 @@ export class RbtDrama implements IShaderLibListener{
             redRole.dispEntity = box;
             this.m_campModule.redCamp.addRole(redRole);
         }
-        let terrain: Terrain = new Terrain();
-
-        this.m_flrFactory.initialize(this.m_rscene, 0, this.m_campModule.redCamp, terrain);
-        this.m_twrFactory.initialize(this.m_rscene, 0, this.m_campModule.redCamp, terrain);
+        
+        this.m_flrFactory.initialize(this.m_rscene, 0, this.m_campModule.redCamp, this.m_terrain.getTerrainData());
+        this.m_twrFactory.initialize(this.m_rscene, 0, this.m_campModule.redCamp, this.m_terrain.getTerrainData());
 
         let limbRole: FourLimbRole;
         let campType: CampType;
@@ -257,7 +238,7 @@ export class RbtDrama implements IShaderLibListener{
             sillyRole.moveToXZ(Math.random() * 1600.0 - 800.0, Math.random() * 1600.0 - 800.0);
 
             sillyRole.campType = CampType.Free;
-            sillyRole.terrain = terrain;
+            sillyRole.terrainData = this.m_terrain.getTerrainData();
             sillyRole.attackDis = 50;
             sillyRole.radius = 80;
             sillyRole.lifeTime = 200;

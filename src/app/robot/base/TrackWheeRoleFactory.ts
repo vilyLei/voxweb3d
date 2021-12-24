@@ -9,7 +9,7 @@ import TextureProxy from "../../../vox/texture/TextureProxy";
 import RendererScene from "../../../vox/scene/RendererScene";
 import TrackWheelRole from "../../../app/robot/base/TrackWheelRole";
 import IRoleCamp from "../../../app/robot/IRoleCamp";
-import ITerrain from "../../../app/robot/scene/ITerrain";
+import { TerrainData } from "../../../terrain/tile/TerrainData";
 import { CampType } from "../../../app/robot/camp/Camp";
 import AssetsModule from "../../../app/robot/assets/AssetsModule";
 import Box3DEntity from "../../../vox/entity/Box3DEntity";
@@ -19,7 +19,7 @@ import TrackWheelChassisBody from "../../../app/robot/base/TrackWheelChassisBody
 
 export default class TrackWheeRoleFactory {
     private m_roleCamp: IRoleCamp = null;
-    private m_terrain: ITerrain = null;
+    private m_terrainData: TerrainData = null;
     private m_rscene: RendererScene = null;
     private m_renderProcessIndex: number = 0;
 
@@ -27,11 +27,12 @@ export default class TrackWheeRoleFactory {
     private m_srcTwUpperBox: Box3DEntity = null;
     constructor() {
     }
-    initialize(rscene: RendererScene, renderProcessIndex: number, roleCamp: IRoleCamp, terrain: ITerrain): void {
+    initialize(rscene: RendererScene, renderProcessIndex: number, roleCamp: IRoleCamp, terrainData: TerrainData): void {
+        
         this.m_rscene = rscene;
         this.m_renderProcessIndex = renderProcessIndex;
         this.m_roleCamp = roleCamp;
-        this.m_terrain = terrain;
+        this.m_terrainData = terrainData;
 
         if (this.m_boxTrack == null) {
             this.m_boxTrack = new BoxGroupTrack();
@@ -49,7 +50,7 @@ export default class TrackWheeRoleFactory {
         let twRole: TrackWheelRole = new TrackWheelRole();
 
         twRole.roleCamp = this.m_roleCamp;
-        twRole.terrain = this.m_terrain;
+        twRole.terrainData = this.m_terrainData;
         twRole.campType = campType;
         twRole.attackDis = 50;
         twRole.radius = 80;
