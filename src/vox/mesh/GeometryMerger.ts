@@ -17,6 +17,9 @@ class GeomDataNode {
     uvs: Float32Array = null;
     nvs: Float32Array = null;
     cvs: Float32Array = null;
+
+    mat4: Matrix4 = null;
+    offset: Vector3D = null;
     constructor() { }
     destroy(): void {
         this.ivs = null;
@@ -54,7 +57,7 @@ class GeometryMerger extends GeometryBase {
             this.m_nodes.push(node);
         }
     }
-    addGeometry(geom: GeometryBase): void {
+    addGeometry(geom: GeometryBase, mat4: Matrix4 = null): void {
         if (geom != null && geom != this) {
             let node: GeomDataNode = new GeomDataNode();
             node.ivs = geom.getIVS();
@@ -62,6 +65,9 @@ class GeometryMerger extends GeometryBase {
             node.uvs = geom.getUVS();
             node.nvs = geom.getNVS();
             node.cvs = geom.getCVS();
+            if(mat4 != null) {
+                // to do ...
+            }
             this.m_nodes.push(node);
         }
     }

@@ -78,7 +78,7 @@ class SimpleTerrain {
                 color.setRGB3f(0.0 + 1.5 * c / cn, 1.0, 0.0 + 1.5 * r / rn);
                 pv = this.m_terrainData.getGridPositionByRC(r, c);
                 let flag: number = this.m_terrainData.getGridStatusByRC(r, c);
-                //let scale: number = 1.0;//flag > 0 ? 2.0 : 1.0;
+                
                 let box: Box3DEntity = new Box3DEntity();
                 box.vtxColor = color;
                 if (flag < 1) {

@@ -22,6 +22,7 @@ import RunnableModule from "../app/robot/scene/RunnableModule";
 import Terrain from "../app/robot/scene/Terrain";
 import SillyRole from "../app/robot/base/SillyRole";
 import TrackWheelRole from "../app/robot/base/TrackWheelRole";
+import {TerrainModule} from "../app/robot/terrain/TerrainModule";
 
 import CameraViewRay from "../vox/view/CameraViewRay";
 import { UserInteraction } from "../vox/engine/UserInteraction";
@@ -47,55 +48,11 @@ export class RbtDrama implements IShaderLibListener{
 
     private m_terrainData: TerrainData = null;
     private m_toyTerrain: SimpleTerrain = new SimpleTerrain();
+    private m_terrain: TerrainModule = new TerrainModule();
     
     // private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
 
-    private initTerrain(): void {
-
-        let terrainObsVS = new Uint16Array(
-            [
-                0, 0, 0, 0, 0, 0,
-                0, 0, 1, 1, 0, 0,
-                0, 0, 0, 0, 0, 0,
-                0, 0, 0, 1, 0, 0,
-                0, 0, 0, 1, 0, 0,
-                0, 0, 0, 0, 0, 0
-            ]
-        );
-        let terrData: TerrainData = new TerrainData();
-        terrData.rn = 6;
-        terrData.cn = 6;
-        terrData.stvs = terrainObsVS;
-
-        terrData.rn = 30;
-        terrData.cn = 30;
-        terrData.terrainHeight = 15;
-        terrData.obstacleHeight = terrData.terrainHeight;
-        terrData.obstacleY = 0;
-        terrData.gridSize = 80.0;
-        
-        terrData.positionOffset.y = -terrData.terrainHeight;
-
-        let stvs: Uint16Array = new Uint16Array(terrData.rn * terrData.cn);
-        for(let i: number = 0; i < stvs.length; ++i) {
-            stvs[i] = Math.random() > 0.9 ? 1 : 0;
-        }
-        terrData.stvs = stvs;
-
-        terrData.initialize();
-        
-        this.m_terrainData = terrData;
-        this.initTerrainIns( terrData );
-    }
-    
-    private initTerrainIns(terrData: TerrainData): void {
-
-        this.m_toyTerrain = new SimpleTerrain();
-        this.m_toyTerrain.initialize(this.m_rscene, this.m_materialCtx, terrData);
-
-    }
-    
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
         //console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ",loadingTotal, loadedTotal);
         this.initScene();
@@ -164,7 +121,8 @@ export class RbtDrama implements IShaderLibListener{
     }
     initScene(): void {
 
-        this.initTerrain();
+        //this.initTerrain();
+        this.m_terrain.initialize(this.m_rscene, this.m_materialCtx);
 
         let texLoader: ImageTextureLoader = this.m_texLoader;
         AssetsModule.GetInstance().initialize(this.m_texLoader);
