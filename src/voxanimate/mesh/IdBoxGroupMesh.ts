@@ -5,25 +5,19 @@
 /*                                                                         */
 /***************************************************************************/
 
-import MathConst from "../../vox/math/MathConst";
-import Vector3D from "../../vox/math/Vector3D";
 import AABB from "../../vox/geom/AABB";
-import SurfaceNormalCalc from "../../vox/geom/SurfaceNormalCalc";
 import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
-import { VtxNormalType } from "../../vox/mesh/VtxBufConst";
 import MeshBase from "../../vox/mesh/MeshBase";
+import { GeometryMerger } from "../../vox/mesh/GeometryMerger";
 import Box3DMesh from "../../vox/mesh/Box3DMesh";
 
 export default class IdBoxGroupMesh extends MeshBase {
-    private m_posList: number[][] = [null, null, null, null, null, null, null, null];
 
     boxMesh: Box3DMesh = null;
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         super(bufDataUsage);
     }
-    normalType: number = VtxNormalType.FLAT;
-
     private m_vs: Float32Array = null;
     private m_uvs: Float32Array = null;
     private m_nvs: Float32Array = null;
@@ -42,18 +36,11 @@ export default class IdBoxGroupMesh extends MeshBase {
         this.boxMesh.setBufSortFormat(layoutBit);
     }
     initialize(total: number = 1, idStep: number = 3): void {
-        this.setBufSortFormat
-        this.vtxTotal = 24;
-        //
+        
         let i: number = 0;
-        let baseI: number = 0;
-        let k: number = 0;
 
         let newBuild: boolean = (this.m_ivs == null);
         
-
-
-
         this.m_vs = this.boxMesh.getVS();
         this.m_uvs = this.boxMesh.getUVS();
         this.m_nvs = this.boxMesh.getNVS();
@@ -110,20 +97,7 @@ export default class IdBoxGroupMesh extends MeshBase {
         
         ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
         if (newBuild) {
-            stepSize = this.m_ivs.length;
-            let base_ivs: Uint16Array = new Uint16Array(stepSize * total);
-            base_ivs.set(this.m_ivs, 0);
-            let ivsStep: number = 24;
-            for (k0 = 1; k0 < total; ++k0) {
-                ivsStep = k0 * 24;
-                i = stepSize * k0;
-                base_ivs.set(this.m_ivs, i);
-                k1 = i + stepSize;
-                for (; i < k1; ++i) {
-                    base_ivs[i] += ivsStep;
-                }
-            }
-            this.m_ivs = base_ivs;
+            this.m_ivs = GeometryMerger.MergeSameIvs(this.m_ivs, this.m_vs, 4, total);
             this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
             this.m_vbuf.setUint16IVSData(this.m_ivs);
             this.vtCount = this.m_ivs.length;

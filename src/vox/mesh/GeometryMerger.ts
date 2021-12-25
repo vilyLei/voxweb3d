@@ -17,9 +17,10 @@ class GeomDataNode {
     uvs: Float32Array = null;
     nvs: Float32Array = null;
     cvs: Float32Array = null;
-
+    vsBufStep: number = 3;
     mat4: Matrix4 = null;
     offset: Vector3D = null;
+    
     constructor() { }
     destroy(): void {
         this.ivs = null;
@@ -37,7 +38,26 @@ class GeometryMerger extends GeometryBase {
     constructor() {
         super();
     }
-
+    static MergeSameIvs(src_ivs: Uint16Array | Uint32Array, src_vs: Float32Array, vsBufStep: number, total: number): Uint16Array | Uint32Array {
+        
+        let len: number = src_ivs.length;
+        let new_ivs: Uint16Array = new Uint16Array(len * total);
+        new_ivs.set(src_ivs, 0);
+        let ivsStep: number = src_vs.length / vsBufStep;
+        let i: number = 0;
+        let k0: number = 0;
+        let k1: number = 0;
+        for (k0 = 1; k0 < total; ++k0) {
+            ivsStep = k0 * 24;
+            i = len * k0;
+            new_ivs.set(src_ivs, i);
+            k1 = i + len;
+            for (; i < k1; ++i) {
+                new_ivs[i] += ivsStep;
+            }
+        }
+        return new_ivs;
+    }
     addEntity(entity: DisplayEntity, toWorld: boolean = true): void {
 
         if (entity != null) {
@@ -118,7 +138,7 @@ class GeometryMerger extends GeometryBase {
                 if (node.nvs != null) nvsLen += node.nvs.length;
                 if (node.cvs != null) cvsLen += node.cvs.length;
             }
-            let vtxTotal: number = vsLen / 3;
+            let vtxTotal: number = vsLen / node.vsBufStep;
             if (vtxTotal > 65535) {
                 ivs = new Uint32Array(ivsLen);
             }
@@ -145,14 +165,15 @@ class GeometryMerger extends GeometryBase {
 
             for (i = 0; i < tot; ++i) {
                 node = this.m_nodes[i];
+
                 subIVS = node.ivs;
                 subIVSLen = subIVS.length;
                 for (j = 0; j < subIVSLen; j++) {
                     ivs[ivsI++] = subIVS[j] + maxIndex;
                 }
-
                 subVS = node.vs;
                 maxIndex += subVS.length / 3;
+
                 vs.set(subVS, vsI);
                 vsI += subVS.length;
 
