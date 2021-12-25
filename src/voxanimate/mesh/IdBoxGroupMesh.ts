@@ -10,11 +10,11 @@ import VtxBufConst from "../../vox/mesh/VtxBufConst";
 import ROVertexBuffer from "../../vox/mesh/ROVertexBuffer";
 import MeshBase from "../../vox/mesh/MeshBase";
 import { GeometryMerger } from "../../vox/mesh/GeometryMerger";
-import Box3DMesh from "../../vox/mesh/Box3DMesh";
+import Vector3D from "../../vox/math/Vector3D";
 
 export default class IdBoxGroupMesh extends MeshBase {
 
-    boxMesh: Box3DMesh = null;
+    srcMesh: MeshBase = null;
     constructor(bufDataUsage: number = VtxBufConst.VTX_STATIC_DRAW) {
         super(bufDataUsage);
     }
@@ -33,47 +33,61 @@ export default class IdBoxGroupMesh extends MeshBase {
      */
     setBufSortFormat(layoutBit: number): void {
         super.setBufSortFormat(layoutBit);
-        this.boxMesh.setBufSortFormat(layoutBit);
+        this.srcMesh.setBufSortFormat(layoutBit);
     }
-    initialize(total: number = 1, idStep: number = 3): void {
+    initialize(boxesTotal: number = 1, idStep: number = 3, groupPsitions: Vector3D[] = null): void {
         
         let i: number = 0;
-
+        let total: number = boxesTotal;
         let newBuild: boolean = (this.m_ivs == null);
         
-        this.m_vs = this.boxMesh.getVS();
-        this.m_uvs = this.boxMesh.getUVS();
-        this.m_nvs = this.boxMesh.getNVS();
-        this.m_ivs = this.boxMesh.getIVS();
+        this.m_vs = this.srcMesh.getVS();
+        this.m_uvs = this.srcMesh.getUVS();
+        this.m_nvs = this.srcMesh.getNVS();
+        this.m_ivs = this.srcMesh.getIVS();
 
         ROVertexBuffer.Reset();
         let stepSize: number = 24 * 4;
-        let size: number = stepSize * total;
-        let base_fs: Float32Array = new Float32Array(size);
+        
+        let groupsTotal = groupPsitions != null ? groupPsitions.length : 1;
+        let groupDataSize: number = stepSize * boxesTotal;        
+        let fs: Float32Array = new Float32Array(groupDataSize * groupsTotal);
         
         let k0: number = 0;
         let k1: number = 0;
-        for (i = 0; i < 24; ++i) {
-            base_fs[k1] = this.m_vs[k0];
-            base_fs[k1 + 1] = this.m_vs[k0 + 1];
-            base_fs[k1 + 2] = this.m_vs[k0 + 2];
-            base_fs[k1 + 3] = 0;
-            k0 += 3;
-            k1 += 4;
-        }
-        for (i = 1; i < total; ++i) {
-            base_fs.copyWithin(i * stepSize, 0, stepSize);
-        }
-        let id: number = 0;
-        for (k0 = 1; k0 < total; ++k0) {
-            k1 = stepSize * k0;
-            id += idStep;
+        let pos: Vector3D = groupPsitions != null ? groupPsitions[0] : new Vector3D();
+        
+        let vs: Float32Array = this.srcMesh.getVS();
+        for(let j: number = 0; j < groupsTotal; ++j) {
+            pos = groupPsitions != null ? groupPsitions[j] : new Vector3D();
+            k0 = 0;
+            k1 = j * groupDataSize;
             for (i = 0; i < 24; ++i) {
-                base_fs[k1 + 3] = id;
+                fs[k1] = vs[k0] + pos.x;
+                fs[k1 + 1] = vs[k0 + 1] + pos.y;
+                fs[k1 + 2] = vs[k0 + 2] + pos.z;
+                fs[k1 + 3] = 0;
+                k0 += 3;
                 k1 += 4;
             }
+            k1 = j * groupDataSize;
+            for (i = 1; i < total; ++i) {
+                k0 = i * stepSize + k1;
+                fs.copyWithin(k0, k1, k1 + stepSize);
+            }
+            let id: number = 0;
+            k1 = j * groupDataSize;
+            for (let k: number = 1; k < total; ++k) {
+                k0 = stepSize * k + k1;
+                id += idStep;
+                for (i = 0; i < 24; ++i) {
+                    fs[k0 + 3] = id;
+                    k0 += 4;
+                }
+            }
         }
-        this.m_vs = base_fs;
+
+        this.m_vs = fs;
 
         if(this.bounds == null) {
             this.bounds = new AABB();
@@ -83,21 +97,22 @@ export default class IdBoxGroupMesh extends MeshBase {
 
         ROVertexBuffer.AddFloat32Data(this.m_vs, 4);
 
+        total *= groupsTotal;
+
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_UVS_INDEX)) {
-            this.m_uvs = this.buildGroupData(this.boxMesh.getUVS(), total, 2);
+            this.m_uvs = this.buildGroupData(this.srcMesh.getUVS(), total, 2);
         }
 
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_NVS_INDEX)) {
-            
-            this.m_nvs = this.buildGroupData(this.boxMesh.getNVS(), total, 3);
+            this.m_nvs = this.buildGroupData(this.srcMesh.getNVS(), total, 3);
         }
         if (this.isVBufEnabledAt(VtxBufConst.VBUF_CVS_INDEX)) {
-            this.m_cvs = this.buildGroupData(this.boxMesh.getCVS(), total, 3);
+            this.m_cvs = this.buildGroupData(this.srcMesh.getCVS(), total, 3);
         }
         
         ROVertexBuffer.vbWholeDataEnabled = this.vbWholeDataEnabled;
         if (newBuild) {
-            this.m_ivs = GeometryMerger.MergeSameIvs(this.m_ivs, this.m_vs, 4, total);
+            this.m_ivs = GeometryMerger.MergeSameIvs(this.srcMesh.getIVS(), this.m_vs, 4, total);
             this.m_vbuf = ROVertexBuffer.CreateBySaveData(this.getBufDataUsage());
             this.m_vbuf.setUint16IVSData(this.m_ivs);
             this.vtCount = this.m_ivs.length;
@@ -122,7 +137,7 @@ export default class IdBoxGroupMesh extends MeshBase {
     __$destroy(): void {
         if (this.isResFree()) {
             this.bounds = null;
-            this.boxMesh = null;
+            this.srcMesh = null;
             this.m_vs = null;
             this.m_uvs = null;
             this.m_nvs = null;

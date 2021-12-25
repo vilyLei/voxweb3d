@@ -26,8 +26,8 @@ export default class IdBoxGroupAnimator extends DisplayEntity {
     private m_normalType: number = VtxNormalType.FLAT;
     private m_minV: Vector3D = null;
     private m_maxV: Vector3D = null;
+    private m_groupPositions: Vector3D[] = null;
     private m_transMatrix: Matrix4 = null;
-
 
     private m_posDataTex: FloatTextureProxy = null;
     private m_texSize: number = 64;
@@ -128,6 +128,9 @@ export default class IdBoxGroupAnimator extends DisplayEntity {
     showFrontFace(): void {
         this.setRenderState(RendererState.NORMAL_STATE);
     }
+    setGroupPositions(groupPositions: Vector3D[] = null): void {
+        this.m_groupPositions = groupPositions.slice(); 
+    }
     /**
      * initialize a box geometry data and texture data
      * @param minV the min position of the box
@@ -167,7 +170,7 @@ export default class IdBoxGroupAnimator extends DisplayEntity {
             let boxMesh: Box3DMesh = new Box3DMesh();
             boxMesh.setBufSortFormat(material.getBufSortFormat());
             boxMesh.initialize(this.m_minV, this.m_maxV);
-            mesh.boxMesh = boxMesh;
+            mesh.srcMesh = boxMesh;
             if (this.m_transMatrix != null) {
                 mesh.setTransformMatrix(this.m_transMatrix);
             }
@@ -175,12 +178,12 @@ export default class IdBoxGroupAnimator extends DisplayEntity {
             mesh.normalScale = this.normalScale;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             mesh.setBufSortFormat(material.getBufSortFormat());
-            //mesh.initialize(this.m_minV, this.m_maxV, this.m_unitTotal, this.m_idStep);
-            mesh.initialize(this.m_unitTotal, this.m_idStep);
+            mesh.initialize(this.m_unitTotal, this.m_idStep, this.m_groupPositions);
             this.m_minV = null;
             this.m_maxV = null;
             this.setMesh(mesh);
             mesh.setTransformMatrix(null);
+            console.log("group mesh: ",mesh);
         }
         this.m_transMatrix = null;
     }

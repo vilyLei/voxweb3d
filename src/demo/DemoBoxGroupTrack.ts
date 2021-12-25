@@ -17,7 +17,7 @@ import BoxGroupTrack from "../voxanimate/primitive/BoxGroupTrack";
 import { UserInteraction } from "../vox/engine/UserInteraction";
 
 class TrackWheelRole {
-    private m_pz: number = Math.random() * 400.0 - 200.00;
+    private m_pz: number = Math.random() * 1000.0 - 500.00;
     private m_px: number = Math.random() * 200.0 - 100.00;
     private m_spdx: number = 1.0;
     private m_tspdx: number = 3.0;
@@ -106,6 +106,7 @@ export class DemoBoxGroupTrack {
             //this.m_boxTrack.setFactor(2,5,2);
             //this.m_boxTrack.initialize(this.m_rscene.textureBlock,0.5,[tex0], distanceFactor);
             this.m_boxTrack.setFactor(5, 5, 5);
+            this.m_boxTrack.animator.setGroupPositions([new Vector3D(), new Vector3D(0.0,0.0, 70.0), new Vector3D(0.0,0.0, 140.0)]);
             this.m_boxTrack.initialize(this.m_rscene.textureBlock, 5.0, [tex0], distanceFactor);
             //this.m_boxTrack.setScale(2.2);
             this.m_rscene.addEntity(this.m_boxTrack.animator);
