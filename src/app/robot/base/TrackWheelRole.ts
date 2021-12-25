@@ -44,8 +44,9 @@ export default class TrackWheelRole extends RbtRole implements IAttackDst {
             this.m_rscene = sc;
             this.m_srcTrackWheel = srcTrackWheel;
 
-            let offsetPos: Vector3D = new Vector3D(0.0, 0.0, 0.0);
+            let offsetPos: Vector3D = new Vector3D(0.0, 6.0, 0.0);
             this.m_legModule.initialize(sc, renderProcessIndex, chassisBody, this.m_srcTrackWheel, dis, offsetPos);
+            offsetPos.setXYZ(0.0,0.0,0.0);
             this.m_armModule.initialize(sc, renderProcessIndex, weapBody, offsetPos);
 
             this.m_moveModule.setSpeed(this.m_speed);

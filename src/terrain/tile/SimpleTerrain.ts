@@ -84,8 +84,8 @@ class SimpleTerrain {
                 if (flag < 1) {
                     flag = Math.random() > 0.5 ? -1 : -2;
                 }
+                pv.addBy( this.m_terrainData.positionOffset );
                 if (flag > 0) {
-                    pv.addBy( this.m_terrainData.positionOffset );
                     pv.y += this.m_terrainData.obstacleY;
                     
                     box.setPosition(pv);
@@ -94,7 +94,6 @@ class SimpleTerrain {
                     obsMeshMerger.addEntity(box);
                 }
                 else {
-                    pv.addBy( this.m_terrainData.positionOffset );
                     box.setPosition(pv);
                     if (flag == -1) {
                         box.setMaterial(material1);

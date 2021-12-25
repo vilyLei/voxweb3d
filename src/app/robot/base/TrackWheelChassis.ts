@@ -74,16 +74,17 @@ export default class TrackWheelChassis implements IRbtModule, IPoseture {
             this.m_sc = sc;
 
             sc.addContainer(this.m_container, renderProcessIndex);
-
             this.m_trackWheelL.initializeFrom(srcTrackWheel, [AssetsModule.GetImageTexByUrl("static/assets/metal_02.jpg")]);
             srcTrackWheel.getPosition(this.m_pos);
             this.m_pos.z -= 0.5 * dis;
+            this.m_pos.addBy( offsetPos );
             this.m_trackWheelL.setPosition(this.m_pos);
             this.m_container.addEntity(this.m_trackWheelL.animator);
 
             this.m_trackWheelR.initializeFrom(srcTrackWheel, [AssetsModule.GetImageTexByUrl("static/assets/metal_02.jpg")]);
             srcTrackWheel.getPosition(this.m_pos);
             this.m_pos.z += 0.5 * dis;
+            this.m_pos.addBy( offsetPos );
             this.m_trackWheelR.setPosition(this.m_pos);
             this.m_container.addEntity(this.m_trackWheelR.animator);
 
