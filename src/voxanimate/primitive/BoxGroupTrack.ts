@@ -8,8 +8,10 @@
 import Vector3D from "../../vox/math/Vector3D";
 import TextureProxy from "../../vox/texture/TextureProxy";
 import TextureBlock from "../../vox/texture/TextureBlock";
-import IdBoxGroupAnimator from "../../voxanimate/primitive/IdBoxGroupAnimator";
+import {IdMeshGroupAnimator} from "../../voxanimate/primitive/IdMeshGroupAnimator";
 import PathTrack from "../../voxnav/path/PathTrack";
+import Box3DMesh from "../../vox/mesh/Box3DMesh";
+import VSTexturePosIdMaterial from "../../voxanimate/material/VSTexturePosIdMaterial";
 
 export default class BoxGroupTrack {
 
@@ -24,7 +26,7 @@ export default class BoxGroupTrack {
     private m_unitMaxV: Vector3D = new Vector3D(2, 2, 4);
     private m_track: PathTrack = new PathTrack();
     private m_trackPosList: Vector3D[] = null;
-    readonly animator: IdBoxGroupAnimator = new IdBoxGroupAnimator();
+    readonly animator: IdMeshGroupAnimator = new IdMeshGroupAnimator();
     constructor() { }
     setTrackScale(scale: number): void {
         this.m_trackScale.setXYZ(scale, scale, scale);
@@ -91,7 +93,7 @@ export default class BoxGroupTrack {
             unitMinV.copyFrom(srcTrack.m_unitMinV);
             let unitMaxV: Vector3D = new Vector3D();
             unitMaxV.copyFrom(srcTrack.m_unitMaxV);
-            this.animator.initialize(unitMinV, unitMaxV, srcTrack.m_unitsTotal, srcTrack.m_stepFactor, texList);
+            this.animator.initialize(srcTrack.m_unitsTotal, srcTrack.m_stepFactor, texList);
         }
     }
     initialize(textureBlock: TextureBlock, stepDis: number = 0.5, texList: TextureProxy[] = null, distanceFactor: number = 1.0): void {
@@ -109,9 +111,11 @@ export default class BoxGroupTrack {
         pos = new Vector3D(100.0, 0.0, 0.0);
         let pdis: number = 0.0;
         let flag: number = PathTrack.TRACK_BEGIN;
-        let total: number = this.animator.getDataTextureSize();
+        let total: number = this.animator.getDataTextureArea();
         let i: number = 0;
+        
         for (; i < total; ++i) {
+
             flag = this.m_track.calcPosByDis(pos, pdis, false);
             pdis += stepDis * distanceFactor;
 
@@ -121,11 +125,26 @@ export default class BoxGroupTrack {
                 break;
             }
         }
+        let material: VSTexturePosIdMaterial = null;
+        if(this.animator.getMesh() == null && this.animator.getGroupSrcMesh() == null) {
+            material = new VSTexturePosIdMaterial();
+            material.initializeByCodeBuf( true );
+            let boxMesh: Box3DMesh = new Box3DMesh();
+            boxMesh.setBufSortFormat(material.getBufSortFormat());
+            boxMesh.initialize(this.m_unitMinV, this.m_unitMaxV);
+            this.animator.setGroupSrcMesh(boxMesh);
+            this.animator.setMaterial( material );
+        }
 
         this.m_stepUnit = Math.floor(Math.abs(this.m_unitMinV.x * 2.0) + this.m_spaceFactor);
         this.m_unitsTotal = Math.ceil(this.m_track.getPathDistance() / this.m_stepUnit);
         this.m_stepFactor = Math.round(this.m_stepUnit / stepDis);
-        this.animator.initialize(this.m_unitMinV, this.m_unitMaxV, this.m_unitsTotal, this.m_stepFactor, texList);
+        this.animator.initialize(this.m_unitsTotal, this.m_stepFactor, texList);
+        
+        if(material != null) {
+            material.setTexSize( this.animator.getDataTextureSize() );
+            material.setPosTotal( this.animator.getPosTotal() );
+        }
     }
     moveDistanceOffset(distanceOffset: number): void {
         this.animator.moveIdDistanceOffset(distanceOffset);
