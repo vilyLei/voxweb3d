@@ -1,4 +1,4 @@
-initLocalPos();
+initLocalVtx();
 
 #ifdef VOX_USE_UV_VTX_TRANSFORM
     v_uv = a_uvs.xy * u_vertLocalParams[0].xy + u_vertLocalParams[0].zw;
@@ -6,9 +6,6 @@ initLocalPos();
     v_uv = a_uvs.xy;
 #endif
 
-#ifdef VOX_DISPLACEMENT_MAP
-    displaceLocalVtx( u_vertLocalParams[1].xy );
-#endif
 
 worldPosition = u_objMat * localPosition;
 viewPosition = u_viewMat * worldPosition;

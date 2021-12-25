@@ -210,7 +210,6 @@ class ShaderLib implements IShaderLib{
     addAllShaderCodeObject(): void {
         if(this.m_configLib.getUUIDListLength() > 0) {
             let uuidList: ShaderCodeUUID[] = this.m_configLib.getUUIDList();
-            console.log("xxx uuidList.length: ",uuidList.length);
             for(let i: number = 0; i < uuidList.length; ++i) {
                 this.addShaderCodeObjectWithUUID(uuidList[i]);
             }

@@ -27,10 +27,23 @@ class VSTexturePosIdRenderShaderBuffer extends ShaderCodeBuffer {
         let coder = this.m_coder;
         coder.addVertLayout("vec4", "a_vs");
         coder.addFragUniform("vec4", "u_color");
-        coder.addVertUniform("vec4", "u_vtxParams");
+        coder.addVertUniform("vec4", "u_vtxParam");
         this.m_uniform.add2DMap("VTX_TRANSFORM_MAP", false, false, true);
         this.m_uniform.addDiffuseMap();
 
+        coder.addVertFunction(
+            `
+void  initLocalPos() {
+    localPosition = vec4(a_vs.xyz, 1.0);
+    
+    vec4 params = u_vtxParam;
+    float index = abs(mod((a_vs.w + params[1]),params[2]));
+    index *= params[0];
+    vec2 puv = vec2(fract(index), floor(index) * params[0]);
+    localPosition.xyz += VOX_Texture2D(VTX_TRANSFORM_MAP, puv).xyz;
+}
+            `
+        );
         coder.addFragMainCode(
             `
     FragColor0 = VOX_Texture2D(VOX_DIFFUSE_MAP, v_uv) * u_color;
@@ -38,12 +51,8 @@ class VSTexturePosIdRenderShaderBuffer extends ShaderCodeBuffer {
         );
         coder.addVertMainCode(
             `
-    float index = abs(mod((a_vs.w + u_vtxParams[1]),u_vtxParams[2]));
-    index *= u_vtxParams[0];
-    vec2 puv = vec2(fract(index), floor(index) * u_vtxParams[0]);
-    localPosition = vec4(a_vs.xyz,1.0);
-    localPosition.xyz += VOX_Texture2D(VTX_TRANSFORM_MAP, puv).xyz;
-
+    initLocalPos();
+    
     worldPosition = u_objMat * localPosition;
     viewPosition = u_viewMat * worldPosition;
     gl_Position = u_projMat * viewPosition;
@@ -98,7 +107,7 @@ export class VSTexturePosIdMaterial extends MaterialBase {
     }
     createSelfUniformData(): ShaderUniformData {
         let oum: ShaderUniformData = new ShaderUniformData();
-        oum.uniformNameList = ["u_vtxParams", "u_color"];
+        oum.uniformNameList = ["u_vtxParam", "u_color"];
         oum.dataList = [this.m_posParam, this.m_colorArray];
         return oum;
     }
