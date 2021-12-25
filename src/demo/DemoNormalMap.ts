@@ -22,7 +22,7 @@ import ScreenFixedAlignPlaneEntity from "../vox/entity/ScreenFixedAlignPlaneEnti
 import LambertLightMaterial from "../vox/material/mcase/LambertLightMaterial";
 import { MaterialPipeType } from "../vox/material/pipeline/MaterialPipeType";
 //  import { MaterialContext, MaterialContextParam } from "../materialLab/base/MaterialContext";
-import { MaterialContext, DebugMaterialContext, MaterialContextParam } from "../materialLab/base/DebugMaterialContext";
+import { DebugMaterialContext, MaterialContextParam } from "../materialLab/base/DebugMaterialContext";
 
 import Billboard3DEntity from "../vox/entity/Billboard3DEntity";
 

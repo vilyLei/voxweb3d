@@ -48,7 +48,7 @@ export class RbtDrama implements IShaderLibListener{
     private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
 
     shaderLibLoadComplete(loadingTotal: number, loadedTotal: number): void {
-        //console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ",loadingTotal, loadedTotal);
+        console.log("shaderLibLoadComplete(), loadingTotal, loadedTotal: ",loadingTotal, loadedTotal);
         this.initScene();
     }
     private initMaterialCtx(): void {
@@ -114,7 +114,6 @@ export class RbtDrama implements IShaderLibListener{
     }
     initScene(): void {
 
-        //this.initTerrain();
         this.m_terrain.initialize(this.m_rscene, this.m_materialCtx);
 
         AssetsModule.GetInstance().initialize(this.m_materialCtx);

@@ -1,6 +1,5 @@
 import RendererScene from "../../../vox/scene/RendererScene";
-import { MaterialContextParam } from "../../../materialLab/base/CommonMaterialContext";
-import { DebugMaterialContext } from "../../../materialLab/base/DebugMaterialContext";
+import { CommonMaterialContext } from "../../../materialLab/base/CommonMaterialContext";
 
 import { TerrainData } from "../../../terrain/tile/TerrainData";
 import { SimpleTerrain } from "../../../terrain/tile/SimpleTerrain";
@@ -12,8 +11,7 @@ class TerrainModule {
     private m_terrainData: TerrainData = null;
     private m_toyTerrain: SimpleTerrain = new SimpleTerrain();
     
-    // private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
-    private m_materialCtx: DebugMaterialContext;// = new DebugMaterialContext();
+    private m_materialCtx: CommonMaterialContext;
 
     getTerrainData(): TerrainData {
         return this.m_terrainData;
@@ -62,17 +60,8 @@ class TerrainModule {
         this.m_toyTerrain.initialize(this.m_rscene, this.m_materialCtx, terrData);
 
     }
-    
-    private initMaterialCtx(): void {
-
-        let mcParam: MaterialContextParam = new MaterialContextParam();
-        mcParam.pointLightsTotal = 0;
-        mcParam.directionLightsTotal = 1;
-        mcParam.spotLightsTotal = 0;
         
-    }
-    
-    initialize(rscene: RendererScene, materialCtx: DebugMaterialContext): void {
+    initialize(rscene: RendererScene, materialCtx: CommonMaterialContext): void {
         console.log("TerrainModule::initialize()......");
         if (this.m_rscene == null) {
             this.m_rscene = rscene;

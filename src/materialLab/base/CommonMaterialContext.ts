@@ -47,17 +47,24 @@ class CommonMaterialContext extends MaterialContext {
     }
     initialize(rscene: RendererScene, param: MaterialContextParam = null, shaderLibConfigure: IShaderLibConfigure = null): void {
         if (this.m_rscene == null) {
-            
-            if (shaderLibConfigure == null) {
-                let libConfig = this.createShaderLibConfig();
+            this.buildConfigure(param, shaderLibConfigure);
+            super.initialize(rscene, param, shaderLibConfigure);
+        }
+    }
+    protected buildConfigure(param: MaterialContextParam, shaderLibConfigure: IShaderLibConfigure): void {
 
-                let configure: ShaderCodeConfigure = null;
-                if(param == null) {
-                    param = new MaterialContextParam();
-                }
-                param.loadAllShaderCode = true;
-                param.shaderCodeBinary = true;
+        console.log("buildConfigure >>> common");
+        if (shaderLibConfigure == null) {
+            let libConfig = this.createShaderLibConfig();
 
+            let configure: ShaderCodeConfigure = null;
+            if(param == null) {
+                param = new MaterialContextParam();
+            }
+            param.loadAllShaderCode = true;
+            param.shaderCodeBinary = true;
+
+            if(param.loadAllShaderCode) {
                 if (param.lambertMaterialEnabled) {
                     configure = new ShaderCodeConfigure();
                     configure.uuid = ShaderCodeUUID.Lambert;
@@ -84,15 +91,18 @@ class CommonMaterialContext extends MaterialContext {
                     configure.binary = true;
                     libConfig.shaderCodeConfigures.push(configure);
                 }
-
-                shaderLibConfigure = libConfig;
             }
 
-            super.initialize(rscene, param, shaderLibConfigure);
-            let selfT: any = this;
-            selfT.pbrPipeline = this.createPipeline();
-            selfT.lambertPipeline = this.createPipeline();
+            shaderLibConfigure = libConfig;
         }
+
+    }
+    protected initEnd(param: MaterialContextParam): void {
+        
+        let selfT: any = this;
+        if(this.pbrPipeline != null) selfT.pbrPipeline = this.createPipeline();
+        if(this.lambertPipeline != null) selfT.lambertPipeline = this.createPipeline();
+        super.initEnd(param);
     }
 }
 export { ShaderCodeUUID, IShaderLibConfigure, IShaderLibListener, ShaderCodeConfigure, ShaderCodeType, MaterialContextParam, MaterialContext, CommonMaterialContext };
