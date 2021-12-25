@@ -21,23 +21,20 @@ class DebugMaterialContext extends CommonMaterialContext {
 
     initialize(rscene: RendererScene, param: MaterialContextParam = null, shaderLibConfigure: IShaderLibConfigure = null): void {
 
-        if(param != null) {
+        if(param == null) {
             param = new MaterialContextParam();
         }
         param.shaderCodeBinary = false;
         param.loadAllShaderCode = false;
         super.initialize(rscene, param, shaderLibConfigure);        
     }
-    protected buildConfigure(param: MaterialContextParam, shaderLibConfigure: IShaderLibConfigure): void {
+    protected buildConfigure(param: MaterialContextParam, shaderLibConfigure: IShaderLibConfigure): IShaderLibConfigure {
+        return null;
     }
     protected initEnd(param: MaterialContextParam): void {
-
-        let selfT: any = this;
-        if(this.pbrPipeline != null) selfT.pbrPipeline = this.createPipeline();
-        if(this.lambertPipeline != null) selfT.lambertPipeline = this.createPipeline();
+        super.initEnd( param );
         this.addShaderCodeObject(ShaderCodeUUID.PBR, PBRShaderCode);
         this.addShaderCodeObject(ShaderCodeUUID.Lambert, LambertLightShaderCode);
-        super.initEnd( param );
     }
 }
 export { ShaderCodeUUID, IShaderLibConfigure, IShaderLibListener, ShaderCodeConfigure, ShaderCodeType, MaterialContextParam, DebugMaterialContext };

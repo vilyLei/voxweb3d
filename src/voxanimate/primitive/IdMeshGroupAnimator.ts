@@ -100,11 +100,11 @@ class IdMeshGroupAnimator extends DisplayEntity {
     }
     moveIdDistanceOffset(distanceOffset: number): void {
         this.m_idDistance += distanceOffset;
-        this.m_idMaterial.setMoveDis(this.m_idDistance);
+        this.m_idMaterial.setMoveDistance(this.m_idDistance);
     }
     moveIdDistance(distance: number): void {
         this.m_idDistance = distance;
-        this.m_idMaterial.setMoveDis(distance);
+        this.m_idMaterial.setMoveDistance(distance);
     }
     setVtxTransformMatrix(matrix: Matrix4): void {
         this.m_transMatrix = matrix;
@@ -115,7 +115,7 @@ class IdMeshGroupAnimator extends DisplayEntity {
         if (material == null) {
             material = new VSTexturePosIdMaterial();
             material.setTexSize(this.m_texSize);
-            material.setPosTotal(this.m_posTotal);
+            material.setPositionsTotal(this.m_posTotal);
             material.setTextureList(texList);
             this.setMaterial(material);
         }

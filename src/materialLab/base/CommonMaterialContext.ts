@@ -12,7 +12,7 @@ import TextureProxy from "../../vox/texture/TextureProxy";
  * 实现 material 构造 pipeline 的上下文
  */
 class CommonMaterialContext extends MaterialContext {
-    
+
     /**
      * 构造 lambert light material流水线
      */
@@ -26,11 +26,11 @@ class CommonMaterialContext extends MaterialContext {
     }
     createDefaultMaterial(textures: TextureProxy[], initialization: boolean = true): Default3DMaterial {
         let material: Default3DMaterial = new Default3DMaterial();
-        material.setMaterialPipeline(this.lambertPipeline);
+        material.setMaterialPipeline(this.pipeline);
         material.setTextureList(textures);
-        if(initialization) {
+        if (initialization) {
             let hasTex: boolean = textures != null && textures.length > 0 && textures[0] != null;
-            material.initializeByCodeBuf( hasTex );
+            material.initializeByCodeBuf(hasTex);
         }
         return material;
     }
@@ -47,61 +47,65 @@ class CommonMaterialContext extends MaterialContext {
     }
     initialize(rscene: RendererScene, param: MaterialContextParam = null, shaderLibConfigure: IShaderLibConfigure = null): void {
         if (this.m_rscene == null) {
-            this.buildConfigure(param, shaderLibConfigure);
+            shaderLibConfigure = this.buildConfigure(param, shaderLibConfigure);
             super.initialize(rscene, param, shaderLibConfigure);
         }
     }
-    protected buildConfigure(param: MaterialContextParam, shaderLibConfigure: IShaderLibConfigure): void {
+    protected buildConfigure(param: MaterialContextParam, shaderLibConfigure: IShaderLibConfigure): IShaderLibConfigure {
 
-        console.log("buildConfigure >>> common");
         if (shaderLibConfigure == null) {
             let libConfig = this.createShaderLibConfig();
 
             let configure: ShaderCodeConfigure = null;
-            if(param == null) {
+            if (param == null) {
                 param = new MaterialContextParam();
             }
             param.loadAllShaderCode = true;
-            param.shaderCodeBinary = true;
 
-            if(param.loadAllShaderCode) {
+            if (param.loadAllShaderCode) {
                 if (param.lambertMaterialEnabled) {
                     configure = new ShaderCodeConfigure();
+                    configure.buildBinaryFile = param.buildBinaryFile;
                     configure.uuid = ShaderCodeUUID.Lambert;
                     configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
-                    configure.urls = [
-                        "static/shader/glsl/lambert/glsl01.bin",
-                        "static/shader/glsl/lambert/glsl02.bin",
-                        "static/shader/glsl/lambert/glsl03.bin",
-                        "static/shader/glsl/lambert/glsl04.bin"
-                    ]
-                    configure.binary = true;
+                    if (param.shaderCodeBinary) {
+                        configure.urls = [
+                            "static/shader/glsl/lambert/glsl01.bin",
+                            "static/shader/glsl/lambert/glsl02.bin",
+                            "static/shader/glsl/lambert/glsl03.bin",
+                            "static/shader/glsl/lambert/glsl04.bin"
+                        ]
+                    }
+                    configure.binary = param.shaderCodeBinary;
                     libConfig.shaderCodeConfigures.push(configure);
                 }
                 if (param.pbrMaterialEnabled) {
                     configure = new ShaderCodeConfigure();
+                    configure.buildBinaryFile = param.buildBinaryFile;
                     configure.uuid = ShaderCodeUUID.PBR;
                     configure.types = [ShaderCodeType.VertHead, ShaderCodeType.VertBody, ShaderCodeType.FragHead, ShaderCodeType.FragBody];
-                    configure.urls = [
-                        "static/shader/glsl/pbr/glsl01.bin",
-                        "static/shader/glsl/pbr/glsl02.bin",
-                        "static/shader/glsl/pbr/glsl03.bin",
-                        "static/shader/glsl/pbr/glsl04.bin"
-                    ]
-                    configure.binary = true;
+                    if (param.shaderCodeBinary) {
+                        configure.urls = [
+                            "static/shader/glsl/pbr/glsl01.bin",
+                            "static/shader/glsl/pbr/glsl02.bin",
+                            "static/shader/glsl/pbr/glsl03.bin",
+                            "static/shader/glsl/pbr/glsl04.bin"
+                        ]
+                        configure.binary = param.shaderCodeBinary;
+                    }
                     libConfig.shaderCodeConfigures.push(configure);
                 }
             }
 
             shaderLibConfigure = libConfig;
         }
-
+        return shaderLibConfigure;
     }
     protected initEnd(param: MaterialContextParam): void {
-        
+
         let selfT: any = this;
-        if(this.pbrPipeline != null) selfT.pbrPipeline = this.createPipeline();
-        if(this.lambertPipeline != null) selfT.lambertPipeline = this.createPipeline();
+        if (this.pbrPipeline == null) selfT.pbrPipeline = this.createPipeline();
+        if (this.lambertPipeline == null) selfT.lambertPipeline = this.createPipeline();
         super.initEnd(param);
     }
 }

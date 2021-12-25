@@ -93,7 +93,6 @@ export default class LambertLightMaterial extends MaterialBase {
         this.m_parallaxParamIndex = src.m_parallaxParamIndex;
         this.m_fragLocalParamsTotal = src.m_fragLocalParamsTotal;
         this.m_uniqueShaderName = src.m_uniqueShaderName;
-        
     }
     private buildTextureList(): TextureProxy[] {
 
@@ -113,10 +112,17 @@ export default class LambertLightMaterial extends MaterialBase {
         if (this.m_fragLocalParams == null) {
 
             this.m_fragLocalParamsTotal = 2;
+            let vtxParamsTotal = 2;
+            //this.m_vertLocalParams = new Float32Array(vtxParamsTotal * 4);
             this.m_vertLocalParams = new Float32Array([
                 1.0,1.0, 0.0,0.0,      // u scale, v scale, translation u, translation v
                 10.0, 0.0, 0.0,0.0     // displacement scale, bias, undefined, undefined
             ]);
+            // this.m_vertLocalParams.set([
+            //     1.0,1.0, 0.0,0.0,      // u scale, v scale, translation u, translation v
+            //     10.0, 0.0, 0.0,0.0     // displacement scale, bias, undefined, undefined
+            // ], 0);
+
             if (this.parallaxMap != null) {
                 this.m_fragLocalParamsTotal += 1;
             }
@@ -279,7 +285,7 @@ export default class LambertLightMaterial extends MaterialBase {
     }
 
     createSelfUniformData(): ShaderUniformData {
-
+        
         let oum: ShaderUniformData = new ShaderUniformData();
         oum.uniformNameList = ["u_fragLocalParams", "u_vertLocalParams"];
         oum.dataList = [this.m_fragLocalParams, this.m_vertLocalParams];

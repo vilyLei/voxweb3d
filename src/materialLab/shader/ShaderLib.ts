@@ -48,7 +48,7 @@ class ShaderCodeObjectLoader {
     private loadedShdCode(code: string, type: ShaderCodeType, loadedCallback: (uuid: ShaderCodeUUID, shaderCodeobject: ShaderCodeObject) => void): void {
 
         this.m_loadingTotal++;
-        //let code: string;
+        
         if(this.m_configure.buildBinaryFile && !this.m_configure.binary) {
             let u8arr: Uint8Array = this.encodeUint8Arr(code);
             for(let i: number = 0; i < u8arr.length; ++i) {
@@ -210,6 +210,7 @@ class ShaderLib implements IShaderLib{
     addAllShaderCodeObject(): void {
         if(this.m_configLib.getUUIDListLength() > 0) {
             let uuidList: ShaderCodeUUID[] = this.m_configLib.getUUIDList();
+            console.log("xxx uuidList.length: ",uuidList.length);
             for(let i: number = 0; i < uuidList.length; ++i) {
                 this.addShaderCodeObjectWithUUID(uuidList[i]);
             }

@@ -81,6 +81,10 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
      */
     private m_preCompileInfo: ShaderCompileInfo = null;
 
+    fragHeadCodeUnlock: boolean = true;
+    fragMainCodeUnlock: boolean = true;
+    vertHeadCodeUnlock: boolean = true;
+    vertMainCodeUnlock: boolean = true;
 
     readonly uniform: IShaderCodeUniform;
     mathDefineEanbled: boolean = true;
@@ -91,7 +95,7 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
     vertMatrixInverseEnabled: boolean = false;
     vtxUVTransfromEnabled: boolean = false;
     fragMatrixInverseEnabled: boolean = false;
-
+    
     constructor(uniform: IShaderCodeUniform) {
         let self: any = this;
         self.uniform = uniform;
@@ -114,6 +118,11 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
         this.m_fragObjMat = false;
         this.m_fragViewMat = false;
         this.m_fragProjMat = false;
+        
+        this.fragHeadCodeUnlock = true;
+        this.fragMainCodeUnlock = true;
+        this.vertHeadCodeUnlock = true;
+        this.vertMainCodeUnlock = true;
 
         this.m_use2DMap = false;
 
@@ -360,17 +369,17 @@ export default class ShaderCodeBuilder implements IShaderCodeBuilder {
     addFragMainCode(code: string): void {
         if (code != "") this.m_fragMainCode += "\n" + code;
     }
-
     addShaderObject(shaderObj: IShaderCodeObject): void {
-        this.addFragHeadCode(shaderObj.frag_head);
-        this.addFragMainCode(shaderObj.frag_body);
-        this.addVertHeadCode(shaderObj.vert_head);
-        this.addVertMainCode(shaderObj.vert_body);
+        
+        if(this.fragHeadCodeUnlock) this.addFragHeadCode(shaderObj.frag_head);
+        if(this.fragMainCodeUnlock) this.addFragMainCode(shaderObj.frag_body);
+        if(this.vertHeadCodeUnlock) this.addVertHeadCode(shaderObj.vert_head);
+        if(this.vertMainCodeUnlock) this.addVertMainCode(shaderObj.vert_body);
     }
     addShaderObjectHead(shaderObj: IShaderCodeObject): void {
 
-        this.addFragHeadCode(shaderObj.frag_head);
-        this.addVertMainCode(shaderObj.vert_head);
+        if(this.fragHeadCodeUnlock) this.addFragHeadCode(shaderObj.frag_head);
+        if(this.vertHeadCodeUnlock) this.addVertMainCode(shaderObj.vert_head);
     }
 
     private autoBuildHeadCode(): void {

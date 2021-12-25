@@ -143,7 +143,7 @@ export default class BoxGroupTrack {
         
         if(material != null) {
             material.setTexSize( this.animator.getDataTextureSize() );
-            material.setPosTotal( this.animator.getPosTotal() );
+            material.setPositionsTotal( this.animator.getPosTotal() );
         }
     }
     moveDistanceOffset(distanceOffset: number): void {

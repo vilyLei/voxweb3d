@@ -26,6 +26,10 @@ class MaterialContextParam {
 
     lambertMaterialEnabled: boolean = true;
     pbrMaterialEnabled: boolean = true;
+    /**
+     * 生产 二进制 glsl代码文件
+     */
+    buildBinaryFile: boolean = false;
 
     constructor() { }
 }
@@ -143,16 +147,17 @@ class MaterialContext {
             selfT.pipeline = this.createPipeline();
             
             this.initEnd( param );
+            
+            if(!param.loadAllShaderCode) {
+                let listener = MaterialContext.ShaderLib.getListener();
+                if(listener != null) {
+                    listener.shaderLibLoadComplete(0, 0);
+                }
+            }
         }
     }
     protected initEnd(param: MaterialContextParam): void {
 
-        if(!param.loadAllShaderCode) {
-            let listener = MaterialContext.ShaderLib.getListener();
-            if(listener != null) {
-                listener.shaderLibLoadComplete(0, 0);
-            }
-        }
     }
     
     addShaderCodeObject(uuid: ShaderCodeUUID, shaderCodeObject: ShaderCodeObject): void {

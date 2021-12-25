@@ -40,8 +40,8 @@ export class DemoMultiLambertLights implements IShaderLibListener {
     private m_engine: EngineBase = null;
     private m_profileInstance: ProfileInstance = null;
     private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
-    // private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
-    private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
+    private m_materialCtx: CommonMaterialContext = new CommonMaterialContext();
+    //private m_materialCtx: DebugMaterialContext = new DebugMaterialContext();
 
     private m_lightEntities: ILightEntity[] = [];
     initialize(): void {
@@ -78,9 +78,10 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         mcParam.spotLightsTotal = 0;
         //mcParam.vsmEnabled = false;
         mcParam.loadAllShaderCode = true;
-        mcParam.shaderCodeBinary = true;
+        mcParam.shaderCodeBinary = false;
         mcParam.pbrMaterialEnabled = false;
         //mcParam.vsmEnabled = false;
+        //mcParam.buildBinaryFile = true;
 
         this.m_materialCtx.addShaderLibListener(this);
         this.m_materialCtx.initialize(this.m_engine.rscene, mcParam, null);
@@ -176,6 +177,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         let material: LambertLightMaterial = this.m_materialCtx.createLambertLightMaterial();
         this.useMaps(material, "metal_08", true, true, true);
         material.fogEnabled = true;
+        material.vtxUVTransformEnabled = true;
         material.initializeLocalData();
         material.setDisplacementParams(10.0, -10.0);
         color.normalizeRandom(0.5);
@@ -202,6 +204,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         material = this.m_materialCtx.createLambertLightMaterial();
         this.useMaps(material, "lava_03", true, true, true);
         material.fogEnabled = true;
+        material.vtxUVTransformEnabled = true;
         material.initializeLocalData();
         color.normalizeRandom(1.1);
         colorBias.normalizeRandom(0.5);

@@ -28,7 +28,7 @@ class VSTexturePosIdRenderShaderBuffer extends ShaderCodeBuffer {
         coder.addVertLayout("vec4", "a_vs");
         coder.addFragUniform("vec4", "u_color");
         coder.addVertUniform("vec4", "u_vtxParams");
-        this.m_uniform.add2DMap("VOX_POSITION_MAP", false, false, true);
+        this.m_uniform.add2DMap("VTX_TRANSFORM_MAP", false, false, true);
         this.m_uniform.addDiffuseMap();
 
         coder.addFragMainCode(
@@ -42,8 +42,11 @@ class VSTexturePosIdRenderShaderBuffer extends ShaderCodeBuffer {
     index *= u_vtxParams[0];
     vec2 puv = vec2(fract(index), floor(index) * u_vtxParams[0]);
     localPosition = vec4(a_vs.xyz,1.0);
-    localPosition.xyz += VOX_Texture2D(VOX_POSITION_MAP, puv).xyz;
-    gl_Position = u_projMat * u_viewMat * u_objMat * localPosition;
+    localPosition.xyz += VOX_Texture2D(VTX_TRANSFORM_MAP, puv).xyz;
+
+    worldPosition = u_objMat * localPosition;
+    viewPosition = u_viewMat * worldPosition;
+    gl_Position = u_projMat * viewPosition;
     v_uv = a_uvs;
 `
         )
@@ -76,10 +79,10 @@ export class VSTexturePosIdMaterial extends MaterialBase {
         this.m_texSize = size;
         this.m_posParam[0] = 1.0 / size;
     }
-    setPosTotal(total: number): void {
+    setPositionsTotal(total: number): void {
         this.m_posParam[2] = total;
     }
-    setMoveDis(index: number): void {
+    setMoveDistance(index: number): void {
         this.m_posParam[1] = index;
     }
     setRGB3f(pr: number, pg: number, pb: number): void {
