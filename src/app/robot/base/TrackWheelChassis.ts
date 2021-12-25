@@ -19,8 +19,7 @@ import BoxGroupTrack from "../../../voxanimate/primitive/BoxGroupTrack";
 export default class TrackWheelChassis implements IRbtModule, IPoseture {
     private m_sc: RendererScene = null;
     private m_container: DisplayEntityContainer = null;
-    private m_trackWheelL: BoxGroupTrack = new BoxGroupTrack();
-    private m_trackWheelR: BoxGroupTrack = new BoxGroupTrack();
+    private m_trackWheel: BoxGroupTrack = new BoxGroupTrack();
     private m_pos: Vector3D = new Vector3D();
 
     degreeTween: DegreeTween = new DegreeTween();
@@ -51,8 +50,7 @@ export default class TrackWheelChassis implements IRbtModule, IPoseture {
         return this.m_container.getRotationY();
     }
     direcByDegree(degree: number, finished: boolean): void {
-        this.m_trackWheelL.moveDistanceOffset(0.75);
-        this.m_trackWheelR.moveDistanceOffset(0.75);
+        this.m_trackWheel.moveDistanceOffset(0.75);
         this.degreeTween.runRotY(degree);
         if (this.degreeTween.isDegreeChanged()) {
             this.m_container.update();
@@ -74,20 +72,11 @@ export default class TrackWheelChassis implements IRbtModule, IPoseture {
             this.m_sc = sc;
 
             sc.addContainer(this.m_container, renderProcessIndex);
-            this.m_trackWheelL.initializeFrom(srcTrackWheel, [AssetsModule.GetImageTexByUrl("static/assets/metal_02.jpg")]);
+            this.m_trackWheel.initializeFrom(srcTrackWheel, [AssetsModule.GetImageTexByUrl("static/assets/metal_02.jpg")]);
             srcTrackWheel.getPosition(this.m_pos);
-            this.m_pos.z -= 0.5 * dis;
             this.m_pos.addBy( offsetPos );
-            this.m_trackWheelL.setPosition(this.m_pos);
-            this.m_container.addEntity(this.m_trackWheelL.animator);
-
-            this.m_trackWheelR.initializeFrom(srcTrackWheel, [AssetsModule.GetImageTexByUrl("static/assets/metal_02.jpg")]);
-            srcTrackWheel.getPosition(this.m_pos);
-            this.m_pos.z += 0.5 * dis;
-            this.m_pos.addBy( offsetPos );
-            this.m_trackWheelR.setPosition(this.m_pos);
-            this.m_container.addEntity(this.m_trackWheelR.animator);
-
+            this.m_trackWheel.setPosition(this.m_pos);
+            this.m_container.addEntity(this.m_trackWheel.animator);
             this.degreeTween.bindTarget(this.m_container);
         }
     }

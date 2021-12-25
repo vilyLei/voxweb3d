@@ -1,7 +1,4 @@
-import RendererDevice from "../../../vox/render/RendererDevice";
-import RendererParam from "../../../vox/scene/RendererParam";
 import Vector3D from "../../../vox/math/Vector3D";
-import RenderStatusDisplay from "../../../vox/scene/RenderStatusDisplay";
 import TextureProxy from "../../../vox/texture/TextureProxy";
 import Axis3DEntity from "../../../vox/entity/Axis3DEntity";
 import Box3DEntity from "../../../vox/entity/Box3DEntity";
@@ -29,7 +26,6 @@ class SceneModule {
     constructor() { }
 
     private m_rscene: RendererScene = null;
-    private m_statusDisp: RenderStatusDisplay = new RenderStatusDisplay();
 
     private m_limbRole: FourLimbRole = null;
     private m_flrFactory: FourLimbRoleFactory = new FourLimbRoleFactory();
@@ -95,7 +91,7 @@ class SceneModule {
         }
 
         this.m_flrFactory.initialize(this.m_rscene, 0, this.m_campModule.redCamp, this.m_terrain.getTerrainData());
-        this.m_twrFactory.initialize(this.m_rscene, 0, this.m_campModule.redCamp, this.m_terrain.getTerrainData());
+        this.m_twrFactory.initialize(this.m_rscene, 0, this.m_campModule.redCamp, this.m_terrain.getTerrainData(), 70.0);
 
         let limbRole: FourLimbRole;
         let campType: CampType;

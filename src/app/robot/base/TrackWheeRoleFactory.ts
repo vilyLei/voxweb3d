@@ -16,6 +16,7 @@ import Box3DEntity from "../../../vox/entity/Box3DEntity";
 import BoxGroupTrack from "../../../voxanimate/primitive/BoxGroupTrack";
 import TrackWheelWeaponBody from "../../../app/robot/base/TrackWheelWeaponBody";
 import TrackWheelChassisBody from "../../../app/robot/base/TrackWheelChassisBody";
+import Vector3D from "../../../vox/math/Vector3D";
 
 export default class TrackWheeRoleFactory {
     private m_roleCamp: IRoleCamp = null;
@@ -27,7 +28,7 @@ export default class TrackWheeRoleFactory {
     private m_srcTwUpperBox: Box3DEntity = null;
     constructor() {
     }
-    initialize(rscene: RendererScene, renderProcessIndex: number, roleCamp: IRoleCamp, terrainData: TerrainData): void {
+    initialize(rscene: RendererScene, renderProcessIndex: number, roleCamp: IRoleCamp, terrainData: TerrainData, dis: number = 50.0): void {
         
         this.m_rscene = rscene;
         this.m_renderProcessIndex = renderProcessIndex;
@@ -38,6 +39,7 @@ export default class TrackWheeRoleFactory {
             this.m_boxTrack = new BoxGroupTrack();
             this.m_boxTrack.setTrackScaleXYZ(0.5, 0.4, 1.0);
             this.m_boxTrack.setFactor(5, 5, 5);
+            this.m_boxTrack.animator.setGroupPositions([new Vector3D(0.0, 0.0, -0.5 * dis), new Vector3D(0.0, 0.0, 0.5 * dis)]);
             this.m_boxTrack.initialize(this.m_rscene.textureBlock, 5.0, [AssetsModule.GetImageTexByUrl("static/assets/default.jpg")], 0.98);
             this.m_boxTrack.animator.setXYZ(0.0, 20.0, 0.0);
 
