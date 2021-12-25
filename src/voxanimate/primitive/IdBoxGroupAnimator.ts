@@ -19,6 +19,7 @@ import FloatTextureProxy from "../../vox/texture/FloatTextureProxy";
 import TextureBlock from "../../vox/texture/TextureBlock";
 import { VtxNormalType } from "../../vox/mesh/VtxBufConst";
 import IdBoxGroupMesh from "../../voxanimate/mesh/IdBoxGroupMesh";
+import Box3DMesh from "../../vox/mesh/Box3DMesh";
 
 export default class IdBoxGroupAnimator extends DisplayEntity {
     normalScale: number = 1.0;
@@ -49,7 +50,7 @@ export default class IdBoxGroupAnimator extends DisplayEntity {
 
             let texSize: number = this.m_texSize;
             let posTex: FloatTextureProxy = textureBlock.createFloatTex2D(texSize, texSize);
-            posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
+            //posTex.setWrap(TextureConst.WRAP_CLAMP_TO_EDGE);
             posTex.mipmapEnabled = false;
             posTex.minFilter = TextureConst.NEAREST;
             posTex.magFilter = TextureConst.NEAREST;
@@ -162,6 +163,11 @@ export default class IdBoxGroupAnimator extends DisplayEntity {
             mesh = this.getMesh() as IdBoxGroupMesh;
         }
         if (mesh != null) {
+
+            let boxMesh: Box3DMesh = new Box3DMesh();
+            boxMesh.setBufSortFormat(material.getBufSortFormat());
+            boxMesh.initialize(this.m_minV, this.m_maxV);
+            mesh.boxMesh = boxMesh;
             if (this.m_transMatrix != null) {
                 mesh.setTransformMatrix(this.m_transMatrix);
             }
@@ -169,7 +175,8 @@ export default class IdBoxGroupAnimator extends DisplayEntity {
             mesh.normalScale = this.normalScale;
             mesh.vbWholeDataEnabled = this.vbWholeDataEnabled;
             mesh.setBufSortFormat(material.getBufSortFormat());
-            mesh.initialize(this.m_minV, this.m_maxV, this.m_unitTotal, this.m_idStep);
+            //mesh.initialize(this.m_minV, this.m_maxV, this.m_unitTotal, this.m_idStep);
+            mesh.initialize(this.m_unitTotal, this.m_idStep);
             this.m_minV = null;
             this.m_maxV = null;
             this.setMesh(mesh);

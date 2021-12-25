@@ -80,16 +80,17 @@ class AABB {
 		if (this.max.y < pvy) this.max.y = pvy;
 		if (this.max.z < pvz) this.max.z = pvz;
 	}
-	addXYZFloat32Arr(vs: Float32Array): void {
+	addXYZFloat32Arr(vs: Float32Array, step: number = 3): void {
 
 		let len: number = vs.length;
 		let pvx: number = 0.0;
 		let pvy: number = 0.0;
 		let pvz: number = 0.0;
 		for (let i: number = 0; i < len;) {
-			pvx = vs[i++];
-			pvy = vs[i++];
-			pvz = vs[i++];
+			pvx = vs[i];
+			pvy = vs[i + 1];
+			pvz = vs[i + 2];
+			i += step;
 			if (this.min.x > pvx) this.min.x = pvx;
 			if (this.min.y > pvy) this.min.y = pvy;
 			if (this.min.z > pvz) this.min.z = pvz;
