@@ -78,7 +78,7 @@ export class DemoMultiLambertLights implements IShaderLibListener {
         mcParam.spotLightsTotal = 0;
         //mcParam.vsmEnabled = false;
         mcParam.loadAllShaderCode = true;
-        mcParam.shaderCodeBinary = false;
+        mcParam.shaderCodeBinary = true;
         mcParam.pbrMaterialEnabled = false;
         //mcParam.vsmEnabled = false;
         //mcParam.buildBinaryFile = true;
